@@ -9,7 +9,7 @@ const ibmPlexSans = IBM_Plex_Sans({
   variable: '--font-ibm-plex',
 })
 
-// Import IBM Plex for Arabic (Crucial for the official name and bilingual support)
+// Import IBM Plex for Arabic
 const ibmPlexArabic = IBM_Plex_Sans_Arabic({
   subsets: ['arabic'],
   weight: ['400', '500', '600', '700'],
@@ -28,8 +28,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${ibmPlexSans.variable} ${ibmPlexArabic.variable}`}>
-      {/* Set global background to Obsidian and text to Ivory */}
-      <body className="bg-federation-obsidian text-federation-ivory font-sans antialiased selection:bg-federation-ivory selection:text-federation-obsidian">
+      <body>
         <main className="min-h-screen flex flex-col">
           {children}
         </main>
