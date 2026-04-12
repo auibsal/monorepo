@@ -2,27 +2,60 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { createClient } from '@/utils/supabase/client';
 
 export default function RegisterPlayer() {
-  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+  const supabase = createClient();
 
-  // In the next step, this will connect to Supabase Auth
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+
+  // Form State
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [arabicName, setArabicName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
   const handleRegistration = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    setErrorMsg(null);
     
-    // Simulate database latency
-    setTimeout(() => {
-      setIsLoading(false);
-      // alert('Supabase integration pending!');
-    }, 1500);
+    // 1. Call Supabase Auth
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        // This metadata is caught by our Postgres trigger to build the public profile
+        data: {
+          first_name: firstName,
+          last_name: lastName,
+          arabic_name: arabicName || null,
+        }
+      }
+    });
+
+    setIsLoading(false);
+
+    // 2. Handle Authentication Response
+    if (error) {
+      setErrorMsg(error.message);
+      return;
+    }
+
+    if (data.user) {
+      // Success! Redirect to the secure dashboard
+      router.push('/dashboard');
+    }
   };
 
   return (
     <div className="min-h-[85vh] flex items-center justify-center px-6 py-12">
       <div className="w-full max-w-lg">
         
-        {/* Portal Header */}
         <div className="text-center mb-10">
           <h2 className="text-sm font-medium tracking-widest uppercase opacity-60 mb-2 text-red-500">
             Secure IDF Portal
@@ -35,8 +68,15 @@ export default function RegisterPlayer() {
           </p>
         </div>
 
-        {/* Registration Form */}
         <div className="bg-federation-ivory/5 border border-federation-ivory/20 p-8 rounded-sm shadow-2xl">
+          
+          {errorMsg && (
+            <div className="mb-6 p-4 bg-red-950 border border-red-500 text-red-200 text-sm rounded-sm">
+              <span className="font-bold uppercase tracking-wider">Error: </span>
+              {errorMsg}
+            </div>
+          )}
+
           <form onSubmit={handleRegistration} className="space-y-6">
             
             <div className="grid grid-cols-2 gap-4">
@@ -47,6 +87,8 @@ export default function RegisterPlayer() {
                 <input 
                   type="text" 
                   required
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
                   className="w-full bg-black/50 border border-federation-ivory/20 rounded-sm px-4 py-3 text-federation-ivory focus:outline-none focus:border-federation-ivory transition-colors"
                   placeholder="e.g. Ahmed"
                 />
@@ -58,6 +100,8 @@ export default function RegisterPlayer() {
                 <input 
                   type="text" 
                   required
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
                   className="w-full bg-black/50 border border-federation-ivory/20 rounded-sm px-4 py-3 text-federation-ivory focus:outline-none focus:border-federation-ivory transition-colors"
                   placeholder="e.g. Al-Fadhli"
                 />
@@ -67,11 +111,13 @@ export default function RegisterPlayer() {
             <div className="space-y-2">
               <label className="text-xs font-bold uppercase tracking-widest text-federation-ivory/70 flex justify-between">
                 <span>Full Name (Arabic)</span>
-                <span className="opacity-50 font-normal normal-case tracking-normal">Optional for now</span>
+                <span className="opacity-50 font-normal normal-case tracking-normal">Optional</span>
               </label>
               <input 
                 type="text" 
                 dir="rtl"
+                value={arabicName}
+                onChange={(e) => setArabicName(e.target.value)}
                 className="w-full bg-black/50 border border-federation-ivory/20 rounded-sm px-4 py-3 text-federation-ivory focus:outline-none focus:border-federation-ivory transition-colors font-medium"
                 placeholder="أحمد الفضلي"
                 style={{ fontFamily: 'var(--font-ibm-plex-arabic)' }}
@@ -85,6 +131,8 @@ export default function RegisterPlayer() {
               <input 
                 type="email" 
                 required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 className="w-full bg-black/50 border border-federation-ivory/20 rounded-sm px-4 py-3 text-federation-ivory focus:outline-none focus:border-federation-ivory transition-colors"
                 placeholder="player@example.com"
               />
@@ -97,12 +145,14 @@ export default function RegisterPlayer() {
               <input 
                 type="password" 
                 required
+                minLength={6}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 className="w-full bg-black/50 border border-federation-ivory/20 rounded-sm px-4 py-3 text-federation-ivory focus:outline-none focus:border-federation-ivory transition-colors"
                 placeholder="••••••••"
               />
             </div>
 
-            {/* Legal Agreement */}
             <div className="flex items-start gap-3 pt-2">
               <input 
                 type="checkbox" 
@@ -129,12 +179,6 @@ export default function RegisterPlayer() {
               )}
             </button>
           </form>
-        </div>
-
-        <div className="text-center mt-8">
-          <p className="text-sm font-light opacity-60">
-            Already have a Federation ID? <Link href="/login" className="text-federation-ivory font-bold hover:underline">Access Dashboard</Link>
-          </p>
         </div>
 
       </div>
