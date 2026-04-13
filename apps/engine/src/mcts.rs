@@ -165,7 +165,7 @@ impl ISMCTS {
         for high in 0..=6 {
             for low in 0..=high {
                 let d = Domino::new(high, low);
-                if virtual_state.unplayed_tiles.contains(d) {
+                if virtual_state.unplayed_tiles.contains(&d) {
                     unassigned_tiles.push(d);
                 }
             }
@@ -182,7 +182,7 @@ impl ISMCTS {
             
             for _ in current_size..target_size {
                 if let Some(tile) = unassigned_tiles.pop() {
-                    virtual_state.hands[player_idx].add(tile);
+                    virtual_state.hands[player_idx].add(&tile);
                 }
             }
         }
