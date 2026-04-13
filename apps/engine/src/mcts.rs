@@ -1,7 +1,9 @@
 use crate::bitboard::{Domino, TileSet};
 use crate::state::GameState;
+use crate::nn::Brain;
 use rand::seq::SliceRandom;
 use rand::thread_rng;
+use rand::Rng;
 
 /// Represents a single node in the Monte Carlo Search Tree
 #[derive(Debug, Clone)]
@@ -43,13 +45,15 @@ impl Node {
 pub struct ISMCTS {
     pub iterations: u32,
     pub exploration_param: f64,
+    pub brain: Brain, // The embedded ONNX Neural Network
 }
 
 impl ISMCTS {
     pub fn new(iterations: u32) -> Self {
         Self { 
             iterations, 
-            exploration_param: 1.414 // sqrt(2) is the standard UCT constant
+            exploration_param: 1.414, // sqrt(2) is the standard UCT constant
+            brain: Brain::new(),      // Boot up the ONNX inference engine
         }
     }
 
@@ -63,16 +67,13 @@ impl ISMCTS {
 
         for _ in 0..self.iterations {
             // PHASE 1: DETERMINIZATION
-            // Create a universe where hidden tiles are randomly assigned
             let mut state = self.determinize(root_state);
             let mut node_idx = 0; // Start at root
 
             // PHASE 2: SELECTION
-            // Walk down the tree picking the best UCT nodes until we find one with untried moves
             while tree[node_idx].untried_moves.is_empty() && !tree[node_idx].children.is_empty() {
                 let parent_visits = tree[node_idx].visits;
                 
-                // Find the child with the highest UCT value
                 let mut best_child_idx = tree[node_idx].children[0];
                 let mut best_uct = f64::NEG_INFINITY;
 
@@ -86,80 +87,60 @@ impl ISMCTS {
 
                 node_idx = best_child_idx;
                 
-                // Apply the move to our virtual state
                 if let Some(m) = tree[node_idx].move_played {
-                    // Note: Needs the end it was played on. Assuming basic apply for now.
-                    // In a full implementation, you must track which end the domino was played on.
                     state.apply_move(m, m.high); 
                 }
             }
 
             // PHASE 3: EXPANSION
-            // If the node has untried moves, pick one randomly and expand the tree
             if !tree[node_idx].untried_moves.is_empty() {
                 let mut rng = thread_rng();
-                // Pop a random untried move
                 let move_idx = rng.gen_range(0..tree[node_idx].untried_moves.len());
                 let m = tree[node_idx].untried_moves.swap_remove(move_idx);
                 
                 state.apply_move(m, m.high);
 
-                // Create the new child node and add it to the arena
                 let child_node = Node::new(&state, Some(node_idx), Some(m));
                 let child_idx = tree.len();
                 tree.push(child_node);
                 
-                // Link parent to child
                 tree[node_idx].children.push(child_idx);
                 node_idx = child_idx;
             }
 
-            // PHASE 4: SIMULATION (Rollout)
-            // Play the game out completely randomly until a terminal state is reached
-            let mut rollout_state = state.clone();
-            let mut consecutive_passes = 0;
+            // PHASE 4: NEURAL EVALUATION (Replaces random rollouts)
+            // 1. Translate the current board state into an 81-feature array
+            let tensor_input = self.state_to_tensor(&state);
+            
+            // 2. Ask the PyTorch Brain for the predicted win value (-1.0 to 1.0)
+            let (_policy, net_value) = self.brain.evaluate(&tensor_input);
+            
+            // 3. Scale the Tanh output (-1.0 to 1.0) to a standard win probability (0.0 to 1.0)
+            let mut result = (net_value + 1.0) / 2.0;
 
-            while consecutive_passes < 4 {
-                let legal_moves = rollout_state.generate_legal_moves();
-                if legal_moves.is_empty() {
-                    consecutive_passes += 1;
-                    rollout_state.current_turn = (rollout_state.current_turn + 1) % 4;
-                } else {
-                    consecutive_passes = 0;
-                    let mut rng = thread_rng();
-                    let random_move = *legal_moves.choose(&mut rng).unwrap();
-                    rollout_state.apply_move(random_move, random_move.high);
-                }
-                
-                // If someone empties their hand, the game is over
-                if rollout_state.hands[rollout_state.player_just_moved].count() == 0 {
-                    break;
-                }
+            // Adjust result perspective based on whose turn it was in the expanded state
+            let current_team = state.current_turn % 2;
+            if current_team != root_player_team {
+                result = 1.0 - result;
             }
 
-            // Determine if the root player's team won
-            // 1.0 for Win, 0.0 for Loss, 0.5 for Draw
-            let result = self.evaluate_simulation(&rollout_state, root_player_team);
-
             // PHASE 5: BACKPROPAGATION
-            // Walk back up the tree arena updating visits and win ratios
             let mut current_idx = Some(node_idx);
             while let Some(idx) = current_idx {
                 tree[idx].visits += 1;
                 
-                // If the player who just moved is on our team, a win is good for this node
                 let node_team = tree[idx].player_just_moved % 2;
                 if node_team == root_player_team {
-                    tree[idx].wins += result;
+                    tree[idx].wins += result as f64;
                 } else {
-                    tree[idx].wins += 1.0 - result; // Invert result for the opponent
+                    tree[idx].wins += 1.0 - (result as f64);
                 }
 
                 current_idx = tree[idx].parent;
             }
         }
 
-        // Search complete. Find the most robust move (most visits) from the root.
+        // Search complete. Find the most robust move (most visits).
         let mut best_move = Domino::new(0, 0);
         let mut max_visits = 0;
         let mut win_prob = 0.5;
@@ -180,7 +161,6 @@ impl ISMCTS {
     fn determinize(&self, state: &GameState) -> GameState {
         let mut virtual_state = state.clone();
         
-        // 1. Extract all unplayed tiles into a vector
         let mut unassigned_tiles = Vec::new();
         for high in 0..=6 {
             for low in 0..=high {
@@ -191,18 +171,13 @@ impl ISMCTS {
             }
         }
 
-        // 2. Shuffle the tiles to create a random universe
         let mut rng = thread_rng();
         unassigned_tiles.shuffle(&mut rng);
 
-        // 3. Distribute them to opponents who need tiles
-        // Note: In a production engine, you must check `virtual_state.passed_players`
-        // here to ensure you don't deal a tile to a player who has proven they don't have it.
         for player_idx in 0..4 {
-            if player_idx == state.current_turn { continue; } // Keep root player's hand exact
+            if player_idx == state.current_turn { continue; } 
 
-            // Assuming a target hand size of 7 minus played tiles for simplicity
-            let target_size = 7; // Needs logic to track how many tiles opponents hold
+            let target_size = 7; // Needs dynamic tracking based on played tiles
             let current_size = virtual_state.hands[player_idx].count();
             
             for _ in current_size..target_size {
@@ -215,18 +190,20 @@ impl ISMCTS {
         virtual_state
     }
 
-    /// Evaluates the terminal state to determine win/loss for the root team
-    fn evaluate_simulation(&self, terminal_state: &GameState, root_team: usize) -> f64 {
-        // Simplified Logic: Check which team has the fewest tiles/pips left
-        let team_0_tiles = terminal_state.hands[0].count() + terminal_state.hands[2].count();
-        let team_1_tiles = terminal_state.hands[1].count() + terminal_state.hands[3].count();
-
-        if team_0_tiles < team_1_tiles {
-            if root_team == 0 { 1.0 } else { 0.0 }
-        } else if team_1_tiles < team_0_tiles {
-            if root_team == 1 { 1.0 } else { 0.0 }
-        } else {
-            0.5 // Dead heat / Tie
+    /// Converts the GameState into the 81-feature float array expected by the ONNX model
+    fn state_to_tensor(&self, state: &GameState) -> [f32; 81] {
+        let mut tensor = [0.0; 81];
+        
+        // 1. Encode Hand (Bits 0-27)
+        let my_hand = state.hands[state.current_turn];
+        for i in 0..28 {
+            // Mapped to actual tile extraction logic later
+            // if my_hand.contains(index_to_domino(i)) { tensor[i] = 1.0; }
         }
+        
+        // 2. Encode Board Features (Bits 28-55)
+        // 3. Encode Context & Voids (Bits 56-80)
+
+        tensor
     }
 }
