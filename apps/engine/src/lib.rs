@@ -1,6 +1,7 @@
 pub mod bitboard;
 pub mod state;
 pub mod mcts;
+pub mod nn;
 
 use wasm_bindgen::prelude::*;
 use crate::state::GameState;
