@@ -8,8 +8,9 @@ export default function FederationCharter() {
 
   // Interactive Scroll Spy to highlight the active section in the sidebar
   useEffect(() => {
+    const sections = document.querySelectorAll('section[id]');
+
     const handleScroll = () => {
-      const sections = document.querySelectorAll('section[id]');
       let currentSectionId = '';
 
       sections.forEach((section) => {
@@ -23,7 +24,9 @@ export default function FederationCharter() {
       setActiveSection(currentSectionId);
     };
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll(); // Initial check
+
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
