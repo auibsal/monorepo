@@ -17,12 +17,18 @@ interface GameState {
   consecutivePasses: number;
   gameStatus: 'waiting' | 'playing' | 'finished';
   matchResult: { winner: 'Team A' | 'Team B' | 'Draw', reason: string } | null;
+
+  // Engine Analysis State (Restored for OracleBar)
+  winProbability: number;
+  analysisDepth: number;
+  bestMove: [number, number] | null;
   
   // Actions
   startGame: (initialHands: Record<number, Domino[]>) => void;
   playTile: (playerId: number, tileId: string, endToPlayOn: 'left' | 'right') => void;
   passTurn: (playerId: number) => void;
   evaluateGameOver: () => void;
+  updateAnalysis: (prob: number, move: [number, number], depth: number) => void;
 }
 
 export const useGameStore = create<GameState>((set, get) => ({
@@ -33,6 +39,11 @@ export const useGameStore = create<GameState>((set, get) => ({
   consecutivePasses: 0,
   gameStatus: 'waiting',
   matchResult: null,
+
+  // Engine Analysis Initial State
+  winProbability: 0.5,
+  analysisDepth: 0,
+  bestMove: null,
 
   startGame: (initialHands) => set({
     hands: initialHands,
@@ -68,7 +79,7 @@ export const useGameStore = create<GameState>((set, get) => ({
       else if (tile.low === currentEndValue) newEnds[targetEnd] = tile.high;
     }
 
-    const nextState = {
+    const nextState: Partial<GameState> = {
       hands: { ...state.hands, [playerId]: newHand },
       boardTiles: newBoard,
       openEnds: newEnds,
@@ -91,9 +102,6 @@ export const useGameStore = create<GameState>((set, get) => ({
   passTurn: (playerId) => set((state) => {
     if (state.currentTurn !== playerId || state.gameStatus !== 'playing') return state;
 
-    // TODO: Add logic to mathematically verify the player actually has no playable tiles
-    // before allowing the pass (Anti-cheat).
-
     const passes = state.consecutivePasses + 1;
     const nextState: Partial<GameState> = {
       currentTurn: (state.currentTurn % 4) + 1,
@@ -103,12 +111,18 @@ export const useGameStore = create<GameState>((set, get) => ({
     // Check for Block (Lock) - 4 consecutive passes
     if (passes >= 4) {
       nextState.gameStatus = 'finished';
-      // TODO: Calculate pip differentials across teams to determine the winner of the block
       nextState.matchResult = { winner: 'Draw', reason: 'Board Locked' };
     }
 
     return nextState;
   }),
 
-  evaluateGameOver: () => {} // Utility to trigger ELO math and DPN export
+  evaluateGameOver: () => {}, // Utility to trigger ELO math and DPN export
+
+  // Engine Analysis Action
+  updateAnalysis: (prob, move, depth) => set({ 
+    winProbability: prob, 
+    bestMove: move, 
+    analysisDepth: depth 
+  }),
 }));
