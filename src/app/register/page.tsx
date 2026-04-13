@@ -11,6 +11,8 @@ export default function RegisterPlayer() {
 
   const [isLoading, setIsLoading] = useState(false);
 
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+
   const handleRegistration = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
