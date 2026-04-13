@@ -2,10 +2,9 @@
   "name": "idf-platform",
   "private": true,
   "workspaces": [
-    "web",
-    "engine"
+    "apps/*"
   ],
   "scripts": {
-    "build:engine": "cd engine && wasm-pack build --target web"
+    "build:engine": "cd apps/engine && wasm-pack build --target web"
   }
 }
