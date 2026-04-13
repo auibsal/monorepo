@@ -2,15 +2,20 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { createClient } from '@/lib/supabase/client';
 
 export default function RegisterPlayer() {
   const [isLoading, setIsLoading] = useState(false);
+  const supabase = createClient();
 
   // In the next step, this will connect to Supabase Auth
   const handleRegistration = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     
+    // NOTE: This is where you will add your Supabase Auth sign up logic
+    // const { error } = await supabase.auth.signUp({ ... })
+
     // Simulate database latency
     setTimeout(() => {
       setIsLoading(false);
