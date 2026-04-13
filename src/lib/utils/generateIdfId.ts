@@ -1,6 +1,13 @@
-export function generateIdfId(userCount: number): string {
-  // Assuming userCount is the total number of players currently in the DB
-  // We pad the number with leading zeros to ensure a 6-digit standard.
-  const numericId = (userCount + 1).toString().padStart(6, '0');
-  return `IDF-${numericId}`;
+/**
+ * Generates a secure, non-predictable identifier for IDF players.
+ * Replaces the previous sequential generation to prevent enumeration attacks.
+ *
+ * @param _userCount - Deprecated: No longer used for ID generation
+ * @returns A string prefixed with 'IDF-' followed by a secure UUID
+ */
+export function generateIdfId(_userCount?: number): string {
+  // We use a cryptographically secure random identifier (UUID)
+  // to prevent predictable sequential ID generation.
+  const randomId = crypto.randomUUID();
+  return `IDF-${randomId}`;
 }
