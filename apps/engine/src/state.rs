@@ -44,8 +44,8 @@ impl GameState {
     /// Executes a move, updating the board ends and passing the turn
     pub fn apply_move(&mut self, domino: Domino, played_on_end: u8) {
         // 1. Remove tile from current player's hand and unplayed pool
-        self.hands[self.current_turn].remove(domino);
-        self.unplayed_tiles.remove(domino);
+        self.hands[self.current_turn].remove(&domino);
+        self.unplayed_tiles.remove(&domino);
 
         // 2. Update the open ends
         if let Some((e1, e2)) = self.open_ends {
