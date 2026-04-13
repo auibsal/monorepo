@@ -22,27 +22,44 @@ const DropZone = ({ id, currentEnd }: { id: string, currentEnd: number | null })
   );
 };
 
-export const GameTable = () => {
-  const { playerHand, boardTiles, openEnds, playTile } = useGameStore();
+interface GameTableProps {
+  onTilePlayed?: (tileId: string, endToPlayOn: 'left' | 'right') => void;
+  myPlayerId?: number; // Which player's hand to render (1, 2, 3, or 4)
+}
+
+export const GameTable = ({ onTilePlayed, myPlayerId = 1 }: GameTableProps) => {
+  // Pull the multiplayer state from the Zustand store
+  const { hands, boardTiles, openEnds, playTile } = useGameStore();
+
+  // Extract only the physical tiles belonging to the current client
+  const myHand = hands[myPlayerId] || [];
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
     if (!over) return;
 
-    const tileData = active.data.current;
+    const tileData = active.data.current as { high: number, low: number } | undefined;
     if (!tileData) return;
 
     const dropZoneId = over.id.toString(); // 'zone-left' or 'zone-right'
     const targetEnd = dropZoneId === 'zone-left' ? 0 : 1;
     const endValue = openEnds[targetEnd];
 
-    // Check if it's the first move, or if the tile matches the open end
+    // Mathematical verification: Check if it's the first move, or if the tile matches the open end
     if (
       endValue === null || 
       tileData.high === endValue || 
       tileData.low === endValue
     ) {
-      playTile(active.id.toString(), dropZoneId === 'zone-left' ? 'left' : 'right');
+      const playedEnd = dropZoneId === 'zone-left' ? 'left' : 'right';
+      
+      if (onTilePlayed) {
+        // Multiplayer Mode: Handled by the parent page to broadcast the move to Supabase
+        onTilePlayed(active.id.toString(), playedEnd);
+      } else {
+        // Offline/Local Mode: Handled directly by the Zustand store
+        playTile(myPlayerId, active.id.toString(), playedEnd);
+      }
     }
   };
 
@@ -56,7 +73,13 @@ export const GameTable = () => {
           
           <div className="flex gap-2">
             {boardTiles.map(tile => (
-              <DominoTile key={`board-${tile.id}`} id={`board-${tile.id}`} high={tile.high} low={tile.low} isDraggable={false} />
+              <DominoTile 
+                key={`board-${tile.id}`} 
+                id={`board-${tile.id}`} 
+                high={tile.high} 
+                low={tile.low} 
+                isDraggable={false} 
+              />
             ))}
           </div>
 
@@ -65,8 +88,14 @@ export const GameTable = () => {
 
         {/* THE PLAYER'S HAND */}
         <div className="flex justify-center gap-4 p-8 bg-federation-ivory/5 border-t border-federation-ivory/10 rounded-b-lg">
-          {playerHand.map((tile) => (
-            <DominoTile key={tile.id} id={tile.id} high={tile.high} low={tile.low} />
+          {myHand.map((tile) => (
+            <DominoTile 
+              key={tile.id} 
+              id={tile.id} 
+              high={tile.high} 
+              low={tile.low} 
+              isDraggable={true} 
+            />
           ))}
         </div>
 
