@@ -1,5 +1,5 @@
 import { useEffect, useCallback } from 'react';
-import { createClient } from '@/utils/supabase/client';
+import { createClient } from '@/lib/supabase/client';
 import { useGameStore } from '@/store/useGameStore';
 
 export const useMatchSync = (matchId: string, myPlayerId: number) => {
