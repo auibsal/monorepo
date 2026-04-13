@@ -9,7 +9,6 @@ export default function RegisterPlayer() {
   const supabase = createClient();
 
   const [isLoading, setIsLoading] = useState(false);
-  const supabase = createClient();
 
   const handleRegistration = async (e: React.FormEvent) => {
     e.preventDefault();
