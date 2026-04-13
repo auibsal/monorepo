@@ -2,54 +2,28 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { createClient } from '@/utils/supabase/client';
+import { createClient } from '@/lib/supabase/client';
 
 export default function RegisterPlayer() {
   const router = useRouter();
   const supabase = createClient();
 
   const [isLoading, setIsLoading] = useState(false);
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
-
-  // Form State
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [arabicName, setArabicName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const supabase = createClient();
 
   const handleRegistration = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setErrorMsg(null);
     
-    // 1. Call Supabase Auth
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        // This metadata is caught by our Postgres trigger to build the public profile
-        data: {
-          first_name: firstName,
-          last_name: lastName,
-          arabic_name: arabicName || null,
-        }
-      }
-    });
+    // NOTE: This is where you will add your Supabase Auth sign up logic
+    // const { error } = await supabase.auth.signUp({ ... })
 
-    setIsLoading(false);
-
-    // 2. Handle Authentication Response
-    if (error) {
-      setErrorMsg(error.message);
-      return;
-    }
-
-    if (data.user) {
-      // Success! Redirect to the secure dashboard
-      router.push('/dashboard');
-    }
+    // Simulate database latency
+    setTimeout(() => {
+      setIsLoading(false);
+      // alert('Supabase integration pending!');
+    }, 1500);
   };
 
   return (
