@@ -135,17 +135,14 @@ export class TileSet {
 if (Symbol.dispose) TileSet.prototype[Symbol.dispose] = TileSet.prototype.free;
 
 /**
- * This is the bridge function exposed to JavaScript/Next.js.
- * It takes the current board state as a JSON string, runs the AI,
- * and returns the best move and probability as a JSON string.
- * @param {string} _board_json
+ * @param {string} board_json
  * @returns {string}
  */
-export function analyze_board_state(_board_json) {
+export function analyze_board_state(board_json) {
     let deferred2_0;
     let deferred2_1;
     try {
-        const ptr0 = passStringToWasm0(_board_json, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const ptr0 = passStringToWasm0(board_json, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         const len0 = WASM_VECTOR_LEN;
         const ret = wasm.analyze_board_state(ptr0, len0);
         deferred2_0 = ret[0];
