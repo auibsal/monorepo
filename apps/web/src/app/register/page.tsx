@@ -58,7 +58,7 @@ export default function RegisterPlayer() {
         
         <div className="text-center mb-10">
           <h2 className="text-sm font-medium tracking-widest uppercase opacity-60 mb-2 text-red-500">
-            Secure IDF Portal
+            Secure IDA Portal
           </h2>
           <h1 className="text-3xl md:text-4xl font-bold uppercase tracking-tight mb-4">
             Claim Player ID
@@ -119,7 +119,7 @@ export default function RegisterPlayer() {
                 value={arabicName}
                 onChange={(e) => setArabicName(e.target.value)}
                 className="w-full bg-black/50 border border-federation-ivory/20 rounded-sm px-4 py-3 text-federation-ivory focus:outline-none focus:border-federation-ivory transition-colors font-medium"
-                placeholder="أحمد الفضلي"
+                placeholder=""
                 style={{ fontFamily: 'var(--font-ibm-plex-arabic)' }}
               />
             </div>
@@ -160,7 +160,7 @@ export default function RegisterPlayer() {
                 className="mt-1 bg-black border-federation-ivory/30 appearance-none w-4 h-4 border checked:bg-federation-ivory checked:border-federation-ivory transition-colors cursor-pointer" 
               />
               <p className="text-xs font-light opacity-60 leading-relaxed">
-                By registering, I unconditionally agree to the IDF <Link href="/charter" className="underline hover:text-white">Supreme Charter</Link> and the <Link href="/rules" className="underline hover:text-white">Official Rulebook</Link>. I understand that manipulating ELO data is grounds for permanent expulsion.
+                By registering, I unconditionally agree to the IDA <Link href="/charter" className="underline hover:text-white">Supreme Charter</Link> and the <Link href="/rules" className="underline hover:text-white">Official Rulebook</Link>. I understand that manipulating ELO data is grounds for permanent expulsion.
               </p>
             </div>
 

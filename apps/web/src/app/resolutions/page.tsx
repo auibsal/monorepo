@@ -10,7 +10,7 @@ export default function HandbookResolutionsPage() {
         <div className="max-w-6xl mx-auto px-8 py-6 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 bg-federation-ivory text-black flex items-center justify-center font-bold text-2xl uppercase tracking-tighter">
-              IDF
+              IDA
             </div>
             <div>
               <h1 className="text-xl font-bold uppercase tracking-widest leading-none text-white">International</h1>
@@ -59,7 +59,7 @@ export default function HandbookResolutionsPage() {
             <div className="flex gap-4 text-xs font-mono opacity-50 border-y border-federation-ivory/10 py-3">
               <span>Latest Amendment: 2026 Congress</span>
               <span>•</span>
-              <span>Document Ref: IDF-RES-02</span>
+              <span>Document Ref: IDA-RES-02</span>
             </div>
           </div>
 
@@ -112,7 +112,7 @@ export default function HandbookResolutionsPage() {
                     <div>
                       <p className="font-bold text-lg mb-1">Two Years in Arrears</p>
                       <p className="opacity-70 leading-relaxed italic">
-                        [span_7](start_span)The federation or club shall be subject to temporary exclusion and removal from the IDF Registry.[span_7](end_span)
+                        [span_7](start_span)The federation or club shall be subject to temporary exclusion and removal from the IDA Registry.[span_7](end_span)
                       </p>
                     </div>
                   </div>

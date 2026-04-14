@@ -36,7 +36,7 @@ export default function ContactPage() {
         <div className="absolute inset-0 bg-[url('/noise.png')] opacity-5 mix-blend-overlay pointer-events-none"></div>
         <div className="text-center max-w-4xl mx-auto z-10 relative">
           <h2 className="text-xl md:text-2xl font-medium tracking-wide mb-4 opacity-80 text-federation-ivory" style={{ fontFamily: 'var(--font-ibm-plex-arabic)' }}>
-            التواصل مع المقر الرئيسي
+
           </h2>
           <h1 className="text-4xl md:text-6xl font-bold tracking-tight uppercase leading-none mb-6">
             Contact <br />
@@ -45,7 +45,7 @@ export default function ContactPage() {
             </span>
           </h1>
           <p className="text-lg font-light opacity-70 max-w-2xl mx-auto leading-relaxed">
-            The Iraqi Dominoes Federation operates out of Baghdad. For official inquiries, partnership requests, or dispute resolutions, please direct your communication to the appropriate department.
+            The Iraqi Dominoes Association operates out of Baghdad. For official inquiries, partnership requests, or dispute resolutions, please direct your communication to the appropriate department.
           </p>
         </div>
       </section>
@@ -59,7 +59,7 @@ export default function ContactPage() {
           {/* Physical Address */}
           <div>
             <h3 className="text-xs font-bold uppercase tracking-widest text-red-500 mb-2">Primary Seat</h3>
-            <h2 className="text-2xl font-bold uppercase tracking-wide text-federation-ivory mb-4">IDF Baghdad Office</h2>
+            <h2 className="text-2xl font-bold uppercase tracking-wide text-federation-ivory mb-4">IDA Baghdad Office</h2>
             <div className="font-light opacity-80 leading-relaxed border-l-2 border-federation-ivory/20 pl-4 space-y-1">
               <p>Al-Karrada District</p>
               <p>Baghdad, Republic of Iraq</p>
@@ -75,19 +75,19 @@ export default function ContactPage() {
               <div className="bg-federation-ivory/5 p-6 rounded-sm border border-federation-ivory/10 hover:bg-federation-ivory/10 transition-colors">
                 <h4 className="text-lg font-bold uppercase mb-1">General Operations</h4>
                 <p className="font-light opacity-70 text-sm mb-3">For player registration issues, platform bugs, and general inquiries.</p>
-                <a href="mailto:info@idf.iq" className="font-mono text-federation-ivory tracking-wider hover:underline">info@idf.iq</a>
+                <a href="mailto:info@ida.iq" className="font-mono text-federation-ivory tracking-wider hover:underline">info@ida.iq</a>
               </div>
 
               <div className="bg-federation-ivory/5 p-6 rounded-sm border border-federation-ivory/10 hover:bg-federation-ivory/10 transition-colors">
                 <h4 className="text-lg font-bold uppercase mb-1">Commercial & Partnerships</h4>
                 <p className="font-light opacity-70 text-sm mb-3">For corporate sponsorships, venue affiliation, and media rights.</p>
-                <a href="mailto:commercial@idf.iq" className="font-mono text-federation-ivory tracking-wider hover:underline">commercial@idf.iq</a>
+                <a href="mailto:commercial@ida.iq" className="font-mono text-federation-ivory tracking-wider hover:underline">commercial@ida.iq</a>
               </div>
 
               <div className="bg-federation-ivory/5 p-6 rounded-sm border border-red-900/30 hover:border-red-500/50 transition-colors">
                 <h4 className="text-lg font-bold uppercase mb-1">Arbitration & Ethics</h4>
                 <p className="font-light opacity-70 text-sm mb-3">For match disputes, rulebook clarifications, and reporting violations.</p>
-                <a href="mailto:arbitration@idf.iq" className="font-mono text-red-400 tracking-wider hover:underline">arbitration@idf.iq</a>
+                <a href="mailto:arbitration@ida.iq" className="font-mono text-red-400 tracking-wider hover:underline">arbitration@ida.iq</a>
               </div>
             </div>
           </div>
@@ -119,7 +119,7 @@ export default function ContactPage() {
                   value={formData.name}
                   onChange={(e) => setFormData({...formData, name: e.target.value})}
                   className="w-full bg-black/50 border border-federation-ivory/20 rounded-sm px-4 py-3 text-federation-ivory focus:outline-none focus:border-federation-ivory transition-colors"
-                  placeholder="e.g. Ahmed Al-Fadhli (IDF-001042)"
+                  placeholder="e.g. Ahmed Al-Fadhli (IDA-001042)"
                 />
               </div>
 

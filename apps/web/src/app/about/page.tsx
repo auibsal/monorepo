@@ -13,7 +13,7 @@ export default function AboutPage() {
         
         <div className="text-center max-w-4xl z-10 relative mt-16">
           <h2 className="text-xl md:text-2xl font-medium tracking-wide mb-4 opacity-80 text-federation-ivory" style={{ fontFamily: 'var(--font-ibm-plex-arabic)' }}>
-            عن الاتحاد العراقي للدومينو
+
           </h2>
           <h1 className="text-5xl md:text-7xl font-bold tracking-tighter mb-8 uppercase leading-[1.1]">
             Elevating a Tradition. <br />
@@ -22,7 +22,7 @@ export default function AboutPage() {
             </span>
           </h1>
           <p className="text-lg md:text-xl font-light opacity-70 max-w-2xl mx-auto leading-relaxed">
-            The Iraqi Dominoes Federation (IDF) is the supreme governing body dedicated to transitioning the nation's most beloved pastime into a mathematically rated, globally recognized competitive institution.
+            The Iraqi Dominoes Association (IDA) is the supreme governing body dedicated to transitioning the nation's most beloved pastime into a mathematically rated, globally recognized competitive institution.
           </p>
         </div>
       </section>
@@ -37,7 +37,7 @@ export default function AboutPage() {
               For generations, dominoes has been the heartbeat of Iraqi cafe culture—a game of sharp intellect, unspoken partnerships, and fierce local pride. However, without a unified rulebook or a standardized tracking system, the true hierarchy of the nation's best players remained a matter of debate.
             </p>
             <p>
-              Founded in 2026, the IDF was established to change that. By combining institutional governance with a proprietary, dynamic ELO mathematical algorithm, we removed the subjectivity from the sport. 
+              Founded in 2026, the IDA was established to change that. By combining institutional governance with a proprietary, dynamic ELO mathematical algorithm, we removed the subjectivity from the sport.
             </p>
             <p>
               Today, the Federation sanctions venues, certifies arbiters, and maintains the immutable digital ledger that ranks thousands of players across every governorate, bridging the gap between local cafes and the international stage.
@@ -108,7 +108,7 @@ export default function AboutPage() {
             The Executive Board
           </h2>
           <p className="font-light opacity-60 mt-4 max-w-2xl">
-            The administrative and fiduciary authority of the IDF is vested in the Executive Board, tasked with driving the strategic and technological vision of the Federation.
+            The administrative and fiduciary authority of the IDA is vested in the Executive Board, tasked with driving the strategic and technological vision of the Federation.
           </p>
         </div>
 

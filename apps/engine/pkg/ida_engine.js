@@ -1,4 +1,4 @@
-/* @ts-self-types="./idf_engine.d.ts" */
+/* @ts-self-types="./ida_engine.d.ts" */
 
 export class Domino {
     __destroy_into_raw() {
@@ -265,7 +265,7 @@ function __wbg_get_imports() {
     };
     return {
         __proto__: null,
-        "./idf_engine_bg.js": import0,
+        "./ida_engine_bg.js": import0,
     };
 }
 
@@ -462,7 +462,7 @@ async function __wbg_init(module_or_path) {
     }
 
     if (module_or_path === undefined) {
-        module_or_path = new URL('idf_engine_bg.wasm', import.meta.url);
+        module_or_path = new URL('ida_engine_bg.wasm', import.meta.url);
     }
     const imports = __wbg_get_imports();
 

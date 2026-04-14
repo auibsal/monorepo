@@ -1,5 +1,5 @@
 {
-  "name": "idf-platform",
+  "name": "ida-platform",
   "private": true,
   "workspaces": [
     "apps/*"

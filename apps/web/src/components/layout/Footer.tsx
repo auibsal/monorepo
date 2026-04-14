@@ -7,9 +7,9 @@ export default function Footer() {
         
         {/* Brand Column */}
         <div className="col-span-1 md:col-span-2">
-          <h2 className="text-2xl font-bold uppercase tracking-widest mb-2">Iraqi Dominoes Federation</h2>
+          <h2 className="text-2xl font-bold uppercase tracking-widest mb-2">Iraqi Dominoes Association</h2>
           <p className="text-sm font-medium tracking-wide opacity-80 mb-6" style={{ fontFamily: 'var(--font-ibm-plex-arabic)' }}>
-            الاتحاد العراقي للدومينو
+
           </p>
           <p className="text-federation-ivory/60 font-light max-w-sm leading-relaxed mb-6">
             The official governing body standardizing competitive dominoes across Iraq through technological integration and a mathematical rating system.
@@ -43,7 +43,7 @@ export default function Footer() {
       </div>
 
       <div className="max-w-7xl mx-auto px-6 lg:px-12 flex flex-col md:flex-row justify-between items-center pt-8 border-t border-federation-ivory/10 text-xs uppercase tracking-widest text-federation-ivory/40">
-        <p>© {new Date().getFullYear()} Iraqi Dominoes Federation. All rights reserved.</p>
+        <p>© {new Date().getFullYear()} Iraqi Dominoes Association. All rights reserved.</p>
         <p className="mt-4 md:mt-0 font-mono">SYS-VER-1.0.0</p>
       </div>
     </footer>

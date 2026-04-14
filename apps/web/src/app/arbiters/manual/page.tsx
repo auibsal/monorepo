@@ -9,7 +9,7 @@ export default function HandbookArbitersPage() {
         <div className="max-w-6xl mx-auto px-8 py-6 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 bg-federation-ivory text-black flex items-center justify-center font-bold text-2xl uppercase tracking-tighter">
-              IDF
+              IDA
             </div>
             <div>
               <h1 className="text-xl font-bold uppercase tracking-widest leading-none text-white">International</h1>
@@ -63,7 +63,7 @@ export default function HandbookArbitersPage() {
             <div className="flex gap-4 text-xs font-mono opacity-50 border-y border-federation-ivory/10 py-3">
               <span>Valid from: April 2026</span>
               <span>•</span>
-              <span>Document Ref: IDF-ARB-MANUAL-26</span>
+              <span>Document Ref: IDA-ARB-MANUAL-26</span>
             </div>
           </div>
 
@@ -87,7 +87,7 @@ export default function HandbookArbitersPage() {
                   <div className="absolute top-0 right-0 bg-white/10 px-3 py-1 font-mono text-xs">Level 1</div>
                   <h3 className="text-xl font-bold uppercase tracking-widest mb-4">Provincial Arbiter (PA)</h3>
                   <p className="opacity-70 text-sm leading-relaxed mb-4">
-                    Authorized to officiate club-level matches, regional qualifiers, and amateur tournaments. Must demonstrate proficiency in utilizing the IDF digital scoring tablet and basic conflict resolution.
+                    Authorized to officiate club-level matches, regional qualifiers, and amateur tournaments. Must demonstrate proficiency in utilizing the IDA digital scoring tablet and basic conflict resolution.
                   </p>
                   <ul className="text-xs font-mono opacity-60 space-y-2 list-disc list-inside">
                     <li>Prerequisite: 18+ years of age.</li>
@@ -113,14 +113,14 @@ export default function HandbookArbitersPage() {
                   <div className="absolute top-0 right-0 bg-red-500 text-black font-bold px-3 py-1 font-mono text-xs">Level 3 (Highest)</div>
                   <h3 className="text-2xl font-bold uppercase tracking-widest mb-4 text-red-400">International Arbiter (IA)</h3>
                   <p className="opacity-80 text-sm leading-relaxed mb-4 max-w-2xl">
-                    The highest officiating honor bestowed by the IDF. International Arbiters hold jurisdiction over Grand Olympiads, intercontinental championships, and World Title matches. They possess the authority to disqualify players, override engine disputes, and initiate ethics tribunals.
+                    The highest officiating honor bestowed by the IDA. International Arbiters hold jurisdiction over Grand Olympiads, intercontinental championships, and World Title matches. They possess the authority to disqualify players, override engine disputes, and initiate ethics tribunals.
                   </p>
                   <div className="flex gap-8 border-t border-red-500/20 pt-4 mt-4">
                     <div className="text-xs font-mono opacity-70">
                       <span className="block text-red-400 mb-1">Requirements:</span>
                       • 4 NA Norms in international events.<br/>
                       • Fluency in Arabic and English.<br/>
-                      • Approval by the IDF Presidential Board.
+                      • Approval by the IDA Presidential Board.
                     </div>
                   </div>
                 </div>
@@ -208,7 +208,7 @@ export default function HandbookArbitersPage() {
             <section className="mt-16 text-center border-t border-white/10 pt-12">
               <h3 className="text-2xl font-bold uppercase tracking-widest mb-4">Begin Your Certification</h3>
               <p className="opacity-60 max-w-lg mx-auto mb-8">
-                Aspiring arbiters must create an IDF account and pass the online preliminary examinations to register for the next provincial seminar.
+                Aspiring arbiters must create an IDA account and pass the online preliminary examinations to register for the next provincial seminar.
               </p>
               <button className="bg-federation-ivory text-black font-bold uppercase tracking-widest px-8 py-4 hover:bg-white transition-colors text-sm">
                 Access Training Portal

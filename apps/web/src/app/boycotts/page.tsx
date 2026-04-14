@@ -9,7 +9,7 @@ export default function HandbookBoycottsPage() {
         <div className="max-w-6xl mx-auto px-8 py-6 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 bg-federation-ivory text-black flex items-center justify-center font-bold text-2xl uppercase tracking-tighter">
-              IDF
+              IDA
             </div>
             <div>
               <h1 className="text-xl font-bold uppercase tracking-widest leading-none">International</h1>
@@ -63,14 +63,14 @@ export default function HandbookBoycottsPage() {
             <div className="flex gap-4 text-xs font-mono opacity-50 border-y border-federation-ivory/10 py-3">
               <span>Approved by the inaugural Congress.</span>
               <span>•</span>
-              <span>Document Ref: IDF-HB-01</span>
+              <span>Document Ref: IDA-HB-01</span>
             </div>
           </div>
 
           <div className="prose prose-invert prose-p:text-federation-ivory/80 prose-li:text-federation-ivory/80 max-w-none">
             
             <h2 className="text-2xl font-bold uppercase tracking-widest border-l-4 border-red-500 pl-4 mb-6">
-              Moral Principles of the IDF for Competitions
+              Moral Principles of the IDA for Competitions
             </h2>
             
             <div className="space-y-8 pl-4">
@@ -81,9 +81,9 @@ export default function HandbookBoycottsPage() {
                   The organizers and the athletes must be guided by the highest principles of the Federation's Statutes[span_0](end_span):
                 </p>
                 <ol className="list-decimal list-outside ml-12 space-y-4 opacity-90 font-serif text-lg leading-relaxed marker:text-federation-ivory/40">
-                  <li>The IDF is concerned exclusively with dominoes activities.</li>
-                  <li>The IDF rejects discriminatory treatment for national, political, racial, social or religious reasons or on account of sex.</li>
-                  <li>The IDF observes a strict neutrality in the internal affairs of the national and provincial dominoes federations.</li>
+                  <li>The IDA is concerned exclusively with dominoes activities.</li>
+                  <li>The IDA rejects discriminatory treatment for national, political, racial, social or religious reasons or on account of sex.</li>
+                  <li>The IDA observes a strict neutrality in the internal affairs of the national and provincial dominoes federations.</li>
                 </ol>
               </div>
 
@@ -91,7 +91,7 @@ export default function HandbookBoycottsPage() {
               <div className="flex gap-4">
                 <span className="text-red-500 font-mono font-bold text-lg">2.</span>
                 <p className="font-serif text-lg leading-relaxed opacity-90">
-                  In accord with its Statutes, the IDF reaffirms its commitment to the right to play dominoes and opposes all organized actions that would hinder that right.
+                  In accord with its Statutes, the IDA reaffirms its commitment to the right to play dominoes and opposes all organized actions that would hinder that right.
                 </p>
               </div>
 
@@ -106,7 +106,7 @@ export default function HandbookBoycottsPage() {
                     An organizer of a dominoes competition has the right to invite any player he chooses. Once an invitation has been issued and accepted, it must not be withdrawn.
                   </li>
                   <li>
-                    Each player accepts an invitation only on his own free will but in strict accordance with the statutes and resolutions accepted by the IDF.
+                    Each player accepts an invitation only on his own free will but in strict accordance with the statutes and resolutions accepted by the IDA.
                   </li>
                 </ol>
               </div>

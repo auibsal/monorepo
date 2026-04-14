@@ -11,7 +11,7 @@ export default function AffiliatePortal() {
           </span>
         </h1>
         <p className="max-w-2xl mx-auto text-lg font-light opacity-80">
-          Transform your cafe, club, or venue into a competitive hub. Join the IDF network to host officially sanctioned, mathematically rated tournaments and drive guaranteed foot traffic to your business.
+          Transform your cafe, club, or venue into a competitive hub. Join the IDA network to host officially sanctioned, mathematically rated tournaments and drive guaranteed foot traffic to your business.
         </p>
       </header>
 
@@ -26,7 +26,7 @@ export default function AffiliatePortal() {
         </div>
         <div className="bg-federation-ivory/5 p-8 border border-federation-ivory/10 rounded-sm">
           <h3 className="text-xl font-bold uppercase mb-3 text-federation-ivory">National Prestige</h3>
-          <p className="font-light opacity-70">Your venue will be listed on the official IDF digital directory, establishing your brand as a pillar of the local sports community.</p>
+          <p className="font-light opacity-70">Your venue will be listed on the official IDA digital directory, establishing your brand as a pillar of the local sports community.</p>
         </div>
       </div>
 

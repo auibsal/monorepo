@@ -68,7 +68,7 @@ export default function PerformancePage() {
             <div>
               <h3 className="text-lg font-bold uppercase mb-3 text-federation-ivory/80">Table Posture</h3>
               <p className="font-light opacity-70 text-sm leading-relaxed">
-                Slouching compresses the diaphragm, reducing oxygen intake. IDF sanctioned venues are required to provide seating with structured lumbar support. Players should maintain an upright, neutral spine to preserve energy over multi-hour tournament brackets.
+                Slouching compresses the diaphragm, reducing oxygen intake. IDA sanctioned venues are required to provide seating with structured lumbar support. Players should maintain an upright, neutral spine to preserve energy over multi-hour tournament brackets.
               </p>
             </div>
             <div>

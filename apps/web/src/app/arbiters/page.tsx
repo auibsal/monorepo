@@ -16,7 +16,7 @@ export default function ArbiterProgram() {
         <div>
           <h2 className="text-2xl font-bold uppercase mb-2">Tier 1: Local Arbiter</h2>
           <p className="font-light opacity-70 mb-4 max-w-3xl">
-            Certified to officiate club-level matches and input live scores into the IDF database. Requires passing the Master Dossier written exam.
+            Certified to officiate club-level matches and input live scores into the IDA database. Requires passing the Master Dossier written exam.
           </p>
         </div>
         

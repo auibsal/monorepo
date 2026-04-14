@@ -20,7 +20,7 @@ const ibmPlexArabic = IBM_Plex_Sans_Arabic({
 
 // 3. Define the Global Metadata
 export const metadata: Metadata = {
-  title: 'الاتحاد العراقي للدومينو | Iraqi Dominoes Federation',
+  title: 'Iraqi Dominoes Association',
   description: 'The official governing body and digital rating platform for dominoes in Iraq.',
 }
 
