@@ -4,37 +4,79 @@ pub mod mcts;
 pub mod nn;
 
 use wasm_bindgen::prelude::*;
+use serde::{Deserialize, Serialize};
+use crate::bitboard::{Domino, TileSet};
 use crate::state::GameState;
 use crate::mcts::ISMCTS;
 
-/// This is the bridge function exposed to JavaScript/Next.js.
-/// It takes the current board state as a JSON string, runs the AI, 
-/// and returns the best move and probability as a JSON string.
+// 1. Define the shape of the incoming JSON from Next.js
+#[derive(Deserialize)]
+struct BoardStatePayload {
+    current_turn: usize,
+    consecutive_passes: u32,
+    my_hand: Vec<DominoPayload>,
+    board_tiles: Vec<DominoPayload>,
+}
+
+#[derive(Deserialize)]
+struct DominoPayload {
+    high: u8,
+    low: u8,
+}
+
+// 2. Define the shape of the outgoing JSON to Next.js
+#[derive(Serialize)]
+struct AnalysisResult {
+    win_probability: f64,
+    best_move: [u8; 2],
+    depth: u32,
+}
+
 #[wasm_bindgen]
-pub fn analyze_board_state(_board_json: &str) -> String {
-    // NOTE: In a full production build, we will use `serde_json` to parse 
-    // `_board_json` into a real `GameState`. For now, we mock the root state.
-    let root_state = GameState::new();
+pub fn analyze_board_state(board_json: &str) -> String {
+    // 3. Parse the JSON payload
+    let payload: BoardStatePayload = match serde_json::from_str(board_json) {
+        Ok(p) => p,
+        Err(e) => return format!(r#"{{"error": "Failed to parse JSON: {}"}}"#, e),
+    };
 
-    // Boot up the IS-MCTS Engine
-    // 100,000 iterations provides a solid balance of grandmaster strength and <1s execution time.
-    let engine = ISMCTS::new(100_000);
+    let mut state = GameState::new();
+    
+    // Map the JS turn (1-4) to Rust's array index (0-3)
+    let player_idx = if payload.current_turn > 0 { payload.current_turn - 1 } else { 0 };
+    state.current_turn = player_idx;
+    // state.consecutive_passes = payload.consecutive_passes; // Uncomment if implemented in GameState
 
-    // Execute the search algorithm
-    let (best_move, win_probability) = engine.search(&root_state);
+    // 4. Translate the parsed JSON dominoes into the mathematical Bitboards
+    let mut my_tiles = TileSet::empty();
+    
+    for d in payload.my_hand {
+        let domino = Domino::new(d.high, d.low);
+        my_tiles.add(&domino);
+        // Remove these tiles from the "unknown" pool since we are holding them
+        state.unplayed_tiles.remove(&domino);
+    }
+    state.hands[player_idx] = my_tiles;
 
-    // Serialize the result back into the exact JSON format expected by Next.js
-    format!(
-        r#"{{
-            "best_move": [{}, {}],
-            "win_probability": {:.4},
-            "depth": {}
-        }}"#,
-        best_move.high,
-        best_move.low,
+    for d in payload.board_tiles {
+        let domino = Domino::new(d.high, d.low);
+        // Remove tiles already on the board from the "unknown" pool
+        state.unplayed_tiles.remove(&domino);
+    }
+
+    // Boot up the IS-MCTS Engine (10,000 universes is perfect for web speed)
+    let engine = ISMCTS::new(10_000);
+
+    // Execute the search algorithm based on the REAL board state
+    let (best_move, win_probability) = engine.search(&state);
+
+    let result = AnalysisResult {
         win_probability,
-        engine.iterations
-    )
+        best_move: [best_move.high, best_move.low],
+        depth: engine.iterations,
+    };
+
+    serde_json::to_string(&result).unwrap_or_else(|_| r#"{"error": "Serialization failed"}"#.to_string())
 }
 
 // -----------------------------------------------------------------------------
@@ -46,19 +88,15 @@ mod tests {
 
     #[test]
     fn test_domino_to_index() {
-        // 0-0
         let d = Domino::new(0, 0);
         assert_eq!(d.to_index(), 0);
 
-        // 1-0
         let d = Domino::new(0, 1);
         assert_eq!(d.to_index(), 1);
 
-        // 1-1
         let d = Domino::new(1, 1);
         assert_eq!(d.to_index(), 2);
 
-        // 6-6
         let d = Domino::new(6, 6);
         assert_eq!(d.to_index(), 27);
     }
