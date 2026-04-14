@@ -1,6 +1,5 @@
-use crate::bitboard::{Domino, TileSet, Action};
+use crate::bitboard::{Domino, Action};
 use crate::state::GameState;
-use crate::nn::Brain;
 use rand::seq::SliceRandom;
 use rand::thread_rng;
 use rand::Rng;
@@ -25,7 +24,7 @@ impl Node {
             visits: 0,
             wins: 0.0,
             untried_moves: state.generate_legal_moves(),
-            player_just_moved: (state.current_turn + 3) % 4, // The player who just went
+            player_just_moved: (state.current_turn + 3) % 4, 
         }
     }
 
@@ -42,7 +41,6 @@ impl Node {
 pub struct ISMCTS {
     pub iterations: u32,
     pub exploration_param: f64,
-    pub brain: Brain, 
 }
 
 impl ISMCTS {
@@ -50,7 +48,6 @@ impl ISMCTS {
         Self { 
             iterations, 
             exploration_param: 1.414, 
-            brain: Brain::new(),      
         }
     }
 
@@ -61,7 +58,6 @@ impl ISMCTS {
         let root_player_team = root_state.current_turn % 2;
 
         for _ in 0..self.iterations {
-            // PHASE 1: DETERMINIZATION
             let mut state = self.determinize(root_state);
             let mut node_idx = 0; 
 
@@ -103,14 +99,54 @@ impl ISMCTS {
                 node_idx = child_idx;
             }
 
-            // PHASE 4: NEURAL EVALUATION 
-            let tensor_input = self.state_to_tensor(&state);
-            let (_policy, net_value) = self.brain.evaluate(&tensor_input);
-            let mut result = (net_value + 1.0) / 2.0;
+            // PHASE 4: RANDOM ROLLOUT (True Vanilla MCTS)
+            let mut rollout_state = state.clone();
+            
+            while rollout_state.consecutive_passes < 4 {
+                // Check if anyone won by emptying their hand
+                let mut won = false;
+                for i in 0..4 {
+                    if rollout_state.hands[i].count() == 0 {
+                        won = true;
+                        break;
+                    }
+                }
+                if won { break; }
 
-            let current_team = state.current_turn % 2;
-            if current_team != root_player_team {
-                result = 1.0 - result;
+                // Play a random legal move
+                let legal_moves = rollout_state.generate_legal_moves();
+                if legal_moves.is_empty() {
+                    rollout_state.consecutive_passes += 1;
+                    rollout_state.current_turn = (rollout_state.current_turn + 1) % 4;
+                } else {
+                    let mut rng = thread_rng();
+                    let m = legal_moves[rng.gen_range(0..legal_moves.len())];
+                    rollout_state.apply_move(m);
+                }
+            }
+
+            // Calculate exact pip count to see who won the simulated universe
+            let mut team_0_pips = 0;
+            let mut team_1_pips = 0;
+            
+            for i in 0..4 {
+                let mut player_pips = 0;
+                for high in 0..=6 {
+                    for low in 0..=high {
+                        if rollout_state.hands[i].contains(&Domino::new(high, low)) {
+                            player_pips += high + low;
+                        }
+                    }
+                }
+                if i % 2 == 0 { team_0_pips += player_pips; } 
+                else { team_1_pips += player_pips; }
+            }
+
+            let mut result = 0.5; // Tie
+            if team_0_pips < team_1_pips {
+                result = if root_player_team == 0 { 1.0 } else { 0.0 };
+            } else if team_1_pips < team_0_pips {
+                result = if root_player_team == 1 { 1.0 } else { 0.0 };
             }
 
             // PHASE 5: BACKPROPAGATION
@@ -142,7 +178,6 @@ impl ISMCTS {
             }
         }
 
-        // Safe fallback if the game is already in a terminal state
         let final_action = best_move.unwrap_or(Action { 
             tile: Domino::new(0, 0), 
             target_pip: None 
@@ -181,11 +216,5 @@ impl ISMCTS {
         }
 
         virtual_state
-    }
-
-    fn state_to_tensor(&self, state: &GameState) -> [f32; 81] {
-        let tensor = [0.0; 81];
-        // Tensor features logic mapping 
-        tensor
     }
 }
