@@ -18,8 +18,10 @@ export const DpnTester = () => {
     // Hardcode your test hand so the engine has valid moves to evaluate
     parsedInformationSet.my_hand = [
       { high: 6, low: 2 }, 
-      { high: 5, low: 4 }, 
-      { high: 3, low: 3 }
+      { high: 6, low: 1 }, 
+      { high: 3, low: 3 },
+      { high: 6, low: 3 }, 
+      { high: 6, low: 4 }
     ];
 
     // 2. Fire the translated JSON across the WASM bridge to Rust
