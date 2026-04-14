@@ -58,4 +58,10 @@ impl TileSet {
     pub fn count(&self) -> u32 {
         self.0.count_ones()
     }
+
+    // Add this below the Domino and TileSet implementations
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct Action {
+    pub tile: Domino,
+    pub target_pip: Option<u8>, // None if it's the very first move of the round
 }
