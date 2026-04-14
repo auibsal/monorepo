@@ -1,24 +1,23 @@
-use crate::bitboard::{Domino, TileSet};
+use crate::bitboard::{Domino, TileSet, Action};
 use crate::state::GameState;
 use crate::nn::Brain;
 use rand::seq::SliceRandom;
 use rand::thread_rng;
 use rand::Rng;
 
-/// Represents a single node in the Monte Carlo Search Tree
 #[derive(Debug, Clone)]
 pub struct Node {
     pub parent: Option<usize>,
-    pub move_played: Option<Domino>, // The move that led to this node
-    pub children: Vec<usize>,        // Indices of child nodes in the arena
+    pub move_played: Option<Action>, 
+    pub children: Vec<usize>,
     pub visits: u32,
     pub wins: f64,
-    pub untried_moves: Vec<Domino>,
+    pub untried_moves: Vec<Action>,  
     pub player_just_moved: usize,
 }
 
 impl Node {
-    pub fn new(state: &GameState, parent: Option<usize>, move_played: Option<Domino>) -> Self {
+    pub fn new(state: &GameState, parent: Option<usize>, move_played: Option<Action>) -> Self {
         Self {
             parent,
             move_played,
@@ -30,7 +29,6 @@ impl Node {
         }
     }
 
-    /// Upper Confidence Bound (UCT) formula to balance exploring vs exploiting
     pub fn uct_value(&self, parent_visits: u32, exploration_param: f64) -> f64 {
         if self.visits == 0 {
             return f64::INFINITY;
@@ -41,34 +39,31 @@ impl Node {
     }
 }
 
-/// The Information Set Monte Carlo Tree Search Engine
 pub struct ISMCTS {
     pub iterations: u32,
     pub exploration_param: f64,
-    pub brain: Brain, // The embedded ONNX Neural Network
+    pub brain: Brain, 
 }
 
 impl ISMCTS {
     pub fn new(iterations: u32) -> Self {
         Self { 
             iterations, 
-            exploration_param: 1.414, // sqrt(2) is the standard UCT constant
-            brain: Brain::new(),      // Boot up the ONNX inference engine
+            exploration_param: 1.414, 
+            brain: Brain::new(),      
         }
     }
 
-    /// Executes the search and returns the (Best Move, Win Probability)
-    pub fn search(&self, root_state: &GameState) -> (Domino, f64) {
+    pub fn search(&self, root_state: &GameState) -> (Action, f64) {
         let mut tree: Vec<Node> = Vec::with_capacity(self.iterations as usize);
         
-        // Push the root node into the arena
         tree.push(Node::new(root_state, None, None));
         let root_player_team = root_state.current_turn % 2;
 
         for _ in 0..self.iterations {
             // PHASE 1: DETERMINIZATION
             let mut state = self.determinize(root_state);
-            let mut node_idx = 0; // Start at root
+            let mut node_idx = 0; 
 
             // PHASE 2: SELECTION
             while tree[node_idx].untried_moves.is_empty() && !tree[node_idx].children.is_empty() {
@@ -88,7 +83,7 @@ impl ISMCTS {
                 node_idx = best_child_idx;
                 
                 if let Some(m) = tree[node_idx].move_played {
-                    state.apply_move(m, m.high); 
+                    state.apply_move(m); 
                 }
             }
 
@@ -98,7 +93,7 @@ impl ISMCTS {
                 let move_idx = rng.gen_range(0..tree[node_idx].untried_moves.len());
                 let m = tree[node_idx].untried_moves.swap_remove(move_idx);
                 
-                state.apply_move(m, m.high);
+                state.apply_move(m);
 
                 let child_node = Node::new(&state, Some(node_idx), Some(m));
                 let child_idx = tree.len();
@@ -108,17 +103,11 @@ impl ISMCTS {
                 node_idx = child_idx;
             }
 
-            // PHASE 4: NEURAL EVALUATION (Replaces random rollouts)
-            // 1. Translate the current board state into an 81-feature array
+            // PHASE 4: NEURAL EVALUATION 
             let tensor_input = self.state_to_tensor(&state);
-            
-            // 2. Ask the PyTorch Brain for the predicted win value (-1.0 to 1.0)
             let (_policy, net_value) = self.brain.evaluate(&tensor_input);
-            
-            // 3. Scale the Tanh output (-1.0 to 1.0) to a standard win probability (0.0 to 1.0)
             let mut result = (net_value + 1.0) / 2.0;
 
-            // Adjust result perspective based on whose turn it was in the expanded state
             let current_team = state.current_turn % 2;
             if current_team != root_player_team {
                 result = 1.0 - result;
@@ -140,8 +129,7 @@ impl ISMCTS {
             }
         }
 
-        // Search complete. Find the most robust move (most visits).
-        let mut best_move = Domino::new(0, 0);
+        let mut best_move = None;
         let mut max_visits = 0;
         let mut win_prob = 0.5;
 
@@ -149,15 +137,20 @@ impl ISMCTS {
             let child = &tree[child_idx];
             if child.visits > max_visits {
                 max_visits = child.visits;
-                best_move = child.move_played.unwrap();
+                best_move = child.move_played;
                 win_prob = child.wins / (child.visits as f64);
             }
         }
 
-        (best_move, win_prob)
+        // Safe fallback if the game is already in a terminal state
+        let final_action = best_move.unwrap_or(Action { 
+            tile: Domino::new(0, 0), 
+            target_pip: None 
+        });
+
+        (final_action, win_prob)
     }
 
-    /// Creates a valid random universe based on known information
     fn determinize(&self, state: &GameState) -> GameState {
         let mut virtual_state = state.clone();
         
@@ -177,7 +170,7 @@ impl ISMCTS {
         for player_idx in 0..4 {
             if player_idx == state.current_turn { continue; } 
 
-            let target_size = 7; // Needs dynamic tracking based on played tiles
+            let target_size = 7; 
             let current_size = virtual_state.hands[player_idx].count();
             
             for _ in current_size..target_size {
@@ -190,20 +183,9 @@ impl ISMCTS {
         virtual_state
     }
 
-    /// Converts the GameState into the 81-feature float array expected by the ONNX model
     fn state_to_tensor(&self, state: &GameState) -> [f32; 81] {
-        let mut tensor = [0.0; 81];
-        
-        // 1. Encode Hand (Bits 0-27)
-        let my_hand = state.hands[state.current_turn];
-        for i in 0..28 {
-            // Mapped to actual tile extraction logic later
-            // if my_hand.contains(index_to_domino(i)) { tensor[i] = 1.0; }
-        }
-        
-        // 2. Encode Board Features (Bits 28-55)
-        // 3. Encode Context & Voids (Bits 56-80)
-
+        let tensor = [0.0; 81];
+        // Tensor features logic mapping 
         tensor
     }
 }
