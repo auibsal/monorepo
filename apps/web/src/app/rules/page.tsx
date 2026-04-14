@@ -90,7 +90,7 @@ export default function LawsOfDominoes() {
             <span className="text-sm font-mono text-federation-ivory/60">EFFECTIVE JAN 2026</span>
           </div>
           <h2 className="text-xl md:text-2xl font-medium tracking-wide mb-4 opacity-80" style={{ fontFamily: 'var(--font-ibm-plex-arabic)' }}>
-            قوانين اللعبة الرسمية
+
           </h2>
           <h1 className="text-4xl md:text-7xl font-bold tracking-tight uppercase leading-none mb-6">
             The Laws of <br />
@@ -99,7 +99,7 @@ export default function LawsOfDominoes() {
             </span>
           </h1>
           <p className="text-lg font-light opacity-80 leading-relaxed max-w-3xl">
-            Approved by the IDF Executive Council. The English text is the authentic version of the Laws of Dominoes covering over-the-table play for all sanctioned, mathematically rated events within the Republic of Iraq.
+            Approved by the IDA Executive Council. The English text is the authentic version of the Laws of Dominoes covering over-the-table play for all sanctioned, mathematically rated events within the Republic of Iraq.
           </p>
         </header>
 
@@ -114,7 +114,7 @@ export default function LawsOfDominoes() {
               The Laws assume that Arbiters have the necessary competence, sound judgement, and absolute objectivity. Too detailed a rule might deprive the Arbiter of his/her freedom of judgement and thus prevent him/her from finding a solution to a problem dictated by fairness, logic, and special factors. 
             </p>
             <p>
-              A necessary condition for a match to be rated by the IDF mathematical ELO system is that it shall be played strictly according to these Laws.
+              A necessary condition for a match to be rated by the IDA mathematical ELO system is that it shall be played strictly according to these Laws.
             </p>
           </div>
         </section>
@@ -212,9 +212,9 @@ export default function LawsOfDominoes() {
         <section id="art-8" className="scroll-mt-32">
           <h3 className="text-2xl font-bold uppercase tracking-wide mb-6">Article 8: Digital Recording & Match Submission</h3>
           <div className="space-y-4 font-light opacity-80 leading-relaxed text-justify">
-            <p><strong className="text-federation-ivory font-semibold">8.1 The IDF Platform:</strong> Paper scoresheets are strictly prohibited for official ELO calculations. All match scores must be recorded on the official digital terminal provided at the table.</p>
+            <p><strong className="text-federation-ivory font-semibold">8.1 The IDA Platform:</strong> Paper scoresheets are strictly prohibited for official ELO calculations. All match scores must be recorded on the official digital terminal provided at the table.</p>
             <p><strong className="text-federation-ivory font-semibold">8.2 Live Entry:</strong> At the conclusion of each hand, the winning team dictates the opposing team's remaining pip count to the Arbiter or inputs it directly into the terminal.</p>
-            <p><strong className="text-federation-ivory font-semibold">8.3 Verification:</strong> At the conclusion of the Match (reaching 100 or 200 points), both teams must physically or digitally verify the terminal's score before it is transmitted to the IDF mathematical rating engine. Once verified, the algorithm's calculation is absolute and irreversible.</p>
+            <p><strong className="text-federation-ivory font-semibold">8.3 Verification:</strong> At the conclusion of the Match (reaching 100 or 200 points), both teams must physically or digitally verify the terminal's score before it is transmitted to the IDA mathematical rating engine. Once verified, the algorithm's calculation is absolute and irreversible.</p>
           </div>
         </section>
 
@@ -277,7 +277,7 @@ export default function LawsOfDominoes() {
               <h4 className="font-bold uppercase tracking-widest text-sm text-federation-ivory/60 mb-2">Appendix B</h4>
               <h3 className="text-xl font-bold mb-4">The Mathematical Engine</h3>
               <p className="font-light opacity-80 text-sm">
-                The IDF utilizes a dynamic ELO system. The mathematical formula calculates the average rating of Team A against Team B to determine the expected outcome, adjusting the rank volatility (K-Factor) based on the players' experience levels.
+                The IDA utilizes a dynamic ELO system. The mathematical formula calculates the average rating of Team A against Team B to determine the expected outcome, adjusting the rank volatility (K-Factor) based on the players' experience levels.
               </p>
             </div>
           </div>
@@ -288,7 +288,7 @@ export default function LawsOfDominoes() {
             <div className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4 border-b border-federation-ivory/10 pb-4">
                 <div className="font-bold text-federation-ivory">Boneyard</div>
-                <div className="md:col-span-3 font-light opacity-80">The reserve pile of tiles not drawn. Note: Standard IDF 2v2 play utilizes all 28 tiles, leaving no boneyard.</div>
+                <div className="md:col-span-3 font-light opacity-80">The reserve pile of tiles not drawn. Note: Standard IDA 2v2 play utilizes all 28 tiles, leaving no boneyard.</div>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4 border-b border-federation-ivory/10 pb-4">
                 <div className="font-bold text-federation-ivory">Pip</div>
@@ -304,7 +304,7 @@ export default function LawsOfDominoes() {
               </div>
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4 border-b border-federation-ivory/10 pb-4">
                 <div className="font-bold text-federation-ivory">ELO</div>
-                <div className="md:col-span-3 font-light opacity-80">The mathematical rating system employed by the IDF digital platform to rank players nationally based on relative skill levels and match outcomes.</div>
+                <div className="md:col-span-3 font-light opacity-80">The mathematical rating system employed by the IDA digital platform to rank players nationally based on relative skill levels and match outcomes.</div>
               </div>
             </div>
           </div>

@@ -22,7 +22,7 @@ export default function InteractiveHome() {
           </div>
 
           <h2 className="text-2xl md:text-3xl font-medium tracking-wide mb-4 opacity-90" style={{ fontFamily: 'var(--font-ibm-plex-arabic)' }}>
-            الاتحاد العراقي للدومينو
+
           </h2>
 
           <h1 className="text-5xl md:text-7xl font-bold tracking-tighter mb-8 uppercase leading-[1.1]">
@@ -71,9 +71,9 @@ export default function InteractiveHome() {
 
           <div className="flex flex-col gap-4">
             {[
-              { rank: 1, name: "Ali Hassan", id: "IDF-001042", elo: "2145.50", status: "up" },
-              { rank: 2, name: "Omar Al-Fadhli", id: "IDF-008211", elo: "2102.10", status: "down" },
-              { rank: 3, name: "Mustafa Kamal", id: "IDF-019920", elo: "2088.00", status: "stable" },
+              { rank: 1, name: "Ali Hassan", id: "IDA-001042", elo: "2145.50", status: "up" },
+              { rank: 2, name: "Omar Al-Fadhli", id: "IDA-008211", elo: "2102.10", status: "down" },
+              { rank: 3, name: "Mustafa Kamal", id: "IDA-019920", elo: "2088.00", status: "stable" },
             ].map((player, idx) => (
               <div 
                 key={player.id}
@@ -105,7 +105,7 @@ export default function InteractiveHome() {
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-8">
           <Link href="/affiliates" className="group p-10 bg-federation-ivory/5 border border-federation-ivory/10 hover:bg-federation-ivory/10 transition-colors rounded-sm">
             <h3 className="text-2xl font-bold uppercase mb-4 group-hover:text-red-500 transition-colors">Sanctioned Venues</h3>
-            <p className="font-light opacity-70 mb-8 leading-relaxed">Turn your cafe or club into an official IDF affiliate. Host ranked tournaments and draw massive foot traffic.</p>
+            <p className="font-light opacity-70 mb-8 leading-relaxed">Turn your cafe or club into an official IDA affiliate. Host ranked tournaments and draw massive foot traffic.</p>
             <span className="text-sm font-bold uppercase tracking-widest border-b border-federation-ivory/30 pb-1 group-hover:border-federation-ivory transition-colors">Apply as Host &rarr;</span>
           </Link>
 

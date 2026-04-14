@@ -1,7 +1,7 @@
 export default function PlayerDashboard() {
   // In a real app, you would fetch this data securely via Supabase Auth & SQL
   const mockPlayerData = {
-    idf_id: "IDF-001042",
+    ida_id: "IDA-001042",
     name: "Ahmed Al-Fadhli",
     rating: 1642.50,
     rank: "National Master",
@@ -25,7 +25,7 @@ export default function PlayerDashboard() {
             <span className="text-6xl font-bold">🁫</span>
           </div>
           <p className="text-sm uppercase tracking-widest text-federation-ivory/60 mb-1">Federation ID</p>
-          <h2 className="text-3xl font-mono font-semibold text-white mb-6">{mockPlayerData.idf_id}</h2>
+          <h2 className="text-3xl font-mono font-semibold text-white mb-6">{mockPlayerData.ida_id}</h2>
           
           <p className="text-sm uppercase tracking-widest text-federation-ivory/60 mb-1">Player Name</p>
           <h3 className="text-xl font-medium">{mockPlayerData.name}</h3>

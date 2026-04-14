@@ -77,10 +77,10 @@ export default function DigitalRegulationsPage() {
             <span className="px-3 py-1 bg-federation-ivory text-federation-obsidian text-xs font-bold uppercase tracking-widest rounded-sm">
               Regulatory Supplement
             </span>
-            <span className="text-sm font-mono text-federation-ivory/60">IDF-DHP-2026</span>
+            <span className="text-sm font-mono text-federation-ivory/60">IDA-DHP-2026</span>
           </div>
           <h2 className="text-xl md:text-2xl font-medium tracking-wide mb-4 opacity-80" style={{ fontFamily: 'var(--font-ibm-plex-arabic)' }}>
-            لوائح اللعب الرقمي والهجين
+
           </h2>
           <h1 className="text-4xl md:text-6xl font-bold tracking-tight uppercase leading-none mb-6">
             Digital & Hybrid <br />
@@ -101,7 +101,7 @@ export default function DigitalRegulationsPage() {
               <strong className="text-federation-ivory font-semibold">0.1 Online Play with Supervision:</strong> An event where players compete from their own remote locations (e.g., their homes) but are actively monitored by an Arbiter via a Video Conferencing System (VCS) and screen-sharing technology.
             </p>
             <p>
-              <strong className="text-federation-ivory font-semibold">0.2 Hybrid Competitions:</strong> An event where players gather at physically sanctioned IDF Affiliates (cafes, clubs) and are physically supervised by a Local Chief Arbiter (LCA), but execute their moves against remote teams via digital devices connected to the Playing Zone.
+              <strong className="text-federation-ivory font-semibold">0.2 Hybrid Competitions:</strong> An event where players gather at physically sanctioned IDA Affiliates (cafes, clubs) and are physically supervised by a Local Chief Arbiter (LCA), but execute their moves against remote teams via digital devices connected to the Playing Zone.
             </p>
           </div>
         </section>
@@ -111,7 +111,7 @@ export default function DigitalRegulationsPage() {
           <h2 className="text-3xl font-bold uppercase tracking-wide mb-6">1.0 The Playing Zone</h2>
           <div className="space-y-4 font-light opacity-80 leading-relaxed text-justify">
             <p>
-              The "Playing Zone" refers to the official IDF Superapp or authorised web terminal hosting the virtual board. 
+              The "Playing Zone" refers to the official IDA Superapp or authorised web terminal hosting the virtual board.
             </p>
             <p className="font-bold text-federation-ivory mt-4">1.1 Enforced Legality</p>
             <p>
@@ -166,7 +166,7 @@ export default function DigitalRegulationsPage() {
           <h2 className="text-3xl font-bold uppercase tracking-wide mb-6 border-l-4 border-red-600 pl-6">4.0 Anti-Cheating & Collusion</h2>
           <div className="space-y-4 font-light opacity-80 leading-relaxed text-justify">
             <p>
-              The Fair Play Commission (FPL) actively monitors all sanctioned digital matches using the IDF Game Screening Tool to detect statistical anomalies and impossible calculation speeds.
+              The Fair Play Commission (FPL) actively monitors all sanctioned digital matches using the IDA Game Screening Tool to detect statistical anomalies and impossible calculation speeds.
             </p>
             <p className="font-bold text-red-400 mt-4">4.1 Illicit Partner Collusion</p>
             <p>
@@ -188,7 +188,7 @@ export default function DigitalRegulationsPage() {
           <h2 className="text-3xl font-bold uppercase tracking-wide mb-6">5.0 Hybrid Competitions</h2>
           <div className="space-y-4 font-light opacity-80 leading-relaxed text-justify">
             <p>
-              Hybrid competitions bridge the gap between physical cafe culture and global digital reach. Teams gather at official IDF Host Venues to play on digital tablets against teams located in other cities or governorates.
+              Hybrid competitions bridge the gap between physical cafe culture and global digital reach. Teams gather at official IDA Host Venues to play on digital tablets against teams located in other cities or governorates.
             </p>
             <p className="font-bold text-federation-ivory mt-4">5.1 Local Chief Arbiter (LCA)</p>
             <p>

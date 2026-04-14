@@ -77,10 +77,10 @@ export default function AdaptivePlayPage() {
             <span className="px-3 py-1 bg-federation-ivory text-federation-obsidian text-xs font-bold uppercase tracking-widest rounded-sm">
               Regulatory Supplement
             </span>
-            <span className="text-sm font-mono text-federation-ivory/60">IDF-ADA-2026</span>
+            <span className="text-sm font-mono text-federation-ivory/60">IDA-ADA-2026</span>
           </div>
           <h2 className="text-xl md:text-2xl font-medium tracking-wide mb-4 opacity-80" style={{ fontFamily: 'var(--font-ibm-plex-arabic)' }}>
-            لوائح اللعب التكيفي
+
           </h2>
           <h1 className="text-4xl md:text-6xl font-bold tracking-tight uppercase leading-none mb-6">
             Adaptive Play & <br />
@@ -89,7 +89,7 @@ export default function AdaptivePlayPage() {
             </span>
           </h1>
           <p className="text-lg font-light opacity-80 leading-relaxed max-w-3xl">
-            Supplement to the IDF Official Rulebook governing competitive matches involving visually handicapped and physically disabled athletes. Derived from international standard sports practices to ensure absolute parity in mathematical ELO ratings.
+            Supplement to the IDA Official Rulebook governing competitive matches involving visually handicapped and physically disabled athletes. Derived from international standard sports practices to ensure absolute parity in mathematical ELO ratings.
           </p>
         </header>
 
@@ -98,7 +98,7 @@ export default function AdaptivePlayPage() {
           <h2 className="text-3xl font-bold uppercase tracking-wide mb-6">0.0 The Inclusive Mandate</h2>
           <div className="bg-federation-ivory/5 p-8 rounded-sm border border-federation-ivory/10 space-y-4 font-light opacity-80 leading-relaxed text-justify">
             <p>
-              Dominoes is an inherently tactile sport. The Iraqi Dominoes Federation mandates that all sanctioned Tier 1 and Tier 2 events must accommodate players with visual or physical disabilities without prejudice. Tournament directors possess the authority to adapt table layouts and provide specialized equipment to ensure a fair competitive environment.
+              Dominoes is an inherently tactile sport. The Iraqi Dominoes Association mandates that all sanctioned Tier 1 and Tier 2 events must accommodate players with visual or physical disabilities without prejudice. Tournament directors possess the authority to adapt table layouts and provide specialized equipment to ensure a fair competitive environment.
             </p>
           </div>
         </section>
@@ -173,7 +173,7 @@ export default function AdaptivePlayPage() {
               </li>
               <li className="flex items-start gap-4">
                 <span className="text-red-500 font-bold mt-1">3.</span>
-                <span><strong>Digital Logging:</strong> Keep the official digital game score on the IDF Terminal and operate the match clock on behalf of the player.</span>
+                <span><strong>Digital Logging:</strong> Keep the official digital game score on the IDA Terminal and operate the match clock on behalf of the player.</span>
               </li>
               <li className="flex items-start gap-4">
                 <span className="text-red-500 font-bold mt-1">4.</span>
@@ -191,7 +191,7 @@ export default function AdaptivePlayPage() {
               If, during a hand, a discrepancy arises between the physical board state and the mental or secondary tracking board of the visually handicapped player, the match clock must be immediately paused.
             </p>
             <p>
-              The Arbiter must be summoned. The hand shall be retraced to the point where all players agree on the board state, utilizing the digital IDF Terminal logs as the absolute source of truth. The Arbiter holds the authority to readjust the match clocks to account for the interruption.
+              The Arbiter must be summoned. The hand shall be retraced to the point where all players agree on the board state, utilizing the digital IDA Terminal logs as the absolute source of truth. The Arbiter holds the authority to readjust the match clocks to account for the interruption.
             </p>
           </div>
         </section>

@@ -76,10 +76,10 @@ export default function EnginePlayPage() {
             <span className="px-3 py-1 bg-federation-ivory text-federation-obsidian text-xs font-bold uppercase tracking-widest rounded-sm">
               Regulatory Supplement
             </span>
-            <span className="text-sm font-mono text-federation-ivory/60">IDF-ALG-2026</span>
+            <span className="text-sm font-mono text-federation-ivory/60">IDA-ALG-2026</span>
           </div>
           <h2 className="text-xl md:text-2xl font-medium tracking-wide mb-4 opacity-80" style={{ fontFamily: 'var(--font-ibm-plex-arabic)' }}>
-            لوائح اللعب ضد الخوارزميات
+
           </h2>
           <h1 className="text-4xl md:text-6xl font-bold tracking-tight uppercase leading-none mb-6">
             Algorithmic Entities <br />
@@ -97,7 +97,7 @@ export default function EnginePlayPage() {
           <h2 className="text-3xl font-bold uppercase tracking-wide mb-6">0.0 Preamble & Scope</h2>
           <div className="bg-federation-ivory/5 p-8 rounded-sm border border-federation-ivory/10 space-y-4 font-light opacity-80 leading-relaxed text-justify">
             <p>
-              [span_0](start_span)The game shall be played according to the official IDF Laws of Dominoes on a physical tournament board, utilizing a standard match clock[span_0](end_span). In 2v2 exhibition formats, an Algorithmic Entity (Engine) may be paired with a human partner, or two Engines may operate as a single team against a human pair.
+              [span_0](start_span)The game shall be played according to the official IDA Laws of Dominoes on a physical tournament board, utilizing a standard match clock[span_0](end_span). In 2v2 exhibition formats, an Algorithmic Entity (Engine) may be paired with a human partner, or two Engines may operate as a single team against a human pair.
             </p>
           </div>
         </section>
@@ -170,7 +170,7 @@ export default function EnginePlayPage() {
               [span_11](start_span)Engines and their development teams taking part in exhibition matches alongside human tournaments are only eligible to receive special "Algorithmic Division" prizes, if any are offered by the host venue[span_11](end_span). 
             </p>
             <p>
-              Algorithmic Entities cannot claim financial prize pools reserved for human athletes, nor can they hold a standard National ELO rank. Matches played against an Engine do not impact a human player's official IDF rating.
+              Algorithmic Entities cannot claim financial prize pools reserved for human athletes, nor can they hold a standard National ELO rank. Matches played against an Engine do not impact a human player's official IDA rating.
             </p>
           </div>
         </section>

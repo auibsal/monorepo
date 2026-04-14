@@ -76,10 +76,10 @@ export default function CsrPage() {
             <span className="px-3 py-1 bg-federation-ivory text-federation-obsidian text-xs font-bold uppercase tracking-widest rounded-sm">
               Official Guidelines
             </span>
-            <span className="text-sm font-mono text-federation-ivory/60">IDF-CSR-2026</span>
+            <span className="text-sm font-mono text-federation-ivory/60">IDA-CSR-2026</span>
           </div>
           <h2 className="text-xl md:text-2xl font-medium tracking-wide mb-4 opacity-80" style={{ fontFamily: 'var(--font-ibm-plex-arabic)' }}>
-            المسؤولية الاجتماعية والأخلاقيات
+
           </h2>
           <h1 className="text-4xl md:text-6xl font-bold tracking-tight uppercase leading-none mb-6">
             Corporate Social <br />
@@ -88,7 +88,7 @@ export default function CsrPage() {
             </span>
           </h1>
           <p className="text-lg font-light opacity-80 leading-relaxed max-w-3xl">
-            The IDF transcends algorithmic ratings and tournament logistics. We are dedicated to ensuring that the sport of dominoes acts as a catalyst for positive societal impact, adhering to the highest standards of international sporting governance.
+            The IDA transcends algorithmic ratings and tournament logistics. We are dedicated to ensuring that the sport of dominoes acts as a catalyst for positive societal impact, adhering to the highest standards of international sporting governance.
           </p>
         </header>
 
@@ -115,7 +115,7 @@ export default function CsrPage() {
             </p>
             <p className="font-bold text-federation-ivory mt-4">1.2 Gender Equality and Equity</p>
             <p>
-              [span_4](start_span)The IDF works tirelessly to increase the number of women in all aspects of dominoes life[span_4](end_span). [span_5](start_span)This involves not only developing specific programs to increase female participation in competitive brackets, but actively seeking their participation in leading institutional roles[span_5](end_span). [span_6](start_span)We encourage women to pursue careers as elite players, national arbiters, trainers, and Federation officers[span_6](end_span).
+              [span_4](start_span)The IDA works tirelessly to increase the number of women in all aspects of dominoes life[span_4](end_span). [span_5](start_span)This involves not only developing specific programs to increase female participation in competitive brackets, but actively seeking their participation in leading institutional roles[span_5](end_span). [span_6](start_span)We encourage women to pursue careers as elite players, national arbiters, trainers, and Federation officers[span_6](end_span).
             </p>
             <p className="font-bold text-federation-ivory mt-4">1.3 Rehabilitation & Accessibility</p>
             <p>
@@ -130,7 +130,7 @@ export default function CsrPage() {
           <div className="space-y-4 font-light opacity-80 leading-relaxed text-justify">
             <p className="font-bold text-federation-ivory mt-4">2.1 Protecting Our Seniors</p>
             <p>
-              [span_9](start_span)The IDF strives to protect senior players who, after having devoted their lives to the sport and cafe culture, find themselves in an unstable financial situation[span_9](end_span). [span_10](start_span)We seek to build support programs and seek external funding to honor their legacy[span_10](end_span).
+              [span_9](start_span)The IDA strives to protect senior players who, after having devoted their lives to the sport and cafe culture, find themselves in an unstable financial situation[span_9](end_span). [span_10](start_span)We seek to build support programs and seek external funding to honor their legacy[span_10](end_span).
             </p>
             <p className="font-bold text-federation-ivory mt-4">2.2 Supporting Host Venues and Affiliates</p>
             <p>
@@ -144,7 +144,7 @@ export default function CsrPage() {
           <h2 className="text-3xl font-bold uppercase tracking-wide mb-6">3.0 Environmental Protocol</h2>
           <div className="space-y-4 font-light opacity-80 leading-relaxed text-justify">
             <p>
-              [span_13](start_span)The Federation stays focused on adopting environmental solutions that lessen our footprint[span_13](end_span). [span_14](start_span)By transitioning exclusively to the digital IDF Terminal for scoring and ELO calculations, we commit to minimizing physical waste generation and paper pollution, integrating these clean efforts into our day-to-day tournament operations[span_14](end_span).
+              [span_13](start_span)The Federation stays focused on adopting environmental solutions that lessen our footprint[span_13](end_span). [span_14](start_span)By transitioning exclusively to the digital IDA Terminal for scoring and ELO calculations, we commit to minimizing physical waste generation and paper pollution, integrating these clean efforts into our day-to-day tournament operations[span_14](end_span).
             </p>
             <p>
               [span_15](start_span)Furthermore, in order to minimize atmospheric emissions, we strive to reduce unnecessary travel by making full use of our advanced Video Conferencing Systems (VCS) to replace physical face-to-face administrative meetings whenever possible[span_15](end_span).
@@ -162,7 +162,7 @@ export default function CsrPage() {
             <ul className="space-y-4 mt-6">
               <li className="flex items-start gap-4">
                 <span className="text-red-500 font-bold mt-1">1.</span>
-                [span_17](start_span)<span><strong>Nepotism & Favoritism:</strong> No IDF official or employee may make, participate in, or attempt to influence Employment Decisions or Business Decisions involving a Relative[span_17](end_span).</span>
+                [span_17](start_span)<span><strong>Nepotism & Favoritism:</strong> No IDA official or employee may make, participate in, or attempt to influence Employment Decisions or Business Decisions involving a Relative[span_17](end_span).</span>
               </li>
               <li className="flex items-start gap-4">
                 <span className="text-red-500 font-bold mt-1">2.</span>

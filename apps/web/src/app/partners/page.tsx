@@ -6,7 +6,7 @@ export default function SponsorsDeck() {
       <header className="text-center mb-20">
         <h2 className="text-xl font-medium tracking-widest uppercase opacity-60 mb-4">Corporate Integration</h2>
         <h1 className="text-4xl md:text-6xl font-bold uppercase tracking-tight">
-          Partner with the IDF
+          Partner with the IDA
         </h1>
       </header>
 
@@ -31,7 +31,7 @@ export default function SponsorsDeck() {
           Contact the Executive Board to receive our comprehensive commercial dossier, detailing user demographics, engagement metrics, and exclusive partnership tiers.
         </p>
         <a 
-          href="mailto:commercial@idf.iq" 
+          href="mailto:commercial@ida.iq"
           className="px-8 py-4 bg-federation-ivory text-federation-obsidian font-bold uppercase tracking-wider rounded-sm hover:bg-white transition-colors inline-block"
         >
           Contact Commercial Department

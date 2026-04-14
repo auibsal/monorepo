@@ -3,7 +3,7 @@ use std::io::Cursor;
 
 // Embed the trained ONNX model directly into the WebAssembly binary.
 // This guarantees zero-latency loading when the browser initializes the engine.
-const MODEL_BYTES: &[u8] = include_bytes!("../models/idf_brain_single.onnx");
+const MODEL_BYTES: &[u8] = include_bytes!("../models/ida_brain_single.onnx");
 
 pub struct Brain {
     model: SimplePlan<TypedFact, Box<dyn TypedOp>, Graph<TypedFact, Box<dyn TypedOp>>>,

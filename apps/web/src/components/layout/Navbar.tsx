@@ -30,10 +30,10 @@ export default function Navbar() {
         {/* Logo Area */}
         <Link href="/" className="group flex flex-col">
           <span className="text-sm font-medium tracking-wider opacity-80 group-hover:opacity-100 transition-opacity" style={{ fontFamily: 'var(--font-ibm-plex-arabic)' }}>
-            الاتحاد العراقي للدومينو
+
           </span>
           <span className="text-xl font-bold uppercase tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-federation-ivory to-gray-400 group-hover:to-white transition-all">
-            IDF
+            IDA
           </span>
         </Link>
 

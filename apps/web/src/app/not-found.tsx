@@ -28,7 +28,7 @@ export default function NotFound() {
 
       <div className="text-center z-10">
         <h2 className="text-xl font-medium tracking-wide mb-2 opacity-80 text-red-500" style={{ fontFamily: 'var(--font-ibm-plex-arabic)' }}>
-          اللوحة مقفلة
+
         </h2>
         <h1 className="text-5xl md:text-7xl font-bold uppercase tracking-tighter mb-6">
           The Board is Locked

@@ -1,14 +1,14 @@
 {
-  "name": "idf_engine",
+  "name": "ida_engine",
   "type": "module",
   "version": "0.1.0",
   "files": [
-    "idf_engine_bg.wasm",
-    "idf_engine.js",
-    "idf_engine.d.ts"
+    "ida_engine_bg.wasm",
+    "ida_engine.js",
+    "ida_engine.d.ts"
   ],
-  "main": "idf_engine.js",
-  "types": "idf_engine.d.ts",
+  "main": "ida_engine.js",
+  "types": "ida_engine.d.ts",
   "sideEffects": [
     "./snippets/*"
   ]

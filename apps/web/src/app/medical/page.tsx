@@ -13,7 +13,7 @@ export default function MedicalHub() {
         
         <div className="text-center max-w-4xl mx-auto z-10 relative">
           <h2 className="text-xl md:text-2xl font-medium tracking-wide mb-4 opacity-80 text-federation-ivory" style={{ fontFamily: 'var(--font-ibm-plex-arabic)' }}>
-            اللجنة الطبية للاتحاد
+
           </h2>
           <h1 className="text-4xl md:text-6xl font-bold tracking-tight uppercase leading-none mb-6">
             Medical & Performance <br />
@@ -22,7 +22,7 @@ export default function MedicalHub() {
             </span>
           </h1>
           <p className="text-lg font-light opacity-70 max-w-2xl mx-auto leading-relaxed">
-            Safeguarding the integrity of the sport and the health of the athlete. The IDF Medical Directorate ensures strict compliance with international anti-doping standards while advancing research into the cognitive and physical demands of competitive dominoes.
+            Safeguarding the integrity of the sport and the health of the athlete. The IDA Medical Directorate ensures strict compliance with international anti-doping standards while advancing research into the cognitive and physical demands of competitive dominoes.
           </p>
         </div>
       </section>
@@ -36,7 +36,7 @@ export default function MedicalHub() {
           <span className="text-4xl mb-6 block opacity-80">🚫</span>
           <h3 className="text-2xl font-bold uppercase tracking-wide mb-4 text-federation-ivory">Anti-Doping & WADA</h3>
           <p className="font-light opacity-70 leading-relaxed mb-8">
-            The official IDF policy on prohibited substances, in-competition testing procedures, and Therapeutic Use Exemptions (TUEs). Maintaining a clean sport is our highest priority.
+            The official IDA policy on prohibited substances, in-competition testing procedures, and Therapeutic Use Exemptions (TUEs). Maintaining a clean sport is our highest priority.
           </p>
           <span className="text-sm font-bold uppercase tracking-widest text-red-500 group-hover:text-red-400 transition-colors">
             View Policy &rarr;

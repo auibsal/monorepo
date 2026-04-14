@@ -30,7 +30,7 @@ export default function LoginPlayer() {
         {/* Portal Header */}
         <div className="text-center mb-10">
           <h2 className="text-sm font-medium tracking-widest uppercase opacity-60 mb-2 text-red-500">
-            Secure IDF Portal
+            Secure IDA Portal
           </h2>
           <h1 className="text-3xl md:text-4xl font-bold uppercase tracking-tight mb-4">
             Access Dashboard

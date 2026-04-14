@@ -1,5 +1,5 @@
 // Dynamically import the WASM module
-import init, { analyze_board_state } from '../../../../engine/pkg/idf_engine';
+import init, { analyze_board_state } from '../../../../engine/pkg/ida_engine';
 
 let isEngineInitialized = false;
 

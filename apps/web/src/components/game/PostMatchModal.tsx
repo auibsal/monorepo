@@ -11,7 +11,7 @@ export const PostMatchModal = () => {
     // 1. Bundle the DPN log
     // 2. Transmit to Supabase (transmitMatchLog)
     // 3. Boot up the Rust WASM Engine to process the match
-    console.log("Booting IDF Oracle Engine...");
+    console.log("Booting IDA Oracle Engine...");
   };
 
   return (

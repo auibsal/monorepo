@@ -14,7 +14,7 @@ export default function AntiDopingPage() {
           Anti-Doping Policy
         </h1>
         <p className="text-lg font-light opacity-80 pl-7 max-w-3xl leading-relaxed">
-          In accordance with Article 37 of the IDF Supreme Charter, the Federation unconditionally adopts the World Anti-Doping Agency (WADA) Code. Mental sports are highly susceptible to cognitive-enhancing pharmacology; we enforce a strict zero-tolerance policy.
+          In accordance with Article 37 of the IDA Supreme Charter, the Federation unconditionally adopts the World Anti-Doping Agency (WADA) Code. Mental sports are highly susceptible to cognitive-enhancing pharmacology; we enforce a strict zero-tolerance policy.
         </p>
       </header>
 
@@ -53,7 +53,7 @@ export default function AntiDopingPage() {
         <section>
           <h2 className="text-2xl font-bold uppercase tracking-wide mb-6">In-Competition Testing</h2>
           <p className="font-light opacity-80 leading-relaxed mb-4">
-            The Medical Directorate reserves the right to conduct randomized urine and saliva testing during the National Championships and Regional Qualifiers. Refusal to submit to a requested test carries the exact same penalty as a positive result: immediate disqualification, nullification of ELO gains, and a multi-year ban from IDF sanctioned play.
+            The Medical Directorate reserves the right to conduct randomized urine and saliva testing during the National Championships and Regional Qualifiers. Refusal to submit to a requested test carries the exact same penalty as a positive result: immediate disqualification, nullification of ELO gains, and a multi-year ban from IDA sanctioned play.
           </p>
         </section>
 
