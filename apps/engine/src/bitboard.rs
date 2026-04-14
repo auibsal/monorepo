@@ -58,8 +58,9 @@ impl TileSet {
     pub fn count(&self) -> u32 {
         self.0.count_ones()
     }
+}
 
-    // Add this below the Domino and TileSet implementations
+// The new Action Space struct representing a directional move
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct Action {
     pub tile: Domino,
