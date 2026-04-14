@@ -58,7 +58,16 @@ export const DpnTester = () => {
             <p className="text-green-400">✓ Engine Execution Complete</p>
             <p><strong>Universes Analyzed:</strong> {result.depth.toLocaleString()}</p>
             <p><strong>Win Probability:</strong> {(result.win_probability * 100).toFixed(1)}%</p>
-            <p><strong>Oracle's Best Move:</strong> [{result.best_move[0]} | {result.best_move[1]}]</p>
+            <p className="flex items-center gap-2">
+              <strong>Oracle's Best Move:</strong> 
+              <span className="bg-white/10 px-2 py-1 rounded">[{result.best_move[0]} | {result.best_move[1]}]</span>
+            </p>
+            {/* THIS IS THE NEW TARGET RENDERER */}
+            {result.target_pip !== null && result.target_pip !== undefined ? (
+               <p className="text-red-400"><strong>Target End:</strong> Connect to the <strong>{result.target_pip}</strong></p>
+            ) : (
+               <p className="text-white/50"><strong>Target End:</strong> Any (Opening Move)</p>
+            )}
           </div>
         )}
 
