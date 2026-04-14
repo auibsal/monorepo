@@ -28,7 +28,6 @@ export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembl
 
 export interface InitOutput {
     readonly memory: WebAssembly.Memory;
-    readonly analyze_board_state: (a: number, b: number) => [number, number];
     readonly __wbg_domino_free: (a: number, b: number) => void;
     readonly __wbg_get_domino_high: (a: number) => number;
     readonly __wbg_get_domino_low: (a: number) => number;
@@ -45,6 +44,7 @@ export interface InitOutput {
     readonly tileset_empty: () => number;
     readonly tileset_remove: (a: number, b: number) => void;
     readonly tileset_new: () => number;
+    readonly analyze_board_state: (a: number, b: number) => [number, number];
     readonly __wbindgen_exn_store: (a: number) => void;
     readonly __externref_table_alloc: () => number;
     readonly __wbindgen_externrefs: WebAssembly.Table;
