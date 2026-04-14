@@ -22,12 +22,7 @@ export class TileSet {
     0: number;
 }
 
-/**
- * This is the bridge function exposed to JavaScript/Next.js.
- * It takes the current board state as a JSON string, runs the AI,
- * and returns the best move and probability as a JSON string.
- */
-export function analyze_board_state(_board_json: string): string;
+export function analyze_board_state(board_json: string): string;
 
 export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;
 
