@@ -2,7 +2,8 @@
   "name": "ida-platform",
   "private": true,
   "workspaces": [
-    "apps/*"
+    "apps/*",
+    "packages/*"
   ],
   "scripts": {
     "build:engine": "cd apps/engine && wasm-pack build --target web",
