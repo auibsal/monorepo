@@ -1,13 +1,15 @@
 'use client';
+import React from 'react';
 
-const PIP_MAP: Record<number, JSX.Element[]> = {
+// Use React.ReactElement[] instead of JSX.Element[]
+const PIP_MAP: Record<number, React.ReactElement[]> = {
   0: [],
   1: [<circle key="c" cx="50" cy="50" r="10" />],
-  2: [<circle key="1" cx="20" cy="20" r="10" />, <circle key="2" cx="80" cy="80" r="10" />],
-  3: [<circle key="1" cx="20" cy="20" r="10" />, <circle key="c" cx="50" cy="50" r="10" />, <circle key="2" cx="80" cy="80" r="10" />],
-  4: [<circle key="1" cx="20" cy="20" r="10" />, <circle key="2" cx="80" cy="20" r="10" />, <circle key="3" cx="20" cy="80" r="10" />, <circle key="4" cx="80" cy="80" r="10" />],
-  5: [<circle key="1" cx="20" cy="20" r="10" />, <circle key="2" cx="80" cy="20" r="10" />, <circle key="c" cx="50" cy="50" r="10" />, <circle key="3" cx="20" cy="80" r="10" />, <circle key="4" cx="80" cy="80" r="10" />],
-  6: [<circle key="1" cx="20" cy="25" r="10" />, <circle key="2" cx="80" cy="25" r="10" />, <circle key="3" cx="20" cy="50" r="10" />, <circle key="4" cx="80" cy="50" r="10" />, <circle key="5" cx="20" cy="75" r="10" />, <circle key="6" cx="80" cy="75" r="10" />],
+  2: [<circle key="1" cx="25" cy="25" r="10" />, <circle key="2" cx="75" cy="75" r="10" />],
+  3: [<circle key="1" cx="25" cy="25" r="10" />, <circle key="c" cx="50" cy="50" r="10" />, <circle key="2" cx="75" cy="75" r="10" />],
+  4: [<circle key="1" cx="25" cy="25" r="10" />, <circle key="2" cx="75" cy="25" r="10" />, <circle key="3" cx="25" cy="75" r="10" />, <circle key="4" cx="75" cy="75" r="10" />],
+  5: [<circle key="1" cx="25" cy="25" r="10" />, <circle key="2" cx="75" cy="25" r="10" />, <circle key="c" cx="50" cy="50" r="10" />, <circle key="3" cx="25" cy="75" r="10" />, <circle key="4" cx="75" cy="75" r="10" />],
+  6: [<circle key="1" cx="25" cy="20" r="10" />, <circle key="2" cx="75" cy="20" r="10" />, <circle key="3" cx="25" cy="50" r="10" />, <circle key="4" cx="75" cy="50" r="10" />, <circle key="5" cx="25" cy="80" r="10" />, <circle key="6" cx="75" cy="80" r="10" />],
 };
 
 export default function DominoTile({ values, orientation, isReversed }: any) {
