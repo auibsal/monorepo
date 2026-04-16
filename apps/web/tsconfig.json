@@ -13,6 +13,9 @@
     "isolatedModules": true,
     "jsx": "react-jsx",
     "incremental": true,
+     "baseUrl": ".",
+    "paths": {
+      "@repo/core": ["../../packages/core/src/index.ts"],
     "plugins": [
       {
         "name": "next"
