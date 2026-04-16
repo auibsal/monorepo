@@ -1,4 +1,4 @@
-import LobbyButton from '../components/LobbyButton';
+import LobbyButton from '../../components/LobbyButton';
 
 export default function Home() {
     return (
