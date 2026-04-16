@@ -1,47 +1,71 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { DominoEngine2v2, Domino } from '@repo/core';
 import DominoTile from '../../components/DominoTile';
 import { calculateLinearBoard } from '../../utils/boardLayout';
 
 export default function OfflineSandbox() {
-    // 1. Initialize the engine inside the component state
-    // We use useMemo so the board doesn't re-shuffle every time the component renders
+    // Persistent instance of the engine
     const engine = useMemo(() => new DominoEngine2v2(), []);
-    
-    // 2. Local state to force React to update when the engine state changes
-    const [turn, setTurn] = useState(engine.currentTurn);
+
+    // React-tracked states
     const [board, setBoard] = useState<Domino[]>([]);
-    const [hands, setHands] = useState(engine.hands);
+    const [turn, setTurn] = useState<number>(0);
+    const [hands, setHands] = useState<Record<number, Domino[]>>({ 0: [], 1: [], 2: [], 3: [] });
+
+    // Sync React state with engine on first mount
+    useEffect(() => {
+        setBoard([...engine.board]);
+        setTurn(engine.currentTurn);
+        setHands({ ...engine.hands });
+    }, [engine]);
 
     const handlePlay = (tile: Domino, side: 'left' | 'right') => {
         const success = engine.playDomino(engine.currentTurn, tile, side);
         
         if (success) {
-            // Update local state to trigger a re-render
-            setBoard([...engine.board]);
+            // CRITICAL: We create NEW references so React triggers a re-render
+            setBoard([...engine.board]); 
             setTurn(engine.currentTurn);
-            setHands({...engine.hands});
+            setHands({
+                0: [...engine.hands[0]],
+                1: [...engine.hands[1]],
+                2: [...engine.hands[2]],
+                3: [...engine.hands[3]],
+            });
         } else {
-            alert("Invalid Move!");
+            console.warn("Move rejected by engine logic.");
         }
+    };
+
+    const handlePass = () => {
+        engine.passTurn(engine.currentTurn as any);
+        setTurn(engine.currentTurn);
     };
 
     const visualBoard = calculateLinearBoard(board);
 
     return (
-        <div className="min-h-screen bg-zinc-950 text-zinc-100 font-mono p-8">
-            <header className="mb-8 border-b border-zinc-800 pb-4">
-                <h1 className="text-2xl font-bold tracking-tighter">OFFLINE_TEST_ENVIRONMENT</h1>
-                <p className="text-zinc-500 text-sm">Playing as: TEAM {turn === 0 || turn === 2 ? 'A' : 'B'} (Player {turn})</p>
+        <div className="min-h-screen bg-black text-zinc-100 font-mono p-4 md:p-12">
+            <header className="mb-12 border-b-2 border-zinc-800 pb-6 flex justify-between items-end">
+                <div>
+                    <h1 className="text-3xl font-black tracking-tighter uppercase">Sandbox_v1.0</h1>
+                    <p className="text-zinc-500 text-xs mt-1 tracking-widest">LOCAL_AUTHORITATIVE_ENGINE_TEST</p>
+                </div>
+                <div className="text-right">
+                    <span className="text-[10px] block text-zinc-500 uppercase">Current Turn</span>
+                    <span className="text-xl font-bold text-white">PLAYER_0{turn}</span>
+                </div>
             </header>
 
-            {/* THE BOARD */}
-            <div className="flex items-center justify-center min-h-[300px] bg-zinc-900/50 rounded-lg border border-zinc-800 mb-12 overflow-x-auto p-10">
+            {/* THE GAME TABLE */}
+            <div className="relative w-full aspect-video bg-zinc-900/30 rounded-3xl border-2 border-zinc-800 flex items-center justify-center overflow-x-auto p-12 shadow-inner">
                 <div className="flex items-center gap-1">
                     {visualBoard.length === 0 ? (
-                        <span className="text-zinc-700 italic">Board is empty. Play the [6,6] to start.</span>
+                        <div className="text-zinc-700 border-2 border-dashed border-zinc-800 p-12 text-center uppercase text-sm tracking-widest">
+                            Initial State: Waiting for [6,6]
+                        </div>
                     ) : (
                         visualBoard.map((tile, idx) => (
                             <DominoTile 
@@ -55,39 +79,43 @@ export default function OfflineSandbox() {
                 </div>
             </div>
 
-            {/* THE HAND (Changes based on whose turn it is) */}
-            <div className="flex flex-col items-center gap-6">
-                <h2 className="text-xs uppercase tracking-[0.3em] text-zinc-500">Active Hand: Player {turn}</h2>
-                <div className="flex gap-4 p-6 bg-zinc-900 border border-zinc-800 rounded-xl">
-                    {hands[turn].map((tile, idx) => (
-                        <div key={idx} className="group relative">
+            {/* PLAYER HUD */}
+            <div className="mt-12 max-w-4xl mx-auto">
+                <div className="flex justify-between items-center mb-6">
+                    <h2 className="text-xs font-bold uppercase tracking-widest text-zinc-400">
+                        Player 0{turn} Inventory
+                    </h2>
+                    <button 
+                        onClick={handlePass}
+                        className="text-[10px] border border-zinc-700 px-4 py-1 hover:bg-zinc-800 transition-colors uppercase"
+                    >
+                        Skip Turn
+                    </button>
+                </div>
+
+                <div className="flex flex-wrap justify-center gap-4 bg-zinc-900/80 p-8 rounded-2xl border-2 border-zinc-800 shadow-2xl">
+                    {hands[turn]?.map((tile, idx) => (
+                        <div key={`${turn}-${idx}`} className="group relative">
                             <DominoTile values={tile} orientation="vertical" isReversed={false} />
                             
-                            {/* Controls appear on hover */}
-                            <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center gap-2 transition-opacity rounded">
+                            {/* ACTION OVERLAY */}
+                            <div className="absolute inset-0 bg-black/80 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center gap-2 transition-all duration-200 rounded-sm">
                                 <button 
                                     onClick={() => handlePlay(tile, 'left')}
-                                    className="bg-white text-black text-[10px] font-bold px-2 py-1 w-16"
+                                    className="bg-zinc-100 text-black text-[9px] font-black w-14 py-1 hover:bg-white active:scale-95"
                                 >
-                                    PLAY LEFT
+                                    LEFT
                                 </button>
                                 <button 
                                     onClick={() => handlePlay(tile, 'right')}
-                                    className="bg-white text-black text-[10px] font-bold px-2 py-1 w-16"
+                                    className="bg-zinc-100 text-black text-[9px] font-black w-14 py-1 hover:bg-white active:scale-95"
                                 >
-                                    PLAY RIGHT
+                                    RIGHT
                                 </button>
                             </div>
                         </div>
                     ))}
                 </div>
-                
-                <button 
-                    onClick={() => { engine.passTurn(turn); setTurn(engine.currentTurn); }}
-                    className="mt-4 px-6 py-2 border border-zinc-700 text-zinc-400 hover:text-white hover:border-zinc-500 transition-colors uppercase text-xs tracking-widest"
-                >
-                    Pass Turn
-                </button>
             </div>
         </div>
     );
