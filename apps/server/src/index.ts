@@ -1,44 +1,66 @@
 // apps/server/src/index.ts
+import { createClient } from '@supabase/supabase-js';
 
-import express from 'express';
-import { createServer } from 'http';
-import { Server, Socket } from 'socket.io';
-import { createClient } from 'redis';
-import { DominoEngine2v2 } from '@repo/core';
-import { v4 as uuidv4 } from 'uuid';
-import * as dotenv from 'dotenv';
+// Initialize Supabase Client (Use the SERVICE_ROLE key so the server can bypass RLS)
+const supabase = createClient(
+    process.env.SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
 
-dotenv.config();
+// ... inside your socket connection ...
 
-const app = express();
-const httpServer = createServer(app);
+async function handleGameEnd(roomId: string, game: DominoEngine2v2, winningSeat: 0|1|2|3, moveLog: any[]) {
+    // Determine outcomes
+    const teamAWin = winningSeat === 0 || winningSeat === 2;
+    const outcomeStr = teamAWin ? 'team_a_win' : 'team_b_win'; // Make sure this matches your USER-DEFINED enum in Postgres
+    
+    // In a real scenario, playerSeats maps to real Supabase UUIDs
+    // For testing, let's assume we mapped socket IDs to real DB UUIDs during the matchmaker phase:
+    const p0_id = "uuid-for-player-0"; 
+    const p1_id = "uuid-for-player-1";
+    const p2_id = "uuid-for-player-2";
+    const p3_id = "uuid-for-player-3";
 
-// 1. Production CORS Lockdown
-const io = new Server(httpServer, { 
-    cors: { 
-        origin: process.env.FRONTEND_URL || 'http://localhost:3000',
-        methods: ["GET", "POST"],
-        credentials: true
-    } 
-});
+    try {
+        // 1. Insert into matches table
+        const { data: matchData, error: matchError } = await supabase
+            .from('matches')
+            .insert({
+                team_a_player_1: p0_id,
+                team_a_player_2: p2_id,
+                team_b_player_1: p1_id,
+                team_b_player_2: p3_id,
+                outcome: outcomeStr, 
+                score_differential: 100, // You'll calculate the actual pip difference here
+                dpn_log: moveLog, // The jsonb move history goes here
+                engine_analyzed: false
+            })
+            .select('id')
+            .single();
 
-// 2. Secure Upstash Connection
-// Upstash requires TLS, so the URL must start with 'rediss://' (note the double 's')
-const redis = createClient({ 
-    url: process.env.UPSTASH_REDIS_URL 
-});
+        if (matchError) throw matchError;
 
-redis.on('error', (err) => console.error('Upstash Redis Error:', err));
-redis.on('connect', () => console.log('Connected to Upstash Production Redis'));
+        // 2. Insert into match_participants table
+        // (Since the analysis engine is bypassed, we just pass 0 for rating changes for now)
+        const participantsData = [
+            { match_id: matchData.id, player_id: p0_id, team: 'TEAM_A', rating_change: 0, rating_after: 1500 },
+            { match_id: matchData.id, player_id: p2_id, team: 'TEAM_A', rating_change: 0, rating_after: 1500 },
+            { match_id: matchData.id, player_id: p1_id, team: 'TEAM_B', rating_change: 0, rating_after: 1500 },
+            { match_id: matchData.id, player_id: p3_id, team: 'TEAM_B', rating_change: 0, rating_after: 1500 },
+        ];
 
-await redis.connect();
+        const { error: partError } = await supabase
+            .from('match_participants')
+            .insert(participantsData);
 
-const activeGames = new Map<string, DominoEngine2v2>();
-const playerSeats = new Map<string, 0 | 1 | 2 | 3>();
+        if (partError) throw partError;
 
-// ... (Keep all the socket.io logic and matchmaking loop from the previous step exactly as is) ...
-
-const PORT = process.env.PORT || 3001;
-httpServer.listen(PORT, () => {
-    console.log(`Production Game Server running on port ${PORT}`);
-});
+        console.log(`Game over! Match ${matchData.id} saved to Supabase.`);
+        
+        // Clean up memory
+        activeGames.delete(roomId);
+        
+    } catch (error) {
+        console.error("Failed to save match to Supabase:", error);
+    }
+}
