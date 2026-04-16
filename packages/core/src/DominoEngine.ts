@@ -1,5 +1,4 @@
-export type Domino = [number, number];
-export type PlayerPosition = 0 | 1 | 2 | 3; // 0 & 2 are Team A, 1 & 3 are Team B
+import { Domino, PlayerPosition } from './types';
 
 export class DominoEngine2v2 {
     public board: Domino[] = [];
