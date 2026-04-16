@@ -1,5 +1,5 @@
 // apps/web/app/room/[roomId]/page.tsx
-import GameBoard from '../../../components/GameBoard';
+import GameBoard from '../../../../components/GameBoard';
 
 // Next.js App Router dynamic page
 export default function RoomPage({ params }: { params: { roomId: string } }) {
