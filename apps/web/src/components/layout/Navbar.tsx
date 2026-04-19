@@ -1,94 +1,62 @@
-'use client'; // Required for scroll event listeners and state
+'use client';
 
-import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { useState } from 'react';
 
-export default function Navbar() {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const pathname = usePathname();
-
-  // Detect scroll to trigger glassy effect
-  useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 50);
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  const navLinks = [
-    { name: 'Rulebook', path: '/rules' },
-    { name: 'Affiliates', path: '/affiliates' },
-    { name: 'Arbiters', path: '/arbiters' },
-    { name: 'Partners', path: '/partners' },
-  ];
+export const Navbar = () => {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
-    <nav className={`fixed w-full z-50 transition-all duration-300 ${isScrolled ? 'bg-federation-obsidian/90 backdrop-blur-md border-b border-federation-ivory/10 py-4' : 'bg-transparent py-6'}`}>
-      <div className="max-w-7xl mx-auto px-6 lg:px-12 flex justify-between items-center">
+    <nav className="border-b border-white/10 sticky top-0 z-50 bg-black/80 backdrop-blur-md">
+      <div className="flex justify-between items-center p-4 md:px-8">
         
-        {/* Logo Area */}
-        <Link href="/" className="group flex flex-col">
-          <span className="text-sm font-medium tracking-wider opacity-80 group-hover:opacity-100 transition-opacity" style={{ fontFamily: 'var(--font-ibm-plex-arabic)' }}>
-
-          </span>
-          <span className="text-xl font-bold uppercase tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-federation-ivory to-gray-400 group-hover:to-white transition-all">
-            IDA
-          </span>
+        {/* BRANDING */}
+        <Link href="/" className="flex items-center gap-4 group">
+          <div className="w-10 h-10 bg-white text-black flex flex-col justify-between p-1 rounded-sm border border-gray-400 transform -rotate-12 group-hover:rotate-0 transition-transform duration-300">
+            <div className="w-2 h-2 bg-black rounded-full"></div>
+            <div className="w-full h-[1px] bg-gray-400"></div>
+            <div className="w-2 h-2 bg-black rounded-full self-end"></div>
+          </div>
+          <div>
+            <h1 className="text-2xl font-black tracking-tighter leading-none group-hover:text-red-500 transition-colors">I.D.A.</h1>
+            <p className="text-[10px] font-mono text-white/50 tracking-widest">GLOBAL FEDERATION</p>
+          </div>
         </Link>
 
-        {/* Desktop Links */}
-        <div className="hidden md:flex items-center gap-8">
-          {navLinks.map((link) => (
-            <Link 
-              key={link.name} 
-              href={link.path}
-              className={`text-sm uppercase tracking-widest font-medium transition-colors hover:text-federation-ivory ${pathname === link.path ? 'text-federation-ivory border-b border-federation-ivory pb-1' : 'text-federation-ivory/60'}`}
-            >
-              {link.name}
-            </Link>
-          ))}
-          <Link 
-            href="/dashboard" 
-            className="ml-4 px-6 py-2 bg-federation-ivory text-federation-obsidian text-sm font-bold uppercase tracking-wider rounded-sm hover:scale-105 transition-transform"
-          >
-            Player Portal
-          </Link>
+        {/* DESKTOP NAVIGATION */}
+        <div className="hidden md:flex gap-8 font-mono text-xs uppercase tracking-widest text-white/70">
+          <Link href="/arena" className="hover:text-white hover:underline decoration-red-500 underline-offset-8 transition-all">The Arena</Link>
+          <Link href="/leaderboard" className="hover:text-white hover:underline decoration-red-500 underline-offset-8 transition-all">Rankings</Link>
+          <Link href="/rules" className="hover:text-white hover:underline decoration-red-500 underline-offset-8 transition-all">Regulations</Link>
+          <Link href="/dev" className="hover:text-red-500 hover:underline decoration-red-500 underline-offset-8 transition-all text-red-500/70">Engine</Link>
         </div>
 
-        {/* Mobile Menu Toggle */}
+        {/* ACTION / AUTH */}
+        <div className="hidden md:block">
+          <button className="bg-white text-black px-6 py-2 text-xs font-bold uppercase tracking-widest hover:bg-red-600 hover:text-white transition-all">
+            Authenticate
+          </button>
+        </div>
+
+        {/* MOBILE MENU TOGGLE */}
         <button 
-          className="md:hidden text-federation-ivory p-2"
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          className="md:hidden text-white font-mono text-xs uppercase tracking-widest border border-white/20 px-3 py-1"
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
         >
-          <span className="sr-only">Open menu</span>
-          <div className="w-6 h-0.5 bg-federation-ivory mb-1.5 transition-all"></div>
-          <div className="w-6 h-0.5 bg-federation-ivory mb-1.5 transition-all"></div>
-          <div className="w-6 h-0.5 bg-federation-ivory transition-all"></div>
+          {isMobileMenuOpen ? 'CLOSE' : 'MENU'}
         </button>
       </div>
 
-      {/* Mobile Menu Dropdown */}
-      {mobileMenuOpen && (
-        <div className="md:hidden absolute top-full left-0 w-full bg-federation-obsidian border-b border-federation-ivory/10 py-4 px-6 flex flex-col gap-4 shadow-2xl">
-          {navLinks.map((link) => (
-            <Link 
-              key={link.name} 
-              href={link.path}
-              onClick={() => setMobileMenuOpen(false)}
-              className="text-lg uppercase tracking-widest font-medium text-federation-ivory/80 hover:text-federation-ivory"
-            >
-              {link.name}
-            </Link>
-          ))}
-          <Link 
-            href="/dashboard" 
-            className="mt-4 text-center py-3 bg-federation-ivory text-federation-obsidian font-bold uppercase tracking-wider rounded-sm"
-          >
-            Access Player Portal
-          </Link>
+      {/* MOBILE NAVIGATION DROPDOWN */}
+      {isMobileMenuOpen && (
+        <div className="md:hidden bg-[#050505] border-t border-white/10 font-mono text-sm uppercase tracking-widest flex flex-col">
+          <Link href="/arena" className="p-4 border-b border-white/5 hover:bg-white/5 hover:text-red-500">The Arena</Link>
+          <Link href="/leaderboard" className="p-4 border-b border-white/5 hover:bg-white/5 hover:text-red-500">Rankings</Link>
+          <Link href="/rules" className="p-4 border-b border-white/5 hover:bg-white/5 hover:text-red-500">Regulations</Link>
+          <Link href="/dev" className="p-4 border-b border-white/5 text-red-500 hover:bg-white/5">Oracle Engine</Link>
+          <button className="w-full text-left p-4 bg-red-600 text-white font-bold">Authenticate</button>
         </div>
       )}
     </nav>
   );
-}
+};
