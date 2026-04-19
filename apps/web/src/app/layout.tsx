@@ -1,8 +1,8 @@
 import type { Metadata } from 'next'
 import { IBM_Plex_Sans, IBM_Plex_Sans_Arabic } from 'next/font/google'
 import './globals.css'
-import Navbar from '@/components/layout/Navbar'
-import Footer from '@/components/layout/Footer'
+import { Navbar } from '@/components/layout/Navbar'
+import { Footer } from '@/components/layout/Footer'
 
 // 1. Define the English Font
 const ibmPlexSans = IBM_Plex_Sans({ 
