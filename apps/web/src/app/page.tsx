@@ -131,7 +131,7 @@ export default function FederationHomePage() {
             </Link>
             <Link href="/rules" className="border border-white/20 text-white font-bold uppercase tracking-widest px-8 py-5 text-center hover:bg-white hover:text-black transition-colors">
               Read Regulations
-            </button>
+            </Link>
           </div>
         </div>
 
