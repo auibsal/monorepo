@@ -82,30 +82,7 @@ export default function FederationHomePage() {
         </div>
       </div>
 
-      {/* 2. HEADER */}
-      <header className="border-b border-white/10 flex justify-between items-center p-6 md:px-12 relative z-10 backdrop-blur-md bg-black/50 sticky top-0">
-        <div className="flex items-center gap-4">
-          <div className="w-10 h-10 bg-white text-black flex flex-col justify-between p-1 rounded-sm border border-gray-400 transform -rotate-12">
-            <div className="w-2 h-2 bg-black rounded-full"></div>
-            <div className="w-full h-[1px] bg-gray-400"></div>
-            <div className="w-2 h-2 bg-black rounded-full self-end"></div>
-          </div>
-          <div>
-            <h1 className="text-2xl font-black tracking-tighter leading-none">I.D.A.</h1>
-            <p className="text-[10px] font-mono text-white/50 tracking-widest">GLOBAL FEDERATION</p>
-          </div>
-        </div>
-        <nav className="hidden md:flex gap-8 font-mono text-sm uppercase tracking-widest text-white/70">
-          <Link href="/arena" className="hover:text-white transition-colors">The Arena</Link>
-          <Link href="/leaderboard" className="hover:text-white transition-colors">Rankings</Link>
-          <Link href="/dev" className="hover:text-red-500 transition-colors">Oracle Engine</Link>
-        </nav>
-        <button className="bg-white text-black px-6 py-2 text-sm font-bold uppercase tracking-widest hover:bg-red-600 hover:text-white transition-all">
-          Login
-        </button>
-      </header>
-
-      {/* 3. HERO SECTION (Postmodern Split) */}
+      {/* 2. HERO SECTION (Postmodern Split) */}
       <main className="grid grid-cols-1 lg:grid-cols-2 min-h-[85vh] relative">
         {/* Background Grid Pattern */}
         <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 pointer-events-none mix-blend-overlay"></div>
@@ -153,7 +130,7 @@ export default function FederationHomePage() {
         </div>
       </main>
 
-      {/* 4. THE RANKINGS (FIFA Style Leaderboard preview) */}
+      {/* 3. THE RANKINGS (FIFA Style Leaderboard preview) */}
       <section className="border-t border-white/10 bg-black relative">
         <div className="grid grid-cols-1 md:grid-cols-3">
           
@@ -202,17 +179,6 @@ export default function FederationHomePage() {
           </div>
         </div>
       </section>
-
-      {/* 5. FOOTER */}
-      <footer className="border-t border-white/10 p-6 md:p-12 flex flex-col md:flex-row justify-between items-center gap-4 bg-[#020202]">
-        <div className="text-white/30 font-mono text-xs uppercase tracking-widest text-center md:text-left">
-          © 2026 Iraqi Department of Entertainment Affairs. <br/>
-          Engineered for Mathematical Precision.
-        </div>
-        <div className="text-white/30 font-mono text-xs uppercase tracking-widest">
-          SYS.STATUS: <span className="text-green-500">OPERATIONAL</span>
-        </div>
-      </footer>
 
       {/* Required style for the marquee animation */}
       <style dangerouslySetInnerHTML={{__html: `
