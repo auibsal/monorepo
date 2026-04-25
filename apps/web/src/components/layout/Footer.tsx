@@ -1,6 +1,8 @@
-import Link from 'next/link';
+import { Link } from '@/i18n/routing';
+import { useTranslations } from 'next-intl';
 
 export const Footer = () => {
+  const t = useTranslations('Footer');
   return (
     <footer className="bg-[#020202] border-t border-white/10 text-white font-mono relative overflow-hidden z-20">
       
@@ -18,16 +20,18 @@ export const Footer = () => {
                 <div className="w-full h-[1px] bg-gray-400"></div>
                 <div className="w-1.5 h-1.5 bg-black rounded-full self-end"></div>
               </div>
-              <h2 className="text-white text-2xl font-black tracking-tighter uppercase">Iraqi Domino<br/>Association</h2>
+              <h2 className="text-white text-2xl font-black tracking-tighter uppercase">{t('title')}</h2>
             </div>
             <p className="text-white/40 leading-relaxed normal-case text-sm tracking-normal font-sans border-l border-white/10 pl-4">
-              The supreme authority and international governing body for the sport of Iraqi Dominoes. Dedicated to the preservation of café heritage and the advancement of absolute mathematical strategy.
+              {t('description')}
             </p>
           </div>
 
           {/* COLUMNS */}
           <div className="col-span-1 md:col-span-2 flex flex-col gap-5">
-            <h3 className="text-white/30 text-xs tracking-[0.2em] mb-2 uppercase">The Registry</h3>
+            <h3 className="text-white/30 text-xs tracking-[0.2em] mb-2 uppercase">{t('registry')}</h3>
+            <h3 className="text-white/30 text-xs tracking-[0.2em] mb-2 uppercase">{t('rulebook')}</h3>
+            <h3 className="text-white/30 text-xs tracking-[0.2em] mb-2 uppercase">{t('sanctionedPlay')}</h3>
             <Link href="/arena" className="text-sm text-white/60 hover:text-white hover:translate-x-1 transition-all">Sanctioned Arenas</Link>
             <Link href="/leaderboard" className="text-sm text-white/60 hover:text-white hover:translate-x-1 transition-all">World Rankings</Link>
             <Link href="/tournaments" className="text-sm text-white/60 hover:text-white hover:translate-x-1 transition-all">Championships</Link>
