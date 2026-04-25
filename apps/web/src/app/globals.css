@@ -13,6 +13,7 @@
 @layer base {
   [lang="ar"] {
     --font-sans: var(--font-ibm-plex-arabic), var(--font-ibm-plex), sans-serif;
+    --font-mono: var(--font-ibm-plex-arabic), var(--font-ibm-plex), sans-serif;
   }
 
   body {
