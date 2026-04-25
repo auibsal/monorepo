@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 
-export default function OfficialBylawsPage() {
+export default function BylawsEN {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
