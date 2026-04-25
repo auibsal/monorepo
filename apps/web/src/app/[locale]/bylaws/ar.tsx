@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 
-export default function ar() {
+export default function BylawsAR() {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
