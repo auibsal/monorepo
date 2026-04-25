@@ -11,6 +11,10 @@
 
 /* Base styling applied universally */
 @layer base {
+  [lang="ar"] {
+    --font-sans: var(--font-ibm-plex-arabic), var(--font-ibm-plex), sans-serif;
+  }
+
   body {
     background-color: var(--color-federation-obsidian);
     color: var(--color-federation-ivory);
