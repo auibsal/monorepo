@@ -103,4 +103,53 @@ export default function OfficialBylawsPage() {
 
             <h3 className="text-white font-bold uppercase tracking-widest mt-8 mb-2">The Executive Board</h3>
             <p>
-              The Executive Board is the strategic, administrative, and oversight body of the Association, exercising both executive and legislative functions between General Assembly sessions. The membership term is four (4) calendar years. A member may run for consecutive terms
+              The Executive Board is the strategic, administrative, and oversight body of the Association, exercising both executive and legislative functions between General Assembly sessions. The membership term is four (4) calendar years. A member may run for consecutive terms, provided they do not exceed two consecutive terms or three non-consecutive terms, and their age must not exceed seventy-five (75) years.
+            </p>
+            <p className="mt-4">
+              Candidates for the Presidential Body (President, Vice-President, Secretary-General) must hold at least a Bachelor's degree or an equivalent higher degree, combined with verified years of professional experience in the field of dominoes or sports administration. All other candidates for the Executive Board must hold at least a preparatory certificate. Members are strictly prohibited from officially playing or refereeing while in office.
+            </p>
+          </div>
+        </section>
+
+        {/* PART V & VI */}
+        <section>
+          <h2 className="text-3xl font-black uppercase tracking-tighter mb-8 border-b border-white/10 pb-4 text-white/90">
+            Part V & VI: Ethics, Arbitration, and Finance
+          </h2>
+          <div className="space-y-6 font-mono text-sm text-gray-300 leading-relaxed">
+            <ul className="list-disc pl-6 space-y-3">
+              <li>To ensure integrity and adherence to the International Code of Sports Ethics, the General Assembly shall form an Ethics Committee consisting of no less than three and no more than seven (7) members, guaranteeing female representation.</li>
+              <li>The Association and its members are legally bound by the mechanisms and decisions of the National Center for Sports Settlement and Arbitration in Iraq.</li>
+              <li>In cases concerning international representation, cross-border technical disputes, or directives from the FID, disputes may escalate to the CAS. An appeal before CAS may only be brought after all internal Association procedures and national remedies have been fully exhausted.</li>
+            </ul>
+            <div className="bg-red-900/10 border border-red-500/20 p-6 mt-8">
+              <h3 className="text-red-500 font-bold uppercase tracking-widest mb-4">Anti-Discrimination Protocols</h3>
+              <p className="mb-4">
+                The Association unequivocally rejects and strictly prevents any form of racial discrimination against a geographic region, private person, or group on account of race, skin color, ethnic, national or social origin, age, wealth, disability, religion, or political opinions. 
+              </p>
+              <p>
+                The Association shall undertake all measures necessary to guarantee equal access to the sport. All relevant parties, clubs, and halls are legally obligated to take all appropriate measures to eliminate discrimination against women, promote the practice of the sport as a basic right, and actively raise the participation of female players to ensure foundational gender equality.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* PART VIII */}
+        <section>
+          <h2 className="text-3xl font-black uppercase tracking-tighter mb-8 border-b border-white/10 pb-4 text-white/90">
+            Part VIII: Final Provisions
+          </h2>
+          <div className="space-y-6 font-mono text-sm text-gray-300 leading-relaxed mb-16">
+            <p>
+              These Bylaws may only be amended by the General Assembly. Any proposed amendment must be submitted to the Secretariat at least thirty (30) days prior to a General Assembly meeting. Ratification of any amendment requires a mandatory supermajority of two-thirds (2/3) of the valid votes of the Members present. Following ratification, the amended Bylaws shall be submitted to the FID for international recognition and the relevant Iraqi state authorities.
+            </p>
+            <p>
+              The Association may only be dissolved by a special resolution of the General Assembly convened specifically for this purpose. The decision to dissolve the Association requires a supermajority of three-quarters (3/4) of the total voting Members.
+            </p>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  );
+}
