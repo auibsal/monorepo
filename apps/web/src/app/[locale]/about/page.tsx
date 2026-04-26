@@ -7,17 +7,17 @@ export default function AboutPage() {
     <div className="w-full">
       
       {/* HERO SECTION */}
-      <section className="relative min-h-[60vh] flex flex-col items-center justify-center px-6 overflow-hidden border-b border-federation-ivory/10">
+      <section className="relative min-h-[60vh] flex flex-col items-center justify-center px-6 overflow-hidden border-b border-black/10">
         <div className="absolute inset-0 bg-[url('/noise.png')] opacity-5 mix-blend-overlay pointer-events-none"></div>
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-red-900/10 blur-[120px] rounded-full pointer-events-none -z-10"></div>
         
         <div className="text-center max-w-4xl z-10 relative mt-16">
-          <h2 className="text-xl md:text-2xl font-medium tracking-wide mb-4 opacity-80 text-federation-ivory" style={{ fontFamily: 'var(--font-ibm-plex-arabic)' }}>
+          <h2 className="text-xl md:text-2xl font-medium tracking-wide mb-4 opacity-80 text-association-black">
 
           </h2>
           <h1 className="text-5xl md:text-7xl font-bold tracking-tighter mb-8 uppercase leading-[1.1]">
             Elevating a Tradition. <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-federation-ivory to-gray-600">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-association-black to-gray-800">
               Engineering a Sport.
             </span>
           </h1>
@@ -47,18 +47,18 @@ export default function AboutPage() {
         
         {/* Abstract Visual Representation */}
         <div className="w-full lg:w-1/2 flex justify-center relative">
-          <div className="relative w-64 h-96 border-4 border-federation-ivory rounded-xl bg-federation-obsidian shadow-2xl flex flex-col transform rotate-6 hover:rotate-0 transition-transform duration-700">
-            <div className="flex-1 border-b-4 border-federation-ivory flex justify-center items-center">
-              <div className="w-12 h-12 rounded-full bg-federation-ivory"></div>
+          <div className="relative w-64 h-96 border-4 border-association-white rounded-xl bg-white shadow-2xl flex flex-col transform rotate-6 hover:rotate-0 transition-transform duration-700">
+            <div className="flex-1 border-b-4 border-association-white flex justify-center items-center">
+              <div className="w-12 h-12 rounded-full bg-association-white"></div>
             </div>
             <div className="flex-1 flex justify-center items-center">
               {/* Empty / Blank half */}
             </div>
           </div>
-          <div className="absolute top-10 right-10 w-64 h-96 border-4 border-federation-ivory/20 rounded-xl bg-transparent flex flex-col transform -rotate-12 -z-10">
-             <div className="flex-1 border-b-4 border-federation-ivory/20 flex items-center justify-center gap-4">
-                <div className="w-8 h-8 rounded-full bg-federation-ivory/20"></div>
-                <div className="w-8 h-8 rounded-full bg-federation-ivory/20"></div>
+          <div className="absolute top-10 right-10 w-64 h-96 border-4 border-black/20 rounded-xl bg-transparent flex flex-col transform -rotate-12 -z-10">
+             <div className="flex-1 border-b-4 border-black/20 flex items-center justify-center gap-4">
+                <div className="w-8 h-8 rounded-full bg-black/20"></div>
+                <div className="w-8 h-8 rounded-full bg-black/20"></div>
              </div>
              <div className="flex-1"></div>
           </div>
@@ -66,7 +66,7 @@ export default function AboutPage() {
       </section>
 
       {/* THE THREE PILLARS */}
-      <section className="py-24 bg-federation-ivory/5 border-y border-federation-ivory/10">
+      <section className="py-24 bg-black/5 border-y border-black/10">
         <div className="max-w-7xl mx-auto px-6 lg:px-12">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold uppercase tracking-wide">The Pillars of the Federation</h2>
@@ -74,25 +74,25 @@ export default function AboutPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="bg-federation-obsidian p-10 border border-federation-ivory/10 hover:border-federation-ivory/40 transition-colors rounded-sm group">
+            <div className="bg-white p-10 border border-black/10 hover:border-black/40 transition-colors rounded-sm group">
               <div className="text-4xl mb-6 opacity-50 group-hover:opacity-100 transition-opacity">⚖️</div>
-              <h3 className="text-xl font-bold uppercase mb-4 text-federation-ivory">Regulatory Standardization</h3>
+              <h3 className="text-xl font-bold uppercase mb-4 text-association-black">Regulatory Standardization</h3>
               <p className="font-light opacity-70 leading-relaxed text-sm">
                 Unifying the fragmented "house rules" of local cafes into a single, definitive Master Dossier. We train and certify national Arbiters to uphold the integrity of the game at every sanctioned table.
               </p>
             </div>
             
-            <div className="bg-federation-obsidian p-10 border border-federation-ivory/10 hover:border-red-500/50 transition-colors rounded-sm group">
+            <div className="bg-white p-10 border border-black/10 hover:border-red-500/50 transition-colors rounded-sm group">
               <div className="text-4xl mb-6 opacity-50 group-hover:opacity-100 transition-opacity">🧮</div>
-              <h3 className="text-xl font-bold uppercase mb-4 text-federation-ivory">Mathematical Precision</h3>
+              <h3 className="text-xl font-bold uppercase mb-4 text-association-black">Mathematical Precision</h3>
               <p className="font-light opacity-70 leading-relaxed text-sm">
                 Our bespoke digital platform utilizes a heavily weighted, dynamic ELO algorithm designed specifically for 2v2 play. Every sanctioned match outcome is permanently recorded, creating an undeniable national hierarchy.
               </p>
             </div>
 
-            <div className="bg-federation-obsidian p-10 border border-federation-ivory/10 hover:border-federation-ivory/40 transition-colors rounded-sm group">
+            <div className="bg-white p-10 border border-black/10 hover:border-black/40 transition-colors rounded-sm group">
               <div className="text-4xl mb-6 opacity-50 group-hover:opacity-100 transition-opacity">🏛️</div>
-              <h3 className="text-xl font-bold uppercase mb-4 text-federation-ivory">Global Affiliation</h3>
+              <h3 className="text-xl font-bold uppercase mb-4 text-association-black">Global Affiliation</h3>
               <p className="font-light opacity-70 leading-relaxed text-sm">
                 Operating under the framework of the Ministry of Youth and Sports (MoYS) while aligning technical standards with the Federación Internacional de Dominó (FID) to prepare Iraqi players for the World Championship stage.
               </p>
@@ -104,7 +104,7 @@ export default function AboutPage() {
       {/* EXECUTIVE BOARD / LEADERSHIP */}
       <section className="py-24 px-6 lg:px-12 max-w-7xl mx-auto">
         <div className="mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold uppercase tracking-wide border-b border-federation-ivory/20 pb-4 inline-block">
+          <h2 className="text-3xl md:text-4xl font-bold uppercase tracking-wide border-b border-black/20 pb-4 inline-block">
             The Executive Board
           </h2>
           <p className="font-light opacity-60 mt-4 max-w-2xl">
@@ -120,11 +120,11 @@ export default function AboutPage() {
             { title: "VP of Operations", role: "Sanctioning Director", focus: "Affiliates & Tournaments" },
             { title: "Secretary General", role: "Legal & Ethics", focus: "Rulebook & Arbitration" },
           ].map((member, index) => (
-            <div key={index} className="flex flex-col border-l border-federation-ivory/20 pl-6 hover:border-federation-ivory transition-colors">
+            <div key={index} className="flex flex-col border-l border-black/20 pl-6 hover:border-association-white transition-colors">
               <span className="text-xs font-bold uppercase tracking-widest text-red-500 mb-1">
                 {member.role}
               </span>
-              <h3 className="text-xl font-bold uppercase text-federation-ivory mb-2">
+              <h3 className="text-xl font-bold uppercase text-association-black mb-2">
                 {member.title}
               </h3>
               <p className="text-sm font-light opacity-70">
@@ -136,7 +136,7 @@ export default function AboutPage() {
       </section>
 
       {/* CALL TO ACTION */}
-      <section className="py-24 text-center border-t border-federation-ivory/10 bg-gradient-to-b from-transparent to-black/40">
+      <section className="py-24 text-center border-t border-black/10 bg-gradient-to-b from-transparent to-black/40">
         <h2 className="text-3xl font-bold uppercase tracking-wide mb-6">Take Your Place in History</h2>
         <p className="font-light opacity-80 max-w-xl mx-auto mb-10 text-lg">
           Whether you are a player seeking a national rank, or a venue looking to host official tournaments, the Federation welcomes you.
@@ -144,13 +144,13 @@ export default function AboutPage() {
         <div className="flex flex-col sm:flex-row justify-center gap-4">
           <Link 
             href="/register" 
-            className="px-8 py-4 bg-federation-ivory text-federation-obsidian font-bold uppercase tracking-wider rounded-sm hover:bg-white transition-colors"
+            className="px-8 py-4 bg-association-white text-association-black font-bold uppercase tracking-wider rounded-sm hover:bg-white transition-colors"
           >
             Claim Player ID
           </Link>
           <Link 
             href="/affiliates" 
-            className="px-8 py-4 border border-federation-ivory text-federation-ivory font-bold uppercase tracking-wider rounded-sm hover:bg-federation-ivory/10 transition-colors"
+            className="px-8 py-4 border border-association-white text-association-black font-bold uppercase tracking-wider rounded-sm hover:bg-black/10 transition-colors"
           >
             Become an Affiliate
           </Link>

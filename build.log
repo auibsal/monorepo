@@ -1,0 +1,5 @@
+
+> build:engine
+> cd apps/engine && wasm-pack build --target web
+
+sh: 1: cd: can't cd to apps/engine

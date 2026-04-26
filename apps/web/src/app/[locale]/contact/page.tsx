@@ -32,15 +32,15 @@ export default function ContactPage() {
     <div className="w-full min-h-[85vh] flex flex-col">
       
       {/* HEADER SECTION */}
-      <section className="relative pt-24 pb-16 px-6 overflow-hidden border-b border-federation-ivory/10">
+      <section className="relative pt-24 pb-16 px-6 overflow-hidden border-b border-black/10">
         <div className="absolute inset-0 bg-[url('/noise.png')] opacity-5 mix-blend-overlay pointer-events-none"></div>
         <div className="text-center max-w-4xl mx-auto z-10 relative">
-          <h2 className="text-xl md:text-2xl font-medium tracking-wide mb-4 opacity-80 text-federation-ivory" style={{ fontFamily: 'var(--font-ibm-plex-arabic)' }}>
+          <h2 className="text-xl md:text-2xl font-medium tracking-wide mb-4 opacity-80 text-association-black">
 
           </h2>
           <h1 className="text-4xl md:text-6xl font-bold tracking-tight uppercase leading-none mb-6">
             Contact <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-federation-ivory to-gray-500">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-association-black to-gray-800">
               Headquarters
             </span>
           </h1>
@@ -59,8 +59,8 @@ export default function ContactPage() {
           {/* Physical Address */}
           <div>
             <h3 className="text-xs font-bold uppercase tracking-widest text-red-500 mb-2">Primary Seat</h3>
-            <h2 className="text-2xl font-bold uppercase tracking-wide text-federation-ivory mb-4">IDA Baghdad Office</h2>
-            <div className="font-light opacity-80 leading-relaxed border-l-2 border-federation-ivory/20 pl-4 space-y-1">
+            <h2 className="text-2xl font-bold uppercase tracking-wide text-association-black mb-4">IDA Baghdad Office</h2>
+            <div className="font-light opacity-80 leading-relaxed border-l-2 border-black/20 pl-4 space-y-1">
               <p>Al-Karrada District</p>
               <p>Baghdad, Republic of Iraq</p>
               <p className="pt-2 text-sm opacity-70 font-mono">Coordinates: 33.2940° N, 44.4258° E</p>
@@ -72,19 +72,19 @@ export default function ContactPage() {
             <h3 className="text-xs font-bold uppercase tracking-widest text-red-500 mb-6">Official Directory</h3>
             
             <div className="space-y-6">
-              <div className="bg-federation-ivory/5 p-6 rounded-sm border border-federation-ivory/10 hover:bg-federation-ivory/10 transition-colors">
+              <div className="bg-black/5 p-6 rounded-sm border border-black/10 hover:bg-black/10 transition-colors">
                 <h4 className="text-lg font-bold uppercase mb-1">General Operations</h4>
                 <p className="font-light opacity-70 text-sm mb-3">For player registration issues, platform bugs, and general inquiries.</p>
-                <a href="mailto:info@ida.iq" className="font-mono text-federation-ivory tracking-wider hover:underline">info@ida.iq</a>
+                <a href="mailto:info@ida.iq" className="font-mono text-association-black tracking-wider hover:underline">info@ida.iq</a>
               </div>
 
-              <div className="bg-federation-ivory/5 p-6 rounded-sm border border-federation-ivory/10 hover:bg-federation-ivory/10 transition-colors">
+              <div className="bg-black/5 p-6 rounded-sm border border-black/10 hover:bg-black/10 transition-colors">
                 <h4 className="text-lg font-bold uppercase mb-1">Commercial & Partnerships</h4>
                 <p className="font-light opacity-70 text-sm mb-3">For corporate sponsorships, venue affiliation, and media rights.</p>
-                <a href="mailto:commercial@ida.iq" className="font-mono text-federation-ivory tracking-wider hover:underline">commercial@ida.iq</a>
+                <a href="mailto:commercial@ida.iq" className="font-mono text-association-black tracking-wider hover:underline">commercial@ida.iq</a>
               </div>
 
-              <div className="bg-federation-ivory/5 p-6 rounded-sm border border-red-900/30 hover:border-red-500/50 transition-colors">
+              <div className="bg-black/5 p-6 rounded-sm border border-red-900/30 hover:border-red-500/50 transition-colors">
                 <h4 className="text-lg font-bold uppercase mb-1">Arbitration & Ethics</h4>
                 <p className="font-light opacity-70 text-sm mb-3">For match disputes, rulebook clarifications, and reporting violations.</p>
                 <a href="mailto:arbitration@ida.iq" className="font-mono text-red-400 tracking-wider hover:underline">arbitration@ida.iq</a>
@@ -95,7 +95,7 @@ export default function ContactPage() {
         </div>
 
         {/* RIGHT COLUMN: SECURE FORM */}
-        <div className="bg-federation-ivory/5 border border-federation-ivory/20 p-8 md:p-10 rounded-sm shadow-2xl h-fit">
+        <div className="bg-black/5 border border-black/20 p-8 md:p-10 rounded-sm shadow-2xl h-fit">
           <h3 className="text-2xl font-bold uppercase tracking-wide mb-2">Secure Dispatch</h3>
           <p className="font-light opacity-70 text-sm mb-8">
             Submit a formal inquiry directly to the Federation's internal routing system. All correspondence is securely logged.
@@ -110,7 +110,7 @@ export default function ContactPage() {
             <form onSubmit={handleSubmit} className="space-y-6">
               
               <div className="space-y-2">
-                <label className="text-xs font-bold uppercase tracking-widest text-federation-ivory/70">
+                <label className="text-xs font-bold uppercase tracking-widest text-association-black/70">
                   Full Name / Federation ID
                 </label>
                 <input 
@@ -118,13 +118,13 @@ export default function ContactPage() {
                   required
                   value={formData.name}
                   onChange={(e) => setFormData({...formData, name: e.target.value})}
-                  className="w-full bg-black/50 border border-federation-ivory/20 rounded-sm px-4 py-3 text-federation-ivory focus:outline-none focus:border-federation-ivory transition-colors"
+                  className="w-full bg-white border border-black/20 rounded-sm px-4 py-3 text-association-black focus:outline-none focus:border-association-black transition-colors"
                   placeholder="e.g. Ahmed Al-Fadhli (IDA-001042)"
                 />
               </div>
 
               <div className="space-y-2">
-                <label className="text-xs font-bold uppercase tracking-widest text-federation-ivory/70">
+                <label className="text-xs font-bold uppercase tracking-widest text-association-black/70">
                   Reply Email Address
                 </label>
                 <input 
@@ -132,19 +132,19 @@ export default function ContactPage() {
                   required
                   value={formData.email}
                   onChange={(e) => setFormData({...formData, email: e.target.value})}
-                  className="w-full bg-black/50 border border-federation-ivory/20 rounded-sm px-4 py-3 text-federation-ivory focus:outline-none focus:border-federation-ivory transition-colors"
+                  className="w-full bg-white border border-black/20 rounded-sm px-4 py-3 text-association-black focus:outline-none focus:border-association-black transition-colors"
                   placeholder="name@example.com"
                 />
               </div>
 
               <div className="space-y-2">
-                <label className="text-xs font-bold uppercase tracking-widest text-federation-ivory/70">
+                <label className="text-xs font-bold uppercase tracking-widest text-association-black/70">
                   Routing Department
                 </label>
                 <select 
                   value={formData.department}
                   onChange={(e) => setFormData({...formData, department: e.target.value})}
-                  className="w-full bg-black/50 border border-federation-ivory/20 rounded-sm px-4 py-3 text-federation-ivory focus:outline-none focus:border-federation-ivory transition-colors appearance-none cursor-pointer"
+                  className="w-full bg-white border border-black/20 rounded-sm px-4 py-3 text-association-black focus:outline-none focus:border-association-black transition-colors appearance-none cursor-pointer"
                 >
                   <option value="general">General Operations</option>
                   <option value="commercial">Commercial & Venues</option>
@@ -154,7 +154,7 @@ export default function ContactPage() {
               </div>
 
               <div className="space-y-2">
-                <label className="text-xs font-bold uppercase tracking-widest text-federation-ivory/70">
+                <label className="text-xs font-bold uppercase tracking-widest text-association-black/70">
                   Official Message
                 </label>
                 <textarea 
@@ -162,7 +162,7 @@ export default function ContactPage() {
                   rows={5}
                   value={formData.message}
                   onChange={(e) => setFormData({...formData, message: e.target.value})}
-                  className="w-full bg-black/50 border border-federation-ivory/20 rounded-sm px-4 py-3 text-federation-ivory focus:outline-none focus:border-federation-ivory transition-colors resize-none"
+                  className="w-full bg-white border border-black/20 rounded-sm px-4 py-3 text-association-black focus:outline-none focus:border-association-black transition-colors resize-none"
                   placeholder="Detail your inquiry here..."
                 ></textarea>
               </div>
@@ -170,11 +170,11 @@ export default function ContactPage() {
               <button 
                 type="submit" 
                 disabled={isLoading}
-                className={`w-full py-4 mt-2 font-bold uppercase tracking-widest rounded-sm transition-all duration-200 flex justify-center items-center gap-3 ${isLoading ? 'bg-federation-ivory/50 text-federation-obsidian cursor-not-allowed' : 'bg-federation-ivory text-federation-obsidian hover:bg-white'}`}
+                className={`w-full py-4 mt-2 font-bold uppercase tracking-widest rounded-sm transition-all duration-200 flex justify-center items-center gap-3 ${isLoading ? 'bg-black/10 text-association-black cursor-not-allowed' : 'bg-association-white text-association-black hover:bg-white'}`}
               >
                 {isLoading ? (
                   <>
-                    <div className="w-5 h-5 border-2 border-federation-obsidian/30 border-t-federation-obsidian rounded-full animate-spin"></div>
+                    <div className="w-5 h-5 border-2 border-association-black/30 border-t-association-black rounded-full animate-spin"></div>
                     Transmitting...
                   </>
                 ) : (

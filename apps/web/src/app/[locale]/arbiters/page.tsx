@@ -12,7 +12,7 @@ export default function ArbiterProgram() {
         </p>
       </header>
 
-      <div className="space-y-12 border-l border-federation-ivory/20 pl-8">
+      <div className="space-y-12 border-l border-black/20 pl-8">
         <div>
           <h2 className="text-2xl font-bold uppercase mb-2">Tier 1: Local Arbiter</h2>
           <p className="font-light opacity-70 mb-4 max-w-3xl">
@@ -28,14 +28,14 @@ export default function ArbiterProgram() {
         </div>
       </div>
 
-      <div className="mt-16 bg-federation-ivory text-federation-obsidian p-8 rounded-sm">
+      <div className="mt-16 bg-association-white text-association-black p-8 rounded-sm">
         <h3 className="text-2xl font-bold uppercase mb-4">Begin Your Certification</h3>
         <p className="font-medium mb-6 max-w-2xl">
           Download the Official Rulebook, study the technical foul guidelines, and register to take the online Arbiter Entrance Examination.
         </p>
         <Link 
           href="/arbiters/exam" 
-          className="px-6 py-3 border-2 border-federation-obsidian font-bold uppercase tracking-wider hover:bg-federation-obsidian hover:text-federation-ivory transition-colors inline-block"
+          className="px-6 py-3 border-2 border-association-black font-bold uppercase tracking-wider hover:bg-white hover:text-association-black transition-colors inline-block"
         >
           Access Examination Portal
         </Link>

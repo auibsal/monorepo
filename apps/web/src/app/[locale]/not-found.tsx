@@ -2,7 +2,7 @@ import { Link } from '@/i18n/routing';
 
 export default function NotFound() {
   return (
-    <div className="min-h-screen bg-[#fafafa] text-[#0a0a0a] font-sans flex flex-col justify-center items-center relative overflow-hidden">
+    <div className="min-h-screen bg-association-white text-association-black font-sans flex flex-col justify-center items-center relative overflow-hidden">
       
       {/* Structural Grid */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#00000008_1px,transparent_1px),linear-gradient(to_bottom,#00000008_1px,transparent_1px)] bg-[size:4rem_4rem] pointer-events-none z-0"></div>
@@ -28,7 +28,7 @@ export default function NotFound() {
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/" className="bg-[#0a0a0a] text-white font-mono text-xs font-bold uppercase tracking-widest px-8 py-4 hover:bg-red-600 transition-colors shadow-[4px_4px_0px_rgba(0,0,0,0.2)]">
+            <Link href="/" className="bg-white text-white font-mono text-xs font-bold uppercase tracking-widest px-8 py-4 hover:bg-red-600 transition-colors shadow-[4px_4px_0px_rgba(0,0,0,0.2)]">
               Return to Registry
             </Link>
             <Link href="/arena" className="bg-white border border-black/20 text-black font-mono text-xs font-bold uppercase tracking-widest px-8 py-4 hover:bg-black hover:text-white transition-colors">

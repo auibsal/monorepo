@@ -65,7 +65,7 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#fafafa] text-[#0a0a0a] selection:bg-red-600 selection:text-white font-sans overflow-hidden relative">
+    <div className="min-h-screen bg-association-white text-association-black selection:bg-red-600 selection:text-white font-sans overflow-hidden relative">
       
       {/* Light Mode Spotlight Tracking */}
       <div 
@@ -76,7 +76,7 @@ export default function Home() {
       />
 
       {/* FEDERATION TICKER */}
-      <div className="bg-[#0a0a0a] text-white font-mono text-xs font-bold uppercase tracking-[0.2em] whitespace-nowrap overflow-hidden py-2.5 relative z-10 border-b-4 border-red-600">
+      <div className="bg-association-black text-white font-mono text-xs font-bold uppercase tracking-[0.2em] whitespace-nowrap overflow-hidden py-2.5 relative z-10 border-b-4 border-red-600">
         <div className="animate-marquee inline-block">
           <span className="mx-6 text-red-500">● OFFICIAL I.D.A. SANCTIONED EVENT</span>
           <span className="mx-6">|</span>
@@ -102,9 +102,9 @@ export default function Home() {
 
           <h2 className="text-6xl md:text-8xl lg:text-[7.5rem] font-black uppercase leading-[0.85] tracking-tighter mb-8 relative">
             <span className="text-transparent [-webkit-text-stroke:2px_rgba(0,0,0,0.15)] block hover:[-webkit-text-stroke:2px_black] transition-colors duration-500">Preserve</span>
-            <span className="text-[#0a0a0a] block">The Heritage.</span>
+            <span className="text-association-black block">The Heritage.</span>
             <span className="text-transparent [-webkit-text-stroke:2px_rgba(0,0,0,0.15)] block hover:[-webkit-text-stroke:2px_black] transition-colors duration-500">Master</span>
-            <span className="text-[#0a0a0a] block">The Board.</span>
+            <span className="text-association-black block">The Board.</span>
           </h2>
 
           <p className="text-black/60 font-mono text-sm md:text-base max-w-lg mb-12 leading-relaxed pl-6 border-l-4 border-red-600 bg-red-50/50 py-2">
@@ -112,7 +112,7 @@ export default function Home() {
           </p>
           
           <div className="flex flex-col sm:flex-row gap-6 items-start">
-            <Link href="/arena" className="group relative bg-[#0a0a0a] text-white font-bold uppercase tracking-[0.2em] px-10 py-5 overflow-hidden shadow-[8px_8px_0px_rgba(220,38,38,1)] hover:shadow-[0px_0px_0px_rgba(220,38,38,1)] hover:translate-x-2 hover:translate-y-2 transition-all duration-300">
+            <Link href="/arena" className="group relative bg-association-black text-white font-bold uppercase tracking-[0.2em] px-10 py-5 overflow-hidden shadow-[8px_8px_0px_rgba(220,38,38,1)] hover:shadow-[0px_0px_0px_rgba(220,38,38,1)] hover:translate-x-2 hover:translate-y-2 transition-all duration-300">
               <div className="absolute inset-0 w-full h-full bg-red-600 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-[cubic-bezier(0.19,1,0.22,1)] z-0"></div>
               <span className="relative z-10 transition-colors duration-500">Enter Sanctioned Play</span>
             </Link>
@@ -133,7 +133,7 @@ export default function Home() {
               <div className="w-2 h-2 bg-red-600 animate-pulse"></div>
               <span className="text-black/50 tracking-widest font-bold">ENGINE TELEMETRY</span>
             </div>
-            <p className="text-4xl font-black text-[#0a0a0a] mb-1">+4.23</p>
+            <p className="text-4xl font-black text-association-black mb-1">+4.23</p>
             <p className="text-black/40 font-bold">IS-MCTS Depth: 10,000</p>
           </div>
 
@@ -142,7 +142,7 @@ export default function Home() {
               <div className="w-2 h-2 bg-green-500"></div>
               <span className="text-black/50 tracking-widest font-bold">FEDERATION RULE</span>
             </div>
-            <p className="text-2xl font-black text-[#0a0a0a] mb-1">Victor's Privilege</p>
+            <p className="text-2xl font-black text-association-black mb-1">Victor's Privilege</p>
             <p className="text-black/40 font-bold">Strategic Opening Authorized</p>
           </div>
         </div>

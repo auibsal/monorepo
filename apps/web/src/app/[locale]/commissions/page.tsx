@@ -3,7 +3,7 @@ import { Users, Cpu, ShieldCheck, BookOpen, Gavel } from 'lucide-react';
 
 export default function HandbookCommissionsPage() {
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-white/90 font-sans selection:bg-red-500/30">
+    <div className="min-h-screen bg-association-white text-association-black font-sans selection:bg-red-500/30">
       
       {/* Official Header */}
       <header className="border-b border-white/10 bg-black sticky top-0 z-10">
@@ -62,7 +62,7 @@ export default function HandbookCommissionsPage() {
           <div className="space-y-16">
             
             {/* PREAMBLE & GENERAL REGULATIONS */}
-            <section className="prose prose-invert max-w-none">
+            <section className="prose  max-w-none">
               <p className="text-lg font-serif leading-relaxed opacity-90 border-l-2 border-white/20 pl-6">
                 While the Presidential Board and General Assembly are elected bodies representing the provincial chapters, the IDA requires specialized, merit-based commissions to manage the technical, ethical, and mathematical complexities of the sport. Non-Elected Commission members are appointed directly by the President based on expertise and serve concurrent terms.
               </p>
