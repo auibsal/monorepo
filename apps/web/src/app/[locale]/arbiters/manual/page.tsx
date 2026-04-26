@@ -2,21 +2,21 @@ import { Link } from '@/i18n/routing';
 
 export default function HandbookArbitersPage() {
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-federation-ivory font-sans selection:bg-red-500/30">
+    <div className="min-h-screen bg-association-white text-association-black font-sans selection:bg-red-500/30">
       
       {/* Official Header */}
-      <header className="border-b border-federation-ivory/10 bg-black sticky top-0 z-10">
+      <header className="border-b border-black/10 bg-black sticky top-0 z-10">
         <div className="max-w-6xl mx-auto px-8 py-6 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-federation-ivory text-black flex items-center justify-center font-bold text-2xl uppercase tracking-tighter">
+            <div className="w-12 h-12 bg-association-white text-black flex items-center justify-center font-bold text-2xl uppercase tracking-tighter">
               IDA
             </div>
             <div>
               <h1 className="text-xl font-bold uppercase tracking-widest leading-none text-white">International</h1>
-              <h1 className="text-xl font-bold uppercase tracking-widest text-federation-ivory/70 leading-none">Dominoes Federation</h1>
+              <h1 className="text-xl font-bold uppercase tracking-widest text-association-black/70 leading-none">Dominoes Federation</h1>
             </div>
           </div>
-          <nav className="hidden md:flex gap-8 text-sm font-bold uppercase tracking-widest text-federation-ivory/60">
+          <nav className="hidden md:flex gap-8 text-sm font-bold uppercase tracking-widest text-association-black/60">
             <Link href="/news" className="hover:text-white transition-colors">News</Link>
             <Link href="/ratings" className="hover:text-white transition-colors">Ratings</Link>
             <Link href="/handbook" className="text-white border-b-2 border-red-500 pb-1">Handbook</Link>
@@ -28,7 +28,7 @@ export default function HandbookArbitersPage() {
         
         {/* Directory Sidebar */}
         <aside className="w-full md:w-64 flex-shrink-0">
-          <h3 className="text-xs font-bold uppercase tracking-widest text-federation-ivory/40 mb-6 pb-4 border-b border-federation-ivory/10">
+          <h3 className="text-xs font-bold uppercase tracking-widest text-association-black/40 mb-6 pb-4 border-b border-black/10">
             Contents / Handbook
           </h3>
           <ul className="space-y-4 text-sm font-mono opacity-80">
@@ -60,7 +60,7 @@ export default function HandbookArbitersPage() {
           <div className="mb-12">
             <p className="text-red-500 font-mono text-sm mb-4 uppercase tracking-widest">Handbook / 04. Arbiters</p>
             <h1 className="text-5xl font-bold uppercase tracking-tight mb-6">Arbiter's Manual & Certification</h1>
-            <div className="flex gap-4 text-xs font-mono opacity-50 border-y border-federation-ivory/10 py-3">
+            <div className="flex gap-4 text-xs font-mono opacity-50 border-y border-black/10 py-3">
               <span>Valid from: April 2026</span>
               <span>•</span>
               <span>Document Ref: IDA-ARB-MANUAL-26</span>
@@ -70,8 +70,8 @@ export default function HandbookArbitersPage() {
           <div className="space-y-16">
             
             {/* PREAMBLE */}
-            <section className="prose prose-invert max-w-none">
-              <p className="text-xl font-serif leading-relaxed opacity-90 border-l-2 border-federation-ivory/20 pl-6">
+            <section className="prose  max-w-none">
+              <p className="text-xl font-serif leading-relaxed opacity-90 border-l-2 border-black/20 pl-6">
                 The Arbiter is the absolute authority in the playing hall. Their role extends beyond the mere observation of dominoes being placed on the table; they are the custodians of mathematical fairness, the neutral enforcers of the clock, and the sole administrators of the Oracle DPN match logs. An Arbiter must exhibit flawless objectivity, zero tolerance for unsanctioned communication, and a complete mastery of the Federation's digital architecture.
               </p>
             </section>
@@ -172,7 +172,7 @@ export default function HandbookArbitersPage() {
               <div className="bg-black border border-white/10 rounded-lg overflow-hidden">
                 <table className="w-full text-left border-collapse">
                   <thead>
-                    <tr className="bg-white/5 border-b border-white/10 text-xs font-mono uppercase tracking-widest text-federation-ivory/50">
+                    <tr className="bg-white/5 border-b border-white/10 text-xs font-mono uppercase tracking-widest text-association-black/50">
                       <th className="p-4 w-1/3">Infraction Type</th>
                       <th className="p-4 w-1/3">Immediate Action</th>
                       <th className="p-4 w-1/3">Penalty</th>
@@ -210,7 +210,7 @@ export default function HandbookArbitersPage() {
               <p className="opacity-60 max-w-lg mx-auto mb-8">
                 Aspiring arbiters must create an IDA account and pass the online preliminary examinations to register for the next provincial seminar.
               </p>
-              <button className="bg-federation-ivory text-black font-bold uppercase tracking-widest px-8 py-4 hover:bg-white transition-colors text-sm">
+              <button className="bg-association-white text-black font-bold uppercase tracking-widest px-8 py-4 hover:bg-white transition-colors text-sm">
                 Access Training Portal
               </button>
             </section>

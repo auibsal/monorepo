@@ -5,7 +5,7 @@ import { Link } from '@/i18n/routing';
 export default function AntiDopingPage() {
   return (
     <div className="max-w-5xl mx-auto py-24 px-6 lg:px-12 w-full">
-      <Link href="/medical" className="text-xs font-bold uppercase tracking-widest text-federation-ivory/50 hover:text-federation-ivory transition-colors mb-8 inline-block">
+      <Link href="/medical" className="text-xs font-bold uppercase tracking-widest text-association-black/50 hover:text-association-black transition-colors mb-8 inline-block">
         &larr; Medical Directorate
       </Link>
       
@@ -23,7 +23,7 @@ export default function AntiDopingPage() {
         {/* Prohibited Substances */}
         <section>
           <h2 className="text-2xl font-bold uppercase tracking-wide mb-6 text-red-500">Prohibited Substances (Cognitive Enhancers)</h2>
-          <div className="bg-federation-ivory/5 border border-federation-ivory/10 p-8 rounded-sm">
+          <div className="bg-black/5 border border-black/10 p-8 rounded-sm">
             <p className="font-light opacity-80 mb-6 leading-relaxed">
               While anabolic steroids are rarely a factor in dominoes, nootropics and prescription stimulants are strictly regulated. The following classes of substances are banned in-competition:
             </p>
@@ -43,7 +43,7 @@ export default function AntiDopingPage() {
             Players with a documented, legitimate medical condition (such as ADHD) requiring the use of a prohibited substance must apply for a TUE no less than 30 days prior to a sanctioned Tier 1 or Tier 2 event.
           </p>
           <div className="flex gap-4 mt-6">
-            <a href="#" className="px-6 py-3 border border-federation-ivory/30 text-xs font-bold uppercase tracking-widest hover:bg-federation-ivory hover:text-federation-obsidian transition-colors rounded-sm">
+            <a href="#" className="px-6 py-3 border border-black/30 text-xs font-bold uppercase tracking-widest hover:bg-association-white hover:text-association-black transition-colors rounded-sm">
               Download TUE Form [PDF]
             </a>
           </div>

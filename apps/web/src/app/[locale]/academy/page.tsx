@@ -3,13 +3,13 @@ import { PlayCircle, Brain, Target, Award, ChevronRight, Lock } from 'lucide-rea
 
 export default function AcademyDashboardPage() {
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-federation-ivory font-sans selection:bg-red-500/30">
+    <div className="min-h-screen bg-association-white text-association-black font-sans selection:bg-red-500/30">
       
       {/* Official Header */}
-      <header className="border-b border-federation-ivory/10 bg-black sticky top-0 z-20">
+      <header className="border-b border-black/10 bg-black sticky top-0 z-20">
         <div className="max-w-7xl mx-auto px-8 py-6 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-federation-ivory text-black flex items-center justify-center font-bold text-2xl uppercase tracking-tighter">
+            <div className="w-12 h-12 bg-association-white text-black flex items-center justify-center font-bold text-2xl uppercase tracking-tighter">
               IDF
             </div>
             <div>
@@ -17,7 +17,7 @@ export default function AcademyDashboardPage() {
               <h1 className="text-sm font-mono opacity-60 uppercase tracking-widest leading-none mt-1">Interactive Training Hub</h1>
             </div>
           </div>
-          <nav className="hidden md:flex gap-8 text-sm font-bold uppercase tracking-widest text-federation-ivory/60">
+          <nav className="hidden md:flex gap-8 text-sm font-bold uppercase tracking-widest text-association-black/60">
             <Link href="/arena" className="hover:text-white transition-colors">Play Arena</Link>
             <Link href="/academy" className="text-white border-b-2 border-red-500 pb-1">Academy</Link>
             <div className="flex items-center gap-2 text-red-400">
@@ -34,7 +34,7 @@ export default function AcademyDashboardPage() {
         <aside className="w-full lg:w-64 flex-shrink-0 space-y-8">
           
           <div className="bg-white/5 border border-white/10 p-6 rounded-lg">
-            <h3 className="text-xs font-bold uppercase tracking-widest text-federation-ivory/40 mb-4">Your Curriculum</h3>
+            <h3 className="text-xs font-bold uppercase tracking-widest text-association-black/40 mb-4">Your Curriculum</h3>
             <ul className="space-y-3 font-mono text-sm opacity-90">
               <li>
                 <Link href="/academy/courses" className="flex items-center gap-3 text-white hover:text-red-400 transition-colors">
@@ -72,7 +72,7 @@ export default function AcademyDashboardPage() {
                   <span className="text-white">92%</span>
                 </div>
                 <div className="w-full h-1 bg-black rounded-full overflow-hidden">
-                  <div className="h-full bg-federation-ivory w-[92%]" />
+                  <div className="h-full bg-association-white w-[92%]" />
                 </div>
               </div>
             </div>
@@ -101,7 +101,7 @@ export default function AcademyDashboardPage() {
               <p className="text-lg opacity-80 font-serif max-w-2xl mb-8">
                 Episode 4: How to mathematically deduce your opponent's missing suits based on early-game passing patterns and forced plays.
               </p>
-              <button className="bg-federation-ivory text-black font-bold uppercase tracking-widest px-8 py-4 w-max hover:bg-white transition-colors">
+              <button className="bg-association-white text-black font-bold uppercase tracking-widest px-8 py-4 w-max hover:bg-white transition-colors">
                 Continue Lesson
               </button>
             </div>
@@ -111,7 +111,7 @@ export default function AcademyDashboardPage() {
           <section>
             <div className="flex items-center justify-between mb-6 border-b border-white/10 pb-4">
               <h2 className="text-2xl font-bold uppercase tracking-widest">Training Modules</h2>
-              <Link href="/academy/courses" className="text-sm font-mono text-federation-ivory/50 hover:text-white flex items-center">
+              <Link href="/academy/courses" className="text-sm font-mono text-association-black/50 hover:text-white flex items-center">
                 View All <ChevronRight size={16} />
               </Link>
             </div>
@@ -134,7 +134,7 @@ export default function AcademyDashboardPage() {
               </div>
 
               {/* Module 2 */}
-              <div className="bg-white/5 border border-white/10 p-6 rounded-lg hover:border-federation-ivory/50 transition-all cursor-pointer group">
+              <div className="bg-white/5 border border-white/10 p-6 rounded-lg hover:border-black/50 transition-all cursor-pointer group">
                 <div className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center mb-4 group-hover:bg-white transition-colors group-hover:text-black">
                   <Brain size={20} />
                 </div>
@@ -196,12 +196,12 @@ export default function AcademyDashboardPage() {
                </div>
                {/* Mock Domino Representation */}
                <div className="flex gap-1 shadow-2xl rotate-12 scale-125">
-                 <div className="w-12 h-24 bg-federation-ivory rounded-md border border-black flex flex-col justify-between p-2">
+                 <div className="w-12 h-24 bg-association-white rounded-md border border-black flex flex-col justify-between p-2">
                     <span className="text-black font-bold text-center">5</span>
                     <div className="h-[2px] w-full bg-black/20" />
                     <span className="text-black font-bold text-center">5</span>
                  </div>
-                 <div className="w-12 h-24 bg-federation-ivory rounded-md border border-black flex flex-col justify-between p-2">
+                 <div className="w-12 h-24 bg-association-white rounded-md border border-black flex flex-col justify-between p-2">
                     <span className="text-black font-bold text-center">5</span>
                     <div className="h-[2px] w-full bg-black/20" />
                     <span className="text-black font-bold text-center">2</span>

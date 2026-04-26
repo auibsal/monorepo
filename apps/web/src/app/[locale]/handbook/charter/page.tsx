@@ -45,11 +45,11 @@ export default function FederationCharter() {
       <aside className="w-full md:w-1/4 md:sticky md:top-32 h-fit mb-12 md:mb-0">
         <Link 
           href="/" 
-          className="text-xs font-bold uppercase tracking-widest text-federation-ivory/50 hover:text-federation-ivory transition-colors mb-8 inline-block"
+          className="text-xs font-bold uppercase tracking-widest text-association-black/50 hover:text-association-black transition-colors mb-8 inline-block"
         >
           &larr; Return to Headquarters
         </Link>
-        <h3 className="text-sm font-bold uppercase tracking-widest border-b border-federation-ivory/20 pb-4 mb-6">
+        <h3 className="text-sm font-bold uppercase tracking-widest border-b border-black/20 pb-4 mb-6">
           Charter Index
         </h3>
         <nav className="flex flex-col gap-4">
@@ -61,8 +61,8 @@ export default function FederationCharter() {
               }}
               className={`text-left text-sm uppercase tracking-wide transition-all duration-300 ${
                 activeSection === item.id 
-                  ? 'text-federation-ivory font-bold translate-x-2' 
-                  : 'text-federation-ivory/60 hover:text-federation-ivory'
+                  ? 'text-association-black font-bold translate-x-2'
+                  : 'text-association-black/60 hover:text-association-black'
               }`}
             >
               {item.title}
@@ -75,13 +75,13 @@ export default function FederationCharter() {
       <article className="w-full md:w-3/4 space-y-24">
         
         {/* Header */}
-        <header className="border-b-2 border-federation-ivory/30 pb-12">
-          <h2 className="text-xl md:text-2xl font-medium tracking-wide mb-4 opacity-80" style={{ fontFamily: 'var(--font-ibm-plex-arabic)' }}>
+        <header className="border-b-2 border-black/30 pb-12">
+          <h2 className="text-xl md:text-2xl font-medium tracking-wide mb-4 opacity-80">
 
           </h2>
           <h1 className="text-4xl md:text-6xl font-bold tracking-tight uppercase leading-none mb-6">
             The Supreme Charter <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-federation-ivory to-gray-500">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-association-black to-gray-800">
               of the Federation
             </span>
           </h1>
@@ -92,7 +92,7 @@ export default function FederationCharter() {
 
         {/* PART I */}
         <section id="part-1" className="scroll-mt-32">
-          <div className="mb-8 border-l-4 border-federation-ivory pl-6">
+          <div className="mb-8 border-l-4 border-association-white pl-6">
             <h2 className="text-3xl font-bold uppercase tracking-wide">Part I - General Provisions</h2>
           </div>
           <div className="space-y-8 pl-0 sm:pl-7">
@@ -101,16 +101,16 @@ export default function FederationCharter() {
               <h3 className="text-xl font-semibold mb-3">Article 1: Name, Legal Status, and Seat</h3>
               <div className="space-y-4 font-light opacity-80 leading-relaxed text-justify">
                 <p>
-                  <strong className="text-federation-ivory font-semibold">1.1</strong> The Iraqi Dominoes Association (hereafter the IDA) is a non-governmental, non-profit organization.
+                  <strong className="text-association-black font-semibold">1.1</strong> The Iraqi Dominoes Association (hereafter the IDA) is a non-governmental, non-profit organization.
                 </p>
                 <p>
-                  <strong className="text-federation-ivory font-semibold">1.2</strong> The IDA is an association of unlimited duration, with the status of a legal person.
+                  <strong className="text-association-black font-semibold">1.2</strong> The IDA is an association of unlimited duration, with the status of a legal person.
                 </p>
                 <p>
-                  <strong className="text-federation-ivory font-semibold">1.3</strong> The principal seat and headquarters of the IDA are located in Baghdad, Iraq. Operational offices may be opened in other governorates or cities, if deemed necessary and approved by the Executive Council.
+                  <strong className="text-association-black font-semibold">1.3</strong> The principal seat and headquarters of the IDA are located in Baghdad, Iraq. Operational offices may be opened in other governorates or cities, if deemed necessary and approved by the Executive Council.
                 </p>
                 <p>
-                  <strong className="text-federation-ivory font-semibold">1.4</strong> The IDA possesses exclusive rights to its name in both Arabic and English, as well as in any official translations.
+                  <strong className="text-association-black font-semibold">1.4</strong> The IDA possesses exclusive rights to its name in both Arabic and English, as well as in any official translations.
                 </p>
               </div>
             </div>
@@ -119,7 +119,7 @@ export default function FederationCharter() {
               <h3 className="text-xl font-semibold mb-3">Article 2: Official Languages</h3>
               <div className="space-y-4 font-light opacity-80 leading-relaxed text-justify">
                 <p>
-                  <strong className="text-federation-ivory font-semibold">2.1</strong> Arabic and English are the official operational and legislative languages of the IDA. In the case of divergence or legal dispute between the Arabic and English texts of this Charter, the Arabic text registered with the Iraqi Ministry of Youth and Sports shall prevail.
+                  <strong className="text-association-black font-semibold">2.1</strong> Arabic and English are the official operational and legislative languages of the IDA. In the case of divergence or legal dispute between the Arabic and English texts of this Charter, the Arabic text registered with the Iraqi Ministry of Youth and Sports shall prevail.
                 </p>
               </div>
             </div>
@@ -128,7 +128,7 @@ export default function FederationCharter() {
 
         {/* PART II */}
         <section id="part-2" className="scroll-mt-32">
-          <div className="mb-8 border-l-4 border-federation-ivory pl-6">
+          <div className="mb-8 border-l-4 border-association-white pl-6">
             <h2 className="text-3xl font-bold uppercase tracking-wide">Part II - Mission and Principles</h2>
           </div>
           <div className="space-y-8 pl-0 sm:pl-7">
@@ -137,31 +137,31 @@ export default function FederationCharter() {
               <h3 className="text-xl font-semibold mb-3">Article 3: Mission and Role of the IDA</h3>
               <div className="space-y-4 font-light opacity-80 leading-relaxed text-justify">
                 <p>
-                  <strong className="text-federation-ivory font-semibold">3.1</strong> Dominoes is recognized as an ancient intellectual and cultural game, representing a combination of sport, mathematical probability, and strategic thinking.
+                  <strong className="text-association-black font-semibold">3.1</strong> Dominoes is recognized as an ancient intellectual and cultural game, representing a combination of sport, mathematical probability, and strategic thinking.
                 </p>
                 <p>
-                  <strong className="text-federation-ivory font-semibold">3.2</strong> The fundamental mission of the IDA is the diffusion, regulation, and development of dominoes among all regions, as well as the raising of the level of cultural knowledge on a sporting, scientific, and educational basis.
+                  <strong className="text-association-black font-semibold">3.2</strong> The fundamental mission of the IDA is the diffusion, regulation, and development of dominoes among all regions, as well as the raising of the level of cultural knowledge on a sporting, scientific, and educational basis.
                 </p>
                 <p>
-                  <strong className="text-federation-ivory font-semibold">3.3</strong> The IDA serves as the supreme governing body responsible for the sport of dominoes, its national championships, and mathematically rated events within the Republic of Iraq. The IDA assumes exclusive rights for the formulation of official ratings, mathematical ranking algorithms, and the authorization of sanctioned competitions.
+                  <strong className="text-association-black font-semibold">3.3</strong> The IDA serves as the supreme governing body responsible for the sport of dominoes, its national championships, and mathematically rated events within the Republic of Iraq. The IDA assumes exclusive rights for the formulation of official ratings, mathematical ranking algorithms, and the authorization of sanctioned competitions.
                 </p>
               </div>
             </div>
 
             <div>
               <h3 className="text-xl font-semibold mb-3">Article 4: Federation Principles</h3>
-              <div className="space-y-4 font-light opacity-80 leading-relaxed text-justify bg-federation-ivory/5 p-6 rounded-sm border border-federation-ivory/10">
+              <div className="space-y-4 font-light opacity-80 leading-relaxed text-justify bg-black/5 p-6 rounded-sm border border-black/10">
                 <p>
-                  <strong className="text-federation-ivory font-semibold">4.1</strong> The IDA is a democratically established and fully independent organization, based fundamentally on the principle of equal rights among its members.
+                  <strong className="text-association-black font-semibold">4.1</strong> The IDA is a democratically established and fully independent organization, based fundamentally on the principle of equal rights among its members.
                 </p>
                 <p>
-                  <strong className="text-federation-ivory font-semibold">4.2</strong> The IDA unequivocally rejects any kind of discrimination against a geographic region, private person, or group on account of race, skin colour, ethnic, national or social origin, age, wealth, disability, religion, or political opinions.
+                  <strong className="text-association-black font-semibold">4.2</strong> The IDA unequivocally rejects any kind of discrimination against a geographic region, private person, or group on account of race, skin colour, ethnic, national or social origin, age, wealth, disability, religion, or political opinions.
                 </p>
                 <p>
-                  <strong className="text-federation-ivory font-semibold">4.3</strong> The IDA shall undertake all measures necessary to guarantee equal access to the sport and to assure gender balance inside IDA organs and management.
+                  <strong className="text-association-black font-semibold">4.3</strong> The IDA shall undertake all measures necessary to guarantee equal access to the sport and to assure gender balance inside IDA organs and management.
                 </p>
                 <p>
-                  <strong className="text-federation-ivory font-semibold">4.4</strong> The IDA is committed strictly to the protection of personal data regarding all its stakeholders and registered players.
+                  <strong className="text-association-black font-semibold">4.4</strong> The IDA is committed strictly to the protection of personal data regarding all its stakeholders and registered players.
                 </p>
               </div>
             </div>
@@ -170,7 +170,7 @@ export default function FederationCharter() {
 
         {/* PART III */}
         <section id="part-3" className="scroll-mt-32">
-          <div className="mb-8 border-l-4 border-federation-ivory pl-6">
+          <div className="mb-8 border-l-4 border-association-white pl-6">
             <h2 className="text-3xl font-bold uppercase tracking-wide">Part III - Membership</h2>
           </div>
           <div className="space-y-8 pl-0 sm:pl-7">
@@ -179,13 +179,13 @@ export default function FederationCharter() {
               <h3 className="text-xl font-semibold mb-3">Article 5: Affiliate Members</h3>
               <div className="space-y-4 font-light opacity-80 leading-relaxed text-justify">
                 <p>
-                  <strong className="text-federation-ivory font-semibold">5.1</strong> Member Affiliates are regional associations, venues, or corresponding organizations which maintain operational infrastructure for dominoes activities in their respective territories and which have been formally admitted to the IDA.
+                  <strong className="text-association-black font-semibold">5.1</strong> Member Affiliates are regional associations, venues, or corresponding organizations which maintain operational infrastructure for dominoes activities in their respective territories and which have been formally admitted to the IDA.
                 </p>
                 <p>
-                  <strong className="text-federation-ivory font-semibold">5.2</strong> Member Affiliates hold the right to exercise all privileges arising from IDA rules, including the right to organize official rated events and the right to make proposals for inclusion in the agenda of the General Assembly.
+                  <strong className="text-association-black font-semibold">5.2</strong> Member Affiliates hold the right to exercise all privileges arising from IDA rules, including the right to organize official rated events and the right to make proposals for inclusion in the agenda of the General Assembly.
                 </p>
                 <p>
-                  <strong className="text-federation-ivory font-semibold">5.3</strong> All Members must observe all rules, regulations, and decisions of the IDA and ensure their own subordinate bodies and players comply completely with them.
+                  <strong className="text-association-black font-semibold">5.3</strong> All Members must observe all rules, regulations, and decisions of the IDA and ensure their own subordinate bodies and players comply completely with them.
                 </p>
               </div>
             </div>
@@ -194,7 +194,7 @@ export default function FederationCharter() {
 
         {/* PART IV */}
         <section id="part-4" className="scroll-mt-32">
-          <div className="mb-8 border-l-4 border-federation-ivory pl-6">
+          <div className="mb-8 border-l-4 border-association-white pl-6">
             <h2 className="text-3xl font-bold uppercase tracking-wide">Part IV - Organization & Organs</h2>
           </div>
           <div className="space-y-8 pl-0 sm:pl-7">
@@ -203,10 +203,10 @@ export default function FederationCharter() {
               <h3 className="text-xl font-semibold mb-3">Article 6: The General Assembly</h3>
               <div className="space-y-4 font-light opacity-80 leading-relaxed text-justify">
                 <p>
-                  <strong className="text-federation-ivory font-semibold">6.1</strong> The General Assembly is the highest legislative authority of the IDA.
+                  <strong className="text-association-black font-semibold">6.1</strong> The General Assembly is the highest legislative authority of the IDA.
                 </p>
                 <p>
-                  <strong className="text-federation-ivory font-semibold">6.2</strong> It exercises the absolute power to approve and modify the IDA Charter, requiring a mandatory majority of two-thirds of valid votes of those Members present. It acts as the final internal appellate organ for all decisions taken by the Executive Council or the President.
+                  <strong className="text-association-black font-semibold">6.2</strong> It exercises the absolute power to approve and modify the IDA Charter, requiring a mandatory majority of two-thirds of valid votes of those Members present. It acts as the final internal appellate organ for all decisions taken by the Executive Council or the President.
                 </p>
               </div>
             </div>
@@ -215,10 +215,10 @@ export default function FederationCharter() {
               <h3 className="text-xl font-semibold mb-3">Article 7: The Executive Council and President</h3>
               <div className="space-y-4 font-light opacity-80 leading-relaxed text-justify">
                 <p>
-                  <strong className="text-federation-ivory font-semibold">7.1</strong> The President officially represents the IDA in all legal, financial, and external capacities. The President holds the sole authority to sign documents and assume obligations for the Federation, though explicit delegations may be granted to the Management Board.
+                  <strong className="text-association-black font-semibold">7.1</strong> The President officially represents the IDA in all legal, financial, and external capacities. The President holds the sole authority to sign documents and assume obligations for the Federation, though explicit delegations may be granted to the Management Board.
                 </p>
                 <p>
-                  <strong className="text-federation-ivory font-semibold">7.2</strong> The Executive Council is the strategic and oversight body of the IDA, exercising both executive and legislative functions. It approves regulations concerning tournaments, ratings, and the mathematical ELO algorithm.
+                  <strong className="text-association-black font-semibold">7.2</strong> The Executive Council is the strategic and oversight body of the IDA, exercising both executive and legislative functions. It approves regulations concerning tournaments, ratings, and the mathematical ELO algorithm.
                 </p>
               </div>
             </div>
@@ -236,13 +236,13 @@ export default function FederationCharter() {
               <h3 className="text-xl font-semibold mb-3 text-red-500">Article 8: Appeals and Arbitration</h3>
               <div className="space-y-4 font-light opacity-80 leading-relaxed text-justify">
                 <p>
-                  <strong className="text-federation-ivory font-semibold">8.1</strong> Any final decision taken by an IDA organ regarding technical fouls or disciplinary action may be challenged exclusively by way of an internal appeal to the General Assembly.
+                  <strong className="text-association-black font-semibold">8.1</strong> Any final decision taken by an IDA organ regarding technical fouls or disciplinary action may be challenged exclusively by way of an internal appeal to the General Assembly.
                 </p>
                 <p>
-                  <strong className="text-federation-ivory font-semibold">8.2</strong> In cases concerning international representation, disputes may be escalated to the Court of Arbitration for Sport (CAS) in Lausanne, Switzerland, which will resolve the dispute in a final and binding manner in accordance with the Code of Sports-related Arbitration. An appeal before the CAS may only be brought after all internal IDA procedures and remedies have been fully exhausted.
+                  <strong className="text-association-black font-semibold">8.2</strong> In cases concerning international representation, disputes may be escalated to the Court of Arbitration for Sport (CAS) in Lausanne, Switzerland, which will resolve the dispute in a final and binding manner in accordance with the Code of Sports-related Arbitration. An appeal before the CAS may only be brought after all internal IDA procedures and remedies have been fully exhausted.
                 </p>
                 <p>
-                  <strong className="text-federation-ivory font-semibold">8.3</strong> The time limit for any such external appeal is twenty-one days from the receipt by the appellant of the finalized IDA decision.
+                  <strong className="text-association-black font-semibold">8.3</strong> The time limit for any such external appeal is twenty-one days from the receipt by the appellant of the finalized IDA decision.
                 </p>
               </div>
             </div>

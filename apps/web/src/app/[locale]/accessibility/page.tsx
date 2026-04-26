@@ -42,11 +42,11 @@ export default function AdaptivePlayPage() {
       <aside className="w-full lg:w-1/4 lg:sticky lg:top-32 h-fit mb-12 lg:mb-0">
         <Link 
           href="/" 
-          className="text-xs font-bold uppercase tracking-widest text-federation-ivory/50 hover:text-federation-ivory transition-colors mb-8 inline-block"
+          className="text-xs font-bold uppercase tracking-widest text-association-black/50 hover:text-association-black transition-colors mb-8 inline-block"
         >
           &larr; Return to Headquarters
         </Link>
-        <h3 className="text-sm font-bold uppercase tracking-widest border-b border-federation-ivory/20 pb-4 mb-6">
+        <h3 className="text-sm font-bold uppercase tracking-widest border-b border-black/20 pb-4 mb-6">
           Adaptive Play Index
         </h3>
         <nav className="flex flex-col gap-4">
@@ -58,8 +58,8 @@ export default function AdaptivePlayPage() {
               }}
               className={`text-left text-xs sm:text-sm uppercase tracking-wider transition-all duration-300 ${
                 activeSection === item.id 
-                  ? 'text-federation-ivory font-bold translate-x-2' 
-                  : 'text-federation-ivory/50 hover:text-federation-ivory'
+                  ? 'text-association-black font-bold translate-x-2'
+                  : 'text-association-black/50 hover:text-association-black'
               }`}
             >
               {item.title}
@@ -72,19 +72,19 @@ export default function AdaptivePlayPage() {
       <article className="w-full lg:w-3/4 space-y-20">
         
         {/* Header */}
-        <header className="border-b-2 border-federation-ivory/30 pb-12">
+        <header className="border-b-2 border-black/30 pb-12">
           <div className="flex items-center gap-4 mb-6">
-            <span className="px-3 py-1 bg-federation-ivory text-federation-obsidian text-xs font-bold uppercase tracking-widest rounded-sm">
+            <span className="px-3 py-1 bg-association-white text-association-black text-xs font-bold uppercase tracking-widest rounded-sm">
               Regulatory Supplement
             </span>
-            <span className="text-sm font-mono text-federation-ivory/60">IDA-ADA-2026</span>
+            <span className="text-sm font-mono text-association-black/60">IDA-ADA-2026</span>
           </div>
-          <h2 className="text-xl md:text-2xl font-medium tracking-wide mb-4 opacity-80" style={{ fontFamily: 'var(--font-ibm-plex-arabic)' }}>
+          <h2 className="text-xl md:text-2xl font-medium tracking-wide mb-4 opacity-80">
 
           </h2>
           <h1 className="text-4xl md:text-6xl font-bold tracking-tight uppercase leading-none mb-6">
             Adaptive Play & <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-federation-ivory to-gray-500">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-association-black to-gray-800">
               Accessibility
             </span>
           </h1>
@@ -96,7 +96,7 @@ export default function AdaptivePlayPage() {
         {/* 0.0 Mandate */}
         <section id="mandate" className="scroll-mt-32">
           <h2 className="text-3xl font-bold uppercase tracking-wide mb-6">0.0 The Inclusive Mandate</h2>
-          <div className="bg-federation-ivory/5 p-8 rounded-sm border border-federation-ivory/10 space-y-4 font-light opacity-80 leading-relaxed text-justify">
+          <div className="bg-black/5 p-8 rounded-sm border border-black/10 space-y-4 font-light opacity-80 leading-relaxed text-justify">
             <p>
               Dominoes is an inherently tactile sport. The Iraqi Dominoes Association mandates that all sanctioned Tier 1 and Tier 2 events must accommodate players with visual or physical disabilities without prejudice. Tournament directors possess the authority to adapt table layouts and provide specialized equipment to ensure a fair competitive environment.
             </p>
@@ -110,11 +110,11 @@ export default function AdaptivePlayPage() {
             <p>
               In competitive dominoes between sighted and visually handicapped players, either player or team may demand the use of specially constructed equipment to facilitate fair play.
             </p>
-            <p className="font-bold text-federation-ivory mt-4">1.1 Tactile Tiles</p>
+            <p className="font-bold text-association-black mt-4">1.1 Tactile Tiles</p>
             <p>
               The specially constructed domino sets must feature deeply recessed or raised pips that can be easily identified by touch. Furthermore, the dividing line and spinner must be physically pronounced.
             </p>
-            <p className="font-bold text-federation-ivory mt-4">1.2 Securing Racks</p>
+            <p className="font-bold text-association-black mt-4">1.2 Securing Racks</p>
             <p>
               To prevent accidental exposure of tiles during tactile scanning, visually handicapped players must be provided with deep-grooved wooden or plastic racks that securely lock the tiles in a face-up position facing only the player.
             </p>
@@ -125,15 +125,15 @@ export default function AdaptivePlayPage() {
         <section id="execution" className="scroll-mt-32">
           <h2 className="text-3xl font-bold uppercase tracking-wide mb-6">2.0 Execution of Moves</h2>
           <div className="space-y-4 font-light opacity-80 leading-relaxed text-justify">
-            <p className="font-bold text-federation-ivory mt-4">2.1 Mandatory Announcements</p>
+            <p className="font-bold text-association-black mt-4">2.1 Mandatory Announcements</p>
             <p>
-              To ensure absolute clarity, the moves must be announced clearly, repeated by the opponent, and executed on the board. For example, a player must declare: <span className="font-mono text-federation-ivory/80">"Playing the 6-4 on the open 6."</span>
+              To ensure absolute clarity, the moves must be announced clearly, repeated by the opponent, and executed on the board. For example, a player must declare: <span className="font-mono text-association-black/80">"Playing the 6-4 on the open 6."</span>
             </p>
-            <p className="font-bold text-federation-ivory mt-4">2.2 Definition of a "Touched" Tile</p>
+            <p className="font-bold text-association-black mt-4">2.2 Definition of a "Touched" Tile</p>
             <p>
               Unlike sighted play where hovering is prohibited, a visually handicapped player's tile shall only be considered "touched" (and therefore committed) when it has been completely lifted out of the securing rack.
             </p>
-            <p className="font-bold text-federation-ivory mt-4">2.3 Definition of an "Executed" Move</p>
+            <p className="font-bold text-association-black mt-4">2.3 Definition of an "Executed" Move</p>
             <p>
               A move shall be considered fully executed when the tile is physically connected to the open end on the board AND the move has been verbally announced. Only after this sequence is completed may the match clock be pressed.
             </p>
@@ -158,7 +158,7 @@ export default function AdaptivePlayPage() {
         {/* 4.0 Assistants */}
         <section id="assistants" className="scroll-mt-32">
           <h2 className="text-3xl font-bold uppercase tracking-wide mb-6 border-l-4 border-red-600 pl-6">4.0 Authorised Assistants</h2>
-          <div className="space-y-4 font-light opacity-80 leading-relaxed text-justify bg-federation-obsidian p-8 border border-federation-ivory/20 rounded-sm shadow-xl">
+          <div className="space-y-4 font-light opacity-80 leading-relaxed text-justify bg-white p-8 border border-black/20 rounded-sm shadow-xl">
             <p>
               The visually handicapped player shall have the right to make use of an officially sanctioned assistant. The assistant is strictly neutral and shall have any or all of the following authorized duties:
             </p>

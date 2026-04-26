@@ -54,7 +54,7 @@ export default async function RootLayout({
 
   return (
     <html lang={locale} dir={locale === 'ar' ? 'rtl' : 'ltr'} className={`${ibmPlexSans.variable} ${ibmPlexArabic.variable}`}>
-      <body className="bg-federation-obsidian text-federation-ivory font-sans antialiased selection:bg-federation-ivory selection:text-federation-obsidian flex flex-col min-h-screen">
+      <body className="bg-association-white text-association-black font-sans antialiased selection:bg-association-black selection:text-association-white flex flex-col min-h-screen">
         <NextIntlClientProvider messages={messages}>
           <Navbar />
           <main className="flex-grow pt-24">

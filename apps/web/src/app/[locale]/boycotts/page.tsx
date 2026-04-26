@@ -2,24 +2,24 @@ import { Link } from '@/i18n/routing';
 
 export default function HandbookBoycottsPage() {
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-federation-ivory font-sans selection:bg-red-500/30">
+    <div className="min-h-screen bg-association-white text-association-black font-sans selection:bg-red-500/30">
       
       {/* Official Header */}
-      <header className="border-b border-federation-ivory/10 bg-black sticky top-0 z-10">
+      <header className="border-b border-black/10 bg-black sticky top-0 z-10">
         <div className="max-w-6xl mx-auto px-8 py-6 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-federation-ivory text-black flex items-center justify-center font-bold text-2xl uppercase tracking-tighter">
+            <div className="w-12 h-12 bg-association-white text-black flex items-center justify-center font-bold text-2xl uppercase tracking-tighter">
               IDA
             </div>
             <div>
               <h1 className="text-xl font-bold uppercase tracking-widest leading-none">International</h1>
-              <h1 className="text-xl font-bold uppercase tracking-widest text-federation-ivory/70 leading-none">Dominoes Federation</h1>
+              <h1 className="text-xl font-bold uppercase tracking-widest text-association-black/70 leading-none">Dominoes Federation</h1>
             </div>
           </div>
-          <nav className="hidden md:flex gap-8 text-sm font-bold uppercase tracking-widest text-federation-ivory/60">
-            <Link href="/news" className="hover:text-federation-ivory transition-colors">News</Link>
-            <Link href="/ratings" className="hover:text-federation-ivory transition-colors">Ratings</Link>
-            <Link href="/handbook" className="text-federation-ivory border-b-2 border-red-500 pb-1">Handbook</Link>
+          <nav className="hidden md:flex gap-8 text-sm font-bold uppercase tracking-widest text-association-black/60">
+            <Link href="/news" className="hover:text-association-black transition-colors">News</Link>
+            <Link href="/ratings" className="hover:text-association-black transition-colors">Ratings</Link>
+            <Link href="/handbook" className="text-association-black border-b-2 border-red-500 pb-1">Handbook</Link>
           </nav>
         </div>
       </header>
@@ -28,7 +28,7 @@ export default function HandbookBoycottsPage() {
         
         {/* Directory Sidebar */}
         <aside className="w-full md:w-64 flex-shrink-0">
-          <h3 className="text-xs font-bold uppercase tracking-widest text-federation-ivory/40 mb-6 pb-4 border-b border-federation-ivory/10">
+          <h3 className="text-xs font-bold uppercase tracking-widest text-association-black/40 mb-6 pb-4 border-b border-black/10">
             Contents / Handbook
           </h3>
           <ul className="space-y-4 text-sm font-mono opacity-80">
@@ -38,17 +38,17 @@ export default function HandbookBoycottsPage() {
               </Link>
             </li>
             <li>
-              <Link href="/handbook/02-resolutions" className="hover:text-federation-ivory transition-colors flex items-center gap-3">
+              <Link href="/handbook/02-resolutions" className="hover:text-association-black transition-colors flex items-center gap-3">
                 <span>02.</span> Resolutions
               </Link>
             </li>
             <li>
-              <Link href="/handbook/03-engine" className="hover:text-federation-ivory transition-colors flex items-center gap-3">
+              <Link href="/handbook/03-engine" className="hover:text-association-black transition-colors flex items-center gap-3">
                 <span>03.</span> Engine Mathematics
               </Link>
             </li>
             <li>
-              <Link href="/handbook/04-arbiters" className="hover:text-federation-ivory transition-colors flex items-center gap-3">
+              <Link href="/handbook/04-arbiters" className="hover:text-association-black transition-colors flex items-center gap-3">
                 <span>04.</span> Arbiter Certification
               </Link>
             </li>
@@ -60,14 +60,14 @@ export default function HandbookBoycottsPage() {
           <div className="mb-12">
             <p className="text-red-500 font-mono text-sm mb-4">Handbook / 01. Boycotts</p>
             <h1 className="text-5xl font-bold uppercase tracking-tight mb-6">Boycotts & Moral Principles</h1>
-            <div className="flex gap-4 text-xs font-mono opacity-50 border-y border-federation-ivory/10 py-3">
+            <div className="flex gap-4 text-xs font-mono opacity-50 border-y border-black/10 py-3">
               <span>Approved by the inaugural Congress.</span>
               <span>•</span>
               <span>Document Ref: IDA-HB-01</span>
             </div>
           </div>
 
-          <div className="prose prose-invert prose-p:text-federation-ivory/80 prose-li:text-federation-ivory/80 max-w-none">
+          <div className="prose  prose-p:text-black/80 prose-li:text-black/80 max-w-none">
             
             <h2 className="text-2xl font-bold uppercase tracking-widest border-l-4 border-red-500 pl-4 mb-6">
               Moral Principles of the IDA for Competitions
@@ -80,7 +80,7 @@ export default function HandbookBoycottsPage() {
                   <span className="text-red-500 font-mono">1.</span>
                   The organizers and the athletes must be guided by the highest principles of the Federation's Statutes[span_0](end_span):
                 </p>
-                <ol className="list-decimal list-outside ml-12 space-y-4 opacity-90 font-serif text-lg leading-relaxed marker:text-federation-ivory/40">
+                <ol className="list-decimal list-outside ml-12 space-y-4 opacity-90 font-serif text-lg leading-relaxed marker:text-association-black/40">
                   <li>The IDA is concerned exclusively with dominoes activities.</li>
                   <li>The IDA rejects discriminatory treatment for national, political, racial, social or religious reasons or on account of sex.</li>
                   <li>The IDA observes a strict neutrality in the internal affairs of the national and provincial dominoes federations.</li>
@@ -101,7 +101,7 @@ export default function HandbookBoycottsPage() {
                   <span className="text-red-500 font-mono">3.</span>
                   It is mathematically and ethically understood that:
                 </p>
-                <ol className="list-decimal list-outside ml-12 space-y-4 opacity-90 font-serif text-lg leading-relaxed marker:text-federation-ivory/40">
+                <ol className="list-decimal list-outside ml-12 space-y-4 opacity-90 font-serif text-lg leading-relaxed marker:text-association-black/40">
                   <li>
                     An organizer of a dominoes competition has the right to invite any player he chooses. Once an invitation has been issued and accepted, it must not be withdrawn.
                   </li>

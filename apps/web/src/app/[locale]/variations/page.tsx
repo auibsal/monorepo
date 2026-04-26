@@ -3,7 +3,7 @@ import { Map, History, Coffee, AlertTriangle, ScrollText } from 'lucide-react';
 
 export default function HandbookVariationsPage() {
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-white/90 font-sans selection:bg-red-500/30">
+    <div className="min-h-screen bg-association-white text-association-black font-sans selection:bg-red-500/30">
       
       {/* Official Header */}
       <header className="border-b border-white/10 bg-black sticky top-0 z-10">

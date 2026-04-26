@@ -41,11 +41,11 @@ export default function CsrPage() {
       <aside className="w-full lg:w-1/4 lg:sticky lg:top-32 h-fit mb-12 lg:mb-0 custom-scrollbar overflow-y-auto max-h-[80vh] pr-4">
         <Link 
           href="/" 
-          className="text-xs font-bold uppercase tracking-widest text-federation-ivory/50 hover:text-federation-ivory transition-colors mb-8 inline-block"
+          className="text-xs font-bold uppercase tracking-widest text-association-black/50 hover:text-association-black transition-colors mb-8 inline-block"
         >
           &larr; Return to Headquarters
         </Link>
-        <h3 className="text-sm font-bold uppercase tracking-widest border-b border-federation-ivory/20 pb-4 mb-6">
+        <h3 className="text-sm font-bold uppercase tracking-widest border-b border-black/20 pb-4 mb-6">
           CSR & Ethics Index
         </h3>
         <nav className="flex flex-col gap-4">
@@ -57,8 +57,8 @@ export default function CsrPage() {
               }}
               className={`text-left text-xs sm:text-sm uppercase tracking-wider transition-all duration-300 ${
                 activeSection === item.id 
-                  ? 'text-federation-ivory font-bold translate-x-2' 
-                  : 'text-federation-ivory/50 hover:text-federation-ivory'
+                  ? 'text-association-black font-bold translate-x-2'
+                  : 'text-association-black/50 hover:text-association-black'
               }`}
             >
               {item.title}
@@ -71,19 +71,19 @@ export default function CsrPage() {
       <article className="w-full lg:w-3/4 space-y-20">
         
         {/* Header */}
-        <header className="border-b-2 border-federation-ivory/30 pb-12">
+        <header className="border-b-2 border-black/30 pb-12">
           <div className="flex items-center gap-4 mb-6">
-            <span className="px-3 py-1 bg-federation-ivory text-federation-obsidian text-xs font-bold uppercase tracking-widest rounded-sm">
+            <span className="px-3 py-1 bg-association-white text-association-black text-xs font-bold uppercase tracking-widest rounded-sm">
               Official Guidelines
             </span>
-            <span className="text-sm font-mono text-federation-ivory/60">IDA-CSR-2026</span>
+            <span className="text-sm font-mono text-association-black/60">IDA-CSR-2026</span>
           </div>
-          <h2 className="text-xl md:text-2xl font-medium tracking-wide mb-4 opacity-80" style={{ fontFamily: 'var(--font-ibm-plex-arabic)' }}>
+          <h2 className="text-xl md:text-2xl font-medium tracking-wide mb-4 opacity-80">
 
           </h2>
           <h1 className="text-4xl md:text-6xl font-bold tracking-tight uppercase leading-none mb-6">
             Corporate Social <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-federation-ivory to-gray-500">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-association-black to-gray-800">
               Responsibility
             </span>
           </h1>
@@ -95,7 +95,7 @@ export default function CsrPage() {
         {/* 0.0 Preamble */}
         <section id="preamble" className="scroll-mt-32">
           <h2 className="text-3xl font-bold uppercase tracking-wide mb-6">0.0 Introduction & Mission</h2>
-          <div className="bg-federation-ivory/5 p-8 rounded-sm border border-federation-ivory/10 space-y-4 font-light opacity-80 leading-relaxed text-justify">
+          <div className="bg-black/5 p-8 rounded-sm border border-black/10 space-y-4 font-light opacity-80 leading-relaxed text-justify">
             <p>
               [span_0](start_span)Corporate Social Responsibility (CSR) is a self-regulating operational model that incorporates social and environmental concerns into the Federation's planning and operations[span_0](end_span). [span_1](start_span)The primary goal is to ensure that all of our administrative and competitive activities positively affect Iraqi society as a whole[span_1](end_span). 
             </p>
@@ -109,15 +109,15 @@ export default function CsrPage() {
         <section id="inclusion" className="scroll-mt-32">
           <h2 className="text-3xl font-bold uppercase tracking-wide mb-6">1.0 Diversity & Inclusion</h2>
           <div className="space-y-4 font-light opacity-80 leading-relaxed text-justify">
-            <p className="font-bold text-federation-ivory mt-4">1.1 Anti-Discrimination Policy</p>
+            <p className="font-bold text-association-black mt-4">1.1 Anti-Discrimination Policy</p>
             <p>
               [span_3](start_span)Our stance on this matter includes a strict, zero-tolerance policy for any kind of discrimination based on age, ethnicity, origin, political belief, race, religion, sex, gender, sexual orientation, disability, language, or cultural grounds[span_3](end_span). 
             </p>
-            <p className="font-bold text-federation-ivory mt-4">1.2 Gender Equality and Equity</p>
+            <p className="font-bold text-association-black mt-4">1.2 Gender Equality and Equity</p>
             <p>
               [span_4](start_span)The IDA works tirelessly to increase the number of women in all aspects of dominoes life[span_4](end_span). [span_5](start_span)This involves not only developing specific programs to increase female participation in competitive brackets, but actively seeking their participation in leading institutional roles[span_5](end_span). [span_6](start_span)We encourage women to pursue careers as elite players, national arbiters, trainers, and Federation officers[span_6](end_span).
             </p>
-            <p className="font-bold text-federation-ivory mt-4">1.3 Rehabilitation & Accessibility</p>
+            <p className="font-bold text-association-black mt-4">1.3 Rehabilitation & Accessibility</p>
             <p>
               [span_7](start_span)Dominoes has proven to be an effective tool to help rehabilitate individuals facing life difficulties, ranging from criminality to substance abuse[span_7](end_span). [span_8](start_span)The Federation encourages the development of programs that utilize the strategic focus of the game to provide individuals an opportunity to transform their lives[span_8](end_span).
             </p>
@@ -128,11 +128,11 @@ export default function CsrPage() {
         <section id="community" className="scroll-mt-32">
           <h2 className="text-3xl font-bold uppercase tracking-wide mb-6">2.0 Community & Support</h2>
           <div className="space-y-4 font-light opacity-80 leading-relaxed text-justify">
-            <p className="font-bold text-federation-ivory mt-4">2.1 Protecting Our Seniors</p>
+            <p className="font-bold text-association-black mt-4">2.1 Protecting Our Seniors</p>
             <p>
               [span_9](start_span)The IDA strives to protect senior players who, after having devoted their lives to the sport and cafe culture, find themselves in an unstable financial situation[span_9](end_span). [span_10](start_span)We seek to build support programs and seek external funding to honor their legacy[span_10](end_span).
             </p>
-            <p className="font-bold text-federation-ivory mt-4">2.2 Supporting Host Venues and Affiliates</p>
+            <p className="font-bold text-association-black mt-4">2.2 Supporting Host Venues and Affiliates</p>
             <p>
               [span_11](start_span)We are committed to helping all local Affiliates promote the sport by providing technical infrastructure and, in the future, financial assistance via Federation Development Funds[span_11](end_span). [span_12](start_span)We strongly urge our Affiliates to engage in their own local CSR activities and partner with institutions sharing similar objectives[span_12](end_span).
             </p>
@@ -155,7 +155,7 @@ export default function CsrPage() {
         {/* 4.0 Conflict of Interest */}
         <section id="conflict" className="scroll-mt-32">
           <h2 className="text-3xl font-bold uppercase tracking-wide mb-6 border-l-4 border-red-600 pl-6">4.0 Conflict of Interest & Employment</h2>
-          <div className="space-y-4 font-light opacity-80 leading-relaxed text-justify bg-federation-obsidian p-8 border border-federation-ivory/20 rounded-sm shadow-xl">
+          <div className="space-y-4 font-light opacity-80 leading-relaxed text-justify bg-white p-8 border border-black/20 rounded-sm shadow-xl">
             <p>
               [span_16](start_span)To maintain the integrity of the Federation, these guidelines are enacted to avoid conflicts of interest and loyalty associated with employment and official appointments[span_16](end_span).
             </p>
