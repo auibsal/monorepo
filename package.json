@@ -3,10 +3,5 @@
   "private": true,
   "workspaces": [
     "apps/*",
-    "packages/*"
   ],
-  "scripts": {
-    "build:engine": "cd apps/engine && wasm-pack build --target web",
-    "test": "npm run test --workspace=apps/web && cd apps/engine && cargo test"
-  }
 }
