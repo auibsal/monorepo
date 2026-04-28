@@ -1,7 +1,17 @@
 {
-  "name": "ida-platform",
+  "name": "the-iraqi-curator-monorepo",
   "private": true,
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "lint": "turbo run lint",
+    "clean": "turbo run clean"
+  },
+  "devDependencies": {
+    "turbo": "latest"
+  },
   "workspaces": [
     "apps/*",
-  ],
+    "packages/*"
+  ]
 }
