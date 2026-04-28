@@ -1,37 +1,11 @@
 {
-  "Navbar": {
-    "title": "I.D.A.",
-    "subtitle": "Iraqi Domino Association",
-    "sanctionedPlay": "Sanctioned Play",
-    "registry": "The Registry",
-    "rulebook": "Rulebook",
-    "engineOracle": "Engine Oracle",
-    "memberPortal": "Member Portal"
+  "Navigation": {
+    "museum": "Gallery",
+    "blog": "Curations",
+    "switch_lang": "عربي"
   },
   "Footer": {
-    "title": "Iraqi Domino Association",
-    "description": "The supreme authority and international governing body for the sport of Iraqi Dominoes. Dedicated to the preservation of café heritage and the advancement of absolute mathematical strategy.",
-    "registry": "The Registry",
-    "rulebook": "Rulebook",
-    "sanctionedPlay": "Sanctioned Play"
-  },
-  "Home": {
-    "ticker1": "OFFICIAL I.D.A. SANCTIONED EVENT",
-    "ticker2": "FEDERATION NOTICE: BONE-YARD PROTOCOLS ENFORCED",
-    "ticker3": "RANKINGS UPDATE: WORLD CHAMPIONSHIP QUALIFIERS",
-    "ticker4": "IS-MCTS ENGINE V1.0 MAINTAINS 99.8% ACCURACY",
-    "governingBody": "The Governing Body",
-    "preserve": "Preserve",
-    "theHeritage": "The Heritage.",
-    "master": "Master",
-    "theBoard": "The Board.",
-    "description": "The Iraqi Domino Association is the sole governing authority for competitive play. We enforce historical regulations, sanction global tournaments, and advance the sport through deterministic mathematical analysis.",
-    "enterPlay": "Enter Sanctioned Play",
-    "viewRegistry": "View Official Registry",
-    "engineTelemetry": "ENGINE TELEMETRY",
-    "depth": "IS-MCTS Depth",
-    "federationRule": "FEDERATION RULE",
-    "victorPrivilege": "Victor's Privilege",
-    "strategicOpening": "Strategic Opening Authorized"
+    "rights": "All rights reserved.",
+    "location": "Baghdad, Iraq"
   }
 }
