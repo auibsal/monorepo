@@ -1,17 +1,22 @@
-import { NextIntlClientProvider, useMessages } from 'next-intl';
+import { NextIntlClientProvider } from 'next-intl';
+import { getMessages } from 'next-intl/server';
 import '../globals.css';
-// Add curly braces around Navbar and Footer
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 
-export default function LocaleLayout({
+export default async function LocaleLayout({
   children,
-  params: { locale }
+  params
 }: {
   children: React.ReactNode;
-  params: { locale: string };
+  params: Promise<{ locale: string }>;
 }) {
-  const messages = useMessages();
+  // 1. Await the params explicitly
+  const resolvedParams = await params;
+  const locale = resolvedParams.locale;
+
+  // 2. Fetch messages asynchronously 
+  const messages = await getMessages();
 
   return (
     <html lang={locale}>
