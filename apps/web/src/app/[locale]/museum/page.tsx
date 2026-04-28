@@ -33,12 +33,13 @@ function Artwork({ art }: { art: any }) {
       onPointerOut={handlePointerOut}
       onClick={playAudio}
     >
-      <DreiImage 
+            <DreiImage 
         url={art.image_url} 
-        scale={hovered ? [3.2, 3.2, 1] : [3, 3, 1]} 
+        scale={hovered ? [3.2, 3.2] : [3, 3]} 
         transparent 
         opacity={hovered ? 1 : 0.9}
       />
+
       <mesh position={[0, 0, -0.05]}>
         <boxGeometry args={[3.3, 3.3, 0.1]} />
         <meshStandardMaterial color={hovered ? "#f59e0b" : "#18181b"} />
