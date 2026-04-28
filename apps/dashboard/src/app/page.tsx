@@ -1,7 +1,7 @@
 import { createClient } from '@repo/supabase/server';
 
 export default async function DashboardOverview() {
-  const supabase = createClient();
+  const supabase = await createClient();
   
   const [ { count: artworksCount }, { count: postsCount } ] = await Promise.all([
     supabase.from('artworks').select('*', { count: 'exact', head: true }),
