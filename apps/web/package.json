@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@repo/supabase": "workspace:*",
+    "@repo/supabase": "*",
     "next": "14.1.0",
     "next-intl": "^3.5.0",
     "react": "^18",
