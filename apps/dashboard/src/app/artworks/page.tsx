@@ -3,7 +3,7 @@ import { Plus } from 'lucide-react';
 import Image from 'next/image';
 
 export default async function ArtworksManager() {
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data: artworks } = await supabase.from('artworks').select('*').order('created_at', { ascending: false });
 
   return (

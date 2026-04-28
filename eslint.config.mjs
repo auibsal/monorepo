@@ -20,6 +20,23 @@ export default [
           jsx: true,
         },
       },
+      globals: {
+        React: "readonly",
+        console: "readonly",
+        process: "readonly",
+        window: "readonly",
+        document: "readonly",
+        fetch: "readonly",
+        setTimeout: "readonly",
+        clearTimeout: "readonly",
+        setInterval: "readonly",
+        clearInterval: "readonly",
+        __dirname: "readonly",
+        URL: "readonly",
+        AbortController: "readonly",
+        Event: "readonly",
+        Promise: "readonly",
+      }
     },
     rules: {
       ...tsPlugin.configs.recommended.rules,
@@ -28,13 +45,17 @@ export default [
       "react/react-in-jsx-scope": "off",
       "@typescript-eslint/no-unused-vars": "warn",
       "@typescript-eslint/no-explicit-any": "warn",
+      "@typescript-eslint/no-empty-object-type": "off",
+      "no-undef": "off"
     },
-    ignores: [
-      ".next/*",
-      "node_modules/*",
-      "dist/*",
-      "apps/web/.next/*",
-      "apps/dashboard/.next/*"
-    ],
   },
+  {
+    ignores: [
+      "**/.next/**",
+      "**/node_modules/**",
+      "**/dist/**",
+      "apps/web/.next/**",
+      "apps/dashboard/.next/**"
+    ],
+  }
 ];

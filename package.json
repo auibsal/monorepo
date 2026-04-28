@@ -8,6 +8,10 @@
     "clean": "turbo run clean"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/eslint__js": "^9.14.0",
+    "eslint": "^9.39.4",
+    "eslint-config-next": "^16.2.4",
     "turbo": "latest"
   },
   "packageManager": "pnpm@9.12.0"
