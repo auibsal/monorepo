@@ -1,6 +1,7 @@
 {
   "name": "@repo/supabase",
   "version": "1.0.0",
+  "private": true,
   "exports": {
     "./client": "./src/client.ts",
     "./server": "./src/server.ts",
@@ -10,5 +11,8 @@
   "dependencies": {
     "@supabase/supabase-js": "^2.39.0",
     "@supabase/ssr": "^0.1.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
   }
 }
