@@ -1,7 +1,8 @@
 import { NextIntlClientProvider, useMessages } from 'next-intl';
 import '../globals.css';
-import Navbar from '@/components/layout/Navbar';
-import Footer from '@/components/layout/Footer';
+// Add curly braces around Navbar and Footer
+import { Navbar } from '@/components/layout/Navbar';
+import { Footer } from '@/components/layout/Footer';
 
 export default function LocaleLayout({
   children,
