@@ -9,10 +9,10 @@
     "./types": "./src/types.ts"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.39.0",
-    "@supabase/ssr": "^0.1.0"
+    "@supabase/supabase-js": "^2.105.0",
+    "@supabase/ssr": "^0.10.2"
   },
   "devDependencies": {
-    "typescript": "^5.0.0"
+    "typescript": "^6.0.3"
   }
 }
