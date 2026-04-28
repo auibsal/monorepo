@@ -15,4 +15,5 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default withNextIntl(nextConfig);
+// The 'as any' inline cast forces TypeScript to bypass the monorepo type mismatch
+export default withNextIntl(nextConfig as any);
