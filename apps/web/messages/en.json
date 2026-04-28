@@ -7,5 +7,17 @@
   "Footer": {
     "rights": "All rights reserved.",
     "location": "Baghdad, Iraq"
+  },
+  "Landing": {
+    "title_prefix": "The Iraqi ",
+    "title_highlight": "Curator",
+    "subtitle": "Audiovisual Museum • Contemporary Art",
+    "enter": "Enter Gallery",
+    "read": "Read Curations"
+  },
+  "Museum": {
+    "loading": "Loading Exhibition...",
+    "exhibition": "Exhibition 01",
+    "archive": "Contemporary Archive"
   }
 }
