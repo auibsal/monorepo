@@ -1,92 +1,46 @@
 'use client';
 
+import { Link, usePathname, useRouter } from '@/i18n/routing';
 import { useTranslations, useLocale } from 'next-intl';
-import { Link, usePathname } from '@/i18n/routing';
-import { useState, useEffect } from 'react';
 
 export const Navbar = () => {
-  const t = useTranslations('Navbar');
+  const t = useTranslations('Navigation');
   const locale = useLocale();
   const pathname = usePathname();
-  const [scrolled, setScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const router = useRouter();
 
-  // Elaborate shrink effect on scroll
-  useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 50);
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  const toggleLanguage = () => {
+    const nextLocale = locale === 'en' ? 'ar' : 'en';
+    // Replace the current URL with the new language prefix
+    router.replace(pathname, { locale: nextLocale });
+  };
 
   return (
-    <nav className={`sticky top-0 z-50 transition-all duration-500 border-b border-black/10 ${scrolled ? 'bg-white/90 backdrop-blur-xl py-0 shadow-sm' : 'bg-association-white py-2'}`}>
-      <div className="flex justify-between items-stretch h-20 md:px-12 px-6 max-w-[1600px] mx-auto">
-        
-        {/* BRANDING */}
-        <Link href="/" className="flex items-center gap-6 group py-4">
-          {/* Light Mode Domino Logo */}
-          <div className="w-12 h-12 bg-association-black flex flex-col justify-between p-1.5 rounded-sm border-2 border-transparent group-hover:border-red-600 group-hover:bg-white transition-all duration-500 shadow-md transform group-hover:rotate-12">
-            <div className="w-2.5 h-2.5 bg-white group-hover:bg-black rounded-full transition-colors"></div>
-            <div className="w-full h-[2px] bg-white/50 group-hover:bg-black/50"></div>
-            <div className="w-2.5 h-2.5 bg-white group-hover:bg-red-600 rounded-full self-end transition-colors"></div>
-          </div>
-          <div className="flex flex-col justify-center">
-            <h1 className="text-3xl font-black tracking-tighter leading-none text-association-black">I.D.A.</h1>
-            <p className="text-[9px] font-mono text-black/50 tracking-[0.3em] mt-1 uppercase">
-              {locale === 'ar' ? 'الاتحاد العراقي للدومينو' : 'Iraqi Domino Association'}
-            </p>
-          </div>
+    <header className="fixed top-0 w-full z-50 mix-blend-difference text-zinc-50 pointer-events-none">
+      <nav className="flex justify-between items-center p-8 md:px-12 pointer-events-auto">
+        {/* Brand */}
+        <Link href="/" className="text-sm font-black tracking-widest uppercase hover:text-amber-500 transition-colors">
+          TIC.
         </Link>
 
-        {/* DESKTOP NAVIGATION */}
-        <div className="hidden md:flex items-stretch font-mono text-xs uppercase tracking-widest text-black/60">
-          {['sanctionedPlay', 'registry', 'rulebook', 'engineOracle'].map((key) => (
-            <Link key={key} href={`/${key === 'registry' ? 'leaderboard' : key === 'rulebook' ? 'rules' : key === 'sanctionedPlay' ? 'arena' : key === 'engineOracle' ? 'dev' : key}`} className="flex items-center px-8 border-l border-black/10 hover:bg-black/5 hover:text-black transition-colors relative group">
-              {t(key)}
-              <div className="absolute bottom-0 left-0 w-full h-[2px] bg-red-600 scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-500 ease-out"></div>
-            </Link>
-          ))}
-        </div>
-
-        <div className="hidden md:flex items-center ml-8 gap-6">
-          {/* LANGUAGE SWITCHER */}
-          <Link 
-            href={pathname} 
-            locale={locale === 'en' ? 'ar' : 'en'} 
-            className="text-association-black font-mono text-xs font-bold px-4 py-2 border border-black/20 hover:border-black hover:bg-black hover:text-white transition-all"
-            dir="ltr"
-          >
-            {locale === 'en' ? 'عربي' : 'EN'}
+        {/* Links */}
+        <div className="flex items-center gap-8">
+          <Link href="/museum" className="text-xs uppercase tracking-[0.2em] hover:text-amber-500 transition-colors">
+            {t('museum')}
           </Link>
-
-          <button className="bg-red-600 text-white px-8 py-3 text-xs font-bold uppercase tracking-[0.2em] hover:bg-black transition-all duration-500 ease-out shadow-[4px_4px_0px_rgba(0,0,0,1)] hover:shadow-[0px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1">
-            {t('memberPortal')}
-          </button>
-        </div>
-
-        {/* MOBILE MENU TOGGLE */}
-        <div className="md:hidden flex items-center gap-4">
-           <Link href={pathname} locale={locale === 'en' ? 'ar' : 'en'} className="text-black font-mono text-xs px-2 py-1 border border-black/20">
-            {locale === 'en' ? 'AR' : 'EN'}
+          <Link href="/blog" className="text-xs uppercase tracking-[0.2em] hover:text-amber-500 transition-colors">
+            {t('blog')}
           </Link>
+          
+          {/* Language Switcher */}
           <button 
-            className="text-black font-mono text-xs uppercase tracking-widest border border-black/20 px-4 py-2 hover:bg-black hover:text-white transition-colors"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            onClick={toggleLanguage}
+            className="text-xs font-serif italic text-amber-500 hover:text-amber-400 ml-4 border border-amber-500/30 px-3 py-1 rounded-none"
           >
-            {isMobileMenuOpen ? 'CLOSE' : 'MENU'}
+            {t('switch_lang')}
           </button>
         </div>
-      </div>
-
-      {/* MOBILE MENU */}
-      {isMobileMenuOpen && (
-        <div className="md:hidden bg-white border-t border-black/10 font-mono text-sm uppercase tracking-widest flex flex-col absolute w-full h-screen z-40 text-black">
-          <Link href="/arena" className="p-6 border-b border-black/10 hover:bg-black/5">{t('sanctionedPlay')}</Link>
-          <Link href="/leaderboard" className="p-6 border-b border-black/10 hover:bg-black/5">{t('registry')}</Link>
-          <Link href="/rules" className="p-6 border-b border-black/10 hover:bg-black/5">{t('rulebook')}</Link>
-          <Link href="/dev" className="p-6 border-b border-black/10 text-red-600 hover:bg-black/5">{t('engineOracle')}</Link>
-        </div>
-      )}
-    </nav>
+      </nav>
+    </header>
   );
 };
