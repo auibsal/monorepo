@@ -1,8 +1,21 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+:root {
+  color-scheme: dark;
+}
+
+html {
+  scroll-behavior: smooth;
+}
 
 body {
   background-color: #09090b;
   color: #fafafa;
+  overflow-x: hidden;
+}
+
+/* Optional: Clean up standard dashboard table borders */
+table {
+  border-collapse: collapse;
+  width: 100%;
 }
