@@ -1,0 +1,11 @@
+{
+  "name": "dashboard",
+  "dependencies": {
+    "next": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "@repo/supabase": "workspace:*",
+    "lucide-react": "latest",
+    "tailwindcss": "latest"
+  }
+}
