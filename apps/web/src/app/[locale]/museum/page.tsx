@@ -5,6 +5,7 @@ import { OrbitControls, Environment, Image as DreiImage, Text } from '@react-thr
 import { useState, useEffect, Suspense } from 'react';
 import { createClient } from '@repo/supabase/client';
 import { Howl } from 'howler';
+import { useTranslations } from 'next-intl'; // <-- Imported translation hook
 
 function Artwork({ art }: { art: any }) {
   const [hovered, setHover] = useState(false);
@@ -33,13 +34,12 @@ function Artwork({ art }: { art: any }) {
       onPointerOut={handlePointerOut}
       onClick={playAudio}
     >
-            <DreiImage 
+      <DreiImage 
         url={art.image_url} 
         scale={hovered ? [3.2, 3.2] : [3, 3]} 
         transparent 
         opacity={hovered ? 1 : 0.9}
       />
-
       <mesh position={[0, 0, -0.05]}>
         <boxGeometry args={[3.3, 3.3, 0.1]} />
         <meshStandardMaterial color={hovered ? "#f59e0b" : "#18181b"} />
@@ -64,6 +64,7 @@ function Artwork({ art }: { art: any }) {
 export default function Museum() {
   const [artworks, setArtworks] = useState<any[]>([]);
   const supabase = createClient();
+  const t = useTranslations('Museum'); // <-- Initialize hook
 
   useEffect(() => {
     async function fetchArt() {
@@ -75,7 +76,7 @@ export default function Museum() {
 
   return (
     <div className="w-full h-screen bg-zinc-950 overflow-hidden relative">
-      <Suspense fallback={<div className="absolute inset-0 flex items-center justify-center text-amber-500 uppercase tracking-widest text-xs">Loading Exhibition...</div>}>
+      <Suspense fallback={<div className="absolute inset-0 flex items-center justify-center text-amber-500 uppercase tracking-widest text-xs">{t('loading')}</div>}>
         <Canvas camera={{ position: [0, 0, 15], fov: 45 }}>
           <ambientLight intensity={0.3} />
           <spotLight position={[10, 15, 10]} angle={0.3} penumbra={1} intensity={2} color="#f59e0b" />
@@ -97,9 +98,10 @@ export default function Museum() {
         </Canvas>
       </Suspense>
       
+      {/* Localized Overlay UI */}
       <div className="absolute bottom-10 left-10 pointer-events-none">
-        <p className="text-zinc-500 text-xs tracking-[0.2em] uppercase">Exhibition 01</p>
-        <p className="text-zinc-300 text-sm tracking-widest uppercase mt-1">Contemporary Archive</p>
+        <p className="text-zinc-500 text-xs tracking-[0.2em] uppercase">{t('exhibition')}</p>
+        <p className="text-zinc-300 text-sm tracking-widest uppercase mt-1">{t('archive')}</p>
       </div>
     </div>
   );
