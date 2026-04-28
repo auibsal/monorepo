@@ -7,5 +7,17 @@
   "Footer": {
     "rights": "جميع الحقوق محفوظة.",
     "location": "بغداد، العراق"
+  },
+  "Landing": {
+    "title_prefix": "القيّم ",
+    "title_highlight": "العراقي",
+    "subtitle": "متحف سمعي بصري • فن معاصر",
+    "enter": "دخول المعرض",
+    "read": "تصفح المقالات"
+  },
+  "Museum": {
+    "loading": "جاري تحميل المعرض...",
+    "exhibition": "المعرض ٠١",
+    "archive": "أرشيف معاصر"
   }
 }
