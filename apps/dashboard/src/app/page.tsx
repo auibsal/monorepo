@@ -3,11 +3,7 @@ import { createClient } from '@repo/supabase/server';
 export default async function DashboardOverview() {
   const supabase = createClient();
   
-  // Parallel fetching for dashboard metrics
-  const [
-    { count: artworksCount }, 
-    { count: postsCount }
-  ] = await Promise.all([
+  const [ { count: artworksCount }, { count: postsCount } ] = await Promise.all([
     supabase.from('artworks').select('*', { count: 'exact', head: true }),
     supabase.from('posts').select('*', { count: 'exact', head: true })
   ]);
@@ -23,7 +19,6 @@ export default async function DashboardOverview() {
           <p className="text-xs uppercase tracking-widest text-zinc-500 mb-2">Total Artworks</p>
           <p className="text-4xl font-light text-amber-500">{artworksCount || 0}</p>
         </div>
-        
         <div className="p-6 border border-zinc-800 bg-zinc-900/20">
           <p className="text-xs uppercase tracking-widest text-zinc-500 mb-2">Published Posts</p>
           <p className="text-4xl font-light text-amber-500">{postsCount || 0}</p>
