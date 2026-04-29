@@ -1,18 +1,22 @@
 @import "tailwindcss";
 
 :root {
-  /* Forces the browser's default scrollbars and inputs into dark mode */
-  color-scheme: dark; 
+  color-scheme: light;
 }
 
 html {
   scroll-behavior: smooth;
+  cursor: none; /* Hides default cursor for the Awwwards feel */
 }
 
 body {
-  /* Zinc-950 background and Zinc-50 text to match your IDEA group minimalist branding */
-  background-color: #09090b;
-  color: #fafafa;
-  /* Prevent horizontal scrolling issues on mobile */
+  background-color: #f8f8f8; /* Warm editorial off-white */
+  color: #111111; /* Sharp off-black for high contrast */
   overflow-x: hidden;
+  font-feature-settings: "salt", "ss01", "ss02", "ss03"; /* Enhances font ligatures if your font supports it */
+}
+
+/* Ensure links and buttons also hide the default cursor so our custom one takes over */
+a, button, input, select, textarea {
+  cursor: none;
 }
