@@ -6,8 +6,15 @@ import { motion } from 'framer-motion';
 export function CustomCursor() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isHovering, setIsHovering] = useState(false);
+  const [isTouchDevice, setIsTouchDevice] = useState(false);
 
   useEffect(() => {
+    // 1. Detect if it's a mobile/touch device
+    if (window.matchMedia("(pointer: coarse)").matches) {
+      setIsTouchDevice(true);
+      return; // Stop running cursor logic on mobile
+    }
+
     const updateMousePosition = (e: MouseEvent) => {
       setMousePosition({ x: e.clientX, y: e.clientY });
     };
@@ -30,9 +37,12 @@ export function CustomCursor() {
     };
   }, []);
 
+  // 2. Do not render anything if it's a touch screen
+  if (isTouchDevice) return null;
+
   return (
     <motion.div
-      className="fixed top-0 left-0 w-6 h-6 rounded-full border-2 border-amber-600 pointer-events-none z-[9999] mix-blend-difference flex items-center justify-center"
+      className="fixed top-0 left-0 w-6 h-6 rounded-full border-2 border-amber-600 pointer-events-none z-[9999] mix-blend-difference flex items-center justify-center hidden md:flex"
       animate={{
         x: mousePosition.x - 12,
         y: mousePosition.y - 12,
