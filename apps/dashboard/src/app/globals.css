@@ -1,21 +1,11 @@
 @import "tailwindcss";
 
-:root {
-  color-scheme: dark;
-}
-
 html {
   scroll-behavior: smooth;
 }
 
 body {
-  background-color: #09090b;
-  color: #fafafa;
+  background-color: #f4f4f5; /* zinc-100 */
+  color: #18181b; /* zinc-900 */
   overflow-x: hidden;
-}
-
-/* Optional: Clean up standard dashboard table borders */
-table {
-  border-collapse: collapse;
-  width: 100%;
 }
