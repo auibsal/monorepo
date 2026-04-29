@@ -131,3 +131,5 @@ export default function DashboardArtworks() {
         </div>
       </main>
     </div>
+  );
+}
