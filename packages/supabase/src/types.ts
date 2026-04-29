@@ -56,6 +56,39 @@ export type Database = {
         }
         Relationships: []
       }
+      curations: {
+        Row: {
+          content: string
+          created_at: string
+          excerpt: string | null
+          id: string
+          image_url: string | null
+          published: boolean | null
+          slug: string
+          title: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          excerpt?: string | null
+          id?: string
+          image_url?: string | null
+          published?: boolean | null
+          slug: string
+          title: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          excerpt?: string | null
+          id?: string
+          image_url?: string | null
+          published?: boolean | null
+          slug?: string
+          title?: string
+        }
+        Relationships: []
+      }
       posts: {
         Row: {
           author_id: string | null
