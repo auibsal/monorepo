@@ -16,7 +16,8 @@ export default function EditCuration({ params }: { params: Promise<{ id: string 
 
   useEffect(() => {
     async function fetchPost() {
-      const { data } = await supabase.from('curations' as any).select('*').eq('id', resolvedParams.id).single();
+      const response = await supabase.from('curations' as any).select('*').eq('id', resolvedParams.id).single();
+      const data = response.data as any;
       if (data) setForm({ title: data.title, slug: data.slug, content: data.content, excerpt: data.excerpt || '', language: data.language || 'en', published: data.published });
       setLoading(false);
     }
