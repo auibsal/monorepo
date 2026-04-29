@@ -11,6 +11,7 @@ export const dynamic = 'force-dynamic';
 export default function DashboardArtworks() {
   const [artworks, setArtworks] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [uploading, setUploading] = useState(false);
   const supabase = createClient();
 
   const [title, setTitle] = useState('');
@@ -22,9 +23,30 @@ export default function DashboardArtworks() {
   useEffect(() => { fetchArtworks(); }, []);
 
   async function fetchArtworks() {
-    const { data } = await supabase.from('artworks' as any).select('*').order('created_at', { ascending: false });
+    const response = await supabase.from('artworks' as any).select('*').order('created_at', { ascending: false });
+    const data = response.data as any;
     if (data) setArtworks(data);
     setLoading(false);
+  }
+
+  async function handleUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${Math.random()}.${fileExt}`;
+    const filePath = `artworks/${fileName}`;
+
+    const { error: uploadError } = await supabase.storage.from('museum-assets').upload(filePath, file);
+    
+    if (uploadError) {
+      alert('Upload error: ' + uploadError.message);
+    } else {
+      const { data } = supabase.storage.from('museum-assets').getPublicUrl(filePath);
+      setAudioUrl(data.publicUrl);
+    }
+    setUploading(false);
   }
 
   async function handleCreate(e: React.FormEvent) {
@@ -64,11 +86,18 @@ export default function DashboardArtworks() {
               </div>
               <input type="text" placeholder="ARTIST NAME" dir="auto" value={artist} onChange={(e) => setArtist(e.target.value)} required
                 className="bg-zinc-50 border border-zinc-300 p-3 text-xs uppercase tracking-wider focus:border-amber-500 outline-none" />
-              <input type="text" placeholder="AUDIO URL (Optional)" value={audioUrl} onChange={(e) => setAudioUrl(e.target.value)}
-                className="bg-zinc-50 border border-zinc-300 p-3 text-xs lowercase tracking-wider focus:border-amber-500 outline-none" />
+              
+              {/* ASSET UPLOADER */}
+              <div className="flex flex-col gap-2 border border-zinc-300 p-3 bg-zinc-50">
+                <label className="text-[10px] uppercase tracking-widest text-zinc-500">Upload Media Asset (Audio/Image)</label>
+                <input type="file" accept="audio/*,image/*" onChange={handleUpload} disabled={uploading} className="text-xs file:mr-4 file:py-2 file:px-4 file:border-0 file:text-xs file:font-bold file:uppercase file:bg-zinc-200 file:text-zinc-700 hover:file:bg-zinc-300 transition-colors" />
+                {uploading && <span className="text-xs text-amber-600 font-bold uppercase tracking-widest mt-2">Uploading to storage...</span>}
+                {audioUrl && !uploading && <span className="text-[10px] text-green-600 truncate mt-2">Asset linked: {audioUrl}</span>}
+              </div>
+
               <textarea placeholder="CURATORIAL DESCRIPTION" dir="auto" value={description} onChange={(e) => setDescription(e.target.value)} required rows={4}
                 className="bg-zinc-50 border border-zinc-300 p-3 text-sm focus:border-amber-500 outline-none leading-relaxed" />
-              <button type="submit" className="bg-amber-500 text-white font-bold uppercase tracking-widest text-xs py-4 hover:bg-amber-400 transition-colors">
+              <button type="submit" disabled={uploading} className="bg-amber-500 text-white font-bold uppercase tracking-widest text-xs py-4 hover:bg-amber-400 transition-colors disabled:opacity-50 mt-2">
                 Add to Collection
               </button>
             </form>
@@ -102,5 +131,3 @@ export default function DashboardArtworks() {
         </div>
       </main>
     </div>
-  );
-}
