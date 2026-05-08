@@ -1,43 +1,49 @@
-'use client';
+import { useTranslations } from 'next-intl';
+import Link from 'next/link';
 
-import { motion } from 'framer-motion';
+export default function Footer({ locale }: { locale: string }) {
+  const t = useTranslations('Footer');
+  const year = new Date().getFullYear();
 
-export function Footer() {
   return (
-    <footer className="bg-[#111111] text-[#f8f8f8] py-12 md:py-24 px-6 md:px-12 overflow-hidden rounded-t-3xl md:rounded-t-[4rem]">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-24 gap-8">
-        <div className="max-w-md">
-          <p className="text-xs uppercase tracking-widest text-zinc-500 mb-4">Preserving the Present</p>
-          <p className="text-sm md:text-base leading-relaxed text-zinc-400">
-            The Iraqi Curator is a digital preservation initiative focused on contemporary art, essays, and audiovisual history from Baghdad to the world.
-          </p>
+    <footer className="bg-auib-charcoal text-auib-white pt-16 pb-8 border-t-4 border-auib-red">
+      <div className="max-w-6xl mx-auto px-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12 border-b border-auib-white/10 pb-12">
+          
+          {/* Brand Identity */}
+          <div className="md:col-span-1">
+            <h3 className="text-xl font-bold mb-4">{t('societyName')}</h3>
+            <p className="text-auib-white/70 text-sm leading-relaxed">
+              {t('description')}
+            </p>
+          </div>
+
+          {/* Quick Links */}
+          <div className="md:col-span-1">
+            <h4 className="text-lg font-semibold mb-4 text-auib-red">{t('linksTitle')}</h4>
+            <ul className="space-y-2 text-sm text-auib-white/80">
+              <li><Link href={`/${locale}`} className="hover:text-auib-white transition-colors">{t('home')}</Link></li>
+              <li><Link href={`/${locale}/events`} className="hover:text-auib-white transition-colors">{t('events')}</Link></li>
+              <li><Link href={`/${locale}/journal`} className="hover:text-auib-white transition-colors">{t('journal')}</Link></li>
+            </ul>
+          </div>
+
+          {/* Location */}
+          <div className="md:col-span-1 text-sm text-auib-white/80">
+             <h4 className="text-lg font-semibold mb-4 text-auib-red">{t('contactTitle')}</h4>
+             <address className="not-italic leading-relaxed">
+               {t('university')}<br />
+               {t('addressLine1')}<br />
+               {t('addressLine2')}
+             </address>
+          </div>
         </div>
-        
-        <div className="flex flex-col gap-2 text-xs font-bold uppercase tracking-[0.2em] text-right">
-          <a href="mailto:contact@theideaiq.com" className="hover:text-amber-500 transition-colors">Contact</a>
-          <a href="https://theideaiq.com" target="_blank" rel="noreferrer" className="hover:text-amber-500 transition-colors">The IDEA Group</a>
+
+        <div className="text-center text-xs text-auib-white/50 flex flex-col md:flex-row justify-between items-center">
+          <p>&copy; {year} {t('societyName')}. {t('rights')}</p>
+          <p className="mt-2 md:mt-0">{t('designedBy')}</p>
         </div>
       </div>
-
-      <div className="border-t border-zinc-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-        <p className="text-[10px] uppercase tracking-widest text-zinc-500">
-          &copy; {new Date().getFullYear()} The Iraqi Curator. All Rights Reserved.
-        </p>
-        <img src="/logo-samoon.png" alt="Samoon" className="w-8 h-8 opacity-20 grayscale" />
-      </div>
-
-      {/* Massive Typography */}
-      <motion.div 
-        initial={{ y: 50, opacity: 0 }}
-        whileInView={{ y: 0, opacity: 1 }}
-        viewport={{ once: true, margin: "100px" }}
-        transition={{ duration: 1, ease: "easeOut" }}
-        className="mt-12 md:mt-24 w-full flex justify-center"
-      >
-        <h2 className="text-[14vw] leading-[0.8] font-black uppercase tracking-tighter text-zinc-800/50 select-none text-center">
-          Baghdad
-        </h2>
-      </motion.div>
     </footer>
   );
 }
