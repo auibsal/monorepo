@@ -3,7 +3,7 @@ import { getMessages } from 'next-intl/server';
 import { Ubuntu } from 'next/font/google';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
-import './globals.css';
+import '../globals.css';
 
 const ubuntu = Ubuntu({ 
   weight: ['300', '400', '500', '700'], 
