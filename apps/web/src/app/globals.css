@@ -1,22 +1,20 @@
 @import "tailwindcss";
 
-:root {
-  color-scheme: light;
+@theme {
+  /* AUIB Brand Colors */
+  --color-auib-red: #9C213E;
+  --color-auib-charcoal: #273237;
+  --color-auib-white: #FFFFFF;
+
+  /* Typography */
+  --font-ubuntu: var(--font-ubuntu), ui-sans-serif, system-ui, sans-serif;
+  --font-ubuntu-arabic: var(--font-ubuntu-arabic), ui-sans-serif, system-ui, sans-serif;
 }
 
-html {
-  scroll-behavior: smooth;
-  cursor: none; /* Hides default cursor for the Awwwards feel */
-}
-
-body {
-  background-color: #f8f8f8; /* Warm editorial off-white */
-  color: #111111; /* Sharp off-black for high contrast */
-  overflow-x: hidden;
-  font-feature-settings: "salt", "ss01", "ss02", "ss03"; /* Enhances font ligatures if your font supports it */
-}
-
-/* Ensure links and buttons also hide the default cursor so our custom one takes over */
-a, button, input, select, textarea {
-  cursor: none;
+/* Base resets or forced light mode body styles can go here */
+@layer base {
+  body {
+    background-color: var(--color-auib-white);
+    color: var(--color-auib-charcoal);
+  }
 }
