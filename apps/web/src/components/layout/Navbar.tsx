@@ -1,62 +1,55 @@
-'use client';
+import { useTranslations } from 'next-intl';
+import Link from 'next/link';
+import Image from 'next/image';
 
-import { motion } from 'framer-motion';
-import { Link, usePathname } from '@/i18n/routing';
-import { useLocale } from 'next-intl';
-import { useState } from 'react';
-
-export function Navbar() {
-  const locale = useLocale();
-  const pathname = usePathname();
-  const [imgError, setImgError] = useState(false);
-  
-  const nextLocale = locale === 'en' ? 'ar' : 'en';
-  const toggleText = locale === 'en' ? 'عربي' : 'ENG';
+export default function Navbar({ locale }: { locale: string }) {
+  const t = useTranslations('Navigation');
+  const targetLocale = locale === 'en' ? 'ar' : 'en';
 
   return (
-    <motion.nav 
-      initial={{ y: -50, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-      className="fixed top-0 left-0 w-full z-40 px-6 md:px-12 py-6 flex items-center justify-between pointer-events-none mix-blend-difference text-white"
-    >
-      {/* LEFT: Logo / Home Link */}
-      <div className="pointer-events-auto">
-        <Link href="/" className="group flex items-center gap-3">
-          {!imgError && (
-            <img 
-              src="/logo-samoon.png" 
-              alt="TIC" 
-              onError={() => setImgError(true)}
-              className="w-8 h-8 group-hover:rotate-12 transition-transform duration-500" 
-            />
-          )}
-          <span className="font-black uppercase tracking-widest text-xs group-hover:text-amber-500 transition-colors">
-            TIC.
+    <nav className="sticky top-0 z-50 w-full bg-auib-white/95 backdrop-blur-sm border-b border-auib-charcoal/10">
+      <div className="max-w-6xl mx-auto px-6 h-20 flex items-center justify-between">
+        {/* Logo Section */}
+        <Link href={`/${locale}`} className="flex items-center gap-3">
+          {/* Using your provided square logo concept */}
+          <div className="w-12 h-12 bg-auib-red text-auib-white flex items-center justify-center font-bold font-serif shadow-sm">
+            SAL
+          </div>
+          <span className="font-bold text-auib-charcoal tracking-wide hidden sm:block">
+            {t('societyName')}
           </span>
         </Link>
-      </div>
 
-      {/* CENTER & RIGHT: Links and Language Toggle */}
-      <div className="pointer-events-auto flex items-center gap-4 md:gap-8">
-        <div className="flex items-center gap-4 text-[10px] md:text-xs font-bold uppercase tracking-[0.2em]">
-          <Link href="/museum" className="hover:text-amber-500 transition-colors duration-300 relative group hidden sm:block">
-            Museum
-          </Link>
-          <Link href="/blog" className="hover:text-amber-500 transition-colors duration-300 relative group hidden sm:block">
-            Curations
+        {/* Links & Locale Switcher */}
+        <div className="flex items-center gap-8">
+          <ul className="flex items-center gap-6 font-medium text-sm text-auib-charcoal">
+            <li>
+              <Link href={`/${locale}`} className="hover:text-auib-red transition-colors">
+                {t('home')}
+              </Link>
+            </li>
+            <li>
+              <Link href={`/${locale}/events`} className="hover:text-auib-red transition-colors">
+                {t('events')}
+              </Link>
+            </li>
+            <li>
+              <Link href={`/${locale}/journal`} className="hover:text-auib-red transition-colors">
+                {t('journal')}
+              </Link>
+            </li>
+          </ul>
+
+          <div className="h-6 w-px bg-auib-charcoal/20"></div>
+
+          <Link 
+            href={`/${targetLocale}`} 
+            className="text-sm font-bold text-auib-red hover:text-auib-charcoal transition-colors uppercase tracking-widest"
+          >
+            {targetLocale}
           </Link>
         </div>
-
-        {/* Language Switcher */}
-        <Link 
-          href={pathname} 
-          locale={nextLocale} 
-          className="w-8 h-8 md:w-10 md:h-10 rounded-full border border-current flex items-center justify-center text-[9px] md:text-[10px] font-bold uppercase hover:bg-amber-500 hover:border-amber-500 hover:text-black transition-all duration-300"
-        >
-          {toggleText}
-        </Link>
       </div>
-    </motion.nav>
+    </nav>
   );
 }
