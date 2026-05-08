@@ -1,7 +1,8 @@
-import { useTranslations } from 'next-intl';
+import { getTranslations } from 'next-intl/server';
 
-export default function Events() {
-  const t = useTranslations('EventsPage');
+export default async function Events({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: 'EventsPage' });
 
   const upcomingEvents = [
     {
@@ -23,20 +24,13 @@ export default function Events() {
   return (
     <div className="max-w-5xl mx-auto px-6 py-16">
       <header className="mb-16 text-center">
-        <h1 className="text-4xl md:text-5xl font-bold text-auib-red mb-4">
-          {t('pageTitle')}
-        </h1>
-        <p className="text-lg text-auib-charcoal/70 max-w-2xl mx-auto">
-          {t('pageSubtitle')}
-        </p>
+        <h1 className="text-4xl md:text-5xl font-bold text-auib-red mb-4">{t('pageTitle')}</h1>
+        <p className="text-lg text-auib-charcoal/70 max-w-2xl mx-auto">{t('pageSubtitle')}</p>
       </header>
 
       <div className="space-y-8">
         {upcomingEvents.map((event) => (
-          <article 
-            key={event.id} 
-            className="flex flex-col md:flex-row bg-white border border-auib-charcoal/10 shadow-sm hover:shadow-md transition-shadow group"
-          >
+          <article key={event.id} className="flex flex-col md:flex-row bg-white border border-auib-charcoal/10 shadow-sm hover:shadow-md transition-shadow group">
             <div className="md:w-1/3 bg-auib-charcoal/5 p-8 flex flex-col justify-center border-b md:border-b-0 md:border-r border-auib-charcoal/10">
               <span className="text-auib-red font-bold text-xl mb-2">{event.date}</span>
               <span className="text-sm font-medium text-auib-charcoal uppercase tracking-wider flex items-center gap-2">
