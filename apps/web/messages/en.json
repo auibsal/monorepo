@@ -1,23 +1,51 @@
 {
   "Navigation": {
-    "museum": "Gallery",
-    "blog": "Curations",
-    "switch_lang": "عربي"
+    "societyName": "Society of Arts and Letters",
+    "home": "Home",
+    "events": "Events",
+    "journal": "The Journal"
   },
   "Footer": {
-    "rights": "All rights reserved.",
-    "location": "Baghdad, Iraq"
+    "societyName": "AUIB Society of Arts and Letters",
+    "description": "Fostering academic excellence, creative discourse, and the humanities across the university campus.",
+    "linksTitle": "Navigation",
+    "home": "Home",
+    "events": "Events",
+    "journal": "Journal",
+    "contactTitle": "Society Address",
+    "university": "American University of Iraq, Baghdad",
+    "addressLine1": "Airport Road",
+    "addressLine2": "Baghdad, Iraq",
+    "rights": "All Rights Reserved.",
+    "designedBy": "Designed for the literary mind."
   },
-  "Landing": {
-    "title_prefix": "The Iraqi ",
-    "title_highlight": "Curator",
-    "subtitle": "Audiovisual Museum • Contemporary Art",
-    "enter": "Enter Gallery",
-    "read": "Read Curations"
+  "HomePage": {
+    "title": "Society of Arts and Letters",
+    "subtitle": "Fostering literary excellence, discourse, and the humanities at the American University of Iraq, Baghdad.",
+    "missionTitle": "Our Mission",
+    "missionText": "To cultivate a community of scholars and artists dedicated to the pursuit of intellectual and creative expression.",
+    "membershipTitle": "Membership",
+    "membershipText": "Membership is extended to students who demonstrate exceptional promise in the literary, performing, and visual arts.",
+    "applyButton": "Inquire Regarding Membership"
   },
-  "Museum": {
-    "loading": "Loading Exhibition...",
-    "exhibition": "Exhibition 01",
-    "archive": "Contemporary Archive"
+  "EventsPage": {
+    "pageTitle": "Gatherings & Productions",
+    "pageSubtitle": "Join us for an upcoming evening of literary discourse, theatrical stagings, or society readings.",
+    "event1Date": "October 15, 2026",
+    "event1Title": "Autumn Literary Reading",
+    "event1Location": "AUIB Library Rotunda",
+    "event1Desc": "An evening of original poetry and prose read by the founding members of the society.",
+    "event2Date": "November 20, 2026",
+    "event2Title": "Staged Production: The Importance of Being Earnest",
+    "event2Location": "AUIB Main Auditorium",
+    "event2Desc": "A collaborative production bringing Oscar Wilde's classic trivial comedy for serious people to the university stage."
+  },
+  "JournalPage": {
+    "journalName": "The SAL Review",
+    "journalSubtitle": "The Official Literary Publication of the Society",
+    "journalIntro": "Publishing the finest essays, poetry, and dramatic criticisms authored by our members and the wider university body.",
+    "article1Title": "The Genesis of Letters at AUIB",
+    "article1Excerpt": "An exploration into the founding necessity of a literary society within a burgeoning university environment, examining the role of humanities in a modern technical world.",
+    "readMore": "Read full essay"
   }
 }
