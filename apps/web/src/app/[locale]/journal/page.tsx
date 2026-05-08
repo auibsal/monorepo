@@ -1,11 +1,11 @@
-import { useTranslations } from 'next-intl';
+import { getTranslations } from 'next-intl/server';
 
-export default function Journal() {
-  const t = useTranslations('JournalPage');
+export default async function Journal({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: 'JournalPage' });
 
   return (
     <div className="max-w-4xl mx-auto px-6 py-16">
-      
       <header className="text-center mb-20 border-b border-auib-charcoal/10 pb-16">
         <h1 className="text-5xl md:text-6xl font-bold text-auib-charcoal mb-4 font-serif">
           {t('journalName')}
@@ -19,13 +19,14 @@ export default function Journal() {
       </header>
 
       <div className="space-y-16">
-        {/* Mocked Journal Entries */}
         <article className="group cursor-pointer">
-          <div className="flex items-center gap-4 mb-3">
-            <span className="text-xs text-auib-charcoal bg-auib-charcoal/10 px-3 py-1 rounded-full uppercase tracking-widest font-bold">
+          <div className="flex flex-col gap-2 mb-4 border-l-2 border-auib-red pl-4">
+            <span className="text-xs text-auib-charcoal uppercase tracking-widest font-bold">
               Vol. I, Issue 1
             </span>
-            <span className="text-sm text-auib-charcoal/60">May 2026</span>
+            <span className="text-sm text-auib-charcoal/80 italic">
+              {t('article1Authors')}
+            </span>
           </div>
           <h3 className="text-3xl font-bold mt-1 group-hover:text-auib-red transition-colors mb-3">
             {t('article1Title')}
@@ -38,7 +39,6 @@ export default function Journal() {
           </span>
         </article>
       </div>
-
     </div>
   );
 }
