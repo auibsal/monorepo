@@ -2,8 +2,8 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { Ubuntu } from 'next/font/google';
 import localFont from 'next/font/local'; // Import the local loader
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
+import Navbar from '@/components/layout/Navbar';
+import Footer from '@/components/layout/Footer';
 import '../globals.css';
 
 // 1. Keep Google Fonts for the English (Latin) version
