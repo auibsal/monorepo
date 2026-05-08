@@ -1,35 +1,45 @@
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
-import { CustomCursor } from '@/components/CustomCursor';
-import { Navbar } from '@/components/layout/Navbar';
-import { Footer } from '@/components/layout/Footer';
-import '../globals.css';
+import { Ubuntu } from 'next/font/google';
+import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
+import './globals.css';
+
+const ubuntu = Ubuntu({ 
+  weight: ['300', '400', '500', '700'], 
+  subsets: ['latin'],
+  variable: '--font-ubuntu'
+});
+
+const ubuntuArabic = Ubuntu({ 
+  weight: ['400', '700'], 
+  subsets: ['arabic'],
+  variable: '--font-ubuntu-arabic'
+});
 
 export default async function LocaleLayout({
   children,
-  params,
+  params: { locale }
 }: {
   children: React.ReactNode;
-  params: Promise<{ locale: string }>;
+  params: { locale: string };
 }) {
-  const resolvedParams = await params;
-  const locale = resolvedParams.locale;
   const messages = await getMessages();
+  const dir = locale === 'ar' ? 'rtl' : 'ltr';
+  const fontClass = locale === 'ar' ? ubuntuArabic.variable : ubuntu.variable;
 
   return (
-    <html lang={locale} dir={locale === 'ar' ? 'rtl' : 'ltr'}>
-      <body className="flex flex-col min-h-screen bg-[#f8f8f8] text-[#111111]">
+    <html lang={locale} dir={dir}>
+      <body className={`${fontClass} font-sans bg-auib-white text-auib-charcoal min-h-screen flex flex-col antialiased`}>
         <NextIntlClientProvider messages={messages}>
-          <CustomCursor />
           
-          <Navbar />
+          <Navbar locale={locale} />
           
-          {/* Main content grows to push footer down */}
           <main className="flex-grow">
             {children}
           </main>
           
-          <Footer />
+          <Footer locale={locale} />
 
         </NextIntlClientProvider>
       </body>
