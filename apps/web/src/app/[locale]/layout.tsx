@@ -1,8 +1,8 @@
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { Ubuntu } from 'next/font/google';
-import Navbar from '@/components/layout/Navbar';
-import Footer from '@/components/layout/Footer';
+import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
 import '../globals.css';
 
 const ubuntu = Ubuntu({ 
@@ -19,12 +19,14 @@ const ubuntuArabic = Ubuntu({
 
 export default async function LocaleLayout({
   children,
-  params: { locale }
+  params,
 }: {
   children: React.ReactNode;
-  params: { locale: string };
+  params: Promise<{ locale: string }>;
 }) {
+  const { locale } = await params; 
   const messages = await getMessages();
+  
   const dir = locale === 'ar' ? 'rtl' : 'ltr';
   const fontClass = locale === 'ar' ? ubuntuArabic.variable : ubuntu.variable;
 
@@ -32,15 +34,11 @@ export default async function LocaleLayout({
     <html lang={locale} dir={dir}>
       <body className={`${fontClass} font-sans bg-auib-white text-auib-charcoal min-h-screen flex flex-col antialiased`}>
         <NextIntlClientProvider messages={messages}>
-          
           <Navbar locale={locale} />
-          
           <main className="flex-grow">
             {children}
           </main>
-          
           <Footer locale={locale} />
-
         </NextIntlClientProvider>
       </body>
     </html>
