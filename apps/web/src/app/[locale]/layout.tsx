@@ -17,12 +17,12 @@ const ubuntu = Ubuntu({
 const ubuntuArabic = localFont({
   src: [
     {
-      path: '../../../../public/fonts/UbuntuArabic-Regular.ttf',
+      path: '../../../public/fonts/UbuntuArabic-Regular.ttf',
       weight: '400',
       style: 'normal',
     },
     {
-      path: '../../../../public/fonts/UbuntuArabic-Bold.ttf',
+      path: '../../../public/fonts/UbuntuArabic-Bold.ttf',
       weight: '700',
       style: 'normal',
     }
