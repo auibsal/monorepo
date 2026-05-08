@@ -1,15 +1,13 @@
-import { useTranslations } from 'next-intl';
+import { getTranslations } from 'next-intl/server';
 import Image from 'next/image';
 
-export default function Home() {
-  const t = useTranslations('HomePage');
+export default async function Home({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: 'HomePage' });
 
   return (
     <div className="max-w-6xl mx-auto px-6 py-16 md:py-24">
-      
-      {/* Hero Section */}
       <section className="text-center mb-24 flex flex-col items-center">
-        {/* Replace path with your actual uploaded red logo */}
         <Image 
           src="/logos/Logos_20260508_143919_0002.png" 
           alt="AUIB Society of Arts and Letters" 
@@ -25,10 +23,8 @@ export default function Home() {
         </p>
       </section>
 
-      {/* Divider */}
       <div className="w-24 h-1 bg-auib-red mx-auto mb-20 rounded-full"></div>
 
-      {/* Mission & Vision grid */}
       <section className="grid md:grid-cols-2 gap-16">
         <div className="bg-auib-charcoal/5 p-8 rounded-sm border border-auib-charcoal/10">
           <h2 className="text-3xl font-semibold text-auib-red mb-4">{t('missionTitle')}</h2>
@@ -46,7 +42,6 @@ export default function Home() {
           </button>
         </div>
       </section>
-
     </div>
   );
 }
