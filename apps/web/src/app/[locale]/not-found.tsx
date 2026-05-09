@@ -21,7 +21,7 @@ export default function NotFound() {
   }, []);
 
   return (
-    <div className="min-h-[70vh] flex flex-col items-center justify-center p-8 overflow-hidden relative bg-auib-white">
+    <div className="min-h-[70vh] flex flex-col items-start justify-start p-8 overflow-hidden relative bg-auib-white">
       <motion.div 
         animate={{ x: mousePosition.x, y: mousePosition.y }}
         transition={{ type: 'spring', damping: 15 }}
@@ -30,13 +30,13 @@ export default function NotFound() {
         <Image src="/logo-samoon.png" alt="Lost Page" fill className="object-contain opacity-50 grayscale mix-blend-multiply" />
       </motion.div>
 
-      <div className="absolute inset-0 flex flex-col items-center justify-center z-20 pointer-events-none">
+      <div className="absolute inset-0 flex flex-col items-start justify-start z-20 pointer-events-none">
         <h1 className="text-[10rem] md:text-[15rem] font-black text-black/5 leading-none">404</h1>
       </div>
 
-      <div className="relative z-30 text-center mt-12">
+      <div className="relative z-30  mt-12">
         <h2 className="text-3xl md:text-5xl font-black uppercase tracking-tighter mb-4 text-[#111111]">Page not found.</h2>
-        <p className="text-sm tracking-widest uppercase text-zinc-500 mb-8 max-w-md mx-auto leading-relaxed">
+        <p className="text-sm tracking-widest uppercase text-zinc-500 mb-8 max-w-md leading-relaxed">
           The requested page could not be found.
         </p>
         <Link href="/" className="inline-block border border-auib-red text-auib-red px-8 py-4 text-xs font-bold uppercase tracking-[0.2em] hover:bg-auib-red hover:text-white transition-colors duration-300">
