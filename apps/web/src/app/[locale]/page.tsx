@@ -1,5 +1,4 @@
 import { getTranslations } from 'next-intl/server';
-import Image from 'next/image';
 
 export default async function Home({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -8,14 +7,6 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
   return (
     <div className="max-w-6xl mx-auto px-6 py-16 md:py-32">
       <section className="text-center mb-28 flex flex-col items-center">
-        <div className="relative w-48 h-48 mb-12 hover:scale-105 transition-transform duration-500 ease-in-out">
-          <Image
-            src="/logo-samoon.png"
-            alt="AUIB Society of Arts and Letters"
-            fill
-            className="object-contain drop-shadow-md"
-          />
-        </div>
         <h1 className="text-5xl md:text-7xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-auib-red to-[#5a1122] mb-8 tracking-tight leading-tight">
           {t('title')}
         </h1>

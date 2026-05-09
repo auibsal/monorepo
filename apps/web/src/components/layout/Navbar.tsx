@@ -9,13 +9,27 @@ export default async function Navbar({ locale }: { locale: string }) {
     <nav className="sticky top-0 z-50 w-full bg-auib-white/95 backdrop-blur-sm border-b border-auib-charcoal/10">
       <div className="max-w-6xl mx-auto px-6 h-20 flex items-center justify-between">
         
-        <Link href="/" className="flex items-center gap-3">
-          <div className="w-12 h-12 bg-auib-red text-auib-white flex items-center justify-center font-bold font-serif shadow-sm">
-            SAL
+        <Link href="/" className="flex items-center">
+          <div
+            className="font-bold text-auib-charcoal"
+            style={{ letterSpacing: '0px', lineHeight: 1.4 }}
+          >
+            {locale === 'en' ? (
+              <>
+                AUIB<br />
+                Society of<br />
+                Arts and<br />
+                Letters
+              </>
+            ) : (
+              <>
+                جمعيةُ الفنونِ<br />
+                والآداب في<br />
+                الجامعةِ<br />
+                الأمريكيةِ
+              </>
+            )}
           </div>
-          <span className="font-bold text-auib-charcoal tracking-wide hidden sm:block">
-            {t('societyName')}
-          </span>
         </Link>
 
         <div className="flex items-center gap-8">
