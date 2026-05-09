@@ -5,38 +5,48 @@ export default async function Journal({ params }: { params: Promise<{ locale: st
   const t = await getTranslations({ locale, namespace: 'JournalPage' });
 
   return (
-    <div className="max-w-4xl mx-auto px-6 py-16">
-      <header className="text-center mb-20 border-b border-auib-charcoal/10 pb-16">
-        <h1 className="text-5xl md:text-6xl font-bold text-auib-charcoal mb-4 font-serif">
+    <div className="max-w-4xl mx-auto px-6 py-20">
+      <header className="text-center mb-24 border-b-2 border-auib-charcoal/10 pb-16 relative">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-32 bg-auib-red/5 rounded-full blur-3xl -z-10"></div>
+        <h1 className="text-6xl md:text-8xl font-black text-auib-charcoal mb-6 font-serif tracking-tight">
           {t('journalName')}
         </h1>
-        <p className="text-xl text-auib-red italic mb-8">
+        <p className="text-2xl text-auib-red font-medium mb-10 tracking-wide">
           {t('journalSubtitle')}
         </p>
-        <p className="text-lg leading-relaxed max-w-2xl mx-auto">
+        <div className="w-16 h-1 bg-auib-charcoal/20 mx-auto mb-10"></div>
+        <p className="text-xl leading-relaxed max-w-2xl mx-auto text-auib-charcoal/80 font-serif">
           {t('journalIntro')}
         </p>
       </header>
 
-      <div className="space-y-16">
-        <article className="group cursor-pointer">
-          <div className="flex flex-col gap-2 mb-4 border-l-2 border-auib-red pl-4">
-            <span className="text-xs text-auib-charcoal uppercase tracking-widest font-bold">
+      <div className="space-y-20">
+        <article className="group cursor-pointer relative bg-white p-10 md:p-14 rounded-xl shadow-sm border border-auib-charcoal/5 hover:shadow-2xl hover:border-auib-red/20 transition-all duration-500 overflow-hidden">
+          <div className="absolute top-0 right-0 w-full h-1 bg-gradient-to-r from-auib-red/0 via-auib-red to-auib-red/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+            <span className="inline-block px-4 py-1.5 bg-auib-charcoal/5 text-auib-charcoal text-xs font-bold uppercase tracking-widest rounded-full w-fit">
               Vol. I, Issue 1
             </span>
-            <span className="text-sm text-auib-charcoal/80 italic">
+            <span className="text-sm text-auib-charcoal/60 font-serif italic">
               {t('article1Authors')}
             </span>
           </div>
-          <h3 className="text-3xl font-bold mt-1 group-hover:text-auib-red transition-colors mb-3">
+
+          <h3 className="text-4xl md:text-5xl font-bold mt-2 text-auib-charcoal group-hover:text-auib-red transition-colors mb-6 leading-tight">
             {t('article1Title')}
           </h3>
-          <p className="text-lg text-auib-charcoal/80 leading-relaxed mb-4">
+
+          <p className="text-xl text-auib-charcoal/70 leading-relaxed mb-8 font-serif">
             {t('article1Excerpt')}
           </p>
-          <span className="text-auib-red font-medium hover:underline underline-offset-4">
-            {t('readMore')} &rarr;
-          </span>
+
+          <div className="flex items-center text-auib-red font-bold uppercase tracking-widest text-sm group-hover:translate-x-2 transition-transform">
+            <span>{t('readMore')}</span>
+            <svg className="w-5 h-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            </svg>
+          </div>
         </article>
       </div>
     </div>

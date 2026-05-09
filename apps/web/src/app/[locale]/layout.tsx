@@ -1,19 +1,17 @@
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { Ubuntu } from 'next/font/google';
-import localFont from 'next/font/local'; // Import the local loader
+import localFont from 'next/font/local';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import '../globals.css';
 
-// 1. Keep Google Fonts for the English (Latin) version
 const ubuntu = Ubuntu({ 
   weight: ['300', '400', '500', '700'], 
   subsets: ['latin'],
   variable: '--font-ubuntu'
 });
 
-// 2. Use localFont for the Ubuntu Arabic files
 const ubuntuArabic = localFont({
   src: [
     {
@@ -44,7 +42,7 @@ export default async function LocaleLayout({
   const fontClass = locale === 'ar' ? ubuntuArabic.variable : ubuntu.variable;
 
   return (
-    <html lang={locale} dir={dir}>
+    <html lang={locale} dir={dir} className={`${ubuntu.variable} ${ubuntuArabic.variable}`}>
       <body className={`${fontClass} font-sans bg-auib-white text-auib-charcoal min-h-screen flex flex-col antialiased`}>
         <NextIntlClientProvider messages={messages}>
           <Navbar locale={locale} />
