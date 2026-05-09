@@ -1,5 +1,6 @@
 import { getTranslations } from 'next-intl/server';
 import { Link } from '@/i18n/routing';
+import Logo from '@/components/Logo';
 
 export default async function Navbar({ locale }: { locale: string }) {
   const t = await getTranslations({ locale, namespace: 'Navigation' });
@@ -10,26 +11,7 @@ export default async function Navbar({ locale }: { locale: string }) {
       <div className="max-w-6xl mx-auto px-6 h-20 flex items-center justify-between">
         
         <Link href="/" className="flex items-center">
-          <div
-            className="font-bold text-auib-charcoal"
-            style={{ letterSpacing: '0px', lineHeight: 1.4 }}
-          >
-            {locale === 'en' ? (
-              <>
-                AUIB<br />
-                Society of<br />
-                Arts and<br />
-                Letters
-              </>
-            ) : (
-              <>
-                جمعيةُ الفنونِ<br />
-                والآداب في<br />
-                الجامعةِ<br />
-                الأمريكيةِ
-              </>
-            )}
-          </div>
+          <Logo locale={locale} className="text-xs sm:text-sm leading-tight" />
         </Link>
 
         <div className="flex items-center gap-8">

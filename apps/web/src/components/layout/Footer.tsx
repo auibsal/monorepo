@@ -1,5 +1,6 @@
 import { getTranslations } from 'next-intl/server';
 import { Link } from '@/i18n/routing';
+import Logo from '@/components/Logo';
 
 export default async function Footer({ locale }: { locale: string }) {
   const t = await getTranslations({ locale, namespace: 'Footer' });
@@ -11,7 +12,9 @@ export default async function Footer({ locale }: { locale: string }) {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12 border-b border-auib-white/10 pb-12">
           
           <div className="md:col-span-1">
-            <h3 className="text-xl font-bold mb-4">{t('societyName')}</h3>
+            <div className="mb-6">
+              <Logo locale={locale} className="text-xl text-auib-white" />
+            </div>
             <p className="text-auib-white/70 text-sm leading-relaxed">
               {t('description')}
             </p>
@@ -37,7 +40,7 @@ export default async function Footer({ locale }: { locale: string }) {
           </div>
         </div>
 
-        <div className="text-center text-xs text-auib-white/50 flex flex-col md:flex-row justify-between items-center">
+        <div className=" text-xs text-auib-white/50 flex flex-col md:flex-row justify-between items-center">
           <p>&copy; {year} {t('societyName')}. {t('rights')}</p>
           <p className="mt-2 md:mt-0">{t('designedBy')}</p>
         </div>

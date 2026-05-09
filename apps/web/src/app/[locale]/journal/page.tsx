@@ -6,16 +6,16 @@ export default async function Journal({ params }: { params: Promise<{ locale: st
 
   return (
     <div className="max-w-4xl mx-auto px-6 py-20">
-      <header className="text-center mb-24 border-b-2 border-auib-charcoal/10 pb-16 relative">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-32 bg-auib-red/5 rounded-full blur-3xl -z-10"></div>
+      <header className=" mb-24 border-b-2 border-auib-charcoal/10 pb-16 relative">
+        <div className="absolute top-0 start-0 w-32 h-32 bg-auib-red/5 rounded-full blur-3xl -z-10"></div>
         <h1 className="text-6xl md:text-8xl font-black text-auib-charcoal mb-6 tracking-tight">
           {t('journalName')}
         </h1>
         <p className="text-2xl text-auib-red font-medium mb-10 tracking-wide">
           {t('journalSubtitle')}
         </p>
-        <div className="w-16 h-1 bg-auib-charcoal/20 mx-auto mb-10"></div>
-        <p className="text-xl leading-relaxed max-w-2xl mx-auto text-auib-charcoal/80">
+        <div className="w-16 h-1 bg-auib-charcoal/20 mb-10"></div>
+        <p className="text-xl leading-relaxed max-w-2xl text-auib-charcoal/80">
           {t('journalIntro')}
         </p>
       </header>

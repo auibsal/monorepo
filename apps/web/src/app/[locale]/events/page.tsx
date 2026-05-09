@@ -23,15 +23,15 @@ export default async function Events({ params }: { params: Promise<{ locale: str
 
   return (
     <div className="max-w-5xl mx-auto px-6 py-20">
-      <header className="mb-20 text-center relative">
-        <div className="absolute inset-0 flex items-center justify-center -z-10 opacity-5">
+      <header className="mb-20  relative">
+        <div className="absolute inset-0 flex items-start -z-10 opacity-5">
           <svg className="w-64 h-64" fill="currentColor" viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20a2 2 0 002 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2zm-7 5h5v5h-5v-5z"/></svg>
         </div>
         <h1 className="text-5xl md:text-6xl font-extrabold text-auib-charcoal mb-6 tracking-tight">
           {t('pageTitle')}
         </h1>
-        <div className="w-24 h-1.5 bg-auib-red mx-auto mb-8 rounded-full"></div>
-        <p className="text-xl text-auib-charcoal/70 max-w-2xl mx-auto leading-relaxed font-light">
+        <div className="w-24 h-1.5 bg-auib-red mb-8 rounded-full"></div>
+        <p className="text-xl text-auib-charcoal/70 max-w-2xl leading-relaxed font-light">
           {t('pageSubtitle')}
         </p>
       </header>

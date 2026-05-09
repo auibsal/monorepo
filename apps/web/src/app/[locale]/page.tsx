@@ -6,16 +6,16 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
 
   return (
     <div className="max-w-6xl mx-auto px-6 py-16 md:py-32">
-      <section className="text-center mb-28 flex flex-col items-center">
+      <section className=" mb-28 flex flex-col items-start">
         <h1 className="text-5xl md:text-7xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-auib-red to-[#5a1122] mb-8 tracking-tight leading-tight">
           {t('title')}
         </h1>
-        <p className="text-xl md:text-3xl text-auib-charcoal/80 max-w-4xl mx-auto leading-relaxed font-light">
+        <p className="text-xl md:text-3xl text-auib-charcoal/80 max-w-4xl leading-relaxed font-light">
           {t('subtitle')}
         </p>
       </section>
 
-      <div className="w-32 h-1.5 bg-gradient-to-r from-auib-red/20 via-auib-red to-auib-red/20 mx-auto mb-28 rounded-full"></div>
+      <div className="w-32 h-1.5 bg-gradient-to-r from-auib-red/20 via-auib-red to-auib-red/20 mb-28 rounded-full"></div>
 
       <section className="grid md:grid-cols-2 gap-12 md:gap-16">
         <div className="group bg-white p-10 rounded-2xl border border-auib-charcoal/5 shadow-lg shadow-auib-charcoal/5 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
@@ -42,7 +42,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
             <p className="text-lg leading-relaxed text-white/80 mb-10">
               {t('membershipText')}
             </p>
-            <button className="px-8 py-4 bg-auib-red text-white font-bold rounded-lg hover:bg-white hover:text-auib-red transition-all shadow-lg hover:shadow-auib-red/20 w-full md:w-auto text-center">
+            <button className="px-8 py-4 bg-auib-red text-white font-bold rounded-lg hover:bg-white hover:text-auib-red transition-all shadow-lg hover:shadow-auib-red/20 w-full md:w-auto ">
               {t('applyButton')}
             </button>
           </div>
