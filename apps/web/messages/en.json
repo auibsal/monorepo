@@ -48,5 +48,17 @@
     "article1Authors": "Authored by Shaheen Farjo. Contributions by Hussein, Remas, and Jude.",
     "article1Excerpt": "An exploration into the founding necessity of a literary society within a burgeoning university environment, examining the role of humanities in a modern technical world.",
     "readMore": "Read full essay"
+  },
+  "NotFound": {
+    "title": "404",
+    "heading": "Page Not Found",
+    "description": "The manuscript you are looking for has been lost in the archives.",
+    "returnHome": "Return Home",
+    "quotes": {
+      "q1": "Not all those who wander are lost, but this page certainly is.",
+      "q2": "A blank page is a canvas, but this one is just missing.",
+      "q3": "The ink has dried, and the words have faded from this path.",
+      "q4": "Some stories remain untold, and some links remain broken."
+    }
   }
 }
