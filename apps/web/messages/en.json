@@ -49,6 +49,44 @@
     "article1Excerpt": "An exploration into the founding necessity of a literary society within a burgeoning university environment, examining the role of humanities in a modern technical world.",
     "readMore": "Read full essay"
   },
+  "AboutPage": {
+    "title": "About the Society",
+    "p1": "The AUIB Society of Arts and Letters is a community dedicated to the humanities.",
+    "p2": "We believe in the power of words, art, and intellectual exchange."
+  },
+  "PoliciesPage": {
+    "title": "Policies",
+    "p1": "All members must adhere to the highest standards of academic integrity.",
+    "p2": "Plagiarism is strictly prohibited."
+  },
+  "CharterPage": {
+    "title": "Charter and Bylaws",
+    "p1": "This document outlines the foundational principles of our society.",
+    "p2": "The society operates independently under the guidance of our faculty."
+  },
+  "BlogPage": {
+    "title": "Society News",
+    "subtitle": "Latest updates and announcements.",
+    "placeholderTitle": "Coming Soon",
+    "placeholderDesc": "Our first blog post will be published here."
+  },
+  "PortalPage": {
+    "title": "Member Portal",
+    "welcome": "Welcome back.",
+    "submissionsText": "Track the status of your recent submissions here.",
+    "eventsText": "RSVP to upcoming exclusive member events."
+  },
+  "SubmitPage": {
+    "title": "Submit Your Work",
+    "instructions": "Use this form to submit your writing to the editorial board.",
+    "formTitle": "Title",
+    "formType": "Type of Work",
+    "typeEssay": "Essay",
+    "typePoetry": "Poetry",
+    "typeFiction": "Fiction",
+    "formContent": "Content",
+    "submitButton": "Submit Application"
+  },
   "NotFound": {
     "title": "404",
     "heading": "Page Not Found",
