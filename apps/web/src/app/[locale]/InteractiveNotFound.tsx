@@ -4,7 +4,6 @@ import { motion } from 'framer-motion';
 import { Link } from '@/i18n/routing';
 import { useEffect, useState, useRef } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
-import Image from 'next/image';
 
 interface Trail {
   x: number;
@@ -113,10 +112,6 @@ export default function InteractiveNotFound() {
           ))}
         </div>
       )}
-
-      <div className="relative z-20 w-48 h-48 md:w-64 md:h-64 mb-8">
-        <Image src="/logo-samoon.png" alt="Lost Page" fill className="object-contain opacity-50 grayscale mix-blend-multiply drop-shadow-xl" />
-      </div>
 
       <div className="absolute inset-0 flex flex-col items-start justify-start z-10 pointer-events-none p-8">
         <h1 className="text-[10rem] md:text-[15rem] font-black text-black/5 leading-none select-none text-start tracking-tighter">
