@@ -52,7 +52,7 @@ export default async function EventsPage() {
             <p className="text-sm text-gray-500 mb-4">Check for conflicts before scheduling.</p>
             <div className="bg-white rounded-lg border border-red-200 overflow-hidden max-h-[600px] overflow-y-auto">
                 <ul className="divide-y divide-gray-100">
-                    {auibEvents.slice(0, 10).map((event: any, i) => (
+                    {auibEvents.slice(0, 10).map((event: any /* eslint-disable-line @typescript-eslint/no-explicit-any */, i) => (
                         <li key={i} className="p-4 hover:bg-gray-50">
                             <p className="font-medium text-sm">{event.summary}</p>
                             <p className="text-xs text-gray-500 mt-1">

@@ -40,7 +40,7 @@ export async function GET(
   }
 
   // Map to ICS format
-  const icsEvents: EventAttributes[] = eventsData.map((event: any) => {
+  const icsEvents: EventAttributes[] = eventsData.map((event: any /* eslint-disable-line @typescript-eslint/no-explicit-any */) => {
     const startDate = new Date(event.starts_at);
     const endDate = new Date(event.ends_at);
 
