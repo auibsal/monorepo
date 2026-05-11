@@ -40,14 +40,15 @@ export async function GET(
   }
 
   // Map to ICS format
-  const icsEvents: EventAttributes[] = eventsData.map((event: any) => {
-    const startDate = new Date(event.starts_at);
-    const endDate = new Date(event.ends_at);
+  const icsEvents: EventAttributes[] = eventsData.map((event) => {
+    const evt = event as { starts_at: string; ends_at: string; title_en: string; description_en: string; location: string };
+    const startDate = new Date(evt.starts_at);
+    const endDate = new Date(evt.ends_at);
 
     return {
-      title: event.title_en,
-      description: event.description_en,
-      location: event.location,
+      title: evt.title_en,
+      description: evt.description_en,
+      location: evt.location,
       startInputType: 'utc',
       start: [
         startDate.getUTCFullYear(),
