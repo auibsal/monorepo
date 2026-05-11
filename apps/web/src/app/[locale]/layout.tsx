@@ -1,6 +1,7 @@
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
-import { ubuntu, ubuntuArabic, Navbar } from 'ui';
+import { ubuntu, ubuntuArabic } from 'ui';
+import WebNavbar from '@/components/layout/WebNavbar';
 import Footer from '@/components/layout/Footer';
 import '../globals.css';
 
@@ -21,7 +22,7 @@ export default async function LocaleLayout({
     <html lang={locale} dir={dir} className={`${ubuntu.variable} ${ubuntuArabic.variable}`}>
       <body className={`${fontClass} font-sans bg-auib-white text-auib-charcoal min-h-screen flex flex-col antialiased`}>
         <NextIntlClientProvider messages={messages}>
-          <Navbar locale={locale} />
+          <WebNavbar locale={locale} />
           <main className="flex-grow">
             {children}
           </main>
