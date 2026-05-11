@@ -98,5 +98,17 @@
       "q3": "The ink has dried, and the words have faded from this path.",
       "q4": "Some stories remain untold, and some links remain broken."
     }
+  },
+  "LoginPage": {
+    "loginTitle": "Member Login",
+    "loginSubtitle": "Access the society portal.",
+    "registerTitle": "Apply for Membership",
+    "registerSubtitle": "Submit your credentials for review.",
+    "emailLabel": "University Email",
+    "passwordLabel": "Password",
+    "loginButton": "Authenticate",
+    "registerButton": "Submit Application",
+    "loading": "Processing...",
+    "registerSuccess": "Application submitted. Please await further instructions."
   }
 }

@@ -1,6 +1,6 @@
 import { getTranslations } from 'next-intl/server';
 import { Link } from '@/i18n/routing';
-import Logo from '@/components/Logo';
+import { Logo } from 'ui';
 
 export default async function Footer({ locale }: { locale: string }) {
   const t = await getTranslations({ locale, namespace: 'Footer' });
