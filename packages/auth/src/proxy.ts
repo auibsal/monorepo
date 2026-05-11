@@ -1,11 +1,12 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
-export async function proxy(request: NextRequest, supabaseUrl: string, supabaseAnonKey: string) {
-  let supabaseResponse = NextResponse.next({
-    request,
-  })
-
+export async function updateSession(
+  request: NextRequest,
+  response: NextResponse,
+  supabaseUrl: string,
+  supabaseAnonKey: string
+) {
   const supabase = createServerClient(
     supabaseUrl,
     supabaseAnonKey,
@@ -16,18 +17,15 @@ export async function proxy(request: NextRequest, supabaseUrl: string, supabaseA
         },
         setAll(cookiesToSet) {
           cookiesToSet.forEach(({ name, value, options }) => request.cookies.set(name, value))
-          supabaseResponse = NextResponse.next({
-            request,
-          })
           cookiesToSet.forEach(({ name, value, options }) =>
-            supabaseResponse.cookies.set(name, value, options)
+            response.cookies.set(name, value, options)
           )
         },
       },
     }
   )
 
-  await supabase.auth.getUser()
+  const { data } = await supabase.auth.getUser()
 
-  return supabaseResponse
+  return { supabase, user: data.user, response }
 }

@@ -1,32 +1,8 @@
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
-import { Ubuntu } from 'next/font/google';
-import localFont from 'next/font/local';
-import Navbar from '@/components/layout/Navbar';
+import { ubuntu, ubuntuArabic, Navbar } from 'ui';
 import Footer from '@/components/layout/Footer';
 import '../globals.css';
-
-const ubuntu = Ubuntu({ 
-  weight: ['300', '400', '500', '700'], 
-  subsets: ['latin'],
-  variable: '--font-ubuntu'
-});
-
-const ubuntuArabic = localFont({
-  src: [
-    {
-      path: '../../../public/fonts/UbuntuArabic-Regular.ttf',
-      weight: '400',
-      style: 'normal',
-    },
-    {
-      path: '../../../public/fonts/UbuntuArabic-Bold.ttf',
-      weight: '700',
-      style: 'normal',
-    }
-  ],
-  variable: '--font-ubuntu-arabic'
-});
 
 export default async function LocaleLayout({
   children,
