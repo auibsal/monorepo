@@ -49,7 +49,7 @@ export default function DashboardLogin() {
 
         {status === 'success' ? (
           <div className="p-4 bg-auib-charcoal text-white border border-auib-charcoal font-mono text-sm">
-            > Access token dispatched. Check your university inbox.
+            Access token dispatched. Check your university inbox.
           </div>
         ) : (
           <form onSubmit={handleLogin} className="space-y-6">
