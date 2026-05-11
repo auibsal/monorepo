@@ -1,7 +1,6 @@
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { createServerClient } from '@supabase/ssr';
-import { getTranslations } from 'next-intl/server';
 
 export default async function MemberPortalPage({
   params,
@@ -9,7 +8,6 @@ export default async function MemberPortalPage({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: 'Portal' });
   const cookieStore = await cookies();
 
   // Initialize Supabase Server Client

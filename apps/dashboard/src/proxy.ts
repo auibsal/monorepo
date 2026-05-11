@@ -1,6 +1,5 @@
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
-import { createServerClient } from 'auth';
+import { NextResponse, type NextRequest } from 'next/server';
+import { updateSession } from 'auth';
 
 export async function proxy(request: NextRequest) {
   let response = NextResponse.next({
@@ -12,11 +11,7 @@ export async function proxy(request: NextRequest) {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
 
-  // Use the auth package's createServerClient which manages cookies correctly
-  const supabase = await createServerClient(supabaseUrl, supabaseAnonKey);
-
-  // Check user role
-  const { data: { user } } = await supabase.auth.getUser();
+  const { supabase, user } = await updateSession(request as any, response as any, supabaseUrl, supabaseAnonKey);
 
   if (!user) {
     return NextResponse.redirect(new URL('/login', request.url));
