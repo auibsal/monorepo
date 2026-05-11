@@ -52,7 +52,9 @@ export default async function MemberPortalPage({
     .gte('starts_at', new Date().toISOString())
     .order('starts_at', { ascending: true });
 
-  const calendarFeedUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://auibsal.org'}/api/calendar/${profile?.calendar_token}/events.ics`;
+  // Generate the feed URL. 
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://auibsal.org';
+  const calendarFeedUrl = `${baseUrl}/api/calendar/${profile?.calendar_token}/events.ics`;
 
   return (
     <div className="min-h-screen bg-auib-white text-auib-charcoal p-8 md:p-16 font-sans">
@@ -152,20 +154,19 @@ export default async function MemberPortalPage({
             {/* Private Calendar Integration */}
             <div className="border-2 border-auib-charcoal bg-auib-charcoal text-white p-6 shadow-[8px_8px_0px_0px_#9C213E]">
               <h3 className="font-bold text-xl uppercase mb-2">Calendar Sync</h3>
-              <p className="text-sm text-white/80 mb-4">
-                Subscribe to your private Society feed to automatically sync exclusive events to your Apple or Google Calendar.
+              <p className="text-sm text-white/80 mb-6">
+                Subscribe to your private Society feed to automatically sync exclusive events to your Apple, Google, or Outlook Calendar.
               </p>
-              <div className="space-y-2">
-                <label className="text-xs uppercase font-bold text-white/60">Your Secret iCal URL</label>
-                <input 
-                  type="text" 
-                  readOnly 
-                  value={calendarFeedUrl}
-                  className="w-full bg-black/40 border border-white/20 p-2 text-xs font-mono text-white/90 outline-none selection:bg-auib-red"
-                  onClick={(e) => e.currentTarget.select()}
-                />
-              </div>
-              <p className="text-xs text-white/50 mt-4 italic">
+              
+              {/* Replaced input with a clean, functional link */}
+              <a 
+                href={calendarFeedUrl}
+                className="block w-full text-center bg-white text-auib-charcoal font-bold uppercase py-3 hover:bg-auib-red hover:text-white transition-colors text-sm border-2 border-transparent"
+              >
+                Add to Calendar
+              </a>
+
+              <p className="text-xs text-white/50 mt-4 italic text-center">
                 * Do not share this link. It is tied to your university ID.
               </p>
             </div>
@@ -180,7 +181,6 @@ export default async function MemberPortalPage({
                 <a href={`/${locale}/charter`} className="block w-full text-center border-2 border-auib-charcoal py-2 font-bold uppercase hover:bg-auib-charcoal hover:text-white transition-colors">
                   Read Bylaws
                 </a>
-                {/* Logout Button (Ideally wired to a client component or server action) */}
                 <form action="/auth/signout" method="post">
                   <button type="submit" className="w-full text-center border-2 border-auib-red text-auib-red py-2 font-bold uppercase hover:bg-auib-red hover:text-white transition-colors">
                     Sign Out
