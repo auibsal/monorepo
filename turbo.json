@@ -20,7 +20,7 @@
         "POSTGRES_PASSWORD",
         "POSTGRES_DATABASE"
       ],
-      "outputs": [".next/**", "!.next/cache/**"]
+      "outputs": [".next/**", "!.next/cache/**", "dist/**"]
     },
     "dev": {
       "cache": false,
