@@ -11,18 +11,26 @@ export interface User {
   created_at: string; // Timestamp
 }
 
-export type SubmissionType = 'essay' | 'poetry' | 'fiction' | 'theatre' | 'other';
+export type SubmissionType = 'essay' | 'poetry' | 'fiction' | 'theatre' | 'visual_art' | 'other';
 export type SubmissionStatus = 'pending' | 'under_review' | 'revisions_requested' | 'accepted' | 'rejected';
 
 export interface Submission {
   id: string;
   author_id: string; // UUID
   title: string;
-  content: string;
+  content: string; // Might be empty if using file_url
+  file_url?: string;
   type: SubmissionType;
   status: SubmissionStatus;
   submitted_at: string;
   reviewed_by: string | null; // UUID
+
+  // Rubric fields
+  rubric_technical?: number;     // 20, 10, or 0
+  rubric_originality?: number;   // 20, 10, or 0
+  rubric_thematic?: number;      // 20, 10, or 0
+  rubric_archive?: boolean;      // Yes / No
+  rubric_formatting?: string;    // Pass, Fail, disqualified
 }
 
 export interface JournalIssue {
@@ -31,6 +39,7 @@ export interface JournalIssue {
   issue_number: number;
   title_en: string;
   title_ar: string;
+  file_url?: string;
   published_at: string;
 }
 

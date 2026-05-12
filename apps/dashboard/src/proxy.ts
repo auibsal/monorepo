@@ -14,7 +14,11 @@ export async function proxy(request: NextRequest) {
   const { supabase, user } = await updateSession(request as any, response as any, supabaseUrl, supabaseAnonKey);
 
   if (!user) {
-    return NextResponse.redirect(new URL('/login', request.url));
+    // If local dev, redirect to web on 3000, otherwise relative or environment based.
+    const loginUrl = process.env.NODE_ENV === 'development'
+        ? 'http://localhost:3000/en/login'
+        : `http://${request.nextUrl.host.replace(/^dashboard\./, 'web.')}/en/login`;
+    return NextResponse.redirect(loginUrl);
   }
 
   // Fetch role from custom users table
@@ -24,10 +28,13 @@ export async function proxy(request: NextRequest) {
     .eq('id', user.id)
     .single();
 
-  if (!userData || (userData.role !== 'editor' && userData.role !== 'admin')) {
-    return NextResponse.redirect(new URL('/unauthorized', request.url));
+  // Pass the role to headers so we can access it in the dashboard layout/pages if needed.
+  // Or we just allow users in but conditionally render parts of the dashboard.
+  if (userData) {
+      response.headers.set('x-user-role', userData.role);
   }
 
+  // We no longer strictly block non-editors/admins since members have a dashboard too.
   return response;
 }
 

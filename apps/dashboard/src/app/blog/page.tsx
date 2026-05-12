@@ -1,61 +1,69 @@
+'use client';
+
+import { useState } from 'react';
+import { RichTextEditor } from 'ui';
+
 export default function BlogPage() {
+  const [contentEn, setContentEn] = useState('');
+  const [contentAr, setContentAr] = useState('');
+
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-semibold">Blog CMS</h2>
-        <button className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">New Post</button>
+        <h2 className="text-2xl font-bold uppercase tracking-widest">Blog CMS</h2>
+        <button className="bg-auib-red text-auib-white font-bold uppercase tracking-wider px-4 py-2 border-2 border-auib-red hover:bg-auib-white hover:text-auib-red transition-colors shadow-[4px_4px_0px_0px_#273237]">New Post</button>
       </div>
 
-      <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+      <div className="bg-auib-charcoal text-auib-white border-2 border-auib-white shadow-[8px_8px_0px_0px_#FFFFFF] overflow-hidden mb-12">
         <table className="w-full text-left">
-          <thead className="bg-gray-50 border-b border-gray-200">
+          <thead className="border-b-2 border-auib-white">
             <tr>
-              <th className="px-6 py-3 text-sm font-medium text-gray-500">Title (EN)</th>
-              <th className="px-6 py-3 text-sm font-medium text-gray-500">Title (AR)</th>
-              <th className="px-6 py-3 text-sm font-medium text-gray-500">Author</th>
-              <th className="px-6 py-3 text-sm font-medium text-gray-500">Status</th>
-              <th className="px-6 py-3 text-sm font-medium text-gray-500">Actions</th>
+              <th className="px-6 py-3 text-sm font-bold uppercase tracking-wide">Title (EN)</th>
+              <th className="px-6 py-3 text-sm font-bold uppercase tracking-wide">Title (AR)</th>
+              <th className="px-6 py-3 text-sm font-bold uppercase tracking-wide">Author</th>
+              <th className="px-6 py-3 text-sm font-bold uppercase tracking-wide">Status</th>
+              <th className="px-6 py-3 text-sm font-bold uppercase tracking-wide">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-200">
+          <tbody className="divide-y-2 divide-auib-white/20">
             <tr>
-              <td className="px-6 py-4 text-sm">Welcome to SAL</td>
-              <td className="px-6 py-4 text-sm">مرحباً بكم في الجمعية</td>
+              <td className="px-6 py-4 text-sm font-medium">Welcome to SAL</td>
+              <td className="px-6 py-4 text-sm font-medium">مرحباً بكم في الجمعية</td>
               <td className="px-6 py-4 text-sm">Admin User</td>
-              <td className="px-6 py-4 text-sm"><span className="bg-green-100 text-green-800 py-1 px-2 rounded-full text-xs">Published</span></td>
-              <td className="px-6 py-4 text-sm text-blue-600 hover:underline cursor-pointer">Edit</td>
+              <td className="px-6 py-4 text-sm"><span className="bg-auib-red text-white py-1 px-2 font-bold uppercase text-xs tracking-wider border border-auib-red">Published</span></td>
+              <td className="px-6 py-4 text-sm text-auib-white hover:text-auib-red font-bold uppercase tracking-wider cursor-pointer transition-colors">Edit</td>
             </tr>
           </tbody>
         </table>
       </div>
 
-      {/* Example Form (hidden by default in real app, showing for scaffolding) */}
-      <div className="mt-12 bg-white p-6 rounded-lg border border-gray-200 max-w-4xl">
-        <h3 className="text-lg font-medium mb-4">Draft New Post</h3>
-        <div className="grid grid-cols-2 gap-6">
+      {/* Draft Post Form */}
+      <div className="bg-auib-white text-auib-charcoal p-8 border-2 border-auib-charcoal shadow-[8px_8px_0px_0px_#273237] max-w-6xl">
+        <h3 className="text-xl font-bold mb-6 uppercase tracking-widest border-b-2 border-auib-charcoal pb-2">Draft New Post</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Title (English)</label>
-              <input type="text" className="w-full border border-gray-300 rounded-md p-2" />
+              <label className="block text-sm font-bold uppercase tracking-wide text-auib-charcoal mb-2">Title (English)</label>
+              <input type="text" className="w-full p-3 border-2 border-auib-charcoal bg-transparent focus:outline-none focus:border-auib-red transition-colors rounded-none" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Content (English)</label>
-              <textarea rows={10} className="w-full border border-gray-300 rounded-md p-2"></textarea>
+              <label className="block text-sm font-bold uppercase tracking-wide text-auib-charcoal mb-2">Content (English)</label>
+              <RichTextEditor content={contentEn} onChange={setContentEn} />
             </div>
           </div>
           <div className="space-y-4" dir="rtl">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">العنوان (عربي)</label>
-              <input type="text" className="w-full border border-gray-300 rounded-md p-2" />
+              <label className="block text-sm font-bold uppercase tracking-wide text-auib-charcoal mb-2">العنوان (عربي)</label>
+              <input type="text" className="w-full p-3 border-2 border-auib-charcoal bg-transparent focus:outline-none focus:border-auib-red transition-colors rounded-none" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">المحتوى (عربي)</label>
-              <textarea rows={10} className="w-full border border-gray-300 rounded-md p-2"></textarea>
+              <label className="block text-sm font-bold uppercase tracking-wide text-auib-charcoal mb-2">المحتوى (عربي)</label>
+              <RichTextEditor content={contentAr} onChange={setContentAr} />
             </div>
           </div>
         </div>
-        <div className="mt-6 flex justify-end">
-            <button className="bg-gray-800 text-white px-6 py-2 rounded-md hover:bg-gray-900">Save Draft</button>
+        <div className="mt-8 flex justify-end">
+            <button className="bg-auib-charcoal text-auib-white font-bold uppercase tracking-wider px-6 py-3 border-2 border-auib-charcoal hover:bg-auib-red hover:border-auib-red transition-colors shadow-[4px_4px_0px_0px_#9C213E]">Save Draft</button>
         </div>
       </div>
     </div>
