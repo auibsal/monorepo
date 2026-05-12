@@ -1,23 +1,140 @@
+'use client';
+
+import { useState } from 'react';
+import { createBrowserClient } from '@supabase/ssr';
+
 export default function JournalPage() {
+  const [file, setFile] = useState<File | null>(null);
+  const [status, setStatus] = useState<'idle' | 'uploading' | 'success' | 'error'>('idle');
+  const [errorMessage, setErrorMessage] = useState('');
+
+  const [vol, setVol] = useState('1');
+  const [issue, setIssue] = useState('1');
+  const [titleEn, setTitleEn] = useState('');
+  const [titleAr, setTitleAr] = useState('');
+
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
+  const supabase = supabaseUrl ? createBrowserClient(supabaseUrl, supabaseKey) : null;
+
+  const handleUpload = async (e: React.FormEvent) => {
+    if (!supabase) return;
+    e.preventDefault();
+    if (!file || file.type !== 'application/pdf') {
+      setErrorMessage('Please provide a valid compiled PDF file for the journal issue.');
+      return;
+    }
+
+    setStatus('uploading');
+    setErrorMessage('');
+
+    try {
+      const fileName = `vol${vol}_issue${issue}_${Date.now()}.pdf`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('journal_issues')
+        .upload(fileName, file);
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('journal_issues')
+        .getPublicUrl(fileName);
+
+      const { error: dbError } = await supabase.from('journal_issues').insert({
+        volume_number: parseInt(vol),
+        issue_number: parseInt(issue),
+        title_en: titleEn,
+        title_ar: titleAr,
+        file_url: publicUrl // Assuming this column exists like submissions
+      });
+
+      if (dbError) throw dbError;
+
+      setStatus('success');
+      setFile(null);
+    } catch (err: any) {
+      setStatus('error');
+      setErrorMessage(err.message || 'Error uploading journal issue.');
+    }
+  };
+
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-semibold">Journal Issues</h2>
-        <button className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">New Issue</button>
+        <h2 className="text-2xl font-bold uppercase tracking-widest text-auib-white">Journal CMS</h2>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+        <div className="bg-auib-white p-6 border-2 border-auib-charcoal shadow-[8px_8px_0px_0px_#273237] text-auib-charcoal">
           <div className="flex justify-between items-start mb-4">
             <div>
-                <h3 className="text-lg font-medium">Volume 1, Issue 1</h3>
-                <p className="text-sm text-gray-500">Fall 2026</p>
+                <h3 className="text-lg font-bold uppercase tracking-wide">Volume 1, Issue 1</h3>
+                <p className="text-sm font-mono text-auib-charcoal/70 mt-1">Fall 2026</p>
             </div>
-            <span className="bg-green-100 text-green-800 py-1 px-2 rounded-full text-xs">Published</span>
+            <span className="bg-auib-red text-auib-white py-1 px-2 border-2 border-auib-red text-xs font-bold uppercase tracking-wider">Published</span>
           </div>
-          <p className="text-sm text-gray-600 mb-4">12 Entries Assigned</p>
-          <button className="text-blue-600 text-sm font-medium hover:underline">Manage Entries &rarr;</button>
+          <a href="#" className="text-auib-red font-bold text-sm hover:underline uppercase tracking-widest inline-block mt-4">View PDF &rarr;</a>
         </div>
+      </div>
+
+      <div className="bg-auib-white text-auib-charcoal p-8 border-2 border-auib-charcoal shadow-[8px_8px_0px_0px_#273237] max-w-4xl">
+        <h3 className="text-xl font-bold mb-6 uppercase tracking-widest border-b-2 border-auib-charcoal pb-2">Publish New Issue</h3>
+        <p className="mb-6 font-mono text-sm text-auib-charcoal/80">Upload a single, compiled PDF file for the issue. The public web app will embed this PDF directly.</p>
+
+        <form onSubmit={handleUpload} className="space-y-6">
+          <div className="grid grid-cols-2 gap-6">
+            <div className="space-y-2">
+              <label className="block text-sm font-bold uppercase tracking-wide">Volume Number</label>
+              <input type="number" required value={vol} onChange={e=>setVol(e.target.value)} className="w-full p-3 border-2 border-auib-charcoal bg-transparent focus:outline-none focus:border-auib-red transition-colors rounded-none" />
+            </div>
+            <div className="space-y-2">
+              <label className="block text-sm font-bold uppercase tracking-wide">Issue Number</label>
+              <input type="number" required value={issue} onChange={e=>setIssue(e.target.value)} className="w-full p-3 border-2 border-auib-charcoal bg-transparent focus:outline-none focus:border-auib-red transition-colors rounded-none" />
+            </div>
+            <div className="space-y-2">
+              <label className="block text-sm font-bold uppercase tracking-wide">Title (EN)</label>
+              <input type="text" required value={titleEn} onChange={e=>setTitleEn(e.target.value)} className="w-full p-3 border-2 border-auib-charcoal bg-transparent focus:outline-none focus:border-auib-red transition-colors rounded-none" />
+            </div>
+            <div className="space-y-2" dir="rtl">
+              <label className="block text-sm font-bold uppercase tracking-wide text-left" dir="ltr">Title (AR)</label>
+              <input type="text" required value={titleAr} onChange={e=>setTitleAr(e.target.value)} className="w-full p-3 border-2 border-auib-charcoal bg-transparent focus:outline-none focus:border-auib-red transition-colors rounded-none" />
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <label className="block text-sm font-bold uppercase tracking-wide">Compiled PDF File</label>
+            <input
+              type="file"
+              required
+              accept="application/pdf"
+              onChange={(e) => setFile(e.target.files ? e.target.files[0] : null)}
+              className="w-full p-3 border-2 border-dashed border-auib-charcoal bg-transparent focus:outline-none focus:border-auib-red transition-colors rounded-none file:mr-4 file:py-2 file:px-4 file:rounded-none file:border-0 file:text-sm file:font-bold file:bg-auib-charcoal file:text-white hover:file:bg-auib-red"
+            />
+          </div>
+
+          {errorMessage && (
+            <div className="p-3 border-2 border-auib-red text-auib-red font-bold text-sm">
+              {errorMessage}
+            </div>
+          )}
+
+          {status === 'success' && (
+            <div className="p-3 border-2 border-auib-charcoal bg-auib-charcoal text-auib-white font-bold text-sm">
+              Issue successfully published!
+            </div>
+          )}
+
+          <div className="flex justify-end pt-4">
+            <button
+              type="submit"
+              disabled={status === 'uploading' || !file}
+              className="bg-auib-charcoal text-auib-white font-bold uppercase tracking-wider px-8 py-4 border-2 border-auib-charcoal hover:bg-auib-red hover:border-auib-red transition-colors disabled:opacity-50 shadow-[4px_4px_0px_0px_#9C213E]"
+            >
+              {status === 'uploading' ? 'Uploading...' : 'Publish Issue'}
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );

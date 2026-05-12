@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Navbar, type NavbarLink } from 'ui';
 import { createBrowserClient } from '@supabase/ssr';
@@ -8,9 +8,8 @@ import { useRouter } from 'next/navigation';
 
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
+  const [role, setRole] = useState<string | null>(null);
 
-  // Conditionally initialize supabase only if the env vars are available
-  // This allows the build process to pass during static generation
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
   const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
 
@@ -18,20 +17,46 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
     ? createBrowserClient(supabaseUrl, supabaseKey)
     : null;
 
+  useEffect(() => {
+    async function fetchRole() {
+      if (supabase) {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          const { data } = await supabase.from('users').select('role').eq('id', user.id).single();
+          if (data) {
+            setRole(data.role);
+          }
+        }
+      }
+    }
+    fetchRole();
+  }, [supabase]);
+
   const handleSignOut = async () => {
     if (supabase) {
       await supabase.auth.signOut();
     }
-    router.push('/login');
+    // Redirect to web app locally if it's running on 3000
+    if (process.env.NODE_ENV === 'development') {
+      window.location.href = 'http://localhost:3000/en/login';
+    } else {
+      window.location.href = '/en/login';
+    }
   };
 
-  const links: NavbarLink[] = [
+  const isEditor = role === 'editor' || role === 'admin';
+
+  const links: NavbarLink[] = isEditor ? [
     { href: '/', label: 'Overview' },
     { href: '/submissions', label: 'Submissions' },
     { href: '/blog', label: 'Blog' },
     { href: '/journal', label: 'Journal' },
     { href: '/events', label: 'Events' },
     { href: '/users', label: 'Users' },
+  ] : [
+    { href: '/', label: 'Member Portal' },
+    { href: '/submit', label: 'Submit Work' },
+    { href: '/guidelines', label: 'Guidelines' },
   ];
 
   const rightModule = (
