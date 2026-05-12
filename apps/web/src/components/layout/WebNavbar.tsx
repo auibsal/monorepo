@@ -22,10 +22,10 @@ export default async function WebNavbar({ locale }: { locale: string }) {
       </Link>
       <div className="h-6 w-1 bg-auib-white/30 hidden md:block"></div>
       <Link
-        href="/dashboard"
+        href={`/${locale}/nexus`}
         className="text-sm font-bold text-auib-white hover:text-auib-charcoal transition-colors uppercase tracking-widest"
       >
-        Account
+        Nexus
       </Link>
     </>
   );

@@ -1,13 +1,13 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import Link from 'next/link';
+
 import { Navbar, type NavbarLink } from 'ui';
 import { createBrowserClient } from '@supabase/ssr';
-import { useRouter } from 'next/navigation';
+
 
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
-  const router = useRouter();
+
   const [role, setRole] = useState<string | null>(null);
 
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';

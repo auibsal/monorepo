@@ -4,8 +4,8 @@ import './globals.css';
 import ClientLayout from './ClientLayout';
 
 export const metadata: Metadata = {
-  title: 'SAL Dashboard',
-  description: 'Internal Dashboard for the Society of Arts and Letters',
+  title: 'SAL Nexus',
+  description: 'Internal Nexus for the Society of Arts and Letters',
 };
 
 export default function RootLayout({
