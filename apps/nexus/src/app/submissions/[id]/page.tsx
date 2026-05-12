@@ -27,7 +27,7 @@ export default function GradingPage() {
   useEffect(() => {
     async function fetchSub() {
       if (!supabase) return;
-      const { data, error } = await supabase.from('submissions').select('*').eq('id', submissionId).single();
+      const { data } = await supabase.from('submissions').select('*').eq('id', submissionId).single();
       if (data) {
         setSubmission(data);
         setTech(data.rubric_technical !== undefined && data.rubric_technical !== null ? String(data.rubric_technical) : '');
@@ -92,6 +92,7 @@ export default function GradingPage() {
             submission.file_url.endsWith('.pdf') ? (
               <iframe src={submission.file_url} className="w-full h-[600px] border-2 border-auib-charcoal" />
             ) : (
+
               <img src={submission.file_url} alt="Submission" className="max-w-full max-h-[600px] object-contain border-2 border-auib-charcoal" />
             )
           ) : (

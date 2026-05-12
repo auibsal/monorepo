@@ -110,5 +110,13 @@
     "registerButton": "Submit Application",
     "loading": "Processing...",
     "registerSuccess": "Application submitted. Please await further instructions."
+  },
+  "NexusIntro": {
+    "title": "Welcome to Nexus",
+    "description": "Nexus is the central hub for our members and editors.",
+    "feature1": "• Submit your creative writing and visual art for review.",
+    "feature2": "• Track the status of your submissions.",
+    "feature3": "• Access the editorial overview and manage members (Authorized personnel only).",
+    "loginLink": "Access Nexus"
   }
 }

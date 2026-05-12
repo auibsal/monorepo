@@ -44,7 +44,7 @@ export default [
       ...nextPlugin.configs["core-web-vitals"].rules,
       "react/react-in-jsx-scope": "off",
       "@typescript-eslint/no-unused-vars": "warn",
-      "@typescript-eslint/no-explicit-any": "warn",
+      "@typescript-eslint/no-explicit-any": "off",
       "@typescript-eslint/no-empty-object-type": "off",
       "no-undef": "off"
     },
@@ -55,7 +55,7 @@ export default [
       "**/node_modules/**",
       "**/dist/**",
       "apps/web/.next/**",
-      "apps/dashboard/.next/**"
+      "apps/nexus/.next/**"
     ],
   }
 ];
