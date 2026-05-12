@@ -7,7 +7,7 @@ export default async function Footer({ locale }: { locale: string }) {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="bg-auib-charcoal text-auib-white pt-16 pb-8 border-t-4 border-auib-red">
+    <footer className="bg-auib-red text-auib-white pt-16 pb-8 border-t-4 border-auib-charcoal">
       <div className="max-w-6xl mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12 border-b border-auib-white/10 pb-12">
           
@@ -21,7 +21,7 @@ export default async function Footer({ locale }: { locale: string }) {
           </div>
 
           <div className="md:col-span-1">
-            <h4 className="text-lg font-semibold mb-4 text-auib-red">{t('linksTitle')}</h4>
+            <h4 className="text-lg font-semibold mb-4 text-auib-charcoal">{t('linksTitle')}</h4>
             <ul className="space-y-2 text-sm text-auib-white/80">
               {/* Clean paths here as well */}
               <li><Link href="/" className="hover:text-auib-white transition-colors">{t('home')}</Link></li>
@@ -31,7 +31,7 @@ export default async function Footer({ locale }: { locale: string }) {
           </div>
 
           <div className="md:col-span-1 text-sm text-auib-white/80">
-             <h4 className="text-lg font-semibold mb-4 text-auib-red">{t('contactTitle')}</h4>
+             <h4 className="text-lg font-semibold mb-4 text-auib-charcoal">{t('contactTitle')}</h4>
              <address className="not-italic leading-relaxed">
                {t('university')}<br />
                {t('addressLine1')}<br />
