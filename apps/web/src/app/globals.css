@@ -1,1 +1,15 @@
-@import "ui/globals.css";
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@theme {
+  --color-auib-red: #9C213E;
+  --color-auib-charcoal: #273237;
+  --color-auib-white: #FFFFFF;
+}
+
+@layer base {
+  body {
+    background-color: var(--color-auib-white);
+    color: var(--color-auib-charcoal);
+  }
+}

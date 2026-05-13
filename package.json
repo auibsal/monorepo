@@ -24,6 +24,7 @@
   "dependencies": {
     "@hello-pangea/dnd": "^18.0.1",
     "@playwright/test": "^1.59.1",
+    "@tailwindcss/typography": "^0.5.19",
     "@tiptap/react": "^3.23.2",
     "@tiptap/starter-kit": "^3.23.2",
     "next-intl": "^4.11.0"
