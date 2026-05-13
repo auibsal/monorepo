@@ -1,9 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { createBrowserClient } from '@supabase/ssr';
+import { JournalIssue } from 'database';
 
 export default function JournalPage() {
+  const [issues, setIssues] = useState<JournalIssue[]>([]);
+  const [loading, setLoading] = useState(true);
+
   const [file, setFile] = useState<File | null>(null);
   const [status, setStatus] = useState<'idle' | 'uploading' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
@@ -16,6 +20,19 @@ export default function JournalPage() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
   const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
   const supabase = supabaseUrl ? createBrowserClient(supabaseUrl, supabaseKey) : null;
+
+  useEffect(() => {
+    fetchIssues();
+  }, []);
+
+  const fetchIssues = async () => {
+    if (!supabase) return;
+    const { data, error } = await supabase.from('journal_issues').select('*').order('volume_number', { ascending: false }).order('issue_number', { ascending: false });
+    if (!error && data) {
+      setIssues(data);
+    }
+    setLoading(false);
+  };
 
   const handleUpload = async (e: React.FormEvent) => {
     if (!supabase) return;
@@ -53,6 +70,7 @@ export default function JournalPage() {
 
       setStatus('success');
       setFile(null);
+      fetchIssues(); // Refresh list
     } catch (err: any) {
       setStatus('error');
       setErrorMessage(err.message || 'Error uploading journal issue.');
@@ -66,16 +84,24 @@ export default function JournalPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-        <div className="bg-auib-white p-6 border-2 border-auib-charcoal shadow-[8px_8px_0px_0px_#273237] text-auib-charcoal">
-          <div className="flex justify-between items-start mb-4">
-            <div>
-                <h3 className="text-lg font-bold uppercase tracking-wide">Volume 1, Issue 1</h3>
-                <p className="text-sm font-mono text-auib-charcoal/70 mt-1">Fall 2026</p>
+        {loading ? (
+            <div className="text-auib-white font-mono p-4">Loading issues...</div>
+        ) : issues.length === 0 ? (
+            <div className="text-auib-white font-mono p-4">No published issues found.</div>
+        ) : issues.map(iss => (
+            <div key={iss.id} className="bg-auib-white p-6 border-2 border-auib-charcoal shadow-[8px_8px_0px_0px_#273237] text-auib-charcoal">
+                <div className="flex justify-between items-start mb-4">
+                    <div>
+                        <h3 className="text-lg font-bold uppercase tracking-wide">Volume {iss.volume_number}, Issue {iss.issue_number}</h3>
+                        <p className="text-sm font-mono text-auib-charcoal/70 mt-1">{new Date(iss.published_at).toLocaleDateString()}</p>
+                    </div>
+                    <span className="bg-auib-red text-auib-white py-1 px-2 border-2 border-auib-red text-xs font-bold uppercase tracking-wider">Published</span>
+                </div>
+                {iss.file_url && (
+                    <a href={iss.file_url} target="_blank" rel="noopener noreferrer" className="text-auib-red font-bold text-sm hover:underline uppercase tracking-widest inline-block mt-4">View PDF &rarr;</a>
+                )}
             </div>
-            <span className="bg-auib-red text-auib-white py-1 px-2 border-2 border-auib-red text-xs font-bold uppercase tracking-wider">Published</span>
-          </div>
-          <a href="#" className="text-auib-red font-bold text-sm hover:underline uppercase tracking-widest inline-block mt-4">View PDF &rarr;</a>
-        </div>
+        ))}
       </div>
 
       <div className="bg-auib-white text-auib-charcoal p-8 border-2 border-auib-charcoal shadow-[8px_8px_0px_0px_#273237] max-w-4xl">

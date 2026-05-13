@@ -1,7 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams, useRouter } from "next/navigation";
+import Image from "next/image";
 import { createBrowserClient } from '@supabase/ssr';
 import { Submission } from 'database';
 
@@ -93,7 +94,7 @@ export default function GradingPage() {
               <iframe src={submission.file_url} className="w-full h-[600px] border-2 border-auib-charcoal" />
             ) : (
 
-              <img src={submission.file_url} alt="Submission" className="max-w-full max-h-[600px] object-contain border-2 border-auib-charcoal" />
+              <Image unoptimized width={800} height={600}  src={submission.file_url} alt="Submission" className="max-w-full max-h-[600px] object-contain border-2 border-auib-charcoal" />
             )
           ) : (
             <div className="flex items-center justify-center h-full font-mono text-auib-charcoal/50">
