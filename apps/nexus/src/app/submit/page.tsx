@@ -2,11 +2,13 @@
 
 import { useState } from 'react';
 import { createBrowserClient } from '@supabase/ssr';
+import { RichTextEditor } from 'ui';
 
 export default function SubmitWorkPage() {
   const [title, setTitle] = useState('');
   const [type, setType] = useState('essay');
   const [file, setFile] = useState<File | null>(null);
+  const [content, setContent] = useState('');
   const [status, setStatus] = useState<'idle' | 'uploading' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
 
@@ -43,8 +45,14 @@ export default function SubmitWorkPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     if (!supabase) return;
     e.preventDefault();
-    if (!file) {
+    
+    if (isVisualArt && !file) {
       setErrorMessage('Please select a file to upload.');
+      return;
+    }
+
+    if (!isVisualArt && (!content || content.trim() === '')) {
+      setErrorMessage('Please enter your submission content.');
       return;
     }
 
@@ -55,21 +63,27 @@ export default function SubmitWorkPage() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Not authenticated');
 
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${user.id}_${Date.now()}.${fileExt}`;
-      const filePath = `${fileName}`;
+      let publicUrl: string | undefined = undefined;
 
-      // Upload to storage bucket
-      const { error: uploadError } = await supabase.storage
-        .from('submissions')
-        .upload(filePath, file);
+      if (isVisualArt && file) {
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${user.id}_${Date.now()}.${fileExt}`;
+        const filePath = `${fileName}`;
 
-      if (uploadError) throw uploadError;
+        // Upload to storage bucket
+        const { error: uploadError } = await supabase.storage
+          .from('submissions')
+          .upload(filePath, file);
 
-      // Get public URL
-      const { data: { publicUrl } } = supabase.storage
-        .from('submissions')
-        .getPublicUrl(filePath);
+        if (uploadError) throw uploadError;
+
+        // Get public URL
+        const { data } = supabase.storage
+          .from('submissions')
+          .getPublicUrl(filePath);
+          
+        publicUrl = data.publicUrl;
+      }
 
       // Insert into database
       const { error: dbError } = await supabase.from('submissions').insert({
@@ -77,8 +91,8 @@ export default function SubmitWorkPage() {
         title,
         type,
         status: 'pending',
-        file_url: publicUrl,
-        content: '', // Leaving empty since we use files now
+        file_url: publicUrl || null,
+        content: isVisualArt ? null : content,
       });
 
       if (dbError) throw dbError;
@@ -137,21 +151,33 @@ export default function SubmitWorkPage() {
           </select>
         </div>
 
-        <div className="space-y-2">
-          <label className="block text-sm font-bold uppercase tracking-wide text-auib-charcoal">
-            Upload File
-          </label>
-          <p className="text-xs text-auib-charcoal/70 mb-2 font-mono">
-            {isVisualArt ? "Requires high-resolution JPEG or PNG." : "Requires a PDF document."}
-          </p>
-          <input
-            type="file"
-            required
-            accept={isVisualArt ? "image/jpeg, image/png" : "application/pdf"}
-            onChange={handleFileChange}
-            className="w-full p-3 border-2 border-dashed border-auib-charcoal bg-transparent focus:outline-none focus:border-auib-red transition-colors rounded-none text-auib-charcoal file:mr-4 file:py-2 file:px-4 file:rounded-none file:border-0 file:text-sm file:font-bold file:bg-auib-charcoal file:text-white hover:file:bg-auib-red"
-          />
-        </div>
+        {isVisualArt ? (
+          <div className="space-y-2">
+            <label className="block text-sm font-bold uppercase tracking-wide text-auib-charcoal">
+              Upload File
+            </label>
+            <p className="text-xs text-auib-charcoal/70 mb-2 font-mono">
+              Requires high-resolution JPEG or PNG.
+            </p>
+            <input
+              type="file"
+              required
+              accept="image/jpeg, image/png"
+              onChange={handleFileChange}
+              className="w-full p-3 border-2 border-dashed border-auib-charcoal bg-transparent focus:outline-none focus:border-auib-red transition-colors rounded-none text-auib-charcoal file:mr-4 file:py-2 file:px-4 file:rounded-none file:border-0 file:text-sm file:font-bold file:bg-auib-charcoal file:text-white hover:file:bg-auib-red"
+            />
+          </div>
+        ) : (
+          <div className="space-y-2">
+            <label className="block text-sm font-bold uppercase tracking-wide text-auib-charcoal">
+              Content
+            </label>
+            <p className="text-xs text-auib-charcoal/70 mb-2 font-mono">
+              Compose or paste your written work here.
+            </p>
+            <RichTextEditor content={content} onChange={setContent} />
+          </div>
+        )}
 
         {errorMessage && (
           <div className="p-3 border-2 border-auib-red text-auib-red font-bold text-sm bg-auib-white">
@@ -161,7 +187,7 @@ export default function SubmitWorkPage() {
 
         <button
           type="submit"
-          disabled={status === 'uploading' || !file}
+          disabled={status === 'uploading' || (isVisualArt && !file) || (!isVisualArt && !content)}
           className="w-full bg-auib-charcoal text-auib-white font-bold uppercase tracking-widest px-6 py-4 border-2 border-auib-charcoal hover:bg-auib-red hover:border-auib-red transition-colors disabled:opacity-50"
         >
           {status === 'uploading' ? 'Uploading...' : 'Submit'}
