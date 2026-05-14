@@ -18,9 +18,9 @@ export default function BlogPage() {
   const [isSaving, setIsSaving] = useState(false);
   const [showForm, setShowForm] = useState(false);
 
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
-  const supabase = supabaseUrl ? createBrowserClient(supabaseUrl, supabaseKey) : null;
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+  const supabase = createBrowserClient(supabaseUrl, supabaseKey);
 
   useEffect(() => {
     fetchPosts();

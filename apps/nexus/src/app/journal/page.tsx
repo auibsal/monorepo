@@ -17,9 +17,9 @@ export default function JournalPage() {
   const [titleEn, setTitleEn] = useState('');
   const [titleAr, setTitleAr] = useState('');
 
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
-  const supabase = supabaseUrl ? createBrowserClient(supabaseUrl, supabaseKey) : null;
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+  const supabase = createBrowserClient(supabaseUrl, supabaseKey);
 
   useEffect(() => {
     fetchIssues();

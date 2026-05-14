@@ -10,12 +10,10 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
 
   const [role, setRole] = useState<string | null>(null);
 
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
-  const supabase = supabaseUrl && supabaseKey
-    ? createBrowserClient(supabaseUrl, supabaseKey)
-    : null;
+  const supabase = createBrowserClient(supabaseUrl, supabaseKey);
 
   useEffect(() => {
     async function fetchRole() {
