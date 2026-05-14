@@ -18,7 +18,7 @@ export interface Submission {
   id: string;
   author_id: string; // UUID
   title: string;
-  content: string; // Might be empty if using file_url
+  content?: string; // Might be empty if using file_url
   file_url?: string;
   type: SubmissionType;
   status: SubmissionStatus;
