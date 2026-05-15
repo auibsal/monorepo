@@ -26,38 +26,41 @@ Ensure you have the following installed:
 ### 2. Environment Variables
 You must connect the platform to Supabase. Create a `.env.local` file at the root of the monorepo and populate it with your project keys:
 
-`\``\``env
+```env
 NEXT_PUBLIC_SUPABASE_URL="your-supabase-project-url"
 NEXT_PUBLIC_SUPABASE_ANON_KEY="your-supabase-anon-key"
-`\``\``
 
+```
 ### 3. Installation
 Install all dependencies across the workspace from the root directory:
-`\``\``bash
+```bash
 pnpm install
-`\``\``
 
+```
 ### 4. Local Development
 Start the development servers for all applications simultaneously using Turborepo:
-`\``\``bash
+```bash
 pnpm dev
-`\``\``
-- The public web app will be available at `http://localhost:3000`
-- The Nexus dashboard will be available at `http://localhost:3001`
 
-## 🛠 Build Commands
-
+```
+ * The public web app will be available at http://localhost:3000
+ * The Nexus dashboard will be available at http://localhost:3001
+## 🛠 Build & Test Commands
 To build all apps and packages for production:
-`\``\``bash
+```bash
 pnpm build
-`\``\``
 
+```
 To run the Next.js linters across all workspaces:
-`\``\``bash
+```bash
 pnpm lint
-`\``\``
 
+```
 To run a strict TypeScript typecheck across all workspaces:
-`\``\``bash
+```bash
 pnpm typecheck
-`\``\``
+
+```
+To execute Playwright end-to-end tests:
+```bash
+pnpm test
