@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
 import { createClient } from 'auth/client';
 import { Submission, SubmissionStatus } from 'database';
@@ -15,7 +15,7 @@ const STATUSES: { id: SubmissionStatus; label: string }[] = [
 ];
 
 export default function KanbanBoard() {
-  const [submissions, setSubmissions] = useState<Submission[]>([]);
+  const [submissions, setSubmissions] = useState<Record<string, Submission>>({});
   const [loading, setLoading] = useState(true);
 
   const supabase = createClient();
@@ -28,7 +28,7 @@ export default function KanbanBoard() {
     if (!supabase) return;
     const { data, error } = await supabase.from('submissions').select('*');
     if (!error && data) {
-      setSubmissions(data);
+      setSubmissions(Object.fromEntries(data.map(sub => [sub.id, sub])));
     }
     setLoading(false);
   };
@@ -46,15 +46,16 @@ export default function KanbanBoard() {
       return;
     }
 
-    const draggedSubmission = submissions.find(sub => sub.id === draggableId);
+    const draggedSubmission = submissions[draggableId];
     if (!draggedSubmission) return;
 
     const newStatus = destination.droppableId as SubmissionStatus;
 
     // Optimistic update
-    setSubmissions(prev =>
-      prev.map(sub => sub.id === draggableId ? { ...sub, status: newStatus } : sub)
-    );
+    setSubmissions(prev => ({
+      ...prev,
+      [draggableId]: { ...prev[draggableId], status: newStatus }
+    }));
 
     // DB update
     const { error } = await supabase
@@ -69,6 +70,20 @@ export default function KanbanBoard() {
     }
   };
 
+  const groupedSubmissions = useMemo(() => {
+    const grouped: Record<SubmissionStatus, Submission[]> = {
+      pending: [],
+      under_review: [],
+      revisions_requested: [],
+      accepted: [],
+      rejected: [],
+    };
+    Object.values(submissions).forEach(sub => {
+      grouped[sub.status].push(sub);
+    });
+    return grouped;
+  }, [submissions]);
+
   if (loading) {
     return <div className="p-8 font-mono text-auib-white">Loading Kanban board...</div>;
   }
@@ -81,7 +96,7 @@ export default function KanbanBoard() {
             <h3 className="font-bold text-auib-white mb-3 uppercase tracking-widest flex items-center justify-between border-b-2 border-auib-white pb-2">
               {status.label}
               <span className="bg-auib-white text-auib-charcoal py-0.5 px-2 font-mono text-xs shadow-[2px_2px_0px_0px_#9C213E]">
-                {submissions.filter(s => s.status === status.id).length}
+                {groupedSubmissions[status.id].length}
               </span>
             </h3>
 
@@ -94,8 +109,7 @@ export default function KanbanBoard() {
                     snapshot.isDraggingOver ? 'bg-auib-white/10' : 'bg-transparent'
                   }`}
                 >
-                  {submissions
-                    .filter(s => s.status === status.id)
+                  {groupedSubmissions[status.id]
                     .map((sub, index) => (
                       <Draggable key={sub.id} draggableId={sub.id} index={index}>
                         {(provided, snapshot) => (
