@@ -1,14 +1,12 @@
 import { NextResponse } from 'next/server';
-import { createServerClient } from 'auth';
+import { createClient } from 'auth/server';
 
 export async function GET(request: Request) {
   const requestUrl = new URL(request.url);
   const code = requestUrl.searchParams.get('code');
 
   if (code) {
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
-    const supabase = await createServerClient(supabaseUrl, supabaseAnonKey);
+    const supabase = await createClient();
 
     await supabase.auth.exchangeCodeForSession(code);
   }

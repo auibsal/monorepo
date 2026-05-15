@@ -1,6 +1,5 @@
 import { getTranslations } from 'next-intl/server';
-import { createServerClient } from '@supabase/ssr';
-import { cookies } from 'next/headers';
+import { createClient } from 'auth/server';
 import Link from 'next/link';
 
 export const revalidate = 3600; // Prevent caching
@@ -9,14 +8,7 @@ export default async function Journal({ params }: { params: Promise<{ locale: st
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'JournalPage' });
 
-  const cookieStore = await cookies();
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
-  const supabase = createServerClient(supabaseUrl, supabaseKey, {
-      cookies: {
-          getAll() { return cookieStore.getAll(); }
-      }
-  });
+  const supabase = await createClient();
 
   const { data: issues, error } = await supabase.from('journal_issues').select('*').order('volume_number', { ascending: false }).order('issue_number', { ascending: false });
 

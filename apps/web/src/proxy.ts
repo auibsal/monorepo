@@ -8,10 +8,7 @@ const intlMiddleware = createMiddleware(routing);
 export async function proxy(request: NextRequest) {
   let response = intlMiddleware(request);
 
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
-
-  const { response: updatedResponse } = await updateSession(request as any, response as any, supabaseUrl, supabaseAnonKey);
+  const { response: updatedResponse } = await updateSession(request, response as any);
 
   return updatedResponse;
 }

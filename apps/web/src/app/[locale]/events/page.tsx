@@ -1,6 +1,5 @@
 import { getTranslations } from 'next-intl/server';
-import { createServerClient } from '@supabase/ssr';
-import { cookies } from 'next/headers';
+import { createClient } from 'auth/server';
 
 
 export const revalidate = 3600; // Prevent static generation caching issues for this page
@@ -9,16 +8,7 @@ export default async function Events({ params }: { params: Promise<{ locale: str
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'EventsPage' });
 
-  const cookieStore = await cookies();
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
-  const supabase = createServerClient(supabaseUrl, supabaseKey, {
-      cookies: {
-          getAll() {
-              return cookieStore.getAll();
-          }
-      }
-  });
+  const supabase = await createClient();
 
   const { data: events, error } = await supabase.from('events').select('*').order('starts_at', { ascending: true });
 

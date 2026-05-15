@@ -1,5 +1,4 @@
-import { createServerClient } from '@supabase/ssr';
-import { cookies } from 'next/headers';
+import { createClient } from 'auth/server';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import DOMPurify from 'isomorphic-dompurify';
@@ -9,14 +8,7 @@ export const revalidate = 3600; // Prevent caching
 export default async function BlogPostPage({ params }: { params: Promise<{ locale: string; slug: string }> }) {
   const { locale, slug } = await params;
 
-  const cookieStore = await cookies();
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
-  const supabase = createServerClient(supabaseUrl, supabaseKey, {
-      cookies: {
-          getAll() { return cookieStore.getAll(); }
-      }
-  });
+  const supabase = await createClient();
 
   const { data: post, error } = await supabase.from('blog_posts').select('*, users(full_name)').eq('slug', slug).single();
 
