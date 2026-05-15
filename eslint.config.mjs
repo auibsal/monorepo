@@ -2,14 +2,23 @@ import js from "@eslint/js";
 import nextPlugin from "@next/eslint-plugin-next";
 import tsPlugin from "@typescript-eslint/eslint-plugin";
 import tsParser from "@typescript-eslint/parser";
+import globals from "globals";
 
 export default [
   js.configs.recommended,
   {
+    ignores: [
+      "**/.next/**",
+      "**/node_modules/**",
+      "**/dist/**",
+      "**/.turbo/**"
+    ],
+  },
+  // Base configuration for ALL files in the monorepo
+  {
     files: ["**/*.{js,jsx,ts,tsx}"],
     plugins: {
       "@typescript-eslint": tsPlugin,
-      "@next/next": nextPlugin,
     },
     languageOptions: {
       parser: tsParser,
@@ -21,41 +30,28 @@ export default [
         },
       },
       globals: {
-        React: "readonly",
-        console: "readonly",
-        process: "readonly",
-        window: "readonly",
-        document: "readonly",
-        fetch: "readonly",
-        setTimeout: "readonly",
-        clearTimeout: "readonly",
-        setInterval: "readonly",
-        clearInterval: "readonly",
-        __dirname: "readonly",
-        URL: "readonly",
-        AbortController: "readonly",
-        Event: "readonly",
-        Promise: "readonly",
+        ...globals.browser,
+        ...globals.node,
       }
     },
     rules: {
       ...tsPlugin.configs.recommended.rules,
-      ...nextPlugin.configs.recommended.rules,
-      ...nextPlugin.configs["core-web-vitals"].rules,
       "react/react-in-jsx-scope": "off",
       "@typescript-eslint/no-unused-vars": "warn",
-      "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/no-explicit-any": "warn", 
       "@typescript-eslint/no-empty-object-type": "off",
       "no-undef": "off"
     },
   },
+  // Next.js specific rules scoped ONLY to the apps directory
   {
-    ignores: [
-      "**/.next/**",
-      "**/node_modules/**",
-      "**/dist/**",
-      "apps/web/.next/**",
-      "apps/nexus/.next/**"
-    ],
+    files: ["apps/**/*.{js,jsx,ts,tsx}"],
+    plugins: {
+      "@next/next": nextPlugin,
+    },
+    rules: {
+      ...nextPlugin.configs.recommended.rules,
+      ...nextPlugin.configs["core-web-vitals"].rules,
+    }
   }
 ];
