@@ -10,9 +10,16 @@ export default getRequestConfig(async ({ requestLocale }) => {
   }
 
   // Explicitly import to fix Vercel Serverless file tracing
-  const messages = locale === 'ar' 
-    ? (await import('../../messages/ar.json')).default
-    : (await import('../../messages/en.json')).default;
+  let messages;
+  switch (locale) {
+    case 'ar':
+      messages = (await import('../../messages/ar.json')).default;
+      break;
+    case 'en':
+    default:
+      messages = (await import('../../messages/en.json')).default;
+      break;
+  }
 
   return {
     locale,
