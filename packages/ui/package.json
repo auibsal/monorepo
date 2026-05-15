@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@base-ui/react": "^1.4.1",
+    "@repo/typescript-config": "workspace:*",
     "@tailwindcss/typography": "^0.5.19",
     "@tiptap/core": "^3.23.4",
     "@tiptap/extension-text-align": "^3.23.4",
