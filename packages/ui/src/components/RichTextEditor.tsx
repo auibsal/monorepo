@@ -34,56 +34,92 @@ export function RichTextEditor({ content, onChange }: { content: string, onChang
     <div className="border-2 border-auib-charcoal rounded-none shadow-[8px_8px_0px_0px_#273237] bg-white flex flex-col">
       <div className="border-b-2 border-auib-charcoal p-2 flex gap-2 flex-wrap bg-auib-charcoal text-white">
         <button
+          type="button"
+          aria-label="Bold"
+          title="Bold"
+          aria-pressed={editor.isActive('bold')}
           onClick={(e) => { e.preventDefault(); editor.chain().focus().toggleBold().run(); }}
-          className={`p-1 px-3 border-2 border-transparent hover:border-auib-red font-bold transition-colors ${editor.isActive('bold') ? 'bg-auib-red text-white' : ''}`}
+          className={`p-1 px-3 border-2 border-transparent hover:border-auib-red focus-visible:outline-none focus-visible:border-auib-red font-bold transition-colors ${editor.isActive('bold') ? 'bg-auib-red text-white' : ''}`}
         >
           B
         </button>
         <button
+          type="button"
+          aria-label="Italic"
+          title="Italic"
+          aria-pressed={editor.isActive('italic')}
           onClick={(e) => { e.preventDefault(); editor.chain().focus().toggleItalic().run(); }}
-          className={`p-1 px-3 border-2 border-transparent hover:border-auib-red font-bold italic transition-colors ${editor.isActive('italic') ? 'bg-auib-red text-white' : ''}`}
+          className={`p-1 px-3 border-2 border-transparent hover:border-auib-red focus-visible:outline-none focus-visible:border-auib-red font-bold italic transition-colors ${editor.isActive('italic') ? 'bg-auib-red text-white' : ''}`}
         >
           I
         </button>
         <button
+          type="button"
+          aria-label="Underline"
+          title="Underline"
+          aria-pressed={editor.isActive('underline')}
           onClick={(e) => { e.preventDefault(); editor.chain().focus().toggleUnderline().run(); }}
-          className={`p-1 px-3 border-2 border-transparent hover:border-auib-red font-bold underline transition-colors ${editor.isActive('underline') ? 'bg-auib-red text-white' : ''}`}
+          className={`p-1 px-3 border-2 border-transparent hover:border-auib-red focus-visible:outline-none focus-visible:border-auib-red font-bold underline transition-colors ${editor.isActive('underline') ? 'bg-auib-red text-white' : ''}`}
         >
           U
         </button>
         <button
+          type="button"
+          aria-label="Heading 2"
+          title="Heading 2"
+          aria-pressed={editor.isActive('heading', { level: 2 })}
           onClick={(e) => { e.preventDefault(); editor.chain().focus().toggleHeading({ level: 2 }).run(); }}
-          className={`p-1 px-3 border-2 border-transparent hover:border-auib-red font-bold transition-colors ${editor.isActive('heading', { level: 2 }) ? 'bg-auib-red text-white' : ''}`}
+          className={`p-1 px-3 border-2 border-transparent hover:border-auib-red focus-visible:outline-none focus-visible:border-auib-red font-bold transition-colors ${editor.isActive('heading', { level: 2 }) ? 'bg-auib-red text-white' : ''}`}
         >
           H2
         </button>
         <button
+          type="button"
+          aria-label="Bullet List"
+          title="Bullet List"
+          aria-pressed={editor.isActive('bulletList')}
           onClick={(e) => { e.preventDefault(); editor.chain().focus().toggleBulletList().run(); }}
-          className={`p-1 px-3 border-2 border-transparent hover:border-auib-red font-bold transition-colors ${editor.isActive('bulletList') ? 'bg-auib-red text-white' : ''}`}
+          className={`p-1 px-3 border-2 border-transparent hover:border-auib-red focus-visible:outline-none focus-visible:border-auib-red font-bold transition-colors ${editor.isActive('bulletList') ? 'bg-auib-red text-white' : ''}`}
         >
           List
         </button>
         <button
+          type="button"
+          aria-label="Align Left"
+          title="Align Left"
+          aria-pressed={editor.isActive({ textAlign: 'left' })}
           onClick={(e) => { e.preventDefault(); editor.chain().focus().setTextAlign('left').run(); }}
-          className={`p-1 px-3 border-2 border-transparent hover:border-auib-red font-bold transition-colors ${editor.isActive({ textAlign: 'left' }) ? 'bg-auib-red text-white' : ''}`}
+          className={`p-1 px-3 border-2 border-transparent hover:border-auib-red focus-visible:outline-none focus-visible:border-auib-red font-bold transition-colors ${editor.isActive({ textAlign: 'left' }) ? 'bg-auib-red text-white' : ''}`}
         >
           Left
         </button>
         <button
+          type="button"
+          aria-label="Align Center"
+          title="Align Center"
+          aria-pressed={editor.isActive({ textAlign: 'center' })}
           onClick={(e) => { e.preventDefault(); editor.chain().focus().setTextAlign('center').run(); }}
-          className={`p-1 px-3 border-2 border-transparent hover:border-auib-red font-bold transition-colors ${editor.isActive({ textAlign: 'center' }) ? 'bg-auib-red text-white' : ''}`}
+          className={`p-1 px-3 border-2 border-transparent hover:border-auib-red focus-visible:outline-none focus-visible:border-auib-red font-bold transition-colors ${editor.isActive({ textAlign: 'center' }) ? 'bg-auib-red text-white' : ''}`}
         >
           Center
         </button>
         <button
+          type="button"
+          aria-label="Align Right"
+          title="Align Right"
+          aria-pressed={editor.isActive({ textAlign: 'right' })}
           onClick={(e) => { e.preventDefault(); editor.chain().focus().setTextAlign('right').run(); }}
-          className={`p-1 px-3 border-2 border-transparent hover:border-auib-red font-bold transition-colors ${editor.isActive({ textAlign: 'right' }) ? 'bg-auib-red text-white' : ''}`}
+          className={`p-1 px-3 border-2 border-transparent hover:border-auib-red focus-visible:outline-none focus-visible:border-auib-red font-bold transition-colors ${editor.isActive({ textAlign: 'right' }) ? 'bg-auib-red text-white' : ''}`}
         >
           Right
         </button>
         <button
+          type="button"
+          aria-label="Justify"
+          title="Justify"
+          aria-pressed={editor.isActive({ textAlign: 'justify' })}
           onClick={(e) => { e.preventDefault(); editor.chain().focus().setTextAlign('justify').run(); }}
-          className={`p-1 px-3 border-2 border-transparent hover:border-auib-red font-bold transition-colors ${editor.isActive({ textAlign: 'justify' }) ? 'bg-auib-red text-white' : ''}`}
+          className={`p-1 px-3 border-2 border-transparent hover:border-auib-red focus-visible:outline-none focus-visible:border-auib-red font-bold transition-colors ${editor.isActive({ textAlign: 'justify' }) ? 'bg-auib-red text-white' : ''}`}
         >
           Justify
         </button>
