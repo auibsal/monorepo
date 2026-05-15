@@ -1,12 +1,16 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
-export async function updateSession(
-  request: NextRequest,
-  response: NextResponse,
-  supabaseUrl: string,
-  supabaseAnonKey: string
-) {
+export async function updateSession(request: NextRequest) {
+  // 1. Create an initial response object that forwards the request
+  let supabaseResponse = NextResponse.next({
+    request,
+  })
+
+  // 2. Read environment variables directly
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+
   const supabase = createServerClient(
     supabaseUrl,
     supabaseAnonKey,
@@ -16,16 +20,25 @@ export async function updateSession(
           return request.cookies.getAll()
         },
         setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value, options }) => request.cookies.set(name, value))
+          // Update the request cookies so subsequent middleware logic sees them
+          cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
+          
+          // CRITICAL: Recreate the response object with the updated request headers
+          supabaseResponse = NextResponse.next({
+            request,
+          })
+          
+          // Attach the new cookies to the outgoing response
           cookiesToSet.forEach(({ name, value, options }) =>
-            response.cookies.set(name, value, options)
+            supabaseResponse.cookies.set(name, value, options)
           )
         },
       },
     }
   )
 
-  const { data } = await supabase.auth.getUser()
+  // 3. Fetch user and capture potential errors
+  const { data: { user }, error } = await supabase.auth.getUser()
 
-  return { supabase, user: data.user, response }
+  return { supabase, user, error, response: supabaseResponse }
 }
