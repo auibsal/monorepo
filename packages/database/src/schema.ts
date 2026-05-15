@@ -1,36 +1,34 @@
 export type Role = 'user' | 'member' | 'editor' | 'admin';
+export type SubmissionType = 'essay' | 'poetry' | 'fiction' | 'theatre' | 'visual_art' | 'other';
+export type SubmissionStatus = 'pending' | 'under_review' | 'revisions_requested' | 'accepted' | 'rejected';
 
 export interface User {
-  id: string; // UUID from auth
+  id: string; 
   full_name: string;
   university_id: string;
   biography: string;
   avatar_url: string;
-  role: Role; // default 'user'
-  calendar_token: string; // UUID default uuid_generate_v4()
-  created_at: string; // Timestamp
+  role: Role; 
+  calendar_token: string; 
+  created_at: string; 
 }
-
-export type SubmissionType = 'essay' | 'poetry' | 'fiction' | 'theatre' | 'visual_art' | 'other';
-export type SubmissionStatus = 'pending' | 'under_review' | 'revisions_requested' | 'accepted' | 'rejected';
 
 export interface Submission {
   id: string;
-  author_id: string; // UUID
+  author_id: string; 
   title: string;
-  content?: string; // Might be empty if using file_url
+  content?: string; 
   file_url?: string;
   type: SubmissionType;
   status: SubmissionStatus;
   submitted_at: string;
-  reviewed_by: string | null; // UUID
+  reviewed_by: string | null; 
 
-  // Rubric fields
-  rubric_technical?: number;     // 20, 10, or 0
-  rubric_originality?: number;   // 20, 10, or 0
-  rubric_thematic?: number;      // 20, 10, or 0
-  rubric_archive?: boolean;      // Yes / No
-  rubric_formatting?: string;    // Pass, Fail, disqualified
+  rubric_technical?: number;     
+  rubric_originality?: number;   
+  rubric_thematic?: number;      
+  rubric_archive?: boolean;      
+  rubric_formatting?: string;    
 }
 
 export interface JournalIssue {
@@ -45,8 +43,8 @@ export interface JournalIssue {
 
 export interface JournalEntry {
   id: string;
-  issue_id: string; // UUID
-  author_id: string; // UUID
+  issue_id: string; 
+  author_id: string; 
   title_en: string;
   title_ar: string;
   content_en: string;
@@ -56,7 +54,7 @@ export interface JournalEntry {
 
 export interface BlogPost {
   id: string;
-  author_id: string; // UUID
+  author_id: string; 
   slug: string;
   title_en: string;
   title_ar: string;
@@ -79,37 +77,40 @@ export interface Event {
   is_members_only: boolean;
 }
 
+// Utility type to mark specific auto-generated Postgres columns as optional during Insert
+type MakeOptional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
+
 export interface Database {
   public: {
     Tables: {
       users: {
         Row: User;
-        Insert: Partial<User>;
+        Insert: MakeOptional<User, 'id' | 'role' | 'calendar_token' | 'created_at'>;
         Update: Partial<User>;
       };
       submissions: {
         Row: Submission;
-        Insert: Partial<Submission>;
+        Insert: MakeOptional<Submission, 'id' | 'submitted_at' | 'status'>;
         Update: Partial<Submission>;
       };
       journal_issues: {
         Row: JournalIssue;
-        Insert: Partial<JournalIssue>;
+        Insert: MakeOptional<JournalIssue, 'id' | 'published_at'>;
         Update: Partial<JournalIssue>;
       };
       journal_entries: {
         Row: JournalEntry;
-        Insert: Partial<JournalEntry>;
+        Insert: MakeOptional<JournalEntry, 'id'>;
         Update: Partial<JournalEntry>;
       };
       blog_posts: {
         Row: BlogPost;
-        Insert: Partial<BlogPost>;
+        Insert: MakeOptional<BlogPost, 'id' | 'published_at'>;
         Update: Partial<BlogPost>;
       };
       events: {
         Row: Event;
-        Insert: Partial<Event>;
+        Insert: MakeOptional<Event, 'id'>;
         Update: Partial<Event>;
       };
     };
