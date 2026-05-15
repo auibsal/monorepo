@@ -1,34 +1,63 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AUIB Society of Arts and Letters - Digital Platform
 
-## Getting Started
+This is the monorepo for the official digital platform and internal editorial dashboard of the AUIB Society of Arts and Letters. It is built using Next.js, Turborepo, Tailwind CSS, and Supabase.
 
-First, run the development server:
+## 🏗 Architecture
 
-```bash
+This repository utilizes [Turborepo](https://turbo.build/) to manage multiple applications and shared packages within a single workspace using `pnpm`.
+
+### Applications (`apps/`)
+- `web`: The public-facing Next.js application (Internationalized: EN/AR). Contains the society blog, event calendar, published journals, and public information.
+- `nexus`: The internal Next.js editorial dashboard. Handles manuscript submissions, the editorial Kanban board, CMS management, and user roles.
+
+### Shared Packages (`packages/`)
+- `ui`: A shared brutalist UI component library built with Shadcn, Tailwind, and Radix UI. Includes the TipTap rich-text editor and typography configurations.
+- `database`: Shared Supabase database types, schemas, and interfaces.
+- `auth`: Shared Supabase SSR authentication utilities and middleware logic.
+- `typescript-config`: Base TypeScript configurations extended across the monorepo.
+
+## 🚀 Getting Started
+
+### 1. Prerequisites
+Ensure you have the following installed:
+- Node.js (v18+)
+- [pnpm](https://pnpm.io/installation) (v10.x)
+
+### 2. Environment Variables
+You must connect the platform to Supabase. Create a `.env.local` file at the root of the monorepo and populate it with your project keys:
+
+`\``\``env
+NEXT_PUBLIC_SUPABASE_URL="your-supabase-project-url"
+NEXT_PUBLIC_SUPABASE_ANON_KEY="your-supabase-anon-key"
+`\``\``
+
+### 3. Installation
+Install all dependencies across the workspace from the root directory:
+`\``\``bash
+pnpm install
+`\``\``
+
+### 4. Local Development
+Start the development servers for all applications simultaneously using Turborepo:
+`\``\``bash
 pnpm dev
-# or
-yarn dev
-# or
-bun dev
-```
+`\``\``
+- The public web app will be available at `http://localhost:3000`
+- The Nexus dashboard will be available at `http://localhost:3001`
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🛠 Build Commands
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+To build all apps and packages for production:
+`\``\``bash
+pnpm build
+`\``\``
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+To run the Next.js linters across all workspaces:
+`\``\``bash
+pnpm lint
+`\``\``
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+To run a strict TypeScript typecheck across all workspaces:
+`\``\``bash
+pnpm typecheck
+`\``\``
