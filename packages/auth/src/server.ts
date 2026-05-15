@@ -1,8 +1,11 @@
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 
-export async function createClient(supabaseUrl: string, supabaseAnonKey: string) {
+export async function createClient() {
   const cookieStore = await cookies()
+
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
   return createServerClient(
     supabaseUrl,
@@ -19,8 +22,8 @@ export async function createClient(supabaseUrl: string, supabaseAnonKey: string)
             )
           } catch {
             // The `setAll` method was called from a Server Component.
-            // This can be ignored if you have middleware refreshing
-            // user sessions.
+            // Next.js does not allow mutating cookies in Server Components.
+            // This is safe to ignore as long as your middleware handles the token refresh.
           }
         },
       },
