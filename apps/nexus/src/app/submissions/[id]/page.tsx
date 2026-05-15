@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import { createBrowserClient } from '@supabase/ssr';
 import { Submission } from 'database';
+import DOMPurify from 'isomorphic-dompurify';
 
 export default function GradingPage() {
   const params = useParams();
@@ -88,17 +89,26 @@ export default function GradingPage() {
           <h2 className="font-bold uppercase tracking-widest">{submission.title}</h2>
           <span className="text-xs font-mono bg-auib-white text-auib-charcoal px-2 py-1 uppercase">{submission.type}</span>
         </div>
-        <div className="flex-1 min-h-[600px] p-4 bg-gray-100 flex items-center justify-center overflow-hidden">
-          {submission.file_url ? (
-            submission.file_url.endsWith('.pdf') ? (
-              <iframe src={submission.file_url} className="w-full h-[600px] border-2 border-auib-charcoal" />
-            ) : (
+        <div className="flex-1 min-h-[600px] p-4 bg-gray-100 flex flex-col items-center justify-start overflow-y-auto gap-6">
+          {submission.content && (
+            <div className="w-full p-8 bg-white border-2 border-auib-charcoal shadow-[8px_8px_0px_0px_#273237] prose max-w-none text-auib-charcoal text-start">
+              <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(submission.content) }} />
+            </div>
+          )}
 
-              <Image unoptimized width={800} height={600}  src={submission.file_url} alt="Submission" className="max-w-full max-h-[600px] object-contain border-2 border-auib-charcoal" />
-            )
-          ) : (
-            <div className="flex items-center justify-center h-full font-mono text-auib-charcoal/50">
-              No file attached.
+          {submission.file_url && (
+            <div className="w-full flex justify-center items-center">
+              {submission.file_url.endsWith('.pdf') ? (
+                <iframe src={submission.file_url} className="w-full h-[600px] border-2 border-auib-charcoal shadow-[8px_8px_0px_0px_#273237]" />
+              ) : (
+                <Image unoptimized width={800} height={600} src={submission.file_url} alt="Submission" className="max-w-full max-h-[600px] object-contain border-2 border-auib-charcoal shadow-[8px_8px_0px_0px_#273237]" />
+              )}
+            </div>
+          )}
+
+          {!submission.content && !submission.file_url && (
+            <div className="flex items-center justify-center h-full w-full font-mono text-auib-charcoal/50">
+              No content or file attached.
             </div>
           )}
         </div>
