@@ -1,5 +1,5 @@
 {
-  "name": "the-iraqi-curator-monorepo",
+  "name": "auibsal-monorepo",
   "private": true,
   "scripts": {
     "build": "turbo run build",
