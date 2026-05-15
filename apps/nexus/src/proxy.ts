@@ -2,16 +2,7 @@ import { NextResponse, type NextRequest } from 'next/server';
 import { updateSession } from 'auth';
 
 export async function proxy(request: NextRequest) {
-  let response = NextResponse.next({
-    request: {
-      headers: request.headers,
-    },
-  });
-
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
-
-  const { supabase, user } = await updateSession(request as any, response as any, supabaseUrl, supabaseAnonKey);
+  const { supabase, user, response } = await updateSession(request);
 
   const isAuthPage = request.nextUrl.pathname.startsWith('/login') || request.nextUrl.pathname.startsWith('/register');
   const isApiRoute = request.nextUrl.pathname.startsWith('/api');

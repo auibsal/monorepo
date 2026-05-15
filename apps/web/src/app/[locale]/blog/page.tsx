@@ -1,6 +1,5 @@
 import { getTranslations } from 'next-intl/server';
-import { createServerClient } from '@supabase/ssr';
-import { cookies } from 'next/headers';
+import { createClient } from 'auth/server';
 import Link from 'next/link';
 
 export const revalidate = 3600; // Prevent caching
@@ -9,14 +8,7 @@ export default async function BlogPage({ params }: { params: Promise<{ locale: s
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'BlogPage' });
 
-  const cookieStore = await cookies();
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
-  const supabase = createServerClient(supabaseUrl, supabaseKey, {
-      cookies: {
-          getAll() { return cookieStore.getAll(); }
-      }
-  });
+  const supabase = await createClient();
 
   const { data: posts, error } = await supabase.from('blog_posts').select('*, users(full_name)').order('published_at', { ascending: false });
 

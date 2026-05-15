@@ -1,15 +1,21 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
-export async function updateSession(request: NextRequest) {
+export async function updateSession(request: NextRequest, response?: NextResponse) {
   // 1. Create an initial response object that forwards the request
-  let supabaseResponse = NextResponse.next({
+  let supabaseResponse = response || NextResponse.next({
     request,
   })
 
   // 2. Read environment variables directly
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  if (!supabaseUrl || !supabaseAnonKey) {
+    throw new Error(
+      'Missing environment variables: NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY must be defined'
+    );
+  }
 
   const supabase = createServerClient(
     supabaseUrl,
@@ -24,6 +30,8 @@ export async function updateSession(request: NextRequest) {
           cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
           
           // CRITICAL: Recreate the response object with the updated request headers
+          // Note: If an external response was provided, we must be careful about overwriting it.
+          // For now, we follow the recommended Supabase pattern.
           supabaseResponse = NextResponse.next({
             request,
           })
