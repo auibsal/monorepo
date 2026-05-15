@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
-import { createBrowserClient } from '@supabase/ssr';
+import { createClient } from 'auth/client';
 import { Submission, SubmissionStatus } from 'database';
 import Link from 'next/link';
 
@@ -18,9 +18,7 @@ export default function KanbanBoard() {
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
-  const supabase = createBrowserClient(supabaseUrl, supabaseKey);
+  const supabase = createClient();
 
   useEffect(() => {
     fetchSubmissions();

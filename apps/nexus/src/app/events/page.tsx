@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { createBrowserClient } from '@supabase/ssr';
+import { createClient } from 'auth/client';
 import { Event } from 'database';
 
 export default function EventsPage() {
@@ -19,9 +19,7 @@ export default function EventsPage() {
   const [endsAt, setEndsAt] = useState('');
   const [isMembersOnly, setIsMembersOnly] = useState(false);
 
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
-  const supabase = createBrowserClient(supabaseUrl, supabaseKey);
+  const supabase = createClient();
 
   useEffect(() => {
     fetchEvents();

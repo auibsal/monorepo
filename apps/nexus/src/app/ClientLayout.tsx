@@ -3,17 +3,14 @@
 import React, { useEffect, useState } from 'react';
 
 import { Navbar, type NavbarLink } from 'ui';
-import { createBrowserClient } from '@supabase/ssr';
+import { createClient } from 'auth/client';
 
 
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
 
   const [role, setRole] = useState<string | null>(null);
 
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
-
-  const supabase = createBrowserClient(supabaseUrl, supabaseKey);
+  const supabase = createClient();
 
   useEffect(() => {
     async function fetchRole() {
