@@ -2,8 +2,9 @@ import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
+import DOMPurify from 'isomorphic-dompurify';
 
-export const revalidate = 0; // Prevent caching
+export const revalidate = 3600; // Prevent caching
 
 export default async function BlogPostPage({ params }: { params: Promise<{ locale: string; slug: string }> }) {
   const { locale, slug } = await params;
@@ -25,6 +26,8 @@ export default async function BlogPostPage({ params }: { params: Promise<{ local
 
   const isAr = locale === 'ar';
   const content = isAr ? post.content_ar : post.content_en;
+
+  const cleanHTML = DOMPurify.sanitize(content);
 
   return (
     <div className="max-w-4xl mx-auto px-6 py-20">
@@ -55,7 +58,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ local
       {/* Render tip-tap HTML output directly with prose styles */}
       <div
         className="prose prose-lg md:prose-xl max-w-none text-auib-charcoal leading-relaxed prose-headings:font-bold prose-headings:text-auib-charcoal prose-a:text-auib-red prose-a:no-underline hover:prose-a:underline"
-        dangerouslySetInnerHTML={{ __html: content }}
+        dangerouslySetInnerHTML={{ __html: cleanHTML }}
       />
     </div>
   );

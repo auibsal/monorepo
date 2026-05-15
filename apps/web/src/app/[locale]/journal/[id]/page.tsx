@@ -3,7 +3,7 @@ import { cookies } from 'next/headers';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 
-export const revalidate = 0; // Prevent caching
+export const revalidate = 3600; // Prevent caching
 
 export default async function JournalIssuePage({ params }: { params: Promise<{ locale: string; id: string }> }) {
   const { locale, id } = await params;

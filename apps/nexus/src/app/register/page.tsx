@@ -17,8 +17,8 @@ export default function NexusRegister() {
   const [errorMessage, setErrorMessage] = useState('');
 
   const supabase = createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL || 'http://localhost:54321',
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.dummy'
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
   );
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -55,7 +55,12 @@ export default function NexusRegister() {
 
     if (error) {
       setStatus('error');
-      setErrorMessage(error.message);
+      const errLower = error.message.toLowerCase();
+      if (errLower.includes('already registered') || errLower.includes('user already exists')) {
+        setErrorMessage("An account with this email already exists. Please proceed to the login page.");
+      } else {
+        setErrorMessage(error.message);
+      }
     } else {
       setStatus('success');
     }

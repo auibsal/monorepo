@@ -3,7 +3,7 @@ import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 
 
-export const revalidate = 0; // Prevent static generation caching issues for this page
+export const revalidate = 3600; // Prevent static generation caching issues for this page
 
 export default async function Events({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
