@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { createBrowserClient } from '@supabase/ssr';
+import { createClient } from 'auth/client';
 import { JournalIssue } from 'database';
 
 export default function JournalPage() {
@@ -17,9 +17,7 @@ export default function JournalPage() {
   const [titleEn, setTitleEn] = useState('');
   const [titleAr, setTitleAr] = useState('');
 
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
-  const supabase = createBrowserClient(supabaseUrl, supabaseKey);
+  const supabase = createClient();
 
   useEffect(() => {
     fetchIssues();

@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
-import { createBrowserClient } from '@supabase/ssr';
+import { createClient } from 'auth/client';
 import { Submission } from 'database';
 import DOMPurify from 'isomorphic-dompurify';
 
@@ -22,9 +22,7 @@ export default function GradingPage() {
   const [formatting, setFormatting] = useState<string>('');
   const [saving, setSaving] = useState(false);
 
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
-  const supabase = createBrowserClient(supabaseUrl, supabaseKey);
+  const supabase = createClient();
 
   useEffect(() => {
     async function fetchSub() {
