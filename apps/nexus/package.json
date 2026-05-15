@@ -9,9 +9,10 @@
     "lint": "eslint --max-warnings 100"
   },
   "dependencies": {
+    "@hello-pangea/dnd": "^18.0.1",
     "@supabase/ssr": "^0.10.3",
     "@supabase/supabase-js": "^2.105.4",
-    "auth": "workspace:^1.0.0",
+    "auth": "workspace:^",
     "database": "workspace:^1.0.0",
     "isomorphic-dompurify": "^3.13.0",
     "next": "16.2.6",
@@ -21,6 +22,7 @@
     "ui": "workspace:^0.1.0"
   },
   "devDependencies": {
+    "@repo/typescript-config": "workspace:*",
     "@tailwindcss/postcss": "^4",
     "@tailwindcss/typography": "^0.5.19",
     "@types/node": "^20",
