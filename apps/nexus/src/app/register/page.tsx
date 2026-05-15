@@ -40,7 +40,7 @@ export default function NexusRegister() {
     setStatus('loading');
     setErrorMessage('');
 
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
@@ -61,6 +61,9 @@ export default function NexusRegister() {
       } else {
         setErrorMessage(error.message);
       }
+    } else if (data?.user?.identities && data.user.identities.length === 0) {
+      setStatus('error');
+      setErrorMessage("An account with this email already exists. Please proceed to the login page.");
     } else {
       setStatus('success');
     }
