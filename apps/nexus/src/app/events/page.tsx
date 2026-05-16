@@ -24,30 +24,30 @@ export default function EventsPage() {
   const supabase = createClient();
 
   useEffect(() => {
+    const fetchEvents = async () => {
+      if (!supabase) return;
+      const { data, error } = await supabase.from('events').select('*').order('starts_at', { ascending: true });
+      if (!error && data) {
+        setEvents(data);
+      }
+      setLoading(false);
+    };
+
+    const fetchAuibEvents = async () => {
+      try {
+        const res = await fetch('/api/auib-events');
+        if (res.ok) {
+          const data = await res.json();
+          setAuibEvents(data);
+        }
+      } catch (e) {
+        console.error("Failed to fetch auib events proxy", e);
+      }
+    };
+
     fetchEvents();
     fetchAuibEvents();
   }, []);
-
-  const fetchEvents = async () => {
-    if (!supabase) return;
-    const { data, error } = await supabase.from('events').select('*').order('starts_at', { ascending: true });
-    if (!error && data) {
-      setEvents(data);
-    }
-    setLoading(false);
-  };
-
-  const fetchAuibEvents = async () => {
-     try {
-       const res = await fetch('/api/auib-events');
-       if (res.ok) {
-           const data = await res.json();
-           setAuibEvents(data);
-       }
-     } catch(e) {
-       console.error("Failed to fetch auib events proxy", e);
-     }
-  };
 
   // CRITICAL: Dedicated cancel handler to prevent state memory leaks
   const handleCloseModal = () => {
