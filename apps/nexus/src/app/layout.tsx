@@ -14,16 +14,12 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  // 1. Await the headers injected by our middleware.ts
   const headersList = await headers();
-  
-  // 2. Extract the secure role
   const role = headersList.get('x-user-role');
 
   return (
     <html lang="en" className={`${ubuntu.variable} ${ubuntuArabic.variable}`}>
-      <body className="font-sans antialiased min-h-screen flex flex-col bg-auib-white text-auib-charcoal">
-        {/* 3. Pass the role straight into the client wrapper instantly */}
+      <body className="font-sans antialiased min-h-screen flex flex-col bg-auib-white text-auib-charcoal overflow-x-hidden">
         <ClientLayout role={role}>
           {children}
         </ClientLayout>
