@@ -5,9 +5,18 @@ import { createClient } from 'auth/client';
 import { Event } from 'database';
 import { CalendarDays, AlertCircle, X } from 'lucide-react';
 
+interface AuibEvent {
+  title?: string;
+  start?: string | Date;
+  end?: string | Date;
+  location?: string;
+  description?: string;
+  [key: string]: unknown;
+}
+
 export default function EventsPage() {
   const [events, setEvents] = useState<Event[]>([]);
-  const [auibEvents, setAuibEvents] = useState<any[]>([]);
+  const [auibEvents, setAuibEvents] = useState<AuibEvent[]>([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [createError, setCreateError] = useState('');
