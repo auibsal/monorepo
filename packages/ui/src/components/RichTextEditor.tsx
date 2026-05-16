@@ -4,6 +4,7 @@ import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Underline from '@tiptap/extension-underline';
 import TextAlign from '@tiptap/extension-text-align';
+import { useEffect } from 'react';
 
 export function RichTextEditor({ content, onChange }: { content: string, onChange: (content: string) => void }) {
   const editor = useEditor({
@@ -16,6 +17,8 @@ export function RichTextEditor({ content, onChange }: { content: string, onChang
       }),
     ],
     content,
+    // CRITICAL: Prevents React 18 hydration mismatch errors in Next.js
+    immediatelyRender: false, 
     editorProps: {
       attributes: {
         class: 'min-h-[200px] w-full p-4 focus:outline-none focus:ring-0',
@@ -25,6 +28,13 @@ export function RichTextEditor({ content, onChange }: { content: string, onChang
       onChange(editor.getHTML());
     },
   });
+
+  // CRITICAL: Sync external asynchronous data loads
+  useEffect(() => {
+    if (editor && content !== editor.getHTML()) {
+      editor.commands.setContent(content);
+    }
+  }, [content, editor]);
 
   if (!editor) {
     return null;
