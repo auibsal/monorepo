@@ -24,7 +24,7 @@ export async function GET() {
       .filter((event): event is ical.VEvent => event.type === 'VEVENT')
       .map((event) => ({
         id: event.uid,
-        title: typeof event.summary === 'string' ? event.summary : event.summary?.val || 'Untitled Event',
+        title: typeof event.summary === 'string' ? event.summary : (event.summary as any)?.val || 'Untitled Event',
         start: event.start?.toISOString() || null,
         end: event.end?.toISOString() || null,
         location: event.location || 'AUIB Campus',
