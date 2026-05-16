@@ -32,16 +32,16 @@ export default function EventsPage() {
 
   const supabase = createClient();
 
-  useEffect(() => {
-    const fetchEvents = async () => {
-      if (!supabase) return;
-      const { data, error } = await supabase.from('events').select('*').order('starts_at', { ascending: true });
-      if (!error && data) {
-        setEvents(data);
-      }
-      setLoading(false);
-    };
+  const fetchEvents = async () => {
+    if (!supabase) return;
+    const { data, error } = await supabase.from('events').select('*').order('starts_at', { ascending: true });
+    if (!error && data) {
+      setEvents(data);
+    }
+    setLoading(false);
+  };
 
+  useEffect(() => {
     const fetchAuibEvents = async () => {
       try {
         const res = await fetch('/api/auib-events');
@@ -161,7 +161,7 @@ export default function EventsPage() {
                 <ul className="divide-y-2 divide-auib-red/20">
                     {auibEvents.slice(0, 10).map((event, i) => {
                         // CRITICAL: Mapped to match our new Next.js API route payload
-                        const evt = event as { title?: string; start?: string | Date };
+                        const evt = event as AuibEvent;
                         return (
                         <li key={i} className="p-5 hover:bg-auib-red/5 transition-colors">
                             <p className="font-bold text-sm uppercase tracking-wide leading-tight">{evt.title}</p>
