@@ -2,20 +2,18 @@
 
 ## Supported Versions
 
-Use this section to tell people about which versions of your project are
-currently being supported with security updates.
-
-| Version | Supported          |
-| ------- | ------------------ |
-| 5.1.x   | :white_check_mark: |
-| 5.0.x   | :x:                |
-| 4.0.x   | :white_check_mark: |
-| < 4.0   | :x:                |
+Security updates and patches are exclusively provided for the current production deployment branch (`main`) of the AUIB Society of Arts and Letters monorepo.
 
 ## Reporting a Vulnerability
 
-Use this section to tell people how to report a vulnerability.
+We take the security of our platform and the data of our members very seriously. **Please do not report security vulnerabilities through public GitHub issues, discussions, or pull requests.**
 
-Tell them where to go, how often they can expect to get an update on a
-reported vulnerability, what to expect if the vulnerability is accepted or
-declined, etc.
+Instead, please report them directly via email to the core infrastructure team. 
+
+When reporting, please include:
+- A detailed description of the vulnerability.
+- Step-by-step instructions to reproduce the issue.
+- The potential impact on the system or user data.
+- Any suggested mitigations or patches (if applicable).
+
+You should expect a response within 48 hours acknowledging receipt of the vulnerability report. We will prioritize the investigation, patching, and secure deployment of any confirmed security issues prior to any public disclosure.
