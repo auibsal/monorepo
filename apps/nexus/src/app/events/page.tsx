@@ -79,9 +79,9 @@ export default function EventsPage() {
       starts_at: startsAt,
       ends_at: endsAt,
       is_members_only: isMembersOnly,
-    });
 
     if (error) {
+      console.error('Failed to create event', error);
       console.error('Failed to create event', error);
       setCreateError('Failed to create event. Please check your inputs and try again.');
     } else {
@@ -163,7 +163,8 @@ export default function EventsPage() {
                         // CRITICAL: Mapped to match our new Next.js API route payload
                         const evt = event as AuibEvent;
                         const eventKey = `${String(evt.title ?? 'untitled')}|${String(evt.start ?? 'no-start')}|${String(evt.end ?? 'no-end')}`;
-                        return (
+                        const eventKey = `${String(evt.title ?? 'untitled')}|${String(evt.start ?? 'no-start')}|${String(evt.end ?? 'no-end')}`;
+                        <li key={eventKey} className="p-5 hover:bg-auib-red/5 transition-colors">
                         <li key={eventKey} className="p-5 hover:bg-auib-red/5 transition-colors">
                             <p className="font-bold text-sm uppercase tracking-wide leading-tight">{evt.title}</p>
                             <p className="text-xs font-bold text-auib-red mt-2 uppercase tracking-widest">
