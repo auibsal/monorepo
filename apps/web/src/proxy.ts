@@ -5,12 +5,19 @@ import { updateSession } from 'auth';
 
 const intlMiddleware = createMiddleware(routing);
 
-export async function proxy(request: NextRequest) {
-  let response = intlMiddleware(request);
+export default async function proxy(request: NextRequest) {
+  // 1. Refresh the Supabase session and get the auth response
+  const { response: authResponse } = await updateSession(request);
 
-  const { response: updatedResponse } = await updateSession(request, response as any);
+  // 2. Run the internationalization middleware to handle redirects and locale headers
+  const intlResponse = intlMiddleware(request);
 
-  return updatedResponse;
+  // 3. CRITICAL: Merge the Supabase authentication cookies into the next-intl response
+  authResponse.cookies.getAll().forEach((cookie) => {
+    intlResponse.cookies.set(cookie.name, cookie.value);
+  });
+
+  return intlResponse;
 }
 
 export const config = {
