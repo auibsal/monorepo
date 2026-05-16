@@ -25,15 +25,19 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }));
 
   // Fetch dynamic journal issues
-  // The prompt explicitly requested: "where the status is explicitly set to public/accepted"
+  // Keep filtering to public/accepted while avoiding type suppression.
   const { data: issues } = await supabase
     .from('journal_issues')
-    .select('id, published_at')
-    // @ts-ignore - The prompt implies a status column exists for filtering
-    .in('status', ['public', 'accepted']);
+    .select('id, published_at, status')
+    .or('status.eq.public,status.eq.accepted');
 
   if (issues) {
     issues.forEach((issue) => {
+      const issueStatus = (issue as { status?: string }).status;
+      if (issueStatus !== 'public' && issueStatus !== 'accepted') {
+        return;
+      }
+
       sitemapEntries.push({
         url: `${baseUrl}/journal/${issue.id}`,
         lastModified: new Date(issue.published_at || new Date()),
