@@ -76,7 +76,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   if (submissions) {
     submissions.forEach((sub) => {
       sitemapEntries.push({
-        url: `${baseUrl}/submissions/${sub.id}`, // Using a logical path
+        // Public submissions use the canonical detail route `/submissions/:id`.
+        // Only `public` and `accepted` records are queried above, so this exposes only intended public pages.
+        url: `${baseUrl}/submissions/${sub.id}`,
         lastModified: new Date(sub.submitted_at || new Date()),
         alternates: {
           languages: {
