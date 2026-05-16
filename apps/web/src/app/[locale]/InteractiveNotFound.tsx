@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { Link } from '@/i18n/routing';
 import { useEffect, useState, useRef } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
+import { buttonVariants } from 'ui';
 
 interface Trail {
   x: number;
@@ -17,19 +18,16 @@ export default function InteractiveNotFound() {
   const isRtl = locale === 'ar';
 
   const [trails, setTrails] = useState<Trail[]>([]);
-  // Use a fixed default quote for SSR to avoid hydration errors
   const [quoteIndex, setQuoteIndex] = useState(1);
   const [isClient, setIsClient] = useState(false);
   const trailIdCounter = useRef(0);
 
-  // Characters to float around (English/Arabic depending on locale)
   const floatingChars = isRtl
     ? ['أ', 'ب', 'ت', 'ث', 'ج', 'ح', 'خ', 'د', 'ذ', 'ر', 'ز', 'س', 'ش', 'ص', 'ض', 'ط', 'ظ', 'ع', 'غ', 'ف', 'ق', 'ك', 'ل', 'م', 'ن', 'ه', 'و', 'ي', '؟', '!']
     : ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '?', '!'];
 
   useEffect(() => {
     setIsClient(true);
-    // Select a random quote (1 to 4) on the client
     setQuoteIndex(Math.floor(Math.random() * 4) + 1);
 
     const handleMouseMove = (e: MouseEvent) => {
@@ -52,7 +50,6 @@ export default function InteractiveNotFound() {
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
 
-  // Remove trails over time to create a fading effect
   useEffect(() => {
     if (trails.length === 0) return;
     const timer = setTimeout(() => {
@@ -62,7 +59,7 @@ export default function InteractiveNotFound() {
   }, [trails]);
 
   return (
-    <div className="min-h-[70vh] flex flex-col items-start justify-start p-8 overflow-hidden relative bg-auib-white selection:bg-auib-red selection:text-white">
+    <div className="min-h-[70vh] flex flex-col items-start justify-start p-8 overflow-hidden relative selection:bg-auib-red selection:text-white">
 
       {/* Ink Trail Effect */}
       {trails.map((trail, index) => (
@@ -82,7 +79,7 @@ export default function InteractiveNotFound() {
         />
       ))}
 
-      {/* Floating Letters Background - Only render on client to avoid hydration mismatch with random initial positions */}
+      {/* Floating Letters Background */}
       {isClient && (
         <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
           {[...Array(20)].map((_, i) => (
@@ -124,7 +121,7 @@ export default function InteractiveNotFound() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="text-4xl md:text-6xl font-black uppercase tracking-tighter mb-4 text-[#111111] text-start"
+          className="text-4xl md:text-6xl font-bold uppercase tracking-tighter mb-4 text-auib-charcoal text-start"
         >
           {t('heading')}
         </motion.h2>
@@ -133,7 +130,7 @@ export default function InteractiveNotFound() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="text-base md:text-lg tracking-widest text-zinc-600 mb-6 leading-relaxed text-start"
+          className="text-base md:text-lg font-medium tracking-widest text-auib-charcoal/80 mb-6 leading-relaxed text-start"
         >
           {t('description')}
         </motion.p>
@@ -142,7 +139,7 @@ export default function InteractiveNotFound() {
            initial={{ opacity: 0 }}
            animate={{ opacity: 1 }}
            transition={{ duration: 1, delay: 0.8 }}
-           className="pl-4 rtl:pl-0 rtl:pr-4 border-l-2 rtl:border-l-0 rtl:border-r-2 border-auib-red/30 italic text-zinc-500 mb-10 text-start"
+           className="pl-4 rtl:pl-0 rtl:pr-4 border-l-4 rtl:border-l-0 rtl:border-r-4 border-auib-red italic font-medium text-auib-charcoal/60 mb-10 text-start"
         >
           &quot;{isClient ? t(`quotes.q${quoteIndex}`) : t('quotes.q1')}&quot;
         </motion.div>
@@ -151,20 +148,18 @@ export default function InteractiveNotFound() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.4 }}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          className="inline-block self-start"
+          className="inline-block self-start mt-2"
         >
           <Link
             href="/"
-            className="inline-block border border-auib-red text-auib-red px-8 py-4 text-sm font-bold uppercase tracking-[0.2em] hover:bg-auib-red hover:text-white transition-all duration-300 shadow-[4px_4px_0px_0px_rgba(185,28,28,0.2)] hover:shadow-none translate-x-0 hover:translate-x-[4px] hover:translate-y-[4px]"
+            className={buttonVariants({ variant: 'default', size: 'lg' })}
           >
             {t('returnHome')}
           </Link>
         </motion.div>
       </div>
 
-      {/* Draggable ink blots for extra interactivity - Only render on client to avoid random initial positions hydration error */}
+      {/* Draggable ink blots */}
       {isClient && (
         <div className="absolute inset-0 pointer-events-none z-40 overflow-hidden">
           {[...Array(3)].map((_, i) => (
@@ -180,7 +175,7 @@ export default function InteractiveNotFound() {
                 top: `${20 + Math.random() * 60}%`,
                 filter: 'blur(8px)',
               }}
-              whileHover={{ scale: 1.1, backgroundColor: 'rgba(185,28,28,0.15)' }}
+              whileHover={{ scale: 1.1, backgroundColor: 'rgba(156,33,62,0.15)' }} 
               whileTap={{ scale: 0.9 }}
             />
           ))}
