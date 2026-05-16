@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
-import { ubuntu, ubuntuArabic } from 'ui';
+// CRITICAL: Importing from local app, NOT the shared UI package
+import { ubuntu, ubuntuArabic } from '@/fonts';
 import './globals.css';
 import ClientLayout from './ClientLayout';
 
@@ -15,7 +16,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${ubuntu.variable} ${ubuntuArabic.variable}`}>
-      <body className={`${ubuntu.variable} ${ubuntuArabic.variable} font-sans antialiased`}>
+      <body className="font-sans antialiased min-h-screen flex flex-col bg-auib-white text-auib-charcoal">
         <ClientLayout>{children}</ClientLayout>
       </body>
     </html>
