@@ -33,6 +33,12 @@ export default function BlogPage() {
     setLoading(false);
   };
 
+  // CRITICAL: Dedicated cancel handler to prevent state memory leaks
+  const handleCancel = () => {
+    setTitleEn(''); setTitleAr(''); setContentEn(''); setContentAr(''); setSlug('');
+    setShowForm(false);
+  };
+
   const handleSave = async () => {
     if (!supabase) return;
     setIsSaving(true);
@@ -51,13 +57,12 @@ export default function BlogPage() {
             content_en: contentEn,
             content_ar: contentAr,
             slug: finalSlug,
-            cover_image_url: '', // Default empty for now
+            cover_image_url: '', 
         });
 
         if (error) throw error;
 
-        setTitleEn(''); setTitleAr(''); setContentEn(''); setContentAr(''); setSlug('');
-        setShowForm(false);
+        handleCancel();
         fetchPosts();
 
     } catch (err: any) {
@@ -69,37 +74,41 @@ export default function BlogPage() {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold uppercase tracking-widest text-auib-white">Blog CMS</h2>
+      {/* Architectural Header */}
+      <div className="flex justify-between items-center mb-10 border-b-4 border-auib-charcoal pb-4">
+        <h2 className="text-3xl font-bold uppercase tracking-widest text-auib-charcoal">Blog CMS</h2>
         <button
-            onClick={() => setShowForm(!showForm)}
-            className="bg-auib-red text-auib-white font-bold uppercase tracking-wider px-4 py-2 border-2 border-auib-red hover:bg-auib-white hover:text-auib-red transition-colors shadow-[4px_4px_0px_0px_#273237]">
+            onClick={showForm ? handleCancel : () => setShowForm(true)}
+            className="bg-auib-red text-white font-bold uppercase tracking-wider px-6 py-2 border-4 border-auib-charcoal hover:bg-white hover:text-auib-red transition-colors shadow-[6px_6px_0px_0px_#273237] hover:shadow-[8px_8px_0px_0px_#273237] hover:-translate-y-0.5">
             {showForm ? 'Cancel' : 'New Post'}
         </button>
       </div>
 
+      {/* Brutalist Data Table */}
       {!showForm && (
-        <div className="bg-auib-white text-auib-charcoal border-2 border-auib-charcoal shadow-[8px_8px_0px_0px_#273237] overflow-hidden mb-12">
-            <table className="w-full text-left">
-            <thead className="border-b-2 border-auib-charcoal bg-auib-charcoal text-auib-white">
+        <div className="bg-white text-auib-charcoal border-4 border-auib-charcoal shadow-[8px_8px_0px_0px_#273237] overflow-x-auto mb-12">
+            <table className="w-full text-left border-collapse">
+            <thead className="border-b-4 border-auib-charcoal bg-auib-charcoal text-white">
                 <tr>
-                <th className="px-6 py-3 text-sm font-bold uppercase tracking-wide">Title (EN)</th>
-                <th className="px-6 py-3 text-sm font-bold uppercase tracking-wide">Title (AR)</th>
-                <th className="px-6 py-3 text-sm font-bold uppercase tracking-wide">Author</th>
-                <th className="px-6 py-3 text-sm font-bold uppercase tracking-wide">Status</th>
+                <th className="px-6 py-4 text-sm font-bold uppercase tracking-wide">Title (EN)</th>
+                <th className="px-6 py-4 text-sm font-bold uppercase tracking-wide">Title (AR)</th>
+                <th className="px-6 py-4 text-sm font-bold uppercase tracking-wide">Author</th>
+                <th className="px-6 py-4 text-sm font-bold uppercase tracking-wide text-right">Status</th>
                 </tr>
             </thead>
-            <tbody className="divide-y-2 divide-auib-charcoal/20">
+            <tbody className="divide-y-2 divide-auib-charcoal">
                 {loading ? (
-                    <tr><td colSpan={4} className="px-6 py-4 text-sm font-mono text-center">Loading posts...</td></tr>
+                    <tr><td colSpan={4} className="px-6 py-8 text-sm font-bold uppercase tracking-widest text-center text-auib-charcoal/70">Loading posts...</td></tr>
                 ) : posts.length === 0 ? (
-                    <tr><td colSpan={4} className="px-6 py-4 text-sm font-mono text-center">No posts found.</td></tr>
+                    <tr><td colSpan={4} className="px-6 py-8 text-sm font-bold uppercase tracking-widest text-center text-auib-charcoal/70">No posts found.</td></tr>
                 ) : posts.map(post => (
-                <tr key={post.id}>
-                <td className="px-6 py-4 text-sm font-bold">{post.title_en}</td>
-                <td className="px-6 py-4 text-sm font-bold font-mono">{post.title_ar}</td>
-                <td className="px-6 py-4 text-sm">{post.users?.full_name || 'Unknown'}</td>
-                <td className="px-6 py-4 text-sm"><span className="bg-auib-red text-white py-1 px-2 font-bold uppercase text-xs tracking-wider border border-auib-red shadow-[2px_2px_0px_0px_#273237]">Published</span></td>
+                <tr key={post.id} className="hover:bg-auib-charcoal/5 transition-colors">
+                  <td className="px-6 py-4 text-sm font-bold">{post.title_en}</td>
+                  <td className="px-6 py-4 text-sm font-bold">{post.title_ar}</td>
+                  <td className="px-6 py-4 text-sm font-medium">{post.users?.full_name || 'Unknown'}</td>
+                  <td className="px-6 py-4 text-sm text-right">
+                    <span className="bg-auib-red text-white py-1.5 px-3 font-bold uppercase text-xs tracking-wider border-2 border-auib-charcoal shadow-[2px_2px_0px_0px_#273237]">Published</span>
+                  </td>
                 </tr>
                 ))}
             </tbody>
@@ -109,38 +118,38 @@ export default function BlogPage() {
 
       {/* Draft Post Form */}
       {showForm && (
-        <div className="bg-auib-white text-auib-charcoal p-8 border-2 border-auib-charcoal shadow-[8px_8px_0px_0px_#273237] max-w-6xl">
-            <h3 className="text-xl font-bold mb-6 uppercase tracking-widest border-b-2 border-auib-charcoal pb-2">Draft New Post</h3>
+        <div className="bg-white text-auib-charcoal p-8 md:p-12 border-4 border-auib-charcoal shadow-[12px_12px_0px_0px_#273237] max-w-6xl">
+            <h3 className="text-2xl font-bold mb-8 uppercase tracking-widest border-b-4 border-auib-charcoal pb-4">Draft New Post</h3>
 
-            <div className="mb-6">
-                <label className="block text-sm font-bold uppercase tracking-wide text-auib-charcoal mb-2">Slug (optional, auto-generated from Title EN if empty)</label>
-                <input type="text" value={slug} onChange={e=>setSlug(e.target.value)} className="w-full md:w-1/2 p-3 border-2 border-auib-charcoal bg-transparent focus:outline-none focus:border-auib-red transition-colors rounded-none font-mono" />
+            <div className="mb-8">
+                <label className="block text-sm font-bold uppercase tracking-wide text-auib-charcoal mb-3">Slug (optional, auto-generated from Title EN if empty)</label>
+                <input type="text" value={slug} onChange={e=>setSlug(e.target.value)} className="w-full md:w-1/2 p-4 border-2 border-auib-charcoal bg-white focus:outline-none focus:border-auib-red focus:ring-1 focus:ring-auib-red transition-all rounded-none font-mono text-sm" />
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <div className="space-y-4">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            <div className="space-y-6">
                 <div>
-                <label className="block text-sm font-bold uppercase tracking-wide text-auib-charcoal mb-2">Title (English)</label>
-                <input type="text" required value={titleEn} onChange={e=>setTitleEn(e.target.value)} className="w-full p-3 border-2 border-auib-charcoal bg-transparent focus:outline-none focus:border-auib-red transition-colors rounded-none" />
+                <label className="block text-sm font-bold uppercase tracking-wide text-auib-charcoal mb-3">Title (English)</label>
+                <input type="text" required value={titleEn} onChange={e=>setTitleEn(e.target.value)} className="w-full p-4 border-2 border-auib-charcoal bg-white focus:outline-none focus:border-auib-red focus:ring-1 focus:ring-auib-red transition-all rounded-none font-bold" />
                 </div>
                 <div>
-                <label className="block text-sm font-bold uppercase tracking-wide text-auib-charcoal mb-2">Content (English)</label>
+                <label className="block text-sm font-bold uppercase tracking-wide text-auib-charcoal mb-3">Content (English)</label>
                 <RichTextEditor content={contentEn} onChange={setContentEn} />
                 </div>
             </div>
-            <div className="space-y-4" dir="rtl">
+            <div className="space-y-6" dir="rtl">
                 <div>
-                <label className="block text-sm font-bold uppercase tracking-wide text-auib-charcoal mb-2 text-left" dir="ltr">العنوان (عربي)</label>
-                <input type="text" required value={titleAr} onChange={e=>setTitleAr(e.target.value)} className="w-full p-3 border-2 border-auib-charcoal bg-transparent focus:outline-none focus:border-auib-red transition-colors rounded-none" />
+                <label className="block text-sm font-bold uppercase tracking-wide text-auib-charcoal mb-3 text-right">العنوان (عربي)</label>
+                <input type="text" required value={titleAr} onChange={e=>setTitleAr(e.target.value)} className="w-full p-4 border-2 border-auib-charcoal bg-white focus:outline-none focus:border-auib-red focus:ring-1 focus:ring-auib-red transition-all rounded-none font-bold" />
                 </div>
                 <div>
-                <label className="block text-sm font-bold uppercase tracking-wide text-auib-charcoal mb-2 text-left" dir="ltr">المحتوى (عربي)</label>
+                <label className="block text-sm font-bold uppercase tracking-wide text-auib-charcoal mb-3 text-right">المحتوى (عربي)</label>
                 <RichTextEditor content={contentAr} onChange={setContentAr} />
                 </div>
             </div>
             </div>
-            <div className="mt-8 flex justify-end">
-                <button disabled={isSaving} onClick={handleSave} className="bg-auib-charcoal text-auib-white font-bold uppercase tracking-wider px-6 py-3 border-2 border-auib-charcoal hover:bg-auib-red hover:border-auib-red transition-colors shadow-[4px_4px_0px_0px_#9C213E] disabled:opacity-50">
+            <div className="mt-12 flex justify-end">
+                <button disabled={isSaving} onClick={handleSave} className="bg-auib-charcoal text-white font-bold uppercase tracking-wider px-8 py-4 border-4 border-auib-charcoal hover:bg-auib-red hover:border-auib-red transition-colors shadow-[6px_6px_0px_0px_#273237] hover:shadow-[8px_8px_0px_0px_#273237] disabled:opacity-50 hover:-translate-y-1">
                     {isSaving ? 'Saving...' : 'Publish Post'}
                 </button>
             </div>
