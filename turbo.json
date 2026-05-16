@@ -5,7 +5,9 @@
       "dependsOn": ["^build"],
       "env": [
         "NEXT_PUBLIC_SUPABASE_URL",
-        "NEXT_PUBLIC_SUPABASE_ANON_KEY"
+        "NEXT_PUBLIC_SUPABASE_ANON_KEY",
+        "NEXT_PUBLIC_WEB_URL",
+        "NEXT_PUBLIC_NEXUS_URL"
       ],
       "outputs": [".next/**", "!.next/cache/**", "dist/**"]
     },
