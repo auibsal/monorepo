@@ -68,6 +68,7 @@ function LoginForm() {
         <input
           id="email"
           type="email"
+          autoComplete="email"
           required
           placeholder="member@auib.edu.iq"
           value={email}
