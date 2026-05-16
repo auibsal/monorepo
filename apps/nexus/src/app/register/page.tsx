@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { createClient } from 'auth/client';
 import Link from 'next/link';
-import { AlertTriangle, CheckSquare, ShieldAlert } from 'lucide-react';
+import { CheckSquare, ShieldAlert } from 'lucide-react';
 
 export default function NexusRegister() {
   const [email, setEmail] = useState('');
