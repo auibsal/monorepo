@@ -167,7 +167,7 @@ export default function EventsPage() {
         <div className="fixed inset-0 bg-auib-charcoal/90 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
             <div className="bg-white text-auib-charcoal p-8 md:p-12 border-4 border-auib-charcoal shadow-[16px_16px_0px_0px_#9C213E] max-w-3xl w-full max-h-[90vh] overflow-y-auto relative">
                 
-                <button onClick={handleCloseModal} className="absolute top-6 right-6 text-auib-charcoal hover:text-auib-red transition-colors">
+                <button onClick={handleCloseModal} aria-label="Close modal" className="absolute top-6 right-6 text-auib-charcoal hover:text-auib-red transition-colors">
                     <X size={32} strokeWidth={3} />
                 </button>
 
