@@ -18,12 +18,15 @@ function LoginForm() {
   // 1. Intercept URL errors from the API callbacks
   useEffect(() => {
     const errorParam = searchParams.get('error');
-    if (errorParam === 'invalid_auth_code') {
+    const errorMessages: Record<string, string> = {
+      invalid_auth_code: 'Your login link expired or was invalid. Please authenticate again.',
+      access_denied: 'Access was denied. Please try again or contact support.',
+      session_expired: 'Your session has expired. Please sign in again.',
+    };
+
+    if (errorParam) {
       setStatus('error');
-      setErrorMessage('Your login link expired or was invalid. Please authenticate again.');
-    } else if (errorParam) {
-      setStatus('error');
-      setErrorMessage(errorParam);
+      setErrorMessage(errorMessages[errorParam] || 'Authentication failed. Please try again.');
     }
   }, [searchParams]);
 
