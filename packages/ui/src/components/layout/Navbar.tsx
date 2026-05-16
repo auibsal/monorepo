@@ -13,13 +13,69 @@ export interface NavbarLink {
 export interface NavbarProps {
   locale: string;
   links: NavbarLink[];
-  rightModule?: React.ReactNode;
-  homeUrl?: string; 
+  homeUrl?: string;
+  platform?: 'web' | 'nexus';
+
+  // Nexus-specific props
+  onSignOut?: () => void;
+
+  // Web-specific props
+  onLanguageToggle?: () => void;
+  targetLocale?: string;
+  nexusUrl?: string;
 }
 
-export default function Navbar({ locale, links, rightModule, homeUrl }: NavbarProps) {
+export default function Navbar({
+  locale,
+  links,
+  homeUrl,
+  platform,
+  onSignOut,
+  onLanguageToggle,
+  targetLocale,
+  nexusUrl
+}: NavbarProps) {
   const [isOpen, setIsOpen] = useState(false);
   const logoHref = homeUrl || `/${locale}`;
+
+  const renderPlatformActions = () => {
+    if (platform === 'nexus') {
+      return (
+        <button
+          onClick={onSignOut}
+          className="text-sm font-bold text-white hover:text-auib-red transition-colors uppercase tracking-widest"
+        >
+          Sign Out
+        </button>
+      );
+    }
+
+    if (platform === 'web') {
+      return (
+        <>
+          <button
+            onClick={onLanguageToggle}
+            className="text-sm font-bold text-white hover:text-auib-charcoal transition-colors uppercase tracking-widest"
+          >
+            {targetLocale === 'en' ? 'English' : 'عربي'}
+          </button>
+          <div className="h-6 w-1 bg-white/30 hidden md:block"></div>
+          {nexusUrl && (
+            <a
+              href={nexusUrl}
+              className="text-sm font-bold text-white hover:text-auib-charcoal transition-colors uppercase tracking-widest"
+            >
+              Nexus
+            </a>
+          )}
+        </>
+      );
+    }
+
+    return null;
+  };
+
+  const rightModule = renderPlatformActions();
 
   return (
     <nav className="sticky top-0 z-50 w-full bg-auib-red backdrop-blur-sm border-b-4 border-auib-charcoal text-white">

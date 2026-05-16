@@ -8,7 +8,9 @@ test("cn utility", async (t) => {
   });
 
   await t.test("handles conditional classes", () => {
-    assert.strictEqual(cn("foo", true && "bar", false && "baz"), "foo bar");
+    const isTrue = true;
+    const isFalse = false;
+    assert.strictEqual(cn("foo", isTrue && "bar", isFalse && "baz"), "foo bar");
     assert.strictEqual(cn("foo", null, undefined, "bar"), "foo bar");
   });
 
