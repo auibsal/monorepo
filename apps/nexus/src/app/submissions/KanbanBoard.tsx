@@ -5,6 +5,7 @@ import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea
 import { createClient } from 'auth/client';
 import { Submission, SubmissionStatus } from 'database';
 import Link from 'next/link';
+import { GripVertical, AlertOctagon } from 'lucide-react';
 
 const STATUSES: { id: SubmissionStatus; label: string }[] = [
   { id: 'pending', label: 'Pending' },
@@ -17,10 +18,13 @@ const STATUSES: { id: SubmissionStatus; label: string }[] = [
 export default function KanbanBoard() {
   const [submissions, setSubmissions] = useState<Record<string, Submission>>({});
   const [loading, setLoading] = useState(true);
+  const [isMounted, setIsMounted] = useState(false);
 
   const supabase = createClient();
 
   useEffect(() => {
+    // CRITICAL: Hydration flag to ensure DragDropContext only mounts on the client
+    setIsMounted(true);
     fetchSubmissions();
   }, []);
 
@@ -38,26 +42,20 @@ export default function KanbanBoard() {
     const { destination, source, draggableId } = result;
 
     if (!destination) return;
-
-    if (
-      destination.droppableId === source.droppableId &&
-      destination.index === source.index
-    ) {
-      return;
-    }
+    if (destination.droppableId === source.droppableId && destination.index === source.index) return;
 
     const draggedSubmission = submissions[draggableId];
     if (!draggedSubmission) return;
 
     const newStatus = destination.droppableId as SubmissionStatus;
 
-    // Optimistic update
+    // Optimistic UI update
     setSubmissions(prev => ({
       ...prev,
       [draggableId]: { ...prev[draggableId], status: newStatus }
     }));
 
-    // DB update
+    // Database sync
     const { error } = await supabase
       .from('submissions')
       .update({ status: newStatus })
@@ -65,7 +63,7 @@ export default function KanbanBoard() {
 
     if (error) {
       console.error('Error updating status:', error);
-      // Revert on error
+      // Automatically revert the card if the database request fails
       fetchSubmissions();
     }
   };
@@ -79,34 +77,46 @@ export default function KanbanBoard() {
       rejected: [],
     };
     Object.values(submissions).forEach(sub => {
-      grouped[sub.status].push(sub);
+      if (grouped[sub.status]) {
+        grouped[sub.status].push(sub);
+      }
     });
     return grouped;
   }, [submissions]);
 
+  // Prevent Next.js SSR hydration mismatch crashes
+  if (!isMounted) return null;
+
   if (loading) {
-    return <div className="p-8 font-mono text-auib-white">Loading Kanban board...</div>;
+    return (
+      <div className="p-8 font-bold uppercase tracking-widest text-auib-charcoal/50 flex items-center justify-center h-64 border-4 border-dashed border-auib-charcoal/20">
+        Loading Board Logistics...
+      </div>
+    );
   }
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
-      <div className="flex gap-6 overflow-x-auto pb-4 items-start">
+      <div className="flex gap-8 overflow-x-auto pb-8 items-start snap-x">
         {STATUSES.map(status => (
-          <div key={status.id} className="w-80 flex-shrink-0 flex flex-col">
-            <h3 className="font-bold text-auib-white mb-3 uppercase tracking-widest flex items-center justify-between border-b-2 border-auib-white pb-2">
+          <div key={status.id} className="w-80 flex-shrink-0 flex flex-col snap-start">
+            
+            {/* Brutalist Column Header */}
+            <h3 className="font-bold text-auib-charcoal mb-4 uppercase tracking-widest flex items-center justify-between border-b-4 border-auib-charcoal pb-3">
               {status.label}
-              <span className="bg-auib-white text-auib-charcoal py-0.5 px-2 font-mono text-xs shadow-[2px_2px_0px_0px_#9C213E]">
+              <span className="bg-auib-charcoal text-white py-1 px-3 font-bold text-xs shadow-[4px_4px_0px_0px_#9C213E]">
                 {groupedSubmissions[status.id].length}
               </span>
             </h3>
 
+            {/* Drop Zone */}
             <Droppable droppableId={status.id}>
               {(provided, snapshot) => (
                 <div
                   ref={provided.innerRef}
                   {...provided.droppableProps}
-                  className={`min-h-[500px] border-2 border-auib-white flex flex-col gap-4 p-4 ${
-                    snapshot.isDraggingOver ? 'bg-auib-white/10' : 'bg-transparent'
+                  className={`min-h-[600px] border-4 flex flex-col gap-5 p-4 transition-colors ${
+                    snapshot.isDraggingOver ? 'bg-auib-charcoal/5 border-auib-red border-dashed' : 'bg-transparent border-auib-charcoal'
                   }`}
                 >
                   {groupedSubmissions[status.id]
@@ -117,23 +127,33 @@ export default function KanbanBoard() {
                             ref={provided.innerRef}
                             {...provided.draggableProps}
                             {...provided.dragHandleProps}
-                            className={`bg-auib-white text-auib-charcoal p-4 border-2 border-auib-charcoal transition-transform ${
-                              snapshot.isDragging ? 'shadow-[8px_8px_0px_0px_#9C213E] -rotate-1' : 'shadow-[4px_4px_0px_0px_#273237]'
+                            className={`bg-white text-auib-charcoal p-5 border-4 transition-all ${
+                              snapshot.isDragging 
+                                ? 'border-auib-red shadow-[12px_12px_0px_0px_#9C213E] -rotate-2 z-50 scale-105' 
+                                : 'border-auib-charcoal shadow-[6px_6px_0px_0px_#273237] hover:shadow-[8px_8px_0px_0px_#273237] hover:-translate-y-0.5'
                             }`}
                             style={{ ...provided.draggableProps.style }}
                           >
-                            <Link href={`/submissions/${sub.id}`}>
-                              <h4 className="font-bold uppercase tracking-wide mb-1 hover:text-auib-red transition-colors truncate">{sub.title}</h4>
-                            </Link>
-                            <div className="flex justify-between items-end mt-4">
-                              <span className="text-xs font-mono uppercase tracking-wider bg-auib-charcoal text-auib-white px-2 py-1">
-                                {sub.type}
-                              </span>
-                              {sub.rubric_formatting === 'disqualified' && (
-                                <span className="text-xs font-bold text-auib-red uppercase tracking-wider">
-                                  Disqualified
-                                </span>
-                              )}
+                            <div className="flex items-start gap-3">
+                              <GripVertical className="text-auib-charcoal/30 flex-shrink-0 mt-0.5 cursor-grab active:cursor-grabbing" size={20} />
+                              <div className="flex-1 min-w-0">
+                                <Link href={`/submissions/${sub.id}`} className="block group">
+                                  <h4 className="font-bold uppercase tracking-wide mb-3 text-auib-charcoal group-hover:text-auib-red transition-colors truncate leading-tight">
+                                    {sub.title}
+                                  </h4>
+                                </Link>
+                                <div className="flex justify-between items-end mt-5">
+                                  <span className="text-xs font-bold uppercase tracking-widest bg-auib-charcoal text-white px-3 py-1.5 border-2 border-auib-charcoal shadow-[2px_2px_0px_0px_#273237]">
+                                    {sub.type}
+                                  </span>
+                                  {sub.rubric_formatting === 'disqualified' && (
+                                    <span className="text-xs font-bold text-auib-red uppercase tracking-widest flex items-center gap-1">
+                                      <AlertOctagon size={14} />
+                                      DQ'd
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
                             </div>
                           </div>
                         )}
@@ -143,6 +163,7 @@ export default function KanbanBoard() {
                 </div>
               )}
             </Droppable>
+
           </div>
         ))}
       </div>
