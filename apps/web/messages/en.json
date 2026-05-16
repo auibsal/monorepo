@@ -38,7 +38,7 @@
     "event2Date": "November 20, 2026",
     "event2Title": "Staged Production: The Importance of Being Earnest",
     "event2Location": "AUIB Main Auditorium",
-    "event2Desc": "A collaborative production bringing Oscar Wilde's classic trivial comedy for serious people to the university stage."
+    "event2Desc": "A collaborative production bringing Oscar Wilde's classic, A Trivial Comedy for Serious People, to the university stage."
   },
   "JournalPage": {
     "journalName": "The SAL Review",
@@ -47,7 +47,7 @@
     "article1Title": "The Genesis of Letters at AUIB",
     "article1Authors": "Authored by Shaheen Farjo. Contributions by Hussein, Remas, and Jude.",
     "article1Excerpt": "An exploration into the founding necessity of a literary society within a burgeoning university environment, examining the role of humanities in a modern technical world.",
-    "readMore": "Read full essay"
+    "readMore": "Read Full Essay"
   },
   "AboutPage": {
     "title": "About the Society",
@@ -85,7 +85,7 @@
     "typePoetry": "Poetry",
     "typeFiction": "Fiction",
     "formContent": "Content",
-    "submitButton": "Submit Application"
+    "submitButton": "Submit Manuscript"
   },
   "NotFound": {
     "title": "404",
@@ -102,21 +102,4 @@
   "LoginPage": {
     "loginTitle": "Member Login",
     "loginSubtitle": "Access the society portal.",
-    "registerTitle": "Apply for Membership",
-    "registerSubtitle": "Submit your credentials for review.",
-    "emailLabel": "University Email",
-    "passwordLabel": "Password",
-    "loginButton": "Authenticate",
-    "registerButton": "Submit Application",
-    "loading": "Processing...",
-    "registerSuccess": "Application submitted. Please await further instructions."
-  },
-  "NexusIntro": {
-    "title": "Welcome to Nexus",
-    "description": "Nexus is the central hub for our members and editors.",
-    "feature1": "• Submit your creative writing and visual art for review.",
-    "feature2": "• Track the status of your submissions.",
-    "feature3": "• Access the editorial overview and manage members (Authorized personnel only).",
-    "loginLink": "Access Nexus"
-  }
-}
+    "registerTitle":
