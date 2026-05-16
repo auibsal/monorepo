@@ -1,9 +1,9 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import { updateSession } from 'auth';
+import { updateSession } from 'auth/proxy';
 
 export default async function proxy(request: NextRequest) {
   // 1. Refresh the session and grab the response (contains updated JWT cookies)
-  const { supabase, user, response: authResponse } = await updateSession(request);
+  const { supabase, user, response: authResponse } = await updateSession(request as any);
 
   const isAuthPage = request.nextUrl.pathname.startsWith('/login') || request.nextUrl.pathname.startsWith('/register');
   const isApiRoute = request.nextUrl.pathname.startsWith('/api');
@@ -14,12 +14,12 @@ export default async function proxy(request: NextRequest) {
   if (!user) {
     if (!isAuthPage && !isApiRoute) {
       // Unauthenticated user attempting to access a secure route
-      finalResponse = NextResponse.redirect(new URL('/login', request.url));
+      finalResponse = NextResponse.redirect(new URL('/login', request.url)) as any;
     }
   } else {
     if (isAuthPage) {
       // Authenticated user attempting to view the login page
-      finalResponse = NextResponse.redirect(new URL('/', request.url));
+      finalResponse = NextResponse.redirect(new URL('/', request.url)) as any;
     } else if (!isApiRoute) {
       // Safely fetch and inject the user role into the headers for downstream layouts
       const { data: userData } = await supabase

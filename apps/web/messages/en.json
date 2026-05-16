@@ -102,4 +102,6 @@
   "LoginPage": {
     "loginTitle": "Member Login",
     "loginSubtitle": "Access the society portal.",
-    "registerTitle":
+    "registerTitle": "Register"
+  }
+}
