@@ -32,16 +32,16 @@ export default function EventsPage() {
 
   const supabase = createClient();
 
-  useEffect(() => {
-    const fetchEvents = async () => {
-      if (!supabase) return;
-      const { data, error } = await supabase.from('events').select('*').order('starts_at', { ascending: true });
-      if (!error && data) {
-        setEvents(data);
-      }
-      setLoading(false);
-    };
+  const fetchEvents = async () => {
+    if (!supabase) return;
+    const { data, error } = await supabase.from('events').select('*').order('starts_at', { ascending: true });
+    if (!error && data) {
+      setEvents(data);
+    }
+    setLoading(false);
+  };
 
+  useEffect(() => {
     const fetchAuibEvents = async () => {
       try {
         const res = await fetch('/api/auib-events');
