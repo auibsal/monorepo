@@ -43,7 +43,11 @@ function LoginForm() {
     } else {
       setStatus('success');
       // 2. Safely capture the intended destination to preserve deep-links
-      const next = searchParams.get('next') || '/';
+      // SECURITY: Validate 'next' to prevent DOM-based XSS (javascript:) and Open Redirects
+      let next = searchParams.get('next') || '/';
+      if (!next.startsWith('/') || next.startsWith('//')) {
+        next = '/';
+      }
       window.location.href = next;
     }
   };

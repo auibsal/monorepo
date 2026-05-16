@@ -16,7 +16,12 @@ export async function GET(request: Request) {
 
     if (!error) {
       // Success! Send them to their intended destination within the Nexus dashboard
-      return NextResponse.redirect(`${origin}${next}`);
+      // SECURITY: Validate 'next' to prevent Open Redirects
+      let safeNext = next;
+      if (!safeNext.startsWith('/') || safeNext.startsWith('//')) {
+        safeNext = '/';
+      }
+      return NextResponse.redirect(`${origin}${safeNext}`);
     }
   }
 
