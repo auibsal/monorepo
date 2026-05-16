@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useMemo, Suspense } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { createClient } from 'auth/client';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -12,7 +12,7 @@ function LoginForm() {
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
 
-  const supabase = useMemo(() => createClient(), []);
+  const [supabase] = useState(() => createClient());
   const searchParams = useSearchParams();
   const router = useRouter();
 
