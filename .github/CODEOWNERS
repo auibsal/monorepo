@@ -1,0 +1,9 @@
+# Global owner
+* @ShaheenFarjo
+
+# Lock down the database package
+/packages/database/ @ShaheenFarjo
+
+# Lock down infrastructure config
+turbo.json @ShaheenFarjo
+.github/workflows/ @ShaheenFarjo
