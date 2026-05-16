@@ -20,7 +20,8 @@ export default async function LocaleLayout({
 
   return (
     <html lang={locale} dir={dir} className={`${ubuntu.variable} ${ubuntuArabic.variable}`}>
-      <body className="min-h-screen flex flex-col antialiased">
+      {/* CRITICAL: Added overflow-x-hidden to kill the mobile scroll bug, and anchored the global theme colors */}
+      <body className="font-sans antialiased min-h-screen flex flex-col bg-auib-white text-auib-charcoal overflow-x-hidden">
         <NextIntlClientProvider messages={messages}>
           <WebNavbar locale={locale} />
           <main className="flex-grow">
