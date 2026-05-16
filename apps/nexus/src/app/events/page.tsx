@@ -83,7 +83,8 @@ export default function EventsPage() {
     });
 
     if (error) {
-      setCreateError('Error creating event: ' + error.message);
+      console.error('Failed to create event', error);
+      setCreateError('Failed to create event. Please check your inputs and try again.');
     } else {
       handleCloseModal();
       fetchEvents();
