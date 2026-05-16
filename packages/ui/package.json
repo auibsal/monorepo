@@ -9,6 +9,7 @@
   "scripts": {
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
+    "test": "node --import tsx --test src/**/*.test.ts",
     "clean": "rm -rf .turbo node_modules"
   },
   "dependencies": {
@@ -41,6 +42,7 @@
     "eslint-config-next": "16.2.6",
     "shadcn": "^4.7.0",
     "tailwindcss": "^4",
+    "tsx": "^4.19.2",
     "typescript": "^5"
   }
 }
