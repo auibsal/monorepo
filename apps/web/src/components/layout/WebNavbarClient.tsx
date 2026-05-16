@@ -1,6 +1,6 @@
 'use client';
 
-import { Navbar } from 'ui';
+import { Navbar } from '@auibsal/ui';
 import { useRouter, usePathname } from '@/i18n/routing';
 
 export default function WebNavbarClient({

@@ -1,5 +1,5 @@
 import { getTranslations } from 'next-intl/server';
-import { createClient } from 'auth/server';
+import { createClient } from '@auibsal/auth/server';
 import { Link } from '@/i18n/routing';
 import { ArrowRight, User } from 'lucide-react';
 

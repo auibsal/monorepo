@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "exports": {
-    "./globals.css": "./src/globals.css",
     ".": "./src/index.ts"
   },
   "scripts": {
@@ -33,7 +32,7 @@
     "react-dom": "^19.2.4"
   },
   "devDependencies": {
-    "@repo/typescript-config": "workspace:*",
+    "@auibsal/config": "workspace:*",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^25",
     "@types/react": "^19",

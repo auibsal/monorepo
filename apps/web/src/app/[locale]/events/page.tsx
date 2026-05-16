@@ -1,6 +1,6 @@
 
 import { getTranslations } from 'next-intl/server';
-import { createClient } from 'auth/server';
+import { createClient } from '@auibsal/auth/server';
 import { Calendar, MapPin } from 'lucide-react';
 
 // CRITICAL: 0 completely prevents caching to ensure live event updates.

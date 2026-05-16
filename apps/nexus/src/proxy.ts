@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import { updateSession } from 'auth/proxy';
+import { updateSession } from '@auibsal/auth/proxy';
 
 export default async function proxy(request: NextRequest) {
   // 1. Refresh the session and grab the response (contains updated JWT cookies)

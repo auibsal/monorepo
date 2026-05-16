@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { createClient } from 'auth/client';
-import { User, Role } from 'database';
+import { createClient } from '@auibsal/auth/client';
+import { User, Role } from '@auibsal/database';
 import { Save, Loader2, Users } from 'lucide-react';
 
 export default function UsersPage() {

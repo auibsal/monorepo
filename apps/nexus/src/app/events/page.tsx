@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { createClient } from 'auth/client';
-import { Event } from 'database';
+import { createClient } from '@auibsal/auth/client';
+import { Event } from '@auibsal/database';
 import { CalendarDays, AlertCircle, X } from 'lucide-react';
 
 export default function EventsPage() {
@@ -181,57 +181,6 @@ export default function EventsPage() {
                         </div>
                         <div className="space-y-3" dir="rtl">
                             <label className="block text-sm font-bold uppercase tracking-wide text-right">Title (AR)</label>
-                            <input required type="text" value={titleAr} onChange={e=>setTitleAr(e.target.value)} className="w-full p-4 border-2 border-auib-charcoal bg-white focus:outline-none focus:border-auib-red focus:ring-1 focus:ring-auib-red rounded-none font-bold text-lg" />
-                        </div>
-                    </div>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <div className="space-y-3">
-                            <label className="block text-sm font-bold uppercase tracking-wide">Description (EN)</label>
-                            <textarea required value={descEn} onChange={e=>setDescEn(e.target.value)} className="w-full p-4 border-2 border-auib-charcoal bg-white focus:outline-none focus:border-auib-red focus:ring-1 focus:ring-auib-red rounded-none h-32 font-medium leading-relaxed resize-none" />
-                        </div>
-                        <div className="space-y-3" dir="rtl">
-                            <label className="block text-sm font-bold uppercase tracking-wide text-right">Description (AR)</label>
-                            <textarea required value={descAr} onChange={e=>setDescAr(e.target.value)} className="w-full p-4 border-2 border-auib-charcoal bg-white focus:outline-none focus:border-auib-red focus:ring-1 focus:ring-auib-red rounded-none h-32 font-medium leading-relaxed resize-none" />
-                        </div>
-                    </div>
-                    
-                    <div className="space-y-3">
-                        <label className="block text-sm font-bold uppercase tracking-wide">Location</label>
-                        <input required type="text" value={location} onChange={e=>setLocation(e.target.value)} className="w-full p-4 border-2 border-auib-charcoal bg-white focus:outline-none focus:border-auib-red focus:ring-1 focus:ring-auib-red rounded-none font-bold" />
-                    </div>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <div className="space-y-3">
-                            <label className="block text-sm font-bold uppercase tracking-wide">Starts At</label>
-                            <input required type="datetime-local" value={startsAt} onChange={e=>setStartsAt(e.target.value)} className="w-full p-4 border-2 border-auib-charcoal bg-white focus:outline-none focus:border-auib-red focus:ring-1 focus:ring-auib-red rounded-none font-bold text-sm" />
-                        </div>
-                        <div className="space-y-3">
-                            <label className="block text-sm font-bold uppercase tracking-wide">Ends At</label>
-                            <input required type="datetime-local" value={endsAt} onChange={e=>setEndsAt(e.target.value)} className="w-full p-4 border-2 border-auib-charcoal bg-white focus:outline-none focus:border-auib-red focus:ring-1 focus:ring-auib-red rounded-none font-bold text-sm" />
-                        </div>
-                    </div>
-                    
-                    <div className="flex items-center gap-4 mt-8 pt-8 border-t-4 border-auib-charcoal">
-                        <input type="checkbox" id="membersOnly" checked={isMembersOnly} onChange={e=>setIsMembersOnly(e.target.checked)} className="w-6 h-6 text-auib-red border-2 border-auib-charcoal rounded-none focus:ring-auib-red focus:ring-offset-0" />
-                        <label htmlFor="membersOnly" className="text-lg font-bold uppercase tracking-wider text-auib-charcoal cursor-pointer">Members Only Event</label>
-                    </div>
-
-                    <div className="flex justify-end gap-6 mt-12">
-                        <button type="button" onClick={handleCloseModal} className="px-8 py-4 border-4 border-auib-charcoal text-auib-charcoal font-bold uppercase tracking-widest hover:bg-auib-charcoal hover:text-white transition-colors shadow-[6px_6px_0px_0px_#273237] hover:shadow-none hover:translate-y-1 hover:translate-x-1">
-                            Cancel
-                        </button>
-                        <button type="submit" className="px-8 py-4 bg-auib-red text-white font-bold uppercase tracking-widest border-4 border-auib-charcoal shadow-[6px_6px_0px_0px_#273237] hover:bg-auib-charcoal transition-colors hover:shadow-none hover:translate-y-1 hover:translate-x-1">
-                            Create Event
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-      )}
-    </div>
-  );
-}text-sm font-bold uppercase tracking-wide text-right">Title (AR)</label>
                             <input required type="text" value={titleAr} onChange={e=>setTitleAr(e.target.value)} className="w-full p-4 border-2 border-auib-charcoal bg-white focus:outline-none focus:border-auib-red focus:ring-1 focus:ring-auib-red rounded-none font-bold text-lg" />
                         </div>
                     </div>

@@ -10,7 +10,7 @@ const cspHeader = `
 `.replace(/\n/g, '').replace(/\s+/g, ' ').trim();
 
 const nextConfig: NextConfig = {
-  transpilePackages: ["auth", "database", "ui"],
+  transpilePackages: ["@auibsal/auth", "@auibsal/database", "@auibsal/ui"],
   images: {
     remotePatterns: [
       {
