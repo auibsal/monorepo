@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useEffect, Suspense, useRef } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { createClient } from 'auth/client';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { AlertTriangle } from 'lucide-react';
 
@@ -12,26 +12,18 @@ function LoginForm() {
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
 
-  const supabaseRef = useRef<ReturnType<typeof createClient> | null>(null);
-  if (!supabaseRef.current) {
-    supabaseRef.current = createClient();
-  }
-  const supabase = supabaseRef.current;
+  const supabase = createClient();
   const searchParams = useSearchParams();
-  const router = useRouter();
 
   // 1. Intercept URL errors from the API callbacks
   useEffect(() => {
     const errorParam = searchParams.get('error');
-    const errorMessages: Record<string, string> = {
-      invalid_auth_code: 'Your login link expired or was invalid. Please authenticate again.',
-      access_denied: 'Access was denied. Please try again or contact support.',
-      session_expired: 'Your session has expired. Please sign in again.',
-    };
-
-    if (errorParam) {
+    if (errorParam === 'invalid_auth_code') {
       setStatus('error');
-      setErrorMessage(errorMessages[errorParam] || 'Authentication failed. Please try again.');
+      setErrorMessage('Your login link expired or was invalid. Please authenticate again.');
+    } else if (errorParam) {
+      setStatus('error');
+      setErrorMessage(errorParam);
     }
   }, [searchParams]);
 
@@ -56,7 +48,7 @@ function LoginForm() {
       if (!next.startsWith('/') || next.startsWith('//')) {
         next = '/';
       }
-      router.push(next);
+      window.location.href = next;
     }
   };
 
@@ -72,7 +64,6 @@ function LoginForm() {
         <input
           id="email"
           type="email"
-          autoComplete="email"
           required
           placeholder="member@auib.edu.iq"
           value={email}
@@ -91,7 +82,6 @@ function LoginForm() {
         <input
           id="password"
           type="password"
-          autoComplete="current-password"
           required
           placeholder="••••••••"
           value={password}
