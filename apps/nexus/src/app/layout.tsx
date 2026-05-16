@@ -7,6 +7,11 @@ import ClientLayout from './ClientLayout';
 export const metadata: Metadata = {
   title: 'SAL Nexus',
   description: 'Internal Nexus for the Society of Arts and Letters',
+  robots: {
+    index: false,
+    follow: false,
+    nocache: true,
+  },
 };
 
 export default async function RootLayout({
