@@ -5,9 +5,18 @@ import { createClient } from 'auth/client';
 import { Event } from 'database';
 import { CalendarDays, AlertCircle, X } from 'lucide-react';
 
+interface AuibEvent {
+  title?: string;
+  start?: string | Date;
+  end?: string | Date;
+  location?: string;
+  description?: string;
+  [key: string]: unknown;
+}
+
 export default function EventsPage() {
   const [events, setEvents] = useState<Event[]>([]);
-  const [auibEvents, setAuibEvents] = useState<any[]>([]);
+  const [auibEvents, setAuibEvents] = useState<AuibEvent[]>([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [createError, setCreateError] = useState('');
@@ -24,30 +33,30 @@ export default function EventsPage() {
   const supabase = createClient();
 
   useEffect(() => {
+    const fetchEvents = async () => {
+      if (!supabase) return;
+      const { data, error } = await supabase.from('events').select('*').order('starts_at', { ascending: true });
+      if (!error && data) {
+        setEvents(data);
+      }
+      setLoading(false);
+    };
+
+    const fetchAuibEvents = async () => {
+      try {
+        const res = await fetch('/api/auib-events');
+        if (res.ok) {
+          const data = await res.json();
+          setAuibEvents(data);
+        }
+      } catch (e) {
+        console.error("Failed to fetch auib events proxy", e);
+      }
+    };
+
     fetchEvents();
     fetchAuibEvents();
   }, []);
-
-  const fetchEvents = async () => {
-    if (!supabase) return;
-    const { data, error } = await supabase.from('events').select('*').order('starts_at', { ascending: true });
-    if (!error && data) {
-      setEvents(data);
-    }
-    setLoading(false);
-  };
-
-  const fetchAuibEvents = async () => {
-     try {
-       const res = await fetch('/api/auib-events');
-       if (res.ok) {
-           const data = await res.json();
-           setAuibEvents(data);
-       }
-     } catch(e) {
-       console.error("Failed to fetch auib events proxy", e);
-     }
-  };
 
   // CRITICAL: Dedicated cancel handler to prevent state memory leaks
   const handleCloseModal = () => {
