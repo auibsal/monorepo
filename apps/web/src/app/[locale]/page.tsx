@@ -1,4 +1,8 @@
+
 import { getTranslations } from 'next-intl/server';
+import { Link } from '@/i18n/routing';
+import { buttonVariants } from 'ui';
+import { BookOpen, Users } from 'lucide-react';
 
 export default async function Home({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -6,47 +10,54 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
 
   return (
     <div className="max-w-6xl mx-auto px-6 py-16 md:py-32">
-      <section className=" mb-28 flex flex-col items-start">
-        <h1 className="text-5xl md:text-7xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-auib-red to-[#5a1122] mb-8 tracking-tight leading-tight">
+      
+      {/* Architectural Header */}
+      <section className="mb-28 flex flex-col items-start border-l-8 border-auib-red pl-6 md:pl-10">
+        <h1 className="text-5xl md:text-7xl font-bold text-auib-charcoal mb-6 uppercase tracking-tight leading-none">
           {t('title')}
         </h1>
-        <p className="text-xl md:text-3xl text-auib-charcoal/80 max-w-4xl leading-relaxed font-light">
+        <p className="text-xl md:text-3xl text-auib-charcoal/90 max-w-4xl leading-relaxed font-medium">
           {t('subtitle')}
         </p>
       </section>
 
-      <div className="w-32 h-1.5 bg-gradient-to-r from-auib-red/20 via-auib-red to-auib-red/20 mb-28 rounded-full"></div>
+      {/* Hard Divider */}
+      <div className="w-full h-1.5 bg-auib-charcoal mb-28"></div>
 
+      {/* Brutalist Grid */}
       <section className="grid md:grid-cols-2 gap-12 md:gap-16">
-        <div className="group bg-white p-10 rounded-2xl border border-auib-charcoal/5 shadow-lg shadow-auib-charcoal/5 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-          <div className="w-12 h-12 bg-auib-red/10 rounded-full flex items-center justify-center mb-6 text-auib-red group-hover:scale-110 transition-transform">
-            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-            </svg>
+        
+        {/* Card 1: Mission */}
+        <div className="group bg-white p-10 border-4 border-auib-charcoal shadow-[12px_12px_0px_0px_#273237] hover:shadow-[16px_16px_0px_0px_#273237] hover:-translate-y-1 hover:-translate-x-1 transition-all duration-200">
+          <div className="w-16 h-16 bg-auib-charcoal flex items-center justify-center mb-8 border-2 border-transparent">
+            <BookOpen size={32} className="text-white" />
           </div>
-          <h2 className="text-3xl font-bold text-auib-charcoal mb-4">{t('missionTitle')}</h2>
-          <p className="text-lg leading-relaxed text-auib-charcoal/70">
+          <h2 className="text-3xl font-bold text-auib-charcoal mb-4 uppercase tracking-wider">{t('missionTitle')}</h2>
+          <p className="text-lg leading-relaxed text-auib-charcoal font-medium">
             {t('missionText')}
           </p>
         </div>
 
-        <div className="group bg-auib-charcoal text-white p-10 rounded-2xl shadow-xl hover:-translate-y-1 transition-all duration-300 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-auib-red/20 rounded-full blur-3xl -mr-32 -mt-32"></div>
-          <div className="relative z-10">
-            <div className="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center mb-6 text-auib-white group-hover:scale-110 transition-transform">
-              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-              </svg>
+        {/* Card 2: Membership */}
+        <div className="group bg-auib-red p-10 border-4 border-auib-charcoal shadow-[12px_12px_0px_0px_#273237] hover:shadow-[16px_16px_0px_0px_#273237] hover:-translate-y-1 hover:-translate-x-1 transition-all duration-200 flex flex-col justify-between">
+          <div>
+            <div className="w-16 h-16 bg-white flex items-center justify-center mb-8 border-2 border-auib-charcoal shadow-[4px_4px_0px_0px_#273237]">
+              <Users size={32} className="text-auib-red" />
             </div>
-            <h2 className="text-3xl font-bold text-white mb-4">{t('membershipTitle')}</h2>
-            <p className="text-lg leading-relaxed text-white/80 mb-10">
+            <h2 className="text-3xl font-bold text-white mb-4 uppercase tracking-wider">{t('membershipTitle')}</h2>
+            <p className="text-lg leading-relaxed text-white/90 mb-10 font-medium">
               {t('membershipText')}
             </p>
-            <button className="px-8 py-4 bg-auib-red text-white font-bold rounded-lg hover:bg-white hover:text-auib-red transition-all shadow-lg hover:shadow-auib-red/20 w-full md:w-auto ">
-              {t('applyButton')}
-            </button>
           </div>
+          
+          <Link 
+            href="/login" 
+            className={`${buttonVariants({ variant: 'outline', size: 'lg' })} w-full md:w-auto bg-white text-auib-charcoal hover:bg-auib-charcoal hover:text-white border-2 border-auib-charcoal shadow-[6px_6px_0px_0px_#273237]`}
+          >
+            {t('applyButton')}
+          </Link>
         </div>
+
       </section>
     </div>
   );
