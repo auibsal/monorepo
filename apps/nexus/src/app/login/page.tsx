@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, Suspense } from 'react';
+import { useState, useEffect, useMemo, Suspense } from 'react';
 import { createClient } from 'auth/client';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
@@ -12,18 +12,21 @@ function LoginForm() {
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
 
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   const searchParams = useSearchParams();
 
   // 1. Intercept URL errors from the API callbacks
   useEffect(() => {
     const errorParam = searchParams.get('error');
-    if (errorParam === 'invalid_auth_code') {
+    const errorMessages: Record<string, string> = {
+      invalid_auth_code: 'Your login link expired or was invalid. Please authenticate again.',
+      access_denied: 'Access was denied. Please try again or contact support.',
+      session_expired: 'Your session has expired. Please sign in again.',
+    };
+
+    if (errorParam) {
       setStatus('error');
-      setErrorMessage('Your login link expired or was invalid. Please authenticate again.');
-    } else if (errorParam) {
-      setStatus('error');
-      setErrorMessage(errorParam);
+      setErrorMessage(errorMessages[errorParam] || 'Authentication failed. Please try again.');
     }
   }, [searchParams]);
 
