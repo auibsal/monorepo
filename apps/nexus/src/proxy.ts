@@ -1,43 +1,48 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { updateSession } from 'auth';
 
-export async function proxy(request: NextRequest) {
-  const { supabase, user, response } = await updateSession(request);
+export default async function proxy(request: NextRequest) {
+  // 1. Refresh the session and grab the response (contains updated JWT cookies)
+  const { supabase, user, response: authResponse } = await updateSession(request);
 
   const isAuthPage = request.nextUrl.pathname.startsWith('/login') || request.nextUrl.pathname.startsWith('/register');
   const isApiRoute = request.nextUrl.pathname.startsWith('/api');
 
+  // Default to returning the Supabase response
+  let finalResponse = authResponse;
+
   if (!user) {
     if (!isAuthPage && !isApiRoute) {
-      // If unauthenticated user visits any page except /login and /register, redirect them to /login
-      const loginUrl = new URL('/login', request.url);
-      return NextResponse.redirect(loginUrl);
+      // Unauthenticated user attempting to access a secure route
+      finalResponse = NextResponse.redirect(new URL('/login', request.url));
     }
   } else {
     if (isAuthPage) {
-      // If authenticated user visits /login or /register, redirect them to /
-      const homeUrl = new URL('/', request.url);
-      return NextResponse.redirect(homeUrl);
-    }
-
-    if (!isApiRoute && user) {
-        // Fetch role from custom users table
-        const { data: userData } = await supabase
+      // Authenticated user attempting to view the login page
+      finalResponse = NextResponse.redirect(new URL('/', request.url));
+    } else if (!isApiRoute) {
+      // Safely fetch and inject the user role into the headers for downstream layouts
+      const { data: userData } = await supabase
         .from('users')
         .select('role')
         .eq('id', user.id)
         .single();
 
-        // Pass the role to headers so we can access it in the nexus layout/pages if needed.
-        // Or we just allow users in but conditionally render parts of the nexus.
-        if (userData) {
-            response.headers.set('x-user-role', userData.role);
-        }
+      if (userData) {
+        finalResponse.headers.set('x-user-role', userData.role);
+      }
     }
   }
 
-  // We no longer strictly block non-editors/admins since members have a nexus too.
-  return response;
+  // 2. CRITICAL: If we triggered a redirect, we generated a brand new NextResponse.
+  // We MUST copy the refreshed JWT cookies over from the Supabase response, or the user gets logged out!
+  if (finalResponse !== authResponse) {
+    authResponse.cookies.getAll().forEach((cookie) => {
+      finalResponse.cookies.set(cookie.name, cookie.value);
+    });
+  }
+
+  return finalResponse;
 }
 
 export const config = {
