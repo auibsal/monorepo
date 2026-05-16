@@ -15,7 +15,6 @@ export default function SubmitWorkPage() {
   const [errorMessage, setErrorMessage] = useState('');
 
   const supabase = createClient();
-
   const isVisualArt = type === 'visual_art';
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -101,16 +100,16 @@ export default function SubmitWorkPage() {
 
   if (status === 'success') {
     return (
-      <div className="max-w-2xl mx-auto mt-12 md:mt-24">
-        <div className="bg-white p-12 border-4 border-auib-charcoal text-auib-charcoal shadow-[16px_16px_0px_0px_#273237] flex flex-col items-center text-center">
+      <div className="max-w-2xl mx-auto mt-8 md:mt-24 px-4">
+        <div className="bg-white p-8 md:p-12 border-4 border-auib-charcoal text-auib-charcoal shadow-[8px_8px_0px_0px_#273237] md:shadow-[16px_16px_0px_0px_#273237] flex flex-col items-center text-center">
           <CheckSquare size={64} className="text-green-500 mb-6" />
-          <h2 className="text-3xl font-black mb-4 uppercase tracking-widest border-b-4 border-auib-charcoal pb-4">Manuscript Secured</h2>
-          <p className="font-bold text-sm uppercase tracking-widest text-auib-charcoal/70 mb-10 leading-relaxed">
+          <h2 className="text-2xl md:text-3xl font-black mb-4 uppercase tracking-widest border-b-4 border-auib-charcoal pb-4">Manuscript Secured</h2>
+          <p className="font-bold text-xs md:text-sm uppercase tracking-widest text-auib-charcoal/70 mb-10 leading-relaxed">
             Your work has been successfully logged in the database and is currently awaiting editorial review.
           </p>
           <Link 
             href="/" 
-            className="bg-auib-charcoal text-white px-8 py-4 font-bold uppercase tracking-widest border-4 border-auib-charcoal shadow-[6px_6px_0px_0px_#9C213E] hover:shadow-[8px_8px_0px_0px_#9C213E] hover:-translate-y-1 hover:bg-auib-red hover:border-auib-red transition-all flex items-center gap-3"
+            className="bg-auib-charcoal text-white px-6 py-4 md:px-8 font-bold uppercase tracking-widest border-4 border-auib-charcoal shadow-[4px_4px_0px_0px_#9C213E] md:shadow-[6px_6px_0px_0px_#9C213E] hover:shadow-[6px_6px_0px_0px_#9C213E] md:hover:shadow-[8px_8px_0px_0px_#9C213E] hover:-translate-y-1 hover:bg-auib-red hover:border-auib-red transition-all flex items-center justify-center gap-3 w-full md:w-auto text-sm md:text-base"
           >
             <ArrowLeft size={20} />
             Return to Dashboard
@@ -121,15 +120,12 @@ export default function SubmitWorkPage() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto mt-12 mb-24 space-y-12">
-      
-      {/* Architectural Header */}
+    <div className="max-w-4xl mx-auto mt-8 md:mt-12 mb-24 space-y-8 md:space-y-12 px-4 md:px-0">
       <div className="flex justify-between items-center border-b-4 border-auib-charcoal pb-4">
-        <h2 className="text-3xl font-bold uppercase tracking-widest text-auib-charcoal">Submit Work</h2>
+        <h2 className="text-2xl md:text-3xl font-bold uppercase tracking-widest text-auib-charcoal">Submit Work</h2>
       </div>
 
-      <form onSubmit={handleSubmit} className="bg-white p-8 md:p-12 border-4 border-auib-charcoal shadow-[16px_16px_0px_0px_#273237] space-y-8">
-        
+      <form onSubmit={handleSubmit} className="bg-white p-6 md:p-12 border-4 border-auib-charcoal shadow-[8px_8px_0px_0px_#273237] md:shadow-[16px_16px_0px_0px_#273237] space-y-8">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="space-y-3">
             <label className="block text-sm font-bold uppercase tracking-wide text-auib-charcoal">Manuscript Title</label>
@@ -138,7 +134,7 @@ export default function SubmitWorkPage() {
               required
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full p-4 border-4 border-auib-charcoal bg-white focus:outline-none focus:border-auib-red focus:ring-1 focus:ring-auib-red transition-all rounded-none text-auib-charcoal font-bold text-lg"
+              className="w-full p-4 border-4 border-auib-charcoal bg-white focus:outline-none focus:border-auib-red focus:ring-1 focus:ring-auib-red transition-all rounded-none text-auib-charcoal font-bold text-base md:text-lg"
             />
           </div>
 
@@ -150,7 +146,7 @@ export default function SubmitWorkPage() {
                 setType(e.target.value);
                 setFile(null); 
               }}
-              className="w-full p-4 border-4 border-auib-charcoal bg-white focus:outline-none focus:border-auib-red focus:ring-1 focus:ring-auib-red transition-all rounded-none text-auib-charcoal font-bold text-lg cursor-pointer hover:bg-auib-charcoal/5"
+              className="w-full p-4 border-4 border-auib-charcoal bg-white focus:outline-none focus:border-auib-red focus:ring-1 focus:ring-auib-red transition-all rounded-none text-auib-charcoal font-bold text-base md:text-lg cursor-pointer hover:bg-auib-charcoal/5"
             >
               <option value="essay">Essay / Non-Fiction</option>
               <option value="fiction">Fiction</option>
@@ -171,7 +167,7 @@ export default function SubmitWorkPage() {
             <p className="text-xs text-auib-charcoal/60 font-bold uppercase tracking-widest mb-4">
               Requires uncompressed, high-resolution JPEG or PNG matrix.
             </p>
-            <div className="relative border-4 border-dashed border-auib-charcoal p-12 hover:bg-auib-charcoal/5 transition-colors flex flex-col items-center justify-center text-center group cursor-pointer bg-white">
+            <div className="relative border-4 border-dashed border-auib-charcoal p-8 md:p-12 hover:bg-auib-charcoal/5 transition-colors flex flex-col items-center justify-center text-center group cursor-pointer bg-white">
               <input
                 type="file"
                 required
@@ -180,7 +176,7 @@ export default function SubmitWorkPage() {
                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
               />
               <Upload size={48} className="text-auib-charcoal group-hover:text-auib-red mb-4 transition-colors" />
-              <p className="font-bold uppercase tracking-wider text-sm text-auib-charcoal">
+              <p className="font-bold uppercase tracking-wider text-sm text-auib-charcoal break-words px-2">
                 {file ? file.name : 'Click or Drag Image to Mount Payload'}
               </p>
               {file && (
@@ -189,7 +185,7 @@ export default function SubmitWorkPage() {
             </div>
           </div>
         ) : (
-          <div className="space-y-3 pt-4 border-t-4 border-auib-charcoal/10">
+          <div className="space-y-3 pt-4 border-t-4 border-auib-charcoal/10 overflow-hidden">
             <label className="block text-sm font-bold uppercase tracking-wide text-auib-charcoal flex items-center gap-2">
                <FileText className="text-auib-red" size={20} />
                Manuscript Editor
@@ -197,7 +193,7 @@ export default function SubmitWorkPage() {
             <p className="text-xs text-auib-charcoal/60 font-bold uppercase tracking-widest mb-4">
               Compose directly or paste your raw text into the field below.
             </p>
-            <div className="border-4 border-auib-charcoal focus-within:border-auib-red transition-colors bg-white">
+            <div className="border-4 border-auib-charcoal focus-within:border-auib-red transition-colors bg-white w-full max-w-full overflow-x-hidden">
                <RichTextEditor content={content} onChange={setContent} />
             </div>
           </div>
@@ -205,8 +201,8 @@ export default function SubmitWorkPage() {
 
         {errorMessage && (
           <div className="p-4 border-4 border-auib-red bg-white text-auib-red font-bold text-sm flex items-center gap-3">
-             <ShieldAlert size={20} />
-             {errorMessage}
+             <ShieldAlert size={20} className="flex-shrink-0" />
+             <span className="break-words">{errorMessage}</span>
           </div>
         )}
 
@@ -214,12 +210,12 @@ export default function SubmitWorkPage() {
             <button
             type="submit"
             disabled={status === 'uploading' || (isVisualArt && !file) || (!isVisualArt && !content)}
-            className="w-full bg-auib-charcoal text-white font-bold uppercase tracking-widest px-8 py-5 border-4 border-auib-charcoal hover:bg-auib-red hover:border-auib-red transition-all disabled:opacity-50 flex items-center justify-center gap-3 shadow-[6px_6px_0px_0px_#273237] hover:shadow-[8px_8px_0px_0px_#273237] hover:-translate-y-1"
+            className="w-full bg-auib-charcoal text-white font-bold uppercase tracking-widest px-6 py-4 md:px-8 md:py-5 border-4 border-auib-charcoal hover:bg-auib-red hover:border-auib-red transition-all disabled:opacity-50 flex items-center justify-center gap-3 shadow-[4px_4px_0px_0px_#273237] md:shadow-[6px_6px_0px_0px_#273237] hover:shadow-[6px_6px_0px_0px_#273237] md:hover:shadow-[8px_8px_0px_0px_#273237] hover:-translate-y-1 text-sm md:text-base"
             >
             {status === 'uploading' ? (
                 <>
                     <Upload className="animate-bounce" size={20} />
-                    Transmitting to Server...
+                    Transmitting...
                 </>
             ) : (
                 'Transmit Manuscript'
