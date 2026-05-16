@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo, Suspense } from 'react';
 import { createClient } from 'auth/client';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { AlertTriangle } from 'lucide-react';
 
@@ -14,6 +14,7 @@ function LoginForm() {
 
   const supabase = useMemo(() => createClient(), []);
   const searchParams = useSearchParams();
+  const router = useRouter();
 
   // 1. Intercept URL errors from the API callbacks
   useEffect(() => {
@@ -51,7 +52,7 @@ function LoginForm() {
       if (!next.startsWith('/') || next.startsWith('//')) {
         next = '/';
       }
-      window.location.href = next;
+      router.push(next);
     }
   };
 
