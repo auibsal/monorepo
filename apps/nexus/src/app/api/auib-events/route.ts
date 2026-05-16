@@ -1,15 +1,39 @@
 import { NextResponse } from 'next/server';
 import ical from 'node-ical';
 
-export const revalidate = 3600; // revalidate every hour
+export const revalidate = 3600;
 
 export async function GET() {
   try {
-    const events = await ical.async.fromURL('https://auib.edu.iq/?post_type=tribe_events&ical=1&eventDisplay=list');
-    const auibEvents = Object.values(events).filter((event) => event && event.type === 'VEVENT');
+    // 1. Use native fetch to strictly engage the Next.js Data Cache
+    const response = await fetch('https://auib.edu.iq/?post_type=tribe_events&ical=1&eventDisplay=list', {
+      next: { revalidate: 3600 }
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch AUIB calendar: ${response.statusText}`);
+    }
+
+    const icsString = await response.text();
+
+    // 2. Parse the raw string synchronously
+    const events = ical.sync.parseICS(icsString);
+
+    // 3. Clean and map the payload to prevent JSON serialization crashes
+    const auibEvents = Object.values(events)
+      .filter((event): event is ical.VEvent => event.type === 'VEVENT')
+      .map((event) => ({
+        id: event.uid,
+        title: typeof event.summary === 'string' ? event.summary : event.summary?.val || 'Untitled Event',
+        start: event.start?.toISOString() || null,
+        end: event.end?.toISOString() || null,
+        location: event.location || 'AUIB Campus',
+        description: event.description || '',
+      }));
+
     return NextResponse.json(auibEvents);
   } catch (error) {
-    console.error('Failed to fetch AUIB calendar:', error);
+    console.error('Failed to parse AUIB calendar:', error);
     return NextResponse.json([], { status: 500 });
   }
 }
