@@ -79,7 +79,6 @@ export default function EventsPage() {
       starts_at: startsAt,
       ends_at: endsAt,
       is_members_only: isMembersOnly,
-      cover_image_url: '', 
     });
 
     if (error) {
