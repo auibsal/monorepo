@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { createClient } from 'auth/client';
-import { RichTextEditor } from 'ui';
+import { createClient } from '@auibsal/auth/client';
+import { RichTextEditor } from '@auibsal/ui';
 import Link from 'next/link';
 import { Upload, CheckSquare, ShieldAlert, FileText, Image as ImageIcon, ArrowLeft } from 'lucide-react';
 

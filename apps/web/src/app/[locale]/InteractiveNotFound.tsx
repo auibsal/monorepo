@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { Link } from '@/i18n/routing';
 import { useEffect, useState, useRef } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
-import { buttonVariants } from 'ui';
+import { buttonVariants } from '@auibsal/ui';
 
 interface Trail {
   x: number;

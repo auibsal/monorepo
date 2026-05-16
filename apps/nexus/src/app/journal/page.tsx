@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { createClient } from 'auth/client';
-import { JournalIssue } from 'database';
+import { createClient } from '@auibsal/auth/client';
+import { JournalIssue } from '@auibsal/database';
 import { FileUp, BookOpen, AlertTriangle, CheckSquare, ArrowRight } from 'lucide-react';
 
 export default function JournalPage() {

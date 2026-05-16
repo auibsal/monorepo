@@ -2,8 +2,8 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
-import { createClient } from 'auth/client';
-import { Submission, SubmissionStatus } from 'database';
+import { createClient } from '@auibsal/auth/client';
+import { Submission, SubmissionStatus } from '@auibsal/database';
 import Link from 'next/link';
 import { GripVertical, AlertOctagon } from 'lucide-react';
 

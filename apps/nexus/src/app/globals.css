@@ -1,2 +1,4 @@
-@import "ui/globals.css";
+@import "tailwindcss";
+@import "@auibsal/config/theme.css";
+@source "../../../../packages/ui";
 @plugin "@tailwindcss/typography";

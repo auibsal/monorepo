@@ -1,7 +1,7 @@
 
 import { getTranslations } from 'next-intl/server';
 import { Link } from '@/i18n/routing';
-import { buttonVariants } from 'ui';
+import { buttonVariants } from '@auibsal/ui';
 import { BookOpen, Users } from 'lucide-react';
 
 export default async function Home({ params }: { params: Promise<{ locale: string }> }) {

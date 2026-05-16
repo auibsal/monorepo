@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { createClient } from 'auth/client';
+import { createClient } from '@auibsal/auth/client';
 import Link from 'next/link';
 import { CheckSquare, ShieldAlert } from 'lucide-react';
 

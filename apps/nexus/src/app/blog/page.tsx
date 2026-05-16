@@ -1,9 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { createClient } from 'auth/client';
-import { RichTextEditor } from 'ui';
-import { BlogPost } from "database";
+import { createClient } from '@auibsal/auth/client';
+import { RichTextEditor } from '@auibsal/ui';
+import { BlogPost } from "@auibsal/database";
 
 export default function BlogPage() {
   const [posts, setPosts] = useState<(BlogPost & { users: { full_name: string } | null })[]>([]);

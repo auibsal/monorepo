@@ -1,4 +1,4 @@
-import { createClient } from 'auth/server';
+import { createClient } from '@auibsal/auth/server';
 import { notFound } from 'next/navigation';
 import { Link } from '@/i18n/routing';
 import { ArrowLeft } from 'lucide-react';

@@ -1,5 +1,5 @@
 import { MetadataRoute } from 'next';
-import { createClient } from 'auth/server';
+import { createClient } from '@auibsal/auth/server';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_WEB_URL || 'https://www.auibsal.org';
@@ -29,8 +29,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const { data: issues } = await supabase
     .from('journal_issues')
     .select('id, published_at')
-    // @ts-expect-error - The prompt implies a status column exists for filtering
-    .in('status', ['public', 'accepted']);
+    .not('published_at', 'is', null);
 
   if (issues) {
     issues.forEach((issue) => {

@@ -12,8 +12,8 @@
   "dependencies": {
     "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.6.1",
-    "auth": "workspace:*",
-    "database": "workspace:*",
+    "@auibsal/auth": "workspace:*",
+    "@auibsal/database": "workspace:*",
     "framer-motion": "^12.38.0",
     "howler": "^2.2.4",
     "ics": "^3.12.0",
@@ -24,11 +24,11 @@
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
     "three": "^0.184.0",
-    "ui": "workspace:*",
+    "@auibsal/ui": "workspace:*",
     "zustand": "^5.0.12"
   },
   "devDependencies": {
-    "@repo/typescript-config": "workspace:*",
+    "@auibsal/config": "workspace:*",
     "@tailwindcss/postcss": "^4.2.4",
     "@types/howler": "^2.2.12",
     "@types/node": "25.8.0",

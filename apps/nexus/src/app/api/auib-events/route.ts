@@ -1,7 +1,9 @@
 import { NextResponse } from 'next/server';
 import ical from 'node-ical';
 
-export const revalidate = 3600;
+// Ensure this API route is forced dynamic to avoid any Next.js caching or static generation bugs with node-ical
+export const dynamic = 'force-dynamic';
+// export const runtime = "nodejs";
 
 export async function GET() {
   try {
@@ -21,8 +23,9 @@ export async function GET() {
 
     // 3. Clean and map the payload to prevent JSON serialization crashes
     const auibEvents = Object.values(events)
-      .filter((event): event is ical.VEvent => event.type === 'VEVENT')
-      .map((event) => ({
+      // @ts-ignore - Event type may be missing in old versions of node-ical
+      .filter((event): event is any => event?.type === 'VEVENT')
+      .map((event: any) => ({
         id: event.uid,
         title: typeof event.summary === 'string' ? event.summary : (event.summary as any)?.val || 'Untitled Event',
         start: event.start?.toISOString() || null,

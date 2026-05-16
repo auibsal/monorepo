@@ -1,4 +1,4 @@
-import { createClient } from 'auth/server';
+import { createClient } from '@auibsal/auth/server';
 import { headers } from 'next/headers';
 import { Calendar, Users, FileText, Activity } from 'lucide-react';
 

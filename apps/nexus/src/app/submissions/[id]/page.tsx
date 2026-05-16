@@ -3,8 +3,8 @@
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
-import { createClient } from 'auth/client';
-import { Submission } from 'database';
+import { createClient } from '@auibsal/auth/client';
+import { Submission } from '@auibsal/database';
 import DOMPurify from 'isomorphic-dompurify';
 import { Save, AlertOctagon, FileText, LayoutTemplate, ShieldAlert } from 'lucide-react';
 
