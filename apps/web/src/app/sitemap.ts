@@ -33,11 +33,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   if (issues) {
     issues.forEach((issue) => {
-      const issueStatus = (issue as { status?: string }).status;
-      if (issueStatus !== 'public' && issueStatus !== 'accepted') {
-        return;
-      }
-
       sitemapEntries.push({
         url: `${baseUrl}/journal/${issue.id}`,
         lastModified: new Date(issue.published_at || new Date()),
