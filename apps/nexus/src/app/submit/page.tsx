@@ -117,9 +117,8 @@ export default function SubmitWorkPage() {
           </Link>
         </div>
       </div>
-    </div>
-  );
-}
+    );
+  }
 
   return (
     <div className="max-w-4xl mx-auto mt-12 mb-24 space-y-12">
