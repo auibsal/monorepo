@@ -1,42 +1,23 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-
+import React from 'react';
 import { Navbar, type NavbarLink } from 'ui';
 import { createClient } from 'auth/client';
 
-
-export default function ClientLayout({ children }: { children: React.ReactNode }) {
-
-  const [role, setRole] = useState<string | null>(null);
-
+export default function ClientLayout({ 
+  children, 
+  role 
+}: { 
+  children: React.ReactNode; 
+  role: string | null;
+}) {
   const supabase = createClient();
 
-  useEffect(() => {
-    async function fetchRole() {
-      if (supabase) {
-        const { data: { user } } = await supabase.auth.getUser();
-        if (user) {
-          const { data } = await supabase.from('users').select('role').eq('id', user.id).single();
-          if (data) {
-            setRole(data.role);
-          }
-        }
-      }
-    }
-    fetchRole();
-  }, [supabase]);
-
   const handleSignOut = async () => {
-    if (supabase) {
-      await supabase.auth.signOut();
-    }
-    // Redirect to web app locally if it's running on 3000
-    if (process.env.NODE_ENV === 'development') {
-      window.location.href = 'http://localhost:3000/en/login';
-    } else {
-      window.location.href = '/en/login';
-    }
+    await supabase.auth.signOut();
+    // CRITICAL: Redirect to the external public Web application, not a local relative path
+    const webUrl = process.env.NEXT_PUBLIC_WEB_URL || 'http://localhost:3000';
+    window.location.href = `${webUrl}/login`;
   };
 
   const isEditor = role === 'editor' || role === 'admin';
@@ -57,14 +38,14 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
   const rightModule = (
     <button
       onClick={handleSignOut}
-      className="text-sm font-bold text-auib-white hover:text-auib-charcoal transition-colors uppercase tracking-widest"
+      className="text-sm font-bold text-white hover:text-auib-red transition-colors uppercase tracking-widest"
     >
       Sign Out
     </button>
   );
 
   return (
-    <div className="flex flex-col min-h-screen bg-auib-charcoal text-auib-white font-sans">
+    <div className="flex flex-col min-h-screen">
       <Navbar
         locale="en"
         links={links}
@@ -73,7 +54,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
       />
 
       {/* Main Content Area */}
-      <main className="flex-1 w-full max-w-6xl mx-auto px-6 py-8">
+      <main className="flex-1 w-full max-w-7xl mx-auto px-6 py-12">
         {children}
       </main>
     </div>
