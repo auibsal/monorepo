@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { createClient } from 'auth/client';
 import { Event } from 'database';
 import { CalendarDays, AlertCircle, X } from 'lucide-react';
@@ -32,14 +32,14 @@ export default function EventsPage() {
 
   const supabase = createClient();
 
-  const fetchEvents = async () => {
+  const fetchEvents = useCallback(async () => {
     if (!supabase) return;
     const { data, error } = await supabase.from('events').select('*').order('starts_at', { ascending: true });
     if (!error && data) {
       setEvents(data);
     }
     setLoading(false);
-  };
+  }, [supabase]);
 
   useEffect(() => {
     const fetchAuibEvents = async () => {
@@ -56,7 +56,7 @@ export default function EventsPage() {
 
     fetchEvents();
     fetchAuibEvents();
-  }, []);
+  }, [fetchEvents]);
 
   // CRITICAL: Dedicated cancel handler to prevent state memory leaks
   const handleCloseModal = () => {
