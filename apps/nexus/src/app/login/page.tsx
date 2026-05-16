@@ -86,6 +86,7 @@ function LoginForm() {
         <input
           id="password"
           type="password"
+          autoComplete="current-password"
           required
           placeholder="••••••••"
           value={password}
