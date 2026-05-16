@@ -46,7 +46,7 @@ export default function EventsPage() {
      } catch(e) {
        console.error("Failed to fetch auib events proxy", e);
      }
-  }
+  };
 
   // CRITICAL: Dedicated cancel handler to prevent state memory leaks
   const handleCloseModal = () => {
