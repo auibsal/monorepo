@@ -79,7 +79,6 @@ export default function EventsPage() {
       starts_at: startsAt,
       ends_at: endsAt,
       is_members_only: isMembersOnly,
-    });
 
     if (error) {
       console.error('Failed to create event', error);
