@@ -35,7 +35,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     issues.forEach((issue) => {
       sitemapEntries.push({
         url: `${baseUrl}/journal/${issue.id}`,
-        lastModified: new Date(issue.published_at || new Date()),
+        lastModified: issue.published_at ? new Date(issue.published_at) : new Date(),
         alternates: {
           languages: {
             en: `${baseUrl}/en/journal/${issue.id}`,
