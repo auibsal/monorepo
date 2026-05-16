@@ -35,22 +35,14 @@ export default function ClientLayout({
     { href: '/guidelines', label: 'Guidelines' },
   ];
 
-  const rightModule = (
-    <button
-      onClick={handleSignOut}
-      className="text-sm font-bold text-white hover:text-auib-red transition-colors uppercase tracking-widest"
-    >
-      Sign Out
-    </button>
-  );
-
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar
         locale="en"
         links={links}
-        rightModule={rightModule}
         homeUrl="/"
+        platform="nexus"
+        onSignOut={handleSignOut}
       />
 
       {/* Main Content Area */}

@@ -1,9 +1,24 @@
-import { getTranslations } from 'next-intl/server';
-import { Link } from '@/i18n/routing';
-import { Logo } from 'ui';
+import React from 'react';
+import Link from 'next/link';
+import Logo from '../Logo';
 
-export default async function Footer({ locale }: { locale: string }) {
-  const t = await getTranslations({ locale, namespace: 'Footer' });
+export interface FooterProps {
+  locale: string;
+  dictionary: {
+    description: string;
+    linksTitle: string;
+    links: { label: string; href: string }[];
+    contactTitle: string;
+    university: string;
+    addressLine1: string;
+    addressLine2: string;
+    societyName: string;
+    rights: string;
+    designedBy: string;
+  };
+}
+
+export default function Footer({ locale, dictionary }: FooterProps) {
   const year = new Date().getFullYear();
 
   return (
@@ -16,49 +31,41 @@ export default async function Footer({ locale }: { locale: string }) {
               <Logo locale={locale} className="text-xl text-white" />
             </div>
             <p className="text-white/80 text-sm leading-relaxed font-medium">
-              {t('description')}
+              {dictionary.description}
             </p>
           </div>
 
           <div className="md:col-span-1">
             {/* CRITICAL: Brutalist label style to fix WCAG contrast failure */}
             <h4 className="inline-block bg-auib-charcoal text-white px-3 py-1 mb-6 text-xs font-bold uppercase tracking-widest">
-              {t('linksTitle')}
+              {dictionary.linksTitle}
             </h4>
             <ul className="space-y-3 text-sm font-bold uppercase tracking-wider text-white/80">
-              <li>
-                <Link href="/" className="hover:text-white hover:translate-x-1 rtl:hover:-translate-x-1 transition-all inline-block">
-                  {t('home')}
-                </Link>
-              </li>
-              <li>
-                <Link href="/events" className="hover:text-white hover:translate-x-1 rtl:hover:-translate-x-1 transition-all inline-block">
-                  {t('events')}
-                </Link>
-              </li>
-              <li>
-                <Link href="/journal" className="hover:text-white hover:translate-x-1 rtl:hover:-translate-x-1 transition-all inline-block">
-                  {t('journal')}
-                </Link>
-              </li>
+              {dictionary.links.map((link) => (
+                <li key={link.href}>
+                  <Link href={link.href} className="hover:text-white hover:translate-x-1 rtl:hover:-translate-x-1 transition-all inline-block">
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
           <div className="md:col-span-1 text-sm font-medium text-white/80">
              <h4 className="inline-block bg-auib-charcoal text-white px-3 py-1 mb-6 text-xs font-bold uppercase tracking-widest">
-               {t('contactTitle')}
+               {dictionary.contactTitle}
              </h4>
              <address className="not-italic leading-relaxed">
-               {t('university')}<br />
-               {t('addressLine1')}<br />
-               {t('addressLine2')}
+               {dictionary.university}<br />
+               {dictionary.addressLine1}<br />
+               {dictionary.addressLine2}
              </address>
           </div>
         </div>
 
         <div className="text-xs font-bold uppercase tracking-wider text-white/60 flex flex-col md:flex-row justify-between items-center">
-          <p>&copy; {year} {t('societyName')}. {t('rights')}</p>
-          <p className="mt-4 md:mt-0">{t('designedBy')}</p>
+          <p>&copy; {year} {dictionary.societyName}. {dictionary.rights}</p>
+          <p className="mt-4 md:mt-0">{dictionary.designedBy}</p>
         </div>
       </div>
     </footer>
