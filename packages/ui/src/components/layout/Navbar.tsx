@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { Menu, X } from 'lucide-react';
-import { Logo } from '../../';
+import Logo from '../Logo';
 
 export interface NavbarLink {
   href: string;
@@ -14,7 +14,7 @@ export interface NavbarProps {
   locale: string;
   links: NavbarLink[];
   rightModule?: React.ReactNode;
-  homeUrl?: string; // Optional URL for the logo click
+  homeUrl?: string; 
 }
 
 export default function Navbar({ locale, links, rightModule, homeUrl }: NavbarProps) {
@@ -22,11 +22,11 @@ export default function Navbar({ locale, links, rightModule, homeUrl }: NavbarPr
   const logoHref = homeUrl || `/${locale}`;
 
   return (
-    <nav className="sticky top-0 z-50 w-full bg-auib-red backdrop-blur-sm border-b-4 border-auib-charcoal text-auib-white">
+    <nav className="sticky top-0 z-50 w-full bg-auib-red backdrop-blur-sm border-b-4 border-auib-charcoal text-white">
       <div className="max-w-6xl mx-auto px-6 h-20 flex items-center justify-between">
 
-        <Link href={logoHref} className="flex items-center text-auib-white hover:opacity-90 transition-opacity">
-          <Logo locale={locale} className="text-xs sm:text-sm leading-tight text-auib-white" />
+        <Link href={logoHref} className="flex items-center text-white hover:opacity-90 transition-opacity">
+          <Logo locale={locale} className="text-xs sm:text-sm leading-tight text-white" />
         </Link>
 
         <div className="flex items-center gap-4">
@@ -36,9 +36,11 @@ export default function Navbar({ locale, links, rightModule, homeUrl }: NavbarPr
 
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="p-2 border-2 border-transparent hover:border-auib-white hover:bg-auib-white hover:text-auib-red transition-colors flex items-center gap-2 font-bold uppercase tracking-widest text-sm"
+            aria-expanded={isOpen}
+            aria-label="Toggle navigation menu"
+            className="p-2 border-2 border-transparent hover:border-white hover:bg-white hover:text-auib-red transition-colors flex items-center gap-2 font-bold uppercase tracking-widest text-sm"
           >
-            {isOpen ? <X size={24} /> : <Menu size={24} />}
+            {isOpen ? <X size={24} aria-hidden="true" /> : <Menu size={24} aria-hidden="true" />}
             <span className="hidden sm:inline">Menu</span>
           </button>
         </div>
@@ -46,7 +48,7 @@ export default function Navbar({ locale, links, rightModule, homeUrl }: NavbarPr
 
       {/* Hamburger Menu Overlay */}
       {isOpen && (
-        <div className="absolute top-20 left-0 w-full bg-auib-charcoal text-auib-white border-b-4 border-auib-red shadow-xl">
+        <div className="absolute top-20 left-0 w-full bg-auib-charcoal text-white border-b-4 border-auib-red shadow-xl">
           <div className="max-w-6xl mx-auto px-6 py-8">
             <ul className="flex flex-col gap-4 font-bold uppercase tracking-widest text-lg">
               {links.map((link) => (
@@ -54,7 +56,7 @@ export default function Navbar({ locale, links, rightModule, homeUrl }: NavbarPr
                   <Link
                     href={link.href}
                     onClick={() => setIsOpen(false)}
-                    className="block py-2 hover:text-auib-red hover:translate-x-2 transition-all"
+                    className="block py-2 hover:text-auib-red hover:translate-x-2 rtl:hover:-translate-x-2 transition-all"
                   >
                     {link.label}
                   </Link>
@@ -62,7 +64,7 @@ export default function Navbar({ locale, links, rightModule, homeUrl }: NavbarPr
               ))}
             </ul>
 
-            <div className="mt-8 pt-8 border-t border-auib-white/20 md:hidden flex items-center gap-4">
+            <div className="mt-8 pt-8 border-t border-white/20 md:hidden flex items-center gap-4">
               {rightModule}
             </div>
           </div>
