@@ -2,40 +2,38 @@ import { getTranslations } from 'next-intl/server';
 import { Navbar } from 'ui';
 import Link from 'next/link';
 
-import { headers } from 'next/headers';
-
 export default async function WebNavbar({ locale }: { locale: string }) {
   const t = await getTranslations({ locale, namespace: 'Navigation' });
   const targetLocale = locale === 'en' ? 'ar' : 'en';
 
-  const headersList = await headers();
-  const host = headersList.get('host') || '';
+  // CRITICAL: Pull external service URLs from the environment, not the Host header
+  const nexusUrl = process.env.NEXUS_URL || 'http://localhost:3001';
 
-  let nexusUrl = 'http://localhost:3001';
-  if (process.env.NODE_ENV !== 'development') {
-    // Determine dynamically by prepending 'nexus.' and removing 'www.'
-    const domain = host.replace(/^www\./, '');
-    nexusUrl = `https://nexus.${domain}`;
-  }
+  // Safely resolve routes to respect the 'as-needed' next-intl configuration
+  // This prevents the shared UI package from being polluted with next-intl logic.
+  const resolveHref = (path: string) => {
+    if (locale === 'en') return path;
+    return path === '/' ? '/ar' : `/ar${path}`;
+  };
 
   const links = [
-    { href: `/${locale}`, label: t('home') },
-    { href: `/${locale}/events`, label: t('events') },
-    { href: `/${locale}/journal`, label: t('journal') },
+    { href: resolveHref('/'), label: t('home') },
+    { href: resolveHref('/events'), label: t('events') },
+    { href: resolveHref('/journal'), label: t('journal') },
   ];
 
   const rightModule = (
     <>
       <Link
-        href={`/${targetLocale}`}
-        className="text-sm font-bold text-auib-white hover:text-auib-charcoal transition-colors uppercase tracking-widest"
+        href={targetLocale === 'en' ? '/' : '/ar'}
+        className="text-sm font-bold text-white hover:text-auib-charcoal transition-colors uppercase tracking-widest"
       >
         {targetLocale === 'en' ? 'English' : 'عربي'}
       </Link>
-      <div className="h-6 w-1 bg-auib-white/30 hidden md:block"></div>
+      <div className="h-6 w-1 bg-white/30 hidden md:block"></div>
       <a
         href={nexusUrl}
-        className="text-sm font-bold text-auib-white hover:text-auib-charcoal transition-colors uppercase tracking-widest"
+        className="text-sm font-bold text-white hover:text-auib-charcoal transition-colors uppercase tracking-widest"
       >
         Nexus
       </a>
@@ -47,7 +45,7 @@ export default async function WebNavbar({ locale }: { locale: string }) {
       locale={locale}
       links={links}
       rightModule={rightModule}
-      homeUrl={`/${locale}`}
+      homeUrl={resolveHref('/')}
     />
   );
 }
