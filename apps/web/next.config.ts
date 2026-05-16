@@ -9,8 +9,12 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "**",
+        // CRITICAL: Locks image optimization to your Supabase storage buckets
+        hostname: "*.supabase.co", 
+        port: "",
+        pathname: "/storage/v1/object/public/**",
       },
+      // You can add other specific domains here later (e.g., Google or GitHub avatars)
     ],
   },
 };
