@@ -1,7 +1,4 @@
 import type { NextConfig } from "next";
-import createNextIntlPlugin from "next-intl/plugin";
-
-const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
 const cspHeader = `
     default-src 'self';
@@ -19,7 +16,7 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         // CRITICAL: Locks image optimization to your Supabase storage buckets
-        hostname: "*.supabase.co", 
+        hostname: "*.supabase.co",
         port: "",
         pathname: "/storage/v1/object/public/**",
       },
@@ -57,4 +54,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default withNextIntl(nextConfig);
+export default nextConfig;
