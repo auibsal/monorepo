@@ -1,0 +1,25 @@
+version: 2
+updates:
+  # Root dependencies
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      
+  # Web App
+  - package-ecosystem: "npm"
+    directory: "/apps/web"
+    schedule:
+      interval: "weekly"
+      
+  # Nexus Dashboard
+  - package-ecosystem: "npm"
+    directory: "/apps/nexus"
+    schedule:
+      interval: "weekly"
+
+  # Shared UI Package
+  - package-ecosystem: "npm"
+    directory: "/packages/ui"
+    schedule:
+      interval: "weekly"
