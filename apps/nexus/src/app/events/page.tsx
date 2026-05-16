@@ -10,6 +10,7 @@ export default function EventsPage() {
   const [auibEvents, setAuibEvents] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
+  const [createError, setCreateError] = useState('');
 
   const [titleEn, setTitleEn] = useState('');
   const [titleAr, setTitleAr] = useState('');
@@ -58,6 +59,7 @@ export default function EventsPage() {
   const handleCreateEvent = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!supabase) return;
+    setCreateError('');
 
     const { error } = await supabase.from('events').insert({
       title_en: titleEn,
@@ -72,7 +74,7 @@ export default function EventsPage() {
     });
 
     if (error) {
-      alert('Error creating event: ' + error.message);
+      setCreateError('Error creating event: ' + error.message);
     } else {
       handleCloseModal();
       fetchEvents();
@@ -81,6 +83,11 @@ export default function EventsPage() {
 
   return (
     <div>
+      {createError ? (
+        <div role="alert" className="mb-4 rounded-md border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-700">
+          {createError}
+        </div>
+      ) : null}
       {/* Architectural Header */}
       <div className="flex justify-between items-center mb-10 border-b-4 border-auib-charcoal pb-4">
         <h2 className="text-3xl font-bold uppercase tracking-widest text-auib-charcoal">Events Management</h2>
