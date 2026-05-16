@@ -79,7 +79,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         // Public submissions use the canonical detail route `/submissions/:id`.
         // Only `public` and `accepted` records are queried above, so this exposes only intended public pages.
         url: `${baseUrl}/submissions/${sub.id}`,
-        lastModified: new Date(sub.submitted_at || new Date()),
+        lastModified: sub.submitted_at ? new Date(sub.submitted_at) : new Date(),
         alternates: {
           languages: {
             en: `${baseUrl}/en/submissions/${sub.id}`,
