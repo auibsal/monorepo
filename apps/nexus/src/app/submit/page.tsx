@@ -15,6 +15,7 @@ export default function SubmitWorkPage() {
   const [errorMessage, setErrorMessage] = useState('');
 
   const supabase = createClient();
+
   const isVisualArt = type === 'visual_art';
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -121,11 +122,13 @@ export default function SubmitWorkPage() {
 
   return (
     <div className="max-w-4xl mx-auto mt-8 md:mt-12 mb-24 space-y-8 md:space-y-12 px-4 md:px-0">
+      
       <div className="flex justify-between items-center border-b-4 border-auib-charcoal pb-4">
         <h2 className="text-2xl md:text-3xl font-bold uppercase tracking-widest text-auib-charcoal">Submit Work</h2>
       </div>
 
       <form onSubmit={handleSubmit} className="bg-white p-6 md:p-12 border-4 border-auib-charcoal shadow-[8px_8px_0px_0px_#273237] md:shadow-[16px_16px_0px_0px_#273237] space-y-8">
+        
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="space-y-3">
             <label className="block text-sm font-bold uppercase tracking-wide text-auib-charcoal">Manuscript Title</label>
