@@ -29,7 +29,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const { data: issues } = await supabase
     .from('journal_issues')
     .select('id, published_at')
-    // @ts-ignore - The prompt implies a status column exists for filtering
+    // @ts-expect-error - The prompt implies a status column exists for filtering
     .in('status', ['public', 'accepted']);
 
   if (issues) {

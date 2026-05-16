@@ -16,7 +16,7 @@ const STATUSES: { id: SubmissionStatus; label: string }[] = [
 ];
 
 export default function KanbanBoard() {
-  const [submissions, setSubmissions] = useState<Record<string, Submission>>({});
+  const [submissions, setSubmissions] = useState<Record<string, Pick<Submission, 'id' | 'title' | 'type' | 'status' | 'rubric_formatting'>>>({});
   const [loading, setLoading] = useState(true);
   const [isMounted, setIsMounted] = useState(false);
 
@@ -30,7 +30,7 @@ export default function KanbanBoard() {
 
   const fetchSubmissions = async () => {
     if (!supabase) return;
-    const { data, error } = await supabase.from('submissions').select('*');
+    const { data, error } = await supabase.from('submissions').select('id, title, type, status, rubric_formatting');
     if (!error && data) {
       setSubmissions(Object.fromEntries(data.map(sub => [sub.id, sub])));
     }
@@ -69,7 +69,7 @@ export default function KanbanBoard() {
   };
 
   const groupedSubmissions = useMemo(() => {
-    const grouped: Record<SubmissionStatus, Submission[]> = {
+    const grouped: Record<SubmissionStatus, Pick<Submission, 'id' | 'title' | 'type' | 'status' | 'rubric_formatting'>[]> = {
       pending: [],
       under_review: [],
       revisions_requested: [],
