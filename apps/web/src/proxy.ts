@@ -1,13 +1,13 @@
 import { type NextRequest } from 'next/server';
 import createMiddleware from 'next-intl/middleware';
 import { routing } from '@/i18n/routing';
-import { updateSession } from 'auth';
+import { updateSession } from 'auth/proxy';
 
 const intlMiddleware = createMiddleware(routing);
 
 export default async function proxy(request: NextRequest) {
   // 1. Refresh the Supabase session and get the auth response
-  const { response: authResponse } = await updateSession(request);
+  const { response: authResponse } = await updateSession(request as any);
 
   // 2. Run the internationalization middleware to handle redirects and locale headers
   const intlResponse = intlMiddleware(request);
