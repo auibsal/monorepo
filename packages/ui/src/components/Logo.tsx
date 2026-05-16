@@ -1,16 +1,14 @@
 import React from 'react';
+import { cn } from '../lib/utils';
 
 interface LogoProps {
   locale: string;
   className?: string;
 }
 
-export default function Logo({ locale, className = '' }: LogoProps) {
+export default function Logo({ locale, className }: LogoProps) {
   return (
-    <div
-      className={`font-bold ${className}`}
-      style={{ letterSpacing: '0px' }}
-    >
+    <div className={cn("font-bold tracking-normal", className)}>
       {locale === 'en' ? (
         <span className="leading-[1.4] block">
           AUIB<br />
@@ -19,7 +17,7 @@ export default function Logo({ locale, className = '' }: LogoProps) {
           Letters
         </span>
       ) : (
-        <span className="leading-[1.4] block">
+        <span className="leading-[1.4] block" dir="rtl">
           جمعيةُ الفنونِ<br />
           والآدابِ في<br />
           الجامعةِ<br />
