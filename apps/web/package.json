@@ -12,10 +12,8 @@
   "dependencies": {
     "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.6.1",
-    "@supabase/ssr": "^0.10.3",
-    "@supabase/supabase-js": "^2.105.4",
-    "auth": "workspace:^1.0.0",
-    "database": "workspace:^1.0.0",
+    "auth": "workspace:*",
+    "database": "workspace:*",
     "framer-motion": "^12.38.0",
     "howler": "^2.2.4",
     "ics": "^3.12.0",
@@ -25,21 +23,17 @@
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "three": "^0.184.0",
-    "ui": "workspace:^",
+    "ui": "workspace:*",
     "zustand": "^5.0.12"
   },
   "devDependencies": {
+    "@repo/typescript-config": "workspace:*",
     "@tailwindcss/postcss": "^4.2.4",
     "@types/howler": "^2.2.12",
     "@types/node": "25.6.2",
     "@types/react": "^19.2.14",
     "@types/three": "^0.184.0",
-    "autoprefixer": "^10.5.0",
-    "postcss": "^8",
     "tailwindcss": "^4.2.4",
-    "typescript": "^6"
-  },
-  "peerDependencies": {
-    "@types/react": "^19.2.14"
+    "typescript": "^6.0.0"
   }
 }
