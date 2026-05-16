@@ -161,7 +161,7 @@ export default function EventsPage() {
                 <ul className="divide-y-2 divide-auib-red/20">
                     {auibEvents.slice(0, 10).map((event, i) => {
                         // CRITICAL: Mapped to match our new Next.js API route payload
-                        const evt = event as { title?: string; start?: string | Date };
+                        const evt = event as AuibEvent;
                         return (
                         <li key={i} className="p-5 hover:bg-auib-red/5 transition-colors">
                             <p className="font-bold text-sm uppercase tracking-wide leading-tight">{evt.title}</p>
