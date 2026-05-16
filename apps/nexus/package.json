@@ -1,35 +1,34 @@
 {
-  "name": "@repo/nexus",
+  "name": "nexus",
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p 3001",
     "build": "next build",
     "start": "next start",
     "lint": "eslint --max-warnings 100"
   },
   "dependencies": {
     "@hello-pangea/dnd": "^18.0.1",
-    "@supabase/ssr": "^0.10.3",
-    "@supabase/supabase-js": "^2.105.4",
-    "auth": "workspace:^1.0.0",
-    "database": "workspace:^1.0.0",
+    "auth": "workspace:*",
+    "database": "workspace:*",
     "isomorphic-dompurify": "^3.13.0",
     "next": "16.2.6",
     "node-ical": "0.17.2",
     "react": "19.2.4",
     "react-dom": "19.2.4",
-    "ui": "workspace:^0.1.0"
+    "ui": "workspace:*"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4",
+    "@repo/typescript-config": "workspace:*",
+    "@tailwindcss/postcss": "^4.2.4",
     "@tailwindcss/typography": "^0.5.19",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
+    "@types/node": "25.6.2",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.14",
     "eslint": "^9",
     "eslint-config-next": "16.2.6",
-    "tailwindcss": "^4",
-    "typescript": "^5"
+    "tailwindcss": "^4.2.4",
+    "typescript": "^6.0.0"
   }
 }
