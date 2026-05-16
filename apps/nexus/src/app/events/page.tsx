@@ -83,6 +83,7 @@ export default function EventsPage() {
 
     if (error) {
       console.error('Failed to create event', error);
+      console.error('Failed to create event', error);
       setCreateError('Failed to create event. Please check your inputs and try again.');
     } else {
       handleCloseModal();
