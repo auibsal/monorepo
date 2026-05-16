@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { createClient } from 'auth/client';
 import { Event } from 'database';
 import { CalendarDays, AlertCircle, X } from 'lucide-react';
@@ -32,14 +32,14 @@ export default function EventsPage() {
 
   const supabase = createClient();
 
-  const fetchEvents = async () => {
+  const fetchEvents = useCallback(async () => {
     if (!supabase) return;
     const { data, error } = await supabase.from('events').select('*').order('starts_at', { ascending: true });
     if (!error && data) {
       setEvents(data);
     }
     setLoading(false);
-  };
+  }, [supabase]);
 
   useEffect(() => {
     const fetchAuibEvents = async () => {
@@ -56,7 +56,7 @@ export default function EventsPage() {
 
     fetchEvents();
     fetchAuibEvents();
-  }, []);
+  }, [fetchEvents]);
 
   // CRITICAL: Dedicated cancel handler to prevent state memory leaks
   const handleCloseModal = () => {
@@ -79,11 +79,11 @@ export default function EventsPage() {
       starts_at: startsAt,
       ends_at: endsAt,
       is_members_only: isMembersOnly,
-      cover_image_url: '', 
     });
 
     if (error) {
-      setCreateError('Error creating event: ' + error.message);
+      console.error('Failed to create event', error);
+      setCreateError('Failed to create event. Please check your inputs and try again.');
     } else {
       handleCloseModal();
       fetchEvents();
@@ -159,11 +159,12 @@ export default function EventsPage() {
             <p className="text-sm font-bold uppercase tracking-widest text-auib-charcoal/60 mb-6">Check for conflicts before scheduling.</p>
             <div className="bg-white text-auib-charcoal border-4 border-auib-red shadow-[8px_8px_0px_0px_#9C213E] overflow-hidden max-h-[600px] overflow-y-auto">
                 <ul className="divide-y-2 divide-auib-red/20">
-                    {auibEvents.slice(0, 10).map((event, i) => {
+                    {auibEvents.slice(0, 10).map((event) => {
                         // CRITICAL: Mapped to match our new Next.js API route payload
                         const evt = event as AuibEvent;
+                        const eventKey = `${String(evt.title ?? 'untitled')}|${String(evt.start ?? 'no-start')}|${String(evt.end ?? 'no-end')}`;
                         return (
-                        <li key={i} className="p-5 hover:bg-auib-red/5 transition-colors">
+                        <li key={eventKey} className="p-5 hover:bg-auib-red/5 transition-colors">
                             <p className="font-bold text-sm uppercase tracking-wide leading-tight">{evt.title}</p>
                             <p className="text-xs font-bold text-auib-red mt-2 uppercase tracking-widest">
                                 {evt.start ? new Date(evt.start).toLocaleDateString() : 'TBD'}
