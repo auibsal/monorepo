@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert";
-import { cn } from "./utils.ts";
+import { cn } from "./utils";
 
 test("cn utility", async (t) => {
   await t.test("concatenates strings", () => {
@@ -25,14 +25,12 @@ test("cn utility", async (t) => {
   });
 
   await t.test("merges tailwind classes correctly", () => {
-    // twMerge should prioritize the last class for the same property
     assert.strictEqual(cn("px-2 py-1", "px-4"), "py-1 px-4");
     assert.strictEqual(cn("text-red-500", "text-blue-500"), "text-blue-500");
   });
 
   await t.test("handles complex tailwind conflicts", () => {
-    assert.strictEqual(cn("p-4", "pt-2"), "p-4 pt-2"); // pt-2 is more specific or a subset, but usually p-4 then pt-2 results in both or overwritten.
-    // Actually twMerge handles: p-4 pt-2 -> p-4 pt-2 (padding-top is overwritten if it comes later)
+    assert.strictEqual(cn("p-4", "pt-2"), "p-4 pt-2"); 
     assert.strictEqual(cn("pt-2", "p-4"), "p-4"); 
   });
 });
