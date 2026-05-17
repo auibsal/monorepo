@@ -1,0 +1,3 @@
+## YYYY-MM-DD - Avoid Over-Fetching Large Text Fields in Supabase list queries
+**Learning:** Using `select("*")` on tables with large fields (like rich-text `content`, `content_en`, `content_ar` or `file_url`) causes severe payload bloat when only metadata is needed for list views. The `blog_posts` table contains `content_en` and `content_ar`, and `submissions` contains `content` and `file_url`, all of which were being fetched unnecessarily on index/dashboard pages.
+**Action:** Always explicitly specify only the columns needed for rendering (e.g., `select("id, title_en, title_ar, published_at")`) when querying for list views or cards.

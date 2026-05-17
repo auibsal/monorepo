@@ -21,7 +21,8 @@ export default async function NexusHome() {
     // 2. Run the remaining independent queries in parallel to cut load times in half
     const [userRes, subRes] = await Promise.all([
       supabase.from('users').select('calendar_token').eq('id', user.id).single(),
-      supabase.from('submissions').select('*').eq('author_id', user.id)
+      // ⚡ Bolt Performance Optimization: Explicitly select only the fields needed for the member list UI to prevent over-fetching large 'content' and 'file_url' fields.
+      supabase.from('submissions').select('id, title, type, status').eq('author_id', user.id)
     ]);
     
     if (userRes.data) calendarToken = userRes.data.calendar_token;
