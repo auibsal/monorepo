@@ -92,10 +92,11 @@ export default function NexusRegister() {
             <form onSubmit={handleSubmit} className="space-y-8">
               
               <div className="space-y-3 text-start">
-                <label className="block text-sm font-bold uppercase tracking-wide text-auib-charcoal">
-                  Legal Full Name
+                <label htmlFor="fullName" className="block text-sm font-bold uppercase tracking-wide text-auib-charcoal">
+                  Legal Full Name <span className="text-auib-red">*</span>
                 </label>
                 <input
+                  id="fullName"
                   type="text"
                   required
                   value={fullName}
@@ -105,8 +106,9 @@ export default function NexusRegister() {
               </div>
 
               <div className="p-6 border-4 border-auib-charcoal/10 bg-auib-charcoal/5 space-y-6">
-                <label className="flex items-center space-x-3 text-sm font-bold uppercase tracking-wide text-auib-charcoal cursor-pointer">
+                <label htmlFor="isExternal" className="flex items-center space-x-3 text-sm font-bold uppercase tracking-wide text-auib-charcoal cursor-pointer">
                   <input
+                    id="isExternal"
                     type="checkbox"
                     checked={isExternal}
                     onChange={(e) => setIsExternal(e.target.checked)}
@@ -117,10 +119,11 @@ export default function NexusRegister() {
 
                 {!isExternal && (
                   <div className="space-y-3 text-start pt-4 border-t-2 border-auib-charcoal/10">
-                    <label className="block text-sm font-bold uppercase tracking-wide text-auib-charcoal">
-                      AUIB Student ID & Major
+                    <label htmlFor="studentId" className="block text-sm font-bold uppercase tracking-wide text-auib-charcoal">
+                      AUIB Student ID & Major <span className="text-auib-red">*</span>
                     </label>
                     <input
+                      id="studentId"
                       type="text"
                       required={!isExternal}
                       value={studentId}
@@ -134,10 +137,11 @@ export default function NexusRegister() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="space-y-3 text-start">
-                  <label className="block text-sm font-bold uppercase tracking-wide text-auib-charcoal">
-                    Email Address
+                  <label htmlFor="email" className="block text-sm font-bold uppercase tracking-wide text-auib-charcoal">
+                    Email Address <span className="text-auib-red">*</span>
                   </label>
                   <input
+                    id="email"
                     type="email"
                     required
                     placeholder="student@auib.edu.iq"
@@ -148,10 +152,11 @@ export default function NexusRegister() {
                 </div>
 
                 <div className="space-y-3 text-start">
-                  <label className="block text-sm font-bold uppercase tracking-wide text-auib-charcoal">
-                    Password
+                  <label htmlFor="password" className="block text-sm font-bold uppercase tracking-wide text-auib-charcoal">
+                    Password <span className="text-auib-red">*</span>
                   </label>
                   <input
+                    id="password"
                     type="password"
                     required
                     placeholder="••••••••"
@@ -163,10 +168,11 @@ export default function NexusRegister() {
               </div>
 
               <div className="space-y-3 text-start">
-                <label className="block text-sm font-bold uppercase tracking-wide text-auib-charcoal">
+                <label htmlFor="bio" className="block text-sm font-bold uppercase tracking-wide text-auib-charcoal">
                   3rd-Person Author Bio <span className="text-auib-red">(Max 50 words)</span>
                 </label>
                 <textarea
+                  id="bio"
                   rows={4}
                   value={bio}
                   onChange={(e) => setBio(e.target.value)}
@@ -178,8 +184,9 @@ export default function NexusRegister() {
               </div>
 
               <div className="p-6 border-4 border-auib-red bg-auib-red/5">
-                <label className="flex items-start space-x-4 text-sm font-bold tracking-wide text-auib-charcoal cursor-pointer">
+                <label htmlFor="aiPolicy" className="flex items-start space-x-4 text-sm font-bold tracking-wide text-auib-charcoal cursor-pointer">
                   <input
+                    id="aiPolicy"
                     type="checkbox"
                     required
                     checked={aiPolicy}
@@ -187,7 +194,7 @@ export default function NexusRegister() {
                     className="w-6 h-6 mt-1 rounded-none border-4 border-auib-red text-auib-red focus:ring-auib-red focus:ring-offset-0 bg-white"
                   />
                   <span className="leading-relaxed">
-                    I guarantee that any submitted work will be entirely my own human creation. I explicitly understand that the use of Generative AI is strictly prohibited.
+                    I guarantee that any submitted work will be entirely my own human creation. I explicitly understand that the use of Generative AI is strictly prohibited. <span className="text-auib-red">*</span>
                   </span>
                 </label>
               </div>
