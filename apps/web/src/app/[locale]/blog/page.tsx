@@ -12,7 +12,8 @@ export default async function BlogPage({ params }: { params: Promise<{ locale: s
 
   const supabase = await createClient();
 
-  const { data: posts, error } = await supabase.from('blog_posts').select('*, users(full_name)').order('published_at', { ascending: false });
+  // ⚡ Bolt Performance Optimization: Explicitly select only the fields needed for the list UI to prevent over-fetching large rich-text 'content_en' and 'content_ar' fields.
+  const { data: posts, error } = await supabase.from('blog_posts').select('id, slug, title_en, title_ar, published_at, users(full_name)').order('published_at', { ascending: false });
 
   const blogPosts = !error && posts ? posts : [];
   const isAr = locale === 'ar';
