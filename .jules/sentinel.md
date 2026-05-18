@@ -1,0 +1,4 @@
+## 2024-05-18 - Authorization Bypass via Middleware Header Spoofing
+**Vulnerability:** The Next.js middleware (`proxy.ts`) failed to strip the `x-user-role` header from incoming HTTP requests. Furthermore, it incorrectly set the securely fetched user role on the *response* headers instead of the *request* headers. This allowed any malicious user to gain admin privileges by simply sending `x-user-role: admin` in their request headers.
+**Learning:** Next.js Server Components (`headers()`) read from *request* headers, not response headers. To securely pass data from middleware to Server Components, you must inject it into the request headers via `NextResponse.next({ request: { headers } })` AND explicitly strip any incoming headers of the same name to prevent spoofing.
+**Prevention:** Always strip custom internal headers from incoming requests at the edge. Always use `NextResponse.next({ request: { headers } })` to forward internal state to layouts and pages.
