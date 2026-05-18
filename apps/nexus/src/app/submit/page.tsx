@@ -131,8 +131,11 @@ export default function SubmitWorkPage() {
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="space-y-3">
-            <label className="block text-sm font-bold uppercase tracking-wide text-auib-charcoal">Manuscript Title</label>
+            <label htmlFor="title" className="block text-sm font-bold uppercase tracking-wide text-auib-charcoal">
+              Manuscript Title <span className="text-auib-red">*</span>
+            </label>
             <input
+              id="title"
               type="text"
               required
               value={title}
@@ -142,8 +145,11 @@ export default function SubmitWorkPage() {
           </div>
 
           <div className="space-y-3">
-            <label className="block text-sm font-bold uppercase tracking-wide text-auib-charcoal">Submission Format</label>
+            <label htmlFor="type" className="block text-sm font-bold uppercase tracking-wide text-auib-charcoal">
+              Submission Format <span className="text-auib-red">*</span>
+            </label>
             <select
+              id="type"
               value={type}
               onChange={(e) => {
                 setType(e.target.value);
@@ -163,15 +169,16 @@ export default function SubmitWorkPage() {
 
         {isVisualArt ? (
           <div className="space-y-3 pt-4 border-t-4 border-auib-charcoal/10">
-            <label className="block text-sm font-bold uppercase tracking-wide text-auib-charcoal flex items-center gap-2">
+            <label htmlFor="file-upload" className="block text-sm font-bold uppercase tracking-wide text-auib-charcoal flex items-center gap-2">
                <ImageIcon className="text-auib-red" size={20} />
-               Mount Visual Artifact
+               Mount Visual Artifact <span className="text-auib-red">*</span>
             </label>
             <p className="text-xs text-auib-charcoal/60 font-bold uppercase tracking-widest mb-4">
               Requires uncompressed, high-resolution JPEG or PNG matrix.
             </p>
             <div className="relative border-4 border-dashed border-auib-charcoal p-8 md:p-12 hover:bg-auib-charcoal/5 transition-colors flex flex-col items-center justify-center text-center group cursor-pointer bg-white">
               <input
+                id="file-upload"
                 type="file"
                 required
                 accept="image/jpeg, image/png"
@@ -189,14 +196,14 @@ export default function SubmitWorkPage() {
           </div>
         ) : (
           <div className="space-y-3 pt-4 border-t-4 border-auib-charcoal/10 overflow-hidden">
-            <label className="block text-sm font-bold uppercase tracking-wide text-auib-charcoal flex items-center gap-2">
+            <div className="block text-sm font-bold uppercase tracking-wide text-auib-charcoal flex items-center gap-2" id="editor-label">
                <FileText className="text-auib-red" size={20} />
-               Manuscript Editor
-            </label>
+               Manuscript Editor <span className="text-auib-red">*</span>
+            </div>
             <p className="text-xs text-auib-charcoal/60 font-bold uppercase tracking-widest mb-4">
               Compose directly or paste your raw text into the field below.
             </p>
-            <div className="border-4 border-auib-charcoal focus-within:border-auib-red transition-colors bg-white w-full max-w-full overflow-x-hidden">
+            <div className="border-4 border-auib-charcoal focus-within:border-auib-red transition-colors bg-white w-full max-w-full overflow-x-hidden" aria-labelledby="editor-label">
                <RichTextEditor content={content} onChange={setContent} />
             </div>
           </div>
