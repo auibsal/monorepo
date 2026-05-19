@@ -2,7 +2,7 @@
 import { InteractiveErrorState } from '@auibsal/ui';
 import './globals.css'; 
 
-export default function GlobalError({ error, reset }: { error: Error; reset: () => void }) {
+export default function GlobalError({ reset }: { reset: () => void }) {
   return (
     <html lang="en">
       <body>
