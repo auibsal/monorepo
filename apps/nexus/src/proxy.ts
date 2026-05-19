@@ -1,10 +1,9 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { updateSession } from '@auibsal/auth/proxy';
 
-
 export default async function proxy(request: NextRequest) {
   // Phase 1: Auth & Token Refresh
-  const { supabase, user, response: supabaseResponse } = await updateSession(request as any);
+  const { supabase, user, response: supabaseResponse } = await updateSession(request);
 
   const isAuthPage = request.nextUrl.pathname.startsWith('/login') || request.nextUrl.pathname.startsWith('/register');
   const isApiRoute = request.nextUrl.pathname.startsWith('/api');
@@ -19,7 +18,7 @@ export default async function proxy(request: NextRequest) {
   if (!user) {
     if (!isAuthPage && !isApiRoute) {
       // Unauthenticated user attempting to access a secure route
-      finalResponse = NextResponse.redirect(new URL('/login', request.url)) as any;
+      finalResponse = NextResponse.redirect(new URL('/login', request.url));
     } else {
       finalResponse = NextResponse.next({
         request: {
@@ -30,18 +29,30 @@ export default async function proxy(request: NextRequest) {
   } else {
     if (isAuthPage) {
       // Authenticated user attempting to view the login page
-      finalResponse = NextResponse.redirect(new URL('/', request.url)) as any;
+      finalResponse = NextResponse.redirect(new URL('/', request.url));
     } else if (!isApiRoute) {
-      // Extract the role
+      // Extract the role safely
       let userRole = user.user_metadata?.role;
+      
       if (!userRole) {
-        const { data: userData } = await supabase
-          .from('users')
-          .select('role')
-          .eq('id', user.id)
-          .single();
-        userRole = userData?.role || 'member';
+        try {
+          // FIX: Use maybeSingle() and wrap in a try/catch to prevent 500 crashes
+          const { data: userData, error } = await supabase
+            .from('users')
+            .select('role')
+            .eq('id', user.id)
+            .maybeSingle();
+            
+          if (error) throw error;
+          userRole = userData?.role || 'member';
+        } catch (err) {
+          console.error('Middleware Role Fetch Error:', err);
+          userRole = 'member'; // Failsafe
+        }
       }
+
+      // Absolute fallback guarantees userRole is never undefined
+      if (!userRole) userRole = 'member';
 
       // Inject the role into the headers
       requestHeaders.set('x-user-role', userRole);
@@ -51,9 +62,9 @@ export default async function proxy(request: NextRequest) {
       const isAdminRoute = request.nextUrl.pathname.startsWith('/admin');
 
       if (userRole === 'member' && (isEditorialRoute || isAdminRoute)) {
-        finalResponse = NextResponse.redirect(new URL('/', request.url)) as any;
+        finalResponse = NextResponse.redirect(new URL('/', request.url));
       } else if (userRole === 'editor' && isAdminRoute) {
-        finalResponse = NextResponse.redirect(new URL('/', request.url)) as any;
+        finalResponse = NextResponse.redirect(new URL('/', request.url));
       } else {
         // Build the Final Request Headers
         finalResponse = NextResponse.next({
