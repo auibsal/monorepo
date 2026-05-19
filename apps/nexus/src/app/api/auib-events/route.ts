@@ -23,7 +23,7 @@ export async function GET() {
 
     // 3. Clean and map the payload to prevent JSON serialization crashes
     const auibEvents = Object.values(events)
-      // @ts-ignore - Event type may be missing in old versions of node-ical
+      // @ts-expect-error - Event type may be missing in old versions of node-ical
       .filter((event): event is any => event?.type === 'VEVENT')
       .map((event: any) => ({
         id: event.uid,
