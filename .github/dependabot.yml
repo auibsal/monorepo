@@ -1,25 +1,25 @@
 version: 2
 updates:
   # Root dependencies
-  - package-ecosystem: "npm"
+  - package-ecosystem: "pnpm"
     directory: "/"
     schedule:
       interval: "weekly"
       
   # Web App
-  - package-ecosystem: "npm"
+  - package-ecosystem: "pnpm"
     directory: "/apps/web"
     schedule:
       interval: "weekly"
       
   # Nexus Dashboard
-  - package-ecosystem: "npm"
+  - package-ecosystem: "pnpm"
     directory: "/apps/nexus"
     schedule:
       interval: "weekly"
 
   # Shared UI Package
-  - package-ecosystem: "npm"
+  - package-ecosystem: "pnpm"
     directory: "/packages/ui"
     schedule:
       interval: "weekly"
