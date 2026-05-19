@@ -6,4 +6,4 @@ export type { NavbarProps, NavbarLink } from './components/layout/Navbar';
 export { default as Footer } from './components/layout/Footer';
 export type { FooterProps } from './components/layout/Footer';
 export * from './components/RichTextEditor';
-export * from './components/InteractiveErrorState';
+export { default as InteractiveErrorState } from './components/InteractiveErrorState';
