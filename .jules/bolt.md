@@ -1,0 +1,3 @@
+## 2024-05-24 - Over-fetching large rich text columns
+**Learning:** Querying `select('*')` or `select('*, users(full_name)')` on tables like `blog_posts` (which contain large text fields like `content_en` and `content_ar`) or `submissions` (which contain `file_url` or `content`) causes significant payload bloat and slows down API responses, especially for list views where only the ID and title are needed.
+**Action:** Always explicitly scope the `.select()` fields to only what is required by the UI (e.g., `select('id, title_en, title_ar, users(full_name)')`) to prevent unnecessary data transfer.

@@ -26,7 +26,8 @@ export default function BlogPage() {
 
   const fetchPosts = async () => {
     if (!supabase) return;
-    const { data, error } = await supabase.from('blog_posts').select('*, users(full_name)').order('published_at', { ascending: false });
+    // ⚡ Bolt Performance Optimization: Explicitly select only the required fields to prevent over-fetching large rich-text 'content_en' and 'content_ar' fields.
+    const { data, error } = await supabase.from('blog_posts').select('id, title_en, title_ar, users(full_name)').order('published_at', { ascending: false });
     if (!error && data) {
       setPosts(data as any);
     }
