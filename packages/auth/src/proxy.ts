@@ -1,9 +1,9 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
-export async function updateSession(request: NextRequest, response?: NextResponse) {
+export async function updateSession(request: NextRequest) {
   // 1. Create an initial response object that forwards the request
-  let supabaseResponse = response || NextResponse.next({
+  let supabaseResponse = NextResponse.next({
     request,
   })
 
@@ -30,8 +30,6 @@ export async function updateSession(request: NextRequest, response?: NextRespons
           cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
           
           // CRITICAL: Recreate the response object with the updated request headers
-          // Note: If an external response was provided, we must be careful about overwriting it.
-          // For now, we follow the recommended Supabase pattern.
           supabaseResponse = NextResponse.next({
             request,
           })
