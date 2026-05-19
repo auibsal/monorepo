@@ -14,16 +14,18 @@ export default async function proxy(request: NextRequest) {
   // CRITICAL SECURITY: Strip any incoming role headers to prevent authorization bypass via spoofing
   requestHeaders.delete('x-user-role');
 
-  let finalResponse = NextResponse.next({
-    request: {
-      headers: requestHeaders,
-    },
-  }) as NextResponse;
+  let finalResponse: NextResponse;
 
   if (!user) {
     if (!isAuthPage && !isApiRoute) {
       // Unauthenticated user attempting to access a secure route
       finalResponse = NextResponse.redirect(new URL('/login', request.url)) as any;
+    } else {
+      finalResponse = NextResponse.next({
+        request: {
+          headers: requestHeaders,
+        },
+      });
     }
   } else {
     if (isAuthPage) {
@@ -52,7 +54,20 @@ export default async function proxy(request: NextRequest) {
         finalResponse = NextResponse.redirect(new URL('/', request.url)) as any;
       } else if (userRole === 'editor' && isAdminRoute) {
         finalResponse = NextResponse.redirect(new URL('/', request.url)) as any;
+      } else {
+        // Build the Final Request Headers
+        finalResponse = NextResponse.next({
+          request: {
+            headers: requestHeaders,
+          },
+        });
       }
+    } else {
+      finalResponse = NextResponse.next({
+        request: {
+          headers: requestHeaders,
+        },
+      });
     }
   }
 
