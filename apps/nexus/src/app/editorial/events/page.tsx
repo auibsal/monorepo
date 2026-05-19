@@ -176,39 +176,39 @@ export default function EventsPage() {
                 <form onSubmit={handleCreateEvent} className="space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div className="space-y-3">
-                            <label className="block text-sm font-bold uppercase tracking-wide">Title (EN)</label>
-                            <input required type="text" value={titleEn} onChange={e=>setTitleEn(e.target.value)} className="w-full p-4 border-2 border-auib-charcoal bg-white focus:outline-none focus:border-auib-red focus:ring-1 focus:ring-auib-red rounded-none font-bold text-lg" />
+                            <label htmlFor="titleEn" className="block text-sm font-bold uppercase tracking-wide">Title (EN) <span className="text-auib-red">*</span></label>
+                            <input id="titleEn" required type="text" value={titleEn} onChange={e=>setTitleEn(e.target.value)} className="w-full p-4 border-2 border-auib-charcoal bg-white focus:outline-none focus:border-auib-red focus:ring-1 focus:ring-auib-red rounded-none font-bold text-lg" />
                         </div>
                         <div className="space-y-3" dir="rtl">
-                            <label className="block text-sm font-bold uppercase tracking-wide text-right">Title (AR)</label>
-                            <input required type="text" value={titleAr} onChange={e=>setTitleAr(e.target.value)} className="w-full p-4 border-2 border-auib-charcoal bg-white focus:outline-none focus:border-auib-red focus:ring-1 focus:ring-auib-red rounded-none font-bold text-lg" />
+                            <label htmlFor="titleAr" className="block text-sm font-bold uppercase tracking-wide text-right">Title (AR) <span className="text-auib-red">*</span></label>
+                            <input id="titleAr" required type="text" value={titleAr} onChange={e=>setTitleAr(e.target.value)} className="w-full p-4 border-2 border-auib-charcoal bg-white focus:outline-none focus:border-auib-red focus:ring-1 focus:ring-auib-red rounded-none font-bold text-lg" />
                         </div>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div className="space-y-3">
-                            <label className="block text-sm font-bold uppercase tracking-wide">Description (EN)</label>
-                            <textarea required value={descEn} onChange={e=>setDescEn(e.target.value)} className="w-full p-4 border-2 border-auib-charcoal bg-white focus:outline-none focus:border-auib-red focus:ring-1 focus:ring-auib-red rounded-none h-32 font-medium leading-relaxed resize-none" />
+                            <label htmlFor="descEn" className="block text-sm font-bold uppercase tracking-wide">Description (EN) <span className="text-auib-red">*</span></label>
+                            <textarea id="descEn" required value={descEn} onChange={e=>setDescEn(e.target.value)} className="w-full p-4 border-2 border-auib-charcoal bg-white focus:outline-none focus:border-auib-red focus:ring-1 focus:ring-auib-red rounded-none h-32 font-medium leading-relaxed resize-none" />
                         </div>
                         <div className="space-y-3" dir="rtl">
-                            <label className="block text-sm font-bold uppercase tracking-wide text-right">Description (AR)</label>
-                            <textarea required value={descAr} onChange={e=>setDescAr(e.target.value)} className="w-full p-4 border-2 border-auib-charcoal bg-white focus:outline-none focus:border-auib-red focus:ring-1 focus:ring-auib-red rounded-none h-32 font-medium leading-relaxed resize-none" />
+                            <label htmlFor="descAr" className="block text-sm font-bold uppercase tracking-wide text-right">Description (AR) <span className="text-auib-red">*</span></label>
+                            <textarea id="descAr" required value={descAr} onChange={e=>setDescAr(e.target.value)} className="w-full p-4 border-2 border-auib-charcoal bg-white focus:outline-none focus:border-auib-red focus:ring-1 focus:ring-auib-red rounded-none h-32 font-medium leading-relaxed resize-none" />
                         </div>
                     </div>
 
                     <div className="space-y-3">
-                        <label className="block text-sm font-bold uppercase tracking-wide">Location</label>
-                        <input required type="text" value={location} onChange={e=>setLocation(e.target.value)} className="w-full p-4 border-2 border-auib-charcoal bg-white focus:outline-none focus:border-auib-red focus:ring-1 focus:ring-auib-red rounded-none font-bold" />
+                        <label htmlFor="location" className="block text-sm font-bold uppercase tracking-wide">Location <span className="text-auib-red">*</span></label>
+                        <input id="location" required type="text" value={location} onChange={e=>setLocation(e.target.value)} className="w-full p-4 border-2 border-auib-charcoal bg-white focus:outline-none focus:border-auib-red focus:ring-1 focus:ring-auib-red rounded-none font-bold" />
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div className="space-y-3">
-                            <label className="block text-sm font-bold uppercase tracking-wide">Starts At</label>
-                            <input required type="datetime-local" value={startsAt} onChange={e=>setStartsAt(e.target.value)} className="w-full p-4 border-2 border-auib-charcoal bg-white focus:outline-none focus:border-auib-red focus:ring-1 focus:ring-auib-red rounded-none font-bold text-sm" />
+                            <label htmlFor="startsAt" className="block text-sm font-bold uppercase tracking-wide">Starts At <span className="text-auib-red">*</span></label>
+                            <input id="startsAt" required type="datetime-local" value={startsAt} onChange={e=>setStartsAt(e.target.value)} className="w-full p-4 border-2 border-auib-charcoal bg-white focus:outline-none focus:border-auib-red focus:ring-1 focus:ring-auib-red rounded-none font-bold text-sm" />
                         </div>
                         <div className="space-y-3">
-                            <label className="block text-sm font-bold uppercase tracking-wide">Ends At</label>
-                            <input required type="datetime-local" value={endsAt} onChange={e=>setEndsAt(e.target.value)} className="w-full p-4 border-2 border-auib-charcoal bg-white focus:outline-none focus:border-auib-red focus:ring-1 focus:ring-auib-red rounded-none font-bold text-sm" />
+                            <label htmlFor="endsAt" className="block text-sm font-bold uppercase tracking-wide">Ends At <span className="text-auib-red">*</span></label>
+                            <input id="endsAt" required type="datetime-local" value={endsAt} onChange={e=>setEndsAt(e.target.value)} className="w-full p-4 border-2 border-auib-charcoal bg-white focus:outline-none focus:border-auib-red focus:ring-1 focus:ring-auib-red rounded-none font-bold text-sm" />
                         </div>
                     </div>
 
