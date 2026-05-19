@@ -94,7 +94,7 @@ export default function UsersPage() {
                       onChange={(e) => handleRoleChange(user.id, e.target.value as Role)}
                       className="border-2 border-auib-charcoal rounded-none p-2 text-sm bg-white font-bold cursor-pointer focus:outline-none focus:border-auib-red focus:ring-1 focus:ring-auib-red hover:bg-auib-charcoal/5 transition-colors uppercase tracking-wider"
                     >
-                        <option value="user">User</option>
+
                         <option value="member">Member</option>
                         <option value="editor">Editor</option>
                         <option value="admin">Admin</option>

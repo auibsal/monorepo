@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { updateSession } from '@auibsal/auth/proxy';
 
+
 export default async function proxy(request: NextRequest) {
   // 1. Refresh the session and grab the response (contains updated JWT cookies)
   const { supabase, user, response: authResponse } = await updateSession(request as any);
@@ -32,22 +33,35 @@ export default async function proxy(request: NextRequest) {
       finalResponse = NextResponse.redirect(new URL('/', request.url)) as any;
     } else if (!isApiRoute) {
       // Safely fetch and inject the user role into the headers for downstream layouts
-      const { data: userData } = await supabase
-        .from('users')
-        .select('role')
-        .eq('id', user.id)
-        .single();
 
-      if (userData) {
-        // MUST set on request headers so Server Components (via headers()) can read it
-        requestHeaders.set('x-user-role', userData.role);
+      let userRole = user.user_metadata?.role;
+      if (!userRole) {
+        const { data: userData } = await supabase
+          .from('users')
+          .select('role')
+          .eq('id', user.id)
+          .single();
+        userRole = userData?.role || 'member';
       }
 
-      finalResponse = NextResponse.next({
-        request: {
-          headers: requestHeaders,
-        },
-      });
+      // MUST set on request headers so Server Components (via headers()) can read it
+      requestHeaders.set('x-user-role', userRole);
+
+      // Perform strict boundary RBAC redirects
+      const isEditorialRoute = request.nextUrl.pathname.startsWith('/editorial');
+      const isAdminRoute = request.nextUrl.pathname.startsWith('/admin');
+
+      if (userRole === 'member' && (isEditorialRoute || isAdminRoute)) {
+        finalResponse = NextResponse.redirect(new URL('/', request.url)) as any;
+      } else if (userRole === 'editor' && isAdminRoute) {
+        finalResponse = NextResponse.redirect(new URL('/', request.url)) as any;
+      } else {
+        finalResponse = NextResponse.next({
+          request: {
+            headers: requestHeaders,
+          },
+        });
+      }
     } else {
       finalResponse = NextResponse.next({
         request: {

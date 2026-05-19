@@ -20,20 +20,33 @@ export default function ClientLayout({
     window.location.href = `${webUrl}/login`;
   };
 
-  const isEditor = role === 'editor' || role === 'admin';
+  const isAdmin = role === 'admin';
+  const isEditorOrAdmin = role === 'editor' || role === 'admin';
 
-  const links: NavbarLink[] = isEditor ? [
-    { href: '/', label: 'Overview' },
-    { href: '/submissions', label: 'Submissions' },
-    { href: '/blog', label: 'Blog' },
-    { href: '/journal', label: 'Journal' },
-    { href: '/events', label: 'Events' },
-    { href: '/users', label: 'Users' },
-  ] : [
+  let links: NavbarLink[] = [
     { href: '/', label: 'Member Portal' },
+    { href: '/events', label: 'Events' },
     { href: '/submit', label: 'Submit Work' },
-    { href: '/guidelines', label: 'Guidelines' },
+    { href: '/settings/profile', label: 'Profile' },
   ];
+
+  if (isEditorOrAdmin) {
+    links = [
+      ...links,
+      { href: '/editorial/submissions', label: 'Submissions (Ed)' },
+      { href: '/editorial/blog', label: 'Blog (Ed)' },
+      { href: '/editorial/journal', label: 'Journal (Ed)' },
+      { href: '/editorial/events', label: 'Events (Ed)' },
+    ];
+  }
+
+  if (isAdmin) {
+    links = [
+      ...links,
+      { href: '/admin/users', label: 'Users (Admin)' },
+      { href: '/admin/logs', label: 'Logs (Admin)' },
+    ];
+  }
 
   return (
     <div className="flex flex-col min-h-screen">

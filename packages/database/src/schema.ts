@@ -1,4 +1,4 @@
-export type Role = 'user' | 'member' | 'editor' | 'admin';
+export type Role = 'member' | 'editor' | 'admin';
 export type SubmissionType = 'essay' | 'poetry' | 'fiction' | 'theatre' | 'visual_art' | 'other';
 export type SubmissionStatus = 'pending' | 'under_review' | 'revisions_requested' | 'accepted' | 'rejected';
 
