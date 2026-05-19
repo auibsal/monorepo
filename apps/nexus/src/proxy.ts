@@ -3,37 +3,34 @@ import { updateSession } from '@auibsal/auth/proxy';
 
 
 export default async function proxy(request: NextRequest) {
-  // 1. Refresh the session and grab the response (contains updated JWT cookies)
-  const { supabase, user, response: authResponse } = await updateSession(request as any);
+  // Phase 1: Auth & Token Refresh
+  const { supabase, user, response: supabaseResponse } = await updateSession(request as any);
 
   const isAuthPage = request.nextUrl.pathname.startsWith('/login') || request.nextUrl.pathname.startsWith('/register');
   const isApiRoute = request.nextUrl.pathname.startsWith('/api');
 
-  // Create new Headers to prevent spoofing and properly pass data to Server Components
+  // Phase 2: Role Extraction & Final Routing
   const requestHeaders = new Headers(request.headers);
   // CRITICAL SECURITY: Strip any incoming role headers to prevent authorization bypass via spoofing
   requestHeaders.delete('x-user-role');
 
-  let finalResponse = authResponse;
+  let finalResponse = NextResponse.next({
+    request: {
+      headers: requestHeaders,
+    },
+  }) as NextResponse;
 
   if (!user) {
     if (!isAuthPage && !isApiRoute) {
       // Unauthenticated user attempting to access a secure route
       finalResponse = NextResponse.redirect(new URL('/login', request.url)) as any;
-    } else {
-      finalResponse = NextResponse.next({
-        request: {
-          headers: requestHeaders,
-        },
-      });
     }
   } else {
     if (isAuthPage) {
       // Authenticated user attempting to view the login page
       finalResponse = NextResponse.redirect(new URL('/', request.url)) as any;
     } else if (!isApiRoute) {
-      // Safely fetch and inject the user role into the headers for downstream layouts
-
+      // Extract the role
       let userRole = user.user_metadata?.role;
       if (!userRole) {
         const { data: userData } = await supabase
@@ -44,7 +41,7 @@ export default async function proxy(request: NextRequest) {
         userRole = userData?.role || 'member';
       }
 
-      // MUST set on request headers so Server Components (via headers()) can read it
+      // Inject the role into the headers
       requestHeaders.set('x-user-role', userRole);
 
       // Perform strict boundary RBAC redirects
@@ -55,33 +52,13 @@ export default async function proxy(request: NextRequest) {
         finalResponse = NextResponse.redirect(new URL('/', request.url)) as any;
       } else if (userRole === 'editor' && isAdminRoute) {
         finalResponse = NextResponse.redirect(new URL('/', request.url)) as any;
-      } else {
-        finalResponse = NextResponse.next({
-          request: {
-            headers: requestHeaders,
-          },
-        });
       }
-    } else {
-      finalResponse = NextResponse.next({
-        request: {
-          headers: requestHeaders,
-        },
-      });
     }
   }
 
-  // 2. CRITICAL: If we triggered a redirect or a new response, we generated a brand new NextResponse.
-  // We MUST copy the refreshed JWT cookies over from the Supabase response, or the user gets logged out!
-  authResponse.cookies.getAll().forEach((cookie) => {
+  // The Cookie Sync (Crucial Step): Manually copy the cookies from supabaseResponse
+  supabaseResponse.cookies.getAll().forEach((cookie) => {
     finalResponse.cookies.set(cookie.name, cookie.value);
-  });
-
-  // Also preserve other headers from authResponse if any were set by updateSession
-  authResponse.headers.forEach((value, key) => {
-    if (key.toLowerCase() !== 'set-cookie') {
-      finalResponse.headers.set(key, value);
-    }
   });
 
   return finalResponse;
