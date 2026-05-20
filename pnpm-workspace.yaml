@@ -2,10 +2,17 @@ packages:
   - "apps/*"
   - "packages/*"
 
-# OPTIONAL: The Global Dependency Dictionary
-catalogs:
-  default:
-    react: "^19.0.0"
-    react-dom: "^19.0.0"
-    typescript: "^5.4.5"
-    tailwindcss: "^4.0.0"
+catalog:
+  # Framework & UI
+  next: "16.2.6"
+  react: "^19.0.0"
+  react-dom: "^19.0.0"
+  
+  # Styling (Tailwind v4)
+  tailwindcss: "^4.0.0"
+  "@tailwindcss/postcss": "^4.0.0"
+  
+  # Tooling & Types
+  typescript: "^5.8.2"
+  eslint: "^9.39.4"
+  prettier: "^3.5.2"
