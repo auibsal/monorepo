@@ -4,7 +4,11 @@
   "private": true,
   "type": "module",
   "exports": {
-    ".": "./src/index.ts"
+    "./lib/utils": "./src/lib/utils.ts",
+    "./components/*": "./src/components/*",
+    "./hooks/*": "./src/hooks/*"
+  },
+    
   },
   "scripts": {
     "lint": "eslint .",
