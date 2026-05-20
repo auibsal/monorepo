@@ -18,16 +18,8 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'en_US',
     alternateLocale: 'ar_IQ',
-    url: '/',
+    // Removed the hardcoded images array; Next.js handles opengraph-image.png natively
     siteName: 'AUIB Society of Arts and Letters',
-    images: [
-      {
-        url: '/og-image.png', // Create a 1200x630 brutalist banner and put it in apps/web/public
-        width: 1200,
-        height: 630,
-        alt: 'AUIB Society of Arts and Letters',
-      },
-    ],
   },
   twitter: {
     card: 'summary_large_image',
@@ -48,8 +40,8 @@ export default async function LocaleLayout({
 
   return (
     <html lang={locale} dir={dir} className={`${ubuntu.variable} ${ubuntuArabic.variable}`}>
-      {/* CRITICAL: Added overflow-x-hidden to kill the mobile scroll bug, and anchored the global theme colors */}
-      <body className="font-sans antialiased min-h-screen flex flex-col bg-auib-white text-auib-charcoal overflow-x-hidden">
+      {/* Swapped to semantic background/foreground tokens to preserve dark mode compatibility */}
+      <body className="font-sans antialiased min-h-screen flex flex-col bg-background text-foreground overflow-x-hidden">
         <NextIntlClientProvider messages={messages}>
           <WebNavbarServer locale={locale} />
           <main className="flex-grow">
