@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Menu, X } from 'lucide-react';
 import Logo from '../Logo';
@@ -11,7 +11,8 @@ export interface NavbarLink {
 }
 
 export interface NavbarProps {
-  locale: string;
+  // 1. Strict literal types mapped perfectly to your Logo and routing setup
+  locale: 'en' | 'ar';
   links: NavbarLink[];
   homeUrl?: string;
   platform?: 'web' | 'nexus';
@@ -21,7 +22,7 @@ export interface NavbarProps {
 
   // Web-specific props
   onLanguageToggle?: () => void;
-  targetLocale?: string;
+  targetLocale?: 'en' | 'ar';
   nexusUrl?: string;
 }
 
@@ -38,12 +39,25 @@ export default function Navbar({
   const [isOpen, setIsOpen] = useState(false);
   const logoHref = homeUrl || `/${locale}`;
 
+  // 2. Mobile Scroll Lock
+  // Prevents the page from scrolling underneath the mobile menu overlay
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen]);
+
   const renderPlatformActions = () => {
     if (platform === 'nexus') {
       return (
         <button
           onClick={onSignOut}
-          className="text-sm font-bold text-white hover:text-auib-red transition-colors uppercase tracking-widest"
+          className="text-sm font-bold text-white hover:text-auib-charcoal transition-colors uppercase tracking-widest"
         >
           Sign Out
         </button>
@@ -78,10 +92,15 @@ export default function Navbar({
   const rightModule = renderPlatformActions();
 
   return (
-    <nav className="sticky top-0 z-50 w-full bg-auib-red backdrop-blur-sm border-b-4 border-auib-charcoal text-white">
+    // 3. Removed the useless backdrop-blur for pure, flat brutalism
+    <nav className="sticky top-0 z-50 w-full bg-auib-red border-b-4 border-auib-charcoal text-white transition-colors duration-300">
       <div className="max-w-6xl mx-auto px-6 h-20 flex items-center justify-between">
 
-        <Link href={logoHref} className="flex items-center text-white hover:opacity-90 transition-opacity">
+        <Link 
+          href={logoHref} 
+          onClick={() => setIsOpen(false)} // Ensure clicking logo closes mobile menu
+          className="flex items-center text-white hover:opacity-90 transition-opacity"
+        >
           <Logo locale={locale} className="text-xs sm:text-sm leading-tight text-white" />
         </Link>
 
@@ -94,7 +113,7 @@ export default function Navbar({
             onClick={() => setIsOpen(!isOpen)}
             aria-expanded={isOpen}
             aria-label="Toggle navigation menu"
-            className="p-2 border-2 border-transparent hover:border-white hover:bg-white hover:text-auib-red transition-colors flex items-center gap-2 font-bold uppercase tracking-widest text-sm"
+            className="p-2 border-2 border-transparent hover:border-white hover:bg-white hover:text-auib-red transition-colors flex items-center gap-2 font-bold uppercase tracking-widest text-sm md:hidden"
           >
             {isOpen ? <X size={24} aria-hidden="true" /> : <Menu size={24} aria-hidden="true" />}
             <span className="hidden sm:inline">Menu</span>
@@ -104,7 +123,7 @@ export default function Navbar({
 
       {/* Hamburger Menu Overlay */}
       {isOpen && (
-        <div className="absolute top-20 left-0 w-full bg-auib-charcoal text-white border-b-4 border-auib-red shadow-xl">
+        <div className="absolute top-20 left-0 w-full h-[calc(100vh-5rem)] overflow-y-auto bg-auib-charcoal text-white border-b-4 border-auib-red shadow-brutalist-md md:hidden">
           <div className="max-w-6xl mx-auto px-6 py-8">
             <ul className="flex flex-col gap-4 font-bold uppercase tracking-widest text-lg">
               {links.map((link) => (
@@ -112,7 +131,7 @@ export default function Navbar({
                   <Link
                     href={link.href}
                     onClick={() => setIsOpen(false)}
-                    className="block py-2 hover:text-auib-red hover:translate-x-2 rtl:hover:-translate-x-2 transition-all"
+                    className="block py-2 hover:text-auib-red hover:translate-x-2 rtl:hover:-translate-x-2 transition-transform duration-200"
                   >
                     {link.label}
                   </Link>
@@ -120,7 +139,7 @@ export default function Navbar({
               ))}
             </ul>
 
-            <div className="mt-8 pt-8 border-t border-white/20 md:hidden flex items-center gap-4">
+            <div className="mt-8 pt-8 border-t-2 border-white/20 flex flex-col items-start gap-6">
               {rightModule}
             </div>
           </div>
