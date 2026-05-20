@@ -3,24 +3,21 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
   "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "default": "./dist/index.js"
-    }
+    ".": "./src/index.ts"
   },
   "scripts": {
     "build": "tsc",
-    "clean": "rm -rf dist .turbo node_modules"
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist .turbo node_modules",
+    "generate": "supabase gen types typescript --project-id your-project-id > src/types.ts"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.105.4"
+    "@supabase/supabase-js": "catalog:"
   },
   "devDependencies": {
     "@auibsal/config": "workspace:*",
-    "typescript": "^6.0.3"
+    "typescript": "catalog:"
   }
 }
