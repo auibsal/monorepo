@@ -1,4 +1,5 @@
-import { createBrowserClient } from '@supabase/ssr'
+import { createBrowserClient } from '@supabase/ssr';
+import type { Database } from '@auibsal/database';
 
 export function createClient() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -10,8 +11,10 @@ export function createClient() {
     );
   }
 
-  return createBrowserClient(
+  // Injecting the <Database> generic ensures 100% strict type safety
+  // across all frontend data fetching.
+  return createBrowserClient<Database>(
     supabaseUrl,
     supabaseAnonKey
-  )
+  );
 }
