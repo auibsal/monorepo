@@ -1,0 +1,8 @@
+# Disable blank issues to force the use of structured YAML forms
+blank_issues_enabled: false
+
+# Reroute non-bug questions to the appropriate channels
+contact_links:
+  - name: 💬 General Support & Questions
+    url: https://auibsal.org
+    about: Please ask general questions or request platform support through our official portal.
