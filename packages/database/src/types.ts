@@ -114,5 +114,13 @@ export interface Database {
         Update: Partial<Event>;
       };
     };
+    // Explicit mappings for structural compliance with Supabase JS SDK v2
+    Views: Record<string, never>;
+    Functions: Record<string, never>;
+    Enums: {
+      user_role_type: Role;
+      submission_type: SubmissionType;
+      submission_status_type: SubmissionStatus;
+    };
   };
 }
