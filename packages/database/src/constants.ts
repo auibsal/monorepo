@@ -1,23 +1,31 @@
-// Define the arrays "as const" so they lock in as strict literal types
-export const SUBMISSION_STATUSES = [
-  'pending',
-  'under_review',
-  'revisions_requested',
-  'accepted',
-  'rejected',
-] as const;
+import type { Enums } from './index';
 
-export const SUBMISSION_TYPES = [
-  'essay',
-  'poetry',
-  'fiction',
-  'theatre',
-  'visual_art',
-  'other',
-] as const;
+// By tying the keys strictly to Enums<'...'>, TypeScript will throw an error 
+// if you ever miss a database enum or misspell one.
+export const SUBMISSION_STATUS_LABELS: Record<Enums<'submission_status_type'>, string> = {
+  pending: 'Pending',
+  under_review: 'Under Review',
+  revisions_requested: 'Revisions Requested',
+  accepted: 'Accepted',
+  rejected: 'Rejected',
+} as const;
 
-export const USER_ROLES = [
-  'member',
-  'editor',
-  'admin',
-] as const;
+export const SUBMISSION_TYPE_LABELS: Record<Enums<'submission_type'>, string> = {
+  essay: 'Essay',
+  poetry: 'Poetry',
+  fiction: 'Fiction',
+  theatre: 'Theatre',
+  visual_art: 'Visual Art',
+  other: 'Other',
+} as const;
+
+export const USER_ROLE_LABELS: Record<Enums<'user_role_type'>, string> = {
+  member: 'Member',
+  editor: 'Editor',
+  admin: 'Administrator',
+} as const;
+
+// Helper arrays if you just need the raw values (e.g., for Zod validation)
+export const SUBMISSION_STATUSES = Object.keys(SUBMISSION_STATUS_LABELS) as Enums<'submission_status_type'>[];
+export const SUBMISSION_TYPES = Object.keys(SUBMISSION_TYPE_LABELS) as Enums<'submission_type'>[];
+export const USER_ROLES = Object.keys(USER_ROLE_LABELS) as Enums<'user_role_type'>[];
