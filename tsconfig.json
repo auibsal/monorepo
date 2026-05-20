@@ -1,0 +1,19 @@
+{
+  "extends": "@auibsal/config/tsconfig.base.json",
+  "compilerOptions": {
+    "baseUrl": "."
+  },
+  "include": [
+    "*.ts", 
+    "*.js", 
+    "*.mjs", 
+    "*.cjs"
+  ],
+  "exclude": [
+    "apps", 
+    "packages", 
+    "node_modules", 
+    ".turbo", 
+    "dist"
+  ]
+}
