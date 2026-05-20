@@ -11,7 +11,7 @@
   /* Base & Typography Mappings */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-ubuntu), var(--font-ubuntu-arabic), ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-sans: var(--font-ubuntu), var(--font-ubuntu-arabic), ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
   --font-mono: var(--font-geist-mono);
   --font-heading: var(--font-sans);
   
@@ -55,14 +55,18 @@
   --radius-3xl: 0rem;
   --radius-4xl: 0rem;
 
-  /* Brutalist Shadows */
-  --shadow-brutalist-sm: 4px 4px 0px 0px #273237;
-  --shadow-brutalist-md: 8px 8px 0px 0px #273237;
-  --shadow-brutalist-lg: 16px 16px 0px 0px #273237;
-  --shadow-brutalist-red: 8px 8px 0px 0px #9C213E;
+  /* Brutalist Shadows (Now dynamic via CSS variables) */
+  --shadow-brutalist-sm: 4px 4px 0px 0px var(--brutalist-shadow);
+  --shadow-brutalist-md: 8px 8px 0px 0px var(--brutalist-shadow);
+  --shadow-brutalist-lg: 16px 16px 0px 0px var(--brutalist-shadow);
+  --shadow-brutalist-red: 8px 8px 0px 0px var(--color-auib-red);
 }
 
 :root {
+  /* Dynamic Brutalist Tokens */
+  --brutalist-shadow: #273237;
+
+  /* Standard Tokens */
   --background: oklch(1 0 0);
   --foreground: #273237;
   --card: oklch(1 0 0);
@@ -78,8 +82,11 @@
   --accent: oklch(0.97 0 0);
   --accent-foreground: #273237;
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
+  
+  /* Hardened borders for light mode */
+  --border: #273237;
+  --input: #273237;
+  
   --ring: #9C213E;
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
@@ -87,17 +94,22 @@
   --chart-4: oklch(0.371 0 0);
   --chart-5: oklch(0.269 0 0);
   --radius: 0rem;
+  
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: #273237;
   --sidebar-primary: #9C213E;
   --sidebar-primary-foreground: oklch(1 0 0);
   --sidebar-accent: oklch(0.97 0 0);
   --sidebar-accent-foreground: #273237;
-  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-border: #273237;
   --sidebar-ring: #9C213E;
 }
 
 .dark {
+  /* Drops dark mode shadows to pure black for high contrast against charcoal */
+  --brutalist-shadow: #000000;
+
+  /* Standard Tokens */
   --background: #273237;
   --foreground: oklch(1 0 0);
   --card: #273237;
@@ -113,20 +125,24 @@
   --accent: oklch(0.269 0 0);
   --accent-foreground: oklch(1 0 0);
   --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
+  
+  /* Hardened borders for dark mode */
+  --border: oklch(1 0 0);
+  --input: oklch(1 0 0);
+  
   --ring: #9C213E;
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);
   --chart-4: oklch(0.371 0 0);
   --chart-5: oklch(0.269 0 0);
+  
   --sidebar: #273237;
   --sidebar-foreground: oklch(1 0 0);
   --sidebar-primary: #9C213E;
   --sidebar-primary-foreground: oklch(1 0 0);
   --sidebar-accent: oklch(0.269 0 0);
   --sidebar-accent-foreground: oklch(1 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-border: oklch(1 0 0);
   --sidebar-ring: #9C213E;
 }
