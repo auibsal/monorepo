@@ -13,7 +13,7 @@ Security updates and patches are exclusively provided for the current production
 
 We take the security of our platform and the data of our members very seriously. **Please do not report security vulnerabilities through public GitHub issues, discussions, or pull requests.**
 
-Instead, please report them directly via email to: **[INSERT_YOUR_SECURITY_EMAIL_HERE]**
+Instead, please report them directly via email to: **security@auibsal.org**
 
 When reporting, please include:
 - A detailed description of the vulnerability.
