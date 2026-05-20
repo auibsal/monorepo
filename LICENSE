@@ -1,11 +1,24 @@
 Copyright (c) 2026 AUIB Society of Arts and Letters. All Rights Reserved.
 
-This repository, including all source code, design assets, and database schemas, 
-is proprietary and confidential. 
+PROPRIETARY AND CONFIDENTIAL
+
+This repository, including all original source code, design assets, proprietary 
+components, and database schemas, is the exclusive intellectual property of the 
+AUIB Society of Arts and Letters.
 
 Unauthorized copying, distribution, modification, reproduction, or use of these 
 files, via any medium, is strictly prohibited without explicit, written permission 
 from the AUIB Society of Arts and Letters administrative board.
+
+THIRD-PARTY OPEN SOURCE SOFTWARE
+
+This repository contains and utilizes third-party open-source software dependencies. 
+Nothing in this proprietary license is intended to alter, restrict, or claim 
+ownership over those open-source components. All third-party libraries, packages, 
+and frameworks remain subject to their respective original licenses (e.g., MIT, 
+Apache 2.0).
+
+DISCLAIMER OF WARRANTY AND LIABILITY
 
 This software is provided "as is", without warranty of any kind, express or 
 implied, including but not limited to the warranties of merchantability, fitness 
