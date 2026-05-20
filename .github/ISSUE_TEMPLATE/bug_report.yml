@@ -1,0 +1,32 @@
+name: 🐛 Bug Report
+description: Report an issue with the AUIB SAL web platform or Nexus dashboard
+labels: ["bug", "triage"]
+body:
+  - type: dropdown
+    id: environment
+    attributes:
+      label: Which application is affected?
+      options:
+        - apps/web (Public Platform)
+        - apps/nexus (Editorial Dashboard)
+        - packages/ui (Component Library)
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Describe the bug
+      description: A clear and concise description of what the bug is.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to Reproduce
+      description: How can we trigger this bug?
+      value: |
+        1. Go to '...'
+        2. Click on '....'
+        3. See error
+    validations:
+      required: true
