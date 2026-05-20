@@ -1,22 +1,60 @@
-import type { Linter } from 'eslint';
-import tseslint from 'typescript-eslint';
+import js from "@eslint/js";
+import nextPlugin from "@next/eslint-plugin-next";
+import tsPlugin from "@typescript-eslint/eslint-plugin";
+import tsParser from "@typescript-eslint/parser";
+import globals from "globals";
+import type { Linter } from "eslint";
 
-const config: Linter.Config[] = [
+// 1. Global Ignores
+export const ignoresConfig: Linter.Config = {
+  ignores: ["**/.next/**", "**/node_modules/**", "**/dist/**", "**/.turbo/**"],
+};
+
+// 2. Base TypeScript Architecture (For root, UI, DB, etc.)
+export const baseConfig: Linter.Config[] = [
+  ignoresConfig,
+  js.configs.recommended,
   {
-    // Globally ignore build outputs and cache directories
-    ignores: ['.next/**', 'node_modules/**', 'dist/**', '.turbo/**'],
-  },
-  ...tseslint.configs.recommended,
-  {
-    files: ['**/*.ts', '**/*.tsx'],
+    files: ["**/*.{ts,tsx,js,jsx}"],
+    languageOptions: {
+      parser: tsParser,
+      parserOptions: {
+        ecmaVersion: "latest",
+        sourceType: "module",
+        ecmaFeatures: { jsx: true },
+      },
+      globals: {
+        ...globals.browser,
+        ...globals.node,
+      },
+    },
+    plugins: {
+      "@typescript-eslint": tsPlugin,
+    },
     rules: {
-      // Define your shared architectural linting rules here
-      'react/jsx-key': 'off',
-      '@next/next/no-html-link-for-pages': 'off',
-      '@typescript-eslint/no-explicit-any': 'off',
-      '@typescript-eslint/no-unused-vars': 'off'
+      ...tsPlugin.configs.recommended.rules,
+      "react/react-in-jsx-scope": "off",
+      "react/jsx-key": "off",
+      "@typescript-eslint/no-unused-vars": "warn",
+      "@typescript-eslint/no-explicit-any": "warn",
+      "@typescript-eslint/no-empty-object-type": "off",
+      "no-undef": "off",
     },
   },
 ];
 
-export default config;
+// 3. Next.js Architecture (For Web & Nexus)
+export const nextConfig: Linter.Config[] = [
+  ...baseConfig,
+  {
+    files: ["**/*.{ts,tsx,js,jsx}"],
+    plugins: {
+      "@next/next": nextPlugin,
+    },
+    rules: {
+      ...nextPlugin.configs.recommended.rules,
+      ...nextPlugin.configs["core-web-vitals"].rules,
+      "@next/next/no-html-link-for-pages": "off",
+    },
+  },
+];
