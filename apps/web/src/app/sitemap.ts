@@ -13,19 +13,19 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     '/blog'
   ];
 
+  // 1. Corrected Static Routes
   const sitemapEntries: MetadataRoute.Sitemap = staticPaths.map((path) => ({
     url: `${baseUrl}${path}`,
     lastModified: new Date(),
     alternates: {
       languages: {
-        en: `${baseUrl}/en${path}`,
-        ar: `${baseUrl}/ar${path}`,
+        en: `${baseUrl}${path}`, // English is at the root
+        ar: `${baseUrl}/ar${path}`, // Arabic has the prefix
       },
     },
   }));
 
   // Fetch dynamic journal issues
-  // The prompt explicitly requested: "where the status is explicitly set to public/accepted"
   const { data: issues } = await supabase
     .from('journal_issues')
     .select('id, published_at')
@@ -38,7 +38,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         lastModified: new Date(issue.published_at || new Date()),
         alternates: {
           languages: {
-            en: `${baseUrl}/en/journal/${issue.id}`,
+            en: `${baseUrl}/journal/${issue.id}`,
             ar: `${baseUrl}/ar/journal/${issue.id}`,
           },
         },
@@ -58,7 +58,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         lastModified: new Date(post.published_at || new Date()),
         alternates: {
           languages: {
-            en: `${baseUrl}/en/blog/${post.slug}`,
+            en: `${baseUrl}/blog/${post.slug}`,
             ar: `${baseUrl}/ar/blog/${post.slug}`,
           },
         },
@@ -75,11 +75,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   if (submissions) {
     submissions.forEach((sub) => {
       sitemapEntries.push({
-        url: `${baseUrl}/submissions/${sub.id}`, // Using a logical path
+        url: `${baseUrl}/submissions/${sub.id}`, 
         lastModified: new Date(sub.submitted_at || new Date()),
         alternates: {
           languages: {
-            en: `${baseUrl}/en/submissions/${sub.id}`,
+            en: `${baseUrl}/submissions/${sub.id}`,
             ar: `${baseUrl}/ar/submissions/${sub.id}`,
           },
         },
