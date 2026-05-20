@@ -7,6 +7,8 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: '*',
       allow: '/',
+      // Explicitly block crawlers from internal membership and system routes
+      disallow: ['/portal/', '/api/', '/login/'],
     },
     sitemap: `${baseUrl}/sitemap.xml`,
   };
