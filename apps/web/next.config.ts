@@ -3,14 +3,19 @@ import createNextIntlPlugin from "next-intl/plugin";
 
 const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
-const cspHeader = `
+// 1. Dynamic CSP Generator based on the environment
+const generateCsp = () => {
+  const isDev = process.env.NODE_ENV === 'development';
+  
+  return `
     default-src 'self';
-    script-src 'self' 'unsafe-inline' 'unsafe-eval';
+    script-src 'self' 'unsafe-inline' ${isDev ? "'unsafe-eval'" : ""};
     style-src 'self' 'unsafe-inline';
     connect-src 'self' *.supabase.co;
     img-src 'self' data: blob: *.supabase.co;
     frame-src 'self' *.supabase.co;
-`.replace(/\n/g, '').replace(/\s+/g, ' ').trim();
+  `.replace(/\n/g, '').replace(/\s+/g, ' ').trim();
+};
 
 const nextConfig: NextConfig = {
   transpilePackages: ["@auibsal/auth", "@auibsal/database", "@auibsal/ui"],
@@ -18,12 +23,11 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        // CRITICAL: Locks image optimization to your Supabase storage buckets
+        // Locks image optimization to your Supabase storage buckets
         hostname: "*.supabase.co", 
         port: "",
         pathname: "/storage/v1/object/public/**",
       },
-      // You can add other specific domains here later (e.g., Google or GitHub avatars)
     ],
   },
   async headers() {
@@ -49,7 +53,8 @@ const nextConfig: NextConfig = {
           },
           {
             key: 'Content-Security-Policy',
-            value: cspHeader,
+            // 2. Execute the generator at build/request time
+            value: generateCsp(),
           },
         ],
       },
