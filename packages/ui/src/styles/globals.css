@@ -1,4 +1,4 @@
-/* packages/config/theme.css */
+@import "tailwindcss";
 
 @custom-variant dark (&:is(.dark *));
 
