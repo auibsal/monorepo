@@ -1,9 +1,9 @@
-import React from 'react';
 import Link from 'next/link';
 import Logo from '../Logo';
 
 export interface FooterProps {
-  locale: string;
+  // 1. Locked down locale typing
+  locale: 'en' | 'ar';
   dictionary: {
     description: string;
     linksTitle: string;
@@ -63,9 +63,9 @@ export default function Footer({ locale, dictionary }: FooterProps) {
           </div>
         </div>
 
-        <div className="text-xs font-bold uppercase tracking-wider text-white/60 flex flex-col md:flex-row justify-between items-center">
+        <div className="text-xs font-bold uppercase tracking-wider text-white/60 flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
           <p>&copy; {year} {dictionary.societyName}. {dictionary.rights}</p>
-          <p className="mt-4 md:mt-0">{dictionary.designedBy}</p>
+          <p>{dictionary.designedBy}</p>
         </div>
       </div>
     </footer>
