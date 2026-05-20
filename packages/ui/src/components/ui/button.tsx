@@ -4,7 +4,8 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "../../lib/utils"
 
 const buttonVariants = cva(
-  "group/button inline-flex shrink-0 items-center justify-center border-2 border-auib-charcoal rounded-none text-sm font-bold uppercase tracking-wider whitespace-nowrap transition-all outline-none select-none focus-visible:ring-2 focus-visible:ring-auib-red focus-visible:ring-offset-2 active:translate-y-[2px] active:translate-x-[2px] active:shadow-none disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+  // 1. Math Fix: Changed active translations to 4px (1 in Tailwind scale) to perfectly erase the base 4px shadow.
+  "group/button inline-flex shrink-0 items-center justify-center border-2 border-auib-charcoal rounded-none text-sm font-bold uppercase tracking-wider whitespace-nowrap transition-all outline-none select-none focus-visible:ring-2 focus-visible:ring-auib-red focus-visible:ring-offset-2 active:translate-y-1 active:translate-x-1 active:shadow-none disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
   {
     variants: {
       variant: {
@@ -38,7 +39,8 @@ function Button({
   variant,
   size,
   ...props
-}: ButtonPrimitive.Props & VariantProps<typeof buttonVariants>) {
+  // 2. Used React 19's native ref passthrough compatibility via standard props
+}: React.ComponentProps<typeof ButtonPrimitive> & VariantProps<typeof buttonVariants>) {
   return (
     <ButtonPrimitive
       data-slot="button"
