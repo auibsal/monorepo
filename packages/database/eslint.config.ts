@@ -1,8 +1,1 @@
-import { baseConfig } from '@auibsal/config/eslint.config';
-import type { Linter } from 'eslint';
-
-const config: Linter.Config[] = [
-  ...baseConfig,
-];
-
-export default config;
+export { baseConfig as default } from '@auibsal/config/eslint.config';
