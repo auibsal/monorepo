@@ -16,6 +16,36 @@ import {
   AlignRight,
   AlignJustify
 } from 'lucide-react';
+import { cn } from '../lib/utils'; // 1. Bring in your new superpower
+
+// 2. Abstract the button logic to kill JSX bloat
+const ToolbarButton = ({
+  onClick,
+  isActive,
+  label,
+  children
+}: {
+  onClick: () => void;
+  isActive: boolean;
+  label: string;
+  children: React.ReactNode;
+}) => (
+  <button
+    type="button"
+    aria-label={label}
+    title={label}
+    onClick={(e) => {
+      e.preventDefault();
+      onClick();
+    }}
+    className={cn(
+      "p-2 border-2 border-transparent hover:border-auib-red focus-visible:outline-none transition-colors",
+      isActive ? "bg-auib-red text-white" : "text-white"
+    )}
+  >
+    {children}
+  </button>
+);
 
 export function RichTextEditor({ content, onChange }: { content: string, onChange: (content: string) => void }) {
   const editor = useEditor({
@@ -28,7 +58,7 @@ export function RichTextEditor({ content, onChange }: { content: string, onChang
       }),
     ],
     content,
-    // CRITICAL: Prevents React 18 hydration mismatch errors in Next.js
+    // Prevents React 18 hydration mismatch errors in Next.js
     immediatelyRender: false, 
     editorProps: {
       attributes: {
@@ -41,10 +71,12 @@ export function RichTextEditor({ content, onChange }: { content: string, onChang
     },
   });
 
-  // CRITICAL: Sync external asynchronous data loads
+  // 3. The Cursor-Safe Sync Effect
   useEffect(() => {
-    if (editor && content !== editor.getHTML()) {
-      editor.commands.setContent(content);
+    // ONLY override the editor content if the user isn't actively typing inside it.
+    // This perfectly syncs database loads without destroying cursor placement.
+    if (editor && !editor.isFocused && content !== editor.getHTML()) {
+      editor.commands.setContent(content, false); // false = preserve selection if possible
     }
   }, [content, editor]);
 
@@ -53,95 +85,39 @@ export function RichTextEditor({ content, onChange }: { content: string, onChang
   }
 
   return (
-    // 1. Strict w-full and overflow-hidden guards on the parent wrapper
     <div className="w-full max-w-full overflow-hidden border-4 border-auib-charcoal bg-white flex flex-col focus-within:border-auib-red transition-colors">
       
-      {/* 2. Responsive toolbar with wrap enabled */}
-      <div className="border-b-4 border-auib-charcoal p-2 flex gap-1.5 flex-wrap bg-auib-charcoal text-white w-full">
-        <button
-          type="button"
-          aria-label="Bold"
-          title="Bold"
-          onClick={(e) => { e.preventDefault(); editor.chain().focus().toggleBold().run(); }}
-          className={`p-2 border-2 border-transparent hover:border-auib-red focus-visible:outline-none transition-colors ${editor.isActive('bold') ? 'bg-auib-red text-white' : 'text-white'}`}
-        >
+      <div className="border-b-4 border-auib-charcoal p-2 flex gap-1.5 flex-wrap bg-auib-charcoal w-full">
+        <ToolbarButton label="Bold" isActive={editor.isActive('bold')} onClick={() => editor.chain().focus().toggleBold().run()}>
           <Bold size={18} />
-        </button>
-        <button
-          type="button"
-          aria-label="Italic"
-          title="Italic"
-          onClick={(e) => { e.preventDefault(); editor.chain().focus().toggleItalic().run(); }}
-          className={`p-2 border-2 border-transparent hover:border-auib-red focus-visible:outline-none transition-colors ${editor.isActive('italic') ? 'bg-auib-red text-white' : 'text-white'}`}
-        >
+        </ToolbarButton>
+        <ToolbarButton label="Italic" isActive={editor.isActive('italic')} onClick={() => editor.chain().focus().toggleItalic().run()}>
           <Italic size={18} />
-        </button>
-        <button
-          type="button"
-          aria-label="Underline"
-          title="Underline"
-          onClick={(e) => { e.preventDefault(); editor.chain().focus().toggleUnderline().run(); }}
-          className={`p-2 border-2 border-transparent hover:border-auib-red focus-visible:outline-none transition-colors ${editor.isActive('underline') ? 'bg-auib-red text-white' : 'text-white'}`}
-        >
+        </ToolbarButton>
+        <ToolbarButton label="Underline" isActive={editor.isActive('underline')} onClick={() => editor.chain().focus().toggleUnderline().run()}>
           <UnderlineIcon size={18} />
-        </button>
-        <button
-          type="button"
-          aria-label="Heading 2"
-          title="Heading 2"
-          onClick={(e) => { e.preventDefault(); editor.chain().focus().toggleHeading({ level: 2 }).run(); }}
-          className={`p-2 border-2 border-transparent hover:border-auib-red focus-visible:outline-none transition-colors ${editor.isActive('heading', { level: 2 }) ? 'bg-auib-red text-white' : 'text-white'}`}
-        >
+        </ToolbarButton>
+        <ToolbarButton label="Heading 2" isActive={editor.isActive('heading', { level: 2 })} onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}>
           <Heading2 size={18} />
-        </button>
-        <button
-          type="button"
-          aria-label="Bullet List"
-          title="Bullet List"
-          onClick={(e) => { e.preventDefault(); editor.chain().focus().toggleBulletList().run(); }}
-          className={`p-2 border-2 border-transparent hover:border-auib-red focus-visible:outline-none transition-colors ${editor.isActive('bulletList') ? 'bg-auib-red text-white' : 'text-white'}`}
-        >
+        </ToolbarButton>
+        <ToolbarButton label="Bullet List" isActive={editor.isActive('bulletList')} onClick={() => editor.chain().focus().toggleBulletList().run()}>
           <ListIcon size={18} />
-        </button>
+        </ToolbarButton>
         
         <div className="w-0.5 h-6 bg-white/20 mx-1 self-center hidden sm:block"></div>
 
-        <button
-          type="button"
-          aria-label="Align Left"
-          title="Align Left"
-          onClick={(e) => { e.preventDefault(); editor.chain().focus().setTextAlign('left').run(); }}
-          className={`p-2 border-2 border-transparent hover:border-auib-red focus-visible:outline-none transition-colors ${editor.isActive({ textAlign: 'left' }) ? 'bg-auib-red text-white' : 'text-white'}`}
-        >
+        <ToolbarButton label="Align Left" isActive={editor.isActive({ textAlign: 'left' })} onClick={() => editor.chain().focus().setTextAlign('left').run()}>
           <AlignLeft size={18} />
-        </button>
-        <button
-          type="button"
-          aria-label="Align Center"
-          title="Align Center"
-          onClick={(e) => { e.preventDefault(); editor.chain().focus().setTextAlign('center').run(); }}
-          className={`p-2 border-2 border-transparent hover:border-auib-red focus-visible:outline-none transition-colors ${editor.isActive({ textAlign: 'center' }) ? 'bg-auib-red text-white' : 'text-white'}`}
-        >
+        </ToolbarButton>
+        <ToolbarButton label="Align Center" isActive={editor.isActive({ textAlign: 'center' })} onClick={() => editor.chain().focus().setTextAlign('center').run()}>
           <AlignCenter size={18} />
-        </button>
-        <button
-          type="button"
-          aria-label="Align Right"
-          title="Align Right"
-          onClick={(e) => { e.preventDefault(); editor.chain().focus().setTextAlign('right').run(); }}
-          className={`p-2 border-2 border-transparent hover:border-auib-red focus-visible:outline-none transition-colors ${editor.isActive({ textAlign: 'right' }) ? 'bg-auib-red text-white' : 'text-white'}`}
-        >
+        </ToolbarButton>
+        <ToolbarButton label="Align Right" isActive={editor.isActive({ textAlign: 'right' })} onClick={() => editor.chain().focus().setTextAlign('right').run()}>
           <AlignRight size={18} />
-        </button>
-        <button
-          type="button"
-          aria-label="Justify"
-          title="Justify"
-          onClick={(e) => { e.preventDefault(); editor.chain().focus().setTextAlign('justify').run(); }}
-          className={`p-2 border-2 border-transparent hover:border-auib-red focus-visible:outline-none transition-colors ${editor.isActive({ textAlign: 'justify' }) ? 'bg-auib-red text-white' : 'text-white'}`}
-        >
+        </ToolbarButton>
+        <ToolbarButton label="Justify" isActive={editor.isActive({ textAlign: 'justify' })} onClick={() => editor.chain().focus().setTextAlign('justify').run()}>
           <AlignJustify size={18} />
-        </button>
+        </ToolbarButton>
       </div>
 
       <EditorContent editor={editor} className="flex-1 bg-transparent prose max-w-none text-auib-charcoal w-full overflow-x-hidden" />
