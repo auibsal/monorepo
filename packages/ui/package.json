@@ -5,7 +5,10 @@
   "type": "module",
   "exports": {
     "./lib/utils": "./src/lib/utils.ts",
-    "./components/*": "./src/components/*"
+    "./components/*": "./src/components/*",
+    "./styles/globals.css": "./src/styles/globals.css"
+  },
+    
   },
     
   },
