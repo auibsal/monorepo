@@ -20,7 +20,7 @@ This repository utilizes [Turborepo](https://turbo.build/) to manage multiple ap
 
 ### 1. Prerequisites
 Ensure you have the following installed:
-- Node.js (v18+)
+- Node.js (v24.x)
 - [pnpm](https://pnpm.io/installation) (v10.x)
 
 ### 2. Environment Variables
