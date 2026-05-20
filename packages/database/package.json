@@ -11,7 +11,7 @@
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "clean": "rm -rf dist .turbo node_modules",
-    "generate": "supabase gen types typescript --project-id your-project-id > src/types.ts"
+    "generate": "pnpm dlx supabase@latest gen types typescript --project-id dgjxwsttotfqcvtgujry > src/types.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "catalog:"
