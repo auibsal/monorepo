@@ -1,8 +1,8 @@
-import React from 'react';
 import { cn } from '../lib/utils';
 
 interface LogoProps {
-  locale: string;
+  // 1. Lock down the locale to strict literal types
+  locale: 'en' | 'ar';
   className?: string;
 }
 
