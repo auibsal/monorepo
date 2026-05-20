@@ -13,9 +13,16 @@ dist/
 packages/**/dist/
 
 # =========================
-# Turborepo
+# Vercel & Deployments
+# =========================
+.vercel/
+
+# =========================
+# Turborepo & Tooling Caches
 # =========================
 .turbo/
+.eslintcache
+.prettiercache
 
 # =========================
 # Environment Variables
@@ -46,6 +53,7 @@ blob-report/
 # OS & Editor Files
 # =========================
 .DS_Store
+Thumbs.db
 *.pem
 .vscode/*
 !.vscode/settings.json
