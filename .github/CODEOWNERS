@@ -1,9 +1,34 @@
-# Global owner
+# ==========================================
+# Global Default
+# ==========================================
+# Every pull request requires review by default
 * @ShaheenFarjo
 
-# Lock down the database package
-/packages/database/ @ShaheenFarjo
+# ==========================================
+# Critical Infrastructure & Tooling
+# ==========================================
+# Lock down the build engine and dependency catalog
+/turbo.json @ShaheenFarjo
+/pnpm-workspace.yaml @ShaheenFarjo
+/pnpm-lock.yaml @ShaheenFarjo
+/package.json @ShaheenFarjo
+/.npmrc @ShaheenFarjo
 
-# Lock down infrastructure config
-turbo.json @ShaheenFarjo
-.github/workflows/ @ShaheenFarjo
+# ==========================================
+# CI/CD & GitHub Architecture
+# ==========================================
+# Lock down workflows, PR templates, and Dependabot
+/.github/ @ShaheenFarjo
+
+# ==========================================
+# Core Monorepo Packages
+# ==========================================
+# Protect the database schema and centralized formatting brain
+/packages/database/ @ShaheenFarjo
+/packages/config/ @ShaheenFarjo
+
+# ==========================================
+# Security & Environment Blueprints
+# ==========================================
+/SECURITY.md @ShaheenFarjo
+/.env.example @ShaheenFarjo
