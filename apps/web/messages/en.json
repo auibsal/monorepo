@@ -102,6 +102,21 @@
   "LoginPage": {
     "loginTitle": "Member Login",
     "loginSubtitle": "Access the society portal.",
-    "registerTitle": "Register"
+    "registerTitle": "Request Membership",
+    "registerSubtitle": "Submit your credentials for review.",
+    "emailLabel": "University Email",
+    "passwordLabel": "Password",
+    "loginButton": "Enter",
+    "registerButton": "Submit Request",
+    "loading": "Processing...",
+    "registerSuccess": "Request submitted. Please await further instructions."
+  },
+  "NexusIntro": {
+    "title": "Welcome to Nexus",
+    "description": "Nexus is the central hub for our members and editorial staff.",
+    "feature1": "• Submit your creative writing and artistic portfolios for review.",
+    "feature2": "• Track the status of your submissions.",
+    "feature3": "• Access the editorial overview and member management (approved staff only).",
+    "loginLink": "Access Nexus"
   }
 }
