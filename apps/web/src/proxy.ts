@@ -7,14 +7,23 @@ const intlMiddleware = createMiddleware(routing);
 
 export default async function proxy(request: NextRequest) {
   // 1. Refresh the Supabase session and get the auth response
-  const { response: authResponse } = await updateSession(request as any);
+  const { response: authResponse } = await updateSession(request);
 
   // 2. Run the internationalization middleware to handle redirects and locale headers
   const intlResponse = intlMiddleware(request);
 
-  // 3. CRITICAL: Merge the Supabase authentication cookies into the next-intl response
+  // 3. CRITICAL SECURITY FIX: Merge the Supabase cookies while strictly preserving all security attributes
   authResponse.cookies.getAll().forEach((cookie) => {
-    intlResponse.cookies.set(cookie.name, cookie.value);
+    intlResponse.cookies.set({
+      name: cookie.name,
+      value: cookie.value,
+      domain: cookie.domain,
+      path: cookie.path,
+      maxAge: cookie.maxAge,
+      httpOnly: cookie.httpOnly,
+      secure: cookie.secure,
+      sameSite: cookie.sameSite,
+    });
   });
 
   return intlResponse;
@@ -22,6 +31,7 @@ export default async function proxy(request: NextRequest) {
 
 export const config = {
   matcher: [
+    // Ignore static assets, image optimization, and favicon
     '/((?!_next/static|_next/image|favicon.ico|\\.well-known|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
   ],
 };
