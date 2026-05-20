@@ -6,7 +6,8 @@
   "exports": {
     "./client": "./src/client.ts",
     "./server": "./src/server.ts",
-    "./proxy": "./src/proxy.ts"
+    "./proxy": "./src/proxy.ts",
+    "./admin": ".src/admin.ts"
   },
   "scripts": {
     "build": "tsc",
