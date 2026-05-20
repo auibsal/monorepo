@@ -1,0 +1,28 @@
+# Turborepo & Next.js Build Outputs
+.next/
+.turbo/
+dist/
+build/
+coverage/
+
+# Dependencies
+node_modules/
+pnpm-lock.yaml
+
+# Public & Static Assets
+public/
+*.svg
+*.png
+*.jpg
+*.jpeg
+*.ico
+*.woff
+*.woff2
+
+# Environment Variables
+.env
+.env.*
+
+# Package-specific exclusions (if any apps generate raw data)
+*.csv
+*.pdf
