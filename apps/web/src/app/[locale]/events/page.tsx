@@ -12,7 +12,8 @@ export default async function Events({ params }: { params: Promise<{ locale: str
 
   const supabase = await createClient();
 
-  const { data: events, error } = await supabase.from('events').select('*').order('starts_at', { ascending: true });
+  // ⚡ Bolt Performance Optimization: Explicitly select only required fields to prevent over-fetching
+  const { data: events, error } = await supabase.from('events').select('id, starts_at, location, title_en, title_ar, description_en, description_ar').order('starts_at', { ascending: true });
 
   const upcomingEvents = !error && events ? events : [];
   const isAr = locale === 'ar';

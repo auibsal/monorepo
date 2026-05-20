@@ -8,8 +8,6 @@
     "./components/*": "./src/components/*",
     "./hooks/*": "./src/hooks/*"
   },
-    
-  },
   "scripts": {
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",

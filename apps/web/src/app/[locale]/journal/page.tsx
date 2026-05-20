@@ -12,7 +12,8 @@ export default async function Journal({ params }: { params: Promise<{ locale: st
 
   const supabase = await createClient();
 
-  const { data: issues, error } = await supabase.from('journal_issues').select('*').order('volume_number', { ascending: false }).order('issue_number', { ascending: false });
+  // ⚡ Bolt Performance Optimization: Explicitly select only required fields to prevent over-fetching
+  const { data: issues, error } = await supabase.from('journal_issues').select('id, volume_number, issue_number, published_at, title_en, title_ar').order('volume_number', { ascending: false }).order('issue_number', { ascending: false });
 
   const publishedIssues = !error && issues ? issues : [];
   const isAr = locale === 'ar';

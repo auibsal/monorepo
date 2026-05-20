@@ -28,7 +28,8 @@ export default function JournalPage() {
     if (!supabase) return;
     const { data: issuesData, error } = await supabase
       .from('journal_issues')
-      .select('*')
+      // ⚡ Bolt Performance Optimization: Explicitly select only required fields to prevent over-fetching
+      .select('id, volume_number, issue_number, published_at, title_en, title_ar, file_url')
       .order('volume_number', { ascending: false })
       .order('issue_number', { ascending: false });
     

@@ -177,7 +177,7 @@ export default function GradingPage() {
           </div>
 
           <div className="space-y-4 pt-6 border-t-4 border-auib-charcoal/10">
-            <label className="block text-sm font-bold uppercase tracking-wide">"The Archive" Factor</label>
+            <label className="block text-sm font-bold uppercase tracking-wide">&quot;The Archive&quot; Factor</label>
             <div className="flex gap-8">
               <label className="flex items-center gap-3 cursor-pointer group">
                 <input type="radio" name="archive" checked={archive === true} onChange={() => setArchive(true)} className="w-6 h-6 text-auib-red border-4 border-auib-charcoal focus:ring-auib-red focus:ring-offset-0" /> 

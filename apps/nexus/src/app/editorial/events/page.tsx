@@ -29,7 +29,8 @@ export default function EventsPage() {
 
   const fetchEvents = async () => {
     if (!supabase) return;
-    const { data, error } = await supabase.from('events').select('*').order('starts_at', { ascending: true });
+    // ⚡ Bolt Performance Optimization: Explicitly select only required fields to prevent over-fetching
+    const { data, error } = await supabase.from('events').select('id, title_en, starts_at, is_members_only').order('starts_at', { ascending: true });
     if (!error && data) {
       setEvents(data);
     }

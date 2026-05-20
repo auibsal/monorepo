@@ -18,7 +18,8 @@ export default function UsersPage() {
 
   const fetchUsers = async () => {
     if (!supabase) return;
-    const { data, error } = await supabase.from('users').select('*').order('created_at', { ascending: false });
+    // ⚡ Bolt Performance Optimization: Explicitly select only required fields to prevent over-fetching
+    const { data, error } = await supabase.from('users').select('id, full_name, university_id, role, created_at').order('created_at', { ascending: false });
     if (!error && data) {
       setUsers(data);
     }
