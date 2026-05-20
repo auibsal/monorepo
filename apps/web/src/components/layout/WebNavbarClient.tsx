@@ -2,6 +2,7 @@
 
 import { Navbar } from '@auibsal/ui';
 import { useRouter, usePathname } from '@/i18n/routing';
+import { useSearchParams } from 'next/navigation';
 
 export default function WebNavbarClient({
   locale,
@@ -18,9 +19,15 @@ export default function WebNavbarClient({
 }) {
   const router = useRouter();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
 
   const handleLanguageToggle = () => {
-    router.replace(pathname, { locale: targetLocale });
+    // Reconstruct the full URL string to preserve query parameters
+    const queryString = searchParams.toString();
+    const href = queryString ? `${pathname}?${queryString}` : pathname;
+    
+    // Explicitly pass scroll: false to prevent the browser from jumping to the top of the page
+    router.replace(href as any, { locale: targetLocale, scroll: false });
   };
 
   return (
