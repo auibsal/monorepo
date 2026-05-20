@@ -1,25 +1,28 @@
 version: 2
 updates:
-  # Root dependencies
+  # Centralized Monorepo Updates
   - package-ecosystem: "pnpm"
     directory: "/"
     schedule:
-      interval: "weekly"
-      
-  # Web App
-  - package-ecosystem: "pnpm"
-    directory: "/apps/web"
-    schedule:
-      interval: "weekly"
-      
-  # Nexus Dashboard
-  - package-ecosystem: "pnpm"
-    directory: "/apps/nexus"
-    schedule:
-      interval: "weekly"
-
-  # Shared UI Package
-  - package-ecosystem: "pnpm"
-    directory: "/packages/ui"
-    schedule:
-      interval: "weekly"
+      interval: "daily"
+      time: "18:00"
+      timezone: "Asia/Baghdad"
+    open-pull-requests-limit: 5
+    
+    # Grouping strategies to eliminate Pull Request noise
+    groups:
+      core-framework:
+        patterns:
+          - "next"
+          - "react"
+          - "react-dom"
+      styling-engine:
+        patterns:
+          - "tailwindcss"
+          - "@tailwindcss/*"
+      tooling-linters:
+        patterns:
+          - "eslint"
+          - "prettier"
+          - "typescript"
+          - "turbo"
