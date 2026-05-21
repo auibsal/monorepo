@@ -1,8 +1,12 @@
 import type { NextConfig } from "next";
 
+// ⚡ Bolt Security Optimization: Dynamically evaluate the environment
+const isDev = process.env.NODE_ENV !== 'production';
+
 const cspHeader = `
     default-src 'self';
-    script-src 'self' 'unsafe-inline' 'unsafe-eval';
+    /* CRITICAL FIX: Strip unsafe-eval in production to kill XSS vectors */
+    script-src 'self' 'unsafe-inline' ${isDev ? "'unsafe-eval'" : ""};
     style-src 'self' 'unsafe-inline';
     connect-src 'self' *.supabase.co;
     img-src 'self' data: blob: *.supabase.co;
@@ -16,12 +20,11 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        // CRITICAL: Locks image optimization to your Supabase storage buckets
+        // Locks image optimization to your Supabase storage buckets
         hostname: "*.supabase.co",
         port: "",
         pathname: "/storage/v1/object/public/**",
       },
-      // You can add other specific domains here later (e.g., Google or GitHub avatars)
     ],
   },
   async headers() {
