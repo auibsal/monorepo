@@ -6,7 +6,7 @@ import { Event } from '@auibsal/database';
 import { CalendarDays, AlertCircle, X } from 'lucide-react';
 
 export default function EventsPage() {
-  const [events, setEvents] = useState<Event[]>([]);
+  const [events, setEvents] = useState<Pick<Event, 'id' | 'title_en' | 'starts_at' | 'is_members_only'>[]>([]);
   const [auibEvents, setAuibEvents] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
@@ -29,7 +29,8 @@ export default function EventsPage() {
 
   const fetchEvents = async () => {
     if (!supabase) return;
-    const { data, error } = await supabase.from('events').select('*').order('starts_at', { ascending: true });
+    // ⚡ Bolt Performance Optimization: Explicitly select only the required fields to prevent over-fetching large 'description_en' and 'description_ar' fields in this list view.
+    const { data, error } = await supabase.from('events').select('id, title_en, starts_at, is_members_only').order('starts_at', { ascending: true });
     if (!error && data) {
       setEvents(data);
     }

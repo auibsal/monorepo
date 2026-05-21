@@ -6,7 +6,7 @@ import { User, Role } from '@auibsal/database';
 import { Save, Loader2, Users } from 'lucide-react';
 
 export default function UsersPage() {
-  const [users, setUsers] = useState<User[]>([]);
+  const [users, setUsers] = useState<Pick<User, 'id' | 'full_name' | 'university_id' | 'role'>[]>([]);
   const [loading, setLoading] = useState(true);
   const [savingId, setSavingId] = useState<string | null>(null);
 
@@ -18,7 +18,8 @@ export default function UsersPage() {
 
   const fetchUsers = async () => {
     if (!supabase) return;
-    const { data, error } = await supabase.from('users').select('*').order('created_at', { ascending: false });
+    // ⚡ Bolt Performance Optimization: Explicitly select only the required fields to prevent over-fetching large 'biography' and 'avatar_url' fields in this list view.
+    const { data, error } = await supabase.from('users').select('id, full_name, university_id, role').order('created_at', { ascending: false });
     if (!error && data) {
       setUsers(data);
     }
