@@ -149,7 +149,7 @@ export default function KanbanBoard() {
                                   {sub.rubric_formatting === 'disqualified' && (
                                     <span className="text-xs font-bold text-auib-red uppercase tracking-widest flex items-center gap-1">
                                       <AlertOctagon size={14} />
-                                      DQ'd
+                                      DQ&apos;d
                                     </span>
                                   )}
                                 </div>
