@@ -24,7 +24,8 @@ export default async function RootLayout({
 
   return (
     <html lang="en" className={`${ubuntu.variable} ${ubuntuArabic.variable}`}>
-      <body className="font-sans antialiased min-h-screen flex flex-col bg-auib-white text-auib-charcoal overflow-x-hidden">
+      {/* Swapped hardcoded hexes to semantic bg-background and text-foreground tokens */}
+      <body className="font-sans antialiased min-h-screen flex flex-col bg-background text-foreground overflow-x-hidden">
         <ClientLayout role={role}>
           {children}
         </ClientLayout>
