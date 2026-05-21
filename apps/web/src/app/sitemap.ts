@@ -1,17 +1,12 @@
 import { MetadataRoute } from 'next';
+
 import { createClient } from '@auibsal/auth/server';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_WEB_URL || 'https://www.auibsal.org';
   const supabase = await createClient();
 
-  const staticPaths = [
-    '',
-    '/about',
-    '/events',
-    '/journal',
-    '/blog'
-  ];
+  const staticPaths = ['', '/about', '/events', '/journal', '/blog'];
 
   // 1. Corrected Static Routes
   const sitemapEntries: MetadataRoute.Sitemap = staticPaths.map((path) => ({
@@ -47,9 +42,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }
 
   // Fetch dynamic blog posts
-  const { data: posts } = await supabase
-    .from('blog_posts')
-    .select('slug, published_at');
+  const { data: posts } = await supabase.from('blog_posts').select('slug, published_at');
 
   if (posts) {
     posts.forEach((post) => {
@@ -75,7 +68,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   if (submissions) {
     submissions.forEach((sub) => {
       sitemapEntries.push({
-        url: `${baseUrl}/submissions/${sub.id}`, 
+        url: `${baseUrl}/submissions/${sub.id}`,
         lastModified: new Date(sub.submitted_at || new Date()),
         alternates: {
           languages: {

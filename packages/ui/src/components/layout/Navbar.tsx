@@ -1,8 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
+
 import Link from 'next/link';
+
 import { Menu, X } from 'lucide-react';
+
 import Logo from '../Logo';
 
 export interface NavbarLink {
@@ -34,7 +37,7 @@ export default function Navbar({
   onSignOut,
   onLanguageToggle,
   targetLocale,
-  nexusUrl
+  nexusUrl,
 }: NavbarProps) {
   const [isOpen, setIsOpen] = useState(false);
   const logoHref = homeUrl || `/${locale}`;
@@ -57,7 +60,7 @@ export default function Navbar({
       return (
         <button
           onClick={onSignOut}
-          className="text-sm font-bold text-white hover:text-auib-charcoal transition-colors uppercase tracking-widest"
+          className="hover:text-auib-charcoal text-sm font-bold uppercase tracking-widest text-white transition-colors"
         >
           Sign Out
         </button>
@@ -69,15 +72,15 @@ export default function Navbar({
         <>
           <button
             onClick={onLanguageToggle}
-            className="text-sm font-bold text-white hover:text-auib-charcoal transition-colors uppercase tracking-widest"
+            className="hover:text-auib-charcoal text-sm font-bold uppercase tracking-widest text-white transition-colors"
           >
             {targetLocale === 'en' ? 'English' : 'عربي'}
           </button>
-          <div className="h-6 w-1 bg-white/30 hidden md:block"></div>
+          <div className="hidden h-6 w-1 bg-white/30 md:block"></div>
           {nexusUrl && (
             <a
               href={nexusUrl}
-              className="text-sm font-bold text-white hover:text-auib-charcoal transition-colors uppercase tracking-widest"
+              className="hover:text-auib-charcoal text-sm font-bold uppercase tracking-widest text-white transition-colors"
             >
               Nexus
             </a>
@@ -93,27 +96,24 @@ export default function Navbar({
 
   return (
     // 3. Removed the useless backdrop-blur for pure, flat brutalism
-    <nav className="sticky top-0 z-50 w-full bg-auib-red border-b-4 border-auib-charcoal text-white transition-colors duration-300">
-      <div className="max-w-6xl mx-auto px-6 h-20 flex items-center justify-between">
-
-        <Link 
-          href={logoHref} 
+    <nav className="bg-auib-red border-auib-charcoal sticky top-0 z-50 w-full border-b-4 text-white transition-colors duration-300">
+      <div className="mx-auto flex h-20 max-w-6xl items-center justify-between px-6">
+        <Link
+          href={logoHref}
           onClick={() => setIsOpen(false)} // Ensure clicking logo closes mobile menu
-          className="flex items-center text-white hover:opacity-90 transition-opacity"
+          className="flex items-center text-white transition-opacity hover:opacity-90"
         >
-          <Logo locale={locale} className="text-xs sm:text-sm leading-tight text-white" />
+          <Logo locale={locale} className="text-xs leading-tight text-white sm:text-sm" />
         </Link>
 
         <div className="flex items-center gap-4">
-          <div className="hidden md:flex items-center gap-4">
-            {rightModule}
-          </div>
+          <div className="hidden items-center gap-4 md:flex">{rightModule}</div>
 
           <button
             onClick={() => setIsOpen(!isOpen)}
             aria-expanded={isOpen}
             aria-label="Toggle navigation menu"
-            className="p-2 border-2 border-transparent hover:border-white hover:bg-white hover:text-auib-red transition-colors flex items-center gap-2 font-bold uppercase tracking-widest text-sm md:hidden"
+            className="hover:text-auib-red flex items-center gap-2 border-2 border-transparent p-2 text-sm font-bold uppercase tracking-widest transition-colors hover:border-white hover:bg-white md:hidden"
           >
             {isOpen ? <X size={24} aria-hidden="true" /> : <Menu size={24} aria-hidden="true" />}
             <span className="hidden sm:inline">Menu</span>
@@ -123,15 +123,15 @@ export default function Navbar({
 
       {/* Hamburger Menu Overlay */}
       {isOpen && (
-        <div className="absolute top-20 left-0 w-full h-[calc(100vh-5rem)] overflow-y-auto bg-auib-charcoal text-white border-b-4 border-auib-red shadow-brutalist-md md:hidden">
-          <div className="max-w-6xl mx-auto px-6 py-8">
-            <ul className="flex flex-col gap-4 font-bold uppercase tracking-widest text-lg">
+        <div className="bg-auib-charcoal border-auib-red shadow-brutalist-md absolute left-0 top-20 h-[calc(100vh-5rem)] w-full overflow-y-auto border-b-4 text-white md:hidden">
+          <div className="mx-auto max-w-6xl px-6 py-8">
+            <ul className="flex flex-col gap-4 text-lg font-bold uppercase tracking-widest">
               {links.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
                     onClick={() => setIsOpen(false)}
-                    className="block py-2 hover:text-auib-red hover:translate-x-2 rtl:hover:-translate-x-2 transition-transform duration-200"
+                    className="hover:text-auib-red block py-2 transition-transform duration-200 hover:translate-x-2 rtl:hover:-translate-x-2"
                   >
                     {link.label}
                   </Link>
@@ -139,7 +139,7 @@ export default function Navbar({
               ))}
             </ul>
 
-            <div className="mt-8 pt-8 border-t-2 border-white/20 flex flex-col items-start gap-6">
+            <div className="mt-8 flex flex-col items-start gap-6 border-t-2 border-white/20 pt-8">
               {rightModule}
             </div>
           </div>

@@ -9,10 +9,7 @@ const config = {
   bracketSpacing: true,
 
   // Plugins
-  plugins: [
-    '@trivago/prettier-plugin-sort-imports',
-    'prettier-plugin-tailwindcss',
-  ],
+  plugins: ['@trivago/prettier-plugin-sort-imports', 'prettier-plugin-tailwindcss'],
 
   // Import Sorting Configuration
   importOrder: [

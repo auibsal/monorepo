@@ -1,10 +1,12 @@
 import type { Metadata } from 'next';
-import { NextIntlClientProvider } from 'next-intl';
-import { getMessages } from 'next-intl/server';
+
+import WebFooter from '@/components/layout/WebFooter';
+import WebNavbarServer from '@/components/layout/WebNavbarServer';
 // CRITICAL: Importing from local app, NOT the shared UI package
 import { ubuntu, ubuntuArabic } from '@/fonts';
-import WebNavbarServer from '@/components/layout/WebNavbarServer';
-import WebFooter from '@/components/layout/WebFooter';
+import { NextIntlClientProvider } from 'next-intl';
+import { getMessages } from 'next-intl/server';
+
 import '../globals.css';
 
 export const metadata: Metadata = {
@@ -13,7 +15,8 @@ export const metadata: Metadata = {
     default: 'AUIB Society of Arts and Letters',
     template: '%s | AUIB SAL',
   },
-  description: 'Official portal for the Society of Arts and Letters at the American University of Iraq Baghdad.',
+  description:
+    'Official portal for the Society of Arts and Letters at the American University of Iraq Baghdad.',
   openGraph: {
     type: 'website',
     locale: 'en_US',
@@ -33,20 +36,18 @@ export default async function LocaleLayout({
   children: React.ReactNode;
   params: Promise<{ locale: string }>;
 }) {
-  const { locale } = await params; 
+  const { locale } = await params;
   const messages = await getMessages();
-  
+
   const dir = locale === 'ar' ? 'rtl' : 'ltr';
 
   return (
     <html lang={locale} dir={dir} className={`${ubuntu.variable} ${ubuntuArabic.variable}`}>
       {/* Swapped to semantic background/foreground tokens to preserve dark mode compatibility */}
-      <body className="font-sans antialiased min-h-screen flex flex-col bg-background text-foreground overflow-x-hidden">
+      <body className="bg-background text-foreground flex min-h-screen flex-col overflow-x-hidden font-sans antialiased">
         <NextIntlClientProvider messages={messages}>
           <WebNavbarServer locale={locale} />
-          <main className="flex-grow">
-            {children}
-          </main>
+          <main className="flex-grow">{children}</main>
           <WebFooter locale={locale} />
         </NextIntlClientProvider>
       </body>

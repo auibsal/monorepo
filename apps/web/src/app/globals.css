@@ -1,5 +1,5 @@
 /* 1. Imports the core Tailwind engine and your exact brutalist theme from the UI package */
-@import "@auibsal/ui/styles/globals.css";
+@import '@auibsal/ui/styles/globals.css';
 
 /* 2. Tells the compiler to scan the UI package for class names to prevent them from being purged */
 @source "../../../../packages/ui";

@@ -1,15 +1,17 @@
 'use client';
 
-import { Navbar } from '@auibsal/ui';
-import { useRouter, usePathname } from '@/i18n/routing';
 import { useSearchParams } from 'next/navigation';
+
+import { usePathname, useRouter } from '@/i18n/routing';
+
+import { Navbar } from '@auibsal/ui';
 
 export default function WebNavbarClient({
   locale,
   links,
   nexusUrl,
   targetLocale,
-  homeUrl
+  homeUrl,
 }: {
   locale: string;
   links: { href: string; label: string }[];
@@ -25,7 +27,7 @@ export default function WebNavbarClient({
     // Reconstruct the full URL string to preserve query parameters
     const queryString = searchParams.toString();
     const href = queryString ? `${pathname}?${queryString}` : pathname;
-    
+
     // Explicitly pass scroll: false to prevent the browser from jumping to the top of the page
     router.replace(href as any, { locale: targetLocale, scroll: false });
   };

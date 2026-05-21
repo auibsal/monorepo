@@ -1,4 +1,5 @@
-import { NextResponse, type NextRequest } from 'next/server';
+import { type NextRequest, NextResponse } from 'next/server';
+
 import { updateSession } from '@auibsal/auth/proxy';
 
 // NEXT.JS REQUIREMENT: The function must be exported as the default middleware
@@ -6,7 +7,9 @@ export default async function proxy(request: NextRequest) {
   // Phase 1: Auth & Token Refresh
   const { supabase, user, response: supabaseResponse } = await updateSession(request);
 
-  const isAuthPage = request.nextUrl.pathname.startsWith('/login') || request.nextUrl.pathname.startsWith('/register');
+  const isAuthPage =
+    request.nextUrl.pathname.startsWith('/login') ||
+    request.nextUrl.pathname.startsWith('/register');
   const isApiRoute = request.nextUrl.pathname.startsWith('/api');
 
   // Phase 2: Role Extraction & Final Routing
@@ -34,7 +37,7 @@ export default async function proxy(request: NextRequest) {
     } else if (!isApiRoute) {
       // Extract the role safely
       let userRole = user.user_metadata?.role;
-      
+
       if (!userRole) {
         try {
           const { data: userData, error } = await supabase
@@ -42,7 +45,7 @@ export default async function proxy(request: NextRequest) {
             .select('role')
             .eq('id', user.id)
             .maybeSingle();
-            
+
           if (error) throw error;
           userRole = userData?.role || 'member';
         } catch (err) {
@@ -96,7 +99,5 @@ export default async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    '/((?!_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|unauthorized).*)',
-  ],
+  matcher: ['/((?!_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|unauthorized).*)'],
 };

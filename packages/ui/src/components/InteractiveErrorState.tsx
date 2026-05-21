@@ -1,8 +1,12 @@
 'use client';
 
+import { useEffect, useState } from 'react';
+
 import { motion } from 'framer-motion';
-import { useState, useEffect } from 'react';
-import { cn } from '../lib/utils'; // Optional: if you want to use it for class merging
+
+import { cn } from '../lib/utils';
+
+// Optional: if you want to use it for class merging
 
 interface ErrorProps {
   code: string;
@@ -13,9 +17,16 @@ interface ErrorProps {
   isRtl?: boolean;
 }
 
-export default function InteractiveErrorState({ code, title, message, actionText, onAction, isRtl = false }: ErrorProps) {
+export default function InteractiveErrorState({
+  code,
+  title,
+  message,
+  actionText,
+  onAction,
+  isRtl = false,
+}: ErrorProps) {
   const [isHovering, setIsHovering] = useState(false);
-  
+
   // 1. Hydration Guard State
   const [isMounted, setIsMounted] = useState(false);
 
@@ -24,36 +35,33 @@ export default function InteractiveErrorState({ code, title, message, actionText
   }, []);
 
   return (
-    <div 
+    <div
       className={cn(
-        "relative flex min-h-[80vh] w-full flex-col items-center justify-center bg-background p-8 text-foreground selection:bg-auib-red selection:text-white overflow-hidden",
+        'bg-background text-foreground selection:bg-auib-red relative flex min-h-[80vh] w-full flex-col items-center justify-center overflow-hidden p-8 selection:text-white',
         isRtl ? 'rtl' : 'ltr'
       )}
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
     >
-      <div className="relative z-10 max-w-3xl border-4 border-auib-charcoal bg-white p-8 md:p-16 shadow-brutalist-md text-start w-full transition-transform duration-500 ease-out hover:scale-[1.01]">
-        
-        <div className="mb-6 border-b-4 border-auib-charcoal pb-4 flex justify-between items-end">
-          <span className="font-mono text-xl font-bold uppercase tracking-widest text-auib-red">
+      <div className="border-auib-charcoal shadow-brutalist-md relative z-10 w-full max-w-3xl border-4 bg-white p-8 text-start transition-transform duration-500 ease-out hover:scale-[1.01] md:p-16">
+        <div className="border-auib-charcoal mb-6 flex items-end justify-between border-b-4 pb-4">
+          <span className="text-auib-red font-mono text-xl font-bold uppercase tracking-widest">
             {code}
           </span>
-          <span className="font-mono text-xs opacity-50 uppercase">
-            System Directive
-          </span>
+          <span className="font-mono text-xs uppercase opacity-50">System Directive</span>
         </div>
 
         {/* Redacted Title */}
         <div className="relative mb-6 inline-block">
-          <h1 className="font-serif text-5xl font-black uppercase md:text-7xl text-auib-charcoal relative z-0">
+          <h1 className="text-auib-charcoal relative z-0 font-serif text-5xl font-black uppercase md:text-7xl">
             {title}
           </h1>
-          <motion.div 
+          <motion.div
             initial={{ scaleX: 1 }}
             animate={{ scaleX: isHovering ? 0 : 1 }}
-            transition={{ duration: 0.5, ease: "circOut" }}
+            transition={{ duration: 0.5, ease: 'circOut' }}
             className={cn(
-              "absolute inset-0 z-10 bg-auib-charcoal",
+              'bg-auib-charcoal absolute inset-0 z-10',
               isRtl ? 'origin-right' : 'origin-left'
             )}
           />
@@ -61,55 +69,53 @@ export default function InteractiveErrorState({ code, title, message, actionText
 
         {/* Redacted Message */}
         <div className="relative mb-12 max-w-xl">
-          <p className="text-lg font-medium leading-relaxed opacity-90 relative z-0">
-            {message}
-          </p>
-          <motion.div 
+          <p className="relative z-0 text-lg font-medium leading-relaxed opacity-90">{message}</p>
+          <motion.div
             initial={{ scaleY: 1 }}
             animate={{ scaleY: isHovering ? 0 : 1 }}
-            transition={{ duration: 0.5, delay: 0.1, ease: "circOut" }}
-            className="absolute inset-0 z-10 bg-auib-charcoal origin-top"
+            transition={{ duration: 0.5, delay: 0.1, ease: 'circOut' }}
+            className="bg-auib-charcoal absolute inset-0 z-10 origin-top"
           />
         </div>
 
         {/* Action Button */}
-        <button 
+        <button
           onClick={onAction}
-          className="group relative overflow-hidden border-2 border-auib-charcoal bg-auib-charcoal px-8 py-4 font-mono text-sm font-bold uppercase tracking-widest text-white transition-all shadow-[4px_4px_0px_0px_rgba(20,20,20,1)] hover:shadow-none hover:translate-y-1 hover:translate-x-1"
+          className="border-auib-charcoal bg-auib-charcoal group relative overflow-hidden border-2 px-8 py-4 font-mono text-sm font-bold uppercase tracking-widest text-white shadow-[4px_4px_0px_0px_rgba(20,20,20,1)] transition-all hover:translate-x-1 hover:translate-y-1 hover:shadow-none"
         >
           <span className="relative z-10 mix-blend-difference">{actionText}</span>
-          <motion.div 
+          <motion.div
             className="absolute inset-0 z-0 bg-white"
-            initial={{ y: "100%" }}
+            initial={{ y: '100%' }}
             whileHover={{ y: 0 }}
-            transition={{ duration: 0.3, ease: "easeInOut" }}
+            transition={{ duration: 0.3, ease: 'easeInOut' }}
           />
         </button>
-
       </div>
 
       {/* 2. Hydration-Safe Background Noise */}
       <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden opacity-[0.03]">
-        {isMounted && [...Array(15)].map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute font-serif text-9xl font-black select-none"
-            initial={{ 
-              x: Math.random() * window.innerWidth, 
-              y: Math.random() * window.innerHeight 
-            }}
-            animate={{ 
-              y: [null, Math.random() * window.innerHeight] 
-            }}
-            transition={{ 
-              duration: 20 + Math.random() * 20, 
-              repeat: Infinity, 
-              ease: "linear" 
-            }}
-          >
-            {code}
-          </motion.div>
-        ))}
+        {isMounted &&
+          [...Array(15)].map((_, i) => (
+            <motion.div
+              key={i}
+              className="absolute select-none font-serif text-9xl font-black"
+              initial={{
+                x: Math.random() * window.innerWidth,
+                y: Math.random() * window.innerHeight,
+              }}
+              animate={{
+                y: [null, Math.random() * window.innerHeight],
+              }}
+              transition={{
+                duration: 20 + Math.random() * 20,
+                repeat: Infinity,
+                ease: 'linear',
+              }}
+            >
+              {code}
+            </motion.div>
+          ))}
       </div>
     </div>
   );

@@ -1,4 +1,5 @@
 import { createBrowserClient } from '@supabase/ssr';
+
 import type { Database } from '@auibsal/database';
 
 export function createClient() {
@@ -13,8 +14,5 @@ export function createClient() {
 
   // Injecting the <Database> generic ensures 100% strict type safety
   // across all frontend data fetching.
-  return createBrowserClient<Database>(
-    supabaseUrl,
-    supabaseAnonKey
-  );
+  return createBrowserClient<Database>(supabaseUrl, supabaseAnonKey);
 }

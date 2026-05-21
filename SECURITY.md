@@ -16,6 +16,7 @@ We take the security of our platform and the data of our members very seriously.
 Instead, please report them directly via email to: **security@auibsal.org**
 
 When reporting, please include:
+
 - A detailed description of the vulnerability.
 - Step-by-step instructions to reproduce the issue.
 - The potential impact on the system or user data.
@@ -26,6 +27,7 @@ You should expect a response within 48 hours acknowledging receipt of the vulner
 ## Out of Scope
 
 The following items are strictly out of scope for this disclosure policy:
+
 - Volumetric/Denial of Service (DoS/DDoS) attacks.
 - Vulnerabilities within third-party managed infrastructure (e.g., Supabase, Vercel, Stripe). Please report these directly to the respective vendors.
 - Spam, social engineering, or phishing attacks against platform members.

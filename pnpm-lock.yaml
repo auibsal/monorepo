@@ -30,9 +30,6 @@ catalogs:
     eslint:
       specifier: ^9.39.4
       version: 9.39.4
-    framer-motion:
-      specifier: ^12.38.0
-      version: 12.38.0
     lucide-react:
       specifier: ^0.360.0
       version: 0.360.0
@@ -169,7 +166,7 @@ importers:
         specifier: ^9.6.1
         version: 9.6.1(@types/react@19.2.14)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(three@0.184.0)
       framer-motion:
-        specifier: 'catalog:'
+        specifier: ^12.38.0
         version: 12.38.0(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       howler:
         specifier: ^2.2.4
@@ -229,6 +226,9 @@ importers:
 
   packages/auth:
     dependencies:
+      '@auibsal/database':
+        specifier: workspace:*
+        version: link:../database
       '@supabase/ssr':
         specifier: 'catalog:'
         version: 0.10.3(@supabase/supabase-js@2.105.4)

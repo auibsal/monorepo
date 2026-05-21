@@ -1,12 +1,14 @@
 'use client';
+
 import { useRouter } from 'next/navigation';
+
 import { InteractiveErrorState } from '@auibsal/ui';
 
 export default function NexusUnauthorized() {
   const router = useRouter();
 
   return (
-    <InteractiveErrorState 
+    <InteractiveErrorState
       code="401_UNAUTHORIZED"
       title="Access Denied"
       message="Cryptographic signature missing. You must supply valid authentication credentials to interact with this module."

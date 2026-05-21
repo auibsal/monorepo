@@ -1,6 +1,8 @@
 'use client';
-import { useTranslations, useLocale } from 'next-intl';
+
 import { useRouter } from '@/i18n/routing';
+import { useLocale, useTranslations } from 'next-intl';
+
 import { InteractiveErrorState } from '@auibsal/ui';
 
 export default function WebNotFound() {
@@ -9,7 +11,7 @@ export default function WebNotFound() {
   const router = useRouter();
 
   return (
-    <InteractiveErrorState 
+    <InteractiveErrorState
       code="404_VOID"
       title={t('title')}
       message={t('description')}

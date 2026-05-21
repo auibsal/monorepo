@@ -1,14 +1,15 @@
 'use client';
 
 import React from 'react';
-import { Navbar, type NavbarLink } from '@auibsal/ui';
-import { createClient } from '@auibsal/auth/client';
 
-export default function ClientLayout({ 
-  children, 
-  role 
-}: { 
-  children: React.ReactNode; 
+import { createClient } from '@auibsal/auth/client';
+import { Navbar, type NavbarLink } from '@auibsal/ui';
+
+export default function ClientLayout({
+  children,
+  role,
+}: {
+  children: React.ReactNode;
   role: string | null;
 }) {
   const supabase = createClient();
@@ -49,19 +50,11 @@ export default function ClientLayout({
   }
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <Navbar
-        locale="en"
-        links={links}
-        homeUrl="/"
-        platform="nexus"
-        onSignOut={handleSignOut}
-      />
+    <div className="flex min-h-screen flex-col">
+      <Navbar locale="en" links={links} homeUrl="/" platform="nexus" onSignOut={handleSignOut} />
 
       {/* Main Content Area */}
-      <main className="flex-1 w-full max-w-7xl mx-auto px-6 py-12">
-        {children}
-      </main>
+      <main className="mx-auto w-full max-w-7xl flex-1 px-6 py-12">{children}</main>
     </div>
   );
 }

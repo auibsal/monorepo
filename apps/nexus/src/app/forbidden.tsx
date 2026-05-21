@@ -1,12 +1,14 @@
 'use client';
+
 import { useRouter } from 'next/navigation';
+
 import { InteractiveErrorState } from '@auibsal/ui';
 
 export default function NexusForbidden() {
   const router = useRouter();
 
   return (
-    <InteractiveErrorState 
+    <InteractiveErrorState
       code="403_RESTRICTED"
       title="Clearance Denied"
       message="Your current authentication tier lacks the necessary system privileges to execute this directive."
