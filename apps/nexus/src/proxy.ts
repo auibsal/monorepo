@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { updateSession } from '@auibsal/auth/proxy';
 
+// NEXT.JS REQUIREMENT: The function must be exported as the default middleware
 export default async function proxy(request: NextRequest) {
   // Phase 1: Auth & Token Refresh
   const { supabase, user, response: supabaseResponse } = await updateSession(request);
@@ -36,7 +37,6 @@ export default async function proxy(request: NextRequest) {
       
       if (!userRole) {
         try {
-          // FIX: Use maybeSingle() and wrap in a try/catch to prevent 500 crashes
           const { data: userData, error } = await supabase
             .from('users')
             .select('role')
@@ -82,9 +82,14 @@ export default async function proxy(request: NextRequest) {
     }
   }
 
-  // The Cookie Sync (Crucial Step): Manually copy the cookies from supabaseResponse
+  // The Cookie Sync (Crucial Step)
   supabaseResponse.cookies.getAll().forEach((cookie) => {
-    finalResponse.cookies.set(cookie.name, cookie.value);
+    // CRITICAL FIX: Spreading the entire cookie object ensures httpOnly, secure, and maxAge are preserved
+    finalResponse.cookies.set({
+      name: cookie.name,
+      value: cookie.value,
+      ...cookie,
+    });
   });
 
   return finalResponse;
