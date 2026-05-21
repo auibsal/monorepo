@@ -9,7 +9,8 @@ export default async function EditorialLayout({
   const headersList = await headers();
   const role = headersList.get('x-user-role');
 
-  if (role === 'member' || !role) {
+  // ⚡ Bolt Security Optimization: Shift from a fragile blacklist to a mathematically strict whitelist
+  if (role !== 'editor' && role !== 'admin') {
     forbidden();
   }
 
