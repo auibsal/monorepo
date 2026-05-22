@@ -1,6 +1,6 @@
 'use client';
 
-import { Navbar } from '@auibsal/ui';
+import Navbar from '@auibsal/ui/components/layout/Navbar';
 import { useRouter, usePathname } from '@/i18n/routing';
 import { useSearchParams } from 'next/navigation';
 

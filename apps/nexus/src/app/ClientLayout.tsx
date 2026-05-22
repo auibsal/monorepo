@@ -1,7 +1,8 @@
 'use client';
 
 import React from 'react';
-import { Navbar, type NavbarLink } from '@auibsal/ui';
+import Navbar from '@auibsal/ui/components/layout/Navbar';
+import { type NavbarLink } from '@auibsal/ui/components/layout/Navbar';
 import { createClient } from '@auibsal/auth/client';
 
 export default function ClientLayout({ 

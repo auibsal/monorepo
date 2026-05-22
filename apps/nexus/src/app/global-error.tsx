@@ -1,6 +1,6 @@
 'use client';
 
-import { InteractiveErrorState } from '@auibsal/ui';
+import InteractiveErrorState from '@auibsal/ui/components/InteractiveErrorState';
 import { ubuntu, ubuntuArabic } from '@/fonts';
 import './globals.css'; 
 

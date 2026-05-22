@@ -76,7 +76,7 @@ export function RichTextEditor({ content, onChange }: { content: string, onChang
     // ONLY override the editor content if the user isn't actively typing inside it.
     // This perfectly syncs database loads without destroying cursor placement.
     if (editor && !editor.isFocused && content !== editor.getHTML()) {
-      editor.commands.setContent(content, false); // false = preserve selection if possible
+      editor.commands.setContent(content); // false = preserve selection if possible
     }
   }, [content, editor]);
 

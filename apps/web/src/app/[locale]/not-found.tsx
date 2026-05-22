@@ -1,7 +1,7 @@
 'use client';
 import { useTranslations, useLocale } from 'next-intl';
 import { useRouter } from '@/i18n/routing';
-import { InteractiveErrorState } from '@auibsal/ui';
+import InteractiveErrorState from '@auibsal/ui/components/InteractiveErrorState';
 
 export default function WebNotFound() {
   const t = useTranslations('NotFound');
