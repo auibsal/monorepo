@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { createClient } from '@auibsal/auth/client';
-import { RichTextEditor } from '@auibsal/ui';
+import { RichTextEditor } from '@auibsal/ui/components/RichTextEditor';
 import { BlogPost } from "@auibsal/database";
 import { AlertTriangle } from 'lucide-react';
 

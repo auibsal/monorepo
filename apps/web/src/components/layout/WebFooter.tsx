@@ -1,5 +1,5 @@
 import { getTranslations } from 'next-intl/server';
-import { Footer as UIFooter } from '@auibsal/ui';
+import UIFooter from '@auibsal/ui/components/layout/Footer';
 
 export default async function Footer({ locale }: { locale: string }) {
   const t = await getTranslations({ locale, namespace: 'Footer' });

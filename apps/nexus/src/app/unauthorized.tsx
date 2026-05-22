@@ -1,6 +1,6 @@
 'use client';
 import { useRouter } from 'next/navigation';
-import { InteractiveErrorState } from '@auibsal/ui';
+import InteractiveErrorState from '@auibsal/ui/components/InteractiveErrorState';
 
 export default function NexusUnauthorized() {
   const router = useRouter();

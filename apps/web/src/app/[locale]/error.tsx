@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
-import { InteractiveErrorState } from '@auibsal/ui';
+import InteractiveErrorState from '@auibsal/ui/components/InteractiveErrorState';
 
 export default function WebError({ 
   error, 
