@@ -16,8 +16,9 @@
     "clean": "rm -rf dist .turbo node_modules"
   },
   "dependencies": {
-    "@supabase/ssr": "catalog:",
-    "@supabase/supabase-js": "catalog:"
+    "@supabase/ssr": "^0.10.3",
+    "@supabase/supabase-js": "catalog:",
+    "@auibsal/database": "workspace:*"
   },
   "peerDependencies": {
     "next": "catalog:"
