@@ -9,17 +9,17 @@
     "clean": "turbo run clean",
     "format": "prettier --write \"**/*.{ts,tsx,md,json,mjs,css}\""
   },
-    "engines": {
+  "engines": {
     "node": ">=24.0.0"
   },
   "devDependencies": {
     "@auibsal/config": "workspace:*",
-    "@playwright/test": "^1.59.1",
-    "@trivago/prettier-plugin-sort-imports": "^5.2.2",
+    "@playwright/test": "^1.60.0",
+    "@trivago/prettier-plugin-sort-imports": "^6.0.2",
     "eslint": "catalog:",
     "jiti": "^2.7.0",
-    "prettier": "^3.5.2",
-    "prettier-plugin-tailwindcss": "^0.6.11",
+    "prettier": "^3.8.3",
+    "prettier-plugin-tailwindcss": "^0.8.0",
     "turbo": "latest",
     "typescript": "catalog:"
   },
