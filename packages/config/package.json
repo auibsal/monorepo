@@ -10,10 +10,13 @@
   "devDependencies": {
     "@next/eslint-plugin-next": "^16.2.6",
     "eslint": "catalog:",
-    "eslint-plugin-react": "^7.37.0",
-    "eslint-plugin-react-hooks": "^5.1.0",
-    "globals": "^15.14.0",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "globals": "^17.6.0",
     "typescript": "catalog:",
-    "typescript-eslint": "^8.24.0"
+    "typescript-eslint": "^8.59.4"
+  },
+  "dependencies": {
+    "@eslint/js": "^10.0.1"
   }
 }
