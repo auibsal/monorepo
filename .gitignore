@@ -2,6 +2,7 @@
 # Dependencies
 # =========================
 node_modules/
+.pnpm-store/
 
 # =========================
 # Next.js & Build Outputs
@@ -23,6 +24,12 @@ packages/**/dist/
 .turbo/
 .eslintcache
 .prettiercache
+
+# =========================
+# Supabase Local Development
+# =========================
+supabase/.temp/
+supabase/.branch/
 
 # =========================
 # Environment Variables
@@ -52,9 +59,24 @@ blob-report/
 # =========================
 # OS & Editor Files
 # =========================
+# macOS
 .DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# Windows
 Thumbs.db
+ehthumbs.db
+$RECYCLE.BIN/
+
+# Editors
 *.pem
+*.swp
+.idea/
+*.iml
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
