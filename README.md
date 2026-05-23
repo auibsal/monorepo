@@ -58,4 +58,4 @@ pnpm install
 |---|---|
 | pnpm build | Production build for all workspaces |
 ## 🛡 Security
-Please report vulnerabilities privately via **security@auibsal.org** or use the GitHub "Report a vulnerability" tool in the Security tab. See SECURITY.md for full disclosure policies.
+Please report vulnerabilities privately via **security@auibsal.org** or use the GitHub "Report a vulnerability" tool in the Security tab. See /SECURITY.md for full disclosure policies.
