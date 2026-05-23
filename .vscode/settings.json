@@ -1,9 +1,47 @@
 {
+  // =========================
+  // Formatting & Linting
+  // =========================
   "editor.formatOnSave": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit"
   },
   "eslint.experimental.useFlatConfig": true,
-  "prettier.configPath": "./prettier.config.mjs"
+  "prettier.configPath": "./prettier.config.mjs",
+
+  // =========================
+  // TypeScript Enforcement
+  // =========================
+  // Force the editor to use the exact TS version installed in the monorepo
+  "typescript.tsdk": "node_modules/typescript/lib",
+
+  // =========================
+  // Tailwind CSS v4
+  // =========================
+  // Ensure IntelliSense triggers inside v4's standard CSS files
+  "files.associations": {
+    "*.css": "tailwindcss"
+  },
+
+  // =========================
+  // Performance Optimization
+  // =========================
+  // Prevent VS Code from indexing heavy build caches and local databases
+  "search.exclude": {
+    "**/.turbo": true,
+    "**/.next": true,
+    "**/dist": true,
+    "**/node_modules": true,
+    "**/supabase/.temp": true,
+    "**/coverage": true
+  },
+  "files.watcherExclude": {
+    "**/.turbo/**": true,
+    "**/.next/**": true,
+    "**/dist/**": true,
+    "**/node_modules/**": true,
+    "**/supabase/.temp/**": true,
+    "**/coverage/**": true
+  }
 }
