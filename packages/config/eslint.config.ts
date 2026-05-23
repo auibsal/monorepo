@@ -1,5 +1,6 @@
 import js from '@eslint/js';
 import nextPlugin from '@next/eslint-plugin-next';
+import turboPlugin from 'eslint-plugin-turbo';
 import type { Linter } from 'eslint';
 import reactPlugin from 'eslint-plugin-react';
 import hooksPlugin from 'eslint-plugin-react-hooks';
@@ -8,15 +9,25 @@ import tseslint from 'typescript-eslint';
 
 // 1. Global Ignores
 export const ignoresConfig: Linter.Config = {
-  ignores: ['**/.next/**', '**/node_modules/**', '**/dist/**', '**/.turbo/**', '**/.vercel/**'],
+  ignores: [
+    '**/.next/**',
+    '**/node_modules/**',
+    '**/dist/**',
+    '**/.turbo/**',
+    '**/.vercel/**',
+    '**/supabase/.temp/**',
+  ],
 };
 
-// 2. Base TypeScript Architecture (For root, packages/ui, packages/database)
+// 2. Base TypeScript Architecture (For root, packages/ui, packages/database, packages/config)
 export const baseConfig: Linter.Config[] = tseslint.config(
   ignoresConfig,
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {
+    plugins: {
+      turbo: turboPlugin,
+    },
     languageOptions: {
       globals: {
         ...globals.browser,
@@ -24,7 +35,18 @@ export const baseConfig: Linter.Config[] = tseslint.config(
       },
     },
     rules: {
-      '@typescript-eslint/no-unused-vars': 'warn',
+      // 🚨 Turborepo cache protection
+      'turbo/no-undeclared-env-vars': 'error',
+
+      // 🧹 TypeScript cleanliness & bundle optimization
+      '@typescript-eslint/consistent-type-imports': [
+        'warn',
+        { prefer: 'type-imports', fixStyle: 'inline-type-imports' },
+      ],
+      '@typescript-eslint/no-unused-vars': [
+        'warn',
+        { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
+      ],
       '@typescript-eslint/no-explicit-any': 'warn',
       '@typescript-eslint/no-empty-object-type': 'off',
       'no-undef': 'off', // Automatically handled by TypeScript
