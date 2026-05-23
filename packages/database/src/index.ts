@@ -1,19 +1,11 @@
-import type { Database } from './types';
+import type { Tables, Enums } from './types';
 
-// 1. Pass through the raw generated database schema
-export * from './types';
+// 1. Pass through the raw generated database schema and Supabase's native helpers
+// Using `export type *` ensures these are completely stripped from the JS bundle.
+export type * from './types';
 
-// 2. High-Performance Shorthand Helpers
-// Bypasses the deeply nested Supabase object paths anywhere in the monorepo
-export type Tables<T extends keyof Database['public']['Tables']> =
-  Database['public']['Tables'][T]['Row'];
-export type InsertTables<T extends keyof Database['public']['Tables']> =
-  Database['public']['Tables'][T]['Insert'];
-export type UpdateTables<T extends keyof Database['public']['Tables']> =
-  Database['public']['Tables'][T]['Update'];
-export type Enums<T extends keyof Database['public']['Enums']> = Database['public']['Enums'][T];
-
-// Domain Aliases mapped to the generated schema
+// 2. Domain Aliases
+// Mapped cleanly using the natively auto-generated Supabase shorthands.
 export type User = Tables<'users'>;
 export type Role = Enums<'user_role'>;
 export type Submission = Tables<'submissions'>;
