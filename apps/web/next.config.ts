@@ -1,32 +1,36 @@
-import type { NextConfig } from "next";
-import createNextIntlPlugin from "next-intl/plugin";
+import type { NextConfig } from 'next';
 
-const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
+import createNextIntlPlugin from 'next-intl/plugin';
+
+const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
 
 // 1. Dynamic CSP Generator based on the environment
 const generateCsp = () => {
   const isDev = process.env.NODE_ENV === 'development';
-  
+
   return `
     default-src 'self';
-    script-src 'self' 'unsafe-inline' ${isDev ? "'unsafe-eval'" : ""};
+    script-src 'self' 'unsafe-inline' ${isDev ? "'unsafe-eval'" : ''};
     style-src 'self' 'unsafe-inline';
     connect-src 'self' *.supabase.co;
     img-src 'self' data: blob: *.supabase.co;
     frame-src 'self' *.supabase.co;
-  `.replace(/\n/g, '').replace(/\s+/g, ' ').trim();
+  `
+    .replace(/\n/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
 };
 
 const nextConfig: NextConfig = {
-  transpilePackages: ["@auibsal/auth", "@auibsal/database", "@auibsal/ui"],
+  transpilePackages: ['@auibsal/auth', '@auibsal/database', '@auibsal/ui'],
   images: {
     remotePatterns: [
       {
-        protocol: "https",
+        protocol: 'https',
         // Locks image optimization to your Supabase storage buckets
-        hostname: "*.supabase.co", 
-        port: "",
-        pathname: "/storage/v1/object/public/**",
+        hostname: '*.supabase.co',
+        port: '',
+        pathname: '/storage/v1/object/public/**',
       },
     ],
   },

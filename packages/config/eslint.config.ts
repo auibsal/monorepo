@@ -1,20 +1,14 @@
-import js from "@eslint/js";
-import nextPlugin from "@next/eslint-plugin-next";
-import reactPlugin from "eslint-plugin-react";
-import hooksPlugin from "eslint-plugin-react-hooks";
-import tseslint from "typescript-eslint";
-import globals from "globals";
-import type { Linter } from "eslint";
+import js from '@eslint/js';
+import nextPlugin from '@next/eslint-plugin-next';
+import type { Linter } from 'eslint';
+import reactPlugin from 'eslint-plugin-react';
+import hooksPlugin from 'eslint-plugin-react-hooks';
+import globals from 'globals';
+import tseslint from 'typescript-eslint';
 
 // 1. Global Ignores
 export const ignoresConfig: Linter.Config = {
-  ignores: [
-    "**/.next/**",
-    "**/node_modules/**",
-    "**/dist/**",
-    "**/.turbo/**",
-    "**/.vercel/**"
-  ],
+  ignores: ['**/.next/**', '**/node_modules/**', '**/dist/**', '**/.turbo/**', '**/.vercel/**'],
 };
 
 // 2. Base TypeScript Architecture (For root, packages/ui, packages/database)
@@ -30,10 +24,10 @@ export const baseConfig: Linter.Config[] = tseslint.config(
       },
     },
     rules: {
-      "@typescript-eslint/no-unused-vars": "warn",
-      "@typescript-eslint/no-explicit-any": "warn",
-      "@typescript-eslint/no-empty-object-type": "off",
-      "no-undef": "off", // Automatically handled by TypeScript
+      '@typescript-eslint/no-unused-vars': 'warn',
+      '@typescript-eslint/no-explicit-any': 'warn',
+      '@typescript-eslint/no-empty-object-type': 'off',
+      'no-undef': 'off', // Automatically handled by TypeScript
     },
   }
 ) as Linter.Config[];
@@ -42,11 +36,11 @@ export const baseConfig: Linter.Config[] = tseslint.config(
 export const nextConfig: Linter.Config[] = [
   ...baseConfig,
   {
-    files: ["**/*.{ts,tsx,js,jsx}"],
+    files: ['**/*.{ts,tsx,js,jsx}'],
     plugins: {
       react: reactPlugin as any,
-      "react-hooks": hooksPlugin as any,
-      "@next/next": nextPlugin as any,
+      'react-hooks': hooksPlugin as any,
+      '@next/next': nextPlugin as any,
     },
     languageOptions: {
       parserOptions: {
@@ -55,20 +49,20 @@ export const nextConfig: Linter.Config[] = [
     },
     settings: {
       react: {
-        version: "detect",
+        version: 'detect',
       },
     },
     rules: {
       // React & Hooks Rules
       ...reactPlugin.configs.recommended.rules,
       ...hooksPlugin.configs.recommended.rules,
-      "react/react-in-jsx-scope": "off", // Not needed in Next.js
-      "react/prop-types": "off",         // We use TypeScript for this
+      'react/react-in-jsx-scope': 'off', // Not needed in Next.js
+      'react/prop-types': 'off', // We use TypeScript for this
 
       // Next.js Rules
       ...nextPlugin.configs.recommended.rules,
-      ...nextPlugin.configs["core-web-vitals"].rules,
-      "@next/next/no-html-link-for-pages": "off",
+      ...nextPlugin.configs['core-web-vitals'].rules,
+      '@next/next/no-html-link-for-pages': 'off',
     },
   },
 ];

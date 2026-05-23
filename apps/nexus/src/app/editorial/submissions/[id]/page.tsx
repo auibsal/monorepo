@@ -1,12 +1,23 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useParams, useRouter } from "next/navigation";
-import Image from "next/image";
+
+import Image from 'next/image';
+import { useParams, useRouter } from 'next/navigation';
+
+import DOMPurify from 'isomorphic-dompurify';
+import {
+  AlertOctagon,
+  AlertTriangle,
+  CheckSquare,
+  FileText,
+  LayoutTemplate,
+  Save,
+  ShieldAlert,
+} from 'lucide-react';
+
 import { createClient } from '@auibsal/auth/client';
 import { Submission } from '@auibsal/database';
-import DOMPurify from 'isomorphic-dompurify';
-import { Save, AlertOctagon, FileText, LayoutTemplate, ShieldAlert, CheckSquare, AlertTriangle } from 'lucide-react';
 
 export default function GradingPage() {
   const params = useParams();
@@ -21,7 +32,7 @@ export default function GradingPage() {
   const [theme, setTheme] = useState<string>('');
   const [archive, setArchive] = useState<boolean | null>(null);
   const [formatting, setFormatting] = useState<string>('');
-  
+
   // Replaced native alerts with state-driven feedback
   const [saving, setSaving] = useState(false);
   const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
@@ -32,12 +43,28 @@ export default function GradingPage() {
   useEffect(() => {
     async function fetchSub() {
       if (!supabase) return;
-      const { data } = await supabase.from('submissions').select('*').eq('id', submissionId).single();
+      const { data } = await supabase
+        .from('submissions')
+        .select('*')
+        .eq('id', submissionId)
+        .single();
       if (data) {
         setSubmission(data);
-        setTech(data.rubric_technical !== undefined && data.rubric_technical !== null ? String(data.rubric_technical) : '');
-        setOrig(data.rubric_originality !== undefined && data.rubric_originality !== null ? String(data.rubric_originality) : '');
-        setTheme(data.rubric_thematic !== undefined && data.rubric_thematic !== null ? String(data.rubric_thematic) : '');
+        setTech(
+          data.rubric_technical !== undefined && data.rubric_technical !== null
+            ? String(data.rubric_technical)
+            : ''
+        );
+        setOrig(
+          data.rubric_originality !== undefined && data.rubric_originality !== null
+            ? String(data.rubric_originality)
+            : ''
+        );
+        setTheme(
+          data.rubric_thematic !== undefined && data.rubric_thematic !== null
+            ? String(data.rubric_thematic)
+            : ''
+        );
         setArchive(data.rubric_archive ?? null);
         setFormatting(data.rubric_formatting || '');
       }
@@ -53,17 +80,20 @@ export default function GradingPage() {
     setErrorMessage('');
 
     try {
-      const { error } = await supabase.from('submissions').update({
-        rubric_technical: tech ? parseInt(tech) : null,
-        rubric_originality: orig ? parseInt(orig) : null,
-        rubric_thematic: theme ? parseInt(theme) : null,
-        rubric_archive: archive,
-        rubric_formatting: formatting || null,
-      }).eq('id', submissionId);
+      const { error } = await supabase
+        .from('submissions')
+        .update({
+          rubric_technical: tech ? parseInt(tech) : null,
+          rubric_originality: orig ? parseInt(orig) : null,
+          rubric_thematic: theme ? parseInt(theme) : null,
+          rubric_archive: archive,
+          rubric_formatting: formatting || null,
+        })
+        .eq('id', submissionId);
 
       if (error) throw error;
       setStatus('success');
-      
+
       // Auto-clear success message after 3 seconds
       setTimeout(() => setStatus('idle'), 3000);
     } catch (err: unknown) {
@@ -77,11 +107,18 @@ export default function GradingPage() {
   const handleDisqualify = async () => {
     if (!supabase) return;
     // Keeping native confirm here serves as an intentional, high-friction interrupt for a destructive action
-    if (confirm('CRITICAL ACTION: Are you sure you want to disqualify this submission? This will permanently update the status to "rejected" and formatting to "disqualified".')) {
-      const { error } = await supabase.from('submissions').update({
-        status: 'rejected',
-        rubric_formatting: 'disqualified',
-      }).eq('id', submissionId);
+    if (
+      confirm(
+        'CRITICAL ACTION: Are you sure you want to disqualify this submission? This will permanently update the status to "rejected" and formatting to "disqualified".'
+      )
+    ) {
+      const { error } = await supabase
+        .from('submissions')
+        .update({
+          status: 'rejected',
+          rubric_formatting: 'disqualified',
+        })
+        .eq('id', submissionId);
 
       if (!error) {
         // Enforce boundary routing relative to the current working perimeter
@@ -90,60 +127,72 @@ export default function GradingPage() {
     }
   };
 
-  if (loading) return (
-    <div className="p-12 font-bold uppercase tracking-widest text-foreground/50 flex items-center justify-center h-96 border-4 border-dashed border-border/20">
-      Loading Dossier...
-    </div>
-  );
+  if (loading)
+    return (
+      <div className="flex h-96 items-center justify-center border-4 border-dashed border-border/20 p-12 font-bold tracking-widest text-foreground/50 uppercase">
+        Loading Dossier...
+      </div>
+    );
 
-  if (!submission) return (
-    <div className="p-12 font-bold uppercase tracking-widest text-red-500 flex flex-col items-center justify-center gap-4 h-96 border-4 border-dashed border-red-500/30 bg-red-500/5">
-      <ShieldAlert size={48} />
-      Submission Not Found.
-    </div>
-  );
+  if (!submission)
+    return (
+      <div className="flex h-96 flex-col items-center justify-center gap-4 border-4 border-dashed border-red-500/30 bg-red-500/5 p-12 font-bold tracking-widest text-red-500 uppercase">
+        <ShieldAlert size={48} />
+        Submission Not Found.
+      </div>
+    );
 
-  const totalScore = (tech ? parseInt(tech) : 0) + (orig ? parseInt(orig) : 0) + (theme ? parseInt(theme) : 0);
+  const totalScore =
+    (tech ? parseInt(tech) : 0) + (orig ? parseInt(orig) : 0) + (theme ? parseInt(theme) : 0);
 
   return (
-    <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-8 lg:gap-12">
-      
+    <div className="mx-auto flex max-w-7xl flex-col gap-8 lg:flex-row lg:gap-12">
       {/* File Viewer Side */}
-      <div className="flex-1 bg-card text-foreground border-4 border-border shadow-[12px_12px_0px_0px_var(--brutalist-shadow)] flex flex-col overflow-hidden">
-        
+      <div className="flex flex-1 flex-col overflow-hidden border-4 border-border bg-card text-foreground shadow-[12px_12px_0px_0px_var(--brutalist-shadow)]">
         {/* Document Header fully inverted */}
-        <div className="p-6 border-b-4 border-border flex justify-between items-center bg-foreground text-background">
+        <div className="flex items-center justify-between border-b-4 border-border bg-foreground p-6 text-background">
           <div className="flex items-center gap-3">
             <FileText className="text-primary" />
-            <h2 className="text-xl font-bold uppercase tracking-widest truncate max-w-[300px] md:max-w-md">{submission.title}</h2>
+            <h2 className="max-w-[300px] truncate text-xl font-bold tracking-widest uppercase md:max-w-md">
+              {submission.title}
+            </h2>
           </div>
-          <span className="text-sm font-bold bg-background text-foreground px-3 py-1.5 uppercase tracking-wider border-2 border-transparent shadow-[2px_2px_0px_0px_var(--primary)]">
+          <span className="border-2 border-transparent bg-background px-3 py-1.5 text-sm font-bold tracking-wider text-foreground uppercase shadow-[2px_2px_0px_0px_var(--primary)]">
             {submission.type}
           </span>
         </div>
 
         {/* Document Body */}
-        <div className="flex-1 min-h-[700px] p-6 md:p-12 bg-foreground/5 flex flex-col items-center justify-start overflow-y-auto gap-8 relative">
-          
+        <div className="relative flex min-h-[700px] flex-1 flex-col items-center justify-start gap-8 overflow-y-auto bg-foreground/5 p-6 md:p-12">
           {submission.content && (
             // ⚡ Bolt Optimization: Added dark:prose-invert to support typographic swapping
-            <div className="w-full p-8 md:p-16 bg-card border-4 border-border shadow-[8px_8px_0px_0px_var(--brutalist-shadow)] prose prose-lg dark:prose-invert max-w-4xl text-foreground">
+            <div className="prose prose-lg dark:prose-invert w-full max-w-4xl border-4 border-border bg-card p-8 text-foreground shadow-[8px_8px_0px_0px_var(--brutalist-shadow)] md:p-16">
               <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(submission.content) }} />
             </div>
           )}
 
           {submission.file_url && (
-            <div className="w-full flex justify-center items-center">
+            <div className="flex w-full items-center justify-center">
               {submission.file_url.endsWith('.pdf') ? (
-                <iframe src={submission.file_url} className="w-full h-[800px] border-4 border-border shadow-[8px_8px_0px_0px_var(--brutalist-shadow)] bg-background" />
+                <iframe
+                  src={submission.file_url}
+                  className="h-[800px] w-full border-4 border-border bg-background shadow-[8px_8px_0px_0px_var(--brutalist-shadow)]"
+                />
               ) : (
-                <Image unoptimized width={1200} height={800} src={submission.file_url} alt="Submission Attachment" className="max-w-full max-h-[800px] object-contain border-4 border-border shadow-[8px_8px_0px_0px_var(--brutalist-shadow)] bg-card p-2" />
+                <Image
+                  unoptimized
+                  width={1200}
+                  height={800}
+                  src={submission.file_url}
+                  alt="Submission Attachment"
+                  className="max-h-[800px] max-w-full border-4 border-border bg-card object-contain p-2 shadow-[8px_8px_0px_0px_var(--brutalist-shadow)]"
+                />
               )}
             </div>
           )}
 
           {!submission.content && !submission.file_url && (
-            <div className="flex flex-col items-center justify-center h-full w-full font-bold uppercase tracking-widest text-foreground/40 gap-4 mt-32">
+            <div className="mt-32 flex h-full w-full flex-col items-center justify-center gap-4 font-bold tracking-widest text-foreground/40 uppercase">
               <LayoutTemplate size={64} />
               No manuscript or file attached.
             </div>
@@ -152,19 +201,24 @@ export default function GradingPage() {
       </div>
 
       {/* Grading Rubric Side Panel */}
-      <div className="w-full lg:w-[400px] bg-card p-8 border-4 border-border shadow-[12px_12px_0px_0px_var(--brutalist-shadow)] text-foreground flex flex-col h-fit">
-        
-        <div className="flex justify-between items-center border-b-4 border-border pb-6 mb-8">
-          <h3 className="text-2xl font-bold uppercase tracking-widest text-foreground">Rubric</h3>
-          <div className="bg-foreground text-background font-black text-xl px-4 py-2 border-4 border-border shadow-[4px_4px_0px_0px_var(--primary)]">
+      <div className="flex h-fit w-full flex-col border-4 border-border bg-card p-8 text-foreground shadow-[12px_12px_0px_0px_var(--brutalist-shadow)] lg:w-[400px]">
+        <div className="mb-8 flex items-center justify-between border-b-4 border-border pb-6">
+          <h3 className="text-2xl font-bold tracking-widest text-foreground uppercase">Rubric</h3>
+          <div className="border-4 border-border bg-foreground px-4 py-2 text-xl font-black text-background shadow-[4px_4px_0px_0px_var(--primary)]">
             {totalScore} / 60
           </div>
         </div>
 
-        <div className="space-y-8 flex-1">
+        <div className="flex-1 space-y-8">
           <div className="space-y-3">
-            <label className="block text-sm font-bold uppercase tracking-wide">Technical Command & Craft</label>
-            <select value={tech} onChange={e=>setTech(e.target.value)} className="w-full p-4 border-4 border-border bg-background text-foreground focus:outline-none focus:border-primary rounded-none font-bold text-sm cursor-pointer hover:bg-foreground/5 transition-colors">
+            <label className="block text-sm font-bold tracking-wide uppercase">
+              Technical Command & Craft
+            </label>
+            <select
+              value={tech}
+              onChange={(e) => setTech(e.target.value)}
+              className="w-full cursor-pointer rounded-none border-4 border-border bg-background p-4 text-sm font-bold text-foreground transition-colors hover:bg-foreground/5 focus:border-primary focus:outline-none"
+            >
               <option value="">Select Score...</option>
               <option value="20">20 - Exceptional</option>
               <option value="10">10 - Proficient</option>
@@ -173,8 +227,14 @@ export default function GradingPage() {
           </div>
 
           <div className="space-y-3">
-            <label className="block text-sm font-bold uppercase tracking-wide">Originality & Voice</label>
-            <select value={orig} onChange={e=>setOrig(e.target.value)} className="w-full p-4 border-4 border-border bg-background text-foreground focus:outline-none focus:border-primary rounded-none font-bold text-sm cursor-pointer hover:bg-foreground/5 transition-colors">
+            <label className="block text-sm font-bold tracking-wide uppercase">
+              Originality & Voice
+            </label>
+            <select
+              value={orig}
+              onChange={(e) => setOrig(e.target.value)}
+              className="w-full cursor-pointer rounded-none border-4 border-border bg-background p-4 text-sm font-bold text-foreground transition-colors hover:bg-foreground/5 focus:border-primary focus:outline-none"
+            >
               <option value="">Select Score...</option>
               <option value="20">20 - Exceptional</option>
               <option value="10">10 - Proficient</option>
@@ -183,8 +243,14 @@ export default function GradingPage() {
           </div>
 
           <div className="space-y-3">
-            <label className="block text-sm font-bold uppercase tracking-wide">Thematic Depth & Resonance</label>
-            <select value={theme} onChange={e=>setTheme(e.target.value)} className="w-full p-4 border-4 border-border bg-background text-foreground focus:outline-none focus:border-primary rounded-none font-bold text-sm cursor-pointer hover:bg-foreground/5 transition-colors">
+            <label className="block text-sm font-bold tracking-wide uppercase">
+              Thematic Depth & Resonance
+            </label>
+            <select
+              value={theme}
+              onChange={(e) => setTheme(e.target.value)}
+              className="w-full cursor-pointer rounded-none border-4 border-border bg-background p-4 text-sm font-bold text-foreground transition-colors hover:bg-foreground/5 focus:border-primary focus:outline-none"
+            >
               <option value="">Select Score...</option>
               <option value="20">20 - Exceptional</option>
               <option value="10">10 - Proficient</option>
@@ -192,23 +258,47 @@ export default function GradingPage() {
             </select>
           </div>
 
-          <div className="space-y-4 pt-6 border-t-4 border-border/10">
-            <label className="block text-sm font-bold uppercase tracking-wide">"The Archive" Factor</label>
+          <div className="space-y-4 border-t-4 border-border/10 pt-6">
+            <label className="block text-sm font-bold tracking-wide uppercase">
+              "The Archive" Factor
+            </label>
             <div className="flex gap-8">
-              <label className="flex items-center gap-3 cursor-pointer group">
-                <input type="radio" name="archive" checked={archive === true} onChange={() => setArchive(true)} className="w-6 h-6 text-primary border-4 border-border focus:ring-primary focus:ring-offset-0 bg-background" /> 
-                <span className="font-bold uppercase tracking-widest text-sm group-hover:text-primary transition-colors">Yes</span>
+              <label className="group flex cursor-pointer items-center gap-3">
+                <input
+                  type="radio"
+                  name="archive"
+                  checked={archive === true}
+                  onChange={() => setArchive(true)}
+                  className="h-6 w-6 border-4 border-border bg-background text-primary focus:ring-primary focus:ring-offset-0"
+                />
+                <span className="text-sm font-bold tracking-widest uppercase transition-colors group-hover:text-primary">
+                  Yes
+                </span>
               </label>
-              <label className="flex items-center gap-3 cursor-pointer group">
-                <input type="radio" name="archive" checked={archive === false} onChange={() => setArchive(false)} className="w-6 h-6 text-primary border-4 border-border focus:ring-primary focus:ring-offset-0 bg-background" /> 
-                <span className="font-bold uppercase tracking-widest text-sm group-hover:text-primary transition-colors">No</span>
+              <label className="group flex cursor-pointer items-center gap-3">
+                <input
+                  type="radio"
+                  name="archive"
+                  checked={archive === false}
+                  onChange={() => setArchive(false)}
+                  className="h-6 w-6 border-4 border-border bg-background text-primary focus:ring-primary focus:ring-offset-0"
+                />
+                <span className="text-sm font-bold tracking-widest uppercase transition-colors group-hover:text-primary">
+                  No
+                </span>
               </label>
             </div>
           </div>
 
           <div className="space-y-3">
-            <label className="block text-sm font-bold uppercase tracking-wide">Formatting & Professionalism</label>
-            <select value={formatting} onChange={e=>setFormatting(e.target.value)} className="w-full p-4 border-4 border-border bg-background text-foreground focus:outline-none focus:border-primary rounded-none font-bold text-sm cursor-pointer hover:bg-foreground/5 transition-colors">
+            <label className="block text-sm font-bold tracking-wide uppercase">
+              Formatting & Professionalism
+            </label>
+            <select
+              value={formatting}
+              onChange={(e) => setFormatting(e.target.value)}
+              className="w-full cursor-pointer rounded-none border-4 border-border bg-background p-4 text-sm font-bold text-foreground transition-colors hover:bg-foreground/5 focus:border-primary focus:outline-none"
+            >
               <option value="">Select Protocol...</option>
               <option value="pass">Pass</option>
               <option value="fail">Fail</option>
@@ -219,25 +309,29 @@ export default function GradingPage() {
         {/* System Feedback Matrix */}
         <div className="mt-8 space-y-4">
           {status === 'error' && (
-            <div className="p-4 border-4 border-red-500 bg-background text-red-500 font-bold text-sm flex items-center gap-3">
+            <div className="flex items-center gap-3 border-4 border-red-500 bg-background p-4 text-sm font-bold text-red-500">
               <AlertTriangle size={20} className="flex-shrink-0" />
               <span className="break-words">{errorMessage}</span>
             </div>
           )}
 
           {status === 'success' && (
-            <div className="p-4 border-4 border-green-500 bg-background text-green-500 font-bold text-sm flex items-center gap-3">
+            <div className="flex items-center gap-3 border-4 border-green-500 bg-background p-4 text-sm font-bold text-green-500">
               <CheckSquare size={20} className="flex-shrink-0" />
               <span>Rubric successfully synchronized.</span>
             </div>
           )}
         </div>
 
-        <div className="mt-8 space-y-6 pt-8 border-t-4 border-border">
-          <button onClick={handleSave} disabled={saving} className="w-full bg-foreground text-background font-bold uppercase tracking-widest p-5 border-4 border-border hover:bg-primary hover:border-primary transition-all disabled:opacity-50 flex items-center justify-center gap-3 shadow-[6px_6px_0px_0px_var(--brutalist-shadow)] hover:shadow-[8px_8px_0px_0px_var(--brutalist-shadow)] hover:-translate-y-1">
+        <div className="mt-8 space-y-6 border-t-4 border-border pt-8">
+          <button
+            onClick={handleSave}
+            disabled={saving}
+            className="flex w-full items-center justify-center gap-3 border-4 border-border bg-foreground p-5 font-bold tracking-widest text-background uppercase shadow-[6px_6px_0px_0px_var(--brutalist-shadow)] transition-all hover:-translate-y-1 hover:border-primary hover:bg-primary hover:shadow-[8px_8px_0px_0px_var(--brutalist-shadow)] disabled:opacity-50"
+          >
             {saving ? (
               <>
-                <div className="w-4 h-4 bg-background rounded-none animate-spin"></div>
+                <div className="h-4 w-4 animate-spin rounded-none bg-background"></div>
                 Transmitting...
               </>
             ) : (
@@ -248,7 +342,10 @@ export default function GradingPage() {
             )}
           </button>
 
-          <button onClick={handleDisqualify} className="w-full bg-card text-red-500 font-bold uppercase tracking-widest p-5 border-4 border-red-500 hover:bg-red-500 hover:text-white transition-all flex items-center justify-center gap-3 shadow-[6px_6px_0px_0px_var(--primary)] hover:shadow-[8px_8px_0px_0px_var(--primary)] hover:-translate-y-1">
+          <button
+            onClick={handleDisqualify}
+            className="flex w-full items-center justify-center gap-3 border-4 border-red-500 bg-card p-5 font-bold tracking-widest text-red-500 uppercase shadow-[6px_6px_0px_0px_var(--primary)] transition-all hover:-translate-y-1 hover:bg-red-500 hover:text-white hover:shadow-[8px_8px_0px_0px_var(--primary)]"
+          >
             <AlertOctagon size={20} />
             Disqualify & Return
           </button>

@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+
 import ical from 'node-ical';
 
 // CRITICAL: Force dynamic execution to bypass static build crashes
@@ -20,9 +21,12 @@ interface ParsedVEvent {
 export async function GET() {
   try {
     // 1. Use native fetch to strictly engage the Next.js Data Cache for 1 hour
-    const response = await fetch('https://auib.edu.iq/?post_type=tribe_events&ical=1&eventDisplay=list', {
-      next: { revalidate: 3600 }
-    });
+    const response = await fetch(
+      'https://auib.edu.iq/?post_type=tribe_events&ical=1&eventDisplay=list',
+      {
+        next: { revalidate: 3600 },
+      }
+    );
 
     if (!response.ok) {
       throw new Error(`Failed to fetch AUIB calendar: ${response.statusText}`);
@@ -40,14 +44,15 @@ export async function GET() {
       .map((event) => {
         // Safely cast the validated event to our expected interface
         const vEvent = event as unknown as ParsedVEvent;
-        
+
         return {
           id: vEvent.uid || crypto.randomUUID(), // Fallback to avoid React key errors if AUIB drops the UID
-          title: typeof vEvent.summary === 'string' 
-            ? vEvent.summary 
-            : typeof vEvent.summary === 'object' && vEvent.summary !== null
-              ? vEvent.summary.val 
-              : 'Untitled Event',
+          title:
+            typeof vEvent.summary === 'string'
+              ? vEvent.summary
+              : typeof vEvent.summary === 'object' && vEvent.summary !== null
+                ? vEvent.summary.val
+                : 'Untitled Event',
           // node-ical parses start/end as native JS Dates if formatted correctly
           start: vEvent.start instanceof Date ? vEvent.start.toISOString() : null,
           end: vEvent.end instanceof Date ? vEvent.end.toISOString() : null,

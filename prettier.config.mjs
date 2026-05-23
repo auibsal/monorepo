@@ -9,10 +9,7 @@ const config = {
   bracketSpacing: true,
 
   // Plugins
-  plugins: [
-    '@trivago/prettier-plugin-sort-imports',
-    'prettier-plugin-tailwindcss',
-  ],
+  plugins: ['@trivago/prettier-plugin-sort-imports', 'prettier-plugin-tailwindcss'],
 
   // Import Sorting Configuration
   importOrder: [
@@ -26,7 +23,7 @@ const config = {
   importOrderSortSpecifiers: true,
 
   // Tailwind Configuration (Allows Prettier to read your v4 classes)
-  tailwindConfig: './packages/config/theme.css',
+  tailwindConfig: './packages/ui/src/styles/globals.css',
   tailwindFunctions: ['clsx', 'cva', 'cn'],
 };
 

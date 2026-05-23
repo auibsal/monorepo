@@ -1,4 +1,4 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next';
 
 // ⚡ Bolt Security Optimization: Dynamically evaluate the environment
 const isDev = process.env.NODE_ENV !== 'production';
@@ -6,24 +6,27 @@ const isDev = process.env.NODE_ENV !== 'production';
 const cspHeader = `
     default-src 'self';
     /* CRITICAL FIX: Strip unsafe-eval in production to kill XSS vectors */
-    script-src 'self' 'unsafe-inline' ${isDev ? "'unsafe-eval'" : ""};
+    script-src 'self' 'unsafe-inline' ${isDev ? "'unsafe-eval'" : ''};
     style-src 'self' 'unsafe-inline';
     connect-src 'self' *.supabase.co;
     img-src 'self' data: blob: *.supabase.co;
     frame-src 'self' *.supabase.co;
-`.replace(/\n/g, '').replace(/\s+/g, ' ').trim();
+`
+  .replace(/\n/g, '')
+  .replace(/\s+/g, ' ')
+  .trim();
 
 const nextConfig: NextConfig = {
-  transpilePackages: ["@auibsal/auth", "@auibsal/database", "@auibsal/ui"],
-  serverExternalPackages: ["node-ical"],
+  transpilePackages: ['@auibsal/auth', '@auibsal/database', '@auibsal/ui'],
+  serverExternalPackages: ['node-ical'],
   images: {
     remotePatterns: [
       {
-        protocol: "https",
+        protocol: 'https',
         // Locks image optimization to your Supabase storage buckets
-        hostname: "*.supabase.co",
-        port: "",
-        pathname: "/storage/v1/object/public/**",
+        hostname: '*.supabase.co',
+        port: '',
+        pathname: '/storage/v1/object/public/**',
       },
     ],
   },

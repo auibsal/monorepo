@@ -1,4 +1,5 @@
 import Link from 'next/link';
+
 import Logo from '../Logo';
 
 export interface FooterProps {
@@ -22,28 +23,30 @@ export default function Footer({ locale, dictionary }: FooterProps) {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="bg-auib-red text-white pt-16 pb-8 border-t-4 border-auib-charcoal">
-      <div className="max-w-6xl mx-auto px-6">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12 border-b-2 border-auib-charcoal pb-12">
-          
+    <footer className="border-t-4 border-auib-charcoal bg-auib-red pt-16 pb-8 text-white">
+      <div className="mx-auto max-w-6xl px-6">
+        <div className="mb-12 grid grid-cols-1 gap-12 border-b-2 border-auib-charcoal pb-12 md:grid-cols-3">
           <div className="md:col-span-1">
             <div className="mb-6">
               <Logo locale={locale} className="text-xl text-white" />
             </div>
-            <p className="text-white/80 text-sm leading-relaxed font-medium">
+            <p className="text-sm leading-relaxed font-medium text-white/80">
               {dictionary.description}
             </p>
           </div>
 
           <div className="md:col-span-1">
             {/* CRITICAL: Brutalist label style to fix WCAG contrast failure */}
-            <h4 className="inline-block bg-auib-charcoal text-white px-3 py-1 mb-6 text-xs font-bold uppercase tracking-widest">
+            <h4 className="mb-6 inline-block bg-auib-charcoal px-3 py-1 text-xs font-bold tracking-widest text-white uppercase">
               {dictionary.linksTitle}
             </h4>
-            <ul className="space-y-3 text-sm font-bold uppercase tracking-wider text-white/80">
+            <ul className="space-y-3 text-sm font-bold tracking-wider text-white/80 uppercase">
               {dictionary.links.map((link) => (
                 <li key={link.href}>
-                  <Link href={link.href} className="hover:text-white hover:translate-x-1 rtl:hover:-translate-x-1 transition-all inline-block">
+                  <Link
+                    href={link.href}
+                    className="inline-block transition-all hover:translate-x-1 hover:text-white rtl:hover:-translate-x-1"
+                  >
                     {link.label}
                   </Link>
                 </li>
@@ -51,20 +54,24 @@ export default function Footer({ locale, dictionary }: FooterProps) {
             </ul>
           </div>
 
-          <div className="md:col-span-1 text-sm font-medium text-white/80">
-             <h4 className="inline-block bg-auib-charcoal text-white px-3 py-1 mb-6 text-xs font-bold uppercase tracking-widest">
-               {dictionary.contactTitle}
-             </h4>
-             <address className="not-italic leading-relaxed">
-               {dictionary.university}<br />
-               {dictionary.addressLine1}<br />
-               {dictionary.addressLine2}
-             </address>
+          <div className="text-sm font-medium text-white/80 md:col-span-1">
+            <h4 className="mb-6 inline-block bg-auib-charcoal px-3 py-1 text-xs font-bold tracking-widest text-white uppercase">
+              {dictionary.contactTitle}
+            </h4>
+            <address className="leading-relaxed not-italic">
+              {dictionary.university}
+              <br />
+              {dictionary.addressLine1}
+              <br />
+              {dictionary.addressLine2}
+            </address>
           </div>
         </div>
 
-        <div className="text-xs font-bold uppercase tracking-wider text-white/60 flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
-          <p>&copy; {year} {dictionary.societyName}. {dictionary.rights}</p>
+        <div className="flex flex-col items-center justify-between gap-4 text-center text-xs font-bold tracking-wider text-white/60 uppercase md:flex-row md:text-left">
+          <p>
+            &copy; {year} {dictionary.societyName}. {dictionary.rights}
+          </p>
           <p>{dictionary.designedBy}</p>
         </div>
       </div>

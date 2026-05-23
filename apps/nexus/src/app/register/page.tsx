@@ -1,9 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import { createClient } from '@auibsal/auth/client';
+
 import Link from 'next/link';
+
 import { CheckSquare, ShieldAlert } from 'lucide-react';
+
+import { createClient } from '@auibsal/auth/client';
 
 export default function NexusRegister() {
   const [email, setEmail] = useState('');
@@ -48,51 +51,58 @@ export default function NexusRegister() {
           full_name: fullName,
           university_id: isExternal ? 'EXTERNAL' : studentId,
           biography: bio,
-        }
-      }
+        },
+      },
     });
 
     if (error) {
       setStatus('error');
       const errLower = error.message.toLowerCase();
       if (errLower.includes('already registered') || errLower.includes('user already exists')) {
-        setErrorMessage("An account with this email already exists. Please proceed to the login page.");
+        setErrorMessage(
+          'An account with this email already exists. Please proceed to the login page.'
+        );
       } else {
         setErrorMessage(error.message);
       }
     } else if (data?.user?.identities && data.user.identities.length === 0) {
       setStatus('error');
-      setErrorMessage("An account with this email already exists. Please proceed to the login page.");
+      setErrorMessage(
+        'An account with this email already exists. Please proceed to the login page.'
+      );
     } else {
       setStatus('success');
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-6 font-sans py-12 md:py-24">
+    <div className="flex min-h-screen items-center justify-center bg-background p-6 py-12 font-sans md:py-24">
       {/* Container fully mapped to semantic card, border, and brutalist shadow variables */}
       <div className="w-full max-w-2xl border-4 border-border bg-card shadow-[16px_16px_0px_0px_var(--brutalist-shadow)]">
         <div className="p-8 md:p-12">
-          
           {/* Brutalist Header */}
-          <h1 className="text-4xl font-black text-foreground mb-4 uppercase tracking-tighter border-b-4 border-border pb-4">
+          <h1 className="mb-4 border-b-4 border-border pb-4 text-4xl font-black tracking-tighter text-foreground uppercase">
             Membership Application
           </h1>
-          <p className="text-sm text-foreground/80 mb-10 font-bold uppercase tracking-widest leading-relaxed">
+          <p className="mb-10 text-sm leading-relaxed font-bold tracking-widest text-foreground/80 uppercase">
             Create an account to join the Society of Arts and Letters.
           </p>
 
           {status === 'success' ? (
-            <div className="p-6 border-4 border-border bg-foreground text-background font-bold uppercase tracking-widest text-sm flex flex-col items-center justify-center text-center gap-4">
+            <div className="flex flex-col items-center justify-center gap-4 border-4 border-border bg-foreground p-6 text-center text-sm font-bold tracking-widest text-background uppercase">
               <CheckSquare size={48} className="text-green-500" />
               <p>Registration successful.</p>
-              <p className="text-xs text-background/70">Please check your email to verify your account before logging in.</p>
+              <p className="text-xs text-background/70">
+                Please check your email to verify your account before logging in.
+              </p>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-8">
-              
               <div className="space-y-3 text-start">
-                <label htmlFor="fullName" className="block text-sm font-bold uppercase tracking-wide text-foreground">
+                <label
+                  htmlFor="fullName"
+                  className="block text-sm font-bold tracking-wide text-foreground uppercase"
+                >
                   Legal Full Name <span className="text-primary">*</span>
                 </label>
                 <input
@@ -101,25 +111,31 @@ export default function NexusRegister() {
                   required
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
-                  className="w-full p-4 border-4 border-border bg-background focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all rounded-none font-bold text-foreground"
+                  className="w-full rounded-none border-4 border-border bg-background p-4 font-bold text-foreground transition-all focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
                 />
               </div>
 
-              <div className="p-6 border-4 border-border/10 bg-foreground/5 space-y-6">
-                <label htmlFor="isExternal" className="flex items-center space-x-3 text-sm font-bold uppercase tracking-wide text-foreground cursor-pointer">
+              <div className="space-y-6 border-4 border-border/10 bg-foreground/5 p-6">
+                <label
+                  htmlFor="isExternal"
+                  className="flex cursor-pointer items-center space-x-3 text-sm font-bold tracking-wide text-foreground uppercase"
+                >
                   <input
                     id="isExternal"
                     type="checkbox"
                     checked={isExternal}
                     onChange={(e) => setIsExternal(e.target.checked)}
-                    className="w-6 h-6 rounded-none border-4 border-border text-primary focus:ring-primary focus:ring-offset-0 bg-background"
+                    className="h-6 w-6 rounded-none border-4 border-border bg-background text-primary focus:ring-primary focus:ring-offset-0"
                   />
                   <span>I am an external affiliate (No AUIB ID)</span>
                 </label>
 
                 {!isExternal && (
-                  <div className="space-y-3 text-start pt-4 border-t-2 border-border/10">
-                    <label htmlFor="studentId" className="block text-sm font-bold uppercase tracking-wide text-foreground">
+                  <div className="space-y-3 border-t-2 border-border/10 pt-4 text-start">
+                    <label
+                      htmlFor="studentId"
+                      className="block text-sm font-bold tracking-wide text-foreground uppercase"
+                    >
                       AUIB Student ID & Major <span className="text-primary">*</span>
                     </label>
                     <input
@@ -129,15 +145,18 @@ export default function NexusRegister() {
                       value={studentId}
                       onChange={(e) => setStudentId(e.target.value)}
                       placeholder="e.g. 123456 / Software Engineering"
-                      className="w-full p-4 border-4 border-border bg-background focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all rounded-none font-bold text-foreground"
+                      className="w-full rounded-none border-4 border-border bg-background p-4 font-bold text-foreground transition-all focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
                     />
                   </div>
                 )}
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
                 <div className="space-y-3 text-start">
-                  <label htmlFor="email" className="block text-sm font-bold uppercase tracking-wide text-foreground">
+                  <label
+                    htmlFor="email"
+                    className="block text-sm font-bold tracking-wide text-foreground uppercase"
+                  >
                     Email Address <span className="text-primary">*</span>
                   </label>
                   <input
@@ -147,12 +166,15 @@ export default function NexusRegister() {
                     placeholder="student@auib.edu.iq"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full p-4 border-4 border-border bg-background focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all rounded-none font-bold text-foreground"
+                    className="w-full rounded-none border-4 border-border bg-background p-4 font-bold text-foreground transition-all focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
                   />
                 </div>
 
                 <div className="space-y-3 text-start">
-                  <label htmlFor="password" className="block text-sm font-bold uppercase tracking-wide text-foreground">
+                  <label
+                    htmlFor="password"
+                    className="block text-sm font-bold tracking-wide text-foreground uppercase"
+                  >
                     Password <span className="text-primary">*</span>
                   </label>
                   <input
@@ -162,13 +184,16 @@ export default function NexusRegister() {
                     placeholder="••••••••"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full p-4 border-4 border-border bg-background focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all rounded-none font-bold text-foreground"
+                    className="w-full rounded-none border-4 border-border bg-background p-4 font-bold text-foreground transition-all focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
                   />
                 </div>
               </div>
 
               <div className="space-y-3 text-start">
-                <label htmlFor="bio" className="block text-sm font-bold uppercase tracking-wide text-foreground">
+                <label
+                  htmlFor="bio"
+                  className="block text-sm font-bold tracking-wide text-foreground uppercase"
+                >
                   3rd-Person Author Bio <span className="text-primary">(Max 50 words)</span>
                 </label>
                 <textarea
@@ -176,31 +201,38 @@ export default function NexusRegister() {
                   rows={4}
                   value={bio}
                   onChange={(e) => setBio(e.target.value)}
-                  className="w-full p-4 border-4 border-border bg-background focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all rounded-none font-medium resize-none leading-relaxed text-foreground"
+                  className="w-full resize-none rounded-none border-4 border-border bg-background p-4 leading-relaxed font-medium text-foreground transition-all focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
                 />
-                <div className={`text-xs font-bold text-right uppercase tracking-widest ${bio.trim().split(/\s+/).length > 50 ? 'text-primary' : 'text-foreground/50'}`}>
+                <div
+                  className={`text-right text-xs font-bold tracking-widest uppercase ${bio.trim().split(/\s+/).length > 50 ? 'text-primary' : 'text-foreground/50'}`}
+                >
                   {bio.trim() ? bio.trim().split(/\s+/).length : 0} / 50 words
                 </div>
               </div>
 
-              <div className="p-6 border-4 border-primary bg-primary/5">
-                <label htmlFor="aiPolicy" className="flex items-start space-x-4 text-sm font-bold tracking-wide text-foreground cursor-pointer">
+              <div className="border-4 border-primary bg-primary/5 p-6">
+                <label
+                  htmlFor="aiPolicy"
+                  className="flex cursor-pointer items-start space-x-4 text-sm font-bold tracking-wide text-foreground"
+                >
                   <input
                     id="aiPolicy"
                     type="checkbox"
                     required
                     checked={aiPolicy}
                     onChange={(e) => setAiPolicy(e.target.checked)}
-                    className="w-6 h-6 mt-1 rounded-none border-4 border-primary text-primary focus:ring-primary focus:ring-offset-0 bg-background"
+                    className="mt-1 h-6 w-6 rounded-none border-4 border-primary bg-background text-primary focus:ring-primary focus:ring-offset-0"
                   />
                   <span className="leading-relaxed">
-                    I guarantee that any submitted work will be entirely my own human creation. I explicitly understand that the use of Generative AI is strictly prohibited. <span className="text-primary">*</span>
+                    I guarantee that any submitted work will be entirely my own human creation. I
+                    explicitly understand that the use of Generative AI is strictly prohibited.{' '}
+                    <span className="text-primary">*</span>
                   </span>
                 </label>
               </div>
 
               {status === 'error' && (
-                <div className="p-4 border-4 border-red-500 bg-background text-red-500 text-sm font-bold flex items-center gap-3">
+                <div className="flex items-center gap-3 border-4 border-red-500 bg-background p-4 text-sm font-bold text-red-500">
                   <ShieldAlert size={20} />
                   {errorMessage}
                 </div>
@@ -209,13 +241,16 @@ export default function NexusRegister() {
               <button
                 type="submit"
                 disabled={status === 'loading'}
-                className="w-full bg-foreground text-background p-4 font-bold uppercase tracking-widest border-4 border-border hover:bg-primary hover:border-primary transition-all disabled:opacity-50 shadow-[6px_6px_0px_0px_var(--brutalist-shadow)] hover:shadow-[8px_8px_0px_0px_var(--brutalist-shadow)] hover:-translate-y-1"
+                className="w-full border-4 border-border bg-foreground p-4 font-bold tracking-widest text-background uppercase shadow-[6px_6px_0px_0px_var(--brutalist-shadow)] transition-all hover:-translate-y-1 hover:border-primary hover:bg-primary hover:shadow-[8px_8px_0px_0px_var(--brutalist-shadow)] disabled:opacity-50"
               >
                 {status === 'loading' ? 'Processing Application...' : 'Submit Application'}
               </button>
 
-              <div className="text-center mt-8 pt-8 border-t-4 border-border">
-                <Link href="/login" className="text-foreground hover:text-primary text-sm font-bold uppercase tracking-wider transition-colors inline-block hover:-translate-y-0.5">
+              <div className="mt-8 border-t-4 border-border pt-8 text-center">
+                <Link
+                  href="/login"
+                  className="inline-block text-sm font-bold tracking-wider text-foreground uppercase transition-colors hover:-translate-y-0.5 hover:text-primary"
+                >
                   Back to Member Login
                 </Link>
               </div>

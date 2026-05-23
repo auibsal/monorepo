@@ -19,7 +19,7 @@ export const ubuntuArabic = localFont({
       path: './UbuntuArabic-Bold.ttf',
       weight: '700',
       style: 'normal',
-    }
+    },
   ],
   variable: '--font-ubuntu-arabic',
   display: 'swap', // CRITICAL: Added for instant text rendering

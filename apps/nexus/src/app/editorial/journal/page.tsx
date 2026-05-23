@@ -1,9 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
+
+import { AlertTriangle, ArrowRight, BookOpen, CheckSquare, FileUp } from 'lucide-react';
+
 import { createClient } from '@auibsal/auth/client';
 import { JournalIssue } from '@auibsal/database';
-import { FileUp, BookOpen, AlertTriangle, CheckSquare, ArrowRight } from 'lucide-react';
 
 export default function JournalPage() {
   const [issues, setIssues] = useState<JournalIssue[]>([]);
@@ -22,7 +24,7 @@ export default function JournalPage() {
 
   useEffect(() => {
     fetchIssues();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fetchIssues = async () => {
@@ -32,7 +34,7 @@ export default function JournalPage() {
       .select('*')
       .order('volume_number', { ascending: false })
       .order('issue_number', { ascending: false });
-    
+
     if (!error && issuesData) {
       setIssues(issuesData);
     }
@@ -69,23 +71,23 @@ export default function JournalPage() {
 
       if (uploadError) throw uploadError;
 
-      const { data: { publicUrl } } = supabase.storage
-        .from('journal_issues')
-        .getPublicUrl(fileName);
+      const {
+        data: { publicUrl },
+      } = supabase.storage.from('journal_issues').getPublicUrl(fileName);
 
       const { error: dbError } = await supabase.from('journal_issues').insert({
         volume_number: parseInt(vol),
         issue_number: parseInt(issue),
         title_en: titleEn,
         title_ar: titleAr,
-        pdf_file_url: publicUrl
+        pdf_file_url: publicUrl,
       });
 
       if (dbError) throw dbError;
 
       setStatus('success');
       resetFormState();
-      fetchIssues(); 
+      fetchIssues();
     } catch (err: unknown) {
       setStatus('error');
       // Enforced strict instance checking on the catch block
@@ -96,106 +98,184 @@ export default function JournalPage() {
   return (
     <div className="space-y-12">
       {/* Architectural Header anchored to dynamic border/text tokens */}
-      <div className="flex justify-between items-center border-b-4 border-border pb-4">
-        <h2 className="text-3xl font-bold uppercase tracking-widest text-foreground">Journal CMS</h2>
+      <div className="flex items-center justify-between border-b-4 border-border pb-4">
+        <h2 className="text-3xl font-bold tracking-widest text-foreground uppercase">
+          Journal CMS
+        </h2>
       </div>
 
       {/* Grid Display for Published Issues */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
         {loading ? (
-            <div className="text-foreground font-bold uppercase tracking-widest text-sm p-4">Loading issues...</div>
+          <div className="p-4 text-sm font-bold tracking-widest text-foreground uppercase">
+            Loading issues...
+          </div>
         ) : issues.length === 0 ? (
-            <div className="text-foreground/60 font-bold uppercase tracking-widest text-sm p-4 border-4 border-dashed border-border/30 text-center col-span-full">
-              No published issues found.
-            </div>
-        ) : issues.map(iss => (
+          <div className="col-span-full border-4 border-dashed border-border/30 p-4 text-center text-sm font-bold tracking-widest text-foreground/60 uppercase">
+            No published issues found.
+          </div>
+        ) : (
+          issues.map((iss) => (
             // Card container fully mapped to dynamic Dark Mode tokens
-            <div key={iss.id} className="bg-card p-8 border-4 border-border shadow-[8px_8px_0px_0px_var(--brutalist-shadow)] text-foreground hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[12px_12px_0px_0px_var(--brutalist-shadow)] transition-all flex flex-col justify-between">
-                <div>
-                    <div className="flex justify-between items-start mb-6">
-                        <div>
-                            <h3 className="text-xl font-bold uppercase tracking-tight">Vol. {iss.volume_number}, Issue {iss.issue_number}</h3>
-                            <p className="text-xs font-bold text-primary uppercase tracking-widest mt-2">{iss.published_at ? new Date(iss.published_at).toLocaleDateString() : 'Unpublished'}</p>
-                        </div>
-                        <span className="bg-foreground text-background py-1.5 px-3 border-2 border-transparent text-xs font-bold uppercase tracking-wider">{iss.published_at ? 'Published' : 'Draft'}</span>
-                    </div>
-                    <div className="space-y-2 border-t-2 border-border/10 pt-4">
-                      <p className="font-bold text-sm text-foreground uppercase tracking-wide"><span className="text-xs font-medium text-foreground/50 mr-1">EN:</span> {iss.title_en}</p>
-                      <p className="font-bold text-sm text-foreground text-right" dir="rtl"><span className="text-xs font-medium text-foreground/50 ml-1" dir="ltr">AR:</span> {iss.title_ar}</p>
-                    </div>
+            <div
+              key={iss.id}
+              className="flex flex-col justify-between border-4 border-border bg-card p-8 text-foreground shadow-[8px_8px_0px_0px_var(--brutalist-shadow)] transition-all hover:-translate-x-1 hover:-translate-y-1 hover:shadow-[12px_12px_0px_0px_var(--brutalist-shadow)]"
+            >
+              <div>
+                <div className="mb-6 flex items-start justify-between">
+                  <div>
+                    <h3 className="text-xl font-bold tracking-tight uppercase">
+                      Vol. {iss.volume_number}, Issue {iss.issue_number}
+                    </h3>
+                    <p className="mt-2 text-xs font-bold tracking-widest text-primary uppercase">
+                      {iss.published_at
+                        ? new Date(iss.published_at).toLocaleDateString()
+                        : 'Unpublished'}
+                    </p>
+                  </div>
+                  <span className="border-2 border-transparent bg-foreground px-3 py-1.5 text-xs font-bold tracking-wider text-background uppercase">
+                    {iss.published_at ? 'Published' : 'Draft'}
+                  </span>
                 </div>
-                {iss.pdf_file_url && (
-                    <a href={iss.pdf_file_url} target="_blank" rel="noopener noreferrer" className="group flex items-center justify-between p-4 bg-background border-t-2 border-border/10 text-sm font-bold uppercase tracking-widest hover:bg-primary hover:text-background transition-colors cursor-pointer">
-                      View PDF <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform rtl:rotate-180 rtl:group-hover:-translate-x-1" />
-                    </a>
-                )}
+                <div className="space-y-2 border-t-2 border-border/10 pt-4">
+                  <p className="text-sm font-bold tracking-wide text-foreground uppercase">
+                    <span className="mr-1 text-xs font-medium text-foreground/50">EN:</span>{' '}
+                    {iss.title_en}
+                  </p>
+                  <p className="text-right text-sm font-bold text-foreground" dir="rtl">
+                    <span className="ml-1 text-xs font-medium text-foreground/50" dir="ltr">
+                      AR:
+                    </span>{' '}
+                    {iss.title_ar}
+                  </p>
+                </div>
+              </div>
+              {iss.pdf_file_url && (
+                <a
+                  href={iss.pdf_file_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group flex cursor-pointer items-center justify-between border-t-2 border-border/10 bg-background p-4 text-sm font-bold tracking-widest uppercase transition-colors hover:bg-primary hover:text-background"
+                >
+                  View PDF{' '}
+                  <ArrowRight
+                    size={16}
+                    className="transition-transform group-hover:translate-x-1 rtl:rotate-180 rtl:group-hover:-translate-x-1"
+                  />
+                </a>
+              )}
             </div>
-        ))}
+          ))
+        )}
       </div>
 
       {/* Upload/Creation Section */}
-      <div className="bg-card text-foreground p-8 md:p-12 border-4 border-border shadow-[12px_12px_0px_0px_var(--brutalist-shadow)] max-w-4xl">
-        <h3 className="text-2xl font-bold mb-4 uppercase tracking-widest border-b-4 border-border pb-4 flex items-center gap-3">
+      <div className="max-w-4xl border-4 border-border bg-card p-8 text-foreground shadow-[12px_12px_0px_0px_var(--brutalist-shadow)] md:p-12">
+        <h3 className="mb-4 flex items-center gap-3 border-b-4 border-border pb-4 text-2xl font-bold tracking-widest uppercase">
           <BookOpen className="text-primary" />
           Publish New Issue
         </h3>
-        <p className="mb-8 font-bold uppercase tracking-widest text-xs text-foreground/60 leading-relaxed">
-          Upload a single, compiled PDF file for the issue. The public web app will automatically capture and embed this data stream natively.
+        <p className="mb-8 text-xs leading-relaxed font-bold tracking-widest text-foreground/60 uppercase">
+          Upload a single, compiled PDF file for the issue. The public web app will automatically
+          capture and embed this data stream natively.
         </p>
 
         <form onSubmit={handleUpload} className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
             <div className="space-y-3">
-              <label className="block text-sm font-bold uppercase tracking-wide">Volume Number</label>
-              <input type="number" required min="1" value={vol} onChange={e=>setVol(e.target.value)} className="w-full p-4 border-2 border-border bg-background focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary rounded-none font-bold text-foreground" />
+              <label className="block text-sm font-bold tracking-wide uppercase">
+                Volume Number
+              </label>
+              <input
+                type="number"
+                required
+                min="1"
+                value={vol}
+                onChange={(e) => setVol(e.target.value)}
+                className="w-full rounded-none border-2 border-border bg-background p-4 font-bold text-foreground focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
+              />
             </div>
             <div className="space-y-3">
-              <label className="block text-sm font-bold uppercase tracking-wide">Issue Number</label>
-              <input type="number" required min="1" value={issue} onChange={e=>setIssue(e.target.value)} className="w-full p-4 border-2 border-border bg-background focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary rounded-none font-bold text-foreground" />
+              <label className="block text-sm font-bold tracking-wide uppercase">
+                Issue Number
+              </label>
+              <input
+                type="number"
+                required
+                min="1"
+                value={issue}
+                onChange={(e) => setIssue(e.target.value)}
+                className="w-full rounded-none border-2 border-border bg-background p-4 font-bold text-foreground focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
+              />
             </div>
             <div className="space-y-3">
-              <label className="block text-sm font-bold uppercase tracking-wide">Title (English)</label>
-              <input type="text" required value={titleEn} onChange={e=>setTitleEn(e.target.value)} className="w-full p-4 border-2 border-border bg-background focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary rounded-none font-bold text-foreground" />
+              <label className="block text-sm font-bold tracking-wide uppercase">
+                Title (English)
+              </label>
+              <input
+                type="text"
+                required
+                value={titleEn}
+                onChange={(e) => setTitleEn(e.target.value)}
+                className="w-full rounded-none border-2 border-border bg-background p-4 font-bold text-foreground focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
+              />
             </div>
             <div className="space-y-3" dir="rtl">
-              <label className="block text-sm font-bold uppercase tracking-wide text-right">العنوان (عربي)</label>
-              <input type="text" required value={titleAr} onChange={e=>setTitleAr(e.target.value)} className="w-full p-4 border-2 border-border bg-background focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary rounded-none font-bold text-lg text-foreground" />
+              <label className="block text-right text-sm font-bold tracking-wide uppercase">
+                العنوان (عربي)
+              </label>
+              <input
+                type="text"
+                required
+                value={titleAr}
+                onChange={(e) => setTitleAr(e.target.value)}
+                className="w-full rounded-none border-2 border-border bg-background p-4 text-lg font-bold text-foreground focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
+              />
             </div>
           </div>
 
           <div className="space-y-3">
-            <label className="block text-sm font-bold uppercase tracking-wide">Compiled PDF File</label>
-            <div className="relative border-4 border-dashed border-border p-8 hover:bg-foreground/5 transition-colors flex flex-col items-center justify-center text-center group cursor-pointer bg-background">
+            <label className="block text-sm font-bold tracking-wide uppercase">
+              Compiled PDF File
+            </label>
+            <div className="group relative flex cursor-pointer flex-col items-center justify-center border-4 border-dashed border-border bg-background p-8 text-center transition-colors hover:bg-foreground/5">
               <input
                 type="file"
                 required
                 accept="application/pdf"
                 onChange={(e) => {
-                  setFile((e.target.files && e.target.files.length > 0) ? (e.target.files[0] || null) : null);
-                  if(status === 'success') setStatus('idle');
-                  if(status === 'error') setStatus('idle');
+                  setFile(
+                    e.target.files && e.target.files.length > 0 ? e.target.files[0] || null : null
+                  );
+                  if (status === 'success') setStatus('idle');
+                  if (status === 'error') setStatus('idle');
                 }}
-                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                className="absolute inset-0 z-10 h-full w-full cursor-pointer opacity-0"
               />
-              <FileUp size={40} className="text-foreground group-hover:text-primary mb-3 transition-colors" />
-              <p className="font-bold uppercase tracking-wider text-sm text-foreground">
+              <FileUp
+                size={40}
+                className="mb-3 text-foreground transition-colors group-hover:text-primary"
+              />
+              <p className="text-sm font-bold tracking-wider text-foreground uppercase">
                 {file ? file.name : 'Click or Drag PDF to Mount File'}
               </p>
               {file && (
-                <p className="text-xs font-mono mt-1 text-primary">({(file.size / (1024 * 1024)).toFixed(2)} MB)</p>
+                <p className="mt-1 font-mono text-xs text-primary">
+                  ({(file.size / (1024 * 1024)).toFixed(2)} MB)
+                </p>
               )}
             </div>
           </div>
 
           {status === 'error' && errorMessage && (
-            <div className="p-4 border-4 border-red-500 bg-background text-red-500 font-bold text-sm flex items-center gap-3">
+            <div className="flex items-center gap-3 border-4 border-red-500 bg-background p-4 text-sm font-bold text-red-500">
               <AlertTriangle size={20} className="flex-shrink-0" />
               <span className="break-words">{errorMessage}</span>
             </div>
           )}
 
           {status === 'success' && (
-            <div className="p-4 border-4 border-green-500 bg-background text-green-500 font-bold text-sm flex items-center gap-3">
+            <div className="flex items-center gap-3 border-4 border-green-500 bg-background p-4 text-sm font-bold text-green-500">
               <CheckSquare size={20} className="flex-shrink-0" />
               <span>Issue successfully published!</span>
             </div>
@@ -205,7 +285,7 @@ export default function JournalPage() {
             <button
               type="submit"
               disabled={status === 'uploading' || !file}
-              className="bg-foreground text-background font-bold uppercase tracking-wider px-8 py-4 border-4 border-border hover:bg-primary hover:border-primary transition-colors disabled:opacity-50 shadow-[6px_6px_0px_0px_var(--brutalist-shadow)] hover:shadow-[8px_8px_0px_0px_var(--brutalist-shadow)] hover:-translate-y-0.5"
+              className="border-4 border-border bg-foreground px-8 py-4 font-bold tracking-wider text-background uppercase shadow-[6px_6px_0px_0px_var(--brutalist-shadow)] transition-colors hover:-translate-y-0.5 hover:border-primary hover:bg-primary hover:shadow-[8px_8px_0px_0px_var(--brutalist-shadow)] disabled:opacity-50"
             >
               {status === 'uploading' ? 'Uploading...' : 'Publish Issue'}
             </button>

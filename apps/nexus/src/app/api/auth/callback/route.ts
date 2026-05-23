@@ -1,9 +1,10 @@
 import { NextResponse } from 'next/server';
+
 import { createClient } from '@auibsal/auth/server';
 
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
-  
+
   const code = searchParams.get('code');
   // "next" is a standard parameter used to track the user's intended destination
   const next = searchParams.get('next') ?? '/';
@@ -11,13 +12,13 @@ export async function GET(request: Request) {
   // Extract the true domain and protocol from the reverse proxy headers
   const forwardedHost = request.headers.get('x-forwarded-host');
   const forwardedProto = request.headers.get('x-forwarded-proto') ?? 'https';
-  
+
   // Construct a mathematically secure Base URL
   const baseUrl = forwardedHost ? `${forwardedProto}://${forwardedHost}` : origin;
 
   if (code) {
     const supabase = await createClient();
-    
+
     // Exchange the PKCE code for a secure JWT session
     const { error } = await supabase.auth.exchangeCodeForSession(code);
 
@@ -27,7 +28,7 @@ export async function GET(request: Request) {
       if (!safeNext.startsWith('/') || safeNext.startsWith('//')) {
         safeNext = '/';
       }
-      
+
       // Execute the secure proxy-aware redirect
       return NextResponse.redirect(`${baseUrl}${safeNext}`);
     }
