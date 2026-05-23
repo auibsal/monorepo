@@ -20,9 +20,7 @@ import {
 
 import { cn } from '../lib/utils';
 
-// 1. Bring in your new superpower
-
-// 2. Abstract the button logic to kill JSX bloat
+// Abstracted button logic engineered for zero focus-loss
 const ToolbarButton = ({
   onClick,
   isActive,
@@ -38,7 +36,8 @@ const ToolbarButton = ({
     type="button"
     aria-label={label}
     title={label}
-    onClick={(e) => {
+    // CRITICAL: onMouseDown prevents the browser from stealing focus from the typing canvas
+    onMouseDown={(e) => {
       e.preventDefault();
       onClick();
     }}
@@ -76,7 +75,8 @@ export function RichTextEditor({
     content,
     editorProps: {
       attributes: {
-        // Enforce max-width on the typing area to prevent horizontal text overflow
+        // 1. The Superpower: dir="auto" provides native Bidirectional (BiDi) support for Arabic text
+        dir: 'auto',
         class:
           'min-h-[300px] w-full max-w-full p-4 md:p-6 focus:outline-none focus:ring-0 text-base md:text-lg leading-relaxed',
       },
@@ -86,16 +86,26 @@ export function RichTextEditor({
     },
   });
 
-  // 3. The Cursor-Safe Sync Effect
+  // The Cursor-Safe Sync Effect
   useEffect(() => {
     // ONLY override the editor content if the user isn't actively typing inside it.
-    // This perfectly syncs database loads without destroying cursor placement.
+    // The boolean `false` flag strictly tells Tiptap to preserve cursor selection if possible.
     if (editor && !editor.isFocused && content !== editor.getHTML()) {
-      editor.commands.setContent(content); // false = preserve selection if possible
+      editor.commands.setContent(content, false); 
     }
   }, [content, editor]);
 
-  if (!isMounted || !editor) {
+  // CLS Protection: Render a brutalist skeleton of equal height during SSR/Hydration
+  if (!isMounted) {
+    return (
+      <div className="flex w-full min-h-[365px] flex-col overflow-hidden border-4 border-auib-charcoal bg-white">
+        <div className="h-12 w-full border-b-4 border-auib-charcoal bg-auib-charcoal" />
+        <div className="flex-1 bg-gray-50/50" />
+      </div>
+    );
+  }
+
+  if (!editor) {
     return null;
   }
 
@@ -172,7 +182,8 @@ export function RichTextEditor({
 
       <EditorContent
         editor={editor}
-        className="prose w-full max-w-none flex-1 overflow-x-hidden bg-transparent text-auib-charcoal"
+        // prose-a:text-auib-red strictly themes nested links to match your brand guidelines
+        className="prose prose-slate w-full max-w-none flex-1 overflow-x-hidden bg-transparent text-auib-charcoal prose-a:text-auib-red focus:outline-none"
       />
     </div>
   );
