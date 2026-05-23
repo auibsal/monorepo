@@ -18,7 +18,7 @@ const cspHeader = `
 
 const nextConfig: NextConfig = {
   transpilePackages: ['@auibsal/auth', '@auibsal/database', '@auibsal/ui'],
-  serverExternalPackages: ['node-ical'],
+  serverExternalPackages: ['node-ical', 'isomorphic-dompurify'],
   images: {
     remotePatterns: [
       {

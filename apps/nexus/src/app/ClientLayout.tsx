@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import { createClient } from '@auibsal/auth/client';
 import Navbar from '@auibsal/ui/components/layout/Navbar';
@@ -13,7 +13,7 @@ export default function ClientLayout({
   children: React.ReactNode;
   role: string | null;
 }) {
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();

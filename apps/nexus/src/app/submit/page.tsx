@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 
 import Link from 'next/link';
 
@@ -25,7 +25,7 @@ export default function SubmitWorkPage() {
   const [status, setStatus] = useState<'idle' | 'uploading' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
 
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
 
   const isVisualArt = false; // Temporarily overriding visual_art logic as it was removed from the schema
 

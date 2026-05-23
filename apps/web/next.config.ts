@@ -23,6 +23,7 @@ const generateCsp = () => {
 
 const nextConfig: NextConfig = {
   transpilePackages: ['@auibsal/auth', '@auibsal/database', '@auibsal/ui'],
+  serverExternalPackages: ['isomorphic-dompurify'],
   images: {
     remotePatterns: [
       {
