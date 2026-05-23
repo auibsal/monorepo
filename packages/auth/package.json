@@ -7,18 +7,18 @@
     "./client": "./src/client.ts",
     "./server": "./src/server.ts",
     "./proxy": "./src/proxy.ts",
-    "./admin": ".src/admin.ts"
+    "./admin": "./src/admin.ts"
   },
   "scripts": {
     "build": "tsc",
-    "lint": "eslint .",
+    "lint": "eslint . --cache --max-warnings 0",
     "typecheck": "tsc --noEmit",
     "clean": "rm -rf dist .turbo node_modules"
   },
   "dependencies": {
+    "@auibsal/database": "workspace:*",
     "@supabase/ssr": "^0.10.3",
-    "@supabase/supabase-js": "catalog:",
-    "@auibsal/database": "workspace:*"
+    "@supabase/supabase-js": "catalog:"
   },
   "peerDependencies": {
     "next": "catalog:"
@@ -26,6 +26,7 @@
   "devDependencies": {
     "@auibsal/config": "workspace:*",
     "@types/node": "catalog:",
+    "eslint": "catalog:",
     "typescript": "catalog:"
   }
 }
