@@ -1,3 +1,5 @@
+import 'server-only';
+
 import { cookies } from 'next/headers';
 
 import { createServerClient } from '@supabase/ssr';
@@ -25,7 +27,10 @@ export async function createClient() {
       },
       setAll(cookiesToSet) {
         try {
-          cookiesToSet.forEach(({ name, value, options }) => cookieStore.set(name, value, options));
+          // Using strict object mapping to guarantee cookie flag preservation
+          cookiesToSet.forEach(({ name, value, options }) =>
+            cookieStore.set({ name, value, ...options })
+          );
         } catch {
           // The `setAll` method was called from a Server Component.
           // Next.js does not allow mutating cookies in Server Components.
