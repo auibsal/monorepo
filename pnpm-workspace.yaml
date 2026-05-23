@@ -1,19 +1,31 @@
 packages:
-- apps/*
-- packages/*
+  - 'apps/*'
+  - 'packages/*'
+  # Explicitly exclude build and cache directories to optimize pnpm's workspace scanning algorithm
+  - '!**/dist/**'
+  - '!**/.next/**'
+  - '!**/node_modules/**'
+
 catalog:
+  # --- Core Framework ---
   next: ^16.2.6
   react: ^19.2.6
   react-dom: ^19.2.6
-  '@types/react': ^19.2.15
-  '@types/react-dom': ^19.2.3
-  '@supabase/supabase-js': ^2.106.1
-  tailwindcss: ^4.3.0
+
+  # --- UI & Styling ---
   '@tailwindcss/postcss': ^4.3.0
-  lucide-react: ^1.16.0
-  typescript: ^6.0.3
-  '@types/node': ^25.9.1
-  eslint: ^10.4.0
   '@tailwindcss/typography': ^0.5.19
   framer-motion: ^12.40.0
+  lucide-react: ^1.16.0
+  tailwindcss: ^4.3.0
+
+  # --- Data & Security ---
+  '@supabase/supabase-js': ^2.106.1
   isomorphic-dompurify: ^3.14.0
+
+  # --- Tooling & Types ---
+  '@types/node': ^25.9.1
+  '@types/react': ^19.2.15
+  '@types/react-dom': ^19.2.3
+  eslint: ^10.4.0
+  typescript: ^6.0.3
