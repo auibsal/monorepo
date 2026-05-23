@@ -1,8 +1,10 @@
 import type { Metadata } from 'next';
 import { headers } from 'next/headers';
+
 import { ubuntu, ubuntuArabic } from '@/fonts';
-import './globals.css';
+
 import ClientLayout from './ClientLayout';
+import './globals.css';
 
 export const metadata: Metadata = {
   title: 'SAL Nexus',
@@ -14,21 +16,15 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const headersList = await headers();
   const role = headersList.get('x-user-role');
 
   return (
     <html lang="en" className={`${ubuntu.variable} ${ubuntuArabic.variable}`}>
       {/* Swapped hardcoded hexes to semantic bg-background and text-foreground tokens */}
-      <body className="font-sans antialiased min-h-screen flex flex-col bg-background text-foreground overflow-x-hidden">
-        <ClientLayout role={role}>
-          {children}
-        </ClientLayout>
+      <body className="flex min-h-screen flex-col overflow-x-hidden bg-background font-sans text-foreground antialiased">
+        <ClientLayout role={role}>{children}</ClientLayout>
       </body>
     </html>
   );

@@ -1,65 +1,65 @@
-import { getTranslations } from 'next-intl/server';
 import { Link } from '@/i18n/routing';
-import { buttonVariants } from '@auibsal/ui/components/ui/button';
 import { BookOpen, Users } from 'lucide-react';
+import { getTranslations } from 'next-intl/server';
+
+import { buttonVariants } from '@auibsal/ui/components/ui/button';
 
 export default async function Home({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'HomePage' });
 
   return (
-    <div className="max-w-6xl mx-auto px-6 py-16 md:py-32">
-      
+    <div className="mx-auto max-w-6xl px-6 py-16 md:py-32">
       {/* Architectural Header */}
       <section className="mb-28 flex flex-col items-start border-l-8 border-primary pl-6 md:pl-10">
         {/* Swapped text-auib-charcoal to text-foreground */}
-        <h1 className="text-5xl md:text-7xl font-bold text-foreground mb-6 uppercase tracking-tight leading-none">
+        <h1 className="mb-6 text-5xl leading-none font-bold tracking-tight text-foreground uppercase md:text-7xl">
           {t('title')}
         </h1>
         {/* Swapped text-auib-charcoal/90 to text-foreground/90 */}
-        <p className="text-xl md:text-3xl text-foreground/90 max-w-4xl leading-relaxed font-medium">
+        <p className="max-w-4xl text-xl leading-relaxed font-medium text-foreground/90 md:text-3xl">
           {t('subtitle')}
         </p>
       </section>
 
       {/* Hard Divider - Mapped to foreground for high contrast in both themes */}
-      <div className="w-full h-1.5 bg-foreground mb-28"></div>
+      <div className="mb-28 h-1.5 w-full bg-foreground"></div>
 
       {/* Brutalist Grid */}
-      <section className="grid md:grid-cols-2 gap-12 md:gap-16">
-        
+      <section className="grid gap-12 md:grid-cols-2 md:gap-16">
         {/* Card 1: Mission */}
         {/* Replaced hardcoded hexes with semantic background, border, and dynamic shadow variables */}
-        <div className="group bg-card p-10 border-4 border-border shadow-[12px_12px_0px_0px_var(--brutalist-shadow)] hover:shadow-[16px_16px_0px_0px_var(--brutalist-shadow)] hover:-translate-y-1 hover:-translate-x-1 transition-all duration-200">
-          <div className="w-16 h-16 bg-foreground flex items-center justify-center mb-8 border-2 border-transparent">
+        <div className="group border-4 border-border bg-card p-10 shadow-[12px_12px_0px_0px_var(--brutalist-shadow)] transition-all duration-200 hover:-translate-x-1 hover:-translate-y-1 hover:shadow-[16px_16px_0px_0px_var(--brutalist-shadow)]">
+          <div className="mb-8 flex h-16 w-16 items-center justify-center border-2 border-transparent bg-foreground">
             <BookOpen size={32} className="text-background" />
           </div>
-          <h2 className="text-3xl font-bold text-foreground mb-4 uppercase tracking-wider">{t('missionTitle')}</h2>
-          <p className="text-lg leading-relaxed text-foreground font-medium">
-            {t('missionText')}
-          </p>
+          <h2 className="mb-4 text-3xl font-bold tracking-wider text-foreground uppercase">
+            {t('missionTitle')}
+          </h2>
+          <p className="text-lg leading-relaxed font-medium text-foreground">{t('missionText')}</p>
         </div>
 
         {/* Card 2: Membership (Keeps AUIB Red as a distinct brand accent, but hooks the shadows) */}
-        <div className="group bg-primary p-10 border-4 border-border shadow-[12px_12px_0px_0px_var(--brutalist-shadow)] hover:shadow-[16px_16px_0px_0px_var(--brutalist-shadow)] hover:-translate-y-1 hover:-translate-x-1 transition-all duration-200 flex flex-col justify-between">
+        <div className="group flex flex-col justify-between border-4 border-border bg-primary p-10 shadow-[12px_12px_0px_0px_var(--brutalist-shadow)] transition-all duration-200 hover:-translate-x-1 hover:-translate-y-1 hover:shadow-[16px_16px_0px_0px_var(--brutalist-shadow)]">
           <div>
-            <div className="w-16 h-16 bg-background flex items-center justify-center mb-8 border-2 border-border shadow-[4px_4px_0px_0px_var(--brutalist-shadow)]">
+            <div className="mb-8 flex h-16 w-16 items-center justify-center border-2 border-border bg-background shadow-[4px_4px_0px_0px_var(--brutalist-shadow)]">
               <Users size={32} className="text-primary" />
             </div>
-            <h2 className="text-3xl font-bold text-primary-foreground mb-4 uppercase tracking-wider">{t('membershipTitle')}</h2>
-            <p className="text-lg leading-relaxed text-primary-foreground/90 mb-10 font-medium">
+            <h2 className="mb-4 text-3xl font-bold tracking-wider text-primary-foreground uppercase">
+              {t('membershipTitle')}
+            </h2>
+            <p className="mb-10 text-lg leading-relaxed font-medium text-primary-foreground/90">
               {t('membershipText')}
             </p>
           </div>
-          
-          <Link 
-            href="/login" 
-            className={`${buttonVariants({ variant: 'outline', size: 'lg' })} w-full md:w-auto bg-background text-foreground hover:bg-foreground hover:text-background border-2 border-border shadow-[6px_6px_0px_0px_var(--brutalist-shadow)]`}
+
+          <Link
+            href="/login"
+            className={`${buttonVariants({ variant: 'outline', size: 'lg' })} w-full border-2 border-border bg-background text-foreground shadow-[6px_6px_0px_0px_var(--brutalist-shadow)] hover:bg-foreground hover:text-background md:w-auto`}
           >
             {t('applyButton')}
           </Link>
         </div>
-
       </section>
     </div>
   );

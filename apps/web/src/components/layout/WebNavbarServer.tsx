@@ -1,4 +1,5 @@
 import { getTranslations } from 'next-intl/server';
+
 import WebNavbarClient from './WebNavbarClient';
 
 export default async function WebNavbarServer({ locale }: { locale: string }) {

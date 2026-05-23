@@ -1,9 +1,10 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { createClient } from '@auibsal/auth/client';
-import { Terminal, RefreshCw, AlertTriangle, ShieldCheck } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
+import { AlertTriangle, RefreshCw, ShieldCheck, Terminal } from 'lucide-react';
+
+import { createClient } from '@auibsal/auth/client';
 import { Tables } from '@auibsal/database';
 
 // Establish the strict cryptographic shape of the audit ledger natively
@@ -22,7 +23,7 @@ export default function LogsPage() {
 
     try {
       // ⚡ Bolt Architecture: Polling the secure audit_logs table.
-      // If this table is not yet provisioned in your database schema, 
+      // If this table is not yet provisioned in your database schema,
       // the catch block will seamlessly render a terminal-authentic failure state.
       const { data, error } = await supabase
         .from('system_logs')
@@ -49,24 +50,27 @@ export default function LogsPage() {
   // Helper to color-code terminal output based on severity (using action for system logs)
   const getLevelColor = (action: string) => {
     switch (action) {
-      case 'DELETE': return 'text-primary animate-pulse';
-      case 'UPDATE': return 'text-yellow-500';
-      default: return 'text-foreground/70';
+      case 'DELETE':
+        return 'text-primary animate-pulse';
+      case 'UPDATE':
+        return 'text-yellow-500';
+      default:
+        return 'text-foreground/70';
     }
   };
 
   return (
     <div className="space-y-12">
       {/* Architectural Header */}
-      <div className="flex justify-between items-end border-b-4 border-border pb-4 gap-4 flex-wrap">
-        <h2 className="text-3xl font-bold uppercase tracking-widest text-foreground flex items-center gap-3">
+      <div className="flex flex-wrap items-end justify-between gap-4 border-b-4 border-border pb-4">
+        <h2 className="flex items-center gap-3 text-3xl font-bold tracking-widest text-foreground uppercase">
           <Terminal className="text-primary" size={32} />
           System Logs
         </h2>
         <button
           onClick={fetchLogs}
           disabled={status === 'loading'}
-          className="bg-card text-foreground px-4 py-2 text-sm font-bold uppercase tracking-widest border-2 border-border hover:bg-foreground hover:text-background hover:border-foreground transition-all disabled:opacity-50 shadow-[4px_4px_0px_0px_var(--brutalist-shadow)] hover:-translate-y-0.5 flex items-center gap-2"
+          className="flex items-center gap-2 border-2 border-border bg-card px-4 py-2 text-sm font-bold tracking-widest text-foreground uppercase shadow-[4px_4px_0px_0px_var(--brutalist-shadow)] transition-all hover:-translate-y-0.5 hover:border-foreground hover:bg-foreground hover:text-background disabled:opacity-50"
         >
           <RefreshCw size={16} className={status === 'loading' ? 'animate-spin' : ''} />
           {status === 'loading' ? 'Polling...' : 'Flush & Refresh'}
@@ -74,10 +78,9 @@ export default function LogsPage() {
       </div>
 
       {/* Brutalist Terminal Interface */}
-      <div className="bg-card p-6 md:p-8 border-4 border-border shadow-[12px_12px_0px_0px_var(--brutalist-shadow)] font-mono text-sm overflow-x-auto relative min-h-[400px] flex flex-col">
-        
+      <div className="relative flex min-h-[400px] flex-col overflow-x-auto border-4 border-border bg-card p-6 font-mono text-sm shadow-[12px_12px_0px_0px_var(--brutalist-shadow)] md:p-8">
         {/* Terminal Header Bar */}
-        <div className="flex items-center gap-3 border-b-2 border-border/20 pb-4 mb-4 text-foreground/50 uppercase tracking-widest text-xs font-bold">
+        <div className="mb-4 flex items-center gap-3 border-b-2 border-border/20 pb-4 text-xs font-bold tracking-widest text-foreground/50 uppercase">
           <ShieldCheck size={16} />
           <span>NEXUS_OS // AUDIT_DAEMON // TAIL -N 50</span>
         </div>
@@ -85,42 +88,56 @@ export default function LogsPage() {
         {/* Dynamic State Rendering */}
         <div className="flex-1">
           {status === 'loading' && logs.length === 0 ? (
-             <div className="flex items-center gap-3 text-foreground/50 animate-pulse">
-               <div className="w-2 h-4 bg-primary animate-ping"></div>
-               <p>Establishing secure connection to audit volume...</p>
-             </div>
+            <div className="flex animate-pulse items-center gap-3 text-foreground/50">
+              <div className="h-4 w-2 animate-ping bg-primary"></div>
+              <p>Establishing secure connection to audit volume...</p>
+            </div>
           ) : status === 'error' ? (
-             <div className="text-red-500 font-bold space-y-2">
-               <div className="flex items-center gap-2">
-                 <AlertTriangle size={18} />
-                 <span>[SYS_ERR] Core dump executed. Directory mapping failed.</span>
-               </div>
-               <p className="pl-6 opacity-80">Exception: {errorMessage}</p>
-             </div>
+            <div className="space-y-2 font-bold text-red-500">
+              <div className="flex items-center gap-2">
+                <AlertTriangle size={18} />
+                <span>[SYS_ERR] Core dump executed. Directory mapping failed.</span>
+              </div>
+              <p className="pl-6 opacity-80">Exception: {errorMessage}</p>
+            </div>
           ) : logs.length === 0 ? (
-             <div className="text-foreground/50">
-               <p>{'>'} Audit ledger initialized.</p>
-               <p>{'>'} 0 events recorded in current matrix.</p>
-               <div className="w-2 h-4 bg-primary animate-pulse mt-2"></div>
-             </div>
+            <div className="text-foreground/50">
+              <p>{'>'} Audit ledger initialized.</p>
+              <p>{'>'} 0 events recorded in current matrix.</p>
+              <div className="mt-2 h-4 w-2 animate-pulse bg-primary"></div>
+            </div>
           ) : (
             <ul className="space-y-3">
               {logs.map((log) => (
-                <li key={log.id} className="flex flex-col md:flex-row md:items-start gap-2 md:gap-4 hover:bg-foreground/5 p-1 -mx-1 transition-colors">
-                  <span className="text-foreground/40 shrink-0">
-                    [{log.created_at ? new Date(log.created_at).toISOString().replace('T', ' ').slice(0, 19) : 'UNKNOWN'}]
+                <li
+                  key={log.id}
+                  className="-mx-1 flex flex-col gap-2 p-1 transition-colors hover:bg-foreground/5 md:flex-row md:items-start md:gap-4"
+                >
+                  <span className="shrink-0 text-foreground/40">
+                    [
+                    {log.created_at
+                      ? new Date(log.created_at).toISOString().replace('T', ' ').slice(0, 19)
+                      : 'UNKNOWN'}
+                    ]
                   </span>
-                  <span className={`shrink-0 uppercase tracking-wider font-bold ${getLevelColor(log.action)}`}>
+                  <span
+                    className={`shrink-0 font-bold tracking-wider uppercase ${getLevelColor(log.action)}`}
+                  >
                     [{log.action}]
                   </span>
-                  <span className="text-foreground break-words">
-                    <span className="font-bold text-primary">{log.actor_id || 'SYSTEM'}</span> executed <span className="underline decoration-border/50 underline-offset-2">{log.action}</span> on {log.entity_type} ({log.entity_id})
+                  <span className="break-words text-foreground">
+                    <span className="font-bold text-primary">{log.actor_id || 'SYSTEM'}</span>{' '}
+                    executed{' '}
+                    <span className="underline decoration-border/50 underline-offset-2">
+                      {log.action}
+                    </span>{' '}
+                    on {log.entity_type} ({log.entity_id})
                   </span>
                 </li>
               ))}
-              <li className="pt-4 flex items-center gap-2 text-foreground/50">
+              <li className="flex items-center gap-2 pt-4 text-foreground/50">
                 <span>{'>'} EOF</span>
-                <div className="w-2 h-4 bg-primary animate-pulse"></div>
+                <div className="h-4 w-2 animate-pulse bg-primary"></div>
               </li>
             </ul>
           )}

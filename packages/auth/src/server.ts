@@ -1,5 +1,7 @@
-import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
+
+import { createServerClient } from '@supabase/ssr';
+
 import type { Database } from '@auibsal/database';
 
 export async function createClient() {
@@ -16,26 +18,20 @@ export async function createClient() {
 
   // Injecting the <Database> generic secures all server-side queries,
   // Server Actions, and Route Handlers.
-  return createServerClient<Database>(
-    supabaseUrl,
-    supabaseAnonKey,
-    {
-      cookies: {
-        getAll() {
-          return cookieStore.getAll();
-        },
-        setAll(cookiesToSet) {
-          try {
-            cookiesToSet.forEach(({ name, value, options }) =>
-              cookieStore.set(name, value, options)
-            );
-          } catch {
-            // The `setAll` method was called from a Server Component.
-            // Next.js does not allow mutating cookies in Server Components.
-            // This is safe to ignore as long as your middleware handles the token refresh.
-          }
-        },
+  return createServerClient<Database>(supabaseUrl, supabaseAnonKey, {
+    cookies: {
+      getAll() {
+        return cookieStore.getAll();
       },
-    }
-  );
+      setAll(cookiesToSet) {
+        try {
+          cookiesToSet.forEach(({ name, value, options }) => cookieStore.set(name, value, options));
+        } catch {
+          // The `setAll` method was called from a Server Component.
+          // Next.js does not allow mutating cookies in Server Components.
+          // This is safe to ignore as long as your middleware handles the token refresh.
+        }
+      },
+    },
+  });
 }

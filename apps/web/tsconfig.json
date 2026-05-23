@@ -2,7 +2,7 @@
   "extends": "@auibsal/config/tsconfig.base.json",
   "compilerOptions": {
     "baseUrl": ".",
-    // 1. Explicitly define the DOM environment and JSX transform 
+    // 1. Explicitly define the DOM environment and JSX transform
     // to prevent the Next.js compiler from automatically rewriting this file.
     "lib": ["dom", "dom.iterable", "esnext"],
     "jsx": "preserve",
@@ -17,14 +17,9 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": [
-    "next-env.d.ts", 
-    "**/*.ts", 
-    "**/*.tsx", 
-    ".next/types/**/*.ts"
-  ],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
   "exclude": [
-    "node_modules", 
+    "node_modules",
     ".turbo" // 2. Enforce the cache blackout
   ]
 }

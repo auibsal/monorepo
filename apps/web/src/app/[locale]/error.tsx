@@ -1,14 +1,16 @@
 'use client';
 
 import { useEffect } from 'react';
-import { useTranslations, useLocale } from 'next-intl';
+
+import { useLocale, useTranslations } from 'next-intl';
+
 import InteractiveErrorState from '@auibsal/ui/components/InteractiveErrorState';
 
-export default function WebError({ 
-  error, 
-  reset 
-}: { 
-  error: Error & { digest?: string }; 
+export default function WebError({
+  error,
+  reset,
+}: {
+  error: Error & { digest?: string };
   reset: () => void;
 }) {
   const t = useTranslations('Error');
@@ -20,7 +22,7 @@ export default function WebError({
   }, [error]);
 
   return (
-    <InteractiveErrorState 
+    <InteractiveErrorState
       code="500_FATAL"
       title={t('title')}
       message={t('description')}
