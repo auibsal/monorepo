@@ -1,7 +1,35 @@
 {
   "recommendations": [
+    // =========================
+    // Core Formatting & Linting
+    // =========================
     "esbenp.prettier-vscode",
     "dbaeumer.vscode-eslint",
-    "bradlc.vscode-tailwindcss"
+
+    // =========================
+    // UI & Styling
+    // =========================
+    "bradlc.vscode-tailwindcss",
+
+    // =========================
+    // TypeScript Enhancements
+    // =========================
+    "yoavbls.pretty-ts-errors",
+
+    // =========================
+    // Database Infrastructure
+    // =========================
+    "supabase.supabase-vscode",
+    "Prisma.prisma",
+
+    // =========================
+    // Testing Pipelines
+    // =========================
+    "ms-playwright.playwright",
+
+    // =========================
+    // Tooling & Utilities
+    // =========================
+    "mikestead.dotenv"
   ]
 }
