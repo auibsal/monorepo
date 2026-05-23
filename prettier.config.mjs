@@ -11,22 +11,25 @@ const config = {
 
   // Plugins
   // Note: prettier-plugin-tailwindcss MUST remain the last plugin in the array
-  plugins: ['@trivago/prettier-plugin-sort-imports', 'prettier-plugin-tailwindcss'],
+  plugins: ['@ianvs/prettier-plugin-sort-imports', 'prettier-plugin-tailwindcss'],
 
-  // Import Sorting Configuration
+  // Import Sorting Configuration (@ianvs syntax)
   importOrder: [
     '^(react/(.*)$)|^(react$)',
     '^(next/(.*)$)|^(next$)',
     '<THIRD_PARTY_MODULES>',
+    '',
     '^@auibsal/(.*)$',
+    '',
     '^@/(.*)$',
     '^[./]',
   ],
-  importOrderSeparation: true,
-  importOrderSortSpecifiers: true,
+  // @ianvs handles separation via empty strings in the array above, but we keep TS parsing strict
+  importOrderParserPlugins: ['typescript', 'jsx', 'decorators-legacy'],
+  importOrderTypeScriptVersion: '5.0.0',
 
-  // Tailwind Configuration (Allows Prettier to read your v4 classes)
-  tailwindConfig: './packages/ui/src/styles/globals.css',
+  // Tailwind Configuration (v4 CSS Stylesheet)
+  tailwindStylesheet: './packages/ui/src/styles/globals.css',
   tailwindFunctions: ['clsx', 'cva', 'cn'],
 };
 
