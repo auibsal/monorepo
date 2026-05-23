@@ -16,7 +16,7 @@ permissions:
 
 jobs:
   build-and-test:
-    name: Build, Lint & Typecheck
+    name: Build, Lint, Typecheck & Test
     runs-on: ubuntu-latest
     
     # 🛡️ Build-Time Environment Dummy Variables
@@ -24,9 +24,11 @@ jobs:
     env:
       NEXT_PUBLIC_WEB_URL: "http://localhost:3000"
       NEXT_PUBLIC_NEXUS_URL: "http://localhost:3001"
-      NEXT_PUBLIC_SUPABASE_URL: "https://ci-dummy-project.supabase.co"
+      NEXT_PUBLIC_SUPABASE_URL: "http://127.0.0.1:54321"
       NEXT_PUBLIC_SUPABASE_ANON_KEY: "ci-dummy-key"
-      POSTGRES_URL: "postgresql://postgres:postgres@localhost:5432/ci-dummy"
+      POSTGRES_PRISMA_URL: "postgresql://postgres:postgres@127.0.0.1:54322/ci-dummy"
+      POSTGRES_URL_NON_POOLING: "postgresql://postgres:postgres@127.0.0.1:5432/ci-dummy"
+      POSTGRES_URL: "postgresql://postgres:postgres@127.0.0.1:5432/ci-dummy"
       RESEND_API_KEY: "re_dummy_key"
 
     steps:
@@ -36,10 +38,11 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@v4
           
-      - name: Setup Node.js 24
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 24
+          # Reads directly from the universal file we established
+          node-version-file: '.node-version'
           cache: 'pnpm'
 
       - name: Cache Turborepo
@@ -55,10 +58,13 @@ jobs:
         run: pnpm install --frozen-lockfile
         
       - name: Verify Formatting
-        run: pnpm prettier --check "**/*.{ts,tsx,md,json,mjs,css}"
+        run: pnpm run format:check
         
       - name: Run Linters & Typecheck
         run: pnpm turbo run lint typecheck
         
       - name: Build Applications
         run: pnpm turbo run build
+        
+      - name: Run End-to-End Tests
+        run: pnpm test
