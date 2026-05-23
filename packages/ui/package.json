@@ -11,10 +11,10 @@
     "./styles/globals.css": "./src/styles/globals.css"
   },
   "scripts": {
-    "lint": "eslint .",
+    "lint": "eslint . --cache --max-warnings 0",
     "typecheck": "tsc --noEmit",
     "test": "node --import tsx --test src/**/*.test.ts",
-    "clean": "rm -rf .turbo node_modules"
+    "clean": "rm -rf dist .turbo node_modules"
   },
   "dependencies": {
     "@base-ui/react": "^1.5.0",
