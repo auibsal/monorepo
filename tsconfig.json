@@ -1,8 +1,26 @@
 {
   "extends": "@auibsal/config/tsconfig.base.json",
   "compilerOptions": {
-    "baseUrl": "."
+    "baseUrl": ".",
+    "noEmit": true
   },
-  "include": ["*.ts", "*.js", "*.mjs", "*.cjs"],
-  "exclude": ["apps", "packages", "node_modules", ".turbo", "dist"]
+  "include": [
+    "*.ts",
+    "*.js",
+    "*.mjs",
+    "*.cjs",
+    ".*.ts",
+    ".*.js",
+    ".*.mjs",
+    ".*.cjs"
+  ],
+  "exclude": [
+    "apps",
+    "packages",
+    "node_modules",
+    ".turbo",
+    "dist",
+    "coverage",
+    "*.tsbuildinfo"
+  ]
 }
