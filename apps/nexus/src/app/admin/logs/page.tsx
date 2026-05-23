@@ -4,18 +4,13 @@ import { useState, useEffect } from 'react';
 import { createClient } from '@auibsal/auth/client';
 import { Terminal, RefreshCw, AlertTriangle, ShieldCheck } from 'lucide-react';
 
-// Establish the strict cryptographic shape of the audit ledger
-type AuditLog = {
-  id: string;
-  created_at: string;
-  level: 'info' | 'warn' | 'critical';
-  event: string;
-  actor: string;
-  ip_address: string | null;
-};
+import { Tables } from '@auibsal/database';
+
+// Establish the strict cryptographic shape of the audit ledger natively
+type SystemLog = Tables<'system_logs'>;
 
 export default function LogsPage() {
-  const [logs, setLogs] = useState<AuditLog[]>([]);
+  const [logs, setLogs] = useState<SystemLog[]>([]);
   const [status, setStatus] = useState<'loading' | 'idle' | 'error'>('loading');
   const [errorMessage, setErrorMessage] = useState('');
 
@@ -30,15 +25,15 @@ export default function LogsPage() {
       // If this table is not yet provisioned in your database schema, 
       // the catch block will seamlessly render a terminal-authentic failure state.
       const { data, error } = await supabase
-        .from('audit_logs')
+        .from('system_logs')
         .select('*')
         .order('created_at', { ascending: false })
         .limit(50);
 
       if (error) throw error;
 
-      // Type cast the validated payload to eliminate the 'any' bypass
-      setLogs((data as AuditLog[]) || []);
+      // Type cast the validated payload to eliminate the 'any' bypass natively mapped to the database definition
+      setLogs(data || []);
       setStatus('idle');
     } catch (err: unknown) {
       setStatus('error');
@@ -51,11 +46,11 @@ export default function LogsPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Helper to color-code terminal output based on severity
-  const getLevelColor = (level: string) => {
-    switch (level) {
-      case 'critical': return 'text-primary animate-pulse';
-      case 'warn': return 'text-yellow-500';
+  // Helper to color-code terminal output based on severity (using action for system logs)
+  const getLevelColor = (action: string) => {
+    switch (action) {
+      case 'DELETE': return 'text-primary animate-pulse';
+      case 'UPDATE': return 'text-yellow-500';
       default: return 'text-foreground/70';
     }
   };
@@ -113,14 +108,13 @@ export default function LogsPage() {
               {logs.map((log) => (
                 <li key={log.id} className="flex flex-col md:flex-row md:items-start gap-2 md:gap-4 hover:bg-foreground/5 p-1 -mx-1 transition-colors">
                   <span className="text-foreground/40 shrink-0">
-                    [{new Date(log.created_at).toISOString().replace('T', ' ').slice(0, 19)}]
+                    [{log.created_at ? new Date(log.created_at).toISOString().replace('T', ' ').slice(0, 19) : 'UNKNOWN'}]
                   </span>
-                  <span className={`shrink-0 uppercase tracking-wider font-bold ${getLevelColor(log.level)}`}>
-                    [{log.level}]
+                  <span className={`shrink-0 uppercase tracking-wider font-bold ${getLevelColor(log.action)}`}>
+                    [{log.action}]
                   </span>
                   <span className="text-foreground break-words">
-                    <span className="font-bold text-primary">{log.actor}</span> executed <span className="underline decoration-border/50 underline-offset-2">{log.event}</span>
-                    {log.ip_address && <span className="text-foreground/40 ml-2">(IP: {log.ip_address})</span>}
+                    <span className="font-bold text-primary">{log.actor_id || 'SYSTEM'}</span> executed <span className="underline decoration-border/50 underline-offset-2">{log.action}</span> on {log.entity_type} ({log.entity_id})
                   </span>
                 </li>
               ))}

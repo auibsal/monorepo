@@ -1,7 +1,6 @@
 import { getTranslations } from 'next-intl/server';
 import { createClient } from '@auibsal/auth/server';
 import { Calendar, MapPin } from 'lucide-react';
-import { useFormatter } from 'next-intl'; // Using the formatter for better date handling
 
 export const revalidate = 0; 
 

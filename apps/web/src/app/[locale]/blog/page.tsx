@@ -57,7 +57,6 @@ export default async function BlogPage({ params }: { params: Promise<{ locale: s
                         <div>
                             {/* Type cast bypassed natively by removing 'any' above, letting Supabase types cascade */}
                             <p className="text-sm font-bold uppercase tracking-wider text-foreground">
-                              {/* @ts-expect-error - users relationship may be an array in generic Supabase types depending on generation */}
                               {post.users?.full_name || 'Unknown Author'}
                             </p>
                             <p className="text-xs font-bold text-primary">

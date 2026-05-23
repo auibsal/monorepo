@@ -21,7 +21,7 @@ export default async function JournalIssuePage({ params }: { params: Promise<{ l
     .not('published_at', 'is', null)
     .single();
 
-  if (error || !issue || !issue.file_url) {
+  if (error || !issue || !issue.pdf_file_url) {
       notFound();
   }
 
@@ -61,7 +61,7 @@ export default async function JournalIssuePage({ params }: { params: Promise<{ l
       {/* Brutalist PDF Viewer Frame anchored to dark mode tokens */}
       <div className="bg-card p-2 border-4 border-border shadow-[12px_12px_0px_0px_var(--brutalist-shadow)] h-[80vh] w-full">
          <iframe 
-            src={issue.file_url} 
+            src={issue.pdf_file_url}
             className="w-full h-full border-2 border-border" 
             title={isAr ? issue.title_ar : issue.title_en} 
          />

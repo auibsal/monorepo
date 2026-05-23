@@ -56,9 +56,8 @@ export default async function BlogPostPage({ params }: { params: Promise<{ local
                 <User size={24} />
             </div>
             <div>
-                {/* Supabase types resolved via standard TS expectation rather than 'any' wiping */}
+                {/* Supabase types resolved natively via generated relation schemas */}
                 <p className="text-sm font-bold uppercase tracking-wider text-foreground">
-                    {/* @ts-expect-error - Joined relationship type resolution */}
                     {post.users?.full_name || 'Unknown Author'}
                 </p>
                 <p className="text-xs font-bold text-primary">
