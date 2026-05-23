@@ -1,15 +1,24 @@
 {
   "extends": "@auibsal/config/tsconfig.base.json",
   "compilerOptions": {
+    "rootDir": "./src",
+    "outDir": "./dist",
+
+    // =========================
+    // Monorepo Type Caching
+    // =========================
+    // Allows consuming apps to read from a cached API signature for instant IntelliSense
+    "composite": true,
     "declaration": true,
     "declarationMap": true,
-    "sourceMap": true,
-    "outDir": "./dist",
-    "rootDir": "./src",
 
+    // =========================
+    // Clean Output
+    // =========================
+    // Overrides the base "noEmit: true" to output ONLY definitions, zero raw JS.
     "noEmit": false,
-    "emitDeclarationOnly": true
+    "emitDeclarationOnly": true,
+    "sourceMap": false
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist", ".turbo"]
+  "include": ["src/**/*"]
 }
