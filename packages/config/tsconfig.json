@@ -2,8 +2,7 @@
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
     "module": "NodeNext",
-    "moduleResolution": "NodeNext",
-    "allowJs": true
+    "moduleResolution": "NodeNext"
   },
   "include": ["eslint.config.ts"]
 }
