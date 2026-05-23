@@ -51,10 +51,14 @@ export default function KanbanBoard() {
     const newStatus = destination.droppableId as SubmissionStatus;
 
     // Optimistic UI update
-    setSubmissions(prev => ({
-      ...prev,
-      [draggableId]: { ...prev[draggableId], status: newStatus }
-    }));
+    setSubmissions(prev => {
+      const existing = prev[draggableId];
+      if (!existing) return prev;
+      return {
+        ...prev,
+        [draggableId]: { ...existing, status: newStatus }
+      };
+    });
 
     // Database sync
     const { error } = await supabase
@@ -78,7 +82,7 @@ export default function KanbanBoard() {
       rejected: [],
     };
     Object.values(submissions).forEach(sub => {
-      if (grouped[sub.status]) {
+      if (sub.status && grouped[sub.status]) {
         grouped[sub.status].push(sub);
       }
     });

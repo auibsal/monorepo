@@ -86,8 +86,6 @@ export default async function proxy(request: NextRequest) {
   supabaseResponse.cookies.getAll().forEach((cookie) => {
     // CRITICAL FIX: Spreading the entire cookie object ensures httpOnly, secure, and maxAge are preserved
     finalResponse.cookies.set({
-      name: cookie.name,
-      value: cookie.value,
       ...cookie,
     });
   });

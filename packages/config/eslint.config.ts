@@ -44,9 +44,9 @@ export const nextConfig: Linter.Config[] = [
   {
     files: ["**/*.{ts,tsx,js,jsx}"],
     plugins: {
-      react: reactPlugin,
-      "react-hooks": hooksPlugin,
-      "@next/next": nextPlugin,
+      react: reactPlugin as any,
+      "react-hooks": hooksPlugin as any,
+      "@next/next": nextPlugin as any,
     },
     languageOptions: {
       parserOptions: {

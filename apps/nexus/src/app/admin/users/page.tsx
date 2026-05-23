@@ -32,7 +32,7 @@ export default function UsersPage() {
   const saveRole = async (userId: string, newRole: Role) => {
     if (!supabase) return;
     setSavingId(userId);
-    const { error } = await supabase.from('users').update({ role: newRole }).eq('id', userId);
+    const { error } = await supabase.from('users').update({ role: newRole as import('@auibsal/database').Database['public']['Enums']['user_role'] }).eq('id', userId);
     setSavingId(null);
     if (error) {
       alert('Failed to update role: ' + error.message);
@@ -90,7 +90,7 @@ export default function UsersPage() {
                   </td>
                   <td className="px-6 py-4 text-sm">
                     <select
-                      value={user.role}
+                      value={user.role || 'member'}
                       onChange={(e) => handleRoleChange(user.id, e.target.value as Role)}
                       className="border-2 border-border rounded-none p-2 text-sm bg-background font-bold text-foreground cursor-pointer focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary hover:bg-foreground/5 transition-colors uppercase tracking-wider"
                     >
@@ -101,7 +101,7 @@ export default function UsersPage() {
                   </td>
                   <td className="px-6 py-4 text-sm font-bold uppercase tracking-wider text-right">
                     <button
-                      onClick={() => saveRole(user.id, user.role)}
+                      onClick={() => saveRole(user.id, user.role || 'member')}
                       disabled={savingId === user.id}
                       className="inline-flex items-center gap-2 bg-foreground text-background px-4 py-2 text-xs font-bold uppercase tracking-widest border-2 border-border hover:bg-primary hover:border-primary transition-all disabled:opacity-50 shadow-[4px_4px_0px_0px_var(--brutalist-shadow)] hover:shadow-[6px_6px_0px_0px_var(--brutalist-shadow)] hover:-translate-y-0.5"
                     >

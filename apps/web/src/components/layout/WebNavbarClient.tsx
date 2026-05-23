@@ -27,16 +27,16 @@ export default function WebNavbarClient({
     const href = queryString ? `${pathname}?${queryString}` : pathname;
     
     // Explicitly pass scroll: false to prevent the browser from jumping to the top of the page
-    router.replace(href as any, { locale: targetLocale, scroll: false });
+    router.replace(href, { locale: targetLocale as 'en' | 'ar', scroll: false });
   };
 
   return (
     <Navbar
-      locale={locale}
+      locale={locale as 'en' | 'ar'}
       links={links}
       homeUrl={homeUrl}
       platform="web"
-      targetLocale={targetLocale}
+      targetLocale={targetLocale as 'en' | 'ar'}
       nexusUrl={nexusUrl}
       onLanguageToggle={handleLanguageToggle}
     />

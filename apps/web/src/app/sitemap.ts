@@ -70,7 +70,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const { data: submissions } = await supabase
     .from('submissions')
     .select('id, submitted_at')
-    .in('status', ['public', 'accepted']);
+    .in('status', ['accepted']);
 
   if (submissions) {
     submissions.forEach((sub) => {

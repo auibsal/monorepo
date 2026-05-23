@@ -78,7 +78,7 @@ export default function JournalPage() {
         issue_number: parseInt(issue),
         title_en: titleEn,
         title_ar: titleAr,
-        file_url: publicUrl 
+        pdf_file_url: publicUrl
       });
 
       if (dbError) throw dbError;
@@ -115,17 +115,17 @@ export default function JournalPage() {
                     <div className="flex justify-between items-start mb-6">
                         <div>
                             <h3 className="text-xl font-bold uppercase tracking-tight">Vol. {iss.volume_number}, Issue {iss.issue_number}</h3>
-                            <p className="text-xs font-bold text-primary uppercase tracking-widest mt-2">{new Date(iss.published_at).toLocaleDateString()}</p>
+                            <p className="text-xs font-bold text-primary uppercase tracking-widest mt-2">{iss.published_at ? new Date(iss.published_at).toLocaleDateString() : 'Unpublished'}</p>
                         </div>
-                        <span className="bg-foreground text-background py-1.5 px-3 border-2 border-transparent text-xs font-bold uppercase tracking-wider">Published</span>
+                        <span className="bg-foreground text-background py-1.5 px-3 border-2 border-transparent text-xs font-bold uppercase tracking-wider">{iss.published_at ? 'Published' : 'Draft'}</span>
                     </div>
                     <div className="space-y-2 border-t-2 border-border/10 pt-4">
                       <p className="font-bold text-sm text-foreground uppercase tracking-wide"><span className="text-xs font-medium text-foreground/50 mr-1">EN:</span> {iss.title_en}</p>
                       <p className="font-bold text-sm text-foreground text-right" dir="rtl"><span className="text-xs font-medium text-foreground/50 ml-1" dir="ltr">AR:</span> {iss.title_ar}</p>
                     </div>
                 </div>
-                {iss.file_url && (
-                    <a href={iss.file_url} target="_blank" rel="noopener noreferrer" className="text-primary font-bold text-sm hover:text-foreground uppercase tracking-widest inline-flex items-center gap-2 mt-8 group">
+                {iss.pdf_file_url && (
+                    <a href={iss.pdf_file_url} target="_blank" rel="noopener noreferrer" className="group flex items-center justify-between p-4 bg-background border-t-2 border-border/10 text-sm font-bold uppercase tracking-widest hover:bg-primary hover:text-background transition-colors cursor-pointer">
                       View PDF <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform rtl:rotate-180 rtl:group-hover:-translate-x-1" />
                     </a>
                 )}
@@ -171,7 +171,7 @@ export default function JournalPage() {
                 required
                 accept="application/pdf"
                 onChange={(e) => {
-                  setFile(e.target.files ? e.target.files[0] : null);
+                  setFile((e.target.files && e.target.files.length > 0) ? (e.target.files[0] || null) : null);
                   if(status === 'success') setStatus('idle');
                   if(status === 'error') setStatus('idle');
                 }}

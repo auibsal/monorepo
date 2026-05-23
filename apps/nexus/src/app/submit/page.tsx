@@ -3,12 +3,13 @@
 import { useState } from 'react';
 import { createClient } from '@auibsal/auth/client';
 import { RichTextEditor } from '@auibsal/ui/components/RichTextEditor';
+import { SubmissionType } from '@auibsal/database';
 import Link from 'next/link';
 import { Upload, CheckSquare, ShieldAlert, FileText, Image as ImageIcon, ArrowLeft } from 'lucide-react';
 
 export default function SubmitWorkPage() {
   const [title, setTitle] = useState('');
-  const [type, setType] = useState('essay');
+  const [type, setType] = useState<SubmissionType>('essay');
   const [file, setFile] = useState<File | null>(null);
   const [content, setContent] = useState('');
   const [status, setStatus] = useState<'idle' | 'uploading' | 'success' | 'error'>('idle');
@@ -16,7 +17,7 @@ export default function SubmitWorkPage() {
 
   const supabase = createClient();
 
-  const isVisualArt = type === 'visual_art';
+  const isVisualArt = false; // Temporarily overriding visual_art logic as it was removed from the schema
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -156,7 +157,7 @@ export default function SubmitWorkPage() {
               id="type"
               value={type}
               onChange={(e) => {
-                setType(e.target.value);
+                setType(e.target.value as SubmissionType);
                 setFile(null); 
               }}
               className="w-full p-4 border-4 border-border bg-background focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all rounded-none text-foreground font-bold text-base md:text-lg cursor-pointer hover:bg-foreground/5"
@@ -165,7 +166,6 @@ export default function SubmitWorkPage() {
               <option value="fiction">Fiction</option>
               <option value="poetry">Poetry</option>
               <option value="theatre">Theatre / Screenplay</option>
-              <option value="visual_art">Visual Art</option>
               <option value="other">Other</option>
             </select>
           </div>

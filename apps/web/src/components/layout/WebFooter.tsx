@@ -26,5 +26,5 @@ export default async function Footer({ locale }: { locale: string }) {
     designedBy: t('designedBy'),
   };
 
-  return <UIFooter locale={locale} dictionary={dictionary} />;
+  return <UIFooter locale={locale as 'en' | 'ar'} dictionary={dictionary} />;
 }

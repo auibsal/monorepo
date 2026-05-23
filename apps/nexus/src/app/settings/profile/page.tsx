@@ -256,7 +256,7 @@ export default function ProfilePage() {
         <div className="pt-8 border-t-4 border-border mt-8">
           <button
             type="submit"
-            disabled={status === 'saving' || status === 'loading'}
+            disabled={status === 'saving'}
             className="w-full bg-foreground text-background font-bold uppercase tracking-widest px-6 py-4 border-4 border-border hover:bg-primary hover:border-primary transition-all disabled:opacity-50 flex items-center justify-center gap-3 shadow-[4px_4px_0px_0px_var(--brutalist-shadow)] md:shadow-[6px_6px_0px_0px_var(--brutalist-shadow)] hover:shadow-[6px_6px_0px_0px_var(--brutalist-shadow)] md:hover:shadow-[8px_8px_0px_0px_var(--brutalist-shadow)] hover:-translate-y-1 text-sm md:text-base"
           >
             {status === 'saving' ? (
