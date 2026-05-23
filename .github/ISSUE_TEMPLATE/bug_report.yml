@@ -1,32 +1,84 @@
 name: 🐛 Bug Report
-description: Report an issue with the AUIB SAL web platform or Nexus dashboard
+description: Report an issue with the platform applications, shared packages, or core infrastructure
 labels: ["bug", "triage"]
 body:
+  - type: markdown
+    attributes:
+      value: |
+        ### 🛡️ Direct Routing Notice
+        If this issue contains a potential **security vulnerability**, do not submit it here. Please immediately route a private disclosure report to **security@auibsal.org** or utilize the Security tab directly.
+
   - type: dropdown
-    id: environment
+    id: workspace
     attributes:
-      label: Which application is affected?
+      label: Affected Workspace Scope
+      description: Which part of the monorepo is experiencing this issue?
       options:
-        - apps/web (Public Platform)
-        - apps/nexus (Editorial Dashboard)
-        - packages/ui (Component Library)
+        - "apps/web (Public Platform)"
+        - "apps/nexus (Editorial Dashboard)"
+        - "packages/ui (Brutalist Component Library)"
+        - "packages/database (Supabase Schemas & Migrations)"
+        - "packages/auth (SSR Session & Middleware Logic)"
+        - "packages/config (Tooling, Linter, & Design Tokens)"
+        - "Root / CI/CD Infrastructure"
     validations:
       required: true
+
   - type: textarea
-    id: description
+    id: current-behavior
     attributes:
-      label: Describe the bug
-      description: A clear and concise description of what the bug is.
+      label: Current Behavior
+      description: What is the system currently doing? Provide a clear and descriptive summary of the failure state.
     validations:
       required: true
+
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: Expected Behavior
+      description: What should the system be doing instead?
+    validations:
+      required: true
+
   - type: textarea
     id: reproduction
     attributes:
       label: Steps to Reproduce
-      description: How can we trigger this bug?
+      description: Provide the exact steps needed to trigger this bug consistently.
       value: |
         1. Go to '...'
         2. Click on '....'
-        3. See error
+        3. Authenticate via '...'
+        4. See error execution
     validations:
       required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Debug Logs & Stack Traces
+      description: Paste any relevant browser console logs, terminal outputs, or database error chunks here.
+      render: shell
+    validations:
+      required: false
+
+  - type: input
+    id: environment-info
+    attributes:
+      label: Environment & Runtime Details
+      description: Browser/OS versions, local Node execution version, or specific deployment states (e.g., Chrome 124, Node 24.0.0, Local Dev vs Production).
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: assertions
+    attributes:
+      label: Pre-Submission Assertions
+      description: Please verify these core parameters before opening this issue.
+      options:
+        - label: I have verified this issue is not a duplicate of an active or resolved report.
+          required: true
+        - label: I confirm my local environment is fully synced with the specified engine configurations (.node-version).
+          required: true
+        - label: This report does not contain private user metadata or actionable security exploits.
+          required: true
