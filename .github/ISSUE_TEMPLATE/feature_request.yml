@@ -1,0 +1,25 @@
+name: ✨ Feature Request
+description: Propose a new feature, component, or architectural change
+labels: ["enhancement", "discussion"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: The Problem Context
+      description: Is your feature request related to a specific problem or friction point? (e.g., "I'm always frustrated when...")
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed Solution
+      description: Describe the ideal outcome, functionality, or API design you would like to see implemented.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternative Solutions Considered
+      description: Have you thought of any other ways to solve this? (Optional)
+    validations:
+      required: false
