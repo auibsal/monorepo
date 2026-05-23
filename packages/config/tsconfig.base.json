@@ -1,26 +1,40 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
   "compilerOptions": {
+    // =========================
+    // Core Engine
+    // =========================
     "target": "es2022",
     "lib": ["dom", "dom.iterable", "esnext"],
-    "allowJs": true,
-    "skipLibCheck": true,
-    "strict": true,
-    "forceConsistentCasingInFileNames": true,
-    "noEmit": true,
-    "esModuleInterop": true,
     "module": "esnext",
     "moduleResolution": "bundler",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
+    "esModuleInterop": true,
+    "allowJs": true,
     "jsx": "preserve",
+    
+    // =========================
+    // Build & Performance
+    // =========================
+    "noEmit": true,
+    "isolatedModules": true,
     "incremental": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
 
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
+    // =========================
+    // Strict Type-Checking
+    // =========================
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
     "noImplicitReturns": true,
-    "noUncheckedIndexedAccess": true
+    "noUncheckedIndexedAccess": true,
+    
+    // 🛡️ Database Safety: Prevents passing explicit `undefined` to optional database fields
+    "exactOptionalPropertyTypes": true
+    
+    // Note: noUnusedLocals and noUnusedParameters are intentionally omitted. 
+    // They are handled exclusively by ESLint to allow for `_` prefixed ignores.
   },
   "exclude": ["node_modules", "dist", ".next", ".turbo"]
 }
