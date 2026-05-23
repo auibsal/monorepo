@@ -4,7 +4,7 @@ import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Underline from '@tiptap/extension-underline';
 import TextAlign from '@tiptap/extension-text-align';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Bold,
   Italic,
@@ -48,6 +48,12 @@ const ToolbarButton = ({
 );
 
 export function RichTextEditor({ content, onChange }: { content: string, onChange: (content: string) => void }) {
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -58,8 +64,6 @@ export function RichTextEditor({ content, onChange }: { content: string, onChang
       }),
     ],
     content,
-    // Prevents React 18 hydration mismatch errors in Next.js
-    immediatelyRender: false, 
     editorProps: {
       attributes: {
         // Enforce max-width on the typing area to prevent horizontal text overflow
@@ -80,7 +84,7 @@ export function RichTextEditor({ content, onChange }: { content: string, onChang
     }
   }, [content, editor]);
 
-  if (!editor) {
+  if (!isMounted || !editor) {
     return null;
   }
 

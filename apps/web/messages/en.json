@@ -47,7 +47,8 @@
     "article1Title": "The Genesis of Letters at AUIB",
     "article1Authors": "Authored by Shaheen Farjo. Contributions by Hussein, Remas, and Jude.",
     "article1Excerpt": "An exploration into the founding necessity of a literary society within a burgeoning university environment, examining the role of humanities in a modern technical world.",
-    "readMore": "Read Full Essay"
+    "readMore": "Read Full Essay",
+    "noIssues": "No published issues yet."
   },
   "AboutPage": {
     "title": "About the Society",
@@ -68,7 +69,10 @@
     "title": "Society News",
     "subtitle": "Latest updates and announcements.",
     "placeholderTitle": "Coming Soon",
-    "placeholderDesc": "Our first blog post will be published here."
+    "placeholderDesc": "Our first blog post will be published here.",
+    "noPosts": "No blog posts published yet.",
+    "readArticle": "Read Article",
+    "backToBlog": "Back to Blog"
   },
   "PortalPage": {
     "title": "Member Portal",

@@ -113,7 +113,7 @@ export default function Navbar({
             onClick={() => setIsOpen(!isOpen)}
             aria-expanded={isOpen}
             aria-label="Toggle navigation menu"
-            className="p-2 border-2 border-transparent hover:border-white hover:bg-white hover:text-auib-red transition-colors flex items-center gap-2 font-bold uppercase tracking-widest text-sm md:hidden"
+            className="p-2 border-2 border-transparent hover:border-white hover:bg-white hover:text-auib-red transition-colors flex items-center gap-2 font-bold uppercase tracking-widest text-sm"
           >
             {isOpen ? <X size={24} aria-hidden="true" /> : <Menu size={24} aria-hidden="true" />}
             <span className="hidden sm:inline">Menu</span>
@@ -123,7 +123,7 @@ export default function Navbar({
 
       {/* Hamburger Menu Overlay */}
       {isOpen && (
-        <div className="absolute top-20 left-0 w-full h-[calc(100vh-5rem)] overflow-y-auto bg-auib-charcoal text-white border-b-4 border-auib-red shadow-brutalist-md md:hidden">
+        <div className="absolute top-20 left-0 w-full h-[calc(100vh-5rem)] overflow-y-auto bg-auib-charcoal text-white border-b-4 border-auib-red shadow-brutalist-md">
           <div className="max-w-6xl mx-auto px-6 py-8">
             <ul className="flex flex-col gap-4 font-bold uppercase tracking-widest text-lg">
               {links.map((link) => (
