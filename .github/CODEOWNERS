@@ -1,5 +1,5 @@
 # ==========================================
-# Global Default
+# Global Default (The Ultimate Catch-All)
 # ==========================================
 # Every pull request requires review by default
 * @ShaheenFarjo
@@ -13,6 +13,7 @@
 /pnpm-lock.yaml @ShaheenFarjo
 /package.json @ShaheenFarjo
 /.npmrc @ShaheenFarjo
+/.node-version @ShaheenFarjo
 
 # ==========================================
 # CI/CD & GitHub Architecture
@@ -21,14 +22,23 @@
 /.github/ @ShaheenFarjo
 
 # ==========================================
-# Core Monorepo Packages
-# ==========================================
-# Protect the database schema and centralized formatting brain
-/packages/database/ @ShaheenFarjo
-/packages/config/ @ShaheenFarjo
-
-# ==========================================
 # Security & Environment Blueprints
 # ==========================================
 /SECURITY.md @ShaheenFarjo
 /.env.example @ShaheenFarjo
+
+# ==========================================
+# Core Monorepo Packages
+# ==========================================
+# Protect the database schema, SSR middleware, and centralized formatting brain
+/packages/auth/ @ShaheenFarjo
+/packages/database/ @ShaheenFarjo
+/packages/config/ @ShaheenFarjo
+/packages/ui/ @ShaheenFarjo
+
+# ==========================================
+# Applications
+# ==========================================
+# Application-level routing, layouts, and pages
+/apps/nexus/ @ShaheenFarjo
+/apps/web/ @ShaheenFarjo
