@@ -4,20 +4,22 @@ import { type VariantProps, cva } from 'class-variance-authority';
 import { cn } from '../../lib/utils';
 
 const buttonVariants = cva(
-  // 1. Math Fix: Changed active translations to 4px (1 in Tailwind scale) to perfectly erase the base 4px shadow.
+  // The Math Fix: Translating by 1 (4px) perfectly erases the base 4px shadow on click.
   "group/button inline-flex shrink-0 items-center justify-center rounded-none border-2 border-auib-charcoal text-sm font-bold tracking-wider whitespace-nowrap uppercase transition-all outline-none select-none focus-visible:ring-2 focus-visible:ring-auib-red focus-visible:ring-offset-2 active:translate-x-1 active:translate-y-1 active:shadow-none disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
   {
     variants: {
       variant: {
         default:
-          'bg-auib-charcoal text-white shadow-[4px_4px_0px_0px_#E63946] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0px_0px_#E63946]',
+          // Synchronized with semantic tokens: shadow-brutalist-red and var(--color-auib-red)
+          'bg-auib-charcoal text-white shadow-brutalist-red hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0px_0px_var(--color-auib-red)]',
         outline:
-          'bg-white text-auib-charcoal shadow-[4px_4px_0px_0px_#273237] hover:bg-auib-charcoal hover:text-white',
+          'bg-white text-auib-charcoal shadow-brutalist-sm hover:bg-auib-charcoal hover:text-white',
         secondary:
-          'border-transparent bg-gray-200 text-auib-charcoal shadow-[4px_4px_0px_0px_#273237] hover:border-auib-charcoal hover:bg-gray-300',
+          'border-transparent bg-gray-200 text-auib-charcoal shadow-brutalist-sm hover:border-auib-charcoal hover:bg-gray-300',
         ghost: 'border-transparent hover:bg-auib-charcoal hover:text-white',
         destructive:
-          'bg-auib-red text-white shadow-[4px_4px_0px_0px_#273237] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0px_0px_#273237]',
+          // Synchronized with semantic tokens: var(--brutalist-shadow) respects dark mode flips
+          'bg-auib-red text-white shadow-brutalist-sm hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0px_0px_var(--brutalist-shadow)]',
         link: 'border-transparent text-auib-charcoal underline-offset-4 hover:underline',
       },
       size: {
@@ -39,7 +41,6 @@ function Button({
   variant,
   size,
   ...props
-  // 2. Used React 19's native ref passthrough compatibility via standard props
 }: React.ComponentProps<typeof ButtonPrimitive> & VariantProps<typeof buttonVariants>) {
   return (
     <ButtonPrimitive
