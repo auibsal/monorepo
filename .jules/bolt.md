@@ -1,0 +1,3 @@
+## 2024-05-23 - Prevent overfetching with explicit select
+**Learning:** Supabase queries use `.select('*')` by default, which can be inefficient when large datasets or unneeded properties like JSON metadata are loaded but not rendered. Specifically, `system_logs` contains a `metadata: Json | null` column which might have large payloads that aren't rendered on the UI.
+**Action:** Instead of `select('*')`, explicitly specify the exact fields being accessed: `select('id, action, actor_id, entity_type, entity_id, created_at')`. For types in TypeScript mapped to the generated schema, use `Pick<Tables<TableName>, 'field1' | 'field2'>` instead of the full table mapping so type safety ensures we don't access fields we haven't fetched.
