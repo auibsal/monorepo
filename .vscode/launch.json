@@ -1,0 +1,17 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Next.js: Debug Nexus Dashboard",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "pnpm turbo run dev --filter=nexus"
+    },
+    {
+      "name": "Next.js: Debug Public Web",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "pnpm turbo run dev --filter=web"
+    }
+  ]
+}
