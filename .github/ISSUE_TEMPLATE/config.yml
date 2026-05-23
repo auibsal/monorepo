@@ -1,8 +1,11 @@
 # Disable blank issues to force the use of structured YAML forms
 blank_issues_enabled: false
 
-# Reroute non-bug questions to the appropriate channels
 contact_links:
   - name: 💬 General Support & Questions
-    url: https://auibsal.org
+    url: https://auibsal.org/contact
     about: Please ask general questions or request platform support through our official portal.
+    
+  - name: 🔒 Report a Security Vulnerability
+    url: https://github.com/auibsal/monorepo/security/policy
+    about: STRICTLY PROHIBITED: Do not report vulnerabilities as public issues. Click here for our private disclosure protocol.
