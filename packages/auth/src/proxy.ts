@@ -1,3 +1,5 @@
+import 'server-only';
+
 import { type NextRequest, NextResponse } from 'next/server';
 
 import { createServerClient } from '@supabase/ssr';
@@ -42,9 +44,9 @@ export async function updateSession(request: NextRequest): Promise<{
           request,
         });
 
-        // Attach the new cookies to the outgoing response
+        // Attach the new cookies to the outgoing response using strict Next.js object syntax
         cookiesToSet.forEach(({ name, value, options }) =>
-          supabaseResponse.cookies.set(name, value, options)
+          supabaseResponse.cookies.set({ name, value, ...options })
         );
       },
     },
