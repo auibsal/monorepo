@@ -6,8 +6,6 @@ import { motion } from 'framer-motion';
 
 import { cn } from '../lib/utils';
 
-// Optional: if you want to use it for class merging
-
 interface ErrorProps {
   code: string;
   title: string;
@@ -17,7 +15,7 @@ interface ErrorProps {
   isRtl?: boolean;
 }
 
-export default function InteractiveErrorState({
+export function InteractiveErrorState({
   code,
   title,
   message,
@@ -27,7 +25,7 @@ export default function InteractiveErrorState({
 }: ErrorProps) {
   const [isHovering, setIsHovering] = useState(false);
 
-  // 1. Hydration Guard State
+  // Hydration Guard State
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -36,10 +34,9 @@ export default function InteractiveErrorState({
 
   return (
     <div
-      className={cn(
-        'relative flex min-h-[80vh] w-full flex-col items-center justify-center overflow-hidden bg-background p-8 text-foreground selection:bg-auib-red selection:text-white',
-        isRtl ? 'rtl' : 'ltr'
-      )}
+      // 1. Native DOM Directionality attribute for perfect BiDi rendering
+      dir={isRtl ? 'rtl' : 'ltr'}
+      className="relative flex min-h-[80vh] w-full flex-col items-center justify-center overflow-hidden bg-background p-8 text-foreground selection:bg-auib-red selection:text-white"
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
     >
@@ -69,7 +66,7 @@ export default function InteractiveErrorState({
 
         {/* Redacted Message */}
         <div className="relative mb-12 max-w-xl">
-          <p className="relative z-0 text-lg leading-relaxed font-medium opacity-90">{message}</p>
+          <p className="relative z-0 text-lg font-medium leading-relaxed opacity-90">{message}</p>
           <motion.div
             initial={{ scaleY: 1 }}
             animate={{ scaleY: isHovering ? 0 : 1 }}
@@ -80,8 +77,10 @@ export default function InteractiveErrorState({
 
         {/* Action Button */}
         <button
+          type="button"
           onClick={onAction}
-          className="group relative overflow-hidden border-2 border-auib-charcoal bg-auib-charcoal px-8 py-4 font-mono text-sm font-bold tracking-widest text-white uppercase shadow-[4px_4px_0px_0px_rgba(20,20,20,1)] transition-all hover:translate-x-1 hover:translate-y-1 hover:shadow-none"
+          // 2. Synchronized with Tailwind v4 Brutalist Design Tokens
+          className="group relative overflow-hidden border-2 border-auib-charcoal bg-auib-charcoal px-8 py-4 font-mono text-sm font-bold tracking-widest text-white uppercase shadow-brutalist-sm transition-all hover:translate-x-1 hover:translate-y-1 hover:shadow-none"
         >
           <span className="relative z-10 mix-blend-difference">{actionText}</span>
           <motion.div
@@ -93,7 +92,7 @@ export default function InteractiveErrorState({
         </button>
       </div>
 
-      {/* 2. Hydration-Safe Background Noise */}
+      {/* Hydration-Safe Background Noise */}
       <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden opacity-[0.03]">
         {isMounted &&
           [...Array(15)].map((_, i) => (
