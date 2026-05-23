@@ -1,4 +1,4 @@
-import type { Enums } from './index';
+import type { Enums } from './types';
 
 // By tying the keys strictly to Enums<'...'>, TypeScript will throw an error
 // if you ever miss a database enum or misspell one.
