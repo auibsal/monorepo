@@ -2,27 +2,28 @@ Copyright (c) 2026 AUIB Society of Arts and Letters. All Rights Reserved.
 
 PROPRIETARY AND CONFIDENTIAL
 
+1. INTELLECTUAL PROPERTY
 This repository, including all original source code, design assets, proprietary 
 components, and database schemas, is the exclusive intellectual property of the 
-AUIB Society of Arts and Letters.
+AUIB Society of Arts and Letters. Unauthorized copying, distribution, 
+modification, reproduction, or use of these files, in whole or in part, via any 
+medium, is strictly prohibited without explicit, written permission from the 
+AUIB Society of Arts and Letters administrative board.
 
-Unauthorized copying, distribution, modification, reproduction, or use of these 
-files, via any medium, is strictly prohibited without explicit, written permission 
-from the AUIB Society of Arts and Letters administrative board.
+2. THIRD-PARTY COMPONENTS
+This software incorporates third-party open-source components, which are governed 
+by their respective licenses. Nothing in this proprietary license shall be 
+construed to alter, restrict, or claim ownership over such third-party code. 
+For a complete list of third-party licenses, see the THIRD-PARTY-NOTICES.md 
+file located in the root of this repository.
 
-THIRD-PARTY OPEN SOURCE SOFTWARE
+3. DISCLAIMER OF WARRANTY
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS 
+FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.
 
-This repository contains and utilizes third-party open-source software dependencies. 
-Nothing in this proprietary license is intended to alter, restrict, or claim 
-ownership over those open-source components. All third-party libraries, packages, 
-and frameworks remain subject to their respective original licenses (e.g., MIT, 
-Apache 2.0).
-
-DISCLAIMER OF WARRANTY AND LIABILITY
-
-This software is provided "as is", without warranty of any kind, express or 
-implied, including but not limited to the warranties of merchantability, fitness 
-for a particular purpose, and non-infringement. In no event shall the authors or 
-copyright holders be liable for any claim, damages, or other liability, whether 
-in an action of contract, tort, or otherwise, arising from, out of, or in 
-connection with the software or the use or other dealings in the software.
+4. LIMITATION OF LIABILITY
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, 
+DAMAGES, OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT, OR 
+OTHERWISE, ARISING FROM, OUT OF, OR IN CONNECTION WITH THE SOFTWARE OR THE USE 
+OR OTHER DEALINGS IN THE SOFTWARE.
