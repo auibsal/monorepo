@@ -4,11 +4,13 @@ const config = {
   semi: true,
   singleQuote: true,
   tabWidth: 2,
-  trailingComma: 'es5',
+  trailingComma: 'all',
   printWidth: 100,
   bracketSpacing: true,
+  endOfLine: 'lf',
 
   // Plugins
+  // Note: prettier-plugin-tailwindcss MUST remain the last plugin in the array
   plugins: ['@trivago/prettier-plugin-sort-imports', 'prettier-plugin-tailwindcss'],
 
   // Import Sorting Configuration
@@ -17,6 +19,7 @@ const config = {
     '^(next/(.*)$)|^(next$)',
     '<THIRD_PARTY_MODULES>',
     '^@auibsal/(.*)$',
+    '^@/(.*)$',
     '^[./]',
   ],
   importOrderSeparation: true,
