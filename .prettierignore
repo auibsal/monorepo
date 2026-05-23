@@ -1,16 +1,30 @@
-# Turborepo & Next.js Build Outputs
+# --- Build Outputs ---
 .next/
 .turbo/
 dist/
 build/
 coverage/
+*.tsbuildinfo
 
-# Dependencies
+# --- Dependencies & Lockfiles ---
 node_modules/
 pnpm-lock.yaml
 
-# Public & Static Assets
+# --- System & Editor Metadata ---
+.git/
+.DS_Store
+.vscode/
+.idea/
+
+# --- Environment & Logs ---
+.env
+.env.*
+*.log
+
+# --- Public Assets & Binary Files ---
+# Ignore the entire public directory to prevent binary processing
 public/
+# Catch-all for non-text assets if they ever sit outside /public
 *.svg
 *.png
 *.jpg
@@ -18,11 +32,7 @@ public/
 *.ico
 *.woff
 *.woff2
-
-# Environment Variables
-.env
-.env.*
-
-# Package-specific exclusions (if any apps generate raw data)
-*.csv
 *.pdf
+
+# --- Data Assets ---
+*.csv
