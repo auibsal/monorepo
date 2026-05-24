@@ -6,7 +6,8 @@ import Link from 'next/link';
 
 import { Menu, X } from 'lucide-react';
 
-import Logo from '../Logo';
+// 1. Synchronized with the named export from the previous step
+import { Logo } from '../Logo';
 
 export interface NavbarLink {
   href: string;
@@ -14,7 +15,6 @@ export interface NavbarLink {
 }
 
 export interface NavbarProps {
-  // 1. Strict literal types mapped perfectly to your Logo and routing setup
   locale: 'en' | 'ar';
   links: NavbarLink[];
   homeUrl?: string;
@@ -29,7 +29,7 @@ export interface NavbarProps {
   nexusUrl?: string;
 }
 
-export default function Navbar({
+export function Navbar({
   locale,
   links,
   homeUrl,
@@ -42,8 +42,7 @@ export default function Navbar({
   const [isOpen, setIsOpen] = useState(false);
   const logoHref = homeUrl || `/${locale}`;
 
-  // 2. Mobile Scroll Lock
-  // Prevents the page from scrolling underneath the mobile menu overlay
+  // Mobile Scroll Lock
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
@@ -59,6 +58,7 @@ export default function Navbar({
     if (platform === 'nexus') {
       return (
         <button
+          type="button"
           onClick={onSignOut}
           className="text-sm font-bold tracking-widest text-white uppercase transition-colors hover:text-auib-charcoal"
         >
@@ -71,6 +71,7 @@ export default function Navbar({
       return (
         <>
           <button
+            type="button"
             onClick={onLanguageToggle}
             className="text-sm font-bold tracking-widest text-white uppercase transition-colors hover:text-auib-charcoal"
           >
@@ -95,12 +96,11 @@ export default function Navbar({
   const rightModule = renderPlatformActions();
 
   return (
-    // 3. Removed the useless backdrop-blur for pure, flat brutalism
-    <nav className="sticky top-0 z-50 w-full border-b-4 border-auib-charcoal bg-auib-red text-white transition-colors duration-300">
+    <nav dir="auto" className="sticky top-0 z-50 w-full border-b-4 border-auib-charcoal bg-auib-red text-white transition-colors duration-300">
       <div className="mx-auto flex h-20 max-w-6xl items-center justify-between px-6">
         <Link
           href={logoHref}
-          onClick={() => setIsOpen(false)} // Ensure clicking logo closes mobile menu
+          onClick={() => setIsOpen(false)}
           className="flex items-center text-white transition-opacity hover:opacity-90"
         >
           <Logo locale={locale} className="text-xs leading-tight text-white sm:text-sm" />
@@ -110,6 +110,7 @@ export default function Navbar({
           <div className="hidden items-center gap-4 md:flex">{rightModule}</div>
 
           <button
+            type="button"
             onClick={() => setIsOpen(!isOpen)}
             aria-expanded={isOpen}
             aria-label="Toggle navigation menu"
@@ -123,7 +124,8 @@ export default function Navbar({
 
       {/* Hamburger Menu Overlay */}
       {isOpen && (
-        <div className="absolute top-20 left-0 h-[calc(100vh-5rem)] w-full overflow-y-auto border-b-4 border-auib-red bg-auib-charcoal text-white shadow-brutalist-md">
+        // 2. Swapped left-0 to inset-x-0 for flawless BiDi absolute positioning
+        <div className="absolute top-20 inset-x-0 h-[calc(100vh-5rem)] w-full overflow-y-auto border-b-4 border-auib-red bg-auib-charcoal text-white shadow-brutalist-md">
           <div className="mx-auto max-w-6xl px-6 py-8">
             <ul className="flex flex-col gap-4 text-lg font-bold tracking-widest uppercase">
               {links.map((link) => (
