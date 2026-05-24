@@ -4,7 +4,7 @@ import createNextIntlPlugin from 'next-intl/plugin';
 
 const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
 
-// 1. Dynamic CSP Generator based on the environment
+// Dynamic CSP Generator based on the environment
 const generateCsp = () => {
   const isDev = process.env.NODE_ENV === 'development';
 
@@ -23,6 +23,15 @@ const generateCsp = () => {
 
 const nextConfig: NextConfig = {
   transpilePackages: ['@auibsal/auth', '@auibsal/database', '@auibsal/ui'],
+  
+  // =========================================================================
+  // Monorepo CI Optimization
+  // =========================================================================
+  // Turborepo handles linting and typechecking in parallel tasks.
+  // We disable them here to prevent Next.js from doubling the build time.
+  eslint: { ignoreDuringBuilds: true },
+  typescript: { ignoreBuildErrors: true },
+
   images: {
     remotePatterns: [
       {
@@ -34,6 +43,7 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  
   async headers() {
     return [
       {
@@ -57,7 +67,7 @@ const nextConfig: NextConfig = {
           },
           {
             key: 'Content-Security-Policy',
-            // 2. Execute the generator at build/request time
+            // Execute the generator at build/request time
             value: generateCsp(),
           },
         ],
