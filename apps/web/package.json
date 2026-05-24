@@ -7,7 +7,13 @@
     "dev": "next dev -p 3000",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint ."
+    
+    // =========================================================================
+    // Monorepo CI Scripts (Synchronized with Turborepo)
+    // =========================================================================
+    "lint": "eslint . --cache --max-warnings 0",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf .next .turbo node_modules"
   },
   "dependencies": {
     "@auibsal/auth": "workspace:*",
@@ -34,8 +40,8 @@
     "@types/node": "catalog:",
     "@types/react": "catalog:",
     "@types/three": "^0.184.1",
+    "eslint": "catalog:",
     "tailwindcss": "catalog:",
-    "typescript": "catalog:",
-    "eslint": "catalog:"
+    "typescript": "catalog:"
   }
 }
