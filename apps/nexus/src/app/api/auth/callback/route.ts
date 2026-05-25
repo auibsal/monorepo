@@ -5,36 +5,39 @@ import { createClient } from '@auibsal/auth/server';
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
 
+  // Extract the cryptographic payloads
   const code = searchParams.get('code');
-  // "next" is a standard parameter used to track the user's intended destination
-  const next = searchParams.get('next') ?? '/';
+  const token_hash = searchParams.get('token_hash');
+  const type = searchParams.get('type') as any; // e.g., 'invite', 'recovery', 'magiclink'
+  
+  // Extract the destination, fallback to root
+  let next = searchParams.get('next') || searchParams.get('redirect_to') || '/';
 
-  // Extract the true domain and protocol from the reverse proxy headers
-  const forwardedHost = request.headers.get('x-forwarded-host');
-  const forwardedProto = request.headers.get('x-forwarded-proto') ?? 'https';
+  // SECURITY: Open Redirect Guillotine
+  if (!next.startsWith('/') || next.startsWith('//')) {
+    next = '/';
+  }
 
-  // Construct a mathematically secure Base URL
-  const baseUrl = forwardedHost ? `${forwardedProto}://${forwardedHost}` : origin;
+  const supabase = await createClient();
 
-  if (code) {
-    const supabase = await createClient();
-
-    // Exchange the PKCE code for a secure JWT session
-    const { error } = await supabase.auth.exchangeCodeForSession(code);
-
+  // Vector 1: Email Template Token Hash (The Invite / Password Reset Flow)
+  if (token_hash && type) {
+    const { error } = await supabase.auth.verifyOtp({ token_hash, type });
     if (!error) {
-      // SECURITY: Validate 'next' to prevent DOM-based XSS and Open Redirects
-      let safeNext = next;
-      if (!safeNext.startsWith('/') || safeNext.startsWith('//')) {
-        safeNext = '/';
-      }
-
-      // Execute the secure proxy-aware redirect
-      return NextResponse.redirect(`${baseUrl}${safeNext}`);
+      // Session mathematically established, routing to destination
+      return NextResponse.redirect(`${origin}${next}`);
     }
   }
 
-  // If there was no code, or if the token exchange failed (e.g., expired link),
-  // safely eject them back to the login page with an error flag.
-  return NextResponse.redirect(`${baseUrl}/login?error=invalid_auth_code`);
+  // Vector 2: Standard PKCE Code Exchange (Standard OAuth / Magic Links)
+  if (code) {
+    const { error } = await supabase.auth.exchangeCodeForSession(code);
+    if (!error) {
+      // Session mathematically established, routing to destination
+      return NextResponse.redirect(`${origin}${next}`);
+    }
+  }
+
+  // If both cryptographic vectors fail or are missing, defect to gateway
+  return NextResponse.redirect(`${origin}/login?error=invalid_auth_code`);
 }
