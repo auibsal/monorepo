@@ -7,10 +7,6 @@
     "dev": "next dev -p 3000",
     "build": "next build",
     "start": "next start",
-    
-    // =========================================================================
-    // Monorepo CI Scripts (Synchronized with Turborepo)
-    // =========================================================================
     "lint": "eslint . --cache --max-warnings 0",
     "typecheck": "tsc --noEmit",
     "clean": "rm -rf .next .turbo node_modules"
