@@ -4,10 +4,8 @@ import { Activity, Calendar, FileText, Users } from 'lucide-react';
 
 import { createClient } from '@auibsal/auth/server';
 
-// CRITICAL: Force dynamic rendering so dashboard metrics never cache
 export const dynamic = 'force-dynamic';
 
-// Define the expected submission shape to eliminate the 'any' type trap
 type DashboardSubmission = {
   id: string;
   title: string;
@@ -21,19 +19,22 @@ export default async function NexusHome() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  // 1. Instantly grab the role from the secure edge headers we wired in layout.tsx
   const headersList = await headers();
   const role = headersList.get('x-user-role') || 'user';
   const isEditor = role === 'editor' || role === 'admin';
+
+  // CRITICAL FIX: Calculate the true Nexus base URL from the incoming request headers
+  // This guarantees the ICS link will perfectly match localhost:3001 in dev, and nexus.auibsal.org in production
+  const host = headersList.get('x-forwarded-host') || headersList.get('host') || 'localhost:3001';
+  const proto = headersList.get('x-forwarded-proto') || 'http';
+  const nexusUrl = process.env.NEXT_PUBLIC_NEXUS_URL || `${proto}://${host}`;
 
   let calendarToken = '';
   let memberSubmissions: DashboardSubmission[] = [];
 
   if (user) {
-    // 2. Run the remaining independent queries in parallel to cut load times in half
     const [userRes, subRes] = await Promise.all([
       supabase.from('users').select('calendar_token').eq('id', user.id).single(),
-      // ⚡ Bolt Performance Optimization
       supabase.from('submissions').select('id, title, type, status').eq('author_id', user.id),
     ]);
 
@@ -66,9 +67,6 @@ export default async function NexusHome() {
     upcomingEventsCount = eventsRes.count || 0;
   }
 
-  // 3. Fallback to the environment variable, not a hardcoded production string
-  const webUrl = process.env.NEXT_PUBLIC_WEB_URL || 'https://www.auibsal.org';
-
   return (
     <div className="space-y-16">
       {isEditor && (
@@ -79,7 +77,6 @@ export default async function NexusHome() {
             </h2>
           </div>
           <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
-            {/* Swapped to semantic background, border, and dynamic shadow variables */}
             <div className="flex flex-col border-4 border-border bg-card p-8 shadow-[8px_8px_0px_0px_var(--brutalist-shadow)] transition-all hover:-translate-x-1 hover:-translate-y-1 hover:shadow-[12px_12px_0px_0px_var(--brutalist-shadow)]">
               <div className="mb-4 flex items-start justify-between">
                 <h3 className="text-lg font-bold tracking-wide text-foreground uppercase">
@@ -141,7 +138,6 @@ export default async function NexusHome() {
                         <Activity className="h-4 w-4" />
                         {sub.type}
                       </span>
-                      {/* Semantic badge inversion logic */}
                       <span
                         className={`border-2 px-3 py-1 text-xs tracking-widest uppercase ${sub.status === 'approved' ? 'border-foreground bg-foreground text-background' : 'border-border bg-card text-foreground'}`}
                       >
@@ -160,7 +156,6 @@ export default async function NexusHome() {
             )}
           </div>
 
-          {/* Account status inverted with semantic tokens to ensure legibility in all color modes */}
           <div className="h-fit border-4 border-border bg-foreground p-8 text-background shadow-[8px_8px_0px_0px_var(--brutalist-shadow)]">
             <h3 className="mb-6 text-xl font-bold tracking-wide text-background uppercase">
               Account Status
@@ -187,7 +182,8 @@ export default async function NexusHome() {
                     <input
                       type="text"
                       readOnly
-                      value={`${webUrl}/api/calendar/${calendarToken}/events.ics`}
+                      {/* CRITICAL FIX: Swap webUrl to nexusUrl */}
+                      value={`${nexusUrl}/api/calendar/${calendarToken}/events.ics`}
                       className="w-full truncate border-2 border-background/30 bg-background/10 p-3 font-mono text-xs text-background focus:border-primary focus:outline-none"
                     />
                   </div>
