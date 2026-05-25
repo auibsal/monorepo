@@ -2,11 +2,10 @@
 
 import { ubuntu, ubuntuArabic } from '@/fonts';
 
-import InteractiveErrorState from '@auibsal/ui/components/InteractiveErrorState';
+// 1. Synchronized with the named export standard of the UI package
+import { InteractiveErrorState } from '@auibsal/ui/components/InteractiveErrorState';
 
-import './globals.css';
-
-// Path adjusted for the root app directory
+import './globals.css'; // Path adjusted for the root app directory
 
 export default function GlobalError({ reset }: { reset: () => void }) {
   return (
