@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
 import { Link } from '@/i18n/routing';
@@ -6,22 +7,47 @@ import { getTranslations } from 'next-intl/server';
 
 import { createClient } from '@auibsal/auth/server';
 
-// Added translation import
+// 1. CRITICAL PERFORMANCE UPGRADE: Incremental Static Regeneration (ISR)
+// Caches the page globally for 1 hour to ensure instant page transitions.
+export const revalidate = 3600;
 
-// CRITICAL: 0 completely prevents caching to ensure live updates.
-export const revalidate = 0;
+type Props = {
+  params: Promise<{ locale: 'en' | 'ar'; id: string }>;
+};
 
-export default async function JournalIssuePage({
-  params,
-}: {
-  params: Promise<{ locale: string; id: string }>;
-}) {
+// 2. Dynamic SEO Injection
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale, id } = await params;
+  const supabase = await createClient();
+
+  const { data: issue } = await supabase
+    .from('journal_issues')
+    .select('title_en, title_ar, volume_number, issue_number')
+    .eq('id', id)
+    .single();
+
+  if (!issue) return {};
+
+  const title = locale === 'ar' ? issue.title_ar : issue.title_en;
+
+  return {
+    title: `${title} | Vol. ${issue.volume_number}, Issue ${issue.issue_number}`,
+    description: `Read the official publication of the AUIB Society of Arts and Letters.`,
+    openGraph: {
+      title: `${title} | AUIB SAL Journal`,
+      description: `Volume ${issue.volume_number}, Issue ${issue.issue_number}`,
+    },
+  };
+}
+
+// 3. Strictly typed component parameters
+export default async function JournalIssuePage({ params }: Props) {
   const { locale, id } = await params;
   const t = await getTranslations({ locale, namespace: 'JournalPage' });
 
   const supabase = await createClient();
 
-  // CRITICAL FIX: Chained .not() to prevent direct-link bypass for unpublished drafts
+  // Ensure unpublished drafts cannot be accessed via direct link
   const { data: issue, error } = await supabase
     .from('journal_issues')
     .select('*')
@@ -44,7 +70,6 @@ export default async function JournalIssuePage({
           className="inline-flex items-center gap-2 text-sm font-bold tracking-widest text-foreground uppercase transition-transform hover:-translate-x-1 hover:text-primary rtl:hover:translate-x-1"
         >
           <ArrowLeft className="h-5 w-5 rtl:rotate-180" />
-          {/* Fallback pattern ensuring parity with next-intl */}
           {t('backToJournal') || (isAr ? 'العودة إلى المجلة' : 'Back to Journal')}
         </Link>
       </div>
