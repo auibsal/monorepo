@@ -2,14 +2,14 @@
 
 import { useEffect } from 'react';
 
-import { ubuntu, ubuntuArabic } from '@/fonts';
 import { InteractiveErrorState } from '@auibsal/ui/components/InteractiveErrorState';
+
+import { ubuntu, ubuntuArabic } from '@/fonts';
 
 import './globals.css';
 
 export default function GlobalError({
   error,
-
 }: {
   // CRITICAL: Extract the Next.js error digest for telemetry
   error: Error & { digest?: string };
@@ -20,9 +20,7 @@ export default function GlobalError({
     void error;
   }, [error]);
 
-  const errorHash = error.digest
-    ? `[Exception Hash: ${error.digest}]`
-    : '[Uncaught System Fault]';
+  const errorHash = error.digest ? `[Exception Hash: ${error.digest}]` : '[Uncaught System Fault]';
 
   const handleHardReboot = () => {
     // A root layout crash corrupts the React tree. Force a hard browser reload instead of a soft reset.
@@ -31,7 +29,11 @@ export default function GlobalError({
 
   return (
     // Parity with layout.tsx: Suppress hydration warnings
-    <html lang="en" className={`${ubuntu.variable} ${ubuntuArabic.variable}`} suppressHydrationWarning>
+    <html
+      lang="en"
+      className={`${ubuntu.variable} ${ubuntuArabic.variable}`}
+      suppressHydrationWarning
+    >
       <body className="flex min-h-screen flex-col overflow-x-hidden bg-background font-sans text-foreground antialiased">
         <InteractiveErrorState
           code="SYS_HALT"

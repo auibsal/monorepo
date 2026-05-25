@@ -55,17 +55,9 @@ export default function ClientLayout({
   return (
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
       <div className="flex min-h-screen flex-col">
-        <Navbar 
-          locale="en" 
-          links={links} 
-          homeUrl="/" 
-          platform="nexus" 
-          onSignOut={handleSignOut} 
-        />
+        <Navbar locale="en" links={links} homeUrl="/" platform="nexus" onSignOut={handleSignOut} />
 
-        <main className="mx-auto w-full max-w-7xl flex-1 px-6 py-12">
-          {children}
-        </main>
+        <main className="mx-auto w-full max-w-7xl flex-1 px-6 py-12">{children}</main>
       </div>
     </ThemeProvider>
   );

@@ -11,7 +11,7 @@
     "esModuleInterop": true,
     "allowJs": true,
     "jsx": "preserve",
-    
+
     // =========================
     // Build & Performance
     // =========================
@@ -29,11 +29,11 @@
     "noFallthroughCasesInSwitch": true,
     "noImplicitReturns": true,
     "noUncheckedIndexedAccess": true,
-    
+
     // 🛡️ Database Safety: Prevents passing explicit `undefined` to optional database fields
     "exactOptionalPropertyTypes": true
-    
-    // Note: noUnusedLocals and noUnusedParameters are intentionally omitted. 
+
+    // Note: noUnusedLocals and noUnusedParameters are intentionally omitted.
     // They are handled exclusively by ESLint to allow for `_` prefixed ignores.
   },
   "exclude": ["node_modules", "dist", ".next", ".turbo"]

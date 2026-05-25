@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-
 import { Loader2, Save, Users } from 'lucide-react';
 
 import { createClient } from '@auibsal/auth/client';

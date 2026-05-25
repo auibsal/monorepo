@@ -1,5 +1,4 @@
 import type { NextConfig } from 'next';
-
 import createNextIntlPlugin from 'next-intl/plugin';
 
 const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
@@ -23,13 +22,12 @@ const generateCsp = () => {
 
 const nextConfig: NextConfig = {
   transpilePackages: ['@auibsal/auth', '@auibsal/database', '@auibsal/ui'],
-  
+
   // =========================================================================
   // Monorepo CI Optimization
   // =========================================================================
   // Turborepo handles linting and typechecking in parallel tasks.
   // We disable them here to prevent Next.js from doubling the build time.
-  eslint: { ignoreDuringBuilds: true },
   typescript: { ignoreBuildErrors: true },
 
   images: {
@@ -43,7 +41,7 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  
+
   async headers() {
     return [
       {

@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-
 import { AlertTriangle, BookOpen, CheckSquare, Mail, Save, User } from 'lucide-react';
 
 import { createClient } from '@auibsal/auth/client';
@@ -14,7 +13,7 @@ export default function ProfilePage() {
   const [bio, setBio] = useState('');
 
   const [status, setStatus] = useState<'loading' | 'idle' | 'saving' | 'success' | 'error'>(
-    'loading'
+    'loading',
   );
   const [errorMessage, setErrorMessage] = useState('');
 
@@ -118,7 +117,7 @@ export default function ProfilePage() {
     } catch (err: unknown) {
       setStatus('error');
       setErrorMessage(
-        err instanceof Error ? err.message : 'An unknown exception occurred during transmission.'
+        err instanceof Error ? err.message : 'An unknown exception occurred during transmission.',
       );
     }
   };

@@ -1,9 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-
 import Link from 'next/link';
-
 import {
   ArrowLeft,
   CheckSquare,
@@ -110,7 +108,7 @@ export default function SubmitWorkPage() {
       // Stripped the 'any' bypass and instituted strict error instance checking
       setStatus('error');
       setErrorMessage(
-        err instanceof Error ? err.message : 'An unknown exception occurred during transmission.'
+        err instanceof Error ? err.message : 'An unknown exception occurred during transmission.',
       );
     }
   };

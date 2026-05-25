@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-
 import { AlertTriangle, ArrowRight, BookOpen, CheckSquare, FileUp } from 'lucide-react';
 
 import { createClient } from '@auibsal/auth/client';
@@ -24,7 +23,6 @@ export default function JournalPage() {
 
   useEffect(() => {
     fetchIssues();
-
   }, []);
 
   const fetchIssues = async () => {
@@ -245,7 +243,7 @@ export default function JournalPage() {
                 accept="application/pdf"
                 onChange={(e) => {
                   setFile(
-                    e.target.files && e.target.files.length > 0 ? e.target.files[0] || null : null
+                    e.target.files && e.target.files.length > 0 ? e.target.files[0] || null : null,
                   );
                   if (status === 'success') setStatus('idle');
                   if (status === 'error') setStatus('idle');

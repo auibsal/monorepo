@@ -11,7 +11,7 @@ export const revalidate = 3600;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_WEB_URL || 'https://www.auibsal.org';
-  
+
   // Safe to call here now because of the revalidate/dynamic export
   const supabase = await createClient();
 
@@ -65,9 +65,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }
 
   // 3. Fetch dynamic blog posts
-  const { data: posts } = await supabase
-    .from('blog_posts')
-    .select('slug, published_at');
+  const { data: posts } = await supabase.from('blog_posts').select('slug, published_at');
 
   if (posts) {
     posts.forEach((post) => {

@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-
 import { AlertCircle, AlertTriangle, CalendarDays, X } from 'lucide-react';
 
 import { createClient } from '@auibsal/auth/client';
@@ -40,7 +39,6 @@ export default function EventsPage() {
   useEffect(() => {
     fetchEvents();
     fetchAuibEvents();
-
   }, []);
 
   const fetchEvents = async () => {

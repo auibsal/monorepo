@@ -10,11 +10,7 @@
     "tsconfig.json",
     "tsconfig.base.json"
   ],
-  "globalEnv": [
-    "NODE_ENV",
-    "VERCEL_ENV",
-    "VERCEL_URL"
-  ],
+  "globalEnv": ["NODE_ENV", "VERCEL_ENV", "VERCEL_URL"],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],

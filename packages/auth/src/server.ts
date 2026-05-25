@@ -1,7 +1,6 @@
 import 'server-only';
 
 import { cookies } from 'next/headers';
-
 import { createServerClient } from '@supabase/ssr';
 
 import type { Database } from '@auibsal/database';
@@ -14,7 +13,7 @@ export async function createClient() {
 
   if (!supabaseUrl || !supabaseAnonKey) {
     throw new Error(
-      'Missing environment variables: NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY must be defined'
+      'Missing environment variables: NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY must be defined',
     );
   }
 
@@ -29,7 +28,7 @@ export async function createClient() {
         try {
           // Using strict object mapping to guarantee cookie flag preservation
           cookiesToSet.forEach(({ name, value, options }) =>
-            cookieStore.set({ name, value, ...options })
+            cookieStore.set({ name, value, ...options }),
           );
         } catch {
           // The `setAll` method was called from a Server Component.

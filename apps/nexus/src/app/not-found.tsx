@@ -1,4 +1,5 @@
 'use client';
+
 import { useRouter } from 'next/navigation';
 
 import { InteractiveErrorState } from '@auibsal/ui/components/InteractiveErrorState';

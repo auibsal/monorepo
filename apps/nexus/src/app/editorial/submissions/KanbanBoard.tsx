@@ -1,10 +1,8 @@
 'use client';
 
 import React, { useEffect, useMemo, useState } from 'react';
-
 import Link from 'next/link';
-
-import { DragDropContext, Draggable, DropResult, Droppable } from '@hello-pangea/dnd';
+import { DragDropContext, Draggable, Droppable, DropResult } from '@hello-pangea/dnd';
 import { AlertOctagon, GripVertical } from 'lucide-react';
 
 import { createClient } from '@auibsal/auth/client';
@@ -31,7 +29,6 @@ export default function KanbanBoard() {
     // CRITICAL: Hydration flag to ensure DragDropContext only mounts on the client
     setIsMounted(true);
     fetchSubmissions();
-
   }, []);
 
   const fetchSubmissions = async () => {

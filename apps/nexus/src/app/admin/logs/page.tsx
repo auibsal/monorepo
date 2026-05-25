@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-
 import { AlertTriangle, RefreshCw, ShieldCheck, Terminal } from 'lucide-react';
 
 import { createClient } from '@auibsal/auth/client';
@@ -44,7 +43,6 @@ export default function LogsPage() {
 
   useEffect(() => {
     fetchLogs();
-
   }, []);
 
   // Helper to color-code terminal output based on severity (using action for system logs)

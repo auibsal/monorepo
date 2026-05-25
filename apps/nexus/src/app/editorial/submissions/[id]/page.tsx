@@ -1,10 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-
 import Image from 'next/image';
 import { useParams, useRouter } from 'next/navigation';
-
 import DOMPurify from 'isomorphic-dompurify';
 import {
   AlertOctagon,
@@ -53,17 +51,17 @@ export default function GradingPage() {
         setTech(
           data.rubric_technical !== undefined && data.rubric_technical !== null
             ? String(data.rubric_technical)
-            : ''
+            : '',
         );
         setOrig(
           data.rubric_originality !== undefined && data.rubric_originality !== null
             ? String(data.rubric_originality)
-            : ''
+            : '',
         );
         setTheme(
           data.rubric_thematic !== undefined && data.rubric_thematic !== null
             ? String(data.rubric_thematic)
-            : ''
+            : '',
         );
         setArchive(data.rubric_archive ?? null);
         setFormatting(data.rubric_formatting || '');
@@ -109,7 +107,7 @@ export default function GradingPage() {
     // Keeping native confirm here serves as an intentional, high-friction interrupt for a destructive action
     if (
       confirm(
-        'CRITICAL ACTION: Are you sure you want to disqualify this submission? This will permanently update the status to "rejected" and formatting to "disqualified".'
+        'CRITICAL ACTION: Are you sure you want to disqualify this submission? This will permanently update the status to "rejected" and formatting to "disqualified".',
       )
     ) {
       const { error } = await supabase

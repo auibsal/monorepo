@@ -1,17 +1,16 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import { NextIntlClientProvider } from 'next-intl';
+import { getMessages } from 'next-intl/server';
+
+// 1. Import the centralized Toaster for global notifications
+import { Toaster } from '@auibsal/ui/components/ui/sonner';
 
 import WebFooter from '@/components/layout/WebFooter';
 import WebNavbarServer from '@/components/layout/WebNavbarServer';
 // CRITICAL: Importing from local app, NOT the shared UI package
 import { ubuntu, ubuntuArabic } from '@/fonts';
 import { routing } from '@/i18n/routing';
-
-// 1. Import the centralized Toaster for global notifications
-import { Toaster } from '@auibsal/ui/components/ui/sonner';
-
-import { NextIntlClientProvider } from 'next-intl';
-import { getMessages } from 'next-intl/server';
 
 import '../globals.css';
 
@@ -44,13 +43,13 @@ export default async function LocaleLayout({
   const { locale } = await params;
 
   // 2. Validate the incoming locale to prevent 500 errors on invalid URLs
-  if (!routing.locales.includes(locale)) {
+  if (!routing.locales.includes(locale as 'en' | 'ar')) {
     notFound();
   }
 
   const messages = await getMessages();
   const dir = locale === 'ar' ? 'rtl' : 'ltr';
-  
+
   // 3. Strictly type the locale for our custom components
   const typedLocale = locale as 'en' | 'ar';
 
@@ -60,9 +59,9 @@ export default async function LocaleLayout({
         {/* Pass the locale down to the provider to avoid client-side mismatch */}
         <NextIntlClientProvider messages={messages} locale={locale}>
           <WebNavbarServer locale={typedLocale} />
-          
+
           <main className="flex-grow">{children}</main>
-          
+
           <WebFooter locale={typedLocale} />
         </NextIntlClientProvider>
 

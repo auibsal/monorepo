@@ -1,5 +1,4 @@
 import { headers } from 'next/headers';
-
 import { Activity, Calendar, FileText, Users } from 'lucide-react';
 
 import { createClient } from '@auibsal/auth/server';

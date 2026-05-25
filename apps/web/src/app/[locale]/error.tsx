@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect } from 'react';
-
 import { useLocale, useTranslations } from 'next-intl';
 
 // 1. Synchronized with the named export standard of the UI package
