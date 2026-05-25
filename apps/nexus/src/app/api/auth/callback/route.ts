@@ -25,7 +25,7 @@ export async function GET(request: Request) {
     if (!error) {
       // SECURITY: Validate 'next' to prevent DOM-based XSS and Open Redirects
       let safeNext = next;
-      if (!safeNext.startsWith('/') || safeNext.startsWith('//')) {
+      if (!safeNext.startsWith('/') || safeNext.startsWith('//') || safeNext.includes('\\') || /[\s]/.test(safeNext)) {
         safeNext = '/';
       }
 
