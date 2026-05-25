@@ -8,7 +8,9 @@ import { createClient } from '@auibsal/auth/client';
 import { Role, User } from '@auibsal/database';
 
 export default function UsersPage() {
-  const [users, setUsers] = useState<User[]>([]);
+  const [users, setUsers] = useState<
+    Pick<User, 'id' | 'full_name' | 'university_id' | 'role' | 'created_at'>[]
+  >([]);
   const [loading, setLoading] = useState(true);
   const [savingId, setSavingId] = useState<string | null>(null);
 
@@ -20,9 +22,12 @@ export default function UsersPage() {
 
   const fetchUsers = async () => {
     if (!supabase) return;
+    // ⚡ Bolt Optimization: Replaced `.select('*')` with explicit column names
+    // Impact: Reduces payload size by avoiding fetching unnecessary fields (like avatar_url, biography, calendar_token)
+    // Measurement: Compare network tab payload size of /users endpoint before and after.
     const { data, error } = await supabase
       .from('users')
-      .select('*')
+      .select('id, full_name, university_id, role, created_at')
       .order('created_at', { ascending: false });
     if (!error && data) {
       setUsers(data);

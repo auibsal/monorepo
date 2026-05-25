@@ -8,7 +8,10 @@ import { createClient } from '@auibsal/auth/client';
 import { Tables } from '@auibsal/database';
 
 // Establish the strict cryptographic shape of the audit ledger natively
-type SystemLog = Tables<'system_logs'>;
+type SystemLog = Pick<
+  Tables<'system_logs'>,
+  'id' | 'action' | 'actor_id' | 'entity_type' | 'entity_id' | 'created_at'
+>;
 
 export default function LogsPage() {
   const [logs, setLogs] = useState<SystemLog[]>([]);
@@ -25,9 +28,12 @@ export default function LogsPage() {
       // ⚡ Bolt Architecture: Polling the secure audit_logs table.
       // If this table is not yet provisioned in your database schema,
       // the catch block will seamlessly render a terminal-authentic failure state.
+      // ⚡ Bolt Optimization: Replaced `.select('*')` with explicit column names
+      // Impact: Reduces payload size by avoiding fetching unnecessary fields (like metadata)
+      // Measurement: Compare network tab payload size of /logs endpoint before and after.
       const { data, error } = await supabase
         .from('system_logs')
-        .select('*')
+        .select('id, action, actor_id, entity_type, entity_id, created_at')
         .order('created_at', { ascending: false })
         .limit(50);
 
