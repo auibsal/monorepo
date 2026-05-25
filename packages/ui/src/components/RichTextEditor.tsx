@@ -91,7 +91,7 @@ export function RichTextEditor({
     // ONLY override the editor content if the user isn't actively typing inside it.
     // The boolean `false` flag strictly tells Tiptap to preserve cursor selection if possible.
     if (editor && !editor.isFocused && content !== editor.getHTML()) {
-      editor.commands.setContent(content, false); 
+      editor.commands.setContent(content, { emitUpdate: false });
     }
   }, [content, editor]);
 

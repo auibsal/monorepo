@@ -3,7 +3,7 @@
 import React from 'react';
 
 import { createClient } from '@auibsal/auth/client';
-import Navbar from '@auibsal/ui/components/layout/Navbar';
+import { Navbar } from '@auibsal/ui/components/layout/Navbar';
 import { type NavbarLink } from '@auibsal/ui/components/layout/Navbar';
 
 export default function ClientLayout({

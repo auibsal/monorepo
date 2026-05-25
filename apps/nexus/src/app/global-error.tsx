@@ -2,7 +2,7 @@
 
 import { ubuntu, ubuntuArabic } from '@/fonts';
 
-import InteractiveErrorState from '@auibsal/ui/components/InteractiveErrorState';
+import { InteractiveErrorState } from '@auibsal/ui/components/InteractiveErrorState';
 
 import './globals.css';
 

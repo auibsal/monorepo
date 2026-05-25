@@ -1,7 +1,7 @@
 'use client';
 import { useRouter } from 'next/navigation';
 
-import InteractiveErrorState from '@auibsal/ui/components/InteractiveErrorState';
+import { InteractiveErrorState } from '@auibsal/ui/components/InteractiveErrorState';
 
 export default function NexusForbidden() {
   const router = useRouter();

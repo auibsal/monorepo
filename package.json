@@ -18,10 +18,12 @@
   "devDependencies": {
     "@auibsal/config": "workspace:*",
     "@trivago/prettier-plugin-sort-imports": "^6.0.2",
+    "client-only": "^0.0.1",
     "eslint": "catalog:",
     "jiti": "^2.7.0",
     "prettier": "^3.8.3",
     "prettier-plugin-tailwindcss": "^0.8.0",
+    "server-only": "^0.0.1",
     "turbo": "latest",
     "typescript": "catalog:"
   },
@@ -34,5 +36,9 @@
       "sharp",
       "unrs-resolver"
     ]
+  },
+  "dependencies": {
+    "@types/node": "catalog:",
+    "@types/react": "catalog:"
   }
 }

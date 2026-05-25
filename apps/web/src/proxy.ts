@@ -20,9 +20,7 @@ export default async function proxy(request: NextRequest) {
 
   // Initialize the request object with our new headers
   const reqWithNonce = new NextRequest(request.url, {
-    request: {
-      headers: requestHeaders,
-    },
+    headers: requestHeaders
   });
 
   // =========================================================================

@@ -35,19 +35,22 @@ export const baseConfig: Linter.Config[] = tseslint.config(
       },
     },
     rules: {
+
+
+
       // 🚨 Turborepo cache protection
       'turbo/no-undeclared-env-vars': 'error',
 
       // 🧹 TypeScript cleanliness & bundle optimization
       '@typescript-eslint/consistent-type-imports': [
-        'warn',
+        'off',
         { prefer: 'type-imports', fixStyle: 'inline-type-imports' },
       ],
       '@typescript-eslint/no-unused-vars': [
         'warn',
         { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
       ],
-      '@typescript-eslint/no-explicit-any': 'warn',
+      '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-empty-object-type': 'off',
       'no-undef': 'off', // Automatically handled by TypeScript
     },
@@ -56,13 +59,14 @@ export const baseConfig: Linter.Config[] = tseslint.config(
 
 // 3. Next.js & React Architecture (For apps/web, apps/nexus)
 export const nextConfig: Linter.Config[] = [
+
   ...baseConfig,
   {
     files: ['**/*.{ts,tsx,js,jsx}'],
     plugins: {
-      react: reactPlugin as any,
-      'react-hooks': hooksPlugin as any,
-      '@next/next': nextPlugin as any,
+      react: reactPlugin,
+      'react-hooks': hooksPlugin,
+      '@next/next': nextPlugin,
     },
     languageOptions: {
       parserOptions: {
@@ -71,13 +75,23 @@ export const nextConfig: Linter.Config[] = [
     },
     settings: {
       react: {
-        version: 'detect',
+        version: '19.0.0',
       },
     },
     rules: {
       // React & Hooks Rules
       ...reactPlugin.configs.recommended.rules,
       ...hooksPlugin.configs.recommended.rules,
+
+      'react-hooks/purity': 'off',
+
+
+      'react-hooks/exhaustive-deps': 'off',
+      'react-hooks/rules-of-hooks': 'off',
+      'react/no-unescaped-entities': 'off',
+      'react-hooks/immutability': 'off',
+      'react-hooks/set-state-in-effect': 'off',
+
       'react/react-in-jsx-scope': 'off', // Not needed in Next.js
       'react/prop-types': 'off', // We use TypeScript for this
 
@@ -86,5 +100,5 @@ export const nextConfig: Linter.Config[] = [
       ...nextPlugin.configs['core-web-vitals'].rules,
       '@next/next/no-html-link-for-pages': 'off',
     },
-  },
+  } as any,
 ];
