@@ -14,8 +14,6 @@
     "format": "prettier --write \"**/*.{ts,tsx,md,json,mjs,css}\" --cache",
     "format:check": "prettier --check \"**/*.{ts,tsx,md,json,mjs,css}\" --cache",
     "generate:notices": "pnpm licenses list --prod > THIRD-PARTY-NOTICES.txt"
-    }
-    
   },
   "devDependencies": {
     "@auibsal/config": "workspace:*",
