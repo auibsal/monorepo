@@ -1,8 +1,11 @@
 'use client';
-import { useRouter } from '@/i18n/routing';
+
 import { useLocale, useTranslations } from 'next-intl';
 
-import InteractiveErrorState from '@auibsal/ui/components/InteractiveErrorState';
+import { useRouter } from '@/i18n/routing';
+
+// 1. Synchronized with the named export standard of the UI package
+import { InteractiveErrorState } from '@auibsal/ui/components/InteractiveErrorState';
 
 export default function WebNotFound() {
   const t = useTranslations('NotFound');
@@ -11,8 +14,9 @@ export default function WebNotFound() {
 
   return (
     <InteractiveErrorState
-      code="404_VOID"
-      title={t('title')}
+      // 2. Perfectly mapped to your established dictionary keys
+      code={t('title')}       // Translates to "404"
+      title={t('heading')}    // Translates to "Page Not Found" / "الصفحة غير موجودة"
       message={t('description')}
       actionText={t('returnHome')}
       onAction={() => router.push('/')}
