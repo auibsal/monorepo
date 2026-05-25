@@ -7,8 +7,6 @@
       }
     ],
     "paths": {
-      "@auibsal/ui/*": ["../../packages/ui/src/*"],
-      "@auibsal/ui/components/*": ["../../packages/ui/src/components/*"],
       "@/*": ["./src/*"]
     }
   },
