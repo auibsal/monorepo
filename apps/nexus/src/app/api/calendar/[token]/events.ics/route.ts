@@ -1,27 +1,24 @@
 import { NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
+
+// 1. Import your newly centralized Admin Client from the shared workspace
+import { createAdminClient } from '@auibsal/auth/admin';
 
 // CRITICAL: Force dynamic execution so the feed updates in real-time
 export const dynamic = 'force-dynamic';
 
 export async function GET(
   request: Request,
-  // Extract the dynamic route segment containing the user's cryptographic token
+  // Next.js 15 strictly requires params to be awaited
   { params }: { params: Promise<{ token: string }> }
 ) {
   const { token } = await params;
 
-  // 1. Initialize Supabase Admin Client
-  // We MUST use the service role key here because calendar clients (Apple/Google) 
-  // do not send Supabase auth cookies. This allows us to securely bypass RLS 
-  // to validate the token.
-  const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-  );
+  // 2. Instantiate the Admin client without needing local dependencies.
+  // This safely bypasses RLS for cookie-less calendar clients (Apple/Google).
+  const supabase = createAdminClient();
 
   try {
-    // 2. Validate cryptographic token
+    // Validate cryptographic token
     const { data: user, error: userError } = await supabase
       .from('users')
       .select('id, role')
@@ -29,12 +26,11 @@ export async function GET(
       .single();
 
     if (userError || !user) {
-      // Return standard 401 if the token is invalid, revoked, or missing
       return new NextResponse('Unauthorized: Invalid or revoked calendar token.', { status: 401 });
     }
 
-    // 3. Fetch approved society events
-    // Adjust these columns to match your exact Supabase 'events' schema
+    // Fetch approved society events
+    // Adjust columns here to perfectly match your database schema
     const { data: events, error: eventsError } = await supabase
       .from('events')
       .select('id, title, description, starts_at, ends_at, location')
@@ -43,7 +39,7 @@ export async function GET(
 
     if (eventsError) throw eventsError;
 
-    // 4. Construct the raw ICS String
+    // Construct the raw ICS String
     // iCalendar format strictly requires \r\n (CRLF) line endings
     const CRLF = '\r\n';
     let icsString = '';
@@ -56,7 +52,6 @@ export async function GET(
     icsString += `X-WR-CALNAME:Society Events${CRLF}`;
     icsString += `X-WR-TIMEZONE:Asia/Baghdad${CRLF}`;
 
-    // Map each database row to a VEVENT block
     events?.forEach((event) => {
       // ICS requires exact date formatting (YYYYMMDDThhmmssZ)
       const formatIcsDate = (dateString: string) => {
@@ -64,7 +59,7 @@ export async function GET(
       };
 
       const dtStart = formatIcsDate(event.starts_at);
-      const dtEnd = event.ends_at ? formatIcsDate(event.ends_at) : dtStart; // Fallback if no end time
+      const dtEnd = event.ends_at ? formatIcsDate(event.ends_at) : dtStart; 
       
       // Clean string payloads to prevent ICS syntax breaking
       const cleanText = (text: string) => text.replace(/\n/g, '\\n').replace(/,/g, '\\,');
@@ -83,7 +78,7 @@ export async function GET(
 
     icsString += `END:VCALENDAR${CRLF}`;
 
-    // 5. Inject the strict Calendar MIME type
+    // Inject the strict Calendar MIME type and caching headers
     return new NextResponse(icsString, {
       status: 200,
       headers: {
