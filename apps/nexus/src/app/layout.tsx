@@ -21,7 +21,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const role = headersList.get('x-user-role');
 
   return (
-    <html lang="en" className={`${ubuntu.variable} ${ubuntuArabic.variable}`}>
+    // CRITICAL FIX: suppressHydrationWarning added to prevent React 19 theme mismatch errors
+    <html lang="en" className={`${ubuntu.variable} ${ubuntuArabic.variable}`} suppressHydrationWarning>
       {/* Swapped hardcoded hexes to semantic bg-background and text-foreground tokens */}
       <body className="flex min-h-screen flex-col overflow-x-hidden bg-background font-sans text-foreground antialiased">
         <ClientLayout role={role}>{children}</ClientLayout>
