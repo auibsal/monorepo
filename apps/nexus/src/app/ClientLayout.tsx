@@ -1,10 +1,11 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
+// Requires: pnpm add next-themes
+import { ThemeProvider } from 'next-themes';
 
 import { createClient } from '@auibsal/auth/client';
-import { Navbar } from '@auibsal/ui/components/layout/Navbar';
-import { type NavbarLink } from '@auibsal/ui/components/layout/Navbar';
+import { Navbar, type NavbarLink } from '@auibsal/ui/components/layout/Navbar';
 
 export default function ClientLayout({
   children,
@@ -13,11 +14,12 @@ export default function ClientLayout({
   children: React.ReactNode;
   role: string | null;
 }) {
-  const supabase = createClient();
+  // 1. CRITICAL PERFORMANCE FIX: Memoize the Supabase client to prevent memory leaks and re-renders
+  const [supabase] = useState(() => createClient());
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
-    // CRITICAL: Redirect to the external public Web application, not a local relative path
+    // Redirects to the external public Web application, completely crossing the micro-frontend boundary
     const webUrl = process.env.NEXT_PUBLIC_WEB_URL || 'http://localhost:3000';
     window.location.href = `${webUrl}/login`;
   };
@@ -32,6 +34,7 @@ export default function ClientLayout({
     { href: '/settings/profile', label: 'Profile' },
   ];
 
+  // RBAC Link Injection
   if (isEditorOrAdmin) {
     links = [
       ...links,
@@ -51,11 +54,22 @@ export default function ClientLayout({
   }
 
   return (
-    <div className="flex min-h-screen flex-col">
-      <Navbar locale="en" links={links} homeUrl="/" platform="nexus" onSignOut={handleSignOut} />
+    // 2. ARCHITECTURAL FIX: Mount the ThemeProvider to execute the semantic variable inversion
+    <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+      <div className="flex min-h-screen flex-col">
+        <Navbar 
+          locale="en" 
+          links={links} 
+          homeUrl="/" 
+          platform="nexus" 
+          onSignOut={handleSignOut} 
+        />
 
-      {/* Main Content Area */}
-      <main className="mx-auto w-full max-w-7xl flex-1 px-6 py-12">{children}</main>
-    </div>
+        {/* Main Content Area */}
+        <main className="mx-auto w-full max-w-7xl flex-1 px-6 py-12">
+          {children}
+        </main>
+      </div>
+    </ThemeProvider>
   );
 }
