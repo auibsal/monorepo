@@ -40,13 +40,16 @@ export default function NexusRegister() {
     setStatus('loading');
     setErrorMessage('');
 
-    const webUrl = process.env.NEXT_PUBLIC_WEB_URL || 'http://localhost:3000';
+    // CRITICAL FIX: Dynamically calculate the origin of the Nexus portal
+    // This guarantees the verification email points back to the Nexus callback route, not the Web app.
+    const origin = typeof window !== 'undefined' ? window.location.origin : '';
 
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
-        emailRedirectTo: `${webUrl}/api/auth/callback`,
+        // Pointing directly to the Nexus callback
+        emailRedirectTo: `${origin}/api/auth/callback`,
         data: {
           full_name: fullName,
           university_id: isExternal ? 'EXTERNAL' : studentId,
