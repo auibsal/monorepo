@@ -4,16 +4,19 @@ import { getTranslations } from 'next-intl/server';
 
 import { createClient } from '@auibsal/auth/server';
 
-// CRITICAL: 0 completely prevents caching to ensure live journal updates.
-export const revalidate = 0;
+// 1. CRITICAL PERFORMANCE UPGRADE: Incremental Static Regeneration (ISR)
+// Caches the page globally for 1 hour. This eliminates redundant Supabase reads 
+// and delivers lightning-fast load times while still staying relatively live.
+export const revalidate = 3600;
 
-export default async function Journal({ params }: { params: Promise<{ locale: string }> }) {
+// 2. Strictly typing the locale promise
+export default async function Journal({ params }: { params: Promise<{ locale: 'en' | 'ar' }> }) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'JournalPage' });
 
   const supabase = await createClient();
 
-  // CRITICAL FIX: Ensure unpublished drafts are completely hidden from the public query
+  // Ensure unpublished drafts are completely hidden from the public query
   const { data: issues, error } = await supabase
     .from('journal_issues')
     .select('*')
@@ -45,9 +48,7 @@ export default async function Journal({ params }: { params: Promise<{ locale: st
       <div className="space-y-12">
         {publishedIssues.length === 0 ? (
           <p className="text-xl font-bold tracking-widest text-foreground/70 uppercase">
-            {/* Ensure you add 'noIssues' to your en.json and ar.json JournalPage object */}
-            {t('noIssues') ||
-              (isAr ? 'لا توجد إصدارات منشورة حالياً.' : 'No published issues yet.')}
+            {t('noIssues')}
           </p>
         ) : (
           publishedIssues.map((issue) => (
