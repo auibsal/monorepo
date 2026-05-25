@@ -2,7 +2,6 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { ThemeProvider } from 'next-themes';
 
 import { createClient } from '@auibsal/auth/client';
 import { Navbar, type NavbarLink } from '@auibsal/ui/components/layout/Navbar';
@@ -19,9 +18,8 @@ export default function ClientLayout({
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
-    // CRITICAL FIX: Route locally since Nexus owns the authentication layer
     router.push('/login');
-    router.refresh(); // Forces Next.js to re-evaluate the server layout and middleware
+    router.refresh();
   };
 
   const isAdmin = role === 'admin';
@@ -53,20 +51,18 @@ export default function ClientLayout({
   }
 
   return (
-    <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-      <div className="flex min-h-screen flex-col">
-        <Navbar 
-          locale="en" 
-          links={links} 
-          homeUrl="/" 
-          platform="nexus" 
-          onSignOut={handleSignOut} 
-        />
+    <div className="flex min-h-screen flex-col">
+      <Navbar 
+        locale="en" 
+        links={links} 
+        homeUrl="/" 
+        platform="nexus" 
+        onSignOut={handleSignOut} 
+      />
 
-        <main className="mx-auto w-full max-w-7xl flex-1 px-6 py-12">
-          {children}
-        </main>
-      </div>
-    </ThemeProvider>
+      <main className="mx-auto w-full max-w-7xl flex-1 px-6 py-12">
+        {children}
+      </main>
+    </div>
   );
 }
