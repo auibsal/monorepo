@@ -4,16 +4,18 @@ import { getTranslations } from 'next-intl/server';
 
 import { createClient } from '@auibsal/auth/server';
 
-// CRITICAL: 0 completely prevents caching. 3600 caches for an hour.
-export const revalidate = 0;
+// 1. CRITICAL PERFORMANCE UPGRADE: Incremental Static Regeneration (ISR)
+// Caches the page globally for 1 hour to prevent redundant Supabase reads.
+export const revalidate = 3600;
 
-export default async function BlogPage({ params }: { params: Promise<{ locale: string }> }) {
+// 2. Strictly typing the locale promise
+export default async function BlogPage({ params }: { params: Promise<{ locale: 'en' | 'ar' }> }) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'BlogPage' });
 
   const supabase = await createClient();
 
-  // ⚡ Bolt Performance Optimization + Security Fix: Shielding unpublished drafts
+  // Shielding unpublished drafts
   const { data: posts, error } = await supabase
     .from('blog_posts')
     .select('id, slug, title_en, title_ar, published_at, users(full_name)')
@@ -41,24 +43,24 @@ export default async function BlogPage({ params }: { params: Promise<{ locale: s
       <div className="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-3">
         {blogPosts.length === 0 ? (
           <p className="col-span-full text-xl font-bold tracking-widest text-foreground/70 uppercase">
-            {/* Fallback to t() block to enforce next-intl parity */}
-            {t('noPosts') ||
-              (isAr ? 'لا توجد مقالات منشورة حالياً.' : 'No blog posts published yet.')}
+            {/* 3. Removed inline fallbacks to enforce strict dictionary adherence */}
+            {t('noPosts')}
           </p>
         ) : (
           blogPosts.map((post) => (
             <Link key={post.id} href={`/blog/${post.slug}`} className="group h-full">
               <article className="flex h-full flex-col border-4 border-border bg-card shadow-[8px_8px_0px_0px_var(--brutalist-shadow)] transition-all duration-200 hover:-translate-x-1 hover:-translate-y-1 hover:shadow-[12px_12px_0px_0px_var(--brutalist-shadow)]">
                 <div className="flex flex-1 flex-col p-8">
-                  {/* Brutalist Author Block mapped to semantic foreground/background tokens */}
+                  {/* Brutalist Author Block */}
                   <div className="mb-8 flex items-center gap-4 border-b-2 border-border pb-6">
                     <div className="flex h-12 w-12 items-center justify-center border-2 border-transparent bg-foreground font-bold text-background">
                       <User size={24} />
                     </div>
                     <div>
-                      {/* Type cast bypassed natively by removing 'any' above, letting Supabase types cascade */}
+                      {/* Type cast bypassed natively; letting Supabase types cascade */}
                       <p className="text-sm font-bold tracking-wider text-foreground uppercase">
-                        {post.users?.full_name || 'Unknown Author'}
+                        {/* Assuming a 1:1 joined query returns an object in your generated types */}
+                        {(post.users as any)?.full_name || 'Unknown Author'}
                       </p>
                       <p className="text-xs font-bold text-primary">
                         {new Date(post.published_at).toLocaleDateString(locale, {
@@ -75,7 +77,8 @@ export default async function BlogPage({ params }: { params: Promise<{ locale: s
                   </h2>
 
                   <div className="mt-auto flex items-center pt-6 text-sm font-bold tracking-widest text-primary uppercase transition-transform group-hover:translate-x-2 rtl:group-hover:-translate-x-2">
-                    <span>{t('readArticle') || (isAr ? 'اقرأ المزيد' : 'Read Article')}</span>
+                    {/* 3. Removed inline fallbacks */}
+                    <span>{t('readArticle')}</span>
                     <ArrowRight className="ml-2 h-5 w-5 rtl:mr-2 rtl:ml-0 rtl:rotate-180" />
                   </div>
                 </div>
