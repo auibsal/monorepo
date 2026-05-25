@@ -2,6 +2,9 @@
 
 import { useEffect, useState } from 'react';
 
+// CRITICAL FIX: Import the Next.js router
+import { useRouter } from 'next/navigation';
+
 import { AlertTriangle, BookOpen, CheckSquare, Mail, Save, User } from 'lucide-react';
 
 import { createClient } from '@auibsal/auth/client';
@@ -19,6 +22,8 @@ export default function ProfilePage() {
   const [errorMessage, setErrorMessage] = useState('');
 
   const supabase = createClient();
+  // Initialize the router
+  const router = useRouter();
 
   useEffect(() => {
     let isMounted = true;
@@ -112,6 +117,9 @@ export default function ProfilePage() {
       if (authUpdateError) throw authUpdateError;
 
       setStatus('success');
+
+      // CRITICAL FIX: Invalidate the Next.js Server Component cache to instantly reflect changes globally
+      router.refresh();
 
       // Clear success message after 3 seconds to return to idle state
       setTimeout(() => setStatus('idle'), 3000);
