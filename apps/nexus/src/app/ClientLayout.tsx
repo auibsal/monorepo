@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-// Requires: pnpm add next-themes
+import { useRouter } from 'next/navigation';
 import { ThemeProvider } from 'next-themes';
 
 import { createClient } from '@auibsal/auth/client';
@@ -14,14 +14,14 @@ export default function ClientLayout({
   children: React.ReactNode;
   role: string | null;
 }) {
-  // 1. CRITICAL PERFORMANCE FIX: Memoize the Supabase client to prevent memory leaks and re-renders
+  const router = useRouter();
   const [supabase] = useState(() => createClient());
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
-    // Redirects to the external public Web application, completely crossing the micro-frontend boundary
-    const webUrl = process.env.NEXT_PUBLIC_WEB_URL || 'http://localhost:3000';
-    window.location.href = `${webUrl}/login`;
+    // CRITICAL FIX: Route locally since Nexus owns the authentication layer
+    router.push('/login');
+    router.refresh(); // Forces Next.js to re-evaluate the server layout and middleware
   };
 
   const isAdmin = role === 'admin';
@@ -34,7 +34,6 @@ export default function ClientLayout({
     { href: '/settings/profile', label: 'Profile' },
   ];
 
-  // RBAC Link Injection
   if (isEditorOrAdmin) {
     links = [
       ...links,
@@ -54,7 +53,6 @@ export default function ClientLayout({
   }
 
   return (
-    // 2. ARCHITECTURAL FIX: Mount the ThemeProvider to execute the semantic variable inversion
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
       <div className="flex min-h-screen flex-col">
         <Navbar 
@@ -65,7 +63,6 @@ export default function ClientLayout({
           onSignOut={handleSignOut} 
         />
 
-        {/* Main Content Area */}
         <main className="mx-auto w-full max-w-7xl flex-1 px-6 py-12">
           {children}
         </main>
