@@ -3,14 +3,15 @@ import type { NextConfig } from 'next';
 // ⚡ Bolt Security Optimization: Dynamically evaluate the environment
 const isDev = process.env.NODE_ENV !== 'production';
 
+// CRITICAL FIX: Strip unsafe-eval in production to kill XSS vectors
+// Note: Do not put comments inside the backticks, as HTTP headers cannot parse them.
 const cspHeader = `
-    default-src 'self';
-    /* CRITICAL FIX: Strip unsafe-eval in production to kill XSS vectors */
-    script-src 'self' 'unsafe-inline' ${isDev ? "'unsafe-eval'" : ''};
-    style-src 'self' 'unsafe-inline';
-    connect-src 'self' *.supabase.co;
-    img-src 'self' data: blob: *.supabase.co;
-    frame-src 'self' *.supabase.co;
+  default-src 'self';
+  script-src 'self' 'unsafe-inline' ${isDev ? "'unsafe-eval'" : ''};
+  style-src 'self' 'unsafe-inline';
+  connect-src 'self' *.supabase.co;
+  img-src 'self' data: blob: *.supabase.co;
+  frame-src 'self' *.supabase.co;
 `
   .replace(/\n/g, '')
   .replace(/\s+/g, ' ')
