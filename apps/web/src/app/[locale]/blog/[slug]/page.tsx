@@ -1,3 +1,5 @@
+
+import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
 import { Link } from '@/i18n/routing';
@@ -7,22 +9,50 @@ import { getTranslations } from 'next-intl/server';
 
 import { createClient } from '@auibsal/auth/server';
 
-// Brought in the translation layer
+// 1. CRITICAL PERFORMANCE UPGRADE: Incremental Static Regeneration (ISR)
+// Caches the page globally for 1 hour to ensure instant page transitions.
+export const revalidate = 3600;
 
-// CRITICAL: 0 completely prevents caching to ensure live updates.
-export const revalidate = 0;
+type Props = {
+  params: Promise<{ locale: 'en' | 'ar'; slug: string }>;
+};
 
-export default async function BlogPostPage({
-  params,
-}: {
-  params: Promise<{ locale: string; slug: string }>;
-}) {
+// 2. Dynamic SEO Injection
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale, slug } = await params;
+  const supabase = await createClient();
+
+  const { data: post } = await supabase
+    .from('blog_posts')
+    .select('title_en, title_ar, users(full_name)')
+    .eq('slug', slug)
+    .single();
+
+  if (!post) return {};
+
+  const title = locale === 'ar' ? post.title_ar : post.title_en;
+  // Type cast bypassed natively assuming standard joined query object
+  const authorName = (post.users as any)?.full_name || 'Unknown Author';
+
+  return {
+    title: title,
+    description: `Read "${title}" by ${authorName} on the AUIB Society of Arts and Letters Blog.`,
+    openGraph: {
+      title: `${title} | AUIB SAL Blog`,
+      description: `An article by ${authorName}.`,
+      type: 'article',
+    },
+  };
+}
+
+// 3. Strictly typed component parameters
+export default async function BlogPostPage({ params }: Props) {
   const { locale, slug } = await params;
   const t = await getTranslations({ locale, namespace: 'BlogPage' });
 
   const supabase = await createClient();
 
-  // CRITICAL FIX: The .not() filter prevents direct-slug access to unpublished manuscripts
+  // The .not() filter prevents direct-slug access to unpublished manuscripts
   const { data: post, error } = await supabase
     .from('blog_posts')
     .select('*, users(full_name)')
@@ -48,7 +78,8 @@ export default async function BlogPostPage({
           className="inline-flex items-center gap-2 text-sm font-bold tracking-widest text-foreground uppercase transition-transform hover:-translate-x-1 hover:text-primary rtl:hover:translate-x-1"
         >
           <ArrowLeft className="h-5 w-5 rtl:rotate-180" />
-          {t('backToBlog') || (isAr ? 'العودة إلى المدونة' : 'Back to Blog')}
+          {/* Removed inline fallbacks to enforce strict dictionary adherence */}
+          {t('backToBlog')}
         </Link>
       </div>
 
@@ -63,9 +94,8 @@ export default async function BlogPostPage({
             <User size={24} />
           </div>
           <div>
-            {/* Supabase types resolved natively via generated relation schemas */}
             <p className="text-sm font-bold tracking-wider text-foreground uppercase">
-              {post.users?.full_name || 'Unknown Author'}
+              {(post.users as any)?.full_name || 'Unknown Author'}
             </p>
             <p className="text-xs font-bold text-primary">
               {new Date(post.published_at).toLocaleDateString(locale, {
@@ -78,10 +108,7 @@ export default async function BlogPostPage({
         </div>
       </header>
 
-      {/* Brutalist Prose Container: 
-        All custom prose variants (text, headings, links) are perfectly mapped to the foreground 
-        and primary CSS variables to guarantee flawless Dark Mode inversion. 
-      */}
+      {/* Brutalist Prose Container */}
       <div
         className="prose prose-lg md:prose-xl prose-headings:font-bold prose-headings:text-foreground prose-headings:uppercase prose-headings:tracking-tight prose-a:text-primary prose-a:underline prose-a:underline-offset-4 prose-a:decoration-2 hover:prose-a:text-foreground max-w-none leading-relaxed font-medium text-foreground"
         dangerouslySetInnerHTML={{ __html: cleanHTML }}
