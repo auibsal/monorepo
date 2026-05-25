@@ -2,11 +2,13 @@ import { getTranslations } from 'next-intl/server';
 
 import WebNavbarClient from './WebNavbarClient';
 
-export default async function WebNavbarServer({ locale }: { locale: string }) {
+// 1. Strictly typed locale parameter
+export default async function WebNavbarServer({ locale }: { locale: 'en' | 'ar' }) {
   const t = await getTranslations({ locale, namespace: 'Navigation' });
   const targetLocale = locale === 'en' ? 'ar' : 'en';
 
-  const nexusUrl = process.env.NEXUS_URL || 'http://localhost:3001';
+  // 2. Synchronized with the CI pipeline and Next.js public env standards
+  const nexusUrl = process.env.NEXT_PUBLIC_NEXUS_URL || 'http://localhost:3001';
 
   const resolveHref = (path: string) => {
     if (locale === 'en') return path;
