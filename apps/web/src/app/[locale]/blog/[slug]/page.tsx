@@ -32,7 +32,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const title = locale === 'ar' ? post.title_ar : post.title_en;
   // Type cast bypassed natively assuming standard joined query object
-  const authorName = (post.users as any)?.full_name || 'Unknown Author';
+  const authorName = (post.users)?.full_name || 'Unknown Author';
 
   return {
     title: title,
@@ -95,7 +95,7 @@ export default async function BlogPostPage({ params }: Props) {
           </div>
           <div>
             <p className="text-sm font-bold tracking-wider text-foreground uppercase">
-              {(post.users as any)?.full_name || 'Unknown Author'}
+              {(post.users)?.full_name || 'Unknown Author'}
             </p>
             <p className="text-xs font-bold text-primary">
               {new Date(post.published_at).toLocaleDateString(locale, {

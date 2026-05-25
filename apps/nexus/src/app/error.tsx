@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 
-import InteractiveErrorState from '@auibsal/ui/components/InteractiveErrorState';
+import { InteractiveErrorState } from '@auibsal/ui/components/InteractiveErrorState';
 
 export default function NexusError({
   error,

@@ -3,13 +3,14 @@
   "compilerOptions": {
     "rootDir": "./src",
     "outDir": "./dist",
+    "ignoreDeprecations": "6.0",
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
     },
     
     // Strictly bounds the package to React environments (no Node.js globals)
-    "types": ["react", "react-dom"],
+    "types": ["react", "react-dom", "node"],
 
     // =========================
     // Monorepo Type Caching

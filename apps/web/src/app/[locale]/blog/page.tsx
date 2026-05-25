@@ -60,7 +60,7 @@ export default async function BlogPage({ params }: { params: Promise<{ locale: '
                       {/* Type cast bypassed natively; letting Supabase types cascade */}
                       <p className="text-sm font-bold tracking-wider text-foreground uppercase">
                         {/* Assuming a 1:1 joined query returns an object in your generated types */}
-                        {(post.users as any)?.full_name || 'Unknown Author'}
+                        {(post.users)?.full_name || 'Unknown Author'}
                       </p>
                       <p className="text-xs font-bold text-primary">
                         {new Date(post.published_at).toLocaleDateString(locale, {
