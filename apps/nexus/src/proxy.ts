@@ -40,6 +40,8 @@ export default async function proxy(request: NextRequest) {
 
       if (!userRole) {
         try {
+          // Warning: If user_metadata is persistently empty, this will cause Edge latency on every request.
+          // Ensure your Supabase triggers inject the role into the JWT.
           const { data: userData, error } = await supabase
             .from('users')
             .select('role')
