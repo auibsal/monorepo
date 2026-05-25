@@ -3,17 +3,23 @@ import { getTranslations } from 'next-intl/server';
 
 import { createClient } from '@auibsal/auth/server';
 
-export const revalidate = 0;
+// 1. CRITICAL PERFORMANCE UPGRADE: Incremental Static Regeneration (ISR)
+// Caches the page globally for 1 hour for instantaneous loads.
+export const revalidate = 3600;
 
-export default async function Events({ params }: { params: Promise<{ locale: string }> }) {
+// 2. Strictly typing the locale promise
+export default async function Events({ params }: { params: Promise<{ locale: 'en' | 'ar' }> }) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'EventsPage' });
   const supabase = await createClient();
 
+  // 3. LOGICAL FIX: Filter out past events
   const { data: events, error } = await supabase
     .from('events')
     .select('*')
+    .gte('starts_at', new Date().toISOString()) // Only fetch events happening from today onward
     .order('starts_at', { ascending: true });
+
   const upcomingEvents = !error && events ? events : [];
   const isAr = locale === 'ar';
 
@@ -33,7 +39,7 @@ export default async function Events({ params }: { params: Promise<{ locale: str
       <div className="space-y-12">
         {upcomingEvents.length === 0 ? (
           <p className="text-xl font-bold tracking-widest text-foreground/70 uppercase">
-            {t('noEvents')} {/* Mapped to translation file for better practice */}
+            {t('noEvents')}
           </p>
         ) : (
           upcomingEvents.map((event) => (
