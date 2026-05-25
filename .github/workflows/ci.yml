@@ -42,7 +42,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           # Reads directly from the universal file we established
-          node-version-file: '.nvmrc'
+          node-version-file: '.node-version'
           cache: 'pnpm'
 
       - name: Cache Turborepo
