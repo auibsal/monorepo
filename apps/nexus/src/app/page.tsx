@@ -182,7 +182,6 @@ export default async function NexusHome() {
                     <input
                       type="text"
                       readOnly
-                      {/* CRITICAL FIX: Swap webUrl to nexusUrl */}
                       value={`${nexusUrl}/api/calendar/${calendarToken}/events.ics`}
                       className="w-full truncate border-2 border-background/30 bg-background/10 p-3 font-mono text-xs text-background focus:border-primary focus:outline-none"
                     />
