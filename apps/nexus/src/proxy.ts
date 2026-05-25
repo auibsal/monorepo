@@ -51,7 +51,7 @@ export default async function proxy(request: NextRequest) {
           if (error) throw error;
           userRole = userData?.role || 'member';
         } catch (err) {
-          console.error('Middleware Role Fetch Error:', err);
+          void err;
           userRole = 'member'; // Failsafe
         }
       }

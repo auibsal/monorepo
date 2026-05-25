@@ -40,7 +40,7 @@ export default function EventsPage() {
   useEffect(() => {
     fetchEvents();
     fetchAuibEvents();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
   }, []);
 
   const fetchEvents = async () => {
@@ -64,7 +64,7 @@ export default function EventsPage() {
         setAuibEvents(data as AuibEvent[]);
       }
     } catch (e) {
-      console.error('Failed to fetch auib events proxy', e);
+      void e;
     }
   };
 

@@ -31,7 +31,7 @@ export default function KanbanBoard() {
     // CRITICAL: Hydration flag to ensure DragDropContext only mounts on the client
     setIsMounted(true);
     fetchSubmissions();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
   }, []);
 
   const fetchSubmissions = async () => {
@@ -75,7 +75,7 @@ export default function KanbanBoard() {
       .eq('id', draggableId);
 
     if (error) {
-      console.error('Error updating status:', error);
+      void error;
       // Automatically revert the card if the database request fails
       fetchSubmissions();
     }

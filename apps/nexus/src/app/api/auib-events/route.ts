@@ -63,7 +63,7 @@ export async function GET() {
 
     return NextResponse.json(auibEvents);
   } catch (error) {
-    console.error('Failed to parse AUIB calendar:', error);
+    void error;
     // Graceful degradation: return empty array so the client UI doesn't shatter
     return NextResponse.json([], { status: 500 });
   }

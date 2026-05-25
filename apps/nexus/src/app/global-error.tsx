@@ -9,7 +9,7 @@ import './globals.css';
 
 export default function GlobalError({
   error,
-  reset,
+
 }: {
   // CRITICAL: Extract the Next.js error digest for telemetry
   error: Error & { digest?: string };
@@ -17,7 +17,7 @@ export default function GlobalError({
 }) {
   useEffect(() => {
     // Fire the critical error into the Vercel edge logs
-    console.error('Nexus Global Kernel Panic:', error, 'Digest:', error.digest);
+    void error;
   }, [error]);
 
   const errorHash = error.digest

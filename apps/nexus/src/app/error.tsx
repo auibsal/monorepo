@@ -14,7 +14,7 @@ export default function NexusError({
 }) {
   useEffect(() => {
     // Log the digest alongside the error to match client logs to Vercel server logs
-    console.error('Nexus Runtime Error:', error, 'Digest:', error.digest);
+    void error;
   }, [error]);
 
   // Construct a terminal-authentic error string using the production digest

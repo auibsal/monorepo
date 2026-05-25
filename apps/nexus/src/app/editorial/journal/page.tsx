@@ -24,7 +24,7 @@ export default function JournalPage() {
 
   useEffect(() => {
     fetchIssues();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
   }, []);
 
   const fetchIssues = async () => {

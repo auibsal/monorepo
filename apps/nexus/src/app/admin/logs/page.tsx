@@ -44,7 +44,7 @@ export default function LogsPage() {
 
   useEffect(() => {
     fetchLogs();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
   }, []);
 
   // Helper to color-code terminal output based on severity (using action for system logs)

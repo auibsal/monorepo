@@ -19,6 +19,7 @@
     "isomorphic-dompurify": "catalog:",
     "lucide-react": "catalog:",
     "next": "catalog:",
+    "next-themes": "^0.4.6",
     "node-ical": "^0.26.1",
     "react": "catalog:",
     "react-dom": "catalog:"
