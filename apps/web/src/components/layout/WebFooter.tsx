@@ -1,10 +1,13 @@
 import { getTranslations } from 'next-intl/server';
 
-import UIFooter from '@auibsal/ui/components/layout/Footer';
+// 1. Synchronized with the named export from the UI package
+import { Footer as UIFooter } from '@auibsal/ui/components/layout/Footer';
 
-export default async function Footer({ locale }: { locale: string }) {
+// 2. Strictly typed locale parameter
+export default async function WebFooter({ locale }: { locale: 'en' | 'ar' }) {
   const t = await getTranslations({ locale, namespace: 'Footer' });
 
+  // Resolves the absolute path for the native Next.js Link used in the UI package
   const resolveHref = (path: string) => {
     if (locale === 'en') return path;
     return path === '/' ? '/ar' : `/ar${path}`;
@@ -27,5 +30,5 @@ export default async function Footer({ locale }: { locale: string }) {
     designedBy: t('designedBy'),
   };
 
-  return <UIFooter locale={locale as 'en' | 'ar'} dictionary={dictionary} />;
+  return <UIFooter locale={locale} dictionary={dictionary} />;
 }
