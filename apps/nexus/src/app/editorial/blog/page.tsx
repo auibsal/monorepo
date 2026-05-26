@@ -44,13 +44,7 @@ export default function BlogPage() {
   }, [supabase]);
 
   useEffect(() => {
-    let isMounted = true;
-    if (isMounted) {
-      fetchPosts();
-    }
-    return () => {
-      isMounted = false;
-    };
+    fetchPosts();
   }, [fetchPosts]);
 
   const handleCancel = () => {
