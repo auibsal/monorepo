@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { AlertCircle, AlertTriangle, CalendarDays, X } from 'lucide-react';
 
@@ -32,18 +32,14 @@ export default function EventsPage() {
   const [endsAt, setEndsAt] = useState('');
   const [isMembersOnly, setIsMembersOnly] = useState(false);
 
-  // Replaced native alert with state-driven error handling
+  // State-driven error handling
   const [errorMessage, setErrorMessage] = useState('');
+  const [isSaving, setIsSaving] = useState(false);
 
   const supabase = createClient();
 
-  useEffect(() => {
-    fetchEvents();
-    fetchAuibEvents();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const fetchEvents = async () => {
+  // CRITICAL FIX: Wrapped fetchers in useCallback to satisfy strict React concurrency rules
+  const fetchEvents = useCallback(async () => {
     if (!supabase) return;
     const { data, error } = await supabase
       .from('events')
@@ -53,9 +49,9 @@ export default function EventsPage() {
       setEvents(data);
     }
     setLoading(false);
-  };
+  }, [supabase]);
 
-  const fetchAuibEvents = async () => {
+  const fetchAuibEvents = useCallback(async () => {
     try {
       const res = await fetch('/api/auib-events');
       if (res.ok) {
@@ -66,7 +62,18 @@ export default function EventsPage() {
     } catch (e) {
       console.error('Failed to fetch auib events proxy', e);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    let isMounted = true;
+    if (isMounted) {
+      fetchEvents();
+      fetchAuibEvents();
+    }
+    return () => {
+      isMounted = false;
+    };
+  }, [fetchEvents, fetchAuibEvents]);
 
   const handleCloseModal = () => {
     setShowModal(false);
@@ -79,30 +86,42 @@ export default function EventsPage() {
     setEndsAt('');
     setIsMembersOnly(false);
     setErrorMessage('');
+    setIsSaving(false);
   };
 
   const handleCreateEvent = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!supabase) return;
+    setIsSaving(true);
     setErrorMessage('');
 
-    const { error } = await supabase.from('events').insert({
-      title_en: titleEn,
-      title_ar: titleAr,
-      description_en: descEn,
-      description_ar: descAr,
-      location,
-      starts_at: startsAt,
-      ends_at: endsAt,
-      is_members_only: isMembersOnly,
-      cover_image_url: '',
-    });
+    try {
+      // CRITICAL FIX: Convert the local datetime string into a strict UTC ISO string
+      // This mathematically guarantees Postgres stores the exact absolute time, regardless of server location.
+      const isoStartsAt = new Date(startsAt).toISOString();
+      const isoEndsAt = new Date(endsAt).toISOString();
 
-    if (error) {
-      setErrorMessage(error.message);
-    } else {
+      const { error } = await supabase.from('events').insert({
+        title_en: titleEn,
+        title_ar: titleAr,
+        description_en: descEn,
+        description_ar: descAr,
+        location,
+        starts_at: isoStartsAt,
+        ends_at: isoEndsAt,
+        is_members_only: isMembersOnly,
+        cover_image_url: '',
+      });
+
+      if (error) throw error;
+
       handleCloseModal();
       fetchEvents();
+    } catch (err: unknown) {
+      setErrorMessage(
+        err instanceof Error ? err.message : 'An unknown exception occurred during transmission.'
+      );
+      setIsSaving(false);
     }
   };
 
@@ -142,11 +161,12 @@ export default function EventsPage() {
               <tbody className="divide-y-2 divide-border">
                 {loading ? (
                   <tr>
-                    <td
-                      className="px-6 py-8 text-center text-sm font-bold tracking-widest text-foreground/70 uppercase"
-                      colSpan={3}
-                    >
-                      Loading events...
+                    <td className="p-8" colSpan={3}>
+                      {/* CRITICAL FIX: Standardized Brutalist Loading State */}
+                      <div className="flex animate-pulse items-center justify-center gap-3 text-sm font-bold tracking-widest text-foreground/50 uppercase">
+                        <div className="h-4 w-4 animate-spin rounded-none bg-primary"></div>
+                        Polling Database...
+                      </div>
                     </td>
                   </tr>
                 ) : events.length === 0 ? (
@@ -332,7 +352,6 @@ export default function EventsPage() {
                   >
                     Starts At <span className="text-primary">*</span>
                   </label>
-                  {/* The color-scheme CSS forces the native browser calendar picker to obey dark mode */}
                   <input
                     id="startsAt"
                     required
@@ -380,15 +399,20 @@ export default function EventsPage() {
                 <button
                   type="button"
                   onClick={handleCloseModal}
-                  className="border-4 border-border px-8 py-4 font-bold tracking-widest text-foreground uppercase shadow-[6px_6px_0px_0px_var(--brutalist-shadow)] transition-colors hover:translate-x-1 hover:translate-y-1 hover:bg-foreground hover:text-background hover:shadow-none"
+                  disabled={isSaving}
+                  className="border-4 border-border px-8 py-4 font-bold tracking-widest text-foreground uppercase shadow-[6px_6px_0px_0px_var(--brutalist-shadow)] transition-colors hover:translate-x-1 hover:translate-y-1 hover:bg-foreground hover:text-background hover:shadow-none disabled:opacity-50"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="border-4 border-border bg-primary px-8 py-4 font-bold tracking-widest text-background uppercase shadow-[6px_6px_0px_0px_var(--brutalist-shadow)] transition-colors hover:translate-x-1 hover:translate-y-1 hover:bg-foreground hover:shadow-none"
+                  disabled={isSaving}
+                  className="flex items-center gap-3 border-4 border-border bg-primary px-8 py-4 font-bold tracking-widest text-background uppercase shadow-[6px_6px_0px_0px_var(--brutalist-shadow)] transition-colors hover:translate-x-1 hover:translate-y-1 hover:bg-foreground hover:shadow-none disabled:opacity-50"
                 >
-                  Create Event
+                  {isSaving && (
+                    <div className="h-4 w-4 animate-spin rounded-none bg-background"></div>
+                  )}
+                  {isSaving ? 'Creating...' : 'Create Event'}
                 </button>
               </div>
             </form>
