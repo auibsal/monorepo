@@ -45,9 +45,10 @@ export default function KanbanBoard() {
 
     try {
       // 1. Fetch Submissions with Author Identity and Assignee
+      // CRITICAL FIX: Explicitly hinting the author relation to bypass the assignee collision
       const { data: subData, error: subError } = await supabase
         .from('submissions')
-        .select('id, title, type, status, rubric_formatting, assigned_to, users(full_name)');
+        .select('id, title, type, status, rubric_formatting, assigned_to, users!author_id(full_name)');
 
       if (subError) throw subError;
 
@@ -127,7 +128,7 @@ export default function KanbanBoard() {
     if (!supabase) return;
     const newAssignee = editorId === 'unassigned' ? null : editorId;
 
-    // CRITICAL FIX: Guarded Optimistic UI update to satisfy strict TypeScript definitions
+    // Guarded Optimistic UI update to satisfy strict TypeScript definitions
     setSubmissions((prev) => {
       const existing = prev[submissionId];
       // Abort if the record is missing, mathematically preventing malformed state injection
