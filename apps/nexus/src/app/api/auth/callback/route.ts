@@ -9,7 +9,7 @@ export async function GET(request: Request) {
   const code = searchParams.get('code');
   const token_hash = searchParams.get('token_hash');
   const type = searchParams.get('type') as any; // e.g., 'invite', 'recovery', 'magiclink'
-  
+
   // Extract the destination, fallback to root
   let next = searchParams.get('next') || searchParams.get('redirect_to') || '/';
 

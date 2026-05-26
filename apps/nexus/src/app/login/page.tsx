@@ -1,10 +1,8 @@
 'use client';
 
 import { Suspense, useEffect, useState } from 'react';
-
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-
 import { AlertTriangle } from 'lucide-react';
 
 import { createClient } from '@auibsal/auth/client';
@@ -48,7 +46,12 @@ function LoginForm() {
       // 2. Safely capture the intended destination to preserve deep-links
       // SECURITY: Validate 'next' to prevent DOM-based XSS (javascript:) and Open Redirects
       let next = searchParams.get('next') || '/';
-      if (!next.startsWith('/') || next.startsWith('//') || next.includes('\\') || /[\s]/.test(next)) {
+      if (
+        !next.startsWith('/') ||
+        next.startsWith('//') ||
+        next.includes('\\') ||
+        /[\s]/.test(next)
+      ) {
         next = '/';
       }
       window.location.href = next;

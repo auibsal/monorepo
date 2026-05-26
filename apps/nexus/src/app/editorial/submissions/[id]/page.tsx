@@ -1,10 +1,8 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
-
 import Image from 'next/image';
 import { useParams, useRouter } from 'next/navigation';
-
 import DOMPurify from 'isomorphic-dompurify';
 import {
   AlertOctagon,
@@ -76,17 +74,17 @@ export default function GradingPage() {
         setTech(
           subData.rubric_technical !== undefined && subData.rubric_technical !== null
             ? String(subData.rubric_technical)
-            : ''
+            : '',
         );
         setOrig(
           subData.rubric_originality !== undefined && subData.rubric_originality !== null
             ? String(subData.rubric_originality)
-            : ''
+            : '',
         );
         setTheme(
           subData.rubric_thematic !== undefined && subData.rubric_thematic !== null
             ? String(subData.rubric_thematic)
-            : ''
+            : '',
         );
         setArchive(subData.rubric_archive ?? null);
         setFormatting(subData.rubric_formatting || '');
@@ -100,7 +98,6 @@ export default function GradingPage() {
 
       if (editorError) throw editorError;
       if (editorData) setEditors(editorData);
-
     } catch (err) {
       console.error('Failed to mount secure dossier:', err);
     } finally {
@@ -149,10 +146,10 @@ export default function GradingPage() {
 
   const handleDisqualify = async () => {
     if (!supabase) return;
-    
+
     if (
       confirm(
-        'CRITICAL ACTION: Are you sure you want to disqualify this submission? This will permanently update the status to "rejected", formatting to "disqualified", and unmask the author.'
+        'CRITICAL ACTION: Are you sure you want to disqualify this submission? This will permanently update the status to "rejected", formatting to "disqualified", and unmask the author.',
       )
     ) {
       const { error } = await supabase
@@ -268,7 +265,6 @@ export default function GradingPage() {
         </div>
 
         <div className="flex-1 space-y-8">
-          
           {/* Assignment Task Module */}
           <div className="space-y-3 border-b-4 border-border/10 pb-8">
             <label className="flex items-center gap-2 text-sm font-bold tracking-wide uppercase">

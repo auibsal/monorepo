@@ -1,9 +1,9 @@
 import js from '@eslint/js';
 import nextPlugin from '@next/eslint-plugin-next';
-import turboPlugin from 'eslint-plugin-turbo';
 import type { Linter } from 'eslint';
 import reactPlugin from 'eslint-plugin-react';
 import hooksPlugin from 'eslint-plugin-react-hooks';
+import turboPlugin from 'eslint-plugin-turbo';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
@@ -35,9 +35,6 @@ export const baseConfig: Linter.Config[] = tseslint.config(
       },
     },
     rules: {
-
-
-
       // 🚨 Turborepo cache protection
       'turbo/no-undeclared-env-vars': 'error',
 
@@ -54,12 +51,11 @@ export const baseConfig: Linter.Config[] = tseslint.config(
       '@typescript-eslint/no-empty-object-type': 'off',
       'no-undef': 'off', // Automatically handled by TypeScript
     },
-  }
+  },
 ) as Linter.Config[];
 
 // 3. Next.js & React Architecture (For apps/web, apps/nexus)
 export const nextConfig: Linter.Config[] = [
-
   ...baseConfig,
   {
     files: ['**/*.{ts,tsx,js,jsx}'],
@@ -84,7 +80,6 @@ export const nextConfig: Linter.Config[] = [
       ...hooksPlugin.configs.recommended.rules,
 
       'react-hooks/purity': 'off',
-
 
       'react-hooks/exhaustive-deps': 'off',
       'react-hooks/rules-of-hooks': 'off',

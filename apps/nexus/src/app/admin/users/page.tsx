@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-
 import { Save, Users } from 'lucide-react';
 
 import { createClient } from '@auibsal/auth/client';
@@ -10,7 +9,7 @@ import { Role, User } from '@auibsal/database';
 export default function UsersPage() {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
-  
+
   // CRITICAL FIX: Isolate un-saved changes to prevent "Ghost States"
   const [draftRoles, setDraftRoles] = useState<Record<string, Role>>({});
   const [savingId, setSavingId] = useState<string | null>(null);
@@ -23,12 +22,12 @@ export default function UsersPage() {
     // CRITICAL FIX: Encapsulate the async fetcher to satisfy strict React lifecycle rules
     const fetchUsers = async () => {
       if (!supabase) return;
-      
+
       const { data, error } = await supabase
         .from('users')
         .select('*')
         .order('created_at', { ascending: false });
-        
+
       if (!error && data && isMounted) {
         setUsers(data);
       }
@@ -49,12 +48,12 @@ export default function UsersPage() {
 
   const saveRole = async (userId: string, currentRole: Role) => {
     if (!supabase) return;
-    
+
     const newRole = draftRoles[userId] || currentRole;
     if (newRole === currentRole) return; // Prevent redundant DB calls
 
     setSavingId(userId);
-    
+
     const { error } = await supabase
       .from('users')
       .update({
@@ -73,7 +72,7 @@ export default function UsersPage() {
         return newState;
       });
     }
-    
+
     setSavingId(null);
   };
 
@@ -146,8 +145,8 @@ export default function UsersPage() {
                         value={activeRole}
                         onChange={(e) => handleRoleChange(user.id, e.target.value as Role)}
                         className={`cursor-pointer rounded-none border-2 p-2 text-sm font-bold tracking-wider uppercase transition-colors focus:outline-none ${
-                          hasChanged 
-                            ? 'border-primary bg-primary/10 text-primary focus:ring-1 focus:ring-primary' 
+                          hasChanged
+                            ? 'border-primary bg-primary/10 text-primary focus:ring-1 focus:ring-primary'
                             : 'border-border bg-background text-foreground hover:bg-foreground/5 focus:border-primary focus:ring-1 focus:ring-primary'
                         }`}
                       >

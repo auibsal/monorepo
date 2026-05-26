@@ -12,7 +12,7 @@
       }
     ],
     "paths": {
-      // Strictly reserved for local app resolution. 
+      // Strictly reserved for local app resolution.
       // All @auibsal/* packages are resolved natively via pnpm workspace symlinks.
       "@/*": ["./src/*"]
     }

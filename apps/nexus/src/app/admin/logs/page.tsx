@@ -1,7 +1,6 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
-
 import { AlertTriangle, RefreshCw, ShieldCheck, Terminal } from 'lucide-react';
 
 import { createClient } from '@auibsal/auth/client';
@@ -45,7 +44,7 @@ export default function LogsPage() {
 
   useEffect(() => {
     let isMounted = true;
-    
+
     if (isMounted) {
       fetchLogs();
     }
@@ -140,8 +139,7 @@ export default function LogsPage() {
                       [{log.action}]
                     </span>
                     <span className="break-words text-foreground">
-                      <span className="font-bold text-primary">{actorIdentity}</span>{' '}
-                      executed{' '}
+                      <span className="font-bold text-primary">{actorIdentity}</span> executed{' '}
                       <span className="underline decoration-border/50 underline-offset-2">
                         {log.action}
                       </span>{' '}

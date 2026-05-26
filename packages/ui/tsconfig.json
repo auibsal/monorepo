@@ -8,7 +8,7 @@
     "paths": {
       "@/*": ["./src/*"]
     },
-    
+
     // Strictly bounds the package to React environments (no Node.js globals)
     "types": ["react", "react-dom", "node"],
 

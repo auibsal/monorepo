@@ -1,9 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-
 import Link from 'next/link';
-
 import { Menu, X } from 'lucide-react';
 
 // 1. Synchronized with the named export from the previous step
@@ -96,7 +94,10 @@ export function Navbar({
   const rightModule = renderPlatformActions();
 
   return (
-    <nav dir="auto" className="sticky top-0 z-50 w-full border-b-4 border-auib-charcoal bg-auib-red text-white transition-colors duration-300">
+    <nav
+      dir="auto"
+      className="sticky top-0 z-50 w-full border-b-4 border-auib-charcoal bg-auib-red text-white transition-colors duration-300"
+    >
       <div className="mx-auto flex h-20 max-w-6xl items-center justify-between px-6">
         <Link
           href={logoHref}
@@ -125,7 +126,7 @@ export function Navbar({
       {/* Hamburger Menu Overlay */}
       {isOpen && (
         // 2. Swapped left-0 to inset-x-0 for flawless BiDi absolute positioning
-        <div className="absolute top-20 inset-x-0 h-[calc(100vh-5rem)] w-full overflow-y-auto border-b-4 border-auib-red bg-auib-charcoal text-white shadow-brutalist-md">
+        <div className="absolute inset-x-0 top-20 h-[calc(100vh-5rem)] w-full overflow-y-auto border-b-4 border-auib-red bg-auib-charcoal text-white shadow-brutalist-md">
           <div className="mx-auto max-w-6xl px-6 py-8">
             <ul className="flex flex-col gap-4 text-lg font-bold tracking-widest uppercase">
               {links.map((link) => (
