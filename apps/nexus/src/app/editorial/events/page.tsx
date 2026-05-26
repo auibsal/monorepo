@@ -65,14 +65,8 @@ export default function EventsPage() {
   }, []);
 
   useEffect(() => {
-    let isMounted = true;
-    if (isMounted) {
-      fetchEvents();
-      fetchAuibEvents();
-    }
-    return () => {
-      isMounted = false;
-    };
+    fetchEvents();
+    fetchAuibEvents();
   }, [fetchEvents, fetchAuibEvents]);
 
   const handleCloseModal = () => {
