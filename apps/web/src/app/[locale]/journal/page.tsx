@@ -19,7 +19,7 @@ export default async function Journal({ params }: { params: Promise<{ locale: 'e
   // Ensure unpublished drafts are completely hidden from the public query
   const { data: issues, error } = await supabase
     .from('journal_issues')
-    .select('*')
+    .select('id, volume_number, issue_number, published_at, title_en, title_ar')
     .not('published_at', 'is', null)
     .order('volume_number', { ascending: false })
     .order('issue_number', { ascending: false });
