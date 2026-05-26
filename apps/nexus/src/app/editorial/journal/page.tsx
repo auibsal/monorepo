@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { AlertTriangle, ArrowRight, BookOpen, CheckSquare, FileUp } from 'lucide-react';
 
@@ -22,12 +22,8 @@ export default function JournalPage() {
 
   const supabase = createClient();
 
-  useEffect(() => {
-    fetchIssues();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const fetchIssues = async () => {
+  // CRITICAL FIX: Wrapped in useCallback to satisfy strict React concurrency rules
+  const fetchIssues = useCallback(async () => {
     if (!supabase) return;
     const { data: issuesData, error } = await supabase
       .from('journal_issues')
@@ -39,7 +35,15 @@ export default function JournalPage() {
       setIssues(issuesData);
     }
     setLoading(false);
-  };
+  }, [supabase]);
+
+  useEffect(() => {
+    let isMounted = true;
+    if (isMounted) fetchIssues();
+    return () => {
+      isMounted = false;
+    };
+  }, [fetchIssues]);
 
   const resetFormState = () => {
     setFile(null);
@@ -62,7 +66,7 @@ export default function JournalPage() {
     setErrorMessage('');
 
     try {
-      // ⚡ Bolt Security Optimization: Shift from weak timestamps to true cryptographic UUIDs
+      // Cryptographic file naming to prevent CDN collisions
       const fileName = `vol${vol}_issue${issue}_${crypto.randomUUID()}.pdf`;
 
       const { error: uploadError } = await supabase.storage
@@ -90,14 +94,13 @@ export default function JournalPage() {
       fetchIssues();
     } catch (err: unknown) {
       setStatus('error');
-      // Enforced strict instance checking on the catch block
       setErrorMessage(err instanceof Error ? err.message : 'Error uploading journal issue.');
     }
   };
 
   return (
     <div className="space-y-12">
-      {/* Architectural Header anchored to dynamic border/text tokens */}
+      {/* Architectural Header */}
       <div className="flex items-center justify-between border-b-4 border-border pb-4">
         <h2 className="text-3xl font-bold tracking-widest text-foreground uppercase">
           Journal CMS
@@ -107,16 +110,19 @@ export default function JournalPage() {
       {/* Grid Display for Published Issues */}
       <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
         {loading ? (
-          <div className="p-4 text-sm font-bold tracking-widest text-foreground uppercase">
-            Loading issues...
+          <div className="col-span-full flex items-center justify-center p-12">
+            {/* CRITICAL FIX: Standardized Brutalist Loading State */}
+            <div className="flex animate-pulse items-center gap-3 text-sm font-bold tracking-widest text-foreground/50 uppercase">
+              <div className="h-4 w-4 animate-spin rounded-none bg-primary"></div>
+              Polling Journal Matrix...
+            </div>
           </div>
         ) : issues.length === 0 ? (
-          <div className="col-span-full border-4 border-dashed border-border/30 p-4 text-center text-sm font-bold tracking-widest text-foreground/60 uppercase">
+          <div className="col-span-full border-4 border-dashed border-border/30 p-12 text-center text-sm font-bold tracking-widest text-foreground/60 uppercase">
             No published issues found.
           </div>
         ) : (
           issues.map((iss) => (
-            // Card container fully mapped to dynamic Dark Mode tokens
             <div
               key={iss.id}
               className="flex flex-col justify-between border-4 border-border bg-card p-8 text-foreground shadow-[8px_8px_0px_0px_var(--brutalist-shadow)] transition-all hover:-translate-x-1 hover:-translate-y-1 hover:shadow-[12px_12px_0px_0px_var(--brutalist-shadow)]"
@@ -155,7 +161,7 @@ export default function JournalPage() {
                   href={iss.pdf_file_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group flex cursor-pointer items-center justify-between border-t-2 border-border/10 bg-background p-4 text-sm font-bold tracking-widest uppercase transition-colors hover:bg-primary hover:text-background"
+                  className="mt-6 group flex cursor-pointer items-center justify-between border-t-2 border-border/10 bg-background p-4 text-sm font-bold tracking-widest uppercase transition-colors hover:bg-primary hover:text-background"
                 >
                   View PDF{' '}
                   <ArrowRight
@@ -192,7 +198,7 @@ export default function JournalPage() {
                 min="1"
                 value={vol}
                 onChange={(e) => setVol(e.target.value)}
-                className="w-full rounded-none border-2 border-border bg-background p-4 font-bold text-foreground focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
+                className="w-full rounded-none border-4 border-border bg-background p-4 font-bold text-foreground transition-colors focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
               />
             </div>
             <div className="space-y-3">
@@ -205,7 +211,7 @@ export default function JournalPage() {
                 min="1"
                 value={issue}
                 onChange={(e) => setIssue(e.target.value)}
-                className="w-full rounded-none border-2 border-border bg-background p-4 font-bold text-foreground focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
+                className="w-full rounded-none border-4 border-border bg-background p-4 font-bold text-foreground transition-colors focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
               />
             </div>
             <div className="space-y-3">
@@ -217,7 +223,7 @@ export default function JournalPage() {
                 required
                 value={titleEn}
                 onChange={(e) => setTitleEn(e.target.value)}
-                className="w-full rounded-none border-2 border-border bg-background p-4 font-bold text-foreground focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
+                className="w-full rounded-none border-4 border-border bg-background p-4 font-bold text-foreground transition-colors focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
               />
             </div>
             <div className="space-y-3" dir="rtl">
@@ -229,7 +235,7 @@ export default function JournalPage() {
                 required
                 value={titleAr}
                 onChange={(e) => setTitleAr(e.target.value)}
-                className="w-full rounded-none border-2 border-border bg-background p-4 text-lg font-bold text-foreground focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
+                className="w-full rounded-none border-4 border-border bg-background p-4 text-lg font-bold text-foreground transition-colors focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
               />
             </div>
           </div>
@@ -239,7 +245,9 @@ export default function JournalPage() {
               Compiled PDF File
             </label>
             <div className="group relative flex cursor-pointer flex-col items-center justify-center border-4 border-dashed border-border bg-background p-8 text-center transition-colors hover:bg-foreground/5">
+              {/* CRITICAL FIX: The dynamic key mathematically guarantees the DOM input is destroyed and rebuilt when the state clears, preventing the Ghost Input trap. */}
               <input
+                key={file ? 'loaded' : 'empty'}
                 type="file"
                 required
                 accept="application/pdf"
@@ -256,11 +264,11 @@ export default function JournalPage() {
                 size={40}
                 className="mb-3 text-foreground transition-colors group-hover:text-primary"
               />
-              <p className="text-sm font-bold tracking-wider text-foreground uppercase">
+              <p className="px-2 text-sm font-bold tracking-wider text-foreground uppercase">
                 {file ? file.name : 'Click or Drag PDF to Mount File'}
               </p>
               {file && (
-                <p className="mt-1 font-mono text-xs text-primary">
+                <p className="mt-2 font-mono text-xs text-primary">
                   ({(file.size / (1024 * 1024)).toFixed(2)} MB)
                 </p>
               )}
@@ -285,9 +293,13 @@ export default function JournalPage() {
             <button
               type="submit"
               disabled={status === 'uploading' || !file}
-              className="border-4 border-border bg-foreground px-8 py-4 font-bold tracking-wider text-background uppercase shadow-[6px_6px_0px_0px_var(--brutalist-shadow)] transition-colors hover:-translate-y-0.5 hover:border-primary hover:bg-primary hover:shadow-[8px_8px_0px_0px_var(--brutalist-shadow)] disabled:opacity-50"
+              className="flex items-center gap-3 border-4 border-border bg-foreground px-8 py-4 font-bold tracking-wider text-background uppercase shadow-[6px_6px_0px_0px_var(--brutalist-shadow)] transition-all hover:-translate-y-0.5 hover:border-primary hover:bg-primary hover:shadow-[8px_8px_0px_0px_var(--brutalist-shadow)] disabled:opacity-50"
             >
-              {status === 'uploading' ? 'Uploading...' : 'Publish Issue'}
+              {/* CRITICAL FIX: Standardized Brutalist Uploading State */}
+              {status === 'uploading' && (
+                <div className="h-4 w-4 animate-spin rounded-none bg-background"></div>
+              )}
+              {status === 'uploading' ? 'Transmitting Payload...' : 'Publish Issue'}
             </button>
           </div>
         </form>
