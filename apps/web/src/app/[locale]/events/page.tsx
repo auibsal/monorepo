@@ -16,7 +16,7 @@ export default async function Events({ params }: { params: Promise<{ locale: 'en
   // 3. LOGICAL FIX: Filter out past events
   const { data: events, error } = await supabase
     .from('events')
-    .select('*')
+    .select('id, starts_at, location, title_ar, title_en, description_ar, description_en')
     .gte('starts_at', new Date().toISOString()) // Only fetch events happening from today onward
     .order('starts_at', { ascending: true });
 
