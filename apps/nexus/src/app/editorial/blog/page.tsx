@@ -1,8 +1,8 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
-import { AlertTriangle } from 'lucide-react';
+import { AlertTriangle, Plus, X } from 'lucide-react';
 
 import { createClient } from '@auibsal/auth/client';
 import { BlogPost } from '@auibsal/database';
@@ -25,16 +25,12 @@ export default function BlogPage() {
 
   const [isSaving, setIsSaving] = useState(false);
   const [showForm, setShowForm] = useState(false);
-  // Replaced native alert with state-driven error handling
   const [errorMessage, setErrorMessage] = useState('');
 
   const supabase = createClient();
 
-  useEffect(() => {
-    fetchPosts();
-  }, []);
-
-  const fetchPosts = async () => {
+  // CRITICAL FIX: Wrapped in useCallback to satisfy strict React concurrency rules
+  const fetchPosts = useCallback(async () => {
     if (!supabase) return;
     const { data, error } = await supabase
       .from('blog_posts')
@@ -42,11 +38,20 @@ export default function BlogPage() {
       .order('published_at', { ascending: false });
 
     if (!error && data) {
-      // Cast safely to our explicit interface rather than 'any'
       setPosts(data as unknown as CMSPostRecord[]);
     }
     setLoading(false);
-  };
+  }, [supabase]);
+
+  useEffect(() => {
+    let isMounted = true;
+    if (isMounted) {
+      fetchPosts();
+    }
+    return () => {
+      isMounted = false;
+    };
+  }, [fetchPosts]);
 
   const handleCancel = () => {
     setTitleEn('');
@@ -60,6 +65,14 @@ export default function BlogPage() {
 
   const handleSave = async () => {
     if (!supabase) return;
+
+    // CRITICAL FIX: Explicitly block blank RichText payloads from reaching the database
+    const stripHtml = (html: string) => html.replace(/<[^>]+>/g, '').trim();
+    if (!stripHtml(contentEn) || !stripHtml(contentAr)) {
+      setErrorMessage('Both English and Arabic content payloads are strictly required.');
+      return;
+    }
+
     setIsSaving(true);
     setErrorMessage('');
 
@@ -84,7 +97,7 @@ export default function BlogPage() {
         content_en: contentEn,
         content_ar: contentAr,
         slug: finalSlug,
-        cover_image_url: '',
+        cover_image_url: '', // Image mount point reserved for future iterations
       });
 
       if (error) throw error;
@@ -103,19 +116,24 @@ export default function BlogPage() {
   return (
     <div>
       {/* Architectural Header anchored to dynamic tokens */}
-      <div className="mb-10 flex items-center justify-between border-b-4 border-border pb-4">
+      <div className="mb-10 flex flex-wrap items-center justify-between gap-4 border-b-4 border-border pb-4">
         <h2 className="text-3xl font-bold tracking-widest text-foreground uppercase">Blog CMS</h2>
         <button
           onClick={showForm ? handleCancel : () => setShowForm(true)}
-          className="border-4 border-border bg-primary px-6 py-2 font-bold tracking-wider text-background uppercase shadow-[6px_6px_0px_0px_var(--brutalist-shadow)] transition-colors hover:-translate-y-0.5 hover:bg-background hover:text-primary hover:shadow-[8px_8px_0px_0px_var(--brutalist-shadow)]"
+          className={`flex items-center gap-2 border-4 border-border px-6 py-2 font-bold tracking-wider uppercase shadow-[6px_6px_0px_0px_var(--brutalist-shadow)] transition-all hover:-translate-y-0.5 hover:shadow-[8px_8px_0px_0px_var(--brutalist-shadow)] ${
+            showForm
+              ? 'bg-background text-foreground hover:border-primary hover:text-primary'
+              : 'bg-primary text-background hover:bg-background hover:text-primary'
+          }`}
         >
+          {showForm ? <X size={18} /> : <Plus size={18} />}
           {showForm ? 'Cancel' : 'New Post'}
         </button>
       </div>
 
       {/* Brutalist Data Table */}
       {!showForm && (
-        <div className="mb-12 overflow-x-auto border-4 border-border bg-card text-foreground shadow-[8px_8px_0px_0px_var(--brutalist-shadow)]">
+        <div className="mb-12 overflow-x-auto border-4 border-border bg-card text-foreground shadow-[12px_12px_0px_0px_var(--brutalist-shadow)]">
           <table className="w-full border-collapse text-left">
             <thead className="border-b-4 border-border bg-foreground text-background">
               <tr>
@@ -130,20 +148,21 @@ export default function BlogPage() {
             <tbody className="divide-y-2 divide-border">
               {loading ? (
                 <tr>
-                  <td
-                    colSpan={4}
-                    className="px-6 py-8 text-center text-sm font-bold tracking-widest text-foreground/70 uppercase"
-                  >
-                    Loading posts...
+                  <td colSpan={4} className="p-8">
+                    {/* CRITICAL FIX: Standardized Brutalist Loading State */}
+                    <div className="flex animate-pulse items-center justify-center gap-3 text-sm font-bold tracking-widest text-foreground/50 uppercase">
+                      <div className="h-4 w-4 animate-spin rounded-none bg-primary"></div>
+                      Polling CMS Database...
+                    </div>
                   </td>
                 </tr>
               ) : posts.length === 0 ? (
                 <tr>
                   <td
                     colSpan={4}
-                    className="px-6 py-8 text-center text-sm font-bold tracking-widest text-foreground/70 uppercase"
+                    className="px-6 py-12 text-center text-sm font-bold tracking-widest text-foreground/50 uppercase"
                   >
-                    No posts found.
+                    No posts found in the matrix.
                   </td>
                 </tr>
               ) : (
@@ -151,12 +170,11 @@ export default function BlogPage() {
                   <tr key={post.id} className="transition-colors hover:bg-foreground/5">
                     <td className="px-6 py-4 text-sm font-bold">{post.title_en}</td>
                     <td className="px-6 py-4 text-sm font-bold">{post.title_ar}</td>
-                    {/* Extracting relation property safely */}
                     <td className="px-6 py-4 text-sm font-medium">
                       {post.users?.full_name || 'Unknown Author'}
                     </td>
                     <td className="px-6 py-4 text-right text-sm">
-                      <span className="border-2 border-border bg-primary px-3 py-1.5 text-xs font-bold tracking-wider text-background uppercase shadow-[2px_2px_0px_0px_var(--brutalist-shadow)]">
+                      <span className="border-2 border-primary bg-primary/10 px-3 py-1.5 text-xs font-bold tracking-wider text-primary uppercase shadow-[2px_2px_0px_0px_var(--primary)]">
                         Published
                       </span>
                     </td>
@@ -190,7 +208,7 @@ export default function BlogPage() {
               type="text"
               value={slug}
               onChange={(e) => setSlug(e.target.value)}
-              className="w-full rounded-none border-2 border-border bg-background p-4 font-mono text-sm text-foreground transition-all focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none md:w-1/2"
+              className="w-full rounded-none border-4 border-border bg-background p-4 font-mono text-sm text-foreground transition-all focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none md:w-1/2"
             />
           </div>
 
@@ -198,22 +216,21 @@ export default function BlogPage() {
             <div className="space-y-6">
               <div>
                 <label className="mb-3 block text-sm font-bold tracking-wide text-foreground uppercase">
-                  Title (English)
+                  Title (English) <span className="text-primary">*</span>
                 </label>
                 <input
                   type="text"
                   required
                   value={titleEn}
                   onChange={(e) => setTitleEn(e.target.value)}
-                  className="w-full rounded-none border-2 border-border bg-background p-4 font-bold text-foreground transition-all focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
+                  className="w-full rounded-none border-4 border-border bg-background p-4 font-bold text-foreground transition-all focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
                 />
               </div>
               <div>
                 <label className="mb-3 block text-sm font-bold tracking-wide text-foreground uppercase">
-                  Content (English)
+                  Content (English) <span className="text-primary">*</span>
                 </label>
-                {/* Wrapped in a border context to ensure focus-states map to semantic variables */}
-                <div className="border-2 border-border bg-background transition-colors focus-within:border-primary">
+                <div className="border-4 border-border bg-background transition-colors focus-within:border-primary">
                   <RichTextEditor content={contentEn} onChange={setContentEn} />
                 </div>
               </div>
@@ -221,22 +238,22 @@ export default function BlogPage() {
             <div className="space-y-6" dir="rtl">
               <div>
                 <label className="mb-3 block text-right text-sm font-bold tracking-wide text-foreground uppercase">
-                  العنوان (عربي)
+                  العنوان (عربي) <span className="text-primary">*</span>
                 </label>
                 <input
                   type="text"
                   required
                   value={titleAr}
                   onChange={(e) => setTitleAr(e.target.value)}
-                  className="w-full rounded-none border-2 border-border bg-background p-4 font-bold text-foreground transition-all focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
+                  className="w-full rounded-none border-4 border-border bg-background p-4 font-bold text-foreground transition-all focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
                 />
               </div>
               <div>
                 <label className="mb-3 block text-right text-sm font-bold tracking-wide text-foreground uppercase">
-                  المحتوى (عربي)
+                  المحتوى (عربي) <span className="text-primary">*</span>
                 </label>
                 <div
-                  className="border-2 border-border bg-background text-right transition-colors focus-within:border-primary"
+                  className="border-4 border-border bg-background text-right transition-colors focus-within:border-primary"
                   dir="rtl"
                 >
                   <RichTextEditor content={contentAr} onChange={setContentAr} />
@@ -248,9 +265,10 @@ export default function BlogPage() {
             <button
               disabled={isSaving}
               onClick={handleSave}
-              className="border-4 border-border bg-foreground px-8 py-4 font-bold tracking-wider text-background uppercase shadow-[6px_6px_0px_0px_var(--brutalist-shadow)] transition-colors hover:-translate-y-1 hover:border-primary hover:bg-primary hover:shadow-[8px_8px_0px_0px_var(--brutalist-shadow)] disabled:opacity-50"
+              className="flex items-center gap-3 border-4 border-border bg-foreground px-8 py-4 font-bold tracking-wider text-background uppercase shadow-[6px_6px_0px_0px_var(--brutalist-shadow)] transition-all hover:-translate-y-1 hover:border-primary hover:bg-primary hover:shadow-[8px_8px_0px_0px_var(--brutalist-shadow)] disabled:opacity-50"
             >
-              {isSaving ? 'Saving...' : 'Publish Post'}
+              {isSaving && <div className="h-4 w-4 animate-spin rounded-none bg-background"></div>}
+              {isSaving ? 'Transmitting Payload...' : 'Publish Post'}
             </button>
           </div>
         </div>
