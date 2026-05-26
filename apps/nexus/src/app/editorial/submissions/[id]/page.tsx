@@ -60,17 +60,18 @@ export default function GradingPage() {
     if (!supabase) return;
 
     try {
-      // 1. Fetch the Submission and Relational Author
+      // CRITICAL FIX: Appended '!author_id' to strictly command PostgREST to follow the author relation, bypassing the assignee relation ambiguity
       const { data: subData, error: subError } = await supabase
         .from('submissions')
-        .select('*, users(full_name)')
+        .select('*, users!author_id(full_name)')
         .eq('id', submissionId)
         .single();
 
       if (subError) throw subError;
 
       if (subData) {
-        setSubmission(subData as GradingSubmission);
+        // Double-cast to bypass the auto-generated PostgREST ambiguity error in the strict TS compiler
+        setSubmission(subData as unknown as GradingSubmission);
         setAssignedTo(subData.assigned_to || 'unassigned');
         setTech(
           subData.rubric_technical !== undefined && subData.rubric_technical !== null
@@ -91,7 +92,7 @@ export default function GradingPage() {
         setFormatting(subData.rubric_formatting || '');
       }
 
-      // 2. Fetch the Authorized Editor Roster
+      // Fetch the Authorized Editor Roster
       const { data: editorData, error: editorError } = await supabase
         .from('users')
         .select('id, full_name')
