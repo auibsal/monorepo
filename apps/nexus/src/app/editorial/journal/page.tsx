@@ -38,11 +38,7 @@ export default function JournalPage() {
   }, [supabase]);
 
   useEffect(() => {
-    let isMounted = true;
-    if (isMounted) fetchIssues();
-    return () => {
-      isMounted = false;
-    };
+    fetchIssues();
   }, [fetchIssues]);
 
   const resetFormState = () => {
