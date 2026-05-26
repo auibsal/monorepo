@@ -109,11 +109,7 @@ export default function GradingPage() {
   }, [supabase, submissionId]);
 
   useEffect(() => {
-    let isMounted = true;
-    if (isMounted) fetchDossierData();
-    return () => {
-      isMounted = false;
-    };
+    fetchDossierData();
   }, [fetchDossierData]);
 
   const handleSave = async () => {
