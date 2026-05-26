@@ -14,7 +14,7 @@ export async function GET(request: Request) {
   let next = searchParams.get('next') || searchParams.get('redirect_to') || '/';
 
   // SECURITY: Open Redirect Guillotine
-  if (!next.startsWith('/') || next.startsWith('//')) {
+  if (!next.startsWith('/') || next.startsWith('//') || next.includes('\\') || /[\s]/.test(next)) {
     next = '/';
   }
 
