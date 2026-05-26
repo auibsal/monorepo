@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import Image from 'next/image';
 import { useParams, useRouter } from 'next/navigation';
@@ -14,64 +14,106 @@ import {
   LayoutTemplate,
   Save,
   ShieldAlert,
+  ShieldCheck,
+  User,
 } from 'lucide-react';
 
 import { createClient } from '@auibsal/auth/client';
 import { Submission } from '@auibsal/database';
+
+// Extend the database type to include the relational author identity and assignment
+type GradingSubmission = Submission & {
+  users?: { full_name: string } | null;
+  assigned_to?: string | null;
+};
+
+type EditorProfile = {
+  id: string;
+  full_name: string;
+};
 
 export default function GradingPage() {
   const params = useParams();
   const router = useRouter();
   const submissionId = params.id as string;
 
-  const [submission, setSubmission] = useState<Submission | null>(null);
+  const [submission, setSubmission] = useState<GradingSubmission | null>(null);
+  const [editors, setEditors] = useState<EditorProfile[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // Rubric & Logistics State
+  const [assignedTo, setAssignedTo] = useState<string>('unassigned');
   const [tech, setTech] = useState<string>('');
   const [orig, setOrig] = useState<string>('');
   const [theme, setTheme] = useState<string>('');
   const [archive, setArchive] = useState<boolean | null>(null);
   const [formatting, setFormatting] = useState<string>('');
 
-  // Replaced native alerts with state-driven feedback
+  // State-driven feedback matrix
   const [saving, setSaving] = useState(false);
   const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
 
   const supabase = createClient();
 
-  useEffect(() => {
-    async function fetchSub() {
-      if (!supabase) return;
-      const { data } = await supabase
+  const fetchDossierData = useCallback(async () => {
+    if (!supabase) return;
+
+    try {
+      // 1. Fetch the Submission and Relational Author
+      const { data: subData, error: subError } = await supabase
         .from('submissions')
-        .select('*')
+        .select('*, users(full_name)')
         .eq('id', submissionId)
         .single();
-      if (data) {
-        setSubmission(data);
+
+      if (subError) throw subError;
+
+      if (subData) {
+        setSubmission(subData as GradingSubmission);
+        setAssignedTo(subData.assigned_to || 'unassigned');
         setTech(
-          data.rubric_technical !== undefined && data.rubric_technical !== null
-            ? String(data.rubric_technical)
+          subData.rubric_technical !== undefined && subData.rubric_technical !== null
+            ? String(subData.rubric_technical)
             : ''
         );
         setOrig(
-          data.rubric_originality !== undefined && data.rubric_originality !== null
-            ? String(data.rubric_originality)
+          subData.rubric_originality !== undefined && subData.rubric_originality !== null
+            ? String(subData.rubric_originality)
             : ''
         );
         setTheme(
-          data.rubric_thematic !== undefined && data.rubric_thematic !== null
-            ? String(data.rubric_thematic)
+          subData.rubric_thematic !== undefined && subData.rubric_thematic !== null
+            ? String(subData.rubric_thematic)
             : ''
         );
-        setArchive(data.rubric_archive ?? null);
-        setFormatting(data.rubric_formatting || '');
+        setArchive(subData.rubric_archive ?? null);
+        setFormatting(subData.rubric_formatting || '');
       }
+
+      // 2. Fetch the Authorized Editor Roster
+      const { data: editorData, error: editorError } = await supabase
+        .from('users')
+        .select('id, full_name')
+        .in('role', ['editor', 'admin']);
+
+      if (editorError) throw editorError;
+      if (editorData) setEditors(editorData);
+
+    } catch (err) {
+      console.error('Failed to mount secure dossier:', err);
+    } finally {
       setLoading(false);
     }
-    fetchSub();
-  }, [submissionId, supabase]);
+  }, [supabase, submissionId]);
+
+  useEffect(() => {
+    let isMounted = true;
+    if (isMounted) fetchDossierData();
+    return () => {
+      isMounted = false;
+    };
+  }, [fetchDossierData]);
 
   const handleSave = async () => {
     if (!supabase) return;
@@ -83,6 +125,7 @@ export default function GradingPage() {
       const { error } = await supabase
         .from('submissions')
         .update({
+          assigned_to: assignedTo === 'unassigned' ? null : assignedTo,
           rubric_technical: tech ? parseInt(tech) : null,
           rubric_originality: orig ? parseInt(orig) : null,
           rubric_thematic: theme ? parseInt(theme) : null,
@@ -94,7 +137,6 @@ export default function GradingPage() {
       if (error) throw error;
       setStatus('success');
 
-      // Auto-clear success message after 3 seconds
       setTimeout(() => setStatus('idle'), 3000);
     } catch (err: unknown) {
       setStatus('error');
@@ -106,10 +148,10 @@ export default function GradingPage() {
 
   const handleDisqualify = async () => {
     if (!supabase) return;
-    // Keeping native confirm here serves as an intentional, high-friction interrupt for a destructive action
+    
     if (
       confirm(
-        'CRITICAL ACTION: Are you sure you want to disqualify this submission? This will permanently update the status to "rejected" and formatting to "disqualified".'
+        'CRITICAL ACTION: Are you sure you want to disqualify this submission? This will permanently update the status to "rejected", formatting to "disqualified", and unmask the author.'
       )
     ) {
       const { error } = await supabase
@@ -121,7 +163,6 @@ export default function GradingPage() {
         .eq('id', submissionId);
 
       if (!error) {
-        // Enforce boundary routing relative to the current working perimeter
         router.push('/editorial/submissions');
       }
     }
@@ -129,8 +170,11 @@ export default function GradingPage() {
 
   if (loading)
     return (
-      <div className="flex h-96 items-center justify-center border-4 border-dashed border-border/20 p-12 font-bold tracking-widest text-foreground/50 uppercase">
-        Loading Dossier...
+      <div className="flex h-[500px] items-center justify-center border-4 border-dashed border-border/20 p-12">
+        <div className="flex animate-pulse items-center gap-3 text-sm font-bold tracking-widest text-foreground/50 uppercase">
+          <div className="h-4 w-4 animate-spin rounded-none bg-primary"></div>
+          Mounting Secure Dossier...
+        </div>
       </div>
     );
 
@@ -145,27 +189,40 @@ export default function GradingPage() {
   const totalScore =
     (tech ? parseInt(tech) : 0) + (orig ? parseInt(orig) : 0) + (theme ? parseInt(theme) : 0);
 
+  // BLIND REVIEW LOGIC
+  const isTerminalState = submission.status === 'accepted' || submission.status === 'rejected';
+  const authorDisplay = isTerminalState
+    ? submission.users?.full_name || 'Unknown Author'
+    : 'Anonymous Manuscript';
+
   return (
     <div className="mx-auto flex max-w-7xl flex-col gap-8 lg:flex-row lg:gap-12">
       {/* File Viewer Side */}
       <div className="flex flex-1 flex-col overflow-hidden border-4 border-border bg-card text-foreground shadow-[12px_12px_0px_0px_var(--brutalist-shadow)]">
-        {/* Document Header fully inverted */}
-        <div className="flex items-center justify-between border-b-4 border-border bg-foreground p-6 text-background">
-          <div className="flex items-center gap-3">
-            <FileText className="text-primary" />
-            <h2 className="max-w-[300px] truncate text-xl font-bold tracking-widest uppercase md:max-w-md">
-              {submission.title}
-            </h2>
+        <div className="flex items-start justify-between border-b-4 border-border bg-foreground p-6 text-background md:items-center">
+          <div>
+            <div className="flex items-center gap-3">
+              <FileText className="mt-1 shrink-0 text-primary md:mt-0" />
+              <h2 className="max-w-[250px] truncate text-xl font-bold tracking-widest uppercase md:max-w-md">
+                {submission.title}
+              </h2>
+            </div>
+            <div
+              className={`mt-3 flex items-center gap-2 text-xs font-bold tracking-wider uppercase ${
+                isTerminalState ? 'text-primary' : 'text-background/50'
+              }`}
+            >
+              <User size={14} />
+              <span className="truncate">{authorDisplay}</span>
+            </div>
           </div>
-          <span className="border-2 border-transparent bg-background px-3 py-1.5 text-sm font-bold tracking-wider text-foreground uppercase shadow-[2px_2px_0px_0px_var(--primary)]">
+          <span className="border-2 border-transparent bg-background px-3 py-1.5 text-xs font-bold tracking-wider text-foreground uppercase shadow-[2px_2px_0px_0px_var(--primary)] md:text-sm">
             {submission.type}
           </span>
         </div>
 
-        {/* Document Body */}
         <div className="relative flex min-h-[700px] flex-1 flex-col items-center justify-start gap-8 overflow-y-auto bg-foreground/5 p-6 md:p-12">
           {submission.content && (
-            // ⚡ Bolt Optimization: Added dark:prose-invert to support typographic swapping
             <div className="prose prose-lg dark:prose-invert w-full max-w-4xl border-4 border-border bg-card p-8 text-foreground shadow-[8px_8px_0px_0px_var(--brutalist-shadow)] md:p-16">
               <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(submission.content) }} />
             </div>
@@ -210,6 +267,27 @@ export default function GradingPage() {
         </div>
 
         <div className="flex-1 space-y-8">
+          
+          {/* Assignment Task Module */}
+          <div className="space-y-3 border-b-4 border-border/10 pb-8">
+            <label className="flex items-center gap-2 text-sm font-bold tracking-wide uppercase">
+              <ShieldCheck size={18} className="text-primary" />
+              Assigned Editor
+            </label>
+            <select
+              value={assignedTo}
+              onChange={(e) => setAssignedTo(e.target.value)}
+              className="w-full cursor-pointer rounded-none border-4 border-border bg-background p-4 text-sm font-bold text-foreground transition-colors hover:bg-foreground/5 focus:border-primary focus:outline-none"
+            >
+              <option value="unassigned">-- Unassigned --</option>
+              {editors.map((editor) => (
+                <option key={editor.id} value={editor.id}>
+                  {editor.full_name}
+                </option>
+              ))}
+            </select>
+          </div>
+
           <div className="space-y-3">
             <label className="block text-sm font-bold tracking-wide uppercase">
               Technical Command & Craft
