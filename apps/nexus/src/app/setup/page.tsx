@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 
 import { useRouter } from 'next/navigation';
 
-import { CheckSquare, ShieldAlert } from 'lucide-react';
+import { ShieldAlert } from 'lucide-react';
 
 import { createClient } from '@auibsal/auth/client';
 
