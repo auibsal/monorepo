@@ -21,7 +21,7 @@ const generateCsp = () => {
     .trim();
 };
 
-const nextConfig: NextConfig = {
+const nextConfig: NextConfig & { eslint?: any } = {
   transpilePackages: ['@auibsal/auth', '@auibsal/database', '@auibsal/ui'],
   
   // =========================================================================

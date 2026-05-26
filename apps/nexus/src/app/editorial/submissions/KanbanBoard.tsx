@@ -21,10 +21,9 @@ const STATUSES: { id: SubmissionStatus; label: string }[] = [
 // Strictly define the shape of the relational join and the new assignment module
 type BoardSubmission = Pick<
   Submission,
-  'id' | 'title' | 'type' | 'status' | 'rubric_formatting'
+  'id' | 'title' | 'type' | 'status' | 'rubric_formatting' | 'assigned_to'
 > & {
   users: { full_name: string } | null;
-  assigned_to?: string | null; // Assumes this column exists in your database
 };
 
 type EditorProfile = {
@@ -128,10 +127,14 @@ export default function KanbanBoard() {
     const newAssignee = editorId === 'unassigned' ? null : editorId;
 
     // Optimistic UI update
-    setSubmissions((prev) => ({
-      ...prev,
-      [submissionId]: { ...prev[submissionId], assigned_to: newAssignee },
-    }));
+    setSubmissions((prev) => {
+      const existing = prev[submissionId];
+      if (!existing) return prev;
+      return {
+        ...prev,
+        [submissionId]: { ...existing, assigned_to: newAssignee },
+      };
+    });
 
     // Database sync
     const { error } = await supabase

@@ -44,7 +44,7 @@ export default async function LocaleLayout({
   const { locale } = await params;
 
   // 2. Validate the incoming locale to prevent 500 errors on invalid URLs
-  if (!routing.locales.includes(locale)) {
+  if (!routing.locales.includes(locale as 'en' | 'ar')) {
     notFound();
   }
 

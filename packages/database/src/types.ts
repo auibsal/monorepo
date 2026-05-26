@@ -173,6 +173,7 @@ export type Database = {
           deleted_at: string | null;
           file_url: string | null;
           id: string;
+          assigned_to: string | null;
           reviewed_by: string | null;
           rubric_archive: boolean | null;
           rubric_formatting: string | null;
@@ -190,6 +191,7 @@ export type Database = {
           deleted_at?: string | null;
           file_url?: string | null;
           id?: string;
+          assigned_to?: string | null;
           reviewed_by?: string | null;
           rubric_archive?: boolean | null;
           rubric_formatting?: string | null;
@@ -207,6 +209,7 @@ export type Database = {
           deleted_at?: string | null;
           file_url?: string | null;
           id?: string;
+          assigned_to?: string | null;
           reviewed_by?: string | null;
           rubric_archive?: boolean | null;
           rubric_formatting?: string | null;
@@ -222,6 +225,13 @@ export type Database = {
           {
             foreignKeyName: 'submissions_author_id_fkey';
             columns: ['author_id'];
+            isOneToOne: false;
+            referencedRelation: 'users';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'submissions_assigned_to_fkey';
+            columns: ['assigned_to'];
             isOneToOne: false;
             referencedRelation: 'users';
             referencedColumns: ['id'];
