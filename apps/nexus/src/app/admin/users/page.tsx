@@ -143,6 +143,7 @@ export default function UsersPage() {
                     </td>
                     <td className="px-6 py-4 text-sm">
                       <select
+                        aria-label={`Select role for ${user.full_name}`}
                         value={activeRole}
                         onChange={(e) => handleRoleChange(user.id, e.target.value as Role)}
                         className={`cursor-pointer rounded-none border-2 p-2 text-sm font-bold tracking-wider uppercase transition-colors focus:outline-none ${
@@ -158,6 +159,7 @@ export default function UsersPage() {
                     </td>
                     <td className="px-6 py-4 text-right text-sm font-bold tracking-wider uppercase">
                       <button
+                        aria-label={`Save role for ${user.full_name}`}
                         onClick={() => saveRole(user.id, user.role || 'member')}
                         // Disable if saving OR if no change has been made
                         disabled={savingId === user.id || !hasChanged}
