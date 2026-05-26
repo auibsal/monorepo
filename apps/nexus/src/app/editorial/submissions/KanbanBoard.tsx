@@ -24,7 +24,7 @@ type BoardSubmission = Pick<
   'id' | 'title' | 'type' | 'status' | 'rubric_formatting'
 > & {
   users: { full_name: string } | null;
-  assigned_to?: string | null; // Assumes this column exists in your database
+  assigned_to?: string | null; 
 };
 
 type EditorProfile = {
@@ -101,7 +101,7 @@ export default function KanbanBoard() {
 
     const newStatus = destination.droppableId as SubmissionStatus;
 
-    // Optimistic UI update
+    // Guarded Optimistic UI update
     setSubmissions((prev) => {
       const existing = prev[draggableId];
       if (!existing) return prev;
@@ -127,11 +127,17 @@ export default function KanbanBoard() {
     if (!supabase) return;
     const newAssignee = editorId === 'unassigned' ? null : editorId;
 
-    // Optimistic UI update
-    setSubmissions((prev) => ({
-      ...prev,
-      [submissionId]: { ...prev[submissionId], assigned_to: newAssignee },
-    }));
+    // CRITICAL FIX: Guarded Optimistic UI update to satisfy strict TypeScript definitions
+    setSubmissions((prev) => {
+      const existing = prev[submissionId];
+      // Abort if the record is missing, mathematically preventing malformed state injection
+      if (!existing) return prev; 
+      
+      return {
+        ...prev,
+        [submissionId]: { ...existing, assigned_to: newAssignee },
+      };
+    });
 
     // Database sync
     const { error } = await supabase
@@ -177,10 +183,8 @@ export default function KanbanBoard() {
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
-      {/* CRITICAL FIX: Removed snap-x to allow smooth horizontal auto-scrolling during drag */}
       <div className="flex items-start gap-8 overflow-x-auto pb-8">
         {STATUSES.map((status) => (
-          // CRITICAL FIX: Removed snap-start
           <div key={status.id} className="flex w-80 flex-shrink-0 flex-col">
             <h3 className="mb-4 flex items-center justify-between border-b-4 border-border pb-3 font-bold tracking-widest text-foreground uppercase">
               {status.label}
@@ -214,7 +218,6 @@ export default function KanbanBoard() {
                           <div
                             ref={provided.innerRef}
                             {...provided.draggableProps}
-                            // CRITICAL FIX: Drag properties are removed from the root div to prevent clicking interference
                             className={`border-4 bg-card p-4 text-foreground transition-all ${
                               snapshot.isDragging
                                 ? 'z-50 scale-105 -rotate-2 border-primary shadow-[12px_12px_0px_0px_var(--primary)]'
@@ -223,7 +226,7 @@ export default function KanbanBoard() {
                             style={{ ...provided.draggableProps.style }}
                           >
                             <div className="flex items-start gap-3">
-                              {/* CRITICAL FIX: The Grip is now the strict, exclusive drag handle */}
+                              {/* The Grip is now the strict, exclusive drag handle */}
                               <div
                                 {...provided.dragHandleProps}
                                 className="mt-1 flex-shrink-0 cursor-grab p-1 text-foreground/30 active:cursor-grabbing hover:text-primary"
