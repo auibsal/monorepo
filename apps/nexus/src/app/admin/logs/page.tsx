@@ -44,15 +44,7 @@ export default function LogsPage() {
   }, [supabase]);
 
   useEffect(() => {
-    let isMounted = true;
-
-    if (isMounted) {
-      fetchLogs();
-    }
-
-    return () => {
-      isMounted = false;
-    };
+    fetchLogs();
   }, [fetchLogs]);
 
   // Helper to color-code terminal output based on severity
