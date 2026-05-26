@@ -1,5 +1,4 @@
 import Link from 'next/link';
-
 import { Logo } from '../Logo';
 
 export interface FooterProps {
@@ -23,10 +22,7 @@ export function Footer({ locale, dictionary }: FooterProps) {
 
   return (
     // dir="auto" ensures BiDi address and description rendering is handled natively
-    <footer
-      dir="auto"
-      className="border-t-4 border-auib-charcoal bg-auib-red pt-16 pb-8 text-white"
-    >
+    <footer dir="auto" className="border-t-4 border-auib-charcoal bg-auib-red pt-16 pb-8 text-white">
       <div className="mx-auto max-w-6xl px-6">
         <div className="mb-12 grid grid-cols-1 gap-12 border-b-2 border-auib-charcoal pb-12 md:grid-cols-3">
           <div className="md:col-span-1">

@@ -1,7 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+
 import { useRouter } from 'next/navigation';
+
 import { CheckSquare, ShieldAlert } from 'lucide-react';
 
 import { createClient } from '@auibsal/auth/client';
@@ -23,9 +25,7 @@ export default function SetupProfilePage() {
   useEffect(() => {
     let isMounted = true;
     async function checkSession() {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
+      const { data: { session } } = await supabase.auth.getSession();
       if (!session && isMounted) {
         router.push('/login?error=Please log in to complete setup.');
       } else if (isMounted) {
@@ -33,9 +33,7 @@ export default function SetupProfilePage() {
       }
     }
     checkSession();
-    return () => {
-      isMounted = false;
-    };
+    return () => { isMounted = false; };
   }, [supabase, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -58,12 +56,8 @@ export default function SetupProfilePage() {
     setErrorMessage('');
 
     try {
-      const {
-        data: { user },
-        error: userError,
-      } = await supabase.auth.getUser();
-      if (userError || !user)
-        throw new Error('Session expired. Please use your invite link again.');
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
+      if (userError || !user) throw new Error('Session expired. Please use your invite link again.');
 
       // 1. Establish the permanent password and sync Auth metadata
       const { error: authError } = await supabase.auth.updateUser({
@@ -72,7 +66,7 @@ export default function SetupProfilePage() {
           full_name: fullName,
           university_id: isExternal ? 'EXTERNAL' : studentId,
           biography: bio,
-        },
+        }
       });
       if (authError) throw authError;
 
@@ -90,6 +84,7 @@ export default function SetupProfilePage() {
       // 3. Invalidate caches and route to the dashboard
       router.refresh();
       router.push('/');
+
     } catch (err: unknown) {
       setStatus('error');
       setErrorMessage(err instanceof Error ? err.message : 'System failed to construct profile.');
@@ -115,16 +110,12 @@ export default function SetupProfilePage() {
             Initialize Profile
           </h1>
           <p className="mb-10 text-sm leading-relaxed font-bold tracking-widest text-foreground/80 uppercase">
-            Your invitation was accepted. You must establish a permanent password and construct your
-            identity matrix to access the Nexus.
+            Your invitation was accepted. You must establish a permanent password and construct your identity matrix to access the Nexus.
           </p>
 
           <form onSubmit={handleSubmit} className="space-y-8">
             <div className="space-y-3 text-start">
-              <label
-                htmlFor="password"
-                className="block text-sm font-bold tracking-wide text-foreground uppercase"
-              >
+              <label htmlFor="password" className="block text-sm font-bold tracking-wide text-foreground uppercase">
                 Establish Permanent Password <span className="text-primary">*</span>
               </label>
               <input
@@ -139,10 +130,7 @@ export default function SetupProfilePage() {
             </div>
 
             <div className="space-y-3 text-start">
-              <label
-                htmlFor="fullName"
-                className="block text-sm font-bold tracking-wide text-foreground uppercase"
-              >
+              <label htmlFor="fullName" className="block text-sm font-bold tracking-wide text-foreground uppercase">
                 Legal Full Name <span className="text-primary">*</span>
               </label>
               <input
@@ -156,10 +144,7 @@ export default function SetupProfilePage() {
             </div>
 
             <div className="space-y-6 border-4 border-border/10 bg-foreground/5 p-6">
-              <label
-                htmlFor="isExternal"
-                className="flex cursor-pointer items-center space-x-3 text-sm font-bold tracking-wide text-foreground uppercase"
-              >
+              <label htmlFor="isExternal" className="flex cursor-pointer items-center space-x-3 text-sm font-bold tracking-wide text-foreground uppercase">
                 <input
                   id="isExternal"
                   type="checkbox"
@@ -175,10 +160,7 @@ export default function SetupProfilePage() {
 
               {!isExternal && (
                 <div className="space-y-3 border-t-2 border-border/10 pt-4 text-start">
-                  <label
-                    htmlFor="studentId"
-                    className="block text-sm font-bold tracking-wide text-foreground uppercase"
-                  >
+                  <label htmlFor="studentId" className="block text-sm font-bold tracking-wide text-foreground uppercase">
                     AUIB Student ID & Major <span className="text-primary">*</span>
                   </label>
                   <input
@@ -195,10 +177,7 @@ export default function SetupProfilePage() {
             </div>
 
             <div className="space-y-3 text-start">
-              <label
-                htmlFor="bio"
-                className="block text-sm font-bold tracking-wide text-foreground uppercase"
-              >
+              <label htmlFor="bio" className="block text-sm font-bold tracking-wide text-foreground uppercase">
                 3rd-Person Author Bio <span className="text-primary">(Max 50 words)</span>
               </label>
               <textarea

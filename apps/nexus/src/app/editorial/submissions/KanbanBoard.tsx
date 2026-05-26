@@ -1,8 +1,10 @@
 'use client';
 
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
+
 import Link from 'next/link';
-import { DragDropContext, Draggable, Droppable, DropResult } from '@hello-pangea/dnd';
+
+import { DragDropContext, Draggable, DropResult, Droppable } from '@hello-pangea/dnd';
 import { AlertOctagon, GripVertical, ShieldCheck, User } from 'lucide-react';
 
 import { createClient } from '@auibsal/auth/client';
@@ -46,15 +48,15 @@ export default function KanbanBoard() {
       // CRITICAL FIX: Explicitly hinting the author relation to bypass the assignee collision
       const { data: subData, error: subError } = await supabase
         .from('submissions')
-        .select(
-          'id, title, type, status, rubric_formatting, assigned_to, users!author_id(full_name)',
-        );
+        .select('id, title, type, status, rubric_formatting, assigned_to, users!author_id(full_name)');
 
       if (subError) throw subError;
 
       if (subData) {
         setSubmissions(
-          Object.fromEntries(subData.map((sub) => [sub.id, sub as unknown as BoardSubmission])),
+          Object.fromEntries(
+            subData.map((sub) => [sub.id, sub as unknown as BoardSubmission])
+          )
         );
       }
 
@@ -66,6 +68,7 @@ export default function KanbanBoard() {
 
       if (editorError) throw editorError;
       if (editorData) setEditors(editorData);
+
     } catch (err) {
       console.error('Failed to mount board data:', err);
     } finally {
@@ -204,7 +207,8 @@ export default function KanbanBoard() {
                 >
                   {groupedSubmissions[status.id].map((sub, index) => {
                     // BLIND REVIEW LOGIC: Mathematically evaluate terminal states
-                    const isTerminalState = sub.status === 'accepted' || sub.status === 'rejected';
+                    const isTerminalState =
+                      sub.status === 'accepted' || sub.status === 'rejected';
                     const authorDisplay = isTerminalState
                       ? sub.users?.full_name || 'Unknown Author'
                       : 'Anonymous Manuscript';
@@ -226,7 +230,7 @@ export default function KanbanBoard() {
                               {/* The Grip is now the strict, exclusive drag handle */}
                               <div
                                 {...provided.dragHandleProps}
-                                className="mt-1 flex-shrink-0 cursor-grab p-1 text-foreground/30 hover:text-primary active:cursor-grabbing"
+                                className="mt-1 flex-shrink-0 cursor-grab p-1 text-foreground/30 active:cursor-grabbing hover:text-primary"
                               >
                                 <GripVertical size={20} />
                               </div>

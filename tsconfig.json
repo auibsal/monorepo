@@ -4,6 +4,23 @@
     "baseUrl": ".",
     "noEmit": true
   },
-  "include": ["*.ts", "*.js", "*.mjs", "*.cjs", ".*.ts", ".*.js", ".*.mjs", ".*.cjs"],
-  "exclude": ["apps", "packages", "node_modules", ".turbo", "dist", "coverage", "*.tsbuildinfo"]
+  "include": [
+    "*.ts",
+    "*.js",
+    "*.mjs",
+    "*.cjs",
+    ".*.ts",
+    ".*.js",
+    ".*.mjs",
+    ".*.cjs"
+  ],
+  "exclude": [
+    "apps",
+    "packages",
+    "node_modules",
+    ".turbo",
+    "dist",
+    "coverage",
+    "*.tsbuildinfo"
+  ]
 }

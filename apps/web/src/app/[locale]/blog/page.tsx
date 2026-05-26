@@ -1,9 +1,8 @@
+import { Link } from '@/i18n/routing';
 import { ArrowRight, User } from 'lucide-react';
 import { getTranslations } from 'next-intl/server';
 
 import { createClient } from '@auibsal/auth/server';
-
-import { Link } from '@/i18n/routing';
 
 // 1. CRITICAL PERFORMANCE UPGRADE: Incremental Static Regeneration (ISR)
 // Caches the page globally for 1 hour to prevent redundant Supabase reads.
@@ -61,7 +60,7 @@ export default async function BlogPage({ params }: { params: Promise<{ locale: '
                       {/* Type cast bypassed natively; letting Supabase types cascade */}
                       <p className="text-sm font-bold tracking-wider text-foreground uppercase">
                         {/* Assuming a 1:1 joined query returns an object in your generated types */}
-                        {post.users?.full_name || 'Unknown Author'}
+                        {(post.users)?.full_name || 'Unknown Author'}
                       </p>
                       <p className="text-xs font-bold text-primary">
                         {new Date(post.published_at).toLocaleDateString(locale, {

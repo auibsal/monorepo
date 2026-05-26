@@ -1,6 +1,7 @@
 import 'server-only';
 
-import { NextResponse, type NextRequest } from 'next/server';
+import { type NextRequest, NextResponse } from 'next/server';
+
 import { createServerClient } from '@supabase/ssr';
 import type { AuthError, SupabaseClient, User } from '@supabase/supabase-js';
 
@@ -24,7 +25,7 @@ export async function updateSession(request: NextRequest): Promise<{
 
   if (!supabaseUrl || !supabaseAnonKey) {
     throw new Error(
-      'Missing environment variables: NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY must be defined',
+      'Missing environment variables: NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY must be defined'
     );
   }
 
@@ -45,7 +46,7 @@ export async function updateSession(request: NextRequest): Promise<{
 
         // Attach the new cookies to the outgoing response using strict Next.js object syntax
         cookiesToSet.forEach(({ name, value, options }) =>
-          supabaseResponse.cookies.set({ name, value, ...options }),
+          supabaseResponse.cookies.set({ name, value, ...options })
         );
       },
     },
