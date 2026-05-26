@@ -13,7 +13,7 @@ export default async function proxy(request: NextRequest) {
   // STEP 1: Cryptographic Nonce Generation (The CSP Upgrade)
   // =========================================================================
   const nonce = Buffer.from(crypto.randomUUID()).toString('base64');
-  
+
   // Clone the request headers so we can securely inject the nonce for Next.js to read
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set('x-nonce', nonce);
@@ -56,7 +56,7 @@ export default async function proxy(request: NextRequest) {
   // STEP 5: Dynamic Content Security Policy Injection
   // =========================================================================
   const isDev = process.env.NODE_ENV === 'development';
-  
+
   const cspHeader = `
     default-src 'self';
     script-src 'self' 'nonce-${nonce}' 'strict-dynamic' ${isDev ? "'unsafe-eval'" : ''};

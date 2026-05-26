@@ -24,7 +24,7 @@ type BoardSubmission = Pick<
   'id' | 'title' | 'type' | 'status' | 'rubric_formatting'
 > & {
   users: { full_name: string } | null;
-  assigned_to?: string | null; 
+  assigned_to?: string | null;
 };
 
 type EditorProfile = {
@@ -132,8 +132,8 @@ export default function KanbanBoard() {
     setSubmissions((prev) => {
       const existing = prev[submissionId];
       // Abort if the record is missing, mathematically preventing malformed state injection
-      if (!existing) return prev; 
-      
+      if (!existing) return prev;
+
       return {
         ...prev,
         [submissionId]: { ...existing, assigned_to: newAssignee },

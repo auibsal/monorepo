@@ -21,7 +21,7 @@ export async function GET(
       return new NextResponse('Unauthorized: Invalid or revoked calendar token.', { status: 401 });
     }
 
-    // CRITICAL FIX: Explicitly request 'title_en' and 'description_en' 
+    // CRITICAL FIX: Explicitly request 'title_en' and 'description_en'
     // to perfectly map to your bilingual database schema.
     const { data: events, error: eventsError } = await supabase
       .from('events')
@@ -48,8 +48,8 @@ export async function GET(
       };
 
       const dtStart = formatIcsDate(event.starts_at);
-      const dtEnd = event.ends_at ? formatIcsDate(event.ends_at) : dtStart; 
-      
+      const dtEnd = event.ends_at ? formatIcsDate(event.ends_at) : dtStart;
+
       const cleanText = (text: string) => text.replace(/\n/g, '\\n').replace(/,/g, '\\,');
 
       icsString += `BEGIN:VEVENT${CRLF}`;
@@ -57,7 +57,7 @@ export async function GET(
       icsString += `DTSTAMP:${formatIcsDate(new Date().toISOString())}${CRLF}`;
       icsString += `DTSTART:${dtStart}${CRLF}`;
       icsString += `DTEND:${dtEnd}${CRLF}`;
-      
+
       // CRITICAL FIX: Rendering the English text values
       icsString += `SUMMARY:${cleanText(event.title_en)}${CRLF}`;
       if (event.description_en) {
@@ -66,7 +66,7 @@ export async function GET(
       if (event.location) {
         icsString += `LOCATION:${cleanText(event.location)}${CRLF}`;
       }
-      
+
       icsString += `STATUS:CONFIRMED${CRLF}`;
       icsString += `END:VEVENT${CRLF}`;
     });

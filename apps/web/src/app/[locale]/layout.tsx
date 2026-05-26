@@ -50,7 +50,7 @@ export default async function LocaleLayout({
 
   const messages = await getMessages();
   const dir = locale === 'ar' ? 'rtl' : 'ltr';
-  
+
   // 3. Strictly type the locale for our custom components
   const typedLocale = locale as 'en' | 'ar';
 
@@ -60,9 +60,9 @@ export default async function LocaleLayout({
         {/* Pass the locale down to the provider to avoid client-side mismatch */}
         <NextIntlClientProvider messages={messages} locale={locale}>
           <WebNavbarServer locale={typedLocale} />
-          
+
           <main className="flex-grow">{children}</main>
-          
+
           <WebFooter locale={typedLocale} />
         </NextIntlClientProvider>
 

@@ -39,19 +39,19 @@ The following items are strictly out of scope for this policy:
 
 ## Content Security Policy (CSP) Architecture
 
-The AUIB Society of Arts and Letters application employs a strictly-typed Content Security Policy (CSP) injected at the edge via Next.js Middleware. 
+The AUIB Society of Arts and Letters application employs a strictly-typed Content Security Policy (CSP) injected at the edge via Next.js Middleware.
 
 Our policy is designed to achieve maximum protection against Cross-Site Scripting (XSS) and data injection attacks while maintaining full compatibility with the Next.js 15 App Router and Supabase capabilities.
 
 ### The Active Policy
 
 \`\`\`http
-Content-Security-Policy: 
-  default-src 'self'; 
-  script-src 'self' 'nonce-{dynamic}' 'strict-dynamic'; 
-  style-src 'self' 'unsafe-inline'; 
-  connect-src 'self' *.supabase.co; 
-  img-src 'self' data: blob: *.supabase.co; 
+Content-Security-Policy:
+  default-src 'self';
+  script-src 'self' 'nonce-{dynamic}' 'strict-dynamic';
+  style-src 'self' 'unsafe-inline';
+  connect-src 'self' *.supabase.co;
+  img-src 'self' data: blob: *.supabase.co;
   frame-src 'self' *.supabase.co;
 \`\`\`
 *(Note: During local development \`NODE_ENV === 'development'\`, \`'unsafe-eval'\` is appended to \`script-src\` strictly to allow the Turbopack/Next.js Hot Module Replacement engine to function. This is automatically stripped in production builds.)*

@@ -45,7 +45,7 @@ export default function LogsPage() {
 
   useEffect(() => {
     let isMounted = true;
-    
+
     if (isMounted) {
       fetchLogs();
     }

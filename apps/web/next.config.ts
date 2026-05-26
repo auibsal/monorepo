@@ -23,7 +23,7 @@ const generateCsp = () => {
 
 const nextConfig: NextConfig = {
   transpilePackages: ['@auibsal/auth', '@auibsal/database', '@auibsal/ui'],
-  
+
   // =========================================================================
   // Monorepo CI Optimization
   // =========================================================================
@@ -43,7 +43,7 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  
+
   async headers() {
     return [
       {

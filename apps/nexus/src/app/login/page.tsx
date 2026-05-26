@@ -48,7 +48,7 @@ function LoginForm() {
       // 2. Safely capture the intended destination to preserve deep-links
       // SECURITY: Validate 'next' to prevent DOM-based XSS (javascript:) and Open Redirects
       let next = searchParams.get('next') || '/';
-      if (!next.startsWith('/') || next.startsWith('//')) {
+      if (!next.startsWith('/') || next.startsWith('//') || next.includes('\\') || /[\s]/.test(next)) {
         next = '/';
       }
       window.location.href = next;
