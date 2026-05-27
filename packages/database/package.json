@@ -8,7 +8,7 @@
   },
   "scripts": {
     "build": "tsc",
-    "lint": "eslint . --cache --max-warnings 0",
+    "lint": "biome check . --no-errors-on-unmatched",
     "typecheck": "tsc --noEmit",
     "clean": "rm -rf dist .turbo node_modules",
     "generate": "pnpm dlx supabase@latest gen types typescript --project-id dgjxwsttotfqcvtgujry > src/types.ts"
@@ -18,7 +18,6 @@
   },
   "devDependencies": {
     "@auibsal/config": "workspace:*",
-    "eslint": "catalog:",
     "typescript": "catalog:"
   }
 }

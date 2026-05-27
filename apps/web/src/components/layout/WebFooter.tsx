@@ -1,7 +1,6 @@
-import { getTranslations } from 'next-intl/server';
-
 // 1. Synchronized with the named export from the UI package
 import { Footer as UIFooter } from '@auibsal/ui/components/layout/Footer';
+import { getTranslations } from 'next-intl/server';
 
 // 2. Strictly typed locale parameter
 export default async function WebFooter({ locale }: { locale: 'en' | 'ar' }) {

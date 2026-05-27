@@ -11,7 +11,7 @@
     "./styles/globals.css": "./src/styles/globals.css"
   },
   "scripts": {
-    "lint": "eslint . --cache --max-warnings 0",
+    "lint": "biome check . --no-errors-on-unmatched",
     "typecheck": "tsc --noEmit",
     "test": "node --import tsx --test src/**/*.test.ts",
     "clean": "rm -rf dist .turbo node_modules"
@@ -45,7 +45,6 @@
     "@types/node": "catalog:",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
-    "eslint": "catalog:",
     "shadcn": "^4.8.0",
     "tailwindcss": "catalog:",
     "tsx": "^4.22.3",

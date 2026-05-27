@@ -1,17 +1,14 @@
+// 1. Import the centralized Toaster for global notifications
+import { Toaster } from '@auibsal/ui/components/ui/sonner';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-
+import { NextIntlClientProvider } from 'next-intl';
+import { getMessages } from 'next-intl/server';
 import WebFooter from '@/components/layout/WebFooter';
 import WebNavbarServer from '@/components/layout/WebNavbarServer';
 // CRITICAL: Importing from local app, NOT the shared UI package
 import { ubuntu, ubuntuArabic } from '@/fonts';
 import { routing } from '@/i18n/routing';
-
-// 1. Import the centralized Toaster for global notifications
-import { Toaster } from '@auibsal/ui/components/ui/sonner';
-
-import { NextIntlClientProvider } from 'next-intl';
-import { getMessages } from 'next-intl/server';
 
 import '../globals.css';
 

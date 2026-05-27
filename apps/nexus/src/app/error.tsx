@@ -1,8 +1,7 @@
 'use client';
 
-import { useEffect } from 'react';
-
 import { InteractiveErrorState } from '@auibsal/ui/components/InteractiveErrorState';
+import { useEffect } from 'react';
 
 export default function NexusError({
   error,

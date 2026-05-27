@@ -1,8 +1,7 @@
 import 'server-only';
 
-import { createClient as createSupabaseClient } from '@supabase/supabase-js';
-
 import type { Database } from '@auibsal/database';
+import { createClient as createSupabaseClient } from '@supabase/supabase-js';
 
 export function createAdminClient() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -11,7 +10,7 @@ export function createAdminClient() {
 
   if (!supabaseUrl || !serviceRoleKey) {
     throw new Error(
-      'Missing environment variables: NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY must be defined'
+      'Missing environment variables: NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY must be defined',
     );
   }
 

@@ -1,11 +1,9 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-
-import { Save, Users } from 'lucide-react';
-
 import { createClient } from '@auibsal/auth/client';
-import { Role, User } from '@auibsal/database';
+import type { Role, User } from '@auibsal/database';
+import { Save, Users } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 export default function UsersPage() {
   const [users, setUsers] = useState<User[]>([]);
@@ -159,6 +157,7 @@ export default function UsersPage() {
                     </td>
                     <td className="px-6 py-4 text-right text-sm font-bold tracking-wider uppercase">
                       <button
+                        type="button"
                         aria-label={`Save role for ${user.full_name}`}
                         onClick={() => saveRole(user.id, user.role || 'member')}
                         // Disable if saving OR if no change has been made

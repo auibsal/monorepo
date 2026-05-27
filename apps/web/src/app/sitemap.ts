@@ -1,6 +1,5 @@
-import { MetadataRoute } from 'next';
-
 import { createClient } from '@auibsal/auth/server';
+import type { MetadataRoute } from 'next';
 
 // =========================================================================
 // Incremental Static Regeneration (ISR)
@@ -65,9 +64,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }
 
   // 3. Fetch dynamic blog posts
-  const { data: posts } = await supabase
-    .from('blog_posts')
-    .select('slug, published_at');
+  const { data: posts } = await supabase.from('blog_posts').select('slug, published_at');
 
   if (posts) {
     posts.forEach((post) => {

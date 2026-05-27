@@ -11,18 +11,18 @@
     "lint": "turbo run lint --cache",
     "typecheck": "turbo run typecheck",
     "clean": "turbo run clean",
-    "format": "prettier --write \"**/*.{ts,tsx,md,json,mjs,css}\" --cache",
-    "format:check": "prettier --check \"**/*.{ts,tsx,md,json,mjs,css}\" --cache",
-    "generate:notices": "pnpm licenses list --prod > THIRD-PARTY-NOTICES.txt"
+    "format": "biome format --write .",
+    "format:check": "biome format .",
+    "generate:notices": "pnpm licenses list --prod > THIRD-PARTY-NOTICES.txt",
+    "prepare": "husky"
   },
   "devDependencies": {
-    "@auibsal/config": "workspace:*",
-    "@ianvs/prettier-plugin-sort-imports": "^4.7.1",
+    "@biomejs/biome": "^2.4.15",
+    "@changesets/cli": "^2.31.0",
     "client-only": "^0.0.1",
-    "eslint": "catalog:",
+    "husky": "^9.1.7",
     "jiti": "^2.7.0",
-    "prettier": "^3.8.3",
-    "prettier-plugin-tailwindcss": "^0.8.0",
+    "lint-staged": "^17.0.5",
     "server-only": "^0.0.1",
     "turbo": "latest",
     "typescript": "catalog:"
@@ -40,5 +40,10 @@
   "dependencies": {
     "@types/node": "catalog:",
     "@types/react": "catalog:"
+  },
+  "lint-staged": {
+    "*": [
+      "biome check --write --no-errors-on-unmatched"
+    ]
   }
 }

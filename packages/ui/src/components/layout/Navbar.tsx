@@ -1,10 +1,9 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { Menu, X } from 'lucide-react';
 
 import Link from 'next/link';
-
-import { Menu, X } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 // 1. Synchronized with the named export from the previous step
 import { Logo } from '../Logo';
@@ -96,7 +95,10 @@ export function Navbar({
   const rightModule = renderPlatformActions();
 
   return (
-    <nav dir="auto" className="sticky top-0 z-50 w-full border-b-4 border-auib-charcoal bg-auib-red text-white transition-colors duration-300">
+    <nav
+      dir="auto"
+      className="sticky top-0 z-50 w-full border-b-4 border-auib-charcoal bg-auib-red text-white transition-colors duration-300"
+    >
       <div className="mx-auto flex h-20 max-w-6xl items-center justify-between px-6">
         <Link
           href={logoHref}

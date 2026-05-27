@@ -1,8 +1,7 @@
 import 'client-only';
 
-import { createBrowserClient } from '@supabase/ssr';
-
 import type { Database } from '@auibsal/database';
+import { createBrowserClient } from '@supabase/ssr';
 
 export function createClient() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -10,7 +9,7 @@ export function createClient() {
 
   if (!supabaseUrl || !supabaseAnonKey) {
     throw new Error(
-      'Missing environment variables: NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY must be defined'
+      'Missing environment variables: NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY must be defined',
     );
   }
 

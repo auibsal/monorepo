@@ -26,7 +26,7 @@ export const USER_ROLE_LABELS: Record<Enums<'user_role'>, string> = {
 
 // Helper arrays if you just need the raw values (e.g., for Zod validation)
 export const SUBMISSION_STATUSES = Object.keys(
-  SUBMISSION_STATUS_LABELS
+  SUBMISSION_STATUS_LABELS,
 ) as Enums<'submission_status'>[];
 export const SUBMISSION_TYPES = Object.keys(SUBMISSION_TYPE_LABELS) as Enums<'submission_type'>[];
 export const USER_ROLES = Object.keys(USER_ROLE_LABELS) as Enums<'user_role'>[];

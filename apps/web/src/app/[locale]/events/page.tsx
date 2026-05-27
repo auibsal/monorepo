@@ -1,7 +1,6 @@
+import { createClient } from '@auibsal/auth/server';
 import { Calendar, MapPin } from 'lucide-react';
 import { getTranslations } from 'next-intl/server';
-
-import { createClient } from '@auibsal/auth/server';
 
 // 1. CRITICAL PERFORMANCE UPGRADE: Incremental Static Regeneration (ISR)
 // Caches the page globally for 1 hour for instantaneous loads.

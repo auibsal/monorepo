@@ -1,11 +1,9 @@
 'use client';
 
-import { useSearchParams } from 'next/navigation';
-
-import { usePathname, useRouter } from '@/i18n/routing';
-
 // 1. Synchronized with the named export from the UI package
 import { Navbar } from '@auibsal/ui/components/layout/Navbar';
+import { useSearchParams } from 'next/navigation';
+import { usePathname, useRouter } from '@/i18n/routing';
 
 export default function WebNavbarClient({
   locale,

@@ -1,8 +1,7 @@
-import { headers } from 'next/headers';
+import { createClient } from '@auibsal/auth/server';
 
 import { Activity, Calendar, FileText, Users } from 'lucide-react';
-
-import { createClient } from '@auibsal/auth/server';
+import { headers } from 'next/headers';
 
 export const dynamic = 'force-dynamic';
 

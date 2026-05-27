@@ -1,12 +1,9 @@
 'use client';
 
-import { useState } from 'react';
-
-import Link from 'next/link';
-
-import { CheckSquare, ShieldAlert } from 'lucide-react';
-
 import { createClient } from '@auibsal/auth/client';
+import { CheckSquare, ShieldAlert } from 'lucide-react';
+import Link from 'next/link';
+import { useState } from 'react';
 
 export default function NexusRegister() {
   const [email, setEmail] = useState('');
@@ -63,7 +60,7 @@ export default function NexusRegister() {
       const errLower = error.message.toLowerCase();
       if (errLower.includes('already registered') || errLower.includes('user already exists')) {
         setErrorMessage(
-          'An account with this email already exists. Please proceed to the login page.'
+          'An account with this email already exists. Please proceed to the login page.',
         );
       } else {
         setErrorMessage(error.message);
@@ -71,7 +68,7 @@ export default function NexusRegister() {
     } else if (data?.user?.identities && data.user.identities.length === 0) {
       setStatus('error');
       setErrorMessage(
-        'An account with this email already exists. Please proceed to the login page.'
+        'An account with this email already exists. Please proceed to the login page.',
       );
     } else {
       setStatus('success');

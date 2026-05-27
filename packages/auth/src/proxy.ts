@@ -1,11 +1,10 @@
 import 'server-only';
 
-import { type NextRequest, NextResponse } from 'next/server';
+import type { Database } from '@auibsal/database';
 
 import { createServerClient } from '@supabase/ssr';
 import type { AuthError, SupabaseClient, User } from '@supabase/supabase-js';
-
-import type { Database } from '@auibsal/database';
+import { type NextRequest, NextResponse } from 'next/server';
 
 // Explicitly type the return signature so the consuming middleware has perfect intellisense
 export async function updateSession(request: NextRequest): Promise<{
@@ -25,7 +24,7 @@ export async function updateSession(request: NextRequest): Promise<{
 
   if (!supabaseUrl || !supabaseAnonKey) {
     throw new Error(
-      'Missing environment variables: NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY must be defined'
+      'Missing environment variables: NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY must be defined',
     );
   }
 
@@ -37,7 +36,9 @@ export async function updateSession(request: NextRequest): Promise<{
       },
       setAll(cookiesToSet) {
         // Update the request cookies so subsequent middleware logic sees them
-        cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
+        cookiesToSet.forEach(({ name, value }) => {
+          request.cookies.set(name, value);
+        });
 
         // CRITICAL: Recreate the response object with the updated request headers
         supabaseResponse = NextResponse.next({
@@ -45,9 +46,9 @@ export async function updateSession(request: NextRequest): Promise<{
         });
 
         // Attach the new cookies to the outgoing response using strict Next.js object syntax
-        cookiesToSet.forEach(({ name, value, options }) =>
-          supabaseResponse.cookies.set({ name, value, ...options })
-        );
+        cookiesToSet.forEach(({ name, value, options }) => {
+          supabaseResponse.cookies.set({ name, value, ...options });
+        });
       },
     },
   });

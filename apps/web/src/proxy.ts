@@ -1,9 +1,7 @@
-import { NextRequest } from 'next/server';
-
-import { routing } from '@/i18n/routing';
-import createMiddleware from 'next-intl/middleware';
-
 import { updateSession } from '@auibsal/auth/proxy';
+import { NextRequest } from 'next/server';
+import createMiddleware from 'next-intl/middleware';
+import { routing } from '@/i18n/routing';
 
 const intlMiddleware = createMiddleware(routing);
 
@@ -20,7 +18,7 @@ export default async function proxy(request: NextRequest) {
 
   // Initialize the request object with our new headers
   const reqWithNonce = new NextRequest(request.url, {
-    headers: requestHeaders
+    headers: requestHeaders,
   });
 
   // =========================================================================

@@ -1,4 +1,4 @@
-import type { Tables, Enums } from './types';
+import type { Enums, Tables } from './types';
 
 // 1. Pass through the raw generated database schema and Supabase's native helpers
 // Using `export type *` ensures these are completely stripped from the JS bundle.

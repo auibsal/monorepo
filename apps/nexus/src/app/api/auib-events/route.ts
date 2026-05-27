@@ -25,7 +25,7 @@ export async function GET() {
       'https://auib.edu.iq/?post_type=tribe_events&ical=1&eventDisplay=list',
       {
         next: { revalidate: 3600 },
-      }
+      },
     );
 
     if (!response.ok) {

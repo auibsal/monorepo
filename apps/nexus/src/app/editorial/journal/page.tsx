@@ -1,11 +1,9 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
-
-import { AlertTriangle, ArrowRight, BookOpen, CheckSquare, FileUp } from 'lucide-react';
-
 import { createClient } from '@auibsal/auth/client';
-import { JournalIssue } from '@auibsal/database';
+import type { JournalIssue } from '@auibsal/database';
+import { AlertTriangle, ArrowRight, BookOpen, CheckSquare, FileUp } from 'lucide-react';
+import { useCallback, useEffect, useState } from 'react';
 
 export default function JournalPage() {
   const [issues, setIssues] = useState<JournalIssue[]>([]);
@@ -185,7 +183,7 @@ export default function JournalPage() {
         <form onSubmit={handleUpload} className="space-y-6">
           <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
             <div className="space-y-3">
-              <label className="block text-sm font-bold tracking-wide uppercase">
+              <label htmlFor="slug" className="block text-sm font-bold tracking-wide uppercase">
                 Volume Number
               </label>
               <input
@@ -198,7 +196,7 @@ export default function JournalPage() {
               />
             </div>
             <div className="space-y-3">
-              <label className="block text-sm font-bold tracking-wide uppercase">
+              <label htmlFor="slug" className="block text-sm font-bold tracking-wide uppercase">
                 Issue Number
               </label>
               <input
@@ -211,7 +209,7 @@ export default function JournalPage() {
               />
             </div>
             <div className="space-y-3">
-              <label className="block text-sm font-bold tracking-wide uppercase">
+              <label htmlFor="slug" className="block text-sm font-bold tracking-wide uppercase">
                 Title (English)
               </label>
               <input
@@ -223,7 +221,10 @@ export default function JournalPage() {
               />
             </div>
             <div className="space-y-3" dir="rtl">
-              <label className="block text-right text-sm font-bold tracking-wide uppercase">
+              <label
+                htmlFor="titleAr"
+                className="block text-right text-sm font-bold tracking-wide uppercase"
+              >
                 العنوان (عربي)
               </label>
               <input
@@ -237,7 +238,7 @@ export default function JournalPage() {
           </div>
 
           <div className="space-y-3">
-            <label className="block text-sm font-bold tracking-wide uppercase">
+            <label htmlFor="slug" className="block text-sm font-bold tracking-wide uppercase">
               Compiled PDF File
             </label>
             <div className="group relative flex cursor-pointer flex-col items-center justify-center border-4 border-dashed border-border bg-background p-8 text-center transition-colors hover:bg-foreground/5">
@@ -249,7 +250,7 @@ export default function JournalPage() {
                 accept="application/pdf"
                 onChange={(e) => {
                   setFile(
-                    e.target.files && e.target.files.length > 0 ? e.target.files[0] || null : null
+                    e.target.files && e.target.files.length > 0 ? e.target.files[0] || null : null,
                   );
                   if (status === 'success') setStatus('idle');
                   if (status === 'error') setStatus('idle');
