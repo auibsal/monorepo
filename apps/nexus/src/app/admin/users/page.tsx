@@ -5,8 +5,10 @@ import type { Role, User } from '@auibsal/database';
 import { Save, Users } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+type AdminUser = Pick<User, 'id' | 'full_name' | 'university_id' | 'role' | 'created_at'>;
+
 export default function UsersPage() {
-  const [users, setUsers] = useState<User[]>([]);
+  const [users, setUsers] = useState<AdminUser[]>([]);
   const [loading, setLoading] = useState(true);
 
   // CRITICAL FIX: Isolate un-saved changes to prevent "Ghost States"
@@ -24,7 +26,8 @@ export default function UsersPage() {
 
       const { data, error } = await supabase
         .from('users')
-        .select('*')
+        // ⚡ Bolt Optimization: Replacing select('*') with explicit columns to reduce network payload
+        .select('id, full_name, university_id, role, created_at')
         .order('created_at', { ascending: false });
 
       if (!error && data && isMounted) {

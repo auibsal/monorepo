@@ -48,7 +48,8 @@ export default async function JournalIssuePage({ params }: Props) {
   // Ensure unpublished drafts cannot be accessed via direct link
   const { data: issue, error } = await supabase
     .from('journal_issues')
-    .select('*')
+    // ⚡ Bolt Optimization: Replacing select('*') with explicit columns to reduce network payload
+    .select('id, title_en, title_ar, volume_number, issue_number, published_at, pdf_file_url')
     .eq('id', id)
     .not('published_at', 'is', null)
     .single();

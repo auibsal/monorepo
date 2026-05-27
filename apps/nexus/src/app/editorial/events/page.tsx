@@ -15,8 +15,10 @@ type AuibEvent = {
   description: string;
 };
 
+type EditorialEvent = Pick<Event, 'id' | 'title_en' | 'title_ar' | 'starts_at' | 'ends_at' | 'location' | 'description_en' | 'description_ar' | 'is_members_only'>;
+
 export default function EventsPage() {
-  const [events, setEvents] = useState<Event[]>([]);
+  const [events, setEvents] = useState<EditorialEvent[]>([]);
   const [auibEvents, setAuibEvents] = useState<AuibEvent[]>([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
@@ -41,7 +43,10 @@ export default function EventsPage() {
     if (!supabase) return;
     const { data, error } = await supabase
       .from('events')
-      .select('*')
+      // ⚡ Bolt Optimization: Replacing select('*') with explicit columns to reduce network payload
+      .select(
+        'id, title_en, title_ar, starts_at, ends_at, location, description_en, description_ar, is_members_only',
+      )
       .order('starts_at', { ascending: true });
     if (!error && data) {
       setEvents(data);
@@ -391,7 +396,6 @@ export default function EventsPage() {
 
               <div className="mt-12 flex justify-end gap-6">
                 <button
-
                   onClick={handleCloseModal}
                   disabled={isSaving}
                   className="border-4 border-border px-8 py-4 font-bold tracking-widest text-foreground uppercase shadow-[6px_6px_0px_0px_var(--brutalist-shadow)] transition-colors hover:translate-x-1 hover:translate-y-1 hover:bg-foreground hover:text-background hover:shadow-none disabled:opacity-50"
@@ -399,7 +403,6 @@ export default function EventsPage() {
                   Cancel
                 </button>
                 <button
-
                   type="submit"
                   disabled={isSaving}
                   className="flex items-center gap-3 border-4 border-border bg-primary px-8 py-4 font-bold tracking-widest text-background uppercase shadow-[6px_6px_0px_0px_var(--brutalist-shadow)] transition-colors hover:translate-x-1 hover:translate-y-1 hover:bg-foreground hover:shadow-none disabled:opacity-50"

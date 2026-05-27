@@ -5,8 +5,10 @@ import type { JournalIssue } from '@auibsal/database';
 import { AlertTriangle, ArrowRight, BookOpen, CheckSquare, FileUp } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 
+type EditorialIssue = Pick<JournalIssue, 'id' | 'volume_number' | 'issue_number' | 'published_at' | 'title_en' | 'title_ar' | 'pdf_file_url'>;
+
 export default function JournalPage() {
-  const [issues, setIssues] = useState<JournalIssue[]>([]);
+  const [issues, setIssues] = useState<EditorialIssue[]>([]);
   const [loading, setLoading] = useState(true);
 
   const [file, setFile] = useState<File | null>(null);
@@ -25,7 +27,8 @@ export default function JournalPage() {
     if (!supabase) return;
     const { data: issuesData, error } = await supabase
       .from('journal_issues')
-      .select('*')
+      // ⚡ Bolt Optimization: Replacing select('*') with explicit columns to reduce network payload
+      .select('id, volume_number, issue_number, published_at, title_en, title_ar, pdf_file_url')
       .order('volume_number', { ascending: false })
       .order('issue_number', { ascending: false });
 
