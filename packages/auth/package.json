@@ -11,7 +11,7 @@
   },
   "scripts": {
     "build": "tsc",
-    "lint": "eslint . --cache --max-warnings 0",
+    "lint": "biome check . --no-errors-on-unmatched",
     "typecheck": "tsc --noEmit",
     "clean": "rm -rf dist .turbo node_modules"
   },
@@ -27,7 +27,6 @@
     "@auibsal/config": "workspace:*",
     "@types/node": "catalog:",
     "client-only": "^0.0.1",
-    "eslint": "catalog:",
     "server-only": "^0.0.1",
     "typescript": "catalog:"
   }

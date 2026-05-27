@@ -1,10 +1,7 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
-
-import Image from 'next/image';
-import { useParams, useRouter } from 'next/navigation';
-
+import { createClient } from '@auibsal/auth/client';
+import type { Submission } from '@auibsal/database';
 import DOMPurify from 'isomorphic-dompurify';
 import {
   AlertOctagon,
@@ -17,9 +14,9 @@ import {
   ShieldCheck,
   User,
 } from 'lucide-react';
-
-import { createClient } from '@auibsal/auth/client';
-import { Submission } from '@auibsal/database';
+import Image from 'next/image';
+import { useParams, useRouter } from 'next/navigation';
+import { useCallback, useEffect, useState } from 'react';
 
 // Extend the database type to include the relational author identity and assignment
 type GradingSubmission = Submission & {
@@ -76,17 +73,17 @@ export default function GradingPage() {
         setTech(
           subData.rubric_technical !== undefined && subData.rubric_technical !== null
             ? String(subData.rubric_technical)
-            : ''
+            : '',
         );
         setOrig(
           subData.rubric_originality !== undefined && subData.rubric_originality !== null
             ? String(subData.rubric_originality)
-            : ''
+            : '',
         );
         setTheme(
           subData.rubric_thematic !== undefined && subData.rubric_thematic !== null
             ? String(subData.rubric_thematic)
-            : ''
+            : '',
         );
         setArchive(subData.rubric_archive ?? null);
         setFormatting(subData.rubric_formatting || '');
@@ -100,7 +97,6 @@ export default function GradingPage() {
 
       if (editorError) throw editorError;
       if (editorData) setEditors(editorData);
-
     } catch (err) {
       console.error('Failed to mount secure dossier:', err);
     } finally {
@@ -148,7 +144,7 @@ export default function GradingPage() {
 
     if (
       confirm(
-        'CRITICAL ACTION: Are you sure you want to disqualify this submission? This will permanently update the status to "rejected", formatting to "disqualified", and unmask the author.'
+        'CRITICAL ACTION: Are you sure you want to disqualify this submission? This will permanently update the status to "rejected", formatting to "disqualified", and unmask the author.',
       )
     ) {
       const { error } = await supabase
@@ -229,6 +225,7 @@ export default function GradingPage() {
             <div className="flex w-full items-center justify-center">
               {submission.file_url.endsWith('.pdf') ? (
                 <iframe
+                  title="Submission Document Viewer"
                   src={submission.file_url}
                   className="h-[800px] w-full border-4 border-border bg-background shadow-[8px_8px_0px_0px_var(--brutalist-shadow)]"
                 />
@@ -264,10 +261,12 @@ export default function GradingPage() {
         </div>
 
         <div className="flex-1 space-y-8">
-
           {/* Assignment Task Module */}
           <div className="space-y-3 border-b-4 border-border/10 pb-8">
-            <label className="flex items-center gap-2 text-sm font-bold tracking-wide uppercase">
+            <label
+              htmlFor="assign"
+              className="flex items-center gap-2 text-sm font-bold tracking-wide uppercase"
+            >
               <ShieldCheck size={18} className="text-primary" />
               Assigned Editor
             </label>
@@ -286,7 +285,7 @@ export default function GradingPage() {
           </div>
 
           <div className="space-y-3">
-            <label className="block text-sm font-bold tracking-wide uppercase">
+            <label htmlFor="tech" className="block text-sm font-bold tracking-wide uppercase">
               Technical Command & Craft
             </label>
             <select
@@ -302,7 +301,7 @@ export default function GradingPage() {
           </div>
 
           <div className="space-y-3">
-            <label className="block text-sm font-bold tracking-wide uppercase">
+            <label htmlFor="tech" className="block text-sm font-bold tracking-wide uppercase">
               Originality & Voice
             </label>
             <select
@@ -318,7 +317,7 @@ export default function GradingPage() {
           </div>
 
           <div className="space-y-3">
-            <label className="block text-sm font-bold tracking-wide uppercase">
+            <label htmlFor="tech" className="block text-sm font-bold tracking-wide uppercase">
               Thematic Depth & Resonance
             </label>
             <select
@@ -334,7 +333,7 @@ export default function GradingPage() {
           </div>
 
           <div className="space-y-4 border-t-4 border-border/10 pt-6">
-            <label className="block text-sm font-bold tracking-wide uppercase">
+            <label htmlFor="tech" className="block text-sm font-bold tracking-wide uppercase">
               "The Archive" Factor
             </label>
             <div className="flex gap-8">
@@ -366,7 +365,7 @@ export default function GradingPage() {
           </div>
 
           <div className="space-y-3">
-            <label className="block text-sm font-bold tracking-wide uppercase">
+            <label htmlFor="tech" className="block text-sm font-bold tracking-wide uppercase">
               Formatting & Professionalism
             </label>
             <select
@@ -400,6 +399,7 @@ export default function GradingPage() {
 
         <div className="mt-8 space-y-6 border-t-4 border-border pt-8">
           <button
+            type="button"
             onClick={handleSave}
             disabled={saving}
             className="flex w-full items-center justify-center gap-3 border-4 border-border bg-foreground p-5 font-bold tracking-widest text-background uppercase shadow-[6px_6px_0px_0px_var(--brutalist-shadow)] transition-all hover:-translate-y-1 hover:border-primary hover:bg-primary hover:shadow-[8px_8px_0px_0px_var(--brutalist-shadow)] disabled:opacity-50"
@@ -418,6 +418,7 @@ export default function GradingPage() {
           </button>
 
           <button
+            type="button"
             onClick={handleDisqualify}
             className="flex w-full items-center justify-center gap-3 border-4 border-red-500 bg-card p-5 font-bold tracking-widest text-red-500 uppercase shadow-[6px_6px_0px_0px_var(--primary)] transition-all hover:-translate-y-1 hover:bg-red-500 hover:text-white hover:shadow-[8px_8px_0px_0px_var(--primary)]"
           >

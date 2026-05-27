@@ -1,12 +1,9 @@
-import { NextResponse } from 'next/server';
 import { createAdminClient } from '@auibsal/auth/admin';
+import { NextResponse } from 'next/server';
 
 export const dynamic = 'force-dynamic';
 
-export async function GET(
-  request: Request,
-  { params }: { params: Promise<{ token: string }> }
-) {
+export async function GET(request: Request, { params }: { params: Promise<{ token: string }> }) {
   const { token } = await params;
   const supabase = createAdminClient();
 

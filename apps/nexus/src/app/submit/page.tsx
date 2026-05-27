@@ -1,9 +1,8 @@
 'use client';
 
-import { useState } from 'react';
-
-import Link from 'next/link';
-
+import { createClient } from '@auibsal/auth/client';
+import type { SubmissionType } from '@auibsal/database';
+import { RichTextEditor } from '@auibsal/ui/components/RichTextEditor';
 import {
   ArrowLeft,
   CheckSquare,
@@ -12,10 +11,8 @@ import {
   ShieldAlert,
   Upload,
 } from 'lucide-react';
-
-import { createClient } from '@auibsal/auth/client';
-import { SubmissionType } from '@auibsal/database';
-import { RichTextEditor } from '@auibsal/ui/components/RichTextEditor';
+import Link from 'next/link';
+import { useState } from 'react';
 
 export default function SubmitWorkPage() {
   const [title, setTitle] = useState('');
@@ -84,7 +81,7 @@ export default function SubmitWorkPage() {
       } = await supabase.auth.getUser();
       if (!user) throw new Error('Not authenticated');
 
-      let publicUrl: string | undefined = undefined;
+      let publicUrl: string | undefined;
 
       // Storage upload executes if a file exists, covering both Visual Art (Images) and Written Work (PDFs)
       if (file) {
@@ -121,7 +118,7 @@ export default function SubmitWorkPage() {
     } catch (err: unknown) {
       setStatus('error');
       setErrorMessage(
-        err instanceof Error ? err.message : 'An unknown exception occurred during transmission.'
+        err instanceof Error ? err.message : 'An unknown exception occurred during transmission.',
       );
     }
   };
@@ -282,10 +279,7 @@ export default function SubmitWorkPage() {
                 <p className="mb-4 text-xs font-bold tracking-widest text-foreground/60 uppercase">
                   Compose directly or paste your raw text into the field below.
                 </p>
-                <div
-                  className="w-full max-w-full overflow-x-hidden border-4 border-border bg-background transition-colors focus-within:border-primary"
-                  aria-labelledby="editor-label"
-                >
+                <div className="w-full max-w-full overflow-x-hidden border-4 border-border bg-background transition-colors focus-within:border-primary">
                   <RichTextEditor content={content} onChange={setContent} />
                 </div>
               </div>

@@ -1,7 +1,5 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-
 import TextAlign from '@tiptap/extension-text-align';
 import Underline from '@tiptap/extension-underline';
 import { EditorContent, useEditor } from '@tiptap/react';
@@ -17,6 +15,7 @@ import {
   List as ListIcon,
   Underline as UnderlineIcon,
 } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 import { cn } from '../lib/utils';
 
@@ -43,7 +42,7 @@ const ToolbarButton = ({
     }}
     className={cn(
       'border-2 border-transparent p-2 transition-colors hover:border-auib-red focus-visible:outline-none',
-      isActive ? 'bg-auib-red text-white' : 'text-white'
+      isActive ? 'bg-auib-red text-white' : 'text-white',
     )}
   >
     {children}

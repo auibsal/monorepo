@@ -1,11 +1,9 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
-
-import { AlertTriangle, RefreshCw, ShieldCheck, Terminal } from 'lucide-react';
-
 import { createClient } from '@auibsal/auth/client';
-import { Tables } from '@auibsal/database';
+import type { Tables } from '@auibsal/database';
+import { AlertTriangle, RefreshCw, ShieldCheck, Terminal } from 'lucide-react';
+import { useCallback, useEffect, useState } from 'react';
 
 // Extend the native table type to account for the relational join
 type SystemLogWithActor = Tables<'system_logs'> & {
@@ -70,6 +68,7 @@ export default function LogsPage() {
           System Logs
         </h2>
         <button
+          type="button"
           onClick={fetchLogs}
           disabled={status === 'loading'}
           className="flex items-center gap-2 border-2 border-border bg-card px-4 py-2 text-sm font-bold tracking-widest text-foreground uppercase shadow-[4px_4px_0px_0px_var(--brutalist-shadow)] transition-all hover:-translate-y-0.5 hover:border-foreground hover:bg-foreground hover:text-background disabled:opacity-50"
@@ -132,8 +131,7 @@ export default function LogsPage() {
                       [{log.action}]
                     </span>
                     <span className="break-words text-foreground">
-                      <span className="font-bold text-primary">{actorIdentity}</span>{' '}
-                      executed{' '}
+                      <span className="font-bold text-primary">{actorIdentity}</span> executed{' '}
                       <span className="underline decoration-border/50 underline-offset-2">
                         {log.action}
                       </span>{' '}

@@ -22,7 +22,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
   return (
     // CRITICAL FIX: suppressHydrationWarning added to prevent React 19 theme mismatch errors
-    <html lang="en" className={`${ubuntu.variable} ${ubuntuArabic.variable}`} suppressHydrationWarning>
+    <html
+      lang="en"
+      className={`${ubuntu.variable} ${ubuntuArabic.variable}`}
+      suppressHydrationWarning
+    >
       {/* Swapped hardcoded hexes to semantic bg-background and text-foreground tokens */}
       <body className="flex min-h-screen flex-col overflow-x-hidden bg-background font-sans text-foreground antialiased">
         <ClientLayout role={role}>{children}</ClientLayout>

@@ -1,6 +1,5 @@
-import { type NextRequest, NextResponse } from 'next/server';
-
 import { updateSession } from '@auibsal/auth/proxy';
+import { type NextRequest, NextResponse } from 'next/server';
 
 // NEXT.JS REQUIREMENT: The function must be exported as the default middleware
 export default async function proxy(request: NextRequest) {

@@ -1,12 +1,10 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
-
-import { AlertTriangle, Plus, X } from 'lucide-react';
-
 import { createClient } from '@auibsal/auth/client';
-import { BlogPost } from '@auibsal/database';
+import type { BlogPost } from '@auibsal/database';
 import { RichTextEditor } from '@auibsal/ui/components/RichTextEditor';
+import { AlertTriangle, Plus, X } from 'lucide-react';
+import { useCallback, useEffect, useState } from 'react';
 
 // Strictly define the shape of the Supabase relational join
 type CMSPostRecord = Pick<BlogPost, 'id' | 'title_en' | 'title_ar'> & {
@@ -100,7 +98,7 @@ export default function BlogPage() {
       fetchPosts();
     } catch (err: unknown) {
       setErrorMessage(
-        err instanceof Error ? err.message : 'An unknown exception occurred during transmission.'
+        err instanceof Error ? err.message : 'An unknown exception occurred during transmission.',
       );
     }
 
@@ -113,6 +111,7 @@ export default function BlogPage() {
       <div className="mb-10 flex flex-wrap items-center justify-between gap-4 border-b-4 border-border pb-4">
         <h2 className="text-3xl font-bold tracking-widest text-foreground uppercase">Blog CMS</h2>
         <button
+          type="button"
           onClick={showForm ? handleCancel : () => setShowForm(true)}
           className={`flex items-center gap-2 border-4 border-border px-6 py-2 font-bold tracking-wider uppercase shadow-[6px_6px_0px_0px_var(--brutalist-shadow)] transition-all hover:-translate-y-0.5 hover:shadow-[8px_8px_0px_0px_var(--brutalist-shadow)] ${
             showForm
@@ -195,7 +194,10 @@ export default function BlogPage() {
           )}
 
           <div className="mb-8">
-            <label className="mb-3 block text-sm font-bold tracking-wide text-foreground uppercase">
+            <label
+              htmlFor="slug"
+              className="mb-3 block text-sm font-bold tracking-wide text-foreground uppercase"
+            >
               Slug (optional, auto-generated from Title EN if empty)
             </label>
             <input
@@ -209,7 +211,10 @@ export default function BlogPage() {
           <div className="grid grid-cols-1 gap-12 lg:grid-cols-2">
             <div className="space-y-6">
               <div>
-                <label className="mb-3 block text-sm font-bold tracking-wide text-foreground uppercase">
+                <label
+                  htmlFor="slug"
+                  className="mb-3 block text-sm font-bold tracking-wide text-foreground uppercase"
+                >
                   Title (English) <span className="text-primary">*</span>
                 </label>
                 <input
@@ -221,7 +226,10 @@ export default function BlogPage() {
                 />
               </div>
               <div>
-                <label className="mb-3 block text-sm font-bold tracking-wide text-foreground uppercase">
+                <label
+                  htmlFor="slug"
+                  className="mb-3 block text-sm font-bold tracking-wide text-foreground uppercase"
+                >
                   Content (English) <span className="text-primary">*</span>
                 </label>
                 <div className="border-4 border-border bg-background transition-colors focus-within:border-primary">
@@ -231,7 +239,10 @@ export default function BlogPage() {
             </div>
             <div className="space-y-6" dir="rtl">
               <div>
-                <label className="mb-3 block text-right text-sm font-bold tracking-wide text-foreground uppercase">
+                <label
+                  htmlFor="slug"
+                  className="mb-3 block text-right text-sm font-bold tracking-wide text-foreground uppercase"
+                >
                   العنوان (عربي) <span className="text-primary">*</span>
                 </label>
                 <input
@@ -243,7 +254,10 @@ export default function BlogPage() {
                 />
               </div>
               <div>
-                <label className="mb-3 block text-right text-sm font-bold tracking-wide text-foreground uppercase">
+                <label
+                  htmlFor="slug"
+                  className="mb-3 block text-right text-sm font-bold tracking-wide text-foreground uppercase"
+                >
                   المحتوى (عربي) <span className="text-primary">*</span>
                 </label>
                 <div
@@ -257,6 +271,7 @@ export default function BlogPage() {
           </div>
           <div className="mt-12 flex justify-end">
             <button
+              type="button"
               disabled={isSaving}
               onClick={handleSave}
               className="flex items-center gap-3 border-4 border-border bg-foreground px-8 py-4 font-bold tracking-wider text-background uppercase shadow-[6px_6px_0px_0px_var(--brutalist-shadow)] transition-all hover:-translate-y-1 hover:border-primary hover:bg-primary hover:shadow-[8px_8px_0px_0px_var(--brutalist-shadow)] disabled:opacity-50"

@@ -29,7 +29,6 @@ const nextConfig: NextConfig = {
   // =========================================================================
   // Turborepo handles linting and typechecking in parallel tasks.
   // We disable them here to prevent Next.js from doubling the build time.
-  eslint: { ignoreDuringBuilds: true },
   typescript: { ignoreBuildErrors: true },
 
   images: {

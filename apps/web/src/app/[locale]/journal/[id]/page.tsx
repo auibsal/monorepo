@@ -1,11 +1,9 @@
+import { createClient } from '@auibsal/auth/server';
+import { ArrowLeft } from 'lucide-react';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-
-import { Link } from '@/i18n/routing';
-import { ArrowLeft } from 'lucide-react';
 import { getTranslations } from 'next-intl/server';
-
-import { createClient } from '@auibsal/auth/server';
+import { Link } from '@/i18n/routing';
 
 // 1. CRITICAL PERFORMANCE UPGRADE: Incremental Static Regeneration (ISR)
 // Caches the page globally for 1 hour to ensure instant page transitions.

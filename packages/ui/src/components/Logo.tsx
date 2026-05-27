@@ -18,10 +18,10 @@ export function Logo({ locale, className }: LogoProps) {
       className={cn(
         // Base weight locked in.
         'font-black',
-        // English gets brutalist uppercase and tight tracking. 
+        // English gets brutalist uppercase and tight tracking.
         // Arabic relies on natural cursive flow (no tracking adjustments).
         locale === 'en' && 'uppercase tracking-tighter',
-        className
+        className,
       )}
     >
       {/* 2. Accessible layer: Screen readers read this smoothly */}

@@ -1,10 +1,10 @@
 'use client';
 
-import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
-
 import { createClient } from '@auibsal/auth/client';
 import { Navbar, type NavbarLink } from '@auibsal/ui/components/layout/Navbar';
+import { useRouter } from 'next/navigation';
+import type React from 'react';
+import { useState } from 'react';
 
 export default function ClientLayout({
   children,
@@ -52,17 +52,9 @@ export default function ClientLayout({
 
   return (
     <div className="flex min-h-screen flex-col">
-      <Navbar
-        locale="en"
-        links={links}
-        homeUrl="/"
-        platform="nexus"
-        onSignOut={handleSignOut}
-      />
+      <Navbar locale="en" links={links} homeUrl="/" platform="nexus" onSignOut={handleSignOut} />
 
-      <main className="mx-auto w-full max-w-7xl flex-1 px-6 py-12">
-        {children}
-      </main>
+      <main className="mx-auto w-full max-w-7xl flex-1 px-6 py-12">{children}</main>
     </div>
   );
 }

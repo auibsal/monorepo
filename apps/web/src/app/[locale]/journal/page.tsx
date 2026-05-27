@@ -1,11 +1,10 @@
-import { Link } from '@/i18n/routing';
+import { createClient } from '@auibsal/auth/server';
 import { ArrowRight } from 'lucide-react';
 import { getTranslations } from 'next-intl/server';
-
-import { createClient } from '@auibsal/auth/server';
+import { Link } from '@/i18n/routing';
 
 // 1. CRITICAL PERFORMANCE UPGRADE: Incremental Static Regeneration (ISR)
-// Caches the page globally for 1 hour. This eliminates redundant Supabase reads 
+// Caches the page globally for 1 hour. This eliminates redundant Supabase reads
 // and delivers lightning-fast load times while still staying relatively live.
 export const revalidate = 3600;
 

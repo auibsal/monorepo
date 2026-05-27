@@ -3,18 +3,13 @@
   "globalDependencies": [
     "**/.env.*local",
     "**/.env",
-    "eslint.config.ts",
-    "prettier.config.mjs",
+    "biome.json",
     "package.json",
     "pnpm-lock.yaml",
     "tsconfig.json",
     "tsconfig.base.json"
   ],
-  "globalEnv": [
-    "NODE_ENV",
-    "VERCEL_ENV",
-    "VERCEL_URL"
-  ],
+  "globalEnv": ["NODE_ENV", "VERCEL_ENV", "VERCEL_URL"],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
@@ -45,8 +40,8 @@
       "outputs": ["*.tsbuildinfo", ".tsbuildinfo"]
     },
     "lint": {
-      "dependsOn": [],
-      "outputs": [".eslintcache"]
+      "outputs": [],
+      "dependsOn": []
     },
     "format": {
       "dependsOn": [],

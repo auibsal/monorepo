@@ -1,7 +1,6 @@
+import { buttonVariants } from '@auibsal/ui/components/ui/button';
 import { BookOpen, Users } from 'lucide-react';
 import { getTranslations } from 'next-intl/server';
-
-import { buttonVariants } from '@auibsal/ui/components/ui/button';
 
 // Strictly typing the locale promise
 export default async function Home({ params }: { params: Promise<{ locale: 'en' | 'ar' }> }) {

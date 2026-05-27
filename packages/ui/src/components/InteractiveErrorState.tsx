@@ -1,8 +1,7 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-
 import { motion } from 'framer-motion';
+import { useEffect, useState } from 'react';
 
 import { cn } from '../lib/utils';
 
@@ -23,8 +22,6 @@ export function InteractiveErrorState({
   onAction,
   isRtl = false,
 }: ErrorProps) {
-  const [isHovering, setIsHovering] = useState(false);
-
   // Hydration Guard State
   const [isMounted, setIsMounted] = useState(false);
 
@@ -36,9 +33,7 @@ export function InteractiveErrorState({
     <div
       // 1. Native DOM Directionality attribute for perfect BiDi rendering
       dir={isRtl ? 'rtl' : 'ltr'}
-      className="relative flex min-h-[80vh] w-full flex-col items-center justify-center overflow-hidden bg-background p-8 text-foreground selection:bg-auib-red selection:text-white"
-      onMouseEnter={() => setIsHovering(true)}
-      onMouseLeave={() => setIsHovering(false)}
+      className="group relative flex min-h-[80vh] w-full flex-col items-center justify-center overflow-hidden bg-background p-8 text-foreground selection:bg-auib-red selection:text-white"
     >
       <div className="relative z-10 w-full max-w-3xl border-4 border-auib-charcoal bg-white p-8 text-start shadow-brutalist-md transition-transform duration-500 ease-out hover:scale-[1.01] md:p-16">
         <div className="mb-6 flex items-end justify-between border-b-4 border-auib-charcoal pb-4">
@@ -53,13 +48,10 @@ export function InteractiveErrorState({
           <h1 className="relative z-0 font-serif text-5xl font-black text-auib-charcoal uppercase md:text-7xl">
             {title}
           </h1>
-          <motion.div
-            initial={{ scaleX: 1 }}
-            animate={{ scaleX: isHovering ? 0 : 1 }}
-            transition={{ duration: 0.5, ease: 'circOut' }}
+          <div
             className={cn(
-              'absolute inset-0 z-10 bg-auib-charcoal',
-              isRtl ? 'origin-right' : 'origin-left'
+              'absolute inset-0 z-10 bg-auib-charcoal transition-transform duration-500 ease-out group-hover:scale-x-0',
+              isRtl ? 'origin-right' : 'origin-left',
             )}
           />
         </div>
@@ -67,12 +59,7 @@ export function InteractiveErrorState({
         {/* Redacted Message */}
         <div className="relative mb-12 max-w-xl">
           <p className="relative z-0 text-lg font-medium leading-relaxed opacity-90">{message}</p>
-          <motion.div
-            initial={{ scaleY: 1 }}
-            animate={{ scaleY: isHovering ? 0 : 1 }}
-            transition={{ duration: 0.5, delay: 0.1, ease: 'circOut' }}
-            className="absolute inset-0 z-10 origin-top bg-auib-charcoal"
-          />
+          <div className="absolute inset-0 z-10 origin-top bg-auib-charcoal transition-transform delay-100 duration-500 ease-out group-hover:scale-y-0" />
         </div>
 
         {/* Action Button */}
