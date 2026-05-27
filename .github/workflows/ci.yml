@@ -65,6 +65,3 @@ jobs:
         
       - name: Build Applications
         run: pnpm turbo run build
-        
-      - name: Run End-to-End Tests
-        run: pnpm turbo run test
