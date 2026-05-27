@@ -5,7 +5,16 @@ import type { JournalIssue } from '@auibsal/database';
 import { AlertTriangle, ArrowRight, BookOpen, CheckSquare, FileUp } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 
-type EditorialIssue = Pick<JournalIssue, 'id' | 'volume_number' | 'issue_number' | 'published_at' | 'title_en' | 'title_ar' | 'pdf_file_url'>;
+type EditorialIssue = Pick<
+  JournalIssue,
+  | 'id'
+  | 'volume_number'
+  | 'issue_number'
+  | 'published_at'
+  | 'title_en'
+  | 'title_ar'
+  | 'pdf_file_url'
+>;
 
 export default function JournalPage() {
   const [issues, setIssues] = useState<EditorialIssue[]>([]);
@@ -77,8 +86,8 @@ export default function JournalPage() {
       } = supabase.storage.from('journal_issues').getPublicUrl(fileName);
 
       const { error: dbError } = await supabase.from('journal_issues').insert({
-        volume_number: parseInt(vol),
-        issue_number: parseInt(issue),
+        volume_number: parseInt(vol, 10),
+        issue_number: parseInt(issue, 10),
         title_en: titleEn,
         title_ar: titleAr,
         pdf_file_url: publicUrl,

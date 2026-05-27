@@ -119,9 +119,9 @@ export default function GradingPage() {
         .from('submissions')
         .update({
           assigned_to: assignedTo === 'unassigned' ? null : assignedTo,
-          rubric_technical: tech ? parseInt(tech) : null,
-          rubric_originality: orig ? parseInt(orig) : null,
-          rubric_thematic: theme ? parseInt(theme) : null,
+          rubric_technical: tech ? parseInt(tech, 10) : null,
+          rubric_originality: orig ? parseInt(orig, 10) : null,
+          rubric_thematic: theme ? parseInt(theme, 10) : null,
           rubric_archive: archive,
           rubric_formatting: formatting || null,
         })
@@ -180,7 +180,9 @@ export default function GradingPage() {
     );
 
   const totalScore =
-    (tech ? parseInt(tech) : 0) + (orig ? parseInt(orig) : 0) + (theme ? parseInt(theme) : 0);
+    (tech ? parseInt(tech, 10) : 0) +
+    (orig ? parseInt(orig, 10) : 0) +
+    (theme ? parseInt(theme, 10) : 0);
 
   // BLIND REVIEW LOGIC
   const isTerminalState = submission.status === 'accepted' || submission.status === 'rejected';

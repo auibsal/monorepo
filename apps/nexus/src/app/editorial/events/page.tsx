@@ -15,7 +15,18 @@ type AuibEvent = {
   description: string;
 };
 
-type EditorialEvent = Pick<Event, 'id' | 'title_en' | 'title_ar' | 'starts_at' | 'ends_at' | 'location' | 'description_en' | 'description_ar' | 'is_members_only'>;
+type EditorialEvent = Pick<
+  Event,
+  | 'id'
+  | 'title_en'
+  | 'title_ar'
+  | 'starts_at'
+  | 'ends_at'
+  | 'location'
+  | 'description_en'
+  | 'description_ar'
+  | 'is_members_only'
+>;
 
 export default function EventsPage() {
   const [events, setEvents] = useState<EditorialEvent[]>([]);
@@ -396,6 +407,7 @@ export default function EventsPage() {
 
               <div className="mt-12 flex justify-end gap-6">
                 <button
+                  type="button"
                   onClick={handleCloseModal}
                   disabled={isSaving}
                   className="border-4 border-border px-8 py-4 font-bold tracking-widest text-foreground uppercase shadow-[6px_6px_0px_0px_var(--brutalist-shadow)] transition-colors hover:translate-x-1 hover:translate-y-1 hover:bg-foreground hover:text-background hover:shadow-none disabled:opacity-50"
