@@ -53,6 +53,10 @@
     "dev": {
       "cache": false,
       "persistent": true
+    },
+    "test": {
+      "outputs": [],
+      "dependsOn": []
     }
   }
 }
