@@ -391,7 +391,7 @@ export default function EventsPage() {
 
               <div className="mt-12 flex justify-end gap-6">
                 <button
-
+                  type="button"
                   onClick={handleCloseModal}
                   disabled={isSaving}
                   className="border-4 border-border px-8 py-4 font-bold tracking-widest text-foreground uppercase shadow-[6px_6px_0px_0px_var(--brutalist-shadow)] transition-colors hover:translate-x-1 hover:translate-y-1 hover:bg-foreground hover:text-background hover:shadow-none disabled:opacity-50"
@@ -399,7 +399,6 @@ export default function EventsPage() {
                   Cancel
                 </button>
                 <button
-
                   type="submit"
                   disabled={isSaving}
                   className="flex items-center gap-3 border-4 border-border bg-primary px-8 py-4 font-bold tracking-widest text-background uppercase shadow-[6px_6px_0px_0px_var(--brutalist-shadow)] transition-colors hover:translate-x-1 hover:translate-y-1 hover:bg-foreground hover:shadow-none disabled:opacity-50"
