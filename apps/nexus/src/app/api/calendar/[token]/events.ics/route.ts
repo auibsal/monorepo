@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 
 export const dynamic = 'force-dynamic';
 
-export async function GET(request: Request, { params }: { params: Promise<{ token: string }> }) {
+export async function GET(_request: Request, { params }: { params: Promise<{ token: string }> }) {
   const { token } = await params;
   const supabase = createAdminClient();
 
@@ -41,7 +41,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ toke
 
     events?.forEach((event) => {
       const formatIcsDate = (dateString: string) => {
-        return new Date(dateString).toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+        return `${new Date(dateString).toISOString().replace(/[-:]/g, '').split('.')[0]}Z`;
       };
 
       const dtStart = formatIcsDate(event.starts_at);

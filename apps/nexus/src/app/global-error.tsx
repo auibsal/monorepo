@@ -8,7 +8,6 @@ import './globals.css';
 
 export default function GlobalError({
   error,
-  reset,
 }: {
   // CRITICAL: Extract the Next.js error digest for telemetry
   error: Error & { digest?: string };

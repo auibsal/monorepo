@@ -6,7 +6,7 @@ import type { Submission, SubmissionStatus } from '@auibsal/database';
 import { DragDropContext, Draggable, Droppable, type DropResult } from '@hello-pangea/dnd';
 import { AlertOctagon, GripVertical, ShieldCheck, User } from 'lucide-react';
 import Link from 'next/link';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 const STATUSES: { id: SubmissionStatus; label: string }[] = [
   { id: 'pending', label: 'Pending' },

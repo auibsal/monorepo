@@ -37,7 +37,7 @@ export default async function NexusHome() {
       supabase.from('submissions').select('id, title, type, status').eq('author_id', user.id),
     ]);
 
-    if (userRes.data && userRes.data.calendar_token) calendarToken = userRes.data.calendar_token;
+    if (userRes.data?.calendar_token) calendarToken = userRes.data.calendar_token;
     if (subRes.data) memberSubmissions = subRes.data as DashboardSubmission[];
   }
 

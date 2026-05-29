@@ -61,7 +61,7 @@ export default function UsersPage() {
       .eq('id', userId);
 
     if (error) {
-      alert('Failed to update role: ' + error.message);
+      alert(`Failed to update role: ${error.message}`);
     } else {
       // Upon confirmed success, sync the source of truth and clear the draft
       setUsers((prev) => prev.map((u) => (u.id === userId ? { ...u, role: newRole } : u)));

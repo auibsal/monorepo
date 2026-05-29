@@ -74,8 +74,8 @@ export default function JournalPage() {
       } = supabase.storage.from('journal_issues').getPublicUrl(fileName);
 
       const { error: dbError } = await supabase.from('journal_issues').insert({
-        volume_number: parseInt(vol),
-        issue_number: parseInt(issue),
+        volume_number: parseInt(vol, 10),
+        issue_number: parseInt(issue, 10),
         title_en: titleEn,
         title_ar: titleAr,
         pdf_file_url: publicUrl,
