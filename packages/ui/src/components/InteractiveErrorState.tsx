@@ -67,7 +67,7 @@ export function InteractiveErrorState({
           type="button"
           onClick={onAction}
           // 2. Synchronized with Tailwind v4 Brutalist Design Tokens
-          className="group relative overflow-hidden border-2 border-auib-charcoal bg-auib-charcoal px-8 py-4 font-mono text-sm font-bold tracking-widest text-white uppercase shadow-brutalist-sm transition-all hover:translate-x-1 hover:translate-y-1 hover:shadow-none"
+          className="group relative overflow-hidden border-2 border-auib-charcoal bg-auib-charcoal px-8 py-4 font-mono text-sm font-bold tracking-widest text-white uppercase shadow-brutalist-sm transition-all hover:translate-x-1 hover:translate-y-1 hover:shadow-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-auib-red focus-visible:ring-offset-2"
         >
           <span className="relative z-10 mix-blend-difference">{actionText}</span>
           <motion.div
