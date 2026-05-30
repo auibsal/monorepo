@@ -1,8 +1,13 @@
 import { waylRequest } from './client';
-import type { WaylLinkCreationPayload, WaylLinkRecord, WaylLinkStatus } from '../../types';
+import type { UniversalCheckoutRequest } from '../../types';
+import type { 
+  WaylLinkCreationPayload, 
+  WaylLinkRecord, 
+  WaylLinkStatus 
+} from './types';
 
 /**
- * Validates authentication credentials directly against Wayl's validation sequence
+ * Validates authentication credentials directly against Wayl's validation sequence.
  */
 export async function verifyAuthKey(): Promise<boolean> {
   const result = await waylRequest<Record<string, never>>('/api/v1/verify-auth-key', { method: 'GET' });
@@ -10,31 +15,34 @@ export async function verifyAuthKey(): Promise<boolean> {
 }
 
 /**
- * Creates an authorized public checkout link
+ * Translates a Universal Checkout Request into Wayl's strictly typed schema,
+ * then executes the creation sequence.
  */
-export async function createPaymentLink(payload: WaylLinkCreationPayload) {
-  if (payload.amountIQD < 1000) {
-    return { success: false, error: 'Minimum transaction boundary is 1,000 IQD.' };
+export async function createPaymentLink(req: UniversalCheckoutRequest) {
+  if (req.amountIQD < 1000) {
+    return { success: false as const, error: 'Minimum transaction boundary is 1,000 IQD.' };
   }
 
-  const body = {
+  // 1. Translate Universal -> Wayl Payload
+  const body: WaylLinkCreationPayload = {
     env: process.env.WAYL_ENV === 'live' ? 'live' : 'test',
-    referenceId: payload.referenceId,
-    total: payload.amountIQD,
+    referenceId: req.referenceId,
+    total: req.amountIQD,
     currency: 'IQD',
-    customParameter: payload.customerName || '',
-    lineItem: payload.lineItems || [
+    customParameter: req.customerName || '',
+    lineItem: [
       {
         label: 'Basket Value',
-        amount: payload.amountIQD,
+        amount: req.amountIQD,
         type: 'increase',
-      },
+      }
     ],
-    webhookUrl: payload.webhookUrl || process.env.WAYL_WEBHOOK_URL,
-    webhookSecret: payload.webhookSecret || process.env.WAYL_WEBHOOK_SECRET,
-    redirectionUrl: payload.successUrl,
+    redirectionUrl: req.successUrl,
+    webhookUrl: process.env.WAYL_WEBHOOK_URL,
+    webhookSecret: process.env.WAYL_WEBHOOK_SECRET,
   };
 
+  // 2. Execute the Wayl-specific request
   return await waylRequest<WaylLinkRecord>('/api/v1/links', {
     method: 'POST',
     body: JSON.stringify(body),
@@ -42,14 +50,14 @@ export async function createPaymentLink(payload: WaylLinkCreationPayload) {
 }
 
 /**
- * Fetches a single link object by your internal unique reference configuration
+ * Fetches a single link object by your internal unique reference configuration.
  */
 export async function getLinkByReference(referenceId: string) {
   return await waylRequest<WaylLinkRecord>(`/api/v1/links/${referenceId}`, { method: 'GET' });
 }
 
 /**
- * Retreives a historical paginated matrix of created links filtered by status
+ * Retrieves a historical paginated matrix of created links filtered by status.
  */
 export async function getLinks(params: { take?: number; skip?: number; statuses?: WaylLinkStatus[] } = {}) {
   const query = new URLSearchParams();
@@ -66,14 +74,14 @@ export async function getLinks(params: { take?: number; skip?: number; statuses?
 }
 
 /**
- * Hard-invalidates an uncaptured link asset immediately
+ * Hard-invalidates an uncaptured link asset immediately.
  */
 export async function invalidateLink(referenceId: string) {
   return await waylRequest<WaylLinkRecord>(`/api/v1/links/${referenceId}/invalidate`, { method: 'POST' });
 }
 
 /**
- * Conditionally invalidates an asset only if it resides in a pending evaluation state
+ * Conditionally invalidates an asset only if it resides in a pending evaluation state.
  */
 export async function invalidateLinkIfPending(referenceId: string) {
   return await waylRequest<WaylLinkRecord>(`/api/v1/links/${referenceId}/invalidate-if-pending`, { method: 'POST' });
