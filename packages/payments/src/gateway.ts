@@ -1,16 +1,21 @@
-import { createPaymentLink } from './providers/wayl/links';
+// The Gateway imports the specific execution engines (The Infrastructure)
+import { createPaymentLink as processWayl } from './providers/wayl/links';
+// import { createPaymentLink as processZainCash } from './providers/zaincash/links';
+
+// The Gateway imports the Universal Language (The Core Domain)
 import type { 
   UniversalCheckoutRequest, 
   UniversalCheckoutResponse, 
   PaymentProvider 
 } from './types';
 
-// The global default if no specific provider is requested by the user
+// Establish the primary engine from Vercel environment variables
 const PRIMARY_PROVIDER = (process.env.PRIMARY_PAYMENT_PROVIDER as PaymentProvider) || 'wayl';
 
 /**
- * Universal Checkout Orchestrator
- * Routes the financial transaction to the active or requested payment gateway.
+ * The Switchboard Operator
+ * Receives a universal request, routes it to the correct provider engine, 
+ * and returns a universal response.
  */
 export async function processCheckout(
   req: UniversalCheckoutRequest,
@@ -21,46 +26,30 @@ export async function processCheckout(
 
   switch (targetProvider) {
     case 'wayl': {
-      // Translate Universal Request to Wayl Payload
-      const result = await createPaymentLink({
-        amountIQD: req.amountIQD,
-        referenceId: req.referenceId,
-        successUrl: req.successUrl,
-        customerName: req.customerName,
-      });
+      // The Gateway simply hands the Universal request to the Wayl Adapter.
+      // The Adapter handles the internal translation to Wayl's specific OpenAPI schema.
+      const result = await processWayl(req);
 
-      // Standardize Wayl Error Response
+      // The Gateway standardizes the response back to Nexus
       if (!result.success) {
         return { success: false, provider: 'wayl', error: result.error };
       }
 
-      // Standardize Wayl Success Response
       return {
         success: true,
         provider: 'wayl',
-        checkoutUrl: result.data.url,
-        transactionId: result.data.id,
+        checkoutUrl: result.data.url,       // The link the user clicks
+        transactionId: result.data.id,      // Wayl's internal tracking ID
       };
     }
 
     case 'zaincash': {
-      // Placeholder for future ZainCash integration
-      // const result = await createZainCashCheckout(req);
-      return { success: false, provider: 'zaincash', error: 'ZainCash engine offline/unimplemented.' };
-    }
-
-    case 'superqi': {
-      // Placeholder for future SuperQi integration
-      return { success: false, provider: 'superqi', error: 'SuperQi engine offline/unimplemented.' };
-    }
-
-    case 'stripe': {
-      // Placeholder for future Stripe integration
-      return { success: false, provider: 'stripe', error: 'Stripe engine offline/unimplemented.' };
+      // return await processZainCash(req);
+      return { success: false, provider: 'zaincash', error: 'Engine offline.' };
     }
 
     default:
-      console.error(`[PAYMENTS] Unknown provider requested: ${targetProvider}`);
+      console.error(`[PAYMENTS GATEWAY] Unknown provider requested: ${targetProvider}`);
       return { 
         success: false, 
         provider: targetProvider, 
