@@ -1,3 +1,0 @@
-## 2024-05-30 - Focus-Visible on Custom Interactive Components
-**Learning:** Custom interactive components outside the main `ui/button.tsx` (such as Navbar buttons or InteractiveErrorState actions) often miss keyboard focus rings since they implement their own styles. The `focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2` pattern needs to be manually applied to ensure keyboard accessibility isn't lost during visual restyling.
-**Action:** When auditing or building custom interactive elements that deviate from standard UI primitives, explicitly verify keyboard focus visibility and apply standard focus-visible rings with proper brand contrast colors.
