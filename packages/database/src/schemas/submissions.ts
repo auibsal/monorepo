@@ -1,0 +1,30 @@
+import { z } from 'zod';
+import { SUBMISSION_STATUSES, SUBMISSION_TYPES } from '../constants';
+
+/**
+ * Validates the payload when an author submits a new manuscript.
+ */
+export const insertSubmissionSchema = z.object({
+  title: z.string().min(2, 'Title must be at least 2 characters').max(255, 'Title is too long'),
+  type: z.enum(SUBMISSION_TYPES as [string, ...string[]]),
+  content: z.string().nullable().optional(),
+  file_url: z.string().url('Must be a valid URL').nullable().optional(),
+});
+
+/**
+ * Validates the payload when an editor updates a submission's status.
+ */
+export const updateSubmissionStatusSchema = z.object({
+  status: z.enum(SUBMISSION_STATUSES as [string, ...string[]]),
+});
+
+/**
+ * Validates the payload for editorial rubric grading.
+ */
+export const gradeSubmissionSchema = z.object({
+  rubric_technical: z.number().min(0).max(10),
+  rubric_thematic: z.number().min(0).max(10),
+  rubric_originality: z.number().min(0).max(10),
+  rubric_formatting: z.string().nullable().optional(),
+  rubric_archive: z.boolean(),
+});
