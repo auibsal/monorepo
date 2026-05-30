@@ -27,7 +27,7 @@
     "react": "catalog:",
     "react-dom": "catalog:",
     "three": "^0.184.0",
-    "zustand": "^5.0.13"
+    "zustand": "^5.0.14"
   },
   "devDependencies": {
     "@auibsal/config": "workspace:*",
