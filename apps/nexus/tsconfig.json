@@ -1,6 +1,8 @@
 {
   "extends": "@auibsal/config/tsconfig.base.json",
   "compilerOptions": {
+    "ignoreDeprecations": "6.0",
+    "baseUrl": ".",
     "plugins": [
       {
         "name": "next"
@@ -17,5 +19,5 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts"
   ],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", ".turbo"]
 }
