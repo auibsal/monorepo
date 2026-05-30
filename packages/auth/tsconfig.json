@@ -2,23 +2,12 @@
   "extends": "@auibsal/config/tsconfig.base.json",
   "compilerOptions": {
     "ignoreDeprecations": "6.0",
-    "moduleResolution": "bundler",
     "baseUrl": ".",
     "rootDir": "./src",
     "outDir": "./dist",
-
-    // =========================
-    // Monorepo Type Caching
-    // =========================
-    // Allows consuming apps to read from a cached API signature for instant IntelliSense
     "composite": true,
     "declaration": true,
     "declarationMap": true,
-
-    // =========================
-    // Clean Output
-    // =========================
-    // Overrides the base "noEmit: true" to output ONLY definitions, zero raw JS.
     "noEmit": false,
     "emitDeclarationOnly": true,
     "sourceMap": false
