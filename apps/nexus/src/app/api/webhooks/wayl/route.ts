@@ -1,5 +1,5 @@
-import { verifyWaylWebhookSignature } from '@auibsal/payments/wayl/webhooks';
 import { createClient } from '@auibsal/auth/server'; // Your Supabase admin client
+import { verifyWaylWebhookSignature } from '@auibsal/payments/wayl/webhooks';
 
 export async function POST(req: Request) {
   try {
@@ -14,7 +14,7 @@ export async function POST(req: Request) {
     const isValid = verifyWaylWebhookSignature(
       rawBody,
       signature,
-      process.env.WAYL_WEBHOOK_SECRET!
+      process.env.WAYL_WEBHOOK_SECRET!,
     );
 
     if (!isValid) {
@@ -29,19 +29,18 @@ export async function POST(req: Request) {
       const referenceId = event.referenceId; // e.g., The Submission ID or Order ID
 
       const supabase = await createClient();
-      
+
       // Update our internal database
       await supabase
         .from('submissions')
         .update({ status: 'accepted' }) // changed from payment_status to valid schema field
         .eq('id', referenceId);
-        
+
       // (Optional) Trigger @auibsal/email here to send a receipt
     }
 
     // 4. Tell Wayl we successfully received the transmission
     return new Response('Webhook Acknowledged', { status: 200 });
-    
   } catch (err) {
     console.error('Webhook processing failure:', err);
     return new Response('Internal Server Error', { status: 500 });

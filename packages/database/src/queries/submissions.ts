@@ -1,14 +1,14 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
-import type { Database } from '../types';
+import { type EditorialTableDTO, toEditorialTableDTO } from '../dtos/submissions';
 import type { Submission } from '../index';
-import { toEditorialTableDTO, type EditorialTableDTO } from '../dtos/submissions';
+import type { Database } from '../types';
 
 /**
  * Retrieves a single submission by its UUID.
  */
 export async function getSubmissionById(
   client: SupabaseClient<Database>,
-  id: string
+  id: string,
 ): Promise<{ data: Submission | null; error: any }> {
   return await client.from('submissions').select('*').eq('id', id).single();
 }
@@ -17,7 +17,7 @@ export async function getSubmissionById(
  * Retrieves all submissions joined with author data, mapped perfectly for the Editorial Dashboard.
  */
 export async function getEditorialDashboardSubmissions(
-  client: SupabaseClient<Database>
+  client: SupabaseClient<Database>,
 ): Promise<{ data: EditorialTableDTO[] | null; error: any }> {
   const { data, error } = await client
     .from('submissions')

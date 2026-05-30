@@ -1,13 +1,12 @@
 const WAYL_API_KEY = process.env.WAYL_API_KEY;
 const WAYL_ENV = process.env.WAYL_ENV === 'live' ? 'live' : 'test';
 
-const WAYL_BASE_URL = WAYL_ENV === 'live' 
-  ? 'https://api.thewayl.com' 
-  : 'https://api.thewayl-staging.com';
+const WAYL_BASE_URL =
+  WAYL_ENV === 'live' ? 'https://api.thewayl.com' : 'https://api.thewayl-staging.com';
 
 export async function waylRequest<T>(
   path: string,
-  options: RequestInit = {}
+  options: RequestInit = {},
 ): Promise<{ success: true; data: T; message: string } | { success: false; error: string }> {
   if (!WAYL_API_KEY) {
     return { success: false, error: 'WAYL_API_KEY is missing from environment.' };
@@ -15,7 +14,7 @@ export async function waylRequest<T>(
 
   const url = `${WAYL_BASE_URL}${path}`;
   const headers = new Headers(options.headers);
-  
+
   // Enforce custom security header specification
   headers.set('X-WAYL-AUTHENTICATION', WAYL_API_KEY);
   headers.set('Content-Type', 'application/json');
@@ -25,7 +24,10 @@ export async function waylRequest<T>(
     const payload = await response.json();
 
     if (!response.ok) {
-      return { success: false, error: payload.message || `API request failed with status ${response.status}` };
+      return {
+        success: false,
+        error: payload.message || `API request failed with status ${response.status}`,
+      };
     }
 
     return {

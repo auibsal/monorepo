@@ -1,16 +1,14 @@
-import { waylRequest } from './client';
 import type { UniversalCheckoutRequest } from '../../types';
-import type { 
-  WaylLinkCreationPayload, 
-  WaylLinkRecord, 
-  WaylLinkStatus 
-} from './types';
+import { waylRequest } from './client';
+import type { WaylLinkCreationPayload, WaylLinkRecord, WaylLinkStatus } from './types';
 
 /**
  * Validates authentication credentials directly against Wayl's validation sequence.
  */
 export async function verifyAuthKey(): Promise<boolean> {
-  const result = await waylRequest<Record<string, never>>('/api/v1/verify-auth-key', { method: 'GET' });
+  const result = await waylRequest<Record<string, never>>('/api/v1/verify-auth-key', {
+    method: 'GET',
+  });
   return result.success;
 }
 
@@ -35,7 +33,7 @@ export async function createPaymentLink(req: UniversalCheckoutRequest) {
         label: 'Basket Value',
         amount: req.amountIQD,
         type: 'increase',
-      }
+      },
     ],
     redirectionUrl: req.successUrl,
   };
@@ -65,7 +63,9 @@ export async function getLinkByReference(referenceId: string) {
 /**
  * Retrieves a historical paginated matrix of created links filtered by status.
  */
-export async function getLinks(params: { take?: number; skip?: number; statuses?: WaylLinkStatus[] } = {}) {
+export async function getLinks(
+  params: { take?: number; skip?: number; statuses?: WaylLinkStatus[] } = {},
+) {
   const query = new URLSearchParams();
   if (params.take) query.set('take', String(params.take));
   if (params.skip) query.set('skip', String(params.skip));
@@ -83,12 +83,16 @@ export async function getLinks(params: { take?: number; skip?: number; statuses?
  * Hard-invalidates an uncaptured link asset immediately.
  */
 export async function invalidateLink(referenceId: string) {
-  return await waylRequest<WaylLinkRecord>(`/api/v1/links/${referenceId}/invalidate`, { method: 'POST' });
+  return await waylRequest<WaylLinkRecord>(`/api/v1/links/${referenceId}/invalidate`, {
+    method: 'POST',
+  });
 }
 
 /**
  * Conditionally invalidates an asset only if it resides in a pending evaluation state.
  */
 export async function invalidateLinkIfPending(referenceId: string) {
-  return await waylRequest<WaylLinkRecord>(`/api/v1/links/${referenceId}/invalidate-if-pending`, { method: 'POST' });
+  return await waylRequest<WaylLinkRecord>(`/api/v1/links/${referenceId}/invalidate-if-pending`, {
+    method: 'POST',
+  });
 }

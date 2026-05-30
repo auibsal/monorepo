@@ -3,25 +3,20 @@ import { createPaymentLink as processWayl } from './providers/wayl/links';
 // import { createPaymentLink as processZainCash } from './providers/zaincash/links';
 
 // The Gateway imports the Universal Language (The Core Domain)
-import type { 
-  UniversalCheckoutRequest, 
-  UniversalCheckoutResponse, 
-  PaymentProvider 
-} from './types';
+import type { PaymentProvider, UniversalCheckoutRequest, UniversalCheckoutResponse } from './types';
 
 // Establish the primary engine from Vercel environment variables
 const PRIMARY_PROVIDER = (process.env.PRIMARY_PAYMENT_PROVIDER as PaymentProvider) || 'wayl';
 
 /**
  * The Switchboard Operator
- * Receives a universal request, routes it to the correct provider engine, 
+ * Receives a universal request, routes it to the correct provider engine,
  * and returns a universal response.
  */
 export async function processCheckout(
   req: UniversalCheckoutRequest,
-  requestedProvider?: PaymentProvider
+  requestedProvider?: PaymentProvider,
 ): Promise<UniversalCheckoutResponse> {
-  
   const targetProvider = requestedProvider || PRIMARY_PROVIDER;
 
   switch (targetProvider) {
@@ -38,8 +33,8 @@ export async function processCheckout(
       return {
         success: true,
         provider: 'wayl',
-        checkoutUrl: result.data.url,       // The link the user clicks
-        transactionId: result.data.id,      // Wayl's internal tracking ID
+        checkoutUrl: result.data.url, // The link the user clicks
+        transactionId: result.data.id, // Wayl's internal tracking ID
       };
     }
 
@@ -50,10 +45,10 @@ export async function processCheckout(
 
     default:
       console.error(`[PAYMENTS GATEWAY] Unknown provider requested: ${targetProvider}`);
-      return { 
-        success: false, 
-        provider: targetProvider, 
-        error: 'Invalid payment provider requested.' 
+      return {
+        success: false,
+        provider: targetProvider,
+        error: 'Invalid payment provider requested.',
       };
   }
 }

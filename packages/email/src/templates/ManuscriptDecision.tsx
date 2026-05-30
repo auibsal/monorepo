@@ -1,4 +1,3 @@
-import * as React from 'react';
 import {
   Body,
   Container,
@@ -11,6 +10,7 @@ import {
   Section,
   Text,
 } from '@react-email/components';
+import type * as React from 'react';
 
 interface ManuscriptDecisionProps {
   authorName: string;
@@ -25,7 +25,7 @@ export const ManuscriptDecisionTemplate: React.FC<ManuscriptDecisionProps> = ({
 }) => {
   const isAccepted = status === 'accepted';
   const isRevisions = status === 'revisions_requested';
-  
+
   const statusColor = isAccepted ? '#10B981' : isRevisions ? '#F59E0B' : '#EF4444';
   const statusText = isAccepted ? 'ACCEPTED' : isRevisions ? 'REVISIONS REQUESTED' : 'REJECTED';
 
@@ -56,19 +56,24 @@ export const ManuscriptDecisionTemplate: React.FC<ManuscriptDecisionProps> = ({
 
             {isAccepted && (
               <Text style={text}>
-                Your work has been selected for publication. Our editorial team will contact you shortly to begin the final formatting and archival process.
+                Your work has been selected for publication. Our editorial team will contact you
+                shortly to begin the final formatting and archival process.
               </Text>
             )}
 
             {!isAccepted && !isRevisions && (
               <Text style={text}>
-                We regret to inform you that your manuscript has not been selected for publication at this time. The board reviewed a high volume of submissions and had to make difficult protocol decisions.
+                We regret to inform you that your manuscript has not been selected for publication
+                at this time. The board reviewed a high volume of submissions and had to make
+                difficult protocol decisions.
               </Text>
             )}
 
             {isRevisions && (
               <Text style={text}>
-                The board recognizes the structural integrity of your manuscript but requires revisions before a final determination can be made. Please check the Nexus portal for detailed rubric feedback.
+                The board recognizes the structural integrity of your manuscript but requires
+                revisions before a final determination can be made. Please check the Nexus portal
+                for detailed rubric feedback.
               </Text>
             )}
 
@@ -80,7 +85,8 @@ export const ManuscriptDecisionTemplate: React.FC<ManuscriptDecisionProps> = ({
 
             <Hr style={hr} />
             <Text style={footer}>
-              This is a mathematically automated transmission from the AUIB Society of Arts and Letters infrastructure. Do not reply to this email.
+              This is a mathematically automated transmission from the AUIB Society of Arts and
+              Letters infrastructure. Do not reply to this email.
             </Text>
           </Section>
         </Container>
@@ -92,7 +98,8 @@ export const ManuscriptDecisionTemplate: React.FC<ManuscriptDecisionProps> = ({
 // --- Brutalist Inline CSS Variables ---
 const main = {
   backgroundColor: '#f5f5f5',
-  fontFamily: '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Ubuntu,sans-serif',
+  fontFamily:
+    '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Ubuntu,sans-serif',
 };
 
 const container = {

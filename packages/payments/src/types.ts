@@ -4,7 +4,7 @@ export type PaymentProvider = 'wayl' | 'zaincash' | 'stripe' | 'superqi';
 
 export interface UniversalCheckoutRequest {
   amountIQD: number;
-  referenceId: string;       
+  referenceId: string;
   successUrl: string;
   customerName?: string;
 }

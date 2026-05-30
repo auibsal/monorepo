@@ -1,7 +1,6 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
   "compilerOptions": {
-    
     "target": "es2022",
     "lib": ["dom", "dom.iterable", "esnext"],
     "module": "esnext",
@@ -16,7 +15,6 @@
     "skipLibCheck": true,
     "resolveJsonModule": true,
 
-
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
@@ -24,7 +22,6 @@
     "noUncheckedIndexedAccess": true,
 
     "exactOptionalPropertyTypes": true
-
   },
   "exclude": ["node_modules", "dist", ".next", ".turbo"]
 }

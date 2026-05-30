@@ -6,7 +6,7 @@ import crypto from 'node:crypto';
 export function verifyWaylWebhookSignature(
   rawBodyPayload: string | Buffer,
   incomingHeaderSignature: string,
-  localWebhookSecretId: string
+  localWebhookSecretId: string,
 ): boolean {
   if (!incomingHeaderSignature || !localWebhookSecretId) return false;
 

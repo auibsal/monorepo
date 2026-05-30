@@ -8,7 +8,7 @@ import type { Database } from '../types';
  */
 export async function executeAtomicManuscriptAcceptance(
   client: SupabaseClient<Database>,
-  payload: { submissionId: string; adminId: string }
+  payload: { submissionId: string; adminId: string },
 ) {
   // await client.rpc('accept_manuscript_transaction', payload);
   throw new Error('RPC endpoint not yet implemented in PostgreSQL engine.');

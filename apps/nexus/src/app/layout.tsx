@@ -1,9 +1,7 @@
 import type { Metadata } from 'next';
 import { headers } from 'next/headers';
-
-import { ubuntu, ubuntuArabic } from '@/fonts';
-
 import ClientLayout from '@/components/layout/ClientLayout';
+import { ubuntu, ubuntuArabic } from '@/fonts';
 import './globals.css';
 
 export const metadata: Metadata = {
