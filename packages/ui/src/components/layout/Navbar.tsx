@@ -59,7 +59,7 @@ export function Navbar({
         <button
           type="button"
           onClick={onSignOut}
-          className="text-sm font-bold tracking-widest text-white uppercase transition-colors hover:text-auib-charcoal"
+          className="text-sm font-bold tracking-widest text-white uppercase transition-colors hover:text-auib-charcoal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-auib-red rounded-sm"
         >
           Sign Out
         </button>
@@ -72,7 +72,7 @@ export function Navbar({
           <button
             type="button"
             onClick={onLanguageToggle}
-            className="text-sm font-bold tracking-widest text-white uppercase transition-colors hover:text-auib-charcoal"
+            className="text-sm font-bold tracking-widest text-white uppercase transition-colors hover:text-auib-charcoal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-auib-red rounded-sm"
           >
             {targetLocale === 'en' ? 'English' : 'عربي'}
           </button>
@@ -116,7 +116,7 @@ export function Navbar({
             onClick={() => setIsOpen(!isOpen)}
             aria-expanded={isOpen}
             aria-label="Toggle navigation menu"
-            className="flex items-center gap-2 border-2 border-transparent p-2 text-sm font-bold tracking-widest uppercase transition-colors hover:border-white hover:bg-white hover:text-auib-red"
+            className="flex items-center gap-2 border-2 border-transparent p-2 text-sm font-bold tracking-widest uppercase transition-colors hover:border-white hover:bg-white hover:text-auib-red focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-auib-red"
           >
             {isOpen ? <X size={24} aria-hidden="true" /> : <Menu size={24} aria-hidden="true" />}
             <span className="hidden sm:inline">Menu</span>
