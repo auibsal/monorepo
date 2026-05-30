@@ -38,9 +38,15 @@ export async function createPaymentLink(req: UniversalCheckoutRequest) {
       }
     ],
     redirectionUrl: req.successUrl,
-    webhookUrl: process.env.WAYL_WEBHOOK_URL,
-    webhookSecret: process.env.WAYL_WEBHOOK_SECRET,
   };
+
+  if (process.env.WAYL_WEBHOOK_URL) {
+    body.webhookUrl = process.env.WAYL_WEBHOOK_URL;
+  }
+
+  if (process.env.WAYL_WEBHOOK_SECRET) {
+    body.webhookSecret = process.env.WAYL_WEBHOOK_SECRET;
+  }
 
   // 2. Execute the Wayl-specific request
   return await waylRequest<WaylLinkRecord>('/api/v1/links', {

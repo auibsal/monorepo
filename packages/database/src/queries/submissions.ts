@@ -1,6 +1,6 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { Database } from '../types';
-import type { Submission } from '../aliases';
+import type { Submission } from '../index';
 import { toEditorialTableDTO, type EditorialTableDTO } from '../dtos/submissions';
 
 /**

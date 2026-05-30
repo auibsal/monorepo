@@ -3,7 +3,7 @@ import { headers } from 'next/headers';
 
 import { ubuntu, ubuntuArabic } from '@/fonts';
 
-import ClientLayout from './ClientLayout';
+import ClientLayout from '@/components/layout/ClientLayout';
 import './globals.css';
 
 export const metadata: Metadata = {

@@ -33,7 +33,7 @@ export async function POST(req: Request) {
       // Update our internal database
       await supabase
         .from('submissions')
-        .update({ payment_status: 'paid' })
+        .update({ status: 'accepted' }) // changed from payment_status to valid schema field
         .eq('id', referenceId);
         
       // (Optional) Trigger @auibsal/email here to send a receipt
