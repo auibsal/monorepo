@@ -1,5 +1,6 @@
 import { waylRequest } from './client';
-import type { WaylRefundRecord } from '../../types';
+// 🛠️ CORRECTED: Importing strictly from the local provider types
+import type { WaylRefundRecord } from './types';
 
 /**
  * Launches a transaction reversal against an explicitly captured reference identifier
