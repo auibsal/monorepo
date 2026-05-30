@@ -4,10 +4,13 @@
   "private": true,
   "type": "module",
   "exports": {
-    ".": "./src/index.ts"
+    "./types": "./src/types.ts",
+    "./constants": "./src/constants.ts",
+    "./aliases": "./src/aliases.ts",
+    "./queries/submissions": "./src/queries/submissions.ts",
+    "./mutations/submissions": "./src/mutations/submissions.ts"
   },
   "scripts": {
-    "build": "tsc",
     "lint": "biome check . --no-errors-on-unmatched",
     "typecheck": "tsc --noEmit",
     "clean": "rm -rf dist .turbo node_modules",
