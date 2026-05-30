@@ -1,0 +1,29 @@
+{
+  "name": "@auibsal/email",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./templates/*": "./src/templates/*.tsx"
+  },
+  "scripts": {
+    "lint": "biome check . --no-errors-on-unmatched",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist .turbo node_modules"
+  },
+  "dependencies": {
+    "@react-email/components": "^0.0.32",
+    "resend": "^4.0.1-alpha.0"
+  },
+  "peerDependencies": {
+    "react": "catalog:",
+    "react-dom": "catalog:"
+  },
+  "devDependencies": {
+    "@auibsal/config": "workspace:*",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "typescript": "catalog:"
+  }
+}
