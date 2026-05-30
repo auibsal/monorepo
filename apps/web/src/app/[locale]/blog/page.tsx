@@ -1,5 +1,6 @@
 import { createClient } from '@auibsal/auth/server';
 import { ArrowRight, User } from 'lucide-react';
+import type { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
 import { Link } from '@/i18n/routing';
 
@@ -7,8 +8,20 @@ import { Link } from '@/i18n/routing';
 // Caches the page globally for 1 hour to prevent redundant Supabase reads.
 export const revalidate = 3600;
 
+type Props = { params: Promise<{ locale: 'en' | 'ar' }> };
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: 'BlogPage' });
+
+  return {
+    title: t('title'),
+    description: t('subtitle'),
+  };
+}
+
 // 2. Strictly typing the locale promise
-export default async function BlogPage({ params }: { params: Promise<{ locale: 'en' | 'ar' }> }) {
+export default async function BlogPage({ params }: Props) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'BlogPage' });
 

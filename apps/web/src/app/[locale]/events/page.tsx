@@ -1,13 +1,26 @@
 import { createClient } from '@auibsal/auth/server';
 import { Calendar, MapPin } from 'lucide-react';
+import type { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
 
 // 1. CRITICAL PERFORMANCE UPGRADE: Incremental Static Regeneration (ISR)
 // Caches the page globally for 1 hour for instantaneous loads.
 export const revalidate = 3600;
 
+type Props = { params: Promise<{ locale: 'en' | 'ar' }> };
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: 'EventsPage' });
+
+  return {
+    title: t('pageTitle'),
+    description: t('pageSubtitle'),
+  };
+}
+
 // 2. Strictly typing the locale promise
-export default async function Events({ params }: { params: Promise<{ locale: 'en' | 'ar' }> }) {
+export default async function Events({ params }: Props) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'EventsPage' });
   const supabase = await createClient();

@@ -1,5 +1,6 @@
 import { createClient } from '@auibsal/auth/server';
 import { ArrowRight } from 'lucide-react';
+import type { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
 import { Link } from '@/i18n/routing';
 
@@ -8,8 +9,20 @@ import { Link } from '@/i18n/routing';
 // and delivers lightning-fast load times while still staying relatively live.
 export const revalidate = 3600;
 
+type Props = { params: Promise<{ locale: 'en' | 'ar' }> };
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: 'JournalPage' });
+
+  return {
+    title: t('journalName'),
+    description: t('journalSubtitle'),
+  };
+}
+
 // 2. Strictly typing the locale promise
-export default async function Journal({ params }: { params: Promise<{ locale: 'en' | 'ar' }> }) {
+export default async function Journal({ params }: Props) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'JournalPage' });
 

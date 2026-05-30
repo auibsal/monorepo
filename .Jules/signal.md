@@ -1,0 +1,3 @@
+## 2026-05-30 - Localized SEO Metadata for Dynamic App Pages
+**Learning:** In Next.js 15+ using `next-intl`, dynamic parameters like `params` and `searchParams` are asynchronous. When generating SEO metadata for list pages (e.g., Blog, Events, Journal) that depend on localization, the metadata function must be implemented as `async function generateMetadata({ params }: Props): Promise<Metadata>`.
+**Action:** When adding or fixing metadata generation for Next.js App Router pages that rely on a locale, ensure `params` is awaited and `getTranslations` is used from `next-intl/server` to fetch the correctly translated `title` and `description`.
