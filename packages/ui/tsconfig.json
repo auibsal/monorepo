@@ -1,27 +1,17 @@
 {
   "extends": "@auibsal/config/tsconfig.base.json",
   "compilerOptions": {
-    "rootDir": "./src",
-    "outDir": "./dist",
     "ignoreDeprecations": "6.0",
     "baseUrl": ".",
+    "rootDir": "./src",
+    "outDir": "./dist",
     "paths": {
       "@/*": ["./src/*"]
     },
-
-    // Strictly bounds the package to React environments (no Node.js globals)
     "types": ["react", "react-dom", "node"],
-
-    // =========================
-    // Monorepo Type Caching
-    // =========================
     "composite": true,
     "declaration": true,
     "declarationMap": true,
-
-    // =========================
-    // Clean Output
-    // =========================
     "noEmit": false,
     "emitDeclarationOnly": true,
     "sourceMap": false
