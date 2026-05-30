@@ -7,8 +7,11 @@
     "./types": "./src/types.ts",
     "./constants": "./src/constants.ts",
     "./aliases": "./src/aliases.ts",
-    "./queries/submissions": "./src/queries/submissions.ts",
-    "./mutations/submissions": "./src/mutations/submissions.ts"
+    "./schemas/*": "./src/schemas/*.ts",
+    "./dtos/*": "./src/dtos/*.ts",
+    "./queries/*": "./src/queries/*.ts",
+    "./mutations/*": "./src/mutations/*.ts",
+    "./rpc/*": "./src/rpc/*.ts"
   },
   "scripts": {
     "lint": "biome check . --no-errors-on-unmatched",
@@ -17,7 +20,8 @@
     "generate": "pnpm dlx supabase@latest gen types typescript --project-id dgjxwsttotfqcvtgujry > src/types.ts"
   },
   "dependencies": {
-    "@supabase/supabase-js": "catalog:"
+    "@supabase/supabase-js": "catalog:",
+    "zod": "catalog:"
   },
   "devDependencies": {
     "@auibsal/config": "workspace:*",
