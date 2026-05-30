@@ -1,59 +1,18 @@
-export type WaylEnvironment = 'live' | 'test';
+// packages/payments/src/types.ts
 
-export type WaylLinkStatus =
-  | 'Created'
-  | 'Pending'
-  | 'Processing'
-  | 'Complete'
-  | 'Delivered'
-  | 'Cancelled'
-  | 'Rejected'
-  | 'Returned';
+export type PaymentProvider = 'wayl' | 'zaincash' | 'stripe' | 'superqi';
 
-export type WaylRefundStatus = 'Requested' | 'Refunded' | 'Rejected' | 'Cancelled';
-
-export interface WaylLineItem {
-  label: string;
-  amount: number;
-  type: 'increase' | 'decrease';
-}
-
-// Creation Request Object
-export interface WaylLinkCreationPayload {
+export interface UniversalCheckoutRequest {
   amountIQD: number;
-  referenceId: string;
+  referenceId: string;       
   successUrl: string;
   customerName?: string;
-  lineItems?: WaylLineItem[];
-  webhookUrl?: string;
-  webhookSecret?: string;
 }
 
-// Complete Wayl Link Record Schema
-export interface WaylLinkRecord {
-  id: string;
-  code: string;
-  referenceId: string;
-  total: string; // Wayl serializes this to text in the JSON body
-  currency: 'IQD';
-  type: string;
-  status: WaylLinkStatus;
-  paymentMethod: string | null;
-  url: string;
-  webhookUrl?: string;
-  redirectionUrl?: string;
-  completedAt: string | null;
-  createdAt: string;
-  updatedAt: string;
-}
-
-// Complete Wayl Refund Schema
-export interface WaylRefundRecord {
-  id: string;
-  linkId: string;
-  referenceId: string;
-  amount: number;
-  reason: string;
-  initiatedBy: 'Merchant' | string;
-  status: WaylRefundStatus;
+export interface UniversalCheckoutResponse {
+  success: boolean;
+  provider: PaymentProvider;
+  checkoutUrl?: string;
+  transactionId?: string;
+  error?: string;
 }
