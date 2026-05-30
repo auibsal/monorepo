@@ -47,7 +47,8 @@ export async function GET(request: Request, { params }: { params: Promise<{ toke
       const dtStart = formatIcsDate(event.starts_at);
       const dtEnd = event.ends_at ? formatIcsDate(event.ends_at) : dtStart;
 
-      const cleanText = (text: string) => text.replace(/\n/g, '\\n').replace(/,/g, '\\,');
+      const cleanText = (text: string) =>
+        text.replace(/\r/g, '').replace(/\n/g, '\\n').replace(/,/g, '\\,').replace(/;/g, '\\;');
 
       icsString += `BEGIN:VEVENT${CRLF}`;
       icsString += `UID:${event.id}@auibsal.org${CRLF}`;

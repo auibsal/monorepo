@@ -83,7 +83,7 @@ export default function LogsPage() {
         {/* Terminal Header Bar */}
         <div className="mb-4 flex items-center gap-3 border-b-2 border-border/20 pb-4 text-xs font-bold tracking-widest text-foreground/50 uppercase">
           <ShieldCheck size={16} />
-          <span>NEXUS_OS // AUDIT_DAEMON // TAIL -N 50</span>
+          <span>NEXUS_OS {/* AUDIT_DAEMON // TAIL -N 50 */}</span>
         </div>
 
         {/* Dynamic State Rendering */}
