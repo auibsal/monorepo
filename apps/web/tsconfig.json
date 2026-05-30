@@ -3,21 +3,21 @@
   "compilerOptions": {
     "ignoreDeprecations": "6.0",
     "baseUrl": ".",
-    // Explicitly define the DOM environment and JSX transform
-    // to prevent the Next.js compiler from automatically rewriting this file.
-    "lib": ["dom", "dom.iterable", "esnext"],
-    "jsx": "preserve",
     "plugins": [
       {
         "name": "next"
       }
     ],
     "paths": {
-      // Strictly reserved for local app resolution.
-      // All @auibsal/* packages are resolved natively via pnpm workspace symlinks.
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts"
+  ],
   "exclude": ["node_modules", ".turbo"]
 }
