@@ -1,6 +1,6 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
-import type { Database, TablesInsert, TablesUpdate } from '../types';
-import type { Submission } from '../aliases';
+// 🛠️ CORRECTED: Importing Tables natively, removed the dead aliases import
+import type { Database, Tables, TablesInsert, TablesUpdate } from '../types';
 
 /**
  * Inserts a new manuscript submission into the database.
@@ -8,7 +8,7 @@ import type { Submission } from '../aliases';
 export async function createSubmission(
   client: SupabaseClient<Database>,
   payload: TablesInsert<'submissions'>
-): Promise<{ data: Submission | null; error: any }> {
+): Promise<{ data: Tables<'submissions'> | null; error: any }> {
   return await client
     .from('submissions')
     .insert(payload)
@@ -23,7 +23,7 @@ export async function updateSubmissionStatus(
   client: SupabaseClient<Database>,
   id: string,
   status: Database['public']['Enums']['submission_status']
-): Promise<{ data: Submission | null; error: any }> {
+): Promise<{ data: Tables<'submissions'> | null; error: any }> {
   return await client
     .from('submissions')
     .update({ status })
