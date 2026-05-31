@@ -1,5 +1,6 @@
 import { z } from 'zod';
-import { SUBMISSION_STATUSES, SUBMISSION_TYPES } from '../constants';
+// 🛠️ CORRECTED: Importing from the specific domain constants
+import { SUBMISSION_STATUSES, SUBMISSION_TYPES } from '../constants/submissions';
 
 /**
  * Validates the payload when an author submits a new manuscript.
