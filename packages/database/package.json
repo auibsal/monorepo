@@ -6,7 +6,6 @@
   "exports": {
     "./types": "./src/types.ts",
     "./constants": "./src/constants.ts",
-    "./aliases": "./src/aliases.ts",
     "./schemas/*": "./src/schemas/*.ts",
     "./dtos/*": "./src/dtos/*.ts",
     "./queries/*": "./src/queries/*.ts",
