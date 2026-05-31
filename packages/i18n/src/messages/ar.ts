@@ -1,3 +1,5 @@
+import type { Dictionary } from './en';
+
 export const ar: Dictionary = {
   Navigation: {
     societyName: 'جمعية الفنون والآداب',
