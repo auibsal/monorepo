@@ -1,0 +1,16 @@
+{
+  "name": "@auibsal/testing",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./vitest": "./src/vitest.config.ts"
+  },
+  "scripts": {
+    "lint": "biome check . --no-errors-on-unmatched"
+  },
+  "devDependencies": {
+    "vitest": "catalog:",
+    "typescript": "catalog:"
+  }
+}
