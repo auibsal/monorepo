@@ -4,10 +4,14 @@
   "private": true,
   "type": "module",
   "exports": {
-    "./vitest": "./src/vitest.config.ts"
+    "./vitest": "./src/vitest.config.ts",
+    "./playwright": "./src/playwright.config.ts"
   },
   "scripts": {
     "lint": "biome check . --no-errors-on-unmatched"
+  },
+  "dependencies": {
+    "@playwright/test": "^1.42.0"
   },
   "devDependencies": {
     "vitest": "catalog:",
