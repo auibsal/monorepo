@@ -1,6 +1,6 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
-import type { Database } from '../types';
-import type { Submission } from '../aliases';
+// We simply import Tables natively from the generated schema
+import type { Database, Tables } from '../types'; 
 import { toEditorialTableDTO, type EditorialTableDTO } from '../dtos/submissions';
 
 /**
@@ -9,7 +9,7 @@ import { toEditorialTableDTO, type EditorialTableDTO } from '../dtos/submissions
 export async function getSubmissionById(
   client: SupabaseClient<Database>,
   id: string
-): Promise<{ data: Submission | null; error: any }> {
+): Promise<{ data: Tables<'submissions'> | null; error: any }> {
   return await client.from('submissions').select('*').eq('id', id).single();
 }
 
@@ -21,7 +21,6 @@ export async function getEditorialDashboardSubmissions(
 ): Promise<{ data: EditorialTableDTO[] | null; error: any }> {
   const { data, error } = await client
     .from('submissions')
-    // The query string tells Supabase to execute an inner join on the users table
     .select(`
       *,
       users (
@@ -36,7 +35,6 @@ export async function getEditorialDashboardSubmissions(
     return { data: null, error };
   }
 
-  // Pass the raw joined data through the DTO translator
   const formattedData = data.map(toEditorialTableDTO);
 
   return { data: formattedData, error: null };
