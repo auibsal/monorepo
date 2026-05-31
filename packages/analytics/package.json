@@ -1,0 +1,28 @@
+{
+  "name": "@auibsal/analytics",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./components": "./src/components.tsx",
+    "./logger": "./src/logger.ts"
+  },
+  "scripts": {
+    "lint": "biome check . --no-errors-on-unmatched",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist .turbo node_modules"
+  },
+  "dependencies": {
+    "@vercel/analytics": "^1.2.2",
+    "@vercel/speed-insights": "^1.0.10"
+  },
+  "devDependencies": {
+    "@auibsal/config": "workspace:*",
+    "@types/react": "catalog:",
+    "react": "catalog:",
+    "typescript": "catalog:"
+  },
+  "peerDependencies": {
+    "react": ">=18"
+  }
+}
