@@ -1,0 +1,19 @@
+{
+  "name": "@auibsal/i18n",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./dictionary": "./src/dictionary.ts",
+    "./types": "./src/types.ts"
+  },
+  "scripts": {
+    "lint": "biome check . --no-errors-on-unmatched",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist .turbo node_modules"
+  },
+  "devDependencies": {
+    "@auibsal/config": "workspace:*",
+    "typescript": "catalog:"
+  }
+}
