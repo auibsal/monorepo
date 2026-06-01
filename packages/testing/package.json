@@ -6,8 +6,9 @@
   "exports": {
     "./vitest": "./src/vitest.config.ts",
     "./playwright": "./src/playwright.config.ts",
-    "./msw": "./src/msw/index.ts",
-    "./seed": "./src/seed/index.ts"
+    "./msw/server": "./src/msw/server.ts",
+    "./msw/handlers": "./src/msw/handlers.ts",
+    "./seeder": "./src/seed/database.ts"
   },
   "scripts": {
     "lint": "biome check . --no-errors-on-unmatched"
