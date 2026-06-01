@@ -5,13 +5,17 @@
   "type": "module",
   "exports": {
     "./vitest": "./src/vitest.config.ts",
-    "./playwright": "./src/playwright.config.ts"
+    "./playwright": "./src/playwright.config.ts",
+    "./msw": "./src/msw/index.ts",
+    "./seed": "./src/seed/index.ts"
   },
   "scripts": {
     "lint": "biome check . --no-errors-on-unmatched"
   },
   "dependencies": {
-    "@playwright/test": "^1.42.0"
+    "@playwright/test": "^1.42.0",
+    "msw": "^2.2.0",
+    "@faker-js/faker": "^8.4.0"
   },
   "devDependencies": {
     "vitest": "catalog:",
