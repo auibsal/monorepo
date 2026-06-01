@@ -2,7 +2,7 @@
 
 // 1. Synchronized with the named export standard of the UI package
 import { InteractiveErrorState } from '@auibsal/ui/components/InteractiveErrorState';
-import { ubuntu, ubuntuArabic } from '@/fonts';
+import { ubuntu, ubuntuArabic } from '@/fonts/fonts';
 
 import './globals.css'; // Path adjusted for the root app directory
 

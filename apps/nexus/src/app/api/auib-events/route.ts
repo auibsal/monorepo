@@ -3,8 +3,18 @@ import { NextResponse } from 'next/server';
 import ical from 'node-ical';
 
 // CRITICAL: Force dynamic execution to bypass static build crashes
+/**
+ * dynamic
+ *
+ * @description Standardized execution for dynamic.
+ */
 export const dynamic = 'force-dynamic';
 // CRITICAL: Explicitly lock the runtime to Node.js to protect node-ical from the Edge network
+/**
+ * runtime
+ *
+ * @description Standardized execution for runtime.
+ */
 export const runtime = 'nodejs';
 
 // Define the exact shape we expect to extract from the node-ical parsing engine

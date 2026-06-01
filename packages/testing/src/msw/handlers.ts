@@ -4,6 +4,11 @@ import { faker } from '@faker-js/faker';
 // A mathematically fixed seed ensures the fake data is identical every time a test runs.
 faker.seed(123); 
 
+/**
+ * handlers
+ *
+ * @description Standardized execution for handlers.
+ */
 export const handlers = [
   http.get('*/api/manuscripts', () => {
     return HttpResponse.json({

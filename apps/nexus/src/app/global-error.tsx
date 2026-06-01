@@ -2,7 +2,7 @@
 
 import { InteractiveErrorState } from '@auibsal/ui/components/InteractiveErrorState';
 import { useEffect } from 'react';
-import { ubuntu, ubuntuArabic } from '@/fonts';
+import { ubuntu, ubuntuArabic } from '@/fonts/fonts';
 
 import './globals.css';
 

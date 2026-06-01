@@ -1,5 +1,10 @@
 import type { Dictionary } from './en';
 
+/**
+ * ar
+ *
+ * @description Standardized execution for ar.
+ */
 export const ar: Dictionary = {
   Navigation: {
     societyName: 'جمعية الفنون والآداب',

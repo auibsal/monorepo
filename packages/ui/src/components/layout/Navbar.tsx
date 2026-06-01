@@ -8,11 +8,21 @@ import { useEffect, useState } from 'react';
 // 1. Synchronized with the named export from the previous step
 import { Logo } from '../Logo';
 
+/**
+ * NavbarLink
+ *
+ * @description Standardized execution for NavbarLink.
+ */
 export interface NavbarLink {
   href: string;
   label: string;
 }
 
+/**
+ * NavbarProps
+ *
+ * @description Standardized execution for NavbarProps.
+ */
 export interface NavbarProps {
   locale: 'en' | 'ar';
   links: NavbarLink[];
@@ -28,6 +38,11 @@ export interface NavbarProps {
   nexusUrl?: string;
 }
 
+/**
+ * Navbar
+ *
+ * @description Standardized execution for Navbar.
+ */
 export function Navbar({
   locale,
   links,

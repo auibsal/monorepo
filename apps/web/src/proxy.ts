@@ -72,6 +72,11 @@ export default async function proxy(request: NextRequest) {
   return intlResponse;
 }
 
+/**
+ * config
+ *
+ * @description Standardized execution for config.
+ */
 export const config = {
   matcher: [
     // Ignore static assets, image optimization, and favicon

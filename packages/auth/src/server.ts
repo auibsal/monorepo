@@ -1,6 +1,6 @@
 import 'server-only';
 
-import type { Database } from '@auibsal/database';
+import type { Database } from '@auibsal/database/types';
 
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';

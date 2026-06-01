@@ -1,6 +1,11 @@
 import { createNavigation } from 'next-intl/navigation';
 import { defineRouting } from 'next-intl/routing';
 
+/**
+ * routing
+ *
+ * @description Standardized execution for routing.
+ */
 export const routing = defineRouting({
   locales: ['en', 'ar'],
   defaultLocale: 'en',

@@ -1,7 +1,7 @@
 'use client';
 
 import { createClient } from '@auibsal/auth/client';
-import type { Event } from '@auibsal/database';
+import type { Event } from '@auibsal/database/types';
 import { AlertCircle, AlertTriangle, CalendarDays, X } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 

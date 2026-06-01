@@ -1,3 +1,8 @@
+/**
+ * en
+ *
+ * @description Standardized execution for en.
+ */
 export const en = {
   Navigation: {
     societyName: 'Society of Arts and Letters',
@@ -126,4 +131,9 @@ export const en = {
 } as const;
 
 // Forces all other locales to strictly match this object shape
+/**
+ * Dictionary
+ *
+ * @description Standardized execution for Dictionary.
+ */
 export type Dictionary = typeof en;

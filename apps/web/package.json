@@ -1,6 +1,6 @@
 {
   "name": "@auibsal/web",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -27,7 +27,10 @@
     "react": "catalog:",
     "react-dom": "catalog:",
     "three": "^0.184.0",
-    "zustand": "^5.0.14"
+    "zustand": "^5.0.14",
+    "@auibsal/seo": "workspace:*",
+    "@auibsal/testing": "workspace:*",
+    "@auibsal/i18n": "workspace:*"
   },
   "devDependencies": {
     "@auibsal/config": "workspace:*",

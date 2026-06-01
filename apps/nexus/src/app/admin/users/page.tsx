@@ -1,7 +1,7 @@
 'use client';
 
 import { createClient } from '@auibsal/auth/client';
-import type { Role, User } from '@auibsal/database';
+import type { Role, User } from '@auibsal/database/types';
 import { Save, Users } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
@@ -56,7 +56,7 @@ export default function UsersPage() {
     const { error } = await supabase
       .from('users')
       .update({
-        role: newRole as import('@auibsal/database').Database['public']['Enums']['user_role'],
+        role: newRole as import('@auibsal/database/types').Database['public']['Enums']['user_role'],
       })
       .eq('id', userId);
 

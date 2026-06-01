@@ -7,29 +7,20 @@ import { getMessages } from 'next-intl/server';
 import WebFooter from '@/components/layout/WebFooter';
 import WebNavbarServer from '@/components/layout/WebNavbarServer';
 // CRITICAL: Importing from local app, NOT the shared UI package
-import { ubuntu, ubuntuArabic } from '@/fonts';
+import { ubuntu, ubuntuArabic } from '@/fonts/fonts';
 import { routing } from '@/i18n/routing';
 
 import '../globals.css';
 
-export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_WEB_URL || 'https://www.auibsal.org'),
-  title: {
-    default: 'AUIB Society of Arts and Letters',
-    template: '%s | AUIB SAL',
-  },
-  description:
-    'Official portal for the Society of Arts and Letters at the American University of Iraq Baghdad.',
-  openGraph: {
-    type: 'website',
-    locale: 'en_US',
-    alternateLocale: 'ar_IQ',
-    siteName: 'AUIB Society of Arts and Letters',
-  },
-  twitter: {
-    card: 'summary_large_image',
-  },
-};
+import { constructMetadata } from '@auibsal/seo/metadata';
+
+/**
+ * metadata
+ *
+ * @description Standardized execution for metadata.
+ */
+export const metadata: Metadata = constructMetadata({ title: "AUIB Society of Arts and Letters", description: "Official portal for the Society of Arts and Letters at the American University of Iraq Baghdad." });
+
 
 export default async function LocaleLayout({
   children,

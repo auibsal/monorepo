@@ -1,7 +1,7 @@
 'use client';
 
 import { createClient } from '@auibsal/auth/client';
-import type { Submission } from '@auibsal/database';
+import type { Submission } from '@auibsal/database/types';
 import DOMPurify from 'isomorphic-dompurify';
 import {
   AlertOctagon,

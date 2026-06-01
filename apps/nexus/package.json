@@ -1,6 +1,6 @@
 {
   "name": "@auibsal/nexus",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -21,7 +21,11 @@
     "next": "catalog:",
     "node-ical": "^0.26.1",
     "react": "catalog:",
-    "react-dom": "catalog:"
+    "react-dom": "catalog:",
+    "@auibsal/payments": "workspace:*",
+    "@auibsal/seo": "workspace:*",
+    "@auibsal/testing": "workspace:*",
+    "@auibsal/i18n": "workspace:*"
   },
   "devDependencies": {
     "@auibsal/config": "workspace:*",

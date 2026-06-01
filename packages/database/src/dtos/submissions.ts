@@ -1,4 +1,9 @@
 // The shape of the data the frontend UI actually wants
+/**
+ * EditorialTableDTO
+ *
+ * @description Standardized execution for EditorialTableDTO.
+ */
 export interface EditorialTableDTO {
   id: string;
   title: string;
@@ -15,6 +20,11 @@ export interface EditorialTableDTO {
  * but outputs a mathematically strict frontend object.
  */
 // biome-ignore lint/suspicious/noExplicitAny: Required for mapping complex Supabase joins
+/**
+ * toEditorialTableDTO
+ *
+ * @description Standardized execution for toEditorialTableDTO.
+ */
 export function toEditorialTableDTO(raw: any): EditorialTableDTO {
   return {
     id: raw.id,

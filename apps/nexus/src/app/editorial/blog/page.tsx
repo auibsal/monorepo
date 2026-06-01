@@ -1,7 +1,7 @@
 'use client';
 
 import { createClient } from '@auibsal/auth/client';
-import type { BlogPost } from '@auibsal/database';
+import type { BlogPost } from '@auibsal/database/types';
 import { RichTextEditor } from '@auibsal/ui/components/RichTextEditor';
 import { AlertTriangle, Plus, X } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
