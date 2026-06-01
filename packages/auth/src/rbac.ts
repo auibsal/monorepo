@@ -2,6 +2,11 @@
 import 'server-only';
 import { createClient } from './server';
 
+/**
+ * UserRole
+ *
+ * @description Standardized execution for UserRole.
+ */
 export type UserRole = 'admin' | 'editor' | 'member';
 
 /**

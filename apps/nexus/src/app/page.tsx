@@ -3,6 +3,11 @@ import { createClient } from '@auibsal/auth/server';
 import { Activity, Calendar, FileText, Users } from 'lucide-react';
 import { headers } from 'next/headers';
 
+/**
+ * dynamic
+ *
+ * @description Standardized execution for dynamic.
+ */
 export const dynamic = 'force-dynamic';
 
 type DashboardSubmission = {

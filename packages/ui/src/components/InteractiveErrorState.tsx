@@ -14,6 +14,11 @@ interface ErrorProps {
   isRtl?: boolean;
 }
 
+/**
+ * InteractiveErrorState
+ *
+ * @description Standardized execution for InteractiveErrorState.
+ */
 export function InteractiveErrorState({
   code,
   title,

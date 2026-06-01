@@ -8,6 +8,11 @@ import { Link } from '@/i18n/routing';
 
 // 1. CRITICAL PERFORMANCE UPGRADE: Incremental Static Regeneration (ISR)
 // Caches the page globally for 1 hour to ensure instant page transitions.
+/**
+ * revalidate
+ *
+ * @description Standardized execution for revalidate.
+ */
 export const revalidate = 3600;
 
 type Props = {

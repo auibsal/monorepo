@@ -1,5 +1,10 @@
 import { ImageResponse } from 'next/og';
 
+/**
+ * generateOGImage
+ *
+ * @description Standardized execution for generateOGImage.
+ */
 export function generateOGImage({
   title,
   author,

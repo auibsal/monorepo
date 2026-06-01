@@ -6,6 +6,11 @@ import { Link } from '@/i18n/routing';
 // 1. CRITICAL PERFORMANCE UPGRADE: Incremental Static Regeneration (ISR)
 // Caches the page globally for 1 hour. This eliminates redundant Supabase reads
 // and delivers lightning-fast load times while still staying relatively live.
+/**
+ * revalidate
+ *
+ * @description Standardized execution for revalidate.
+ */
 export const revalidate = 3600;
 
 // 2. Strictly typing the locale promise

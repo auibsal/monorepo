@@ -34,7 +34,8 @@
       "esbuild",
       "msw",
       "sharp",
-      "unrs-resolver"
+      "unrs-resolver",
+      "core-js-pure"
     ]
   },
   "dependencies": {

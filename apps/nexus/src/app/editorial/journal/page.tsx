@@ -1,7 +1,7 @@
 'use client';
 
 import { createClient } from '@auibsal/auth/client';
-import type { JournalIssue } from '@auibsal/database';
+import type { JournalIssue } from '@auibsal/database/types';
 import { AlertTriangle, ArrowRight, BookOpen, CheckSquare, FileUp } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 

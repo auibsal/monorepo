@@ -2,6 +2,11 @@
 // 1. CONFIGURATION & LIFECYCLE ENUMS
 // ==========================================
 
+/**
+ * WaylEnvironment
+ *
+ * @description Standardized execution for WaylEnvironment.
+ */
 export type WaylEnvironment = 'live' | 'test';
 
 /**
@@ -26,6 +31,11 @@ export type WaylRefundStatus = 'Requested' | 'Refunded' | 'Rejected' | 'Cancelle
 // 2. LINE ITEM & COMPONENT SCHEMAS
 // ==========================================
 
+/**
+ * WaylLineItem
+ *
+ * @description Standardized execution for WaylLineItem.
+ */
 export interface WaylLineItem {
   label: string;
   /** Amount in Iraqi Dinar (IQD) */
@@ -38,6 +48,11 @@ export interface WaylLineItem {
 // 3. PAYMENT LINK SCHEMAS (CREATION & RESPONSES)
 // ==========================================
 
+/**
+ * WaylLinkCreationPayload
+ *
+ * @description Standardized execution for WaylLinkCreationPayload.
+ */
 export interface WaylLinkCreationPayload {
   env: WaylEnvironment;
   /** Max 255 characters. Must be globally unique across all your store links. */
@@ -58,6 +73,11 @@ export interface WaylLinkCreationPayload {
   redirectionUrl?: string;
 }
 
+/**
+ * WaylLinkRecord
+ *
+ * @description Standardized execution for WaylLinkRecord.
+ */
 export interface WaylLinkRecord {
   id: string;
   code: string;
@@ -86,6 +106,11 @@ export interface WaylLinkRecord {
 // 4. REFUNDS SCHEMAS
 // ==========================================
 
+/**
+ * WaylRefundRecord
+ *
+ * @description Standardized execution for WaylRefundRecord.
+ */
 export interface WaylRefundRecord {
   id: string;
   linkId: string;
@@ -102,6 +127,11 @@ export interface WaylRefundRecord {
 // 5. WEBHOOK EVENT SCHEMAS
 // ==========================================
 
+/**
+ * WaylWebhookCustomer
+ *
+ * @description Standardized execution for WaylWebhookCustomer.
+ */
 export interface WaylWebhookCustomer {
   id: string;
   name: string;
@@ -111,6 +141,11 @@ export interface WaylWebhookCustomer {
   address: string;
 }
 
+/**
+ * WaylWebhookEvent
+ *
+ * @description Standardized execution for WaylWebhookEvent.
+ */
 export interface WaylWebhookEvent {
   id: string;
   verb: 'POST' | string;

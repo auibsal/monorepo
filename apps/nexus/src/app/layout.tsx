@@ -1,20 +1,27 @@
 import type { Metadata } from 'next';
 import { headers } from 'next/headers';
 
-import { ubuntu, ubuntuArabic } from '@/fonts';
+import { ubuntu, ubuntuArabic } from '@/fonts/fonts';
 
 import ClientLayout from './ClientLayout';
 import './globals.css';
 
-export const metadata: Metadata = {
+import { constructMetadata } from '@auibsal/seo/metadata';
+
+/**
+ * metadata
+ *
+ * @description Standardized execution for metadata.
+ */
+export const metadata: Metadata = constructMetadata({ title: "SAL Nexus", description: "Internal Nexus for the Society of Arts and Letters", noIndex: true });
+/*
   title: 'SAL Nexus',
   description: 'Internal Nexus for the Society of Arts and Letters',
   robots: {
     index: false,
     follow: false,
     nocache: true,
-  },
-};
+*/
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const headersList = await headers();

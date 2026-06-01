@@ -6,6 +6,11 @@ interface LogoProps {
   className?: string;
 }
 
+/**
+ * Logo
+ *
+ * @description Standardized execution for Logo.
+ */
 export function Logo({ locale, className }: LogoProps) {
   // Contiguous text for seamless screen reader parsing
   const srText =

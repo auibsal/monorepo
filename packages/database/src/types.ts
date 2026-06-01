@@ -1,5 +1,15 @@
+/**
+ * Json
+ *
+ * @description Standardized execution for Json.
+ */
 export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
 
+/**
+ * Database
+ *
+ * @description Standardized execution for Database.
+ */
 export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
@@ -343,6 +353,11 @@ type DatabaseWithoutInternals = Omit<Database, '__InternalSupabase'>;
 
 type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, 'public'>];
 
+/**
+ * Tables
+ *
+ * @description Standardized execution for Tables.
+ */
 export type Tables<
   DefaultSchemaTableNameOrOptions extends
     | keyof (DefaultSchema['Tables'] & DefaultSchema['Views'])
@@ -370,6 +385,11 @@ export type Tables<
       : never
     : never;
 
+/**
+ * TablesInsert
+ *
+ * @description Standardized execution for TablesInsert.
+ */
 export type TablesInsert<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema['Tables']
@@ -395,6 +415,11 @@ export type TablesInsert<
       : never
     : never;
 
+/**
+ * TablesUpdate
+ *
+ * @description Standardized execution for TablesUpdate.
+ */
 export type TablesUpdate<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema['Tables']
@@ -420,6 +445,11 @@ export type TablesUpdate<
       : never
     : never;
 
+/**
+ * Enums
+ *
+ * @description Standardized execution for Enums.
+ */
 export type Enums<
   DefaultSchemaEnumNameOrOptions extends
     | keyof DefaultSchema['Enums']
@@ -437,6 +467,11 @@ export type Enums<
     ? DefaultSchema['Enums'][DefaultSchemaEnumNameOrOptions]
     : never;
 
+/**
+ * CompositeTypes
+ *
+ * @description Standardized execution for CompositeTypes.
+ */
 export type CompositeTypes<
   PublicCompositeTypeNameOrOptions extends
     | keyof DefaultSchema['CompositeTypes']
@@ -454,6 +489,11 @@ export type CompositeTypes<
     ? DefaultSchema['CompositeTypes'][PublicCompositeTypeNameOrOptions]
     : never;
 
+/**
+ * Constants
+ *
+ * @description Standardized execution for Constants.
+ */
 export const Constants = {
   public: {
     Enums: {

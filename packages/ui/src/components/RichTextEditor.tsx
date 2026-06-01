@@ -49,6 +49,11 @@ const ToolbarButton = ({
   </button>
 );
 
+/**
+ * RichTextEditor
+ *
+ * @description Standardized execution for RichTextEditor.
+ */
 export function RichTextEditor({
   content,
   onChange,

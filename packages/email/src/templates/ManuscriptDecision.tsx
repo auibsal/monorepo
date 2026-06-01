@@ -18,6 +18,11 @@ interface ManuscriptDecisionProps {
   status: 'accepted' | 'rejected' | 'revisions_requested';
 }
 
+/**
+ * ManuscriptDecisionTemplate
+ *
+ * @description Standardized execution for ManuscriptDecisionTemplate.
+ */
 export const ManuscriptDecisionTemplate: React.FC<ManuscriptDecisionProps> = ({
   authorName,
   manuscriptTitle,

@@ -1,7 +1,7 @@
 'use client';
 
 import { createClient } from '@auibsal/auth/client';
-import type { Submission, SubmissionStatus } from '@auibsal/database';
+import type { Submission, SubmissionStatus } from '@auibsal/database/types';
 
 import { DragDropContext, Draggable, Droppable, type DropResult } from '@hello-pangea/dnd';
 import { AlertOctagon, GripVertical, ShieldCheck, User } from 'lucide-react';

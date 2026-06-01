@@ -1,7 +1,7 @@
 'use client';
 
 import { createClient } from '@auibsal/auth/client';
-import type { Tables } from '@auibsal/database';
+import type { Tables } from '@auibsal/database/types';
 import { AlertTriangle, RefreshCw, ShieldCheck, Terminal } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 

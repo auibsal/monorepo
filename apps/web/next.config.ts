@@ -22,7 +22,7 @@ const generateCsp = () => {
 };
 
 const nextConfig: NextConfig = {
-  transpilePackages: ['@auibsal/auth', '@auibsal/database', '@auibsal/ui'],
+  transpilePackages: ['@auibsal/auth', '@auibsal/database', '@auibsal/ui', '@auibsal/seo', '@auibsal/testing', '@auibsal/i18n'],
 
   // =========================================================================
   // Monorepo CI Optimization

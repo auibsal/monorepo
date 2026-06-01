@@ -1,6 +1,11 @@
 import Link from 'next/link';
 import { Logo } from '../Logo';
 
+/**
+ * FooterProps
+ *
+ * @description Standardized execution for FooterProps.
+ */
 export interface FooterProps {
   locale: 'en' | 'ar';
   dictionary: {
@@ -17,6 +22,11 @@ export interface FooterProps {
   };
 }
 
+/**
+ * Footer
+ *
+ * @description Standardized execution for Footer.
+ */
 export function Footer({ locale, dictionary }: FooterProps) {
   const year = new Date().getFullYear();
 

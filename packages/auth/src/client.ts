@@ -1,8 +1,13 @@
 import 'client-only';
 
-import type { Database } from '@auibsal/database';
+import type { Database } from '@auibsal/database/types';
 import { createBrowserClient } from '@supabase/ssr';
 
+/**
+ * createClient
+ *
+ * @description Standardized execution for createClient.
+ */
 export function createClient() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;

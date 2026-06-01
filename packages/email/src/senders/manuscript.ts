@@ -1,6 +1,11 @@
 import { resend, SENDER_IDENTITY } from '../client';
 import { ManuscriptDecisionTemplate } from '../templates/ManuscriptDecision';
 
+/**
+ * SendManuscriptDecisionParams
+ *
+ * @description Standardized execution for SendManuscriptDecisionParams.
+ */
 export interface SendManuscriptDecisionParams {
   to: string;
   authorName: string;

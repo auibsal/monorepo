@@ -1,8 +1,13 @@
 import 'server-only';
 
-import type { Database } from '@auibsal/database';
+import type { Database } from '@auibsal/database/types';
 import { createClient as createSupabaseClient } from '@supabase/supabase-js';
 
+/**
+ * createAdminClient
+ *
+ * @description Standardized execution for createAdminClient.
+ */
 export function createAdminClient() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   // Note: We use the private server-side key, NOT the public anon key

@@ -1,7 +1,7 @@
 'use client';
 
 import { createClient } from '@auibsal/auth/client';
-import type { SubmissionType } from '@auibsal/database';
+import type { SubmissionType } from '@auibsal/database/types';
 import { RichTextEditor } from '@auibsal/ui/components/RichTextEditor';
 import {
   ArrowLeft,

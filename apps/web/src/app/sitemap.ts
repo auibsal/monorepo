@@ -6,6 +6,11 @@ import type { MetadataRoute } from 'next';
 // =========================================================================
 // Prevents Next.js from crashing at build-time due to cookie access,
 // while ensuring the sitemap is cached and regenerated every hour.
+/**
+ * revalidate
+ *
+ * @description Standardized execution for revalidate.
+ */
 export const revalidate = 3600;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
