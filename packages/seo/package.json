@@ -5,7 +5,8 @@
   "type": "module",
   "exports": {
     "./metadata": "./src/metadata.ts",
-    "./json-ld": "./src/json-ld.ts"
+    "./json-ld": "./src/json-ld.ts",
+    "./og": "./src/og-image.tsx"
   },
   "scripts": {
     "lint": "biome check . --no-errors-on-unmatched",
