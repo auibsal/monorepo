@@ -5,6 +5,7 @@
   "type": "module",
   "exports": {
     "./editor": "./src/editor.tsx",
+    "./single-player": "./src/single-player.tsx",
     "./toolbar": "./src/toolbar.tsx",
     "./threads": "./src/threads.tsx"
   },
