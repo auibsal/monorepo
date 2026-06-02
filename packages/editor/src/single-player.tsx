@@ -20,7 +20,6 @@ import TableHeader from '@tiptap/extension-table-header';
 
 // We reuse the exact same brutalist toolbar
 import { EditorToolbar } from './toolbar';
-import 'katex/dist/katex.min.css';
 
 export interface SinglePlayerEditorProps {
   content: string;
