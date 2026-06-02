@@ -6,7 +6,8 @@ const webhookHandler = new WebhookHandler(process.env.LIVEBLOCKS_WEBHOOK_SECRET 
 const liveblocks = new Liveblocks({ secret: process.env.LIVEBLOCKS_SECRET_KEY as string });
 
 export async function POST(request: NextRequest) {
-  const body = await request.text();
+  // 1. Extract the raw string
+  const rawBody = await request.text();
   const signature = request.headers.get('webhook-signature');
 
   if (!signature) {
@@ -15,8 +16,9 @@ export async function POST(request: NextRequest) {
 
   let event;
   try {
+    // 2. CRITICAL FIX: The SDK strictly requires the key to be named 'rawBody'
     event = webhookHandler.verifyRequest({
-      body,
+      rawBody: rawBody, 
       headers: { 'webhook-signature': signature },
     });
   } catch (err) {
@@ -28,13 +30,9 @@ export async function POST(request: NextRequest) {
     const roomId = event.data.roomId; 
     
     try {
-      // 1. Fetch document from Liveblocks API
       const documentText = await liveblocks.getYjsDocumentAsText(roomId);
-      
-      // 2. Use admin client (bypasses cookies, RLS-safe for server-to-server)
       const supabase = createAdminClient();
       
-      // 3. Sync to your database
       const { error } = await supabase
         .from('submissions')
         .update({ 
