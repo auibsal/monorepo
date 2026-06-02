@@ -220,10 +220,21 @@ export default function GradingPage() {
           {submission.content && (
             <div className="w-full max-w-4xl">
               <LiveblocksProvider 
-                authEndpoint="/api/auth/liveblocks"
-                getAuthEndpoint={async () => {
+                authEndpoint={async (room) => {
+                  // Fetch the Supabase session dynamically
                   const { data } = await supabase.auth.getSession();
-                  return { headers: { Authorization: `Bearer ${data.session?.access_token}` } };
+                  
+                  // Manually POST to the backend route with the injected token
+                  const response = await fetch('/api/auth/liveblocks', {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json',
+                      Authorization: `Bearer ${data.session?.access_token}`,
+                    },
+                    body: JSON.stringify({ room }),
+                  });
+                  
+                  return await response.json();
                 }}
                 resolveUsers={async ({ userIds }) => {
                   // Connects to your editor roster so cursors show real names
