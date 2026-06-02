@@ -1,12 +1,17 @@
 'use client';
 
 import { createClient } from '@auibsal/auth/client';
-import type { JournalIssue } from '@auibsal/database/types';
+import type { Tables } from '@auibsal/database/types';
 import { AlertTriangle, ArrowRight, BookOpen, CheckSquare, FileUp } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 
 export default function JournalPage() {
-  const [issues, setIssues] = useState<JournalIssue[]>([]);
+  const [issues, setIssues] = useState<
+    Pick<
+      Tables<'journal_issues'>,
+      'id' | 'volume_number' | 'issue_number' | 'published_at' | 'title_en' | 'title_ar' | 'pdf_file_url'
+    >[]
+  >([]);
   const [loading, setLoading] = useState(true);
 
   const [file, setFile] = useState<File | null>(null);
@@ -25,7 +30,7 @@ export default function JournalPage() {
     if (!supabase) return;
     const { data: issuesData, error } = await supabase
       .from('journal_issues')
-      .select('*')
+      .select('id, volume_number, issue_number, published_at, title_en, title_ar, pdf_file_url')
       .order('volume_number', { ascending: false })
       .order('issue_number', { ascending: false });
 
