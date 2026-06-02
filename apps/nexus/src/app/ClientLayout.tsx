@@ -27,7 +27,6 @@ export default function ClientLayout({
 
   let links: NavbarLink[] = [
     { href: '/', label: 'Member Portal' },
-    { href: '/events', label: 'Events' },
     { href: '/submit', label: 'Submit Work' },
     { href: '/settings/profile', label: 'Profile' },
   ];
