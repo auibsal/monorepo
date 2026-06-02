@@ -1,6 +1,6 @@
 import { WebhookHandler } from '@liveblocks/node';
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@auibsal/database/server';
+import { createClient } from '@auibsal/auth/server';
 
 const webhookHandler = new WebhookHandler(process.env.LIVEBLOCKS_WEBHOOK_SECRET as string);
 
