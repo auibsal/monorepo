@@ -6,9 +6,15 @@
     "rootDir": "./src",
     "outDir": "./dist",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": [
+        "./src/*"
+      ]
     },
-    "types": ["react", "react-dom", "node"],
+    "types": [
+      "react",
+      "react-dom",
+      "node"
+    ],
     "composite": true,
     "declaration": true,
     "declarationMap": true,
@@ -16,5 +22,7 @@
     "emitDeclarationOnly": true,
     "sourceMap": false
   },
-  "include": ["src/**/*"]
+  "include": [
+    "src/**/*"
+  ]
 }

@@ -1,14 +1,14 @@
 /**
- * Json
+ * Represents a JSON-compatible type.
  *
- * @description Standardized execution for Json.
+ * @example
+ * const data: Json = { key: "value", arr: [1, 2, 3] };
  */
 export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
 
 /**
- * Database
- *
- * @description Standardized execution for Database.
+ * The generated Supabase Database schema type.
+ * This provides end-to-end type safety for all database interactions.
  */
 export type Database = {
   // Allows to automatically instantiate createClient with right options
@@ -354,9 +354,10 @@ type DatabaseWithoutInternals = Omit<Database, '__InternalSupabase'>;
 type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, 'public'>];
 
 /**
- * Tables
+ * Helper to extract Row types for a specific table.
  *
- * @description Standardized execution for Tables.
+ * @example
+ * type UserRow = Tables<'users'>;
  */
 export type Tables<
   DefaultSchemaTableNameOrOptions extends
@@ -386,9 +387,10 @@ export type Tables<
     : never;
 
 /**
- * TablesInsert
+ * Helper to extract Insert payload types for a specific table.
  *
- * @description Standardized execution for TablesInsert.
+ * @example
+ * type InsertUser = TablesInsert<'users'>;
  */
 export type TablesInsert<
   DefaultSchemaTableNameOrOptions extends
@@ -416,9 +418,10 @@ export type TablesInsert<
     : never;
 
 /**
- * TablesUpdate
+ * Helper to extract Update payload types for a specific table.
  *
- * @description Standardized execution for TablesUpdate.
+ * @example
+ * type UpdateUser = TablesUpdate<'users'>;
  */
 export type TablesUpdate<
   DefaultSchemaTableNameOrOptions extends
@@ -446,9 +449,10 @@ export type TablesUpdate<
     : never;
 
 /**
- * Enums
+ * Helper to extract specific enum union types.
  *
- * @description Standardized execution for Enums.
+ * @example
+ * type Role = Enums<'user_role'>;
  */
 export type Enums<
   DefaultSchemaEnumNameOrOptions extends
@@ -468,9 +472,7 @@ export type Enums<
     : never;
 
 /**
- * CompositeTypes
- *
- * @description Standardized execution for CompositeTypes.
+ * Helper to extract composite types.
  */
 export type CompositeTypes<
   PublicCompositeTypeNameOrOptions extends
@@ -503,3 +505,37 @@ export const Constants = {
     },
   },
 } as const;
+
+
+/**
+ * Alias for the User database row.
+ */
+export type User = Tables<'users'>;
+/**
+ * Alias for the User Role enum.
+ */
+export type Role = Enums<'user_role'>;
+/**
+ * Alias for the BlogPost database row.
+ */
+export type BlogPost = Tables<'blog_posts'>;
+/**
+ * Alias for the Event database row.
+ */
+export type Event = Tables<'events'>;
+/**
+ * Alias for the JournalIssue database row.
+ */
+export type JournalIssue = Tables<'journal_issues'>;
+/**
+ * Alias for the Submission database row.
+ */
+export type Submission = Tables<'submissions'>;
+/**
+ * Alias for the SubmissionStatus enum.
+ */
+export type SubmissionStatus = Enums<'submission_status'>;
+/**
+ * Alias for the SubmissionType enum.
+ */
+export type SubmissionType = Enums<'submission_type'>;

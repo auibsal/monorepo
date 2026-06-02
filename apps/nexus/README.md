@@ -1,14 +1,6 @@
-# @auibsal/nexus
+# AUIB SAL Nexus
 
-## ⚡ Overview
-Core architecture and dependencies.
+The editorial and administrative dashboard.
 
-## 🚀 Usage
-Strictly utilize `workspace:*` and absolute pathing for internal consumption.
-
-## 🔒 Security
-All changes must pass static analysis.
-
-## 🤝 Rules
-- No barrel files (`index.ts`).
-- Strictly adhere to TSDoc standard.
+## Security
+Enforces server-side RBAC (Role-Based Access Control) using `@auibsal/auth` middleware.
