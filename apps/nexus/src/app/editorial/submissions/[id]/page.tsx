@@ -324,6 +324,7 @@ export default function GradingPage() {
               Assigned Editor
             </label>
             <select
+              id="assign"
               value={assignedTo}
               onChange={(e) => setAssignedTo(e.target.value)}
               className="w-full cursor-pointer rounded-none border-4 border-border bg-background p-4 text-sm font-bold text-foreground transition-colors hover:bg-foreground/5 focus:border-primary focus:outline-none"
@@ -342,6 +343,7 @@ export default function GradingPage() {
               Technical Command & Craft
             </label>
             <select
+              id="tech"
               value={tech}
               onChange={(e) => setTech(e.target.value)}
               className="w-full cursor-pointer rounded-none border-4 border-border bg-background p-4 text-sm font-bold text-foreground transition-colors hover:bg-foreground/5 focus:border-primary focus:outline-none"
@@ -354,10 +356,11 @@ export default function GradingPage() {
           </div>
 
           <div className="space-y-3">
-            <label htmlFor="tech" className="block text-sm font-bold tracking-wide uppercase">
+            <label htmlFor="orig" className="block text-sm font-bold tracking-wide uppercase">
               Originality & Voice
             </label>
             <select
+              id="orig"
               value={orig}
               onChange={(e) => setOrig(e.target.value)}
               className="w-full cursor-pointer rounded-none border-4 border-border bg-background p-4 text-sm font-bold text-foreground transition-colors hover:bg-foreground/5 focus:border-primary focus:outline-none"
@@ -370,10 +373,11 @@ export default function GradingPage() {
           </div>
 
           <div className="space-y-3">
-            <label htmlFor="tech" className="block text-sm font-bold tracking-wide uppercase">
+            <label htmlFor="theme" className="block text-sm font-bold tracking-wide uppercase">
               Thematic Depth & Resonance
             </label>
             <select
+              id="theme"
               value={theme}
               onChange={(e) => setTheme(e.target.value)}
               className="w-full cursor-pointer rounded-none border-4 border-border bg-background p-4 text-sm font-bold text-foreground transition-colors hover:bg-foreground/5 focus:border-primary focus:outline-none"
@@ -386,10 +390,10 @@ export default function GradingPage() {
           </div>
 
           <div className="space-y-4 border-t-4 border-border/10 pt-6">
-            <label htmlFor="tech" className="block text-sm font-bold tracking-wide uppercase">
+            <div id="archive-group" className="block text-sm font-bold tracking-wide uppercase">
               "The Archive" Factor
-            </label>
-            <div className="flex gap-8">
+            </div>
+            <div className="flex gap-8" role="radiogroup" aria-labelledby="archive-group">
               <label className="group flex cursor-pointer items-center gap-3">
                 <input
                   type="radio"
@@ -418,10 +422,11 @@ export default function GradingPage() {
           </div>
 
           <div className="space-y-3">
-            <label htmlFor="tech" className="block text-sm font-bold tracking-wide uppercase">
+            <label htmlFor="formatting" className="block text-sm font-bold tracking-wide uppercase">
               Formatting & Professionalism
             </label>
             <select
+              id="formatting"
               value={formatting}
               onChange={(e) => setFormatting(e.target.value)}
               className="w-full cursor-pointer rounded-none border-4 border-border bg-background p-4 text-sm font-bold text-foreground transition-colors hover:bg-foreground/5 focus:border-primary focus:outline-none"
