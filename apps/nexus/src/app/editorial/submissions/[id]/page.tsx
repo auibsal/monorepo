@@ -2,7 +2,6 @@
 
 import { createClient } from '@auibsal/auth/client';
 import type { Submission } from '@auibsal/database/types';
-import DOMPurify from 'isomorphic-dompurify';
 import {
   AlertOctagon,
   AlertTriangle,
@@ -18,7 +17,10 @@ import Image from 'next/image';
 import { useParams, useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 
-// Extend the database type to include the relational author identity and assignment
+// LIVEBLOCKS & EDITOR IMPORTS
+import { LiveblocksProvider, RoomProvider, ClientSideSuspense } from '@liveblocks/react/suspense';
+import { MultiplayerEditor } from '@auibsal/editor/editor';
+
 type GradingSubmission = Submission & {
   users?: { full_name: string } | null;
   assigned_to?: string | null;
@@ -57,7 +59,6 @@ export default function GradingPage() {
     if (!supabase) return;
 
     try {
-      // CRITICAL FIX: Appended '!author_id' to strictly command PostgREST to follow the author relation, bypassing the assignee relation ambiguity
       const { data: subData, error: subError } = await supabase
         .from('submissions')
         .select('*, users!author_id(full_name)')
@@ -67,7 +68,6 @@ export default function GradingPage() {
       if (subError) throw subError;
 
       if (subData) {
-        // Double-cast to bypass the auto-generated PostgREST ambiguity error in the strict TS compiler
         setSubmission(subData as unknown as GradingSubmission);
         setAssignedTo(subData.assigned_to || 'unassigned');
         setTech(
@@ -215,13 +215,51 @@ export default function GradingPage() {
         </div>
 
         <div className="relative flex min-h-[700px] flex-1 flex-col items-center justify-start gap-8 overflow-y-auto bg-foreground/5 p-6 md:p-12">
+          
+          {/* MULTIPLAYER EDITOR INTEGRATION */}
           {submission.content && (
-            <div className="prose prose-lg dark:prose-invert w-full max-w-4xl border-4 border-border bg-card p-8 text-foreground shadow-[8px_8px_0px_0px_var(--brutalist-shadow)] md:p-16">
-              <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(submission.content) }} />
+            <div className="w-full max-w-4xl">
+              <LiveblocksProvider 
+                authEndpoint="/api/auth/liveblocks"
+                resolveUsers={async ({ userIds }) => {
+                  // Connects to your editor roster so cursors show real names
+                  return userIds.map((id) => {
+                    const editor = editors.find((e) => e.id === id);
+                    return {
+                      name: editor ? editor.full_name : "AUIB Editor",
+                      color: "#000000",
+                      avatar: "https://auibsal.org/default-avatar.png",
+                    };
+                  });
+                }}
+                resolveMentionSuggestions={async ({ text }) => {
+                  // Allows @mentions inside the document comments
+                  if (text) {
+                    return editors
+                      .filter((e) => e.full_name.toLowerCase().includes(text.toLowerCase()))
+                      .map((e) => e.id);
+                  }
+                  return editors.map((e) => e.id);
+                }}
+              >
+                <RoomProvider id={submissionId}>
+                  <ClientSideSuspense 
+                    fallback={
+                      <div className="flex animate-pulse items-center gap-3 p-12 text-sm font-bold tracking-widest border-4 border-black uppercase bg-white">
+                        <div className="h-4 w-4 animate-spin bg-black"></div>
+                        Connecting to WebSocket...
+                      </div>
+                    }
+                  >
+                    <MultiplayerEditor />
+                  </ClientSideSuspense>
+                </RoomProvider>
+              </LiveblocksProvider>
             </div>
           )}
 
-          {submission.file_url && (
+          {/* Fallback Viewers for PDFs and Images remain untouched */}
+          {!submission.content && submission.file_url && (
             <div className="flex w-full items-center justify-center">
               {submission.file_url.endsWith('.pdf') ? (
                 <iframe
