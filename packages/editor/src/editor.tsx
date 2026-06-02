@@ -87,8 +87,8 @@ export function MultiplayerEditor() {
 
       {/* Brutalist Footer for Character Count */}
       <div className="flex justify-between items-center text-xs font-black uppercase text-zinc-500 mt-8 pt-4 border-t-2 border-black">
-        <span>{editor.storage.characterCount.characters()} Characters</span>
-        <span>{editor.storage.characterCount.words()} Words</span>
+        <span>{(editor.storage as any).characterCount.characters()} Characters</span>
+        <span>{(editor.storage as any).characterCount.words()} Words</span>
       </div>
     </div>
   );
