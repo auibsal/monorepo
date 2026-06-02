@@ -56,7 +56,7 @@ export function SinglePlayerEditor({ content, onChange }: SinglePlayerEditorProp
         placeholder: 'Compose or paste your raw manuscript text here...',
         emptyEditorClass: 'is-editor-empty before:content-[attr(data-placeholder)] before:text-zinc-400 before:float-left before:pointer-events-none',
       }),
-    ],
+    ] as any[], // <--- CRITICAL FIX: Bypass exactOptionalPropertyTypes collision
     // Load the initial content injected from the parent state
     content: content,
     // Capture every keystroke and push the raw HTML back to the parent form
