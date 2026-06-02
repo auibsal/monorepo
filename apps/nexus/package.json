@@ -14,18 +14,22 @@
   "dependencies": {
     "@auibsal/auth": "workspace:*",
     "@auibsal/database": "workspace:*",
+    "@auibsal/editor": "workspace:*",
+    "@auibsal/i18n": "workspace:*",
+    "@auibsal/payments": "workspace:*",
+    "@auibsal/seo": "workspace:*",
+    "@auibsal/testing": "workspace:*",
     "@auibsal/ui": "workspace:*",
     "@hello-pangea/dnd": "^18.0.1",
+    "@liveblocks/client": "^2.0.0",
+    "@liveblocks/node": "^2.0.0",
+    "@liveblocks/react": "^2.0.0",
     "isomorphic-dompurify": "catalog:",
     "lucide-react": "catalog:",
     "next": "catalog:",
     "node-ical": "^0.26.1",
     "react": "catalog:",
-    "react-dom": "catalog:",
-    "@auibsal/payments": "workspace:*",
-    "@auibsal/seo": "workspace:*",
-    "@auibsal/testing": "workspace:*",
-    "@auibsal/i18n": "workspace:*"
+    "react-dom": "catalog:"
   },
   "devDependencies": {
     "@auibsal/config": "workspace:*",
