@@ -14,12 +14,12 @@
     "lint": "biome check . --no-errors-on-unmatched"
   },
   "dependencies": {
-    "@playwright/test": "^1.42.0",
-    "msw": "^2.2.0",
-    "@faker-js/faker": "^8.4.0"
+    "@playwright/test": "^1.60.0",
+    "msw": "^2.14.6",
+    "@faker-js/faker": "^10.4.0"
   },
   "devDependencies": {
-    "vitest": "^4.1.0",
+    "vitest": "catalog:",
     "typescript": "catalog:"
   }
 }

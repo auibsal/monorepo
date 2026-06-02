@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "catalog:",
-    "zod": "catalog:"
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@auibsal/config": "workspace:*",

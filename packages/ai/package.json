@@ -14,8 +14,8 @@
     "clean": "rm -rf dist .turbo node_modules"
   },
   "dependencies": {
-    "ai": "catalog:",
-    "@ai-sdk/google": "catalog:"
+    "ai": "^6.0.194",
+    "@ai-sdk/google": "^3.0.80"
   },
   "devDependencies": {
     "@auibsal/config": "workspace:*",

@@ -25,8 +25,8 @@
   "devDependencies": {
     "@auibsal/config": "workspace:*",
     "@types/node": "catalog:",
-    "client-only": "^0.0.1",
-    "server-only": "^0.0.1",
+    "client-only": "catalog:",
+    "server-only": "catalog:",
     "typescript": "catalog:"
   }
 }
