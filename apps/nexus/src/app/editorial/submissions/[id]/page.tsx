@@ -221,6 +221,10 @@ export default function GradingPage() {
             <div className="w-full max-w-4xl">
               <LiveblocksProvider 
                 authEndpoint="/api/auth/liveblocks"
+                getAuthEndpoint={async () => {
+                  const { data } = await supabase.auth.getSession();
+                  return { headers: { Authorization: `Bearer ${data.session?.access_token}` } };
+                }}
                 resolveUsers={async ({ userIds }) => {
                   // Connects to your editor roster so cursors show real names
                   return userIds.map((id) => {
