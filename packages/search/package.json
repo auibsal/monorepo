@@ -14,7 +14,7 @@
     "clean": "rm -rf dist .turbo node_modules"
   },
   "dependencies": {
-    "meilisearch": "catalog:"
+    "meilisearch": "^0.58.0"
   },
   "devDependencies": {
     "@auibsal/config": "workspace:*",

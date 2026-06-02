@@ -13,7 +13,7 @@
   "scripts": {
     "lint": "biome check . --no-errors-on-unmatched",
     "typecheck": "tsc --noEmit",
-    "test": "node --import tsx --test src/**/*.test.ts",
+    "test": "vitest run",
     "clean": "rm -rf dist .turbo node_modules"
   },
   "dependencies": {
@@ -45,12 +45,12 @@
     "@types/node": "catalog:",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
-    "shadcn": "^4.8.3",
+    "shadcn": "^4.10.0",
     "tailwindcss": "catalog:",
-    "tsx": "^4.22.3",
+    "tsx": "^4.22.4",
     "typescript": "catalog:",
-    "vitest": "^4.1.0",
-    "@testing-library/jest-dom": "^6.4.2",
+    "vitest": "catalog:",
+    "@testing-library/jest-dom": "^6.9.1",
     "@auibsal/testing": "workspace:*"
   }
 }
