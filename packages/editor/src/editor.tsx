@@ -18,14 +18,12 @@ import Table from '@tiptap/extension-table';
 import TableRow from '@tiptap/extension-table-row';
 import TableCell from '@tiptap/extension-table-cell';
 import TableHeader from '@tiptap/extension-table-header';
-import Mathematics from '@tiptap-pro/extension-mathematics';
 
 // Internal UI Components
 import { EditorToolbar } from './toolbar';
 import { EditorThreads } from './threads';
 
 // External Required Styles
-import 'katex/dist/katex.min.css';
 import "@liveblocks/react-ui/styles.css";
 import "@liveblocks/react-tiptap/styles.css";
 
@@ -52,16 +50,13 @@ export function MultiplayerEditor() {
       Link.configure({ openOnClick: false }),
       Image,
 
-      // 4. Mathematical Engine (LaTeX)
-      Mathematics,
-
-      // 5. Tables
+      // 4. Tables
       Table.configure({ resizable: true }),
       TableRow,
       TableHeader,
       TableCell,
 
-      // 6. Utilities
+      // 5. Utilities
       CharacterCount,
       Placeholder.configure({
         placeholder: 'Begin the manuscript...',
