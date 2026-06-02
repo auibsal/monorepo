@@ -1,0 +1,15 @@
+{
+  "extends": "@auibsal/config/tsconfig.base.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "composite": true,
+    "declaration": true,
+    "declarationMap": true,
+    "noEmit": false,
+    "emitDeclarationOnly": true,
+    "sourceMap": false
+  },
+  "include": ["src/**/*"]
+}
