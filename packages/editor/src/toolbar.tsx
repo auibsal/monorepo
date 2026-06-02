@@ -22,9 +22,7 @@ export function EditorToolbar({ editor }: { editor: Editor }) {
       {/* Advanced Typographical Needs */}
       <button onClick={() => editor.chain().focus().toggleSubscript().run()} className={`${btnClass} ${editor.isActive('subscript') ? activeClass : inactiveClass}`}>Sub</button>
       <button onClick={() => editor.chain().focus().toggleSuperscript().run()} className={`${btnClass} ${editor.isActive('superscript') ? activeClass : inactiveClass}`}>Super</button>
-      
-      {/* Mathematical Engine (LaTeX) */}
-      <button onClick={() => editor.chain().focus().insertContent('$$ E=mc^2 $$').run()} className={`${btnClass} ${inactiveClass}`}>Insert Math</button>
+    
 
       {/* Structural Elements */}
       <button onClick={() => editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()} className={`${btnClass} ${inactiveClass}`}>Insert Table</button>
