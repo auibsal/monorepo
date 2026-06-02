@@ -32,7 +32,10 @@
         "SUPABASE_JWT_SECRET",
         "SUPABASE_PUBLISHABLE_KEY",
         "SUPABASE_SECRET_KEY",
-        "RESEND_API_KEY"
+        "RESEND_API_KEY",
+        "LIVEBLOCKS_SECRET_KEY",
+        "LIVEBLOCKS_WEBHOOK_SECRET",
+        "NEXT_PUBLIC_LIVEBLOCKS_PUBLIC_KEY"
       ]
     },
     "typecheck": {
