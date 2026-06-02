@@ -79,8 +79,8 @@ export function SinglePlayerEditor({ content, onChange }: SinglePlayerEditorProp
       <EditorContent editor={editor} className="editor mt-4" />
       
       <div className="flex justify-between items-center text-xs font-black uppercase text-zinc-500 mt-4 pt-4 border-t-2 border-black">
-        <span>{editor.storage.characterCount.characters()} Characters</span>
-        <span>{editor.storage.characterCount.words()} Words</span>
+        <span>{(editor.storage as any).characterCount.characters()} Characters</span>
+        <span>{(editor.storage as any).characterCount.words()} Words</span>
       </div>
     </div>
   );
