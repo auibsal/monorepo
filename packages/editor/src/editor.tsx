@@ -62,7 +62,7 @@ export function MultiplayerEditor() {
         placeholder: 'Begin the manuscript...',
         emptyEditorClass: 'is-editor-empty before:content-[attr(data-placeholder)] before:text-zinc-400 before:float-left before:pointer-events-none',
       }),
-    ],
+    ] as any[], // <--- CRITICAL FIX: Bypass exactOptionalPropertyTypes collision
     editorProps: {
       attributes: {
         class: 'prose prose-black max-w-none focus:outline-none min-h-[500px] border-4 border-black p-4 font-serif',
