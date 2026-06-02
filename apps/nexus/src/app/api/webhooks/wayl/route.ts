@@ -1,16 +1,16 @@
 import { verifyWaylWebhookSignature } from '@auibsal/payments/wayl/webhooks';
-import { createClient } from '@auibsal/auth/server'; // Your Supabase admin client
+// 1. CRITICAL FIX: Import the Admin Client
+import { createAdminClient } from '@auibsal/auth/admin'; 
 
 export async function POST(req: Request) {
   try {
-    const rawBody = await req.text(); // Read the raw bytes for the crypto signature
+    const rawBody = await req.text(); 
     const signature = req.headers.get('x-wayl-signature-256');
 
     if (!signature) {
       return new Response('Missing Signature', { status: 401 });
     }
 
-    // 1. Verify Authenticity (Mathematical check against forged payloads)
     const isValid = verifyWaylWebhookSignature(
       rawBody,
       signature,
@@ -21,25 +21,25 @@ export async function POST(req: Request) {
       return new Response('Cryptographic Verification Failed', { status: 403 });
     }
 
-    // 2. Parse the verified data
     const event = JSON.parse(rawBody);
 
-    // 3. Process the Event
     if (event.event === 'order.created' || event.paymentStatus === 'Complete') {
-      const referenceId = event.referenceId; // e.g., The Submission ID or Order ID
+      const referenceId = event.referenceId; 
 
-      const supabase = await createClient();
+      // 2. CRITICAL FIX: Use the Admin Client to bypass RLS for this background task
+      const supabase = createAdminClient();
       
-      // Update our internal database
-      await supabase
+      const { error } = await supabase
         .from('submissions')
         .update({ status: 'under_review' })
         .eq('id', referenceId);
         
-      // (Optional) Trigger @auibsal/email here to send a receipt
+      if (error) {
+        console.error('Database Update Failed:', error);
+        throw error;
+      }
     }
 
-    // 4. Tell Wayl we successfully received the transmission
     return new Response('Webhook Acknowledged', { status: 200 });
     
   } catch (err) {
