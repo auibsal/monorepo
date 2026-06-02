@@ -1,6 +1,6 @@
 import { Liveblocks } from '@liveblocks/node';
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@auibsal/database/server'; 
+import { createClient } from '@auibsal/auth/server'; 
 
 const liveblocks = new Liveblocks({
   secret: process.env.LIVEBLOCKS_SECRET_KEY as string,
