@@ -62,7 +62,7 @@ jobs:
       # 🚨 INJECTED STEP: Validates all commit messages in the Pull Request
       - name: Enforce Commit Format
         if: github.event_name == 'pull_request'
-        run: pnpm exec commitlint --from ${{ github.event.pull_request.base.sha }} --to ${{ github.event.pull_request.head.sha }} --verbose
+        run: npx commitlint --from ${{ github.event.pull_request.base.sha }} --to ${{ github.event.pull_request.head.sha }} --verbose
         
       - name: Verify Formatting
         run: pnpm run format:check
