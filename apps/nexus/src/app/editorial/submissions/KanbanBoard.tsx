@@ -254,14 +254,13 @@ export default function KanbanBoard() {
                                 {/* Editor Assignment Task Module */}
                                 <div className="mb-5 border-t-2 border-border/10 pt-4">
                                   <label
-                                    htmlFor={`assign-${sub.id}`}
+                                    htmlFor="assign"
                                     className="mb-2 flex items-center gap-1 text-[10px] font-bold tracking-widest text-foreground/60 uppercase"
                                   >
                                     <ShieldCheck size={12} />
                                     Assigned Editor
                                   </label>
                                   <select
-                                    id={`assign-${sub.id}`}
                                     value={sub.assigned_to || 'unassigned'}
                                     onChange={(e) => handleAssignEditor(sub.id, e.target.value)}
                                     className="w-full cursor-pointer rounded-none border-2 border-border bg-background p-1.5 text-xs font-bold tracking-wider text-foreground uppercase transition-colors hover:border-primary focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
