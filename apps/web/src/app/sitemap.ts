@@ -1,22 +1,22 @@
 import { createClient } from '@auibsal/auth/server';
 import type { MetadataRoute } from 'next';
 
-// =========================================================================
-// Incremental Static Regeneration (ISR)
-// =========================================================================
-// Prevents Next.js from crashing at build-time due to cookie access,
-// while ensuring the sitemap is cached and regenerated every hour.
 /**
- * revalidate
- *
- * @description Standardized execution for revalidate.
+ * The revalidation period for ISR (Incremental Static Regeneration).
+ * Prevents Next.js from crashing at build-time due to cookie access,
+ * while ensuring the sitemap is cached and regenerated every hour.
  */
 export const revalidate = 3600;
 
+/**
+ * Generates the dynamic sitemap for the application.
+ * Merges static routes with dynamic entities like journal issues, blog posts, and submissions.
+ *
+ * @returns {Promise<MetadataRoute.Sitemap>} The fully generated sitemap structure.
+ */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_WEB_URL || 'https://www.auibsal.org';
 
-  // Safe to call here now because of the revalidate/dynamic export
   const supabase = await createClient();
 
   const staticPaths = [
@@ -27,7 +27,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { path: '/blog', priority: 0.8, changeFrequency: 'weekly' },
   ] as const;
 
-  // 1. Core Static Routes
   const sitemapEntries: MetadataRoute.Sitemap = staticPaths.map((item) => ({
     url: `${baseUrl}${item.path}`,
     lastModified: new Date(),
@@ -35,17 +34,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: item.priority,
     alternates: {
       languages: {
-        en: `${baseUrl}${item.path}`, // English is at the root
-        ar: `${baseUrl}/ar${item.path}`, // Arabic has the prefix
+        en: `${baseUrl}${item.path}`,
+        ar: `${baseUrl}/ar${item.path}`,
       },
     },
   }));
 
-  // =========================================================================
-  // Dynamic Content Fetching
-  // =========================================================================
-
-  // 2. Fetch dynamic journal issues
   const { data: issues } = await supabase
     .from('journal_issues')
     .select('id, published_at')
@@ -68,7 +62,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     });
   }
 
-  // 3. Fetch dynamic blog posts
   const { data: posts } = await supabase.from('blog_posts').select('slug, published_at');
 
   if (posts) {
@@ -88,7 +81,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     });
   }
 
-  // 4. Fetch dynamic submissions (if publicly visible)
   const { data: submissions } = await supabase
     .from('submissions')
     .select('id, submitted_at')

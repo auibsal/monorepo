@@ -1,14 +1,6 @@
 # @auibsal/database
 
-## ⚡ Overview
-Core architecture and dependencies.
+Centralized Supabase schema and types.
 
-## 🚀 Usage
-Strictly utilize `workspace:*` and absolute pathing for internal consumption.
-
-## 🔒 Security
-All changes must pass static analysis.
-
-## 🤝 Rules
-- No barrel files (`index.ts`).
-- Strictly adhere to TSDoc standard.
+## Generation
+Run `pnpm run generate` with `SUPABASE_ACCESS_TOKEN` to update types.

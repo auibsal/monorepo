@@ -1,14 +1,8 @@
-# @auibsal/web
+# AUIB SAL Web
 
-## ⚡ Overview
-Core architecture and dependencies.
+The public website for the AUIB Society of Arts and Letters.
 
-## 🚀 Usage
-Strictly utilize `workspace:*` and absolute pathing for internal consumption.
-
-## 🔒 Security
-All changes must pass static analysis.
-
-## 🤝 Rules
-- No barrel files (`index.ts`).
-- Strictly adhere to TSDoc standard.
+## Tech Stack
+- Next.js (App Router)
+- next-intl (i18n)
+- Tailwind CSS (Brutalist theme)

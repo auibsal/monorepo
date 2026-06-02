@@ -1,7 +1,6 @@
 /**
- * en
- *
- * @description Standardized execution for en.
+ * The core English (en) translation dictionary.
+ * Acts as the base schema for all other supported locales (e.g., ar.ts).
  */
 export const en = {
   Navigation: {
@@ -128,12 +127,14 @@ export const en = {
     feature3: '• Access the editorial overview and member management (approved staff only).',
     loginLink: 'Access Nexus',
   },
-} as const;
+};
 
 // Forces all other locales to strictly match this object shape
 /**
- * Dictionary
+ * The strictly enforced type shape for all translation dictionaries.
+ * Prevents missing keys or type mismatches in secondary languages.
  *
- * @description Standardized execution for Dictionary.
+ * @example
+ * const ar: Dictionary = { ... };
  */
 export type Dictionary = typeof en;
