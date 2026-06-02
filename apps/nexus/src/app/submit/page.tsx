@@ -2,7 +2,6 @@
 
 import { createClient } from '@auibsal/auth/client';
 import type { SubmissionType } from '@auibsal/database/types';
-import { RichTextEditor } from '@auibsal/ui/components/RichTextEditor';
 import {
   ArrowLeft,
   CheckSquare,
@@ -13,6 +12,9 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
+
+// IMPORT THE SINGLE-PLAYER ENGINE INSTEAD OF THE UI PRIMITIVE
+import { SinglePlayerEditor } from '@auibsal/editor/single-player';
 
 export default function SubmitWorkPage() {
   const [title, setTitle] = useState('');
@@ -25,7 +27,6 @@ export default function SubmitWorkPage() {
 
   const supabase = createClient();
 
-  // CRITICAL FIX: Dynamically binding the visual art pipeline to the exact dropdown state
   const isVisualArt = type === 'visual_art';
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -55,14 +56,13 @@ export default function SubmitWorkPage() {
     if (!supabase) return;
     e.preventDefault();
 
-    // Validations based on the active method and type
     if (isVisualArt && !file) {
       setErrorMessage('Please mount a visual artifact to upload.');
       return;
     }
 
     if (!isVisualArt) {
-      if (submissionMethod === 'editor' && (!content || content.trim() === '')) {
+      if (submissionMethod === 'editor' && (!content || content.trim() === '' || content === '<p></p>')) {
         setErrorMessage('Please enter your submission content.');
         return;
       }
@@ -83,7 +83,6 @@ export default function SubmitWorkPage() {
 
       let publicUrl: string | undefined;
 
-      // Storage upload executes if a file exists, covering both Visual Art (Images) and Written Work (PDFs)
       if (file) {
         const rawExt = file.name.split('.').pop() || 'bin';
         const safeExt = rawExt.replace(/[^a-zA-Z0-9]/g, '');
@@ -100,15 +99,12 @@ export default function SubmitWorkPage() {
         publicUrl = data.publicUrl;
       }
 
-      // Execute the database mutation
       const { error: dbError } = await supabase.from('submissions').insert({
         author_id: user.id,
         title,
-        // Enforcing strict type boundaries for the database enum
         type: type as SubmissionType,
         status: 'pending',
         file_url: publicUrl || null,
-        // Only inject raw text content if it's a written work submitted via the editor
         content: !isVisualArt && submissionMethod === 'editor' ? content : null,
       });
 
@@ -189,7 +185,6 @@ export default function SubmitWorkPage() {
               value={type}
               onChange={(e) => {
                 setType(e.target.value as SubmissionType | 'visual_art');
-                // Automatically nullify any mounted files when crossing submission bounds
                 setFile(null);
                 setContent('');
               }}
@@ -199,14 +194,12 @@ export default function SubmitWorkPage() {
               <option value="fiction">Fiction</option>
               <option value="poetry">Poetry</option>
               <option value="theatre">Theatre / Screenplay</option>
-              {/* CRITICAL FIX: Reintroduced the Visual Art vector */}
               <option value="visual_art">Visual Art / Photography</option>
               <option value="other">Other</option>
             </select>
           </div>
         </div>
 
-        {/* Dynamic Input Switching */}
         {isVisualArt ? (
           <div className="space-y-3 border-t-4 border-border/10 pt-4">
             <label
@@ -276,11 +269,9 @@ export default function SubmitWorkPage() {
                   <FileText className="text-primary" size={20} />
                   Manuscript Editor <span className="text-primary">*</span>
                 </div>
-                <p className="mb-4 text-xs font-bold tracking-widest text-foreground/60 uppercase">
-                  Compose directly or paste your raw text into the field below.
-                </p>
-                <div className="w-full max-w-full overflow-x-hidden border-4 border-border bg-background transition-colors focus-within:border-primary">
-                  <RichTextEditor content={content} onChange={setContent} />
+                <div className="w-full max-w-full overflow-x-hidden transition-colors focus-within:border-primary">
+                  {/* THE SINGLE-PLAYER MATRIX DEPLOYED */}
+                  <SinglePlayerEditor content={content} onChange={setContent} />
                 </div>
               </div>
             ) : (
@@ -335,7 +326,7 @@ export default function SubmitWorkPage() {
             disabled={
               status === 'uploading' ||
               (isVisualArt && !file) ||
-              (!isVisualArt && submissionMethod === 'editor' && !content) ||
+              (!isVisualArt && submissionMethod === 'editor' && (!content || content === '<p></p>')) ||
               (!isVisualArt && submissionMethod === 'pdf' && !file)
             }
             className="flex w-full items-center justify-center gap-3 border-4 border-border bg-foreground px-6 py-4 text-sm font-bold tracking-widest text-background uppercase shadow-[4px_4px_0px_0px_var(--brutalist-shadow)] transition-all hover:-translate-y-1 hover:border-primary hover:bg-primary hover:shadow-[6px_6px_0px_0px_var(--brutalist-shadow)] disabled:opacity-50 md:px-8 md:py-5 md:text-base md:shadow-[6px_6px_0px_0px_var(--brutalist-shadow)] md:hover:shadow-[8px_8px_0px_0px_var(--brutalist-shadow)]"
