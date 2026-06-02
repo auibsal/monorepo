@@ -1,14 +1,12 @@
 'use client';
 
 import { createClient } from '@auibsal/auth/client';
-import type { Role, Tables } from '@auibsal/database/types';
+import type { Role, User } from '@auibsal/database/types';
 import { Save, Users } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 export default function UsersPage() {
-  const [users, setUsers] = useState<
-    Pick<Tables<'users'>, 'id' | 'full_name' | 'university_id' | 'role' | 'created_at'>[]
-  >([]);
+  const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
 
   // CRITICAL FIX: Isolate un-saved changes to prevent "Ghost States"
@@ -26,7 +24,7 @@ export default function UsersPage() {
 
       const { data, error } = await supabase
         .from('users')
-        .select('id, full_name, university_id, role, created_at')
+        .select('*')
         .order('created_at', { ascending: false });
 
       if (!error && data && isMounted) {
