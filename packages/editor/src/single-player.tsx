@@ -17,7 +17,6 @@ import Table from '@tiptap/extension-table';
 import TableRow from '@tiptap/extension-table-row';
 import TableCell from '@tiptap/extension-table-cell';
 import TableHeader from '@tiptap/extension-table-header';
-import Mathematics from '@tiptap-pro/extension-mathematics';
 
 // We reuse the exact same brutalist toolbar
 import { EditorToolbar } from './toolbar';
@@ -46,16 +45,13 @@ export function SinglePlayerEditor({ content, onChange }: SinglePlayerEditorProp
       Link.configure({ openOnClick: false }),
       Image,
 
-      // 4. Mathematical Engine (LaTeX)
-      Mathematics,
-
-      // 5. Tables
+      // 4. Tables
       Table.configure({ resizable: true }),
       TableRow,
       TableHeader,
       TableCell,
 
-      // 6. Utilities
+      // 5. Utilities
       CharacterCount,
       Placeholder.configure({
         placeholder: 'Compose or paste your raw manuscript text here...',
