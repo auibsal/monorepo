@@ -2,9 +2,11 @@
 
 import { createClient } from '@auibsal/auth/client';
 import type { BlogPost } from '@auibsal/database/types';
-import { RichTextEditor } from '@auibsal/ui/components/RichTextEditor';
 import { AlertTriangle, Plus, X } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
+
+// INJECTING THE TYPOGRAPHICAL ENGINE
+import { SinglePlayerEditor } from '@auibsal/editor/single-player';
 
 // Strictly define the shape of the Supabase relational join
 type CMSPostRecord = Pick<BlogPost, 'id' | 'title_en' | 'title_ar'> & {
@@ -60,7 +62,8 @@ export default function BlogPage() {
 
     // CRITICAL FIX: Explicitly block blank RichText payloads from reaching the database
     const stripHtml = (html: string) => html.replace(/<[^>]+>/g, '').trim();
-    if (!stripHtml(contentEn) || !stripHtml(contentAr)) {
+    // Tiptap often leaves an empty paragraph tag, so we check for that specifically
+    if (!stripHtml(contentEn) || contentEn === '<p></p>' || !stripHtml(contentAr) || contentAr === '<p></p>') {
       setErrorMessage('Both English and Arabic content payloads are strictly required.');
       return;
     }
@@ -212,12 +215,13 @@ export default function BlogPage() {
             <div className="space-y-6">
               <div>
                 <label
-                  htmlFor="slug"
+                  htmlFor="titleEn"
                   className="mb-3 block text-sm font-bold tracking-wide text-foreground uppercase"
                 >
                   Title (English) <span className="text-primary">*</span>
                 </label>
                 <input
+                  id="titleEn"
                   type="text"
                   required
                   value={titleEn}
@@ -227,25 +231,25 @@ export default function BlogPage() {
               </div>
               <div>
                 <label
-                  htmlFor="slug"
                   className="mb-3 block text-sm font-bold tracking-wide text-foreground uppercase"
                 >
                   Content (English) <span className="text-primary">*</span>
                 </label>
-                <div className="border-4 border-border bg-background transition-colors focus-within:border-primary">
-                  <RichTextEditor content={contentEn} onChange={setContentEn} />
+                <div className="w-full max-w-full overflow-x-hidden transition-colors focus-within:border-primary">
+                  <SinglePlayerEditor content={contentEn} onChange={setContentEn} />
                 </div>
               </div>
             </div>
             <div className="space-y-6" dir="rtl">
               <div>
                 <label
-                  htmlFor="slug"
+                  htmlFor="titleAr"
                   className="mb-3 block text-right text-sm font-bold tracking-wide text-foreground uppercase"
                 >
                   العنوان (عربي) <span className="text-primary">*</span>
                 </label>
                 <input
+                  id="titleAr"
                   type="text"
                   required
                   value={titleAr}
@@ -255,16 +259,12 @@ export default function BlogPage() {
               </div>
               <div>
                 <label
-                  htmlFor="slug"
                   className="mb-3 block text-right text-sm font-bold tracking-wide text-foreground uppercase"
                 >
                   المحتوى (عربي) <span className="text-primary">*</span>
                 </label>
-                <div
-                  className="border-4 border-border bg-background text-right transition-colors focus-within:border-primary"
-                  dir="rtl"
-                >
-                  <RichTextEditor content={contentAr} onChange={setContentAr} />
+                <div className="w-full max-w-full overflow-x-hidden transition-colors focus-within:border-primary text-right">
+                  <SinglePlayerEditor content={contentAr} onChange={setContentAr} />
                 </div>
               </div>
             </div>
