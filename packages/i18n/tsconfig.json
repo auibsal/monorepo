@@ -9,7 +9,13 @@
     "declarationMap": true,
     "noEmit": false,
     "emitDeclarationOnly": true,
-    "sourceMap": false
+    "sourceMap": false,
+    "types": [
+      "node"
+    ],
+    "ignoreDeprecations": "6.0"
   },
-  "include": ["src/**/*"]
+  "include": [
+    "src/**/*"
+  ]
 }

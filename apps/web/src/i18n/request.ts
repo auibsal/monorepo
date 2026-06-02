@@ -13,6 +13,6 @@ export default getRequestConfig(async ({ requestLocale }) => {
   return {
     locale,
     // Modern Next.js natively traces template literal imports
-    messages: (await import(`../../messages/${locale}.json`)).default,
+    messages: (await import(`@auibsal/i18n/messages/${locale}`))[locale as 'en' | 'ar'],
   };
 });

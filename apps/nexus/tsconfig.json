@@ -9,7 +9,9 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": [
+        "./src/*"
+      ]
     }
   },
   "include": [
@@ -19,5 +21,8 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts"
   ],
-  "exclude": ["node_modules", ".turbo"]
+  "exclude": [
+    "node_modules",
+    ".turbo"
+  ]
 }

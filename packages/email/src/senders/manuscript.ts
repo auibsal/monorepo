@@ -2,9 +2,7 @@ import { resend, SENDER_IDENTITY } from '../client';
 import { ManuscriptDecisionTemplate } from '../templates/ManuscriptDecision';
 
 /**
- * SendManuscriptDecisionParams
- *
- * @description Standardized execution for SendManuscriptDecisionParams.
+ * Parameters for dispatching a manuscript decision email.
  */
 export interface SendManuscriptDecisionParams {
   to: string;
@@ -13,6 +11,19 @@ export interface SendManuscriptDecisionParams {
   status: 'accepted' | 'rejected' | 'revisions_requested';
 }
 
+/**
+ * Dispatches an email notification regarding a manuscript's editorial decision.
+ *
+ * @param {SendManuscriptDecisionParams} params - The data required to populate the decision template.
+ * @returns {Promise<{success: boolean, error?: any, data?: any}>} The result of the email dispatch operation.
+ * @example
+ * const result = await sendManuscriptDecision({
+ *   to: 'author@auib.edu.iq',
+ *   authorName: 'John Doe',
+ *   manuscriptTitle: 'The Genesis of Letters',
+ *   status: 'accepted'
+ * });
+ */
 export async function sendManuscriptDecision(params: SendManuscriptDecisionParams) {
   try {
     const { data, error } = await resend.emails.send({
@@ -23,7 +34,7 @@ export async function sendManuscriptDecision(params: SendManuscriptDecisionParam
         authorName: params.authorName,
         manuscriptTitle: params.manuscriptTitle,
         status: params.status,
-      }),
+      }) as any,
     });
 
     if (error) {
