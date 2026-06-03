@@ -19,8 +19,6 @@
   "devDependencies": {
     "@biomejs/biome": "^2.4.16",
     "@changesets/cli": "^2.31.0",
-    "@commitlint/cli": "^21.0.2",
-    "@commitlint/config-conventional": "^21.0.2",
     "client-only": "catalog:",
     "husky": "^9.1.7",
     "jiti": "^2.7.0",
