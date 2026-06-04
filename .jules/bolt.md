@@ -1,0 +1,3 @@
+## 2024-05-24 - Supabase Payload Bloat Anti-pattern
+**Learning:** When querying Supabase in list views (like `/admin/users` or `/editorial/events`), using `select('*')` overfetches large text columns (`biography`, `description_en`, `description_ar`) that are only used in detail views, leading to unnecessary payload bloat.
+**Action:** Always explicitly specify required columns (e.g., `select('id, title_en, starts_at, is_members_only')`) in list views to minimize the JSON payload size and improve render performance. Update the state types using TypeScript's `Pick<>` utility mapping over the auto-generated Supabase schema to ensure type safety.
