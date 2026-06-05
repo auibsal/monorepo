@@ -27,3 +27,4 @@ dist-ssr
 .turbo
 coverage
 tsconfig.tsbuildinfo
+packages/editor/dist/
