@@ -21,7 +21,7 @@
     "@auibsal/testing": "workspace:*",
     "@auibsal/ui": "workspace:*",
     "@hello-pangea/dnd": "^18.0.1",
-    "@liveblocks/client": "^2.0.0",
+    "@liveblocks/client": "^3.19.4",
     "@liveblocks/node": "^2.0.0",
     "@liveblocks/react": "^2.0.0",
     "isomorphic-dompurify": "catalog:",

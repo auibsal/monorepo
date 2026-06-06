@@ -127,8 +127,8 @@ importers:
         specifier: ^18.0.1
         version: 18.0.1(@types/react@19.2.16)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@liveblocks/client':
-        specifier: ^2.0.0
-        version: 2.24.4
+        specifier: ^3.19.4
+        version: 3.19.4(@types/json-schema@7.0.15)
       '@liveblocks/node':
         specifier: ^2.0.0
         version: 2.24.4
@@ -404,8 +404,8 @@ importers:
   packages/editor:
     dependencies:
       '@liveblocks/client':
-        specifier: ^2.0.0
-        version: 2.24.4
+        specifier: ^3.19.4
+        version: 3.19.4(@types/json-schema@7.0.15)
       '@liveblocks/react':
         specifier: ^2.0.0
         version: 2.24.4(react@19.2.7)
@@ -2375,8 +2375,16 @@ packages:
   '@liveblocks/client@2.24.4':
     resolution: {integrity: sha512-jT6kpapuSWuQlg8m/r3N5R/i7XlQAG2UkeaQi1DkyCc2+U4PWgKNVVXVWUUKM+OcbG3yKoJJ93Pw4AZE0hHWDg==}
 
+  '@liveblocks/client@3.19.4':
+    resolution: {integrity: sha512-vucJQ62edHi56NdBfZTyojXC4iaDjrG1taTF6ik8MmfUZ/+0i0GhnL2VCnju6UWkqhHd+P57hFbD653Tg0B2Jg==}
+
   '@liveblocks/core@2.24.4':
     resolution: {integrity: sha512-Os2Fs/RgggyrISpqHIefWo864auKIkpw48BG5fvPubcXkLU9i8wUcK5oczWEqJ0JvtyTfqREl/tkEhGf124DCw==}
+
+  '@liveblocks/core@3.19.4':
+    resolution: {integrity: sha512-J+W8HqoUI1GVQTs1UsjZ29ld1cabErj2xidV44kelyQ0luPovxfsp55wY1RSpydTzKaOgrT8CldfEBmKyU8Dxw==}
+    peerDependencies:
+      '@types/json-schema': ^7
 
   '@liveblocks/node@2.24.4':
     resolution: {integrity: sha512-2dKJxZUXbtL26DsqT8NEF3GthDIpK5sbEsRYMv7rCdhZaXWPBTrWE4Dh2ZcE6eWAfYA+dSNZaQB8K7GenSKagg==}
@@ -9880,7 +9888,17 @@ snapshots:
     dependencies:
       '@liveblocks/core': 2.24.4
 
+  '@liveblocks/client@3.19.4(@types/json-schema@7.0.15)':
+    dependencies:
+      '@liveblocks/core': 3.19.4(@types/json-schema@7.0.15)
+    transitivePeerDependencies:
+      - '@types/json-schema'
+
   '@liveblocks/core@2.24.4': {}
+
+  '@liveblocks/core@3.19.4(@types/json-schema@7.0.15)':
+    dependencies:
+      '@types/json-schema': 7.0.15
 
   '@liveblocks/node@2.24.4':
     dependencies:

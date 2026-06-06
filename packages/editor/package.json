@@ -15,7 +15,7 @@
     "clean": "rm -rf dist .turbo node_modules"
   },
   "dependencies": {
-    "@liveblocks/client": "^2.0.0",
+    "@liveblocks/client": "^3.19.4",
     "@liveblocks/react": "^2.0.0",
     "@liveblocks/react-tiptap": "^2.0.0",
     "@liveblocks/react-ui": "^2.0.0",
