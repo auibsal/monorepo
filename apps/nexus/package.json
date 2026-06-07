@@ -15,6 +15,7 @@
     "@auibsal/auth": "workspace:*",
     "@auibsal/database": "workspace:*",
     "@auibsal/editor": "workspace:*",
+    "@auibsal/env": "workspace:*",
     "@auibsal/i18n": "workspace:*",
     "@auibsal/payments": "workspace:*",
     "@auibsal/seo": "workspace:*",

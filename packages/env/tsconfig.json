@@ -10,8 +10,12 @@
     "noEmit": false,
     "emitDeclarationOnly": true,
     "sourceMap": false,
-    "ignoreDeprecations": "6.0",
-    "jsx": "react-jsx"
+    "types": [
+      "node"
+    ],
+    "ignoreDeprecations": "6.0"
   },
-  "include": ["src/**/*"]
+  "include": [
+    "src/**/*"
+  ]
 }

@@ -1,7 +1,8 @@
 import { Resend } from 'resend';
+import { env } from '@auibsal/env';
 
 // The consumer application (Nexus/Web) is strictly responsible for providing this environment variable.
-const apiKey = process.env.RESEND_API_KEY;
+const apiKey = env.RESEND_API_KEY;
 
 if (!apiKey) {
   console.warn('RESEND_API_KEY is not defined in the environment. Email transmission will fail.');

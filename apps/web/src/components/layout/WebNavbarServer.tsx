@@ -1,4 +1,5 @@
 import { getTranslations } from 'next-intl/server';
+import { env } from '@auibsal/env';
 
 import WebNavbarClient from './WebNavbarClient';
 
@@ -8,7 +9,7 @@ export default async function WebNavbarServer({ locale }: { locale: 'en' | 'ar' 
   const targetLocale = locale === 'en' ? 'ar' : 'en';
 
   // 2. Synchronized with the CI pipeline and Next.js public env standards
-  const nexusUrl = process.env.NEXT_PUBLIC_NEXUS_URL || 'http://localhost:3001';
+  const nexusUrl = env.NEXT_PUBLIC_NEXUS_URL;
 
   const resolveHref = (path: string) => {
     if (locale === 'en') return path;

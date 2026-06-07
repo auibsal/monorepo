@@ -8,9 +8,10 @@ import type {
   UniversalCheckoutResponse, 
   PaymentProvider 
 } from './types';
+import { env } from '@auibsal/env';
 
 // Establish the primary engine from Vercel environment variables
-const PRIMARY_PROVIDER = (process.env.PRIMARY_PAYMENT_PROVIDER as PaymentProvider) || 'wayl';
+const PRIMARY_PROVIDER = (env.PRIMARY_PAYMENT_PROVIDER as PaymentProvider) || 'wayl';
 
 /**
  * The Switchboard Operator

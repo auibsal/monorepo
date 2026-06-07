@@ -2,6 +2,7 @@ import { createClient } from '@auibsal/auth/server';
 
 import { Activity, Calendar, FileText, Users } from 'lucide-react';
 import { headers } from 'next/headers';
+import { env } from '@auibsal/env';
 
 /**
  * dynamic
@@ -31,7 +32,7 @@ export default async function NexusHome() {
   // This guarantees the ICS link will perfectly match localhost:3001 in dev, and nexus.auibsal.org in production
   const host = headersList.get('x-forwarded-host') || headersList.get('host') || 'localhost:3001';
   const proto = headersList.get('x-forwarded-proto') || 'http';
-  const nexusUrl = process.env.NEXT_PUBLIC_NEXUS_URL || `${proto}://${host}`;
+  const nexusUrl = env.NEXT_PUBLIC_NEXUS_URL;
 
   let calendarToken = '';
   let memberSubmissions: DashboardSubmission[] = [];

@@ -1,5 +1,6 @@
 import { createClient } from '@auibsal/auth/server';
 import type { MetadataRoute } from 'next';
+import { env } from '@auibsal/env';
 
 /**
  * The revalidation period for ISR (Incremental Static Regeneration).
@@ -15,7 +16,7 @@ export const revalidate = 3600;
  * @returns {Promise<MetadataRoute.Sitemap>} The fully generated sitemap structure.
  */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = process.env.NEXT_PUBLIC_WEB_URL || 'https://www.auibsal.org';
+  const baseUrl = env.NEXT_PUBLIC_WEB_URL;
 
   const supabase = await createClient();
 

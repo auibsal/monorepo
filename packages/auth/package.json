@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@auibsal/database": "workspace:*",
+    "@auibsal/env": "workspace:*",
     "@supabase/ssr": "^0.10.3",
     "@supabase/supabase-js": "catalog:"
   },

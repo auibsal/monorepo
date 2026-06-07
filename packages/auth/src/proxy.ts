@@ -5,6 +5,7 @@ import type { Database } from '@auibsal/database/types';
 import { createServerClient } from '@supabase/ssr';
 import type { AuthError, SupabaseClient, User } from '@supabase/supabase-js';
 import { type NextRequest, NextResponse } from 'next/server';
+import { env } from '@auibsal/env';
 
 // Explicitly type the return signature so the consuming middleware has perfect intellisense
 export async function updateSession(request: NextRequest): Promise<{
@@ -19,14 +20,8 @@ export async function updateSession(request: NextRequest): Promise<{
   });
 
   // 2. Read environment variables directly
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
-  if (!supabaseUrl || !supabaseAnonKey) {
-    throw new Error(
-      'Missing environment variables: NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY must be defined',
-    );
-  }
+  const supabaseUrl = env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseAnonKey = env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
   // Inject <Database> generic for absolute type safety
   const supabase = createServerClient<Database>(supabaseUrl, supabaseAnonKey, {

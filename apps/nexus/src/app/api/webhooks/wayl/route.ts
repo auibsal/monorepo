@@ -1,6 +1,7 @@
 import { verifyWaylWebhookSignature } from '@auibsal/payments/wayl/webhooks';
 // 1. CRITICAL FIX: Import the Admin Client
 import { createAdminClient } from '@auibsal/auth/admin'; 
+import { env } from '@auibsal/env';
 
 export async function POST(req: Request) {
   try {
@@ -14,7 +15,7 @@ export async function POST(req: Request) {
     const isValid = verifyWaylWebhookSignature(
       rawBody,
       signature,
-      process.env.WAYL_WEBHOOK_SECRET!
+      env.WAYL_WEBHOOK_SECRET!
     );
 
     if (!isValid) {

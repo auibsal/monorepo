@@ -5,6 +5,7 @@ import type {
   WaylLinkRecord, 
   WaylLinkStatus 
 } from './types';
+import { env } from '@auibsal/env';
 
 /**
  * Validates authentication credentials directly against Wayl's validation sequence.
@@ -39,7 +40,7 @@ export async function createPaymentLink(req: UniversalCheckoutRequest) {
 
   // 1. Translate Universal -> Wayl Payload
   const body: WaylLinkCreationPayload = {
-    env: process.env.WAYL_ENV === 'live' ? 'live' : 'test',
+    env: env.WAYL_ENV === 'live' ? 'live' : 'test',
     referenceId: req.referenceId,
     total: req.amountIQD,
     currency: 'IQD',
@@ -52,8 +53,8 @@ export async function createPaymentLink(req: UniversalCheckoutRequest) {
       }
     ],
     redirectionUrl: req.successUrl,
-    webhookUrl: process.env.WAYL_WEBHOOK_URL || '',
-    webhookSecret: process.env.WAYL_WEBHOOK_SECRET || '',
+    webhookUrl: env.WAYL_WEBHOOK_URL || '',
+    webhookSecret: env.WAYL_WEBHOOK_SECRET || '',
   };
 
   // 2. Execute the Wayl-specific request
