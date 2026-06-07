@@ -1,0 +1,3 @@
+## 2026-06-07 - Prevent Payload Bloat with Explicit select() in Supabase Queries
+**Learning:** Using `select(*)` in Supabase queries for list views/dashboards fetches entire rows. For tables with large text/JSON columns or heavy relationships, this significantly inflates the network payload, increasing memory usage and load times unnecessarily when only a few columns are needed.
+**Action:** When querying Supabase for list views or cards, explicitly specify only the required columns (e.g., `select('id, title, status')`) instead of `select(*)` to prevent payload bloat. For TypeScript typing, strictly use `Pick<Tables<'table_name'>, 'col1' | 'col2'>` to map the result to the generated schema and ensure type safety.
