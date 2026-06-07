@@ -14,6 +14,8 @@ export const env = createEnv({
     SUPABASE_SERVICE_ROLE_KEY: z.string().min(1),
     LIVEBLOCKS_WEBHOOK_SECRET: z.string().optional(),
     LIVEBLOCKS_SECRET_KEY: z.string().optional(),
+    UPSTASH_REDIS_REST_URL: z.string().url(),
+    UPSTASH_REDIS_REST_TOKEN: z.string().min(1),
   },
   client: {
     NEXT_PUBLIC_SEARCH_URL: z.string().url(),
