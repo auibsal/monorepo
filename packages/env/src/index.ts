@@ -16,6 +16,10 @@ export const env = createEnv({
     LIVEBLOCKS_SECRET_KEY: z.string().optional(),
     UPSTASH_REDIS_REST_URL: z.string().url(),
     UPSTASH_REDIS_REST_TOKEN: z.string().min(1),
+    QSTASH_URL: z.string().url(),
+    QSTASH_TOKEN: z.string().min(1),
+    QSTASH_CURRENT_SIGNING_KEY: z.string().min(1),
+    QSTASH_NEXT_SIGNING_KEY: z.string().min(1),
   },
   client: {
     NEXT_PUBLIC_SEARCH_URL: z.string().url(),
