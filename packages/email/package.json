@@ -14,6 +14,7 @@
     "clean": "rm -rf dist .turbo node_modules"
   },
   "dependencies": {
+    "@auibsal/env": "workspace:*",
     "@react-email/components": "^1.0.12",
     "resend": "^6.12.4"
   },

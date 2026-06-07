@@ -1,8 +1,9 @@
 import { WebhookHandler } from '@liveblocks/node';
 import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@auibsal/auth/admin';
+import { env } from '@auibsal/env';
 
-const webhookHandler = new WebhookHandler(process.env.LIVEBLOCKS_WEBHOOK_SECRET as string);
+const webhookHandler = new WebhookHandler(env.LIVEBLOCKS_WEBHOOK_SECRET as string);
 
 export async function POST(request: NextRequest) {
   // 1. Extract the raw string for cryptographic verification
@@ -33,7 +34,7 @@ export async function POST(request: NextRequest) {
       // Tiptap explicitly stores its data in a Yjs fragment named "default"
       const response = await fetch(`https://api.liveblocks.io/v2/rooms/${roomId}/yjs/default?format=html`, {
         headers: {
-          Authorization: `Bearer ${process.env.LIVEBLOCKS_SECRET_KEY}`,
+          Authorization: `Bearer ${env.LIVEBLOCKS_SECRET_KEY}`,
         },
       });
 

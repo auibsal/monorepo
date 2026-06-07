@@ -1,9 +1,10 @@
 import { Liveblocks } from '@liveblocks/node';
 import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@auibsal/auth/admin';
+import { env } from '@auibsal/env';
 
 const liveblocks = new Liveblocks({
-  secret: process.env.LIVEBLOCKS_SECRET_KEY as string,
+  secret: env.LIVEBLOCKS_SECRET_KEY as string,
 });
 
 export async function POST(request: NextRequest) {

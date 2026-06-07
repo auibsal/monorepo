@@ -1,6 +1,7 @@
 import { buttonVariants } from '@auibsal/ui/components/ui/button';
 import { BookOpen, Users } from 'lucide-react';
 import { getTranslations } from 'next-intl/server';
+import { env } from '@auibsal/env';
 
 // Strictly typing the locale promise
 export default async function Home({ params }: { params: Promise<{ locale: 'en' | 'ar' }> }) {
@@ -8,7 +9,7 @@ export default async function Home({ params }: { params: Promise<{ locale: 'en' 
   const t = await getTranslations({ locale, namespace: 'HomePage' });
 
   // 1. Establish the bridge to the Nexus platform
-  const nexusUrl = process.env.NEXT_PUBLIC_NEXUS_URL || 'http://localhost:3001';
+  const nexusUrl = env.NEXT_PUBLIC_NEXUS_URL;
 
   return (
     <div className="mx-auto max-w-6xl px-6 py-16 md:py-32">

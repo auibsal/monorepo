@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { env } from '@auibsal/env';
 
 interface MetadataProps {
   title?: string;
@@ -10,7 +11,7 @@ interface MetadataProps {
 const DEFAULT_TITLE = 'AUIB Society of Arts & Letters';
 const DEFAULT_DESCRIPTION = 'The premier platform for literary publication, discourse, and editorial excellence.';
 const DEFAULT_IMAGE = 'https://society.idea.inc/og-default.png'; // Will eventually route to your storage bucket
-const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+const BASE_URL = env.NEXT_PUBLIC_APP_URL;
 
 /**
  * Constructs a standardized Next.js Metadata object.

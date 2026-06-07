@@ -1,4 +1,4 @@
-import { MeiliSearch } from 'meilisearch';
+import { Meilisearch } from 'meilisearch';
 import type { SearchDocument } from './types';
 
 const INDEX_NAME = 'society_records';
@@ -15,7 +15,7 @@ const INDEX_NAME = 'society_records';
  * ```
  */
 export async function indexDocuments(host: string, adminKey: string, documents: SearchDocument[]) {
-  const client = new MeiliSearch({ host, apiKey: adminKey });
+  const client = new Meilisearch({ host, apiKey: adminKey });
   const index = client.index(INDEX_NAME);
   
   // Enforces typo-tolerance and search prioritization rules
@@ -35,6 +35,6 @@ export async function indexDocuments(host: string, adminKey: string, documents: 
  * @param documentId - The unique identifier of the record to delete.
  */
 export async function deleteDocument(host: string, adminKey: string, documentId: string) {
-  const client = new MeiliSearch({ host, apiKey: adminKey });
+  const client = new Meilisearch({ host, apiKey: adminKey });
   return await client.index(INDEX_NAME).deleteDocument(documentId);
 }

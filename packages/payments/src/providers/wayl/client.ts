@@ -1,5 +1,7 @@
-const WAYL_API_KEY = process.env.WAYL_API_KEY;
-const WAYL_ENV = process.env.WAYL_ENV === 'live' ? 'live' : 'test';
+import { env } from '@auibsal/env';
+
+const WAYL_API_KEY = env.WAYL_API_KEY;
+const WAYL_ENV = env.WAYL_ENV === 'live' ? 'live' : 'test';
 
 const WAYL_BASE_URL = WAYL_ENV === 'live' 
   ? 'https://api.thewayl.com' 

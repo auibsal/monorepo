@@ -1,4 +1,4 @@
-import { MeiliSearch } from 'meilisearch';
+import { Meilisearch } from 'meilisearch';
 import type { SearchDocument } from './types';
 
 /**
@@ -8,7 +8,8 @@ import type { SearchDocument } from './types';
  * @returns A strictly typed Meilisearch client instance.
  * * @example
  * ```ts
- * const searchClient = getSearchClient(process.env.NEXT_PUBLIC_SEARCH_URL, process.env.NEXT_PUBLIC_SEARCH_KEY);
+ * import { env } from '@auibsal/env';
+ * const searchClient = getSearchClient(env.NEXT_PUBLIC_SEARCH_URL, env.NEXT_PUBLIC_SEARCH_KEY);
  * const results = await searchClient.index('society_records').search('Brutalism');
  * ```
  */
@@ -17,7 +18,7 @@ export function getSearchClient(host: string, apiKey: string) {
     throw new Error('Search environment variables are missing.');
   }
 
-  return new MeiliSearch({
+  return new Meilisearch({
     host,
     apiKey,
   });

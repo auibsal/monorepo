@@ -2,6 +2,7 @@ import { updateSession } from '@auibsal/auth/proxy';
 import { NextRequest } from 'next/server';
 import createMiddleware from 'next-intl/middleware';
 import { routing } from '@/i18n/routing';
+import { env } from '@auibsal/env';
 
 const intlMiddleware = createMiddleware(routing);
 
@@ -53,7 +54,7 @@ export default async function proxy(request: NextRequest) {
   // =========================================================================
   // STEP 5: Dynamic Content Security Policy Injection
   // =========================================================================
-  const isDev = process.env.NODE_ENV === 'development';
+  const isDev = env.NODE_ENV === 'development';
 
   const cspHeader = `
     default-src 'self';

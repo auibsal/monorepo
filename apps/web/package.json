@@ -14,6 +14,10 @@
   "dependencies": {
     "@auibsal/auth": "workspace:*",
     "@auibsal/database": "workspace:*",
+    "@auibsal/env": "workspace:*",
+    "@auibsal/i18n": "workspace:*",
+    "@auibsal/seo": "workspace:*",
+    "@auibsal/testing": "workspace:*",
     "@auibsal/ui": "workspace:*",
     "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.6.1",
@@ -27,10 +31,7 @@
     "react": "catalog:",
     "react-dom": "catalog:",
     "three": "^0.184.0",
-    "zustand": "^5.0.14",
-    "@auibsal/seo": "workspace:*",
-    "@auibsal/testing": "workspace:*",
-    "@auibsal/i18n": "workspace:*"
+    "zustand": "^5.0.14"
   },
   "devDependencies": {
     "@auibsal/config": "workspace:*",
