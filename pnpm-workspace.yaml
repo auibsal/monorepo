@@ -23,4 +23,4 @@ catalog:
 
   'client-only': ^0.0.1
   'server-only': ^0.0.1
-  'vitest': ^3.0.0
+  'vitest': ^4.1.0
