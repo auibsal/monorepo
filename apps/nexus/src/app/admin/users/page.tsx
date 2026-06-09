@@ -1,7 +1,7 @@
 'use client';
 
 import { createClient } from '@auibsal/auth/client';
-import type { Role, Tables } from '@auibsal/database/types';
+import type { Role, Tables, User } from '@auibsal/database/types';
 import { Save, Users } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
