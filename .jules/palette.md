@@ -1,0 +1,3 @@
+## 2024-06-10 - ARIA and Type Attributes for Custom Toolbars
+**Learning:** Custom toolbars using standard `<div>` elements need explicitly set `role="toolbar"` to be announced properly by screen readers. Furthermore, interactive buttons functioning as toggleable formats need `aria-pressed` mirroring their active states to provide auditory feedback of toggle status, and must enforce `type="button"` to avoid accidentally submitting parent forms.
+**Action:** Consistently assign `role="toolbar"` and `aria-label` to custom control sets. Map format activity properties to `aria-pressed` for all toggleable controls and strictly set `type="button"`.
