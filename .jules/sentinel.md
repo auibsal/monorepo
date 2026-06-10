@@ -1,0 +1,4 @@
+## 2024-06-10 - [Zod URL Validation SSRF/XSS Bypass]
+**Vulnerability:** Zod's default `z.string().url()` validation accepts dangerous URL schemes such as `javascript:` and `data:`, potentially leading to XSS vulnerabilities if the user input is rendered into DOM elements like links or iframes, or SSRF if used for server-side fetching.
+**Learning:** By default, URL parsers including Zod's underlying one do not strictly require HTTP/HTTPS protocols unless explicitly configured.
+**Prevention:** Always add a case-insensitive refinement block (e.g., `.refine(val => val.toLowerCase().startsWith('http'))`) to explicitly require `http://` or `https://` protocols when validating URLs with Zod. Avoid strict case-sensitive checks (e.g., `.startsWith('http')`) because valid uppercase protocols (e.g., `HTTPS://`) would be incorrectly rejected.
