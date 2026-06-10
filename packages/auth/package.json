@@ -28,6 +28,7 @@
     "@types/node": "catalog:",
     "client-only": "catalog:",
     "server-only": "catalog:",
-    "typescript": "catalog:"
+    "typescript": "catalog:",
+    "@types/node": "catalog:"
   }
 }

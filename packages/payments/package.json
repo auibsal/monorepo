@@ -18,7 +18,8 @@
   "devDependencies": {
     "@auibsal/config": "workspace:*",
     "@types/node": "catalog:",
-    "typescript": "catalog:"
+    "typescript": "catalog:",
+    "@types/node": "catalog:"
   },
   "dependencies": {
     "@auibsal/env": "workspace:*"
