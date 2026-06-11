@@ -1,0 +1,3 @@
+## 2026-06-11 - Eliminate N+1 DB Queries via Explicit Projection
+**Learning:** When using Supabase `select('*')` on generic list views, unnecessary/large fields (e.g., tokens, URLs, long text) are implicitly fetched into memory and transmitted over the wire, bloating the payload and violating the principle of minimal data retrieval.
+**Action:** Always restrict Supabase `.select()` queries to only the explicitly required columns (e.g., `.select('id, name')`) in list/admin views, and enforce strict type safety on the client state by narrowing generic Supabase schema types using TypeScript's `Pick<Model, 'cols'>` utility.

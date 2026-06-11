@@ -6,7 +6,7 @@ import { Save, Users } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 export default function UsersPage() {
-  const [users, setUsers] = useState<User[]>([]);
+  const [users, setUsers] = useState<Pick<User, 'id' | 'full_name' | 'university_id' | 'role' | 'created_at'>[]>([]);
   const [loading, setLoading] = useState(true);
 
   // CRITICAL FIX: Isolate un-saved changes to prevent "Ghost States"
@@ -22,9 +22,10 @@ export default function UsersPage() {
     const fetchUsers = async () => {
       if (!supabase) return;
 
+      // ⚡ Bolt: Replaced `select('*')` with explicit column projection to eliminate N+1 over-fetching and minimize network payload size.
       const { data, error } = await supabase
         .from('users')
-        .select('*')
+        .select('id, full_name, university_id, role, created_at')
         .order('created_at', { ascending: false });
 
       if (!error && data && isMounted) {
