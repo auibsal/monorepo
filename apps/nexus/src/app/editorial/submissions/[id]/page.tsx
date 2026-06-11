@@ -324,6 +324,7 @@ export default function GradingPage() {
               Assigned Editor
             </label>
             <select
+              id="assign"
               value={assignedTo}
               onChange={(e) => setAssignedTo(e.target.value)}
               className="w-full cursor-pointer rounded-none border-4 border-border bg-background p-4 text-sm font-bold text-foreground transition-colors hover:bg-foreground/5 focus:border-primary focus:outline-none"
