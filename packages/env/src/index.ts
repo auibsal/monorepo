@@ -1,6 +1,10 @@
 import { createEnv } from '@t3-oss/env-nextjs';
 import { z } from 'zod';
 
+const httpUrl = z.string().url().refine(val => val.toLowerCase().startsWith('http'), {
+  message: 'URL must use http:// or https:// protocol',
+});
+
 export const env = createEnv({
   server: {
     NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
@@ -8,26 +12,26 @@ export const env = createEnv({
     PRIMARY_PAYMENT_PROVIDER: z.string().optional(),
     WAYL_ENV: z.enum(['live', 'test']).optional(),
     WAYL_API_KEY: z.string().optional(),
-    WAYL_WEBHOOK_URL: z.string().url().optional(),
+    WAYL_WEBHOOK_URL: httpUrl.optional(),
     WAYL_WEBHOOK_SECRET: z.string().optional(),
     RESEND_API_KEY: z.string().optional(),
     SUPABASE_SERVICE_ROLE_KEY: z.string().min(1),
     LIVEBLOCKS_WEBHOOK_SECRET: z.string().optional(),
     LIVEBLOCKS_SECRET_KEY: z.string().optional(),
-    UPSTASH_REDIS_REST_URL: z.string().url(),
+    UPSTASH_REDIS_REST_URL: httpUrl,
     UPSTASH_REDIS_REST_TOKEN: z.string().min(1),
-    QSTASH_URL: z.string().url(),
+    QSTASH_URL: httpUrl,
     QSTASH_TOKEN: z.string().min(1),
     QSTASH_CURRENT_SIGNING_KEY: z.string().min(1),
     QSTASH_NEXT_SIGNING_KEY: z.string().min(1),
   },
   client: {
-    NEXT_PUBLIC_SEARCH_URL: z.string().url(),
+    NEXT_PUBLIC_SEARCH_URL: httpUrl,
     NEXT_PUBLIC_SEARCH_KEY: z.string().min(1),
-    NEXT_PUBLIC_APP_URL: z.string().url(),
-    NEXT_PUBLIC_WEB_URL: z.string().url(),
-    NEXT_PUBLIC_NEXUS_URL: z.string().url(),
-    NEXT_PUBLIC_SUPABASE_URL: z.string().url(),
+    NEXT_PUBLIC_APP_URL: httpUrl,
+    NEXT_PUBLIC_WEB_URL: httpUrl,
+    NEXT_PUBLIC_NEXUS_URL: httpUrl,
+    NEXT_PUBLIC_SUPABASE_URL: httpUrl,
     NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().min(1),
   },
   experimental__runtimeEnv: {
