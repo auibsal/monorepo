@@ -1,7 +1,7 @@
 'use client';
 
 import { createClient } from '@auibsal/auth/client';
-import type { Event } from '@auibsal/database/types';
+import type { Tables } from '@auibsal/database/types';
 import { AlertCircle, AlertTriangle, CalendarDays, X } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 
@@ -16,7 +16,7 @@ type AuibEvent = {
 };
 
 export default function EventsPage() {
-  const [events, setEvents] = useState<Event[]>([]);
+  const [events, setEvents] = useState<Pick<Tables<'events'>, 'id' | 'title_en' | 'starts_at' | 'is_members_only'>[]>([]);
   const [auibEvents, setAuibEvents] = useState<AuibEvent[]>([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
@@ -39,9 +39,11 @@ export default function EventsPage() {
   // CRITICAL FIX: Wrapped fetchers in useCallback to satisfy strict React concurrency rules
   const fetchEvents = useCallback(async () => {
     if (!supabase) return;
+
+    // ⚡ Bolt Optimization: Reduced payload size by explicitly selecting only required columns instead of '*'
     const { data, error } = await supabase
       .from('events')
-      .select('*')
+      .select('id, title_en, starts_at, is_members_only')
       .order('starts_at', { ascending: true });
     if (!error && data) {
       setEvents(data);
