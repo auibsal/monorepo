@@ -241,7 +241,7 @@ export default function NexusRegister() {
               <button
                 type="submit"
                 disabled={status === 'loading'}
-                className="w-full border-4 border-border bg-foreground p-4 font-bold tracking-widest text-background uppercase shadow-[6px_6px_0px_0px_var(--brutalist-shadow)] transition-all hover:-translate-y-1 hover:border-primary hover:bg-primary hover:shadow-[8px_8px_0px_0px_var(--brutalist-shadow)] disabled:opacity-50"
+                className="w-full border-4 border-border bg-foreground p-4 font-bold tracking-widest text-background uppercase shadow-[6px_6px_0px_0px_var(--brutalist-shadow)] transition-all hover:-translate-y-1 hover:border-primary hover:bg-primary hover:shadow-[8px_8px_0px_0px_var(--brutalist-shadow)] disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded-sm"
               >
                 {status === 'loading' ? 'Processing Application...' : 'Submit Application'}
               </button>
@@ -249,7 +249,7 @@ export default function NexusRegister() {
               <div className="mt-8 border-t-4 border-border pt-8 text-center">
                 <Link
                   href="/login"
-                  className="inline-block text-sm font-bold tracking-wider text-foreground uppercase transition-colors hover:-translate-y-0.5 hover:text-primary"
+                  className="inline-block text-sm font-bold tracking-wider text-foreground uppercase transition-colors hover:-translate-y-0.5 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded-sm"
                 >
                   Back to Member Login
                 </Link>

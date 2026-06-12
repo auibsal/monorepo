@@ -1,0 +1,3 @@
+## 2026-06-12 - Focus States on Raw Next.js Links
+**Learning:** When using raw Next.js Link elements or native buttons outside of the unified UI package (e.g., in layouts or auth pages), they often lose the standardized keyboard accessibility focus rings defined in the unified button or Link components.
+**Action:** Always explicitly append standard focus-visible classes like 'focus-visible:outline-none focus-visible:ring-2' alongside brand-specific offsets (e.g., 'focus-visible:ring-offset-auib-red' or 'focus-visible:ring-primary') to raw interactive elements to ensure consistent keyboard navigation visibility.
