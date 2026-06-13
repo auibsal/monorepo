@@ -1,3 +1,0 @@
-## 2024-06-13 - [Editor Toolbar Accessibility]
-**Learning:** Custom rich text editor toolbars (like TipTap toolbars) lack native accessibility semantics out of the box. They need `role="toolbar"`, `aria-label`, explicit `type="button"` to prevent form submission, `aria-pressed` for toggle states, and focus styles for keyboard navigation.
-**Action:** When implementing custom toolbars or grouping interactive controls, always explicitly add `role="toolbar"` to the container, use `aria-pressed` to reflect active states, add `type="button"` to buttons, and ensure proper `focus-visible` styling is present on all interactive elements.
