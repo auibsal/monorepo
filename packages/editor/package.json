@@ -17,7 +17,7 @@
   "dependencies": {
     "@liveblocks/client": "^3.19.4",
     "@liveblocks/react": "^2.0.0",
-    "@liveblocks/react-tiptap": "^2.0.0",
+    "@liveblocks/react-tiptap": "^3.19.5",
     "@liveblocks/react-ui": "^3.19.4",
     "@tiptap/extension-character-count": "^2.4.0",
     "@tiptap/extension-highlight": "^2.4.0",
