@@ -1,0 +1,3 @@
+## 2024-06-08 - TipTap Toolbar Accessibility
+**Learning:** Custom TipTap toolbars built without a pre-made UI library often lack fundamental accessibility attributes. Buttons missing `type="button"` can trigger accidental form submissions when placed inside forms, while lack of `role="toolbar"` and `aria-pressed` states makes it impossible for screen reader users to understand their available tools or currently active formatting.
+**Action:** Always wrap custom TipTap/rich-text toolbars in a container with `role="toolbar"`, add explicit `type="button"` to prevent form submission, use `aria-pressed` tied to `editor.isActive()` for state indication, and ensure standard `focus-visible` classes are included.
