@@ -42,15 +42,29 @@ export default function KanbanBoard() {
     if (!supabase) return;
 
     try {
-      // 1. Fetch Submissions with Author Identity and Assignee
-      // CRITICAL FIX: Explicitly hinting the author relation to bypass the assignee collision
-      const { data: subData, error: subError } = await supabase
-        .from('submissions')
-        .select(
-          'id, title, type, status, rubric_formatting, assigned_to, users!author_id(full_name)',
-        );
+      // ⚡ Bolt Optimization: Batch database queries in a single Promise.all to prevent network waterfall
+      // This eliminates the round-trip latency penalty between the submissions and users queries.
+      const [
+        { data: subData, error: subError },
+        { data: editorData, error: editorError }
+      ] = await Promise.all([
+        // 1. Fetch Submissions with Author Identity and Assignee
+        // CRITICAL FIX: Explicitly hinting the author relation to bypass the assignee collision
+        supabase
+          .from('submissions')
+          .select(
+            'id, title, type, status, rubric_formatting, assigned_to, users!author_id(full_name)',
+          ),
+
+        // 2. Fetch Authorized Editors for the Assignment Module
+        supabase
+          .from('users')
+          .select('id, full_name')
+          .in('role', ['editor', 'admin'])
+      ]);
 
       if (subError) throw subError;
+      if (editorError) throw editorError;
 
       if (subData) {
         setSubmissions(
@@ -58,13 +72,6 @@ export default function KanbanBoard() {
         );
       }
 
-      // 2. Fetch Authorized Editors for the Assignment Module
-      const { data: editorData, error: editorError } = await supabase
-        .from('users')
-        .select('id, full_name')
-        .in('role', ['editor', 'admin']);
-
-      if (editorError) throw editorError;
       if (editorData) setEditors(editorData);
     } catch (err) {
       console.error('Failed to mount board data:', err);
