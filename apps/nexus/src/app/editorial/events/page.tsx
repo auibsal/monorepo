@@ -246,7 +246,7 @@ export default function EventsPage() {
             </h3>
 
             {errorMessage && (
-              <div className="mb-8 flex items-center gap-3 border-4 border-red-500 bg-background p-4 text-sm font-bold text-red-500">
+              <div role="alert" className="mb-8 flex items-center gap-3 border-4 border-red-500 bg-background p-4 text-sm font-bold text-red-500">
                 <AlertTriangle size={20} className="flex-shrink-0" />
                 <span className="break-words">{errorMessage}</span>
               </div>
