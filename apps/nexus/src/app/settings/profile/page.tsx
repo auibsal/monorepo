@@ -283,14 +283,14 @@ export default function ProfilePage() {
 
         {/* System Feedback Matrix */}
         {status === 'error' && (
-          <div className="flex items-center gap-3 border-4 border-red-500 bg-background p-4 text-sm font-bold text-red-500">
+          <div role="alert" className="flex items-center gap-3 border-4 border-red-500 bg-background p-4 text-sm font-bold text-red-500">
             <AlertTriangle size={20} className="flex-shrink-0" />
             <span className="break-words">{errorMessage}</span>
           </div>
         )}
 
         {status === 'success' && (
-          <div className="flex items-center gap-3 border-4 border-green-500 bg-background p-4 text-sm font-bold text-green-500">
+          <div role="status" className="flex items-center gap-3 border-4 border-green-500 bg-background p-4 text-sm font-bold text-green-500">
             <CheckSquare size={20} className="flex-shrink-0" />
             <span>Profile parameters successfully synchronized.</span>
           </div>
