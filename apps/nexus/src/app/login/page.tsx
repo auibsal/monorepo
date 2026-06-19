@@ -97,7 +97,7 @@ function LoginForm() {
       </div>
 
       {status === 'error' && (
-        <div className="flex items-center gap-3 border-4 border-red-500 bg-background p-4 text-sm font-bold text-red-500">
+        <div role="alert" aria-live="assertive" className="flex items-center gap-3 border-4 border-red-500 bg-background p-4 text-sm font-bold text-red-500">
           <AlertTriangle size={20} />
           {errorMessage}
         </div>

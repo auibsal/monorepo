@@ -89,7 +89,7 @@ export default function NexusRegister() {
           </p>
 
           {status === 'success' ? (
-            <div className="flex flex-col items-center justify-center gap-4 border-4 border-border bg-foreground p-6 text-center text-sm font-bold tracking-widest text-background uppercase">
+            <div role="status" aria-live="polite" className="flex flex-col items-center justify-center gap-4 border-4 border-border bg-foreground p-6 text-center text-sm font-bold tracking-widest text-background uppercase">
               <CheckSquare size={48} className="text-green-500" />
               <p>Registration successful.</p>
               <p className="text-xs text-background/70">
@@ -232,7 +232,7 @@ export default function NexusRegister() {
               </div>
 
               {status === 'error' && (
-                <div className="flex items-center gap-3 border-4 border-red-500 bg-background p-4 text-sm font-bold text-red-500">
+                <div role="alert" aria-live="assertive" className="flex items-center gap-3 border-4 border-red-500 bg-background p-4 text-sm font-bold text-red-500">
                   <ShieldAlert size={20} />
                   {errorMessage}
                 </div>
