@@ -1,3 +1,0 @@
-## 2025-03-09 - [Concurrent Independent Queries]
-**Learning:** Making independent database queries sequentially causes a network waterfall which severely degrades performance. In `sitemap.ts`, three independent tables (`journal_issues`, `blog_posts`, `submissions`) were queried one after another.
-**Action:** Use `Promise.all` to batch independent queries concurrently. This eliminates network latency bottlenecks, reducing total fetch time to that of the slowest single query rather than the sum of all queries.
