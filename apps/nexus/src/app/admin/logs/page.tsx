@@ -94,7 +94,7 @@ export default function LogsPage() {
               <p>Establishing secure connection to audit volume...</p>
             </div>
           ) : status === 'error' ? (
-            <div className="space-y-2 font-bold text-red-500">
+            <div role="alert" aria-live="assertive" className="space-y-2 font-bold text-red-500">
               <div className="flex items-center gap-2">
                 <AlertTriangle size={18} />
                 <span>[SYS_ERR] Core dump executed. Directory mapping failed.</span>
