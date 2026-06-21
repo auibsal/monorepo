@@ -3,7 +3,7 @@
 import { createClient } from '@auibsal/auth/client';
 import { AlertTriangle } from 'lucide-react';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { Suspense, useEffect, useState } from 'react';
 
 function LoginForm() {
@@ -14,6 +14,7 @@ function LoginForm() {
 
   const supabase = createClient();
   const searchParams = useSearchParams();
+  const router = useRouter();
 
   // 1. Intercept URL errors from the API callbacks
   useEffect(() => {
@@ -53,7 +54,7 @@ function LoginForm() {
       ) {
         next = '/';
       }
-      window.location.href = next;
+      router.push(next);
     }
   };
 
