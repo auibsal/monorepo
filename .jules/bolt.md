@@ -1,0 +1,3 @@
+## 2025-06-21 - Resolving network waterfalls in React Server Components and hooks
+**Learning:** Independent database queries within hooks (like `useCallback`) or Server Components can create hidden network waterfalls, doubling the latency for users. This is especially problematic when fetching related data that isn't strictly joinable due to schema restrictions or role-based filtering (like fetching an item, and separately fetching a list of allowed assignees).
+**Action:** When querying for independent datasets within a component/route, always combine them using `Promise.all` instead of awaiting them sequentially to eliminate network waterfalls. Add the comment `// ⚡ Bolt Optimization: Batch database queries in a single Promise.all to prevent network waterfall`.
