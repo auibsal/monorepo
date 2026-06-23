@@ -1,0 +1,1 @@
+## 2024-06-23 - DOM-based XSS Risk via Open Redirects\n**Vulnerability:** window.location.href usage with poorly validated 'next' search params\n**Learning:** window.location.href allows javascript: URIs execution resulting in XSS\n**Prevention:** Utilize router.push() instead of window.location.href which inherently blocks non-HTTP/S execution
