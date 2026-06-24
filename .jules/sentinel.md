@@ -1,0 +1,4 @@
+## 2024-03-21 - Client-Side Navigation and XSS/Open Redirects
+**Vulnerability:** Usage of `window.location.href = next;` for client-side navigation with user-provided or query-parameter-derived URLs.
+**Learning:** Raw browser navigation APIs like `window.location.href` execute Javascript URIs (`javascript:alert(1)`) and allow open redirects (`//evil.com`) if not exhaustively sanitized. This poses a DOM-based XSS vulnerability. Next.js router handles some of these mitigations natively.
+**Prevention:** In Next.js client components, always use `useRouter` from `next/navigation` and `router.push()` for navigation instead of raw browser APIs.
