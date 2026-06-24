@@ -56,7 +56,7 @@ export function Footer({ locale, dictionary }: FooterProps) {
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="inline-block transition-all hover:translate-x-1 hover:text-white rtl:hover:-translate-x-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-auib-charcoal rounded-sm"
+                    className="inline-block transition-all hover:translate-x-1 hover:text-white rtl:hover:-translate-x-1"
                   >
                     {link.label}
                   </Link>
