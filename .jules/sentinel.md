@@ -1,0 +1,4 @@
+## 2024-06-25 - DOM-based XSS mitigation for Open Redirects in Next.js Client Components
+**Vulnerability:** Weak denylist validation for URL parameters (`next.startsWith('http://')` etc.) assigned to `window.location.href` fails to prevent `javascript:` URIs from executing, leading to DOM-based XSS.
+**Learning:** Using `router.push()` in Next.js mitigates XSS, but in auth flows, a hard reload via `window.location.href` is often intentionally used so Server Components correctly read newly set auth cookies. Replacing it with `router.push()` risks state bugs (showing unauthenticated UI) and crashes if a `javascript:` payload gets through to the router.
+**Prevention:** Rather than avoiding `window.location.href`, fix the root cause by applying strict allowlist validation (e.g. `!next.startsWith('/') || next.startsWith('//')`) that guarantees the path is a safe, absolute internal route before assigning it to `window.location.href`.
