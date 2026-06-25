@@ -44,15 +44,14 @@ function LoginForm() {
       setStatus('success');
       // 2. Safely capture the intended destination to preserve deep-links
       // SECURITY: Validate 'next' to prevent DOM-based XSS (javascript:) and Open Redirects
+      // Strict allowlist validation enforcing absolute path routing
       let next = searchParams.get('next') || '/';
-      if (
-        !next.startsWith('/') ||
-        next.startsWith('//') ||
-        next.includes('\\') ||
-        /[\s]/.test(next)
-      ) {
+      if (!next.startsWith('/') || next.startsWith('//') || next.includes('\\') || /[\s]/.test(next)) {
         next = '/';
       }
+
+      // We must use window.location.href here to force a hard reload
+      // so Server Components accurately read the newly minted auth cookies.
       window.location.href = next;
     }
   };
