@@ -1,5 +1,0 @@
-perf: optimize sitemap queries using Promise.all
-
-Refactored apps/web/src/app/sitemap.ts to execute three
-independent Supabase database queries concurrently using Promise.all.
-This eliminates the network waterfall and speeds up generation.
