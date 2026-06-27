@@ -22,7 +22,7 @@
     "@auibsal/testing": "workspace:*",
     "@auibsal/ui": "workspace:*",
     "@hello-pangea/dnd": "^18.0.1",
-    "@liveblocks/client": "^3.19.4",
+    "@liveblocks/client": "^3.20.1",
     "@liveblocks/node": "^3.19.5",
     "@liveblocks/react": "^3.19.4",
     "isomorphic-dompurify": "catalog:",
