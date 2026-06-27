@@ -59,24 +59,13 @@ export default function GradingPage() {
     if (!supabase) return;
 
     try {
-      // ⚡ Bolt Optimization: Batch database queries in a single Promise.all to prevent network waterfall
-      const [
-        { data: subData, error: subError },
-        { data: editorData, error: editorError }
-      ] = await Promise.all([
-        supabase
-          .from('submissions')
-          .select('*, users!author_id(full_name)')
-          .eq('id', submissionId)
-          .single(),
-        supabase
-          .from('users')
-          .select('id, full_name')
-          .in('role', ['editor', 'admin'])
-      ]);
+      const { data: subData, error: subError } = await supabase
+        .from('submissions')
+        .select('*, users!author_id(full_name)')
+        .eq('id', submissionId)
+        .single();
 
       if (subError) throw subError;
-      if (editorError) throw editorError;
 
       if (subData) {
         setSubmission(subData as unknown as GradingSubmission);
@@ -100,6 +89,13 @@ export default function GradingPage() {
         setFormatting(subData.rubric_formatting || '');
       }
 
+      // Fetch the Authorized Editor Roster
+      const { data: editorData, error: editorError } = await supabase
+        .from('users')
+        .select('id, full_name')
+        .in('role', ['editor', 'admin']);
+
+      if (editorError) throw editorError;
       if (editorData) setEditors(editorData);
     } catch (err) {
       console.error('Failed to mount secure dossier:', err);
