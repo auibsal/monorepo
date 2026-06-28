@@ -1,0 +1,4 @@
+## 2025-02-21 - XSS Risk in File Uploads & Blog Posts
+**Vulnerability:** Found two specific XSS vectors. `DOMPurify.sanitize()` lacked strict URI enforcement, leaving an opening for dangerous `javascript:` schemes inside rendered blog posts. Second, `z.string().url()` alone permitted `javascript:` and `data:` schemes in database records for external file links, causing potential Stored XSS.
+**Learning:** `DOMPurify` has a base level of safety but can be bypassed depending on the context without explicit URI constraints. `z.string().url()` relies on a standard URL parser which inherently supports malicious protocols, demonstrating that 'URL validation' does not equal 'safe HTTP URL validation'.
+**Prevention:** Use explicitly bound `ALLOWED_URI_REGEXP` patterns in `DOMPurify` options. Always wrap `z.string().url()` with a `.refine(val => val.toLowerCase().startsWith('http'))` block when URLs are expected to be web links.
