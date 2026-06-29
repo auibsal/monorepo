@@ -69,10 +69,7 @@ export default async function BlogPostPage({ params }: Props) {
   const isAr = locale === 'ar';
   const content = isAr ? post.content_ar : post.content_en;
 
-  const cleanHTML = DOMPurify.sanitize(content, {
-    ALLOWED_URI_REGEXP:
-      /^(?:(?:(?:f|ht)tps?|mailto|tel|callto|sms|cid|xmpp):|[^a-z]|[a-z+.\-]+(?:[^a-z+.\-:]|$))/i,
-  });
+  const cleanHTML = DOMPurify.sanitize(content);
 
   return (
     <div className="mx-auto max-w-4xl px-6 py-16 md:py-32">
