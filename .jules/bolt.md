@@ -1,3 +1,0 @@
-## 2024-06-30 - Modifying Code Structure using String Replace
-**Learning:** When using Node `fs` or `sed` to replace large blocks of code, especially those involving nested scopes (like `if` statements or `forEach` loops), it is extremely easy to accidentally duplicate or remove brackets/braces. This leads to syntax errors and broken builds.
-**Action:** When implementing structural refactorings like Promise.all groupings, carefully verify the surrounding braces and brackets in the replacement string. Immediately after execution, run `git diff` to manually inspect the changes, and always run the workspace linter (`npx @biomejs/biome check <file>`) to catch syntax errors before committing.
