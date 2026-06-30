@@ -1,6 +1,5 @@
 import { createClient } from '@auibsal/auth/server';
 import DOMPurify from 'isomorphic-dompurify';
-import { env } from '@auibsal/env';
 import { ArrowLeft, User } from 'lucide-react';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
@@ -69,29 +68,11 @@ export default async function BlogPostPage({ params }: Props) {
 
   const isAr = locale === 'ar';
   const content = isAr ? post.content_ar : post.content_en;
-  const title = isAr ? post.title_ar : post.title_en;
-  const authorName = post.users?.full_name || 'Unknown Author';
 
   const cleanHTML = DOMPurify.sanitize(content);
 
-  const jsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'Article',
-    headline: title,
-    author: {
-      '@type': 'Person',
-      name: authorName,
-    },
-    datePublished: post.published_at,
-    url: `${env.NEXT_PUBLIC_APP_URL}/${locale}/blog/${slug}`,
-  };
-
   return (
     <div className="mx-auto max-w-4xl px-6 py-16 md:py-32">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
-      />
       {/* Brutalist Back Navigation using semantic foreground and primary tokens */}
       <div className="mb-16">
         <Link

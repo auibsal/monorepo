@@ -1,3 +1,0 @@
-## 2024-06-30 - Missing Structured Data on Dynamic Content
-**Learning:** Blog posts are being rendered dynamically but completely lack JSON-LD structured data (Schema.org). This represents a missed opportunity for Rich Snippets (e.g., Article schema) in search engine results. Search engines rely heavily on Structured Data to understand the entity (Author, Date Published, Title) accurately.
-**Action:** Always verify that dynamic content routes (like blog posts or articles) include standard JSON-LD Schema. Inject `<script type="application/ld+json">` with appropriate schemas using framework head managers or embedded scripts.
