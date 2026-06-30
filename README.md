@@ -32,8 +32,13 @@ This repository is managed using Turborepo and pnpm workspaces. It enforces stri
 
 ## ⚙️ Usage
 To run the project locally:
-```bash
-pnpm install
-pnpm build
-pnpm dev
-```
+1. **Setup Environment Variables**: You must copy `.env.example` to `.env.local` to fulfill `@auibsal/env` schema validation before installation or builds will succeed.
+   ```bash
+   cp .env.example .env.local
+   ```
+2. **Install and Run**:
+   ```bash
+   pnpm install
+   pnpm build
+   pnpm dev
+   ```
