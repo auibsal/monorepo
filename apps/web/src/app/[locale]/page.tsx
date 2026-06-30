@@ -29,7 +29,7 @@ export default async function Home({ params }: { params: Promise<{ locale: 'en' 
       {/* Brutalist Grid */}
       <section className="grid gap-12 md:grid-cols-2 md:gap-16">
         {/* Card 1: Mission */}
-        <div className="group border-4 border-border bg-card p-10 shadow-[12px_12px_0px_0px_var(--brutalist-shadow)] transition-all duration-200 hover:-translate-x-1 hover:-translate-y-1 hover:shadow-[16px_16px_0px_0px_var(--brutalist-shadow)]">
+        <div className="group border-4 border-border bg-card p-10 shadow-brutalist-md transition-all duration-200 hover:-translate-x-1 hover:-translate-y-1 hover:shadow-brutalist-lg">
           <div className="mb-8 flex h-16 w-16 items-center justify-center border-2 border-transparent bg-foreground">
             <BookOpen size={32} className="text-background" />
           </div>
@@ -40,9 +40,9 @@ export default async function Home({ params }: { params: Promise<{ locale: 'en' 
         </div>
 
         {/* Card 2: Membership */}
-        <div className="group flex flex-col justify-between border-4 border-border bg-primary p-10 shadow-[12px_12px_0px_0px_var(--brutalist-shadow)] transition-all duration-200 hover:-translate-x-1 hover:-translate-y-1 hover:shadow-[16px_16px_0px_0px_var(--brutalist-shadow)]">
+        <div className="group flex flex-col justify-between border-4 border-border bg-primary p-10 shadow-brutalist-md transition-all duration-200 hover:-translate-x-1 hover:-translate-y-1 hover:shadow-brutalist-lg">
           <div>
-            <div className="mb-8 flex h-16 w-16 items-center justify-center border-2 border-border bg-background shadow-[4px_4px_0px_0px_var(--brutalist-shadow)]">
+            <div className="mb-8 flex h-16 w-16 items-center justify-center border-2 border-border bg-background shadow-brutalist-sm">
               <Users size={32} className="text-primary" />
             </div>
             <h2 className="mb-4 text-3xl font-bold tracking-wider text-primary-foreground uppercase">
@@ -56,7 +56,7 @@ export default async function Home({ params }: { params: Promise<{ locale: 'en' 
           {/* 2. Replaced Next-Intl Link with standard Anchor pointing to Nexus */}
           <a
             href={`${nexusUrl}/login`}
-            className={`${buttonVariants({ variant: 'outline', size: 'lg' })} w-full border-2 border-border bg-background text-foreground shadow-[6px_6px_0px_0px_var(--brutalist-shadow)] hover:bg-foreground hover:text-background md:w-auto text-center`}
+            className={`${buttonVariants({ variant: 'outline', size: 'lg' })} w-full border-2 border-border bg-background text-foreground shadow-brutalist-sm hover:bg-foreground hover:text-background md:w-auto text-center`}
           >
             {t('applyButton')}
           </a>

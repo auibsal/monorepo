@@ -1,0 +1,3 @@
+## 2024-06-30 - Magic numbers in brutalist shadow utilities
+**Learning:** A missing constraint in the design system allowed developers to bypass standard brutalist shadow tokens (e.g., `--shadow-brutalist-md`) by hardcoding magic numbers using Tailwind's arbitrary values (e.g., `shadow-[12px_12px_0px_0px_var(--brutalist-shadow)]`). This breaks visual depth consistency and makes dark-mode shadow toggling fragile.
+**Action:** Always map brutalist depth (cards, buttons) to the pre-defined `shadow-brutalist-*` variables from `globals.css` instead of using arbitrary pixel values, ensuring strict adherence to the aesthetic.
