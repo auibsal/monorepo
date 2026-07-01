@@ -95,7 +95,7 @@ export function Navbar({
           {nexusUrl && (
             <a
               href={nexusUrl}
-              className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-auib-red rounded-sm text-sm font-bold tracking-widest text-white uppercase transition-colors hover:text-auib-charcoal"
+              className="text-sm font-bold tracking-widest text-white uppercase transition-colors hover:text-auib-charcoal"
             >
               Nexus
             </a>
@@ -118,7 +118,7 @@ export function Navbar({
         <Link
           href={logoHref}
           onClick={() => setIsOpen(false)}
-          className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-auib-red rounded-sm flex items-center text-white transition-opacity hover:opacity-90"
+          className="flex items-center text-white transition-opacity hover:opacity-90"
         >
           <Logo locale={locale} className="text-xs leading-tight text-white sm:text-sm" />
         </Link>
@@ -150,7 +150,7 @@ export function Navbar({
                   <Link
                     href={link.href}
                     onClick={() => setIsOpen(false)}
-                    className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-auib-charcoal rounded-sm block py-2 transition-transform duration-200 hover:translate-x-2 hover:text-auib-red rtl:hover:-translate-x-2"
+                    className="block py-2 transition-transform duration-200 hover:translate-x-2 hover:text-auib-red rtl:hover:-translate-x-2"
                   >
                     {link.label}
                   </Link>
