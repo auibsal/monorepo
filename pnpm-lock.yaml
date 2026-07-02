@@ -441,8 +441,8 @@ importers:
         specifier: ^3.19.4
         version: 3.19.4(@types/json-schema@7.0.15)
       '@liveblocks/react':
-        specifier: ^2.0.0
-        version: 2.24.4(react@19.2.7)
+        specifier: ^3.19.4
+        version: 3.19.5(@types/json-schema@7.0.15)(@types/react-dom@19.2.3(@types/react@19.2.16))(@types/react@19.2.16)(react@19.2.7)
       '@liveblocks/react-tiptap':
         specifier: ^3.19.5
         version: 3.19.5(@tiptap/core@2.27.2(@tiptap/pm@2.27.2))(@tiptap/pm@2.27.2)(@tiptap/react@2.27.2(@tiptap/core@2.27.2(@tiptap/pm@2.27.2))(@tiptap/pm@2.27.2)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@tiptap/suggestion@2.27.2(@tiptap/core@2.27.2(@tiptap/pm@2.27.2))(@tiptap/pm@2.27.2))(@types/json-schema@7.0.15)(@types/react-dom@19.2.3(@types/react@19.2.16))(@types/react@19.2.16)(prosemirror-model@1.25.7)(prosemirror-state@1.4.4)(prosemirror-view@1.41.8)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(y-protocols@1.0.7(yjs@13.6.31))(yjs@13.6.31)
@@ -2394,17 +2394,11 @@ packages:
   '@juggle/resize-observer@3.4.0':
     resolution: {integrity: sha512-dfLbk+PwWvFzSxwk3n5ySL0hfBog779o8h68wK/7/APo/7cgyWp5jcXockbxdk5kFRkbeXWm4Fbi9FrdN381sA==}
 
-  '@liveblocks/client@2.24.4':
-    resolution: {integrity: sha512-jT6kpapuSWuQlg8m/r3N5R/i7XlQAG2UkeaQi1DkyCc2+U4PWgKNVVXVWUUKM+OcbG3yKoJJ93Pw4AZE0hHWDg==}
-
   '@liveblocks/client@3.19.4':
     resolution: {integrity: sha512-vucJQ62edHi56NdBfZTyojXC4iaDjrG1taTF6ik8MmfUZ/+0i0GhnL2VCnju6UWkqhHd+P57hFbD653Tg0B2Jg==}
 
   '@liveblocks/client@3.19.5':
     resolution: {integrity: sha512-kXffixgJnMtlaCL8iRrRvMekXo8wBhwKAVKlrZ0QKupo8gmkAF0pQR3NhoK7HOCKNly7zQhKKBiHDA0Mk1MtHw==}
-
-  '@liveblocks/core@2.24.4':
-    resolution: {integrity: sha512-Os2Fs/RgggyrISpqHIefWo864auKIkpw48BG5fvPubcXkLU9i8wUcK5oczWEqJ0JvtyTfqREl/tkEhGf124DCw==}
 
   '@liveblocks/core@3.19.4':
     resolution: {integrity: sha512-J+W8HqoUI1GVQTs1UsjZ29ld1cabErj2xidV44kelyQ0luPovxfsp55wY1RSpydTzKaOgrT8CldfEBmKyU8Dxw==}
@@ -2467,11 +2461,6 @@ packages:
         optional: true
       '@types/react-dom':
         optional: true
-
-  '@liveblocks/react@2.24.4':
-    resolution: {integrity: sha512-p6t7HVGkQ34MLtiDp2L1qXmae4MH8MyOTaJfP2USfimOrMp1vIKendxuIoaR71XvtShvhihkwvdHa3ogCmm+2A==}
-    peerDependencies:
-      react: ^18 || ^19 || ^19.0.0-rc
 
   '@liveblocks/react@3.19.4':
     resolution: {integrity: sha512-l2ui2T9u4r3NlhJtV+SRSsuPr79JeD4IfF4KfZEPQ+AKwSUbbBoADBTaGND7kJqXbxQDQ5seYTjK9pL9yJgQQw==}
@@ -10691,10 +10680,6 @@ snapshots:
 
   '@juggle/resize-observer@3.4.0': {}
 
-  '@liveblocks/client@2.24.4':
-    dependencies:
-      '@liveblocks/core': 2.24.4
-
   '@liveblocks/client@3.19.4(@types/json-schema@7.0.15)':
     dependencies:
       '@liveblocks/core': 3.19.4(@types/json-schema@7.0.15)
@@ -10706,8 +10691,6 @@ snapshots:
       '@liveblocks/core': 3.19.5(@types/json-schema@7.0.15)
     transitivePeerDependencies:
       - '@types/json-schema'
-
-  '@liveblocks/core@2.24.4': {}
 
   '@liveblocks/core@3.19.4(@types/json-schema@7.0.15)':
     dependencies:
@@ -10801,12 +10784,6 @@ snapshots:
       '@types/react-dom': 19.2.3(@types/react@19.2.16)
     transitivePeerDependencies:
       - '@types/json-schema'
-
-  '@liveblocks/react@2.24.4(react@19.2.7)':
-    dependencies:
-      '@liveblocks/client': 2.24.4
-      '@liveblocks/core': 2.24.4
-      react: 19.2.7
 
   '@liveblocks/react@3.19.4(@types/json-schema@7.0.15)(@types/react-dom@19.2.3(@types/react@19.2.16))(@types/react@19.2.16)(react@19.2.7)':
     dependencies:

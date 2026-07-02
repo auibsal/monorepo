@@ -8,6 +8,8 @@
     "declaration": true,
     "declarationMap": true,
     "noEmit": false,
+    "ignoreDeprecations": "6.0",
+    "types": ["node"],
     "emitDeclarationOnly": true,
     "sourceMap": false,
     "ignoreDeprecations": "6.0",
