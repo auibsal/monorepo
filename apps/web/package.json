@@ -30,7 +30,7 @@
     "next-intl": "^4.13.0",
     "react": "catalog:",
     "react-dom": "catalog:",
-    "three": "^0.184.0",
+    "three": "^0.185.1",
     "zustand": "^5.0.14"
   },
   "devDependencies": {
