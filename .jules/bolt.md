@@ -1,0 +1,3 @@
+## 2024-03-24 - Executing Independent Database Queries Concurrently
+**Learning:** In Next.js routes (like `sitemap.ts`) that fetch multiple distinct, independent datasets from Supabase, sequential `await` calls create a network waterfall that unnecessarily blocks execution and increases overall response time.
+**Action:** Always wrap distinct, independent Supabase queries (e.g., `journal_issues`, `blog_posts`, `submissions`) in a `Promise.all` block to execute them concurrently, eliminating the network waterfall and significantly improving component load or generation performance.
