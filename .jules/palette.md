@@ -1,0 +1,3 @@
+## 2024-07-05 - Missing Focus Styles on Links
+**Learning:** Next.js `Link` and `a` tags in layout components often lack default visible focus states, making keyboard navigation difficult and inaccessible.
+**Action:** Always add explicit keyboard focus styles (e.g., `rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2`) to `Link` elements and anchor tags in layout components to maintain consistent keyboard navigation accessibility.
