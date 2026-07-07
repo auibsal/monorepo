@@ -1,0 +1,3 @@
+## 2024-07-07 - Add Keyboard Focus Styles to Navigation Links
+**Learning:** Next.js `Link` components and standard anchor (`a`) tags frequently omit default keyboard focus indicators. When these elements are placed in primary layout regions (like Navbars or Footers) and are styled heavily with standard utility classes, they become invisible to users navigating via keyboard, breaking accessibility rules.
+**Action:** Always append explicit focus rings (e.g., `focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-auib-red rounded-sm`) to `Link` and `a` tags, especially within custom layout elements, to ensure interactive elements are visibly indicated for keyboard users.
