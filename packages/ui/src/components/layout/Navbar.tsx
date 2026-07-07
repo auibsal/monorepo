@@ -95,7 +95,7 @@ export function Navbar({
           {nexusUrl && (
             <a
               href={nexusUrl}
-            className="text-sm font-bold tracking-widest text-white uppercase transition-colors hover:text-auib-charcoal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-auib-red rounded-sm"
+              className="text-sm font-bold tracking-widest text-white uppercase transition-colors hover:text-auib-charcoal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-auib-red rounded-sm"
             >
               Nexus
             </a>
