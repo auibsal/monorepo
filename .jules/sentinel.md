@@ -1,0 +1,4 @@
+## 2025-02-14 - Strict Enforcement of DOMPurify ALLOWED_URI_REGEXP
+**Vulnerability:** Relying solely on default configuration for critical security libraries like `DOMPurify` can sometimes lead to regressions or bypasses if defaults change in future versions or if the library is misconfigured elsewhere.
+**Learning:** For defense-in-depth, it's a critical practice in this codebase to explicitly enforce the `ALLOWED_URI_REGEXP` configuration when using `isomorphic-dompurify` to restrict dangerous URI schemes like `javascript:`.
+**Prevention:** Always explicitly pass an `ALLOWED_URI_REGEXP` configuration (e.g., `/^(?:(?:(?:f|ht)tps?|mailto|tel|callto|sms|cid|xmpp):|[^a-z]|[a-z+.\-]+(?:[^a-z+.\-:]|$))/i`) when using `DOMPurify.sanitize()` to ensure defense-in-depth against XSS via dangerous schemes.
