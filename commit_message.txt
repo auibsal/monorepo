@@ -1,0 +1,6 @@
+perf: ⚡ Bolt: Optimize database queries in editorial submissions page
+
+💡 What: Wrapped sequential Supabase queries in a Promise.all() block.
+🎯 Why: Prevents a network waterfall, allowing independent queries for submissions and user data to run concurrently, speeding up page load.
+📊 Impact: Eliminates round-trip latency penalty, improving load performance for the specific submission route.
+🔬 Measurement: Verify using network tools that both queries are executed concurrently on component mount.
