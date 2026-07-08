@@ -1,0 +1,3 @@
+## 2024-07-08 - Added Explicit Keyboard Focus Styles to Layout Links
+**Learning:** Next.js `Link` elements and standard anchor (`a`) tags in layout components often lack default focus states, negatively impacting keyboard accessibility for navigation menus.
+**Action:** Always add explicit keyboard focus styles (e.g., `focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-auib-red rounded-sm`) to Next.js `Link` elements and anchor (`a`) tags in layout components to maintain consistent keyboard navigation accessibility.
