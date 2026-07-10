@@ -13,11 +13,13 @@ export function EditorThreads({ editor }: { editor: Editor | null }) {
     <>
       {/* Desktop side-panel comments */}
       <div className="hidden sm:block absolute top-0 right-[-320px] w-[300px]">
+        {/* @ts-expect-error -- Liveblocks typing mismatch with Tiptap metadata */}
         <AnchoredThreads editor={editor} threads={threads} />
       </div>
 
       {/* Mobile floating comments */}
       <div className="block sm:hidden">
+        {/* @ts-expect-error -- Liveblocks typing mismatch with Tiptap metadata */}
         <FloatingThreads editor={editor} threads={threads} />
       </div>
 
