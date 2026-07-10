@@ -1,0 +1,3 @@
+## 2024-05-18 - [Eliminate Supabase Query Waterfalls in Next.js Client Components]
+**Learning:** Sequential, independent Supabase queries (e.g. fetching a submission dossier and then fetching an editor roster) in Next.js Client Component `useEffect` hooks create performance-degrading network waterfalls.
+**Action:** Always inspect sequential `await supabase` calls in data-fetching functions. When queries do not depend on each other, group them into a single `await Promise.all([query1, query2])` block to execute them concurrently, significantly accelerating component initialization and reducing time-to-interactive.
