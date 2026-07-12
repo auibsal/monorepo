@@ -1,0 +1,3 @@
+## 2024-05-15 - Optimizing Supabase/PostgreSQL Count Queries
+**Learning:** When using `head: true` with `count: 'exact'` in Supabase/PostgREST to fetch just the count of rows without returning data, using `select('*')` forces PostgreSQL to evaluate all column metadata for the table, whereas `select('id')` leverages the primary key index efficiently. This is especially relevant in count queries.
+**Action:** Always use `select('id', { count: 'exact', head: true })` instead of `select('*', { count: 'exact', head: true })` for count-only queries to minimize database evaluation time.
