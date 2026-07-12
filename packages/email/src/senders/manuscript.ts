@@ -44,6 +44,7 @@ export async function sendManuscriptDecision(params: SendManuscriptDecisionParam
     return { success: true, data };
   } catch (err) {
     console.error('Failed to transmit manuscript decision:', err);
-    return { success: false, error: err };
+    // SECURITY: Prevent info leakage by not returning raw error objects to caller
+    return { success: false, error: 'An internal error occurred while transmitting the manuscript decision.' };
   }
 }
