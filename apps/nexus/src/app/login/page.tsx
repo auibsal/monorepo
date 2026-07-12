@@ -97,7 +97,7 @@ function LoginForm() {
       </div>
 
       {status === 'error' && (
-        <div role="alert" className="flex items-center gap-3 border-4 border-red-500 bg-background p-4 text-sm font-bold text-red-500">
+        <div className="flex items-center gap-3 border-4 border-red-500 bg-background p-4 text-sm font-bold text-red-500">
           <AlertTriangle size={20} />
           {errorMessage}
         </div>
@@ -107,7 +107,7 @@ function LoginForm() {
       <button
         type="submit"
         disabled={status === 'loading'}
-        className="w-full border-4 border-border bg-foreground p-4 font-bold tracking-widest text-background uppercase shadow-[6px_6px_0px_0px_var(--brutalist-shadow)] transition-all hover:-translate-y-1 hover:border-primary hover:bg-primary hover:shadow-[8px_8px_0px_0px_var(--brutalist-shadow)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:opacity-50"
+        className="w-full border-4 border-border bg-foreground p-4 font-bold tracking-widest text-background uppercase shadow-[6px_6px_0px_0px_var(--brutalist-shadow)] transition-all hover:-translate-y-1 hover:border-primary hover:bg-primary hover:shadow-[8px_8px_0px_0px_var(--brutalist-shadow)] disabled:opacity-50"
       >
         {status === 'loading' ? 'Authenticating...' : 'Authenticate'}
       </button>
@@ -115,7 +115,7 @@ function LoginForm() {
       <div className="mt-8 border-t-4 border-border pt-8 text-center">
         <Link
           href="/register"
-          className="inline-block text-sm font-bold tracking-wider text-foreground uppercase transition-colors hover:-translate-y-0.5 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+          className="inline-block text-sm font-bold tracking-wider text-foreground uppercase transition-colors hover:-translate-y-0.5 hover:text-primary"
         >
           Create an Account
         </Link>
