@@ -183,11 +183,10 @@ export default function JournalPage() {
         <form onSubmit={handleUpload} className="space-y-6">
           <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
             <div className="space-y-3">
-              <label htmlFor="vol" className="block text-sm font-bold tracking-wide uppercase">
+              <label htmlFor="slug" className="block text-sm font-bold tracking-wide uppercase">
                 Volume Number
               </label>
               <input
-                id="vol"
                 type="number"
                 required
                 min="1"
@@ -197,11 +196,10 @@ export default function JournalPage() {
               />
             </div>
             <div className="space-y-3">
-              <label htmlFor="issue" className="block text-sm font-bold tracking-wide uppercase">
+              <label htmlFor="slug" className="block text-sm font-bold tracking-wide uppercase">
                 Issue Number
               </label>
               <input
-                id="issue"
                 type="number"
                 required
                 min="1"
@@ -211,11 +209,10 @@ export default function JournalPage() {
               />
             </div>
             <div className="space-y-3">
-              <label htmlFor="titleEn" className="block text-sm font-bold tracking-wide uppercase">
+              <label htmlFor="slug" className="block text-sm font-bold tracking-wide uppercase">
                 Title (English)
               </label>
               <input
-                id="titleEn"
                 type="text"
                 required
                 value={titleEn}
@@ -231,7 +228,6 @@ export default function JournalPage() {
                 العنوان (عربي)
               </label>
               <input
-                id="titleAr"
                 type="text"
                 required
                 value={titleAr}
@@ -242,13 +238,12 @@ export default function JournalPage() {
           </div>
 
           <div className="space-y-3">
-            <label htmlFor="pdfFile" className="block text-sm font-bold tracking-wide uppercase">
+            <label htmlFor="slug" className="block text-sm font-bold tracking-wide uppercase">
               Compiled PDF File
             </label>
             <div className="group relative flex cursor-pointer flex-col items-center justify-center border-4 border-dashed border-border bg-background p-8 text-center transition-colors hover:bg-foreground/5">
               {/* CRITICAL FIX: The dynamic key mathematically guarantees the DOM input is destroyed and rebuilt when the state clears, preventing the Ghost Input trap. */}
               <input
-                id="pdfFile"
                 key={file ? 'loaded' : 'empty'}
                 type="file"
                 required
