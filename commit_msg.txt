@@ -1,0 +1,15 @@
+fix: 🛡️ Sentinel: [HIGH] Fix XSS in file URL
+
+🚨 Severity: HIGH
+💡 Vulnerability: The Zod schema for file_url allowed
+any valid URL scheme (e.g., javascript:, data:),
+leading to XSS risks when rendered.
+🎯 Impact: Attackers could submit malicious URLs
+that execute arbitrary JS in an editor's context
+if clicked or embedded in an iframe.
+🔧 Fix: Added a case-insensitive .refine() to
+enforce http/https before .nullable().optional(),
+preventing malicious schemes.
+✅ Verification: Verified fix manually against
+test values and successfully ran typecheck
+and lint commands for the database package.
