@@ -9,7 +9,8 @@ export const insertSubmissionSchema = z.object({
   title: z.string().min(2, 'Title must be at least 2 characters').max(255, 'Title is too long'),
   type: z.enum(SUBMISSION_TYPES as [string, ...string[]]),
   content: z.string().nullable().optional(),
-  file_url: z.string().url('Must be a valid URL').nullable().optional(),
+  // SECURITY: Enforce http/https protocols to prevent javascript: URI XSS vulnerabilities
+  file_url: z.string().url('Must be a valid URL').refine((val) => val.toLowerCase().startsWith('http'), { message: 'Must be an HTTP/HTTPS URL' }).nullable().optional(),
 });
 
 /**
