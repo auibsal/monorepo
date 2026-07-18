@@ -55,18 +55,15 @@ export default async function NexusHome() {
     const [pendingRes, membersRes, eventsRes] = await Promise.all([
       supabase
         .from('submissions')
-        // ⚡ Bolt Optimization: Use .select('id') instead of .select('*') for head queries to reduce index evaluation and metadata parsing overhead.
-        .select('id', { count: 'exact', head: true })
+        .select('*', { count: 'exact', head: true })
         .eq('status', 'pending'),
       supabase
         .from('users')
-        // ⚡ Bolt Optimization: Use .select('id') instead of .select('*') for head queries to reduce index evaluation and metadata parsing overhead.
-        .select('id', { count: 'exact', head: true })
+        .select('*', { count: 'exact', head: true })
         .in('role', ['member', 'editor', 'admin']),
       supabase
         .from('events')
-        // ⚡ Bolt Optimization: Use .select('id') instead of .select('*') for head queries to reduce index evaluation and metadata parsing overhead.
-        .select('id', { count: 'exact', head: true })
+        .select('*', { count: 'exact', head: true })
         .gt('starts_at', new Date().toISOString()),
     ]);
 
