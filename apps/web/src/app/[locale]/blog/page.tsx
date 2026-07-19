@@ -52,7 +52,7 @@ export default async function BlogPage({ params }: { params: Promise<{ locale: '
           </p>
         ) : (
           blogPosts.map((post) => (
-            <Link key={post.id} href={`/blog/${post.slug}`} className="group h-full">
+            <Link key={post.id} href={`/blog/${post.slug}`} className="group h-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background">
               <article className="flex h-full flex-col border-4 border-border bg-card shadow-[8px_8px_0px_0px_var(--brutalist-shadow)] transition-all duration-200 hover:-translate-x-1 hover:-translate-y-1 hover:shadow-[12px_12px_0px_0px_var(--brutalist-shadow)]">
                 <div className="flex flex-1 flex-col p-8">
                   {/* Brutalist Author Block */}

@@ -70,7 +70,7 @@ export default async function JournalIssuePage({ params }: Props) {
       <div className="mb-16">
         <Link
           href="/journal"
-          className="inline-flex items-center gap-2 text-sm font-bold tracking-widest text-foreground uppercase transition-transform hover:-translate-x-1 hover:text-primary rtl:hover:translate-x-1"
+          className="inline-flex items-center gap-2 text-sm font-bold tracking-widest text-foreground uppercase transition-transform hover:-translate-x-1 hover:text-primary rtl:hover:translate-x-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
         >
           <ArrowLeft className="h-5 w-5 rtl:rotate-180" />
           {t('backToJournal') || (isAr ? 'العودة إلى المجلة' : 'Back to Journal')}

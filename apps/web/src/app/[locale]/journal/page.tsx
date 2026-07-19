@@ -56,7 +56,7 @@ export default async function Journal({ params }: { params: Promise<{ locale: 'e
           </p>
         ) : (
           publishedIssues.map((issue) => (
-            <Link key={issue.id} href={`/journal/${issue.id}`} className="group block">
+            <Link key={issue.id} href={`/journal/${issue.id}`} className="group block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background">
               {/* Replaced hardcoded hexes with semantic tokens for seamless dark mode compatibility */}
               <article className="relative overflow-hidden border-4 border-border bg-card p-10 shadow-[8px_8px_0px_0px_var(--brutalist-shadow)] transition-all duration-200 hover:-translate-x-1 hover:-translate-y-1 hover:shadow-[12px_12px_0px_0px_var(--brutalist-shadow)] md:p-14">
                 {/* Hover Accent mapped to the primary brand color */}
