@@ -52,18 +52,19 @@ export default async function NexusHome() {
   let upcomingEventsCount = 0;
 
   if (isEditor) {
+    // ⚡ Bolt Optimization: Used .select('id') instead of .select('*') to reduce PostgREST row metadata parsing time for count-only queries.
     const [pendingRes, membersRes, eventsRes] = await Promise.all([
       supabase
         .from('submissions')
-        .select('*', { count: 'exact', head: true })
+        .select('id', { count: 'exact', head: true })
         .eq('status', 'pending'),
       supabase
         .from('users')
-        .select('*', { count: 'exact', head: true })
+        .select('id', { count: 'exact', head: true })
         .in('role', ['member', 'editor', 'admin']),
       supabase
         .from('events')
-        .select('*', { count: 'exact', head: true })
+        .select('id', { count: 'exact', head: true })
         .gt('starts_at', new Date().toISOString()),
     ]);
 
