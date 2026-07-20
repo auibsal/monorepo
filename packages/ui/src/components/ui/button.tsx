@@ -5,7 +5,7 @@ import { cn } from '../../lib/utils';
 
 const buttonVariants = cva(
   // The Math Fix: Translating by 1 (4px) perfectly erases the base 4px shadow on click.
-  "group/button inline-flex shrink-0 items-center justify-center rounded-none border-2 border-auib-charcoal text-sm font-bold tracking-wider whitespace-nowrap uppercase transition-all outline-none select-none focus-visible:ring-2 focus-visible:ring-auib-red focus-visible:ring-offset-2 active:translate-x-1 active:translate-y-1 active:shadow-none disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+  "group/button inline-flex shrink-0 items-center justify-center rounded-none border-2 border-auib-charcoal text-sm font-bold tracking-wider whitespace-nowrap uppercase transition-all outline-none select-none focus-visible:ring-2 focus-visible:ring-auib-red focus-visible:ring-offset-2 active:translate-x-1 active:translate-y-1 active:shadow-none disabled:cursor-not-allowed disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
   {
     variants: {
       variant: {
