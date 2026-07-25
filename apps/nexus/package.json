@@ -28,7 +28,7 @@
     "isomorphic-dompurify": "catalog:",
     "lucide-react": "catalog:",
     "next": "catalog:",
-    "node-ical": "^0.26.1",
+    "node-ical": "^0.27.1",
     "react": "catalog:",
     "react-dom": "catalog:"
   },
