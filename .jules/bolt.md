@@ -1,3 +1,3 @@
 ## 2026-07-25 - Optimize Supabase Count Queries
-**Learning:** Using .select('*') with { count: 'exact', head: true } in Supabase causes PostgREST and PostgreSQL to evaluate full row metadata, creating unnecessary database overhead for simple count queries.
-**Action:** Always use .select('id') when performing count-only queries to improve database performance.
+**Learning:** Using .select('*') with { count: 'exact', head: true } in Supabase causes PostgREST to default to COUNT(*) on the backend, which is typically the most optimized method in Postgres. However, in certain scenarios, specifying the primary key like .select('id') can sometimes bypass full row scanning if an index-only scan is preferred. Furthermore, the massive unrequested lockfile change was due to Shadcn getting automatically updated without freezing the lockfile.
+**Action:** Use .select('id') for count-only queries but always verify index usage. Never blind commit large unrequested pnpm-lock.yaml changes.
