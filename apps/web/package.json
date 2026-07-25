@@ -27,7 +27,7 @@
     "isomorphic-dompurify": "catalog:",
     "lucide-react": "catalog:",
     "next": "catalog:",
-    "next-intl": "^4.13.0",
+    "next-intl": "^4.13.4",
     "react": "catalog:",
     "react-dom": "catalog:",
     "three": "^0.184.0",
