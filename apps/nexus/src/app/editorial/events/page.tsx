@@ -127,7 +127,7 @@ export default function EventsPage() {
         <button
           type="button"
           onClick={() => setShowModal(true)}
-          className="border-4 border-border bg-primary px-6 py-2 font-bold tracking-wider text-background uppercase shadow-[6px_6px_0px_0px_var(--brutalist-shadow)] transition-colors hover:-translate-y-0.5 hover:bg-background hover:text-primary hover:shadow-[8px_8px_0px_0px_var(--brutalist-shadow)]"
+          className="border-4 border-border bg-primary px-6 py-2 font-bold tracking-wider text-background uppercase shadow-[6px_6px_0px_0px_var(--brutalist-shadow)] transition-colors hover:-translate-y-0.5 hover:bg-background hover:text-primary hover:shadow-[8px_8px_0px_0px_var(--brutalist-shadow)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
         >
           New Event
         </button>
@@ -236,7 +236,7 @@ export default function EventsPage() {
               type="button"
               onClick={handleCloseModal}
               aria-label="Close modal"
-              className="absolute top-6 right-6 text-foreground transition-colors hover:text-primary"
+              className="absolute top-6 right-6 text-foreground transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             >
               <X size={32} strokeWidth={3} />
             </button>
@@ -394,14 +394,14 @@ export default function EventsPage() {
                   type="button"
                   onClick={handleCloseModal}
                   disabled={isSaving}
-                  className="border-4 border-border px-8 py-4 font-bold tracking-widest text-foreground uppercase shadow-[6px_6px_0px_0px_var(--brutalist-shadow)] transition-colors hover:translate-x-1 hover:translate-y-1 hover:bg-foreground hover:text-background hover:shadow-none disabled:opacity-50"
+                  className="border-4 border-border px-8 py-4 font-bold tracking-widest text-foreground uppercase shadow-[6px_6px_0px_0px_var(--brutalist-shadow)] transition-colors hover:translate-x-1 hover:translate-y-1 hover:bg-foreground hover:text-background hover:shadow-none disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSaving}
-                  className="flex items-center gap-3 border-4 border-border bg-primary px-8 py-4 font-bold tracking-widest text-background uppercase shadow-[6px_6px_0px_0px_var(--brutalist-shadow)] transition-colors hover:translate-x-1 hover:translate-y-1 hover:bg-foreground hover:shadow-none disabled:opacity-50"
+                  className="flex items-center gap-3 border-4 border-border bg-primary px-8 py-4 font-bold tracking-widest text-background uppercase shadow-[6px_6px_0px_0px_var(--brutalist-shadow)] transition-colors hover:translate-x-1 hover:translate-y-1 hover:bg-foreground hover:shadow-none disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                 >
                   {isSaving && (
                     <div className="h-4 w-4 animate-spin rounded-none bg-background"></div>
