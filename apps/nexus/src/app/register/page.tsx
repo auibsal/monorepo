@@ -241,9 +241,16 @@ export default function NexusRegister() {
               <button
                 type="submit"
                 disabled={status === 'loading'}
-                className="w-full border-4 border-border bg-foreground p-4 font-bold tracking-widest text-background uppercase shadow-[6px_6px_0px_0px_var(--brutalist-shadow)] transition-all hover:-translate-y-1 hover:border-primary hover:bg-primary hover:shadow-[8px_8px_0px_0px_var(--brutalist-shadow)] disabled:opacity-50"
+                className="flex w-full items-center justify-center gap-3 border-4 border-border bg-foreground p-4 font-bold tracking-widest text-background uppercase shadow-[6px_6px_0px_0px_var(--brutalist-shadow)] transition-all hover:-translate-y-1 hover:border-primary hover:bg-primary hover:shadow-[8px_8px_0px_0px_var(--brutalist-shadow)] disabled:opacity-50"
               >
-                {status === 'loading' ? 'Processing Application...' : 'Submit Application'}
+                {status === 'loading' ? (
+                  <>
+                    <div className="h-4 w-4 animate-spin rounded-none bg-background"></div>
+                    Processing Application...
+                  </>
+                ) : (
+                  'Submit Application'
+                )}
               </button>
 
               <div className="mt-8 border-t-4 border-border pt-8 text-center">
