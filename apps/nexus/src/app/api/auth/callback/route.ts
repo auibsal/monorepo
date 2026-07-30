@@ -1,5 +1,6 @@
 import { createClient } from '@auibsal/auth/server';
 import { NextResponse } from 'next/server';
+import type { EmailOtpType } from '@supabase/supabase-js';
 
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
@@ -7,7 +8,7 @@ export async function GET(request: Request) {
   // Extract the cryptographic payloads
   const code = searchParams.get('code');
   const token_hash = searchParams.get('token_hash');
-  const type = searchParams.get('type') as any; // e.g., 'invite', 'recovery', 'magiclink'
+  const type = searchParams.get('type') as EmailOtpType; // e.g., 'invite', 'recovery', 'magiclink'
 
   // Extract the destination, fallback to root
   let next = searchParams.get('next') || searchParams.get('redirect_to') || '/';
