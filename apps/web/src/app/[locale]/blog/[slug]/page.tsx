@@ -115,6 +115,21 @@ export default async function BlogPostPage({ params }: Props) {
         className="prose prose-lg md:prose-xl prose-headings:font-bold prose-headings:text-foreground prose-headings:uppercase prose-headings:tracking-tight prose-a:text-primary prose-a:underline prose-a:underline-offset-4 prose-a:decoration-2 hover:prose-a:text-foreground max-w-none leading-relaxed font-medium text-foreground"
         dangerouslySetInnerHTML={{ __html: cleanHTML }}
       />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Article",
+            headline: isAr ? post.title_ar : post.title_en,
+            author: {
+              "@type": "Person",
+              name: post.users?.full_name || 'Unknown Author',
+            },
+            datePublished: post.published_at,
+          }).replace(/</g, '\\u003c'),
+        }}
+      />
     </div>
   );
 }
