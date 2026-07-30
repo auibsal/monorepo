@@ -24,6 +24,8 @@
     "next": "catalog:"
   },
   "devDependencies": {
+    "@auibsal/testing": "workspace:*",
+    "vitest": "catalog:",
     "@auibsal/config": "workspace:*",
     "@types/node": "catalog:",
     "client-only": "catalog:",
