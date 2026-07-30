@@ -82,7 +82,7 @@ export default async function NexusHome() {
             </h2>
           </div>
           <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
-            <div className="flex flex-col border-4 border-border bg-card p-8 shadow-[8px_8px_0px_0px_var(--brutalist-shadow)] transition-all hover:-translate-x-1 hover:-translate-y-1 hover:shadow-[12px_12px_0px_0px_var(--brutalist-shadow)]">
+            <div className="flex flex-col border-4 border-border bg-card p-8 shadow-brutalist-md transition-all hover:-translate-x-2 hover:-translate-y-2 hover:shadow-brutalist-lg">
               <div className="mb-4 flex items-start justify-between">
                 <h3 className="text-lg font-bold tracking-wide text-foreground uppercase">
                   Pending Submissions
@@ -94,7 +94,7 @@ export default async function NexusHome() {
               </p>
             </div>
 
-            <div className="flex flex-col border-4 border-border bg-card p-8 shadow-[8px_8px_0px_0px_var(--brutalist-shadow)] transition-all hover:-translate-x-1 hover:-translate-y-1 hover:shadow-[12px_12px_0px_0px_var(--brutalist-shadow)]">
+            <div className="flex flex-col border-4 border-border bg-card p-8 shadow-brutalist-md transition-all hover:-translate-x-2 hover:-translate-y-2 hover:shadow-brutalist-lg">
               <div className="mb-4 flex items-start justify-between">
                 <h3 className="text-lg font-bold tracking-wide text-foreground uppercase">
                   Active Members
@@ -104,7 +104,7 @@ export default async function NexusHome() {
               <p className="mt-auto text-5xl font-black text-foreground">{activeMembersCount}</p>
             </div>
 
-            <div className="flex flex-col border-4 border-border bg-card p-8 shadow-[8px_8px_0px_0px_var(--brutalist-shadow)] transition-all hover:-translate-x-1 hover:-translate-y-1 hover:shadow-[12px_12px_0px_0px_var(--brutalist-shadow)]">
+            <div className="flex flex-col border-4 border-border bg-card p-8 shadow-brutalist-md transition-all hover:-translate-x-2 hover:-translate-y-2 hover:shadow-brutalist-lg">
               <div className="mb-4 flex items-start justify-between">
                 <h3 className="text-lg font-bold tracking-wide text-foreground uppercase">
                   Upcoming Events
@@ -124,7 +124,7 @@ export default async function NexusHome() {
           </h2>
         </div>
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-          <div className="border-4 border-border bg-card p-8 shadow-[8px_8px_0px_0px_var(--brutalist-shadow)]">
+          <div className="border-4 border-border bg-card p-8 shadow-brutalist-md">
             <h3 className="mb-6 text-xl font-bold tracking-wide text-foreground uppercase">
               My Submissions
             </h3>
@@ -161,7 +161,7 @@ export default async function NexusHome() {
             )}
           </div>
 
-          <div className="h-fit border-4 border-border bg-foreground p-8 text-background shadow-[8px_8px_0px_0px_var(--brutalist-shadow)]">
+          <div className="h-fit border-4 border-border bg-foreground p-8 text-background shadow-brutalist-md">
             <h3 className="mb-6 text-xl font-bold tracking-wide text-background uppercase">
               Account Status
             </h3>
