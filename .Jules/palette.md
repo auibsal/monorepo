@@ -1,0 +1,3 @@
+## 2024-07-30 - Brutalist Interactive Feedback
+**Learning:** In a brutalist design system where animations are minimized and shapes are rigid, interactive feedback like loading states can be overlooked. Relying solely on text changes (e.g., 'Authenticating...') is less discoverable and accessible than visual cues.
+**Action:** Always include a visual loading indicator for async submit buttons. Use a stark, squared-off spinner (e.g., `<div className="h-4 w-4 animate-spin rounded-none bg-background"></div>`) paired with a flex layout to maintain the brutalist aesthetic while improving immediate user feedback.
