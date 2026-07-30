@@ -34,7 +34,7 @@ export async function sendManuscriptDecision(params: SendManuscriptDecisionParam
         authorName: params.authorName,
         manuscriptTitle: params.manuscriptTitle,
         status: params.status,
-      }) as any,
+      }),
     });
 
     if (error) {

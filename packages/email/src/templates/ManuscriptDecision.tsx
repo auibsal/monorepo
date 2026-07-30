@@ -23,11 +23,11 @@ interface ManuscriptDecisionProps {
  *
  * @description Standardized execution for ManuscriptDecisionTemplate.
  */
-export const ManuscriptDecisionTemplate: React.FC<ManuscriptDecisionProps> = ({
+export const ManuscriptDecisionTemplate = ({
   authorName,
   manuscriptTitle,
   status,
-}) => {
+}: ManuscriptDecisionProps) => {
   const isAccepted = status === 'accepted';
   const isRevisions = status === 'revisions_requested';
   
