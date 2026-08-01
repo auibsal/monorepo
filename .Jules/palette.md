@@ -1,0 +1,3 @@
+## 2026-08-01 - Focus Rings and Loading States on Brutalist Components
+**Learning:** Custom brutalist UI components in Next.js (like Link elements and buttons overriding native styles) often lack or obscure default browser focus rings. Furthermore, brutalist submit buttons require explicit flex layouts to integrate standard square loading spinners cleanly.
+**Action:** Always add explicit keyboard focus styles (`focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background`) to Links and buttons. Additionally, structure brutalist submit buttons with `flex items-center justify-center gap-3` to maintain design system consistency when adding the square spinner pattern.
