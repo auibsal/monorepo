@@ -1,0 +1,4 @@
+## 2026-08-02 - [CRITICAL] Privilege Escalation via user_metadata Authorization Bypass
+**Vulnerability:** Authorization checks rely on `user.user_metadata?.role` to determine permissions.
+**Learning:** `user.user_metadata` can be arbitrarily modified by authenticated users via `supabase.auth.updateUser()`, leading to critical privilege escalation. The proxy extracts roles from this insecure metadata and grants administrative or editorial permissions based on user-controlled input.
+**Prevention:** In Supabase applications, authorization logic and role-based access control must strictly extract user roles and sensitive claims from `user.app_metadata` (managed securely by the server/service-role) or directly from a secure database query (like the 'users' table, assuming RLS is properly configured). Never use `user.user_metadata` for authorization.
