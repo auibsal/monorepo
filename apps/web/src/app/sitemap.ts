@@ -41,6 +41,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   }));
 
+  // Optimization: Run independent DB queries concurrently to eliminate network waterfall and reduce total wait time.
   const [
     { data: issues },
     { data: posts },
