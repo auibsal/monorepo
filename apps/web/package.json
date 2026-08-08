@@ -19,7 +19,7 @@
     "@auibsal/seo": "workspace:*",
     "@auibsal/testing": "workspace:*",
     "@auibsal/ui": "workspace:*",
-    "@react-three/drei": "^10.7.7",
+    "@react-three/drei": "^10.7.8",
     "@react-three/fiber": "^9.6.1",
     "framer-motion": "catalog:",
     "howler": "^2.2.4",
