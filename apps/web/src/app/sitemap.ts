@@ -41,6 +41,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   }));
 
+  // Performance optimization: Batch independent Supabase database queries using Promise.all()
+  // to avoid network waterfalls and significantly reduce sitemap generation time.
   const [
     { data: issues },
     { data: posts },
