@@ -35,7 +35,7 @@ export default async function proxy(request: NextRequest) {
       finalResponse = NextResponse.redirect(new URL('/', request.url));
     } else if (!isApiRoute) {
       // Extract the role safely
-      let userRole = user.user_metadata?.role;
+      let userRole = user.app_metadata?.role;
 
       if (!userRole) {
         try {
