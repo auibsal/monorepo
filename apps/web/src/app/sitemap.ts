@@ -41,13 +41,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   }));
 
-  const { data: issues } = await supabase
-    .from('journal_issues')
-    .select('id, published_at')
-    .not('published_at', 'is', null);
+  const [issuesRes, postsRes, submissionsRes] = await Promise.all([
+    supabase
+      .from('journal_issues')
+      .select('id, published_at')
+      .not('published_at', 'is', null),
+    supabase.from('blog_posts').select('slug, published_at'),
+    supabase
+      .from('submissions')
+      .select('id, submitted_at')
+      .in('status', ['accepted']),
+  ]);
 
-  if (issues) {
-    issues.forEach((issue) => {
+  if (issuesRes.data) {
+    issuesRes.data.forEach((issue) => {
       sitemapEntries.push({
         url: `${baseUrl}/journal/${issue.id}`,
         lastModified: new Date(issue.published_at || new Date()),
@@ -63,10 +70,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     });
   }
 
-  const { data: posts } = await supabase.from('blog_posts').select('slug, published_at');
-
-  if (posts) {
-    posts.forEach((post) => {
+  if (postsRes.data) {
+    postsRes.data.forEach((post) => {
       sitemapEntries.push({
         url: `${baseUrl}/blog/${post.slug}`,
         lastModified: new Date(post.published_at || new Date()),
@@ -82,13 +87,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     });
   }
 
-  const { data: submissions } = await supabase
-    .from('submissions')
-    .select('id, submitted_at')
-    .in('status', ['accepted']);
-
-  if (submissions) {
-    submissions.forEach((sub) => {
+  if (submissionsRes.data) {
+    submissionsRes.data.forEach((sub) => {
       sitemapEntries.push({
         url: `${baseUrl}/submissions/${sub.id}`,
         lastModified: new Date(sub.submitted_at || new Date()),
