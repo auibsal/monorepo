@@ -2,6 +2,7 @@
   "extends": "@auibsal/config/tsconfig.base.json",
   "compilerOptions": {
     "ignoreDeprecations": "6.0",
+    "types": ["node"],
     "baseUrl": ".",
     "rootDir": "./src",
     "outDir": "./dist",
