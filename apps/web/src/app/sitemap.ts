@@ -41,10 +41,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   }));
 
-  const { data: issues } = await supabase
-    .from('journal_issues')
-    .select('id, published_at')
-    .not('published_at', 'is', null);
+  // CRITICAL PERFORMANCE UPGRADE: Batch independent queries to prevent network waterfalls
+  // Reduces sitemap generation time significantly by executing these requests concurrently.
+  const [issuesRes, postsRes, submissionsRes] = await Promise.all([
+    supabase.from('journal_issues').select('id, published_at').not('published_at', 'is', null),
+    supabase.from('blog_posts').select('slug, published_at'),
+    supabase.from('submissions').select('id, submitted_at').in('status', ['accepted']),
+  ]);
+
+  const issues = issuesRes.data;
+  const posts = postsRes.data;
+  const submissions = submissionsRes.data;
 
   if (issues) {
     issues.forEach((issue) => {
@@ -63,8 +70,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     });
   }
 
-  const { data: posts } = await supabase.from('blog_posts').select('slug, published_at');
-
   if (posts) {
     posts.forEach((post) => {
       sitemapEntries.push({
@@ -81,11 +86,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       });
     });
   }
-
-  const { data: submissions } = await supabase
-    .from('submissions')
-    .select('id, submitted_at')
-    .in('status', ['accepted']);
 
   if (submissions) {
     submissions.forEach((sub) => {
