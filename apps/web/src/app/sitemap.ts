@@ -41,7 +41,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   }));
 
-    // CRITICAL PERFORMANCE UPGRADE: Batch independent queries to prevent network waterfalls
+  // CRITICAL PERFORMANCE UPGRADE: Batch independent queries to prevent network waterfalls
   // Reduces sitemap generation time significantly by executing these requests concurrently.
   const [issuesRes, postsRes, submissionsRes] = await Promise.all([
     supabase.from('journal_issues').select('id, published_at').not('published_at', 'is', null),
