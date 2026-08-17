@@ -41,6 +41,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   }));
 
+  // ⚡ Bolt: Batch independent Supabase queries using Promise.all()
+  // to avoid a network waterfall, significantly reducing edge response time.
   const [{ data: issues }, { data: posts }, { data: submissions }] = await Promise.all([
     supabase.from('journal_issues').select('id, published_at').not('published_at', 'is', null),
     supabase.from('blog_posts').select('slug, published_at'),
