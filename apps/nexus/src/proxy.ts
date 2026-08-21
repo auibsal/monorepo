@@ -35,11 +35,12 @@ export default async function proxy(request: NextRequest) {
       finalResponse = NextResponse.redirect(new URL('/', request.url));
     } else if (!isApiRoute) {
       // Extract the role safely
-      let userRole = user.user_metadata?.role;
+      // SECURITY FIX: Always extract roles from app_metadata instead of user_metadata to prevent privilege escalation
+      let userRole = user.app_metadata?.role;
 
       if (!userRole) {
         try {
-          // Warning: If user_metadata is persistently empty, this will cause Edge latency on every request.
+          // Warning: If app_metadata is persistently empty, this will cause Edge latency on every request.
           // Ensure your Supabase triggers inject the role into the JWT.
           const { data: userData, error } = await supabase
             .from('users')
