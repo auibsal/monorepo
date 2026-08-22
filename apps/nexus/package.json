@@ -24,7 +24,7 @@
     "@hello-pangea/dnd": "^18.0.1",
     "@liveblocks/client": "^3.19.4",
     "@liveblocks/node": "^3.19.5",
-    "@liveblocks/react": "^3.19.4",
+    "@liveblocks/react": "^3.24.1",
     "isomorphic-dompurify": "catalog:",
     "lucide-react": "catalog:",
     "next": "catalog:",
