@@ -5,6 +5,8 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
 import { Link } from '@/i18n/routing';
+import { generateArticleSchema } from '@auibsal/seo/json-ld';
+import { env } from '@auibsal/env';
 
 // 1. CRITICAL PERFORMANCE UPGRADE: Incremental Static Regeneration (ISR)
 // Caches the page globally for 1 hour to ensure instant page transitions.
@@ -71,8 +73,19 @@ export default async function BlogPostPage({ params }: Props) {
 
   const cleanHTML = DOMPurify.sanitize(content);
 
+  const articleSchema = generateArticleSchema({
+    title: isAr ? post.title_ar : post.title_en,
+    authorName: post.users?.full_name || 'Unknown Author',
+    publishedAt: post.published_at,
+    url: `${env.NEXT_PUBLIC_WEB_URL}/${locale}/blog/${slug}`,
+  });
+
   return (
     <div className="mx-auto max-w-4xl px-6 py-16 md:py-32">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+      />
       {/* Brutalist Back Navigation using semantic foreground and primary tokens */}
       <div className="mb-16">
         <Link
