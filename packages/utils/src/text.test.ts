@@ -8,7 +8,7 @@ describe('calculateWordCount', () => {
   });
 
   it('returns 0 for empty input', () => {
-    // @ts-expect-error Testing invalid input
+    // @ts-ignore Testing invalid input
     expect(calculateWordCount(null)).toBe(0);
     expect(calculateWordCount('')).toBe(0);
     expect(calculateWordCount('   ')).toBe(0);
