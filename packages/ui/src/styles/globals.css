@@ -61,7 +61,7 @@
   --shadow-brutalist-sm: 4px 4px 0px 0px var(--brutalist-shadow);
   --shadow-brutalist-md: 8px 8px 0px 0px var(--brutalist-shadow);
   --shadow-brutalist-lg: 16px 16px 0px 0px var(--brutalist-shadow);
-  --shadow-brutalist-red: 8px 8px 0px 0px var(--color-auib-red);
+  --shadow-brutalist-red: 4px 4px 0px 0px var(--color-auib-red);
 }
 
 @layer base {
