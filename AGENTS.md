@@ -22,10 +22,12 @@ items and decisions) and continue from the first unticked item.
   every platform email in both languages, at design.auibsal.org. Its routing
   middleware lets in only officers signed in through the Nexus
   (`lib/gate.ts`); no vendor login.
-- Documents live on auibsal.org/documents (`apps/web`), the officer handbook
-  in the Nexus (`governance.handbook_pages`, edited in place) and the platform
-  runbooks in `docs/platform` (Markdown). There is no separate docs site;
-  docs.auibsal.org redirects (`apps/web/next.config.ts`).
+- Documents live on auibsal.org/documents (`apps/web`); the officer handbook
+  and the internal documents' text in the team's Notion workspace (the Nexus
+  links there: setting `notion.handbook`, `society_documents.notion_url`;
+  `docs/platform/notion.md`); the platform runbooks in `docs/platform`
+  (Markdown). There is no separate docs site; docs.auibsal.org redirects
+  (`apps/web/next.config.ts`).
 - `packages/*` — shared code, imported as `@repo/<name>`. `@repo` is a fixed
   internal scope; never rename it.
   - `@repo/database` — SQL migrations (`supabase/migrations`), pgTAP tests

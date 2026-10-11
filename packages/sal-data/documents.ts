@@ -3,7 +3,8 @@ import { sanitizeRichText, toPlainText } from "./sanitize";
 
 /**
  * The Society's documents (governance.society_documents): public ones on
- * auibsal.org/documents, internal ones in the Nexus. Each page shows the
+ * auibsal.org/documents, internal ones in the Nexus, with their text in the
+ * team's Notion workspace (`notion_url`). Each page shows the
  * status recorded here and nothing else, so a draft is never presented as
  * adopted. Governance managers edit the text and the status in the Nexus.
  */
@@ -21,6 +22,8 @@ export interface SalDocument {
   code: string;
   dated: string | null;
   id: string;
+  /** Internal documents: where the text is kept in the team's Notion. */
+  notion_url?: string | null;
   ratification: string | null;
   slug: string;
   sort: number;
@@ -34,7 +37,7 @@ export interface SalDocument {
 }
 
 const LISTING =
-  "id, slug, code, title_en, title_ar, summary_en, summary_ar, audience, status, version, dated, ratification, adopted_on, sort, updated_at";
+  "id, slug, code, title_en, title_ar, summary_en, summary_ar, audience, status, version, dated, ratification, adopted_on, sort, updated_at, notion_url";
 
 /** The public documents, without their text (for listings and the sitemap). */
 export const publicDocuments = async (client: Client) =>

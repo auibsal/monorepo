@@ -8,8 +8,10 @@ import { formatLongDate } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
 import { documents } from "@repo/sal-data";
 import { useQuery } from "@tanstack/react-query";
+import { ExternalLink } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
+import { isNotionUrl } from "@/lib/notion";
 import { EmptyLine, ErrorState, SectionSpinner } from "../states";
 
 type Status = documents.DocumentStatus;
@@ -18,10 +20,18 @@ type Audience = documents.DocumentAudience;
 /**
  * The Society's documents in the Nexus: the public ones (also on
  * auibsal.org) and, for officers who read the internal library, the
- * internal ones (Row Level Security decides).
+ * internal ones (Row Level Security decides). An internal document's text
+ * is kept in the team's Notion workspace; it opens there.
  */
+
+/** Where an internal document's text is, if it is kept in Notion. */
+const notionPage = (doc: documents.SalDocument) =>
+  doc.audience === "internal" && isNotionUrl(doc.notion_url)
+    ? doc.notion_url
+    : null;
 export const Documents = () => {
   const t = useTranslations("nexus.documents");
+  const tc = useTranslations("common");
   const locale = useLocale() as Locale;
   const { supabase } = useAuth();
   const list = useQuery({
@@ -64,15 +74,30 @@ export const Documents = () => {
                 <SalCard>
                   <div className="grid gap-1">
                     <p className="type-kicker">{d.code}</p>
-                    <Link
-                      className="font-bold underline underline-offset-4"
-                      href={{
-                        pathname: "/documents/view",
-                        query: { slug: d.slug },
-                      }}
-                    >
-                      {documents.documentTitle(d, locale)}
-                    </Link>
+                    {notionPage(d) ? (
+                      <a
+                        className="inline-flex items-center gap-1.5 font-bold underline underline-offset-4"
+                        href={notionPage(d) ?? undefined}
+                        rel="noopener"
+                        target="_blank"
+                      >
+                        {documents.documentTitle(d, locale)}
+                        <ExternalLink
+                          aria-label={tc("externalLink")}
+                          className="size-3.5"
+                        />
+                      </a>
+                    ) : (
+                      <Link
+                        className="font-bold underline underline-offset-4"
+                        href={{
+                          pathname: "/documents/view",
+                          query: { slug: d.slug },
+                        }}
+                      >
+                        {documents.documentTitle(d, locale)}
+                      </Link>
+                    )}
                     <p className="type-caption">
                       {t(`statuses.${d.status as Status}`)} ·{" "}
                       {t("updated", {
@@ -90,60 +115,14 @@ export const Documents = () => {
   );
 };
 
-export const DocumentView = () => {
+/** A document's text kept in the Nexus, with its table of contents. */
+const DocumentText = ({ doc }: { doc: documents.SalDocument }) => {
   const t = useTranslations("nexus.documents");
   const locale = useLocale() as Locale;
-  const { supabase } = useAuth();
-  const slug = useSearchParams().get("slug") ?? "";
-  const doc = useQuery({
-    enabled: Boolean(slug),
-    queryFn: () => documents.documentBySlug(supabase, slug),
-    queryKey: ["documents", slug],
-  });
-
-  if (doc.isPending && slug) {
-    return <SectionSpinner />;
-  }
-  if (!doc.data) {
-    return (
-      <EmptyLine action={{ href: "/documents", label: t("back") }}>
-        {t("notFound")}
-      </EmptyLine>
-    );
-  }
-  const body = documents.documentBody(doc.data, locale);
+  const body = documents.documentBody(doc, locale);
   const { contents, html } = documents.documentSections(body.html);
-
   return (
-    <article className="mx-auto grid w-full max-w-4xl gap-6">
-      <div className="flex flex-wrap items-center gap-3 print:hidden">
-        <Link className="type-body underline" href="/documents">
-          {t("back")}
-        </Link>
-        <Button onClick={() => window.print()} size="sm" variant="outline">
-          {t("print")}
-        </Button>
-      </div>
-      <header className="grid gap-2">
-        <p className="type-kicker">
-          {doc.data.code} · {t(`groups.${doc.data.audience as Audience}`)}
-        </p>
-        <h1 className="type-display">
-          {documents.documentTitle(doc.data, locale)}
-        </h1>
-        {doc.data.summary_en ? (
-          <p className="type-lede max-w-2xl" dir="auto">
-            {(locale === "ar" && doc.data.summary_ar) || doc.data.summary_en}
-          </p>
-        ) : null}
-        <p className="type-caption">
-          {t(`statuses.${doc.data.status as Status}`)}
-          {doc.data.version ? ` · ${doc.data.version}` : ""}
-          {doc.data.adopted_on
-            ? ` · ${t("adoptedOn", { date: formatLongDate(doc.data.adopted_on, locale) })}`
-            : ""}
-        </p>
-      </header>
+    <>
       {contents.length > 0 ? (
         <nav aria-label={t("contents")} className="print:hidden">
           <ol className="grid gap-1 ps-6" dir={body.english ? "ltr" : "rtl"}>
@@ -173,6 +152,82 @@ export const DocumentView = () => {
         />
       ) : (
         <p className="type-body">{t("noText")}</p>
+      )}
+    </>
+  );
+};
+
+export const DocumentView = () => {
+  const t = useTranslations("nexus.documents");
+  const tc = useTranslations("common");
+  const locale = useLocale() as Locale;
+  const { supabase } = useAuth();
+  const slug = useSearchParams().get("slug") ?? "";
+  const doc = useQuery({
+    enabled: Boolean(slug),
+    queryFn: () => documents.documentBySlug(supabase, slug),
+    queryKey: ["documents", slug],
+  });
+
+  if (doc.isPending && slug) {
+    return <SectionSpinner />;
+  }
+  if (!doc.data) {
+    return (
+      <EmptyLine action={{ href: "/documents", label: t("back") }}>
+        {t("notFound")}
+      </EmptyLine>
+    );
+  }
+  const notion = notionPage(doc.data);
+
+  return (
+    <article className="mx-auto grid w-full max-w-4xl gap-6">
+      <div className="flex flex-wrap items-center gap-3 print:hidden">
+        <Link className="type-body underline" href="/documents">
+          {t("back")}
+        </Link>
+        {notion ? null : (
+          <Button onClick={() => window.print()} size="sm" variant="outline">
+            {t("print")}
+          </Button>
+        )}
+      </div>
+      <header className="grid gap-2">
+        <p className="type-kicker">
+          {doc.data.code} · {t(`groups.${doc.data.audience as Audience}`)}
+        </p>
+        <h1 className="type-display">
+          {documents.documentTitle(doc.data, locale)}
+        </h1>
+        {doc.data.summary_en ? (
+          <p className="type-lede max-w-2xl" dir="auto">
+            {(locale === "ar" && doc.data.summary_ar) || doc.data.summary_en}
+          </p>
+        ) : null}
+        <p className="type-caption">
+          {t(`statuses.${doc.data.status as Status}`)}
+          {doc.data.version ? ` · ${doc.data.version}` : ""}
+          {doc.data.adopted_on
+            ? ` · ${t("adoptedOn", { date: formatLongDate(doc.data.adopted_on, locale) })}`
+            : ""}
+        </p>
+      </header>
+      {notion ? (
+        <div className="grid gap-3">
+          <p className="type-body">{t("inNotion")}</p>
+          <Button asChild className="justify-self-start">
+            <a href={notion} rel="noopener" target="_blank">
+              {t("openInNotion")}
+              <ExternalLink
+                aria-label={tc("externalLink")}
+                className="size-4"
+              />
+            </a>
+          </Button>
+        </div>
+      ) : (
+        <DocumentText doc={doc.data} />
       )}
     </article>
   );

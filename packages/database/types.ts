@@ -2533,6 +2533,7 @@ export type Database = {
           created_at: string;
           dated: string | null;
           id: string;
+          notion_url: string | null;
           ratification: string | null;
           slug: string;
           sort: number;
@@ -2554,6 +2555,7 @@ export type Database = {
           created_at?: string;
           dated?: string | null;
           id?: string;
+          notion_url?: string | null;
           ratification?: string | null;
           slug: string;
           sort?: number;
@@ -2575,6 +2577,7 @@ export type Database = {
           created_at?: string;
           dated?: string | null;
           id?: string;
+          notion_url?: string | null;
           ratification?: string | null;
           slug?: string;
           sort?: number;

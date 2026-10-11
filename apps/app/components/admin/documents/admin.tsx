@@ -141,7 +141,8 @@ const NewDocument = ({ onDone }: { onDone: (id: string) => void }) => {
  * Society documents (Nexus admin): the text of every foundational
  * document, edited in place, with who may read it and its status. Public
  * documents are published on auibsal.org/documents within a minute of
- * saving; internal ones are read only in the Nexus.
+ * saving; internal ones keep their text in the team's Notion workspace
+ * (`notion_url`), and only their registry entry here.
  */
 export const DocumentsAdmin = () => {
   const t = useTranslations("nexus.admin.documents");
@@ -266,6 +267,7 @@ const EditorForm = ({
     audience: doc.audience as Audience,
     body: { ar: doc.body_ar ?? "", en: doc.body_en ?? "" },
     dated: doc.dated ?? "",
+    notion_url: doc.notion_url ?? "",
     ratification: doc.ratification ?? "",
     status: doc.status as Status,
     summary: { ar: doc.summary_ar ?? "", en: doc.summary_en ?? "" },
@@ -286,6 +288,11 @@ const EditorForm = ({
               : null,
             body_en: sanitizeRichText(form.body.en),
             dated: optionalDate(form.dated),
+            // Only internal documents keep their text in Notion.
+            notion_url:
+              form.audience === "internal"
+                ? form.notion_url.trim() || null
+                : null,
             ratification: optionalDate(form.ratification),
             status: form.status,
             summary_ar: form.summary.ar.trim() || null,
@@ -299,6 +306,7 @@ const EditorForm = ({
     onSuccess: onSaved,
   });
   const adoptedWithoutDate = form.status === "adopted" && !form.adopted_on;
+  const inNotion = form.audience === "internal" && form.notion_url.trim();
 
   return (
     <form
@@ -416,23 +424,49 @@ const EditorForm = ({
       {adoptedWithoutDate ? (
         <p className="type-caption">{t("adoptedNoDate")}</p>
       ) : null}
-      <RichTextEditor
-        document
-        label={t("fields.bodyEn")}
-        lang="en"
-        onChange={(en) => setForm((f) => ({ ...f, body: { ...f.body, en } }))}
-        value={form.body.en}
-      />
-      <RichTextEditor
-        document
-        label={t("fields.bodyAr")}
-        lang="ar"
-        onChange={(ar) => setForm((f) => ({ ...f, body: { ...f.body, ar } }))}
-        value={form.body.ar}
-      />
-      <p className="type-caption">
-        {form.audience === "public" ? t("publicNote") : t("internalNote")}
-      </p>
+      {form.audience === "internal" ? (
+        <Field hint={t("fields.notionHint")} label={t("fields.notion")}>
+          {(fieldId) => (
+            <Input
+              dir="ltr"
+              id={fieldId}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, notion_url: e.target.value }))
+              }
+              pattern="https://(app\.notion\.com|www\.notion\.so)/.+"
+              type="url"
+              value={form.notion_url}
+            />
+          )}
+        </Field>
+      ) : null}
+      {inNotion ? (
+        <p className="type-body">{t("notionNote")}</p>
+      ) : (
+        <>
+          <RichTextEditor
+            document
+            label={t("fields.bodyEn")}
+            lang="en"
+            onChange={(en) =>
+              setForm((f) => ({ ...f, body: { ...f.body, en } }))
+            }
+            value={form.body.en}
+          />
+          <RichTextEditor
+            document
+            label={t("fields.bodyAr")}
+            lang="ar"
+            onChange={(ar) =>
+              setForm((f) => ({ ...f, body: { ...f.body, ar } }))
+            }
+            value={form.body.ar}
+          />
+          <p className="type-caption">
+            {form.audience === "public" ? t("publicNote") : t("internalNote")}
+          </p>
+        </>
+      )}
       <SaveButton pending={save.isPending} success={save.isSuccess} />
       <ErrorLine error={save.error} />
     </form>

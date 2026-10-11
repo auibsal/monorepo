@@ -23,12 +23,11 @@ import {
   usePathname,
   useRouter,
 } from "@repo/internationalization/navigation";
-import { hasPermissionAnywhere } from "@repo/rbac";
-import { content } from "@repo/sal-data";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { ExternalLink, MenuIcon } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { type ReactNode, useState } from "react";
+import { useNotionHandbook, useTeamWorkspace } from "@/lib/notion";
 import { disablePush } from "@/lib/push";
 import { useMemberStatus } from "@/lib/queries";
 import { useVisibleModules } from "./admin/admin-shell";
@@ -50,9 +49,6 @@ const useAccountLinks = () => {
   const twoStep = useTwoStep();
   const admin = visible.length > 0 || Boolean(twoStep.data?.needs);
   const status = useMemberStatus();
-  const handbook =
-    hasPermissionAnywhere(grants.data, "library.read") ||
-    hasPermissionAnywhere(grants.data, "governance.manage");
   // Form F-18: every role holder declares conflicts each semester (P8).
   const declares = (grants.data ?? []).length > 0;
   const member = Boolean(status.data?.is_member);
@@ -62,7 +58,6 @@ const useAccountLinks = () => {
     { href: "/forms", key: "forms" },
     { href: "/documents", key: "documents" },
     ...(member ? [{ href: "/offers", key: "offers" } as const] : []),
-    ...(handbook ? [{ href: "/handbook", key: "handbook" } as const] : []),
     ...(declares
       ? [{ href: "/declarations", key: "declarations" } as const]
       : []),
@@ -71,20 +66,18 @@ const useAccountLinks = () => {
 };
 
 /**
- * The team's Notion workspace, for role holders: team work (projects,
- * tasks, meetings, planning, the handbook) lives there.
+ * Links into the team's Notion workspace: Start here for role holders, and
+ * the officer handbook for those who may read the internal library.
  */
-const useTeamWorkspace = () => {
-  const { supabase } = useAuth();
-  const { grants } = useVisibleModules();
-  const officer = (grants.data ?? []).length > 0;
-  const home = useQuery({
-    enabled: officer,
-    queryFn: () => content.publicSetting(supabase, "notion.home_url"),
-    queryKey: ["setting", "notion.home_url"],
-    staleTime: 3_600_000,
-  });
-  return officer && typeof home.data === "string" ? home.data : null;
+const useNotionLinks = () => {
+  const workspace = useTeamWorkspace();
+  const handbook = useNotionHandbook();
+  return [
+    ...(workspace ? [{ href: workspace, key: "workspace" } as const] : []),
+    ...(handbook.home
+      ? [{ href: handbook.home, key: "handbook" } as const]
+      : []),
+  ];
 };
 
 const NavLinks = ({ onNavigate }: { onNavigate?: () => void }) => {
@@ -126,7 +119,7 @@ export const AppShell = ({ children }: { children: ReactNode }) => {
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
   const account = useAccountLinks();
-  const workspace = useTeamWorkspace();
+  const notion = useNotionLinks();
 
   const signOut = async () => {
     // A shared computer must not show the last member's notices.
@@ -174,17 +167,17 @@ export const AppShell = ({ children }: { children: ReactNode }) => {
                     <Link href={link.href}>{t(`nexus.nav.${link.key}`)}</Link>
                   </DropdownMenuItem>
                 ))}
-                {workspace ? (
-                  <DropdownMenuItem asChild>
-                    <a href={workspace} rel="noopener" target="_blank">
-                      {t("nexus.nav.workspace")}
+                {notion.map((link) => (
+                  <DropdownMenuItem asChild key={link.key}>
+                    <a href={link.href} rel="noopener" target="_blank">
+                      {t(`nexus.nav.${link.key}`)}
                       <ExternalLink
                         aria-label={t("common.externalLink")}
                         className="size-3.5"
                       />
                     </a>
                   </DropdownMenuItem>
-                ) : null}
+                ))}
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onSelect={signOut}>
                   {t("auth.signOut")}
@@ -220,22 +213,22 @@ export const AppShell = ({ children }: { children: ReactNode }) => {
                       </Link>
                     </li>
                   ))}
-                  {workspace ? (
-                    <li>
+                  {notion.map((link) => (
+                    <li key={link.key}>
                       <a
                         className="inline-flex items-center gap-1.5 underline underline-offset-4"
-                        href={workspace}
+                        href={link.href}
                         rel="noopener"
                         target="_blank"
                       >
-                        {t("nexus.nav.workspace")}
+                        {t(`nexus.nav.${link.key}`)}
                         <ExternalLink
                           aria-label={t("common.externalLink")}
                           className="size-3.5"
                         />
                       </a>
                     </li>
-                  ) : null}
+                  ))}
                 </ul>
                 <Button
                   className="mt-6 w-full"
