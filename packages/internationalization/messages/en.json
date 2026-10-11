@@ -2206,11 +2206,14 @@
           "adopted": "Adopted on",
           "adoptedHint": "Only once the Assembly or Council has adopted it.",
           "bodyEn": "Text (English)",
-          "bodyAr": "Text (Arabic)"
+          "bodyAr": "Text (Arabic)",
+          "notion": "Notion page",
+          "notionHint": "Internal documents only: the address of the page in the team's Notion workspace that holds the text."
         },
         "adoptedNoDate": "An adopted document should record the date it was adopted.",
         "publicNote": "Saving publishes this text on auibsal.org/documents. Its status is shown on the page, so a draft is never presented as adopted.",
-        "internalNote": "Internal: read only in the Nexus by officers who read the internal library."
+        "internalNote": "Internal: read only in the Nexus by officers who read the internal library.",
+        "notionNote": "The text is kept in Notion. Edit it there; this entry keeps the document's status, version and dates."
       },
       "notion": {
         "event": "This event is written in the team's Notion workspace. Publishing it from Notion again replaces changes made here.",
@@ -2268,30 +2271,12 @@
     },
     "handbook": {
       "title": "Officer handbook",
-      "lede": "How to run the Society in the Nexus: events, the Journal, news, the charity ledger, members, elections and the brand. For Society officers only.",
-      "sections": {
-        "start": "Start here",
-        "running": "Running the Society",
-        "making": "Making things"
-      },
-      "back": "Back to the handbook",
-      "edit": "Edit this page",
-      "delete": "Delete this page",
-      "deleteConfirm": "The page is removed for every officer. This can't be undone.",
-      "newPage": "Add a page",
-      "slug": "Web address (slug)",
-      "slugHint": "Lowercase words joined by hyphens, for example “events”.",
-      "section": "Section",
-      "titleLabel": "Title",
-      "summary": "Summary",
-      "bodyEn": "Text in English",
-      "bodyAr": "Text in Arabic",
-      "cancel": "Cancel",
-      "notFound": "This page isn't in the handbook.",
-      "englishOnly": "This page hasn't been written in Arabic yet; here it is in English.",
       "forOfficers": "The handbook is for Society officers. It opens when you hold a role.",
       "seeSociety": "See who runs the Society",
-      "empty": "The handbook has no pages yet."
+      "inNotion": "The handbook is kept in the team's Notion workspace, the only copy, edited there. Sign in to Notion with your AUIB address.",
+      "open": "Open the handbook in Notion",
+      "notConnected": "The handbook isn't linked from the Nexus yet.",
+      "home": "Back to home"
     },
     "declarations": {
       "title": "Conflict of interest",
@@ -3033,7 +3018,9 @@
       "contents": "Contents",
       "adoptedOn": "Adopted on {date}",
       "englishOnly": "This document is in English; the Arabic version is being prepared.",
-      "noText": "The text of this document has not been entered yet."
+      "noText": "The text of this document has not been entered yet.",
+      "inNotion": "The text of this internal document is kept in the team's Notion workspace. Sign in to Notion with your AUIB address.",
+      "openInNotion": "Read it in Notion"
     }
   },
   "web": {

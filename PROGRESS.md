@@ -346,6 +346,19 @@ These stop parts of the work. Everything else continues around them.
   narrows the Oct 9 "our own sign-in everywhere" decision for this
   workspace only. Invite-only; the auib.edu.iq allowed-domain setting stays
   off; volunteers are guests on their project's pages.
+- Handbook and internal documents in Notion only (Oct 10, 2026, owner;
+  migration `20261010000400`): the nine handbook pages were copied to
+  Notion word for word (the charity page no longer names the deleted
+  Second Chapter 2026 draft; the events and news pages now say how to
+  publish from Notion). The Nexus links there (Account → Officer
+  handbook; `/handbook?page=…` forwards to the same page in Notion) and
+  `governance.handbook_pages` is read only. Internal documents keep their
+  registry entry and status in the Nexus and their text in Notion
+  (`society_documents.notion_url`).
+- Rows deleted directly in production (the Second Chapter 2026 campaign,
+  Journal Issue 1 and its call, Mohammed Ali Ehsan's Editor-in-Chief role):
+  the owner deleted them on purpose and does not want them back (Oct 10,
+  2026). Their copies stay in `core.activity_log` as usual.
 - UX pass (Oct 10, 2026): setup asks for the member's name (accounts made
   by a sign-in link had none, so they showed blank across the Nexus), and
   members without one are sent back to setup once. Admin sections are in
@@ -458,7 +471,7 @@ These stop parts of the work. Everything else continues around them.
 - [x] Overview (`core.admin_overview()`), Members (directory, verification queue, tiers, manual activity, roles via `access.assign_role`)
 - [x] Events (editor, questions, attendance, camera QR check-in)
 - [x] Content (news, pages, announcements, homepage slots, media library; live co-editing on Supabase Realtime)
-- [x] Officer handbook in the Nexus (Account → Officer handbook), edited in place by governance managers
+- [x] Officer handbook in the team's Notion workspace, linked from Account → Officer handbook (until Oct 10, 2026 it was edited in the Nexus)
 - [x] Charity (campaigns, ledger with sign-off and reversals, receipts through signed URLs; winter-set cost is a placeholder setting)
 - [x] Programs, Governance (minutes co-edited, elections, spending, library uploads), Activity log, Settings
 - [x] Productions (`/admin/productions`): stages, rights clearance by a second person, auditions with private panel notes, cast and crew credits, hours as service, rehearsals, performances linked to events, partners, Program Report (F-25 B), drafted certificates; public page auibsal.org/productions
@@ -526,8 +539,8 @@ Covered by automated tests so far:
 
 ## Content still needed
 
-- TODO(content): Arabic titles, summaries and text for the officer handbook
-  pages (`governance.handbook_pages`); the Nexus shows English until then.
+- TODO(content): Arabic versions of the officer handbook pages, written in
+  Notion (Handbook and internal documents → Officer handbook).
 - The Journal, Second Chapter and Side Quest documents listed above.
 - A formal Human Authorship pledge wording: the setup page shows Policy
   Manual P10.1 (English verbatim) until one exists. The Member Pledge is now
@@ -574,6 +587,11 @@ Covered by automated tests so far:
 - `core.programmes.name_ar`: every name.
 - Notion (2026-10-10): `nexus.nav.workspace`, `nexus.admin.notion.*` and
   `nexus.admin.settings.notion.*`.
+- Handbook and internal documents in Notion (2026-10-10):
+  `nexus.handbook.{inNotion,open,notConnected,home}`,
+  `nexus.documents.{inNotion,openInNotion}`,
+  `nexus.admin.documents.fields.{notion,notionHint}` and
+  `nexus.admin.documents.notionNote`.
 - UX pass (2026-10-10): `nexus.setup.name.*`, `nexus.home.greetingPlain`,
   `nexus.admin.nav.groups.*`, `web.home.whatWeDo`, `web.home.allPrograms`,
   `web.home.closes`, `web.programmes.major` and `web.programmes.regular`.

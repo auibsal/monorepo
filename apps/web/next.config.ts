@@ -8,8 +8,10 @@ import { env } from "@/env";
 const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
 
 // docs.auibsal.org was SAL Docs on Mintlify (until Oct 9, 2026). Its pages
-// now live here (the documents), in the Nexus (the officer handbook) and in
-// the repository (the platform runbooks); old links land in the right place.
+// now live here (the documents), in the team's Notion workspace (the officer
+// handbook, reached through the Nexus's /handbook, which forwards each page)
+// and in the repository (the platform runbooks); old links land in the
+// right place.
 const DOCS_HOST = [{ type: "host" as const, value: "docs.auibsal.org" }];
 const NEXUS_HANDBOOK = "https://nexus.auibsal.org/en/handbook";
 const RUNBOOKS = `${project.repoUrl}/blob/main/docs/platform`;

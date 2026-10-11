@@ -12,14 +12,32 @@ record or members taking part lives in the Nexus. Nothing is kept in both.
 | Projects, tasks, meetings (agendas, working notes) | Members, verification, roles |
 | Events and news: written and published from Notion | RSVPs, check-in, the waitlist |
 | The content calendar (Instagram, newsletters) | Elections and ballots |
-| The officer handbook and the internal documents | Journal submissions and blind review |
+| The officer handbook and the internal documents' text | Journal submissions and blind review |
 | | The charity ledger, certificates, service hours |
-| | Forms (including confidential ones), adopted minutes, foundational documents |
+| | Forms (including confidential ones), adopted minutes, the public foundational documents, the document registry (status, version, dates) |
 
 Notion also holds **read-only copies** ("From the Nexus"): the officer
 directory, programs, the document and minutes registry, and Journal counts
 per stage (numbers only; review is blind). Edit them in the Nexus; each row
 links there.
+
+## The handbook and the internal documents
+
+The officer handbook is **Handbook and internal documents → Officer
+handbook**, one page per topic, edited only there. The Nexus links to it
+from Account → Officer handbook for people who may read the internal
+library. The public setting `notion.handbook` holds its first page and each
+page by its old Nexus slug, so `/handbook?page=events` and the old
+docs.auibsal.org links still land on the right page; update it when a page
+is added or moved. The old `governance.handbook_pages` table is read only
+(migration `20261010000400`).
+
+The internal documents (Founding Proposal, Operations Playbook, Templates &
+Forms, Printables) keep their **registry entry** in the Nexus
+(Administration → Documents: status, version, dates), and their **text** in
+Notion: the entry's *Notion page* field (`society_documents.notion_url`)
+says where, and the Nexus Documents page opens it there. Public documents
+stay on auibsal.org and are edited in the Nexus.
 
 ## How the sync works
 
