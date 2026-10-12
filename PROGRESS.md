@@ -212,6 +212,10 @@ These stop parts of the work. Everything else continues around them.
   kickers, navigation and buttons (never Arabic), the Nexus on ink. Print is
   unchanged. Recorded in `brand/BRAND-BOOK.md` ("Screens") and the Design
   System artifact.
+- **Password first at sign-in** (owner, 2026-10-12): every address,
+  AUIB included, signs in with a password by default; "Email me a sign-in
+  link instead" stays one click away. Each link is an email against
+  Resend's free 100 a day.
 - **Human check at sign-in** (owner, 2026-10-12): Cloudflare Turnstile on
   Nexus sign-up, sign-in and password reset, through Supabase Auth's
   captcha protection (the secret is in Supabase; the public site key is

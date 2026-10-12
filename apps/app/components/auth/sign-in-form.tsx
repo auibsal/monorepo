@@ -1,10 +1,6 @@
 "use client";
 
-import {
-  isAuibEmail,
-  sendMagicLink,
-  signInWithPassword,
-} from "@repo/auth/email";
+import { sendMagicLink, signInWithPassword } from "@repo/auth/email";
 import { passkeysSupported, signInWithPasskey } from "@repo/auth/passkeys";
 import { useAuth } from "@repo/auth/provider";
 import { FormHeader } from "@repo/design-system/components/sal/form-header";
@@ -35,10 +31,9 @@ export const SignInForm = () => {
   const next = safeNextPath(params.get("next"));
   const id = useId();
   const [email, setEmail] = useState("");
-  // AUIB addresses sign in by link by default (no password to remember);
-  // anyone can switch either way.
-  const [chosen, setChosen] = useState<"password" | "link" | null>(null);
-  const mode = chosen ?? (isAuibEmail(email) ? "link" : "password");
+  // Password first for everyone; a sign-in link is the fallback. Links
+  // cost an email each, and Resend's free plan allows 100 a day.
+  const [mode, setMode] = useState<"password" | "link">("password");
   const [password, setPassword] = useState("");
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string>();
@@ -124,11 +119,6 @@ export const SignInForm = () => {
               {t("emailHint")}
             </p>
           </div>
-          {mode === "link" && chosen === null ? (
-            <p className="type-body" role="status">
-              {t("signIn.auibLink")}
-            </p>
-          ) : null}
           {mode === "password" ? (
             <div className="grid gap-2">
               <Label htmlFor={`${id}-password`}>{t("password")}</Label>
@@ -155,7 +145,7 @@ export const SignInForm = () => {
           <Button
             onClick={() => {
               setError(undefined);
-              setChosen(mode === "password" ? "link" : "password");
+              setMode(mode === "password" ? "link" : "password");
             }}
             type="button"
             variant="link"

@@ -67,7 +67,6 @@
       "description": "The members' portal of the AUIB Society of Arts and Letters.",
       "submit": "Sign in",
       "submitting": "Signing in…",
-      "auibLink": "AUIB addresses sign in with a link by email: no password needed.",
       "magicLink": "Email me a sign-in link instead",
       "usePassword": "Use my password instead",
       "sendLink": "Send the link",
