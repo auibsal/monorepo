@@ -212,6 +212,13 @@ These stop parts of the work. Everything else continues around them.
   kickers, navigation and buttons (never Arabic), the Nexus on ink. Print is
   unchanged. Recorded in `brand/BRAND-BOOK.md` ("Screens") and the Design
   System artifact.
+- **Human check at sign-in** (owner, 2026-10-12): Cloudflare Turnstile on
+  Nexus sign-up, sign-in and password reset, through Supabase Auth's
+  captcha protection (the secret is in Supabase; the public site key is
+  `NEXT_PUBLIC_TURNSTILE_SITE_KEY` on sal-nexus). Arcjet stays on apps/api's
+  public form; the two don't overlap (sign-in goes straight to Supabase,
+  which Arcjet never sees). Cloudflare Email Routing forwards
+  hello@auibsal.org; R2 is on but unused.
 - **Monitoring and protection on free plans** (2026-10-08): Sentry (projects
   sal-web, sal-nexus, sal-api; 10% traces, no replays), BetterStack uptime
   (three monitors), Arcjet on apps/api's public form endpoints only (fails
@@ -587,6 +594,7 @@ Covered by automated tests so far:
 - `core.programmes.name_ar`: every name.
 - Notion (2026-10-10): `nexus.nav.workspace`, `nexus.admin.notion.*` and
   `nexus.admin.settings.notion.*`.
+- Human check (2026-10-12): `auth.errors.captcha_failed` and `auth.humanCheck.failed`.
 - Handbook and internal documents in Notion (2026-10-10):
   `nexus.handbook.{inNotion,open,notConnected,home}`,
   `nexus.documents.{inNotion,openInNotion}`,

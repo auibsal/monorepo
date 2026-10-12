@@ -59,7 +59,8 @@
       "signups_disabled": "New sign-ups are currently closed.",
       "unknown": "Something went wrong. Please try again.",
       "user_exists": "An account with this email already exists. Sign in instead.",
-      "weak_password": "Use at least 10 characters, with letters and numbers."
+      "weak_password": "Use at least 10 characters, with letters and numbers.",
+      "captcha_failed": "We couldn't confirm you're a person. Reload the page and try again."
     },
     "signIn": {
       "title": "Sign in to the Nexus",
@@ -125,6 +126,9 @@
       "expired": "That took too long. Please try again.",
       "rate_limited": "Too many attempts. Please wait a moment and try again.",
       "unknown": "Passkeys aren't working right now. Please sign in with your email."
+    },
+    "humanCheck": {
+      "failed": "We couldn't confirm you're a person. Reload the page and try again."
     }
   },
   "nexus": {

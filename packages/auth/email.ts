@@ -17,6 +17,7 @@ export const isAuibEmail = (email: string) =>
 export const MIN_PASSWORD_LENGTH = 10;
 
 export type EmailAuthErrorCode =
+  | "captcha_failed"
   | "email_not_confirmed"
   | "invalid_credentials"
   | "invalid_email"
@@ -35,6 +36,8 @@ export const toEmailAuthError = (
   error: Pick<AuthError, "code" | "status"> | null | undefined
 ): EmailAuthErrorCode => {
   switch (error?.code) {
+    case "captcha_failed":
+      return "captcha_failed";
     case "invalid_credentials":
       return "invalid_credentials";
     case "email_not_confirmed":
@@ -60,7 +63,19 @@ export const toEmailAuthError = (
 
 type Client = SupabaseClient<Database>;
 
+/**
+ * Supabase Auth's human check (Cloudflare Turnstile): when it is on, every
+ * sign-up, sign-in and reset request carries the token the widget gave.
+ */
+const captcha = (captchaToken?: string) =>
+  captchaToken ? { captchaToken } : {};
+
+/** Errors that the "don't reveal whether an account exists" rule lets through. */
+const SHOWN: EmailAuthErrorCode[] = ["captcha_failed", "rate_limited"];
+
 export interface SignUpDetails {
+  /** From the Turnstile widget, when the human check is on. */
+  captchaToken?: string;
   email: string;
   fullNameAr?: string;
   fullNameEn: string;
@@ -92,6 +107,7 @@ export const signUpWithEmail = async (
   const { data, error } = await supabase.auth.signUp({
     email,
     options: {
+      ...captcha(details.captchaToken),
       data: {
         full_name_ar: details.fullNameAr?.trim() || undefined,
         full_name_en: details.fullNameEn.trim(),
@@ -115,11 +131,13 @@ export const signUpWithEmail = async (
 export const signInWithPassword = async (
   supabase: Client,
   email: string,
-  password: string
+  password: string,
+  captchaToken?: string
 ): Promise<AuthResult> => {
   const { error } = await supabase.auth.signInWithPassword({
     email: normalizeEmail(email),
     password,
+    ...(captchaToken ? { options: { captchaToken } } : {}),
   });
 
   return error
@@ -131,7 +149,8 @@ export const signInWithPassword = async (
 export const sendMagicLink = async (
   supabase: Client,
   email: string,
-  redirectTo: string
+  redirectTo: string,
+  captchaToken?: string
 ): Promise<AuthResult> => {
   if (!isValidEmail(email)) {
     return { code: "invalid_email", ok: false };
@@ -139,12 +158,17 @@ export const sendMagicLink = async (
 
   const { error } = await supabase.auth.signInWithOtp({
     email: normalizeEmail(email),
-    options: { emailRedirectTo: redirectTo, shouldCreateUser: false },
+    options: {
+      ...captcha(captchaToken),
+      emailRedirectTo: redirectTo,
+      shouldCreateUser: false,
+    },
   });
 
   // Don't reveal whether an account exists.
-  if (error && toEmailAuthError(error) === "rate_limited") {
-    return { code: "rate_limited", ok: false };
+  const code = error ? toEmailAuthError(error) : null;
+  if (code && SHOWN.includes(code)) {
+    return { code, ok: false };
   }
   return { ok: true, value: undefined };
 };
@@ -152,7 +176,8 @@ export const sendMagicLink = async (
 export const sendPasswordReset = async (
   supabase: Client,
   email: string,
-  redirectTo: string
+  redirectTo: string,
+  captchaToken?: string
 ): Promise<AuthResult> => {
   if (!isValidEmail(email)) {
     return { code: "invalid_email", ok: false };
@@ -160,11 +185,12 @@ export const sendPasswordReset = async (
 
   const { error } = await supabase.auth.resetPasswordForEmail(
     normalizeEmail(email),
-    { redirectTo }
+    { ...captcha(captchaToken), redirectTo }
   );
 
-  if (error && toEmailAuthError(error) === "rate_limited") {
-    return { code: "rate_limited", ok: false };
+  const code = error ? toEmailAuthError(error) : null;
+  if (code && SHOWN.includes(code)) {
+    return { code, ok: false };
   }
   return { ok: true, value: undefined };
 };

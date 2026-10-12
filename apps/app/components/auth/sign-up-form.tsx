@@ -13,6 +13,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useId, useState } from "react";
 import { useAuthError } from "@/lib/auth-messages";
 import { callbackUrl, safeNextPath } from "@/lib/navigation";
+import { useHumanCheck } from "./human-check";
 
 export const SignUpForm = () => {
   const t = useTranslations("auth");
@@ -33,6 +34,7 @@ export const SignUpForm = () => {
   const [error, setError] = useState<string>();
   const [sentTo, setSentTo] = useState<string>();
   const external = values.email.includes("@") && !isAuibEmail(values.email);
+  const human = useHumanCheck("sign-up");
 
   const set =
     (key: keyof typeof values) => (event: { target: { value: string } }) =>
@@ -43,6 +45,7 @@ export const SignUpForm = () => {
     setPending(true);
     setError(undefined);
     const result = await signUpWithEmail(supabase, {
+      captchaToken: human.token,
       email: values.email,
       fullNameAr: values.fullNameAr,
       fullNameEn: values.fullNameEn,
@@ -53,6 +56,7 @@ export const SignUpForm = () => {
       verificationStatement: values.statement,
     });
     setPending(false);
+    human.reset();
     if (result.ok) {
       setSentTo(values.email);
     } else {
@@ -151,12 +155,16 @@ export const SignUpForm = () => {
             </p>
           </div>
         ) : null}
+        {human.element}
         {error ? (
           <p className="text-title" role="alert">
             {error}
           </p>
         ) : null}
-        <Button disabled={pending || !values.fullNameEn.trim()} type="submit">
+        <Button
+          disabled={pending || !human.ready || !values.fullNameEn.trim()}
+          type="submit"
+        >
           {pending ? t("signUp.submitting") : t("signUp.submit")}
         </Button>
       </form>

@@ -17,6 +17,13 @@ import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useEffect, useId, useRef, useState } from "react";
 import { useAuthError, usePasskeyError } from "@/lib/auth-messages";
 import { callbackUrl, safeNextPath } from "@/lib/navigation";
+import { useHumanCheck } from "./human-check";
+
+/** The submit button's text, idle and while sending. */
+const SUBMIT = {
+  link: ["signIn.sendLink", "forgot.sending"],
+  password: ["signIn.submit", "signIn.submitting"],
+} as const;
 
 export const SignInForm = () => {
   const t = useTranslations("auth");
@@ -43,11 +50,14 @@ export const SignInForm = () => {
   // One request at a time: a second magic-link request replaces the first
   // link and this browser's PKCE verifier (see ForgotForm).
   const inFlight = useRef<boolean>(false);
+  const human = useHumanCheck("sign-in");
 
-  let submitLabel = pending ? t("forgot.sending") : t("signIn.sendLink");
-  if (mode === "password") {
-    submitLabel = pending ? t("signIn.submitting") : t("signIn.submit");
-  }
+  const submitLabel = t(SUBMIT[mode][pending ? 1 : 0]);
+
+  const request = () =>
+    mode === "password"
+      ? signInWithPassword(supabase, email, password, human.token)
+      : sendMagicLink(supabase, email, callbackUrl(locale, next), human.token);
 
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -57,11 +67,9 @@ export const SignInForm = () => {
     inFlight.current = true;
     setPending(true);
     setError(undefined);
-    const result =
-      mode === "password"
-        ? await signInWithPassword(supabase, email, password)
-        : await sendMagicLink(supabase, email, callbackUrl(locale, next));
+    const result = await request();
     inFlight.current = false;
+    human.reset();
     setPending(false);
     if (!result.ok) {
       setError(errorText(result.code));
@@ -135,12 +143,13 @@ export const SignInForm = () => {
               />
             </div>
           ) : null}
+          {human.element}
           {error ? (
             <p className="text-title" role="alert">
               {error}
             </p>
           ) : null}
-          <Button disabled={pending} type="submit">
+          <Button disabled={pending || !human.ready} type="submit">
             {submitLabel}
           </Button>
           <Button
