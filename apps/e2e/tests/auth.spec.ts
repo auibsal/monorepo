@@ -31,13 +31,13 @@ test("sign up with an AUIB address, confirm by email, finish setup", async ({
   await expect(page.getByRole("heading", { name: /Welcome/ })).toBeVisible();
 });
 
-test("an AUIB address signs in by link by default, or by password", async ({
+test("an AUIB address signs in by password, with a link one click away", async ({
   page,
 }) => {
   await page.goto(`${urls.app}/en/sign-in`);
   await page.getByLabel("Email").fill(member.email);
   await expect(
-    page.getByRole("button", { name: "Send the link" })
+    page.getByRole("button", { name: "Email me a sign-in link instead" })
   ).toBeVisible();
   await signInWithPassword(page, member.email);
   await expectAccessible(page);

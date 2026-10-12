@@ -22,10 +22,6 @@ test("shows a translated error for wrong credentials", async () => {
   fireEvent.change(screen.getByLabelText("Email"), {
     target: { value: "Student@AUIB.edu.iq" },
   });
-  // AUIB addresses default to a link; this member picks the password.
-  fireEvent.click(
-    screen.getByRole("button", { name: "Use my password instead" })
-  );
   fireEvent.change(screen.getByLabelText("Password"), {
     target: { value: "wrong-password" },
   });
@@ -78,7 +74,7 @@ test("magic links never reveal whether an account exists", async () => {
   );
 });
 
-test("an AUIB address signs in by link by default", () => {
+test("an AUIB address signs in by password, with a link one click away", () => {
   const supabase = fakeSupabase({
     auth: {
       getSession: vi.fn(async () => ({ data: { session: null } })),
@@ -93,6 +89,10 @@ test("an AUIB address signs in by link by default", () => {
   fireEvent.change(screen.getByLabelText("Email"), {
     target: { value: "student@auib.edu.iq" },
   });
+  expect(screen.getByLabelText("Password")).toBeTruthy();
+  fireEvent.click(
+    screen.getByRole("button", { name: "Email me a sign-in link instead" })
+  );
   expect(screen.queryByLabelText("Password")).toBeNull();
   expect(screen.getByRole("button", { name: "Send the link" })).toBeTruthy();
 });
