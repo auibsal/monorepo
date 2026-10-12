@@ -9,6 +9,7 @@ import { Label } from "@repo/design-system/components/ui/label";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useId, useRef, useState } from "react";
 import { useAuthError } from "@/lib/auth-messages";
+import { useHumanCheck } from "./human-check";
 
 export const ForgotForm = () => {
   const t = useTranslations("auth");
@@ -24,6 +25,7 @@ export const ForgotForm = () => {
   // browser, so a second click while the first is sending would leave the
   // emailed link unusable. The ref blocks it before React re-renders.
   const inFlight = useRef<boolean>(false);
+  const human = useHumanCheck("reset");
 
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -36,9 +38,11 @@ export const ForgotForm = () => {
     const result = await sendPasswordReset(
       supabase,
       email,
-      `${window.location.origin}/${locale}/auth/callback?next=/${locale}/auth/reset`
+      `${window.location.origin}/${locale}/auth/callback?next=/${locale}/auth/reset`,
+      human.token
     );
     inFlight.current = false;
+    human.reset();
     setPending(false);
     if (result.ok) {
       setSent(true);
@@ -68,12 +72,13 @@ export const ForgotForm = () => {
               value={email}
             />
           </div>
+          {human.element}
           {error ? (
             <p className="text-title" role="alert">
               {error}
             </p>
           ) : null}
-          <Button disabled={pending} type="submit">
+          <Button disabled={pending || !human.ready} type="submit">
             {pending ? t("forgot.sending") : t("forgot.submit")}
           </Button>
         </form>

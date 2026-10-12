@@ -12,6 +12,10 @@ export const keys = () =>
         .startsWith("sb_publishable_")
         .optional(),
       NEXT_PUBLIC_SUPABASE_URL: z.url().optional(),
+      // Cloudflare Turnstile site key (public) for Supabase Auth's human
+      // check on sign-up, sign-in and reset. Its secret half is set in the
+      // Supabase dashboard (Authentication → Attack Protection), not here.
+      NEXT_PUBLIC_TURNSTILE_SITE_KEY: z.string().min(1).optional(),
     },
     // Treat KEY="" (as in .env.example) as unset.
     emptyStringAsUndefined: true,
@@ -21,6 +25,8 @@ export const keys = () =>
       NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY:
         process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
       NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
+      NEXT_PUBLIC_TURNSTILE_SITE_KEY:
+        process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY,
     },
     skipValidation: process.env.SKIP_ENV_VALIDATION === "true",
   });

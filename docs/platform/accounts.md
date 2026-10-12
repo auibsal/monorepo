@@ -15,6 +15,9 @@ Policy P15 and Bylaws B11.3 apply to the platform too: **every account has at le
 | BetterStack | Uptime monitors for the site, the Nexus sign-in and the API health check | Free |
 | Arcjet | Protects the public removal-request form | Free after the trial: 10,000 requests a month, then a hard stop (no bill); the form keeps working when it is spent |
 | Google Analytics 4 | Visitor counts on the public site only | Free |
+| Cloudflare Turnstile | The human check on Nexus sign-up, sign-in and password reset (Supabase Auth → Attack Protection; site key `NEXT_PUBLIC_TURNSTILE_SITE_KEY` on sal-nexus, secret in Supabase) | Free |
+| Cloudflare Email Routing | Forwards mail to hello@auibsal.org (and any role addresses) to officers' inboxes | Free |
+| Cloudflare R2 | Turned on, not used yet: room for files if Supabase Storage's free 1 GB runs short | Free up to 10 GB; a card is on file |
 
 ## Where secrets live
 
