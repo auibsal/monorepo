@@ -69,8 +69,9 @@ Branch: `claude/new-session-qosn60`.
       CNAME to Vercel); Environment Variables → `NEXT_PUBLIC_SUPABASE_URL`,
       `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` (the public values) and
       `NEXT_PUBLIC_APP_URL=https://nexus.auibsal.org`; then Settings →
-      Deployment Protection → Vercel Authentication off (the gate in
-      `apps/storybook/middleware.ts` takes over; it fails closed). The Nexus
+      Deployment Protection → Vercel Authentication "All except custom
+      domains" (done Oct 13, 2026; the gate in `apps/storybook/proxy.ts`
+      takes over on design.auibsal.org; it fails closed). The Nexus
       session cookie must be shared (`NEXT_PUBLIC_AUTH_COOKIE_DOMAIN=.auibsal.org`
       on sal-nexus).
 - [ ] **Co-editing on Supabase Realtime:** Dashboard → Realtime → Settings →

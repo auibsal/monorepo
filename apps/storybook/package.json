@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "build": "storybook build",
-    "clean": "git clean -xdf .cache .turbo dist node_modules",
+    "build": "storybook build -o public && next build",
+    "clean": "git clean -xdf .cache .next .turbo dist node_modules public",
     "dev": "storybook dev -p 6006",
     "test": "vitest run",
     "typecheck": "tsc --noEmit --emitDeclarationOnly false"
@@ -14,7 +14,6 @@
     "@repo/design-system": "workspace:*",
     "@repo/email": "workspace:*",
     "@supabase/supabase-js": "^2.117.3",
-    "@vercel/functions": "^3.9.11",
     "next": "16.3.8",
     "react": "19.3.0",
     "react-dom": "19.3.0"

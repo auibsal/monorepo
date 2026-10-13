@@ -1,8 +1,7 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "bunVersion": "1.x",
-  "framework": "storybook",
+  "framework": "nextjs",
   "buildCommand": "bun run build",
-  "outputDirectory": "storybook-static",
   "ignoreCommand": "node scripts/skip-ci.js"
 }
