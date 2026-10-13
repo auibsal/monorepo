@@ -3460,6 +3460,42 @@
         "creative": "Creative team"
       },
       "posterAlt": "Poster for {title}"
+    },
+    "institutions": {
+      "title": "Home and partners",
+      "lede": "The Society is a registered student organization of the American University of Iraq – Baghdad, recognized by the Office of Student Life.",
+      "roles": {
+        "home": "Home institution",
+        "recognition": "Recognition",
+        "partner": "Institutional partner"
+      },
+      "names": {
+        "auib": "The American University of Iraq – Baghdad",
+        "studentLife": "Office of Student Life",
+        "cas": "College of Arts and Sciences",
+        "press": "AUIB Press"
+      },
+      "allPartners": "All partners"
+    },
+    "verse": {
+      "label": "Our motto, from al-Mutanabbi",
+      "text": "The horses, the night and the desert know me; so do the sword, the lance, the paper and the pen.",
+      "attribution": "al-Mutanabbi. We keep only the last two."
+    },
+    "programmeMark": "A Society of Arts and Letters programme",
+    "notFound": {
+      "kicker": "Error 404 · A missing page",
+      "title": "A page unwritten",
+      "description": "We looked between the lines and in the margins. This page was never written, or it has moved to another chapter.",
+      "home": "Back to the first page",
+      "search": "Search the site"
+    },
+    "footerExtra": {
+      "copyright": "© {year} AUIB Society of Arts and Letters. All rights reserved.",
+      "recognition": "A registered student organization of AUIB, recognized by the Office of Student Life.",
+      "colophon": "Set in Ubuntu and Ubuntu Arabic. Written in Baghdad.",
+      "instagram": "Instagram",
+      "verse": "Read the whole line"
     }
   }
 }

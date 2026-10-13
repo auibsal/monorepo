@@ -15,12 +15,16 @@ import {
   events,
   journal,
   localized,
+  partners,
   programmes,
 } from "@repo/sal-data";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { Institutions } from "@/components/institutions";
+import { mediaUrl } from "@/lib/media";
 import { localizedMetadata } from "@/lib/metadata";
 import { readPublished } from "@/lib/supabase";
+import { MUTANABBI } from "@/lib/verse";
 
 interface HomeProps {
   readonly params: Promise<{ locale: Locale }>;
@@ -41,20 +45,25 @@ const Home = async ({ params }: HomeProps) => {
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "web.home" });
+  const tw = await getTranslations({ locale, namespace: "web" });
 
-  const [nextEvents, pieces, campaigns, progress, calls, allProgrammes] =
-    await Promise.all([
-      readPublished(
-        ["events"],
-        (c) => events.publicEvents(c, { limit: 3 }),
-        []
-      ),
-      readPublished(["journal"], (c) => journal.latestPieces(c, 3), []),
-      readPublished(["charity"], (c) => charity.activeCampaigns(c), []),
-      readPublished(["charity"], (c) => charity.campaignProgress(c), []),
-      readPublished(["journal"], (c) => journal.openCalls(c), []),
-      readPublished(["programmes"], (c) => programmes.programmes(c), []),
-    ]);
+  const [
+    nextEvents,
+    pieces,
+    campaigns,
+    progress,
+    calls,
+    allProgrammes,
+    listedPartners,
+  ] = await Promise.all([
+    readPublished(["events"], (c) => events.publicEvents(c, { limit: 3 }), []),
+    readPublished(["journal"], (c) => journal.latestPieces(c, 3), []),
+    readPublished(["charity"], (c) => charity.activeCampaigns(c), []),
+    readPublished(["charity"], (c) => charity.campaignProgress(c), []),
+    readPublished(["journal"], (c) => journal.openCalls(c), []),
+    readPublished(["programmes"], (c) => programmes.programmes(c), []),
+    readPublished(["partners"], (c) => partners.publicPartners(c), []),
+  ]);
   // The flagship programs (not the regular formats), for "What we do".
   const flagship = (allProgrammes ?? []).filter(
     (p) => p.is_active && p.kind !== "format"
@@ -119,12 +128,32 @@ const Home = async ({ params }: HomeProps) => {
                         {localized(p, "summary", locale)}
                       </p>
                     ) : null}
+                    <p className="type-caption mt-auto pt-2">
+                      {tw("programmeMark")}
+                    </p>
                   </Link>
                 </li>
               ))}
             </ul>
           </section>
         ) : null}
+
+        <figure className="grid gap-4 rounded-card bg-surface-tint p-card-padding sm:p-10 lg:col-span-2">
+          <figcaption className="type-kicker">{tw("verse.label")}</figcaption>
+          <blockquote className="grid gap-3">
+            <p
+              className="font-bold text-2xl leading-loose sm:text-3xl"
+              dir="rtl"
+              lang="ar"
+            >
+              {MUTANABBI}
+            </p>
+            {locale === "ar" ? null : (
+              <p className="type-lede max-w-3xl">{tw("verse.text")}</p>
+            )}
+          </blockquote>
+          <p className="type-caption">{tw("verse.attribution")}</p>
+        </figure>
 
         {(nextEvents ?? []).length > 0 ? (
           <section
@@ -250,6 +279,35 @@ const Home = async ({ params }: HomeProps) => {
             </ul>
           </section>
         ) : null}
+        <div className="grid gap-6 lg:col-span-2">
+          <Institutions showAll />
+          {(listedPartners ?? []).length > 0 ? (
+            <ul className="flex flex-wrap items-center gap-x-8 gap-y-4">
+              {(listedPartners ?? []).map((partner) => {
+                const logo = mediaUrl(partner.logo_path);
+                const name = localized(partner, "name", locale);
+                return (
+                  <li key={partner.slug}>
+                    <Link className="hover:underline" href="/partners">
+                      {logo ? (
+                        // biome-ignore lint/performance/noImgElement: a partner logo from the media bucket
+                        <img
+                          alt={name}
+                          className="h-10 w-auto object-contain"
+                          height={40}
+                          src={logo}
+                          width={140}
+                        />
+                      ) : (
+                        <span className="type-subheading">{name}</span>
+                      )}
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+          ) : null}
+        </div>
       </div>
 
       <section aria-labelledby="join" className="band frame-t">

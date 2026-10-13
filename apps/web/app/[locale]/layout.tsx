@@ -12,6 +12,7 @@ import {
   setRequestLocale,
 } from "next-intl/server";
 import type { ReactNode } from "react";
+import { ConsoleNote } from "@/components/console-note";
 import { JsonLd, organization } from "@/lib/json-ld";
 import { Footer } from "./components/footer";
 import { Header } from "./components/header";
@@ -57,6 +58,7 @@ const RootLayout = async ({ children, params }: RootLayoutProperties) => {
                 {children}
               </main>
               <Footer />
+              <ConsoleNote />
             </DesignSystemProvider>
           </AnalyticsProvider>
         </NextIntlClientProvider>

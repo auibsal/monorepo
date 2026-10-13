@@ -212,6 +212,14 @@ These stop parts of the work. Everything else continues around them.
   kickers, navigation and buttons (never Arabic), the Nexus on ink. Print is
   unchanged. Recorded in `brand/BRAND-BOOK.md` ("Screens") and the Design
   System artifact.
+- **Public site populated** (owner, 2026-10-12): "Home and partners" on the
+  home and Partners pages (AUIB as home institution, recognition by the
+  Office of Student Life per Constitution 1.2, the College of Arts and
+  Sciences and AUIB Press as institutional partners, named by the owner),
+  the register's listed partners on the home page, al-Mutanabbi's line
+  (the Constitution's motto), "A Society of Arts and Letters programme" on
+  program cards, a footer with copyright, recognition, colophon and
+  Instagram, a literary 404 and a console note.
 - **Password first at sign-in** (owner, 2026-10-12): every address,
   AUIB included, signs in with a password by default; "Email me a sign-in
   link instead" stays one click away. Each link is an email against
@@ -550,6 +558,10 @@ Covered by automated tests so far:
 
 ## Content still needed
 
+- TODO(content): official logo files for AUIB, the Office of Student Life,
+  the College of Arts and Sciences and AUIB Press (`apps/web/public/institutions/`,
+  then `apps/web/lib/institutions.ts`); and descriptions/links for the
+  College and the Press. Their names show until then.
 - TODO(content): Arabic versions of the officer handbook pages, written in
   Notion (Handbook and internal documents → Officer handbook).
 - The Journal, Second Chapter and Side Quest documents listed above.
@@ -598,6 +610,7 @@ Covered by automated tests so far:
 - `core.programmes.name_ar`: every name.
 - Notion (2026-10-10): `nexus.nav.workspace`, `nexus.admin.notion.*` and
   `nexus.admin.settings.notion.*`.
+- Public site (2026-10-12): `web.institutions.*`, `web.verse.*`, `web.programmeMark` (verbatim from the Brand Book), `web.notFound.*`, `web.footerExtra.*`.
 - Human check (2026-10-12): `auth.errors.captcha_failed` and `auth.humanCheck.failed`.
 - Handbook and internal documents in Notion (2026-10-10):
   `nexus.handbook.{inNotion,open,notConnected,home}`,

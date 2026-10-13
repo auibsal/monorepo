@@ -1,12 +1,16 @@
 import { project } from "@repo/config";
 import { Link } from "@repo/internationalization/navigation";
 import { getLocale, getTranslations } from "next-intl/server";
+import { MUTANABBI } from "@/lib/verse";
+
+const INSTAGRAM = "https://www.instagram.com/auibsal";
 
 /** v5 footer: the ink ground, the rest of the sections and the small print. */
 export const Footer = async () => {
   const t = await getTranslations("web.footer");
   const tc = await getTranslations("common");
   const tn = await getTranslations("web.nav");
+  const tx = await getTranslations("web.footerExtra");
   const locale = await getLocale();
 
   const groups = [
@@ -31,10 +35,16 @@ export const Footer = async () => {
       <div className="mx-auto grid w-full max-w-6xl gap-8 px-4 py-12 sm:grid-cols-2 lg:grid-cols-4">
         <div className="grid content-start gap-2 lg:col-span-2">
           <p className="font-bold text-lg">{tc("society")}</p>
-          <p className="type-caption">{t("university")}</p>
-          <p className="type-caption" lang="ar">
-            {project.motto.ar}
-          </p>
+          <p className="type-caption">{tx("recognition")}</p>
+          {/* A small find: the motto opens to the whole line it comes from. */}
+          <details className="type-caption">
+            <summary className="cursor-pointer" lang="ar">
+              {project.motto.ar}
+            </summary>
+            <p className="pt-2" dir="rtl" lang="ar">
+              {MUTANABBI}
+            </p>
+          </details>
           <a
             className="type-label mt-4 justify-self-start border-2 border-frame px-4 py-2 text-xs shadow-offset"
             href={`${project.hosts.app}/${locale}`}
@@ -54,8 +64,26 @@ export const Footer = async () => {
                 </Link>
               </li>
             ))}
+            {links[0][0] === "/contact" ? (
+              <li>
+                <a
+                  className="underline-offset-4 hover:underline"
+                  href={INSTAGRAM}
+                  rel="noopener"
+                  target="_blank"
+                >
+                  {tx("instagram")}
+                </a>
+              </li>
+            ) : null}
           </ul>
         ))}
+      </div>
+      <div className="frame-t">
+        <div className="type-caption mx-auto flex w-full max-w-6xl flex-wrap justify-between gap-2 px-4 py-6">
+          <p>{tx("copyright", { year: String(new Date().getFullYear()) })}</p>
+          <p>{tx("colophon")}</p>
+        </div>
       </div>
     </footer>
   );
