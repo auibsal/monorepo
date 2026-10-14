@@ -14,7 +14,9 @@ const migrations = join(
   "migrations"
 );
 // Every migration, in the order they run: reference data comes first, and
-// later migrations may add permissions, roles and grants (never remove).
+// later migrations add permissions, roles and grants, or retire them with a
+// plain `delete from access.roles where key in (...)` or `delete from
+// access.role_permissions where role = '...' and permission = '...'`.
 const sql = readdirSync(migrations)
   .filter((f) => f.endsWith(".sql"))
   .sort()
@@ -32,6 +34,19 @@ const inserts = (table: string) =>
     ),
   ].map((m) => m[1]);
 
+const retiredRoles = new Set(
+  [
+    ...sql.matchAll(/delete from access\.roles where key in \(([^)]*)\)/g),
+  ].flatMap((m) => [...m[1].matchAll(/'([a-z_]+)'/g)].map((k) => k[1]))
+);
+const revokedGrants = new Set(
+  [
+    ...sql.matchAll(
+      /delete from access\.role_permissions where role = '([a-z_]+)' and permission = '([a-z_.]+)'/g
+    ),
+  ].map((m) => `${m[1]}:${m[2]}`)
+);
+
 describe("mirror of the reference data in the migrations", () => {
   test("permission keys match", () => {
     const keys = inserts("access.permissions").flatMap((body) =>
@@ -46,8 +61,9 @@ describe("mirror of the reference data in the migrations", () => {
         /\('([a-z_]+)', '[^']+', '[^']+', (true|false), (null|\d+), \d+\)/g
       ),
     ]);
-    expect(rows.map((m) => m[1]).sort()).toEqual([...roleKeys].sort());
-    for (const [, key, council, limit] of rows) {
+    const live = rows.filter((m) => !retiredRoles.has(m[1]));
+    expect(live.map((m) => m[1]).sort()).toEqual([...roleKeys].sort());
+    for (const [, key, council, limit] of live) {
       const role = roles[key as keyof typeof roles];
       expect(role.isCouncil, key).toBe(council === "true");
       expect(role.spendingLimitIqd, key).toBe(
@@ -58,8 +74,11 @@ describe("mirror of the reference data in the migrations", () => {
 
   test("role bundles match", () => {
     const fromSql = new Map<string, Set<string>>();
-    const grant = (role: string, permission: string) =>
-      fromSql.set(role, (fromSql.get(role) ?? new Set()).add(permission));
+    const grant = (role: string, permission: string) => {
+      if (!revokedGrants.has(`${role}:${permission}`)) {
+        fromSql.set(role, (fromSql.get(role) ?? new Set()).add(permission));
+      }
+    };
     for (const body of inserts("access.role_permissions")) {
       // Bundles: ('role', array['a', 'b']).
       for (const [, role, list] of body.matchAll(

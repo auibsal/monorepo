@@ -2848,6 +2848,35 @@ export type Database = {
           },
         ];
       };
+      approvals: {
+        Row: {
+          approved_at: string;
+          approved_by: string;
+          kind: string;
+          piece_id: string;
+        };
+        Insert: {
+          approved_at?: string;
+          approved_by?: string;
+          kind: string;
+          piece_id: string;
+        };
+        Update: {
+          approved_at?: string;
+          approved_by?: string;
+          kind?: string;
+          piece_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "approvals_piece_id_fkey";
+            columns: ["piece_id"];
+            isOneToOne: false;
+            referencedRelation: "pieces";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       assignments: {
         Row: {
           assigned_at: string;
@@ -2890,6 +2919,7 @@ export type Database = {
           call_id: string;
           category: Database["journal"]["Enums"]["category"];
           created_at: string;
+          desk: Database["journal"]["Enums"]["desk"] | null;
           editor_notes: string | null;
           flag_note: string | null;
           flagged: boolean;
@@ -2907,6 +2937,7 @@ export type Database = {
           call_id: string;
           category: Database["journal"]["Enums"]["category"];
           created_at?: string;
+          desk?: never;
           editor_notes?: string | null;
           flag_note?: string | null;
           flagged?: boolean;
@@ -2924,6 +2955,7 @@ export type Database = {
           call_id?: string;
           category?: Database["journal"]["Enums"]["category"];
           created_at?: string;
+          desk?: never;
           editor_notes?: string | null;
           flag_note?: string | null;
           flagged?: boolean;
@@ -3015,6 +3047,8 @@ export type Database = {
         Row: {
           closes_at: string;
           created_at: string;
+          decisions_at: string | null;
+          desks: Database["journal"]["Enums"]["desk"][];
           eligibility_ar: string | null;
           eligibility_en: string | null;
           id: string;
@@ -3031,6 +3065,8 @@ export type Database = {
         Insert: {
           closes_at: string;
           created_at?: string;
+          decisions_at?: string | null;
+          desks?: Database["journal"]["Enums"]["desk"][];
           eligibility_ar?: string | null;
           eligibility_en?: string | null;
           id?: string;
@@ -3047,6 +3083,8 @@ export type Database = {
         Update: {
           closes_at?: string;
           created_at?: string;
+          decisions_at?: string | null;
+          desks?: Database["journal"]["Enums"]["desk"][];
           eligibility_ar?: string | null;
           eligibility_en?: string | null;
           id?: string;
@@ -3076,6 +3114,7 @@ export type Database = {
           bio_en: string | null;
           created_at: string;
           id: string;
+          is_pen_name: boolean;
           name_ar: string | null;
           name_en: string;
           slug: string;
@@ -3087,6 +3126,7 @@ export type Database = {
           bio_en?: string | null;
           created_at?: string;
           id?: string;
+          is_pen_name?: boolean;
           name_ar?: string | null;
           name_en: string;
           slug: string;
@@ -3098,6 +3138,7 @@ export type Database = {
           bio_en?: string | null;
           created_at?: string;
           id?: string;
+          is_pen_name?: boolean;
           name_ar?: string | null;
           name_en?: string;
           slug?: string;
@@ -3106,30 +3147,68 @@ export type Database = {
         };
         Relationships: [];
       };
+      corrections: {
+        Row: {
+          created_at: string;
+          created_by: string | null;
+          id: string;
+          note_ar: string | null;
+          note_en: string | null;
+          piece_id: string;
+        };
+        Insert: {
+          created_at?: string;
+          created_by?: string | null;
+          id?: string;
+          note_ar?: string | null;
+          note_en?: string | null;
+          piece_id: string;
+        };
+        Update: {
+          created_at?: string;
+          created_by?: string | null;
+          id?: string;
+          note_ar?: string | null;
+          note_en?: string | null;
+          piece_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "corrections_piece_id_fkey";
+            columns: ["piece_id"];
+            isOneToOne: false;
+            referencedRelation: "pieces";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       decisions: {
         Row: {
-          blind_entry_id: string;
+          blind_entry_id: string | null;
           decided_at: string;
           decided_by: string | null;
           decision: string;
           id: string;
           notes: string | null;
+          submission_id: string | null;
         };
         Insert: {
-          blind_entry_id: string;
+          blind_entry_id?: string | null;
           decided_at?: string;
           decided_by?: string | null;
           decision: string;
           id?: string;
           notes?: string | null;
+          submission_id?: string | null;
         };
         Update: {
-          blind_entry_id?: string;
+          blind_entry_id?: string | null;
           decided_at?: string;
           decided_by?: string | null;
           decision?: string;
           id?: string;
           notes?: string | null;
+          submission_id?: string | null;
         };
         Relationships: [
           {
@@ -3137,6 +3216,13 @@ export type Database = {
             columns: ["blind_entry_id"];
             isOneToOne: true;
             referencedRelation: "blind_entries";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "decisions_submission_id_fkey";
+            columns: ["submission_id"];
+            isOneToOne: true;
+            referencedRelation: "submissions";
             referencedColumns: ["id"];
           },
         ];
@@ -3152,6 +3238,8 @@ export type Database = {
           pdf_path: string | null;
           publish_at: string | null;
           published_at: string | null;
+          season_ar: string | null;
+          season_en: string | null;
           slug: string;
           status: string;
           theme_ar: string | null;
@@ -3171,6 +3259,8 @@ export type Database = {
           pdf_path?: string | null;
           publish_at?: string | null;
           published_at?: string | null;
+          season_ar?: string | null;
+          season_en?: string | null;
           slug: string;
           status?: string;
           theme_ar?: string | null;
@@ -3190,6 +3280,8 @@ export type Database = {
           pdf_path?: string | null;
           publish_at?: string | null;
           published_at?: string | null;
+          season_ar?: string | null;
+          season_en?: string | null;
           slug?: string;
           status?: string;
           theme_ar?: string | null;
@@ -3230,13 +3322,138 @@ export type Database = {
           },
         ];
       };
+      piece_credits: {
+        Row: {
+          contributor_id: string;
+          piece_id: string;
+          role: string;
+          sort: number;
+        };
+        Insert: {
+          contributor_id: string;
+          piece_id: string;
+          role: string;
+          sort?: number;
+        };
+        Update: {
+          contributor_id?: string;
+          piece_id?: string;
+          role?: string;
+          sort?: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "piece_credits_contributor_id_fkey";
+            columns: ["contributor_id"];
+            isOneToOne: false;
+            referencedRelation: "contributors";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "piece_credits_piece_id_fkey";
+            columns: ["piece_id"];
+            isOneToOne: false;
+            referencedRelation: "pieces";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      piece_media: {
+        Row: {
+          alt_ar: string;
+          alt_en: string;
+          caption_ar: string | null;
+          caption_en: string | null;
+          created_at: string;
+          height: number | null;
+          id: string;
+          piece_id: string;
+          sort: number;
+          storage_path: string;
+          width: number | null;
+        };
+        Insert: {
+          alt_ar?: string;
+          alt_en?: string;
+          caption_ar?: string | null;
+          caption_en?: string | null;
+          created_at?: string;
+          height?: number | null;
+          id?: string;
+          piece_id: string;
+          sort?: number;
+          storage_path: string;
+          width?: number | null;
+        };
+        Update: {
+          alt_ar?: string;
+          alt_en?: string;
+          caption_ar?: string | null;
+          caption_en?: string | null;
+          created_at?: string;
+          height?: number | null;
+          id?: string;
+          piece_id?: string;
+          sort?: number;
+          storage_path?: string;
+          width?: number | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "piece_media_piece_id_fkey";
+            columns: ["piece_id"];
+            isOneToOne: false;
+            referencedRelation: "pieces";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      piece_notes: {
+        Row: {
+          author_id: string;
+          body: string;
+          created_at: string;
+          id: number;
+          piece_id: string;
+        };
+        Insert: {
+          author_id?: string;
+          body: string;
+          created_at?: string;
+          id?: never;
+          piece_id: string;
+        };
+        Update: {
+          author_id?: string;
+          body?: string;
+          created_at?: string;
+          id?: never;
+          piece_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "piece_notes_piece_id_fkey";
+            columns: ["piece_id"];
+            isOneToOne: false;
+            referencedRelation: "pieces";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       pieces: {
         Row: {
+          author_approved_at: string | null;
+          author_requested_at: string | null;
           category: Database["journal"]["Enums"]["category"];
           contributor_id: string;
           created_at: string;
           credit_ar: string | null;
           credit_en: string | null;
+          deck_ar: string | null;
+          deck_en: string | null;
+          desk: Database["journal"]["Enums"]["desk"] | null;
+          edit_note: string | null;
+          front_rank: number | null;
           id: string;
           image_path: string | null;
           issue_id: string | null;
@@ -3251,14 +3468,24 @@ export type Database = {
           submission_id: string | null;
           title_ar: string | null;
           title_en: string | null;
+          unpublish_note: string | null;
+          unpublished_at: string | null;
           updated_at: string;
+          video_url: string | null;
         };
         Insert: {
+          author_approved_at?: string | null;
+          author_requested_at?: string | null;
           category: Database["journal"]["Enums"]["category"];
           contributor_id: string;
           created_at?: string;
           credit_ar?: string | null;
           credit_en?: string | null;
+          deck_ar?: string | null;
+          deck_en?: string | null;
+          desk?: never;
+          edit_note?: string | null;
+          front_rank?: number | null;
           id?: string;
           image_path?: string | null;
           issue_id?: string | null;
@@ -3273,14 +3500,24 @@ export type Database = {
           submission_id?: string | null;
           title_ar?: string | null;
           title_en?: string | null;
+          unpublish_note?: string | null;
+          unpublished_at?: string | null;
           updated_at?: string;
+          video_url?: string | null;
         };
         Update: {
+          author_approved_at?: string | null;
+          author_requested_at?: string | null;
           category?: Database["journal"]["Enums"]["category"];
           contributor_id?: string;
           created_at?: string;
           credit_ar?: string | null;
           credit_en?: string | null;
+          deck_ar?: string | null;
+          deck_en?: string | null;
+          desk?: never;
+          edit_note?: string | null;
+          front_rank?: number | null;
           id?: string;
           image_path?: string | null;
           issue_id?: string | null;
@@ -3295,7 +3532,10 @@ export type Database = {
           submission_id?: string | null;
           title_ar?: string | null;
           title_en?: string | null;
+          unpublish_note?: string | null;
+          unpublished_at?: string | null;
           updated_at?: string;
+          video_url?: string | null;
         };
         Relationships: [
           {
@@ -3455,62 +3695,80 @@ export type Database = {
         Row: {
           author_id: string;
           body_html: string | null;
-          call_id: string;
+          call_id: string | null;
           category: Database["journal"]["Enums"]["category"];
+          consent_confirmed: boolean;
           cover_note: string | null;
           created_at: string;
+          deck: string | null;
+          desk: Database["journal"]["Enums"]["desk"] | null;
+          first_publication_confirmed: boolean;
           human_authorship_confirmed: boolean;
           id: string;
           intake_note: string | null;
           intake_returned_at: string | null;
           language: Database["journal"]["Enums"]["language"];
           partner_id: string | null;
+          pen_name: string | null;
           rights_note: string | null;
           source_author: string | null;
           source_text: string | null;
           status: Database["journal"]["Enums"]["submission_status"];
           title: string;
           updated_at: string;
+          video_url: string | null;
         };
         Insert: {
           author_id?: string;
           body_html?: string | null;
-          call_id: string;
+          call_id?: string | null;
           category: Database["journal"]["Enums"]["category"];
+          consent_confirmed?: boolean;
           cover_note?: string | null;
           created_at?: string;
+          deck?: string | null;
+          desk?: never;
+          first_publication_confirmed?: boolean;
           human_authorship_confirmed: boolean;
           id?: string;
           intake_note?: string | null;
           intake_returned_at?: string | null;
           language: Database["journal"]["Enums"]["language"];
           partner_id?: string | null;
+          pen_name?: string | null;
           rights_note?: string | null;
           source_author?: string | null;
           source_text?: string | null;
           status?: Database["journal"]["Enums"]["submission_status"];
           title: string;
           updated_at?: string;
+          video_url?: string | null;
         };
         Update: {
           author_id?: string;
           body_html?: string | null;
-          call_id?: string;
+          call_id?: string | null;
           category?: Database["journal"]["Enums"]["category"];
+          consent_confirmed?: boolean;
           cover_note?: string | null;
           created_at?: string;
+          deck?: string | null;
+          desk?: never;
+          first_publication_confirmed?: boolean;
           human_authorship_confirmed?: boolean;
           id?: string;
           intake_note?: string | null;
           intake_returned_at?: string | null;
           language?: Database["journal"]["Enums"]["language"];
           partner_id?: string | null;
+          pen_name?: string | null;
           rights_note?: string | null;
           source_author?: string | null;
           source_text?: string | null;
           status?: Database["journal"]["Enums"]["submission_status"];
           title?: string;
           updated_at?: string;
+          video_url?: string | null;
         };
         Relationships: [
           {
@@ -3541,6 +3799,10 @@ export type Database = {
           title: string;
         }[];
       };
+      approve_piece: {
+        Args: { kind: string; piece_id: string };
+        Returns: string;
+      };
       assign_reader: {
         Args: {
           blind_entry_id: string;
@@ -3549,6 +3811,7 @@ export type Database = {
         };
         Returns: string;
       };
+      author_approve: { Args: { piece_id: string }; Returns: string };
       call_partner_names: {
         Args: { call_id: string };
         Returns: {
@@ -3556,9 +3819,49 @@ export type Database = {
           name_en: string;
         }[];
       };
+      create_staff_piece: {
+        Args: {
+          category: Database["journal"]["Enums"]["category"];
+          contributor_id: string;
+          issue_id?: string;
+          language: Database["journal"]["Enums"]["language"];
+          title_ar: string;
+          title_en: string;
+        };
+        Returns: string;
+      };
       decide: {
         Args: { blind_entry_id: string; decision: string; notes?: string };
         Returns: string;
+      };
+      decide_named: {
+        Args: { decision: string; notes?: string; submission_id: string };
+        Returns: string;
+      };
+      desk_of: {
+        Args: { category: Database["journal"]["Enums"]["category"] };
+        Returns: Database["journal"]["Enums"]["desk"];
+      };
+      desk_queue: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          author_id: string;
+          author_name_ar: string;
+          author_name_en: string;
+          category: Database["journal"]["Enums"]["category"];
+          created_at: string;
+          deck: string;
+          desk: Database["journal"]["Enums"]["desk"];
+          file_count: number;
+          intake_note: string;
+          intake_returned_at: string;
+          language: Database["journal"]["Enums"]["language"];
+          pen_name: string;
+          piece_id: string;
+          status: Database["journal"]["Enums"]["submission_status"];
+          submission_id: string;
+          title: string;
+        }[];
       };
       entry_author: {
         Args: { blind_entry_id: string };
@@ -3585,6 +3888,10 @@ export type Database = {
           updated_at: string;
         }[];
       };
+      is_edition_desk: {
+        Args: { desk: Database["journal"]["Enums"]["desk"] };
+        Returns: boolean;
+      };
       my_call_pathways: {
         Args: Record<PropertyKey, never>;
         Returns: {
@@ -3594,7 +3901,31 @@ export type Database = {
           partner_id: string;
         }[];
       };
+      my_contributors: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          bio_ar: string;
+          bio_en: string;
+          id: string;
+          is_pen_name: boolean;
+          name_ar: string;
+          name_en: string;
+          slug: string;
+        }[];
+      };
       piece_from_entry: { Args: { blind_entry_id: string }; Returns: string };
+      piece_thread: {
+        Args: { piece_id: string };
+        Returns: {
+          body: string;
+          created_at: string;
+          from_author: boolean;
+          id: number;
+          mine: boolean;
+          writer_name_ar: string;
+          writer_name_en: string;
+        }[];
+      };
       pipeline_issues: {
         Args: Record<PropertyKey, never>;
         Returns: {
@@ -3611,6 +3942,12 @@ export type Database = {
           volume: number;
         }[];
       };
+      publish_readiness: { Args: { piece_id: string }; Returns: string };
+      reopen_piece: { Args: { piece_id: string }; Returns: undefined };
+      request_author_approval: {
+        Args: { piece_id: string };
+        Returns: undefined;
+      };
       return_for_formatting: {
         Args: { note: string; submission_id: string };
         Returns: undefined;
@@ -3622,6 +3959,14 @@ export type Database = {
           full_name_en: string;
           user_id: string;
         }[];
+      };
+      schedule_piece: {
+        Args: { piece_id: string; publish_at: string };
+        Returns: string;
+      };
+      set_front: {
+        Args: { front_rank: number; piece_id: string };
+        Returns: undefined;
       };
       sign_agreement: {
         Args: { signer_name: string; submission_id: string };
@@ -3643,6 +3988,24 @@ export type Database = {
         };
         Returns: Database["journal"]["Enums"]["submission_status"];
       };
+      unpublish_piece: {
+        Args: { note: string; piece_id: string };
+        Returns: undefined;
+      };
+      update_my_contributor: {
+        Args: {
+          bio_ar: string;
+          bio_en: string;
+          contributor_id: string;
+          name_ar: string;
+          name_en: string;
+        };
+        Returns: undefined;
+      };
+      withdraw_approval: {
+        Args: { kind: string; piece_id: string };
+        Returns: undefined;
+      };
     };
     Enums: {
       category:
@@ -3652,7 +4015,17 @@ export type Database = {
         | "short_drama"
         | "art_photography"
         | "translation"
-        | "six_words";
+        | "six_words"
+        | "article"
+        | "interview"
+        | "review"
+        | "feature"
+        | "photo_essay"
+        | "comic"
+        | "video"
+        | "column"
+        | "letter";
+      desk: "news" | "letters" | "gallery" | "video" | "voices";
       language: "en" | "ar" | "bilingual";
       submission_status:
         | "received"
@@ -5045,7 +5418,17 @@ export const Constants = {
         "art_photography",
         "translation",
         "six_words",
+        "article",
+        "interview",
+        "review",
+        "feature",
+        "photo_essay",
+        "comic",
+        "video",
+        "column",
+        "letter",
       ],
+      desk: ["news", "letters", "gallery", "video", "voices"],
       language: ["en", "ar", "bilingual"],
       submission_status: [
         "received",

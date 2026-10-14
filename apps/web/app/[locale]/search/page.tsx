@@ -39,7 +39,7 @@ const hrefFor = (kind: Kind, slug: string) => {
     return `/news/${slug}`;
   }
   if (kind === "piece") {
-    return `/journal/pieces/${slug}`;
+    return `/waraq/pieces/${slug}`;
   }
   return slug;
 };

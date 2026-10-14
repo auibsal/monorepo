@@ -62,7 +62,35 @@ const docsRedirects = async () => [
   },
 ];
 
-let nextConfig: NextConfig = { ...config, redirects: docsRedirects };
+// The AUIB Literary Journal became Waraq (owner, Oct 14, 2026): its pages
+// moved under /waraq.
+const journalRedirects = ["", "/en", "/ar"].flatMap((prefix) => [
+  {
+    destination: `${prefix}/waraq`,
+    permanent: true,
+    source: `${prefix}/journal`,
+  },
+  {
+    destination: `${prefix}/waraq/pieces/:slug`,
+    permanent: true,
+    source: `${prefix}/journal/pieces/:slug`,
+  },
+  {
+    destination: `${prefix}/waraq/authors/:slug`,
+    permanent: true,
+    source: `${prefix}/journal/contributors/:slug`,
+  },
+  {
+    destination: `${prefix}/waraq/editions/:slug`,
+    permanent: true,
+    source: `${prefix}/journal/:slug`,
+  },
+]);
+
+let nextConfig: NextConfig = {
+  ...config,
+  redirects: async () => [...(await docsRedirects()), ...journalRedirects],
+};
 
 // www.auibsal.org → auibsal.org is configured as a redirect domain in Vercel.
 

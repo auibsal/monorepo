@@ -3,9 +3,43 @@ import { z } from "zod";
 import { type Client, unwrap } from "./client";
 import { sanitizeRichText } from "./sanitize";
 
-/** The seven Journal categories: one list for the form and the database enum. */
+/** Every type of piece: one list for the forms and the database enum. */
 export const categories = Constants.journal.Enums.category;
 export type Category = Enums<{ schema: "journal" }, "category">;
+
+/** Waraq's five desks (journal.desk). */
+export const desks = Constants.journal.Enums.desk;
+export type Desk = Enums<{ schema: "journal" }, "desk">;
+
+/** The desk each type belongs to: the same mapping as journal.desk_of(). */
+export const deskOf = (category: Category): Desk => {
+  switch (category) {
+    case "article":
+    case "interview":
+    case "review":
+    case "feature":
+      return "news";
+    case "art_photography":
+    case "photo_essay":
+    case "comic":
+      return "gallery";
+    case "video":
+      return "video";
+    case "column":
+    case "letter":
+      return "voices";
+    default:
+      return "letters";
+  }
+};
+
+/** Letters and Gallery answer a call for an Edition and are read blind. */
+export const isEditionDesk = (desk: Desk) =>
+  desk === "letters" || desk === "gallery";
+
+/** The types on each desk, in the order the forms list them. */
+export const deskCategories = (desk: Desk) =>
+  categories.filter((c) => deskOf(c) === desk);
 
 export const submissionStatuses = Constants.journal.Enums.submission_status;
 export type SubmissionStatus = Enums<
@@ -130,19 +164,61 @@ export const MAX_FILE_BYTES = 25 * 1024 * 1024;
 export const submissionSchema = z
   .object({
     body_html: z.string().max(200_000).optional(),
-    call_id: z.uuid(),
+    /** Edition desks only (Letters, Gallery); News, Video and Voices have none. */
+    call_id: z.uuid().optional(),
     category: z.enum(categories),
+    /** Every identifiable person in an image consented (Gallery: required). */
+    consent_confirmed: z.boolean().optional(),
     cover_note: z.string().max(2000).optional(),
+    /** News: one or two sentences under the headline. */
+    deck: z.string().trim().max(400).optional(),
+    /** The work has not appeared in another journal, anthology or book. */
+    first_publication_confirmed: z.boolean().optional(),
     human_authorship_confirmed: z.literal(true),
     language: z.enum(Constants.journal.Enums.language),
     /** The partner the author submits through (partner pathway). */
     partner_id: z.uuid().optional(),
+    /** Only the Submissions Manager keeps the real name. */
+    pen_name: z.string().trim().min(2).max(80).optional(),
     rights_note: z.string().max(2000).optional(),
     source_author: z.string().max(300).optional(),
     source_text: z.string().max(200_000).optional(),
     title: z.string().trim().min(1).max(300),
+    video_url: z
+      .url({ protocol: /^https$/ })
+      .max(500)
+      .optional(),
   })
   .superRefine((value, context) => {
+    const desk = deskOf(value.category);
+    if (isEditionDesk(desk) !== Boolean(value.call_id)) {
+      context.addIssue({
+        code: "custom",
+        message: isEditionDesk(desk) ? "call_required" : "no_call",
+        path: ["call_id"],
+      });
+    }
+    if (desk !== "news" && value.first_publication_confirmed !== true) {
+      context.addIssue({
+        code: "custom",
+        message: "first_publication_required",
+        path: ["first_publication_confirmed"],
+      });
+    }
+    if (desk === "gallery" && value.consent_confirmed !== true) {
+      context.addIssue({
+        code: "custom",
+        message: "consent_required",
+        path: ["consent_confirmed"],
+      });
+    }
+    if (value.category === "video" && !value.video_url) {
+      context.addIssue({
+        code: "custom",
+        message: "video_required",
+        path: ["video_url"],
+      });
+    }
     if (value.category === "translation") {
       if (!value.source_text?.trim()) {
         context.addIssue({
@@ -296,7 +372,7 @@ export const latestPieces = async (client: Client, limit = 6) =>
     await journal(client)
       .from("pieces")
       .select(
-        "id, slug, title_en, title_ar, category, language, members_only, published_at, contributor:contributors(slug, name_en, name_ar)"
+        "id, slug, title_en, title_ar, category, language, members_only, published_at, contributor:contributors!pieces_contributor_id_fkey(slug, name_en, name_ar)"
       )
       .order("published_at", { ascending: false })
       .limit(limit)
@@ -339,7 +415,7 @@ export const submitScore = async (
 // would not show drafts either; RLS is still the boundary.
 
 const pieceListColumns =
-  "id, slug, title_en, title_ar, category, language, members_only, published_at, sort, contributor:contributors(slug, name_en, name_ar)";
+  "id, slug, title_en, title_ar, category, language, members_only, published_at, sort, contributor:contributors!pieces_contributor_id_fkey(slug, name_en, name_ar)";
 
 const published = <
   T extends {
@@ -412,6 +488,213 @@ export const contributorBySlug = async (client: Client, slug: string) => {
           .select(pieceListColumns)
           .eq("contributor_id", contributor.id)
       ).order("published_at", { ascending: false })
+    ) ?? [];
+  return { ...contributor, pieces };
+};
+
+// ── Waraq: the piece workflow ───────────────────────────────────────────────
+
+/** Editing → Author approved → Approved → Scheduled → Published (or Unpublished). */
+export const pieceStatuses = [
+  "editing",
+  "author_approved",
+  "approved",
+  "scheduled",
+  "published",
+  "unpublished",
+] as const;
+export type PieceStatus = (typeof pieceStatuses)[number];
+
+/** desk: the desk editor; chief: the EIC or ME; copy: the Copy Chief. */
+export const approvalKinds = ["desk", "chief", "copy"] as const;
+export type ApprovalKind = (typeof approvalKinds)[number];
+
+/** The permission each approval needs (journal.approve_piece). */
+export const approvalPermission = (kind: ApprovalKind, desk: Desk) => {
+  if (kind === "desk") {
+    return `journal.edit.${desk}` as const;
+  }
+  return kind === "chief" ? "journal.approve" : "journal.copy";
+};
+
+const DECKED: readonly Category[] = ["article", "feature", "interview"];
+
+/**
+ * What a type needs before it can publish: the same rules as
+ * private.publish_check (both titles always).
+ */
+export const typeNeeds = (category: Category) => {
+  const desk = deskOf(category);
+  return {
+    deck: DECKED.includes(category),
+    media: desk === "gallery",
+    text: desk !== "gallery" && category !== "video",
+    video: category === "video",
+  };
+};
+
+const TAG = /<[^>]+>/g;
+const ENTITY = /&[a-z#0-9]+;/gi;
+const SPACE = /\s+/u;
+const PUNCTUATION = /[\p{P}\p{S}]+/gu;
+const YOUTUBE =
+  /^https:\/\/(?:www\.|m\.)?(?:youtube\.com\/(?:watch\?v=|shorts\/|embed\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/;
+
+/** Words in rich text or plain text, for limits and reading time. */
+export const wordCount = (text: string) => {
+  const plain = text.replace(TAG, " ").replace(ENTITY, " ").trim();
+  return plain ? plain.split(SPACE).length : 0;
+};
+
+/** Reading time in minutes (about 220 words a minute), at least one. */
+export const readingMinutes = (html: string) =>
+  Math.max(1, Math.round(wordCount(html) / 220));
+
+/** Six Words: exactly six words; punctuation does not count. */
+export const isSixWords = (line: string) =>
+  line.replace(PUNCTUATION, " ").trim().split(SPACE).filter(Boolean).length ===
+  6;
+
+/** Only YouTube links are embedded; any other link opens where it lives. */
+export const youtubeId = (url: string | null | undefined) => {
+  if (!url) {
+    return null;
+  }
+  return YOUTUBE.exec(url)?.[1] ?? null;
+};
+
+/** Named work (News, Video, Voices) in the caller's desks, with authors. */
+export const deskQueue = async (client: Client) =>
+  unwrap(await journal(client).rpc("desk_queue")) ?? [];
+
+// ── Waraq on auibsal.org ────────────────────────────────────────────────────
+// Published rows only, whoever asks (RLS is still the boundary).
+
+const cardColumns =
+  "id, slug, desk, category, language, title_en, title_ar, deck_en, deck_ar, members_only, published_at, front_rank, video_url, image_path, contributor:contributors!pieces_contributor_id_fkey(slug, name_en, name_ar), media:piece_media(storage_path, alt_en, alt_ar, width, height, sort)";
+
+const fullColumns =
+  "id, slug, desk, category, language, title_en, title_ar, deck_en, deck_ar, members_only, published_at, front_rank, video_url, image_path, credit_en, credit_ar, issue_id, contributor:contributors!pieces_contributor_id_fkey(slug, name_en, name_ar), media:piece_media(storage_path, alt_en, alt_ar, caption_en, caption_ar, width, height, sort), issue:issues(slug, title_en, title_ar)";
+
+const publishedPieces = (client: Client) =>
+  journal(client)
+    .from("pieces")
+    .select(cardColumns)
+    .eq("status", "published")
+    .lte("published_at", new Date().toISOString())
+    .order("sort", { ascending: true, referencedTable: "piece_media" });
+
+export type PieceCard = NonNullable<
+  Awaited<ReturnType<typeof deskPieces>>
+>[number];
+
+/** The latest published pieces on a desk (or of some types). */
+export const deskPieces = async (
+  client: Client,
+  desk: Desk,
+  {
+    categories: only,
+    limit = 12,
+  }: { categories?: Category[]; limit?: number } = {}
+) => {
+  let query = publishedPieces(client).eq("desk", desk);
+  if (only) {
+    query = query.in("category", only);
+  }
+  return (
+    unwrap(
+      await query.order("published_at", { ascending: false }).limit(limit)
+    ) ?? []
+  );
+};
+
+/** The front page, as the Editor-in-Chief ordered it (1 is the lead). */
+export const frontPieces = async (client: Client) =>
+  unwrap(
+    await publishedPieces(client)
+      .not("front_rank", "is", null)
+      .order("front_rank", { ascending: true })
+  ) ?? [];
+
+/** The latest Edition out, for the front page. */
+export const currentEdition = async (client: Client) =>
+  unwrap(
+    await journal(client)
+      .from("issues")
+      .select("*")
+      .eq("status", "published")
+      .lte("published_at", new Date().toISOString())
+      .order("published_at", { ascending: false })
+      .limit(1)
+      .maybeSingle()
+  );
+
+/** An Edition's pieces in its order, with their images. */
+export const editionPieces = async (client: Client, issueId: string) =>
+  unwrap(
+    await publishedPieces(client)
+      .eq("issue_id", issueId)
+      .order("sort", { ascending: true })
+  ) ?? [];
+
+/** A published piece in full: text, images, credits and corrections. */
+export const waraqPiece = async (client: Client, slug: string) => {
+  const piece = unwrap(
+    await journal(client)
+      .from("pieces")
+      .select(fullColumns)
+      .eq("status", "published")
+      .lte("published_at", new Date().toISOString())
+      .eq("slug", slug)
+      .order("sort", { ascending: true, referencedTable: "piece_media" })
+      .maybeSingle()
+  );
+  if (!piece) {
+    return null;
+  }
+  const j = journal(client);
+  const [body, credits, corrections] = await Promise.all([
+    j
+      .from("piece_bodies")
+      .select("body_en, body_ar")
+      .eq("piece_id", piece.id)
+      .maybeSingle(),
+    j
+      .from("piece_credits")
+      .select("role, sort, contributor:contributors(slug, name_en, name_ar)")
+      .eq("piece_id", piece.id)
+      .order("sort"),
+    j
+      .from("corrections")
+      .select("note_en, note_ar, created_at")
+      .eq("piece_id", piece.id)
+      .order("created_at"),
+  ]);
+  return {
+    ...piece,
+    body: unwrap(body),
+    corrections: unwrap(corrections) ?? [],
+    credits: unwrap(credits) ?? [],
+  };
+};
+
+/** A contributor's page: bio and every published piece. */
+export const authorPage = async (client: Client, slug: string) => {
+  const contributor = unwrap(
+    await journal(client)
+      .from("contributors")
+      .select("id, slug, name_en, name_ar, bio_en, bio_ar")
+      .eq("slug", slug)
+      .maybeSingle()
+  );
+  if (!contributor) {
+    return null;
+  }
+  const pieces =
+    unwrap(
+      await publishedPieces(client)
+        .eq("contributor_id", contributor.id)
+        .order("published_at", { ascending: false })
     ) ?? [];
   return { ...contributor, pieces };
 };

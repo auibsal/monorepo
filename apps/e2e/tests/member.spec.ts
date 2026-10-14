@@ -22,7 +22,7 @@ test("a member books a place and gives it back", async ({ page }) => {
   await expect(card.getByRole("status")).toContainText("Done");
 });
 
-test("a member sends work to the Journal and sees the reading timeline", async ({
+test("a member sends work to Waraq and sees the reading timeline", async ({
   page,
 }) => {
   await signInWithPassword(page, member.email);
@@ -30,6 +30,7 @@ test("a member sends work to the Journal and sees the reading timeline", async (
   await page.getByLabel("Title").fill(`A small poem ${Date.now()}`);
   await page.locator('[contenteditable="true"]').first().click();
   await page.keyboard.type("The paper and the pen, and the hour between them.");
+  await page.getByLabel(/has not appeared in another journal/i).check();
   await page.getByLabel(/human authorship|my own/i).check();
   await page.getByRole("button", { name: "Send my work" }).click();
   await expect(page).toHaveURL(/\/en\/journal\/submission/);

@@ -7,13 +7,19 @@ import {
   canEditorMove,
   categories,
   criteria,
+  deskOf,
   editorMoves,
+  isSixWords,
   needsThirdRead,
+  readingMinutes,
   rubric,
   rubricTotal,
   scoreSchema,
   submissionObjectPath,
   submissionSchema,
+  typeNeeds,
+  wordCount,
+  youtubeId,
 } from "./journal";
 
 const TRANSITION_PAIR =
@@ -26,6 +32,14 @@ const migrations = join(
   "supabase",
   "migrations"
 );
+const waraqTypesSql = readFileSync(
+  join(migrations, "20261014000000_waraq_types.sql"),
+  "utf8"
+);
+const waraqSql = readFileSync(
+  join(migrations, "20261014000100_waraq.sql"),
+  "utf8"
+);
 const journalSql = readFileSync(
   join(
     migrations,
@@ -35,7 +49,7 @@ const journalSql = readFileSync(
 );
 
 describe("categories", () => {
-  test("the form offers exactly the database's seven categories", () => {
+  test("the forms offer exactly the database's sixteen types", () => {
     expect([...categories]).toEqual([
       "poetry",
       "fiction",
@@ -44,9 +58,18 @@ describe("categories", () => {
       "art_photography",
       "translation",
       "six_words",
+      "article",
+      "interview",
+      "review",
+      "feature",
+      "photo_essay",
+      "comic",
+      "video",
+      "column",
+      "letter",
     ]);
     for (const category of categories) {
-      expect(journalSql).toContain(`'${category}'`);
+      expect(`${journalSql}${waraqTypesSql}`).toContain(`'${category}'`);
     }
   });
 });
@@ -96,10 +119,66 @@ describe("rubric v2", () => {
 describe("submission form", () => {
   const base = {
     call_id: "00000000-0000-4000-8000-000000000001",
+    first_publication_confirmed: true,
     human_authorship_confirmed: true as const,
     language: "en" as const,
     title: "Firsts",
   };
+
+  test("desks: Letters and Gallery answer a call, News does not", () => {
+    expect(deskOf("poetry")).toBe("letters");
+    expect(deskOf("comic")).toBe("gallery");
+    expect(deskOf("interview")).toBe("news");
+    expect(
+      submissionSchema.safeParse({ ...base, category: "article" }).success
+    ).toBe(false);
+    const { call_id: _call, ...noCall } = base;
+    expect(
+      submissionSchema.safeParse({ ...noCall, category: "article" }).success
+    ).toBe(true);
+    expect(
+      submissionSchema.safeParse({ ...noCall, category: "poetry" }).success
+    ).toBe(false);
+  });
+
+  test("Gallery work needs consent; video needs its link", () => {
+    expect(
+      submissionSchema.safeParse({ ...base, category: "comic" }).success
+    ).toBe(false);
+    expect(
+      submissionSchema.safeParse({
+        ...base,
+        category: "comic",
+        consent_confirmed: true,
+      }).success
+    ).toBe(true);
+    const { call_id: _call, ...noCall } = base;
+    expect(
+      submissionSchema.safeParse({ ...noCall, category: "video" }).success
+    ).toBe(false);
+    expect(
+      submissionSchema.safeParse({
+        ...noCall,
+        category: "video",
+        video_url: "https://youtu.be/x",
+      }).success
+    ).toBe(true);
+  });
+
+  test("the desk mapping matches journal.desk_of()", () => {
+    const fn = waraqSql.slice(
+      waraqSql.indexOf("create function journal.desk_of"),
+      waraqSql.indexOf("-- Letters and Gallery answer a call")
+    );
+    for (const category of categories) {
+      const desk = deskOf(category);
+      if (desk !== "letters") {
+        expect(fn, category).toMatch(
+          new RegExp(`'${category}'[^\\n]*then '${desk}'`)
+        );
+      }
+    }
+  });
 
   test("a translation needs its source and a rights note", () => {
     expect(
@@ -154,5 +233,37 @@ describe("the board", () => {
     expect(averageTotal([])).toBeNull();
     expect(averageTotal([null, undefined])).toBeNull();
     expect(averageTotal([80, null, 71])).toBe(75.5);
+  });
+});
+
+describe("Waraq helpers", () => {
+  test("six words, punctuation aside", () => {
+    expect(isSixWords("For sale: baby shoes, never worn.")).toBe(true);
+    expect(isSixWords("Too few words here.")).toBe(false);
+    expect(isSixWords("بيت قديم وباب مفتوح وذاكرة باقية")).toBe(true);
+  });
+
+  test("what each type needs mirrors the publish rule", () => {
+    expect(typeNeeds("article")).toEqual({
+      deck: true,
+      media: false,
+      text: true,
+      video: false,
+    });
+    expect(typeNeeds("comic").media).toBe(true);
+    expect(typeNeeds("video")).toMatchObject({ text: false, video: true });
+    expect(waraqSql).toContain(
+      "p.category in ('article', 'feature', 'interview')"
+    );
+  });
+
+  test("reading time and YouTube links", () => {
+    expect(readingMinutes("<p>word</p>")).toBe(1);
+    expect(wordCount("<p>one two</p><p>three</p>")).toBe(3);
+    expect(youtubeId("https://youtu.be/dQw4w9WgXcQ")).toBe("dQw4w9WgXcQ");
+    expect(youtubeId("https://www.youtube.com/watch?v=dQw4w9WgXcQ&t=1")).toBe(
+      "dQw4w9WgXcQ"
+    );
+    expect(youtubeId("https://vimeo.com/1")).toBeNull();
   });
 });

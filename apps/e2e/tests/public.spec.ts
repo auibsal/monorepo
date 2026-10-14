@@ -40,11 +40,9 @@ test.describe("public site", () => {
     await expectAccessible(page);
   });
 
-  test("the Journal page is accessible", async ({ page }) => {
-    await page.goto(`${urls.web}/en/journal`);
-    await expect(page.getByRole("heading", { level: 1 })).toHaveText(
-      "AUIB Literary Journal"
-    );
+  test("the Waraq front page is accessible", async ({ page }) => {
+    await page.goto(`${urls.web}/en/waraq`);
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText("Waraq");
     await expectAccessible(page);
   });
 });

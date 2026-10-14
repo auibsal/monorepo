@@ -171,6 +171,22 @@ These stop parts of the work. Everything else continues around them.
 
 ## Decisions
 
+- **Waraq** (owner, 2026-10-14; Notion project "Waraq: one publication for
+  news, letters and art"): the AUIB Literary Journal, campus news, the
+  Gallery Wall, Six Words and Side Quest episodes become one bilingual
+  paper with five desks (News, Letters, Gallery, Video, Voices). It extends
+  the Journal module (schema `journal`): Letters and Gallery answer an
+  Edition's call and are read blind as before; News, Video and Voices are
+  always open and edited by name. Accepting makes the piece; it publishes
+  itself once the author approves the text, the desk editor and the
+  Editor-in-Chief or Managing Editor (two people) approve, the Copy Chief
+  marks style done and the agreement is signed (`private.publish_check`).
+  The spec's `waraq.*` permissions are `journal.edit.<desk>`,
+  `journal.approve`, `journal.copy`, `journal.frontpage`; intake is
+  `journal.identity.view`, reading `journal.review`. Digital Editor, Art
+  Director and Layout Designer are retired (nobody held them). The name is
+  the `journal.name_*` setting (decision due Oct 22 in Notion).
+
 - **Third-party apps and the API** (owner, 2026-10-08): a Journal team at
   AUIB wants to sign members in with their SAL account and run the
   editorial flow from its own tool. Sign-in is the Supabase OAuth 2.1
@@ -414,6 +430,18 @@ These stop parts of the work. Everything else continues around them.
 
 ## Checklist
 
+### Waraq (2026-10-14)
+- [x] Database: desks, types, named desks' intake and decisions, the piece
+      workflow (author approval, three approvals, publish rule, scheduling,
+      unpublish, corrections, front page), pen names, Editions, masthead
+      roles, Edition 1 call (Oct 25 – Dec 3; decisions Dec 17)
+- [ ] Nexus: submit by desk and type, the newsroom, editing with the author,
+      approvals, front page, Editions
+- [ ] auibsal.org/waraq: front page, layouts by type, sections, Editions,
+      author pages, both languages
+- [ ] Author letters, the Sunday Paper, decisions held to their day, the
+      Notion content calendar's "Waraq" kind
+
 ### Foundation (§3)
 - [x] `bun run init`; remove payments, Wayl, commerce config, Capacitor, native auth
 - [x] Email auth: password + magic link + reset, AUIB auto-verify, other domains → queue
@@ -602,6 +630,11 @@ Covered by automated tests so far:
   and «مدير الشراكات والتواصل» (`20261009000100_partners.sql`), «محرر ضيف»
   (`20261009000300_journal_partners.sql`) and «قائد العمل المسرحي»
   (`20261009000400_productions.sql`).
+- Waraq (2026-10-14): role names «محرر الأخبار», «محرر الآداب», «محرر المعرض»,
+  «محرر المرئيات», «مراسل», «مصوّر», «رسّام», «رئيس التدقيق», «المحرر العربي»
+  and the Edition 1 call title (`20261014000100_waraq.sql`); the desk and
+  type names and form text in `ar.json`. The name «ورق» and the full title
+  come from the Notion project page.
 - Productions (2026-10-09): `nexus.productions.*`, `nexus.admin.productions.*`
   and `web.productions.*`, including the stage, department and audition
   status names.
