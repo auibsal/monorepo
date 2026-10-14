@@ -16,12 +16,6 @@ export const roomKinds = {
     scope: "global",
     table: { name: "minutes", schema: "governance" },
   },
-  /** News posts. */
-  news: {
-    permission: "content.manage",
-    scope: "global",
-    table: { name: "news_posts", schema: "content" },
-  },
   /** Site pages. */
   page: {
     permission: "content.manage",

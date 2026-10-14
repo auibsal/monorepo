@@ -164,8 +164,8 @@ insert into content.news_posts (slug, title_en, title_ar, status, published_at) 
 select pg_temp.login_anon();
 select is((select array_agg(slug) from content.news_posts), array['charter-night'],
   'Visitors read only published news');
-select is((select count(*) from content.search('Night') where kind = 'news')::integer, 1,
-  'Search returns published news only');
+select is((select count(*) from content.search('Night') where kind = 'news')::integer, 0,
+  'Search no longer lists the old news posts (Waraq''s News desk has them)');
 select is((select count(*) from core.settings where key = 'auib.calendar_url')::integer, 0,
   'Private settings are hidden from visitors');
 select is((select value #>> '{}' from core.settings where key = 'journal.name_en'), 'Waraq',

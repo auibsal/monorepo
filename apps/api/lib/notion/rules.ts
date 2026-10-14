@@ -23,16 +23,6 @@ export interface EventValues {
   venue_en: string | null;
 }
 
-export interface NewsValues {
-  excerpt_ar: string | null;
-  excerpt_en: string | null;
-  programme_id: string | null;
-  publish_at: string | null;
-  slug: string;
-  title_ar: string;
-  title_en: string;
-}
-
 type Checked<T> = { ok: true; values: T } | { ok: false; problems: string[] };
 
 const optional = (text: string) => text || null;
@@ -153,45 +143,6 @@ export const checkEvent = (
   };
 };
 
-export const checkNews = (
-  page: NotionPage,
-  programmes: ReadonlyMap<string, string>
-): Checked<NewsValues> => {
-  const problems: string[] = [];
-  const { titleAr, titleEn } = titles(page, problems);
-  const excerptEn = read.text(page, "Excerpt");
-  const excerptAr = read.text(page, "Excerpt (Arabic)");
-  problems.push(
-    ...lengthProblem("The excerpt", excerptEn, 400),
-    ...lengthProblem("The Arabic excerpt", excerptAr, 400)
-  );
-  if (excerptEn && !excerptAr) {
-    problems.push("Add the Arabic excerpt to match the English one.");
-  }
-  const on = read.date(page, "Publish on")?.start ?? null;
-  // A date alone means 9:00 AM Baghdad time that day.
-  const publishAt = on ? (toInstant(on) ?? toInstant(`${on}T09:00:00`)) : null;
-  const slug = slugFor(page, titleEn);
-  problems.push(...slugProblems(slug));
-  const programmeId = programmeFor(page, programmes, problems);
-
-  if (problems.length > 0) {
-    return { ok: false, problems };
-  }
-  return {
-    ok: true,
-    values: {
-      excerpt_ar: optional(excerptAr),
-      excerpt_en: optional(excerptEn),
-      programme_id: programmeId,
-      publish_at: publishAt,
-      slug,
-      title_ar: titleAr,
-      title_en: titleEn,
-    },
-  };
-};
-
 export type WaraqDesk = "news" | "letters" | "gallery" | "video" | "voices";
 
 export interface WaraqValues {
@@ -216,10 +167,13 @@ const DESKS: Record<string, WaraqDesk> = {
  * piece in Editing, so it needs only what a piece starts with. The editing,
  * approvals and publishing happen in the Nexus.
  */
-export const checkWaraq = (page: NotionPage): Checked<WaraqValues> => {
+export const checkWaraq = (
+  page: NotionPage,
+  fallbackDesk?: WaraqDesk
+): Checked<WaraqValues> => {
   const problems: string[] = [];
   const { titleAr, titleEn } = titles(page, problems);
-  const desk = DESKS[read.select(page, "Desk") ?? ""];
+  const desk = DESKS[read.select(page, "Desk") ?? ""] ?? fallbackDesk;
   if (!desk) {
     problems.push("Choose the Desk: News, Letters, Gallery, Video or Voices.");
   }

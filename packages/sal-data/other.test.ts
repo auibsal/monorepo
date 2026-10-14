@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 import { ledgerEntrySchema } from "./charity";
-import { announcementSchema, newsSchema, pageSchema } from "./content";
+import { announcementSchema, pageSchema } from "./content";
 import { ballotSchema, needsCouncilVote } from "./governance";
 import { profileSchema, wordCount } from "./membership";
 import { isReelUrl, sixWordsSchema, timeLeft, youtubeId } from "./programmes";
@@ -64,24 +64,7 @@ describe("schemas", () => {
 });
 
 describe("content schemas match the database", () => {
-  const news = {
-    cover_path: null,
-    programme_id: null,
-    publish_at: null,
-    slug: "charter-night",
-    status: "draft" as const,
-    title_ar: "ليلة الميثاق",
-    title_en: "Charter Night",
-  };
-
-  test("scheduled news needs a publish time", () => {
-    expect(newsSchema.safeParse(news).success).toBe(true);
-    expect(newsSchema.safeParse({ ...news, status: "scheduled" }).success).toBe(
-      false
-    );
-  });
-
-  test("page slugs may nest; news slugs may not", () => {
+  test("page slugs may nest, in lowercase words", () => {
     const page = {
       slug: "about/traditions",
       status: "draft" as const,
@@ -89,7 +72,9 @@ describe("content schemas match the database", () => {
       title_en: "Traditions",
     };
     expect(pageSchema.safeParse(page).success).toBe(true);
-    expect(newsSchema.safeParse({ ...news, slug: "a/b" }).success).toBe(false);
+    expect(pageSchema.safeParse({ ...page, slug: "About/x" }).success).toBe(
+      false
+    );
   });
 
   test("a banner is always public, as the table requires", () => {

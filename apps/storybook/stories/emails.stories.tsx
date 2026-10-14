@@ -51,7 +51,7 @@ const role: RoleInfo = {
   name_en: "Director of Programs and Events",
 };
 const removal: RemovalInfo = {
-  content_url: "https://auibsal.org/en/news/example",
+  content_url: "https://auibsal.org/waraq/pieces/example",
   details: "Please remove the photo of me from this post.",
   due_at: "2026-10-09T15:00:00Z",
   requester_email: "member@auib.edu.iq",

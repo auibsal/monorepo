@@ -15,13 +15,14 @@ import {
   saveLink,
 } from "./context";
 import { prop, read, slugify } from "./props";
-import { checkEvent, checkNews, checkWaraq, type WaraqDesk } from "./rules";
+import { checkEvent, checkWaraq, type WaraqDesk } from "./rules";
 
 /**
- * Events and news are written in Notion (Publishing). A page set to
- * "Ready to publish" is checked and published; "Cancel on the site" cancels
- * a published event. The person who last edited the page must hold the
- * permission in the Nexus (events.manage, content.manage), matched by email.
+ * Events and Waraq pieces are written in Notion (Publishing). An event set
+ * to "Ready to publish" is checked and published; "Cancel on the site"
+ * cancels a published event. News ("News post" or "Waraq" pages) goes to
+ * Waraq's newsroom, in Editing. The person who last edited the page must
+ * hold the permission in the Nexus, matched by email.
  * Results go back to the page: status, links, and a note saying what was
  * done or what to fix (also left as a comment).
  */
@@ -29,11 +30,10 @@ import { checkEvent, checkNews, checkWaraq, type WaraqDesk } from "./rules";
 const READY = "Ready to publish";
 const CANCEL = "Cancel on the site";
 
-type Kind = "event" | "news";
+type Kind = "event";
 
-const PERMISSION: Record<Kind, "content.manage" | "events.manage"> = {
+const PERMISSION: Record<Kind, "events.manage"> = {
   event: "events.manage",
-  news: "content.manage",
 };
 
 const stamp = () => {
@@ -131,18 +131,14 @@ const programmeMap = async (ctx: SyncContext) =>
 
 const slugTaken = async (
   ctx: SyncContext,
-  table: "events" | "news_posts",
   slug: string,
   ownId: string | null
 ) => {
-  const query =
-    table === "events"
-      ? ctx.admin.schema("events").from("events").select("id").eq("slug", slug)
-      : ctx.admin
-          .schema("content")
-          .from("news_posts")
-          .select("id")
-          .eq("slug", slug);
+  const query = ctx.admin
+    .schema("events")
+    .from("events")
+    .select("id")
+    .eq("slug", slug);
   const { data } = await (ownId ? query.neq("id", ownId) : query).limit(1);
   return (data ?? []).length > 0;
 };
@@ -215,7 +211,7 @@ const publishEvent = async (
     return;
   }
   const existing = await recordFor(ctx, "event", page.id);
-  if (await slugTaken(ctx, "events", v.slug, existing)) {
+  if (await slugTaken(ctx, v.slug, existing)) {
     await needsChanges(ctx, page, [
       `Another event already uses the Slug ${v.slug}. Set a different Slug.`,
     ]);
@@ -266,84 +262,6 @@ const publishEvent = async (
     Status: prop.select("Published"),
   });
   count(ctx, existing ? "event.republished" : "event.published");
-};
-
-const publishNews = async (
-  ctx: SyncContext,
-  page: NotionPage,
-  email: string,
-  programmes: ReadonlyMap<string, string>
-) => {
-  const checked = checkNews(page, programmes);
-  if (!checked.ok) {
-    await needsChanges(ctx, page, checked.problems);
-    return;
-  }
-  const v = checked.values;
-  const publisher = await publisherFor(ctx, "news", email, v.programme_id);
-  if (!publisher) {
-    await needsChanges(ctx, page, [
-      `${email} does not hold content.manage in the Nexus. Ask someone who does to set Ready to publish.`,
-    ]);
-    return;
-  }
-  const existing = await recordFor(ctx, "news", page.id);
-  if (await slugTaken(ctx, "news_posts", v.slug, existing)) {
-    await needsChanges(ctx, page, [
-      `Another news post already uses the Slug ${v.slug}. Set a different Slug.`,
-    ]);
-    return;
-  }
-  const later =
-    v.publish_at !== null && v.publish_at > new Date().toISOString();
-  const cover = await copyImage(ctx, page, "Cover", "news");
-  const row = {
-    ...v,
-    ...(await bodiesOf(ctx, page)),
-    ...(cover ? { cover_path: cover } : {}),
-    status: later ? "scheduled" : "published",
-  };
-  let id = existing;
-  if (id) {
-    const { error } = await ctx.admin
-      .schema("content")
-      .from("news_posts")
-      .update(row)
-      .eq("id", id);
-    if (error) {
-      throw error;
-    }
-  } else {
-    const { data, error } = await ctx.admin
-      .schema("content")
-      .from("news_posts")
-      .insert({
-        ...row,
-        author_id: publisher,
-        published_at: later ? null : new Date().toISOString(),
-      })
-      .select("id")
-      .single();
-    if (error) {
-      throw error;
-    }
-    ({ id } = data);
-  }
-  await saveLink(ctx, "news", page.id, id, null);
-  const who = await publisherName(ctx, publisher);
-  await ctx.notion.updatePage(page.id, {
-    Nexus: prop.url(`${ctx.appUrl}/admin/content/news?id=${id}`),
-    "Nexus ID": prop.text(id),
-    "Platform note": prop.text(
-      later && v.publish_at
-        ? `Scheduled ${stamp()} by ${who}; goes live ${formatLongDate(v.publish_at, "en")}, ${formatClock(v.publish_at, "en")}.`
-        : publishedNote(who)
-    ),
-    "Public page": prop.url(`${ctx.webUrl}/news/${v.slug}`),
-    Slug: prop.text(v.slug),
-    Status: prop.select("Published"),
-  });
-  count(ctx, existing ? "news.republished" : "news.published");
 };
 
 /** The type a Notion piece starts as on each desk (editors change it). */
@@ -417,7 +335,8 @@ const pieceSlug = async (ctx: SyncContext, title: string) => {
 };
 
 /**
- * Staff writing for Waraq (Kind "Waraq"): imported as a piece in Editing,
+ * Staff writing for Waraq (Kind "Waraq", or "News post" for the News desk):
+ * imported as a piece in Editing,
  * where it goes through the same approvals as everything else. The person
  * who set Ready to publish needs the desk's permission (or journal.approve)
  * and becomes the byline. A page already imported updates its piece while
@@ -426,9 +345,10 @@ const pieceSlug = async (ctx: SyncContext, title: string) => {
 const importWaraq = async (
   ctx: SyncContext,
   page: NotionPage,
-  email: string
+  email: string,
+  fallbackDesk?: WaraqDesk
 ) => {
-  const checked = checkWaraq(page);
+  const checked = checkWaraq(page, fallbackDesk);
   if (!checked.ok) {
     await needsChanges(ctx, page, checked.problems);
     return;
@@ -546,9 +466,9 @@ export const publishWaiting = async (ctx: SyncContext) => {
       ],
     }),
   ]);
-  const queue: [Kind | "waraq", NotionPage][] = [
+  const queue: [Kind | "news" | "waraq", NotionPage][] = [
     ...events.map((p): [Kind, NotionPage] => ["event", p]),
-    ...news.map((p): [Kind, NotionPage] => ["news", p]),
+    ...news.map((p): ["news", NotionPage] => ["news", p]),
     ...waraq.map((p): ["waraq", NotionPage] => ["waraq", p]),
   ];
   for (const [kind, page] of queue) {
@@ -565,7 +485,8 @@ export const publishWaiting = async (ctx: SyncContext) => {
       if (kind === "waraq") {
         await importWaraq(ctx, page, email);
       } else if (kind === "news") {
-        await publishNews(ctx, page, email, programmes);
+        // The old news posts are Waraq's News desk now.
+        await importWaraq(ctx, page, email, "news");
       } else if (read.select(page, "Status") === CANCEL) {
         await cancelEvent(ctx, page, email);
       } else {
@@ -625,51 +546,13 @@ const adoptEvents = async (ctx: SyncContext) => {
   }
 };
 
-const adoptNews = async (ctx: SyncContext) => {
-  const [news, links] = await Promise.all([
-    ctx.admin
-      .schema("content")
-      .from("news_posts")
-      .select("id, slug, title_en, title_ar, status, publish_at, published_at")
-      .gte("created_at", new Date(Date.now() - 90 * 86_400_000).toISOString()),
-    linksOf(ctx, "news"),
-  ]);
-  for (const n of news.data ?? []) {
-    if (links.has(n.id) || outOfTime(ctx)) {
-      continue;
-    }
-    try {
-      // biome-ignore lint/performance/noAwaitInLoops: rate-limited, sequential
-      const page = await ctx.notion.createPage(ctx.sources.news, {
-        Kind: prop.select("News post"),
-        Nexus: prop.url(`${ctx.appUrl}/admin/content/news?id=${n.id}`),
-        "Nexus ID": prop.text(n.id),
-        "Platform note": prop.text(ADOPTED_NOTE),
-        "Public page": prop.url(
-          n.status === "published" ? `${ctx.webUrl}/news/${n.slug}` : null
-        ),
-        "Publish on": prop.date(n.publish_at ?? n.published_at),
-        Slug: prop.text(n.slug),
-        Status: prop.select(n.status === "draft" ? "Drafting" : "Published"),
-        Title: prop.title(n.title_en),
-        "Title (Arabic)": prop.text(n.title_ar),
-      });
-      await saveLink(ctx, "news", page.id, n.id, null);
-      count(ctx, "news.adopted");
-    } catch (error) {
-      problem(ctx, `news ${n.id}: ${(error as Error).message}`);
-    }
-  }
-};
-
 /**
- * Events and news made in the Nexus get a page in Notion too, so the
- * calendar is complete and the team can take them over there. Their text
- * stays in the Nexus until someone writes it in the page.
+ * Events made in the Nexus get a page in Notion too, so the calendar is
+ * complete and the team can take them over there. Their text stays in the
+ * Nexus until someone writes it in the page.
  */
 export const adoptNexusItems = async (ctx: SyncContext) => {
   await adoptEvents(ctx);
-  await adoptNews(ctx);
 };
 
 /** Confirmed RSVPs per event, written back when the number changed. */
