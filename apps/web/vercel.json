@@ -5,21 +5,6 @@
   "regions": ["fra1"],
   "redirects": [
     {
-      "source": "/:locale(en|ar)/waraq/:path*",
-      "destination": "/:locale/journal/:path*",
-      "permanent": true
-    },
-    {
-      "source": "/:locale(en|ar)/waraq",
-      "destination": "/:locale/journal",
-      "permanent": true
-    },
-    {
-      "source": "/waraq",
-      "destination": "/journal",
-      "permanent": true
-    },
-    {
       "source": "/:locale(en|ar)/programmes",
       "destination": "/:locale/programs",
       "permanent": true
