@@ -14,7 +14,6 @@ type SectionNamespace =
   | "web.give"
   | "web.join"
   | "web.mediaKit"
-  | "web.news"
   | "web.partners"
   | "web.privacy"
   | "web.productions"

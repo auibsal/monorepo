@@ -29,14 +29,11 @@ export const generateMetadata = async ({
   };
 };
 
-type Kind = "event" | "news" | "piece" | "document";
+type Kind = "event" | "piece" | "document";
 
 const hrefFor = (kind: Kind, slug: string) => {
   if (kind === "event") {
     return `/events/${slug}`;
-  }
-  if (kind === "news") {
-    return `/news/${slug}`;
   }
   if (kind === "piece") {
     return `/waraq/pieces/${slug}`;
@@ -88,7 +85,7 @@ const SearchPage = async ({ params, searchParams }: SearchProps) => {
   const long = query.length >= 2;
   const found = long
     ? await readPublished(
-        ["events", "news", "journal"],
+        ["events", "journal"],
         (c) => content.search(c, query),
         []
       )

@@ -21,7 +21,6 @@ const staticPaths = [
   "/waraq/editions",
   "/join",
   "/give",
-  "/news",
   "/contact",
   "/media-kit",
   "/privacy",

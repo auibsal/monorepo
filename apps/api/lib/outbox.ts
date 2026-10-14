@@ -1,6 +1,7 @@
 import "server-only";
 
 import { AsyncLocalStorage } from "node:async_hooks";
+import { project } from "@repo/config";
 import type { AdminClient } from "@repo/database/admin";
 import { EmailQuotaError, sendEmail } from "@repo/email";
 import {
@@ -50,6 +51,10 @@ interface OutboxRow {
 
 const TRAILING_SLASH = /\/$/;
 
+// English pages have no language prefix; other languages do ("/ar").
+const prefix = (lang: string) =>
+  lang === project.locale.default ? "" : `/${lang}`;
+
 const appUrl = () => env.NEXT_PUBLIC_APP_URL.replace(TRAILING_SLASH, "");
 
 interface Recipient {
@@ -93,7 +98,7 @@ const pushNotice = (built: Built, lang: Lang, row: number | undefined) => {
     lang,
     tag: row === undefined ? undefined : `outbox-${row}`,
     title: block?.heading ?? built.subject,
-    url: block?.action?.href ?? `${appUrl()}/${lang}`,
+    url: block?.action?.href ?? `${appUrl()}${prefix(lang)}`,
   };
 };
 
@@ -316,7 +321,7 @@ const handlers: Record<string, Handler> = {
         piecePublished(
           to.lang,
           pieceTitle(piece, to.lang),
-          `${webUrl()}/${to.lang}/waraq/pieces/${piece.slug}`
+          `${webUrl()}${prefix(to.lang)}/waraq/pieces/${piece.slug}`
         )
       );
     }
@@ -375,10 +380,13 @@ const handlers: Record<string, Handler> = {
         desk_en: desk?.en ?? "",
         title_ar: p.title_ar ?? "",
         title_en: p.title_en ?? "",
-        url: `${webUrl()}/${to.lang}/waraq/pieces/${p.slug}`,
+        url: `${webUrl()}${prefix(to.lang)}/waraq/pieces/${p.slug}`,
       };
     });
-    await send(to, sundayPaper(to.lang, items, `${webUrl()}/${to.lang}/waraq`));
+    await send(
+      to,
+      sundayPaper(to.lang, items, `${webUrl()}${prefix(to.lang)}/waraq`)
+    );
   },
   "programmes.removal_overdue": async (admin, payload) => {
     const [request, managers] = await Promise.all([

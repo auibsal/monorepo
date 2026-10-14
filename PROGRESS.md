@@ -9,6 +9,10 @@ Branch: `claude/new-session-qosn60`.
 
 ## Blocked — needed from the user
 
+- [ ] **Old news table:** `content.news_posts` is no longer used (the old
+      /news is Waraq's News desk). Say whether to drop it; dropping deletes
+      its rows in production and cannot be undone.
+
 - [ ] **Waraq masthead (Notion: decide by Oct 22):** confirm the name (it is
       the `journal.name_*` setting, Waraq now). In Administration → Members
       give the roles: Editor-in-Chief, Managing Editor, Submissions Manager,
@@ -177,6 +181,13 @@ These stop parts of the work. Everything else continues around them.
       Realtime since 2026-10-09 (decision below).
 
 ## Decisions
+
+- **News into Waraq** (owner, 2026-10-14): the old /news is Waraq's News
+  desk everywhere. auibsal.org/news, the Nexus News tab, the "news" search
+  kind and the Notion "News post" publishing are gone; Notion News post
+  pages are imported to the News desk for editing. `content.news_posts`
+  stays in the database, unused, until the owner decides (blocked item).
+  A separate blog is not needed: News, Voices and the Letters desk cover it.
 
 - **Waraq** (owner, 2026-10-14; Notion project "Waraq: one publication for
   news, letters and art"): the AUIB Literary Journal, campus news, the
@@ -643,6 +654,8 @@ Covered by automated tests so far:
 
 ## needs-native-review (Arabic written for the platform)
 
+- News into Waraq (2026-10-14): `nexus.admin.content.newsMoved`,
+  `nexus.admin.content.newsroom` and the shortened `nexus.admin.content.lede`.
 - `packages/internationalization/messages/ar.json` — every string (all of it
   was written for the platform; none came from a source document), except
   the motto «والقرطاسُ والقلم» and the Society's name «جمعية الفنون والآداب»,

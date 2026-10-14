@@ -882,15 +882,15 @@
       },
       "content": {
         "title": "Content",
-        "lede": "News, pages, notices, the homepage and the media library. Rich text is sanitized when saved and again when shown.",
+        "lede": "Pages, notices, the homepage and the media library. Rich text is sanitized when saved and again when shown.",
+        "newsMoved": "News is now written on Waraq's News desk.",
+        "newsroom": "Open the newsroom",
         "tabs": {
-          "news": "News",
           "pages": "Pages",
           "announcements": "Notices",
           "homepage": "Homepage",
           "media": "Media library"
         },
-        "newNews": "New post",
         "newPage": "New page",
         "columns": {
           "title": "Title",
@@ -3574,12 +3574,6 @@
       "noReceipts": "No receipts published yet.",
       "openReceipt": "View receipt",
       "impactTitle": "Impact"
-    },
-    "news": {
-      "title": "News",
-      "lede": "News from the Society.",
-      "none": "No news yet.",
-      "all": "All news"
     },
     "contact": {
       "title": "Contact",

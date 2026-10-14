@@ -4,7 +4,7 @@ import { urls } from "../playwright.config";
 import { signInWithPassword } from "./helpers";
 
 /**
- * Two editors on one news post (Supabase Realtime). Needs Realtime with
+ * Two editors on one site page (Supabase Realtime). Needs Realtime with
  * private channels on the stack under test; set E2E_COLLAB=1 to run it (for
  * example against a preview).
  */
@@ -20,8 +20,8 @@ test("two editors see each other and each other's typing", async ({
 
   await first.goto(`${urls.app}/admin/content`);
   await first
-    .getByRole("button", { name: "New post" })
-    .or(first.getByRole("link", { name: "New post" }))
+    .getByRole("button", { name: "New page" })
+    .or(first.getByRole("link", { name: "New page" }))
     .first()
     .click();
   const title = `Shared draft ${Date.now()}`;

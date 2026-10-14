@@ -6,9 +6,7 @@ vi.mock("server-only", () => ({}));
 const { pageBodies } = await import("@/lib/notion/blocks");
 const { createNotion, bareId } = await import("@/lib/notion/client");
 const { slugify, toInstant } = await import("@/lib/notion/props");
-const { checkEvent, checkNews, checkWaraq } = await import(
-  "@/lib/notion/rules"
-);
+const { checkEvent, checkWaraq } = await import("@/lib/notion/rules");
 
 const rt = (content: string, extra: object = {}) => ({
   plain_text: content,
@@ -159,24 +157,21 @@ describe("publishing rules", () => {
     });
   });
 
-  test("a news post dated in the future is scheduled for 9:00 AM Baghdad time", () => {
-    const result = checkNews(
+  test("a News post page goes to the News desk, dated for 9:00 AM Baghdad time", () => {
+    const result = checkWaraq(
       page({
         "Publish on": {
           date: { end: null, start: "2030-01-05" },
           type: "date",
         },
-        Title: title("Issue 1 is out"),
-        "Title (Arabic)": text("صدر العدد الأول"),
+        Title: title("Edition 1 is out"),
+        "Title (Arabic)": text("صدر الإصدار الأول"),
       }),
-      programmes
+      "news"
     );
     expect(result).toMatchObject({
       ok: true,
-      values: {
-        publish_at: "2030-01-05T06:00:00.000Z",
-        slug: "issue-1-is-out",
-      },
+      values: { desk: "news", publish_at: "2030-01-05T06:00:00.000Z" },
     });
   });
 });

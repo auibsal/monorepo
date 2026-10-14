@@ -10,7 +10,7 @@ record or members taking part lives in the Nexus. Nothing is kept in both.
 | In Notion (the only home) | In the Nexus (the only home) |
 | --- | --- |
 | Projects, tasks, meetings (agendas, working notes) | Members, verification, roles |
-| Events and news: written and published from Notion | RSVPs, check-in, the waitlist |
+| Events (published from Notion) and Waraq pieces (imported for editing) | RSVPs, check-in, the waitlist |
 | The content calendar (Instagram, newsletters) | Elections and ballots |
 | The officer handbook and the internal documents' text | Journal submissions and blind review |
 | | The charity ledger, certificates, service hours |
@@ -49,7 +49,7 @@ every five minutes with the cron secret:
    and Voices desks' stages, and each desk's pieces by newsroom stage). A row is written only when it changed
    (hash in `core.notion_links`) and moved to the trash when its record is
    gone. Officers are matched to Notion people by AUIB email.
-2. **Publishing.** Pages in Events or Content calendar (kind News post) with
+2. **Publishing.** Pages in Events with
    Status **Ready to publish** are checked (`lib/notion/rules.ts`): titles in
    both languages, a start time, lengths, slug, program. The page's last
    editor is matched by email and must hold `events.manage` or
@@ -67,7 +67,9 @@ every five minutes with the cron secret:
    Notion: the approvals and the publish rule happen in the Nexus. The page
    gets Status **In editing** and the Nexus link; while the piece is still in
    editing, setting Ready to publish again updates its title, deck and text.
-3. **Nexus items.** Events and news made in the Nexus get a page in Notion
+   **News post** pages (the old news, Oct 14, 2026) are imported the same
+   way, to the News desk.
+3. **Nexus items.** Events made in the Nexus get a page in Notion
    too (their text stays in the Nexus until written in the page; an empty
    page never blanks it).
 4. **RSVP counts** go back to each event's page.

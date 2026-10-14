@@ -39,69 +39,7 @@ const linkClass = "font-medium underline underline-offset-4";
 const buttonLink =
   "inline-flex h-8 items-center justify-self-start rounded-md bg-primary px-3 text-primary-foreground text-sm";
 
-// ── News and pages ──────────────────────────────────────────────────────────
-
-const NewsList = () => {
-  const t = useTranslations("nexus.admin.content");
-  const tk = useTranslations("nexus.admin.kit");
-  const locale = useLocale() as Locale;
-  const { supabase } = useAuth();
-  const news = useQuery({
-    queryFn: async () =>
-      unwrap(
-        await supabase
-          .schema("content")
-          .from("news_posts")
-          .select(
-            "id, title_en, title_ar, status, published_at, publish_at, updated_at"
-          )
-          .order("updated_at", { ascending: false })
-          .limit(200)
-      ) ?? [],
-    queryKey: ["admin", "news-list"],
-  });
-  type Row = NonNullable<typeof news.data>[number];
-  const columns: Column<Row>[] = [
-    {
-      cell: (n) => (
-        <Link
-          className={linkClass}
-          href={{ pathname: "/admin/content/news", query: { id: n.id } }}
-        >
-          {localized(n, "title", locale)}
-        </Link>
-      ),
-      header: t("columns.title"),
-      key: "title",
-    },
-    {
-      cell: (n) =>
-        tk(`statuses.${n.status as "draft" | "scheduled" | "published"}`),
-      header: t("columns.status"),
-      key: "status",
-    },
-    {
-      cell: (n) => {
-        const date = n.published_at ?? n.publish_at ?? n.updated_at;
-        return formatLongDate(date, locale, true);
-      },
-      className: "whitespace-nowrap",
-      header: t("columns.date"),
-      key: "date",
-    },
-  ];
-  return (
-    <div className="grid gap-4">
-      <Link className={buttonLink} href="/admin/content/news">
-        {t("newNews")}
-      </Link>
-      {news.isPending ? <SectionSpinner /> : null}
-      {news.data ? (
-        <DataTable columns={columns} rowKey={(n) => n.id} rows={news.data} />
-      ) : null}
-    </div>
-  );
-};
+// ── Pages ──────────────────────────────────────────────────────────
 
 const PagesList = () => {
   const t = useTranslations("nexus.admin.content");
@@ -455,7 +393,6 @@ const refTables: Record<
   campaign: { schema: "charity", table: "campaigns", title: "title" },
   event: { schema: "events", table: "events", title: "title" },
   issue: { schema: "journal", table: "issues", title: "title" },
-  news: { schema: "content", table: "news_posts", title: "title" },
   page: { schema: "content", table: "pages", title: "title" },
   piece: { schema: "journal", table: "pieces", title: "title" },
 };
@@ -846,9 +783,14 @@ export const ContentAdmin = () => {
   return (
     <div className="grid gap-6">
       <AdminHeading title={t("title")}>{t("lede")}</AdminHeading>
-      <Tabs defaultValue="news">
+      <p className="type-body text-text-secondary">
+        {t("newsMoved")}{" "}
+        <Link className={linkClass} href="/admin/journal">
+          {t("newsroom")}
+        </Link>
+      </p>
+      <Tabs defaultValue="pages">
         <TabsList className="flex-wrap">
-          <TabsTrigger value="news">{t("tabs.news")}</TabsTrigger>
           <TabsTrigger value="pages">{t("tabs.pages")}</TabsTrigger>
           <TabsTrigger value="announcements">
             {t("tabs.announcements")}
@@ -856,9 +798,6 @@ export const ContentAdmin = () => {
           <TabsTrigger value="homepage">{t("tabs.homepage")}</TabsTrigger>
           <TabsTrigger value="media">{t("tabs.media")}</TabsTrigger>
         </TabsList>
-        <TabsContent className="pt-4" value="news">
-          <NewsList />
-        </TabsContent>
         <TabsContent className="pt-4" value="pages">
           <PagesList />
         </TabsContent>

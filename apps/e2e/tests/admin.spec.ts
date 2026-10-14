@@ -3,7 +3,7 @@ import { editor } from "../fixtures";
 import { urls } from "../playwright.config";
 import { expectAccessible, signInWithPassword } from "./helpers";
 
-test("an editor publishes a news post and it appears on the public site", async ({
+test("a News desk editor starts a piece, and it waits in Editing, unpublished", async ({
   page,
 }) => {
   const title = `Society notes ${Date.now()}`;
@@ -13,10 +13,10 @@ test("an editor publishes a news post and it appears on the public site", async 
   await expect(page).toHaveURL(/\/admin\/members/);
   await expectAccessible(page);
 
-  await page.goto(`${urls.app}/admin/content`);
+  await page.goto(`${urls.app}/admin/journal`);
   await page
-    .getByRole("link", { name: "New post" })
-    .or(page.getByRole("button", { name: "New post" }))
+    .getByRole("link", { name: "New staff piece" })
+    .or(page.getByRole("button", { name: "New staff piece" }))
     .first()
     .click();
   await page.getByRole("textbox", { name: "English" }).first().fill(title);
@@ -25,19 +25,12 @@ test("an editor publishes a news post and it appears on the public site", async 
     .first()
     .fill("ملاحظات الجمعية");
   await page
-    .getByRole("textbox", { name: "Web address (slug)" })
-    .fill(`society-notes-${Date.now()}`);
-  await page.getByRole("textbox", { name: "Text in English" }).click();
-  await page.keyboard.type("A short note from the Society.");
-  await page.getByRole("button", { name: "Publish" }).click();
-  const confirm = page.getByRole("alertdialog").or(page.getByRole("dialog"));
-  if (await confirm.isVisible().catch(() => false)) {
-    await confirm.getByRole("button", { name: "Publish" }).click();
-  }
-  await expect(
-    page.getByRole("button", { name: "Back to draft" })
-  ).toBeVisible();
+    .getByRole("combobox", { name: "Contributor" })
+    .selectOption({ label: "Waraq News Desk" });
+  await page.getByRole("button", { name: "Create the piece" }).click();
+  await expect(page).toHaveURL(/\/admin\/journal\/piece\?id=/);
 
-  await page.goto(`${urls.web}/news`);
-  await expect(page.getByText(title)).toBeVisible();
+  // The publish rule keeps it off the site until it is approved.
+  await page.goto(`${urls.web}/waraq/news`);
+  await expect(page.getByText(title)).toHaveCount(0);
 });
