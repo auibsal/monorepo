@@ -301,5 +301,70 @@ export const mirrorJournal = async (ctx: SyncContext) => {
       });
     });
   }
+  // Waraq: News, Video and Voices work in each stage, and every desk's
+  // pieces by stage of the newsroom (counts only; no titles or names).
+  const [{ data: named }, { data: pieces }] = await Promise.all([
+    ctx.admin
+      .schema("journal")
+      .from("submissions")
+      .select("desk, status")
+      .is("call_id", null),
+    ctx.admin.schema("journal").from("pieces").select("desk, status"),
+  ]);
+  for (const desk of ["news", "video", "voices"] as const) {
+    const tally = new Map<string, number>();
+    for (const s of (named ?? []).filter((x) => x.desk === desk)) {
+      tally.set(s.status, (tally.get(s.status) ?? 0) + 1);
+    }
+    STAGES.forEach(([stage, label], index) => {
+      rows.push({
+        key: `desk:${desk}:${stage}`,
+        props: {
+          Call: prop.text(`${DESK_LABEL[desk]} desk`),
+          Closes: prop.date(null),
+          Count: prop.number(tally.get(stage) ?? 0),
+          Nexus: prop.url(app(ctx, "/admin/journal")),
+          "Nexus ID": prop.text(`desk:${desk}:${stage}`),
+          Order: prop.number(index + 1),
+          Stage: prop.title(label),
+        },
+      });
+    });
+  }
+  for (const desk of Object.keys(DESK_LABEL) as (keyof typeof DESK_LABEL)[]) {
+    PIECE_STAGES.forEach(([stage, label], index) => {
+      rows.push({
+        key: `pieces:${desk}:${stage}`,
+        props: {
+          Call: prop.text(`${DESK_LABEL[desk]} pieces`),
+          Closes: prop.date(null),
+          Count: prop.number(
+            (pieces ?? []).filter((p) => p.desk === desk && p.status === stage)
+              .length
+          ),
+          Nexus: prop.url(app(ctx, "/admin/journal")),
+          "Nexus ID": prop.text(`pieces:${desk}:${stage}`),
+          Order: prop.number(index + 1),
+          Stage: prop.title(label),
+        },
+      });
+    });
+  }
   await mirror(ctx, "journal_stage", ctx.sources.journal, rows);
 };
+
+const DESK_LABEL = {
+  gallery: "Gallery",
+  letters: "Letters",
+  news: "News",
+  video: "Video",
+  voices: "Voices",
+} as const;
+
+const PIECE_STAGES = [
+  ["editing", "Editing"],
+  ["author_approved", "Author approved"],
+  ["approved", "Approved"],
+  ["scheduled", "Scheduled"],
+  ["published", "Published"],
+] as const;

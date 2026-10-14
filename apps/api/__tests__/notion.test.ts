@@ -6,7 +6,9 @@ vi.mock("server-only", () => ({}));
 const { pageBodies } = await import("@/lib/notion/blocks");
 const { createNotion, bareId } = await import("@/lib/notion/client");
 const { slugify, toInstant } = await import("@/lib/notion/props");
-const { checkEvent, checkNews } = await import("@/lib/notion/rules");
+const { checkEvent, checkNews, checkWaraq } = await import(
+  "@/lib/notion/rules"
+);
 
 const rt = (content: string, extra: object = {}) => ({
   plain_text: content,
@@ -132,6 +134,29 @@ describe("publishing rules", () => {
         expect.stringContaining("Set a Slug in Latin letters"),
       ])
     );
+  });
+
+  test("a Waraq page needs its desk and both titles", () => {
+    const desk = (name: string) => ({
+      select: { name },
+      type: "select",
+    });
+    expect(
+      checkWaraq(page({ Title: title("Book drive results") }))
+    ).toMatchObject({ ok: false });
+    expect(
+      checkWaraq(
+        page({
+          Desk: desk("News"),
+          Excerpt: text("Second Chapter collected books."),
+          Title: title("Book drive results"),
+          "Title (Arabic)": text("نتائج حملة الكتب"),
+        })
+      )
+    ).toMatchObject({
+      ok: true,
+      values: { deck_en: "Second Chapter collected books.", desk: "news" },
+    });
   });
 
   test("a news post dated in the future is scheduled for 9:00 AM Baghdad time", () => {

@@ -9,6 +9,13 @@ Branch: `claude/new-session-qosn60`.
 
 ## Blocked — needed from the user
 
+- [ ] **Waraq masthead (Notion: decide by Oct 22):** confirm the name (it is
+      the `journal.name_*` setting, Waraq now). In Administration → Members
+      give the roles: Editor-in-Chief, Managing Editor, Submissions Manager,
+      News, Letters, Gallery and Video Editors (Ali Hayder is named Video
+      Editor in Notion), Copy Chief, readers. Set Edition 1's launch time
+      (Administration → Waraq → Editions) once Launch Night's hour is known.
+
 - [ ] **Notion connection can read emails:** Notion → Settings → Connections →
   SAL Platform → Capabilities → allow "Read user information including email
   addresses". Without it the sync cannot tell who set Ready to publish, so it
@@ -435,12 +442,18 @@ These stop parts of the work. Everything else continues around them.
       workflow (author approval, three approvals, publish rule, scheduling,
       unpublish, corrections, front page), pen names, Editions, masthead
       roles, Edition 1 call (Oct 25 – Dec 3; decisions Dec 17)
-- [ ] Nexus: submit by desk and type, the newsroom, editing with the author,
+- [x] Nexus: submit by desk and type, the newsroom, editing with the author,
       approvals, front page, Editions
-- [ ] auibsal.org/waraq: front page, layouts by type, sections, Editions,
-      author pages, both languages
-- [ ] Author letters, the Sunday Paper, decisions held to their day, the
-      Notion content calendar's "Waraq" kind
+- [x] auibsal.org/waraq: front page, layouts by type, sections, Editions,
+      author pages, both languages; /journal redirects
+- [x] Author letters (received, fix request, acceptance, acceptance with
+      edits, decline, edit note, final check, published), decisions held to
+      the call's day, the Sunday Paper (Sundays 9 AM), the Notion content
+      calendar's "Waraq" kind, Waraq pipeline counts by desk
+- [ ] Launch invitation and shortlisted-decline letters (the handbook's
+      wording needs the counts and readers' sentences the editors choose)
+- [ ] Copy accepted Gallery images from the private submissions bucket to
+      the piece (editors upload them in the piece for now)
 
 ### Foundation (§3)
 - [x] `bun run init`; remove payments, Wayl, commerce config, Capacitor, native auth

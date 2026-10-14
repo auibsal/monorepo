@@ -2398,7 +2398,8 @@
           "askFix": "Ask for one fix",
           "accept": "Accept",
           "acceptWithEdits": "Accept with edits",
-          "decline": "Decline"
+          "decline": "Decline",
+          "openFile": "Open file {number}"
         }
       }
     },

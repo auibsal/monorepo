@@ -14,8 +14,8 @@ import {
   type SyncContext,
   saveLink,
 } from "./context";
-import { prop, read } from "./props";
-import { checkEvent, checkNews } from "./rules";
+import { prop, read, slugify } from "./props";
+import { checkEvent, checkNews, checkWaraq, type WaraqDesk } from "./rules";
 
 /**
  * Events and news are written in Notion (Publishing). A page set to
@@ -346,6 +346,184 @@ const publishNews = async (
   count(ctx, existing ? "news.republished" : "news.published");
 };
 
+/** The type a Notion piece starts as on each desk (editors change it). */
+const STARTING_TYPE = {
+  gallery: "art_photography",
+  letters: "creative_nonfiction",
+  news: "article",
+  video: "video",
+  voices: "column",
+} as const satisfies Record<WaraqDesk, string>;
+
+/** The publisher's own byline: their contributor record, made if needed. */
+const bylineFor = async (ctx: SyncContext, userId: string) => {
+  const j = ctx.admin.schema("journal");
+  const { data: found } = await j
+    .from("contributors")
+    .select("id")
+    .eq("user_id", userId)
+    .eq("is_pen_name", false)
+    .limit(1)
+    .maybeSingle();
+  if (found) {
+    return found.id;
+  }
+  const { data: profile } = await ctx.admin
+    .schema("core")
+    .from("profiles")
+    .select("full_name_en, full_name_ar")
+    .eq("id", userId)
+    .maybeSingle();
+  const name = profile?.full_name_en?.trim() || "Waraq";
+  const base = slugify(name) || "contributor";
+  const { data: taken } = await j
+    .from("contributors")
+    .select("slug")
+    .like("slug", `${base}%`);
+  const used = new Set((taken ?? []).map((c) => c.slug));
+  let slug = base;
+  for (let n = 2; used.has(slug); n += 1) {
+    slug = `${base}-${n}`;
+  }
+  const { data, error } = await j
+    .from("contributors")
+    .insert({
+      name_ar: profile?.full_name_ar ?? null,
+      name_en: name,
+      slug,
+      user_id: userId,
+    })
+    .select("id")
+    .single();
+  if (error) {
+    throw error;
+  }
+  return data.id;
+};
+
+const pieceSlug = async (ctx: SyncContext, title: string) => {
+  const base = (slugify(title) || "piece").slice(0, 70);
+  const { data: taken } = await ctx.admin
+    .schema("journal")
+    .from("pieces")
+    .select("slug")
+    .like("slug", `${base}%`);
+  const used = new Set((taken ?? []).map((p) => p.slug));
+  let slug = base;
+  for (let n = 2; used.has(slug); n += 1) {
+    slug = `${base}-${n}`;
+  }
+  return slug;
+};
+
+/**
+ * Staff writing for Waraq (Kind "Waraq"): imported as a piece in Editing,
+ * where it goes through the same approvals as everything else. The person
+ * who set Ready to publish needs the desk's permission (or journal.approve)
+ * and becomes the byline. A page already imported updates its piece while
+ * it is still in editing.
+ */
+const importWaraq = async (
+  ctx: SyncContext,
+  page: NotionPage,
+  email: string
+) => {
+  const checked = checkWaraq(page);
+  if (!checked.ok) {
+    await needsChanges(ctx, page, checked.problems);
+    return;
+  }
+  const v = checked.values;
+  const rpc = (permission: string) =>
+    ctx.admin.schema("access").rpc("notion_publisher", {
+      email,
+      permission,
+      scope_type: "global",
+    });
+  const [desk, chief] = await Promise.all([
+    rpc(`journal.edit.${v.desk}`),
+    rpc("journal.approve"),
+  ]);
+  const publisher = (desk.data ?? chief.data) as string | null;
+  if (!publisher) {
+    await needsChanges(ctx, page, [
+      `${email} does not edit the ${v.desk} desk in the Nexus. Ask its editor or the Editor-in-Chief to set Ready to publish.`,
+    ]);
+    return;
+  }
+  const bodies = await bodiesOf(ctx, page);
+  let language: "en" | "ar" | "bilingual" = "en";
+  if (bodies.body_ar && bodies.body_en) {
+    language = "bilingual";
+  } else if (bodies.body_ar) {
+    language = "ar";
+  }
+  const j = ctx.admin.schema("journal");
+  const existing = await recordFor(ctx, "piece", page.id);
+  let id = existing;
+  if (id) {
+    const { data: piece } = await j
+      .from("pieces")
+      .select("status")
+      .eq("id", id)
+      .maybeSingle();
+    if (piece && !["editing", "author_approved"].includes(piece.status)) {
+      await needsChanges(ctx, page, [
+        "This piece is past editing in the Nexus. Change it there (or reopen it there first).",
+      ]);
+      return;
+    }
+    const { error } = await j
+      .from("pieces")
+      .update({
+        deck_ar: v.deck_ar,
+        deck_en: v.deck_en,
+        publish_at: v.publish_at,
+        title_ar: v.title_ar,
+        title_en: v.title_en,
+      })
+      .eq("id", id);
+    if (error) {
+      throw error;
+    }
+    if (Object.keys(bodies).length > 0) {
+      await j.from("piece_bodies").update(bodies).eq("piece_id", id);
+    }
+  } else {
+    const { data, error } = await j
+      .from("pieces")
+      .insert({
+        category: STARTING_TYPE[v.desk],
+        contributor_id: await bylineFor(ctx, publisher),
+        deck_ar: v.deck_ar,
+        deck_en: v.deck_en,
+        language,
+        publish_at: v.publish_at,
+        slug: await pieceSlug(ctx, v.title_en),
+        status: "editing",
+        title_ar: v.title_ar,
+        title_en: v.title_en,
+      })
+      .select("id")
+      .single();
+    if (error) {
+      throw error;
+    }
+    ({ id } = data);
+    await j.from("piece_bodies").insert({ piece_id: id, ...bodies });
+  }
+  await saveLink(ctx, "piece", page.id, id, null);
+  await ctx.notion.updatePage(page.id, {
+    Nexus: prop.url(`${ctx.appUrl}/en/admin/journal/piece?id=${id}`),
+    "Nexus ID": prop.text(id),
+    "Platform note": prop.text(
+      `In the Waraq newsroom since ${stamp()}, in Editing: the approvals and publishing happen in the Nexus.`
+    ),
+    Status: prop.select("In editing"),
+  });
+  count(ctx, existing ? "waraq.updated" : "waraq.imported");
+};
+
 const statusFilter = (statuses: string[]) => ({
   or: statuses.map((s) => ({ property: "Status", select: { equals: s } })),
 });
@@ -353,7 +531,7 @@ const statusFilter = (statuses: string[]) => ({
 /** Pages waiting for the platform, handled one at a time. */
 export const publishWaiting = async (ctx: SyncContext) => {
   const programmes = await programmeMap(ctx);
-  const [events, news] = await Promise.all([
+  const [events, news, waraq] = await Promise.all([
     ctx.notion.query(ctx.sources.events, statusFilter([READY, CANCEL])),
     ctx.notion.query(ctx.sources.news, {
       and: [
@@ -361,10 +539,17 @@ export const publishWaiting = async (ctx: SyncContext) => {
         statusFilter([READY]),
       ],
     }),
+    ctx.notion.query(ctx.sources.news, {
+      and: [
+        { property: "Kind", select: { equals: "Waraq" } },
+        statusFilter([READY]),
+      ],
+    }),
   ]);
-  const queue: [Kind, NotionPage][] = [
+  const queue: [Kind | "waraq", NotionPage][] = [
     ...events.map((p): [Kind, NotionPage] => ["event", p]),
     ...news.map((p): [Kind, NotionPage] => ["news", p]),
+    ...waraq.map((p): ["waraq", NotionPage] => ["waraq", p]),
   ];
   for (const [kind, page] of queue) {
     if (outOfTime(ctx)) {
@@ -377,7 +562,9 @@ export const publishWaiting = async (ctx: SyncContext) => {
         await needsChanges(ctx, page, [NO_EMAIL]);
         continue;
       }
-      if (kind === "news") {
+      if (kind === "waraq") {
+        await importWaraq(ctx, page, email);
+      } else if (kind === "news") {
         await publishNews(ctx, page, email, programmes);
       } else if (read.select(page, "Status") === CANCEL) {
         await cancelEvent(ctx, page, email);

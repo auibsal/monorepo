@@ -9,13 +9,18 @@ import {
   type Lang as CopyLang,
   type Decision,
   decision,
+  deskNames,
   eventReminder,
+  finalCheck,
+  pieceNote,
+  piecePublished,
   removalReceived,
   removalRequested,
   returnedForFormatting,
   roleEnding,
   rsvpConfirmed,
   submissionReceived,
+  sundayPaper,
   waitlistPromoted,
 } from "@repo/email/copy";
 import { Notice } from "@repo/email/templates/notice";
@@ -116,6 +121,41 @@ const eventInfo = async (admin: AdminClient, eventId: unknown) => {
     .maybeSingle();
   return data;
 };
+
+/** Whether a submission is read blind (an Edition call) or by name. */
+const submissionDesk = async (admin: AdminClient, submissionId: unknown) => {
+  const { data } = await admin
+    .schema("journal")
+    .from("submissions")
+    .select("call_id")
+    .eq("id", String(submissionId))
+    .maybeSingle();
+  return data?.call_id ? "blind" : "named";
+};
+
+/** A piece's title in the author's language, and its author. */
+const pieceInfo = async (admin: AdminClient, pieceId: unknown) => {
+  const { data } = await admin
+    .schema("journal")
+    .from("pieces")
+    .select(
+      "id, slug, title_en, title_ar, contributor:contributors!pieces_contributor_id_fkey(user_id)"
+    )
+    .eq("id", String(pieceId))
+    .maybeSingle();
+  return data;
+};
+
+const pieceTitle = (
+  piece: { title_ar: string | null; title_en: string | null },
+  lang: Lang
+) =>
+  (lang === "ar" ? piece.title_ar : piece.title_en) ??
+  piece.title_en ??
+  piece.title_ar ??
+  "";
+
+const webUrl = () => env.NEXT_PUBLIC_WEB_URL.replace(TRAILING_SLASH, "");
 
 const submissionTitle = async (admin: AdminClient, submissionId: unknown) => {
   const { data } = await admin
@@ -242,6 +282,45 @@ const handlers: Record<string, Handler> = {
       await send(to, decision(to.lang, work, outcome, appUrl()));
     }
   },
+  "journal.final_check": async (admin, payload) => {
+    const [to, piece] = await Promise.all([
+      recipient(admin, payload.user_id),
+      pieceInfo(admin, payload.piece_id),
+    ]);
+    if (to && piece) {
+      await send(
+        to,
+        finalCheck(to.lang, pieceTitle(piece, to.lang), piece.id, appUrl())
+      );
+    }
+  },
+  "journal.piece_note": async (admin, payload) => {
+    const [to, piece] = await Promise.all([
+      recipient(admin, payload.user_id),
+      pieceInfo(admin, payload.piece_id),
+    ]);
+    if (to && piece) {
+      await send(
+        to,
+        pieceNote(to.lang, pieceTitle(piece, to.lang), piece.id, appUrl())
+      );
+    }
+  },
+  "journal.piece_published": async (admin, payload) => {
+    const piece = await pieceInfo(admin, payload.piece_id);
+    // Staff pieces have no account behind the byline to thank.
+    const to = await recipient(admin, piece?.contributor?.user_id);
+    if (to && piece) {
+      await send(
+        to,
+        piecePublished(
+          to.lang,
+          pieceTitle(piece, to.lang),
+          `${webUrl()}/${to.lang}/waraq/pieces/${piece.slug}`
+        )
+      );
+    }
+  },
   "journal.returned_for_formatting": async (admin, payload) => {
     const [to, work] = await Promise.all([
       recipient(admin, payload.user_id),
@@ -260,13 +339,46 @@ const handlers: Record<string, Handler> = {
     }
   },
   "journal.submission_received": async (admin, payload) => {
-    const [to, work] = await Promise.all([
+    const [to, work, desk] = await Promise.all([
       recipient(admin, payload.user_id),
       submissionTitle(admin, payload.submission_id),
+      submissionDesk(admin, payload.submission_id),
     ]);
     if (to && work) {
-      await send(to, submissionReceived(to.lang, work, appUrl()));
+      await send(to, submissionReceived(to.lang, work, appUrl(), desk));
     }
+  },
+  "journal.sunday_paper": async (admin, payload) => {
+    const since =
+      typeof payload.since === "string"
+        ? payload.since
+        : new Date(Date.now() - 7 * 86_400_000).toISOString();
+    const [to, { data: pieces }] = await Promise.all([
+      recipient(admin, payload.user_id),
+      admin
+        .schema("journal")
+        .from("pieces")
+        .select("slug, desk, title_en, title_ar, published_at")
+        .eq("status", "published")
+        .gt("published_at", since)
+        .lte("published_at", new Date().toISOString())
+        .order("published_at", { ascending: false })
+        .limit(20),
+    ]);
+    if (!(to && pieces && pieces.length > 0)) {
+      return;
+    }
+    const items = pieces.map((p) => {
+      const desk = deskNames[p.desk as keyof typeof deskNames];
+      return {
+        desk_ar: desk?.ar ?? "",
+        desk_en: desk?.en ?? "",
+        title_ar: p.title_ar ?? "",
+        title_en: p.title_en ?? "",
+        url: `${webUrl()}/${to.lang}/waraq/pieces/${p.slug}`,
+      };
+    });
+    await send(to, sundayPaper(to.lang, items, `${webUrl()}/${to.lang}/waraq`));
   },
   "programmes.removal_overdue": async (admin, payload) => {
     const [request, managers] = await Promise.all([
@@ -305,6 +417,18 @@ const handlers: Record<string, Handler> = {
   },
 };
 
+/**
+ * A row that waits for its day: decision letters go out on the call's
+ * announced decisions day (payload.send_after), all at once.
+ */
+export const isDeferred = (payload: unknown, now = Date.now()) => {
+  const after =
+    payload && typeof payload === "object"
+      ? (payload as Record<string, unknown>).send_after
+      : null;
+  return typeof after === "string" && Date.parse(after) > now;
+};
+
 /** Claims and processes one row; true when it is done (or not ours to do). */
 export const processRow = async (admin: AdminClient, id: number) => {
   const { data: row } = await admin
@@ -316,6 +440,10 @@ export const processRow = async (admin: AdminClient, id: number) => {
     .lt("attempts", MAX_ATTEMPTS)
     .maybeSingle();
   if (!row) {
+    return true;
+  }
+  if (isDeferred(row.payload)) {
+    // Not yet: left unclaimed for the drain on its day.
     return true;
   }
   const previousAttempts = row.attempts;
@@ -371,17 +499,21 @@ export const processRow = async (admin: AdminClient, id: number) => {
 
 /** Pending rows older than two minutes (the trigger handles fresh ones). */
 export const drain = async (admin: AdminClient, limit = 50) => {
-  const { data: rows } = await admin
+  const { data: pending } = await admin
     .schema("core")
     .from("outbox")
-    .select("id")
+    .select("id, payload")
     .is("processed_at", null)
     .lt("attempts", MAX_ATTEMPTS)
     .lt("created_at", new Date(Date.now() - 2 * 60 * 1000).toISOString())
     .order("created_at")
-    .limit(limit);
+    .limit(limit * 10);
+  // Letters held for their day stay behind without blocking the rest.
+  const rows = (pending ?? [])
+    .filter((row) => !isDeferred(row.payload))
+    .slice(0, limit);
   let done = 0;
-  for (const row of rows ?? []) {
+  for (const row of rows) {
     try {
       // One at a time: Resend's rate limit is per second.
       // biome-ignore lint/performance/noAwaitInLoops: sequential on purpose
@@ -391,10 +523,10 @@ export const drain = async (admin: AdminClient, limit = 50) => {
     } catch (error) {
       if (error instanceof EmailQuotaError) {
         // The rest would fail the same way; they wait for the next drain.
-        return { done, quotaReached: true, seen: rows?.length ?? 0 };
+        return { done, quotaReached: true, seen: rows.length };
       }
       throw error;
     }
   }
-  return { done, quotaReached: false, seen: rows?.length ?? 0 };
+  return { done, quotaReached: false, seen: rows.length };
 };

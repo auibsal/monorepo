@@ -5,7 +5,10 @@ import {
   decision,
   type EventInfo,
   eventReminder,
+  finalCheck,
   type Lang,
+  pieceNote,
+  piecePublished,
   type RemovalInfo,
   type RoleInfo,
   removalReceived,
@@ -14,6 +17,7 @@ import {
   roleEnding,
   rsvpConfirmed,
   submissionReceived,
+  sundayPaper,
   waitlistPromoted,
 } from "@repo/email/copy";
 import { Notice } from "@repo/email/templates/notice";
@@ -33,6 +37,7 @@ type Story = StoryObj<typeof meta>;
 
 const APP = "https://nexus.auibsal.org";
 const WORK = "The paper and the pen";
+const PIECE = "00000000-0000-4000-8000-000000000001";
 const event: EventInfo = {
   starts_at: "2026-10-13T15:00:00Z",
   title_ar: "صفحات مفتوحة",
@@ -101,3 +106,26 @@ export const SubmissionReceived = email((l) =>
   submissionReceived(l, WORK, APP)
 );
 export const WaitlistPromoted = email((l) => waitlistPromoted(l, event, APP));
+export const SubmissionReceivedNamed = email((l) =>
+  submissionReceived(l, WORK, APP, "named")
+);
+export const FinalCheck = email((l) => finalCheck(l, WORK, PIECE, APP));
+export const PieceNote = email((l) => pieceNote(l, WORK, PIECE, APP));
+export const PiecePublished = email((l) =>
+  piecePublished(l, WORK, "https://auibsal.org/en/waraq/pieces/sample")
+);
+export const SundayPaper = email((l) =>
+  sundayPaper(
+    l,
+    [
+      {
+        desk_ar: "أخبار",
+        desk_en: "News",
+        title_ar: "عنوان تجريبي",
+        title_en: "Sample headline",
+        url: "https://auibsal.org/en/waraq/pieces/sample",
+      },
+    ],
+    "https://auibsal.org/en/waraq"
+  )
+);

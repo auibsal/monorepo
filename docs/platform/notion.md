@@ -45,7 +45,8 @@ stay on auibsal.org and are edited in the Nexus.
 every five minutes with the cron secret:
 
 1. **Mirrors.** Programs, officers (`access.officer_directory()`), documents
-   and minutes, Journal stage counts. A row is written only when it changed
+   and minutes, Waraq pipeline counts (each call's stages, the News, Video
+   and Voices desks' stages, and each desk's pieces by newsroom stage). A row is written only when it changed
    (hash in `core.notion_links`) and moved to the trash when its record is
    gone. Officers are matched to Notion people by AUIB email.
 2. **Publishing.** Pages in Events or Content calendar (kind News post) with
@@ -59,6 +60,13 @@ every five minutes with the cron secret:
    bucket. The page gets Status **Published**, the Nexus and public links and
    a note; problems set **Needs changes**, a note and a comment.
    **Cancel on the site** cancels a published event.
+   **Waraq** (kind Waraq, with a **Desk**: News, Letters, Gallery, Video or
+   Voices): Ready to publish imports the page as a staff piece in **Editing**
+   in Administration → Waraq, bylined to the person who set it (they need
+   `journal.edit.<desk>` or `journal.approve`). It is not published from
+   Notion: the approvals and the publish rule happen in the Nexus. The page
+   gets Status **In editing** and the Nexus link; while the piece is still in
+   editing, setting Ready to publish again updates its title, deck and text.
 3. **Nexus items.** Events and news made in the Nexus get a page in Notion
    too (their text stays in the Nexus until written in the page; an empty
    page never blanks it).

@@ -2398,7 +2398,8 @@
           "askFix": "اطلب تعديلاً واحداً",
           "accept": "اقبل",
           "acceptWithEdits": "اقبل مع تعديلات",
-          "decline": "اعتذر"
+          "decline": "اعتذر",
+          "openFile": "افتح الملف {number}"
         }
       }
     },

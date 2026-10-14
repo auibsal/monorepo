@@ -13,6 +13,7 @@ export type LinkKind =
   | "minutes"
   | "news"
   | "officer"
+  | "piece"
   | "programme";
 
 /** The workspace's data sources (core.settings `notion.data_sources`). */
