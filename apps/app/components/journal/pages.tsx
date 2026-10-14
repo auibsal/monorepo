@@ -42,6 +42,7 @@ import {
 import {
   AuthorshipPledge,
   blankWork,
+  Declarations,
   revisableColumns,
   WorkFields,
   type WorkValue,
@@ -256,6 +257,8 @@ export const SubmitWork = () => {
   const [work, setWork] = useState<WorkValue>(blankWork);
   const [files, setFiles] = useState<PendingFile[]>([]);
   const [pledged, setPledged] = useState(false);
+  const [firstPublication, setFirstPublication] = useState(false);
+  const [consent, setConsent] = useState(false);
   const [partial, setPartial] = useState<string | null>(null);
   const [partnerId, setPartnerId] = useState("");
   const pathway = useSubmitPathway(calls.data, callId, partnerId);
@@ -268,10 +271,13 @@ export const SubmitWork = () => {
         body_html: work.body_html || undefined,
         call_id: call?.id ?? "",
         category: work.category,
+        consent_confirmed: consent,
         cover_note: work.cover_note || undefined,
+        first_publication_confirmed: firstPublication,
         human_authorship_confirmed: true,
         language: work.language,
         partner_id: throughPartner,
+        pen_name: work.pen_name.trim() || undefined,
         rights_note: work.rights_note || undefined,
         source_author: work.source_author || undefined,
         source_text: work.source_text || undefined,
@@ -309,6 +315,8 @@ export const SubmitWork = () => {
   const ready =
     Boolean(call) &&
     pledged &&
+    firstPublication &&
+    (journal.deskOf(work.category) !== "gallery" || consent) &&
     workIsReady(work, files.filter((f) => kinds.includes(f.kind)).length);
 
   return (
@@ -369,6 +377,13 @@ export const SubmitWork = () => {
               }
             />
           </fieldset>
+          <Declarations
+            category={work.category}
+            consent={consent}
+            firstPublication={firstPublication}
+            onConsent={setConsent}
+            onFirstPublication={setFirstPublication}
+          />
           <AuthorshipPledge checked={pledged} onChange={setPledged} />
           <p className="type-caption">
             {t("limits", {
@@ -532,6 +547,7 @@ export const MySubmission = () => {
         category: row.category,
         cover_note: row.cover_note ?? "",
         language: row.language,
+        pen_name: row.pen_name ?? "",
         rights_note: row.rights_note ?? "",
         source_author: row.source_author ?? "",
         source_text: row.source_text ?? "",

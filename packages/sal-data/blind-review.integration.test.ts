@@ -124,6 +124,7 @@ describe.skipIf(!enabled)("blind review over the Data API", () => {
         body_html: "<p>A first poem</p>",
         call_id: callId,
         category: "poetry",
+        first_publication_confirmed: true,
         human_authorship_confirmed: true,
         language: "en",
         title: "First light",

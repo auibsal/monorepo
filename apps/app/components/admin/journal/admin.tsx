@@ -313,7 +313,7 @@ const Contributors = () => {
         await supabase
           .schema("journal")
           .from("contributors")
-          .select("*")
+          .select("id, slug, name_en, name_ar, bio_en, bio_ar, is_pen_name")
           .order("name_en")
       ) ?? [],
     queryKey: [...key, "contributors"],

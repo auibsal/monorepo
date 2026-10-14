@@ -3,9 +3,43 @@ import { z } from "zod";
 import { type Client, unwrap } from "./client";
 import { sanitizeRichText } from "./sanitize";
 
-/** The seven Journal categories: one list for the form and the database enum. */
+/** Every type of piece: one list for the forms and the database enum. */
 export const categories = Constants.journal.Enums.category;
 export type Category = Enums<{ schema: "journal" }, "category">;
+
+/** Waraq's five desks (journal.desk). */
+export const desks = Constants.journal.Enums.desk;
+export type Desk = Enums<{ schema: "journal" }, "desk">;
+
+/** The desk each type belongs to: the same mapping as journal.desk_of(). */
+export const deskOf = (category: Category): Desk => {
+  switch (category) {
+    case "article":
+    case "interview":
+    case "review":
+    case "feature":
+      return "news";
+    case "art_photography":
+    case "photo_essay":
+    case "comic":
+      return "gallery";
+    case "video":
+      return "video";
+    case "column":
+    case "letter":
+      return "voices";
+    default:
+      return "letters";
+  }
+};
+
+/** Letters and Gallery answer a call for an Edition and are read blind. */
+export const isEditionDesk = (desk: Desk) =>
+  desk === "letters" || desk === "gallery";
+
+/** The types on each desk, in the order the forms list them. */
+export const deskCategories = (desk: Desk) =>
+  categories.filter((c) => deskOf(c) === desk);
 
 export const submissionStatuses = Constants.journal.Enums.submission_status;
 export type SubmissionStatus = Enums<
@@ -130,19 +164,61 @@ export const MAX_FILE_BYTES = 25 * 1024 * 1024;
 export const submissionSchema = z
   .object({
     body_html: z.string().max(200_000).optional(),
-    call_id: z.uuid(),
+    /** Edition desks only (Letters, Gallery); News, Video and Voices have none. */
+    call_id: z.uuid().optional(),
     category: z.enum(categories),
+    /** Every identifiable person in an image consented (Gallery: required). */
+    consent_confirmed: z.boolean().optional(),
     cover_note: z.string().max(2000).optional(),
+    /** News: one or two sentences under the headline. */
+    deck: z.string().trim().max(400).optional(),
+    /** The work has not appeared in another journal, anthology or book. */
+    first_publication_confirmed: z.boolean().optional(),
     human_authorship_confirmed: z.literal(true),
     language: z.enum(Constants.journal.Enums.language),
     /** The partner the author submits through (partner pathway). */
     partner_id: z.uuid().optional(),
+    /** Only the Submissions Manager keeps the real name. */
+    pen_name: z.string().trim().min(2).max(80).optional(),
     rights_note: z.string().max(2000).optional(),
     source_author: z.string().max(300).optional(),
     source_text: z.string().max(200_000).optional(),
     title: z.string().trim().min(1).max(300),
+    video_url: z
+      .url({ protocol: /^https$/ })
+      .max(500)
+      .optional(),
   })
   .superRefine((value, context) => {
+    const desk = deskOf(value.category);
+    if (isEditionDesk(desk) !== Boolean(value.call_id)) {
+      context.addIssue({
+        code: "custom",
+        message: isEditionDesk(desk) ? "call_required" : "no_call",
+        path: ["call_id"],
+      });
+    }
+    if (desk !== "news" && value.first_publication_confirmed !== true) {
+      context.addIssue({
+        code: "custom",
+        message: "first_publication_required",
+        path: ["first_publication_confirmed"],
+      });
+    }
+    if (desk === "gallery" && value.consent_confirmed !== true) {
+      context.addIssue({
+        code: "custom",
+        message: "consent_required",
+        path: ["consent_confirmed"],
+      });
+    }
+    if (value.category === "video" && !value.video_url) {
+      context.addIssue({
+        code: "custom",
+        message: "video_required",
+        path: ["video_url"],
+      });
+    }
     if (value.category === "translation") {
       if (!value.source_text?.trim()) {
         context.addIssue({

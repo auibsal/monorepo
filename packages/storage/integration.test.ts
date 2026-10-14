@@ -104,6 +104,7 @@ describe.skipIf(
       .insert({
         call_id: call.data?.id ?? "",
         category: "poetry",
+        first_publication_confirmed: true,
         human_authorship_confirmed: true,
         language: "en",
         title: "Upload test",

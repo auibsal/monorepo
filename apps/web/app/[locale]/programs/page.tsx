@@ -26,7 +26,7 @@ const ProgrammesPage = async ({ params }: LocaleParams) => {
       {localized(p, "summary", locale) ? (
         <p className="type-body">{localized(p, "summary", locale)}</p>
       ) : null}
-      {p.slug === "journal" ? (
+      {p.slug === "waraq" ? (
         <Link
           className="type-caption underline underline-offset-4"
           href="/journal"

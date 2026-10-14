@@ -123,10 +123,10 @@ declare new_id uuid;
 begin
   perform pg_temp.login_as(pg_temp.author(n));
   insert into journal.submissions (call_id, category, language, title, body_html, source_text, rights_note,
-    human_authorship_confirmed)
+    human_authorship_confirmed, first_publication_confirmed, consent_confirmed)
   values (call, cat, 'en', initcap(cat::text) || ' by ' || n, '<p>Text</p>',
     case when cat = 'translation' then 'Original' end,
-    case when cat = 'translation' then 'Public domain' end, true)
+    case when cat = 'translation' then 'Public domain' end, true, true, true)
   returning id into new_id;
   perform pg_temp.logout();
   return new_id;
@@ -137,8 +137,9 @@ grant execute on function pg_temp.submit(integer, journal.category, uuid) to pub
 
 select is(
   (select array_agg(c order by c) from unnest(enum_range(null::journal.category)) c)::text[],
-  array['poetry', 'fiction', 'creative_nonfiction', 'short_drama', 'art_photography', 'translation', 'six_words'],
-  'The category enum matches the form''s seven categories'
+  array['poetry', 'fiction', 'creative_nonfiction', 'short_drama', 'art_photography', 'translation', 'six_words',
+    'article', 'interview', 'review', 'feature', 'photo_essay', 'comic', 'video', 'column', 'letter'],
+  'The category enum matches the journal''s seven types and Waraq''s nine'
 );
 
 select lives_ok($$ select pg_temp.submit(1, 'poetry') $$, 'Poetry is accepted');
@@ -175,14 +176,14 @@ select throws_ok(
 
 select pg_temp.login_as(pg_temp.author(2));
 select throws_ok(
-  $$ insert into journal.submissions (call_id, category, language, title, human_authorship_confirmed)
-     values ('ca000000-0000-0000-0000-000000000001', 'translation', 'en', 'No source', true) $$,
+  $$ insert into journal.submissions (call_id, category, language, title, human_authorship_confirmed, first_publication_confirmed)
+     values ('ca000000-0000-0000-0000-000000000001', 'translation', 'en', 'No source', true, true) $$,
   '23514', null,
   'A translation needs its source text and a rights note'
 );
 select throws_ok(
-  $$ insert into journal.submissions (call_id, category, language, title, human_authorship_confirmed)
-     values ('ca000000-0000-0000-0000-000000000001', 'poetry', 'en', 'No pledge', false) $$,
+  $$ insert into journal.submissions (call_id, category, language, title, human_authorship_confirmed, first_publication_confirmed)
+     values ('ca000000-0000-0000-0000-000000000001', 'poetry', 'en', 'No pledge', false, true) $$,
   '23514', null,
   'The Human Authorship pledge is reconfirmed per submission'
 );

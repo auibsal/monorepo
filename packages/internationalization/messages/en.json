@@ -481,7 +481,12 @@
         "rightsNote": "Rights to translate",
         "rightsHint": "How you know the translation may be published: public domain, the author's permission, or similar.",
         "coverNote": "Note to the editors (optional)",
-        "coverHint": "Anything the editors should know. The note doesn't go to readers."
+        "coverHint": "Anything the editors should know. The note doesn't go to readers.",
+        "penName": "Pen name (optional)",
+        "penNameHint": "Published instead of your name. Only the Submissions Manager knows who wrote it.",
+        "declarations": "Declarations",
+        "firstPublication": "This work has not appeared in another journal, anthology or book. Posts on my own social media, if any, are named in the note to the editors.",
+        "consent": "Every identifiable person in these images has agreed to appear (a parent or guardian for anyone under 18)."
       },
       "files": {
         "title": "Files",
@@ -1490,7 +1495,16 @@
           "short_drama": "Short Drama",
           "art_photography": "Art & Photography",
           "translation": "Translation",
-          "six_words": "Six Words"
+          "six_words": "Six Words",
+          "article": "News article",
+          "interview": "Interview",
+          "review": "Review",
+          "feature": "Feature",
+          "photo_essay": "Photo essay",
+          "comic": "Comic",
+          "video": "Video",
+          "column": "Column",
+          "letter": "Letter to the editor"
         },
         "languages": {
           "en": "English",
@@ -1534,6 +1548,13 @@
           "bio": "Bio",
           "new": "New contributor",
           "edit": "Edit contributor"
+        },
+        "desks": {
+          "news": "News",
+          "letters": "Letters",
+          "gallery": "Gallery",
+          "video": "Video",
+          "voices": "Voices"
         }
       },
       "pipeline": {
@@ -3129,9 +3150,25 @@
         "short_drama": "Short Drama",
         "art_photography": "Art & Photography",
         "translation": "Translation",
-        "six_words": "Six Words"
+        "six_words": "Six Words",
+        "article": "News article",
+        "interview": "Interview",
+        "review": "Review",
+        "feature": "Feature",
+        "photo_essay": "Photo essay",
+        "comic": "Comic",
+        "video": "Video",
+        "column": "Column",
+        "letter": "Letter to the editor"
       },
-      "partnersMayAnswer": "Members of {partners} may also answer this call."
+      "partnersMayAnswer": "Members of {partners} may also answer this call.",
+      "desks": {
+        "news": "News",
+        "letters": "Letters",
+        "gallery": "Gallery",
+        "video": "Video",
+        "voices": "Voices"
+      }
     },
     "about": {
       "title": "About the Society",

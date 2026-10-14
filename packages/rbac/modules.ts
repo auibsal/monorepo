@@ -19,7 +19,20 @@ export const adminModules = [
     permissions: ["members.verify", "members.manage", "roles.assign"],
   },
   { key: "events", permissions: ["events.manage", "events.checkin"] },
-  { key: "journal", permissions: ["journal.publish"] },
+  {
+    key: "journal",
+    permissions: [
+      "journal.publish",
+      "journal.approve",
+      "journal.copy",
+      "journal.frontpage",
+      "journal.edit.news",
+      "journal.edit.letters",
+      "journal.edit.gallery",
+      "journal.edit.video",
+      "journal.edit.voices",
+    ],
+  },
   {
     key: "pipeline",
     permissions: [

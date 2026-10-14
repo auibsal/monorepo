@@ -118,7 +118,7 @@ const Home = async ({ params }: HomeProps) => {
                 <li key={p.id}>
                   <Link
                     className="frame press grid h-full content-start gap-2 bg-surface-tint p-card-padding shadow-offset hover:bg-surface"
-                    href={p.slug === "journal" ? "/journal" : "/programs"}
+                    href={p.slug === "waraq" ? "/journal" : "/programs"}
                   >
                     <h3 className="type-subheading">
                       {localized(p, "name", locale)}

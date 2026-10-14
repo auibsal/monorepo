@@ -20,8 +20,8 @@
   "supportEmail": "hello@auibsal.org",
   "repoUrl": "https://github.com/auibsal/mono",
   "journal": {
-    "name_en": "AUIB Literary Journal",
-    "name_ar": "مجلة الجامعة الأمريكية الأدبية"
+    "name_en": "Waraq",
+    "name_ar": "ورق"
   },
   "locale": {
     "default": "en",

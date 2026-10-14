@@ -104,9 +104,9 @@ select '00000000-0000-0000-0000-0000000000a1', t, '1'
 from unnest(enum_range(null::membership.pledge_type)) t;
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a1');
-insert into journal.submissions (call_id, category, language, title, body_html, human_authorship_confirmed)
+insert into journal.submissions (call_id, category, language, title, body_html, human_authorship_confirmed, first_publication_confirmed)
 values ('ca000000-0000-0000-0000-000000000001',
-  'poetry', 'en', 'The First Rain', '<p>Rain on the roof.</p>', true);
+  'poetry', 'en', 'The First Rain', '<p>Rain on the roof.</p>', true, true);
 
 -- ── pipeline_issues ─────────────────────────────────────────────────────────
 

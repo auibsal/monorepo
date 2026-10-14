@@ -99,9 +99,14 @@ any schema change. Integration tests run against a local stack with
   entries); only signed-off entries count. No online payments of any kind.
 - **Documents.** Never present a draft document as adopted. Every document
   page shows its status from the registry.
-- **Names.** The journal is the **AUIB Literary Journal** (Arabic «مجلة الجامعة
-  الأمريكية الأدبية»); "Waraq" was its working title and is not used. The Society has
-  no charity partner on record (Natrok Athar was removed on Oct 8, 2026).
+- **Names.** The publication is **Waraq** («ورق»; full title "Waraq: AUIB's
+  paper of news, letters and art"), owner's decision of Oct 14, 2026: the AUIB
+  Literary Journal, news, the Gallery Wall, Six Words and Side Quest episodes
+  in one paper with five desks. The journal became its Letters desk and its
+  Editions. The name is read from the settings `journal.name_en`/`_ar`, so a
+  rename is a settings change; the schema keeps the code name `journal`. The
+  Society has no charity partner on record (Natrok Athar was removed on Oct 8,
+  2026).
 - **Navigation.** At most five sections per app header; the rest go in the
   footer (web) or the Account menu (Nexus). Every Nexus empty state offers one
   next action (`EmptyLine action`).

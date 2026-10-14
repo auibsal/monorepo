@@ -145,9 +145,9 @@ select is((select array_agg(name_en) from journal.call_partner_names('ca000000-0
 -- The partner's poet: not a member, not yet verified as the partner's.
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000b1');
 select throws_ok(
-  $$ insert into journal.submissions (call_id, partner_id, category, language, title, body_html, human_authorship_confirmed)
+  $$ insert into journal.submissions (call_id, partner_id, category, language, title, body_html, human_authorship_confirmed, first_publication_confirmed)
      values ('ca000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-00000000d001',
-       'poetry', 'en', 'Too early', '<p>Text</p>', true) $$,
+       'poetry', 'en', 'Too early', '<p>Text</p>', true, true) $$,
   '42501', null,
   'A partner''s member cannot submit before the Society verifies the affiliation'
 );
@@ -162,28 +162,28 @@ select pg_temp.login_as('00000000-0000-0000-0000-0000000000b1');
 select is((select count(*)::int from journal.my_call_pathways()), 1,
   'Once verified, the poet sees the call they may answer through the partner');
 select lives_ok(
-  $$ insert into journal.submissions (call_id, partner_id, category, language, title, body_html, human_authorship_confirmed)
+  $$ insert into journal.submissions (call_id, partner_id, category, language, title, body_html, human_authorship_confirmed, first_publication_confirmed)
      values ('ca000000-0000-0000-0000-000000000001',
-       '00000000-0000-0000-0000-00000000d001', 'poetry', 'en', 'Through the hub', '<p>Text</p>', true) $$,
+       '00000000-0000-0000-0000-00000000d001', 'poetry', 'en', 'Through the hub', '<p>Text</p>', true, true) $$,
   'and submits through the partner'
 );
 select throws_ok(
-  $$ insert into journal.submissions (call_id, category, language, title, body_html, human_authorship_confirmed)
-     values ('ca000000-0000-0000-0000-000000000001', 'fiction', 'en', 'No pathway', '<p>Text</p>', true) $$,
+  $$ insert into journal.submissions (call_id, category, language, title, body_html, human_authorship_confirmed, first_publication_confirmed)
+     values ('ca000000-0000-0000-0000-000000000001', 'fiction', 'en', 'No pathway', '<p>Text</p>', true, true) $$,
   '42501', null,
   'but not without naming the partner'
 );
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a5');
 select lives_ok(
-  $$ insert into journal.submissions (call_id, category, language, title, body_html, human_authorship_confirmed)
-     values ('ca000000-0000-0000-0000-000000000001', 'poetry', 'en', 'A member''s poem', '<p>Text</p>', true) $$,
+  $$ insert into journal.submissions (call_id, category, language, title, body_html, human_authorship_confirmed, first_publication_confirmed)
+     values ('ca000000-0000-0000-0000-000000000001', 'poetry', 'en', 'A member''s poem', '<p>Text</p>', true, true) $$,
   'Members submit as before'
 );
 select throws_ok(
-  $$ insert into journal.submissions (call_id, partner_id, category, language, title, body_html, human_authorship_confirmed)
+  $$ insert into journal.submissions (call_id, partner_id, category, language, title, body_html, human_authorship_confirmed, first_publication_confirmed)
      values ('ca000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-00000000d001',
-       'fiction', 'en', 'Borrowed pathway', '<p>Text</p>', true) $$,
+       'fiction', 'en', 'Borrowed pathway', '<p>Text</p>', true, true) $$,
   '42501', null,
   'but cannot claim a partner they do not belong to'
 );

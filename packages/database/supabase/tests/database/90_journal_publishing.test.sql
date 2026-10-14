@@ -104,9 +104,9 @@ from unnest(enum_range(null::membership.pledge_type)) t;
 
 -- A poem, moved through the pipeline as the database would.
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a1');
-insert into journal.submissions (call_id, category, language, title, body_html, human_authorship_confirmed)
+insert into journal.submissions (call_id, category, language, title, body_html, human_authorship_confirmed, first_publication_confirmed)
 values ('ca000000-0000-0000-0000-000000000001',
-  'poetry', 'en', 'The First Rain', '<p>Rain on the roof.</p>', true);
+  'poetry', 'en', 'The First Rain', '<p>Rain on the roof.</p>', true, true);
 
 select pg_temp.logout();
 create function pg_temp.sub() returns uuid language sql as $$
@@ -147,20 +147,22 @@ select pg_temp.login_as('00000000-0000-0000-0000-0000000005e1');
 select journal.decide(pg_temp.entry(), 'accept');
 
 -- ── After acceptance ────────────────────────────────────────────────────────
+-- Accepting makes the piece straight away (Waraq: nobody places anything
+-- by hand); piece_from_entry finds it.
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000005d1');
 select throws_ok(
   $$ select journal.piece_from_entry(pg_temp.entry()) $$,
-  '42501', null, 'A publisher for another issue cannot place the piece'
+  '42501', null, 'A Copy Chief for another Edition cannot reach the piece'
 );
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000005c1');
-select is((select count(*) from journal.accepted_unplaced())::integer, 1,
-  'The issue''s publisher sees accepted work waiting to be placed');
+select is((select count(*) from journal.accepted_unplaced())::integer, 0,
+  'Accepted work is already a piece: nothing waits to be placed');
 select is((select count(*) from journal.submissions)::integer, 0,
   'Publishers still cannot read submissions');
-select lives_ok($$ select journal.piece_from_entry(pg_temp.entry()) $$,
-  'The publisher turns accepted work into a draft piece');
+select is(journal.piece_from_entry(pg_temp.entry()), (select id from journal.pieces),
+  'The accepted entry leads to its piece, in Editing');
 select is(
   (select c.name_en from journal.pieces p join journal.contributors c on c.id = p.contributor_id),
   'Layla Hassan',
@@ -171,17 +173,15 @@ select is((select body_en from journal.piece_bodies), '<p>Rain on the roof.</p>'
 
 select throws_ok(
   $$ update journal.pieces set status = 'published', published_at = now() $$,
-  '23514', null, 'No publishing before the Publication Agreement is signed'
+  '42501', null, 'Nobody publishes by hand: status moves only through the publish rule'
 );
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a1');
 select journal.sign_agreement((select submission_id from ids), 'Layla Hassan');
 
-select pg_temp.login_as('00000000-0000-0000-0000-0000000005c1');
-select lives_ok(
-  $$ update journal.pieces set status = 'published', published_at = now() $$,
-  'Once signed, the piece can be published'
-);
+select pg_temp.logout();
+select is((select status from journal.pieces), 'editing',
+  'A signed agreement alone does not publish the piece');
 
 select * from finish();
 rollback;
