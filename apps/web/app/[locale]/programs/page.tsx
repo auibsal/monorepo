@@ -29,7 +29,7 @@ const ProgrammesPage = async ({ params }: LocaleParams) => {
       {p.slug === "waraq" ? (
         <Link
           className="type-caption underline underline-offset-4"
-          href="/journal"
+          href="/waraq"
         >
           {t("journal")}
         </Link>

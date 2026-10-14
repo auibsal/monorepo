@@ -40,8 +40,8 @@ test.describe("public site", () => {
     await expectAccessible(page);
   });
 
-  test("the Journal page is accessible", async ({ page }) => {
-    await page.goto(`${urls.web}/en/journal`);
+  test("the Waraq front page is accessible", async ({ page }) => {
+    await page.goto(`${urls.web}/en/waraq`);
     await expect(page.getByRole("heading", { level: 1 })).toHaveText("Waraq");
     await expectAccessible(page);
   });

@@ -1812,6 +1812,21 @@ where slug = 'journal';
 -- launches on February 24, 2027 at Launch Night. The launch time is set in
 -- the Nexus when it is known (it decides when every piece goes out).
 
+-- Where the journal's Issue 1 is still on record (not in production, which
+-- is empty), it becomes Edition 1 and its call moves to the new dates.
+update journal.issues
+set slug = 'edition-1', title_en = 'Edition 1', title_ar = 'الإصدار الأول'
+where volume = 1 and number = 1 and slug = 'issue-1' and status = 'draft';
+
+update journal.calls c
+set title_en = 'Edition 1: call for Letters and Gallery',
+    title_ar = 'الإصدار الأول: دعوة للمشاركة في الآداب والمعرض',
+    opens_at = '2026-10-25 00:00:00+03',
+    closes_at = '2026-12-03 23:59:59+03'
+from journal.issues i
+where i.id = c.issue_id and i.slug = 'edition-1'
+  and not exists (select 1 from journal.submissions s where s.call_id = c.id);
+
 insert into journal.issues (volume, number, slug, title_en, title_ar, status)
 values (1, 1, 'edition-1', 'Edition 1', 'الإصدار الأول', 'draft')
 on conflict (volume, number) do nothing;

@@ -14,7 +14,7 @@ type SectionKey = "about" | "programs" | "journal" | "events" | "join";
 const sections: { href: string; key: SectionKey }[] = [
   { href: "/about", key: "about" },
   { href: "/programs", key: "programs" },
-  { href: "/journal", key: "journal" },
+  { href: "/waraq", key: "journal" },
   { href: "/events", key: "events" },
   { href: "/join", key: "join" },
 ];

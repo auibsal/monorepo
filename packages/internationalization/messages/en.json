@@ -3388,7 +3388,37 @@
         "gallery": "Gallery",
         "video": "Video",
         "voices": "Voices"
-      }
+      },
+      "tagline": "AUIB's paper of news, letters and art",
+      "sections": "Sections",
+      "editions": "Editions",
+      "firstEdition": "The first pieces arrive with the News desk on November 15 and with Edition 1 at Launch Night.",
+      "lead": "Lead story",
+      "sixWordsOfTheWeek": "Six Words of the week",
+      "currentEdition": "The current Edition",
+      "sendNews": "Send news, video or a column to the newsroom",
+      "deskLedes": {
+        "news": "Campus and Society news, events, interviews, features and reviews, by named reporters.",
+        "letters": "Poetry, fiction, creative nonfiction, short drama, translation and Six Words, read blind.",
+        "gallery": "Art, photography, comics, illustration, calligraphy and photo essays.",
+        "video": "Side Quest episodes and reels.",
+        "voices": "Letters to the editor and student columns on campus life, arts and culture."
+      },
+      "watch": "Watch the video",
+      "corrections": "Corrections",
+      "roles": {
+        "reporter": "Reporting",
+        "photographer": "Photographs",
+        "illustrator": "Illustration",
+        "translator": "Translation",
+        "author": "With"
+      },
+      "readingTime": "{minutes} min read",
+      "firstPublished": "First published in Waraq. The author keeps the copyright.",
+      "moreFrom": "More from {desk}",
+      "editionsLede": "Each semester an Edition gathers the best Letters and Gallery work, launched at Launch Night.",
+      "noEditions": "Edition 1 launches on February 24, 2027.",
+      "edition": "Edition"
     },
     "about": {
       "title": "About the Society",

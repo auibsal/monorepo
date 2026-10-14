@@ -118,7 +118,7 @@ const Home = async ({ params }: HomeProps) => {
                 <li key={p.id}>
                   <Link
                     className="frame press grid h-full content-start gap-2 bg-surface-tint p-card-padding shadow-offset hover:bg-surface"
-                    href={p.slug === "waraq" ? "/journal" : "/programs"}
+                    href={p.slug === "waraq" ? "/waraq" : "/programs"}
                   >
                     <h3 className="type-subheading">
                       {localized(p, "name", locale)}
@@ -202,7 +202,7 @@ const Home = async ({ params }: HomeProps) => {
                 <li className="border-rule border-b py-4" key={piece.id}>
                   <Link
                     className="grid gap-1 hover:underline"
-                    href={`/journal/pieces/${piece.slug}`}
+                    href={`/waraq/pieces/${piece.slug}`}
                   >
                     <h3
                       className="type-subheading"
@@ -264,7 +264,7 @@ const Home = async ({ params }: HomeProps) => {
             <ul className="grid">
               {(calls ?? []).map((call) => (
                 <li className="border-rule border-b py-4" key={call.id}>
-                  <Link className="grid gap-1 hover:underline" href="/journal">
+                  <Link className="grid gap-1 hover:underline" href="/waraq">
                     <span className="type-subheading">
                       {localized(call, "title", locale)}
                     </span>

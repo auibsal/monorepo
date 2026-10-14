@@ -135,7 +135,7 @@ const Newsroom = () => {
         .schema("journal")
         .from("pieces")
         .select(
-          "id, desk, category, title_en, title_ar, status, publish_at, published_at, updated_at, front_rank, contributor:contributors(name_en, name_ar)"
+          "id, desk, category, title_en, title_ar, status, publish_at, published_at, updated_at, front_rank, contributor:contributors!pieces_contributor_id_fkey(name_en, name_ar)"
         )
         .order("updated_at", { ascending: false })
         .limit(200);
