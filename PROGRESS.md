@@ -67,8 +67,8 @@ Branch: `claude/new-session-qosn60`.
       before each DNS change; the steps:
       1. Vercel → sal-web → Settings → Domains → add `docs.auibsal.org`, then
          in Cloudflare point the `docs` CNAME at Vercel instead of Mintlify.
-         Old links then redirect (documents → auibsal.org, handbook → the
-         Nexus, platform pages → `docs/platform` on GitHub).
+         (The old-link redirects were removed on Oct 14, 2026: the owner
+         wants no redirects, so old docs links no longer forward.)
       2. Delete the Mintlify deployment `theideaiq` (Mintlify dashboard), and
          the Liveblocks account.
 - [ ] **Design system behind our sign-in:** Vercel → sal-storybook →
@@ -268,7 +268,7 @@ These stop parts of the work. Everything else continues around them.
   the repository is public anyway, so: documents stay on auibsal.org, the
   officer handbook lives in the Nexus (`governance.handbook_pages`, officers
   with `library.read`, edited by `governance.manage`), runbooks are Markdown
-  in `docs/platform`, and docs.auibsal.org redirects. The design system
+  in `docs/platform`; docs.auibsal.org is retired. The design system
   (Storybook, rebranded) sits behind a gate that accepts the Nexus session.
   Live co-editing moved from Liveblocks (its badge only comes off on a paid
   plan) to Supabase Realtime (migration `20261008001600`).
@@ -445,7 +445,8 @@ These stop parts of the work. Everything else continues around them.
 - [x] Nexus: submit by desk and type, the newsroom, editing with the author,
       approvals, front page, Editions
 - [x] auibsal.org/waraq: front page, layouts by type, sections, Editions,
-      author pages, both languages; /journal redirects
+      author pages, both languages (no redirects from the old /journal pages,
+      owner, Oct 14, 2026)
 - [x] Author letters (received, fix request, acceptance, acceptance with
       edits, decline, edit note, final check, published), decisions held to
       the call's day, the Sunday Paper (Sundays 9 AM), the Notion content

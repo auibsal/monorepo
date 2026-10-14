@@ -26,8 +26,9 @@ items and decisions) and continue from the first unticked item.
   and the internal documents' text in the team's Notion workspace (the Nexus
   links there: setting `notion.handbook`, `society_documents.notion_url`;
   `docs/platform/notion.md`); the platform runbooks in `docs/platform`
-  (Markdown). There is no separate docs site; docs.auibsal.org redirects
-  (`apps/web/next.config.ts`).
+  (Markdown). There is no separate docs site. The apps configure no
+  redirects (owner, Oct 14, 2026); www.auibsal.org → auibsal.org is a
+  Vercel domain setting.
 - `packages/*` — shared code, imported as `@repo/<name>`. `@repo` is a fixed
   internal scope; never rename it.
   - `@repo/database` — SQL migrations (`supabase/migrations`), pgTAP tests
