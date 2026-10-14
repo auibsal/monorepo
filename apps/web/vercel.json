@@ -2,17 +2,5 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "bunVersion": "1.x",
   "ignoreCommand": "node scripts/skip-ci.js",
-  "regions": ["fra1"],
-  "redirects": [
-    {
-      "source": "/:locale(en|ar)/programmes",
-      "destination": "/:locale/programs",
-      "permanent": true
-    },
-    {
-      "source": "/programmes",
-      "destination": "/programs",
-      "permanent": true
-    }
-  ]
+  "regions": ["fra1"]
 }
