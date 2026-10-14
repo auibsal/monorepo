@@ -9,12 +9,17 @@ import {
   criteria,
   deskOf,
   editorMoves,
+  isSixWords,
   needsThirdRead,
+  readingMinutes,
   rubric,
   rubricTotal,
   scoreSchema,
   submissionObjectPath,
   submissionSchema,
+  typeNeeds,
+  wordCount,
+  youtubeId,
 } from "./journal";
 
 const TRANSITION_PAIR =
@@ -228,5 +233,37 @@ describe("the board", () => {
     expect(averageTotal([])).toBeNull();
     expect(averageTotal([null, undefined])).toBeNull();
     expect(averageTotal([80, null, 71])).toBe(75.5);
+  });
+});
+
+describe("Waraq helpers", () => {
+  test("six words, punctuation aside", () => {
+    expect(isSixWords("For sale: baby shoes, never worn.")).toBe(true);
+    expect(isSixWords("Too few words here.")).toBe(false);
+    expect(isSixWords("بيت قديم وباب مفتوح وذاكرة باقية")).toBe(true);
+  });
+
+  test("what each type needs mirrors the publish rule", () => {
+    expect(typeNeeds("article")).toEqual({
+      deck: true,
+      media: false,
+      text: true,
+      video: false,
+    });
+    expect(typeNeeds("comic").media).toBe(true);
+    expect(typeNeeds("video")).toMatchObject({ text: false, video: true });
+    expect(waraqSql).toContain(
+      "p.category in ('article', 'feature', 'interview')"
+    );
+  });
+
+  test("reading time and YouTube links", () => {
+    expect(readingMinutes("<p>word</p>")).toBe(1);
+    expect(wordCount("<p>one two</p><p>three</p>")).toBe(3);
+    expect(youtubeId("https://youtu.be/dQw4w9WgXcQ")).toBe("dQw4w9WgXcQ");
+    expect(youtubeId("https://www.youtube.com/watch?v=dQw4w9WgXcQ&t=1")).toBe(
+      "dQw4w9WgXcQ"
+    );
+    expect(youtubeId("https://vimeo.com/1")).toBeNull();
   });
 });

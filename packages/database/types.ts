@@ -3914,6 +3914,18 @@ export type Database = {
         }[];
       };
       piece_from_entry: { Args: { blind_entry_id: string }; Returns: string };
+      piece_thread: {
+        Args: { piece_id: string };
+        Returns: {
+          body: string;
+          created_at: string;
+          from_author: boolean;
+          id: number;
+          mine: boolean;
+          writer_name_ar: string;
+          writer_name_en: string;
+        }[];
+      };
       pipeline_issues: {
         Args: Record<PropertyKey, never>;
         Returns: {

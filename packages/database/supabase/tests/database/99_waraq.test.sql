@@ -78,7 +78,7 @@ update core.settings set value = '0' where key = 'membership.founding_voters';
 
 delete from journal.issues;
 
-select plan(47);
+select plan(50);
 
 -- People.
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000f1', 'founder@auib.edu.iq', 'Founder');
@@ -250,7 +250,7 @@ select is(journal.approve_piece(pg_temp.news(), 'copy'), 'editing',
   'With everything approved but the agreement missing, the rule sends it back');
 select pg_temp.logout();
 select matches((select edit_note from journal.pieces where id = pg_temp.news()),
-  'Publication Agreement', 'with the reason');
+  'agreement', 'with the reason');
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a1');
 select journal.sign_agreement(pg_temp.news_sub(), 'Sara Reporter');
@@ -276,6 +276,15 @@ select pg_temp.login_as('00000000-0000-0000-0000-00000000ae11');
 insert into journal.corrections (piece_id, note_en) values (pg_temp.news(), 'An earlier version gave the wrong total.');
 select pg_temp.login_anon();
 select is((select count(*) from journal.corrections)::integer, 1, 'Corrections are public and dated');
+
+select pg_temp.login_as('00000000-0000-0000-0000-00000000ae11');
+insert into journal.piece_notes (piece_id, body) values (pg_temp.news(), 'Please check the total.');
+select pg_temp.login_as('00000000-0000-0000-0000-0000000000a1');
+select is((select count(*) from journal.piece_thread(pg_temp.news()) where not from_author and writer_name_en = 'News Editor')::integer, 1,
+  'The author reads the editor''s note, signed');
+select pg_temp.logout();
+select is((select count(*) from core.outbox where kind = 'journal.piece_note')::integer, 1,
+  'and is emailed about it');
 
 select pg_temp.login_as('00000000-0000-0000-0000-00000000ae11');
 select throws_ok($$ select journal.unpublish_piece(pg_temp.news(), '') $$, '22023', null,
@@ -327,7 +336,11 @@ select is(
   (select c.name_en || '/' || c.is_pen_name from journal.pieces p join journal.contributors c on c.id = p.contributor_id
    where p.submission_id = pg_temp.poem_sub()),
   'The Quiet One/true', 'A pen name gets its own contributor record');
+select pg_temp.login_as('00000000-0000-0000-0000-00000000ae12');
+select is((select author_name_en from journal.entry_author(pg_temp.poem_entry())), 'The Quiet One',
+  'After the decision the editors learn the pen name, not the real name');
 
+select pg_temp.logout();
 create function pg_temp.poem() returns uuid language sql security definer as $$
   select id from journal.pieces where submission_id = pg_temp.poem_sub();
 $$;

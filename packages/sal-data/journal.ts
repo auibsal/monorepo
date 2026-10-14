@@ -491,3 +491,74 @@ export const contributorBySlug = async (client: Client, slug: string) => {
     ) ?? [];
   return { ...contributor, pieces };
 };
+
+// ── Waraq: the piece workflow ───────────────────────────────────────────────
+
+/** Editing → Author approved → Approved → Scheduled → Published (or Unpublished). */
+export const pieceStatuses = [
+  "editing",
+  "author_approved",
+  "approved",
+  "scheduled",
+  "published",
+  "unpublished",
+] as const;
+export type PieceStatus = (typeof pieceStatuses)[number];
+
+/** desk: the desk editor; chief: the EIC or ME; copy: the Copy Chief. */
+export const approvalKinds = ["desk", "chief", "copy"] as const;
+export type ApprovalKind = (typeof approvalKinds)[number];
+
+/** The permission each approval needs (journal.approve_piece). */
+export const approvalPermission = (kind: ApprovalKind, desk: Desk) => {
+  if (kind === "desk") {
+    return `journal.edit.${desk}` as const;
+  }
+  return kind === "chief" ? "journal.approve" : "journal.copy";
+};
+
+const DECKED: readonly Category[] = ["article", "feature", "interview"];
+
+/**
+ * What a type needs before it can publish: the same rules as
+ * private.publish_check (both titles always).
+ */
+export const typeNeeds = (category: Category) => {
+  const desk = deskOf(category);
+  return {
+    deck: DECKED.includes(category),
+    media: desk === "gallery",
+    text: desk !== "gallery" && category !== "video",
+    video: category === "video",
+  };
+};
+
+const TAG = /<[^>]+>/g;
+const ENTITY = /&[a-z#0-9]+;/gi;
+const SPACE = /\s+/u;
+const PUNCTUATION = /[\p{P}\p{S}]+/gu;
+const YOUTUBE =
+  /^https:\/\/(?:www\.|m\.)?(?:youtube\.com\/(?:watch\?v=|shorts\/|embed\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/;
+
+/** Words in rich text or plain text, for limits and reading time. */
+export const wordCount = (text: string) => {
+  const plain = text.replace(TAG, " ").replace(ENTITY, " ").trim();
+  return plain ? plain.split(SPACE).length : 0;
+};
+
+/** Reading time in minutes (about 220 words a minute), at least one. */
+export const readingMinutes = (html: string) =>
+  Math.max(1, Math.round(wordCount(html) / 220));
+
+/** Six Words: exactly six words; punctuation does not count. */
+export const isSixWords = (line: string) =>
+  line.replace(PUNCTUATION, " ").trim().split(SPACE).filter(Boolean).length ===
+  6;
+
+/** Only YouTube links are embedded; any other link opens where it lives. */
+export const youtubeId = (url: string | null | undefined) => {
+  if (!url) {
+    return null;
+  }
+  return YOUTUBE.exec(url)?.[1] ?? null;
+};

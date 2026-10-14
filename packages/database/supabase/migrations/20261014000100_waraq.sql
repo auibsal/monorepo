@@ -303,7 +303,7 @@ alter table journal.pieces
   -- author approved the text as it now stands.
   add column author_requested_at timestamptz,
   add column author_approved_at timestamptz,
-  -- Why the publish rule sent the piece back, shown to the editors.
+  -- Why the publish rule sent the piece back (private.publish_check codes).
   add column edit_note text check (char_length(edit_note) <= 2000),
   add column unpublished_at timestamptz,
   add column unpublish_note text check (char_length(unpublish_note) <= 2000),
@@ -341,7 +341,7 @@ create index piece_credits_contributor_id_idx on journal.piece_credits (contribu
 create table journal.piece_media (
   id uuid primary key default gen_random_uuid(),
   piece_id uuid not null references journal.pieces (id) on delete cascade,
-  storage_path text not null unique check (storage_path ~ '^waraq/[0-9a-f-]{36}/[A-Za-z0-9._-]+$'),
+  storage_path text not null unique check (storage_path ~ '^waraq/[0-9a-f-]{36}/[^/]+$'),
   alt_en text not null default '' check (char_length(alt_en) <= 500),
   alt_ar text not null default '' check (char_length(alt_ar) <= 500),
   caption_en text check (char_length(caption_en) <= 1000),
@@ -428,7 +428,9 @@ grant execute on function private.piece_editor(uuid) to authenticated, service_r
 
 -- ── The publish rule ────────────────────────────────────────────────────────
 
--- Why a piece cannot publish yet, or null when it can (apart from its time).
+-- Why a piece cannot publish yet, as comma-separated codes the Nexus
+-- translates (desk_approval, chief_approval, copy_check, author_approval,
+-- agreement, titles, images, video, text, deck), or null when it can.
 create function private.publish_check(piece_id uuid)
 returns text
 language plpgsql
@@ -445,49 +447,49 @@ begin
   select * into b from journal.piece_bodies where piece_bodies.piece_id = p.id;
 
   if not exists (select 1 from journal.approvals a where a.piece_id = p.id and a.kind = 'desk') then
-    problems := array_append(problems, 'The desk editor has not approved it.');
+    problems := array_append(problems, 'desk_approval');
   end if;
   if not exists (select 1 from journal.approvals a where a.piece_id = p.id and a.kind = 'chief') then
-    problems := array_append(problems, 'The Editor-in-Chief or Managing Editor has not approved it.');
+    problems := array_append(problems, 'chief_approval');
   end if;
   if not exists (select 1 from journal.approvals a where a.piece_id = p.id and a.kind = 'copy') then
-    problems := array_append(problems, 'The Copy Chief has not marked the style check done.');
+    problems := array_append(problems, 'copy_check');
   end if;
   if p.submission_id is not null then
     if p.author_approved_at is null then
-      problems := array_append(problems, 'The author has not approved the final text.');
+      problems := array_append(problems, 'author_approval');
     end if;
     if not exists (select 1 from journal.agreements a where a.submission_id = p.submission_id) then
-      problems := array_append(problems, 'The author has not signed the Publication Agreement.');
+      problems := array_append(problems, 'agreement');
     end if;
   end if;
 
   -- Every piece has an Arabic and an English title.
   if char_length(btrim(coalesce(p.title_en, ''))) = 0 or char_length(btrim(coalesce(p.title_ar, ''))) = 0 then
-    problems := array_append(problems, 'It needs both an English and an Arabic title.');
+    problems := array_append(problems, 'titles');
   end if;
 
   -- What its type needs.
   if p.desk = 'gallery' then
     if not exists (select 1 from journal.piece_media m where m.piece_id = p.id) and p.image_path is null then
-      problems := array_append(problems, 'A gallery piece needs at least one image.');
+      problems := array_append(problems, 'images');
     end if;
   elsif p.category = 'video' then
     if p.video_url is null then
-      problems := array_append(problems, 'A video piece needs its video link.');
+      problems := array_append(problems, 'video');
     end if;
   else
     if (p.language in ('en', 'bilingual') and char_length(btrim(coalesce(b.body_en, ''))) = 0)
        or (p.language in ('ar', 'bilingual') and char_length(btrim(coalesce(b.body_ar, ''))) = 0) then
-      problems := array_append(problems, 'The text is missing.');
+      problems := array_append(problems, 'text');
     end if;
   end if;
   if p.category in ('article', 'feature', 'interview')
      and char_length(btrim(coalesce(p.deck_en, p.deck_ar, ''))) = 0 then
-    problems := array_append(problems, 'A news story needs a deck under the headline.');
+    problems := array_append(problems, 'deck');
   end if;
 
-  return nullif(array_to_string(problems, ' '), '');
+  return nullif(array_to_string(problems, ','), '');
 end;
 $$;
 
@@ -687,6 +689,89 @@ create trigger after_piece_credits_change after insert or update or delete on jo
 revoke all on function private.after_piece_content_change() from public, anon, authenticated;
 revoke all on function private.after_piece_body_change() from public, anon, authenticated;
 revoke all on function private.after_piece_parts_change() from public, anon, authenticated;
+
+-- The thread on a piece. Editors are named; the author is "the author",
+-- so a pen name never leads back to a real name.
+create function journal.piece_thread(piece_id uuid)
+returns table (id bigint, body text, created_at timestamptz, mine boolean, from_author boolean, writer_name_en text, writer_name_ar text)
+language plpgsql
+stable
+security definer
+set search_path = ''
+as $$
+declare
+  author uuid;
+begin
+  if not (private.piece_editor(piece_thread.piece_id) or private.is_piece_author(piece_thread.piece_id)) then
+    raise exception 'Piece not found' using errcode = 'P0002';
+  end if;
+  select c.user_id into author from journal.pieces p
+  join journal.contributors c on c.id = p.contributor_id
+  where p.id = piece_thread.piece_id;
+  return query
+    select n.id, n.body, n.created_at, n.author_id = auth.uid(), n.author_id = author,
+      case when n.author_id = author then null else pr.full_name_en end,
+      case when n.author_id = author then null else pr.full_name_ar end
+    from journal.piece_notes n
+    left join core.profiles pr on pr.id = n.author_id
+    where n.piece_id = piece_thread.piece_id
+    order by n.created_at;
+end;
+$$;
+
+revoke all on function journal.piece_thread(uuid) from public, anon;
+grant execute on function journal.piece_thread(uuid) to authenticated, service_role;
+
+-- A note from an editor reaches the author by email (the edit letter);
+-- a note from the author reaches the piece's desk editors in the Nexus.
+create function private.after_piece_note()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  author uuid;
+begin
+  select c.user_id into author from journal.pieces p
+  join journal.contributors c on c.id = p.contributor_id
+  where p.id = new.piece_id;
+  if author is not null and new.author_id <> author then
+    perform private.enqueue('journal.piece_note',
+      jsonb_build_object('piece_id', new.piece_id, 'user_id', author, 'note_id', new.id));
+  end if;
+  return null;
+end;
+$$;
+
+create trigger after_piece_note after insert on journal.piece_notes
+  for each row execute function private.after_piece_note();
+
+revoke all on function private.after_piece_note() from public, anon, authenticated;
+
+-- After a decision the review team may know who wrote a piece, but a pen
+-- name stays a pen name: only the Submissions Manager keeps the real one.
+create or replace function journal.entry_author(blind_entry_id uuid)
+returns table (author_name_en text, author_name_ar text)
+language sql
+stable
+security definer
+set search_path = ''
+as $$
+  select
+    case when s.pen_name is not null and not private.can_view_identity(b.issue_id)
+      then s.pen_name else p.full_name_en end,
+    case when s.pen_name is not null and not private.can_view_identity(b.issue_id)
+      then s.pen_name else p.full_name_ar end
+  from journal.blind_entries b
+  join journal.decisions d on d.blind_entry_id = b.id
+  join journal.blind_keys k on k.blind_entry_id = b.id
+  join journal.submissions s on s.id = k.submission_id
+  join core.profiles p on p.id = s.author_id
+  where b.id = entry_author.blind_entry_id
+    and (private.is_assigned_reader(b.id) or private.is_issue_editor(b.issue_id)
+      or private.can_view_identity(b.issue_id));
+$$;
 
 -- ── Moves on a piece ────────────────────────────────────────────────────────
 
@@ -1693,8 +1778,8 @@ select role, permission from (values
   ('eic', array['journal.approve', 'journal.frontpage', 'journal.edit.voices']),
   ('managing_editor', array['journal.approve', 'journal.edit.voices']),
   ('news_editor', array['journal.edit.news', 'library.read']),
-  ('letters_editor', array['journal.edit.letters', 'journal.manage', 'library.read']),
-  ('gallery_editor', array['journal.edit.gallery', 'journal.manage', 'library.read']),
+  ('letters_editor', array['journal.edit.letters', 'journal.manage', 'journal.decide', 'library.read']),
+  ('gallery_editor', array['journal.edit.gallery', 'journal.manage', 'journal.decide', 'library.read']),
   ('video_editor', array['journal.edit.video', 'library.read']),
   ('arabic_editor', array['journal.publish']),
   ('copy_editor', array['journal.copy']),

@@ -127,7 +127,12 @@ export const roles = {
     isCouncil: false,
     nameAr: "محرر المعرض",
     nameEn: "Gallery Editor",
-    permissions: ["journal.edit.gallery", "journal.manage", "library.read"],
+    permissions: [
+      "journal.edit.gallery",
+      "journal.manage",
+      "journal.decide",
+      "library.read",
+    ],
     spendingLimitIqd: null,
   },
   general_secretary: {
@@ -170,7 +175,12 @@ export const roles = {
     isCouncil: false,
     nameAr: "محرر الآداب",
     nameEn: "Letters Editor",
-    permissions: ["journal.edit.letters", "journal.manage", "library.read"],
+    permissions: [
+      "journal.edit.letters",
+      "journal.manage",
+      "journal.decide",
+      "library.read",
+    ],
     spendingLimitIqd: null,
   },
   managing_editor: {
