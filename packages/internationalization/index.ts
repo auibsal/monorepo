@@ -11,6 +11,7 @@ export {
   type Locale,
   localeDefinitions,
   locales,
+  localizedPath,
 } from "./config";
 
 export type Messages = typeof en;

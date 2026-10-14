@@ -9,11 +9,11 @@ test("an editor publishes a news post and it appears on the public site", async 
   const title = `Society notes ${Date.now()}`;
   await signInWithPassword(page, editor.email);
   // No Overview for this role: /admin opens the first section it has.
-  await page.goto(`${urls.app}/en/admin`);
-  await expect(page).toHaveURL(/\/en\/admin\/members/);
+  await page.goto(`${urls.app}/admin`);
+  await expect(page).toHaveURL(/\/admin\/members/);
   await expectAccessible(page);
 
-  await page.goto(`${urls.app}/en/admin/content`);
+  await page.goto(`${urls.app}/admin/content`);
   await page
     .getByRole("link", { name: "New post" })
     .or(page.getByRole("button", { name: "New post" }))
@@ -38,6 +38,6 @@ test("an editor publishes a news post and it appears on the public site", async 
     page.getByRole("button", { name: "Back to draft" })
   ).toBeVisible();
 
-  await page.goto(`${urls.web}/en/news`);
+  await page.goto(`${urls.web}/news`);
   await expect(page.getByText(title)).toBeVisible();
 });

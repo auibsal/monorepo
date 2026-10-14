@@ -1,5 +1,6 @@
 import { project } from "@repo/config";
 import type { Locale } from "@repo/internationalization";
+import { localizedPath } from "@repo/internationalization";
 import { formatNumber } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
 import { journal, localized } from "@repo/sal-data";
@@ -166,7 +167,7 @@ const PiecePage = async ({ params }: PieceProps) => {
             <p className="type-body">{t("membersOnlyBody")}</p>
             <a
               className="inline-flex h-10 items-center justify-self-start rounded-md bg-primary px-4 text-primary-foreground text-sm"
-              href={`${project.hosts.app}/${locale}/journal/piece?slug=${piece.slug}`}
+              href={`${project.hosts.app}${localizedPath(locale, "/journal/piece")}?slug=${piece.slug}`}
             >
               {t("readInNexus")}
             </a>

@@ -2,6 +2,7 @@
 
 import { useAuth } from "@repo/auth/provider";
 import { project } from "@repo/config";
+import { localizedPath } from "@repo/internationalization";
 import { formatLongDate } from "@repo/internationalization/format";
 import { governance, localized, unwrap } from "@repo/sal-data";
 import { useQuery } from "@tanstack/react-query";
@@ -56,7 +57,7 @@ const Council = () => {
       {roster.data?.length === 0 ? (
         <EmptyLine
           action={{
-            href: `${project.hosts.web}/${locale}/documents/roles-and-staffing`,
+            href: `${project.hosts.web}${localizedPath(locale, "/documents/roles-and-staffing")}`,
             label: ta("readRoles"),
           }}
         >
@@ -119,7 +120,7 @@ const Minutes = () => {
       {minutes.data?.length === 0 ? (
         <EmptyLine
           action={{
-            href: `${project.hosts.web}/${locale}/documents`,
+            href: `${project.hosts.web}${localizedPath(locale, "/documents")}`,
             label: ta("readDocuments"),
           }}
         >

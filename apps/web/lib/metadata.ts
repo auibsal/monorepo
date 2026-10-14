@@ -1,5 +1,5 @@
 import type { Locale } from "@repo/internationalization";
-import { locales } from "@repo/internationalization";
+import { locales, localizedPath } from "@repo/internationalization";
 import type { Metadata } from "next";
 import { createMetadata } from "./create-metadata";
 
@@ -21,7 +21,7 @@ export const ogImagePath = (
   if (kicker) {
     query.set("kicker", kicker.slice(0, 80));
   }
-  return `/${locale}/og?${query.toString()}`;
+  return `${localizedPath(locale, "/og")}?${query.toString()}`;
 };
 
 /**
@@ -33,15 +33,13 @@ export const localizedMetadata = (
   path: string,
   page: PageMetadata
 ): Metadata => {
-  const suffix = path === "/" ? "" : path;
-
   const { kicker, ...rest } = page;
   return createMetadata({
     ...rest,
     alternates: {
-      canonical: `/${locale}${suffix}`,
+      canonical: localizedPath(locale, path),
       languages: Object.fromEntries(
-        locales.map((language) => [language, `/${language}${suffix}`])
+        locales.map((language) => [language, localizedPath(language, path)])
       ),
     },
     image: page.image ?? ogImagePath(locale, { kicker, title: page.title }),

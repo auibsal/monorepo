@@ -217,9 +217,7 @@ export const mirrorDocuments = async (ctx: SyncContext) => {
         Nexus: prop.url(app(ctx, "/admin/documents")),
         "Nexus ID": prop.text(d.id),
         "Public page": prop.url(
-          d.audience === "public"
-            ? `${ctx.webUrl}/en/documents/${d.slug}`
-            : null
+          d.audience === "public" ? `${ctx.webUrl}/documents/${d.slug}` : null
         ),
         Status: prop.select(d.status),
         Title: prop.title(d.title_en),

@@ -3,11 +3,10 @@
 import { type Locale, locales } from "@repo/internationalization/config";
 import { usePathname, useRouter } from "@repo/internationalization/navigation";
 import { useLocale, useTranslations } from "next-intl";
-import { rememberLocale } from "@/lib/locale";
 
 /**
  * Switches between English and Arabic, in words (the brand prefers words
- * to icons), and remembers the choice on this device.
+ * to icons). The proxy remembers the choice in a cookie.
  */
 export const LanguageSwitcher = () => {
   const t = useTranslations("common");
@@ -23,7 +22,6 @@ export const LanguageSwitcher = () => {
       className="rounded-sm px-2 py-1 text-sm underline-offset-4 hover:underline"
       lang={other}
       onClick={() => {
-        rememberLocale(other);
         router.replace(`${pathname}${window.location.search}`, {
           locale: other,
         });

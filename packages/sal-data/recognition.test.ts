@@ -61,8 +61,11 @@ describe("recognition", () => {
   });
 
   test("verification and LinkedIn links carry the serial and the code", () => {
-    const url = verificationUrl("https://auibsal.org/", "en", "abc123");
-    expect(url).toBe("https://auibsal.org/en/verify/abc123");
+    const url = verificationUrl("https://auibsal.org/", "/verify", "abc123");
+    expect(url).toBe("https://auibsal.org/verify/abc123");
+    expect(verificationUrl("https://auibsal.org", "/ar/verify", "abc123")).toBe(
+      "https://auibsal.org/ar/verify/abc123"
+    );
     const linkedIn = new URL(
       linkedInUrl({
         issuedAt: "2026-10-09T10:00:00Z",

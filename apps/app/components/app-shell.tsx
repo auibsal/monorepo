@@ -18,6 +18,7 @@ import {
   SheetTrigger,
 } from "@repo/design-system/components/ui/sheet";
 import { cn } from "@repo/design-system/lib/utils";
+import { localizedPath } from "@repo/internationalization";
 import {
   Link,
   usePathname,
@@ -249,7 +250,7 @@ export const AppShell = ({ children }: { children: ReactNode }) => {
         <p className="type-caption mx-auto w-full max-w-6xl px-4 py-4">
           <a
             className="underline-offset-4 hover:underline"
-            href={`${project.hosts.web}/${locale}`}
+            href={`${project.hosts.web}${localizedPath(locale)}`}
           >
             {t("nexus.nav.publicSite")}
           </a>

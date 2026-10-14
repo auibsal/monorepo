@@ -256,12 +256,12 @@ const publishEvent = async (
   }
   await saveLink(ctx, "event", page.id, id, null);
   await ctx.notion.updatePage(page.id, {
-    Nexus: prop.url(`${ctx.appUrl}/en/admin/events/edit?id=${id}`),
+    Nexus: prop.url(`${ctx.appUrl}/admin/events/edit?id=${id}`),
     "Nexus ID": prop.text(id),
     "Platform note": prop.text(
       publishedNote(await publisherName(ctx, publisher))
     ),
-    "Public page": prop.url(`${ctx.webUrl}/en/events/${v.slug}`),
+    "Public page": prop.url(`${ctx.webUrl}/events/${v.slug}`),
     Slug: prop.text(v.slug),
     Status: prop.select("Published"),
   });
@@ -332,14 +332,14 @@ const publishNews = async (
   await saveLink(ctx, "news", page.id, id, null);
   const who = await publisherName(ctx, publisher);
   await ctx.notion.updatePage(page.id, {
-    Nexus: prop.url(`${ctx.appUrl}/en/admin/content/news?id=${id}`),
+    Nexus: prop.url(`${ctx.appUrl}/admin/content/news?id=${id}`),
     "Nexus ID": prop.text(id),
     "Platform note": prop.text(
       later && v.publish_at
         ? `Scheduled ${stamp()} by ${who}; goes live ${formatLongDate(v.publish_at, "en")}, ${formatClock(v.publish_at, "en")}.`
         : publishedNote(who)
     ),
-    "Public page": prop.url(`${ctx.webUrl}/en/news/${v.slug}`),
+    "Public page": prop.url(`${ctx.webUrl}/news/${v.slug}`),
     Slug: prop.text(v.slug),
     Status: prop.select("Published"),
   });
@@ -514,7 +514,7 @@ const importWaraq = async (
   }
   await saveLink(ctx, "piece", page.id, id, null);
   await ctx.notion.updatePage(page.id, {
-    Nexus: prop.url(`${ctx.appUrl}/en/admin/journal/piece?id=${id}`),
+    Nexus: prop.url(`${ctx.appUrl}/admin/journal/piece?id=${id}`),
     "Nexus ID": prop.text(id),
     "Platform note": prop.text(
       `In the Waraq newsroom since ${stamp()}, in Editing: the approvals and publishing happen in the Nexus.`
@@ -605,11 +605,11 @@ const adoptEvents = async (ctx: SyncContext) => {
       // biome-ignore lint/performance/noAwaitInLoops: rate-limited, sequential
       const page = await ctx.notion.createPage(ctx.sources.events, {
         Capacity: prop.number(e.capacity),
-        Nexus: prop.url(`${ctx.appUrl}/en/admin/events/edit?id=${e.id}`),
+        Nexus: prop.url(`${ctx.appUrl}/admin/events/edit?id=${e.id}`),
         "Nexus ID": prop.text(e.id),
         "Platform note": prop.text(ADOPTED_NOTE),
         "Public page": prop.url(
-          e.status === "published" ? `${ctx.webUrl}/en/events/${e.slug}` : null
+          e.status === "published" ? `${ctx.webUrl}/events/${e.slug}` : null
         ),
         Slug: prop.text(e.slug),
         Status: prop.select(EVENT_STATUS[e.status] ?? "Planning"),
@@ -642,11 +642,11 @@ const adoptNews = async (ctx: SyncContext) => {
       // biome-ignore lint/performance/noAwaitInLoops: rate-limited, sequential
       const page = await ctx.notion.createPage(ctx.sources.news, {
         Kind: prop.select("News post"),
-        Nexus: prop.url(`${ctx.appUrl}/en/admin/content/news?id=${n.id}`),
+        Nexus: prop.url(`${ctx.appUrl}/admin/content/news?id=${n.id}`),
         "Nexus ID": prop.text(n.id),
         "Platform note": prop.text(ADOPTED_NOTE),
         "Public page": prop.url(
-          n.status === "published" ? `${ctx.webUrl}/en/news/${n.slug}` : null
+          n.status === "published" ? `${ctx.webUrl}/news/${n.slug}` : null
         ),
         "Publish on": prop.date(n.publish_at ?? n.published_at),
         Slug: prop.text(n.slug),

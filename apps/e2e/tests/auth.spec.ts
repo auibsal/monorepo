@@ -7,7 +7,7 @@ test("sign up with an AUIB address, confirm by email, finish setup", async ({
   page,
 }) => {
   const email = `e2e-${Date.now()}@auib.edu.iq`;
-  await page.goto(`${urls.app}/en/sign-up`);
+  await page.goto(`${urls.app}/sign-up`);
   await expectAccessible(page);
   await page.getByLabel("Full name (English)").fill("New Member");
   await page.getByLabel("Email").fill(email);
@@ -21,7 +21,7 @@ test("sign up with an AUIB address, confirm by email, finish setup", async ({
   await page.goto((link ?? "").replaceAll("&amp;", "&"));
   await page.getByRole("button", { name: /continue/i }).click();
 
-  await expect(page).toHaveURL(/\/en\/setup/);
+  await expect(page).toHaveURL(/\/setup/);
   await expect(page.getByText("1 of 4 done")).toBeVisible();
   await expect(page.getByLabel("Name in English")).toHaveValue("New Member");
   await page.getByLabel("I make the Human Authorship pledge").check();
@@ -34,7 +34,7 @@ test("sign up with an AUIB address, confirm by email, finish setup", async ({
 test("an AUIB address signs in by password, with a link one click away", async ({
   page,
 }) => {
-  await page.goto(`${urls.app}/en/sign-in`);
+  await page.goto(`${urls.app}/sign-in`);
   await page.getByLabel("Email").fill(member.email);
   await expect(
     page.getByRole("button", { name: "Email me a sign-in link instead" })

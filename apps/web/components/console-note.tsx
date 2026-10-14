@@ -7,7 +7,7 @@ import { useEffect } from "react";
 export const ConsoleNote = () => {
   useEffect(() => {
     console.info(
-      `%c${project.motto.ar}%c\n${project.motto.en}.\n\nReading the source? It is open: ${project.repoUrl}\nWrite with us: ${project.hosts.web}/en/join`,
+      `%c${project.motto.ar}%c\n${project.motto.en}.\n\nReading the source? It is open: ${project.repoUrl}\nWrite with us: ${project.hosts.web}/join`,
       "font: bold 20px Ubuntu, sans-serif; color: #9c213e;",
       "font: 13px Ubuntu, sans-serif;"
     );

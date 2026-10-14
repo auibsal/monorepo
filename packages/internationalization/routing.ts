@@ -2,11 +2,11 @@ import { defineRouting } from "next-intl/routing";
 import { defaultLocale, locales } from "./config";
 
 /**
- * Every URL carries its locale (/ar/…, /en/…). An explicit prefix also works
- * for the Nexus static export, where no middleware can rewrite URLs.
+ * The default language (English) has no prefix (/events); every other
+ * language does (/ar/events). Owner's decision, Oct 14, 2026.
  */
 export const routing = defineRouting({
   defaultLocale,
-  localePrefix: "always",
+  localePrefix: "as-needed",
   locales,
 });

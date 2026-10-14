@@ -1,4 +1,5 @@
 import { project } from "@repo/config";
+import { localizedPath } from "@repo/internationalization";
 import { Link } from "@repo/internationalization/navigation";
 import { getLocale, getTranslations } from "next-intl/server";
 import { MUTANABBI } from "@/lib/verse";
@@ -47,7 +48,7 @@ export const Footer = async () => {
           </details>
           <a
             className="type-label mt-4 justify-self-start border-2 border-frame px-4 py-2 text-xs shadow-offset"
-            href={`${project.hosts.app}/${locale}`}
+            href={`${project.hosts.app}${localizedPath(locale)}`}
           >
             {tn("nexus")}
           </a>

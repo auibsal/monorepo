@@ -1,3 +1,4 @@
+import { localizedPath } from "@repo/internationalization";
 import { formatClock, formatLongDate } from "@repo/internationalization/format";
 import type { NoticeBlock, NoticeProps } from "./templates/notice";
 
@@ -33,7 +34,7 @@ const when = (iso: string, l: Lang) =>
   `${formatLongDate(iso, l)} · ${formatClock(iso, l)}`;
 
 const nexus = (base: string, l: Lang, path = "") => ({
-  href: `${base}/${l}${path}`,
+  href: `${base}${localizedPath(l, path || "/")}`,
   label: l === "ar" ? "افتح النِّكسَس" : "Open the Nexus",
 });
 

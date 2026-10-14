@@ -15,7 +15,7 @@ interface LocaleLayoutProperties {
   }>;
 }
 
-// Every page is prerendered once per language (static export).
+// Every page is prerendered once per language.
 export const generateStaticParams = () => locales.map((locale) => ({ locale }));
 export const dynamicParams = false;
 

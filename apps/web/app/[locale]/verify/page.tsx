@@ -2,6 +2,7 @@ import { Button } from "@repo/design-system/components/ui/button";
 import { Input } from "@repo/design-system/components/ui/input";
 import { Label } from "@repo/design-system/components/ui/label";
 import type { Locale } from "@repo/internationalization";
+import { localizedPath } from "@repo/internationalization";
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
@@ -36,14 +37,18 @@ const VerifyPage = async ({ params, searchParams }: VerifyParams) => {
   const { code } = await searchParams;
   const typed = code?.trim().toLowerCase();
   if (typed && CODE.test(typed)) {
-    redirect(`/${locale}/verify/${typed}`);
+    redirect(localizedPath(locale, `/verify/${typed}`));
   }
   const t = await getTranslations({ locale, namespace: "web.verify" });
 
   return (
     <div className="mx-auto grid w-full max-w-xl gap-8 px-4 py-16">
       <PageHeader lede={t("lede")} title={t("title")} />
-      <form action={`/${locale}/verify`} className="grid gap-3" method="get">
+      <form
+        action={localizedPath(locale, "/verify")}
+        className="grid gap-3"
+        method="get"
+      >
         <Label htmlFor="verify-code">{t("code")}</Label>
         <Input
           autoComplete="off"

@@ -6,6 +6,7 @@ import { project } from "@repo/config";
 import { Button } from "@repo/design-system/components/ui/button";
 import { Label } from "@repo/design-system/components/ui/label";
 import { Textarea } from "@repo/design-system/components/ui/textarea";
+import { localizedPath } from "@repo/internationalization";
 import { formatClock, formatLongDate } from "@repo/internationalization/format";
 import { governance, localized, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -446,7 +447,7 @@ export const Elections = () => {
       {elections.data?.elections.length === 0 ? (
         <EmptyLine
           action={{
-            href: `${project.hosts.web}/${locale}/documents/constitution`,
+            href: `${project.hosts.web}${localizedPath(locale, "/documents/constitution")}`,
             label: ta("readConstitution"),
           }}
         >

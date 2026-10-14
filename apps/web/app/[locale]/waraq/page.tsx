@@ -1,5 +1,6 @@
 import { project } from "@repo/config";
 import type { Locale } from "@repo/internationalization";
+import { localizedPath } from "@repo/internationalization";
 import { formatLongDate } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
 import { journal, localized, sanitizeRichText } from "@repo/sal-data";
@@ -70,7 +71,7 @@ const Calls = async ({ locale }: { locale: Locale }) => {
             {isOpen ? (
               <a
                 className="frame inline-flex h-10 items-center justify-self-start rounded-md bg-surface px-4 text-sm text-text"
-                href={`${project.hosts.app}/${locale}/journal/submit?call=${call.id}`}
+                href={`${project.hosts.app}${localizedPath(locale, "/journal/submit")}?call=${call.id}`}
               >
                 {t("submit")}
               </a>
@@ -80,7 +81,7 @@ const Calls = async ({ locale }: { locale: Locale }) => {
       })}
       <a
         className="justify-self-start text-on-band underline underline-offset-4"
-        href={`${project.hosts.app}/${locale}/journal`}
+        href={`${project.hosts.app}${localizedPath(locale, "/journal")}`}
       >
         {t("sendNews")}
       </a>

@@ -4,6 +4,10 @@ import { project } from "@repo/config";
 import type { AdminClient } from "@repo/database/admin";
 import type { IcsEvent } from "./ics";
 
+// English pages have no language prefix; other languages do ("/ar").
+const prefix = (locale: string) =>
+  locale === project.locale.default ? "" : `/${locale}`;
+
 const eventColumns =
   "id, slug, title_en, title_ar, summary_en, venue_en, venue_ar, starts_at, ends_at, members_only";
 
@@ -36,8 +40,8 @@ const toIcs = (
   title: locale === "ar" ? event.title_ar : event.title_en,
   uid: `${event.id}@${project.domain}`,
   url: event.members_only
-    ? `${project.hosts.app}/${locale}`
-    : `${project.hosts.web}/${locale}/events/${event.slug}`,
+    ? `${project.hosts.app}${prefix(locale)}`
+    : `${project.hosts.web}${prefix(locale)}/events/${event.slug}`,
 });
 
 const since = () => new Date(Date.now() - 90 * 86_400_000).toISOString();

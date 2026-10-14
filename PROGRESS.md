@@ -302,8 +302,15 @@ These stop parts of the work. Everything else continues around them.
   the Nexus is static and the database must enforce `features.elections`.
 - Analytics: GA4 only (`NEXT_PUBLIC_GA_ID`), on apps/web only; Meta, TikTok,
   PostHog, GTM, Vercel Analytics and server conversions removed.
-- The Nexus is always a static export; its security headers are in
-  `apps/app/vercel.json`. Routes with ids use query strings (static export).
+- The Nexus is no longer a static export (owner, Oct 14, 2026): its pages
+  are client-rendered with one locale proxy and no secrets. Security headers
+  are in `apps/app/vercel.json`. Routes with ids still use query strings.
+- English URLs have no prefix (`/events`); Arabic ones do (`/ar/events`),
+  in both apps. Old `/en/…` links are forwarded by the locale proxy. Owner:
+  in Supabase → Authentication → URL Configuration, keep
+  `https://nexus.auibsal.org/**` in Redirect URLs; paste the updated email
+  templates (`packages/database/supabase/templates`) so the Arabic buttons
+  open `/ar/…`.
 - Members-only piece text lives in `journal.piece_bodies`, so piece metadata
   can be public (with a sign-in prompt) while the text stays members-only.
 - Partnerships (Oct 9, 2026): one generic Partners module, no code per

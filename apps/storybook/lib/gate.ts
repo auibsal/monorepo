@@ -90,7 +90,7 @@ export const accessTokenFrom = (
 
 const signIn = (env: GateEnv, requestUrl: string): GateResult => {
   const to = new URL(requestUrl);
-  const location = new URL("/en/continue", env.nexusUrl);
+  const location = new URL("/continue", env.nexusUrl);
   location.searchParams.set("to", to.toString());
   return { kind: "sign-in", location: location.toString() };
 };

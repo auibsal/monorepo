@@ -64,7 +64,7 @@ describe("design system gate", () => {
     expect(result.kind).toBe("sign-in");
     const location = new URL(result.kind === "sign-in" ? result.location : "");
     expect(location.origin + location.pathname).toBe(
-      "https://nexus.auibsal.org/en/continue"
+      "https://nexus.auibsal.org/continue"
     );
     expect(location.searchParams.get("to")).toBe(
       "https://design.auibsal.org/?path=/docs/intro"
