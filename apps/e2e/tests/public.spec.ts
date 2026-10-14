@@ -24,14 +24,14 @@ test.describe("public site", () => {
   test("an event page links booking to the Nexus and carries structured data", async ({
     page,
   }) => {
-    await page.goto(`${urls.web}/en/events/${event.slug}`);
+    await page.goto(`${urls.web}/events/${event.slug}`);
     await expect(
       page.getByRole("heading", { name: event.title })
     ).toBeVisible();
     const book = page.getByRole("link", { name: /rsvp|book/i }).first();
     await expect(book).toHaveAttribute(
       "href",
-      new RegExp(`/en/events#${event.slug}$`)
+      new RegExp(`/events#${event.slug}$`)
     );
     const ld = await page
       .locator('script[type="application/ld+json"]')
@@ -41,7 +41,7 @@ test.describe("public site", () => {
   });
 
   test("the Waraq front page is accessible", async ({ page }) => {
-    await page.goto(`${urls.web}/en/waraq`);
+    await page.goto(`${urls.web}/waraq`);
     await expect(page.getByRole("heading", { level: 1 })).toHaveText("Waraq");
     await expectAccessible(page);
   });

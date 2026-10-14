@@ -3,6 +3,7 @@
 import { project } from "@repo/config";
 import { BrandLogo } from "@repo/design-system/components/brand-logo";
 import { Button } from "@repo/design-system/components/ui/button";
+import { localizedPath } from "@repo/internationalization";
 import { type Locale, locales } from "@repo/internationalization/config";
 import { Link, usePathname } from "@repo/internationalization/navigation";
 import { MenuIcon, XIcon } from "lucide-react";
@@ -30,7 +31,7 @@ export const Header = () => {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const other = (locales.find((l) => l !== locale) ?? locale) as Locale;
-  const nexus = `${project.hosts.app}/${locale}`;
+  const nexus = `${project.hosts.app}${localizedPath(locale)}`;
 
   const links = (large: boolean) => (
     <ul className={large ? "grid gap-1" : "flex items-center gap-6"}>

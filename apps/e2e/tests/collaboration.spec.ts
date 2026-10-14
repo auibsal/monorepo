@@ -18,7 +18,7 @@ test("two editors see each other and each other's typing", async ({
   await signInWithPassword(first, editor.email);
   await signInWithPassword(second, editor.email);
 
-  await first.goto(`${urls.app}/en/admin/content`);
+  await first.goto(`${urls.app}/admin/content`);
   await first
     .getByRole("button", { name: "New post" })
     .or(first.getByRole("link", { name: "New post" }))

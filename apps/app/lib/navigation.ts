@@ -1,5 +1,5 @@
 import { project } from "@repo/config";
-import { isLocale } from "@repo/internationalization";
+import { isLocale, localizedPath } from "@repo/internationalization";
 
 /**
  * A post-sign-in destination taken from the URL. Only paths inside this app
@@ -18,7 +18,10 @@ export const stripLocale = (path: string) => {
 
 /** Where confirmation and magic links land, carrying the return path. */
 export const callbackUrl = (locale: string, next: string | null) => {
-  const url = new URL(`/${locale}/auth/callback`, window.location.origin);
+  const url = new URL(
+    localizedPath(locale, "/auth/callback"),
+    window.location.origin
+  );
   if (next) {
     url.searchParams.set("next", next);
   }

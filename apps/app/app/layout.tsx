@@ -46,7 +46,7 @@ interface RootLayoutProperties {
 
 /**
  * The only root layout; the language lives in the [locale] segment. A single
- * root keeps every navigation client-side, which the static export needs.
+ * root keeps every navigation client-side.
  */
 const RootLayout = ({ children }: RootLayoutProperties) => (
   // v5 Screens: the Nexus is on the ink ground. Light islands (Journal reading)

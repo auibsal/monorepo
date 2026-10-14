@@ -576,7 +576,7 @@ const Media = ({ record }: { record: PieceRecord }) => {
               className="grid gap-3 rounded-card bg-surface-tint p-3 sm:grid-cols-[10rem_1fr]"
               key={m.id}
             >
-              {/* biome-ignore lint/performance/noImgElement: a static export has no image optimizer */}
+              {/* biome-ignore lint/performance/noImgElement: the Nexus serves images unoptimized (next.config.ts) */}
               <img
                 alt={m.alt_en || m.alt_ar}
                 className="max-h-40 rounded-card object-contain"

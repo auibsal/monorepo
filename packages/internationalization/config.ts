@@ -34,3 +34,15 @@ export const getDirection = (locale: string): Direction =>
 
 export const getLocaleLabel = (locale: Locale) =>
   localeDefinitions[locale].label;
+
+/**
+ * A page's path in a locale. The default language has no prefix
+ * (`/events`); every other language does (`/ar/events`).
+ */
+export const localizedPath = (locale: string, path = "/") => {
+  const page = path.startsWith("/") ? path : `/${path}`;
+  if (locale === defaultLocale || !isLocale(locale)) {
+    return page;
+  }
+  return page === "/" ? `/${locale}` : `/${locale}${page}`;
+};

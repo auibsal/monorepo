@@ -1,5 +1,5 @@
 import { project } from "@repo/config";
-import { locales } from "@repo/internationalization";
+import { locales, localizedPath } from "@repo/internationalization";
 import { documents } from "@repo/sal-data";
 import type { MetadataRoute } from "next";
 import { readPublished } from "@/lib/supabase";
@@ -36,7 +36,7 @@ const localized = (path: string): MetadataRoute.Sitemap => {
   const languages = Object.fromEntries(
     locales.map((locale) => [
       locale,
-      new URL(`/${locale}${path}`, project.hosts.web).href,
+      new URL(localizedPath(locale, path), project.hosts.web).href,
     ])
   );
 

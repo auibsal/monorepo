@@ -6,6 +6,7 @@ import { FormHeader } from "@repo/design-system/components/sal/form-header";
 import { Button } from "@repo/design-system/components/ui/button";
 import { Input } from "@repo/design-system/components/ui/input";
 import { Label } from "@repo/design-system/components/ui/label";
+import { localizedPath } from "@repo/internationalization";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useId, useRef, useState } from "react";
 import { useAuthError } from "@/lib/auth-messages";
@@ -38,7 +39,7 @@ export const ForgotForm = () => {
     const result = await sendPasswordReset(
       supabase,
       email,
-      `${window.location.origin}/${locale}/auth/callback?next=/${locale}/auth/reset`,
+      `${window.location.origin}${localizedPath(locale, "/auth/callback")}?next=${localizedPath(locale, "/auth/reset")}`,
       human.token
     );
     inFlight.current = false;

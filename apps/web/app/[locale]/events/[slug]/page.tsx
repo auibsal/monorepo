@@ -1,6 +1,7 @@
 import { project } from "@repo/config";
 import { Button } from "@repo/design-system/components/ui/button";
 import type { Locale } from "@repo/internationalization";
+import { localizedPath } from "@repo/internationalization";
 import { formatClock, formatLongDate } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
 import { events, localized, sanitizeRichText } from "@repo/sal-data";
@@ -119,7 +120,9 @@ const EventPage = async ({ params }: EventProps) => {
         <div className="flex flex-wrap gap-3">
           {event.rsvp_enabled ? (
             <Button asChild>
-              <a href={`${project.hosts.app}/${locale}/events#${event.slug}`}>
+              <a
+                href={`${project.hosts.app}${localizedPath(locale, "/events")}#${event.slug}`}
+              >
                 {t("rsvp")}
               </a>
             </Button>

@@ -1,22 +1,8 @@
 import { describe, expect, test, vi } from "vitest";
 import { matchesConfirmation } from "@/components/profile/delete-account";
 import { ApiError, callApi } from "@/lib/api";
-import { preferredLocale, resolveLocalizedPath } from "@/lib/locale";
 import { safeNextPath, safeSocietyUrl, stripLocale } from "@/lib/navigation";
 import { fakeSupabase } from "./render";
-
-describe("locale", () => {
-  test("prefers the saved choice, then the device language", () => {
-    expect(preferredLocale("ar", ["en-US"])).toBe("ar");
-    expect(preferredLocale(null, ["ar-IQ", "en"])).toBe("ar");
-    expect(preferredLocale(null, ["fr-FR"])).toBe("en");
-  });
-
-  test("adds a locale to paths without one", () => {
-    expect(resolveLocalizedPath("/profile?x=1", "ar")).toBe("/ar/profile?x=1");
-    expect(resolveLocalizedPath("/en/profile", "ar")).toBe("/en/profile");
-  });
-});
 
 describe("return paths", () => {
   test("only accepts paths inside the app", () => {

@@ -12,10 +12,15 @@ items and decisions) and continue from the first unticked item.
   Published reads only, with the publishable key; cached by tag and
   revalidated on publish (`/api/revalidate`).
 - `apps/app` — **the Nexus**, nexus.auibsal.org: the member portal and the
-  role-gated admin. A static export (`output: "export"`): no Server Actions,
-  Route Handlers, `cookies()`, proxy or request-time rendering, and no
-  secrets. Every check in it is UX only. Anything that needs a secret goes to
-  `apps/api`, called with the member's token (`callApi` in `apps/app/lib/api.ts`).
+  role-gated admin. Client-rendered pages and one server piece, the locale
+  proxy (`proxy.ts`); no secrets, Server Actions or Route Handlers (owner,
+  Oct 14, 2026: the static export ended with Capacitor). Every check in it is
+  UX only. Anything that needs a secret goes to `apps/api`, called with the
+  member's token (`callApi` in `apps/app/lib/api.ts`).
+- **URLs.** English, the default language, has no prefix (`/events`); other
+  languages do (`/ar/events`), in both apps (owner, Oct 14, 2026). Build
+  links with `Link` from `@repo/internationalization/navigation`, or
+  `localizedPath(locale, path)` for another app's URL; never write `/en`.
 - `apps/api` — api.auibsal.org: email, cron, calendar feeds, revalidation,
   exports, signed URLs, account deletion. The only app with the secret key.
 - `apps/storybook` — the SAL Design System: SAL components, v5 Screens and

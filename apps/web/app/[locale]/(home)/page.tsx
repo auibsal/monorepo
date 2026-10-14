@@ -3,6 +3,7 @@ import { BrandLogo } from "@repo/design-system/components/brand-logo";
 import { SalCard } from "@repo/design-system/components/sal/card";
 import { Button } from "@repo/design-system/components/ui/button";
 import type { Locale } from "@repo/internationalization";
+import { localizedPath } from "@repo/internationalization";
 import {
   formatClock,
   formatIqd,
@@ -87,7 +88,11 @@ const Home = async ({ params }: HomeProps) => {
           <p className="type-lede max-w-2xl">{t("lede")}</p>
           <div className="flex flex-wrap gap-4 pt-2">
             <Button asChild size="lg">
-              <a href={`${project.hosts.app}/${locale}/sign-up`}>{t("join")}</a>
+              <a
+                href={`${project.hosts.app}${localizedPath(locale, "/sign-up")}`}
+              >
+                {t("join")}
+              </a>
             </Button>
             <Button asChild size="lg" variant="outline">
               <Link href="/events">{t("allEvents")}</Link>
@@ -321,7 +326,11 @@ const Home = async ({ params }: HomeProps) => {
             className="justify-self-start bg-on-band text-band hover:bg-on-band/90"
             size="lg"
           >
-            <a href={`${project.hosts.app}/${locale}/sign-up`}>{t("join")}</a>
+            <a
+              href={`${project.hosts.app}${localizedPath(locale, "/sign-up")}`}
+            >
+              {t("join")}
+            </a>
           </Button>
         </div>
       </section>

@@ -163,7 +163,8 @@ describe("outbox and the email sending limit", () => {
     expect(userId).toBe("u1");
     expect(notice).toMatchObject({ lang: "en", tag: "outbox-8" });
     expect(notice.title).toContain("The paper and the pen");
-    expect(notice.url.startsWith("https://nexus.auibsal.org/en")).toBe(true);
+    expect(notice.url.startsWith("https://nexus.auibsal.org/")).toBe(true);
+    expect(notice.url).not.toContain("/en/");
   });
 
   test("no push goes out when the email fails, so a retry sends it once", async () => {

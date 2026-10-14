@@ -1,4 +1,5 @@
 import { project } from "@repo/config";
+import { localizedPath } from "@repo/internationalization";
 
 type Thing = Record<string, unknown>;
 
@@ -20,7 +21,7 @@ export const JsonLd = ({ data }: { readonly data: Thing }) => (
 );
 
 const pageUrl = (locale: string, path: string) =>
-  `${project.url}/${locale}${path === "/" ? "" : path}`;
+  `${project.url}${localizedPath(locale, path)}`;
 
 export const organization = (): Thing => ({
   "@id": `${project.url}/#organization`,

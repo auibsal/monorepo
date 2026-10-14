@@ -118,12 +118,15 @@ export type CertificateInput = z.input<typeof certificateSchema>;
 
 const TRAILING_SLASH = /\/$/;
 
-/** Where a certificate is checked: auibsal.org/<locale>/verify/<code>. */
+/**
+ * Where a certificate is checked, from the verify page's path in the
+ * reader's language: auibsal.org/verify/<code>, auibsal.org/ar/verify/<code>.
+ */
 export const verificationUrl = (
   webHost: string,
-  locale: string,
+  verifyPath: string,
   code: string
-) => `${webHost.replace(TRAILING_SLASH, "")}/${locale}/verify/${code}`;
+) => `${webHost.replace(TRAILING_SLASH, "")}${verifyPath}/${code}`;
 
 /**
  * LinkedIn's "Add to profile" link for a certification. Opens LinkedIn with
