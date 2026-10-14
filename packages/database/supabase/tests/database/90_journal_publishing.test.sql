@@ -75,6 +75,8 @@ update core.settings set value = '0' where key = 'membership.founding_voters';
 
 -- Start from an empty journal: migrations seed the real Issue 1 call.
 delete from journal.issues;
+-- And from an empty News desk: migration 20261014000300 publishes its archive.
+delete from journal.pieces;
 
 select plan(10);
 
