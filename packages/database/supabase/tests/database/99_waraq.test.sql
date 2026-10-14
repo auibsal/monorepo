@@ -77,6 +77,9 @@ update core.settings set value = '0' where key = 'membership.founding_voters';
 -- publish rule, the front page, pen names and Editions.
 
 delete from journal.issues;
+-- The News desk's archive (migration 20261014000300) is published content;
+-- these checks count pieces from a clean desk.
+delete from journal.pieces;
 
 select plan(50);
 
