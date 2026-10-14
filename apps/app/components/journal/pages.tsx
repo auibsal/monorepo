@@ -64,8 +64,64 @@ const useInvalidate = () => {
 
 // ── Journal home ──────────────────────────────────────────────────────────────
 
+/** The author's accepted work, on its way to publication or out. */
+const MyPieces = () => {
+  const t = useTranslations("nexus.waraq");
+  const tw = useTranslations("nexus.admin.waraq");
+  const tj = useTranslations("nexus.admin.journal");
+  const locale = useLocale() as Locale;
+  const { supabase } = useAuth();
+  const pieces = useQuery({
+    queryFn: async () => {
+      const mine =
+        unwrap(await supabase.schema("journal").rpc("my_contributors")) ?? [];
+      if (mine.length === 0) {
+        return [];
+      }
+      return (
+        unwrap(
+          await supabase
+            .schema("journal")
+            .from("pieces")
+            .select("id, title_en, title_ar, category, status, updated_at")
+            .in(
+              "contributor_id",
+              mine.map((c) => c.id)
+            )
+            .order("updated_at", { ascending: false })
+        ) ?? []
+      );
+    },
+    queryKey: ["journal", "my-pieces"],
+  });
+  if (!pieces.data || pieces.data.length === 0) {
+    return null;
+  }
+  return (
+    <section className="grid gap-4">
+      <h2 className="type-subheading">{t("myPieces")}</h2>
+      <ul className="grid gap-2">
+        {pieces.data.map((p) => (
+          <li className="flex flex-wrap items-baseline gap-3" key={p.id}>
+            <Link
+              className="font-medium underline underline-offset-4"
+              href={{ pathname: "/journal/work", query: { id: p.id } }}
+            >
+              {localized(p, "title", locale) || t("pieceTitle")}
+            </Link>
+            <span className="type-caption">
+              {`${tj(`categories.${p.category}`)} · ${tw(`statuses.${p.status as journal.PieceStatus}`)}`}
+            </span>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+};
+
 export const JournalHome = () => {
   const t = useTranslations("nexus.journal");
+  const tn = useTranslations("nexus.waraq");
   const tw = useTranslations("nexus.home.journal");
   const tj = useTranslations("nexus.admin.journal");
   const locale = useLocale() as Locale;
@@ -146,6 +202,28 @@ export const JournalHome = () => {
           ))}
         </ul>
       </section>
+      <section className="grid gap-4">
+        <h2 className="type-subheading">{tn("desksTitle")}</h2>
+        <p>{tn("desksLede")}</p>
+        <ul className="grid gap-4 sm:grid-cols-3">
+          {(["news", "video", "voices"] as const).map((desk) => (
+            <li
+              className="grid content-start gap-2 rounded-card bg-surface-tint p-4"
+              key={desk}
+            >
+              <h3 className="font-medium">{tj(`desks.${desk}`)}</h3>
+              <p className="type-caption">{tn(`deskLines.${desk}`)}</p>
+              <Link
+                className={buttonLink}
+                href={{ pathname: "/journal/submit", query: { desk } }}
+              >
+                {tn("sendTo")}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </section>
+      <MyPieces />
       <section className="grid gap-4">
         <h2 className="type-subheading">{tw("mine")}</h2>
         {submissions.data ? (
@@ -421,7 +499,36 @@ export const SubmitWork = () => {
 
 // ── One submission ──────────────────────────────────────────────────────────
 
-const Agreement = ({ submissionId }: { submissionId: string }) => {
+/** Accepted work becomes a piece the author follows to publication. */
+const PieceLink = ({ submissionId }: { submissionId: string }) => {
+  const t = useTranslations("nexus.waraq");
+  const { supabase } = useAuth();
+  const piece = useQuery({
+    queryFn: async () =>
+      unwrap(
+        await supabase
+          .schema("journal")
+          .from("pieces")
+          .select("id")
+          .eq("submission_id", submissionId)
+          .maybeSingle()
+      ),
+    queryKey: ["journal", "piece-of", submissionId],
+  });
+  if (!piece.data) {
+    return null;
+  }
+  return (
+    <Link
+      className={buttonLink}
+      href={{ pathname: "/journal/work", query: { id: piece.data.id } }}
+    >
+      {t("openYourPiece")}
+    </Link>
+  );
+};
+
+export const Agreement = ({ submissionId }: { submissionId: string }) => {
   const t = useTranslations("nexus.journal.agreement");
   const locale = useLocale() as Locale;
   const { supabase } = useAuth();
@@ -626,6 +733,7 @@ export const MySubmission = () => {
       ) : null}
 
       {row.status === "accepted" ? <Agreement submissionId={row.id} /> : null}
+      {row.status === "accepted" ? <PieceLink submissionId={row.id} /> : null}
 
       <ReadingTimeline history={data.data?.history ?? []} status={row.status} />
 

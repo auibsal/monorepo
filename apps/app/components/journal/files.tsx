@@ -23,8 +23,12 @@ export const acceptFor = (kind: FileKind) =>
 
 /** Which files a category asks for (translations add the source text). */
 export const kindsFor = (category: journal.Category): FileKind[] => {
-  if (category === "art_photography") {
+  const desk = journal.deskOf(category);
+  if (desk === "gallery") {
     return ["image"];
+  }
+  if (desk === "news") {
+    return ["manuscript", "image"];
   }
   if (category === "translation") {
     return ["manuscript", "source"];

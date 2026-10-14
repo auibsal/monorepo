@@ -562,3 +562,7 @@ export const youtubeId = (url: string | null | undefined) => {
   }
   return YOUTUBE.exec(url)?.[1] ?? null;
 };
+
+/** Named work (News, Video, Voices) in the caller's desks, with authors. */
+export const deskQueue = async (client: Client) =>
+  unwrap(await journal(client).rpc("desk_queue")) ?? [];
