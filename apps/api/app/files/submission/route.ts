@@ -13,7 +13,8 @@ const body = z.object({ id: z.uuid() });
 
 /**
  * A five-minute link to an original submission file, for its author and
- * the issue's Submissions Manager only: the caller's own read of
+ * the issue's Submissions Manager, and the desk editor for News, Video
+ * and Voices work (named, not blind): the caller's own read of
  * journal.submission_files decides, under RLS. Readers use /files/blind.
  */
 export const POST = async (request: Request) => {

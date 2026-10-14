@@ -46,6 +46,7 @@ describe("platform email", () => {
     const [accepted] = decision("en", "W", "accept", APP).blocks;
     const [declined] = decision("en", "W", "decline", APP).blocks;
     expect(accepted?.paragraphs.join(" ")).toContain("Publication Agreement");
-    expect(declined?.action).toBeUndefined();
+    expect(declined?.paragraphs.join(" ")).not.toContain("Agreement");
+    expect(declined?.paragraphs.join(" ")).toContain("submit again");
   });
 });

@@ -191,3 +191,58 @@ export const checkNews = (
     },
   };
 };
+
+export type WaraqDesk = "news" | "letters" | "gallery" | "video" | "voices";
+
+export interface WaraqValues {
+  deck_ar: string | null;
+  deck_en: string | null;
+  desk: WaraqDesk;
+  publish_at: string | null;
+  title_ar: string;
+  title_en: string;
+}
+
+const DESKS: Record<string, WaraqDesk> = {
+  Gallery: "gallery",
+  Letters: "letters",
+  News: "news",
+  Video: "video",
+  Voices: "voices",
+};
+
+/**
+ * A Waraq page in the content calendar (Kind "Waraq"): it is imported as a
+ * piece in Editing, so it needs only what a piece starts with. The editing,
+ * approvals and publishing happen in the Nexus.
+ */
+export const checkWaraq = (page: NotionPage): Checked<WaraqValues> => {
+  const problems: string[] = [];
+  const { titleAr, titleEn } = titles(page, problems);
+  const desk = DESKS[read.select(page, "Desk") ?? ""];
+  if (!desk) {
+    problems.push("Choose the Desk: News, Letters, Gallery, Video or Voices.");
+  }
+  const deckEn = read.text(page, "Excerpt");
+  const deckAr = read.text(page, "Excerpt (Arabic)");
+  problems.push(
+    ...lengthProblem("The excerpt (the deck)", deckEn, 400),
+    ...lengthProblem("The Arabic excerpt", deckAr, 400)
+  );
+  const on = read.date(page, "Publish on")?.start ?? null;
+  const publishAt = on ? (toInstant(on) ?? toInstant(`${on}T09:00:00`)) : null;
+  if (problems.length > 0 || !desk) {
+    return { ok: false, problems };
+  }
+  return {
+    ok: true,
+    values: {
+      deck_ar: optional(deckAr),
+      deck_en: optional(deckEn),
+      desk,
+      publish_at: publishAt,
+      title_ar: titleAr,
+      title_en: titleEn,
+    },
+  };
+};

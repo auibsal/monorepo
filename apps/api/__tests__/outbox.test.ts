@@ -16,7 +16,7 @@ vi.mock("@repo/email", () => ({
 vi.mock("@/lib/push", () => ({ pushToUser }));
 
 const { EmailQuotaError } = await import("@repo/email");
-const { drain, processRow } = await import("@/lib/outbox");
+const { drain, isDeferred, processRow } = await import("@/lib/outbox");
 
 interface Row {
   attempts: number;
@@ -170,5 +170,19 @@ describe("outbox and the email sending limit", () => {
     sendEmail.mockRejectedValue(new Error("invalid address"));
     await processRow(fakeAdmin([submissionRow(9)]), 9);
     expect(pushToUser).not.toHaveBeenCalled();
+  });
+});
+
+describe("decision letters wait for their day", () => {
+  test("a row with a future send_after is held, a past one goes", () => {
+    const now = Date.parse("2026-12-10T00:00:00Z");
+    expect(isDeferred({ send_after: "2026-12-17T00:00:00+03:00" }, now)).toBe(
+      true
+    );
+    expect(isDeferred({ send_after: "2026-12-01T00:00:00+03:00" }, now)).toBe(
+      false
+    );
+    expect(isDeferred({ send_after: null }, now)).toBe(false);
+    expect(isDeferred({}, now)).toBe(false);
   });
 });

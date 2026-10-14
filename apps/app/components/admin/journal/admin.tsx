@@ -34,6 +34,7 @@ import {
   SaveButton,
   SelectInput,
 } from "../kit";
+import { openSubmissionFile } from "../pipeline/data";
 import { FrontRank } from "./workflow";
 
 const key = ["admin", "journal"];
@@ -254,7 +255,20 @@ type QueueRow = Awaited<ReturnType<typeof journal.deskQueue>>[number];
 
 /** The work as sent, for the desk editor to read before deciding. */
 const QueueWork = ({ item }: { item: QueueRow }) => {
+  const t = useTranslations("nexus.admin.waraq.queue");
   const { supabase } = useAuth();
+  const files = useQuery({
+    queryFn: async () =>
+      unwrap(
+        await supabase
+          .schema("journal")
+          .from("submission_files")
+          .select("id, kind")
+          .eq("submission_id", item.submission_id)
+          .order("created_at")
+      ) ?? [],
+    queryKey: [...key, "queue-files", item.submission_id],
+  });
   const work = useQuery({
     queryFn: async () =>
       unwrap(
@@ -297,6 +311,21 @@ const QueueWork = ({ item }: { item: QueueRow }) => {
         <p className="type-caption whitespace-pre-wrap">
           {work.data.cover_note}
         </p>
+      ) : null}
+      {(files.data ?? []).length > 0 ? (
+        <ul className="flex flex-wrap gap-2">
+          {files.data?.map((f, index) => (
+            <li key={f.id}>
+              <Button
+                onClick={() => openSubmissionFile(supabase, f.id)}
+                size="sm"
+                variant="outline"
+              >
+                {t("openFile", { number: formatNumber(index + 1) })}
+              </Button>
+            </li>
+          ))}
+        </ul>
       ) : null}
     </div>
   );

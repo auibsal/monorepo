@@ -1,7 +1,7 @@
 import { Constants, type Enums } from "@repo/database";
 import { z } from "zod";
 import { type Client, unwrap } from "./client";
-import { sanitizeRichText } from "./sanitize";
+import { sanitizeRichText, toPlainText } from "./sanitize";
 
 /** Every type of piece: one list for the forms and the database enum. */
 export const categories = Constants.journal.Enums.category;
@@ -533,8 +533,6 @@ export const typeNeeds = (category: Category) => {
   };
 };
 
-const TAG = /<[^>]+>/g;
-const ENTITY = /&[a-z#0-9]+;/gi;
 const SPACE = /\s+/u;
 const PUNCTUATION = /[\p{P}\p{S}]+/gu;
 const YOUTUBE =
@@ -542,7 +540,10 @@ const YOUTUBE =
 
 /** Words in rich text or plain text, for limits and reading time. */
 export const wordCount = (text: string) => {
-  const plain = text.replace(TAG, " ").replace(ENTITY, " ").trim();
+  // Paragraphs and line breaks separate words; the sanitizer drops tags.
+  const plain = toPlainText(
+    text.replaceAll("</p>", " </p>").replaceAll("<br", " <br")
+  );
   return plain ? plain.split(SPACE).length : 0;
 };
 

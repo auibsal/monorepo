@@ -95,20 +95,43 @@ export const eventReminder = (lang: Lang, e: EventInfo, app: string) =>
     ],
   }));
 
-export const submissionReceived = (lang: Lang, work: string, app: string) =>
+/** Letters and Gallery are read blind; News, Video and Voices by name. */
+export type DeskKind = "blind" | "named";
+
+const RECEIVED: Record<DeskKind, Record<Lang, string[]>> = {
+  blind: {
+    ar: [
+      "يُقرأ عملك قراءة عمياء: لا يرى القرّاء والمحررون اسمك حتى يُتَّخذ القرار.",
+      "يسمع كل كاتب الجواب في اليوم المعلن، أياً كان القرار. ويمكنك متابعة المراحل في النِّكسَس.",
+    ],
+    en: [
+      "Your work is read blind: readers and editors never see your name until a decision is made.",
+      "Every author hears by the announced date, either way. You can follow its progress in the Nexus.",
+    ],
+  },
+  named: {
+    ar: [
+      "سيقرؤه محرر القسم ويتواصل معك باسمك بشأن التحرير والتحقق من الوقائع.",
+      "يمكنك متابعة المراحل في النِّكسَس.",
+    ],
+    en: [
+      "The desk editor will read it and work with you by name on the edit and the facts.",
+      "You can follow its progress in the Nexus.",
+    ],
+  },
+};
+
+export const submissionReceived = (
+  lang: Lang,
+  work: string,
+  app: string,
+  desk: DeskKind = "blind"
+) =>
   build(lang, (l) => ({
     action: nexus(app, l, "/journal"),
-    heading: l === "ar" ? `وصلنا عملك: ${work}` : `We received ${work}`,
-    paragraphs:
-      l === "ar"
-        ? [
-            "يفحص مسؤول المشاركات التنسيق أولاً، ثم يقرأ القرّاء العمل قراءةً عمياء دون اسمك.",
-            "يمكنك متابعة مراحل مشاركتك في النِّكسَس.",
-          ]
-        : [
-            "The Submissions Manager checks formatting first; then readers read it blind, without your name.",
-            "You can follow its progress in the Nexus.",
-          ],
+    heading:
+      l === "ar" ? `شكراً، وصلنا ${work}` : `Thank you: we received ${work}`,
+    paragraphs: RECEIVED[desk][l],
   }));
 
 export const returnedForFormatting = (
@@ -121,17 +144,28 @@ export const returnedForFormatting = (
     action: nexus(app, l, "/journal"),
     heading:
       l === "ar"
-        ? `يحتاج عملك إلى إصلاح في التنسيق: ${work}`
-        : `${work} needs a formatting fix`,
+        ? `تعديل واحد قبل القراءة: ${work}`
+        : `One fix before reading: ${work}`,
     paragraphs: [
       ...(note ? [note] : []),
       l === "ar"
-        ? "الأمر يتعلق بالتنسيق، لا بالحكم على العمل. عدّله في النِّكسَس ثم احفظ."
-        : "This is about formatting, not a judgment of the work. Revise it in the Nexus and save.",
+        ? "هذا تعديل واحد وفرصة واحدة قبل الموعد النهائي، ولا يُحسب ضد العمل. عدّله في النِّكسَس ثم احفظ."
+        : "It is one specific fix, one chance, before the deadline, and it won't count against the piece. Revise it in the Nexus and save.",
     ],
   }));
 
 export type Decision = "accept" | "accept_with_edits" | "decline";
+
+const ACCEPTED: Record<Exclude<Decision, "decline">, Record<Lang, string>> = {
+  accept: {
+    ar: "يسعدنا أن نخبرك بأن عملك قُبل.",
+    en: "We are delighted to tell you the work is accepted.",
+  },
+  accept_with_edits: {
+    ar: "أحبّ المحررون هذا العمل، ولديهم ما يودّون تطويره معك. قرار المراجعة لك.",
+    en: "The editors love this work and have some things they would like to develop with you. The choice to revise is yours.",
+  },
+};
 
 export const decision = (
   lang: Lang,
@@ -142,37 +176,30 @@ export const decision = (
   build(lang, (l) => {
     if (outcome === "decline") {
       return {
+        action: nexus(app, l, "/journal"),
         heading:
           l === "ar" ? `شكراً لإرسالك ${work}` : `Thank you for sending ${work}`,
         paragraphs:
           l === "ar"
             ? [
-                "لم يختر المحررون هذا العمل لمجلة الجامعة الأمريكية الأدبية هذه المرة.",
-                "نأمل أن نقرأ لك مجدداً في الدعوة القادمة.",
+                "لم يختر المحررون هذا العمل لورق هذه المرة.",
+                "هذا قرار يخص إصداراً واحداً، لا قيمة كتابتك. نرجو أن ترسل إلينا مجدداً.",
               ]
             : [
-                "This time the editors have not selected it for the AUIB Literary Journal.",
-                "We hope to read more of your work in the next call.",
+                "This time the editors have not selected it for Waraq.",
+                "It is a decision about one Edition, not the worth of the writing. Please submit again.",
               ],
       };
     }
     return {
       action: nexus(app, l, "/journal"),
       heading:
-        l === "ar"
-          ? `قُبل عملك في مجلة الجامعة الأمريكية الأدبية: ${work}`
-          : `${work} is accepted for the AUIB Literary Journal`,
+        l === "ar" ? `قُبل ${work} في ورق` : `${work} is accepted for Waraq`,
       paragraphs: [
-        ...(outcome === "accept_with_edits"
-          ? [
-              l === "ar"
-                ? "قُبل مع تعديلات؛ سيتواصل معك المحررون بشأنها."
-                : "It is accepted with edits; the editors will be in touch about them.",
-            ]
-          : []),
+        ACCEPTED[outcome][l],
         l === "ar"
-          ? "الخطوة التالية: وقّع اتفاقية النشر في النِّكسَس. لا يُنشر العمل قبل توقيعها."
-          : "Next, sign the Publication Agreement in the Nexus. Nothing is published before it is signed.",
+          ? "خلال سبعة أيام: وقّع اتفاقية النشر وأكمل بياناتك ككاتب في النِّكسَس. توافق أنت على كل تغيير، وترى النص النهائي قبل نشره."
+          : "Within 7 days, sign the Publication Agreement and complete your contributor details in the Nexus. You approve every change and see the final text before it is published.",
       ],
     };
   });
@@ -186,8 +213,101 @@ export const agreementReminder = (lang: Lang, work: string, app: string) =>
         : `Waiting for your signature: ${work}`,
     paragraphs: [
       l === "ar"
-        ? "قُبل عملك في مجلة الجامعة الأمريكية الأدبية، ولا يمكن نشره قبل أن توقّع اتفاقية النشر في النِّكسَس."
-        : "Your work is accepted for the AUIB Literary Journal, and it cannot be published until you sign the Publication Agreement in the Nexus.",
+        ? "قُبل عملك في ورق، ولا يمكن نشره قبل أن توقّع اتفاقية النشر في النِّكسَس."
+        : "Your work is accepted for Waraq, and it cannot be published until you sign the Publication Agreement in the Nexus.",
+    ],
+  }));
+
+const piecePath = (pieceId: string) => `/journal/work?id=${pieceId}`;
+
+/** Final check (72 hours): errors only, not new revisions. */
+export const finalCheck = (
+  lang: Lang,
+  work: string,
+  pieceId: string,
+  app: string
+) =>
+  build(lang, (l) => ({
+    action: nexus(app, l, piecePath(pieceId)),
+    heading:
+      l === "ar" ? `مراجعتك الأخيرة: ${work}` : `Your final check: ${work}`,
+    paragraphs: [
+      l === "ar"
+        ? "راجع خلال ٧٢ ساعة اسمك والعنوان وكل فاصل أسطر ونبذتك، ثم وافق على النص في النِّكسَس."
+        : "Within 72 hours, check your name, the title, every line break and your bio, then approve the text in the Nexus.",
+      l === "ar"
+        ? "الأخطاء فقط، لا تعديلات جديدة."
+        : "Errors only, not new revisions.",
+    ],
+  }));
+
+/** The editor wrote on the piece (the edit letter and what follows). */
+export const pieceNote = (
+  lang: Lang,
+  work: string,
+  pieceId: string,
+  app: string
+) =>
+  build(lang, (l) => ({
+    action: nexus(app, l, piecePath(pieceId)),
+    heading:
+      l === "ar"
+        ? `ملاحظة من المحرر: ${work}`
+        : `A note from your editor: ${work}`,
+    paragraphs: [
+      l === "ar"
+        ? "كتب المحرر إليك عن عملك. اقرأ الملاحظة وردّ عليها في النِّكسَس. الكلمة الأخيرة في كلماتك لك."
+        : "Your editor wrote to you about the piece. Read the note and reply in the Nexus. The final word on the words is yours.",
+    ],
+  }));
+
+/** Thank-you with the credit line, when the piece goes out. */
+export const piecePublished = (lang: Lang, work: string, url: string) =>
+  build(lang, (l) => ({
+    action: {
+      href: url,
+      label: l === "ar" ? "اقرأه في ورق" : "Read it in Waraq",
+    },
+    heading: l === "ar" ? `نُشر ${work}` : `${work} is published`,
+    paragraphs: [
+      l === "ar"
+        ? "شكراً لك. إن أعدت نشره في مكان آخر فاكتب: «نُشر أولاً في ورق»."
+        : "Thank you. If you republish it anywhere, add: \u201cFirst published in Waraq.\u201d",
+    ],
+  }));
+
+/** Waraq's desks, as the emails name them. */
+export const deskNames = {
+  gallery: { ar: "معرض", en: "Gallery" },
+  letters: { ar: "آداب", en: "Letters" },
+  news: { ar: "أخبار", en: "News" },
+  video: { ar: "مرئيات", en: "Video" },
+  voices: { ar: "أصوات", en: "Voices" },
+} as const;
+
+export interface SundayItem {
+  desk_ar: string;
+  desk_en: string;
+  title_ar: string;
+  title_en: string;
+  url: string;
+}
+
+/** The Sunday Paper: the week's pieces, in both languages. */
+export const sundayPaper = (lang: Lang, items: SundayItem[], front: string) =>
+  build(lang, (l) => ({
+    action: {
+      href: front,
+      label: l === "ar" ? "افتح ورق" : "Open Waraq",
+    },
+    heading: l === "ar" ? "صحيفة الأحد من ورق" : "The Sunday Paper from Waraq",
+    paragraphs: [
+      l === "ar" ? "ما نُشر في ورق هذا الأسبوع:" : "This week in Waraq:",
+      ...items.map((i) =>
+        l === "ar"
+          ? `${i.desk_ar}: ${i.title_ar || i.title_en} ${i.url}`
+          : `${i.desk_en}: ${i.title_en || i.title_ar} ${i.url}`
+      ),
     ],
   }));
 
@@ -257,10 +377,10 @@ export const removalReceived = (lang: Lang, dueAt: string) =>
 export const pushTest = (lang: Lang) =>
   lang === "ar"
     ? {
-        body: "ستصلك هنا تذكيرات الفعاليات وأخبار المجلة وقرارات النشر.",
+        body: "ستصلك هنا تذكيرات الفعاليات وأخبار ورق وقرارات النشر.",
         title: "الإشعارات تعمل",
       }
     : {
-        body: "Event reminders, Journal news and decisions will arrive here.",
+        body: "Event reminders, Waraq news and decisions will arrive here.",
         title: "Notifications are on",
       };
