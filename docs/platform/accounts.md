@@ -9,7 +9,8 @@ Policy P15 and Bylaws B11.3 apply to the platform too: **every account has at le
 | GitHub (`auibsal/mono`) | The code, CI, nightly backups, Dependabot, CodeQL | Free (public repository) |
 | Vercel (team `theideaiq`) | Hosts sal-web, sal-nexus, sal-api and sal-storybook (the design system); daily keep-alive cron | Pro for now; Hobby is free: 100 deployments a day, cron jobs at most once a day, one member |
 | Supabase (project `auibsal.org`, Frankfurt) | Postgres, sign-in (also for the design system and third-party apps), file storage, scheduled jobs, live co-editing (Realtime) | Free: 500 MB database, 1 GB files; pauses after 7 idle days (the keep-alive cron prevents it); no downloadable backups (the nightly GitHub backup covers it) |
-| Cloudflare | DNS for auibsal.org | Free |
+| Cloudflare | DNS for auibsal.org; Zaraz (the consent banner) and the Google tag gateway once auibsal.org is proxied ([Analytics](analytics.md)) | Free |
+| Google Analytics 4 and Tag Manager | Visit counts on auibsal.org, with consent ([Analytics](analytics.md)) | Free |
 | Resend | Every email the platform sends, including sign-in links | Free: 100 emails a day, 3,000 a month. Emails over the limit wait in the outbox until it resets |
 | Sentry (EU) | Errors and server logs from all three apps | Free Developer plan: 5,000 errors a month, one user |
 | BetterStack | Uptime monitors for the site, the Nexus sign-in and the API health check | Free |

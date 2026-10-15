@@ -9,6 +9,15 @@ Branch: `claude/new-session-qosn60`.
 
 ## Blocked — needed from the user
 
+- [ ] **Analytics (owner, 2026-10-15: Zaraz, Cloudflare consent, the Google
+      tag gateway, GA4 and GTM):** the code is in and switched off. Follow
+      `docs/platform/analytics.md`: put auibsal.org behind Cloudflare's proxy
+      (SSL Full (strict) first), create the GA4 property and the GTM
+      container, turn on the tag gateway at `/metrics` and Zaraz consent with
+      an Analytics purpose, then set `NEXT_PUBLIC_GTM_ID`,
+      `NEXT_PUBLIC_TAG_GATEWAY_PATH` and `NEXT_PUBLIC_ZARAZ_ANALYTICS_PURPOSE`
+      on sal-web.
+
 - [ ] **Old news table:** `content.news_posts` is no longer used (the old
       /news is Waraq's News desk). Say whether to drop it; dropping deletes
       its rows in production and cannot be undone.
@@ -685,6 +694,8 @@ Covered by automated tests so far:
 
 ## needs-native-review (Arabic written for the platform)
 
+- Analytics (2026-10-15): `web.footer.cookieSettings` and the new
+  `web.privacy.platform.analyticsOn`.
 - Newsletter (2026-10-14): `web.newsletter.*`, `web.footer.newsletter`,
   `web.journal.newsletter*`, `web.privacy.platform.newsletter`,
   `nexus.admin.content.newsletter`, and the Arabic of `newsletterConfirm`

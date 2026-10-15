@@ -1,52 +1,44 @@
 import Script from "next/script";
 import type { ReactNode } from "react";
+import { bootScript, loaderSrc } from "./boot";
 import { keys } from "./keys";
-
-const SCRIPT_UNSAFE_CHAR_MAP: Record<string, string> = {
-  "/": "\\u002F",
-  "\\": "\\\\",
-  "\0": "\\0",
-  "\b": "\\b",
-  "\f": "\\f",
-  "\n": "\\n",
-  "\r": "\\r",
-  "\t": "\\t",
-  "\u2028": "\\u2028",
-  "\u2029": "\\u2029",
-  "<": "\\u003C",
-  ">": "\\u003E",
-};
-
-const escapeUnsafeScriptChars = (value: string): string =>
-  value.replace(
-    /[<>/\\\b\f\n\r\t\0\u2028\u2029]/g,
-    (char) => SCRIPT_UNSAFE_CHAR_MAP[char] ?? char
-  );
 
 interface AnalyticsProviderProps {
   readonly children: ReactNode;
 }
 
+/** The analytics settings from the environment. */
+const analyticsSettings = () => {
+  const env = keys();
+  return {
+    gaId: env.NEXT_PUBLIC_GA_ID,
+    gatewayPath: env.NEXT_PUBLIC_TAG_GATEWAY_PATH,
+    gtmId: env.NEXT_PUBLIC_GTM_ID,
+    zarazPurpose: env.NEXT_PUBLIC_ZARAZ_ANALYTICS_PURPOSE,
+  };
+};
+
 /**
- * GA4 for the public site, loaded only when NEXT_PUBLIC_GA_ID is set. No
- * Meta or TikTok pixels, no server-side conversions, no advertising
+ * Analytics for the public site: Google Tag Manager (GA4 is configured in
+ * the container) or GA4 alone, loaded only when NEXT_PUBLIC_GTM_ID or
+ * NEXT_PUBLIC_GA_ID is set, through the Google tag gateway when
+ * NEXT_PUBLIC_TAG_GATEWAY_PATH is set. Consent comes from Cloudflare Zaraz;
+ * nothing is stored until the visitor allows analytics. No advertising
  * features. Render once, in apps/web's layout.
  */
 export const AnalyticsProvider = ({ children }: AnalyticsProviderProps) => {
-  const gaId = keys().NEXT_PUBLIC_GA_ID;
+  const settings = analyticsSettings();
+  const src = loaderSrc(settings);
 
   return (
     <>
       {children}
-      {gaId ? (
+      {src ? (
         <>
-          <Script
-            src={`https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(gaId)}`}
-            strategy="afterInteractive"
-          />
-          <Script id="ga4" strategy="afterInteractive">
-            {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}window.gtag=gtag;gtag('js',new Date());gtag('config',${escapeUnsafeScriptChars(JSON.stringify(gaId))},{allow_google_signals:false,allow_ad_personalization_signals:false});`}
+          <Script id="analytics-consent" strategy="afterInteractive">
+            {bootScript(settings)}
           </Script>
+          <Script src={src} strategy="afterInteractive" />
         </>
       ) : null}
     </>
