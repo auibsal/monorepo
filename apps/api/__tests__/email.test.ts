@@ -1,6 +1,12 @@
 // @vitest-environment node
 import { render } from "@react-email/components";
-import { decision, removalReceived, rsvpConfirmed } from "@repo/email/copy";
+import {
+  decision,
+  monthInWaraq,
+  newsletterConfirm,
+  removalReceived,
+  rsvpConfirmed,
+} from "@repo/email/copy";
 import { Notice } from "@repo/email/templates/notice";
 import { describe, expect, test } from "vitest";
 
@@ -48,5 +54,49 @@ describe("platform email", () => {
     expect(accepted?.paragraphs.join(" ")).toContain("Publication Agreement");
     expect(declined?.paragraphs.join(" ")).not.toContain("Agreement");
     expect(declined?.paragraphs.join(" ")).toContain("submit again");
+  });
+});
+
+describe("the newsletter", () => {
+  test("the confirmation asks before anything else is sent", () => {
+    const built = newsletterConfirm(
+      "en",
+      "https://auibsal.org/newsletter/confirm?token=abc"
+    );
+    expect(built.subject).toBe(
+      "Confirm your subscription to The Month in Waraq"
+    );
+    expect(built.blocks[0]?.action?.href).toBe(
+      "https://auibsal.org/newsletter/confirm?token=abc"
+    );
+  });
+
+  test("the Month in Waraq lists pieces and events and ends with unsubscribe", () => {
+    const built = monthInWaraq(
+      "ar",
+      [
+        {
+          desk_ar: "أخبار",
+          desk_en: "News",
+          title_ar: "خبر",
+          title_en: "A story",
+          url: "https://auibsal.org/ar/waraq/pieces/a-story",
+        },
+      ],
+      [{ ...event, url: "https://auibsal.org/ar/events/charter-day" }],
+      "https://auibsal.org/ar/waraq",
+      "https://auibsal.org/ar/newsletter/unsubscribe?token=t"
+    );
+    expect(built.subject).toBe("شهر في ورق");
+    const english = built.blocks.find((b) => b.lang === "en");
+    expect(english?.paragraphs).toContain(
+      "News: A story https://auibsal.org/ar/waraq/pieces/a-story"
+    );
+    expect(english?.paragraphs.at(-1)).toBe(
+      "To unsubscribe: https://auibsal.org/ar/newsletter/unsubscribe?token=t"
+    );
+    expect(
+      english?.paragraphs.some((p) => p.startsWith("Tuesday, October 13"))
+    ).toBe(true);
   });
 });

@@ -12,6 +12,7 @@
     "./events": "./events.ts",
     "./flags": "./flags.ts",
     "./forms": "./forms.ts",
+    "./games": "./games.ts",
     "./governance": "./governance.ts",
     "./journal": "./journal.ts",
     "./letters": "./letters.ts",

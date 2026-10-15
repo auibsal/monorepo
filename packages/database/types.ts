@@ -829,6 +829,45 @@ export type Database = {
         };
         Relationships: [];
       };
+      newsletter_subscribers: {
+        Row: {
+          confirm_sent_at: string | null;
+          confirm_token: string | null;
+          confirmed_at: string | null;
+          created_at: string;
+          email: string;
+          id: string;
+          lang: string;
+          status: string;
+          unsubscribe_token: string;
+          unsubscribed_at: string | null;
+        };
+        Insert: {
+          confirm_sent_at?: string | null;
+          confirm_token?: string | null;
+          confirmed_at?: string | null;
+          created_at?: string;
+          email: string;
+          id?: string;
+          lang?: string;
+          status?: string;
+          unsubscribe_token?: string;
+          unsubscribed_at?: string | null;
+        };
+        Update: {
+          confirm_sent_at?: string | null;
+          confirm_token?: string | null;
+          confirmed_at?: string | null;
+          created_at?: string;
+          email?: string;
+          id?: string;
+          lang?: string;
+          status?: string;
+          unsubscribe_token?: string;
+          unsubscribed_at?: string | null;
+        };
+        Relationships: [];
+      };
       pages: {
         Row: {
           body_ar: string | null;
@@ -3560,6 +3599,60 @@ export type Database = {
             referencedColumns: ["id"];
           },
         ];
+      };
+      puzzles: {
+        Row: {
+          created_at: string;
+          created_by: string | null;
+          data: NonNullable<Json>;
+          id: string;
+          kind: string;
+          language: string;
+          made_with_ai: boolean;
+          note_ar: string | null;
+          note_en: string | null;
+          published_at: string | null;
+          slug: string;
+          status: string;
+          title_ar: string;
+          title_en: string;
+          updated_at: string;
+        };
+        Insert: {
+          created_at?: string;
+          created_by?: string | null;
+          data?: NonNullable<Json>;
+          id?: string;
+          kind: string;
+          language: string;
+          made_with_ai?: boolean;
+          note_ar?: string | null;
+          note_en?: string | null;
+          published_at?: string | null;
+          slug: string;
+          status?: string;
+          title_ar?: string;
+          title_en?: string;
+          updated_at?: string;
+        };
+        Update: {
+          created_at?: string;
+          created_by?: string | null;
+          data?: NonNullable<Json>;
+          id?: string;
+          kind?: string;
+          language?: string;
+          made_with_ai?: boolean;
+          note_ar?: string | null;
+          note_en?: string | null;
+          published_at?: string | null;
+          slug?: string;
+          status?: string;
+          title_ar?: string;
+          title_en?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
       };
       scores: {
         Row: {

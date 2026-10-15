@@ -14,7 +14,10 @@ import {
 } from "@repo/design-system/components/ui/tabs";
 import { Textarea } from "@repo/design-system/components/ui/textarea";
 import type { Locale } from "@repo/internationalization";
-import { formatLongDate } from "@repo/internationalization/format";
+import {
+  formatLongDate,
+  formatNumber,
+} from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
 import { content, localized, unwrap } from "@repo/sal-data";
 import { getMediaUrl, removeFiles, uploadMedia } from "@repo/storage";
@@ -778,6 +781,34 @@ const MediaLibrary = () => {
 
 // ── Page ────────────────────────────────────────────────────────────────────
 
+/** How many people receive The Month in Waraq (RLS: content.manage). */
+const NewsletterCount = () => {
+  const t = useTranslations("nexus.admin.content");
+  const { supabase } = useAuth();
+  const count = useQuery({
+    queryFn: async () => {
+      const { count: n, error } = await supabase
+        .schema("content")
+        .from("newsletter_subscribers")
+        .select("id", { count: "exact", head: true })
+        .eq("status", "subscribed");
+      if (error) {
+        throw error;
+      }
+      return n ?? 0;
+    },
+    queryKey: ["admin", "content", "newsletter"],
+  });
+  if (count.data === undefined) {
+    return null;
+  }
+  return (
+    <p className="type-body text-text-secondary">
+      {t("newsletter", { count: formatNumber(count.data) })}
+    </p>
+  );
+};
+
 export const ContentAdmin = () => {
   const t = useTranslations("nexus.admin.content");
   return (
@@ -789,6 +820,7 @@ export const ContentAdmin = () => {
           {t("newsroom")}
         </Link>
       </p>
+      <NewsletterCount />
       <Tabs defaultValue="pages">
         <TabsList className="flex-wrap">
           <TabsTrigger value="pages">{t("tabs.pages")}</TabsTrigger>

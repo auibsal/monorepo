@@ -7,7 +7,13 @@ export const generateMetadata = sectionMetadata("web.privacy", "/privacy");
 
 const PHOTO = ["5_1", "5_2", "5_3", "5_4", "5_5"] as const;
 const DATA = ["6_1", "6_2", "6_3", "6_4", "6_5"] as const;
-const PLATFORM = ["signIn", "storage", "email", "hosting"] as const;
+const PLATFORM = [
+  "signIn",
+  "storage",
+  "email",
+  "newsletter",
+  "hosting",
+] as const;
 
 const Clauses = ({
   items,

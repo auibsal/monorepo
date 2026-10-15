@@ -5,6 +5,7 @@ export * as content from "./content";
 export * as documents from "./documents";
 export * as events from "./events";
 export * as forms from "./forms";
+export * as games from "./games";
 export * as governance from "./governance";
 export * as journal from "./journal";
 export * as letters from "./letters";

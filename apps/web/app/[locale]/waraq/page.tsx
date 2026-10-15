@@ -6,6 +6,7 @@ import { Link } from "@repo/internationalization/navigation";
 import { journal, localized, sanitizeRichText } from "@repo/sal-data";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { NewsletterSignup } from "@/components/newsletter/signup";
 import {
   leadImage,
   PieceCardView,
@@ -294,6 +295,19 @@ const WaraqFrontPage = async ({ params }: WaraqProps) => {
       ) : null}
 
       <Calls locale={locale} />
+
+      <section
+        aria-labelledby="newsletter"
+        className="grid gap-4 rounded-card bg-surface-tint p-6 md:grid-cols-[1fr_1.4fr] md:items-start"
+      >
+        <div className="grid gap-2">
+          <h2 className="type-heading" id="newsletter">
+            {t("newsletter")}
+          </h2>
+          <p className="type-body">{t("newsletterLede")}</p>
+        </div>
+        <NewsletterSignup compact />
+      </section>
     </div>
   );
 };

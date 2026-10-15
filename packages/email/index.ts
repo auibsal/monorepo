@@ -11,6 +11,8 @@ type EmailContent =
   | { react?: ReactElement; text: string };
 
 type SendEmailOptions = EmailContent & {
+  /** Extra headers, such as List-Unsubscribe on the newsletter. */
+  headers?: Record<string, string>;
   /** Resend drops a repeat of the same key for 24 hours (safe retries). */
   idempotencyKey?: string;
   replyTo?: string;
@@ -38,6 +40,7 @@ export const sendEmail = async ({
   subject,
   replyTo,
   idempotencyKey,
+  headers,
   ...content
 }: SendEmailOptions) => {
   if (!(resend && RESEND_FROM)) {
@@ -49,6 +52,7 @@ export const sendEmail = async ({
   const { data, error } = await resend.emails.send(
     {
       from: RESEND_FROM,
+      headers,
       replyTo,
       subject,
       to,
