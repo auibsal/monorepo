@@ -7,6 +7,8 @@ import {
   eventReminder,
   finalCheck,
   type Lang,
+  monthInWaraq,
+  newsletterConfirm,
   pieceNote,
   piecePublished,
   type RemovalInfo,
@@ -112,7 +114,7 @@ export const SubmissionReceivedNamed = email((l) =>
 export const FinalCheck = email((l) => finalCheck(l, WORK, PIECE, APP));
 export const PieceNote = email((l) => pieceNote(l, WORK, PIECE, APP));
 export const PiecePublished = email((l) =>
-  piecePublished(l, WORK, "https://auibsal.org/en/waraq/pieces/sample")
+  piecePublished(l, WORK, "https://auibsal.org/waraq/pieces/sample")
 );
 export const SundayPaper = email((l) =>
   sundayPaper(
@@ -123,9 +125,29 @@ export const SundayPaper = email((l) =>
         desk_en: "News",
         title_ar: "عنوان تجريبي",
         title_en: "Sample headline",
-        url: "https://auibsal.org/en/waraq/pieces/sample",
+        url: "https://auibsal.org/waraq/pieces/sample",
       },
     ],
-    "https://auibsal.org/en/waraq"
+    "https://auibsal.org/waraq"
+  )
+);
+export const NewsletterConfirm = email((l) =>
+  newsletterConfirm(l, "https://auibsal.org/newsletter/confirm?token=sample")
+);
+export const MonthInWaraq = email((l) =>
+  monthInWaraq(
+    l,
+    [
+      {
+        desk_ar: "أخبار",
+        desk_en: "News",
+        title_ar: "عنوان تجريبي",
+        title_en: "Sample headline",
+        url: "https://auibsal.org/waraq/pieces/sample",
+      },
+    ],
+    [{ ...event, url: "https://auibsal.org/events/sample" }],
+    "https://auibsal.org/waraq",
+    "https://auibsal.org/newsletter/unsubscribe?token=sample"
   )
 );

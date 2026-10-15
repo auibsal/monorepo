@@ -829,6 +829,45 @@ export type Database = {
         };
         Relationships: [];
       };
+      newsletter_subscribers: {
+        Row: {
+          confirm_sent_at: string | null;
+          confirm_token: string | null;
+          confirmed_at: string | null;
+          created_at: string;
+          email: string;
+          id: string;
+          lang: string;
+          status: string;
+          unsubscribe_token: string;
+          unsubscribed_at: string | null;
+        };
+        Insert: {
+          confirm_sent_at?: string | null;
+          confirm_token?: string | null;
+          confirmed_at?: string | null;
+          created_at?: string;
+          email: string;
+          id?: string;
+          lang?: string;
+          status?: string;
+          unsubscribe_token?: string;
+          unsubscribed_at?: string | null;
+        };
+        Update: {
+          confirm_sent_at?: string | null;
+          confirm_token?: string | null;
+          confirmed_at?: string | null;
+          created_at?: string;
+          email?: string;
+          id?: string;
+          lang?: string;
+          status?: string;
+          unsubscribe_token?: string;
+          unsubscribed_at?: string | null;
+        };
+        Relationships: [];
+      };
       pages: {
         Row: {
           body_ar: string | null;

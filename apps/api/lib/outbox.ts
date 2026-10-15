@@ -13,6 +13,8 @@ import {
   deskNames,
   eventReminder,
   finalCheck,
+  monthInWaraq,
+  newsletterConfirm,
   pieceNote,
   piecePublished,
   removalReceived,
@@ -102,10 +104,15 @@ const pushNotice = (built: Built, lang: Lang, row: number | undefined) => {
   };
 };
 
-const send = async (to: Recipient, built: Built) => {
+const send = async (
+  to: Recipient,
+  built: Built,
+  headers?: Record<string, string>
+) => {
   const run = current.getStore();
   const row = run?.row;
   await sendEmail({
+    headers,
     idempotencyKey: row === undefined ? undefined : `outbox-${row}-${to.email}`,
     react: Notice({ blocks: built.blocks, preview: built.preview }),
     subject: built.subject,
@@ -218,6 +225,33 @@ const revalidate = async (tags: unknown) => {
   if (!response.ok) {
     throw new Error(`Revalidation failed: ${response.status}`);
   }
+};
+
+/** A newsletter subscriber (no account), with their unsubscribe token. */
+const subscriber = async (admin: AdminClient, id: unknown) => {
+  const { data } = await admin
+    .schema("content")
+    .from("newsletter_subscribers")
+    .select("email, lang, status, confirm_token, unsubscribe_token")
+    .eq("id", String(id))
+    .maybeSingle();
+  return data;
+};
+
+const unsubscribeLinks = (lang: Lang, token: string) => {
+  const page = `${webUrl()}${prefix(lang)}/newsletter/unsubscribe?token=${token}`;
+  const api = (env.NEXT_PUBLIC_API_URL ?? project.hosts.api).replace(
+    TRAILING_SLASH,
+    ""
+  );
+  const oneClick = `${api}/newsletter/unsubscribe?token=${token}`;
+  return {
+    headers: {
+      "List-Unsubscribe": `<${oneClick}>`,
+      "List-Unsubscribe-Post": "List-Unsubscribe=One-Click",
+    },
+    page,
+  };
 };
 
 type Handler = (
@@ -386,6 +420,82 @@ const handlers: Record<string, Handler> = {
     await send(
       to,
       sundayPaper(to.lang, items, `${webUrl()}${prefix(to.lang)}/waraq`)
+    );
+  },
+  "newsletter.confirm": async (admin, payload) => {
+    const row = await subscriber(admin, payload.subscriber_id);
+    if (!(row?.confirm_token && row.status === "pending")) {
+      return;
+    }
+    const lang: Lang = row.lang === "ar" ? "ar" : "en";
+    await send(
+      { email: row.email, lang },
+      newsletterConfirm(
+        lang,
+        `${webUrl()}${prefix(lang)}/newsletter/confirm?token=${row.confirm_token}`
+      )
+    );
+  },
+  "newsletter.monthly": async (admin, payload) => {
+    const since =
+      typeof payload.since === "string"
+        ? payload.since
+        : new Date(Date.now() - 31 * 86_400_000).toISOString();
+    const now = new Date();
+    const [row, { data: pieces }, { data: events }] = await Promise.all([
+      subscriber(admin, payload.subscriber_id),
+      admin
+        .schema("journal")
+        .from("pieces")
+        .select("slug, desk, title_en, title_ar, published_at")
+        .eq("status", "published")
+        .gt("published_at", since)
+        .lte("published_at", now.toISOString())
+        .order("published_at", { ascending: false })
+        .limit(20),
+      admin
+        .schema("events")
+        .from("events")
+        .select("slug, title_en, title_ar, starts_at")
+        .eq("status", "published")
+        .eq("members_only", false)
+        .gt("starts_at", now.toISOString())
+        .lte(
+          "starts_at",
+          new Date(now.getTime() + 31 * 86_400_000).toISOString()
+        )
+        .order("starts_at")
+        .limit(10),
+    ]);
+    if (row?.status !== "subscribed") {
+      return;
+    }
+    if ((pieces?.length ?? 0) + (events?.length ?? 0) === 0) {
+      return;
+    }
+    const lang: Lang = row.lang === "ar" ? "ar" : "en";
+    const base = `${webUrl()}${prefix(lang)}`;
+    const items = (pieces ?? []).map((p) => {
+      const desk = deskNames[p.desk as keyof typeof deskNames];
+      return {
+        desk_ar: desk?.ar ?? "",
+        desk_en: desk?.en ?? "",
+        title_ar: p.title_ar ?? "",
+        title_en: p.title_en ?? "",
+        url: `${base}/waraq/pieces/${p.slug}`,
+      };
+    });
+    const coming = (events ?? []).map((e) => ({
+      starts_at: e.starts_at,
+      title_ar: e.title_ar ?? "",
+      title_en: e.title_en,
+      url: `${base}/events/${e.slug}`,
+    }));
+    const links = unsubscribeLinks(lang, row.unsubscribe_token);
+    await send(
+      { email: row.email, lang },
+      monthInWaraq(lang, items, coming, `${base}/waraq`, links.page),
+      links.headers
     );
   },
   "programmes.removal_overdue": async (admin, payload) => {

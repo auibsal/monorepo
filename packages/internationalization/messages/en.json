@@ -970,7 +970,8 @@
           "removeConfirm": "Remove this image from the library and from storage? Pages using it will lose it.",
           "remove": "Remove"
         },
-        "scheduleConfirm": "Schedule this post? It is published on its own at the publish time."
+        "scheduleConfirm": "Schedule this post? It is published on its own at the publish time.",
+        "newsletter": "The Month in Waraq, the public monthly email, has {count} confirmed subscribers. They sign up at auibsal.org/newsletter."
       },
       "charity": {
         "title": "Charity",
@@ -3343,7 +3344,8 @@
       "search": "Search",
       "university": "A student society at the American University of Iraq – Baghdad.",
       "partners": "Partners",
-      "productions": "Productions"
+      "productions": "Productions",
+      "newsletter": "Newsletter"
     },
     "home": {
       "title": "The paper and the pen",
@@ -3474,7 +3476,9 @@
       "editionsLede": "Each semester an Edition gathers the best Letters and Gallery work, launched at Launch Night.",
       "noEditions": "Edition 1 launches on February 24, 2027.",
       "edition": "Edition",
-      "games": "Games"
+      "games": "Games",
+      "newsletter": "The Month in Waraq",
+      "newsletterLede": "One email a month: what Waraq published and the Society's coming public events."
     },
     "about": {
       "title": "About the Society",
@@ -3697,7 +3701,8 @@
         "hosting": "The website, the Nexus and the API are hosted on Vercel.",
         "analytics": "This website uses no analytics or advertising cookies.",
         "delete": "You can delete your account in the Nexus, under Profile and privacy.",
-        "analyticsOn": "This website uses Google Analytics 4 to count visits; it sets analytics cookies."
+        "analyticsOn": "This website uses Google Analytics 4 to count visits; it sets analytics cookies.",
+        "newsletter": "The Month in Waraq, the public newsletter, keeps only your email address, your language and when you subscribed. Unsubscribing stops it at once."
       }
     },
     "care": {
@@ -3889,6 +3894,38 @@
         "solved": "Solved.",
         "checked": "Wrong letters are crossed out.",
         "howTo": "Type in the squares. Choose a clue, or the same square twice, to change direction."
+      }
+    },
+    "newsletter": {
+      "title": "The Month in Waraq",
+      "lede": "One email a month, on the 1st: the pieces Waraq published that month and the AUIB Society of Arts and Letters' coming public events. Anyone can subscribe.",
+      "members": "Members also get the Sunday Paper, a weekly email of the week's pieces, in the Nexus.",
+      "email": "Your email address",
+      "submit": "Subscribe",
+      "sending": "Sending…",
+      "sent": "Check your inbox: we sent a link to confirm. Nothing else arrives until you do.",
+      "website": "Website",
+      "fineprint": "We use your address only for this email. Every email has a link to unsubscribe.",
+      "errors": {
+        "invalid_email": "That address cannot receive email. Check it and try again.",
+        "rate_limited": "Too many tries. Wait a few minutes and try again.",
+        "failed": "Something went wrong. Try again later."
+      },
+      "confirm": {
+        "title": "Confirm your subscription",
+        "lede": "Press the button to start receiving The Month in Waraq.",
+        "button": "Confirm",
+        "done": "You are subscribed. The next email arrives on the 1st of the month.",
+        "invalid": "This link has expired or was already used. Subscribe again to get a new one.",
+        "failed": "Something went wrong. Try again later."
+      },
+      "unsubscribe": {
+        "title": "Unsubscribe",
+        "lede": "Press the button to stop receiving The Month in Waraq.",
+        "button": "Unsubscribe",
+        "done": "You are unsubscribed. You will not get another email from us.",
+        "invalid": "This link is not valid.",
+        "failed": "Something went wrong. Try again later."
       }
     }
   }

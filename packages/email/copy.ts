@@ -312,6 +312,75 @@ export const sundayPaper = (lang: Lang, items: SundayItem[], front: string) =>
     ],
   }));
 
+/** The newsletter's double opt-in: nothing is sent until they confirm. */
+export const newsletterConfirm = (lang: Lang, confirm: string) =>
+  build(lang, (l) => ({
+    action: {
+      href: confirm,
+      label: l === "ar" ? "أكّد اشتراكك" : "Confirm your subscription",
+    },
+    heading:
+      l === "ar"
+        ? "أكّد اشتراكك في «شهر في ورق»"
+        : "Confirm your subscription to The Month in Waraq",
+    paragraphs: [
+      l === "ar"
+        ? "طلب أحدهم بهذا العنوان رسالة «شهر في ورق» الشهرية من جمعية الفنون والآداب. اضغط الزر للتأكيد."
+        : "Someone asked for The Month in Waraq, the monthly email from the AUIB Society of Arts and Letters, at this address. Press the button to confirm.",
+      l === "ar"
+        ? "إن لم تطلبه فتجاهل هذه الرسالة؛ لن نراسلك."
+        : "If it was not you, ignore this email; we will not write again.",
+    ],
+  }));
+
+export interface MonthEvent {
+  starts_at: string;
+  title_ar: string;
+  title_en: string;
+  url: string;
+}
+
+/** The Month in Waraq: the month's pieces and the coming public events. */
+export const monthInWaraq = (
+  lang: Lang,
+  pieces: SundayItem[],
+  events: MonthEvent[],
+  front: string,
+  unsubscribe: string
+) =>
+  build(lang, (l) => ({
+    action: {
+      href: front,
+      label: l === "ar" ? "افتح ورق" : "Open Waraq",
+    },
+    heading: l === "ar" ? "شهر في ورق" : "The Month in Waraq",
+    paragraphs: [
+      ...(pieces.length > 0
+        ? [
+            l === "ar" ? "ما نُشر في ورق هذا الشهر:" : "This month in Waraq:",
+            ...pieces.map((i) =>
+              l === "ar"
+                ? `${i.desk_ar}: ${i.title_ar || i.title_en} ${i.url}`
+                : `${i.desk_en}: ${i.title_en || i.title_ar} ${i.url}`
+            ),
+          ]
+        : []),
+      ...(events.length > 0
+        ? [
+            l === "ar" ? "قادم في الجمعية:" : "Coming up at SAL:",
+            ...events.map((e) =>
+              l === "ar"
+                ? `${formatLongDate(e.starts_at, l)}: ${e.title_ar || e.title_en} ${e.url}`
+                : `${formatLongDate(e.starts_at, l)}: ${e.title_en || e.title_ar} ${e.url}`
+            ),
+          ]
+        : []),
+      l === "ar"
+        ? `لإلغاء الاشتراك: ${unsubscribe}`
+        : `To unsubscribe: ${unsubscribe}`,
+    ],
+  }));
+
 export interface RoleInfo {
   ends_at: string;
   name_ar: string;

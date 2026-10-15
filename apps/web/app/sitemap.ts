@@ -22,6 +22,7 @@ const staticPaths = [
   "/waraq/games",
   "/waraq/games/word",
   "/waraq/games/search",
+  "/newsletter",
   "/join",
   "/give",
   "/contact",
