@@ -102,6 +102,24 @@ describe("mirror of the reference data in the migrations", () => {
     }
   });
 
+  test("the President has every permission but the checks on the President", () => {
+    // Owner, Oct 15, 2026: concerns about the President go elsewhere
+    // (F-20); Waraq reads blind; the Elections Committee runs elections;
+    // the Treasurer and the Faculty Advisor countersign.
+    const withheld = new Set([
+      "concerns.about_president",
+      "journal.review",
+      "journal.identity.view",
+      "elections.manage",
+      "spending.countersign",
+      "charity.ledger.signoff",
+      "certificates.countersign",
+    ]);
+    expect([...roles.president.permissions].sort()).toEqual(
+      permissions.filter((p) => !withheld.has(p)).sort()
+    );
+  });
+
   test("Bylaws thresholds", () => {
     expect(roles.director.spendingLimitIqd).toBe(50_000);
     expect(roles.president.spendingLimitIqd).toBe(250_000);

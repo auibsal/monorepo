@@ -182,6 +182,14 @@ These stop parts of the work. Everything else continues around them.
 
 ## Decisions
 
+- **The President has access to everything** (owner, 2026-10-15) except
+  the checks on the President, which stay with other officers: concerns
+  about the President (F-20), blind reading and author identities (only the
+  Submissions Manager), running elections (the Elections Committee), the
+  Treasurer's countersignature and ledger sign-off, and the Faculty
+  Advisor's countersignature. Migration `20261015000100`; `rbac.test.ts`
+  fails if a new permission is not given to the President.
+
 - **Public newsletter** (owner, 2026-10-14: "a public subscription, and
   maybe the Sunday Paper should be members only"): "The Month in Waraq",
   one email on the 1st of each month (9:00 AM Baghdad), with the month's
