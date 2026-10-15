@@ -3345,7 +3345,8 @@
       "university": "A student society at the American University of Iraq – Baghdad.",
       "partners": "Partners",
       "productions": "Productions",
-      "newsletter": "Newsletter"
+      "newsletter": "Newsletter",
+      "cookieSettings": "Cookie settings"
     },
     "home": {
       "title": "The paper and the pen",
@@ -3701,7 +3702,7 @@
         "hosting": "The website, the Nexus and the API are hosted on Vercel.",
         "analytics": "This website uses no analytics or advertising cookies.",
         "delete": "You can delete your account in the Nexus, under Profile and privacy.",
-        "analyticsOn": "This website uses Google Analytics 4 to count visits; it sets analytics cookies.",
+        "analyticsOn": "This website counts visits with Google Analytics 4, through Google Tag Manager served from auibsal.org. Analytics cookies are set only if you allow them (Cookie settings, at the foot of every page); advertising features are off.",
         "newsletter": "The Month in Waraq, the public newsletter, keeps only your email address, your language and when you subscribed. Unsubscribing stops it at once."
       }
     },

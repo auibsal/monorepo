@@ -152,8 +152,14 @@ any schema change. Integration tests run against a local stack with
   code only.
 - **Files:** use `@repo/storage`. Private buckets (`submissions`, `receipts`,
   `library`) are reached only through signed URLs issued by `apps/api`.
-- **Analytics:** GA4 only, on `apps/web`, loaded only when `NEXT_PUBLIC_GA_ID`
-  is set. Record events with `track()` from `@repo/analytics/client`.
+- **Analytics:** on `apps/web` only (owner, Oct 15, 2026): Google Tag Manager
+  with GA4 inside it, served from auibsal.org by the Google tag gateway
+  (Cloudflare), consent from Cloudflare Zaraz through Google consent mode
+  (everything denied until the visitor allows analytics; advertising signals
+  always denied). Nothing loads until `NEXT_PUBLIC_GTM_ID` (or
+  `NEXT_PUBLIC_GA_ID`) is set; never add GA4 as a Zaraz tool too (it would
+  count every visit twice). Record events with `track()` from
+  `@repo/analytics/client`. Runbook: `docs/platform/analytics.md`.
 - **Translations:** every UI string comes from
   `packages/internationalization/messages/{ar,en}.json`, checked by
   `bun run check:i18n`. Pass numbers and dates into messages already

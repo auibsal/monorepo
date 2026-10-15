@@ -65,7 +65,7 @@ const PrivacyPage = async ({ params }: LocaleParams) => {
             </li>
           ))}
           <li className="type-body">
-            {env.NEXT_PUBLIC_GA_ID
+            {env.NEXT_PUBLIC_GA_ID || env.NEXT_PUBLIC_GTM_ID
               ? t("platform.analyticsOn")
               : t("platform.analytics")}
           </li>
