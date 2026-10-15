@@ -182,6 +182,16 @@ These stop parts of the work. Everything else continues around them.
 
 ## Decisions
 
+- **Waraq games** (owner, 2026-10-14: "automatic games, plus the starter
+  puzzles, and the games that editors write"): auibsal.org/waraq/games has a
+  daily word guess and a daily word search in each language, made in the
+  browser from fixed word lists (`packages/sal-data/game-words.ts`) and the
+  Baghdad date; editors' crosswords and word searches (`journal.puzzles`,
+  Administration → Waraq → Games: answers and clues in, grid laid out for
+  them). Four starter puzzles, made with an AI tool from facts already on the
+  site (programs, desks, motto), say so on the page. Progress stays in the
+  reader's browser; nothing is sent.
+
 - **News into Waraq** (owner, 2026-10-14): the old /news is Waraq's News
   desk everywhere. auibsal.org/news, the Nexus News tab, the "news" search
   kind and the Notion "News post" publishing are gone; Notion News post
@@ -654,6 +664,10 @@ Covered by automated tests so far:
 
 ## needs-native-review (Arabic written for the platform)
 
+- Games (2026-10-14): `web.games.*`, `web.journal.games`,
+  `nexus.admin.waraq.games.*`, `nexus.admin.waraq.tabs.games`, the Arabic
+  word lists in `packages/sal-data/game-words.ts`, and the Arabic titles and
+  clues of the starter puzzles (`20261014000500_waraq_games.sql`).
 - News into Waraq (2026-10-14): `nexus.admin.content.newsMoved`,
   `nexus.admin.content.newsroom` and the shortened `nexus.admin.content.lede`.
 - `packages/internationalization/messages/ar.json` — every string (all of it

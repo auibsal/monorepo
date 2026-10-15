@@ -83,6 +83,7 @@ const LOGGED_TABLES = [
   "journal.decisions",
   "journal.issues",
   "journal.pieces",
+  "journal.puzzles",
   "membership.activity_records",
   "membership.certificates",
   "membership.memberships",

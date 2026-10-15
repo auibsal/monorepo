@@ -3561,6 +3561,60 @@ export type Database = {
           },
         ];
       };
+      puzzles: {
+        Row: {
+          created_at: string;
+          created_by: string | null;
+          data: NonNullable<Json>;
+          id: string;
+          kind: string;
+          language: string;
+          made_with_ai: boolean;
+          note_ar: string | null;
+          note_en: string | null;
+          published_at: string | null;
+          slug: string;
+          status: string;
+          title_ar: string;
+          title_en: string;
+          updated_at: string;
+        };
+        Insert: {
+          created_at?: string;
+          created_by?: string | null;
+          data?: NonNullable<Json>;
+          id?: string;
+          kind: string;
+          language: string;
+          made_with_ai?: boolean;
+          note_ar?: string | null;
+          note_en?: string | null;
+          published_at?: string | null;
+          slug: string;
+          status?: string;
+          title_ar?: string;
+          title_en?: string;
+          updated_at?: string;
+        };
+        Update: {
+          created_at?: string;
+          created_by?: string | null;
+          data?: NonNullable<Json>;
+          id?: string;
+          kind?: string;
+          language?: string;
+          made_with_ai?: boolean;
+          note_ar?: string | null;
+          note_en?: string | null;
+          published_at?: string | null;
+          slug?: string;
+          status?: string;
+          title_ar?: string;
+          title_en?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
       scores: {
         Row: {
           archive_factor: number;

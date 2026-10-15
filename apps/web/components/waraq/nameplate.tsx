@@ -10,7 +10,7 @@ export const Nameplate = async ({
   locale,
   small = false,
 }: {
-  current?: journal.Desk;
+  current?: journal.Desk | "games";
   locale: Locale;
   small?: boolean;
 }) => {
@@ -49,6 +49,15 @@ export const Nameplate = async ({
               href="/waraq/editions"
             >
               {t("editions")}
+            </Link>
+          </li>
+          <li>
+            <Link
+              aria-current={current === "games" ? "page" : undefined}
+              className="type-label text-sm underline-offset-4 hover:underline aria-[current=page]:underline"
+              href="/waraq/games"
+            >
+              {t("games")}
             </Link>
           </li>
         </ul>

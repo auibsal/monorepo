@@ -35,6 +35,7 @@ import {
   SelectInput,
 } from "../kit";
 import { openSubmissionFile } from "../pipeline/data";
+import { Puzzles } from "./puzzles";
 import { FrontRank } from "./workflow";
 
 const key = ["admin", "journal"];
@@ -761,6 +762,17 @@ const Contributors = () => {
   );
 };
 
+const puzzleEditorKeys = [
+  "journal.approve",
+  "journal.publish",
+  "journal.copy",
+  "journal.edit.news",
+  "journal.edit.letters",
+  "journal.edit.gallery",
+  "journal.edit.video",
+  "journal.edit.voices",
+] as const;
+
 export const JournalAdmin = () => {
   const t = useTranslations("nexus.admin.waraq");
   const grants = useGrants();
@@ -770,6 +782,10 @@ export const JournalAdmin = () => {
       hasPermissionAnywhere(grants.data, "journal.approve")
   );
   const front = hasPermission(grants.data, "journal.frontpage");
+  // The same keys as private.can_edit_puzzles().
+  const puzzles = puzzleEditorKeys.some((p) =>
+    hasPermissionAnywhere(grants.data, p)
+  );
   return (
     <div className="grid gap-6">
       <AdminHeading title={t("title")}>{t("lede")}</AdminHeading>
@@ -783,6 +799,9 @@ export const JournalAdmin = () => {
             <TabsTrigger value="front">{t("tabs.front")}</TabsTrigger>
           ) : null}
           <TabsTrigger value="editions">{t("tabs.editions")}</TabsTrigger>
+          {puzzles ? (
+            <TabsTrigger value="games">{t("tabs.games")}</TabsTrigger>
+          ) : null}
           <TabsTrigger value="contributors">
             {t("tabs.contributors")}
           </TabsTrigger>
@@ -803,6 +822,11 @@ export const JournalAdmin = () => {
         <TabsContent className="pt-4" value="editions">
           <Editions />
         </TabsContent>
+        {puzzles ? (
+          <TabsContent className="pt-4" value="games">
+            <Puzzles />
+          </TabsContent>
+        ) : null}
         <TabsContent className="pt-4" value="contributors">
           <Contributors />
         </TabsContent>

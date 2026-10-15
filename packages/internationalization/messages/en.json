@@ -2252,7 +2252,8 @@
           "desks": "Desk queue",
           "front": "Front page",
           "editions": "Editions",
-          "contributors": "Contributors"
+          "contributors": "Contributors",
+          "games": "Games"
         },
         "edition": "Edition",
         "launch": "Launch",
@@ -2400,6 +2401,59 @@
           "acceptWithEdits": "Accept with edits",
           "decline": "Decline",
           "openFile": "Open file {number}"
+        },
+        "games": {
+          "lede": "Crosswords and word searches on auibsal.org/waraq/games. The daily word guess and word search make themselves.",
+          "editorLede": "Write the answers and clues, or the words; the grid is laid out for you. A puzzle is in one language.",
+          "new": "New puzzle",
+          "none": "No puzzles yet.",
+          "untitled": "Untitled puzzle",
+          "notFound": "This puzzle no longer exists.",
+          "draft": "Draft",
+          "publishedOn": "Published {date}",
+          "published": "Published.",
+          "kinds": {
+            "crossword": "Crossword",
+            "word_search": "Word search"
+          },
+          "languages": {
+            "en": "English",
+            "ar": "Arabic"
+          },
+          "fields": {
+            "title": "Title",
+            "kind": "Kind",
+            "language": "Language",
+            "status": "Status",
+            "note": "Introduction (optional)",
+            "slug": "Address"
+          },
+          "languageHint": "The language of the answers. The puzzle appears on that language's games page.",
+          "slugHint": "auibsal.org/waraq/puzzles/… Leave empty to use the English title.",
+          "clues": "Answers and clues",
+          "cluesHint": "One answer per row, from 2 to 15 letters. Spaces and hamzas on alif are dropped.",
+          "answer": "Answer",
+          "clue": "Clue",
+          "answerN": "Answer {number}",
+          "clueN": "Clue {number}",
+          "removeN": "Remove row {number}",
+          "remove": "Remove",
+          "addClue": "Add an answer",
+          "words": "Words to hide",
+          "wordsHint": "One word per line, at least three.",
+          "size": "Grid size",
+          "sizeN": "{size} by {size}",
+          "backward": "Hide some words backward (harder)",
+          "preview": "Preview",
+          "left": "Left out: {words}. Try another layout, or change them.",
+          "needsMore": "It needs at least two crossing answers (crossword) or three words (word search) before it can be published.",
+          "shuffle": "Try another layout",
+          "saveDraft": "Save draft",
+          "saveChanges": "Save changes",
+          "publish": "Publish",
+          "unpublish": "Unpublish",
+          "delete": "Delete",
+          "deleteConfirm": "Delete this puzzle? Readers' saved progress on it is lost."
         }
       }
     },
@@ -3419,7 +3473,8 @@
       "moreFrom": "More from {desk}",
       "editionsLede": "Each semester an Edition gathers the best Letters and Gallery work, launched at Launch Night.",
       "noEditions": "Edition 1 launches on February 24, 2027.",
-      "edition": "Edition"
+      "edition": "Edition",
+      "games": "Games"
     },
     "about": {
       "title": "About the Society",
@@ -3778,6 +3833,63 @@
       "colophon": "Set in Ubuntu and Ubuntu Arabic. Written in Baghdad.",
       "instagram": "Instagram",
       "verse": "Read the whole line"
+    },
+    "games": {
+      "title": "Games",
+      "lede": "A word guess and a word search every day, and crosswords and word searches from Waraq's editors.",
+      "daily": "Every day",
+      "today": "The daily games change at midnight, Baghdad time. Your progress stays in this browser.",
+      "fromEditors": "From the editors",
+      "none": "No puzzles from the editors yet.",
+      "number": "No. {number}",
+      "guessLede": "Find the five-letter word in six tries.",
+      "searchLede": "Find the eight hidden words.",
+      "aiMade": "Made with an AI tool from facts published on auibsal.org.",
+      "kinds": {
+        "crossword": "Crossword",
+        "word_search": "Word search",
+        "word_guess": "Word guess"
+      },
+      "guess": {
+        "board": "Your guesses",
+        "row": "Guess {number}",
+        "hit": "{letter}, right place",
+        "near": "{letter}, in the word but elsewhere",
+        "miss": "{letter}, not in the word",
+        "empty": "Empty",
+        "enter": "Enter",
+        "delete": "Delete",
+        "keyboard": "Keyboard",
+        "tooShort": "Five letters, please.",
+        "won": "Solved in {tries} of 6.",
+        "lost": "The word was {word}.",
+        "tomorrow": "A new word tomorrow.",
+        "howTo": "A dark square is the right letter in the right place. A tinted square is in the word, somewhere else."
+      },
+      "search": {
+        "grid": "Letter grid",
+        "cell": "Row {row}, column {col}: {letter}",
+        "words": "Words to find",
+        "found": "found",
+        "foundWord": "{word}: found.",
+        "notAWord": "No word there. Choose its first letter again.",
+        "progress": "{found} of {total} found",
+        "done": "All words found.",
+        "reset": "Start again",
+        "howTo": "Choose the first letter of a word, then its last. Words run across, down or diagonally."
+      },
+      "crossword": {
+        "across": "Across",
+        "down": "Down",
+        "grid": "Crossword grid",
+        "cell": "Row {row}, column {col}",
+        "check": "Check",
+        "reveal": "Show the answers",
+        "clear": "Clear",
+        "solved": "Solved.",
+        "checked": "Wrong letters are crossed out.",
+        "howTo": "Type in the squares. Choose a clue, or the same square twice, to change direction."
+      }
     }
   }
 }
