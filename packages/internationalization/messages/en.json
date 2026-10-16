@@ -150,7 +150,8 @@
       "service": "My service",
       "forms": "Forms",
       "documents": "Library",
-      "workspace": "Team workspace"
+      "workspace": "Team workspace",
+      "paperwork": "My paperwork"
     },
     "errors": {
       "loadFailed": "We couldn't load this. Check your connection and try again.",
@@ -3967,7 +3968,8 @@
         "won": "Solved in {tries} of 6.",
         "lost": "The word was {word}.",
         "tomorrow": "A new word tomorrow.",
-        "howTo": "A dark square is the right letter in the right place. A tinted square is in the word, somewhere else."
+        "howTo": "A dark square is the right letter in the right place. A tinted square is in the word, somewhere else.",
+        "streak": "Streak: {days} days in a row."
       },
       "search": {
         "grid": "Letter grid",

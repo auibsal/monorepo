@@ -710,7 +710,7 @@ Covered by automated tests so far:
   («المكتبة»), `web.programmes.care`, `web.programmes.productions`,
   `web.productions.allPrograms`, `web.nav.openNexus`, `web.governance.*`,
   `web.footer.governance`, `web.about.governance`, `web.search.kinds.production`,
-  `web.search.lede`.
+  `web.search.lede`, `nexus.nav.paperwork`, `web.games.guess.streak`.
 - Analytics (2026-10-15): `web.footer.cookieSettings` and the new
   `web.privacy.platform.analyticsOn`; the consent card, `web.consent.*`
   (2026-10-16).

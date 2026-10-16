@@ -3,13 +3,16 @@
 import { Button } from "@repo/design-system/components/ui/button";
 import { cn } from "@repo/design-system/lib/utils";
 import {
+  currentStreak,
   dailyAnswer,
   type GameLang,
   gameDay,
   keyboardRows,
   MAX_GUESSES,
   type Mark,
+  nextStreak,
   normalizeWord,
+  type Streak,
   scoreGuess,
   WORD_LENGTH,
 } from "@repo/sal-data/games";
@@ -34,12 +37,16 @@ export const WordGuess = ({ lang }: { lang: GameLang }) => {
   const [guesses, setGuesses] = useState<string[][]>([]);
   const [current, setCurrent] = useState<string[]>([]);
   const [message, setMessage] = useState("");
+  // Days in a row solved, kept in this browser like the guesses.
+  const [streak, setStreak] = useState(0);
+  const streakKey = `streak-guess-${lang}`;
 
   useEffect(() => {
     const today = gameDay();
     setDay(today);
     setGuesses(loadProgress<string[][]>(`guess-${lang}-${today}`) ?? []);
-  }, [lang]);
+    setStreak(currentStreak(loadProgress<Streak>(streakKey), today));
+  }, [lang, streakKey]);
 
   const answer = useMemo(
     () => (day === null ? [] : dailyAnswer(lang, day)),
@@ -51,6 +58,14 @@ export const WordGuess = ({ lang }: { lang: GameLang }) => {
   );
   const won = marks.some((m) => m.every((x) => x === "hit"));
   const over = won || guesses.length >= MAX_GUESSES;
+
+  useEffect(() => {
+    if (won && day !== null) {
+      const next = nextStreak(loadProgress<Streak>(streakKey), day);
+      saveProgress(streakKey, next);
+      setStreak(next.count);
+    }
+  }, [day, streakKey, won]);
 
   const keyMarks = useMemo(() => {
     const best = new Map<string, Mark>();
@@ -173,6 +188,9 @@ export const WordGuess = ({ lang }: { lang: GameLang }) => {
         {message}
         {won ? t("guess.won", { tries: String(guesses.length) }) : null}
         {over && !won ? t("guess.lost", { word: answer.join("") }) : null}
+        {over && streak > 0
+          ? ` ${t("guess.streak", { days: String(streak) })}`
+          : null}
         {over ? ` ${t("guess.tomorrow")}` : null}
       </p>
 

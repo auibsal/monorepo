@@ -8,6 +8,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@repo/design-system/components/ui/dropdown-menu";
@@ -53,17 +54,22 @@ const useAccountLinks = () => {
   // Form F-18: every role holder declares conflicts each semester (P8).
   const declares = (grants.data ?? []).length > 0;
   const member = Boolean(status.data?.is_member);
-  return [
-    { href: "/profile", key: "profile" },
-    { href: "/service", key: "service" },
-    { href: "/forms", key: "forms" },
-    { href: "/library", key: "documents" },
-    ...(member ? [{ href: "/offers", key: "offers" } as const] : []),
-    ...(declares
-      ? [{ href: "/declarations", key: "declarations" } as const]
-      : []),
-    ...(admin ? [{ href: "/admin", key: "admin" } as const] : []),
-  ] as const;
+  return {
+    account: [
+      { href: "/profile", key: "profile" },
+      { href: "/library", key: "documents" },
+      ...(member ? [{ href: "/offers", key: "offers" } as const] : []),
+      ...(admin ? [{ href: "/admin", key: "admin" } as const] : []),
+    ],
+    // Service, forms and declarations together, under "My paperwork".
+    paperwork: [
+      { href: "/service", key: "service" },
+      { href: "/forms", key: "forms" },
+      ...(declares
+        ? [{ href: "/declarations", key: "declarations" } as const]
+        : []),
+    ],
+  } as const;
 };
 
 /**
@@ -81,7 +87,7 @@ const useNotionLinks = () => {
   ];
 };
 
-const NavLinks = ({ onNavigate }: { onNavigate?: () => void }) => {
+const NavLinks = () => {
   const t = useTranslations("nexus.nav");
   const pathname = usePathname();
   const links = memberLinks;
@@ -99,7 +105,35 @@ const NavLinks = ({ onNavigate }: { onNavigate?: () => void }) => {
                 active && "text-title lg:border-accent-line"
               )}
               href={link.href}
-              onClick={onNavigate}
+            >
+              {t(link.key)}
+            </Link>
+          </li>
+        );
+      })}
+    </ul>
+  );
+};
+
+/** Phones: the sections in a bar at the bottom, in reach of the thumb. */
+const TabLinks = () => {
+  const t = useTranslations("nexus.nav");
+  const pathname = usePathname();
+  return (
+    <ul className="grid grid-cols-4">
+      {memberLinks.map((link) => {
+        const active = pathname.startsWith(link.href);
+        return (
+          <li key={link.href}>
+            <Link
+              aria-current={active ? "page" : undefined}
+              className={cn(
+                "type-label block border-t-2 py-3 text-center text-xs",
+                active
+                  ? "border-accent-line text-title"
+                  : "border-transparent text-text-secondary"
+              )}
+              href={link.href}
             >
               {t(link.key)}
             </Link>
@@ -118,7 +152,7 @@ export const AppShell = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
-  const account = useAccountLinks();
+  const { account, paperwork } = useAccountLinks();
   const notion = useNotionLinks();
 
   const signOut = async () => {
@@ -130,7 +164,7 @@ export const AppShell = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <div className="flex min-h-dvh flex-col">
+    <div className="flex min-h-dvh flex-col pb-16 lg:pb-0 print:pb-0">
       <a
         className="sr-only focus:not-sr-only focus:absolute focus:start-4 focus:top-4 focus:z-50 focus:bg-surface focus:p-2"
         href="#main"
@@ -167,6 +201,16 @@ export const AppShell = ({ children }: { children: ReactNode }) => {
                     <Link href={link.href}>{t(`nexus.nav.${link.key}`)}</Link>
                   </DropdownMenuItem>
                 ))}
+                <DropdownMenuSeparator />
+                <DropdownMenuLabel>
+                  {t("nexus.nav.paperwork")}
+                </DropdownMenuLabel>
+                {paperwork.map((link) => (
+                  <DropdownMenuItem asChild key={link.href}>
+                    <Link href={link.href}>{t(`nexus.nav.${link.key}`)}</Link>
+                  </DropdownMenuItem>
+                ))}
+                {notion.length > 0 ? <DropdownMenuSeparator /> : null}
                 {notion.map((link) => (
                   <DropdownMenuItem asChild key={link.key}>
                     <a href={link.href} rel="noopener" target="_blank">
@@ -198,9 +242,6 @@ export const AppShell = ({ children }: { children: ReactNode }) => {
                 <SheetTitle className="type-subheading">
                   {t("nexus.name")}
                 </SheetTitle>
-                <nav aria-label={t("nexus.nav.label")} className="mt-4">
-                  <NavLinks onNavigate={() => setOpen(false)} />
-                </nav>
                 <ul className="mt-6 grid gap-2">
                   {account.map((link) => (
                     <li key={link.href}>
@@ -213,6 +254,22 @@ export const AppShell = ({ children }: { children: ReactNode }) => {
                       </Link>
                     </li>
                   ))}
+                </ul>
+                <p className="type-kicker mt-6">{t("nexus.nav.paperwork")}</p>
+                <ul className="mt-2 grid gap-2">
+                  {paperwork.map((link) => (
+                    <li key={link.href}>
+                      <Link
+                        className="underline underline-offset-4"
+                        href={link.href}
+                        onClick={() => setOpen(false)}
+                      >
+                        {t(`nexus.nav.${link.key}`)}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+                <ul className="mt-6 grid gap-2">
                   {notion.map((link) => (
                     <li key={link.key}>
                       <a
@@ -245,6 +302,12 @@ export const AppShell = ({ children }: { children: ReactNode }) => {
       <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8" id="main">
         {children}
       </main>
+      <nav
+        aria-label={t("nexus.nav.label")}
+        className="frame-t fixed inset-x-0 bottom-0 z-40 bg-surface pb-[env(safe-area-inset-bottom)] lg:hidden print:hidden"
+      >
+        <TabLinks />
+      </nav>
       <footer className="frame-t print:hidden">
         <ul className="type-caption mx-auto flex w-full max-w-6xl flex-wrap gap-x-6 gap-y-2 px-4 py-4">
           {(
