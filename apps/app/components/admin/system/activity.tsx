@@ -75,6 +75,7 @@ const LOGGED_TABLES = [
   "governance.resolutions",
   "governance.society_documents",
   "governance.spending_approvals",
+  "journal.ads",
   "journal.agreements",
   "journal.approvals",
   "journal.call_partners",

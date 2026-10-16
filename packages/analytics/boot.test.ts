@@ -46,7 +46,13 @@ const run = (
 const consentUpdates = (layer: unknown[]) =>
   layer.filter(
     (e) => Array.isArray(e) && e[0] === "consent" && e[1] === "update"
-  ) as [string, string, { analytics_storage: string }][];
+  ) as [string, string, Record<string, string>][];
+
+/** The last value Google was told for a consent signal. */
+const lastSignal = (layer: unknown[], signal: string) =>
+  consentUpdates(layer)
+    .filter(([, , update]) => signal in update)
+    .at(-1)?.[2][signal];
 
 describe("what loads", () => {
   test("nothing without an ID", () => {
@@ -118,7 +124,7 @@ describe("consent", () => {
     ).toEqual([]);
   });
 
-  test("advertising signals are never granted", () => {
+  test("without an advertising purpose, ad signals are never granted", () => {
     const page = run(
       { gtmId: "GTM-ABC1", zarazPurpose: "aNaL" },
       { aNaL: true }
@@ -126,6 +132,28 @@ describe("consent", () => {
     for (const [, , update] of consentUpdates(page.layer())) {
       expect(Object.keys(update)).toEqual(["analytics_storage"]);
     }
+  });
+
+  test("ad signals follow only the advertising purpose", () => {
+    const settings = {
+      adsPurpose: "aDs",
+      gtmId: "GTM-ABC1",
+      zarazPurpose: "aNaL",
+    };
+    const analyticsOnly = run(settings, { aDs: false, aNaL: true });
+    expect(lastSignal(analyticsOnly.layer(), "analytics_storage")).toBe(
+      "granted"
+    );
+    for (const signal of ["ad_storage", "ad_user_data", "ad_personalization"]) {
+      expect(lastSignal(analyticsOnly.layer(), signal)).toBe("denied");
+    }
+    const adsOnly = run(settings, { aDs: true, aNaL: false });
+    expect(lastSignal(adsOnly.layer(), "analytics_storage")).toBe("denied");
+    for (const signal of ["ad_storage", "ad_user_data", "ad_personalization"]) {
+      expect(lastSignal(adsOnly.layer(), signal)).toBe("granted");
+    }
+    adsOnly.change({ aDs: false, aNaL: false });
+    expect(lastSignal(adsOnly.layer(), "ad_storage")).toBe("denied");
   });
 
   test("a value cannot break out of the script", () => {

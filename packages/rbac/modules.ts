@@ -44,6 +44,8 @@ export const adminModules = [
     ],
   },
   { key: "content", permissions: ["content.manage"] },
+  // Waraq's ads: Society ads (content) and sponsor ads (partnerships).
+  { key: "ads", permissions: ["content.manage", "partners.manage"] },
   {
     key: "charity",
     permissions: [

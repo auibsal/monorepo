@@ -49,14 +49,13 @@ export const hasChoice = (cookies: string, purpose: string) =>
     }
   });
 
-/** Saves the visitor's answer in Zaraz, which updates Google consent mode. */
+/** Saves the visitor's answers in Zaraz, which updates Google consent mode. */
 export const saveChoice = (
   api: ZarazConsentApi,
-  purpose: string,
-  allowed: boolean
+  choices: Record<string, boolean>
 ) => {
-  api.set({ [purpose]: allowed });
-  if (allowed) {
+  api.set(choices);
+  if (Object.values(choices).some(Boolean)) {
     api.sendQueuedEvents?.();
   }
 };

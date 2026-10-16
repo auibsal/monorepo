@@ -20,6 +20,16 @@ Branch: `claude/new-session-qosn60`.
       `BACKUP_PASSPHRASE` to the production environment (backups fail
       without it).
 
+- [ ] **Ads in Waraq (owner, 2026-10-16: Society and sponsor ads plus
+      Google AdSense, none for signed-in visitors):** the code is in; Society
+      and sponsor ads work as soon as officers write them (Nexus →
+      Administration → Ads). AdSense stays off until you follow
+      `docs/platform/ads.md`: apply at AdSense, block the sensitive categories
+      the Policy Manual rules out (11.3), add an Advertising purpose in Zaraz,
+      then set `NEXT_PUBLIC_ADSENSE_CLIENT`, `NEXT_PUBLIC_ADSENSE_SLOT` and
+      `NEXT_PUBLIC_ZARAZ_ADS_PURPOSE` on sal-web. The Council decides who
+      receives AdSense payments and records it.
+
 - [ ] **Old news table:** `content.news_posts` is no longer used (the old
       /news is Waraq's News desk). Say whether to drop it; dropping deletes
       its rows in production and cannot be undone.
@@ -699,6 +709,10 @@ Covered by automated tests so far:
 - Analytics (2026-10-15): `web.footer.cookieSettings` and the new
   `web.privacy.platform.analyticsOn`; the consent card, `web.consent.*`
   (2026-10-16).
+- Ads in Waraq (2026-10-16): `web.ads.*`, `web.consent.*` (the Advertising
+  choice), `web.privacy.platform.analyticsOff` and `adsOn`,
+  `nexus.admin.ads.*`, `nexus.admin.nav.ads` and the memorandum grant
+  `nexus.admin.partners.agreements.grants.advertising`.
 - Newsletter (2026-10-14): `web.newsletter.*`, `web.footer.newsletter`,
   `web.journal.newsletter*`, `web.privacy.platform.newsletter`,
   `nexus.admin.content.newsletter`, and the Arabic of `newsletterConfirm`

@@ -42,7 +42,7 @@ const groups: { key: Group; modules: AdminModule[] }[] = [
     modules: ["events", "programs", "productions", "pipeline", "journal"],
   },
   { key: "people", modules: ["members", "recognition", "partners"] },
-  { key: "publishing", modules: ["content", "documents", "charity"] },
+  { key: "publishing", modules: ["content", "ads", "documents", "charity"] },
   { key: "society", modules: ["governance", "forms"] },
   { key: "system", modules: ["activity", "settings"] },
 ];

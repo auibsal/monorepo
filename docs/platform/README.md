@@ -13,4 +13,5 @@ documents are on [auibsal.org/documents](https://auibsal.org/en/documents).
 - [Sign in with SAL and the API](api.md)
 - [Notifications](notifications.md)
 - [Analytics and consent](analytics.md)
+- [Ads in Waraq](ads.md)
 - [The team's Notion workspace](notion.md)

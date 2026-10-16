@@ -6,6 +6,7 @@ import {
 } from "@nosecone/next";
 import {
   apiCspSources,
+  type CspSources,
   createContentSecurityPolicy,
   defaultCspSources,
   supabaseCspSources,
@@ -13,13 +14,14 @@ import {
 
 // Nosecone security headers configuration
 // https://docs.arcjet.com/nosecone/quick-start
-const baseOptions: Options = {
+const baseOptions = (...extra: CspSources[]): Options => ({
   ...defaults,
   contentSecurityPolicy: createContentSecurityPolicy(
     {},
     defaultCspSources,
     supabaseCspSources(process.env.NEXT_PUBLIC_SUPABASE_URL),
-    apiCspSources(process.env.NEXT_PUBLIC_API_URL)
+    apiCspSources(process.env.NEXT_PUBLIC_API_URL),
+    ...extra
   ),
   // `require-corp` blocks third-party images, pixels and iframes that do not
   // send a Cross-Origin-Resource-Policy header (most analytics endpoints).
@@ -34,15 +36,20 @@ const baseOptions: Options = {
     maxAge: 63_072_000,
     preload: true,
   },
-};
+});
 
 /**
- * Security headers for every app. The Vercel Toolbar's origins are allowed
- * only when it is enabled (`FLAGS_SECRET` is set).
+ * Security headers, with any extra CSP sources an app needs (auibsal.org's
+ * AdSense). The Vercel Toolbar's origins are allowed only when it is
+ * enabled (`FLAGS_SECRET` is set).
  */
-export const noseconeOptions: Options = process.env.FLAGS_SECRET
-  ? withVercelToolbar(baseOptions)
-  : baseOptions;
+export const noseconeOptionsWith = (...extra: CspSources[]): Options =>
+  process.env.FLAGS_SECRET
+    ? withVercelToolbar(baseOptions(...extra))
+    : baseOptions(...extra);
+
+/** Security headers for every app. */
+export const noseconeOptions: Options = noseconeOptionsWith();
 
 /**
  * The same headers as static `headers()` entries for next.config, for apps

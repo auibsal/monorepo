@@ -27,18 +27,18 @@ describe("has the visitor answered", () => {
 });
 
 describe("saving the answer", () => {
-  test("sets the purpose, and releases waiting events only when allowed", () => {
+  test("sets the purposes, and releases waiting events only when allowed", () => {
     const api = {
       get: vi.fn(),
       modal: false,
       sendQueuedEvents: vi.fn(),
       set: vi.fn(),
     };
-    saveChoice(api, "aNaL", false);
-    expect(api.set).toHaveBeenLastCalledWith({ aNaL: false });
+    saveChoice(api, { aDs: false, aNaL: false });
+    expect(api.set).toHaveBeenLastCalledWith({ aDs: false, aNaL: false });
     expect(api.sendQueuedEvents).not.toHaveBeenCalled();
-    saveChoice(api, "aNaL", true);
-    expect(api.set).toHaveBeenLastCalledWith({ aNaL: true });
+    saveChoice(api, { aDs: false, aNaL: true });
+    expect(api.set).toHaveBeenLastCalledWith({ aDs: false, aNaL: true });
     expect(api.sendQueuedEvents).toHaveBeenCalledOnce();
   });
 });

@@ -41,6 +41,38 @@ export const defaultCspSources: CspSources = {
   script: ["https://www.googletagmanager.com"],
 };
 
+/**
+ * Google AdSense, for Waraq's ads on auibsal.org (apps/web only, and only
+ * with NEXT_PUBLIC_ADSENSE_CLIENT set). The ads themselves render in
+ * Google's frames, under Google's own policy.
+ */
+export const adsenseCspSources: CspSources = {
+  connect: [
+    "https://pagead2.googlesyndication.com",
+    "https://*.adtrafficquality.google",
+    "https://*.doubleclick.net",
+  ],
+  frame: [
+    "https://googleads.g.doubleclick.net",
+    "https://tpc.googlesyndication.com",
+    "https://*.googlesyndication.com",
+    "https://*.adtrafficquality.google",
+    "https://www.google.com",
+  ],
+  img: [
+    "https://pagead2.googlesyndication.com",
+    "https://tpc.googlesyndication.com",
+    "https://*.doubleclick.net",
+    "https://*.adtrafficquality.google",
+    "https://www.google.com",
+  ],
+  script: [
+    "https://pagead2.googlesyndication.com",
+    "https://*.googlesyndication.com",
+    "https://*.adtrafficquality.google",
+  ],
+};
+
 /** Our own API (apps/api), called directly from the browser by apps/app. */
 export const apiCspSources = (url: string | undefined): CspSources =>
   url ? { connect: [new URL(url).origin] } : {};

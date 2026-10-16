@@ -40,6 +40,14 @@ const PrivacyPage = async ({ params }: LocaleParams) => {
   const t = await getTranslations({ locale, namespace: "web.privacy" });
   const clause = (id: string) => id.replace("_", ".");
 
+  const analyticsOn = Boolean(env.NEXT_PUBLIC_GA_ID || env.NEXT_PUBLIC_GTM_ID);
+  const adsOn = Boolean(env.NEXT_PUBLIC_ADSENSE_CLIENT);
+  let trackingLine: "analytics" | "analyticsOff" | "analyticsOn" = "analytics";
+  if (analyticsOn) {
+    trackingLine = "analyticsOn";
+  } else if (adsOn) {
+    trackingLine = "analyticsOff";
+  }
   return (
     <div className="mx-auto grid w-full max-w-4xl gap-12 px-4 py-16">
       <PageHeader lede={t("lede")} title={t("title")} />
@@ -64,11 +72,10 @@ const PrivacyPage = async ({ params }: LocaleParams) => {
               {t(`platform.${key}`)}
             </li>
           ))}
-          <li className="type-body">
-            {env.NEXT_PUBLIC_GA_ID || env.NEXT_PUBLIC_GTM_ID
-              ? t("platform.analyticsOn")
-              : t("platform.analytics")}
-          </li>
+          <li className="type-body">{t(`platform.${trackingLine}`)}</li>
+          {env.NEXT_PUBLIC_ADSENSE_CLIENT ? (
+            <li className="type-body">{t("platform.adsOn")}</li>
+          ) : null}
           <li className="type-body">{t("platform.delete")}</li>
         </ul>
       </Section>

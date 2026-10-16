@@ -16,8 +16,9 @@ consent mode (owner, Oct 15, 2026). The Nexus has no analytics.
   to denied.
 - **Analytics is granted only by the visitor.** That happens when they accept
   the Zaraz purpose named in `NEXT_PUBLIC_ZARAZ_ANALYTICS_PURPOSE`. If they
-  change their mind later, the site updates consent again. Advertising
-  signals are never granted.
+  change their mind later, the site updates consent again. The advertising
+  signals follow a separate Advertising purpose, used by Waraq's AdSense ads
+  (`docs/platform/ads.md`); without it they stay denied.
 - **The site asks, Zaraz remembers.** A small card at the bottom of the page
   (Allow or Decline, never in the way of the page) asks each new visitor.
   The answer is stored by Zaraz through its Consent API; Zaraz's own
