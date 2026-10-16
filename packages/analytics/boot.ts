@@ -60,7 +60,8 @@ export const bootScript = (settings: AnalyticsSettings) =>
     "gtag('set','ads_data_redaction',true);",
     `var salPurpose=${inline(settings.zarazPurpose)},salAds=${inline(settings.adsPurpose)};`,
     "function salConsent(){var z=window.zaraz;if(!z||!z.consent||typeof z.consent.get!=='function'){return;}",
-    "function on(p){return z.consent.get(p)===true?'granted':'denied';}",
+    // Zaraz throws on a purpose it does not have; that one stays denied.
+    "function on(p){try{return z.consent.get(p)===true?'granted':'denied';}catch(e){return 'denied';}}",
     "if(salPurpose){gtag('consent','update',{analytics_storage:on(salPurpose)});}",
     "if(salAds){var a=on(salAds);gtag('consent','update',{ad_storage:a,ad_user_data:a,ad_personalization:a});}}",
     "document.addEventListener('zarazConsentAPIReady',salConsent);",

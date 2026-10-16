@@ -5,6 +5,8 @@
 interface ZarazConsentApi {
   get: (purpose: string) => boolean | undefined;
   modal: boolean;
+  /** The purposes set up (and published) in Zaraz, by ID. */
+  purposes?: Record<string, unknown>;
   sendQueuedEvents?: () => void;
   set: (choices: Record<string, boolean>) => void;
 }
@@ -49,13 +51,35 @@ export const hasChoice = (cookies: string, purpose: string) =>
     }
   });
 
-/** Saves the visitor's answers in Zaraz, which updates Google consent mode. */
+/**
+ * The purpose IDs Zaraz knows. Zaraz throws on an ID it does not have (one
+ * set on the site but not yet added or published in Zaraz) and then saves
+ * nothing, so the site asks only about these.
+ */
+export const knownPurposes = (api: ZarazConsentApi, ids: readonly string[]) =>
+  api.purposes ? ids.filter((id) => id in (api.purposes ?? {})) : [...ids];
+
+/**
+ * Saves the visitor's answers in Zaraz, which updates Google consent mode.
+ * Only purposes Zaraz knows are sent; false when Zaraz refused the answers.
+ */
 export const saveChoice = (
   api: ZarazConsentApi,
   choices: Record<string, boolean>
 ) => {
-  api.set(choices);
-  if (Object.values(choices).some(Boolean)) {
+  const known = Object.fromEntries(
+    knownPurposes(api, Object.keys(choices)).map((id) => [id, choices[id]])
+  ) as Record<string, boolean>;
+  if (Object.keys(known).length === 0) {
+    return false;
+  }
+  try {
+    api.set(known);
+  } catch {
+    return false;
+  }
+  if (Object.values(known).some(Boolean)) {
     api.sendQueuedEvents?.();
   }
+  return true;
 };
