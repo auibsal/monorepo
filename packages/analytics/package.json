@@ -5,6 +5,7 @@
   "exports": {
     ".": "./index.ts",
     "./client": "./client.ts",
+    "./consent": "./consent.ts",
     "./keys": "./keys.ts",
     "./provider": "./provider.tsx"
   },
