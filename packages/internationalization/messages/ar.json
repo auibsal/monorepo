@@ -149,7 +149,7 @@
       "declarations": "الإقرارات",
       "service": "خدمتي",
       "forms": "النماذج",
-      "documents": "وثائق الجمعية",
+      "documents": "المكتبة",
       "workspace": "مساحة عمل الفريق"
     },
     "errors": {
@@ -2071,7 +2071,7 @@
         "fields": {
           "title": "العنوان",
           "slug": "عنوان الصفحة",
-          "slugHint": "أحرف إنجليزية صغيرة وأرقام وشرطات، لصفحة auibsal.org/productions.",
+          "slugHint": "أحرف إنجليزية صغيرة وأرقام وشرطات، لصفحة auibsal.org/programs/productions.",
           "playwright": "تأليف",
           "kind": "النوع",
           "origin": "النص",
@@ -2079,7 +2079,7 @@
           "programme": "البرنامج",
           "noProgramme": "بلا برنامج",
           "poster": "الملصق",
-          "isPublic": "اعرضه في auibsal.org/productions",
+          "isPublic": "اعرضه في auibsal.org/programs/productions",
           "isPublicHint": "يظهر العنوان والنبذة والملصق وأسماء من وافقوا على ظهورها والشركاء والعروض المنشورة فقط. لا تظهر الحقوق ولا تجارب الأداء ولا التقرير أبدًا."
         },
         "tabs": {
@@ -3296,7 +3296,7 @@
       }
     },
     "documents": {
-      "title": "وثائق الجمعية",
+      "title": "المكتبة",
       "lede": "الدستور والنظام الداخلي والسياسات والأدلة. ويجد المسؤولون هنا الوثائق الداخلية أيضًا.",
       "empty": "لا توجد وثائق بعد.",
       "home": "اذهب إلى الرئيسية",
@@ -3694,7 +3694,9 @@
       "journal": "اقرأ ورق",
       "events": "الفعاليات",
       "major": "البرامج الرئيسية",
-      "regular": "على مدار الفصل"
+      "regular": "على مدار الفصل",
+      "care": "رعاية «سايد كويست»",
+      "productions": "الأعمال المسرحية"
     },
     "give": {
       "title": "العطاء",
@@ -3892,7 +3894,8 @@
         "crew": "الطاقم الفني",
         "creative": "الفريق الإبداعي"
       },
-      "posterAlt": "ملصق {title}"
+      "posterAlt": "ملصق {title}",
+      "allPrograms": "كل البرامج"
     },
     "institutions": {
       "title": "الجامعة والشركاء",

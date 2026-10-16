@@ -36,11 +36,11 @@ import { useTwoStep } from "./auth/two-step";
 import { LanguageSwitcher } from "./language-switcher";
 
 // Five sections at most (v5); the account items live in their own menu.
+// The logo leads home, so Home needs no link of its own.
 const memberLinks = [
-  { href: "/", key: "home" },
   { href: "/events", key: "events" },
   { href: "/programs", key: "programs" },
-  { href: "/journal", key: "journal" },
+  { href: "/waraq", key: "journal" },
   { href: "/society", key: "society" },
 ] as const;
 
@@ -57,7 +57,7 @@ const useAccountLinks = () => {
     { href: "/profile", key: "profile" },
     { href: "/service", key: "service" },
     { href: "/forms", key: "forms" },
-    { href: "/documents", key: "documents" },
+    { href: "/library", key: "documents" },
     ...(member ? [{ href: "/offers", key: "offers" } as const] : []),
     ...(declares
       ? [{ href: "/declarations", key: "declarations" } as const]
@@ -89,8 +89,7 @@ const NavLinks = ({ onNavigate }: { onNavigate?: () => void }) => {
   return (
     <ul className="flex flex-col lg:flex-row lg:items-center lg:gap-6">
       {links.map((link) => {
-        const active =
-          link.href === "/" ? pathname === "/" : pathname.startsWith(link.href);
+        const active = pathname.startsWith(link.href);
         return (
           <li key={link.href}>
             <Link

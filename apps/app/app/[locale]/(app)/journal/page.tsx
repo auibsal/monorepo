@@ -1,8 +1,6 @@
-import { JournalHome } from "@/components/journal/pages";
-import { titleFrom } from "@/lib/metadata";
+import { Forward } from "@/components/forward";
 
-export const generateMetadata = titleFrom((t) => t("nexus.journal.title"));
+// Moved to /waraq (2026-10-16).
+const MovedPage = () => <Forward to="/waraq" />;
 
-const JournalHomePage = () => <JournalHome />;
-
-export default JournalHomePage;
+export default MovedPage;

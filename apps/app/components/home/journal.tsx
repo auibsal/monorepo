@@ -24,7 +24,7 @@ export const JournalSection = () => {
   return (
     <Section id="journal" title={t("title")}>
       {calls.data?.length === 0 ? (
-        <EmptyLine action={{ href: "/journal", label: ta("readJournal") }}>
+        <EmptyLine action={{ href: "/waraq", label: ta("readJournal") }}>
           {t("none")}
         </EmptyLine>
       ) : null}
@@ -46,7 +46,7 @@ export const JournalSection = () => {
             </p>
             <Link
               className="text-sm underline underline-offset-4"
-              href={{ pathname: "/journal/submit", query: { call: call.id } }}
+              href={{ pathname: "/waraq/submit", query: { call: call.id } }}
             >
               {t("submit")}
             </Link>
@@ -65,7 +65,7 @@ export const JournalSection = () => {
                 <Link
                   className="underline underline-offset-4"
                   href={{
-                    pathname: "/journal/submission",
+                    pathname: "/waraq/submission",
                     query: { id: submission.id },
                   }}
                 >

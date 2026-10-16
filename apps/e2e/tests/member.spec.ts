@@ -26,7 +26,7 @@ test("a member sends work to Waraq and sees the reading timeline", async ({
   page,
 }) => {
   await signInWithPassword(page, member.email);
-  await page.goto(`${urls.app}/journal/submit`);
+  await page.goto(`${urls.app}/waraq/submit`);
   await page.getByLabel("Title").fill(`A small poem ${Date.now()}`);
   await page.locator('[contenteditable="true"]').first().click();
   await page.keyboard.type("The paper and the pen, and the hour between them.");

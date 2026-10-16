@@ -91,7 +91,7 @@ const ContactPage = async ({ params }: LocaleParams) => {
         <p className="type-body">{t("photo")}</p>
         <Link
           className="type-label frame press inline-flex h-10 items-center justify-self-start bg-surface px-4 text-xs shadow-offset"
-          href="/side-quest/care#request"
+          href="/programs/side-quest/care#request"
         >
           {t("photoLink")}
         </Link>

@@ -91,7 +91,7 @@ export const Documents = () => {
                       <Link
                         className="font-bold underline underline-offset-4"
                         href={{
-                          pathname: "/documents/view",
+                          pathname: "/library/view",
                           query: { slug: d.slug },
                         }}
                       >
@@ -174,7 +174,7 @@ export const DocumentView = () => {
   }
   if (!doc.data) {
     return (
-      <EmptyLine action={{ href: "/documents", label: t("back") }}>
+      <EmptyLine action={{ href: "/library", label: t("back") }}>
         {t("notFound")}
       </EmptyLine>
     );
@@ -184,7 +184,7 @@ export const DocumentView = () => {
   return (
     <article className="mx-auto grid w-full max-w-4xl gap-6">
       <div className="flex flex-wrap items-center gap-3 print:hidden">
-        <Link className="type-body underline" href="/documents">
+        <Link className="type-body underline" href="/library">
           {t("back")}
         </Link>
         {notion ? null : (

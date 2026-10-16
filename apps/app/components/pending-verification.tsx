@@ -76,7 +76,7 @@ export const PendingVerification = () => {
 export const PartnerGuest = () => {
   const t = useTranslations("nexus.partnerGuest");
   const links = [
-    ["/journal", t("journal")],
+    ["/waraq", t("journal")],
     ["/profile", t("profile")],
     ["/service", t("service")],
   ] as const;

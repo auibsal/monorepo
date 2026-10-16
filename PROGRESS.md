@@ -413,7 +413,7 @@ These stop parts of the work. Everything else continues around them.
   `production` scope and the Production Lead role run one production;
   hours become recorded service, a closed production drafts certificates
   for its credited members, and the lead signs the Program Report (F-25,
-  section B). Public page: auibsal.org/productions (footer).
+  section B). Public page: auibsal.org/programs/productions (footer, and linked from Programs).
 - Forms (Oct 9, 2026): one engine for every form not built into its own
   module (F-03, F-04, F-06, F-09, F-10, F-11, F-13, F-14, F-17, F-19, F-20,
   F-24, F-25 A, F-27, F-29). `governance.form_types` says who may fill
@@ -706,6 +706,9 @@ Covered by automated tests so far:
 
 ## needs-native-review (Arabic written for the platform)
 
+- Streamlining (2026-10-16): `nexus.nav.documents` and `nexus.documents.title`
+  («المكتبة»), `web.programmes.care`, `web.programmes.productions`,
+  `web.productions.allPrograms`.
 - Analytics (2026-10-15): `web.footer.cookieSettings` and the new
   `web.privacy.platform.analyticsOn`; the consent card, `web.consent.*`
   (2026-10-16).

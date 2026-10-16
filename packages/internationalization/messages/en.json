@@ -149,7 +149,7 @@
       "declarations": "Declarations",
       "service": "My service",
       "forms": "Forms",
-      "documents": "Society documents",
+      "documents": "Library",
       "workspace": "Team workspace"
     },
     "errors": {
@@ -2071,7 +2071,7 @@
         "fields": {
           "title": "Title",
           "slug": "Web address",
-          "slugHint": "Lowercase letters, numbers and hyphens, for auibsal.org/productions.",
+          "slugHint": "Lowercase letters, numbers and hyphens, for auibsal.org/programs/productions.",
           "playwright": "Written by",
           "kind": "Kind",
           "origin": "Script",
@@ -2079,7 +2079,7 @@
           "programme": "Program",
           "noProgramme": "No program",
           "poster": "Poster",
-          "isPublic": "Show on auibsal.org/productions",
+          "isPublic": "Show on auibsal.org/programs/productions",
           "isPublicHint": "Only the title, summary, poster, credits people agreed to, partners and published performances are shown. Rights, auditions and the report never are."
         },
         "tabs": {
@@ -3296,7 +3296,7 @@
       }
     },
     "documents": {
-      "title": "Society documents",
+      "title": "Library",
       "lede": "The Constitution, the Bylaws, the policies and handbooks. Officers also find the internal documents here.",
       "empty": "No documents yet.",
       "home": "Go to Home",
@@ -3694,7 +3694,9 @@
       "journal": "Read Waraq",
       "events": "See the events",
       "major": "Flagship programs",
-      "regular": "Through the term"
+      "regular": "Through the term",
+      "care": "Side Quest care",
+      "productions": "See the productions"
     },
     "give": {
       "title": "Give",
@@ -3892,7 +3894,8 @@
         "crew": "Crew",
         "creative": "Creative team"
       },
-      "posterAlt": "Poster for {title}"
+      "posterAlt": "Poster for {title}",
+      "allPrograms": "All programs"
     },
     "institutions": {
       "title": "Home and partners",

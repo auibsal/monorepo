@@ -34,6 +34,14 @@ const ProgrammesPage = async ({ params }: LocaleParams) => {
           {t("journal")}
         </Link>
       ) : null}
+      {p.slug === "side-quest" ? (
+        <Link
+          className="type-caption underline underline-offset-4"
+          href="/programs/side-quest/care"
+        >
+          {t("care")}
+        </Link>
+      ) : null}
     </li>
   );
 
@@ -57,15 +65,17 @@ const ProgrammesPage = async ({ params }: LocaleParams) => {
           {regular.map(card)}
         </ul>
       </section>
-      <Link
-        className={buttonVariants({
-          className: "justify-self-start",
-          variant: "outline",
-        })}
-        href="/events"
-      >
-        {t("events")}
-      </Link>
+      <div className="flex flex-wrap gap-3">
+        <Link className={buttonVariants({ variant: "outline" })} href="/events">
+          {t("events")}
+        </Link>
+        <Link
+          className={buttonVariants({ variant: "outline" })}
+          href="/programs/productions"
+        >
+          {t("productions")}
+        </Link>
+      </div>
     </div>
   );
 };

@@ -23,14 +23,14 @@ export const Footer = async () => {
       ["/newsletter", t("newsletter")],
       ["/documents", tn("documents")],
       ["/partners", t("partners")],
-      ["/productions", t("productions")],
+      ["/programs/productions", t("productions")],
       ["/search", t("search")],
     ],
     [
       ["/contact", t("contact")],
       ["/media-kit", t("mediaKit")],
       ["/privacy", t("privacy")],
-      ["/side-quest/care", t("sideQuestCare")],
+      ["/programs/side-quest/care", t("sideQuestCare")],
     ],
   ] as const;
 

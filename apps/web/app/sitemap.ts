@@ -28,11 +28,11 @@ const staticPaths = [
   "/contact",
   "/media-kit",
   "/privacy",
-  "/side-quest/care",
+  "/programs/side-quest/care",
   "/events",
   "/documents",
   "/partners",
-  "/productions",
+  "/programs/productions",
 ];
 
 const localized = (path: string): MetadataRoute.Sitemap => {
