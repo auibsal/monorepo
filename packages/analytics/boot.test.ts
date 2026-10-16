@@ -189,4 +189,40 @@ describe("consent", () => {
     expect(lastSignal(layer, "analytics_storage")).toBe("granted");
     expect(lastSignal(layer, "ad_storage")).toBe("denied");
   });
+
+  test("answers in the site's cookie count, even ones Zaraz refuses", () => {
+    const listeners: Partial<Record<string, (() => void)[]>> = {};
+    const document = {
+      addEventListener: (name: string, fn: () => void) => {
+        listeners[name] = [...(listeners[name] ?? []), fn];
+      },
+      cookie: "",
+    };
+    const window: Record<string, unknown> = { document };
+    window.window = window;
+    window.zaraz = {
+      consent: {
+        get: (id: string) => {
+          throw new Error(`Unknown purpose id: ${id}`);
+        },
+      },
+    };
+    runInNewContext(
+      bootScript({
+        adsPurpose: "aDs",
+        gtmId: "GTM-ABC1",
+        zarazPurpose: "aNaL",
+      }),
+      window
+    );
+    const layer = () =>
+      (window.dataLayer as ArrayLike<unknown>[]).map((e) => Array.from(e));
+    expect(lastSignal(layer(), "ad_storage")).toBe("denied");
+    document.cookie = `sal_consent=${encodeURIComponent('{"aDs":true,"aNaL":false}')}`;
+    for (const fn of listeners["sal:consent-saved"] ?? []) {
+      fn();
+    }
+    expect(lastSignal(layer(), "ad_storage")).toBe("granted");
+    expect(lastSignal(layer(), "analytics_storage")).toBe("denied");
+  });
 });
