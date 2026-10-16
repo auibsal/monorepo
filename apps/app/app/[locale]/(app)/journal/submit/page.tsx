@@ -1,16 +1,6 @@
-import { Suspense } from "react";
-import { SubmitByDesk } from "@/components/journal/submit";
-import { SectionSpinner } from "@/components/states";
-import { titleFrom } from "@/lib/metadata";
+import { Forward } from "@/components/forward";
 
-export const generateMetadata = titleFrom((t) =>
-  t("nexus.journal.submitTitle")
-);
+// Moved to /waraq/submit (2026-10-16).
+const MovedPage = () => <Forward to="/waraq/submit" />;
 
-const Page = () => (
-  <Suspense fallback={<SectionSpinner />}>
-    <SubmitByDesk />
-  </Suspense>
-);
-
-export default Page;
+export default MovedPage;

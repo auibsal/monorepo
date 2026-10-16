@@ -3,6 +3,7 @@ import { localizedPath } from "@repo/internationalization";
 import { Link } from "@repo/internationalization/navigation";
 import { getLocale, getTranslations } from "next-intl/server";
 import { CookieSettings } from "@/components/cookie-settings";
+import { askedConsent } from "@/lib/consent";
 import { MUTANABBI } from "@/lib/verse";
 
 const INSTAGRAM = "https://www.instagram.com/auibsal";
@@ -21,15 +22,16 @@ export const Footer = async () => {
       ["/waraq/news", tn("news")],
       ["/newsletter", t("newsletter")],
       ["/documents", tn("documents")],
+      ["/governance", t("governance")],
       ["/partners", t("partners")],
-      ["/productions", t("productions")],
+      ["/programs/productions", t("productions")],
       ["/search", t("search")],
     ],
     [
       ["/contact", t("contact")],
       ["/media-kit", t("mediaKit")],
       ["/privacy", t("privacy")],
-      ["/side-quest/care", t("sideQuestCare")],
+      ["/programs/side-quest/care", t("sideQuestCare")],
     ],
   ] as const;
 
@@ -79,7 +81,10 @@ export const Footer = async () => {
                 </a>
               </li>
             ) : null}
-            {links[0][0] === "/contact" ? <CookieSettings /> : null}
+            {links[0][0] === "/contact" &&
+            Object.values(askedConsent()).some(Boolean) ? (
+              <CookieSettings />
+            ) : null}
           </ul>
         ))}
       </div>

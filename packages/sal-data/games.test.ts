@@ -5,12 +5,14 @@ import {
   cellsOf,
   crosswordCells,
   crosswordSchema,
+  currentStreak,
   dailyAnswer,
   dailySearch,
   gameDay,
   gameNumber,
   layoutCrossword,
   lettersOf,
+  nextStreak,
   normalizeWord,
   parsePuzzle,
   scoreGuess,
@@ -298,5 +300,24 @@ describe("crossword layout", () => {
     const { crossword } = layoutCrossword({ items, lang: "en" });
     expect(parsePuzzle("crossword", crossword)?.kind).toBe("crossword");
     expect(parsePuzzle("word_search", crossword)).toBeNull();
+  });
+});
+
+describe("streaks", () => {
+  test("grow day by day, stay put on the same day, restart after a gap", () => {
+    const one = nextStreak(null, 100);
+    expect(one).toEqual({ count: 1, last: 100 });
+    expect(nextStreak(one, 100)).toBe(one);
+    const two = nextStreak(one, 101);
+    expect(two).toEqual({ count: 2, last: 101 });
+    expect(nextStreak(two, 103)).toEqual({ count: 1, last: 103 });
+  });
+
+  test("show until a day is missed", () => {
+    const streak = { count: 4, last: 200 };
+    expect(currentStreak(streak, 200)).toBe(4);
+    expect(currentStreak(streak, 201)).toBe(4);
+    expect(currentStreak(streak, 202)).toBe(0);
+    expect(currentStreak(null, 202)).toBe(0);
   });
 });

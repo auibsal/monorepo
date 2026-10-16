@@ -1,13 +1,6 @@
-import { Suspense } from "react";
-import { DocumentView } from "@/components/documents/documents";
-import { titleFrom } from "@/lib/metadata";
+import { Forward } from "@/components/forward";
 
-export const generateMetadata = titleFrom((t) => t("nexus.documents.title"));
+// Moved to /library/view (2026-10-16).
+const MovedPage = () => <Forward to="/library/view" />;
 
-const DocumentViewPage = () => (
-  <Suspense>
-    <DocumentView />
-  </Suspense>
-);
-
-export default DocumentViewPage;
+export default MovedPage;

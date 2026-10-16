@@ -149,8 +149,9 @@
       "declarations": "Declarations",
       "service": "My service",
       "forms": "Forms",
-      "documents": "Society documents",
-      "workspace": "Team workspace"
+      "documents": "Library",
+      "workspace": "Team workspace",
+      "paperwork": "My paperwork"
     },
     "errors": {
       "loadFailed": "We couldn't load this. Check your connection and try again.",
@@ -2071,7 +2072,7 @@
         "fields": {
           "title": "Title",
           "slug": "Web address",
-          "slugHint": "Lowercase letters, numbers and hyphens, for auibsal.org/productions.",
+          "slugHint": "Lowercase letters, numbers and hyphens, for auibsal.org/programs/productions.",
           "playwright": "Written by",
           "kind": "Kind",
           "origin": "Script",
@@ -2079,7 +2080,7 @@
           "programme": "Program",
           "noProgramme": "No program",
           "poster": "Poster",
-          "isPublic": "Show on auibsal.org/productions",
+          "isPublic": "Show on auibsal.org/programs/productions",
           "isPublicHint": "Only the title, summary, poster, credits people agreed to, partners and published performances are shown. Rights, auditions and the report never are."
         },
         "tabs": {
@@ -3296,7 +3297,7 @@
       }
     },
     "documents": {
-      "title": "Society documents",
+      "title": "Library",
       "lede": "The Constitution, the Bylaws, the policies and handbooks. Officers also find the internal documents here.",
       "empty": "No documents yet.",
       "home": "Go to Home",
@@ -3395,7 +3396,8 @@
       "news": "News",
       "documents": "Documents",
       "signIn": "Sign in",
-      "nexus": "The Nexus"
+      "nexus": "The Nexus",
+      "openNexus": "Open the Nexus"
     },
     "footer": {
       "contact": "Contact",
@@ -3407,7 +3409,8 @@
       "partners": "Partners",
       "productions": "Productions",
       "newsletter": "Newsletter",
-      "cookieSettings": "Cookie settings"
+      "cookieSettings": "Cookie settings",
+      "governance": "Governance"
     },
     "consent": {
       "title": "Cookies",
@@ -3633,7 +3636,8 @@
         }
       },
       "nonPartisan": "Our Society is non-partisan and non-sectarian. Your writing and art can explore anything human. The Society itself takes no side in party or sect.",
-      "documents": "Read the founding documents"
+      "documents": "Read the founding documents",
+      "governance": "Council, resolutions and elections"
     },
     "join": {
       "title": "Join the Society",
@@ -3694,7 +3698,9 @@
       "journal": "Read Waraq",
       "events": "See the events",
       "major": "Flagship programs",
-      "regular": "Through the term"
+      "regular": "Through the term",
+      "care": "Side Quest care",
+      "productions": "See the productions"
     },
     "give": {
       "title": "Give",
@@ -3818,7 +3824,7 @@
     },
     "search": {
       "title": "Search",
-      "lede": "Search events, news, Waraq and the founding documents.",
+      "lede": "Search events, news, Waraq, productions and the founding documents.",
       "label": "Search the site",
       "placeholder": "A title, a name, a word",
       "submit": "Search",
@@ -3829,7 +3835,8 @@
         "event": "Event",
         "news": "News",
         "piece": "Waraq",
-        "document": "Document"
+        "document": "Document",
+        "production": "Production"
       }
     },
     "partners": {
@@ -3892,7 +3899,8 @@
         "crew": "Crew",
         "creative": "Creative team"
       },
-      "posterAlt": "Poster for {title}"
+      "posterAlt": "Poster for {title}",
+      "allPrograms": "All programs"
     },
     "institutions": {
       "title": "Home and partners",
@@ -3960,7 +3968,8 @@
         "won": "Solved in {tries} of 6.",
         "lost": "The word was {word}.",
         "tomorrow": "A new word tomorrow.",
-        "howTo": "A dark square is the right letter in the right place. A tinted square is in the word, somewhere else."
+        "howTo": "A dark square is the right letter in the right place. A tinted square is in the word, somewhere else.",
+        "streak": "Streak: {days} days in a row."
       },
       "search": {
         "grid": "Letter grid",
@@ -4018,6 +4027,25 @@
         "invalid": "This link is not valid.",
         "failed": "Something went wrong. Try again later."
       }
+    },
+    "governance": {
+      "title": "Governance",
+      "lede": "Who sits on the Council, what the Society has adopted, and whom members elected.",
+      "council": "The Council",
+      "councilEmpty": "The Council roster appears here once officers take office.",
+      "resolutions": "Adopted resolutions",
+      "resolutionsEmpty": "No resolutions have been adopted yet.",
+      "body": {
+        "council": "Council",
+        "general_assembly": "General Assembly"
+      },
+      "votes": "{for} for, {against} against, {abstain} abstaining",
+      "elections": "Election results",
+      "electionsEmpty": "Results appear here once the Elections Committee publishes them.",
+      "turnout": "{counted} ballots from {eligible} eligible voters",
+      "reopened": "Re-open nominations: the office will be filled again",
+      "rules": "How the Council works and how elections run is set out in the Constitution and the Bylaws.",
+      "documents": "Read the documents"
     }
   }
 }

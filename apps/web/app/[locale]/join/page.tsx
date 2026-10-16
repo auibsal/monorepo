@@ -17,7 +17,7 @@ const JoinPage = async ({ params }: LocaleParams) => {
     <div className="grid gap-2">
       <a
         className="inline-flex h-11 items-center justify-self-start rounded-md bg-primary px-5 text-primary-foreground"
-        href={`${project.hosts.app}${localizedPath(locale, "/sign-in")}`}
+        href={`${project.hosts.app}${localizedPath(locale, "/sign-up")}`}
       >
         {t("cta")}
       </a>

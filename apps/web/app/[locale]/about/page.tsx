@@ -88,15 +88,20 @@ const AboutPage = async ({ params }: LocaleParams) => {
       </section>
 
       <p className="type-body">{t("nonPartisan")}</p>
-      <Link
-        className={buttonVariants({
-          className: "justify-self-start",
-          variant: "outline",
-        })}
-        href="/documents"
-      >
-        {t("documents")}
-      </Link>
+      <div className="flex flex-wrap gap-3">
+        <Link
+          className={buttonVariants({ variant: "outline" })}
+          href="/documents"
+        >
+          {t("documents")}
+        </Link>
+        <Link
+          className={buttonVariants({ variant: "outline" })}
+          href="/governance"
+        >
+          {t("governance")}
+        </Link>
+      </div>
     </div>
   );
 };

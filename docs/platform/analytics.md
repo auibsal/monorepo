@@ -2,9 +2,10 @@
 
 auibsal.org counts visits with **Google Analytics 4**, loaded by **Google Tag
 Manager**. Both scripts are served from auibsal.org's own address by the
-**Google tag gateway** on Cloudflare. **Cloudflare Zaraz** shows the cookie
-consent banner, and the site passes each visitor's choice to Google through
-consent mode (owner, Oct 15, 2026). The Nexus has no analytics.
+**Google tag gateway** on Cloudflare. The site asks for consent itself, with
+its own card, and passes each visitor's choice to Google through consent mode
+(owner, Oct 15, 2026; the site's own card replaced Cloudflare Zaraz on Oct 16,
+2026). The Nexus has no analytics.
 
 ## How it fits together
 
@@ -14,22 +15,19 @@ consent mode (owner, Oct 15, 2026). The Nexus has no analytics.
 - **Every consent signal starts denied.** Before GTM loads, the site sets
   `analytics_storage`, `ad_storage`, `ad_user_data` and `ad_personalization`
   to denied.
-- **Analytics is granted only by the visitor.** That happens when they accept
-  the Zaraz purpose named in `NEXT_PUBLIC_ZARAZ_ANALYTICS_PURPOSE`. If they
-  change their mind later, the site updates consent again. The advertising
-  signals follow a separate Advertising purpose, used by Waraq's AdSense ads
+- **Analytics is granted only by the visitor.** That happens when they allow
+  Analytics on the consent card. If they change their mind later, the site
+  updates consent again. The advertising signals follow a separate
+  Advertising choice, asked only while Waraq's AdSense ads are switched on
   (`docs/platform/ads.md`); without it they stay denied.
 - **The site asks and remembers.** A small card at the bottom of the page
-  (never in the way of the page) asks each new visitor. Their answers are
-  kept in the site's own consent cookie, `sal_consent` (one year), and passed
-  on to Zaraz for each purpose Zaraz stores. Zaraz lists every purpose but
-  stores only some (in practice those with a Zaraz tool assigned; Advertising
-  has none), and it rejects a whole save that names one it doesn't store, so
-  the site sends Zaraz one purpose at a time. Zaraz's own consent window
-  stays off. **Cookie settings** in the footer reopens the card. Both appear
-  only where Zaraz consent runs.
-- **GA4 is never added as a Zaraz tool.** GTM already loads it, and adding it
-  in Zaraz too would count every visit twice.
+  (never in the way of the page) asks each new visitor about what is
+  switched on. Their answers are kept in the site's own cookie,
+  `sal_consent` (one year), which the boot script reads on every page.
+  **Cookie settings** in the footer reopens the card. No third-party consent
+  tool is involved: Cloudflare Zaraz was used at first, but it saved only
+  some answers (it stores only purposes that have a Zaraz tool), so it was
+  dropped.
 
 ## Setting it up (once)
 
@@ -38,8 +36,7 @@ holds these accounts.
 
 ### 1. Put auibsal.org behind Cloudflare's proxy
 
-Zaraz, the consent banner and the tag gateway work only on traffic that
-passes through Cloudflare. Today auibsal.org is "DNS only": Vercel serves it
+The tag gateway works only on traffic that passes through Cloudflare. Today auibsal.org is "DNS only": Vercel serves it
 directly.
 
 1. In Cloudflare, open auibsal.org → **SSL/TLS** → **Overview** and set the
@@ -94,19 +91,13 @@ When it is done, `https://auibsal.org/metrics/gtm.js?id=GTM-…` should return
 JavaScript. If Google's setup screen shows a different script address, tell
 the developer; the site builds `<path>/gtm.js?id=…` and may need to match.
 
-### 5. Turn on Zaraz consent
+### 5. Keep Zaraz off
 
-1. In Cloudflare, open auibsal.org → **Zaraz** and enable it.
-2. In **Zaraz** → **Consent**, turn on **consent management**. Turn **Show
-   consent modal** and **Use IAB TCF compliant modal** off: the site shows
-   its own card. Add one purpose, **Analytics** ("Counting visits with Google Analytics; no
-   advertising"), and give it an Arabic name and description if Zaraz
-   offers translations.
-3. Copy the purpose's **ID**: a short code shown next to it.
-4. Under **Assign purposes to tools**, give every tool (Cloudflare
-   Monitoring included) the Analytics purpose.
-5. Do **not** add Google Analytics, or anything else that loads Google's
-   scripts, under **Zaraz** → **Tools**. GTM loads GA4.
+The site asks for consent itself. In Cloudflare, open auibsal.org → **Zaraz**
+and leave it **disabled** (if it was enabled earlier, disable it). With Zaraz
+on, its own consent window can appear on top of the site's card. Never load
+GA4 through Zaraz either: GTM already loads it, and it would count every
+visit twice.
 
 ### 6. Tell the site
 
@@ -117,7 +108,6 @@ In Vercel → **sal-web** → **Settings** → **Environment Variables**
 | --- | --- |
 | `NEXT_PUBLIC_GTM_ID` | `GTM-…` |
 | `NEXT_PUBLIC_TAG_GATEWAY_PATH` | `/metrics` |
-| `NEXT_PUBLIC_ZARAZ_ANALYTICS_PURPOSE` | the Zaraz purpose ID |
 
 Leave `NEXT_PUBLIC_GA_ID` empty: GA4 lives in the GTM container.
 

@@ -1,14 +1,6 @@
-import { Suspense } from "react";
-import { MyPiece } from "@/components/journal/work";
-import { SectionSpinner } from "@/components/states";
-import { titleFrom } from "@/lib/metadata";
+import { Forward } from "@/components/forward";
 
-export const generateMetadata = titleFrom((t) => t("nexus.waraq.pieceTitle"));
+// Moved to /waraq/work (2026-10-16).
+const MovedPage = () => <Forward to="/waraq/work" />;
 
-const Page = () => (
-  <Suspense fallback={<SectionSpinner />}>
-    <MyPiece />
-  </Suspense>
-);
-
-export default Page;
+export default MovedPage;

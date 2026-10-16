@@ -106,6 +106,30 @@ export const gameDay = (date = new Date()) =>
 const FIRST_DAY = Date.UTC(2026, 9, 14) / DAY_MS;
 export const gameNumber = (day: number) => day - FIRST_DAY + 1;
 
+/** Days in a row a daily game was solved, ending on the last solved day. */
+export interface Streak {
+  count: number;
+  last: number;
+}
+
+/**
+ * The streak after solving the game of `day`: one more when the last solve
+ * was the day before, unchanged when today was already counted, else 1.
+ */
+export const nextStreak = (streak: Streak | null, day: number): Streak => {
+  if (streak?.last === day) {
+    return streak;
+  }
+  return {
+    count: streak?.last === day - 1 ? streak.count + 1 : 1,
+    last: day,
+  };
+};
+
+/** The streak to show on `day`: zero once a day has been missed. */
+export const currentStreak = (streak: Streak | null, day: number) =>
+  streak && day - streak.last <= 1 ? streak.count : 0;
+
 // ── Word guess ───────────────────────────────────────────────────────────────
 
 export type Mark = "hit" | "near" | "miss";

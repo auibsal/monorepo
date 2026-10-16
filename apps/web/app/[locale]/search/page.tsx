@@ -29,7 +29,7 @@ export const generateMetadata = async ({
   };
 };
 
-type Kind = "event" | "piece" | "document";
+type Kind = "event" | "piece" | "production" | "document";
 
 const hrefFor = (kind: Kind, slug: string) => {
   if (kind === "event") {
@@ -37,6 +37,9 @@ const hrefFor = (kind: Kind, slug: string) => {
   }
   if (kind === "piece") {
     return `/waraq/pieces/${slug}`;
+  }
+  if (kind === "production") {
+    return `/programs/productions#${slug}`;
   }
   return slug;
 };

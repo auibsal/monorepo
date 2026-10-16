@@ -129,7 +129,7 @@ export const submissionReceived = (
   desk: DeskKind = "blind"
 ) =>
   build(lang, (l) => ({
-    action: nexus(app, l, "/journal"),
+    action: nexus(app, l, "/waraq"),
     heading:
       l === "ar" ? `شكراً، وصلنا ${work}` : `Thank you: we received ${work}`,
     paragraphs: RECEIVED[desk][l],
@@ -142,7 +142,7 @@ export const returnedForFormatting = (
   app: string
 ) =>
   build(lang, (l) => ({
-    action: nexus(app, l, "/journal"),
+    action: nexus(app, l, "/waraq"),
     heading:
       l === "ar"
         ? `تعديل واحد قبل القراءة: ${work}`
@@ -177,7 +177,7 @@ export const decision = (
   build(lang, (l) => {
     if (outcome === "decline") {
       return {
-        action: nexus(app, l, "/journal"),
+        action: nexus(app, l, "/waraq"),
         heading:
           l === "ar" ? `شكراً لإرسالك ${work}` : `Thank you for sending ${work}`,
         paragraphs:
@@ -193,7 +193,7 @@ export const decision = (
       };
     }
     return {
-      action: nexus(app, l, "/journal"),
+      action: nexus(app, l, "/waraq"),
       heading:
         l === "ar" ? `قُبل ${work} في ورق` : `${work} is accepted for Waraq`,
       paragraphs: [
@@ -207,7 +207,7 @@ export const decision = (
 
 export const agreementReminder = (lang: Lang, work: string, app: string) =>
   build(lang, (l) => ({
-    action: nexus(app, l, "/journal"),
+    action: nexus(app, l, "/waraq"),
     heading:
       l === "ar"
         ? `بانتظار توقيعك: اتفاقية نشر ${work}`
@@ -219,7 +219,7 @@ export const agreementReminder = (lang: Lang, work: string, app: string) =>
     ],
   }));
 
-const piecePath = (pieceId: string) => `/journal/work?id=${pieceId}`;
+const piecePath = (pieceId: string) => `/waraq/work?id=${pieceId}`;
 
 /** Final check (72 hours): errors only, not new revisions. */
 export const finalCheck = (

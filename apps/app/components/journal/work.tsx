@@ -139,7 +139,7 @@ export const MyPiece = () => {
   });
 
   const back = (
-    <Link className="text-sm underline underline-offset-4" href="/journal">
+    <Link className="text-sm underline underline-offset-4" href="/waraq">
       {t("back")}
     </Link>
   );

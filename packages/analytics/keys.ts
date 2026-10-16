@@ -2,7 +2,6 @@ import { createEnv } from "@t3-oss/env-nextjs";
 import { z } from "zod";
 
 const GATEWAY_PATH = /^\/[a-z0-9][a-z0-9/_-]*$/;
-const PURPOSE_ID = /^[A-Za-z0-9_-]{1,40}$/;
 const ADSENSE_CLIENT = /^ca-pub-\d{16}$/;
 const ADSENSE_SLOT = /^\d{6,12}$/;
 
@@ -22,15 +21,6 @@ export const keys = () =>
       // The Google tag gateway's measurement path on auibsal.org, set up in
       // Cloudflare (for example "/metrics"). Unset: scripts load from Google.
       NEXT_PUBLIC_TAG_GATEWAY_PATH: z.string().regex(GATEWAY_PATH).optional(),
-      // The Zaraz consent purpose ID for advertising (ad cookies and
-      // personalized ads). Unset: advertising consent stays denied.
-      NEXT_PUBLIC_ZARAZ_ADS_PURPOSE: z.string().regex(PURPOSE_ID).optional(),
-      // The Zaraz consent purpose ID for analytics (Cloudflare → Zaraz →
-      // Consent). Unset: analytics consent stays denied.
-      NEXT_PUBLIC_ZARAZ_ANALYTICS_PURPOSE: z
-        .string()
-        .regex(PURPOSE_ID)
-        .optional(),
     },
     emptyStringAsUndefined: true,
     runtimeEnv: {
@@ -39,9 +29,6 @@ export const keys = () =>
       NEXT_PUBLIC_GA_ID: process.env.NEXT_PUBLIC_GA_ID,
       NEXT_PUBLIC_GTM_ID: process.env.NEXT_PUBLIC_GTM_ID,
       NEXT_PUBLIC_TAG_GATEWAY_PATH: process.env.NEXT_PUBLIC_TAG_GATEWAY_PATH,
-      NEXT_PUBLIC_ZARAZ_ADS_PURPOSE: process.env.NEXT_PUBLIC_ZARAZ_ADS_PURPOSE,
-      NEXT_PUBLIC_ZARAZ_ANALYTICS_PURPOSE:
-        process.env.NEXT_PUBLIC_ZARAZ_ANALYTICS_PURPOSE,
     },
     skipValidation: process.env.SKIP_ENV_VALIDATION === "true",
   });

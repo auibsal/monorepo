@@ -1,11 +1,10 @@
-import { describe, expect, test, vi } from "vitest";
+import { describe, expect, test } from "vitest";
 import {
-  currentChoice,
   hasChoice,
   SITE_CONSENT_COOKIE,
   saveChoice,
   siteChoices,
-  zarazStores,
+  siteConsentCookie,
 } from "./consent";
 
 /** A cookie jar: what saveChoice writes, read back like document.cookie. */
@@ -13,93 +12,53 @@ const jar = (initial = "") => {
   let site = initial;
   return {
     read: () => site,
-    write: (cookie: string) => {
-      site = cookie.split(";")[0] ?? "";
+    write: (text: string) => {
+      site = text.split(";")[0] ?? "";
     },
   };
 };
 
-/** A Zaraz that, like the real one, stores only some of its purposes. */
-const zaraz = (stores: string[]) => {
-  const saved: Record<string, boolean> = {};
-  return {
-    get: (id: string) => saved[id],
-    getAll: () =>
-      Object.fromEntries(stores.map((id) => [id, saved[id] ?? false])),
-    modal: false,
-    purposes: { aDs: {}, aNaL: {} },
-    saved,
-    sendQueuedEvents: vi.fn(),
-    set: vi.fn((choices: Record<string, boolean>) => {
-      for (const id of Object.keys(choices)) {
-        if (!stores.includes(id)) {
-          throw new Error(`Unknown purpose id: ${id}`);
-        }
-      }
-      Object.assign(saved, choices);
-    }),
-  };
-};
+const cookie = (value: unknown) =>
+  `${SITE_CONSENT_COOKIE}=${encodeURIComponent(JSON.stringify(value))}`;
 
 describe("has the visitor answered", () => {
   test("not before anything is stored", () => {
-    expect(hasChoice("", "aNaL")).toBe(false);
-    expect(hasChoice("NEXT_LOCALE=en; cf_clearance=abc", "aNaL")).toBe(false);
+    expect(hasChoice("", "analytics")).toBe(false);
+    expect(hasChoice("NEXT_LOCALE=en; cf_clearance=abc", "analytics")).toBe(
+      false
+    );
   });
 
-  test("yes, from the site's cookie or Zaraz's, allowed or declined", () => {
-    expect(hasChoice('zaraz-consent={"aNaL":false}', "aNaL")).toBe(true);
-    expect(
-      hasChoice(
-        `${SITE_CONSENT_COOKIE}=${encodeURIComponent('{"aDs":true}')}`,
-        "aDs"
-      )
-    ).toBe(true);
+  test("yes, allowed or declined, for each purpose on its own", () => {
+    const cookies = `NEXT_LOCALE=ar; ${cookie({ analytics: false })}`;
+    expect(hasChoice(cookies, "analytics")).toBe(true);
+    expect(hasChoice(cookies, "ads")).toBe(false);
   });
 
-  test("ignores other purposes and broken values", () => {
-    expect(hasChoice('zaraz-consent={"other":true}', "aNaL")).toBe(false);
-    expect(hasChoice("zaraz-consent={not json", "aNaL")).toBe(false);
+  test("ignores other cookies, unknown keys and broken values", () => {
+    expect(siteChoices('zaraz-consent={"analytics":true}')).toEqual({});
+    expect(siteChoices(cookie({ analytics: "yes", nOag: true }))).toEqual({});
+    expect(siteChoices(`${SITE_CONSENT_COOKIE}=%7Bnot`)).toEqual({});
   });
 });
 
 describe("saving the answers", () => {
-  test("keeps every answer, even the ones Zaraz refuses", () => {
+  test("keeps both answers, and a later answer for one keeps the other", () => {
     const cookies = jar();
-    const api = zaraz(["aNaL"]);
-    saveChoice(api, { aDs: true, aNaL: true }, cookies);
-    expect(siteChoices(cookies.read())).toEqual({ aDs: true, aNaL: true });
-    expect(api.saved).toEqual({ aNaL: true });
-    expect(api.sendQueuedEvents).toHaveBeenCalledOnce();
+    saveChoice({ ads: true, analytics: true }, cookies, true);
+    saveChoice({ analytics: false }, cookies, true);
+    expect(siteChoices(cookies.read())).toEqual({
+      ads: true,
+      analytics: false,
+    });
   });
 
-  test("a refused purpose never stops the others", () => {
-    const cookies = jar();
-    const api = zaraz(["aNaL"]);
-    api.getAll = undefined as never;
-    saveChoice(api, { aDs: false, aNaL: true }, cookies);
-    expect(api.saved).toEqual({ aNaL: true });
-  });
-
-  test("a later answer for one purpose keeps the other", () => {
-    const cookies = jar();
-    saveChoice(null, { aDs: true, aNaL: true }, cookies);
-    saveChoice(null, { aNaL: false }, cookies);
-    expect(siteChoices(cookies.read())).toEqual({ aDs: true, aNaL: false });
-  });
-
-  test("Zaraz stores only the purposes it lists in getAll", () => {
-    expect(zarazStores(zaraz(["aNaL"]), ["aNaL", "aDs"])).toEqual(["aNaL"]);
-  });
-});
-
-describe("the visitor's answer", () => {
-  test("the site's cookie first, then Zaraz, else declined", () => {
-    const api = zaraz(["aNaL"]);
-    api.saved.aNaL = true;
-    const site = `${SITE_CONSENT_COOKIE}=${encodeURIComponent('{"aDs":true}')}`;
-    expect(currentChoice(api, site, "aDs")).toBe(true);
-    expect(currentChoice(api, site, "aNaL")).toBe(true);
-    expect(currentChoice(null, "", "aNaL")).toBe(false);
+  test("a year, this site only, Secure on https", () => {
+    const text = siteConsentCookie({ ads: false }, true);
+    expect(text).toContain("Max-Age=31536000");
+    expect(text).toContain("SameSite=Lax");
+    expect(text).toContain("Secure");
+    expect(text).not.toContain("Domain=");
+    expect(siteConsentCookie({}, false)).not.toContain("Secure");
   });
 });

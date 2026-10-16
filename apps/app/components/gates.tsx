@@ -28,7 +28,9 @@ export const RequireAuth = ({ children }: GateProps) => {
     if (!(loading || user)) {
       router.replace({
         pathname: "/sign-in",
-        query: { next: `${pathname}${window.location.search}` },
+        query: {
+          next: `${pathname}${window.location.search}${window.location.hash}`,
+        },
       });
     }
   }, [loading, pathname, router, user]);
@@ -38,10 +40,17 @@ export const RequireAuth = ({ children }: GateProps) => {
 
 /**
  * Where people verified as a partner's members (not Society members) may
- * go: the Journal (calls opened to their partner), their profile, their
- * service and certificates. Row Level Security still decides every row.
+ * go: Waraq (calls opened to their partner), their profile, their service
+ * and certificates (and /journal, Waraq's old address, which forwards).
+ * Row Level Security still decides every row.
  */
-const GUEST_PATHS = ["/journal", "/profile", "/service", "/certificate"];
+const GUEST_PATHS = [
+  "/waraq",
+  "/journal",
+  "/profile",
+  "/service",
+  "/certificate",
+];
 
 export const isGuestPath = (pathname: string) =>
   GUEST_PATHS.some(
@@ -87,7 +96,9 @@ export const RequireMember = ({ children }: GateProps) => {
     if (needsSetup && profile.data) {
       router.replace({
         pathname: "/setup",
-        query: { next: `${pathname}${window.location.search}` },
+        query: {
+          next: `${pathname}${window.location.search}${window.location.hash}`,
+        },
       });
     }
   }, [needsSetup, pathname, profile.data, router]);

@@ -21,7 +21,7 @@ import { Link } from "@repo/internationalization/navigation";
 import { events, localized, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
-import { type FormEvent, useState } from "react";
+import { type FormEvent, useEffect, useState } from "react";
 import { queryKeys, useMyRsvps, useMyWaitlist } from "@/lib/queries";
 import { EmptyLine, ErrorState, SectionSpinner } from "../states";
 
@@ -125,6 +125,16 @@ export const EventsBrowser = () => {
   const [notice, setNotice] = useState<{ id: string; key: NoticeKey } | null>(
     null
   );
+
+  // auibsal.org's event pages link to /events#<slug>: the list arrives after
+  // the page, so scroll to that event once it is there.
+  const loaded = Boolean(upcoming.data);
+  useEffect(() => {
+    const slug = decodeURIComponent(window.location.hash.slice(1));
+    if (loaded && slug) {
+      document.getElementById(slug)?.scrollIntoView({ block: "start" });
+    }
+  }, [loaded]);
 
   const refresh = () =>
     Promise.all([

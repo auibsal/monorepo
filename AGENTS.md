@@ -154,11 +154,12 @@ any schema change. Integration tests run against a local stack with
   `library`) are reached only through signed URLs issued by `apps/api`.
 - **Analytics:** on `apps/web` only (owner, Oct 15, 2026): Google Tag Manager
   with GA4 inside it, served from auibsal.org by the Google tag gateway
-  (Cloudflare), consent from Cloudflare Zaraz through Google consent mode
-  (everything denied until the visitor allows analytics; the ad signals only
-  with the separate Advertising purpose). Nothing loads until
-  `NEXT_PUBLIC_GTM_ID` (or `NEXT_PUBLIC_GA_ID`) is set; never add GA4 as a
-  Zaraz tool too (it would count every visit twice). Record events with
+  (Cloudflare), consent from the site's own card (cookie `sal_consent`)
+  through Google consent mode (everything denied until the visitor allows
+  analytics; the ad signals only with the separate Advertising choice).
+  Nothing loads until `NEXT_PUBLIC_GTM_ID` (or `NEXT_PUBLIC_GA_ID`) is set.
+  No third-party consent tool: Cloudflare Zaraz stays off (owner, Oct 16,
+  2026). Record events with
   `track()` from `@repo/analytics/client`. Runbook:
   `docs/platform/analytics.md`.
 - **Ads:** in Waraq on `apps/web` only, never for signed-in visitors (owner,

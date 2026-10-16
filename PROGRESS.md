@@ -11,10 +11,11 @@ Branch: `claude/new-session-qosn60`.
 
 - [ ] **Analytics (owner, 2026-10-15: Zaraz, Cloudflare consent, the Google
       tag gateway, GA4 and GTM):** live since 2026-10-16 (GTM-PWRQNN7H,
-      gateway at `/metrics`, Zaraz purpose `nOag`; checked in a browser:
-      no `_ga` cookie before consent, granted after Allow). Left in
-      Cloudflare: Zaraz → Consent, turn **Show consent modal** and **IAB
-      TCF** off (the site shows its own card); turn off Web Analytics'
+      gateway at `/metrics`; checked in a browser: no `_ga` cookie before
+      consent, granted after Allow). Consent is now the site's own card
+      alone (2026-10-16). Left in Cloudflare: disable **Zaraz** (no longer
+      used); in Vercel → sal-web, delete `NEXT_PUBLIC_ZARAZ_ANALYTICS_PURPOSE`
+      and `NEXT_PUBLIC_ZARAZ_ADS_PURPOSE`; turn off Web Analytics'
       automatic setup (the CSP blocks its beacon); let the site's HSTS header
       through (Cloudflare shortens it to 6 months). In GitHub, add
       `BACKUP_PASSPHRASE` to the production environment (backups fail
@@ -25,9 +26,8 @@ Branch: `claude/new-session-qosn60`.
       and sponsor ads work as soon as officers write them (Nexus →
       Administration → Ads). AdSense stays off until you follow
       `docs/platform/ads.md`: apply at AdSense, block the sensitive categories
-      the Policy Manual rules out (11.3), add an Advertising purpose in Zaraz,
-      then set `NEXT_PUBLIC_ADSENSE_CLIENT`, `NEXT_PUBLIC_ADSENSE_SLOT` and
-      `NEXT_PUBLIC_ZARAZ_ADS_PURPOSE` on sal-web. The Council decides who
+      the Policy Manual rules out (11.3), then set
+      `NEXT_PUBLIC_ADSENSE_CLIENT` and `NEXT_PUBLIC_ADSENSE_SLOT` on sal-web. The Council decides who
       receives AdSense payments and records it.
 
 - [ ] **Old news table:** `content.news_posts` is no longer used (the old
@@ -413,7 +413,7 @@ These stop parts of the work. Everything else continues around them.
   `production` scope and the Production Lead role run one production;
   hours become recorded service, a closed production drafts certificates
   for its credited members, and the lead signs the Program Report (F-25,
-  section B). Public page: auibsal.org/productions (footer).
+  section B). Public page: auibsal.org/programs/productions (footer, and linked from Programs).
 - Forms (Oct 9, 2026): one engine for every form not built into its own
   module (F-03, F-04, F-06, F-09, F-10, F-11, F-13, F-14, F-17, F-19, F-20,
   F-24, F-25 A, F-27, F-29). `governance.form_types` says who may fill
@@ -706,6 +706,11 @@ Covered by automated tests so far:
 
 ## needs-native-review (Arabic written for the platform)
 
+- Streamlining (2026-10-16): `nexus.nav.documents` and `nexus.documents.title`
+  («المكتبة»), `web.programmes.care`, `web.programmes.productions`,
+  `web.productions.allPrograms`, `web.nav.openNexus`, `web.governance.*`,
+  `web.footer.governance`, `web.about.governance`, `web.search.kinds.production`,
+  `web.search.lede`, `nexus.nav.paperwork`, `web.games.guess.streak`.
 - Analytics (2026-10-15): `web.footer.cookieSettings` and the new
   `web.privacy.platform.analyticsOn`; the consent card, `web.consent.*`
   (2026-10-16).
