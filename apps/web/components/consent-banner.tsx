@@ -2,11 +2,11 @@
 
 import {
   CONSENT_SAVED,
-  currentChoice,
+  type ConsentPurpose,
   hasChoice,
   OPEN_CONSENT,
   saveChoice,
-  zarazConsent,
+  siteChoices,
 } from "@repo/analytics/consent";
 import { Button } from "@repo/design-system/components/ui/button";
 import { Checkbox } from "@repo/design-system/components/ui/checkbox";
@@ -16,18 +16,15 @@ import { XIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useId, useRef, useState } from "react";
 
-/** The Zaraz consent purposes the site asks about. */
-export interface ConsentPurposes {
-  ads?: string;
-  analytics?: string;
-}
+/** Which purposes the site asks about (what is switched on). */
+export type ConsentPurposes = Record<ConsentPurpose, boolean>;
 
 interface ConsentBannerProps {
   readonly purposes: ConsentPurposes;
 }
 
 type State = "hidden" | "first" | "choose";
-type Topic = keyof ConsentPurposes;
+type Topic = ConsentPurpose;
 
 const topics = (purposes: ConsentPurposes) =>
   (["analytics", "ads"] as const).filter((topic) => purposes[topic]);
@@ -36,9 +33,8 @@ const topics = (purposes: ConsentPurposes) =>
  * The consent card: pinned to the bottom of the page, never in the way of
  * the page itself. It asks until the visitor has answered for every purpose,
  * and again from "Cookie settings" in the footer. The answers are kept in the
- * site's own consent cookie and passed on to Cloudflare Zaraz where Zaraz
- * stores them (its own consent window stays off); the boot script passes
- * them on to Google consent mode.
+ * site's own consent cookie, which the boot script passes on to Google
+ * consent mode.
  */
 export const ConsentBanner = ({ purposes }: ConsentBannerProps) => {
   const t = useTranslations("web.consent");
@@ -52,51 +48,31 @@ export const ConsentBanner = ({ purposes }: ConsentBannerProps) => {
   const card = useRef<HTMLElement>(null);
   const opener = useRef<HTMLElement | null>(null);
   const asked = topics(purposes);
-  const key = asked.map((topic) => purposes[topic] ?? "").join(",");
+  const key = asked.join(",");
 
   useEffect(() => {
-    const purposeIds = key.split(",").filter(Boolean);
+    const askedTopics = key.split(",").filter(Boolean) as Topic[];
     const allAnswered = () =>
-      purposeIds.every((purpose) => hasChoice(document.cookie, purpose));
-    const ready = () => {
-      const api = zarazConsent();
-      if (!api) {
-        return;
-      }
-      // Only this card asks; never Zaraz's window on top of the page.
-      if (api.modal) {
-        api.modal = false;
-      }
-      if (purposeIds.length > 0 && !allAnswered()) {
-        setState((now) => (now === "hidden" ? "first" : now));
-      }
-    };
+      askedTopics.every((topic) => hasChoice(document.cookie, topic));
+    if (askedTopics.length > 0 && !allAnswered()) {
+      setState((now) => (now === "hidden" ? "first" : now));
+    }
     const open = () => {
-      const api = zarazConsent();
-      if (!api) {
-        return;
-      }
       opener.current =
         document.activeElement instanceof HTMLElement
           ? document.activeElement
           : null;
-      const isAllowed = (purpose: string | undefined) =>
-        Boolean(purpose && currentChoice(api, document.cookie, purpose));
+      const choices = siteChoices(document.cookie);
       setAllowed({
-        ads: isAllowed(purposes.ads),
-        analytics: isAllowed(purposes.analytics),
+        ads: choices.ads === true,
+        analytics: choices.analytics === true,
       });
       setAnswered(allAnswered());
       setState("choose");
     };
-    ready();
-    document.addEventListener("zarazConsentAPIReady", ready);
     document.addEventListener(OPEN_CONSENT, open);
-    return () => {
-      document.removeEventListener("zarazConsentAPIReady", ready);
-      document.removeEventListener(OPEN_CONSENT, open);
-    };
-  }, [key, purposes.ads, purposes.analytics]);
+    return () => document.removeEventListener(OPEN_CONSENT, open);
+  }, [key]);
 
   useEffect(() => {
     // Opened from the footer or "Choose": take the visitor to the card.
@@ -113,10 +89,7 @@ export const ConsentBanner = ({ purposes }: ConsentBannerProps) => {
 
   const save = (choice: Record<Topic, boolean>) => {
     saveChoice(
-      zarazConsent(),
-      Object.fromEntries(
-        asked.map((topic) => [purposes[topic] ?? "", choice[topic]])
-      ),
+      Object.fromEntries(asked.map((topic) => [topic, choice[topic]])),
       {
         read: () => document.cookie,
         write: (cookie) => {

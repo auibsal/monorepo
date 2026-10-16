@@ -11,10 +11,11 @@ Branch: `claude/new-session-qosn60`.
 
 - [ ] **Analytics (owner, 2026-10-15: Zaraz, Cloudflare consent, the Google
       tag gateway, GA4 and GTM):** live since 2026-10-16 (GTM-PWRQNN7H,
-      gateway at `/metrics`, Zaraz purpose `nOag`; checked in a browser:
-      no `_ga` cookie before consent, granted after Allow). Left in
-      Cloudflare: Zaraz → Consent, turn **Show consent modal** and **IAB
-      TCF** off (the site shows its own card); turn off Web Analytics'
+      gateway at `/metrics`; checked in a browser: no `_ga` cookie before
+      consent, granted after Allow). Consent is now the site's own card
+      alone (2026-10-16). Left in Cloudflare: disable **Zaraz** (no longer
+      used); in Vercel → sal-web, delete `NEXT_PUBLIC_ZARAZ_ANALYTICS_PURPOSE`
+      and `NEXT_PUBLIC_ZARAZ_ADS_PURPOSE`; turn off Web Analytics'
       automatic setup (the CSP blocks its beacon); let the site's HSTS header
       through (Cloudflare shortens it to 6 months). In GitHub, add
       `BACKUP_PASSPHRASE` to the production environment (backups fail
@@ -25,9 +26,8 @@ Branch: `claude/new-session-qosn60`.
       and sponsor ads work as soon as officers write them (Nexus →
       Administration → Ads). AdSense stays off until you follow
       `docs/platform/ads.md`: apply at AdSense, block the sensitive categories
-      the Policy Manual rules out (11.3), add an Advertising purpose in Zaraz,
-      then set `NEXT_PUBLIC_ADSENSE_CLIENT`, `NEXT_PUBLIC_ADSENSE_SLOT` and
-      `NEXT_PUBLIC_ZARAZ_ADS_PURPOSE` on sal-web. The Council decides who
+      the Policy Manual rules out (11.3), then set
+      `NEXT_PUBLIC_ADSENSE_CLIENT` and `NEXT_PUBLIC_ADSENSE_SLOT` on sal-web. The Council decides who
       receives AdSense payments and records it.
 
 - [ ] **Old news table:** `content.news_posts` is no longer used (the old

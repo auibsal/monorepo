@@ -3,6 +3,7 @@ import { localizedPath } from "@repo/internationalization";
 import { Link } from "@repo/internationalization/navigation";
 import { getLocale, getTranslations } from "next-intl/server";
 import { CookieSettings } from "@/components/cookie-settings";
+import { askedConsent } from "@/lib/consent";
 import { MUTANABBI } from "@/lib/verse";
 
 const INSTAGRAM = "https://www.instagram.com/auibsal";
@@ -79,7 +80,10 @@ export const Footer = async () => {
                 </a>
               </li>
             ) : null}
-            {links[0][0] === "/contact" ? <CookieSettings /> : null}
+            {links[0][0] === "/contact" &&
+            Object.values(askedConsent()).some(Boolean) ? (
+              <CookieSettings />
+            ) : null}
           </ul>
         ))}
       </div>

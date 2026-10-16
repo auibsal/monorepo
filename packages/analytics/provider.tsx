@@ -12,13 +12,9 @@ const analyticsSettings = () => {
   const env = keys();
   return {
     adsense: Boolean(env.NEXT_PUBLIC_ADSENSE_CLIENT),
-    adsPurpose: env.NEXT_PUBLIC_ADSENSE_CLIENT
-      ? env.NEXT_PUBLIC_ZARAZ_ADS_PURPOSE
-      : undefined,
     gaId: env.NEXT_PUBLIC_GA_ID,
     gatewayPath: env.NEXT_PUBLIC_TAG_GATEWAY_PATH,
     gtmId: env.NEXT_PUBLIC_GTM_ID,
-    zarazPurpose: env.NEXT_PUBLIC_ZARAZ_ANALYTICS_PURPOSE,
   };
 };
 
@@ -26,7 +22,7 @@ const analyticsSettings = () => {
  * Analytics for the public site: Google Tag Manager (GA4 is configured in
  * the container) or GA4 alone, loaded only when NEXT_PUBLIC_GTM_ID or
  * NEXT_PUBLIC_GA_ID is set, through the Google tag gateway when
- * NEXT_PUBLIC_TAG_GATEWAY_PATH is set. Consent comes from Cloudflare Zaraz;
+ * NEXT_PUBLIC_TAG_GATEWAY_PATH is set. Consent comes from the site's own card;
  * nothing is stored until the visitor allows analytics, and no ad cookies
  * until they allow advertising (Waraq's AdSense ads). Render once, in
  * apps/web's layout.

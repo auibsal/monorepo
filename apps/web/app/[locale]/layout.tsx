@@ -14,7 +14,7 @@ import {
 import type { ReactNode } from "react";
 import { ConsentBanner } from "@/components/consent-banner";
 import { ConsoleNote } from "@/components/console-note";
-import { env } from "@/env";
+import { askedConsent } from "@/lib/consent";
 import { JsonLd, organization } from "@/lib/json-ld";
 import { Footer } from "./components/footer";
 import { Header } from "./components/header";
@@ -41,17 +41,7 @@ const RootLayout = async ({ children, params }: RootLayoutProperties) => {
   const t = await getTranslations({ locale, namespace: "common" });
   // Client components only need the shared and public-site texts.
   const { common, web } = await getMessages();
-  // The consent card asks about what is switched on and has a Zaraz purpose:
-  // analytics (GTM or GA4) and advertising (Waraq's AdSense ads).
-  const consentPurposes = {
-    ads: env.NEXT_PUBLIC_ADSENSE_CLIENT
-      ? env.NEXT_PUBLIC_ZARAZ_ADS_PURPOSE
-      : undefined,
-    analytics:
-      env.NEXT_PUBLIC_GTM_ID || env.NEXT_PUBLIC_GA_ID
-        ? env.NEXT_PUBLIC_ZARAZ_ANALYTICS_PURPOSE
-        : undefined,
-  };
+  const consentPurposes = askedConsent();
 
   return (
     <html className={fonts} dir={dir} lang={locale}>

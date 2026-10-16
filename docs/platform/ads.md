@@ -30,8 +30,8 @@ signed in to the Nexus sees none. There are three kinds:
   Nexus session cookie is present, which works because the sign-in cookie is
   shared with auibsal.org (`NEXT_PUBLIC_AUTH_COOKIE_DOMAIN=.auibsal.org`). This
   check only decides what the page shows; it controls no access.
-- **Consent.** The consent card asks about **Analytics** and **Advertising**
-  (a second Zaraz purpose). Until a visitor allows Advertising, Google's ad
+- **Consent.** Once AdSense is set up, the consent card asks about
+  **Analytics** and **Advertising**. Until a visitor allows Advertising, Google's ad
   signals (`ad_storage`, `ad_user_data`, `ad_personalization`) stay denied:
   AdSense then shows limited ads that use no cookies and are not chosen for
   the visitor. Society and sponsor ads use no cookies at all.
@@ -57,21 +57,15 @@ Only the owner or the technical administrator holds these accounts.
    dating, politics, religion, get-rich-quick and anything else the Council
    would not accept from a sponsor (11.3). Under General categories, also
    block what does not suit a student paper.
-5. **Add the advertising consent purpose.** In Cloudflare, open auibsal.org →
-   **Zaraz** → **Consent** and add a second purpose, **Advertising**, described
-   as "Ad cookies and ads chosen for you in Waraq". Copy its **ID**. Under
-   **Assign purposes to tools**, assign nothing to it (AdSense is not a
-   Zaraz tool).
-6. **Tell the site.** In Vercel → **sal-web** → **Settings** → **Environment
+5. **Tell the site.** In Vercel → **sal-web** → **Settings** → **Environment
    Variables** (Production), set the following, then redeploy:
 
    | Variable | Value |
    | --- | --- |
    | `NEXT_PUBLIC_ADSENSE_CLIENT` | `ca-pub-…` |
    | `NEXT_PUBLIC_ADSENSE_SLOT` | the ad unit's slot number |
-   | `NEXT_PUBLIC_ZARAZ_ADS_PURPOSE` | the Advertising purpose ID |
-
-7. **Ask Google to review the site.** Once
+   
+6. **Ask Google to review the site.** Once
    `https://auibsal.org/ads.txt` shows the publisher line, request the
    review in AdSense. Ads stay blank until Google approves the site.
 
