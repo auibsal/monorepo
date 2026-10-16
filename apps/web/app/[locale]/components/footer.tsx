@@ -22,6 +22,7 @@ export const Footer = async () => {
       ["/waraq/news", tn("news")],
       ["/newsletter", t("newsletter")],
       ["/documents", tn("documents")],
+      ["/governance", t("governance")],
       ["/partners", t("partners")],
       ["/programs/productions", t("productions")],
       ["/search", t("search")],

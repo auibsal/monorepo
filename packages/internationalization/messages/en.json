@@ -3408,7 +3408,8 @@
       "partners": "Partners",
       "productions": "Productions",
       "newsletter": "Newsletter",
-      "cookieSettings": "Cookie settings"
+      "cookieSettings": "Cookie settings",
+      "governance": "Governance"
     },
     "consent": {
       "title": "Cookies",
@@ -3634,7 +3635,8 @@
         }
       },
       "nonPartisan": "Our Society is non-partisan and non-sectarian. Your writing and art can explore anything human. The Society itself takes no side in party or sect.",
-      "documents": "Read the founding documents"
+      "documents": "Read the founding documents",
+      "governance": "Council, resolutions and elections"
     },
     "join": {
       "title": "Join the Society",
@@ -4022,6 +4024,25 @@
         "invalid": "This link is not valid.",
         "failed": "Something went wrong. Try again later."
       }
+    },
+    "governance": {
+      "title": "Governance",
+      "lede": "Who sits on the Council, what the Society has adopted, and whom members elected.",
+      "council": "The Council",
+      "councilEmpty": "The Council roster appears here once officers take office.",
+      "resolutions": "Adopted resolutions",
+      "resolutionsEmpty": "No resolutions have been adopted yet.",
+      "body": {
+        "council": "Council",
+        "general_assembly": "General Assembly"
+      },
+      "votes": "{for} for, {against} against, {abstain} abstaining",
+      "elections": "Election results",
+      "electionsEmpty": "Results appear here once the Elections Committee publishes them.",
+      "turnout": "{counted} ballots from {eligible} eligible voters",
+      "reopened": "Re-open nominations: the office will be filled again",
+      "rules": "How the Council works and how elections run is set out in the Constitution and the Bylaws.",
+      "documents": "Read the documents"
     }
   }
 }

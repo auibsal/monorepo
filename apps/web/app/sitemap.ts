@@ -31,6 +31,7 @@ const staticPaths = [
   "/programs/side-quest/care",
   "/events",
   "/documents",
+  "/governance",
   "/partners",
   "/programs/productions",
 ];

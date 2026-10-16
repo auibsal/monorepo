@@ -12,6 +12,7 @@ type SectionNamespace =
   | "web.care"
   | "web.contact"
   | "web.give"
+  | "web.governance"
   | "web.join"
   | "web.mediaKit"
   | "web.partners"

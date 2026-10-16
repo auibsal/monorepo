@@ -43,3 +43,22 @@ export const castBallot = async (
 
 export const councilRoster = async (client: Client) =>
   unwrap(await client.schema("governance").rpc("council_roster")) ?? [];
+
+/** Resolutions the Council or the General Assembly adopted, newest first. */
+export const adoptedResolutions = async (client: Client) =>
+  unwrap(
+    await client
+      .schema("governance")
+      .from("resolutions")
+      .select(
+        "id, code, title_en, title_ar, body, adopted_on, votes_for, votes_against, votes_abstain"
+      )
+      .eq("status", "adopted")
+      .order("adopted_on", { ascending: false })
+      .limit(50)
+  ) ?? [];
+
+/** Who was elected in each published election (no other candidates). */
+export const publicElectionResults = async (client: Client) =>
+  unwrap(await client.schema("governance").rpc("public_election_results")) ??
+  [];

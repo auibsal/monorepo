@@ -2786,6 +2786,23 @@ export type Database = {
         Returns: string;
       };
       open_voting: { Args: { election_id: string }; Returns: number };
+      public_election_results: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          ballots_counted: number;
+          election_id: string;
+          election_title_ar: string;
+          election_title_en: string;
+          eligible_count: number;
+          position_sort: number;
+          position_title_ar: string;
+          position_title_en: string;
+          ron_won: boolean;
+          voting_closes_at: string;
+          winner_name_ar: string;
+          winner_name_en: string;
+        }[];
+      };
       public_partners: {
         Args: Record<PropertyKey, never>;
         Returns: {

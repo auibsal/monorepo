@@ -16,6 +16,7 @@ export const cacheTags = [
   "partners",
   "certificates",
   "productions",
+  "governance",
 ] as const;
 export type CacheTag = (typeof cacheTags)[number];
 
