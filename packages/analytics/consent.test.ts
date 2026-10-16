@@ -1,5 +1,5 @@
 import { describe, expect, test, vi } from "vitest";
-import { hasChoice, saveChoice } from "./consent";
+import { hasChoice, knownPurposes, saveChoice } from "./consent";
 
 describe("has the visitor answered", () => {
   test("not before Zaraz has stored a choice", () => {
@@ -40,5 +40,22 @@ describe("saving the answer", () => {
     saveChoice(api, { aDs: false, aNaL: true });
     expect(api.set).toHaveBeenLastCalledWith({ aDs: false, aNaL: true });
     expect(api.sendQueuedEvents).toHaveBeenCalledOnce();
+  });
+
+  test("sends only the purposes Zaraz has, and survives Zaraz refusing", () => {
+    const api = {
+      get: vi.fn(),
+      modal: false,
+      purposes: { aNaL: {} },
+      set: vi.fn(),
+    };
+    expect(knownPurposes(api, ["aNaL", "aDs"])).toEqual(["aNaL"]);
+    expect(saveChoice(api, { aDs: true, aNaL: true })).toBe(true);
+    expect(api.set).toHaveBeenLastCalledWith({ aNaL: true });
+    expect(saveChoice(api, { aDs: true })).toBe(false);
+    api.set.mockImplementation(() => {
+      throw new Error("Unknown purpose id");
+    });
+    expect(saveChoice(api, { aNaL: false })).toBe(false);
   });
 });

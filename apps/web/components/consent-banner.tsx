@@ -2,6 +2,7 @@
 
 import {
   hasChoice,
+  knownPurposes,
   OPEN_CONSENT,
   saveChoice,
   zarazConsent,
@@ -48,14 +49,19 @@ export const ConsentBanner = ({ purposes }: ConsentBannerProps) => {
   const [answered, setAnswered] = useState(false);
   const card = useRef<HTMLElement>(null);
   const opener = useRef<HTMLElement | null>(null);
-  const asked = topics(purposes);
-  const ids = asked.map((topic) => purposes[topic] ?? "");
-  const key = ids.join(",");
+  // The purposes Zaraz has; one set on the site but missing in Zaraz is not
+  // asked about (Zaraz would refuse the whole answer).
+  const [known, setKnown] = useState<string[]>([]);
+  const configured = topics(purposes);
+  const key = configured.map((topic) => purposes[topic] ?? "").join(",");
+  const asked = configured.filter((topic) =>
+    known.includes(purposes[topic] ?? "")
+  );
 
   useEffect(() => {
     const purposeIds = key.split(",");
-    const allAnswered = () =>
-      purposeIds.every((purpose) => hasChoice(document.cookie, purpose));
+    const allAnswered = (ids: string[]) =>
+      ids.every((purpose) => hasChoice(document.cookie, purpose));
     const ready = () => {
       const api = zarazConsent();
       if (!api) {
@@ -65,7 +71,9 @@ export const ConsentBanner = ({ purposes }: ConsentBannerProps) => {
       if (api.modal) {
         api.modal = false;
       }
-      if (!allAnswered()) {
+      const ids = knownPurposes(api, purposeIds);
+      setKnown(ids);
+      if (ids.length > 0 && !allAnswered(ids)) {
         setState((now) => (now === "hidden" ? "first" : now));
       }
     };
@@ -78,13 +86,15 @@ export const ConsentBanner = ({ purposes }: ConsentBannerProps) => {
         document.activeElement instanceof HTMLElement
           ? document.activeElement
           : null;
+      const ids = knownPurposes(api, purposeIds);
+      const isAllowed = (purpose: string | undefined) =>
+        Boolean(purpose && ids.includes(purpose) && api.get(purpose) === true);
       setAllowed({
-        ads: Boolean(purposes.ads && api.get(purposes.ads) === true),
-        analytics: Boolean(
-          purposes.analytics && api.get(purposes.analytics) === true
-        ),
+        ads: isAllowed(purposes.ads),
+        analytics: isAllowed(purposes.analytics),
       });
-      setAnswered(allAnswered());
+      setKnown(ids);
+      setAnswered(allAnswered(ids));
       setState("choose");
     };
     ready();
@@ -126,7 +136,7 @@ export const ConsentBanner = ({ purposes }: ConsentBannerProps) => {
     return null;
   }
 
-  const body = purposes.ads ? t("bodyWithAds") : t("body");
+  const body = asked.includes("ads") ? t("bodyWithAds") : t("body");
 
   return (
     <section

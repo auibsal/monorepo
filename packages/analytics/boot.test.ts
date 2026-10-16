@@ -159,4 +159,34 @@ describe("consent", () => {
   test("a value cannot break out of the script", () => {
     expect(bootScript({ gaId: "G-</script><b>" })).not.toContain("</script>");
   });
+
+  test("a purpose Zaraz does not have stays denied and breaks nothing", () => {
+    const window: Record<string, unknown> = {
+      document: { addEventListener: () => undefined },
+    };
+    window.window = window;
+    window.zaraz = {
+      consent: {
+        get: (id: string) => {
+          if (id !== "aNaL") {
+            throw new Error(`Unknown purpose id: ${id}`);
+          }
+          return true;
+        },
+      },
+    };
+    runInNewContext(
+      bootScript({
+        adsPurpose: "aDs",
+        gtmId: "GTM-ABC1",
+        zarazPurpose: "aNaL",
+      }),
+      window
+    );
+    const layer = (window.dataLayer as ArrayLike<unknown>[]).map((e) =>
+      Array.from(e)
+    );
+    expect(lastSignal(layer, "analytics_storage")).toBe("granted");
+    expect(lastSignal(layer, "ad_storage")).toBe("denied");
+  });
 });
