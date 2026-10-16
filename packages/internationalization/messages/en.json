@@ -3823,7 +3823,7 @@
     },
     "search": {
       "title": "Search",
-      "lede": "Search events, news, Waraq and the founding documents.",
+      "lede": "Search events, news, Waraq, productions and the founding documents.",
       "label": "Search the site",
       "placeholder": "A title, a name, a word",
       "submit": "Search",
@@ -3834,7 +3834,8 @@
         "event": "Event",
         "news": "News",
         "piece": "Waraq",
-        "document": "Document"
+        "document": "Document",
+        "production": "Production"
       }
     },
     "partners": {
