@@ -81,8 +81,9 @@ export const SignInForm = () => {
     inFlight.current = true;
     setPending(true);
     setError(undefined);
-    const result = await signInWithPasskey(supabase);
+    const result = await signInWithPasskey(supabase, human.token);
     inFlight.current = false;
+    human.reset();
     setPending(false);
     if (!result.ok) {
       setError(passkeyErrorText(result.code));
@@ -156,7 +157,7 @@ export const SignInForm = () => {
           </Button>
           {canUsePasskey ? (
             <Button
-              disabled={pending}
+              disabled={pending || !human.ready}
               onClick={signInPasskey}
               type="button"
               variant="outline"

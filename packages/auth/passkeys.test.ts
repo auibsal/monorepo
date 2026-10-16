@@ -34,6 +34,9 @@ describe("passkey helpers", () => {
       "expired"
     );
     expect(toPasskeyError({ status: 429 })).toBe("rate_limited");
+    expect(toPasskeyError({ code: "captcha_failed", status: 400 })).toBe(
+      "human_check"
+    );
     expect(toPasskeyError(null)).toBe("unknown");
   });
 
@@ -112,5 +115,17 @@ describe("passkey helpers", () => {
     });
     await addPasskey(supabase, "   ");
     expect(update).not.toHaveBeenCalled();
+  });
+
+  test("sends the bot-check token with a passkey sign-in", async () => {
+    const signIn = vi.fn().mockResolvedValue({ data: {}, error: null });
+    const supabase = client({ signInWithPasskey: signIn });
+    expect(await signInWithPasskey(supabase, "token-1")).toEqual({
+      ok: true,
+      value: undefined,
+    });
+    expect(signIn).toHaveBeenCalledWith({
+      options: { captchaToken: "token-1" },
+    });
   });
 });

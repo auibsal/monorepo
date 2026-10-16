@@ -14,6 +14,7 @@ export type PasskeyErrorCode =
   | "already_registered"
   | "cancelled"
   | "expired"
+  | "human_check"
   | "rate_limited"
   | "unknown";
 
@@ -67,6 +68,9 @@ export const toPasskeyError = (
       return "already_registered";
     case "webauthn_challenge_expired":
       return "expired";
+    // Supabase Auth's bot check (Turnstile) had no token, or a used one.
+    case "captcha_failed":
+      return "human_check";
     case "over_request_rate_limit":
       return "rate_limited";
     default:
@@ -74,11 +78,18 @@ export const toPasskeyError = (
   }
 };
 
-/** Signs in with a passkey saved on this device or a nearby phone. */
+/**
+ * Signs in with a passkey saved on this device or a nearby phone. With
+ * Supabase Auth's bot check on (Attack Protection), passkey sign-in needs a
+ * Turnstile token too, like every other sign-in.
+ */
 export const signInWithPasskey = async (
-  supabase: Client
+  supabase: Client,
+  captchaToken?: string
 ): Promise<PasskeyResult> => {
-  const { error } = await supabase.auth.signInWithPasskey();
+  const { error } = await supabase.auth.signInWithPasskey(
+    captchaToken ? { options: { captchaToken } } : undefined
+  );
   return error
     ? { code: toPasskeyError(error), ok: false }
     : { ok: true, value: undefined };
