@@ -246,14 +246,26 @@ export const AppShell = ({ children }: { children: ReactNode }) => {
         {children}
       </main>
       <footer className="frame-t print:hidden">
-        <p className="type-caption mx-auto w-full max-w-6xl px-4 py-4">
-          <a
-            className="underline-offset-4 hover:underline"
-            href={`${project.hosts.web}${localizedPath(locale)}`}
-          >
-            {t("nexus.nav.publicSite")}
-          </a>
-        </p>
+        <ul className="type-caption mx-auto flex w-full max-w-6xl flex-wrap gap-x-6 gap-y-2 px-4 py-4">
+          {(
+            [
+              ["/", "publicSite"],
+              ["/waraq", "journal"],
+              ["/events", "events"],
+            ] as const
+          ).map(([path, key]) => (
+            <li key={key}>
+              <a
+                className="underline-offset-4 hover:underline"
+                href={`${project.hosts.web}${localizedPath(locale, path)}`}
+              >
+                {key === "publicSite"
+                  ? t("nexus.nav.publicSite")
+                  : `${t(`nexus.nav.${key}`)} · ${t("nexus.nav.publicSite")}`}
+              </a>
+            </li>
+          ))}
+        </ul>
       </footer>
     </div>
   );

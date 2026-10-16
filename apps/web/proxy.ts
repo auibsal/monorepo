@@ -7,7 +7,7 @@ export const config = {
   // matcher tells Next.js which routes to run the middleware on. This runs the
   // middleware on all routes except for static assets
   matcher: [
-    "/((?!api/|_next/static|_next/image|ingest|favicon.ico|robots.txt|ads.txt|sitemap.xml|.*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|pdf|docx?|xlsx?|zip|webmanifest)).*)",
+    "/((?!api/|_next/static|_next/image|ingest|favicon.ico|robots.txt|ads.txt|calendar.ics|sitemap.xml|.*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|pdf|docx?|xlsx?|zip|webmanifest)).*)",
   ],
 };
 

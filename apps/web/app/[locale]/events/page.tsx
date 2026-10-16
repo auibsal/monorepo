@@ -32,7 +32,7 @@ const EventsPage = async ({ params }: EventsProps) => {
     readPublished(["events"], (c) => events.publicEvents(c), []),
     readPublished(["events"], (c) => events.pastPublicEvents(c), []),
   ]);
-  const feed = `${project.hosts.api.replace(HTTP_SCHEME, "webcal:")}/calendar/sal.ics?lang=${locale}`;
+  const feed = `${project.hosts.web.replace(HTTP_SCHEME, "webcal:")}/calendar.ics?lang=${locale}`;
 
   return (
     <div className="mx-auto grid w-full max-w-4xl gap-12 px-4 py-16">

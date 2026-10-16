@@ -28,7 +28,9 @@ export const RequireAuth = ({ children }: GateProps) => {
     if (!(loading || user)) {
       router.replace({
         pathname: "/sign-in",
-        query: { next: `${pathname}${window.location.search}` },
+        query: {
+          next: `${pathname}${window.location.search}${window.location.hash}`,
+        },
       });
     }
   }, [loading, pathname, router, user]);
@@ -94,7 +96,9 @@ export const RequireMember = ({ children }: GateProps) => {
     if (needsSetup && profile.data) {
       router.replace({
         pathname: "/setup",
-        query: { next: `${pathname}${window.location.search}` },
+        query: {
+          next: `${pathname}${window.location.search}${window.location.hash}`,
+        },
       });
     }
   }, [needsSetup, pathname, profile.data, router]);

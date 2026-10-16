@@ -3395,7 +3395,8 @@
       "news": "News",
       "documents": "Documents",
       "signIn": "Sign in",
-      "nexus": "The Nexus"
+      "nexus": "The Nexus",
+      "openNexus": "Open the Nexus"
     },
     "footer": {
       "contact": "Contact",

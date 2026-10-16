@@ -1,5 +1,6 @@
 "use client";
 
+import { hasSessionCookie } from "@repo/auth/session-cookie";
 import { project } from "@repo/config";
 import { BrandLogo } from "@repo/design-system/components/brand-logo";
 import { Button } from "@repo/design-system/components/ui/button";
@@ -8,7 +9,7 @@ import { type Locale, locales } from "@repo/internationalization/config";
 import { Link, usePathname } from "@repo/internationalization/navigation";
 import { MenuIcon, XIcon } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 // Five sections in the header (v5); Give, News and Documents are in the footer.
 type SectionKey = "about" | "programs" | "journal" | "events" | "join";
@@ -31,7 +32,20 @@ export const Header = () => {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const other = (locales.find((l) => l !== locale) ?? locale) as Locale;
-  const nexus = `${project.hosts.app}${localizedPath(locale)}`;
+  // Signed in to the Nexus (the session cookie is shared with auibsal.org):
+  // the button opens the Nexus instead of asking to sign in. Read after the
+  // first render, so the page itself stays the same for everyone.
+  const [signedIn, setSignedIn] = useState(false);
+  useEffect(() => setSignedIn(hasSessionCookie(document.cookie)), []);
+  const account = signedIn
+    ? {
+        href: `${project.hosts.app}${localizedPath(locale)}`,
+        label: t("openNexus"),
+      }
+    : {
+        href: `${project.hosts.app}${localizedPath(locale, "/sign-in")}`,
+        label: t("signIn"),
+      };
 
   const links = (large: boolean) => (
     <ul className={large ? "grid gap-1" : "flex items-center gap-6"}>
@@ -76,7 +90,7 @@ export const Header = () => {
             {tc("otherLanguage")}
           </Link>
           <Button asChild className="hidden sm:inline-flex" size="sm">
-            <a href={`${nexus}/sign-in`}>{t("signIn")}</a>
+            <a href={account.href}>{account.label}</a>
           </Button>
           <Button
             aria-expanded={open}
@@ -101,7 +115,7 @@ export const Header = () => {
         >
           <nav aria-label={tc("society")}>{links(true)}</nav>
           <Button asChild className="mt-6 w-full" size="lg">
-            <a href={`${nexus}/sign-in`}>{t("signIn")}</a>
+            <a href={account.href}>{account.label}</a>
           </Button>
         </div>
       ) : null}
