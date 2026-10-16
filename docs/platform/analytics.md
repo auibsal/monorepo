@@ -19,11 +19,15 @@ consent mode (owner, Oct 15, 2026). The Nexus has no analytics.
   change their mind later, the site updates consent again. The advertising
   signals follow a separate Advertising purpose, used by Waraq's AdSense ads
   (`docs/platform/ads.md`); without it they stay denied.
-- **The site asks, Zaraz remembers.** A small card at the bottom of the page
-  (Allow or Decline, never in the way of the page) asks each new visitor.
-  The answer is stored by Zaraz through its Consent API; Zaraz's own
-  consent window stays off. **Cookie settings** in the footer reopens the
-  card. Both appear only where Zaraz consent runs.
+- **The site asks and remembers.** A small card at the bottom of the page
+  (never in the way of the page) asks each new visitor. Their answers are
+  kept in the site's own consent cookie, `sal_consent` (one year), and passed
+  on to Zaraz for each purpose Zaraz stores. Zaraz lists every purpose but
+  stores only some (in practice those with a Zaraz tool assigned; Advertising
+  has none), and it rejects a whole save that names one it doesn't store, so
+  the site sends Zaraz one purpose at a time. Zaraz's own consent window
+  stays off. **Cookie settings** in the footer reopens the card. Both appear
+  only where Zaraz consent runs.
 - **GA4 is never added as a Zaraz tool.** GTM already loads it, and adding it
   in Zaraz too would count every visit twice.
 

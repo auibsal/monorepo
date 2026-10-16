@@ -1,8 +1,9 @@
 "use client";
 
 import {
+  CONSENT_SAVED,
+  currentChoice,
   hasChoice,
-  knownPurposes,
   OPEN_CONSENT,
   saveChoice,
   zarazConsent,
@@ -34,9 +35,10 @@ const topics = (purposes: ConsentPurposes) =>
 /**
  * The consent card: pinned to the bottom of the page, never in the way of
  * the page itself. It asks until the visitor has answered for every purpose,
- * and again from "Cookie settings" in the footer. The answers are stored by
- * Cloudflare Zaraz (its own consent window stays off), and the boot script
- * passes them on to Google consent mode.
+ * and again from "Cookie settings" in the footer. The answers are kept in the
+ * site's own consent cookie and passed on to Cloudflare Zaraz where Zaraz
+ * stores them (its own consent window stays off); the boot script passes
+ * them on to Google consent mode.
  */
 export const ConsentBanner = ({ purposes }: ConsentBannerProps) => {
   const t = useTranslations("web.consent");
@@ -49,19 +51,13 @@ export const ConsentBanner = ({ purposes }: ConsentBannerProps) => {
   const [answered, setAnswered] = useState(false);
   const card = useRef<HTMLElement>(null);
   const opener = useRef<HTMLElement | null>(null);
-  // The purposes Zaraz has; one set on the site but missing in Zaraz is not
-  // asked about (Zaraz would refuse the whole answer).
-  const [known, setKnown] = useState<string[]>([]);
-  const configured = topics(purposes);
-  const key = configured.map((topic) => purposes[topic] ?? "").join(",");
-  const asked = configured.filter((topic) =>
-    known.includes(purposes[topic] ?? "")
-  );
+  const asked = topics(purposes);
+  const key = asked.map((topic) => purposes[topic] ?? "").join(",");
 
   useEffect(() => {
-    const purposeIds = key.split(",");
-    const allAnswered = (ids: string[]) =>
-      ids.every((purpose) => hasChoice(document.cookie, purpose));
+    const purposeIds = key.split(",").filter(Boolean);
+    const allAnswered = () =>
+      purposeIds.every((purpose) => hasChoice(document.cookie, purpose));
     const ready = () => {
       const api = zarazConsent();
       if (!api) {
@@ -71,9 +67,7 @@ export const ConsentBanner = ({ purposes }: ConsentBannerProps) => {
       if (api.modal) {
         api.modal = false;
       }
-      const ids = knownPurposes(api, purposeIds);
-      setKnown(ids);
-      if (ids.length > 0 && !allAnswered(ids)) {
+      if (purposeIds.length > 0 && !allAnswered()) {
         setState((now) => (now === "hidden" ? "first" : now));
       }
     };
@@ -86,15 +80,13 @@ export const ConsentBanner = ({ purposes }: ConsentBannerProps) => {
         document.activeElement instanceof HTMLElement
           ? document.activeElement
           : null;
-      const ids = knownPurposes(api, purposeIds);
       const isAllowed = (purpose: string | undefined) =>
-        Boolean(purpose && ids.includes(purpose) && api.get(purpose) === true);
+        Boolean(purpose && currentChoice(api, document.cookie, purpose));
       setAllowed({
         ads: isAllowed(purposes.ads),
         analytics: isAllowed(purposes.analytics),
       });
-      setKnown(ids);
-      setAnswered(allAnswered(ids));
+      setAnswered(allAnswered());
       setState("choose");
     };
     ready();
@@ -120,15 +112,20 @@ export const ConsentBanner = ({ purposes }: ConsentBannerProps) => {
   };
 
   const save = (choice: Record<Topic, boolean>) => {
-    const api = zarazConsent();
-    if (api) {
-      saveChoice(
-        api,
-        Object.fromEntries(
-          asked.map((topic) => [purposes[topic] ?? "", choice[topic]])
-        )
-      );
-    }
+    saveChoice(
+      zarazConsent(),
+      Object.fromEntries(
+        asked.map((topic) => [purposes[topic] ?? "", choice[topic]])
+      ),
+      {
+        read: () => document.cookie,
+        write: (cookie) => {
+          // biome-ignore lint/suspicious/noDocumentCookie: the site's own consent record
+          document.cookie = cookie;
+        },
+      }
+    );
+    document.dispatchEvent(new Event(CONSENT_SAVED));
     close();
   };
 
@@ -136,7 +133,7 @@ export const ConsentBanner = ({ purposes }: ConsentBannerProps) => {
     return null;
   }
 
-  const body = asked.includes("ads") ? t("bodyWithAds") : t("body");
+  const body = purposes.ads ? t("bodyWithAds") : t("body");
 
   return (
     <section
