@@ -33,7 +33,7 @@ test("a member sends work to Waraq and sees the reading timeline", async ({
   await page.getByLabel(/has not appeared in another journal/i).check();
   await page.getByRole("checkbox", { name: /human authorship/i }).check();
   await page.getByRole("button", { name: "Send my work" }).click();
-  await expect(page).toHaveURL(/\/journal\/submission/);
+  await expect(page).toHaveURL(/\/waraq\/submission/);
   await expect(page.getByRole("heading", { name: "Progress" })).toBeVisible();
   await expect(page.locator('[aria-current="step"]')).toContainText("Received");
   await expectAccessible(page);
