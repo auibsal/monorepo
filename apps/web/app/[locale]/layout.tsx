@@ -41,11 +41,17 @@ const RootLayout = async ({ children, params }: RootLayoutProperties) => {
   const t = await getTranslations({ locale, namespace: "common" });
   // Client components only need the shared and public-site texts.
   const { common, web } = await getMessages();
-  // The consent card runs only with analytics on and a Zaraz purpose set.
-  const consentPurpose =
-    env.NEXT_PUBLIC_GTM_ID || env.NEXT_PUBLIC_GA_ID
-      ? env.NEXT_PUBLIC_ZARAZ_ANALYTICS_PURPOSE
-      : undefined;
+  // The consent card asks about what is switched on and has a Zaraz purpose:
+  // analytics (GTM or GA4) and advertising (Waraq's AdSense ads).
+  const consentPurposes = {
+    ads: env.NEXT_PUBLIC_ADSENSE_CLIENT
+      ? env.NEXT_PUBLIC_ZARAZ_ADS_PURPOSE
+      : undefined,
+    analytics:
+      env.NEXT_PUBLIC_GTM_ID || env.NEXT_PUBLIC_GA_ID
+        ? env.NEXT_PUBLIC_ZARAZ_ANALYTICS_PURPOSE
+        : undefined,
+  };
 
   return (
     <html className={fonts} dir={dir} lang={locale}>
@@ -66,8 +72,8 @@ const RootLayout = async ({ children, params }: RootLayoutProperties) => {
               </main>
               <Footer />
               <ConsoleNote />
-              {consentPurpose ? (
-                <ConsentBanner purpose={consentPurpose} />
+              {consentPurposes.ads || consentPurposes.analytics ? (
+                <ConsentBanner purposes={consentPurposes} />
               ) : null}
             </DesignSystemProvider>
           </AnalyticsProvider>

@@ -5,6 +5,7 @@
   "type": "module",
   "exports": {
     ".": "./index.ts",
+    "./ads": "./ads.ts",
     "./charity": "./charity.ts",
     "./client": "./client.ts",
     "./content": "./content.ts",

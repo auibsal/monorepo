@@ -2852,6 +2852,72 @@ export type Database = {
   };
   journal: {
     Tables: {
+      ads: {
+        Row: {
+          action_ar: string | null;
+          action_en: string | null;
+          body_ar: string | null;
+          body_en: string | null;
+          created_at: string;
+          created_by: string | null;
+          ends_on: string | null;
+          headline_ar: string;
+          headline_en: string;
+          id: string;
+          image_alt_ar: string | null;
+          image_alt_en: string | null;
+          image_path: string | null;
+          is_published: boolean;
+          kind: string;
+          partner_id: string | null;
+          starts_on: string;
+          updated_at: string;
+          url: string;
+        };
+        Insert: {
+          action_ar?: string | null;
+          action_en?: string | null;
+          body_ar?: string | null;
+          body_en?: string | null;
+          created_at?: string;
+          created_by?: string | null;
+          ends_on?: string | null;
+          headline_ar?: string;
+          headline_en?: string;
+          id?: string;
+          image_alt_ar?: string | null;
+          image_alt_en?: string | null;
+          image_path?: string | null;
+          is_published?: boolean;
+          kind: string;
+          partner_id?: string | null;
+          starts_on?: string;
+          updated_at?: string;
+          url: string;
+        };
+        Update: {
+          action_ar?: string | null;
+          action_en?: string | null;
+          body_ar?: string | null;
+          body_en?: string | null;
+          created_at?: string;
+          created_by?: string | null;
+          ends_on?: string | null;
+          headline_ar?: string;
+          headline_en?: string;
+          id?: string;
+          image_alt_ar?: string | null;
+          image_alt_en?: string | null;
+          image_path?: string | null;
+          is_published?: boolean;
+          kind?: string;
+          partner_id?: string | null;
+          starts_on?: string;
+          updated_at?: string;
+          url?: string;
+        };
+        Relationships: [];
+      };
       agreements: {
         Row: {
           id: string;
@@ -3922,6 +3988,25 @@ export type Database = {
           title_en: string;
         };
         Returns: string;
+      };
+      current_ads: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          action_ar: string;
+          action_en: string;
+          body_ar: string;
+          body_en: string;
+          headline_ar: string;
+          headline_en: string;
+          id: string;
+          image_alt_ar: string;
+          image_alt_en: string;
+          image_path: string;
+          kind: string;
+          sponsor_ar: string;
+          sponsor_en: string;
+          url: string;
+        }[];
       };
       decide: {
         Args: { blind_entry_id: string; decision: string; notes?: string };

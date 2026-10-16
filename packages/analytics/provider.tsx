@@ -11,6 +11,10 @@ interface AnalyticsProviderProps {
 const analyticsSettings = () => {
   const env = keys();
   return {
+    adsense: Boolean(env.NEXT_PUBLIC_ADSENSE_CLIENT),
+    adsPurpose: env.NEXT_PUBLIC_ADSENSE_CLIENT
+      ? env.NEXT_PUBLIC_ZARAZ_ADS_PURPOSE
+      : undefined,
     gaId: env.NEXT_PUBLIC_GA_ID,
     gatewayPath: env.NEXT_PUBLIC_TAG_GATEWAY_PATH,
     gtmId: env.NEXT_PUBLIC_GTM_ID,
@@ -23,24 +27,25 @@ const analyticsSettings = () => {
  * the container) or GA4 alone, loaded only when NEXT_PUBLIC_GTM_ID or
  * NEXT_PUBLIC_GA_ID is set, through the Google tag gateway when
  * NEXT_PUBLIC_TAG_GATEWAY_PATH is set. Consent comes from Cloudflare Zaraz;
- * nothing is stored until the visitor allows analytics. No advertising
- * features. Render once, in apps/web's layout.
+ * nothing is stored until the visitor allows analytics, and no ad cookies
+ * until they allow advertising (Waraq's AdSense ads). Render once, in
+ * apps/web's layout.
  */
 export const AnalyticsProvider = ({ children }: AnalyticsProviderProps) => {
-  const settings = analyticsSettings();
+  const { adsense, ...settings } = analyticsSettings();
   const src = loaderSrc(settings);
 
+  // Consent mode is set up whenever Google loads anything: GTM or GA4, or
+  // Waraq's AdSense ads (which read the same consent signals).
   return (
     <>
       {children}
-      {src ? (
-        <>
-          <Script id="analytics-consent" strategy="afterInteractive">
-            {bootScript(settings)}
-          </Script>
-          <Script src={src} strategy="afterInteractive" />
-        </>
+      {src || adsense ? (
+        <Script id="analytics-consent" strategy="afterInteractive">
+          {bootScript(settings)}
+        </Script>
       ) : null}
+      {src ? <Script src={src} strategy="afterInteractive" /> : null}
     </>
   );
 };

@@ -7,7 +7,13 @@ import { journal, localized } from "@repo/sal-data";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { Byline, leadImage, PieceColumn } from "@/components/waraq/cards";
+import { WaraqAd } from "@/components/waraq/ad";
+import {
+  Byline,
+  leadImage,
+  PieceColumn,
+  pieceHref,
+} from "@/components/waraq/cards";
 import { CorrectionNotes, PieceBody, texts } from "@/components/waraq/layouts";
 import { Nameplate } from "@/components/waraq/nameplate";
 import { articleLd, JsonLd } from "@/lib/json-ld";
@@ -180,6 +186,9 @@ const PiecePage = async ({ params }: PieceProps) => {
           {t("firstPublished")}
         </p>
       </article>
+      <div className="mx-auto w-full max-w-3xl px-4">
+        <WaraqAd locale={locale} page={pieceHref(piece)} slot={0} />
+      </div>
       {related.length > 0 ? (
         <aside
           aria-labelledby="related"

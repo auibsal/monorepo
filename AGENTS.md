@@ -155,11 +155,17 @@ any schema change. Integration tests run against a local stack with
 - **Analytics:** on `apps/web` only (owner, Oct 15, 2026): Google Tag Manager
   with GA4 inside it, served from auibsal.org by the Google tag gateway
   (Cloudflare), consent from Cloudflare Zaraz through Google consent mode
-  (everything denied until the visitor allows analytics; advertising signals
-  always denied). Nothing loads until `NEXT_PUBLIC_GTM_ID` (or
-  `NEXT_PUBLIC_GA_ID`) is set; never add GA4 as a Zaraz tool too (it would
-  count every visit twice). Record events with `track()` from
-  `@repo/analytics/client`. Runbook: `docs/platform/analytics.md`.
+  (everything denied until the visitor allows analytics; the ad signals only
+  with the separate Advertising purpose). Nothing loads until
+  `NEXT_PUBLIC_GTM_ID` (or `NEXT_PUBLIC_GA_ID`) is set; never add GA4 as a
+  Zaraz tool too (it would count every visit twice). Record events with
+  `track()` from `@repo/analytics/client`. Runbook:
+  `docs/platform/analytics.md`.
+- **Ads:** in Waraq on `apps/web` only, never for signed-in visitors (owner,
+  Oct 16, 2026): Society ads, sponsor ads (only with a signed memorandum
+  granting `advertising`; Policy Manual 11.3 applies) and Google AdSense for
+  the rest. Readers get ads only through `journal.current_ads()`. No ads in
+  the Nexus, in emails or on other pages. Runbook: `docs/platform/ads.md`.
 - **Translations:** every UI string comes from
   `packages/internationalization/messages/{ar,en}.json`, checked by
   `bun run check:i18n`. Pass numbers and dates into messages already
