@@ -12,7 +12,9 @@ import {
   setRequestLocale,
 } from "next-intl/server";
 import type { ReactNode } from "react";
+import { ConsentBanner } from "@/components/consent-banner";
 import { ConsoleNote } from "@/components/console-note";
+import { env } from "@/env";
 import { JsonLd, organization } from "@/lib/json-ld";
 import { Footer } from "./components/footer";
 import { Header } from "./components/header";
@@ -39,6 +41,11 @@ const RootLayout = async ({ children, params }: RootLayoutProperties) => {
   const t = await getTranslations({ locale, namespace: "common" });
   // Client components only need the shared and public-site texts.
   const { common, web } = await getMessages();
+  // The consent card runs only with analytics on and a Zaraz purpose set.
+  const consentPurpose =
+    env.NEXT_PUBLIC_GTM_ID || env.NEXT_PUBLIC_GA_ID
+      ? env.NEXT_PUBLIC_ZARAZ_ANALYTICS_PURPOSE
+      : undefined;
 
   return (
     <html className={fonts} dir={dir} lang={locale}>
@@ -59,6 +66,9 @@ const RootLayout = async ({ children, params }: RootLayoutProperties) => {
               </main>
               <Footer />
               <ConsoleNote />
+              {consentPurpose ? (
+                <ConsentBanner purpose={consentPurpose} />
+              ) : null}
             </DesignSystemProvider>
           </AnalyticsProvider>
         </NextIntlClientProvider>

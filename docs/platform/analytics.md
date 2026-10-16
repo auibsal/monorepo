@@ -18,8 +18,11 @@ consent mode (owner, Oct 15, 2026). The Nexus has no analytics.
   the Zaraz purpose named in `NEXT_PUBLIC_ZARAZ_ANALYTICS_PURPOSE`. If they
   change their mind later, the site updates consent again. Advertising
   signals are never granted.
-- **Cookie settings in the footer** reopens the Zaraz consent window. The
-  link appears only where Zaraz runs.
+- **The site asks, Zaraz remembers.** A small card at the bottom of the page
+  (Allow or Decline, never in the way of the page) asks each new visitor.
+  The answer is stored by Zaraz through its Consent API; Zaraz's own
+  consent window stays off. **Cookie settings** in the footer reopens the
+  card. Both appear only where Zaraz consent runs.
 - **GA4 is never added as a Zaraz tool.** GTM already loads it, and adding it
   in Zaraz too would count every visit twice.
 
@@ -77,6 +80,11 @@ follow the steps. It connects to your Cloudflare account. If the Cloudflare
 dashboard offers the setup instead, search for "Google tag gateway" there.
 Choose the measurement path **`/metrics`**.
 
+Keep the gateway's **automatic tag injection off**: the site loads GTM
+itself, after it has set every consent signal to denied. Injected by
+Cloudflare, GTM loads before that default (and twice), and GA4 sets its
+cookies without consent.
+
 When it is done, `https://auibsal.org/metrics/gtm.js?id=GTM-…` should return
 JavaScript. If Google's setup screen shows a different script address, tell
 the developer; the site builds `<path>/gtm.js?id=…` and may need to match.
@@ -84,12 +92,15 @@ the developer; the site builds `<path>/gtm.js?id=…` and may need to match.
 ### 5. Turn on Zaraz consent
 
 1. In Cloudflare, open auibsal.org → **Zaraz** and enable it.
-2. In **Zaraz** → **Consent**, turn on **consent management**. Add one
-   purpose, **Analytics** ("Counting visits with Google Analytics; no
+2. In **Zaraz** → **Consent**, turn on **consent management**. Turn **Show
+   consent modal** and **Use IAB TCF compliant modal** off: the site shows
+   its own card. Add one purpose, **Analytics** ("Counting visits with Google Analytics; no
    advertising"), and give it an Arabic name and description if Zaraz
    offers translations.
 3. Copy the purpose's **ID**: a short code shown next to it.
-4. Do **not** add Google Analytics, or anything else that loads Google's
+4. Under **Assign purposes to tools**, give every tool (Cloudflare
+   Monitoring included) the Analytics purpose.
+5. Do **not** add Google Analytics, or anything else that loads Google's
    scripts, under **Zaraz** → **Tools**. GTM loads GA4.
 
 ### 6. Tell the site
@@ -107,9 +118,10 @@ Leave `NEXT_PUBLIC_GA_ID` empty: GA4 lives in the GTM container.
 
 ### 7. Check
 
-1. Open auibsal.org in a private window. The Zaraz banner appears.
+1. Open auibsal.org in a private window. The consent card appears at the
+   bottom of the page, and the page still scrolls and clicks behind it.
 2. Decline, then look at GA4 → **Reports** → **Realtime**: no visit appears.
-3. Open **Cookie settings** in the footer, allow analytics and reload: the
+3. Open **Cookie settings** in the footer, choose Allow and reload: the
    visit appears within a minute.
 4. GTM's **Preview** (Tag Assistant) shows consent `analytics_storage`
    changing from denied to granted.

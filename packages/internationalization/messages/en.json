@@ -3348,6 +3348,16 @@
       "newsletter": "Newsletter",
       "cookieSettings": "Cookie settings"
     },
+    "consent": {
+      "title": "Cookies",
+      "body": "auibsal.org counts visits with Google Analytics only if you allow it. No advertising.",
+      "privacy": "Privacy policy",
+      "allow": "Allow",
+      "decline": "Decline",
+      "close": "Close cookie settings",
+      "nowAllowed": "You allowed analytics.",
+      "nowDeclined": "You declined analytics."
+    },
     "home": {
       "title": "The paper and the pen",
       "lede": "The AUIB Society of Arts and Letters is a bilingual student society for literature, theater and the arts.",
