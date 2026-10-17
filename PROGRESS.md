@@ -42,9 +42,8 @@ Branch: `claude/new-session-qosn60`.
       accessibility issues after a manual audit (SAL-PLT-07); Arabic text of
       all eleven.
 
-- [ ] **Old news table:** `content.news_posts` is no longer used (the old
-      /news is Waraq's News desk). Say whether to drop it; dropping deletes
-      its rows in production and cannot be undone.
+- [x] **Old news table:** dropped (owner, 2026-10-17), migration
+      `20261017000100_drop_news_posts`.
 
 - [ ] **Waraq masthead (Notion: decide by Oct 22):** confirm the name (it is
       the `journal.name_*` setting, Waraq now). In Administration → Members
@@ -250,7 +249,7 @@ These stop parts of the work. Everything else continues around them.
   desk everywhere. auibsal.org/news, the Nexus News tab, the "news" search
   kind and the Notion "News post" publishing are gone; Notion News post
   pages are imported to the News desk for editing. `content.news_posts`
-  stays in the database, unused, until the owner decides (blocked item).
+  was dropped on 2026-10-17 (owner).
   A separate blog is not needed: News, Voices and the Letters desk cover it.
 
 - **Waraq** (owner, 2026-10-14; Notion project "Waraq: one publication for

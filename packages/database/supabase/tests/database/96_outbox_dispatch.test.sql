@@ -87,20 +87,20 @@ select is((select count(*)::integer from cron.job where jobname like 'sal-%'), 9
   'The nine scheduled jobs exist (with the Sunday Paper and the newsletter)');
 
 -- Scheduled publishing.
-insert into content.news_posts (slug, title_en, title_ar, status, publish_at) values
-  ('due', 'Due', 'حان', 'scheduled', now() - interval '1 minute'),
-  ('later', 'Later', 'لاحقاً', 'scheduled', now() + interval '1 day');
+insert into journal.issues (volume, number, slug, title_en, title_ar, status, publish_at) values
+  (90, 1, 'due', 'Due', 'حان', 'scheduled', now() - interval '1 minute'),
+  (90, 2, 'later', 'Later', 'لاحقاً', 'scheduled', now() + interval '1 day');
 select is(private.publish_scheduled(), 1, 'Only what is due is published');
-select is((select status from content.news_posts where slug = 'later'), 'scheduled',
-  'Future posts wait');
+select is((select status from journal.issues where slug = 'later'), 'scheduled',
+  'Future editions wait');
 
 -- Revalidation: nothing due queues nothing; a pending one is not doubled.
 update core.outbox set processed_at = now() where processed_at is null;
 select is(private.publish_scheduled(), 0, 'Nothing more is due');
 select is((select count(*)::integer from core.outbox where kind = 'revalidate' and processed_at is null), 0,
   'A publish run with nothing due queues no revalidation');
-update content.news_posts set title_en = 'Due (edited)' where slug = 'due';
-update content.news_posts set title_en = 'Due (edited again)' where slug = 'due';
+update journal.issues set title_en = 'Due (edited)' where slug = 'due';
+update journal.issues set title_en = 'Due (edited again)' where slug = 'due';
 select is((select count(*)::integer from core.outbox where kind = 'revalidate' and processed_at is null), 1,
   'Two edits before dispatch queue one revalidation');
 

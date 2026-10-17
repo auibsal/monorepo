@@ -56,7 +56,6 @@ const LOGGED_TABLES = [
   "charity.receipts",
   "content.announcements",
   "content.homepage_slots",
-  "content.news_posts",
   "content.pages",
   "core.semesters",
   "core.settings",

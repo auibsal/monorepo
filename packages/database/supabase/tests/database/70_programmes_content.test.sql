@@ -156,14 +156,9 @@ select is((select count(*) from programmes.removal_requests)::integer, 0, 'Membe
 -- ── Content and settings ────────────────────────────────────────────────────
 
 select pg_temp.logout();
-insert into content.news_posts (slug, title_en, title_ar, status, published_at) values
-  ('charter-night', 'Charter Night', 'ليلة الميثاق', 'published', now() - interval '1 hour'),
-  ('draft-post', 'Draft Night', 'مسودة', 'draft', null),
-  ('future-post', 'Future Night', 'لاحقًا', 'published', now() + interval '1 day');
+select hasnt_table('content', 'news_posts', 'The old news table is gone (Waraq''s News desk has news)');
 
 select pg_temp.login_anon();
-select is((select array_agg(slug) from content.news_posts), array['charter-night'],
-  'Visitors read only published news');
 select is((select count(*) from content.search('Night') where kind = 'news')::integer, 0,
   'Search no longer lists the old news posts (Waraq''s News desk has them)');
 select is((select count(*) from core.settings where key = 'auib.calendar_url')::integer, 0,

@@ -769,66 +769,6 @@ export type Database = {
         };
         Relationships: [];
       };
-      news_posts: {
-        Row: {
-          author_id: string | null;
-          body_ar: string | null;
-          body_en: string | null;
-          cover_path: string | null;
-          created_at: string;
-          excerpt_ar: string | null;
-          excerpt_en: string | null;
-          id: string;
-          programme_id: string | null;
-          publish_at: string | null;
-          published_at: string | null;
-          search: unknown;
-          slug: string;
-          status: string;
-          title_ar: string;
-          title_en: string;
-          updated_at: string;
-        };
-        Insert: {
-          author_id?: string | null;
-          body_ar?: string | null;
-          body_en?: string | null;
-          cover_path?: string | null;
-          created_at?: string;
-          excerpt_ar?: string | null;
-          excerpt_en?: string | null;
-          id?: string;
-          programme_id?: string | null;
-          publish_at?: string | null;
-          published_at?: string | null;
-          search?: never;
-          slug: string;
-          status?: string;
-          title_ar: string;
-          title_en: string;
-          updated_at?: string;
-        };
-        Update: {
-          author_id?: string | null;
-          body_ar?: string | null;
-          body_en?: string | null;
-          cover_path?: string | null;
-          created_at?: string;
-          excerpt_ar?: string | null;
-          excerpt_en?: string | null;
-          id?: string;
-          programme_id?: string | null;
-          publish_at?: string | null;
-          published_at?: string | null;
-          search?: never;
-          slug?: string;
-          status?: string;
-          title_ar?: string;
-          title_en?: string;
-          updated_at?: string;
-        };
-        Relationships: [];
-      };
       newsletter_subscribers: {
         Row: {
           confirm_sent_at: string | null;

@@ -81,7 +81,7 @@ select pg_temp.make_user('00000000-0000-0000-0000-0000000000f1', 'editor-rt@auib
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000f2', 'member-rt@auib.edu.iq');
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000000f1', 'communications_lead');
 
-insert into content.news_posts (id, slug, title_en, title_ar)
+insert into content.pages (id, slug, title_en, title_ar)
 values ('00000000-0000-0000-0000-00000000b001', 'room-test', 'Room test', 'اختبار');
 
 select ok(
@@ -90,21 +90,21 @@ select ok(
   'Realtime messages are guarded by the room policy');
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000f1');
-select ok(private.can_edit_room('sal:news:00000000-0000-0000-0000-00000000b001'),
-  'A content editor joins the news post''s room');
-select ok(not private.can_edit_room('sal:news:00000000-0000-0000-0000-00000000b999'),
+select ok(private.can_edit_room('sal:page:00000000-0000-0000-0000-00000000b001'),
+  'A content editor joins the page''s room');
+select ok(not private.can_edit_room('sal:page:00000000-0000-0000-0000-00000000b999'),
   'No room for a record that does not exist');
 select ok(not private.can_edit_room('sal:submission:00000000-0000-0000-0000-00000000b001'),
   'No room for kinds that are not co-edited (blind submissions)');
 select ok(not private.can_edit_room('anything'), 'Malformed topics are refused');
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000f2');
-select ok(not private.can_edit_room('sal:news:00000000-0000-0000-0000-00000000b001'),
+select ok(not private.can_edit_room('sal:page:00000000-0000-0000-0000-00000000b001'),
   'A member without content.manage stays out');
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000f1',
   '{"client_id": "00000000-0000-0000-0000-00000000a001"}');
-select ok(not private.can_edit_room('sal:news:00000000-0000-0000-0000-00000000b001'),
+select ok(not private.can_edit_room('sal:page:00000000-0000-0000-0000-00000000b001'),
   'Third-party app tokens never join a room');
 
 select * from finish();

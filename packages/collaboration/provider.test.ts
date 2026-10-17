@@ -87,7 +87,7 @@ const fakeRealtime = () => {
   };
 };
 
-const ROOM = "sal:news:00000000-0000-0000-0000-00000000b001";
+const ROOM = "sal:page:00000000-0000-0000-0000-00000000b001";
 const ada = { color: "var(--sal-ink)", id: "u1", name: "Ada" };
 const bo = { color: "var(--sal-crimson)", id: "u2", name: "Bo" };
 
