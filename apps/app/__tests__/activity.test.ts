@@ -27,9 +27,14 @@ describe("activity log", () => {
     const sql = readdirSync(dir)
       .map((file) => readFileSync(join(dir, file), "utf8"))
       .join("\n");
+    const dropped = new Set(
+      [...sql.matchAll(/drop table ([a-z_]+\.[a-z_]+)/g)].map((m) => m[1])
+    );
     const logged = [
       ...sql.matchAll(/log_activity after [a-z ,]+ on ([a-z_]+\.[a-z_]+)/g),
-    ].map((m) => m[1]);
+    ]
+      .map((m) => m[1])
+      .filter((table) => !dropped.has(table));
     const source = readFileSync(
       join(
         import.meta.dirname,
