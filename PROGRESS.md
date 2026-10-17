@@ -9,17 +9,16 @@ Branch: `claude/new-session-qosn60`.
 
 ## Blocked — needed from the user
 
-- [ ] **Analytics (owner, 2026-10-15: Zaraz, Cloudflare consent, the Google
-      tag gateway, GA4 and GTM):** live since 2026-10-16 (GTM-PWRQNN7H,
-      gateway at `/metrics`; checked in a browser: no `_ga` cookie before
-      consent, granted after Allow). Consent is now the site's own card
-      alone (2026-10-16). Left in Cloudflare: disable **Zaraz** (no longer
-      used); in Vercel → sal-web, delete `NEXT_PUBLIC_ZARAZ_ANALYTICS_PURPOSE`
-      and `NEXT_PUBLIC_ZARAZ_ADS_PURPOSE`; turn off Web Analytics'
-      automatic setup (the CSP blocks its beacon); let the site's HSTS header
-      through (Cloudflare shortens it to 6 months). In GitHub, add
-      `BACKUP_PASSPHRASE` to the production environment (backups fail
-      without it).
+- [ ] **Analytics (owner, 2026-10-15: GA4 and GTM through the Google tag
+      gateway):** live since 2026-10-16 (GTM-PWRQNN7H, gateway at
+      `/metrics`). Consent is the site's own card alone (2026-10-16). Done
+      2026-10-17 (owner): Zaraz and its consent off in Cloudflare, the
+      `NEXT_PUBLIC_ZARAZ_*` variables deleted from Vercel; Cloudflare's HSTS
+      set to 12 months with includeSubDomains and preload (checked live:
+      `max-age=31536000; includeSubDomains; preload`, nosniff on);
+      `BACKUP_PASSPHRASE` being added to the GitHub production environment.
+      Left: turn off Cloudflare Web Analytics' automatic setup, if still on
+      (the CSP blocks its beacon).
 
 - [ ] **Ads in Waraq (owner, 2026-10-16: Society and sponsor ads plus
       Google AdSense, none for signed-in visitors):** the code is in; Society
