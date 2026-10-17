@@ -43,8 +43,8 @@ and www have been proxied since October 2026; these steps record how.
    mode to **Full (strict)**. Do this before step 2: with Flexible, the site
    redirects in a loop.
 2. Open **DNS** → **Records**. Turn the cloud **on (Proxied)** for the
-   `auibsal.org` and `www` records only. Leave `nexus`, `api`, `design` and
-   the mail records as **DNS only**.
+   `auibsal.org` and `www` records. The mail records stay **DNS only**;
+   `nexus`, `api` and `design` can follow (see the end of this section).
 3. Open **Caching** → **Cache Rules** and create a rule: "Hostname equals
    auibsal.org" → **Bypass cache**. Vercel already caches, and publishing
    clears Vercel's cache, not Cloudflare's.
@@ -65,7 +65,9 @@ Cloudflare configuration rule "Hostname equals api.auibsal.org" that turns
 Fight Mode** off for the zone: on the free plan it cannot be skipped per
 hostname. Webhooks, cron, calendar apps and `/v1` clients cannot solve a
 challenge.
-Keep `nexus` and `design` DNS only.
+`nexus` and `design` may be proxied with the same settings as auibsal.org
+(Full (strict), cache bypass, Rocket Loader off); nothing in them depends on
+the visitor's address. Mail and verification records stay DNS only.
 
 ### 2. Create GA4
 
