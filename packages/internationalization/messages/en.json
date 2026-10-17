@@ -3410,7 +3410,9 @@
       "productions": "Productions",
       "newsletter": "Newsletter",
       "cookieSettings": "Cookie settings",
-      "governance": "Governance"
+      "governance": "Governance",
+      "terms": "Terms of use",
+      "accessibility": "Accessibility"
     },
     "consent": {
       "title": "Cookies",

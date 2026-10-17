@@ -31,6 +31,8 @@ export const Footer = async () => {
       ["/contact", t("contact")],
       ["/media-kit", t("mediaKit")],
       ["/privacy", t("privacy")],
+      ["/documents/terms-of-use", t("terms")],
+      ["/documents/accessibility", t("accessibility")],
       ["/programs/side-quest/care", t("sideQuestCare")],
     ],
   ] as const;

@@ -74,7 +74,7 @@ insert into core.semesters (code, name_en, name_ar, starts_on, ends_on) values
 -- first-100 rule back on themselves.
 update core.settings set value = '0' where key = 'membership.founding_voters';
 -- </preamble>
-select plan(8);
+select plan(9);
 
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a1', 'member-sd@auib.edu.iq', 'A Member');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a2', 'director-sd@auib.edu.iq', 'A Director');
@@ -83,8 +83,11 @@ select pg_temp.grant_role('00000000-0000-0000-0000-0000000000a2', 'director');
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000000a3', 'general_secretary');
 
 select pg_temp.login_anon();
-select is((select count(*)::int from governance.society_documents where audience = 'public'), 6,
-  'Visitors read the six public documents');
+select is((select count(*)::int from governance.society_documents where audience = 'public'), 17,
+  'Visitors read the six public documents and the eleven platform policies');
+select is((select count(*)::int from governance.society_documents
+  where code like 'SAL-PLT-%' and status = 'draft' and adopted_on is null), 11,
+  'The platform policies are drafts until the Council adopts them');
 select is((select count(*)::int from governance.society_documents where audience = 'internal'), 0,
   'but never the internal ones');
 select ok((select body_en like '%<strong>6.6</strong> While the Society is small%' from governance.society_documents where slug = 'constitution'),
