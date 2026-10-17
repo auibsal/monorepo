@@ -36,15 +36,15 @@ holds these accounts.
 
 ### 1. Put auibsal.org behind Cloudflare's proxy
 
-The tag gateway works only on traffic that passes through Cloudflare. Today auibsal.org is "DNS only": Vercel serves it
-directly.
+The tag gateway works only on traffic that passes through Cloudflare. auibsal.org
+and www have been proxied since October 2026; these steps record how.
 
 1. In Cloudflare, open auibsal.org → **SSL/TLS** → **Overview** and set the
    mode to **Full (strict)**. Do this before step 2: with Flexible, the site
    redirects in a loop.
 2. Open **DNS** → **Records**. Turn the cloud **on (Proxied)** for the
-   `auibsal.org` and `www` records only. Leave `nexus`, `api`, `design` and
-   the mail records as **DNS only**.
+   `auibsal.org` and `www` records. The mail records stay **DNS only**;
+   `nexus`, `api` and `design` can follow (see the end of this section).
 3. Open **Caching** → **Cache Rules** and create a rule: "Hostname equals
    auibsal.org" → **Bypass cache**. Vercel already caches, and publishing
    clears Vercel's cache, not Cloudflare's.
@@ -55,6 +55,19 @@ directly.
    *Valid Configuration*. The response headers should include `cf-ray`.
 
 To undo, turn the cloud off again (DNS only).
+
+`api` may be proxied too: its form rate limits read the visitor's address
+from `CF-Connecting-IP` when a request comes from Cloudflare
+(`packages/security/form.ts`). Before you turn its cloud on, add a
+Cloudflare configuration rule "Hostname equals api.auibsal.org" that turns
+**Browser Integrity Check** off and sets the security level to
+**Essentially off**, and a cache rule that bypasses the cache. Leave **Bot
+Fight Mode** off for the zone: on the free plan it cannot be skipped per
+hostname. Webhooks, cron, calendar apps and `/v1` clients cannot solve a
+challenge.
+`nexus` and `design` may be proxied with the same settings as auibsal.org
+(Full (strict), cache bypass, Rocket Loader off); nothing in them depends on
+the visitor's address. Mail and verification records stay DNS only.
 
 ### 2. Create GA4
 

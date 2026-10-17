@@ -1,4 +1,5 @@
 import arcjet, {
+  cloudflare,
   detectBot,
   shield,
   slidingWindow,
@@ -18,6 +19,10 @@ const formGuard = arcjetKey
   ? arcjet({
       characteristics: ["ip.src"],
       key: arcjetKey,
+      // Behind Cloudflare the visitor's address comes from CF-Connecting-IP,
+      // trusted only on requests from Cloudflare's ranges, so the limit is
+      // right whether api.auibsal.org is proxied or DNS only.
+      proxies: [cloudflare()],
       rules: [
         shield({ mode: "LIVE" }),
         detectBot({ allow: [], mode: "LIVE" }),
