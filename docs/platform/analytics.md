@@ -36,8 +36,8 @@ holds these accounts.
 
 ### 1. Put auibsal.org behind Cloudflare's proxy
 
-The tag gateway works only on traffic that passes through Cloudflare. Today auibsal.org is "DNS only": Vercel serves it
-directly.
+The tag gateway works only on traffic that passes through Cloudflare. auibsal.org
+and www have been proxied since October 2026; these steps record how.
 
 1. In Cloudflare, open auibsal.org → **SSL/TLS** → **Overview** and set the
    mode to **Full (strict)**. Do this before step 2: with Flexible, the site
@@ -55,6 +55,17 @@ directly.
    *Valid Configuration*. The response headers should include `cf-ray`.
 
 To undo, turn the cloud off again (DNS only).
+
+`api` may be proxied too: its form rate limits read the visitor's address
+from `CF-Connecting-IP` when a request comes from Cloudflare
+(`packages/security/form.ts`). Before you turn its cloud on, add a
+Cloudflare configuration rule "Hostname equals api.auibsal.org" that turns
+**Browser Integrity Check** off and sets the security level to
+**Essentially off**, and a cache rule that bypasses the cache. Leave **Bot
+Fight Mode** off for the zone: on the free plan it cannot be skipped per
+hostname. Webhooks, cron, calendar apps and `/v1` clients cannot solve a
+challenge.
+Keep `nexus` and `design` DNS only.
 
 ### 2. Create GA4
 
