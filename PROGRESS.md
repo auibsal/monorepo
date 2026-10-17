@@ -30,6 +30,18 @@ Branch: `claude/new-session-qosn60`.
       `NEXT_PUBLIC_ADSENSE_CLIENT` and `NEXT_PUBLIC_ADSENSE_SLOT` on sal-web. The Council decides who
       receives AdSense payments and records it.
 
+- [ ] **Platform policies (2026-10-17):** eleven drafts on auibsal.org/documents
+      (SAL-PLT-01 to 11: terms of use, acceptable use, cookies, data retention,
+      submissions and AI, advertising, accessibility, security, complaints,
+      API terms, email). They apply the Policy Manual and AUIB's Student
+      Engagement and Organizations, Student Conduct and Community Standards,
+      and Student Rights and Responsibilities policies. The Council reviews
+      and adopts them (record the date in Administration → Documents);
+      Student Life may want to see them. TODO(content): retention periods for
+      logs, error reports, email records and backups (SAL-PLT-04); known
+      accessibility issues after a manual audit (SAL-PLT-07); Arabic text of
+      all eleven.
+
 - [ ] **Old news table:** `content.news_posts` is no longer used (the old
       /news is Waraq's News desk). Say whether to drop it; dropping deletes
       its rows in production and cannot be undone.
@@ -710,7 +722,9 @@ Covered by automated tests so far:
   («المكتبة»), `web.programmes.care`, `web.programmes.productions`,
   `web.productions.allPrograms`, `web.nav.openNexus`, `web.governance.*`,
   `web.footer.governance`, `web.about.governance`, `web.search.kinds.production`,
-  `web.search.lede`, `nexus.nav.paperwork`, `web.games.guess.streak`.
+  `web.search.lede`, `nexus.nav.paperwork`, `web.games.guess.streak`,
+  `web.footer.terms`, `web.footer.accessibility`, and the Arabic titles and
+  summaries of SAL-PLT-01 to 11.
 - Analytics (2026-10-15): `web.footer.cookieSettings` and the new
   `web.privacy.platform.analyticsOn`; the consent card, `web.consent.*`
   (2026-10-16).

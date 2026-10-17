@@ -1,5 +1,7 @@
 # Sign in with SAL and the API
 
+The public guide and reference for app builders are at api.auibsal.org (pages in `apps/api/app`; the endpoint list in `apps/api/lib/endpoints.ts`, which `GET /v1` also returns). This runbook is for the officers who run it.
+
 How apps outside the Nexus sign members in and work with the AUIB Literary Journal, and what keeps that safe.
 
 Apps outside the Nexus, such as a Journal team's own tool, can sign members in with their Society account and act for them through the API at `api.auibsal.org/v1`. The Society approves each app and decides what it may reach. Members choose whether to allow it, and can disconnect it at any time.
