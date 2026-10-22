@@ -30,12 +30,10 @@ export const TelegramBot = ({
   const { supabase, user } = useAuth();
   const queryClient = useQueryClient();
   const [username, setUsername] = useState("");
-  const [address, setAddress] = useState("");
   const [rules, setRules] = useState({ ar: "", en: "" });
   const [code, setCode] = useState<string | null>(null);
   useEffect(() => {
     setUsername(asText(settings["telegram.bot_username"]));
-    setAddress(asText(settings["platform.bot_url"]));
     setRules({
       ar: asText(settings["telegram.rules_ar"]),
       en: asText(settings["telegram.rules_en"]),
@@ -45,7 +43,6 @@ export const TelegramBot = ({
   const save = useMutation({
     mutationFn: async () => {
       const entries: Record<string, string> = {
-        "platform.bot_url": address.trim(),
         "telegram.bot_username": username.trim().replace(LEADING_AT, ""),
         "telegram.rules_ar": rules.ar.trim(),
         "telegram.rules_en": rules.en.trim(),
@@ -91,19 +88,6 @@ export const TelegramBot = ({
               maxLength={33}
               onChange={(event) => setUsername(event.target.value)}
               value={username}
-            />
-          )}
-        </Field>
-        <Field hint={t("addressHint")} label={t("address")}>
-          {(id) => (
-            <Input
-              dir="ltr"
-              id={id}
-              inputMode="url"
-              maxLength={200}
-              onChange={(event) => setAddress(event.target.value)}
-              type="url"
-              value={address}
             />
           )}
         </Field>

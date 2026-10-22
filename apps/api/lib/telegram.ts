@@ -10,7 +10,7 @@ const OPEN = { ar: "افتح", en: "Open" } as const;
 
 /**
  * Copies of the Nexus notices in Telegram, for members who linked it with
- * Hudhud (apps/bot) and left notices on. Email stays the record: a failure
+ * Hudhud (lib/bot) and left notices on. Email stays the record: a failure
  * is logged and never fails the outbox row. A member who blocked the bot
  * (403) has their Telegram notices turned off.
  */

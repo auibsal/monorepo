@@ -6,7 +6,7 @@ import { type Copy, copy, type Lang } from "./copy";
 /**
  * Tells Telegram about the bot: where to deliver updates, the commands in
  * each language and place, and the profile texts. Safe to run again after
- * every deploy (POST /api/setup).
+ * every deploy (POST /telegram/setup).
  */
 
 const list = (t: Copy, names: (keyof Copy["commands"])[]): BotCommand[] =>

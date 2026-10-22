@@ -12,7 +12,7 @@ import { today } from "./word";
 
 /**
  * What the bot posts to connected groups, every ten minutes (pg_cron calls
- * /api/cron): new public events (to the events topic), a "starting soon"
+ * /cron/telegram): new public events (to the events topic), a "starting soon"
  * reply to each event's post three hours before, new Waraq pieces, and the
  * daily word at 9:00 AM Baghdad time. Each post is claimed in
  * core.telegram_posts before it is sent, so overlapping runs never post

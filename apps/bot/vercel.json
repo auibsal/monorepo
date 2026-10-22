@@ -1,8 +1,0 @@
-{
-  "$schema": "https://openapi.vercel.sh/vercel.json",
-  "bunVersion": "1.x",
-  "buildCommand": "bun run build",
-  "framework": null,
-  "ignoreCommand": "node scripts/skip-ci.cjs",
-  "regions": ["fra1"]
-}

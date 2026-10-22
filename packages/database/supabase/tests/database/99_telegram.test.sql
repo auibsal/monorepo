@@ -86,7 +86,7 @@ end;
 $$;
 grant execute on function pg_temp.as_service() to public;
 
-select plan(22);
+select plan(24);
 
 select pg_temp.make_user('00000000-0000-0000-0000-0000000007a1', 'tg1@auib.edu.iq', 'Linked Member');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000007a2', 'tg2@auib.edu.iq', 'Other Member');
@@ -164,6 +164,12 @@ select is(core.telegram_rsvp(4242, 'e0000000-0000-0000-0000-0000000007e2'), 'con
 select pg_temp.as_service();
 select throws_ok($$ select core.telegram_rsvp(9999, 'e0000000-0000-0000-0000-0000000007e1') $$,
   '42501', null, 'An unlinked account cannot RSVP');
+
+-- The group posts go through apps/api like the other scheduled jobs.
+select pg_temp.logout();
+select ok((select command like '%call_api(''/cron/telegram''%' from cron.job
+  where jobname = 'sal-telegram-posts'), 'The group posts call apps/api');
+select hasnt_function('private', 'call_bot', 'The bot has no caller of its own');
 
 select * from finish();
 rollback;

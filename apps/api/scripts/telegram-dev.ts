@@ -1,5 +1,5 @@
-import { allowedUpdates, sharedBot } from "./bot";
-import { runFeeds } from "./feeds";
+import { allowedUpdates, sharedBot } from "../lib/bot/bot";
+import { runFeeds } from "../lib/bot/feeds";
 
 /**
  * Local development with a separate test bot (its own token in

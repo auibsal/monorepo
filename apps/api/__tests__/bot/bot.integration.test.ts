@@ -1,3 +1,4 @@
+// @vitest-environment node
 /**
  * The bot end to end against a local stack, with Telegram replaced by a
  * recorder: linking, RSVP through the member's own rules, the daily word,
@@ -8,7 +9,10 @@ import { createHash } from "node:crypto";
 import type { Database } from "@repo/database";
 import { createClient } from "@supabase/supabase-js";
 import type { Update } from "grammy/types";
-import { afterAll, beforeAll, describe, expect, test } from "vitest";
+import { afterAll, beforeAll, describe, expect, test, vi } from "vitest";
+
+vi.mock("server-only", () => ({}));
+process.env.SKIP_ENV_VALIDATION = "true";
 
 const url = process.env.API_URL ?? "http://127.0.0.1:54321";
 const publishableKey = process.env.PUBLISHABLE_KEY ?? "";
@@ -18,7 +22,10 @@ const enabled = Boolean(
 );
 
 const loadBot = async () =>
-  (await import("@/bot")).createBot(`123456:${"A".repeat(35)}`, "sal_test_bot");
+  (await import("@/lib/bot/bot")).createBot(
+    `123456:${"A".repeat(35)}`,
+    "sal_test_bot"
+  );
 
 interface Call {
   method: string;
@@ -129,7 +136,7 @@ describe.skipIf(!enabled)("Hudhud", () => {
     process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY = publishableKey;
     process.env.SUPABASE_SECRET_KEY = secretKey;
     bot = await loadBot();
-    ({ runFeeds } = (await import("@/feeds")) as never);
+    ({ runFeeds } = (await import("@/lib/bot/feeds")) as never);
     bot.api.config.use(((
       _prev: unknown,
       method: string,
