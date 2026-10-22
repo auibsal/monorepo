@@ -1553,9 +1553,7 @@
           "connectGroup": "Connect a group",
           "connectHint": "Add the bot to the group as an admin, then send this message in the group within 15 minutes.",
           "makeCode": "Make a setup code",
-          "newCode": "Make a new code",
-          "address": "Bot address",
-          "addressHint": "The bot's Vercel production URL. The database calls it every ten minutes for the group posts."
+          "newCode": "Make a new code"
         }
       },
       "journal": {

@@ -1,7 +1,8 @@
 # Hudhud, the Telegram bot
 
 Hudhud (هدهد), the hoopoe who carries the Society's letters, is the
-AUIB Society of Arts and Letters' Telegram bot. The code is `apps/bot`;
+AUIB Society of Arts and Letters' Telegram bot. The code is in apps/api
+(`lib/bot`, routes `/telegram`, `/telegram/setup`, `/cron/telegram`);
 the mascot and its rules are in `brand/mascot`.
 
 ## What it does
@@ -51,7 +52,7 @@ And without commands:
 - **Newcomers' links.** A link, mention or forward from someone who joined
   less than a day ago and isn't a linked member is deleted and noted in
   the log topic.
-- **Posts, every ten minutes** (pg_cron → `/api/cron`): new public events
+- **Posts, every ten minutes** (pg_cron → `/cron/telegram`): new public events
   in the next 45 days (to `events`, else `announcements`), a "starting
   soon" reply three hours before, new Waraq pieces of the last three days
   (`waraq`, else `announcements`), and the daily word at 9:00 AM Baghdad
@@ -60,14 +61,13 @@ And without commands:
 
 ## How it works
 
-- `apps/bot` is grammY on Vercel Functions, built with the Build Output
-  API (`scripts/build.ts`): three functions (`/api/telegram`, `/api/cron`,
-  `/api/setup`), each one minified module of about 1 MB with everything
-  inlined, in Frankfurt next to the database. The bot's identity comes from
-  the token and `TELEGRAM_BOT_USERNAME`, so a cold start makes no extra
-  call to Telegram.
-- Telegram sends updates to `/api/telegram` with the webhook secret;
-  anything without it is refused.
+- The bot is grammY inside apps/api, the only app with secrets: the
+  Telegram token sits next to the Supabase secret key, and the same app
+  sends the Nexus notices to Telegram. Telegram delivers updates to
+  `api.auibsal.org/telegram` with the webhook secret; anything without it
+  is refused. The bot's identity comes from the token and
+  `TELEGRAM_BOT_USERNAME`, so a cold start makes no extra call to
+  Telegram.
 - The bot uses the secret key, but acts for a member only through the
   `core.telegram_*` database functions. They set the linked member's
   claims (aal1) for their own transaction and call the Nexus functions
@@ -93,31 +93,24 @@ And without commands:
    - `/setinline`: turn inline mode on (placeholder: "Events and Waraq").
    - `/setjoingroups`: on. `/setprivacy`: leave it enabled (as an admin
      the bot sees the group anyway).
-2. **Create the Vercel project** `sal-bot` from the repository, root
-   directory `apps/bot` (framework: Other; `vercel.json` sets the rest),
-   Function region Frankfurt. Environment variables (Production), all
-   sensitive except the URL and publishable key:
-   `TELEGRAM_BOT_TOKEN`, `TELEGRAM_BOT_USERNAME`, `TELEGRAM_WEBHOOK_SECRET`
-   (`openssl rand -hex 32`), `CRON_SECRET` (the same value as on sal-api),
-   `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`,
-   `SUPABASE_SECRET_KEY`.
-3. **On sal-api**, add `TELEGRAM_BOT_TOKEN` too (for the notices) and
-   redeploy.
-4. **Point Telegram at it**, once after the first production deploy and
-   again whenever the commands change:
+2. **On sal-api** (Production, marked sensitive), add
+   `TELEGRAM_BOT_TOKEN`, `TELEGRAM_BOT_USERNAME` and
+   `TELEGRAM_WEBHOOK_SECRET` (`openssl rand -hex 32`), and redeploy.
+3. **Point Telegram at it**, once after that deploy and again whenever
+   the commands change:
 
    ```sh
-   curl -X POST https://<sal-bot production domain>/api/setup \
+   curl -X POST https://api.auibsal.org/telegram/setup \
      -H "Authorization: Bearer $CRON_SECRET"
    ```
 
    It sets the webhook, the commands in English and Arabic, and the
-   descriptions.
-5. **The Nexus.** Settings → Telegram: the bot's username (this shows
-   *Connect Telegram* in members' profiles), the bot address (the sal-bot
-   production URL, which the database calls for the scheduled posts), and
-   house rules if you want them.
-6. **The group.** Make it a supergroup with topics. Add the bot as an
+   descriptions. The scheduled posts need nothing more: the database
+   already calls apps/api.
+4. **The Nexus.** Settings → Telegram: the bot's username (this shows
+   *Connect Telegram* in members' profiles), and house rules if you want
+   them.
+5. **The group.** Make it a supergroup with topics. Add the bot as an
    admin who can delete messages, ban users, invite users and pin
    messages. In the Nexus, Settings → Telegram → *Make a setup code*, and
    send the `/setup …` line in the group. Then `/topic …` in each topic,
@@ -126,10 +119,11 @@ And without commands:
 ## Development
 
 Use a separate test bot from @BotFather. Put its token and username in
-`apps/bot/.env.local` with the local Supabase keys, and run
-`bun run --cwd apps/bot dev`: long polling (it removes that bot's webhook)
-and the group posts every minute. Never run it with the Society's token.
+`apps/api/.env.local` with the local Supabase keys, and run
+`bun run --cwd apps/api telegram:dev`: long polling (it removes that bot's
+webhook) and the group posts every minute. Never run it with the
+Society's token.
 
-Tests: `bun run --cwd apps/bot test` (unit), and with the local stack
-`SUPABASE_INTEGRATION=1` runs the whole bot against the database with
-Telegram replaced by a recorder.
+Tests: `bun run --cwd apps/api test` runs the bot's unit tests; with the
+local stack, `SUPABASE_INTEGRATION=1` also runs the whole bot against the
+database with Telegram replaced by a recorder.

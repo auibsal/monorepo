@@ -6,7 +6,7 @@ journey in Attar's *The Conference of the Birds*. For the AUIB Society of
 Arts and Letters it is the messenger. It carries the Society's letter in
 its beak: the SAL symbol, a sheet folded like a letter.
 
-It is the face of the Telegram bot (`apps/bot`) and may appear wherever
+It is the face of the Telegram bot (`apps/api/lib/bot`) and may appear wherever
 the Society speaks to members one to one: the bot, notices, empty states
 that point somewhere. It is not a logo and never replaces one.
 

@@ -9,17 +9,24 @@ Branch: `claude/new-session-qosn60`.
 
 ## Blocked — needed from the user
 
-- [ ] **Telegram bot, Hudhud (2026-10-22):** the code is in (`apps/bot`,
-      runbook `docs/platform/telegram.md`). To go live: create the bot in
-      @BotFather (name "Hudhud · SAL", avatar `brand/mascot/hudhud-avatar.png`,
-      inline mode on); create the Vercel project sal-bot (root `apps/bot`,
-      Frankfurt) with its seven variables; add `TELEGRAM_BOT_TOKEN` to
-      sal-api; call `/api/setup` once; in the Nexus, Settings → Telegram, set
-      the username and the bot address; then connect the group with a setup
-      code and `/topic` in each topic. Optional: house rules for `/rules`
-      (TODO(content): the group's own rules, if any, besides the Acceptable
-      Use Policy). The privacy notice and SAL-PLT-04 should mention the
-      Telegram link and what the bot keeps (TODO(content)).
+- [ ] **Telegram bot, Hudhud (2026-10-22; in apps/api since 2026-10-23):**
+      the code is in (`apps/api/lib/bot`, runbook `docs/platform/telegram.md`).
+      To go live: create the bot in @BotFather (name "Hudhud · SAL", avatar
+      `brand/mascot/hudhud-avatar.png`, inline mode on); on sal-api add
+      `TELEGRAM_BOT_TOKEN`, `TELEGRAM_BOT_USERNAME` and
+      `TELEGRAM_WEBHOOK_SECRET` (Production, sensitive) and redeploy; call
+      `/telegram/setup` once; in the Nexus, Settings → Telegram, set the
+      username; connect the group with a setup code and `/topic` in each
+      topic. Optional: house rules for `/rules` (TODO(content): the group's
+      own rules, if any, besides the Acceptable Use Policy). The privacy
+      notice and SAL-PLT-04 should mention the Telegram link and what the
+      bot keeps (TODO(content)).
+- [ ] **Vercel variables to delete (2026-10-23):** `RESEND_TOKEN` and
+      `RESEND_FROM` on sal-web (the site sends no email; the code no longer
+      reads them), `NEXT_PUBLIC_DOCS_URL` on sal-web and sal-nexus (the docs
+      site is gone), and `FLAGS_SECRET` anywhere it is set (it only turns on
+      the Vercel Toolbar). Keep every secret on Production only, marked
+      sensitive.
 
 - [ ] **Analytics (owner, 2026-10-15: GA4 and GTM through the Google tag
       gateway):** live since 2026-10-16 (GTM-PWRQNN7H, gateway at
@@ -229,9 +236,10 @@ These stop parts of the work. Everything else continues around them.
   mascot … do what you think is best"): the mascot is Hudhud (هدهد), a
   hoopoe carrying the SAL symbol as a letter (native to Iraq, the messenger
   of the old stories, the guide in The Conference of the Birds), drawn in
-  the brand colors only (`brand/mascot`). The bot is a new app, `apps/bot`,
-  with the secret key (the second app after apps/api): it acts for members
-  only through `core.telegram_*` functions under their own claims at aal1,
+  the brand colors only (`brand/mascot`). The bot lives in apps/api (owner,
+  2026-10-23: one app holds the secrets; first built as apps/bot): it acts
+  for members only through `core.telegram_*` functions under their own
+  claims at aal1,
   so roles that need two-step sign-in never count in Telegram. Linking and
   connecting a group start in the Nexus with one-time codes. No emoji in
   the bot (brand rule); the daily word's marks are ● ○ ·.
@@ -751,7 +759,7 @@ Covered by automated tests so far:
 
 ## needs-native-review (Arabic written for the platform)
 
-- Telegram (2026-10-22): all of `apps/bot/src/copy.ts` (Arabic), the bot's
+- Telegram (2026-10-22): all of `apps/api/lib/bot/copy.ts` (Arabic), the bot's
   Arabic commands and descriptions, `nexus.profile.telegram.*` and
   `nexus.admin.settings.telegram.*`.
 

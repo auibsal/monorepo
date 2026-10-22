@@ -2,8 +2,8 @@ import { autoRetry } from "@grammyjs/auto-retry";
 import { botIdFromToken } from "@repo/telegram";
 import { Bot, GrammyError, HttpError } from "grammy";
 import type { UserFromGetMe } from "grammy/types";
+import { env } from "@/env";
 import { type BotContext, flavor } from "./context";
-import { env } from "./env";
 import { account } from "./features/account";
 import { events } from "./features/events";
 import { joins } from "./features/group/joins";
@@ -46,7 +46,7 @@ const identity = (token: string, username: string): UserFromGetMe => ({
 
 export const createBot = (
   token: string,
-  username = env().TELEGRAM_BOT_USERNAME
+  username = env.TELEGRAM_BOT_USERNAME
 ) => {
   const bot = new Bot<BotContext>(token, {
     botInfo: username ? identity(token, username) : undefined,
@@ -114,7 +114,7 @@ let shared: Bot<BotContext> | undefined;
 
 /** One bot per instance, created on the first update. */
 export const sharedBot = () => {
-  const token = env().TELEGRAM_BOT_TOKEN;
+  const token = env.TELEGRAM_BOT_TOKEN;
   if (!token) {
     throw new Error("TELEGRAM_BOT_TOKEN is not set.");
   }

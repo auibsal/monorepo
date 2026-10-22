@@ -1,6 +1,6 @@
 /**
- * Shared Telegram helpers for apps/bot (the bot itself, on grammY) and
- * apps/api (copies of the Nexus notices). Messages use Telegram's HTML
+ * Telegram helpers for apps/api: the bot (on grammY, lib/bot) and the
+ * copies of the Nexus notices. Messages use Telegram's HTML
  * formatting; everything we did not write goes through `escapeHtml`.
  */
 

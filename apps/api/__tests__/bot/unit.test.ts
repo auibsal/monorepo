@@ -1,10 +1,22 @@
-import { describe, expect, it } from "vitest";
-import { copy, langOf } from "@/copy";
-import type { EventRow } from "@/db";
-import { baghdadHour } from "@/feeds";
-import { eventText, formatDuration, parseDuration } from "@/format";
-import { eventCalendar, messageLink, piecePage } from "@/links";
-import { board, finished, readGuess, shareGrid, solved, today } from "@/word";
+// @vitest-environment node
+import { describe, expect, it, vi } from "vitest";
+
+vi.mock("server-only", () => ({}));
+process.env.SKIP_ENV_VALIDATION = "true";
+
+import { copy, langOf } from "@/lib/bot/copy";
+import type { EventRow } from "@/lib/bot/db";
+import { baghdadHour } from "@/lib/bot/feeds";
+import { eventText, formatDuration, parseDuration } from "@/lib/bot/format";
+import { eventCalendar, messageLink, piecePage } from "@/lib/bot/links";
+import {
+  board,
+  finished,
+  readGuess,
+  shareGrid,
+  solved,
+  today,
+} from "@/lib/bot/word";
 
 const EXCLAMATION = /[!！]/;
 const EMOJI = /\p{Extended_Pictographic}/u;
