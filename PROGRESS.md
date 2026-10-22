@@ -13,10 +13,10 @@ Branch: `claude/new-session-qosn60`.
       the code is in (`apps/api/lib/bot`, runbook `docs/platform/telegram.md`).
       To go live: create the bot in @BotFather (name "Hudhud · SAL", avatar
       `brand/mascot/hudhud-avatar.png`, inline mode on); on sal-api add
-      `TELEGRAM_BOT_TOKEN`, `TELEGRAM_BOT_USERNAME` and
-      `TELEGRAM_WEBHOOK_SECRET` (Production, sensitive) and redeploy; call
-      `/telegram/setup` once; in the Nexus, Settings → Telegram, set the
-      username; connect the group with a setup code and `/topic` in each
+      `TELEGRAM_BOT_TOKEN` and `TELEGRAM_BOT_USERNAME` (Production,
+      sensitive; `TELEGRAM_WEBHOOK_SECRET` is already set, 2026-10-23) and
+      redeploy; in the Nexus, Settings → Telegram, set the username and press
+      *Connect the bot to Telegram*; connect the group with a setup code and `/topic` in each
       topic. Optional: house rules for `/rules` (TODO(content): the group's
       own rules, if any, besides the Acceptable Use Policy). The privacy
       notice and SAL-PLT-04 should mention the Telegram link and what the

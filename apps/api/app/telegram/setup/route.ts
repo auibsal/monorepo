@@ -1,29 +1,79 @@
+import { authenticateRequest } from "@repo/auth/verify";
 import { project } from "@repo/config";
+import { NextResponse } from "next/server";
+import { z } from "zod";
 import { env } from "@/env";
 import { hasBearer } from "@/lib/bearer";
 import { sharedBot } from "@/lib/bot/bot";
 import { configure } from "@/lib/bot/setup";
+import { corsHeaders, preflight } from "@/lib/cors";
+import { hasPermission } from "@/lib/permissions";
 
 export const maxDuration = 30;
+export const OPTIONS = preflight;
 
 const TRAILING_SLASH = /\/$/;
+const body = z.object({ connect: z.boolean().default(false) });
+
+const webhookUrl = () =>
+  `${(env.NEXT_PUBLIC_API_URL ?? project.hosts.api).replace(TRAILING_SLASH, "")}/telegram`;
 
 /**
- * POST /telegram/setup (Bearer CRON_SECRET): points Telegram at
- * <api>/telegram and sets the bot's commands and profile texts in both
- * languages. Run once after the first deploy with the token, and again
- * whenever the commands change.
+ * POST /telegram/setup, for Administration → Settings → Telegram (settings
+ * managers) or with Bearer CRON_SECRET. `{ connect: true }` points Telegram
+ * at <api>/telegram and sets the bot's commands and profile texts in both
+ * languages; without it, it only reports whether the bot is set up and
+ * connected. Run it once after the token is added, and again whenever the
+ * commands change.
  */
 export const POST = async (request: Request) => {
+  const headers = corsHeaders(request);
+  const json = (data: object, status = 200) =>
+    NextResponse.json(data, { headers, status });
+
   if (!hasBearer(request, env.CRON_SECRET)) {
-    return new Response("Unauthorized", { status: 401 });
+    const session = await authenticateRequest(request);
+    if (!session) {
+      return json({ error: "unauthorized" }, 401);
+    }
+    if (!(await hasPermission(session, "settings.manage"))) {
+      return json({ error: "forbidden" }, 403);
+    }
   }
-  if (!(env.TELEGRAM_BOT_TOKEN && env.TELEGRAM_WEBHOOK_SECRET)) {
-    return Response.json({ error: "not_configured" }, { status: 503 });
+  const parsed = body.safeParse(await request.json().catch(() => ({})));
+  if (!parsed.success) {
+    return json({ error: "invalid_body" }, 400);
   }
-  const info = await configure(sharedBot().api, {
-    secretToken: env.TELEGRAM_WEBHOOK_SECRET,
-    url: `${(env.NEXT_PUBLIC_API_URL ?? project.hosts.api).replace(TRAILING_SLASH, "")}/telegram`,
-  });
-  return Response.json({ pending: info.pending_update_count, url: info.url });
+
+  const configured = Boolean(
+    env.TELEGRAM_BOT_TOKEN && env.TELEGRAM_WEBHOOK_SECRET
+  );
+  if (!configured) {
+    return json({
+      configured,
+      missing: [
+        env.TELEGRAM_BOT_TOKEN ? null : "TELEGRAM_BOT_TOKEN",
+        env.TELEGRAM_BOT_USERNAME ? null : "TELEGRAM_BOT_USERNAME",
+        env.TELEGRAM_WEBHOOK_SECRET ? null : "TELEGRAM_WEBHOOK_SECRET",
+      ].filter(Boolean),
+    });
+  }
+  const { api } = sharedBot();
+  try {
+    const info = parsed.data.connect
+      ? await configure(api, {
+          secretToken: env.TELEGRAM_WEBHOOK_SECRET,
+          url: webhookUrl(),
+        })
+      : await api.getWebhookInfo();
+    return json({
+      configured,
+      connected: info.url === webhookUrl(),
+      lastError: info.last_error_message ?? null,
+      pending: info.pending_update_count,
+    });
+  } catch {
+    // Most often a mistyped token: Telegram answers 401.
+    return json({ configured, error: "telegram_refused" }, 502);
+  }
 };

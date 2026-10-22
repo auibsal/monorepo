@@ -96,17 +96,13 @@ And without commands:
 2. **On sal-api** (Production, marked sensitive), add
    `TELEGRAM_BOT_TOKEN`, `TELEGRAM_BOT_USERNAME` and
    `TELEGRAM_WEBHOOK_SECRET` (`openssl rand -hex 32`), and redeploy.
-3. **Point Telegram at it**, once after that deploy and again whenever
-   the commands change:
-
-   ```sh
-   curl -X POST https://api.auibsal.org/telegram/setup \
-     -H "Authorization: Bearer $CRON_SECRET"
-   ```
-
-   It sets the webhook, the commands in English and Arabic, and the
-   descriptions. The scheduled posts need nothing more: the database
-   already calls apps/api.
+3. **Connect it.** In the Nexus, Settings → Telegram → *Connect the bot
+   to Telegram* (settings managers). It sets the webhook, the commands in
+   English and Arabic, and the descriptions; do it again whenever the
+   commands or the secret change. (Without the Nexus:
+   `curl -X POST https://api.auibsal.org/telegram/setup -H "Authorization: Bearer $CRON_SECRET" -d '{"connect":true}'`.)
+   The scheduled posts need nothing more: the database already calls
+   apps/api.
 4. **The Nexus.** Settings → Telegram: the bot's username (this shows
    *Connect Telegram* in members' profiles), and house rules if you want
    them.
