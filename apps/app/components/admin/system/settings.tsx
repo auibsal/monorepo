@@ -26,6 +26,7 @@ import {
 } from "../kit";
 import { ThirdPartyApps } from "./apps";
 import { NotionWorkspace } from "./notion";
+import { TelegramBot } from "./telegram";
 
 const key = ["admin", "settings"];
 const SEMESTER_CODE = /^(fall|spring|summer)-\d{4}$/;
@@ -708,6 +709,7 @@ export const SettingsAdmin = () => {
       <Versions settings={values} />
       <Flags settings={values} />
       <NotionWorkspace />
+      <TelegramBot settings={values} />
       <ThirdPartyApps />
       <p className="type-caption">{t("banner")}</p>
       <p className="type-caption">{t("emails")}</p>

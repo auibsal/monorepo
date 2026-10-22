@@ -29,6 +29,7 @@ import {
 import { Notice } from "@repo/email/templates/notice";
 import { env } from "@/env";
 import { pushToUser } from "./push";
+import { telegramToUser } from "./telegram";
 
 /**
  * Processes core.outbox rows: the emails and site revalidation queued by
@@ -119,8 +120,12 @@ const send = async (
     to: to.email,
   });
   if (run && to.userId) {
-    // Never throws: email is the record.
-    await pushToUser(run.admin, to.userId, pushNotice(built, to.lang, row));
+    // Neither throws: email is the record.
+    const notice = pushNotice(built, to.lang, row);
+    await Promise.all([
+      pushToUser(run.admin, to.userId, notice),
+      telegramToUser(run.admin, to.userId, notice),
+    ]);
   }
 };
 

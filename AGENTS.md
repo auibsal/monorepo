@@ -22,7 +22,14 @@ items and decisions) and continue from the first unticked item.
   links with `Link` from `@repo/internationalization/navigation`, or
   `localizedPath(locale, path)` for another app's URL; never write `/en`.
 - `apps/api` — api.auibsal.org: email, cron, calendar feeds, revalidation,
-  exports, signed URLs, account deletion. The only app with the secret key.
+  exports, signed URLs, account deletion. With `apps/bot`, the only app with
+  the secret key.
+- `apps/bot` — Hudhud, the Society's Telegram bot (grammY on bundled Vercel
+  functions; `docs/platform/telegram.md`). Holds the secret key, but acts
+  for a member only through the `core.telegram_*` functions, which run the
+  Nexus functions under the member's claims (aal1) so RLS still decides.
+  Public reads use the publishable key. Copy in `src/copy.ts`, both
+  languages; the mascot in `brand/mascot`.
 - `apps/storybook` — the SAL Design System: SAL components, v5 Screens and
   every platform email in both languages, at design.auibsal.org. Its routing
   middleware lets in only officers signed in through the Nexus
@@ -95,7 +102,7 @@ any schema change. Integration tests run against a local stack with
 - **Atomic multi-step operations are Postgres functions** called by RPC
   (ledger sign-off, ballots, blind ids, waitlist promotion, transitions).
 - **No secrets in `app` or `web`.** The service-role key lives only in
-  `apps/api` and CI. New env vars go in the package's `keys.ts` and every
+  `apps/api`, `apps/bot` and CI. New env vars go in the package's `keys.ts` and every
   affected `.env.example`.
 - **Paired fields.** Translatable columns come in pairs (`title_en`,
   `title_ar`, …). Store times as `timestamptz` (UTC); display Asia/Baghdad.

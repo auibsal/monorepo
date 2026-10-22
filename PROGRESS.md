@@ -9,6 +9,18 @@ Branch: `claude/new-session-qosn60`.
 
 ## Blocked — needed from the user
 
+- [ ] **Telegram bot, Hudhud (2026-10-22):** the code is in (`apps/bot`,
+      runbook `docs/platform/telegram.md`). To go live: create the bot in
+      @BotFather (name "Hudhud · SAL", avatar `brand/mascot/hudhud-avatar.png`,
+      inline mode on); create the Vercel project sal-bot (root `apps/bot`,
+      Frankfurt) with its seven variables; add `TELEGRAM_BOT_TOKEN` to
+      sal-api; call `/api/setup` once; in the Nexus, Settings → Telegram, set
+      the username and the bot address; then connect the group with a setup
+      code and `/topic` in each topic. Optional: house rules for `/rules`
+      (TODO(content): the group's own rules, if any, besides the Acceptable
+      Use Policy). The privacy notice and SAL-PLT-04 should mention the
+      Telegram link and what the bot keeps (TODO(content)).
+
 - [ ] **Analytics (owner, 2026-10-15: GA4 and GTM through the Google tag
       gateway):** live since 2026-10-16 (GTM-PWRQNN7H, gateway at
       `/metrics`). Consent is the site's own card alone (2026-10-16). Done
@@ -212,6 +224,17 @@ These stop parts of the work. Everything else continues around them.
       Realtime since 2026-10-09 (decision below).
 
 ## Decisions
+
+- **Telegram bot and mascot** (owner, 2026-10-22: "a Telegram bot … our
+  mascot … do what you think is best"): the mascot is Hudhud (هدهد), a
+  hoopoe carrying the SAL symbol as a letter (native to Iraq, the messenger
+  of the old stories, the guide in The Conference of the Birds), drawn in
+  the brand colors only (`brand/mascot`). The bot is a new app, `apps/bot`,
+  with the secret key (the second app after apps/api): it acts for members
+  only through `core.telegram_*` functions under their own claims at aal1,
+  so roles that need two-step sign-in never count in Telegram. Linking and
+  connecting a group start in the Nexus with one-time codes. No emoji in
+  the bot (brand rule); the daily word's marks are ● ○ ·.
 
 - **The President has access to everything** (owner, 2026-10-15) except
   the checks on the President, which stay with other officers: concerns
@@ -517,6 +540,18 @@ These stop parts of the work. Everything else continues around them.
 
 ## Checklist
 
+### Telegram (2026-10-22)
+- [x] Database: linked accounts, hashed one-time codes, act-as-member
+      functions, groups, members, posts, word plays, pg_cron posts and tidy
+      (`20261022000000_telegram`, `99_telegram.test.sql`)
+- [x] Bot: start, events and RSVP, Waraq, the daily word, /me, inline
+      sharing; groups: setup, topics, join policy, welcome, moderation,
+      reports, rules, newcomers' links, scheduled posts
+- [x] Nexus: Connect Telegram in the profile; Settings → Telegram
+- [x] apps/api: Telegram copies of notices
+- [x] Mascot: `brand/mascot`, SAL/Mascot in the Design System
+- [ ] Live: the owner's steps above
+
 ### Waraq (2026-10-14)
 - [x] Database: desks, types, named desks' intake and decisions, the piece
       workflow (author approval, three approvals, publish rule, scheduling,
@@ -715,6 +750,10 @@ Covered by automated tests so far:
   use (as the form says).
 
 ## needs-native-review (Arabic written for the platform)
+
+- Telegram (2026-10-22): all of `apps/bot/src/copy.ts` (Arabic), the bot's
+  Arabic commands and descriptions, `nexus.profile.telegram.*` and
+  `nexus.admin.settings.telegram.*`.
 
 - Streamlining (2026-10-16): `nexus.nav.documents` and `nexus.documents.title`
   («المكتبة»), `web.programmes.care`, `web.programmes.productions`,

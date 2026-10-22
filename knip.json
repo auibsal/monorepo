@@ -31,6 +31,9 @@
     },
     "packages/email": {
       "ignoreDependencies": ["react-dom", "@types/react-dom"]
+    },
+    "apps/bot": {
+      "entry": ["src/handlers/*.ts", "scripts/*.{cjs,ts}"]
     }
   }
 }

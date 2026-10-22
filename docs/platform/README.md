@@ -15,3 +15,4 @@ documents are on [auibsal.org/documents](https://auibsal.org/en/documents).
 - [Analytics and consent](analytics.md)
 - [Ads in Waraq](ads.md)
 - [The team's Notion workspace](notion.md)
+- [Hudhud, the Telegram bot](telegram.md)

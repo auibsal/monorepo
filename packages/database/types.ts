@@ -1216,6 +1216,169 @@ export type Database = {
         };
         Relationships: [];
       };
+      telegram_accounts: {
+        Row: {
+          linked_at: string;
+          notify: boolean;
+          telegram_id: number;
+          user_id: string;
+          username: string | null;
+        };
+        Insert: {
+          linked_at?: string;
+          notify?: boolean;
+          telegram_id: number;
+          user_id: string;
+          username?: string | null;
+        };
+        Update: {
+          linked_at?: string;
+          notify?: boolean;
+          telegram_id?: number;
+          user_id?: string;
+          username?: string | null;
+        };
+        Relationships: [];
+      };
+      telegram_codes: {
+        Row: {
+          code_hash: string;
+          expires_at: string;
+          purpose: string;
+          user_id: string;
+        };
+        Insert: {
+          code_hash: string;
+          expires_at?: string;
+          purpose: string;
+          user_id: string;
+        };
+        Update: {
+          code_hash?: string;
+          expires_at?: string;
+          purpose?: string;
+          user_id?: string;
+        };
+        Relationships: [];
+      };
+      telegram_groups: {
+        Row: {
+          chat_id: number;
+          join_policy: string;
+          lang: string;
+          registered_at: string;
+          registered_by: string | null;
+          title: string | null;
+          topics: NonNullable<Json>;
+        };
+        Insert: {
+          chat_id: number;
+          join_policy?: string;
+          lang?: string;
+          registered_at?: string;
+          registered_by?: string | null;
+          title?: string | null;
+          topics?: NonNullable<Json>;
+        };
+        Update: {
+          chat_id?: number;
+          join_policy?: string;
+          lang?: string;
+          registered_at?: string;
+          registered_by?: string | null;
+          title?: string | null;
+          topics?: NonNullable<Json>;
+        };
+        Relationships: [];
+      };
+      telegram_members: {
+        Row: {
+          chat_id: number;
+          joined_at: string;
+          telegram_id: number;
+          verified_at: string | null;
+          warnings: number;
+        };
+        Insert: {
+          chat_id: number;
+          joined_at?: string;
+          telegram_id: number;
+          verified_at?: string | null;
+          warnings?: number;
+        };
+        Update: {
+          chat_id?: number;
+          joined_at?: string;
+          telegram_id?: number;
+          verified_at?: string | null;
+          warnings?: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "telegram_members_chat_id_fkey";
+            columns: ["chat_id"];
+            isOneToOne: false;
+            referencedRelation: "telegram_groups";
+            referencedColumns: ["chat_id"];
+          },
+        ];
+      };
+      telegram_posts: {
+        Row: {
+          chat_id: number;
+          kind: string;
+          message_id: number | null;
+          posted_at: string;
+          ref: string;
+        };
+        Insert: {
+          chat_id: number;
+          kind: string;
+          message_id?: number | null;
+          posted_at?: string;
+          ref: string;
+        };
+        Update: {
+          chat_id?: number;
+          kind?: string;
+          message_id?: number | null;
+          posted_at?: string;
+          ref?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "telegram_posts_chat_id_fkey";
+            columns: ["chat_id"];
+            isOneToOne: false;
+            referencedRelation: "telegram_groups";
+            referencedColumns: ["chat_id"];
+          },
+        ];
+      };
+      telegram_word_plays: {
+        Row: {
+          created_at: string;
+          day: number;
+          guesses: string[];
+          lang: string;
+          telegram_id: number;
+        };
+        Insert: {
+          created_at?: string;
+          day: number;
+          guesses?: string[];
+          lang: string;
+          telegram_id: number;
+        };
+        Update: {
+          created_at?: string;
+          day?: number;
+          guesses?: string[];
+          lang?: string;
+          telegram_id?: number;
+        };
+        Relationships: [];
+      };
     };
     Views: {
       [_ in never]: never;
@@ -1274,6 +1437,32 @@ export type Database = {
         };
         Returns: string;
       };
+      telegram_cancel_rsvp: {
+        Args: { event_id: string; telegram_id: number };
+        Returns: undefined;
+      };
+      telegram_events: {
+        Args: { event_id?: string; max_rows?: number; telegram_id: number };
+        Returns: Json;
+      };
+      telegram_group_code: {
+        Args: Record<PropertyKey, never>;
+        Returns: string;
+      };
+      telegram_link_code: { Args: Record<PropertyKey, never>; Returns: string };
+      telegram_redeem_link: {
+        Args: { code: string; telegram_id: number; username?: string };
+        Returns: string;
+      };
+      telegram_register_group: {
+        Args: { chat_id: number; code: string; title?: string };
+        Returns: boolean;
+      };
+      telegram_rsvp: {
+        Args: { event_id: string; telegram_id: number };
+        Returns: string;
+      };
+      telegram_whoami: { Args: { telegram_id: number }; Returns: Json };
     };
     Enums: {
       [_ in never]: never;

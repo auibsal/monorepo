@@ -11,7 +11,8 @@
         "!.next/cache/**",
         "out/**",
         "**/generated/**",
-        "storybook-static/**"
+        "storybook-static/**",
+        ".vercel/output/**"
       ]
     },
     "typecheck": {
