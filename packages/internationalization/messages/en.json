@@ -1553,7 +1553,13 @@
           "connectGroup": "Connect a group",
           "connectHint": "Add the bot to the group as an admin, then send this message in the group within 15 minutes.",
           "makeCode": "Make a setup code",
-          "newCode": "Make a new code"
+          "newCode": "Make a new code",
+          "botTitle": "The bot",
+          "notConfigured": "Not set up yet: add {missing} to sal-api in Vercel, then redeploy.",
+          "connected": "Connected: Telegram delivers messages to the API.",
+          "notConnected": "Set up but not connected to Telegram yet.",
+          "connect": "Connect the bot to Telegram",
+          "reconnect": "Connect again (after changing commands or the secret)"
         }
       },
       "journal": {

@@ -6,12 +6,20 @@ import { SalCard } from "@repo/design-system/components/sal/card";
 import { Button } from "@repo/design-system/components/ui/button";
 import { Input } from "@repo/design-system/components/ui/input";
 import { unwrap } from "@repo/sal-data";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
+import { callApi } from "@/lib/api";
 import { BilingualField, ErrorLine, Field, SaveButton } from "../kit";
 
 const LEADING_AT = /^@/;
+
+interface BotStatus {
+  configured: boolean;
+  connected?: boolean;
+  lastError?: string | null;
+  missing?: string[];
+}
 
 const asText = (value: Json | undefined) =>
   typeof value === "string" ? value : "";
@@ -63,6 +71,26 @@ export const TelegramBot = ({
     onSuccess: () =>
       queryClient.invalidateQueries({ queryKey: ["admin", "settings"] }),
   });
+  const statusKey = ["admin", "telegram-status"];
+  const status = useQuery({
+    queryFn: () => callApi<BotStatus>(supabase, "/telegram/setup", {}),
+    queryKey: statusKey,
+  });
+  const connect = useMutation({
+    mutationFn: () =>
+      callApi<BotStatus>(supabase, "/telegram/setup", { connect: true }),
+    onSuccess: (data) => queryClient.setQueryData(statusKey, data),
+  });
+  let statusLine: string | null = null;
+  if (status.data && !status.data.configured) {
+    statusLine = t("notConfigured", {
+      missing: (status.data.missing ?? []).join(", "),
+    });
+  } else if (status.data?.connected) {
+    statusLine = t("connected");
+  } else if (status.data) {
+    statusLine = t("notConnected");
+  }
   const groupCode = useMutation({
     mutationFn: async () =>
       unwrap(await supabase.schema("core").rpc("telegram_group_code")),
@@ -73,6 +101,30 @@ export const TelegramBot = ({
     <SalCard>
       <h2 className="type-subheading">{t("title")}</h2>
       <p className="type-body">{t("lede")}</p>
+      <div className="grid gap-2">
+        <h3 className="type-body font-bold">{t("botTitle")}</h3>
+        {statusLine ? (
+          <p className="type-caption" role="status">
+            {statusLine}
+          </p>
+        ) : null}
+        {status.data?.lastError ? (
+          <p className="type-caption" dir="ltr">
+            {status.data.lastError}
+          </p>
+        ) : null}
+        {status.data?.configured ? (
+          <Button
+            className="justify-self-start"
+            disabled={connect.isPending}
+            onClick={() => connect.mutate()}
+            variant={status.data.connected ? "outline" : "default"}
+          >
+            {status.data.connected ? t("reconnect") : t("connect")}
+          </Button>
+        ) : null}
+        <ErrorLine error={status.error ?? connect.error} />
+      </div>
       <form
         className="grid gap-4"
         onSubmit={(event) => {
