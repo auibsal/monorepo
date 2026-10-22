@@ -98,7 +98,7 @@ jobs:
         with:
           node-version-file: .nvmrc
       - run: bun install --frozen-lockfile
-      - run: bunx turbo build --filter=api --filter=app --filter=web --filter=@repo/storybook
+      - run: bunx turbo build --filter=api --filter=app --filter=web --filter=@repo/storybook --filter=bot
       # No secret may reach a client bundle: the Nexus export and the public
       # site must not contain the secret-key prefix or server-only names.
       - name: No secrets in client bundles

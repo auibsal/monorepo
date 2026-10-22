@@ -589,6 +589,21 @@
           "declined": "Not verified",
           "ended": "Ended"
         }
+      },
+      "telegram": {
+        "title": "Telegram",
+        "description": "Link Telegram and Hudhud, the Society's bot, brings your notices there too: reminders, RSVPs and Waraq decisions. You can RSVP from Telegram as well.",
+        "connect": "Connect Telegram",
+        "open": "Open Telegram to finish",
+        "codeHint": "The link works once, for 15 minutes.",
+        "linked": "Linked to Telegram.",
+        "linkedAs": "Linked to Telegram as @{username}.",
+        "noticesOn": "Notices go there as well as by email.",
+        "noticesOff": "Notices go by email only.",
+        "turnOff": "Stop notices in Telegram",
+        "turnOn": "Send notices to Telegram",
+        "unlink": "Unlink Telegram",
+        "failed": "We couldn't change Telegram. Please try again."
       }
     },
     "admin": {
@@ -1527,6 +1542,20 @@
             "email": "Email",
             "roles": "Roles"
           }
+        },
+        "telegram": {
+          "title": "Telegram",
+          "lede": "Hudhud, the Society's Telegram bot: its username, the house rules it shows with /rules, and connecting the Society's group.",
+          "username": "Bot username",
+          "usernameHint": "Without the @, as set in BotFather; it ends in \"bot\". Members see Connect Telegram in their profile once it is set.",
+          "rules": "House rules",
+          "rulesHint": "Shown with /rules after the Acceptable Use Policy. Leave empty for the policy alone.",
+          "connectGroup": "Connect a group",
+          "connectHint": "Add the bot to the group as an admin, then send this message in the group within 15 minutes.",
+          "makeCode": "Make a setup code",
+          "newCode": "Make a new code",
+          "address": "Bot address",
+          "addressHint": "The bot's Vercel production URL. The database calls it every ten minutes for the group posts."
         }
       },
       "journal": {

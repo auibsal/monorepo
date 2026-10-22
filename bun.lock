@@ -31,6 +31,7 @@
         "@repo/sal-data": "workspace:*",
         "@repo/security": "workspace:*",
         "@repo/storage": "workspace:*",
+        "@repo/telegram": "workspace:*",
         "@sentry/nextjs": "^10.76.2",
         "@supabase/supabase-js": "^2.117.3",
         "@t3-oss/env-nextjs": "^0.13.10",

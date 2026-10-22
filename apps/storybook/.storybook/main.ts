@@ -19,7 +19,10 @@ const config: StorybookConfig = {
     name: getAbsolutePath("@storybook/nextjs"),
     options: {},
   },
-  staticDirs: [{ from: "../../../brand/logos", to: "/brand" }],
+  staticDirs: [
+    { from: "../../../brand/logos", to: "/brand" },
+    { from: "../../../brand/mascot", to: "/mascot" },
+  ],
   stories: [
     "../stories/**/*.mdx",
     "../stories/**/*.stories.@(js|jsx|mjs|ts|tsx)",

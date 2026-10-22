@@ -21,6 +21,7 @@ import { ConnectedApps } from "./connected-apps";
 import { DeleteAccount } from "./delete-account";
 import { Passkeys } from "./passkeys";
 import { PhoneNotifications } from "./phone-notifications";
+import { TelegramLink } from "./telegram-link";
 
 export const ProfileScreen = () => {
   const t = useTranslations("nexus");
@@ -199,6 +200,9 @@ export const ProfileScreen = () => {
       </form>
       <SalCard>
         <PhoneNotifications />
+      </SalCard>
+      <SalCard>
+        <TelegramLink />
       </SalCard>
       <CalendarFeed />
       <Affiliations />
