@@ -315,4 +315,31 @@ describe.skipIf(!enabled)("Hudhud", () => {
       stranger
     );
   });
+  test("answers a guest mention with the matching event", async () => {
+    updateId += 1;
+    await bot.handleUpdate({
+      guest_message: {
+        chat: { id: -42, title: "Elsewhere", type: "group" },
+        date: 0,
+        from: from(stranger),
+        guest_query_id: "g1",
+        message_id: updateId,
+        text: `@sal_test_bot Telegram Evening ${stamp}`,
+      },
+      update_id: updateId,
+    } as Update);
+    const answer = sent("answerGuestQuery").at(-1);
+    expect(answer?.payload.guest_query_id).toBe("g1");
+    expect(JSON.stringify(answer?.payload.result)).toContain(
+      `Telegram Evening ${stamp}`
+    );
+  });
+
+  test("greets a member who linked with Telegram's login", async () => {
+    const { greetLinked } = await import("@/lib/bot/features/account");
+    await greetLinked(bot.api, tgUser);
+    const greeting = sent("sendMessage").at(-1);
+    expect(greeting?.payload.chat_id).toBe(tgUser);
+    expect(String(greeting?.payload.text)).toContain("Linked");
+  });
 });

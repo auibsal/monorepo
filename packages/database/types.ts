@@ -1449,6 +1449,10 @@ export type Database = {
         Args: Record<PropertyKey, never>;
         Returns: string;
       };
+      telegram_link_account: {
+        Args: { telegram_id: number; user_id: string; username?: string };
+        Returns: undefined;
+      };
       telegram_link_code: { Args: Record<PropertyKey, never>; Returns: string };
       telegram_redeem_link: {
         Args: { code: string; telegram_id: number; username?: string };

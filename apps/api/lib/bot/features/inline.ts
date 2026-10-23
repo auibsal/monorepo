@@ -6,17 +6,20 @@ import type { BotContext } from "../context";
 import { copy, type Lang } from "../copy";
 import { anon } from "../db";
 import { pick, when } from "../format";
-import { botLink, eventPage, piecePage } from "../links";
+import { botLink, eventPage, piecePage, web } from "../links";
 import { pieceAuthor, publicPieces } from "./waraq";
 
 /**
  * Inline mode: in any chat, "@<bot> poetry" offers the public events and
- * Waraq pieces that match, to share as a card with its buttons. Guests'
- * reads only (RLS as anon), cached by Telegram for five minutes.
+ * Waraq pieces that match, to share as a card with its buttons. Guest mode:
+ * mentioning the bot in a chat it isn't in ("@<bot> open mic") answers there
+ * with the best match, or with what's coming up. Guests' reads only (RLS as
+ * anon); inline answers are cached by Telegram for five minutes.
  */
 export const inline = new Composer<BotContext>();
 
 const MAX_QUERY = 40;
+const MENTIONS = /@\w+/g;
 
 const matches = (query: string, ...fields: (string | null)[]) =>
   !query ||
@@ -81,4 +84,42 @@ inline.on("inline_query", async (ctx) => {
   ]);
   const results: InlineQueryResult[] = [...eventsFound, ...piecesFound];
   await ctx.answerInlineQuery(results, { cache_time: 300, is_personal: false });
+});
+
+const UPCOMING = 5;
+
+/** What's coming up, as one card: the answer when nothing else matches. */
+const upcoming = async (lang: Lang) => {
+  const t = copy[lang];
+  const list = ((await publicEvents(anon(), { limit: UPCOMING })) ?? []).map(
+    (event) =>
+      `${escapeHtml(pick(lang, event.title_en, event.title_ar))}\n${when(lang, event.starts_at)}`
+  );
+  return InlineQueryResultBuilder.article("upcoming", t.buttons.events, {
+    reply_markup: new InlineKeyboard().url(
+      t.buttons.events,
+      web(lang, "/events")
+    ),
+  }).text(list.length ? [t.eventsTitle, ...list].join("\n\n") : t.eventsNone, {
+    link_preview_options: { is_disabled: true },
+    parse_mode: "HTML",
+  });
+};
+
+inline.on("guest_message", async (ctx) => {
+  const message = ctx.guestMessage;
+  const query = (message.text ?? message.caption ?? "")
+    .replace(MENTIONS, "")
+    .trim()
+    .slice(0, MAX_QUERY);
+  const { lang } = ctx;
+  let best: InlineQueryResult | undefined;
+  if (query) {
+    const [eventsFound, piecesFound] = await Promise.all([
+      eventResults(lang, query, ctx.botUsername),
+      pieceResults(lang, query),
+    ]);
+    best = eventsFound[0] ?? piecesFound[0];
+  }
+  await ctx.answerGuestQuery(best ?? (await upcoming(lang)));
 });

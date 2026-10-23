@@ -17,6 +17,7 @@ that point somewhere. It is not a logo and never replaces one.
 | `hudhud.svg` | The mascot on its own, transparent. |
 | `hudhud.png` | The same, 1180 × 1000, transparent. |
 | `hudhud-avatar.svg` / `hudhud-avatar.png` | The bot's profile picture, 640 × 640 on crimson-50. Telegram crops it to a circle; the bird stays inside it. |
+| `hudhud-welcome.svg` / `hudhud-welcome.png` | The bot's description picture (BotFather → Edit Bot → Description picture), 640 × 360 on crimson-50: what people see before they first start the bot. |
 
 ## Drawing
 
