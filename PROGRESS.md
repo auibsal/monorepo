@@ -780,6 +780,9 @@ Covered by automated tests so far:
 
 ## needs-native-review (Arabic written for the platform)
 
+- Version 1 (2026-10-24): the cron-failure notice to administrators,
+  `cronFailed` in `packages/email/copy.ts`.
+
 - Telegram (2026-10-22): all of `apps/api/lib/bot/copy.ts` (Arabic), the bot's
   Arabic commands and descriptions, `nexus.profile.telegram.*` and
   `nexus.admin.settings.telegram.*`.

@@ -42,7 +42,7 @@ stay on auibsal.org and are edited in the Nexus.
 ## How the sync works
 
 `apps/api` route `/cron/notion-sync`, called by pg_cron (`sal-notion-sync`)
-every five minutes with the cron secret:
+every fifteen minutes with the cron secret:
 
 1. **Mirrors.** Programs, officers (`access.officer_directory()`), documents
    and minutes, Waraq pipeline counts (each call's stages, the News, Video

@@ -100,6 +100,12 @@ any schema change. Integration tests run against a local stack with
   session; `access.has_permission` enforces it. Don't add bypasses.
 - **Atomic multi-step operations are Postgres functions** called by RPC
   (ledger sign-off, ballots, blind ids, waitlist promotion, transitions).
+  The body is a SECURITY DEFINER function in the `private` schema that
+  checks permissions itself; the name the apps call, in the exposed schema,
+  is a SECURITY INVOKER wrapper with the same signature (migration
+  `20261024000000`). The Supabase advisors stay at zero findings:
+  `00_advisors.test.sql` fails otherwise (one permissive policy per role and
+  action, every foreign key indexed, no exposed SECURITY DEFINER function).
 - **No secrets in `app` or `web`.** The service-role key lives only in
   `apps/api` and CI. New env vars go in the package's `keys.ts` and every
   affected `.env.example`.
