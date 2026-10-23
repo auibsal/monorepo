@@ -2347,7 +2347,7 @@
       },
       "waraq": {
         "title": "Waraq",
-        "lede": "The newsroom: every piece on every desk, from Editing to Published. A piece publishes itself once the author, the desk editor, the Editor-in-Chief or Managing Editor and the Copy Chief have approved it.",
+        "lede": "The newsroom: every piece on every desk, from Editing to Published. A piece publishes itself once the author and the desk editor have approved it; an Edition piece (Letters, Gallery) also needs the Editor-in-Chief or Managing Editor. The Copy Chief's style check is recorded, never required.",
         "tabs": {
           "newsroom": "Newsroom",
           "desks": "Desk queue",
@@ -2414,7 +2414,7 @@
         "approvals": {
           "desk": "Desk editor",
           "chief": "Editor-in-Chief or Managing Editor",
-          "copy": "Copy Chief (style)"
+          "copy": "Copy Chief (style, optional)"
         },
         "workflow": {
           "title": "Where it stands",
@@ -2428,6 +2428,7 @@
           "approvedByYou": "Approved by you, {date}",
           "approved": "Approved, {date}",
           "waiting": "Waiting",
+          "optional": "Not required",
           "approve": "Approve",
           "withdraw": "Withdraw",
           "publishAt": "Publish on",

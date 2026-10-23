@@ -1,4 +1,4 @@
-import { admin, editor, event, member, PASSWORD } from "./fixtures";
+import { admin, editor, editor2, event, member, PASSWORD } from "./fixtures";
 
 /**
  * Seeds what the journeys need, idempotently: a member who has finished
@@ -28,8 +28,9 @@ export default async function globalSetup() {
   const db = admin();
   const memberId = await ensureUser(member.email, member.name);
   const editorId = await ensureUser(editor.email, editor.name);
+  const editor2Id = await ensureUser(editor2.email, editor2.name);
 
-  for (const id of [memberId, editorId]) {
+  for (const id of [memberId, editorId, editor2Id]) {
     const versions = await db
       .schema("core")
       .from("settings")
@@ -67,6 +68,7 @@ export default async function globalSetup() {
         { role: "tech_admin", scope_type: "global", user_id: editorId },
         // Waraq's News desk (journal.edit.news), for the newsroom journey.
         { role: "news_editor", scope_type: "global", user_id: editorId },
+        { role: "tech_admin", scope_type: "global", user_id: editor2Id },
       ],
       { ignoreDuplicates: true }
     );

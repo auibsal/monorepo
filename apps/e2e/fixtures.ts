@@ -13,4 +13,9 @@ export const admin = () =>
 export const PASSWORD = "E2e-pass-12345";
 export const member = { email: "e2e-member@auib.edu.iq", name: "E2E Member" };
 export const editor = { email: "e2e-editor@auib.edu.iq", name: "E2E Editor" };
+/** A second editor, for the co-editing journey (presence hides your own tabs). */
+export const editor2 = {
+  email: "e2e-editor-2@auib.edu.iq",
+  name: "E2E Second Editor",
+};
 export const event = { slug: "e2e-open-pages", title: "Open Pages (e2e)" };

@@ -248,6 +248,13 @@ These stop parts of the work. Everything else continues around them.
   and the Open Call. One attribute (`data-theme` on the Nexus `<html>`)
   reverses it. The shell paints before the data: the header, navigation
   and footer render at once and the gates spin inside `main`.
+- **Fewer gates to print** (owner, 2026-10-24, "many steps require too
+  much bureaucracy"): a piece on a named desk (News, Video, Voices)
+  publishes on the desk editor's approval; an Edition piece (Letters,
+  Gallery) needs the desk editor and the Editor-in-Chief or Managing
+  Editor, two people; the Copy Chief's style check is recorded, never
+  required (`private.required_approvals`, migration `20261024000400`).
+  The author's approval and the agreement on submitted work stay.
 - **Forms without paper codes** (2026-10-24): members see forms by what
   they do ("Certificate of Service"), never by F- or L- number; the codes
   stay in the database and on the printed form for the Policy Manual.
