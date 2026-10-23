@@ -86,7 +86,7 @@ end;
 $$;
 grant execute on function pg_temp.as_service() to public;
 
-select plan(24);
+select plan(28);
 
 select pg_temp.make_user('00000000-0000-0000-0000-0000000007a1', 'tg1@auib.edu.iq', 'Linked Member');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000007a2', 'tg2@auib.edu.iq', 'Other Member');
@@ -164,6 +164,22 @@ select is(core.telegram_rsvp(4242, 'e0000000-0000-0000-0000-0000000007e2'), 'con
 select pg_temp.as_service();
 select throws_ok($$ select core.telegram_rsvp(9999, 'e0000000-0000-0000-0000-0000000007e1') $$,
   '42501', null, 'An unlinked account cannot RSVP');
+
+-- Linking through Telegram's login (apps/api verifies the id_token)
+select pg_temp.login_as('00000000-0000-0000-0000-0000000007a2');
+select throws_ok(
+  $$ select core.telegram_link_account('00000000-0000-0000-0000-0000000007a2', 5151) $$,
+  '42501', null, 'Members cannot link an account themselves');
+select pg_temp.as_service();
+select lives_ok(
+  $$ select core.telegram_link_account('00000000-0000-0000-0000-0000000007a2', 4242, 'moved') $$,
+  'apps/api links a verified Telegram account');
+select is((select user_id from core.telegram_accounts where telegram_id = 4242),
+  '00000000-0000-0000-0000-0000000007a2'::uuid,
+  'The Telegram account moves to the member who linked it last');
+select is((select count(*)::int from core.telegram_accounts
+  where user_id = '00000000-0000-0000-0000-0000000007a1'), 0,
+  'The previous member no longer has it');
 
 -- The group posts go through apps/api like the other scheduled jobs.
 select pg_temp.logout();

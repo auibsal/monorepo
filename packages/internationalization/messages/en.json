@@ -603,7 +603,9 @@
         "turnOff": "Stop notices in Telegram",
         "turnOn": "Send notices to Telegram",
         "unlink": "Unlink Telegram",
-        "failed": "We couldn't change Telegram. Please try again."
+        "failed": "We couldn't change Telegram. Please try again.",
+        "linking": "Linking Telegram…",
+        "loginHint": "Connect sends you to Telegram to confirm, then back here. It only links Telegram; you still sign in to the Nexus with your email."
       }
     },
     "admin": {

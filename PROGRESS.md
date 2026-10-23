@@ -10,17 +10,20 @@ Branch: `claude/new-session-qosn60`.
 ## Blocked — needed from the user
 
 - [ ] **Telegram bot, Hudhud (2026-10-22; in apps/api since 2026-10-23):**
-      the code is in (`apps/api/lib/bot`, runbook `docs/platform/telegram.md`).
-      To go live: create the bot in @BotFather (name "Hudhud · SAL", avatar
-      `brand/mascot/hudhud-avatar.png`, inline mode on); on sal-api add
-      `TELEGRAM_BOT_TOKEN` and `TELEGRAM_BOT_USERNAME` (Production,
-      sensitive; `TELEGRAM_WEBHOOK_SECRET` is already set, 2026-10-23) and
-      redeploy; in the Nexus, Settings → Telegram, set the username and press
-      *Connect the bot to Telegram*; connect the group with a setup code and `/topic` in each
-      topic. Optional: house rules for `/rules` (TODO(content): the group's
-      own rules, if any, besides the Acceptable Use Policy). The privacy
-      notice and SAL-PLT-04 should mention the Telegram link and what the
-      bot keeps (TODO(content)).
+      live as @auibsal_bot since 2026-10-23 (runbook
+      `docs/platform/telegram.md`). Left: (1) Telegram's login for linking
+      (2026-10-23): in BotFather → Login Widget → OpenID Connect add the
+      Redirect URIs `https://nexus.auibsal.org/profile` and
+      `https://nexus.auibsal.org/ar/profile`, and put the Client Secret on
+      sal-api as `TELEGRAM_LOGIN_CLIENT_SECRET` (Production, sensitive),
+      then redeploy; (2) the BotFather settings in the runbook (Guest Mode
+      on, Bot Management and Threaded Mode off, admin rights, privacy
+      policy URL, description picture `brand/mascot/hudhud-welcome.png`),
+      then *Connect again* in Settings → Telegram; (3) connect the group
+      with a setup code and `/topic` in each topic. Optional: house rules
+      for `/rules` (TODO(content): the group's own rules, if any, besides
+      the Acceptable Use Policy). The privacy notice and SAL-PLT-04 should
+      mention the Telegram link and what the bot keeps (TODO(content)).
 - [ ] **Vercel variables to delete (2026-10-23):** `RESEND_TOKEN` and
       `RESEND_FROM` on sal-web (the site sends no email; the code no longer
       reads them), `NEXT_PUBLIC_DOCS_URL` on sal-web and sal-nexus (the docs
@@ -240,8 +243,11 @@ These stop parts of the work. Everything else continues around them.
   2026-10-23: one app holds the secrets; first built as apps/bot): it acts
   for members only through `core.telegram_*` functions under their own
   claims at aal1,
-  so roles that need two-step sign-in never count in Telegram. Linking and
-  connecting a group start in the Nexus with one-time codes. No emoji in
+  so roles that need two-step sign-in never count in Telegram. Linking
+  starts in the Nexus with Telegram's login (OpenID Connect, verified by
+  apps/api; the bot's one-time code is the fallback), and connecting a
+  group with a one-time code. Telegram never signs anyone in to the Nexus:
+  sign-in is email only (owner, 2026-10-23). No emoji in
   the bot (brand rule); the daily word's marks are ● ○ ·.
 
 - **The President has access to everything** (owner, 2026-10-15) except
@@ -557,6 +563,8 @@ These stop parts of the work. Everything else continues around them.
       reports, rules, newcomers' links, scheduled posts
 - [x] Nexus: Connect Telegram in the profile; Settings → Telegram
 - [x] apps/api: Telegram copies of notices
+- [x] Linking with Telegram's login (`/telegram/link`,
+      `core.telegram_link_account`); Guest Mode answers (2026-10-23)
 - [x] Mascot: `brand/mascot`, SAL/Mascot in the Design System
 - [ ] Live: the owner's steps above
 

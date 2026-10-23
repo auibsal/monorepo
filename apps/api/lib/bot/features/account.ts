@@ -1,7 +1,8 @@
 import { escapeHtml } from "@repo/telegram";
-import { Composer, InlineKeyboard } from "grammy";
+import { type Api, Composer, InlineKeyboard } from "grammy";
 import type { BotContext } from "../context";
-import { db, visibleEvents } from "../db";
+import { type Copy, copy, type Lang } from "../copy";
+import { db, visibleEvents, whoami } from "../db";
 import { pick, when } from "../format";
 import { connectPage, nexus } from "../links";
 import { admitPending } from "./group/joins";
@@ -53,15 +54,37 @@ export const redeemLink = async (ctx: BotContext, payload: string) => {
   return true;
 };
 
-export const menu = (ctx: BotContext) =>
+const menuFor = (t: Copy, lang: Lang) =>
   new InlineKeyboard()
-    .text(ctx.t.buttons.events, "evs")
-    .text(ctx.t.buttons.waraq, "waraq")
+    .text(t.buttons.events, "evs")
+    .text(t.buttons.waraq, "waraq")
     .row()
-    .text(ctx.t.buttons.word, "word")
-    .text(ctx.t.buttons.me, "me")
+    .text(t.buttons.word, "word")
+    .text(t.buttons.me, "me")
     .row()
-    .url(ctx.t.buttons.nexus, nexus(ctx.lang));
+    .url(t.buttons.nexus, nexus(lang));
+
+export const menu = (ctx: BotContext) => menuFor(ctx.t, ctx.lang);
+
+/**
+ * After a member links Telegram from the Nexus (Telegram's login): the same
+ * greeting as a redeemed code, and anyone waiting at a group's door is let
+ * in. The login's bot_access scope lets the bot write first.
+ */
+export const greetLinked = async (api: Api, telegramId: number) => {
+  const me = await whoami(telegramId);
+  if (!me) {
+    return;
+  }
+  const t = copy[me.locale];
+  const name = escapeHtml(pick(me.locale, me.name_en, me.name_ar));
+  await api
+    .sendMessage(telegramId, t.linked(name), {
+      reply_markup: menuFor(t, me.locale),
+    })
+    .catch(() => undefined);
+  await admitPending(api, telegramId);
+};
 
 const meView = async (ctx: BotContext) => {
   const me = await ctx.account();
