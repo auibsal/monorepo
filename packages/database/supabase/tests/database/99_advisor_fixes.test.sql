@@ -103,7 +103,7 @@ select pg_temp.logout();
 select is(
   (select with_check from pg_policies
    where schemaname = 'programmes' and tablename = 'shift_signups'
-     and policyname = 'Programme managers update sign-ups') = 'true',
+     and policyname = 'Update by authenticated') = 'true',
   false, 'The manager update policy on sign-ups checks the new row');
 
 insert into programmes.rotas (id, programme_id, title_en, title_ar)

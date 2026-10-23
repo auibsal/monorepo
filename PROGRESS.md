@@ -243,6 +243,22 @@ These stop parts of the work. Everything else continues around them.
 
 ## Decisions
 
+- **One ground** (owner, 2026-10-24, "improve the UI/UX … especially nexus
+  vs web"): the Nexus is light like the site; ink stays for the "why" pages
+  and the Open Call. One attribute (`data-theme` on the Nexus `<html>`)
+  reverses it. The shell paints before the data: the header, navigation
+  and footer render at once and the gates spin inside `main`.
+- **Fewer gates to print** (owner, 2026-10-24, "many steps require too
+  much bureaucracy"): a piece on a named desk (News, Video, Voices)
+  publishes on the desk editor's approval; an Edition piece (Letters,
+  Gallery) needs the desk editor and the Editor-in-Chief or Managing
+  Editor, two people; the Copy Chief's style check is recorded, never
+  required (`private.required_approvals`, migration `20261024000400`).
+  The author's approval and the agreement on submitted work stay.
+- **Forms without paper codes** (2026-10-24): members see forms by what
+  they do ("Certificate of Service"), never by F- or L- number; the codes
+  stay in the database and on the printed form for the Policy Manual.
+
 - **Telegram bot and mascot** (owner, 2026-10-22: "a Telegram bot … our
   mascot … do what you think is best"): the mascot is Hudhud (هدهد), a
   hoopoe carrying the SAL symbol as a letter (native to Iraq, the messenger
@@ -557,15 +573,34 @@ These stop parts of the work. Everything else continues around them.
   transaction; an insert trigger hands each to apps/api (pg_net), and a
   drain every ten minutes retries what failed.
 - Supabase advisor (Oct 9, 2026): fixed the media bucket listing and the
-  always-true sign-up check (migration `20261009000000`). Left as is, by
-  design: SECURITY DEFINER functions callable by visitors or members (each
-  returns only public data or checks permissions inside; the uid-taking
-  membership helpers answer only about the caller unless the caller manages
-  members), "multiple permissive policies" and "unused index" (performance
-  notes, negligible at the Society's scale), and leaked-password protection
-  (a paid feature the owner canceled).
+  always-true sign-up check (migration `20261009000000`). Oct 24, 2026
+  (owner: "not a single advisor warning"): every RPC entry point is now a
+  SECURITY INVOKER wrapper around its body in `private`, overlapping
+  permissive policies are merged, every foreign key is indexed, the
+  hand-made `rls_auto_enable` is dropped, and `00_advisors.test.sql` keeps
+  all of it true. The one row left, leaked-password protection, is a
+  dashboard setting on the Pro plan.
 
 ## Checklist
+
+### Version 1 (2026-10-24)
+- [x] Rails: the secret grep in CI works, `bun audit` and `turbo boundaries`
+      run on every PR, strict Turbo env, dependency review on every PR,
+      Next 16.4.3, Storybook 10.6.3, one Ignored Build Step script, the
+      journeys against built apps with Realtime (co-editing included)
+- [x] Database: zero advisor findings (migrations `20261024000000`–`000200`),
+      `00_advisors.test.sql`, the daily cron watch (`sal-cron-health` →
+      `platform.cron_failed` → the administrators), Notion mirror every 15
+      minutes
+- [x] UX: one light ground, shell-first loading, `dir="auto"` on mixed
+      lists, six words written from Home, Waraq front page without a gap,
+      ads that vanish when empty, newsroom tabs and order, forms without
+      paper codes
+- [x] Fewer gates to print (`private.required_approvals`)
+- [ ] Owner: the ruleset on `main` (PR #115 names the checks), secret
+      scanning's non-provider patterns and validity checks, Copilot review
+      off, leaked-password protection when on the Pro plan, then merge #115
+- [ ] Owner: the Telegram steps, the Vercel variables and AdSense above
 
 ### Telegram (2026-10-22)
 - [x] Database: linked accounts, hashed one-time codes, act-as-member
@@ -779,6 +814,11 @@ Covered by automated tests so far:
   use (as the form says).
 
 ## needs-native-review (Arabic written for the platform)
+
+- Version 1 (2026-10-24): the cron-failure notice to administrators,
+  `cronFailed` in `packages/email/copy.ts`; `nexus.home.sixWords.{edit,hint,count,save,cancel}`,
+  `nexus.declarations.makeOne`, `nexus.admin.waraq.sortedBy`, and the
+  reworded ledes of Declarations, Service and Side Quest care.
 
 - Telegram (2026-10-22): all of `apps/api/lib/bot/copy.ts` (Arabic), the bot's
   Arabic commands and descriptions, `nexus.profile.telegram.*` and

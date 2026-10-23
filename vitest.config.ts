@@ -21,6 +21,7 @@ export default defineConfig({
       "packages/rbac",
       "packages/internationalization",
       "packages/next-config",
+      "packages/telegram",
     ],
   },
 });

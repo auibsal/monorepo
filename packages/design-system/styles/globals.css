@@ -16,8 +16,8 @@
 /*
  * SAL v4 with the v5 Screens amendment (brand/BRAND-BOOK.md, "Screens").
  * Components use only the role tokens (tokens.css); the shadcn variables
- * below are aliases of them. The public site is light; the ink theme
- * ([data-theme="dark"]) is the Nexus, the "why" pages and the Open Call.
+ * below are aliases of them. The site and the Nexus are light; the ink theme
+ * ([data-theme="dark"]) is for the "why" pages and the Open Call.
  * Square corners, a 2px frame, and one elevation: a solid offset block
  * (shadow-offset), never a blur. No user-facing theme toggle. Never add a
  * color.
@@ -473,6 +473,45 @@
     [data-slot="select-trigger"]
   ) {
   background-color: transparent;
+}
+/* Tabs read as a row of kickers on a rule; the current one carries the accent line. */
+[data-slot="tabs-list"] {
+  gap: 1.5rem;
+  justify-content: flex-start;
+  width: 100%;
+  height: auto;
+  padding: 0;
+  background: transparent;
+  border-bottom: 1px solid var(--rule);
+  border-radius: 0;
+}
+[data-slot="tabs-trigger"] {
+  flex: none;
+  height: auto;
+  padding: 0.5rem 0;
+  margin-bottom: -1px;
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  background: transparent;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  box-shadow: none;
+}
+[data-slot="tabs-trigger"]:lang(ar) {
+  font-size: 0.875rem;
+  text-transform: none;
+  letter-spacing: 0;
+}
+[data-slot="tabs-trigger"][data-state="active"] {
+  color: var(--title);
+  background: transparent;
+  border-bottom-color: var(--accent-line);
+  box-shadow: none;
 }
 [data-slot="card"],
 [data-slot="dialog-content"],

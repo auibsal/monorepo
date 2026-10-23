@@ -509,6 +509,14 @@ export type PieceStatus = (typeof pieceStatuses)[number];
 export const approvalKinds = ["desk", "chief", "copy"] as const;
 export type ApprovalKind = (typeof approvalKinds)[number];
 
+/**
+ * The approvals a piece needs before it publishes (private.required_approvals):
+ * the desk editor's on a named desk; the desk editor's and the chief's on an
+ * Edition desk (Letters, Gallery). The Copy Chief's check is never required.
+ */
+export const requiredApprovals = (desk: Desk): readonly ApprovalKind[] =>
+  desk === "letters" || desk === "gallery" ? ["desk", "chief"] : ["desk"];
+
 /** The permission each approval needs (journal.approve_piece). */
 export const approvalPermission = (kind: ApprovalKind, desk: Desk) => {
   if (kind === "desk") {

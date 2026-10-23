@@ -69,6 +69,8 @@ export const PieceCardView = async ({
   const t = await getTranslations({ locale, namespace: "web.journal" });
   const picture = image ? leadImage(piece) : null;
   const deck = localized(piece, "deck", locale);
+  // Headlines keep their own language and direction on either page.
+  const lang = piece.language === "ar" ? "ar" : "en";
   return (
     <article className="grid content-start gap-2">
       {picture?.url ? (
@@ -88,7 +90,11 @@ export const PieceCardView = async ({
         {t(`categories.${piece.category}`)}
         {piece.members_only ? ` · ${t("membersOnly")}` : ""}
       </p>
-      <h3 className={large ? "type-display" : "type-subheading"}>
+      <h3
+        className={large ? "type-display" : "type-subheading"}
+        dir="auto"
+        lang={lang}
+      >
         <Link
           className="underline-offset-4 hover:underline"
           href={pieceHref(piece)}
@@ -97,7 +103,11 @@ export const PieceCardView = async ({
         </Link>
       </h3>
       {deck ? (
-        <p className={large ? "type-lede" : "type-body text-text-secondary"}>
+        <p
+          className={large ? "type-lede" : "type-body text-text-secondary"}
+          dir="auto"
+          lang={lang}
+        >
           {deck}
         </p>
       ) : null}

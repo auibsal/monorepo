@@ -272,6 +272,11 @@
         "description": "Your entry in the Book of Members.",
         "empty": "You haven't written your six words yet.",
         "write": "Write my six words",
+        "edit": "Change",
+        "hint": "Six words, in English or Arabic.",
+        "count": "{count} of 6 words",
+        "save": "Save my six words",
+        "cancel": "Cancel",
         "pending": "Waiting for moderation"
       },
       "greetingPlain": "Welcome"
@@ -2342,7 +2347,7 @@
       },
       "waraq": {
         "title": "Waraq",
-        "lede": "The newsroom: every piece on every desk, from Editing to Published. A piece publishes itself once the author, the desk editor, the Editor-in-Chief or Managing Editor and the Copy Chief have approved it.",
+        "lede": "The newsroom: every piece on every desk, from Editing to Published. A piece publishes itself once the author and the desk editor have approved it; an Edition piece (Letters, Gallery) also needs the Editor-in-Chief or Managing Editor. The Copy Chief's style check is recorded, never required.",
         "tabs": {
           "newsroom": "Newsroom",
           "desks": "Desk queue",
@@ -2365,6 +2370,7 @@
         "desk": "Desk",
         "allDesks": "All desks",
         "allStages": "All stages",
+        "sortedBy": "Pieces in order of stage (work in progress first), then date",
         "newPiece": "New staff piece",
         "noPieces": "No pieces here yet. Accepted work and staff pieces appear here.",
         "newPieceLede": "A piece written by the newsroom: news, a Side Quest episode or an invited Guest Page. It needs no submission and no Publication Agreement.",
@@ -2408,7 +2414,7 @@
         "approvals": {
           "desk": "Desk editor",
           "chief": "Editor-in-Chief or Managing Editor",
-          "copy": "Copy Chief (style)"
+          "copy": "Copy Chief (style, optional)"
         },
         "workflow": {
           "title": "Where it stands",
@@ -2422,6 +2428,7 @@
           "approvedByYou": "Approved by you, {date}",
           "approved": "Approved, {date}",
           "waiting": "Waiting",
+          "optional": "Not required",
           "approve": "Approve",
           "withdraw": "Withdraw",
           "publishAt": "Publish on",
@@ -2612,7 +2619,7 @@
     },
     "declarations": {
       "title": "Conflict of interest",
-      "lede": "Form F-18. Every role holder, every semester, and whenever something new arises (P8).",
+      "lede": "Every role holder, every semester, and whenever something new arises (Policy Manual P8).",
       "definition": "A conflict of interest is any situation where a personal interest, relationship or loyalty could affect, or seem to affect, a Society decision. Declaring one is normal and responsible; hiding one is not.",
       "role": "Your role",
       "semester": "Semester",
@@ -2638,6 +2645,7 @@
       "saved": "Declaration signed. The General Secretary will record receipt.",
       "history": "Your declarations",
       "noHistory": "You haven't signed a declaration yet.",
+      "makeOne": "Make a declaration",
       "nothingDeclared": "Nothing to declare.",
       "close": "No longer applies",
       "closedOn": "closed {date}",
@@ -2654,7 +2662,7 @@
     },
     "service": {
       "title": "My service",
-      "lede": "Your recorded service (Form F-16) and certificates. Hours count once someone else confirms them.",
+      "lede": "Your recorded service and certificates. Hours count once someone else confirms them.",
       "thisYear": "This academic year",
       "hours": "{hours} hours",
       "progressLabel": "{hours} of {target} hours",
@@ -3839,7 +3847,7 @@
     },
     "care": {
       "title": "Side Quest care",
-      "lede": "Side Quest is our campus video series (working title). Here is how we look after the people in it.",
+      "lede": "Side Quest is our campus video series. Here is how we look after the people in it.",
       "promiseTitle": "Our promise",
       "source": "Policy Manual, SAL-POL-01, P5",
       "formTitle": "Ask for a removal",

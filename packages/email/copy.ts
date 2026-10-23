@@ -444,6 +444,31 @@ export const removalReceived = (lang: Lang, dueAt: string) =>
   }));
 
 /** The test notice sent from Profile and privacy (push only, no email). */
+export interface FailedJob {
+  failures: number;
+  job: string;
+  last_error: string;
+}
+
+/** To the administrators: the cron jobs that failed in the last day. */
+export const cronFailed = (lang: Lang, jobs: FailedJob[], day: string) =>
+  build(lang, (l) => ({
+    heading:
+      l === "ar"
+        ? `أخفقت مهام مجدولة في ${formatLongDate(day, l)}`
+        : `Scheduled jobs failed on ${formatLongDate(day, l)}`,
+    paragraphs: [
+      l === "ar"
+        ? "أخفقت هذه المهام في قاعدة البيانات خلال اليوم الماضي. التفاصيل في Supabase تحت Integrations ثم Cron."
+        : "These database jobs failed in the last day. The details are in Supabase under Integrations, then Cron.",
+      ...jobs.map((j) =>
+        l === "ar"
+          ? `${j.job}: ${j.failures} ${j.failures === 1 ? "إخفاق" : "إخفاقات"}. ${j.last_error}`
+          : `${j.job}: ${j.failures} ${j.failures === 1 ? "failure" : "failures"}. ${j.last_error}`
+      ),
+    ],
+  }));
+
 export const pushTest = (lang: Lang) =>
   lang === "ar"
     ? {

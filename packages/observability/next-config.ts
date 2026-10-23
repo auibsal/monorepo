@@ -8,11 +8,9 @@ export const sentryConfig: Parameters<typeof withSentryConfig>[1] = {
   // Only print logs for uploading source maps in CI
   silent: !process.env.CI,
 
-  /*
-   * No tunnelRoute: the Nexus is a static export and cannot serve the
-   * rewrite. Browsers send events straight to ingest.de.sentry.io, which
-   * every CSP allows (https://*.sentry.io).
-   */
+  // Browsers send events through the app's own origin, so ad blockers that
+  // drop requests to sentry.io no longer lose them.
+  tunnelRoute: "/monitoring",
 
   webpack: {
     /*

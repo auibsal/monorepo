@@ -201,9 +201,7 @@ export const ProfileScreen = () => {
       <SalCard>
         <PhoneNotifications />
       </SalCard>
-      <SalCard>
-        <TelegramLink />
-      </SalCard>
+      <TelegramLink />
       <CalendarFeed />
       <Affiliations />
       <Passkeys />

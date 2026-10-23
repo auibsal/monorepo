@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { editor } from "../fixtures";
+import { editor, editor2 } from "../fixtures";
 import { urls } from "../playwright.config";
 import { signInWithPassword } from "./helpers";
 
@@ -16,7 +16,7 @@ test("two editors see each other and each other's typing", async ({
   const first = await (await browser.newContext()).newPage();
   const second = await (await browser.newContext()).newPage();
   await signInWithPassword(first, editor.email);
-  await signInWithPassword(second, editor.email);
+  await signInWithPassword(second, editor2.email);
 
   await first.goto(`${urls.app}/admin/content`);
   await first
@@ -34,6 +34,8 @@ test("two editors see each other and each other's typing", async ({
     .getByRole("textbox", { name: "Web address (slug)" })
     .fill(`shared-${Date.now()}`);
   await first.getByRole("button", { name: "Save" }).click();
+  // Saving a new page moves the editor to its id; the room opens there.
+  await expect(first).toHaveURL(/id=/);
   const url = first.url();
 
   await second.goto(url);

@@ -25,12 +25,11 @@ env:
   TURBO_TEAM: ${{ vars.TURBO_TEAM }}
 
 jobs:
-  # New or updated packages with known vulnerabilities fail the PR. Needs
-  # the repository's dependency graph (Settings → Code security); runs once
-  # the DEPENDENCY_REVIEW variable is "on".
+  # New or updated packages with known vulnerabilities fail the PR (the
+  # dependency graph is on by default for a public repository).
   dependency-review:
     name: Dependency review
-    if: github.event_name == 'pull_request' && vars.DEPENDENCY_REVIEW == 'on'
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -49,7 +48,10 @@ jobs:
         with:
           bun-version-file: package.json
       - run: bun install --frozen-lockfile
+      # Known vulnerabilities in the lockfile (high or critical) fail the build.
+      - run: bun audit --audit-level=high
       - run: bun run check
+      - run: bunx turbo boundaries
       - run: bun run typecheck
       - run: bun run test:coverage
       - run: bun run check:placeholders
@@ -99,11 +101,19 @@ jobs:
           node-version-file: .nvmrc
       - run: bun install --frozen-lockfile
       - run: bunx turbo build --filter=api --filter=app --filter=web --filter=@repo/storybook
-      # No secret may reach a client bundle: the Nexus export and the public
-      # site must not contain the secret-key prefix or server-only names.
+      # No secret may reach a browser bundle: the client chunks of the three
+      # apps must not contain the secret-key prefix or server-only names.
+      # Every directory must exist, or the check is not checking anything.
       - name: No secrets in client bundles
         run: |
-          ! grep -rlE "sb_secret_[A-Za-z0-9_-]{8,}|SUPABASE_SECRET_KEY|RESEND_TOKEN|CRON_SECRET|REVALIDATE_SECRET|DATABASE_WEBHOOK_SECRET|sk_(dev|prod)_[A-Za-z0-9_-]{8,}" apps/app/out apps/web/.next/static
+          set -e
+          for dir in apps/app/.next/static apps/web/.next/static apps/api/.next/static; do
+            test -d "$dir" || { echo "Missing $dir"; exit 1; }
+          done
+          if grep -rqE "sb_secret_[A-Za-z0-9_-]{8,}|SUPABASE_SECRET_KEY|RESEND_TOKEN|CRON_SECRET|REVALIDATE_SECRET|DATABASE_WEBHOOK_SECRET|TELEGRAM_BOT_TOKEN|VAPID_PRIVATE_KEY|sk_(dev|prod)_[A-Za-z0-9_-]{8,}" apps/app/.next/static apps/web/.next/static apps/api/.next/static; then
+            echo "A secret name or value reached a client bundle."
+            exit 1
+          fi
 
   database:
     name: Database (migrations, RLS, integration)
@@ -151,19 +161,26 @@ jobs:
         with:
           node-version-file: .nvmrc
       - run: bun install --frozen-lockfile
-      - name: Start Supabase (with Mailpit for confirmation emails)
+      - name: Start Supabase (with Mailpit for confirmation emails and Realtime for co-editing)
         working-directory: packages/database
-        run: bunx supabase start -x studio,imgproxy,logflare,vector,supavisor,edge-runtime,realtime,postgres-meta
+        run: bunx supabase start -x studio,imgproxy,logflare,vector,supavisor,edge-runtime,postgres-meta
       - name: Browsers
         working-directory: apps/e2e
         run: bunx playwright install --with-deps chromium
-      - name: Journeys (sign up, sign in, book, submit, publish) and axe checks
+      # The journeys run against production builds (next start), not the dev
+      # server: faster, and what actually ships.
+      - name: Build the Nexus and the site against the local stack
+        run: |
+          eval "$(cd packages/database && bunx supabase status -o env | grep -E '^(API_URL|PUBLISHABLE_KEY)=' | sed 's/^/export /')"
+          export NEXT_PUBLIC_SUPABASE_URL="$API_URL" NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY="$PUBLISHABLE_KEY"
+          bunx turbo build --filter=app --filter=web
+      - name: Journeys (sign up, sign in, book, submit, publish, co-edit) and axe checks
         run: |
           eval "$(cd packages/database && bunx supabase status -o env | grep -E '^(API_URL|PUBLISHABLE_KEY|SECRET_KEY|MAILPIT_URL|INBUCKET_URL)=' | sed 's/^/export /')"
           export SUPABASE_URL="$API_URL" SUPABASE_SECRET_KEY="$SECRET_KEY"
           export MAILPIT_URL="${MAILPIT_URL:-$INBUCKET_URL}"
           export NEXT_PUBLIC_SUPABASE_URL="$API_URL" NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY="$PUBLISHABLE_KEY"
-          bun run --cwd apps/e2e e2e
+          E2E_START=start E2E_COLLAB=1 bun run --cwd apps/e2e e2e
       - uses: actions/upload-artifact@v6
         if: failure()
         with:

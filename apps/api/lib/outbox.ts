@@ -8,10 +8,12 @@ import {
   agreementReminder,
   type Built,
   type Lang as CopyLang,
+  cronFailed,
   type Decision,
   decision,
   deskNames,
   eventReminder,
+  type FailedJob,
   finalCheck,
   monthInWaraq,
   newsletterConfirm,
@@ -185,22 +187,32 @@ const submissionTitle = async (admin: AdminClient, submissionId: unknown) => {
 };
 
 /** Holders of programmes.manage for the program (or globally). */
-const programmeManagers = async (
+/** Everyone holding a permission, globally or for one scope. */
+const holders = async (
   admin: AdminClient,
-  programmeId: unknown
+  permission: string,
+  scope?: { id: unknown; type: string }
 ): Promise<Recipient[]> => {
-  const { data: holders } = await admin
-    .schema("access")
-    .rpc("permission_holders", {
-      permission: "programmes.manage",
-      scope_id: typeof programmeId === "string" ? programmeId : undefined,
-      scope_type: "programme",
-    });
+  const { data } = await admin.schema("access").rpc("permission_holders", {
+    permission,
+    scope_id: typeof scope?.id === "string" ? scope.id : undefined,
+    scope_type: scope?.type ?? "global",
+  });
   const found = await Promise.all(
-    (holders ?? []).map((h) => recipient(admin, h.user_id))
+    (data ?? []).map((h) => recipient(admin, h.user_id))
   );
   return found.filter((r): r is Recipient => r !== null);
 };
+
+const programmeManagers = (admin: AdminClient, programmeId: unknown) =>
+  holders(admin, "programmes.manage", { id: programmeId, type: "programme" });
+
+const isFailedJob = (x: unknown): x is FailedJob =>
+  typeof x === "object" &&
+  x !== null &&
+  typeof (x as FailedJob).job === "string" &&
+  typeof (x as FailedJob).failures === "number" &&
+  typeof (x as FailedJob).last_error === "string";
 
 const removalInfo = async (admin: AdminClient, requestId: unknown) => {
   const { data } = await admin
@@ -501,6 +513,24 @@ const handlers: Record<string, Handler> = {
       { email: row.email, lang },
       monthInWaraq(lang, items, coming, `${base}/waraq`, links.page),
       links.headers
+    );
+  },
+  // From private.cron_health(): the day's failed pg_cron runs, to the
+  // administrators.
+  "platform.cron_failed": async (admin, payload) => {
+    const jobs = Array.isArray(payload.jobs)
+      ? payload.jobs.filter(isFailedJob)
+      : [];
+    if (jobs.length === 0) {
+      return;
+    }
+    const day =
+      typeof payload.day === "string"
+        ? payload.day
+        : new Date().toISOString().slice(0, 10);
+    const admins = await holders(admin, "settings.manage");
+    await Promise.all(
+      admins.map((a) => send(a, cronFailed(a.lang, jobs, day)))
     );
   },
   "programmes.removal_overdue": async (admin, payload) => {

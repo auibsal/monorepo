@@ -229,7 +229,10 @@ const Approvals = ({
       {journal.approvalKinds.map((kind) => {
         const given = record.approvals.find((a) => a.kind === kind);
         const mine = given?.approved_by === user?.id;
-        let line = t("workflow.waiting");
+        const required = journal
+          .requiredApprovals(piece.desk as journal.Desk)
+          .includes(kind);
+        let line = t(required ? "workflow.waiting" : "workflow.optional");
         if (given) {
           line = t(mine ? "workflow.approvedByYou" : "workflow.approved", {
             date: formatLongDate(given.approved_at, locale, true),
@@ -386,7 +389,7 @@ export const FrontRank = ({
 
 /**
  * Where the piece stands and the moves from here: the author's final
- * check, the three approvals, the publish time, unpublishing and the front
+ * check, the approvals, the publish time, unpublishing and the front
  * page. Every move is a database function that checks again.
  */
 export const Workflow = ({ record }: { record: PieceRecord }) => {

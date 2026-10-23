@@ -6,7 +6,7 @@
     "build": "next build",
     "clean": "git clean -xdf .cache .turbo dist node_modules out",
     "dev": "next dev -p 3000",
-    "start": "next start",
+    "start": "next start -p 3000",
     "test": "NODE_ENV=test vitest run",
     "typecheck": "tsc --noEmit --emitDeclarationOnly false"
   },
@@ -35,7 +35,7 @@
     "import-in-the-middle": "^3.0.0",
     "jsqr": "^1.4.0",
     "lucide-react": "^1.53.0",
-    "next": "16.3.8",
+    "next": "16.4.3",
     "next-intl": "^4.14.9",
     "react": "19.3.0",
     "react-dom": "19.3.0",

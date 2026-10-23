@@ -9,7 +9,7 @@ How the SAL platform fits together, and how to set up each integration.
 flowchart LR
   subgraph Clients
     W["apps/web · auibsal.org<br/>public site (SSG + tags)"]
-    A["apps/app · nexus.auibsal.org<br/>the Nexus (static export)"]
+    A["apps/app · nexus.auibsal.org<br/>the Nexus (client-rendered)"]
   end
   subgraph Vercel
     API["apps/api · api.auibsal.org<br/>email · cron · feeds · signed URLs"]
@@ -35,15 +35,21 @@ flowchart LR
 1. **Row Level Security is the boundary.** The Nexus queries Postgres with the
    member's token; the public site with the publishable key. Policies decide
    what each can read and write. Every policy calls
-   `access.has_permission(permission, scope_type, scope_id)`.
-2. **Secrets live in `apps/api` (and CI), nowhere else.** The Nexus is a
-   static export whose bundle anyone can read. When it needs a privileged
+   `access.has_permission(permission, scope_type, scope_id)` (its body
+   lives in `private.has_permission`, which the policies bind to).
+2. **Secrets live in `apps/api` (and CI), nowhere else.** The Nexus holds
+   no secrets: its only server code is the locale proxy, and its bundle is
+   public by design. When it needs a privileged
    action it calls `apps/api`, which verifies the JWT (`authenticateRequest`)
    and re-checks the permission (`hasPermission`) before using the admin client.
 3. **Multi-step rules are Postgres functions.** RSVPs and waitlist promotion,
    check-ins, Journal transitions and decisions, ledger sign-off, spending
    approvals, ballots and the ranked-choice count are `SECURITY DEFINER`
-   functions with `search_path = ''`, called by RPC.
+   functions with `search_path = ''` in the `private` schema, each checking
+   permissions itself; the name the apps call, in the exposed schema, is a
+   `SECURITY INVOKER` wrapper with the same signature (migration
+   `20261024000000`). The Supabase advisors stay at zero findings and
+   `00_advisors.test.sql` fails CI if one would come back.
 4. **Side effects go through an outbox.** Functions and triggers write to
    `core.outbox` in the same transaction (emails to send, cache tags to
    revalidate). A Supabase database webhook on insert hands each row to
@@ -117,17 +123,23 @@ indexes on policy columns, and pgTAP tests. Regenerate types and commit them.
    <DATABASE_WEBHOOK_SECRET>`.
 8. **First admin:** after the Founder signs up, run once (SQL editor, as the
    service role): `select access.bootstrap_founder('<email>');`
-9. Run the security and performance advisors and fix every finding.
+9. The security and performance advisors read zero findings; the one row
+   the code cannot change is **leaked-password protection** (Authentication
+   → Attack protection), a dashboard setting on the Pro plan.
 
 ## Vercel
 
-Three projects from this repository (root directory → app):
+Four projects from this repository (root directory → app):
 
 | Project | Root | Domains |
 | --- | --- | --- |
-| web | `apps/web` | auibsal.org, www.auibsal.org (redirect) |
-| app | `apps/app` | nexus.auibsal.org |
-| api | `apps/api` | api.auibsal.org |
+| sal-web | `apps/web` | auibsal.org, www.auibsal.org (redirect) |
+| sal-nexus | `apps/app` | nexus.auibsal.org |
+| sal-api | `apps/api` | api.auibsal.org |
+| sal-design | `apps/storybook` | design.auibsal.org (officers only) |
+
+Each project builds only when a change touches it or a package it depends
+on (`scripts/vercel-ignore.mjs`, the Ignored Build Step).
 
 Environment variables per project are listed in each app's `.env.example`.
 `SUPABASE_SECRET_KEY`, `RESEND_TOKEN`, `CRON_SECRET`,

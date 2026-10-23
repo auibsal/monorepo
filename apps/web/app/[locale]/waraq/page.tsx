@@ -91,6 +91,45 @@ const Calls = async ({ locale }: { locale: Locale }) => {
   );
 };
 
+/** Latest news: a column beside Letters, or a full row of cards alone. */
+const News = async ({
+  alone,
+  locale,
+  pieces,
+}: {
+  alone: boolean;
+  locale: Locale;
+  pieces: readonly journal.PieceCard[];
+}) => {
+  const t = await getTranslations({ locale, namespace: "web.journal" });
+  if (pieces.length === 0) {
+    return null;
+  }
+  return (
+    <section
+      aria-labelledby="news"
+      className={
+        alone
+          ? "grid content-start gap-4 md:col-span-3"
+          : "grid content-start gap-4"
+      }
+    >
+      <h2 className={heading} id="news">
+        <Link href="/waraq/news">{t("desks.news")}</Link>
+      </h2>
+      {alone ? (
+        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+          {pieces.map((piece) => (
+            <PieceCardView key={piece.id} locale={locale} piece={piece} />
+          ))}
+        </div>
+      ) : (
+        <PieceColumn locale={locale} pieces={pieces} />
+      )}
+    </section>
+  );
+};
+
 const WaraqFrontPage = async ({ params }: WaraqProps) => {
   const { locale } = await params;
   setRequestLocale(locale);
@@ -126,8 +165,11 @@ const WaraqFrontPage = async ({ params }: WaraqProps) => {
       read((c) => journal.deskPieces(c, "voices", { limit: 3 }), []),
       read((c) => journal.currentEdition(c), null),
     ]);
-  const [lead, ...ranked] = front;
-  const onFront = new Set(front.slice(0, 5).map((p) => p.id));
+  // With nothing set as front, the newest news leads so the page has a
+  // top rather than a gap.
+  const top = front.length > 0 ? front : news.slice(0, 5);
+  const [lead, ...ranked] = top;
+  const onFront = new Set(top.slice(0, 5).map((p) => p.id));
   const latestNews = news.filter((p) => !onFront.has(p.id));
   const sixWordsBody = sixWords[0]
     ? await readPublished(
@@ -164,14 +206,11 @@ const WaraqFrontPage = async ({ params }: WaraqProps) => {
       <WaraqAd locale={locale} page="/waraq" slot={0} />
 
       <div className="grid gap-12 md:grid-cols-3">
-        {latestNews.length > 0 ? (
-          <section aria-labelledby="news" className="grid content-start gap-4">
-            <h2 className={heading} id="news">
-              <Link href="/waraq/news">{t("desks.news")}</Link>
-            </h2>
-            <PieceColumn locale={locale} pieces={latestNews} />
-          </section>
-        ) : null}
+        <News
+          alone={letters.length === 0}
+          locale={locale}
+          pieces={latestNews}
+        />
         {letters.length > 0 ? (
           <section
             aria-labelledby="letters"
@@ -211,7 +250,11 @@ const WaraqFrontPage = async ({ params }: WaraqProps) => {
                         width={image.width ?? 800}
                       />
                     ) : null}
-                    <span className="type-subheading">
+                    <span
+                      className="type-subheading"
+                      dir="auto"
+                      lang={piece.language === "ar" ? "ar" : "en"}
+                    >
                       {localized(piece, "title", locale)}
                     </span>
                   </Link>

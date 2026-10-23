@@ -11,23 +11,14 @@
   ],
   "workspaces": {
     ".": {
-      "entry": ["scripts/*.ts"],
+      "entry": ["scripts/*.ts", "scripts/*.mjs"],
       "ignoreDependencies": ["@repo/typescript-config"]
     },
     "apps/api": {
       "entry": ["scripts/*.{js,mjs,ts}"]
     },
     "apps/app": {
-      "entry": ["scripts/*.{js,mjs,ts}", "public/sw.js"]
-    },
-    "apps/storybook": {
-      "entry": ["scripts/*.{js,mjs,ts}"]
-    },
-    "apps/web": {
-      "entry": ["scripts/*.{js,mjs,ts}"]
-    },
-    "packages/design-system": {
-      "ignoreDependencies": ["next"]
+      "entry": ["public/sw.js"]
     },
     "packages/email": {
       "ignoreDependencies": ["react-dom", "@types/react-dom"]

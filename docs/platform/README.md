@@ -2,8 +2,9 @@
 
 How the AUIB Society of Arts and Letters platform runs, for the technical
 administrator and their successor. Officers' how-to guides are in the
-**Officer handbook** in the Nexus (nexus.auibsal.org/handbook); the Society's
-documents are on [auibsal.org/documents](https://auibsal.org/en/documents).
+**Officer handbook** in the team's Notion workspace (the Nexus links to it
+under Account); the Society's documents are on
+[auibsal.org/documents](https://auibsal.org/documents).
 
 - [How the platform works](overview.md)
 - [Accounts and access](accounts.md)

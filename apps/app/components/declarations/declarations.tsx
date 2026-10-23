@@ -117,7 +117,7 @@ export const Declarations = () => {
       </header>
       <p className="type-body">{t("definition")}</p>
 
-      <form className="grid gap-5" onSubmit={onSubmit}>
+      <form className="grid gap-5" id="declare" onSubmit={onSubmit}>
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="grid gap-2">
             <Label htmlFor="declaration-role">{t("role")}</Label>
@@ -256,7 +256,9 @@ export const Declarations = () => {
         <h2 className="type-subheading">{t("history")}</h2>
         {history.isPending ? <SectionSpinner /> : null}
         {history.data?.length === 0 ? (
-          <EmptyLine>{t("noHistory")}</EmptyLine>
+          <EmptyLine action={{ href: "#declare", label: t("makeOne") }}>
+            {t("noHistory")}
+          </EmptyLine>
         ) : null}
         <ul className="grid gap-3">
           {(history.data ?? []).map((d) => (

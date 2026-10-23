@@ -41,11 +41,6 @@
   },
   "overrides": [
     {
-      // Supabase Edge Functions run on Deno.
-      "includes": ["packages/database/supabase/functions/**"],
-      "javascript": { "globals": ["Deno"] }
-    },
-    {
       // Playwright journeys: inline URL and name patterns read best in place,
       // and steps run one after another on purpose.
       "includes": ["apps/e2e/**"],
