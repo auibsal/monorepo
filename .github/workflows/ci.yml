@@ -42,8 +42,27 @@ jobs:
     name: Lint, typecheck, test
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    permissions:
+      contents: read
+      pull-requests: read
     steps:
       - uses: actions/checkout@v7
+      # GitHub builds a squash merge's message from every commit in the pull
+      # request, and skips every workflow on main when that message carries
+      # one of its skip markers: no CI, no migration, no deployment (it
+      # happened twice on October 23, 2026). So no commit in a pull request
+      # may contain one, not even to describe it.
+      - name: Commit messages carry no workflow skip marker
+        if: github.event_name == 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.pull_request.number }}
+        run: |
+          if gh api "repos/${{ github.repository }}/pulls/$PR/commits" --paginate --jq '.[].commit.message' \
+            | grep -Eiq '\[(skip ci|ci skip|no ci|skip actions|actions skip)\]'; then
+            echo "A commit message in this pull request contains a workflow skip marker. Reword it (git rebase) before merging."
+            exit 1
+          fi
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version-file: package.json

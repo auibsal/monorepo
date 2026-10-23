@@ -601,7 +601,11 @@ These stop parts of the work. Everything else continues around them.
       literal CI-skip marker from a commit body, so GitHub ran no workflow
       on `main` and Vercel skipped the production builds: the follow-up PR
       gives `main` a clean commit, and `scripts/vercel-ignore.mjs` now reads
-      only the subject line. Rule in `docs/platform/releases.md`.
+      only the subject line. Rule in `docs/platform/releases.md`. The
+      follow-up (#116, 818e326) hit the same wall: the branch still carried
+      its 24 pre-squash commits and GitHub put their bodies into the squash
+      message again. The branch now restarts from `main` after each merge,
+      and CI fails a pull request whose commits contain a skip marker.
 - [ ] Owner: the ruleset on `main` (PR #115 names the checks), secret
       scanning's non-provider patterns and validity checks, Copilot review
       off, leaked-password protection when on the Pro plan, then merge #115
