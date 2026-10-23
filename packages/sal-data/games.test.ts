@@ -204,6 +204,18 @@ describe("crossword layout", () => {
     expect(crossword.entries.some((e) => !e.across)).toBe(true);
   });
 
+  test("rejects an entry off the grid or at a non-integer square", () => {
+    const base = { across: true, answer: "sal", clue: "Us", number: 1 };
+    const grid = (row: number, col: number) =>
+      crosswordCells({ cols: 3, entries: [{ ...base, col, row }], rows: 1 });
+    expect(grid(0, 0)).not.toBeNull();
+    expect(grid(0, 1)).toBeNull();
+    expect(grid(1, 0)).toBeNull();
+    expect(grid(-1, 0)).toBeNull();
+    expect(grid(0.5, 0)).toBeNull();
+    expect(grid(Number("__proto__"), 0)).toBeNull();
+  });
+
   test("numbers clues in reading order, starting at 1", () => {
     const { crossword } = layoutCrossword({ items, lang: "en" });
     const numbers = [...new Set(crossword?.entries.map((e) => e.number))].sort(
