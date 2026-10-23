@@ -135,8 +135,9 @@ any schema change. Integration tests run against a local stack with
   (`surface`, `surface-tint`, `text`, `text-secondary`, `text-meta`, `title`,
   `accent-line`, `band`, `on-band`, plus `rule`). Never add a color. No
   shadows. Cards on `surface-tint` with the 8px card radius. At most one
-  crimson band per page; crimson never on ink. Light everywhere; the ink
-  theme (`data-theme="dark"`) only on the "why" pages and the Open Call page.
+  crimson band per page; crimson never on ink. Light everywhere, the Nexus
+  included (owner, Oct 24, 2026); the ink theme (`data-theme="dark"`) only on
+  the "why" pages and the Open Call page.
   Logos are used exactly as supplied in `brand/logos`, never redrawn.
   Functional icons only (menu, close, back, chevron, search, external link,
   check), each with an accessible label; no decorative icons, no emoji.

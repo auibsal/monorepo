@@ -108,9 +108,12 @@ const Home = async ({ params }: HomeProps) => {
             className="grid content-start gap-6 lg:col-span-2"
           >
             <div className="frame-b flex flex-wrap items-baseline justify-between gap-4 pb-2">
-              <h2 className="type-heading" id="what-we-do">
-                {t("whatWeDo")}
-              </h2>
+              <div className="grid gap-1">
+                <h2 className="type-heading" id="what-we-do">
+                  {t("whatWeDo")}
+                </h2>
+                <p className="type-kicker">{tw("programmeMark")}</p>
+              </div>
               <Link
                 className="type-label text-xs underline underline-offset-4"
                 href="/programs"
@@ -133,9 +136,6 @@ const Home = async ({ params }: HomeProps) => {
                         {localized(p, "summary", locale)}
                       </p>
                     ) : null}
-                    <p className="type-caption mt-auto pt-2">
-                      {tw("programmeMark")}
-                    </p>
                   </Link>
                 </li>
               ))}
@@ -211,7 +211,8 @@ const Home = async ({ params }: HomeProps) => {
                   >
                     <h3
                       className="type-subheading"
-                      lang={piece.language === "ar" ? "ar" : undefined}
+                      dir="auto"
+                      lang={piece.language === "ar" ? "ar" : "en"}
                     >
                       {localized(piece, "title", locale)}
                     </h3>

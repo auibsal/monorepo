@@ -135,15 +135,12 @@ export const Forms = () => {
           {available.map((type) => (
             <li className="border-rule border-b" key={type.key}>
               <Link
-                className="group -mx-2 grid grid-cols-[4.5rem_1fr] gap-x-3 gap-y-1 px-2 py-3 hover:bg-surface-tint focus-visible:bg-surface-tint"
+                className="group -mx-2 grid gap-y-1 px-2 py-3 hover:bg-surface-tint focus-visible:bg-surface-tint"
                 href={{
                   pathname: "/forms/fill",
                   query: { form: type.key },
                 }}
               >
-                <span className="type-code row-span-2 pt-0.5 text-sm text-text-secondary">
-                  {type.code}
-                </span>
                 <span className="font-bold underline-offset-4 group-hover:underline">
                   <FormTitle formKey={type.key} />
                 </span>
@@ -164,9 +161,6 @@ export const Forms = () => {
         <ul className="mt-3 grid gap-2">
           {forms.formsElsewhere.map((f) => (
             <li key={f.key}>
-              <span className="type-code text-sm text-text-secondary">
-                {f.code}
-              </span>{" "}
               <Link className="underline underline-offset-4" href={f.path}>
                 {te(f.key)}
               </Link>

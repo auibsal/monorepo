@@ -12,6 +12,7 @@ import {
 import { Textarea } from "@repo/design-system/components/ui/textarea";
 import type { Locale } from "@repo/internationalization";
 import {
+  formatDate,
   formatLongDate,
   formatNumber,
 } from "@repo/internationalization/format";
@@ -137,7 +138,7 @@ const Newsroom = () => {
         .schema("journal")
         .from("pieces")
         .select(
-          "id, desk, category, title_en, title_ar, status, publish_at, published_at, updated_at, front_rank, contributor:contributors!pieces_contributor_id_fkey(name_en, name_ar)"
+          "id, desk, category, language, title_en, title_ar, status, publish_at, published_at, updated_at, front_rank, contributor:contributors!pieces_contributor_id_fkey(name_en, name_ar)"
         )
         .order("updated_at", { ascending: false })
         .limit(200);
@@ -147,7 +148,18 @@ const Newsroom = () => {
       if (status) {
         query = query.eq("status", status);
       }
-      return unwrap(await query) ?? [];
+      // Work in progress first, then what is scheduled, then the published
+      // by date: the order the newsroom reads in.
+      const rank = (s: string) => journal.pieceStatuses.indexOf(s as never);
+      const when = (p: {
+        publish_at: string | null;
+        published_at: string | null;
+        updated_at: string;
+      }) => p.published_at ?? p.publish_at ?? p.updated_at;
+      return (unwrap(await query) ?? []).sort(
+        (a, b) =>
+          rank(a.status) - rank(b.status) || when(b).localeCompare(when(a))
+      );
     },
     queryKey: [...key, "pieces", desk, status],
   });
@@ -157,7 +169,9 @@ const Newsroom = () => {
       cell: (p) => (
         <Link
           className="font-medium underline underline-offset-4"
+          dir="auto"
           href={{ pathname: "/admin/journal/piece", query: { id: p.id } }}
+          lang={p.language === "ar" ? "ar" : "en"}
         >
           {localized(p, "title", locale) || t("untitled")}
         </Link>
@@ -182,13 +196,14 @@ const Newsroom = () => {
         const s = p.status as journal.PieceStatus;
         let when = "";
         if (s === "published" && p.published_at) {
-          when = `, ${formatLongDate(p.published_at, locale, true)}`;
+          when = ` · ${formatDate(p.published_at, locale)}`;
         } else if (s === "scheduled" && p.publish_at) {
-          when = `, ${formatLongDate(p.publish_at, locale, true)}`;
+          when = ` · ${formatDate(p.publish_at, locale)}`;
         }
         const lead = p.front_rank === 1 ? ` · ${t("workflow.lead")}` : "";
         return `${t(`statuses.${s}`)}${when}${lead}`;
       },
+      className: "whitespace-nowrap",
       header: t("stage"),
       key: "status",
     },
@@ -238,6 +253,7 @@ const Newsroom = () => {
       </div>
       {pieces.data ? (
         <DataTable
+          caption={t("sortedBy")}
           columns={columns}
           empty={t("noPieces")}
           rowKey={(p) => p.id}

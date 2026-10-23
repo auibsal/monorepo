@@ -49,11 +49,10 @@ interface RootLayoutProperties {
  * root keeps every navigation client-side.
  */
 const RootLayout = ({ children }: RootLayoutProperties) => (
-  // v5 Screens: the Nexus is on the ink ground. Light islands (Journal reading)
-  // set data-theme="light".
+  // One ground for the whole platform (owner, Oct 24, 2026): the Nexus is
+  // light like the site. Ink stays for the "why" pages and the Open Call.
   <html
     className={fonts}
-    data-theme="dark"
     dir={getDirection(defaultLocale)}
     lang={defaultLocale}
     suppressHydrationWarning

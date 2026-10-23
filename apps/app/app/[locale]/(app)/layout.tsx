@@ -6,13 +6,18 @@ interface AppLayoutProps {
   readonly children: ReactNode;
 }
 
-/** Signed-in, verified members with current pledges. */
+/**
+ * Signed-in, verified members with current pledges. The shell (header,
+ * navigation, footer) paints at once; the gates wait for the session and
+ * the membership inside it, so a slow connection shows the frame first
+ * rather than a blank screen.
+ */
 const AppLayout = ({ children }: AppLayoutProps) => (
-  <RequireAuth>
-    <RequireMember>
-      <AppShell>{children}</AppShell>
-    </RequireMember>
-  </RequireAuth>
+  <AppShell>
+    <RequireAuth>
+      <RequireMember>{children}</RequireMember>
+    </RequireAuth>
+  </AppShell>
 );
 
 export default AppLayout;

@@ -27,16 +27,47 @@ declare global {
   }
 }
 
-/** Google's display ad unit, filled once it is on the page. */
-const AdSenseUnit = ({ client, slot }: { client: string; slot: string }) => {
+type Fill = "pending" | "filled" | "unfilled";
+
+/**
+ * Google's display ad unit, filled once it is on the page. Google marks the
+ * unit `data-ad-status="unfilled"` when it has nothing to show; the slot
+ * then disappears rather than leaving an empty box.
+ */
+const AdSenseUnit = ({
+  client,
+  onFill,
+  slot,
+}: {
+  client: string;
+  onFill: (fill: Fill) => void;
+  slot: string;
+}) => {
   const unit = useRef<HTMLModElement>(null);
 
   useEffect(() => {
-    if (unit.current && !unit.current.dataset.adsbygoogleStatus) {
+    const element = unit.current;
+    if (!element) {
+      return;
+    }
+    if (!element.dataset.adsbygoogleStatus) {
       window.adsbygoogle = window.adsbygoogle ?? [];
       window.adsbygoogle.push({});
     }
-  }, []);
+    const report = () => {
+      const status = element.dataset.adStatus;
+      if (status === "filled" || status === "unfilled") {
+        onFill(status);
+      }
+    };
+    report();
+    const observer = new MutationObserver(report);
+    observer.observe(element, {
+      attributeFilter: ["data-ad-status"],
+      attributes: true,
+    });
+    return () => observer.disconnect();
+  }, [onFill]);
 
   return (
     <>
@@ -47,7 +78,7 @@ const AdSenseUnit = ({ client, slot }: { client: string; slot: string }) => {
         strategy="afterInteractive"
       />
       <ins
-        className="adsbygoogle block min-h-24 w-full"
+        className="adsbygoogle block w-full"
         data-ad-client={client}
         data-ad-format="auto"
         data-ad-slot={slot}
@@ -56,6 +87,58 @@ const AdSenseUnit = ({ client, slot }: { client: string; slot: string }) => {
       />
     </>
   );
+};
+
+const linkClass = "justify-self-start text-title underline underline-offset-4";
+
+/** A Society or sponsor ad: image, headline, line, one link. */
+const HouseAdView = ({ house }: { house: HouseAd }) => {
+  const t = useTranslations("web.ads");
+  const action = house.action || t("learnMore");
+  return (
+    <div className="grid items-center gap-4 sm:grid-cols-[auto_1fr]">
+      {house.image ? (
+        // biome-ignore lint/performance/noImgElement: a published image from the media bucket
+        <img
+          alt={house.image.alt}
+          className="aspect-square w-24 rounded-card object-cover"
+          height={96}
+          loading="lazy"
+          src={house.image.url}
+          width={96}
+        />
+      ) : null}
+      <div className="grid gap-2">
+        <p className="type-subheading">{house.headline}</p>
+        {house.body ? <p className="type-caption">{house.body}</p> : null}
+        {house.url.startsWith("/") ? (
+          <Link className={linkClass} href={house.url}>
+            {action}
+          </Link>
+        ) : (
+          <a
+            className={linkClass}
+            href={house.url}
+            rel={house.kind === "sponsor" ? "sponsored noopener" : "noopener"}
+          >
+            {action}
+          </a>
+        )}
+      </div>
+    </div>
+  );
+};
+
+const adLabel = (
+  t: ReturnType<typeof useTranslations<"web.ads">>,
+  house: HouseAd | null
+) => {
+  if (!house) {
+    return t("advertisement");
+  }
+  return house.kind === "sponsor"
+    ? t("sponsoredBy", { name: house.sponsor })
+    : t("fromTheSociety");
 };
 
 /**
@@ -67,68 +150,28 @@ const AdSenseUnit = ({ client, slot }: { client: string; slot: string }) => {
 export const AdSlot = ({ adsense, house }: AdSlotProps) => {
   const t = useTranslations("web.ads");
   const [show, setShow] = useState(false);
+  const [fill, setFill] = useState<Fill>("pending");
 
   useEffect(() => {
     setShow(!hasSessionCookie(document.cookie));
   }, []);
 
-  if (!(show && (house || adsense))) {
+  if (!(show && (house || adsense)) || (!house && fill === "unfilled")) {
     return null;
   }
+  // Google's unit says nothing until it has an ad: no label, no box.
+  const quiet = !house && fill !== "filled";
 
-  const label = (() => {
-    if (!house) {
-      return t("advertisement");
-    }
-    return house.kind === "sponsor"
-      ? t("sponsoredBy", { name: house.sponsor })
-      : t("fromTheSociety");
-  })();
+  const label = adLabel(t, house);
 
   return (
     <aside
       aria-label={label}
-      className="grid gap-3 rounded-card bg-surface-tint p-4"
+      className={quiet ? "grid" : "grid gap-3 rounded-card bg-surface-tint p-4"}
     >
-      <p className="type-kicker text-text-meta">{label}</p>
-      {house ? (
-        <div className="grid items-center gap-4 sm:grid-cols-[auto_1fr]">
-          {house.image ? (
-            // biome-ignore lint/performance/noImgElement: a published image from the media bucket
-            <img
-              alt={house.image.alt}
-              className="aspect-square w-24 rounded-card object-cover"
-              height={96}
-              loading="lazy"
-              src={house.image.url}
-              width={96}
-            />
-          ) : null}
-          <div className="grid gap-2">
-            <p className="type-subheading">{house.headline}</p>
-            {house.body ? <p className="type-caption">{house.body}</p> : null}
-            {house.url.startsWith("/") ? (
-              <Link
-                className="justify-self-start text-title underline underline-offset-4"
-                href={house.url}
-              >
-                {house.action || t("learnMore")}
-              </Link>
-            ) : (
-              <a
-                className="justify-self-start text-title underline underline-offset-4"
-                href={house.url}
-                rel={
-                  house.kind === "sponsor" ? "sponsored noopener" : "noopener"
-                }
-              >
-                {house.action || t("learnMore")}
-              </a>
-            )}
-          </div>
-        </div>
-      ) : null}
-      {!house && adsense ? <AdSenseUnit {...adsense} /> : null}
+      {quiet ? null : <p className="type-kicker text-text-meta">{label}</p>}
+      {house ? <HouseAdView house={house} /> : null}
+      {!house && adsense ? <AdSenseUnit {...adsense} onFill={setFill} /> : null}
     </aside>
   );
 };

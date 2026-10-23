@@ -12,6 +12,13 @@ export const FullPageSpinner = () => (
   </div>
 );
 
+/** A page's content while its gate or data loads, inside the shell. */
+export const PageSpinner = () => (
+  <div className="flex min-h-[50dvh] items-center justify-center">
+    <Spinner className="size-6 text-text-meta" />
+  </div>
+);
+
 export const SectionSpinner = ({ className }: { className?: string }) => (
   <div className={cn("flex items-center justify-center py-8", className)}>
     <Spinner className="size-5 text-text-meta" />
@@ -47,7 +54,8 @@ export const ErrorState = ({ className, onRetry }: ErrorStateProps) => {
 };
 
 const actionClass = "type-label text-xs underline underline-offset-4";
-const EXTERNAL = /^(https?|webcal):/;
+// Full URLs and same-page anchors are plain links; paths get the language.
+const EXTERNAL = /^(https?|webcal):|^#/;
 
 const ActionLink = ({ href, label }: { href: string; label: string }) =>
   EXTERNAL.test(href) ? (

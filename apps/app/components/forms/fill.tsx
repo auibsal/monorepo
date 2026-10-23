@@ -266,7 +266,7 @@ const FormEditor = ({
   return (
     <div className="mx-auto grid w-full max-w-3xl gap-6">
       <header className="grid gap-2">
-        <p className="type-kicker">{definition.code}</p>
+        <p className="type-kicker">{t("fillTitle")}</p>
         <h1 className="type-display">{labels.title()}</h1>
         <p className="type-lede max-w-2xl">{labels.purpose()}</p>
       </header>

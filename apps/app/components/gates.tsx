@@ -8,7 +8,7 @@ import { type ReactNode, useEffect } from "react";
 import { safeNextPath } from "@/lib/navigation";
 import { useMemberStatus, useProfile } from "@/lib/queries";
 import { PartnerGuest, PendingVerification } from "./pending-verification";
-import { ErrorState, FullPageSpinner } from "./states";
+import { ErrorState, FullPageSpinner, PageSpinner } from "./states";
 
 interface GateProps {
   readonly children: ReactNode;
@@ -35,7 +35,7 @@ export const RequireAuth = ({ children }: GateProps) => {
     }
   }, [loading, pathname, router, user]);
 
-  return loading || !user ? <FullPageSpinner /> : children;
+  return loading || !user ? <PageSpinner /> : children;
 };
 
 /**
@@ -118,7 +118,7 @@ export const RequireMember = ({ children }: GateProps) => {
     needsSetup ||
     (unverified && guest.isPending)
   ) {
-    return <FullPageSpinner />;
+    return <PageSpinner />;
   }
   if (isGuest) {
     return isGuestPath(pathname) ? children : <PartnerGuest />;

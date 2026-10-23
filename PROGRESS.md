@@ -243,6 +243,15 @@ These stop parts of the work. Everything else continues around them.
 
 ## Decisions
 
+- **One ground** (owner, 2026-10-24, "improve the UI/UX … especially nexus
+  vs web"): the Nexus is light like the site; ink stays for the "why" pages
+  and the Open Call. One attribute (`data-theme` on the Nexus `<html>`)
+  reverses it. The shell paints before the data: the header, navigation
+  and footer render at once and the gates spin inside `main`.
+- **Forms without paper codes** (2026-10-24): members see forms by what
+  they do ("Certificate of Service"), never by F- or L- number; the codes
+  stay in the database and on the printed form for the Policy Manual.
+
 - **Telegram bot and mascot** (owner, 2026-10-22: "a Telegram bot … our
   mascot … do what you think is best"): the mascot is Hudhud (هدهد), a
   hoopoe carrying the SAL symbol as a letter (native to Iraq, the messenger
@@ -781,7 +790,9 @@ Covered by automated tests so far:
 ## needs-native-review (Arabic written for the platform)
 
 - Version 1 (2026-10-24): the cron-failure notice to administrators,
-  `cronFailed` in `packages/email/copy.ts`.
+  `cronFailed` in `packages/email/copy.ts`; `nexus.home.sixWords.{edit,hint,count,save,cancel}`,
+  `nexus.declarations.makeOne`, `nexus.admin.waraq.sortedBy`, and the
+  reworded ledes of Declarations, Service and Side Quest care.
 
 - Telegram (2026-10-22): all of `apps/api/lib/bot/copy.ts` (Arabic), the bot's
   Arabic commands and descriptions, `nexus.profile.telegram.*` and
