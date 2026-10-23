@@ -354,6 +354,44 @@ export interface CrosswordCell {
 }
 
 /**
+ * Both indices must be integers inside the grid before either indexes an
+ * array: a non-numeric key would otherwise reach the prototype.
+ */
+const inGrid = (crossword: Crossword, r: number, c: number) =>
+  Number.isSafeInteger(r) &&
+  Number.isSafeInteger(c) &&
+  r >= 0 &&
+  r < crossword.rows &&
+  c >= 0 &&
+  c < crossword.cols;
+
+/** Writes one entry into the grid; false when it clashes or runs off it. */
+const placeEntry = (
+  crossword: Crossword,
+  cells: (CrosswordCell | null)[][],
+  entry: CrosswordEntry
+) => {
+  const letters = lettersOf(entry.answer);
+  for (const [i, letter] of letters.entries()) {
+    const r = entry.across ? entry.row : entry.row + i;
+    const c = entry.across ? entry.col + i : entry.col;
+    const line = inGrid(crossword, r, c) ? cells[r] : undefined;
+    if (!line) {
+      return false;
+    }
+    const cell = line[c];
+    if (cell && cell.letter !== letter) {
+      return false;
+    }
+    line[c] = {
+      letter,
+      number: i === 0 ? entry.number : cell?.number,
+    };
+  }
+  return true;
+};
+
+/**
  * The grid of a crossword: a letter (and its clue number) in every white
  * square, null in the black ones. Null as a whole when two entries disagree
  * on a square or one runs off the grid.
@@ -363,26 +401,9 @@ export const crosswordCells = (crossword: Crossword) => {
     { length: crossword.rows },
     () => Array.from({ length: crossword.cols }, () => null)
   );
-  for (const entry of crossword.entries) {
-    const letters = lettersOf(entry.answer);
-    for (const [i, letter] of letters.entries()) {
-      const r = entry.across ? entry.row : entry.row + i;
-      const c = entry.across ? entry.col + i : entry.col;
-      const line = cells[r];
-      if (!line || c < 0 || c >= crossword.cols) {
-        return null;
-      }
-      const cell = line[c];
-      if (cell && cell.letter !== letter) {
-        return null;
-      }
-      line[c] = {
-        letter,
-        number: i === 0 ? entry.number : cell?.number,
-      };
-    }
-  }
-  return cells;
+  return crossword.entries.every((entry) => placeEntry(crossword, cells, entry))
+    ? cells
+    : null;
 };
 
 interface LayoutCell {
