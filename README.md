@@ -4,11 +4,19 @@ The web platform of the AUIB Society of Arts and Letters (SAL, «جمعية ال
 والآداب»), the bilingual student society for literature, theater and the arts
 at the American University of Iraq – Baghdad. *The paper and the pen.*
 
+**Version 1** (October 24, 2026): one light ground for the site and the
+Nexus, the database at zero Supabase advisor findings with a test that
+keeps it there, a publish rule with the fewest gates that still protect
+the work, and the rails (protected `main`, audited dependencies, journeys
+against built apps) that let the Society run it without a developer on
+call. What remains is content and the owner's settings, listed in
+`PROGRESS.md`.
+
 | App | What it is | Deployed at |
 | --- | --- | --- |
-| `apps/web` | Public site, `/en` and `/ar` | auibsal.org |
+| `apps/web` | Public site, English at `/` and Arabic at `/ar` | auibsal.org |
 | `apps/app` | **The Nexus**: member portal and role-gated admin (client-rendered; a locale proxy is its only server code) | nexus.auibsal.org |
-| `apps/api` | Email, cron, calendar feeds, revalidation, exports, deletion | api.auibsal.org |
+| `apps/api` | Email, cron (and a daily watch on the cron jobs), calendar feeds, revalidation, exports, deletion, Hudhud the Telegram bot | api.auibsal.org |
 | `apps/storybook` | The SAL Design System: components, v5 Screens and every platform email (bilingual) | design.auibsal.org (officers, Nexus sign-in) |
 | `apps/e2e` | Playwright + axe journeys | CI |
 
@@ -35,8 +43,10 @@ Copy each app's `.env.example` to `.env.local` and fill in the local keys from
 bun run check         # Biome
 bun run typecheck
 bun run test
-bun run db:test       # pgTAP: RLS and RPC behavior
+bun run db:test       # pgTAP: RLS, RPC behavior, and the advisor invariants
 bun run check:placeholders && bun run check:rtl && bun run check:i18n
+bun run check:unused  # Knip
+bun audit --audit-level=high
 ```
 
 ## Further reading
@@ -46,6 +56,7 @@ bun run check:placeholders && bun run check:rtl && bun run check:i18n
 - `AGENTS.md` — rules for humans and AI agents
 - `ARCHITECTURE_AND_INTEGRATIONS.md` — how the pieces fit together and how to
   set up Supabase, Vercel, Resend and the domains
+- `docs/platform/` — the runbooks: releases, backups, incidents, accounts
 - `.github/CONTRIBUTING.md` — workflow and local checks
 
 Repository: https://github.com/auibsal/mono · Contact: hello@auibsal.org
