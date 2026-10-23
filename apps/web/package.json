@@ -6,7 +6,7 @@
     "build": "next build",
     "clean": "git clean -xdf .cache .turbo dist node_modules",
     "dev": "next dev -p 3001",
-    "start": "next start",
+    "start": "next start -p 3001",
     "typecheck": "tsc --noEmit --emitDeclarationOnly false"
   },
   "dependencies": {
