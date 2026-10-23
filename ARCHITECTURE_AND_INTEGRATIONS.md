@@ -141,8 +141,7 @@ Four projects from this repository (root directory → app):
 Every push to `main` builds every project; only a commit whose subject
 carries the skip marker builds nothing (`scripts/vercel-ignore.mjs`, the
 Ignored Build Step). Skipping unaffected projects is Vercel's own setting
-(project → Settings → Git), not a script: a script that compares against
-the previous deployment goes wrong once that deployment was skipped.
+(project → Settings → Git), not a script in this repository.
 
 Environment variables per project are listed in each app's `.env.example`.
 `SUPABASE_SECRET_KEY`, `RESEND_TOKEN`, `CRON_SECRET`,
