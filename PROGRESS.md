@@ -606,6 +606,14 @@ These stop parts of the work. Everything else continues around them.
       its 24 pre-squash commits and GitHub put their bodies into the squash
       message again. The branch now restarts from `main` after each merge,
       and CI fails a pull request whose commits contain a skip marker.
+      #117 (ea35fee) then ran CI and the production migration on `main`
+      (the five `20261024*` migrations applied). Vercel built nothing for
+      it, rightly: the four production deployments of 818e326 had shipped
+      at 19:55 UTC, and ea35fee changed only CI and docs. Production has
+      run version 1 since then. `scripts/vercel-ignore.mjs` now builds
+      everything except a commit whose subject carries the marker: one
+      script fewer to reason about; Vercel's own "skip unaffected
+      projects" setting is the way to skip again, if wanted.
 - [ ] Owner: the ruleset on `main` (PR #115 names the checks), secret
       scanning's non-provider patterns and validity checks, Copilot review
       off, leaked-password protection when on the Pro plan, then merge #115

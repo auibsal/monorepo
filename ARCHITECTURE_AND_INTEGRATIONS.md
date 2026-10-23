@@ -138,8 +138,10 @@ Four projects from this repository (root directory → app):
 | sal-api | `apps/api` | api.auibsal.org |
 | sal-design | `apps/storybook` | design.auibsal.org (officers only) |
 
-Each project builds only when a change touches it or a package it depends
-on (`scripts/vercel-ignore.mjs`, the Ignored Build Step).
+Every push to `main` builds every project; only a commit whose subject
+carries the skip marker builds nothing (`scripts/vercel-ignore.mjs`, the
+Ignored Build Step). Skipping unaffected projects is Vercel's own setting
+(project → Settings → Git), not a script in this repository.
 
 Environment variables per project are listed in each app's `.env.example`.
 `SUPABASE_SECRET_KEY`, `RESEND_TOKEN`, `CRON_SECRET`,
