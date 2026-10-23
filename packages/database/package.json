@@ -20,7 +20,6 @@
     "db:test": "bun scripts/sync-test-preamble.ts --check && supabase test db",
     "db:test:sync": "bun scripts/sync-test-preamble.ts",
     "db:types": "supabase gen types typescript --local --schema public,core,access,membership,events,journal,charity,programmes,governance,content | biome format --stdin-file-path=types.ts > types.ts.tmp && mv types.ts.tmp types.ts",
-    "functions:serve": "supabase functions serve",
     "migration:new": "supabase migration new",
     "typecheck": "tsc --noEmit --emitDeclarationOnly false"
   },

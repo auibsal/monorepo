@@ -30,7 +30,9 @@
     "typecheck": "turbo typecheck"
   },
   "overrides": {
-    "parse5": "^7.2.1"
+    "launch-editor": "^2.14.2",
+    "vite": "^8.3.5",
+    "webpack-dev-middleware": "^7.4.5"
   },
   "devDependencies": {
     "@biomejs/biome": "2.5.15",
@@ -50,5 +52,9 @@
   },
   "trustedDependencies": [
     "supabase"
-  ]
+  ],
+  "dependencies": {
+    "launch-editor": "^2.14.2",
+    "vite": "^8.3.5"
+  }
 }

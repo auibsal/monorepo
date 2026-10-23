@@ -1,6 +1,7 @@
 "use client";
 
 import { useAuth } from "@repo/auth/provider";
+import { SalCard } from "@repo/design-system/components/sal/card";
 import { Button } from "@repo/design-system/components/ui/button";
 import { unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -166,61 +167,65 @@ export const TelegramLink = () => {
     connect.isError || finish.isError || notify.isError || unlink.isError;
 
   return (
-    <div className="grid gap-3" id="telegram">
-      <h2 className="type-subheading">{t("title")}</h2>
-      <p className="type-body">{t("description")}</p>
-      {account ? (
-        <>
-          <p className="type-caption">
-            {account.username
-              ? t("linkedAs", { username: account.username })
-              : t("linked")}{" "}
-            {account.notify ? t("noticesOn") : t("noticesOff")}
-          </p>
-          <div className="flex flex-wrap gap-3">
-            <Button
-              disabled={notify.isPending}
-              onClick={() => notify.mutate(!account.notify)}
-              variant="outline"
-            >
-              {account.notify ? t("turnOff") : t("turnOn")}
-            </Button>
-            <Button
-              disabled={unlink.isPending}
-              onClick={() => unlink.mutate()}
-              variant="outline"
-            >
-              {t("unlink")}
-            </Button>
-          </div>
-        </>
-      ) : (
-        <div className="flex flex-wrap items-center gap-3">
-          {startLink ? (
-            <>
-              <Button asChild>
-                <a href={startLink} rel="noopener" target="_blank">
-                  {t("open")}
-                </a>
+    <SalCard>
+      <div className="grid gap-3" id="telegram">
+        <h2 className="type-subheading">{t("title")}</h2>
+        <p className="type-body">{t("description")}</p>
+        {account ? (
+          <>
+            <p className="type-caption">
+              {account.username
+                ? t("linkedAs", { username: account.username })
+                : t("linked")}{" "}
+              {account.notify ? t("noticesOn") : t("noticesOff")}
+            </p>
+            <div className="flex flex-wrap gap-3">
+              <Button
+                disabled={notify.isPending}
+                onClick={() => notify.mutate(!account.notify)}
+                variant="outline"
+              >
+                {account.notify ? t("turnOff") : t("turnOn")}
               </Button>
-              <p className="type-caption">{t("codeHint")}</p>
-            </>
-          ) : (
-            <Button
-              disabled={connect.isPending || finish.isPending}
-              onClick={() => connect.mutate()}
-            >
-              {finish.isPending ? t("linking") : t("connect")}
-            </Button>
-          )}
-          {startLink ? null : <p className="type-caption">{t("loginHint")}</p>}
-        </div>
-      )}
-      {failed ? (
-        <p className="text-title" role="alert">
-          {t("failed")}
-        </p>
-      ) : null}
-    </div>
+              <Button
+                disabled={unlink.isPending}
+                onClick={() => unlink.mutate()}
+                variant="outline"
+              >
+                {t("unlink")}
+              </Button>
+            </div>
+          </>
+        ) : (
+          <div className="flex flex-wrap items-center gap-3">
+            {startLink ? (
+              <>
+                <Button asChild>
+                  <a href={startLink} rel="noopener" target="_blank">
+                    {t("open")}
+                  </a>
+                </Button>
+                <p className="type-caption">{t("codeHint")}</p>
+              </>
+            ) : (
+              <Button
+                disabled={connect.isPending || finish.isPending}
+                onClick={() => connect.mutate()}
+              >
+                {finish.isPending ? t("linking") : t("connect")}
+              </Button>
+            )}
+            {startLink ? null : (
+              <p className="type-caption">{t("loginHint")}</p>
+            )}
+          </div>
+        )}
+        {failed ? (
+          <p className="text-title" role="alert">
+            {t("failed")}
+          </p>
+        ) : null}
+      </div>
+    </SalCard>
   );
 };

@@ -9,7 +9,7 @@ How the SAL platform fits together, and how to set up each integration.
 flowchart LR
   subgraph Clients
     W["apps/web · auibsal.org<br/>public site (SSG + tags)"]
-    A["apps/app · nexus.auibsal.org<br/>the Nexus (static export)"]
+    A["apps/app · nexus.auibsal.org<br/>the Nexus (client-rendered)"]
   end
   subgraph Vercel
     API["apps/api · api.auibsal.org<br/>email · cron · feeds · signed URLs"]
@@ -36,8 +36,9 @@ flowchart LR
    member's token; the public site with the publishable key. Policies decide
    what each can read and write. Every policy calls
    `access.has_permission(permission, scope_type, scope_id)`.
-2. **Secrets live in `apps/api` (and CI), nowhere else.** The Nexus is a
-   static export whose bundle anyone can read. When it needs a privileged
+2. **Secrets live in `apps/api` (and CI), nowhere else.** The Nexus holds
+   no secrets: its only server code is the locale proxy, and its bundle is
+   public by design. When it needs a privileged
    action it calls `apps/api`, which verifies the JWT (`authenticateRequest`)
    and re-checks the permission (`hasPermission`) before using the admin client.
 3. **Multi-step rules are Postgres functions.** RSVPs and waitlist promotion,
@@ -121,13 +122,17 @@ indexes on policy columns, and pgTAP tests. Regenerate types and commit them.
 
 ## Vercel
 
-Three projects from this repository (root directory → app):
+Four projects from this repository (root directory → app):
 
 | Project | Root | Domains |
 | --- | --- | --- |
-| web | `apps/web` | auibsal.org, www.auibsal.org (redirect) |
-| app | `apps/app` | nexus.auibsal.org |
-| api | `apps/api` | api.auibsal.org |
+| sal-web | `apps/web` | auibsal.org, www.auibsal.org (redirect) |
+| sal-nexus | `apps/app` | nexus.auibsal.org |
+| sal-api | `apps/api` | api.auibsal.org |
+| sal-design | `apps/storybook` | design.auibsal.org (officers only) |
+
+Each project builds only when a change touches it or a package it depends
+on (`scripts/vercel-ignore.mjs`, the Ignored Build Step).
 
 Environment variables per project are listed in each app's `.env.example`.
 `SUPABASE_SECRET_KEY`, `RESEND_TOKEN`, `CRON_SECRET`,

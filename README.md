@@ -7,7 +7,7 @@ at the American University of Iraq – Baghdad. *The paper and the pen.*
 | App | What it is | Deployed at |
 | --- | --- | --- |
 | `apps/web` | Public site, `/en` and `/ar` | auibsal.org |
-| `apps/app` | **The Nexus**: member portal and role-gated admin (static export) | nexus.auibsal.org |
+| `apps/app` | **The Nexus**: member portal and role-gated admin (client-rendered; a locale proxy is its only server code) | nexus.auibsal.org |
 | `apps/api` | Email, cron, calendar feeds, revalidation, exports, deletion | api.auibsal.org |
 | `apps/storybook` | The SAL Design System: components, v5 Screens and every platform email (bilingual) | design.auibsal.org (officers, Nexus sign-in) |
 | `apps/e2e` | Playwright + axe journeys | CI |
@@ -22,7 +22,7 @@ Supabase stack).
 
 ```sh
 bun install
-bun run db:start      # local Supabase: migrations + reference data
+bun run db:start      # local Supabase: migrations (the browser journeys seed their own data)
 bun run dev           # every app: app :3000, web :3001, api :3002
 ```
 
