@@ -17,13 +17,21 @@ Branch: `claude/new-session-qosn60`.
       `https://nexus.auibsal.org/ar/profile`, and put the Client Secret on
       sal-api as `TELEGRAM_LOGIN_CLIENT_SECRET` (Production, sensitive),
       then redeploy; (2) the BotFather settings in the runbook (Guest Mode
-      on, Bot Management and Threaded Mode off, admin rights, privacy
-      policy URL, description picture `brand/mascot/hudhud-welcome.png`),
-      then *Connect again* in Settings → Telegram; (3) connect the group
-      with a setup code and `/topic` in each topic. Optional: house rules
-      for `/rules` (TODO(content): the group's own rules, if any, besides
-      the Acceptable Use Policy). The privacy notice and SAL-PLT-04 should
+      and Guard on, Main App = the word game, Bot Management and Threaded
+      Mode off, admin rights, privacy policy URL, description picture
+      `brand/mascot/hudhud-welcome.png`), then *Connect again* in Settings →
+      Telegram; (3) connect the group with a setup code and `/topic` in each
+      topic, and in the group's own settings write the Welcome Message
+      (TODO(content): the greeting and the group's rules, with the
+      Acceptable Use Policy marked as a draft until adopted) and turn on
+      Aggressive Anti-Spam. The privacy notice and SAL-PLT-04 should
       mention the Telegram link and what the bot keeps (TODO(content)).
+- [ ] **Telegram leftovers in the database (2026-10-23):** Telegram now
+      does welcomes, rules, moderation and the word game, so
+      `core.telegram_word_plays`, `core.telegram_groups.join_policy`,
+      `core.telegram_members.warnings` and `joined_at`, and the settings
+      `telegram.rules_en`/`_ar` are unused. Dropping them deletes their
+      data: waiting for the owner's go-ahead.
 - [ ] **Vercel variables to delete (2026-10-23):** `RESEND_TOKEN` and
       `RESEND_FROM` on sal-web (the site sends no email; the code no longer
       reads them), `NEXT_PUBLIC_DOCS_URL` on sal-web and sal-nexus (the docs
@@ -247,7 +255,12 @@ These stop parts of the work. Everything else continues around them.
   starts in the Nexus with Telegram's login (OpenID Connect, verified by
   apps/api; the bot's one-time code is the fallback), and connecting a
   group with a one-time code. Telegram never signs anyone in to the Nexus:
-  sign-in is email only (owner, 2026-10-23). No emoji in
+  sign-in is email only (owner, 2026-10-23). Where Telegram has its own
+  feature the bot doesn't duplicate it (owner, 2026-10-23): the group's
+  welcome message and rules, anti-spam, moderation and its log, join
+  checks (Guard mode answers; admins decide the rest), the menu button,
+  and the daily word (the web game as the bot's Main App). The bot keeps
+  only what needs the Society's data. No emoji in
   the bot (brand rule); the daily word's marks are ● ○ ·.
 
 - **The President has access to everything** (owner, 2026-10-15) except

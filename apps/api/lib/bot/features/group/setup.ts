@@ -1,12 +1,6 @@
 import { Composer } from "grammy";
 import type { BotContext } from "../../context";
-import {
-  copy,
-  type JoinPolicy,
-  joinPolicies,
-  type Purpose,
-  purposes,
-} from "../../copy";
+import { copy, type Purpose, purposes } from "../../copy";
 import { db } from "../../db";
 import {
   currentGroup,
@@ -19,7 +13,7 @@ import {
 /**
  * Connecting a group and telling the bot about it. /setup takes the code an
  * officer made in the Nexus (settings.manage); the rest is for the group's
- * Telegram admins: /topic, /policy, /lang.
+ * Telegram admins: /topic, /lang.
  */
 export const setup = new Composer<BotContext>();
 const groups = setup.chatType(["group", "supergroup"]);
@@ -105,19 +99,6 @@ adminCommand("topic", async (ctx, arg, group) => {
       ? ctx.t.topicCleared
       : ctx.t.topicOk(ctx.t.purposeNames[arg as Purpose])
   );
-});
-
-adminCommand("policy", async (ctx, arg) => {
-  if (!joinPolicies.includes(arg as JoinPolicy)) {
-    await replyHere(ctx, ctx.t.policyUsage);
-    return;
-  }
-  await db()
-    .schema("core")
-    .from("telegram_groups")
-    .update({ join_policy: arg })
-    .eq("chat_id", ctx.chat.id);
-  await replyHere(ctx, ctx.t.policyOk[arg as JoinPolicy]);
 });
 
 adminCommand("lang", async (ctx, arg) => {

@@ -48,6 +48,29 @@ export const noseconeOptionsWith = (...extra: CspSources[]): Options =>
     ? withVercelToolbar(baseOptions(...extra))
     : baseOptions(...extra);
 
+/**
+ * The same headers for a page that is also a Telegram Mini App: Telegram's
+ * web app (web.telegram.org) shows Mini Apps in a frame, so it may frame
+ * the page. The phone and desktop apps open it in their own view.
+ */
+export const telegramMiniApp = (options: Options): Options => {
+  const csp = options.contentSecurityPolicy;
+  return {
+    ...options,
+    contentSecurityPolicy:
+      typeof csp === "object"
+        ? {
+            ...csp,
+            directives: {
+              ...csp.directives,
+              frameAncestors: ["'self'", "https://web.telegram.org"],
+            },
+          }
+        : csp,
+    xFrameOptions: false,
+  };
+};
+
 /** Security headers for every app. */
 export const noseconeOptions: Options = noseconeOptionsWith();
 

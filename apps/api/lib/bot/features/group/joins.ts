@@ -3,183 +3,97 @@ import { Composer, GrammyError, InlineKeyboard } from "grammy";
 import type { BotContext } from "../../context";
 import { copy, langOf } from "../../copy";
 import { db, group as loadGroup, whoami } from "../../db";
-import { displayName, label } from "../../format";
-import { botLink, connectPage } from "../../links";
-import { groupText, postTo } from "./common";
+import { connectPage } from "../../links";
 
 /**
- * Joining a connected group. With "Approve new members" on, every request
- * comes to the bot: linked members get in at once; under "verify" everyone
- * else taps a button in a private message first (most spam bots never do);
- * under "members" they link their Nexus account first, and are let in the
- * moment they do. Everyone who joins is welcomed in the welcome topic, and
- * the "joined" and "left" service messages are cleared away.
+ * Join requests to a connected group ("Approve new members" on the invite
+ * link). With BotFather's Guard mode, Telegram asks the bot first: a linked
+ * Nexus account is approved at once, and everyone else is queued for the
+ * group's admins in Telegram's own request list, with a private note
+ * inviting them to link (the moment they do, they're let in). Welcome
+ * messages, anti-spam, restrictions and bans are Telegram's own (group
+ * settings and admin tools), not the bot's.
  */
 export const joins = new Composer<BotContext>();
 
-const members = () => db().schema("core").from("telegram_members");
+// Requests waiting for an admin, so linking later can let the person in.
+const waiting = () => db().schema("core").from("telegram_members");
+
+const forget = (chatId: number, telegramId: number) =>
+  waiting().delete().eq("chat_id", chatId).eq("telegram_id", telegramId);
 
 const approve = async (api: Api, chatId: number, telegramId: number) => {
   try {
     await api.approveChatJoinRequest(chatId, telegramId);
   } catch (error) {
-    // Already handled, or the person withdrew the request.
-    if (error instanceof GrammyError && error.error_code === 400) {
-      return false;
+    // Already handled by an admin, or the person withdrew the request.
+    if (!(error instanceof GrammyError && error.error_code === 400)) {
+      throw error;
     }
-    throw error;
   }
-  await members()
-    .update({ verified_at: new Date().toISOString() })
-    .eq("chat_id", chatId)
-    .eq("telegram_id", telegramId);
-  return true;
+  await forget(chatId, telegramId);
 };
 
 joins.on("chat_join_request", async (ctx) => {
   const request = ctx.chatJoinRequest;
-  const group = await loadGroup(request.chat.id);
+  const person = request.from;
+  const [group, me] = await Promise.all([
+    loadGroup(request.chat.id),
+    whoami(person.id),
+  ]);
+  // Guard mode: Telegram waits up to 10 seconds for the bot's answer.
+  const answer = (result: "approve" | "queue") =>
+    request.query_id
+      ? ctx.api.answerChatJoinRequestQuery(request.query_id, result)
+      : null;
   if (!group) {
+    await answer("queue");
     return;
   }
-  const person = request.from;
-  await members().upsert(
-    {
-      chat_id: group.chat_id,
-      joined_at: new Date().toISOString(),
-      telegram_id: person.id,
-      verified_at: null,
-    },
+  if (me) {
+    await (request.query_id
+      ? answer("approve")
+      : approve(ctx.api, group.chat_id, person.id));
+    return;
+  }
+  await answer("queue");
+  await waiting().upsert(
+    { chat_id: group.chat_id, telegram_id: person.id, verified_at: null },
     { onConflict: "chat_id,telegram_id" }
   );
-  if (group.join_policy === "open") {
-    await approve(ctx.api, group.chat_id, person.id);
-    return;
-  }
-  const me = await whoami(person.id);
-  if (me?.member || (me && group.join_policy === "verify")) {
-    await approve(ctx.api, group.chat_id, person.id);
-    return;
-  }
-  const lang = me?.locale ?? langOf(person.language_code);
+  const lang = langOf(person.language_code);
   const t = copy[lang];
-  const title = displayName({ first_name: request.chat.title ?? "SAL" });
-  const keyboard = new InlineKeyboard();
-  if (group.join_policy === "verify") {
-    keyboard.text(t.buttons.verify, `verify:${group.chat_id}`).row();
-  }
-  keyboard.url(t.buttons.link, connectPage(lang));
-  const text =
-    group.join_policy === "verify"
-      ? t.verifyAsk(displayName(person), title)
-      : t.membersOnlyAsk(title);
   // Bots may write to someone who asked to join, even before /start.
   await ctx.api
-    .sendMessage(request.user_chat_id, text, { reply_markup: keyboard })
+    .sendMessage(
+      request.user_chat_id,
+      t.joinWaiting(request.chat.title ?? "SAL"),
+      {
+        reply_markup: new InlineKeyboard().url(
+          t.buttons.link,
+          connectPage(lang)
+        ),
+      }
+    )
     .catch(() => undefined);
 });
 
-joins.callbackQuery(/^verify:(-\d+)$/, async (ctx) => {
-  const chatId = Number(ctx.match[1]);
-  const group = await loadGroup(chatId);
-  const t = copy[langOf(ctx.from.language_code)];
-  const ok =
-    group?.join_policy === "verify" &&
-    (await approve(ctx.api, chatId, ctx.from.id));
-  await ctx.answerCallbackQuery();
-  await ctx.editMessageText(ok ? t.verifyDone : t.verifyGone);
-});
-
-/**
- * After someone links their account: approve their waiting requests to
- * connected groups (members-only groups need a verified member).
- */
+/** After someone links their account: approve their waiting requests. */
 export const admitPending = async (api: Api, telegramId: number) => {
-  const { data: waiting } = await members()
+  const { data: rows } = await waiting()
     .select("chat_id")
-    .eq("telegram_id", telegramId)
-    .is("verified_at", null);
-  if (!waiting?.length) {
-    return;
-  }
-  const me = await whoami(telegramId);
+    .eq("telegram_id", telegramId);
   await Promise.all(
-    waiting.map(async ({ chat_id }) => {
-      const group = await loadGroup(chat_id);
-      if (group && (group.join_policy !== "members" || me?.member)) {
-        await approve(api, chat_id, telegramId);
-      }
-    })
+    (rows ?? []).map(({ chat_id }) => approve(api, chat_id, telegramId))
   );
 };
-
-const IN = new Set(["member", "administrator", "creator"]);
-const OUT = new Set(["left", "kicked"]);
-
-joins.on("chat_member", async (ctx) => {
-  const update = ctx.chatMember;
-  const before = update.old_chat_member;
-  const after = update.new_chat_member;
-  const joined =
-    (IN.has(after.status) ||
-      (after.status === "restricted" && after.is_member)) &&
-    (OUT.has(before.status) ||
-      (before.status === "restricted" && !before.is_member));
-  const left = OUT.has(after.status);
-  if (!(joined || left) || after.user.is_bot) {
-    return;
-  }
-  const group = await loadGroup(update.chat.id);
-  if (!group) {
-    return;
-  }
-  if (left) {
-    await members()
-      .delete()
-      .eq("chat_id", group.chat_id)
-      .eq("telegram_id", after.user.id);
-    return;
-  }
-  await members().upsert(
-    { chat_id: group.chat_id, telegram_id: after.user.id },
-    { ignoreDuplicates: true, onConflict: "chat_id,telegram_id" }
-  );
-  const name = displayName(after.user);
-  await postTo(
-    ctx.api,
-    group,
-    ["welcome"],
-    groupText(group, (t) => t.welcome(name)),
-    {
-      reply_markup: new InlineKeyboard()
-        .url(
-          label(group.lang, (t) => t.buttons.rules),
-          botLink(ctx.botUsername, "rules")
-        )
-        .url(
-          label(group.lang, (t) => t.buttons.link),
-          connectPage(group.lang === "ar" ? "ar" : "en")
-        ),
-    }
-  );
-});
-
-// "X joined the group" / "X left": noise once the bot welcomes people.
-joins.on(
-  ["message:new_chat_members", "message:left_chat_member"],
-  async (ctx) => {
-    if (await loadGroup(ctx.chat.id)) {
-      await ctx.deleteMessage().catch(() => undefined);
-    }
-  }
-);
 
 // Added to a group that isn't connected yet: say how to connect it.
 joins.on("my_chat_member", async (ctx) => {
   const update = ctx.myChatMember;
   const added =
-    OUT.has(update.old_chat_member.status) &&
-    IN.has(update.new_chat_member.status);
+    ["left", "kicked"].includes(update.old_chat_member.status) &&
+    ["member", "administrator"].includes(update.new_chat_member.status);
   if (
     !added ||
     update.chat.type === "private" ||

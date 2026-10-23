@@ -5,8 +5,9 @@ import { type Copy, copy, type Lang } from "./copy";
 
 /**
  * Tells Telegram about the bot: where to deliver updates, the commands in
- * each language and place, and the profile texts. Safe to run again after
- * every deploy (POST /telegram/setup).
+ * each language and place, and the profile texts (BotFather sets them in
+ * one language only). The menu button, Main App, pictures and the rest are
+ * BotFather's. Safe to run again after every deploy (POST /telegram/setup).
  */
 
 const list = (t: Copy, names: (keyof Copy["commands"])[]): BotCommand[] =>
@@ -20,20 +21,8 @@ const PRIVATE: (keyof Copy["commands"])[] = [
   "me",
   "help",
 ];
-const GROUP: (keyof Copy["commands"])[] = ["events", "rules", "report", "help"];
-const ADMINS: (keyof Copy["commands"])[] = [
-  ...GROUP,
-  "warn",
-  "unwarn",
-  "mute",
-  "unmute",
-  "ban",
-  "unban",
-  "topic",
-  "policy",
-  "lang",
-  "setup",
-];
+const GROUP: (keyof Copy["commands"])[] = ["events", "help"];
+const ADMINS: (keyof Copy["commands"])[] = [...GROUP, "topic", "lang", "setup"];
 
 export const configure = async (
   api: Api,
@@ -68,6 +57,5 @@ export const configure = async (
       ];
     })
   );
-  await api.setChatMenuButton({ menu_button: { type: "commands" } });
   return api.getWebhookInfo();
 };

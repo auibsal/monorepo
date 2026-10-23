@@ -10,7 +10,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { callApi } from "@/lib/api";
-import { BilingualField, ErrorLine, Field, SaveButton } from "../kit";
+import { ErrorLine, Field, SaveButton } from "../kit";
 
 const LEADING_AT = /^@/;
 
@@ -26,8 +26,9 @@ const asText = (value: Json | undefined) =>
 
 /**
  * Settings: Hudhud, the Society's Telegram bot. Its username (members see
- * "Connect Telegram" once it is set), the house rules it shows with /rules,
- * and a one-time /setup code for connecting a group.
+ * "Connect Telegram" once it is set) and a one-time /setup code for
+ * connecting a group. The group's rules and welcome live in Telegram itself
+ * (its welcome message and description).
  */
 export const TelegramBot = ({
   settings,
@@ -38,35 +39,23 @@ export const TelegramBot = ({
   const { supabase, user } = useAuth();
   const queryClient = useQueryClient();
   const [username, setUsername] = useState("");
-  const [rules, setRules] = useState({ ar: "", en: "" });
   const [code, setCode] = useState<string | null>(null);
   useEffect(() => {
     setUsername(asText(settings["telegram.bot_username"]));
-    setRules({
-      ar: asText(settings["telegram.rules_ar"]),
-      en: asText(settings["telegram.rules_en"]),
-    });
   }, [settings]);
 
   const save = useMutation({
     mutationFn: async () => {
-      const entries: Record<string, string> = {
-        "telegram.bot_username": username.trim().replace(LEADING_AT, ""),
-        "telegram.rules_ar": rules.ar.trim(),
-        "telegram.rules_en": rules.en.trim(),
-      };
-      const results = await Promise.all(
-        Object.entries(entries).map(([settingKey, value]) =>
-          supabase
-            .schema("core")
-            .from("settings")
-            .update({ updated_by: user?.id ?? null, value })
-            .eq("key", settingKey)
-        )
+      unwrap(
+        await supabase
+          .schema("core")
+          .from("settings")
+          .update({
+            updated_by: user?.id ?? null,
+            value: username.trim().replace(LEADING_AT, ""),
+          })
+          .eq("key", "telegram.bot_username")
       );
-      for (const result of results) {
-        unwrap(result);
-      }
     },
     onSuccess: () =>
       queryClient.invalidateQueries({ queryKey: ["admin", "settings"] }),
@@ -143,15 +132,6 @@ export const TelegramBot = ({
             />
           )}
         </Field>
-        <BilingualField
-          label={t("rules")}
-          maxLength={2000}
-          multiline
-          onChange={setRules}
-          rows={4}
-          value={rules}
-        />
-        <p className="type-caption">{t("rulesHint")}</p>
         <SaveButton pending={save.isPending} success={save.isSuccess} />
         <ErrorLine error={save.error} />
       </form>

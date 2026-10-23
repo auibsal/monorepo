@@ -7,12 +7,10 @@ import { type BotContext, flavor } from "./context";
 import { account } from "./features/account";
 import { events } from "./features/events";
 import { joins } from "./features/group/joins";
-import { moderation } from "./features/group/moderation";
 import { setup } from "./features/group/setup";
 import { inline } from "./features/inline";
 import { start } from "./features/start";
 import { waraq } from "./features/waraq";
-import { word } from "./features/word";
 
 // Methods whose text we write in Telegram HTML, with link previews off
 // unless a post asks for one.
@@ -41,7 +39,7 @@ const identity = (token: string, username: string): UserFromGetMe => ({
   is_bot: true,
   supports_guest_queries: true,
   supports_inline_queries: true,
-  supports_join_request_queries: false,
+  supports_join_request_queries: true,
   username,
 });
 
@@ -71,8 +69,8 @@ export const createBot = (
   );
 
   bot.use(flavor);
-  bot.use(start, account, events, waraq, word, inline);
-  bot.use(setup, joins, moderation);
+  bot.use(start, account, events, waraq, inline);
+  bot.use(setup, joins);
 
   bot.catch(async ({ ctx, error }) => {
     if (error instanceof GrammyError) {
@@ -101,14 +99,13 @@ export const createBot = (
   return bot;
 };
 
-/** The updates the bot asks Telegram for (chat_member needs it said). */
+/** The updates the bot asks Telegram for. */
 export const allowedUpdates = [
   "message",
   "callback_query",
   "inline_query",
   "guest_message",
   "chat_join_request",
-  "chat_member",
   "my_chat_member",
 ] as const;
 

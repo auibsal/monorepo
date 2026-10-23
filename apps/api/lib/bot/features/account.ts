@@ -4,7 +4,7 @@ import type { BotContext } from "../context";
 import { type Copy, copy, type Lang } from "../copy";
 import { db, visibleEvents, whoami } from "../db";
 import { pick, when } from "../format";
-import { connectPage, nexus } from "../links";
+import { connectPage, nexus, wordPage } from "../links";
 import { admitPending } from "./group/joins";
 
 /**
@@ -59,7 +59,7 @@ const menuFor = (t: Copy, lang: Lang) =>
     .text(t.buttons.events, "evs")
     .text(t.buttons.waraq, "waraq")
     .row()
-    .text(t.buttons.word, "word")
+    .webApp(t.buttons.word, wordPage(lang))
     .text(t.buttons.me, "me")
     .row()
     .url(t.buttons.nexus, nexus(lang));

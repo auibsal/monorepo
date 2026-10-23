@@ -184,11 +184,6 @@ describe.skipIf(!enabled)("Hudhud", () => {
       .from("telegram_groups")
       .delete()
       .eq("chat_id", chatId);
-    await admin
-      .schema("core")
-      .from("telegram_word_plays")
-      .delete()
-      .eq("telegram_id", tgUser);
     await admin.schema("events").from("events").delete().eq("id", eventId);
     await admin.auth.admin.deleteUser(userId);
   });
@@ -239,14 +234,11 @@ describe.skipIf(!enabled)("Hudhud", () => {
     expect(lastText()).toContain("Link your Nexus account first");
   });
 
-  test("plays the daily word", async () => {
+  test("opens the daily word as a Mini App", async () => {
     await bot.handleUpdate(message("/word"));
-    expect(lastText()).toContain("Word No.");
-    await bot.handleUpdate(message("hi"));
-    expect(lastText()).toContain("five-letter word");
-    await bot.handleUpdate(message("ZZZZZ"));
-    expect(lastText()).toContain("Z Z Z Z Z");
-    expect(lastText()).toContain("5 tries left");
+    expect(JSON.stringify(sent().at(-1)?.payload.reply_markup)).toContain(
+      "https://auibsal.org/waraq/games/word"
+    );
   });
 
   test("connects a group, sets a topic and posts there once", async () => {
@@ -293,28 +285,37 @@ describe.skipIf(!enabled)("Hudhud", () => {
     ).toHaveLength(0);
   });
 
-  test("asks a stranger to tap before joining, then lets them in", async () => {
+  const joinRequest = (user: number, queryId?: string): Update => {
     updateId += 1;
-    await bot.handleUpdate({
+    return {
       chat_join_request: {
         chat: { id: chatId, title: "SAL", type: "supergroup" },
         date: 0,
-        from: from(stranger),
-        user_chat_id: stranger,
+        from: from(user),
+        query_id: queryId,
+        user_chat_id: user,
       },
       update_id: updateId,
-    } as Update);
-    const ask = sent().at(-1);
-    expect(ask?.payload.chat_id).toBe(stranger);
-    expect(JSON.stringify(ask?.payload.reply_markup)).toContain(
-      `verify:${chatId}`
-    );
+    } as Update;
+  };
+  const guardAnswer = () =>
+    sent("answerChatJoinRequestQuery").at(-1)?.payload.result;
 
-    await bot.handleUpdate(press(`verify:${chatId}`, stranger));
-    expect(sent("approveChatJoinRequest").at(-1)?.payload.user_id).toBe(
-      stranger
-    );
+  test("lets linked members in and leaves strangers to the admins", async () => {
+    await bot.handleUpdate(joinRequest(tgUser, "q1"));
+    expect(guardAnswer()).toBe("approve");
+
+    await bot.handleUpdate(joinRequest(stranger, "q2"));
+    expect(guardAnswer()).toBe("queue");
+    const note = sent().at(-1);
+    expect(note?.payload.chat_id).toBe(stranger);
+    expect(String(note?.payload.text)).toContain("An admin will look");
+
+    // Without Guard mode a linked member is approved directly.
+    await bot.handleUpdate(joinRequest(tgUser));
+    expect(sent("approveChatJoinRequest").at(-1)?.payload.user_id).toBe(tgUser);
   });
+
   test("answers a guest mention with the matching event", async () => {
     updateId += 1;
     await bot.handleUpdate({

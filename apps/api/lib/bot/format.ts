@@ -74,29 +74,3 @@ export const label = (
   mode === "both"
     ? `${pickLabel(copy.en)} · ${pickLabel(copy.ar)}`
     : pickLabel(copy[mode]);
-
-const DURATION = /^(\d{1,4})\s*([mhd])$/i;
-const MAX_SECONDS = 366 * 24 * 60 * 60;
-
-/** "30m", "2h", "1d" → seconds (Telegram's limit: up to 366 days). */
-export const parseDuration = (text: string | undefined, fallback = 3600) => {
-  const match = DURATION.exec(text?.trim() ?? "");
-  if (!match) {
-    return fallback;
-  }
-  const n = Number(match[1]);
-  const unit = match[2]?.toLowerCase();
-  const seconds = n * ({ d: 86_400, h: 3600, m: 60 }[unit ?? "m"] ?? 60);
-  return Math.min(Math.max(seconds, 60), MAX_SECONDS);
-};
-
-export const formatDuration = (lang: Lang, seconds: number) => {
-  const t = copy[lang];
-  if (seconds % 86_400 === 0) {
-    return t.days(String(seconds / 86_400));
-  }
-  if (seconds % 3600 === 0) {
-    return t.hours(String(seconds / 3600));
-  }
-  return t.minutes(String(Math.round(seconds / 60)));
-};
