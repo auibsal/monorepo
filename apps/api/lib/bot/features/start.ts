@@ -1,13 +1,24 @@
-import { Composer } from "grammy";
+import { Composer, InlineKeyboard } from "grammy";
 import type { BotContext } from "../context";
+import { wordPage } from "../links";
 import { accountName, menu, redeemLink } from "./account";
 import { EVENT_PAYLOAD, showEvent } from "./events";
-import { showRules } from "./group/moderation";
-import { startWord } from "./word";
 
-/** /start (with the payloads other places link to) and /help. */
+/** /start (with the payloads other places link to), /word and /help. */
 export const start = new Composer<BotContext>();
 const dm = start.chatType("private");
+
+/**
+ * The daily word is auibsal.org's own game, opened inside Telegram as a
+ * Mini App; the bot only hands it over.
+ */
+const openWord = (ctx: BotContext) =>
+  ctx.reply(ctx.t.wordOpen, {
+    reply_markup: new InlineKeyboard().webApp(
+      ctx.t.buttons.play,
+      wordPage(ctx.lang)
+    ),
+  });
 
 dm.command("start", async (ctx) => {
   const payload = ctx.match.trim();
@@ -20,11 +31,7 @@ dm.command("start", async (ctx) => {
     return;
   }
   if (payload === "word") {
-    await startWord(ctx);
-    return;
-  }
-  if (payload === "rules") {
-    await showRules(ctx, ctx.lang);
+    await openWord(ctx);
     return;
   }
   const me = await ctx.account();
@@ -35,6 +42,8 @@ dm.command("start", async (ctx) => {
     reply_markup: menu(ctx),
   });
 });
+
+dm.command("word", openWord);
 
 start.command("help", async (ctx) => {
   await ctx.account();

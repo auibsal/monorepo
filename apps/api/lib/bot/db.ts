@@ -77,7 +77,6 @@ export interface EventRow {
 
 export interface Group {
   chat_id: number;
-  join_policy: "open" | "verify" | "members";
   lang: "en" | "ar" | "both";
   title: string | null;
   topics: Partial<Record<string, number>>;
@@ -112,7 +111,7 @@ export const group = async (chatId: number) => {
   const { data, error } = await db()
     .schema("core")
     .from("telegram_groups")
-    .select("chat_id, title, lang, join_policy, topics")
+    .select("chat_id, title, lang, topics")
     .eq("chat_id", chatId)
     .maybeSingle();
   if (error) {
@@ -125,7 +124,7 @@ export const groups = async () => {
   const { data, error } = await db()
     .schema("core")
     .from("telegram_groups")
-    .select("chat_id, title, lang, join_policy, topics");
+    .select("chat_id, title, lang, topics");
   if (error) {
     throw error;
   }

@@ -32,6 +32,13 @@ export const connectPage = (lang: Lang) => nexus(lang, "/profile#telegram");
 export const botLink = (username: string, payload?: string) =>
   startLink(username, payload);
 
+/**
+ * The bot's Main App (BotFather: Mini Apps, Main App), which is the daily
+ * word game on auibsal.org opened inside Telegram.
+ */
+export const mainApp = (username: string) =>
+  `https://t.me/${username}?startapp`;
+
 const SUPERGROUP_PREFIX = /^-100/;
 
 /** A link to a message in a supergroup (t.me/c/<id>/<thread>/<message>). */

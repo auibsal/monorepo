@@ -1,6 +1,10 @@
 import { internationalizationMiddleware } from "@repo/internationalization/proxy";
 import { adsenseCspSources } from "@repo/security/csp";
-import { noseconeOptionsWith, withSecurityHeaders } from "@repo/security/proxy";
+import {
+  noseconeOptionsWith,
+  telegramMiniApp,
+  withSecurityHeaders,
+} from "@repo/security/proxy";
 import type { NextRequest } from "next/server";
 
 export const config = {
@@ -16,12 +20,18 @@ const securityOptions = noseconeOptionsWith(
   ...(process.env.NEXT_PUBLIC_ADSENSE_CLIENT ? [adsenseCspSources] : [])
 );
 
+// The daily word is also the Telegram bot's Main App: Telegram's web app
+// shows Mini Apps in a frame, so that page (and only that page) may be framed
+// by it.
+const WORD_GAME = /^(\/[a-z]{2})?\/waraq\/games\/word\/?$/;
+const miniAppOptions = telegramMiniApp(securityOptions);
+
 // The marketing site has no signed-in area and serves published content
 // only, so the proxy just picks the locale and sets the security headers.
 // Arcjet guards the one public form, on apps/api.
 export default function proxy(request: NextRequest) {
   return withSecurityHeaders(
     internationalizationMiddleware(request),
-    securityOptions
+    WORD_GAME.test(request.nextUrl.pathname) ? miniAppOptions : securityOptions
   );
 }

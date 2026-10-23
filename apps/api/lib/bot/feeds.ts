@@ -1,5 +1,6 @@
 import { formatClock } from "@repo/internationalization/format";
 import { publicEvents } from "@repo/sal-data/events";
+import { gameDay, gameNumber } from "@repo/sal-data/games";
 import { escapeHtml } from "@repo/telegram";
 import { type Api, GrammyError, InlineKeyboard } from "grammy";
 import { copy, type Lang } from "./copy";
@@ -7,8 +8,7 @@ import { anon, db, type Group, groups } from "./db";
 import { groupText, postTo } from "./features/group/common";
 import { pieceAuthor, publicPieces } from "./features/waraq";
 import { label, pick, when } from "./format";
-import { botLink, eventPage, piecePage } from "./links";
-import { today } from "./word";
+import { botLink, eventPage, mainApp, piecePage } from "./links";
 
 /**
  * What the bot posts to connected groups, every ten minutes (pg_cron calls
@@ -265,22 +265,22 @@ const dailyWord = (run: Run) => {
   if (baghdadHour(run.now) < WORD_HOUR) {
     return Promise.resolve(0);
   }
-  const round = today("en", run.now);
+  const day = gameDay(run.now);
   return sequence(
     [
       () =>
-        once(run.group, "word", String(round.day), () =>
+        once(run.group, "word", String(day), () =>
           postTo(
             run.api,
             run.group,
             ["word", "waraq"],
             copyFor(run.group, (lang) =>
-              copy[lang].postWord(String(round.number))
+              copy[lang].postWord(String(gameNumber(day)))
             ),
             {
               reply_markup: new InlineKeyboard().url(
                 label(run.group.lang, (t) => t.buttons.play),
-                botLink(run.username, "word")
+                mainApp(run.username)
               ),
             }
           )

@@ -20,10 +20,6 @@ export const groupLang = (group: Pick<Group, "lang"> | null, fallback: Lang) =>
 export const isStaff = (member: ChatMember) =>
   member.status === "creator" || member.status === "administrator";
 
-export const canRestrict = (member: ChatMember) =>
-  member.status === "creator" ||
-  (member.status === "administrator" && member.can_restrict_members);
-
 /**
  * The sender's standing: anonymous admins post as the group itself, so a
  * message sent as the chat counts as an admin's.
