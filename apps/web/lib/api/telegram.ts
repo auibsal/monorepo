@@ -4,7 +4,7 @@ import type { AdminClient } from "@repo/database/admin";
 import { log } from "@repo/observability/log";
 import { callTelegram, noticeMessage, TelegramError } from "@repo/telegram";
 import { env } from "@/env";
-import { type Sticker, stickerId } from "./bot/stickers";
+import { type Sticker, type StickerSet, stickerId } from "./bot/stickers";
 import type { PushNotice } from "./push";
 
 const OPEN = { ar: "افتح", en: "Open" } as const;
@@ -44,7 +44,11 @@ export const telegramToUser = async (
         title: notice.title,
       }),
     });
-    const id = sticker ? stickerId(sticker) : null;
+    const id = sticker
+      ? await stickerId(sticker, (name) =>
+          callTelegram<StickerSet>(token, "getStickerSet", { name })
+        ).catch(() => null)
+      : null;
     if (id) {
       await callTelegram(token, "sendSticker", {
         chat_id: account.telegram_id,

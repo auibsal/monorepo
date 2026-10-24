@@ -67,20 +67,11 @@ const projectSchema = z
     slug: z.string().min(1),
     supportEmail: filled(z.email()),
     /**
-     * Hudhud's stickers (brand/mascot/stickers): Telegram file_ids from the
-     * "Hudhud · SAL" set, filled in once the set exists. An empty id sends
-     * nothing (docs/platform/telegram.md, Sticker set).
+     * Hudhud's sticker set on Telegram (t.me/addstickers/<name>): the bot
+     * reads it and follows some replies with one (lib/api/bot/stickers.ts).
+     * Empty sends none.
      */
-    telegram: z
-      .object({
-        stickers: z.object({
-          asleep: z.string(),
-          sent: z.string(),
-          sorry: z.string(),
-          youreIn: z.string(),
-        }),
-      })
-      .strict(),
+    telegram: z.object({ stickerSet: z.string() }).strict(),
     /** The one site: the public pages, the Diwan under /diwan, the API under /api. */
     url: z.url(),
   })

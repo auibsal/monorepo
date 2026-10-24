@@ -9,37 +9,23 @@ Branch: `claude/new-session-qosn60`.
 
 ## Blocked — needed from the user
 
-- [ ] **Brand v6 and the new names (2026-10-24), the owner's part:**
-  - **Redirects (your decision):** `/waraq` and `/nexus` (and `/ar/…`) now
-    answer 404, and links to them have been shared. Say whether to add one
-    permanent redirect for each old path (`/waraq/…` → `/qirtas/…`,
-    `/nexus/…` → `/diwan/…`); nothing was added unasked.
-  - **Supabase → Authentication → URL Configuration:** add
-    `https://auibsal.org/diwan/**` and `https://auibsal.org/ar/diwan/**` to
-    the redirect URLs (keep the `/nexus` ones until the redirects question
-    is settled). **Authentication → OAuth Server:** the consent path is now
-    `/diwan/oauth/consent`.
+- [ ] **Brand v6 (2026-10-24), what is left for the owner:**
   - **Supabase → Authentication → Emails:** paste the four updated
     templates and subjects from `packages/database/supabase/templates`
-    (they link to `/diwan/auth/confirm` and say "the Diwan"); the old ones
-    link to `/nexus`, which no longer exists.
-  - **BotFather → Login Widget → OpenID Connect:** replace the redirect
-    URIs with `https://auibsal.org/diwan/profile` and
-    `https://auibsal.org/ar/diwan/profile`, or Telegram linking stops.
-  - **Hudhud:** BotFather → Edit Bot → Profile picture:
-    `brand/mascot/hudhud-avatar.png` (`/setuserpic`); clear the description
-    picture (v6 ships none). Make the sticker set "Hudhud · SAL"
-    (docs/platform/telegram.md, Sticker set) and send me the four file_ids
-    (`youreIn`, `sent`, `sorry`, `asleep`) for `project.json`. Then press
-    *Connect the bot to Telegram* in the Diwan so the descriptions update.
-  - **The Company's kind:** it is stored as `series` (no schema change).
-    Say if you want a `company` kind added to `core.programmes`.
-  - **Published pieces keep their text:** the launch article still says
-    "Waraq launches"; the crossword's NEXUS answer stays. Edit them in the
-    newsroom if you want them renamed.
-  - **Native Arabic review:** the v6 lines under needs-native-review.
-  - **Governance documents** still use the old names and ranks; amend them
-    when you are ready (the platform does not edit ratified text).
+    (they link to `/diwan/auth/confirm` and say "the Diwan"), unless done.
+  - **BotFather → Edit Bot → Description picture:**
+    `brand/mascot/hudhud-description.png`, then *Connect the bot to
+    Telegram* in the Diwan so the descriptions update.
+  - **The Company's kind:** stored as `series`; say if you want a
+    `company` kind.
+  - **Published pieces keep their text** (the launch article, the
+    crossword's NEXUS); the governance documents keep the old names until
+    amended.
+  - Done (owner, 2026-10-24): redirect URLs (`https://auibsal.org/**`),
+    the Telegram login redirect URIs (`/diwan`, `/ar/diwan`), the bot's
+    picture, the sticker set t.me/addstickers/auibsal (the bot reads it
+    itself), and the native review of all Arabic. No redirects from
+    `/waraq` or `/nexus` (owner's decision).
 
 - [ ] **Environment variables on Vercel (2026-10-24):** the one project is
       `auibsal`. Set on 2026-10-24 (Production; secrets sensitive):
@@ -693,8 +679,9 @@ These stop parts of the work. Everything else continues around them.
 - [x] Step 8: check, typecheck, test, rtl, i18n, placeholders, unused,
       pgTAP and the e2e journeys; screenshots at 1440 and 390 in light and
       dark, nothing sideways at 360
-- [ ] Owner: the items under Blocked (redirects, Supabase URLs and
-      templates, the Telegram redirect URIs, the sticker set, Arabic review)
+- [x] Owner (2026-10-24): redirect URLs, Telegram login URIs, the sticker
+      set, Arabic review; no redirects from the old paths
+- [ ] Owner: the auth email templates and the bot's description picture
 
 ### One app (2026-10-24)
 
@@ -966,116 +953,6 @@ Covered by automated tests so far:
 
 ## needs-native-review (Arabic written for the platform)
 
-- Brand v6 (2026-10-24): the new names («قرطاس»، «الديوان»، «المحطة
-  القادمة»، «الفرقة»، «المسرح المفتوح»، «المناظرة»، «جمعة المتنبي»،
-  «جوائز قرطاس»، «السجل»، «لائحة الزملاء»، «ليلة العودة»، «زميل فخري»،
-  «عضو مدى الحياة»، and the Council as «المجلس التنفيذي») wherever they
-  replaced the old ones in `messages/ar.json`, the bot's copy and the
-  emails; `web.home.{kicker,title,lede,whatsOn,thisTerm,programs,comeIn,comeInBody}`;
-  `web.programmes.{lede,weekly,weeklyNote,specials,productions}`;
-  `common.menu` «القائمة», `common.menuClose` «إغلاق» and the footer
-  headings `web.footer.columns.*`; the summaries of Qirtas and the Company
-  in migration 20261024000800 and «مكتب أخبار قرطاس»; «يوم الميثاق» in
-  `brand/components/DocumentCover` and `SocialPost` previews.
-
-- Dark mode (2026-10-24): `common.theme.dark` «الوضع الداكن» and
-  `common.theme.light` «الوضع الفاتح»; the reworded Notion and Telegram
-  "not set up" notes (`nexus.admin.settings…notConfigured`).
-
-- Version 1 (2026-10-24): the cron-failure notice to administrators,
-  `cronFailed` in `packages/email/copy.ts`; `nexus.home.sixWords.{edit,hint,count,save,cancel}`,
-  `nexus.declarations.makeOne`, `nexus.admin.waraq.sortedBy`, and the
-  reworded ledes of Declarations, Service and Side Quest care.
-
-- Telegram (2026-10-22): all of `apps/api/lib/bot/copy.ts` (Arabic), the bot's
-  Arabic commands and descriptions, `nexus.profile.telegram.*` and
-  `nexus.admin.settings.telegram.*`.
-
-- Streamlining (2026-10-16): `nexus.nav.documents` and `nexus.documents.title`
-  («المكتبة»), `web.programmes.care`, `web.programmes.productions`,
-  `web.productions.allPrograms`, `web.nav.openNexus`, `web.governance.*`,
-  `web.footer.governance`, `web.about.governance`, `web.search.kinds.production`,
-  `web.search.lede`, `nexus.nav.paperwork`, `web.games.guess.streak`,
-  `web.footer.terms`, `web.footer.accessibility`, and the Arabic titles and
-  summaries of SAL-PLT-01 to 11.
-- Analytics (2026-10-15): `web.footer.cookieSettings` and the new
-  `web.privacy.platform.analyticsOn`; the consent card, `web.consent.*`
-  (2026-10-16).
-- Ads in Waraq (2026-10-16): `web.ads.*`, `web.consent.*` (the Advertising
-  choice), `web.privacy.platform.analyticsOff` and `adsOn`,
-  `nexus.admin.ads.*`, `nexus.admin.nav.ads` and the memorandum grant
-  `nexus.admin.partners.agreements.grants.advertising`.
-- Newsletter (2026-10-14): `web.newsletter.*`, `web.footer.newsletter`,
-  `web.journal.newsletter*`, `web.privacy.platform.newsletter`,
-  `nexus.admin.content.newsletter`, and the Arabic of `newsletterConfirm`
-  and `monthInWaraq` in `packages/email/copy.ts` (the name «شهر في ورق»).
-- Games (2026-10-14): `web.games.*`, `web.journal.games`,
-  `nexus.admin.waraq.games.*`, `nexus.admin.waraq.tabs.games`, the Arabic
-  word lists in `packages/sal-data/game-words.ts`, and the Arabic titles and
-  clues of the starter puzzles (`20261014000500_waraq_games.sql`).
-- News into Waraq (2026-10-14): `nexus.admin.content.newsMoved`,
-  `nexus.admin.content.newsroom` and the shortened `nexus.admin.content.lede`.
-- `packages/internationalization/messages/ar.json` — every string (all of it
-  was written for the platform; none came from a source document), except
-  the motto «والقرطاسُ والقلم» and the Society's name «جمعية الفنون والآداب»,
-  which come from the brief.
-- `access.roles.name_ar` (reference-data migration): all 24 role names,
-  and «مدير الشراكات والتواصل» (`20261009000100_partners.sql`), «محرر ضيف»
-  (`20261009000300_journal_partners.sql`) and «قائد العمل المسرحي»
-  (`20261009000400_productions.sql`).
-- Waraq (2026-10-14): role names «محرر الأخبار», «محرر الآداب», «محرر المعرض»,
-  «محرر المرئيات», «مراسل», «مصوّر», «رسّام», «رئيس التدقيق», «المحرر العربي»
-  and the Edition 1 call title (`20261014000100_waraq.sql`); the desk and
-  type names and form text in `ar.json`. The name «ورق» and the full title
-  come from the Notion project page.
-- Productions (2026-10-09): `nexus.productions.*`, `nexus.admin.productions.*`
-  and `web.productions.*`, including the stage, department and audition
-  status names.
-- Forms (2026-10-09): `nexus.forms.*` (every form title, purpose, field and
-  option, including the Arabic of the F-17 media release, which the form
-  itself says must be checked by a native speaker) and `nexus.admin.forms.*`.
-- `core.programmes.name_ar`: every name.
-- Notion (2026-10-10): `nexus.nav.workspace`, `nexus.admin.notion.*` and
-  `nexus.admin.settings.notion.*`.
-- Public site (2026-10-12): `web.institutions.*`, `web.verse.*`, `web.programmeMark` (verbatim from the Brand Book), `web.notFound.*`, `web.footerExtra.*`.
-- Human check (2026-10-12): `auth.errors.captcha_failed` and `auth.humanCheck.failed`.
-- Handbook and internal documents in Notion (2026-10-10):
-  `nexus.handbook.{inNotion,open,notConnected,home}`,
-  `nexus.documents.{inNotion,openInNotion}`,
-  `nexus.admin.documents.fields.{notion,notionHint}` and
-  `nexus.admin.documents.notionNote`.
-- UX pass (2026-10-10): `nexus.setup.name.*`, `nexus.home.greetingPlain`,
-  `nexus.admin.nav.groups.*`, `web.home.whatWeDo`, `web.home.allPrograms`,
-  `web.home.closes`, `web.programmes.major` and `web.programmes.regular`.
-- `charity.campaigns.unit_label_ar` default «أطفال كُسوا».
-- `core.semesters` names in pgTAP fixtures are test-only (no review needed).
-- The transliteration «النِّكسَس» for "the Nexus".
-- Arabic document titles in `governance.society_documents` (migration `20261010000100`, except «دليل السياسات»), the internal documents' Arabic titles, and `nexus.documents.*` / `nexus.admin.documents.*`.
-- `core.programmes.summary_ar` (migration `20261006000000`) and «ليلة المناظرة» for Motion Night (was «ليلة الصورة المتحركة», which meant a moving-image night).
-- `web.about` Arabic (translated from the Constitution and Handbook) and the parts of `web.join` that are not on the Handbook's Arabic welcome page.
-- The Arabic of Policy Manual P10.1 on the setup page (translated for the
-  platform; the manual has no Arabic for it) and the Arabic program names
-  for "the Prizes" in it (the other program names match the reference data).
-- Email Arabic: every Arabic string in `packages/email/copy.ts` and the
-  Arabic halves of `packages/database/supabase/templates/*.html` and
-  `subjects.txt`.
-- Sign-in links (2026-10-08): «جارٍ الإرسال…» and the new `auth.callback.failed` text.
-- Auth email links (2026-10-08): `auth.confirm.*` and the new Arabic in
-  `supabase/templates/magic_link.html` («رابط دخولك», «افتح النِّكسَس»).
-
-- AUIB Literary Journal (2026-10-08): «مجلة الجامعة الأمريكية الأدبية» and every Arabic
-  string added that day (`nexus.society.*`, `nexus.next.*`, the two-step
-  panel, setup progress and pledge reasons, the reading timeline, overview
-  context sentences, Society contacts settings).
-- Online ballots (2026-10-08): `nexus.society.elections.{onList,notOnList,auibOnly,notEligible,status.notice}`,
-  `nexus.admin.governance.elections.{giveNotice,giveNoticeConfirm,noticeGiven,openVotingConfirm,flagOff,statuses.notice}`,
-  `web.journal.opensCloses`, and the Issue 1 names «العدد الأول» and
-  «العدد الأول: دعوة للمشاركة».
-- Founding voters (2026-10-08): `nexus.home.voting.founding` and the added
-  sentence in `web.join.steps.twoThings.body`.
-- Phone notifications (2026-10-08): `nexus.profile.push.*` and `pushTest`
-  in `packages/email/copy.ts`.
-- Sign in with SAL (2026-10-08): `nexus.oauth.*`, `nexus.profile.apps.*`
-  and `nexus.admin.settings.apps.*`.
-- Officer handbook and design-system sign-in (2026-10-09): `nexus.handbook.*`,
-  `nexus.nav.handbook`, `auth.continue.*`.
+All Arabic written for the platform up to 2026-10-24 was reviewed by the
+owner and approved ("reviewed across the board, it's all good"). List new
+Arabic here as it is written.

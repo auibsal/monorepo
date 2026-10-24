@@ -18,12 +18,7 @@
   },
   "supportEmail": "hello@auibsal.org",
   "telegram": {
-    "stickers": {
-      "youreIn": "",
-      "asleep": "",
-      "sent": "",
-      "sorry": ""
-    }
+    "stickerSet": "auibsal"
   },
   "repoUrl": "https://github.com/auibsal/mono",
   "journal": {

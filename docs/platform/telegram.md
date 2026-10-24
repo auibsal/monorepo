@@ -113,7 +113,7 @@ And without commands:
    | Setting | Choose | Why |
    | --- | --- | --- |
    | Edit Bot → Profile picture | `brand/mascot/hudhud-avatar.png`: white Hudhud on crimson | The bot's picture only. The Society's own spaces (the supergroup, channels) use `brand/logos/sal-avatar.svg`, the white Bookmark on crimson; never Hudhud. |
-   | Edit Bot → Description picture | None (v6 ships no welcome picture) | The name, about and description texts are set by step 4. |
+   | Edit Bot → Description picture | `brand/mascot/hudhud-description.png` (640 × 360: the reversed Hudhud, as supplied, on crimson) | What people see before they press Start. The name, about and description texts are set by step 4. |
    | Inline Mode | On, placeholder "Events and Qirtas" | Sharing cards. |
    | Guest Mode | On | Answers a mention in chats the bot isn't in. |
    | Login Widget → OpenID Connect | Redirect URIs `https://auibsal.org/diwan/profile` and `https://auibsal.org/ar/diwan/profile` (and `http://localhost:3000/diwan/profile` for a test bot); Trusted Origins empty; signing RS256 | Linking from the profile. Copy the Client Secret to the auibsal project; the Client ID is the bot's id and needs no variable. |
@@ -150,22 +150,18 @@ And without commands:
 ## Sticker set
 
 Hudhud's twelve stickers are in `brand/mascot/stickers` (512 × 512 PNG and
-WebP, a 100 × 100 `pack-icon.png`, a contact sheet). The bot follows a few
-replies with one, in private chats only and never instead of the text:
-RSVP confirmed → 02 (`youreIn`), work received → 06 (`sent`), an error →
-07 (`sorry`), nothing new or an empty list → 05 (`asleep`). Until the set
-exists the file_ids are empty and nothing extra is sent.
+WebP, a 100 × 100 `pack-icon.png`, a contact sheet), published as
+t.me/addstickers/auibsal; the set's short name is `telegram.stickerSet` in
+`packages/config/project.json`. The bot reads the set itself (Bot API
+`getStickerSet`, once per instance) and follows a few replies with one, in
+private chats only and never instead of the text: RSVP confirmed → 02
+(🎉), work received → 06 (✉️), an error → 07 (😓), nothing new or an empty
+list → 05 (😴). It finds each by its emoji, or else by its place in the
+set, so no file_ids are kept anywhere; an empty set name sends none.
 
-1. In @Stickers, `/newpack` and name it "Hudhud · SAL".
-2. Send `stickers/png/01-hello.png` … `12-oops.png` in order, each as a
-   file, and after each one its emoji from `brand/mascot/README.md`.
-3. `/publish`; for the icon send `stickers/pack-icon.png`; short name
-   `hudhud_sal` (or `auibsal_hudhud` if taken), so the link is
-   t.me/addstickers/hudhud_sal.
-4. Get each sticker's file_id (send it to the bot and read the update, or
-   to @idstickerbot) and put the four the bot uses in
-   `packages/config/project.json` under `telegram.stickers` (`youreIn`,
-   `sent`, `sorry`, `asleep`), then deploy.
+To change the set: @Stickers `/replacesticker`, `/editsticker` (keep the
+emoji in `brand/mascot/README.md`) or `/ordersticker`. A new set needs only
+its short name in config.
 
 ## Development
 
