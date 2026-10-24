@@ -211,7 +211,7 @@ const GridInput = ({
             </th>
             {(field.columns ?? []).map((col) => (
               <th
-                className="type-kicker px-2 py-2 text-start"
+                className="type-label px-2 py-2 text-start"
                 key={col.key}
                 scope="col"
               >
@@ -531,7 +531,7 @@ const TableView = ({
             </th>
             {(field.columns ?? []).map((col) => (
               <th
-                className="type-kicker px-2 py-1 text-start"
+                className="type-label px-2 py-1 text-start"
                 key={col.key}
                 scope="col"
               >
@@ -574,7 +574,7 @@ export const FormValues = ({
   <dl className="grid gap-4">
     {fields.map((field) => (
       <div className="grid gap-1 border-line border-b pb-3" key={field.key}>
-        <dt className="type-kicker">
+        <dt className="type-label">
           {office ? labels.office(field.key) : labels.field(field.key)}
         </dt>
         <dd className="type-body">

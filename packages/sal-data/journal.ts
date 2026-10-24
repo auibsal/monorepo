@@ -707,3 +707,14 @@ export const authorPage = async (client: Client, slug: string) => {
     ) ?? [];
   return { ...contributor, pieces };
 };
+
+/**
+ * One language per page (SAL-BRD-01): a list on the English site shows the
+ * pieces written in English (or in both), the Arabic site those in Arabic.
+ * Rows without a language (calls, editions) pass through.
+ */
+export const inLanguage = <T>(list: readonly T[], locale: string): T[] =>
+  list.filter((item) => {
+    const { language } = item as { language?: string };
+    return !language || language === "bilingual" || language === locale;
+  });

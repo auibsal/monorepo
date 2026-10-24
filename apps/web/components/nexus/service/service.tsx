@@ -111,7 +111,7 @@ export const Service = () => {
     <DiwanPage lede={t("lede")} narrow title={t("title")}>
       <SalCard>
         <div className="grid gap-3">
-          <p className="type-kicker">{t("thisYear")}</p>
+          <p className="type-label">{t("thisYear")}</p>
           <p className="font-medium text-3xl">
             {t("hours", { hours: formatNumber(total) })}
           </p>

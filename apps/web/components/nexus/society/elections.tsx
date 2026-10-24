@@ -333,10 +333,10 @@ const ElectionCard = ({
   return (
     <article className="grid gap-4 border-line border-t pt-space-4">
       <header className="grid gap-1">
-        <p className="type-kicker">
+        <h3 className="type-heading">{localized(election, "title", locale)}</h3>
+        <p className="type-caption">
           {t(`status.${election.status as "voting"}`)}
         </p>
-        <h3 className="type-heading">{localized(election, "title", locale)}</h3>
         <p className="type-caption">
           {t("dates", {
             nominations: when(election.nominations_close_at),

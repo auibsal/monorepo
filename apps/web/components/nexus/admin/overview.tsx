@@ -57,7 +57,7 @@ const Figure = ({
   readonly value: number;
 }) => (
   <SalCard className="content-start gap-2 p-4 sm:gap-3 sm:p-space-4">
-    <p className="type-kicker">{label}</p>
+    <p className="type-label">{label}</p>
     <p className="font-light text-3xl text-text tabular-nums sm:text-4xl">
       {formatNumber(value)}
     </p>

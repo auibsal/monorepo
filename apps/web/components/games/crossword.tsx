@@ -268,9 +268,7 @@ export const CrosswordGame = ({
       <div className="grid content-start gap-8 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
         {[true, false].map((across) => (
           <section className="grid content-start gap-2" key={String(across)}>
-            <h2 className="type-kicker border-line border-b pb-2">
-              {across ? t("across") : t("down")}
-            </h2>
+            <h2 className="type-heading">{across ? t("across") : t("down")}</h2>
             <ol className="grid gap-1">
               {clueList(across).map((e) => (
                 <li key={`${e.number}-${across}`}>

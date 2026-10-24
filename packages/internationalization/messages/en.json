@@ -180,7 +180,6 @@
       "editStatement": "Update what you told us"
     },
     "setup": {
-      "kicker": "Membership",
       "title": "Before you begin",
       "description": "Your name, two pledges and a few choices. You can change the choices later in Profile and privacy.",
       "pledges": "Pledges",
@@ -837,7 +836,7 @@
       },
       "events": {
         "title": "Events",
-        "lede": "Bilingual events with capacity, a waitlist and QR check-in. Members-only events never appear on the public site.",
+        "lede": "Events with capacity, a waitlist and QR check-in, written in English and Arabic for each site. Members-only events never appear on the public site.",
         "new": "New event",
         "tabs": {
           "upcoming": "Upcoming",
@@ -1519,7 +1518,7 @@
         "turnOff": "Turn off",
         "flagConfirm": "Change this for everyone, at once?",
         "banner": "The site-wide banner is a public notice: Content → Notices.",
-        "emails": "Email templates are part of the code (packages/email), bilingual and on brand; ask the technical administrator to change them.",
+        "emails": "Email templates are part of the code (packages/email), in English and Arabic and on brand; each member gets their own language. Ask the technical administrator to change them.",
         "contacts": {
           "title": "Contact and the Faculty Advisor",
           "email": "Society email",
@@ -3513,7 +3512,7 @@
     "home": {
       "metaTitle": "The paper and the pen",
       "title": "The paper and the <accent>pen.</accent>",
-      "lede": "A bilingual society for literature, theater and the arts at the American University of Iraq – Baghdad.",
+      "lede": "A society for literature, theater and the arts at the American University of Iraq – Baghdad. Our motto is a line of al‑Mutanabbi.",
       "join": "Join the Society",
       "whatsOn": "What’s on this term",
       "thisTerm": "This term",
@@ -3522,8 +3521,16 @@
       "closes": "Closes {date}",
       "programs": "Programs",
       "allPrograms": "All programs",
-      "comeIn": "Come in.",
-      "comeInBody": "Membership is free and open to every AUIB student. No audition, no portfolio, no fee."
+      "comeIn": "Come <accent>in.</accent>",
+      "comeInBody": "Membership is free and open to every AUIB student. No audition, no portfolio, no fee.",
+      "evenings": {
+        "title": "The Evenings",
+        "line": "The Majlis, Book Circle, Open Pages and Open Stage, in turn, every week."
+      },
+      "specials": {
+        "title": "The Specials",
+        "line": "Bad Poetry Night, Munazara and Mutanabbi Friday, once a term each."
+      }
     },
     "documents": {
       "title": "Documents",
@@ -3765,15 +3772,15 @@
     },
     "programmes": {
       "title": "Programs",
-      "lede": "Five flagships, one evening a week and three specials a term. The Term Card lists this semester's dates.",
+      "lede": "Four flagships, the Evenings and the Specials. The Term Card lists this semester's dates.",
       "journal": "Read Qirtas",
       "events": "See the events",
-      "major": "Flagship programs",
+      "major": "Flagships",
       "care": "Next Stop care",
       "productions": "The Company's productions",
-      "weekly": "One evening a week",
-      "weeklyNote": "The same weekday, in a four-week cycle: the Majlis, Book Circle, Open Pages, Open Stage.",
-      "specials": "Three specials a term"
+      "weekly": "The Evenings",
+      "weeklyNote": "One weekday, in a four-week cycle: the Majlis, Book Circle, Open Pages, Open Stage.",
+      "specials": "The Specials"
     },
     "give": {
       "title": "Give",
@@ -3833,11 +3840,11 @@
         "horizontalReversed": "Horizontal lockup, reversed",
         "stacked": "Stacked lockup",
         "stackedReversed": "Stacked lockup, reversed",
-        "bilingual": "Bilingual lockup",
-        "bilingualReversed": "Bilingual lockup, reversed",
         "symbol": "Symbol",
         "symbolWhite": "Symbol, white",
-        "avatar": "Avatar"
+        "avatar": "Avatar",
+        "horizontalAr": "Arabic horizontal lockup",
+        "horizontalArReversed": "Arabic horizontal lockup, reversed"
       },
       "coloursTitle": "Colors",
       "contactPress": "For anything else, contact the Media Director through any of our channels."
@@ -3992,7 +3999,6 @@
     },
     "programmeMark": "A Society of Arts and Letters programme",
     "notFound": {
-      "kicker": "Error 404 · A missing page",
       "title": "A page unwritten",
       "description": "We looked between the lines and in the margins. This page was never written, or it has moved to another chapter.",
       "home": "Back to the first page",

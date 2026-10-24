@@ -49,7 +49,7 @@ const GamesPage = async ({ params }: GamesProps) => {
       </header>
 
       <section aria-labelledby="daily" className="grid gap-4">
-        <h2 className="type-kicker border-line border-b pb-2" id="daily">
+        <h2 className="type-heading" id="daily">
           {t("daily")} · <GameNumber />
         </h2>
         <ul className="grid gap-4 sm:grid-cols-2">
@@ -70,7 +70,7 @@ const GamesPage = async ({ params }: GamesProps) => {
       </section>
 
       <section aria-labelledby="editors" className="grid gap-4">
-        <h2 className="type-kicker border-line border-b pb-2" id="editors">
+        <h2 className="type-heading" id="editors">
           {t("fromEditors")}
         </h2>
         {puzzles.length === 0 ? (

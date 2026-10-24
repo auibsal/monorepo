@@ -173,7 +173,7 @@ export const formatClock = (value: DateInput, locale: Locale = defaultLocale) =>
   }).format(toDate(value));
 
 /**
- * A date for the dated lists (v6): the day ("25") and a short weekday and
+ * A date for the dated lists: the day ("25") and a short weekday and
  * month ("Sun", "Oct"), in Baghdad and with Latin digits.
  */
 export const formatDayParts = (

@@ -28,7 +28,7 @@ const topics = (purposes: ConsentPurposes) =>
   (["analytics", "ads"] as const).filter((topic) => purposes[topic]);
 
 /**
- * The consent bar (v6): a slim bar along the bottom edge; the page ends
+ * The consent bar: a slim bar along the bottom edge; the page ends
  * above it, so it never covers content. It asks until the visitor has answered for every purpose,
  * and again from "Cookie settings" in the footer. The answers are kept in the
  * site's own consent cookie, which the boot script passes on to Google

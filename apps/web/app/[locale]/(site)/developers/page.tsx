@@ -33,7 +33,6 @@ const OverviewPage = () => (
     lang="en"
   >
     <header className="grid gap-4">
-      <p className="type-kicker">{project.name}</p>
       <h1 className="type-display">The Society's API</h1>
       <p className="type-lede max-w-3xl">
         Build tools for the Society's members: sign them in with their Society

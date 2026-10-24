@@ -7,16 +7,16 @@ interface SectionHeadProps {
   readonly className?: string;
   /** The heading level; sections on a page are h2. */
   readonly level?: "h2" | "h3";
-  /** "title" (44 px) on the public pages; "heading" (28 px) in the Diwan. */
+  /** "title" (44 px) on the public pages; "heading" (28 px) in the account and the Diwan. */
   readonly size?: "heading" | "title";
   readonly title: ReactNode;
   readonly titleId?: string;
 }
 
 /**
- * A section title (v6): the Bookmark marker, the title in 44 px Regular and
- * an optional text link at the end of the line. Every section title on the
- * public pages starts this way, in place of boxes and colored kickers.
+ * A section title: the title alone, Light (Ubuntu Arabic Regular in
+ * Arabic), and at most a text link at the end of its line. No marker and
+ * nothing above it: the Bookmark is only ever the logo.
  */
 export const SectionHead = ({
   action,
@@ -28,17 +28,19 @@ export const SectionHead = ({
 }: SectionHeadProps) => (
   <div
     className={cn(
-      "flex flex-wrap items-center gap-x-[14px] gap-y-2",
+      "flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2",
       className
     )}
   >
-    <span aria-hidden="true" className="bookmark" />
     <Heading
-      className={cn(size === "title" ? "type-title" : "type-heading", "m-0")}
+      className={cn(
+        size === "title" ? "type-title" : "type-heading font-light",
+        "m-0"
+      )}
       id={titleId}
     >
       {title}
     </Heading>
-    {action ? <div className="ms-auto">{action}</div> : null}
+    {action ? <div>{action}</div> : null}
   </div>
 );

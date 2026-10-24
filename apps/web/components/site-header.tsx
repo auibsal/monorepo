@@ -10,7 +10,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { type ReactNode, useEffect, useState } from "react";
 import { Masthead, mastheadLink } from "./masthead";
 
-// Five sections in the header (v6); the rest are in the footer.
+// Five sections in the header; the rest are in the footer.
 type SectionKey = "about" | "programs" | "journal" | "events" | "join";
 const sections: { href: string; key: SectionKey }[] = [
   { href: "/about", key: "about" },

@@ -6,7 +6,7 @@ import { getTranslations } from "next-intl/server";
 import type { ReactNode } from "react";
 
 /**
- * The paper's nameplate (v6): the name in Medium with the other language's
+ * The paper's nameplate: the name in Medium with the other language's
  * name under it, a dateline between two ink rules, and the desks. Small on
  * the inner pages: the name and the desks.
  */

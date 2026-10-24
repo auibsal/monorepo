@@ -150,7 +150,7 @@ export const Productions = () => {
               <li key={c.id}>
                 <SalCard>
                   <div className="grid gap-2">
-                    <p className="type-kicker">
+                    <p className="type-label">
                       {t(
                         `departments.${c.department as productions.Department}`
                       )}
@@ -220,8 +220,8 @@ export const Productions = () => {
         {auditioning.map((p) => (
           <SalCard key={p.id}>
             <div className="grid gap-3">
-              <p className="type-kicker">{t(`kinds.${p.kind as Kind}`)}</p>
               <h3 className="type-heading">{localized(p, "title", locale)}</h3>
+              <p className="type-caption">{t(`kinds.${p.kind as Kind}`)}</p>
               {p.playwright ? (
                 <p className="type-caption" dir="auto">
                   {t("by", { name: p.playwright })}

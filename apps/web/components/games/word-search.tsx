@@ -156,7 +156,7 @@ export const WordSearchGame = ({
 
       <div className="grid content-start gap-4">
         <p className="type-caption">{t("howTo")}</p>
-        <h2 className="type-kicker border-line border-b pb-2">{t("words")}</h2>
+        <h2 className="type-heading">{t("words")}</h2>
         <ul className="grid grid-cols-2 gap-x-6 gap-y-1">
           {search.words.map((w) => {
             const isFound = found.includes(w.word);

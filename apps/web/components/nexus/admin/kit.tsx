@@ -137,7 +137,7 @@ export const DataTable = <T,>({
                   key={column.key}
                 >
                   {index > 0 && column.header ? (
-                    <span className="type-kicker md:hidden">
+                    <span className="type-label md:hidden">
                       {column.header}
                     </span>
                   ) : null}

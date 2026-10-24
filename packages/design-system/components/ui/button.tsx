@@ -3,7 +3,7 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@repo/design-system/lib/utils"
 import { Slot } from "radix-ui"
 
-// SAL v6: one solid `accent` button per view, 48–50 px, square, sentence
+// one solid `accent` button per view, 48–50 px, square, sentence
 // case. Every other variant is an underlined text link (no frames, no
 // offset blocks, no tracked capitals); icon sizes stay square.
 const linkLook =

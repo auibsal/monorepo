@@ -109,7 +109,7 @@ const Council = () => {
           {rows.map((row) => (
             <li key={`${String(row.role)}-${String(row.full_name_en)}`}>
               <SalCard>
-                <p className="type-kicker">
+                <p className="type-label">
                   {localized(row, "title", locale) ||
                     localized(row, "role_name", locale)}
                 </p>

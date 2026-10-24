@@ -87,8 +87,8 @@ const GuidePage = () => {
         <ol className="grid gap-4">
           {steps.map((s, i) => (
             <li className="grid gap-1 border-line border-t p-5" key={s.title}>
-              <p className="type-kicker">Step {i + 1}</p>
               <h3 className="type-subheading">{s.title}</h3>
+              <p className="type-caption">Step {i + 1}</p>
               <p className="type-body">{s.body}</p>
             </li>
           ))}

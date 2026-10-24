@@ -46,7 +46,7 @@ const RequestCard = ({ request, name }: { request: Request; name: string }) => {
         {t("applied")}: {formatLongDate(request.created_at, locale, true)}
       </p>
       <div>
-        <p className="type-kicker">{t("statement")}</p>
+        <p className="type-label">{t("statement")}</p>
         <p className="type-body whitespace-pre-line">
           {request.statement || t("noStatement")}
         </p>

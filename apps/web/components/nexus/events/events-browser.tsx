@@ -337,11 +337,11 @@ const EventCard = ({
   return (
     <li className="scroll-mt-28" id={event.slug}>
       <article className="grid h-full content-start gap-3 border-line border-t pt-space-4">
-        <p className="type-kicker">
+        <h2 className="type-heading">{localized(event, "title", locale)}</h2>
+        <p className="type-caption">
           {formatLongDate(event.starts_at, locale)} ·{" "}
           {formatClock(event.starts_at, locale)}
         </p>
-        <h2 className="type-heading">{localized(event, "title", locale)}</h2>
         {venue ? <p className="type-body">{venue}</p> : null}
         {summary ? (
           <p className="type-body text-text-secondary">{summary}</p>

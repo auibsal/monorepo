@@ -129,8 +129,8 @@ const ProseBody = ({ piece }: { piece: Full }) => (
       <Html
         className={
           text.lang === "ar"
-            ? "prose max-w-none"
-            : "prose max-w-none [&>p:first-of-type]:first-letter:float-start [&>p:first-of-type]:first-letter:pe-2 [&>p:first-of-type]:first-letter:font-medium [&>p:first-of-type]:first-letter:text-6xl [&>p:first-of-type]:first-letter:text-accent [&>p:first-of-type]:first-letter:leading-none"
+            ? "prose max-w-none [&_blockquote]:border-0 [&_blockquote]:p-0 [&_blockquote]:font-sans [&_blockquote]:text-3xl [&_blockquote]:not-italic"
+            : "prose max-w-none [&>p:first-of-type]:first-letter:float-start [&>p:first-of-type]:first-letter:pe-2 [&>p:first-of-type]:first-letter:font-medium [&>p:first-of-type]:first-letter:text-6xl [&>p:first-of-type]:first-letter:text-accent [&>p:first-of-type]:first-letter:leading-none [&_blockquote]:border-0 [&_blockquote]:p-0 [&_blockquote]:font-light [&_blockquote]:font-sans [&_blockquote]:text-3xl [&_blockquote]:not-italic [&_blockquote]:leading-tight [&_blockquote]:tracking-tight"
         }
         html={text.html}
         key={text.lang}
@@ -244,7 +244,7 @@ const SixWordsBody = ({ piece }: { piece: Full }) => (
   <div className="mx-auto grid w-full max-w-2xl gap-6 px-4">
     {texts(piece).map((text) => (
       <div
-        className="reading grid min-h-56 place-items-center border border-line p-10 text-center"
+        className="grid min-h-56 place-items-center border-line border-y py-10 text-center"
         key={text.lang}
       >
         <Html
@@ -303,7 +303,7 @@ export const CorrectionNotes = async ({
   const t = await getTranslations({ locale, namespace: "web.journal" });
   return (
     <aside className="mx-auto grid w-full max-w-3xl gap-2 border-line border-t px-4 pt-4">
-      <h2 className="type-kicker">{t("corrections")}</h2>
+      <h2 className="type-heading">{t("corrections")}</h2>
       <ul className="grid gap-1">
         {piece.corrections.map((c) => (
           <li className="type-caption" key={c.created_at}>

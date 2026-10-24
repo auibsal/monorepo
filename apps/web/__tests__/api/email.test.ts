@@ -20,17 +20,19 @@ const event = {
 const APP = "https://auibsal.org";
 
 describe("platform email", () => {
-  test("both languages, the recipient's first, with Baghdad time", async () => {
+  test("the recipient's language only, with Baghdad time", async () => {
     const built = rsvpConfirmed("ar", event, APP);
     expect(built.subject).toBe("حُجز مكانك: يوم الميثاق");
-    expect(built.blocks.map((b) => b.lang)).toEqual(["ar", "en"]);
+    expect(built.blocks.map((b) => b.lang)).toEqual(["ar"]);
     const html = await render(Notice(built));
-    expect(html).toContain("Tuesday, October 13 · 6:00 PM");
-    expect(html).toContain("Main Hall");
-    expect(html.indexOf("حُجز مكانك")).toBeLessThan(
-      html.indexOf("booked: Charter Day")
-    );
+    expect(html).toContain("حُجز مكانك");
+    expect(html).not.toContain("booked: Charter Day");
+    expect(html).toContain("/brand/sal-lockup-horizontal-ar-email.png");
     expect(html).toContain(`href="${APP}/ar/account"`);
+    const english = await render(Notice(rsvpConfirmed("en", event, APP)));
+    expect(english).toContain("Tuesday, October 13 · 6:00 PM");
+    expect(english).toContain("Main Hall");
+    expect(english).not.toContain("حُجز مكانك");
   });
 
   test("one image, the lockup; no exclamation marks in headings", async () => {
@@ -41,7 +43,7 @@ describe("platform email", () => {
     ];
     const html = await Promise.all(built.map((b) => render(Notice(b))));
     for (const page of html) {
-      // v6: the horizontal lockup heads every email, and nothing else.
+      // The lockup in the email's language heads it, and nothing else.
       const images = page.match(/<img[^>]*>/g) ?? [];
       expect(images).toHaveLength(1);
       expect(images[0]).toContain("/brand/sal-lockup-horizontal-email.png");
@@ -76,7 +78,7 @@ describe("the newsletter", () => {
 
   test("the Month in Waraq lists pieces and events and ends with unsubscribe", () => {
     const built = monthInWaraq(
-      "ar",
+      "en",
       [
         {
           desk_ar: "أخبار",
@@ -90,7 +92,8 @@ describe("the newsletter", () => {
       "https://auibsal.org/ar/qirtas",
       "https://auibsal.org/ar/newsletter/unsubscribe?token=t"
     );
-    expect(built.subject).toBe("شهر في قرطاس");
+    expect(built.subject).toBe("The Month in Qirtas");
+    expect(built.blocks.map((b) => b.lang)).toEqual(["en"]);
     const english = built.blocks.find((b) => b.lang === "en");
     expect(english?.paragraphs).toContain(
       "News: A story https://auibsal.org/ar/qirtas/pieces/a-story"

@@ -12,7 +12,7 @@ import {
 } from "@react-email/components";
 import { siteUrl } from "@repo/internationalization";
 
-// Brand colors (brand/tokens.json, v6). Email clients need inline styles.
+// Brand colors (brand/tokens.json). Email clients need inline styles.
 const CRIMSON = "#9c213e";
 const INK = "#273236";
 const ASH = "#5c6568";
@@ -20,7 +20,11 @@ const STONE = "#e2ddd6";
 const WHITE = "#ffffff";
 
 /** The horizontal lockup as supplied, rasterized for mail clients. */
-const LOCKUP = siteUrl("en", "/brand/sal-lockup-horizontal-email.png");
+// The lockup in the email's language (PNG: email clients block SVG).
+const LOCKUP = {
+  ar: siteUrl("en", "/brand/sal-lockup-horizontal-ar-email.png"),
+  en: siteUrl("en", "/brand/sal-lockup-horizontal-email.png"),
+};
 
 const FONT = "'Ubuntu Arabic', Ubuntu, 'Segoe UI', Tahoma, Arial, sans-serif";
 
@@ -103,10 +107,10 @@ const Block = ({ block }: { block: NoticeBlock }) => {
 };
 
 /**
- * Every notice the platform sends (v6): white, the horizontal lockup, a
- * Light headline, the message in the recipient's language and then the
- * other, one crimson button per language and a hairline footer. No other
- * images, no tracking, no exclamation marks.
+ * Every notice the platform sends: white, the lockup in the email's
+ * language, a Light headline, the message in the recipient's language only,
+ * one crimson button and a hairline footer. No other images, no tracking,
+ * no exclamation marks.
  */
 export const Notice = ({ blocks, preview }: NoticeProps) => {
   const first = blocks[0]?.lang ?? "en";
@@ -119,9 +123,12 @@ export const Notice = ({ blocks, preview }: NoticeProps) => {
           <Img
             alt={NAME[first]}
             height={48}
-            src={LOCKUP}
-            style={{ margin: "0 0 40px" }}
-            width={96}
+            src={LOCKUP[first]}
+            style={{
+              display: "block",
+              margin: first === "ar" ? "0 0 40px auto" : "0 0 40px",
+            }}
+            width={first === "ar" ? 92 : 96}
           />
           {blocks.map((block, index) => (
             <Section key={block.lang}>
@@ -158,16 +165,13 @@ export const Notice = ({ blocks, preview }: NoticeProps) => {
 Notice.PreviewProps = {
   blocks: [
     {
-      action: { href: "https://auibsal.org/diwan", label: "Open the Diwan" },
+      action: {
+        href: "https://auibsal.org/account",
+        label: "Open your account",
+      },
       heading: "You're booked for the Majlis",
       lang: "en",
       paragraphs: ["Tuesday, October 13 · 6:00 PM", "Library, second floor"],
-    },
-    {
-      action: { href: "https://auibsal.org/ar/diwan", label: "افتح الديوان" },
-      heading: "حُجز مكانك في المجلس",
-      lang: "ar",
-      paragraphs: ["الثلاثاء، 13 تشرين الأول · 6:00 مساءً"],
     },
   ],
   preview: "You're booked for the Majlis",

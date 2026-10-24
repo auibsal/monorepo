@@ -86,10 +86,6 @@ export const PieceCardView = async ({
           />
         </Link>
       ) : null}
-      <p className="type-label text-accent!">
-        {t(`categories.${piece.category}`)}
-        {piece.members_only ? ` · ${t("membersOnly")}` : ""}
-      </p>
       <h3
         className={
           large ? "type-title text-balance font-light!" : "type-heading"
@@ -101,6 +97,10 @@ export const PieceCardView = async ({
           {localized(piece, "title", locale)}
         </Link>
       </h3>
+      <p className="type-caption">
+        {t(`categories.${piece.category}`)}
+        {piece.members_only ? ` · ${t("membersOnly")}` : ""}
+      </p>
       {deck ? (
         <p
           className={
@@ -137,7 +137,7 @@ export const PieceColumn = async ({
 );
 
 /**
- * The lead story (v6): the category, a Light headline, the deck in Literata
+ * The lead story: the category, a Light headline, the deck in Literata
  * and the byline. The picture shows only when the piece has one: a story
  * without an image keeps a typographic layout, never an empty box.
  */
@@ -154,15 +154,15 @@ export const LeadStory = async ({
   const lang = piece.language === "ar" ? "ar" : "en";
   return (
     <article className="grid content-start gap-4">
-      <p className="type-label text-accent!">
-        {t(`categories.${piece.category}`)}
-        {piece.members_only ? ` · ${t("membersOnly")}` : ""}
-      </p>
       <h2 className="type-display text-balance" dir="auto" lang={lang}>
         <Link className="hover:text-accent" href={pieceHref(piece)}>
           {localized(piece, "title", locale)}
         </Link>
       </h2>
+      <p className="type-caption">
+        {t(`categories.${piece.category}`)}
+        {piece.members_only ? ` · ${t("membersOnly")}` : ""}
+      </p>
       {deck ? (
         <p
           className="type-lede max-w-[44ch] text-text-secondary"

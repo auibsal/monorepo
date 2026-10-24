@@ -75,7 +75,7 @@ const ProductionsPage = async ({ params }: LocaleParams) => {
                 />
               ) : null}
               <div className="grid content-start gap-4">
-                <p className="type-kicker">
+                <p className="type-label">
                   {t(`kinds.${p.kind as Kind}`)}
                   {p.playwright ? ` · ${t("by", { name: p.playwright })}` : ""}
                 </p>
@@ -119,7 +119,7 @@ const ProductionsPage = async ({ params }: LocaleParams) => {
                       }
                       return (
                         <div className="grid gap-1" key={d}>
-                          <p className="type-kicker">
+                          <p className="type-label">
                             {t(`departments.${d as Department}`)}
                           </p>
                           <ul className="grid gap-1">

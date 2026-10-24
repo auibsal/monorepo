@@ -5,7 +5,7 @@ import type { Preview } from "@storybook/react";
 import "@repo/design-system/styles/globals.css";
 
 /**
- * SAL v6: light and dark mode (ink, data-theme="dark") across the site and
+ * light and dark mode (ink, data-theme="dark") across the site and
  * the portal. Stories cover SAL components only; every one is checked in
  * both modes (Theme) and in both directions (Direction).
  */

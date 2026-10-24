@@ -3,8 +3,10 @@ import { formatClock, formatLongDate } from "@repo/internationalization/format";
 import type { NoticeBlock, NoticeProps } from "./templates/notice";
 
 /**
- * The words of every platform email, in both languages. Arabic here was
- * written for the platform (needs-native-review in PROGRESS.md).
+ * The words of every platform email, in both languages. Each email goes
+ * out in the member's language only (SAL-BRD-01: one language per piece).
+ * Arabic here was written for the platform (needs-native-review in
+ * PROGRESS.md).
  */
 export type Lang = "en" | "ar";
 
@@ -18,16 +20,11 @@ export interface Built extends NoticeProps {
   subject: string;
 }
 
-const other = (lang: Lang): Lang => (lang === "ar" ? "en" : "ar");
-
-/** Builds the notice: the recipient's language first, then the other. */
+/** Builds the notice in the recipient's language only. */
 const build = (lang: Lang, make: (l: Lang) => Copy): Built => {
-  const first = make(lang);
-  const blocks: NoticeBlock[] = [lang, other(lang)].map((l) => ({
-    lang: l,
-    ...make(l),
-  }));
-  return { blocks, preview: first.heading, subject: first.heading };
+  const copy = make(lang);
+  const blocks: NoticeBlock[] = [{ lang, ...copy }];
+  return { blocks, preview: copy.heading, subject: copy.heading };
 };
 
 const when = (iso: string, l: Lang) =>

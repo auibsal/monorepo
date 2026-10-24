@@ -34,8 +34,8 @@ export const mastheadLink =
   "whitespace-nowrap py-1.5 font-medium text-[0.90625rem] hover:text-accent";
 
 /**
- * The one header for the whole site, public pages and the portal alike
- * (v6): one line, the horizontal lockup (56 px, 40 px on phones), at most
+ * The one header for the whole site, public pages and the portal alike:
+ * one line, the lockup in the page's language (56 px, 40 px on phones), at most
  * five sections in Ubuntu Medium, sentence case, then the language, the
  * theme and Sign in as words. A hairline below; the current section carries
  * a 1.5 px accent underline. On phones the sections open in a panel under

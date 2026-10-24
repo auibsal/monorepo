@@ -20,7 +20,7 @@
 );
 
 /*
- * SAL v6, "the page" (brand/BRAND-BOOK.md). Components use only the role
+ * "the page" (brand/BRAND-BOOK.md). Components use only the role
  * tokens in tokens.css; the shadcn variables below are aliases of them.
  * Quiet by default: Light headlines in `text`, hairlines in `line` and space
  * between things, square corners, no shadows, no frames, no tinted cards,
@@ -322,8 +322,8 @@
  * Type styles: the screen styles of brand/tokens.json. Display is Light
  * (300), tightly spaced, in `text`; text is Regular at 1.6; labels are
  * Medium, small, tracked capitals in `text-secondary`. Arabic (ar-*): Ubuntu
- * Arabic has no Light, so its display is Regular, one step larger through
- * :lang(ar), with 1.5 leading and no tracking.
+ * Arabic has no Light or italic, so its display is Regular through
+ * :lang(ar), with 1.3 leading and no tracking.
  */
 @utility type-display-xl {
   font-size: clamp(3.5rem, 8.6vw, 7.75rem);
@@ -334,7 +334,7 @@
   &:lang(ar),
   :lang(ar) & {
     font-weight: 400;
-    line-height: 1.5;
+    line-height: 1.3;
     letter-spacing: 0;
   }
 }
@@ -347,19 +347,21 @@
   &:lang(ar),
   :lang(ar) & {
     font-weight: 400;
-    line-height: 1.5;
+    line-height: 1.3;
     letter-spacing: 0;
   }
 }
+/* Section titles: Light, standing alone (no marker, nothing above them). */
 @utility type-title {
   font-size: clamp(2.125rem, 4vw, 2.75rem);
-  font-weight: 400;
+  font-weight: 300;
   line-height: 1.1;
   color: var(--text);
   letter-spacing: -0.025em;
   &:lang(ar),
   :lang(ar) & {
-    line-height: 1.6;
+    font-weight: 400;
+    line-height: 1.4;
     letter-spacing: 0;
   }
 }
@@ -402,7 +404,10 @@
   line-height: 1.45;
   color: var(--text-secondary);
 }
-/* Small tracked capitals: kickers, dates under numerals, footer headings. */
+/*
+ * Small tracked capitals: field names, columns, dates under numerals, footer
+ * headings. Never a line above a headline or section title.
+ */
 @utility type-label {
   font-size: 0.75rem;
   font-weight: 500;
@@ -418,41 +423,22 @@
     letter-spacing: 0;
   }
 }
-/* The same label, kept under its older name. */
-@utility type-kicker {
-  font-size: 0.75rem;
-  font-weight: 500;
-  line-height: 1.4;
-  color: var(--text-secondary);
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  &:lang(ar),
-  :lang(ar) & {
-    font-size: 0.875rem;
-    text-transform: none;
-    letter-spacing: 0;
-  }
-}
-/* One word per headline at most: Light italic in `accent`. */
+/* One word per headline at most: Light italic in `accent`. Arabic has no
+   italic, so there the word changes color only. */
 @utility type-accent {
   font-style: italic;
   font-weight: inherit;
   color: var(--accent);
+  &:lang(ar),
+  :lang(ar) & {
+    font-style: normal;
+  }
 }
 /* Document codes and clause numbers. */
 @utility type-code {
   font-family: var(--font-mono);
   font-size: 0.875em;
   letter-spacing: 0.02em;
-}
-/* The Bookmark marker: starts a section title. A marker, never a logo. */
-@utility bookmark {
-  display: inline-block;
-  flex: none;
-  width: 14px;
-  height: 17px;
-  background-color: var(--accent);
-  clip-path: polygon(0 0, 50% 22%, 100% 0, 100% 100%, 0 100%);
 }
 /* Hairlines in `line` between rows and sections. */
 @utility hairline {
@@ -488,7 +474,7 @@
 }
 
 /*
- * v6 on the shadcn base (unlayered, so it wins over the generated classes):
+ * The brand on the shadcn base (unlayered, so it wins over the generated classes):
  * fields are a 1px `line` box, square, with no fill; tabs are a row of words
  * on a hairline; cards carry no fill or border; menus and dialogs are set off
  * by a hairline, never a shadow.

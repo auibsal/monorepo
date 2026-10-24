@@ -11,21 +11,18 @@ import type { ReactNode } from "react";
 export const DiwanPage = ({
   actions,
   children,
-  kicker,
   lede,
   narrow = false,
   title,
 }: {
   readonly actions?: ReactNode;
   readonly children: ReactNode;
-  readonly kicker?: ReactNode;
   readonly lede?: ReactNode;
   readonly narrow?: boolean;
   readonly title: ReactNode;
 }) => (
   <div className={cn("grid content-start gap-14", narrow && "max-w-3xl")}>
     <header className="grid gap-4">
-      {kicker ? <p className="type-label">{kicker}</p> : null}
       <h1 className="type-display text-balance">{title}</h1>
       {lede ? (
         <p className="type-lede max-w-[48ch] text-text-secondary">{lede}</p>
@@ -41,7 +38,7 @@ export const DiwanPage = ({
 );
 
 /**
- * A Diwan section: the Bookmark and a 28 px title (the site's section head
+ * A section in the account or the Diwan: a 28 px Light title (the site's section head
  * at the portal's size), an optional line on what it holds, an optional
  * text link at the end of the title, then the content.
  */

@@ -2,7 +2,7 @@ import { SectionHead } from "@repo/design-system/components/sal/section-head";
 import type { ReactNode } from "react";
 
 /**
- * A page section (v6): the Bookmark and the title in 44 px Regular, an
+ * A page section: the title alone in 44 px Light, an
  * optional text link at the end, then the content after a title's space.
  */
 export const Section = ({
@@ -22,20 +22,17 @@ export const Section = ({
   </section>
 );
 
-/** A page header (v6): a Light display title in ink and one sentence. */
+/** A page header: a Light display title in ink and one sentence. */
 export const PageHeader = ({
   children,
-  kicker,
   lede,
   title,
 }: {
   children?: ReactNode;
-  kicker?: string;
   lede: string;
   title: ReactNode;
 }) => (
   <header className="grid gap-6">
-    {kicker ? <p className="type-label">{kicker}</p> : null}
     <h1 className="type-display max-w-4xl text-balance">{title}</h1>
     <p className="type-lede max-w-[34ch] text-text-secondary">{lede}</p>
     {children}
@@ -43,7 +40,7 @@ export const PageHeader = ({
 );
 
 /**
- * Pillars, steps and facts (v6): a list on hairlines, a Regular title and a
+ * Pillars, steps and facts: a list on hairlines, a Regular title and a
  * line of text in each, in one to three columns. Never boxes.
  */
 export const RuledList = ({

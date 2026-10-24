@@ -8,7 +8,6 @@ const NotFound = () => {
 
   return (
     <div className="mx-auto flex min-h-[60vh] max-w-6xl flex-col items-start justify-center gap-4 px-4 py-20">
-      <p className="type-kicker">{t("kicker")}</p>
       <h1 className="type-display">{t("title")}</h1>
       <p className="type-lede max-w-xl">{t("description")}</p>
       <div className="flex flex-wrap gap-3 pt-2">

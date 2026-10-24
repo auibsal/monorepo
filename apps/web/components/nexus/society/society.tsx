@@ -71,7 +71,7 @@ const Council = () => {
             className="grid gap-1 border-line border-t pt-space-4"
             key={`${seat.role}-${seat.full_name_en}`}
           >
-            <p className="type-kicker">
+            <p className="type-label">
               {localized(seat, "title", locale) ||
                 localized(seat, "role_name", locale)}
             </p>
@@ -83,7 +83,7 @@ const Council = () => {
       </ul>
       {advisorName ? (
         <p className="type-body">
-          <span className="type-kicker me-2">{t("advisor")}</span>
+          <span className="type-label me-2">{t("advisor")}</span>
           {advisorName}
         </p>
       ) : null}

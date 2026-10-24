@@ -591,7 +591,7 @@ export const MemberDetail = () => {
       <SalCard>
         <dl className="grid gap-3 sm:grid-cols-4">
           <div>
-            <dt className="type-kicker">{tm("columns.since")}</dt>
+            <dt className="type-label">{tm("columns.since")}</dt>
             <dd>
               {row.member_since
                 ? formatLongDate(row.member_since, locale, true)
@@ -599,15 +599,15 @@ export const MemberDetail = () => {
             </dd>
           </div>
           <div>
-            <dt className="type-kicker">{tm("columns.status")}</dt>
+            <dt className="type-label">{tm("columns.status")}</dt>
             <dd>{row.verified_at ? tm("verified") : tm("unverified")}</dd>
           </div>
           <div>
-            <dt className="type-kicker">{tm("columns.activities")}</dt>
+            <dt className="type-label">{tm("columns.activities")}</dt>
             <dd className="tabular-nums">{formatNumber(row.activities)}</dd>
           </div>
           <div>
-            <dt className="type-kicker">{tm("columns.voting")}</dt>
+            <dt className="type-label">{tm("columns.voting")}</dt>
             <dd>
               {row.voting_member ? th("card.voting") : th("card.notVoting")}
             </dd>

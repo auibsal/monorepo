@@ -2,15 +2,16 @@ import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { ImageResponse } from "next/og";
 
-// The brand's share card on the tint ground (brand/components/SocialPost),
-// at the Open Graph size. Colors from brand/tokens.json; logo as supplied.
-// assets-og/ holds Ubuntu Arabic with its Extension lookups rewritten as
-// direct ones (Satori cannot read type 7), and the symbol byte for byte.
-const TINT = "#f7ecef";
-const CRIMSON = "#9c213e";
-const CRIMSON_700 = "#7e1a32";
+// The brand's post on the white ground (brand/components/previews/
+// SocialPost.md), at the Open Graph size: the lockup in the page's language
+// at the top start, a Light headline in ink with nothing above it, and the
+// link and @auibsal at the bottom start. One language per image. Colors from
+// brand/tokens.json; logos as supplied. assets-og/ holds Ubuntu Light (Latin)
+// and Ubuntu Arabic with its Extension lookups rewritten as direct ones
+// (Satori cannot read type 7).
+const WHITE = "#ffffff";
 const INK = "#273236";
-const INK_SECONDARY = "#4a5559";
+const ASH = "#5c6568";
 
 const SIZE = { height: 630, width: 1200 };
 const WHITESPACE = /\s+/;
@@ -74,86 +75,55 @@ export const GET = async (
   const rtl = lang === "ar";
   const search = new URL(request.url).searchParams;
   const title = (search.get("title") ?? NAME[lang]).slice(0, 120);
-  const kicker = (search.get("kicker") ?? "").slice(0, 80);
-  const [regular, bold, symbol] = await Promise.all([
+  const [light, arabic, lockup] = await Promise.all([
+    asset("Ubuntu-Light.ttf"),
     asset("UbuntuArabic-Regular.ttf"),
-    asset("UbuntuArabic-Bold.ttf"),
-    asset("sal-symbol.svg"),
+    asset(rtl ? "sal-lockup-horizontal-ar.svg" : "sal-lockup-horizontal.svg"),
   ]);
-  const symbolSrc = `data:image/svg+xml;base64,${symbol.toString("base64")}`;
+  const lockupSrc = `data:image/svg+xml;base64,${lockup.toString("base64")}`;
 
   return new ImageResponse(
     <div
       style={{
-        background: TINT,
+        alignItems: rtl ? "flex-end" : "flex-start",
+        background: WHITE,
         color: INK,
         display: "flex",
         flexDirection: "column",
-        fontFamily: "Ubuntu Arabic",
+        fontFamily: rtl ? "Ubuntu Arabic" : "Ubuntu",
         height: "100%",
         justifyContent: "space-between",
-        padding: "64px 72px",
+        padding: "56px 72px",
         width: "100%",
       }}
     >
-      <div
+      {/* biome-ignore lint/performance/noImgElement: Satori renders plain img */}
+      <img
+        alt={NAME[lang]}
+        height={96}
+        src={lockupSrc}
+        width={rtl ? 184 : 192}
+      />
+      <Line
+        rtl={rtl}
         style={{
-          alignItems: "flex-start",
-          display: "flex",
-          flexDirection: rtl ? "row-reverse" : "row",
-          justifyContent: "space-between",
+          color: INK,
+          fontSize: title.length > 60 ? 60 : 76,
+          fontWeight: rtl ? 400 : 300,
+          letterSpacing: rtl ? 0 : "-0.03em",
+          lineHeight: rtl ? 1.3 : 1.05,
         }}
-      >
-        <Line
-          rtl={rtl}
-          style={{ color: CRIMSON_700, fontSize: 30, fontWeight: 700 }}
-          text={NAME[lang]}
-        />
-        {/* biome-ignore lint/performance/noImgElement: Satori renders plain img */}
-        <img alt="" height={96} src={symbolSrc} width={80} />
-      </div>
-      <div
-        style={{
-          alignItems: rtl ? "flex-end" : "flex-start",
-          display: "flex",
-          flexDirection: "column",
-          gap: 16,
-        }}
-      >
-        {kicker ? (
-          <Line
-            rtl={rtl}
-            style={{ color: INK_SECONDARY, fontSize: 30 }}
-            text={kicker}
-          />
-        ) : null}
-        <Line
-          rtl={rtl}
-          style={{
-            color: CRIMSON,
-            fontSize: title.length > 60 ? 56 : 72,
-            fontWeight: 700,
-            lineHeight: 1.3,
-          }}
-          text={title}
-        />
-      </div>
-      <div
-        style={{
-          color: INK_SECONDARY,
-          display: "flex",
-          fontSize: 26,
-          justifyContent: rtl ? "flex-end" : "flex-start",
-        }}
-      >
-        @auibsal · auibsal.org
+        text={title}
+      />
+      <div style={{ color: ASH, display: "flex", fontSize: 26 }}>
+        auibsal.org · @auibsal
       </div>
     </div>,
     {
       ...SIZE,
       fonts: [
-        { data: regular, name: "Ubuntu Arabic", style: "normal", weight: 400 },
-        { data: bold, name: "Ubuntu Arabic", style: "normal", weight: 700 },
+        { data: light, name: "Ubuntu", style: "normal", weight: 300 },
+        { data: arabic, name: "Ubuntu Arabic", style: "normal", weight: 400 },
       ],
       headers: { "Cache-Control": "public, max-age=86400, immutable" },
     }

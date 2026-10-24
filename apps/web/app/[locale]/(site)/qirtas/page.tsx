@@ -143,7 +143,11 @@ const WaraqFrontPage = async ({ params }: WaraqProps) => {
   const read = <T,>(
     fn: (c: Parameters<typeof journal.frontPieces>[0]) => Promise<T>,
     fallback: T
-  ) => readPublished(["journal"], fn, fallback);
+  ) =>
+    readPublished(["journal"], fn, fallback).then(
+      (rows) =>
+        (Array.isArray(rows) ? journal.inLanguage(rows, locale) : rows) as T
+    );
   const [
     front,
     news,
@@ -357,7 +361,7 @@ const WaraqFrontPage = async ({ params }: WaraqProps) => {
               />
             ) : null}
             <div className="grid content-start gap-2">
-              <h2 className="type-label" id="edition">
+              <h2 className="type-heading" id="edition">
                 {t("currentEdition")}
               </h2>
               <Link

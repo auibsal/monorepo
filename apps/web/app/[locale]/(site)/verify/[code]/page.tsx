@@ -104,7 +104,7 @@ const CertificatePage = async ({ params }: CertificateParams) => {
       <dl className="grid gap-3 border-line border-t p-5">
         {rows.map(([label, value]) => (
           <div className="grid gap-1 sm:grid-cols-[10rem_1fr]" key={label}>
-            <dt className="type-kicker">{label}</dt>
+            <dt className="type-label">{label}</dt>
             <dd className="type-body" dir="auto">
               {value}
             </dd>
