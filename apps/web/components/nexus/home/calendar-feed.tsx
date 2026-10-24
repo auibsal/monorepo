@@ -17,7 +17,7 @@ import { membership } from "@repo/sal-data";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
-import { env } from "@/env";
+import { clientEnv as env } from "@/env.client";
 import { queryKeys, useCalendarToken } from "@/lib/nexus/queries";
 import { Section } from "./section";
 

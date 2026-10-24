@@ -24,8 +24,8 @@ const presets = envPresets(
 /**
  * The one app's environment. Server keys (the Supabase secret key, Resend,
  * the shared secrets below) are read only in route handlers and lib/api;
- * the pages and the Nexus use the NEXT_PUBLIC_* values. CI greps the client
- * bundle for the server names.
+ * client components import `@/env.client` instead, so the server names never
+ * reach the browser bundle (CI greps for them).
  */
 export const env = withPresets(
   createEnv({

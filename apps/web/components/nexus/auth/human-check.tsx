@@ -2,7 +2,7 @@
 
 import { useLocale, useTranslations } from "next-intl";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { env } from "@/env";
+import { clientEnv as env } from "@/env.client";
 
 /**
  * Cloudflare Turnstile, which Supabase Auth asks for on sign-up, sign-in

@@ -1,6 +1,6 @@
 import type { Database } from "@repo/database";
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { env } from "@/env";
+import { clientEnv as env } from "@/env.client";
 
 /**
  * Phone and browser notifications (Web Push). The browser's push service
