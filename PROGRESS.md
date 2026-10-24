@@ -33,8 +33,11 @@ Branch: `claude/new-session-qosn60`.
          `https://auibsal.org`; Redirect URLs `https://auibsal.org/**`
          (drop the nexus. and api. entries). **OAuth Server:** authorization
          path `/nexus/oauth/consent`. **Passkeys:** Relying Party Origins
-         `https://auibsal.org`. **Database → Webhooks:** the outbox webhook
-         URL `https://auibsal.org/api/hooks/outbox`.
+         `https://auibsal.org`. **Email Templates:** paste the four files in
+         `packages/database/supabase/templates` again (their links now go to
+         `/nexus/auth/confirm`; until then confirmation, magic-link and
+         reset emails land on a 404). **Database → Webhooks:** the outbox
+         webhook URL `https://auibsal.org/api/hooks/outbox`.
       4. **Telegram:** Nexus → Settings → Telegram → *Connect the bot to
          Telegram* again (it points the webhook at
          `auibsal.org/api/telegram`); BotFather → Login Widget → OpenID
@@ -234,8 +237,9 @@ These stop parts of the work. Everything else continues around them.
       Society of Arts and Letters". Authentication → Email Templates: paste
       the four files in `packages/database/supabase/templates` with the
       subjects in `subjects.txt`. (Local stacks load them from `config.toml`.)
-      Since 2026-10-08 the links go to `{{ .SiteURL }}/en/auth/confirm`, so
-      the Site URL must be `https://nexus.auibsal.org`.
+      Since 2026-10-24 the links go to `{{ .SiteURL }}/nexus/auth/confirm`
+      (`/ar/nexus/auth/confirm`), so the Site URL must be
+      `https://auibsal.org`.
 - [x] ~~Liveblocks secret~~: Liveblocks replaced by Supabase Realtime (2026-10-09).
 - [x] **Knock and Upstash removed** (owner, 2026-10-08): packages, env keys
       and CSP hosts are gone. Delete the two accounts at will.
