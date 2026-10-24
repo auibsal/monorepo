@@ -56,7 +56,7 @@ export const AuthCallback = () => {
 
   return (
     <main
-      className="flex min-h-dvh flex-col items-center justify-center gap-4 p-6 text-center"
+      className="flex flex-1 flex-col items-center justify-center gap-4 p-6 text-center"
       id="main"
     >
       <p role="alert">{t("failed")}</p>

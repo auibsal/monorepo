@@ -9,45 +9,39 @@ Branch: `claude/new-session-qosn60`.
 
 ## Blocked — needed from the user
 
-- [ ] **One app cutover (2026-10-24):** the site, the Nexus and the API are
-      one Next.js app, deployed as sal-web; nexus.auibsal.org and
-      api.auibsal.org redirect to auibsal.org/nexus and auibsal.org/api
-      (`apps/web/next.config.ts`). After the merge deploys, in this order:
-      1. **Vercel → sal-web → Environment Variables (Production, marked
-         sensitive):** copy from sal-api `SUPABASE_SECRET_KEY`,
-         `RESEND_TOKEN`, `CRON_SECRET`, `DATABASE_WEBHOOK_SECRET`,
-         `NOTION_TOKEN`, `ARCJET_KEY`, `TELEGRAM_BOT_TOKEN`,
-         `TELEGRAM_BOT_USERNAME`, `TELEGRAM_WEBHOOK_SECRET`,
-         `TELEGRAM_LOGIN_CLIENT_SECRET` (the values cannot be read back, so
-         paste them from the password manager), then redeploy.
-         `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_TURNSTILE_SITE_KEY` and
-         `RESEND_FROM` are already set (2026-10-24). Delete
-         `NEXT_PUBLIC_APP_URL`, `NEXT_PUBLIC_WEB_URL`, `NEXT_PUBLIC_API_URL`
-         and `NEXT_PUBLIC_AUTH_COOKIE_DOMAIN` from sal-web (one origin needs
-         no cookie domain).
-      2. **Vercel → Domains:** move `nexus.auibsal.org` and
-         `api.auibsal.org` to sal-web (the app redirects them); remove
-         `design.auibsal.org`; then delete the sal-nexus, sal-api and
-         sal-design projects.
-      3. **Supabase → Authentication → URL Configuration:** Site URL
-         `https://auibsal.org`; Redirect URLs `https://auibsal.org/**`
-         (drop the nexus. and api. entries). **OAuth Server:** authorization
-         path `/nexus/oauth/consent`. **Passkeys:** Relying Party Origins
-         `https://auibsal.org`. **Email Templates:** paste the four files in
-         `packages/database/supabase/templates` again (their links now go to
-         `/nexus/auth/confirm`; until then confirmation, magic-link and
-         reset emails land on a 404). **Database → Webhooks:** the outbox
-         webhook URL `https://auibsal.org/api/hooks/outbox`.
-      4. **Telegram:** Nexus → Settings → Telegram → *Connect the bot to
-         Telegram* again (it points the webhook at
-         `auibsal.org/api/telegram`); BotFather → Login Widget → OpenID
-         Connect: Redirect URIs `https://auibsal.org/nexus/profile` and
-         `https://auibsal.org/ar/nexus/profile`.
-      5. **BetterStack:** monitors on `auibsal.org`,
-         `auibsal.org/nexus/sign-in` and `auibsal.org/api/health`; delete
-         the old ones. **Sentry:** the sal-nexus and sal-api projects can go.
-         **Cloudflare:** the configuration rule for the API now matches
-         "URI Path starts with /api/" (`docs/platform/analytics.md`).
+- [ ] **Environment variables on Vercel (2026-10-24):** the one project is
+      `auibsal` (Production; the secrets marked sensitive), then redeploy.
+      Missing, with where each comes from:
+      | Variable | Where to get it | Without it |
+      | --- | --- | --- |
+      | `RESEND_TOKEN` | Resend → API Keys → Create (sending access, domain auibsal.org) | No email at all |
+      | `DATABASE_WEBHOOK_SECRET` | The value of the Vault secret `outbox_webhook_secret` (Supabase → Integrations → Vault) | The outbox route refuses the database: no emails, push or cache refresh |
+      | `CRON_SECRET` | The value of the Vault secret `cron_secret` | The cron routes refuse the database's jobs and Vercel's keep-alive |
+      | `TELEGRAM_BOT_USERNAME` | `auibsal_bot` | No t.me links |
+      | `TELEGRAM_WEBHOOK_SECRET` | `openssl rand -hex 32`; then Nexus → Settings → Telegram → *Connect the bot to Telegram* | Telegram's updates are refused |
+      | `TELEGRAM_LOGIN_CLIENT_SECRET` | BotFather → Bot Settings → Login Widget → OpenID Connect | Linking by one-time code only |
+      | `ARCJET_KEY` | Arcjet → the auibsal.org site → SDK key | The public forms have no rate limit (they still work) |
+      | `NEXT_PUBLIC_VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY` | The pair from sal-api (password manager); a new pair (`bunx web-push generate-vapid-keys`) means members turn notifications on again | No push notifications |
+      Keep everything else set, including `NEXT_PUBLIC_AUTH_COOKIE_DOMAIN`
+      (`.auibsal.org`: the members' sessions carry it,
+      `packages/auth/cookies.ts`). Delete `NEXT_PUBLIC_APP_URL`,
+      `NEXT_PUBLIC_WEB_URL` and `NEXT_PUBLIC_API_URL`: nothing reads them.
+      The Supabase integration's own variables (`SUPABASE_URL`,
+      `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`,
+      `SUPABASE_JWT_SECRET`, `POSTGRES_*` …) are unused but harmless; the
+      integration manages them. The database's `platform.api_url` moves to
+      `https://auibsal.org/api` with migration `20261024000600`; check it in
+      Supabase → Table Editor → core.settings after the merge.
+- [ ] **After the one-app cutover (2026-10-24):** the owner removed the
+      sal-nexus, sal-api and sal-design projects and their hosts and set up
+      Supabase (Auth URLs, templates). Left: **Telegram:** BotFather → Login
+      Widget → OpenID Connect: Redirect URIs
+      `https://auibsal.org/nexus/profile` and
+      `https://auibsal.org/ar/nexus/profile`. **BetterStack:** monitors on
+      `auibsal.org`, `auibsal.org/nexus/sign-in` and
+      `auibsal.org/api/health`. **Sentry:** the sal-nexus and sal-api
+      projects can go. **Cloudflare:** the configuration rule for the API
+      matches "URI Path starts with /api/" (`docs/platform/analytics.md`).
 
 - [ ] **Telegram bot, Hudhud (2026-10-22; in the API routes since 2026-10-23):**
       live as @auibsal_bot since 2026-10-23 (runbook
@@ -55,7 +49,7 @@ Branch: `claude/new-session-qosn60`.
       (2026-10-23): in BotFather → Login Widget → OpenID Connect add the
       Redirect URIs `https://auibsal.org/nexus/profile` and
       `https://auibsal.org/ar/nexus/profile`, and put the Client Secret on
-      sal-web as `TELEGRAM_LOGIN_CLIENT_SECRET` (Production, sensitive),
+      the auibsal project as `TELEGRAM_LOGIN_CLIENT_SECRET` (Production, sensitive),
       then redeploy; (2) the BotFather settings in the runbook (Guest Mode
       and Guard on, Main App = the word game, Bot Management and Threaded
       Mode off, admin rights, privacy policy URL, description picture
@@ -72,12 +66,10 @@ Branch: `claude/new-session-qosn60`.
       `core.telegram_members.warnings` and `joined_at`, and the settings
       `telegram.rules_en`/`_ar` are unused. Dropping them deletes their
       data: waiting for the owner's go-ahead.
-- [ ] **Vercel variables to delete (2026-10-23):** `RESEND_TOKEN` and
-      `RESEND_FROM` on sal-web (the site sends no email; the code no longer
-      reads them), `NEXT_PUBLIC_DOCS_URL` on sal-web and sal-nexus (the docs
-      site is gone), and `FLAGS_SECRET` anywhere it is set (it only turns on
-      the Vercel Toolbar). Keep every secret on Production only, marked
-      sensitive.
+- [x] **Vercel variables to delete (2026-10-23):** `NEXT_PUBLIC_DOCS_URL`
+      and `FLAGS_SECRET` are gone with the old projects (checked
+      2026-10-24). The one app sends email, so `RESEND_TOKEN` and
+      `RESEND_FROM` belong on it (see the first item).
 
 - [ ] **Analytics (owner, 2026-10-15: GA4 and GTM through the Google tag
       gateway):** live since 2026-10-16 (GTM-PWRQNN7H, gateway at
@@ -96,7 +88,7 @@ Branch: `claude/new-session-qosn60`.
       Administration → Ads). AdSense stays off until you follow
       `docs/platform/ads.md`: apply at AdSense, block the sensitive categories
       the Policy Manual rules out (11.3), then set
-      `NEXT_PUBLIC_ADSENSE_CLIENT` and `NEXT_PUBLIC_ADSENSE_SLOT` on sal-web. The Council decides who
+      `NEXT_PUBLIC_ADSENSE_CLIENT` and `NEXT_PUBLIC_ADSENSE_SLOT` on the auibsal project (both set). The Council decides who
       receives AdSense payments and records it.
 
 - [ ] **Platform policies (2026-10-17):** eleven drafts on auibsal.org/documents
@@ -143,7 +135,7 @@ Branch: `claude/new-session-qosn60`.
       instead of dropping it.
 - [ ] **Passkeys:** Supabase → Authentication → Passkeys: on; Relying Party
       ID `auibsal.org` (never change it after members register passkeys);
-      origins `https://nexus.auibsal.org`; display name `AUIB Society of
+      origins `https://auibsal.org`; display name `AUIB Society of
       Arts and Letters`. The Nexus shows the passkey button and the Profile
       card already; see `docs/platform/accounts.md`.
 - [ ] **Partnerships (P11):** in Administration → Members, give the
@@ -170,26 +162,17 @@ Branch: `claude/new-session-qosn60`.
       for 30 days. Run it once from Actions to check it.
 - [ ] **Leave Mintlify (owner, 2026-10-09):** `apps/docs` is gone. Ask me
       before each DNS change; the steps:
-      1. Vercel → sal-web → Settings → Domains → add `docs.auibsal.org`, then
+      1. Vercel → auibsal → Settings → Domains → add `docs.auibsal.org`, then
          in Cloudflare point the `docs` CNAME at Vercel instead of Mintlify.
          (The old-link redirects were removed on Oct 14, 2026: the owner
          wants no redirects, so old docs links no longer forward.)
       2. Delete the Mintlify deployment `theideaiq` (Mintlify dashboard), and
          the Liveblocks account.
-- [ ] **Design system behind our sign-in:** Vercel → sal-storybook →
-      Settings → Domains → add `design.auibsal.org` (Cloudflare: `design`
-      CNAME to Vercel); Environment Variables → `NEXT_PUBLIC_SUPABASE_URL`,
-      `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` (the public values) and
-      `NEXT_PUBLIC_APP_URL=https://nexus.auibsal.org`; then Settings →
-      Deployment Protection → Vercel Authentication "All except custom
-      domains" (done Oct 13, 2026; the gate in `apps/storybook/proxy.ts`
-      takes over on design.auibsal.org; it fails closed). The Nexus
-      session cookie must be shared (`NEXT_PUBLIC_AUTH_COOKIE_DOMAIN=.auibsal.org`
-      on sal-nexus).
+- [x] ~~Design system behind our sign-in~~: the design system runs locally
+      only since 2026-10-24 (`packages/storybook`); design.auibsal.org and
+      its project are gone.
 - [ ] **Co-editing on Supabase Realtime:** Dashboard → Realtime → Settings →
-      turn off "Allow public access" (only private, checked channels). Remove
-      `LIVEBLOCKS_SECRET` from sal-api and `NEXT_PUBLIC_LIVEBLOCKS_ENABLED`
-      from sal-nexus in Vercel.
+      turn off "Allow public access" (only private, checked channels).
 - [ ] **Code security:** in GitHub Settings → Code security, turn on the
       dependency graph, secret scanning and push protection; then add the
       repository variable `DEPENDENCY_REVIEW` = `on` (Settings → Secrets and
@@ -252,24 +235,25 @@ These stop parts of the work. Everything else continues around them.
       auibsal.org at hstspreload.org once the deploy is live.
 - [ ] **Supabase Auth → MFA:** confirm TOTP is enabled (on by default).
 - [ ] **Sign in with SAL (for the Journal team's app):** Supabase →
-      Authentication → OAuth Server: on, path `/oauth/consent`, dynamic
+      Authentication → OAuth Server: on, path `/nexus/oauth/consent`, dynamic
       registration off; URL Configuration → Site URL
-      `https://nexus.auibsal.org`; for OpenID Connect ID tokens, Settings →
+      `https://auibsal.org`; for OpenID Connect ID tokens, Settings →
       JWT Keys → asymmetric keys. Then register the team's app (OAuth Apps →
       Add), send them the client id privately, and approve it in Nexus →
       Settings → Third-party apps with "Name and language" and "AUIB
       Literary Journal". Steps: `docs/platform/api.md`.
 - [ ] **Phone notifications (Web Push) keys:** run
-      `bunx web-push generate-vapid-keys` once. Put the public key in
-      `NEXT_PUBLIC_VAPID_PUBLIC_KEY` on sal-nexus and sal-api, the private
-      key in `VAPID_PRIVATE_KEY` on sal-api only, then redeploy both. Until
+      `bunx web-push generate-vapid-keys` once (or reuse the pair from
+      sal-api). Put the public key in `NEXT_PUBLIC_VAPID_PUBLIC_KEY` and the
+      private key in `VAPID_PRIVATE_KEY` (sensitive) on the auibsal project,
+      then redeploy. Until
       then the Profile section says the browser can't show notifications and
       everything still goes by email.
 - [ ] **Owner dashboard steps** listed in the SAL Platform Master Guide
       (claude.ai/code/artifact/4f305659-631a-4244-adbd-18b93a8e10a1): `SENTRY_AUTH_TOKEN` on the
-      three Vercel projects, Cloudflare Email Routing for `hello@auibsal.org`
-      (no MX record today, so replies bounce), Vercel Bot Protection on
-      sal-web in Log mode.
+      auibsal project (source maps), Cloudflare Email Routing for
+      `hello@auibsal.org` (no MX record today, so replies bounce), Vercel Bot
+      Protection on the auibsal project in Log mode.
 - [x] Cancelled by the owner (2026-10-08): leaked-password protection (a
       paid Supabase feature; everything stays on free plans) and the AUIB IT
       allowlist (mail already reaches AUIB inboxes).
@@ -283,6 +267,17 @@ These stop parts of the work. Everything else continues around them.
       Realtime since 2026-10-09 (decision below).
 
 ## Decisions
+
+- **Dark mode and one frame** (owner, 2026-10-24, "add a dark mode across
+  the board … unify the UX between web and nexus"): dark mode is the brand's
+  ink theme on the whole page, from the system setting or the words-only
+  toggle in the header (cookie `sal_theme`; `apps/web/lib/theme.ts` runs
+  before the first paint, and pages print light). Certificates, letters and
+  form printouts stay paper. The site and the Nexus share one masthead and
+  one footer; the Nexus adds its name beside the logo, its sections, the
+  Account menu and the phones' tab bar, and the sign-in pages carry the
+  site's own header. This replaces "light everywhere" of the same day. The
+  old hosts' redirects are gone with the hosts.
 
 - **One app** (owner, 2026-10-24, "a simple project with one app … all will
   be on web, but there would be /nexus and still sign in and so on"): the
@@ -647,13 +642,18 @@ These stop parts of the work. Everything else continues around them.
 - [x] API routes under `app/api` with `lib/api`; `/api/v1`; the outbox
       revalidates in process; `calendar.ics` reuses the feed route
 - [x] Developer pages at `/developers` (guide, reference)
-- [x] One `env.ts`, `.env.example`, proxy (Turnstile in the CSP), redirects
-      for the old hosts, keep-alive cron, Vitest (API tests in the node
+- [x] One `env.ts`, `.env.example`, proxy (Turnstile in the CSP),
+      keep-alive cron, Vitest (API tests in the node
       environment), e2e against one server, CI (one build, one bundle grep)
 - [x] `@repo/config` paths (`/nexus`, `/api`) and `@repo/internationalization`
       helpers (`nexusPath`, `apiPath`, `siteUrl`, `nexusUrl`, `apiUrl`)
 - [x] Storybook as `packages/storybook`, local only
-- [ ] Owner: the cutover steps under Blocked
+- [x] Dark mode across the site and the Nexus (system setting, toggle, no
+      flash, print light); the logo follows the ground
+- [x] One masthead and one footer for the site, the Nexus and sign-in
+- [x] Old hosts gone: redirects, comments, tests and docs; the database's
+      `platform.api_url` moves to auibsal.org/api (migration)
+- [ ] Owner: the environment variables and the steps under Blocked
 
 ### Version 1 (2026-10-24)
 - [x] Rails: the secret grep in CI works, `bun audit` and `turbo boundaries`
@@ -903,6 +903,10 @@ Covered by automated tests so far:
   use (as the form says).
 
 ## needs-native-review (Arabic written for the platform)
+
+- Dark mode (2026-10-24): `common.theme.dark` «الوضع الداكن» and
+  `common.theme.light` «الوضع الفاتح»; the reworded Notion and Telegram
+  "not set up" notes (`nexus.admin.settings…notConfigured`).
 
 - Version 1 (2026-10-24): the cron-failure notice to administrators,
   `cronFailed` in `packages/email/copy.ts`; `nexus.home.sixWords.{edit,hint,count,save,cancel}`,

@@ -27,8 +27,8 @@ signed in to the Nexus sees none. There are three kinds:
   spaces on a page take turns through them (`adForSlot` in
   `@repo/sal-data/ads`). When nothing is running, AdSense fills the space.
 - **Members.** Each ad space is drawn in the browser. It stays empty when the
-  Nexus session cookie is present, which works because the sign-in cookie is
-  shared with auibsal.org (`NEXT_PUBLIC_AUTH_COOKIE_DOMAIN=.auibsal.org`). This
+  Nexus session cookie is present, which works because the public pages and
+  the Nexus share one origin. This
   check only decides what the page shows; it controls no access.
 - **Consent.** Once AdSense is set up, the consent card asks about
   **Analytics** and **Advertising**. Until a visitor allows Advertising, Google's ad
@@ -57,7 +57,7 @@ Only the owner or the technical administrator holds these accounts.
    dating, politics, religion, get-rich-quick and anything else the Council
    would not accept from a sponsor (11.3). Under General categories, also
    block what does not suit a student paper.
-5. **Tell the site.** In Vercel → **sal-web** → **Settings** → **Environment
+5. **Tell the site.** In Vercel → **auibsal** → **Settings** → **Environment
    Variables** (Production), set the following, then redeploy:
 
    | Variable | Value |

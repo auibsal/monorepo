@@ -21,7 +21,7 @@ const formGuard = arcjetKey
       key: arcjetKey,
       // Behind Cloudflare the visitor's address comes from CF-Connecting-IP,
       // trusted only on requests from Cloudflare's ranges, so the limit is
-      // right whether api.auibsal.org is proxied or DNS only.
+      // right whether auibsal.org is proxied or DNS only.
       proxies: [cloudflare()],
       rules: [
         shield({ mode: "LIVE" }),

@@ -17,7 +17,7 @@ vi.mock("@supabase/supabase-js", () => ({
 const { authenticateRequest } = await import("./verify");
 
 const request = () =>
-  new Request("https://api.auibsal.org/x", {
+  new Request("https://auibsal.org/api/x", {
     headers: { authorization: "Bearer token" },
   });
 
@@ -46,7 +46,7 @@ describe("authenticateRequest", () => {
 
   test("rejects a missing or invalid token", async () => {
     expect(
-      await authenticateRequest(new Request("https://api.auibsal.org/x"))
+      await authenticateRequest(new Request("https://auibsal.org/api/x"))
     ).toBeNull();
     getClaims.mockResolvedValue({ data: null, error: new Error("bad") });
     expect(await authenticateRequest(request())).toBeNull();

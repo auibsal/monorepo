@@ -21,7 +21,7 @@ Use this system for anything carrying the Society's name: documents, posts, prin
 - The AUIB three lead: `crimson`, `ink`, `white`. The six supporting tones (`crimson-700`, `crimson-100`, `crimson-50`, `ink-70`, `ink-50`, `paper`) do the quiet work. Never add a color, and no program may add one.
 - Aim for about 60% white, 22% crimson, 12% ink, 6% tints. Use crimson boldly but not everywhere.
 - Build with the role tokens, not the palette directly: `surface`, `surface-tint`, `text`, `text-secondary`, `text-meta`, `title`, `accent-line`, `band`, `on-band`. They switch correctly between the light and dark themes.
-- Set `data-theme="dark"` for the ink "why" pages (mission, preamble, the case for the Society) and the Open Call (see Screens). On ink, titles and text are `white` and lines and kickers are `crimson-100`.
+- The dark theme is ink. On screen it is dark mode, for the whole page (see Screens); within a light page, `data-theme="dark"` makes one ink section. On ink, titles and text are `white` and lines and kickers are `crimson-100`.
 - Never set crimson text or the crimson symbol on `ink` (1.7:1).
 - Keep `ink-50` / `text-meta` for captions and meta on `white`, at 8 pt and up. On `crimson-50` or `paper`, use `ink-70` instead.
 - `paper` belongs to the AUIB Literary Journal. Elsewhere the page is `white`.
@@ -58,7 +58,7 @@ Use this system for anything carrying the Society's name: documents, posts, prin
 
 The v5 amendment (October 8, 2026) gives screens the character of set type and stamped cards. It adds platform tokens and changes nothing in print.
 
-- **Grounds.** The public site and the Nexus, the members' portal, are white, with ink and crimson sections; the site's footer is ink (one ground for the whole platform, October 24, 2026; the Nexus was on ink from October 8 to 24). Inside an ink section, forms and Journal reading pages are white sheets (`data-theme="light"`).
+- **Grounds.** One ground for the whole platform, the public site and the Nexus alike, in two modes (owner, October 24, 2026). Light mode is white, with ink and crimson sections; dark mode is ink. The visitor's system setting picks the mode until they choose with the header's words-only toggle. The footer is ink in both. Certificates, letters and printouts stay white sheets in dark mode (`data-theme="light"`), and pages print in light mode.
 - **Shape.** Corners are square on screen (`radius-screen`, 0). The 8 px card radius stays for print.
 - **Frame.** Controls, cards and the header carry a 2 px rule in the `frame` role: ink on light, white on ink. Row and section hairlines stay `rule`.
 - **One elevation.** A solid offset block in the `offset` role (ink on light, crimson on ink), 4 px for controls and cards and 8 px for feature blocks. It never blurs, falls toward the end of the line (right in English, left in Arabic), and collapses when pressed. A feature block on a light page may use the crimson offset.

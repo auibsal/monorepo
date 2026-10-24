@@ -19,11 +19,11 @@ describe("return paths", () => {
   });
 
   test("returns only to the Society's own https sites", () => {
-    expect(safeSocietyUrl("https://design.auibsal.org/?path=/x")).toBe(
-      "https://design.auibsal.org/?path=/x"
+    expect(safeSocietyUrl("https://www.auibsal.org/?path=/x")).toBe(
+      "https://www.auibsal.org/?path=/x"
     );
     expect(safeSocietyUrl("https://auibsal.org/")).toBe("https://auibsal.org/");
-    expect(safeSocietyUrl("http://design.auibsal.org/")).toBeNull();
+    expect(safeSocietyUrl("http://www.auibsal.org/")).toBeNull();
     expect(safeSocietyUrl("https://auibsal.org.evil.example/")).toBeNull();
     expect(safeSocietyUrl("https://evilauibsal.org/")).toBeNull();
     expect(safeSocietyUrl("javascript:alert(1)")).toBeNull();

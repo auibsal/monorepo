@@ -90,7 +90,7 @@ export const renderTokens = (tokens: BrandTokens) => {
     ...sizes.map((token) => `  --sal-${token.name}: ${token.value};`),
     "}",
     "",
-    "/* Light pages, and light islands inside ink (Journal reading, covers). */",
+    "/* Light mode, and light islands that stay light in dark mode (certificates, letters, printouts). */",
     ":root,",
     '[data-theme="light"] {',
     ...Object.entries(roles).map(
@@ -98,7 +98,7 @@ export const renderTokens = (tokens: BrandTokens) => {
     ),
     "}",
     "",
-    '/* The ink theme: the Nexus, the "why" pages and the Open Call page. */',
+    "/* Dark mode (the ink theme): the whole page, or an ink block within a light page. */",
     '[data-theme="dark"] {',
     ...Object.entries(roles).map(
       ([role, value]) => `  --${role}: ${reference(value.dark)};`

@@ -30,8 +30,8 @@ flowchart LR
 
 One app since October 24, 2026 (owner's decision): the public site, the
 Nexus and the API share one Next.js project, one deployment and one origin.
-The old hosts nexus.auibsal.org and api.auibsal.org redirect to
-auibsal.org/nexus and auibsal.org/api.
+The old hosts (nexus.auibsal.org, api.auibsal.org, design.auibsal.org) and
+their Vercel projects are gone.
 
 ### Principles
 
@@ -61,8 +61,9 @@ auibsal.org/nexus and auibsal.org/api.
    `/api/hooks/outbox`, which sends the mail or revalidates the public
    pages' cache tags in process.
 5. **One session, one origin.** The public pages, the Nexus and the API
-   routes share auibsal.org, so the session cookie needs no domain setting
-   (`NEXT_PUBLIC_AUTH_COOKIE_DOMAIN` stays optional, for a subdomain).
+   routes share auibsal.org, so the session cookie needs no domain setting.
+   Production keeps `NEXT_PUBLIC_AUTH_COOKIE_DOMAIN=.auibsal.org` only
+   because existing sessions carry that domain (`packages/auth/cookies.ts`).
 
 ## Data model
 
@@ -139,7 +140,7 @@ One project from this repository:
 
 | Project | Root | Domains |
 | --- | --- | --- |
-| sal-web | `apps/web` | auibsal.org, www.auibsal.org (redirect); nexus.auibsal.org and api.auibsal.org (redirected by the app) |
+| auibsal | `apps/web` | auibsal.org, www.auibsal.org (redirect) |
 
 Every push to `main` builds it; only a commit whose subject carries the
 skip marker builds nothing (`scripts/vercel-ignore.mjs`, the Ignored Build

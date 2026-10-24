@@ -7,6 +7,10 @@
     "language": "Language",
     "switchLanguage": "Switch language",
     "otherLanguage": "العربية",
+    "theme": {
+      "dark": "Dark mode",
+      "light": "Light mode"
+    },
     "skipToContent": "Skip to content",
     "loading": "Loading…",
     "error": "Something went wrong.",
@@ -1531,7 +1535,7 @@
         "notion": {
           "title": "Notion",
           "lede": "The team's workspace: projects, tasks, meetings and the handbook live there, and events and news are written and published from there. Every five minutes the platform copies officers, programs, documents and Journal counts into it and publishes what is marked Ready to publish.",
-          "notConfigured": "Not connected. Add the SAL Platform connection's token as NOTION_TOKEN on the sal-api project in Vercel.",
+          "notConfigured": "Not connected. Add the SAL Platform connection's token as NOTION_TOKEN on the auibsal project in Vercel, then redeploy.",
           "lastSync": "Last sync {date}, {time}.",
           "counts": "{created} added, {updated} updated, {published} published, {refused} sent back for changes.",
           "problems": "{count} problems in the last sync",
@@ -1560,7 +1564,7 @@
           "makeCode": "Make a setup code",
           "newCode": "Make a new code",
           "botTitle": "The bot",
-          "notConfigured": "Not set up yet: add {missing} to sal-api in Vercel, then redeploy.",
+          "notConfigured": "Not set up yet: add {missing} to the auibsal project in Vercel, then redeploy.",
           "connected": "Connected: Telegram delivers messages to the API.",
           "notConnected": "Set up but not connected to Telegram yet.",
           "connect": "Connect the bot to Telegram",

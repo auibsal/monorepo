@@ -1,7 +1,6 @@
 "use client";
 
 import { useAuth } from "@repo/auth/provider";
-import { BrandLogo } from "@repo/design-system/components/brand-logo";
 import { Button } from "@repo/design-system/components/ui/button";
 import {
   DropdownMenu,
@@ -11,18 +10,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@repo/design-system/components/ui/dropdown-menu";
-import {
-  Sheet,
-  SheetContent,
-  SheetTitle,
-  SheetTrigger,
-} from "@repo/design-system/components/ui/sheet";
 import { cn } from "@repo/design-system/lib/utils";
-import { localizedPath } from "@repo/internationalization";
+import { localizedPath, nexusPath } from "@repo/internationalization";
 import { useQueryClient } from "@tanstack/react-query";
-import { ExternalLink, MenuIcon } from "lucide-react";
+import { ExternalLink } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
-import { type ReactNode, useState } from "react";
+import type { ReactNode } from "react";
+import { Masthead } from "@/components/masthead";
 import { Link, usePathname, useRouter } from "@/lib/nexus/navigation";
 import { useNotionHandbook, useTeamWorkspace } from "@/lib/nexus/notion";
 import { disablePush } from "@/lib/nexus/push";
@@ -82,40 +76,12 @@ const useNotionLinks = () => {
   ];
 };
 
-const NavLinks = () => {
-  const t = useTranslations("nexus.nav");
-  const pathname = usePathname();
-  const links = memberLinks;
-
-  return (
-    <ul className="flex flex-col lg:flex-row lg:items-center lg:gap-6">
-      {links.map((link) => {
-        const active = pathname.startsWith(link.href);
-        return (
-          <li key={link.href}>
-            <Link
-              aria-current={active ? "page" : undefined}
-              className={cn(
-                "lg:type-label block border-rule border-b py-4 font-bold text-xl lg:border-transparent lg:border-b-2 lg:py-1 lg:text-xs lg:hover:border-frame",
-                active && "text-title lg:border-accent-line"
-              )}
-              href={link.href}
-            >
-              {t(link.key)}
-            </Link>
-          </li>
-        );
-      })}
-    </ul>
-  );
-};
-
 /** Phones: the sections in a bar at the bottom, in reach of the thumb. */
 const TabLinks = () => {
   const t = useTranslations("nexus.nav");
   const pathname = usePathname();
   return (
-    <ul className="grid grid-cols-4">
+    <ul className="grid grid-cols-4" data-tab-bar>
       {memberLinks.map((link) => {
         const active = pathname.startsWith(link.href);
         return (
@@ -139,14 +105,14 @@ const TabLinks = () => {
   );
 };
 
-/** The Nexus frame: skip link, header with words-first navigation, main. */
+/** The Nexus frame: skip link, the site's masthead with the Nexus sections, main. */
 export const AppShell = ({ children }: { children: ReactNode }) => {
   const t = useTranslations();
   const locale = useLocale();
   const { supabase } = useAuth();
   const router = useRouter();
+  const pathname = usePathname();
   const queryClient = useQueryClient();
-  const [open, setOpen] = useState(false);
   const { account, paperwork } = useAccountLinks();
   const notion = useNotionLinks();
 
@@ -158,142 +124,123 @@ export const AppShell = ({ children }: { children: ReactNode }) => {
     router.replace("/sign-in");
   };
 
+  const external = (
+    link: { href: string; key: "workspace" | "handbook" },
+    className: string
+  ) => (
+    <a className={className} href={link.href} rel="noopener" target="_blank">
+      {t(`nexus.nav.${link.key}`)}
+      <ExternalLink
+        aria-label={t("common.externalLink")}
+        className="size-3.5"
+      />
+    </a>
+  );
+
   return (
-    <div className="flex min-h-dvh flex-col pb-16 lg:pb-0 print:pb-0">
+    <div className="flex flex-1 flex-col">
       <a
         className="sr-only focus:not-sr-only focus:absolute focus:start-4 focus:top-4 focus:z-50 focus:bg-surface focus:p-2"
         href="#main"
       >
         {t("common.skipToContent")}
       </a>
-      <header className="frame-b sticky top-0 z-40 bg-surface print:hidden">
-        <div className="mx-auto flex w-full max-w-6xl items-center gap-4 px-4 py-3">
-          <Link className="shrink-0" href="/">
-            <BrandLogo height={56} locale={locale} />
-            <span className="sr-only">{t("nexus.name")}</span>
-          </Link>
-          <nav
-            aria-label={t("nexus.nav.label")}
-            className="ms-auto hidden lg:block"
-          >
-            <NavLinks />
-          </nav>
-          <div className="ms-auto flex items-center gap-2 lg:ms-6">
-            <LanguageSwitcher />
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  className="hidden lg:inline-flex"
-                  size="sm"
-                  variant="outline"
-                >
-                  {t("nexus.nav.account")}
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                {account.map((link) => (
-                  <DropdownMenuItem asChild key={link.href}>
-                    <Link href={link.href}>{t(`nexus.nav.${link.key}`)}</Link>
-                  </DropdownMenuItem>
-                ))}
-                <DropdownMenuSeparator />
-                <DropdownMenuLabel>
-                  {t("nexus.nav.paperwork")}
-                </DropdownMenuLabel>
-                {paperwork.map((link) => (
-                  <DropdownMenuItem asChild key={link.href}>
-                    <Link href={link.href}>{t(`nexus.nav.${link.key}`)}</Link>
-                  </DropdownMenuItem>
-                ))}
-                {notion.length > 0 ? <DropdownMenuSeparator /> : null}
-                {notion.map((link) => (
-                  <DropdownMenuItem asChild key={link.key}>
-                    <a href={link.href} rel="noopener" target="_blank">
-                      {t(`nexus.nav.${link.key}`)}
-                      <ExternalLink
-                        aria-label={t("common.externalLink")}
-                        className="size-3.5"
-                      />
-                    </a>
-                  </DropdownMenuItem>
-                ))}
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onSelect={signOut}>
-                  {t("auth.signOut")}
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-            <Sheet onOpenChange={setOpen} open={open}>
-              <SheetTrigger asChild>
-                <Button className="lg:hidden" size="icon" variant="outline">
-                  <MenuIcon aria-hidden="true" />
-                  <span className="sr-only">{t("common.openMenu")}</span>
-                </Button>
-              </SheetTrigger>
-              <SheetContent
-                className="p-4"
-                side={locale === "ar" ? "left" : "right"}
+      <Masthead
+        action={
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                className="hidden lg:inline-flex"
+                size="sm"
+                variant="outline"
               >
-                <SheetTitle className="type-subheading">
-                  {t("nexus.name")}
-                </SheetTitle>
-                <ul className="mt-6 grid gap-2">
-                  {account.map((link) => (
-                    <li key={link.href}>
-                      <Link
-                        className="underline underline-offset-4"
-                        href={link.href}
-                        onClick={() => setOpen(false)}
-                      >
-                        {t(`nexus.nav.${link.key}`)}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-                <p className="type-kicker mt-6">{t("nexus.nav.paperwork")}</p>
-                <ul className="mt-2 grid gap-2">
-                  {paperwork.map((link) => (
-                    <li key={link.href}>
-                      <Link
-                        className="underline underline-offset-4"
-                        href={link.href}
-                        onClick={() => setOpen(false)}
-                      >
-                        {t(`nexus.nav.${link.key}`)}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-                <ul className="mt-6 grid gap-2">
-                  {notion.map((link) => (
-                    <li key={link.key}>
-                      <a
-                        className="inline-flex items-center gap-1.5 underline underline-offset-4"
-                        href={link.href}
-                        rel="noopener"
-                        target="_blank"
-                      >
-                        {t(`nexus.nav.${link.key}`)}
-                        <ExternalLink
-                          aria-label={t("common.externalLink")}
-                          className="size-3.5"
-                        />
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-                <Button
-                  className="mt-6 w-full"
-                  onClick={signOut}
-                  variant="outline"
-                >
-                  {t("auth.signOut")}
-                </Button>
-              </SheetContent>
-            </Sheet>
-          </div>
-        </div>
-      </header>
+                {t("nexus.nav.account")}
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              {account.map((link) => (
+                <DropdownMenuItem asChild key={link.href}>
+                  <Link href={link.href}>{t(`nexus.nav.${link.key}`)}</Link>
+                </DropdownMenuItem>
+              ))}
+              <DropdownMenuSeparator />
+              <DropdownMenuLabel>{t("nexus.nav.paperwork")}</DropdownMenuLabel>
+              {paperwork.map((link) => (
+                <DropdownMenuItem asChild key={link.href}>
+                  <Link href={link.href}>{t(`nexus.nav.${link.key}`)}</Link>
+                </DropdownMenuItem>
+              ))}
+              {notion.length > 0 ? <DropdownMenuSeparator /> : null}
+              {notion.map((link) => (
+                <DropdownMenuItem asChild key={link.key}>
+                  {external(link, "")}
+                </DropdownMenuItem>
+              ))}
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onSelect={signOut}>
+                {t("auth.signOut")}
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        }
+        home={localizedPath(locale, nexusPath())}
+        language={<LanguageSwitcher />}
+        menu={(close) => (
+          <>
+            <ul className="grid gap-2">
+              {account.map((link) => (
+                <li key={link.href}>
+                  <Link
+                    className="underline underline-offset-4"
+                    href={link.href}
+                    onClick={close}
+                  >
+                    {t(`nexus.nav.${link.key}`)}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+            <div className="grid gap-2">
+              <p className="type-kicker">{t("nexus.nav.paperwork")}</p>
+              <ul className="grid gap-2">
+                {paperwork.map((link) => (
+                  <li key={link.href}>
+                    <Link
+                      className="underline underline-offset-4"
+                      href={link.href}
+                      onClick={close}
+                    >
+                      {t(`nexus.nav.${link.key}`)}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            {notion.length > 0 ? (
+              <ul className="grid gap-2">
+                {notion.map((link) => (
+                  <li key={link.key}>
+                    {external(
+                      link,
+                      "inline-flex items-center gap-1.5 underline underline-offset-4"
+                    )}
+                  </li>
+                ))}
+              </ul>
+            ) : null}
+            <Button className="w-full" onClick={signOut} variant="outline">
+              {t("auth.signOut")}
+            </Button>
+          </>
+        )}
+        navLabel={t("nexus.nav.label")}
+        place={t("nexus.name")}
+        sections={memberLinks.map((link) => ({
+          current: pathname.startsWith(link.href),
+          href: localizedPath(locale, nexusPath(link.href)),
+          label: t(`nexus.nav.${link.key}`),
+        }))}
+      />
       <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8" id="main">
         {children}
       </main>
@@ -303,28 +250,6 @@ export const AppShell = ({ children }: { children: ReactNode }) => {
       >
         <TabLinks />
       </nav>
-      <footer className="frame-t print:hidden">
-        <ul className="type-caption mx-auto flex w-full max-w-6xl flex-wrap gap-x-6 gap-y-2 px-4 py-4">
-          {(
-            [
-              ["/", "publicSite"],
-              ["/waraq", "journal"],
-              ["/events", "events"],
-            ] as const
-          ).map(([path, key]) => (
-            <li key={key}>
-              <a
-                className="underline-offset-4 hover:underline"
-                href={localizedPath(locale, path)}
-              >
-                {key === "publicSite"
-                  ? t("nexus.nav.publicSite")
-                  : `${t(`nexus.nav.${key}`)} · ${t("nexus.nav.publicSite")}`}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </footer>
     </div>
   );
 };

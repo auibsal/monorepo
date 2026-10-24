@@ -89,7 +89,7 @@ export const AuthConfirm = () => {
   if (failed) {
     return (
       <main
-        className="flex min-h-dvh flex-col items-center justify-center gap-4 p-6 text-center"
+        className="flex flex-1 flex-col items-center justify-center gap-4 p-6 text-center"
         id="main"
       >
         <p role="alert">{t("callback.failed")}</p>
@@ -102,7 +102,7 @@ export const AuthConfirm = () => {
 
   return (
     <main
-      className="mx-auto flex min-h-dvh w-full max-w-md flex-col justify-center gap-6 p-6"
+      className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center gap-6 p-6"
       id="main"
     >
       <FormHeader title={t("confirm.title")}>

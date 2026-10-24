@@ -19,8 +19,8 @@ Generate the pair once with `bunx web-push generate-vapid-keys`.
 
 | Variable | Where |
 | --- | --- |
-| `NEXT_PUBLIC_VAPID_PUBLIC_KEY` | sal-web |
-| `VAPID_PRIVATE_KEY` | sal-web, Production, marked sensitive |
+| `NEXT_PUBLIC_VAPID_PUBLIC_KEY` | auibsal |
+| `VAPID_PRIVATE_KEY` | auibsal, Production, marked sensitive |
 
 Without them, the Profile section says the browser can't show notifications, and everything still goes by email. Changing the keys signs every device out of notifications; members turn them on again.
 

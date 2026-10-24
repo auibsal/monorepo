@@ -4,8 +4,12 @@ import { cn } from "../lib/utils";
 
 interface BrandLogoProps {
   readonly className?: string;
-  /** "dark" on crimson or ink grounds: uses the reversed file. */
-  readonly ground?: "light" | "dark";
+  /**
+   * The ground the logo sits on. "auto" (the default) follows the theme:
+   * the reversed file on ink (dark mode, or an ink block), the standard
+   * file elsewhere. "light" or "dark" fixes one file.
+   */
+  readonly ground?: "auto" | "light" | "dark";
   /** Rendered height in pixels (the width follows the file's proportions). */
   readonly height?: number;
   readonly locale?: string;
@@ -18,21 +22,35 @@ interface BrandLogoProps {
  */
 export const BrandLogo = ({
   className,
-  ground = "light",
+  ground = "auto",
   height = 40,
   locale = "en",
   variant = "horizontal",
 }: BrandLogoProps) => {
   const file = logos[variant];
-  return (
+  const name = locale === "ar" ? project.nameAr : project.name;
+  const image = (src: string, extra?: string, hidden?: boolean) => (
     // biome-ignore lint/performance/noImgElement: SVG logo, served as supplied
     <img
-      alt={locale === "ar" ? project.nameAr : project.name}
-      className={cn("block w-auto", className)}
+      alt={hidden ? "" : name}
+      aria-hidden={hidden ? true : undefined}
+      className={cn("block w-auto", extra, className)}
       height={height}
-      src={ground === "dark" ? file.onDark : file.onLight}
+      src={src}
       style={{ height }}
       width={Math.round(height * file.aspect)}
     />
+  );
+
+  if (ground !== "auto") {
+    return image(ground === "dark" ? file.onDark : file.onLight);
+  }
+  // Both files, one shown: the theme is known only in the browser, so CSS
+  // picks the file and the page renders the same for everyone.
+  return (
+    <>
+      {image(file.onLight, "on-ink:hidden")}
+      {image(file.onDark, "on-ink:block hidden", true)}
+    </>
   );
 };
