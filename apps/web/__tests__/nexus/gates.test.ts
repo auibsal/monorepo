@@ -2,8 +2,8 @@ import { expect, test } from "vitest";
 import { isGuestPath } from "@/components/nexus/gates";
 
 test("a partner's members reach only the Journal, profile and service", () => {
-  expect(isGuestPath("/waraq")).toBe(true);
-  expect(isGuestPath("/waraq/submit")).toBe(true);
+  expect(isGuestPath("/qirtas")).toBe(true);
+  expect(isGuestPath("/qirtas/submit")).toBe(true);
   expect(isGuestPath("/profile")).toBe(true);
   expect(isGuestPath("/service")).toBe(true);
   expect(isGuestPath("/certificate")).toBe(true);

@@ -5,19 +5,19 @@ import type { Lang } from "./copy";
 /** A public page, in the member's language (English has no prefix). */
 export const web = (lang: Lang, path = "") => siteUrl(lang, path || "/");
 
-/** A Nexus page (auibsal.org/nexus), in the member's language. */
+/** A Nexus page (auibsal.org/diwan), in the member's language. */
 export const nexus = (lang: Lang, path = "") => nexusUrl(lang, path || "/");
 
 export const eventPage = (lang: Lang, slug: string) =>
   web(lang, `/events/${slug}`);
 
 export const piecePage = (lang: Lang, slug: string) =>
-  web(lang, `/waraq/pieces/${slug}`);
+  web(lang, `/qirtas/pieces/${slug}`);
 
 export const eventCalendar = (lang: Lang, slug: string) =>
   apiUrl(`/calendar/events/${slug}.ics${lang === "ar" ? "?lang=ar" : ""}`);
 
-export const wordPage = (lang: Lang) => web(lang, "/waraq/games/word");
+export const wordPage = (lang: Lang) => web(lang, "/qirtas/games/word");
 
 export const documentPage = (lang: Lang, slug: string) =>
   web(lang, `/documents/${slug}`);

@@ -38,8 +38,16 @@ const ProgrammesPage = async ({ params }: LocaleParams) => {
           </p>
         ) : null}
         {p.slug === "waraq" ? (
-          <Link className="link type-caption justify-self-start" href="/waraq">
+          <Link className="link type-caption justify-self-start" href="/qirtas">
             {t("journal")}
+          </Link>
+        ) : null}
+        {p.slug === "company" ? (
+          <Link
+            className="link type-caption justify-self-start"
+            href="/programs/productions"
+          >
+            {t("productions")}
           </Link>
         ) : null}
         {p.slug === "side-quest" ? (
@@ -82,12 +90,9 @@ const ProgrammesPage = async ({ params }: LocaleParams) => {
           </ul>
         </Section>
       ) : null}
-      <p className="flex flex-wrap gap-x-8 gap-y-2 border-line border-t pt-space-4">
+      <p className="border-line border-t pt-space-4">
         <Link className="link" href="/events">
           {t("events")}
-        </Link>
-        <Link className="link" href="/programs/productions">
-          {t("productions")}
         </Link>
       </p>
     </div>

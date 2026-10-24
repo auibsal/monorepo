@@ -48,7 +48,7 @@ const projectSchema = z
     orgSlug: z.string().min(1),
     /**
      * Where the member portal (the Nexus) and the API live on the one site:
-     * auibsal.org/nexus and auibsal.org/api. The language prefix comes first
+     * auibsal.org/diwan and auibsal.org/api. The language prefix comes first
      * (/ar/nexus/events); API paths carry none.
      */
     paths: z.object({

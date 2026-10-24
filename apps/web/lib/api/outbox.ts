@@ -60,7 +60,7 @@ interface OutboxRow {
 const prefix = (lang: string) =>
   lang === project.locale.default ? "" : `/${lang}`;
 
-// The email templates add /nexus and the language themselves.
+// The email templates add /diwan and the language themselves.
 const appUrl = origin;
 
 interface Recipient {
@@ -361,7 +361,7 @@ const handlers: Record<string, Handler> = {
         piecePublished(
           to.lang,
           pieceTitle(piece, to.lang),
-          `${webUrl()}${prefix(to.lang)}/waraq/pieces/${piece.slug}`
+          `${webUrl()}${prefix(to.lang)}/qirtas/pieces/${piece.slug}`
         )
       );
     }
@@ -420,12 +420,12 @@ const handlers: Record<string, Handler> = {
         desk_en: desk?.en ?? "",
         title_ar: p.title_ar ?? "",
         title_en: p.title_en ?? "",
-        url: `${webUrl()}${prefix(to.lang)}/waraq/pieces/${p.slug}`,
+        url: `${webUrl()}${prefix(to.lang)}/qirtas/pieces/${p.slug}`,
       };
     });
     await send(
       to,
-      sundayPaper(to.lang, items, `${webUrl()}${prefix(to.lang)}/waraq`)
+      sundayPaper(to.lang, items, `${webUrl()}${prefix(to.lang)}/qirtas`)
     );
   },
   "newsletter.confirm": async (admin, payload) => {
@@ -488,7 +488,7 @@ const handlers: Record<string, Handler> = {
         desk_en: desk?.en ?? "",
         title_ar: p.title_ar ?? "",
         title_en: p.title_en ?? "",
-        url: `${base}/waraq/pieces/${p.slug}`,
+        url: `${base}/qirtas/pieces/${p.slug}`,
       };
     });
     const coming = (events ?? []).map((e) => ({
@@ -500,7 +500,7 @@ const handlers: Record<string, Handler> = {
     const links = unsubscribeLinks(lang, row.unsubscribe_token);
     await send(
       { email: row.email, lang },
-      monthInWaraq(lang, items, coming, `${base}/waraq`, links.page),
+      monthInWaraq(lang, items, coming, `${base}/qirtas`, links.page),
       links.headers
     );
   },

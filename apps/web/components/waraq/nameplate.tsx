@@ -31,7 +31,7 @@ export const Nameplate = async ({
       {small ? (
         <Link
           className="justify-self-center font-medium text-4xl tracking-tight hover:text-accent"
-          href="/waraq"
+          href="/qirtas"
         >
           {t("title")}
         </Link>
@@ -40,7 +40,7 @@ export const Nameplate = async ({
           <div className="grid justify-items-center pt-4 text-center">
             <Link
               className="font-medium text-[clamp(4.5rem,13vw,10rem)] leading-[0.95] tracking-[-0.04em] hover:text-accent"
-              href="/waraq"
+              href="/qirtas"
             >
               {t("title")}
             </Link>
@@ -67,14 +67,14 @@ export const Nameplate = async ({
               <Link
                 aria-current={current === d ? "page" : undefined}
                 className={desk}
-                href={`/waraq/${d}`}
+                href={`/qirtas/${d}`}
               >
                 {t(`desks.${d}`)}
               </Link>
             </li>
           ))}
           <li>
-            <Link className={desk} href="/waraq/editions">
+            <Link className={desk} href="/qirtas/editions">
               {t("editions")}
             </Link>
           </li>
@@ -82,7 +82,7 @@ export const Nameplate = async ({
             <Link
               aria-current={current === "games" ? "page" : undefined}
               className={desk}
-              href="/waraq/games"
+              href="/qirtas/games"
             >
               {t("games")}
             </Link>

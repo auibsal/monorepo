@@ -34,7 +34,7 @@ const GuidePage = () => {
     {
       body: (
         <>
-          The member signs in and lands on the Nexus consent page, which names
+          The member signs in and lands on the Diwan consent page, which names
           your app and lists what it can do. They allow it or refuse it. Apps
           the Society has not approved can only be refused.
         </>
@@ -99,17 +99,17 @@ const GuidePage = () => {
         <p className="type-body">
           OAuth scopes only shape the ID token; they do not limit data. What
           your app reaches is set by the areas the Society grants it, such as
-          name and language, Waraq, events, programs, pages and news, and inside
-          those areas by what the member may do. Some decisions (an editor
-          deciding on a piece, officers' actions) count only after the member
-          finishes two-step sign-in, so your app may need to send them back to
-          sign in again.
+          name and language, Qirtas, events, programs, pages and news, and
+          inside those areas by what the member may do. Some decisions (an
+          editor deciding on a piece, officers' actions) count only after the
+          member finishes two-step sign-in, so your app may need to send them
+          back to sign in again.
         </p>
       </Block>
 
       <Block id="disconnect" title="When a member disconnects">
         <p className="type-body">
-          Members disconnect apps in the Nexus under Profile and privacy, and
+          Members disconnect apps in the Diwan under Profile and privacy, and
           officers can switch an app off for everyone. Either ends its access at
           once: its refreshes and calls for that member stop working. Delete
           what you hold for them.

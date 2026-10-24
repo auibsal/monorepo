@@ -69,14 +69,14 @@ describe("an ad as written in the Nexus", () => {
 
 describe("which ad a slot shows", () => {
   test("none when nothing is running", () => {
-    expect(adForSlot([], "/waraq", 0)).toBeNull();
+    expect(adForSlot([], "/qirtas", 0)).toBeNull();
   });
 
   test("slots on a page take turns, the same way every time", () => {
     const ads = ["a", "b", "c"];
-    const first = adForSlot(ads, "/waraq/pieces/x", 0);
-    expect(adForSlot(ads, "/waraq/pieces/x", 0)).toBe(first);
-    expect(adForSlot(ads, "/waraq/pieces/x", 1)).not.toBe(first);
+    const first = adForSlot(ads, "/qirtas/pieces/x", 0);
+    expect(adForSlot(ads, "/qirtas/pieces/x", 0)).toBe(first);
+    expect(adForSlot(ads, "/qirtas/pieces/x", 1)).not.toBe(first);
     expect(new Set([0, 1, 2].map((i) => adForSlot(ads, "/p", i))).size).toBe(3);
   });
 });

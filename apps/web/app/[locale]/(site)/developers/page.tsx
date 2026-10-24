@@ -9,8 +9,8 @@ const offers = [
     title: "Sign in with SAL",
   },
   {
-    body: "Read Waraq's open calls and editions, submit work, read and score blind entries, and record editorial decisions, always as the member who signed in.",
-    title: "The Waraq API",
+    body: "Read Qirtas's open calls and editions, submit work, read and score blind entries, and record editorial decisions, always as the member who signed in.",
+    title: "The Qirtas API",
   },
   {
     body: "Every public Society event as an iCal feed, in English or Arabic, for any calendar app. No sign-in needed.",
@@ -19,7 +19,7 @@ const offers = [
 ] as const;
 
 const safeguards = [
-  "Every request runs as the member who signed in: an app can do only what that member could do in the Nexus.",
+  "Every request runs as the member who signed in: an app can do only what that member could do in the Diwan.",
   "The Society approves each app and grants it areas. Membership records, elections and ballots, the charity ledger and roles are never open to apps.",
   "Blind review holds: readers get the text and a blind id, never the author.",
   "The limits live in the database, behind row-level security, where an app cannot get around them.",
@@ -37,7 +37,7 @@ const OverviewPage = () => (
       <h1 className="type-display">The Society's API</h1>
       <p className="type-lede max-w-3xl">
         Build tools for the Society's members: sign them in with their Society
-        account and work with Waraq on their behalf, inside rules the Society
+        account and work with Qirtas on their behalf, inside rules the Society
         sets and the database enforces.
       </p>
       <div className="flex flex-wrap gap-3">
@@ -88,7 +88,7 @@ const OverviewPage = () => (
           privately.
         </li>
         <li className="type-body">
-          Members connect your app from a sign-in page in the Nexus, and you
+          Members connect your app from a sign-in page in the Diwan, and you
           call the API with their token.
         </li>
       </ol>

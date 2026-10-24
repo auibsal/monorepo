@@ -43,8 +43,8 @@ const NAME = {
 };
 
 const FOOTER = {
-  ar: "رسالة من النِّكسَس، منصة جمعية الفنون والآداب في الجامعة الأمريكية في العراق – بغداد.",
-  en: "Sent by the Nexus, the platform of the AUIB Society of Arts and Letters.",
+  ar: "رسالة من الديوان، منصة جمعية الفنون والآداب في الجامعة الأمريكية في العراق – بغداد.",
+  en: "Sent by the Diwan, the platform of the AUIB Society of Arts and Letters.",
 };
 
 const Block = ({ block }: { block: NoticeBlock }) => {
@@ -158,13 +158,13 @@ export const Notice = ({ blocks, preview }: NoticeProps) => {
 Notice.PreviewProps = {
   blocks: [
     {
-      action: { href: "https://auibsal.org/nexus", label: "Open the Nexus" },
+      action: { href: "https://auibsal.org/diwan", label: "Open the Diwan" },
       heading: "You're booked for the Majlis",
       lang: "en",
       paragraphs: ["Tuesday, October 13 · 6:00 PM", "Library, second floor"],
     },
     {
-      action: { href: "https://auibsal.org/ar/nexus", label: "افتح النِّكسَس" },
+      action: { href: "https://auibsal.org/ar/diwan", label: "افتح الديوان" },
       heading: "حُجز مكانك في المجلس",
       lang: "ar",
       paragraphs: ["الثلاثاء، 13 تشرين الأول · 6:00 مساءً"],

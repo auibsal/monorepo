@@ -102,7 +102,7 @@ const ReferencePage = () => (
       </ul>
       <p className="type-body">
         Members also have a private feed of the events they booked, with its own
-        link in the Nexus. Treat it like a password.
+        link in the Diwan. Treat it like a password.
       </p>
     </Block>
   </div>

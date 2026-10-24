@@ -42,7 +42,7 @@ export const nexusHref = <T extends Href>(href: T): T => {
   return href;
 };
 
-/** "/nexus/events" → "/events": the path as the Nexus code names it. */
+/** "/diwan/events" → "/events": the path as the Nexus code names it. */
 export const stripNexus = (pathname: string) => {
   if (pathname === PREFIX) {
     return "/";
@@ -116,7 +116,7 @@ export const callbackUrl = (locale: string, next: string | null) => {
 
 /**
  * A return address on the Society's own site after sign-in (the ?to= of
- * /nexus/continue). Only https URLs on the Society's domain are accepted, so
+ * /diwan/continue). Only https URLs on the Society's domain are accepted, so
  * the Nexus never sends anyone elsewhere.
  */
 export const safeSocietyUrl = (value: string | null | undefined) => {

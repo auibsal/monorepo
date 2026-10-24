@@ -1,9 +1,9 @@
 {
-  "name": "The Nexus · AUIB Society of Arts and Letters",
-  "short_name": "Nexus",
+  "name": "The Diwan · AUIB Society of Arts and Letters",
+  "short_name": "Diwan",
   "description": "The member portal of the AUIB Society of Arts and Letters.",
   "id": "/nexus",
-  "start_url": "/nexus",
+  "start_url": "/diwan",
   "scope": "/",
   "display": "standalone",
   "background_color": "#273236",

@@ -33,7 +33,7 @@ const view = async (ctx: BotContext) => {
   const pieces = await publicPieces(6);
   const keyboard = new InlineKeyboard();
   if (!pieces.length) {
-    keyboard.url(ctx.t.buttons.waraq, web(ctx.lang, "/waraq"));
+    keyboard.url(ctx.t.buttons.waraq, web(ctx.lang, "/qirtas"));
     return { keyboard, text: ctx.t.waraqNone };
   }
   const lines = pieces.map((piece) => {
@@ -44,7 +44,7 @@ const view = async (ctx: BotContext) => {
     );
     return author ? `${title}\n${escapeHtml(ctx.t.by(author))}` : title;
   });
-  keyboard.url(ctx.t.buttons.waraq, web(ctx.lang, "/waraq"));
+  keyboard.url(ctx.t.buttons.waraq, web(ctx.lang, "/qirtas"));
   return {
     keyboard,
     text: [ctx.t.waraqTitle, "", lines.join("\n\n")].join("\n"),

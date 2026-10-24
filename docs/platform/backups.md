@@ -18,6 +18,6 @@ Practice this on a scratch Supabase project first. Restoring over production rep
 
 1. **Download and decrypt.** Download the artifact `sal-backup-YYYY-MM-DD`, then:  ```sh gpg --decrypt sal-YYYY-MM-DD.tar.gz.gpg > sal.tar.gz tar -xzf sal.tar.gz   # roles.sql, schema.sql, data.sql ```
 2. **Restore into the target database.** Use the target project's connection string (Project Settings → Database):  ```sh psql "$TARGET_DB_URL" -v ON_ERROR_STOP=1 \ -f roles.sql -f schema.sql \ -c "SET session_replication_role = replica" \ -f data.sql ```
-3. **Check.** Sign in to a Nexus pointed at the target, open a member, an event and the ledger, and compare row counts with the source.
+3. **Check.** Sign in to a Diwan pointed at the target, open a member, an event and the ledger, and compare row counts with the source.
 
 Files in Storage (submissions, receipts, the library) are not in this backup; they stay in Supabase Storage.

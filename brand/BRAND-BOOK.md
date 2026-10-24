@@ -16,7 +16,7 @@ This is version 6 (October 24, 2026). It keeps the logo, the AUIB colors and Ubu
 - Be playful about ideas, never people: "The worst poem at AUIB wins."
 - Write Arabic for Arabic readers, then have a native speaker check it. Never ship a translation as an afterthought.
 - Names: "AUIB Society of Arts and Letters" in full on first use in formal documents; then "the Society" or "SAL". Never "the club", never "Art and Letter".
-- The Society's paper is **Qirtas** («قرطاس», paper, from the motto «والقرطاسُ والقلم»), "AUIB's paper of news, letters and art." It replaces both "Waraq" and "AUIB Literary Journal" (owner, October 24, 2026). Remaining working title: Side Quest.
+- The Society's paper is **Qirtas** («قرطاس», paper, from the motto «والقرطاسُ والقلم»), "AUIB's paper of news, letters and art." It replaces both "Waraq" and "AUIB Literary Journal" (owner, October 24, 2026). The working title Side Quest is now Next Stop.
 - Endorsed programs carry the line "a Society of Arts and Letters programme" (Arabic: «من برامج جمعية الفنون والآداب»).
 - Short titles: "Charter Day", "Every Dinar", "The Ribbon".
 - Dates as "Tuesday, October 13"; times as "6:00 PM"; money as "50,000 IQD". Numerals in tables; words in prose for numbers under ten.
@@ -63,7 +63,7 @@ This is version 6 (October 24, 2026). It keeps the logo, the AUIB colors and Ubu
 
 ## Screens (v6)
 
-- **Grounds.** One ground for the whole platform, public site and Nexus alike, in two modes: light is white; dark is ink. The visitor's system setting picks the mode until they choose. The footer is ink in both. Qirtas pages sit on `paper`. Certificates and printouts stay white sheets in dark mode.
+- **Grounds.** One ground for the whole platform, public site and Diwan alike, in two modes: light is white; dark is ink. The visitor's system setting picks the mode until they choose. The footer is ink in both. Qirtas pages sit on `paper`. Certificates and printouts stay white sheets in dark mode.
 - **Header.** One line: the horizontal lockup, at most five sections, Arabic and Sign in. A hairline below it. Nothing boxed.
 - **Buttons.** One solid `accent` button per view for the main action, 48–50 px tall, square, sentence case. Everything else is a text link with an underline. No frames, no offset blocks.
 - **Lists over cards.** Events, stories, programs and partners are lists separated by hairlines. Use a card only when the thing is a separate object, like a ticket.

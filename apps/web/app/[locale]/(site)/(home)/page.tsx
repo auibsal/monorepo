@@ -13,6 +13,14 @@ import { PieceCardView } from "@/components/waraq/cards";
 import { localizedMetadata } from "@/lib/metadata";
 import { readPublished } from "@/lib/supabase";
 
+/** Where a program's name leads: its own pages, or the programs page. */
+const programmeHref = (slug: string) => {
+  if (slug === "waraq") {
+    return "/qirtas";
+  }
+  return slug === "company" ? "/programs/productions" : "/programs";
+};
+
 interface HomeProps {
   readonly params: Promise<{ locale: Locale }>;
 }
@@ -53,7 +61,7 @@ const Home = async ({ params }: HomeProps) => {
   const term: DatedItem[] = [
     ...(calls ?? []).map((call) => ({
       at: call.closes_at,
-      href: "/waraq",
+      href: "/qirtas",
       key: call.id,
       line: localized(call, "theme", locale),
       place: t("closes", { date: formatLongDate(call.closes_at, locale) }),
@@ -139,7 +147,7 @@ const Home = async ({ params }: HomeProps) => {
               <h2 className="flex items-baseline gap-4" id="paper">
                 <Link
                   className="font-medium text-4xl tracking-tight hover:text-accent sm:text-5xl"
-                  href="/waraq"
+                  href="/qirtas"
                 >
                   {tj("title")}
                 </Link>
@@ -185,7 +193,7 @@ const Home = async ({ params }: HomeProps) => {
                 <li className="border-line border-t py-space-4" key={p.id}>
                   <Link
                     className="group grid gap-2"
-                    href={p.slug === "waraq" ? "/waraq" : "/programs"}
+                    href={programmeHref(p.slug)}
                   >
                     <h3
                       className={

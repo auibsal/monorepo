@@ -22,7 +22,7 @@ import { checkEvent, checkWaraq, type WaraqDesk } from "./rules";
  * to "Ready to publish" is checked and published; "Cancel on the site"
  * cancels a published event. News ("News post" or "Waraq" pages) goes to
  * Waraq's newsroom, in Editing. The person who last edited the page must
- * hold the permission in the Nexus, matched by email.
+ * hold the permission in the Diwan, matched by email.
  * Results go back to the page: status, links, and a note saying what was
  * done or what to fix (also left as a comment).
  */
@@ -145,7 +145,7 @@ const slugTaken = async (
 
 const bodiesOf = async (ctx: SyncContext, page: NotionPage) => {
   const bodies = pageBodies(await ctx.notion.blocks(page.id));
-  // An empty page keeps the text already in the Nexus (rows that started
+  // An empty page keeps the text already in the Diwan (rows that started
   // there, before anyone wrote them in Notion).
   return {
     ...(bodies.en ? { body_en: sanitizeRichText(bodies.en) } : {}),
@@ -170,7 +170,7 @@ const cancelEvent = async (
   const publisher = await publisherFor(ctx, "event", email, null);
   if (!publisher) {
     await needsChanges(ctx, page, [
-      `${email} does not hold events.manage in the Nexus, so the event stays as it is.`,
+      `${email} does not hold events.manage in the Diwan, so the event stays as it is.`,
     ]);
     return;
   }
@@ -184,7 +184,7 @@ const cancelEvent = async (
   }
   await ctx.notion.updatePage(page.id, {
     "Platform note": prop.text(
-      `Canceled on the site ${stamp()} by ${await publisherName(ctx, publisher)}. Members who booked are not told automatically: post an announcement in the Nexus (Administration, Content).`
+      `Canceled on the site ${stamp()} by ${await publisherName(ctx, publisher)}. Members who booked are not told automatically: post an announcement in the Diwan (Administration, Content).`
     ),
     Status: prop.select("Canceled"),
   });
@@ -206,7 +206,7 @@ const publishEvent = async (
   const publisher = await publisherFor(ctx, "event", email, v.programme_id);
   if (!publisher) {
     await needsChanges(ctx, page, [
-      `${email} does not hold events.manage in the Nexus${v.programme_id ? " for this program" : ""}. Ask someone who does to set Ready to publish.`,
+      `${email} does not hold events.manage in the Diwan${v.programme_id ? " for this program" : ""}. Ask someone who does to set Ready to publish.`,
     ]);
     return;
   }
@@ -367,7 +367,7 @@ const importWaraq = async (
   const publisher = (desk.data ?? chief.data) as string | null;
   if (!publisher) {
     await needsChanges(ctx, page, [
-      `${email} does not edit the ${v.desk} desk in the Nexus. Ask its editor or the Editor-in-Chief to set Ready to publish.`,
+      `${email} does not edit the ${v.desk} desk in the Diwan. Ask its editor or the Editor-in-Chief to set Ready to publish.`,
     ]);
     return;
   }
@@ -389,7 +389,7 @@ const importWaraq = async (
       .maybeSingle();
     if (piece && !["editing", "author_approved"].includes(piece.status)) {
       await needsChanges(ctx, page, [
-        "This piece is past editing in the Nexus. Change it there (or reopen it there first).",
+        "This piece is past editing in the Diwan. Change it there (or reopen it there first).",
       ]);
       return;
     }
@@ -437,7 +437,7 @@ const importWaraq = async (
     Nexus: prop.url(`${ctx.appUrl}/admin/journal/piece?id=${id}`),
     "Nexus ID": prop.text(id),
     "Platform note": prop.text(
-      `In the Waraq newsroom since ${stamp()}, in Editing: the approvals and publishing happen in the Nexus.`
+      `In the Qirtas newsroom since ${stamp()}, in Editing: the approvals and publishing happen in the Diwan.`
     ),
     Status: prop.select("In editing"),
   });
@@ -505,7 +505,7 @@ const EVENT_STATUS: Record<string, string> = {
 };
 
 const ADOPTED_NOTE =
-  "Made in the Nexus; its text is still there. Write it here under English and العربية before publishing from here.";
+  "Made in the Diwan; its text is still there. Write it here under English and العربية before publishing from here.";
 
 const adoptEvents = async (ctx: SyncContext) => {
   const [events, links] = await Promise.all([
@@ -547,7 +547,7 @@ const adoptEvents = async (ctx: SyncContext) => {
 };
 
 /**
- * Events made in the Nexus get a page in Notion too, so the calendar is
+ * Events made in the Diwan get a page in Notion too, so the calendar is
  * complete and the team can take them over there. Their text stays in the
  * Nexus until someone writes it in the page.
  */

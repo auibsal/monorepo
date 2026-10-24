@@ -5,22 +5,22 @@ The web platform of the AUIB Society of Arts and Letters (SAL, «جمعية ال
 at the American University of Iraq – Baghdad. *The paper and the pen.*
 
 **Version 1** (October 24, 2026): one light ground for the site and the
-Nexus, the database at zero Supabase advisor findings with a test that
+Diwan, the database at zero Supabase advisor findings with a test that
 keeps it there, a publish rule with the fewest gates that still protect
 the work, and the rails (protected `main`, audited dependencies, journeys
 against built apps) that let the Society run it without a developer on
 call. What remains is content and the owner's settings, listed in
 `PROGRESS.md`.
 
-**One app** (October 24, 2026): the public site, the Nexus and the API are
+**One app** (October 24, 2026): the public site, the Diwan and the API are
 one Next.js app, `apps/web`, deployed once to auibsal.org.
 
 | Where | What it is |
 | --- | --- |
 | `auibsal.org` (`app/[locale]/(site)`) | The public site, English at `/` and Arabic at `/ar` |
-| `auibsal.org/nexus` (`app/[locale]/nexus`) | **The Nexus**: member portal and role-gated admin, client-rendered with the member's own token |
+| `auibsal.org/diwan` (`app/[locale]/diwan`) | **The Diwan**: member portal and role-gated admin, client-rendered with the member's own token |
 | `auibsal.org/api` (`app/api`, `lib/api`) | Email, cron (and a daily watch on the cron jobs), calendar feeds, exports, file links, deletion, the `/api/v1` API for apps, Hudhud the Telegram bot |
-| `auibsal.org/developers` | The guide and reference for app builders (Sign in with SAL, the Waraq API) |
+| `auibsal.org/developers` | The guide and reference for app builders (Sign in with SAL, the Qirtas API) |
 | `packages/storybook` | The SAL Design System: components, v5 Screens and every platform email, run locally (`bun run --cwd packages/storybook dev`) |
 | `apps/e2e` | Playwright + axe journeys, in CI |
 
@@ -35,7 +35,7 @@ Supabase stack).
 ```sh
 bun install
 bun run db:start      # local Supabase: migrations (the browser journeys seed their own data)
-bun run dev           # the app at http://localhost:3000 (the Nexus at /nexus)
+bun run dev           # the app at http://localhost:3000 (the Diwan at /diwan)
 ```
 
 Copy `apps/web/.env.example` to `apps/web/.env.local` and fill in the local

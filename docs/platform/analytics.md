@@ -5,7 +5,7 @@ Manager**. Both scripts are served from auibsal.org's own address by the
 **Google tag gateway** on Cloudflare. The site asks for consent itself, with
 its own card, and passes each visitor's choice to Google through consent mode
 (owner, Oct 15, 2026; the site's own card replaced Cloudflare Zaraz on Oct 16,
-2026). The Nexus has no analytics.
+2026). The Diwan has no analytics.
 
 ## How it fits together
 
@@ -18,7 +18,7 @@ its own card, and passes each visitor's choice to Google through consent mode
 - **Analytics is granted only by the visitor.** That happens when they allow
   Analytics on the consent card. If they change their mind later, the site
   updates consent again. The advertising signals follow a separate
-  Advertising choice, asked only while Waraq's AdSense ads are switched on
+  Advertising choice, asked only while Qirtas's AdSense ads are switched on
   (`docs/platform/ads.md`); without it they stay denied.
 - **The site asks and remembers.** A small card at the bottom of the page
   (never in the way of the page) asks each new visitor about what is

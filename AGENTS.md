@@ -13,41 +13,41 @@ items and decisions) and continue from the first unticked item.
   one deployment:
   - `app/[locale]/(site)` — the public site, `/` and `/ar`. Published reads
     only, with the publishable key; cached by tag and revalidated on publish.
-  - `app/[locale]/nexus` — **the Nexus**, auibsal.org/nexus: the member
+  - `app/[locale]/diwan` — **the Diwan** (code name `nexus`), auibsal.org/diwan: the member
     portal and the role-gated admin. Client-rendered pages (`components/nexus`,
     `lib/nexus`); every check in them is UX only. They read and write
     Supabase with the member's token, and call the API routes with it
-    (`callApi` in `lib/nexus/api.ts`). Nexus code names pages by their own
+    (`callApi` in `lib/nexus/api.ts`). Diwan code names pages by their own
     path (`/events`); `Link`, `useRouter`, `usePathname` and `redirect` from
-    `@/lib/nexus/navigation` add the `/nexus` prefix. From the public pages,
+    `@/lib/nexus/navigation` add the `/diwan` prefix. From the public pages,
     link with `localizedPath(locale, nexusPath("/sign-in"))`.
   - `app/api` and `lib/api` — the API routes, auibsal.org/api: email, cron,
     calendar feeds, exports, signed URLs, account deletion, `/api/v1` for
     third-party apps, and Hudhud, the Society's Telegram bot (`lib/api/bot`,
     grammY; webhook `/api/telegram`; `docs/platform/telegram.md`). The only
     code that reads the secret key. The bot acts for a member only through
-    the `core.telegram_*` functions, which run the Nexus functions under the
+    the `core.telegram_*` functions, which run the Diwan functions under the
     member's claims (aal1) so RLS still decides. Bot copy in
     `lib/api/bot/copy.ts`; the mascot in `brand/mascot`.
   - `app/[locale]/(site)/developers` — the guide and reference for app
     builders, English only (like the API and the runbooks).
 - **URLs.** English, the default language, has no prefix (`/events`,
-  `/nexus/events`); other languages do (`/ar/events`, `/ar/nexus/events`)
+  `/diwan/events`); other languages do (`/ar/events`, `/ar/diwan/events`)
   (owner, Oct 14, 2026). API routes carry no language (`/api/...`). Build
   links with `Link` from `@repo/internationalization/navigation` (inside the
-  Nexus: from `@/lib/nexus/navigation`), or `localizedPath`, `nexusPath`,
+  Diwan: from `@/lib/nexus/navigation`), or `localizedPath`, `nexusPath`,
   `apiPath` and the absolute `siteUrl`, `nexusUrl`, `apiUrl` from
   `@repo/internationalization`; never write `/en`.
-- **One frame.** The public pages and the Nexus share one header
+- **One frame.** The public pages and the Diwan share one header
   (`components/masthead.tsx`: the site's sections in `site-header.tsx`, the
-  Nexus sections in `components/nexus/app-shell.tsx`) and one footer
+  Diwan sections in `components/nexus/app-shell.tsx`) and one footer
   (`components/footer.tsx`), so moving between them never feels like
   another app.
 - `packages/storybook` — the SAL Design System: SAL components, v6 Screens
   and every platform email in both languages. Local only
   (`bun run --cwd packages/storybook dev`); nothing is deployed.
 - Documents live on auibsal.org/documents (`apps/web`); the officer handbook
-  and the internal documents' text in the team's Notion workspace (the Nexus
+  and the internal documents' text in the team's Notion workspace (the Diwan
   links there: setting `notion.handbook`, `society_documents.notion_url`;
   `docs/platform/notion.md`); the platform runbooks in `docs/platform`
   (Markdown). There is no separate docs site. The apps configure no
@@ -62,7 +62,8 @@ items and decisions) and continue from the first unticked item.
   - `@repo/sal-data` — zod schemas and typed queries per domain (membership,
     events, journal, charity, governance, programmes, content).
 - `packages/config/project.json` — names, motto, the site URL and the
-  `/nexus` and `/api` paths, locales, region and the default journal name.
+  `/diwan` (key `paths.nexus`) and `/api` paths, locales, region and the
+  default journal name.
   Read it through `@repo/config`.
 - `scripts/` — `check-placeholders.ts`, `check-rtl.ts`, `check-i18n.ts`.
 
@@ -134,16 +135,40 @@ any schema change. Integration tests run against a local stack with
   entries); only signed-off entries count. No online payments of any kind.
 - **Documents.** Never present a draft document as adopted. Every document
   page shows its status from the registry.
-- **Names.** The publication is **Waraq** («ورق»; full title "Waraq: AUIB's
-  paper of news, letters and art"), owner's decision of Oct 14, 2026: the AUIB
-  Literary Journal, news, the Gallery Wall, Six Words and Side Quest episodes
-  in one paper with five desks. The journal became its Letters desk and its
-  Editions. The name is read from the settings `journal.name_en`/`_ar`, so a
-  rename is a settings change; the schema keeps the code name `journal`. The
-  Society has no charity partner on record (Natrok Athar was removed on Oct 8,
-  2026).
+- **Names.** The publication is **Qirtas** («قرطاس»; "AUIB's paper of news,
+  letters and art"): news, letters, the gallery, Six Words and Next Stop
+  episodes in one paper with five desks (Waraq until the v6 names, owner,
+  Oct 24, 2026). The name is read from the settings `journal.name_en`/`_ar`;
+  the schema keeps the code names `journal` and `waraq`. The Society has no
+  charity partner on record (Natrok Athar was removed on Oct 8, 2026).
+- **Renames (v6, owner, Oct 24, 2026).** What people see changed; the code
+  kept its names. One line each, "now (the code still says …)":
+  - Qirtas, قرطاس, at `/qirtas` (code: `waraq`, `journal`, `components/waraq`).
+  - The Month in Qirtas, «شهر في قرطاس» (code: `monthInWaraq`, newsletter).
+  - The Diwan, الديوان, at `/diwan` (code: `nexus`, `components/nexus`,
+    `lib/nexus`, `nexusPath`, `paths.nexus`, messages namespace `nexus`).
+  - Next Stop, المحطة القادمة (code: slug `side-quest`, `/programs/side-quest/care`).
+  - The Company, الفرقة, the fifth flagship (code: `productions`, slug
+    `company`, `/programs/productions`).
+  - Open Stage, المسرح المفتوح (code: slug `scratch-night`).
+  - Munazara, المناظرة (code: slug `motion-night`).
+  - Mutanabbi Friday, جمعة المتنبي (code: slug `mutanabbi-walk`).
+  - Gallery Wall merged into Qirtas's Gallery desk, «معرض قرطاس» (code: slug
+    `gallery-wall`, kept and unpublished).
+  - The Qirtas Prizes, جوائز قرطاس (was "the Prizes").
+  - The Register and the Roll of Fellows, السجل ولائحة الزملاء (were the Book
+    of Members and the Book of Fellows).
+  - The Return, ليلة العودة (was Charter Night).
+  - Editor of Qirtas, Director of the Company, Director of Programs, and the
+    short Media, Partnerships and Membership titles (role assignment titles;
+    role keys unchanged).
+  - The Council in Arabic is «المجلس التنفيذي» («المجلس» is the Majlis).
+  - Honorary Fellow, زميل فخري, and Life Member, عضو مدى الحياة (code: tiers
+    `honorary` and `alumni`).
+  The governance documents keep the old titles until the owner amends them;
+  never edit the text of ratified documents.
 - **Navigation.** At most five sections per app header; the rest go in the
-  footer (web) or the Account menu (Nexus). Every Nexus empty state offers one
+  footer (web) or the Account menu (Diwan). Every Diwan empty state offers one
   next action (`EmptyLine action`).
 - **Content.** Don't invent names, dates, figures or quotes. Missing text is a
   `TODO(content): …` placeholder listed in `PROGRESS.md`. Arabic written for
@@ -158,7 +183,7 @@ any schema change. Integration tests run against a local stack with
   text link. Section titles start with the Bookmark (`SectionHead`). The
   paper's articles are set in Literata (`reading`). At most one crimson
   band per page; crimson never on ink. Light and dark mode across
-  the site and the Nexus (owner, Oct 24, 2026): dark mode is the brand's ink
+  the site and the Diwan (owner, Oct 24, 2026): dark mode is the brand's ink
   theme, `data-theme="dark"` on `<html>` from the system setting or the
   header toggle (cookie `sal_theme`, `apps/web/lib/theme.ts`). Never test
   the mode in code: the role tokens switch, `on-ink:` styles what sits on
@@ -184,7 +209,7 @@ any schema change. Integration tests run against a local stack with
   dependency a package imports; keep versions aligned across workspaces. Bun
   installs and runs scripts; Next.js runs on Node (`next build`).
 - **Auth:** email sign-in (AUIB address first; magic link or password). In
-  the Nexus, query with `useAuth().supabase` so RLS applies. In the API
+  the Diwan, query with `useAuth().supabase` so RLS applies. In the API
   routes, identify callers with `authenticateRequest` and re-check
   permissions with `hasPermission` (`lib/api/permissions.ts`). The admin
   client (`@repo/database/admin`) bypasses RLS: webhooks, cron and trusted
@@ -201,11 +226,11 @@ any schema change. Integration tests run against a local stack with
   2026). Record events with
   `track()` from `@repo/analytics/client`. Runbook:
   `docs/platform/analytics.md`.
-- **Ads:** in Waraq on `apps/web` only, never for signed-in visitors (owner,
+- **Ads:** in Qirtas on `apps/web` only, never for signed-in visitors (owner,
   Oct 16, 2026): Society ads, sponsor ads (only with a signed memorandum
   granting `advertising`; Policy Manual 11.3 applies) and Google AdSense for
   the rest. Readers get ads only through `journal.current_ads()`. No ads in
-  the Nexus, in emails or on other pages. Runbook: `docs/platform/ads.md`.
+  the Diwan, in emails or on other pages. Runbook: `docs/platform/ads.md`.
 - **Translations:** every UI string comes from
   `packages/internationalization/messages/{ar,en}.json`, checked by
   `bun run check:i18n`. Pass numbers and dates into messages already

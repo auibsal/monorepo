@@ -105,7 +105,7 @@ const MyPieces = () => {
           <li className="flex flex-wrap items-baseline gap-3" key={p.id}>
             <Link
               className="font-medium underline underline-offset-4"
-              href={{ pathname: "/waraq/work", query: { id: p.id } }}
+              href={{ pathname: "/qirtas/work", query: { id: p.id } }}
             >
               {localized(p, "title", locale) || t("pieceTitle")}
             </Link>
@@ -133,7 +133,7 @@ export const JournalHome = () => {
       cell: (s) => (
         <Link
           className="font-medium underline underline-offset-4"
-          href={{ pathname: "/waraq/submission", query: { id: s.id } }}
+          href={{ pathname: "/qirtas/submission", query: { id: s.id } }}
         >
           {s.title}
         </Link>
@@ -191,7 +191,7 @@ export const JournalHome = () => {
               </p>
               <Link
                 className={buttonLink}
-                href={{ pathname: "/waraq/submit", query: { call: call.id } }}
+                href={{ pathname: "/qirtas/submit", query: { call: call.id } }}
               >
                 {tw("submit")}
               </Link>
@@ -212,7 +212,7 @@ export const JournalHome = () => {
               <p className="type-caption">{tn(`deskLines.${desk}`)}</p>
               <Link
                 className={buttonLink}
-                href={{ pathname: "/waraq/submit", query: { desk } }}
+                href={{ pathname: "/qirtas/submit", query: { desk } }}
               >
                 {tn("sendTo")}
               </Link>
@@ -375,7 +375,7 @@ export const SubmitWork = () => {
     onSuccess: async (id) => {
       await invalidate();
       if (id) {
-        router.push({ pathname: "/waraq/submission", query: { id } });
+        router.push({ pathname: "/qirtas/submission", query: { id } });
       }
     },
   });
@@ -398,7 +398,7 @@ export const SubmitWork = () => {
     <div className="grid gap-8">
       <AdminHeading
         actions={
-          <Link className="text-sm underline underline-offset-4" href="/waraq">
+          <Link className="text-sm underline underline-offset-4" href="/qirtas">
             {t("back")}
           </Link>
         }
@@ -477,7 +477,7 @@ export const SubmitWork = () => {
               <Link
                 className="link"
                 href={{
-                  pathname: "/waraq/submission",
+                  pathname: "/qirtas/submission",
                   query: { id: partial },
                 }}
               >
@@ -515,7 +515,7 @@ const PieceLink = ({ submissionId }: { submissionId: string }) => {
   return (
     <Link
       className={buttonLink}
-      href={{ pathname: "/waraq/work", query: { id: piece.data.id } }}
+      href={{ pathname: "/qirtas/work", query: { id: piece.data.id } }}
     >
       {t("openYourPiece")}
     </Link>
@@ -688,7 +688,7 @@ export const MySubmission = () => {
   });
 
   const back = (
-    <Link className="text-sm underline underline-offset-4" href="/waraq">
+    <Link className="text-sm underline underline-offset-4" href="/qirtas">
       {t("back")}
     </Link>
   );

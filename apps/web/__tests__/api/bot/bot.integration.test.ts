@@ -237,7 +237,7 @@ describe.skipIf(!enabled)("Hudhud", () => {
   test("opens the daily word as a Mini App", async () => {
     await bot.handleUpdate(message("/word"));
     expect(JSON.stringify(sent().at(-1)?.payload.reply_markup)).toContain(
-      "https://auibsal.org/waraq/games/word"
+      "https://auibsal.org/qirtas/games/word"
     );
   });
 

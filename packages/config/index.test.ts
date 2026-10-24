@@ -17,7 +17,7 @@ describe("project config", () => {
   test("serves SAL from auibsal.org with English and Arabic", () => {
     expect(project.domain).toBe("auibsal.org");
     expect(project.url).toBe("https://auibsal.org");
-    expect(project.paths.nexus).toBe("/nexus");
+    expect(project.paths.nexus).toBe("/diwan");
     expect(project.paths.api).toBe("/api");
     expect([...project.locale.enabled].sort()).toEqual(["ar", "en"]);
   });

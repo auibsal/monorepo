@@ -9,8 +9,8 @@ import { defineConfig, devices } from "@playwright/test";
  */
 const site = process.env.E2E_SITE_URL ?? "http://localhost:3000";
 const web = site;
-// The Nexus lives under /nexus on the same site.
-const app = `${site}/nexus`;
+// The Nexus lives under /diwan on the same site.
+const app = `${site}/diwan`;
 const script = process.env.E2E_START === "start" ? "start" : "dev";
 
 export default defineConfig({

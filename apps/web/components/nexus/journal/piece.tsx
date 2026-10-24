@@ -25,7 +25,7 @@ export const PieceReader = () => {
     return <SectionSpinner />;
   }
   const back = (
-    <Link className="type-caption underline underline-offset-4" href="/waraq">
+    <Link className="type-caption underline underline-offset-4" href="/qirtas">
       {t("back")}
     </Link>
   );

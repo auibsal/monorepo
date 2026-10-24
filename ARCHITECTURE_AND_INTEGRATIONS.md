@@ -9,7 +9,7 @@ How the SAL platform fits together, and how to set up each integration.
 flowchart LR
   subgraph apps/web · auibsal.org (one Vercel project)
     W["(site) · public pages<br/>SSG + cache tags"]
-    A["/nexus · the Nexus<br/>client-rendered"]
+    A["/diwan · the Diwan<br/>client-rendered"]
     API["/api · route handlers<br/>email · cron · feeds · signed URLs · /api/v1"]
   end
   subgraph Supabase
@@ -29,21 +29,21 @@ flowchart LR
 ```
 
 One app since October 24, 2026 (owner's decision): the public site, the
-Nexus and the API share one Next.js project, one deployment and one origin.
+Diwan and the API share one Next.js project, one deployment and one origin.
 The old hosts (nexus.auibsal.org, api.auibsal.org, design.auibsal.org) and
 their Vercel projects are gone.
 
 ### Principles
 
-1. **Row Level Security is the boundary.** The Nexus queries Postgres with the
+1. **Row Level Security is the boundary.** The Diwan queries Postgres with the
    member's token; the public site with the publishable key. Policies decide
    what each can read and write. Every policy calls
    `access.has_permission(permission, scope_type, scope_id)` (its body
    lives in `private.has_permission`, which the policies bind to).
 2. **Secrets live in server code only.** The route handlers under `app/api`
    and `lib/api` read the secret key, Resend and the shared secrets; the
-   pages and the Nexus (client-rendered) read only `NEXT_PUBLIC_*` values,
-   and CI greps the client bundle for the server names. When the Nexus needs
+   pages and the Diwan (client-rendered) read only `NEXT_PUBLIC_*` values,
+   and CI greps the client bundle for the server names. When the Diwan needs
    a privileged action it calls an API route with the member's token, which
    verifies the JWT (`authenticateRequest`) and re-checks the permission
    (`hasPermission`) before using the admin client.
@@ -60,7 +60,7 @@ their Vercel projects are gone.
    revalidate). A Supabase database webhook on insert hands each row to
    `/api/hooks/outbox`, which sends the mail or revalidates the public
    pages' cache tags in process.
-5. **One session, one origin.** The public pages, the Nexus and the API
+5. **One session, one origin.** The public pages, the Diwan and the API
    routes share auibsal.org, so the session cookie needs no domain setting.
    Production keeps `NEXT_PUBLIC_AUTH_COOKIE_DOMAIN=.auibsal.org` only
    because existing sessions carry that domain (`packages/auth/cookies.ts`).
@@ -77,7 +77,7 @@ Schemas (all exposed to the Data API, all with RLS on every table):
 | `events` | events, RSVPs, waitlist, staff, check-ins, cached AUIB campus calendar |
 | `journal` | issues, contributors, pieces and their text, calls, submissions, files, blind entries, blind keys, assignments, scores, decisions, agreements, status history |
 | `charity` | partners, campaigns, append-only ledger and sign-offs, receipts, impact metrics |
-| `programmes` | Side Quest episodes and reels, Six Words, rotas, shifts, removal requests |
+| `programmes` | Next Stop episodes and reels, Six Words, rotas, shifts, removal requests |
 | `governance` | Council terms, minutes, resolutions, spending approvals, library, elections, positions, candidates, voters, ballot receipts, ballots, results |
 | `content` | pages, news, media, homepage slots, announcements, document search index, `search()` |
 
@@ -120,7 +120,7 @@ indexes on policy columns, and pgTAP tests. Regenerate types and commit them.
    journal, charity, programmes, governance, content`.
 4. **Auth → URL configuration:** site URL `https://auibsal.org`; redirect
    URLs `https://auibsal.org/**` and `http://localhost:3000/**`. OAuth
-   Server: authorization path `/nexus/oauth/consent`.
+   Server: authorization path `/diwan/oauth/consent`.
 5. **Auth → Providers:** email on (confirmations on, password min 10, letters
    and digits); phone off.
 6. **Auth → SMTP:** Resend (`smtp.resend.com`, port 465, user `resend`,

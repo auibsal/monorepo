@@ -4,7 +4,7 @@ Where alerts come from, where to look first, and who to tell.
 
 | Signal | Comes from | Look at |
 | --- | --- | --- |
-| The site is down | BetterStack monitors: auibsal.org, auibsal.org/nexus/sign-in, auibsal.org/api/health | The Vercel project's latest deployment, then Supabase status |
+| The site is down | BetterStack monitors: auibsal.org, auibsal.org/diwan/sign-in, auibsal.org/api/health | The Vercel project's latest deployment, then Supabase status |
 | Errors for members | Sentry (project sal-web) | The issue's stack trace and the release it started in |
 | Emails not arriving | Resend logs | Whether the outbox is draining: rows in `core.outbox` with no `processed_at` |
 | A deploy failed | Vercel and GitHub checks on the pull request | The build log |
@@ -15,7 +15,7 @@ Where alerts come from, where to look first, and who to tell.
 
 1. **Is it everyone or one person?** Try it signed out, then signed in with a test account.
 2. **Did something just change?** If a deploy went out in the last hour, [roll it back](releases.md#if-a-release-breaks-something) first and investigate after.
-3. **Is it a permission?** In the Nexus, most "can't see it" reports are a missing role or a missing two-step sign-in, not a fault. See the handbook's *Signing in* page (Nexus → Account → Officer handbook).
+3. **Is it a permission?** In the Diwan, most "can't see it" reports are a missing role or a missing two-step sign-in, not a fault. See the handbook's *Signing in* page (Diwan → Account → Officer handbook).
 4. **Tell people.** Post a short note in the Council group: what is broken, since when, and when you will update next.
 
 ## Data or safety incidents

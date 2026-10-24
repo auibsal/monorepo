@@ -44,7 +44,7 @@ export const RequireAuth = ({ children }: GateProps) => {
  * Row Level Security still decides every row.
  */
 const GUEST_PATHS = [
-  "/waraq",
+  "/qirtas",
   "/journal",
   "/profile",
   "/service",

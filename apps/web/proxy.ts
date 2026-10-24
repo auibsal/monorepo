@@ -23,7 +23,7 @@ const securityOptions = noseconeOptionsWith(
 // The daily word is also the Telegram bot's Main App: Telegram's web app
 // shows Mini Apps in a frame, so that page (and only that page) may be framed
 // by it.
-const WORD_GAME = /^(\/[a-z]{2})?\/waraq\/games\/word\/?$/;
+const WORD_GAME = /^(\/[a-z]{2})?\/qirtas\/games\/word\/?$/;
 const miniAppOptions = telegramMiniApp(securityOptions);
 
 // The proxy picks the language and sets the security headers. Sign-in and

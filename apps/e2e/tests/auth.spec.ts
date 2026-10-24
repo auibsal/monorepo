@@ -27,7 +27,7 @@ test("sign up with an AUIB address, confirm by email, finish setup", async ({
   await page.getByLabel("I make the Human Authorship pledge").check();
   await page.getByLabel("I make the Member Pledge").check();
   await expect(page.getByText("4 of 4 done")).toBeVisible();
-  await page.getByRole("button", { name: "Enter the Nexus" }).click();
+  await page.getByRole("button", { name: "Enter the Diwan" }).click();
   await expect(page.getByRole("heading", { name: /Welcome/ })).toBeVisible();
 });
 

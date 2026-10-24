@@ -36,7 +36,7 @@ const hrefFor = (kind: Kind, slug: string) => {
     return `/events/${slug}`;
   }
   if (kind === "piece") {
-    return `/waraq/pieces/${slug}`;
+    return `/qirtas/pieces/${slug}`;
   }
   if (kind === "production") {
     return `/programs/productions#${slug}`;

@@ -63,7 +63,7 @@ export const TwoStepPanel = () => {
       }
       const result = await supabase.auth.mfa.enroll({
         factorType: "totp",
-        friendlyName: "SAL Nexus",
+        friendlyName: "SAL Diwan",
       });
       if (result.error) {
         throw result.error;

@@ -21,7 +21,7 @@ test.describe("public site", () => {
     });
   }
 
-  test("an event page links booking to the Nexus and carries structured data", async ({
+  test("an event page links booking to the Diwan and carries structured data", async ({
     page,
   }) => {
     await page.goto(`${urls.web}/events/${event.slug}`);
@@ -40,9 +40,9 @@ test.describe("public site", () => {
     await expectAccessible(page);
   });
 
-  test("the Waraq front page is accessible", async ({ page }) => {
-    await page.goto(`${urls.web}/waraq`);
-    await expect(page.getByRole("heading", { level: 1 })).toHaveText("Waraq");
+  test("the Qirtas front page is accessible", async ({ page }) => {
+    await page.goto(`${urls.web}/qirtas`);
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText("Qirtas");
     await expectAccessible(page);
   });
 });

@@ -8,7 +8,7 @@ import { mediaUrl } from "@/lib/media";
 type Card = journal.PieceCard;
 
 export const pieceHref = (piece: { slug: string }) =>
-  `/waraq/pieces/${piece.slug}`;
+  `/qirtas/pieces/${piece.slug}`;
 
 /** The first image of a piece (gallery, photo essay, comic, news photo). */
 export const leadImage = (piece: Card) => {
@@ -43,7 +43,7 @@ export const Byline = ({
     {piece.contributor ? (
       <Link
         className="underline-offset-4 hover:underline"
-        href={`/waraq/authors/${piece.contributor.slug}`}
+        href={`/qirtas/authors/${piece.contributor.slug}`}
       >
         {localized(piece.contributor, "name", locale)}
       </Link>

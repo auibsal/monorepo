@@ -1,6 +1,6 @@
 # Releases and migrations
 
-How a change reaches auibsal.org (the site, the Nexus and the API) and the database.
+How a change reaches auibsal.org (the site, the Diwan and the API) and the database.
 
 Every change goes through a pull request to `main`. Nothing is edited on production by hand: not the code, not the database.
 

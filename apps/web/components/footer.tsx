@@ -44,8 +44,8 @@ export const Footer = async ({ consent = true }: FooterProps = {}) => {
     {
       heading: t("columns.read"),
       links: [
-        ["/waraq", tn("journal")],
-        ["/waraq/news", tn("news")],
+        ["/qirtas", tn("journal")],
+        ["/qirtas/news", tn("news")],
         ["/newsletter", t("newsletter")],
         ["/programs/productions", t("productions")],
         ["/search", t("search")],

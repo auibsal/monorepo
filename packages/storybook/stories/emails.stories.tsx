@@ -54,7 +54,7 @@ const role: RoleInfo = {
   name_en: "Director of Programs and Events",
 };
 const removal: RemovalInfo = {
-  content_url: "https://auibsal.org/waraq/pieces/example",
+  content_url: "https://auibsal.org/qirtas/pieces/example",
   details: "Please remove the photo of me from this post.",
   due_at: "2026-10-09T15:00:00Z",
   requester_email: "member@auib.edu.iq",
@@ -115,7 +115,7 @@ export const SubmissionReceivedNamed = email((l) =>
 export const FinalCheck = email((l) => finalCheck(l, WORK, PIECE, APP));
 export const PieceNote = email((l) => pieceNote(l, WORK, PIECE, APP));
 export const PiecePublished = email((l) =>
-  piecePublished(l, WORK, "https://auibsal.org/waraq/pieces/sample")
+  piecePublished(l, WORK, "https://auibsal.org/qirtas/pieces/sample")
 );
 export const SundayPaper = email((l) =>
   sundayPaper(
@@ -126,10 +126,10 @@ export const SundayPaper = email((l) =>
         desk_en: "News",
         title_ar: "عنوان تجريبي",
         title_en: "Sample headline",
-        url: "https://auibsal.org/waraq/pieces/sample",
+        url: "https://auibsal.org/qirtas/pieces/sample",
       },
     ],
-    "https://auibsal.org/waraq"
+    "https://auibsal.org/qirtas"
   )
 );
 export const NewsletterConfirm = email((l) =>
@@ -144,11 +144,11 @@ export const MonthInWaraq = email((l) =>
         desk_en: "News",
         title_ar: "عنوان تجريبي",
         title_en: "Sample headline",
-        url: "https://auibsal.org/waraq/pieces/sample",
+        url: "https://auibsal.org/qirtas/pieces/sample",
       },
     ],
     [{ ...event, url: "https://auibsal.org/events/sample" }],
-    "https://auibsal.org/waraq",
+    "https://auibsal.org/qirtas",
     "https://auibsal.org/newsletter/unsubscribe?token=sample"
   )
 );
