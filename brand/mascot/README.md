@@ -62,4 +62,4 @@ Hudhud's sticker pack: twelve 512 × 512 PNGs with transparent backgrounds and a
 
 ## Source
 
-`source/` holds the Python that draws every file (needs `cairosvg` and `Pillow`). `finals5.py` draws the standing, reversed and avatar files; `finals6.py` the flying file; `stickers7.py` the stickers. `rig3.py` is the current drawing and builds on `rig2.py`, `rig.py` and `props.py`. New poses are new entries in `stickers7.py`, never redrawn by hand. Hudhud's head is never turned or reshaped: the whole bird leans instead.
+`source/` holds the Python that draws every file (needs `cairosvg` and `Pillow`). `finals.py` draws the standing, reversed and avatar files; `finals-flying.py` the flying file; `stickers.py` the stickers. `rig3.py` is the drawing and builds on `rig2.py`, `rig.py` and `props.py`. New poses are new entries in `stickers.py`, never redrawn by hand. Hudhud's head is never turned or reshaped: the whole bird leans instead.

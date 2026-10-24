@@ -154,8 +154,8 @@ export const Certificate = () => {
         lang={locale}
       >
         <header className="grid justify-items-center gap-2">
-          <BrandLogo height={56} locale={locale} variant="bilingual" />
-          <p className="type-kicker tracking-widest">{t("society")}</p>
+          <BrandLogo height={56} locale={locale} />
+          <p className="type-label tracking-widest">{t("society")}</p>
         </header>
 
         <div className="grid justify-items-center gap-4">

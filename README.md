@@ -22,7 +22,7 @@ one Next.js app, `apps/web`, deployed once to auibsal.org.
 | `auibsal.org/diwan` (`app/[locale]/diwan`) | **The Diwan**: the officers' administration (anyone holding a role), client-rendered with the officer's own token |
 | `auibsal.org/api` (`app/api`, `lib/api`) | Email, cron (and a daily watch on the cron jobs), calendar feeds, exports, file links, deletion, the `/api/v1` API for apps, Hudhud the Telegram bot |
 | `auibsal.org/developers` | The guide and reference for app builders (Sign in with SAL, the Qirtas API) |
-| `packages/storybook` | The SAL Design System: components, v5 Screens and every platform email, run locally (`bun run --cwd packages/storybook dev`) |
+| `packages/storybook` | The SAL Design System: components, Screens and every platform email, run locally (`bun run --cwd packages/storybook dev`) |
 | `apps/e2e` | Playwright + axe journeys, in CI |
 
 Data lives in Supabase (Postgres with Row Level Security on every table,

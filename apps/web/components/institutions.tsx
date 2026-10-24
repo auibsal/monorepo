@@ -32,7 +32,7 @@ export const Institutions = async ({
           const name = t(`names.${item.key}`);
           const body = (
             <>
-              <span className="type-kicker">{t(`roles.${item.role}`)}</span>
+              <span className="type-label">{t(`roles.${item.role}`)}</span>
               {item.logo ? (
                 // biome-ignore lint/performance/noImgElement: a static logo file, as supplied
                 <img

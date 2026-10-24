@@ -31,13 +31,13 @@ const WordPage = async ({ params }: WordProps) => {
     <div className="mx-auto grid w-full max-w-6xl gap-8 px-4 py-10">
       <Nameplate current="games" locale={locale} small />
       <header className="grid gap-2 text-center">
-        <p className="type-kicker">
+        <h1 className="type-display">{t("kinds.word_guess")}</h1>
+        <p className="type-caption">
           <Link className="hover:underline" href="/qirtas/games">
             {t("title")}
           </Link>{" "}
           · <GameNumber />
         </p>
-        <h1 className="type-display">{t("kinds.word_guess")}</h1>
         <p className="type-lede">{t("guessLede")}</p>
       </header>
       <WordGuess lang={locale === "ar" ? "ar" : "en"} />

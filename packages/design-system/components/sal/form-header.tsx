@@ -11,7 +11,7 @@ interface FormHeaderProps {
 }
 
 /**
- * The brand's Form Header (v6, brand/components/bundle.css `.sal-form`):
+ * The brand's Form Header (brand/components/bundle.css `.sal-form`):
  * the form code in Ubuntu Mono and a Light title above an ink hairline, the
  * symbol at the top end. It takes the colors of the page it sits on: on
  * ink, the white symbol (never crimson on ink).

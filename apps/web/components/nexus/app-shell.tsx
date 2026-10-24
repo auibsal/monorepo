@@ -22,7 +22,7 @@ import { useNotionHandbook, useTeamWorkspace } from "@/lib/nexus/notion";
 import { disablePush } from "@/lib/nexus/push";
 import { LanguageSwitcher } from "./language-switcher";
 
-// The Diwan's own sections (at most five, v6); the modules are in the
+// The Diwan's own sections (at most five); the modules are in the
 // administration's side navigation.
 const sections = [
   { href: "/", key: "overview" },

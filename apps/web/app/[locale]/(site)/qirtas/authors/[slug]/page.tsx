@@ -50,12 +50,12 @@ const AuthorPage = async ({ params }: AuthorProps) => {
     <div className="mx-auto grid w-full max-w-4xl gap-10 px-4 py-10">
       <Nameplate locale={locale} small />
       <header className="grid gap-3">
-        <p className="type-kicker">{t("contributor")}</p>
         <h1 className="type-display">{localized(author, "name", locale)}</h1>
+        <p className="type-caption">{t("contributor")}</p>
         {bio ? <p className="type-lede">{bio}</p> : null}
       </header>
       <section aria-labelledby="work" className="grid gap-4">
-        <h2 className="type-kicker border-line border-b pb-2" id="work">
+        <h2 className="type-heading" id="work">
           {t("work")}
         </h2>
         <PieceColumn locale={locale} pieces={author.pieces} />

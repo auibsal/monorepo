@@ -51,10 +51,12 @@ export const PieceReader = () => {
     <article className="grid max-w-3xl gap-6">
       {back}
       <header className="grid gap-2">
-        <p className="type-kicker">{tj(`categories.${piece.data.category}`)}</p>
         <h1 className="type-display text-balance">
           {localized(piece.data, "title", locale)}
         </h1>
+        <p className="type-caption">
+          {tj(`categories.${piece.data.category}`)}
+        </p>
         {piece.data.contributor ? (
           <p className="type-lede">
             {localized(piece.data.contributor, "name", locale)}

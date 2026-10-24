@@ -1,5 +1,5 @@
-"""Hudhud v5: v3's silhouette, crest and wing; v4's beak, tail and flat colors; v3's ink eye.
-Drawn in v3 coordinates, then shifted so the body sits near the local origin (same frame as rig.py)."""
+"""Hudhud, the Society's mascot: the drawing, as flat SVG shapes.
+Shapes are drawn in their own coordinates, then shifted so the body sits near the local origin."""
 import math
 from rig import CR,C700,C100,C50,INK,INK70,W,SCHEMES,wing,wingshape,svg,g
 OX,OY=-280,-300

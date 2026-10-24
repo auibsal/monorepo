@@ -16,8 +16,8 @@ interface FooterProps {
 const linkClass = "hover:text-accent hover:underline hover:underline-offset-4";
 
 /**
- * The one footer for the whole site, public pages and the portal alike
- * (v6): ink in both modes. The reversed horizontal lockup and one sentence,
+ * The one footer for the whole site, public pages and the portal alike:
+ * ink in both modes. The reversed lockup in the page's language and one sentence,
  * three short columns (Society, Read, Contact) under rose labels, then a
  * hairline and the fine print, which keeps the policies and cookie settings
  * within reach.

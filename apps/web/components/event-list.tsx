@@ -16,7 +16,7 @@ export interface DatedItem {
 }
 
 /**
- * The dated list (v6): a large Light day number with the weekday and month
+ * The dated list: a large Light day number with the weekday and month
  * under it, the title and one line, and the place and time at the end, each
  * row on a hairline.
  */

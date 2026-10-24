@@ -63,7 +63,7 @@ const removal: RemovalInfo = {
 
 const LANGS = ["en", "ar"] as const;
 
-/** Both languages side by side, each in its own frame like a mail client. */
+/** Each language in its own frame like a mail client: an email is only ever in one. */
 const email = (make: (lang: Lang) => Built): Story => ({
   loaders: [
     async () => ({
@@ -78,7 +78,7 @@ const email = (make: (lang: Lang) => Built): Story => ({
         <figure className="grid gap-2" key={lang}>
           <figcaption className="type-caption">{make(lang).subject}</figcaption>
           <iframe
-            className="h-[720px] w-full rounded-lg border border-line"
+            className="h-[720px] w-full border border-line"
             srcDoc={(loaded.html as string[])[i]}
             title={make(lang).subject}
           />

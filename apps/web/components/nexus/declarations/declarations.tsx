@@ -260,7 +260,7 @@ export const Declarations = () => {
           {(history.data ?? []).map((d) => (
             <li key={d.id}>
               <SalCard>
-                <p className="type-kicker">
+                <p className="type-label">
                   {formatLongDate(d.signed_at, locale, true)}
                   {d.role_title ? ` · ${d.role_title}` : ""}
                 </p>

@@ -77,13 +77,15 @@ const PiecePage = async ({ params }: PieceProps) => {
     "letter",
     "translation",
   ];
-  const related = (
-    await readPublished(
-      ["journal"],
-      (c) => journal.deskPieces(c, desk, { limit: 4 }),
-      []
+  const related = journal
+    .inLanguage(
+      await readPublished(
+        ["journal"],
+        (c) => journal.deskPieces(c, desk, { limit: 4 }),
+        []
+      ),
+      locale
     )
-  )
     .filter((p) => p.id !== piece.id)
     .slice(0, 3);
   const issue = piece.issue as {
@@ -117,8 +119,14 @@ const PiecePage = async ({ params }: PieceProps) => {
               : "mx-auto grid w-full max-w-3xl gap-3 px-4"
           }
         >
-          <p className="type-kicker">
-            <Link className="hover:underline" href={`/qirtas/${desk}`}>
+          <h1 className="type-display text-balance">
+            {localized(piece, "title", locale)}
+          </h1>
+          <p className="type-caption">
+            <Link
+              className="text-accent hover:underline"
+              href={`/qirtas/${desk}`}
+            >
               {t(`desks.${desk}`)}
             </Link>
             {` · ${t(`categories.${category}`)}`}
@@ -134,9 +142,6 @@ const PiecePage = async ({ params }: PieceProps) => {
               </>
             ) : null}
           </p>
-          <h1 className="type-display text-balance">
-            {localized(piece, "title", locale)}
-          </h1>
           {deck ? (
             <p className="type-lede max-w-[44ch] text-text-secondary">{deck}</p>
           ) : null}
@@ -172,10 +177,10 @@ const PiecePage = async ({ params }: PieceProps) => {
           ) : null}
         </header>
         {lockedText ? (
-          <div className="mx-auto grid w-full max-w-3xl gap-3 border border-line border-t p-6">
+          <div className="mx-auto grid w-full max-w-3xl gap-3 border-line border-t px-4 pt-6">
             <p className="type-body">{t("membersOnlyBody")}</p>
             <a
-              className="inline-flex h-10 items-center justify-self-start rounded-md bg-primary px-4 text-primary-foreground text-sm"
+              className="inline-flex h-12 items-center justify-self-start bg-accent px-6 font-medium text-[0.9375rem] text-on-accent hover:bg-accent/90"
               href={`${localizedPath(locale, "/qirtas/piece")}?slug=${piece.slug}`}
             >
               {t("readInNexus")}
@@ -197,7 +202,7 @@ const PiecePage = async ({ params }: PieceProps) => {
           aria-labelledby="related"
           className="mx-auto grid w-full max-w-3xl gap-4 px-4"
         >
-          <h2 className="type-kicker border-line border-b pb-2" id="related">
+          <h2 className="type-heading" id="related">
             {t("moreFrom", { desk: t(`desks.${desk}`) })}
           </h2>
           <PieceColumn locale={locale} pieces={related} />

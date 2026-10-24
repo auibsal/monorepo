@@ -14,7 +14,7 @@ interface DocumentHeaderProps {
 }
 
 /**
- * The brand's Document Cover (v6), adapted for the web: the code in Ubuntu
+ * The brand's Document Cover, adapted for the web: the code in Ubuntu
  * Mono and the Arabic name at the top end, the title in Display Light in
  * ink, then one sentence. The site header carries the lockup, so it is not
  * repeated here. Always light.

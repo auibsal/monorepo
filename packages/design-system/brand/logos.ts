@@ -1,5 +1,5 @@
 /**
- * The SAL logo files (unchanged since v4), used exactly as supplied in
+ * The SAL logo files , used exactly as supplied in
  * brand/logos and copied byte-for-byte to the app's public/brand
  * (tokens.test.ts checks). Never redrawn, recolored or rebuilt in code. The
  * light files are for white and paper; the reversed files for crimson and
@@ -19,11 +19,17 @@ export const logos = {
     onDark: "/brand/sal-lockup-bilingual-reversed.svg",
     onLight: "/brand/sal-lockup-bilingual.svg",
   },
-  /** The default: headers, covers, letterheads. */
+  /** The default on English pages: headers, covers, letterheads. */
   horizontal: {
     aspect: 2017.86 / 1009,
     onDark: "/brand/sal-lockup-horizontal-reversed.svg",
     onLight: "/brand/sal-lockup-horizontal.svg",
+  },
+  /** The default on Arabic pages: the Arabic lockup, symbol on the right. */
+  "horizontal-ar": {
+    aspect: 2108.2 / 1099.22,
+    onDark: "/brand/sal-lockup-horizontal-ar-reversed.svg",
+    onLight: "/brand/sal-lockup-horizontal-ar.svg",
   },
   /** Square spaces, stickers and merchandise. */
   stacked: {
@@ -46,6 +52,8 @@ export const logoFiles = [
   "sal-avatar.svg",
   "sal-lockup-bilingual-reversed.svg",
   "sal-lockup-bilingual.svg",
+  "sal-lockup-horizontal-ar-reversed.svg",
+  "sal-lockup-horizontal-ar.svg",
   "sal-lockup-horizontal-reversed.svg",
   "sal-lockup-horizontal.svg",
   "sal-lockup-stacked-reversed.svg",

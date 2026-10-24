@@ -1,4 +1,4 @@
-magic_link: Your Diwan sign-in link · رابط دخولك إلى الديوان
+magic_link: Your sign-in link · رابط دخولك
 confirmation: Confirm your email · أكّد بريدك الإلكتروني
 recovery: Set a new password · تعيين كلمة مرور جديدة
 email_change: Confirm your new email · أكّد بريدك الجديد

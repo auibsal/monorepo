@@ -155,11 +155,11 @@ export const SetupForm = () => {
 
   return (
     <>
-      <FormHeader code={t("kicker")} title={t("title")}>
+      <FormHeader title={t("title")}>
         {setupIntro(t, isRenewal, Boolean(profile.data?.setup_completed_at))}
       </FormHeader>
       <div className="grid gap-2" role="status">
-        <p className="type-kicker">
+        <p className="type-label">
           {t("progress", { done: String(done), total: String(total) })}
         </p>
         <div

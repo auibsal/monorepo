@@ -3,7 +3,7 @@ import { Literata, Ubuntu, Ubuntu_Mono } from "next/font/google";
 import localFont from "next/font/local";
 
 /**
- * SAL type (v6): Ubuntu for everything on screen, Light (300, with its
+ * SAL type: Ubuntu for everything on screen, Light (300, with its
  * italic) for display, Regular for text, Medium (500) for labels and links,
  * Bold for emphasis inside a sentence; Ubuntu Mono for codes; Literata for
  * Qirtas's article text (dek and body) only.

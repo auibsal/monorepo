@@ -9,7 +9,19 @@ Branch: `claude/new-session-qosn60`.
 
 ## Blocked — needed from the user
 
-- [ ] **Brand v6 (2026-10-24), what is left for the owner:**
+- [ ] **The brand, Version 1 (2026-10-25), what is left for the owner:**
+  - **Supabase → Authentication → Emails:** paste the four templates again
+    (`packages/database/supabase/templates`): each now goes out in one
+    language, Arabic when the member signed up in Arabic. The subjects stay
+    in both languages (Supabase subjects can't choose a language).
+  - **@BotFather `/setuserpic`** with `brand/mascot/hudhud-avatar.png` if
+    the bot's picture isn't that file yet.
+  - **The sticker set** is t.me/addstickers/auibsal (owner, Oct 24), so the
+    handoff's `hudhud_sal` set is not needed.
+  - **Redirects** from `/waraq` and `/nexus`: none (owner's decision, Oct 24).
+  - **Native review** of the new Arabic listed under needs-native-review.
+
+- [ ] **Brand (2026-10-24), what is left for the owner:**
   - **Supabase → Authentication → Emails:** paste the four updated
     templates and subjects from `packages/database/supabase/templates`
     (they now link to `/auth/confirm` on the site; the old `/diwan/auth/…`
@@ -213,10 +225,10 @@ Branch: `claude/new-session-qosn60`.
       after it.
 These stop parts of the work. Everything else continues around them.
 
-- [x] **`brand/`** (2026-10-05): the v4 design-system export (BRAND-BOOK.md
+- [x] **`brand/`** (2026-10-05): the design-system export (BRAND-BOOK.md
       from its README, tokens.json/css, Ubuntu Arabic, components, the 13 logo
-      SVGs, the retired Key for reference) and the v4 guide PDF
-      (SAL-BRD-01, Version 4 · Draft 2).
+      SVGs, the retired Key for reference) and the guide PDF
+      (SAL-BRD-01).
 - [x] **`docs-source/`** (2026-10-05): the six public founding documents
       (SAL-GOV-01, GOV-02, GOV-03, POL-01, STR-01, MEM-01). The repo is
       public, so the restricted ones are **not** committed: the Founding
@@ -295,6 +307,15 @@ These stop parts of the work. Everything else continues around them.
 
 ## Decisions
 
+- **The brand is SAL-BRD-01, Version 1** (owner, 2026-10-25; the brand
+  handoff): one version, no earlier ones. The Bookmark is only ever the
+  logo (no markers before titles); titles stand alone (no kicker, eyebrow
+  or label above them); one language per page, email, share image and post,
+  with the Arabic lockup on Arabic pages; Qirtas is the paper, not a
+  program (its row unpublished); programs grouped as Flagships, the
+  Evenings and the Specials. News pieces keep the site's type (owner, Oct
+  24); Literata stays for literary pieces, as in the article reference.
+
 - **The Diwan is for officers only** (owner, 2026-10-24): "Diwan should be
   just for admins. Though users can sign up/in. All public features should
   become outside of diwan." Sign-in, sign-up and every member page moved to
@@ -317,7 +338,7 @@ These stop parts of the work. Everything else continues around them.
   without the kicker and the extra rules. The Diwan has Home in its five
   sections, a single Account menu, and one page frame (`DiwanPage`).
 
-- **Brand v6 and the new names** (owner, 2026-10-24; the v6 handoff,
+- **Brand and the new names** (owner, 2026-10-24; the brand handoff,
   START.md and NAMES.md): Light headlines, hairlines in place of boxes, one
   accent button per view, six colors, the Bookmark before section titles,
   Literata for Qirtas articles. Waraq is Qirtas at `/qirtas`, the Nexus is
@@ -479,7 +500,7 @@ These stop parts of the work. Everything else continues around them.
   migration `20261008001100`).
 - **American English** (owner, 2026-10-08) for all copy, comments, commits
   and docs; verbatim quotes from the Society's documents keep their spelling.
-- **v5 Screens** (owner, 2026-10-08, Option B of the audit): square corners,
+- **Screens** (owner, 2026-10-08, Option B of the audit): square corners,
   a 2px frame, one solid offset elevation, tracked capitals only for
   kickers, navigation and buttons (never Arabic), the Nexus on ink. Print is
   unchanged. Recorded in `brand/BRAND-BOOK.md` ("Screens") and the Design
@@ -692,19 +713,19 @@ These stop parts of the work. Everything else continues around them.
 
 ## Checklist
 
-### Brand v6 and the new names (2026-10-24)
+### Brand and the new names (2026-10-24)
 
-- [x] Step 2: brand files (BRAND-BOOK.md, tokens.json, bundle.css, the v6
+- [x] Step 2: brand files (BRAND-BOOK.md, tokens.json, bundle.css, the
       PDF) and generated tokens; fonts (Ubuntu Light, Literata)
 - [x] Step 3: one header, footer, buttons, links, inputs, section heads
 - [x] Step 4: the public pages and Qirtas as in the reference; dated lists;
       programs grouped; fix: visitors could not read programs or public
       settings (migration 20261024000700)
 - [x] Step 5: the Diwan, the emails (both languages) and Storybook
-      ("Screens v6")
+      ("Screens")
 - [x] Step 6: the renames (messages, metadata, emails, bot, docs, routes,
       migration 20261024000800)
-- [x] Step 7: Hudhud's v6 files, the stickers story, stickers after bot
+- [x] Step 7: Hudhud's files, the stickers story, stickers after bot
       replies (file_ids empty until the set exists)
 - [x] Step 8: check, typecheck, test, rtl, i18n, placeholders, unused,
       pgTAP and the e2e journeys; screenshots at 1440 and 390 in light and
@@ -819,10 +840,10 @@ These stop parts of the work. Everything else continues around them.
 ### Design system (§4)
 - [x] Tokens → CSS variables, generated from `brand/tokens.json` (tests: palette, contrast, staleness)
 - [x] shadcn variables aliased to role tokens; ink theme via `data-theme="dark"`
-- [x] No shadows (theme-level), 8px card radius, hairline/band utilities (print; screens: v5 below)
-- [x] v5 Screens: `frame` and `offset` roles, `radius-screen` 0, `shadow-offset` (mirrors in RTL, `press` collapses it), `type-label`, Arabic never tracked; buttons and form controls restyled; light islands inside ink
-- [x] v5 Screens: public header (five sections, sticky), home, ink footer; Nexus shell on ink; auth on a light sheet
-- [ ] v5 Screens: remaining public pages (events list, the Journal, about, join) and admin screens get the framed cards
+- [x] No shadows (theme-level), 8px card radius, hairline/band utilities (print; screens below)
+- [x] Screens: `frame` and `offset` roles, `radius-screen` 0, `shadow-offset` (mirrors in RTL, `press` collapses it), `type-label`, Arabic never tracked; buttons and form controls restyled; light islands inside ink
+- [x] Screens: public header (five sections, sticky), home, ink footer; Nexus shell on ink; auth on a light sheet
+- [ ] Screens: remaining public pages (events list, the Journal, about, join) and admin screens get the framed cards
 - [x] Ubuntu / Ubuntu Mono / Amiri / Literata via next/font/google
 - [x] Ubuntu Arabic via next/font/local (byte-checked against brand/fonts)
 - [x] Type styles from the brand (Display 1.02, Lede 300/1.3, Body 1.5, Caption 1.4, Kicker 0.06em); `:lang(ar)` one step larger, 1.8–2.0 leading, 1.4 at display
@@ -1008,3 +1029,12 @@ Written 2026-10-24 (the Diwan overhaul):
   `web.events.*`, `web.journal.submit`, `web.journal.readInNexus`,
   `web.join.*`, `web.privacy.*`, `web.verify.signedBy`,
   `web.newsletter.members`, and Hudhud's lines in `lib/api/bot/copy.ts`).
+
+Written 2026-10-25 (the brand, Version 1):
+
+- `web.home.lede`, `web.home.title` («والقرطاسُ والقلم.»), `web.home.evenings`,
+  `web.home.specials`, `web.programmes.lede`, `weekly`, `weeklyNote`,
+  `specials`; the media kit's Arabic lockup labels; `nexus.admin.events.lede`,
+  `nexus.admin.settings.emails`.
+- The four Supabase auth emails (`packages/database/supabase/templates`),
+  the Arabic sample copy in the Storybook stories (SAL/Social, SAL/Screens).

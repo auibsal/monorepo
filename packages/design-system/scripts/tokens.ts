@@ -2,8 +2,8 @@ import { readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 
 /**
- * Generates the CSS for the brand's own token file, brand/tokens.json (SAL v6,
- * binding), into two places:
+ * Generates the CSS for the brand's own token file, brand/tokens.json
+ * (binding), into two places:
  *
  * - packages/design-system/styles/tokens.css: the palette as `--sal-*`, the
  *   spacing scale, radii and strokes, the type families, and the color roles
@@ -144,7 +144,7 @@ const typeClass = (style: TypeStyle, family: string) => {
 export const renderBrandTokens = (tokens: BrandTokens) => {
   const { palette, roles } = splitColors(tokens);
   return [
-    "/* AUIB Society of Arts and Letters, design tokens v6. Generated from tokens.json by packages/design-system/scripts/tokens.ts; edit that file, not this one. */",
+    "/* AUIB Society of Arts and Letters, design tokens. Generated from tokens.json by packages/design-system/scripts/tokens.ts; edit that file, not this one. */",
     `@import url('${GOOGLE_FONTS}');`,
     "/* Ubuntu Arabic is not on Google Fonts; it ships in fonts/ (Ubuntu Font Licence 1.0). */",
     ...tokens.type.fonts.map(

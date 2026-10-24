@@ -189,12 +189,12 @@ export const DocumentView = () => {
         )}
       </div>
       <header className="grid gap-4">
-        <p className="type-label">
-          {t(`groups.${doc.data.audience as Audience}`)}
-        </p>
         <h1 className="type-display text-balance">
           {documents.documentTitle(doc.data, locale)}
         </h1>
+        <p className="type-caption">
+          {t(`groups.${doc.data.audience as Audience}`)}
+        </p>
         {documents.documentSummary(doc.data, locale) ? (
           <p className="type-lede max-w-[48ch] text-text-secondary">
             {documents.documentSummary(doc.data, locale)}

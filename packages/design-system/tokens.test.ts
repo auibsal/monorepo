@@ -32,7 +32,7 @@ const ratio = (a: string, b: string) => {
 };
 
 /**
- * Every text pair the v6 roles allow, in both modes (brand/tokens.json,
+ * Every text pair the brand's roles allow, in both modes (brand/tokens.json,
  * "Color roles"): text and secondary text on the page and on Qirtas's
  * reading ground, the accent as text, text on the accent button and on the
  * band. Rules (`line`) carry no words and are not checked.
@@ -75,7 +75,7 @@ describe("SAL tokens (brand/tokens.json)", () => {
     );
   });
 
-  test("the roles are v6's ten", () => {
+  test("the roles are the brand's ten", () => {
     expect(Object.keys(roles).sort()).toEqual(
       [
         "accent",

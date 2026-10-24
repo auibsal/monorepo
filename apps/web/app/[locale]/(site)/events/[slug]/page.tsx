@@ -77,12 +77,12 @@ const EventPage = async ({ params }: EventProps) => {
         {t("all")}
       </Link>
       <header className="grid gap-3">
-        <p className="type-kicker">
+        <h1 className="type-display">{localized(event, "title", locale)}</h1>
+        <p className="type-caption">
           {formatLongDate(event.starts_at, locale)} ·{" "}
           {formatClock(event.starts_at, locale)}
           {event.ends_at ? ` – ${formatClock(event.ends_at, locale)}` : ""}
         </p>
-        <h1 className="type-display">{localized(event, "title", locale)}</h1>
         {localized(event, "venue", locale) ? (
           <p className="type-body">{localized(event, "venue", locale)}</p>
         ) : null}

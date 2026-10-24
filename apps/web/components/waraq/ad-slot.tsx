@@ -169,9 +169,7 @@ export const AdSlot = ({ adsense, house }: AdSlotProps) => {
       aria-label={label}
       className={quiet ? "grid" : "grid gap-3 border-line border-t p-4"}
     >
-      {quiet ? null : (
-        <p className="type-kicker text-text-secondary">{label}</p>
-      )}
+      {quiet ? null : <p className="type-label text-text-secondary">{label}</p>}
       {house ? <HouseAdView house={house} /> : null}
       {!house && adsense ? <AdSenseUnit {...adsense} onFill={setFill} /> : null}
     </aside>

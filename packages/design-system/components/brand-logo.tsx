@@ -29,7 +29,12 @@ export const BrandLogo = ({
   locale = "en",
   variant = "horizontal",
 }: BrandLogoProps) => {
-  const file = logos[variant];
+  // One language per page: the horizontal lockup comes in the page's
+  // language (the Arabic lockup on /ar).
+  const file =
+    variant === "horizontal" && locale === "ar"
+      ? logos["horizontal-ar"]
+      : logos[variant];
   // A height class (h-10 lg:h-14) sizes the logo responsively; otherwise the
   // inline height does (Tailwind's preflight sets images to height: auto).
   const sized = HEIGHT_CLASS.test(className ?? "");

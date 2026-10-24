@@ -89,7 +89,7 @@ const AdminNav = () => {
 
   return (
     <nav aria-label={t("nav.label")}>
-      <p className="type-kicker mb-2 hidden lg:block">{t("title")}</p>
+      <p className="type-label mb-2 hidden lg:block">{t("title")}</p>
       <button
         aria-controls="admin-sections"
         aria-expanded={open}
@@ -98,7 +98,7 @@ const AdminNav = () => {
         type="button"
       >
         <span className="grid">
-          <span className="type-kicker">{t("title")}</span>
+          <span className="type-label">{t("title")}</span>
           <span className="font-medium">
             {current ? t(`nav.${current.key}`) : t("nav.overview")}
           </span>

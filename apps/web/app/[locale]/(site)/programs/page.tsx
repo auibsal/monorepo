@@ -17,7 +17,7 @@ const ProgrammesPage = async ({ params }: LocaleParams) => {
   const group = (name: programmes.ProgrammeGroup) =>
     rows.filter((p) => programmes.programmeGroup(p) === name);
 
-  // Flagship names in Light Italic accent (v6); the rest in Regular ink.
+  // Flagship names in Light Italic accent; the rest in Regular ink.
   const item = (p: (typeof rows)[number]) => {
     const flagship = programmes.programmeGroup(p) === "flagship";
     return (
@@ -36,11 +36,6 @@ const ProgrammesPage = async ({ params }: LocaleParams) => {
           <p className="type-body max-w-[44ch] text-text-secondary">
             {localized(p, "summary", locale)}
           </p>
-        ) : null}
-        {p.slug === "waraq" ? (
-          <Link className="link type-caption justify-self-start" href="/qirtas">
-            {t("journal")}
-          </Link>
         ) : null}
         {p.slug === "company" ? (
           <Link

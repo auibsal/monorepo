@@ -22,6 +22,9 @@ const config: StorybookConfig = {
   staticDirs: [
     { from: "../../../brand/logos", to: "/brand" },
     { from: "../../../brand/mascot", to: "/mascot" },
+    // The brand kit's own CSS (tokens.css, components/bundle.css) and its
+    // fonts, for the social templates (stories/social.stories.tsx).
+    { from: "../../../brand", to: "/brand-kit" },
   ],
   stories: [
     "../stories/**/*.mdx",

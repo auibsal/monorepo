@@ -47,13 +47,13 @@ const PuzzlePage = async ({ params }: PuzzleProps) => {
     <div className="mx-auto grid w-full max-w-6xl gap-8 px-4 py-10">
       <Nameplate current="games" locale={locale} small />
       <header className="grid gap-2">
-        <p className="type-kicker">
+        <h1 className="type-display">{localized(puzzle, "title", locale)}</h1>
+        <p className="type-caption">
           <Link className="hover:underline" href="/qirtas/games">
             {t("title")}
           </Link>{" "}
           · {t(`kinds.${puzzle.kind}`)}
         </p>
-        <h1 className="type-display">{localized(puzzle, "title", locale)}</h1>
         {note ? <p className="type-lede max-w-3xl">{note}</p> : null}
         {puzzle.published_at ? (
           <p className="type-caption">

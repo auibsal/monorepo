@@ -56,7 +56,7 @@ items and decisions) and continue from the first unticked item.
   Diwan sections in `components/nexus/app-shell.tsx`) and one footer
   (`components/footer.tsx`), so moving between them never feels like
   another app.
-- `packages/storybook` — the SAL Design System: SAL components, v6 Screens
+- `packages/storybook` — the SAL Design System: SAL components, Screens
   and every platform email in both languages. Local only
   (`bun run --cwd packages/storybook dev`); nothing is deployed.
 - Documents live on auibsal.org/documents (`apps/web`); the officer handbook
@@ -163,16 +163,16 @@ any schema change. Integration tests run against a local stack with
   codes stay as they are underneath.
 - **Members' and Diwan pages.** Every members' page and Diwan page is
   `DiwanPage` with `DiwanSection`s and `RowList`s
-  (`components/nexus/page.tsx`): the Light title, one line, the Bookmark
-  before each section, hairlines between rows only. Admin pages use
+  (`components/nexus/page.tsx`): the Light title, one line, section titles
+  standing alone, hairlines between rows only. Admin pages use
   `AdminHeading`, which matches. Nothing a member does lives in the Diwan.
 - **Names.** The publication is **Qirtas** («قرطاس»; "AUIB's paper of news,
   letters and art"): news, letters, the gallery, Six Words and Next Stop
-  episodes in one paper with five desks (Waraq until the v6 names, owner,
+  episodes in one paper with five desks (Waraq until the new names, owner,
   Oct 24, 2026). The name is read from the settings `journal.name_en`/`_ar`;
   the schema keeps the code names `journal` and `waraq`. The Society has no
   charity partner on record (Natrok Athar was removed on Oct 8, 2026).
-- **Renames (v6, owner, Oct 24, 2026).** What people see changed; the code
+- **Renames (owner, Oct 24, 2026).** What people see changed; the code
   kept its names. One line each, "now (the code still says …)":
   - Qirtas, قرطاس, at `/qirtas` (code: `waraq`, `journal`, `components/waraq`).
   - The Month in Qirtas, «شهر في قرطاس» (code: `monthInWaraq`, newsletter).
@@ -205,14 +205,16 @@ any schema change. Integration tests run against a local stack with
 - **Content.** Don't invent names, dates, figures or quotes. Missing text is a
   `TODO(content): …` placeholder listed in `PROGRESS.md`. Arabic written for
   this platform (not taken from a source) is listed as `needs-native-review`.
-- **Brand book (binding, SAL v6, `brand/BRAND-BOOK.md`).** Six colors do the
+- **Brand book (binding, `brand/BRAND-BOOK.md`).** Six colors do the
   work (white, ink, crimson, paper, stone, ash); components use only the
   role tokens (`surface`, `surface-reading`, `text`, `text-secondary`,
   `accent`, `on-accent`, `line`, `band`, `on-band`, `footer`). Never add a
   color. Headlines are Light, text Regular, labels Medium tracked capitals;
   never bold headlines. Hairlines in place of boxes and cards; square
   corners; no shadows. One solid accent button per view, everything else a
-  text link. Section titles start with the Bookmark (`SectionHead`). The
+  text link. Titles stand alone (`SectionHead`): no marker, no kicker, eyebrow
+  or label above any headline or section title; small tracked labels only
+  name fields, columns and metadata. The Bookmark is only ever the logo. The
   paper's articles are set in Literata (`reading`). At most one crimson
   band per page; crimson never on ink. Light and dark mode across
   the site and the Diwan (owner, Oct 24, 2026): dark mode is the brand's ink

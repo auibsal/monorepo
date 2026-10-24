@@ -64,7 +64,7 @@ const GovernancePage = async ({ params }: LocaleParams) => {
                 className="grid gap-1 border-line border-t py-space-4"
                 key={`${member.role}-${member.full_name_en}`}
               >
-                <p className="type-kicker">
+                <p className="type-label">
                   {localized(member, "title", locale) ||
                     localized(member, "role_name", locale)}
                 </p>
@@ -142,7 +142,7 @@ const GovernancePage = async ({ params }: LocaleParams) => {
                       className="grid gap-1 border-line border-t py-space-4"
                       key={office.position_title_en}
                     >
-                      <dt className="type-kicker">
+                      <dt className="type-label">
                         {localized(office, "position_title", locale)}
                       </dt>
                       <dd className="type-body">

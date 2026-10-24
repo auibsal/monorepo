@@ -1,4 +1,4 @@
-/* AUIB Society of Arts and Letters, design tokens v6. Generated from tokens.json by packages/design-system/scripts/tokens.ts; edit that file, not this one. */
+/* AUIB Society of Arts and Letters, design tokens. Generated from tokens.json by packages/design-system/scripts/tokens.ts; edit that file, not this one. */
 @import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400&family=Ubuntu+Mono:wght@400;700&family=Literata:wght@400;500&display=swap');
 /* Ubuntu Arabic is not on Google Fonts; it ships in fonts/ (Ubuntu Font Licence 1.0). */
 @font-face { font-family: "Ubuntu Arabic"; src: url("fonts/UbuntuArabic-Regular.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
@@ -59,7 +59,7 @@
 }
 .display-xl { font-family: var(--font-sans); font-size: 124px; font-weight: 300; line-height: 0.98; letter-spacing: -0.045em; }
 .display { font-family: var(--font-sans); font-size: 72px; font-weight: 300; line-height: 1; letter-spacing: -0.035em; }
-.title { font-family: var(--font-sans); font-size: 44px; font-weight: 400; line-height: 1.1; letter-spacing: -0.025em; }
+.title { font-family: var(--font-sans); font-size: 44px; font-weight: 300; line-height: 1.1; letter-spacing: -0.025em; }
 .heading { font-family: var(--font-sans); font-size: 28px; font-weight: 400; line-height: 1.25; letter-spacing: -0.01em; }
 .lede { font-family: var(--font-sans); font-size: 21px; font-weight: 400; line-height: 1.5; }
 .body { font-family: var(--font-sans); font-size: 17px; font-weight: 400; line-height: 1.6; }
@@ -74,10 +74,10 @@
 .post-display { font-family: var(--font-sans); font-size: 160px; font-weight: 300; line-height: 1; letter-spacing: -0.03em; }
 .post-lede { font-family: var(--font-sans); font-size: 38px; font-weight: 400; line-height: 1.4; }
 .post-meta { font-family: var(--font-sans); font-size: 28px; font-weight: 500; line-height: 1.4; }
-.ar-display { font-family: var(--font-arabic); font-size: 64px; font-weight: 400; line-height: 1.5; direction: rtl; }
+.ar-display { font-family: var(--font-arabic); font-size: 64px; font-weight: 400; line-height: 1.3; direction: rtl; }
 .ar-heading { font-family: var(--font-arabic); font-size: 30px; font-weight: 400; line-height: 1.6; direction: rtl; }
 .ar-body { font-family: var(--font-arabic); font-size: 18.5px; font-weight: 400; line-height: 1.9; direction: rtl; }
-.ar-post { font-family: var(--font-arabic); font-size: 40px; font-weight: 400; line-height: 1.6; direction: rtl; }
+.ar-post { font-family: var(--font-arabic); font-size: 132px; font-weight: 400; line-height: 1.3; direction: rtl; }
 .read-dek { font-family: var(--font-read); font-size: 22px; font-weight: 400; line-height: 1.5; }
 .read-body { font-family: var(--font-read); font-size: 17.5px; font-weight: 400; line-height: 1.68; }
 .code { font-family: var(--font-mono); font-size: 12px; font-weight: 400; line-height: 1.3; }

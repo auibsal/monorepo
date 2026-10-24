@@ -9,15 +9,14 @@ const LOGOS = [
   ["horizontalReversed", "sal-lockup-horizontal-reversed.svg", true],
   ["stacked", "sal-lockup-stacked.svg", false],
   ["stackedReversed", "sal-lockup-stacked-reversed.svg", true],
-  ["bilingual", "sal-lockup-bilingual.svg", false],
-  ["bilingualReversed", "sal-lockup-bilingual-reversed.svg", true],
+  ["horizontalAr", "sal-lockup-horizontal-ar.svg", false],
+  ["horizontalArReversed", "sal-lockup-horizontal-ar-reversed.svg", true],
   ["symbol", "sal-symbol.svg", false],
   ["symbolWhite", "sal-symbol-white.svg", true],
   ["avatar", "sal-avatar.svg", false],
 ] as const;
 
-// The palette from brand/tokens.json (SAL v4).
-// The six colors of v6 (brand/tokens.json).
+// The six colors (brand/tokens.json).
 const COLORS = [
   ["White", "#ffffff"],
   ["Ink", "#273236"],

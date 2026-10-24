@@ -56,11 +56,11 @@ export const SubmissionSheet = ({
       data-theme="light"
     >
       <header className="grid gap-1 border-line border-b-2 pb-3">
-        <p className="type-kicker">
+        <h2 className="type-heading">{labels.title()}</h2>
+        <p className="type-caption">
           {actions ? `${definition.code} · ` : ""}
           {t("society")}
         </p>
-        <h2 className="type-heading">{labels.title()}</h2>
         <p className="type-caption">
           {t(`statuses.${submission.status as forms.FormStatus}`)}
           {submission.submitted_at

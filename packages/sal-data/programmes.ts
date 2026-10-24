@@ -100,7 +100,7 @@ export const timeLeft = (dueAt: string, now = new Date()) => {
 };
 
 /**
- * The weekly rhythm (v6): the four formats that rotate through a four-week
+ * The weekly rhythm: the four formats that rotate through a four-week
  * cycle. The other formats are the specials; every other kind is a flagship.
  */
 export const WEEKLY_RHYTHM = [

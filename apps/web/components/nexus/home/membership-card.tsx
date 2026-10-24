@@ -27,10 +27,10 @@ export const MembershipCard = () => {
       className="grid gap-6 bg-surface-reading p-6 sm:grid-cols-[1fr_auto] sm:p-8"
     >
       <div className="grid content-start gap-2">
-        <p className="type-label">{t("card.title")}</p>
         <h2 className="type-title" id="membership-card">
           {name}
         </h2>
+        <p className="type-caption">{t("card.title")}</p>
         {status.data.member_since ? (
           <p className="type-body">
             {t("card.memberSince", {

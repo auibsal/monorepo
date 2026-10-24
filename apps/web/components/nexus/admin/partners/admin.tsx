@@ -289,7 +289,7 @@ const PartnerForm = ({
       </div>
       <p className="type-caption">{t("listedHint")}</p>
       <fieldset className="grid gap-4 sm:grid-cols-3">
-        <legend className="type-kicker mb-2">{t("contact")}</legend>
+        <legend className="type-label mb-2">{t("contact")}</legend>
         <Field label={t("contactName")}>
           {(id) => (
             <Input
@@ -606,7 +606,7 @@ const AgreementForm = ({ onDone }: { onDone: () => void }) => {
         ))}
       </div>
       <fieldset className="grid gap-2">
-        <legend className="type-kicker mb-1">{t("fields.grants")}</legend>
+        <legend className="type-label mb-1">{t("fields.grants")}</legend>
         <p className="type-caption">{t("grantsHint")}</p>
         {partners.agreementGrants.map((grant) => (
           <div className="flex items-center gap-2" key={grant}>

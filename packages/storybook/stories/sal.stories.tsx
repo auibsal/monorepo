@@ -4,14 +4,13 @@ import { DocumentFooter } from "@repo/design-system/components/sal/document-foot
 import { DocumentHeader } from "@repo/design-system/components/sal/document-header";
 import { FormHeader } from "@repo/design-system/components/sal/form-header";
 import { SectionHead } from "@repo/design-system/components/sal/section-head";
-import { SocialPost } from "@repo/design-system/components/sal/social-post";
 import type { Meta, StoryObj } from "@storybook/react";
 
 /**
- * SAL brand components (v6), ported from brand/components (Document Cover,
- * Document Footer, Form Header, Social Post, Section Head): Light headlines,
+ * SAL brand components, ported from brand/components (Document Cover,
+ * Document Footer, Form Header, Section Head): Light headlines,
  * hairlines, square corners and one accent. Screen components are in
- * "SAL/Screens (v6)".
+ * "SAL/Screens", social posts in "SAL/Social".
  */
 const meta = {
   title: "SAL/Brand",
@@ -24,27 +23,40 @@ type Story = StoryObj<typeof meta>;
 export const TypeStyles: Story = {
   render: () => (
     <div className="grid max-w-4xl gap-5">
-      <p className="type-label">Label · tracked capitals, small</p>
       <h1 className="type-display-xl">
         The paper and the <span className="type-accent">pen.</span>
       </h1>
       <h2 className="type-display">Display: Light, in ink</h2>
-      <h3 className="type-title">Title: 44 px Regular</h3>
+      <h3 className="type-title">Title: 44 px Light, standing alone</h3>
       <h4 className="type-heading">Heading</h4>
       <p className="type-lede">
-        Lede: a bilingual student society for literature, theater and the arts.
+        Lede: a society for literature, theater and the arts.
       </p>
       <p className="type-body">Body text is Regular, 1.6 leading.</p>
       <p className="type-caption text-text-secondary">
-        Caption in text-secondary (ash).
+        Caption in text-secondary (ash): News · October 14
+      </p>
+      <p className="type-label">
+        Label: names fields and columns, never above a title
       </p>
       <p className="reading max-w-[44ch] text-[1.375rem]">
         Reading: Literata, for the paper's decks and articles.
       </p>
       <p className="type-code">SAL-GOV-01 · Article 7</p>
-      <p className="text-4xl" lang="ar">
-        والقرطاسُ والقلم
-      </p>
+    </div>
+  ),
+};
+
+/** Arabic: Ubuntu Arabic Regular; the accent word changes color only. */
+export const TypeStylesArabic: Story = {
+  render: () => (
+    <div className="grid max-w-4xl gap-5" dir="rtl" lang="ar">
+      <h1 className="type-display-xl">
+        والقرطاسُ <span className="type-accent">والقلم.</span>
+      </h1>
+      <h3 className="type-title">هذا الفصل</h3>
+      <p className="type-lede">جمعية للأدب والمسرح والفنون.</p>
+      <p className="type-body">النص بخط Ubuntu Arabic العادي.</p>
     </div>
   ),
 };
@@ -90,14 +102,13 @@ export const Document: Story = {
     <article className="grid max-w-3xl gap-6">
       <DocumentHeader
         code="SAL-BRD-01"
-        nameAr="جمعية الفنون والآداب"
-        subtitle="The Society’s design system, version 6: the same logo, colors and type, used with more restraint"
-        title="Brand & Identity"
+        subtitle="The logo, colors, type and voice of the Society, quiet by default, one loud thing per page"
+        title="Brand and Identity"
       />
       <DocumentFooter
         code="SAL-BRD-01"
-        end="Version 6 · Draft 1"
-        title="Brand & Identity v6"
+        end="Version 1"
+        title="Brand and Identity"
       />
     </article>
   ),
@@ -106,10 +117,10 @@ export const Document: Story = {
 export const Card: Story = {
   render: () => (
     <SalCard className="max-w-sm">
-      <p className="type-label">Membership</p>
       <h2 className="type-heading">Member name</h2>
+      <p className="type-caption">Member since Saturday, October 24</p>
       <p className="type-body text-text-secondary">
-        No boxes in v6: a hairline above, the title and a line of text.
+        No boxes: a hairline above, the title and a line of text.
       </p>
     </SalCard>
   ),
@@ -119,45 +130,10 @@ export const Logo: Story = {
   render: () => (
     <div className="grid gap-6">
       <BrandLogo height={64} />
-      <BrandLogo height={64} variant="bilingual" />
+      <BrandLogo height={64} locale="ar" />
       <div className="band p-6">
         <BrandLogo ground="dark" height={64} />
       </div>
-    </div>
-  ),
-};
-
-export const Posts: Story = {
-  render: () => (
-    <div className="grid max-w-4xl grid-cols-2 gap-space-4 md:grid-cols-3">
-      <SocialPost
-        date="Tuesday, October 13"
-        ground="crimson"
-        headline={
-          <>
-            Charter <i>Day.</i>
-          </>
-        }
-      />
-      <SocialPost
-        date="auibsal.org/join"
-        ground="ink"
-        headline={
-          <>
-            Come <i>in.</i>
-          </>
-        }
-        lede="Membership is free and open to every AUIB student."
-      />
-      <SocialPost
-        date="No audition, no fee"
-        ground="white"
-        headline={
-          <>
-            For every <i>student.</i>
-          </>
-        }
-      />
     </div>
   ),
 };

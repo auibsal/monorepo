@@ -41,10 +41,13 @@ const DeskPage = async ({ params }: DeskProps) => {
     notFound();
   }
   const t = await getTranslations({ locale, namespace: "web.journal" });
-  const pieces = await readPublished(
-    ["journal"],
-    (c) => journal.deskPieces(c, desk, { limit: 48 }),
-    []
+  const pieces = journal.inLanguage(
+    await readPublished(
+      ["journal"],
+      (c) => journal.deskPieces(c, desk, { limit: 48 }),
+      []
+    ),
+    locale
   );
   const pictures = desk === "gallery" || desk === "video";
 

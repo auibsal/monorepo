@@ -130,7 +130,7 @@ const SearchPage = async ({ params, searchParams }: SearchProps) => {
                 className="grid gap-1 border-line border-b pb-4"
                 key={`${r.kind}-${r.id}`}
               >
-                <p className="type-kicker">
+                <p className="type-label">
                   {t(`kinds.${r.kind as Kind}`)}
                   {r.occurred_at
                     ? ` · ${formatLongDate(r.occurred_at, locale)}`

@@ -48,10 +48,13 @@ const EditionPage = async ({ params }: EditionProps) => {
     notFound();
   }
   const t = await getTranslations({ locale, namespace: "web.journal" });
-  const pieces = await readPublished(
-    ["journal"],
-    (c) => journal.editionPieces(c, edition.id),
-    []
+  const pieces = journal.inLanguage(
+    await readPublished(
+      ["journal"],
+      (c) => journal.editionPieces(c, edition.id),
+      []
+    ),
+    locale
   );
   const cover = mediaUrl(edition.cover_path);
   const pdf = mediaUrl(edition.pdf_path);
@@ -75,12 +78,12 @@ const EditionPage = async ({ params }: EditionProps) => {
           />
         ) : null}
         <div className="grid content-start gap-3">
-          <p className="type-kicker">
-            {localized(edition, "season", locale) || t("edition")}
-          </p>
           <h1 className="type-display">
             {localized(edition, "title", locale)}
           </h1>
+          <p className="type-caption">
+            {localized(edition, "season", locale) || t("edition")}
+          </p>
           {localized(edition, "theme", locale) ? (
             <p className="type-lede">{localized(edition, "theme", locale)}</p>
           ) : null}
@@ -102,14 +105,14 @@ const EditionPage = async ({ params }: EditionProps) => {
           aria-labelledby="letter"
           className="reading mx-auto grid w-full max-w-2xl gap-3 p-8"
         >
-          <h2 className="type-kicker" id="letter">
+          <h2 className="type-heading" id="letter">
             {t("editorsNote")}
           </h2>
           <p className="whitespace-pre-wrap">{letter}</p>
         </section>
       ) : null}
       <section aria-labelledby="contents" className="grid gap-8">
-        <h2 className="type-kicker border-line border-b pb-2" id="contents">
+        <h2 className="type-heading" id="contents">
           {t("inThisIssue")}
         </h2>
         {byDesk.map((group) => (

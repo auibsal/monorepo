@@ -12,7 +12,7 @@ interface DocumentFooterProps {
 }
 
 /**
- * The brand's Document Footer (v6): a hairline, then the code and title in
+ * The brand's Document Footer: a hairline, then the code and title in
  * Ubuntu Mono at the start and a slot at the end ("3 / 14" on paper), in
  * text-secondary.
  */

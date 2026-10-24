@@ -36,7 +36,7 @@ export const generateMetadata = async ({
   });
 };
 
-/** The italic word of a headline, in the accent (v6). */
+/** The italic word of a headline, in the accent. */
 const accent = (chunks: ReactNode) => (
   <span className="type-accent">{chunks}</span>
 );
@@ -72,18 +72,21 @@ const Home = async ({ params }: HomeProps) => {
     .sort((a, b) => a.at.localeCompare(b.at))
     .slice(0, 5);
 
-  const pieces = ((front ?? []).length > 0 ? front : news) ?? [];
+  const pieces = journal.inLanguage(
+    ((front ?? []).length > 0 ? front : news) ?? [],
+    locale
+  );
   const [lead, ...rest] = pieces;
 
-  // Flagships first, then the weekly rhythm; six on the home page.
-  const listed = (allProgrammes ?? [])
-    .filter((p) => p.is_active && programmes.programmeGroup(p) !== "special")
-    .sort(
-      (a, b) =>
-        Number(programmes.programmeGroup(a) !== "flagship") -
-        Number(programmes.programmeGroup(b) !== "flagship")
-    )
-    .slice(0, 6);
+  // The flagships (Qirtas is the paper, not a program: its row is
+  // unpublished), then the Evenings and the Specials as one entry each.
+  const flagships = (allProgrammes ?? []).filter(
+    (p) => p.is_active && programmes.programmeGroup(p) === "flagship"
+  );
+  const groups = [
+    { href: "/programs#weekly", key: "evenings" },
+    { href: "/programs#specials", key: "specials" },
+  ] as const;
 
   return (
     <>
@@ -152,7 +155,7 @@ const Home = async ({ params }: HomeProps) => {
         </section>
       ) : null}
 
-      {listed.length > 0 ? (
+      {flagships.length > 0 ? (
         <section
           aria-labelledby="programs"
           className="mx-auto grid w-full max-w-6xl gap-space-5 px-4 py-16"
@@ -167,32 +170,32 @@ const Home = async ({ params }: HomeProps) => {
             titleId="programs"
           />
           <ul className="grid gap-x-10 sm:grid-cols-2 lg:grid-cols-3">
-            {listed.map((p) => {
-              const flagship = programmes.programmeGroup(p) === "flagship";
-              return (
-                <li className="border-line border-t py-space-4" key={p.id}>
-                  <Link
-                    className="group grid gap-2"
-                    href={programmeHref(p.slug)}
-                  >
-                    <h3
-                      className={
-                        flagship
-                          ? "type-heading type-accent group-hover:underline"
-                          : "type-heading group-hover:text-accent"
-                      }
-                    >
-                      {localized(p, "name", locale)}
-                    </h3>
-                    {localized(p, "summary", locale) ? (
-                      <p className="type-caption max-w-[32ch] text-text-secondary">
-                        {localized(p, "summary", locale)}
-                      </p>
-                    ) : null}
-                  </Link>
-                </li>
-              );
-            })}
+            {flagships.map((p) => (
+              <li className="border-line border-t py-space-4" key={p.id}>
+                <Link className="group grid gap-2" href={programmeHref(p.slug)}>
+                  <h3 className="type-heading type-accent group-hover:underline">
+                    {localized(p, "name", locale)}
+                  </h3>
+                  {localized(p, "summary", locale) ? (
+                    <p className="type-caption max-w-[32ch] text-text-secondary">
+                      {localized(p, "summary", locale)}
+                    </p>
+                  ) : null}
+                </Link>
+              </li>
+            ))}
+            {groups.map((group) => (
+              <li className="border-line border-t py-space-4" key={group.key}>
+                <Link className="group grid gap-2" href={group.href}>
+                  <h3 className="type-heading group-hover:text-accent">
+                    {t(`${group.key}.title`)}
+                  </h3>
+                  <p className="type-caption max-w-[32ch] text-text-secondary">
+                    {t(`${group.key}.line`)}
+                  </p>
+                </Link>
+              </li>
+            ))}
           </ul>
         </section>
       ) : null}
@@ -205,7 +208,7 @@ const Home = async ({ params }: HomeProps) => {
         <div className="mx-auto grid w-full max-w-6xl gap-8 px-4 py-20">
           <div className="grid gap-6">
             <h2 className="type-display-xl" id="come-in">
-              {t("comeIn")}
+              {t.rich("comeIn", { accent })}
             </h2>
             <p className="type-lede max-w-[36ch]">{t("comeInBody")}</p>
             <Button
