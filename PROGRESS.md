@@ -10,28 +10,28 @@ Branch: `claude/new-session-qosn60`.
 ## Blocked — needed from the user
 
 - [ ] **Environment variables on Vercel (2026-10-24):** the one project is
-      `auibsal` (Production; the secrets marked sensitive), then redeploy.
-      Missing, with where each comes from:
+      `auibsal`. Set on 2026-10-24 (Production; secrets sensitive):
+      `RESEND_TOKEN` (a new sending-only key for auibsal.org, "auibsal
+      (Vercel, one app)"), `ARCJET_KEY` (site sal-api), `TELEGRAM_BOT_USERNAME`,
+      `TELEGRAM_WEBHOOK_SECRET` (generated), and a new Web Push pair
+      `NEXT_PUBLIC_VAPID_PUBLIC_KEY` / `VAPID_PRIVATE_KEY`. Left for the owner:
       | Variable | Where to get it | Without it |
       | --- | --- | --- |
-      | `RESEND_TOKEN` | Resend → API Keys → Create (sending access, domain auibsal.org) | No email at all |
-      | `DATABASE_WEBHOOK_SECRET` | The value of the Vault secret `outbox_webhook_secret` (Supabase → Integrations → Vault) | The outbox route refuses the database: no emails, push or cache refresh |
-      | `CRON_SECRET` | The value of the Vault secret `cron_secret` | The cron routes refuse the database's jobs and Vercel's keep-alive |
-      | `TELEGRAM_BOT_USERNAME` | `auibsal_bot` | No t.me links |
-      | `TELEGRAM_WEBHOOK_SECRET` | `openssl rand -hex 32`; then Nexus → Settings → Telegram → *Connect the bot to Telegram* | Telegram's updates are refused |
+      | `DATABASE_WEBHOOK_SECRET` | Copy the Vault secret `outbox_webhook_secret` (Supabase → Integrations → Vault → reveal) | The outbox route refuses the database: no emails, push or cache refresh |
+      | `CRON_SECRET` | Copy the Vault secret `cron_secret` | The cron routes refuse the database's jobs and Vercel's keep-alive |
       | `TELEGRAM_LOGIN_CLIENT_SECRET` | BotFather → Bot Settings → Login Widget → OpenID Connect | Linking by one-time code only |
-      | `ARCJET_KEY` | Arcjet → the auibsal.org site → SDK key | The public forms have no rate limit (they still work) |
-      | `NEXT_PUBLIC_VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY` | The pair from sal-api (password manager); a new pair (`bunx web-push generate-vapid-keys`) means members turn notifications on again | No push notifications |
-      Keep everything else set, including `NEXT_PUBLIC_AUTH_COOKIE_DOMAIN`
+      If a Vault secret is missing, make one value with a password generator
+      (64 letters and digits, no symbols) and save it in both places. Then
+      delete `NEXT_PUBLIC_APP_URL`, `NEXT_PUBLIC_WEB_URL` and
+      `NEXT_PUBLIC_API_URL` (nothing reads them), redeploy, and press Nexus →
+      Settings → Telegram → *Connect the bot to Telegram* (it registers the
+      new webhook secret). Keep `NEXT_PUBLIC_AUTH_COOKIE_DOMAIN`
       (`.auibsal.org`: the members' sessions carry it,
-      `packages/auth/cookies.ts`). Delete `NEXT_PUBLIC_APP_URL`,
-      `NEXT_PUBLIC_WEB_URL` and `NEXT_PUBLIC_API_URL`: nothing reads them.
-      The Supabase integration's own variables (`SUPABASE_URL`,
-      `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`,
-      `SUPABASE_JWT_SECRET`, `POSTGRES_*` …) are unused but harmless; the
-      integration manages them. The database's `platform.api_url` moves to
-      `https://auibsal.org/api` with migration `20261024000600`; check it in
-      Supabase → Table Editor → core.settings after the merge.
+      `packages/auth/cookies.ts`). The Supabase integration's own variables
+      are unused but harmless. Resend's click-tracking CNAME (`links`) fails
+      verification; tracking is off, so it does not affect sending. Check
+      `platform.api_url` in Supabase → Table Editor → core.settings reads
+      `https://auibsal.org/api` (migration `20261024000600`).
 - [ ] **After the one-app cutover (2026-10-24):** the owner removed the
       sal-nexus, sal-api and sal-design projects and their hosts and set up
       Supabase (Auth URLs, templates). Left: **Telegram:** BotFather → Login
@@ -242,7 +242,8 @@ These stop parts of the work. Everything else continues around them.
       Add), send them the client id privately, and approve it in Nexus →
       Settings → Third-party apps with "Name and language" and "AUIB
       Literary Journal". Steps: `docs/platform/api.md`.
-- [ ] **Phone notifications (Web Push) keys:** run
+- [x] **Phone notifications (Web Push) keys** (set on the auibsal project
+      2026-10-24; this item kept for the record): run
       `bunx web-push generate-vapid-keys` once (or reuse the pair from
       sal-api). Put the public key in `NEXT_PUBLIC_VAPID_PUBLIC_KEY` and the
       private key in `VAPID_PRIVATE_KEY` (sensitive) on the auibsal project,
