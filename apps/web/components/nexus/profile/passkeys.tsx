@@ -9,7 +9,6 @@ import {
   removePasskey,
 } from "@repo/auth/passkeys";
 import { useAuth } from "@repo/auth/provider";
-import { SalCard } from "@repo/design-system/components/sal/card";
 import { Button } from "@repo/design-system/components/ui/button";
 import { Input } from "@repo/design-system/components/ui/input";
 import { Label } from "@repo/design-system/components/ui/label";
@@ -18,6 +17,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useEffect, useId, useState } from "react";
 import { usePasskeyError } from "@/lib/nexus/auth-messages";
+import { DiwanSection } from "../page";
 
 const KEY = ["passkeys"];
 
@@ -89,11 +89,12 @@ export const Passkeys = () => {
   const list = passkeys.data ?? [];
 
   return (
-    <SalCard>
+    <DiwanSection
+      description={t("description")}
+      id="passkeys"
+      title={t("title")}
+    >
       <div className="grid gap-3">
-        <h2 className="type-subheading">{t("title")}</h2>
-        <p className="type-body">{t("description")}</p>
-
         {list.length > 0 ? (
           <ul className="grid gap-3">
             {list.map((passkey) => (
@@ -164,6 +165,7 @@ export const Passkeys = () => {
               className="justify-self-start"
               disabled={add.isPending}
               type="submit"
+              variant="outline"
             >
               {add.isPending ? t("adding") : t("add")}
             </Button>
@@ -176,6 +178,6 @@ export const Passkeys = () => {
           </p>
         ) : null}
       </div>
-    </SalCard>
+    </DiwanSection>
   );
 };

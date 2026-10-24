@@ -1,6 +1,6 @@
 import { Button } from "@repo/design-system/components/ui/button";
 import type { Locale } from "@repo/internationalization";
-import { apiPath, localizedPath, nexusPath } from "@repo/internationalization";
+import { apiPath, localizedPath } from "@repo/internationalization";
 import { formatClock, formatLongDate } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
 import { events, localized, sanitizeRichText } from "@repo/sal-data";
@@ -114,7 +114,7 @@ const EventPage = async ({ params }: EventProps) => {
           {event.rsvp_enabled ? (
             <Button asChild>
               <a
-                href={`${localizedPath(locale, nexusPath("/events"))}#${event.slug}`}
+                href={`${localizedPath(locale, "/events/book")}#${event.slug}`}
               >
                 {t("rsvp")}
               </a>

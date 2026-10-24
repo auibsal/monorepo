@@ -12,6 +12,8 @@ import { localized, unwrap } from "@repo/sal-data";
 import { useQuery } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/lib/nexus/navigation";
+import { StartLinks } from "../forms/forms";
+import { DiwanSection } from "../page";
 import { ErrorState, SectionSpinner } from "../states";
 import { AdminHeading } from "./kit";
 
@@ -99,7 +101,7 @@ const verificationFigure = (
           date: formatLongDate(o.verification_oldest_at ?? "", locale),
         })
       : t("verificationNone"),
-    href: "/admin/members",
+    href: "/members",
     label: t("verificationPending"),
     value: o.verification_pending,
   };
@@ -131,7 +133,7 @@ const eventsFigure = (
   return {
     action: t("openEvents"),
     detail,
-    href: "/admin/events",
+    href: "/events",
     label: t("upcomingRsvps"),
     value: o.upcoming_rsvps,
   };
@@ -160,7 +162,7 @@ const submissionsFigure = (
           selection: formatNumber(stages.selection ?? 0),
         })
       : t("submissionsNone"),
-    href: "/admin/pipeline",
+    href: "/pipeline",
     label: t("openSubmissions"),
     value: o.open_submissions,
   };
@@ -197,7 +199,7 @@ export const AdminOverview = () => {
   const figures = buildFigures(o, t, locale);
 
   return (
-    <div className="grid gap-8">
+    <div className="grid gap-14">
       <AdminHeading title={t("title")} />
       {figures.length === 0 && !o.campaigns ? (
         <p className="type-body text-text-secondary">{t("nothing")}</p>
@@ -210,8 +212,7 @@ export const AdminOverview = () => {
         </div>
       ) : null}
       {o.campaigns ? (
-        <section className="grid gap-3">
-          <h2 className="type-heading">{t("campaigns")}</h2>
+        <DiwanSection id="campaigns" title={t("campaigns")}>
           {o.campaigns.length === 0 ? (
             <p className="type-body text-text-secondary">{t("noCampaigns")}</p>
           ) : (
@@ -239,8 +240,17 @@ export const AdminOverview = () => {
               ))}
             </ul>
           )}
-        </section>
+        </DiwanSection>
       ) : null}
+      <DiwanSection
+        description={t("forRole.lede")}
+        id="for-your-role"
+        title={t("forRole.title")}
+      >
+        <StartLinks
+          keys={["f11", "f13", "f14", "f24", "f04", "f06", "f27", "f25a"]}
+        />
+      </DiwanSection>
     </div>
   );
 };

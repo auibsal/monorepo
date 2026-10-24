@@ -2,17 +2,13 @@
 
 import { useAuth } from "@repo/auth/provider";
 import { Button } from "@repo/design-system/components/ui/button";
+import { Link, useRouter } from "@repo/internationalization/navigation";
 import type { AuthError } from "@supabase/supabase-js";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 import { FullPageSpinner } from "@/components/nexus/states";
-import {
-  Link,
-  safeNextPath,
-  stripLocale,
-  useRouter,
-} from "@/lib/nexus/navigation";
+import { safeNextPath, stripLocale } from "@/lib/nexus/navigation";
 
 /**
  * Landing page for confirmation, magic and recovery links (PKCE): exchanges
@@ -43,7 +39,7 @@ export const AuthCallback = () => {
       const signedIn =
         !error || Boolean((await supabase.auth.getSession()).data.session);
       if (signedIn) {
-        router.replace(next ? stripLocale(next) : "/");
+        router.replace(next ? stripLocale(next) : "/account");
       } else {
         setFailed(true);
       }

@@ -6,7 +6,6 @@ import { documents } from "@repo/sal-data";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { DocumentStatus } from "@/components/document-status";
 import { localizedMetadata } from "@/lib/metadata";
 import { readPublished } from "@/lib/supabase";
 
@@ -39,10 +38,10 @@ export const generateMetadata = async ({
   if (!doc) {
     return {};
   }
-  const t = await getTranslations({ locale, namespace: "web.documents" });
-  const status = t(`statuses.${doc.status as documents.DocumentStatus}`);
   return localizedMetadata(locale, `/documents/${doc.slug}`, {
-    description: doc.summary_en ? `${status}. ${doc.summary_en}` : status,
+    description:
+      documents.documentSummary(doc, locale) ||
+      documents.documentTitle(doc, locale),
     title: documents.documentTitle(doc, locale),
   });
 };
@@ -66,14 +65,10 @@ const DocumentPage = async ({ params }: DocumentProps) => {
       >
         {t("all")}
       </Link>
-      <DocumentHeader
-        code={doc.code}
-        nameAr={doc.title_ar ?? undefined}
-        title={documents.documentTitle(doc, locale)}
-      >
-        {doc.summary_en ? (
-          <p className="type-lede max-w-3xl" dir="auto">
-            {(locale === "ar" && doc.summary_ar) || doc.summary_en}
+      <DocumentHeader title={documents.documentTitle(doc, locale)}>
+        {documents.documentSummary(doc, locale) ? (
+          <p className="type-lede max-w-3xl">
+            {documents.documentSummary(doc, locale)}
           </p>
         ) : null}
         {doc.dated ? (
@@ -82,8 +77,6 @@ const DocumentPage = async ({ params }: DocumentProps) => {
           </p>
         ) : null}
       </DocumentHeader>
-
-      <DocumentStatus doc={doc} locale={locale} />
 
       {contents.length > 0 ? (
         <nav aria-labelledby="contents" className="grid gap-3">

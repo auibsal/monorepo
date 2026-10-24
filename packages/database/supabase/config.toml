@@ -384,7 +384,7 @@ enabled = false
 # OAuth server configuration
 [auth.oauth_server]
 # "Sign in with SAL" for third-party apps (the OAuth 2.1 server). Production:
-# Dashboard → Authentication → OAuth Server. Consent page: the Diwan.
+# Dashboard → Authentication → OAuth Server. Consent page: /oauth/consent on the site.
 enabled = true
 # Path for OAuth consent flow UI
 authorization_url_path = "/oauth/consent"

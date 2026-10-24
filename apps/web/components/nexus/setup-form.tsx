@@ -11,12 +11,13 @@ import {
   RadioGroup,
   RadioGroupItem,
 } from "@repo/design-system/components/ui/radio-group";
+import { useRouter } from "@repo/internationalization/navigation";
 import { content, membership } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { type FormEvent, useEffect, useId, useState } from "react";
-import { safeNextPath, stripLocale, useRouter } from "@/lib/nexus/navigation";
+import { safeNextPath, stripLocale } from "@/lib/nexus/navigation";
 import { useMemberStatus, useProfile } from "@/lib/nexus/queries";
 import { ErrorState, FullPageSpinner } from "./states";
 
@@ -123,7 +124,9 @@ export const SetupForm = () => {
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries();
-      router.replace(next ? stripLocale(next) : "/", { locale: prefs.locale });
+      router.replace(next ? stripLocale(next) : "/account", {
+        locale: prefs.locale,
+      });
     },
   });
 

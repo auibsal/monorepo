@@ -17,12 +17,13 @@ import {
   formatLongDate,
   formatNumber,
 } from "@repo/internationalization/format";
+import { Link } from "@repo/internationalization/navigation";
 import { events, localized, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useEffect, useState } from "react";
-import { Link } from "@/lib/nexus/navigation";
 import { queryKeys, useMyRsvps, useMyWaitlist } from "@/lib/nexus/queries";
+import { DiwanPage } from "../page";
 import { EmptyLine, ErrorState, SectionSpinner } from "../states";
 
 interface Question {
@@ -209,15 +210,13 @@ export const EventsBrowser = () => {
   }
 
   return (
-    <div className="grid gap-8">
-      <header className="grid gap-2">
-        <h1 className="type-display">{t("title")}</h1>
-        <p className="type-lede max-w-2xl">{t("lede")}</p>
-      </header>
-
+    <DiwanPage lede={t("lede")} title={t("title")}>
       {upcoming.data.length === 0 ? (
         <EmptyLine
-          action={{ href: "/#calendar", label: ta("subscribeCalendar") }}
+          action={{
+            href: "/account/profile#calendar",
+            label: ta("subscribeCalendar"),
+          }}
         >
           {t("empty")}
         </EmptyLine>
@@ -274,7 +273,7 @@ export const EventsBrowser = () => {
           </form>
         </DialogContent>
       </Dialog>
-    </div>
+    </DiwanPage>
   );
 };
 
@@ -359,7 +358,7 @@ const EventCard = ({
           ) : null}
           {state === "booked" ? (
             <Button asChild variant="outline">
-              <Link href="/#next-events">{t("ticket")}</Link>
+              <Link href="/account#next-events">{t("ticket")}</Link>
             </Button>
           ) : null}
           {holding ? (

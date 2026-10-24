@@ -85,11 +85,15 @@ const Figure = ({
   );
 };
 
-/** News, interviews, features, reviews: a reading column after the photo. */
+/**
+ * News, interviews, features, reviews: a column after the photo, in the
+ * site's own type (owner, Oct 24, 2026: news reads like the rest of the
+ * site; Literata stays for stories and poems).
+ */
 const NewsBody = ({ locale, piece }: { locale: Locale; piece: Full }) => {
   const [photo] = images(piece);
   return (
-    <div className="reading mx-auto grid w-full max-w-2xl gap-6 px-4">
+    <div className="mx-auto grid w-full max-w-2xl gap-6 px-4">
       {photo ? <Figure image={photo} locale={locale} /> : null}
       {texts(piece).map((text) => (
         <Html

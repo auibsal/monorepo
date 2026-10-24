@@ -66,7 +66,7 @@ const PagesList = () => {
       cell: (p) => (
         <Link
           className={linkClass}
-          href={{ pathname: "/admin/content/page", query: { id: p.id } }}
+          href={{ pathname: "/content/page", query: { id: p.id } }}
         >
           {localized(p, "title", locale)}
         </Link>
@@ -91,7 +91,7 @@ const PagesList = () => {
   ];
   return (
     <div className="grid gap-4">
-      <Link className={buttonLink} href="/admin/content/page">
+      <Link className={buttonLink} href="/content/page">
         {t("newPage")}
       </Link>
       {pages.isPending ? <SectionSpinner /> : null}
@@ -816,7 +816,7 @@ export const ContentAdmin = () => {
       <AdminHeading title={t("title")}>{t("lede")}</AdminHeading>
       <p className="type-body text-text-secondary">
         {t("newsMoved")}{" "}
-        <Link className={linkClass} href="/admin/journal">
+        <Link className={linkClass} href="/journal">
           {t("newsroom")}
         </Link>
       </p>

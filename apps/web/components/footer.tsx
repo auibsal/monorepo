@@ -1,6 +1,5 @@
-import { project } from "@repo/config";
 import { BrandLogo } from "@repo/design-system/components/brand-logo";
-import { localizedPath, nexusPath } from "@repo/internationalization";
+import { localizedPath } from "@repo/internationalization";
 import { Link } from "@repo/internationalization/navigation";
 import NextLink from "next/link";
 import { getLocale, getTranslations } from "next-intl/server";
@@ -73,9 +72,6 @@ export const Footer = async ({ consent = true }: FooterProps = {}) => {
           <p className="max-w-[34ch] text-text-secondary">
             {tx("recognition")}
           </p>
-          <p className="text-text-secondary" lang="ar">
-            {project.motto.ar}
-          </p>
         </div>
         {columns.map((column) => (
           <div className="grid content-start gap-3.5" key={column.heading}>
@@ -124,9 +120,9 @@ export const Footer = async ({ consent = true }: FooterProps = {}) => {
             <li>
               <NextLink
                 className={linkClass}
-                href={localizedPath(locale, nexusPath())}
+                href={localizedPath(locale, "/account")}
               >
-                {tn("nexus")}
+                {tn("account")}
               </NextLink>
             </li>
           </ul>

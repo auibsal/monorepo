@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
+import { DiwanSection } from "../page";
 
-/** A Society page section: heading on a 2px rule, then its content. */
+/** A Society page section: the Diwan's section head and its line. */
 export const SocietySection = ({
   children,
   id,
@@ -12,13 +13,7 @@ export const SocietySection = ({
   readonly lede?: string;
   readonly title: string;
 }) => (
-  <section aria-labelledby={id} className="grid content-start gap-4">
-    <header className="grid gap-1 border-line border-b pb-2">
-      <h2 className="type-heading" id={id}>
-        {title}
-      </h2>
-      {lede ? <p className="type-body text-text-secondary">{lede}</p> : null}
-    </header>
+  <DiwanSection description={lede} id={id} title={title}>
     {children}
-  </section>
+  </DiwanSection>
 );

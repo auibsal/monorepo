@@ -22,8 +22,6 @@ export const generateMetadata = async ({
   });
 };
 
-type Status = documents.DocumentStatus;
-
 const DocumentsPage = async ({ params }: DocumentsProps) => {
   const { locale } = await params;
   setRequestLocale(locale);
@@ -48,7 +46,6 @@ const DocumentsPage = async ({ params }: DocumentsProps) => {
             className="grid content-start gap-2 border-line border-t py-space-4"
             key={doc.code}
           >
-            <p className="type-code text-sm text-text-secondary">{doc.code}</p>
             <h2 className="type-heading">
               <Link
                 className="hover:text-accent"
@@ -57,14 +54,11 @@ const DocumentsPage = async ({ params }: DocumentsProps) => {
                 {documents.documentTitle(doc, locale)}
               </Link>
             </h2>
-            {doc.summary_en ? (
-              <p className="type-body text-text-secondary" dir="auto">
-                {(locale === "ar" && doc.summary_ar) || doc.summary_en}
+            {documents.documentSummary(doc, locale) ? (
+              <p className="type-body text-text-secondary">
+                {documents.documentSummary(doc, locale)}
               </p>
             ) : null}
-            <p className="type-kicker">
-              {t(`statuses.${doc.status as Status}`)}
-            </p>
           </li>
         ))}
       </ul>

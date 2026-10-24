@@ -4,16 +4,12 @@ import { useAuth } from "@repo/auth/provider";
 import { FormHeader } from "@repo/design-system/components/sal/form-header";
 import { Button } from "@repo/design-system/components/ui/button";
 import { isLocale } from "@repo/internationalization";
+import { Link, useRouter } from "@repo/internationalization/navigation";
 import type { EmailOtpType } from "@supabase/supabase-js";
 import { useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
-import {
-  Link,
-  safeNextPath,
-  stripLocale,
-  useRouter,
-} from "@/lib/nexus/navigation";
+import { safeNextPath, stripLocale } from "@/lib/nexus/navigation";
 
 const types = new Set<EmailOtpType>([
   "email",
@@ -83,7 +79,7 @@ export const AuthConfirm = () => {
     }
     const back = returnUrl(params.get("next"));
     const next = safeNextPath(back?.searchParams.get("next"));
-    router.replace(next ? stripLocale(next) : "/");
+    router.replace(next ? stripLocale(next) : "/account");
   };
 
   if (failed) {

@@ -6,10 +6,10 @@ import { FormHeader } from "@repo/design-system/components/sal/form-header";
 import { Button } from "@repo/design-system/components/ui/button";
 import { Input } from "@repo/design-system/components/ui/input";
 import { Label } from "@repo/design-system/components/ui/label";
+import { Link } from "@repo/internationalization/navigation";
 import { useTranslations } from "next-intl";
 import { type FormEvent, useId, useState } from "react";
 import { useAuthError } from "@/lib/nexus/auth-messages";
-import { Link } from "@/lib/nexus/navigation";
 import { RequireAuth } from "../gates";
 
 /** New password after a recovery link (the callback signed the member in). */
@@ -42,7 +42,7 @@ export const ResetForm = () => {
       {done ? (
         <p role="status">
           {t("reset.done")}{" "}
-          <Link className="link" href="/">
+          <Link className="link" href="/account">
             {t("signIn.submit")}
           </Link>
         </p>

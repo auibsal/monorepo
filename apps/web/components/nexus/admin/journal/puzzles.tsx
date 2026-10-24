@@ -179,7 +179,7 @@ export const Puzzles = () => {
       cell: (p) => (
         <Link
           className="link"
-          href={{ pathname: "/admin/journal/puzzle", query: { id: p.id } }}
+          href={{ pathname: "/journal/puzzle", query: { id: p.id } }}
         >
           {localized(p, "title", locale) || t("untitled")}
         </Link>
@@ -209,7 +209,7 @@ export const Puzzles = () => {
   return (
     <div className="grid gap-4">
       <p className="type-caption">{t("lede")}</p>
-      <Link className={buttonLink} href="/admin/journal/puzzle">
+      <Link className={buttonLink} href="/journal/puzzle">
         {t("new")}
       </Link>
       {puzzles.data ? (
@@ -330,7 +330,7 @@ const PuzzleForm = ({ initial }: { initial: Draft }) => {
       setSaved(true);
       await queryClient.invalidateQueries({ queryKey: key });
       if (!draft.id) {
-        router.replace({ pathname: "/admin/journal/puzzle", query: { id } });
+        router.replace({ pathname: "/journal/puzzle", query: { id } });
       }
     },
   });
@@ -349,7 +349,7 @@ const PuzzleForm = ({ initial }: { initial: Draft }) => {
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: key });
-      router.push("/admin/journal");
+      router.push("/journal");
     },
   });
 
@@ -624,10 +624,7 @@ export const PuzzleEditor = () => {
   }, [id, record.data]);
 
   const back = (
-    <Link
-      className="text-sm underline underline-offset-4"
-      href="/admin/journal"
-    >
+    <Link className="text-sm underline underline-offset-4" href="/journal">
       {tk("back")}
     </Link>
   );

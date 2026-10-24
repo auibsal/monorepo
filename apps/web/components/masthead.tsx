@@ -69,7 +69,7 @@ export const Masthead = ({
         <NextLink className="flex shrink-0 items-center gap-3" href={home}>
           <BrandLogo className="h-10 lg:h-14" height={56} locale={locale} />
           {place ? (
-            <span className="type-label hidden border-line border-s ps-3 sm:block">
+            <span className="hidden border-line border-s ps-3 font-medium text-[0.90625rem] text-text-secondary sm:block">
               {place}
             </span>
           ) : null}

@@ -12,7 +12,15 @@ Branch: `claude/new-session-qosn60`.
 - [ ] **Brand v6 (2026-10-24), what is left for the owner:**
   - **Supabase → Authentication → Emails:** paste the four updated
     templates and subjects from `packages/database/supabase/templates`
-    (they link to `/diwan/auth/confirm` and say "the Diwan"), unless done.
+    (they now link to `/auth/confirm` on the site; the old `/diwan/auth/…`
+    links forward meanwhile).
+  - **Members' pages left the Diwan (2026-10-24), three settings to move:**
+    BotFather → Bot Settings → Login Widget → OpenID Connect → Redirect
+    URIs `https://auibsal.org/account/profile` and
+    `https://auibsal.org/ar/account/profile` (in place of the `/diwan/profile`
+    ones; Telegram linking from the profile fails until then); Supabase →
+    Authentication → OAuth Server → authorization path `/oauth/consent`;
+    BetterStack's sign-in monitor → `https://auibsal.org/sign-in`.
   - **BotFather → Edit Bot → Description picture:**
     `brand/mascot/hudhud-description.png`, then *Connect the bot to
     Telegram* in the Diwan so the descriptions update.
@@ -286,6 +294,28 @@ These stop parts of the work. Everything else continues around them.
       Realtime since 2026-10-09 (decision below).
 
 ## Decisions
+
+- **The Diwan is for officers only** (owner, 2026-10-24): "Diwan should be
+  just for admins. Though users can sign up/in. All public features should
+  become outside of diwan." Sign-in, sign-up and every member page moved to
+  the site, in its header and footer: `/sign-in`, `/sign-up`, `/account`
+  (overview, profile, requests and reports, service, offers, certificate),
+  `/events/book`, `/programs/shifts`, `/programs/productions/auditions`,
+  `/qirtas/write` (submit, submissions, work), `/society`. The Diwan keeps
+  the administration at `/diwan/<module>` (no more `/diwan/admin`), the
+  library and declarations, and opens only for role holders; everyone else
+  is sent to `/account`. Old member addresses under `/diwan` forward to the
+  new ones (emails already sent, the sign-in emails until they are
+  re-pasted).
+
+- **The Diwan overhaul, documents and one language per page** (owner,
+  2026-10-24): every document adopted as Version 1, codes and statuses for
+  admins only; forms woven into the sections they belong to with plain
+  actions and no codes (Requests and reports at `/diwan/forms`); no Arabic
+  on English pages and no English on Arabic ones; news pieces in Qirtas in
+  the site's type (Literata stays for stories and poems); the home page
+  without the kicker and the extra rules. The Diwan has Home in its five
+  sections, a single Account menu, and one page frame (`DiwanPage`).
 
 - **Brand v6 and the new names** (owner, 2026-10-24; the v6 handoff,
   START.md and NAMES.md): Light headlines, hairlines in place of boxes, one
@@ -956,3 +986,25 @@ Covered by automated tests so far:
 All Arabic written for the platform up to 2026-10-24 was reviewed by the
 owner and approved ("reviewed across the board, it's all good"). List new
 Arabic here as it is written.
+
+Written 2026-10-24 (the Diwan overhaul):
+
+- `web.about.constitution` «اقرأ الدستور»; «الغرفة المشتركة» (The Common
+  Room); «حسابك الجامعي», «بالحساب الجامعي».
+- `nexus.forms`: «الطلبات والبلاغات» and its page copy, and the action of
+  each request (`defs.*.action`: «تقدّم لدور»، «اقترح بندًا على الجمعية
+  العمومية»، «اعرض فكرة برنامج»، «خطّط لفعالية»، «اطلب استرداد مصروفات»،
+  «سجّل عدّ النقد»، «إذن التصوير والنشر»، «أبلغ عن حادث»، «قدّم ملاحظة أو
+  شكوى»، «جهّز ملف تسليمك»، «اكتب تقرير الفصل»، «أنهِ دورًا عند التسليم»،
+  «اكتب ميثاق برنامج»، «قيّم مقابلة»، «استقبل صاحب دور جديد»).
+- `nexus.society.takePart`, `nexus.programs.ideas`,
+  `nexus.admin.overview.forRole`, `nexus.profile.lede`, `aboutYou` and
+  `consent`.
+- The members' pages leaving the Diwan: `nexus.nav.overview` «نظرة عامة»,
+  `web.nav.account` «حسابك», «افتح حسابك» (emails and the bot), and the
+  rewritten lines that no longer send members to the Diwan (`auth.signIn.title`,
+  `auth.confirm.title`, `nexus.setup.*`, `nexus.twoStep.*`,
+  `nexus.profile.push.*`, `nexus.offers.lede`, `nexus.partnerGuest.body`,
+  `web.events.*`, `web.journal.submit`, `web.journal.readInNexus`,
+  `web.join.*`, `web.privacy.*`, `web.verify.signedBy`,
+  `web.newsletter.members`, and Hudhud's lines in `lib/api/bot/copy.ts`).

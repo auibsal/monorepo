@@ -77,7 +77,7 @@ export const Certificate = () => {
 
   if (!id) {
     return (
-      <EmptyLine action={{ href: "/service", label: t("back") }}>
+      <EmptyLine action={{ href: "/account/service", label: t("back") }}>
         {t("missing")}
       </EmptyLine>
     );
@@ -90,7 +90,7 @@ export const Certificate = () => {
   }
   if (!certificate.data) {
     return (
-      <EmptyLine action={{ href: "/service", label: t("back") }}>
+      <EmptyLine action={{ href: "/account/service", label: t("back") }}>
         {t("missing")}
       </EmptyLine>
     );
@@ -159,11 +159,11 @@ export const Certificate = () => {
         </header>
 
         <div className="grid justify-items-center gap-4">
-          <h1 className="font-bold text-4xl text-text">
+          <h1 className="font-light text-4xl text-text">
             {t(`titles.${kind}`)}
           </h1>
           <p className="type-body">{t("recordThat")}</p>
-          <p className="border-line border-b-2 px-8 pb-1 font-bold text-3xl">
+          <p className="border-line border-b px-8 pb-1 font-light text-3xl">
             {name}
           </p>
           <p className="type-body max-w-2xl text-lg">
@@ -175,8 +175,8 @@ export const Certificate = () => {
         </div>
 
         <footer className="grid gap-6">
-          <p className="type-caption" lang="ar">
-            {project.motto.ar}
+          <p className="type-caption">
+            {locale === "ar" ? project.motto.ar : project.motto.en}
           </p>
           <div className="grid grid-cols-3 items-end gap-6 text-sm">
             <div className="grid gap-1 border-line border-t pt-2">

@@ -2,7 +2,7 @@
 
 Qirtas's pages on auibsal.org (the front page, each desk and each piece) show
 ads to visitors who are **not signed in** (owner, Oct 16, 2026). Anyone
-signed in to the Diwan sees none. There are three kinds:
+signed in sees none. There are three kinds:
 
 - **Society ads.** Events, open calls, joining SAL. Written in the Diwan by
   whoever keeps the site's content (`content.manage`: the General Secretary,
@@ -75,7 +75,7 @@ Only the owner or the technical administrator holds these accounts.
    Society or sponsor ad, or an AdSense ad (blank until AdSense approves the
    site).
 2. The consent card lists Analytics and Advertising under **Choose**.
-3. Sign in to the Diwan and reload auibsal.org/qirtas: no ad spaces.
+3. Sign in and reload auibsal.org/qirtas: no ad spaces.
 4. The privacy page (Platform section) describes the ads.
 
 ## Writing an ad

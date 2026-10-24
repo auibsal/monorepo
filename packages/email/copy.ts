@@ -33,6 +33,13 @@ const build = (lang: Lang, make: (l: Lang) => Copy): Built => {
 const when = (iso: string, l: Lang) =>
   `${formatLongDate(iso, l)} · ${formatClock(iso, l)}`;
 
+/** A member's own page on the site (their account, Qirtas, …). */
+const account = (base: string, l: Lang, path = "/account") => ({
+  href: `${base}${localizedPath(l, path)}`,
+  label: l === "ar" ? "افتح حسابك" : "Open your account",
+});
+
+/** A page in the Diwan, for officers. */
 const nexus = (base: string, l: Lang, path = "") => ({
   href: `${base}${localizedPath(l, nexusPath(path || "/"))}`,
   label: l === "ar" ? "افتح الديوان" : "Open the Diwan",
@@ -56,7 +63,7 @@ const eventLines = (e: EventInfo, l: Lang) =>
 
 export const rsvpConfirmed = (lang: Lang, e: EventInfo, app: string) =>
   build(lang, (l) => ({
-    action: nexus(app, l),
+    action: account(app, l),
     heading:
       l === "ar"
         ? `حُجز مكانك: ${title(e, l)}`
@@ -71,7 +78,7 @@ export const rsvpConfirmed = (lang: Lang, e: EventInfo, app: string) =>
 
 export const waitlistPromoted = (lang: Lang, e: EventInfo, app: string) =>
   build(lang, (l) => ({
-    action: nexus(app, l),
+    action: account(app, l),
     heading:
       l === "ar"
         ? `أصبح لك مكان: ${title(e, l)}`
@@ -86,7 +93,7 @@ export const waitlistPromoted = (lang: Lang, e: EventInfo, app: string) =>
 
 export const eventReminder = (lang: Lang, e: EventInfo, app: string) =>
   build(lang, (l) => ({
-    action: nexus(app, l),
+    action: account(app, l),
     heading: l === "ar" ? `غداً: ${title(e, l)}` : `Tomorrow: ${title(e, l)}`,
     paragraphs: [
       ...eventLines(e, l),
@@ -129,7 +136,7 @@ export const submissionReceived = (
   desk: DeskKind = "blind"
 ) =>
   build(lang, (l) => ({
-    action: nexus(app, l, "/qirtas"),
+    action: account(app, l, "/qirtas/write"),
     heading:
       l === "ar" ? `شكراً، وصلنا ${work}` : `Thank you: we received ${work}`,
     paragraphs: RECEIVED[desk][l],
@@ -142,7 +149,7 @@ export const returnedForFormatting = (
   app: string
 ) =>
   build(lang, (l) => ({
-    action: nexus(app, l, "/qirtas"),
+    action: account(app, l, "/qirtas/write"),
     heading:
       l === "ar"
         ? `تعديل واحد قبل القراءة: ${work}`
@@ -177,7 +184,7 @@ export const decision = (
   build(lang, (l) => {
     if (outcome === "decline") {
       return {
-        action: nexus(app, l, "/qirtas"),
+        action: account(app, l, "/qirtas/write"),
         heading:
           l === "ar" ? `شكراً لإرسالك ${work}` : `Thank you for sending ${work}`,
         paragraphs:
@@ -193,7 +200,7 @@ export const decision = (
       };
     }
     return {
-      action: nexus(app, l, "/qirtas"),
+      action: account(app, l, "/qirtas/write"),
       heading:
         l === "ar" ? `قُبل ${work} في قرطاس` : `${work} is accepted for Qirtas`,
       paragraphs: [
@@ -207,7 +214,7 @@ export const decision = (
 
 export const agreementReminder = (lang: Lang, work: string, app: string) =>
   build(lang, (l) => ({
-    action: nexus(app, l, "/qirtas"),
+    action: account(app, l, "/qirtas/write"),
     heading:
       l === "ar"
         ? `بانتظار توقيعك: اتفاقية نشر ${work}`
@@ -229,7 +236,7 @@ export const finalCheck = (
   app: string
 ) =>
   build(lang, (l) => ({
-    action: nexus(app, l, piecePath(pieceId)),
+    action: account(app, l, piecePath(pieceId)),
     heading:
       l === "ar" ? `مراجعتك الأخيرة: ${work}` : `Your final check: ${work}`,
     paragraphs: [
@@ -250,7 +257,7 @@ export const pieceNote = (
   app: string
 ) =>
   build(lang, (l) => ({
-    action: nexus(app, l, piecePath(pieceId)),
+    action: account(app, l, piecePath(pieceId)),
     heading:
       l === "ar"
         ? `ملاحظة من المحرر: ${work}`
@@ -390,7 +397,7 @@ export interface RoleInfo {
 
 export const roleEnding = (lang: Lang, role: RoleInfo, app: string) =>
   build(lang, (l) => ({
-    action: nexus(app, l),
+    action: account(app, l),
     heading:
       l === "ar"
         ? `ينتهي دورك قريباً: ${role.name_ar}`
@@ -422,7 +429,7 @@ export const removalRequested = (
   overdue = false
 ) =>
   build(lang, (l) => ({
-    action: nexus(app, l, "/admin/programs"),
+    action: nexus(app, l, "/programs"),
     heading: removalHeading[overdue ? "overdue" : "new"][l],
     paragraphs: [
       l === "ar"

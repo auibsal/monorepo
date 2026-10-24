@@ -1,5 +1,5 @@
 import { buttonVariants } from "@repo/design-system/components/ui/button";
-import { localizedPath, nexusPath } from "@repo/internationalization";
+import { localizedPath } from "@repo/internationalization";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { PageHeader, RuledList, Section } from "@/components/section";
 import { type LocaleParams, sectionMetadata } from "@/lib/page";
@@ -17,7 +17,7 @@ const JoinPage = async ({ params }: LocaleParams) => {
     <div className="grid gap-3">
       <a
         className={buttonVariants({ className: "justify-self-start" })}
-        href={localizedPath(locale, nexusPath("/sign-up"))}
+        href={localizedPath(locale, "/sign-up")}
       >
         {t("cta")}
       </a>

@@ -1,7 +1,7 @@
 import { SectionHead } from "@repo/design-system/components/sal/section-head";
 import { Button } from "@repo/design-system/components/ui/button";
 import type { Locale } from "@repo/internationalization";
-import { localizedPath, nexusPath } from "@repo/internationalization";
+import { localizedPath } from "@repo/internationalization";
 import { formatLongDate } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
 import { events, journal, localized, programmes } from "@repo/sal-data";
@@ -46,7 +46,7 @@ const Home = async ({ params }: HomeProps) => {
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "web.home" });
   const tj = await getTranslations({ locale, namespace: "web.journal" });
-  const join = localizedPath(locale, nexusPath("/sign-up"));
+  const join = localizedPath(locale, "/sign-up");
 
   const [nextEvents, calls, front, news, allProgrammes] = await Promise.all([
     readPublished(["events"], (c) => events.publicEvents(c, { limit: 4 }), []),
@@ -87,10 +87,9 @@ const Home = async ({ params }: HomeProps) => {
 
   return (
     <>
-      <section className="border-line border-b">
-        <div className="mx-auto grid w-full max-w-6xl gap-8 px-4 py-16 sm:py-24 lg:grid-cols-[1fr_auto] lg:items-end">
+      <section>
+        <div className="mx-auto grid w-full max-w-6xl gap-8 px-4 py-16 sm:py-24">
           <div className="grid gap-6">
-            <p className="type-label">{t("kicker")}</p>
             <h1 className="type-display-xl max-w-4xl">
               {t.rich("title", { accent })}
             </h1>
@@ -104,16 +103,6 @@ const Home = async ({ params }: HomeProps) => {
               </Button>
             </div>
           </div>
-          {locale === "ar" ? null : (
-            <figure className="grid justify-items-end gap-2" lang="ar">
-              <p className="text-4xl leading-tight sm:text-5xl" dir="rtl">
-                {t("motto")}
-              </p>
-              <figcaption className="type-label" lang="en">
-                {t("mottoBy")}
-              </figcaption>
-            </figure>
-          )}
         </div>
       </section>
 
@@ -138,25 +127,16 @@ const Home = async ({ params }: HomeProps) => {
       </section>
 
       {lead ? (
-        <section
-          aria-labelledby="paper"
-          className="border-line border-y bg-surface-reading"
-        >
+        <section aria-labelledby="paper" className="bg-surface-reading">
           <div className="mx-auto grid w-full max-w-6xl gap-space-5 px-4 py-16">
             <header className="flex flex-wrap items-end justify-between gap-x-8 gap-y-2 border-text border-b pb-3">
-              <h2 className="flex items-baseline gap-4" id="paper">
+              <h2 id="paper">
                 <Link
                   className="font-medium text-4xl tracking-tight hover:text-accent sm:text-5xl"
                   href="/qirtas"
                 >
                   {tj("title")}
                 </Link>
-                <span
-                  className="text-3xl sm:text-4xl"
-                  lang={locale === "ar" ? "en" : "ar"}
-                >
-                  {tj("otherName")}
-                </span>
               </h2>
               <p className="type-caption text-text-secondary">
                 {tj("tagline")}
@@ -222,7 +202,7 @@ const Home = async ({ params }: HomeProps) => {
         className="bg-footer text-text"
         data-theme="dark"
       >
-        <div className="mx-auto grid w-full max-w-6xl gap-8 px-4 py-20 lg:grid-cols-[1fr_auto] lg:items-end">
+        <div className="mx-auto grid w-full max-w-6xl gap-8 px-4 py-20">
           <div className="grid gap-6">
             <h2 className="type-display-xl" id="come-in">
               {t("comeIn")}
@@ -235,15 +215,6 @@ const Home = async ({ params }: HomeProps) => {
               <a href={join}>{t("join")}</a>
             </Button>
           </div>
-          {locale === "ar" ? null : (
-            <p
-              className="text-5xl text-accent leading-tight sm:text-6xl"
-              dir="rtl"
-              lang="ar"
-            >
-              {t("comeInAr")}
-            </p>
-          )}
         </div>
       </section>
     </>

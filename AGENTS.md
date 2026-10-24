@@ -13,14 +13,27 @@ items and decisions) and continue from the first unticked item.
   one deployment:
   - `app/[locale]/(site)` — the public site, `/` and `/ar`. Published reads
     only, with the publishable key; cached by tag and revalidated on publish.
-  - `app/[locale]/diwan` — **the Diwan** (code name `nexus`), auibsal.org/diwan: the member
-    portal and the role-gated admin. Client-rendered pages (`components/nexus`,
-    `lib/nexus`); every check in them is UX only. They read and write
-    Supabase with the member's token, and call the API routes with it
-    (`callApi` in `lib/nexus/api.ts`). Diwan code names pages by their own
-    path (`/events`); `Link`, `useRouter`, `usePathname` and `redirect` from
-    `@/lib/nexus/navigation` add the `/diwan` prefix. From the public pages,
-    link with `localizedPath(locale, nexusPath("/sign-in"))`.
+  - `app/[locale]/(account)` — **the members' pages, on the site** (owner,
+    Oct 24, 2026): `/sign-in`, `/sign-up`, `/auth/*`, `/setup`,
+    `/oauth/consent`, and, for members, `/account` (overview, `/profile`,
+    `/requests`, `/service`, `/offers`, `/certificate`), `/events/book`,
+    `/programs/shifts`, `/programs/productions/auditions`, `/qirtas/write`
+    (with `/submit`, `/submission`, `/work`, `/piece`) and `/society`. The
+    site's header and footer, an account row (`components/account`), and
+    the gates in `components/nexus/gates.tsx`. They link with the site's
+    `Link` (`@repo/internationalization/navigation`) and full paths.
+  - `app/[locale]/diwan` — **the Diwan** (code name `nexus`), auibsal.org/diwan:
+    the officers' administration only (anyone holding a role,
+    `RequireStaff`): the overview and modules at `/diwan/<module>`, the
+    library, declarations. Members are sent to `/account`. Diwan code names
+    pages by their own path (`/events`); `Link`, `useRouter`, `usePathname`
+    and `redirect` from `@/lib/nexus/navigation` add the `/diwan` prefix.
+  - Both are client-rendered (`components/nexus`, `lib/nexus`, the code
+    kept its names); every check in them is UX only. They read and write
+    Supabase with the user's token, and call the API routes with it
+    (`callApi` in `lib/nexus/api.ts`). Shared empty states link through
+    `useAppLink` (`lib/link-context.tsx`): the site's link outside the Diwan,
+    the Diwan's inside it.
   - `app/api` and `lib/api` — the API routes, auibsal.org/api: email, cron,
     calendar feeds, exports, signed URLs, account deletion, `/api/v1` for
     third-party apps, and Hudhud, the Society's Telegram bot (`lib/api/bot`,
@@ -133,8 +146,26 @@ any schema change. Integration tests run against a local stack with
   verify against network responses, not the UI.
 - **Money.** The charity ledger is append-only (corrections are reversing
   entries); only signed-off entries count. No online payments of any kind.
-- **Documents.** Never present a draft document as adopted. Every document
-  page shows its status from the registry.
+- **Documents.** Every document is adopted, Version 1 (owner, Oct 24, 2026).
+  Visitors and members see the title, summary and text only; codes
+  (`SAL-…`, `F-…`), statuses, versions and ratification lines are internal
+  and appear only in the admin. A later draft stays in the admin until it
+  is adopted.
+- **One language per page.** The English pages carry no Arabic and the
+  Arabic pages no English (owner, Oct 24, 2026); the only exceptions are
+  the language switcher, fields meant for the other language, and a
+  document that exists in one language only.
+- **No forms, as such.** Members never see the word "form" or a form code:
+  each request starts where it belongs with a plain action ("Pitch a
+  program", "Raise a concern") through `StartLinks`
+  (`components/nexus/forms/forms.tsx`), and what they have sent is under
+  Requests and reports (`/account/requests`) and in Profile. The forms engine and its
+  codes stay as they are underneath.
+- **Members' and Diwan pages.** Every members' page and Diwan page is
+  `DiwanPage` with `DiwanSection`s and `RowList`s
+  (`components/nexus/page.tsx`): the Light title, one line, the Bookmark
+  before each section, hairlines between rows only. Admin pages use
+  `AdminHeading`, which matches. Nothing a member does lives in the Diwan.
 - **Names.** The publication is **Qirtas** («قرطاس»; "AUIB's paper of news,
   letters and art"): news, letters, the gallery, Six Words and Next Stop
   episodes in one paper with five desks (Waraq until the v6 names, owner,
@@ -145,8 +176,9 @@ any schema change. Integration tests run against a local stack with
   kept its names. One line each, "now (the code still says …)":
   - Qirtas, قرطاس, at `/qirtas` (code: `waraq`, `journal`, `components/waraq`).
   - The Month in Qirtas, «شهر في قرطاس» (code: `monthInWaraq`, newsletter).
-  - The Diwan, الديوان, at `/diwan` (code: `nexus`, `components/nexus`,
-    `lib/nexus`, `nexusPath`, `paths.nexus`, messages namespace `nexus`).
+  - The Diwan, الديوان, at `/diwan`, for officers (code: `nexus`,
+    `components/nexus`, `lib/nexus`, `nexusPath`, `paths.nexus`, messages
+    namespace `nexus`, which also holds the members' pages' text).
   - Next Stop, المحطة القادمة (code: slug `side-quest`, `/programs/side-quest/care`).
   - The Company, الفرقة, the fifth flagship (code: `productions`, slug
     `company`, `/programs/productions`).
@@ -209,7 +241,8 @@ any schema change. Integration tests run against a local stack with
   dependency a package imports; keep versions aligned across workspaces. Bun
   installs and runs scripts; Next.js runs on Node (`next build`).
 - **Auth:** email sign-in (AUIB address first; magic link or password). In
-  the Diwan, query with `useAuth().supabase` so RLS applies. In the API
+  the members' pages and the Diwan, query with `useAuth().supabase` so RLS
+  applies. In the API
   routes, identify callers with `authenticateRequest` and re-check
   permissions with `hasPermission` (`lib/api/permissions.ts`). The admin
   client (`@repo/database/admin`) bypasses RLS: webhooks, cron and trusted

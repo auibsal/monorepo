@@ -104,7 +104,7 @@ export const MinutesEditor = () => {
       });
       if (!minutesId) {
         router.replace({
-          pathname: "/admin/governance/minutes",
+          pathname: "/governance/minutes",
           query: { id: savedId },
         });
       }
@@ -153,7 +153,7 @@ export const MinutesEditor = () => {
         actions={
           <Link
             className="text-sm underline underline-offset-4"
-            href="/admin/governance"
+            href="/governance"
           >
             {tk("back")}
           </Link>

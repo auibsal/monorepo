@@ -27,11 +27,11 @@ export const DatedList = ({
   items: readonly DatedItem[];
   locale: Locale;
 }) => (
-  <ul className="grid border-line border-b">
+  <ul className="grid divide-y divide-line">
     {items.map((item) => {
       const { day, month, weekday } = formatDayParts(item.at, locale);
       return (
-        <li className="border-line border-t" key={item.key}>
+        <li key={item.key}>
           <Link
             className="group grid grid-cols-[4.5rem_1fr] gap-x-space-4 gap-y-1 py-space-4 sm:grid-cols-[8rem_1fr_auto] sm:items-baseline"
             href={item.href}

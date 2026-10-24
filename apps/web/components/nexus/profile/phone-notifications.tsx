@@ -12,6 +12,7 @@ import {
   type PushState,
   pushState,
 } from "@/lib/nexus/push";
+import { DiwanSection } from "../page";
 
 /** Profile and privacy: Web Push on this device. */
 export const PhoneNotifications = () => {
@@ -61,9 +62,11 @@ export const PhoneNotifications = () => {
   }
 
   return (
-    <div className="grid gap-3">
-      <h2 className="type-subheading">{t("title")}</h2>
-      <p className="type-body">{t("description")}</p>
+    <DiwanSection
+      description={t("description")}
+      id="phone-notifications"
+      title={t("title")}
+    >
       {note ? (
         <p className="type-body text-text-secondary">{note}</p>
       ) : (
@@ -104,6 +107,6 @@ export const PhoneNotifications = () => {
           ) : null}
         </>
       )}
-    </div>
+    </DiwanSection>
   );
 };

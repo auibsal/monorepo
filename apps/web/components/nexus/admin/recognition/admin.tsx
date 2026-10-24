@@ -14,12 +14,12 @@ import {
   formatLongDate,
   formatNumber,
 } from "@repo/internationalization/format";
+import { Link as SiteLink } from "@repo/internationalization/navigation";
 import { hasPermissionAnywhere } from "@repo/rbac";
 import { localized, recognition, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
-import { Link } from "@/lib/nexus/navigation";
 import { useFlags, useGrants } from "@/lib/nexus/queries";
 import { SectionSpinner } from "../../states";
 import {
@@ -572,9 +572,11 @@ const Certificates = () => {
     return (
       <div className="flex flex-wrap gap-2">
         <Button asChild size="sm" variant="outline">
-          <Link href={{ pathname: "/certificate", query: { id: row.id } }}>
+          <SiteLink
+            href={{ pathname: "/account/certificate", query: { id: row.id } }}
+          >
             {t("open")}
-          </Link>
+          </SiteLink>
         </Button>
         {mySignatureDue(row) ? (
           <Button

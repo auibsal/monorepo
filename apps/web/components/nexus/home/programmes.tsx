@@ -7,6 +7,7 @@ import { localized } from "@repo/sal-data";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { queryKeys, useMyShifts } from "@/lib/nexus/queries";
+import { RowList } from "../page";
 import { EmptyLine } from "../states";
 import { Section } from "./section";
 
@@ -45,17 +46,16 @@ export const MyProgrammes = () => {
   return (
     <Section id="programmes" title={t("title")}>
       {shifts.data?.length === 0 ? (
-        <EmptyLine action={{ href: "/programs", label: ta("openShifts") }}>
+        <EmptyLine
+          action={{ href: "/programs/shifts", label: ta("openShifts") }}
+        >
           {t("empty")}
         </EmptyLine>
       ) : null}
-      <ul className="grid gap-3">
+      <RowList>
         {shifts.data?.map((signup) =>
           signup.shift ? (
-            <li
-              className="grid gap-1 border-line border-b pb-3"
-              key={signup.shift_id}
-            >
+            <li className="grid gap-1" key={signup.shift_id}>
               <p className="type-body font-medium">
                 {localized(signup.shift, "role", locale)}
               </p>
@@ -64,7 +64,7 @@ export const MyProgrammes = () => {
                 {formatClock(signup.shift.starts_at, locale)}
               </p>
               {signup.status === "signed_up" ? (
-                <div className="flex gap-2">
+                <div className="flex gap-5">
                   <Button
                     onClick={() =>
                       update.mutate({
@@ -73,6 +73,7 @@ export const MyProgrammes = () => {
                       })
                     }
                     size="sm"
+                    variant="link"
                   >
                     {t("confirm")}
                   </Button>
@@ -93,7 +94,7 @@ export const MyProgrammes = () => {
             </li>
           ) : null
         )}
-      </ul>
+      </RowList>
     </Section>
   );
 };

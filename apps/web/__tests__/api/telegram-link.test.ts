@@ -17,7 +17,7 @@ const { POST } = await import("@/app/api/telegram/link/route");
 
 const start = {
   codeChallenge: "c".repeat(43),
-  redirectUri: "https://site.example/ar/diwan/profile",
+  redirectUri: "https://site.example/ar/account/profile",
   state: "s".repeat(20),
 };
 
@@ -41,14 +41,11 @@ describe("POST /telegram/link", () => {
   it.each([
     "https://evil.example/profile",
     "https://site.example/diwan/events",
-    "https://site.example/diwan/profile?next=x",
+    "https://site.example/account/profile?next=x",
     "https://site.example/ar/profile",
-  ])(
-    "sends Telegram back only to the Nexus profile, not %s",
-    async (redirectUri) => {
-      expect((await call({ ...start, redirectUri })).status).toBe(400);
-    }
-  );
+  ])("sends Telegram back only to the profile, not %s", async (redirectUri) => {
+    expect((await call({ ...start, redirectUri })).status).toBe(400);
+  });
 
   it("answers no address until the login is set up", async () => {
     expect(await (await call(start)).json()).toEqual({ url: null });

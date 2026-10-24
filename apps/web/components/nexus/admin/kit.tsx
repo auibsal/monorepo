@@ -41,13 +41,19 @@ export const AdminHeading = ({
   children,
   title,
 }: AdminHeadingProps) => (
-  <header className="grid gap-2 border-text border-b pb-space-3">
-    <div className="flex flex-wrap items-end justify-between gap-space-4">
-      <h1 className="type-title">{title}</h1>
-      {actions ? <div className="flex flex-wrap gap-2">{actions}</div> : null}
+  <header className="grid gap-3">
+    <div className="flex flex-wrap items-end justify-between gap-x-space-4 gap-y-3">
+      <h1 className="type-title text-balance font-light">{title}</h1>
+      {actions ? (
+        <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
+          {actions}
+        </div>
+      ) : null}
     </div>
     {children ? (
-      <div className="type-body text-text-secondary">{children}</div>
+      <div className="type-lede max-w-[60ch] text-text-secondary">
+        {children}
+      </div>
     ) : null}
   </header>
 );

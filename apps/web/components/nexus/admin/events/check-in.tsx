@@ -223,7 +223,7 @@ export const CheckInScreen = () => {
         actions={
           <Link
             className="text-sm underline underline-offset-4"
-            href={{ pathname: "/admin/events/edit", query: { id: eventId } }}
+            href={{ pathname: "/events/edit", query: { id: eventId } }}
           >
             {tk("back")}
           </Link>

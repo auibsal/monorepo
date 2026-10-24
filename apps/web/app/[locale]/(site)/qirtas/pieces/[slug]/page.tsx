@@ -1,5 +1,5 @@
 import type { Locale } from "@repo/internationalization";
-import { localizedPath, nexusPath } from "@repo/internationalization";
+import { localizedPath } from "@repo/internationalization";
 import { formatNumber } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
 import { journal, localized } from "@repo/sal-data";
@@ -138,9 +138,7 @@ const PiecePage = async ({ params }: PieceProps) => {
             {localized(piece, "title", locale)}
           </h1>
           {deck ? (
-            <p className="reading max-w-[44ch] text-[1.375rem] leading-normal">
-              {deck}
-            </p>
+            <p className="type-lede max-w-[44ch] text-text-secondary">{deck}</p>
           ) : null}
           <Byline locale={locale} piece={piece} />
           {piece.credits.length > 0 ? (
@@ -178,7 +176,7 @@ const PiecePage = async ({ params }: PieceProps) => {
             <p className="type-body">{t("membersOnlyBody")}</p>
             <a
               className="inline-flex h-10 items-center justify-self-start rounded-md bg-primary px-4 text-primary-foreground text-sm"
-              href={`${localizedPath(locale, nexusPath("/qirtas/piece"))}?slug=${piece.slug}`}
+              href={`${localizedPath(locale, "/qirtas/piece")}?slug=${piece.slug}`}
             >
               {t("readInNexus")}
             </a>

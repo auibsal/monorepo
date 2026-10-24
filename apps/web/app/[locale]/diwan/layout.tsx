@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   appleWebApp: { capable: true, title: "Diwan" },
   icons: { apple: "/icons/sal-avatar-180.png" },
   manifest: "/manifest.webmanifest",
-  // The Nexus is for members: keep it out of search engines.
+  // The Diwan is for officers: keep it out of search engines.
   robots: { follow: false, index: false },
   title: {
     default: `The Diwan · ${project.shortName}`,
@@ -29,10 +29,11 @@ export const metadata: Metadata = {
 };
 
 /**
- * The Nexus, the member portal, at /diwan on the one site, in the site's
- * own header and footer. Client-rendered:
- * every read and write goes to Supabase with the member's token (Row Level
- * Security decides) or to the API routes under /api with that token.
+ * The Diwan (code name Nexus), the officers' administration at /diwan on
+ * the one site, in the site's own header and footer. Members' pages are on
+ * the site itself (/account and the rest; owner, Oct 24, 2026). Client-
+ * rendered: every read and write goes to Supabase with the officer's token
+ * (Row Level Security decides) or to the API routes under /api with it.
  */
 const NexusLayout = async ({ children, params }: NexusLayoutProperties) => {
   const { locale } = await params;
@@ -42,15 +43,14 @@ const NexusLayout = async ({ children, params }: NexusLayoutProperties) => {
   setRequestLocale(locale);
   const { auth, common, nexus, web } = await getMessages();
 
-  // The site's own header and footer frame the Nexus too, so going between
-  // them feels like one place. The phones' tab bar sits over the bottom of
-  // the page, so the page makes room for it when it is there.
+  // The site's own header and footer frame the Diwan too, so going between
+  // them feels like one place.
   return (
     <NextIntlClientProvider
       messages={{ auth, common, nexus, web: { nav: web.nav } }}
     >
       <AppProviders>
-        <div className="flex min-h-dvh flex-col has-[[data-tab-bar]]:pb-16 lg:has-[[data-tab-bar]]:pb-0 print:pb-0">
+        <div className="flex min-h-dvh flex-col">
           {children}
           <Footer consent={false} />
         </div>

@@ -88,7 +88,7 @@ export const MembersDirectory = () => {
         <Link
           className="font-medium underline underline-offset-4"
           href={{
-            pathname: "/admin/members/member",
+            pathname: "/members/member",
             query: { id: row.user_id },
           }}
         >
@@ -145,7 +145,7 @@ export const MembersDirectory = () => {
             {hasPermission(grants.data, "members.verify") ? (
               <Link
                 className={buttonVariants({ size: "sm", variant: "outline" })}
-                href="/admin/members/verification"
+                href="/members/verification"
               >
                 {t("queue", { count: formatNumber(pending) })}
               </Link>

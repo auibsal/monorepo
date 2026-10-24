@@ -30,7 +30,7 @@ import {
 } from "@repo/email/copy";
 import { Notice } from "@repo/email/templates/notice";
 import { revalidateTag } from "next/cache";
-import { api, nexus, origin } from "@/lib/api/urls";
+import { api, origin, site } from "@/lib/api/urls";
 import { type CacheTag, cacheTags } from "@/lib/supabase";
 import type { Sticker } from "./bot/stickers";
 import { pushToUser } from "./push";
@@ -105,7 +105,7 @@ const pushNotice = (built: Built, lang: Lang, row: number | undefined) => {
     lang,
     tag: row === undefined ? undefined : `outbox-${row}`,
     title: block?.heading ?? built.subject,
-    url: block?.action?.href ?? nexus(lang),
+    url: block?.action?.href ?? site(lang, "/account"),
   };
 };
 

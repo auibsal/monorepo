@@ -6,14 +6,15 @@ import { Checkbox } from "@repo/design-system/components/ui/checkbox";
 import { Label } from "@repo/design-system/components/ui/label";
 import type { Locale } from "@repo/internationalization";
 import { formatIqd, formatNumber } from "@repo/internationalization/format";
+import { Link, useRouter } from "@repo/internationalization/navigation";
 import { forms, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useEffect, useState } from "react";
-import { Link, useRouter } from "@/lib/nexus/navigation";
 import { ErrorLine, Field, SelectInput } from "../admin/kit";
 import { MemberPicker, useMemberNames } from "../admin/member-picker";
+import { DiwanPage } from "../page";
 import { EmptyLine, SectionSpinner } from "../states";
 import { FormFieldInput, type FormLabels, useFormLabels } from "./field";
 
@@ -153,7 +154,7 @@ export const FillForm = () => {
   const id = params.get("id");
   if (!forms.isFormKey(formKey)) {
     return (
-      <EmptyLine action={{ href: "/forms", label: t("back") }}>
+      <EmptyLine action={{ href: "/account/requests", label: t("back") }}>
         {t("notFound")}
       </EmptyLine>
     );
@@ -228,8 +229,11 @@ const FormEditor = ({
       }
       router.push(
         submit
-          ? { pathname: "/forms/view", query: { id: savedId } }
-          : { pathname: "/forms/fill", query: { form: formKey, id: savedId } }
+          ? { pathname: "/account/requests/view", query: { id: savedId } }
+          : {
+              pathname: "/account/requests/new",
+              query: { form: formKey, id: savedId },
+            }
       );
     },
   });
@@ -239,14 +243,14 @@ const FormEditor = ({
   }
   if (id && !existing.data) {
     return (
-      <EmptyLine action={{ href: "/forms", label: t("back") }}>
+      <EmptyLine action={{ href: "/account/requests", label: t("back") }}>
         {t("notFound")}
       </EmptyLine>
     );
   }
   if (sentAnonymously) {
     return (
-      <EmptyLine action={{ href: "/forms", label: t("back") }}>
+      <EmptyLine action={{ href: "/account/requests", label: t("back") }}>
         {t("sentAnonymously")}
       </EmptyLine>
     );
@@ -264,16 +268,9 @@ const FormEditor = ({
   };
 
   return (
-    <div className="mx-auto grid w-full max-w-3xl gap-6">
-      <header className="grid gap-2">
-        <p className="type-kicker">{t("fillTitle")}</p>
-        <h1 className="type-display">{labels.title()}</h1>
-        <p className="type-lede max-w-2xl">{labels.purpose()}</p>
-      </header>
+    <DiwanPage lede={labels.purpose()} narrow title={labels.action()}>
       {definition.preamble ? (
-        <p className="type-body border-line border-t p-5">
-          {labels.preamble()}
-        </p>
+        <p className="type-body bg-surface-reading p-5">{labels.preamble()}</p>
       ) : null}
 
       <form className="grid gap-5" noValidate onSubmit={onSubmit}>
@@ -345,12 +342,15 @@ const FormEditor = ({
               {t("saveDraft")}
             </Button>
           ) : null}
-          <Link className="type-body self-center underline" href="/forms">
+          <Link
+            className="link type-caption self-center"
+            href="/account/requests"
+          >
             {t("back")}
           </Link>
         </div>
         <ErrorLine error={save.error} />
       </form>
-    </div>
+    </DiwanPage>
   );
 };

@@ -4,11 +4,11 @@ import { useAuth } from "@repo/auth/provider";
 import { Button } from "@repo/design-system/components/ui/button";
 import { Input } from "@repo/design-system/components/ui/input";
 import { Textarea } from "@repo/design-system/components/ui/textarea";
+import { Link, useRouter } from "@repo/internationalization/navigation";
 import { journal, toPlainText } from "@repo/sal-data";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { type FormEvent, useState } from "react";
-import { Link, useRouter } from "@/lib/nexus/navigation";
 import { queryKeys } from "@/lib/nexus/queries";
 import { AdminHeading, ErrorLine, Field, SelectInput } from "../admin/kit";
 import { RichTextEditor } from "../editor/rich-text";
@@ -104,7 +104,10 @@ export const SendToDesk = ({ desk }: { desk: NamedDesk }) => {
     <div className="grid gap-8">
       <AdminHeading
         actions={
-          <Link className="text-sm underline underline-offset-4" href="/qirtas">
+          <Link
+            className="text-sm underline underline-offset-4"
+            href="/qirtas/write"
+          >
             {t("back")}
           </Link>
         }

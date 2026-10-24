@@ -25,12 +25,12 @@ const AboutPage = async ({ params }: LocaleParams) => {
   return (
     <div className="mx-auto grid w-full max-w-6xl gap-20 px-4 py-16 sm:py-24">
       <PageHeader lede={t("lede")} title={t("title")}>
-        <p className="type-caption text-text-secondary">
-          {t("draftNote")}{" "}
-          <Link className="link" href="/documents/constitution">
-            SAL-GOV-01
-          </Link>
-        </p>
+        <Link
+          className="link type-caption justify-self-start"
+          href="/documents/constitution"
+        >
+          {t("constitution")}
+        </Link>
       </PageHeader>
 
       <Section id="preamble" title={t("preambleTitle")}>
@@ -39,16 +39,9 @@ const AboutPage = async ({ params }: LocaleParams) => {
 
       <Section id="motto" title={t("mottoTitle")}>
         <figure className="grid gap-3 border-line border-t pt-space-4">
-          <p
-            className="justify-self-start text-4xl leading-tight sm:text-5xl"
-            dir="rtl"
-            lang="ar"
-          >
-            والقرطاسُ والقلم
+          <p className="font-light text-4xl leading-tight sm:text-5xl">
+            {t("motto")}
           </p>
-          {locale === "ar" ? null : (
-            <p className="type-heading font-light">{t("motto")}</p>
-          )}
           <figcaption className="type-body max-w-[60ch] text-text-secondary">
             {t("mottoNote")}
           </figcaption>

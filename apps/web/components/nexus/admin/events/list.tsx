@@ -78,7 +78,7 @@ export const EventsList = () => {
       cell: (e) => (
         <Link
           className="font-medium underline underline-offset-4"
-          href={{ pathname: "/admin/events/edit", query: { id: e.id } }}
+          href={{ pathname: "/events/edit", query: { id: e.id } }}
         >
           {localized(e, "title", locale)}
         </Link>
@@ -128,7 +128,7 @@ export const EventsList = () => {
         e.status === "published" ? (
           <Link
             className="text-sm underline underline-offset-4"
-            href={{ pathname: "/admin/events/check-in", query: { id: e.id } }}
+            href={{ pathname: "/events/check-in", query: { id: e.id } }}
           >
             {t("checkIn")}
           </Link>
@@ -144,7 +144,7 @@ export const EventsList = () => {
         actions={
           <Link
             className="inline-flex h-8 items-center rounded-md bg-primary px-3 text-primary-foreground text-sm"
-            href="/admin/events/edit"
+            href="/events/edit"
           >
             {t("new")}
           </Link>

@@ -1,4 +1,3 @@
-import { RequireModule } from "@/components/nexus/admin/admin-shell";
 import { AdminOverview } from "@/components/nexus/admin/overview";
 import { titleFrom } from "@/lib/nexus/metadata";
 
@@ -6,10 +5,7 @@ export const generateMetadata = titleFrom((t) =>
   t("nexus.admin.overview.title")
 );
 
-const AdminPage = () => (
-  <RequireModule module="overview">
-    <AdminOverview />
-  </RequireModule>
-);
+/** The Diwan's front page, for every officer: figures their roles open, and what they can start. */
+const DiwanHome = () => <AdminOverview />;
 
-export default AdminPage;
+export default DiwanHome;

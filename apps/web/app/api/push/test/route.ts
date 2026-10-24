@@ -4,7 +4,7 @@ import { pushTest } from "@repo/email/copy";
 import { NextResponse } from "next/server";
 import { corsHeaders, preflight } from "@/lib/api/cors";
 import { pushConfigured, pushToUser } from "@/lib/api/push";
-import { nexus } from "@/lib/api/urls";
+import { site } from "@/lib/api/urls";
 
 export const OPTIONS = preflight;
 
@@ -34,7 +34,7 @@ export const POST = async (request: Request) => {
     ...pushTest(lang),
     lang,
     tag: "test",
-    url: nexus(lang, "/profile"),
+    url: site(lang, "/account/profile"),
   });
   return json({ sent });
 };

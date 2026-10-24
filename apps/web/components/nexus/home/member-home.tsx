@@ -2,6 +2,7 @@
 
 import { useLocale, useTranslations } from "next-intl";
 import { useProfile } from "@/lib/nexus/queries";
+import { DiwanPage } from "../page";
 import { JournalSection } from "./journal";
 import { MembershipCard } from "./membership-card";
 import { NextEvents } from "./next-events";
@@ -12,7 +13,7 @@ import { VotingEligibility } from "./voting";
 
 /**
  * Member home, mobile-first: what to do next first (notices only when there
- * are some), then voting and the Book of Members. The calendar feed is a
+ * are some), then voting and the Register. The calendar feed is a
  * setting, so it lives in Profile and privacy.
  */
 export const MemberHome = () => {
@@ -25,12 +26,9 @@ export const MemberHome = () => {
     "";
 
   return (
-    <div className="grid gap-8">
-      <h1 className="type-display">
-        {name ? t("greeting", { name }) : t("greetingPlain")}
-      </h1>
+    <DiwanPage title={name ? t("greeting", { name }) : t("greetingPlain")}>
       <MembershipCard />
-      <div className="grid gap-8 lg:grid-cols-2">
+      <div className="grid gap-x-16 gap-y-14 lg:grid-cols-2">
         <Notices />
         <NextEvents />
         <JournalSection />
@@ -38,6 +36,6 @@ export const MemberHome = () => {
         <VotingEligibility />
         <SixWords />
       </div>
-    </div>
+    </DiwanPage>
   );
 };

@@ -8,11 +8,11 @@ import {
   formatLongDate,
   formatNumber,
 } from "@repo/internationalization/format";
+import { Link, useRouter } from "@repo/internationalization/navigation";
 import { journal, localized, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useEffect, useState } from "react";
-import { Link, useRouter } from "@/lib/nexus/navigation";
 import {
   queryKeys,
   useMemberStatus,
@@ -30,6 +30,7 @@ import {
   SaveButton,
   SelectInput,
 } from "../admin/kit";
+import { DiwanSection } from "../page";
 import { SectionSpinner } from "../states";
 import {
   attachFile,
@@ -98,8 +99,7 @@ const MyPieces = () => {
     return null;
   }
   return (
-    <section className="grid gap-4">
-      <h2 className="type-subheading">{t("myPieces")}</h2>
+    <DiwanSection id="mypieces" title={t("myPieces")}>
       <ul className="grid gap-2">
         {pieces.data.map((p) => (
           <li className="flex flex-wrap items-baseline gap-3" key={p.id}>
@@ -115,7 +115,7 @@ const MyPieces = () => {
           </li>
         ))}
       </ul>
-    </section>
+    </DiwanSection>
   );
 };
 
@@ -165,8 +165,7 @@ export const JournalHome = () => {
   return (
     <div className="grid gap-8">
       <AdminHeading title={t("title")}>{t("lede")}</AdminHeading>
-      <section className="grid gap-4">
-        <h2 className="type-subheading">{t("openCalls")}</h2>
+      <DiwanSection id="opencalls" title={t("openCalls")}>
         {calls.data ? null : <SectionSpinner />}
         {calls.data?.length === 0 ? <p>{tw("none")}</p> : null}
         <ul className="grid gap-4">
@@ -198,9 +197,8 @@ export const JournalHome = () => {
             </li>
           ))}
         </ul>
-      </section>
-      <section className="grid gap-4">
-        <h2 className="type-subheading">{tn("desksTitle")}</h2>
+      </DiwanSection>
+      <DiwanSection id="deskstitle" title={tn("desksTitle")}>
         <p>{tn("desksLede")}</p>
         <ul className="grid gap-4 sm:grid-cols-3">
           {(["news", "video", "voices"] as const).map((desk) => (
@@ -219,10 +217,9 @@ export const JournalHome = () => {
             </li>
           ))}
         </ul>
-      </section>
+      </DiwanSection>
       <MyPieces />
-      <section className="grid gap-4">
-        <h2 className="type-subheading">{tw("mine")}</h2>
+      <DiwanSection id="mine" title={tw("mine")}>
         {submissions.data ? (
           <DataTable
             columns={columns}
@@ -233,7 +230,7 @@ export const JournalHome = () => {
         ) : (
           <SectionSpinner />
         )}
-      </section>
+      </DiwanSection>
     </div>
   );
 };
@@ -398,7 +395,10 @@ export const SubmitWork = () => {
     <div className="grid gap-8">
       <AdminHeading
         actions={
-          <Link className="text-sm underline underline-offset-4" href="/qirtas">
+          <Link
+            className="text-sm underline underline-offset-4"
+            href="/qirtas/write"
+          >
             {t("back")}
           </Link>
         }
@@ -688,7 +688,7 @@ export const MySubmission = () => {
   });
 
   const back = (
-    <Link className="text-sm underline underline-offset-4" href="/qirtas">
+    <Link className="text-sm underline underline-offset-4" href="/qirtas/write">
       {t("back")}
     </Link>
   );
@@ -728,8 +728,7 @@ export const MySubmission = () => {
 
       <ReadingTimeline history={data.data?.history ?? []} status={row.status} />
 
-      <section className="grid gap-3">
-        <h2 className="type-subheading">{t("files.title")}</h2>
+      <DiwanSection id="files-title" title={t("files.title")}>
         {data.data?.files.length ? (
           <ul className="grid gap-1">
             {data.data.files.map((f, index) => (
@@ -757,7 +756,7 @@ export const MySubmission = () => {
           <p className="type-caption">{t("files.none")}</p>
         )}
         <ErrorLine error={removeFile.error} />
-      </section>
+      </DiwanSection>
 
       {editable ? (
         <form
@@ -789,8 +788,7 @@ export const MySubmission = () => {
       ) : null}
 
       {FINAL.includes(row.status) ? null : (
-        <section className="grid gap-2">
-          <h2 className="type-subheading">{t("withdrawTitle")}</h2>
+        <DiwanSection id="withdrawtitle" title={t("withdrawTitle")}>
           <p className="type-caption">{t("withdrawNote")}</p>
           <div>
             <ConfirmAction
@@ -803,7 +801,7 @@ export const MySubmission = () => {
             </ConfirmAction>
           </div>
           <ErrorLine error={withdraw.error} />
-        </section>
+        </DiwanSection>
       )}
     </div>
   );

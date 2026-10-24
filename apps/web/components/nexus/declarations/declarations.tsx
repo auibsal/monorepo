@@ -13,6 +13,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useState } from "react";
 import { ErrorLine } from "../admin/kit";
+import { DiwanPage, DiwanSection } from "../page";
 import { EmptyLine, SectionSpinner } from "../states";
 
 const KEY = ["declarations"];
@@ -110,11 +111,7 @@ export const Declarations = () => {
   };
 
   return (
-    <div className="mx-auto grid w-full max-w-3xl gap-8">
-      <header className="grid gap-2">
-        <h1 className="type-display">{t("title")}</h1>
-        <p className="type-lede max-w-2xl">{t("lede")}</p>
-      </header>
+    <DiwanPage lede={t("lede")} narrow title={t("title")}>
       <p className="type-body">{t("definition")}</p>
 
       <form className="grid gap-5" id="declare" onSubmit={onSubmit}>
@@ -252,8 +249,7 @@ export const Declarations = () => {
         <ErrorLine error={submit.error} />
       </form>
 
-      <section className="grid gap-3">
-        <h2 className="type-subheading">{t("history")}</h2>
+      <DiwanSection id="history" title={t("history")}>
         {history.isPending ? <SectionSpinner /> : null}
         {history.data?.length === 0 ? (
           <EmptyLine action={{ href: "#declare", label: t("makeOne") }}>
@@ -318,7 +314,7 @@ export const Declarations = () => {
             </li>
           ))}
         </ul>
-      </section>
-    </div>
+      </DiwanSection>
+    </DiwanPage>
   );
 };

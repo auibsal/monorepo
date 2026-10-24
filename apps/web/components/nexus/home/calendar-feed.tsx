@@ -60,6 +60,7 @@ export const CalendarFeed = () => {
             setCopied(true);
           }}
           size="sm"
+          variant="outline"
         >
           {copied ? tc("copied") : t("copy")}
         </Button>

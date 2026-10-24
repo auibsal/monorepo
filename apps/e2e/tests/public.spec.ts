@@ -21,7 +21,7 @@ test.describe("public site", () => {
     });
   }
 
-  test("an event page links booking to the Diwan and carries structured data", async ({
+  test("an event page links to booking and carries structured data", async ({
     page,
   }) => {
     await page.goto(`${urls.web}/events/${event.slug}`);
@@ -31,7 +31,7 @@ test.describe("public site", () => {
     const book = page.getByRole("link", { name: /rsvp|book/i }).first();
     await expect(book).toHaveAttribute(
       "href",
-      new RegExp(`/events#${event.slug}$`)
+      new RegExp(`/events/book#${event.slug}$`)
     );
     const ld = await page
       .locator('script[type="application/ld+json"]')

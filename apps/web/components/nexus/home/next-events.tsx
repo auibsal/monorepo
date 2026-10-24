@@ -1,7 +1,6 @@
 "use client";
 
 import { useAuth } from "@repo/auth/provider";
-import { SalCard } from "@repo/design-system/components/sal/card";
 import { Button } from "@repo/design-system/components/ui/button";
 import {
   Dialog,
@@ -18,12 +17,13 @@ import {
   formatLongDate,
   formatNumber,
 } from "@repo/internationalization/format";
+import { Link } from "@repo/internationalization/navigation";
 import { events, localized, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import QRCode from "react-qr-code";
-import { Link } from "@/lib/nexus/navigation";
 import { queryKeys, useMyRsvps, useMyWaitlist } from "@/lib/nexus/queries";
+import { RowList } from "../page";
 import { EmptyLine, ErrorState, SectionSpinner } from "../states";
 import { Section } from "./section";
 
@@ -62,9 +62,11 @@ export const NextEvents = () => {
   return (
     <Section
       action={
-        <Link className="text-sm underline underline-offset-4" href="/events">
-          {t("browse")}
-        </Link>
+        upcoming.length > 0 ? (
+          <Link className="link type-caption" href="/events/book">
+            {t("browse")}
+          </Link>
+        ) : undefined
       }
       id="next-events"
       title={t("title")}
@@ -74,80 +76,74 @@ export const NextEvents = () => {
       {rsvps.data &&
       upcoming.length === 0 &&
       (waitlist.data ?? []).length === 0 ? (
-        <EmptyLine action={{ href: "/events", label: ta("browseEvents") }}>
+        <EmptyLine action={{ href: "/events/book", label: ta("browseEvents") }}>
           {t("empty")}
         </EmptyLine>
       ) : null}
-      <ul className="grid gap-3">
+      <RowList>
         {upcoming.map((rsvp) =>
           rsvp.event ? (
-            <li key={rsvp.id}>
-              <SalCard className="sm:grid-cols-[1fr_auto]">
-                <div className="grid content-start gap-1">
-                  <h3 className="type-subheading">
-                    {localized(rsvp.event, "title", locale)}
-                  </h3>
-                  <p className="type-body">
-                    {formatLongDate(rsvp.event.starts_at, locale)} ·{" "}
-                    {formatClock(rsvp.event.starts_at, locale)}
+            <li className="grid grid-cols-[1fr_auto] gap-4" key={rsvp.id}>
+              <div className="grid content-start gap-1">
+                <h3 className="type-subheading">
+                  {localized(rsvp.event, "title", locale)}
+                </h3>
+                <p className="type-body">
+                  {formatLongDate(rsvp.event.starts_at, locale)} ·{" "}
+                  {formatClock(rsvp.event.starts_at, locale)}
+                </p>
+                {localized(rsvp.event, "venue", locale) ? (
+                  <p className="type-caption">
+                    {localized(rsvp.event, "venue", locale)}
                   </p>
-                  {localized(rsvp.event, "venue", locale) ? (
-                    <p className="type-caption">
-                      {localized(rsvp.event, "venue", locale)}
-                    </p>
-                  ) : null}
-                  <div className="mt-2 flex flex-wrap gap-2">
-                    <Button asChild size="sm" variant="outline">
-                      <a
-                        href={apiPath(
-                          `/calendar/events/${rsvp.event.slug}.ics`
-                        )}
-                      >
-                        {t("addToCalendar")}
-                      </a>
-                    </Button>
-                    <Dialog>
-                      <DialogTrigger asChild>
-                        <Button size="sm" variant="ghost">
-                          {t("cancel")}
+                ) : null}
+                <div className="mt-1 flex flex-wrap gap-x-5 gap-y-1">
+                  <Button asChild size="sm" variant="link">
+                    <a
+                      href={apiPath(`/calendar/events/${rsvp.event.slug}.ics`)}
+                    >
+                      {t("addToCalendar")}
+                    </a>
+                  </Button>
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button size="sm" variant="ghost">
+                        {t("cancel")}
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>{t("cancel")}</DialogTitle>
+                        <DialogDescription>
+                          {t("cancelConfirm", {
+                            event: localized(rsvp.event, "title", locale),
+                          })}
+                        </DialogDescription>
+                      </DialogHeader>
+                      <DialogFooter>
+                        <Button
+                          disabled={cancel.isPending}
+                          onClick={() =>
+                            rsvp.event && cancel.mutate(rsvp.event.id)
+                          }
+                        >
+                          {tc("confirm")}
                         </Button>
-                      </DialogTrigger>
-                      <DialogContent>
-                        <DialogHeader>
-                          <DialogTitle>{t("cancel")}</DialogTitle>
-                          <DialogDescription>
-                            {t("cancelConfirm", {
-                              event: localized(rsvp.event, "title", locale),
-                            })}
-                          </DialogDescription>
-                        </DialogHeader>
-                        <DialogFooter>
-                          <Button
-                            disabled={cancel.isPending}
-                            onClick={() =>
-                              rsvp.event && cancel.mutate(rsvp.event.id)
-                            }
-                          >
-                            {tc("confirm")}
-                          </Button>
-                        </DialogFooter>
-                      </DialogContent>
-                    </Dialog>
-                  </div>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
                 </div>
-                <figure className="grid justify-items-center gap-1">
-                  <div className="bg-surface p-2">
-                    <QRCode
-                      aria-hidden="true"
-                      size={96}
-                      value={`sal:ticket:${rsvp.ticket_code}`}
-                    />
-                  </div>
-                  <figcaption className="type-caption">
-                    {t("ticket")}
-                  </figcaption>
-                </figure>
-              </SalCard>
+              </div>
+              <figure className="grid justify-items-center gap-1">
+                <div className="bg-surface p-1.5" data-theme="light">
+                  <QRCode
+                    aria-hidden="true"
+                    size={72}
+                    value={`sal:ticket:${rsvp.ticket_code}`}
+                  />
+                </div>
+                <figcaption className="type-caption">{t("ticket")}</figcaption>
+              </figure>
             </li>
           ) : null
         )}
@@ -161,7 +157,7 @@ export const NextEvents = () => {
             </li>
           ) : null
         )}
-      </ul>
+      </RowList>
     </Section>
   );
 };
@@ -187,13 +183,13 @@ const WaitlistItem = ({
   });
 
   return (
-    <SalCard>
+    <div className="grid gap-1">
       <h3 className="type-subheading">{title}</h3>
       {position.data ? (
-        <p className="type-body">
+        <p className="type-caption">
           {t("waitlist", { position: formatNumber(position.data) })}
         </p>
       ) : null}
-    </SalCard>
+    </div>
   );
 };

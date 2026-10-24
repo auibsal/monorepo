@@ -5,12 +5,12 @@ import type { Tables } from "@repo/database/types";
 import { Button } from "@repo/design-system/components/ui/button";
 import type { Locale } from "@repo/internationalization";
 import { formatLongDate } from "@repo/internationalization/format";
+import { Link } from "@repo/internationalization/navigation";
 import { forms, unwrap } from "@repo/sal-data";
 import { useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import type { ReactNode } from "react";
-import { Link } from "@/lib/nexus/navigation";
 import { useMemberNames } from "../admin/member-picker";
 import { memberName } from "../admin/members/directory";
 import { EmptyLine, SectionSpinner } from "../states";
@@ -57,7 +57,8 @@ export const SubmissionSheet = ({
     >
       <header className="grid gap-1 border-line border-b-2 pb-3">
         <p className="type-kicker">
-          {definition.code} · {t("society")}
+          {actions ? `${definition.code} · ` : ""}
+          {t("society")}
         </p>
         <h2 className="type-heading">{labels.title()}</h2>
         <p className="type-caption">
@@ -143,7 +144,7 @@ export const ViewForm = () => {
   }
   if (!submission.data) {
     return (
-      <EmptyLine action={{ href: "/forms", label: t("back") }}>
+      <EmptyLine action={{ href: "/account/requests", label: t("back") }}>
         {t("notFound")}
       </EmptyLine>
     );
@@ -152,9 +153,9 @@ export const ViewForm = () => {
   const ongoing = types.data?.find((ty) => ty.key === row.form_key)?.ongoing;
 
   return (
-    <div className="mx-auto grid w-full max-w-3xl gap-4">
+    <div className="grid max-w-3xl gap-4">
       <div className="flex flex-wrap items-center gap-3 print:hidden">
-        <Link className="type-body underline" href="/forms">
+        <Link className="type-body underline" href="/account/requests">
           {t("back")}
         </Link>
         <Button onClick={() => window.print()} size="sm" variant="outline">
@@ -164,7 +165,7 @@ export const ViewForm = () => {
           <Link
             className="type-body underline"
             href={{
-              pathname: "/forms/fill",
+              pathname: "/account/requests/new",
               query: { form: row.form_key, id: row.id },
             }}
           >

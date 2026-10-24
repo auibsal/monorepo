@@ -214,7 +214,7 @@ const MinutesList = () => {
       cell: (m) => (
         <Link
           className="font-medium underline underline-offset-4"
-          href={{ pathname: "/admin/governance/minutes", query: { id: m.id } }}
+          href={{ pathname: "/governance/minutes", query: { id: m.id } }}
         >
           {localized(m, "title", locale)}
         </Link>
@@ -246,7 +246,7 @@ const MinutesList = () => {
     <div className="grid gap-4">
       <Link
         className="inline-flex h-8 items-center justify-self-start rounded-md bg-primary px-3 text-primary-foreground text-sm"
-        href="/admin/governance/minutes"
+        href="/governance/minutes"
       >
         {t("minutes.new")}
       </Link>

@@ -222,7 +222,7 @@ export const EventEditor = () => {
       await queryClient.invalidateQueries({ queryKey: ["admin"] });
       if (!eventId) {
         router.replace({
-          pathname: "/admin/events/edit",
+          pathname: "/events/edit",
           query: { id: savedId },
         });
       }
@@ -240,7 +240,7 @@ export const EventEditor = () => {
       ),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["admin"] });
-      router.replace("/admin/events");
+      router.replace("/events");
     },
   });
 
@@ -271,10 +271,7 @@ export const EventEditor = () => {
     <div className="grid gap-10">
       <AdminHeading
         actions={
-          <Link
-            className="text-sm underline underline-offset-4"
-            href="/admin/events"
-          >
+          <Link className="text-sm underline underline-offset-4" href="/events">
             {tk("back")}
           </Link>
         }

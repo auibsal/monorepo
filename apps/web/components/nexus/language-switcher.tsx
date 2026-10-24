@@ -1,9 +1,9 @@
 "use client";
 
 import { type Locale, locales } from "@repo/internationalization/config";
+import { usePathname, useRouter } from "@repo/internationalization/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { mastheadLink } from "@/components/masthead";
-import { usePathname, useRouter } from "@/lib/nexus/navigation";
 
 /**
  * Switches between English and Arabic, in words (the brand prefers words

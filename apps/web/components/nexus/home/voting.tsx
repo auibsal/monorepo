@@ -10,6 +10,12 @@ import { useActivity, useMemberStatus } from "@/lib/nexus/queries";
 import { EmptyLine } from "../states";
 import { Section } from "./section";
 
+// One mark per activity a Voting Member needs.
+const STEPS = Array.from(
+  { length: membership.VOTING_ACTIVITIES },
+  (_, i) => i + 1
+);
+
 export const VotingEligibility = () => {
   const t = useTranslations("nexus.home.voting");
   const ta = useTranslations("nexus.next");
@@ -19,26 +25,29 @@ export const VotingEligibility = () => {
   const count = status.data?.activities ?? 0;
 
   return (
-    <Section id="voting" title={t("title")}>
-      <p className="type-body font-medium">
-        {t("progress", { count: formatNumber(Math.min(count, 99)) })}
-      </p>
-      <progress
-        aria-label={t("title")}
-        className="h-2 w-full accent-[var(--text)]"
-        max={membership.VOTING_ACTIVITIES}
-        value={Math.min(count, membership.VOTING_ACTIVITIES)}
-      />
-      {status.data?.founding_voter && status.data.founding_until ? (
+    <Section description={t("rule")} id="voting" title={t("title")}>
+      <div className="grid gap-2">
         <p className="type-body">
+          {t("progress", { count: formatNumber(Math.min(count, 99)) })}
+        </p>
+        <div aria-hidden="true" className="grid grid-cols-2 gap-1">
+          {STEPS.map((step) => (
+            <span
+              className={step <= count ? "h-1 bg-text" : "h-1 bg-line"}
+              key={step}
+            />
+          ))}
+        </div>
+      </div>
+      {status.data?.founding_voter && status.data.founding_until ? (
+        <p className="type-body text-text-secondary">
           {t("founding", {
             date: formatLongDate(status.data.founding_until, locale),
           })}
         </p>
       ) : null}
-      <p className="type-caption">{t("rule")}</p>
       <details>
-        <summary className="cursor-pointer text-sm underline underline-offset-4">
+        <summary className="link type-caption cursor-pointer">
           {t("history")}
         </summary>
         {activity.data?.length ? (
@@ -59,7 +68,9 @@ export const VotingEligibility = () => {
             </tbody>
           </table>
         ) : (
-          <EmptyLine action={{ href: "/events", label: ta("browseEvents") }}>
+          <EmptyLine
+            action={{ href: "/events/book", label: ta("browseEvents") }}
+          >
             {t("noHistory")}
           </EmptyLine>
         )}

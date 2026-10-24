@@ -6,8 +6,10 @@ import { fakeSupabase, renderWithApp } from "./render";
 const replace = vi.fn();
 let search = new URLSearchParams();
 
-vi.mock("@/lib/nexus/navigation", async (importOriginal) => ({
-  ...(await importOriginal<typeof import("@/lib/nexus/navigation")>()),
+vi.mock("@repo/internationalization/navigation", async (importOriginal) => ({
+  ...(await importOriginal<
+    typeof import("@repo/internationalization/navigation")
+  >()),
   Link: ({ children, href }: { children: React.ReactNode; href: string }) => (
     <a href={href}>{children}</a>
   ),
@@ -78,7 +80,7 @@ describe("auth confirm", () => {
     });
     renderWithApp(<AuthConfirm />, { locale: "en", supabase });
     fireEvent.click(screen.getByRole("button", { name: "Continue" }));
-    await waitFor(() => expect(replace).toHaveBeenCalledWith("/"));
+    await waitFor(() => expect(replace).toHaveBeenCalledWith("/account"));
   });
 
   test("a link without a token shows the error", () => {

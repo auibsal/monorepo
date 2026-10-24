@@ -6,8 +6,10 @@ import { fakeSupabase, renderWithApp } from "./render";
 const replace = vi.fn();
 let search = new URLSearchParams();
 
-vi.mock("@/lib/nexus/navigation", async (importOriginal) => ({
-  ...(await importOriginal<typeof import("@/lib/nexus/navigation")>()),
+vi.mock("@repo/internationalization/navigation", async (importOriginal) => ({
+  ...(await importOriginal<
+    typeof import("@repo/internationalization/navigation")
+  >()),
   Link: ({ children, href }: { children: React.ReactNode; href: string }) => (
     <a href={href}>{children}</a>
   ),
@@ -36,7 +38,7 @@ describe("auth callback", () => {
     const supabase = fakeSupabase();
     Object.assign(supabase.auth, { exchangeCodeForSession });
     renderWithApp(<AuthCallback />, { locale: "en", supabase });
-    await waitFor(() => expect(replace).toHaveBeenCalledWith("/"));
+    await waitFor(() => expect(replace).toHaveBeenCalledWith("/account"));
     expect(exchangeCodeForSession).toHaveBeenCalledTimes(1);
   });
 
@@ -49,7 +51,7 @@ describe("auth callback", () => {
       getSession: vi.fn(async () => ({ data: { session } })),
     });
     renderWithApp(<AuthCallback />, { locale: "en", supabase });
-    await waitFor(() => expect(replace).toHaveBeenCalledWith("/"));
+    await waitFor(() => expect(replace).toHaveBeenCalledWith("/account"));
     expect(screen.queryByRole("alert")).toBeNull();
   });
 

@@ -4,7 +4,7 @@ Where alerts come from, where to look first, and who to tell.
 
 | Signal | Comes from | Look at |
 | --- | --- | --- |
-| The site is down | BetterStack monitors: auibsal.org, auibsal.org/diwan/sign-in, auibsal.org/api/health | The Vercel project's latest deployment, then Supabase status |
+| The site is down | BetterStack monitors: auibsal.org, auibsal.org/sign-in, auibsal.org/api/health | The Vercel project's latest deployment, then Supabase status |
 | Errors for members | Sentry (project sal-web) | The issue's stack trace and the release it started in |
 | Emails not arriving | Resend logs | Whether the outbox is draining: rows in `core.outbox` with no `processed_at` |
 | A deploy failed | Vercel and GitHub checks on the pull request | The build log |
