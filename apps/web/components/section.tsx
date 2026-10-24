@@ -41,3 +41,48 @@ export const PageHeader = ({
     {children}
   </header>
 );
+
+/**
+ * Pillars, steps and facts (v6): a list on hairlines, a Regular title and a
+ * line of text in each, in one to three columns. Never boxes.
+ */
+export const RuledList = ({
+  columns = 2,
+  items,
+  level: Heading = "h3",
+  numbered = false,
+}: {
+  columns?: 1 | 2 | 3;
+  level?: "h2" | "h3";
+  items: readonly { body: ReactNode; key: string; title: ReactNode }[];
+  numbered?: boolean;
+}) => {
+  const grid = {
+    1: "",
+    2: "sm:grid-cols-2",
+    3: "sm:grid-cols-2 lg:grid-cols-3",
+  }[columns];
+  const List = numbered ? "ol" : "ul";
+  return (
+    <List className={`grid gap-x-10 ${grid}`}>
+      {items.map((item, index) => (
+        <li
+          className="grid content-start gap-2 border-line border-t py-space-4"
+          key={item.key}
+        >
+          <Heading className="type-heading">
+            {numbered ? (
+              <span className="me-3 font-light text-text-secondary">
+                {String(index + 1).padStart(2, "0")}
+              </span>
+            ) : null}
+            {item.title}
+          </Heading>
+          <div className="type-body max-w-[52ch] text-text-secondary">
+            {item.body}
+          </div>
+        </li>
+      ))}
+    </List>
+  );
+};

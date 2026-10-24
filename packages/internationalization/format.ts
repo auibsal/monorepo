@@ -172,6 +172,26 @@ export const formatClock = (value: DateInput, locale: Locale = defaultLocale) =>
     timeZone: TIME_ZONE,
   }).format(toDate(value));
 
+/**
+ * A date for the dated lists (v6): the day ("25") and a short weekday and
+ * month ("Sun", "Oct"), in Baghdad and with Latin digits.
+ */
+export const formatDayParts = (
+  value: DateInput,
+  locale: Locale = defaultLocale
+) => {
+  const part = (options: Intl.DateTimeFormatOptions) =>
+    new Intl.DateTimeFormat(brandIntl(locale), {
+      timeZone: TIME_ZONE,
+      ...options,
+    }).format(toDate(value));
+  return {
+    day: part({ day: "2-digit" }),
+    month: part({ month: "short" }),
+    weekday: part({ weekday: "short" }),
+  };
+};
+
 /** "50,000 IQD" / «50,000 دينار». */
 export const formatIqd = (amount: number, locale: Locale = defaultLocale) => {
   const digits = new Intl.NumberFormat("en-US", {

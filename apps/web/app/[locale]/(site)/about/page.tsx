@@ -1,6 +1,6 @@
-import { buttonVariants } from "@repo/design-system/components/ui/button";
 import { Link } from "@repo/internationalization/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { PageHeader, RuledList, Section } from "@/components/section";
 import { type LocaleParams, sectionMetadata } from "@/lib/page";
 
 export const generateMetadata = sectionMetadata("web.about", "/about");
@@ -21,89 +21,71 @@ const AboutPage = async ({ params }: LocaleParams) => {
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "web.about" });
-  const heading = "type-heading border-line border-b pb-2";
 
   return (
-    <div className="mx-auto grid w-full max-w-4xl gap-12 px-4 py-16">
-      <header className="grid gap-4">
-        <h1 className="type-display">{t("title")}</h1>
-        <p className="type-lede max-w-3xl">{t("lede")}</p>
-        <p className="type-caption">
+    <div className="mx-auto grid w-full max-w-6xl gap-20 px-4 py-16 sm:py-24">
+      <PageHeader lede={t("lede")} title={t("title")}>
+        <p className="type-caption text-text-secondary">
           {t("draftNote")}{" "}
-          <Link
-            className="underline underline-offset-4"
-            href="/documents/constitution"
-          >
+          <Link className="link" href="/documents/constitution">
             SAL-GOV-01
           </Link>
         </p>
-      </header>
+      </PageHeader>
 
-      <section aria-labelledby="preamble" className="grid gap-3">
-        <h2 className={heading} id="preamble">
-          {t("preambleTitle")}
-        </h2>
-        <p className="type-body">{t("preamble")}</p>
-      </section>
+      <Section id="preamble" title={t("preambleTitle")}>
+        <p className="type-lede max-w-[60ch]">{t("preamble")}</p>
+      </Section>
 
-      <section aria-labelledby="motto" className="grid gap-3">
-        <h2 className={heading} id="motto">
-          {t("mottoTitle")}
-        </h2>
-        <p className="type-heading" dir="rtl" lang="ar">
-          والقرطاسُ والقلم
+      <Section id="motto" title={t("mottoTitle")}>
+        <figure className="grid gap-3 border-line border-t pt-space-4">
+          <p
+            className="justify-self-start text-4xl leading-tight sm:text-5xl"
+            dir="rtl"
+            lang="ar"
+          >
+            والقرطاسُ والقلم
+          </p>
+          {locale === "ar" ? null : (
+            <p className="type-heading font-light">{t("motto")}</p>
+          )}
+          <figcaption className="type-body max-w-[60ch] text-text-secondary">
+            {t("mottoNote")}
+          </figcaption>
+        </figure>
+      </Section>
+
+      <Section id="pillars" title={t("pillarsTitle")}>
+        <RuledList
+          items={PILLARS.map((key) => ({
+            body: t(`pillars.${key}.body`),
+            key,
+            title: t(`pillars.${key}.title`),
+          }))}
+        />
+      </Section>
+
+      <Section id="glance" title={t("glanceTitle")}>
+        <RuledList
+          columns={3}
+          items={GLANCE.map((key) => ({
+            body: t(`glance.${key}.body`),
+            key,
+            title: t(`glance.${key}.title`),
+          }))}
+        />
+      </Section>
+
+      <div className="grid gap-4 border-line border-t pt-space-4">
+        <p className="type-body max-w-[60ch]">{t("nonPartisan")}</p>
+        <p className="flex flex-wrap gap-x-8 gap-y-2">
+          <Link className="link" href="/documents">
+            {t("documents")}
+          </Link>
+          <Link className="link" href="/governance">
+            {t("governance")}
+          </Link>
         </p>
-        {locale === "ar" ? null : (
-          <p className="type-subheading">{t("motto")}</p>
-        )}
-        <p className="type-body text-text-secondary">{t("mottoNote")}</p>
-      </section>
-
-      <section aria-labelledby="pillars" className="grid gap-4">
-        <h2 className={heading} id="pillars">
-          {t("pillarsTitle")}
-        </h2>
-        <ul className="grid gap-4 sm:grid-cols-2">
-          {PILLARS.map((key) => (
-            <li
-              className="grid gap-1 border border-line border-t p-5"
-              key={key}
-            >
-              <h3 className="type-subheading">{t(`pillars.${key}.title`)}</h3>
-              <p className="type-body">{t(`pillars.${key}.body`)}</p>
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      <section aria-labelledby="glance" className="grid gap-4">
-        <h2 className={heading} id="glance">
-          {t("glanceTitle")}
-        </h2>
-        <dl className="grid gap-4 sm:grid-cols-2">
-          {GLANCE.map((key) => (
-            <div className="grid gap-1" key={key}>
-              <dt className="type-subheading">{t(`glance.${key}.title`)}</dt>
-              <dd className="type-body">{t(`glance.${key}.body`)}</dd>
-            </div>
-          ))}
-        </dl>
-      </section>
-
-      <p className="type-body">{t("nonPartisan")}</p>
-      <div className="flex flex-wrap gap-3">
-        <Link
-          className={buttonVariants({ variant: "outline" })}
-          href="/documents"
-        >
-          {t("documents")}
-        </Link>
-        <Link
-          className={buttonVariants({ variant: "outline" })}
-          href="/governance"
-        >
-          {t("governance")}
-        </Link>
       </div>
     </div>
   );

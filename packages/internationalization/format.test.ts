@@ -7,6 +7,7 @@ import {
   formatCurrency,
   formatDate,
   formatDateTime,
+  formatDayParts,
   formatIqd,
   formatLongDate,
   formatMonthYear,
@@ -92,6 +93,16 @@ describe("SAL copy rules", () => {
   test("Arabic keeps Latin digits", () => {
     expect(formatLongDate(evening, "ar")).toContain("13");
     expect(formatClock(evening, "ar")).toContain("6:00");
+  });
+
+  test("dated lists read '03', 'Tue', 'Nov' in Baghdad", () => {
+    // 22:30 UTC on November 2 is 1:30 AM on November 3 in Baghdad.
+    expect(formatDayParts("2026-11-02T22:30:00Z", "en")).toEqual({
+      day: "03",
+      month: "Nov",
+      weekday: "Tue",
+    });
+    expect(formatDayParts(evening, "ar").day).toBe("13");
   });
 
   test("money reads '50,000 IQD'", () => {

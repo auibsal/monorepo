@@ -4,6 +4,7 @@ import { events } from "@repo/sal-data";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { EventList } from "@/components/event-list";
+import { PageHeader, Section } from "@/components/section";
 import { localizedMetadata } from "@/lib/metadata";
 import { readPublished } from "@/lib/supabase";
 
@@ -35,34 +36,26 @@ const EventsPage = async ({ params }: EventsProps) => {
   const feed = `${project.url.replace(HTTP_SCHEME, "webcal:")}/calendar.ics?lang=${locale}`;
 
   return (
-    <div className="mx-auto grid w-full max-w-4xl gap-12 px-4 py-16">
-      <header className="grid gap-4">
-        <h1 className="type-display">{t("title")}</h1>
-        <p className="type-lede max-w-3xl">{t("lede")}</p>
+    <div className="mx-auto grid w-full max-w-6xl gap-20 px-4 py-16 sm:py-24">
+      <PageHeader lede={t("lede")} title={t("title")}>
         <p className="type-body">
-          <a className="underline underline-offset-4" href={feed}>
+          <a className="link" href={feed}>
             {t("subscribe")}
           </a>{" "}
           <span className="text-text-secondary">{t("subscribeHint")}</span>
         </p>
-      </header>
-      <section aria-labelledby="upcoming" className="grid gap-4">
-        <h2 className="type-heading border-line border-b pb-2" id="upcoming">
-          {t("upcoming")}
-        </h2>
+      </PageHeader>
+      <Section id="upcoming" title={t("upcoming")}>
         {(upcoming ?? []).length === 0 ? (
           <p className="type-body text-text-secondary">{t("none")}</p>
         ) : (
           <EventList events={upcoming ?? []} locale={locale} />
         )}
-      </section>
+      </Section>
       {(past ?? []).length > 0 ? (
-        <section aria-labelledby="past" className="grid gap-4">
-          <h2 className="type-heading border-line border-b pb-2" id="past">
-            {t("past")}
-          </h2>
+        <Section id="past" title={t("past")}>
           <EventList events={past ?? []} locale={locale} />
-        </section>
+        </Section>
       ) : null}
     </div>
   );

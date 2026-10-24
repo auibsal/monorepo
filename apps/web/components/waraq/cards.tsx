@@ -86,25 +86,28 @@ export const PieceCardView = async ({
           />
         </Link>
       ) : null}
-      <p className="type-kicker">
+      <p className="type-label text-accent!">
         {t(`categories.${piece.category}`)}
         {piece.members_only ? ` · ${t("membersOnly")}` : ""}
       </p>
       <h3
-        className={large ? "type-display" : "type-subheading"}
+        className={
+          large ? "type-title text-balance font-light!" : "type-heading"
+        }
         dir="auto"
         lang={lang}
       >
-        <Link
-          className="underline-offset-4 hover:underline"
-          href={pieceHref(piece)}
-        >
+        <Link className="hover:text-accent" href={pieceHref(piece)}>
           {localized(piece, "title", locale)}
         </Link>
       </h3>
       {deck ? (
         <p
-          className={large ? "type-lede" : "type-body text-text-secondary"}
+          className={
+            large
+              ? "reading max-w-[40ch] text-lg text-text-secondary"
+              : "type-caption text-text-secondary"
+          }
           dir="auto"
           lang={lang}
         >
@@ -124,11 +127,64 @@ export const PieceColumn = async ({
   locale: Locale;
   pieces: readonly Card[];
 }) => (
-  <ul className="grid gap-4">
+  <ul className="grid content-start divide-y divide-line">
     {pieces.map((piece) => (
-      <li className="border-line border-b pb-4" key={piece.id}>
+      <li className="py-space-4 first:pt-0" key={piece.id}>
         <PieceCardView locale={locale} piece={piece} />
       </li>
     ))}
   </ul>
 );
+
+/**
+ * The lead story (v6): the category, a Light headline, the deck in Literata
+ * and the byline. The picture shows only when the piece has one: a story
+ * without an image keeps a typographic layout, never an empty box.
+ */
+export const LeadStory = async ({
+  locale,
+  piece,
+}: {
+  locale: Locale;
+  piece: Card;
+}) => {
+  const t = await getTranslations({ locale, namespace: "web.journal" });
+  const picture = leadImage(piece);
+  const deck = localized(piece, "deck", locale);
+  const lang = piece.language === "ar" ? "ar" : "en";
+  return (
+    <article className="grid content-start gap-4">
+      <p className="type-label text-accent!">
+        {t(`categories.${piece.category}`)}
+        {piece.members_only ? ` · ${t("membersOnly")}` : ""}
+      </p>
+      <h2 className="type-display text-balance" dir="auto" lang={lang}>
+        <Link className="hover:text-accent" href={pieceHref(piece)}>
+          {localized(piece, "title", locale)}
+        </Link>
+      </h2>
+      {deck ? (
+        <p
+          className="reading max-w-[44ch] text-[1.375rem] leading-normal"
+          dir="auto"
+          lang={lang}
+        >
+          {deck}
+        </p>
+      ) : null}
+      <Byline locale={locale} piece={piece} />
+      {picture?.url ? (
+        <Link className="mt-2" href={pieceHref(piece)}>
+          {/* biome-ignore lint/performance/noImgElement: a published image from the media bucket */}
+          <img
+            alt={localized(picture, "alt", locale)}
+            className="aspect-[3/2] w-full object-cover"
+            height={picture.height ?? 800}
+            src={picture.url}
+            width={picture.width ?? 1200}
+          />
+        </Link>
+      ) : null}
+    </article>
+  );
+};

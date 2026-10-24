@@ -134,8 +134,14 @@ const PiecePage = async ({ params }: PieceProps) => {
               </>
             ) : null}
           </p>
-          <h1 className="type-display">{localized(piece, "title", locale)}</h1>
-          {deck ? <p className="type-lede">{deck}</p> : null}
+          <h1 className="type-display text-balance">
+            {localized(piece, "title", locale)}
+          </h1>
+          {deck ? (
+            <p className="reading max-w-[44ch] text-[1.375rem] leading-normal">
+              {deck}
+            </p>
+          ) : null}
           <Byline locale={locale} piece={piece} />
           {piece.credits.length > 0 ? (
             <p className="type-caption">

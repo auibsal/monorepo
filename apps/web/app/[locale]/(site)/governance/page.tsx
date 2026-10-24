@@ -51,7 +51,7 @@ const GovernancePage = async ({ params }: LocaleParams) => {
   const elections = byElection(results);
 
   return (
-    <div className="mx-auto grid w-full max-w-4xl gap-12 px-4 py-16">
+    <div className="mx-auto grid w-full max-w-6xl gap-20 px-4 py-16 sm:py-24">
       <PageHeader lede={t("lede")} title={t("title")} />
 
       <Section id="council" title={t("council")}>
@@ -61,7 +61,7 @@ const GovernancePage = async ({ params }: LocaleParams) => {
           <ul className="grid gap-4 sm:grid-cols-2">
             {roster.map((member) => (
               <li
-                className="grid gap-1 border-line border-t p-5"
+                className="grid gap-1 border-line border-t py-space-4"
                 key={`${member.role}-${member.full_name_en}`}
               >
                 <p className="type-kicker">
@@ -139,7 +139,7 @@ const GovernancePage = async ({ params }: LocaleParams) => {
                 <dl className="grid gap-2 sm:grid-cols-2">
                   {offices.map((office) => (
                     <div
-                      className="grid gap-1 border-line border-t p-4"
+                      className="grid gap-1 border-line border-t py-space-4"
                       key={office.position_title_en}
                     >
                       <dt className="type-kicker">
@@ -161,7 +161,7 @@ const GovernancePage = async ({ params }: LocaleParams) => {
 
       <p className="type-body">
         {t("rules")}{" "}
-        <Link className="underline underline-offset-4" href="/documents">
+        <Link className="link" href="/documents">
           {t("documents")}
         </Link>
       </p>

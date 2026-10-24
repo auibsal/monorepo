@@ -89,7 +89,7 @@ const Figure = ({
 const NewsBody = ({ locale, piece }: { locale: Locale; piece: Full }) => {
   const [photo] = images(piece);
   return (
-    <div className="mx-auto grid w-full max-w-3xl gap-6 px-4">
+    <div className="reading mx-auto grid w-full max-w-2xl gap-6 px-4">
       {photo ? <Figure image={photo} locale={locale} /> : null}
       {texts(piece).map((text) => (
         <Html
@@ -126,7 +126,7 @@ const ProseBody = ({ piece }: { piece: Full }) => (
         className={
           text.lang === "ar"
             ? "prose max-w-none"
-            : "prose max-w-none [&>p:first-of-type]:first-letter:float-start [&>p:first-of-type]:first-letter:pe-2 [&>p:first-of-type]:first-letter:font-bold [&>p:first-of-type]:first-letter:text-5xl [&>p:first-of-type]:first-letter:text-text [&>p:first-of-type]:first-letter:leading-none"
+            : "prose max-w-none [&>p:first-of-type]:first-letter:float-start [&>p:first-of-type]:first-letter:pe-2 [&>p:first-of-type]:first-letter:font-medium [&>p:first-of-type]:first-letter:text-6xl [&>p:first-of-type]:first-letter:text-accent [&>p:first-of-type]:first-letter:leading-none"
         }
         html={text.html}
         key={text.lang}

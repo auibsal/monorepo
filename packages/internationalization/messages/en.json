@@ -3495,19 +3495,23 @@
       "learnMore": "Learn more"
     },
     "home": {
-      "title": "The paper and the pen",
-      "lede": "The AUIB Society of Arts and Letters is a bilingual student society for literature, theater and the arts.",
-      "nextEvents": "Coming up",
+      "metaTitle": "The paper and the pen",
+      "kicker": "AUIB · A student society",
+      "title": "The paper and the <accent>pen.</accent>",
+      "lede": "A bilingual society for literature, theater and the arts at the American University of Iraq – Baghdad.",
+      "motto": "والقرطاسُ والقلم",
+      "mottoBy": "al-Mutanabbi",
+      "join": "Join the Society",
+      "whatsOn": "What’s on this term",
+      "thisTerm": "This term",
       "noEvents": "No events announced yet.",
       "allEvents": "All events",
-      "latestJournal": "Latest from Waraq",
-      "warmth": "Warmth Meter",
-      "openCalls": "Open calls",
-      "join": "Join the Society",
-      "joinBody": "Membership is free and open to every AUIB student.",
-      "whatWeDo": "What we do",
+      "closes": "Closes {date}",
+      "programs": "Programs",
       "allPrograms": "All programs",
-      "closes": "Closes {date}"
+      "comeIn": "Come in.",
+      "comeInBody": "Membership is free and open to every AUIB student. No audition, no portfolio, no fee.",
+      "comeInAr": "تفضّلوا"
     },
     "documents": {
       "title": "Documents",
@@ -3548,6 +3552,7 @@
     },
     "journal": {
       "title": "Waraq",
+      "otherName": "ورق",
       "lede": "AUIB's paper of news, letters and art, in Arabic and English.",
       "calls": "Open calls",
       "noCalls": "No call is open at the moment.",
@@ -3753,9 +3758,11 @@
       "journal": "Read Waraq",
       "events": "See the events",
       "major": "Flagship programs",
-      "regular": "Through the term",
       "care": "Side Quest care",
-      "productions": "See the productions"
+      "productions": "See the productions",
+      "weekly": "The weekly rhythm",
+      "weeklyNote": "One a week, in a four-week cycle.",
+      "specials": "Specials"
     },
     "give": {
       "title": "Give",
@@ -3972,11 +3979,6 @@
         "press": "AUIB Press"
       },
       "allPartners": "All partners"
-    },
-    "verse": {
-      "label": "Our motto, from al-Mutanabbi",
-      "text": "The horses, the night and the desert know me; so do the sword, the lance, the paper and the pen.",
-      "attribution": "al-Mutanabbi. We keep only the last two."
     },
     "programmeMark": "A Society of Arts and Letters programme",
     "notFound": {

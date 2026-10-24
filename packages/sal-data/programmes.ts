@@ -98,3 +98,28 @@ export const timeLeft = (dueAt: string, now = new Date()) => {
     overdue: minutes < 0,
   };
 };
+
+/**
+ * The weekly rhythm (v6): the four formats that rotate through a four-week
+ * cycle. The other formats are the specials; every other kind is a flagship.
+ */
+export const WEEKLY_RHYTHM = [
+  "majlis",
+  "book-circle",
+  "open-pages",
+  "scratch-night",
+] as const;
+
+export type ProgrammeGroup = "flagship" | "weekly" | "special";
+
+export const programmeGroup = (programme: {
+  kind: string;
+  slug: string;
+}): ProgrammeGroup => {
+  if (programme.kind !== "format") {
+    return "flagship";
+  }
+  return (WEEKLY_RHYTHM as readonly string[]).includes(programme.slug)
+    ? "weekly"
+    : "special";
+};

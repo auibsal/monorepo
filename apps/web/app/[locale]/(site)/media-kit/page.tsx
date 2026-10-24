@@ -17,14 +17,14 @@ const LOGOS = [
 ] as const;
 
 // The palette from brand/tokens.json (SAL v4).
+// The six colors of v6 (brand/tokens.json).
 const COLORS = [
-  ["Crimson", "#9c213e"],
-  ["Crimson 700", "#7e1a32"],
-  ["Crimson 100", "#ebcbd3"],
-  ["Crimson 50", "#f7ecef"],
-  ["Ink", "#273236"],
   ["White", "#ffffff"],
-  ["Paper", "#faf7f5"],
+  ["Ink", "#273236"],
+  ["Crimson", "#9c213e"],
+  ["Paper", "#f5f2ee"],
+  ["Stone", "#e2ddd6"],
+  ["Ash", "#5c6568"],
 ] as const;
 
 const MediaKitPage = async ({ params }: LocaleParams) => {
@@ -33,7 +33,7 @@ const MediaKitPage = async ({ params }: LocaleParams) => {
   const t = await getTranslations({ locale, namespace: "web.mediaKit" });
 
   return (
-    <div className="mx-auto grid w-full max-w-5xl gap-12 px-4 py-16">
+    <div className="mx-auto grid w-full max-w-6xl gap-20 px-4 py-16 sm:py-24">
       <PageHeader lede={t("lede")} title={t("title")} />
 
       <Section id="name" title={t("nameTitle")}>
@@ -51,7 +51,7 @@ const MediaKitPage = async ({ params }: LocaleParams) => {
         <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {LOGOS.map(([key, file, reversed]) => (
             <li
-              className="grid gap-3 border border-line border-t p-4"
+              className="grid gap-3 border-line border-t py-space-4"
               key={key}
             >
               <div
@@ -86,7 +86,7 @@ const MediaKitPage = async ({ params }: LocaleParams) => {
       </Section>
 
       <Section id="colours" title={t("coloursTitle")}>
-        <ul className="grid grid-cols-2 gap-4 sm:grid-cols-4 lg:grid-cols-7">
+        <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
           {COLORS.map(([name, hex]) => (
             <li className="grid gap-2" key={hex}>
               <span

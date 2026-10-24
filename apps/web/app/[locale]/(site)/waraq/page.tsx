@@ -8,6 +8,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { NewsletterSignup } from "@/components/newsletter/signup";
 import { WaraqAd } from "@/components/waraq/ad";
 import {
+  LeadStory,
   leadImage,
   PieceCardView,
   PieceColumn,
@@ -33,9 +34,9 @@ export const generateMetadata = async ({
   });
 };
 
-const heading = "type-kicker border-line border-b pb-2";
+const heading = "type-label text-text! border-text border-b pb-2";
 
-/** Open and announced calls for the Edition (Letters and Gallery). */
+/** Open and announced calls for the Edition: the page's one crimson band. */
 const Calls = async ({ locale }: { locale: Locale }) => {
   const t = await getTranslations({ locale, namespace: "web.journal" });
   const [open, upcoming] = await Promise.all([
@@ -47,42 +48,51 @@ const Calls = async ({ locale }: { locale: Locale }) => {
     return null;
   }
   return (
-    <section aria-labelledby="calls" className="band grid gap-4 p-6">
-      <h2 className="type-kicker text-on-band" id="calls">
+    <section aria-labelledby="calls" className="band" data-theme="light">
+      <h2 className="sr-only" id="calls">
         {t("calls")}
       </h2>
-      {calls.map((call) => {
-        const isOpen = new Date(call.opens_at) <= new Date();
-        return (
-          <div className="grid gap-2" key={call.id}>
-            <h3 className="type-heading text-on-band">
-              {localized(call, "title", locale)}
-            </h3>
-            <p className="text-on-band">
-              {isOpen
-                ? t("closes", { date: formatLongDate(call.closes_at, locale) })
-                : t("opensCloses", {
-                    closes: formatLongDate(call.closes_at, locale),
-                    opens: formatLongDate(call.opens_at, locale),
-                  })}
-            </p>
-            {isOpen ? (
-              <a
-                className="inline-flex h-10 items-center justify-self-start rounded-md border border-line bg-surface px-4 text-sm text-text"
-                href={`${localizedPath(locale, nexusPath("/waraq/submit"))}?call=${call.id}`}
-              >
-                {t("submit")}
-              </a>
-            ) : null}
-          </div>
-        );
-      })}
-      <a
-        className="justify-self-start text-on-band underline underline-offset-4"
-        href={localizedPath(locale, nexusPath("/waraq"))}
-      >
-        {t("sendNews")}
-      </a>
+      <div className="mx-auto grid w-full max-w-6xl gap-8 px-4 py-12">
+        {calls.map((call) => {
+          const isOpen = new Date(call.opens_at) <= new Date();
+          return (
+            <div
+              className="grid gap-6 md:grid-cols-[1fr_auto] md:items-center"
+              key={call.id}
+            >
+              <div className="grid gap-2">
+                <h3 className="type-title text-on-band">
+                  {localized(call, "title", locale)}
+                </h3>
+                <p className="text-on-band/85">
+                  {isOpen
+                    ? t("closes", {
+                        date: formatLongDate(call.closes_at, locale),
+                      })
+                    : t("opensCloses", {
+                        closes: formatLongDate(call.closes_at, locale),
+                        opens: formatLongDate(call.opens_at, locale),
+                      })}
+                </p>
+              </div>
+              {isOpen ? (
+                <a
+                  className="inline-flex h-12 items-center justify-self-start bg-on-band px-6 font-medium text-[0.9375rem] text-band hover:bg-on-band/90"
+                  href={`${localizedPath(locale, nexusPath("/waraq/submit"))}?call=${call.id}`}
+                >
+                  {t("submit")}
+                </a>
+              ) : null}
+            </div>
+          );
+        })}
+        <a
+          className="justify-self-start text-on-band underline decoration-1 underline-offset-4"
+          href={localizedPath(locale, nexusPath("/waraq"))}
+        >
+          {t("sendNews")}
+        </a>
+      </div>
     </section>
   );
 };
@@ -134,33 +144,43 @@ const WaraqFrontPage = async ({ params }: WaraqProps) => {
     fn: (c: Parameters<typeof journal.frontPieces>[0]) => Promise<T>,
     fallback: T
   ) => readPublished(["journal"], fn, fallback);
-  const [front, news, letters, gallery, sixWords, video, voices, edition] =
-    await Promise.all([
-      read((c) => journal.frontPieces(c), []),
-      read((c) => journal.deskPieces(c, "news", { limit: 6 }), []),
-      read(
-        (c) =>
-          journal.deskPieces(c, "letters", {
-            categories: journal
-              .deskCategories("letters")
-              .filter((x) => x !== "six_words"),
-            limit: 4,
-          }),
-        []
-      ),
-      read((c) => journal.deskPieces(c, "gallery", { limit: 6 }), []),
-      read(
-        (c) =>
-          journal.deskPieces(c, "letters", {
-            categories: ["six_words"],
-            limit: 1,
-          }),
-        []
-      ),
-      read((c) => journal.deskPieces(c, "video", { limit: 2 }), []),
-      read((c) => journal.deskPieces(c, "voices", { limit: 3 }), []),
-      read((c) => journal.currentEdition(c), null),
-    ]);
+  const [
+    front,
+    news,
+    letters,
+    gallery,
+    sixWords,
+    video,
+    voices,
+    edition,
+    calls,
+  ] = await Promise.all([
+    read((c) => journal.frontPieces(c), []),
+    read((c) => journal.deskPieces(c, "news", { limit: 6 }), []),
+    read(
+      (c) =>
+        journal.deskPieces(c, "letters", {
+          categories: journal
+            .deskCategories("letters")
+            .filter((x) => x !== "six_words"),
+          limit: 4,
+        }),
+      []
+    ),
+    read((c) => journal.deskPieces(c, "gallery", { limit: 6 }), []),
+    read(
+      (c) =>
+        journal.deskPieces(c, "letters", {
+          categories: ["six_words"],
+          limit: 1,
+        }),
+      []
+    ),
+    read((c) => journal.deskPieces(c, "video", { limit: 2 }), []),
+    read((c) => journal.deskPieces(c, "voices", { limit: 3 }), []),
+    read((c) => journal.currentEdition(c), null),
+    read((c) => journal.openCalls(c), []),
+  ]);
   // With nothing set as front, the newest news leads so the page has a
   // top rather than a gap.
   const top = front.length > 0 ? front : news.slice(0, 5);
@@ -178,181 +198,200 @@ const WaraqFrontPage = async ({ params }: WaraqProps) => {
     front.length + news.length + letters.length + gallery.length === 0;
   const cover = mediaUrl(edition?.cover_path);
 
+  const [openCall] = calls ?? [];
+
   return (
-    <div className="mx-auto grid w-full max-w-6xl gap-12 px-4 py-10">
-      <Nameplate locale={locale} />
-      <h1 className="sr-only">{t("title")}</h1>
-
-      {nothing ? (
-        <p className="type-lede text-center">{t("firstEdition")}</p>
-      ) : null}
-
-      {lead ? (
-        <section
-          aria-label={t("lead")}
-          className="grid gap-8 md:grid-cols-[2fr_1fr]"
-        >
-          <PieceCardView image large locale={locale} piece={lead} />
-          {ranked.length > 0 ? (
-            <PieceColumn locale={locale} pieces={ranked.slice(0, 4)} />
-          ) : null}
-        </section>
-      ) : null}
-
-      <WaraqAd locale={locale} page="/waraq" slot={0} />
-
-      <div className="grid gap-12 md:grid-cols-3">
-        <News
-          alone={letters.length === 0}
+    <>
+      <div className="mx-auto grid w-full max-w-6xl gap-12 px-4 py-10">
+        <Nameplate
           locale={locale}
-          pieces={latestNews}
+          note={
+            openCall
+              ? t("closes", {
+                  date: formatLongDate(openCall.closes_at, locale),
+                })
+              : null
+          }
         />
-        {letters.length > 0 ? (
+        <h1 className="sr-only">{t("title")}</h1>
+
+        {nothing ? (
+          <p className="type-lede text-center">{t("firstEdition")}</p>
+        ) : null}
+
+        {lead ? (
           <section
-            aria-labelledby="letters"
-            className="reading grid content-start gap-4 p-6 md:col-span-2"
+            aria-label={t("lead")}
+            className="grid gap-x-14 gap-y-10 md:grid-cols-[1.7fr_1fr]"
           >
-            <h2 className={heading} id="letters">
-              <Link href="/waraq/letters">{t("desks.letters")}</Link>
+            <LeadStory locale={locale} piece={lead} />
+            {ranked.length > 0 ? (
+              <PieceColumn locale={locale} pieces={ranked.slice(0, 4)} />
+            ) : null}
+          </section>
+        ) : null}
+
+        <WaraqAd locale={locale} page="/waraq" slot={0} />
+
+        <div className="grid gap-12 md:grid-cols-3">
+          <News
+            alone={letters.length === 0}
+            locale={locale}
+            pieces={latestNews}
+          />
+          {letters.length > 0 ? (
+            <section
+              aria-labelledby="letters"
+              className="grid content-start gap-4 md:col-span-2"
+            >
+              <h2 className={heading} id="letters">
+                <Link href="/waraq/letters">{t("desks.letters")}</Link>
+              </h2>
+              <div className="grid gap-8 sm:grid-cols-2">
+                {letters.map((piece) => (
+                  <PieceCardView key={piece.id} locale={locale} piece={piece} />
+                ))}
+              </div>
+            </section>
+          ) : null}
+        </div>
+
+        {gallery.length > 0 ? (
+          <section aria-labelledby="gallery" className="grid gap-4">
+            <h2 className={heading} id="gallery">
+              <Link href="/waraq/gallery">{t("desks.gallery")}</Link>
             </h2>
-            <div className="grid gap-8 sm:grid-cols-2">
-              {letters.map((piece) => (
-                <PieceCardView key={piece.id} locale={locale} piece={piece} />
-              ))}
+            <ul className="grid grid-cols-2 gap-4 md:grid-cols-3">
+              {gallery.map((piece) => {
+                const image = leadImage(piece);
+                return (
+                  <li key={piece.id}>
+                    <Link className="grid gap-2" href={pieceHref(piece)}>
+                      {image?.url ? (
+                        // biome-ignore lint/performance/noImgElement: a published image from the media bucket
+                        <img
+                          alt={localized(image, "alt", locale)}
+                          className="aspect-square w-full object-cover"
+                          height={image.height ?? 800}
+                          loading="lazy"
+                          src={image.url}
+                          width={image.width ?? 800}
+                        />
+                      ) : null}
+                      <span
+                        className="type-subheading"
+                        dir="auto"
+                        lang={piece.language === "ar" ? "ar" : "en"}
+                      >
+                        {localized(piece, "title", locale)}
+                      </span>
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+          </section>
+        ) : null}
+
+        <div className="grid gap-12 md:grid-cols-3">
+          {sixWordsBody?.body ? (
+            <section aria-labelledby="six" className="grid content-start gap-4">
+              <h2 className={heading} id="six">
+                {t("sixWordsOfTheWeek")}
+              </h2>
+              <Link
+                className="grid min-h-40 place-items-center border-line border-y p-6 text-center hover:text-accent"
+                href={pieceHref(sixWordsBody)}
+              >
+                <span
+                  className="type-subheading font-mono"
+                  // biome-ignore lint/security/noDangerouslySetInnerHtml: sanitized with the one rich-text policy
+                  dangerouslySetInnerHTML={{
+                    __html: sanitizeRichText(
+                      sixWordsBody.body.body_en ??
+                        sixWordsBody.body.body_ar ??
+                        ""
+                    ),
+                  }}
+                />
+              </Link>
+            </section>
+          ) : null}
+          {voices.length > 0 ? (
+            <section
+              aria-labelledby="voices"
+              className="grid content-start gap-4"
+            >
+              <h2 className={heading} id="voices">
+                <Link href="/waraq/voices">{t("desks.voices")}</Link>
+              </h2>
+              <PieceColumn locale={locale} pieces={voices} />
+            </section>
+          ) : null}
+          {video.length > 0 ? (
+            <section
+              aria-labelledby="video"
+              className="grid content-start gap-4"
+            >
+              <h2 className={heading} id="video">
+                <Link href="/waraq/video">{t("desks.video")}</Link>
+              </h2>
+              <PieceColumn locale={locale} pieces={video} />
+            </section>
+          ) : null}
+        </div>
+
+        {edition ? (
+          <section
+            aria-labelledby="edition"
+            className="grid gap-6 border-line border-t pt-space-4 md:grid-cols-[1fr_2fr]"
+          >
+            {cover ? (
+              // biome-ignore lint/performance/noImgElement: a published image from the media bucket
+              <img
+                alt={t("coverAlt")}
+                className="w-full"
+                height={800}
+                src={cover}
+                width={600}
+              />
+            ) : null}
+            <div className="grid content-start gap-2">
+              <h2 className="type-label" id="edition">
+                {t("currentEdition")}
+              </h2>
+              <Link
+                className="type-title hover:text-accent"
+                href={`/waraq/editions/${edition.slug}`}
+              >
+                {localized(edition, "title", locale)}
+              </Link>
+              {localized(edition, "theme", locale) ? (
+                <p className="type-lede">
+                  {localized(edition, "theme", locale)}
+                </p>
+              ) : null}
             </div>
           </section>
         ) : null}
-      </div>
 
-      {gallery.length > 0 ? (
-        <section aria-labelledby="gallery" className="grid gap-4">
-          <h2 className={heading} id="gallery">
-            <Link href="/waraq/gallery">{t("desks.gallery")}</Link>
-          </h2>
-          <ul className="grid grid-cols-2 gap-4 md:grid-cols-3">
-            {gallery.map((piece) => {
-              const image = leadImage(piece);
-              return (
-                <li key={piece.id}>
-                  <Link className="grid gap-2" href={pieceHref(piece)}>
-                    {image?.url ? (
-                      // biome-ignore lint/performance/noImgElement: a published image from the media bucket
-                      <img
-                        alt={localized(image, "alt", locale)}
-                        className="aspect-square w-full object-cover"
-                        height={image.height ?? 800}
-                        loading="lazy"
-                        src={image.url}
-                        width={image.width ?? 800}
-                      />
-                    ) : null}
-                    <span
-                      className="type-subheading"
-                      dir="auto"
-                      lang={piece.language === "ar" ? "ar" : "en"}
-                    >
-                      {localized(piece, "title", locale)}
-                    </span>
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
-        </section>
-      ) : null}
+        <WaraqAd locale={locale} page="/waraq" slot={1} />
 
-      <div className="grid gap-12 md:grid-cols-3">
-        {sixWordsBody?.body ? (
-          <section aria-labelledby="six" className="grid content-start gap-4">
-            <h2 className={heading} id="six">
-              {t("sixWordsOfTheWeek")}
-            </h2>
-            <Link
-              className="reading grid min-h-40 place-items-center border border-line p-6 text-center hover:underline"
-              href={pieceHref(sixWordsBody)}
-            >
-              <span
-                className="type-subheading font-mono"
-                // biome-ignore lint/security/noDangerouslySetInnerHtml: sanitized with the one rich-text policy
-                dangerouslySetInnerHTML={{
-                  __html: sanitizeRichText(
-                    sixWordsBody.body.body_en ?? sixWordsBody.body.body_ar ?? ""
-                  ),
-                }}
-              />
-            </Link>
-          </section>
-        ) : null}
-        {voices.length > 0 ? (
-          <section
-            aria-labelledby="voices"
-            className="grid content-start gap-4"
-          >
-            <h2 className={heading} id="voices">
-              <Link href="/waraq/voices">{t("desks.voices")}</Link>
-            </h2>
-            <PieceColumn locale={locale} pieces={voices} />
-          </section>
-        ) : null}
-        {video.length > 0 ? (
-          <section aria-labelledby="video" className="grid content-start gap-4">
-            <h2 className={heading} id="video">
-              <Link href="/waraq/video">{t("desks.video")}</Link>
-            </h2>
-            <PieceColumn locale={locale} pieces={video} />
-          </section>
-        ) : null}
-      </div>
-
-      {edition ? (
         <section
-          aria-labelledby="edition"
-          className="grid gap-4 border-line border-t p-6 md:grid-cols-[1fr_2fr]"
+          aria-labelledby="newsletter"
+          className="grid gap-4 border-line border-t pt-space-4 md:grid-cols-[1fr_1.4fr] md:items-start"
         >
-          {cover ? (
-            // biome-ignore lint/performance/noImgElement: a published image from the media bucket
-            <img
-              alt={t("coverAlt")}
-              className="w-full"
-              height={800}
-              src={cover}
-              width={600}
-            />
-          ) : null}
-          <div className="grid content-start gap-2">
-            <h2 className="type-kicker" id="edition">
-              {t("currentEdition")}
+          <div className="grid gap-2">
+            <h2 className="type-heading" id="newsletter">
+              {t("newsletter")}
             </h2>
-            <Link
-              className="type-heading hover:underline"
-              href={`/waraq/editions/${edition.slug}`}
-            >
-              {localized(edition, "title", locale)}
-            </Link>
-            {localized(edition, "theme", locale) ? (
-              <p className="type-lede">{localized(edition, "theme", locale)}</p>
-            ) : null}
+            <p className="type-body">{t("newsletterLede")}</p>
           </div>
+          <NewsletterSignup compact />
         </section>
-      ) : null}
-
-      <WaraqAd locale={locale} page="/waraq" slot={1} />
-
+      </div>
       <Calls locale={locale} />
-
-      <section
-        aria-labelledby="newsletter"
-        className="grid gap-4 border-line border-t p-6 md:grid-cols-[1fr_1.4fr] md:items-start"
-      >
-        <div className="grid gap-2">
-          <h2 className="type-heading" id="newsletter">
-            {t("newsletter")}
-          </h2>
-          <p className="type-body">{t("newsletterLede")}</p>
-        </div>
-        <NewsletterSignup compact />
-      </section>
-    </div>
+    </>
   );
 };
 

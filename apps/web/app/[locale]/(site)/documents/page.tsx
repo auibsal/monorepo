@@ -3,6 +3,7 @@ import { Link } from "@repo/internationalization/navigation";
 import { documents } from "@repo/sal-data";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { PageHeader } from "@/components/section";
 import { localizedMetadata } from "@/lib/metadata";
 import { readPublished } from "@/lib/supabase";
 
@@ -34,32 +35,30 @@ const DocumentsPage = async ({ params }: DocumentsProps) => {
   );
 
   return (
-    <div className="mx-auto grid w-full max-w-6xl gap-10 px-4 py-16">
-      <header className="grid gap-4">
-        <h1 className="type-display">{t("title")}</h1>
-        <p className="type-lede max-w-3xl">{t("lede")}</p>
+    <div className="mx-auto grid w-full max-w-6xl gap-16 px-4 py-16 sm:py-24">
+      <PageHeader lede={t("lede")} title={t("title")}>
         {locale === "ar" ? (
           <p className="type-body text-text-secondary">{t("englishOnly")}</p>
         ) : null}
-      </header>
+      </PageHeader>
       {list.length === 0 ? <p className="type-body">{t("empty")}</p> : null}
-      <ul className="grid gap-6 md:grid-cols-2">
+      <ul className="grid gap-x-10 md:grid-cols-2">
         {list.map((doc) => (
           <li
-            className="grid content-start gap-2 border border-line border-t p-6"
+            className="grid content-start gap-2 border-line border-t py-space-4"
             key={doc.code}
           >
             <p className="type-code text-sm text-text-secondary">{doc.code}</p>
             <h2 className="type-heading">
               <Link
-                className="underline-offset-4 hover:underline"
+                className="hover:text-accent"
                 href={`/documents/${doc.slug}`}
               >
                 {documents.documentTitle(doc, locale)}
               </Link>
             </h2>
             {doc.summary_en ? (
-              <p className="type-body" dir="auto">
+              <p className="type-body text-text-secondary" dir="auto">
                 {(locale === "ar" && doc.summary_ar) || doc.summary_en}
               </p>
             ) : null}
