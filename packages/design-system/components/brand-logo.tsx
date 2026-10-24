@@ -34,11 +34,12 @@ export const BrandLogo = ({
   // inline height does (Tailwind's preflight sets images to height: auto).
   const sized = HEIGHT_CLASS.test(className ?? "");
   const name = locale === "ar" ? project.nameAr : project.name;
-  const image = (src: string, extra?: string, hidden?: boolean) => (
+  // Both images carry the name: the one CSS hides (display: none) is left
+  // out of the accessibility tree, so a link around the logo always has one.
+  const image = (src: string, extra?: string) => (
     // biome-ignore lint/performance/noImgElement: SVG logo, served as supplied
     <img
-      alt={hidden ? "" : name}
-      aria-hidden={hidden ? true : undefined}
+      alt={name}
       className={cn("block w-auto", extra, className)}
       height={height}
       src={src}
@@ -55,7 +56,7 @@ export const BrandLogo = ({
   return (
     <>
       {image(file.onLight, "on-ink:hidden")}
-      {image(file.onDark, "on-ink:block hidden", true)}
+      {image(file.onDark, "on-ink:block hidden")}
     </>
   );
 };

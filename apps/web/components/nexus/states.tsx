@@ -53,7 +53,7 @@ export const ErrorState = ({ className, onRetry }: ErrorStateProps) => {
   );
 };
 
-const actionClass = "type-label text-xs underline underline-offset-4";
+const actionClass = "link type-caption";
 // Full URLs and same-page anchors are plain links; paths get the language.
 const EXTERNAL = /^(https?|webcal):|^#/;
 

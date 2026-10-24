@@ -61,10 +61,7 @@ const Figure = ({
     </p>
     <p className="sm:type-body text-sm">{detail}</p>
     {action && href ? (
-      <Link
-        className="type-label justify-self-start text-xs underline underline-offset-4"
-        href={href}
-      >
+      <Link className="link type-caption justify-self-start" href={href}>
         {action}
       </Link>
     ) : null}

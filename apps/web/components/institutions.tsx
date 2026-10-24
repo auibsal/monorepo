@@ -21,10 +21,7 @@ export const Institutions = async ({
           {t("title")}
         </h2>
         {showAll ? (
-          <Link
-            className="type-label text-xs underline underline-offset-4"
-            href="/partners"
-          >
+          <Link className="link type-caption" href="/partners">
             {t("allPartners")}
           </Link>
         ) : null}
