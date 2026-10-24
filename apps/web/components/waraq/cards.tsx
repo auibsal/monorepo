@@ -105,7 +105,7 @@ export const PieceCardView = async ({
         <p
           className={
             large
-              ? "reading max-w-[40ch] text-lg text-text-secondary"
+              ? "type-lede max-w-[40ch] text-text-secondary"
               : "type-caption text-text-secondary"
           }
           dir="auto"
@@ -165,7 +165,7 @@ export const LeadStory = async ({
       </h2>
       {deck ? (
         <p
-          className="reading max-w-[44ch] text-[1.375rem] leading-normal"
+          className="type-lede max-w-[44ch] text-text-secondary"
           dir="auto"
           lang={lang}
         >

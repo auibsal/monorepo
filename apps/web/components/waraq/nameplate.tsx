@@ -23,7 +23,6 @@ export const Nameplate = async ({
   small?: boolean;
 }) => {
   const t = await getTranslations({ locale, namespace: "web.journal" });
-  const other = locale === "ar" ? "en" : "ar";
   const desk =
     "whitespace-nowrap border-transparent border-b-[1.5px] py-1 font-medium text-[0.90625rem] hover:text-accent aria-[current=page]:border-accent";
   return (
@@ -44,9 +43,6 @@ export const Nameplate = async ({
             >
               {t("title")}
             </Link>
-            <span className="text-4xl sm:text-5xl" dir="auto" lang={other}>
-              {t("otherName")}
-            </span>
           </div>
           <p className="grid gap-1 border-text border-y py-2.5 font-medium text-[0.8125rem] sm:grid-cols-3 sm:items-center">
             <span>
