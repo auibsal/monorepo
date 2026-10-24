@@ -12,7 +12,7 @@ export const CookieSettings = () => {
   return (
     <li>
       <button
-        className="underline-offset-4 hover:underline"
+        className="hover:text-accent hover:underline hover:underline-offset-4"
         onClick={() => document.dispatchEvent(new Event(OPEN_CONSENT))}
         type="button"
       >

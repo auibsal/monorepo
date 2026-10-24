@@ -16,7 +16,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { ExternalLink } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import type { ReactNode } from "react";
-import { Masthead } from "@/components/masthead";
+import { Masthead, mastheadLink } from "@/components/masthead";
 import { Link, usePathname, useRouter } from "@/lib/nexus/navigation";
 import { useNotionHandbook, useTeamWorkspace } from "@/lib/nexus/notion";
 import { disablePush } from "@/lib/nexus/push";
@@ -149,13 +149,12 @@ export const AppShell = ({ children }: { children: ReactNode }) => {
         action={
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button
-                className="hidden lg:inline-flex"
-                size="sm"
-                variant="outline"
+              <button
+                className={cn(mastheadLink, "hidden lg:inline")}
+                type="button"
               >
                 {t("nexus.nav.account")}
-              </Button>
+              </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               {account.map((link) => (
@@ -228,7 +227,11 @@ export const AppShell = ({ children }: { children: ReactNode }) => {
                 ))}
               </ul>
             ) : null}
-            <Button className="w-full" onClick={signOut} variant="outline">
+            <Button
+              className="justify-self-start"
+              onClick={signOut}
+              variant="outline"
+            >
               {t("auth.signOut")}
             </Button>
           </>

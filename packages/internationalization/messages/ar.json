@@ -26,6 +26,8 @@
     "required": "مطلوب",
     "openMenu": "فتح القائمة",
     "closeMenu": "إغلاق القائمة",
+    "menu": "القائمة",
+    "menuClose": "إغلاق",
     "search": "بحث",
     "externalLink": "(يُفتح في تبويب جديد)",
     "copy": "نسخ",
@@ -3457,7 +3459,13 @@
       "cookieSettings": "إعدادات ملفات تعريف الارتباط",
       "governance": "الحوكمة",
       "terms": "شروط الاستخدام",
-      "accessibility": "إمكانية الوصول"
+      "accessibility": "إمكانية الوصول",
+      "columns": {
+        "society": "الجمعية",
+        "read": "اقرأ",
+        "contactHeading": "تواصل",
+        "email": "hello@auibsal.org"
+      }
     },
     "consent": {
       "title": "ملفات تعريف الارتباط",

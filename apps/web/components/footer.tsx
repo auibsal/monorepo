@@ -1,11 +1,11 @@
 import { project } from "@repo/config";
+import { BrandLogo } from "@repo/design-system/components/brand-logo";
 import { localizedPath, nexusPath } from "@repo/internationalization";
 import { Link } from "@repo/internationalization/navigation";
 import NextLink from "next/link";
 import { getLocale, getTranslations } from "next-intl/server";
 import { CookieSettings } from "@/components/cookie-settings";
 import { askedConsent } from "@/lib/consent";
-import { MUTANABBI } from "@/lib/verse";
 
 const INSTAGRAM = "https://www.instagram.com/auibsal";
 
@@ -14,98 +14,137 @@ interface FooterProps {
   readonly consent?: boolean;
 }
 
+const linkClass = "hover:text-accent hover:underline hover:underline-offset-4";
+
 /**
- * The one footer for the whole site, public pages and the Nexus alike (v5):
- * the ink ground, the rest of the sections and the small print.
+ * The one footer for the whole site, public pages and the portal alike
+ * (v6): ink in both modes. The reversed horizontal lockup and one sentence,
+ * three short columns (Society, Read, Contact) under rose labels, then a
+ * hairline and the fine print, which keeps the policies and cookie settings
+ * within reach.
  */
 export const Footer = async ({ consent = true }: FooterProps = {}) => {
   const t = await getTranslations("web.footer");
-  const tc = await getTranslations("common");
   const tn = await getTranslations("web.nav");
   const tx = await getTranslations("web.footerExtra");
   const locale = await getLocale();
+  const email = t("columns.email");
 
-  const groups = [
-    [
-      ["/give", tn("give")],
-      ["/waraq/news", tn("news")],
-      ["/newsletter", t("newsletter")],
-      ["/documents", tn("documents")],
-      ["/governance", t("governance")],
-      ["/partners", t("partners")],
-      ["/programs/productions", t("productions")],
-      ["/search", t("search")],
-    ],
-    [
-      ["/contact", t("contact")],
-      ["/media-kit", t("mediaKit")],
-      ["/privacy", t("privacy")],
-      ["/documents/terms-of-use", t("terms")],
-      ["/documents/accessibility", t("accessibility")],
-      ["/programs/side-quest/care", t("sideQuestCare")],
-    ],
+  const columns = [
+    {
+      heading: t("columns.society"),
+      links: [
+        ["/about", tn("about")],
+        ["/governance", t("governance")],
+        ["/documents", tn("documents")],
+        ["/partners", t("partners")],
+        ["/give", tn("give")],
+      ],
+    },
+    {
+      heading: t("columns.read"),
+      links: [
+        ["/waraq", tn("journal")],
+        ["/waraq/news", tn("news")],
+        ["/newsletter", t("newsletter")],
+        ["/programs/productions", t("productions")],
+        ["/search", t("search")],
+      ],
+    },
+  ] as const;
+
+  const fine = [
+    ["/privacy", t("privacy")],
+    ["/documents/terms-of-use", t("terms")],
+    ["/documents/accessibility", t("accessibility")],
+    ["/programs/side-quest/care", t("sideQuestCare")],
   ] as const;
 
   return (
-    <footer
-      className="border-line border-t bg-surface text-text print:hidden"
-      data-theme="dark"
-    >
-      <div className="mx-auto grid w-full max-w-6xl gap-8 px-4 py-12 sm:grid-cols-2 lg:grid-cols-4">
-        <div className="grid content-start gap-2 lg:col-span-2">
-          <p className="font-bold text-lg">{tc("society")}</p>
-          <p className="type-caption">{tx("recognition")}</p>
-          {/* A small find: the motto opens to the whole line it comes from. */}
-          <details className="type-caption">
-            <summary className="cursor-pointer" lang="ar">
-              {project.motto.ar}
-            </summary>
-            <p className="pt-2" dir="rtl" lang="ar">
-              {MUTANABBI}
-            </p>
-          </details>
+    <footer className="bg-footer text-text print:hidden" data-theme="dark">
+      <div className="mx-auto grid w-full max-w-6xl gap-10 px-4 pt-14 pb-10 text-[0.90625rem] sm:grid-cols-2 sm:px-6 lg:grid-cols-[1.4fr_1fr_1fr_1fr] lg:gap-8">
+        <div className="grid content-start gap-4 sm:col-span-2 lg:col-span-1">
           <NextLink
-            className="type-label mt-4 justify-self-start border-2 border-line px-4 py-2 text-xs"
-            href={localizedPath(locale, nexusPath())}
+            className="justify-self-start"
+            href={localizedPath(locale, "/")}
           >
-            {tn("nexus")}
+            <BrandLogo className="h-14" height={56} locale={locale} />
           </NextLink>
+          <p className="max-w-[34ch] text-text-secondary">
+            {tx("recognition")}
+          </p>
+          <p className="text-text-secondary" lang="ar">
+            {project.motto.ar}
+          </p>
         </div>
-        {groups.map((links) => (
-          <ul className="grid content-start gap-2 text-sm" key={links[0][0]}>
-            {links.map(([href, label]) => (
+        {columns.map((column) => (
+          <div className="grid content-start gap-3.5" key={column.heading}>
+            <h2 className="type-label text-accent">{column.heading}</h2>
+            <ul className="grid gap-2">
+              {column.links.map(([href, label]) => (
+                <li key={href}>
+                  <Link className={linkClass} href={href}>
+                    {label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+        <div className="grid content-start gap-3.5">
+          <h2 className="type-label text-accent">
+            {t("columns.contactHeading")}
+          </h2>
+          <ul className="grid gap-2">
+            <li>
+              <a className={linkClass} href={`mailto:${email}`}>
+                {email}
+              </a>
+            </li>
+            <li>
+              <a
+                className={linkClass}
+                href={INSTAGRAM}
+                rel="noopener"
+                target="_blank"
+              >
+                {tx("instagram")} @auibsal
+              </a>
+            </li>
+            <li>
+              <Link className={linkClass} href="/contact">
+                {t("contact")}
+              </Link>
+            </li>
+            <li>
+              <Link className={linkClass} href="/media-kit">
+                {t("mediaKit")}
+              </Link>
+            </li>
+            <li>
+              <NextLink
+                className={linkClass}
+                href={localizedPath(locale, nexusPath())}
+              >
+                {tn("nexus")}
+              </NextLink>
+            </li>
+          </ul>
+        </div>
+        <div className="flex flex-col gap-3 border-line border-t pt-5 text-[0.8125rem] text-text-secondary sm:col-span-2 lg:col-span-4 lg:flex-row lg:flex-wrap lg:items-baseline lg:justify-between">
+          <p>{tx("copyright", { year: String(new Date().getFullYear()) })}</p>
+          <ul className="flex flex-wrap gap-x-5 gap-y-1">
+            {fine.map(([href, label]) => (
               <li key={href}>
-                <Link
-                  className="underline-offset-4 hover:underline"
-                  href={href}
-                >
+                <Link className={linkClass} href={href}>
                   {label}
                 </Link>
               </li>
             ))}
-            {links[0][0] === "/contact" ? (
-              <li>
-                <a
-                  className="underline-offset-4 hover:underline"
-                  href={INSTAGRAM}
-                  rel="noopener"
-                  target="_blank"
-                >
-                  {tx("instagram")}
-                </a>
-              </li>
-            ) : null}
-            {consent &&
-            links[0][0] === "/contact" &&
-            Object.values(askedConsent()).some(Boolean) ? (
+            {consent && Object.values(askedConsent()).some(Boolean) ? (
               <CookieSettings />
             ) : null}
           </ul>
-        ))}
-      </div>
-      <div className="border-line border-t">
-        <div className="type-caption mx-auto flex w-full max-w-6xl flex-wrap justify-between gap-2 px-4 py-6">
-          <p>{tx("copyright", { year: String(new Date().getFullYear()) })}</p>
           <p>{tx("colophon")}</p>
         </div>
       </div>

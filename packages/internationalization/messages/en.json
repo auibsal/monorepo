@@ -26,6 +26,8 @@
     "required": "Required",
     "openMenu": "Open menu",
     "closeMenu": "Close menu",
+    "menu": "Menu",
+    "menuClose": "Close",
     "search": "Search",
     "externalLink": "(opens in a new tab)",
     "copy": "Copy",
@@ -3457,7 +3459,13 @@
       "cookieSettings": "Cookie settings",
       "governance": "Governance",
       "terms": "Terms of use",
-      "accessibility": "Accessibility"
+      "accessibility": "Accessibility",
+      "columns": {
+        "society": "Society",
+        "read": "Read",
+        "contactHeading": "Contact",
+        "email": "hello@auibsal.org"
+      }
     },
     "consent": {
       "title": "Cookies",

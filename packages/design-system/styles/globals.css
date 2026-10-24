@@ -6,10 +6,16 @@
 @plugin "@tailwindcss/typography";
 
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
-/* On ink, unless inside a light sheet (`data-theme="light"`) within it. */
+/*
+ * On ink: inside a dark ground (dark mode, or an ink block such as the
+ * footer on a light page), unless inside a light sheet within that ground.
+ */
 @custom-variant on-ink (
   &:where([data-theme="dark"] *):not(
-    :where([data-theme="light"], [data-theme="light"] *)
+    :where(
+      [data-theme="dark"] [data-theme="light"],
+      [data-theme="dark"] [data-theme="light"] *
+    )
   )
 );
 

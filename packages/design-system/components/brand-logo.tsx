@@ -2,6 +2,8 @@ import { project } from "@repo/config";
 import { type LogoVariant, logos } from "../brand/logos";
 import { cn } from "../lib/utils";
 
+const HEIGHT_CLASS = /(^|\s)([\w-]+:)?h-/;
+
 interface BrandLogoProps {
   readonly className?: string;
   /**
@@ -28,6 +30,9 @@ export const BrandLogo = ({
   variant = "horizontal",
 }: BrandLogoProps) => {
   const file = logos[variant];
+  // A height class (h-10 lg:h-14) sizes the logo responsively; otherwise the
+  // inline height does (Tailwind's preflight sets images to height: auto).
+  const sized = HEIGHT_CLASS.test(className ?? "");
   const name = locale === "ar" ? project.nameAr : project.name;
   const image = (src: string, extra?: string, hidden?: boolean) => (
     // biome-ignore lint/performance/noImgElement: SVG logo, served as supplied
@@ -37,7 +42,7 @@ export const BrandLogo = ({
       className={cn("block w-auto", extra, className)}
       height={height}
       src={src}
-      style={{ height }}
+      style={sized ? undefined : { height }}
       width={Math.round(height * file.aspect)}
     />
   );

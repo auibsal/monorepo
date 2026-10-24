@@ -12,9 +12,9 @@ interface DocumentFooterProps {
 }
 
 /**
- * The brand's Document Footer (brand/components/DocumentFooter): code and
- * title in Ubuntu Mono at the start, a slot at the end, in text-meta (which
- * turns Crimson 100 on ink pages).
+ * The brand's Document Footer (v6): a hairline, then the code and title in
+ * Ubuntu Mono at the start and a slot at the end ("3 / 14" on paper), in
+ * text-secondary.
  */
 export const DocumentFooter = ({
   className,

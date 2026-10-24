@@ -1,16 +1,16 @@
 "use client";
 
 import { hasSessionCookie } from "@repo/auth/session-cookie";
-import { Button } from "@repo/design-system/components/ui/button";
+import { cn } from "@repo/design-system/lib/utils";
 import { localizedPath, nexusPath } from "@repo/internationalization";
 import { type Locale, locales } from "@repo/internationalization/config";
 import { Link, usePathname } from "@repo/internationalization/navigation";
 import NextLink from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { type ReactNode, useEffect, useState } from "react";
-import { Masthead } from "./masthead";
+import { Masthead, mastheadLink } from "./masthead";
 
-// Five sections in the header (v5); Give, News and Documents are in the footer.
+// Five sections in the header (v6); the rest are in the footer.
 type SectionKey = "about" | "programs" | "journal" | "events" | "join";
 const sections: { href: string; key: SectionKey }[] = [
   { href: "/about", key: "about" },
@@ -50,16 +50,19 @@ export const SiteHeader = ({ account = true, language }: SiteHeaderProps) => {
     <Masthead
       action={
         account ? (
-          <Button asChild className="hidden sm:inline-flex" size="sm">
-            <NextLink href={way.href}>{way.label}</NextLink>
-          </Button>
+          <NextLink
+            className={cn(mastheadLink, "hidden sm:inline")}
+            href={way.href}
+          >
+            {way.label}
+          </NextLink>
         ) : null
       }
       home={localizedPath(locale, "/")}
       language={
         language ?? (
           <Link
-            className="whitespace-nowrap px-2 py-1 text-sm underline-offset-4 hover:underline"
+            className={mastheadLink}
             href={pathname}
             lang={other}
             locale={other}
@@ -71,11 +74,9 @@ export const SiteHeader = ({ account = true, language }: SiteHeaderProps) => {
       menu={
         account
           ? (close) => (
-              <Button asChild className="w-full" size="lg">
-                <NextLink href={way.href} onClick={close}>
-                  {way.label}
-                </NextLink>
-              </Button>
+              <NextLink className="link" href={way.href} onClick={close}>
+                {way.label}
+              </NextLink>
             )
           : undefined
       }
