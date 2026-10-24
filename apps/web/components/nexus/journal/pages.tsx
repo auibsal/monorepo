@@ -105,7 +105,7 @@ const MyPieces = () => {
           <li className="flex flex-wrap items-baseline gap-3" key={p.id}>
             <Link
               className="font-medium underline underline-offset-4"
-              href={{ pathname: "/waraq/work", query: { id: p.id } }}
+              href={{ pathname: "/qirtas/work", query: { id: p.id } }}
             >
               {localized(p, "title", locale) || t("pieceTitle")}
             </Link>
@@ -133,7 +133,7 @@ export const JournalHome = () => {
       cell: (s) => (
         <Link
           className="font-medium underline underline-offset-4"
-          href={{ pathname: "/waraq/submission", query: { id: s.id } }}
+          href={{ pathname: "/qirtas/submission", query: { id: s.id } }}
         >
           {s.title}
         </Link>
@@ -171,10 +171,7 @@ export const JournalHome = () => {
         {calls.data?.length === 0 ? <p>{tw("none")}</p> : null}
         <ul className="grid gap-4">
           {calls.data?.map((call) => (
-            <li
-              className="grid gap-2 rounded-card bg-surface-tint p-4"
-              key={call.id}
-            >
+            <li className="grid gap-2 border-line border-t p-4" key={call.id}>
               <h3 className="font-medium">
                 {localized(call, "title", locale)}
               </h3>
@@ -194,7 +191,7 @@ export const JournalHome = () => {
               </p>
               <Link
                 className={buttonLink}
-                href={{ pathname: "/waraq/submit", query: { call: call.id } }}
+                href={{ pathname: "/qirtas/submit", query: { call: call.id } }}
               >
                 {tw("submit")}
               </Link>
@@ -208,14 +205,14 @@ export const JournalHome = () => {
         <ul className="grid gap-4 sm:grid-cols-3">
           {(["news", "video", "voices"] as const).map((desk) => (
             <li
-              className="grid content-start gap-2 rounded-card bg-surface-tint p-4"
+              className="grid content-start gap-2 border-line border-t p-4"
               key={desk}
             >
               <h3 className="font-medium">{tj(`desks.${desk}`)}</h3>
               <p className="type-caption">{tn(`deskLines.${desk}`)}</p>
               <Link
                 className={buttonLink}
-                href={{ pathname: "/waraq/submit", query: { desk } }}
+                href={{ pathname: "/qirtas/submit", query: { desk } }}
               >
                 {tn("sendTo")}
               </Link>
@@ -378,7 +375,7 @@ export const SubmitWork = () => {
     onSuccess: async (id) => {
       await invalidate();
       if (id) {
-        router.push({ pathname: "/waraq/submission", query: { id } });
+        router.push({ pathname: "/qirtas/submission", query: { id } });
       }
     },
   });
@@ -401,7 +398,7 @@ export const SubmitWork = () => {
     <div className="grid gap-8">
       <AdminHeading
         actions={
-          <Link className="text-sm underline underline-offset-4" href="/waraq">
+          <Link className="text-sm underline underline-offset-4" href="/qirtas">
             {t("back")}
           </Link>
         }
@@ -475,12 +472,12 @@ export const SubmitWork = () => {
           </Button>
           <ErrorLine error={send.error} />
           {partial ? (
-            <p className="text-sm text-title" role="alert">
+            <p className="text-sm text-text" role="alert">
               {t("filesFailed")}{" "}
               <Link
-                className="underline underline-offset-4"
+                className="link"
                 href={{
-                  pathname: "/waraq/submission",
+                  pathname: "/qirtas/submission",
                   query: { id: partial },
                 }}
               >
@@ -518,7 +515,7 @@ const PieceLink = ({ submissionId }: { submissionId: string }) => {
   return (
     <Link
       className={buttonLink}
-      href={{ pathname: "/waraq/work", query: { id: piece.data.id } }}
+      href={{ pathname: "/qirtas/work", query: { id: piece.data.id } }}
     >
       {t("openYourPiece")}
     </Link>
@@ -559,7 +556,7 @@ export const Agreement = ({ submissionId }: { submissionId: string }) => {
     return <SectionSpinner />;
   }
   return (
-    <section className="grid max-w-3xl gap-3 rounded-card bg-surface-tint p-4">
+    <section className="grid max-w-3xl gap-3 border-line border-t p-4">
       <h2 className="type-subheading">{t("title")}</h2>
       {agreement.data ? (
         <p>
@@ -691,7 +688,7 @@ export const MySubmission = () => {
   });
 
   const back = (
-    <Link className="text-sm underline underline-offset-4" href="/waraq">
+    <Link className="text-sm underline underline-offset-4" href="/qirtas">
       {t("back")}
     </Link>
   );
@@ -719,10 +716,7 @@ export const MySubmission = () => {
       </AdminHeading>
 
       {row.status === "intake_check" && row.intake_returned_at ? (
-        <section
-          className="grid gap-2 rounded-card bg-surface-tint p-4"
-          role="status"
-        >
+        <section className="grid gap-2 border-line border-t p-4" role="status">
           <h2 className="font-medium">{t("returnedTitle")}</h2>
           <p className="whitespace-pre-wrap">{row.intake_note}</p>
           <p className="type-caption">{t("returnedHint")}</p>
@@ -873,21 +867,21 @@ const ReadingTimeline = ({
           return (
             <li
               aria-current={state === "current" ? "step" : undefined}
-              className="grid grid-cols-[1.5rem_1fr] gap-3 border-rule border-b py-3"
+              className="grid grid-cols-[1.5rem_1fr] gap-3 border-line border-b py-3"
               key={stage}
             >
               <span
                 aria-hidden="true"
                 className={
                   state === "next"
-                    ? "frame mt-1 size-4"
-                    : "frame mt-1 size-4 bg-band"
+                    ? "mt-1 size-4 border border-line"
+                    : "mt-1 size-4 border border-line bg-band"
                 }
               />
               <div className="grid gap-1">
                 <p
                   className={
-                    state === "next" ? "text-text-secondary" : "font-bold"
+                    state === "next" ? "text-text-secondary" : "font-medium"
                   }
                 >
                   {stage === "decision" && index <= current

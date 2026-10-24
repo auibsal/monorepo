@@ -129,7 +129,7 @@ export const WordSearchGame = ({
                 className={cn(
                   "aspect-square rounded-sm border font-semibold text-base uppercase sm:text-lg",
                   isFound
-                    ? "border-accent-line bg-surface-tint text-title"
+                    ? "border-line border-t text-text"
                     : "border-transparent",
                   isStart && "border-text bg-text text-surface"
                 )}
@@ -156,15 +156,13 @@ export const WordSearchGame = ({
 
       <div className="grid content-start gap-4">
         <p className="type-caption">{t("howTo")}</p>
-        <h2 className="type-kicker border-accent-line border-b pb-2">
-          {t("words")}
-        </h2>
+        <h2 className="type-kicker border-line border-b pb-2">{t("words")}</h2>
         <ul className="grid grid-cols-2 gap-x-6 gap-y-1">
           {search.words.map((w) => {
             const isFound = found.includes(w.word);
             return (
               <li
-                className={cn(isFound && "text-text-meta line-through")}
+                className={cn(isFound && "text-text-secondary line-through")}
                 key={w.word}
               >
                 {w.label}

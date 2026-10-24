@@ -38,12 +38,12 @@ describe("Telegram helpers", () => {
   it("formats a notice", () => {
     const message = noticeMessage({
       body: "See you at 6:00 PM",
-      button: { text: "Open", url: "https://auibsal.org/nexus" },
+      button: { text: "Open", url: "https://auibsal.org/diwan" },
       title: "You're in <3",
     });
     expect(message.text).toBe("<b>You're in &lt;3</b>\n\nSee you at 6:00 PM");
     expect(message.reply_markup?.inline_keyboard[0]?.[0]?.url).toBe(
-      "https://auibsal.org/nexus"
+      "https://auibsal.org/diwan"
     );
   });
 

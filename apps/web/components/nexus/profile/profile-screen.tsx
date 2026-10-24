@@ -141,7 +141,7 @@ export const ProfileScreen = () => {
           <p
             className={
               words > membership.BIO_MAX_WORDS
-                ? "type-caption text-title"
+                ? "type-caption text-text"
                 : "type-caption"
             }
             id={`${id}-bio-count`}
@@ -186,7 +186,7 @@ export const ProfileScreen = () => {
           />
         </div>
         {save.isError ? (
-          <p className="text-title" role="alert">
+          <p className="text-text" role="alert">
             {t("errors.saveFailed")}
           </p>
         ) : null}

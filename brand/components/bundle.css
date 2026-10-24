@@ -1,82 +1,82 @@
-/* AUIB Society of Arts and Letters — structural components.
-   Plain HTML + CSS: copy the markup from each component's preview.html and load this file after tokens.css.
-   Every value is a token; px values that are not tokens are measured from SAL-BRD-01 on an A4 page at 96 dpi (794 × 1123 px). */
+/* AUIB Society of Arts and Letters — components, v6.
+   Plain HTML + CSS: load tokens.css first, then this file, and copy the markup from each component's preview.html.
+   Quiet by default: Light headlines in ink, hairlines and space, square corners, no shadows, no tinted cards. */
 
 .sal-ar { font-family: var(--font-arabic); direction: rtl; }
 
-/* ---------- Document page (A4) ---------- */
-.sal-page {
-  position: relative; box-sizing: border-box;
-  width: 794px; height: 1123px; overflow: hidden;
-  background: var(--surface); color: var(--text);
-  font-family: var(--font-sans);
-  padding: 0 var(--page-margin);
-}
+/* ---------- The Bookmark marker ---------- */
+.sal-bookmark { display: inline-block; flex: none; width: 14px; height: 17px; background: var(--accent);
+  clip-path: polygon(0 0, 50% 22%, 100% 0, 100% 100%, 0 100%); }
+.sal-section-head { display: flex; align-items: center; gap: 14px; }
+.sal-section-head h2 { margin: 0; font-family: var(--font-sans); font-weight: 400; font-size: 44px; line-height: 1.1; letter-spacing: -0.025em; color: var(--text); }
+
+/* ---------- Buttons ---------- */
+.sal-button { display: inline-flex; align-items: center; height: 50px; padding: 0 26px; border: 0; border-radius: 0;
+  background: var(--accent); color: var(--on-accent); font: 500 15px var(--font-sans); text-decoration: none; cursor: pointer; }
+.sal-link { color: var(--text); font: 500 15px var(--font-sans); text-decoration: none; border-bottom: var(--hairline) solid currentColor; padding-bottom: 2px; }
+
+/* ---------- Document page (A4, 794 × 1123 at 96 dpi) ---------- */
+.sal-page { position: relative; box-sizing: border-box; width: 794px; height: 1123px; overflow: hidden;
+  background: var(--white); color: var(--ink); font-family: var(--font-sans); padding: 0 var(--page-margin); }
 
 /* ---------- Document cover ---------- */
-.sal-cover__top { position: absolute; top: 91px; left: var(--page-margin); right: var(--page-margin);
+.sal-cover__top { position: absolute; top: 72px; left: var(--page-margin); right: var(--page-margin);
   display: flex; justify-content: space-between; align-items: flex-start; }
-.sal-cover__lockup { display: block; height: 96px; width: auto; }
-.sal-cover__code { text-align: right; }
-.sal-cover__code .sal-code { display: block; font-family: var(--font-mono); font-size: 12px; line-height: 1.3; color: var(--text-meta); letter-spacing: 0.04em; }
-.sal-cover__code .sal-ar { display: block; font-size: 12px; line-height: 1.8; color: var(--text-meta); }
-.sal-cover__title { position: absolute; top: 263px; left: var(--page-margin); right: var(--page-margin); margin: 0;
-  font-size: 77.33px; line-height: 1.02; font-weight: 700; color: var(--text); }
-.sal-cover__subtitle { position: absolute; top: 455px; left: var(--page-margin); right: var(--page-margin); margin: 0;
-  font-size: 22.67px; line-height: 1.3; font-weight: 300; color: var(--text); }
-.sal-cover__audience { position: absolute; top: 557px; left: var(--page-margin); right: var(--page-margin); margin: 0;
-  font-size: 14px; line-height: 1.5; color: var(--text); }
-.sal-cover__prepared { position: absolute; top: 757px; left: var(--page-margin); margin: 0; }
-.sal-cover__prepared-label { display: block; font-size: 11.33px; line-height: 1.4; color: var(--text); }
-.sal-cover__prepared-name { display: block; margin-top: 6px; font-size: 22.67px; line-height: 1.3; font-weight: 300; color: var(--text); }
-.sal-cover__prepared-role { display: block; margin-top: 4px; font-size: 11.33px; line-height: 1.4; color: var(--text); }
-.sal-cover__band { position: absolute; left: 0; right: 0; bottom: 0; height: 84px; box-sizing: border-box;
-  padding: 0 53px; display: flex; align-items: center; justify-content: space-between;
-  background: var(--band); color: var(--on-band); font-size: 14px; line-height: 1.5; }
+.sal-cover__lockup { display: block; height: 78px; width: auto; }
+.sal-cover__code { text-align: right; margin-top: 8px; }
+.sal-cover__code .sal-code { display: block; font-family: var(--font-mono); font-size: 13px; line-height: 1.4; color: var(--ash); }
+.sal-cover__code .sal-ar { display: block; font-size: 15px; line-height: 1.8; color: var(--ash); }
+.sal-cover__ribbon { position: absolute; top: 0; right: 300px; width: 44px; height: 210px; background: var(--crimson);
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 88%, 0 100%); }
+.sal-cover__title { position: absolute; top: 320px; left: var(--page-margin); right: var(--page-margin); margin: 0;
+  font-size: 88px; line-height: 1; font-weight: 300; letter-spacing: -0.03em; color: var(--ink); }
+.sal-cover__subtitle { position: absolute; top: 560px; left: var(--page-margin); max-width: 30ch; margin: 0;
+  font-size: 19px; line-height: 1.5; font-weight: 400; color: var(--ink); }
+.sal-cover__prepared { position: absolute; bottom: 150px; left: var(--page-margin); margin: 0; font-size: 13px; line-height: 1.6; color: var(--ash); }
+.sal-cover__prepared-name { display: block; font-size: 20px; line-height: 1.4; color: var(--ink); }
+.sal-cover__foot { position: absolute; left: var(--page-margin); right: var(--page-margin); bottom: 60px;
+  border-top: var(--hairline) solid var(--ink); padding-top: 12px; display: flex; justify-content: space-between;
+  font: 500 12px var(--font-sans); color: var(--ink); }
 
 /* ---------- Form header ---------- */
-.sal-form { background: var(--surface); color: var(--text); font-family: var(--font-sans); }
-.sal-form__head { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--gap);
-  padding-bottom: var(--gap-tight); border-bottom: calc(var(--hairline) * 2) solid var(--accent-line); }
-.sal-form__code { display: block; font-family: var(--font-mono); font-size: 12px; line-height: 1.3; color: var(--text-secondary); letter-spacing: 0.04em; }
-.sal-form__title { margin: 6px 0 0; font-size: 24px; line-height: 1.2; font-weight: 700; color: var(--text); }
-.sal-form__symbol { display: block; height: 52px; width: auto; flex: none; }
-.sal-form__fields { display: grid; grid-template-columns: 1fr 1fr; column-gap: var(--gap); row-gap: var(--gap); padding: var(--gap) 0; }
+.sal-form { background: var(--white); color: var(--ink); font-family: var(--font-sans); }
+.sal-form__head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px;
+  padding-bottom: 16px; border-bottom: var(--hairline) solid var(--ink); }
+.sal-form__code { display: block; font-family: var(--font-mono); font-size: 13px; line-height: 1.3; color: var(--ash); }
+.sal-form__title { margin: 6px 0 0; font-size: 32px; line-height: 1.1; font-weight: 300; letter-spacing: -0.02em; color: var(--ink); }
+.sal-form__symbol { display: block; height: 44px; width: auto; flex: none; }
+.sal-form__fields { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; padding: 24px 0; }
 .sal-form__field--wide { grid-column: 1 / -1; }
-.sal-label { display: block; font-size: 10.4px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text); }
-.sal-writeon { display: block; height: 28px; border-bottom: var(--hairline) solid var(--text); }
-.sal-form__office { display: grid; grid-template-columns: auto 1fr 1fr 1fr; align-items: end; column-gap: var(--gap);
-  padding: 10px var(--card-padding) 12px; background: var(--rule); color: var(--ink); }
-.sal-form__office .sal-label { color: var(--ink); }
-.sal-form__office .sal-writeon { height: 22px; border-bottom-color: var(--ink); }
+.sal-label { display: block; font-size: 10.4px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ash); }
+.sal-writeon { display: block; height: 28px; border-bottom: var(--hairline) solid var(--ink); }
+.sal-form__office { display: grid; grid-template-columns: auto 1fr 1fr 1fr; align-items: end; gap: 24px;
+  padding: 12px 16px 14px; background: var(--paper); }
 
 /* ---------- Document footer ---------- */
-.sal-footer { display: flex; justify-content: space-between; align-items: baseline; gap: var(--gap);
-  font-size: 10px; line-height: 1.4; color: var(--text-meta); }
-.sal-footer__doc { font-family: var(--font-mono); letter-spacing: 0.02em; }
-.sal-footer__page { font-family: var(--font-sans); font-variant-numeric: tabular-nums; }
+.sal-footer { display: flex; justify-content: space-between; align-items: baseline; gap: 24px;
+  border-top: var(--hairline) solid var(--stone); padding-top: 10px; font-size: 10px; line-height: 1.4; color: var(--ash); }
+.sal-footer__doc { font-family: var(--font-mono); font-size: 11px; }
+.sal-footer__page { font-variant-numeric: tabular-nums; }
 .sal-page > .sal-footer { position: absolute; left: var(--page-margin); right: var(--page-margin); bottom: 36px; }
 
 /* ---------- Social post (1080 × 1350, scales to any width) ---------- */
 .sal-post { --u: calc(100cqw / 1080); container-type: inline-size; }
-.sal-post__frame { position: relative; width: 100%; aspect-ratio: 4 / 5; overflow: hidden; box-sizing: border-box;
-  font-family: var(--font-sans); }
-.sal-post__name { position: absolute; top: calc(80 * var(--u)); left: calc(80 * var(--u)); margin: 0;
-  font-size: calc(34 * var(--u)); line-height: 1.15; font-weight: 700; }
-.sal-post__symbol { position: absolute; top: calc(80 * var(--u)); right: calc(80 * var(--u)); height: calc(124 * var(--u)); width: auto; }
-.sal-post__headline { position: absolute; left: calc(80 * var(--u)); right: calc(80 * var(--u)); top: calc(430 * var(--u)); margin: 0;
-  font-size: calc(132 * var(--u)); line-height: 1.02; font-weight: 700; }
-.sal-post__meta { position: absolute; left: calc(80 * var(--u)); bottom: calc(80 * var(--u)); margin: 0;
-  font-size: calc(30 * var(--u)); line-height: 1.5; }
+.sal-post__frame { position: relative; width: 100%; aspect-ratio: 4 / 5; overflow: hidden; box-sizing: border-box; font-family: var(--font-sans); }
+.sal-post__lockup { position: absolute; top: calc(72 * var(--u)); left: calc(80 * var(--u)); height: calc(132 * var(--u)); width: auto; }
+.sal-post__headline { position: absolute; left: calc(80 * var(--u)); right: calc(80 * var(--u)); top: calc(330 * var(--u)); margin: 0;
+  font-size: calc(160 * var(--u)); line-height: 1; font-weight: 300; letter-spacing: -0.03em; }
+.sal-post__headline i { font-weight: 300; }
+.sal-post__lede { position: absolute; left: calc(80 * var(--u)); top: calc(760 * var(--u)); max-width: 24ch; margin: 0;
+  font-size: calc(38 * var(--u)); line-height: 1.4; }
+.sal-post__meta { position: absolute; left: calc(80 * var(--u)); bottom: calc(72 * var(--u)); margin: 0;
+  font-size: calc(28 * var(--u)); line-height: 1.4; font-weight: 500; }
 .sal-post__meta span { display: block; }
-.sal-post__ar { position: absolute; right: calc(80 * var(--u)); bottom: calc(80 * var(--u)); margin: 0;
-  font-size: calc(32 * var(--u)); line-height: 1.8; }
-/* Grounds: crimson for calls and moments, ink for recruiting, white for membership, tint for regular programmes. */
+.sal-post__ar { position: absolute; right: calc(80 * var(--u)); bottom: calc(72 * var(--u)); margin: 0;
+  font-size: calc(40 * var(--u)); line-height: 1.5; }
+/* Grounds: crimson for calls and moments, white for events, ink for words worth keeping and recruiting. */
 .sal-post--crimson .sal-post__frame { background: var(--crimson); color: var(--white); }
-.sal-post--ink .sal-post__frame { background: var(--ink); color: var(--white); }
+.sal-post--crimson .sal-post__meta { color: var(--crimson-100); }
 .sal-post--white .sal-post__frame { background: var(--white); color: var(--ink); }
-.sal-post--white .sal-post__headline { color: var(--crimson); }
-.sal-post--white .sal-post__name, .sal-post--tint .sal-post__name { color: var(--crimson-700); }
-.sal-post--crimson .sal-post__name, .sal-post--ink .sal-post__name { color: var(--crimson-100); }
-.sal-post--tint .sal-post__frame { background: var(--crimson-50); color: var(--ink); }
-.sal-post--tint .sal-post__headline { color: var(--crimson); }
+.sal-post--white .sal-post__headline i { color: var(--crimson); }
+.sal-post--ink .sal-post__frame { background: var(--ink); color: var(--white); }
+.sal-post--ink .sal-post__headline i, .sal-post--ink .sal-post__meta { color: var(--crimson-100); }

@@ -77,7 +77,7 @@ const AdminNav = () => {
           aria-current={active ? "page" : undefined}
           className={cn(
             "block py-2 text-sm underline-offset-4 hover:underline lg:py-1",
-            active && "font-bold text-title"
+            active && "font-medium text-text"
           )}
           href={hrefFor(module)}
         >
@@ -93,13 +93,13 @@ const AdminNav = () => {
       <button
         aria-controls="admin-sections"
         aria-expanded={open}
-        className="frame flex w-full items-center justify-between gap-3 bg-surface px-4 py-3 text-start lg:hidden"
+        className="flex w-full items-center justify-between gap-3 border border-line bg-surface px-4 py-3 text-start lg:hidden"
         onClick={() => setOpenOn(open ? null : pathname)}
         type="button"
       >
         <span className="grid">
           <span className="type-kicker">{t("title")}</span>
-          <span className="font-bold">
+          <span className="font-medium">
             {current ? t(`nav.${current.key}`) : t("nav.overview")}
           </span>
         </span>

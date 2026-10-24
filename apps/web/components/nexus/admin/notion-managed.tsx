@@ -39,7 +39,7 @@ export const NotionManaged = ({
     return null;
   }
   return (
-    <p className="frame bg-surface-tint p-4 text-sm" role="note">
+    <p className="border-line border-t pt-space-4 text-sm" role="note">
       {t(kind === "event" ? "event" : "news")}{" "}
       <a
         className="inline-flex items-center gap-1 underline underline-offset-4"

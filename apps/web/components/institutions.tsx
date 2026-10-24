@@ -16,21 +16,18 @@ export const Institutions = async ({
 
   return (
     <section aria-labelledby="institutions" className="grid gap-6">
-      <div className="frame-b flex flex-wrap items-baseline justify-between gap-4 pb-2">
+      <div className="flex flex-wrap items-baseline justify-between gap-4 border-line border-b pb-2">
         <h2 className="type-heading" id="institutions">
           {t("title")}
         </h2>
         {showAll ? (
-          <Link
-            className="type-label text-xs underline underline-offset-4"
-            href="/partners"
-          >
+          <Link className="link type-caption" href="/partners">
             {t("allPartners")}
           </Link>
         ) : null}
       </div>
       <p className="type-body max-w-3xl">{t("lede")}</p>
-      <ul className="grid gap-gap sm:grid-cols-2 lg:grid-cols-4">
+      <ul className="grid gap-space-4 sm:grid-cols-2 lg:grid-cols-4">
         {INSTITUTIONS.map((item) => {
           const name = t(`names.${item.key}`);
           const body = (
@@ -52,7 +49,7 @@ export const Institutions = async ({
           );
           return (
             <li
-              className="grid content-start gap-2 rounded-card bg-surface-tint p-card-padding"
+              className="grid content-start gap-2 border-line border-t p-space-4"
               key={item.key}
             >
               {item.url ? (

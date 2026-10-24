@@ -24,7 +24,7 @@ const Rendered = ({
         <span key={index}>{part.text}</span>
       ) : (
         <mark
-          className="rounded-sm bg-surface-tint px-1 text-title"
+          className="rounded-sm border-line border-t px-1 text-text"
           // biome-ignore lint/suspicious/noArrayIndexKey: parts of one fixed sentence
           key={index}
         >
@@ -113,7 +113,7 @@ export const Letters = () => {
             </dd>
           </dl>
           <article
-            className="grid content-start gap-3 rounded-card bg-surface p-6 text-text"
+            className="grid content-start gap-3 bg-surface p-6 text-text"
             data-theme="light"
             dir="ltr"
             lang="en"

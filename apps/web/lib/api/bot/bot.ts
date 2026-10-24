@@ -11,6 +11,7 @@ import { setup } from "./features/group/setup";
 import { inline } from "./features/inline";
 import { start } from "./features/start";
 import { waraq } from "./features/waraq";
+import { followWithSticker } from "./stickers";
 
 // Methods whose text we write in Telegram HTML, with link previews off
 // unless a post asks for one.
@@ -90,6 +91,7 @@ export const createBot = (
         await ctx.answerCallbackQuery(ctx.t?.generic);
       } else if (ctx.chat?.type === "private" && ctx.t) {
         await ctx.reply(ctx.t.generic);
+        await followWithSticker(ctx, "sorry");
       }
     } catch {
       // Nothing more to do: the error is logged above.

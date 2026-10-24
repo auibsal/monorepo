@@ -1,16 +1,16 @@
-# Ads in Waraq
+# Ads in Qirtas
 
-Waraq's pages on auibsal.org (the front page, each desk and each piece) show
+Qirtas's pages on auibsal.org (the front page, each desk and each piece) show
 ads to visitors who are **not signed in** (owner, Oct 16, 2026). Anyone
-signed in to the Nexus sees none. There are three kinds:
+signed in to the Diwan sees none. There are three kinds:
 
-- **Society ads.** Events, open calls, joining SAL. Written in the Nexus by
+- **Society ads.** Events, open calls, joining SAL. Written in the Diwan by
   whoever keeps the site's content (`content.manage`: the General Secretary,
   the Communications Lead and program leads).
 - **Sponsor ads.** Ads from a partner in the partners register. Written by
   the partnership managers (`partners.manage`). A sponsor ad runs only while
   the partner is **active** and has a **signed memorandum in force** that
-  grants **Sponsor ads in Waraq** (`advertising`). The Policy Manual's limits
+  grants **Sponsor ads in Qirtas** (`advertising`). The Policy Manual's limits
   on sponsors (11.3: no political parties, religious or sectarian bodies,
   tobacco, alcohol or gambling) are checked when the memorandum is drafted
   and signed.
@@ -27,8 +27,8 @@ signed in to the Nexus sees none. There are three kinds:
   spaces on a page take turns through them (`adForSlot` in
   `@repo/sal-data/ads`). When nothing is running, AdSense fills the space.
 - **Members.** Each ad space is drawn in the browser. It stays empty when the
-  Nexus session cookie is present, which works because the public pages and
-  the Nexus share one origin. This
+  Diwan session cookie is present, which works because the public pages and
+  the Diwan share one origin. This
   check only decides what the page shows; it controls no access.
 - **Consent.** Once AdSense is set up, the consent card asks about
   **Analytics** and **Advertising**. Until a visitor allows Advertising, Google's ad
@@ -71,16 +71,16 @@ Only the owner or the technical administrator holds these accounts.
 
 ## Check
 
-1. In a private window, open auibsal.org/waraq. Each ad space shows a
+1. In a private window, open auibsal.org/qirtas. Each ad space shows a
    Society or sponsor ad, or an AdSense ad (blank until AdSense approves the
    site).
 2. The consent card lists Analytics and Advertising under **Choose**.
-3. Sign in to the Nexus and reload auibsal.org/waraq: no ad spaces.
+3. Sign in to the Diwan and reload auibsal.org/qirtas: no ad spaces.
 4. The privacy page (Platform section) describes the ads.
 
 ## Writing an ad
 
-Nexus → Administration → **Ads** → **New Society ad** or **New sponsor ad**.
+Diwan → Administration → **Ads** → **New Society ad** or **New sponsor ad**.
 Write a short headline (both languages where possible), an optional line of
 text and button text, and a link (an auibsal.org path such as `/join`, or an
 `https://` address). Add an image if you like, with a description. Set the

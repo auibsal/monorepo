@@ -35,7 +35,7 @@ const when = (iso: string, l: Lang) =>
 
 const nexus = (base: string, l: Lang, path = "") => ({
   href: `${base}${localizedPath(l, nexusPath(path || "/"))}`,
-  label: l === "ar" ? "افتح النِّكسَس" : "Open the Nexus",
+  label: l === "ar" ? "افتح الديوان" : "Open the Diwan",
 });
 
 export interface EventInfo {
@@ -64,8 +64,8 @@ export const rsvpConfirmed = (lang: Lang, e: EventInfo, app: string) =>
     paragraphs: [
       ...eventLines(e, l),
       l === "ar"
-        ? "رمز تذكرتك في النِّكسَس. وإن تغيّرت خططك فألغِ الحجز هناك ليأخذ غيرك المكان."
-        : "Your ticket code is in the Nexus. If your plans change, cancel there so someone else can have the place.",
+        ? "رمز تذكرتك في الديوان. وإن تغيّرت خططك فألغِ الحجز هناك ليأخذ غيرك المكان."
+        : "Your ticket code is in the Diwan. If your plans change, cancel there so someone else can have the place.",
     ],
   }));
 
@@ -79,8 +79,8 @@ export const waitlistPromoted = (lang: Lang, e: EventInfo, app: string) =>
     paragraphs: [
       ...eventLines(e, l),
       l === "ar"
-        ? "كنت على قائمة الانتظار، وقد حُجز لك مكان الآن. رمز تذكرتك في النِّكسَس."
-        : "You were on the waiting list and you now have a place. Your ticket code is in the Nexus.",
+        ? "كنت على قائمة الانتظار، وقد حُجز لك مكان الآن. رمز تذكرتك في الديوان."
+        : "You were on the waiting list and you now have a place. Your ticket code is in the Diwan.",
     ],
   }));
 
@@ -91,8 +91,8 @@ export const eventReminder = (lang: Lang, e: EventInfo, app: string) =>
     paragraphs: [
       ...eventLines(e, l),
       l === "ar"
-        ? "إن لم تعد تستطيع الحضور، فألغِ حجزك في النِّكسَس."
-        : "If you can no longer come, cancel your place in the Nexus.",
+        ? "إن لم تعد تستطيع الحضور، فألغِ حجزك في الديوان."
+        : "If you can no longer come, cancel your place in the Diwan.",
     ],
   }));
 
@@ -103,21 +103,21 @@ const RECEIVED: Record<DeskKind, Record<Lang, string[]>> = {
   blind: {
     ar: [
       "يُقرأ عملك قراءة عمياء: لا يرى القرّاء والمحررون اسمك حتى يُتَّخذ القرار.",
-      "يسمع كل كاتب الجواب في اليوم المعلن، أياً كان القرار. ويمكنك متابعة المراحل في النِّكسَس.",
+      "يسمع كل كاتب الجواب في اليوم المعلن، أياً كان القرار. ويمكنك متابعة المراحل في الديوان.",
     ],
     en: [
       "Your work is read blind: readers and editors never see your name until a decision is made.",
-      "Every author hears by the announced date, either way. You can follow its progress in the Nexus.",
+      "Every author hears by the announced date, either way. You can follow its progress in the Diwan.",
     ],
   },
   named: {
     ar: [
       "سيقرؤه محرر القسم ويتواصل معك باسمك بشأن التحرير والتحقق من الوقائع.",
-      "يمكنك متابعة المراحل في النِّكسَس.",
+      "يمكنك متابعة المراحل في الديوان.",
     ],
     en: [
       "The desk editor will read it and work with you by name on the edit and the facts.",
-      "You can follow its progress in the Nexus.",
+      "You can follow its progress in the Diwan.",
     ],
   },
 };
@@ -129,7 +129,7 @@ export const submissionReceived = (
   desk: DeskKind = "blind"
 ) =>
   build(lang, (l) => ({
-    action: nexus(app, l, "/waraq"),
+    action: nexus(app, l, "/qirtas"),
     heading:
       l === "ar" ? `شكراً، وصلنا ${work}` : `Thank you: we received ${work}`,
     paragraphs: RECEIVED[desk][l],
@@ -142,7 +142,7 @@ export const returnedForFormatting = (
   app: string
 ) =>
   build(lang, (l) => ({
-    action: nexus(app, l, "/waraq"),
+    action: nexus(app, l, "/qirtas"),
     heading:
       l === "ar"
         ? `تعديل واحد قبل القراءة: ${work}`
@@ -150,8 +150,8 @@ export const returnedForFormatting = (
     paragraphs: [
       ...(note ? [note] : []),
       l === "ar"
-        ? "هذا تعديل واحد وفرصة واحدة قبل الموعد النهائي، ولا يُحسب ضد العمل. عدّله في النِّكسَس ثم احفظ."
-        : "It is one specific fix, one chance, before the deadline, and it won't count against the piece. Revise it in the Nexus and save.",
+        ? "هذا تعديل واحد وفرصة واحدة قبل الموعد النهائي، ولا يُحسب ضد العمل. عدّله في الديوان ثم احفظ."
+        : "It is one specific fix, one chance, before the deadline, and it won't count against the piece. Revise it in the Diwan and save.",
     ],
   }));
 
@@ -177,49 +177,49 @@ export const decision = (
   build(lang, (l) => {
     if (outcome === "decline") {
       return {
-        action: nexus(app, l, "/waraq"),
+        action: nexus(app, l, "/qirtas"),
         heading:
           l === "ar" ? `شكراً لإرسالك ${work}` : `Thank you for sending ${work}`,
         paragraphs:
           l === "ar"
             ? [
-                "لم يختر المحررون هذا العمل لورق هذه المرة.",
+                "لم يختر المحررون هذا العمل لقرطاس هذه المرة.",
                 "هذا قرار يخص إصداراً واحداً، لا قيمة كتابتك. نرجو أن ترسل إلينا مجدداً.",
               ]
             : [
-                "This time the editors have not selected it for Waraq.",
+                "This time the editors have not selected it for Qirtas.",
                 "It is a decision about one Edition, not the worth of the writing. Please submit again.",
               ],
       };
     }
     return {
-      action: nexus(app, l, "/waraq"),
+      action: nexus(app, l, "/qirtas"),
       heading:
-        l === "ar" ? `قُبل ${work} في ورق` : `${work} is accepted for Waraq`,
+        l === "ar" ? `قُبل ${work} في قرطاس` : `${work} is accepted for Qirtas`,
       paragraphs: [
         ACCEPTED[outcome][l],
         l === "ar"
-          ? "خلال سبعة أيام: وقّع اتفاقية النشر وأكمل بياناتك ككاتب في النِّكسَس. توافق أنت على كل تغيير، وترى النص النهائي قبل نشره."
-          : "Within 7 days, sign the Publication Agreement and complete your contributor details in the Nexus. You approve every change and see the final text before it is published.",
+          ? "خلال سبعة أيام: وقّع اتفاقية النشر وأكمل بياناتك ككاتب في الديوان. توافق أنت على كل تغيير، وترى النص النهائي قبل نشره."
+          : "Within 7 days, sign the Publication Agreement and complete your contributor details in the Diwan. You approve every change and see the final text before it is published.",
       ],
     };
   });
 
 export const agreementReminder = (lang: Lang, work: string, app: string) =>
   build(lang, (l) => ({
-    action: nexus(app, l, "/waraq"),
+    action: nexus(app, l, "/qirtas"),
     heading:
       l === "ar"
         ? `بانتظار توقيعك: اتفاقية نشر ${work}`
         : `Waiting for your signature: ${work}`,
     paragraphs: [
       l === "ar"
-        ? "قُبل عملك في ورق، ولا يمكن نشره قبل أن توقّع اتفاقية النشر في النِّكسَس."
-        : "Your work is accepted for Waraq, and it cannot be published until you sign the Publication Agreement in the Nexus.",
+        ? "قُبل عملك في قرطاس، ولا يمكن نشره قبل أن توقّع اتفاقية النشر في الديوان."
+        : "Your work is accepted for Qirtas, and it cannot be published until you sign the Publication Agreement in the Diwan.",
     ],
   }));
 
-const piecePath = (pieceId: string) => `/waraq/work?id=${pieceId}`;
+const piecePath = (pieceId: string) => `/qirtas/work?id=${pieceId}`;
 
 /** Final check (72 hours): errors only, not new revisions. */
 export const finalCheck = (
@@ -234,8 +234,8 @@ export const finalCheck = (
       l === "ar" ? `مراجعتك الأخيرة: ${work}` : `Your final check: ${work}`,
     paragraphs: [
       l === "ar"
-        ? "راجع خلال ٧٢ ساعة اسمك والعنوان وكل فاصل أسطر ونبذتك، ثم وافق على النص في النِّكسَس."
-        : "Within 72 hours, check your name, the title, every line break and your bio, then approve the text in the Nexus.",
+        ? "راجع خلال ٧٢ ساعة اسمك والعنوان وكل فاصل أسطر ونبذتك، ثم وافق على النص في الديوان."
+        : "Within 72 hours, check your name, the title, every line break and your bio, then approve the text in the Diwan.",
       l === "ar"
         ? "الأخطاء فقط، لا تعديلات جديدة."
         : "Errors only, not new revisions.",
@@ -257,8 +257,8 @@ export const pieceNote = (
         : `A note from your editor: ${work}`,
     paragraphs: [
       l === "ar"
-        ? "كتب المحرر إليك عن عملك. اقرأ الملاحظة وردّ عليها في النِّكسَس. الكلمة الأخيرة في كلماتك لك."
-        : "Your editor wrote to you about the piece. Read the note and reply in the Nexus. The final word on the words is yours.",
+        ? "كتب المحرر إليك عن عملك. اقرأ الملاحظة وردّ عليها في الديوان. الكلمة الأخيرة في كلماتك لك."
+        : "Your editor wrote to you about the piece. Read the note and reply in the Diwan. The final word on the words is yours.",
     ],
   }));
 
@@ -267,13 +267,13 @@ export const piecePublished = (lang: Lang, work: string, url: string) =>
   build(lang, (l) => ({
     action: {
       href: url,
-      label: l === "ar" ? "اقرأه في ورق" : "Read it in Waraq",
+      label: l === "ar" ? "اقرأه في قرطاس" : "Read it in Qirtas",
     },
     heading: l === "ar" ? `نُشر ${work}` : `${work} is published`,
     paragraphs: [
       l === "ar"
-        ? "شكراً لك. إن أعدت نشره في مكان آخر فاكتب: «نُشر أولاً في ورق»."
-        : "Thank you. If you republish it anywhere, add: \u201cFirst published in Waraq.\u201d",
+        ? "شكراً لك. إن أعدت نشره في مكان آخر فاكتب: «نُشر أولاً في قرطاس»."
+        : "Thank you. If you republish it anywhere, add: \u201cFirst published in Qirtas.\u201d",
     ],
   }));
 
@@ -299,11 +299,12 @@ export const sundayPaper = (lang: Lang, items: SundayItem[], front: string) =>
   build(lang, (l) => ({
     action: {
       href: front,
-      label: l === "ar" ? "افتح ورق" : "Open Waraq",
+      label: l === "ar" ? "افتح قرطاس" : "Open Qirtas",
     },
-    heading: l === "ar" ? "صحيفة الأحد من ورق" : "The Sunday Paper from Waraq",
+    heading:
+      l === "ar" ? "صحيفة الأحد من قرطاس" : "The Sunday Paper from Qirtas",
     paragraphs: [
-      l === "ar" ? "ما نُشر في ورق هذا الأسبوع:" : "This week in Waraq:",
+      l === "ar" ? "ما نُشر في قرطاس هذا الأسبوع:" : "This week in Qirtas:",
       ...items.map((i) =>
         l === "ar"
           ? `${i.desk_ar}: ${i.title_ar || i.title_en} ${i.url}`
@@ -321,12 +322,12 @@ export const newsletterConfirm = (lang: Lang, confirm: string) =>
     },
     heading:
       l === "ar"
-        ? "أكّد اشتراكك في «شهر في ورق»"
-        : "Confirm your subscription to The Month in Waraq",
+        ? "أكّد اشتراكك في «شهر في قرطاس»"
+        : "Confirm your subscription to The Month in Qirtas",
     paragraphs: [
       l === "ar"
-        ? "طلب أحدهم بهذا العنوان رسالة «شهر في ورق» الشهرية من جمعية الفنون والآداب. اضغط الزر للتأكيد."
-        : "Someone asked for The Month in Waraq, the monthly email from the AUIB Society of Arts and Letters, at this address. Press the button to confirm.",
+        ? "طلب أحدهم بهذا العنوان رسالة «شهر في قرطاس» الشهرية من جمعية الفنون والآداب. اضغط الزر للتأكيد."
+        : "Someone asked for The Month in Qirtas, the monthly email from the AUIB Society of Arts and Letters, at this address. Press the button to confirm.",
       l === "ar"
         ? "إن لم تطلبه فتجاهل هذه الرسالة؛ لن نراسلك."
         : "If it was not you, ignore this email; we will not write again.",
@@ -351,13 +352,13 @@ export const monthInWaraq = (
   build(lang, (l) => ({
     action: {
       href: front,
-      label: l === "ar" ? "افتح ورق" : "Open Waraq",
+      label: l === "ar" ? "افتح قرطاس" : "Open Qirtas",
     },
-    heading: l === "ar" ? "شهر في ورق" : "The Month in Waraq",
+    heading: l === "ar" ? "شهر في قرطاس" : "The Month in Qirtas",
     paragraphs: [
       ...(pieces.length > 0
         ? [
-            l === "ar" ? "ما نُشر في ورق هذا الشهر:" : "This month in Waraq:",
+            l === "ar" ? "ما نُشر في قرطاس هذا الشهر:" : "This month in Qirtas:",
             ...pieces.map((i) =>
               l === "ar"
                 ? `${i.desk_ar}: ${i.title_ar || i.title_en} ${i.url}`
@@ -472,10 +473,10 @@ export const cronFailed = (lang: Lang, jobs: FailedJob[], day: string) =>
 export const pushTest = (lang: Lang) =>
   lang === "ar"
     ? {
-        body: "ستصلك هنا تذكيرات الفعاليات وأخبار ورق وقرارات النشر.",
+        body: "ستصلك هنا تذكيرات الفعاليات وأخبار قرطاس وقرارات النشر.",
         title: "الإشعارات تعمل",
       }
     : {
-        body: "Event reminders, Waraq news and decisions will arrive here.",
+        body: "Event reminders, Qirtas news and decisions will arrive here.",
         title: "Notifications are on",
       };

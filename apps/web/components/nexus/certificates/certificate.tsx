@@ -147,7 +147,7 @@ export const Certificate = () => {
       </div>
 
       <article
-        className="grid aspect-[297/210] w-full content-between gap-6 rounded-card border-2 border-accent-line bg-surface p-10 text-center text-text print:rounded-none print:border-0"
+        className="grid aspect-[297/210] w-full content-between gap-6 border-2 border-line bg-surface p-10 text-center text-text print:rounded-none print:border-0"
         // A certificate is paper: always the light ground, also on the
         // Nexus's ink pages.
         data-theme="light"
@@ -159,18 +159,18 @@ export const Certificate = () => {
         </header>
 
         <div className="grid justify-items-center gap-4">
-          <h1 className="font-bold text-4xl text-title">
+          <h1 className="font-bold text-4xl text-text">
             {t(`titles.${kind}`)}
           </h1>
           <p className="type-body">{t("recordThat")}</p>
-          <p className="border-accent-line border-b-2 px-8 pb-1 font-bold text-3xl">
+          <p className="border-line border-b-2 px-8 pb-1 font-bold text-3xl">
             {name}
           </p>
           <p className="type-body max-w-2xl text-lg">
             {t(`bodies.${kind}`, values)}
           </p>
           {row.status === "revoked" ? (
-            <p className="font-bold text-title">{t("revoked")}</p>
+            <p className="font-bold text-text">{t("revoked")}</p>
           ) : null}
         </div>
 
@@ -179,19 +179,19 @@ export const Certificate = () => {
             {project.motto.ar}
           </p>
           <div className="grid grid-cols-3 items-end gap-6 text-sm">
-            <div className="grid gap-1 border-rule border-t pt-2">
+            <div className="grid gap-1 border-line border-t pt-2">
               <span className="font-medium">
                 {signers ? localized(signers, "president", locale) : ""}
               </span>
               <span className="type-caption">{t("president")}</span>
             </div>
-            <div className="grid gap-1 border-rule border-t pt-2">
+            <div className="grid gap-1 border-line border-t pt-2">
               <span className="font-medium">
                 {signers ? localized(signers, "advisor", locale) : ""}
               </span>
               <span className="type-caption">{t("advisor")}</span>
             </div>
-            <div className="grid gap-1 border-rule border-t pt-2">
+            <div className="grid gap-1 border-line border-t pt-2">
               <span className="font-medium">{date(row.issued_at)}</span>
               <span className="type-caption">{t("date")}</span>
             </div>

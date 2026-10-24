@@ -107,10 +107,10 @@ describe("formatting", () => {
 describe("links", () => {
   it("never writes /en", () => {
     expect(piecePage("en", "a-poem")).toBe(
-      "https://auibsal.org/waraq/pieces/a-poem"
+      "https://auibsal.org/qirtas/pieces/a-poem"
     );
     expect(piecePage("ar", "a-poem")).toBe(
-      "https://auibsal.org/ar/waraq/pieces/a-poem"
+      "https://auibsal.org/ar/qirtas/pieces/a-poem"
     );
     expect(eventCalendar("ar", "open-mic")).toBe(
       "https://auibsal.org/api/calendar/events/open-mic.ics?lang=ar"
@@ -127,6 +127,6 @@ describe("links", () => {
 describe("daily word", () => {
   it("opens auibsal.org's game as the bot's Main App", () => {
     expect(mainApp("sal_test_bot")).toBe("https://t.me/sal_test_bot?startapp");
-    expect(wordPage("ar")).toBe("https://auibsal.org/ar/waraq/games/word");
+    expect(wordPage("ar")).toBe("https://auibsal.org/ar/qirtas/games/word");
   });
 });

@@ -164,10 +164,7 @@ const Submissions = () => {
     <div className="grid gap-6 pt-4">
       <ul className="flex flex-wrap gap-2">
         {(queue.data ?? []).map((q) => (
-          <li
-            className="rounded-card bg-surface-tint px-3 py-2"
-            key={q.form_key}
-          >
+          <li className="border-line border-t px-3 py-2" key={q.form_key}>
             <span className="font-medium">
               <FormName formKey={q.form_key} />
             </span>
@@ -255,7 +252,7 @@ const Handle = ({ submission }: { submission: Submission }) => {
 
   return (
     <section
-      className="grid gap-4 border-rule border-t pt-6"
+      className="grid gap-4 border-line border-t pt-6"
       key={submission.id}
     >
       <div className="flex flex-wrap gap-2 print:hidden">

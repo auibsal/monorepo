@@ -30,10 +30,10 @@ const ContactPage = async ({ params }: LocaleParams) => {
   ]);
 
   return (
-    <div className="mx-auto grid w-full max-w-4xl gap-12 px-4 py-16">
+    <div className="mx-auto grid w-full max-w-6xl gap-20 px-4 py-16 sm:py-24">
       <PageHeader lede={t("lede")} title={t("title")} />
       <dl className="grid gap-4 sm:grid-cols-3">
-        <div className="frame grid gap-1 bg-surface-tint p-5">
+        <div className="grid gap-1 border-line border-t py-space-4">
           <dt className="type-caption">{t("instagram")}</dt>
           <dd>
             <a
@@ -47,7 +47,7 @@ const ContactPage = async ({ params }: LocaleParams) => {
             </a>
           </dd>
         </div>
-        <div className="frame grid gap-1 bg-surface-tint p-5">
+        <div className="grid gap-1 border-line border-t py-space-4">
           <dt className="type-caption">{t("telegram")}</dt>
           <dd className="type-subheading" dir="ltr" lang="en">
             {text(telegram) ? (
@@ -64,7 +64,7 @@ const ContactPage = async ({ params }: LocaleParams) => {
             )}
           </dd>
         </div>
-        <div className="frame grid gap-1 bg-surface-tint p-5">
+        <div className="grid gap-1 border-line border-t py-space-4">
           <dt className="type-caption">{t("email")}</dt>
           <dd>
             {text(email) ? (
@@ -82,7 +82,7 @@ const ContactPage = async ({ params }: LocaleParams) => {
         </div>
       </dl>
       <Section id="concern" title={t("concernTitle")}>
-        <blockquote className="grid gap-1 border-accent-line border-s-4 ps-4">
+        <blockquote className="grid gap-1 border-accent border-s-2 ps-4">
           <p className="type-body">{t("concern")}</p>
           <footer className="type-caption">{t("concernSource")}</footer>
         </blockquote>
@@ -90,7 +90,7 @@ const ContactPage = async ({ params }: LocaleParams) => {
       <Section id="photo" title={t("photoTitle")}>
         <p className="type-body">{t("photo")}</p>
         <Link
-          className="type-label frame press inline-flex h-10 items-center justify-self-start bg-surface px-4 text-xs shadow-offset"
+          className="link justify-self-start"
           href="/programs/side-quest/care#request"
         >
           {t("photoLink")}

@@ -143,7 +143,7 @@ export const ThirdPartyApps = () => {
       )}
       <ErrorLine error={apps.error ?? toggle.error} />
       <form className="grid gap-4" onSubmit={submit}>
-        <h3 className="font-bold">{t("add")}</h3>
+        <h3 className="font-medium">{t("add")}</h3>
         <Field hint={t("clientIdHint")} label={t("clientId")}>
           {(fieldId) => (
             <Input

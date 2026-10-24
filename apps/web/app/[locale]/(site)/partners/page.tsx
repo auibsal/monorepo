@@ -26,7 +26,7 @@ const PartnersPage = async ({ params }: LocaleParams) => {
   );
 
   return (
-    <div className="mx-auto grid w-full max-w-5xl gap-12 px-4 py-16">
+    <div className="mx-auto grid w-full max-w-6xl gap-20 px-4 py-16 sm:py-24">
       <PageHeader lede={t("lede")} title={t("title")} />
       <Institutions />
       {list.length === 0 ? <p className="type-body">{t("empty")}</p> : null}
@@ -43,7 +43,7 @@ const PartnersPage = async ({ params }: LocaleParams) => {
                 const name = localized(partner, "name", locale);
                 return (
                   <li
-                    className="grid content-start gap-3 rounded-card bg-surface-tint p-5"
+                    className="grid content-start gap-3 border-line border-t py-space-4"
                     key={partner.slug}
                   >
                     {logo ? (

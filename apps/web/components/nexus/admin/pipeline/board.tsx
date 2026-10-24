@@ -63,7 +63,7 @@ const Card = ({
   return (
     // biome-ignore lint/a11y/noNoninteractiveElementInteractions: drag source; the Move menu is the keyboard path
     <li
-      className="grid cursor-grab gap-2 rounded-card bg-surface p-3"
+      className="grid cursor-grab gap-2 bg-surface p-3"
       draggable={moves.length > 0}
       onDragStart={(event: DragEvent) => {
         event.dataTransfer.setData(
@@ -155,8 +155,8 @@ export const Board = ({ issueId }: { issueId: string }) => {
             <section
               aria-label={ts(status)}
               className={cn(
-                "grid content-start gap-3 rounded-card bg-surface-tint p-3",
-                over === status && "outline-2 outline-accent-line"
+                "grid content-start gap-3 border-line border-t p-3",
+                over === status && "outline-2 outline-accent"
               )}
               key={status}
               onDragLeave={() => setOver(null)}
@@ -184,16 +184,13 @@ export const Board = ({ issueId }: { issueId: string }) => {
             </section>
           );
         })}
-        <section className="grid content-start gap-3 rounded-card bg-surface-tint p-3">
+        <section className="grid content-start gap-3 border-line border-t p-3">
           <h3 className="font-medium">
             {t("board.decided")} ({formatNumber(decided.length)})
           </h3>
           <ul className="grid gap-2">
             {decided.map((entry) => (
-              <li
-                className="grid gap-1 rounded-card bg-surface p-3"
-                key={entry.id}
-              >
+              <li className="grid gap-1 bg-surface p-3" key={entry.id}>
                 <span className="type-code">{entry.blind_id}</span>
                 <EntryLink id={entry.id} label={entry.title} />
                 <span className="type-caption">{ts(entry.status)}</span>

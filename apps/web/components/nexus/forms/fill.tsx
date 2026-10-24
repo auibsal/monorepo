@@ -72,7 +72,7 @@ const Totals = ({ data, formKey }: { data: Data; formKey: string }) => {
   const locale = useLocale() as Locale;
   if (formKey === "f04") {
     return (
-      <p className="type-body font-bold" role="status">
+      <p className="type-body font-medium" role="status">
         {t("interviewTotal", {
           total: formatNumber(forms.interviewTotal(data)),
         })}
@@ -82,7 +82,7 @@ const Totals = ({ data, formKey }: { data: Data; formKey: string }) => {
   }
   if (formKey === "f13") {
     return (
-      <p className="type-body font-bold" role="status">
+      <p className="type-body font-medium" role="status">
         {t("claimTotal", {
           total: formatIqd(forms.claimTotal(data), locale),
         })}
@@ -92,7 +92,7 @@ const Totals = ({ data, formKey }: { data: Data; formKey: string }) => {
   if (formKey === "f14") {
     const totals = forms.cashTotals(data);
     return (
-      <p className="type-body font-bold" role="status">
+      <p className="type-body font-medium" role="status">
         {t("cashTotals", {
           one: formatIqd(totals.count1, locale),
           two: formatIqd(totals.count2, locale),
@@ -137,7 +137,7 @@ const ProblemsLine = ({
 }) => {
   const t = useTranslations("nexus.forms");
   return problems.length > 0 ? (
-    <p className="text-sm text-title" role="alert">
+    <p className="text-sm text-text" role="alert">
       {t("problems", {
         fields: problems.map((key) => labels.field(key)).join(" · "),
       })}
@@ -271,7 +271,7 @@ const FormEditor = ({
         <p className="type-lede max-w-2xl">{labels.purpose()}</p>
       </header>
       {definition.preamble ? (
-        <p className="type-body rounded-card bg-surface-tint p-5">
+        <p className="type-body border-line border-t p-5">
           {labels.preamble()}
         </p>
       ) : null}

@@ -35,7 +35,7 @@ export const Offers = () => {
           {t("empty")}
         </EmptyLine>
       ) : null}
-      <ul className="grid gap-gap">
+      <ul className="grid gap-space-4">
         {(offers.data ?? []).map((offer) => (
           <li key={offer.id}>
             <SalCard>

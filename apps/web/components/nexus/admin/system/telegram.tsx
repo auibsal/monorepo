@@ -91,7 +91,7 @@ export const TelegramBot = ({
       <h2 className="type-subheading">{t("title")}</h2>
       <p className="type-body">{t("lede")}</p>
       <div className="grid gap-2">
-        <h3 className="type-body font-bold">{t("botTitle")}</h3>
+        <h3 className="type-body font-medium">{t("botTitle")}</h3>
         {statusLine ? (
           <p className="type-caption" role="status">
             {statusLine}
@@ -136,7 +136,7 @@ export const TelegramBot = ({
         <ErrorLine error={save.error} />
       </form>
       <div className="grid gap-2">
-        <h3 className="type-body font-bold">{t("connectGroup")}</h3>
+        <h3 className="type-body font-medium">{t("connectGroup")}</h3>
         <p className="type-caption">{t("connectHint")}</p>
         {code ? (
           <code className="type-code select-all" dir="ltr">

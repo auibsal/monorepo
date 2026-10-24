@@ -104,11 +104,7 @@ export const SixWords = () => {
     <Section
       action={
         entry.data && !writing ? (
-          <button
-            className="type-label text-xs underline underline-offset-4"
-            onClick={start}
-            type="button"
-          >
+          <button className="link type-caption" onClick={start} type="button">
             {t("edit")}
           </button>
         ) : undefined

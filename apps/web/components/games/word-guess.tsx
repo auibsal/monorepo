@@ -21,10 +21,10 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { loadProgress, saveProgress } from "./storage";
 
 const tile: Record<Mark | "empty" | "typed", string> = {
-  empty: "border-rule bg-surface",
+  empty: "border-line bg-surface",
   hit: "border-text bg-text text-surface",
-  miss: "border-rule bg-surface text-text-meta",
-  near: "border-accent-line bg-surface-tint text-title",
+  miss: "border-line bg-surface text-text-secondary",
+  near: "border-line border-t border-line text-text",
   typed: "border-text bg-surface",
 };
 
@@ -217,7 +217,7 @@ export const WordGuess = ({ lang }: { lang: GameLang }) => {
                   aria-label={mark ? t(`guess.${mark}`, { letter: key }) : key}
                   className={cn(
                     "h-12 min-w-0 flex-1 rounded-md border font-semibold text-lg disabled:opacity-60",
-                    mark ? tile[mark] : "border-rule bg-surface-tint"
+                    mark ? tile[mark] : "border-line border-t"
                   )}
                   disabled={over}
                   key={key}

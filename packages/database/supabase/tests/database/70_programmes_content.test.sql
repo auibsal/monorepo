@@ -163,7 +163,7 @@ select is((select count(*) from content.search('Night') where kind = 'news')::in
   'Search no longer lists the old news posts (Waraq''s News desk has them)');
 select is((select count(*) from core.settings where key = 'auib.calendar_url')::integer, 0,
   'Private settings are hidden from visitors');
-select is((select value #>> '{}' from core.settings where key = 'journal.name_en'), 'Waraq',
+select is((select value #>> '{}' from core.settings where key = 'journal.name_en'), 'Qirtas',
   'The journal name is a public setting');
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a1');

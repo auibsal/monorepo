@@ -62,7 +62,7 @@ export const RemovalForm = () => {
 
   if (state.kind === "sent") {
     return (
-      <p className="type-body rounded-card bg-surface-tint p-4" role="status">
+      <p className="type-body border-line border-t p-4" role="status">
         {t("sent", {
           date: `${formatLongDate(state.dueAt, locale)}, ${formatClock(state.dueAt, locale)}`,
         })}
@@ -131,17 +131,17 @@ export const RemovalForm = () => {
         {state.kind === "sending" ? t("sending") : t("send")}
       </Button>
       {state.kind === "failed" ? (
-        <p className="text-sm text-title" role="alert">
+        <p className="text-sm text-text" role="alert">
           {t("failed")}
         </p>
       ) : null}
       {state.kind === "rate_limited" ? (
-        <p className="text-sm text-title" role="alert">
+        <p className="text-sm text-text" role="alert">
           {t("rateLimited")}
         </p>
       ) : null}
       {state.kind === "invalid_email" ? (
-        <p className="text-sm text-title" role="alert">
+        <p className="text-sm text-text" role="alert">
           {t("invalidEmail")}
         </p>
       ) : null}

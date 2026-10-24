@@ -212,10 +212,10 @@ export const CrosswordGame = ({
                     autoCapitalize="characters"
                     autoComplete="off"
                     className={cn(
-                      "size-full bg-transparent text-center font-semibold text-base uppercase caret-transparent outline-none focus:bg-surface-tint sm:text-xl",
-                      activeCells.has(k) && "bg-surface-tint",
-                      k === active.cell && "ring-2 ring-accent-line ring-inset",
-                      wrong(k, sq.letter) && "text-title line-through"
+                      "size-full bg-transparent text-center font-semibold text-base uppercase caret-transparent outline-none focus:text-accent sm:text-xl",
+                      activeCells.has(k) && "border-line border-t",
+                      k === active.cell && "ring-2 ring-accent ring-inset",
+                      wrong(k, sq.letter) && "text-text line-through"
                     )}
                     maxLength={2}
                     onChange={(event) => onInput(k, event)}
@@ -268,7 +268,7 @@ export const CrosswordGame = ({
       <div className="grid content-start gap-8 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
         {[true, false].map((across) => (
           <section className="grid content-start gap-2" key={String(across)}>
-            <h2 className="type-kicker border-accent-line border-b pb-2">
+            <h2 className="type-kicker border-line border-b pb-2">
               {across ? t("across") : t("down")}
             </h2>
             <ol className="grid gap-1">
@@ -276,7 +276,7 @@ export const CrosswordGame = ({
                 <li key={`${e.number}-${across}`}>
                   <button
                     aria-current={activeEntry === e ? "true" : undefined}
-                    className="w-full rounded-sm px-2 py-1 text-start hover:bg-surface-tint aria-[current=true]:bg-surface-tint"
+                    className="w-full rounded-sm border-line px-2 py-1 text-start hover:text-accent aria-[current=true]:border-t"
                     onClick={() => focusCell(at(e, 0), e.across)}
                     type="button"
                   >

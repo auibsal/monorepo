@@ -356,7 +356,7 @@ export const Attendance = ({
   ];
 
   return (
-    <section className="grid gap-6 border-rule border-t pt-8">
+    <section className="grid gap-6 border-line border-t pt-8">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <h2 className="type-heading">{t("attendance")}</h2>
         <ExportButton

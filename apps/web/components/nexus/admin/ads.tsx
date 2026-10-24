@@ -150,7 +150,7 @@ export const AdsAdmin = () => {
     {
       cell: (ad) => (
         <Link
-          className="underline underline-offset-4"
+          className="link"
           href={{ pathname: "/admin/ads/ad", query: { id: ad.id } }}
         >
           {localized(ad, "headline", locale) || t("untitled")}

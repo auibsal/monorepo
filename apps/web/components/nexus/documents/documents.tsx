@@ -76,7 +76,7 @@ export const Documents = () => {
                     <p className="type-kicker">{d.code}</p>
                     {notionPage(d) ? (
                       <a
-                        className="inline-flex items-center gap-1.5 font-bold underline underline-offset-4"
+                        className="inline-flex items-center gap-1.5 font-medium underline underline-offset-4"
                         href={notionPage(d) ?? undefined}
                         rel="noopener"
                         target="_blank"
@@ -89,7 +89,7 @@ export const Documents = () => {
                       </a>
                     ) : (
                       <Link
-                        className="font-bold underline underline-offset-4"
+                        className="font-medium underline underline-offset-4"
                         href={{
                           pathname: "/library/view",
                           query: { slug: d.slug },

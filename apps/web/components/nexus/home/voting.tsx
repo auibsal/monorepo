@@ -20,12 +20,12 @@ export const VotingEligibility = () => {
 
   return (
     <Section id="voting" title={t("title")}>
-      <p className="type-body font-bold">
+      <p className="type-body font-medium">
         {t("progress", { count: formatNumber(Math.min(count, 99)) })}
       </p>
       <progress
         aria-label={t("title")}
-        className="h-2 w-full accent-[var(--title)]"
+        className="h-2 w-full accent-[var(--text)]"
         max={membership.VOTING_ACTIVITIES}
         value={Math.min(count, membership.VOTING_ACTIVITIES)}
       />
@@ -45,7 +45,7 @@ export const VotingEligibility = () => {
           <table className="type-body mt-2 w-full text-start">
             <tbody>
               {activity.data.map((record) => (
-                <tr className="border-rule border-b" key={record.id}>
+                <tr className="border-line border-b" key={record.id}>
                   <td className="py-2 pe-4">
                     {formatLongDate(record.occurred_at, locale, true)}
                   </td>

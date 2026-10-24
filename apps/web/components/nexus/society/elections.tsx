@@ -185,7 +185,7 @@ const Nominate = ({ position }: { readonly position: Position }) => {
       )}
       {notice ? (
         <p
-          className="type-body font-bold"
+          className="type-body font-medium"
           role={notice === "nominated" ? "status" : "alert"}
         >
           {t(`notice.${notice as "nominated"}`)}
@@ -255,7 +255,7 @@ const Ballot = ({
         ];
         return (
           <fieldset
-            className="frame grid gap-3 p-card-padding"
+            className="grid gap-3 border-line border-t pt-space-4"
             key={position.id}
           >
             <legend className="type-subheading px-1">
@@ -267,7 +267,7 @@ const Ballot = ({
                   {t("rank", { rank: String(rank + 1) })}
                 </Label>
                 <select
-                  className="frame h-10 bg-surface px-3 text-text"
+                  className="h-12 border border-line bg-surface px-3 text-text"
                   defaultValue=""
                   id={`${position.id}-${rank}`}
                   name={position.id}
@@ -293,7 +293,7 @@ const Ballot = ({
       </Button>
       {notice ? (
         <p
-          className="type-body font-bold"
+          className="type-body font-medium"
           role={notice === "voted" ? "status" : "alert"}
         >
           {t(`notice.${notice as "voted"}`)}
@@ -331,7 +331,7 @@ const ElectionCard = ({
     `${formatLongDate(iso, locale)} · ${formatClock(iso, locale)}`;
 
   return (
-    <article className="frame grid gap-4 bg-surface p-card-padding shadow-offset">
+    <article className="grid gap-4 border-line border-t pt-space-4">
       <header className="grid gap-1">
         <p className="type-kicker">
           {t(`status.${election.status as "voting"}`)}
@@ -346,7 +346,7 @@ const ElectionCard = ({
       </header>
 
       {voting && data.voted.has(election.id) ? (
-        <p className="type-body font-bold">{t("youVoted")}</p>
+        <p className="type-body font-medium">{t("youVoted")}</p>
       ) : null}
       {canVote && auib ? <Ballot data={data} election={election} /> : null}
       {canVote && !auib ? <p className="type-body">{t("auibOnly")}</p> : null}
@@ -370,7 +370,7 @@ const ElectionCard = ({
             );
             return (
               <section
-                className="grid gap-2 border-rule border-t pt-3"
+                className="grid gap-2 border-line border-t pt-3"
                 key={position.id}
               >
                 <h4 className="type-subheading">
@@ -382,7 +382,7 @@ const ElectionCard = ({
                   <ul className="grid gap-2">
                     {approved.map((c) => (
                       <li key={c.id}>
-                        <p className="font-bold">{name(c.user_id)}</p>
+                        <p className="font-medium">{name(c.user_id)}</p>
                         <p className="type-body text-text-secondary">
                           {localized(c, "statement", locale)}
                         </p>
@@ -417,7 +417,7 @@ const ElectionCard = ({
               outcome = name(winner.user_id);
             }
             return (
-              <li className="border-rule border-b py-2" key={position.id}>
+              <li className="border-line border-b py-2" key={position.id}>
                 <span className="type-caption">
                   {localized(position, "title", locale)}
                 </span>

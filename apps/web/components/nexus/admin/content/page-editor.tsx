@@ -190,7 +190,7 @@ export const PageEditor = () => {
           value={form.body}
         />
         {problem ? (
-          <p className="text-sm text-title" role="alert">
+          <p className="text-sm text-text" role="alert">
             {problem}
           </p>
         ) : null}

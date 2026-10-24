@@ -36,7 +36,7 @@ const hrefFor = (kind: Kind, slug: string) => {
     return `/events/${slug}`;
   }
   if (kind === "piece") {
-    return `/waraq/pieces/${slug}`;
+    return `/qirtas/pieces/${slug}`;
   }
   if (kind === "production") {
     return `/programs/productions#${slug}`;
@@ -127,7 +127,7 @@ const SearchPage = async ({ params, searchParams }: SearchProps) => {
           <ul className="grid gap-4">
             {results.map((r) => (
               <li
-                className="grid gap-1 border-rule border-b pb-4"
+                className="grid gap-1 border-line border-b pb-4"
                 key={`${r.kind}-${r.id}`}
               >
                 <p className="type-kicker">

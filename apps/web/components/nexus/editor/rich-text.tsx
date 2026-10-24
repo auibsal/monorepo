@@ -59,7 +59,7 @@ const ToolbarButton = ({
     aria-pressed={active}
     className={cn(
       "h-7 px-2 text-xs",
-      active && "bg-surface-tint font-bold text-title"
+      active && "border-line border-t font-medium text-text"
     )}
     onClick={onClick}
     size="sm"
@@ -140,7 +140,7 @@ const Toolbar = ({
   };
 
   return (
-    <div className="border-rule border-b">
+    <div className="border-line border-b">
       <div
         aria-label={t("toolbar")}
         className="flex flex-wrap gap-1 p-1"

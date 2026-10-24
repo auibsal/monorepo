@@ -1,7 +1,70 @@
 import type { Locale } from "@repo/internationalization";
-import { formatClock, formatLongDate } from "@repo/internationalization/format";
+import { formatClock, formatDayParts } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
 import { localized } from "@repo/sal-data";
+
+export interface DatedItem {
+  /** The day the row is filed under (an instant; shown in Baghdad). */
+  at: string;
+  href: string;
+  key: string;
+  /** One line under the title. */
+  line?: string | null;
+  /** Place and time, at the end of the row. */
+  place?: string | null;
+  title: string;
+}
+
+/**
+ * The dated list (v6): a large Light day number with the weekday and month
+ * under it, the title and one line, and the place and time at the end, each
+ * row on a hairline.
+ */
+export const DatedList = ({
+  items,
+  locale,
+}: {
+  items: readonly DatedItem[];
+  locale: Locale;
+}) => (
+  <ul className="grid border-line border-b">
+    {items.map((item) => {
+      const { day, month, weekday } = formatDayParts(item.at, locale);
+      return (
+        <li className="border-line border-t" key={item.key}>
+          <Link
+            className="group grid grid-cols-[4.5rem_1fr] gap-x-space-4 gap-y-1 py-space-4 sm:grid-cols-[8rem_1fr_auto] sm:items-baseline"
+            href={item.href}
+          >
+            <span className="row-span-3 grid content-start gap-1 sm:row-span-1">
+              <span className="font-light text-[2.75rem] leading-none tracking-tight">
+                {day}
+              </span>
+              <span className="type-label text-text-secondary">
+                {weekday} · {month}
+              </span>
+            </span>
+            <span className="grid gap-1">
+              <span className="font-normal text-xl leading-snug group-hover:text-accent">
+                {item.title}
+              </span>
+              {item.line ? (
+                <span className="type-caption text-text-secondary">
+                  {item.line}
+                </span>
+              ) : null}
+            </span>
+            {item.place ? (
+              <span className="type-caption text-text-secondary sm:text-end">
+                {item.place}
+              </span>
+            ) : null}
+          </Link>
+        </li>
+      );
+    })}
+  </ul>
+);
 
 interface EventRow {
   id: string;
@@ -16,38 +79,29 @@ interface EventRow {
   readonly [key: string]: unknown;
 }
 
-/** Events as framed cards (v5): date and time, title, venue, summary. */
+/** Events as dated rows: what, one line, where and when. */
+export const eventItems = (
+  events: readonly EventRow[],
+  locale: Locale
+): DatedItem[] =>
+  events.map((event) => ({
+    at: event.starts_at,
+    href: `/events/${event.slug}`,
+    key: event.id,
+    line: localized(event, "summary", locale),
+    place: [
+      localized(event, "venue", locale),
+      formatClock(event.starts_at, locale),
+    ]
+      .filter(Boolean)
+      .join(" · "),
+    title: localized(event, "title", locale),
+  }));
+
 export const EventList = ({
   events,
   locale,
 }: {
   events: readonly EventRow[];
   locale: Locale;
-}) => (
-  <ul className="grid gap-6 md:grid-cols-2">
-    {events.map((event) => (
-      <li key={event.id}>
-        <Link
-          className="frame press grid h-full content-start gap-2 bg-surface p-card-padding shadow-offset hover:bg-surface-tint"
-          href={`/events/${event.slug}`}
-        >
-          <p className="type-kicker">
-            {formatLongDate(event.starts_at, locale)} ·{" "}
-            {formatClock(event.starts_at, locale)}
-          </p>
-          <h3 className="type-subheading">
-            {localized(event, "title", locale)}
-          </h3>
-          {localized(event, "venue", locale) ? (
-            <p className="type-caption">{localized(event, "venue", locale)}</p>
-          ) : null}
-          {localized(event, "summary", locale) ? (
-            <p className="type-body text-text-secondary">
-              {localized(event, "summary", locale)}
-            </p>
-          ) : null}
-        </Link>
-      </li>
-    ))}
-  </ul>
-);
+}) => <DatedList items={eventItems(events, locale)} locale={locale} />;

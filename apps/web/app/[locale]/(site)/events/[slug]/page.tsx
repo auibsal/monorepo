@@ -89,7 +89,7 @@ const EventPage = async ({ params }: EventProps) => {
       </header>
       {cancelled ? (
         <p
-          className="type-body rounded-card border-accent-line border-s-4 bg-surface-tint p-4"
+          className="type-body border-line border-s-4 border-t p-4"
           role="status"
         >
           {t("cancelled")}
@@ -97,13 +97,7 @@ const EventPage = async ({ params }: EventProps) => {
       ) : null}
       {image ? (
         // biome-ignore lint/performance/noImgElement: a published image from the media bucket
-        <img
-          alt=""
-          className="w-full rounded-card"
-          height={630}
-          src={image}
-          width={1200}
-        />
+        <img alt="" className="w-full" height={630} src={image} width={1200} />
       ) : null}
       {localized(event, "summary", locale) ? (
         <p className="type-lede">{localized(event, "summary", locale)}</p>

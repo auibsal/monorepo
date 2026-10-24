@@ -5,6 +5,7 @@ import { logoFiles } from "./brand/logos";
 import {
   type BrandTokens,
   brandTokensPath,
+  renderBrandTokens,
   renderTokens,
   splitColors,
 } from "./scripts/tokens";
@@ -30,42 +31,63 @@ const ratio = (a: string, b: string) => {
   return ((hi ?? 0) + 0.05) / ((lo ?? 0) + 0.05);
 };
 
-/** Text pairs that must reach WCAG AA (4.5:1), from the brand's contrast table. */
-const textPairs: Record<"light" | "dark", [string, string][]> = {
-  dark: [
-    ["text", "surface"],
-    ["text", "surface-tint"],
-    ["text-secondary", "surface"],
-    ["text-meta", "surface"],
-    ["title", "surface"],
-    ["on-band", "band"],
-  ],
-  light: [
-    ["text", "surface"],
-    ["text", "surface-tint"],
-    ["text-secondary", "surface"],
-    ["text-secondary", "surface-tint"],
-    ["text-meta", "surface"],
-    ["title", "surface"],
-    ["title", "surface-tint"],
-    ["on-band", "band"],
-  ],
-};
+/**
+ * Every text pair the v6 roles allow, in both modes (brand/tokens.json,
+ * "Color roles"): text and secondary text on the page and on Qirtas's
+ * reading ground, the accent as text, text on the accent button and on the
+ * band. Rules (`line`) carry no words and are not checked.
+ */
+const textPairs: [string, string][] = [
+  ["text", "surface"],
+  ["text", "surface-reading"],
+  ["text-secondary", "surface"],
+  ["text-secondary", "surface-reading"],
+  ["accent", "surface"],
+  ["accent", "surface-reading"],
+  ["on-accent", "accent"],
+  ["on-band", "band"],
+];
+
+/** Fixed pairs outside the roles: the footer is ink, with white text, in both modes. */
+const fixedPairs: [string, string][] = [
+  ["white", "ink"],
+  ["crimson-100", "ink"],
+  ["mist", "ink"],
+  ["crimson-100", "crimson"],
+  ["ash", "paper"],
+];
 
 describe("SAL tokens (brand/tokens.json)", () => {
-  test("the palette is the brand's ten colors and nothing else", () => {
+  test("the palette is the brand's six colors and four reserved tones", () => {
     expect(Object.keys(palette).sort()).toEqual(
       [
+        "ash",
         "crimson",
         "crimson-100",
-        "crimson-50",
         "crimson-700",
         "ink",
-        "ink-50",
-        "ink-70",
+        "mist",
         "paper",
-        "rule",
+        "slate",
+        "stone",
         "white",
+      ].sort()
+    );
+  });
+
+  test("the roles are v6's ten", () => {
+    expect(Object.keys(roles).sort()).toEqual(
+      [
+        "accent",
+        "band",
+        "footer",
+        "line",
+        "on-accent",
+        "on-band",
+        "surface",
+        "surface-reading",
+        "text",
+        "text-secondary",
       ].sort()
     );
   });
@@ -80,16 +102,16 @@ describe("SAL tokens (brand/tokens.json)", () => {
     }
   });
 
-  test("crimson text never sits on ink", () => {
+  test("crimson never sits on ink as text or accent", () => {
     expect(hex("dark", "surface")).toBe(palette.ink);
-    for (const role of ["text", "text-secondary", "title"]) {
+    for (const role of ["text", "text-secondary", "accent"]) {
       expect(hex("dark", role)).not.toBe(palette.crimson);
     }
   });
 
   for (const theme of ["light", "dark"] as const) {
     test(`text pairs reach 4.5:1 (${theme})`, () => {
-      for (const [fg, bg] of textPairs[theme]) {
+      for (const [fg, bg] of textPairs) {
         expect(
           ratio(hex(theme, fg), hex(theme, bg)),
           `${fg} on ${bg}`
@@ -98,16 +120,44 @@ describe("SAL tokens (brand/tokens.json)", () => {
     });
   }
 
-  test("the retired Key's radius is not emitted", () => {
-    expect(renderTokens(tokens)).not.toContain("radius-key");
+  test("the brand's fixed pairs reach 4.5:1", () => {
+    for (const [fg, bg] of fixedPairs) {
+      expect(
+        ratio(palette[fg] ?? "", palette[bg] ?? ""),
+        `${fg} on ${bg}`
+      ).toBeGreaterThanOrEqual(4.5);
+    }
   });
 
-  test("tokens.css is generated from brand/tokens.json", () => {
-    const css = readFileSync(
-      join(import.meta.dirname, "styles", "tokens.css"),
-      "utf8"
-    );
-    expect(css).toBe(renderTokens(tokens));
+  test("no retired token is emitted", () => {
+    const css = renderTokens(tokens) + renderBrandTokens(tokens);
+    for (const retired of [
+      "crimson-50",
+      "ink-70",
+      "ink-50",
+      "--rule:",
+      "--sal-rule:",
+      "surface-tint",
+      "text-meta",
+      "--title",
+      "accent-line",
+      "--frame:",
+      "--offset:",
+      "radius-card",
+      "radius-swatch",
+      "radius-key",
+    ]) {
+      expect(css).not.toContain(retired);
+    }
+  });
+
+  test("tokens.css files are generated from brand/tokens.json", () => {
+    expect(
+      readFileSync(join(import.meta.dirname, "styles", "tokens.css"), "utf8")
+    ).toBe(renderTokens(tokens));
+    expect(
+      readFileSync(join(brandTokensPath, "..", "tokens.css"), "utf8")
+    ).toBe(renderBrandTokens(tokens));
   });
 
   test("the self-hosted Ubuntu Arabic files are the brand's own", () => {

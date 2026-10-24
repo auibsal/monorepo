@@ -337,7 +337,7 @@ const EventCard = ({
 
   return (
     <li className="scroll-mt-28" id={event.slug}>
-      <article className="frame grid h-full content-start gap-3 bg-surface p-card-padding shadow-offset">
+      <article className="grid h-full content-start gap-3 border-line border-t pt-space-4">
         <p className="type-kicker">
           {formatLongDate(event.starts_at, locale)} ·{" "}
           {formatClock(event.starts_at, locale)}
@@ -370,7 +370,7 @@ const EventCard = ({
         </div>
         {notice ? (
           <p
-            className="type-body font-bold"
+            className="type-body font-medium"
             role={
               ["failed", "closed", "notVerified"].includes(notice)
                 ? "alert"

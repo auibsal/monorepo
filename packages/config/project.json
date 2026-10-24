@@ -13,14 +13,22 @@
   "domain": "auibsal.org",
   "url": "https://auibsal.org",
   "paths": {
-    "nexus": "/nexus",
+    "nexus": "/diwan",
     "api": "/api"
   },
   "supportEmail": "hello@auibsal.org",
+  "telegram": {
+    "stickers": {
+      "youreIn": "",
+      "asleep": "",
+      "sent": "",
+      "sorry": ""
+    }
+  },
   "repoUrl": "https://github.com/auibsal/mono",
   "journal": {
-    "name_en": "Waraq",
-    "name_ar": "ورق"
+    "name_en": "Qirtas",
+    "name_ar": "قرطاس"
   },
   "locale": {
     "default": "en",

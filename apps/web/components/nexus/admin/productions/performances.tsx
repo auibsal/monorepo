@@ -139,7 +139,7 @@ export const PerformancesTab = ({
         <ul className="grid gap-2">
           {linked.map((e) => (
             <li
-              className="flex flex-wrap items-center justify-between gap-2 border-rule border-b pb-2"
+              className="flex flex-wrap items-center justify-between gap-2 border-line border-b pb-2"
               key={e.id}
             >
               <span>
@@ -207,7 +207,7 @@ export const PerformancesTab = ({
             .filter((p) => data.data?.partners.has(p.id))
             .map((p) => (
               <li
-                className="flex flex-wrap items-center justify-between gap-2 border-rule border-b pb-2"
+                className="flex flex-wrap items-center justify-between gap-2 border-line border-b pb-2"
                 key={p.id}
               >
                 <span className="font-medium">

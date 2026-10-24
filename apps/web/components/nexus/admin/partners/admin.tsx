@@ -1161,7 +1161,7 @@ const Offers = () => {
           add.mutate();
         }}
       >
-        <h3 className="font-bold text-sm">{t("new")}</h3>
+        <h3 className="font-medium text-sm">{t("new")}</h3>
         <Field label={t("partner")}>
           {(id) => (
             <SelectInput

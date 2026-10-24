@@ -32,6 +32,7 @@ import { Notice } from "@repo/email/templates/notice";
 import { revalidateTag } from "next/cache";
 import { api, nexus, origin } from "@/lib/api/urls";
 import { type CacheTag, cacheTags } from "@/lib/supabase";
+import type { Sticker } from "./bot/stickers";
 import { pushToUser } from "./push";
 import { telegramToUser } from "./telegram";
 
@@ -60,7 +61,7 @@ interface OutboxRow {
 const prefix = (lang: string) =>
   lang === project.locale.default ? "" : `/${lang}`;
 
-// The email templates add /nexus and the language themselves.
+// The email templates add /diwan and the language themselves.
 const appUrl = origin;
 
 interface Recipient {
@@ -111,7 +112,8 @@ const pushNotice = (built: Built, lang: Lang, row: number | undefined) => {
 const send = async (
   to: Recipient,
   built: Built,
-  headers?: Record<string, string>
+  headers?: Record<string, string>,
+  sticker?: Sticker
 ) => {
   const run = current.getStore();
   const row = run?.row;
@@ -127,7 +129,7 @@ const send = async (
     const notice = pushNotice(built, to.lang, row);
     await Promise.all([
       pushToUser(run.admin, to.userId, notice),
-      telegramToUser(run.admin, to.userId, notice),
+      telegramToUser(run.admin, to.userId, notice, sticker),
     ]);
   }
 };
@@ -361,7 +363,7 @@ const handlers: Record<string, Handler> = {
         piecePublished(
           to.lang,
           pieceTitle(piece, to.lang),
-          `${webUrl()}${prefix(to.lang)}/waraq/pieces/${piece.slug}`
+          `${webUrl()}${prefix(to.lang)}/qirtas/pieces/${piece.slug}`
         )
       );
     }
@@ -390,7 +392,12 @@ const handlers: Record<string, Handler> = {
       submissionDesk(admin, payload.submission_id),
     ]);
     if (to && work) {
-      await send(to, submissionReceived(to.lang, work, appUrl(), desk));
+      await send(
+        to,
+        submissionReceived(to.lang, work, appUrl(), desk),
+        undefined,
+        "sent"
+      );
     }
   },
   "journal.sunday_paper": async (admin, payload) => {
@@ -420,12 +427,12 @@ const handlers: Record<string, Handler> = {
         desk_en: desk?.en ?? "",
         title_ar: p.title_ar ?? "",
         title_en: p.title_en ?? "",
-        url: `${webUrl()}${prefix(to.lang)}/waraq/pieces/${p.slug}`,
+        url: `${webUrl()}${prefix(to.lang)}/qirtas/pieces/${p.slug}`,
       };
     });
     await send(
       to,
-      sundayPaper(to.lang, items, `${webUrl()}${prefix(to.lang)}/waraq`)
+      sundayPaper(to.lang, items, `${webUrl()}${prefix(to.lang)}/qirtas`)
     );
   },
   "newsletter.confirm": async (admin, payload) => {
@@ -488,7 +495,7 @@ const handlers: Record<string, Handler> = {
         desk_en: desk?.en ?? "",
         title_ar: p.title_ar ?? "",
         title_en: p.title_en ?? "",
-        url: `${base}/waraq/pieces/${p.slug}`,
+        url: `${base}/qirtas/pieces/${p.slug}`,
       };
     });
     const coming = (events ?? []).map((e) => ({
@@ -500,7 +507,7 @@ const handlers: Record<string, Handler> = {
     const links = unsubscribeLinks(lang, row.unsubscribe_token);
     await send(
       { email: row.email, lang },
-      monthInWaraq(lang, items, coming, `${base}/waraq`, links.page),
+      monthInWaraq(lang, items, coming, `${base}/qirtas`, links.page),
       links.headers
     );
   },

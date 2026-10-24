@@ -1,67 +1,83 @@
-/* AUIB Society of Arts and Letters — design tokens. Generated from tokens.json; edit that file, not this one. */
-@import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;700&family=Ubuntu+Mono:wght@400;700&display=swap');
+/* AUIB Society of Arts and Letters, design tokens v6. Generated from tokens.json by packages/design-system/scripts/tokens.ts; edit that file, not this one. */
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400&family=Ubuntu+Mono:wght@400;700&family=Literata:wght@400;500&display=swap');
 /* Ubuntu Arabic is not on Google Fonts; it ships in fonts/ (Ubuntu Font Licence 1.0). */
 @font-face { font-family: "Ubuntu Arabic"; src: url("fonts/UbuntuArabic-Regular.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
 @font-face { font-family: "Ubuntu Arabic"; src: url("fonts/UbuntuArabic-Bold.woff2") format("woff2"); font-weight: 700; font-style: normal; font-display: swap; }
-:root, [data-theme="light"] {
+:root {
   --crimson: #9c213e;
+  --ink: #273236;
+  --white: #ffffff;
+  --paper: #f5f2ee;
+  --stone: #e2ddd6;
+  --ash: #5c6568;
   --crimson-700: #7e1a32;
   --crimson-100: #ebcbd3;
-  --crimson-50: #f7ecef;
-  --ink: #273236;
-  --ink-70: #4a5559;
-  --ink-50: #6e777a;
-  --white: #ffffff;
-  --paper: #faf7f5;
-  --rule: #e3dedf;
+  --mist: #c3cacb;
+  --slate: #3d494d;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 16px;
+  --space-4: 24px;
+  --space-5: 40px;
+  --space-6: 56px;
+  --space-7: 88px;
+  --space-8: 110px;
+  --space-9: 128px;
+  --page-margin: 79px;
+  --radius-none: 0px;
+  --radius-avatar: 50%;
+  --hairline: 1px;
+  --rule-strong: 1px;
+  --font-sans: "Ubuntu", "Ubuntu Arabic", system-ui, sans-serif;
+  --font-arabic: "Ubuntu Arabic", "Ubuntu", sans-serif;
+  --font-mono: "Ubuntu Mono", ui-monospace, monospace;
+  --font-read: "Literata", Georgia, serif;
+}
+:root, [data-theme="light"] {
   --surface: var(--white);
-  --surface-tint: var(--crimson-50);
+  --surface-reading: var(--paper);
   --text: var(--ink);
-  --text-secondary: var(--ink-70);
-  --text-meta: var(--ink-50);
-  --title: var(--crimson);
-  --accent-line: var(--crimson);
+  --text-secondary: var(--ash);
+  --accent: var(--crimson);
+  --on-accent: var(--white);
+  --line: var(--stone);
   --band: var(--crimson);
   --on-band: var(--white);
+  --footer: var(--ink);
 }
 [data-theme="dark"] {
   --surface: var(--ink);
-  --surface-tint: var(--ink-70);
+  --surface-reading: var(--ink);
   --text: var(--white);
-  --text-secondary: var(--white);
-  --text-meta: var(--crimson-100);
-  --title: var(--white);
-  --accent-line: var(--crimson-100);
+  --text-secondary: var(--mist);
+  --accent: var(--crimson-100);
+  --on-accent: var(--ink);
+  --line: var(--slate);
   --band: var(--crimson);
   --on-band: var(--white);
+  --footer: var(--ink);
 }
-:root {
-  --gap-tight: 15px;
-  --card-padding: 17px;
-  --gap: 19px;
-  --page-margin: 79px;
-  --radius-swatch: 6px;
-  --radius-card: 8px;
-  --radius-key: 50%;
-  --hairline: 1px;
-  --font-sans: "Ubuntu", sans-serif;
-  --font-mono: "Ubuntu Mono", monospace;
-  --font-arabic: "Ubuntu Arabic", sans-serif;
-}
-.print-display { font-family: var(--font-sans); font-size: 77.33px; font-weight: 700; line-height: 1.02; }
-.print-lede { font-family: var(--font-sans); font-size: 22.67px; font-weight: 300; line-height: 1.3; }
-.print-heading { font-family: var(--font-sans); font-size: 24px; font-weight: 700; }
-.print-body { font-family: var(--font-sans); font-size: 14px; font-weight: 400; line-height: 1.5; }
+.display-xl { font-family: var(--font-sans); font-size: 124px; font-weight: 300; line-height: 0.98; letter-spacing: -0.045em; }
+.display { font-family: var(--font-sans); font-size: 72px; font-weight: 300; line-height: 1; letter-spacing: -0.035em; }
+.title { font-family: var(--font-sans); font-size: 44px; font-weight: 400; line-height: 1.1; letter-spacing: -0.025em; }
+.heading { font-family: var(--font-sans); font-size: 28px; font-weight: 400; line-height: 1.25; letter-spacing: -0.01em; }
+.lede { font-family: var(--font-sans); font-size: 21px; font-weight: 400; line-height: 1.5; }
+.body { font-family: var(--font-sans); font-size: 17px; font-weight: 400; line-height: 1.6; }
+.label { font-family: var(--font-sans); font-size: 12px; font-weight: 500; line-height: 1.4; letter-spacing: 0.12em; text-transform: uppercase; }
+.caption { font-family: var(--font-sans); font-size: 13.5px; font-weight: 400; line-height: 1.45; }
+.print-display { font-family: var(--font-sans); font-size: 77.33px; font-weight: 300; line-height: 1; letter-spacing: -0.03em; }
+.print-lede { font-family: var(--font-sans); font-size: 22.67px; font-weight: 300; line-height: 1.35; }
+.print-heading { font-family: var(--font-sans); font-size: 24px; font-weight: 400; line-height: 1.25; }
+.print-body { font-family: var(--font-sans); font-size: 14px; font-weight: 400; line-height: 1.55; }
 .print-caption { font-family: var(--font-sans); font-size: 11.33px; font-weight: 400; line-height: 1.4; }
-.print-kicker { font-family: var(--font-sans); font-size: 10.4px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
-.post-display { font-family: var(--font-sans); font-size: 132px; font-weight: 700; line-height: 1.02; }
-.post-lede { font-family: var(--font-sans); font-size: 44px; font-weight: 300; line-height: 1.3; }
-.post-heading { font-family: var(--font-sans); font-size: 48px; font-weight: 700; }
-.post-body { font-family: var(--font-sans); font-size: 30px; font-weight: 400; line-height: 1.5; }
-.post-caption { font-family: var(--font-sans); font-size: 24px; font-weight: 400; line-height: 1.4; }
-.code { font-family: var(--font-mono); font-size: 12px; font-weight: 400; }
-.ar-display { font-family: var(--font-arabic); font-size: 77.33px; font-weight: 700; line-height: 1.4; direction: rtl; }
-.ar-heading { font-family: var(--font-arabic); font-size: 25.33px; font-weight: 700; line-height: 1.8; direction: rtl; }
-.ar-body { font-family: var(--font-arabic); font-size: 13.33px; font-weight: 400; line-height: 2; direction: rtl; }
-.ar-caption { font-family: var(--font-arabic); font-size: 12px; font-weight: 400; line-height: 1.8; direction: rtl; }
-.ar-post { font-family: var(--font-arabic); font-size: 32px; font-weight: 400; line-height: 1.8; direction: rtl; }
+.print-label { font-family: var(--font-sans); font-size: 10.4px; font-weight: 500; line-height: 1.3; letter-spacing: 0.1em; text-transform: uppercase; }
+.post-display { font-family: var(--font-sans); font-size: 160px; font-weight: 300; line-height: 1; letter-spacing: -0.03em; }
+.post-lede { font-family: var(--font-sans); font-size: 38px; font-weight: 400; line-height: 1.4; }
+.post-meta { font-family: var(--font-sans); font-size: 28px; font-weight: 500; line-height: 1.4; }
+.ar-display { font-family: var(--font-arabic); font-size: 64px; font-weight: 400; line-height: 1.5; direction: rtl; }
+.ar-heading { font-family: var(--font-arabic); font-size: 30px; font-weight: 400; line-height: 1.6; direction: rtl; }
+.ar-body { font-family: var(--font-arabic); font-size: 18.5px; font-weight: 400; line-height: 1.9; direction: rtl; }
+.ar-post { font-family: var(--font-arabic); font-size: 40px; font-weight: 400; line-height: 1.6; direction: rtl; }
+.read-dek { font-family: var(--font-read); font-size: 22px; font-weight: 400; line-height: 1.5; }
+.read-body { font-family: var(--font-read); font-size: 17.5px; font-weight: 400; line-height: 1.68; }
+.code { font-family: var(--font-mono); font-size: 12px; font-weight: 400; line-height: 1.3; }

@@ -5,19 +5,22 @@ import {
   Head,
   Hr,
   Html,
+  Img,
   Preview,
   Section,
   Text,
 } from "@react-email/components";
+import { siteUrl } from "@repo/internationalization";
 
-// Brand colors (brand/tokens.json). Email clients need inline styles.
+// Brand colors (brand/tokens.json, v6). Email clients need inline styles.
 const CRIMSON = "#9c213e";
-const CRIMSON_700 = "#7e1a32";
 const INK = "#273236";
-const INK_SECONDARY = "#4a5559";
-const PAPER = "#faf7f5";
-const RULE = "#e3dedf";
+const ASH = "#5c6568";
+const STONE = "#e2ddd6";
 const WHITE = "#ffffff";
+
+/** The horizontal lockup as supplied, rasterized for mail clients. */
+const LOCKUP = siteUrl("en", "/brand/sal-lockup-horizontal-email.png");
 
 const FONT = "'Ubuntu Arabic', Ubuntu, 'Segoe UI', Tahoma, Arial, sans-serif";
 
@@ -40,8 +43,8 @@ const NAME = {
 };
 
 const FOOTER = {
-  ar: "رسالة من النِّكسَس، منصة جمعية الفنون والآداب في الجامعة الأمريكية في العراق – بغداد.",
-  en: "Sent by the Nexus, the platform of the AUIB Society of Arts and Letters.",
+  ar: "رسالة من الديوان، منصة جمعية الفنون والآداب في الجامعة الأمريكية في العراق – بغداد.",
+  en: "Sent by the Diwan, the platform of the AUIB Society of Arts and Letters.",
 };
 
 const Block = ({ block }: { block: NoticeBlock }) => {
@@ -60,11 +63,12 @@ const Block = ({ block }: { block: NoticeBlock }) => {
       <Text
         style={{
           ...text,
-          color: CRIMSON,
-          fontSize: rtl ? 23 : 22,
-          fontWeight: 700,
-          lineHeight: 1.3,
-          margin: "0 0 16px",
+          color: INK,
+          fontSize: rtl ? 30 : 32,
+          fontWeight: rtl ? 400 : 300,
+          letterSpacing: rtl ? 0 : "-0.02em",
+          lineHeight: rtl ? 1.5 : 1.15,
+          margin: "0 0 20px",
         }}
       >
         {block.heading}
@@ -80,12 +84,13 @@ const Block = ({ block }: { block: NoticeBlock }) => {
             href={block.action.href}
             style={{
               backgroundColor: CRIMSON,
-              borderRadius: 6,
+              borderRadius: 0,
               color: WHITE,
               display: "inline-block",
               fontFamily: FONT,
               fontSize: 15,
-              padding: "12px 20px",
+              fontWeight: 500,
+              padding: "14px 24px",
               textDecoration: "none",
             }}
           >
@@ -98,9 +103,10 @@ const Block = ({ block }: { block: NoticeBlock }) => {
 };
 
 /**
- * Every notice the platform sends: the Society's name, the message in the
- * recipient's language and then the other, and a plain footer. No images,
- * no tracking, no exclamation marks.
+ * Every notice the platform sends (v6): white, the horizontal lockup, a
+ * Light headline, the message in the recipient's language and then the
+ * other, one crimson button per language and a hairline footer. No other
+ * images, no tracking, no exclamation marks.
  */
 export const Notice = ({ blocks, preview }: NoticeProps) => {
   const first = blocks[0]?.lang ?? "en";
@@ -108,42 +114,30 @@ export const Notice = ({ blocks, preview }: NoticeProps) => {
     <Html dir={first === "ar" ? "rtl" : "ltr"} lang={first}>
       <Head />
       <Preview>{preview}</Preview>
-      <Body style={{ backgroundColor: PAPER, margin: 0, padding: "24px 0" }}>
-        <Container
-          style={{
-            backgroundColor: WHITE,
-            border: `1px solid ${RULE}`,
-            borderRadius: 8,
-            maxWidth: 600,
-            padding: "32px",
-          }}
-        >
-          <Text
-            style={{
-              color: CRIMSON_700,
-              fontFamily: FONT,
-              fontSize: 15,
-              fontWeight: 700,
-              margin: "0 0 24px",
-            }}
-          >
-            {NAME[first]}
-          </Text>
+      <Body style={{ backgroundColor: WHITE, margin: 0, padding: "24px 0" }}>
+        <Container style={{ maxWidth: 600, padding: "8px 32px 32px" }}>
+          <Img
+            alt={NAME[first]}
+            height={48}
+            src={LOCKUP}
+            style={{ margin: "0 0 40px" }}
+            width={96}
+          />
           {blocks.map((block, index) => (
             <Section key={block.lang}>
               {index > 0 ? (
-                <Hr style={{ borderColor: RULE, margin: "24px 0" }} />
+                <Hr style={{ borderColor: STONE, margin: "32px 0" }} />
               ) : null}
               <Block block={block} />
             </Section>
           ))}
-          <Hr style={{ borderColor: RULE, margin: "24px 0 16px" }} />
+          <Hr style={{ borderColor: STONE, margin: "40px 0 16px" }} />
           {blocks.map((block) => (
             <Text
               key={`footer-${block.lang}`}
               lang={block.lang}
               style={{
-                color: INK_SECONDARY,
+                color: ASH,
                 direction: block.lang === "ar" ? "rtl" : "ltr",
                 fontFamily: FONT,
                 fontSize: 12,
@@ -164,13 +158,13 @@ export const Notice = ({ blocks, preview }: NoticeProps) => {
 Notice.PreviewProps = {
   blocks: [
     {
-      action: { href: "https://auibsal.org/nexus", label: "Open the Nexus" },
+      action: { href: "https://auibsal.org/diwan", label: "Open the Diwan" },
       heading: "You're booked for the Majlis",
       lang: "en",
       paragraphs: ["Tuesday, October 13 · 6:00 PM", "Library, second floor"],
     },
     {
-      action: { href: "https://auibsal.org/ar/nexus", label: "افتح النِّكسَس" },
+      action: { href: "https://auibsal.org/ar/diwan", label: "افتح الديوان" },
       heading: "حُجز مكانك في المجلس",
       lang: "ar",
       paragraphs: ["الثلاثاء، 13 تشرين الأول · 6:00 مساءً"],

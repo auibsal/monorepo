@@ -2,7 +2,7 @@
 
 How the AUIB Society of Arts and Letters platform runs, for the technical
 administrator and their successor. Officers' how-to guides are in the
-**Officer handbook** in the team's Notion workspace (the Nexus links to it
+**Officer handbook** in the team's Notion workspace (the Diwan links to it
 under Account); the Society's documents are on
 [auibsal.org/documents](https://auibsal.org/documents).
 
@@ -14,6 +14,6 @@ under Account); the Society's documents are on
 - [Sign in with SAL and the API](api.md)
 - [Notifications](notifications.md)
 - [Analytics and consent](analytics.md)
-- [Ads in Waraq](ads.md)
+- [Ads in Qirtas](ads.md)
 - [The team's Notion workspace](notion.md)
 - [Hudhud, the Telegram bot](telegram.md)

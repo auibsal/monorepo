@@ -139,7 +139,7 @@ export const MyPiece = () => {
   });
 
   const back = (
-    <Link className="text-sm underline underline-offset-4" href="/waraq">
+    <Link className="text-sm underline underline-offset-4" href="/qirtas">
       {t("back")}
     </Link>
   );
@@ -173,7 +173,7 @@ export const MyPiece = () => {
       </AdminHeading>
 
       {status === "editing" ? (
-        <section className="grid max-w-3xl gap-3 rounded-card bg-surface-tint p-4">
+        <section className="grid max-w-3xl gap-3 border-line border-t p-4">
           <h2 className="type-subheading">{t("finalCheck")}</h2>
           <p>{t("finalCheckLede")}</p>
           <div>

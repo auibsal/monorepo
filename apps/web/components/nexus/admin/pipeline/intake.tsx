@@ -271,10 +271,7 @@ export const Readers = ({ issueId }: { issueId: string }) => {
         {open.map((entry) => {
           const reads = entry.status === "third_read" ? [1, 2, 3] : [1, 2];
           return (
-            <li
-              className="grid gap-3 rounded-card bg-surface-tint p-4"
-              key={entry.id}
-            >
+            <li className="grid gap-3 border-line border-t p-4" key={entry.id}>
               <div className="flex flex-wrap items-baseline gap-3">
                 <span className="type-code">{entry.blind_id}</span>
                 <span className="font-medium">{entry.title}</span>

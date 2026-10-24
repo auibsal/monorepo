@@ -18,7 +18,7 @@ export const Notices = () => {
     <Section id="notices" title={t("title")}>
       <ul className="grid gap-3">
         {announcements.data?.map((notice) => (
-          <li className="grid gap-1 border-rule border-b pb-3" key={notice.id}>
+          <li className="grid gap-1 border-line border-b pb-3" key={notice.id}>
             <h3 className="type-subheading">
               {localized(notice, "title", locale)}
             </h3>

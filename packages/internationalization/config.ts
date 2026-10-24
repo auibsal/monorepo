@@ -51,7 +51,7 @@ const withSlash = (path: string) => (path.startsWith("/") ? path : `/${path}`);
 
 /**
  * A Nexus page's path on the one site, before the language is applied:
- * "/events" → "/nexus/events". Use `localizedPath(locale, nexusPath(p))`
+ * "/events" → "/diwan/events". Use `localizedPath(locale, nexusPath(p))`
  * for a link from the public pages; inside the Nexus, its own navigation
  * module adds the prefix.
  */

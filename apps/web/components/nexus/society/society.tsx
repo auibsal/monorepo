@@ -66,7 +66,7 @@ const Council = () => {
       <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {roster.data?.map((seat) => (
           <li
-            className="frame grid gap-1 bg-surface p-card-padding"
+            className="grid gap-1 border-line border-t pt-space-4"
             key={`${seat.role}-${seat.full_name_en}`}
           >
             <p className="type-kicker">
@@ -128,7 +128,7 @@ const Minutes = () => {
       ) : null}
       <ul className="grid">
         {minutes.data?.map((entry) => (
-          <li className="border-rule border-b py-3" key={entry.id}>
+          <li className="border-line border-b py-3" key={entry.id}>
             <details>
               <summary className="cursor-pointer">
                 <span className="type-subheading">
@@ -205,7 +205,7 @@ const BookOfMembers = () => {
       {book.isError ? <ErrorState onRetry={() => book.refetch()} /> : null}
       <ul className="grid gap-x-8 sm:grid-cols-2">
         {book.data?.map((person) => (
-          <li className="border-rule border-b py-3" key={person.id}>
+          <li className="border-line border-b py-3" key={person.id}>
             <p className="type-subheading">
               {localized(person, "full_name", locale)}
             </p>

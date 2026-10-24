@@ -156,7 +156,7 @@ export const SignUpForm = () => {
         ) : null}
         {human.element}
         {error ? (
-          <p className="text-title" role="alert">
+          <p className="text-text" role="alert">
             {error}
           </p>
         ) : null}
@@ -170,7 +170,7 @@ export const SignUpForm = () => {
       <p className="type-body">
         {t("signUp.haveAccount")}{" "}
         <Link
-          className="underline underline-offset-4"
+          className="link"
           href={{ pathname: "/sign-in", query: next ? { next } : {} }}
         >
           {t("signUp.signIn")}

@@ -160,7 +160,7 @@ export const Productions = () => {
                         `departments.${c.department as productions.Department}`
                       )}
                     </p>
-                    <p className="font-bold" dir="auto">
+                    <p className="font-medium" dir="auto">
                       {localized(c, "role", locale)} ·{" "}
                       {titleOf(c.production_id)}
                     </p>
@@ -196,7 +196,7 @@ export const Productions = () => {
               {rehearsals.map((r) => {
                 const where = localized(r, "location", locale);
                 return (
-                  <li className="border-rule border-b pb-2" key={r.id}>
+                  <li className="border-line border-b pb-2" key={r.id}>
                     <p className="font-medium">
                       {titleOf(r.production_id)} ·{" "}
                       {formatLongDate(r.starts_at, locale)} ·{" "}
@@ -297,7 +297,7 @@ const AuditionSlot = ({
   const active = status && status !== "cancelled";
 
   return (
-    <li className="grid gap-2 border-rule border-t pt-3">
+    <li className="grid gap-2 border-line border-t pt-3">
       <p className="font-medium">
         {formatLongDate(audition.starts_at, locale)} ·{" "}
         {formatClock(audition.starts_at, locale)}–
@@ -311,7 +311,7 @@ const AuditionSlot = ({
       ) : null}
       {active ? (
         <div className="flex flex-wrap items-center gap-3">
-          <p className="type-body font-bold">{t(`statuses.${status}`)}</p>
+          <p className="type-body font-medium">{t(`statuses.${status}`)}</p>
           {status === "signed_up" ? (
             <Button
               disabled={busy}
@@ -348,7 +348,7 @@ const AuditionSlot = ({
       )}
       {notice ? (
         <p
-          className="type-body font-bold"
+          className="type-body font-medium"
           role={notice === "signedUp" ? "status" : "alert"}
         >
           {t(`notice.${notice}`)}

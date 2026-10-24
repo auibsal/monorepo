@@ -2,6 +2,7 @@
 
 import { type Locale, locales } from "@repo/internationalization/config";
 import { useLocale, useTranslations } from "next-intl";
+import { mastheadLink } from "@/components/masthead";
 import { usePathname, useRouter } from "@/lib/nexus/navigation";
 
 /**
@@ -19,7 +20,7 @@ export const LanguageSwitcher = () => {
   return (
     <button
       aria-label={t("switchLanguage")}
-      className="rounded-sm px-2 py-1 text-sm underline-offset-4 hover:underline"
+      className={mastheadLink}
       lang={other}
       onClick={() => {
         router.replace(`${pathname}${window.location.search}`, {

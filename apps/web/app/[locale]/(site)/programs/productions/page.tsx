@@ -45,7 +45,7 @@ const ProductionsPage = async ({ params }: LocaleParams) => {
   const list = await loadAll();
 
   return (
-    <div className="mx-auto grid w-full max-w-5xl gap-12 px-4 py-16">
+    <div className="mx-auto grid w-full max-w-6xl gap-20 px-4 py-16 sm:py-24">
       <PageHeader lede={t("lede")} title={t("title")} />
       <Link
         className="type-caption justify-self-start underline underline-offset-4"
@@ -68,7 +68,7 @@ const ProductionsPage = async ({ params }: LocaleParams) => {
                 // biome-ignore lint/performance/noImgElement: a poster from the media bucket
                 <img
                   alt={t("posterAlt", { title: localized(p, "title", locale) })}
-                  className="w-full rounded-card object-cover"
+                  className="w-full object-cover"
                   height={600}
                   src={poster}
                   width={420}
@@ -95,10 +95,7 @@ const ProductionsPage = async ({ params }: LocaleParams) => {
                     <ul className="grid gap-2">
                       {p.performances.map((e) => (
                         <li key={e.slug}>
-                          <Link
-                            className="underline underline-offset-4"
-                            href={`/events/${e.slug}`}
-                          >
+                          <Link className="link" href={`/events/${e.slug}`}>
                             {formatLongDate(e.starts_at, locale)} ·{" "}
                             {formatClock(e.starts_at, locale)}
                             {localized(e, "venue", locale)

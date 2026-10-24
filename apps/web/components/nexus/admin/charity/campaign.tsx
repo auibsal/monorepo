@@ -355,7 +355,7 @@ const CampaignSettings = ({ campaignId }: { campaignId: string | null }) => {
         <p className="type-caption">{t("campaign.priceListHint")}</p>
         {form.prices.map((item, index) => (
           <div
-            className="grid gap-3 rounded-card bg-surface-tint p-card-padding"
+            className="grid gap-3 border-line border-t p-space-4"
             key={item.key}
           >
             <BilingualField
@@ -739,7 +739,7 @@ const Ledger = ({ campaignId, slug }: { campaignId: string; slug: string }) => {
             )}
           </Field>
           {problem ? (
-            <p className="text-sm text-title" role="alert">
+            <p className="text-sm text-text" role="alert">
               {problem}
             </p>
           ) : null}
@@ -811,11 +811,11 @@ const SignoffQueue = ({ campaignId }: { campaignId: string }) => {
       <ul className="grid gap-3">
         {waiting.map((e) => (
           <li
-            className="flex flex-wrap items-center justify-between gap-3 border-rule border-b pb-3"
+            className="flex flex-wrap items-center justify-between gap-3 border-line border-b pb-3"
             key={e.id}
           >
             <div>
-              <p className="font-bold tabular-nums">
+              <p className="font-medium tabular-nums">
                 {formatIqd(e.amount_iqd, locale)} · {t(`sources.${e.source}`)}
               </p>
               <p className="type-caption">
@@ -1135,11 +1135,11 @@ const Impact = ({ campaignId }: { campaignId: string }) => {
       <ul className="grid gap-3">
         {metrics.data?.map((m) => (
           <li
-            className="flex flex-wrap items-center justify-between gap-3 border-rule border-b pb-3"
+            className="flex flex-wrap items-center justify-between gap-3 border-line border-b pb-3"
             key={m.id}
           >
             <div>
-              <p className="font-bold">
+              <p className="font-medium">
                 {formatNumber(m.value)} {localized(m, "unit", locale)}
               </p>
               <p className="type-caption">{localized(m, "label", locale)}</p>

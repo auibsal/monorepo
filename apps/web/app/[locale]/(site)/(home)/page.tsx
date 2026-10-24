@@ -1,30 +1,25 @@
-import { BrandLogo } from "@repo/design-system/components/brand-logo";
-import { SalCard } from "@repo/design-system/components/sal/card";
+import { SectionHead } from "@repo/design-system/components/sal/section-head";
 import { Button } from "@repo/design-system/components/ui/button";
 import type { Locale } from "@repo/internationalization";
 import { localizedPath, nexusPath } from "@repo/internationalization";
-import {
-  formatClock,
-  formatIqd,
-  formatLongDate,
-  formatNumber,
-} from "@repo/internationalization/format";
+import { formatLongDate } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
-import {
-  charity,
-  events,
-  journal,
-  localized,
-  partners,
-  programmes,
-} from "@repo/sal-data";
+import { events, journal, localized, programmes } from "@repo/sal-data";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { Institutions } from "@/components/institutions";
-import { mediaUrl } from "@/lib/media";
+import type { ReactNode } from "react";
+import { type DatedItem, DatedList, eventItems } from "@/components/event-list";
+import { PieceCardView } from "@/components/waraq/cards";
 import { localizedMetadata } from "@/lib/metadata";
 import { readPublished } from "@/lib/supabase";
-import { MUTANABBI } from "@/lib/verse";
+
+/** Where a program's name leads: its own pages, or the programs page. */
+const programmeHref = (slug: string) => {
+  if (slug === "waraq") {
+    return "/qirtas";
+  }
+  return slug === "company" ? "/programs/productions" : "/programs";
+};
 
 interface HomeProps {
   readonly params: Promise<{ locale: Locale }>;
@@ -37,297 +32,218 @@ export const generateMetadata = async ({
   const t = await getTranslations({ locale, namespace: "web.home" });
   return localizedMetadata(locale, "/", {
     description: t("lede"),
-    title: t("title"),
+    title: t("metaTitle"),
   });
 };
+
+/** The italic word of a headline, in the accent (v6). */
+const accent = (chunks: ReactNode) => (
+  <span className="type-accent">{chunks}</span>
+);
 
 const Home = async ({ params }: HomeProps) => {
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "web.home" });
-  const tw = await getTranslations({ locale, namespace: "web" });
+  const tj = await getTranslations({ locale, namespace: "web.journal" });
+  const join = localizedPath(locale, nexusPath("/sign-up"));
 
-  const [
-    nextEvents,
-    pieces,
-    campaigns,
-    progress,
-    calls,
-    allProgrammes,
-    listedPartners,
-  ] = await Promise.all([
-    readPublished(["events"], (c) => events.publicEvents(c, { limit: 3 }), []),
-    readPublished(["journal"], (c) => journal.latestPieces(c, 3), []),
-    readPublished(["charity"], (c) => charity.activeCampaigns(c), []),
-    readPublished(["charity"], (c) => charity.campaignProgress(c), []),
+  const [nextEvents, calls, front, news, allProgrammes] = await Promise.all([
+    readPublished(["events"], (c) => events.publicEvents(c, { limit: 4 }), []),
     readPublished(["journal"], (c) => journal.openCalls(c), []),
+    readPublished(["journal"], (c) => journal.frontPieces(c), []),
+    readPublished(["journal"], (c) => journal.deskPieces(c, "news"), []),
     readPublished(["programmes"], (c) => programmes.programmes(c), []),
-    readPublished(["partners"], (c) => partners.publicPartners(c), []),
   ]);
-  // The flagship programs (not the regular formats), for "What we do".
-  const flagship = (allProgrammes ?? []).filter(
-    (p) => p.is_active && p.kind !== "format"
-  );
-  const campaign = campaigns?.[0];
-  const meter = campaign
-    ? progress.find((p) => p.campaign_id === campaign.id)
-    : undefined;
 
-  const heading = "type-heading frame-b pb-2";
+  // This term: open calls (filed under the day they close) and the next
+  // events, in date order.
+  const term: DatedItem[] = [
+    ...(calls ?? []).map((call) => ({
+      at: call.closes_at,
+      href: "/qirtas",
+      key: call.id,
+      line: localized(call, "theme", locale),
+      place: t("closes", { date: formatLongDate(call.closes_at, locale) }),
+      title: localized(call, "title", locale),
+    })),
+    ...eventItems(nextEvents ?? [], locale),
+  ]
+    .sort((a, b) => a.at.localeCompare(b.at))
+    .slice(0, 5);
+
+  const pieces = ((front ?? []).length > 0 ? front : news) ?? [];
+  const [lead, ...rest] = pieces;
+
+  // Flagships first, then the weekly rhythm; six on the home page.
+  const listed = (allProgrammes ?? [])
+    .filter((p) => p.is_active && programmes.programmeGroup(p) !== "special")
+    .sort(
+      (a, b) =>
+        Number(programmes.programmeGroup(a) !== "flagship") -
+        Number(programmes.programmeGroup(b) !== "flagship")
+    )
+    .slice(0, 6);
 
   return (
     <>
-      <section className="frame-b">
-        <div className="mx-auto grid w-full max-w-6xl gap-6 px-4 py-16 sm:py-24">
-          {/* The header already carries the lockup on phones. */}
-          <div className="hidden sm:block">
-            <BrandLogo height={96} locale={locale} variant="bilingual" />
+      <section className="border-line border-b">
+        <div className="mx-auto grid w-full max-w-6xl gap-8 px-4 py-16 sm:py-24 lg:grid-cols-[1fr_auto] lg:items-end">
+          <div className="grid gap-6">
+            <p className="type-label">{t("kicker")}</p>
+            <h1 className="type-display-xl max-w-4xl">
+              {t.rich("title", { accent })}
+            </h1>
+            <p className="type-lede max-w-[34ch]">{t("lede")}</p>
+            <div className="flex flex-wrap items-center gap-x-8 gap-y-4 pt-2">
+              <Button asChild>
+                <a href={join}>{t("join")}</a>
+              </Button>
+              <Button asChild variant="link">
+                <a href="#this-term">{t("whatsOn")}</a>
+              </Button>
+            </div>
           </div>
-          <h1 className="type-display max-w-4xl">{t("title")}</h1>
-          <p className="type-lede max-w-2xl">{t("lede")}</p>
-          <div className="flex flex-wrap gap-4 pt-2">
-            <Button asChild size="lg">
-              <a href={localizedPath(locale, nexusPath("/sign-up"))}>
-                {t("join")}
-              </a>
-            </Button>
-            <Button asChild size="lg" variant="outline">
-              <Link href="/events">{t("allEvents")}</Link>
-            </Button>
-          </div>
+          {locale === "ar" ? null : (
+            <figure className="grid justify-items-end gap-2" lang="ar">
+              <p className="text-4xl leading-tight sm:text-5xl" dir="rtl">
+                {t("motto")}
+              </p>
+              <figcaption className="type-label" lang="en">
+                {t("mottoBy")}
+              </figcaption>
+            </figure>
+          )}
         </div>
       </section>
 
-      <div className="mx-auto grid w-full max-w-6xl gap-16 px-4 py-16 lg:grid-cols-2">
-        {flagship.length > 0 ? (
-          <section
-            aria-labelledby="what-we-do"
-            className="grid content-start gap-6 lg:col-span-2"
-          >
-            <div className="frame-b flex flex-wrap items-baseline justify-between gap-4 pb-2">
-              <div className="grid gap-1">
-                <h2 className="type-heading" id="what-we-do">
-                  {t("whatWeDo")}
-                </h2>
-                <p className="type-kicker">{tw("programmeMark")}</p>
-              </div>
-              <Link
-                className="type-label text-xs underline underline-offset-4"
-                href="/programs"
-              >
+      <section
+        aria-labelledby="this-term"
+        className="mx-auto grid w-full max-w-6xl gap-space-5 px-4 py-16 [&_h2]:scroll-mt-28"
+      >
+        <SectionHead
+          action={
+            <Link className="link type-caption" href="/events">
+              {t("allEvents")}
+            </Link>
+          }
+          title={t("thisTerm")}
+          titleId="this-term"
+        />
+        {term.length > 0 ? (
+          <DatedList items={term} locale={locale} />
+        ) : (
+          <p className="type-body text-text-secondary">{t("noEvents")}</p>
+        )}
+      </section>
+
+      {lead ? (
+        <section
+          aria-labelledby="paper"
+          className="border-line border-y bg-surface-reading"
+        >
+          <div className="mx-auto grid w-full max-w-6xl gap-space-5 px-4 py-16">
+            <header className="flex flex-wrap items-end justify-between gap-x-8 gap-y-2 border-text border-b pb-3">
+              <h2 className="flex items-baseline gap-4" id="paper">
+                <Link
+                  className="font-medium text-4xl tracking-tight hover:text-accent sm:text-5xl"
+                  href="/qirtas"
+                >
+                  {tj("title")}
+                </Link>
+                <span
+                  className="text-3xl sm:text-4xl"
+                  lang={locale === "ar" ? "en" : "ar"}
+                >
+                  {tj("otherName")}
+                </span>
+              </h2>
+              <p className="type-caption text-text-secondary">
+                {tj("tagline")}
+              </p>
+            </header>
+            <div className="grid gap-x-10 gap-y-8 md:grid-cols-[1.4fr_1fr_1fr]">
+              <PieceCardView large locale={locale} piece={lead} />
+              {rest.slice(0, 2).map((piece) => (
+                <PieceCardView key={piece.id} locale={locale} piece={piece} />
+              ))}
+            </div>
+          </div>
+        </section>
+      ) : null}
+
+      {listed.length > 0 ? (
+        <section
+          aria-labelledby="programs"
+          className="mx-auto grid w-full max-w-6xl gap-space-5 px-4 py-16"
+        >
+          <SectionHead
+            action={
+              <Link className="link type-caption" href="/programs">
                 {t("allPrograms")}
               </Link>
-            </div>
-            <ul className="grid gap-gap sm:grid-cols-2 lg:grid-cols-4">
-              {flagship.map((p) => (
-                <li key={p.id}>
+            }
+            title={t("programs")}
+            titleId="programs"
+          />
+          <ul className="grid gap-x-10 sm:grid-cols-2 lg:grid-cols-3">
+            {listed.map((p) => {
+              const flagship = programmes.programmeGroup(p) === "flagship";
+              return (
+                <li className="border-line border-t py-space-4" key={p.id}>
                   <Link
-                    className="frame press grid h-full content-start gap-2 bg-surface-tint p-card-padding shadow-offset hover:bg-surface"
-                    href={p.slug === "waraq" ? "/waraq" : "/programs"}
+                    className="group grid gap-2"
+                    href={programmeHref(p.slug)}
                   >
-                    <h3 className="type-subheading">
+                    <h3
+                      className={
+                        flagship
+                          ? "type-heading type-accent group-hover:underline"
+                          : "type-heading group-hover:text-accent"
+                      }
+                    >
                       {localized(p, "name", locale)}
                     </h3>
                     {localized(p, "summary", locale) ? (
-                      <p className="type-body">
+                      <p className="type-caption max-w-[32ch] text-text-secondary">
                         {localized(p, "summary", locale)}
                       </p>
                     ) : null}
                   </Link>
                 </li>
-              ))}
-            </ul>
-          </section>
-        ) : null}
+              );
+            })}
+          </ul>
+        </section>
+      ) : null}
 
-        <figure className="grid gap-4 rounded-card bg-surface-tint p-card-padding sm:p-10 lg:col-span-2">
-          <figcaption className="type-kicker">{tw("verse.label")}</figcaption>
-          <blockquote className="grid gap-3">
+      <section
+        aria-labelledby="come-in"
+        className="bg-footer text-text"
+        data-theme="dark"
+      >
+        <div className="mx-auto grid w-full max-w-6xl gap-8 px-4 py-20 lg:grid-cols-[1fr_auto] lg:items-end">
+          <div className="grid gap-6">
+            <h2 className="type-display-xl" id="come-in">
+              {t("comeIn")}
+            </h2>
+            <p className="type-lede max-w-[36ch]">{t("comeInBody")}</p>
+            <Button
+              asChild
+              className="justify-self-start bg-paper text-ink hover:bg-paper/90"
+            >
+              <a href={join}>{t("join")}</a>
+            </Button>
+          </div>
+          {locale === "ar" ? null : (
             <p
-              className="font-bold text-2xl leading-loose sm:text-3xl"
+              className="text-5xl text-accent leading-tight sm:text-6xl"
               dir="rtl"
               lang="ar"
             >
-              {MUTANABBI}
+              {t("comeInAr")}
             </p>
-            {locale === "ar" ? null : (
-              <p className="type-lede max-w-3xl">{tw("verse.text")}</p>
-            )}
-          </blockquote>
-          <p className="type-caption">{tw("verse.attribution")}</p>
-        </figure>
-
-        {(nextEvents ?? []).length > 0 ? (
-          <section
-            aria-labelledby="next-events"
-            className="grid content-start gap-6 lg:col-span-2"
-          >
-            <h2 className={heading} id="next-events">
-              {t("nextEvents")}
-            </h2>
-            <ul className="grid gap-6 md:grid-cols-3">
-              {(nextEvents ?? []).map((event) => (
-                <li key={event.id}>
-                  <Link
-                    className="frame press grid h-full content-start gap-2 bg-surface p-card-padding shadow-offset hover:bg-surface-tint"
-                    href={`/events/${event.slug}`}
-                  >
-                    <p className="type-kicker">
-                      {formatLongDate(event.starts_at, locale)} ·{" "}
-                      {formatClock(event.starts_at, locale)}
-                    </p>
-                    <h3 className="type-subheading">
-                      {localized(event, "title", locale)}
-                    </h3>
-                    {localized(event, "summary", locale) ? (
-                      <p className="type-body text-text-secondary">
-                        {localized(event, "summary", locale)}
-                      </p>
-                    ) : null}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </section>
-        ) : null}
-
-        {(pieces ?? []).length > 0 ? (
-          <section
-            aria-labelledby="latest-journal"
-            className="grid content-start gap-4"
-          >
-            <h2 className={heading} id="latest-journal">
-              {t("latestJournal")}
-            </h2>
-            <ul className="grid">
-              {(pieces ?? []).map((piece) => (
-                <li className="border-rule border-b py-4" key={piece.id}>
-                  <Link
-                    className="grid gap-1 hover:underline"
-                    href={`/waraq/pieces/${piece.slug}`}
-                  >
-                    <h3
-                      className="type-subheading"
-                      dir="auto"
-                      lang={piece.language === "ar" ? "ar" : "en"}
-                    >
-                      {localized(piece, "title", locale)}
-                    </h3>
-                    {piece.contributor ? (
-                      <p className="type-caption">
-                        {localized(piece.contributor, "name", locale)}
-                      </p>
-                    ) : null}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </section>
-        ) : null}
-
-        {campaign && meter ? (
-          <section
-            aria-labelledby="warmth"
-            className="grid content-start gap-4"
-          >
-            <h2 className={heading} id="warmth">
-              {t("warmth")}
-            </h2>
-            <SalCard className="shadow-offset">
-              <p className="type-subheading">
-                {localized(campaign, "title", locale)}
-              </p>
-              <p className="type-display">{formatNumber(meter.units)}</p>
-              <p className="type-body">
-                {localized(campaign, "unit_label", locale)}
-              </p>
-              {meter.target_units ? (
-                <progress
-                  aria-label={t("warmth")}
-                  className="h-3 w-full accent-[var(--title)]"
-                  max={meter.target_units}
-                  value={Math.min(meter.units, meter.target_units)}
-                />
-              ) : null}
-              <p className="type-caption">
-                {formatIqd(meter.counted_iqd, locale)}
-              </p>
-            </SalCard>
-          </section>
-        ) : null}
-
-        {(calls ?? []).length > 0 ? (
-          <section
-            aria-labelledby="open-calls"
-            className="grid content-start gap-4"
-          >
-            <h2 className={heading} id="open-calls">
-              {t("openCalls")}
-            </h2>
-            <ul className="grid">
-              {(calls ?? []).map((call) => (
-                <li className="border-rule border-b py-4" key={call.id}>
-                  <Link className="grid gap-1 hover:underline" href="/waraq">
-                    <span className="type-subheading">
-                      {localized(call, "title", locale)}
-                    </span>
-                    <span className="type-caption">
-                      {t("closes", {
-                        date: formatLongDate(call.closes_at, locale),
-                      })}
-                    </span>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </section>
-        ) : null}
-        <div className="grid gap-6 lg:col-span-2">
-          <Institutions showAll />
-          {(listedPartners ?? []).length > 0 ? (
-            <ul className="flex flex-wrap items-center gap-x-8 gap-y-4">
-              {(listedPartners ?? []).map((partner) => {
-                const logo = mediaUrl(partner.logo_path);
-                const name = localized(partner, "name", locale);
-                return (
-                  <li key={partner.slug}>
-                    <Link className="hover:underline" href="/partners">
-                      {logo ? (
-                        // biome-ignore lint/performance/noImgElement: a partner logo from the media bucket
-                        <img
-                          alt={name}
-                          className="h-10 w-auto object-contain"
-                          height={40}
-                          src={logo}
-                          width={140}
-                        />
-                      ) : (
-                        <span className="type-subheading">{name}</span>
-                      )}
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
-          ) : null}
-        </div>
-      </div>
-
-      <section aria-labelledby="join" className="band frame-t">
-        <div className="mx-auto grid w-full max-w-6xl gap-4 px-4 py-16">
-          <h2 className="font-bold text-3xl sm:text-4xl" id="join">
-            {t("join")}
-          </h2>
-          <p className="max-w-2xl text-lg">{t("joinBody")}</p>
-          <Button
-            asChild
-            className="justify-self-start bg-on-band text-band hover:bg-on-band/90"
-            size="lg"
-          >
-            <a href={localizedPath(locale, nexusPath("/sign-up"))}>
-              {t("join")}
-            </a>
-          </Button>
+          )}
         </div>
       </section>
     </>

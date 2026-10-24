@@ -261,7 +261,7 @@ const ProductionEditor = ({ production }: { production: ProductionRow }) => {
   return (
     <section
       aria-labelledby="production-title"
-      className="grid gap-4 border-rule border-t pt-6"
+      className="grid gap-4 border-line border-t pt-6"
     >
       <h2 className="type-heading" id="production-title">
         {localized(production, "title", locale)}

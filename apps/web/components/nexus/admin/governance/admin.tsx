@@ -105,7 +105,7 @@ const Council = () => {
         {roster.data && rows.length === 0 ? (
           <p className="type-body text-text-secondary">{t("empty")}</p>
         ) : null}
-        <ul className="grid gap-gap sm:grid-cols-2 lg:grid-cols-3">
+        <ul className="grid gap-space-4 sm:grid-cols-2 lg:grid-cols-3">
           {rows.map((row) => (
             <li key={`${String(row.role)}-${String(row.full_name_en)}`}>
               <SalCard>
@@ -113,7 +113,7 @@ const Council = () => {
                   {localized(row, "title", locale) ||
                     localized(row, "role_name", locale)}
                 </p>
-                <p className="font-bold">
+                <p className="font-medium">
                   {localized(row, "full_name", locale)}
                 </p>
               </SalCard>
@@ -142,7 +142,7 @@ const Council = () => {
               add.mutate();
             }}
           >
-            <h4 className="font-bold text-sm">{t("newTerm")}</h4>
+            <h4 className="font-medium text-sm">{t("newTerm")}</h4>
             <BilingualField
               label={t("name")}
               maxLength={120}
@@ -551,7 +551,7 @@ const Resolutions = () => {
           </Field>
         </div>
         {problem ? (
-          <p className="text-sm text-title" role="alert">
+          <p className="text-sm text-text" role="alert">
             {problem}
           </p>
         ) : null}
@@ -677,7 +677,7 @@ const Spending = () => {
           <li key={a.id}>
             <SalCard>
               <div className="flex flex-wrap items-baseline justify-between gap-2">
-                <p className="font-bold tabular-nums">
+                <p className="font-medium tabular-nums">
                   {formatIqd(a.amount_iqd, locale)}
                 </p>
                 <p className="type-caption">

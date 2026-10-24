@@ -6,21 +6,28 @@
 @plugin "@tailwindcss/typography";
 
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
-/* On ink, unless inside a light sheet (`data-theme="light"`) within it. */
+/*
+ * On ink: inside a dark ground (dark mode, or an ink block such as the
+ * footer on a light page), unless inside a light sheet within that ground.
+ */
 @custom-variant on-ink (
   &:where([data-theme="dark"] *):not(
-    :where([data-theme="light"], [data-theme="light"] *)
+    :where(
+      [data-theme="dark"] [data-theme="light"],
+      [data-theme="dark"] [data-theme="light"] *
+    )
   )
 );
 
 /*
- * SAL v4 with the v5 Screens amendment (brand/BRAND-BOOK.md, "Screens").
- * Components use only the role tokens (tokens.css); the shadcn variables
- * below are aliases of them. Light and dark mode use the brand's two themes:
- * dark mode is the ink theme ([data-theme="dark"] on <html>), chosen from the
- * visitor's system setting or the toggle in the header (cookie `sal_theme`).
- * Square corners, a 2px frame, and one elevation: a solid offset block
- * (shadow-offset), never a blur. Never add a color.
+ * SAL v6, "the page" (brand/BRAND-BOOK.md). Components use only the role
+ * tokens in tokens.css; the shadcn variables below are aliases of them.
+ * Quiet by default: Light headlines in `text`, hairlines in `line` and space
+ * between things, square corners, no shadows, no frames, no tinted cards,
+ * and one loud thing a page in `accent`. Light and dark mode use the brand's
+ * two themes: dark mode is ink ([data-theme="dark"] on <html>), chosen from
+ * the visitor's system setting or the toggle in the header (cookie
+ * `sal_theme`). Never add a color.
  */
 :root,
 [data-theme="light"] {
@@ -31,50 +38,43 @@
 }
 
 :root,
+[data-theme="light"],
 [data-theme="dark"] {
   --background: var(--surface);
   --foreground: var(--text);
-  --card: var(--surface-tint);
+  --card: var(--surface);
   --card-foreground: var(--text);
   --popover: var(--surface);
   --popover-foreground: var(--text);
-  --primary: var(--band);
-  --primary-foreground: var(--on-band);
-  --secondary: var(--surface-tint);
+  --primary: var(--accent);
+  --primary-foreground: var(--on-accent);
+  --secondary: var(--surface);
   --secondary-foreground: var(--text);
-  --muted: var(--surface-tint);
+  --muted: var(--surface-reading);
   --muted-foreground: var(--text-secondary);
-  --accent: var(--surface-tint);
-  --accent-foreground: var(--text);
-  --destructive: var(--title);
-  --destructive-foreground: var(--title);
+  --accent-foreground: var(--on-accent);
+  --destructive: var(--accent);
+  --destructive-foreground: var(--accent);
   --success: var(--text);
-  --border: var(--rule);
-  --input: var(--rule);
-  --ring: var(--title);
+  --border: var(--line);
+  --input: var(--line);
+  --ring: var(--accent);
   --chart-1: var(--sal-crimson);
   --chart-2: var(--sal-ink);
-  --chart-3: var(--sal-ink-70);
+  --chart-3: var(--sal-ash);
   --chart-4: var(--sal-crimson-100);
-  --chart-5: var(--sal-ink-50);
-  --radius: var(--sal-radius-screen);
-  --sidebar: var(--surface-tint);
+  --chart-5: var(--sal-stone);
+  --radius: var(--sal-radius-none);
+  --sidebar: var(--surface);
   --sidebar-foreground: var(--text);
-  --sidebar-primary: var(--band);
-  --sidebar-primary-foreground: var(--on-band);
-  --sidebar-accent: var(--surface);
+  --sidebar-primary: var(--accent);
+  --sidebar-primary-foreground: var(--on-accent);
+  --sidebar-accent: var(--surface-reading);
   --sidebar-accent-foreground: var(--text);
-  --sidebar-border: var(--rule);
-  --sidebar-ring: var(--title);
+  --sidebar-border: var(--line);
+  --sidebar-ring: var(--accent);
 
   --font-weight-bold: 700;
-
-  /* The offset falls toward the end of the line: right in LTR, left in RTL. */
-  --sal-dir: 1;
-}
-
-[dir="rtl"] {
-  --sal-dir: -1;
 }
 
 @theme inline {
@@ -83,27 +83,29 @@
   --font-sans:
     var(--font-ubuntu), var(--font-ubuntu-arabic), ui-sans-serif, system-ui,
     sans-serif;
+  --font-arabic: var(--font-ubuntu-arabic), var(--font-ubuntu), sans-serif;
   --font-mono: var(--font-ubuntu-mono), ui-monospace, monospace;
-  /* Journal reading pages only: literary text. */
-  --font-literary-en: var(--font-literata), Georgia, serif;
-  --font-literary-ar: var(--font-amiri), serif;
+  /* Qirtas's article text (dek and body) only. */
+  --font-read: var(--font-literata), Georgia, serif;
 
-  /* Role tokens as Tailwind colors: bg-surface, text-title, border-rule… */
+  /* Role tokens as Tailwind colors: bg-surface, text-accent, border-line… */
   --color-surface: var(--surface);
-  --color-surface-tint: var(--surface-tint);
+  --color-surface-reading: var(--surface-reading);
   --color-text: var(--text);
   --color-text-secondary: var(--text-secondary);
-  --color-text-meta: var(--text-meta);
-  --color-title: var(--title);
-  --color-accent-line: var(--accent-line);
-  --color-rule: var(--rule);
+  --color-accent: var(--accent);
+  --color-on-accent: var(--on-accent);
+  --color-line: var(--line);
   --color-band: var(--band);
   --color-on-band: var(--on-band);
+  --color-footer: var(--footer);
+  /* Palette, for the few places that are always one color (the footer, posts). */
+  --color-ink: var(--sal-ink);
   --color-paper: var(--sal-paper);
-  --color-frame: var(--frame);
-  --color-offset: var(--offset);
+  --color-rose: var(--sal-crimson-100);
+  --color-mist: var(--sal-mist);
 
-  /* No blurred shadows anywhere; the one elevation is shadow-offset below. */
+  /* No shadows anywhere. */
   --shadow-2xs: none;
   --shadow-xs: none;
   --shadow-sm: none;
@@ -139,7 +141,6 @@
   --color-border: var(--border);
   --color-destructive: var(--destructive);
   --color-accent-foreground: var(--accent-foreground);
-  --color-accent: var(--accent);
   --color-muted-foreground: var(--muted-foreground);
   --color-muted: var(--muted);
   --color-secondary-foreground: var(--secondary-foreground);
@@ -151,7 +152,7 @@
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
   --color-success: var(--success);
-  /* Screens are square (v5); print keeps the brand's 8px card radius. */
+  /* Square everywhere; only avatars are round (rounded-avatar). */
   --radius-xs: var(--radius);
   --radius-sm: var(--radius);
   --radius-md: var(--radius);
@@ -160,12 +161,17 @@
   --radius-2xl: var(--radius);
   --radius-3xl: var(--radius);
   --radius-4xl: var(--radius);
-  --radius-card: var(--radius);
-  --radius-swatch: var(--radius);
-  /* Space from the brand: gap-gap, p-card-padding, px-page-margin… */
-  --spacing-gap: var(--sal-gap);
-  --spacing-gap-tight: var(--sal-gap-tight);
-  --spacing-card-padding: var(--sal-card-padding);
+  --radius-avatar: var(--sal-radius-avatar);
+  /* The brand's spacing scale: py-space-7, gap-space-5, px-page-margin… */
+  --spacing-space-1: var(--sal-space-1);
+  --spacing-space-2: var(--sal-space-2);
+  --spacing-space-3: var(--sal-space-3);
+  --spacing-space-4: var(--sal-space-4);
+  --spacing-space-5: var(--sal-space-5);
+  --spacing-space-6: var(--sal-space-6);
+  --spacing-space-7: var(--sal-space-7);
+  --spacing-space-8: var(--sal-space-8);
+  --spacing-space-9: var(--sal-space-9);
   --spacing-page-margin: var(--sal-page-margin);
   --animate-accordion-down: accordion-down 0.2s ease-out;
   --animate-accordion-up: accordion-up 0.2s ease-out;
@@ -231,36 +237,48 @@
   --tw-prose-body: var(--color-foreground);
   --tw-prose-headings: var(--color-foreground);
   --tw-prose-lead: var(--color-muted-foreground);
-  /* Crimson on white, white on ink: crimson text never sits on ink. */
-  --tw-prose-links: var(--title);
+  /* Links are underlined text, not color: crimson stays for the one loud thing. */
+  --tw-prose-links: var(--text);
   --tw-prose-bold: var(--color-foreground);
-  --tw-prose-counters: var(--color-foreground);
+  --tw-prose-counters: var(--color-muted-foreground);
   --tw-prose-bullets: var(--color-muted-foreground);
-  --tw-prose-hr: var(--color-muted-foreground);
-  --tw-prose-quotes: var(--color-muted-foreground);
-  --tw-prose-quote-borders: var(--color-border);
+  --tw-prose-hr: var(--line);
+  --tw-prose-quotes: var(--color-foreground);
+  --tw-prose-quote-borders: var(--line);
   --tw-prose-captions: var(--color-muted-foreground);
   --tw-prose-code: var(--color-foreground);
   --tw-prose-pre-code: var(--color-foreground);
   --tw-prose-pre-bg: var(--color-background);
-  --tw-prose-th-borders: var(--color-border);
-  --tw-prose-td-borders: var(--color-border);
+  --tw-prose-th-borders: var(--line);
+  --tw-prose-td-borders: var(--line);
   --tw-prose-invert-body: var(--color-foreground);
   --tw-prose-invert-headings: var(--color-foreground);
   --tw-prose-invert-lead: var(--color-muted-foreground);
-  --tw-prose-invert-links: var(--color-primary);
+  --tw-prose-invert-links: var(--text);
   --tw-prose-invert-bold: var(--color-foreground);
-  --tw-prose-invert-counters: var(--color-foreground);
-  --tw-prose-invert-bullets: var(--color-foreground);
-  --tw-prose-invert-hr: var(--color-muted-foreground);
-  --tw-prose-invert-quotes: var(--color-muted-foreground);
-  --tw-prose-invert-quote-borders: var(--color-border);
+  --tw-prose-invert-counters: var(--color-muted-foreground);
+  --tw-prose-invert-bullets: var(--color-muted-foreground);
+  --tw-prose-invert-hr: var(--line);
+  --tw-prose-invert-quotes: var(--color-foreground);
+  --tw-prose-invert-quote-borders: var(--line);
   --tw-prose-invert-captions: var(--color-muted-foreground);
   --tw-prose-invert-code: var(--color-foreground);
   --tw-prose-invert-pre-code: var(--color-foreground);
   --tw-prose-invert-pre-bg: var(--color-background);
-  --tw-prose-invert-th-borders: var(--color-border);
-  --tw-prose-invert-td-borders: var(--color-border);
+  --tw-prose-invert-th-borders: var(--line);
+  --tw-prose-invert-td-borders: var(--line);
+  & :where(a):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+    font-weight: 500;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+  }
+  &
+    :where(h1, h2, h3):not(
+      :where([class~="not-prose"], [class~="not-prose"] *)
+    ) {
+    font-weight: 400;
+    letter-spacing: -0.015em;
+  }
 }
 
 /* ── SAL base ────────────────────────────────────────────────────────────── */
@@ -269,8 +287,12 @@
     color: var(--text);
     background-color: var(--surface);
   }
+  body {
+    font-size: 1.0625rem;
+    line-height: 1.6;
+  }
 
-  /* Arabic sits one step larger than the English beside it, with 1.8–2.0 leading. */
+  /* Arabic sits one step larger than the English beside it, with 1.6–2.0 leading. */
   :lang(ar) {
     font-size: 1.125em;
     line-height: 1.9;
@@ -279,19 +301,8 @@
     font-size: 1em;
   }
 
-  /*
-   * ink-50 (text-meta) fails on crimson-50 and paper (4.0 / 4.3:1): on those
-   * grounds captions and meta use the secondary text color (ink-70).
-   */
-  .bg-surface-tint,
-  .bg-paper,
-  .bg-card,
-  .bg-muted {
-    --text-meta: var(--text-secondary);
-  }
-
   :focus-visible {
-    outline: 2px solid var(--title);
+    outline: 2px solid var(--accent);
     outline-offset: 2px;
   }
 
@@ -308,83 +319,125 @@
 }
 
 /*
- * Type styles: screen equivalents of the brand book's print-* styles
- * (brand/tokens.json): Display 700 at 1.02 leading, Lede 300 at 1.3, Heading
- * 700, Body 400 at 1.5, Caption 400 at 1.4 in text-meta, Kicker 700 tracked
- * 0.06em in accent-line. Arabic (ar-*): one step larger through :lang(ar),
- * 1.4 leading at display size, Regular for ledes (Ubuntu Arabic has no Light).
+ * Type styles: the screen styles of brand/tokens.json. Display is Light
+ * (300), tightly spaced, in `text`; text is Regular at 1.6; labels are
+ * Medium, small, tracked capitals in `text-secondary`. Arabic (ar-*): Ubuntu
+ * Arabic has no Light, so its display is Regular, one step larger through
+ * :lang(ar), with 1.5 leading and no tracking.
  */
-@utility type-display {
-  font-size: clamp(2.5rem, 6vw, 4.25rem);
-  font-weight: 700;
-  line-height: 1.02;
-  color: var(--title);
-  &:lang(ar),
-  :lang(ar) & {
-    line-height: 1.4;
-  }
-}
-@utility type-lede {
-  font-size: clamp(1.25rem, 2.2vw, 1.5rem);
+@utility type-display-xl {
+  font-size: clamp(3.5rem, 8.6vw, 7.75rem);
   font-weight: 300;
-  line-height: 1.3;
-  color: var(--text-secondary);
+  line-height: 0.98;
+  color: var(--text);
+  letter-spacing: -0.045em;
   &:lang(ar),
   :lang(ar) & {
     font-weight: 400;
-    line-height: 1.8;
+    line-height: 1.5;
+    letter-spacing: 0;
+  }
+}
+@utility type-display {
+  font-size: clamp(2.75rem, 6vw, 4.5rem);
+  font-weight: 300;
+  line-height: 1;
+  color: var(--text);
+  letter-spacing: -0.035em;
+  &:lang(ar),
+  :lang(ar) & {
+    font-weight: 400;
+    line-height: 1.5;
+    letter-spacing: 0;
+  }
+}
+@utility type-title {
+  font-size: clamp(2.125rem, 4vw, 2.75rem);
+  font-weight: 400;
+  line-height: 1.1;
+  color: var(--text);
+  letter-spacing: -0.025em;
+  &:lang(ar),
+  :lang(ar) & {
+    line-height: 1.6;
+    letter-spacing: 0;
   }
 }
 @utility type-heading {
-  font-size: 1.5rem;
-  font-weight: 700;
+  font-size: clamp(1.375rem, 2.4vw, 1.75rem);
+  font-weight: 400;
   line-height: 1.25;
-  color: var(--title);
+  color: var(--text);
+  letter-spacing: -0.01em;
+  &:lang(ar),
+  :lang(ar) & {
+    line-height: 1.6;
+    letter-spacing: 0;
+  }
+}
+@utility type-subheading {
+  font-size: 1.25rem;
+  font-weight: 400;
+  line-height: 1.35;
+  color: var(--text);
+}
+@utility type-lede {
+  font-size: clamp(1.125rem, 1.8vw, 1.3125rem);
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--text);
   &:lang(ar),
   :lang(ar) & {
     line-height: 1.8;
   }
 }
-@utility type-subheading {
-  font-size: 1.125rem;
-  font-weight: 700;
-  line-height: 1.35;
-  color: var(--text);
-}
 @utility type-body {
-  font-size: 1rem;
+  font-size: 1.0625rem;
   font-weight: 400;
-  line-height: 1.5;
+  line-height: 1.6;
   color: var(--text);
 }
 @utility type-caption {
-  font-size: 0.8125rem;
-  line-height: 1.4;
-  color: var(--text-meta);
+  font-size: 0.84375rem;
+  line-height: 1.45;
+  color: var(--text-secondary);
 }
-@utility type-kicker {
+/* Small tracked capitals: kickers, dates under numerals, footer headings. */
+@utility type-label {
   font-size: 0.75rem;
-  font-weight: 700;
-  color: var(--accent-line);
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--text-secondary);
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.12em;
   /* Arabic has no case, and tracking breaks its joined letters. */
   &:lang(ar),
   :lang(ar) & {
     font-size: 0.875rem;
-    letter-spacing: 0;
-  }
-}
-/* Navigation and buttons (v5): short labels in tracked capitals, never Arabic. */
-@utility type-label {
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  &:lang(ar),
-  :lang(ar) & {
     text-transform: none;
     letter-spacing: 0;
   }
+}
+/* The same label, kept under its older name. */
+@utility type-kicker {
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  &:lang(ar),
+  :lang(ar) & {
+    font-size: 0.875rem;
+    text-transform: none;
+    letter-spacing: 0;
+  }
+}
+/* One word per headline at most: Light italic in `accent`. */
+@utility type-accent {
+  font-style: italic;
+  font-weight: inherit;
+  color: var(--accent);
 }
 /* Document codes and clause numbers. */
 @utility type-code {
@@ -392,13 +445,18 @@
   font-size: 0.875em;
   letter-spacing: 0.02em;
 }
-/* Hairlines: accent-line under table heads, rule between rows. */
-@utility hairline {
-  border-color: var(--rule);
-  border-bottom-width: var(--sal-hairline);
+/* The Bookmark marker: starts a section title. A marker, never a logo. */
+@utility bookmark {
+  display: inline-block;
+  flex: none;
+  width: 14px;
+  height: 17px;
+  background-color: var(--accent);
+  clip-path: polygon(0 0, 50% 22%, 100% 0, 100% 100%, 0 100%);
 }
-@utility hairline-accent {
-  border-color: var(--accent-line);
+/* Hairlines in `line` between rows and sections. */
+@utility hairline {
+  border-color: var(--line);
   border-bottom-width: var(--sal-hairline);
 }
 /* The one full-bleed band per page. */
@@ -406,92 +464,57 @@
   color: var(--on-band);
   background-color: var(--band);
 }
-/* Journal reading pages: paper ground, literary faces for the text only. */
-@utility reading {
-  --text-meta: var(--text-secondary);
-  font-family: var(--font-literary-en);
-  font-size: 1.125rem;
-  line-height: 1.75;
-  background-color: var(--sal-paper);
-  &:lang(ar),
-  & :lang(ar) {
-    font-family: var(--font-literary-ar);
-    line-height: 2;
+/* Underlined text links: everything that is not the one button. */
+@utility link {
+  font-weight: 500;
+  text-decoration-line: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+  &:hover {
+    color: var(--accent);
   }
 }
-/*
- * v5 Screens: the one elevation. A solid block in the offset role (ink on
- * light pages, crimson on ink), falling toward the end of the line.
- */
-@utility shadow-offset {
-  box-shadow: calc(var(--sal-dir) * var(--sal-offset)) var(--sal-offset) 0 0
-    var(--offset);
-}
-@utility shadow-offset-lg {
-  box-shadow: calc(var(--sal-dir) * var(--sal-offset-lg)) var(--sal-offset-lg) 0
-    0 var(--offset);
-}
-/* Feature blocks on light pages: the crimson offset (never text on ink). */
-@utility shadow-offset-accent {
-  box-shadow: calc(var(--sal-dir) * var(--sal-offset-lg)) var(--sal-offset-lg) 0
-    0 var(--sal-crimson);
-}
-/* The 2px frame around controls, cards and the header. */
-@utility frame {
-  border: var(--sal-frame-width) solid var(--frame);
-}
-@utility frame-b {
-  border-bottom: var(--sal-frame-width) solid var(--frame);
-}
-@utility frame-t {
-  border-top: var(--sal-frame-width) solid var(--frame);
-}
-/* Pressed: the block moves onto its offset. */
-@utility press {
-  transition:
-    transform 80ms ease-out,
-    box-shadow 80ms ease-out;
-  &:active:not(:disabled) {
-    box-shadow: none;
-    transform: translate(
-      calc(var(--sal-dir) * var(--sal-offset)),
-      var(--sal-offset)
-    );
+/* Qirtas's reading pages: paper ground; Literata for English article text. */
+@utility reading {
+  font-family: var(--font-read);
+  font-size: 1.09375rem;
+  line-height: 1.68;
+  background-color: var(--surface-reading);
+  &:lang(ar),
+  & :lang(ar) {
+    font-family: var(--font-arabic);
+    line-height: 1.9;
   }
 }
 
 /*
- * v5 Screens on the shadcn base (unlayered, so it wins over the generated
- * classes): 2px frames on form controls and cards, transparent fields on
- * ink, and the focus ring as a solid outline.
+ * v6 on the shadcn base (unlayered, so it wins over the generated classes):
+ * fields are a 1px `line` box, square, with no fill; tabs are a row of words
+ * on a hairline; cards carry no fill or border; menus and dialogs are set off
+ * by a hairline, never a shadow.
  */
 [data-slot="input"],
 [data-slot="textarea"],
 [data-slot="select-trigger"],
-[data-slot="input-group"],
-[data-slot="checkbox"],
-[data-slot="radio-group-item"] {
-  border-color: var(--frame);
-  border-width: var(--sal-frame-width);
+[data-slot="input-group"] {
+  background-color: transparent;
+  border: var(--sal-hairline) solid var(--line);
+  border-radius: 0;
   box-shadow: none;
 }
-[data-theme="dark"]
-  :is(
-    [data-slot="input"],
-    [data-slot="textarea"],
-    [data-slot="select-trigger"]
-  ) {
-  background-color: transparent;
+[data-slot="checkbox"],
+[data-slot="radio-group-item"] {
+  border-color: var(--text-secondary);
+  box-shadow: none;
 }
-/* Tabs read as a row of kickers on a rule; the current one carries the accent line. */
 [data-slot="tabs-list"] {
-  gap: 1.5rem;
+  gap: 1.75rem;
   justify-content: flex-start;
   width: 100%;
   height: auto;
   padding: 0;
   background: transparent;
-  border-bottom: 1px solid var(--rule);
+  border-bottom: var(--sal-hairline) solid var(--line);
   border-radius: 0;
 }
 [data-slot="tabs-trigger"] {
@@ -500,55 +523,51 @@
   padding: 0.5rem 0;
   margin-bottom: -1px;
   font-family: var(--font-sans);
-  font-size: 0.75rem;
-  font-weight: 700;
+  font-size: 0.90625rem;
+  font-weight: 500;
   color: var(--text-secondary);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
   background: transparent;
   border: 0;
-  border-bottom: 2px solid transparent;
+  border-bottom: 1.5px solid transparent;
   border-radius: 0;
   box-shadow: none;
 }
-[data-slot="tabs-trigger"]:lang(ar) {
-  font-size: 0.875rem;
-  text-transform: none;
-  letter-spacing: 0;
-}
 [data-slot="tabs-trigger"][data-state="active"] {
-  color: var(--title);
+  color: var(--text);
   background: transparent;
-  border-bottom-color: var(--accent-line);
+  border-bottom-color: var(--accent);
   box-shadow: none;
 }
-[data-slot="card"],
+[data-slot="card"] {
+  background-color: transparent;
+  border: 0;
+  box-shadow: none;
+}
 [data-slot="dialog-content"],
 [data-slot="alert-dialog-content"],
 [data-slot="popover-content"],
 [data-slot="dropdown-menu-content"],
-[data-slot="select-content"],
-[data-slot="sheet-content"] {
-  border: var(--sal-frame-width) solid var(--frame);
-  box-shadow: calc(var(--sal-dir) * var(--sal-offset)) var(--sal-offset) 0 0
-    var(--offset);
+[data-slot="select-content"] {
+  border: var(--sal-hairline) solid var(--line);
+  box-shadow: none;
 }
 :is(
   [data-slot="input"],
   [data-slot="textarea"],
   [data-slot="select-trigger"]
 ):focus-visible {
-  outline: 2px solid var(--title);
+  outline: 2px solid var(--accent);
   outline-offset: 2px;
+  border-color: var(--text);
   box-shadow: none;
 }
 
-/* Society documents (auibsal.org/documents, the Nexus): wide tables scroll
+/* Society documents (auibsal.org/documents, the portal): wide tables scroll
    on small screens; section links land below the sticky header. */
 .document-text h2 {
   padding-bottom: 0.25rem;
   scroll-margin-top: 6rem;
-  border-bottom: 1px solid var(--accent-line);
+  border-bottom: var(--sal-hairline) solid var(--line);
 }
 .document-text table {
   display: block;

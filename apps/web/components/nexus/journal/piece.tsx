@@ -25,7 +25,7 @@ export const PieceReader = () => {
     return <SectionSpinner />;
   }
   const back = (
-    <Link className="type-caption underline underline-offset-4" href="/waraq">
+    <Link className="type-caption underline underline-offset-4" href="/qirtas">
       {t("back")}
     </Link>
   );
@@ -49,7 +49,7 @@ export const PieceReader = () => {
       {back}
       <header className="grid gap-2">
         <p className="type-kicker">{tj(`categories.${piece.data.category}`)}</p>
-        <h1 className="font-bold text-3xl">
+        <h1 className="font-medium text-3xl">
           {localized(piece.data, "title", locale)}
         </h1>
         {piece.data.contributor ? (

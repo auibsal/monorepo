@@ -9,6 +9,38 @@ Branch: `claude/new-session-qosn60`.
 
 ## Blocked — needed from the user
 
+- [ ] **Brand v6 and the new names (2026-10-24), the owner's part:**
+  - **Redirects (your decision):** `/waraq` and `/nexus` (and `/ar/…`) now
+    answer 404, and links to them have been shared. Say whether to add one
+    permanent redirect for each old path (`/waraq/…` → `/qirtas/…`,
+    `/nexus/…` → `/diwan/…`); nothing was added unasked.
+  - **Supabase → Authentication → URL Configuration:** add
+    `https://auibsal.org/diwan/**` and `https://auibsal.org/ar/diwan/**` to
+    the redirect URLs (keep the `/nexus` ones until the redirects question
+    is settled). **Authentication → OAuth Server:** the consent path is now
+    `/diwan/oauth/consent`.
+  - **Supabase → Authentication → Emails:** paste the four updated
+    templates and subjects from `packages/database/supabase/templates`
+    (they link to `/diwan/auth/confirm` and say "the Diwan"); the old ones
+    link to `/nexus`, which no longer exists.
+  - **BotFather → Login Widget → OpenID Connect:** replace the redirect
+    URIs with `https://auibsal.org/diwan/profile` and
+    `https://auibsal.org/ar/diwan/profile`, or Telegram linking stops.
+  - **Hudhud:** BotFather → Edit Bot → Profile picture:
+    `brand/mascot/hudhud-avatar.png` (`/setuserpic`); clear the description
+    picture (v6 ships none). Make the sticker set "Hudhud · SAL"
+    (docs/platform/telegram.md, Sticker set) and send me the four file_ids
+    (`youreIn`, `sent`, `sorry`, `asleep`) for `project.json`. Then press
+    *Connect the bot to Telegram* in the Diwan so the descriptions update.
+  - **The Company's kind:** it is stored as `series` (no schema change).
+    Say if you want a `company` kind added to `core.programmes`.
+  - **Published pieces keep their text:** the launch article still says
+    "Waraq launches"; the crossword's NEXUS answer stays. Edit them in the
+    newsroom if you want them renamed.
+  - **Native Arabic review:** the v6 lines under needs-native-review.
+  - **Governance documents** still use the old names and ranks; amend them
+    when you are ready (the platform does not edit ratified text).
+
 - [ ] **Environment variables on Vercel (2026-10-24):** the one project is
       `auibsal`. Set on 2026-10-24 (Production; secrets sensitive):
       `RESEND_TOKEN` (a new sending-only key for auibsal.org, "auibsal
@@ -268,6 +300,15 @@ These stop parts of the work. Everything else continues around them.
       Realtime since 2026-10-09 (decision below).
 
 ## Decisions
+
+- **Brand v6 and the new names** (owner, 2026-10-24; the v6 handoff,
+  START.md and NAMES.md): Light headlines, hairlines in place of boxes, one
+  accent button per view, six colors, the Bookmark before section titles,
+  Literata for Qirtas articles. Waraq is Qirtas at `/qirtas`, the Nexus is
+  the Diwan at `/diwan`; every other rename is in AGENTS.md ("Renames").
+  The code keeps its names (`waraq`, `journal`, `nexus`, `side-quest`).
+  Programs are grouped as five flagships, one evening a week (a four-week
+  cycle) and three specials; Gallery Wall is unpublished, kept.
 
 - **Dark mode and one frame** (owner, 2026-10-24, "add a dark mode across
   the board … unify the UX between web and nexus"): dark mode is the brand's
@@ -635,6 +676,26 @@ These stop parts of the work. Everything else continues around them.
 
 ## Checklist
 
+### Brand v6 and the new names (2026-10-24)
+
+- [x] Step 2: brand files (BRAND-BOOK.md, tokens.json, bundle.css, the v6
+      PDF) and generated tokens; fonts (Ubuntu Light, Literata)
+- [x] Step 3: one header, footer, buttons, links, inputs, section heads
+- [x] Step 4: the public pages and Qirtas as in the reference; dated lists;
+      programs grouped; fix: visitors could not read programs or public
+      settings (migration 20261024000700)
+- [x] Step 5: the Diwan, the emails (both languages) and Storybook
+      ("Screens v6")
+- [x] Step 6: the renames (messages, metadata, emails, bot, docs, routes,
+      migration 20261024000800)
+- [x] Step 7: Hudhud's v6 files, the stickers story, stickers after bot
+      replies (file_ids empty until the set exists)
+- [x] Step 8: check, typecheck, test, rtl, i18n, placeholders, unused,
+      pgTAP and the e2e journeys; screenshots at 1440 and 390 in light and
+      dark, nothing sideways at 360
+- [ ] Owner: the items under Blocked (redirects, Supabase URLs and
+      templates, the Telegram redirect URIs, the sticker set, Arabic review)
+
 ### One app (2026-10-24)
 
 - [x] Nexus under `app/[locale]/nexus` with `components/nexus`, `lib/nexus`
@@ -904,6 +965,18 @@ Covered by automated tests so far:
   use (as the form says).
 
 ## needs-native-review (Arabic written for the platform)
+
+- Brand v6 (2026-10-24): the new names («قرطاس»، «الديوان»، «المحطة
+  القادمة»، «الفرقة»، «المسرح المفتوح»، «المناظرة»، «جمعة المتنبي»،
+  «جوائز قرطاس»، «السجل»، «لائحة الزملاء»، «ليلة العودة»، «زميل فخري»،
+  «عضو مدى الحياة»، and the Council as «المجلس التنفيذي») wherever they
+  replaced the old ones in `messages/ar.json`, the bot's copy and the
+  emails; `web.home.{kicker,title,lede,whatsOn,thisTerm,programs,comeIn,comeInBody}`;
+  `web.programmes.{lede,weekly,weeklyNote,specials,productions}`;
+  `common.menu` «القائمة», `common.menuClose` «إغلاق» and the footer
+  headings `web.footer.columns.*`; the summaries of Qirtas and the Company
+  in migration 20261024000800 and «مكتب أخبار قرطاس»; «يوم الميثاق» in
+  `brand/components/DocumentCover` and `SocialPost` previews.
 
 - Dark mode (2026-10-24): `common.theme.dark` «الوضع الداكن» and
   `common.theme.light` «الوضع الفاتح»; the reworded Notion and Telegram

@@ -75,7 +75,7 @@ export const NotionWorkspace = () => {
       {status.isPending ? <SectionSpinner /> : null}
       <ErrorLine error={status.error} />
       {data && !data.configured ? (
-        <p className="type-body font-bold">{t("notConfigured")}</p>
+        <p className="type-body font-medium">{t("notConfigured")}</p>
       ) : null}
       {data?.configured && state ? (
         <div className="grid gap-1">
@@ -118,7 +118,7 @@ export const NotionWorkspace = () => {
       ) : null}
       {data?.invite ? (
         <section className="grid gap-2">
-          <h3 className="font-bold">{t("inviteTitle")}</h3>
+          <h3 className="font-medium">{t("inviteTitle")}</h3>
           <p className="type-caption">{t("inviteHint")}</p>
           <DataTable
             caption={t("inviteTitle")}
@@ -131,7 +131,7 @@ export const NotionWorkspace = () => {
       ) : null}
       {data?.remove ? (
         <section className="grid gap-2">
-          <h3 className="font-bold">{t("removeTitle")}</h3>
+          <h3 className="font-medium">{t("removeTitle")}</h3>
           <p className="type-caption">{t("removeHint")}</p>
           <DataTable
             caption={t("removeTitle")}

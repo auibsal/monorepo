@@ -27,7 +27,7 @@ export const endpoints: readonly Endpoint[] = [
   {
     method: "GET",
     path: "/api/v1/journal/calls",
-    summary: "Waraq's calls open now, and the ones announced.",
+    summary: "Qirtas's calls open now, and the ones announced.",
     who: "Anyone",
   },
   {

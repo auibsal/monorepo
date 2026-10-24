@@ -103,7 +103,7 @@ export const usePieceRights = (piece: Piece | null | undefined) => {
   };
 };
 
-const NOTE = "rounded-card bg-surface-tint p-4";
+const NOTE = " border-t border-line p-4";
 
 type Move = (name: string, args: Record<string, unknown>) => void;
 
@@ -514,10 +514,7 @@ export const Thread = ({ pieceId }: { pieceId: string }) => {
       ) : null}
       <ol className="grid gap-3">
         {thread.data?.map((n) => (
-          <li
-            className="grid gap-1 rounded-card bg-surface-tint p-3"
-            key={n.id}
-          >
+          <li className="grid gap-1 border-line border-t p-3" key={n.id}>
             <p className="type-caption">
               {writer(n)}
               {" · "}

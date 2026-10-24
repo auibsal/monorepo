@@ -23,7 +23,7 @@ const CarePage = async ({ params }: LocaleParams) => {
         <ol className="grid gap-3">
           {PROMISE.map((id) => (
             <li className="grid grid-cols-[3rem_1fr] gap-2" key={id}>
-              <span className="type-code text-text-meta" dir="ltr">
+              <span className="type-code text-text-secondary" dir="ltr">
                 {id.replace("_", ".")}
               </span>
               <span className="type-body">{tp(`p.${id}`)}</span>
@@ -38,7 +38,7 @@ const CarePage = async ({ params }: LocaleParams) => {
         id="request"
       >
         <h2
-          className="type-heading border-accent-line border-b pb-2"
+          className="type-heading border-line border-b pb-2"
           id="request-title"
         >
           {t("formTitle")}

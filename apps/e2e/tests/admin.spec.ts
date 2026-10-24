@@ -26,11 +26,11 @@ test("a News desk editor starts a piece, and it waits in Editing, unpublished", 
     .fill("ملاحظات الجمعية");
   await page
     .getByRole("combobox", { name: "Contributor" })
-    .selectOption({ label: "Waraq News Desk" });
+    .selectOption({ label: "Qirtas News Desk" });
   await page.getByRole("button", { name: "Create the piece" }).click();
   await expect(page).toHaveURL(/\/admin\/journal\/piece\?id=/);
 
   // The publish rule keeps it off the site until it is approved.
-  await page.goto(`${urls.web}/waraq/news`);
+  await page.goto(`${urls.web}/qirtas/news`);
   await expect(page.getByText(title)).toHaveCount(0);
 });

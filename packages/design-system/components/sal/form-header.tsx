@@ -11,10 +11,10 @@ interface FormHeaderProps {
 }
 
 /**
- * The brand's Form Header (brand/components/FormHeader), adapted for screen:
- * the form code in Ubuntu Mono and the title, the symbol at the top end, and
- * a crimson rule at twice the hairline. It takes the colors of the page it
- * sits on: on ink, the white symbol (never crimson on ink).
+ * The brand's Form Header (v6, brand/components/bundle.css `.sal-form`):
+ * the form code in Ubuntu Mono and a Light title above an ink hairline, the
+ * symbol at the top end. It takes the colors of the page it sits on: on
+ * ink, the white symbol (never crimson on ink).
  */
 export const FormHeader = ({
   children,
@@ -23,28 +23,30 @@ export const FormHeader = ({
   title,
 }: FormHeaderProps) => (
   <header className={cn("grid gap-3", className)}>
-    <div className="flex items-start justify-between gap-gap border-accent-line border-b-2 pb-gap-tight">
+    <div className="flex items-end justify-between gap-space-4 border-text border-b pb-space-3">
       <div className="grid gap-1.5">
         {code ? (
           <p className="type-code text-sm text-text-secondary">{code}</p>
         ) : null}
-        <h1 className="font-bold text-2xl text-text leading-tight">{title}</h1>
+        <h1 className="font-light text-[2rem] text-text leading-[1.1] tracking-[-0.02em]">
+          {title}
+        </h1>
       </div>
       {/* biome-ignore lint/performance/noImgElement: SVG symbol, served as supplied */}
       <img
         alt=""
-        className="on-ink:hidden h-10 w-auto flex-none"
-        height={40}
+        className="on-ink:hidden h-11 w-auto flex-none"
+        height={44}
         src={logos.symbol.onLight}
-        width={Math.round(40 * logos.symbol.aspect)}
+        width={Math.round(44 * logos.symbol.aspect)}
       />
       {/* biome-ignore lint/performance/noImgElement: SVG symbol, served as supplied */}
       <img
         alt=""
-        className="on-ink:block hidden h-10 w-auto flex-none"
-        height={40}
+        className="on-ink:block hidden h-11 w-auto flex-none"
+        height={44}
         src={logos.symbol.onDark}
-        width={Math.round(40 * logos.symbol.aspect)}
+        width={Math.round(44 * logos.symbol.aspect)}
       />
     </div>
     {children ? (

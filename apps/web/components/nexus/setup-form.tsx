@@ -159,7 +159,10 @@ export const SetupForm = () => {
         <p className="type-kicker">
           {t("progress", { done: String(done), total: String(total) })}
         </p>
-        <div aria-hidden="true" className="frame h-3 w-full bg-surface">
+        <div
+          aria-hidden="true"
+          className="h-3 w-full border border-line bg-surface"
+        >
           <div
             className="h-full bg-band transition-[width]"
             style={{ width: `${(done / total) * 100}%` }}
@@ -322,7 +325,7 @@ export const SetupForm = () => {
         </fieldset>
 
         {save.isError ? (
-          <p className="text-title" role="alert">
+          <p className="text-text" role="alert">
             {te("saveFailed")}
           </p>
         ) : null}

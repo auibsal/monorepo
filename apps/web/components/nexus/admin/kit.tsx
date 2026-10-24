@@ -41,9 +41,9 @@ export const AdminHeading = ({
   children,
   title,
 }: AdminHeadingProps) => (
-  <header className="grid gap-2 border-accent-line border-b-2 pb-gap-tight">
-    <div className="flex flex-wrap items-end justify-between gap-gap">
-      <h1 className="font-bold text-2xl text-text leading-tight">{title}</h1>
+  <header className="grid gap-2 border-text border-b pb-space-3">
+    <div className="flex flex-wrap items-end justify-between gap-space-4">
+      <h1 className="type-title">{title}</h1>
       {actions ? <div className="flex flex-wrap gap-2">{actions}</div> : null}
     </div>
     {children ? (
@@ -97,11 +97,11 @@ export const DataTable = <T,>({
       <table className="w-full border-collapse text-sm max-md:block">
         {caption ? <caption className="sr-only">{caption}</caption> : null}
         <thead className="max-md:sr-only">
-          <tr className="border-accent-line border-b">
+          <tr className="border-text border-b">
             {columns.map((column) => (
               <th
                 className={cn(
-                  "type-kicker whitespace-nowrap px-2 py-2 text-start align-bottom",
+                  "type-label whitespace-nowrap px-2 py-3 text-start align-bottom",
                   column.className
                 )}
                 key={column.key}
@@ -112,20 +112,20 @@ export const DataTable = <T,>({
             ))}
           </tr>
         </thead>
-        <tbody className="max-md:block max-md:border-accent-line max-md:border-t">
+        <tbody className="max-md:block max-md:border-line max-md:border-t">
           {rows.map((row) => (
             <tr
-              className="border-rule border-b max-md:grid max-md:gap-1.5 max-md:py-3"
+              className="border-line border-b max-md:grid max-md:gap-1.5 max-md:py-3"
               key={rowKey(row)}
             >
               {columns.map((column, index) => (
                 <td
                   className={cn(
-                    "px-2 py-2 align-top",
+                    "px-2 py-3 align-top",
                     column.className,
                     "max-md:whitespace-normal max-md:px-0 max-md:py-0 max-md:text-start",
                     index === 0
-                      ? "max-md:block max-md:font-bold max-md:text-base"
+                      ? "max-md:block max-md:font-medium max-md:text-base"
                       : "max-md:grid max-md:grid-cols-[minmax(6rem,35%)_1fr] max-md:items-baseline max-md:gap-3"
                   )}
                   key={column.key}
@@ -280,7 +280,7 @@ export const SelectInput = ({
 }: React.ComponentProps<"select">) => (
   <select
     className={cn(
-      "h-9 w-full rounded-md border border-input bg-surface px-3 text-sm focus-visible:outline-2",
+      "h-12 w-full border border-input bg-surface px-3 text-[0.9375rem] focus-visible:outline-2",
       className
     )}
     {...props}
@@ -309,7 +309,7 @@ export const useErrorReason = () => {
 export const ErrorLine = ({ error }: { error: unknown }) => {
   const reason = useErrorReason();
   return error ? (
-    <p className="text-sm text-title" role="alert">
+    <p className="text-sm text-text" role="alert">
       {reason(error)}
     </p>
   ) : null;
@@ -434,7 +434,7 @@ export const ExportButton = ({
         {state === "busy" ? t("exporting") : t("export")}
       </Button>
       {state === "failed" ? (
-        <p className="text-title text-xs" role="alert">
+        <p className="text-text text-xs" role="alert">
           {t("exportFailed")}
         </p>
       ) : null}

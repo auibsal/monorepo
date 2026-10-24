@@ -133,7 +133,7 @@ export const Declarations = () => {
           <div className="grid gap-2">
             <Label htmlFor="declaration-semester">{t("semester")}</Label>
             <select
-              className="frame h-10 bg-surface px-3"
+              className="h-12 border border-line bg-surface px-3"
               id="declaration-semester"
               onChange={(e) => setSemesterId(e.target.value)}
               value={semesterId}
@@ -184,7 +184,7 @@ export const Declarations = () => {
                           {t("partner")}
                         </Label>
                         <select
-                          className="frame h-10 bg-surface px-3"
+                          className="h-12 border border-line bg-surface px-3"
                           id={`conflict-${kind}-partner`}
                           onChange={(e) =>
                             setItem(kind, { partner_id: e.target.value })

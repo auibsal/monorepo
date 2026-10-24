@@ -573,13 +573,13 @@ const Media = ({ record }: { record: PieceRecord }) => {
           const alt = captions[m.id]?.alt ?? { ar: m.alt_ar, en: m.alt_en };
           return (
             <li
-              className="grid gap-3 rounded-card bg-surface-tint p-3 sm:grid-cols-[10rem_1fr]"
+              className="grid gap-3 border-line border-t p-3 sm:grid-cols-[10rem_1fr]"
               key={m.id}
             >
               {/* biome-ignore lint/performance/noImgElement: the Nexus serves images unoptimized (next.config.ts) */}
               <img
                 alt={m.alt_en || m.alt_ar}
-                className="max-h-40 rounded-card object-contain"
+                className="max-h-40 object-contain"
                 height={m.height ?? undefined}
                 src={getMediaUrl(supabase, m.storage_path)}
                 width={m.width ?? undefined}

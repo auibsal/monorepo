@@ -16,7 +16,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { ExternalLink } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import type { ReactNode } from "react";
-import { Masthead } from "@/components/masthead";
+import { Masthead, mastheadLink } from "@/components/masthead";
 import { Link, usePathname, useRouter } from "@/lib/nexus/navigation";
 import { useNotionHandbook, useTeamWorkspace } from "@/lib/nexus/notion";
 import { disablePush } from "@/lib/nexus/push";
@@ -25,12 +25,12 @@ import { useVisibleModules } from "./admin/admin-shell";
 import { useTwoStep } from "./auth/two-step";
 import { LanguageSwitcher } from "./language-switcher";
 
-// Five sections at most (v5); the account items live in their own menu.
+// Five sections at most (v6); the account items live in their own menu.
 // The logo leads home, so Home needs no link of its own.
 const memberLinks = [
   { href: "/events", key: "events" },
   { href: "/programs", key: "programs" },
-  { href: "/waraq", key: "journal" },
+  { href: "/qirtas", key: "journal" },
   { href: "/society", key: "society" },
 ] as const;
 
@@ -89,9 +89,9 @@ const TabLinks = () => {
             <Link
               aria-current={active ? "page" : undefined}
               className={cn(
-                "type-label block border-t-2 py-3 text-center text-xs",
+                "block border-t-[1.5px] py-3 text-center font-medium text-[0.8125rem]",
                 active
-                  ? "border-accent-line text-title"
+                  ? "border-accent text-text"
                   : "border-transparent text-text-secondary"
               )}
               href={link.href}
@@ -149,13 +149,12 @@ export const AppShell = ({ children }: { children: ReactNode }) => {
         action={
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button
-                className="hidden lg:inline-flex"
-                size="sm"
-                variant="outline"
+              <button
+                className={cn(mastheadLink, "hidden lg:inline")}
+                type="button"
               >
                 {t("nexus.nav.account")}
-              </Button>
+              </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               {account.map((link) => (
@@ -190,26 +189,18 @@ export const AppShell = ({ children }: { children: ReactNode }) => {
             <ul className="grid gap-2">
               {account.map((link) => (
                 <li key={link.href}>
-                  <Link
-                    className="underline underline-offset-4"
-                    href={link.href}
-                    onClick={close}
-                  >
+                  <Link className="link" href={link.href} onClick={close}>
                     {t(`nexus.nav.${link.key}`)}
                   </Link>
                 </li>
               ))}
             </ul>
             <div className="grid gap-2">
-              <p className="type-kicker">{t("nexus.nav.paperwork")}</p>
+              <p className="type-label">{t("nexus.nav.paperwork")}</p>
               <ul className="grid gap-2">
                 {paperwork.map((link) => (
                   <li key={link.href}>
-                    <Link
-                      className="underline underline-offset-4"
-                      href={link.href}
-                      onClick={close}
-                    >
+                    <Link className="link" href={link.href} onClick={close}>
                       {t(`nexus.nav.${link.key}`)}
                     </Link>
                   </li>
@@ -220,15 +211,16 @@ export const AppShell = ({ children }: { children: ReactNode }) => {
               <ul className="grid gap-2">
                 {notion.map((link) => (
                   <li key={link.key}>
-                    {external(
-                      link,
-                      "inline-flex items-center gap-1.5 underline underline-offset-4"
-                    )}
+                    {external(link, "link inline-flex items-center gap-1.5")}
                   </li>
                 ))}
               </ul>
             ) : null}
-            <Button className="w-full" onClick={signOut} variant="outline">
+            <Button
+              className="justify-self-start"
+              onClick={signOut}
+              variant="link"
+            >
               {t("auth.signOut")}
             </Button>
           </>
@@ -246,7 +238,7 @@ export const AppShell = ({ children }: { children: ReactNode }) => {
       </main>
       <nav
         aria-label={t("nexus.nav.label")}
-        className="frame-t fixed inset-x-0 bottom-0 z-40 bg-surface pb-[env(safe-area-inset-bottom)] lg:hidden print:hidden"
+        className="fixed inset-x-0 bottom-0 z-40 border-line border-t bg-surface pb-[env(safe-area-inset-bottom)] lg:hidden print:hidden"
       >
         <TabLinks />
       </nav>

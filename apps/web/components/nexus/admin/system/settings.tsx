@@ -198,14 +198,14 @@ const Semesters = () => {
       <p className="type-caption">{t("semesterHint")}</p>
       {data.isPending ? <SectionSpinner /> : null}
       {data.data?.semesters.length === 0 ? (
-        <p className="font-bold text-title">{t("noSemesters")}</p>
+        <p className="font-medium text-text">{t("noSemesters")}</p>
       ) : null}
       <ul className="grid gap-3">
         {data.data?.semesters.map((s) => (
-          <li className="grid gap-1 border-rule border-b pb-3" key={s.id}>
+          <li className="grid gap-1 border-line border-b pb-3" key={s.id}>
             <div className="flex flex-wrap items-center justify-between gap-2">
               <p>
-                <span className="font-bold">
+                <span className="font-medium">
                   {localized(s, "name", locale)}
                 </span>{" "}
                 <span className="type-code text-xs">{s.code}</span> ·{" "}
@@ -255,7 +255,7 @@ const Semesters = () => {
           addSemester.mutate();
         }}
       >
-        <h3 className="font-bold text-sm">{t("addSemester")}</h3>
+        <h3 className="font-medium text-sm">{t("addSemester")}</h3>
         <div className="grid gap-4 sm:grid-cols-3">
           <Field label={t("code")}>
             {(id) => (
@@ -308,7 +308,7 @@ const Semesters = () => {
           value={form.name}
         />
         {problem ? (
-          <p className="text-sm text-title" role="alert">
+          <p className="text-sm text-text" role="alert">
             {problem}
           </p>
         ) : null}
@@ -325,7 +325,7 @@ const Semesters = () => {
             addBlackout.mutate();
           }}
         >
-          <h3 className="font-bold text-sm">{t("addBlackout")}</h3>
+          <h3 className="font-medium text-sm">{t("addBlackout")}</h3>
           <div className="grid gap-4 sm:grid-cols-3">
             <Field label={t("semesters")}>
               {(id) => (
@@ -488,7 +488,7 @@ const SocietyContacts = ({ settings }: { settings: Record<string, Json> }) => {
             value={telegram}
           />
           {telegramOk ? null : (
-            <p className="text-sm text-title" role="alert">
+            <p className="text-sm text-text" role="alert">
               {t("telegramInvalid")}
             </p>
           )}
@@ -672,7 +672,7 @@ const Flags = ({ settings }: { settings: Record<string, Json> }) => {
     <Section title={t("flags")}>
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <p className="font-bold">
+          <p className="font-medium">
             {t("elections")}: {on ? t("on") : t("off")}
           </p>
           <p className="type-caption">{t("electionsHint")}</p>
@@ -699,7 +699,7 @@ export const SettingsAdmin = () => {
   }
   const values = settings.data ?? {};
   return (
-    <div className="grid gap-gap">
+    <div className="grid gap-space-4">
       <AdminHeading title={t("title")}>{t("lede")}</AdminHeading>
       <Semesters />
       <JournalName settings={values} />

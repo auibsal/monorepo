@@ -30,10 +30,10 @@ describe("platform email", () => {
     expect(html.indexOf("حُجز مكانك")).toBeLessThan(
       html.indexOf("booked: Charter Day")
     );
-    expect(html).toContain(`href="${APP}/ar/nexus"`);
+    expect(html).toContain(`href="${APP}/ar/diwan"`);
   });
 
-  test("no images, no exclamation marks in headings", async () => {
+  test("one image, the lockup; no exclamation marks in headings", async () => {
     const built = [
       decision("en", "The First Rain", "accept", APP),
       decision("en", "The First Rain", "decline", APP),
@@ -41,7 +41,10 @@ describe("platform email", () => {
     ];
     const html = await Promise.all(built.map((b) => render(Notice(b))));
     for (const page of html) {
-      expect(page).not.toContain("<img");
+      // v6: the horizontal lockup heads every email, and nothing else.
+      const images = page.match(/<img[^>]*>/g) ?? [];
+      expect(images).toHaveLength(1);
+      expect(images[0]).toContain("/brand/sal-lockup-horizontal-email.png");
     }
     for (const block of built.flatMap((b) => b.blocks)) {
       expect(block.heading).not.toContain("!");
@@ -64,7 +67,7 @@ describe("the newsletter", () => {
       "https://auibsal.org/newsletter/confirm?token=abc"
     );
     expect(built.subject).toBe(
-      "Confirm your subscription to The Month in Waraq"
+      "Confirm your subscription to The Month in Qirtas"
     );
     expect(built.blocks[0]?.action?.href).toBe(
       "https://auibsal.org/newsletter/confirm?token=abc"
@@ -80,17 +83,17 @@ describe("the newsletter", () => {
           desk_en: "News",
           title_ar: "خبر",
           title_en: "A story",
-          url: "https://auibsal.org/ar/waraq/pieces/a-story",
+          url: "https://auibsal.org/ar/qirtas/pieces/a-story",
         },
       ],
       [{ ...event, url: "https://auibsal.org/ar/events/charter-day" }],
-      "https://auibsal.org/ar/waraq",
+      "https://auibsal.org/ar/qirtas",
       "https://auibsal.org/ar/newsletter/unsubscribe?token=t"
     );
-    expect(built.subject).toBe("شهر في ورق");
+    expect(built.subject).toBe("شهر في قرطاس");
     const english = built.blocks.find((b) => b.lang === "en");
     expect(english?.paragraphs).toContain(
-      "News: A story https://auibsal.org/ar/waraq/pieces/a-story"
+      "News: A story https://auibsal.org/ar/qirtas/pieces/a-story"
     );
     expect(english?.paragraphs.at(-1)).toBe(
       "To unsubscribe: https://auibsal.org/ar/newsletter/unsubscribe?token=t"

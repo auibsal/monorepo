@@ -204,7 +204,7 @@ const GridInput = ({
     <div className="w-full overflow-x-auto">
       <table className="w-full border-collapse text-sm">
         <thead>
-          <tr className="border-accent-line border-b">
+          <tr className="border-line border-b">
             <th className="px-2 py-2" scope="col">
               <span className="sr-only">{labels.field(field.key)}</span>
             </th>
@@ -221,7 +221,7 @@ const GridInput = ({
         </thead>
         <tbody>
           {(field.rows ?? []).map((row) => (
-            <tr className="border-rule border-b" key={row}>
+            <tr className="border-line border-b" key={row}>
               <th className="px-2 py-2 text-start font-medium" scope="row">
                 {rowLabel(row)}
               </th>
@@ -270,7 +270,7 @@ const TableInput = ({
     <div className="grid gap-3">
       {rows.map((row, index) => (
         <fieldset
-          className="grid gap-3 rounded-card bg-surface-tint p-4 sm:grid-cols-2"
+          className="grid gap-3 border-line border-t p-4 sm:grid-cols-2"
           // biome-ignore lint/suspicious/noArrayIndexKey: rows have no ids; their order is the identity
           key={index}
         >
@@ -343,7 +343,7 @@ export const FormFieldInput = ({
   const id = useId();
   const label = office ? labels.office(field.key) : labels.field(field.key);
   const required = field.required ? (
-    <span className="text-title"> {t("required")}</span>
+    <span className="text-text"> {t("required")}</span>
   ) : null;
 
   if (field.type === "datetime") {
@@ -465,7 +465,7 @@ const ValueText = ({
     return <>{value === true ? t("yes") : t("no")}</>;
   }
   if (isEmpty(value)) {
-    return <span className="text-text-meta">{t("blank")}</span>;
+    return <span className="text-text-secondary">{t("blank")}</span>;
   }
   switch (field.type) {
     case "choice":
@@ -524,7 +524,7 @@ const TableView = ({
     <div className="w-full overflow-x-auto">
       <table className="w-full border-collapse text-sm">
         <thead>
-          <tr className="border-accent-line border-b">
+          <tr className="border-line border-b">
             <th className="px-2 py-1" scope="col">
               <span className="sr-only">{labels.field(field.key)}</span>
             </th>
@@ -541,7 +541,7 @@ const TableView = ({
         </thead>
         <tbody>
           {rows.map(([label, row]) => (
-            <tr className="border-rule border-b" key={label}>
+            <tr className="border-line border-b" key={label}>
               <th className="px-2 py-1 text-start font-medium" scope="row">
                 {label}
               </th>
@@ -572,7 +572,7 @@ export const FormValues = ({
 }) => (
   <dl className="grid gap-4">
     {fields.map((field) => (
-      <div className="grid gap-1 border-rule border-b pb-3" key={field.key}>
+      <div className="grid gap-1 border-line border-b pb-3" key={field.key}>
         <dt className="type-kicker">
           {office ? labels.office(field.key) : labels.field(field.key)}
         </dt>

@@ -26,6 +26,8 @@ const PATH_SEGMENT = /\.|\[(\d+)\]/;
 const placeholders = (text: string) =>
   [...new Set([...text.matchAll(PLACEHOLDER)].map((match) => match[1]))].sort();
 
+const TAG = /<([a-z]+)>/g;
+
 describe("messages", () => {
   test("every enabled locale has a messages file", () => {
     for (const locale of locales) {
@@ -74,10 +76,25 @@ describe("messages", () => {
       for (const path of paths(messages)) {
         if (!path.includes("[")) {
           // Every argument gets a value; plural arguments need a number.
+          const raw = String(t.raw(path as never));
           const values = Object.fromEntries(
-            placeholders(String(t.raw(path as never))).map((name) => [name, 1])
+            placeholders(raw).map((name) => [name, 1])
           );
-          t(path as never, values as never);
+          const tags = [...raw.matchAll(TAG)].map((match) => match[1]);
+          if (tags.length > 0) {
+            // Rich text: each tag gets a function, as t.rich() takes them.
+            t.rich(
+              path as never,
+              {
+                ...values,
+                ...Object.fromEntries(
+                  tags.map((tag) => [tag, (chunks: unknown) => chunks])
+                ),
+              } as never
+            );
+          } else {
+            t(path as never, values as never);
+          }
         }
       }
       expect(problems, locale).toEqual([]);

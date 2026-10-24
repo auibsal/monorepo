@@ -8,11 +8,9 @@ import {
   saveChoice,
   siteChoices,
 } from "@repo/analytics/consent";
-import { Button } from "@repo/design-system/components/ui/button";
 import { Checkbox } from "@repo/design-system/components/ui/checkbox";
 import { Label } from "@repo/design-system/components/ui/label";
 import { Link } from "@repo/internationalization/navigation";
-import { XIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useId, useRef, useState } from "react";
 
@@ -30,8 +28,8 @@ const topics = (purposes: ConsentPurposes) =>
   (["analytics", "ads"] as const).filter((topic) => purposes[topic]);
 
 /**
- * The consent card: pinned to the bottom of the page, never in the way of
- * the page itself. It asks until the visitor has answered for every purpose,
+ * The consent bar (v6): a slim bar along the bottom edge; the page ends
+ * above it, so it never covers content. It asks until the visitor has answered for every purpose,
  * and again from "Cookie settings" in the footer. The answers are kept in the
  * site's own consent cookie, which the boot script passes on to Google
  * consent mode.
@@ -75,6 +73,24 @@ export const ConsentBanner = ({ purposes }: ConsentBannerProps) => {
   }, [key]);
 
   useEffect(() => {
+    // The bar never covers the page: the page ends above it.
+    const bar = card.current;
+    if (state === "hidden" || !bar) {
+      return;
+    }
+    const fit = () => {
+      document.body.style.paddingBottom = `${bar.offsetHeight}px`;
+    };
+    fit();
+    const observer = new ResizeObserver(fit);
+    observer.observe(bar);
+    return () => {
+      observer.disconnect();
+      document.body.style.paddingBottom = "";
+    };
+  }, [state]);
+
+  useEffect(() => {
     // Opened from the footer or "Choose": take the visitor to the card.
     if (state === "choose") {
       card.current?.focus();
@@ -107,88 +123,90 @@ export const ConsentBanner = ({ purposes }: ConsentBannerProps) => {
   }
 
   const body = purposes.ads ? t("bodyWithAds") : t("body");
+  const action =
+    "font-medium text-[0.90625rem] underline decoration-1 underline-offset-4 hover:text-accent";
 
   return (
     <section
       aria-labelledby={`${id}-title`}
-      className="fixed inset-x-4 bottom-4 z-40 grid max-h-[80dvh] gap-3 overflow-y-auto rounded-card border border-rule bg-surface-tint p-4 text-text outline-none sm:inset-x-auto sm:end-4 sm:w-96"
+      className="fixed inset-x-0 bottom-0 z-40 max-h-[70dvh] overflow-y-auto border-line border-t bg-surface text-text outline-none"
       ref={card}
       tabIndex={-1}
     >
-      <div className="flex items-start justify-between gap-3">
-        <h2 className="type-kicker text-title" id={`${id}-title`}>
-          {t("title")}
-        </h2>
-        {state === "choose" && answered ? (
-          <button
-            aria-label={t("close")}
-            className="-m-1 p-1 text-text-secondary hover:text-text"
-            onClick={close}
-            type="button"
-          >
-            <XIcon aria-hidden="true" className="size-4" />
-          </button>
-        ) : null}
-      </div>
-      <p className="type-caption">
-        {body}{" "}
-        <Link className="underline underline-offset-4" href="/privacy">
-          {t("privacy")}
-        </Link>
-      </p>
-      {state === "choose" ? (
-        <fieldset className="grid gap-3">
-          <legend className="sr-only">{t("choices")}</legend>
-          {asked.map((topic) => (
-            <div className="flex items-start gap-3" key={topic}>
-              <Checkbox
-                checked={allowed[topic]}
-                id={`${id}-${topic}`}
-                onCheckedChange={(checked) =>
-                  setAllowed((now) => ({ ...now, [topic]: checked === true }))
-                }
-              />
-              <div className="grid gap-1">
-                <Label htmlFor={`${id}-${topic}`}>{t(`${topic}.name`)}</Label>
-                <p className="type-caption text-text-secondary">
-                  {t(`${topic}.description`)}
-                </p>
+      <div className="mx-auto grid w-full max-w-6xl gap-3 px-4 py-3 sm:px-6 lg:flex lg:items-center lg:gap-8">
+        <p className="type-caption text-text lg:flex-1">
+          <span className="font-medium" id={`${id}-title`}>
+            {t("title")}.
+          </span>{" "}
+          {body}{" "}
+          <Link className="underline underline-offset-4" href="/privacy">
+            {t("privacy")}
+          </Link>
+        </p>
+        {state === "choose" ? (
+          <fieldset className="grid gap-3 lg:flex lg:items-center lg:gap-6">
+            <legend className="sr-only">{t("choices")}</legend>
+            {asked.map((topic) => (
+              <div className="flex items-start gap-2" key={topic}>
+                <Checkbox
+                  checked={allowed[topic]}
+                  id={`${id}-${topic}`}
+                  onCheckedChange={(checked) =>
+                    setAllowed((now) => ({ ...now, [topic]: checked === true }))
+                  }
+                />
+                <Label
+                  className="font-normal"
+                  htmlFor={`${id}-${topic}`}
+                  title={t(`${topic}.description`)}
+                >
+                  {t(`${topic}.name`)}
+                </Label>
               </div>
+            ))}
+            <div className="flex items-center gap-5">
+              <button
+                className={action}
+                onClick={() => save(allowed)}
+                type="button"
+              >
+                {t("save")}
+              </button>
+              {answered ? (
+                <button className={action} onClick={close} type="button">
+                  {t("close")}
+                </button>
+              ) : null}
             </div>
-          ))}
-          <Button onClick={() => save(allowed)} size="sm" variant="outline">
-            {t("save")}
-          </Button>
-        </fieldset>
-      ) : (
-        <div className="grid gap-2">
-          <div className="grid grid-cols-2 gap-3">
-            <Button
-              onClick={() => save({ ads: true, analytics: true })}
-              size="sm"
-              variant="outline"
-            >
-              {asked.length > 1 ? t("allowAll") : t("allow")}
-            </Button>
-            <Button
-              onClick={() => save({ ads: false, analytics: false })}
-              size="sm"
-              variant="outline"
-            >
-              {t("decline")}
-            </Button>
-          </div>
-          {asked.length > 1 ? (
+          </fieldset>
+        ) : (
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
             <button
-              className="type-caption justify-self-start underline underline-offset-4"
-              onClick={() => setState("choose")}
+              className={action}
+              onClick={() => save({ ads: true, analytics: true })}
               type="button"
             >
-              {t("choose")}
+              {asked.length > 1 ? t("allowAll") : t("allow")}
             </button>
-          ) : null}
-        </div>
-      )}
+            <button
+              className={action}
+              onClick={() => save({ ads: false, analytics: false })}
+              type="button"
+            >
+              {t("decline")}
+            </button>
+            {asked.length > 1 ? (
+              <button
+                className={action}
+                onClick={() => setState("choose")}
+                type="button"
+              >
+                {t("choose")}
+              </button>
+            ) : null}
+          </div>
+        )}
+      </div>
     </section>
   );
 };

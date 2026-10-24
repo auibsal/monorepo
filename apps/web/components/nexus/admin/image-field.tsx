@@ -83,7 +83,7 @@ export const ImageField = ({
             // biome-ignore lint/performance/noImgElement: a preview of a just-uploaded object
             <img
               alt={t("imageAlt")}
-              className="h-32 w-auto rounded-card"
+              className="h-32 w-auto"
               height={128}
               src={getMediaUrl(supabase, value)}
               width={192}
@@ -113,7 +113,7 @@ export const ImageField = ({
         {!busy && kind === "image" ? t("noImageNote") : null}
       </p>
       {problem ? (
-        <p className="text-sm text-title" role="alert">
+        <p className="text-sm text-text" role="alert">
           {problem}
         </p>
       ) : null}

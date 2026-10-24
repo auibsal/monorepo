@@ -63,7 +63,7 @@ export const TwoStepPanel = () => {
       }
       const result = await supabase.auth.mfa.enroll({
         factorType: "totp",
-        friendlyName: "SAL Nexus",
+        friendlyName: "SAL Diwan",
       });
       if (result.error) {
         throw result.error;
@@ -116,7 +116,7 @@ export const TwoStepPanel = () => {
   return (
     <section
       aria-labelledby="two-step-title"
-      className="frame grid max-w-xl gap-4 bg-surface p-card-padding shadow-offset"
+      className="grid max-w-xl gap-4 border-line border-t pt-space-4"
     >
       <h2 className="type-heading" id="two-step-title">
         {factorId ? t("verifyTitle") : t("setupTitle")}
@@ -138,7 +138,7 @@ export const TwoStepPanel = () => {
 
       {enrolling ? (
         <div className="grid gap-3" data-theme="light">
-          <div className="frame justify-self-start bg-surface p-2">
+          <div className="justify-self-start border border-line bg-surface p-2">
             {/* biome-ignore lint/performance/noImgElement: Supabase returns the QR as an SVG data URL */}
             <img alt={t("qrAlt")} height={176} src={enrolling.qr} width={176} />
           </div>
@@ -177,7 +177,7 @@ export const TwoStepPanel = () => {
       ) : null}
 
       {failed ? (
-        <p className="type-body font-bold" role="alert">
+        <p className="type-body font-medium" role="alert">
           {t("failed")}
         </p>
       ) : null}

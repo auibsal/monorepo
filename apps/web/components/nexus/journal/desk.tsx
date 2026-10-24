@@ -92,7 +92,7 @@ export const SendToDesk = ({ desk }: { desk: NamedDesk }) => {
       await queryClient.invalidateQueries({
         queryKey: queryKeys.submissions(user?.id ?? ""),
       });
-      router.push({ pathname: "/waraq/submission", query: { id } });
+      router.push({ pathname: "/qirtas/submission", query: { id } });
     },
   });
 
@@ -104,7 +104,7 @@ export const SendToDesk = ({ desk }: { desk: NamedDesk }) => {
     <div className="grid gap-8">
       <AdminHeading
         actions={
-          <Link className="text-sm underline underline-offset-4" href="/waraq">
+          <Link className="text-sm underline underline-offset-4" href="/qirtas">
             {t("back")}
           </Link>
         }

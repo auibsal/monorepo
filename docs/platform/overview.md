@@ -7,26 +7,26 @@ The platform is one repository, [auibsal/mono](https://github.com/auibsal/mono),
 | App | Address | What it does |
 | --- | --- | --- |
 | Public site | [auibsal.org](https://auibsal.org) (`apps/web`, `app/[locale]/(site)`) | Events, news, the Journal, documents, the Warmth Meter; English and Arabic |
-| The Nexus | [auibsal.org/nexus](https://auibsal.org/nexus) (`app/[locale]/nexus`) | The member portal and the role-gated admin; rendered in the browser, with the member's own token |
+| The Diwan | [auibsal.org/diwan](https://auibsal.org/diwan) (`app/[locale]/diwan`) | The member portal and the role-gated admin; rendered in the browser, with the member's own token |
 | API | auibsal.org/api (`app/api`, `lib/api`) | Email, scheduled jobs, calendar feeds, file links, exports, account deletion, the API for apps; the only code holding the secret key |
 | Developer pages | auibsal.org/developers | The guide and reference for app builders |
 | SAL Design System | `packages/storybook`, run locally | Every component, screen and email, in both languages |
-| Officer handbook | The team's Notion workspace (linked from the Nexus) | How to run the Society; officers only |
+| Officer handbook | The team's Notion workspace (linked from the Diwan) | How to run the Society; officers only |
 | These runbooks | `docs/platform` in the repository | How the platform runs, for the technical administrator |
 
 ## How a request flows
 
 1. The **public site** reads published rows from Postgres with the public (publishable) key, and caches pages until something is published.
-2. The **Nexus** talks to Postgres directly with the signed-in member's own token. The database decides what that member may read or write.
-3. When something needs a secret (sending email, a private file link, an export), the Nexus calls the **API** with the member's token; the API checks the member's permission again before acting.
+2. The **Diwan** talks to Postgres directly with the signed-in member's own token. The database decides what that member may read or write.
+3. When something needs a secret (sending email, a private file link, an export), the Diwan calls the **API** with the member's token; the API checks the member's permission again before acting.
 4. Changes that need side effects (an email to send, a page to refresh) are written to an **outbox** table in the same transaction. The database hands each row to the API, which sends the email through Resend or refreshes the public site.
 
 ## The rules that keep it safe
 
-- **Row Level Security is the boundary.** Every table checks `access.has_permission()` on every read and write. A screen the Nexus hides is a convenience; the database is the guard.
+- **Row Level Security is the boundary.** Every table checks `access.has_permission()` on every read and write. A screen the Diwan hides is a convenience; the database is the guard.
 - **Permissions, not role names.** Roles are bundles of permissions, assigned only through `access.assign_role()`, never from a user's profile.
 - **Two-step sign-in for sensitive roles.** Council officers, directors and the Elections Committee only hold their permissions on a session that passed the second step.
-- **Secrets live only in the API and CI.** The Nexus bundle is public by design; CI fails if a secret's name or value appears in it.
+- **Secrets live only in the API and CI.** The Diwan bundle is public by design; CI fails if a secret's name or value appears in it.
 - **Multi-step rules are database functions.** Ballots, the ranked-choice count, ledger sign-off, waitlist promotion and Journal decisions are single atomic functions.
 - **Blind review.** Readers never receive an author's identity before a decision; the database withholds it.
 - **The charity ledger is append-only.** Corrections are reversing entries; only signed-off entries count.
@@ -41,7 +41,7 @@ The platform is one repository, [auibsal/mono](https://github.com/auibsal/mono),
 | sal-daily | 4:45 UTC (7:45 AM Baghdad) | Event reminders, agreement reminders, role-ending notices and overdue removal requests |
 | sal-ballot-retention | 5:15 UTC | Deletes ballots and voter lists one year after an election closes (B6.11) |
 | sal-outbox-prune | 5:30 UTC | Deletes sent outbox rows older than 30 days |
-| sal-newsletter | 1st of the month, 6:00 UTC | The Month in Waraq to the newsletter list |
+| sal-newsletter | 1st of the month, 6:00 UTC | The Month in Qirtas to the newsletter list |
 | sal-sunday-paper | Sundays, 6:00 UTC | The Sunday Paper to members |
 | sal-notion-sync | Every 15 minutes | Mirrors officers, programs and the registry into Notion |
 | sal-telegram-posts | Every 10 minutes | Hudhud's posts to the Society's group |

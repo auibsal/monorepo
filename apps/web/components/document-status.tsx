@@ -27,7 +27,7 @@ export const DocumentStatus = async ({
   return (
     <aside
       aria-label={t("statusLabel")}
-      className="grid gap-1 rounded-card border-accent-line border-s-4 bg-surface-tint p-4"
+      className="grid gap-1 border-line border-s-4 border-t p-4"
     >
       <p className="type-kicker">
         {t(`statuses.${doc.status as documents.DocumentStatus}`)}

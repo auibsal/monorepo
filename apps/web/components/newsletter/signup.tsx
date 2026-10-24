@@ -92,7 +92,7 @@ export const NewsletterSignup = ({
       {state === "invalid_email" ||
       state === "rate_limited" ||
       state === "failed" ? (
-        <p className="text-title" role="alert">
+        <p className="text-text" role="alert">
           {t(`errors.${state}`)}
         </p>
       ) : null}

@@ -234,7 +234,7 @@ export const AuditionsTab = ({ production }: { production: ProductionRow }) => {
           (s) => s.audition_id === a.id
         );
         return (
-          <section className="grid gap-3 border-rule border-t pt-4" key={a.id}>
+          <section className="grid gap-3 border-line border-t pt-4" key={a.id}>
             <div className="flex flex-wrap items-center justify-between gap-2">
               <h3 className="type-subheading">
                 {when(a, locale)}
@@ -528,7 +528,7 @@ export const CreditsTab = ({ production }: { production: ProductionRow }) => {
       ) : null}
       <ul className="grid gap-4">
         {(credits.data ?? []).map((c) => (
-          <li className="grid gap-2 border-rule border-b pb-3" key={c.id}>
+          <li className="grid gap-2 border-line border-b pb-3" key={c.id}>
             <div className="flex flex-wrap items-center justify-between gap-2">
               <span>
                 <span className="font-medium" dir="auto">
@@ -755,7 +755,7 @@ export const RehearsalsTab = ({
       <ul className="grid gap-2">
         {(rehearsals.data ?? []).map((r) => (
           <li
-            className="flex flex-wrap items-center justify-between gap-2 border-rule border-b pb-2"
+            className="flex flex-wrap items-center justify-between gap-2 border-line border-b pb-2"
             key={r.id}
           >
             <span className="grid">

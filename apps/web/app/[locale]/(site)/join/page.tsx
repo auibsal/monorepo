@@ -1,5 +1,7 @@
+import { buttonVariants } from "@repo/design-system/components/ui/button";
 import { localizedPath, nexusPath } from "@repo/internationalization";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { PageHeader, RuledList, Section } from "@/components/section";
 import { type LocaleParams, sectionMetadata } from "@/lib/page";
 
 export const generateMetadata = sectionMetadata("web.join", "/join");
@@ -11,80 +13,76 @@ const JoinPage = async ({ params }: LocaleParams) => {
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "web.join" });
-  const heading = "type-heading border-accent-line border-b pb-2";
   const cta = (
-    <div className="grid gap-2">
+    <div className="grid gap-3">
       <a
-        className="inline-flex h-11 items-center justify-self-start rounded-md bg-primary px-5 text-primary-foreground"
+        className={buttonVariants({ className: "justify-self-start" })}
         href={localizedPath(locale, nexusPath("/sign-up"))}
       >
         {t("cta")}
       </a>
-      <p className="type-caption">{t("ctaHint")}</p>
+      <p className="type-caption text-text-secondary">{t("ctaHint")}</p>
     </div>
   );
 
   return (
-    <div className="mx-auto grid w-full max-w-4xl gap-12 px-4 py-16">
-      <header className="grid gap-4">
-        <h1 className="type-display">{t("title")}</h1>
-        <p className="type-lede max-w-3xl">{t("lede")}</p>
+    <div className="mx-auto grid w-full max-w-6xl gap-20 px-4 py-16 sm:py-24">
+      <PageHeader lede={t("lede")} title={t("title")}>
         {cta}
-      </header>
+      </PageHeader>
 
-      <ol className="grid gap-4 md:grid-cols-3">
-        {STEPS.map((key, index) => (
-          <li
-            className="frame grid content-start gap-2 bg-surface-tint p-5"
-            key={key}
-          >
-            <p className="type-kicker">{index + 1}</p>
-            <h2 className="type-subheading">{t(`steps.${key}.title`)}</h2>
-            <p className="type-body">{t(`steps.${key}.body`)}</p>
-          </li>
-        ))}
-      </ol>
+      <RuledList
+        columns={3}
+        items={STEPS.map((key) => ({
+          body: t(`steps.${key}.body`),
+          key,
+          title: t(`steps.${key}.title`),
+        }))}
+        level="h2"
+        numbered
+      />
 
-      <section aria-labelledby="tiers" className="grid gap-4">
-        <h2 className={heading} id="tiers">
-          {t("tiersTitle")}
-        </h2>
+      <Section id="tiers" title={t("tiersTitle")}>
         <div className="overflow-x-auto">
           <table className="w-full text-start">
             <thead>
-              <tr className="border-rule border-b">
-                <th className="py-2 pe-4 text-start" scope="col">
+              <tr className="border-text border-b">
+                <th className="type-label py-2 pe-4 text-start" scope="col">
                   {t("tiersYou")}
                 </th>
-                <th className="py-2 pe-4 text-start" scope="col">
+                <th className="type-label py-2 pe-4 text-start" scope="col">
                   {t("tiersIf")}
                 </th>
-                <th className="py-2 text-start" scope="col">
+                <th className="type-label py-2 text-start" scope="col">
                   {t("tiersCan")}
                 </th>
               </tr>
             </thead>
             <tbody>
               {TIERS.map((key) => (
-                <tr className="border-rule border-b align-top" key={key}>
-                  <th className="py-3 pe-4 text-start font-medium" scope="row">
+                <tr className="border-line border-b align-top" key={key}>
+                  <th
+                    className="py-4 pe-4 text-start font-normal text-xl"
+                    scope="row"
+                  >
                     {t(`tiers.${key}.name`)}
                   </th>
-                  <td className="py-3 pe-4">{t(`tiers.${key}.if`)}</td>
-                  <td className="py-3">{t(`tiers.${key}.can`)}</td>
+                  <td className="py-4 pe-4 text-text-secondary">
+                    {t(`tiers.${key}.if`)}
+                  </td>
+                  <td className="py-4 text-text-secondary">
+                    {t(`tiers.${key}.can`)}
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-      </section>
+      </Section>
 
-      <section aria-labelledby="first-month" className="grid gap-3">
-        <h2 className={heading} id="first-month">
-          {t("firstMonthTitle")}
-        </h2>
-        <p className="type-body">{t("firstMonth")}</p>
-      </section>
+      <Section id="first-month" title={t("firstMonthTitle")}>
+        <p className="type-lede max-w-[60ch]">{t("firstMonth")}</p>
+      </Section>
       {cta}
     </div>
   );

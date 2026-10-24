@@ -59,7 +59,7 @@ const VerifyPage = async ({ params, searchParams }: VerifyParams) => {
           required
         />
         {typed ? (
-          <p className="text-title" role="alert">
+          <p className="text-text" role="alert">
             {t("invalid")}
           </p>
         ) : null}

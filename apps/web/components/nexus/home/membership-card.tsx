@@ -46,7 +46,7 @@ export const MembershipCard = () => {
         <p
           className={
             status.data.voting_member
-              ? "font-bold text-title"
+              ? "font-medium text-text"
               : "text-text-secondary"
           }
         >
@@ -54,7 +54,7 @@ export const MembershipCard = () => {
         </p>
       </div>
       <figure className="grid justify-items-center gap-2">
-        <div className="rounded-card bg-surface p-3">
+        <div className="bg-surface p-3">
           <QRCode
             aria-hidden="true"
             size={132}

@@ -14,11 +14,10 @@ interface DocumentHeaderProps {
 }
 
 /**
- * The brand's Document Cover (brand/components/DocumentCover), adapted for
- * the web: the code and Arabic name at the top end, the title in Display in
- * ink (not crimson: crimson Display is for section titles), then the
- * subtitle. The site header carries the lockup, so it is not repeated here.
- * Always light.
+ * The brand's Document Cover (v6), adapted for the web: the code in Ubuntu
+ * Mono and the Arabic name at the top end, the title in Display Light in
+ * ink, then one sentence. The site header carries the lockup, so it is not
+ * repeated here. Always light.
  */
 export const DocumentHeader = ({
   children,
@@ -30,7 +29,7 @@ export const DocumentHeader = ({
 }: DocumentHeaderProps) => (
   <header className={cn("grid gap-6", className)} data-theme="light">
     {code || nameAr ? (
-      <div className="grid justify-items-end text-end text-text-meta">
+      <div className="grid justify-items-end text-end text-text-secondary">
         {code ? (
           <p className="type-code text-sm tracking-wide">{code}</p>
         ) : null}
@@ -41,7 +40,7 @@ export const DocumentHeader = ({
         ) : null}
       </div>
     ) : null}
-    <h1 className="type-display text-text">{title}</h1>
+    <h1 className="type-display max-w-4xl text-balance text-text">{title}</h1>
     {subtitle ? (
       <p className="type-lede max-w-3xl text-text">{subtitle}</p>
     ) : null}

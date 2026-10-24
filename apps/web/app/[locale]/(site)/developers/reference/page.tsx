@@ -43,7 +43,7 @@ const ReferencePage = () => (
       <ul className="grid gap-3">
         {endpoints.map((e) => (
           <li
-            className="grid gap-2 rounded-card bg-surface-tint p-4"
+            className="grid gap-2 border-line border-t p-4"
             key={`${e.method} ${e.path}`}
           >
             <p className="flex flex-wrap items-baseline justify-between gap-2">
@@ -102,7 +102,7 @@ const ReferencePage = () => (
       </ul>
       <p className="type-body">
         Members also have a private feed of the events they booked, with its own
-        link in the Nexus. Treat it like a password.
+        link in the Diwan. Treat it like a password.
       </p>
     </Block>
   </div>

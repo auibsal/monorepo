@@ -171,7 +171,7 @@ export const Passkeys = () => {
         ) : null}
         {add.isSuccess ? <p role="status">{t("addedNow")}</p> : null}
         {failure instanceof PasskeyFailure ? (
-          <p className="text-title" role="alert">
+          <p className="text-text" role="alert">
             {errorText(failure.code)}
           </p>
         ) : null}

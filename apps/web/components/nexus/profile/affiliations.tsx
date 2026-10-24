@@ -112,7 +112,7 @@ export const Affiliations = () => {
             <div className="grid gap-2">
               <Label htmlFor={`${id}-partner`}>{t("partner")}</Label>
               <select
-                className="frame h-10 max-w-sm bg-surface px-3"
+                className="h-12 max-w-sm border border-line bg-surface px-3"
                 id={`${id}-partner`}
                 onChange={(e) => setPartnerId(e.target.value)}
                 required

@@ -310,7 +310,7 @@ const EditorForm = ({
 
   return (
     <form
-      className="grid gap-5 border-rule border-t pt-6"
+      className="grid gap-5 border-line border-t pt-6"
       onSubmit={(e) => {
         e.preventDefault();
         save.mutate();

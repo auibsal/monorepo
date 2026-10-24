@@ -25,7 +25,7 @@ const notice = {
   body: "See you at 6:00 PM",
   lang: "en" as const,
   title: "You're in",
-  url: "https://auibsal.org/nexus/events",
+  url: "https://auibsal.org/diwan/events",
 };
 
 afterEach(() => vi.unstubAllGlobals());
