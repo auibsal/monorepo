@@ -188,7 +188,7 @@ describe.skipIf(!enabled)("Hudhud", () => {
     await admin.auth.admin.deleteUser(userId);
   });
 
-  test("links an account with the code from the Nexus", async () => {
+  test("links an account with the code from the Diwan", async () => {
     const member = createClient<Database>(url, publishableKey, {
       auth: { persistSession: false },
     });
@@ -231,7 +231,7 @@ describe.skipIf(!enabled)("Hudhud", () => {
     );
 
     await bot.handleUpdate(press(`rsvp:${eventId}`, stranger));
-    expect(lastText()).toContain("Link your Nexus account first");
+    expect(lastText()).toContain("Link your Diwan account first");
   });
 
   test("opens the daily word as a Mini App", async () => {
