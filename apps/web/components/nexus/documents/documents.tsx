@@ -14,7 +14,6 @@ import { Link } from "@/lib/nexus/navigation";
 import { isNotionUrl } from "@/lib/nexus/notion";
 import { EmptyLine, ErrorState, SectionSpinner } from "../states";
 
-type Status = documents.DocumentStatus;
 type Audience = documents.DocumentAudience;
 
 /**
@@ -73,7 +72,6 @@ export const Documents = () => {
               <li key={d.id}>
                 <SalCard>
                   <div className="grid gap-1">
-                    <p className="type-kicker">{d.code}</p>
                     {notionPage(d) ? (
                       <a
                         className="inline-flex items-center gap-1.5 font-medium underline underline-offset-4"
@@ -98,8 +96,7 @@ export const Documents = () => {
                         {documents.documentTitle(d, locale)}
                       </Link>
                     )}
-                    <p className="type-caption">
-                      {t(`statuses.${d.status as Status}`)} ·{" "}
+                    <p className="type-caption text-text-secondary">
                       {t("updated", {
                         date: formatLongDate(d.updated_at, locale, true),
                       })}
@@ -194,24 +191,17 @@ export const DocumentView = () => {
         )}
       </div>
       <header className="grid gap-2">
-        <p className="type-kicker">
-          {doc.data.code} · {t(`groups.${doc.data.audience as Audience}`)}
+        <p className="type-label">
+          {t(`groups.${doc.data.audience as Audience}`)}
         </p>
         <h1 className="type-display">
           {documents.documentTitle(doc.data, locale)}
         </h1>
-        {doc.data.summary_en ? (
-          <p className="type-lede max-w-2xl" dir="auto">
-            {(locale === "ar" && doc.data.summary_ar) || doc.data.summary_en}
+        {documents.documentSummary(doc.data, locale) ? (
+          <p className="type-lede max-w-2xl">
+            {documents.documentSummary(doc.data, locale)}
           </p>
         ) : null}
-        <p className="type-caption">
-          {t(`statuses.${doc.data.status as Status}`)}
-          {doc.data.version ? ` · ${doc.data.version}` : ""}
-          {doc.data.adopted_on
-            ? ` · ${t("adoptedOn", { date: formatLongDate(doc.data.adopted_on, locale) })}`
-            : ""}
-        </p>
       </header>
       {notion ? (
         <div className="grid gap-3">

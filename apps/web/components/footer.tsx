@@ -1,4 +1,3 @@
-import { project } from "@repo/config";
 import { BrandLogo } from "@repo/design-system/components/brand-logo";
 import { localizedPath, nexusPath } from "@repo/internationalization";
 import { Link } from "@repo/internationalization/navigation";
@@ -72,9 +71,6 @@ export const Footer = async ({ consent = true }: FooterProps = {}) => {
           </NextLink>
           <p className="max-w-[34ch] text-text-secondary">
             {tx("recognition")}
-          </p>
-          <p className="text-text-secondary" lang="ar">
-            {project.motto.ar}
           </p>
         </div>
         {columns.map((column) => (

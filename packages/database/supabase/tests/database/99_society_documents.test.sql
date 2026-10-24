@@ -86,8 +86,8 @@ select pg_temp.login_anon();
 select is((select count(*)::int from governance.society_documents where audience = 'public'), 17,
   'Visitors read the six public documents and the eleven platform policies');
 select is((select count(*)::int from governance.society_documents
-  where code like 'SAL-PLT-%' and status = 'draft' and adopted_on is null), 11,
-  'The platform policies are drafts until the Council adopts them');
+  where status = 'adopted' and version = 'Version 1' and adopted_on is not null), 17,
+  'Every public document is adopted, Version 1 (owner, Oct 24, 2026)');
 select is((select count(*)::int from governance.society_documents where audience = 'internal'), 0,
   'but never the internal ones');
 select ok((select body_en like '%<strong>6.6</strong> While the Society is small%' from governance.society_documents where slug = 'constitution'),

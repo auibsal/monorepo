@@ -77,6 +77,12 @@ export const documentTitle = (
   locale: string
 ) => (locale === "ar" && doc.title_ar ? doc.title_ar : doc.title_en);
 
+/** The summary in the page's language only (never the other language's). */
+export const documentSummary = (
+  doc: Pick<SalDocument, "summary_ar" | "summary_en">,
+  locale: string
+) => (locale === "ar" ? doc.summary_ar : doc.summary_en) ?? "";
+
 /** The text in the page's language, and whether it fell back to English. */
 export const documentBody = (
   doc: Pick<SalDocument, "body_ar" | "body_en">,

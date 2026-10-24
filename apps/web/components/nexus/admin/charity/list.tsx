@@ -67,6 +67,7 @@ const blankPartner: PartnerForm = {
 
 const Partners = () => {
   const t = useTranslations("nexus.admin.charity");
+  const locale = useLocale() as Locale;
   const tk = useTranslations("nexus.admin.kit");
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
@@ -117,11 +118,7 @@ const Partners = () => {
       <ul className="grid gap-2">
         {partners.data?.map((p) => (
           <li className="flex flex-wrap items-center gap-3" key={p.id}>
-            <span className="font-medium">
-              {/* Arabic-named partners are named in Arabic first (brand book). */}
-              <span lang="ar">{p.name_ar}</span> ·{" "}
-              <span lang="en">{p.name_en}</span>
-            </span>
+            <span className="font-medium">{localized(p, "name", locale)}</span>
             <Button
               onClick={() =>
                 setForm({

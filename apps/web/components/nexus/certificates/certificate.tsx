@@ -175,8 +175,8 @@ export const Certificate = () => {
         </div>
 
         <footer className="grid gap-6">
-          <p className="type-caption" lang="ar">
-            {project.motto.ar}
+          <p className="type-caption">
+            {locale === "ar" ? project.motto.ar : project.motto.en}
           </p>
           <div className="grid grid-cols-3 items-end gap-6 text-sm">
             <div className="grid gap-1 border-line border-t pt-2">
