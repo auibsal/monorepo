@@ -8,10 +8,10 @@ import {
 import type { NextRequest } from "next/server";
 
 export const config = {
-  // matcher tells Next.js which routes to run the middleware on. This runs the
-  // middleware on all routes except for static assets
+  // Every page, in both languages: the public site and the Nexus. Not the
+  // API routes, the service worker, the manifest, the feeds or static files.
   matcher: [
-    "/((?!api/|_next/static|_next/image|ingest|favicon.ico|robots.txt|ads.txt|calendar.ics|\\.well-known|sitemap.xml|.*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|pdf|docx?|xlsx?|zip|webmanifest)).*)",
+    "/((?!api/|_next/static|_next/image|ingest|favicon.ico|robots.txt|ads.txt|calendar.ics|sw.js|manifest.webmanifest|icons/|\\.well-known|sitemap.xml|.*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|pdf|docx?|xlsx?|zip|webmanifest)).*)",
   ],
 };
 
@@ -26,9 +26,9 @@ const securityOptions = noseconeOptionsWith(
 const WORD_GAME = /^(\/[a-z]{2})?\/waraq\/games\/word\/?$/;
 const miniAppOptions = telegramMiniApp(securityOptions);
 
-// The marketing site has no signed-in area and serves published content
-// only, so the proxy just picks the locale and sets the security headers.
-// Arcjet guards the one public form, on apps/api.
+// The proxy picks the language and sets the security headers. Sign-in and
+// permissions stay in the browser (UX) and in Row Level Security and the
+// API routes (security); the Nexus pages check them client-side.
 export default function proxy(request: NextRequest) {
   return withSecurityHeaders(
     internationalizationMiddleware(request),

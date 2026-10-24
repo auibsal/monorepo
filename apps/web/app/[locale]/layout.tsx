@@ -1,25 +1,14 @@
 import "./styles.css";
-import { AnalyticsProvider } from "@repo/analytics/provider";
 import { DesignSystemProvider } from "@repo/design-system";
 import { fonts } from "@repo/design-system/lib/fonts";
 import { getDirection, locales } from "@repo/internationalization";
 import { routing } from "@repo/internationalization/routing";
 import { notFound } from "next/navigation";
-import { hasLocale, NextIntlClientProvider } from "next-intl";
-import {
-  getMessages,
-  getTranslations,
-  setRequestLocale,
-} from "next-intl/server";
+import { hasLocale } from "next-intl";
+import { getMessages, setRequestLocale } from "next-intl/server";
 import type { ReactNode } from "react";
-import { ConsentBanner } from "@/components/consent-banner";
-import { ConsoleNote } from "@/components/console-note";
-import { askedConsent } from "@/lib/consent";
-import { JsonLd, organization } from "@/lib/json-ld";
-import { Footer } from "./components/footer";
-import { Header } from "./components/header";
 
-interface RootLayoutProperties {
+interface LocaleLayoutProperties {
   readonly children: ReactNode;
   readonly params: Promise<{
     locale: string;
@@ -28,7 +17,12 @@ interface RootLayoutProperties {
 
 export const generateStaticParams = () => locales.map((locale) => ({ locale }));
 
-const RootLayout = async ({ children, params }: RootLayoutProperties) => {
+/**
+ * The one document for the whole site: the public pages ((site)) and the
+ * Nexus (nexus) each add their own frame and messages inside it. English
+ * has no prefix (/events, /nexus/events); other languages do (/ar/…).
+ */
+const LocaleLayout = async ({ children, params }: LocaleLayoutProperties) => {
   const { locale } = await params;
 
   if (!hasLocale(routing.locales, locale)) {
@@ -38,39 +32,17 @@ const RootLayout = async ({ children, params }: RootLayoutProperties) => {
   // Lets pages under this layout render statically.
   setRequestLocale(locale);
   const dir = getDirection(locale);
-  const t = await getTranslations({ locale, namespace: "common" });
-  // Client components only need the shared and public-site texts.
-  const { common, web } = await getMessages();
-  const consentPurposes = askedConsent();
+  const { common } = await getMessages();
 
   return (
     <html className={fonts} dir={dir} lang={locale}>
-      <body className="flex min-h-dvh flex-col bg-surface text-text">
-        <a
-          className="sr-only focus:not-sr-only focus:absolute focus:start-4 focus:top-4 focus:z-50 focus:bg-surface focus:p-2"
-          href="#main"
-        >
-          {t("skipToContent")}
-        </a>
-        <JsonLd data={organization()} />
-        <NextIntlClientProvider messages={{ common, web }}>
-          <AnalyticsProvider>
-            <DesignSystemProvider dir={dir} labels={common.ui}>
-              <Header />
-              <main className="flex-1" id="main">
-                {children}
-              </main>
-              <Footer />
-              <ConsoleNote />
-              {consentPurposes.ads || consentPurposes.analytics ? (
-                <ConsentBanner purposes={consentPurposes} />
-              ) : null}
-            </DesignSystemProvider>
-          </AnalyticsProvider>
-        </NextIntlClientProvider>
+      <body className="bg-surface text-text">
+        <DesignSystemProvider dir={dir} labels={common.ui}>
+          {children}
+        </DesignSystemProvider>
       </body>
     </html>
   );
 };
 
-export default RootLayout;
+export default LocaleLayout;

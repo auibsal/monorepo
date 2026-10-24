@@ -1,5 +1,11 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "ignoreCommand": "node ../../scripts/vercel-ignore.mjs web",
+  "crons": [
+    {
+      "path": "/api/cron/keep-alive",
+      "schedule": "0 1 * * *"
+    }
+  ],
   "regions": ["fra1"]
 }

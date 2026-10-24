@@ -4,7 +4,7 @@ import type { Database } from "@repo/database";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import { env } from "@/env";
 
-/** Cache tags revalidated on publish (apps/api → /api/revalidate). */
+/** Cache tags revalidated on publish (the API routes → /api/revalidate). */
 export const cacheTags = [
   "events",
   "journal",

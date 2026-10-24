@@ -9,13 +9,50 @@ Branch: `claude/new-session-qosn60`.
 
 ## Blocked — needed from the user
 
-- [ ] **Telegram bot, Hudhud (2026-10-22; in apps/api since 2026-10-23):**
+- [ ] **One app cutover (2026-10-24):** the site, the Nexus and the API are
+      one Next.js app, deployed as sal-web; nexus.auibsal.org and
+      api.auibsal.org redirect to auibsal.org/nexus and auibsal.org/api
+      (`apps/web/next.config.ts`). After the merge deploys, in this order:
+      1. **Vercel → sal-web → Environment Variables (Production, marked
+         sensitive):** copy from sal-api `SUPABASE_SECRET_KEY`,
+         `RESEND_TOKEN`, `CRON_SECRET`, `DATABASE_WEBHOOK_SECRET`,
+         `NOTION_TOKEN`, `ARCJET_KEY`, `TELEGRAM_BOT_TOKEN`,
+         `TELEGRAM_BOT_USERNAME`, `TELEGRAM_WEBHOOK_SECRET`,
+         `TELEGRAM_LOGIN_CLIENT_SECRET` (the values cannot be read back, so
+         paste them from the password manager), then redeploy.
+         `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_TURNSTILE_SITE_KEY` and
+         `RESEND_FROM` are already set (2026-10-24). Delete
+         `NEXT_PUBLIC_APP_URL`, `NEXT_PUBLIC_WEB_URL`, `NEXT_PUBLIC_API_URL`
+         and `NEXT_PUBLIC_AUTH_COOKIE_DOMAIN` from sal-web (one origin needs
+         no cookie domain).
+      2. **Vercel → Domains:** move `nexus.auibsal.org` and
+         `api.auibsal.org` to sal-web (the app redirects them); remove
+         `design.auibsal.org`; then delete the sal-nexus, sal-api and
+         sal-design projects.
+      3. **Supabase → Authentication → URL Configuration:** Site URL
+         `https://auibsal.org`; Redirect URLs `https://auibsal.org/**`
+         (drop the nexus. and api. entries). **OAuth Server:** authorization
+         path `/nexus/oauth/consent`. **Passkeys:** Relying Party Origins
+         `https://auibsal.org`. **Database → Webhooks:** the outbox webhook
+         URL `https://auibsal.org/api/hooks/outbox`.
+      4. **Telegram:** Nexus → Settings → Telegram → *Connect the bot to
+         Telegram* again (it points the webhook at
+         `auibsal.org/api/telegram`); BotFather → Login Widget → OpenID
+         Connect: Redirect URIs `https://auibsal.org/nexus/profile` and
+         `https://auibsal.org/ar/nexus/profile`.
+      5. **BetterStack:** monitors on `auibsal.org`,
+         `auibsal.org/nexus/sign-in` and `auibsal.org/api/health`; delete
+         the old ones. **Sentry:** the sal-nexus and sal-api projects can go.
+         **Cloudflare:** the configuration rule for the API now matches
+         "URI Path starts with /api/" (`docs/platform/analytics.md`).
+
+- [ ] **Telegram bot, Hudhud (2026-10-22; in the API routes since 2026-10-23):**
       live as @auibsal_bot since 2026-10-23 (runbook
       `docs/platform/telegram.md`). Left: (1) Telegram's login for linking
       (2026-10-23): in BotFather → Login Widget → OpenID Connect add the
-      Redirect URIs `https://nexus.auibsal.org/profile` and
-      `https://nexus.auibsal.org/ar/profile`, and put the Client Secret on
-      sal-api as `TELEGRAM_LOGIN_CLIENT_SECRET` (Production, sensitive),
+      Redirect URIs `https://auibsal.org/nexus/profile` and
+      `https://auibsal.org/ar/nexus/profile`, and put the Client Secret on
+      sal-web as `TELEGRAM_LOGIN_CLIENT_SECRET` (Production, sensitive),
       then redeploy; (2) the BotFather settings in the runbook (Guest Mode
       and Guard on, Main App = the word game, Bot Management and Threaded
       Mode off, admin rights, privacy policy URL, description picture
@@ -242,6 +279,21 @@ These stop parts of the work. Everything else continues around them.
       Realtime since 2026-10-09 (decision below).
 
 ## Decisions
+
+- **One app** (owner, 2026-10-24, "a simple project with one app … all will
+  be on web, but there would be /nexus and still sign in and so on"): the
+  public site, the Nexus and the API are one Next.js app, `apps/web`, on one
+  origin. The Nexus lives at `/nexus` (`app/[locale]/nexus`, client-rendered
+  as before; `@/lib/nexus/navigation` adds the prefix so its code still
+  names pages by their own path), the API at `/api` (`app/api`, `lib/api`),
+  the developer pages at `/developers` (English only, like the runbooks).
+  Secrets stay server-only: route handlers and `lib/api` read them, CI greps
+  the client bundle. One deployment, one set of variables
+  (`NEXT_PUBLIC_SITE_URL` replaces the three URLs), no cookie domain, the
+  outbox revalidates the cache in process. The old hosts redirect from
+  `next.config.ts`, the one exception to "the apps configure no redirects".
+  Storybook moved to `packages/storybook` and runs locally only; its gate
+  and the design host are gone.
 
 - **One ground** (owner, 2026-10-24, "improve the UI/UX … especially nexus
   vs web"): the Nexus is light like the site; ink stays for the "why" pages
@@ -582,6 +634,22 @@ These stop parts of the work. Everything else continues around them.
   dashboard setting on the Pro plan.
 
 ## Checklist
+
+### One app (2026-10-24)
+
+- [x] Nexus under `app/[locale]/nexus` with `components/nexus`, `lib/nexus`
+      and the prefixing navigation module; manifest and service worker at
+      the root; `/nexus/[...rest]` not-found
+- [x] API routes under `app/api` with `lib/api`; `/api/v1`; the outbox
+      revalidates in process; `calendar.ics` reuses the feed route
+- [x] Developer pages at `/developers` (guide, reference)
+- [x] One `env.ts`, `.env.example`, proxy (Turnstile in the CSP), redirects
+      for the old hosts, keep-alive cron, Vitest (API tests in the node
+      environment), e2e against one server, CI (one build, one bundle grep)
+- [x] `@repo/config` paths (`/nexus`, `/api`) and `@repo/internationalization`
+      helpers (`nexusPath`, `apiPath`, `siteUrl`, `nexusUrl`, `apiUrl`)
+- [x] Storybook as `packages/storybook`, local only
+- [ ] Owner: the cutover steps under Blocked
 
 ### Version 1 (2026-10-24)
 - [x] Rails: the secret grep in CI works, `bun audit` and `turbo boundaries`

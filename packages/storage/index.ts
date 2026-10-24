@@ -89,7 +89,7 @@ export const uploadReceipt = (
 /**
  * Uploads an internal document to the private library bucket under a
  * random name, library/<audience>/<random>.<ext> (governance.manage
- * holders; read only through apps/api links).
+ * holders; read only through the API routes links).
  */
 export const uploadLibraryFile = (
   supabase: Client,
@@ -146,7 +146,7 @@ export const getMediaUrl = (supabase: Client, path: string) =>
   supabase.storage.from(buckets.media.id).getPublicUrl(path).data.publicUrl;
 
 /**
- * A short-lived link to a private object. Only apps/api calls this, with
+ * A short-lived link to a private object. Only the API routes call this, with
  * the admin client, after checking the caller may see the file.
  */
 export const createSignedFileUrl = async (

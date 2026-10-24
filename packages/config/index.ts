@@ -24,11 +24,6 @@ export type SupportedLocale = (typeof supportedLocales)[number];
 const projectSchema = z
   .object({
     domain: z.string().min(1),
-    hosts: z.object({
-      api: z.url(),
-      app: z.url(),
-      web: z.url(),
-    }),
     /**
      * Default journal name. The live value is the `journal.name_*` setting in
      * the database, so the name can change without a code edit.
@@ -51,6 +46,15 @@ const projectSchema = z
     orgName: z.string().min(1),
     orgNameAr: z.string().min(1),
     orgSlug: z.string().min(1),
+    /**
+     * Where the member portal (the Nexus) and the API live on the one site:
+     * auibsal.org/nexus and auibsal.org/api. The language prefix comes first
+     * (/ar/nexus/events); API paths carry none.
+     */
+    paths: z.object({
+      api: z.string().startsWith("/"),
+      nexus: z.string().startsWith("/"),
+    }),
     region: z.object({
       country: z.string().length(2),
       currency: z.string().length(3),
@@ -62,7 +66,8 @@ const projectSchema = z
     shortName: z.string().min(1),
     slug: z.string().min(1),
     supportEmail: filled(z.email()),
-    url: filled(z.url()),
+    /** The one site: the public pages, the Nexus under /nexus, the API under /api. */
+    url: z.url(),
   })
   .strict();
 

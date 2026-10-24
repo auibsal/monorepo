@@ -12,10 +12,9 @@
   "slug": "sal",
   "domain": "auibsal.org",
   "url": "https://auibsal.org",
-  "hosts": {
-    "web": "https://auibsal.org",
-    "app": "https://nexus.auibsal.org",
-    "api": "https://api.auibsal.org"
+  "paths": {
+    "nexus": "/nexus",
+    "api": "/api"
   },
   "supportEmail": "hello@auibsal.org",
   "repoUrl": "https://github.com/auibsal/mono",

@@ -73,9 +73,15 @@ export const adsenseCspSources: CspSources = {
   ],
 };
 
-/** Our own API (apps/api), called directly from the browser by apps/app. */
-export const apiCspSources = (url: string | undefined): CspSources =>
-  url ? { connect: [new URL(url).origin] } : {};
+/**
+ * Cloudflare Turnstile, Supabase Auth's human check on the Nexus sign-in,
+ * sign-up and reset forms.
+ */
+export const turnstileCspSources: CspSources = {
+  connect: ["https://challenges.cloudflare.com"],
+  frame: ["https://challenges.cloudflare.com"],
+  script: ["https://challenges.cloudflare.com"],
+};
 
 /** Supabase REST, Auth, Storage and Realtime (WebSocket) for a project URL. */
 export const supabaseCspSources = (url: string | undefined): CspSources => {

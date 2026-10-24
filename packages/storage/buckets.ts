@@ -3,7 +3,7 @@
  * Limits mirror the bucket settings so uploads fail fast with a clear error;
  * the bucket enforces them either way.
  *
- * Private buckets are never read by clients: apps/api checks access and
+ * Private buckets are never read by clients: the API routes check access and
  * issues short-lived signed URLs.
  */
 export const buckets = {

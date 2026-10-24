@@ -4,7 +4,6 @@
   "ignoreDependencies": [
     "import-in-the-middle",
     "require-in-the-middle",
-    "sharp",
     "tailwindcss",
     "@tailwindcss/postcss",
     "postcss-load-config"
@@ -14,11 +13,8 @@
       "entry": ["scripts/*.ts", "scripts/*.mjs"],
       "ignoreDependencies": ["@repo/typescript-config"]
     },
-    "apps/api": {
-      "entry": ["scripts/*.{js,mjs,ts}"]
-    },
-    "apps/app": {
-      "entry": ["public/sw.js"]
+    "apps/web": {
+      "entry": ["scripts/*.ts", "public/sw.js"]
     },
     "packages/email": {
       "ignoreDependencies": ["react-dom", "@types/react-dom"]

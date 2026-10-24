@@ -17,8 +17,8 @@ interface AuthenticateOptions {
 
 /**
  * Authenticates an API request by its `Authorization: Bearer <access token>`
- * header — how the Nexus (a static site on another origin) calls apps/api, where
- * cookies are not shared. Returns the verified claims and a client that acts
+ * header, how the Nexus (client-rendered) calls the API routes and how
+ * third-party apps call /api/v1. Returns the verified claims and a client that acts
  * as that user, so Row Level Security applies to its queries. `clientId` is
  * the third-party app the token was issued to, or null for the Nexus.
  */

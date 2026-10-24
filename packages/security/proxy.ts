@@ -5,11 +5,11 @@ import {
   withVercelToolbar,
 } from "@nosecone/next";
 import {
-  apiCspSources,
   type CspSources,
   createContentSecurityPolicy,
   defaultCspSources,
   supabaseCspSources,
+  turnstileCspSources,
 } from "./csp";
 
 // Nosecone security headers configuration
@@ -20,7 +20,7 @@ const baseOptions = (...extra: CspSources[]): Options => ({
     {},
     defaultCspSources,
     supabaseCspSources(process.env.NEXT_PUBLIC_SUPABASE_URL),
-    apiCspSources(process.env.NEXT_PUBLIC_API_URL),
+    turnstileCspSources,
     ...extra
   ),
   // `require-corp` blocks third-party images, pixels and iframes that do not
@@ -74,11 +74,7 @@ export const telegramMiniApp = (options: Options): Options => {
 /** Security headers for every app. */
 export const noseconeOptions: Options = noseconeOptionsWith();
 
-/**
- * The same headers as static `headers()` entries for next.config, for apps
- * without a proxy (apps/app is client-first and also builds as a static
- * export, where headers come from the host instead).
- */
+/** The same headers as static `headers()` entries for a next.config. */
 export const securityHeaders = (options: Options = noseconeOptions) => [
   {
     headers: [...nosecone(options)].map(([key, value]) => ({ key, value })),

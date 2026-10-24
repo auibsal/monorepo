@@ -3,6 +3,8 @@ import { defaultLocale, isLocale } from "./config";
 import type en from "./messages/en.json";
 
 export {
+  apiPath,
+  apiUrl,
   type Direction,
   defaultLocale,
   getDirection,
@@ -12,6 +14,9 @@ export {
   localeDefinitions,
   locales,
   localizedPath,
+  nexusPath,
+  nexusUrl,
+  siteUrl,
 } from "./config";
 
 export type Messages = typeof en;

@@ -12,13 +12,20 @@ against built apps) that let the Society run it without a developer on
 call. What remains is content and the owner's settings, listed in
 `PROGRESS.md`.
 
-| App | What it is | Deployed at |
-| --- | --- | --- |
-| `apps/web` | Public site, English at `/` and Arabic at `/ar` | auibsal.org |
-| `apps/app` | **The Nexus**: member portal and role-gated admin (client-rendered; a locale proxy is its only server code) | nexus.auibsal.org |
-| `apps/api` | Email, cron (and a daily watch on the cron jobs), calendar feeds, revalidation, exports, deletion, Hudhud the Telegram bot | api.auibsal.org |
-| `apps/storybook` | The SAL Design System: components, v5 Screens and every platform email (bilingual) | design.auibsal.org (officers, Nexus sign-in) |
-| `apps/e2e` | Playwright + axe journeys | CI |
+**One app** (October 24, 2026): the public site, the Nexus and the API are
+one Next.js app, `apps/web`, deployed once to auibsal.org.
+
+| Where | What it is |
+| --- | --- |
+| `auibsal.org` (`app/[locale]/(site)`) | The public site, English at `/` and Arabic at `/ar` |
+| `auibsal.org/nexus` (`app/[locale]/nexus`) | **The Nexus**: member portal and role-gated admin, client-rendered with the member's own token |
+| `auibsal.org/api` (`app/api`, `lib/api`) | Email, cron (and a daily watch on the cron jobs), calendar feeds, exports, file links, deletion, the `/api/v1` API for apps, Hudhud the Telegram bot |
+| `auibsal.org/developers` | The guide and reference for app builders (Sign in with SAL, the Waraq API) |
+| `packages/storybook` | The SAL Design System: components, v5 Screens and every platform email, run locally (`bun run --cwd packages/storybook dev`) |
+| `apps/e2e` | Playwright + axe journeys, in CI |
+
+The old hosts (nexus.auibsal.org, api.auibsal.org) redirect to the new
+paths.
 
 Data lives in Supabase (Postgres with Row Level Security on every table,
 Auth, Storage). Hosting is Vercel.
@@ -31,11 +38,11 @@ Supabase stack).
 ```sh
 bun install
 bun run db:start      # local Supabase: migrations (the browser journeys seed their own data)
-bun run dev           # every app: app :3000, web :3001, api :3002
+bun run dev           # the app at http://localhost:3000 (the Nexus at /nexus)
 ```
 
-Copy each app's `.env.example` to `.env.local` and fill in the local keys from
-`bunx supabase status` (run in `packages/database`).
+Copy `apps/web/.env.example` to `apps/web/.env.local` and fill in the local
+keys from `bunx supabase status` (run in `packages/database`).
 
 ## Checks
 

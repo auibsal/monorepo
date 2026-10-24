@@ -1,9 +1,9 @@
 # Hudhud, the Telegram bot
 
 Hudhud (هدهد), the hoopoe who carries the Society's letters, is the
-AUIB Society of Arts and Letters' Telegram bot. The code is in apps/api
-(`lib/bot`, routes `/telegram`, `/telegram/setup`, `/telegram/link`,
-`/cron/telegram`);
+AUIB Society of Arts and Letters' Telegram bot. The code is in apps/web
+(`lib/api/bot`, routes `/api/telegram`, `/api/telegram/setup`,
+`/api/telegram/link`, `/api/cron/telegram`);
 the mascot and its rules are in `brand/mascot`.
 
 ## What it does
@@ -25,7 +25,7 @@ Waraq piece as a card. In a chat the bot isn't in, mentioning it in a
 message (Guest Mode: "@<bot> open mic") answers there with the event or
 piece that matches, or with what's coming up.
 
-Members who link Telegram also get the Nexus notices there (apps/api
+Members who link Telegram also get the Nexus notices there (the outbox
 sends them with the email and the push: reminders, RSVPs, waitlist
 places, Waraq decisions). A member who blocks the bot has them turned off.
 
@@ -65,10 +65,10 @@ And without commands:
 
 ## How it works
 
-- The bot is grammY inside apps/api, the only app with secrets: the
-  Telegram token sits next to the Supabase secret key, and the same app
+- The bot is grammY inside the API routes, the only code with secrets: the
+  Telegram token sits next to the Supabase secret key, and the same code
   sends the Nexus notices to Telegram. Telegram delivers updates to
-  `api.auibsal.org/telegram` with the webhook secret; anything without it
+  `auibsal.org/api/telegram` with the webhook secret; anything without it
   is refused. The bot's identity comes from the token and
   `TELEGRAM_BOT_USERNAME`, so a cold start makes no extra call to
   Telegram.
@@ -104,7 +104,7 @@ And without commands:
 
 1. **Create the bot.** In Telegram, open @BotFather: `/newbot`, name
    **Hudhud · SAL**, a username ending in `bot` (ours: `auibsal_bot`).
-2. **On sal-api** (Production, marked sensitive), add
+2. **On sal-web** (Production, marked sensitive), add
    `TELEGRAM_BOT_TOKEN`, `TELEGRAM_BOT_USERNAME`,
    `TELEGRAM_WEBHOOK_SECRET` (`openssl rand -hex 32`) and
    `TELEGRAM_LOGIN_CLIENT_SECRET` (step 3), and redeploy.
@@ -116,7 +116,7 @@ And without commands:
    | Edit Bot → Description picture | `brand/mascot/hudhud-welcome.png` (640 × 360) | What people see before they press Start. The name, about and description texts are set by step 4. |
    | Inline Mode | On, placeholder "Events and Waraq" | Sharing cards. |
    | Guest Mode | On | Answers a mention in chats the bot isn't in. |
-   | Login Widget → OpenID Connect | Redirect URIs `https://nexus.auibsal.org/profile` and `https://nexus.auibsal.org/ar/profile` (and `http://localhost:3000/profile` for a test bot); Trusted Origins empty; signing RS256 | Linking from the profile. Copy the Client Secret to sal-api; the Client ID is the bot's id and needs no variable. |
+   | Login Widget → OpenID Connect | Redirect URIs `https://auibsal.org/nexus/profile` and `https://auibsal.org/ar/nexus/profile` (and `http://localhost:3000/nexus/profile` for a test bot); Trusted Origins empty; signing RS256 | Linking from the profile. Copy the Client Secret to sal-web; the Client ID is the bot's id and needs no variable. |
    | Allow Groups | On | |
    | Group Privacy | On | As an admin the bot sees the group anyway. |
    | Group Admin Rights | Invite users via link | Answering join requests is all the bot does as an admin. |
@@ -128,16 +128,16 @@ And without commands:
    | Secretary, Bot-to-Bot | Off | No business account; no other bots to talk to. |
    | Mini Apps → Main App | On, URL `https://auibsal.org/waraq/games/word`, name "Daily word" | The word game in Telegram, the same one as the site. |
    | Mini Apps → Menu Button | Open the Main App, title "Daily word" (or leave it on Commands) | BotFather decides it; the bot no longer overrides it. |
-   | Payments, Affiliate Program, Games, Serverless | Not used | No online payments of any kind (platform rule); the daily word is the Main App, not a Telegram game; the bot runs on apps/api. |
+   | Payments, Affiliate Program, Games, Serverless | Not used | No online payments of any kind (platform rule); the daily word is the Main App, not a Telegram game; the bot runs in the API routes. |
 
 4. **Connect it.** In the Nexus, Settings → Telegram → *Connect the bot
    to Telegram* (settings managers). It sets the webhook (with the updates
    the bot uses, Guest Mode's among them), the commands in English and
    Arabic, and the descriptions; do it again whenever the commands, the
    secret or the updates change. (Without the Nexus:
-   `curl -X POST https://api.auibsal.org/telegram/setup -H "Authorization: Bearer $CRON_SECRET" -d '{"connect":true}'`.)
+   `curl -X POST https://auibsal.org/api/telegram/setup -H "Authorization: Bearer $CRON_SECRET" -d '{"connect":true}'`.)
    The scheduled posts need nothing more: the database already calls
-   apps/api.
+   the API routes.
 5. **The Nexus.** Settings → Telegram: the bot's username (this shows
    *Connect Telegram* in members' profiles).
 6. **The group.** Make it a supergroup with topics. Add the bot as an
@@ -150,11 +150,11 @@ And without commands:
 ## Development
 
 Use a separate test bot from @BotFather. Put its token and username in
-`apps/api/.env.local` with the local Supabase keys, and run
-`bun run --cwd apps/api telegram:dev`: long polling (it removes that bot's
+`apps/web/.env.local` with the local Supabase keys, and run
+`bun run --cwd apps/web telegram:dev`: long polling (it removes that bot's
 webhook) and the group posts every minute. Never run it with the
 Society's token.
 
-Tests: `bun run --cwd apps/api test` runs the bot's unit tests; with the
+Tests: `bun run --cwd apps/web test` runs the bot's unit tests; with the
 local stack, `SUPABASE_INTEGRATION=1` also runs the whole bot against the
 database with Telegram replaced by a recorder.

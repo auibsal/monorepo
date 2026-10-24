@@ -41,7 +41,7 @@ stay on auibsal.org and are edited in the Nexus.
 
 ## How the sync works
 
-`apps/api` route `/cron/notion-sync`, called by pg_cron (`sal-notion-sync`)
+The route `/api/cron/notion-sync`, called by pg_cron (`sal-notion-sync`)
 every fifteen minutes with the cron secret:
 
 1. **Mirrors.** Programs, officers (`access.officer_directory()`), documents
@@ -85,8 +85,8 @@ the workspace (Notion's API cannot invite people).
    capabilities, allow **Read user information including email addresses**
    (without it nothing can be published: the platform cannot tell who set
    Ready to publish).
-2. Vercel → **sal-api** → Environment Variables: `NOTION_TOKEN` (Production
-   and Preview). Never in `app` or `web`.
+2. Vercel → **sal-web** → Environment Variables: `NOTION_TOKEN` (Production,
+   marked sensitive). It is read only by the API routes.
 3. In Notion, on **Start here**: ••• → Connections → add **SAL Platform**.
 4. The databases' ids are in `core.settings` `notion.data_sources` (migration
    `20261010000300`). If a database is recreated, update that setting.
@@ -107,6 +107,6 @@ the workspace (Notion's API cannot invite people).
 
 - **Nothing publishes; pages say the platform could not see who set the
   status:** step 1's email capability is off.
-- **Settings shows "Not connected":** `NOTION_TOKEN` is missing on sal-api.
+- **Settings shows "Not connected":** `NOTION_TOKEN` is missing on sal-web.
 - **A database stops syncing:** a property was renamed or the page is no
   longer shared with SAL Platform; the problem list in Settings names it.
