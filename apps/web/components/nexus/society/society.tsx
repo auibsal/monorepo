@@ -7,6 +7,8 @@ import { governance, localized, unwrap } from "@repo/sal-data";
 import { useQuery } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useFlags } from "@/lib/nexus/queries";
+import { StartLinks } from "../forms/forms";
+import { DiwanPage, DiwanSection, RowList } from "../page";
 import { EmptyLine, ErrorState, SectionSpinner } from "../states";
 import { Elections } from "./elections";
 import { SocietySection } from "./section";
@@ -126,9 +128,9 @@ const Minutes = () => {
           {t("empty")}
         </EmptyLine>
       ) : null}
-      <ul className="grid">
+      <RowList>
         {minutes.data?.map((entry) => (
-          <li className="border-line border-b py-3" key={entry.id}>
+          <li key={entry.id}>
             <details>
               <summary className="cursor-pointer">
                 <span className="type-subheading">
@@ -152,7 +154,7 @@ const Minutes = () => {
             </details>
           </li>
         ))}
-      </ul>
+      </RowList>
     </SocietySection>
   );
 };
@@ -205,7 +207,7 @@ const BookOfMembers = () => {
       {book.isError ? <ErrorState onRetry={() => book.refetch()} /> : null}
       <ul className="grid gap-x-8 sm:grid-cols-2">
         {book.data?.map((person) => (
-          <li className="border-line border-b py-3" key={person.id}>
+          <li className="border-line border-t py-3" key={person.id}>
             <p className="type-subheading">
               {localized(person, "full_name", locale)}
             </p>
@@ -230,15 +232,18 @@ export const Society = () => {
   const flags = useFlags();
 
   return (
-    <div className="grid gap-12">
-      <header className="grid gap-2">
-        <h1 className="type-display">{t("title")}</h1>
-        <p className="type-lede max-w-2xl">{t("lede")}</p>
-      </header>
+    <DiwanPage lede={t("lede")} title={t("title")}>
       <Council />
       {flags.data?.elections ? <Elections /> : null}
+      <DiwanSection
+        description={t("takePart.lede")}
+        id="take-part"
+        title={t("takePart.title")}
+      >
+        <StartLinks keys={["f03", "f09", "f20", "f19"]} />
+      </DiwanSection>
       <Minutes />
       <BookOfMembers />
-    </div>
+    </DiwanPage>
   );
 };

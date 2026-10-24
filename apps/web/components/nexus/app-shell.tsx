@@ -6,7 +6,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@repo/design-system/components/ui/dropdown-menu";
@@ -26,15 +25,22 @@ import { useTwoStep } from "./auth/two-step";
 import { LanguageSwitcher } from "./language-switcher";
 
 // Five sections at most (v6); the account items live in their own menu.
-// The logo leads home, so Home needs no link of its own.
 const memberLinks = [
+  { href: "/", key: "home" },
   { href: "/events", key: "events" },
   { href: "/programs", key: "programs" },
   { href: "/qirtas", key: "journal" },
   { href: "/society", key: "society" },
 ] as const;
 
-/** Profile, and Administration for members whose roles open it. */
+/** Whether a section is the current page: Home only on itself. */
+const isCurrent = (pathname: string, href: string) =>
+  href === "/" ? pathname === "/" : pathname.startsWith(href);
+
+/**
+ * The Account menu, one list: your profile and library, what you have
+ * sent and your service, then what your roles open.
+ */
 const useAccountLinks = () => {
   const { grants, visible } = useVisibleModules();
   const twoStep = useTwoStep();
@@ -43,22 +49,17 @@ const useAccountLinks = () => {
   // Form F-18: every role holder declares conflicts each semester (P8).
   const declares = (grants.data ?? []).length > 0;
   const member = Boolean(status.data?.is_member);
-  return {
-    account: [
-      { href: "/profile", key: "profile" },
-      { href: "/library", key: "documents" },
-      ...(member ? [{ href: "/offers", key: "offers" } as const] : []),
-      ...(admin ? [{ href: "/admin", key: "admin" } as const] : []),
-    ],
-    // Service, forms and declarations together, under "My paperwork".
-    paperwork: [
-      { href: "/service", key: "service" },
-      { href: "/forms", key: "forms" },
-      ...(declares
-        ? [{ href: "/declarations", key: "declarations" } as const]
-        : []),
-    ],
-  } as const;
+  return [
+    { href: "/profile", key: "profile" },
+    { href: "/library", key: "documents" },
+    { href: "/forms", key: "forms" },
+    { href: "/service", key: "service" },
+    ...(member ? [{ href: "/offers", key: "offers" } as const] : []),
+    ...(declares
+      ? [{ href: "/declarations", key: "declarations" } as const]
+      : []),
+    ...(admin ? [{ href: "/admin", key: "admin" } as const] : []),
+  ] as const;
 };
 
 /**
@@ -81,15 +82,15 @@ const TabLinks = () => {
   const t = useTranslations("nexus.nav");
   const pathname = usePathname();
   return (
-    <ul className="grid grid-cols-4" data-tab-bar>
+    <ul className="grid grid-cols-5" data-tab-bar>
       {memberLinks.map((link) => {
-        const active = pathname.startsWith(link.href);
+        const active = isCurrent(pathname, link.href);
         return (
           <li key={link.href}>
             <Link
               aria-current={active ? "page" : undefined}
               className={cn(
-                "block border-t-[1.5px] py-3 text-center font-medium text-[0.8125rem]",
+                "block truncate border-t-[1.5px] px-1 py-3 text-center font-medium text-[0.8125rem]",
                 active
                   ? "border-accent text-text"
                   : "border-transparent text-text-secondary"
@@ -105,7 +106,7 @@ const TabLinks = () => {
   );
 };
 
-/** The Nexus frame: skip link, the site's masthead with the Nexus sections, main. */
+/** The Diwan frame: skip link, the site's masthead with the Diwan sections, main. */
 export const AppShell = ({ children }: { children: ReactNode }) => {
   const t = useTranslations();
   const locale = useLocale();
@@ -113,7 +114,7 @@ export const AppShell = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
   const pathname = usePathname();
   const queryClient = useQueryClient();
-  const { account, paperwork } = useAccountLinks();
+  const account = useAccountLinks();
   const notion = useNotionLinks();
 
   const signOut = async () => {
@@ -162,13 +163,6 @@ export const AppShell = ({ children }: { children: ReactNode }) => {
                   <Link href={link.href}>{t(`nexus.nav.${link.key}`)}</Link>
                 </DropdownMenuItem>
               ))}
-              <DropdownMenuSeparator />
-              <DropdownMenuLabel>{t("nexus.nav.paperwork")}</DropdownMenuLabel>
-              {paperwork.map((link) => (
-                <DropdownMenuItem asChild key={link.href}>
-                  <Link href={link.href}>{t(`nexus.nav.${link.key}`)}</Link>
-                </DropdownMenuItem>
-              ))}
               {notion.length > 0 ? <DropdownMenuSeparator /> : null}
               {notion.map((link) => (
                 <DropdownMenuItem asChild key={link.key}>
@@ -195,18 +189,6 @@ export const AppShell = ({ children }: { children: ReactNode }) => {
                 </li>
               ))}
             </ul>
-            <div className="grid gap-2">
-              <p className="type-label">{t("nexus.nav.paperwork")}</p>
-              <ul className="grid gap-2">
-                {paperwork.map((link) => (
-                  <li key={link.href}>
-                    <Link className="link" href={link.href} onClick={close}>
-                      {t(`nexus.nav.${link.key}`)}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
             {notion.length > 0 ? (
               <ul className="grid gap-2">
                 {notion.map((link) => (
@@ -228,12 +210,15 @@ export const AppShell = ({ children }: { children: ReactNode }) => {
         navLabel={t("nexus.nav.label")}
         place={t("nexus.name")}
         sections={memberLinks.map((link) => ({
-          current: pathname.startsWith(link.href),
+          current: isCurrent(pathname, link.href),
           href: localizedPath(locale, nexusPath(link.href)),
           label: t(`nexus.nav.${link.key}`),
         }))}
       />
-      <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8" id="main">
+      <main
+        className="mx-auto w-full max-w-6xl flex-1 px-4 pt-12 pb-20 sm:pt-16 sm:pb-24"
+        id="main"
+      >
         {children}
       </main>
       <nav

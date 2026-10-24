@@ -25,6 +25,7 @@ export const useFormLabels = (formKey: string) => {
   const at = (path: string) => `${formKey}.${path}` as Parameters<typeof t>[0];
   const get = (path: string) => (t.has(at(path)) ? t(at(path)) : "");
   return {
+    action: () => get("action") || get("title"),
     column: (field: string, column: string) =>
       get(`columns.${field}.${column}`),
     field: (key: string) => get(`fields.${key}`),

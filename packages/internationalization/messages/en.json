@@ -154,10 +154,9 @@
       "offers": "Member offers",
       "declarations": "Declarations",
       "service": "My service",
-      "forms": "Forms",
+      "forms": "Requests and reports",
       "documents": "Library",
-      "workspace": "Team workspace",
-      "paperwork": "My paperwork"
+      "workspace": "Team workspace"
     },
     "errors": {
       "loadFailed": "We couldn't load this. Check your connection and try again.",
@@ -333,7 +332,11 @@
         "notVerified": "Shifts open once your membership is verified.",
         "failed": "That didn't work. Try again in a moment."
       },
-      "productionsLink": "The Company and auditions"
+      "productionsLink": "The Company and auditions",
+      "ideas": {
+        "title": "Bring an idea",
+        "lede": "Pitch a program to the director closest to it. Role holders also plan events and charter programs here."
+      }
     },
     "society": {
       "title": "Society",
@@ -401,6 +404,10 @@
         "onList": "You're on the voter list for this election.",
         "notOnList": "You're not on this election's voter list. It is the register of Voting Members on the day notice was given.",
         "auibOnly": "Online voting needs your AUIB account (@auib.edu.iq). Sign in with it, or ask the Elections Committee whether there will be a paper ballot box."
+      },
+      "takePart": {
+        "title": "Take part",
+        "lede": "Apply for a role, bring a motion to the General Assembly, or tell the officers when something is wrong."
       }
     },
     "twoStep": {
@@ -617,6 +624,12 @@
         "failed": "We couldn't change Telegram. Please try again.",
         "linking": "Linking Telegram…",
         "loginHint": "Connect sends you to Telegram to confirm, then back here. It only links Telegram; you still sign in to the Diwan with your email."
+      },
+      "lede": "Your details, how the Society reaches you, and what you have shared.",
+      "aboutYou": "About you",
+      "consent": {
+        "title": "Photos and video",
+        "lede": "Say whether the Society may use photos, video or interviews where you are clearly featured. You can change it at any time."
       }
     },
     "admin": {
@@ -723,7 +736,11 @@
         "openEvents": "Open events",
         "submissionsDetail": "{intake} waiting for intake (the oldest since {oldest}), {reading} with readers, {selection} at selection.",
         "submissionsNone": "No submission is waiting.",
-        "openPipeline": "Open the pipeline"
+        "openPipeline": "Open the pipeline",
+        "forRole": {
+          "title": "For your role",
+          "lede": "Plan an event, claim expenses, count cash, and hand a role over. Each goes to the officers who sign it off."
+        }
       },
       "members": {
         "title": "Members",
@@ -2802,34 +2819,15 @@
       }
     },
     "forms": {
-      "title": "Forms",
-      "lede": "The Society’s forms, filled in here instead of on paper. Each goes only to the officers who handle it.",
-      "fillTitle": "Fill in a form",
-      "viewTitle": "A form",
-      "mine": "Your forms",
-      "noMine": "You haven’t sent any forms yet.",
+      "title": "Requests and reports",
+      "lede": "Applications, proposals, claims and reports. Each goes only to the officers who handle it, and you can follow it here.",
+      "fillTitle": "New request",
+      "viewTitle": "Your request",
+      "mine": "What you’ve sent",
+      "noMine": "You haven’t sent anything yet.",
       "aboutYou": "about you",
-      "available": "Forms you can fill in",
-      "noneAvailable": "No forms are open to you yet. Some open once your membership is verified or you hold a role.",
-      "home": "Go to Home",
-      "elsewhereTitle": "Forms elsewhere in the Diwan",
-      "elsewhereLede": "These forms are part of their own sections, so they are filled in there.",
-      "elsewhere": {
-        "f01": "Membership Registration: your profile",
-        "f02": "Member Pledge & Consent: your profile",
-        "f07": "Council Meeting Agenda: Governance",
-        "f08": "Minutes & Decisions: Governance",
-        "f12": "Budget Request: Governance, spending",
-        "f15": "Attendance Sheet: event check-in",
-        "f16": "Volunteer Hours Log: My service",
-        "f18": "Conflict of Interest Declaration: Declarations",
-        "f21": "Election Nomination: Society, elections",
-        "f22": "Ballot Paper: Society, elections",
-        "f23": "Election Results Declaration: Society, elections",
-        "f25b": "Program Report (section B): The Company",
-        "f26": "Partnership Memorandum: Partners",
-        "f28": "Certificate of Service: My service"
-      },
+      "available": "Start something new",
+      "noneAvailable": "Nothing is open to you yet. More opens once your membership is verified or you hold a role.",
       "statuses": {
         "draft": "Draft",
         "submitted": "Sent",
@@ -2845,7 +2843,7 @@
       "yes": "Yes",
       "no": "No",
       "blank": "Not filled in",
-      "subject": "Who this form is about",
+      "subject": "Who this is about",
       "about": "About {name}",
       "routing": "Is your concern about an officer?",
       "routingHint": "If it is, it never reaches that officer.",
@@ -2855,14 +2853,14 @@
         "president": "About the President"
       },
       "anonymous": "Send without my name",
-      "anonymousHint": "No account is stored with it, so we cannot reply and you will not see it in Your forms.",
+      "anonymousHint": "No account is stored with it, so we cannot reply and you will not see it in Requests and reports.",
       "sentAnonymously": "Sent without your name. Thank you for telling us.",
       "problems": "Some answers are missing or not valid: {fields}",
       "send": "Send",
       "saveDraft": "Save as draft",
       "saveChanges": "Save changes",
-      "back": "Back to Forms",
-      "notFound": "This form isn’t available. It may not exist, or it isn’t yours to see.",
+      "back": "Back to Requests and reports",
+      "notFound": "This isn’t available. It may not exist, or it isn’t yours to see.",
       "interviewTotal": "Weighted total: {total} / 100",
       "interviewVeto": "A 1 on Commitment or Teamwork means no, whatever the total.",
       "claimTotal": "Total claimed: {total}",
@@ -2875,7 +2873,7 @@
       "answerBy": "To be answered by {date}",
       "office": "Office use",
       "print": "Print",
-      "update": "Update this form",
+      "update": "Update",
       "defs": {
         "f03": {
           "title": "Role Application",
@@ -2901,7 +2899,8 @@
               "thu": "Thursday",
               "any": "Any time"
             }
-          }
+          },
+          "action": "Apply for a role"
         },
         "f04": {
           "title": "Interview Score Sheet",
@@ -2931,7 +2930,8 @@
               "none": "None",
               "declared": "Declared"
             }
-          }
+          },
+          "action": "Score an interview"
         },
         "f06": {
           "title": "Onboarding Checklist",
@@ -2967,7 +2967,8 @@
               "media_consent": "Media consent rules briefed (if photographing)",
               "announced": "Announced on @auibsal"
             }
-          }
+          },
+          "action": "Welcome a new role holder"
         },
         "f09": {
           "title": "General Assembly Motion",
@@ -2987,7 +2988,8 @@
               "overturn": "Overturn a Bylaw or Policy",
               "removal": "Removal of an officer (two-thirds; secret ballot)"
             }
-          }
+          },
+          "action": "Propose a motion to the General Assembly"
         },
         "f10": {
           "title": "Program Pitch",
@@ -3025,7 +3027,8 @@
               "greenlit": "Greenlit",
               "not_yet": "Not yet"
             }
-          }
+          },
+          "action": "Pitch a program"
         },
         "f11": {
           "title": "Event Plan & Risk Check",
@@ -3084,7 +3087,8 @@
           },
           "office": {
             "approved": "Approved by the Director of Programs"
-          }
+          },
+          "action": "Plan an event"
         },
         "f13": {
           "title": "Expense Claim",
@@ -3114,7 +3118,8 @@
             "paid_on": "Paid on",
             "amount": "Amount (IQD)",
             "ledger_ref": "Ledger reference"
-          }
+          },
+          "action": "Claim expenses"
         },
         "f14": {
           "title": "Cash Count Sheet",
@@ -3151,7 +3156,8 @@
               "count1": "Count 1: number",
               "count2": "Count 2: number"
             }
-          }
+          },
+          "action": "Record a cash count"
         },
         "f17": {
           "title": "Media Release",
@@ -3172,7 +3178,8 @@
               "name": "Credit me by name",
               "no_name": "Do not name me"
             }
-          }
+          },
+          "action": "Photo and video consent"
         },
         "f19": {
           "title": "Incident Report",
@@ -3205,11 +3212,12 @@
           "office": {
             "student_life": "Referred to Student Life",
             "advisor_told": "Faculty Advisor told"
-          }
+          },
+          "action": "Report an incident"
         },
         "f20": {
           "title": "Concern or Complaint",
-          "purpose": "Anyone may use this form. Acknowledged in 3 days, answered in 14.",
+          "purpose": "Anyone may write. Acknowledged in 3 days, answered in 14.",
           "preamble": "You can also speak to any officer, the Faculty Advisor or the Office of Student Life. Harassment, safety and anything involving a child go straight to Student Life. If your concern is about the Vice President, it goes only to the President and the Faculty Advisor; if about the President, only to the Vice President and the Faculty Advisor.",
           "fields": {
             "contact": "How to contact you",
@@ -3242,7 +3250,8 @@
               "conduct_panel": "Conduct Panel",
               "student_life": "Student Life"
             }
-          }
+          },
+          "action": "Raise a concern"
         },
         "f24": {
           "title": "Handover Dossier",
@@ -3256,7 +3265,8 @@
             "money": "5 · Money: budget position, open claims, commitments",
             "files": "6 · Where the files are (Drive paths)",
             "lessons": "7 · Three lessons: what to keep, what to change, what to avoid"
-          }
+          },
+          "action": "Prepare your handover"
         },
         "f25a": {
           "title": "Semester Report",
@@ -3279,7 +3289,8 @@
             "vacancies": "Vacancies",
             "highlights": "Highlights",
             "risks": "Risks and asks for next semester"
-          }
+          },
+          "action": "Write the semester report"
         },
         "f27": {
           "title": "Offboarding Checklist",
@@ -3309,7 +3320,8 @@
               "roster": "Roster updated; successor announced",
               "invited": "Invited to stay on as a member or alumnus"
             }
-          }
+          },
+          "action": "Close a role at handover"
         },
         "f29": {
           "title": "Program Charter",
@@ -3339,9 +3351,12 @@
               "culture": "Celebrating culture",
               "community": "Building a community"
             }
-          }
+          },
+          "action": "Charter a program"
         }
-      }
+      },
+      "mineAll": "Everything you’ve sent",
+      "toProfile": "See your membership"
     },
     "documents": {
       "title": "Library",

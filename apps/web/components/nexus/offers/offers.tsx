@@ -6,6 +6,7 @@ import { formatLongDate } from "@repo/internationalization/format";
 import { localized, partners } from "@repo/sal-data";
 import { useQuery } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
+import { DiwanPage } from "../page";
 import { EmptyLine, ErrorState, SectionSpinner } from "../states";
 
 /**
@@ -23,11 +24,7 @@ export const Offers = () => {
   });
 
   return (
-    <div className="mx-auto grid w-full max-w-3xl gap-6">
-      <header className="grid gap-2">
-        <h1 className="type-display">{t("title")}</h1>
-        <p className="type-lede max-w-2xl">{t("lede")}</p>
-      </header>
+    <DiwanPage lede={t("lede")} narrow title={t("title")}>
       {offers.isPending ? <SectionSpinner /> : null}
       {offers.isError ? <ErrorState /> : null}
       {offers.data?.length === 0 ? (
@@ -66,6 +63,6 @@ export const Offers = () => {
           </li>
         ))}
       </ul>
-    </div>
+    </DiwanPage>
   );
 };

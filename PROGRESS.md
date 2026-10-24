@@ -287,6 +287,15 @@ These stop parts of the work. Everything else continues around them.
 
 ## Decisions
 
+- **The Diwan overhaul, documents and one language per page** (owner,
+  2026-10-24): every document adopted as Version 1, codes and statuses for
+  admins only; forms woven into the sections they belong to with plain
+  actions and no codes (Requests and reports at `/diwan/forms`); no Arabic
+  on English pages and no English on Arabic ones; news pieces in Qirtas in
+  the site's type (Literata stays for stories and poems); the home page
+  without the kicker and the extra rules. The Diwan has Home in its five
+  sections, a single Account menu, and one page frame (`DiwanPage`).
+
 - **Brand v6 and the new names** (owner, 2026-10-24; the v6 handoff,
   START.md and NAMES.md): Light headlines, hairlines in place of boxes, one
   accent button per view, six colors, the Bookmark before section titles,
@@ -956,3 +965,17 @@ Covered by automated tests so far:
 All Arabic written for the platform up to 2026-10-24 was reviewed by the
 owner and approved ("reviewed across the board, it's all good"). List new
 Arabic here as it is written.
+
+Written 2026-10-24 (the Diwan overhaul):
+
+- `web.about.constitution` «اقرأ الدستور»; «الغرفة المشتركة» (The Common
+  Room); «حسابك الجامعي», «بالحساب الجامعي».
+- `nexus.forms`: «الطلبات والبلاغات» and its page copy, and the action of
+  each request (`defs.*.action`: «تقدّم لدور»، «اقترح بندًا على الجمعية
+  العمومية»، «اعرض فكرة برنامج»، «خطّط لفعالية»، «اطلب استرداد مصروفات»،
+  «سجّل عدّ النقد»، «إذن التصوير والنشر»، «أبلغ عن حادث»، «قدّم ملاحظة أو
+  شكوى»، «جهّز ملف تسليمك»، «اكتب تقرير الفصل»، «أنهِ دورًا عند التسليم»،
+  «اكتب ميثاق برنامج»، «قيّم مقابلة»، «استقبل صاحب دور جديد»).
+- `nexus.society.takePart`, `nexus.programs.ideas`,
+  `nexus.admin.overview.forRole`, `nexus.profile.lede`, `aboutYou` and
+  `consent`.

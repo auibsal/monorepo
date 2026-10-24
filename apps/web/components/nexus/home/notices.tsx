@@ -3,6 +3,7 @@
 import { localized } from "@repo/sal-data";
 import { useLocale, useTranslations } from "next-intl";
 import { useAnnouncements } from "@/lib/nexus/queries";
+import { RowList } from "../page";
 import { Section } from "./section";
 
 export const Notices = () => {
@@ -16,9 +17,9 @@ export const Notices = () => {
   }
   return (
     <Section id="notices" title={t("title")}>
-      <ul className="grid gap-3">
+      <RowList>
         {announcements.data?.map((notice) => (
-          <li className="grid gap-1 border-line border-b pb-3" key={notice.id}>
+          <li className="grid gap-1" key={notice.id}>
             <h3 className="type-subheading">
               {localized(notice, "title", locale)}
             </h3>
@@ -27,7 +28,7 @@ export const Notices = () => {
             ) : null}
           </li>
         ))}
-      </ul>
+      </RowList>
     </Section>
   );
 };

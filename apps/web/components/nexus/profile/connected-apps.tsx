@@ -1,11 +1,11 @@
 "use client";
 
 import { useAuth } from "@repo/auth/provider";
-import { SalCard } from "@repo/design-system/components/sal/card";
 import { Button } from "@repo/design-system/components/ui/button";
 import { formatLongDate } from "@repo/internationalization/format";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
+import { DiwanSection } from "../page";
 
 const KEY = ["oauth-grants"];
 
@@ -43,10 +43,12 @@ export const ConnectedApps = () => {
   }
 
   return (
-    <SalCard>
+    <DiwanSection
+      description={t("description")}
+      id="connected-apps"
+      title={t("title")}
+    >
       <div className="grid gap-3">
-        <h2 className="type-subheading">{t("title")}</h2>
-        <p className="type-body">{t("description")}</p>
         <ul className="grid gap-3">
           {grants.data.map((grant) => (
             <li
@@ -79,6 +81,6 @@ export const ConnectedApps = () => {
           </p>
         ) : null}
       </div>
-    </SalCard>
+    </DiwanSection>
   );
 };

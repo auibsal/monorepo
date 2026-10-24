@@ -1,8 +1,6 @@
 "use client";
 
 import { useAuth } from "@repo/auth/provider";
-import { SalCard } from "@repo/design-system/components/sal/card";
-import { FormHeader } from "@repo/design-system/components/sal/form-header";
 import { Button } from "@repo/design-system/components/ui/button";
 import { Checkbox } from "@repo/design-system/components/ui/checkbox";
 import { Input } from "@repo/design-system/components/ui/input";
@@ -13,8 +11,11 @@ import { membership } from "@repo/sal-data";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { type FormEvent, useEffect, useId, useState } from "react";
+import { Link } from "@/lib/nexus/navigation";
 import { queryKeys, useProfile } from "@/lib/nexus/queries";
+import { SentList, StartLinks } from "../forms/forms";
 import { CalendarFeed } from "../home/calendar-feed";
+import { DiwanPage, DiwanSection } from "../page";
 import { ErrorState, SectionSpinner } from "../states";
 import { Affiliations } from "./affiliations";
 import { ConnectedApps } from "./connected-apps";
@@ -99,116 +100,131 @@ export const ProfileScreen = () => {
   };
 
   return (
-    <div className="grid max-w-2xl gap-8">
-      <FormHeader title={t("profile.title")} />
-      <form className="grid gap-4" onSubmit={submit}>
-        <div className="grid gap-2">
-          <Label htmlFor={`${id}-en`}>{ta("fullNameEn")}</Label>
-          <Input
-            dir="ltr"
-            id={`${id}-en`}
-            maxLength={120}
-            onChange={(e) =>
-              setForm((f) => ({ ...f, full_name_en: e.target.value }))
-            }
-            required
-            value={form.full_name_en}
-          />
-        </div>
-        <div className="grid gap-2">
-          <Label htmlFor={`${id}-ar`}>{ta("fullNameAr")}</Label>
-          <Input
-            dir="rtl"
-            id={`${id}-ar`}
-            lang="ar"
-            maxLength={120}
-            onChange={(e) =>
-              setForm((f) => ({ ...f, full_name_ar: e.target.value }))
-            }
-            value={form.full_name_ar}
-          />
-        </div>
-        <div className="grid gap-2">
-          <Label htmlFor={`${id}-bio`}>{t("profile.bio")}</Label>
-          <Textarea
-            aria-describedby={`${id}-bio-count`}
-            aria-invalid={words > membership.BIO_MAX_WORDS}
-            id={`${id}-bio`}
-            onChange={(e) => setForm((f) => ({ ...f, bio: e.target.value }))}
-            rows={4}
-            value={form.bio}
-          />
-          <p
-            className={
-              words > membership.BIO_MAX_WORDS
-                ? "type-caption text-text"
-                : "type-caption"
-            }
-            id={`${id}-bio-count`}
+    <DiwanPage lede={t("profile.lede")} narrow title={t("profile.title")}>
+      <DiwanSection id="about-you" title={t("profile.aboutYou")}>
+        <form className="grid gap-4" onSubmit={submit}>
+          <div className="grid gap-2">
+            <Label htmlFor={`${id}-en`}>{ta("fullNameEn")}</Label>
+            <Input
+              dir="ltr"
+              id={`${id}-en`}
+              maxLength={120}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, full_name_en: e.target.value }))
+              }
+              required
+              value={form.full_name_en}
+            />
+          </div>
+          <div className="grid gap-2">
+            <Label htmlFor={`${id}-ar`}>{ta("fullNameAr")}</Label>
+            <Input
+              dir="rtl"
+              id={`${id}-ar`}
+              lang="ar"
+              maxLength={120}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, full_name_ar: e.target.value }))
+              }
+              value={form.full_name_ar}
+            />
+          </div>
+          <div className="grid gap-2">
+            <Label htmlFor={`${id}-bio`}>{t("profile.bio")}</Label>
+            <Textarea
+              aria-describedby={`${id}-bio-count`}
+              aria-invalid={words > membership.BIO_MAX_WORDS}
+              id={`${id}-bio`}
+              onChange={(e) => setForm((f) => ({ ...f, bio: e.target.value }))}
+              rows={4}
+              value={form.bio}
+            />
+            <p
+              className={
+                words > membership.BIO_MAX_WORDS
+                  ? "type-caption text-text"
+                  : "type-caption"
+              }
+              id={`${id}-bio-count`}
+            >
+              {t("profile.bioCount", { count: formatNumber(words) })}
+            </p>
+          </div>
+          <div className="flex items-start gap-3">
+            <Checkbox
+              checked={form.notify_email}
+              id={`${id}-notify`}
+              onCheckedChange={(v) =>
+                setForm((f) => ({ ...f, notify_email: v === true }))
+              }
+            />
+            <Label className="leading-normal" htmlFor={`${id}-notify`}>
+              {t("setup.notifications")}
+            </Label>
+          </div>
+          <div className="flex items-start gap-3">
+            <Checkbox
+              checked={form.camera_shy}
+              id={`${id}-shy`}
+              onCheckedChange={(v) =>
+                setForm((f) => ({ ...f, camera_shy: v === true }))
+              }
+            />
+            <Label className="leading-normal" htmlFor={`${id}-shy`}>
+              {t("setup.cameraShy")}
+            </Label>
+          </div>
+          <div className="grid gap-2">
+            <Label htmlFor={`${id}-personal`}>{t("setup.personalEmail")}</Label>
+            <Input
+              dir="ltr"
+              id={`${id}-personal`}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, personal_email: e.target.value }))
+              }
+              type="email"
+              value={form.personal_email}
+            />
+          </div>
+          {save.isError ? (
+            <p className="text-text" role="alert">
+              {t("errors.saveFailed")}
+            </p>
+          ) : null}
+          <Button
+            className="justify-self-start"
+            disabled={save.isPending}
+            type="submit"
           >
-            {t("profile.bioCount", { count: formatNumber(words) })}
-          </p>
-        </div>
-        <div className="flex items-start gap-3">
-          <Checkbox
-            checked={form.notify_email}
-            id={`${id}-notify`}
-            onCheckedChange={(v) =>
-              setForm((f) => ({ ...f, notify_email: v === true }))
-            }
-          />
-          <Label className="leading-normal" htmlFor={`${id}-notify`}>
-            {t("setup.notifications")}
-          </Label>
-        </div>
-        <div className="flex items-start gap-3">
-          <Checkbox
-            checked={form.camera_shy}
-            id={`${id}-shy`}
-            onCheckedChange={(v) =>
-              setForm((f) => ({ ...f, camera_shy: v === true }))
-            }
-          />
-          <Label className="leading-normal" htmlFor={`${id}-shy`}>
-            {t("setup.cameraShy")}
-          </Label>
-        </div>
-        <div className="grid gap-2">
-          <Label htmlFor={`${id}-personal`}>{t("setup.personalEmail")}</Label>
-          <Input
-            dir="ltr"
-            id={`${id}-personal`}
-            onChange={(e) =>
-              setForm((f) => ({ ...f, personal_email: e.target.value }))
-            }
-            type="email"
-            value={form.personal_email}
-          />
-        </div>
-        {save.isError ? (
-          <p className="text-text" role="alert">
-            {t("errors.saveFailed")}
-          </p>
-        ) : null}
-        <Button
-          className="justify-self-start"
-          disabled={save.isPending}
-          type="submit"
-        >
-          {saveLabel}
-        </Button>
-      </form>
-      <SalCard>
-        <PhoneNotifications />
-      </SalCard>
+            {saveLabel}
+          </Button>
+        </form>
+      </DiwanSection>
+      <PhoneNotifications />
       <TelegramLink />
       <CalendarFeed />
       <Affiliations />
+      <DiwanSection
+        description={t("profile.consent.lede")}
+        id="consent"
+        title={t("profile.consent.title")}
+      >
+        <StartLinks keys={["f17"]} />
+      </DiwanSection>
+      <DiwanSection
+        action={
+          <Link className="link type-caption" href="/forms">
+            {t("forms.mineAll")}
+          </Link>
+        }
+        id="sent"
+        title={t("forms.mine")}
+      >
+        <SentList limit={5} />
+      </DiwanSection>
       <Passkeys />
       <ConnectedApps />
-      <SalCard>
-        <DeleteAccount />
-      </SalCard>
-    </div>
+      <DeleteAccount />
+    </DiwanPage>
   );
 };

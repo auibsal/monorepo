@@ -1,13 +1,13 @@
 "use client";
 
 import { useAuth } from "@repo/auth/provider";
-import { SalCard } from "@repo/design-system/components/sal/card";
 import { Button } from "@repo/design-system/components/ui/button";
 import { unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { callApi } from "@/lib/nexus/api";
+import { DiwanSection } from "../page";
 
 const key = ["profile", "telegram"];
 const PENDING = "sal.telegram-login";
@@ -167,10 +167,12 @@ export const TelegramLink = () => {
     connect.isError || finish.isError || notify.isError || unlink.isError;
 
   return (
-    <SalCard>
+    <DiwanSection
+      description={t("description")}
+      id="telegram"
+      title={t("title")}
+    >
       <div className="grid gap-3" id="telegram">
-        <h2 className="type-subheading">{t("title")}</h2>
-        <p className="type-body">{t("description")}</p>
         {account ? (
           <>
             <p className="type-caption">
@@ -226,6 +228,6 @@ export const TelegramLink = () => {
           </p>
         ) : null}
       </div>
-    </SalCard>
+    </DiwanSection>
   );
 };

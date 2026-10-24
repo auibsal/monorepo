@@ -1,12 +1,12 @@
 "use client";
 
-import { FormHeader } from "@repo/design-system/components/sal/form-header";
 import { Button } from "@repo/design-system/components/ui/button";
 import { ExternalLink } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect } from "react";
 import { useNotionHandbook } from "@/lib/nexus/notion";
 import { useQueryParam } from "@/lib/nexus/use-query-param";
+import { DiwanPage } from "../page";
 import { EmptyLine, SectionSpinner } from "../states";
 
 /**
@@ -33,18 +33,16 @@ export const Handbook = () => {
   }
   if (!handbook.reader) {
     return (
-      <div className="grid max-w-2xl gap-6">
-        <FormHeader title={t("title")} />
+      <DiwanPage narrow title={t("title")}>
         <EmptyLine action={{ href: "/society", label: t("seeSociety") }}>
           {t("forOfficers")}
         </EmptyLine>
-      </div>
+      </DiwanPage>
     );
   }
 
   return (
-    <div className="grid max-w-2xl gap-6">
-      <FormHeader title={t("title")}>{t("inNotion")}</FormHeader>
+    <DiwanPage lede={t("inNotion")} narrow title={t("title")}>
       {target ? (
         <Button asChild className="justify-self-start">
           <a href={target} rel="noopener">
@@ -57,6 +55,6 @@ export const Handbook = () => {
           {t("notConnected")}
         </EmptyLine>
       )}
-    </div>
+    </DiwanPage>
   );
 };

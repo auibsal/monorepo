@@ -13,6 +13,8 @@ import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 import { Link } from "@/lib/nexus/navigation";
 import { queryKeys, useMyShifts } from "@/lib/nexus/queries";
+import { StartLinks } from "../forms/forms";
+import { DiwanPage, DiwanSection, RowList } from "../page";
 import { EmptyLine, ErrorState, SectionSpinner } from "../states";
 
 type NoticeKey = "signedUp" | "gaveBack" | "full" | "notVerified" | "failed";
@@ -136,18 +138,15 @@ export const ProgrammesBrowser = () => {
   }
 
   return (
-    <div className="grid gap-8">
-      <header className="grid gap-2">
-        <h1 className="type-display">{t("title")}</h1>
-        <p className="type-lede max-w-2xl">{t("lede")}</p>
-        <Link
-          className="type-body justify-self-start underline underline-offset-4"
-          href="/programs/productions"
-        >
+    <DiwanPage
+      actions={
+        <Link className="link" href="/programs/productions">
           {t("productionsLink")}
         </Link>
-      </header>
-
+      }
+      lede={t("lede")}
+      title={t("title")}
+    >
       {rotas.data.length === 0 ? (
         <EmptyLine action={{ href: "/events", label: ta("browseEvents") }}>
           {t("empty")}
@@ -155,22 +154,17 @@ export const ProgrammesBrowser = () => {
       ) : null}
 
       {rotas.data.map((rota) => (
-        <section
-          aria-labelledby={`rota-${rota.id}`}
-          className="grid gap-4 border-line border-t pt-space-4"
+        <DiwanSection
+          description={
+            rota.programme
+              ? localized(rota.programme, "name", locale)
+              : undefined
+          }
+          id={`rota-${rota.id}`}
           key={rota.id}
+          title={localized(rota, "title", locale)}
         >
-          <header className="grid gap-1">
-            {rota.programme ? (
-              <p className="type-kicker">
-                {localized(rota.programme, "name", locale)}
-              </p>
-            ) : null}
-            <h2 className="type-heading" id={`rota-${rota.id}`}>
-              {localized(rota, "title", locale)}
-            </h2>
-          </header>
-          <ul className="grid">
+          <RowList>
             {rota.shifts.map((shift) => (
               <ShiftRow
                 busy={busy}
@@ -182,10 +176,18 @@ export const ProgrammesBrowser = () => {
                 shift={shift}
               />
             ))}
-          </ul>
-        </section>
+          </RowList>
+        </DiwanSection>
       ))}
-    </div>
+
+      <DiwanSection
+        description={t("ideas.lede")}
+        id="ideas"
+        title={t("ideas.title")}
+      >
+        <StartLinks keys={["f10", "f11", "f29"]} />
+      </DiwanSection>
+    </DiwanPage>
   );
 };
 
@@ -214,7 +216,7 @@ const ShiftRow = ({
   const location = localized(shift, "location", locale);
 
   return (
-    <li className="grid gap-2 border-line border-t py-4 sm:grid-cols-[1fr_auto] sm:items-center">
+    <li className="grid gap-3 sm:grid-cols-[1fr_auto] sm:items-center">
       <div className="grid gap-1">
         <p className="type-subheading">{localized(shift, "role", locale)}</p>
         <p className="type-body">
@@ -240,11 +242,21 @@ const ShiftRow = ({
         ) : null}
       </div>
       {isMine ? (
-        <Button disabled={busy} onClick={onGiveBack} variant="outline">
+        <Button
+          className="justify-self-start"
+          disabled={busy}
+          onClick={onGiveBack}
+          variant="ghost"
+        >
           {t("giveBack")}
         </Button>
       ) : (
-        <Button disabled={busy || left === 0} onClick={onSignUp}>
+        <Button
+          className="justify-self-start"
+          disabled={busy || left === 0}
+          onClick={onSignUp}
+          variant="outline"
+        >
           {left === 0 ? t("full") : t("signUp")}
         </Button>
       )}

@@ -9,6 +9,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/lib/nexus/navigation";
 import { useGrants, useMemberStatus } from "@/lib/nexus/queries";
+import { DiwanPage, DiwanSection, RowList } from "../page";
 import { EmptyLine, SectionSpinner } from "../states";
 
 type FormType = Awaited<ReturnType<typeof forms.formTypes>>[number];
@@ -48,22 +49,60 @@ const FormTitle = ({ formKey }: { formKey: string }) => {
 };
 
 /**
- * Forms (Templates & Forms): the ones you can fill in here, where the
- * others live in the Nexus, and the forms you have sent or that are about
- * you.
+ * Where a request starts, in the section it belongs to: the plain action
+ * ("Pitch a program") and one line on what it is for. Only the ones this
+ * person may start are listed; the database checks again on sending.
  */
-export const Forms = () => {
-  const t = useTranslations("nexus.forms");
+export const StartLinks = ({ keys }: { readonly keys?: readonly string[] }) => {
   const td = useTranslations("nexus.forms.defs");
-  const te = useTranslations("nexus.forms.elsewhere");
-  const locale = useLocale() as Locale;
-  const { supabase, user } = useAuth();
   const types = useFormTypes();
   const mayStart = useMayStart();
+  const available = (types.data ?? []).filter(
+    (type) => (!keys || keys.includes(type.key)) && mayStart(type)
+  );
+  if (keys) {
+    available.sort((a, b) => keys.indexOf(a.key) - keys.indexOf(b.key));
+  }
+  if (available.length === 0) {
+    return null;
+  }
+  return (
+    <RowList>
+      {available.map((type) => (
+        <li key={type.key}>
+          <Link
+            className="group grid gap-1"
+            href={{ pathname: "/forms/fill", query: { form: type.key } }}
+          >
+            <span className="font-medium underline-offset-4 group-hover:text-accent group-hover:underline group-focus-visible:text-accent">
+              {td(`${type.key}.action` as Parameters<typeof td>[0])}
+            </span>
+            <span className="type-caption">
+              {td(`${type.key}.purpose` as Parameters<typeof td>[0])}
+            </span>
+          </Link>
+        </li>
+      ))}
+    </RowList>
+  );
+};
 
-  const mine = useQuery({
+interface Sent {
+  created_at: string;
+  form_key: string;
+  id: string;
+  status: string;
+  subject_user_id: string | null;
+  submitted_at: string | null;
+  submitted_by: string | null;
+}
+
+/** What this person has sent, or what was sent about them. */
+export const useMySent = () => {
+  const { supabase, user } = useAuth();
+  return useQuery({
     enabled: Boolean(user),
-    queryFn: async () =>
+    queryFn: async (): Promise<Sent[]> =>
       unwrap(
         await supabase
           .schema("governance")
@@ -76,98 +115,79 @@ export const Forms = () => {
       ) ?? [],
     queryKey: ["forms", "mine", user?.id],
   });
+};
 
-  const available = (types.data ?? []).filter(mayStart);
+/** The rows of what was sent: a draft reopens, the rest open read-only. */
+export const SentList = ({ limit }: { readonly limit?: number }) => {
+  const t = useTranslations("nexus.forms");
+  const locale = useLocale() as Locale;
+  const { user } = useAuth();
+  const mine = useMySent();
+  if (mine.isPending) {
+    return <SectionSpinner />;
+  }
+  const rows = (mine.data ?? []).slice(0, limit);
+  if (rows.length === 0) {
+    return <p className="type-body text-text-secondary">{t("noMine")}</p>;
+  }
+  return (
+    <RowList>
+      {rows.map((s) => (
+        <li
+          className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1"
+          key={s.id}
+        >
+          <Link
+            className="link"
+            href={
+              s.status === "draft"
+                ? {
+                    pathname: "/forms/fill",
+                    query: { form: s.form_key, id: s.id },
+                  }
+                : { pathname: "/forms/view", query: { id: s.id } }
+            }
+          >
+            <FormTitle formKey={s.form_key} />
+          </Link>
+          <span className="type-caption">
+            {t(`statuses.${s.status as forms.FormStatus}`)} ·{" "}
+            {formatLongDate(s.submitted_at ?? s.created_at, locale, true)}
+            {s.subject_user_id === user?.id && s.submitted_by !== user?.id
+              ? ` · ${t("aboutYou")}`
+              : ""}
+          </span>
+        </li>
+      ))}
+    </RowList>
+  );
+};
+
+/**
+ * Requests and reports: what you have sent and where each stands, and
+ * everything you may start. The same actions also sit in the sections
+ * they belong to (Society, Programs, Profile, Administration).
+ */
+export const Forms = () => {
+  const t = useTranslations("nexus.forms");
+  const types = useFormTypes();
+  const mayStart = useMayStart();
+  const none = types.data && types.data.filter(mayStart).length === 0;
 
   return (
-    <div className="mx-auto grid w-full max-w-3xl gap-8">
-      <header className="grid gap-2">
-        <h1 className="type-display">{t("title")}</h1>
-        <p className="type-lede max-w-2xl">{t("lede")}</p>
-      </header>
-
-      <section className="grid gap-3">
-        <h2 className="type-subheading">{t("mine")}</h2>
-        {mine.isPending ? <SectionSpinner /> : null}
-        {mine.data?.length === 0 ? (
-          <p className="type-body text-text-secondary">{t("noMine")}</p>
-        ) : null}
-        <ul className="grid gap-2">
-          {(mine.data ?? []).map((s) => (
-            <li
-              className="flex flex-wrap items-baseline justify-between gap-2 border-line border-b pb-2"
-              key={s.id}
-            >
-              <Link
-                className="link"
-                href={
-                  s.status === "draft"
-                    ? {
-                        pathname: "/forms/fill",
-                        query: { form: s.form_key, id: s.id },
-                      }
-                    : { pathname: "/forms/view", query: { id: s.id } }
-                }
-              >
-                <FormTitle formKey={s.form_key} />
-              </Link>
-              <span className="type-caption">
-                {t(`statuses.${s.status as forms.FormStatus}`)} ·{" "}
-                {formatLongDate(s.submitted_at ?? s.created_at, locale, true)}
-                {s.subject_user_id === user?.id && s.submitted_by !== user?.id
-                  ? ` · ${t("aboutYou")}`
-                  : ""}
-              </span>
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      <section className="grid gap-3">
-        <h2 className="type-subheading">{t("available")}</h2>
+    <DiwanPage lede={t("lede")} narrow title={t("title")}>
+      <DiwanSection id="sent" title={t("mine")}>
+        <SentList />
+      </DiwanSection>
+      <DiwanSection id="start" title={t("available")}>
         {types.isPending ? <SectionSpinner /> : null}
-        {types.data && available.length === 0 ? (
-          <EmptyLine action={{ href: "/", label: t("home") }}>
+        {none ? (
+          <EmptyLine action={{ href: "/", label: t("toProfile") }}>
             {t("noneAvailable")}
           </EmptyLine>
         ) : null}
-        <ul className="grid border-line border-t">
-          {available.map((type) => (
-            <li className="border-line border-b" key={type.key}>
-              <Link
-                className="group -mx-2 grid gap-y-1 px-2 py-3 hover:text-accent focus-visible:text-accent"
-                href={{
-                  pathname: "/forms/fill",
-                  query: { form: type.key },
-                }}
-              >
-                <span className="font-medium underline-offset-4 group-hover:underline">
-                  <FormTitle formKey={type.key} />
-                </span>
-                <span className="type-caption">
-                  {td(`${type.key}.purpose` as Parameters<typeof td>[0])}
-                </span>
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      <details className="group grid gap-3 border-line border-t pt-4">
-        <summary className="type-subheading cursor-pointer">
-          {t("elsewhereTitle")}
-        </summary>
-        <p className="type-body mt-3">{t("elsewhereLede")}</p>
-        <ul className="mt-3 grid gap-2">
-          {forms.formsElsewhere.map((f) => (
-            <li key={f.key}>
-              <Link className="link" href={f.path}>
-                {te(f.key)}
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </details>
-    </div>
+        <StartLinks />
+      </DiwanSection>
+    </DiwanPage>
   );
 };

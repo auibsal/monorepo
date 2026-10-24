@@ -1,7 +1,6 @@
 "use client";
 
 import { useAuth } from "@repo/auth/provider";
-import { SalCard } from "@repo/design-system/components/sal/card";
 import { formatLongDate } from "@repo/internationalization/format";
 import { useLocale, useTranslations } from "next-intl";
 import QRCode from "react-qr-code";
@@ -23,13 +22,13 @@ export const MembershipCard = () => {
     (locale === "ar" && profile.data.full_name_ar) || profile.data.full_name_en;
 
   return (
-    <SalCard
+    <section
       aria-labelledby="membership-card"
-      className="sm:grid-cols-[1fr_auto]"
+      className="grid gap-6 bg-surface-reading p-6 sm:grid-cols-[1fr_auto] sm:p-8"
     >
       <div className="grid content-start gap-2">
-        <p className="type-kicker">{t("card.title")}</p>
-        <h2 className="type-heading" id="membership-card">
+        <p className="type-label">{t("card.title")}</p>
+        <h2 className="type-title" id="membership-card">
           {name}
         </h2>
         {status.data.member_since ? (
@@ -39,22 +38,14 @@ export const MembershipCard = () => {
             })}
           </p>
         ) : null}
-        <dl className="type-body grid grid-cols-[auto_1fr] gap-x-4 gap-y-1">
-          <dt className="text-text-secondary">{t("card.tier")}</dt>
-          <dd>{status.data.tier ? t(`tiers.${status.data.tier}`) : "—"}</dd>
-        </dl>
-        <p
-          className={
-            status.data.voting_member
-              ? "font-medium text-text"
-              : "text-text-secondary"
-          }
-        >
+        <p className="type-body text-text-secondary">
+          {status.data.tier ? t(`tiers.${status.data.tier}`) : null}
+          {status.data.tier ? " · " : null}
           {status.data.voting_member ? t("card.voting") : t("card.notVoting")}
         </p>
       </div>
       <figure className="grid justify-items-center gap-2">
-        <div className="bg-surface p-3">
+        <div className="bg-surface p-3" data-theme="light">
           <QRCode
             aria-hidden="true"
             size={132}
@@ -65,6 +56,6 @@ export const MembershipCard = () => {
           {t("card.qr")}
         </figcaption>
       </figure>
-    </SalCard>
+    </section>
   );
 };

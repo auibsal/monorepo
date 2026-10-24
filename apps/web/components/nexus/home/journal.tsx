@@ -8,6 +8,7 @@ import { localized } from "@repo/sal-data";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/lib/nexus/navigation";
 import { useMySubmissions, useOpenCalls } from "@/lib/nexus/queries";
+import { RowList } from "../page";
 import { EmptyLine } from "../states";
 import { Section } from "./section";
 
@@ -45,7 +46,7 @@ export const JournalSection = () => {
               {t("daysLeft", { days, daysText: formatNumber(days) })}
             </p>
             <Link
-              className="text-sm underline underline-offset-4"
+              className="link type-caption justify-self-start"
               href={{ pathname: "/qirtas/submit", query: { call: call.id } }}
             >
               {t("submit")}
@@ -55,13 +56,10 @@ export const JournalSection = () => {
       })}
       {submissions.data?.length ? (
         <>
-          <h3 className="type-caption type-kicker">{t("mine")}</h3>
-          <ul className="grid gap-2">
+          <h3 className="type-label mt-2">{t("mine")}</h3>
+          <RowList>
             {submissions.data.map((submission) => (
-              <li
-                className="flex justify-between gap-4 border-line border-b pb-2"
-                key={submission.id}
-              >
+              <li className="flex justify-between gap-4" key={submission.id}>
                 <Link
                   className="link"
                   href={{
@@ -76,7 +74,7 @@ export const JournalSection = () => {
                 </span>
               </li>
             ))}
-          </ul>
+          </RowList>
         </>
       ) : null}
     </Section>

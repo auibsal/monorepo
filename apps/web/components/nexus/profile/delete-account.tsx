@@ -17,6 +17,7 @@ import { useTranslations } from "next-intl";
 import { useId, useState } from "react";
 import { callApi } from "@/lib/nexus/api";
 import { useRouter } from "@/lib/nexus/navigation";
+import { DiwanSection } from "../page";
 
 const normalize = (value: string) =>
   value.trim().replace(/\s+/g, " ").toLowerCase();
@@ -45,9 +46,11 @@ export const DeleteAccount = () => {
   });
 
   return (
-    <div className="grid gap-3">
-      <h2 className="type-subheading">{t("title")}</h2>
-      <p className="type-body">{t("description")}</p>
+    <DiwanSection
+      description={t("description")}
+      id="delete-account"
+      title={t("title")}
+    >
       <Dialog>
         <DialogTrigger asChild>
           <Button className="justify-self-start" variant="outline">
@@ -79,6 +82,6 @@ export const DeleteAccount = () => {
           </Button>
         </DialogContent>
       </Dialog>
-    </div>
+    </DiwanSection>
   );
 };

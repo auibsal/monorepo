@@ -159,11 +159,11 @@ export const Certificate = () => {
         </header>
 
         <div className="grid justify-items-center gap-4">
-          <h1 className="font-bold text-4xl text-text">
+          <h1 className="font-light text-4xl text-text">
             {t(`titles.${kind}`)}
           </h1>
           <p className="type-body">{t("recordThat")}</p>
-          <p className="border-line border-b-2 px-8 pb-1 font-bold text-3xl">
+          <p className="border-line border-b px-8 pb-1 font-light text-3xl">
             {name}
           </p>
           <p className="type-body max-w-2xl text-lg">

@@ -7,6 +7,8 @@ interface SectionHeadProps {
   readonly className?: string;
   /** The heading level; sections on a page are h2. */
   readonly level?: "h2" | "h3";
+  /** "title" (44 px) on the public pages; "heading" (28 px) in the Diwan. */
+  readonly size?: "heading" | "title";
   readonly title: ReactNode;
   readonly titleId?: string;
 }
@@ -20,6 +22,7 @@ export const SectionHead = ({
   action,
   className,
   level: Heading = "h2",
+  size = "title",
   title,
   titleId,
 }: SectionHeadProps) => (
@@ -30,7 +33,10 @@ export const SectionHead = ({
     )}
   >
     <span aria-hidden="true" className="bookmark" />
-    <Heading className="type-title m-0" id={titleId}>
+    <Heading
+      className={cn(size === "title" ? "type-title" : "type-heading", "m-0")}
+      id={titleId}
+    >
       {title}
     </Heading>
     {action ? <div className="ms-auto">{action}</div> : null}

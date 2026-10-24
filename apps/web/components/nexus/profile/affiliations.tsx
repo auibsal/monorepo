@@ -1,7 +1,6 @@
 "use client";
 
 import { useAuth } from "@repo/auth/provider";
-import { SalCard } from "@repo/design-system/components/sal/card";
 import { Button } from "@repo/design-system/components/ui/button";
 import { Input } from "@repo/design-system/components/ui/input";
 import { Label } from "@repo/design-system/components/ui/label";
@@ -10,6 +9,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useId, useState } from "react";
 import { ErrorLine } from "../admin/kit";
+import { DiwanSection } from "../page";
 
 const KEY = ["affiliations"];
 
@@ -68,10 +68,12 @@ export const Affiliations = () => {
   const taken = new Set(rows.map((r) => r.partner_id));
 
   return (
-    <SalCard>
+    <DiwanSection
+      description={t("description")}
+      id="affiliations"
+      title={t("title")}
+    >
       <div className="grid gap-3">
-        <h2 className="type-subheading">{t("title")}</h2>
-        <p className="type-body">{t("description")}</p>
         {rows.length > 0 ? (
           <ul className="grid gap-2">
             {rows.map((row) => (
@@ -151,6 +153,6 @@ export const Affiliations = () => {
           </form>
         ) : null}
       </div>
-    </SalCard>
+    </DiwanSection>
   );
 };

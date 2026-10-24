@@ -109,13 +109,13 @@ export const SixWords = () => {
           </button>
         ) : undefined
       }
+      description={t("description")}
       id="six-words"
       title={t("title")}
     >
-      <p className="type-caption">{t("description")}</p>
       {entry.data && !writing ? (
         <blockquote
-          className="type-heading"
+          className="type-heading font-light"
           dir="auto"
           lang={entry.data.language}
         >

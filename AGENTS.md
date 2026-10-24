@@ -133,8 +133,25 @@ any schema change. Integration tests run against a local stack with
   verify against network responses, not the UI.
 - **Money.** The charity ledger is append-only (corrections are reversing
   entries); only signed-off entries count. No online payments of any kind.
-- **Documents.** Never present a draft document as adopted. Every document
-  page shows its status from the registry.
+- **Documents.** Every document is adopted, Version 1 (owner, Oct 24, 2026).
+  Visitors and members see the title, summary and text only; codes
+  (`SAL-…`, `F-…`), statuses, versions and ratification lines are internal
+  and appear only in the admin. A later draft stays in the admin until it
+  is adopted.
+- **One language per page.** The English pages carry no Arabic and the
+  Arabic pages no English (owner, Oct 24, 2026); the only exceptions are
+  the language switcher, fields meant for the other language, and a
+  document that exists in one language only.
+- **No forms, as such.** Members never see the word "form" or a form code:
+  each request starts where it belongs with a plain action ("Pitch a
+  program", "Raise a concern") through `StartLinks`
+  (`components/nexus/forms/forms.tsx`), and what they have sent is under
+  Requests and reports (`/forms`) and in Profile. The forms engine and its
+  codes stay as they are underneath.
+- **Diwan pages.** Every Diwan page is `DiwanPage` with `DiwanSection`s and
+  `RowList`s (`components/nexus/page.tsx`): the Light title, one line, the
+  Bookmark before each section, hairlines between rows only. Admin pages
+  use `AdminHeading`, which matches.
 - **Names.** The publication is **Qirtas** («قرطاس»; "AUIB's paper of news,
   letters and art"): news, letters, the gallery, Six Words and Next Stop
   episodes in one paper with five desks (Waraq until the v6 names, owner,

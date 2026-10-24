@@ -12,6 +12,7 @@ import { useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/lib/nexus/navigation";
 import { isNotionUrl } from "@/lib/nexus/notion";
+import { DiwanPage, DiwanSection } from "../page";
 import { EmptyLine, ErrorState, SectionSpinner } from "../states";
 
 type Audience = documents.DocumentAudience;
@@ -52,21 +53,18 @@ export const Documents = () => {
     .filter((g) => g.docs.length > 0);
 
   return (
-    <div className="mx-auto grid w-full max-w-4xl gap-8">
-      <header className="grid gap-2">
-        <h1 className="type-display">{t("title")}</h1>
-        <p className="type-lede max-w-2xl">{t("lede")}</p>
-      </header>
+    <DiwanPage lede={t("lede")} title={t("title")}>
       {groups.length === 0 ? (
         <EmptyLine action={{ href: "/", label: t("home") }}>
           {t("empty")}
         </EmptyLine>
       ) : null}
       {groups.map((g) => (
-        <section className="grid gap-3" key={g.audience}>
-          <h2 className="type-subheading">
-            {t(`groups.${g.audience as Audience}`)}
-          </h2>
+        <DiwanSection
+          id={`library-${g.audience}`}
+          key={g.audience}
+          title={t(`groups.${g.audience as Audience}`)}
+        >
           <ul className="grid gap-3 sm:grid-cols-2">
             {g.docs.map((d) => (
               <li key={d.id}>
@@ -74,7 +72,7 @@ export const Documents = () => {
                   <div className="grid gap-1">
                     {notionPage(d) ? (
                       <a
-                        className="inline-flex items-center gap-1.5 font-medium underline underline-offset-4"
+                        className="link inline-flex items-center gap-1.5 font-medium"
                         href={notionPage(d) ?? undefined}
                         rel="noopener"
                         target="_blank"
@@ -87,7 +85,7 @@ export const Documents = () => {
                       </a>
                     ) : (
                       <Link
-                        className="font-medium underline underline-offset-4"
+                        className="link font-medium"
                         href={{
                           pathname: "/library/view",
                           query: { slug: d.slug },
@@ -106,9 +104,9 @@ export const Documents = () => {
               </li>
             ))}
           </ul>
-        </section>
+        </DiwanSection>
       ))}
-    </div>
+    </DiwanPage>
   );
 };
 
@@ -179,9 +177,9 @@ export const DocumentView = () => {
   const notion = notionPage(doc.data);
 
   return (
-    <article className="mx-auto grid w-full max-w-4xl gap-6">
-      <div className="flex flex-wrap items-center gap-3 print:hidden">
-        <Link className="type-body underline" href="/library">
+    <article className="grid max-w-3xl gap-8">
+      <div className="flex flex-wrap items-center gap-x-5 gap-y-2 print:hidden">
+        <Link className="link" href="/library">
           {t("back")}
         </Link>
         {notion ? null : (
@@ -190,15 +188,15 @@ export const DocumentView = () => {
           </Button>
         )}
       </div>
-      <header className="grid gap-2">
+      <header className="grid gap-4">
         <p className="type-label">
           {t(`groups.${doc.data.audience as Audience}`)}
         </p>
-        <h1 className="type-display">
+        <h1 className="type-display text-balance">
           {documents.documentTitle(doc.data, locale)}
         </h1>
         {documents.documentSummary(doc.data, locale) ? (
-          <p className="type-lede max-w-2xl">
+          <p className="type-lede max-w-[48ch] text-text-secondary">
             {documents.documentSummary(doc.data, locale)}
           </p>
         ) : null}

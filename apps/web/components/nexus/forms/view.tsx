@@ -57,7 +57,8 @@ export const SubmissionSheet = ({
     >
       <header className="grid gap-1 border-line border-b-2 pb-3">
         <p className="type-kicker">
-          {definition.code} · {t("society")}
+          {actions ? `${definition.code} · ` : ""}
+          {t("society")}
         </p>
         <h2 className="type-heading">{labels.title()}</h2>
         <p className="type-caption">
@@ -152,7 +153,7 @@ export const ViewForm = () => {
   const ongoing = types.data?.find((ty) => ty.key === row.form_key)?.ongoing;
 
   return (
-    <div className="mx-auto grid w-full max-w-3xl gap-4">
+    <div className="grid max-w-3xl gap-4">
       <div className="flex flex-wrap items-center gap-3 print:hidden">
         <Link className="type-body underline" href="/forms">
           {t("back")}

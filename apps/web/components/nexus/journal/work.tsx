@@ -17,6 +17,7 @@ import {
   ConfirmAction,
   ErrorLine,
 } from "../admin/kit";
+import { DiwanSection } from "../page";
 import { SectionSpinner } from "../states";
 import { Agreement } from "./pages";
 
@@ -55,8 +56,7 @@ const ContributorForm = ({ contributorId }: { contributorId: string }) => {
     return null;
   }
   return (
-    <section className="grid max-w-3xl gap-4">
-      <h2 className="type-subheading">{t("title")}</h2>
+    <DiwanSection id="title" title={t("title")}>
       <p className="type-caption">
         {record.is_pen_name ? t("penNameLede") : t("lede")}
       </p>
@@ -90,7 +90,7 @@ const ContributorForm = ({ contributorId }: { contributorId: string }) => {
         </Button>
       </div>
       <ErrorLine error={save.error} />
-    </section>
+    </DiwanSection>
   );
 };
 
@@ -209,8 +209,7 @@ export const MyPiece = () => {
         <Agreement submissionId={piece.submission_id} />
       ) : null}
 
-      <section className="grid max-w-3xl gap-4">
-        <h2 className="type-subheading">{t("theText")}</h2>
+      <DiwanSection id="thetext" title={t("theText")}>
         {texts.map((text) => (
           <div
             className="prose max-w-none"
@@ -221,7 +220,7 @@ export const MyPiece = () => {
             lang={text.lang}
           />
         ))}
-      </section>
+      </DiwanSection>
 
       <Thread pieceId={piece.id} />
       <ContributorForm contributorId={piece.contributor_id} />

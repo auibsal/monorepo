@@ -16,6 +16,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useId, useState } from "react";
 import { Link } from "@/lib/nexus/navigation";
 import { ErrorLine } from "../admin/kit";
+import { DiwanPage, DiwanSection } from "../page";
 import { EmptyLine, SectionSpinner } from "../states";
 
 const KEY = ["service"];
@@ -107,12 +108,7 @@ export const Service = () => {
   };
 
   return (
-    <div className="mx-auto grid w-full max-w-3xl gap-8">
-      <header className="grid gap-2">
-        <h1 className="type-display">{t("title")}</h1>
-        <p className="type-lede max-w-2xl">{t("lede")}</p>
-      </header>
-
+    <DiwanPage lede={t("lede")} narrow title={t("title")}>
       <SalCard>
         <div className="grid gap-3">
           <p className="type-kicker">{t("thisYear")}</p>
@@ -145,8 +141,7 @@ export const Service = () => {
         </div>
       </SalCard>
 
-      <section className="grid gap-4">
-        <h2 className="type-subheading">{t("logTitle")}</h2>
+      <DiwanSection id="logtitle" title={t("logTitle")}>
         <p className="type-body">{t("logLede")}</p>
         <form className="grid gap-4" onSubmit={onSubmit}>
           <div className="grid gap-4 sm:grid-cols-3">
@@ -234,10 +229,9 @@ export const Service = () => {
           </Button>
           <ErrorLine error={log.error} />
         </form>
-      </section>
+      </DiwanSection>
 
-      <section className="grid gap-3">
-        <h2 className="type-subheading">{t("recordsTitle")}</h2>
+      <DiwanSection id="recordstitle" title={t("recordsTitle")}>
         {records.isPending ? <SectionSpinner /> : null}
         {records.data?.length === 0 ? (
           <EmptyLine action={{ href: "/programs", label: t("findShift") }}>
@@ -280,10 +274,9 @@ export const Service = () => {
             </li>
           ))}
         </ul>
-      </section>
+      </DiwanSection>
 
-      <section className="grid gap-3">
-        <h2 className="type-subheading">{t("certificatesTitle")}</h2>
+      <DiwanSection id="certificatestitle" title={t("certificatesTitle")}>
         {certificates.data?.length === 0 ? (
           <p className="type-body text-text-secondary">{t("noCertificates")}</p>
         ) : null}
@@ -303,7 +296,7 @@ export const Service = () => {
             </li>
           ))}
         </ul>
-      </section>
-    </div>
+      </DiwanSection>
+    </DiwanPage>
   );
 };
