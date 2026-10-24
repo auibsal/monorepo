@@ -8,31 +8,41 @@ items and decisions) and continue from the first unticked item.
 
 ## Repository map
 
-- `apps/web` — the public site, auibsal.org (Next.js, `/en` and `/ar`).
-  Published reads only, with the publishable key; cached by tag and
-  revalidated on publish (`/api/revalidate`).
-- `apps/app` — **the Nexus**, nexus.auibsal.org: the member portal and the
-  role-gated admin. Client-rendered pages and one server piece, the locale
-  proxy (`proxy.ts`); no secrets, Server Actions or Route Handlers (owner,
-  Oct 14, 2026: the static export ended with Capacitor). Every check in it is
-  UX only. Anything that needs a secret goes to `apps/api`, called with the
-  member's token (`callApi` in `apps/app/lib/api.ts`).
-- **URLs.** English, the default language, has no prefix (`/events`); other
-  languages do (`/ar/events`), in both apps (owner, Oct 14, 2026). Build
-  links with `Link` from `@repo/internationalization/navigation`, or
-  `localizedPath(locale, path)` for another app's URL; never write `/en`.
-- `apps/api` — api.auibsal.org: email, cron, calendar feeds, revalidation,
-  exports, signed URLs, account deletion, and Hudhud, the Society's Telegram
-  bot (`lib/bot`, grammY; webhook `/telegram`; `docs/platform/telegram.md`).
-  The only app with the secret key. The bot acts for a member only through
-  the `core.telegram_*` functions, which run the Nexus functions under the
-  member's claims (aal1) so RLS still decides; its public reads use the
-  publishable key. Bot copy in `lib/bot/copy.ts`; the mascot in
-  `brand/mascot`.
-- `apps/storybook` — the SAL Design System: SAL components, v5 Screens and
-  every platform email in both languages, at design.auibsal.org. Its routing
-  middleware lets in only officers signed in through the Nexus
-  (`lib/gate.ts`); no vendor login.
+- `apps/web` — **the one app**, auibsal.org (owner, Oct 24, 2026: one
+  Next.js app in place of web, Nexus, api and the design site). Three parts,
+  one deployment:
+  - `app/[locale]/(site)` — the public site, `/` and `/ar`. Published reads
+    only, with the publishable key; cached by tag and revalidated on publish.
+  - `app/[locale]/nexus` — **the Nexus**, auibsal.org/nexus: the member
+    portal and the role-gated admin. Client-rendered pages (`components/nexus`,
+    `lib/nexus`); every check in them is UX only. They read and write
+    Supabase with the member's token, and call the API routes with it
+    (`callApi` in `lib/nexus/api.ts`). Nexus code names pages by their own
+    path (`/events`); `Link`, `useRouter`, `usePathname` and `redirect` from
+    `@/lib/nexus/navigation` add the `/nexus` prefix. From the public pages,
+    link with `localizedPath(locale, nexusPath("/sign-in"))`.
+  - `app/api` and `lib/api` — the API routes, auibsal.org/api: email, cron,
+    calendar feeds, exports, signed URLs, account deletion, `/api/v1` for
+    third-party apps, and Hudhud, the Society's Telegram bot (`lib/api/bot`,
+    grammY; webhook `/api/telegram`; `docs/platform/telegram.md`). The only
+    code that reads the secret key. The bot acts for a member only through
+    the `core.telegram_*` functions, which run the Nexus functions under the
+    member's claims (aal1) so RLS still decides. Bot copy in
+    `lib/api/bot/copy.ts`; the mascot in `brand/mascot`.
+  - `app/[locale]/(site)/developers` — the guide and reference for app
+    builders, English only (like the API and the runbooks).
+- **URLs.** English, the default language, has no prefix (`/events`,
+  `/nexus/events`); other languages do (`/ar/events`, `/ar/nexus/events`)
+  (owner, Oct 14, 2026). API routes carry no language (`/api/...`). Build
+  links with `Link` from `@repo/internationalization/navigation` (inside the
+  Nexus: from `@/lib/nexus/navigation`), or `localizedPath`, `nexusPath`,
+  `apiPath` and the absolute `siteUrl`, `nexusUrl`, `apiUrl` from
+  `@repo/internationalization`; never write `/en`. The old hosts
+  nexus.auibsal.org and api.auibsal.org redirect (`next.config.ts`), the
+  one exception to "the apps configure no redirects".
+- `packages/storybook` — the SAL Design System: SAL components, v5 Screens
+  and every platform email in both languages. Local only
+  (`bun run --cwd packages/storybook dev`); nothing is deployed.
 - Documents live on auibsal.org/documents (`apps/web`); the officer handbook
   and the internal documents' text in the team's Notion workspace (the Nexus
   links there: setting `notion.handbook`, `society_documents.notion_url`;
@@ -48,15 +58,16 @@ items and decisions) and continue from the first unticked item.
     `access.has_permission()`, test personas.
   - `@repo/sal-data` — zod schemas and typed queries per domain (membership,
     events, journal, charity, governance, programmes, content).
-- `packages/config/project.json` — names, motto, hosts, locales, region and
-  the default journal name. Read it through `@repo/config`.
+- `packages/config/project.json` — names, motto, the site URL and the
+  `/nexus` and `/api` paths, locales, region and the default journal name.
+  Read it through `@repo/config`.
 - `scripts/` — `check-placeholders.ts`, `check-rtl.ts`, `check-i18n.ts`.
 
 ## Commands
 
 ```sh
 bun install
-bun run dev                 # all apps
+bun run dev                 # the app at :3000
 bun run check | fix         # Biome (Ultracite rules)
 bun run typecheck           # every workspace
 bun run test                # Vitest in every workspace
@@ -66,6 +77,7 @@ bun run check:i18n          # UI text that isn't in the messages files
 bun run check:unused        # unused files and dependencies (Knip)
 bun run db:start | db:reset | db:test | db:types
 bun run --cwd apps/e2e e2e   # Playwright journeys + axe (local stack running)
+bun run --cwd packages/storybook dev   # the design system, locally
 bun run --cwd packages/database db:test:sync     # copy the pgTAP preamble
 bun run --cwd packages/design-system tokens      # regenerate tokens.css
 bun run gen:package         # scaffold packages/<name>
@@ -93,8 +105,8 @@ any schema change. Integration tests run against a local stack with
   `client_id` and reach only the areas granted in `access.oauth_clients`.
   Every new table needs the restrictive policy "Third-party apps reach only
   their areas" (see migration `20261008001500`; `99_oauth_clients.test.sql`
-  fails without it). apps/api routes refuse app tokens unless they pass
-  `authenticateRequest(request, { apps: true })`, which only `/v1` does.
+  fails without it). API routes refuse app tokens unless they pass
+  `authenticateRequest(request, { apps: true })`, which only `/api/v1` does.
 - **Two-step sign-in for sensitive roles.** Roles with `requires_mfa`
   (Council officers, directors, Elections Committee) count only on an `aal2`
   session; `access.has_permission` enforces it. Don't add bypasses.
@@ -106,9 +118,11 @@ any schema change. Integration tests run against a local stack with
   `20261024000000`). The Supabase advisors stay at zero findings:
   `00_advisors.test.sql` fails otherwise (one permissive policy per role and
   action, every foreign key indexed, no exposed SECURITY DEFINER function).
-- **No secrets in `app` or `web`.** The service-role key lives only in
-  `apps/api` and CI. New env vars go in the package's `keys.ts` and every
-  affected `.env.example`.
+- **Secrets are server-only.** The secret key, Resend, the cron and webhook
+  secrets and the Telegram token are read only in route handlers and
+  `lib/api`, never in a page or client component; CI greps the client bundle
+  for their names. New env vars go in the package's `keys.ts` and in
+  `apps/web/.env.example`.
 - **Paired fields.** Translatable columns come in pairs (`title_en`,
   `title_ar`, …). Store times as `timestamptz` (UTC); display Asia/Baghdad.
 - **Blind review.** Readers never receive author identity before a decision;
@@ -158,13 +172,13 @@ any schema change. Integration tests run against a local stack with
   dependency a package imports; keep versions aligned across workspaces. Bun
   installs and runs scripts; Next.js runs on Node (`next build`).
 - **Auth:** email sign-in (AUIB address first; magic link or password). In
-  `apps/app`, query with `useAuth().supabase` so RLS applies. In `apps/api`,
-  identify callers with `authenticateRequest` and re-check permissions with
-  `hasPermission` (`apps/api/lib/permissions.ts`). The admin client
-  (`@repo/database/admin`) bypasses RLS: webhooks, cron and trusted server
-  code only.
+  the Nexus, query with `useAuth().supabase` so RLS applies. In the API
+  routes, identify callers with `authenticateRequest` and re-check
+  permissions with `hasPermission` (`lib/api/permissions.ts`). The admin
+  client (`@repo/database/admin`) bypasses RLS: webhooks, cron and trusted
+  server code only.
 - **Files:** use `@repo/storage`. Private buckets (`submissions`, `receipts`,
-  `library`) are reached only through signed URLs issued by `apps/api`.
+  `library`) are reached only through signed URLs issued by the API routes.
 - **Analytics:** on `apps/web` only (owner, Oct 15, 2026): Google Tag Manager
   with GA4 inside it, served from auibsal.org by the Google tag gateway
   (Cloudflare), consent from the site's own card (cookie `sal_consent`)

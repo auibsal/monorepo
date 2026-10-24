@@ -40,14 +40,14 @@ const localized = (path: string): MetadataRoute.Sitemap => {
   const languages = Object.fromEntries(
     locales.map((locale) => [
       locale,
-      new URL(localizedPath(locale, path), project.hosts.web).href,
+      new URL(localizedPath(locale, path), project.url).href,
     ])
   );
 
   return locales.map((locale) => ({
     alternates: { languages },
     lastModified: new Date(),
-    url: languages[locale] ?? project.hosts.web,
+    url: languages[locale] ?? project.url,
   }));
 };
 

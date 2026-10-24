@@ -4,8 +4,8 @@ import { authCookieOptions } from "./cookies";
 import { keys } from "./keys";
 
 /**
- * Browser client. Sessions live in cookies on the shared parent domain, so
- * the public site, the Nexus and the API see the same sign-in.
+ * Browser client. Sessions live in cookies, so the public pages, the Nexus
+ * and the API routes of the one site see the same sign-in.
  * (`createBrowserClient` reuses one instance per page.)
  *
  * `detectSessionInUrl` is off: the Nexus callback page exchanges the code

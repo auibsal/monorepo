@@ -124,7 +124,7 @@ describe("SAL tokens (brand/tokens.json)", () => {
 
 describe("SAL logos (brand/logos)", () => {
   const brandDir = join(brandTokensPath, "..", "logos");
-  for (const app of ["web", "app"]) {
+  for (const app of ["web"]) {
     test(`apps/${app}/public/brand holds the brand's files unchanged`, () => {
       for (const file of logoFiles) {
         const ours = readFileSync(
@@ -146,7 +146,7 @@ describe("SAL logos (brand/logos)", () => {
     });
   }
 
-  for (const app of ["web", "app"]) {
+  for (const app of ["web"]) {
     test(`apps/${app}/app/icon.svg is the brand's avatar`, () => {
       const icon = readFileSync(
         join(import.meta.dirname, "..", "..", "apps", app, "app", "icon.svg")

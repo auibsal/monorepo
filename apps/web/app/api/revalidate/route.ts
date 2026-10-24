@@ -17,7 +17,7 @@ const authorized = (request: Request) => {
 
 /**
  * POST { tags: ["events", …] } with `Authorization: Bearer <REVALIDATE_SECRET>`.
- * Called by apps/api when publish-relevant rows change.
+ * Called by the API routes when publish-relevant rows change.
  */
 export const POST = async (request: Request) => {
   if (!authorized(request)) {

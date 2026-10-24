@@ -1,11 +1,11 @@
 "use client";
 
-import { project } from "@repo/config";
 import { Button } from "@repo/design-system/components/ui/button";
 import { Input } from "@repo/design-system/components/ui/input";
 import { Label } from "@repo/design-system/components/ui/label";
 import { Textarea } from "@repo/design-system/components/ui/textarea";
 import type { Locale } from "@repo/internationalization";
+import { apiPath } from "@repo/internationalization";
 import { formatClock, formatLongDate } from "@repo/internationalization/format";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useId, useState } from "react";
@@ -14,7 +14,7 @@ type State =
   | { kind: "idle" | "sending" | "failed" | "rate_limited" | "invalid_email" }
   | { dueAt: string; kind: "sent" };
 
-/** Posts to apps/api /removal-requests; no sign-in needed. */
+/** Posts to the API routes /removal-requests; no sign-in needed. */
 export const RemovalForm = () => {
   const t = useTranslations("web.care");
   const locale = useLocale() as Locale;
@@ -26,7 +26,7 @@ export const RemovalForm = () => {
     const data = new FormData(event.currentTarget);
     setState({ kind: "sending" });
     try {
-      const response = await fetch(`${project.hosts.api}/removal-requests`, {
+      const response = await fetch(apiPath("/removal-requests"), {
         body: JSON.stringify({
           content_url: data.get("content_url") || undefined,
           details: data.get("details"),

@@ -7,16 +7,16 @@ Policy P15 and Bylaws B11.3 apply to the platform too: **every account has at le
 | Service | What it does for SAL | Plan and free limits |
 | --- | --- | --- |
 | GitHub (`auibsal/mono`) | The code, CI, nightly backups, Dependabot, CodeQL | Free (public repository) |
-| Vercel (team `theideaiq`) | Hosts sal-web, sal-nexus, sal-api and sal-storybook (the design system); daily keep-alive cron | Pro for now; Hobby is free: 100 deployments a day, cron jobs at most once a day, one member |
+| Vercel (team `theideaiq`) | Hosts sal-web, the one app (auibsal.org, /nexus, /api); daily keep-alive cron | Pro for now; Hobby is free: 100 deployments a day, cron jobs at most once a day, one member |
 | Supabase (project `auibsal.org`, Frankfurt) | Postgres, sign-in (also for the design system and third-party apps), file storage, scheduled jobs, live co-editing (Realtime) | Free: 500 MB database, 1 GB files; pauses after 7 idle days (the keep-alive cron prevents it); no downloadable backups (the nightly GitHub backup covers it) |
 | Cloudflare | DNS for auibsal.org; the Google tag gateway once auibsal.org is proxied ([Analytics](analytics.md)) | Free |
 | Google Analytics 4 and Tag Manager | Visit counts on auibsal.org, with consent ([Analytics](analytics.md)) | Free |
 | Resend | Every email the platform sends, including sign-in links | Free: 100 emails a day, 3,000 a month. Emails over the limit wait in the outbox until it resets |
-| Sentry (EU) | Errors and server logs from all three apps | Free Developer plan: 5,000 errors a month, one user |
+| Sentry (EU) | Errors and server logs from the app | Free Developer plan: 5,000 errors a month, one user |
 | BetterStack | Uptime monitors for the site, the Nexus sign-in and the API health check | Free |
 | Arcjet | Protects the public removal-request form | Free after the trial: 10,000 requests a month, then a hard stop (no bill); the form keeps working when it is spent |
 | Google Analytics 4 | Visitor counts on the public site only | Free |
-| Cloudflare Turnstile | The human check on Nexus sign-up, sign-in and password reset (Supabase Auth → Attack Protection; site key `NEXT_PUBLIC_TURNSTILE_SITE_KEY` on sal-nexus, secret in Supabase) | Free |
+| Cloudflare Turnstile | The human check on Nexus sign-up, sign-in and password reset (Supabase Auth → Attack Protection; site key `NEXT_PUBLIC_TURNSTILE_SITE_KEY` on sal-web, secret in Supabase) | Free |
 | Cloudflare Email Routing | Forwards mail to hello@auibsal.org (and any role addresses) to officers' inboxes | Free |
 | Cloudflare R2 | Turned on, not used yet: room for files if Supabase Storage's free 1 GB runs short | Free up to 10 GB; a card is on file |
 
@@ -24,12 +24,11 @@ Policy P15 and Bylaws B11.3 apply to the platform too: **every account has at le
 
 | Secret | Held by |
 | --- | --- |
-| Supabase secret key, Resend token, cron and webhook secrets, Arcjet key, Web Push private key (`VAPID_PRIVATE_KEY`) | The sal-api project in Vercel |
-| Revalidation secret | sal-api and sal-web |
+| Supabase secret key, Resend token, cron and webhook secrets, Arcjet key, Notion token, Telegram token and secrets, Web Push private key (`VAPID_PRIVATE_KEY`), revalidation secret | The sal-web project in Vercel, Production, marked sensitive; read only by the API routes |
 | Supabase access token and database password | GitHub → Settings → Environments → production (used by the migration workflow) |
 | Backup passphrase | GitHub production environment; also kept in the password manager, since a backup is useless without it |
 
-The Nexus and the public site hold no secrets; their keys are public by design and the database enforces the rules.
+The pages and the Nexus read only the public keys; the database enforces the rules.
 
 ## Passkeys
 
@@ -38,7 +37,7 @@ Members can sign in with a passkey (fingerprint, face or screen lock) and manage
 | Setting | Value | Why |
 | --- | --- | --- |
 | Relying Party ID | `auibsal.org` | Passkeys work only on this domain and its subdomains. **Never change it**: every passkey already registered stops working. |
-| Relying Party Origins | `https://nexus.auibsal.org` (add `https://auibsal.org` only if the public site ever gets a sign-in) | The exact pages allowed to ask for a passkey. Safe to edit at any time. |
+| Relying Party Origins | `https://auibsal.org` (the Nexus lives at auibsal.org/nexus since October 24, 2026) | The exact pages allowed to ask for a passkey. Safe to edit at any time. |
 | Display name | `AUIB Society of Arts and Letters` | Shown in the device's passkey prompt. |
 
 A passkey sign-in counts as the first step only: officers whose roles need two-step sign-in still enter their authenticator code afterwards.

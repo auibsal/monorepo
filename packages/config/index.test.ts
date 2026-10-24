@@ -16,7 +16,9 @@ describe("project config", () => {
 
   test("serves SAL from auibsal.org with English and Arabic", () => {
     expect(project.domain).toBe("auibsal.org");
-    expect(project.hosts.app).toBe("https://nexus.auibsal.org");
+    expect(project.url).toBe("https://auibsal.org");
+    expect(project.paths.nexus).toBe("/nexus");
+    expect(project.paths.api).toBe("/api");
     expect([...project.locale.enabled].sort()).toEqual(["ar", "en"]);
   });
 
@@ -26,7 +28,7 @@ describe("project config", () => {
   });
 
   test("functional fields are undefined or valid, never a raw token", () => {
-    for (const value of [project.url, project.supportEmail, project.repoUrl]) {
+    for (const value of [project.supportEmail, project.repoUrl]) {
       if (value !== undefined) {
         expect(isPlaceholder(value)).toBe(false);
       }

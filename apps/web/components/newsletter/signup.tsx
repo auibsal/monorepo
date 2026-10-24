@@ -1,9 +1,9 @@
 "use client";
 
-import { project } from "@repo/config";
 import { Button } from "@repo/design-system/components/ui/button";
 import { Input } from "@repo/design-system/components/ui/input";
 import { Label } from "@repo/design-system/components/ui/label";
+import { apiPath } from "@repo/internationalization";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useId, useState } from "react";
 
@@ -15,7 +15,7 @@ type State =
   | "rate_limited"
   | "failed";
 
-/** Signs up for The Month in Waraq; apps/api sends the confirmation email. */
+/** Signs up for The Month in Waraq; the API routes send the confirmation email. */
 export const NewsletterSignup = ({
   compact = false,
 }: {
@@ -31,18 +31,15 @@ export const NewsletterSignup = ({
     const data = new FormData(event.currentTarget);
     setState("sending");
     try {
-      const response = await fetch(
-        `${project.hosts.api}/newsletter/subscribe`,
-        {
-          body: JSON.stringify({
-            email: data.get("email"),
-            lang: locale === "ar" ? "ar" : "en",
-            website: data.get("website") || undefined,
-          }),
-          headers: { "content-type": "application/json" },
-          method: "POST",
-        }
-      );
+      const response = await fetch(apiPath("/newsletter/subscribe"), {
+        body: JSON.stringify({
+          email: data.get("email"),
+          lang: locale === "ar" ? "ar" : "en",
+          website: data.get("website") || undefined,
+        }),
+        headers: { "content-type": "application/json" },
+        method: "POST",
+      });
       const result = (await response.json().catch(() => ({}))) as {
         error?: string;
       };

@@ -56,10 +56,10 @@ and www have been proxied since October 2026; these steps record how.
 
 To undo, turn the cloud off again (DNS only).
 
-`api` may be proxied too: its form rate limits read the visitor's address
-from `CF-Connecting-IP` when a request comes from Cloudflare
-(`packages/security/form.ts`). Before you turn its cloud on, add a
-Cloudflare configuration rule "Hostname equals api.auibsal.org" that turns
+The API routes share the site's host, so they are proxied with it: their
+form rate limits read the visitor's address from `CF-Connecting-IP` when a
+request comes from Cloudflare (`packages/security/form.ts`). Add a
+Cloudflare configuration rule "URI Path starts with /api/" that turns
 **Browser Integrity Check** off and sets the security level to
 **Essentially off**, and a cache rule that bypasses the cache. Leave **Bot
 Fight Mode** off for the zone: on the free plan it cannot be skipped per

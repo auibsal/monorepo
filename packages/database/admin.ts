@@ -9,7 +9,7 @@ import type { Database } from "./types";
  * jobs, background work). It uses the secret key and therefore BYPASSES Row
  * Level Security. Never use it to serve data for a user request — use the
  * member's own client (`useAuth().supabase` in the Nexus, or a client
- * built from the caller's token in apps/api) so RLS applies.
+ * built from the caller's token in the API routes) so RLS applies.
  *
  * A new client is created per call; there is no shared module-level client.
  */

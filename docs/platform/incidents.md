@@ -4,8 +4,8 @@ Where alerts come from, where to look first, and who to tell.
 
 | Signal | Comes from | Look at |
 | --- | --- | --- |
-| A site is down | BetterStack monitors: auibsal.org/en, the Nexus sign-in page, api.auibsal.org/health | The Vercel project's latest deployment, then Supabase status |
-| Errors for members | Sentry (projects sal-web, sal-nexus, sal-api) | The issue's stack trace and the release it started in |
+| The site is down | BetterStack monitors: auibsal.org, auibsal.org/nexus/sign-in, auibsal.org/api/health | The Vercel project's latest deployment, then Supabase status |
+| Errors for members | Sentry (project sal-web) | The issue's stack trace and the release it started in |
 | Emails not arriving | Resend logs | Whether the outbox is draining: rows in `core.outbox` with no `processed_at` |
 | A deploy failed | Vercel and GitHub checks on the pull request | The build log |
 | A migration failed | GitHub → Actions → Migrate production database | The failing statement; fix with a new migration |

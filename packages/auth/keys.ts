@@ -4,8 +4,8 @@ import { z } from "zod";
 export const keys = () =>
   createEnv({
     client: {
-      // Parent domain for the session cookie, e.g. ".auibsal.org", so one
-      // sign-in carries across auibsal.org, nexus. and api. Unset locally.
+      // Optional parent domain for the session cookie (".auibsal.org"),
+      // only if the sign-in must also carry to a subdomain. Unset otherwise.
       NEXT_PUBLIC_AUTH_COOKIE_DOMAIN: z.string().startsWith(".").optional(),
       NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: z
         .string()

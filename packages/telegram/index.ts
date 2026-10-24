@@ -1,5 +1,5 @@
 /**
- * Telegram helpers for apps/api: the bot (on grammY, lib/bot) and the
+ * Telegram helpers for the API routes: the bot (on grammY, lib/bot) and the
  * copies of the Nexus notices. Messages use Telegram's HTML
  * formatting; everything we did not write goes through `escapeHtml`.
  */
@@ -67,7 +67,7 @@ interface ApiResponse<T> {
   result?: T;
 }
 
-/** One Bot API call without a client library (apps/api's notices). */
+/** One Bot API call without a client library (the outbox notices). */
 export const callTelegram = async <T = unknown>(
   token: string,
   method: string,

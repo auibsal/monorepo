@@ -1,7 +1,7 @@
 "use client";
 
-import { project } from "@repo/config";
 import { Button } from "@repo/design-system/components/ui/button";
+import { apiPath } from "@repo/internationalization";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
@@ -25,14 +25,11 @@ export const TokenAction = ({
   const run = async () => {
     setState("sending");
     try {
-      const response = await fetch(
-        `${project.hosts.api}/newsletter/${action}`,
-        {
-          body: JSON.stringify({ token }),
-          headers: { "content-type": "application/json" },
-          method: "POST",
-        }
-      );
+      const response = await fetch(apiPath(`/newsletter/${action}`), {
+        body: JSON.stringify({ token }),
+        headers: { "content-type": "application/json" },
+        method: "POST",
+      });
       if (response.ok) {
         setState("done");
       } else {

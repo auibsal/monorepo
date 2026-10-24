@@ -17,7 +17,7 @@ export const keys = () =>
       TELEGRAM_WEBHOOK_SECRET: process.env.TELEGRAM_WEBHOOK_SECRET,
     },
     server: {
-      // From @BotFather. Server-only: apps/api. Without it the
+      // From @BotFather. Server-only (route handlers). Without it the
       // bot does nothing and notices go by email and push only.
       TELEGRAM_BOT_TOKEN: z.string().regex(TOKEN).optional(),
       // The bot's username without the @, for links (t.me/<username>).

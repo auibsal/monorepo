@@ -13,13 +13,10 @@
 import { readdir, readFile } from "node:fs/promises";
 import { extname, join, relative } from "node:path";
 
-const ROOTS = [
-  "apps/app/app",
-  "apps/app/components",
-  "apps/web/app",
-  "apps/web/components",
-];
-const IGNORED_DIRECTORIES = new Set([".next", "node_modules", "out"]);
+const ROOTS = ["apps/web/app", "apps/web/components"];
+// The developer documentation (auibsal.org/developers) is written in English
+// only, like the API it describes and the runbooks (owner, Oct 24, 2026).
+const IGNORED_DIRECTORIES = new Set([".next", "node_modules", "developers"]);
 // Latin or Arabic-script letters.
 const LETTERS = /[A-Za-z؀-ۿ]{2,}/;
 // Text between a closing ">" and the next "<" on the same line.

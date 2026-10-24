@@ -1,19 +1,19 @@
 # Sign in with SAL and the API
 
-The public guide and reference for app builders are at api.auibsal.org (pages in `apps/api/app`; the endpoint list in `apps/api/lib/endpoints.ts`, which `GET /v1` also returns). This runbook is for the officers who run it.
+The public guide and reference for app builders are at auibsal.org/developers (pages in `apps/web/app/[locale]/(site)/developers`; the endpoint list in `apps/web/lib/api/endpoints.ts`, which `GET /api/v1` also returns). This runbook is for the officers who run it.
 
 How apps outside the Nexus sign members in and work with the AUIB Literary Journal, and what keeps that safe.
 
-Apps outside the Nexus, such as a Journal team's own tool, can sign members in with their Society account and act for them through the API at `api.auibsal.org/v1`. The Society approves each app and decides what it may reach. Members choose whether to allow it, and can disconnect it at any time.
+Apps outside the Nexus, such as a Journal team's own tool, can sign members in with their Society account and act for them through the API at `auibsal.org/api/v1`. The Society approves each app and decides what it may reach. Members choose whether to allow it, and can disconnect it at any time.
 
-It costs nothing: sign-in is the Supabase OAuth 2.1 server (free on every plan while in beta) and the API runs on the existing `apps/api`.
+It costs nothing: sign-in is the Supabase OAuth 2.1 server (free on every plan while in beta) and the API runs in the existing app.
 
 ## How it fits together
 
 1. **The app sends the member to sign in.** A standard OAuth 2.1 authorization-code flow with PKCE, to `https://fghzahtzgelqnpwdhwjo.supabase.co/auth/v1/oauth/authorize`. OpenID Connect discovery is at `/auth/v1/.well-known/openid-configuration` on the same host.
-2. **The member allows it in the Nexus.** Supabase sends them to `nexus.auibsal.org/oauth/consent`. The page names the app and lists what it can do. Apps the Society has not approved can only be refused.
+2. **The member allows it in the Nexus.** Supabase sends them to `auibsal.org/nexus/oauth/consent`. The page names the app and lists what it can do. Apps the Society has not approved can only be refused.
 3. **The app gets tokens.** It exchanges the code at `/auth/v1/oauth/token` for an access token (one hour) and a refresh token.
-4. **The app calls the API as the member.** `Authorization: Bearer <access token>` on `https://api.auibsal.org/v1/...`. Each request runs as that member, so they can do only what they could do in the Nexus.
+4. **The app calls the API as the member.** `Authorization: Bearer <access token>` on `https://auibsal.org/api/v1/...`. Each request runs as that member, so they can do only what they could do in the Nexus.
 
 ## What keeps it safe
 
@@ -50,7 +50,7 @@ The database enforces the call window, the limit per member, the rubric and who 
 
 ## Setting up an app
 
-1. **Turn on the OAuth server (once).** Supabase → Authentication → OAuth Server: on, authorization path `/oauth/consent`, dynamic registration off. Authentication → URL Configuration: Site URL `https://nexus.auibsal.org`. For OpenID Connect ID tokens, switch the project to asymmetric JWT signing keys (Settings → JWT Keys).
+1. **Turn on the OAuth server (once).** Supabase → Authentication → OAuth Server: on, authorization path `/nexus/oauth/consent`, dynamic registration off. Authentication → URL Configuration: Site URL `https://auibsal.org`. For OpenID Connect ID tokens, switch the project to asymmetric JWT signing keys (Settings → JWT Keys).
 2. **Register the app.** Authentication → OAuth Apps → Add: the app's name, its redirect URLs, and its type: **public** for apps that run in a browser or on a phone (PKCE, no secret), **confidential** for apps with a server that can keep a secret. Send the client id (and secret, if any) to the app's team privately.
 3. **Approve it in the Nexus.** Administration → Settings → Third-party apps → Add an app: the client id, the name, a contact email, and the areas it needs. A Journal team's tool needs **Name and language** and **AUIB Literary Journal**.
 

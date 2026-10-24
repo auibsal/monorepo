@@ -164,13 +164,13 @@ export const Notice = ({ blocks, preview }: NoticeProps) => {
 Notice.PreviewProps = {
   blocks: [
     {
-      action: { href: "https://nexus.auibsal.org/en", label: "Open the Nexus" },
+      action: { href: "https://auibsal.org/nexus", label: "Open the Nexus" },
       heading: "You're booked for the Majlis",
       lang: "en",
       paragraphs: ["Tuesday, October 13 · 6:00 PM", "Library, second floor"],
     },
     {
-      action: { href: "https://nexus.auibsal.org/ar", label: "افتح النِّكسَس" },
+      action: { href: "https://auibsal.org/ar/nexus", label: "افتح النِّكسَس" },
       heading: "حُجز مكانك في المجلس",
       lang: "ar",
       paragraphs: ["الثلاثاء، 13 تشرين الأول · 6:00 مساءً"],

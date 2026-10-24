@@ -4,17 +4,15 @@ import { z } from "zod";
 export const keys = () =>
   createEnv({
     client: {
-      NEXT_PUBLIC_API_URL: z.url().optional(),
-      NEXT_PUBLIC_APP_URL: z.url(),
-      NEXT_PUBLIC_WEB_URL: z.url(),
+      // The one site's origin: https://auibsal.org in production, the
+      // preview URL on Vercel previews, http://localhost:3000 locally.
+      NEXT_PUBLIC_SITE_URL: z.url(),
     },
     // Treat KEY="" (as in .env.example) as unset.
     emptyStringAsUndefined: true,
     runtimeEnv: {
       ANALYZE: process.env.ANALYZE,
-      NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
-      NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
-      NEXT_PUBLIC_WEB_URL: process.env.NEXT_PUBLIC_WEB_URL,
+      NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,
       NEXT_RUNTIME: process.env.NEXT_RUNTIME,
       VERCEL: process.env.VERCEL,
       VERCEL_ENV: process.env.VERCEL_ENV,

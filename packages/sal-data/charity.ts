@@ -48,7 +48,7 @@ export const activeCampaigns = async (client: Client) =>
       .order("starts_on", { ascending: false })
   );
 
-/** Receipts the campaign has made public (files through apps/api). */
+/** Receipts the campaign has made public (files through the API routes). */
 export const publicReceipts = async (client: Client, campaignId: string) =>
   unwrap(
     await client

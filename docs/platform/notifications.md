@@ -6,7 +6,7 @@ Every notice (bookings, reminders, Journal receipts and decisions, role endings,
 
 ## Phone notifications
 
-Standard Web Push, with no vendor in between: the browser makers' push services deliver them, and `apps/api` signs each one with the Society's VAPID key.
+Standard Web Push, with no vendor in between: the browser makers' push services deliver them, and the API routes sign each one with the Society's VAPID key.
 
 - Members turn them on per device in **Profile and privacy → Phone notifications**, and can send themselves a test.
 - **iPhone and iPad** (iOS 16.4 or later) show them only when the Nexus is added to the Home Screen: Share → Add to Home Screen, then open it from there. Android and computers work in the browser.
@@ -19,8 +19,8 @@ Generate the pair once with `bunx web-push generate-vapid-keys`.
 
 | Variable | Where |
 | --- | --- |
-| `NEXT_PUBLIC_VAPID_PUBLIC_KEY` | sal-nexus and sal-api |
-| `VAPID_PRIVATE_KEY` | sal-api only |
+| `NEXT_PUBLIC_VAPID_PUBLIC_KEY` | sal-web |
+| `VAPID_PRIVATE_KEY` | sal-web, Production, marked sensitive |
 
 Without them, the Profile section says the browser can't show notifications, and everything still goes by email. Changing the keys signs every device out of notifications; members turn them on again.
 

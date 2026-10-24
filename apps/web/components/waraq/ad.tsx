@@ -1,6 +1,6 @@
 import type { Locale } from "@repo/internationalization";
 import { ads, localized } from "@repo/sal-data";
-import { env } from "@/env";
+import { clientEnv as env } from "@/env.client";
 import { mediaUrl } from "@/lib/media";
 import { readPublished } from "@/lib/supabase";
 import { AdSlot, type HouseAd } from "./ad-slot";

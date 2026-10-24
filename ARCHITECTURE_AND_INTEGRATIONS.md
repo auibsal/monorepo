@@ -7,12 +7,10 @@ How the SAL platform fits together, and how to set up each integration.
 
 ```mermaid
 flowchart LR
-  subgraph Clients
-    W["apps/web · auibsal.org<br/>public site (SSG + tags)"]
-    A["apps/app · nexus.auibsal.org<br/>the Nexus (client-rendered)"]
-  end
-  subgraph Vercel
-    API["apps/api · api.auibsal.org<br/>email · cron · feeds · signed URLs"]
+  subgraph apps/web · auibsal.org (one Vercel project)
+    W["(site) · public pages<br/>SSG + cache tags"]
+    A["/nexus · the Nexus<br/>client-rendered"]
+    API["/api · route handlers<br/>email · cron · feeds · signed URLs · /api/v1"]
   end
   subgraph Supabase
     AUTH["Auth (email)"]
@@ -26,9 +24,14 @@ flowchart LR
   A -- "Bearer token" --> API
   API -- "secret key" --> DB & ST
   DB -- "outbox webhook" --> API
-  API -- "revalidate tags" --> W
+  API -- "revalidateTag, in process" --> W
   API --> RESEND
 ```
+
+One app since October 24, 2026 (owner's decision): the public site, the
+Nexus and the API share one Next.js project, one deployment and one origin.
+The old hosts nexus.auibsal.org and api.auibsal.org redirect to
+auibsal.org/nexus and auibsal.org/api.
 
 ### Principles
 
@@ -37,11 +40,13 @@ flowchart LR
    what each can read and write. Every policy calls
    `access.has_permission(permission, scope_type, scope_id)` (its body
    lives in `private.has_permission`, which the policies bind to).
-2. **Secrets live in `apps/api` (and CI), nowhere else.** The Nexus holds
-   no secrets: its only server code is the locale proxy, and its bundle is
-   public by design. When it needs a privileged
-   action it calls `apps/api`, which verifies the JWT (`authenticateRequest`)
-   and re-checks the permission (`hasPermission`) before using the admin client.
+2. **Secrets live in server code only.** The route handlers under `app/api`
+   and `lib/api` read the secret key, Resend and the shared secrets; the
+   pages and the Nexus (client-rendered) read only `NEXT_PUBLIC_*` values,
+   and CI greps the client bundle for the server names. When the Nexus needs
+   a privileged action it calls an API route with the member's token, which
+   verifies the JWT (`authenticateRequest`) and re-checks the permission
+   (`hasPermission`) before using the admin client.
 3. **Multi-step rules are Postgres functions.** RSVPs and waitlist promotion,
    check-ins, Journal transitions and decisions, ledger sign-off, spending
    approvals, ballots and the ranked-choice count are `SECURITY DEFINER`
@@ -53,10 +58,11 @@ flowchart LR
 4. **Side effects go through an outbox.** Functions and triggers write to
    `core.outbox` in the same transaction (emails to send, cache tags to
    revalidate). A Supabase database webhook on insert hands each row to
-   `apps/api`, which sends the mail or calls `apps/web`'s revalidation route.
-5. **One session across subdomains.** Auth cookies are set on `.auibsal.org`
-   (`NEXT_PUBLIC_AUTH_COOKIE_DOMAIN`), so signing in on the Nexus also signs
-   the visitor in for the public site's member-aware bits.
+   `/api/hooks/outbox`, which sends the mail or revalidates the public
+   pages' cache tags in process.
+5. **One session, one origin.** The public pages, the Nexus and the API
+   routes share auibsal.org, so the session cookie needs no domain setting
+   (`NEXT_PUBLIC_AUTH_COOKIE_DOMAIN` stays optional, for a subdomain).
 
 ## Data model
 
@@ -111,15 +117,15 @@ indexes on policy columns, and pgTAP tests. Regenerate types and commit them.
 2. Apply migrations: `bunx supabase db push` (CI does this on merge to `main`).
 3. **Exposed schemas** (Settings → API): add `core, access, membership, events,
    journal, charity, programmes, governance, content`.
-4. **Auth → URL configuration:** site URL `https://nexus.auibsal.org`;
-   redirect URLs `https://nexus.auibsal.org/**`, `https://auibsal.org/**`,
-   `https://api.auibsal.org/**` and `http://localhost:3000/**`–`3002`.
+4. **Auth → URL configuration:** site URL `https://auibsal.org`; redirect
+   URLs `https://auibsal.org/**` and `http://localhost:3000/**`. OAuth
+   Server: authorization path `/nexus/oauth/consent`.
 5. **Auth → Providers:** email on (confirmations on, password min 10, letters
    and digits); phone off.
 6. **Auth → SMTP:** Resend (`smtp.resend.com`, port 465, user `resend`,
    password = API key, sender `SAL <hello@auibsal.org>`); bilingual templates.
 7. **Database webhook:** on `INSERT` into `core.outbox` → `POST
-   https://api.auibsal.org/hooks/outbox` with `Authorization: Bearer
+   https://auibsal.org/api/hooks/outbox` with `Authorization: Bearer
    <DATABASE_WEBHOOK_SECRET>`.
 8. **First admin:** after the Founder signs up, run once (SQL editor, as the
    service role): `select access.bootstrap_founder('<email>');`
@@ -129,27 +135,24 @@ indexes on policy columns, and pgTAP tests. Regenerate types and commit them.
 
 ## Vercel
 
-Four projects from this repository (root directory → app):
+One project from this repository:
 
 | Project | Root | Domains |
 | --- | --- | --- |
-| sal-web | `apps/web` | auibsal.org, www.auibsal.org (redirect) |
-| sal-nexus | `apps/app` | nexus.auibsal.org |
-| sal-api | `apps/api` | api.auibsal.org |
-| sal-design | `apps/storybook` | design.auibsal.org (officers only) |
+| sal-web | `apps/web` | auibsal.org, www.auibsal.org (redirect); nexus.auibsal.org and api.auibsal.org (redirected by the app) |
 
-Every push to `main` builds every project; only a commit whose subject
-carries the skip marker builds nothing (`scripts/vercel-ignore.mjs`, the
-Ignored Build Step). Skipping unaffected projects is Vercel's own setting
-(project → Settings → Git), not a script in this repository.
+Every push to `main` builds it; only a commit whose subject carries the
+skip marker builds nothing (`scripts/vercel-ignore.mjs`, the Ignored Build
+Step). The daily keep-alive cron is in `apps/web/vercel.json`.
 
-Environment variables per project are listed in each app's `.env.example`.
-`SUPABASE_SECRET_KEY`, `RESEND_TOKEN`, `CRON_SECRET`,
-`DATABASE_WEBHOOK_SECRET` and `REVALIDATE_SECRET` belong to `api` only
-(`REVALIDATE_SECRET` also to `web`). CI greps the client bundles for them.
+Environment variables are listed in `apps/web/.env.example`. The server-only
+ones (`SUPABASE_SECRET_KEY`, `RESEND_TOKEN`, `CRON_SECRET`,
+`DATABASE_WEBHOOK_SECRET`, `REVALIDATE_SECRET`, `NOTION_TOKEN`,
+`VAPID_PRIVATE_KEY`, `TELEGRAM_*`) are marked sensitive in Vercel; CI greps
+the client bundle for their names.
 
 ## Email (Resend)
 
 Add `auibsal.org` in Resend, then add its DKIM, SPF and return-path records in
-Vercel DNS. `apps/api` sends every email with the `@repo/email` templates (previewed in Storybook, "SAL/Emails"), in
+Vercel DNS. The API routes send every email with the `@repo/email` templates (previewed in Storybook, "SAL/Emails"), in
 the member's language (both when unknown).

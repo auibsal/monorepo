@@ -8,9 +8,7 @@ export default defineConfig({
       reportsDirectory: "./coverage",
     },
     projects: [
-      "apps/app",
-      "apps/api",
-      "apps/storybook",
+      "apps/web",
       "packages/analytics",
       "packages/collaboration",
       "packages/storage",

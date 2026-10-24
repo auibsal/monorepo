@@ -2,9 +2,9 @@ import type { CookieOptionsWithName } from "@supabase/ssr";
 import { keys } from "./keys";
 
 /**
- * Session cookie settings shared by every SAL host. With
- * NEXT_PUBLIC_AUTH_COOKIE_DOMAIN=".auibsal.org" the cookie is sent to
- * auibsal.org, nexus.auibsal.org and api.auibsal.org alike.
+ * Session cookie settings. The one site needs no cookie domain; setting
+ * NEXT_PUBLIC_AUTH_COOKIE_DOMAIN=".auibsal.org" also sends the cookie to
+ * subdomains, if the Society ever adds one.
  */
 export const authCookieOptions = (): CookieOptionsWithName => {
   const domain = keys().NEXT_PUBLIC_AUTH_COOKIE_DOMAIN;
