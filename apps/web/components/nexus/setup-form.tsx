@@ -19,9 +19,40 @@ import { useTranslations } from "next-intl";
 import { type FormEvent, useEffect, useId, useState } from "react";
 import { safeNextPath, stripLocale } from "@/lib/nexus/navigation";
 import { useMemberStatus, useProfile } from "@/lib/nexus/queries";
+import { DetailsFields } from "./profile/details-fields";
 import { ErrorState, FullPageSpinner } from "./states";
 
 type PledgeKind = "human_authorship" | "member";
+
+const SPACES = /\s+/;
+
+const blankNames = { familyAr: "", familyEn: "", givenAr: "", givenEn: "" };
+
+/**
+ * The four name parts, or a first guess from a full name given before the
+ * parts were asked for (first word, then the rest), for the member to fix.
+ */
+const namesFrom = (profile: {
+  family_name_ar: string | null;
+  family_name_en: string | null;
+  full_name_ar: string | null;
+  full_name_en: string;
+  given_name_ar: string | null;
+  given_name_en: string | null;
+}) => {
+  const split = (full: string | null) => {
+    const [first = "", ...rest] = (full ?? "").trim().split(SPACES);
+    return { family: rest.join(" "), given: first };
+  };
+  const en = split(profile.full_name_en);
+  const ar = split(profile.full_name_ar);
+  return {
+    familyAr: profile.family_name_ar ?? ar.family,
+    familyEn: profile.family_name_en ?? en.family,
+    givenAr: profile.given_name_ar ?? ar.given,
+    givenEn: profile.given_name_en ?? en.given,
+  };
+};
 
 const usePledgeVersions = () => {
   const { supabase } = useAuth();
@@ -59,6 +90,7 @@ const setupIntro = (
 export const SetupForm = () => {
   const t = useTranslations("nexus.setup");
   const te = useTranslations("nexus.errors");
+  const td = useTranslations("nexus.details");
   const { supabase, user } = useAuth();
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -72,7 +104,8 @@ export const SetupForm = () => {
     human_authorship: false,
     member: false,
   });
-  const [name, setName] = useState({ ar: "", en: "" });
+  const [name, setName] = useState(blankNames);
+  const [details, setDetails] = useState(membership.emptyDetails);
   const [prefs, setPrefs] = useState({
     camera_shy: false,
     locale: "en" as "en" | "ar",
@@ -82,10 +115,7 @@ export const SetupForm = () => {
 
   useEffect(() => {
     if (profile.data) {
-      setName({
-        ar: profile.data.full_name_ar ?? "",
-        en: profile.data.full_name_en ?? "",
-      });
+      setName(namesFrom(profile.data));
       setPrefs({
         camera_shy: profile.data.camera_shy,
         locale: profile.data.locale === "ar" ? "ar" : "en",
@@ -99,8 +129,20 @@ export const SetupForm = () => {
   const isRenewal =
     Boolean(profile.data?.setup_completed_at) && pending.length > 0;
 
+  const saved = useQuery({
+    enabled: Boolean(user),
+    queryFn: () => membership.myDetails(supabase, user?.id ?? ""),
+    queryKey: ["member-details", user?.id],
+  });
+  useEffect(() => {
+    if (saved.data) {
+      setDetails(saved.data);
+    }
+  }, [saved.data]);
+
   const save = useMutation({
     mutationFn: async () => {
+      await membership.saveDetails(supabase, user?.id ?? "", details);
       await Promise.all(
         pending.map((kind) =>
           membership.acceptPledge(supabase, kind, versions.data?.[kind] ?? "1")
@@ -111,8 +153,10 @@ export const SetupForm = () => {
         .from("profiles")
         .update({
           ...prefs,
-          full_name_ar: name.ar.trim() || null,
-          full_name_en: name.en.trim(),
+          family_name_ar: name.familyAr.trim(),
+          family_name_en: name.familyEn.trim(),
+          given_name_ar: name.givenAr.trim(),
+          given_name_en: name.givenEn.trim(),
           personal_email: prefs.personal_email.trim() || null,
           setup_completed_at:
             profile.data?.setup_completed_at ?? new Date().toISOString(),
@@ -137,7 +181,7 @@ export const SetupForm = () => {
     return <ErrorState onRetry={() => status.refetch()} />;
   }
 
-  const named = name.en.trim().length > 0;
+  const named = Object.values(name).every((part) => part.trim() !== "");
   const ready = named && pending.every((kind) => accepted[kind]);
   // Your name, one step per pending pledge, then the choices (always ready).
   const total = pending.length + 2;
@@ -180,32 +224,65 @@ export const SetupForm = () => {
           </p>
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="grid gap-2">
-              <Label htmlFor={`${id}-name-en`}>{t("name.en")}</Label>
+              <Label htmlFor={`${id}-given-en`}>{t("name.givenEn")}</Label>
               <Input
                 aria-describedby={`${id}-name-hint`}
-                autoComplete="name"
+                autoComplete="given-name"
                 dir="ltr"
-                id={`${id}-name-en`}
+                id={`${id}-given-en`}
                 lang="en"
-                maxLength={120}
+                maxLength={60}
                 onChange={(event) =>
-                  setName((n) => ({ ...n, en: event.target.value }))
+                  setName((n) => ({ ...n, givenEn: event.target.value }))
                 }
                 required
-                value={name.en}
+                value={name.givenEn}
               />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor={`${id}-name-ar`}>{t("name.ar")}</Label>
+              <Label htmlFor={`${id}-family-en`}>{t("name.familyEn")}</Label>
               <Input
-                dir="rtl"
-                id={`${id}-name-ar`}
-                lang="ar"
-                maxLength={120}
+                aria-describedby={`${id}-name-hint`}
+                autoComplete="family-name"
+                dir="ltr"
+                id={`${id}-family-en`}
+                lang="en"
+                maxLength={60}
                 onChange={(event) =>
-                  setName((n) => ({ ...n, ar: event.target.value }))
+                  setName((n) => ({ ...n, familyEn: event.target.value }))
                 }
-                value={name.ar}
+                required
+                value={name.familyEn}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor={`${id}-given-ar`}>{t("name.givenAr")}</Label>
+              <Input
+                aria-describedby={`${id}-name-hint`}
+                dir="rtl"
+                id={`${id}-given-ar`}
+                lang="ar"
+                maxLength={60}
+                onChange={(event) =>
+                  setName((n) => ({ ...n, givenAr: event.target.value }))
+                }
+                required
+                value={name.givenAr}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor={`${id}-family-ar`}>{t("name.familyAr")}</Label>
+              <Input
+                aria-describedby={`${id}-name-hint`}
+                dir="rtl"
+                id={`${id}-family-ar`}
+                lang="ar"
+                maxLength={60}
+                onChange={(event) =>
+                  setName((n) => ({ ...n, familyAr: event.target.value }))
+                }
+                required
+                value={name.familyAr}
               />
             </div>
           </div>
@@ -325,6 +402,12 @@ export const SetupForm = () => {
               {t("personalEmailHint")}
             </p>
           </div>
+        </fieldset>
+
+        <fieldset className="grid gap-4">
+          <legend className="type-subheading mb-2">{td("title")}</legend>
+          <p className="type-caption">{td("lede")}</p>
+          <DetailsFields onChange={setDetails} value={details} />
         </fieldset>
 
         {save.isError ? (

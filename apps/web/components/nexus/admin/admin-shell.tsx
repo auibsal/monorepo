@@ -35,7 +35,7 @@ type Group = "work" | "people" | "publishing" | "society" | "system";
 const groups: { key: Group; modules: AdminModule[] }[] = [
   {
     key: "work",
-    modules: ["events", "programs", "productions", "pipeline", "journal"],
+    modules: ["events", "programs", "productions", "journal"],
   },
   { key: "people", modules: ["members", "recognition", "partners"] },
   { key: "publishing", modules: ["content", "ads", "documents", "charity"] },

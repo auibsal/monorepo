@@ -9,6 +9,15 @@ Branch: `claude/new-session-qosn60`.
 
 ## Blocked — needed from the user
 
+- [ ] **Member pages and the card (2026-10-25), for the owner:**
+  - **Public pages for members:** a proposal, nothing built yet (see
+    "Proposal: members' public pages" under Decisions). Say yes, no or
+    which parts.
+  - **Existing members** are asked for their first and last name in both
+    languages the next time they open their account (the setup step).
+  - **Native review** of the new Arabic below (card, sign-up names, More
+    about you, the Qirtas writing page, the insights page).
+
 - [ ] **The brand, Version 1 (2026-10-25), what is left for the owner:**
   - **Supabase → Authentication → Emails:** paste the four templates again
     (`packages/database/supabase/templates`): each now goes out in one
@@ -306,6 +315,61 @@ These stop parts of the work. Everything else continues around them.
       Realtime since 2026-10-09 (decision below).
 
 ## Decisions
+
+- **The membership card works** (owner, 2026-10-25: "make the QR code
+  actually functional"): each member has a card number (in the order they
+  joined) and an unguessable code. The QR is a link,
+  auibsal.org/verify/member/<code>: any phone camera opens a page saying
+  whose card it is and whether the membership stands today (read live,
+  never cached). Officers at the door scan the same QR in the check-in
+  screen (`events.check_in_card`). A member can replace the code from
+  their card ("Lost your card?"); the old link then stops working. The old
+  QR (`sal:member:<user id>`) is gone: it exposed the account id and could
+  not be withdrawn.
+
+- **Names in both languages, and what members tell us** (owner,
+  2026-10-25): sign-up asks for the first and last name in English and in
+  Arabic, all four required; the full names are built from them. Members
+  who joined before are asked at their next visit. "More about you"
+  (setup and Profile) asks, all optional: who they are at AUIB, ID number,
+  college, major, level, graduation year, year of birth, gender, phone,
+  city, languages, interests, skills, volunteering, how they heard of the
+  Society, and whether their answers may be counted in anonymous reports.
+  Only the member and members.manage read them (RLS); the Diwan's "What
+  members tell us" shows counts from consenting members only, hiding any
+  group under five; the members export adds the columns for
+  members.manage.
+
+- **Qirtas is one place** (owner, 2026-10-25): in the Diwan, one Qirtas
+  section (the newsroom and the blind review were two); the blind review
+  is a tab (`/diwan/journal?tab=review`, entries at `/diwan/journal/entry`
+  and `/diwan/journal/submission`). For members, `/qirtas/write` lists
+  every desk and type; the type decides the process (`/qirtas/submit?type=…`:
+  desk types are edited with the author, Edition types are read blind), and
+  "Your work" lists submissions and pieces together.
+
+- **Proposal: members' public pages** (for the owner to decide; not
+  built). An opt-in page per member at auibsal.org/members/<slug>, off by
+  default, the member choosing each part:
+  - the name in the page's language, a photo, a short bio (already in
+    Profile) and pronouns if they want;
+  - their published Qirtas pieces and credits in productions (already
+    public, gathered in one place; Qirtas already has author pages, which
+    this would extend);
+  - their roles and years of service, Fellowship and certificates (each
+    verifiable);
+  - a reading shelf: books they are reading, have read and recommend, with
+    a line each (a "Shelf" the Register could feature, and a reading
+    group could start from);
+  - their six words (already written for the Register), favorite poem or
+    line, and the programs they come to;
+  - links (a personal site, Instagram).
+  Not on the page: email, phone, ID number, year of birth, attendance
+  counts or anything from "More about you". Camera-shy members never show
+  a photo. A Council setting can switch the feature off; Arabic and English
+  pages show only that language's name and text. Cost: one table
+  (`core.member_pages` with the shelf as rows), RLS for owner write and
+  public read when published, one public page, one Profile section.
 
 - **The brand is SAL-BRD-01, Version 1** (owner, 2026-10-25; the brand
   handoff): one version, no earlier ones. The Bookmark is only ever the
@@ -713,6 +777,23 @@ These stop parts of the work. Everything else continues around them.
 
 ## Checklist
 
+### The card, names, details and one Qirtas (2026-10-25)
+
+- [x] Migration `20261025000100_member_card_and_details`: card numbers and
+      codes, the public check, check-in by card, name parts, member
+      details, member insights; pgTAP `99_member_card` (17)
+- [x] The card (paper, the lockup, the name, number, since, tier, vote,
+      the QR as a link, full-screen code, new code), `/verify/member/<code>`
+- [x] Sign-up and setup: first and last name in both languages; the gate
+      sends anyone missing one to setup; More about you in setup and Profile
+- [x] The account menu: one line on phones that opens the list; the row
+      on wider screens (items no longer overlap)
+- [x] Qirtas: one section in the Diwan (blind review as a tab, entries
+      moved under `/diwan/journal`); one writing page for members by type
+- [x] Diwan: What members tell us (`/diwan/members/insights`); details in
+      the members export
+- [ ] Owner: decide on the members' public pages (proposal above)
+
 ### Brand and the new names (2026-10-24)
 
 - [x] Step 2: brand files (BRAND-BOOK.md, tokens.json, bundle.css, the
@@ -1007,6 +1088,21 @@ Covered by automated tests so far:
 All Arabic written for the platform up to 2026-10-24 was reviewed by the
 owner and approved ("reviewed across the board, it's all good"). List new
 Arabic here as it is written.
+
+Written 2026-10-25 (the card, names, details, one Qirtas):
+
+- `nexus.home.card.*` (the card: «رقم {number}»، «عضو منذ»، «التصويت»،
+  «اعرض الرمز بملء الشاشة»، «فقدت بطاقتك؟ احصل على رمز جديد» and the
+  reissue text) and `web.verifyCard.*` (the card's public page).
+- `auth.signUp.nameEn` «اسمك بالإنجليزية», `nameAr`, `givenName` «الاسم
+  الأول», `familyName` «اسم العائلة», `namesHint`;
+  `auth.errors.names_required`; `nexus.setup.name.*`.
+- `nexus.details.*` («المزيد عنك» and every choice: affiliations, levels,
+  genders, languages, interests, skills, how they heard, the consent).
+- `nexus.admin.members.insights.*` («ما يخبرنا به الأعضاء»).
+- `nexus.journal.write.*` (the writing page: processes, desk lines, calls),
+  `nexus.admin.waraq.lede`, `tabs.review` «القراءة العمياء»,
+  `nexus.admin.overview.openPipeline`.
 
 Written 2026-10-24 (the Diwan overhaul):
 

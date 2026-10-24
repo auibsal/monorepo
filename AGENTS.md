@@ -144,6 +144,19 @@ any schema change. Integration tests run against a local stack with
   `title_ar`, …). Store times as `timestamptz` (UTC); display Asia/Baghdad.
 - **Blind review.** Readers never receive author identity before a decision;
   verify against network responses, not the UI.
+- **Member data.** Names come in four parts (first and last, English and
+  Arabic), all required; the full names are built from them. Everything in
+  `core.member_details` is optional and read only by the member and
+  `members.manage`; reports count only members with `research_consent`
+  and never show a group smaller than five (`core.member_insights()`).
+  Public pages never show it.
+- **The membership card.** Its QR is a link to `/verify/member/<code>`
+  (`membership.verify_card`, read live); the door scans it with
+  `events.check_in_card`. Never put an account id in a QR.
+- **Qirtas is one section.** Members send everything from `/qirtas/write`
+  and the type decides the process (desk editing, or the blind review for
+  Edition work); the Diwan's Qirtas section holds the newsroom and the
+  blind review (`?tab=review`) together.
 - **Money.** The charity ledger is append-only (corrections are reversing
   entries); only signed-off entries count. No online payments of any kind.
 - **Documents.** Every document is adopted, Version 1 (owner, Oct 24, 2026).

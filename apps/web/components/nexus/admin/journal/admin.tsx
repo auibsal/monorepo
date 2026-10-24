@@ -23,6 +23,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 import { Link } from "@/lib/nexus/navigation";
 import { useGrants } from "@/lib/nexus/queries";
+import { useQueryParam } from "@/lib/nexus/use-query-param";
 import { SectionSpinner } from "../../states";
 import { slugify } from "../events/editor";
 import {
@@ -36,6 +37,7 @@ import {
   SelectInput,
 } from "../kit";
 import { openSubmissionFile } from "../pipeline/data";
+import { PipelineAdmin } from "../pipeline/pipeline";
 import { Puzzles } from "./puzzles";
 import { FrontRank } from "./workflow";
 
@@ -789,9 +791,39 @@ const puzzleEditorKeys = [
   "journal.edit.voices",
 ] as const;
 
+// Who sees which half: the newsroom keys, and the blind review's.
+const newsroomKeys = [
+  "journal.publish",
+  "journal.approve",
+  "journal.copy",
+  "journal.frontpage",
+  "journal.edit.news",
+  "journal.edit.letters",
+  "journal.edit.gallery",
+  "journal.edit.video",
+  "journal.edit.voices",
+] as const;
+const reviewKeys = [
+  "journal.manage",
+  "journal.review",
+  "journal.identity.view",
+  "journal.decide",
+  "journal.advise",
+] as const;
+
+/**
+ * Qirtas in the Diwan: everything sent to the paper, in one place. The
+ * type decides the process: desk pieces go straight to the newsroom;
+ * Edition work goes through the blind review first, then joins it.
+ */
 export const JournalAdmin = () => {
   const t = useTranslations("nexus.admin.waraq");
   const grants = useGrants();
+  const requested = useQueryParam("tab");
+  const anywhere = (keys: readonly string[]) =>
+    keys.some((p) => hasPermissionAnywhere(grants.data, p as "journal.manage"));
+  const newsroom = anywhere(newsroomKeys);
+  const review = anywhere(reviewKeys);
   const named = (["news", "video", "voices"] as const).some(
     (desk) =>
       hasPermissionAnywhere(grants.data, `journal.edit.${desk}`) ||
@@ -802,51 +834,70 @@ export const JournalAdmin = () => {
   const puzzles = puzzleEditorKeys.some((p) =>
     hasPermissionAnywhere(grants.data, p)
   );
+  const tabs = (
+    [
+      ["newsroom", newsroom],
+      ["review", review],
+      ["desks", named],
+      ["front", front],
+      ["editions", newsroom],
+      ["games", puzzles],
+      ["contributors", newsroom],
+    ] as const
+  )
+    .filter(([, shown]) => shown)
+    .map(([tab]) => tab);
+  const first = tabs.find((tab) => tab === requested) ?? tabs[0];
+
+  if (!(grants.data && first)) {
+    return <SectionSpinner />;
+  }
+
   return (
     <div className="grid gap-6">
       <AdminHeading title={t("title")}>{t("lede")}</AdminHeading>
-      <Tabs defaultValue="newsroom">
+      <Tabs defaultValue={first}>
         <TabsList className="flex-wrap">
-          <TabsTrigger value="newsroom">{t("tabs.newsroom")}</TabsTrigger>
-          {named ? (
-            <TabsTrigger value="desks">{t("tabs.desks")}</TabsTrigger>
-          ) : null}
-          {front ? (
-            <TabsTrigger value="front">{t("tabs.front")}</TabsTrigger>
-          ) : null}
-          <TabsTrigger value="editions">{t("tabs.editions")}</TabsTrigger>
-          {puzzles ? (
-            <TabsTrigger value="games">{t("tabs.games")}</TabsTrigger>
-          ) : null}
-          <TabsTrigger value="contributors">
-            {t("tabs.contributors")}
-          </TabsTrigger>
+          {tabs.map((tab) => (
+            <TabsTrigger key={tab} value={tab}>
+              {t(`tabs.${tab}`)}
+            </TabsTrigger>
+          ))}
         </TabsList>
-        <TabsContent className="pt-4" value="newsroom">
-          <Newsroom />
-        </TabsContent>
-        {named ? (
-          <TabsContent className="pt-4" value="desks">
-            <Desks />
+        {tabs.map((tab) => (
+          <TabsContent className="pt-4" key={tab} value={tab}>
+            <JournalTab tab={tab} />
           </TabsContent>
-        ) : null}
-        {front ? (
-          <TabsContent className="pt-4" value="front">
-            <FrontPage />
-          </TabsContent>
-        ) : null}
-        <TabsContent className="pt-4" value="editions">
-          <Editions />
-        </TabsContent>
-        {puzzles ? (
-          <TabsContent className="pt-4" value="games">
-            <Puzzles />
-          </TabsContent>
-        ) : null}
-        <TabsContent className="pt-4" value="contributors">
-          <Contributors />
-        </TabsContent>
+        ))}
       </Tabs>
     </div>
   );
+};
+
+type JournalTabKey =
+  | "newsroom"
+  | "review"
+  | "desks"
+  | "front"
+  | "editions"
+  | "games"
+  | "contributors";
+
+const JournalTab = ({ tab }: { tab: JournalTabKey }) => {
+  switch (tab) {
+    case "newsroom":
+      return <Newsroom />;
+    case "review":
+      return <PipelineAdmin embedded />;
+    case "desks":
+      return <Desks />;
+    case "front":
+      return <FrontPage />;
+    case "editions":
+      return <Editions />;
+    case "games":
+      return <Puzzles />;
+    default:
+      return <Contributors />;
+  }
 };

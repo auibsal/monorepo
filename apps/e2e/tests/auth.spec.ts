@@ -9,7 +9,12 @@ test("sign up with an AUIB address, confirm by email, finish setup", async ({
   const email = `e2e-${Date.now()}@auib.edu.iq`;
   await page.goto(`${urls.web}/sign-up`);
   await expectAccessible(page);
-  await page.getByLabel("Full name (English)").fill("New Member");
+  const english = page.getByRole("group", { name: "Your name in English" });
+  await english.getByLabel("First name").fill("New");
+  await english.getByLabel("Last name").fill("Member");
+  const arabic = page.getByRole("group", { name: "Your name in Arabic" });
+  await arabic.getByLabel("First name").fill("عضو");
+  await arabic.getByLabel("Last name").fill("جديد");
   await page.getByLabel("Email").fill(email);
   await page.getByLabel("Password").fill(PASSWORD);
   await page.getByRole("button", { name: "Create account" }).click();
@@ -23,7 +28,8 @@ test("sign up with an AUIB address, confirm by email, finish setup", async ({
 
   await expect(page).toHaveURL(/\/setup/);
   await expect(page.getByText("1 of 4 done")).toBeVisible();
-  await expect(page.getByLabel("Name in English")).toHaveValue("New Member");
+  await expect(page.getByLabel("First name in English")).toHaveValue("New");
+  await expect(page.getByLabel("Last name in Arabic")).toHaveValue("جديد");
   await page.getByLabel("I make the Human Authorship pledge").check();
   await page.getByLabel("I make the Member Pledge").check();
   await expect(page.getByText("4 of 4 done")).toBeVisible();

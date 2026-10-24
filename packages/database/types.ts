@@ -985,6 +985,72 @@ export type Database = {
         };
         Relationships: [];
       };
+      member_details: {
+        Row: {
+          affiliation: string | null;
+          birth_year: number | null;
+          city: string | null;
+          college: string | null;
+          created_at: string;
+          gender: string | null;
+          graduation_year: number | null;
+          heard_from: string | null;
+          interests: string[];
+          languages: string[];
+          major: string | null;
+          phone: string | null;
+          research_consent: boolean;
+          skills: string[];
+          student_id: string | null;
+          study_level: string | null;
+          updated_at: string;
+          user_id: string;
+          volunteer: boolean;
+        };
+        Insert: {
+          affiliation?: string | null;
+          birth_year?: number | null;
+          city?: string | null;
+          college?: string | null;
+          created_at?: string;
+          gender?: string | null;
+          graduation_year?: number | null;
+          heard_from?: string | null;
+          interests?: string[];
+          languages?: string[];
+          major?: string | null;
+          phone?: string | null;
+          research_consent?: boolean;
+          skills?: string[];
+          student_id?: string | null;
+          study_level?: string | null;
+          updated_at?: string;
+          user_id?: string;
+          volunteer?: boolean;
+        };
+        Update: {
+          affiliation?: string | null;
+          birth_year?: number | null;
+          city?: string | null;
+          college?: string | null;
+          created_at?: string;
+          gender?: string | null;
+          graduation_year?: number | null;
+          heard_from?: string | null;
+          interests?: string[];
+          languages?: string[];
+          major?: string | null;
+          phone?: string | null;
+          research_consent?: boolean;
+          skills?: string[];
+          student_id?: string | null;
+          study_level?: string | null;
+          updated_at?: string;
+          user_id?: string;
+          volunteer?: boolean;
+        };
+        Relationships: [];
+      };
       notion_links: {
         Row: {
           content_hash: string | null;
@@ -1045,8 +1111,12 @@ export type Database = {
           bio: string | null;
           camera_shy: boolean;
           created_at: string;
+          family_name_ar: string | null;
+          family_name_en: string | null;
           full_name_ar: string | null;
           full_name_en: string;
+          given_name_ar: string | null;
+          given_name_en: string | null;
           id: string;
           locale: string;
           notify_email: boolean;
@@ -1060,8 +1130,12 @@ export type Database = {
           bio?: string | null;
           camera_shy?: boolean;
           created_at?: string;
+          family_name_ar?: string | null;
+          family_name_en?: string | null;
           full_name_ar?: string | null;
           full_name_en?: string;
+          given_name_ar?: string | null;
+          given_name_en?: string | null;
           id: string;
           locale?: string;
           notify_email?: boolean;
@@ -1075,8 +1149,12 @@ export type Database = {
           bio?: string | null;
           camera_shy?: boolean;
           created_at?: string;
+          family_name_ar?: string | null;
+          family_name_en?: string | null;
           full_name_ar?: string | null;
           full_name_en?: string;
+          given_name_ar?: string | null;
+          given_name_en?: string | null;
           id?: string;
           locale?: string;
           notify_email?: boolean;
@@ -1403,6 +1481,7 @@ export type Database = {
           isSetofReturn: false;
         };
       };
+      member_insights: { Args: Record<PropertyKey, never>; Returns: Json };
       my_private_profile: {
         Args: Record<PropertyKey, never>;
         Returns: {
@@ -1761,6 +1840,15 @@ export type Database = {
       cancel_rsvp: { Args: { event_id: string }; Returns: undefined };
       check_in: {
         Args: { event_id: string; target_user?: string; ticket_code?: string };
+        Returns: {
+          already: boolean;
+          full_name_ar: string;
+          full_name_en: string;
+          user_id: string;
+        }[];
+      };
+      check_in_card: {
+        Args: { card_code: string; event_id: string };
         Returns: {
           already: boolean;
           full_name_ar: string;
@@ -4422,6 +4510,27 @@ export type Database = {
         };
         Relationships: [];
       };
+      cards: {
+        Row: {
+          code: string;
+          issued_at: string;
+          number: number;
+          user_id: string;
+        };
+        Insert: {
+          code?: string;
+          issued_at?: string;
+          number?: never;
+          user_id: string;
+        };
+        Update: {
+          code?: string;
+          issued_at?: string;
+          number?: never;
+          user_id?: string;
+        };
+        Relationships: [];
+      };
       certificates: {
         Row: {
           advisor_signed_at: string | null;
@@ -4704,6 +4813,14 @@ export type Database = {
       has_current_pledges: { Args: { uid?: string }; Returns: boolean };
       is_member: { Args: { uid?: string }; Returns: boolean };
       is_voting_member: { Args: { uid?: string }; Returns: boolean };
+      my_card: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          code: string;
+          issued_at: string;
+          number: number;
+        }[];
+      };
       my_status: {
         Args: Record<PropertyKey, never>;
         Returns: {
@@ -4725,6 +4842,14 @@ export type Database = {
       record_shift_service: {
         Args: { member_id: string; shift_id: string };
         Returns: string;
+      };
+      reissue_card: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          code: string;
+          issued_at: string;
+          number: number;
+        }[];
       };
       reset_calendar_token: {
         Args: Record<PropertyKey, never>;
@@ -4756,6 +4881,18 @@ export type Database = {
         Returns: undefined;
       };
       sign_certificate: { Args: { certificate_id: string }; Returns: string };
+      verify_card: {
+        Args: { code: string };
+        Returns: {
+          active: boolean;
+          full_name_ar: string;
+          full_name_en: string;
+          member_since: string;
+          number: number;
+          tier: Database["membership"]["Enums"]["tier"];
+          voting: boolean;
+        }[];
+      };
       verify_certificate: {
         Args: { code: string };
         Returns: {

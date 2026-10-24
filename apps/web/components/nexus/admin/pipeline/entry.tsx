@@ -418,7 +418,10 @@ export const EntryView = () => {
   const issues = usePipelineIssues();
 
   const back = (
-    <Link className="text-sm underline underline-offset-4" href="/pipeline">
+    <Link
+      className="text-sm underline underline-offset-4"
+      href={{ pathname: "/journal", query: { tab: "review" } }}
+    >
       {tk("back")}
     </Link>
   );

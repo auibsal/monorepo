@@ -17,7 +17,6 @@ import { useHumanCheck } from "./human-check";
 
 export const SignUpForm = () => {
   const t = useTranslations("auth");
-  const tc = useTranslations("common");
   const errorText = useAuthError();
   const { supabase } = useAuth();
   const locale = useLocale();
@@ -25,11 +24,19 @@ export const SignUpForm = () => {
   const id = useId();
   const [values, setValues] = useState({
     email: "",
-    fullNameAr: "",
-    fullNameEn: "",
+    familyAr: "",
+    familyEn: "",
+    givenAr: "",
+    givenEn: "",
     password: "",
     statement: "",
   });
+  const named = [
+    values.givenEn,
+    values.familyEn,
+    values.givenAr,
+    values.familyAr,
+  ].every((part) => part.trim() !== "");
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string>();
   const [sentTo, setSentTo] = useState<string>();
@@ -47,9 +54,13 @@ export const SignUpForm = () => {
     const result = await signUpWithEmail(supabase, {
       captchaToken: human.token,
       email: values.email,
-      fullNameAr: values.fullNameAr,
-      fullNameEn: values.fullNameEn,
       locale: locale === "ar" ? "ar" : "en",
+      names: {
+        familyAr: values.familyAr,
+        familyEn: values.familyEn,
+        givenAr: values.givenAr,
+        givenEn: values.givenEn,
+      },
       password: values.password,
       // The confirmation link brings the member back to what they started.
       redirectTo: callbackUrl(locale, next),
@@ -96,32 +107,75 @@ export const SignUpForm = () => {
             {t("emailHint")}
           </p>
         </div>
-        <div className="grid gap-2">
-          <Label htmlFor={`${id}-name-en`}>{t("signUp.fullNameEn")}</Label>
-          <Input
-            autoComplete="name"
-            dir="ltr"
-            id={`${id}-name-en`}
-            maxLength={120}
-            onChange={set("fullNameEn")}
-            required
-            value={values.fullNameEn}
-          />
-        </div>
-        <div className="grid gap-2">
-          <Label htmlFor={`${id}-name-ar`}>
-            {t("signUp.fullNameAr")}{" "}
-            <span className="type-caption">({tc("optional")})</span>
-          </Label>
-          <Input
-            dir="rtl"
-            id={`${id}-name-ar`}
-            lang="ar"
-            maxLength={120}
-            onChange={set("fullNameAr")}
-            value={values.fullNameAr}
-          />
-        </div>
+        <p className="type-caption" id={`${id}-names-hint`}>
+          {t("signUp.namesHint")}
+        </p>
+        <fieldset
+          aria-describedby={`${id}-names-hint`}
+          className="grid gap-3 sm:grid-cols-2"
+        >
+          <legend className="mb-2 font-medium text-sm">
+            {t("signUp.nameEn")}
+          </legend>
+          <div className="grid gap-2">
+            <Label htmlFor={`${id}-given-en`}>{t("signUp.givenName")}</Label>
+            <Input
+              autoComplete="given-name"
+              dir="ltr"
+              id={`${id}-given-en`}
+              lang="en"
+              maxLength={60}
+              onChange={set("givenEn")}
+              required
+              value={values.givenEn}
+            />
+          </div>
+          <div className="grid gap-2">
+            <Label htmlFor={`${id}-family-en`}>{t("signUp.familyName")}</Label>
+            <Input
+              autoComplete="family-name"
+              dir="ltr"
+              id={`${id}-family-en`}
+              lang="en"
+              maxLength={60}
+              onChange={set("familyEn")}
+              required
+              value={values.familyEn}
+            />
+          </div>
+        </fieldset>
+        <fieldset
+          aria-describedby={`${id}-names-hint`}
+          className="grid gap-3 sm:grid-cols-2"
+        >
+          <legend className="mb-2 font-medium text-sm">
+            {t("signUp.nameAr")}
+          </legend>
+          <div className="grid gap-2">
+            <Label htmlFor={`${id}-given-ar`}>{t("signUp.givenName")}</Label>
+            <Input
+              dir="rtl"
+              id={`${id}-given-ar`}
+              lang="ar"
+              maxLength={60}
+              onChange={set("givenAr")}
+              required
+              value={values.givenAr}
+            />
+          </div>
+          <div className="grid gap-2">
+            <Label htmlFor={`${id}-family-ar`}>{t("signUp.familyName")}</Label>
+            <Input
+              dir="rtl"
+              id={`${id}-family-ar`}
+              lang="ar"
+              maxLength={60}
+              onChange={set("familyAr")}
+              required
+              value={values.familyAr}
+            />
+          </div>
+        </fieldset>
         <div className="grid gap-2">
           <Label htmlFor={`${id}-password`}>{t("password")}</Label>
           <Input
@@ -161,10 +215,7 @@ export const SignUpForm = () => {
             {error}
           </p>
         ) : null}
-        <Button
-          disabled={pending || !human.ready || !values.fullNameEn.trim()}
-          type="submit"
-        >
+        <Button disabled={pending || !human.ready || !named} type="submit">
           {pending ? t("signUp.submitting") : t("signUp.submit")}
         </Button>
       </form>

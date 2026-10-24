@@ -6,7 +6,12 @@ import { partners } from "@repo/sal-data";
 import { useQuery } from "@tanstack/react-query";
 import { type ReactNode, useEffect } from "react";
 import { safeNextPath } from "@/lib/nexus/navigation";
-import { useGrants, useMemberStatus, useProfile } from "@/lib/nexus/queries";
+import {
+  hasAllNames,
+  useGrants,
+  useMemberStatus,
+  useProfile,
+} from "@/lib/nexus/queries";
 import { PartnerGuest, PendingVerification } from "./pending-verification";
 import { ErrorState, FullPageSpinner, PageSpinner } from "./states";
 
@@ -89,7 +94,7 @@ export const RequireMember = ({ children }: GateProps) => {
     (status.data?.verified || isGuest) &&
     ((status.data?.pending_pledges.length ?? 0) > 0 ||
       !profile.data?.setup_completed_at ||
-      !profile.data.full_name_en.trim());
+      !hasAllNames(profile.data));
 
   useEffect(() => {
     if (needsSetup && profile.data) {

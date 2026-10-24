@@ -67,7 +67,7 @@ export const IntakeQueue = ({ issueId }: { issueId: string }) => {
         <Link
           className="font-medium underline underline-offset-4"
           href={{
-            pathname: "/pipeline/submission",
+            pathname: "/journal/submission",
             query: { id: s.submission_id },
           }}
         >
@@ -381,7 +381,10 @@ export const SubmissionView = () => {
     return <SectionSpinner />;
   }
   const back = (
-    <Link className="text-sm underline underline-offset-4" href="/pipeline">
+    <Link
+      className="text-sm underline underline-offset-4"
+      href={{ pathname: "/journal", query: { tab: "review" } }}
+    >
       {tk("back")}
     </Link>
   );

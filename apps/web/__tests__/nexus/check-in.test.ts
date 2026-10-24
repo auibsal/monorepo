@@ -8,10 +8,15 @@ describe("check-in scans", () => {
     });
   });
 
-  test("reads a membership card QR", () => {
-    expect(
-      parseScan("sal:member:0b6f6d5e-1f2a-4c3b-9d8e-7f6a5b4c3d2e")
-    ).toEqual({ target_user: "0b6f6d5e-1f2a-4c3b-9d8e-7f6a5b4c3d2e" });
+  test("reads a membership card QR, a link in either language", () => {
+    for (const value of [
+      "https://auibsal.org/verify/member/0123456789abcdef0123",
+      "https://auibsal.org/ar/verify/member/0123456789abcdef0123",
+    ]) {
+      expect(parseScan(value), value).toEqual({
+        card_code: "0123456789abcdef0123",
+      });
+    }
   });
 
   test("ignores anything else", () => {
@@ -19,7 +24,9 @@ describe("check-in scans", () => {
       "https://example.com",
       "sal:ticket:nothex",
       "sal:ticket:0123456789abcdef0123456789",
-      "sal:member:not-a-uuid",
+      "sal:member:0b6f6d5e-1f2a-4c3b-9d8e-7f6a5b4c3d2e",
+      "https://auibsal.org/verify/member/short",
+      "https://auibsal.org/verify/0123456789abcdef0123",
     ]) {
       expect(parseScan(value), value).toBeNull();
     }

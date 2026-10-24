@@ -55,7 +55,7 @@ export const useProfile = () => {
         .schema("core")
         .from("profiles")
         .select(
-          "id, full_name_en, full_name_ar, bio, avatar_path, locale, camera_shy, setup_completed_at, verified_at, created_at, updated_at"
+          "id, full_name_en, full_name_ar, given_name_en, family_name_en, given_name_ar, family_name_ar, bio, avatar_path, locale, camera_shy, setup_completed_at, verified_at, created_at, updated_at"
         )
         .eq("id", userId)
         .single(),
@@ -73,6 +73,25 @@ export const useProfile = () => {
     };
   });
 };
+
+/** Whether a profile has a first and last name in English and in Arabic. */
+export const hasAllNames = (
+  profile:
+    | {
+        family_name_ar: string | null;
+        family_name_en: string | null;
+        given_name_ar: string | null;
+        given_name_en: string | null;
+      }
+    | null
+    | undefined
+) =>
+  Boolean(
+    profile?.given_name_en &&
+      profile.family_name_en &&
+      profile.given_name_ar &&
+      profile.family_name_ar
+  );
 
 /** The member's active grants (for showing admin modules; RLS still decides). */
 export const useGrants = () => {

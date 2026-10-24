@@ -162,7 +162,7 @@ const submissionsFigure = (
           selection: formatNumber(stages.selection ?? 0),
         })
       : t("submissionsNone"),
-    href: "/pipeline",
+    href: "/journal?tab=review",
     label: t("openSubmissions"),
     value: o.open_submissions,
   };

@@ -66,7 +66,8 @@
       "unknown": "Something went wrong. Please try again.",
       "user_exists": "An account with this email already exists. Sign in instead.",
       "weak_password": "Use at least 10 characters, with letters and numbers.",
-      "captcha_failed": "We couldn't confirm you're a person. Reload the page and try again."
+      "captcha_failed": "We couldn't confirm you're a person. Reload the page and try again.",
+      "names_required": "Enter your first and last name in English and in Arabic."
     },
     "signIn": {
       "title": "Sign in",
@@ -86,8 +87,6 @@
     "signUp": {
       "title": "Join the Society",
       "description": "Membership is free and open. AUIB addresses are verified straight away; other addresses are checked by the Council.",
-      "fullNameEn": "Full name (English)",
-      "fullNameAr": "Full name (Arabic)",
       "statement": "Who are you to the Society?",
       "statementHint": "For non-AUIB addresses: alumni, guest writer, partner… This helps the Council verify you.",
       "submit": "Create account",
@@ -95,7 +94,12 @@
       "checkInbox": "Check your inbox",
       "checkInboxBody": "We sent a confirmation link to {email}. Open it on this device to finish signing up.",
       "haveAccount": "Already a member?",
-      "signIn": "Sign in"
+      "signIn": "Sign in",
+      "nameEn": "Your name in English",
+      "nameAr": "Your name in Arabic",
+      "givenName": "First name",
+      "familyName": "Last name",
+      "namesHint": "In both languages, as they should appear on your membership card and certificates."
     },
     "forgot": {
       "title": "Reset your password",
@@ -208,21 +212,38 @@
       "submit": "Continue",
       "name": {
         "title": "Your name",
-        "hint": "As it appears on the Council page, the Register and your certificates.",
-        "en": "Name in English",
-        "ar": "Name in Arabic (optional)",
-        "needed": "Tell us your name. It appears on the Council page, the Register and your certificates."
+        "hint": "Your first and last name in English and in Arabic, as they appear on your membership card, the Council page, the Register and your certificates.",
+        "givenEn": "First name in English",
+        "familyEn": "Last name in English",
+        "givenAr": "First name in Arabic",
+        "familyAr": "Last name in Arabic",
+        "needed": "Tell us your first and last name in English and in Arabic. They appear on your membership card, the Council page, the Register and your certificates."
       }
     },
     "home": {
       "greeting": "Welcome, {name}",
       "card": {
         "title": "Membership card",
-        "memberSince": "Member since {date}",
         "tier": "Tier",
         "voting": "Voting Member",
         "notVoting": "Not yet a Voting Member",
-        "qr": "Show this code at events to check in"
+        "qr": "Scan to check this card. Show it at the door to check in.",
+        "number": "No. {number}",
+        "numberLabel": "Number",
+        "since": "Member since",
+        "vote": "Vote",
+        "votes": "Voting Member",
+        "noVote": "Not yet",
+        "checkLink": "Check this card on auibsal.org",
+        "show": "Show the code full screen",
+        "showHint": "Hold your phone up to the scanner at the door.",
+        "open": "Open the card's page",
+        "reissue": "Lost your card? Get a new code",
+        "reissueTitle": "Get a new code",
+        "reissueBody": "Your card gets a new code. The old QR stops working, so anyone holding a photo of it can no longer use it. Your number stays the same.",
+        "reissueConfirm": "Get a new code",
+        "reissued": "Your card has a new code.",
+        "issued": "This code was issued on {date}."
       },
       "tiers": {
         "member": "Member",
@@ -537,7 +558,27 @@
       "throughPartner": "Submitting through",
       "throughPartnerHint": "You answer this call as a member of this partner.",
       "throughPartnerOptional": "Optional: if this work comes through one of the Society's partners. It is never shown to readers.",
-      "asMember": "As a member of the Society"
+      "asMember": "As a member of the Society",
+      "write": {
+        "lede": "Send your work to Qirtas, the Society's paper of news, letters and art. Everything starts here; what happens next depends on what you send.",
+        "sendTitle": "Send your work",
+        "sendLede": "Choose the type of work. News, Video and Voices are always open and edited with you. Letters and Gallery answer an Edition's call and are read blind.",
+        "processes": {
+          "desk": "Edited with you",
+          "edition": "Read blind",
+          "deskLong": "Edited with you by the desk's editor under your own name, then published once you both approve.",
+          "editionLong": "Read blind: readers and editors never see your name until a decision. Accepted work is then edited with you for the Edition."
+        },
+        "callCloses": "{call} closes {date}. Up to {max} pieces per person.",
+        "noCall": "Opens with the next call.",
+        "yourWork": "Your work",
+        "process": "Process",
+        "updated": "Updated",
+        "deskLines": {
+          "letters": "Poems, stories, essays, short drama, translation and Six Words for the next Edition.",
+          "gallery": "Art and photography, photo essays and comics for the next Edition."
+        }
+      }
     },
     "profile": {
       "title": "Profile and privacy",
@@ -640,8 +681,7 @@
         "overview": "Overview",
         "members": "Members",
         "events": "Events",
-        "journal": "Qirtas: newsroom",
-        "pipeline": "Qirtas: blind reading",
+        "journal": "Qirtas",
         "content": "Content",
         "ads": "Ads",
         "charity": "Charity",
@@ -737,7 +777,7 @@
         "openEvents": "Open events",
         "submissionsDetail": "{intake} waiting for intake (the oldest since {oldest}), {reading} with readers, {selection} at selection.",
         "submissionsNone": "No submission is waiting.",
-        "openPipeline": "Open the pipeline",
+        "openPipeline": "Open the blind review",
         "forRole": {
           "title": "For your role",
           "lede": "Plan an event, claim expenses, count cash, and hand a role over. Each goes to the officers who sign it off."
@@ -765,7 +805,29 @@
         "no": "No",
         "verified": "Verified",
         "unverified": "Not verified",
-        "unnamed": "(no name)"
+        "unnamed": "(no name)",
+        "insights": {
+          "link": "What members tell us",
+          "title": "What members tell us",
+          "lede": "Counts from the answers members give under More about you, from members who agreed to be counted. Names never appear, and any group smaller than five is hidden.",
+          "members": "Members",
+          "answered": "Answered",
+          "counted": "Agreed to be counted",
+          "volunteers": "Would volunteer",
+          "none": "No answers yet.",
+          "fewerThanFive": "Fewer than 5",
+          "facets": {
+            "affiliation": "Who they are",
+            "study_level": "Level of study",
+            "graduation_year": "Graduation year",
+            "interests": "Interests",
+            "skills": "Skills",
+            "languages": "Languages",
+            "heard_from": "How they heard of us",
+            "gender": "Gender"
+          },
+          "membersManageOnly": "Only the Membership officers see these counts."
+        }
       },
       "member": {
         "title": "Member",
@@ -2371,9 +2433,10 @@
       },
       "waraq": {
         "title": "Qirtas",
-        "lede": "The newsroom: every piece on every desk, from Editing to Published. A piece publishes itself once the author and the desk editor have approved it; an Edition piece (Letters, Gallery) also needs the Editor-in-Chief or Managing Editor. The Copy Chief's style check is recorded, never required.",
+        "lede": "Everything sent to Qirtas arrives here, and the type decides the process. News, video and Voices pieces go to their desk, are edited with the author, and publish once the author and the desk editor approve. Poems, stories, essays, art and other Edition work answer a call and go through the blind review first: intake, readers, selection and a decision. Accepted work then joins the newsroom like any other piece.",
         "tabs": {
           "newsroom": "Newsroom",
+          "review": "Blind review",
           "desks": "Desk queue",
           "front": "Front page",
           "editions": "Editions",
@@ -3385,15 +3448,11 @@
       "openInNotion": "Read it in Notion"
     },
     "waraq": {
-      "desksTitle": "Send to the newsroom",
-      "desksLede": "News, Video and Voices are always open. Your work is edited under your own name.",
       "deskLines": {
         "news": "Campus and Society news, event coverage, interviews, features and reviews. Pitch a story or send it.",
         "video": "Episodes and reels, published as Qirtas pieces. Send a link.",
         "voices": "Letters to the editor and columns on campus life, arts and culture. No party politics, religion, sect or ethnicity."
       },
-      "sendTo": "Send work",
-      "myPieces": "Your pieces",
       "pieceTitle": "Your piece",
       "pieceNotFound": "This piece is not yours, or it does not exist.",
       "back": "Back to Qirtas",
@@ -3446,6 +3505,100 @@
           "voices": "No party politics, religion, sect or ethnicity."
         }
       }
+    },
+    "details": {
+      "title": "More about you",
+      "lede": "All optional. These answers help the Society plan programs, find volunteers and report on who it serves. Only you and the Membership officers see them.",
+      "choose": "Choose…",
+      "affiliation": "You are",
+      "affiliations": {
+        "student": "A student at AUIB",
+        "alumni": "An AUIB graduate",
+        "faculty": "Faculty at AUIB",
+        "staff": "Staff at AUIB",
+        "community": "From outside AUIB"
+      },
+      "studentId": "AUIB ID number",
+      "studentIdHint": "Helps the Council confirm membership if your email changes.",
+      "college": "College or school",
+      "major": "Major or department",
+      "studyLevel": "Level of study",
+      "studyLevels": {
+        "foundation": "Foundation year",
+        "undergraduate": "Undergraduate",
+        "graduate": "Graduate",
+        "other": "Other"
+      },
+      "graduationYear": "Graduation year (expected or past)",
+      "birthYear": "Year of birth",
+      "gender": "Gender",
+      "genders": {
+        "woman": "Woman",
+        "man": "Man",
+        "prefer_not": "Prefer not to say"
+      },
+      "phone": "Phone number",
+      "phoneHint": "For WhatsApp or Telegram, only if officers need to reach you about something you signed up for.",
+      "city": "City",
+      "languagesLabel": "Languages you read or write",
+      "languages": {
+        "ar": "Arabic",
+        "en": "English",
+        "ku": "Kurdish",
+        "tr": "Turkmen or Turkish",
+        "syc": "Syriac",
+        "fr": "French",
+        "de": "German",
+        "other": "Another language"
+      },
+      "interestsLabel": "What you would like to take part in",
+      "interests": {
+        "poetry": "Poetry",
+        "fiction": "Fiction",
+        "nonfiction": "Essays and nonfiction",
+        "theater": "Theater",
+        "film": "Film",
+        "music": "Music",
+        "visual_art": "Visual art",
+        "photography": "Photography",
+        "debate": "Debate",
+        "journalism": "Journalism",
+        "translation": "Translation",
+        "calligraphy": "Calligraphy",
+        "reading": "Reading groups"
+      },
+      "skillsLabel": "What you can help with",
+      "skills": {
+        "writing": "Writing",
+        "editing": "Editing",
+        "translation": "Translation",
+        "design": "Design",
+        "photography": "Photography",
+        "video": "Video",
+        "social_media": "Social media",
+        "acting": "Acting",
+        "directing": "Directing",
+        "stage_crew": "Stage crew",
+        "music": "Music",
+        "organizing": "Organizing events",
+        "web": "Websites and code"
+      },
+      "volunteer": "I would like to volunteer at events and productions",
+      "heardFrom": "How you heard about the Society",
+      "heard": {
+        "friend": "A friend",
+        "instagram": "Instagram",
+        "telegram": "Telegram",
+        "event": "An event",
+        "poster": "A poster",
+        "class": "A class or professor",
+        "website": "This website",
+        "other": "Somewhere else"
+      },
+      "consent": "Count my answers in the Society's anonymous reports",
+      "consentHint": "Reports show only totals (for example, how many members are interested in theater), never a name, and never a group smaller than five.",
+      "save": "Save",
+      "saved": "Saved."
     }
   },
   "web": {
@@ -3960,6 +4113,22 @@
         "production": "Certificate of Production Credit",
         "partner": "Certificate of Partnership Service"
       }
+    },
+    "verifyCard": {
+      "title": "Membership card",
+      "lede": "The membership cards of the AUIB Society of Arts and Letters carry a code that leads here. This page says whose card it is and whether the membership stands today.",
+      "notFound": "No card has this code. It may have been replaced by a newer one.",
+      "join": "Join the Society",
+      "valid": "This membership stands today.",
+      "lapsed": "This card belongs to the Society's records, but the membership does not stand today.",
+      "holder": "Member",
+      "number": "Card number",
+      "tier": "Membership",
+      "since": "Member since",
+      "vote": "Vote",
+      "votes": "Voting Member",
+      "noVote": "Not yet a Voting Member",
+      "note": "Members can replace their card's code at any time; an old code then stops working."
     },
     "productions": {
       "title": "The Company",

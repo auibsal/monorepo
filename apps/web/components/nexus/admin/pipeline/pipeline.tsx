@@ -189,7 +189,8 @@ const TabBody = ({ issue, tab }: { issue: PipelineIssue; tab: TabKey }) => {
   }
 };
 
-export const PipelineAdmin = () => {
+/** The blind review; `embedded` inside the Qirtas section (no heading). */
+export const PipelineAdmin = ({ embedded = false }: { embedded?: boolean }) => {
   const t = useTranslations("nexus.admin.pipeline");
   const tj = useTranslations("nexus.admin.journal");
   const locale = useLocale() as Locale;
@@ -201,7 +202,11 @@ export const PipelineAdmin = () => {
 
   return (
     <div className="grid gap-6">
-      <AdminHeading title={t("title")}>{t("lede")}</AdminHeading>
+      {embedded ? (
+        <p className="type-body max-w-3xl text-text-secondary">{t("lede")}</p>
+      ) : (
+        <AdminHeading title={t("title")}>{t("lede")}</AdminHeading>
+      )}
       {issues.data ? null : <SectionSpinner />}
       {issues.data && !issue ? <p>{t("noIssues")}</p> : null}
       {issue ? (

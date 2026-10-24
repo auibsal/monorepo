@@ -235,6 +235,26 @@ const spendingRows = async (session: ApiSession): Promise<ExportTable> => {
   };
 };
 
+/** core.member_details, in the order the members export lists them. */
+const detailColumns = [
+  "affiliation",
+  "student_id",
+  "college",
+  "major",
+  "study_level",
+  "graduation_year",
+  "birth_year",
+  "gender",
+  "phone",
+  "city",
+  "languages",
+  "interests",
+  "skills",
+  "volunteer",
+  "heard_from",
+  "research_consent",
+] as const;
+
 export const exportsByName: Record<string, ExportDefinition> = {
   attendance: {
     permissions: ["events.manage", "events.checkin"],
@@ -250,28 +270,49 @@ export const exportsByName: Record<string, ExportDefinition> = {
   },
   members: {
     permissions: ["members.manage", "members.verify", "roles.assign"],
-    run: async (session) => ({
-      header: [
-        "name_en",
-        "name_ar",
-        "email",
-        "tier",
-        "member_since",
-        "verified",
-        "activities_this_and_last_semester",
-        "voting_member",
-      ],
-      rows: (await membership.directory(session.supabase)).map((m) => [
-        m.full_name_en,
-        m.full_name_ar,
-        m.email,
-        m.tier,
-        m.member_since,
-        m.verified_at ? "yes" : "no",
-        m.activities,
-        m.voting_member ? "yes" : "no",
-      ]),
-    }),
+    run: async (session) => {
+      // What members told us about themselves: RLS returns these rows to
+      // members.manage only; for anyone else the columns stay empty.
+      const details = new Map(
+        (
+          unwrap(
+            await session.supabase
+              .schema("core")
+              .from("member_details")
+              .select("*")
+          ) ?? []
+        ).map((d) => [d.user_id, d as Record<string, unknown>])
+      );
+      const cell = (value: unknown) =>
+        Array.isArray(value) ? value.join(" ") : (value ?? "");
+      return {
+        header: [
+          "name_en",
+          "name_ar",
+          "email",
+          "tier",
+          "member_since",
+          "verified",
+          "activities_this_and_last_semester",
+          "voting_member",
+          ...detailColumns,
+        ],
+        rows: (await membership.directory(session.supabase)).map((m) => {
+          const own = details.get(m.user_id);
+          return [
+            m.full_name_en,
+            m.full_name_ar,
+            m.email,
+            m.tier,
+            m.member_since,
+            m.verified_at ? "yes" : "no",
+            m.activities,
+            m.voting_member ? "yes" : "no",
+            ...detailColumns.map((column) => cell(own?.[column])),
+          ];
+        }),
+      };
+    },
   },
   spending: {
     permissions: [
