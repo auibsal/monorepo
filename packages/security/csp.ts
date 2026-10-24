@@ -89,10 +89,12 @@ export const supabaseCspSources = (url: string | undefined): CspSources => {
     return {};
   }
 
-  const { host, origin } = new URL(url);
+  const { host, origin, protocol } = new URL(url);
+  // A local stack is plain http, and its Realtime socket is plain ws.
+  const socket = protocol === "http:" ? "ws" : "wss";
 
   return {
-    connect: [origin, `wss://${host}`],
+    connect: [origin, `${socket}://${host}`],
     img: [origin],
     media: [origin],
   };
