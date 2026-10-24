@@ -32,6 +32,7 @@ import { Notice } from "@repo/email/templates/notice";
 import { revalidateTag } from "next/cache";
 import { api, nexus, origin } from "@/lib/api/urls";
 import { type CacheTag, cacheTags } from "@/lib/supabase";
+import type { Sticker } from "./bot/stickers";
 import { pushToUser } from "./push";
 import { telegramToUser } from "./telegram";
 
@@ -111,7 +112,8 @@ const pushNotice = (built: Built, lang: Lang, row: number | undefined) => {
 const send = async (
   to: Recipient,
   built: Built,
-  headers?: Record<string, string>
+  headers?: Record<string, string>,
+  sticker?: Sticker
 ) => {
   const run = current.getStore();
   const row = run?.row;
@@ -127,7 +129,7 @@ const send = async (
     const notice = pushNotice(built, to.lang, row);
     await Promise.all([
       pushToUser(run.admin, to.userId, notice),
-      telegramToUser(run.admin, to.userId, notice),
+      telegramToUser(run.admin, to.userId, notice, sticker),
     ]);
   }
 };
@@ -390,7 +392,12 @@ const handlers: Record<string, Handler> = {
       submissionDesk(admin, payload.submission_id),
     ]);
     if (to && work) {
-      await send(to, submissionReceived(to.lang, work, appUrl(), desk));
+      await send(
+        to,
+        submissionReceived(to.lang, work, appUrl(), desk),
+        undefined,
+        "sent"
+      );
     }
   },
   "journal.sunday_paper": async (admin, payload) => {

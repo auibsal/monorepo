@@ -4,6 +4,7 @@ import type { BotContext } from "../context";
 import { db, type EventRow, visibleEvents } from "../db";
 import { eventText, pick, when } from "../format";
 import { botLink, eventCalendar, eventPage } from "../links";
+import { followWithSticker } from "../stickers";
 import { linkKeyboard } from "./account";
 
 /**
@@ -24,7 +25,7 @@ const listView = async (ctx: BotContext) => {
   await ctx.account();
   const list = await visibleEvents(ctx.from?.id ?? 0, { max: 6 });
   if (!list.length) {
-    return { keyboard: undefined, text: ctx.t.eventsNone };
+    return { empty: true, keyboard: undefined, text: ctx.t.eventsNone };
   }
   const keyboard = new InlineKeyboard();
   const isPrivate = ctx.chat?.type === "private";
@@ -91,6 +92,9 @@ export const showEvent = async (ctx: BotContext, eventId: string) => {
 events.command("events", async (ctx) => {
   const view = await listView(ctx);
   await ctx.reply(view.text, { reply_markup: view.keyboard });
+  if ("empty" in view) {
+    await followWithSticker(ctx, "asleep");
+  }
 });
 
 const dm = events.chatType("private");
@@ -99,6 +103,9 @@ dm.callbackQuery("evs", async (ctx) => {
   const view = await listView(ctx);
   await ctx.answerCallbackQuery();
   await ctx.editMessageText(view.text, { reply_markup: view.keyboard });
+  if ("empty" in view) {
+    await followWithSticker(ctx, "asleep");
+  }
 });
 
 dm.callbackQuery(new RegExp(`^ev:(${UUID})$`), async (ctx) => {
@@ -135,6 +142,7 @@ dm.callbackQuery(new RegExp(`^(rsvp|unrsvp):(${UUID})$`), async (ctx) => {
   const eventId = ctx.match[2] ?? "";
   const params = { event_id: eventId, telegram_id: ctx.from.id };
   let notice: string;
+  let booked = false;
   if (ctx.match[1] === "rsvp") {
     const { data, error } = await db()
       .schema("core")
@@ -146,6 +154,7 @@ dm.callbackQuery(new RegExp(`^(rsvp|unrsvp):(${UUID})$`), async (ctx) => {
           confirmed: ctx.t.rsvpConfirmed,
           waitlisted: ctx.t.rsvpWaitlisted,
         }[data as string] ?? ctx.t.rsvpConfirmed);
+    booked = !error && data === "confirmed";
   } else {
     const { error } = await db()
       .schema("core")
@@ -157,4 +166,7 @@ dm.callbackQuery(new RegExp(`^(rsvp|unrsvp):(${UUID})$`), async (ctx) => {
     text: notice,
   });
   await showEvent(ctx, eventId);
+  if (booked) {
+    await followWithSticker(ctx, "youreIn");
+  }
 });

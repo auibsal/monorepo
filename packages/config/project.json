@@ -17,6 +17,14 @@
     "api": "/api"
   },
   "supportEmail": "hello@auibsal.org",
+  "telegram": {
+    "stickers": {
+      "youreIn": "",
+      "asleep": "",
+      "sent": "",
+      "sorry": ""
+    }
+  },
   "repoUrl": "https://github.com/auibsal/mono",
   "journal": {
     "name_en": "Qirtas",

@@ -1,7 +1,7 @@
 # Hudhud, the Telegram bot
 
-Hudhud (هدهد), the hoopoe who carries the Society's letters, is the
-AUIB Society of Arts and Letters' Telegram bot. The code is in apps/web
+Hudhud (هدهد), the hoopoe, is the AUIB Society of Arts and Letters'
+Telegram bot. The code is in apps/web
 (`lib/api/bot`, routes `/api/telegram`, `/api/telegram/setup`,
 `/api/telegram/link`, `/api/cron/telegram`);
 the mascot and its rules are in `brand/mascot`.
@@ -112,11 +112,11 @@ And without commands:
 
    | Setting | Choose | Why |
    | --- | --- | --- |
-   | Edit Bot → Profile picture | `brand/mascot/hudhud-avatar.png` | |
-   | Edit Bot → Description picture | `brand/mascot/hudhud-welcome.png` (640 × 360) | What people see before they press Start. The name, about and description texts are set by step 4. |
+   | Edit Bot → Profile picture | `brand/mascot/hudhud-avatar.png`: white Hudhud on crimson | The bot's picture only. The Society's own spaces (the supergroup, channels) use `brand/logos/sal-avatar.svg`, the white Bookmark on crimson; never Hudhud. |
+   | Edit Bot → Description picture | None (v6 ships no welcome picture) | The name, about and description texts are set by step 4. |
    | Inline Mode | On, placeholder "Events and Qirtas" | Sharing cards. |
    | Guest Mode | On | Answers a mention in chats the bot isn't in. |
-   | Login Widget → OpenID Connect | Redirect URIs `https://auibsal.org/diwan/profile` and `https://auibsal.org/ar/nexus/profile` (and `http://localhost:3000/nexus/profile` for a test bot); Trusted Origins empty; signing RS256 | Linking from the profile. Copy the Client Secret to the auibsal project; the Client ID is the bot's id and needs no variable. |
+   | Login Widget → OpenID Connect | Redirect URIs `https://auibsal.org/diwan/profile` and `https://auibsal.org/ar/diwan/profile` (and `http://localhost:3000/diwan/profile` for a test bot); Trusted Origins empty; signing RS256 | Linking from the profile. Copy the Client Secret to the auibsal project; the Client ID is the bot's id and needs no variable. |
    | Allow Groups | On | |
    | Group Privacy | On | As an admin the bot sees the group anyway. |
    | Group Admin Rights | Invite users via link | Answering join requests is all the bot does as an admin. |
@@ -146,6 +146,26 @@ And without commands:
    `/topic …` in each topic, and turn on *Approve new members* on the
    invite link. In the group's settings: the Welcome Message, Aggressive
    Anti-Spam, and the members' permissions (the table above).
+
+## Sticker set
+
+Hudhud's twelve stickers are in `brand/mascot/stickers` (512 × 512 PNG and
+WebP, a 100 × 100 `pack-icon.png`, a contact sheet). The bot follows a few
+replies with one, in private chats only and never instead of the text:
+RSVP confirmed → 02 (`youreIn`), work received → 06 (`sent`), an error →
+07 (`sorry`), nothing new or an empty list → 05 (`asleep`). Until the set
+exists the file_ids are empty and nothing extra is sent.
+
+1. In @Stickers, `/newpack` and name it "Hudhud · SAL".
+2. Send `stickers/png/01-hello.png` … `12-oops.png` in order, each as a
+   file, and after each one its emoji from `brand/mascot/README.md`.
+3. `/publish`; for the icon send `stickers/pack-icon.png`; short name
+   `hudhud_sal` (or `auibsal_hudhud` if taken), so the link is
+   t.me/addstickers/hudhud_sal.
+4. Get each sticker's file_id (send it to the bot and read the update, or
+   to @idstickerbot) and put the four the bot uses in
+   `packages/config/project.json` under `telegram.stickers` (`youreIn`,
+   `sent`, `sorry`, `asleep`), then deploy.
 
 ## Development
 

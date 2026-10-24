@@ -6,6 +6,7 @@ import type { Lang } from "../copy";
 import { anon } from "../db";
 import { pick } from "../format";
 import { piecePage, web } from "../links";
+import { followWithSticker } from "../stickers";
 
 /** What's new in Waraq: the latest public pieces, read on auibsal.org. */
 export const waraq = new Composer<BotContext>();
@@ -34,7 +35,7 @@ const view = async (ctx: BotContext) => {
   const keyboard = new InlineKeyboard();
   if (!pieces.length) {
     keyboard.url(ctx.t.buttons.waraq, web(ctx.lang, "/qirtas"));
-    return { keyboard, text: ctx.t.waraqNone };
+    return { empty: true, keyboard, text: ctx.t.waraqNone };
   }
   const lines = pieces.map((piece) => {
     const author = pieceAuthor(ctx.lang, piece);
@@ -46,18 +47,25 @@ const view = async (ctx: BotContext) => {
   });
   keyboard.url(ctx.t.buttons.waraq, web(ctx.lang, "/qirtas"));
   return {
+    empty: false,
     keyboard,
     text: [ctx.t.waraqTitle, "", lines.join("\n\n")].join("\n"),
   };
 };
 
 waraq.command("waraq", async (ctx) => {
-  const { keyboard, text } = await view(ctx);
+  const { empty, keyboard, text } = await view(ctx);
   await ctx.reply(text, { reply_markup: keyboard });
+  if (empty) {
+    await followWithSticker(ctx, "asleep");
+  }
 });
 
 waraq.chatType("private").callbackQuery("waraq", async (ctx) => {
-  const { keyboard, text } = await view(ctx);
+  const { empty, keyboard, text } = await view(ctx);
   await ctx.answerCallbackQuery();
   await ctx.editMessageText(text, { reply_markup: keyboard });
+  if (empty) {
+    await followWithSticker(ctx, "asleep");
+  }
 });

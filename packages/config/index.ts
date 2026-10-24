@@ -49,7 +49,7 @@ const projectSchema = z
     /**
      * Where the member portal (the Nexus) and the API live on the one site:
      * auibsal.org/diwan and auibsal.org/api. The language prefix comes first
-     * (/ar/nexus/events); API paths carry none.
+     * (/ar/diwan/events); API paths carry none. The key keeps the code name.
      */
     paths: z.object({
       api: z.string().startsWith("/"),
@@ -66,7 +66,22 @@ const projectSchema = z
     shortName: z.string().min(1),
     slug: z.string().min(1),
     supportEmail: filled(z.email()),
-    /** The one site: the public pages, the Nexus under /nexus, the API under /api. */
+    /**
+     * Hudhud's stickers (brand/mascot/stickers): Telegram file_ids from the
+     * "Hudhud · SAL" set, filled in once the set exists. An empty id sends
+     * nothing (docs/platform/telegram.md, Sticker set).
+     */
+    telegram: z
+      .object({
+        stickers: z.object({
+          asleep: z.string(),
+          sent: z.string(),
+          sorry: z.string(),
+          youreIn: z.string(),
+        }),
+      })
+      .strict(),
+    /** The one site: the public pages, the Diwan under /diwan, the API under /api. */
     url: z.url(),
   })
   .strict();
