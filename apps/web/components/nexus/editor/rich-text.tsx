@@ -59,7 +59,7 @@ const ToolbarButton = ({
     aria-pressed={active}
     className={cn(
       "h-7 px-2 text-xs",
-      active && "border-line border-t font-bold text-text"
+      active && "border-line border-t font-medium text-text"
     )}
     onClick={onClick}
     size="sm"

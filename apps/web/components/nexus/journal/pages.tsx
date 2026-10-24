@@ -475,7 +475,7 @@ export const SubmitWork = () => {
             <p className="text-sm text-text" role="alert">
               {t("filesFailed")}{" "}
               <Link
-                className="underline underline-offset-4"
+                className="link"
                 href={{
                   pathname: "/waraq/submission",
                   query: { id: partial },
@@ -881,7 +881,7 @@ const ReadingTimeline = ({
               <div className="grid gap-1">
                 <p
                   className={
-                    state === "next" ? "text-text-secondary" : "font-bold"
+                    state === "next" ? "text-text-secondary" : "font-medium"
                   }
                 >
                   {stage === "decision" && index <= current

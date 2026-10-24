@@ -86,7 +86,7 @@ export const PartnerGuest = () => {
       <ul className="grid gap-2">
         {links.map(([href, label]) => (
           <li key={href}>
-            <Link className="underline underline-offset-4" href={href}>
+            <Link className="link" href={href}>
               {label}
             </Link>
           </li>

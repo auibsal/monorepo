@@ -33,7 +33,7 @@ describe("platform email", () => {
     expect(html).toContain(`href="${APP}/ar/nexus"`);
   });
 
-  test("no images, no exclamation marks in headings", async () => {
+  test("one image, the lockup; no exclamation marks in headings", async () => {
     const built = [
       decision("en", "The First Rain", "accept", APP),
       decision("en", "The First Rain", "decline", APP),
@@ -41,7 +41,10 @@ describe("platform email", () => {
     ];
     const html = await Promise.all(built.map((b) => render(Notice(b))));
     for (const page of html) {
-      expect(page).not.toContain("<img");
+      // v6: the horizontal lockup heads every email, and nothing else.
+      const images = page.match(/<img[^>]*>/g) ?? [];
+      expect(images).toHaveLength(1);
+      expect(images[0]).toContain("/brand/sal-lockup-horizontal-email.png");
     }
     for (const block of built.flatMap((b) => b.blocks)) {
       expect(block.heading).not.toContain("!");

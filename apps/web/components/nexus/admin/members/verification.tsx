@@ -37,7 +37,7 @@ const RequestCard = ({ request, name }: { request: Request; name: string }) => {
   return (
     <SalCard>
       <div className="flex flex-wrap items-baseline justify-between gap-2">
-        <p className="font-bold">{name}</p>
+        <p className="font-medium">{name}</p>
         <p className="break-all text-sm" dir="ltr">
           {request.email}
         </p>

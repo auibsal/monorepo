@@ -215,7 +215,7 @@ const ElectionCard = ({
         <h3 className="type-subheading">
           {localized(election, "title", locale)}
         </h3>
-        <p className="font-bold text-text">{t(`statuses.${status}`)}</p>
+        <p className="font-medium text-text">{t(`statuses.${status}`)}</p>
       </div>
       <p className="type-caption">
         {t("nominationsOpen")}:{" "}
@@ -243,7 +243,7 @@ const ElectionCard = ({
 
       {data.isPending ? <SectionSpinner /> : null}
       <section className="grid gap-3">
-        <h4 className="font-bold text-sm">{t("positions")}</h4>
+        <h4 className="font-medium text-sm">{t("positions")}</h4>
         {data.data && data.data.positions.length === 0 && status === "draft" ? (
           <Button
             className="justify-self-start"
@@ -268,7 +268,7 @@ const ElectionCard = ({
               className="grid gap-2 border-line border-b pb-3"
               key={position.id}
             >
-              <p className="font-bold">
+              <p className="font-medium">
                 {localized(position, "title", locale)}
               </p>
               {candidates.length === 0 ? (
@@ -317,7 +317,7 @@ const ElectionCard = ({
               </ul>
               {result ? (
                 <div className="grid gap-2">
-                  <p className="font-bold text-text">
+                  <p className="font-medium text-text">
                     {result.ron_won
                       ? t("ronWon")
                       : t("winner", {

@@ -113,7 +113,7 @@ const Council = () => {
                   {localized(row, "title", locale) ||
                     localized(row, "role_name", locale)}
                 </p>
-                <p className="font-bold">
+                <p className="font-medium">
                   {localized(row, "full_name", locale)}
                 </p>
               </SalCard>
@@ -142,7 +142,7 @@ const Council = () => {
               add.mutate();
             }}
           >
-            <h4 className="font-bold text-sm">{t("newTerm")}</h4>
+            <h4 className="font-medium text-sm">{t("newTerm")}</h4>
             <BilingualField
               label={t("name")}
               maxLength={120}
@@ -677,7 +677,7 @@ const Spending = () => {
           <li key={a.id}>
             <SalCard>
               <div className="flex flex-wrap items-baseline justify-between gap-2">
-                <p className="font-bold tabular-nums">
+                <p className="font-medium tabular-nums">
                   {formatIqd(a.amount_iqd, locale)}
                 </p>
                 <p className="type-caption">

@@ -42,7 +42,7 @@ export const ResetForm = () => {
       {done ? (
         <p role="status">
           {t("reset.done")}{" "}
-          <Link className="underline underline-offset-4" href="/">
+          <Link className="link" href="/">
             {t("signIn.submit")}
           </Link>
         </p>

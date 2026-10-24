@@ -815,7 +815,7 @@ const SignoffQueue = ({ campaignId }: { campaignId: string }) => {
             key={e.id}
           >
             <div>
-              <p className="font-bold tabular-nums">
+              <p className="font-medium tabular-nums">
                 {formatIqd(e.amount_iqd, locale)} · {t(`sources.${e.source}`)}
               </p>
               <p className="type-caption">
@@ -1139,7 +1139,7 @@ const Impact = ({ campaignId }: { campaignId: string }) => {
             key={m.id}
           >
             <div>
-              <p className="font-bold">
+              <p className="font-medium">
                 {formatNumber(m.value)} {localized(m, "unit", locale)}
               </p>
               <p className="type-caption">{localized(m, "label", locale)}</p>

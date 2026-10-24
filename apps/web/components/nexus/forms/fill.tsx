@@ -72,7 +72,7 @@ const Totals = ({ data, formKey }: { data: Data; formKey: string }) => {
   const locale = useLocale() as Locale;
   if (formKey === "f04") {
     return (
-      <p className="type-body font-bold" role="status">
+      <p className="type-body font-medium" role="status">
         {t("interviewTotal", {
           total: formatNumber(forms.interviewTotal(data)),
         })}
@@ -82,7 +82,7 @@ const Totals = ({ data, formKey }: { data: Data; formKey: string }) => {
   }
   if (formKey === "f13") {
     return (
-      <p className="type-body font-bold" role="status">
+      <p className="type-body font-medium" role="status">
         {t("claimTotal", {
           total: formatIqd(forms.claimTotal(data), locale),
         })}
@@ -92,7 +92,7 @@ const Totals = ({ data, formKey }: { data: Data; formKey: string }) => {
   if (formKey === "f14") {
     const totals = forms.cashTotals(data);
     return (
-      <p className="type-body font-bold" role="status">
+      <p className="type-body font-medium" role="status">
         {t("cashTotals", {
           one: formatIqd(totals.count1, locale),
           two: formatIqd(totals.count2, locale),

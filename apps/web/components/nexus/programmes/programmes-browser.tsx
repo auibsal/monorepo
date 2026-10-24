@@ -157,7 +157,7 @@ export const ProgrammesBrowser = () => {
       {rotas.data.map((rota) => (
         <section
           aria-labelledby={`rota-${rota.id}`}
-          className="grid gap-4 border border-line bg-surface p-space-4"
+          className="grid gap-4 border-line border-t pt-space-4"
           key={rota.id}
         >
           <header className="grid gap-1">
@@ -230,7 +230,7 @@ const ShiftRow = ({
         </p>
         {notice ? (
           <p
-            className="type-body font-bold"
+            className="type-body font-medium"
             role={
               ["signedUp", "gaveBack"].includes(notice) ? "status" : "alert"
             }

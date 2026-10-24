@@ -6,13 +6,14 @@ import { Label } from "@repo/design-system/components/ui/label";
 import type { Meta, StoryObj } from "@storybook/react";
 
 /**
- * v5 Screens (brand/BRAND-BOOK.md, "Screens"): square corners, the 2px
- * frame, one solid offset that falls toward the end of the line and
- * collapses when pressed, tracked capitals for labels only (never Arabic).
- * Check each story on both grounds (Theme toolbar) and in both directions.
+ * v6 Screens (brand/BRAND-BOOK.md, "Screens"): one solid accent button and
+ * text links for everything else, 1px line inputs, hairline lists in place
+ * of boxes, square corners, no shadows, tracked capitals for labels only
+ * (never Arabic). Check each story in light and dark mode (Theme toolbar)
+ * and in both directions.
  */
 const meta = {
-  title: "SAL/Screens (v5)",
+  title: "SAL/Screens (v6)",
 } satisfies Meta;
 
 export default meta;
@@ -41,27 +42,27 @@ export const Buttons: Story = {
 export const Cards: Story = {
   render: () => (
     <div className="grid max-w-4xl gap-6 md:grid-cols-2">
-      <article className="grid gap-2 border border-line bg-surface p-space-4">
-        <p className="type-kicker">Tuesday, October 13 · 6:00 PM</p>
+      <article className="grid gap-2 border-line border-t pt-space-4">
+        <p className="type-label">Tuesday, October 13 · 6:00 PM</p>
         <h3 className="type-heading">Open Pages</h3>
         <p className="type-body text-text-secondary">
           Read a page you love, or just listen.
         </p>
         <p className="type-caption">24 places left</p>
       </article>
-      <SalCard className="">
-        <p className="type-kicker">Members</p>
-        <p className="font-bold text-4xl text-text tabular-nums">128</p>
+      <SalCard>
+        <p className="type-label">Members</p>
+        <p className="font-light text-5xl text-text tabular-nums">128</p>
         <p className="type-body">
           41 are Voting Members (two activities this semester or last).
         </p>
       </SalCard>
       <article
-        className="grid gap-2 border border-line bg-surface p-space-4"
+        className="grid gap-2 border-line border-t pt-space-4"
         dir="rtl"
         lang="ar"
       >
-        <p className="type-kicker">الثلاثاء، 13 تشرين الأول</p>
+        <p className="type-label">الثلاثاء، 13 تشرين الأول</p>
         <h3 className="type-heading">صفحات مفتوحة</h3>
         <p className="type-body">اقرأ صفحة تحبها، أو استمع فحسب.</p>
       </article>

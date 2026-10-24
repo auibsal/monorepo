@@ -25,7 +25,7 @@ import { useVisibleModules } from "./admin/admin-shell";
 import { useTwoStep } from "./auth/two-step";
 import { LanguageSwitcher } from "./language-switcher";
 
-// Five sections at most (v5); the account items live in their own menu.
+// Five sections at most (v6); the account items live in their own menu.
 // The logo leads home, so Home needs no link of its own.
 const memberLinks = [
   { href: "/events", key: "events" },
@@ -89,9 +89,9 @@ const TabLinks = () => {
             <Link
               aria-current={active ? "page" : undefined}
               className={cn(
-                "type-label block border-t-2 py-3 text-center text-xs",
+                "block border-t-[1.5px] py-3 text-center font-medium text-[0.8125rem]",
                 active
-                  ? "border-line text-text"
+                  ? "border-accent text-text"
                   : "border-transparent text-text-secondary"
               )}
               href={link.href}
@@ -189,26 +189,18 @@ export const AppShell = ({ children }: { children: ReactNode }) => {
             <ul className="grid gap-2">
               {account.map((link) => (
                 <li key={link.href}>
-                  <Link
-                    className="underline underline-offset-4"
-                    href={link.href}
-                    onClick={close}
-                  >
+                  <Link className="link" href={link.href} onClick={close}>
                     {t(`nexus.nav.${link.key}`)}
                   </Link>
                 </li>
               ))}
             </ul>
             <div className="grid gap-2">
-              <p className="type-kicker">{t("nexus.nav.paperwork")}</p>
+              <p className="type-label">{t("nexus.nav.paperwork")}</p>
               <ul className="grid gap-2">
                 {paperwork.map((link) => (
                   <li key={link.href}>
-                    <Link
-                      className="underline underline-offset-4"
-                      href={link.href}
-                      onClick={close}
-                    >
+                    <Link className="link" href={link.href} onClick={close}>
                       {t(`nexus.nav.${link.key}`)}
                     </Link>
                   </li>
@@ -219,10 +211,7 @@ export const AppShell = ({ children }: { children: ReactNode }) => {
               <ul className="grid gap-2">
                 {notion.map((link) => (
                   <li key={link.key}>
-                    {external(
-                      link,
-                      "inline-flex items-center gap-1.5 underline underline-offset-4"
-                    )}
+                    {external(link, "link inline-flex items-center gap-1.5")}
                   </li>
                 ))}
               </ul>
@@ -230,7 +219,7 @@ export const AppShell = ({ children }: { children: ReactNode }) => {
             <Button
               className="justify-self-start"
               onClick={signOut}
-              variant="outline"
+              variant="link"
             >
               {t("auth.signOut")}
             </Button>

@@ -56,7 +56,7 @@ const Figure = ({
 }) => (
   <SalCard className="content-start gap-2 p-4 sm:gap-3 sm:p-space-4">
     <p className="type-kicker">{label}</p>
-    <p className="font-bold text-3xl text-text tabular-nums sm:text-4xl">
+    <p className="font-light text-3xl text-text tabular-nums sm:text-4xl">
       {formatNumber(value)}
     </p>
     <p className="sm:type-body text-sm">{detail}</p>
@@ -222,8 +222,10 @@ export const AdminOverview = () => {
               {o.campaigns.map((c) => (
                 <li key={c.campaign_id}>
                   <SalCard>
-                    <p className="font-bold">{localized(c, "title", locale)}</p>
-                    <p className="font-bold text-2xl text-text tabular-nums">
+                    <p className="font-medium">
+                      {localized(c, "title", locale)}
+                    </p>
+                    <p className="font-light text-2xl text-text tabular-nums">
                       {t("counted", {
                         amount: formatIqd(c.counted_iqd, locale),
                       })}

@@ -89,7 +89,7 @@ export const DetailsTab = ({ production }: { production: ProductionRow }) => {
     <div className="grid max-w-3xl gap-8 pt-4">
       <div className="grid gap-3">
         <p className="type-kicker">{t("stageNow")}</p>
-        <p className="font-bold text-xl">{t(`stages.${stage}`)}</p>
+        <p className="font-medium text-xl">{t(`stages.${stage}`)}</p>
         {finished ? null : (
           <div className="flex flex-wrap items-center gap-3">
             {next ? (
@@ -283,7 +283,7 @@ export const RightsTab = ({ production }: { production: ProductionRow }) => {
       <p className="type-body">{t("lede")}</p>
       <div className="grid gap-1">
         <p className="type-kicker">{t("status")}</p>
-        <p className="font-bold">
+        <p className="font-medium">
           {tp(`rights.${cleared ? "cleared" : "pending"}`)}
           {cleared && production.rights_cleared_at
             ? ` · ${formatLongDate(production.rights_cleared_at, locale)}`

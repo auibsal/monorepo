@@ -56,7 +56,7 @@ export const MyProgrammes = () => {
               className="grid gap-1 border-line border-b pb-3"
               key={signup.shift_id}
             >
-              <p className="type-body font-bold">
+              <p className="type-body font-medium">
                 {localized(signup.shift, "role", locale)}
               </p>
               <p className="type-caption">

@@ -96,7 +96,7 @@ const BlindFiles = ({ entryId }: { entryId: string }) => {
           <li key={f.name}>
             {f.url ? (
               <a
-                className="underline underline-offset-4"
+                className="link"
                 href={f.url}
                 rel="noopener noreferrer"
                 target="_blank"

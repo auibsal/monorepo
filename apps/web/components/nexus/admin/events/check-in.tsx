@@ -234,7 +234,7 @@ export const CheckInScreen = () => {
         {formatClock(event.data.starts_at, locale)}
       </AdminHeading>
       <p className="type-body text-text-secondary">{t("lede")}</p>
-      <p className="font-bold text-text" role="status">
+      <p className="font-medium text-text" role="status">
         {t("count", { count: formatNumber(count.data ?? 0) })}
       </p>
 
@@ -271,7 +271,7 @@ export const CheckInScreen = () => {
         aria-live="assertive"
         className={
           message
-            ? "border-line border-t p-space-4 font-bold text-lg text-text"
+            ? "border-line border-t p-space-4 font-medium text-lg text-text"
             : "sr-only"
         }
       >

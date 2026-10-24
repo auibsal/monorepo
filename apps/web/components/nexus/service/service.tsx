@@ -116,7 +116,7 @@ export const Service = () => {
       <SalCard>
         <div className="grid gap-3">
           <p className="type-kicker">{t("thisYear")}</p>
-          <p className="font-bold text-3xl">
+          <p className="font-medium text-3xl">
             {t("hours", { hours: formatNumber(total) })}
           </p>
           <div
@@ -184,7 +184,7 @@ export const Service = () => {
             <div className="grid gap-2">
               <Label htmlFor={`${id}-programme`}>{t("programme")}</Label>
               <select
-                className="h-10 border border-line bg-surface px-3"
+                className="h-12 border border-line bg-surface px-3"
                 id={`${id}-programme`}
                 onChange={(e) =>
                   setForm((f) => ({ ...f, programme_id: e.target.value }))
@@ -263,7 +263,7 @@ export const Service = () => {
                 </span>
               </span>
               <span className="flex items-center gap-2">
-                <span className="font-bold">
+                <span className="font-medium">
                   {t("hours", { hours: formatNumber(Number(r.hours)) })}
                 </span>
                 {r.status === "pending" ? (
@@ -291,7 +291,7 @@ export const Service = () => {
           {(certificates.data ?? []).map((c) => (
             <li key={c.id}>
               <Link
-                className="underline underline-offset-4"
+                className="link"
                 href={{ pathname: "/certificate", query: { id: c.id } }}
               >
                 {t(`kinds.${c.kind as recognition.CertificateKind}`)}

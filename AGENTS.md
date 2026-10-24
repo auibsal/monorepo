@@ -43,7 +43,7 @@ items and decisions) and continue from the first unticked item.
   Nexus sections in `components/nexus/app-shell.tsx`) and one footer
   (`components/footer.tsx`), so moving between them never feels like
   another app.
-- `packages/storybook` — the SAL Design System: SAL components, v5 Screens
+- `packages/storybook` — the SAL Design System: SAL components, v6 Screens
   and every platform email in both languages. Local only
   (`bun run --cwd packages/storybook dev`); nothing is deployed.
 - Documents live on auibsal.org/documents (`apps/web`); the officer handbook
@@ -148,11 +148,16 @@ any schema change. Integration tests run against a local stack with
 - **Content.** Don't invent names, dates, figures or quotes. Missing text is a
   `TODO(content): …` placeholder listed in `PROGRESS.md`. Arabic written for
   this platform (not taken from a source) is listed as `needs-native-review`.
-- **Brand book (binding, SAL v4).** Components use only the role tokens
-  (`surface`, `surface-tint`, `text`, `text-secondary`, `text-meta`, `title`,
-  `accent-line`, `band`, `on-band`, plus `rule`). Never add a color. No
-  shadows. Cards on `surface-tint` with the 8px card radius. At most one
-  crimson band per page; crimson never on ink. Light and dark mode across
+- **Brand book (binding, SAL v6, `brand/BRAND-BOOK.md`).** Six colors do the
+  work (white, ink, crimson, paper, stone, ash); components use only the
+  role tokens (`surface`, `surface-reading`, `text`, `text-secondary`,
+  `accent`, `on-accent`, `line`, `band`, `on-band`, `footer`). Never add a
+  color. Headlines are Light, text Regular, labels Medium tracked capitals;
+  never bold headlines. Hairlines in place of boxes and cards; square
+  corners; no shadows. One solid accent button per view, everything else a
+  text link. Section titles start with the Bookmark (`SectionHead`). The
+  paper's articles are set in Literata (`reading`). At most one crimson
+  band per page; crimson never on ink. Light and dark mode across
   the site and the Nexus (owner, Oct 24, 2026): dark mode is the brand's ink
   theme, `data-theme="dark"` on `<html>` from the system setting or the
   header toggle (cookie `sal_theme`, `apps/web/lib/theme.ts`). Never test

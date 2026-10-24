@@ -160,7 +160,7 @@ export const Productions = () => {
                         `departments.${c.department as productions.Department}`
                       )}
                     </p>
-                    <p className="font-bold" dir="auto">
+                    <p className="font-medium" dir="auto">
                       {localized(c, "role", locale)} ·{" "}
                       {titleOf(c.production_id)}
                     </p>
@@ -311,7 +311,7 @@ const AuditionSlot = ({
       ) : null}
       {active ? (
         <div className="flex flex-wrap items-center gap-3">
-          <p className="type-body font-bold">{t(`statuses.${status}`)}</p>
+          <p className="type-body font-medium">{t(`statuses.${status}`)}</p>
           {status === "signed_up" ? (
             <Button
               disabled={busy}
@@ -348,7 +348,7 @@ const AuditionSlot = ({
       )}
       {notice ? (
         <p
-          className="type-body font-bold"
+          className="type-body font-medium"
           role={notice === "signedUp" ? "status" : "alert"}
         >
           {t(`notice.${notice}`)}

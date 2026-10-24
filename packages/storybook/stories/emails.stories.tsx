@@ -2,6 +2,7 @@ import { render } from "@react-email/components";
 import {
   agreementReminder,
   type Built,
+  cronFailed,
   decision,
   type EventInfo,
   eventReminder,
@@ -149,5 +150,12 @@ export const MonthInWaraq = email((l) =>
     [{ ...event, url: "https://auibsal.org/events/sample" }],
     "https://auibsal.org/waraq",
     "https://auibsal.org/newsletter/unsubscribe?token=sample"
+  )
+);
+export const CronFailed = email((l) =>
+  cronFailed(
+    l,
+    [{ failures: 2, job: "daily-notices", last_error: "Sample error" }],
+    "2026-10-13T15:00:00Z"
   )
 );

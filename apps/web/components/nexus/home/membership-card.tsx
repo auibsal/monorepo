@@ -46,7 +46,7 @@ export const MembershipCard = () => {
         <p
           className={
             status.data.voting_member
-              ? "font-bold text-text"
+              ? "font-medium text-text"
               : "text-text-secondary"
           }
         >

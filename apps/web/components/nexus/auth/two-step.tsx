@@ -116,7 +116,7 @@ export const TwoStepPanel = () => {
   return (
     <section
       aria-labelledby="two-step-title"
-      className="grid max-w-xl gap-4 border border-line bg-surface p-space-4"
+      className="grid max-w-xl gap-4 border-line border-t pt-space-4"
     >
       <h2 className="type-heading" id="two-step-title">
         {factorId ? t("verifyTitle") : t("setupTitle")}
@@ -177,7 +177,7 @@ export const TwoStepPanel = () => {
       ) : null}
 
       {failed ? (
-        <p className="type-body font-bold" role="alert">
+        <p className="type-body font-medium" role="alert">
           {t("failed")}
         </p>
       ) : null}

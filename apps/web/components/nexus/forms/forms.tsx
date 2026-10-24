@@ -99,7 +99,7 @@ export const Forms = () => {
               key={s.id}
             >
               <Link
-                className="underline underline-offset-4"
+                className="link"
                 href={
                   s.status === "draft"
                     ? {
@@ -141,7 +141,7 @@ export const Forms = () => {
                   query: { form: type.key },
                 }}
               >
-                <span className="font-bold underline-offset-4 group-hover:underline">
+                <span className="font-medium underline-offset-4 group-hover:underline">
                   <FormTitle formKey={type.key} />
                 </span>
                 <span className="type-caption">
@@ -161,7 +161,7 @@ export const Forms = () => {
         <ul className="mt-3 grid gap-2">
           {forms.formsElsewhere.map((f) => (
             <li key={f.key}>
-              <Link className="underline underline-offset-4" href={f.path}>
+              <Link className="link" href={f.path}>
                 {te(f.key)}
               </Link>
             </li>

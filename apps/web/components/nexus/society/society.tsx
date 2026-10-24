@@ -66,7 +66,7 @@ const Council = () => {
       <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {roster.data?.map((seat) => (
           <li
-            className="grid gap-1 border border-line bg-surface p-space-4"
+            className="grid gap-1 border-line border-t pt-space-4"
             key={`${seat.role}-${seat.full_name_en}`}
           >
             <p className="type-kicker">

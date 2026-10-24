@@ -178,7 +178,7 @@ export const Puzzles = () => {
     {
       cell: (p) => (
         <Link
-          className="underline underline-offset-4"
+          className="link"
           href={{ pathname: "/admin/journal/puzzle", query: { id: p.id } }}
         >
           {localized(p, "title", locale) || t("untitled")}
@@ -258,7 +258,7 @@ const Preview = ({
             className={
               letter === null
                 ? "aspect-square bg-text"
-                : "grid aspect-square place-items-center bg-surface font-semibold text-xs sm:text-sm"
+                : "grid aspect-square place-items-center bg-surface font-medium text-xs sm:text-sm"
             }
             // biome-ignore lint/suspicious/noArrayIndexKey: squares are positions
             key={`${r}-${c}`}

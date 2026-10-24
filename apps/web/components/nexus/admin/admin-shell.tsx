@@ -77,7 +77,7 @@ const AdminNav = () => {
           aria-current={active ? "page" : undefined}
           className={cn(
             "block py-2 text-sm underline-offset-4 hover:underline lg:py-1",
-            active && "font-bold text-text"
+            active && "font-medium text-text"
           )}
           href={hrefFor(module)}
         >
@@ -99,7 +99,7 @@ const AdminNav = () => {
       >
         <span className="grid">
           <span className="type-kicker">{t("title")}</span>
-          <span className="font-bold">
+          <span className="font-medium">
             {current ? t(`nav.${current.key}`) : t("nav.overview")}
           </span>
         </span>

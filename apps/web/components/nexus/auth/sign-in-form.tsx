@@ -167,13 +167,13 @@ export const SignInForm = () => {
         </form>
       )}
       <nav className="type-body grid gap-2">
-        <Link className="underline underline-offset-4" href="/forgot-password">
+        <Link className="link" href="/forgot-password">
           {t("signIn.forgot")}
         </Link>
         <p>
           {t("signIn.noAccount")}{" "}
           <Link
-            className="underline underline-offset-4"
+            className="link"
             href={{ pathname: "/sign-up", query: next ? { next } : {} }}
           >
             {t("signIn.createAccount")}

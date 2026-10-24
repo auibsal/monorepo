@@ -20,7 +20,7 @@ export const VotingEligibility = () => {
 
   return (
     <Section id="voting" title={t("title")}>
-      <p className="type-body font-bold">
+      <p className="type-body font-medium">
         {t("progress", { count: formatNumber(Math.min(count, 99)) })}
       </p>
       <progress

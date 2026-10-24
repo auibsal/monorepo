@@ -63,7 +63,7 @@ export const JournalSection = () => {
                 key={submission.id}
               >
                 <Link
-                  className="underline underline-offset-4"
+                  className="link"
                   href={{
                     pathname: "/waraq/submission",
                     query: { id: submission.id },

@@ -150,7 +150,7 @@ const Episodes = ({ programmeId }: { programmeId: string }) => {
             key={e.id}
           >
             <div>
-              <p className="font-bold">
+              <p className="font-medium">
                 {e.season && e.number ? `${e.season}.${e.number} · ` : ""}
                 {localized(e, "title", locale)}
               </p>
@@ -741,7 +741,7 @@ const Shifts = ({ rotaId }: { rotaId: string }) => {
           return (
             <li className="grid gap-2 border-line border-b pb-3" key={shift.id}>
               <div className="flex flex-wrap items-baseline justify-between gap-2">
-                <p className="font-bold">
+                <p className="font-medium">
                   {localized(shift, "role", locale)}
                   {shift.location_en || shift.location_ar
                     ? ` · ${localized(shift, "location", locale)}`
@@ -818,7 +818,7 @@ const Shifts = ({ rotaId }: { rotaId: string }) => {
           add.mutate();
         }}
       >
-        <h4 className="font-bold text-sm">{t("addShift")}</h4>
+        <h4 className="font-medium text-sm">{t("addShift")}</h4>
         <BilingualField
           label={t("role")}
           maxLength={120}
@@ -1014,7 +1014,7 @@ const Countdown = ({ dueAt }: { dueAt: string }) => {
   };
   return (
     <p
-      className={left.overdue ? "font-bold text-text" : "font-bold"}
+      className={left.overdue ? "font-medium text-text" : "font-medium"}
       role="timer"
     >
       {left.overdue ? t("overdue", values) : t("left", values)}
@@ -1055,7 +1055,7 @@ const RemovalCard = ({
   return (
     <SalCard>
       <div className="flex flex-wrap items-baseline justify-between gap-2">
-        <p className="font-bold">
+        <p className="font-medium">
           {t("from", { name: request.requester_name })}
         </p>
         <Countdown dueAt={request.due_at} />
