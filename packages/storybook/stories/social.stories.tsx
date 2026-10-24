@@ -1,7 +1,5 @@
 import { SocialPost } from "@repo/design-system/components/sal/social-post";
 import type { Meta, StoryObj } from "@storybook/react";
-import "../../../brand/tokens.css";
-import "../../../brand/components/bundle.css";
 
 /**
  * Social templates (brand/components/previews: SocialPost, Carousel,
@@ -10,6 +8,17 @@ import "../../../brand/components/bundle.css";
  * brand's own markup and bundle.css.
  */
 const meta = {
+  // The brand kit's CSS is served from brand/ (.storybook/main.ts,
+  // staticDirs): a package may not import files outside itself.
+  decorators: [
+    (Story) => (
+      <>
+        <link href="/brand-kit/tokens.css" rel="stylesheet" />
+        <link href="/brand-kit/components/bundle.css" rel="stylesheet" />
+        <Story />
+      </>
+    ),
+  ],
   title: "SAL/Social",
 } satisfies Meta;
 
