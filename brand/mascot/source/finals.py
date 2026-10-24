@@ -2,7 +2,8 @@ import sys,os; d=os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0,d
 from rig import CR,C50,svg,g; from rig2 import bird; import cairosvg
 os.makedirs('out',exist_ok=True)
 def save(name,s,w):
-    open(f'out/{name}.svg','w').write(s); cairosvg.svg2png(bytestring=s.encode(),write_to=f'out/{name}.png',output_width=w)
+    with open(f'out/{name}.svg','w') as f: f.write(s)
+    cairosvg.svg2png(bytestring=s.encode(),write_to=f'out/{name}.png',output_width=w)
 V=(-240,-240,500,460)
 save('hudhud',svg(g(bird('light',uid='st'),'translate(0 40)'),vb=V,size=1000),1000)
 save('hudhud-reversed',svg(g(bird('crimson',uid='sr'),'translate(0 40)'),vb=V,size=1000,bg=CR),1000)
