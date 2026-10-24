@@ -25,6 +25,7 @@ export type EmailAuthErrorCode =
   | "signups_disabled"
   | "unknown"
   | "user_exists"
+  | "names_required"
   | "weak_password";
 
 export type AuthResult<T = undefined> =
@@ -77,9 +78,14 @@ export interface SignUpDetails {
   /** From the Turnstile widget, when the human check is on. */
   captchaToken?: string;
   email: string;
-  fullNameAr?: string;
-  fullNameEn: string;
   locale: "ar" | "en";
+  /** First and last name, in English and in Arabic (all four required). */
+  names: {
+    familyAr: string;
+    familyEn: string;
+    givenAr: string;
+    givenEn: string;
+  };
   password: string;
   /** Where the confirmation link lands (the Nexus /auth/callback). */
   redirectTo: string;
@@ -103,14 +109,27 @@ export const signUpWithEmail = async (
   if (details.password.length < MIN_PASSWORD_LENGTH) {
     return { code: "weak_password", ok: false };
   }
+  const names = {
+    familyAr: details.names.familyAr.trim(),
+    familyEn: details.names.familyEn.trim(),
+    givenAr: details.names.givenAr.trim(),
+    givenEn: details.names.givenEn.trim(),
+  };
+  if (Object.values(names).some((part) => part === "")) {
+    return { code: "names_required", ok: false };
+  }
 
   const { data, error } = await supabase.auth.signUp({
     email,
     options: {
       ...captcha(details.captchaToken),
       data: {
-        full_name_ar: details.fullNameAr?.trim() || undefined,
-        full_name_en: details.fullNameEn.trim(),
+        family_name_ar: names.familyAr,
+        family_name_en: names.familyEn,
+        full_name_ar: `${names.givenAr} ${names.familyAr}`,
+        full_name_en: `${names.givenEn} ${names.familyEn}`,
+        given_name_ar: names.givenAr,
+        given_name_en: names.givenEn,
         locale: details.locale,
         verification_statement: isAuibEmail(email)
           ? undefined

@@ -28,7 +28,9 @@ import { memberName } from "../members/directory";
 import { useAttendeeSearch } from "./attendance";
 
 const TICKET = /^sal:ticket:([0-9a-f]{24})$/;
-const MEMBER = /^sal:member:([0-9a-f-]{36})$/;
+// The card's QR is a link (…/verify/member/<code>, in any language).
+const CARD =
+  /^https?:\/\/[^/]+(?:\/[a-z]{2})?\/verify\/member\/([0-9a-f]{20})\/?$/;
 
 /** What a scanned code asks for: a ticket, a membership card, or nothing. */
 export const parseScan = (value: string) => {
@@ -36,9 +38,9 @@ export const parseScan = (value: string) => {
   if (ticket?.[1]) {
     return { ticket_code: ticket[1] } as const;
   }
-  const member = MEMBER.exec(value.trim());
-  if (member?.[1]) {
-    return { target_user: member[1] } as const;
+  const card = CARD.exec(value.trim());
+  if (card?.[1]) {
+    return { card_code: card[1] } as const;
   }
   return null;
 };
@@ -100,12 +102,20 @@ export const CheckInScreen = () => {
 
   const checkIn = useMutation({
     mutationFn: async (
-      target: { ticket_code: string } | { target_user: string }
+      target:
+        | { ticket_code: string }
+        | { target_user: string }
+        | { card_code: string }
     ) =>
       unwrap(
-        await supabase
-          .schema("events")
-          .rpc("check_in", { event_id: eventId, ...target })
+        "card_code" in target
+          ? await supabase.schema("events").rpc("check_in_card", {
+              card_code: target.card_code,
+              event_id: eventId,
+            })
+          : await supabase
+              .schema("events")
+              .rpc("check_in", { event_id: eventId, ...target })
       ),
     onError: (error) =>
       setOutcome(

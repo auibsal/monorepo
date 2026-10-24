@@ -35,7 +35,14 @@ const LANGUAGES = ["en", "ar", "bilingual"] as const;
  * video link for the Video desk, a column or letter for Voices. Bylines are
  * real names (no pen names on these desks).
  */
-export const SendToDesk = ({ desk }: { desk: NamedDesk }) => {
+export const SendToDesk = ({
+  desk,
+  initial,
+}: {
+  desk: NamedDesk;
+  /** The type the member chose on Write for Qirtas. */
+  initial?: journal.Category;
+}) => {
   const t = useTranslations("nexus.waraq.send");
   const tj = useTranslations("nexus.admin.journal");
   const router = useRouter();
@@ -43,7 +50,7 @@ export const SendToDesk = ({ desk }: { desk: NamedDesk }) => {
   const queryClient = useQueryClient();
   const types = journal.deskCategories(desk);
   const [category, setCategory] = useState<journal.Category>(
-    types[0] ?? "article"
+    initial && types.includes(initial) ? initial : (types[0] ?? "article")
   );
   const [language, setLanguage] = useState<(typeof LANGUAGES)[number]>("en");
   const [title, setTitle] = useState("");

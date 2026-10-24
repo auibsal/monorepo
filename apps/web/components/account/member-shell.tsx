@@ -9,6 +9,7 @@ import {
   useRouter,
 } from "@repo/internationalization/navigation";
 import { useQueryClient } from "@tanstack/react-query";
+import { ChevronDown } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import type { ReactNode } from "react";
 import { useVisibleModules } from "@/components/nexus/admin/admin-shell";
@@ -65,22 +66,79 @@ const AccountNav = () => {
     router.replace("/");
   };
 
+  const current = links.find((link) => isCurrent(pathname, link.href));
+  const extras = (
+    <>
+      {staff ? (
+        <a
+          className="whitespace-nowrap py-3 font-medium text-sm hover:text-accent"
+          href={localizedPath(locale, nexusPath())}
+        >
+          {t("diwan")}
+        </a>
+      ) : null}
+      <button
+        className="whitespace-nowrap py-3 text-start font-medium text-sm text-text-secondary hover:text-accent"
+        onClick={signOut}
+        type="button"
+      >
+        {ta("signOut")}
+      </button>
+    </>
+  );
+
   return (
     <nav
       aria-label={t("account")}
       className="border-line border-b print:hidden"
     >
-      <div className="mx-auto flex w-full max-w-6xl items-center gap-x-6 overflow-x-auto px-4">
-        <ul className="flex gap-x-6">
+      {/* Phones: one line naming the page, opening the full list. */}
+      <details
+        className="group mx-auto w-full max-w-6xl px-4 md:hidden"
+        // A new page closes the list.
+        key={pathname}
+      >
+        <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-3 font-medium text-sm [&::-webkit-details-marker]:hidden">
+          <span>{t(current?.key ?? "overview")}</span>
+          <ChevronDown
+            aria-hidden="true"
+            className="size-4 transition-transform group-open:rotate-180"
+          />
+        </summary>
+        <ul className="grid divide-y divide-line border-line border-t">
+          {links.map((link) => (
+            <li key={link.href}>
+              <Link
+                aria-current={
+                  isCurrent(pathname, link.href) ? "page" : undefined
+                }
+                className={cn(
+                  "block py-3 text-sm hover:text-accent",
+                  isCurrent(pathname, link.href)
+                    ? "font-medium text-accent"
+                    : "text-text"
+                )}
+                href={link.href}
+              >
+                {t(link.key)}
+              </Link>
+            </li>
+          ))}
+        </ul>
+        <div className="grid border-line border-t">{extras}</div>
+      </details>
+      {/* Wider screens: the links in one row, sign-out at the end. */}
+      <div className="mx-auto hidden w-full max-w-6xl items-center gap-x-6 px-4 md:flex">
+        <ul className="flex min-w-0 gap-x-6 overflow-x-auto">
           {links.map((link) => {
-            const current = isCurrent(pathname, link.href);
+            const here = isCurrent(pathname, link.href);
             return (
-              <li key={link.href}>
+              <li className="shrink-0" key={link.href}>
                 <Link
-                  aria-current={current ? "page" : undefined}
+                  aria-current={here ? "page" : undefined}
                   className={cn(
                     "block whitespace-nowrap border-b-[1.5px] py-3 font-medium text-sm hover:text-accent",
-                    current
+                    here
                       ? "border-accent text-text"
                       : "border-transparent text-text-secondary"
                   )}
@@ -93,21 +151,7 @@ const AccountNav = () => {
           })}
         </ul>
         <div className="ms-auto flex shrink-0 items-center gap-x-6">
-          {staff ? (
-            <a
-              className="whitespace-nowrap py-3 font-medium text-sm hover:text-accent"
-              href={localizedPath(locale, nexusPath())}
-            >
-              {t("diwan")}
-            </a>
-          ) : null}
-          <button
-            className="whitespace-nowrap py-3 font-medium text-sm text-text-secondary hover:text-accent"
-            onClick={signOut}
-            type="button"
-          >
-            {ta("signOut")}
-          </button>
+          {extras}
         </div>
       </div>
     </nav>

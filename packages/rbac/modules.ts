@@ -19,9 +19,16 @@ export const adminModules = [
     permissions: ["members.verify", "members.manage", "roles.assign"],
   },
   { key: "events", permissions: ["events.manage", "events.checkin"] },
+  // Qirtas: the newsroom (desk pieces, edited with the author) and the blind
+  // review of Edition submissions, in one section.
   {
     key: "journal",
     permissions: [
+      "journal.manage",
+      "journal.review",
+      "journal.identity.view",
+      "journal.decide",
+      "journal.advise",
       "journal.publish",
       "journal.approve",
       "journal.copy",
@@ -31,16 +38,6 @@ export const adminModules = [
       "journal.edit.gallery",
       "journal.edit.video",
       "journal.edit.voices",
-    ],
-  },
-  {
-    key: "pipeline",
-    permissions: [
-      "journal.manage",
-      "journal.review",
-      "journal.identity.view",
-      "journal.decide",
-      "journal.advise",
     ],
   },
   { key: "content", permissions: ["content.manage"] },

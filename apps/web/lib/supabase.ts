@@ -68,3 +68,33 @@ export const readPublished = async <T>(
     return fallback;
   }
 };
+
+/**
+ * A read that must be current (a card's status): the same anonymous client
+ * as published reads, never cached.
+ */
+export const readLive = async <T>(
+  read: (client: SupabaseClient<Database>) => Promise<T>,
+  fallback: T
+): Promise<T> => {
+  if (
+    !(env.NEXT_PUBLIC_SUPABASE_URL && env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY)
+  ) {
+    return fallback;
+  }
+  const client = createClient<Database>(
+    env.NEXT_PUBLIC_SUPABASE_URL,
+    env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
+    {
+      auth: { autoRefreshToken: false, persistSession: false },
+      global: {
+        fetch: (input, init) => fetch(input, { ...init, cache: "no-store" }),
+      },
+    }
+  );
+  try {
+    return await read(client);
+  } catch {
+    return fallback;
+  }
+};

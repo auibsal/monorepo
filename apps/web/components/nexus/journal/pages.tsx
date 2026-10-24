@@ -65,14 +65,10 @@ const useInvalidate = () => {
 
 // ── Journal home ──────────────────────────────────────────────────────────────
 
-/** The author's accepted work, on its way to publication or out. */
-const MyPieces = () => {
-  const t = useTranslations("nexus.waraq");
-  const tw = useTranslations("nexus.admin.waraq");
-  const tj = useTranslations("nexus.admin.journal");
-  const locale = useLocale() as Locale;
+/** The author's desk pieces (and accepted Edition work) in the newsroom. */
+const useMyPieces = () => {
   const { supabase } = useAuth();
-  const pieces = useQuery({
+  return useQuery({
     queryFn: async () => {
       const mine =
         unwrap(await supabase.schema("journal").rpc("my_contributors")) ?? [];
@@ -95,137 +91,166 @@ const MyPieces = () => {
     },
     queryKey: ["journal", "my-pieces"],
   });
-  if (!pieces.data || pieces.data.length === 0) {
-    return null;
-  }
-  return (
-    <DiwanSection id="mypieces" title={t("myPieces")}>
-      <ul className="grid gap-2">
-        {pieces.data.map((p) => (
-          <li className="flex flex-wrap items-baseline gap-3" key={p.id}>
-            <Link
-              className="font-medium underline underline-offset-4"
-              href={{ pathname: "/qirtas/work", query: { id: p.id } }}
-            >
-              {localized(p, "title", locale) || t("pieceTitle")}
-            </Link>
-            <span className="type-caption">
-              {`${tj(`categories.${p.category}`)} · ${tw(`statuses.${p.status as journal.PieceStatus}`)}`}
-            </span>
-          </li>
-        ))}
-      </ul>
-    </DiwanSection>
-  );
 };
 
+/** One row of "Your work": an Edition submission or a desk piece. */
+interface Sent {
+  date: string;
+  href: {
+    pathname: "/qirtas/submission" | "/qirtas/work";
+    query: { id: string };
+  };
+  id: string;
+  process: "desk" | "edition";
+  status: string;
+  title: string;
+  type: string;
+}
+
+/**
+ * Write for Qirtas: one place for everything sent to the paper. The member
+ * picks a type; the type decides the process (edited on a desk, or read
+ * blind for an Edition). Below, everything they have sent, either way.
+ */
 export const JournalHome = () => {
   const t = useTranslations("nexus.journal");
+  const tw = useTranslations("nexus.journal.write");
   const tn = useTranslations("nexus.waraq");
-  const tw = useTranslations("nexus.home.journal");
+  const tp = useTranslations("nexus.admin.waraq");
   const tj = useTranslations("nexus.admin.journal");
   const locale = useLocale() as Locale;
   const calls = useOpenCalls();
   const submissions = useMySubmissions();
-  type Row = NonNullable<typeof submissions.data>[number];
-  const columns: Column<Row>[] = [
+  const pieces = useMyPieces();
+
+  const sent: Sent[] = [
+    ...(submissions.data ?? []).map(
+      (s): Sent => ({
+        date: s.created_at,
+        href: { pathname: "/qirtas/submission", query: { id: s.id } },
+        id: `s-${s.id}`,
+        process: "edition",
+        status:
+          s.status === "intake_check" && s.intake_returned_at
+            ? t("returned")
+            : t(`status.${s.status}`),
+        title: s.title,
+        type: tj(`categories.${s.category}`),
+      })
+    ),
+    ...(pieces.data ?? []).map(
+      (p): Sent => ({
+        date: p.updated_at,
+        href: { pathname: "/qirtas/work", query: { id: p.id } },
+        id: `p-${p.id}`,
+        process: "desk",
+        status: tp(`statuses.${p.status as journal.PieceStatus}`),
+        title: localized(p, "title", locale) || tn("pieceTitle"),
+        type: tj(`categories.${p.category}`),
+      })
+    ),
+  ].sort((a, b) => b.date.localeCompare(a.date));
+
+  const columns: Column<Sent>[] = [
     {
-      cell: (s) => (
+      cell: (row) => (
         <Link
           className="font-medium underline underline-offset-4"
-          href={{ pathname: "/qirtas/submission", query: { id: s.id } }}
+          href={row.href}
         >
-          {s.title}
+          {row.title}
         </Link>
       ),
       header: t("columns.title"),
       key: "title",
     },
+    { cell: (row) => row.type, header: t("columns.category"), key: "type" },
     {
-      cell: (s) => tj(`categories.${s.category}`),
-      header: t("columns.category"),
-      key: "category",
+      cell: (row) => tw(`processes.${row.process}`),
+      header: tw("process"),
+      key: "process",
     },
+    { cell: (row) => row.status, header: t("columns.status"), key: "status" },
     {
-      cell: (s) =>
-        s.status === "intake_check" && s.intake_returned_at
-          ? t("returned")
-          : t(`status.${s.status}`),
-      header: t("columns.status"),
-      key: "status",
-    },
-    {
-      cell: (s) => formatLongDate(s.created_at, locale),
+      cell: (row) => formatLongDate(row.date, locale),
       className: "whitespace-nowrap",
-      header: t("columns.sent"),
-      key: "sent",
+      header: tw("updated"),
+      key: "date",
     },
   ];
 
+  const openCalls = calls.data ?? [];
+
   return (
     <div className="grid gap-8">
-      <AdminHeading title={t("title")}>{t("lede")}</AdminHeading>
-      <DiwanSection id="opencalls" title={t("openCalls")}>
+      <AdminHeading title={t("title")}>{tw("lede")}</AdminHeading>
+      <DiwanSection id="send" title={tw("sendTitle")}>
+        <p className="max-w-3xl text-text-secondary">{tw("sendLede")}</p>
         {calls.data ? null : <SectionSpinner />}
-        {calls.data?.length === 0 ? <p>{tw("none")}</p> : null}
-        <ul className="grid gap-4">
-          {calls.data?.map((call) => (
-            <li className="grid gap-2 border-line border-t p-4" key={call.id}>
-              <h3 className="font-medium">
-                {localized(call, "title", locale)}
-              </h3>
-              {localized(call, "theme", locale) ? (
-                <p>{localized(call, "theme", locale)}</p>
-              ) : null}
-              {localized(call, "eligibility", locale) ? (
-                <p className="type-caption whitespace-pre-wrap">
-                  {localized(call, "eligibility", locale)}
-                </p>
-              ) : null}
-              <p className="type-caption">
-                {t("closes", {
-                  date: formatLongDate(call.closes_at, locale, true),
-                  max: formatNumber(call.max_per_person),
-                })}
-              </p>
-              <Link
-                className={buttonLink}
-                href={{ pathname: "/qirtas/submit", query: { call: call.id } }}
+        <ul className="grid divide-y divide-line border-line border-y">
+          {journal.desks.map((desk) => {
+            const edition = journal.isEditionDesk(desk);
+            const open = !edition || openCalls.length > 0;
+            return (
+              <li
+                className="grid gap-3 py-5 md:grid-cols-[12rem_1fr]"
+                key={desk}
               >
-                {tw("submit")}
-              </Link>
-            </li>
-          ))}
+                <h3 className="type-heading">{tj(`desks.${desk}`)}</h3>
+                <div className="grid gap-2">
+                  <p className="type-body">
+                    {edition
+                      ? tw(`deskLines.${desk as "letters"}`)
+                      : tn(`deskLines.${desk as "news"}`)}
+                  </p>
+                  <p className="type-caption">
+                    {edition
+                      ? tw("processes.editionLong")
+                      : tw("processes.deskLong")}
+                  </p>
+                  {edition
+                    ? openCalls.map((call) => (
+                        <p className="type-caption" key={call.id}>
+                          {tw("callCloses", {
+                            call: localized(call, "title", locale),
+                            date: formatLongDate(call.closes_at, locale, true),
+                            max: formatNumber(call.max_per_person),
+                          })}
+                        </p>
+                      ))
+                    : null}
+                  {open ? (
+                    <ul className="flex flex-wrap gap-x-5 gap-y-2 pt-1">
+                      {journal.deskCategories(desk).map((category) => (
+                        <li key={category}>
+                          <Link
+                            className="link font-medium text-sm"
+                            href={{
+                              pathname: "/qirtas/submit",
+                              query: { type: category },
+                            }}
+                          >
+                            {tj(`categories.${category}`)}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="type-caption">{tw("noCall")}</p>
+                  )}
+                </div>
+              </li>
+            );
+          })}
         </ul>
       </DiwanSection>
-      <DiwanSection id="deskstitle" title={tn("desksTitle")}>
-        <p>{tn("desksLede")}</p>
-        <ul className="grid gap-4 sm:grid-cols-3">
-          {(["news", "video", "voices"] as const).map((desk) => (
-            <li
-              className="grid content-start gap-2 border-line border-t p-4"
-              key={desk}
-            >
-              <h3 className="font-medium">{tj(`desks.${desk}`)}</h3>
-              <p className="type-caption">{tn(`deskLines.${desk}`)}</p>
-              <Link
-                className={buttonLink}
-                href={{ pathname: "/qirtas/submit", query: { desk } }}
-              >
-                {tn("sendTo")}
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </DiwanSection>
-      <MyPieces />
-      <DiwanSection id="mine" title={tw("mine")}>
-        {submissions.data ? (
+      <DiwanSection id="mine" title={tw("yourWork")}>
+        {submissions.data && pieces.data ? (
           <DataTable
             columns={columns}
             empty={t("noSubmissions")}
-            rowKey={(s) => s.id}
-            rows={submissions.data}
+            rowKey={(row) => row.id}
+            rows={sent}
           />
         ) : (
           <SectionSpinner />
@@ -235,7 +260,12 @@ export const JournalHome = () => {
   );
 };
 
-// ── Submit ──────────────────────────────────────────────────────────────────
+// ── Submit ────────────────────────────────────────────────────────────────
+
+/** A type that answers an Edition call (Letters and Gallery). */
+const isEditionType = (value: string | null): value is journal.Category =>
+  (journal.categories as readonly string[]).includes(value ?? "") &&
+  journal.isEditionDesk(journal.deskOf(value as journal.Category));
 
 type OpenCall = NonNullable<ReturnType<typeof useOpenCalls>["data"]>[number];
 type Pathway = Awaited<ReturnType<typeof journal.myCallPathways>>[number];
@@ -325,8 +355,13 @@ export const SubmitWork = () => {
   const invalidate = useInvalidate();
   const calls = useOpenCalls();
   const requestedCall = useQueryParam("call");
+  const requestedType = useQueryParam("type");
   const [callId, setCallId] = useState(requestedCall ?? "");
-  const [work, setWork] = useState<WorkValue>(blankWork);
+  const [work, setWork] = useState<WorkValue>(() =>
+    isEditionType(requestedType)
+      ? { ...blankWork, category: requestedType }
+      : blankWork
+  );
   const [files, setFiles] = useState<PendingFile[]>([]);
   const [pledged, setPledged] = useState(false);
   const [firstPublication, setFirstPublication] = useState(false);

@@ -150,6 +150,14 @@ export const MembersDirectory = () => {
                 {t("queue", { count: formatNumber(pending) })}
               </Link>
             ) : null}
+            {hasPermission(grants.data, "members.manage") ? (
+              <Link
+                className={buttonVariants({ size: "sm", variant: "outline" })}
+                href="/members/insights"
+              >
+                {t("insights.link")}
+              </Link>
+            ) : null}
             <ExportButton fileName="sal-members.csv" name="members" />
           </>
         }

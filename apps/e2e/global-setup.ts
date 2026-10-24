@@ -56,7 +56,14 @@ export default async function globalSetup() {
     await db
       .schema("core")
       .from("profiles")
-      .update({ setup_completed_at: new Date().toISOString() })
+      .update({
+        // First and last name in both languages: the gate asks for all four.
+        family_name_ar: "تجريبي",
+        family_name_en: "Tester",
+        given_name_ar: "اختبار",
+        given_name_en: "E2E",
+        setup_completed_at: new Date().toISOString(),
+      })
       .eq("id", id);
   }
 

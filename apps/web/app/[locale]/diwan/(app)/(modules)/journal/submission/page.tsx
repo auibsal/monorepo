@@ -1,17 +1,17 @@
 import { Suspense } from "react";
 import { RequireModule } from "@/components/nexus/admin/admin-shell";
-import { EntryView } from "@/components/nexus/admin/pipeline/entry";
+import { SubmissionView } from "@/components/nexus/admin/pipeline/intake";
 import { SectionSpinner } from "@/components/nexus/states";
 import { titleFrom } from "@/lib/nexus/metadata";
 
 export const generateMetadata = titleFrom((t) =>
-  t("nexus.admin.pipeline.entry.title")
+  t("nexus.admin.pipeline.submission.title")
 );
 
 const Page = () => (
-  <RequireModule module="pipeline">
+  <RequireModule module="journal">
     <Suspense fallback={<SectionSpinner />}>
-      <EntryView />
+      <SubmissionView />
     </Suspense>
   </RequireModule>
 );

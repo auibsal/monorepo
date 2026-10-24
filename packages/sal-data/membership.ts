@@ -63,6 +63,189 @@ export const calendarToken = async (client: Client) =>
 export const resetCalendarToken = async (client: Client) =>
   unwrap(await membership(client).rpc("reset_calendar_token"));
 
+// ── The membership card ─────────────────────────────────────────────────────
+
+/** The path the card's QR links to: anyone's camera opens the check. */
+export const cardPath = (code: string) => `/verify/member/${code}`;
+
+/** A card's code, as it appears in the link (20 hex characters). */
+export const CARD_CODE = /^[0-9a-f]{20}$/;
+
+/** The member's own card (issued on first look). */
+export const myCard = async (client: Client) =>
+  unwrap(await membership(client).rpc("my_card"))?.[0] ?? null;
+
+/** A new code for a lost or shared card; the old link stops working. */
+export const reissueCard = async (client: Client) =>
+  unwrap(await membership(client).rpc("reissue_card"))?.[0] ?? null;
+
+/** The public check of a card by its code (anyone, signed in or not). */
+export const verifyCard = async (client: Client, code: string) =>
+  unwrap(await membership(client).rpc("verify_card", { code }))?.[0] ?? null;
+
+// ── What members tell us about themselves (core.member_details) ─────────────
+
+export const affiliations = [
+  "student",
+  "alumni",
+  "faculty",
+  "staff",
+  "community",
+] as const;
+export const studyLevels = [
+  "foundation",
+  "undergraduate",
+  "graduate",
+  "other",
+] as const;
+export const genders = ["woman", "man", "prefer_not"] as const;
+export const memberLanguages = [
+  "ar",
+  "en",
+  "ku",
+  "tr",
+  "syc",
+  "fr",
+  "de",
+  "other",
+] as const;
+export const interests = [
+  "poetry",
+  "fiction",
+  "nonfiction",
+  "theater",
+  "film",
+  "music",
+  "visual_art",
+  "photography",
+  "debate",
+  "journalism",
+  "translation",
+  "calligraphy",
+  "reading",
+] as const;
+export const skills = [
+  "writing",
+  "editing",
+  "translation",
+  "design",
+  "photography",
+  "video",
+  "social_media",
+  "acting",
+  "directing",
+  "stage_crew",
+  "music",
+  "organizing",
+  "web",
+] as const;
+export const heardFrom = [
+  "friend",
+  "instagram",
+  "telegram",
+  "event",
+  "poster",
+  "class",
+  "website",
+  "other",
+] as const;
+
+const PHONE = /^\+?[0-9 ()-]{7,24}$/;
+const year = (min: number, max: number) =>
+  z.number().int().min(min).max(max).nullable();
+
+/** Every answer is optional; the database checks the same limits. */
+export const detailsSchema = z.object({
+  affiliation: z.enum(affiliations).nullable(),
+  birth_year: year(1930, 2015),
+  city: z.string().trim().max(80).nullable(),
+  college: z.string().trim().max(120).nullable(),
+  gender: z.enum(genders).nullable(),
+  graduation_year: year(1990, 2100),
+  heard_from: z.enum(heardFrom).nullable(),
+  interests: z.array(z.enum(interests)),
+  languages: z.array(z.enum(memberLanguages)),
+  major: z.string().trim().max(120).nullable(),
+  phone: z.string().trim().regex(PHONE).nullable(),
+  research_consent: z.boolean(),
+  skills: z.array(z.enum(skills)),
+  student_id: z.string().trim().max(20).nullable(),
+  study_level: z.enum(studyLevels).nullable(),
+  volunteer: z.boolean(),
+});
+
+export type MemberDetails = z.infer<typeof detailsSchema>;
+
+export const emptyDetails: MemberDetails = {
+  affiliation: null,
+  birth_year: null,
+  city: null,
+  college: null,
+  gender: null,
+  graduation_year: null,
+  heard_from: null,
+  interests: [],
+  languages: [],
+  major: null,
+  phone: null,
+  research_consent: false,
+  skills: [],
+  student_id: null,
+  study_level: null,
+  volunteer: false,
+};
+
+const detailColumns =
+  "affiliation, birth_year, city, college, gender, graduation_year, heard_from, interests, languages, major, phone, research_consent, skills, student_id, study_level, volunteer";
+
+/** The member's own answers (RLS: only theirs, or members.manage). */
+export const myDetails = async (
+  client: Client,
+  userId: string
+): Promise<MemberDetails> => {
+  const row = unwrap(
+    await client
+      .schema("core")
+      .from("member_details")
+      .select(detailColumns)
+      .eq("user_id", userId)
+      .maybeSingle()
+  );
+  return row ? ({ ...emptyDetails, ...row } as MemberDetails) : emptyDetails;
+};
+
+export const saveDetails = async (
+  client: Client,
+  userId: string,
+  details: MemberDetails
+) =>
+  unwrap(
+    await client
+      .schema("core")
+      .from("member_details")
+      .upsert({ ...detailsSchema.parse(details), user_id: userId })
+  );
+
+export interface InsightItem {
+  /** Null when fewer than five members gave this answer. */
+  count: number | null;
+  value: string;
+}
+
+export interface MemberInsights {
+  answered: number;
+  counted: number;
+  facets: Partial<Record<string, InsightItem[]>>;
+  members: number;
+  volunteers: number;
+}
+
+/** Counts for the Diwan (members.manage), from consenting members only. */
+export const memberInsights = async (client: Client) =>
+  unwrap(
+    await client.schema("core").rpc("member_insights")
+  ) as MemberInsights | null;
+
 // ── Admin (members.manage / members.verify / roles.assign) ──────────────────
 
 export const tiers = ["member", "fellow", "honorary", "alumni"] as const;
