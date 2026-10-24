@@ -68,7 +68,7 @@ const EditionPage = async ({ params }: EditionProps) => {
           // biome-ignore lint/performance/noImgElement: a published image from the media bucket
           <img
             alt={t("coverAlt")}
-            className="w-full rounded-card"
+            className="w-full"
             height={800}
             src={cover}
             width={600}
@@ -100,7 +100,7 @@ const EditionPage = async ({ params }: EditionProps) => {
       {letter ? (
         <section
           aria-labelledby="letter"
-          className="reading mx-auto grid w-full max-w-2xl gap-3 rounded-card p-8"
+          className="reading mx-auto grid w-full max-w-2xl gap-3 p-8"
         >
           <h2 className="type-kicker" id="letter">
             {t("editorsNote")}
@@ -109,10 +109,7 @@ const EditionPage = async ({ params }: EditionProps) => {
         </section>
       ) : null}
       <section aria-labelledby="contents" className="grid gap-8">
-        <h2
-          className="type-kicker border-accent-line border-b pb-2"
-          id="contents"
-        >
+        <h2 className="type-kicker border-line border-b pb-2" id="contents">
           {t("inThisIssue")}
         </h2>
         {byDesk.map((group) => (

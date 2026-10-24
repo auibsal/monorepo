@@ -95,7 +95,7 @@ export const Forms = () => {
         <ul className="grid gap-2">
           {(mine.data ?? []).map((s) => (
             <li
-              className="flex flex-wrap items-baseline justify-between gap-2 border-rule border-b pb-2"
+              className="flex flex-wrap items-baseline justify-between gap-2 border-line border-b pb-2"
               key={s.id}
             >
               <Link
@@ -131,11 +131,11 @@ export const Forms = () => {
             {t("noneAvailable")}
           </EmptyLine>
         ) : null}
-        <ul className="grid border-rule border-t">
+        <ul className="grid border-line border-t">
           {available.map((type) => (
-            <li className="border-rule border-b" key={type.key}>
+            <li className="border-line border-b" key={type.key}>
               <Link
-                className="group -mx-2 grid gap-y-1 px-2 py-3 hover:bg-surface-tint focus-visible:bg-surface-tint"
+                className="group -mx-2 grid gap-y-1 px-2 py-3 hover:text-accent focus-visible:text-accent"
                 href={{
                   pathname: "/forms/fill",
                   query: { form: type.key },
@@ -153,7 +153,7 @@ export const Forms = () => {
         </ul>
       </section>
 
-      <details className="group grid gap-3 border-rule border-t pt-4">
+      <details className="group grid gap-3 border-line border-t pt-4">
         <summary className="type-subheading cursor-pointer">
           {t("elsewhereTitle")}
         </summary>

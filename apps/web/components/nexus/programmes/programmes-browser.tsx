@@ -157,7 +157,7 @@ export const ProgrammesBrowser = () => {
       {rotas.data.map((rota) => (
         <section
           aria-labelledby={`rota-${rota.id}`}
-          className="frame grid gap-4 bg-surface p-card-padding shadow-offset"
+          className="grid gap-4 border border-line bg-surface p-space-4"
           key={rota.id}
         >
           <header className="grid gap-1">
@@ -214,7 +214,7 @@ const ShiftRow = ({
   const location = localized(shift, "location", locale);
 
   return (
-    <li className="grid gap-2 border-rule border-t py-4 sm:grid-cols-[1fr_auto] sm:items-center">
+    <li className="grid gap-2 border-line border-t py-4 sm:grid-cols-[1fr_auto] sm:items-center">
       <div className="grid gap-1">
         <p className="type-subheading">{localized(shift, "role", locale)}</p>
         <p className="type-body">

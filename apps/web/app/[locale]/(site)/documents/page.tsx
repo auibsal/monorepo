@@ -46,10 +46,10 @@ const DocumentsPage = async ({ params }: DocumentsProps) => {
       <ul className="grid gap-6 md:grid-cols-2">
         {list.map((doc) => (
           <li
-            className="frame grid content-start gap-2 bg-surface-tint p-6"
+            className="grid content-start gap-2 border border-line border-t p-6"
             key={doc.code}
           >
-            <p className="type-code text-sm text-text-meta">{doc.code}</p>
+            <p className="type-code text-sm text-text-secondary">{doc.code}</p>
             <h2 className="type-heading">
               <Link
                 className="underline-offset-4 hover:underline"

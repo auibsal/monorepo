@@ -11,7 +11,7 @@ export const Block = ({
   readonly title: string;
 }) => (
   <section aria-labelledby={id} className="grid gap-4">
-    <h2 className="type-heading border-accent-line border-b pb-2" id={id}>
+    <h2 className="type-heading border-line border-b pb-2" id={id}>
       {title}
     </h2>
     {children}
@@ -21,7 +21,7 @@ export const Block = ({
 /** Code the reader copies: a path, a header, a request. */
 export const Code = ({ children }: { readonly children: ReactNode }) => (
   <code
-    className="rounded bg-surface-tint px-1.5 py-0.5 font-mono text-sm"
+    className="rounded border-line border-t px-1.5 py-0.5 font-mono text-sm"
     dir="ltr"
   >
     {children}

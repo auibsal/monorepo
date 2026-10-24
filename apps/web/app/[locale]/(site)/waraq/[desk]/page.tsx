@@ -61,7 +61,7 @@ const DeskPage = async ({ params }: DeskProps) => {
         <ul
           className={
             desk === "letters"
-              ? "reading grid gap-10 rounded-card p-6 sm:grid-cols-2"
+              ? "reading grid gap-10 p-6 sm:grid-cols-2"
               : "grid gap-10 sm:grid-cols-2 lg:grid-cols-3"
           }
         >

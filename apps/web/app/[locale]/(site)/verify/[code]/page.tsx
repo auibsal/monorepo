@@ -92,7 +92,7 @@ const CertificatePage = async ({ params }: CertificateParams) => {
       <p
         className={
           certificate.status === "revoked"
-            ? "font-bold text-title"
+            ? "font-bold text-text"
             : "font-bold text-text"
         }
         role="status"
@@ -101,7 +101,7 @@ const CertificatePage = async ({ params }: CertificateParams) => {
           ? t("revoked", { date: date(certificate.revoked_at) })
           : t("valid")}
       </p>
-      <dl className="grid gap-3 rounded-card bg-surface-tint p-5">
+      <dl className="grid gap-3 border-line border-t p-5">
         {rows.map(([label, value]) => (
           <div className="grid gap-1 sm:grid-cols-[10rem_1fr]" key={label}>
             <dt className="type-kicker">{label}</dt>

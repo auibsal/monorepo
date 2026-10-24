@@ -41,8 +41,8 @@ export const AdminHeading = ({
   children,
   title,
 }: AdminHeadingProps) => (
-  <header className="grid gap-2 border-accent-line border-b-2 pb-gap-tight">
-    <div className="flex flex-wrap items-end justify-between gap-gap">
+  <header className="grid gap-2 border-line border-b-2 pb-space-3">
+    <div className="flex flex-wrap items-end justify-between gap-space-4">
       <h1 className="font-bold text-2xl text-text leading-tight">{title}</h1>
       {actions ? <div className="flex flex-wrap gap-2">{actions}</div> : null}
     </div>
@@ -97,7 +97,7 @@ export const DataTable = <T,>({
       <table className="w-full border-collapse text-sm max-md:block">
         {caption ? <caption className="sr-only">{caption}</caption> : null}
         <thead className="max-md:sr-only">
-          <tr className="border-accent-line border-b">
+          <tr className="border-line border-b">
             {columns.map((column) => (
               <th
                 className={cn(
@@ -112,10 +112,10 @@ export const DataTable = <T,>({
             ))}
           </tr>
         </thead>
-        <tbody className="max-md:block max-md:border-accent-line max-md:border-t">
+        <tbody className="max-md:block max-md:border-line max-md:border-t">
           {rows.map((row) => (
             <tr
-              className="border-rule border-b max-md:grid max-md:gap-1.5 max-md:py-3"
+              className="border-line border-b max-md:grid max-md:gap-1.5 max-md:py-3"
               key={rowKey(row)}
             >
               {columns.map((column, index) => (
@@ -309,7 +309,7 @@ export const useErrorReason = () => {
 export const ErrorLine = ({ error }: { error: unknown }) => {
   const reason = useErrorReason();
   return error ? (
-    <p className="text-sm text-title" role="alert">
+    <p className="text-sm text-text" role="alert">
       {reason(error)}
     </p>
   ) : null;
@@ -434,7 +434,7 @@ export const ExportButton = ({
         {state === "busy" ? t("exporting") : t("export")}
       </Button>
       {state === "failed" ? (
-        <p className="text-title text-xs" role="alert">
+        <p className="text-text text-xs" role="alert">
           {t("exportFailed")}
         </p>
       ) : null}

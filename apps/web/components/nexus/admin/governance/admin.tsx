@@ -105,7 +105,7 @@ const Council = () => {
         {roster.data && rows.length === 0 ? (
           <p className="type-body text-text-secondary">{t("empty")}</p>
         ) : null}
-        <ul className="grid gap-gap sm:grid-cols-2 lg:grid-cols-3">
+        <ul className="grid gap-space-4 sm:grid-cols-2 lg:grid-cols-3">
           {rows.map((row) => (
             <li key={`${String(row.role)}-${String(row.full_name_en)}`}>
               <SalCard>
@@ -551,7 +551,7 @@ const Resolutions = () => {
           </Field>
         </div>
         {problem ? (
-          <p className="text-sm text-title" role="alert">
+          <p className="text-sm text-text" role="alert">
             {problem}
           </p>
         ) : null}

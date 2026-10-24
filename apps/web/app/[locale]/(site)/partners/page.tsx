@@ -43,7 +43,7 @@ const PartnersPage = async ({ params }: LocaleParams) => {
                 const name = localized(partner, "name", locale);
                 return (
                   <li
-                    className="grid content-start gap-3 rounded-card bg-surface-tint p-5"
+                    className="grid content-start gap-3 border-line border-t p-5"
                     key={partner.slug}
                   >
                     {logo ? (

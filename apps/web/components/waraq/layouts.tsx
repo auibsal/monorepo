@@ -62,7 +62,7 @@ const Figure = ({
     // biome-ignore lint/performance/noImgElement: a published image from the media bucket
     <img
       alt={localized(image, "alt", locale)}
-      className={full ? "w-full" : "w-full rounded-card"}
+      className={full ? "w-full" : "w-full"}
       height={image.height ?? 900}
       loading="lazy"
       src={image.url}
@@ -105,7 +105,7 @@ const NewsBody = ({ locale, piece }: { locale: Locale; piece: Full }) => {
 
 /** A poem: centered, line breaks exactly as written, generous space. */
 const PoemBody = ({ piece }: { piece: Full }) => (
-  <div className="reading mx-auto grid w-full max-w-2xl justify-items-center gap-12 rounded-card px-4 py-12">
+  <div className="reading mx-auto grid w-full max-w-2xl justify-items-center gap-12 px-4 py-12">
     {texts(piece).map((text) => (
       <Html
         className="prose max-w-none whitespace-pre-wrap [&_p]:mb-6"
@@ -120,13 +120,13 @@ const PoemBody = ({ piece }: { piece: Full }) => (
 /** A story, essay, column or translation: a reading column with a drop cap (English only:
  * Arabic letters join, so a raised first letter would break the word). */
 const ProseBody = ({ piece }: { piece: Full }) => (
-  <div className="reading mx-auto grid w-full max-w-2xl gap-10 rounded-card px-4 py-12">
+  <div className="reading mx-auto grid w-full max-w-2xl gap-10 px-4 py-12">
     {texts(piece).map((text) => (
       <Html
         className={
           text.lang === "ar"
             ? "prose max-w-none"
-            : "prose max-w-none [&>p:first-of-type]:first-letter:float-start [&>p:first-of-type]:first-letter:pe-2 [&>p:first-of-type]:first-letter:font-bold [&>p:first-of-type]:first-letter:text-5xl [&>p:first-of-type]:first-letter:text-title [&>p:first-of-type]:first-letter:leading-none"
+            : "prose max-w-none [&>p:first-of-type]:first-letter:float-start [&>p:first-of-type]:first-letter:pe-2 [&>p:first-of-type]:first-letter:font-bold [&>p:first-of-type]:first-letter:text-5xl [&>p:first-of-type]:first-letter:text-text [&>p:first-of-type]:first-letter:leading-none"
         }
         html={text.html}
         key={text.lang}
@@ -138,7 +138,7 @@ const ProseBody = ({ piece }: { piece: Full }) => (
 
 /** A script: speakers and directions kept as set, a narrower column. */
 const DramaBody = ({ piece }: { piece: Full }) => (
-  <div className="reading mx-auto grid w-full max-w-2xl gap-10 rounded-card px-4 py-12">
+  <div className="reading mx-auto grid w-full max-w-2xl gap-10 px-4 py-12">
     {texts(piece).map((text) => (
       <Html
         className="prose max-w-none whitespace-pre-wrap [&_em]:text-text-secondary [&_p]:mb-4 [&_strong]:uppercase [&_strong]:tracking-wide"
@@ -201,7 +201,7 @@ const VideoBody = async ({
   return (
     <div className="mx-auto grid w-full max-w-4xl gap-6 px-4">
       {id ? (
-        <div className="aspect-video w-full overflow-hidden rounded-card bg-surface-tint">
+        <div className="aspect-video w-full overflow-hidden border-line border-t">
           <iframe
             allow="encrypted-media; picture-in-picture"
             allowFullScreen
@@ -240,7 +240,7 @@ const SixWordsBody = ({ piece }: { piece: Full }) => (
   <div className="mx-auto grid w-full max-w-2xl gap-6 px-4">
     {texts(piece).map((text) => (
       <div
-        className="frame reading grid min-h-56 place-items-center rounded-card p-10 text-center"
+        className="reading grid min-h-56 place-items-center border border-line p-10 text-center"
         key={text.lang}
       >
         <Html
@@ -298,7 +298,7 @@ export const CorrectionNotes = async ({
   }
   const t = await getTranslations({ locale, namespace: "web.journal" });
   return (
-    <aside className="mx-auto grid w-full max-w-3xl gap-2 border-rule border-t px-4 pt-4">
+    <aside className="mx-auto grid w-full max-w-3xl gap-2 border-line border-t px-4 pt-4">
       <h2 className="type-kicker">{t("corrections")}</h2>
       <ul className="grid gap-1">
         {piece.corrections.map((c) => (

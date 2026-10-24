@@ -30,7 +30,7 @@ export const DocumentHeader = ({
 }: DocumentHeaderProps) => (
   <header className={cn("grid gap-6", className)} data-theme="light">
     {code || nameAr ? (
-      <div className="grid justify-items-end text-end text-text-meta">
+      <div className="grid justify-items-end text-end text-text-secondary">
         {code ? (
           <p className="type-code text-sm tracking-wide">{code}</p>
         ) : null}

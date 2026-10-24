@@ -28,7 +28,7 @@ export const EventList = ({
     {events.map((event) => (
       <li key={event.id}>
         <Link
-          className="frame press grid h-full content-start gap-2 bg-surface p-card-padding shadow-offset hover:bg-surface-tint"
+          className="grid h-full content-start gap-2 border border-line bg-surface p-space-4 hover:text-accent"
           href={`/events/${event.slug}`}
         >
           <p className="type-kicker">

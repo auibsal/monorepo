@@ -337,7 +337,7 @@ const EventCard = ({
 
   return (
     <li className="scroll-mt-28" id={event.slug}>
-      <article className="frame grid h-full content-start gap-3 bg-surface p-card-padding shadow-offset">
+      <article className="grid h-full content-start gap-3 border border-line bg-surface p-space-4">
         <p className="type-kicker">
           {formatLongDate(event.starts_at, locale)} ·{" "}
           {formatClock(event.starts_at, locale)}

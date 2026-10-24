@@ -221,7 +221,7 @@ export const TelegramLink = () => {
           </div>
         )}
         {failed ? (
-          <p className="text-title" role="alert">
+          <p className="text-text" role="alert">
             {t("failed")}
           </p>
         ) : null}

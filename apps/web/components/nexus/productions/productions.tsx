@@ -196,7 +196,7 @@ export const Productions = () => {
               {rehearsals.map((r) => {
                 const where = localized(r, "location", locale);
                 return (
-                  <li className="border-rule border-b pb-2" key={r.id}>
+                  <li className="border-line border-b pb-2" key={r.id}>
                     <p className="font-medium">
                       {titleOf(r.production_id)} ·{" "}
                       {formatLongDate(r.starts_at, locale)} ·{" "}
@@ -297,7 +297,7 @@ const AuditionSlot = ({
   const active = status && status !== "cancelled";
 
   return (
-    <li className="grid gap-2 border-rule border-t pt-3">
+    <li className="grid gap-2 border-line border-t pt-3">
       <p className="font-medium">
         {formatLongDate(audition.starts_at, locale)} ·{" "}
         {formatClock(audition.starts_at, locale)}–

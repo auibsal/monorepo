@@ -33,7 +33,7 @@ export const generateMetadata = async ({
   });
 };
 
-const heading = "type-kicker border-accent-line border-b pb-2";
+const heading = "type-kicker border-line border-b pb-2";
 
 /** Open and announced calls for the Edition (Letters and Gallery). */
 const Calls = async ({ locale }: { locale: Locale }) => {
@@ -47,10 +47,7 @@ const Calls = async ({ locale }: { locale: Locale }) => {
     return null;
   }
   return (
-    <section
-      aria-labelledby="calls"
-      className="band grid gap-4 rounded-card p-6"
-    >
+    <section aria-labelledby="calls" className="band grid gap-4 p-6">
       <h2 className="type-kicker text-on-band" id="calls">
         {t("calls")}
       </h2>
@@ -71,7 +68,7 @@ const Calls = async ({ locale }: { locale: Locale }) => {
             </p>
             {isOpen ? (
               <a
-                className="frame inline-flex h-10 items-center justify-self-start rounded-md bg-surface px-4 text-sm text-text"
+                className="inline-flex h-10 items-center justify-self-start rounded-md border border-line bg-surface px-4 text-sm text-text"
                 href={`${localizedPath(locale, nexusPath("/waraq/submit"))}?call=${call.id}`}
               >
                 {t("submit")}
@@ -213,7 +210,7 @@ const WaraqFrontPage = async ({ params }: WaraqProps) => {
         {letters.length > 0 ? (
           <section
             aria-labelledby="letters"
-            className="reading grid content-start gap-4 rounded-card p-6 md:col-span-2"
+            className="reading grid content-start gap-4 p-6 md:col-span-2"
           >
             <h2 className={heading} id="letters">
               <Link href="/waraq/letters">{t("desks.letters")}</Link>
@@ -242,7 +239,7 @@ const WaraqFrontPage = async ({ params }: WaraqProps) => {
                       // biome-ignore lint/performance/noImgElement: a published image from the media bucket
                       <img
                         alt={localized(image, "alt", locale)}
-                        className="aspect-square w-full rounded-card object-cover"
+                        className="aspect-square w-full object-cover"
                         height={image.height ?? 800}
                         loading="lazy"
                         src={image.url}
@@ -271,7 +268,7 @@ const WaraqFrontPage = async ({ params }: WaraqProps) => {
               {t("sixWordsOfTheWeek")}
             </h2>
             <Link
-              className="frame reading grid min-h-40 place-items-center rounded-card p-6 text-center hover:underline"
+              className="reading grid min-h-40 place-items-center border border-line p-6 text-center hover:underline"
               href={pieceHref(sixWordsBody)}
             >
               <span
@@ -310,13 +307,13 @@ const WaraqFrontPage = async ({ params }: WaraqProps) => {
       {edition ? (
         <section
           aria-labelledby="edition"
-          className="grid gap-4 rounded-card bg-surface-tint p-6 md:grid-cols-[1fr_2fr]"
+          className="grid gap-4 border-line border-t p-6 md:grid-cols-[1fr_2fr]"
         >
           {cover ? (
             // biome-ignore lint/performance/noImgElement: a published image from the media bucket
             <img
               alt={t("coverAlt")}
-              className="w-full rounded-card"
+              className="w-full"
               height={800}
               src={cover}
               width={600}
@@ -345,7 +342,7 @@ const WaraqFrontPage = async ({ params }: WaraqProps) => {
 
       <section
         aria-labelledby="newsletter"
-        className="grid gap-4 rounded-card bg-surface-tint p-6 md:grid-cols-[1fr_1.4fr] md:items-start"
+        className="grid gap-4 border-line border-t p-6 md:grid-cols-[1fr_1.4fr] md:items-start"
       >
         <div className="grid gap-2">
           <h2 className="type-heading" id="newsletter">

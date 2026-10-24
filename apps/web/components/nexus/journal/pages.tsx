@@ -171,10 +171,7 @@ export const JournalHome = () => {
         {calls.data?.length === 0 ? <p>{tw("none")}</p> : null}
         <ul className="grid gap-4">
           {calls.data?.map((call) => (
-            <li
-              className="grid gap-2 rounded-card bg-surface-tint p-4"
-              key={call.id}
-            >
+            <li className="grid gap-2 border-line border-t p-4" key={call.id}>
               <h3 className="font-medium">
                 {localized(call, "title", locale)}
               </h3>
@@ -208,7 +205,7 @@ export const JournalHome = () => {
         <ul className="grid gap-4 sm:grid-cols-3">
           {(["news", "video", "voices"] as const).map((desk) => (
             <li
-              className="grid content-start gap-2 rounded-card bg-surface-tint p-4"
+              className="grid content-start gap-2 border-line border-t p-4"
               key={desk}
             >
               <h3 className="font-medium">{tj(`desks.${desk}`)}</h3>
@@ -475,7 +472,7 @@ export const SubmitWork = () => {
           </Button>
           <ErrorLine error={send.error} />
           {partial ? (
-            <p className="text-sm text-title" role="alert">
+            <p className="text-sm text-text" role="alert">
               {t("filesFailed")}{" "}
               <Link
                 className="underline underline-offset-4"
@@ -559,7 +556,7 @@ export const Agreement = ({ submissionId }: { submissionId: string }) => {
     return <SectionSpinner />;
   }
   return (
-    <section className="grid max-w-3xl gap-3 rounded-card bg-surface-tint p-4">
+    <section className="grid max-w-3xl gap-3 border-line border-t p-4">
       <h2 className="type-subheading">{t("title")}</h2>
       {agreement.data ? (
         <p>
@@ -719,10 +716,7 @@ export const MySubmission = () => {
       </AdminHeading>
 
       {row.status === "intake_check" && row.intake_returned_at ? (
-        <section
-          className="grid gap-2 rounded-card bg-surface-tint p-4"
-          role="status"
-        >
+        <section className="grid gap-2 border-line border-t p-4" role="status">
           <h2 className="font-medium">{t("returnedTitle")}</h2>
           <p className="whitespace-pre-wrap">{row.intake_note}</p>
           <p className="type-caption">{t("returnedHint")}</p>
@@ -873,15 +867,15 @@ const ReadingTimeline = ({
           return (
             <li
               aria-current={state === "current" ? "step" : undefined}
-              className="grid grid-cols-[1.5rem_1fr] gap-3 border-rule border-b py-3"
+              className="grid grid-cols-[1.5rem_1fr] gap-3 border-line border-b py-3"
               key={stage}
             >
               <span
                 aria-hidden="true"
                 className={
                   state === "next"
-                    ? "frame mt-1 size-4"
-                    : "frame mt-1 size-4 bg-band"
+                    ? "mt-1 size-4 border border-line"
+                    : "mt-1 size-4 border border-line bg-band"
                 }
               />
               <div className="grid gap-1">

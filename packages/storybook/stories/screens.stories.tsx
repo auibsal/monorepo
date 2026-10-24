@@ -41,7 +41,7 @@ export const Buttons: Story = {
 export const Cards: Story = {
   render: () => (
     <div className="grid max-w-4xl gap-6 md:grid-cols-2">
-      <article className="frame grid gap-2 bg-surface p-card-padding shadow-offset">
+      <article className="grid gap-2 border border-line bg-surface p-space-4">
         <p className="type-kicker">Tuesday, October 13 · 6:00 PM</p>
         <h3 className="type-heading">Open Pages</h3>
         <p className="type-body text-text-secondary">
@@ -49,15 +49,15 @@ export const Cards: Story = {
         </p>
         <p className="type-caption">24 places left</p>
       </article>
-      <SalCard className="shadow-offset">
+      <SalCard className="">
         <p className="type-kicker">Members</p>
-        <p className="font-bold text-4xl text-title tabular-nums">128</p>
+        <p className="font-bold text-4xl text-text tabular-nums">128</p>
         <p className="type-body">
           41 are Voting Members (two activities this semester or last).
         </p>
       </SalCard>
       <article
-        className="frame grid gap-2 bg-surface p-card-padding shadow-offset-accent"
+        className="grid gap-2 border border-line bg-surface p-space-4"
         dir="rtl"
         lang="ar"
       >

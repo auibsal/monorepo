@@ -53,7 +53,7 @@ export const MyProgrammes = () => {
         {shifts.data?.map((signup) =>
           signup.shift ? (
             <li
-              className="grid gap-1 border-rule border-b pb-3"
+              className="grid gap-1 border-line border-b pb-3"
               key={signup.shift_id}
             >
               <p className="type-body font-bold">

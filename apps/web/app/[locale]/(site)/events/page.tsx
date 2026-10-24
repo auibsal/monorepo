@@ -47,10 +47,7 @@ const EventsPage = async ({ params }: EventsProps) => {
         </p>
       </header>
       <section aria-labelledby="upcoming" className="grid gap-4">
-        <h2
-          className="type-heading border-accent-line border-b pb-2"
-          id="upcoming"
-        >
+        <h2 className="type-heading border-line border-b pb-2" id="upcoming">
           {t("upcoming")}
         </h2>
         {(upcoming ?? []).length === 0 ? (
@@ -61,10 +58,7 @@ const EventsPage = async ({ params }: EventsProps) => {
       </section>
       {(past ?? []).length > 0 ? (
         <section aria-labelledby="past" className="grid gap-4">
-          <h2
-            className="type-heading border-accent-line border-b pb-2"
-            id="past"
-          >
+          <h2 className="type-heading border-line border-b pb-2" id="past">
             {t("past")}
           </h2>
           <EventList events={past ?? []} locale={locale} />

@@ -535,7 +535,7 @@ const RolesSection = ({ name, userId }: { name: string; userId: string }) => {
             </ConfirmAction>
           </div>
           {brokenRule ? (
-            <p className="text-sm text-title" role="alert">
+            <p className="text-sm text-text" role="alert">
               {t(`rules.${brokenRule}`)}
             </p>
           ) : (

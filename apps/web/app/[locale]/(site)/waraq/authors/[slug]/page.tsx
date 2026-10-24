@@ -55,7 +55,7 @@ const AuthorPage = async ({ params }: AuthorProps) => {
         {bio ? <p className="type-lede">{bio}</p> : null}
       </header>
       <section aria-labelledby="work" className="grid gap-4">
-        <h2 className="type-kicker border-accent-line border-b pb-2" id="work">
+        <h2 className="type-kicker border-line border-b pb-2" id="work">
           {t("work")}
         </h2>
         <PieceColumn locale={locale} pieces={author.pieces} />

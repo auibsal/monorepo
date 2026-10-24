@@ -136,7 +136,7 @@ export const NextEvents = () => {
                   </div>
                 </div>
                 <figure className="grid justify-items-center gap-1">
-                  <div className="rounded-card bg-surface p-2">
+                  <div className="bg-surface p-2">
                     <QRCode
                       aria-hidden="true"
                       size={96}

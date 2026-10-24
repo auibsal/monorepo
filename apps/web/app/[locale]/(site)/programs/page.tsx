@@ -19,7 +19,7 @@ const ProgrammesPage = async ({ params }: LocaleParams) => {
 
   const card = (p: (typeof rows)[number]) => (
     <li
-      className="frame grid content-start gap-2 bg-surface-tint p-5"
+      className="grid content-start gap-2 border border-line border-t p-5"
       key={p.id}
     >
       <h3 className="type-subheading">{localized(p, "name", locale)}</h3>
@@ -52,13 +52,16 @@ const ProgrammesPage = async ({ params }: LocaleParams) => {
         <p className="type-lede max-w-3xl">{t("lede")}</p>
       </header>
       <section aria-labelledby="flagship" className="grid gap-4">
-        <h2 className="type-heading frame-b pb-2" id="flagship">
+        <h2 className="type-heading border-line border-b pb-2" id="flagship">
           {t("major")}
         </h2>
         <ul className="grid gap-4 md:grid-cols-2">{major.map(card)}</ul>
       </section>
       <section aria-labelledby="through-the-term" className="grid gap-4">
-        <h2 className="type-heading frame-b pb-2" id="through-the-term">
+        <h2
+          className="type-heading border-line border-b pb-2"
+          id="through-the-term"
+        >
           {t("regular")}
         </h2>
         <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

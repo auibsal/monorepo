@@ -140,7 +140,7 @@ export const VerificationQueue = () => {
       {requests.data.length === 0 ? (
         <p className="type-body text-text-secondary">{t("empty")}</p>
       ) : (
-        <ul className="grid gap-gap">
+        <ul className="grid gap-space-4">
           {requests.data.map((request) => {
             const profile = profiles.data?.find(
               (p) => p.id === request.user_id

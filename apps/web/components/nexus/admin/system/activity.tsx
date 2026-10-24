@@ -99,7 +99,7 @@ const LOGGED_TABLES = [
 ] as const;
 
 const operationClass: Record<Operation, string> = {
-  DELETE: "font-bold text-title",
+  DELETE: "font-bold text-text",
   INSERT: "font-bold text-text",
   UPDATE: "text-text-secondary",
 };

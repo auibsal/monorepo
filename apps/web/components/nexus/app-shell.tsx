@@ -91,7 +91,7 @@ const TabLinks = () => {
               className={cn(
                 "type-label block border-t-2 py-3 text-center text-xs",
                 active
-                  ? "border-accent-line text-title"
+                  ? "border-line text-text"
                   : "border-transparent text-text-secondary"
               )}
               href={link.href}
@@ -246,7 +246,7 @@ export const AppShell = ({ children }: { children: ReactNode }) => {
       </main>
       <nav
         aria-label={t("nexus.nav.label")}
-        className="frame-t fixed inset-x-0 bottom-0 z-40 bg-surface pb-[env(safe-area-inset-bottom)] lg:hidden print:hidden"
+        className="fixed inset-x-0 bottom-0 z-40 border-line border-t bg-surface pb-[env(safe-area-inset-bottom)] lg:hidden print:hidden"
       >
         <TabLinks />
       </nav>

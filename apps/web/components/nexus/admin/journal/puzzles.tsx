@@ -529,7 +529,7 @@ const PuzzleForm = ({ initial }: { initial: Draft }) => {
         <h2 className="font-medium text-sm">{t("preview")}</h2>
         <Preview data={data} lang={draft.language} />
         {left.length > 0 ? (
-          <p className="text-sm text-title" role="alert">
+          <p className="text-sm text-text" role="alert">
             {t("left", { words: left.join("، ") })}
           </p>
         ) : null}

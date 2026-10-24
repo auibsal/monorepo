@@ -168,7 +168,7 @@ const PiecePage = async ({ params }: PieceProps) => {
           ) : null}
         </header>
         {lockedText ? (
-          <div className="frame mx-auto grid w-full max-w-3xl gap-3 bg-surface-tint p-6">
+          <div className="mx-auto grid w-full max-w-3xl gap-3 border border-line border-t p-6">
             <p className="type-body">{t("membersOnlyBody")}</p>
             <a
               className="inline-flex h-10 items-center justify-self-start rounded-md bg-primary px-4 text-primary-foreground text-sm"
@@ -193,10 +193,7 @@ const PiecePage = async ({ params }: PieceProps) => {
           aria-labelledby="related"
           className="mx-auto grid w-full max-w-3xl gap-4 px-4"
         >
-          <h2
-            className="type-kicker border-accent-line border-b pb-2"
-            id="related"
-          >
+          <h2 className="type-kicker border-line border-b pb-2" id="related">
             {t("moreFrom", { desk: t(`desks.${desk}`) })}
           </h2>
           <PieceColumn locale={locale} pieces={related} />

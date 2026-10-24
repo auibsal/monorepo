@@ -30,7 +30,7 @@ const NewsletterPage = async ({ params }: NewsletterProps) => {
         <h1 className="type-display">{t("title")}</h1>
         <p className="type-lede">{t("lede")}</p>
       </header>
-      <section className="grid gap-4 rounded-card bg-surface-tint p-6">
+      <section className="grid gap-4 border-line border-t p-6">
         <NewsletterSignup />
       </section>
       <p className="type-body text-text-secondary">{t("members")}</p>

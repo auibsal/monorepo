@@ -14,7 +14,7 @@ export const AuthFrame = ({ children }: { children: ReactNode }) => (
     <SiteHeader account={false} language={<LanguageSwitcher />} />
     <main className="mx-auto w-full max-w-md flex-1 px-4 py-12" id="main">
       {/* The one feature block on the page: the framed sheet with the crimson offset. */}
-      <div className="frame grid content-start gap-6 bg-surface p-6 text-text shadow-offset-accent">
+      <div className="grid content-start gap-6 border border-line bg-surface p-6 text-text">
         {children}
       </div>
     </main>

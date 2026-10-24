@@ -59,7 +59,7 @@ export const JournalSection = () => {
           <ul className="grid gap-2">
             {submissions.data.map((submission) => (
               <li
-                className="flex justify-between gap-4 border-rule border-b pb-2"
+                className="flex justify-between gap-4 border-line border-b pb-2"
                 key={submission.id}
               >
                 <Link

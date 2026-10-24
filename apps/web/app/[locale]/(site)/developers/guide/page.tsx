@@ -86,10 +86,7 @@ const GuidePage = () => {
       <Block id="flow" title="Signing a member in">
         <ol className="grid gap-4">
           {steps.map((s, i) => (
-            <li
-              className="grid gap-1 rounded-card bg-surface-tint p-5"
-              key={s.title}
-            >
+            <li className="grid gap-1 border-line border-t p-5" key={s.title}>
               <p className="type-kicker">Step {i + 1}</p>
               <h3 className="type-subheading">{s.title}</h3>
               <p className="type-body">{s.body}</p>

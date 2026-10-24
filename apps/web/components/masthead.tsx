@@ -66,8 +66,8 @@ export const Masthead = ({
             aria-current={section.current ? "page" : undefined}
             className={
               large
-                ? "block border-rule border-b py-4 font-bold text-2xl text-title"
-                : `type-label block border-b-2 py-1 text-xs hover:border-frame ${section.current ? "border-accent-line text-title" : "border-transparent"}`
+                ? "block border-line border-b py-4 font-bold text-2xl text-text"
+                : `type-label block border-b-2 py-1 text-xs hover:border-line ${section.current ? "border-line text-text" : "border-transparent"}`
             }
             href={section.href}
             onClick={close}
@@ -80,12 +80,12 @@ export const Masthead = ({
   );
 
   return (
-    <header className="frame-b sticky top-0 z-40 bg-surface text-text print:hidden">
+    <header className="sticky top-0 z-40 border-line border-b bg-surface text-text print:hidden">
       <div className="mx-auto flex w-full max-w-6xl items-center gap-2 px-4 py-3 sm:gap-4">
         <NextLink className="flex shrink-0 items-center gap-3" href={home}>
           <BrandLogo height={56} locale={locale} />
           {place ? (
-            <span className="type-kicker hidden border-frame border-s-2 ps-3 sm:block">
+            <span className="type-kicker hidden border-line border-s-2 ps-3 sm:block">
               {place}
             </span>
           ) : null}
@@ -115,7 +115,7 @@ export const Masthead = ({
       </div>
       {open ? (
         <div
-          className="frame-t max-h-[calc(100dvh-5rem)] overflow-y-auto bg-surface px-4 pt-2 pb-8 text-text lg:hidden"
+          className="max-h-[calc(100dvh-5rem)] overflow-y-auto border-line border-t bg-surface px-4 pt-2 pb-8 text-text lg:hidden"
           data-theme="dark"
         >
           <nav aria-label={navLabel}>{links(true)}</nav>

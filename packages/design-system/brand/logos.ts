@@ -1,8 +1,9 @@
 /**
- * The SAL v4 logo files, used exactly as supplied in brand/logos and copied
- * byte-for-byte to each app's public/brand (tokens.test.ts checks). Never
- * redrawn, recolored or rebuilt in code. The light files are for white,
- * paper and crimson-50 grounds; the reversed files for crimson and ink.
+ * The SAL logo files (unchanged since v4), used exactly as supplied in
+ * brand/logos and copied byte-for-byte to the app's public/brand
+ * (tokens.test.ts checks). Never redrawn, recolored or rebuilt in code. The
+ * light files are for white and paper; the reversed files for crimson and
+ * ink. The logo appears once per page.
  */
 interface LogoFile {
   /** Width ÷ height, from the file's viewBox. */

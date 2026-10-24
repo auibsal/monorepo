@@ -1,20 +1,23 @@
 import { cn } from "@repo/design-system/lib/utils";
-import { Amiri, Literata, Ubuntu, Ubuntu_Mono } from "next/font/google";
+import { Literata, Ubuntu, Ubuntu_Mono } from "next/font/google";
 import localFont from "next/font/local";
 
 /**
- * SAL type: Ubuntu (300/400/700) and Ubuntu Mono for the interface; Amiri
- * (Arabic) and Literata (English) for literary text on Journal reading pages.
+ * SAL type (v6): Ubuntu for everything on screen, Light (300, with its
+ * italic) for display, Regular for text, Medium (500) for labels and links,
+ * Bold for emphasis inside a sentence; Ubuntu Mono for codes; Literata for
+ * Qirtas's article text (dek and body) only.
  *
  * Ubuntu Arabic (400/700) is self-hosted with next/font/local from
  * ../fonts, byte-for-byte copies of brand/fonts (tokens.test.ts checks).
- * Never Noto Kufi or another substitute. It has no Light weight.
+ * Never another Arabic face. It has no Light: Arabic display is Regular.
  */
 const ubuntu = Ubuntu({
   display: "swap",
+  style: ["normal", "italic"],
   subsets: ["latin"],
   variable: "--font-ubuntu",
-  weight: ["300", "400", "700"],
+  weight: ["300", "400", "500", "700"],
 });
 
 const ubuntuMono = Ubuntu_Mono({
@@ -33,24 +36,17 @@ const ubuntuArabic = localFont({
   variable: "--font-ubuntu-arabic",
 });
 
-const amiri = Amiri({
-  display: "swap",
-  subsets: ["arabic"],
-  variable: "--font-amiri",
-  weight: ["400", "700"],
-});
-
 const literata = Literata({
   display: "swap",
   subsets: ["latin"],
   variable: "--font-literata",
+  weight: ["400", "500"],
 });
 
 export const fonts = cn(
   ubuntu.variable,
   ubuntuMono.variable,
   ubuntuArabic.variable,
-  amiri.variable,
   literata.variable,
   "touch-manipulation font-sans antialiased"
 );

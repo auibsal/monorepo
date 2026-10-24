@@ -204,7 +204,7 @@ export const AuthorshipPledge = ({
   const t = useTranslations("nexus.setup.humanAuthorship");
   const id = useId();
   return (
-    <fieldset className="grid gap-3 rounded-card bg-surface-tint p-4">
+    <fieldset className="grid gap-3 border-line border-t p-4">
       <legend className="font-medium">{t("title")}</legend>
       <p className="type-body">{t("body")}</p>
       <div className="flex items-start gap-3">
@@ -243,7 +243,7 @@ export const Declarations = ({
   const firstId = useId();
   const consentId = useId();
   return (
-    <fieldset className="grid gap-3 rounded-card bg-surface-tint p-4">
+    <fieldset className="grid gap-3 border-line border-t p-4">
       <legend className="font-medium">{t("declarations")}</legend>
       <div className="flex items-start gap-3">
         <Checkbox

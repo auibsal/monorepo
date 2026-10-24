@@ -215,7 +215,7 @@ const ElectionCard = ({
         <h3 className="type-subheading">
           {localized(election, "title", locale)}
         </h3>
-        <p className="font-bold text-title">{t(`statuses.${status}`)}</p>
+        <p className="font-bold text-text">{t(`statuses.${status}`)}</p>
       </div>
       <p className="type-caption">
         {t("nominationsOpen")}:{" "}
@@ -265,7 +265,7 @@ const ElectionCard = ({
           const rounds = (result?.rounds ?? []) as unknown as Round[];
           return (
             <div
-              className="grid gap-2 border-rule border-b pb-3"
+              className="grid gap-2 border-line border-b pb-3"
               key={position.id}
             >
               <p className="font-bold">
@@ -317,7 +317,7 @@ const ElectionCard = ({
               </ul>
               {result ? (
                 <div className="grid gap-2">
-                  <p className="font-bold text-title">
+                  <p className="font-bold text-text">
                     {result.ron_won
                       ? t("ronWon")
                       : t("winner", {
@@ -488,7 +488,7 @@ export const Elections = () => {
   return (
     <div className="grid gap-6">
       {flags.data && !flags.data.elections ? (
-        <p className="type-body rounded-card bg-surface-tint p-card-padding">
+        <p className="type-body border-line border-t p-space-4">
           {t("flagOff")}
         </p>
       ) : null}
@@ -540,7 +540,7 @@ export const Elections = () => {
           />
         </div>
         {problem ? (
-          <p className="text-sm text-title" role="alert">
+          <p className="text-sm text-text" role="alert">
             {problem}
           </p>
         ) : null}

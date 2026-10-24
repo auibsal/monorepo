@@ -89,7 +89,7 @@ const AdSenseUnit = ({
   );
 };
 
-const linkClass = "justify-self-start text-title underline underline-offset-4";
+const linkClass = "justify-self-start text-text underline underline-offset-4";
 
 /** A Society or sponsor ad: image, headline, line, one link. */
 const HouseAdView = ({ house }: { house: HouseAd }) => {
@@ -101,7 +101,7 @@ const HouseAdView = ({ house }: { house: HouseAd }) => {
         // biome-ignore lint/performance/noImgElement: a published image from the media bucket
         <img
           alt={house.image.alt}
-          className="aspect-square w-24 rounded-card object-cover"
+          className="aspect-square w-24 object-cover"
           height={96}
           loading="lazy"
           src={house.image.url}
@@ -167,9 +167,11 @@ export const AdSlot = ({ adsense, house }: AdSlotProps) => {
   return (
     <aside
       aria-label={label}
-      className={quiet ? "grid" : "grid gap-3 rounded-card bg-surface-tint p-4"}
+      className={quiet ? "grid" : "grid gap-3 border-line border-t p-4"}
     >
-      {quiet ? null : <p className="type-kicker text-text-meta">{label}</p>}
+      {quiet ? null : (
+        <p className="type-kicker text-text-secondary">{label}</p>
+      )}
       {house ? <HouseAdView house={house} /> : null}
       {!house && adsense ? <AdSenseUnit {...adsense} onFill={setFill} /> : null}
     </aside>

@@ -111,12 +111,12 @@ export const ConsentBanner = ({ purposes }: ConsentBannerProps) => {
   return (
     <section
       aria-labelledby={`${id}-title`}
-      className="fixed inset-x-4 bottom-4 z-40 grid max-h-[80dvh] gap-3 overflow-y-auto rounded-card border border-rule bg-surface-tint p-4 text-text outline-none sm:inset-x-auto sm:end-4 sm:w-96"
+      className="fixed inset-x-4 bottom-4 z-40 grid max-h-[80dvh] gap-3 overflow-y-auto border border-line border-t p-4 text-text outline-none sm:inset-x-auto sm:end-4 sm:w-96"
       ref={card}
       tabIndex={-1}
     >
       <div className="flex items-start justify-between gap-3">
-        <h2 className="type-kicker text-title" id={`${id}-title`}>
+        <h2 className="type-kicker text-text" id={`${id}-title`}>
           {t("title")}
         </h2>
         {state === "choose" && answered ? (

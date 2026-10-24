@@ -68,7 +68,7 @@ const ProductionsPage = async ({ params }: LocaleParams) => {
                 // biome-ignore lint/performance/noImgElement: a poster from the media bucket
                 <img
                   alt={t("posterAlt", { title: localized(p, "title", locale) })}
-                  className="w-full rounded-card object-cover"
+                  className="w-full object-cover"
                   height={600}
                   src={poster}
                   width={420}

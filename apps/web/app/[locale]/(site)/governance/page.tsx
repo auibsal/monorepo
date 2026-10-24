@@ -61,7 +61,7 @@ const GovernancePage = async ({ params }: LocaleParams) => {
           <ul className="grid gap-4 sm:grid-cols-2">
             {roster.map((member) => (
               <li
-                className="grid gap-1 rounded-card bg-surface-tint p-5"
+                className="grid gap-1 border-line border-t p-5"
                 key={`${member.role}-${member.full_name_en}`}
               >
                 <p className="type-kicker">
@@ -83,8 +83,8 @@ const GovernancePage = async ({ params }: LocaleParams) => {
         ) : (
           <ul className="grid gap-4">
             {resolutions.map((r) => (
-              <li className="frame-b grid gap-1 pb-4" key={r.id}>
-                <p className="type-caption text-text-meta">
+              <li className="grid gap-1 border-line border-b pb-4" key={r.id}>
+                <p className="type-caption text-text-secondary">
                   <span dir="ltr">{r.code}</span> ·{" "}
                   {t(
                     r.body === "general_assembly"
@@ -127,7 +127,7 @@ const GovernancePage = async ({ params }: LocaleParams) => {
                 <h3 className="type-subheading">
                   {localized(first, "election_title", locale)}
                 </h3>
-                <p className="type-caption text-text-meta">
+                <p className="type-caption text-text-secondary">
                   {formatLongDate(first.voting_closes_at, locale)}
                   {first.eligible_count
                     ? ` · ${t("turnout", {
@@ -139,7 +139,7 @@ const GovernancePage = async ({ params }: LocaleParams) => {
                 <dl className="grid gap-2 sm:grid-cols-2">
                   {offices.map((office) => (
                     <div
-                      className="grid gap-1 rounded-card bg-surface-tint p-4"
+                      className="grid gap-1 border-line border-t p-4"
                       key={office.position_title_en}
                     >
                       <dt className="type-kicker">

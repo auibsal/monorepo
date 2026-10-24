@@ -14,9 +14,9 @@ import {
 const CRIMSON = "#9c213e";
 const CRIMSON_700 = "#7e1a32";
 const INK = "#273236";
-const INK_SECONDARY = "#4a5559";
-const PAPER = "#faf7f5";
-const RULE = "#e3dedf";
+const ASH = "#5c6568";
+const PAPER = "#f5f2ee";
+const STONE = "#e2ddd6";
 const WHITE = "#ffffff";
 
 const FONT = "'Ubuntu Arabic', Ubuntu, 'Segoe UI', Tahoma, Arial, sans-serif";
@@ -112,7 +112,7 @@ export const Notice = ({ blocks, preview }: NoticeProps) => {
         <Container
           style={{
             backgroundColor: WHITE,
-            border: `1px solid ${RULE}`,
+            border: `1px solid ${STONE}`,
             borderRadius: 8,
             maxWidth: 600,
             padding: "32px",
@@ -132,18 +132,18 @@ export const Notice = ({ blocks, preview }: NoticeProps) => {
           {blocks.map((block, index) => (
             <Section key={block.lang}>
               {index > 0 ? (
-                <Hr style={{ borderColor: RULE, margin: "24px 0" }} />
+                <Hr style={{ borderColor: STONE, margin: "24px 0" }} />
               ) : null}
               <Block block={block} />
             </Section>
           ))}
-          <Hr style={{ borderColor: RULE, margin: "24px 0 16px" }} />
+          <Hr style={{ borderColor: STONE, margin: "24px 0 16px" }} />
           {blocks.map((block) => (
             <Text
               key={`footer-${block.lang}`}
               lang={block.lang}
               style={{
-                color: INK_SECONDARY,
+                color: ASH,
                 direction: block.lang === "ar" ? "rtl" : "ltr",
                 fontFamily: FONT,
                 fontSize: 12,

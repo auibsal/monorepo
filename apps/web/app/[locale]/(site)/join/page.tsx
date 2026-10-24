@@ -11,7 +11,7 @@ const JoinPage = async ({ params }: LocaleParams) => {
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "web.join" });
-  const heading = "type-heading border-accent-line border-b pb-2";
+  const heading = "type-heading border-line border-b pb-2";
   const cta = (
     <div className="grid gap-2">
       <a
@@ -35,7 +35,7 @@ const JoinPage = async ({ params }: LocaleParams) => {
       <ol className="grid gap-4 md:grid-cols-3">
         {STEPS.map((key, index) => (
           <li
-            className="frame grid content-start gap-2 bg-surface-tint p-5"
+            className="grid content-start gap-2 border border-line border-t p-5"
             key={key}
           >
             <p className="type-kicker">{index + 1}</p>
@@ -52,7 +52,7 @@ const JoinPage = async ({ params }: LocaleParams) => {
         <div className="overflow-x-auto">
           <table className="w-full text-start">
             <thead>
-              <tr className="border-rule border-b">
+              <tr className="border-line border-b">
                 <th className="py-2 pe-4 text-start" scope="col">
                   {t("tiersYou")}
                 </th>
@@ -66,7 +66,7 @@ const JoinPage = async ({ params }: LocaleParams) => {
             </thead>
             <tbody>
               {TIERS.map((key) => (
-                <tr className="border-rule border-b align-top" key={key}>
+                <tr className="border-line border-b align-top" key={key}>
                   <th className="py-3 pe-4 text-start font-medium" scope="row">
                     {t(`tiers.${key}.name`)}
                   </th>

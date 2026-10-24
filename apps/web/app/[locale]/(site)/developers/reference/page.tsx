@@ -43,7 +43,7 @@ const ReferencePage = () => (
       <ul className="grid gap-3">
         {endpoints.map((e) => (
           <li
-            className="grid gap-2 rounded-card bg-surface-tint p-4"
+            className="grid gap-2 border-line border-t p-4"
             key={`${e.method} ${e.path}`}
           >
             <p className="flex flex-wrap items-baseline justify-between gap-2">

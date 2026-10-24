@@ -77,7 +77,7 @@ const email = (make: (lang: Lang) => Built): Story => ({
         <figure className="grid gap-2" key={lang}>
           <figcaption className="type-caption">{make(lang).subject}</figcaption>
           <iframe
-            className="h-[720px] w-full rounded-lg border border-rule"
+            className="h-[720px] w-full rounded-lg border border-line"
             srcDoc={(loaded.html as string[])[i]}
             title={make(lang).subject}
           />

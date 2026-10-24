@@ -24,7 +24,7 @@ export const DocumentFooter = ({
 }: DocumentFooterProps) => (
   <footer
     className={cn(
-      "flex flex-wrap items-baseline justify-between gap-gap border-rule border-t pt-4 text-sm text-text-meta",
+      "flex flex-wrap items-baseline justify-between gap-space-4 border-line border-t pt-4 text-sm text-text-secondary",
       className
     )}
   >

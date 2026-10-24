@@ -13,7 +13,7 @@ export const SocietySection = ({
   readonly title: string;
 }) => (
   <section aria-labelledby={id} className="grid content-start gap-4">
-    <header className="frame-b grid gap-1 pb-2">
+    <header className="grid gap-1 border-line border-b pb-2">
       <h2 className="type-heading" id={id}>
         {title}
       </h2>

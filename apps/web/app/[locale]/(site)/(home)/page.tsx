@@ -73,11 +73,11 @@ const Home = async ({ params }: HomeProps) => {
     ? progress.find((p) => p.campaign_id === campaign.id)
     : undefined;
 
-  const heading = "type-heading frame-b pb-2";
+  const heading = "type-heading border-b border-line pb-2";
 
   return (
     <>
-      <section className="frame-b">
+      <section className="border-line border-b">
         <div className="mx-auto grid w-full max-w-6xl gap-6 px-4 py-16 sm:py-24">
           {/* The header already carries the lockup on phones. */}
           <div className="hidden sm:block">
@@ -104,7 +104,7 @@ const Home = async ({ params }: HomeProps) => {
             aria-labelledby="what-we-do"
             className="grid content-start gap-6 lg:col-span-2"
           >
-            <div className="frame-b flex flex-wrap items-baseline justify-between gap-4 pb-2">
+            <div className="flex flex-wrap items-baseline justify-between gap-4 border-line border-b pb-2">
               <div className="grid gap-1">
                 <h2 className="type-heading" id="what-we-do">
                   {t("whatWeDo")}
@@ -118,11 +118,11 @@ const Home = async ({ params }: HomeProps) => {
                 {t("allPrograms")}
               </Link>
             </div>
-            <ul className="grid gap-gap sm:grid-cols-2 lg:grid-cols-4">
+            <ul className="grid gap-space-4 sm:grid-cols-2 lg:grid-cols-4">
               {flagship.map((p) => (
                 <li key={p.id}>
                   <Link
-                    className="frame press grid h-full content-start gap-2 bg-surface-tint p-card-padding shadow-offset hover:bg-surface"
+                    className="grid h-full content-start gap-2 border border-line border-t p-space-4 hover:bg-surface"
                     href={p.slug === "waraq" ? "/waraq" : "/programs"}
                   >
                     <h3 className="type-subheading">
@@ -140,7 +140,7 @@ const Home = async ({ params }: HomeProps) => {
           </section>
         ) : null}
 
-        <figure className="grid gap-4 rounded-card bg-surface-tint p-card-padding sm:p-10 lg:col-span-2">
+        <figure className="grid gap-4 border-line border-t p-space-4 sm:p-10 lg:col-span-2">
           <figcaption className="type-kicker">{tw("verse.label")}</figcaption>
           <blockquote className="grid gap-3">
             <p
@@ -169,7 +169,7 @@ const Home = async ({ params }: HomeProps) => {
               {(nextEvents ?? []).map((event) => (
                 <li key={event.id}>
                   <Link
-                    className="frame press grid h-full content-start gap-2 bg-surface p-card-padding shadow-offset hover:bg-surface-tint"
+                    className="grid h-full content-start gap-2 border border-line bg-surface p-space-4 hover:text-accent"
                     href={`/events/${event.slug}`}
                   >
                     <p className="type-kicker">
@@ -201,7 +201,7 @@ const Home = async ({ params }: HomeProps) => {
             </h2>
             <ul className="grid">
               {(pieces ?? []).map((piece) => (
-                <li className="border-rule border-b py-4" key={piece.id}>
+                <li className="border-line border-b py-4" key={piece.id}>
                   <Link
                     className="grid gap-1 hover:underline"
                     href={`/waraq/pieces/${piece.slug}`}
@@ -233,7 +233,7 @@ const Home = async ({ params }: HomeProps) => {
             <h2 className={heading} id="warmth">
               {t("warmth")}
             </h2>
-            <SalCard className="shadow-offset">
+            <SalCard className="">
               <p className="type-subheading">
                 {localized(campaign, "title", locale)}
               </p>
@@ -244,7 +244,7 @@ const Home = async ({ params }: HomeProps) => {
               {meter.target_units ? (
                 <progress
                   aria-label={t("warmth")}
-                  className="h-3 w-full accent-[var(--title)]"
+                  className="h-3 w-full accent-[var(--text)]"
                   max={meter.target_units}
                   value={Math.min(meter.units, meter.target_units)}
                 />
@@ -266,7 +266,7 @@ const Home = async ({ params }: HomeProps) => {
             </h2>
             <ul className="grid">
               {(calls ?? []).map((call) => (
-                <li className="border-rule border-b py-4" key={call.id}>
+                <li className="border-line border-b py-4" key={call.id}>
                   <Link className="grid gap-1 hover:underline" href="/waraq">
                     <span className="type-subheading">
                       {localized(call, "title", locale)}
@@ -313,7 +313,7 @@ const Home = async ({ params }: HomeProps) => {
         </div>
       </div>
 
-      <section aria-labelledby="join" className="band frame-t">
+      <section aria-labelledby="join" className="band border-line border-t">
         <div className="mx-auto grid w-full max-w-6xl gap-4 px-4 py-16">
           <h2 className="font-bold text-3xl sm:text-4xl" id="join">
             {t("join")}

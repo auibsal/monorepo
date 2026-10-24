@@ -135,7 +135,7 @@ export const SignInForm = () => {
           ) : null}
           {human.element}
           {error ? (
-            <p className="text-title" role="alert">
+            <p className="text-text" role="alert">
               {error}
             </p>
           ) : null}

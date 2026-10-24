@@ -58,7 +58,7 @@ const EditionsPage = async ({ params }: EditionsProps) => {
                     // biome-ignore lint/performance/noImgElement: a published image from the media bucket
                     <img
                       alt={t("coverAlt")}
-                      className="w-full rounded-card"
+                      className="w-full"
                       height={800}
                       loading="lazy"
                       src={cover}

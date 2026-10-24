@@ -146,7 +146,7 @@ const Episodes = ({ programmeId }: { programmeId: string }) => {
       <ul className="grid gap-3">
         {episodes.data?.map((e) => (
           <li
-            className="flex flex-wrap items-center justify-between gap-3 border-rule border-b pb-3"
+            className="flex flex-wrap items-center justify-between gap-3 border-line border-b pb-3"
             key={e.id}
           >
             <div>
@@ -278,7 +278,7 @@ const Episodes = ({ programmeId }: { programmeId: string }) => {
           value={form.summary}
         />
         {problem ? (
-          <p className="text-sm text-title" role="alert">
+          <p className="text-sm text-text" role="alert">
             {problem}
           </p>
         ) : null}
@@ -386,7 +386,7 @@ const Reels = ({ programmeId }: { programmeId: string }) => {
       <ul className="grid gap-3">
         {data.data?.reels.map((r) => (
           <li
-            className="flex flex-wrap items-center justify-between gap-3 border-rule border-b pb-3"
+            className="flex flex-wrap items-center justify-between gap-3 border-line border-b pb-3"
             key={r.id}
           >
             <div className="min-w-0">
@@ -481,7 +481,7 @@ const Reels = ({ programmeId }: { programmeId: string }) => {
           value={form.caption}
         />
         {problem ? (
-          <p className="text-sm text-title" role="alert">
+          <p className="text-sm text-text" role="alert">
             {problem}
           </p>
         ) : null}
@@ -541,7 +541,7 @@ const SixWords = () => {
           const person = names.data?.find((n) => n.id === w.user_id);
           return (
             <li
-              className="flex flex-wrap items-center justify-between gap-3 border-rule border-b pb-3"
+              className="flex flex-wrap items-center justify-between gap-3 border-line border-b pb-3"
               key={w.id}
             >
               <div>
@@ -739,7 +739,7 @@ const Shifts = ({ rotaId }: { rotaId: string }) => {
             (s) => s.shift_id === shift.id && s.status !== "cancelled"
           );
           return (
-            <li className="grid gap-2 border-rule border-b pb-3" key={shift.id}>
+            <li className="grid gap-2 border-line border-b pb-3" key={shift.id}>
               <div className="flex flex-wrap items-baseline justify-between gap-2">
                 <p className="font-bold">
                   {localized(shift, "role", locale)}
@@ -1014,7 +1014,7 @@ const Countdown = ({ dueAt }: { dueAt: string }) => {
   };
   return (
     <p
-      className={left.overdue ? "font-bold text-title" : "font-bold"}
+      className={left.overdue ? "font-bold text-text" : "font-bold"}
       role="timer"
     >
       {left.overdue ? t("overdue", values) : t("left", values)}

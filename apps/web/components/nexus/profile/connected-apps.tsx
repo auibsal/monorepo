@@ -74,7 +74,7 @@ export const ConnectedApps = () => {
           ))}
         </ul>
         {revoke.isError ? (
-          <p className="text-title" role="alert">
+          <p className="text-text" role="alert">
             {t("failed")}
           </p>
         ) : null}

@@ -358,7 +358,7 @@ const Announcements = () => {
           />
         </div>
         {problem ? (
-          <p className="text-sm text-title" role="alert">
+          <p className="text-sm text-text" role="alert">
             {problem}
           </p>
         ) : null}
@@ -597,7 +597,7 @@ const HomepageSlots = () => {
     return <SectionSpinner />;
   }
   return (
-    <div className="grid gap-gap">
+    <div className="grid gap-space-4">
       <p className="type-body text-text-secondary">{t("lede")}</p>
       {content.homepageSlotKeys.map((key) => (
         <SlotEditor
@@ -730,7 +730,7 @@ const MediaLibrary = () => {
       {assets.data?.length === 0 ? (
         <p className="type-body text-text-secondary">{t("empty")}</p>
       ) : null}
-      <ul className="grid gap-gap sm:grid-cols-2 lg:grid-cols-3">
+      <ul className="grid gap-space-4 sm:grid-cols-2 lg:grid-cols-3">
         {assets.data?.map((asset) => {
           const url = getMediaUrl(supabase, asset.storage_path);
           return (
@@ -739,7 +739,7 @@ const MediaLibrary = () => {
                 {/* biome-ignore lint/performance/noImgElement: thumbnails from the public media bucket */}
                 <img
                   alt={localized(asset, "alt", locale)}
-                  className="aspect-[4/3] w-full rounded-card object-cover"
+                  className="aspect-[4/3] w-full object-cover"
                   height={240}
                   src={url}
                   width={320}

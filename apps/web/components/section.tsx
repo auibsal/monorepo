@@ -11,7 +11,7 @@ export const Section = ({
   title: string;
 }) => (
   <section aria-labelledby={id} className="grid gap-4">
-    <h2 className="type-heading border-accent-line border-b pb-2" id={id}>
+    <h2 className="type-heading border-line border-b pb-2" id={id}>
       {title}
     </h2>
     {children}

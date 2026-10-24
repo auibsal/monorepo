@@ -8,20 +8,20 @@ import { Link } from "@/lib/nexus/navigation";
 
 export const FullPageSpinner = () => (
   <div className="flex min-h-[50dvh] flex-1 items-center justify-center">
-    <Spinner className="size-6 text-text-meta" />
+    <Spinner className="size-6 text-text-secondary" />
   </div>
 );
 
 /** A page's content while its gate or data loads, inside the shell. */
 export const PageSpinner = () => (
   <div className="flex min-h-[50dvh] items-center justify-center">
-    <Spinner className="size-6 text-text-meta" />
+    <Spinner className="size-6 text-text-secondary" />
   </div>
 );
 
 export const SectionSpinner = ({ className }: { className?: string }) => (
   <div className={cn("flex items-center justify-center py-8", className)}>
-    <Spinner className="size-5 text-text-meta" />
+    <Spinner className="size-5 text-text-secondary" />
   </div>
 );
 

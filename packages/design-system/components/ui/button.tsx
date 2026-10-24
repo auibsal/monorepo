@@ -3,7 +3,7 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@repo/design-system/lib/utils"
 import { Slot } from "radix-ui"
 
-// SAL v5 Screens: square, a 2px frame, the solid offset (shadow-offset) that
+// SAL v5 Screens: square, a 2px frame, the solid offset () that
 // collapses when pressed, and labels in tracked capitals (never on Arabic).
 const buttonVariants = cva(
   "inline-flex shrink-0 items-center justify-center gap-2 text-sm whitespace-nowrap type-label outline-none disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
@@ -11,15 +11,15 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "frame bg-primary text-primary-foreground shadow-offset press hover:bg-primary/90",
+          "border border-line bg-primary text-primary-foreground   hover:bg-primary/90",
         destructive:
-          "frame bg-surface text-title shadow-offset press hover:bg-surface-tint",
+          "border border-line bg-surface text-text   hover:text-accent",
         outline:
-          "frame bg-surface text-text shadow-offset press hover:bg-surface-tint",
+          "border border-line bg-surface text-text   hover:text-accent",
         secondary:
-          "frame bg-secondary text-secondary-foreground press hover:bg-surface",
-        ghost: "hover:bg-accent hover:text-accent-foreground",
-        link: "text-title normal-case tracking-normal underline underline-offset-4 hover:no-underline",
+          "border border-line bg-secondary text-secondary-foreground  hover:bg-surface",
+        ghost: "hover:underline hover:underline-offset-4",
+        link: "text-text normal-case tracking-normal underline underline-offset-4 hover:no-underline",
       },
       size: {
         default: "h-10 px-5 py-2 has-[>svg]:px-4",

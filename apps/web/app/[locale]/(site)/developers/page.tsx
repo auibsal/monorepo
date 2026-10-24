@@ -48,7 +48,7 @@ const OverviewPage = () => (
           Read the guide
         </Link>
         <Link
-          className="type-label rounded-md border border-rule px-4 py-2 text-xs"
+          className="type-label rounded-md border border-line px-4 py-2 text-xs"
           href="/developers/reference"
         >
           See the reference
@@ -60,7 +60,7 @@ const OverviewPage = () => (
       <ul className="grid gap-4 md:grid-cols-3">
         {offers.map((o) => (
           <li
-            className="grid content-start gap-2 rounded-card bg-surface-tint p-5"
+            className="grid content-start gap-2 border-line border-t p-5"
             key={o.title}
           >
             <h3 className="type-subheading">{o.title}</h3>

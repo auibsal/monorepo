@@ -21,7 +21,7 @@ const AboutPage = async ({ params }: LocaleParams) => {
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "web.about" });
-  const heading = "type-heading border-accent-line border-b pb-2";
+  const heading = "type-heading border-line border-b pb-2";
 
   return (
     <div className="mx-auto grid w-full max-w-4xl gap-12 px-4 py-16">
@@ -65,7 +65,10 @@ const AboutPage = async ({ params }: LocaleParams) => {
         </h2>
         <ul className="grid gap-4 sm:grid-cols-2">
           {PILLARS.map((key) => (
-            <li className="frame grid gap-1 bg-surface-tint p-5" key={key}>
+            <li
+              className="grid gap-1 border border-line border-t p-5"
+              key={key}
+            >
               <h3 className="type-subheading">{t(`pillars.${key}.title`)}</h3>
               <p className="type-body">{t(`pillars.${key}.body`)}</p>
             </li>

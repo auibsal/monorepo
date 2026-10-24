@@ -23,7 +23,7 @@ export const FormHeader = ({
   title,
 }: FormHeaderProps) => (
   <header className={cn("grid gap-3", className)}>
-    <div className="flex items-start justify-between gap-gap border-accent-line border-b-2 pb-gap-tight">
+    <div className="flex items-start justify-between gap-space-4 border-line border-b-2 pb-space-3">
       <div className="grid gap-1.5">
         {code ? (
           <p className="type-code text-sm text-text-secondary">{code}</p>

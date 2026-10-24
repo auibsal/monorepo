@@ -92,7 +92,7 @@ export const Logo: Story = {
 
 export const Posts: Story = {
   render: () => (
-    <div className="grid max-w-4xl grid-cols-2 gap-gap md:grid-cols-4">
+    <div className="grid max-w-4xl grid-cols-2 gap-space-4 md:grid-cols-3">
       <SocialPost
         date="Tuesday, October 13"
         ground="crimson"
@@ -107,11 +107,6 @@ export const Posts: Story = {
         date="No audition, no fee"
         ground="white"
         headline="Free. For every student."
-      />
-      <SocialPost
-        date="Monthly, from December"
-        ground="tint"
-        headline="The Majlis."
       />
     </div>
   ),

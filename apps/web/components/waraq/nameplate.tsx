@@ -16,7 +16,7 @@ export const Nameplate = async ({
 }) => {
   const t = await getTranslations({ locale, namespace: "web.journal" });
   return (
-    <header className="grid gap-4 border-accent-line border-b pb-4">
+    <header className="grid gap-4 border-line border-b pb-4">
       <div className="grid justify-items-center gap-1 text-center">
         <Link className="hover:underline" href="/waraq">
           <span className={small ? "type-heading" : "type-display"}>

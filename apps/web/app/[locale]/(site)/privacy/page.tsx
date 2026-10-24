@@ -25,7 +25,7 @@ const Clauses = ({
   <ol className="grid gap-3">
     {items.map(({ id, text }) => (
       <li className="grid grid-cols-[3rem_1fr] gap-2" key={id}>
-        <span className="type-code text-text-meta" dir="ltr">
+        <span className="type-code text-text-secondary" dir="ltr">
           {label(id)}
         </span>
         <span className="type-body">{text}</span>

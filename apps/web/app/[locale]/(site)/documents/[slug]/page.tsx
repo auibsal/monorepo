@@ -87,10 +87,7 @@ const DocumentPage = async ({ params }: DocumentProps) => {
 
       {contents.length > 0 ? (
         <nav aria-labelledby="contents" className="grid gap-3">
-          <h2
-            className="type-heading border-accent-line border-b pb-2"
-            id="contents"
-          >
+          <h2 className="type-heading border-line border-b pb-2" id="contents">
             {t("contents")}
           </h2>
           <ol

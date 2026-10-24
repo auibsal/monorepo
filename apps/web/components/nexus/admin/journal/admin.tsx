@@ -486,7 +486,7 @@ const QueueItem = ({ item }: { item: QueueRow }) => {
       : "";
 
   return (
-    <li className="grid gap-3 rounded-card bg-surface-tint p-4">
+    <li className="grid gap-3 border-line border-t p-4">
       <div className="flex flex-wrap items-baseline justify-between gap-2">
         <h3 className="font-medium">{item.title}</h3>
         <span className="type-caption">

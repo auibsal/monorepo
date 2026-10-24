@@ -78,7 +78,7 @@ export const PieceCardView = async ({
           {/* biome-ignore lint/performance/noImgElement: a published image from the media bucket */}
           <img
             alt={localized(picture, "alt", locale)}
-            className="aspect-[4/3] w-full rounded-card object-cover"
+            className="aspect-[4/3] w-full object-cover"
             height={picture.height ?? 900}
             loading="lazy"
             src={picture.url}
@@ -126,7 +126,7 @@ export const PieceColumn = async ({
 }) => (
   <ul className="grid gap-4">
     {pieces.map((piece) => (
-      <li className="border-rule border-b pb-4" key={piece.id}>
+      <li className="border-line border-b pb-4" key={piece.id}>
         <PieceCardView locale={locale} piece={piece} />
       </li>
     ))}

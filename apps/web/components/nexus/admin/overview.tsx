@@ -54,9 +54,9 @@ const Figure = ({
   readonly label: string;
   readonly value: number;
 }) => (
-  <SalCard className="content-start gap-2 p-4 sm:gap-3 sm:p-card-padding">
+  <SalCard className="content-start gap-2 p-4 sm:gap-3 sm:p-space-4">
     <p className="type-kicker">{label}</p>
-    <p className="font-bold text-3xl text-title tabular-nums sm:text-4xl">
+    <p className="font-bold text-3xl text-text tabular-nums sm:text-4xl">
       {formatNumber(value)}
     </p>
     <p className="sm:type-body text-sm">{detail}</p>
@@ -206,7 +206,7 @@ export const AdminOverview = () => {
         <p className="type-body text-text-secondary">{t("nothing")}</p>
       ) : null}
       {figures.length > 0 ? (
-        <div className="grid grid-cols-2 gap-gap-tight sm:gap-gap xl:grid-cols-3">
+        <div className="grid grid-cols-2 gap-space-3 sm:gap-space-4 xl:grid-cols-3">
           {figures.map((figure) => (
             <Figure key={figure.label} {...figure} />
           ))}
@@ -218,12 +218,12 @@ export const AdminOverview = () => {
           {o.campaigns.length === 0 ? (
             <p className="type-body text-text-secondary">{t("noCampaigns")}</p>
           ) : (
-            <ul className="grid gap-gap sm:grid-cols-2">
+            <ul className="grid gap-space-4 sm:grid-cols-2">
               {o.campaigns.map((c) => (
                 <li key={c.campaign_id}>
                   <SalCard>
                     <p className="font-bold">{localized(c, "title", locale)}</p>
-                    <p className="font-bold text-2xl text-title tabular-nums">
+                    <p className="font-bold text-2xl text-text tabular-nums">
                       {t("counted", {
                         amount: formatIqd(c.counted_iqd, locale),
                       })}

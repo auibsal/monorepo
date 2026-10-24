@@ -427,7 +427,7 @@ export const EventEditor = () => {
           <p className="type-caption">{t("questionsHint")}</p>
           {form.questions.map((question, index) => (
             <div
-              className="grid gap-3 rounded-card bg-surface-tint p-card-padding"
+              className="grid gap-3 border-line border-t p-space-4"
               key={question.id}
             >
               <BilingualField
@@ -494,7 +494,7 @@ export const EventEditor = () => {
         </fieldset>
 
         {problem ? (
-          <p className="text-sm text-title" role="alert">
+          <p className="text-sm text-text" role="alert">
             {problem}
           </p>
         ) : null}

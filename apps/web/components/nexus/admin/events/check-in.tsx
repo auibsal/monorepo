@@ -234,16 +234,14 @@ export const CheckInScreen = () => {
         {formatClock(event.data.starts_at, locale)}
       </AdminHeading>
       <p className="type-body text-text-secondary">{t("lede")}</p>
-      <p className="font-bold text-title" role="status">
+      <p className="font-bold text-text" role="status">
         {t("count", { count: formatNumber(count.data ?? 0) })}
       </p>
 
       <div className="grid gap-3">
         <video
           aria-label={t("video")}
-          className={
-            camera === "on" ? "w-full rounded-card bg-surface-tint" : "hidden"
-          }
+          className={camera === "on" ? "w-full border-line border-t" : "hidden"}
           muted
           playsInline
           ref={videoRef}
@@ -273,7 +271,7 @@ export const CheckInScreen = () => {
         aria-live="assertive"
         className={
           message
-            ? "rounded-card bg-surface-tint p-card-padding font-bold text-lg text-text"
+            ? "border-line border-t p-space-4 font-bold text-lg text-text"
             : "sr-only"
         }
       >
@@ -299,7 +297,7 @@ export const CheckInScreen = () => {
         <ul className="grid gap-2">
           {results.data?.map((person) => (
             <li
-              className="flex flex-wrap items-center justify-between gap-3 border-rule border-b py-2"
+              className="flex flex-wrap items-center justify-between gap-3 border-line border-b py-2"
               key={person.user_id}
             >
               <span>

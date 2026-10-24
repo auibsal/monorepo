@@ -48,7 +48,7 @@ export const Footer = async ({ consent = true }: FooterProps = {}) => {
 
   return (
     <footer
-      className="frame-t bg-surface text-text print:hidden"
+      className="border-line border-t bg-surface text-text print:hidden"
       data-theme="dark"
     >
       <div className="mx-auto grid w-full max-w-6xl gap-8 px-4 py-12 sm:grid-cols-2 lg:grid-cols-4">
@@ -65,7 +65,7 @@ export const Footer = async ({ consent = true }: FooterProps = {}) => {
             </p>
           </details>
           <NextLink
-            className="type-label mt-4 justify-self-start border-2 border-frame px-4 py-2 text-xs shadow-offset"
+            className="type-label mt-4 justify-self-start border-2 border-line px-4 py-2 text-xs"
             href={localizedPath(locale, nexusPath())}
           >
             {tn("nexus")}
@@ -103,7 +103,7 @@ export const Footer = async ({ consent = true }: FooterProps = {}) => {
           </ul>
         ))}
       </div>
-      <div className="frame-t">
+      <div className="border-line border-t">
         <div className="type-caption mx-auto flex w-full max-w-6xl flex-wrap justify-between gap-2 px-4 py-6">
           <p>{tx("copyright", { year: String(new Date().getFullYear()) })}</p>
           <p>{tx("colophon")}</p>

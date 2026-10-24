@@ -184,7 +184,7 @@ export const Service = () => {
             <div className="grid gap-2">
               <Label htmlFor={`${id}-programme`}>{t("programme")}</Label>
               <select
-                className="frame h-10 bg-surface px-3"
+                className="h-10 border border-line bg-surface px-3"
                 id={`${id}-programme`}
                 onChange={(e) =>
                   setForm((f) => ({ ...f, programme_id: e.target.value }))
@@ -247,7 +247,7 @@ export const Service = () => {
         <ul className="grid gap-2">
           {(records.data ?? []).map((r) => (
             <li
-              className="flex flex-wrap items-baseline justify-between gap-2 border-rule border-b pb-2"
+              className="flex flex-wrap items-baseline justify-between gap-2 border-line border-b pb-2"
               key={r.id}
             >
               <span className="grid">

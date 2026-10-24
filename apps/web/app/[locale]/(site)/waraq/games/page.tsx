@@ -26,7 +26,7 @@ export const generateMetadata = async ({
 };
 
 const card =
-  "frame grid content-start gap-2 rounded-card bg-surface-tint p-6 hover:underline";
+  "border border-line grid content-start gap-2  border-t border-line p-6 hover:underline";
 
 /** Waraq's games: two daily games and the editors' puzzles. */
 const GamesPage = async ({ params }: GamesProps) => {
@@ -49,7 +49,7 @@ const GamesPage = async ({ params }: GamesProps) => {
       </header>
 
       <section aria-labelledby="daily" className="grid gap-4">
-        <h2 className="type-kicker border-accent-line border-b pb-2" id="daily">
+        <h2 className="type-kicker border-line border-b pb-2" id="daily">
           {t("daily")} · <GameNumber />
         </h2>
         <ul className="grid gap-4 sm:grid-cols-2">
@@ -70,10 +70,7 @@ const GamesPage = async ({ params }: GamesProps) => {
       </section>
 
       <section aria-labelledby="editors" className="grid gap-4">
-        <h2
-          className="type-kicker border-accent-line border-b pb-2"
-          id="editors"
-        >
+        <h2 className="type-kicker border-line border-b pb-2" id="editors">
           {t("fromEditors")}
         </h2>
         {puzzles.length === 0 ? (

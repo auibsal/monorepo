@@ -51,7 +51,7 @@ const GivePage = async ({ params }: LocaleParams) => {
       <Section id="ways" title={t("waysTitle")}>
         <ul className="grid gap-4 sm:grid-cols-3">
           {WAYS.map((way) => (
-            <li className="frame bg-surface-tint p-5" key={way}>
+            <li className="border border-line border-t p-5" key={way}>
               <h3 className="type-subheading">{t(`ways.${way}`)}</h3>
             </li>
           ))}
@@ -69,10 +69,10 @@ const GivePage = async ({ params }: LocaleParams) => {
               <>
                 <div
                   aria-hidden="true"
-                  className="h-3 w-full rounded-full bg-rule"
+                  className="h-3 w-full rounded-full bg-line"
                 >
                   <div
-                    className="h-3 rounded-full bg-title"
+                    className="h-3 rounded-full bg-text"
                     style={{
                       width: `${Math.min(100, (meter.units / meter.target_units) * 100)}%`,
                     }}
@@ -120,7 +120,7 @@ const GivePage = async ({ params }: LocaleParams) => {
 
       <Section id="transparency" title={t("transparencyTitle")}>
         <p className="type-lede">{t("transparencyLede")}</p>
-        <blockquote className="grid gap-1 border-accent-line border-s-4 ps-4">
+        <blockquote className="grid gap-1 border-line border-s-4 ps-4">
           <p className="type-body">{t("policy")}</p>
           <footer className="type-caption">{t("policySource")}</footer>
         </blockquote>
@@ -129,7 +129,7 @@ const GivePage = async ({ params }: LocaleParams) => {
             <h3 className="type-subheading">{t("impactTitle")}</h3>
             <dl className="grid gap-4 sm:grid-cols-3">
               {impact.map((m) => (
-                <div className="frame bg-surface-tint p-5" key={m.id}>
+                <div className="border border-line border-t p-5" key={m.id}>
                   <dt className="type-caption">
                     {localized(m, "label", locale)}
                   </dt>
@@ -150,7 +150,7 @@ const GivePage = async ({ params }: LocaleParams) => {
             <ul className="grid gap-2">
               {receipts.map((r) => (
                 <li
-                  className="flex flex-wrap items-baseline justify-between gap-3 border-rule border-b pb-2"
+                  className="flex flex-wrap items-baseline justify-between gap-3 border-line border-b pb-2"
                   key={r.id}
                 >
                   <span>{localized(r, "description", locale)}</span>

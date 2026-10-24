@@ -52,10 +52,10 @@ export const SubmissionSheet = ({
 
   return (
     <article
-      className="grid gap-6 rounded-card bg-surface p-6 text-text print:p-0"
+      className="grid gap-6 bg-surface p-6 text-text print:p-0"
       data-theme="light"
     >
-      <header className="grid gap-1 border-accent-line border-b-2 pb-3">
+      <header className="grid gap-1 border-line border-b-2 pb-3">
         <p className="type-kicker">
           {definition.code} · {t("society")}
         </p>
