@@ -3,8 +3,9 @@
 import { Button } from "@repo/design-system/components/ui/button";
 import { Spinner } from "@repo/design-system/components/ui/spinner";
 import { cn } from "@repo/design-system/lib/utils";
+import { Link as SiteLink } from "@repo/internationalization/navigation";
 import { useTranslations } from "next-intl";
-import { Link } from "@/lib/nexus/navigation";
+import { useAppLink } from "@/lib/link-context";
 
 export const FullPageSpinner = () => (
   <div className="flex min-h-[50dvh] flex-1 items-center justify-center">
@@ -57,8 +58,17 @@ const actionClass = "link type-caption";
 // Full URLs and same-page anchors are plain links; paths get the language.
 const EXTERNAL = /^(https?|webcal):|^#/;
 
-const ActionLink = ({ href, label }: { href: string; label: string }) =>
-  EXTERNAL.test(href) ? (
+interface Action {
+  readonly href: string;
+  readonly label: string;
+  /** A page on the site, even inside the Diwan. */
+  readonly site?: boolean;
+}
+
+const ActionLink = ({ href, label, site = false }: Action) => {
+  const AppLink = useAppLink();
+  const Link = site ? SiteLink : AppLink;
+  return EXTERNAL.test(href) ? (
     <a className={actionClass} href={href}>
       {label}
     </a>
@@ -67,16 +77,17 @@ const ActionLink = ({ href, label }: { href: string; label: string }) =>
       {label}
     </Link>
   );
+};
 
 /**
  * One muted line for an empty section, with the next thing to do: every
- * empty state in the Nexus offers one (an internal path or a full URL).
+ * empty state offers one (an in-app path or a full URL).
  */
 export const EmptyLine = ({
   action,
   children,
 }: {
-  readonly action?: { href: string; label: string };
+  readonly action?: Action;
   readonly children: string;
 }) => (
   <div className="grid justify-items-start gap-2">

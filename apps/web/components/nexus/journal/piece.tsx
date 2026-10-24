@@ -1,10 +1,10 @@
 "use client";
 
 import { useAuth } from "@repo/auth/provider";
+import { Link } from "@repo/internationalization/navigation";
 import { journal, localized, sanitizeRichText } from "@repo/sal-data";
 import { useQuery } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
-import { Link } from "@/lib/nexus/navigation";
 import { useQueryParam } from "@/lib/nexus/use-query-param";
 import { SectionSpinner } from "../states";
 
@@ -25,7 +25,10 @@ export const PieceReader = () => {
     return <SectionSpinner />;
   }
   const back = (
-    <Link className="type-caption underline underline-offset-4" href="/qirtas">
+    <Link
+      className="type-caption underline underline-offset-4"
+      href="/qirtas/write"
+    >
       {t("back")}
     </Link>
   );

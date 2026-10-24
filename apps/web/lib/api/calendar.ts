@@ -2,7 +2,7 @@ import "server-only";
 
 import { project } from "@repo/config";
 import type { AdminClient } from "@repo/database/admin";
-import { nexusUrl, siteUrl } from "@repo/internationalization";
+import { siteUrl } from "@repo/internationalization";
 import type { IcsEvent } from "./ics";
 
 const eventColumns =
@@ -37,7 +37,7 @@ const toIcs = (
   title: locale === "ar" ? event.title_ar : event.title_en,
   uid: `${event.id}@${project.domain}`,
   url: event.members_only
-    ? nexusUrl(locale)
+    ? siteUrl(locale, "/events/book")
     : siteUrl(locale, `/events/${event.slug}`),
 });
 

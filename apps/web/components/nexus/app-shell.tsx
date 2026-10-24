@@ -16,51 +16,25 @@ import { ExternalLink } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import type { ReactNode } from "react";
 import { Masthead, mastheadLink } from "@/components/masthead";
-import { Link, usePathname, useRouter } from "@/lib/nexus/navigation";
+import { LinkProvider } from "@/lib/link-context";
+import { Link, usePathname } from "@/lib/nexus/navigation";
 import { useNotionHandbook, useTeamWorkspace } from "@/lib/nexus/notion";
 import { disablePush } from "@/lib/nexus/push";
-import { useMemberStatus } from "@/lib/nexus/queries";
-import { useVisibleModules } from "./admin/admin-shell";
-import { useTwoStep } from "./auth/two-step";
 import { LanguageSwitcher } from "./language-switcher";
 
-// Five sections at most (v6); the account items live in their own menu.
-const memberLinks = [
-  { href: "/", key: "home" },
-  { href: "/events", key: "events" },
-  { href: "/programs", key: "programs" },
-  { href: "/qirtas", key: "journal" },
-  { href: "/society", key: "society" },
+// The Diwan's own sections (at most five, v6); the modules are in the
+// administration's side navigation.
+const sections = [
+  { href: "/", key: "overview" },
+  { href: "/library", key: "documents" },
+  { href: "/declarations", key: "declarations" },
 ] as const;
 
-/** Whether a section is the current page: Home only on itself. */
+/** Whether a section is the current page: the overview covers the modules. */
 const isCurrent = (pathname: string, href: string) =>
-  href === "/" ? pathname === "/" : pathname.startsWith(href);
-
-/**
- * The Account menu, one list: your profile and library, what you have
- * sent and your service, then what your roles open.
- */
-const useAccountLinks = () => {
-  const { grants, visible } = useVisibleModules();
-  const twoStep = useTwoStep();
-  const admin = visible.length > 0 || Boolean(twoStep.data?.needs);
-  const status = useMemberStatus();
-  // Form F-18: every role holder declares conflicts each semester (P8).
-  const declares = (grants.data ?? []).length > 0;
-  const member = Boolean(status.data?.is_member);
-  return [
-    { href: "/profile", key: "profile" },
-    { href: "/library", key: "documents" },
-    { href: "/forms", key: "forms" },
-    { href: "/service", key: "service" },
-    ...(member ? [{ href: "/offers", key: "offers" } as const] : []),
-    ...(declares
-      ? [{ href: "/declarations", key: "declarations" } as const]
-      : []),
-    ...(admin ? [{ href: "/admin", key: "admin" } as const] : []),
-  ] as const;
-};
+  href === "/"
+    ? !sections.some((s) => s.href !== "/" && pathname.startsWith(s.href))
+    : pathname.startsWith(href);
 
 /**
  * Links into the team's Notion workspace: Start here for role holders, and
@@ -77,52 +51,25 @@ const useNotionLinks = () => {
   ];
 };
 
-/** Phones: the sections in a bar at the bottom, in reach of the thumb. */
-const TabLinks = () => {
-  const t = useTranslations("nexus.nav");
-  const pathname = usePathname();
-  return (
-    <ul className="grid grid-cols-5" data-tab-bar>
-      {memberLinks.map((link) => {
-        const active = isCurrent(pathname, link.href);
-        return (
-          <li key={link.href}>
-            <Link
-              aria-current={active ? "page" : undefined}
-              className={cn(
-                "block truncate border-t-[1.5px] px-1 py-3 text-center font-medium text-[0.8125rem]",
-                active
-                  ? "border-accent text-text"
-                  : "border-transparent text-text-secondary"
-              )}
-              href={link.href}
-            >
-              {t(link.key)}
-            </Link>
-          </li>
-        );
-      })}
-    </ul>
-  );
-};
-
-/** The Diwan frame: skip link, the site's masthead with the Diwan sections, main. */
+/**
+ * The Diwan frame (officers only): skip link, the site's masthead with the
+ * Diwan's sections, main. Members' own pages are on the site (/account).
+ */
 export const AppShell = ({ children }: { children: ReactNode }) => {
   const t = useTranslations();
   const locale = useLocale();
   const { supabase } = useAuth();
-  const router = useRouter();
   const pathname = usePathname();
   const queryClient = useQueryClient();
-  const account = useAccountLinks();
   const notion = useNotionLinks();
+  const account = localizedPath(locale, "/account");
 
   const signOut = async () => {
     // A shared computer must not show the last member's notices.
     await disablePush(supabase).catch(() => undefined);
     await supabase.auth.signOut();
     queryClient.clear();
-    router.replace("/sign-in");
+    window.location.assign(localizedPath(locale, "/"));
   };
 
   const external = (
@@ -158,11 +105,9 @@ export const AppShell = ({ children }: { children: ReactNode }) => {
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              {account.map((link) => (
-                <DropdownMenuItem asChild key={link.href}>
-                  <Link href={link.href}>{t(`nexus.nav.${link.key}`)}</Link>
-                </DropdownMenuItem>
-              ))}
+              <DropdownMenuItem asChild>
+                <a href={account}>{t("web.nav.account")}</a>
+              </DropdownMenuItem>
               {notion.length > 0 ? <DropdownMenuSeparator /> : null}
               {notion.map((link) => (
                 <DropdownMenuItem asChild key={link.key}>
@@ -180,15 +125,9 @@ export const AppShell = ({ children }: { children: ReactNode }) => {
         language={<LanguageSwitcher />}
         menu={(close) => (
           <>
-            <ul className="grid gap-2">
-              {account.map((link) => (
-                <li key={link.href}>
-                  <Link className="link" href={link.href} onClick={close}>
-                    {t(`nexus.nav.${link.key}`)}
-                  </Link>
-                </li>
-              ))}
-            </ul>
+            <a className="link" href={account} onClick={close}>
+              {t("web.nav.account")}
+            </a>
             {notion.length > 0 ? (
               <ul className="grid gap-2">
                 {notion.map((link) => (
@@ -209,7 +148,7 @@ export const AppShell = ({ children }: { children: ReactNode }) => {
         )}
         navLabel={t("nexus.nav.label")}
         place={t("nexus.name")}
-        sections={memberLinks.map((link) => ({
+        sections={sections.map((link) => ({
           current: isCurrent(pathname, link.href),
           href: localizedPath(locale, nexusPath(link.href)),
           label: t(`nexus.nav.${link.key}`),
@@ -219,14 +158,8 @@ export const AppShell = ({ children }: { children: ReactNode }) => {
         className="mx-auto w-full max-w-6xl flex-1 px-4 pt-12 pb-20 sm:pt-16 sm:pb-24"
         id="main"
       >
-        {children}
+        <LinkProvider value={Link}>{children}</LinkProvider>
       </main>
-      <nav
-        aria-label={t("nexus.nav.label")}
-        className="fixed inset-x-0 bottom-0 z-40 border-line border-t bg-surface pb-[env(safe-area-inset-bottom)] lg:hidden print:hidden"
-      >
-        <TabLinks />
-      </nav>
     </div>
   );
 };

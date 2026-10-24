@@ -34,7 +34,9 @@ export const Handbook = () => {
   if (!handbook.reader) {
     return (
       <DiwanPage narrow title={t("title")}>
-        <EmptyLine action={{ href: "/society", label: t("seeSociety") }}>
+        <EmptyLine
+          action={{ href: "/society", label: t("seeSociety"), site: true }}
+        >
           {t("forOfficers")}
         </EmptyLine>
       </DiwanPage>

@@ -28,7 +28,7 @@ export const Offers = () => {
       {offers.isPending ? <SectionSpinner /> : null}
       {offers.isError ? <ErrorState /> : null}
       {offers.data?.length === 0 ? (
-        <EmptyLine action={{ href: "/", label: t("membershipCard") }}>
+        <EmptyLine action={{ href: "/account", label: t("membershipCard") }}>
           {t("empty")}
         </EmptyLine>
       ) : null}

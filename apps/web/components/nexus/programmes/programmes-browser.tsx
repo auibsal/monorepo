@@ -7,11 +7,11 @@ import {
   formatLongDate,
   formatNumber,
 } from "@repo/internationalization/format";
+import { Link } from "@repo/internationalization/navigation";
 import { localized, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
-import { Link } from "@/lib/nexus/navigation";
 import { queryKeys, useMyShifts } from "@/lib/nexus/queries";
 import { StartLinks } from "../forms/forms";
 import { DiwanPage, DiwanSection, RowList } from "../page";
@@ -140,7 +140,7 @@ export const ProgrammesBrowser = () => {
   return (
     <DiwanPage
       actions={
-        <Link className="link" href="/programs/productions">
+        <Link className="link" href="/programs/productions/auditions">
           {t("productionsLink")}
         </Link>
       }
@@ -148,7 +148,7 @@ export const ProgrammesBrowser = () => {
       title={t("title")}
     >
       {rotas.data.length === 0 ? (
-        <EmptyLine action={{ href: "/events", label: ta("browseEvents") }}>
+        <EmptyLine action={{ href: "/events/book", label: ta("browseEvents") }}>
           {t("empty")}
         </EmptyLine>
       ) : null}

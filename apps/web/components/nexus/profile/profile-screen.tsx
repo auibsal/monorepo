@@ -7,11 +7,11 @@ import { Input } from "@repo/design-system/components/ui/input";
 import { Label } from "@repo/design-system/components/ui/label";
 import { Textarea } from "@repo/design-system/components/ui/textarea";
 import { formatNumber } from "@repo/internationalization/format";
+import { Link } from "@repo/internationalization/navigation";
 import { membership } from "@repo/sal-data";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { type FormEvent, useEffect, useId, useState } from "react";
-import { Link } from "@/lib/nexus/navigation";
 import { queryKeys, useProfile } from "@/lib/nexus/queries";
 import { SentList, StartLinks } from "../forms/forms";
 import { CalendarFeed } from "../home/calendar-feed";
@@ -213,7 +213,7 @@ export const ProfileScreen = () => {
       </DiwanSection>
       <DiwanSection
         action={
-          <Link className="link type-caption" href="/forms">
+          <Link className="link type-caption" href="/account/requests">
             {t("forms.mineAll")}
           </Link>
         }

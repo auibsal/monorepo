@@ -2,7 +2,7 @@
 
 import { hasSessionCookie } from "@repo/auth/session-cookie";
 import { cn } from "@repo/design-system/lib/utils";
-import { localizedPath, nexusPath } from "@repo/internationalization";
+import { localizedPath } from "@repo/internationalization";
 import { type Locale, locales } from "@repo/internationalization/config";
 import { Link, usePathname } from "@repo/internationalization/navigation";
 import NextLink from "next/link";
@@ -23,7 +23,7 @@ const sections: { href: string; key: SectionKey }[] = [
 interface SiteHeaderProps {
   /** Hide the sign-in button (on the sign-in pages themselves). */
   readonly account?: boolean;
-  /** Replaces the language link (the Nexus pages keep their query). */
+  /** Replaces the language link (the account pages keep their query). */
   readonly language?: ReactNode;
 }
 
@@ -34,17 +34,14 @@ export const SiteHeader = ({ account = true, language }: SiteHeaderProps) => {
   const locale = useLocale();
   const pathname = usePathname();
   const other = (locales.find((l) => l !== locale) ?? locale) as Locale;
-  // Signed in (the session cookie): the button opens the Nexus instead of
+  // Signed in (the session cookie): the link opens the account instead of
   // asking to sign in. Read after the first render, so the page itself
   // stays the same for everyone.
   const [signedIn, setSignedIn] = useState(false);
   useEffect(() => setSignedIn(hasSessionCookie(document.cookie)), []);
   const way = signedIn
-    ? { href: localizedPath(locale, nexusPath()), label: t("openNexus") }
-    : {
-        href: localizedPath(locale, nexusPath("/sign-in")),
-        label: t("signIn"),
-      };
+    ? { href: localizedPath(locale, "/account"), label: t("account") }
+    : { href: localizedPath(locale, "/sign-in"), label: t("signIn") };
 
   return (
     <Masthead

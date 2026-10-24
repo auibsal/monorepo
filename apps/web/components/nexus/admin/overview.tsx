@@ -101,7 +101,7 @@ const verificationFigure = (
           date: formatLongDate(o.verification_oldest_at ?? "", locale),
         })
       : t("verificationNone"),
-    href: "/admin/members",
+    href: "/members",
     label: t("verificationPending"),
     value: o.verification_pending,
   };
@@ -133,7 +133,7 @@ const eventsFigure = (
   return {
     action: t("openEvents"),
     detail,
-    href: "/admin/events",
+    href: "/events",
     label: t("upcomingRsvps"),
     value: o.upcoming_rsvps,
   };
@@ -162,7 +162,7 @@ const submissionsFigure = (
           selection: formatNumber(stages.selection ?? 0),
         })
       : t("submissionsNone"),
-    href: "/admin/pipeline",
+    href: "/pipeline",
     label: t("openSubmissions"),
     value: o.open_submissions,
   };

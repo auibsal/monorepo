@@ -8,11 +8,11 @@ import {
   formatLongDate,
   formatNumber,
 } from "@repo/internationalization/format";
+import { Link, useRouter } from "@repo/internationalization/navigation";
 import { journal, localized, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useEffect, useState } from "react";
-import { Link, useRouter } from "@/lib/nexus/navigation";
 import {
   queryKeys,
   useMemberStatus,
@@ -395,7 +395,10 @@ export const SubmitWork = () => {
     <div className="grid gap-8">
       <AdminHeading
         actions={
-          <Link className="text-sm underline underline-offset-4" href="/qirtas">
+          <Link
+            className="text-sm underline underline-offset-4"
+            href="/qirtas/write"
+          >
             {t("back")}
           </Link>
         }
@@ -685,7 +688,7 @@ export const MySubmission = () => {
   });
 
   const back = (
-    <Link className="text-sm underline underline-offset-4" href="/qirtas">
+    <Link className="text-sm underline underline-offset-4" href="/qirtas/write">
       {t("back")}
     </Link>
   );

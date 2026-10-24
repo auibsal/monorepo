@@ -1,11 +1,12 @@
 "use client";
 
 import { useAuth } from "@repo/auth/provider";
+import { usePathname, useRouter } from "@repo/internationalization/navigation";
 import { partners } from "@repo/sal-data";
 import { useQuery } from "@tanstack/react-query";
 import { type ReactNode, useEffect } from "react";
-import { safeNextPath, usePathname, useRouter } from "@/lib/nexus/navigation";
-import { useMemberStatus, useProfile } from "@/lib/nexus/queries";
+import { safeNextPath } from "@/lib/nexus/navigation";
+import { useGrants, useMemberStatus, useProfile } from "@/lib/nexus/queries";
 import { PartnerGuest, PendingVerification } from "./pending-verification";
 import { ErrorState, FullPageSpinner, PageSpinner } from "./states";
 
@@ -39,16 +40,15 @@ export const RequireAuth = ({ children }: GateProps) => {
 
 /**
  * Where people verified as a partner's members (not Society members) may
- * go: Waraq (calls opened to their partner), their profile, their service
- * and certificates (and /journal, Waraq's old address, which forwards).
+ * go: Qirtas (calls opened to their partner), their profile, their service
+ * and certificates.
  * Row Level Security still decides every row.
  */
 const GUEST_PATHS = [
   "/qirtas",
-  "/journal",
-  "/profile",
-  "/service",
-  "/certificate",
+  "/account/profile",
+  "/account/service",
+  "/account/certificate",
 ];
 
 export const isGuestPath = (pathname: string) =>
@@ -128,7 +128,7 @@ export const RequireMember = ({ children }: GateProps) => {
   return children;
 };
 
-/** Sign-in and sign-up pages: signed-in users go on to the Nexus. */
+/** Sign-in and sign-up pages: signed-in users go on to their account. */
 export const GuestOnly = ({ children }: GateProps) => {
   const { loading, user } = useAuth();
   const router = useRouter();
@@ -136,9 +136,31 @@ export const GuestOnly = ({ children }: GateProps) => {
   useEffect(() => {
     if (!loading && user) {
       const next = new URLSearchParams(window.location.search).get("next");
-      router.replace(safeNextPath(next) ?? "/");
+      router.replace(safeNextPath(next) ?? "/account");
     }
   }, [loading, router, user]);
 
   return loading || user ? <FullPageSpinner /> : children;
+};
+
+/**
+ * The Diwan is for officers (owner, Oct 24, 2026): anyone holding a role.
+ * Everyone else goes to their account on the site. A convenience: Row
+ * Level Security still decides every row.
+ */
+export const RequireStaff = ({ children }: GateProps) => {
+  const grants = useGrants();
+  const router = useRouter();
+  const staff = (grants.data ?? []).length > 0;
+
+  useEffect(() => {
+    if (grants.isSuccess && !staff) {
+      router.replace("/account");
+    }
+  }, [grants.isSuccess, router, staff]);
+
+  if (grants.isError) {
+    return <ErrorState onRetry={() => grants.refetch()} />;
+  }
+  return grants.isPending || !staff ? <PageSpinner /> : children;
 };

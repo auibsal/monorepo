@@ -7,7 +7,7 @@ test("sign up with an AUIB address, confirm by email, finish setup", async ({
   page,
 }) => {
   const email = `e2e-${Date.now()}@auib.edu.iq`;
-  await page.goto(`${urls.app}/sign-up`);
+  await page.goto(`${urls.web}/sign-up`);
   await expectAccessible(page);
   await page.getByLabel("Full name (English)").fill("New Member");
   await page.getByLabel("Email").fill(email);
@@ -27,14 +27,14 @@ test("sign up with an AUIB address, confirm by email, finish setup", async ({
   await page.getByLabel("I make the Human Authorship pledge").check();
   await page.getByLabel("I make the Member Pledge").check();
   await expect(page.getByText("4 of 4 done")).toBeVisible();
-  await page.getByRole("button", { name: "Enter the Diwan" }).click();
+  await page.getByRole("button", { name: "Continue" }).click();
   await expect(page.getByRole("heading", { name: /Welcome/ })).toBeVisible();
 });
 
 test("an AUIB address signs in by password, with a link one click away", async ({
   page,
 }) => {
-  await page.goto(`${urls.app}/sign-in`);
+  await page.goto(`${urls.web}/sign-in`);
   await page.getByLabel("Email").fill(member.email);
   await expect(
     page.getByRole("button", { name: "Email me a sign-in link instead" })

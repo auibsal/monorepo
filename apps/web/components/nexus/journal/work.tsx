@@ -4,11 +4,11 @@ import { useAuth } from "@repo/auth/provider";
 import { Button } from "@repo/design-system/components/ui/button";
 import type { Locale } from "@repo/internationalization";
 import { formatLongDate } from "@repo/internationalization/format";
+import { Link } from "@repo/internationalization/navigation";
 import { journal, localized, sanitizeRichText, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
-import { Link } from "@/lib/nexus/navigation";
 import { useQueryParam } from "@/lib/nexus/use-query-param";
 import { Thread } from "../admin/journal/workflow";
 import {
@@ -139,7 +139,7 @@ export const MyPiece = () => {
   });
 
   const back = (
-    <Link className="text-sm underline underline-offset-4" href="/qirtas">
+    <Link className="text-sm underline underline-offset-4" href="/qirtas/write">
       {t("back")}
     </Link>
   );

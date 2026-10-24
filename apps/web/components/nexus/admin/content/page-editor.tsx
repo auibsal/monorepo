@@ -105,7 +105,7 @@ export const PageEditor = () => {
       await queryClient.invalidateQueries({ queryKey: ["admin"] });
       if (!pageId) {
         router.replace({
-          pathname: "/admin/content/page",
+          pathname: "/content/page",
           query: { id: savedId },
         });
       }
@@ -123,7 +123,7 @@ export const PageEditor = () => {
       ),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["admin"] });
-      router.replace("/admin/content");
+      router.replace("/content");
     },
   });
 
@@ -148,7 +148,7 @@ export const PageEditor = () => {
         actions={
           <Link
             className="text-sm underline underline-offset-4"
-            href="/admin/content"
+            href="/content"
           >
             {tk("back")}
           </Link>

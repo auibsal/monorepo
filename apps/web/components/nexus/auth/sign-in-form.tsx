@@ -7,11 +7,12 @@ import { FormHeader } from "@repo/design-system/components/sal/form-header";
 import { Button } from "@repo/design-system/components/ui/button";
 import { Input } from "@repo/design-system/components/ui/input";
 import { Label } from "@repo/design-system/components/ui/label";
+import { Link } from "@repo/internationalization/navigation";
 import { useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useEffect, useId, useRef, useState } from "react";
 import { useAuthError, usePasskeyError } from "@/lib/nexus/auth-messages";
-import { callbackUrl, Link, safeNextPath } from "@/lib/nexus/navigation";
+import { callbackUrl, safeNextPath } from "@/lib/nexus/navigation";
 import { useHumanCheck } from "./human-check";
 
 /** The submit button's text, idle and while sending. */

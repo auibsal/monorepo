@@ -1,7 +1,7 @@
 import { SectionHead } from "@repo/design-system/components/sal/section-head";
 import { Button } from "@repo/design-system/components/ui/button";
 import type { Locale } from "@repo/internationalization";
-import { localizedPath, nexusPath } from "@repo/internationalization";
+import { localizedPath } from "@repo/internationalization";
 import { formatLongDate } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
 import { events, journal, localized, programmes } from "@repo/sal-data";
@@ -46,7 +46,7 @@ const Home = async ({ params }: HomeProps) => {
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "web.home" });
   const tj = await getTranslations({ locale, namespace: "web.journal" });
-  const join = localizedPath(locale, nexusPath("/sign-up"));
+  const join = localizedPath(locale, "/sign-up");
 
   const [nextEvents, calls, front, news, allProgrammes] = await Promise.all([
     readPublished(["events"], (c) => events.publicEvents(c, { limit: 4 }), []),

@@ -4,7 +4,7 @@ import type { BotContext } from "../context";
 import { type Copy, copy, type Lang } from "../copy";
 import { db, visibleEvents, whoami } from "../db";
 import { pick, when } from "../format";
-import { connectPage, nexus, wordPage } from "../links";
+import { accountPage, connectPage, wordPage } from "../links";
 import { admitPending } from "./group/joins";
 
 /**
@@ -62,7 +62,7 @@ const menuFor = (t: Copy, lang: Lang) =>
     .webApp(t.buttons.word, wordPage(lang))
     .text(t.buttons.me, "me")
     .row()
-    .url(t.buttons.nexus, nexus(lang));
+    .url(t.buttons.nexus, accountPage(lang));
 
 export const menu = (ctx: BotContext) => menuFor(ctx.t, ctx.lang);
 
@@ -115,7 +115,7 @@ const meView = async (ctx: BotContext) => {
       me.notify ? "notify:off" : "notify:on"
     )
     .row()
-    .url(ctx.t.buttons.nexus, nexus(ctx.lang))
+    .url(ctx.t.buttons.nexus, accountPage(ctx.lang))
     .text(ctx.t.buttons.unlink, "unlink");
   return { keyboard, text: lines.join("\n") };
 };

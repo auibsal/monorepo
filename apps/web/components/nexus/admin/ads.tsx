@@ -151,7 +151,7 @@ export const AdsAdmin = () => {
       cell: (ad) => (
         <Link
           className="link"
-          href={{ pathname: "/admin/ads/ad", query: { id: ad.id } }}
+          href={{ pathname: "/ads/ad", query: { id: ad.id } }}
         >
           {localized(ad, "headline", locale) || t("untitled")}
         </Link>
@@ -174,7 +174,7 @@ export const AdsAdmin = () => {
         {kinds.map((kind) => (
           <Link
             className={buttonLink}
-            href={{ pathname: "/admin/ads/ad", query: { kind } }}
+            href={{ pathname: "/ads/ad", query: { kind } }}
             key={kind}
           >
             {t(`new.${kind}`)}
@@ -187,7 +187,7 @@ export const AdsAdmin = () => {
           action={
             kinds[0]
               ? {
-                  href: `/admin/ads/ad?kind=${kinds[0]}`,
+                  href: `/ads/ad?kind=${kinds[0]}`,
                   label: t(`new.${kinds[0]}`),
                 }
               : undefined
@@ -264,7 +264,7 @@ const AdForm = ({ initial }: { initial: Draft }) => {
       await queryClient.invalidateQueries({ queryKey: key });
       if (!draft.id) {
         setDraft((d) => ({ ...d, id }));
-        router.replace({ pathname: "/admin/ads/ad", query: { id } });
+        router.replace({ pathname: "/ads/ad", query: { id } });
       }
     },
   });
@@ -283,7 +283,7 @@ const AdForm = ({ initial }: { initial: Draft }) => {
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: key });
-      router.replace("/admin/ads");
+      router.replace("/ads");
     },
   });
 
@@ -453,7 +453,7 @@ export const AdEditor = () => {
   }, [id, record.data, newKind]);
 
   const back = (
-    <Link className="text-sm underline underline-offset-4" href="/admin/ads">
+    <Link className="text-sm underline underline-offset-4" href="/ads">
       {t("back")}
     </Link>
   );

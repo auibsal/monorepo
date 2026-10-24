@@ -17,11 +17,11 @@ import {
   formatLongDate,
   formatNumber,
 } from "@repo/internationalization/format";
+import { Link } from "@repo/internationalization/navigation";
 import { events, localized, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useEffect, useState } from "react";
-import { Link } from "@/lib/nexus/navigation";
 import { queryKeys, useMyRsvps, useMyWaitlist } from "@/lib/nexus/queries";
 import { DiwanPage } from "../page";
 import { EmptyLine, ErrorState, SectionSpinner } from "../states";
@@ -213,7 +213,10 @@ export const EventsBrowser = () => {
     <DiwanPage lede={t("lede")} title={t("title")}>
       {upcoming.data.length === 0 ? (
         <EmptyLine
-          action={{ href: "/#calendar", label: ta("subscribeCalendar") }}
+          action={{
+            href: "/account/profile#calendar",
+            label: ta("subscribeCalendar"),
+          }}
         >
           {t("empty")}
         </EmptyLine>
@@ -355,7 +358,7 @@ const EventCard = ({
           ) : null}
           {state === "booked" ? (
             <Button asChild variant="outline">
-              <Link href="/#next-events">{t("ticket")}</Link>
+              <Link href="/account#next-events">{t("ticket")}</Link>
             </Button>
           ) : null}
           {holding ? (

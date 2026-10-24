@@ -4,9 +4,9 @@ import {
   formatLongDate,
   formatNumber,
 } from "@repo/internationalization/format";
+import { Link } from "@repo/internationalization/navigation";
 import { localized } from "@repo/sal-data";
 import { useLocale, useTranslations } from "next-intl";
-import { Link } from "@/lib/nexus/navigation";
 import { useMySubmissions, useOpenCalls } from "@/lib/nexus/queries";
 import { RowList } from "../page";
 import { EmptyLine } from "../states";
@@ -25,7 +25,7 @@ export const JournalSection = () => {
   return (
     <Section id="journal" title={t("title")}>
       {calls.data?.length === 0 ? (
-        <EmptyLine action={{ href: "/qirtas", label: ta("readJournal") }}>
+        <EmptyLine action={{ href: "/qirtas/write", label: ta("readJournal") }}>
           {t("none")}
         </EmptyLine>
       ) : null}

@@ -68,7 +68,9 @@ export const VotingEligibility = () => {
             </tbody>
           </table>
         ) : (
-          <EmptyLine action={{ href: "/events", label: ta("browseEvents") }}>
+          <EmptyLine
+            action={{ href: "/events/book", label: ta("browseEvents") }}
+          >
             {t("noHistory")}
           </EmptyLine>
         )}

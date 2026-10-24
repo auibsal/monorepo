@@ -10,11 +10,11 @@ import {
   formatLongDate,
   formatNumber,
 } from "@repo/internationalization/format";
+import { Link } from "@repo/internationalization/navigation";
 import { localized, recognition, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useId, useState } from "react";
-import { Link } from "@/lib/nexus/navigation";
 import { ErrorLine } from "../admin/kit";
 import { DiwanPage, DiwanSection } from "../page";
 import { EmptyLine, SectionSpinner } from "../states";
@@ -234,7 +234,9 @@ export const Service = () => {
       <DiwanSection id="recordstitle" title={t("recordsTitle")}>
         {records.isPending ? <SectionSpinner /> : null}
         {records.data?.length === 0 ? (
-          <EmptyLine action={{ href: "/programs", label: t("findShift") }}>
+          <EmptyLine
+            action={{ href: "/programs/shifts", label: t("findShift") }}
+          >
             {t("noRecords")}
           </EmptyLine>
         ) : null}
@@ -285,7 +287,7 @@ export const Service = () => {
             <li key={c.id}>
               <Link
                 className="link"
-                href={{ pathname: "/certificate", query: { id: c.id } }}
+                href={{ pathname: "/account/certificate", query: { id: c.id } }}
               >
                 {t(`kinds.${c.kind as recognition.CertificateKind}`)}
                 {c.serial ? ` · ${c.serial}` : ""}

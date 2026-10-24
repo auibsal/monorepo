@@ -12,7 +12,15 @@ Branch: `claude/new-session-qosn60`.
 - [ ] **Brand v6 (2026-10-24), what is left for the owner:**
   - **Supabase → Authentication → Emails:** paste the four updated
     templates and subjects from `packages/database/supabase/templates`
-    (they link to `/diwan/auth/confirm` and say "the Diwan"), unless done.
+    (they now link to `/auth/confirm` on the site; the old `/diwan/auth/…`
+    links forward meanwhile).
+  - **Members' pages left the Diwan (2026-10-24), three settings to move:**
+    BotFather → Bot Settings → Login Widget → OpenID Connect → Redirect
+    URIs `https://auibsal.org/account/profile` and
+    `https://auibsal.org/ar/account/profile` (in place of the `/diwan/profile`
+    ones; Telegram linking from the profile fails until then); Supabase →
+    Authentication → OAuth Server → authorization path `/oauth/consent`;
+    BetterStack's sign-in monitor → `https://auibsal.org/sign-in`.
   - **BotFather → Edit Bot → Description picture:**
     `brand/mascot/hudhud-description.png`, then *Connect the bot to
     Telegram* in the Diwan so the descriptions update.
@@ -286,6 +294,19 @@ These stop parts of the work. Everything else continues around them.
       Realtime since 2026-10-09 (decision below).
 
 ## Decisions
+
+- **The Diwan is for officers only** (owner, 2026-10-24): "Diwan should be
+  just for admins. Though users can sign up/in. All public features should
+  become outside of diwan." Sign-in, sign-up and every member page moved to
+  the site, in its header and footer: `/sign-in`, `/sign-up`, `/account`
+  (overview, profile, requests and reports, service, offers, certificate),
+  `/events/book`, `/programs/shifts`, `/programs/productions/auditions`,
+  `/qirtas/write` (submit, submissions, work), `/society`. The Diwan keeps
+  the administration at `/diwan/<module>` (no more `/diwan/admin`), the
+  library and declarations, and opens only for role holders; everyone else
+  is sent to `/account`. Old member addresses under `/diwan` forward to the
+  new ones (emails already sent, the sign-in emails until they are
+  re-pasted).
 
 - **The Diwan overhaul, documents and one language per page** (owner,
   2026-10-24): every document adopted as Version 1, codes and statuses for
@@ -979,3 +1000,11 @@ Written 2026-10-24 (the Diwan overhaul):
 - `nexus.society.takePart`, `nexus.programs.ideas`,
   `nexus.admin.overview.forRole`, `nexus.profile.lede`, `aboutYou` and
   `consent`.
+- The members' pages leaving the Diwan: `nexus.nav.overview` «نظرة عامة»,
+  `web.nav.account` «حسابك», «افتح حسابك» (emails and the bot), and the
+  rewritten lines that no longer send members to the Diwan (`auth.signIn.title`,
+  `auth.confirm.title`, `nexus.setup.*`, `nexus.twoStep.*`,
+  `nexus.profile.push.*`, `nexus.offers.lede`, `nexus.partnerGuest.body`,
+  `web.events.*`, `web.journal.submit`, `web.journal.readInNexus`,
+  `web.join.*`, `web.privacy.*`, `web.verify.signedBy`,
+  `web.newsletter.members`, and Hudhud's lines in `lib/api/bot/copy.ts`).

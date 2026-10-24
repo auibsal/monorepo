@@ -1,12 +1,13 @@
-import { apiUrl, nexusUrl, siteUrl } from "@repo/internationalization";
+import { apiUrl, siteUrl } from "@repo/internationalization";
 import { startLink } from "@repo/telegram";
 import type { Lang } from "./copy";
 
 /** A public page, in the member's language (English has no prefix). */
 export const web = (lang: Lang, path = "") => siteUrl(lang, path || "/");
 
-/** A Nexus page (auibsal.org/diwan), in the member's language. */
-export const nexus = (lang: Lang, path = "") => nexusUrl(lang, path || "/");
+/** The member's account on the site, in their language. */
+export const accountPage = (lang: Lang, path = "") =>
+  siteUrl(lang, `/account${path}`);
 
 export const eventPage = (lang: Lang, slug: string) =>
   web(lang, `/events/${slug}`);
@@ -22,8 +23,9 @@ export const wordPage = (lang: Lang) => web(lang, "/qirtas/games/word");
 export const documentPage = (lang: Lang, slug: string) =>
   web(lang, `/documents/${slug}`);
 
-/** Where a member connects Telegram: their profile in the Nexus. */
-export const connectPage = (lang: Lang) => nexus(lang, "/profile#telegram");
+/** Where a member connects Telegram: their profile. */
+export const connectPage = (lang: Lang) =>
+  accountPage(lang, "/profile#telegram");
 
 export const botLink = (username: string, payload?: string) =>
   startLink(username, payload);

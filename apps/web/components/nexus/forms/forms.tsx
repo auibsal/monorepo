@@ -3,11 +3,11 @@
 import { useAuth } from "@repo/auth/provider";
 import type { Locale } from "@repo/internationalization";
 import { formatLongDate } from "@repo/internationalization/format";
+import { Link } from "@repo/internationalization/navigation";
 import { hasPermission, type Permission } from "@repo/rbac";
 import { forms, unwrap } from "@repo/sal-data";
 import { useQuery } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
-import { Link } from "@/lib/nexus/navigation";
 import { useGrants, useMemberStatus } from "@/lib/nexus/queries";
 import { DiwanPage, DiwanSection, RowList } from "../page";
 import { EmptyLine, SectionSpinner } from "../states";
@@ -72,7 +72,10 @@ export const StartLinks = ({ keys }: { readonly keys?: readonly string[] }) => {
         <li key={type.key}>
           <Link
             className="group grid gap-1"
-            href={{ pathname: "/forms/fill", query: { form: type.key } }}
+            href={{
+              pathname: "/account/requests/new",
+              query: { form: type.key },
+            }}
           >
             <span className="font-medium underline-offset-4 group-hover:text-accent group-hover:underline group-focus-visible:text-accent">
               {td(`${type.key}.action` as Parameters<typeof td>[0])}
@@ -142,10 +145,10 @@ export const SentList = ({ limit }: { readonly limit?: number }) => {
             href={
               s.status === "draft"
                 ? {
-                    pathname: "/forms/fill",
+                    pathname: "/account/requests/new",
                     query: { form: s.form_key, id: s.id },
                   }
-                : { pathname: "/forms/view", query: { id: s.id } }
+                : { pathname: "/account/requests/view", query: { id: s.id } }
             }
           >
             <FormTitle formKey={s.form_key} />
@@ -182,7 +185,7 @@ export const Forms = () => {
       <DiwanSection id="start" title={t("available")}>
         {types.isPending ? <SectionSpinner /> : null}
         {none ? (
-          <EmptyLine action={{ href: "/", label: t("toProfile") }}>
+          <EmptyLine action={{ href: "/account", label: t("toProfile") }}>
             {t("noneAvailable")}
           </EmptyLine>
         ) : null}

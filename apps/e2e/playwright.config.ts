@@ -9,7 +9,8 @@ import { defineConfig, devices } from "@playwright/test";
  */
 const site = process.env.E2E_SITE_URL ?? "http://localhost:3000";
 const web = site;
-// The Nexus lives under /diwan on the same site.
+// The Diwan (the officers' administration) lives under /diwan on the same
+// site; members' pages are on the site itself.
 const app = `${site}/diwan`;
 const script = process.env.E2E_START === "start" ? "start" : "dev";
 

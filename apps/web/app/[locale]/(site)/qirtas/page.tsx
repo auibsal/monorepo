@@ -1,5 +1,5 @@
 import type { Locale } from "@repo/internationalization";
-import { localizedPath, nexusPath } from "@repo/internationalization";
+import { localizedPath } from "@repo/internationalization";
 import { formatLongDate } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
 import { journal, localized, sanitizeRichText } from "@repo/sal-data";
@@ -78,7 +78,7 @@ const Calls = async ({ locale }: { locale: Locale }) => {
               {isOpen ? (
                 <a
                   className="inline-flex h-12 items-center justify-self-start bg-on-band px-6 font-medium text-[0.9375rem] text-band hover:bg-on-band/90"
-                  href={`${localizedPath(locale, nexusPath("/qirtas/submit"))}?call=${call.id}`}
+                  href={`${localizedPath(locale, "/qirtas/submit")}?call=${call.id}`}
                 >
                   {t("submit")}
                 </a>
@@ -88,7 +88,7 @@ const Calls = async ({ locale }: { locale: Locale }) => {
         })}
         <a
           className="justify-self-start text-on-band underline decoration-1 underline-offset-4"
-          href={localizedPath(locale, nexusPath("/qirtas"))}
+          href={localizedPath(locale, "/qirtas/write")}
         >
           {t("sendNews")}
         </a>

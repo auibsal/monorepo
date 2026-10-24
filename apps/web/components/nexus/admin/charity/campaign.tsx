@@ -194,7 +194,7 @@ const CampaignSettings = ({ campaignId }: { campaignId: string | null }) => {
       await queryClient.invalidateQueries({ queryKey: ["admin"] });
       if (!campaignId) {
         router.replace({
-          pathname: "/admin/charity/campaign",
+          pathname: "/charity/campaign",
           query: { id: savedId },
         });
       }
@@ -1261,10 +1261,7 @@ export const CampaignAdmin = () => {
   });
 
   const back = (
-    <Link
-      className="text-sm underline underline-offset-4"
-      href="/admin/charity"
-    >
+    <Link className="text-sm underline underline-offset-4" href="/charity">
       {tk("back")}
     </Link>
   );

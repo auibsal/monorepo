@@ -15,7 +15,7 @@ import { TwoStepPanel, useTwoStep } from "../auth/two-step";
 import { SectionSpinner } from "../states";
 
 const hrefFor = (module: AdminModule) =>
-  module === "overview" ? "/admin" : `/admin/${module}`;
+  module === "overview" ? "/" : `/${module}`;
 
 /** The admin modules the member's grants show (RLS still decides the rows). */
 export const useVisibleModules = () => {
@@ -51,7 +51,7 @@ const ungrouped = adminModules
 
 const isActive = (module: AdminModule, pathname: string) =>
   module === "overview"
-    ? pathname === "/admin"
+    ? pathname === "/"
     : pathname.startsWith(hrefFor(module));
 
 /**

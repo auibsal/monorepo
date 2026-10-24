@@ -13,10 +13,10 @@ Policy P15 and Bylaws B11.3 apply to the platform too: **every account has at le
 | Google Analytics 4 and Tag Manager | Visit counts on auibsal.org, with consent ([Analytics](analytics.md)) | Free |
 | Resend | Every email the platform sends, including sign-in links | Free: 100 emails a day, 3,000 a month. Emails over the limit wait in the outbox until it resets |
 | Sentry (EU) | Errors and server logs from the app | Free Developer plan: 5,000 errors a month, one user |
-| BetterStack | Uptime monitors for the site, the Diwan sign-in and the API health check | Free |
+| BetterStack | Uptime monitors for the site, the sign-in page and the API health check | Free |
 | Arcjet | Protects the public removal-request form | Free after the trial: 10,000 requests a month, then a hard stop (no bill); the form keeps working when it is spent |
 | Google Analytics 4 | Visitor counts on the public site only | Free |
-| Cloudflare Turnstile | The human check on Diwan sign-up, sign-in and password reset (Supabase Auth → Attack Protection; site key `NEXT_PUBLIC_TURNSTILE_SITE_KEY` on the auibsal project, secret in Supabase) | Free |
+| Cloudflare Turnstile | The human check on sign-up, sign-in and password reset (Supabase Auth → Attack Protection; site key `NEXT_PUBLIC_TURNSTILE_SITE_KEY` on the auibsal project, secret in Supabase) | Free |
 | Cloudflare Email Routing | Forwards mail to hello@auibsal.org (and any role addresses) to officers' inboxes | Free |
 | Cloudflare R2 | Turned on, not used yet: room for files if Supabase Storage's free 1 GB runs short | Free up to 10 GB; a card is on file |
 
@@ -32,12 +32,12 @@ The pages and the Diwan read only the public keys; the database enforces the rul
 
 ## Passkeys
 
-Members can sign in with a passkey (fingerprint, face or screen lock) and manage them under Profile in the Diwan. The settings live in Supabase → Authentication → Passkeys:
+Members can sign in with a passkey (fingerprint, face or screen lock) and manage them in their account, under Profile (auibsal.org/account/profile). The settings live in Supabase → Authentication → Passkeys:
 
 | Setting | Value | Why |
 | --- | --- | --- |
 | Relying Party ID | `auibsal.org` | Passkeys work only on this domain and its subdomains. **Never change it**: every passkey already registered stops working. |
-| Relying Party Origins | `https://auibsal.org` (the Diwan lives at auibsal.org/diwan since October 24, 2026) | The exact pages allowed to ask for a passkey. Safe to edit at any time. |
+| Relying Party Origins | `https://auibsal.org` (sign-in and the account are on the site itself since October 24, 2026) | The exact pages allowed to ask for a passkey. Safe to edit at any time. |
 | Display name | `AUIB Society of Arts and Letters` | Shown in the device's passkey prompt. |
 
 A passkey sign-in counts as the first step only: officers whose roles need two-step sign-in still enter their authenticator code afterwards.

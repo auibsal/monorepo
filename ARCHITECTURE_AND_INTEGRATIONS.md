@@ -9,7 +9,8 @@ How the SAL platform fits together, and how to set up each integration.
 flowchart LR
   subgraph apps/web · auibsal.org (one Vercel project)
     W["(site) · public pages<br/>SSG + cache tags"]
-    A["/diwan · the Diwan<br/>client-rendered"]
+    M["(account) · members' pages<br/>client-rendered"]
+    A["/diwan · the Diwan (officers)<br/>client-rendered"]
     API["/api · route handlers<br/>email · cron · feeds · signed URLs · /api/v1"]
   end
   subgraph Supabase
@@ -20,8 +21,8 @@ flowchart LR
   RESEND["Resend (auibsal.org)"]
 
   W -- "publishable key, published rows" --> DB
-  A -- "member's JWT" --> AUTH & DB & ST
-  A -- "Bearer token" --> API
+  M & A -- "member's JWT" --> AUTH & DB & ST
+  M & A -- "Bearer token" --> API
   API -- "secret key" --> DB & ST
   DB -- "outbox webhook" --> API
   API -- "revalidateTag, in process" --> W
@@ -120,7 +121,7 @@ indexes on policy columns, and pgTAP tests. Regenerate types and commit them.
    journal, charity, programmes, governance, content`.
 4. **Auth → URL configuration:** site URL `https://auibsal.org`; redirect
    URLs `https://auibsal.org/**` and `http://localhost:3000/**`. OAuth
-   Server: authorization path `/diwan/oauth/consent`.
+   Server: authorization path `/oauth/consent`.
 5. **Auth → Providers:** email on (confirmations on, password min 10, letters
    and digits); phone off.
 6. **Auth → SMTP:** Resend (`smtp.resend.com`, port 465, user `resend`,

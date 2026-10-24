@@ -1,21 +1,26 @@
 import type { ReactNode } from "react";
 import { AppShell } from "@/components/nexus/app-shell";
-import { RequireAuth, RequireMember } from "@/components/nexus/gates";
+import {
+  RequireAuth,
+  RequireMember,
+  RequireStaff,
+} from "@/components/nexus/gates";
 
 interface AppLayoutProps {
   readonly children: ReactNode;
 }
 
 /**
- * Signed-in, verified members with current pledges. The shell (header,
- * navigation, footer) paints at once; the gates wait for the session and
- * the membership inside it, so a slow connection shows the frame first
- * rather than a blank screen.
+ * The Diwan: officers only (anyone holding a role), signed in, verified,
+ * with current pledges. The shell paints at once; the gates wait for the
+ * session, the membership and the roles inside it.
  */
 const AppLayout = ({ children }: AppLayoutProps) => (
   <AppShell>
     <RequireAuth>
-      <RequireMember>{children}</RequireMember>
+      <RequireMember>
+        <RequireStaff>{children}</RequireStaff>
+      </RequireMember>
     </RequireAuth>
   </AppShell>
 );

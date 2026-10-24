@@ -24,7 +24,7 @@ import {
 type Status = "draft" | "scheduled" | "published";
 
 const back = (label: string) => (
-  <Link className="text-sm underline underline-offset-4" href="/admin/journal">
+  <Link className="text-sm underline underline-offset-4" href="/journal">
     {label}
   </Link>
 );
@@ -179,7 +179,7 @@ export const IssueEditor = () => {
       await queryClient.invalidateQueries({ queryKey: ["admin", "journal"] });
       if (!issueId) {
         router.replace({
-          pathname: "/admin/journal/issue",
+          pathname: "/journal/issue",
           query: { id: savedId },
         });
       }

@@ -579,7 +579,7 @@ export const MemberDetail = () => {
         actions={
           <Link
             className="text-sm underline underline-offset-4"
-            href="/admin/members"
+            href="/members"
           >
             {tk("back")}
           </Link>

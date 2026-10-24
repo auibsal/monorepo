@@ -30,7 +30,7 @@ describe("platform email", () => {
     expect(html.indexOf("حُجز مكانك")).toBeLessThan(
       html.indexOf("booked: Charter Day")
     );
-    expect(html).toContain(`href="${APP}/ar/diwan"`);
+    expect(html).toContain(`href="${APP}/ar/account"`);
   });
 
   test("one image, the lockup; no exclamation marks in headings", async () => {

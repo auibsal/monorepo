@@ -6,10 +6,10 @@ import { FormHeader } from "@repo/design-system/components/sal/form-header";
 import { Button } from "@repo/design-system/components/ui/button";
 import { Label } from "@repo/design-system/components/ui/label";
 import { Textarea } from "@repo/design-system/components/ui/textarea";
+import { Link } from "@repo/internationalization/navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { useId, useState } from "react";
-import { Link } from "@/lib/nexus/navigation";
 import { queryKeys, useVerificationRequest } from "@/lib/nexus/queries";
 import { Affiliations } from "./profile/affiliations";
 
@@ -76,9 +76,9 @@ export const PendingVerification = () => {
 export const PartnerGuest = () => {
   const t = useTranslations("nexus.partnerGuest");
   const links = [
-    ["/qirtas", t("journal")],
-    ["/profile", t("profile")],
-    ["/service", t("service")],
+    ["/qirtas/write", t("journal")],
+    ["/account/profile", t("profile")],
+    ["/account/service", t("service")],
   ] as const;
   return (
     <main className="mx-auto grid w-full max-w-xl gap-6 px-4 py-12" id="main">

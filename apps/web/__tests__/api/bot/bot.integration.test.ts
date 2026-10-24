@@ -231,7 +231,7 @@ describe.skipIf(!enabled)("Hudhud", () => {
     );
 
     await bot.handleUpdate(press(`rsvp:${eventId}`, stranger));
-    expect(lastText()).toContain("Link your Diwan account first");
+    expect(lastText()).toContain("Link your SAL account first");
   });
 
   test("opens the daily word as a Mini App", async () => {

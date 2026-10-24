@@ -211,7 +211,9 @@ export const Productions = () => {
 
       <DiwanSection id="auditionstitle" title={t("auditionsTitle")}>
         {auditioning.length === 0 ? (
-          <EmptyLine action={{ href: "/programs", label: t("findShift") }}>
+          <EmptyLine
+            action={{ href: "/programs/shifts", label: t("findShift") }}
+          >
             {t("noAuditions")}
           </EmptyLine>
         ) : null}

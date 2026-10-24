@@ -5,7 +5,7 @@ import { expectAccessible, signInWithPassword } from "./helpers";
 
 test("a member books a place and gives it back", async ({ page }) => {
   await signInWithPassword(page, member.email);
-  await page.goto(`${urls.app}/events`);
+  await page.goto(`${urls.web}/events/book`);
   const card = page.locator(`li#${event.slug}`);
   await expect(card).toBeVisible();
   await expectAccessible(page);
@@ -26,7 +26,7 @@ test("a member sends work to Qirtas and sees the reading timeline", async ({
   page,
 }) => {
   await signInWithPassword(page, member.email);
-  await page.goto(`${urls.app}/qirtas/submit`);
+  await page.goto(`${urls.web}/qirtas/submit`);
   await page.getByLabel("Title").fill(`A small poem ${Date.now()}`);
   await page.locator('[contenteditable="true"]').first().click();
   await page.keyboard.type("The paper and the pen, and the hour between them.");

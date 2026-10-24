@@ -6,12 +6,12 @@ import { Checkbox } from "@repo/design-system/components/ui/checkbox";
 import { Label } from "@repo/design-system/components/ui/label";
 import type { Locale } from "@repo/internationalization";
 import { formatIqd, formatNumber } from "@repo/internationalization/format";
+import { Link, useRouter } from "@repo/internationalization/navigation";
 import { forms, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useEffect, useState } from "react";
-import { Link, useRouter } from "@/lib/nexus/navigation";
 import { ErrorLine, Field, SelectInput } from "../admin/kit";
 import { MemberPicker, useMemberNames } from "../admin/member-picker";
 import { DiwanPage } from "../page";
@@ -154,7 +154,7 @@ export const FillForm = () => {
   const id = params.get("id");
   if (!forms.isFormKey(formKey)) {
     return (
-      <EmptyLine action={{ href: "/forms", label: t("back") }}>
+      <EmptyLine action={{ href: "/account/requests", label: t("back") }}>
         {t("notFound")}
       </EmptyLine>
     );
@@ -229,8 +229,11 @@ const FormEditor = ({
       }
       router.push(
         submit
-          ? { pathname: "/forms/view", query: { id: savedId } }
-          : { pathname: "/forms/fill", query: { form: formKey, id: savedId } }
+          ? { pathname: "/account/requests/view", query: { id: savedId } }
+          : {
+              pathname: "/account/requests/new",
+              query: { form: formKey, id: savedId },
+            }
       );
     },
   });
@@ -240,14 +243,14 @@ const FormEditor = ({
   }
   if (id && !existing.data) {
     return (
-      <EmptyLine action={{ href: "/forms", label: t("back") }}>
+      <EmptyLine action={{ href: "/account/requests", label: t("back") }}>
         {t("notFound")}
       </EmptyLine>
     );
   }
   if (sentAnonymously) {
     return (
-      <EmptyLine action={{ href: "/forms", label: t("back") }}>
+      <EmptyLine action={{ href: "/account/requests", label: t("back") }}>
         {t("sentAnonymously")}
       </EmptyLine>
     );
@@ -339,7 +342,10 @@ const FormEditor = ({
               {t("saveDraft")}
             </Button>
           ) : null}
-          <Link className="link type-caption self-center" href="/forms">
+          <Link
+            className="link type-caption self-center"
+            href="/account/requests"
+          >
             {t("back")}
           </Link>
         </div>

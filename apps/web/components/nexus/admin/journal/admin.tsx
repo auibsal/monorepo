@@ -74,7 +74,7 @@ const Editions = () => {
       cell: (i) => (
         <Link
           className="font-medium underline underline-offset-4"
-          href={{ pathname: "/admin/journal/issue", query: { id: i.id } }}
+          href={{ pathname: "/journal/issue", query: { id: i.id } }}
         >
           {localized(i, "title", locale)}
         </Link>
@@ -99,7 +99,7 @@ const Editions = () => {
   return (
     <div className="grid gap-4">
       <p className="type-caption">{t("editionsLede")}</p>
-      <Link className={buttonLink} href="/admin/journal/issue">
+      <Link className={buttonLink} href="/journal/issue">
         {t("newEdition")}
       </Link>
       {issues.data ? (
@@ -170,7 +170,7 @@ const Newsroom = () => {
         <Link
           className="font-medium underline underline-offset-4"
           dir="auto"
-          href={{ pathname: "/admin/journal/piece", query: { id: p.id } }}
+          href={{ pathname: "/journal/piece", query: { id: p.id } }}
           lang={p.language === "ar" ? "ar" : "en"}
         >
           {localized(p, "title", locale) || t("untitled")}
@@ -247,7 +247,7 @@ const Newsroom = () => {
             </SelectInput>
           )}
         </Field>
-        <Link className={buttonLink} href="/admin/journal/piece">
+        <Link className={buttonLink} href="/journal/piece">
           {t("newPiece")}
         </Link>
       </div>
@@ -508,7 +508,7 @@ const QueueItem = ({ item }: { item: QueueRow }) => {
         <Link
           className="justify-self-start underline underline-offset-4"
           href={{
-            pathname: "/admin/journal/piece",
+            pathname: "/journal/piece",
             query: { id: item.piece_id },
           }}
         >
@@ -620,7 +620,7 @@ const FrontPage = () => {
       cell: (p) => (
         <Link
           className="font-medium underline underline-offset-4"
-          href={{ pathname: "/admin/journal/piece", query: { id: p.id } }}
+          href={{ pathname: "/journal/piece", query: { id: p.id } }}
         >
           {localized(p, "title", locale) || t("untitled")}
         </Link>

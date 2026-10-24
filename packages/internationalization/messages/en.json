@@ -69,7 +69,7 @@
       "captcha_failed": "We couldn't confirm you're a person. Reload the page and try again."
     },
     "signIn": {
-      "title": "Sign in to the Diwan",
+      "title": "Sign in",
       "description": "The members' portal of the AUIB Society of Arts and Letters.",
       "submit": "Sign in",
       "submitting": "Signing in…",
@@ -115,7 +115,7 @@
       "retry": "Back to sign in"
     },
     "confirm": {
-      "title": "Continue to the Diwan",
+      "title": "Continue to your account",
       "body": "Press Continue to finish signing in.",
       "recovery": "Press Continue, then choose a new password.",
       "continue": "Continue",
@@ -156,7 +156,9 @@
       "service": "My service",
       "forms": "Requests and reports",
       "documents": "Library",
-      "workspace": "Team workspace"
+      "workspace": "Team workspace",
+      "overview": "Overview",
+      "diwan": "The Diwan"
     },
     "errors": {
       "loadFailed": "We couldn't load this. Check your connection and try again.",
@@ -198,13 +200,13 @@
       },
       "renewed": "A pledge has a new version. Please read and accept it again.",
       "preferences": "Your choices",
-      "locale": "Language for the Diwan and emails",
+      "locale": "Language for the website and emails",
       "notifications": "Email me about events, calls and Society notices",
       "cameraShy": "I'm camera-shy: please don't photograph or film me",
       "cameraShyHint": "You'll get a camera-shy sticker at events, and we'll leave you out of SAL photos and videos.",
       "personalEmail": "Personal email for after you graduate",
       "personalEmailHint": "So you can stay in touch as a Life Member. Never shown publicly.",
-      "submit": "Enter the Diwan",
+      "submit": "Continue",
       "name": {
         "title": "Your name",
         "hint": "As it appears on the Council page, the Register and your certificates.",
@@ -288,7 +290,7 @@
     },
     "events": {
       "title": "Events",
-      "lede": "Book a place, join a waitlist, or give your place back. Your tickets are on your home page.",
+      "lede": "Book a place, join a waitlist, or give your place back. Your tickets are in your account.",
       "empty": "No events are announced yet. They appear here as soon as they're published.",
       "membersOnly": "Members only",
       "book": "Book a place",
@@ -307,7 +309,7 @@
         "left": "{count, plural, one {{places} place left} other {{places} places left}}"
       },
       "notice": {
-        "booked": "Booked. Your ticket is on your home page, and a confirmation email is on its way.",
+        "booked": "Booked. Your ticket is in your account, and a confirmation email is on its way.",
         "waitlisted": "The event is full, so you're on the waitlist. We'll email you if a place opens.",
         "cancelled": "Done. Your place has gone to the next person waiting, if there is one.",
         "leftWaitlist": "Done. You're off the waitlist.",
@@ -323,10 +325,10 @@
       "signUp": "Sign up",
       "giveBack": "Give it back",
       "full": "Full",
-      "yours": "You're on this shift. It's also on your home page.",
+      "yours": "You're on this shift. It's also in your account.",
       "left": "{count, plural, =0 {No places left} one {{places} place left} other {{places} places left}}",
       "notice": {
-        "signedUp": "You're on the rota. Confirm the shift from your home page closer to the day.",
+        "signedUp": "You're on the rota. Confirm the shift from your account closer to the day.",
         "gaveBack": "Done. The place is open for someone else.",
         "full": "Someone took the last place first.",
         "notVerified": "Shifts open once your membership is verified.",
@@ -357,7 +359,7 @@
       },
       "book": {
         "title": "The Register",
-        "lede": "{count, plural, one {{members} member} other {{members} members}}, with their six words where they've written them. Add yours from your home page."
+        "lede": "{count, plural, one {{members} member} other {{members} members}}, with their six words where they've written them. Add yours from your account."
       },
       "elections": {
         "title": "Elections",
@@ -414,9 +416,9 @@
       "setupTitle": "Set up two-step sign-in",
       "setupBody": "Your role on the Council or the Elections Committee handles the Society's money, records and votes, so it needs a second step at sign-in: a six-digit code from an authenticator app on your phone (Google Authenticator, Microsoft Authenticator, 1Password or similar). It takes a minute and you do it once.",
       "verifyTitle": "Enter your sign-in code",
-      "verifyBody": "Open your authenticator app and enter the six-digit code for SAL Diwan. Your administration tools open once it's accepted.",
+      "verifyBody": "Open your authenticator app and enter the six-digit code for SAL. Your administration tools open once it's accepted.",
       "start": "Set up my authenticator",
-      "qrAlt": "QR code to add SAL Diwan to an authenticator app",
+      "qrAlt": "QR code to add SAL to an authenticator app",
       "manual": "Can't scan it? Enter this key in the app instead:",
       "codeLabel": "Six-digit code",
       "verify": "Confirm",
@@ -563,8 +565,8 @@
         "test": "Send a test",
         "testSent": "Sent. It should arrive in a few seconds.",
         "testNone": "Nothing arrived at this device. Turn notifications off and on again.",
-        "needsInstall": "On iPhone and iPad, add the Diwan to your Home Screen first: tap Share, then Add to Home Screen, and open it from there.",
-        "denied": "Notifications are blocked for the Diwan in this browser. Allow them in the browser's site settings, then try again.",
+        "needsInstall": "On iPhone and iPad, add auibsal.org to your Home Screen first: tap Share, then Add to Home Screen, and open it from there.",
+        "denied": "Notifications are blocked for auibsal.org in this browser. Allow them in the browser's site settings, then try again.",
         "unsupported": "This browser can't show notifications. You'll still get every notice by email.",
         "failed": "We couldn't change notifications. Please try again."
       },
@@ -623,7 +625,7 @@
         "unlink": "Unlink Telegram",
         "failed": "We couldn't change Telegram. Please try again.",
         "linking": "Linking Telegram…",
-        "loginHint": "Connect sends you to Telegram to confirm, then back here. It only links Telegram; you still sign in to the Diwan with your email."
+        "loginHint": "Connect sends you to Telegram to confirm, then back here. It only links Telegram; you still sign in with your email."
       },
       "lede": "Your details, how the Society reaches you, and what you have shared.",
       "aboutYou": "About you",
@@ -2677,7 +2679,7 @@
     },
     "offers": {
       "title": "Member offers",
-      "lede": "Offers from the Society's partners for members. Nothing is paid through the Diwan: each offer says how to redeem it.",
+      "lede": "Offers from the Society's partners for members. Nothing is paid on this website: each offer says how to redeem it.",
       "empty": "There are no offers right now.",
       "membershipCard": "Show my membership card",
       "code": "Code:",
@@ -2764,7 +2766,7 @@
     },
     "partnerGuest": {
       "title": "Welcome, partner",
-      "body": "You are verified as a member of one of the Society's partners. In the Diwan you can answer Qirtas calls opened to your partner, keep your profile, and see your service and certificates. The rest is for members of the Society.",
+      "body": "You are verified as a member of one of the Society's partners. You can answer Qirtas calls opened to your partner, keep your profile, and see your service and certificates. The rest is for members of the Society.",
       "journal": "Qirtas",
       "profile": "My profile",
       "service": "My service"
@@ -3458,8 +3460,7 @@
       "news": "News",
       "documents": "Documents",
       "signIn": "Sign in",
-      "nexus": "The Diwan",
-      "openNexus": "Open the Diwan"
+      "account": "Your account"
     },
     "footer": {
       "contact": "Contact",
@@ -3549,7 +3550,7 @@
     },
     "events": {
       "title": "Events",
-      "lede": "Readings, workshops, salons and nights out with the Society. Members-only events are listed in the Diwan.",
+      "lede": "Readings, workshops, salons and nights out with the Society. Members see members-only events once they sign in.",
       "subscribe": "Subscribe to the calendar",
       "subscribeHint": "(adds every public event to your phone or computer calendar)",
       "upcoming": "Coming up",
@@ -3557,7 +3558,7 @@
       "none": "No events announced yet.",
       "all": "All events",
       "cancelled": "This event has been canceled.",
-      "rsvp": "RSVP in the Diwan",
+      "rsvp": "Book a place",
       "rsvpHint": "Sign in with your AUIB email to reserve a place.",
       "addToCalendar": "Add to calendar"
     },
@@ -3568,7 +3569,7 @@
       "noCalls": "No call is open at the moment.",
       "closes": "Closes {date}",
       "opensCloses": "Opens {opens}. Closes {closes}.",
-      "submit": "Submit in the Diwan",
+      "submit": "Submit your work",
       "issues": "Issues",
       "volumeNumber": "Vol. {volume}, No. {number}",
       "latest": "Latest pieces",
@@ -3579,7 +3580,7 @@
       "pdf": "Download the print edition (PDF)",
       "membersOnly": "Members",
       "membersOnlyBody": "This piece is for members of the Society.",
-      "readInNexus": "Read it in the Diwan",
+      "readInNexus": "Read it as a member",
       "contributor": "Contributor",
       "work": "In Qirtas",
       "categories": {
@@ -3715,7 +3716,7 @@
       "steps": {
         "register": {
           "title": "Register",
-          "body": "Sign up in the Diwan with your AUIB email and sign the Member Pledge."
+          "body": "Sign up with your AUIB email and sign the Member Pledge."
         },
         "commonRoom": {
           "title": "Join The Common Room",
@@ -3759,7 +3760,7 @@
       },
       "firstMonthTitle": "Your first month",
       "firstMonth": "Register · join The Common Room · type your six words · come to a Majlis with your buddy · tell us after your second event what you would like to do here.",
-      "cta": "Join in the Diwan",
+      "cta": "Sign up",
       "ctaHint": "Use your AUIB email address."
     },
     "programmes": {
@@ -3843,7 +3844,7 @@
     },
     "privacy": {
       "title": "Privacy and photo policy",
-      "lede": "How the Society treats your data and your image, from the Policy Manual, and how this website and the Diwan handle your information.",
+      "lede": "How the Society treats your data and your image, from the Policy Manual, and how this website handles your information.",
       "photoTitle": "Consent, photography and media",
       "dataTitle": "Privacy and member data",
       "source": "Policy Manual",
@@ -3859,14 +3860,14 @@
         "6_4": "Members may ask to see or delete their data at any time. Data of members who leave is deleted one year after they leave, except their name and roles in the archive.",
         "6_5": "Submissions, ballots and conduct records follow their own retention rules: Waraq's guidelines, B6.11 and B10.8."
       },
-      "platformTitle": "This website and the Diwan",
+      "platformTitle": "This website",
       "platform": {
-        "signIn": "You sign in to the Diwan with your email address. The sign-in cookie is shared across auibsal.org and its subdomains, and is used only to keep you signed in.",
+        "signIn": "You sign in with your email address. The sign-in cookie is shared across auibsal.org and its subdomains, and is used only to keep you signed in.",
         "storage": "Member records are stored with Supabase in the European Union (Frankfurt). Who can see each record is enforced in the database itself, by role.",
         "email": "Email from the platform is sent by Resend from the European Union (Ireland). Links in it are not tracked.",
-        "hosting": "The website, the Diwan and the API are hosted on Vercel.",
+        "hosting": "The website and the API are hosted on Vercel.",
         "analytics": "This website uses no analytics or advertising cookies.",
-        "delete": "You can delete your account in the Diwan, under Profile and privacy.",
+        "delete": "You can delete your account under Your account, Profile.",
         "analyticsOn": "This website counts visits with Google Analytics 4, through Google Tag Manager served from auibsal.org. Analytics cookies are set only if you allow them (Cookie settings, at the foot of every page).",
         "analyticsOff": "This website uses no analytics cookies.",
         "adsOn": "Qirtas shows ads to visitors who are not signed in: the Society's own, its sponsors' and Google AdSense's. Signed-in members see none. AdSense sets advertising cookies and chooses ads for you only if you allow advertising (Cookie settings); otherwise its ads use no cookies. Sponsors receive nothing about you.",
@@ -3943,7 +3944,7 @@
       "present": "the present",
       "issued": "Issued",
       "serial": "Serial",
-      "signedBy": "Signed in the Diwan by the President and the Faculty Advisor.",
+      "signedBy": "Signed on this website by the President and the Faculty Advisor.",
       "kinds": {
         "service": "Certificate of Service",
         "fellowship": "Fellow of the Society",
@@ -4065,7 +4066,7 @@
     "newsletter": {
       "title": "The Month in Qirtas",
       "lede": "One email a month, on the 1st: the pieces Qirtas published that month and the AUIB Society of Arts and Letters' coming public events. Anyone can subscribe.",
-      "members": "Members also get the Sunday Paper, a weekly email of the week's pieces, in the Diwan.",
+      "members": "Members also get the Sunday Paper, a weekly email of the week's pieces.",
       "email": "Your email address",
       "submit": "Subscribe",
       "sending": "Sending…",

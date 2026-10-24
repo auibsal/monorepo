@@ -19,11 +19,11 @@ export const expectAccessible = async (page: Page) => {
 };
 
 export const signInWithPassword = async (page: Page, email: string) => {
-  await page.goto(`${urls.app}/sign-in`);
+  await page.goto(`${urls.web}/sign-in`);
   await page.getByLabel("Email").fill(email);
   await page.getByLabel("Password").fill(PASSWORD);
   await page.getByRole("button", { exact: true, name: "Sign in" }).click();
-  await expect(page).toHaveURL(new RegExp(`${urls.app}/?$`));
+  await expect(page).toHaveURL(new RegExp(`${urls.web}/account/?$`));
 };
 
 /** The newest email to an address, from the local stack's Mailpit. */

@@ -17,11 +17,11 @@ import {
   formatLongDate,
   formatNumber,
 } from "@repo/internationalization/format";
+import { Link } from "@repo/internationalization/navigation";
 import { events, localized, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import QRCode from "react-qr-code";
-import { Link } from "@/lib/nexus/navigation";
 import { queryKeys, useMyRsvps, useMyWaitlist } from "@/lib/nexus/queries";
 import { RowList } from "../page";
 import { EmptyLine, ErrorState, SectionSpinner } from "../states";
@@ -63,7 +63,7 @@ export const NextEvents = () => {
     <Section
       action={
         upcoming.length > 0 ? (
-          <Link className="link type-caption" href="/events">
+          <Link className="link type-caption" href="/events/book">
             {t("browse")}
           </Link>
         ) : undefined
@@ -76,7 +76,7 @@ export const NextEvents = () => {
       {rsvps.data &&
       upcoming.length === 0 &&
       (waitlist.data ?? []).length === 0 ? (
-        <EmptyLine action={{ href: "/events", label: ta("browseEvents") }}>
+        <EmptyLine action={{ href: "/events/book", label: ta("browseEvents") }}>
           {t("empty")}
         </EmptyLine>
       ) : null}

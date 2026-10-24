@@ -418,10 +418,7 @@ export const EntryView = () => {
   const issues = usePipelineIssues();
 
   const back = (
-    <Link
-      className="text-sm underline underline-offset-4"
-      href="/admin/pipeline"
-    >
+    <Link className="text-sm underline underline-offset-4" href="/pipeline">
       {tk("back")}
     </Link>
   );
