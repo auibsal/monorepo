@@ -37,9 +37,12 @@ items and decisions) and continue from the first unticked item.
   links with `Link` from `@repo/internationalization/navigation` (inside the
   Nexus: from `@/lib/nexus/navigation`), or `localizedPath`, `nexusPath`,
   `apiPath` and the absolute `siteUrl`, `nexusUrl`, `apiUrl` from
-  `@repo/internationalization`; never write `/en`. The old hosts
-  nexus.auibsal.org and api.auibsal.org redirect (`next.config.ts`), the
-  one exception to "the apps configure no redirects".
+  `@repo/internationalization`; never write `/en`.
+- **One frame.** The public pages and the Nexus share one header
+  (`components/masthead.tsx`: the site's sections in `site-header.tsx`, the
+  Nexus sections in `components/nexus/app-shell.tsx`) and one footer
+  (`components/footer.tsx`), so moving between them never feels like
+  another app.
 - `packages/storybook` — the SAL Design System: SAL components, v5 Screens
   and every platform email in both languages. Local only
   (`bun run --cwd packages/storybook dev`); nothing is deployed.
@@ -149,9 +152,13 @@ any schema change. Integration tests run against a local stack with
   (`surface`, `surface-tint`, `text`, `text-secondary`, `text-meta`, `title`,
   `accent-line`, `band`, `on-band`, plus `rule`). Never add a color. No
   shadows. Cards on `surface-tint` with the 8px card radius. At most one
-  crimson band per page; crimson never on ink. Light everywhere, the Nexus
-  included (owner, Oct 24, 2026); the ink theme (`data-theme="dark"`) only on
-  the "why" pages and the Open Call page.
+  crimson band per page; crimson never on ink. Light and dark mode across
+  the site and the Nexus (owner, Oct 24, 2026): dark mode is the brand's ink
+  theme, `data-theme="dark"` on `<html>` from the system setting or the
+  header toggle (cookie `sal_theme`, `apps/web/lib/theme.ts`). Never test
+  the mode in code: the role tokens switch, `on-ink:` styles what sits on
+  ink, and paper (certificates, letters, printouts) keeps
+  `data-theme="light"`.
   Logos are used exactly as supplied in `brand/logos`, never redrawn.
   Functional icons only (menu, close, back, chevron, search, external link,
   check), each with an accessible label; no decorative icons, no emoji.

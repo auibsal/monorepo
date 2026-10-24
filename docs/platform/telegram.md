@@ -104,7 +104,7 @@ And without commands:
 
 1. **Create the bot.** In Telegram, open @BotFather: `/newbot`, name
    **Hudhud · SAL**, a username ending in `bot` (ours: `auibsal_bot`).
-2. **On sal-web** (Production, marked sensitive), add
+2. **On the auibsal project** (Production, marked sensitive), add
    `TELEGRAM_BOT_TOKEN`, `TELEGRAM_BOT_USERNAME`,
    `TELEGRAM_WEBHOOK_SECRET` (`openssl rand -hex 32`) and
    `TELEGRAM_LOGIN_CLIENT_SECRET` (step 3), and redeploy.
@@ -116,7 +116,7 @@ And without commands:
    | Edit Bot → Description picture | `brand/mascot/hudhud-welcome.png` (640 × 360) | What people see before they press Start. The name, about and description texts are set by step 4. |
    | Inline Mode | On, placeholder "Events and Waraq" | Sharing cards. |
    | Guest Mode | On | Answers a mention in chats the bot isn't in. |
-   | Login Widget → OpenID Connect | Redirect URIs `https://auibsal.org/nexus/profile` and `https://auibsal.org/ar/nexus/profile` (and `http://localhost:3000/nexus/profile` for a test bot); Trusted Origins empty; signing RS256 | Linking from the profile. Copy the Client Secret to sal-web; the Client ID is the bot's id and needs no variable. |
+   | Login Widget → OpenID Connect | Redirect URIs `https://auibsal.org/nexus/profile` and `https://auibsal.org/ar/nexus/profile` (and `http://localhost:3000/nexus/profile` for a test bot); Trusted Origins empty; signing RS256 | Linking from the profile. Copy the Client Secret to the auibsal project; the Client ID is the bot's id and needs no variable. |
    | Allow Groups | On | |
    | Group Privacy | On | As an admin the bot sees the group anyway. |
    | Group Admin Rights | Invite users via link | Answering join requests is all the bot does as an admin. |

@@ -23,7 +23,7 @@
   --sal-offset-lg: 8px;
 }
 
-/* Light pages, and light islands inside ink (Journal reading, covers). */
+/* Light mode, and light islands that stay light in dark mode (certificates, letters, printouts). */
 :root,
 [data-theme="light"] {
   --surface: var(--sal-white);
@@ -40,7 +40,7 @@
   --rule: var(--sal-rule);
 }
 
-/* The ink theme: the Nexus, the "why" pages and the Open Call page. */
+/* Dark mode (the ink theme): the whole page, or an ink block within a light page. */
 [data-theme="dark"] {
   --surface: var(--sal-ink);
   --surface-tint: var(--sal-ink-70);

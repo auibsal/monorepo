@@ -11,7 +11,7 @@ its own card, and passes each visitor's choice to Google through consent mode
 
 - **Nothing loads until it is set up.** `@repo/analytics` adds Google's
   scripts only when `NEXT_PUBLIC_GTM_ID` (or `NEXT_PUBLIC_GA_ID`, for GA4
-  without GTM) is set on the sal-web project.
+  without GTM) is set on the auibsal project.
 - **Every consent signal starts denied.** Before GTM loads, the site sets
   `analytics_storage`, `ad_storage`, `ad_user_data` and `ad_personalization`
   to denied.
@@ -51,7 +51,7 @@ and www have been proxied since October 2026; these steps record how.
 4. In **Speed** → **Optimization**, turn **Rocket Loader off**. It breaks
    Next.js scripts.
 5. Check the site afterwards. auibsal.org should still load. In Vercel →
-   sal-web → **Settings** → **Domains**, auibsal.org should still say
+   auibsal → **Settings** → **Domains**, auibsal.org should still say
    *Valid Configuration*. The response headers should include `cf-ray`.
 
 To undo, turn the cloud off again (DNS only).
@@ -114,7 +114,7 @@ visit twice.
 
 ### 6. Tell the site
 
-In Vercel → **sal-web** → **Settings** → **Environment Variables**
+In Vercel → **auibsal** → **Settings** → **Environment Variables**
 (Production), set the following, then redeploy:
 
 | Variable | Value |

@@ -24,9 +24,6 @@ one Next.js app, `apps/web`, deployed once to auibsal.org.
 | `packages/storybook` | The SAL Design System: components, v5 Screens and every platform email, run locally (`bun run --cwd packages/storybook dev`) |
 | `apps/e2e` | Playwright + axe journeys, in CI |
 
-The old hosts (nexus.auibsal.org, api.auibsal.org) redirect to the new
-paths.
-
 Data lives in Supabase (Postgres with Row Level Security on every table,
 Auth, Storage). Hosting is Vercel.
 

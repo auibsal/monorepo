@@ -10,10 +10,10 @@ import {
 import type { ReactNode } from "react";
 import { ConsentBanner } from "@/components/consent-banner";
 import { ConsoleNote } from "@/components/console-note";
+import { Footer } from "@/components/footer";
+import { SiteHeader } from "@/components/site-header";
 import { askedConsent } from "@/lib/consent";
 import { JsonLd, organization } from "@/lib/json-ld";
-import { Footer } from "./components/footer";
-import { Header } from "./components/header";
 
 interface SiteLayoutProperties {
   readonly children: ReactNode;
@@ -45,7 +45,7 @@ const SiteLayout = async ({ children, params }: SiteLayoutProperties) => {
       <JsonLd data={organization()} />
       <NextIntlClientProvider messages={{ common, web }}>
         <AnalyticsProvider>
-          <Header />
+          <SiteHeader />
           <main className="flex-1" id="main">
             {children}
           </main>

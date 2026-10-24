@@ -16,12 +16,20 @@
 /*
  * SAL v4 with the v5 Screens amendment (brand/BRAND-BOOK.md, "Screens").
  * Components use only the role tokens (tokens.css); the shadcn variables
- * below are aliases of them. The site and the Nexus are light; the ink theme
- * ([data-theme="dark"]) is for the "why" pages and the Open Call.
+ * below are aliases of them. Light and dark mode use the brand's two themes:
+ * dark mode is the ink theme ([data-theme="dark"] on <html>), chosen from the
+ * visitor's system setting or the toggle in the header (cookie `sal_theme`).
  * Square corners, a 2px frame, and one elevation: a solid offset block
- * (shadow-offset), never a blur. No user-facing theme toggle. Never add a
- * color.
+ * (shadow-offset), never a blur. Never add a color.
  */
+:root,
+[data-theme="light"] {
+  color-scheme: light;
+}
+[data-theme="dark"] {
+  color-scheme: dark;
+}
+
 :root,
 [data-theme="dark"] {
   --background: var(--surface);
@@ -223,7 +231,8 @@
   --tw-prose-body: var(--color-foreground);
   --tw-prose-headings: var(--color-foreground);
   --tw-prose-lead: var(--color-muted-foreground);
-  --tw-prose-links: var(--color-primary);
+  /* Crimson on white, white on ink: crimson text never sits on ink. */
+  --tw-prose-links: var(--title);
   --tw-prose-bold: var(--color-foreground);
   --tw-prose-counters: var(--color-foreground);
   --tw-prose-bullets: var(--color-muted-foreground);

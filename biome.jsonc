@@ -30,9 +30,7 @@
       "!brand",
       "!docs-source",
       "!apps/web/public/brand",
-      "!apps/app/public/brand",
       "!apps/web/app/icon.svg",
-      "!apps/app/app/icon.svg",
       // Supabase Auth templates: Go template syntax, pasted into the dashboard.
       "!packages/database/supabase/templates",
       "!apps/e2e/test-results",

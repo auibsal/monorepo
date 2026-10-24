@@ -13,7 +13,7 @@ const { DataError } = await import("@repo/sal-data/client");
 const { member } = await import("@/lib/api/v1");
 
 const call = (handler: Parameters<typeof member>[0]) =>
-  member(handler)(new Request("https://api.auibsal.org/v1/me"), {
+  member(handler)(new Request("https://auibsal.org/api/v1/me"), {
     params: Promise.resolve({}),
   });
 

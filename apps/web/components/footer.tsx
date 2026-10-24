@@ -1,6 +1,7 @@
 import { project } from "@repo/config";
 import { localizedPath, nexusPath } from "@repo/internationalization";
 import { Link } from "@repo/internationalization/navigation";
+import NextLink from "next/link";
 import { getLocale, getTranslations } from "next-intl/server";
 import { CookieSettings } from "@/components/cookie-settings";
 import { askedConsent } from "@/lib/consent";
@@ -8,8 +9,16 @@ import { MUTANABBI } from "@/lib/verse";
 
 const INSTAGRAM = "https://www.instagram.com/auibsal";
 
-/** v5 footer: the ink ground, the rest of the sections and the small print. */
-export const Footer = async () => {
+interface FooterProps {
+  /** The cookie settings link: only where the consent card runs (the site). */
+  readonly consent?: boolean;
+}
+
+/**
+ * The one footer for the whole site, public pages and the Nexus alike (v5):
+ * the ink ground, the rest of the sections and the small print.
+ */
+export const Footer = async ({ consent = true }: FooterProps = {}) => {
   const t = await getTranslations("web.footer");
   const tc = await getTranslations("common");
   const tn = await getTranslations("web.nav");
@@ -38,7 +47,10 @@ export const Footer = async () => {
   ] as const;
 
   return (
-    <footer className="frame-t bg-surface text-text" data-theme="dark">
+    <footer
+      className="frame-t bg-surface text-text print:hidden"
+      data-theme="dark"
+    >
       <div className="mx-auto grid w-full max-w-6xl gap-8 px-4 py-12 sm:grid-cols-2 lg:grid-cols-4">
         <div className="grid content-start gap-2 lg:col-span-2">
           <p className="font-bold text-lg">{tc("society")}</p>
@@ -52,12 +64,12 @@ export const Footer = async () => {
               {MUTANABBI}
             </p>
           </details>
-          <a
+          <NextLink
             className="type-label mt-4 justify-self-start border-2 border-frame px-4 py-2 text-xs shadow-offset"
             href={localizedPath(locale, nexusPath())}
           >
             {tn("nexus")}
-          </a>
+          </NextLink>
         </div>
         {groups.map((links) => (
           <ul className="grid content-start gap-2 text-sm" key={links[0][0]}>
@@ -83,7 +95,8 @@ export const Footer = async () => {
                 </a>
               </li>
             ) : null}
-            {links[0][0] === "/contact" &&
+            {consent &&
+            links[0][0] === "/contact" &&
             Object.values(askedConsent()).some(Boolean) ? (
               <CookieSettings />
             ) : null}

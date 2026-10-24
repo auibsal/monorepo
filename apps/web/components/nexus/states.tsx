@@ -7,7 +7,7 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/lib/nexus/navigation";
 
 export const FullPageSpinner = () => (
-  <div className="flex min-h-dvh items-center justify-center">
+  <div className="flex min-h-[50dvh] flex-1 items-center justify-center">
     <Spinner className="size-6 text-text-meta" />
   </div>
 );
