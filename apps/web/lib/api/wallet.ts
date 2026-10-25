@@ -47,6 +47,9 @@ export const googleWalletLink = async (card: WalletCard) => {
     ),
     classId,
     header: text(card.fullName, card.locale),
+    heroImage: {
+      sourceUri: { uri: `${site}/api/wallet/rosette/${card.number}` },
+    },
     hexBackgroundColor: "#f5f2ee",
     id: `${issuer}.card-${card.code}`,
     logo: { sourceUri: { uri: `${site}/brand/sal-avatar-wallet.png` } },

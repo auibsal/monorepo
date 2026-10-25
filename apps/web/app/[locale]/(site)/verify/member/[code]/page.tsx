@@ -4,6 +4,7 @@ import { Link } from "@repo/internationalization/navigation";
 import { localized, membership } from "@repo/sal-data";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { Guilloche } from "@/components/guilloche";
 import { PageHeader } from "@/components/section";
 import { localizedMetadata } from "@/lib/metadata";
 import { readLive } from "@/lib/supabase";
@@ -44,9 +45,14 @@ const MemberCardPage = async ({ params, searchParams }: CardParams) => {
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "web.verifyCard" });
   const tt = await getTranslations({ locale, namespace: "nexus.home.tiers" });
-  const card = membership.CARD_CODE.test(code)
-    ? await readLive((c) => membership.verifyCard(c, code, live), null)
-    : null;
+  const valid = membership.CARD_CODE.test(code);
+  const [card, record] = valid
+    ? await Promise.all([
+        readLive((c) => membership.verifyCard(c, code, live), null),
+        readLive((c) => membership.cardRecord(c, code), []),
+      ])
+    : [null, []];
+  const tc = await getTranslations({ locale, namespace: "web.verify" });
 
   if (!card) {
     return (
@@ -98,6 +104,44 @@ const MemberCardPage = async ({ params, searchParams }: CardParams) => {
           </div>
         ))}
       </dl>
+      <figure className="grid justify-items-start gap-2">
+        <Guilloche
+          className="size-48"
+          number={card.number}
+          stroke="stroke-text"
+        />
+        <figcaption className="type-caption">{t("pattern")}</figcaption>
+      </figure>
+      {record.length > 0 ? (
+        <section aria-labelledby="record" className="grid gap-3">
+          <h2 className="type-heading" id="record">
+            {t("record")}
+          </h2>
+          <ul className="grid divide-y divide-line border-line border-y">
+            {record.map((item) => (
+              <li className="grid gap-1 py-3" key={item.verification_code}>
+                <Link
+                  className="link font-medium"
+                  href={`/verify/${item.verification_code}`}
+                >
+                  {tc(`kinds.${item.kind as "service"}`)}
+                </Link>
+                <p className="type-caption">
+                  {[
+                    localized(item, "role", locale),
+                    item.issued_at
+                      ? formatLongDate(item.issued_at, locale, true)
+                      : "",
+                    item.status === "revoked" ? tc("revokedShort") : "",
+                  ]
+                    .filter(Boolean)
+                    .join(" · ")}
+                </p>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
       <p className="type-caption">{t("note")}</p>
     </div>
   );

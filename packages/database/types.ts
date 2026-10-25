@@ -1141,6 +1141,7 @@ export type Database = {
           personal_email: string | null;
           personal_email_verified_at: string | null;
           setup_completed_at: string | null;
+          show_certificates_on_card: boolean;
           updated_at: string;
           verified_at: string | null;
         };
@@ -1161,6 +1162,7 @@ export type Database = {
           personal_email?: string | null;
           personal_email_verified_at?: string | null;
           setup_completed_at?: string | null;
+          show_certificates_on_card?: boolean;
           updated_at?: string;
           verified_at?: string | null;
         };
@@ -1181,6 +1183,7 @@ export type Database = {
           personal_email?: string | null;
           personal_email_verified_at?: string | null;
           setup_completed_at?: string | null;
+          show_certificates_on_card?: boolean;
           updated_at?: string;
           verified_at?: string | null;
         };
@@ -4813,6 +4816,19 @@ export type Database = {
         Returns: string;
       };
       calendar_token: { Args: Record<PropertyKey, never>; Returns: string };
+      card_record: {
+        Args: { code: string };
+        Returns: {
+          issued_at: string;
+          kind: string;
+          revoked_at: string;
+          role_ar: string;
+          role_en: string;
+          serial: string;
+          status: string;
+          verification_code: string;
+        }[];
+      };
       certificate_signers: {
         Args: { certificate_id: string };
         Returns: {

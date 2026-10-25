@@ -332,6 +332,12 @@ These stop parts of the work. Everything else continues around them.
   and, for partners, that the member may use member perks; perks show on
   the card. "Lost your card?" is gone: Card security offers "Reset the
   card code" (new code and secret; earlier codes and passes stop).
+  Then (owner, same day: "yes to all, certificates on card off by
+  default"): the rosette shows clearly on the card and is drawn again on
+  the card's check page and as the Wallet pass's banner, for comparison;
+  certificates get their own rosette (from the serial) and a QR to their
+  check; `/verify` checks either a certificate or a card code; a card's
+  check lists the member's certificates only when they turn it on.
 
 - **Personal emails are verified; one address, one person** (owner,
   2026-10-25): the personal email stays optional (it is for keeping in
@@ -1117,6 +1123,11 @@ Covered by automated tests so far:
 All Arabic written for the platform up to 2026-10-24 was reviewed by the
 owner and approved ("reviewed across the board, it's all good"). List new
 Arabic here as it is written.
+
+Written 2026-10-25 (rosettes and one check): `web.verify.title`, `lede`,
+`code`, `invalid`, `pattern`, `revokedShort`; `web.verifyCard.pattern`,
+`record`; `nexus.home.card.showRecord`, `showRecordHint`;
+`nexus.certificate.qr`.
 
 Written 2026-10-25 (the live card): `nexus.home.card.*` (qr, clock,
 wallet, perks, security, reset), `web.verifyCard.live`, `notLive`,

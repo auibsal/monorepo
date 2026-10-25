@@ -75,7 +75,7 @@ insert into core.semesters (code, name_en, name_ar, starts_on, ends_on) values
 update core.settings set value = '0' where key = 'membership.founding_voters';
 -- </preamble>
 
-select plan(22);
+select plan(24);
 
 select pg_temp.make_user('00000000-0000-0000-0000-00000000ca01', 'card.one@auib.edu.iq', 'Card One');
 select pg_temp.make_user('00000000-0000-0000-0000-00000000ca02', 'card.two@auib.edu.iq', 'Card Two');
@@ -189,6 +189,29 @@ select is((select count(*)::integer from core.member_details), 0,
 select pg_temp.login_as('00000000-0000-0000-0000-00000000ca04');
 select is(((core.member_insights()) ->> 'counted')::integer, 1,
   'Member managers see counts of the members who agreed to be counted');
+
+-- The card's record: hidden unless the member turns it on.
+select pg_temp.logout();
+insert into membership.certificates (id, user_id, kind, role_en, period_from, period_to)
+values ('00000000-0000-0000-0000-00000000cafe', '00000000-0000-0000-0000-00000000ca02',
+  'service', 'Door Coordinator', current_date - 200, current_date - 10);
+alter table membership.certificates disable trigger user;
+update membership.certificates set status = 'issued', issued_at = now(),
+  serial = 'SAL-2026-901', verification_code = 'cardrecord1',
+  president_signed_by = '00000000-0000-0000-0000-00000000ca04',
+  advisor_signed_by = '00000000-0000-0000-0000-00000000ca03'
+where id = '00000000-0000-0000-0000-00000000cafe';
+alter table membership.certificates enable trigger user;
+select pg_temp.login_anon();
+select is((select count(*)::integer from membership.card_record((select code from second_code))), 0,
+  'A card''s check page lists no certificates by default');
+select pg_temp.login_as('00000000-0000-0000-0000-00000000ca02');
+update core.profiles set show_certificates_on_card = true
+where id = '00000000-0000-0000-0000-00000000ca02';
+select pg_temp.login_anon();
+select is((select serial from membership.card_record((select code from second_code))), 'SAL-2026-901',
+  'and lists them once the member turns it on');
+select pg_temp.logout();
 
 select * from finish();
 rollback;

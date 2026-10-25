@@ -134,6 +134,10 @@ export const personalEmailError = (
   return "unknown";
 };
 
+/** The certificates a card's check page lists (only if its owner allows). */
+export const cardRecord = async (client: Client, code: string) =>
+  unwrap(await membership(client).rpc("card_record", { code })) ?? [];
+
 // ── What members tell us about themselves (core.member_details) ─────────────
 
 export const affiliations = [

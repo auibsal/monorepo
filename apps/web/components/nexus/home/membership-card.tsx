@@ -3,6 +3,7 @@
 import { useAuth } from "@repo/auth/provider";
 import { BrandLogo } from "@repo/design-system/components/brand-logo";
 import { Button } from "@repo/design-system/components/ui/button";
+import { Checkbox } from "@repo/design-system/components/ui/checkbox";
 import {
   Dialog,
   DialogContent,
@@ -12,13 +13,15 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@repo/design-system/components/ui/dialog";
+import { Label } from "@repo/design-system/components/ui/label";
 import { siteUrl } from "@repo/internationalization";
 import { formatLongDate } from "@repo/internationalization/format";
-import { localized, membership, partners } from "@repo/sal-data";
+import { localized, membership, partners, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 import QRCode from "react-qr-code";
+import { Guilloche } from "@/components/guilloche";
 import { callApi } from "@/lib/nexus/api";
 import { useMemberStatus, useProfile } from "@/lib/nexus/queries";
 import {
@@ -27,7 +30,6 @@ import {
   totpSecondsLeft,
   totpStep,
 } from "@/lib/totp";
-import { Guilloche } from "./guilloche";
 
 const cardKey = ["membership", "card"] as const;
 
@@ -162,6 +164,59 @@ const WalletLink = () => {
   );
 };
 
+/**
+ * Whether the card's check page lists the member's certificates. Off by
+ * default: anyone holding the card's link would see the record.
+ */
+const RecordSetting = () => {
+  const t = useTranslations("nexus.home.card");
+  const { supabase, user } = useAuth();
+  const queryClient = useQueryClient();
+  const key = ["card-record-setting", user?.id];
+  const setting = useQuery({
+    enabled: Boolean(user),
+    queryFn: async () =>
+      Boolean(
+        unwrap(
+          await supabase
+            .schema("core")
+            .from("profiles")
+            .select("show_certificates_on_card")
+            .eq("id", user?.id ?? "")
+            .single()
+        )?.show_certificates_on_card
+      ),
+    queryKey: key,
+  });
+  const save = useMutation({
+    mutationFn: async (show: boolean) =>
+      unwrap(
+        await supabase
+          .schema("core")
+          .from("profiles")
+          .update({ show_certificates_on_card: show })
+          .eq("id", user?.id ?? "")
+      ),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: key }),
+  });
+  return (
+    <div className="flex items-start gap-3">
+      <Checkbox
+        checked={setting.data ?? false}
+        disabled={setting.isPending || save.isPending}
+        id="card-record"
+        onCheckedChange={(value) => save.mutate(value === true)}
+      />
+      <div className="grid gap-1">
+        <Label className="leading-normal" htmlFor="card-record">
+          {t("showRecord")}
+        </Label>
+        <p className="type-caption">{t("showRecordHint")}</p>
+      </div>
+    </div>
+  );
+};
+
 /** Perks: what partners offer members who show this card. */
 const Perks = () => {
   const t = useTranslations("nexus.home.card");
@@ -267,7 +322,7 @@ export const MembershipCard = () => {
         data-theme="light"
       >
         <Guilloche
-          className="pointer-events-none absolute -end-24 -top-24 size-[30rem] opacity-80"
+          className="pointer-events-none absolute start-1/4 top-1/2 size-[26rem] -translate-x-1/2 -translate-y-1/2 opacity-40 rtl:translate-x-1/2"
           number={card.data.number}
         />
         <Sheen />
@@ -389,6 +444,7 @@ export const MembershipCard = () => {
               {t("card.reissued")}
             </p>
           ) : null}
+          <RecordSetting />
           {card.data.issued_at ? (
             <p className="type-caption">
               {t("card.issued", {

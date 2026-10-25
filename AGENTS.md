@@ -165,8 +165,14 @@ any schema change. Integration tests run against a local stack with
   page (`membership.verify_card`, read live) says whether the code is live;
   the door (`events.check_in_card`) refuses one that isn't. The secret
   reaches only its owner (`membership.my_card`). No member photos (owner,
-  Oct 25, 2026). The line pattern is drawn from the card number. Google
-  Wallet only (`docs/platform/wallet.md`). Never put an account id in a QR.
+  Oct 25, 2026). The rosette (`components/guilloche.tsx`) is drawn from
+  the card number, and from the serial on certificates; the check pages and
+  the Wallet banner draw the same one, so a card or certificate can be
+  compared with its check. One check for both: `/verify/<code>` takes a
+  certificate or a card code. A card's check lists the member's
+  certificates only if they turn it on (`show_certificates_on_card`, off by
+  default). Google Wallet only (`docs/platform/wallet.md`). Never put an
+  account id in a QR.
 - **Qirtas is one section.** Members send everything from `/qirtas/write`
   and the type decides the process (desk editing, or the blind review for
   Edition work); the Diwan's Qirtas section holds the newsroom and the

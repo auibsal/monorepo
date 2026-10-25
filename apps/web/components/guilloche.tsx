@@ -1,7 +1,8 @@
 // biome-ignore-all lint/suspicious/noBitwiseOperators: a seeded generator works in 32-bit integers
 /**
- * The card's line pattern: a guilloche rosette drawn from the card number,
- * so no two cards share one. Hairlines in the line color, like the engraved
+ * The line pattern on cards and certificates: a guilloche rosette drawn
+ * from the card number (or a certificate's serial), so no two share one.
+ * The check pages draw the same rosette, so anyone checking can compare. Hairlines in the line color, like the engraved
  * patterns on banknotes and passports; it identifies a card at a glance and
  * is hard to fake by hand. Purely decorative for screen readers.
  */
@@ -40,6 +41,19 @@ const rosette = (outer: number, inner: number, pen: number, turn: number) => {
   return `${path}Z`;
 };
 
+/**
+ * A seed from text (a certificate's serial), so certificates get their own
+ * pattern the same way cards do from their number. FNV-1a, 32-bit.
+ */
+export const seedFromText = (text: string) => {
+  let hash = 0x81_1c_9d_c5;
+  for (const char of text) {
+    hash ^= char.codePointAt(0) ?? 0;
+    hash = Math.imul(hash, 0x01_00_01_93) >>> 0;
+  }
+  return hash;
+};
+
 /** The three curves of one card's pattern. */
 export const guillochePaths = (cardNumber: number) => {
   const random = seeded(cardNumber * 2_654_435_761);
@@ -55,9 +69,11 @@ export const guillochePaths = (cardNumber: number) => {
 export const Guilloche = ({
   className,
   number,
+  stroke = "stroke-text-secondary",
 }: {
   className?: string;
   number: number;
+  stroke?: string;
 }) => (
   <svg
     aria-hidden="true"
@@ -67,7 +83,7 @@ export const Guilloche = ({
   >
     {guillochePaths(number).map((d, layer) => (
       <path
-        className="stroke-line"
+        className={stroke}
         d={d}
         // biome-ignore lint/suspicious/noArrayIndexKey: three fixed layers
         key={layer}

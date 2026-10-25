@@ -1,12 +1,15 @@
 import type { Locale } from "@repo/internationalization";
+import { localizedPath } from "@repo/internationalization";
 import {
   formatLongDate,
   formatNumber,
 } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
-import { localized, recognition } from "@repo/sal-data";
+import { localized, membership, recognition } from "@repo/sal-data";
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { Guilloche, seedFromText } from "@/components/guilloche";
 import { PageHeader } from "@/components/section";
 import { localizedMetadata } from "@/lib/metadata";
 import { readPublished } from "@/lib/supabase";
@@ -32,8 +35,9 @@ export const generateMetadata = async ({
 };
 
 /**
- * The public check of a certificate (issued or revoked) by its code: who
- * holds it, for what, and whether it still stands.
+ * One check for codes: a certificate (issued or revoked) by its code, who
+ * holds it, for what, and whether it still stands; a membership card's code
+ * goes on to the card's own check.
  */
 const CertificatePage = async ({ params }: CertificateParams) => {
   const { code, locale } = await params;
@@ -47,6 +51,9 @@ const CertificatePage = async ({ params }: CertificateParams) => {
       )
     : null;
 
+  if (!certificate && membership.CARD_CODE.test(code)) {
+    redirect(localizedPath(locale, membership.cardPath(code)));
+  }
   if (!certificate) {
     return (
       <div className="mx-auto grid w-full max-w-xl gap-6 px-4 py-16">
@@ -111,6 +118,16 @@ const CertificatePage = async ({ params }: CertificateParams) => {
           </div>
         ))}
       </dl>
+      {certificate.serial ? (
+        <figure className="grid justify-items-start gap-2">
+          <Guilloche
+            className="size-40"
+            number={seedFromText(certificate.serial)}
+            stroke="stroke-text"
+          />
+          <figcaption className="type-caption">{t("pattern")}</figcaption>
+        </figure>
+      ) : null}
       <p className="type-caption">{t("signedBy")}</p>
     </div>
   );
