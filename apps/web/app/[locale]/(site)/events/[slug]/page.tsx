@@ -20,8 +20,9 @@ interface EventProps {
 
 const SLUG = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 
-// Rendered on first request, then cached until an event is published.
-export const generateStaticParams = () => [];
+// Rendered on request: a program's page reads the month it shows from
+// `?month=`. The Supabase reads behind it stay cached by tag until an event
+// or program is published.
 
 type PublicEvent = Awaited<ReturnType<typeof events.publicEvent>>;
 
