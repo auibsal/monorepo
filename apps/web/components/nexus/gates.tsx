@@ -51,10 +51,10 @@ export const RequireAuth = ({ children }: GateProps) => {
  */
 const GUEST_PATHS = [
   "/qirtas",
-  "/account/profile",
-  "/account/service",
-  "/account/certificate",
-  "/account/settings",
+  "/membership/profile",
+  "/membership/service",
+  "/membership/certificate",
+  "/membership/settings",
 ];
 
 export const isGuestPath = (pathname: string) =>
@@ -142,7 +142,7 @@ export const GuestOnly = ({ children }: GateProps) => {
   useEffect(() => {
     if (!loading && user) {
       const next = new URLSearchParams(window.location.search).get("next");
-      router.replace(safeNextPath(next) ?? "/account");
+      router.replace(safeNextPath(next) ?? "/membership");
     }
   }, [loading, router, user]);
 
@@ -161,7 +161,7 @@ export const RequireStaff = ({ children }: GateProps) => {
 
   useEffect(() => {
     if (grants.isSuccess && !staff) {
-      router.replace("/account");
+      router.replace("/membership");
     }
   }, [grants.isSuccess, router, staff]);
 

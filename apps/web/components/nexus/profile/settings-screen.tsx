@@ -22,13 +22,13 @@ export const SettingsScreen = () => {
       <DiwanSection id="yours" title={t("yours")}>
         <RowList>
           <li className="grid gap-1">
-            <Link className="link font-medium" href="/account/profile">
+            <Link className="link font-medium" href="/membership/profile">
               {t("profile")}
             </Link>
             <p className="type-caption">{t("profileLine")}</p>
           </li>
           <li className="grid gap-1">
-            <Link className="link font-medium" href="/account/requests">
+            <Link className="link font-medium" href="/membership/requests">
               {t("requests")}
             </Link>
             <p className="type-caption">{t("requestsLine")}</p>

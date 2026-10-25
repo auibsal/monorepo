@@ -419,7 +419,7 @@ const EventCard = ({
           ) : null}
           {state === "booked" ? (
             <Button asChild variant="outline">
-              <Link href="/account#next-events">{t("ticket")}</Link>
+              <Link href="/membership#next-events">{t("ticket")}</Link>
             </Button>
           ) : null}
           {state === "noBooking" ? (

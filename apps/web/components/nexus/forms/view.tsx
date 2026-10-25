@@ -144,7 +144,7 @@ export const ViewForm = () => {
   }
   if (!submission.data) {
     return (
-      <EmptyLine action={{ href: "/account/requests", label: t("back") }}>
+      <EmptyLine action={{ href: "/membership/requests", label: t("back") }}>
         {t("notFound")}
       </EmptyLine>
     );
@@ -155,7 +155,7 @@ export const ViewForm = () => {
   return (
     <div className="grid max-w-3xl gap-4">
       <div className="flex flex-wrap items-center gap-3 print:hidden">
-        <Link className="type-body underline" href="/account/requests">
+        <Link className="type-body underline" href="/membership/requests">
           {t("back")}
         </Link>
         <Button onClick={() => window.print()} size="sm" variant="outline">
@@ -165,7 +165,7 @@ export const ViewForm = () => {
           <Link
             className="type-body underline"
             href={{
-              pathname: "/account/requests/new",
+              pathname: "/membership/requests/new",
               query: { form: row.form_key, id: row.id },
             }}
           >

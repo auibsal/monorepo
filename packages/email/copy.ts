@@ -30,10 +30,10 @@ const build = (lang: Lang, make: (l: Lang) => Copy): Built => {
 const when = (iso: string, l: Lang) =>
   `${formatLongDate(iso, l)} · ${formatClock(iso, l)}`;
 
-/** A member's own page on the site (their account, Qirtas, …). */
-const account = (base: string, l: Lang, path = "/account") => ({
+/** A member's own page on the site (Membership, Qirtas, …). */
+const account = (base: string, l: Lang, path = "/membership") => ({
   href: `${base}${localizedPath(l, path)}`,
-  label: l === "ar" ? "افتح حسابك" : "Open your account",
+  label: l === "ar" ? "افتح «العضوية»" : "Open Membership",
 });
 
 /** A page in the Diwan, for officers. */

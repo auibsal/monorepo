@@ -39,7 +39,7 @@ export const AuthCallback = () => {
       const signedIn =
         !error || Boolean((await supabase.auth.getSession()).data.session);
       if (signedIn) {
-        router.replace(next ? stripLocale(next) : "/account");
+        router.replace(next ? stripLocale(next) : "/membership");
       } else {
         setFailed(true);
       }

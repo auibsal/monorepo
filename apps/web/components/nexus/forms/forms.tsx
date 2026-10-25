@@ -73,7 +73,7 @@ export const StartLinks = ({ keys }: { readonly keys?: readonly string[] }) => {
           <Link
             className="group grid gap-1"
             href={{
-              pathname: "/account/requests/new",
+              pathname: "/membership/requests/new",
               query: { form: type.key },
             }}
           >
@@ -145,10 +145,10 @@ export const SentList = ({ limit }: { readonly limit?: number }) => {
             href={
               s.status === "draft"
                 ? {
-                    pathname: "/account/requests/new",
+                    pathname: "/membership/requests/new",
                     query: { form: s.form_key, id: s.id },
                   }
-                : { pathname: "/account/requests/view", query: { id: s.id } }
+                : { pathname: "/membership/requests/view", query: { id: s.id } }
             }
           >
             <FormTitle formKey={s.form_key} />
@@ -192,7 +192,7 @@ export const Forms = () => {
       <DiwanSection id="start" title={t("available")}>
         {types.isPending ? <SectionSpinner /> : null}
         {none ? (
-          <EmptyLine action={{ href: "/account", label: t("toProfile") }}>
+          <EmptyLine action={{ href: "/membership", label: t("toProfile") }}>
             {t("noneAvailable")}
           </EmptyLine>
         ) : null}

@@ -17,7 +17,7 @@ const { POST } = await import("@/app/api/telegram/link/route");
 
 const start = {
   codeChallenge: "c".repeat(43),
-  redirectUri: "https://site.example/ar/account/profile",
+  redirectUri: "https://site.example/ar/membership/profile",
   state: "s".repeat(20),
 };
 
@@ -41,7 +41,7 @@ describe("POST /telegram/link", () => {
   it.each([
     "https://evil.example/profile",
     "https://site.example/diwan/events",
-    "https://site.example/account/profile?next=x",
+    "https://site.example/membership/profile?next=x",
     "https://site.example/ar/profile",
   ])("sends Telegram back only to the profile, not %s", async (redirectUri) => {
     expect((await call({ ...start, redirectUri })).status).toBe(400);

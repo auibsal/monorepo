@@ -151,7 +151,7 @@
       "journal": "Qirtas",
       "programs": "Programs",
       "society": "Society",
-      "account": "Account",
+      "account": "Membership",
       "profile": "Profile and privacy",
       "admin": "Administration",
       "publicSite": "auibsal.org",
@@ -322,7 +322,7 @@
     },
     "events": {
       "title": "My calendar",
-      "lede": "Book a place, ask for a reminder, or give your place back. Your tickets are in your account, and everything is in your calendar feed below.",
+      "lede": "Book a place, ask for a reminder, or give your place back. Your tickets are under Membership, and everything is in your calendar feed below.",
       "empty": "No events are announced yet. They appear here as soon as they're published.",
       "membersOnly": "Members only",
       "book": "Book a place",
@@ -341,7 +341,7 @@
         "left": "{count, plural, one {{places} place left} other {{places} places left}}"
       },
       "notice": {
-        "booked": "Booked. Your ticket is in your account, and a confirmation email is on its way.",
+        "booked": "Booked. Your ticket is under Membership, and a confirmation email is on its way.",
         "waitlisted": "The event is full, so you're on the waitlist. We'll email you if a place opens.",
         "cancelled": "Done. Your place has gone to the next person waiting, if there is one.",
         "leftWaitlist": "Done. You're off the waitlist.",
@@ -363,10 +363,10 @@
       "signUp": "Sign up",
       "giveBack": "Give it back",
       "full": "Full",
-      "yours": "You're on this shift. It's also in your account.",
+      "yours": "You're on this shift. It's also under Membership.",
       "left": "{count, plural, =0 {No places left} one {{places} place left} other {{places} places left}}",
       "notice": {
-        "signedUp": "You're on the rota. Confirm the shift from your account closer to the day.",
+        "signedUp": "You're on the rota. Confirm the shift under Membership closer to the day.",
         "gaveBack": "Done. The place is open for someone else.",
         "full": "Someone took the last place first.",
         "notVerified": "Shifts open once your membership is verified.",
@@ -3740,7 +3740,7 @@
       "news": "News",
       "documents": "Documents",
       "signIn": "Sign in",
-      "account": "Your account",
+      "account": "Membership",
       "involved": "Get involved"
     },
     "footer": {
@@ -4172,7 +4172,7 @@
         "email": "Email from the platform is sent by Resend from the European Union (Ireland). Links in it are not tracked.",
         "hosting": "The website and the API are hosted on Vercel.",
         "analytics": "This website uses no analytics or advertising cookies.",
-        "delete": "You can delete your account under Your account, Profile.",
+        "delete": "You can delete your account under Membership, Settings.",
         "analyticsOn": "This website counts visits with Google Analytics 4, through Google Tag Manager served from auibsal.org. Analytics cookies are set only if you allow them (Cookie settings, at the foot of every page).",
         "analyticsOff": "This website uses no analytics cookies.",
         "adsOn": "Qirtas shows ads to visitors who are not signed in: the Society's own, its sponsors' and Google AdSense's. Signed-in members see none. AdSense sets advertising cookies and chooses ads for you only if you allow advertising (Cookie settings); otherwise its ads use no cookies. Sponsors receive nothing about you.",

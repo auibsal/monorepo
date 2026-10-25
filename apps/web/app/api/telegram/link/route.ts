@@ -22,7 +22,7 @@ export const OPTIONS = preflight;
 // is 43 base64url characters.
 const VERIFIER = /^[\w.~-]{43,128}$/;
 const CHALLENGE = /^[\w-]{43}$/;
-const PROFILE_PATH = /^(\/[a-z]{2})?\/account\/profile$/;
+const PROFILE_PATH = /^(\/[a-z]{2})?\/membership\/profile$/;
 
 const body = z.union([
   z.object({

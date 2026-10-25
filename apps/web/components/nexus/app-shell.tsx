@@ -53,7 +53,7 @@ const useNotionLinks = () => {
 
 /**
  * The Diwan frame (officers only): skip link, the site's masthead with the
- * Diwan's sections, main. Members' own pages are on the site (/account).
+ * Diwan's sections, main. Members' own pages are on the site (/membership).
  */
 export const AppShell = ({ children }: { children: ReactNode }) => {
   const t = useTranslations();
@@ -62,7 +62,7 @@ export const AppShell = ({ children }: { children: ReactNode }) => {
   const pathname = usePathname();
   const queryClient = useQueryClient();
   const notion = useNotionLinks();
-  const account = localizedPath(locale, "/account");
+  const account = localizedPath(locale, "/membership");
 
   const signOut = async () => {
     // A shared computer must not show the last member's notices.

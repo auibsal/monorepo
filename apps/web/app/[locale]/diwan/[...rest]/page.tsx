@@ -9,14 +9,14 @@ interface CatchAllProps {
 // Their old addresses, in emails already sent and in the sign-in emails,
 // forward to the new ones.
 const MOVED: Record<string, string> = {
-  certificate: "/account/certificate",
-  forms: "/account/requests",
-  "forms/fill": "/account/requests/new",
-  "forms/view": "/account/requests/view",
-  offers: "/account",
-  profile: "/account/profile",
+  certificate: "/membership/certificate",
+  forms: "/membership/requests",
+  "forms/fill": "/membership/requests/new",
+  "forms/view": "/membership/requests/view",
+  offers: "/membership",
+  profile: "/membership/profile",
   qirtas: "/qirtas/write",
-  service: "/account/service",
+  service: "/membership/service",
   society: "/society",
 };
 const SAME =

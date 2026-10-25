@@ -43,7 +43,7 @@ export const SiteHeader = ({ account = true, language }: SiteHeaderProps) => {
   const [signedIn, setSignedIn] = useState(false);
   useEffect(() => setSignedIn(hasSessionCookie(document.cookie)), []);
   const way = signedIn
-    ? { href: localizedPath(locale, "/account"), label: t("account") }
+    ? { href: localizedPath(locale, "/membership"), label: t("account") }
     : { href: localizedPath(locale, "/sign-in"), label: t("signIn") };
 
   return (

@@ -33,7 +33,7 @@ interface AccountLink {
 /** Whether a link is the current page: Today only on itself. */
 const isCurrent = (pathname: string, link: AccountLink) =>
   [link.href, ...(link.also ?? [])].some((href) =>
-    href === "/account"
+    href === "/membership"
       ? pathname === href
       : pathname === href || pathname.startsWith(`${href}/`)
   );
@@ -51,7 +51,7 @@ const useAccountLinks = () => {
   const staff = visible.length > 0 || Boolean(twoStep.data?.needs);
   const member = Boolean(status.data?.is_member);
   const links: AccountLink[] = [
-    { href: "/account", key: "today" },
+    { href: "/membership", key: "today" },
     ...(member
       ? ([
           { href: "/events/book", key: "calendar" },
@@ -59,10 +59,10 @@ const useAccountLinks = () => {
           { href: "/society", key: "society" },
         ] as const)
       : []),
-    { href: "/account/service", key: "record" },
+    { href: "/membership/service", key: "record" },
     {
-      also: ["/account/profile", "/account/requests"],
-      href: "/account/settings",
+      also: ["/membership/profile", "/membership/requests"],
+      href: "/membership/settings",
       key: "settings",
     },
   ];
@@ -179,7 +179,7 @@ const AccountNav = () => {
 };
 
 /** Pages that show the account's row of links. */
-const ACCOUNT_PAGES = /^\/(account|society)(\/|$)/;
+const ACCOUNT_PAGES = /^\/(membership|society)(\/|$)/;
 
 /** The members' pages: the account row where it belongs, then the page. */
 export const MemberShell = ({ children }: { children: ReactNode }) => {

@@ -17,6 +17,10 @@ Branch: `claude/new-session-qosn60`.
       `sal-membership`: one user, all devices; no modules, Smart Tap or
       redemption issuers; callback URL
       `https://auibsal.org/api/wallet/google/callback`.
+- [ ] **Membership at `/membership` (2026-10-25):** in BotFather, change the
+      Telegram Login redirect URIs to `https://auibsal.org/membership/profile`
+      and `https://auibsal.org/ar/membership/profile`, then run
+      `POST /api/telegram/setup` once so Hudhud's /me reads "membership".
 
 - [ ] **Member pages and the card (2026-10-25), for the owner:**
   - **Public pages for members:** a proposal, nothing built yet (see
@@ -1265,6 +1269,12 @@ Written 2026-10-25 (rosettes and one check): `web.verify.title`, `lede`,
 Written 2026-10-25 (the live card): `nexus.home.card.*` (qr, clock,
 wallet, perks, security, reset), `web.verifyCard.live`, `notLive`,
 `perks`, `nexus.admin.checkIn.cardNotLive`.
+
+Written 2026-10-25 (Membership): «العضوية» (`nexus.nav.account`,
+`web.nav.account`, the Wallet pass link), «افتح «العضوية»» (emails and
+Hudhud), «عضويتي», «عضويتك ومقاعدك» (Hudhud's /me), and the lines that
+point to it (`nexus.events.lede`, `notice.booked`, `nexus.programs.yours`,
+`notice.signedUp`, `web.privacy.platform.delete`).
 
 Written 2026-10-25 (Wallet passes): `nexus.home.card.inWallet` («في Google
 Wallet»), `nexus.admin.members.insights.inWallet`, and the pass's links

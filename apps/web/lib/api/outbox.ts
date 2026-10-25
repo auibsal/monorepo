@@ -109,7 +109,7 @@ const pushNotice = (built: Built, lang: Lang, row: number | undefined) => {
     lang,
     tag: row === undefined ? undefined : `outbox-${row}`,
     title: block?.heading ?? built.subject,
-    url: block?.action?.href ?? site(lang, "/account"),
+    url: block?.action?.href ?? site(lang, "/membership"),
   };
 };
 
