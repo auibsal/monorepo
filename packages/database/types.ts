@@ -332,15 +332,7 @@ export type Database = {
           unit_label_en?: string;
           updated_at?: string;
         };
-        Relationships: [
-          {
-            foreignKeyName: "campaigns_partner_id_fkey";
-            columns: ["partner_id"];
-            isOneToOne: false;
-            referencedRelation: "partners";
-            referencedColumns: ["id"];
-          },
-        ];
+        Relationships: [];
       };
       impact_metrics: {
         Row: {
@@ -480,45 +472,6 @@ export type Database = {
             referencedColumns: ["id"];
           },
         ];
-      };
-      partners: {
-        Row: {
-          created_at: string;
-          description_ar: string | null;
-          description_en: string | null;
-          id: string;
-          logo_path: string | null;
-          name_ar: string;
-          name_en: string;
-          slug: string;
-          updated_at: string;
-          url: string | null;
-        };
-        Insert: {
-          created_at?: string;
-          description_ar?: string | null;
-          description_en?: string | null;
-          id?: string;
-          logo_path?: string | null;
-          name_ar: string;
-          name_en: string;
-          slug: string;
-          updated_at?: string;
-          url?: string | null;
-        };
-        Update: {
-          created_at?: string;
-          description_ar?: string | null;
-          description_en?: string | null;
-          id?: string;
-          logo_path?: string | null;
-          name_ar?: string;
-          name_en?: string;
-          slug?: string;
-          updated_at?: string;
-          url?: string | null;
-        };
-        Relationships: [];
       };
       receipts: {
         Row: {
@@ -3126,6 +3079,15 @@ export type Database = {
         Returns: string;
       };
       open_voting: { Args: { election_id: string }; Returns: number };
+      partner_names: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          id: string;
+          kind: string;
+          name_ar: string;
+          name_en: string;
+        }[];
+      };
       public_election_results: {
         Args: Record<PropertyKey, never>;
         Returns: {

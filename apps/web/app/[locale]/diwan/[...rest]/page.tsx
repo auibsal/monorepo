@@ -13,7 +13,7 @@ const MOVED: Record<string, string> = {
   forms: "/account/requests",
   "forms/fill": "/account/requests/new",
   "forms/view": "/account/requests/view",
-  offers: "/account/offers",
+  offers: "/account",
   profile: "/account/profile",
   qirtas: "/qirtas/write",
   service: "/account/service",

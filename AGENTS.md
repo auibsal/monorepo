@@ -15,10 +15,14 @@ items and decisions) and continue from the first unticked item.
     only, with the publishable key; cached by tag and revalidated on publish.
   - `app/[locale]/(account)` — **the members' pages, on the site** (owner,
     Oct 24, 2026): `/sign-in`, `/sign-up`, `/auth/*`, `/setup`,
-    `/oauth/consent`, and, for members, `/account` (overview, `/profile`,
-    `/requests`, `/service`, `/offers`, `/certificate`), `/events/book`,
-    `/programs/shifts`, `/programs/productions/auditions`, `/qirtas/write`
-    (with `/submit`, `/submission`, `/work`, `/piece`) and `/society`. The
+    `/oauth/consent`, and, for members, the account menu (owner, Oct 25,
+    2026): Today (`/account`), My calendar (`/events/book`), Callboard
+    (`/callboard`), Society (`/society`), Record (`/account/service`, with
+    certificates) and Settings (`/account/settings`, which also holds
+    `/account/profile` and `/account/requests`); also `/account/certificate`,
+    `/programs/productions/auditions`, `/qirtas/write` (with `/submit`,
+    `/submission`, `/work`, `/piece`). Perks are on the card; voting
+    eligibility is on Society; the calendar feed is on My calendar. The
     site's header and footer, an account row (`components/account`), and
     the gates in `components/nexus/gates.tsx`. They link with the site's
     `Link` (`@repo/internationalization/navigation`) and full paths.
@@ -208,6 +212,14 @@ any schema change. Integration tests run against a local stack with
   want, from the same list as Profile (`core.member_details.skills`), and
   what matches the member comes first. Hours given are recorded as service
   as before. `/programs/shifts` shows the same board.
+- **One partner register** (owner, Oct 25, 2026): `governance.partners`,
+  kept in the Diwan's Partners section, is the only list of partners;
+  charity campaigns, Qirtas calls and productions all name partners from
+  it (the charity's own list is gone). Whoever names a partner on their own
+  work reads names through `governance.partner_names()` (members: active
+  and prospective partners; a partner's guest: their own). Accounts
+  verified with a partner but not members are that partner's guests
+  ("Guest of …"; `PartnerGuest`, `GUEST_PATHS` in `gates.tsx`).
 - **Money.** The charity ledger is append-only (corrections are reversing
   entries); only signed-off entries count. No online payments of any kind.
 - **Documents.** Every document is adopted, Version 1 (owner, Oct 24, 2026).

@@ -23,6 +23,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useEffect, useState } from "react";
 import { queryKeys, useMyRsvps, useMyWaitlist } from "@/lib/nexus/queries";
+import { CalendarFeed } from "../home/calendar-feed";
 import { DiwanPage } from "../page";
 import { EmptyLine, ErrorState, SectionSpinner } from "../states";
 
@@ -228,11 +229,19 @@ export const EventsBrowser = () => {
   }
 
   return (
-    <DiwanPage lede={t("lede")} title={t("title")}>
+    <DiwanPage
+      actions={
+        <Link className="link" href="/events">
+          {t("whatsOn")}
+        </Link>
+      }
+      lede={t("lede")}
+      title={t("title")}
+    >
       {upcoming.data.length === 0 ? (
         <EmptyLine
           action={{
-            href: "/account/profile#calendar",
+            href: "/events/book#calendar",
             label: ta("subscribeCalendar"),
           }}
         >
@@ -295,6 +304,8 @@ export const EventsBrowser = () => {
           </form>
         </DialogContent>
       </Dialog>
+
+      <CalendarFeed />
     </DiwanPage>
   );
 };

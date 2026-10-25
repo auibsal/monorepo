@@ -163,7 +163,12 @@
       "documents": "Library",
       "workspace": "Team workspace",
       "overview": "Overview",
-      "diwan": "The Diwan"
+      "diwan": "The Diwan",
+      "today": "Today",
+      "calendar": "My calendar",
+      "callboard": "Callboard",
+      "record": "Record",
+      "settings": "Settings"
     },
     "errors": {
       "loadFailed": "We couldn't load this. Check your connection and try again.",
@@ -315,8 +320,8 @@
       "greetingPlain": "Welcome"
     },
     "events": {
-      "title": "Events",
-      "lede": "Book a place, join a waitlist, or give your place back. Your tickets are in your account.",
+      "title": "My calendar",
+      "lede": "Book a place, ask for a reminder, or give your place back. Your tickets are in your account, and everything is in your calendar feed below.",
       "empty": "No events are announced yet. They appear here as soon as they're published.",
       "membersOnly": "Members only",
       "book": "Book a place",
@@ -347,7 +352,8 @@
       },
       "byInvitation": "By invitation",
       "remind": "Remind me",
-      "forget": "Don't remind me"
+      "forget": "Don't remind me",
+      "whatsOn": "What's on"
     },
     "programs": {
       "title": "Programs",
@@ -596,7 +602,7 @@
       }
     },
     "profile": {
-      "title": "Profile and privacy",
+      "title": "Profile",
       "bio": "Bio",
       "bioHint": "Up to 50 words.",
       "bioCount": "{count} of 50 words",
@@ -1298,7 +1304,9 @@
           "description": "About them",
           "url": "Website (https://…)",
           "logo": "Logo"
-        }
+        },
+        "partnersMoved": "Campaigns name their partner from the Society's one register of partners.",
+        "partnersLink": "Open Partners"
       },
       "picker": {
         "search": "Type a name",
@@ -2808,7 +2816,7 @@
       "until": "Until {date}"
     },
     "service": {
-      "title": "My service",
+      "title": "Record",
       "lede": "Your recorded service and certificates. Hours count once someone else confirms them.",
       "thisYear": "This academic year",
       "hours": "{hours} hours",
@@ -2892,7 +2900,9 @@
       "body": "You are verified as a member of one of the Society's partners. You can answer Qirtas calls opened to your partner, keep your profile, and see your service and certificates. The rest is for members of the Society.",
       "journal": "Qirtas",
       "profile": "My profile",
-      "service": "My service"
+      "service": "Your record",
+      "guestOf": "Guest of {partner}",
+      "settings": "Settings"
     },
     "productions": {
       "title": "The Company",
@@ -3481,7 +3491,11 @@
         }
       },
       "mineAll": "Everything you’ve sent",
-      "toProfile": "See your membership"
+      "toProfile": "See your membership",
+      "concern": {
+        "title": "Raise a concern",
+        "lede": "In confidence. Your concern goes only to the people who must handle it, never to the person it is about."
+      }
     },
     "documents": {
       "title": "Library",
@@ -3702,6 +3716,15 @@
       "hours": "Your hours",
       "hoursLede": "The hours you give on shifts and roles count toward your service record and the Society's certificates.",
       "hoursLink": "See your service record"
+    },
+    "settings": {
+      "title": "Settings",
+      "lede": "How the Society reaches you and how you sign in.",
+      "yours": "Your profile and requests",
+      "profile": "Profile",
+      "profileLine": "Your name in both languages, a short bio, and what you tell us about yourself.",
+      "requests": "Requests and reports",
+      "requestsLine": "What you have sent, and starting a new request."
     }
   },
   "web": {
