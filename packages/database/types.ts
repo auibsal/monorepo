@@ -1884,7 +1884,7 @@ export type Database = {
         }[];
       };
       check_in_card: {
-        Args: { card_code: string; event_id: string };
+        Args: { card_code: string; digits: string; event_id: string };
         Returns: {
           already: boolean;
           full_name_ar: string;
@@ -4551,18 +4551,21 @@ export type Database = {
           code: string;
           issued_at: string;
           number: number;
+          secret: string;
           user_id: string;
         };
         Insert: {
           code?: string;
           issued_at?: string;
           number?: never;
+          secret?: string;
           user_id: string;
         };
         Update: {
           code?: string;
           issued_at?: string;
           number?: never;
+          secret?: string;
           user_id?: string;
         };
         Relationships: [];
@@ -4855,6 +4858,7 @@ export type Database = {
           code: string;
           issued_at: string;
           number: number;
+          secret: string;
         }[];
       };
       my_status: {
@@ -4885,6 +4889,7 @@ export type Database = {
           code: string;
           issued_at: string;
           number: number;
+          secret: string;
         }[];
       };
       reset_calendar_token: {
@@ -4918,11 +4923,12 @@ export type Database = {
       };
       sign_certificate: { Args: { certificate_id: string }; Returns: string };
       verify_card: {
-        Args: { code: string };
+        Args: { code: string; digits?: string };
         Returns: {
           active: boolean;
           full_name_ar: string;
           full_name_en: string;
+          live: boolean;
           member_since: string;
           number: number;
           tier: Database["membership"]["Enums"]["tier"];

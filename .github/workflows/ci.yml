@@ -125,7 +125,7 @@ jobs:
         run: |
           set -e
           test -d apps/web/.next/static || { echo "Missing apps/web/.next/static"; exit 1; }
-          if grep -rqE "sb_secret_[A-Za-z0-9_-]{8,}|SUPABASE_SECRET_KEY|RESEND_TOKEN|CRON_SECRET|REVALIDATE_SECRET|DATABASE_WEBHOOK_SECRET|TELEGRAM_BOT_TOKEN|VAPID_PRIVATE_KEY|sk_(dev|prod)_[A-Za-z0-9_-]{8,}" apps/web/.next/static; then
+          if grep -rqE "sb_secret_[A-Za-z0-9_-]{8,}|SUPABASE_SECRET_KEY|RESEND_TOKEN|CRON_SECRET|REVALIDATE_SECRET|DATABASE_WEBHOOK_SECRET|TELEGRAM_BOT_TOKEN|VAPID_PRIVATE_KEY|GOOGLE_WALLET_PRIVATE_KEY|sk_(dev|prod)_[A-Za-z0-9_-]{8,}" apps/web/.next/static; then
             echo "A secret name or value reached a client bundle."
             exit 1
           fi

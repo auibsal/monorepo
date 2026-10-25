@@ -9,6 +9,12 @@ Branch: `claude/new-session-qosn60`.
 
 ## Blocked — needed from the user
 
+- [ ] **Google Wallet (2026-10-25):** set up the issuer and a service
+      account, then add `GOOGLE_WALLET_ISSUER_ID`,
+      `GOOGLE_WALLET_SERVICE_ACCOUNT_EMAIL` and `GOOGLE_WALLET_PRIVATE_KEY`
+      in Vercel (steps in `docs/platform/wallet.md`). Until then "Add to
+      Google Wallet" says it isn't available yet.
+
 - [ ] **Member pages and the card (2026-10-25), for the owner:**
   - **Public pages for members:** a proposal, nothing built yet (see
     "Proposal: members' public pages" under Decisions). Say yes, no or
@@ -315,6 +321,17 @@ These stop parts of the work. Everything else continues around them.
       Realtime since 2026-10-09 (decision below).
 
 ## Decisions
+
+- **The live card** (owner, 2026-10-25: "go for everything"; no member
+  pictures; the pattern; Google Wallet for now): the QR changes every 30
+  seconds (TOTP of a per-card secret), a clock ticks under it and a sheen
+  drifts across the card, so a screenshot is plain to see and stops
+  working at the door within a minute. A line pattern (guilloche) drawn
+  from the card number makes each card distinct. "Add to Google Wallet"
+  carries the same live code. The check page says whether a code is live
+  and, for partners, that the member may use member perks; perks show on
+  the card. "Lost your card?" is gone: Card security offers "Reset the
+  card code" (new code and secret; earlier codes and passes stop).
 
 - **Personal emails are verified; one address, one person** (owner,
   2026-10-25): the personal email stays optional (it is for keeping in
@@ -1100,6 +1117,10 @@ Covered by automated tests so far:
 All Arabic written for the platform up to 2026-10-24 was reviewed by the
 owner and approved ("reviewed across the board, it's all good"). List new
 Arabic here as it is written.
+
+Written 2026-10-25 (the live card): `nexus.home.card.*` (qr, clock,
+wallet, perks, security, reset), `web.verifyCard.live`, `notLive`,
+`perks`, `nexus.admin.checkIn.cardNotLive`.
 
 Written 2026-10-25 (personal email):
 

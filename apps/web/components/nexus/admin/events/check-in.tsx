@@ -28,9 +28,10 @@ import { memberName } from "../members/directory";
 import { useAttendeeSearch } from "./attendance";
 
 const TICKET = /^sal:ticket:([0-9a-f]{24})$/;
-// The card's QR is a link (…/verify/member/<code>, in any language).
+// The card's QR is a link (…/verify/member/<code>?t=<digits>, in any
+// language); the digits change every 30 seconds.
 const CARD =
-  /^https?:\/\/[^/]+(?:\/[a-z]{2})?\/verify\/member\/([0-9a-f]{20})\/?$/;
+  /^https?:\/\/[^/]+(?:\/[a-z]{2})?\/verify\/member\/([0-9a-f]{20})\/?(?:\?t=([0-9]{8}))?$/;
 
 /** What a scanned code asks for: a ticket, a membership card, or nothing. */
 export const parseScan = (value: string) => {
@@ -40,7 +41,7 @@ export const parseScan = (value: string) => {
   }
   const card = CARD.exec(value.trim());
   if (card?.[1]) {
-    return { card_code: card[1] } as const;
+    return { card_code: card[1], digits: card[2] ?? "" } as const;
   }
   return null;
 };
@@ -49,6 +50,7 @@ type Outcome =
   | { kind: "checked"; name: string }
   | { kind: "already"; name: string }
   | { kind: "invalid" }
+  | { kind: "notLive" }
   | { kind: "unknown" }
   | { kind: "error" };
 
@@ -105,24 +107,31 @@ export const CheckInScreen = () => {
       target:
         | { ticket_code: string }
         | { target_user: string }
-        | { card_code: string }
+        | { card_code: string; digits: string }
     ) =>
       unwrap(
         "card_code" in target
           ? await supabase.schema("events").rpc("check_in_card", {
               card_code: target.card_code,
+              digits: target.digits,
               event_id: eventId,
             })
           : await supabase
               .schema("events")
               .rpc("check_in", { event_id: eventId, ...target })
       ),
-    onError: (error) =>
-      setOutcome(
-        error instanceof DataError && error.code === "P0002"
-          ? { kind: "invalid" }
-          : { kind: "error" }
-      ),
+    onError: (error) => {
+      if (
+        error instanceof DataError &&
+        error.message.includes("card_not_live")
+      ) {
+        setOutcome({ kind: "notLive" });
+      } else if (error instanceof DataError && error.code === "P0002") {
+        setOutcome({ kind: "invalid" });
+      } else {
+        setOutcome({ kind: "error" });
+      }
+    },
     onSuccess: async (rows) => {
       const person = rows?.[0];
       const name = person ? memberName(person, locale) : "";
@@ -221,6 +230,8 @@ export const CheckInScreen = () => {
     message = t("already", { name: outcome.name });
   } else if (outcome?.kind === "invalid") {
     message = t("invalidTicket");
+  } else if (outcome?.kind === "notLive") {
+    message = t("cardNotLive");
   } else if (outcome?.kind === "unknown") {
     message = t("unknownCode");
   } else if (outcome?.kind === "error") {

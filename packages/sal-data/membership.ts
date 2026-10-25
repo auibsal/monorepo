@@ -67,6 +67,13 @@ export const resetCalendarToken = async (client: Client) =>
 /** The path the card's QR links to: anyone's camera opens the check. */
 export const cardPath = (code: string) => `/verify/member/${code}`;
 
+/** The live link: the card's path and the code of this 30-second step. */
+export const livePath = (code: string, digits: string) =>
+  `${cardPath(code)}?t=${digits}`;
+
+/** Live digits, as they appear in the link. */
+export const LIVE_DIGITS = /^[0-9]{8}$/;
+
 /** A card's code, as it appears in the link (20 hex characters). */
 export const CARD_CODE = /^[0-9a-f]{20}$/;
 
@@ -79,8 +86,17 @@ export const reissueCard = async (client: Client) =>
   unwrap(await membership(client).rpc("reissue_card"))?.[0] ?? null;
 
 /** The public check of a card by its code (anyone, signed in or not). */
-export const verifyCard = async (client: Client, code: string) =>
-  unwrap(await membership(client).rpc("verify_card", { code }))?.[0] ?? null;
+export const verifyCard = async (
+  client: Client,
+  code: string,
+  digits?: string
+) =>
+  unwrap(
+    await membership(client).rpc("verify_card", {
+      code,
+      ...(digits ? { digits } : {}),
+    })
+  )?.[0] ?? null;
 
 // ── The personal email (verified from a link; one address, one person) ──────
 

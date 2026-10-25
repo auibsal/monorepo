@@ -17,3 +17,4 @@ under Account); the Society's documents are on
 - [Ads in Qirtas](ads.md)
 - [The team's Notion workspace](notion.md)
 - [Hudhud, the Telegram bot](telegram.md)
+- [Google Wallet: the membership card as a pass](wallet.md)

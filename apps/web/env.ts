@@ -40,6 +40,10 @@ export const env = withPresets(
     runtimeEnv: {
       CRON_SECRET: process.env.CRON_SECRET,
       DATABASE_WEBHOOK_SECRET: process.env.DATABASE_WEBHOOK_SECRET,
+      GOOGLE_WALLET_ISSUER_ID: process.env.GOOGLE_WALLET_ISSUER_ID,
+      GOOGLE_WALLET_PRIVATE_KEY: process.env.GOOGLE_WALLET_PRIVATE_KEY,
+      GOOGLE_WALLET_SERVICE_ACCOUNT_EMAIL:
+        process.env.GOOGLE_WALLET_SERVICE_ACCOUNT_EMAIL,
       NEXT_PUBLIC_VAPID_PUBLIC_KEY: process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
       NOTION_TOKEN: process.env.NOTION_TOKEN,
       REVALIDATE_SECRET: process.env.REVALIDATE_SECRET,
@@ -51,6 +55,16 @@ export const env = withPresets(
       CRON_SECRET: z.string().min(32).optional(),
       // Sent by the Supabase database webhook (outbox) as a Bearer token.
       DATABASE_WEBHOOK_SECRET: z.string().min(32).optional(),
+      // Google Wallet (the membership card as a pass): the issuer id from
+      // the Google Pay & Wallet Console and a service account allowed to
+      // sign passes for it. Without all three, "Add to Google Wallet" says
+      // it isn't available yet. docs/platform/wallet.md.
+      GOOGLE_WALLET_ISSUER_ID: z
+        .string()
+        .regex(/^[0-9]+$/)
+        .optional(),
+      GOOGLE_WALLET_PRIVATE_KEY: z.string().min(100).optional(),
+      GOOGLE_WALLET_SERVICE_ACCOUNT_EMAIL: z.email().optional(),
       // The "SAL Platform" connection in the team's Notion workspace (an
       // internal API token). Without it the Notion sync does nothing.
       NOTION_TOKEN: z.string().min(20).optional(),

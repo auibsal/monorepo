@@ -75,7 +75,7 @@ insert into core.semesters (code, name_en, name_ar, starts_on, ends_on) values
 update core.settings set value = '0' where key = 'membership.founding_voters';
 -- </preamble>
 
-select plan(17);
+select plan(22);
 
 select pg_temp.make_user('00000000-0000-0000-0000-00000000ca01', 'card.one@auib.edu.iq', 'Card One');
 select pg_temp.make_user('00000000-0000-0000-0000-00000000ca02', 'card.two@auib.edu.iq', 'Card Two');
@@ -130,19 +130,36 @@ insert into events.event_staff (event_id, user_id) values
 select pg_temp.login_as('00000000-0000-0000-0000-00000000ca02');
 select throws_ok(
   $$ select * from events.check_in_card('e0000000-0000-0000-0000-0000000000ca',
-    (select code from membership.cards where false)) $$,
+    (select code from membership.cards where false), '00000000') $$,
   '42501', null, 'Only the event''s door staff check people in by card'
 );
 select pg_temp.logout();
 create temp table second_code on commit drop as
-  select code from membership.cards where user_id = '00000000-0000-0000-0000-00000000ca02';
+  select code, private.totp(secret, floor(extract(epoch from now()) / 30)::bigint) as live,
+    private.totp(secret, floor(extract(epoch from now()) / 30)::bigint - 5) as stale
+  from membership.cards where user_id = '00000000-0000-0000-0000-00000000ca02';
 grant select on second_code to public;
 select pg_temp.login_as('00000000-0000-0000-0000-00000000ca03');
+select throws_ok(
+  $$ select * from events.check_in_card('e0000000-0000-0000-0000-0000000000ca',
+    (select code from second_code), (select stale from second_code)) $$,
+  '22023', 'card_not_live', 'A screenshot from minutes ago does not check in'
+);
 select is(
   (select full_name_en from events.check_in_card('e0000000-0000-0000-0000-0000000000ca',
-    (select code from second_code))),
-  'Card Two', 'Door staff check a member in by their card'
+    (select code from second_code), (select live from second_code))),
+  'Card Two', 'Door staff check a member in by their live card'
 );
+select pg_temp.login_anon();
+select ok((select live from membership.verify_card((select code from second_code), (select live from second_code))),
+  'The check page says a live code is live');
+select ok(not (select live from membership.verify_card((select code from second_code))),
+  'and a code without its digits is not');
+select pg_temp.logout();
+select is(private.totp(convert_to('12345678901234567890', 'UTF8'), 1), '94287082',
+  'The live code follows RFC 6238 (its SHA-1 test vector at 59 seconds)');
+select is(private.totp(convert_to('12345678901234567890', 'UTF8'), 66666666), '69279037',
+  'and at 2,000,000,000 seconds');
 
 -- Names
 select pg_temp.login_as('00000000-0000-0000-0000-00000000ca01');

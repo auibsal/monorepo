@@ -10,13 +10,18 @@ describe("check-in scans", () => {
 
   test("reads a membership card QR, a link in either language", () => {
     for (const value of [
-      "https://auibsal.org/verify/member/0123456789abcdef0123",
-      "https://auibsal.org/ar/verify/member/0123456789abcdef0123",
+      "https://auibsal.org/verify/member/0123456789abcdef0123?t=94287082",
+      "https://auibsal.org/ar/verify/member/0123456789abcdef0123?t=94287082",
     ]) {
       expect(parseScan(value), value).toEqual({
         card_code: "0123456789abcdef0123",
+        digits: "94287082",
       });
     }
+    // Without its live digits the door still reads it, then refuses it.
+    expect(
+      parseScan("https://auibsal.org/verify/member/0123456789abcdef0123")
+    ).toEqual({ card_code: "0123456789abcdef0123", digits: "" });
   });
 
   test("ignores anything else", () => {

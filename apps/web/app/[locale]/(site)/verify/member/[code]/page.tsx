@@ -10,6 +10,7 @@ import { readLive } from "@/lib/supabase";
 
 interface CardParams {
   readonly params: Promise<{ code: string; locale: Locale }>;
+  readonly searchParams: Promise<{ t?: string | string[] }>;
 }
 
 export const generateMetadata = async ({
@@ -27,17 +28,24 @@ export const generateMetadata = async ({
 };
 
 /**
- * Where a membership card's QR leads: whose card it is and whether the
- * membership stands today. Read live, never cached, so a reissued code or
- * an ended membership shows at once.
+ * Where a membership card's QR leads: whose card it is, whether the
+ * membership stands today, and whether this is the live card (the code in
+ * the link changes every 30 seconds; a screenshot carries a stale one).
+ * Read live, never cached, so a reset code or an ended membership shows at
+ * once. Partners check perks here too.
  */
-const MemberCardPage = async ({ params }: CardParams) => {
+const MemberCardPage = async ({ params, searchParams }: CardParams) => {
   const { code, locale } = await params;
+  const { t: digits } = await searchParams;
+  const live =
+    typeof digits === "string" && membership.LIVE_DIGITS.test(digits)
+      ? digits
+      : undefined;
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "web.verifyCard" });
   const tt = await getTranslations({ locale, namespace: "nexus.home.tiers" });
   const card = membership.CARD_CODE.test(code)
-    ? await readLive((c) => membership.verifyCard(c, code), null)
+    ? await readLive((c) => membership.verifyCard(c, code, live), null)
     : null;
 
   if (!card) {
@@ -73,9 +81,13 @@ const MemberCardPage = async ({ params }: CardParams) => {
   return (
     <div className="mx-auto grid w-full max-w-xl gap-8 px-4 py-16">
       <PageHeader lede={t("lede")} title={t("title")} />
-      <p className="type-heading" role="status">
-        {card.active ? t("valid") : t("lapsed")}
-      </p>
+      <div className="grid gap-2" role="status">
+        <p className="type-heading">{card.active ? t("valid") : t("lapsed")}</p>
+        <p className="type-body">{card.live ? t("live") : t("notLive")}</p>
+        {card.active && card.live ? (
+          <p className="type-body text-text-secondary">{t("perks")}</p>
+        ) : null}
+      </div>
       <dl className="grid gap-3 border-line border-t pt-5">
         {rows.map(([label, value, dir]) => (
           <div className="grid gap-1 sm:grid-cols-[10rem_1fr]" key={label}>

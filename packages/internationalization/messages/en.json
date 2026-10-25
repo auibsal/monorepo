@@ -227,7 +227,7 @@
         "tier": "Tier",
         "voting": "Voting Member",
         "notVoting": "Not yet a Voting Member",
-        "qr": "Scan to check this card. Show it at the door to check in.",
+        "qr": "The code changes every 30 seconds. Show it at the door to check in; any phone camera can check it.",
         "number": "No. {number}",
         "numberLabel": "Number",
         "since": "Member since",
@@ -238,12 +238,21 @@
         "show": "Show the code full screen",
         "showHint": "Hold your phone up to the scanner at the door.",
         "open": "Open the card's page",
-        "reissue": "Lost your card? Get a new code",
-        "reissueTitle": "Get a new code",
-        "reissueBody": "Your card gets a new code. The old QR stops working, so anyone holding a photo of it can no longer use it. Your number stays the same.",
-        "reissueConfirm": "Get a new code",
-        "reissued": "Your card has a new code.",
-        "issued": "This code was issued on {date}."
+        "reissue": "Reset the card code",
+        "reissueTitle": "Reset the card code",
+        "reissueBody": "Your card gets a new code. Earlier codes, links and Wallet passes stop working; add the card to Google Wallet again afterwards. Your number stays the same.",
+        "reissueConfirm": "Reset the code",
+        "reissued": "Done. Your card has a new code.",
+        "issued": "This code was issued on {date}.",
+        "clock": "The time now, in Baghdad",
+        "wallet": "Add to Google Wallet",
+        "walletUnavailable": "The Google Wallet pass isn't available yet.",
+        "perks": "Perks",
+        "perksHow": "Show this card at the partner. Their staff can scan it to see that you're a member.",
+        "perkCode": "Code:",
+        "perkUntil": "Until {date}",
+        "security": "Card security",
+        "securityBody": "Your card's code changes every 30 seconds, so a screenshot stops working within a minute. If someone else may have used your account on their phone, reset the code: every earlier code, link and Wallet pass stops working, and your number stays the same."
       },
       "tiers": {
         "member": "Member",
@@ -989,7 +998,8 @@
         "noRsvp": "No RSVP",
         "checkInPerson": "Check in",
         "count": "{count} checked in",
-        "noResults": "No member found."
+        "noResults": "No member found.",
+        "cardNotLive": "This card's code isn't live (a screenshot?). Ask to see the card on the member's own phone."
       },
       "content": {
         "title": "Content",
@@ -4144,7 +4154,10 @@
       "vote": "Vote",
       "votes": "Voting Member",
       "noVote": "Not yet a Voting Member",
-      "note": "Members can replace their card's code at any time; an old code then stops working."
+      "note": "Members can replace their card's code at any time; an old code then stops working.",
+      "live": "This is the live card: its code is from the last minute.",
+      "notLive": "This code isn't live (it may be a screenshot). Ask to see the card on the member's own phone.",
+      "perks": "Partners: this member may use the Society's member perks."
     },
     "productions": {
       "title": "The Company",
