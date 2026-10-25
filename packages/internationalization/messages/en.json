@@ -226,9 +226,16 @@
       "personalEmailLater": "After graduation? You can add a personal email in Profile once you're in."
     },
     "home": {
-      "greeting": "Welcome, {name}",
+      "greetings": {
+        "morning": "Good morning, {name}",
+        "afternoon": "Good afternoon, {name}",
+        "evening": "Good evening, {name}",
+        "late": "Hello, {name}",
+        "friday": "Happy Friday, {name}"
+      },
       "card": {
         "title": "Membership card",
+        "live": "Live",
         "tier": "Tier",
         "voting": "Voting Member",
         "notVoting": "Not yet a Voting Member",

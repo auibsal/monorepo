@@ -226,9 +226,16 @@
       "personalEmailLater": "بعد التخرج؟ يمكنك إضافة بريد شخصي من ملفك الشخصي بعد الدخول."
     },
     "home": {
-      "greeting": "أهلًا بك يا {name}",
+      "greetings": {
+        "morning": "صباح الخير يا {name}",
+        "afternoon": "طاب يومك يا {name}",
+        "evening": "مساء الخير يا {name}",
+        "late": "أهلًا يا {name}",
+        "friday": "جمعة مباركة يا {name}"
+      },
       "card": {
         "title": "بطاقة العضوية",
+        "live": "مباشر",
         "tier": "الفئة",
         "voting": "عضو له حق التصويت",
         "notVoting": "لم يكتسب حق التصويت بعد",
