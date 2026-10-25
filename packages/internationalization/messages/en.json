@@ -471,7 +471,7 @@
     },
     "twoStep": {
       "setupTitle": "Set up two-step sign-in",
-      "setupBody": "Your role on the Council or the Elections Committee handles the Society's money, records and votes, so it needs a second step at sign-in: a six-digit code from an authenticator app on your phone (Google Authenticator, Microsoft Authenticator, 1Password or similar). It takes a minute and you do it once.",
+      "setupBody": "Your role reaches the Society's money, records or votes, so it needs a second step at sign-in: a six-digit code from an authenticator app on your phone (Google Authenticator, Microsoft Authenticator, 1Password or similar). It takes a minute and you do it once.",
       "verifyTitle": "Enter your sign-in code",
       "verifyBody": "Open your authenticator app and enter the six-digit code for SAL. Your administration tools open once it's accepted.",
       "start": "Set up my authenticator",
