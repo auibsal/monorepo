@@ -49,6 +49,7 @@ export const changedFields = (
 const LOGGED_TABLES = [
   "access.role_assignments",
   "access.role_permissions",
+  "access.two_step_resets",
   "charity.campaigns",
   "charity.impact_metrics",
   "charity.ledger_entries",

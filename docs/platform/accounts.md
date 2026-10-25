@@ -42,6 +42,17 @@ Members can sign in with a passkey (fingerprint, face or screen lock) and manage
 
 A passkey sign-in counts as the first step only: officers whose roles need two-step sign-in still enter their authenticator code afterwards.
 
+## Lost authenticator
+
+Two ways back in, both of which remove the lost authenticator app so the officer sets up a new one at once:
+
+- **Recovery codes.** The Diwan's overview asks every officer whose role needs two-step sign-in to make ten one-time codes, and again when three or fewer are left. They are shown once; only keyed hashes are stored (`access.recovery_codes`). At the code prompt, "Lost your phone? Use a recovery code" spends one.
+- **A reset.** Whoever holds `roles.assign` opens the person's page in the Diwan (Members) and chooses "Reset two-step sign-in". Check it's really them first (in person, or from their AUIB address). It also removes their recovery codes. Nobody can reset their own.
+
+Every reset is recorded in `access.two_step_resets` (and the activity log) and emails the person, so one they didn't ask for is noticed. Supabase's own recovery codes are still experimental and can't be turned on from `config.toml`, so the platform keeps its own.
+
+The hashes are keyed with `SUPABASE_SECRET_KEY`. Rotating that key makes every saved set stop working: tell the officers to make new codes from the Diwan's overview right after a rotation.
+
 ## Handing the platform over
 
 1. **Add the incoming administrator.** Invite them to the GitHub organization, the Vercel team, the Supabase organization, Cloudflare, Resend, Sentry, BetterStack and Arcjet, with admin rights.

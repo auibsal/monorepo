@@ -1259,6 +1259,11 @@ All Arabic written for the platform up to 2026-10-24 was reviewed by the
 owner and approved ("reviewed across the board, it's all good"). List new
 Arabic here as it is written.
 
+Written 2026-10-25 (recovery codes and resets): `nexus.twoStep.lost`,
+`recoveryBody`, `recoveryLabel`, `recoveryUse`, `recoveryFailed`;
+`nexus.recoveryCodes.*` (title «احفظ رموز الاسترداد»);
+`nexus.admin.member.twoStep.*`; the email `twoStepReset`.
+
 Written 2026-10-25 (two-step wording for every role):
 `nexus.twoStep.setupBody` («يصل دورك إلى أموال الجمعية أو سجلاتها أو
 تصويتها…»).

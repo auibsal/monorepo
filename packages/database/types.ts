@@ -63,6 +63,30 @@ export type Database = {
         };
         Relationships: [];
       };
+      recovery_codes: {
+        Row: {
+          code_hash: string;
+          created_at: string;
+          id: string;
+          used_at: string | null;
+          user_id: string;
+        };
+        Insert: {
+          code_hash: string;
+          created_at?: string;
+          id?: string;
+          used_at?: string | null;
+          user_id: string;
+        };
+        Update: {
+          code_hash?: string;
+          created_at?: string;
+          id?: string;
+          used_at?: string | null;
+          user_id?: string;
+        };
+        Relationships: [];
+      };
       role_assignments: {
         Row: {
           assigned_by: string | null;
@@ -179,6 +203,30 @@ export type Database = {
           requires_mfa?: boolean;
           sort?: number;
           spending_limit_iqd?: number | null;
+        };
+        Relationships: [];
+      };
+      two_step_resets: {
+        Row: {
+          created_at: string;
+          id: string;
+          reset_by: string | null;
+          user_id: string;
+          via: string;
+        };
+        Insert: {
+          created_at?: string;
+          id?: string;
+          reset_by?: string | null;
+          user_id: string;
+          via: string;
+        };
+        Update: {
+          created_at?: string;
+          id?: string;
+          reset_by?: string | null;
+          user_id?: string;
+          via?: string;
         };
         Relationships: [];
       };

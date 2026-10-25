@@ -12,6 +12,7 @@ import { localized, unwrap } from "@repo/sal-data";
 import { useQuery } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/lib/nexus/navigation";
+import { RecoveryCodes } from "../auth/recovery-codes";
 import { StartLinks } from "../forms/forms";
 import { DiwanSection } from "../page";
 import { ErrorState, SectionSpinner } from "../states";
@@ -201,6 +202,7 @@ export const AdminOverview = () => {
   return (
     <div className="grid gap-14">
       <AdminHeading title={t("title")} />
+      <RecoveryCodes />
       {figures.length === 0 && !o.campaigns ? (
         <p className="type-body text-text-secondary">{t("nothing")}</p>
       ) : null}

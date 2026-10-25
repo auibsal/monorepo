@@ -131,7 +131,14 @@ any schema change. Integration tests run against a local stack with
   `authenticateRequest(request, { apps: true })`, which only `/api/v1` does.
 - **Two-step sign-in for sensitive roles.** Roles with `requires_mfa`
   (Council officers, directors, Elections Committee) count only on an `aal2`
-  session; `access.has_permission` enforces it. Don't add bypasses.
+  session; `access.has_permission` enforces it. Don't add bypasses. A
+  passkey is a first step only (owner, Oct 25, 2026). A lost authenticator
+  is recovered with one of ten recovery codes (`access.recovery_codes`,
+  keyed hashes; made on the Diwan overview, used at the code prompt through
+  `/api/two-step/recover`) or reset by whoever holds `roles.assign` (the
+  member's page in the Diwan, `/api/two-step/reset`); either removes the
+  authenticator so a new one is set up, is recorded in
+  `access.two_step_resets` and emails the person.
 - **Atomic multi-step operations are Postgres functions** called by RPC
   (ledger sign-off, ballots, blind ids, waitlist promotion, transitions).
   The body is a SECURITY DEFINER function in the `private` schema that

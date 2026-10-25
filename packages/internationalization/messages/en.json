@@ -479,7 +479,12 @@
       "manual": "Can't scan it? Enter this key in the app instead:",
       "codeLabel": "Six-digit code",
       "verify": "Confirm",
-      "failed": "That code didn't work. Codes change every 30 seconds: enter the one showing now."
+      "failed": "That code didn't work. Codes change every 30 seconds: enter the one showing now.",
+      "lost": "Lost your phone? Use a recovery code",
+      "recoveryBody": "Enter one of the recovery codes you saved. It removes the lost authenticator app, and you set up a new one straight away. Each code works once.",
+      "recoveryLabel": "Recovery code",
+      "recoveryUse": "Use this code",
+      "recoveryFailed": "That code didn't work. Check it, or try another one. If none are left, ask whoever assigns roles to reset your two-step sign-in."
     },
     "journal": {
       "status": {
@@ -923,6 +928,14 @@
           "two_roles_at_most": "They already hold two roles. Nobody holds more than two at once (B5.5) unless the Council agreed a founding-term exception.",
           "one_leadership_role": "They already hold a leadership role (officer, director or program chair). Only one at a time (B5.5) unless the Council agreed a founding-term exception.",
           "exception_needs_adopted_resolution": "The exception needs a Council resolution that has been adopted."
+        },
+        "twoStep": {
+          "title": "Two-step sign-in",
+          "body": "If they lost their phone and have no recovery code left, reset it. Their authenticator app and recovery codes are removed, they set up new ones at their next sign-in, and they get an email saying so.",
+          "reset": "Reset two-step sign-in",
+          "confirm": "Reset",
+          "description": "Remove {name}'s authenticator app and recovery codes? Do this only when they asked, after checking it's really them.",
+          "done": "Reset. {name} sets up a new authenticator at their next sign-in."
         }
       },
       "verification": {
@@ -3746,6 +3759,20 @@
       "profileLine": "Your name in both languages, a short bio, and what you tell us about yourself.",
       "requests": "Requests and reports",
       "requestsLine": "What you have sent, and starting a new request."
+    },
+    "recoveryCodes": {
+      "noneTitle": "Save your recovery codes",
+      "noneBody": "If you lose your phone, one of these codes gets you back into the Diwan. Make a set and keep it somewhere safe, away from your phone.",
+      "fewTitle": "Few recovery codes left",
+      "fewBody": "You have {count} left. Make a new set; the old codes stop working.",
+      "make": "Make my recovery codes",
+      "remake": "Make a new set",
+      "saveTitle": "Your recovery codes",
+      "saveBody": "Each code works once. Save them now in a password manager, or print them: they won't be shown again.",
+      "copy": "Copy the codes",
+      "copied": "Copied",
+      "saved": "I've saved them",
+      "failed": "We couldn't make the codes. Please try again."
     }
   },
   "web": {

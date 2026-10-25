@@ -23,6 +23,7 @@ import {
   rsvpConfirmed,
   submissionReceived,
   sundayPaper,
+  twoStepReset,
   verificationDecided,
   waitlistPromoted,
 } from "@repo/email/copy";
@@ -117,6 +118,12 @@ export const VerificationApproved = email((l) =>
 );
 export const VerificationDeclined = email((l) =>
   verificationDecided(l, false, APP)
+);
+export const TwoStepResetByOfficer = email((l) =>
+  twoStepReset(l, "officer", APP)
+);
+export const TwoStepResetWithCode = email((l) =>
+  twoStepReset(l, "recovery_code", APP)
 );
 export const RemovalOverdue = email((l) =>
   removalRequested(l, removal, APP, true)

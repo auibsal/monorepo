@@ -8,6 +8,7 @@ import { unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { type FormEvent, useState } from "react";
+import { callApi } from "@/lib/nexus/api";
 import { SectionSpinner } from "../states";
 
 /**
@@ -50,6 +51,7 @@ export const TwoStepPanel = () => {
     secret: string;
   } | null>(null);
   const [failed, setFailed] = useState(false);
+  const [recovering, setRecovering] = useState(false);
 
   const enroll = useMutation({
     mutationFn: async () => {
@@ -92,6 +94,17 @@ export const TwoStepPanel = () => {
     onError: () => setFailed(true),
     // The session now carries aal2: every permission check changes.
     onSuccess: () => queryClient.invalidateQueries(),
+  });
+
+  // A recovery code removes the lost authenticator; the panel then offers
+  // to set up a new one.
+  const recover = useMutation({
+    mutationFn: (code: string) =>
+      callApi(supabase, "/two-step/recover", { code }),
+    onSuccess: async () => {
+      setRecovering(false);
+      await queryClient.invalidateQueries({ queryKey: ["two-step"] });
+    },
   });
 
   if (state.isPending) {
@@ -181,6 +194,81 @@ export const TwoStepPanel = () => {
           {t("failed")}
         </p>
       ) : null}
+
+      {factorId && !enrolling ? (
+        <RecoveryCodeForm
+          failed={recover.isError}
+          onSubmit={(code) => recover.mutate(code)}
+          onToggle={() => setRecovering(!recovering)}
+          open={recovering}
+          pending={recover.isPending}
+        />
+      ) : null}
     </section>
+  );
+};
+
+/** "Lost your phone?": one recovery code instead of the app's code. */
+const RecoveryCodeForm = ({
+  failed,
+  onSubmit,
+  onToggle,
+  open,
+  pending,
+}: {
+  failed: boolean;
+  onSubmit: (code: string) => void;
+  onToggle: () => void;
+  open: boolean;
+  pending: boolean;
+}) => {
+  const t = useTranslations("nexus.twoStep");
+  const submit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    onSubmit(String(new FormData(event.currentTarget).get("recovery") ?? ""));
+  };
+  return (
+    <div className="grid gap-3 border-line border-t pt-space-3">
+      <Button
+        aria-expanded={open}
+        className="justify-self-start px-0"
+        onClick={onToggle}
+        type="button"
+        variant="link"
+      >
+        {t("lost")}
+      </Button>
+      {open ? (
+        <form className="grid gap-3" onSubmit={submit}>
+          <p className="type-body">{t("recoveryBody")}</p>
+          <div className="grid gap-2">
+            <Label htmlFor="two-step-recovery">{t("recoveryLabel")}</Label>
+            <Input
+              autoCapitalize="characters"
+              autoComplete="off"
+              className="max-w-64 font-mono tracking-widest"
+              dir="ltr"
+              id="two-step-recovery"
+              name="recovery"
+              required
+              spellCheck={false}
+            />
+          </div>
+          <Button
+            className="justify-self-start"
+            disabled={pending}
+            type="submit"
+            variant="outline"
+          >
+            {t("recoveryUse")}
+          </Button>
+          {failed ? (
+            <p className="type-body font-medium" role="alert">
+              {t("recoveryFailed")}
+            </p>
+          ) : null}
+        </form>
+      ) : null}
+    </div>
   );
 };

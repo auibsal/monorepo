@@ -53,6 +53,7 @@ phone and Telegram too when they turned those on.
 | `personal_email.confirm` | The new personal address | No |
 | `membership.verification_decided` | An account from outside AUIB | No |
 | `access.role_ending`, `programmes.*`, `platform.cron_failed` | Officers | No |
+| `access.two_step_reset` | The person whose authenticator was removed (by an officer or a recovery code) | No |
 
 "Email me about events, calls and Society notices" (`notify_email`, in
 Profile and in setup) covers the optional ones: the Sunday Paper and
