@@ -7,8 +7,9 @@ import { Button } from "@repo/design-system/components/ui/button";
 import { Label } from "@repo/design-system/components/ui/label";
 import { Textarea } from "@repo/design-system/components/ui/textarea";
 import { Link } from "@repo/internationalization/navigation";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useTranslations } from "next-intl";
+import { localized, unwrap } from "@repo/sal-data";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useLocale, useTranslations } from "next-intl";
 import { useId, useState } from "react";
 import { queryKeys, useVerificationRequest } from "@/lib/nexus/queries";
 import { Affiliations } from "./profile/affiliations";
@@ -75,14 +76,28 @@ export const PendingVerification = () => {
  */
 export const PartnerGuest = () => {
   const t = useTranslations("nexus.partnerGuest");
+  const locale = useLocale();
+  const { supabase } = useAuth();
+  // "Guest of …": a guest sees only the partners they are verified with.
+  const partnerNames = useQuery({
+    queryFn: async () =>
+      unwrap(await supabase.schema("governance").rpc("partner_names")) ?? [],
+    queryKey: ["partner-names", "guest"],
+  });
+  const names = (partnerNames.data ?? [])
+    .map((p) => localized(p, "name", locale))
+    .join(", ");
   const links = [
     ["/qirtas/write", t("journal")],
     ["/account/profile", t("profile")],
     ["/account/service", t("service")],
+    ["/account/settings", t("settings")],
   ] as const;
   return (
     <main className="mx-auto grid w-full max-w-xl gap-6 px-4 py-12" id="main">
-      <FormHeader title={t("title")}>{t("body")}</FormHeader>
+      <FormHeader title={names ? t("guestOf", { partner: names }) : t("title")}>
+        {t("body")}
+      </FormHeader>
       <ul className="grid gap-2">
         {links.map(([href, label]) => (
           <li key={href}>

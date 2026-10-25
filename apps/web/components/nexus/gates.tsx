@@ -54,6 +54,7 @@ const GUEST_PATHS = [
   "/account/profile",
   "/account/service",
   "/account/certificate",
+  "/account/settings",
 ];
 
 export const isGuestPath = (pathname: string) =>

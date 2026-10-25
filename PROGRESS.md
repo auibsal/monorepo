@@ -322,6 +322,12 @@ These stop parts of the work. Everything else continues around them.
 
 ## Decisions
 
+- **Partners, one register** (owner, 2026-10-25: "go for everything"): the
+  Diwan's Partners section keeps the only list; campaigns name their
+  partner from it; a partner's verified members are "Guest of [partner]"
+  and can open Qirtas, Profile, Record and Settings. The public "who we
+  work with" page (`/partners`) lists listed partners as before; perks are
+  on the card.
 - **The account** (owner, 2026-10-25: "go for everything"): the menu is
   Today · My calendar · Callboard · Society · Record · Settings. Profile
   (what members tell us about themselves) is split from Settings (how the
@@ -841,6 +847,16 @@ These stop parts of the work. Everything else continues around them.
 
 ## Checklist
 
+### Partners (2026-10-25)
+
+- [x] Migration `20261025000800_one_partner_register`: charity partners
+      folded into the register, campaigns follow; `governance.partner_names()`;
+      pgTAP in `50_charity` (20)
+- [x] Diwan Charity: campaigns pick from the register; the charity's own
+      partner list removed
+- [x] "Guest of [partner]" for a partner's verified members; Settings open
+      to guests
+
 ### The account (2026-10-25)
 
 - [x] Menu: Today · My calendar · Callboard · Society · Record · Settings
@@ -850,7 +866,6 @@ These stop parts of the work. Everything else continues around them.
 - [x] Requests open with "Raise a concern" (in confidence); Today shows the
       latest requests; voting eligibility on Society; calendar feed on My
       calendar; `/account/offers` removed (old Diwan link goes to Today)
-- [ ] Next: partners (public list, guest accounts, one Diwan section)
 
 ### The Callboard (2026-10-25)
 
@@ -1201,6 +1216,10 @@ Covered by automated tests so far:
 All Arabic written for the platform up to 2026-10-24 was reviewed by the
 owner and approved ("reviewed across the board, it's all good"). List new
 Arabic here as it is written.
+
+Written 2026-10-25 (partners): `nexus.partnerGuest.guestOf` («ضيف من
+{partner}»), `settings`, `service`; `nexus.admin.charity.partnersMoved`,
+`partnersLink`.
 
 Written 2026-10-25 (the account): `nexus.nav.today` («اليوم»), `calendar`
 («تقويمي»), `callboard`, `record` («السجل»), `settings`; `nexus.settings.*`;

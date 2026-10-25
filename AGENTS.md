@@ -212,6 +212,14 @@ any schema change. Integration tests run against a local stack with
   want, from the same list as Profile (`core.member_details.skills`), and
   what matches the member comes first. Hours given are recorded as service
   as before. `/programs/shifts` shows the same board.
+- **One partner register** (owner, Oct 25, 2026): `governance.partners`,
+  kept in the Diwan's Partners section, is the only list of partners;
+  charity campaigns, Qirtas calls and productions all name partners from
+  it (the charity's own list is gone). Whoever names a partner on their own
+  work reads names through `governance.partner_names()` (members: active
+  and prospective partners; a partner's guest: their own). Accounts
+  verified with a partner but not members are that partner's guests
+  ("Guest of …"; `PartnerGuest`, `GUEST_PATHS` in `gates.tsx`).
 - **Money.** The charity ledger is append-only (corrections are reversing
   entries); only signed-off entries count. No online payments of any kind.
 - **Documents.** Every document is adopted, Version 1 (owner, Oct 24, 2026).

@@ -43,7 +43,7 @@ export const activeCampaigns = async (client: Client) =>
     await client
       .schema("charity")
       .from("campaigns")
-      .select("*, partner:partners(*)")
+      .select("*")
       .eq("status", "active")
       .order("starts_on", { ascending: false })
   );

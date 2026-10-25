@@ -109,13 +109,8 @@ const CampaignSettings = ({ campaignId }: { campaignId: string | null }) => {
   });
   const partners = useQuery({
     queryFn: async () =>
-      unwrap(
-        await supabase
-          .schema("charity")
-          .from("partners")
-          .select("id, name_en, name_ar")
-      ) ?? [],
-    queryKey: ["admin", "partners"],
+      unwrap(await supabase.schema("governance").rpc("partner_names")) ?? [],
+    queryKey: ["admin", "partner-names"],
   });
   const setting = useQuery({
     queryFn: async () =>

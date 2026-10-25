@@ -1304,7 +1304,9 @@
           "description": "About them",
           "url": "Website (https://…)",
           "logo": "Logo"
-        }
+        },
+        "partnersMoved": "Campaigns name their partner from the Society's one register of partners.",
+        "partnersLink": "Open Partners"
       },
       "picker": {
         "search": "Type a name",
@@ -2898,7 +2900,9 @@
       "body": "You are verified as a member of one of the Society's partners. You can answer Qirtas calls opened to your partner, keep your profile, and see your service and certificates. The rest is for members of the Society.",
       "journal": "Qirtas",
       "profile": "My profile",
-      "service": "My service"
+      "service": "Your record",
+      "guestOf": "Guest of {partner}",
+      "settings": "Settings"
     },
     "productions": {
       "title": "The Company",

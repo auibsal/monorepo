@@ -75,7 +75,7 @@ insert into core.semesters (code, name_en, name_ar, starts_on, ends_on) values
 update core.settings set value = '0' where key = 'membership.founding_voters';
 -- </preamble>
 
-select plan(16);
+select plan(20);
 
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000f1', 'founder@auib.edu.iq', 'Founder');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000c1', 'lead@auib.edu.iq', 'Campaign Lead');
@@ -83,10 +83,10 @@ select pg_temp.make_user('00000000-0000-0000-0000-0000000000c2', 'helper@auib.ed
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000d1', 'treasurer@auib.edu.iq', 'Treasurer');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a1', 'member@auib.edu.iq', 'Member');
 
-insert into charity.partners (slug, name_en, name_ar) values ('test-partner', 'Test Partner', 'شريك تجريبي');
+insert into governance.partners (slug, name_en, name_ar, kind) values ('test-partner', 'Test Partner', 'شريك تجريبي', 'charity');
 insert into charity.campaigns (id, slug, title_en, title_ar, status, partner_id, target_units)
 values ('ca000000-0000-0000-0000-0000000000c1', 'winter-2026', 'Winter 2026', 'شتاء ٢٠٢٦', 'active',
-  (select id from charity.partners where slug = 'test-partner'), 50);
+  (select id from governance.partners where slug = 'test-partner'), 50);
 
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000000c1', 'campaign_lead', 'campaign', 'ca000000-0000-0000-0000-0000000000c1');
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000000d1', 'treasurer');
@@ -214,6 +214,34 @@ select lives_ok(
        pg_temp.entry('first'), 'Miscounted') $$,
   'Corrections are reversing entries'
 );
+
+-- ── One partner register ────────────────────────────────────────────────────
+
+select pg_temp.logout();
+select is(
+  (select p.slug from charity.campaigns k join governance.partners p on p.id = k.partner_id
+   where k.id = 'ca000000-0000-0000-0000-0000000000c1'),
+  'test-partner', 'Campaigns name their partner from the one register'
+);
+select pg_temp.login_as('00000000-0000-0000-0000-0000000000a1');
+select ok(
+  exists (select 1 from governance.partner_names() where name_en = 'Test Partner'),
+  'Members see the names of partners on the register'
+);
+select pg_temp.login_anon();
+select throws_ok($$ select * from governance.partner_names() $$, '42501', null,
+  'The public does not');
+
+select pg_temp.logout();
+select pg_temp.make_user('00000000-0000-0000-0000-0000000000e1', 'guest@partner.example', 'Partner Guest');
+insert into governance.partner_affiliations (partner_id, user_id)
+values ((select id from governance.partners where slug = 'test-partner'),
+  '00000000-0000-0000-0000-0000000000e1');
+update governance.partner_affiliations set status = 'verified'
+where user_id = '00000000-0000-0000-0000-0000000000e1';
+select pg_temp.login_as('00000000-0000-0000-0000-0000000000e1', '{"aal":"aal1"}');
+select is((select array_agg(name_en) from governance.partner_names()), array['Test Partner'],
+  'A partner''s guest sees only their own partner''s name');
 
 select * from finish();
 rollback;

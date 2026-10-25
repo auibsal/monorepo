@@ -1,30 +1,16 @@
 "use client";
 
 import { useAuth } from "@repo/auth/provider";
-import { SalCard } from "@repo/design-system/components/sal/card";
-import { Button } from "@repo/design-system/components/ui/button";
-import { Input } from "@repo/design-system/components/ui/input";
 import type { Locale } from "@repo/internationalization";
 import { formatIqd, formatNumber } from "@repo/internationalization/format";
 import { hasPermission } from "@repo/rbac";
 import { charity, localized, unwrap } from "@repo/sal-data";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
-import { type FormEvent, useState } from "react";
 import { Link } from "@/lib/nexus/navigation";
 import { useGrants } from "@/lib/nexus/queries";
 import { SectionSpinner } from "../../states";
-import { slugify } from "../events/editor";
-import { ImageField } from "../image-field";
-import {
-  AdminHeading,
-  BilingualField,
-  type Column,
-  DataTable,
-  ErrorLine,
-  Field,
-  SaveButton,
-} from "../kit";
+import { AdminHeading, type Column, DataTable } from "../kit";
 
 export const useCampaigns = () => {
   const { supabase } = useAuth();
@@ -47,141 +33,6 @@ export const useCampaigns = () => {
     },
     queryKey: ["admin", "campaigns"],
   });
-};
-
-interface PartnerForm {
-  description: { ar: string; en: string };
-  id: string | null;
-  logo_path: string | null;
-  name: { ar: string; en: string };
-  url: string;
-}
-
-const blankPartner: PartnerForm = {
-  description: { ar: "", en: "" },
-  id: null,
-  logo_path: null,
-  name: { ar: "", en: "" },
-  url: "",
-};
-
-const Partners = () => {
-  const t = useTranslations("nexus.admin.charity");
-  const locale = useLocale() as Locale;
-  const tk = useTranslations("nexus.admin.kit");
-  const { supabase } = useAuth();
-  const queryClient = useQueryClient();
-  const [form, setForm] = useState<PartnerForm>(blankPartner);
-  const partners = useQuery({
-    queryFn: async () =>
-      unwrap(
-        await supabase
-          .schema("charity")
-          .from("partners")
-          .select("*")
-          .order("name_en")
-      ) ?? [],
-    queryKey: ["admin", "partners"],
-  });
-  const save = useMutation({
-    mutationFn: async () => {
-      const row = {
-        description_ar: form.description.ar || null,
-        description_en: form.description.en || null,
-        logo_path: form.logo_path,
-        name_ar: form.name.ar,
-        name_en: form.name.en,
-        slug: slugify(form.name.en),
-        url: form.url.trim() || null,
-      };
-      const table = supabase.schema("charity").from("partners");
-      unwrap(
-        form.id
-          ? await table.update(row).eq("id", form.id)
-          : await table.insert(row)
-      );
-    },
-    onSuccess: async () => {
-      setForm(blankPartner);
-      await queryClient.invalidateQueries({ queryKey: ["admin", "partners"] });
-    },
-  });
-
-  const submit = (event: FormEvent) => {
-    event.preventDefault();
-    save.mutate();
-  };
-
-  return (
-    <section className="grid gap-4">
-      <h2 className="type-heading">{t("partners")}</h2>
-      <ul className="grid gap-2">
-        {partners.data?.map((p) => (
-          <li className="flex flex-wrap items-center gap-3" key={p.id}>
-            <span className="font-medium">{localized(p, "name", locale)}</span>
-            <Button
-              onClick={() =>
-                setForm({
-                  description: {
-                    ar: p.description_ar ?? "",
-                    en: p.description_en ?? "",
-                  },
-                  id: p.id,
-                  logo_path: p.logo_path,
-                  name: { ar: p.name_ar, en: p.name_en },
-                  url: p.url ?? "",
-                })
-              }
-              size="sm"
-              variant="ghost"
-            >
-              {tk("edit")}
-            </Button>
-          </li>
-        ))}
-      </ul>
-      <form className="grid max-w-3xl gap-4" onSubmit={submit}>
-        <h3 className="type-subheading">
-          {form.id ? form.name.ar || form.name.en : t("newPartner")}
-        </h3>
-        <BilingualField
-          label={t("partner.name")}
-          maxLength={200}
-          onChange={(name) => setForm((f) => ({ ...f, name }))}
-          required
-          value={form.name}
-        />
-        <p className="type-caption">{t("partner.nameHint")}</p>
-        <BilingualField
-          label={t("partner.description")}
-          multiline
-          onChange={(description) => setForm((f) => ({ ...f, description }))}
-          rows={3}
-          value={form.description}
-        />
-        <Field label={t("partner.url")}>
-          {(id) => (
-            <Input
-              dir="ltr"
-              id={id}
-              onChange={(e) => setForm((f) => ({ ...f, url: e.target.value }))}
-              pattern="https://.*"
-              type="url"
-              value={form.url}
-            />
-          )}
-        </Field>
-        <ImageField
-          area="partners"
-          label={t("partner.logo")}
-          onChange={(logo_path) => setForm((f) => ({ ...f, logo_path }))}
-          value={form.logo_path}
-        />
-        <SaveButton pending={save.isPending} success={save.isSuccess} />
-        <ErrorLine error={save.error} />
-      </form>
-    </section>
-  );
 };
 
 export const CharityAdmin = () => {
@@ -261,11 +112,12 @@ export const CharityAdmin = () => {
           />
         ) : null}
       </section>
-      {isGlobal ? (
-        <SalCard>
-          <Partners />
-        </SalCard>
-      ) : null}
+      <p className="type-body text-text-secondary">
+        {t("partnersMoved")}{" "}
+        <Link className="link" href="/partners">
+          {t("partnersLink")}
+        </Link>
+      </p>
     </div>
   );
 };
