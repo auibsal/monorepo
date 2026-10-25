@@ -244,7 +244,7 @@ const DeskList = ({ desks }: { desks: readonly journal.Desk[] }) => {
                   <Link
                     className="link font-medium text-sm"
                     href={{
-                      pathname: "/qirtas/submit",
+                      pathname: "/qirtas/write",
                       query: { type: category },
                     }}
                   >

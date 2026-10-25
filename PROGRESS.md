@@ -354,6 +354,9 @@ These stop parts of the work. Everything else continues around them.
   takes art and photography, and comics and photo essays. Six Words are
   never sent from the site: officers transcribe Tour cards in the Diwan and
   attach them to their writers by scanning the writer's membership card.
+  Then (owner, same day: "merge qirtas write and qirtas submit"): one
+  page, `/qirtas/write`; a type opens its form there (`?type=`), and
+  `/qirtas/submit` is gone (no redirect).
 - **What's on** (owner, 2026-10-25: "go for everything"): programs and
   events are one calendar at `/events`, shown a month at a time with each
   program as a series to filter by, and a page per series

@@ -1,8 +1,14 @@
-import { JournalHome } from "@/components/nexus/journal/pages";
+import { Suspense } from "react";
+import { QirtasWrite } from "@/components/nexus/journal/submit";
+import { SectionSpinner } from "@/components/nexus/states";
 import { titleFrom } from "@/lib/nexus/metadata";
 
 export const generateMetadata = titleFrom((t) => t("nexus.journal.title"));
 
-const JournalHomePage = () => <JournalHome />;
+const Page = () => (
+  <Suspense fallback={<SectionSpinner />}>
+    <QirtasWrite />
+  </Suspense>
+);
 
-export default JournalHomePage;
+export default Page;
