@@ -4,6 +4,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { useProfile } from "@/lib/nexus/queries";
 import { DiwanPage } from "../page";
+import { TellUsMoreLine } from "../profile/tell-us-more";
 import { JournalSection } from "./journal";
 import { MembershipCard } from "./membership-card";
 import { NextEvents } from "./next-events";
@@ -79,6 +80,7 @@ export const MemberHome = () => {
       }
     >
       <MembershipCard />
+      <TellUsMoreLine />
       <div className="grid gap-x-16 gap-y-14 lg:grid-cols-2">
         <Notices />
         <NextEvents />

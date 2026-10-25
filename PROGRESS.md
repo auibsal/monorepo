@@ -24,7 +24,7 @@ Branch: `claude/new-session-qosn60`.
       two-step sign-in makes a set from the Diwan's overview and keeps it
       away from their phone.
 
-- [ ] **Sign-in and email (2026-10-25), urgent:** members report the
+- [x] **Sign-in and email (2026-10-25), done by the owner (Oct 25):** members report the
       Cloudflare check spinning on sign-in, and no Society sign-in or
       confirmation email has gone out since Oct 21. The site now says when
       the check fails or stalls (with "Try again" and the error code), and
@@ -58,7 +58,7 @@ Branch: `claude/new-session-qosn60`.
       Google Wallet". Left: **Request publishing access** in the Wallet
       console (until Google approves, only test accounts can save, and passes
       say "[TEST ONLY]").
-- [ ] **Membership at `/membership` (2026-10-25):** in BotFather, change the
+- [x] **Membership at `/membership` (2026-10-25), done by the owner (Oct 25):** in BotFather, change the
       Telegram Login redirect URIs to `https://auibsal.org/membership/profile`
       and `https://auibsal.org/ar/membership/profile`, then run
       `POST /api/telegram/setup` once so Hudhud's /me reads "membership".
@@ -232,7 +232,7 @@ Branch: `claude/new-session-qosn60`.
       everything else is already on a free plan. Resend Free sends 100 emails
       a day: the outbox now holds anything over the limit until it resets
       instead of dropping it.
-- [ ] **Passkeys:** Supabase → Authentication → Passkeys: on; Relying Party
+- [x] **Passkeys (done by the owner, Oct 25):** Supabase → Authentication → Passkeys: on; Relying Party
       ID `auibsal.org` (never change it after members register passkeys);
       origins `https://auibsal.org`; display name `AUIB Society of
       Arts and Letters`. The Nexus shows the passkey button and the Profile
@@ -904,6 +904,24 @@ These stop parts of the work. Everything else continues around them.
 
 ## Checklist
 
+### Sign-up in fewer steps (2026-10-25)
+
+- [x] Sign-up with an AUIB address asks only the address and a password;
+      an outside address also gives the four names and a few words (the
+      Council confirms those accounts)
+- [x] Setup one question per screen: English name, Arabic name, each
+      pending pledge, photos (yes or no), then "Welcome, {name}" with the
+      card; "Step X of Y", Back and the browser's Back, Enter moves on,
+      saved as answered, focus without scrolling (iPhone). Language follows
+      the sign-up page and email notices start on. A renewed pledge asks
+      only the pledge
+- [x] "Tell us more" at `/membership/more`: the optional details a question
+      at a time with Skip and tap-to-choose chips; offered on Today while
+      there are no interests or skills; the full form stays in Profile
+- [x] What's on: an empty month says what comes next; the Diwan says "That
+      address belongs to a program; choose another." on a slug clash
+- [ ] iPhone retest of sign-up and setup (owner)
+
 ### Partners (2026-10-25)
 
 - [x] Migration `20261025000800_one_partner_register`: charity partners
@@ -1273,6 +1291,12 @@ Covered by automated tests so far:
 All Arabic written for the platform up to 2026-10-24 was reviewed by the
 owner and approved ("reviewed across the board, it's all good"). List new
 Arabic here as it is written.
+
+Written 2026-10-25 (sign-up in fewer steps): `auth.signUp.outsideAuib`;
+`nexus.setup.stepOf`, `back`, `continue`, `nameEn.title`, `nameAr.title`,
+`photos.*`, `welcome.*`; `nexus.more.*` (title «أخبرنا المزيد»);
+`web.events.nextLabel`, `nextOn`; `nexus.admin.kit.addressProgram`,
+`addressEvent`.
 
 Written 2026-10-25 (program sessions): `nexus.admin.programmes.tabs.sessions`
 («الجلسات»), `nexus.admin.programmes.sessions.*`.

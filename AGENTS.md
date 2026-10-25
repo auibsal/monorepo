@@ -20,6 +20,7 @@ items and decisions) and continue from the first unticked item.
     (`/callboard`), Society (`/society`), Record (`/membership/service`, with
     certificates) and Settings (`/membership/settings`, which also holds
     `/membership/profile` and `/membership/requests`); also `/membership/certificate`,
+    `/membership/more` ("Tell us more"),
     `/events/company/auditions`, `/qirtas/write` (the two doors, your
     work, and the form itself with `?type=`; then `/submission`, `/work`,
     `/piece`). Perks are on the card; voting
@@ -163,6 +164,16 @@ any schema change. Integration tests run against a local stack with
   and never show a group smaller than five (`core.member_insights()`).
   Public pages never show it. No phone numbers until they can be verified
   (owner, Oct 25, 2026).
+- **Sign-up asks little** (owner, Oct 25, 2026). An AUIB address signs up
+  with the address and a password; an outside address also gives the four
+  names and a few words for the Council. `/setup` then asks one question
+  per screen (`planSetup` in `components/nexus/setup-form.tsx`): each name
+  not yet given, each pledge not yet made in its current version, and, the
+  first time, photos; then the welcome screen with the card. Language
+  follows the sign-up page and email notices start on (both in Settings).
+  The optional details are "Tell us more" (`/membership/more`, a question
+  at a time with Skip), offered on Today; Profile keeps the full form.
+  Each screen starts at the top with its heading focused, never scrolled.
 - **One address, one person.** The personal email (optional, for after
   graduation) is set only through `core.request_personal_email` and counts
   only once confirmed from the link sent to it

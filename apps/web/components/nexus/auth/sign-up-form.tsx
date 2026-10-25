@@ -32,6 +32,8 @@ export const SignUpForm = () => {
     password: "",
     statement: "",
   });
+  // AUIB addresses give their names in setup; the Council verifies others
+  // by theirs, so they give them here.
   const named = [
     values.givenEn,
     values.familyEn,
@@ -56,12 +58,14 @@ export const SignUpForm = () => {
       captchaToken: human.token,
       email: values.email,
       locale: locale === "ar" ? "ar" : "en",
-      names: {
-        familyAr: values.familyAr,
-        familyEn: values.familyEn,
-        givenAr: values.givenAr,
-        givenEn: values.givenEn,
-      },
+      names: external
+        ? {
+            familyAr: values.familyAr,
+            familyEn: values.familyEn,
+            givenAr: values.givenAr,
+            givenEn: values.givenEn,
+          }
+        : undefined,
       password: values.password,
       // The confirmation link brings the member back to what they started.
       redirectTo: callbackUrl(locale, next),
@@ -109,75 +113,6 @@ export const SignUpForm = () => {
             {t("emailHint")}
           </p>
         </div>
-        <p className="type-caption" id={`${id}-names-hint`}>
-          {t("signUp.namesHint")}
-        </p>
-        <fieldset
-          aria-describedby={`${id}-names-hint`}
-          className="grid gap-3 sm:grid-cols-2"
-        >
-          <legend className="mb-2 font-medium text-sm">
-            {t("signUp.nameEn")}
-          </legend>
-          <div className="grid gap-2">
-            <Label htmlFor={`${id}-given-en`}>{t("signUp.givenName")}</Label>
-            <Input
-              autoComplete="given-name"
-              dir="ltr"
-              id={`${id}-given-en`}
-              lang="en"
-              maxLength={60}
-              onChange={set("givenEn")}
-              required
-              value={values.givenEn}
-            />
-          </div>
-          <div className="grid gap-2">
-            <Label htmlFor={`${id}-family-en`}>{t("signUp.familyName")}</Label>
-            <Input
-              autoComplete="family-name"
-              dir="ltr"
-              id={`${id}-family-en`}
-              lang="en"
-              maxLength={60}
-              onChange={set("familyEn")}
-              required
-              value={values.familyEn}
-            />
-          </div>
-        </fieldset>
-        <fieldset
-          aria-describedby={`${id}-names-hint`}
-          className="grid gap-3 sm:grid-cols-2"
-        >
-          <legend className="mb-2 font-medium text-sm">
-            {t("signUp.nameAr")}
-          </legend>
-          <div className="grid gap-2">
-            <Label htmlFor={`${id}-given-ar`}>{t("signUp.givenName")}</Label>
-            <Input
-              dir="rtl"
-              id={`${id}-given-ar`}
-              lang="ar"
-              maxLength={60}
-              onChange={set("givenAr")}
-              required
-              value={values.givenAr}
-            />
-          </div>
-          <div className="grid gap-2">
-            <Label htmlFor={`${id}-family-ar`}>{t("signUp.familyName")}</Label>
-            <Input
-              dir="rtl"
-              id={`${id}-family-ar`}
-              lang="ar"
-              maxLength={60}
-              onChange={set("familyAr")}
-              required
-              value={values.familyAr}
-            />
-          </div>
-        </fieldset>
         <div className="grid gap-2">
           <Label htmlFor={`${id}-password`}>{t("password")}</Label>
           <Input
@@ -196,19 +131,99 @@ export const SignUpForm = () => {
           </p>
         </div>
         {external ? (
-          <div className="grid gap-2">
-            <Label htmlFor={`${id}-statement`}>{t("signUp.statement")}</Label>
-            <Textarea
-              aria-describedby={`${id}-statement-hint`}
-              id={`${id}-statement`}
-              maxLength={1000}
-              onChange={set("statement")}
-              rows={3}
-              value={values.statement}
-            />
-            <p className="type-caption" id={`${id}-statement-hint`}>
-              {t("signUp.statementHint")}
+          <div className="grid gap-4">
+            <p className="type-body">{t("signUp.outsideAuib")}</p>
+            <p className="type-caption" id={`${id}-names-hint`}>
+              {t("signUp.namesHint")}
             </p>
+            <fieldset
+              aria-describedby={`${id}-names-hint`}
+              className="grid gap-3 sm:grid-cols-2"
+            >
+              <legend className="mb-2 font-medium text-sm">
+                {t("signUp.nameEn")}
+              </legend>
+              <div className="grid gap-2">
+                <Label htmlFor={`${id}-given-en`}>
+                  {t("signUp.givenName")}
+                </Label>
+                <Input
+                  autoComplete="given-name"
+                  dir="ltr"
+                  id={`${id}-given-en`}
+                  lang="en"
+                  maxLength={60}
+                  onChange={set("givenEn")}
+                  required
+                  value={values.givenEn}
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor={`${id}-family-en`}>
+                  {t("signUp.familyName")}
+                </Label>
+                <Input
+                  autoComplete="family-name"
+                  dir="ltr"
+                  id={`${id}-family-en`}
+                  lang="en"
+                  maxLength={60}
+                  onChange={set("familyEn")}
+                  required
+                  value={values.familyEn}
+                />
+              </div>
+            </fieldset>
+            <fieldset
+              aria-describedby={`${id}-names-hint`}
+              className="grid gap-3 sm:grid-cols-2"
+            >
+              <legend className="mb-2 font-medium text-sm">
+                {t("signUp.nameAr")}
+              </legend>
+              <div className="grid gap-2">
+                <Label htmlFor={`${id}-given-ar`}>
+                  {t("signUp.givenName")}
+                </Label>
+                <Input
+                  dir="rtl"
+                  id={`${id}-given-ar`}
+                  lang="ar"
+                  maxLength={60}
+                  onChange={set("givenAr")}
+                  required
+                  value={values.givenAr}
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor={`${id}-family-ar`}>
+                  {t("signUp.familyName")}
+                </Label>
+                <Input
+                  dir="rtl"
+                  id={`${id}-family-ar`}
+                  lang="ar"
+                  maxLength={60}
+                  onChange={set("familyAr")}
+                  required
+                  value={values.familyAr}
+                />
+              </div>
+            </fieldset>
+            <div className="grid gap-2">
+              <Label htmlFor={`${id}-statement`}>{t("signUp.statement")}</Label>
+              <Textarea
+                aria-describedby={`${id}-statement-hint`}
+                id={`${id}-statement`}
+                maxLength={1000}
+                onChange={set("statement")}
+                rows={3}
+                value={values.statement}
+              />
+              <p className="type-caption" id={`${id}-statement-hint`}>
+                {t("signUp.statementHint")}
+              </p>
+            </div>
           </div>
         ) : null}
         {human.element}
@@ -217,7 +232,10 @@ export const SignUpForm = () => {
             {error}
           </p>
         ) : null}
-        <Button disabled={pending || !human.ready || !named} type="submit">
+        <Button
+          disabled={pending || !human.ready || (external && !named)}
+          type="submit"
+        >
           {human.label(pending, t("signUp.submit"), t("signUp.submitting"))}
         </Button>
       </form>

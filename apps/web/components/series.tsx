@@ -5,7 +5,7 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import type { ReactNode } from "react";
 import { PageHeader } from "@/components/section";
-import { MonthCalendar, MonthSection } from "@/components/whats-on";
+import { MonthCalendar, MonthSection, nextAfter } from "@/components/whats-on";
 import { localizedMetadata } from "@/lib/metadata";
 import { readPublished } from "@/lib/supabase";
 import { monthFrom } from "@/lib/whats-on";
@@ -56,6 +56,8 @@ export const SeriesView = async ({
     (c) => events.calendar(c, month.from, month.to),
     []
   );
+  const own = rows.filter((row) => row.programme_id === series.id);
+  const next = own.length === 0 ? await nextAfter(month, series.id) : null;
   const pathname = `/events/${series.slug}`;
 
   return (
@@ -69,11 +71,7 @@ export const SeriesView = async ({
         locale={locale}
         month={month}
       >
-        <MonthCalendar
-          locale={locale}
-          month={month}
-          rows={rows.filter((row) => row.programme_id === series.id)}
-        />
+        <MonthCalendar locale={locale} month={month} next={next} rows={own} />
       </MonthSection>
       {children}
       <p className="border-line border-t pt-space-4">

@@ -300,6 +300,15 @@ export const useErrorReason = () => {
   const t = useTranslations("nexus.admin.kit");
   return (error: unknown) => {
     const code = error instanceof DataError ? error.code : "";
+    // Programs and events share the addresses under /events.
+    if (code === "23505" && error instanceof Error) {
+      if (error.message.includes("belongs to a program")) {
+        return t("addressProgram");
+      }
+      if (error.message.includes("belongs to an event")) {
+        return t("addressEvent");
+      }
+    }
     let reason = t("reasons.unknown");
     if (code === "42501") {
       reason = t("reasons.forbidden");

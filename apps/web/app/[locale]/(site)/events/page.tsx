@@ -5,7 +5,12 @@ import { events, localized, programmes } from "@repo/sal-data";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { PageHeader } from "@/components/section";
-import { MonthCalendar, MonthSection, SeriesList } from "@/components/whats-on";
+import {
+  MonthCalendar,
+  MonthSection,
+  nextAfter,
+  SeriesList,
+} from "@/components/whats-on";
 import { localizedMetadata } from "@/lib/metadata";
 import { readPublished } from "@/lib/supabase";
 import { monthFrom, monthParam } from "@/lib/whats-on";
@@ -60,6 +65,7 @@ const EventsPage = async ({ params, searchParams }: EventsProps) => {
     ),
   ]);
   const series = (all ?? []).filter((p) => p.is_active);
+  const upcoming = rows.length === 0 ? await nextAfter(month) : null;
   const feed = `${project.url.replace(HTTP_SCHEME, "webcal:")}/calendar.ics?lang=${locale}`;
 
   // Links keep the month and the AUIB choice unless they change one.
@@ -105,6 +111,7 @@ const EventsPage = async ({ params, searchParams }: EventsProps) => {
         <MonthCalendar
           locale={locale}
           month={month}
+          next={upcoming}
           rows={rows}
           university={withUniversity ? university : []}
         />

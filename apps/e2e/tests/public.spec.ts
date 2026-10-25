@@ -63,6 +63,11 @@ test.describe("public site", () => {
     await expect(
       page.getByRole("link", { name: universityDate.title })
     ).toHaveCount(0);
+    // A month with nothing in it points to what comes next.
+    await page.goto(`${urls.web}/events?month=2026-01&auib=off`);
+    const next = page.getByText("Next:");
+    await expect(next).toBeVisible();
+    await expect(next.getByRole("link")).toHaveAttribute("href", /\/events\//);
   });
 
   test("each program is a series in What's on, at /events/<program>", async ({
