@@ -23,6 +23,7 @@ import {
   rsvpConfirmed,
   submissionReceived,
   sundayPaper,
+  verificationDecided,
   waitlistPromoted,
 } from "@repo/email/copy";
 import { Notice } from "@repo/email/templates/notice";
@@ -108,6 +109,15 @@ export const DecisionAcceptWithEdits = email((l) =>
 );
 export const DecisionDecline = email((l) => decision(l, WORK, "decline", APP));
 export const EventReminder = email((l) => eventReminder(l, event, APP));
+export const EventReminderRemindMe = email((l) =>
+  eventReminder(l, event, APP, false)
+);
+export const VerificationApproved = email((l) =>
+  verificationDecided(l, true, APP)
+);
+export const VerificationDeclined = email((l) =>
+  verificationDecided(l, false, APP)
+);
 export const RemovalOverdue = email((l) =>
   removalRequested(l, removal, APP, true)
 );
@@ -153,7 +163,8 @@ export const SundayPaper = email((l) =>
         url: "https://auibsal.org/qirtas/pieces/sample",
       },
     ],
-    "https://auibsal.org/qirtas"
+    "https://auibsal.org/qirtas",
+    "https://auibsal.org/emails/stop?token=sample"
   )
 );
 export const NewsletterConfirm = email((l) =>

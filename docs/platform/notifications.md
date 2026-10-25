@@ -1,6 +1,7 @@
 # Notifications
 
-Email and phone notifications, and what each costs.
+Email and phone notifications, and what each costs. Every email, its
+sender and the settings behind it: `email.md`.
 
 Every notice (bookings, reminders, Journal receipts and decisions, role endings, removal requests) goes by **email** through Resend. Members who turn on **phone notifications** also get it on their phones and computers. Both are free.
 
@@ -26,4 +27,5 @@ Without them, the Profile section says the browser can't show notifications, and
 
 ## Email limits
 
-Resend's free plan sends 100 emails a day and 3,000 a month. When the day's limit is spent, the outbox waits for it to reset instead of using up its retries, and each email carries an idempotency key so a retry never sends twice.
+Resend's free plan sends 100 emails a day and 3,000 a month, shared with
+Supabase's sign-in emails and with anything else on the same Resend account. When the day's limit is spent, the outbox waits for it to reset instead of using up its retries, and each email carries an idempotency key so a retry never sends twice.

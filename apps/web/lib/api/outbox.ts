@@ -29,10 +29,12 @@ import {
   rsvpConfirmed,
   submissionReceived,
   sundayPaper,
+  verificationDecided,
   waitlistPromoted,
 } from "@repo/email/copy";
-import { Notice } from "@repo/email/templates/notice";
+import { Notice, noticeText } from "@repo/email/templates/notice";
 import { revalidateTag } from "next/cache";
+import { stopToken } from "@/lib/api/email-stop";
 import { api, origin, site } from "@/lib/api/urls";
 import { type CacheTag, cacheTags } from "@/lib/supabase";
 import type { Sticker } from "./bot/stickers";
@@ -71,6 +73,8 @@ const appUrl = origin;
 interface Recipient {
   email: string;
   lang: Lang;
+  /** Members: whether they take the optional emails (notify_email). */
+  optional?: boolean;
   /** Set for members (push goes to their devices); unset for guests. */
   userId?: string;
 }
@@ -87,7 +91,7 @@ const recipient = async (
     admin
       .schema("core")
       .from("profiles")
-      .select("locale")
+      .select("locale, notify_email")
       .eq("id", userId)
       .maybeSingle(),
   ]);
@@ -95,7 +99,12 @@ const recipient = async (
   if (!email) {
     return null;
   }
-  return { email, lang: profile?.locale === "ar" ? "ar" : "en", userId };
+  return {
+    email,
+    lang: profile?.locale === "ar" ? "ar" : "en",
+    optional: profile?.notify_email ?? true,
+    userId,
+  };
 };
 
 /** The outbox row being processed: for idempotency keys and push. */
@@ -126,6 +135,7 @@ const send = async (
     idempotencyKey: row === undefined ? undefined : `outbox-${row}-${to.email}`,
     react: Notice({ blocks: built.blocks, preview: built.preview }),
     subject: built.subject,
+    text: noticeText(built),
     to: to.email,
   });
   if (run && to.userId) {
@@ -266,6 +276,18 @@ const unsubscribeLinks = (lang: Lang, token: string) => {
   };
 };
 
+/** A member's "stop these emails" page and one-click header. */
+const stopLinks = (lang: Lang, userId: string) => {
+  const token = stopToken(userId);
+  return {
+    headers: {
+      "List-Unsubscribe": `<${api(`/email/stop?token=${token}`)}>`,
+      "List-Unsubscribe-Post": "List-Unsubscribe=One-Click",
+    },
+    page: `${webUrl()}${prefix(lang)}/emails/stop?token=${token}`,
+  };
+};
+
 type Handler = (
   admin: AdminClient,
   payload: Record<string, unknown>
@@ -307,7 +329,28 @@ const handlers: Record<string, Handler> = {
       );
     }
   },
-  "events.reminder": eventNotice(eventReminder),
+  // The day before: to everyone booked, and to everyone who asked "Remind
+  // me". A booked reminder is optional (notify_email); "Remind me" was
+  // asked for, so it always goes.
+  "events.reminder": async (admin, payload) => {
+    const [to, event, { data: booking }] = await Promise.all([
+      recipient(admin, payload.user_id),
+      eventInfo(admin, payload.event_id),
+      admin
+        .schema("events")
+        .from("rsvps")
+        .select("status")
+        .eq("event_id", String(payload.event_id))
+        .eq("user_id", String(payload.user_id))
+        .eq("status", "confirmed")
+        .maybeSingle(),
+    ]);
+    const booked = Boolean(booking);
+    if (!(to && event) || (booked && to.optional === false)) {
+      return;
+    }
+    await send(to, eventReminder(to.lang, event, appUrl(), booked));
+  },
   "events.rsvp_confirmed": eventNotice(rsvpConfirmed),
   "events.waitlist_promoted": eventNotice(waitlistPromoted),
   "journal.agreement_reminder": async (admin, payload) => {
@@ -448,10 +491,28 @@ const handlers: Record<string, Handler> = {
         url: `${webUrl()}${prefix(to.lang)}/qirtas/pieces/${p.slug}`,
       };
     });
+    const stop = stopLinks(to.lang, String(payload.user_id));
     await send(
       to,
-      sundayPaper(to.lang, items, `${webUrl()}${prefix(to.lang)}/qirtas`)
+      sundayPaper(
+        to.lang,
+        items,
+        `${webUrl()}${prefix(to.lang)}/qirtas`,
+        stop.page
+      ),
+      stop.headers
     );
+  },
+  // The Council decided an account from outside AUIB
+  // (membership.decide_verification).
+  "membership.verification_decided": async (admin, payload) => {
+    const to = await recipient(admin, payload.user_id);
+    if (to) {
+      await send(
+        to,
+        verificationDecided(to.lang, payload.approved === true, appUrl())
+      );
+    }
   },
   // From the wallet_passes triggers: a card was reset, a membership ended
   // or an account was deleted. Each pass is marked expired in Google

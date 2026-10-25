@@ -47,9 +47,28 @@ const NAME = {
 };
 
 const FOOTER = {
-  ar: "رسالة من الديوان، منصة جمعية الفنون والآداب في الجامعة الأمريكية في العراق – بغداد.",
-  en: "Sent by the Diwan, the platform of the AUIB Society of Arts and Letters.",
+  ar: "أُرسلت من موقع جمعية الفنون والآداب في الجامعة الأمريكية في العراق – بغداد، auibsal.org.",
+  en: "Sent by the website of the AUIB Society of Arts and Letters, auibsal.org.",
 };
+
+/**
+ * The same notice as plain text, sent beside the HTML: some mail apps and
+ * every screen reader in plain-text mode read this one, and spam filters
+ * trust a message more when both parts say the same.
+ */
+export const noticeText = ({ blocks }: Pick<NoticeProps, "blocks">) =>
+  [
+    ...blocks.flatMap((block) => [
+      block.heading,
+      "",
+      ...block.paragraphs.flatMap((p) => [p, ""]),
+      ...(block.action
+        ? [`${block.action.label}: ${block.action.href}`, ""]
+        : []),
+    ]),
+    "--",
+    ...blocks.map((block) => FOOTER[block.lang]),
+  ].join("\n");
 
 const Block = ({ block }: { block: NoticeBlock }) => {
   const rtl = block.lang === "ar";

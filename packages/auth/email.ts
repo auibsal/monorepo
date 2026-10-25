@@ -27,6 +27,7 @@ export type EmailAuthErrorCode =
   | "user_exists"
   | "names_required"
   | "email_reserved"
+  | "invalid_code"
   | "weak_password";
 
 export type AuthResult<T = undefined> =
@@ -64,6 +65,8 @@ export const toEmailAuthError = (
     case "email_address_invalid":
     case "validation_failed":
       return "invalid_email";
+    case "otp_expired":
+      return "invalid_code";
     case "over_email_send_rate_limit":
     case "over_request_rate_limit":
       return "rate_limited";
@@ -200,6 +203,32 @@ export const sendMagicLink = async (
     return { code, ok: false };
   }
   return { ok: true, value: undefined };
+};
+
+const CODE = /^\d{6,10}$/;
+
+/**
+ * The code in a sign-in or confirmation email, typed in where the link
+ * can't be opened (another device, an app's own browser, a mail scanner
+ * that used the link first). It signs the member in.
+ */
+export const verifyEmailCode = async (
+  supabase: Client,
+  email: string,
+  code: string
+): Promise<AuthResult> => {
+  const token = code.replace(/\s/g, "");
+  if (!CODE.test(token)) {
+    return { code: "invalid_code", ok: false };
+  }
+  const { error } = await supabase.auth.verifyOtp({
+    email: normalizeEmail(email),
+    token,
+    type: "email",
+  });
+  return error
+    ? { code: toEmailAuthError(error), ok: false }
+    : { ok: true, value: undefined };
 };
 
 export const sendPasswordReset = async (

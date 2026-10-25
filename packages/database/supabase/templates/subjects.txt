@@ -2,3 +2,7 @@ magic_link: Your sign-in link · رابط دخولك
 confirmation: Confirm your email · أكّد بريدك الإلكتروني
 recovery: Set a new password · تعيين كلمة مرور جديدة
 email_change: Confirm your new email · أكّد بريدك الجديد
+password_changed_notification: Your password was changed · تغيّرت كلمة مرورك
+email_changed_notification: Your sign-in email was changed · تغيّر بريد الدخول
+mfa_factor_enrolled_notification: Two-step sign-in was added · أُضيفت خطوة ثانية لتسجيل الدخول
+mfa_factor_unenrolled_notification: Two-step sign-in was removed · أُزيلت خطوة من خطوات الدخول

@@ -27,13 +27,20 @@ export const signInWithPassword = async (page: Page, email: string) => {
 };
 
 /** The newest email to an address, from the local stack's Mailpit. */
-export const latestMail = async (to: string) => {
+export const latestMail = async (to: string, after = 0) => {
   for (let attempt = 0; attempt < 30; attempt += 1) {
     const list = await fetch(
       `${MAILPIT_URL}/api/v1/search?query=${encodeURIComponent(`to:${to}`)}`
     );
-    const body = (await list.json()) as { messages?: { ID: string }[] };
-    const id = body.messages?.[0]?.ID;
+    const body = (await list.json()) as {
+      messages?: { Created: string; ID: string }[];
+    };
+    // Newest first; with `after`, only a message sent since then.
+    const newest = body.messages?.[0];
+    const id =
+      newest && Date.parse(newest.Created) >= after - 1000
+        ? newest.ID
+        : undefined;
     if (id) {
       const message = await fetch(`${MAILPIT_URL}/api/v1/message/${id}`);
       return (await message.json()) as { HTML: string; Text: string };
