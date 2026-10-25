@@ -2,18 +2,45 @@ import type { Locale } from "@repo/internationalization";
 import { formatClock, formatDayParts } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
 import { localized } from "@repo/sal-data";
+import type { ReactNode } from "react";
 
 export interface DatedItem {
   /** The day the row is filed under (an instant; shown in Baghdad). */
   at: string;
+  /** Another site's page (AUIB's calendar): a plain link, labeled. */
+  external?: { label: string } | null;
   href: string;
   key: string;
+  /** The title's language, when it isn't the page's (AUIB's English). */
+  lang?: string;
   /** One line under the title. */
   line?: string | null;
   /** Place and time, at the end of the row. */
   place?: string | null;
   title: string;
 }
+
+const ROW =
+  "group grid grid-cols-[4.5rem_1fr] gap-x-space-4 gap-y-1 py-space-4 sm:grid-cols-[8rem_1fr_auto] sm:items-baseline";
+
+const RowLink = ({
+  children,
+  external,
+  href,
+}: {
+  children: ReactNode;
+  external?: DatedItem["external"];
+  href: string;
+}) =>
+  external ? (
+    <a aria-label={external.label} className={ROW} href={href} rel="noopener">
+      {children}
+    </a>
+  ) : (
+    <Link className={ROW} href={href}>
+      {children}
+    </Link>
+  );
 
 /**
  * The dated list: a large Light day number with the weekday and month
@@ -32,10 +59,7 @@ export const DatedList = ({
       const { day, month, weekday } = formatDayParts(item.at, locale);
       return (
         <li key={item.key}>
-          <Link
-            className="group grid grid-cols-[4.5rem_1fr] gap-x-space-4 gap-y-1 py-space-4 sm:grid-cols-[8rem_1fr_auto] sm:items-baseline"
-            href={item.href}
-          >
+          <RowLink external={item.external} href={item.href}>
             <span className="row-span-3 grid content-start gap-1 sm:row-span-1">
               <span className="font-light text-[2.75rem] leading-none tracking-tight">
                 {day}
@@ -45,7 +69,10 @@ export const DatedList = ({
               </span>
             </span>
             <span className="grid gap-1">
-              <span className="font-normal text-xl leading-snug group-hover:text-accent">
+              <span
+                className="font-normal text-xl leading-snug group-hover:text-accent"
+                lang={item.lang}
+              >
                 {item.title}
               </span>
               {item.line ? (
@@ -59,7 +86,7 @@ export const DatedList = ({
                 {item.place}
               </span>
             ) : null}
-          </Link>
+          </RowLink>
         </li>
       );
     })}

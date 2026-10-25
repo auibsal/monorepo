@@ -12,6 +12,7 @@ import { type DatedItem, DatedList } from "@/components/event-list";
 import { byDay, type Month, monthWeeks, weekdayColumns } from "@/lib/whats-on";
 
 type Row = events.CalendarEvent;
+type UniversityRow = events.UniversityEvent;
 
 /**
  * Where a row leads: the event's page, or, for a members-only teaser, the
@@ -38,20 +39,40 @@ export const wayOf = (row: Row): WayKey => {
   return row.entry === "open" ? "open" : "rsvp";
 };
 
-/** The month as a grid (wide screens) and as a dated list (phones). */
+/**
+ * The month as a grid (wide screens) and as a dated list (phones): the
+ * Society's events, and AUIB's own dates beside them, quieter, each linking
+ * to the University's page. AUIB publishes its calendar in English only, so
+ * those titles keep their language on the Arabic pages.
+ */
 export const MonthCalendar = async ({
   locale,
   month,
   rows,
+  university = [],
 }: {
   locale: Locale;
   month: Month;
   rows: readonly Row[];
+  university?: readonly UniversityRow[];
 }) => {
   const t = await getTranslations({ locale, namespace: "web.events" });
   const days = byDay(rows);
+  const universityDays = byDay(university);
   const today = toZonedDateValue(new Date());
-  const items: DatedItem[] = rows.map((row) => ({
+  const universityWhen = (row: UniversityRow) =>
+    row.all_day ? t("allDay") : formatClock(row.starts_at, locale);
+  const universityItems: DatedItem[] = university.map((row) => ({
+    at: row.starts_at,
+    external: row.url ? { label: t("auibLink", { title: row.title }) } : null,
+    href: row.url ?? "https://auib.edu.iq/events/",
+    key: row.id,
+    lang: "en",
+    line: t("auib"),
+    place: universityWhen(row),
+    title: row.title,
+  }));
+  const societyItems: DatedItem[] = rows.map((row) => ({
     at: row.starts_at,
     href: rowHref(row),
     key: row.id,
@@ -65,7 +86,11 @@ export const MonthCalendar = async ({
     title: localized(row, "title", locale),
   }));
 
-  if (rows.length === 0) {
+  const items = [...societyItems, ...universityItems].sort((a, b) =>
+    a.at.localeCompare(b.at)
+  );
+
+  if (items.length === 0) {
     return (
       <p className="type-body text-text-secondary">
         {t("noneMonth", { month: formatMonth(month.from, locale) })}
@@ -115,6 +140,20 @@ export const MonthCalendar = async ({
                             {t(`ways.${wayOf(row)}`)}
                           </span>
                         </Link>
+                      ))}
+                      {(universityDays.get(day) ?? []).map((row) => (
+                        <a
+                          aria-label={t("auibLink", { title: row.title })}
+                          className="grid text-sm text-text-secondary leading-snug hover:text-accent"
+                          href={row.url ?? "https://auib.edu.iq/events/"}
+                          key={row.id}
+                          rel="noopener"
+                        >
+                          <span lang="en">{row.title}</span>
+                          <span className="type-caption">
+                            {universityWhen(row)} · {t("auib")}
+                          </span>
+                        </a>
                       ))}
                     </div>
                   ) : null}

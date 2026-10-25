@@ -189,6 +189,12 @@ any schema change. Integration tests run against a local stack with
   members-only events as teasers (title, time, program; nothing else).
   `rsvp_enabled` is kept in step with `entry` by a trigger; write `entry`.
   SECURITY DEFINER code checks visibility with `private.can_see_event_id`.
+  AUIB's own dates (the hourly sync of the University's public calendar
+  into `core.external_events`, `events.universityCalendar`) sit beside the
+  Society's on `/events`, quieter, linking to auib.edu.iq; "Hide AUIB
+  dates" (`?auib=off`) and choosing a series leave them out. AUIB publishes
+  them in English only, so their titles keep that language (`lang="en"`)
+  on the Arabic pages.
 - **Qirtas is one section.** Members send everything from `/qirtas/write`
   and the type decides the process (desk editing, or the blind review for
   Edition work); the Diwan's Qirtas section holds the newsroom and the

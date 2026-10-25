@@ -15,7 +15,11 @@ const HTTP_SCHEME = /^https?:/;
 
 interface EventsProps {
   readonly params: Promise<{ locale: Locale }>;
-  readonly searchParams: Promise<{ month?: string; series?: string }>;
+  readonly searchParams: Promise<{
+    auib?: string;
+    month?: string;
+    series?: string;
+  }>;
 }
 
 export const generateMetadata = async ({
@@ -32,7 +36,9 @@ export const generateMetadata = async ({
 /**
  * What's on: programs and events in one calendar, a month at a time, with
  * each program as a series to filter by. The public see members-only
- * events as teasers; members book from the members' events page.
+ * events as teasers; members book from the members' events page. AUIB's
+ * own dates (the hourly sync of the University's calendar) sit beside the
+ * Society's unless a series is chosen or the visitor hides them.
  */
 const EventsPage = async ({ params, searchParams }: EventsProps) => {
   const { locale } = await params;
@@ -40,13 +46,19 @@ const EventsPage = async ({ params, searchParams }: EventsProps) => {
   const query = await searchParams;
   const t = await getTranslations({ locale, namespace: "web.events" });
   const month = monthFrom(query.month);
-  const [rows, all] = await Promise.all([
+  const withUniversity = query.auib !== "off";
+  const [rows, all, university] = await Promise.all([
     readPublished(
       ["events"],
       (c) => events.calendar(c, month.from, month.to),
       []
     ),
     readPublished(["programmes"], (c) => programmes.programmes(c), []),
+    readPublished(
+      ["events"],
+      (c) => events.universityCalendar(c, month.from, month.to),
+      []
+    ),
   ]);
   const series = (all ?? []).filter((p) => p.is_active);
   const chosen = series.find((p) => p.slug === query.series);
@@ -55,14 +67,21 @@ const EventsPage = async ({ params, searchParams }: EventsProps) => {
     : rows;
   const feed = `${project.url.replace(HTTP_SCHEME, "webcal:")}/calendar.ics?lang=${locale}`;
 
-  // Links keep the month and the series unless they change one of them.
-  const href = (next: { month?: string; series?: string | null }) => {
+  // Links keep the month, the series and the AUIB choice unless they
+  // change one of them.
+  const href = (next: {
+    month?: string;
+    series?: string | null;
+    university?: boolean;
+  }) => {
     const slug = next.series === undefined ? chosen?.slug : next.series;
+    const showUniversity = next.university ?? withUniversity;
     return {
       pathname: "/events",
       query: {
         month: next.month ?? monthParam(month),
         ...(slug ? { series: slug } : {}),
+        ...(showUniversity ? {} : { auib: "off" }),
       },
     };
   };
@@ -126,7 +145,19 @@ const EventsPage = async ({ params, searchParams }: EventsProps) => {
             </Link>
           </p>
         ) : null}
-        <MonthCalendar locale={locale} month={month} rows={shown} />
+        <MonthCalendar
+          locale={locale}
+          month={month}
+          rows={shown}
+          university={chosen || !withUniversity ? [] : university}
+        />
+        {chosen ? null : (
+          <p className="type-caption">
+            <Link className="link" href={href({ university: !withUniversity })}>
+              {withUniversity ? t("hideAuib") : t("showAuib")}
+            </Link>
+          </p>
+        )}
       </section>
 
       <p className="type-caption border-line border-t pt-space-4">

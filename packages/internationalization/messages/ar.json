@@ -3872,6 +3872,11 @@
       "next": "الشهر التالي: {month}",
       "aboutSeries": "عن {series}",
       "noneMonth": "لم يُعلَن شيء في {month} بعد.",
+      "auib": "تقويم الجامعة",
+      "allDay": "طوال اليوم",
+      "hideAuib": "إخفاء مواعيد الجامعة",
+      "showAuib": "إظهار مواعيد الجامعة",
+      "auibLink": "{title}، في تقويم الجامعة (يفتح auib.edu.iq)",
       "ways": {
         "open": "تعال فحسب",
         "rsvp": "احجز مكانًا",

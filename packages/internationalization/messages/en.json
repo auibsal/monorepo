@@ -3872,6 +3872,11 @@
       "next": "Next month: {month}",
       "aboutSeries": "About {series}",
       "noneMonth": "Nothing is announced for {month} yet.",
+      "auib": "AUIB calendar",
+      "allDay": "All day",
+      "hideAuib": "Hide AUIB dates",
+      "showAuib": "Show AUIB dates",
+      "auibLink": "{title}, on the AUIB calendar (opens auib.edu.iq)",
       "ways": {
         "open": "Just come",
         "rsvp": "Book a place",

@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { event } from "../fixtures";
+import { event, universityDate } from "../fixtures";
 import { urls } from "../playwright.config";
 import { expectAccessible } from "./helpers";
 
@@ -54,7 +54,17 @@ test.describe("public site", () => {
     await expect(
       page.getByRole("link", { name: event.title }).first()
     ).toBeAttached();
+    // AUIB's own dates sit beside the Society's, linking to the University.
+    const auib = page
+      .getByRole("link", { name: universityDate.title })
+      .first();
+    await expect(auib).toHaveAttribute("href", universityDate.url);
     await expectAccessible(page);
+    await page.getByRole("link", { name: "Hide AUIB dates" }).click();
+    await expect(page).toHaveURL(/auib=off/);
+    await expect(
+      page.getByRole("link", { name: universityDate.title })
+    ).toHaveCount(0);
   });
 
   test("the Qirtas front page is accessible", async ({ page }) => {

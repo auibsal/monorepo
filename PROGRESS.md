@@ -1259,6 +1259,10 @@ All Arabic written for the platform up to 2026-10-24 was reviewed by the
 owner and approved ("reviewed across the board, it's all good"). List new
 Arabic here as it is written.
 
+Written 2026-10-25 (AUIB dates on What's on): `web.events.auib`
+(«تقويم الجامعة»), `allDay` («طوال اليوم»), `hideAuib`, `showAuib`,
+`auibLink`.
+
 Written 2026-10-25 (partners): `nexus.partnerGuest.guestOf` («ضيف من
 {partner}»), `settings`, `service`; `nexus.admin.charity.partnersMoved`,
 `partnersLink`.
