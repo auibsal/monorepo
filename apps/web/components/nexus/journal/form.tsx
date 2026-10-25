@@ -52,9 +52,7 @@ export const revisableColumns = (value: WorkValue) => ({
  * database only lets authors revise the text and notes).
  */
 export const WorkFields = ({
-  categories = journal.categories.filter((c) =>
-    journal.isEditionDesk(journal.deskOf(c))
-  ),
+  categories = journal.editionDesks.flatMap(journal.sendableCategories),
   fixedKind = false,
   onChange,
   value,

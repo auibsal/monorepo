@@ -6,6 +6,7 @@ import {
   band,
   canEditorMove,
   categories,
+  closedCategories,
   criteria,
   deskOf,
   editorMoves,
@@ -15,6 +16,7 @@ import {
   rubric,
   rubricTotal,
   scoreSchema,
+  sendableCategories,
   submissionObjectPath,
   submissionSchema,
   typeNeeds,
@@ -36,6 +38,10 @@ const waraqTypesSql = readFileSync(
   join(migrations, "20261014000000_waraq_types.sql"),
   "utf8"
 );
+const doorsSql = readFileSync(
+  join(migrations, "20261025000600_qirtas_doors.sql"),
+  "utf8"
+);
 const waraqSql = readFileSync(
   join(migrations, "20261014000100_waraq.sql"),
   "utf8"
@@ -49,9 +55,10 @@ const journalSql = readFileSync(
 );
 
 describe("categories", () => {
-  test("the forms offer exactly the database's sixteen types", () => {
+  test("the forms offer exactly the database's seventeen types", () => {
     expect([...categories]).toEqual([
       "poetry",
+      "prose",
       "fiction",
       "creative_nonfiction",
       "short_drama",
@@ -69,7 +76,25 @@ describe("categories", () => {
       "letter",
     ]);
     for (const category of categories) {
-      expect(`${journalSql}${waraqTypesSql}`).toContain(`'${category}'`);
+      expect(`${journalSql}${waraqTypesSql}${doorsSql}`).toContain(
+        `'${category}'`
+      );
+    }
+  });
+});
+
+describe("the types members send", () => {
+  test("no six words, fiction or photo essays; prose on Letters", () => {
+    expect(sendableCategories("letters")).toEqual([
+      "poetry",
+      "prose",
+      "short_drama",
+      "translation",
+    ]);
+    expect(sendableCategories("gallery")).toEqual(["art_photography", "comic"]);
+    expect(deskOf("prose")).toBe("letters");
+    for (const category of closedCategories) {
+      expect(doorsSql).toContain(`'${category}'`);
     }
   });
 });

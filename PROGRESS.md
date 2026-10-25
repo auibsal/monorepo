@@ -322,6 +322,13 @@ These stop parts of the work. Everything else continues around them.
 
 ## Decisions
 
+- **Qirtas, two doors** (owner, 2026-10-25: "go for everything"): the
+  newsroom is always open; the Edition takes work only during a call (two
+  a year), and members can ask to be emailed when the next one opens.
+  Fewer types: Letters take poetry, prose, drama and translation; Gallery
+  takes art and photography, and comics and photo essays. Six Words are
+  never sent from the site: officers transcribe Tour cards in the Diwan and
+  attach them to their writers by scanning the writer's membership card.
 - **What's on** (owner, 2026-10-25: "go for everything"): programs and
   events are one calendar at `/events`, shown a month at a time with each
   program as a series to filter by, and a page per series
@@ -822,6 +829,19 @@ These stop parts of the work. Everything else continues around them.
 
 ## Checklist
 
+### Qirtas two doors and Six Words on the Tour (2026-10-25)
+
+- [x] Migration `20261025000600_qirtas_doors`: `prose`, retired types,
+      call alerts and the "call opened" notice, Six Words only from the
+      Tour (transcribe, attach by a live card); pgTAP `99_qirtas_doors` (14),
+      journal and programmes tests updated
+- [x] `/qirtas/write`: two doors, the next call and "Tell me when"
+- [x] Email "A Qirtas call is open" (and its Storybook story)
+- [x] Account: Six Words read-only, pointing to the Typewriter Tour
+- [x] Diwan, Programs › Six Words: type a card, scan to save or attach,
+      take down; the camera scanner shared with check-in
+- [ ] Owner: open the two calls a year (nothing enforces the number)
+
 ### What's on (2026-10-25)
 
 - [x] Migration `20261025000500_whats_on`: ways in (`entry`), invitations,
@@ -1149,6 +1169,13 @@ Covered by automated tests so far:
 All Arabic written for the platform up to 2026-10-24 was reviewed by the
 owner and approved ("reviewed across the board, it's all good"). List new
 Arabic here as it is written.
+
+Written 2026-10-25 (Qirtas two doors): `nexus.journal.write.newsroomTitle`,
+`newsroomLede`, `editionTitle`, `editionLede`, `noCall`, `nextCall`,
+`tellMe`, `alertOn`, `alertOff`, `deskLines.*`; the categories `prose`,
+`short_drama` («مسرح»), `comic` («قصص ومقالات مصوّرة»);
+`nexus.home.sixWords.*`; `nexus.admin.programmes.sixWords.*`; the email
+`callOpened` (`packages/email/copy.ts`).
 
 Written 2026-10-25 (What's on): `web.nav.events` («ما يجري»),
 `web.events.title`, `lede`, `all`, `series`, `everything`, `previous`,

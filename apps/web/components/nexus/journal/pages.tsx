@@ -184,65 +184,27 @@ export const JournalHome = () => {
   return (
     <div className="grid gap-8">
       <AdminHeading title={t("title")}>{tw("lede")}</AdminHeading>
-      <DiwanSection id="send" title={tw("sendTitle")}>
-        <p className="max-w-3xl text-text-secondary">{tw("sendLede")}</p>
+      <DiwanSection id="newsroom" title={tw("newsroomTitle")}>
+        <p className="max-w-3xl text-text-secondary">{tw("newsroomLede")}</p>
+        <DeskList desks={journal.newsroomDesks} />
+      </DiwanSection>
+      <DiwanSection id="edition" title={tw("editionTitle")}>
+        <p className="max-w-3xl text-text-secondary">{tw("editionLede")}</p>
         {calls.data ? null : <SectionSpinner />}
-        <ul className="grid divide-y divide-line border-line border-y">
-          {journal.desks.map((desk) => {
-            const edition = journal.isEditionDesk(desk);
-            const open = !edition || openCalls.length > 0;
-            return (
-              <li
-                className="grid gap-3 py-5 md:grid-cols-[12rem_1fr]"
-                key={desk}
-              >
-                <h3 className="type-heading">{tj(`desks.${desk}`)}</h3>
-                <div className="grid gap-2">
-                  <p className="type-body">
-                    {edition
-                      ? tw(`deskLines.${desk as "letters"}`)
-                      : tn(`deskLines.${desk as "news"}`)}
-                  </p>
-                  <p className="type-caption">
-                    {edition
-                      ? tw("processes.editionLong")
-                      : tw("processes.deskLong")}
-                  </p>
-                  {edition
-                    ? openCalls.map((call) => (
-                        <p className="type-caption" key={call.id}>
-                          {tw("callCloses", {
-                            call: localized(call, "title", locale),
-                            date: formatLongDate(call.closes_at, locale, true),
-                            max: formatNumber(call.max_per_person),
-                          })}
-                        </p>
-                      ))
-                    : null}
-                  {open ? (
-                    <ul className="flex flex-wrap gap-x-5 gap-y-2 pt-1">
-                      {journal.deskCategories(desk).map((category) => (
-                        <li key={category}>
-                          <Link
-                            className="link font-medium text-sm"
-                            href={{
-                              pathname: "/qirtas/submit",
-                              query: { type: category },
-                            }}
-                          >
-                            {tj(`categories.${category}`)}
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                  ) : (
-                    <p className="type-caption">{tw("noCall")}</p>
-                  )}
-                </div>
-              </li>
-            );
-          })}
-        </ul>
+        {openCalls.map((call) => (
+          <p className="type-body" key={call.id}>
+            {tw("callCloses", {
+              call: localized(call, "title", locale),
+              date: formatLongDate(call.closes_at, locale, true),
+              max: formatNumber(call.max_per_person),
+            })}
+          </p>
+        ))}
+        {openCalls.length > 0 ? (
+          <DeskList desks={journal.editionDesks} />
+        ) : (
+          <NextCall />
+        )}
       </DiwanSection>
       <DiwanSection id="mine" title={tw("yourWork")}>
         {submissions.data && pieces.data ? (
@@ -256,6 +218,103 @@ export const JournalHome = () => {
           <SectionSpinner />
         )}
       </DiwanSection>
+    </div>
+  );
+};
+
+/** The desks behind a door, each with the types a member sends. */
+const DeskList = ({ desks }: { desks: readonly journal.Desk[] }) => {
+  const tw = useTranslations("nexus.journal.write");
+  const tn = useTranslations("nexus.waraq");
+  const tj = useTranslations("nexus.admin.journal");
+  return (
+    <ul className="grid divide-y divide-line border-line border-y">
+      {desks.map((desk) => (
+        <li className="grid gap-3 py-5 md:grid-cols-[12rem_1fr]" key={desk}>
+          <h3 className="type-heading">{tj(`desks.${desk}`)}</h3>
+          <div className="grid gap-2">
+            <p className="type-body">
+              {journal.isEditionDesk(desk)
+                ? tw(`deskLines.${desk as "letters"}`)
+                : tn(`deskLines.${desk as "news"}`)}
+            </p>
+            <ul className="flex flex-wrap gap-x-5 gap-y-2 pt-1">
+              {journal.sendableCategories(desk).map((category) => (
+                <li key={category}>
+                  <Link
+                    className="link font-medium text-sm"
+                    href={{
+                      pathname: "/qirtas/submit",
+                      query: { type: category },
+                    }}
+                  >
+                    {tj(`categories.${category}`)}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </li>
+      ))}
+    </ul>
+  );
+};
+
+/**
+ * No call is open: when the next one opens (if announced), and "Tell me
+ * when", an email the day it opens.
+ */
+const NextCall = () => {
+  const tw = useTranslations("nexus.journal.write");
+  const locale = useLocale() as Locale;
+  const { supabase } = useAuth();
+  const queryClient = useQueryClient();
+  const next = useQuery({
+    queryFn: () => journal.nextCall(supabase),
+    queryKey: ["journal", "next-call"],
+  });
+  const alert = useQuery({
+    queryFn: () => journal.hasCallAlert(supabase),
+    queryKey: ["journal", "call-alert"],
+  });
+  const toggle = useMutation({
+    mutationFn: (on: boolean) => journal.setCallAlert(supabase, on),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ["journal", "call-alert"] }),
+  });
+  return (
+    <div className="grid gap-3">
+      <p className="type-body">
+        {next.data
+          ? tw("nextCall", {
+              call: localized(next.data, "title", locale),
+              date: formatLongDate(next.data.opens_at, locale, true),
+            })
+          : tw("noCall")}
+      </p>
+      {alert.data ? (
+        <p className="type-caption" role="status">
+          {tw("alertOn")}{" "}
+          <button
+            className="link"
+            disabled={toggle.isPending}
+            onClick={() => toggle.mutate(false)}
+            type="button"
+          >
+            {tw("alertOff")}
+          </button>
+        </p>
+      ) : (
+        <Button
+          className="justify-self-start"
+          disabled={toggle.isPending || alert.isPending}
+          onClick={() => toggle.mutate(true)}
+          variant="outline"
+        >
+          {tw("tellMe")}
+        </Button>
+      )}
+      <ErrorLine error={toggle.error} />
     </div>
   );
 };

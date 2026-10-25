@@ -48,7 +48,7 @@ export const SendToDesk = ({
   const router = useRouter();
   const { supabase, user } = useAuth();
   const queryClient = useQueryClient();
-  const types = journal.deskCategories(desk);
+  const types = journal.sendableCategories(desk);
   const [category, setCategory] = useState<journal.Category>(
     initial && types.includes(initial) ? initial : (types[0] ?? "article")
   );

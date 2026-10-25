@@ -188,6 +188,18 @@ any schema change. Integration tests run against a local stack with
   and the type decides the process (desk editing, or the blind review for
   Edition work); the Diwan's Qirtas section holds the newsroom and the
   blind review (`?tab=review`) together.
+  Two doors (owner, Oct 25, 2026): "Send to the newsroom" (News, Video,
+  Voices; always open) and "Submit to the Edition" (Letters, Gallery; only
+  while a call is open, two calls a year, with "Tell me when",
+  `journal.call_alerts`). Members send only `journal.sendableCategories`:
+  Letters poetry, prose, drama, translation; Gallery art and photography,
+  comics and photo essays. Fiction, creative nonfiction, photo essays and
+  Six Words take no new submissions (the database refuses them).
+- **Six Words come only from the Typewriter Tour.** Never written on the
+  site: whoever runs the Tour transcribes the card in the Diwan
+  (`programmes.record_six_words`) and scans the writer's live membership
+  card to make it theirs (`programmes.attach_six_words`); unsigned cards
+  show without a name. One entry per member; a new card replaces the old.
 - **Money.** The charity ledger is append-only (corrections are reversing
   entries); only signed-off entries count. No online payments of any kind.
 - **Documents.** Every document is adopted, Version 1 (owner, Oct 24, 2026).

@@ -37,6 +37,7 @@ import {
 } from "../kit";
 import { useMemberNames } from "../member-picker";
 import { memberName } from "../members/directory";
+import { TourCards } from "./six-words";
 
 const invalidateKey = ["admin", "programmes-module"];
 
@@ -491,94 +492,6 @@ const Reels = ({ programmeId }: { programmeId: string }) => {
         ) : null}
         <ErrorLine error={publish.error} />
       </form>
-    </div>
-  );
-};
-
-// ── Six Words ───────────────────────────────────────────────────────────────
-
-const usePendingSixWords = () => {
-  const { supabase } = useAuth();
-  return useQuery({
-    queryFn: async () =>
-      unwrap(
-        await supabase
-          .schema("programmes")
-          .from("six_words")
-          .select("id, user_id, text, language, show_name, created_at")
-          .eq("status", "pending")
-          .order("created_at")
-      ) ?? [],
-    queryKey: [...invalidateKey, "six-words"],
-  });
-};
-
-const SixWords = () => {
-  const t = useTranslations("nexus.admin.programmes.sixWords");
-  const locale = useLocale() as Locale;
-  const { supabase } = useAuth();
-  const queryClient = useQueryClient();
-  const pending = usePendingSixWords();
-  const names = useMemberNames(pending.data?.map((w) => w.user_id) ?? []);
-  const moderate = useMutation({
-    mutationFn: async ({ approve, id }: { approve: boolean; id: string }) =>
-      unwrap(
-        await supabase
-          .schema("programmes")
-          .rpc("moderate_six_words", { approve, entry_id: id })
-      ),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: invalidateKey }),
-  });
-
-  return (
-    <div className="grid gap-4">
-      <p className="type-body text-text-secondary">{t("lede")}</p>
-      {pending.data?.length === 0 ? (
-        <p className="type-body text-text-secondary">{t("empty")}</p>
-      ) : null}
-      <ul className="grid gap-3">
-        {pending.data?.map((w) => {
-          const person = names.data?.find((n) => n.id === w.user_id);
-          return (
-            <li
-              className="flex flex-wrap items-center justify-between gap-3 border-line border-b pb-3"
-              key={w.id}
-            >
-              <div>
-                <p
-                  className="type-code text-lg"
-                  dir={w.language === "ar" ? "rtl" : "ltr"}
-                  lang={w.language}
-                >
-                  {w.text}
-                </p>
-                <p className="type-caption">
-                  {person ? memberName(person, locale) : "—"}
-                  {w.show_name ? "" : ` · ${t("anonymous")}`}
-                </p>
-              </div>
-              <div className="flex gap-2">
-                <Button
-                  disabled={moderate.isPending}
-                  onClick={() => moderate.mutate({ approve: true, id: w.id })}
-                  size="sm"
-                >
-                  {t("approve")}
-                </Button>
-                <Button
-                  disabled={moderate.isPending}
-                  onClick={() => moderate.mutate({ approve: false, id: w.id })}
-                  size="sm"
-                  variant="ghost"
-                >
-                  {t("reject")}
-                </Button>
-              </div>
-            </li>
-          );
-        })}
-      </ul>
-      <ErrorLine error={moderate.error} />
     </div>
   );
 };
@@ -1165,7 +1078,6 @@ export const ProgrammesAdmin = () => {
   const t = useTranslations("nexus.admin.programmes");
   const programmeOptions = useProgrammeOptions("programmes.manage");
   const [programmeId, setProgrammeId] = useState("");
-  const sixWords = usePendingSixWords();
   const removals = useOpenRemovals();
   const selected = programmeId || programmeOptions.options[0]?.id || "";
   const openRemovals = (removals.data ?? []).filter(
@@ -1200,11 +1112,7 @@ export const ProgrammesAdmin = () => {
           <TabsTrigger value="episodes">{t("tabs.episodes")}</TabsTrigger>
           <TabsTrigger value="reels">{t("tabs.reels")}</TabsTrigger>
           <TabsTrigger value="rotas">{t("tabs.rotas")}</TabsTrigger>
-          <TabsTrigger value="six-words">
-            {t("tabs.sixWords", {
-              count: formatNumber(sixWords.data?.length ?? 0),
-            })}
-          </TabsTrigger>
+          <TabsTrigger value="six-words">{t("tabs.sixWords")}</TabsTrigger>
           <TabsTrigger value="removals">
             {t("tabs.removals", { count: formatNumber(openRemovals) })}
           </TabsTrigger>
@@ -1223,7 +1131,7 @@ export const ProgrammesAdmin = () => {
           </>
         ) : null}
         <TabsContent className="pt-4" value="six-words">
-          <SixWords />
+          <TourCards />
         </TabsContent>
         <TabsContent className="pt-4" value="removals">
           <Removals />

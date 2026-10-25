@@ -137,22 +137,24 @@ grant execute on function pg_temp.submit(integer, journal.category, uuid) to pub
 
 select is(
   (select array_agg(c order by c) from unnest(enum_range(null::journal.category)) c)::text[],
-  array['poetry', 'fiction', 'creative_nonfiction', 'short_drama', 'art_photography', 'translation', 'six_words',
+  array['poetry', 'prose', 'fiction', 'creative_nonfiction', 'short_drama', 'art_photography', 'translation', 'six_words',
     'article', 'interview', 'review', 'feature', 'photo_essay', 'comic', 'video', 'column', 'letter'],
   'The category enum matches the journal''s seven types and Waraq''s nine'
 );
 
 select lives_ok($$ select pg_temp.submit(1, 'poetry') $$, 'Poetry is accepted');
-select lives_ok($$ select pg_temp.submit(2, 'fiction') $$, 'Fiction is accepted');
-select lives_ok($$ select pg_temp.submit(3, 'creative_nonfiction') $$, 'Creative Nonfiction is accepted');
+select lives_ok($$ select pg_temp.submit(2, 'prose') $$, 'Prose is accepted');
+select throws_ok($$ select pg_temp.submit(3, 'creative_nonfiction') $$, '22023', 'category_retired',
+  'Retired types (fiction, creative nonfiction, photo essays) take no new work');
 select lives_ok($$ select pg_temp.submit(4, 'short_drama') $$, 'Short Drama is accepted');
 select lives_ok($$ select pg_temp.submit(5, 'art_photography') $$, 'Art & Photography is accepted');
 select lives_ok($$ select pg_temp.submit(6, 'translation') $$, 'Translation is accepted');
-select lives_ok($$ select pg_temp.submit(7, 'six_words') $$, 'Six Words is accepted');
+select throws_ok($$ select pg_temp.submit(7, 'six_words') $$, '22023', 'six_words_on_tour',
+  'Six Words come only from the Typewriter Tour');
 
-select lives_ok($$ select pg_temp.submit(1, 'fiction') $$, 'A second submission to the same call is accepted');
+select lives_ok($$ select pg_temp.submit(1, 'prose') $$, 'A second submission to the same call is accepted');
 select throws_ok(
-  $$ select pg_temp.submit(1, 'six_words') $$,
+  $$ select pg_temp.submit(1, 'short_drama') $$,
   '23514', null,
   'A third submission to the same call is rejected'
 );
@@ -200,18 +202,18 @@ select throws_ok(
 );
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000005a1');
-select is((select count(*) from journal.submissions)::integer, 9,
+select is((select count(*) from journal.submissions)::integer, 7,
   'The Submissions Manager sees every submission for the issue');
 
 select lives_ok(
   $$ select journal.transition_submission(s.id, 'intake_check')
-     from journal.submissions s where s.category in ('poetry', 'fiction') and s.author_id = pg_temp.author(1)
+     from journal.submissions s where s.category in ('poetry', 'prose') and s.author_id = pg_temp.author(1)
        and s.call_id = 'ca000000-0000-0000-0000-000000000001' $$,
   'Intake check'
 );
 select lives_ok(
   $$ select journal.transition_submission(s.id, 'in_review')
-     from journal.submissions s where s.category in ('poetry', 'fiction') and s.author_id = pg_temp.author(1)
+     from journal.submissions s where s.category in ('poetry', 'prose') and s.author_id = pg_temp.author(1)
        and s.call_id = 'ca000000-0000-0000-0000-000000000001' $$,
   'Into review: blind entries are created'
 );
@@ -260,7 +262,7 @@ select a.id, 5, 5, 5, 5 from journal.assignments a join journal.blind_entries b 
 where b.category = 'poetry';
 insert into journal.scores (assignment_id, craft, voice, depth, archive_factor)
 select a.id, 4, 4, 4, 4 from journal.assignments a join journal.blind_entries b on b.id = a.blind_entry_id
-where b.category = 'fiction';
+where b.category = 'prose';
 select is((select total from journal.scores s join journal.assignments a on a.id = s.assignment_id
   join journal.blind_entries b on b.id = a.blind_entry_id where b.category = 'poetry'), 100::smallint,
   'Rubric totals are weighted out of 100');
@@ -271,35 +273,35 @@ select a.id, 2, 2, 2, 2 from journal.assignments a join journal.blind_entries b 
 where b.category = 'poetry';
 insert into journal.scores (assignment_id, craft, voice, depth, archive_factor)
 select a.id, 4, 3, 4, 4 from journal.assignments a join journal.blind_entries b on b.id = a.blind_entry_id
-where b.category = 'fiction';
+where b.category = 'prose';
 
 select is((select status from journal.blind_entries where category = 'poetry'), 'third_read'::journal.submission_status,
   'Totals more than 20 apart send the piece to a third read');
-select is((select status from journal.blind_entries where category = 'fiction'), 'in_review'::journal.submission_status,
+select is((select status from journal.blind_entries where category = 'prose'), 'in_review'::journal.submission_status,
   'Totals within 20 stay in review');
 select is((select count(*) from journal.scores)::integer, 2, 'Readers see only their own scores');
 
 -- ── Decisions and the reveal ────────────────────────────────────────────────
 
 select throws_ok(
-  $$ select journal.decide((select id from journal.blind_entries where category = 'fiction'), 'accept') $$,
+  $$ select journal.decide((select id from journal.blind_entries where category = 'prose'), 'accept') $$,
   '42501', null,
   'Readers cannot decide'
 );
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000005e1');
 select lives_ok(
-  $$ select journal.transition_submission((select id from journal.blind_entries where category = 'fiction'), 'selection') $$,
+  $$ select journal.transition_submission((select id from journal.blind_entries where category = 'prose'), 'selection') $$,
   'The EIC moves a card to selection by its blind id'
 );
 select lives_ok(
-  $$ select journal.decide((select id from journal.blind_entries where category = 'fiction'), 'accept', 'Strong') $$,
+  $$ select journal.decide((select id from journal.blind_entries where category = 'prose'), 'accept', 'Strong') $$,
   'The EIC records a decision'
 );
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000005b1');
 select is(
-  (select author_name_en from journal.entry_author((select id from journal.blind_entries where category = 'fiction'))),
+  (select author_name_en from journal.entry_author((select id from journal.blind_entries where category = 'prose'))),
   'Author 1',
   'After the decision the reader sees the author'
 );
@@ -307,7 +309,7 @@ select is(
 select pg_temp.login_as(pg_temp.author(1));
 select lives_ok(
   $$ select journal.sign_agreement(
-       (select id from journal.submissions where category = 'fiction' and status = 'accepted'), 'Author One') $$,
+       (select id from journal.submissions where category = 'prose' and status = 'accepted'), 'Author One') $$,
   'The author signs the agreement once accepted'
 );
 

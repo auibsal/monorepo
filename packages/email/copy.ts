@@ -223,6 +223,30 @@ export const agreementReminder = (lang: Lang, work: string, app: string) =>
     ],
   }));
 
+export interface CallInfo {
+  closes_at: string;
+  title_ar: string;
+  title_en: string;
+}
+
+/** "Tell me when": a Qirtas call has opened. */
+export const callOpened = (lang: Lang, call: CallInfo, app: string) =>
+  build(lang, (l) => ({
+    action: account(app, l, "/qirtas/write"),
+    heading:
+      l === "ar"
+        ? `فُتحت دعوة قرطاس: ${call.title_ar}`
+        : `A Qirtas call is open: ${call.title_en}`,
+    paragraphs: [
+      l === "ar"
+        ? `تستقبل الدعوة الأعمال حتى ${formatLongDate(call.closes_at, l)}. أرسل عملك من صفحة الكتابة لقرطاس.`
+        : `It takes work until ${formatLongDate(call.closes_at, l)}. Send yours from Write for Qirtas.`,
+      l === "ar"
+        ? "وصلتك هذه الرسالة لأنك طلبت أن نخبرك. يمكنك إيقافها من الصفحة نفسها."
+        : "You asked us to tell you. You can stop these from the same page.",
+    ],
+  }));
+
 const piecePath = (pieceId: string) => `/qirtas/work?id=${pieceId}`;
 
 /** Final check (72 hours): errors only, not new revisions. */

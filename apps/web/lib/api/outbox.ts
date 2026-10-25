@@ -8,6 +8,7 @@ import {
   agreementReminder,
   type Built,
   type Lang as CopyLang,
+  callOpened,
   cronFailed,
   type Decision,
   decision,
@@ -314,6 +315,20 @@ const handlers: Record<string, Handler> = {
     ]);
     if (to && work) {
       await send(to, agreementReminder(to.lang, work, appUrl()));
+    }
+  },
+  "journal.call_opened": async (admin, payload) => {
+    const [to, { data: call }] = await Promise.all([
+      recipient(admin, payload.user_id),
+      admin
+        .schema("journal")
+        .from("calls")
+        .select("title_en, title_ar, closes_at")
+        .eq("id", String(payload.call_id))
+        .maybeSingle(),
+    ]);
+    if (to && call) {
+      await send(to, callOpened(to.lang, call, appUrl()));
     }
   },
   "journal.decision": async (admin, payload) => {

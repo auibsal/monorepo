@@ -3476,6 +3476,21 @@ export type Database = {
           },
         ];
       };
+      call_alerts: {
+        Row: {
+          created_at: string;
+          user_id: string;
+        };
+        Insert: {
+          created_at?: string;
+          user_id?: string;
+        };
+        Update: {
+          created_at?: string;
+          user_id?: string;
+        };
+        Relationships: [];
+      };
       call_partners: {
         Row: {
           added_by: string | null;
@@ -4545,6 +4560,7 @@ export type Database = {
     Enums: {
       category:
         | "poetry"
+        | "prose"
         | "fiction"
         | "creative_nonfiction"
         | "short_drama"
@@ -5681,11 +5697,12 @@ export type Database = {
           language: string;
           moderated_at: string | null;
           moderated_by: string | null;
+          recorded_by: string | null;
           show_name: boolean;
           status: string;
           text: string;
           updated_at: string;
-          user_id: string;
+          user_id: string | null;
         };
         Insert: {
           created_at?: string;
@@ -5693,11 +5710,12 @@ export type Database = {
           language: string;
           moderated_at?: string | null;
           moderated_by?: string | null;
+          recorded_by?: string | null;
           show_name?: boolean;
           status?: string;
           text: string;
           updated_at?: string;
-          user_id?: string;
+          user_id?: string | null;
         };
         Update: {
           created_at?: string;
@@ -5705,11 +5723,12 @@ export type Database = {
           language?: string;
           moderated_at?: string | null;
           moderated_by?: string | null;
+          recorded_by?: string | null;
           show_name?: boolean;
           status?: string;
           text?: string;
           updated_at?: string;
-          user_id?: string;
+          user_id?: string | null;
         };
         Relationships: [];
       };
@@ -5718,6 +5737,10 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      attach_six_words: {
+        Args: { card_code: string; digits: string; entry_id: string };
+        Returns: undefined;
+      };
       cancel_audition: { Args: { audition_id: string }; Returns: undefined };
       clear_production_rights: {
         Args: { production_id: string };
@@ -5802,6 +5825,15 @@ export type Database = {
       };
       record_production_service: {
         Args: { hours: number; member_id: string; production_id: string };
+        Returns: string;
+      };
+      record_six_words: {
+        Args: {
+          card_code?: string;
+          digits?: string;
+          language: string;
+          words: string;
+        };
         Returns: string;
       };
       set_credit_visibility: {
@@ -6015,6 +6047,7 @@ export const Constants = {
     Enums: {
       category: [
         "poetry",
+        "prose",
         "fiction",
         "creative_nonfiction",
         "short_drama",
