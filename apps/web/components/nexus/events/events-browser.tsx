@@ -89,6 +89,8 @@ type NoticeKey =
   | "waitlisted"
   | "cancelled"
   | "leftWaitlist"
+  | "reminded"
+  | "forgotten"
   | "notVerified"
   | "closed"
   | "failed";
@@ -122,6 +124,10 @@ export const EventsBrowser = () => {
   const upcoming = useUpcomingEvents();
   const rsvps = useMyRsvps();
   const waitlist = useMyWaitlist();
+  const reminders = useQuery({
+    queryFn: () => events.myReminders(supabase),
+    queryKey: ["event-reminders"],
+  });
   const [asking, setAsking] = useState<UpcomingEvent | null>(null);
   const [notice, setNotice] = useState<{ id: string; key: NoticeKey } | null>(
     null
@@ -174,6 +180,18 @@ export const EventsBrowser = () => {
     },
   });
 
+  // "Remind me", for events without booking: an email the day before.
+  const remind = useMutation({
+    mutationFn: ({ id, on }: { id: string; on: boolean }) =>
+      on ? events.remindMe(supabase, id) : events.forgetReminder(supabase, id),
+    onError: (_error, { id }) => setNotice({ id, key: "failed" }),
+    onSuccess: async (_result, { id, on }) => {
+      setNotice({ id, key: on ? "reminded" : "forgotten" });
+      await queryClient.invalidateQueries({ queryKey: ["event-reminders"] });
+    },
+  });
+  const reminded = new Set(reminders.data ?? []);
+
   const booked = new Set(
     (rsvps.data ?? []).map((r) => r.event?.id).filter(Boolean)
   );
@@ -225,7 +243,7 @@ export const EventsBrowser = () => {
       <ul className="grid gap-6 md:grid-cols-2">
         {upcoming.data.map((event) => (
           <EventCard
-            busy={book.isPending || cancel.isPending}
+            busy={book.isPending || cancel.isPending || remind.isPending}
             event={event}
             isBooked={booked.has(event.id)}
             isWaiting={waiting.has(event.id)}
@@ -235,6 +253,10 @@ export const EventsBrowser = () => {
             onCancel={() =>
               cancel.mutate({ id: event.id, waiting: waiting.has(event.id) })
             }
+            onRemind={() =>
+              remind.mutate({ id: event.id, on: !reminded.has(event.id) })
+            }
+            reminded={reminded.has(event.id)}
           />
         ))}
       </ul>
@@ -306,6 +328,30 @@ const stateOf = (
   return left === 0 ? "full" : "left";
 };
 
+/** Who an event is for, when not everyone. */
+const kindOf = (event: UpcomingEvent) => {
+  if (event.entry === "invite") {
+    return "byInvitation" as const;
+  }
+  return event.members_only ? ("membersOnly" as const) : null;
+};
+
+const NoticeLine = ({ notice }: { notice: NoticeKey }) => {
+  const t = useTranslations("nexus.events");
+  return (
+    <p
+      className="type-body font-medium"
+      role={
+        ["failed", "closed", "notVerified"].includes(notice)
+          ? "alert"
+          : "status"
+      }
+    >
+      {t(`notice.${notice}`)}
+    </p>
+  );
+};
+
 interface EventCardProps {
   readonly busy: boolean;
   readonly event: UpcomingEvent;
@@ -314,6 +360,8 @@ interface EventCardProps {
   readonly notice: NoticeKey | null;
   readonly onBook: () => void;
   readonly onCancel: () => void;
+  readonly onRemind: () => void;
+  readonly reminded: boolean;
 }
 
 const EventCard = ({
@@ -324,6 +372,8 @@ const EventCard = ({
   notice,
   onBook,
   onCancel,
+  onRemind,
+  reminded,
 }: EventCardProps) => {
   const t = useTranslations("nexus.events");
   const locale = useLocale() as "en" | "ar";
@@ -347,7 +397,7 @@ const EventCard = ({
           <p className="type-body text-text-secondary">{summary}</p>
         ) : null}
         <p className="type-caption">
-          {event.members_only ? `${t("membersOnly")} · ` : ""}
+          {kindOf(event) ? `${t(kindOf(event) ?? "membersOnly")} · ` : ""}
           {t(`state.${state}`, { count: left, places: formatNumber(left) })}
         </p>
         <div className="mt-auto flex flex-wrap gap-3 pt-2">
@@ -361,24 +411,23 @@ const EventCard = ({
               <Link href="/account#next-events">{t("ticket")}</Link>
             </Button>
           ) : null}
+          {state === "noBooking" ? (
+            <Button
+              aria-pressed={reminded}
+              disabled={busy}
+              onClick={onRemind}
+              variant={reminded ? "ghost" : "outline"}
+            >
+              {reminded ? t("forget") : t("remind")}
+            </Button>
+          ) : null}
           {holding ? (
             <Button disabled={busy} onClick={onCancel} variant="ghost">
               {state === "booked" ? t("cancel") : t("leaveWaitlist")}
             </Button>
           ) : null}
         </div>
-        {notice ? (
-          <p
-            className="type-body font-medium"
-            role={
-              ["failed", "closed", "notVerified"].includes(notice)
-                ? "alert"
-                : "status"
-            }
-          >
-            {t(`notice.${notice}`)}
-          </p>
-        ) : null}
+        {notice ? <NoticeLine notice={notice} /> : null}
       </article>
     </li>
   );

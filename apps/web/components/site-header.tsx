@@ -12,11 +12,13 @@ import { Masthead, mastheadLink } from "./masthead";
 
 // Five sections in the header; the rest are in the footer.
 type SectionKey = "about" | "programs" | "journal" | "events" | "join";
+// What's on comes second (owner, 2026-10-25): programs and events are one
+// calendar now.
 const sections: { href: string; key: SectionKey }[] = [
   { href: "/about", key: "about" },
-  { href: "/programs", key: "programs" },
-  { href: "/qirtas", key: "journal" },
   { href: "/events", key: "events" },
+  { href: "/qirtas", key: "journal" },
+  { href: "/programs", key: "programs" },
   { href: "/join", key: "join" },
 ];
 

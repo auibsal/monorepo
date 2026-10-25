@@ -40,6 +40,23 @@ test.describe("public site", () => {
     await expectAccessible(page);
   });
 
+  test("What's on shows the event in its month and is accessible", async ({
+    page,
+  }) => {
+    // The fixture event is five days out (global-setup); Baghdad is UTC+3.
+    const month = new Date(Date.now() + 5 * 86_400_000 + 3 * 3_600_000)
+      .toISOString()
+      .slice(0, 7);
+    await page.goto(`${urls.web}/events?month=${month}`);
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText(
+      "What's on"
+    );
+    await expect(
+      page.getByRole("link", { name: event.title }).first()
+    ).toBeAttached();
+    await expectAccessible(page);
+  });
+
   test("the Qirtas front page is accessible", async ({ page }) => {
     await page.goto(`${urls.web}/qirtas`);
     await expect(page.getByRole("heading", { level: 1 })).toHaveText("Qirtas");

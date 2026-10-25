@@ -27,6 +27,7 @@ import {
 import { NotionManaged } from "../notion-managed";
 import { Attendance } from "./attendance";
 import { useProgrammeOptions } from "./data";
+import { Invitations } from "./invitations";
 
 interface Question {
   id: string;
@@ -39,11 +40,11 @@ interface FormState {
   body: { ar: string; en: string };
   capacity: string;
   ends_at: string | null;
+  entry: events.Entry;
   image_path: string | null;
   members_only: boolean;
   programme_id: string;
   questions: Question[];
-  rsvp_enabled: boolean;
   slug: string;
   starts_at: string | null;
   summary: { ar: string; en: string };
@@ -55,11 +56,11 @@ const blank: FormState = {
   body: { ar: "", en: "" },
   capacity: "",
   ends_at: null,
+  entry: "rsvp",
   image_path: null,
   members_only: false,
   programme_id: "",
   questions: [],
-  rsvp_enabled: true,
   slug: "",
   starts_at: null,
   summary: { ar: "", en: "" },
@@ -148,11 +149,11 @@ export const EventEditor = () => {
         body: { ar: e.body_ar ?? "", en: e.body_en ?? "" },
         capacity: e.capacity ? String(e.capacity) : "",
         ends_at: e.ends_at,
+        entry: e.entry as events.Entry,
         image_path: e.image_path,
         members_only: e.members_only,
         programme_id: e.programme_id ?? "",
         questions: asQuestions(e.questions),
-        rsvp_enabled: e.rsvp_enabled,
         slug: e.slug,
         starts_at: e.starts_at,
         summary: { ar: e.summary_ar ?? "", en: e.summary_en ?? "" },
@@ -169,10 +170,10 @@ export const EventEditor = () => {
     body_en: form.body.en || undefined,
     capacity: form.capacity ? Number(form.capacity) : null,
     ends_at: form.ends_at,
+    entry: form.entry,
     members_only: form.members_only,
     programme_id: form.programme_id || null,
     questions: form.questions,
-    rsvp_enabled: form.rsvp_enabled,
     slug: form.slug,
     starts_at: form.starts_at ?? "",
     status: nextStatus as "draft" | "published" | "cancelled",
@@ -390,18 +391,26 @@ export const EventEditor = () => {
             {t("membersOnly")}
           </Label>
         </div>
-        <div className="flex items-start gap-3">
-          <Checkbox
-            checked={form.rsvp_enabled}
-            id={`${id}-rsvp`}
-            onCheckedChange={(v) =>
-              setForm((f) => ({ ...f, rsvp_enabled: v === true }))
-            }
-          />
-          <Label className="leading-normal" htmlFor={`${id}-rsvp`}>
-            {t("rsvpEnabled")}
-          </Label>
-        </div>
+        <Field hint={t(`entryHint.${form.entry}`)} label={t("entry")}>
+          {(fieldId) => (
+            <SelectInput
+              id={fieldId}
+              onChange={(e) =>
+                setForm((f) => ({
+                  ...f,
+                  entry: e.target.value as events.Entry,
+                }))
+              }
+              value={form.entry}
+            >
+              {events.ENTRIES.map((entry) => (
+                <option key={entry} value={entry}>
+                  {t(`entries.${entry}`)}
+                </option>
+              ))}
+            </SelectInput>
+          )}
+        </Field>
         <Field hint={t("capacityHint")} label={t("capacity")}>
           {(fieldId) => (
             <Input
@@ -536,6 +545,9 @@ export const EventEditor = () => {
         <ErrorLine error={remove.error} />
       </form>
 
+      {eventId && existing.data?.entry === "invite" ? (
+        <Invitations eventId={eventId} />
+      ) : null}
       {eventId && existing.data ? (
         <Attendance
           capacity={existing.data.capacity}

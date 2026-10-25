@@ -6,10 +6,11 @@ import { siteUrl } from "@repo/internationalization";
 import type { IcsEvent } from "./ics";
 
 const eventColumns =
-  "id, slug, title_en, title_ar, summary_en, venue_en, venue_ar, starts_at, ends_at, members_only";
+  "id, slug, title_en, title_ar, summary_en, venue_en, venue_ar, starts_at, ends_at, members_only, entry";
 
 interface EventRow {
   ends_at: string | null;
+  entry: string;
   id: string;
   members_only: boolean;
   slug: string;
@@ -75,8 +76,9 @@ export const publicEvent = async (
 
 /**
  * A member's private feed: their RSVPs, all public SAL events, members-only
- * events (members only) and the AUIB campus calendar. Found by the secret
- * token in the URL; reset by the member from the Nexus.
+ * events (members only), invitation-only events they are invited to, and
+ * the AUIB campus calendar. Found by the secret token in the URL; reset by
+ * the member from the Nexus.
  */
 export const memberFeed = async (admin: AdminClient, token: string) => {
   const { data: owner } = await admin
@@ -89,22 +91,32 @@ export const memberFeed = async (admin: AdminClient, token: string) => {
     return null;
   }
 
-  const [{ data: profile }, { data: isMember }, { data: rsvps }] =
-    await Promise.all([
-      admin
-        .schema("core")
-        .from("profiles")
-        .select("locale")
-        .eq("id", owner.user_id)
-        .maybeSingle(),
-      admin.schema("membership").rpc("is_member", { uid: owner.user_id }),
-      admin
-        .schema("events")
-        .from("rsvps")
-        .select("event_id")
-        .eq("user_id", owner.user_id)
-        .eq("status", "confirmed"),
-    ]);
+  const [
+    { data: profile },
+    { data: isMember },
+    { data: rsvps },
+    { data: invitations },
+  ] = await Promise.all([
+    admin
+      .schema("core")
+      .from("profiles")
+      .select("locale")
+      .eq("id", owner.user_id)
+      .maybeSingle(),
+    admin.schema("membership").rpc("is_member", { uid: owner.user_id }),
+    admin
+      .schema("events")
+      .from("rsvps")
+      .select("event_id")
+      .eq("user_id", owner.user_id)
+      .eq("status", "confirmed"),
+    admin
+      .schema("events")
+      .from("invitations")
+      .select("event_id")
+      .eq("user_id", owner.user_id),
+  ]);
+  const invited = new Set((invitations ?? []).map((i) => i.event_id));
   const locale = profile?.locale === "ar" ? "ar" : "en";
   const going = new Set((rsvps ?? []).map((r) => r.event_id));
 
@@ -130,9 +142,12 @@ export const memberFeed = async (admin: AdminClient, token: string) => {
 
   return {
     events: [
-      ...(events ?? []).map((event) =>
-        toIcs(event, locale, going.has(event.id) ? "[RSVP]" : undefined)
-      ),
+      ...(events ?? [])
+        // Invitation-only events reach only the invited.
+        .filter((event) => event.entry !== "invite" || invited.has(event.id))
+        .map((event) =>
+          toIcs(event, locale, going.has(event.id) ? "[RSVP]" : undefined)
+        ),
       ...(campus ?? []).map(
         (event): IcsEvent => ({
           description: event.description,

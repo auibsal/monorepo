@@ -322,6 +322,16 @@ These stop parts of the work. Everything else continues around them.
 
 ## Decisions
 
+- **What's on** (owner, 2026-10-25: "go for everything"): programs and
+  events are one calendar at `/events`, shown a month at a time with each
+  program as a series to filter by, and a page per series
+  (`/programs/<slug>`). Each event has one way in: just come (with "Remind
+  me", an email the day before), book a place, or by invitation (invisible
+  to everyone not invited). The public see members-only events as a title,
+  a time and "For members". The subscribe link stays, now secondary; each
+  event keeps "Add to calendar". The header reads About · What's on ·
+  Qirtas · Programs · Join until the Callboard ("Get involved") replaces
+  Programs.
 - **The live card** (owner, 2026-10-25: "go for everything"; no member
   pictures; the pattern; Google Wallet for now): the QR changes every 30
   seconds (TOTP of a per-card secret), a clock ticks under it and a sheen
@@ -812,6 +822,22 @@ These stop parts of the work. Everything else continues around them.
 
 ## Checklist
 
+### What's on (2026-10-25)
+
+- [x] Migration `20261025000500_whats_on`: ways in (`entry`), invitations,
+      reminders, `events.calendar`, booking and Hudhud honoring invitations,
+      the day-before reminder to those who asked; pgTAP `99_whats_on` (17)
+- [x] `/events` as a month calendar (grid on wide screens, list on phones),
+      series filter, previous and next month; `/programs/<slug>`
+- [x] Event pages: the way in, "Remind me" or "Book a place"
+- [x] Members' events page: "Remind me", "By invitation"
+- [x] Diwan event editor: Way in, and Invitations for invitation-only events
+- [x] Feeds: invitation-only events only in the invited member's feed
+- [x] Header: What's on second
+- [ ] Signed-in visitors see the public calendar; members-only and invited
+      events in full are on the members' events page (a members' layer on
+      `/events` itself can follow)
+
 ### The card, names, details and one Qirtas (2026-10-25)
 
 - [x] Migration `20261025000100_member_card_and_details`: card numbers and
@@ -1123,6 +1149,14 @@ Covered by automated tests so far:
 All Arabic written for the platform up to 2026-10-24 was reviewed by the
 owner and approved ("reviewed across the board, it's all good"). List new
 Arabic here as it is written.
+
+Written 2026-10-25 (What's on): `web.nav.events` («ما يجري»),
+`web.events.title`, `lede`, `all`, `series`, `everything`, `previous`,
+`next`, `aboutSeries`, `noneMonth`, `ways.*`, `remind`, `remindHint`,
+`inCalendar`, `dates`, `noDates`; `nexus.events.byInvitation`, `remind`,
+`forget`, `notice.reminded`, `notice.forgotten`;
+`nexus.admin.event.entry`, `entries.*`, `entryHint.*`, `invitations`,
+`invitationsHint`, `noInvitations`, `invite`, `withdraw`.
 
 Written 2026-10-25 (rosettes and one check): `web.verify.title`, `lede`,
 `code`, `invalid`, `pattern`, `revokedShort`; `web.verifyCard.pattern`,

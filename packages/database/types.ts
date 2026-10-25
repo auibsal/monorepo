@@ -1716,6 +1716,7 @@ export type Database = {
           created_at: string;
           created_by: string | null;
           ends_at: string | null;
+          entry: string;
           id: string;
           image_path: string | null;
           members_only: boolean;
@@ -1742,6 +1743,7 @@ export type Database = {
           created_at?: string;
           created_by?: string | null;
           ends_at?: string | null;
+          entry?: string;
           id?: string;
           image_path?: string | null;
           members_only?: boolean;
@@ -1768,6 +1770,7 @@ export type Database = {
           created_at?: string;
           created_by?: string | null;
           ends_at?: string | null;
+          entry?: string;
           id?: string;
           image_path?: string | null;
           members_only?: boolean;
@@ -1788,6 +1791,61 @@ export type Database = {
           venue_en?: string | null;
         };
         Relationships: [];
+      };
+      invitations: {
+        Row: {
+          created_at: string;
+          event_id: string;
+          invited_by: string | null;
+          user_id: string;
+        };
+        Insert: {
+          created_at?: string;
+          event_id: string;
+          invited_by?: string | null;
+          user_id: string;
+        };
+        Update: {
+          created_at?: string;
+          event_id?: string;
+          invited_by?: string | null;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "invitations_event_id_fkey";
+            columns: ["event_id"];
+            isOneToOne: false;
+            referencedRelation: "events";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      reminders: {
+        Row: {
+          created_at: string;
+          event_id: string;
+          user_id: string;
+        };
+        Insert: {
+          created_at?: string;
+          event_id: string;
+          user_id?: string;
+        };
+        Update: {
+          created_at?: string;
+          event_id?: string;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "reminders_event_id_fkey";
+            columns: ["event_id"];
+            isOneToOne: false;
+            referencedRelation: "events";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       rsvps: {
         Row: {
@@ -1876,6 +1934,28 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      calendar: {
+        Args: { from_at: string; to_at: string };
+        Returns: {
+          capacity: number;
+          ends_at: string;
+          entry: string;
+          id: string;
+          image_path: string;
+          members_only: boolean;
+          programme_id: string;
+          slug: string;
+          starts_at: string;
+          status: string;
+          summary_ar: string;
+          summary_en: string;
+          teaser: boolean;
+          title_ar: string;
+          title_en: string;
+          venue_ar: string;
+          venue_en: string;
+        }[];
+      };
       cancel_rsvp: { Args: { event_id: string }; Returns: undefined };
       check_in: {
         Args: { event_id: string; target_user?: string; ticket_code?: string };
