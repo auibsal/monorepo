@@ -101,7 +101,8 @@
       "nameAr": "Your name in Arabic",
       "givenName": "First name",
       "familyName": "Last name",
-      "namesHint": "In both languages, as they should appear on your membership card and certificates."
+      "namesHint": "In both languages, as they should appear on your membership card and certificates.",
+      "outsideAuib": "Not an AUIB address, so the Council confirms these accounts. Tell us your name and a few words about yourself."
     },
     "forgot": {
       "title": "Reset your password",
@@ -235,7 +236,28 @@
         "familyAr": "Last name in Arabic",
         "needed": "Tell us your first and last name in English and in Arabic. They appear on your membership card, the Council page, the Register and your certificates."
       },
-      "personalEmailLater": "After graduation? You can add a personal email in Profile once you're in."
+      "personalEmailLater": "After graduation? You can add a personal email in Profile once you're in.",
+      "stepOf": "Step {step} of {count}",
+      "back": "Back",
+      "continue": "Continue",
+      "nameEn": {
+        "title": "Your name in English"
+      },
+      "nameAr": {
+        "title": "Your name in Arabic"
+      },
+      "photos": {
+        "title": "Happy to appear in event photos?",
+        "body": "The Society photographs and films its events. If you'd rather not appear, you'll get a camera-shy sticker at events and we'll leave you out. You can change this in Profile.",
+        "yes": "Yes, that's fine",
+        "no": "Please don't photograph or film me"
+      },
+      "welcome": {
+        "title": "Welcome, {name}",
+        "body": "You're a member of the AUIB Society of Arts and Letters. This is your membership card: show it at the door.",
+        "open": "Open Membership",
+        "more": "Tell us more about yourself (two minutes, optional)"
+      }
     },
     "home": {
       "greetings": {
@@ -799,7 +821,9 @@
           "cancelled": "Canceled",
           "scheduled": "Scheduled",
           "archived": "Archived"
-        }
+        },
+        "addressProgram": "That address belongs to a program; choose another.",
+        "addressEvent": "That address belongs to an event; choose another."
       },
       "overview": {
         "title": "Overview",
@@ -3795,6 +3819,52 @@
       "copied": "Copied",
       "saved": "I've saved them",
       "failed": "We couldn't make the codes. Please try again."
+    },
+    "more": {
+      "title": "Tell us more",
+      "stepOf": "Question {step} of {count}",
+      "skip": "Skip",
+      "continue": "Continue",
+      "finish": "Finish",
+      "back": "Back",
+      "many": "Choose as many as you like.",
+      "affiliation": {
+        "title": "Which of these are you?"
+      },
+      "study": {
+        "title": "What do you study?"
+      },
+      "interests": {
+        "title": "What would you like to take part in?"
+      },
+      "skills": {
+        "title": "What can you help with?",
+        "body": "The Callboard puts the roles and shifts that match these first."
+      },
+      "languages": {
+        "title": "Which languages do you read or write?"
+      },
+      "about": {
+        "title": "A little about you"
+      },
+      "heard": {
+        "title": "How did you hear about the Society?"
+      },
+      "consent": {
+        "title": "May we count your answers in anonymous reports?",
+        "yes": "Yes, count them",
+        "no": "No, leave them out"
+      },
+      "done": {
+        "title": "Thank you",
+        "body": "Only you and the Membership officers see these answers. You can change any of them in Profile.",
+        "open": "Back to Membership",
+        "profile": "Open Profile"
+      },
+      "today": {
+        "link": "Tell us more",
+        "line": "Two minutes, optional: the Callboard puts the roles that match your skills first."
+      }
     }
   },
   "web": {
@@ -3937,7 +4007,9 @@
       "remindHint": "No booking needed. Members can ask for a reminder the day before.",
       "inCalendar": "See it in What's on",
       "dates": "Coming dates",
-      "noDates": "No dates are announced yet."
+      "noDates": "No dates are announced yet.",
+      "nextLabel": "Next:",
+      "nextOn": ", {date}."
     },
     "journal": {
       "title": "Qirtas",

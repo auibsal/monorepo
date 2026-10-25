@@ -4,6 +4,7 @@ import {
   isValidEmail,
   normalizeEmail,
   sendMagicLink,
+  signUpWithEmail,
   toEmailAuthError,
 } from "./email";
 
@@ -78,5 +79,61 @@ describe("the human check (Turnstile)", () => {
     expect(
       await sendMagicLink(supabase, "nobody@auib.edu.iq", "https://x/cb")
     ).toEqual({ ok: true, value: undefined });
+  });
+});
+
+describe("signing up", () => {
+  const client = () => {
+    const signUp = vi.fn(() =>
+      Promise.resolve({ data: { session: null }, error: null })
+    );
+    return { signUp, supabase: { auth: { signUp } } as never };
+  };
+  const base = {
+    locale: "en" as const,
+    password: "a-long-password",
+    redirectTo: "https://x/cb",
+  };
+  const names = {
+    familyAr: "فرجو",
+    familyEn: "Farjo",
+    givenAr: "شاهين",
+    givenEn: "Shaheen",
+  };
+
+  test("an AUIB address needs only email and password; names come in setup", async () => {
+    const { signUp, supabase } = client();
+    const result = await signUpWithEmail(supabase, {
+      ...base,
+      email: "s@auib.edu.iq",
+    });
+    expect(result.ok).toBe(true);
+    const sent = (signUp.mock.calls[0] as unknown[])[0] as {
+      options: { data: Record<string, unknown> };
+    };
+    expect(sent.options.data).toEqual({ locale: "en" });
+  });
+
+  test("an address outside AUIB gives all four names, for the Council to verify", async () => {
+    const { signUp, supabase } = client();
+    expect(
+      await signUpWithEmail(supabase, { ...base, email: "s@gmail.com" })
+    ).toEqual({ code: "names_required", ok: false });
+    expect(signUp).not.toHaveBeenCalled();
+    const result = await signUpWithEmail(supabase, {
+      ...base,
+      email: "s@gmail.com",
+      names,
+      verificationStatement: "AUIB alumnus, 2024",
+    });
+    expect(result.ok).toBe(true);
+    const sent = (signUp.mock.calls[0] as unknown[])[0] as {
+      options: { data: Record<string, unknown> };
+    };
+    expect(sent.options.data).toMatchObject({
+      full_name_en: "Shaheen Farjo",
+      given_name_ar: "شاهين",
+      verification_statement: "AUIB alumnus, 2024",
+    });
   });
 });

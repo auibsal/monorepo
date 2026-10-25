@@ -92,8 +92,12 @@ export interface SignUpDetails {
   captchaToken?: string;
   email: string;
   locale: "ar" | "en";
-  /** First and last name, in English and in Arabic (all four required). */
-  names: {
+  /**
+   * First and last name, in English and in Arabic. Required (all four) for
+   * addresses outside AUIB, which the Council verifies by them; AUIB
+   * addresses give their names in setup, after confirming the email.
+   */
+  names?: {
     familyAr: string;
     familyEn: string;
     givenAr: string;
@@ -122,13 +126,15 @@ export const signUpWithEmail = async (
   if (details.password.length < MIN_PASSWORD_LENGTH) {
     return { code: "weak_password", ok: false };
   }
+  const auib = isAuibEmail(email);
   const names = {
-    familyAr: details.names.familyAr.trim(),
-    familyEn: details.names.familyEn.trim(),
-    givenAr: details.names.givenAr.trim(),
-    givenEn: details.names.givenEn.trim(),
+    familyAr: details.names?.familyAr.trim() ?? "",
+    familyEn: details.names?.familyEn.trim() ?? "",
+    givenAr: details.names?.givenAr.trim() ?? "",
+    givenEn: details.names?.givenEn.trim() ?? "",
   };
-  if (Object.values(names).some((part) => part === "")) {
+  const named = Object.values(names).every((part) => part !== "");
+  if (!(auib || named)) {
     return { code: "names_required", ok: false };
   }
 
@@ -137,14 +143,18 @@ export const signUpWithEmail = async (
     options: {
       ...captcha(details.captchaToken),
       data: {
-        family_name_ar: names.familyAr,
-        family_name_en: names.familyEn,
-        full_name_ar: `${names.givenAr} ${names.familyAr}`,
-        full_name_en: `${names.givenEn} ${names.familyEn}`,
-        given_name_ar: names.givenAr,
-        given_name_en: names.givenEn,
+        ...(named
+          ? {
+              family_name_ar: names.familyAr,
+              family_name_en: names.familyEn,
+              full_name_ar: `${names.givenAr} ${names.familyAr}`,
+              full_name_en: `${names.givenEn} ${names.familyEn}`,
+              given_name_ar: names.givenAr,
+              given_name_en: names.givenEn,
+            }
+          : {}),
         locale: details.locale,
-        verification_statement: isAuibEmail(email)
+        verification_statement: auib
           ? undefined
           : details.verificationStatement?.trim() || undefined,
       },

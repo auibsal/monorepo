@@ -1,16 +1,18 @@
 import type { Locale } from "@repo/internationalization";
 import {
   formatClock,
+  formatLongDate,
   formatMonth,
   formatWeekday,
   toZonedDateValue,
 } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
-import { type events, localized, programmes } from "@repo/sal-data";
+import { events, localized, programmes } from "@repo/sal-data";
 import { getTranslations } from "next-intl/server";
 import type { ComponentProps, ReactNode } from "react";
 import { type DatedItem, DatedList } from "@/components/event-list";
 import { Section } from "@/components/section";
+import { readPublished } from "@/lib/supabase";
 import {
   byDay,
   type Month,
@@ -48,6 +50,32 @@ export const wayOf = (row: Row): WayKey => {
   return row.entry === "open" ? "open" : "rsvp";
 };
 
+const YEAR = 366 * 24 * 60 * 60 * 1000;
+
+/**
+ * The first event to come after an empty month (or from today, for a month
+ * already past), within a year: one program's, or any. Canceled dates don't
+ * count.
+ */
+export const nextAfter = async (
+  month: Month,
+  programmeId?: string
+): Promise<Row | null> => {
+  const from = new Date(Math.max(Date.now(), month.from.getTime()));
+  const rows = await readPublished(
+    ["events"],
+    (c) => events.calendar(c, from, new Date(from.getTime() + YEAR)),
+    []
+  );
+  return (
+    rows.find(
+      (row) =>
+        row.status !== "cancelled" &&
+        (!programmeId || row.programme_id === programmeId)
+    ) ?? null
+  );
+};
+
 /**
  * The month as a grid (wide screens) and as a dated list (phones): the
  * Society's events, and AUIB's own dates beside them, quieter, each linking
@@ -57,11 +85,14 @@ export const wayOf = (row: Row): WayKey => {
 export const MonthCalendar = async ({
   locale,
   month,
+  next = null,
   rows,
   university = [],
 }: {
   locale: Locale;
   month: Month;
+  /** What comes next, shown when the month is empty (`nextAfter`). */
+  next?: Row | null;
   rows: readonly Row[];
   university?: readonly UniversityRow[];
 }) => {
@@ -102,7 +133,17 @@ export const MonthCalendar = async ({
   if (items.length === 0) {
     return (
       <p className="type-body text-text-secondary">
-        {t("noneMonth", { month: formatMonth(month.from, locale) })}
+        {next ? (
+          <>
+            {t("nextLabel")}{" "}
+            <Link className="link text-text" href={rowHref(next)}>
+              {localized(next, "title", locale)}
+            </Link>
+            {t("nextOn", { date: formatLongDate(next.starts_at, locale) })}
+          </>
+        ) : (
+          t("noneMonth", { month: formatMonth(month.from, locale) })
+        )}
       </p>
     );
   }

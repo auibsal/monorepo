@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { member, PASSWORD } from "../fixtures";
+import { admin, member, PASSWORD } from "../fixtures";
 import { urls } from "../playwright.config";
 import { expectAccessible, latestMail, signInWithPassword } from "./helpers";
 
@@ -9,14 +9,12 @@ test("sign up with an AUIB address, confirm by email, finish setup", async ({
   const email = `e2e-${Date.now()}@auib.edu.iq`;
   await page.goto(`${urls.web}/sign-up`);
   await expectAccessible(page);
-  const english = page.getByRole("group", { name: "Your name in English" });
-  await english.getByLabel("First name").fill("New");
-  await english.getByLabel("Last name").fill("Member");
-  const arabic = page.getByRole("group", { name: "Your name in Arabic" });
-  await arabic.getByLabel("First name").fill("عضو");
-  await arabic.getByLabel("Last name").fill("جديد");
+  // An AUIB address needs only the address and a password.
   await page.getByLabel("Email").fill(email);
   await page.getByLabel("Password").fill(PASSWORD);
+  await expect(
+    page.getByRole("group", { name: "Your name in English" })
+  ).toHaveCount(0);
   await page.getByRole("button", { name: "Create account" }).click();
   await expect(page.getByText("Check your inbox")).toBeVisible();
 
@@ -26,18 +24,88 @@ test("sign up with an AUIB address, confirm by email, finish setup", async ({
   await page.goto((link ?? "").replaceAll("&amp;", "&"));
   await page.getByRole("button", { name: /continue/i }).click();
 
-  await expect(page).toHaveURL(/\/setup/);
-  await expect(page.getByText("1 of 4 done")).toBeVisible();
+  // One question per screen.
+  await expect(page).toHaveURL(/\/setup\?(.*&)?step=1/);
+  await expect(page.getByText("Step 1 of 5")).toBeVisible();
+  await expectAccessible(page);
+  await page.getByLabel("First name in English").fill("New");
+  await page.getByLabel("Last name in English").fill("Member");
+  await page.getByLabel("Last name in English").press("Enter");
+
+  await expect(page.getByText("Step 2 of 5")).toBeVisible();
+  await page.getByLabel("First name in Arabic").fill("عضو");
+  await page.getByLabel("Last name in Arabic").fill("جديد");
+  // The browser's Back goes to the last screen, answers kept.
+  await page.goBack();
   await expect(page.getByLabel("First name in English")).toHaveValue("New");
-  await expect(page.getByLabel("Last name in Arabic")).toHaveValue("جديد");
-  await page.getByLabel("I make the Human Authorship pledge").check();
-  await page.getByLabel("I make the Member Pledge").check();
-  await expect(page.getByText("4 of 4 done")).toBeVisible();
   await page.getByRole("button", { name: "Continue" }).click();
-  // Greeted by first name, whatever the time of day.
+  await expect(page.getByLabel("Last name in Arabic")).toHaveValue("جديد");
+  await page.getByRole("button", { name: "Continue" }).click();
+
+  await expect(page.getByText("Step 3 of 5")).toBeVisible();
+  await page
+    .getByRole("button", { name: "I make the Human Authorship pledge" })
+    .click();
+  await page.getByRole("button", { name: "I make the Member Pledge" }).click();
   await expect(
-    page.getByRole("heading", { level: 1, name: /, New$/ })
+    page.getByRole("heading", { name: "Happy to appear in event photos?" })
   ).toBeVisible();
+  await page.getByRole("button", { name: "Yes, that's fine" }).click();
+
+  await expect(
+    page.getByRole("heading", { level: 1, name: "Welcome, New" })
+  ).toBeVisible();
+  await expectAccessible(page);
+
+  // The optional details, one question at a time, each with Skip.
+  await page.getByRole("link", { name: /Tell us more about yourself/ }).click();
+  await expect(page).toHaveURL(/\/membership\/more/);
+  await expect(page.getByText("Question 1 of 7")).toBeVisible();
+  await page.getByRole("button", { name: "A student at AUIB" }).click();
+  await expect(
+    page.getByRole("button", { name: "A student at AUIB" })
+  ).toHaveAttribute("aria-pressed", "true");
+  await page.getByRole("button", { name: "Continue" }).click();
+  await expect(page.getByText("Question 2 of 8")).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "What do you study?" })
+  ).toBeVisible();
+  await page.getByRole("button", { name: "Skip" }).click();
+  await page.getByRole("button", { name: "Poetry" }).click();
+  await page.getByRole("button", { name: "Theater" }).click();
+  await page.getByRole("button", { name: "Continue" }).click();
+  await expectAccessible(page);
+  const thanks = page.getByRole("heading", { level: 1, name: "Thank you" });
+  while (!(await thanks.isVisible())) {
+    await page.getByRole("button", { name: "Skip" }).click();
+  }
+  const users = await admin().auth.admin.listUsers({ perPage: 1000 });
+  const id = users.data.users.find((u) => u.email === email)?.id ?? "";
+  const { data } = await admin()
+    .schema("core")
+    .from("member_details")
+    .select("affiliation, interests")
+    .eq("user_id", id)
+    .single();
+  expect(data?.affiliation).toBe("student");
+  expect(data?.interests).toEqual(["poetry", "theater"]);
+});
+
+test("an outside address gives its names and a few words", async ({ page }) => {
+  await page.goto(`${urls.web}/sign-up`);
+  await page.getByLabel("Email").fill(`e2e-${Date.now()}@example.com`);
+  await page.getByLabel("Password").fill(PASSWORD);
+  const create = page.getByRole("button", { name: "Create account" });
+  const english = page.getByRole("group", { name: "Your name in English" });
+  await expect(english).toBeVisible();
+  await expect(create).toBeDisabled();
+  await english.getByLabel("First name").fill("Guest");
+  await english.getByLabel("Last name").fill("Writer");
+  const arabic = page.getByRole("group", { name: "Your name in Arabic" });
+  await arabic.getByLabel("First name").fill("ضيف");
+  await arabic.getByLabel("Last name").fill("كاتب");
+  await expectAccessible(page);
+  await expect(create).toBeEnabled();
 });
 
 test("an AUIB address signs in by password, with a link one click away", async ({
