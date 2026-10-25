@@ -19,7 +19,7 @@ import { formatLongDate } from "@repo/internationalization/format";
 import { localized, membership, partners, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
-import { useEffect, useRef, useState } from "react";
+import { type PointerEvent, useEffect, useRef, useState } from "react";
 import QRCode from "react-qr-code";
 import { Guilloche } from "@/components/guilloche";
 import { callApi } from "@/lib/nexus/api";
@@ -90,25 +90,54 @@ const useLiveCode = (secret: string | undefined) => {
   return { digits, now, secondsLeft: totpSecondsLeft(now) };
 };
 
+/** How far the card leans, at most, in degrees. */
+const MAX_TILT = 8;
+
+interface MotionPermission {
+  requestPermission?: () => Promise<string>;
+}
+
 /**
- * The sheen across the card: it drifts with time and follows the phone's
- * tilt where the browser reports it. Still for anyone who asks for less
- * motion.
+ * The card in the hand: it leans toward a finger or the pointer, and with
+ * the phone where the browser reports its tilt (iPhones ask once, on the
+ * first touch of the card), and the light moves across it as it does.
+ * Still for anyone who asks for less motion. Writes --rx, --ry and
+ * --sheen on the card; the card's transform and the sheen read them.
  */
-const Sheen = () => {
-  const ref = useRef<HTMLSpanElement>(null);
+const useCardMotion = () => {
+  const ref = useRef<HTMLDivElement>(null);
+  const target = useRef({ x: 0, y: 0 });
+
   useEffect(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    const card = ref.current;
+    if (
+      !card ||
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) {
       return;
     }
-    let tilt = 0;
+    const tilt = { x: 0, y: 0 };
     let frame = 0;
     const onTilt = (event: DeviceOrientationEvent) => {
-      tilt = (event.gamma ?? 0) / 45;
+      if (event.gamma === null || event.beta === null) {
+        return;
+      }
+      // Held at about 45 degrees is the rest position.
+      target.current = {
+        x: Math.max(-1, Math.min(1, (event.beta - 45) / 30)),
+        y: Math.max(-1, Math.min(1, event.gamma / 30)),
+      };
     };
     const draw = (time: number) => {
-      const position = 50 + 45 * Math.sin(time / 2600 + tilt);
-      ref.current?.style.setProperty("--sheen", `${position}%`);
+      tilt.x += (target.current.x - tilt.x) * 0.08;
+      tilt.y += (target.current.y - tilt.y) * 0.08;
+      const drift = 18 * Math.sin(time / 2600);
+      card.style.setProperty("--rx", `${(-tilt.x * MAX_TILT).toFixed(2)}deg`);
+      card.style.setProperty("--ry", `${(tilt.y * MAX_TILT).toFixed(2)}deg`);
+      card.style.setProperty(
+        "--sheen",
+        `${(50 + tilt.y * 40 + drift).toFixed(1)}%`
+      );
       frame = window.requestAnimationFrame(draw);
     };
     window.addEventListener("deviceorientation", onTilt);
@@ -118,12 +147,47 @@ const Sheen = () => {
       window.cancelAnimationFrame(frame);
     };
   }, []);
+
+  const onPointerMove = (event: PointerEvent<HTMLDivElement>) => {
+    const box = event.currentTarget.getBoundingClientRect();
+    target.current = {
+      x: ((event.clientY - box.top) / box.height) * 2 - 1,
+      y: ((event.clientX - box.left) / box.width) * 2 - 1,
+    };
+  };
+  const onPointerLeave = () => {
+    target.current = { x: 0, y: 0 };
+  };
+  const onPointerDown = () => {
+    // iPhones report the tilt only after asking, from a touch; they ask
+    // the member once and remember the answer.
+    const motion = window.DeviceOrientationEvent as unknown as
+      | MotionPermission
+      | undefined;
+    motion?.requestPermission?.().catch(() => undefined);
+  };
+  return { onPointerDown, onPointerLeave, onPointerMove, ref };
+};
+
+/** The light across the card, where the card's motion puts it. */
+const Sheen = () => (
+  <span
+    aria-hidden="true"
+    className="pointer-events-none absolute inset-0 bg-[linear-gradient(105deg,transparent_calc(var(--sheen,50%)-16%),color-mix(in_oklab,var(--surface)_85%,transparent)_var(--sheen,50%),transparent_calc(var(--sheen,50%)+16%))] opacity-70 mix-blend-overlay"
+  />
+);
+
+/** "Live", with a slow beat, beside the ticking clock. */
+const LiveMark = () => {
+  const t = useTranslations("nexus.home.card");
   return (
-    <span
-      aria-hidden="true"
-      className="pointer-events-none absolute inset-0 bg-[linear-gradient(105deg,transparent_calc(var(--sheen,50%)-14%),color-mix(in_oklab,var(--surface)_70%,transparent)_var(--sheen,50%),transparent_calc(var(--sheen,50%)+14%))] mix-blend-soft-light"
-      ref={ref}
-    />
+    <span className="type-label inline-flex items-center gap-1.5 text-text">
+      <span
+        aria-hidden="true"
+        className="size-1.5 rounded-full bg-accent motion-safe:animate-pulse"
+      />
+      {t("live")}
+    </span>
   );
 };
 
@@ -305,6 +369,7 @@ export const MembershipCard = () => {
       queryClient.setQueryData([...cardKey, user?.id], fresh),
   });
   const live = useLiveCode(card.data?.secret);
+  const motion = useCardMotion();
 
   if (!(status.data?.is_member && profile.data && card.data)) {
     return null;
@@ -336,13 +401,19 @@ export const MembershipCard = () => {
         {t("card.title")}
       </h2>
       <div
-        className="relative grid max-w-3xl gap-8 overflow-hidden border border-line bg-surface-reading p-6 text-text sm:grid-cols-[1fr_auto] sm:p-8"
+        className="relative grid max-w-3xl gap-8 overflow-hidden border border-line bg-surface-reading p-6 text-text [transform:perspective(1100px)_rotateX(var(--rx,0deg))_rotateY(var(--ry,0deg))] sm:grid-cols-[1fr_auto] sm:p-8"
         data-theme="light"
+        onPointerDown={motion.onPointerDown}
+        onPointerLeave={motion.onPointerLeave}
+        onPointerMove={motion.onPointerMove}
+        ref={motion.ref}
       >
-        <Guilloche
-          className="pointer-events-none absolute start-1/4 top-1/2 size-[26rem] -translate-x-1/2 -translate-y-1/2 opacity-40 rtl:translate-x-1/2"
-          number={card.data.number}
-        />
+        <div className="pointer-events-none absolute start-1/4 top-1/2 size-[26rem] -translate-x-1/2 -translate-y-1/2 rtl:translate-x-1/2">
+          <Guilloche
+            className="size-full opacity-40 motion-safe:animate-[spin_180s_linear_infinite]"
+            number={card.data.number}
+          />
+        </div>
         <Sheen />
         <div className="relative grid content-between gap-8">
           <div className="flex items-start justify-between gap-4">
@@ -385,9 +456,12 @@ export const MembershipCard = () => {
               />
             </span>
           </div>
-          <p className="type-code text-text tabular-nums" dir="ltr">
-            <span className="sr-only">{t("card.clock")} </span>
-            {clock(live.now, locale)}
+          <p className="flex items-center gap-3">
+            <LiveMark />
+            <span className="type-code text-text tabular-nums" dir="ltr">
+              <span className="sr-only">{t("card.clock")} </span>
+              {clock(live.now, locale)}
+            </span>
           </p>
           <figcaption className="type-caption max-w-44 text-center">
             {t("card.qr")}

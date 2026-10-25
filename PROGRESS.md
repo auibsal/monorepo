@@ -9,14 +9,13 @@ Branch: `claude/new-session-qosn60`.
 
 ## Blocked — needed from the user
 
-- [ ] **Google Wallet (2026-10-25):** set up the issuer and a service
-      account, then add `GOOGLE_WALLET_ISSUER_ID`,
-      `GOOGLE_WALLET_SERVICE_ACCOUNT_EMAIL` and `GOOGLE_WALLET_PRIVATE_KEY`
-      in Vercel (steps in `docs/platform/wallet.md`). Until then "Add to
-      Google Wallet" says it isn't available yet. The Generic class
-      `sal-membership`: one user, all devices; no modules, Smart Tap or
-      redemption issuers; callback URL
-      `https://auibsal.org/api/wallet/google/callback`.
+- [ ] **Google Wallet (2026-10-25):** set up and working (owner): the
+      issuer, the Generic class `sal-membership` with the callback, the
+      service account `membership@auibsal.iam.gserviceaccount.com` and the
+      three Vercel variables; a test pass saved and the card says "In your
+      Google Wallet". Left: **Request publishing access** in the Wallet
+      console (until Google approves, only test accounts can save, and passes
+      say "[TEST ONLY]").
 - [ ] **Membership at `/membership` (2026-10-25):** in BotFather, change the
       Telegram Login redirect URIs to `https://auibsal.org/membership/profile`
       and `https://auibsal.org/ar/membership/profile`, then run
@@ -50,9 +49,7 @@ Branch: `claude/new-session-qosn60`.
     links forward meanwhile).
   - **Members' pages left the Diwan (2026-10-24), three settings to move:**
     BotFather → Bot Settings → Login Widget → OpenID Connect → Redirect
-    URIs `https://auibsal.org/account/profile` and
-    `https://auibsal.org/ar/account/profile` (in place of the `/diwan/profile`
-    ones; Telegram linking from the profile fails until then); Supabase →
+    URIs (now `/membership/profile`, see the Membership item above); Supabase →
     Authentication → OAuth Server → authorization path `/oauth/consent`;
     BetterStack's sign-in monitor → `https://auibsal.org/sign-in`.
   - **BotFather → Edit Bot → Description picture:**
@@ -1272,6 +1269,10 @@ Written 2026-10-25 (rosettes and one check): `web.verify.title`, `lede`,
 Written 2026-10-25 (the live card): `nexus.home.card.*` (qr, clock,
 wallet, perks, security, reset), `web.verifyCard.live`, `notLive`,
 `perks`, `nexus.admin.checkIn.cardNotLive`.
+
+Written 2026-10-25 (Today's greeting and the live card):
+`nexus.home.greetings.*` («صباح الخير يا», «طاب يومك يا», «مساء الخير يا»,
+«أهلًا يا», «جمعة مباركة يا» {name}) and `nexus.home.card.live` («مباشر»).
 
 Written 2026-10-25 (Membership): «العضوية» (`nexus.nav.account`,
 `web.nav.account`, the Wallet pass link), «افتح «العضوية»» (emails and
