@@ -17,6 +17,7 @@ import {
   finalCheck,
   monthInWaraq,
   newsletterConfirm,
+  personalEmailConfirm,
   pieceNote,
   piecePublished,
   removalReceived,
@@ -509,6 +510,35 @@ const handlers: Record<string, Handler> = {
       { email: row.email, lang },
       monthInWaraq(lang, items, coming, `${base}/qirtas`, links.page),
       links.headers
+    );
+  },
+  // Only to the new address, never the sign-in one: the link proves the
+  // member reads it.
+  "personal_email.confirm": async (admin, payload) => {
+    const [{ data: pending }, { data: profile }] = await Promise.all([
+      admin
+        .schema("core")
+        .from("personal_email_requests")
+        .select("email, token")
+        .eq("user_id", String(payload.user_id))
+        .maybeSingle(),
+      admin
+        .schema("core")
+        .from("profiles")
+        .select("locale")
+        .eq("id", String(payload.user_id))
+        .maybeSingle(),
+    ]);
+    if (!pending) {
+      return;
+    }
+    const lang: Lang = profile?.locale === "ar" ? "ar" : "en";
+    await send(
+      { email: pending.email, lang },
+      personalEmailConfirm(
+        lang,
+        `${webUrl()}${prefix(lang)}/personal-email/confirm?token=${pending.token}`
+      )
     );
   },
   // From private.cron_health(): the day's failed pg_cron runs, to the

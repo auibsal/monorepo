@@ -149,7 +149,15 @@ any schema change. Integration tests run against a local stack with
   `core.member_details` is optional and read only by the member and
   `members.manage`; reports count only members with `research_consent`
   and never show a group smaller than five (`core.member_insights()`).
-  Public pages never show it.
+  Public pages never show it. No phone numbers until they can be verified
+  (owner, Oct 25, 2026).
+- **One address, one person.** The personal email (optional, for after
+  graduation) is set only through `core.request_personal_email` and counts
+  only once confirmed from the link sent to it
+  (`core.confirm_personal_email`, `/personal-email/confirm`). It can't be
+  an AUIB address, anyone's sign-in address or another member's personal
+  email, and no sign-in address can be a member's verified personal email
+  (triggers on `core.profiles` and `auth.users`, a unique index).
 - **The membership card.** Its QR is a link to `/verify/member/<code>`
   (`membership.verify_card`, read live); the door scans it with
   `events.check_in_card`. Never put an account id in a QR.

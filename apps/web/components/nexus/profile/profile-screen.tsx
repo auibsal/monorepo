@@ -22,6 +22,7 @@ import { ConnectedApps } from "./connected-apps";
 import { DeleteAccount } from "./delete-account";
 import { DetailsSection } from "./details-fields";
 import { Passkeys } from "./passkeys";
+import { PersonalEmail } from "./personal-email";
 import { PhoneNotifications } from "./phone-notifications";
 import { TelegramLink } from "./telegram-link";
 
@@ -40,7 +41,6 @@ export const ProfileScreen = () => {
     given_name_ar: "",
     given_name_en: "",
     notify_email: true,
-    personal_email: "",
   });
 
   useEffect(() => {
@@ -53,7 +53,6 @@ export const ProfileScreen = () => {
         given_name_ar: profile.data.given_name_ar ?? "",
         given_name_en: profile.data.given_name_en ?? "",
         notify_email: profile.data.notify_email,
-        personal_email: profile.data.personal_email ?? "",
       });
     }
   }, [profile.data]);
@@ -68,7 +67,6 @@ export const ProfileScreen = () => {
         .update({
           ...form,
           bio: form.bio.trim() || null,
-          personal_email: form.personal_email.trim() || null,
         })
         .eq("id", user?.id ?? "");
       if (error) {
@@ -223,18 +221,6 @@ export const ProfileScreen = () => {
               {t("setup.cameraShy")}
             </Label>
           </div>
-          <div className="grid gap-2">
-            <Label htmlFor={`${id}-personal`}>{t("setup.personalEmail")}</Label>
-            <Input
-              dir="ltr"
-              id={`${id}-personal`}
-              onChange={(e) =>
-                setForm((f) => ({ ...f, personal_email: e.target.value }))
-              }
-              type="email"
-              value={form.personal_email}
-            />
-          </div>
           {save.isError ? (
             <p className="text-text" role="alert">
               {t("errors.saveFailed")}
@@ -248,6 +234,9 @@ export const ProfileScreen = () => {
             {saveLabel}
           </Button>
         </form>
+      </DiwanSection>
+      <DiwanSection id="personal-email" title={t("personalEmail.title")}>
+        <PersonalEmail />
       </DiwanSection>
       <DetailsSection />
       <PhoneNotifications />

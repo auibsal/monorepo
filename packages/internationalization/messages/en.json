@@ -67,7 +67,8 @@
       "user_exists": "An account with this email already exists. Sign in instead.",
       "weak_password": "Use at least 10 characters, with letters and numbers.",
       "captcha_failed": "We couldn't confirm you're a person. Reload the page and try again.",
-      "names_required": "Enter your first and last name in English and in Arabic."
+      "names_required": "Enter your first and last name in English and in Arabic.",
+      "email_reserved": "This address is already a member's personal email, so it can't start a new account. Sign in with your own address, or use another one."
     },
     "signIn": {
       "title": "Sign in",
@@ -207,8 +208,6 @@
       "notifications": "Email me about events, calls and Society notices",
       "cameraShy": "I'm camera-shy: please don't photograph or film me",
       "cameraShyHint": "You'll get a camera-shy sticker at events, and we'll leave you out of SAL photos and videos.",
-      "personalEmail": "Personal email for after you graduate",
-      "personalEmailHint": "So you can stay in touch as a Life Member. Never shown publicly.",
       "submit": "Continue",
       "name": {
         "title": "Your name",
@@ -218,7 +217,8 @@
         "givenAr": "First name in Arabic",
         "familyAr": "Last name in Arabic",
         "needed": "Tell us your first and last name in English and in Arabic. They appear on your membership card, the Council page, the Register and your certificates."
-      }
+      },
+      "personalEmailLater": "After graduation? You can add a personal email in Profile once you're in."
     },
     "home": {
       "greeting": "Welcome, {name}",
@@ -3537,8 +3537,6 @@
         "man": "Man",
         "prefer_not": "Prefer not to say"
       },
-      "phone": "Phone number",
-      "phoneHint": "For WhatsApp or Telegram, only if officers need to reach you about something you signed up for.",
       "city": "City",
       "languagesLabel": "Languages you read or write",
       "languages": {
@@ -3599,6 +3597,24 @@
       "consentHint": "Reports show only totals (for example, how many members are interested in theater), never a name, and never a group smaller than five.",
       "save": "Save",
       "saved": "Saved."
+    },
+    "personalEmail": {
+      "title": "Personal email",
+      "why": "Optional. An address of your own that stays after you graduate, so the Society can keep in touch with alumni. We use it only after you confirm it from the link we send, and it can't be an address that is already someone's (a sign-in address, or another member's personal email). AUIB addresses can't be used.",
+      "label": "Add a personal email",
+      "change": "Use another address",
+      "sendLink": "Send the link",
+      "remove": "Remove",
+      "verified": "Confirmed.",
+      "unverified": "Not confirmed yet, so it isn't used. Send the link to confirm it.",
+      "pending": "We sent a link to {email} on {date}. Open it to confirm the address; it works for seven days.",
+      "sent": "Sent. Check that inbox for the link.",
+      "errors": {
+        "email_auib": "Use an address outside AUIB: AUIB addresses end when you graduate.",
+        "email_in_use": "This address is already someone's. Use another one.",
+        "email_invalid": "Enter a valid email address.",
+        "unknown": "Something went wrong. Please try again."
+      }
     }
   },
   "web": {
@@ -4288,6 +4304,15 @@
       "reopened": "Re-open nominations: the office will be filled again",
       "rules": "How the Council works and how elections run is set out in the Constitution and the Bylaws.",
       "documents": "Read the documents"
+    },
+    "personalEmail": {
+      "title": "Confirm your personal email",
+      "lede": "Press the button to confirm this address as your personal email with the AUIB Society of Arts and Letters.",
+      "button": "Confirm the address",
+      "done": "Confirmed. The Society will use this address after you graduate.",
+      "invalid": "This link has expired or was already used. Send a new one from Profile.",
+      "in_use": "This address is already someone's, so it can't be confirmed. Use another one in Profile.",
+      "failed": "Something went wrong. Please try again."
     }
   }
 }

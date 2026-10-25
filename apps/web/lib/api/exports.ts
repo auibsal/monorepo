@@ -245,7 +245,6 @@ const detailColumns = [
   "graduation_year",
   "birth_year",
   "gender",
-  "phone",
   "city",
   "languages",
   "interests",

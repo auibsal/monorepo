@@ -338,6 +338,24 @@ export const newsletterConfirm = (lang: Lang, confirm: string) =>
     ],
   }));
 
+/** A personal email's confirmation: sent to the new address only. */
+export const personalEmailConfirm = (lang: Lang, confirm: string) =>
+  build(lang, (l) => ({
+    action: {
+      href: confirm,
+      label: l === "ar" ? "أكّد العنوان" : "Confirm the address",
+    },
+    heading: l === "ar" ? "أكّد بريدك الشخصي" : "Confirm your personal email",
+    paragraphs: [
+      l === "ar"
+        ? "أضاف أحد أعضاء جمعية الفنون والآداب هذا العنوان بريدًا شخصيًا له، لتبقى الجمعية على صلة به بعد تخرجه. اضغط الزر للتأكيد؛ يعمل الرابط سبعة أيام."
+        : "A member of the AUIB Society of Arts and Letters added this address as their personal email, so the Society can keep in touch after they graduate. Press the button to confirm; the link works for seven days.",
+      l === "ar"
+        ? "إن لم تكن أنت فتجاهل هذه الرسالة؛ لن يُستخدم العنوان."
+        : "If it was not you, ignore this email; the address will not be used.",
+    ],
+  }));
+
 export interface MonthEvent {
   starts_at: string;
   title_ar: string;
