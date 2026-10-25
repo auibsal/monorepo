@@ -26,7 +26,7 @@ test("a member sends work to Qirtas and sees the reading timeline", async ({
   page,
 }) => {
   await signInWithPassword(page, member.email);
-  await page.goto(`${urls.web}/qirtas/submit`);
+  await page.goto(`${urls.web}/qirtas/write?type=poetry`);
   await page.getByLabel("Title").fill(`A small poem ${Date.now()}`);
   await page.locator('[contenteditable="true"]').first().click();
   await page.keyboard.type("The paper and the pen, and the hour between them.");

@@ -78,7 +78,7 @@ const Calls = async ({ locale }: { locale: Locale }) => {
               {isOpen ? (
                 <a
                   className="inline-flex h-12 items-center justify-self-start bg-on-band px-6 font-medium text-[0.9375rem] text-band hover:bg-on-band/90"
-                  href={`${localizedPath(locale, "/qirtas/submit")}?call=${call.id}`}
+                  href={`${localizedPath(locale, "/qirtas/write")}?call=${call.id}`}
                 >
                   {t("submit")}
                 </a>

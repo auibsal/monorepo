@@ -47,7 +47,7 @@ export const JournalSection = () => {
             </p>
             <Link
               className="link type-caption justify-self-start"
-              href={{ pathname: "/qirtas/submit", query: { call: call.id } }}
+              href={{ pathname: "/qirtas/write", query: { call: call.id } }}
             >
               {t("submit")}
             </Link>

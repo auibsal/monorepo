@@ -20,8 +20,9 @@ items and decisions) and continue from the first unticked item.
     (`/callboard`), Society (`/society`), Record (`/membership/service`, with
     certificates) and Settings (`/membership/settings`, which also holds
     `/membership/profile` and `/membership/requests`); also `/membership/certificate`,
-    `/programs/productions/auditions`, `/qirtas/write` (with `/submit`,
-    `/submission`, `/work`, `/piece`). Perks are on the card; voting
+    `/programs/productions/auditions`, `/qirtas/write` (the two doors, your
+    work, and the form itself with `?type=`; then `/submission`, `/work`,
+    `/piece`). Perks are on the card; voting
     eligibility is on Society; the calendar feed is on My calendar. The
     site's header and footer, a Membership row (`components/account`), and
     the gates in `components/nexus/gates.tsx`. They link with the site's
