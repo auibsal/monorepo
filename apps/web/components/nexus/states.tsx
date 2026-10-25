@@ -8,14 +8,14 @@ import { useTranslations } from "next-intl";
 import { useAppLink } from "@/lib/link-context";
 
 export const FullPageSpinner = () => (
-  <div className="flex min-h-[50dvh] flex-1 items-center justify-center">
+  <div className="flex min-h-[50svh] flex-1 items-center justify-center">
     <Spinner className="size-6 text-text-secondary" />
   </div>
 );
 
 /** A page's content while its gate or data loads, inside the shell. */
 export const PageSpinner = () => (
-  <div className="flex min-h-[50dvh] items-center justify-center">
+  <div className="flex min-h-[50svh] items-center justify-center">
     <Spinner className="size-6 text-text-secondary" />
   </div>
 );

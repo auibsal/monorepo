@@ -1,6 +1,7 @@
 import { createAdminClient } from "@repo/database/admin";
 import { parseError } from "@repo/observability/error";
 import { log } from "@repo/observability/log";
+import { revalidateTag } from "next/cache";
 import { env } from "@/env";
 import { hasBearer } from "@/lib/api/bearer";
 import { parseIcal } from "@/lib/api/ical";
@@ -11,7 +12,7 @@ export const maxDuration = 60;
  * Hourly (pg_cron, or Vercel Cron with CRON_SECRET): reads the AUIB public
  * calendar (`auib.calendar_url`) into core.external_events. Unset or ""
  * means there is nothing to sync. Events that left the feed are removed
- * from the window the feed covers.
+ * from the window the feed covers. What's on (/events) shows them.
  */
 const sync = async (request: Request) => {
   if (!hasBearer(request, env.CRON_SECRET)) {
@@ -84,6 +85,8 @@ const sync = async (request: Request) => {
     .eq("source", "auib")
     .lt("synced_at", syncedAt)
     .gte("starts_at", earliest);
+  // What's on shows these dates; refresh its cached reads.
+  revalidateTag("events", "max");
   return Response.json({ synced: events.length });
 };
 

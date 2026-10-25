@@ -83,7 +83,7 @@ select pg_temp.make_user('00000000-0000-0000-0000-0000000000b1', 'alum@gmail.com
 
 insert into programmes.rotas (id, programme_id, title_en, title_ar)
 select '00000000-0000-0000-0000-00000000c001', id, 'Door team', 'فريق الباب'
-from core.programmes where slug = 'side-quest';
+from core.programmes where slug = 'next-stop';
 insert into programmes.shifts (id, rota_id, role_en, role_ar, starts_at, ends_at, capacity) values
   ('00000000-0000-0000-0000-00000000c101', '00000000-0000-0000-0000-00000000c001', 'Door', 'الباب', now() + interval '1 day', now() + interval '1 day 2 hours', 2),
   ('00000000-0000-0000-0000-00000000c102', '00000000-0000-0000-0000-00000000c001', 'Past', 'سابق', now() - interval '2 days', now() - interval '1 day', 2);

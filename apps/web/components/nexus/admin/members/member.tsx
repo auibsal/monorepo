@@ -14,6 +14,7 @@ import { access, localized, membership, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useState } from "react";
+import { callApi } from "@/lib/nexus/api";
 import { Link } from "@/lib/nexus/navigation";
 import { useGrants } from "@/lib/nexus/queries";
 import { useQueryParam } from "@/lib/nexus/use-query-param";
@@ -547,6 +548,43 @@ const RolesSection = ({ name, userId }: { name: string; userId: string }) => {
   );
 };
 
+// ── Two-step sign-in ────────────────────────────────────────────────────────
+
+/**
+ * For whoever assigns roles: clears someone's authenticator app and recovery
+ * codes when they lost their phone and have no code left. They set up new
+ * ones at their next sign-in; the reset is recorded and they are emailed.
+ */
+const TwoStepReset = ({ name, userId }: { name: string; userId: string }) => {
+  const t = useTranslations("nexus.admin.member.twoStep");
+  const { supabase } = useAuth();
+  const reset = useMutation({
+    mutationFn: () => callApi(supabase, "/two-step/reset", { userId }),
+  });
+  return (
+    <section className="grid gap-3">
+      <h2 className="type-heading">{t("title")}</h2>
+      <p className="type-body max-w-2xl text-text-secondary">{t("body")}</p>
+      <div>
+        <ConfirmAction
+          confirmLabel={t("confirm")}
+          description={t("description", { name })}
+          disabled={reset.isPending}
+          onConfirm={() => reset.mutate()}
+        >
+          {t("reset")}
+        </ConfirmAction>
+      </div>
+      {reset.isSuccess ? (
+        <p className="type-body" role="status">
+          {t("done", { name })}
+        </p>
+      ) : null}
+      <ErrorLine error={reset.error} />
+    </section>
+  );
+};
+
 // ── Page ────────────────────────────────────────────────────────────────────
 
 export const MemberDetail = () => {
@@ -556,6 +594,7 @@ export const MemberDetail = () => {
   const th = useTranslations("nexus.home");
   const locale = useLocale() as Locale;
   const userId = useQueryParam("id");
+  const { user } = useAuth();
   const grants = useGrants();
   const directory = useDirectory();
 
@@ -572,6 +611,7 @@ export const MemberDetail = () => {
   }
   const name = memberName(row, locale) || tm("unnamed");
   const canManage = hasPermission(grants.data, "members.manage");
+  const canAssign = hasPermission(grants.data, "roles.assign");
 
   return (
     <div className="grid gap-10">
@@ -619,6 +659,9 @@ export const MemberDetail = () => {
       ) : null}
       {canManage ? <ActivitySection userId={userId} /> : null}
       <RolesSection name={name} userId={userId} />
+      {canAssign && userId !== user?.id ? (
+        <TwoStepReset name={name} userId={userId} />
+      ) : null}
     </div>
   );
 };

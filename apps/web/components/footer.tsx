@@ -34,7 +34,6 @@ export const Footer = async ({ consent = true }: FooterProps = {}) => {
       heading: t("columns.society"),
       links: [
         ["/about", tn("about")],
-        ["/programs", tn("programs")],
         ["/governance", t("governance")],
         ["/documents", tn("documents")],
         ["/partners", t("partners")],
@@ -47,7 +46,7 @@ export const Footer = async ({ consent = true }: FooterProps = {}) => {
         ["/qirtas", tn("journal")],
         ["/qirtas/news", tn("news")],
         ["/newsletter", t("newsletter")],
-        ["/programs/productions", t("productions")],
+        ["/events/company", t("productions")],
         ["/search", t("search")],
       ],
     },
@@ -57,7 +56,7 @@ export const Footer = async ({ consent = true }: FooterProps = {}) => {
     ["/privacy", t("privacy")],
     ["/documents/terms-of-use", t("terms")],
     ["/documents/accessibility", t("accessibility")],
-    ["/programs/side-quest/care", t("sideQuestCare")],
+    ["/events/next-stop/care", t("sideQuestCare")],
   ] as const;
 
   return (

@@ -163,7 +163,13 @@ export const RequireStaff = ({ children }: GateProps) => {
   // so its holder is staff waiting for the second step, not a member.
   const waiting = Boolean(twoStep.data?.needs && !twoStep.data.done);
   const staff = (grants.data ?? []).length > 0 || waiting;
-  const settled = grants.isSuccess && twoStep.isSuccess;
+  // Decide only on fresh answers: right after the second step both reload,
+  // and the new level can arrive before the new grants.
+  const settled =
+    grants.isSuccess &&
+    twoStep.isSuccess &&
+    !grants.isFetching &&
+    !twoStep.isFetching;
 
   useEffect(() => {
     if (settled && !staff) {
@@ -181,7 +187,7 @@ export const RequireStaff = ({ children }: GateProps) => {
       />
     );
   }
-  if (!(settled && staff)) {
+  if (!(grants.isSuccess && twoStep.isSuccess && staff)) {
     return <PageSpinner />;
   }
   return waiting ? <TwoStepPanel /> : children;

@@ -1,4 +1,12 @@
-import { admin, editor, editor2, event, member, PASSWORD } from "./fixtures";
+import {
+  admin,
+  editor,
+  editor2,
+  event,
+  member,
+  PASSWORD,
+  universityDate,
+} from "./fixtures";
 
 /**
  * Seeds what the journeys need, idempotently: a member who has finished
@@ -96,6 +104,25 @@ export default async function globalSetup() {
     },
     { onConflict: "slug" }
   );
+  // The event's Baghdad day (UTC+3), all day, as the AUIB sync stores it.
+  const day = new Date(
+    `${new Date(start.getTime() + 3 * 3_600_000).toISOString().slice(0, 10)}T00:00:00Z`
+  );
+  await db
+    .schema("core")
+    .from("external_events")
+    .upsert(
+      {
+        all_day: true,
+        ends_at: new Date(day.getTime() + 86_400_000).toISOString(),
+        source: "auib",
+        starts_at: day.toISOString(),
+        title: universityDate.title,
+        uid: universityDate.uid,
+        url: universityDate.url,
+      },
+      { onConflict: "source,uid" }
+    );
 
   const issue = await db
     .schema("journal")

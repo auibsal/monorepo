@@ -140,6 +140,30 @@ export const calendar = async (client: Client, from: Date, to: Date) =>
 
 export type CalendarEvent = Awaited<ReturnType<typeof calendar>>[number];
 
+/**
+ * AUIB's own dates between two times, as the hourly sync copied them from
+ * the University's public calendar (core.external_events; public rows).
+ */
+export const universityCalendar = async (
+  client: Client,
+  from: Date,
+  to: Date
+) =>
+  unwrap(
+    await client
+      .schema("core")
+      .from("external_events")
+      .select("id, title, starts_at, ends_at, all_day, location, url")
+      .eq("source", "auib")
+      .gte("starts_at", from.toISOString())
+      .lt("starts_at", to.toISOString())
+      .order("starts_at")
+  ) ?? [];
+
+export type UniversityEvent = Awaited<
+  ReturnType<typeof universityCalendar>
+>[number];
+
 /** "Remind me": a reminder the day before an event without booking. */
 export const remindMe = async (client: Client, eventId: string) =>
   unwrap(

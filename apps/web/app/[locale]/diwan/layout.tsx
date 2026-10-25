@@ -50,7 +50,7 @@ const NexusLayout = async ({ children, params }: NexusLayoutProperties) => {
       messages={{ auth, common, nexus, web: { nav: web.nav } }}
     >
       <AppProviders>
-        <div className="flex min-h-dvh flex-col">
+        <div className="flex min-h-svh flex-col">
           {children}
           <Footer consent={false} />
         </div>

@@ -30,7 +30,7 @@ export const RemovalForm = () => {
         body: JSON.stringify({
           content_url: data.get("content_url") || undefined,
           details: data.get("details"),
-          programme: "side-quest",
+          programme: "next-stop",
           requester_email: data.get("requester_email"),
           requester_name: data.get("requester_name"),
           website: data.get("website") || undefined,

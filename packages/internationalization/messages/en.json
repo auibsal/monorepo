@@ -471,7 +471,7 @@
     },
     "twoStep": {
       "setupTitle": "Set up two-step sign-in",
-      "setupBody": "Your role on the Council or the Elections Committee handles the Society's money, records and votes, so it needs a second step at sign-in: a six-digit code from an authenticator app on your phone (Google Authenticator, Microsoft Authenticator, 1Password or similar). It takes a minute and you do it once.",
+      "setupBody": "Your role reaches the Society's money, records or votes, so it needs a second step at sign-in: a six-digit code from an authenticator app on your phone (Google Authenticator, Microsoft Authenticator, 1Password or similar). It takes a minute and you do it once.",
       "verifyTitle": "Enter your sign-in code",
       "verifyBody": "Open your authenticator app and enter the six-digit code for SAL. Your administration tools open once it's accepted.",
       "start": "Set up my authenticator",
@@ -479,7 +479,12 @@
       "manual": "Can't scan it? Enter this key in the app instead:",
       "codeLabel": "Six-digit code",
       "verify": "Confirm",
-      "failed": "That code didn't work. Codes change every 30 seconds: enter the one showing now."
+      "failed": "That code didn't work. Codes change every 30 seconds: enter the one showing now.",
+      "lost": "Lost your phone? Use a recovery code",
+      "recoveryBody": "Enter one of the recovery codes you saved. It removes the lost authenticator app, and you set up a new one straight away. Each code works once.",
+      "recoveryLabel": "Recovery code",
+      "recoveryUse": "Use this code",
+      "recoveryFailed": "That code didn't work. Check it, or try another one. If none are left, ask whoever assigns roles to reset your two-step sign-in."
     },
     "journal": {
       "status": {
@@ -923,6 +928,14 @@
           "two_roles_at_most": "They already hold two roles. Nobody holds more than two at once (B5.5) unless the Council agreed a founding-term exception.",
           "one_leadership_role": "They already hold a leadership role (officer, director or program chair). Only one at a time (B5.5) unless the Council agreed a founding-term exception.",
           "exception_needs_adopted_resolution": "The exception needs a Council resolution that has been adopted."
+        },
+        "twoStep": {
+          "title": "Two-step sign-in",
+          "body": "If they lost their phone and have no recovery code left, reset it. Their authenticator app and recovery codes are removed, they set up new ones at their next sign-in, and they get an email saying so.",
+          "reset": "Reset two-step sign-in",
+          "confirm": "Reset",
+          "description": "Remove {name}'s authenticator app and recovery codes? Do this only when they asked, after checking it's really them.",
+          "done": "Reset. {name} sets up a new authenticator at their next sign-in."
         }
       },
       "verification": {
@@ -1346,7 +1359,8 @@
           "sixWords": "Six Words",
           "rotas": "Rotas",
           "removals": "Removal requests ({count})",
-          "roles": "Roles"
+          "roles": "Roles",
+          "sessions": "Sessions"
         },
         "episodes": {
           "new": "New episode",
@@ -1460,6 +1474,27 @@
           "close": "Close the role",
           "closeConfirm": "Close this role? It leaves the Callboard; the replies stay here.",
           "reopen": "Reopen"
+        },
+        "sessions": {
+          "lede": "How this program repeats. Its sessions appear in What's on, each a date you can still edit or cancel in Events.",
+          "first": "First session",
+          "firstHint": "The others fall on the same weekday after it.",
+          "time": "Starts at",
+          "minutes": "Length (minutes)",
+          "every": "How often",
+          "everyHint": "The Evenings take turns, so each of them comes every four weeks.",
+          "weeks": "{count, plural, =1 {Every week} =2 {Every other week} other {Every {shown} weeks}}",
+          "venue": "Place",
+          "entry": "Way in",
+          "open": "Just come",
+          "rsvp": "Book a place",
+          "capacity": "Places",
+          "membersOnly": "Members only",
+          "addTitle": "Add the sessions",
+          "addBody": "Adds a dated event for each session from today until the day you choose. Dates that already have a session are left alone, so you can run it again after changing the rule.",
+          "until": "Until",
+          "add": "Add the sessions",
+          "added": "{count, plural, =0 {No new dates to add.} one {Added one session.} other {Added {shown} sessions.}}"
         }
       },
       "governance": {
@@ -2285,7 +2320,7 @@
         "fields": {
           "title": "Title",
           "slug": "Web address",
-          "slugHint": "Lowercase letters, numbers and hyphens, for auibsal.org/programs/productions.",
+          "slugHint": "Lowercase letters, numbers and hyphens, for auibsal.org/events/company.",
           "playwright": "Written by",
           "kind": "Kind",
           "origin": "Script",
@@ -2293,7 +2328,7 @@
           "programme": "Program",
           "noProgramme": "No program",
           "poster": "Poster",
-          "isPublic": "Show on auibsal.org/programs/productions",
+          "isPublic": "Show on auibsal.org/events/company",
           "isPublicHint": "Only the title, summary, poster, credits people agreed to, partners and published performances are shown. Rights, auditions and the report never are."
         },
         "tabs": {
@@ -3746,6 +3781,20 @@
       "profileLine": "Your name in both languages, a short bio, and what you tell us about yourself.",
       "requests": "Requests and reports",
       "requestsLine": "What you have sent, and starting a new request."
+    },
+    "recoveryCodes": {
+      "noneTitle": "Save your recovery codes",
+      "noneBody": "If you lose your phone, one of these codes gets you back into the Diwan. Make a set and keep it somewhere safe, away from your phone.",
+      "fewTitle": "Few recovery codes left",
+      "fewBody": "You have {count} left. Make a new set; the old codes stop working.",
+      "make": "Make my recovery codes",
+      "remake": "Make a new set",
+      "saveTitle": "Your recovery codes",
+      "saveBody": "Each code works once. Save them now in a password manager, or print them: they won't be shown again.",
+      "copy": "Copy the codes",
+      "copied": "Copied",
+      "saved": "I've saved them",
+      "failed": "We couldn't make the codes. Please try again."
     }
   },
   "web": {
@@ -3872,6 +3921,11 @@
       "next": "Next month: {month}",
       "aboutSeries": "About {series}",
       "noneMonth": "Nothing is announced for {month} yet.",
+      "auib": "AUIB calendar",
+      "allDay": "All day",
+      "hideAuib": "Hide AUIB dates",
+      "showAuib": "Show AUIB dates",
+      "auibLink": "{title}, on the AUIB calendar (opens auib.edu.iq)",
       "ways": {
         "open": "Just come",
         "rsvp": "Book a place",

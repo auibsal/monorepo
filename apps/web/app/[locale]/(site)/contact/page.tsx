@@ -91,7 +91,7 @@ const ContactPage = async ({ params }: LocaleParams) => {
         <p className="type-body">{t("photo")}</p>
         <Link
           className="link justify-self-start"
-          href="/programs/side-quest/care#request"
+          href="/events/next-stop/care#request"
         >
           {t("photoLink")}
         </Link>

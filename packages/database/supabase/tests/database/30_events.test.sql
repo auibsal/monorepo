@@ -86,7 +86,7 @@ select pg_temp.make_user('00000000-0000-0000-0000-0000000000b1', 'guest@gmail.co
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000c1', 'staff@auib.edu.iq', 'Staff');
 
 insert into events.events (id, slug, programme_id, title_en, title_ar, starts_at, members_only, capacity, status) values
-  ('e0000000-0000-0000-0000-000000000001', 'open-pages', (select id from core.programmes where slug = 'open-pages'),
+  ('e0000000-0000-0000-0000-000000000001', 'open-pages-night', (select id from core.programmes where slug = 'open-pages'),
     'Open Pages', 'صفحات مفتوحة', now() + interval '3 days', false, 2, 'published'),
   ('e0000000-0000-0000-0000-000000000002', 'members-majlis', (select id from core.programmes where slug = 'majlis'),
     'Members Majlis', 'مجلس الأعضاء', now() + interval '4 days', true, null, 'published'),
@@ -96,7 +96,7 @@ insert into events.events (id, slug, programme_id, title_en, title_ar, starts_at
 -- ── Visibility ──────────────────────────────────────────────────────────────
 
 select pg_temp.login_anon();
-select is((select array_agg(slug order by slug) from events.events), array['open-pages'],
+select is((select array_agg(slug order by slug) from events.events), array['open-pages-night'],
   'Anonymous visitors see only published public events');
 select is(
   (select count(*) from content.search('Majlis'))::integer, 0,
@@ -106,11 +106,11 @@ select is(events.confirmed_count('e0000000-0000-0000-0000-000000000002'), 0,
   'Counts for members-only events are hidden from visitors');
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000b1');
-select is((select array_agg(slug order by slug) from events.events), array['open-pages'],
+select is((select array_agg(slug order by slug) from events.events), array['open-pages-night'],
   'Unverified accounts do not see members-only events');
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a1');
-select is((select array_agg(slug order by slug) from events.events), array['members-majlis', 'open-pages'],
+select is((select array_agg(slug order by slug) from events.events), array['members-majlis', 'open-pages-night'],
   'Members see members-only events but not drafts');
 select throws_ok(
   $$ insert into events.events (slug, title_en, title_ar, starts_at) values ('x', 'x', 'x', now()) $$,

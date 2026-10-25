@@ -19,3 +19,9 @@ export const editor2 = {
   name: "E2E Second Editor",
 };
 export const event = { slug: "e2e-open-pages", title: "Open Pages (e2e)" };
+/** A date from AUIB's calendar, as the hourly sync stores it. */
+export const universityDate = {
+  title: "Last day to withdraw (e2e)",
+  uid: "e2e-auib-withdraw@auib.edu.iq",
+  url: "https://auib.edu.iq/event/e2e-withdraw/",
+};

@@ -392,6 +392,41 @@ export const newsletterConfirm = (lang: Lang, confirm: string) =>
   }));
 
 /**
+ * Someone's two-step sign-in was reset: by an officer, or with one of their
+ * recovery codes. Sent either way, so a reset they didn't ask for is
+ * noticed.
+ */
+const TWO_STEP_RESET = {
+  officer: {
+    ar: "أزال أحد المسؤولين في جمعية الفنون والآداب تطبيق المصادقة من حسابك. عند دخولك القادم إلى الديوان، اضبط تطبيق المصادقة من جديد واحفظ رموز الاسترداد الجديدة.",
+    en: "An officer of the AUIB Society of Arts and Letters removed the authenticator app from your account. The next time you open the Diwan, set up your authenticator app again and save your new recovery codes.",
+  },
+  recovery_code: {
+    ar: "استُخدم أحد رموز الاسترداد لإزالة تطبيق المصادقة من حسابك. اضبط تطبيق المصادقة من جديد عند دخولك القادم إلى الديوان.",
+    en: "One of your recovery codes was used to remove the authenticator app from your account. Set up your authenticator app again the next time you open the Diwan.",
+  },
+} as const;
+
+export const twoStepReset = (
+  lang: Lang,
+  via: keyof typeof TWO_STEP_RESET,
+  app: string
+) =>
+  build(lang, (l) => ({
+    action: nexus(app, l),
+    heading:
+      l === "ar"
+        ? "أُعيد ضبط الخطوة الثانية لتسجيل دخولك"
+        : "Your two-step sign-in was reset",
+    paragraphs: [
+      TWO_STEP_RESET[via][l],
+      l === "ar"
+        ? "إن لم تطلب ذلك، فردّ على هذه الرسالة فورًا وأخبر المجلس التنفيذي."
+        : "If you didn't ask for this, reply to this email right away and tell the Council.",
+    ],
+  }));
+
+/**
  * The Council's answer to an account from outside AUIB: verified (the
  * member finishes setting up and is in), or not.
  */

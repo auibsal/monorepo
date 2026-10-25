@@ -29,6 +29,7 @@ import {
   rsvpConfirmed,
   submissionReceived,
   sundayPaper,
+  twoStepReset,
   verificationDecided,
   waitlistPromoted,
 } from "@repo/email/copy";
@@ -324,6 +325,21 @@ const handlers: Record<string, Handler> = {
             name_ar: data.title_ar ?? data.role.name_ar,
             name_en: data.title_en ?? data.role.name_en,
           },
+          appUrl()
+        )
+      );
+    }
+  },
+  // From access.two_step_resets: an officer, or a recovery code, cleared
+  // someone's authenticator app.
+  "access.two_step_reset": async (admin, payload) => {
+    const to = await recipient(admin, payload.user_id);
+    if (to) {
+      await send(
+        to,
+        twoStepReset(
+          to.lang,
+          payload.via === "officer" ? "officer" : "recovery_code",
           appUrl()
         )
       );

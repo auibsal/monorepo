@@ -38,6 +38,7 @@ import {
 import { useMemberNames } from "../member-picker";
 import { memberName } from "../members/directory";
 import { Openings, SkillsPicker } from "./callboard";
+import { Sessions } from "./sessions";
 import { TourCards } from "./six-words";
 
 const invalidateKey = ["admin", "programmes-module"];
@@ -1114,8 +1115,9 @@ export const ProgrammesAdmin = () => {
           </SelectInput>
         )}
       </Field>
-      <Tabs defaultValue="episodes">
+      <Tabs defaultValue="sessions">
         <TabsList className="flex-wrap">
+          <TabsTrigger value="sessions">{t("tabs.sessions")}</TabsTrigger>
           <TabsTrigger value="episodes">{t("tabs.episodes")}</TabsTrigger>
           <TabsTrigger value="reels">{t("tabs.reels")}</TabsTrigger>
           <TabsTrigger value="rotas">{t("tabs.rotas")}</TabsTrigger>
@@ -1127,6 +1129,9 @@ export const ProgrammesAdmin = () => {
         </TabsList>
         {selected ? (
           <>
+            <TabsContent className="pt-4" value="sessions">
+              <Sessions programmeId={selected} />
+            </TabsContent>
             <TabsContent className="pt-4" value="episodes">
               <Episodes programmeId={selected} />
             </TabsContent>

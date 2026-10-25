@@ -20,7 +20,7 @@ items and decisions) and continue from the first unticked item.
     (`/callboard`), Society (`/society`), Record (`/membership/service`, with
     certificates) and Settings (`/membership/settings`, which also holds
     `/membership/profile` and `/membership/requests`); also `/membership/certificate`,
-    `/programs/productions/auditions`, `/qirtas/write` (the two doors, your
+    `/events/company/auditions`, `/qirtas/write` (the two doors, your
     work, and the form itself with `?type=`; then `/submission`, `/work`,
     `/piece`). Perks are on the card; voting
     eligibility is on Society; the calendar feed is on My calendar. The
@@ -131,7 +131,14 @@ any schema change. Integration tests run against a local stack with
   `authenticateRequest(request, { apps: true })`, which only `/api/v1` does.
 - **Two-step sign-in for sensitive roles.** Roles with `requires_mfa`
   (Council officers, directors, Elections Committee) count only on an `aal2`
-  session; `access.has_permission` enforces it. Don't add bypasses.
+  session; `access.has_permission` enforces it. Don't add bypasses. A
+  passkey is a first step only (owner, Oct 25, 2026). A lost authenticator
+  is recovered with one of ten recovery codes (`access.recovery_codes`,
+  keyed hashes; made on the Diwan overview, used at the code prompt through
+  `/api/two-step/recover`) or reset by whoever holds `roles.assign` (the
+  member's page in the Diwan, `/api/two-step/reset`); either removes the
+  authenticator so a new one is set up, is recorded in
+  `access.two_step_resets` and emails the person.
 - **Atomic multi-step operations are Postgres functions** called by RPC
   (ledger sign-off, ballots, blind ids, waitlist promotion, transitions).
   The body is a SECURITY DEFINER function in the `private` schema that
@@ -179,8 +186,14 @@ any schema change. Integration tests run against a local stack with
   default). Google Wallet only (`docs/platform/wallet.md`). Never put an
   account id in a QR.
 - **What's on is one calendar** (owner, Oct 25, 2026): programs and events
-  together at `/events`, a month at a time, each program a series
-  (`/programs/<slug>`). Every event has a way in, `events.events.entry`:
+  together at `/events`, a month at a time, each program a series with its
+  own calendar at `/events/<slug>` (there is no `/programs`, and no
+  redirects: owner). Programs and events share the addresses under
+  `/events`; triggers keep a slug to one of them (and off `book`). A
+  program's sessions come from its repeat rule (`events.series_rules`,
+  the Diwan's Programs → Sessions) through `events.add_series_sessions`,
+  then are edited or canceled one by one as events. Every event has a way
+  in, `events.events.entry`:
   `open` (just come; members may ask "Remind me", `events.reminders`),
   `rsvp` (book a place) or `invite` (only the people in
   `events.invitations` and the event's managers see it; always
@@ -189,6 +202,12 @@ any schema change. Integration tests run against a local stack with
   members-only events as teasers (title, time, program; nothing else).
   `rsvp_enabled` is kept in step with `entry` by a trigger; write `entry`.
   SECURITY DEFINER code checks visibility with `private.can_see_event_id`.
+  AUIB's own dates (the hourly sync of the University's public calendar
+  into `core.external_events`, `events.universityCalendar`) sit beside the
+  Society's on `/events`, quieter, linking to auib.edu.iq; "Hide AUIB
+  dates" (`?auib=off`) and choosing a series leave them out. AUIB publishes
+  them in English only, so their titles keep that language (`lang="en"`)
+  on the Arabic pages.
 - **Qirtas is one section.** Members send everything from `/qirtas/write`
   and the type decides the process (desk editing, or the blind review for
   Edition work); the Diwan's Qirtas section holds the newsroom and the
@@ -212,7 +231,7 @@ any schema change. Integration tests run against a local stack with
   shifts and auditions on one board. Roles and shifts carry the skills they
   want, from the same list as Profile (`core.member_details.skills`), and
   what matches the member comes first. Hours given are recorded as service
-  as before. `/programs/shifts` shows the same board.
+  as before.
 - **One partner register** (owner, Oct 25, 2026): `governance.partners`,
   kept in the Diwan's Partners section, is the only list of partners;
   charity campaigns, Qirtas calls and productions all name partners from
@@ -256,12 +275,14 @@ any schema change. Integration tests run against a local stack with
   - The Diwan, الديوان, at `/diwan`, for officers (code: `nexus`,
     `components/nexus`, `lib/nexus`, `nexusPath`, `paths.nexus`, messages
     namespace `nexus`, which also holds the members' pages' text).
-  - Next Stop, المحطة القادمة (code: slug `side-quest`, `/programs/side-quest/care`).
+  - Next Stop, المحطة القادمة, at `/events/next-stop` (code: `side-quest`
+    in component and message names; slug `next-stop` since Oct 25, 2026;
+    its promise at `/events/next-stop/care`).
   - The Company, الفرقة, the fifth flagship (code: `productions`, slug
-    `company`, `/programs/productions`).
-  - Open Stage, المسرح المفتوح (code: slug `scratch-night`).
-  - Munazara, المناظرة (code: slug `motion-night`).
-  - Mutanabbi Friday, جمعة المتنبي (code: slug `mutanabbi-walk`).
+    `company`; at `/events/company`, with the productions).
+  - Open Stage, المسرح المفتوح (slug `open-stage`).
+  - Munazara, المناظرة (slug `munazara`).
+  - Mutanabbi Friday, جمعة المتنبي (slug `mutanabbi-friday`).
   - Gallery Wall merged into Qirtas's Gallery desk, «معرض قرطاس» (code: slug
     `gallery-wall`, kept and unpublished).
   - The Qirtas Prizes, جوائز قرطاس (was "the Prizes").

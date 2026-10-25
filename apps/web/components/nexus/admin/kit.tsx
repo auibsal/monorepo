@@ -286,7 +286,7 @@ export const SelectInput = ({
 }: React.ComponentProps<"select">) => (
   <select
     className={cn(
-      "h-12 w-full border border-input bg-surface px-3 text-[0.9375rem] focus-visible:outline-2",
+      "h-12 w-full border border-input bg-surface px-3 text-base focus-visible:outline-2",
       className
     )}
     {...props}
