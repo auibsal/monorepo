@@ -55,9 +55,7 @@ test.describe("public site", () => {
       page.getByRole("link", { name: event.title }).first()
     ).toBeAttached();
     // AUIB's own dates sit beside the Society's, linking to the University.
-    const auib = page
-      .getByRole("link", { name: universityDate.title })
-      .first();
+    const auib = page.getByRole("link", { name: universityDate.title }).first();
     await expect(auib).toHaveAttribute("href", universityDate.url);
     await expectAccessible(page);
     await page.getByRole("link", { name: "Hide AUIB dates" }).click();
