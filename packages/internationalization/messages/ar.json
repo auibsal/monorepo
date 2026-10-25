@@ -251,6 +251,7 @@
         "issued": "صدر هذا الرمز في {date}.",
         "clock": "الوقت الآن في بغداد",
         "wallet": "أضف إلى Google Wallet",
+        "inWallet": "في Google Wallet",
         "walletUnavailable": "بطاقة Google Wallet غير متاحة بعد.",
         "perks": "المزايا",
         "perksHow": "اعرض هذه البطاقة لدى الشريك، ويمكن لموظفيه مسحها للتأكد من عضويتك.",
@@ -835,6 +836,7 @@
           "answered": "أجابوا",
           "counted": "وافقوا على الاحتساب",
           "volunteers": "مستعدون للتطوع",
+          "inWallet": "في Google Wallet",
           "none": "لا إجابات بعد.",
           "fewerThanFive": "أقل من 5",
           "facets": {

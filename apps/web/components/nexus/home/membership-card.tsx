@@ -127,11 +127,26 @@ const Sheen = () => {
   );
 };
 
-/** Add to Google Wallet: the pass carries the same live code. */
-const WalletLink = () => {
+/**
+ * Add to Google Wallet: the pass carries the same live code. Once Google
+ * says the member saved it, the card says so instead.
+ */
+const WalletLink = ({ code }: { code: string }) => {
   const t = useTranslations("nexus.home.card");
   const { supabase } = useAuth();
   const [state, setState] = useState<"idle" | "busy" | "unavailable">("idle");
+  const pass = useQuery({
+    queryFn: async () =>
+      unwrap(
+        await supabase
+          .schema("membership")
+          .from("wallet_passes")
+          .select("state")
+          .eq("code", code)
+          .maybeSingle()
+      ),
+    queryKey: ["membership", "wallet", code],
+  });
   const add = async () => {
     setState("busy");
     try {
@@ -145,6 +160,9 @@ const WalletLink = () => {
       setState("unavailable");
     }
   };
+  if (pass.data?.state === "saved") {
+    return <p className="type-caption">{t("inWallet")}</p>;
+  }
   return (
     <>
       <Button
@@ -404,7 +422,7 @@ export const MembershipCard = () => {
             </div>
           </DialogContent>
         </Dialog>
-        <WalletLink />
+        <WalletLink code={card.data.code} />
         {link ? (
           <a className="link type-caption" href={link}>
             {t("card.open")}

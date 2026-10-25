@@ -1,8 +1,14 @@
 import { authenticateRequest } from "@repo/auth/verify";
+import { createAdminClient } from "@repo/database/admin";
 import { membership } from "@repo/sal-data";
 import { NextResponse } from "next/server";
 import { corsHeaders, preflight } from "@/lib/api/cors";
-import { googleWalletLink, walletConfigured } from "@/lib/api/wallet";
+import {
+  googleWalletLink,
+  refreshWalletPass,
+  type WalletCard,
+  walletConfigured,
+} from "@/lib/api/wallet";
 
 export const OPTIONS = preflight;
 
@@ -24,7 +30,9 @@ const tiers = {
 /**
  * The member's "Add to Google Wallet" link. The card and its secret are
  * read as the member (membership.my_card under their token), never with
- * the secret key.
+ * the secret key. The pass is recorded (membership.wallet_passes, so it can
+ * be retired when the card stops being good), and a pass the member
+ * already holds is brought up to date and made active again.
  */
 export const POST = async (request: Request) => {
   const headers = corsHeaders(request);
@@ -52,7 +60,7 @@ export const POST = async (request: Request) => {
     return json({ error: "not_a_member" }, 403);
   }
   const locale = profile.data.locale === "ar" ? "ar" : "en";
-  const url = await googleWalletLink({
+  const pass: WalletCard = {
     code: card.code,
     fullName:
       (locale === "ar" && profile.data.full_name_ar) ||
@@ -68,6 +76,30 @@ export const POST = async (request: Request) => {
     number: card.number,
     secret: card.secret,
     tier: tiers[locale][standing.tier ?? "member"],
-  });
-  return json({ url });
+  };
+
+  const admin = createAdminClient();
+  const { data: recorded } = await admin
+    .schema("membership")
+    .from("wallet_passes")
+    .select("state")
+    .eq("code", card.code)
+    .maybeSingle();
+  if (!recorded) {
+    await admin
+      .schema("membership")
+      .from("wallet_passes")
+      .insert({ code: card.code, user_id: session.userId });
+  } else if (recorded.state === "expired") {
+    await admin
+      .schema("membership")
+      .from("wallet_passes")
+      .update({ state: "issued" })
+      .eq("code", card.code);
+  }
+  // The link only creates a pass; one already in Google Wallet is updated
+  // here. A failure leaves the old pass as it was; the link still works.
+  await refreshWalletPass(pass).catch(() => false);
+
+  return json({ url: await googleWalletLink(pass) });
 };
