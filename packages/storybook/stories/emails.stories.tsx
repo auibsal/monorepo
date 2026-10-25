@@ -11,6 +11,7 @@ import {
   type Lang,
   monthInWaraq,
   newsletterConfirm,
+  openingReply,
   pieceNote,
   piecePublished,
   type RemovalInfo,
@@ -116,6 +117,17 @@ export const ReturnedForFormatting = email((l) =>
   returnedForFormatting(l, WORK, "Please send it as one document.", APP)
 );
 export const RoleEnding = email((l) => roleEnding(l, role, APP));
+export const OpeningReply = email((l) =>
+  openingReply(
+    l,
+    {
+      member: l === "ar" ? "اسم العضو" : "A member's name",
+      note: null,
+      title: l === "ar" ? "مصوّر" : "Photographer",
+    },
+    APP
+  )
+);
 export const RsvpConfirmed = email((l) => rsvpConfirmed(l, event, APP));
 export const SubmissionReceived = email((l) =>
   submissionReceived(l, WORK, APP)

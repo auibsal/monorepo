@@ -11,14 +11,15 @@ import { type ReactNode, useEffect, useState } from "react";
 import { Masthead, mastheadLink } from "./masthead";
 
 // Five sections in the header; the rest are in the footer.
-type SectionKey = "about" | "programs" | "journal" | "events" | "join";
-// What's on comes second (owner, 2026-10-25): programs and events are one
-// calendar now.
+type SectionKey = "about" | "involved" | "journal" | "events" | "join";
+// About · What's on · Qirtas · Get involved · Join (owner, 2026-10-25):
+// programs and events are one calendar, and "Get involved" opens the
+// Callboard. Programs moved to the footer.
 const sections: { href: string; key: SectionKey }[] = [
   { href: "/about", key: "about" },
   { href: "/events", key: "events" },
   { href: "/qirtas", key: "journal" },
-  { href: "/programs", key: "programs" },
+  { href: "/callboard", key: "involved" },
   { href: "/join", key: "join" },
 ];
 

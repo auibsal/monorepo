@@ -322,6 +322,11 @@ These stop parts of the work. Everything else continues around them.
 
 ## Decisions
 
+- **The Callboard** (owner, 2026-10-25: "go for everything"; the name "The
+  Callboard", the link "Get involved"): roles, shifts and auditions on one
+  members' board, matched to the skills in Profile, with the hours given
+  counting toward the service record. The header is About · What's on ·
+  Qirtas · Get involved · Join; Programs moved to the footer.
 - **Qirtas, two doors** (owner, 2026-10-25: "go for everything"): the
   newsroom is always open; the Edition takes work only during a call (two
   a year), and members can ask to be emailed when the next one opens.
@@ -829,6 +834,15 @@ These stop parts of the work. Everything else continues around them.
 
 ## Checklist
 
+### The Callboard (2026-10-25)
+
+- [x] Migration `20261025000700_callboard`: openings, replies (managers
+      emailed), skills on openings and shifts; pgTAP `99_callboard` (12)
+- [x] `/callboard`: roles, shifts and auditions, matched to skills; the
+      header's "Get involved"
+- [x] Diwan, Programs › Roles: post, see replies, close; skills on shifts
+- [ ] Next: the account restructure, then partners
+
 ### Qirtas two doors and Six Words on the Tour (2026-10-25)
 
 - [x] Migration `20261025000600_qirtas_doors`: `prose`, retired types,
@@ -1169,6 +1183,11 @@ Covered by automated tests so far:
 All Arabic written for the platform up to 2026-10-24 was reviewed by the
 owner and approved ("reviewed across the board, it's all good"). List new
 Arabic here as it is written.
+
+Written 2026-10-25 (the Callboard): `web.nav.involved` («شارك»),
+`nexus.callboard.*` (title «لوحة النداءات»),
+`nexus.admin.programmes.callboard.*`, `nexus.admin.programmes.tabs.roles`;
+the email `openingReply`.
 
 Written 2026-10-25 (Qirtas two doors): `nexus.journal.write.newsroomTitle`,
 `newsroomLede`, `editionTitle`, `editionLede`, `noCall`, `nextCall`,

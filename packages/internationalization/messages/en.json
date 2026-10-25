@@ -1316,7 +1316,8 @@
           "reels": "Reels",
           "sixWords": "Six Words",
           "rotas": "Rotas",
-          "removals": "Removal requests ({count})"
+          "removals": "Removal requests ({count})",
+          "roles": "Roles"
         },
         "episodes": {
           "new": "New episode",
@@ -1415,6 +1416,21 @@
           "close": "Close with this status",
           "closeConfirm": "Close this request? Write down what was done.",
           "recent": "Recently closed"
+        },
+        "callboard": {
+          "lede": "Roles this program needs filled, on the Callboard. Members who say they're interested are listed here, and each one is also emailed to the program's managers. Close a role once it's filled.",
+          "title": "Role",
+          "body": "What it involves",
+          "skills": "Skills it wants",
+          "closes": "Closes (optional)",
+          "empty": "No roles posted for this program.",
+          "open": "Open",
+          "closed": "Closed",
+          "closesOn": "closes {date}",
+          "replies": "{count, plural, =0 {Nobody has replied yet} one {One member is interested} other {{count} members are interested}}",
+          "close": "Close the role",
+          "closeConfirm": "Close this role? It leaves the Callboard; the replies stay here.",
+          "reopen": "Reopen"
         }
       },
       "governance": {
@@ -3660,6 +3676,32 @@
         "email_invalid": "Enter a valid email address.",
         "unknown": "Something went wrong. Please try again."
       }
+    },
+    "callboard": {
+      "title": "The Callboard",
+      "lede": "Roles, shifts and auditions across the Society, on one board. Pick something up; the hours you give count toward your service record.",
+      "matched": "What matches the skills in your profile comes first.",
+      "noSkills": "Tell us your skills and what matches them comes first.",
+      "addSkills": "Add your skills",
+      "editSkills": "Change your skills",
+      "matches": "Matches your skills: {skills}",
+      "wants": "Looking for: {skills}",
+      "closes": "Closes {date}",
+      "roles": "Roles",
+      "rolesLede": "Roles a program needs filled. Say you're interested and its lead will be in touch.",
+      "noRoles": "No roles are posted right now.",
+      "interested": "I'm interested",
+      "interestedNote": "You said you're interested. The program's lead will be in touch.",
+      "takeBack": "Take it back",
+      "shifts": "Shifts",
+      "whatsOn": "See what's on",
+      "auditions": "Auditions",
+      "auditionsLede": "The Company casts each production in an audition. Sign up on the Company's page.",
+      "auditionsLink": "Sign up for an audition",
+      "noAuditions": "No auditions are announced right now.",
+      "hours": "Your hours",
+      "hoursLede": "The hours you give on shifts and roles count toward your service record and the Society's certificates.",
+      "hoursLink": "See your service record"
     }
   },
   "web": {
@@ -3673,7 +3715,8 @@
       "news": "News",
       "documents": "Documents",
       "signIn": "Sign in",
-      "account": "Your account"
+      "account": "Your account",
+      "involved": "Get involved"
     },
     "footer": {
       "contact": "Contact",

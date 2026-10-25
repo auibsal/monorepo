@@ -46,9 +46,7 @@ export const MyProgrammes = () => {
   return (
     <Section id="programmes" title={t("title")}>
       {shifts.data?.length === 0 ? (
-        <EmptyLine
-          action={{ href: "/programs/shifts", label: ta("openShifts") }}
-        >
+        <EmptyLine action={{ href: "/callboard", label: ta("openShifts") }}>
           {t("empty")}
         </EmptyLine>
       ) : null}

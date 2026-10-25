@@ -234,9 +234,7 @@ export const Service = () => {
       <DiwanSection id="recordstitle" title={t("recordsTitle")}>
         {records.isPending ? <SectionSpinner /> : null}
         {records.data?.length === 0 ? (
-          <EmptyLine
-            action={{ href: "/programs/shifts", label: t("findShift") }}
-          >
+          <EmptyLine action={{ href: "/callboard", label: t("findShift") }}>
             {t("noRecords")}
           </EmptyLine>
         ) : null}

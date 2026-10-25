@@ -5247,6 +5247,80 @@ export type Database = {
         };
         Relationships: [];
       };
+      opening_replies: {
+        Row: {
+          created_at: string;
+          note: string | null;
+          opening_id: string;
+          user_id: string;
+        };
+        Insert: {
+          created_at?: string;
+          note?: string | null;
+          opening_id: string;
+          user_id?: string;
+        };
+        Update: {
+          created_at?: string;
+          note?: string | null;
+          opening_id?: string;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "opening_replies_opening_id_fkey";
+            columns: ["opening_id"];
+            isOneToOne: false;
+            referencedRelation: "openings";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      openings: {
+        Row: {
+          body_ar: string | null;
+          body_en: string | null;
+          closes_at: string | null;
+          created_at: string;
+          created_by: string | null;
+          id: string;
+          is_open: boolean;
+          programme_id: string | null;
+          skills: string[];
+          title_ar: string;
+          title_en: string;
+          updated_at: string;
+        };
+        Insert: {
+          body_ar?: string | null;
+          body_en?: string | null;
+          closes_at?: string | null;
+          created_at?: string;
+          created_by?: string | null;
+          id?: string;
+          is_open?: boolean;
+          programme_id?: string | null;
+          skills?: string[];
+          title_ar: string;
+          title_en: string;
+          updated_at?: string;
+        };
+        Update: {
+          body_ar?: string | null;
+          body_en?: string | null;
+          closes_at?: string | null;
+          created_at?: string;
+          created_by?: string | null;
+          id?: string;
+          is_open?: boolean;
+          programme_id?: string | null;
+          skills?: string[];
+          title_ar?: string;
+          title_en?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
       production_credits: {
         Row: {
           created_at: string;
@@ -5652,6 +5726,7 @@ export type Database = {
           role_ar: string;
           role_en: string;
           rota_id: string;
+          skills: string[];
           starts_at: string;
         };
         Insert: {
@@ -5665,6 +5740,7 @@ export type Database = {
           role_ar: string;
           role_en: string;
           rota_id: string;
+          skills?: string[];
           starts_at: string;
         };
         Update: {
@@ -5678,6 +5754,7 @@ export type Database = {
           role_ar?: string;
           role_en?: string;
           rota_id?: string;
+          skills?: string[];
           starts_at?: string;
         };
         Relationships: [
