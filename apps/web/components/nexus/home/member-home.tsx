@@ -8,13 +8,13 @@ import { MembershipCard } from "./membership-card";
 import { NextEvents } from "./next-events";
 import { Notices } from "./notices";
 import { MyProgrammes } from "./programmes";
+import { Requests } from "./requests";
 import { SixWords } from "./six-words";
-import { VotingEligibility } from "./voting";
 
 /**
- * Member home, mobile-first: what to do next first (notices only when there
- * are some), then voting and the Register. The calendar feed is a
- * setting, so it lives in Profile and privacy.
+ * Today, mobile-first: the card, what to do next (notices only when there
+ * are some), what the member has sent, and the Register. Voting
+ * eligibility is on the Society page; the calendar feed on My calendar.
  */
 export const MemberHome = () => {
   const t = useTranslations("nexus.home");
@@ -33,7 +33,7 @@ export const MemberHome = () => {
         <NextEvents />
         <JournalSection />
         <MyProgrammes />
-        <VotingEligibility />
+        <Requests />
         <SixWords />
       </div>
     </DiwanPage>

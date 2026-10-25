@@ -15,10 +15,14 @@ items and decisions) and continue from the first unticked item.
     only, with the publishable key; cached by tag and revalidated on publish.
   - `app/[locale]/(account)` — **the members' pages, on the site** (owner,
     Oct 24, 2026): `/sign-in`, `/sign-up`, `/auth/*`, `/setup`,
-    `/oauth/consent`, and, for members, `/account` (overview, `/profile`,
-    `/requests`, `/service`, `/offers`, `/certificate`), `/events/book`,
-    `/programs/shifts`, `/programs/productions/auditions`, `/qirtas/write`
-    (with `/submit`, `/submission`, `/work`, `/piece`) and `/society`. The
+    `/oauth/consent`, and, for members, the account menu (owner, Oct 25,
+    2026): Today (`/account`), My calendar (`/events/book`), Callboard
+    (`/callboard`), Society (`/society`), Record (`/account/service`, with
+    certificates) and Settings (`/account/settings`, which also holds
+    `/account/profile` and `/account/requests`); also `/account/certificate`,
+    `/programs/productions/auditions`, `/qirtas/write` (with `/submit`,
+    `/submission`, `/work`, `/piece`). Perks are on the card; voting
+    eligibility is on Society; the calendar feed is on My calendar. The
     site's header and footer, an account row (`components/account`), and
     the gates in `components/nexus/gates.tsx`. They link with the site's
     `Link` (`@repo/internationalization/navigation`) and full paths.

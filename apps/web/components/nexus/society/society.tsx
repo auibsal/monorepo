@@ -8,6 +8,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useFlags } from "@/lib/nexus/queries";
 import { StartLinks } from "../forms/forms";
+import { VotingEligibility } from "../home/voting";
 import { DiwanPage, DiwanSection, RowList } from "../page";
 import { EmptyLine, ErrorState, SectionSpinner } from "../states";
 import { Elections } from "./elections";
@@ -233,6 +234,7 @@ export const Society = () => {
 
   return (
     <DiwanPage lede={t("lede")} title={t("title")}>
+      <VotingEligibility />
       <Council />
       {flags.data?.elections ? <Elections /> : null}
       <DiwanSection

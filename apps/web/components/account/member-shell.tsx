@@ -17,16 +17,32 @@ import { useTwoStep } from "@/components/nexus/auth/two-step";
 import { disablePush } from "@/lib/nexus/push";
 import { useMemberStatus } from "@/lib/nexus/queries";
 
-/** Whether a link is the current page: Overview only on itself. */
-const isCurrent = (pathname: string, href: string) =>
-  href === "/account"
-    ? pathname === href
-    : pathname === href || pathname.startsWith(`${href}/`);
+interface AccountLink {
+  /** Pages that count as this link's own (Settings holds Profile and Requests). */
+  readonly also?: readonly string[];
+  readonly href: string;
+  readonly key:
+    | "today"
+    | "calendar"
+    | "callboard"
+    | "society"
+    | "record"
+    | "settings";
+}
+
+/** Whether a link is the current page: Today only on itself. */
+const isCurrent = (pathname: string, link: AccountLink) =>
+  [link.href, ...(link.also ?? [])].some((href) =>
+    href === "/account"
+      ? pathname === href
+      : pathname === href || pathname.startsWith(`${href}/`)
+  );
 
 /**
- * The account's own pages, in one row under the site's header: overview,
- * profile, requests, service, offers, the Society, and the Diwan for
- * those whose roles open it.
+ * The account's own pages, in one row under the site's header (owner,
+ * 2026-10-25): Today · My calendar · Callboard · Society · Record ·
+ * Settings, and the Diwan for those whose roles open it. Profile and
+ * Requests sit under Settings; perks are on the card.
  */
 const useAccountLinks = () => {
   const { visible } = useVisibleModules();
@@ -34,17 +50,23 @@ const useAccountLinks = () => {
   const status = useMemberStatus();
   const staff = visible.length > 0 || Boolean(twoStep.data?.needs);
   const member = Boolean(status.data?.is_member);
-  return {
-    links: [
-      { href: "/account", key: "overview" },
-      { href: "/account/profile", key: "profile" },
-      { href: "/account/requests", key: "forms" },
-      { href: "/account/service", key: "service" },
-      ...(member ? [{ href: "/account/offers", key: "offers" } as const] : []),
-      ...(member ? [{ href: "/society", key: "society" } as const] : []),
-    ] as const,
-    staff,
-  };
+  const links: AccountLink[] = [
+    { href: "/account", key: "today" },
+    ...(member
+      ? ([
+          { href: "/events/book", key: "calendar" },
+          { href: "/callboard", key: "callboard" },
+          { href: "/society", key: "society" },
+        ] as const)
+      : []),
+    { href: "/account/service", key: "record" },
+    {
+      also: ["/account/profile", "/account/requests"],
+      href: "/account/settings",
+      key: "settings",
+    },
+  ];
+  return { links, staff };
 };
 
 /** The account's links, sign-out, and the way into the Diwan for officers. */
@@ -66,7 +88,7 @@ const AccountNav = () => {
     router.replace("/");
   };
 
-  const current = links.find((link) => isCurrent(pathname, link.href));
+  const current = links.find((link) => isCurrent(pathname, link));
   const extras = (
     <>
       {staff ? (
@@ -99,7 +121,7 @@ const AccountNav = () => {
         key={pathname}
       >
         <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-3 font-medium text-sm [&::-webkit-details-marker]:hidden">
-          <span>{t(current?.key ?? "overview")}</span>
+          <span>{t(current?.key ?? "today")}</span>
           <ChevronDown
             aria-hidden="true"
             className="size-4 transition-transform group-open:rotate-180"
@@ -109,12 +131,10 @@ const AccountNav = () => {
           {links.map((link) => (
             <li key={link.href}>
               <Link
-                aria-current={
-                  isCurrent(pathname, link.href) ? "page" : undefined
-                }
+                aria-current={isCurrent(pathname, link) ? "page" : undefined}
                 className={cn(
                   "block py-3 text-sm hover:text-accent",
-                  isCurrent(pathname, link.href)
+                  isCurrent(pathname, link)
                     ? "font-medium text-accent"
                     : "text-text"
                 )}
@@ -131,7 +151,7 @@ const AccountNav = () => {
       <div className="mx-auto hidden w-full max-w-6xl items-center gap-x-6 px-4 md:flex">
         <ul className="flex min-w-0 gap-x-6 overflow-x-auto">
           {links.map((link) => {
-            const here = isCurrent(pathname, link.href);
+            const here = isCurrent(pathname, link);
             return (
               <li className="shrink-0" key={link.href}>
                 <Link

@@ -13,18 +13,11 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { type FormEvent, useEffect, useId, useState } from "react";
 import { queryKeys, useProfile } from "@/lib/nexus/queries";
-import { SentList, StartLinks } from "../forms/forms";
-import { CalendarFeed } from "../home/calendar-feed";
+import { StartLinks } from "../forms/forms";
 import { DiwanPage, DiwanSection } from "../page";
 import { ErrorState, SectionSpinner } from "../states";
 import { Affiliations } from "./affiliations";
-import { ConnectedApps } from "./connected-apps";
-import { DeleteAccount } from "./delete-account";
 import { DetailsSection } from "./details-fields";
-import { Passkeys } from "./passkeys";
-import { PersonalEmail } from "./personal-email";
-import { PhoneNotifications } from "./phone-notifications";
-import { TelegramLink } from "./telegram-link";
 
 export const ProfileScreen = () => {
   const t = useTranslations("nexus");
@@ -107,7 +100,16 @@ export const ProfileScreen = () => {
   };
 
   return (
-    <DiwanPage lede={t("profile.lede")} narrow title={t("profile.title")}>
+    <DiwanPage
+      actions={
+        <Link className="link" href="/account/settings">
+          {t("settings.title")}
+        </Link>
+      }
+      lede={t("profile.lede")}
+      narrow
+      title={t("profile.title")}
+    >
       <DiwanSection id="about-you" title={t("profile.aboutYou")}>
         <form className="grid gap-4" onSubmit={submit}>
           <div className="grid gap-4 sm:grid-cols-2">
@@ -235,13 +237,7 @@ export const ProfileScreen = () => {
           </Button>
         </form>
       </DiwanSection>
-      <DiwanSection id="personal-email" title={t("personalEmail.title")}>
-        <PersonalEmail />
-      </DiwanSection>
       <DetailsSection />
-      <PhoneNotifications />
-      <TelegramLink />
-      <CalendarFeed />
       <Affiliations />
       <DiwanSection
         description={t("profile.consent.lede")}
@@ -250,20 +246,6 @@ export const ProfileScreen = () => {
       >
         <StartLinks keys={["f17"]} />
       </DiwanSection>
-      <DiwanSection
-        action={
-          <Link className="link type-caption" href="/account/requests">
-            {t("forms.mineAll")}
-          </Link>
-        }
-        id="sent"
-        title={t("forms.mine")}
-      >
-        <SentList limit={5} />
-      </DiwanSection>
-      <Passkeys />
-      <ConnectedApps />
-      <DeleteAccount />
     </DiwanPage>
   );
 };

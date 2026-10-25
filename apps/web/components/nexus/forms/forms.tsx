@@ -179,6 +179,13 @@ export const Forms = () => {
 
   return (
     <DiwanPage lede={t("lede")} narrow title={t("title")}>
+      <DiwanSection
+        description={t("concern.lede")}
+        id="concern"
+        title={t("concern.title")}
+      >
+        <StartLinks keys={["f20"]} />
+      </DiwanSection>
       <DiwanSection id="sent" title={t("mine")}>
         <SentList />
       </DiwanSection>
