@@ -316,6 +316,18 @@ These stop parts of the work. Everything else continues around them.
 
 ## Decisions
 
+- **Personal emails are verified; one address, one person** (owner,
+  2026-10-25): the personal email stays optional (it is for keeping in
+  touch after graduation; asking everyone for it would mostly collect
+  addresses we never use). A member adds it in Profile; it counts only
+  after they press the link sent to it (seven days). It can't be an AUIB
+  address, anyone's sign-in address (their own included) or another
+  member's verified personal email, and a new account can't sign up with a
+  member's verified personal email. Addresses saved before this stay,
+  unconfirmed and unused, until their owners confirm them from Profile.
+  **No phone numbers** until they can be verified: the field and the
+  column are gone.
+
 - **The membership card works** (owner, 2026-10-25: "make the QR code
   actually functional"): each member has a card number (in the order they
   joined) and an unguessable code. The QR is a link,
@@ -1088,6 +1100,13 @@ Covered by automated tests so far:
 All Arabic written for the platform up to 2026-10-24 was reviewed by the
 owner and approved ("reviewed across the board, it's all good"). List new
 Arabic here as it is written.
+
+Written 2026-10-25 (personal email):
+
+- `nexus.personalEmail.*` («البريد الشخصي», the why, states and errors),
+  `nexus.setup.personalEmailLater`, `web.personalEmail.*` (the confirm
+  page), `auth.errors.email_reserved`, and the confirmation email
+  (`personalEmailConfirm` in `packages/email/copy.ts`).
 
 Written 2026-10-25 (the card, names, details, one Qirtas):
 

@@ -33,6 +33,14 @@ describe("email helpers", () => {
     expect(toEmailAuthError({ code: "something_new", status: 500 })).toBe(
       "unknown"
     );
+    // A new account whose address is a member's verified personal email.
+    expect(
+      toEmailAuthError({
+        code: "unexpected_failure",
+        message: "Database error saving new user",
+        status: 500,
+      })
+    ).toBe("email_reserved");
   });
 });
 

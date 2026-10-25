@@ -110,7 +110,6 @@ export const SetupForm = () => {
     camera_shy: false,
     locale: "en" as "en" | "ar",
     notify_email: true,
-    personal_email: "",
   });
 
   useEffect(() => {
@@ -120,7 +119,6 @@ export const SetupForm = () => {
         camera_shy: profile.data.camera_shy,
         locale: profile.data.locale === "ar" ? "ar" : "en",
         notify_email: profile.data.notify_email,
-        personal_email: profile.data.personal_email ?? "",
       });
     }
   }, [profile.data]);
@@ -157,7 +155,6 @@ export const SetupForm = () => {
           family_name_en: name.familyEn.trim(),
           given_name_ar: name.givenAr.trim(),
           given_name_en: name.givenEn.trim(),
-          personal_email: prefs.personal_email.trim() || null,
           setup_completed_at:
             profile.data?.setup_completed_at ?? new Date().toISOString(),
         })
@@ -385,23 +382,7 @@ export const SetupForm = () => {
               </p>
             </div>
           </div>
-          <div className="grid gap-2">
-            <Label htmlFor={`${id}-personal`}>{t("personalEmail")}</Label>
-            <Input
-              aria-describedby={`${id}-personal-hint`}
-              autoComplete="email"
-              dir="ltr"
-              id={`${id}-personal`}
-              onChange={(event) =>
-                setPrefs((p) => ({ ...p, personal_email: event.target.value }))
-              }
-              type="email"
-              value={prefs.personal_email}
-            />
-            <p className="type-caption" id={`${id}-personal-hint`}>
-              {t("personalEmailHint")}
-            </p>
-          </div>
+          <p className="type-caption">{t("personalEmailLater")}</p>
         </fieldset>
 
         <fieldset className="grid gap-4">

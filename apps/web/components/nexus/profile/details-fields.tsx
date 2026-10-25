@@ -216,20 +216,6 @@ export const DetailsFields = ({ onChange, value }: DetailsFieldsProps) => {
             </SelectInput>
           )}
         </Field>
-        <Field hint={t("phoneHint")} label={t("phone")}>
-          {(fieldId) => (
-            <Input
-              autoComplete="tel"
-              dir="ltr"
-              id={fieldId}
-              inputMode="tel"
-              maxLength={24}
-              onChange={(e) => set("phone", toText(e.target.value))}
-              type="tel"
-              value={value.phone ?? ""}
-            />
-          )}
-        </Field>
         <Field label={t("city")}>
           {(fieldId) => (
             <Input

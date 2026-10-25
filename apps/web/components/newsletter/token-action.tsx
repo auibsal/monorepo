@@ -6,26 +6,35 @@ import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 
-type State = "idle" | "sending" | "done" | "invalid" | "failed";
+type State = "idle" | "sending" | "done" | "invalid" | "in_use" | "failed";
+type Action = "confirm" | "unsubscribe" | "personalEmail";
+
+const namespaces = {
+  confirm: "web.newsletter.confirm",
+  personalEmail: "web.personalEmail",
+  unsubscribe: "web.newsletter.unsubscribe",
+} as const;
+const paths: Record<Action, string> = {
+  confirm: "/newsletter/confirm",
+  personalEmail: "/personal-email/confirm",
+  unsubscribe: "/newsletter/unsubscribe",
+};
 
 /**
- * The button behind an emailed link (confirm or unsubscribe). The link only
+ * The button behind an emailed link (the newsletter's confirm and
+ * unsubscribe, a personal email's confirm). The link only
  * opens this page; the button sends the token, so mail scanners that open
  * links change nothing.
  */
-export const TokenAction = ({
-  action,
-}: {
-  action: "confirm" | "unsubscribe";
-}) => {
-  const t = useTranslations(`web.newsletter.${action}`);
+export const TokenAction = ({ action }: { action: Action }) => {
+  const t = useTranslations(namespaces[action]);
   const token = useSearchParams().get("token") ?? "";
   const [state, setState] = useState<State>(token ? "idle" : "invalid");
 
   const run = async () => {
     setState("sending");
     try {
-      const response = await fetch(apiPath(`/newsletter/${action}`), {
+      const response = await fetch(apiPath(paths[action]), {
         body: JSON.stringify({ token }),
         headers: { "content-type": "application/json" },
         method: "POST",
@@ -33,17 +42,21 @@ export const TokenAction = ({
       if (response.ok) {
         setState("done");
       } else {
-        setState(response.status === 400 ? "invalid" : "failed");
+        const byStatus: Partial<Record<number, State>> = {
+          400: "invalid",
+          409: "in_use",
+        };
+        setState(byStatus[response.status] ?? "failed");
       }
     } catch {
       setState("failed");
     }
   };
 
-  if (state === "done" || state === "invalid") {
+  if (state === "done" || state === "invalid" || state === "in_use") {
     return (
       <p className="type-lede" role="status">
-        {t(state)}
+        {t(state as "done")}
       </p>
     );
   }

@@ -998,7 +998,6 @@ export type Database = {
           interests: string[];
           languages: string[];
           major: string | null;
-          phone: string | null;
           research_consent: boolean;
           skills: string[];
           student_id: string | null;
@@ -1019,7 +1018,6 @@ export type Database = {
           interests?: string[];
           languages?: string[];
           major?: string | null;
-          phone?: string | null;
           research_consent?: boolean;
           skills?: string[];
           student_id?: string | null;
@@ -1040,7 +1038,6 @@ export type Database = {
           interests?: string[];
           languages?: string[];
           major?: string | null;
-          phone?: string | null;
           research_consent?: boolean;
           skills?: string[];
           student_id?: string | null;
@@ -1105,6 +1102,27 @@ export type Database = {
         };
         Relationships: [];
       };
+      personal_email_requests: {
+        Row: {
+          email: string;
+          requested_at: string;
+          token: string;
+          user_id: string;
+        };
+        Insert: {
+          email: string;
+          requested_at?: string;
+          token?: string;
+          user_id: string;
+        };
+        Update: {
+          email?: string;
+          requested_at?: string;
+          token?: string;
+          user_id?: string;
+        };
+        Relationships: [];
+      };
       profiles: {
         Row: {
           avatar_path: string | null;
@@ -1121,6 +1139,7 @@ export type Database = {
           locale: string;
           notify_email: boolean;
           personal_email: string | null;
+          personal_email_verified_at: string | null;
           setup_completed_at: string | null;
           updated_at: string;
           verified_at: string | null;
@@ -1140,6 +1159,7 @@ export type Database = {
           locale?: string;
           notify_email?: boolean;
           personal_email?: string | null;
+          personal_email_verified_at?: string | null;
           setup_completed_at?: string | null;
           updated_at?: string;
           verified_at?: string | null;
@@ -1159,6 +1179,7 @@ export type Database = {
           locale?: string;
           notify_email?: boolean;
           personal_email?: string | null;
+          personal_email_verified_at?: string | null;
           setup_completed_at?: string | null;
           updated_at?: string;
           verified_at?: string | null;
@@ -1463,6 +1484,7 @@ export type Database = {
     };
     Functions: {
       admin_overview: { Args: Record<PropertyKey, never>; Returns: Json };
+      confirm_personal_email: { Args: { token: string }; Returns: string };
       current_semester: {
         Args: Record<PropertyKey, never>;
         Returns: {
@@ -1482,6 +1504,15 @@ export type Database = {
         };
       };
       member_insights: { Args: Record<PropertyKey, never>; Returns: Json };
+      my_personal_email: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          email: string;
+          pending_email: string;
+          pending_since: string;
+          verified: boolean;
+        }[];
+      };
       my_private_profile: {
         Args: Record<PropertyKey, never>;
         Returns: {
@@ -1507,6 +1538,11 @@ export type Database = {
           isSetofReturn: false;
         };
       };
+      remove_personal_email: {
+        Args: Record<PropertyKey, never>;
+        Returns: undefined;
+      };
+      request_personal_email: { Args: { email: string }; Returns: undefined };
       save_push_subscription: {
         Args: {
           auth: string;

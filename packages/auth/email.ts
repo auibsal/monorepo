@@ -26,6 +26,7 @@ export type EmailAuthErrorCode =
   | "unknown"
   | "user_exists"
   | "names_required"
+  | "email_reserved"
   | "weak_password";
 
 export type AuthResult<T = undefined> =
@@ -34,8 +35,17 @@ export type AuthResult<T = undefined> =
 
 /** Maps a Supabase Auth error to a code the UI can translate. */
 export const toEmailAuthError = (
-  error: Pick<AuthError, "code" | "status"> | null | undefined
+  error:
+    | (Pick<AuthError, "code" | "status"> & { message?: string })
+    | null
+    | undefined
 ): EmailAuthErrorCode => {
+  // The database refuses a new account whose address is already a member's
+  // verified personal email (private.guard_sign_in_email); Supabase Auth
+  // reports it as a failure to save the user.
+  if (error?.message?.includes("Database error saving new user")) {
+    return "email_reserved";
+  }
   switch (error?.code) {
     case "captcha_failed":
       return "captcha_failed";

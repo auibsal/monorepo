@@ -21,7 +21,6 @@ export const profileSchema = z.object({
   full_name_en: z.string().trim().min(1).max(120),
   locale: z.enum(["en", "ar"]),
   notify_email: z.boolean(),
-  personal_email: z.email().optional().or(z.literal("")),
 });
 
 export type ProfileInput = z.infer<typeof profileSchema>;
@@ -82,6 +81,42 @@ export const reissueCard = async (client: Client) =>
 /** The public check of a card by its code (anyone, signed in or not). */
 export const verifyCard = async (client: Client, code: string) =>
   unwrap(await membership(client).rpc("verify_card", { code }))?.[0] ?? null;
+
+// ── The personal email (verified from a link; one address, one person) ──────
+
+export interface PersonalEmail {
+  email: string | null;
+  pending_email: string | null;
+  pending_since: string | null;
+  verified: boolean;
+}
+
+export const myPersonalEmail = async (
+  client: Client
+): Promise<PersonalEmail | null> =>
+  (unwrap(await client.schema("core").rpc("my_personal_email"))?.[0] as
+    | PersonalEmail
+    | undefined) ?? null;
+
+/** Raises email_invalid, email_auib or email_in_use (DataError message). */
+export const requestPersonalEmail = async (client: Client, email: string) =>
+  unwrap(await client.schema("core").rpc("request_personal_email", { email }));
+
+export const removePersonalEmail = async (client: Client) =>
+  unwrap(await client.schema("core").rpc("remove_personal_email"));
+
+/** Why an address was refused, from the database's message. */
+export const personalEmailError = (
+  error: unknown
+): "email_auib" | "email_in_use" | "email_invalid" | "unknown" => {
+  const message = error instanceof Error ? error.message : "";
+  for (const code of ["email_auib", "email_in_use", "email_invalid"] as const) {
+    if (message.includes(code)) {
+      return code;
+    }
+  }
+  return "unknown";
+};
 
 // ── What members tell us about themselves (core.member_details) ─────────────
 
@@ -150,7 +185,6 @@ export const heardFrom = [
   "other",
 ] as const;
 
-const PHONE = /^\+?[0-9 ()-]{7,24}$/;
 const year = (min: number, max: number) =>
   z.number().int().min(min).max(max).nullable();
 
@@ -166,7 +200,6 @@ export const detailsSchema = z.object({
   interests: z.array(z.enum(interests)),
   languages: z.array(z.enum(memberLanguages)),
   major: z.string().trim().max(120).nullable(),
-  phone: z.string().trim().regex(PHONE).nullable(),
   research_consent: z.boolean(),
   skills: z.array(z.enum(skills)),
   student_id: z.string().trim().max(20).nullable(),
@@ -187,7 +220,6 @@ export const emptyDetails: MemberDetails = {
   interests: [],
   languages: [],
   major: null,
-  phone: null,
   research_consent: false,
   skills: [],
   student_id: null,
@@ -196,7 +228,7 @@ export const emptyDetails: MemberDetails = {
 };
 
 const detailColumns =
-  "affiliation, birth_year, city, college, gender, graduation_year, heard_from, interests, languages, major, phone, research_consent, skills, student_id, study_level, volunteer";
+  "affiliation, birth_year, city, college, gender, graduation_year, heard_from, interests, languages, major, research_consent, skills, student_id, study_level, volunteer";
 
 /** The member's own answers (RLS: only theirs, or members.manage). */
 export const myDetails = async (
