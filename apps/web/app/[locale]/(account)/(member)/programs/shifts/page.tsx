@@ -1,8 +1,9 @@
-import { ProgrammesBrowser } from "@/components/nexus/programmes/programmes-browser";
+import { Callboard } from "@/components/nexus/programmes/callboard";
 import { titleFrom } from "@/lib/nexus/metadata";
 
-export const generateMetadata = titleFrom((t) => t("nexus.programs.title"));
+export const generateMetadata = titleFrom((t) => t("nexus.callboard.title"));
 
-const ProgrammesPage = () => <ProgrammesBrowser />;
+// The shifts are on the Callboard now; this address keeps working.
+const ShiftsPage = () => <Callboard />;
 
-export default ProgrammesPage;
+export default ShiftsPage;

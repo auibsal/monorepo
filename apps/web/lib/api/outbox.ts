@@ -18,6 +18,7 @@ import {
   finalCheck,
   monthInWaraq,
   newsletterConfirm,
+  openingReply,
   personalEmailConfirm,
   pieceNote,
   piecePublished,
@@ -572,6 +573,55 @@ const handlers: Record<string, Handler> = {
     const admins = await holders(admin, "settings.manage");
     await Promise.all(
       admins.map((a) => send(a, cronFailed(a.lang, jobs, day)))
+    );
+  },
+  "programmes.opening_reply": async (admin, payload) => {
+    const [{ data: opening }, { data: reply }, { data: person }] =
+      await Promise.all([
+        admin
+          .schema("programmes")
+          .from("openings")
+          .select("programme_id, title_en, title_ar")
+          .eq("id", String(payload.opening_id))
+          .maybeSingle(),
+        admin
+          .schema("programmes")
+          .from("opening_replies")
+          .select("note")
+          .eq("opening_id", String(payload.opening_id))
+          .eq("user_id", String(payload.user_id))
+          .maybeSingle(),
+        admin
+          .schema("core")
+          .from("profiles")
+          .select("full_name_en, full_name_ar")
+          .eq("id", String(payload.user_id))
+          .maybeSingle(),
+      ]);
+    if (!(opening && reply && person)) {
+      return;
+    }
+    const managers = opening.programme_id
+      ? await programmeManagers(admin, opening.programme_id)
+      : await holders(admin, "programmes.manage");
+    await Promise.all(
+      managers.map((m) =>
+        send(
+          m,
+          openingReply(
+            m.lang,
+            {
+              member:
+                m.lang === "ar"
+                  ? (person.full_name_ar ?? person.full_name_en)
+                  : person.full_name_en,
+              note: reply.note,
+              title: m.lang === "ar" ? opening.title_ar : opening.title_en,
+            },
+            appUrl()
+          )
+        )
+      )
     );
   },
   "programmes.removal_overdue": async (admin, payload) => {

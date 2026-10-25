@@ -123,3 +123,72 @@ export const programmeGroup = (programme: {
     ? "weekly"
     : "special";
 };
+
+// ── The Callboard ────────────────────────────────────────────────────────────
+
+/** Open roles on the Callboard (RLS shows members the open ones). */
+export const openings = async (client: Client) =>
+  unwrap(
+    await client
+      .schema("programmes")
+      .from("openings")
+      .select(
+        "id, programme_id, title_en, title_ar, body_en, body_ar, skills, closes_at, is_open, created_at"
+      )
+      .order("created_at", { ascending: false })
+  ) ?? [];
+
+/** The openings the signed-in member said they are interested in. */
+export const myOpeningReplies = async (client: Client, userId: string) =>
+  (
+    unwrap(
+      await client
+        .schema("programmes")
+        .from("opening_replies")
+        .select("opening_id")
+        .eq("user_id", userId)
+    ) ?? []
+  ).map((r) => r.opening_id);
+
+export const replyToOpening = async (
+  client: Client,
+  openingId: string,
+  note?: string
+) =>
+  unwrap(
+    await client
+      .schema("programmes")
+      .from("opening_replies")
+      .insert({ note: note?.trim() || null, opening_id: openingId })
+  );
+
+export const withdrawReply = async (
+  client: Client,
+  openingId: string,
+  userId: string
+) =>
+  unwrap(
+    await client
+      .schema("programmes")
+      .from("opening_replies")
+      .delete()
+      .eq("opening_id", openingId)
+      .eq("user_id", userId)
+  );
+
+/** The skills a role asks for that the member has. */
+export const matchingSkills = (
+  wanted: readonly string[],
+  mine: readonly string[]
+) => wanted.filter((s) => mine.includes(s));
+
+/** Rows that match the member's skills come first; the order is otherwise kept. */
+export const matchedFirst = <T extends { skills: readonly string[] }>(
+  rows: readonly T[],
+  mine: readonly string[]
+) =>
+  [...rows].sort(
+    (a, b) =>
+      Number(matchingSkills(b.skills, mine).length > 0) -
+      Number(matchingSkills(a.skills, mine).length > 0)
+  );

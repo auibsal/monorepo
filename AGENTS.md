@@ -200,6 +200,14 @@ any schema change. Integration tests run against a local stack with
   (`programmes.record_six_words`) and scans the writer's live membership
   card to make it theirs (`programmes.attach_six_words`); unsigned cards
   show without a name. One entry per member; a new card replaces the old.
+- **The Callboard** (owner, Oct 25, 2026; header link "Get involved",
+  `/callboard`, members only): roles a program needs filled
+  (`programmes.openings`; members reply "I'm interested",
+  `programmes.opening_replies`, and the program's managers are emailed),
+  shifts and auditions on one board. Roles and shifts carry the skills they
+  want, from the same list as Profile (`core.member_details.skills`), and
+  what matches the member comes first. Hours given are recorded as service
+  as before. `/programs/shifts` shows the same board.
 - **Money.** The charity ledger is append-only (corrections are reversing
   entries); only signed-off entries count. No online payments of any kind.
 - **Documents.** Every document is adopted, Version 1 (owner, Oct 24, 2026).

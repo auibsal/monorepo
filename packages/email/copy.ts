@@ -448,6 +448,32 @@ export const roleEnding = (lang: Lang, role: RoleInfo, app: string) =>
     ],
   }));
 
+export interface OpeningReplyInfo {
+  member: string;
+  note: string | null;
+  title: string;
+}
+
+/** Someone answered a Callboard opening (to the program's managers). */
+export const openingReply = (
+  lang: Lang,
+  reply: OpeningReplyInfo,
+  app: string
+) =>
+  build(lang, (l) => ({
+    action: nexus(app, l, "/programs"),
+    heading:
+      l === "ar"
+        ? `مهتم بدور: ${reply.title}`
+        : `Interested in a role: ${reply.title}`,
+    paragraphs: [
+      l === "ar"
+        ? `${reply.member} مهتم بهذا الدور في لوحة النداءات. تواصل معه.`
+        : `${reply.member} is interested in this role on the Callboard. Get in touch.`,
+      ...(reply.note ? [reply.note] : []),
+    ],
+  }));
+
 export interface RemovalInfo {
   content_url: string | null;
   details: string;

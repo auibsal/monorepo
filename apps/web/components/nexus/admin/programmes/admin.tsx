@@ -37,6 +37,7 @@ import {
 } from "../kit";
 import { useMemberNames } from "../member-picker";
 import { memberName } from "../members/directory";
+import { Openings, SkillsPicker } from "./callboard";
 import { TourCards } from "./six-words";
 
 const invalidateKey = ["admin", "programmes-module"];
@@ -510,6 +511,7 @@ const Shifts = ({ rotaId }: { rotaId: string }) => {
     ends_at: null as string | null,
     location: { ar: "", en: "" },
     role: { ar: "", en: "" },
+    skills: [] as string[],
     starts_at: null as string | null,
   });
   const data = useQuery({
@@ -571,6 +573,7 @@ const Shifts = ({ rotaId }: { rotaId: string }) => {
             role_ar: form.role.ar,
             role_en: form.role.en,
             rota_id: rotaId,
+            skills: form.skills,
             starts_at: form.starts_at ?? "",
           })
       ),
@@ -773,6 +776,10 @@ const Shifts = ({ rotaId }: { rotaId: string }) => {
             )}
           </Field>
         </div>
+        <SkillsPicker
+          onChange={(skills) => setForm((f) => ({ ...f, skills }))}
+          value={form.skills}
+        />
         <SaveButton
           disabled={!(form.starts_at && form.ends_at)}
           pending={add.isPending}
@@ -1112,6 +1119,7 @@ export const ProgrammesAdmin = () => {
           <TabsTrigger value="episodes">{t("tabs.episodes")}</TabsTrigger>
           <TabsTrigger value="reels">{t("tabs.reels")}</TabsTrigger>
           <TabsTrigger value="rotas">{t("tabs.rotas")}</TabsTrigger>
+          <TabsTrigger value="roles">{t("tabs.roles")}</TabsTrigger>
           <TabsTrigger value="six-words">{t("tabs.sixWords")}</TabsTrigger>
           <TabsTrigger value="removals">
             {t("tabs.removals", { count: formatNumber(openRemovals) })}
@@ -1127,6 +1135,9 @@ export const ProgrammesAdmin = () => {
             </TabsContent>
             <TabsContent className="pt-4" value="rotas">
               <Rotas programmeId={selected} />
+            </TabsContent>
+            <TabsContent className="pt-4" value="roles">
+              <Openings programmeId={selected} />
             </TabsContent>
           </>
         ) : null}
