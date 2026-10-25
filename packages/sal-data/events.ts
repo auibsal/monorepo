@@ -16,10 +16,10 @@ export const eventSchema = z
     body_en: z.string().optional(),
     capacity: z.number().int().positive().nullable(),
     ends_at: z.iso.datetime({ offset: true }).nullable(),
+    entry: z.enum(["open", "rsvp", "invite"]).default("rsvp"),
     members_only: z.boolean(),
     programme_id: z.uuid().nullable(),
     questions: z.array(eventQuestionSchema).max(10).default([]),
-    rsvp_enabled: z.boolean().default(true),
     slug,
     starts_at: z.iso.datetime({ offset: true }),
     status: z.enum(["draft", "published", "cancelled"]),
@@ -37,10 +37,14 @@ export const eventSchema = z
 
 export type EventInput = z.infer<typeof eventSchema>;
 
+/** The ways in: just come, book a place, or by invitation. */
+export const ENTRIES = ["open", "rsvp", "invite"] as const;
+export type Entry = (typeof ENTRIES)[number];
+
 const events = (client: Client) => client.schema("events");
 
 export const eventColumns =
-  "id, slug, programme_id, title_en, title_ar, summary_en, summary_ar, venue_en, venue_ar, starts_at, ends_at, members_only, capacity, rsvp_enabled, status, image_path";
+  "id, slug, programme_id, title_en, title_ar, summary_en, summary_ar, venue_en, venue_ar, starts_at, ends_at, members_only, capacity, rsvp_enabled, entry, status, image_path";
 
 /**
  * Public events. Members-only events are filtered here AND by RLS, so they
@@ -117,5 +121,72 @@ export const myRsvps = async (client: Client, userId: string) =>
         `id, status, ticket_code, from_waitlist, event:events(${eventColumns})`
       )
       .eq("status", "confirmed")
+      .eq("user_id", userId)
+  );
+
+/**
+ * What's on between two times: everything the caller may see, and
+ * members-only events as teasers (title, time and program only) for those
+ * who may not. Invitation-only events reach only the invited.
+ */
+export const calendar = async (client: Client, from: Date, to: Date) =>
+  unwrap(
+    await events(client).rpc(
+      "calendar",
+      { from_at: from.toISOString(), to_at: to.toISOString() },
+      { get: true }
+    )
+  ) ?? [];
+
+export type CalendarEvent = Awaited<ReturnType<typeof calendar>>[number];
+
+/** "Remind me": a reminder the day before an event without booking. */
+export const remindMe = async (client: Client, eventId: string) =>
+  unwrap(
+    await events(client)
+      .from("reminders")
+      .upsert({ event_id: eventId }, { ignoreDuplicates: true })
+  );
+
+export const forgetReminder = async (client: Client, eventId: string) =>
+  unwrap(
+    await events(client).from("reminders").delete().eq("event_id", eventId)
+  );
+
+/** The events the signed-in person asked to be reminded of. */
+export const myReminders = async (client: Client) =>
+  (unwrap(await events(client).from("reminders").select("event_id")) ?? []).map(
+    (r) => r.event_id
+  );
+
+/** Who is invited to an invitation-only event (its managers read this). */
+export const invitations = async (client: Client, eventId: string) =>
+  unwrap(
+    await events(client)
+      .from("invitations")
+      .select("user_id, created_at")
+      .eq("event_id", eventId)
+  ) ?? [];
+
+export const invite = async (client: Client, eventId: string, userId: string) =>
+  unwrap(
+    await events(client)
+      .from("invitations")
+      .upsert(
+        { event_id: eventId, user_id: userId },
+        { ignoreDuplicates: true }
+      )
+  );
+
+export const withdrawInvitation = async (
+  client: Client,
+  eventId: string,
+  userId: string
+) =>
+  unwrap(
+    await events(client)
+      .from("invitations")
+      .delete()
+      .eq("event_id", eventId)
       .eq("user_id", userId)
   );

@@ -346,8 +346,13 @@
         "leftWaitlist": "Done. You're off the waitlist.",
         "notVerified": "Booking opens once your membership is verified. An officer checks new members within a few days.",
         "closed": "Booking for this event has closed.",
-        "failed": "That didn't work. Try again in a moment."
-      }
+        "failed": "That didn't work. Try again in a moment.",
+        "reminded": "We'll email you a reminder the day before.",
+        "forgotten": "Done. No reminder for this one."
+      },
+      "byInvitation": "By invitation",
+      "remind": "Remind me",
+      "forget": "Don't remind me"
     },
     "programs": {
       "title": "Programs",
@@ -941,7 +946,6 @@
         "starts": "Starts",
         "ends": "Ends (optional)",
         "membersOnly": "Members only (hidden from the public site, search, sitemap and public feeds)",
-        "rsvpEnabled": "Take RSVPs",
         "capacity": "Capacity (empty for no limit)",
         "capacityHint": "Raising the capacity promotes people from the waitlist at once, and they are emailed.",
         "questions": "Registration questions",
@@ -982,7 +986,23 @@
         "rsvpedAt": "RSVPed",
         "serviceHours": "Hours {name} gave",
         "recordHours": "Record hours",
-        "hoursRecorded": "Hours recorded"
+        "hoursRecorded": "Hours recorded",
+        "entry": "Way in",
+        "entries": {
+          "open": "Just come (no booking)",
+          "rsvp": "Book a place",
+          "invite": "By invitation"
+        },
+        "entryHint": {
+          "open": "Anyone who can see it just comes. Members can ask for a reminder the day before.",
+          "rsvp": "Members book a place; the capacity and the waitlist apply.",
+          "invite": "Only the people you invite see it, and they book a place. It never appears publicly."
+        },
+        "invitations": "Invitations",
+        "invitationsHint": "Only the people invited (and the officers who run the event) see it.",
+        "noInvitations": "Nobody is invited yet.",
+        "invite": "Invite a member",
+        "withdraw": "Withdraw"
       },
       "checkIn": {
         "title": "Check-in",
@@ -3635,7 +3655,7 @@
       "about": "About",
       "programs": "Programs",
       "journal": "Qirtas",
-      "events": "Events",
+      "events": "What's on",
       "give": "Give",
       "join": "Join",
       "news": "News",
@@ -3738,18 +3758,33 @@
       "noText": "The text of this document has not been entered yet."
     },
     "events": {
-      "title": "Events",
-      "lede": "Readings, workshops, salons and nights out with the Society. Members see members-only events once they sign in.",
+      "title": "What's on",
+      "lede": "Programs and events in one calendar. Some you just come to, some you book, and some are for members.",
       "subscribe": "Subscribe to the calendar",
       "subscribeHint": "(adds every public event to your phone or computer calendar)",
-      "upcoming": "Coming up",
-      "past": "Past events",
-      "none": "No events announced yet.",
-      "all": "All events",
+      "all": "What's on",
       "cancelled": "This event has been canceled.",
       "rsvp": "Book a place",
       "rsvpHint": "Sign in with your AUIB email to reserve a place.",
-      "addToCalendar": "Add to calendar"
+      "addToCalendar": "Add to calendar",
+      "series": "Series",
+      "everything": "Everything",
+      "previous": "Previous month: {month}",
+      "next": "Next month: {month}",
+      "aboutSeries": "About {series}",
+      "noneMonth": "Nothing is announced for {month} yet.",
+      "ways": {
+        "open": "Just come",
+        "rsvp": "Book a place",
+        "members": "For members",
+        "invite": "By invitation",
+        "cancelled": "Canceled"
+      },
+      "remind": "Remind me",
+      "remindHint": "No booking needed. Members can ask for a reminder the day before.",
+      "inCalendar": "See it in What's on",
+      "dates": "Coming dates",
+      "noDates": "No dates are announced yet."
     },
     "journal": {
       "title": "Qirtas",

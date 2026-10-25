@@ -239,3 +239,23 @@ export const fromZonedInputValue = (value: string) => {
 /** A UTC instant → "YYYY-MM-DD", the Baghdad calendar day (for type="date"). */
 export const toZonedDateValue = (value: DateInput | null | undefined) =>
   toZonedInputValue(value).slice(0, 10);
+
+// ── Months (the What's on calendar) ─────────────────────────────────────────
+
+/** Midnight on the first of a month in Baghdad, as an instant. */
+export const zonedMonthStart = (year: number, monthIndex: number) =>
+  new Date(new TZDate(year, monthIndex, 1, TIME_ZONE).getTime());
+
+/** The Baghdad year and month (0–11) an instant falls in. */
+export const zonedYearMonth = (value: DateInput) => {
+  const zoned = new TZDate(toDate(value), TIME_ZONE);
+  return { monthIndex: zoned.getMonth(), year: zoned.getFullYear() };
+};
+
+/** "November 2026" / «تشرين الثاني 2026», in Baghdad, Latin digits. */
+export const formatMonth = (value: DateInput, locale: Locale = defaultLocale) =>
+  new Intl.DateTimeFormat(brandIntl(locale), {
+    month: "long",
+    timeZone: TIME_ZONE,
+    year: "numeric",
+  }).format(toDate(value));

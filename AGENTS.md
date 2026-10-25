@@ -173,6 +173,17 @@ any schema change. Integration tests run against a local stack with
   certificates only if they turn it on (`show_certificates_on_card`, off by
   default). Google Wallet only (`docs/platform/wallet.md`). Never put an
   account id in a QR.
+- **What's on is one calendar** (owner, Oct 25, 2026): programs and events
+  together at `/events`, a month at a time, each program a series
+  (`/programs/<slug>`). Every event has a way in, `events.events.entry`:
+  `open` (just come; members may ask "Remind me", `events.reminders`),
+  `rsvp` (book a place) or `invite` (only the people in
+  `events.invitations` and the event's managers see it; always
+  members-only, so every public reader that leaves members-only events out
+  leaves it out too). The public calendar (`events.calendar`) shows
+  members-only events as teasers (title, time, program; nothing else).
+  `rsvp_enabled` is kept in step with `entry` by a trigger; write `entry`.
+  SECURITY DEFINER code checks visibility with `private.can_see_event_id`.
 - **Qirtas is one section.** Members send everything from `/qirtas/write`
   and the type decides the process (desk editing, or the blind review for
   Edition work); the Diwan's Qirtas section holds the newsroom and the

@@ -30,7 +30,9 @@ const ProgrammesPage = async ({ params }: LocaleParams) => {
             flagship ? "type-title type-accent font-light!" : "type-heading"
           }
         >
-          {localized(p, "name", locale)}
+          <Link className="hover:underline" href={`/programs/${p.slug}`}>
+            {localized(p, "name", locale)}
+          </Link>
         </h3>
         {localized(p, "summary", locale) ? (
           <p className="type-body max-w-[44ch] text-text-secondary">

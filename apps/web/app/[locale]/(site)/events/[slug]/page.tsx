@@ -83,6 +83,9 @@ const EventPage = async ({ params }: EventProps) => {
           {formatClock(event.starts_at, locale)}
           {event.ends_at ? ` – ${formatClock(event.ends_at, locale)}` : ""}
         </p>
+        <p className="type-body">
+          {t(`ways.${event.entry === "open" ? "open" : "rsvp"}`)}
+        </p>
         {localized(event, "venue", locale) ? (
           <p className="type-body">{localized(event, "venue", locale)}</p>
         ) : null}
@@ -111,15 +114,11 @@ const EventPage = async ({ params }: EventProps) => {
       ) : null}
       {cancelled || !upcoming ? null : (
         <div className="flex flex-wrap gap-3">
-          {event.rsvp_enabled ? (
-            <Button asChild>
-              <a
-                href={`${localizedPath(locale, "/events/book")}#${event.slug}`}
-              >
-                {t("rsvp")}
-              </a>
-            </Button>
-          ) : null}
+          <Button asChild>
+            <a href={`${localizedPath(locale, "/events/book")}#${event.slug}`}>
+              {event.entry === "open" ? t("remind") : t("rsvp")}
+            </a>
+          </Button>
           <Button asChild variant="outline">
             <a
               href={apiPath(
@@ -131,8 +130,10 @@ const EventPage = async ({ params }: EventProps) => {
           </Button>
         </div>
       )}
-      {event.rsvp_enabled && upcoming && !cancelled ? (
-        <p className="type-caption">{t("rsvpHint")}</p>
+      {upcoming && !cancelled ? (
+        <p className="type-caption">
+          {event.entry === "open" ? t("remindHint") : t("rsvpHint")}
+        </p>
       ) : null}
     </article>
   );
