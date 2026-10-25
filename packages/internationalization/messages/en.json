@@ -307,15 +307,10 @@
       },
       "sixWords": {
         "title": "Six Words",
-        "description": "Your entry in the Register.",
-        "empty": "You haven't written your six words yet.",
-        "write": "Write my six words",
-        "edit": "Change",
-        "hint": "Six words, in English or Arabic.",
-        "count": "{count} of 6 words",
-        "save": "Save my six words",
-        "cancel": "Cancel",
-        "pending": "Waiting for moderation"
+        "description": "Your entry in the Register, written on the Typewriter Tour.",
+        "empty": "Six Words are written on paper at the Typewriter Tour. Bring your membership card, and your card will be added here.",
+        "tour": "When the Tour comes next",
+        "takenDown": "These words were taken down from the wall."
       },
       "greetingPlain": "Welcome"
     },
@@ -577,23 +572,27 @@
       "asMember": "As a member of the Society",
       "write": {
         "lede": "Send your work to Qirtas, the Society's paper of news, letters and art. Everything starts here; what happens next depends on what you send.",
-        "sendTitle": "Send your work",
-        "sendLede": "Choose the type of work. News, Video and Voices are always open and edited with you. Letters and Gallery answer an Edition's call and are read blind.",
         "processes": {
           "desk": "Edited with you",
-          "edition": "Read blind",
-          "deskLong": "Edited with you by the desk's editor under your own name, then published once you both approve.",
-          "editionLong": "Read blind: readers and editors never see your name until a decision. Accepted work is then edited with you for the Edition."
+          "edition": "Read blind"
         },
         "callCloses": "{call} closes {date}. Up to {max} pieces per person.",
-        "noCall": "Opens with the next call.",
+        "noCall": "No call is open now, and the next one isn't announced yet.",
         "yourWork": "Your work",
         "process": "Process",
         "updated": "Updated",
         "deskLines": {
-          "letters": "Poems, stories, essays, short drama, translation and Six Words for the next Edition.",
-          "gallery": "Art and photography, photo essays and comics for the next Edition."
-        }
+          "letters": "Poetry, prose, drama and translation.",
+          "gallery": "Art and photography, and comics and photo essays."
+        },
+        "newsroomTitle": "Send to the newsroom",
+        "newsroomLede": "Always open. News, Video and Voices are edited with you by the desk's editor, under your own name, and published once you both approve.",
+        "editionTitle": "Submit to the Edition",
+        "editionLede": "Letters and Gallery take work only while a call is open, twice a year. Readers never see your name until a decision; accepted work is then edited with you.",
+        "nextCall": "The next call, {call}, opens {date}.",
+        "tellMe": "Tell me when it opens",
+        "alertOn": "We'll email you the day a call opens.",
+        "alertOff": "Stop"
       }
     },
     "profile": {
@@ -1315,7 +1314,7 @@
         "tabs": {
           "episodes": "Episodes",
           "reels": "Reels",
-          "sixWords": "Six Words ({count})",
+          "sixWords": "Six Words",
           "rotas": "Rotas",
           "removals": "Removal requests ({count})"
         },
@@ -1351,11 +1350,23 @@
           "none": "None"
         },
         "sixWords": {
-          "lede": "Approve pieces for the public wall. An edit sends a piece back here.",
-          "empty": "Nothing waiting.",
-          "approve": "Approve",
-          "reject": "Decline",
-          "anonymous": "Wants no name on the wall"
+          "lede": "Six Words are written on paper at the Typewriter Tour, never on the site. Type each card exactly as written. Scan the writer's membership card to save it as theirs, or save it unsigned and attach their card later. A card goes on the wall at once.",
+          "transcribe": "Type a card",
+          "hint": "The six words, as written on the card.",
+          "count": "{count} of 6 words",
+          "scanToSave": "Scan the writer's card to save",
+          "saveUnsigned": "Save unsigned",
+          "recent": "Recent cards",
+          "empty": "No cards yet.",
+          "unsigned": "Unsigned",
+          "attach": "Attach a card",
+          "takeDown": "Take down",
+          "takenDown": "taken down",
+          "problems": {
+            "notLive": "That card's code has expired. Ask them to open their card again and scan the live code.",
+            "unknownCard": "That card isn't on record.",
+            "notCard": "That isn't a membership card."
+          }
         },
         "rotas": {
           "new": "New rota",
@@ -1708,9 +1719,10 @@
         },
         "categories": {
           "poetry": "Poetry",
+          "prose": "Prose",
           "fiction": "Fiction",
           "creative_nonfiction": "Creative Nonfiction",
-          "short_drama": "Short Drama",
+          "short_drama": "Drama",
           "art_photography": "Art & Photography",
           "translation": "Translation",
           "six_words": "Six Words",
@@ -1719,7 +1731,7 @@
           "review": "Review",
           "feature": "Feature",
           "photo_essay": "Photo essay",
-          "comic": "Comic",
+          "comic": "Comics and photo essays",
           "video": "Video",
           "column": "Column",
           "letter": "Letter to the editor"
@@ -3809,6 +3821,7 @@
       "work": "In Qirtas",
       "categories": {
         "poetry": "Poetry",
+        "prose": "Prose",
         "fiction": "Fiction",
         "creative_nonfiction": "Creative Nonfiction",
         "short_drama": "Short Drama",

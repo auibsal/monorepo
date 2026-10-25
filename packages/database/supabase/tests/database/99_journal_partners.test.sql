@@ -169,7 +169,7 @@ select lives_ok(
 );
 select throws_ok(
   $$ insert into journal.submissions (call_id, category, language, title, body_html, human_authorship_confirmed, first_publication_confirmed)
-     values ('ca000000-0000-0000-0000-000000000001', 'fiction', 'en', 'No pathway', '<p>Text</p>', true, true) $$,
+     values ('ca000000-0000-0000-0000-000000000001', 'prose', 'en', 'No pathway', '<p>Text</p>', true, true) $$,
   '42501', null,
   'but not without naming the partner'
 );
@@ -183,7 +183,7 @@ select lives_ok(
 select throws_ok(
   $$ insert into journal.submissions (call_id, partner_id, category, language, title, body_html, human_authorship_confirmed, first_publication_confirmed)
      values ('ca000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-00000000d001',
-       'fiction', 'en', 'Borrowed pathway', '<p>Text</p>', true, true) $$,
+       'prose', 'en', 'Borrowed pathway', '<p>Text</p>', true, true) $$,
   '42501', null,
   'but cannot claim a partner they do not belong to'
 );

@@ -83,53 +83,51 @@ select pg_temp.make_user('00000000-0000-0000-0000-0000000000a1', 'writer@auib.ed
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a2', 'shy@auib.edu.iq', 'Shy Writer');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000b1', 'guest@gmail.com', 'Guest');
 
--- ── Six Words ───────────────────────────────────────────────────────────────
+-- ── Six Words (only from the Typewriter Tour) ───────────────────────────────
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a1');
 select throws_ok(
-  $$ insert into programmes.six_words (text, language) values ('Only five words are here', 'en') $$,
+  $$ insert into programmes.six_words (text, language) values ('The paper waited for the pen', 'en') $$,
+  '42501', null, 'Members do not write six words on the site'
+);
+select throws_ok(
+  $$ select programmes.record_six_words('The paper waited for the pen', 'en') $$,
+  '42501', null, 'nor transcribe Tour cards'
+);
+
+select pg_temp.login_as('00000000-0000-0000-0000-0000000000f1');
+select throws_ok(
+  $$ select programmes.record_six_words('Only five words are here', 'en') $$,
   '23514', null, 'A Six Words piece has exactly six words'
 );
 select lives_ok(
-  $$ insert into programmes.six_words (text, language) values ('The paper waited for the pen', 'en') $$,
-  'A member writes their six words'
+  $$ select programmes.record_six_words('The paper waited for the pen', 'en') $$,
+  'Whoever runs the Tour transcribes a card'
 );
-select throws_ok(
-  $$ insert into programmes.six_words (text, language) values ('A second entry is not allowed', 'en') $$,
-  '23505', null, 'One entry per member in the Book of Members'
-);
-
-select pg_temp.login_as('00000000-0000-0000-0000-0000000000a2');
-insert into programmes.six_words (text, language, show_name) values ('I would rather not be named', 'en', false);
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000b1');
 select throws_ok(
-  $$ insert into programmes.six_words (text, language) values ('Guests cannot write in the book', 'en') $$,
-  '42501', null, 'Unverified accounts cannot write six words'
+  $$ select programmes.record_six_words('Guests cannot write in the book', 'en') $$,
+  '42501', null, 'Guests transcribe nothing'
 );
 
 select pg_temp.login_anon();
-select is((select count(*) from programmes.six_words_wall())::integer, 0, 'Unmoderated pieces are not on the wall');
+select is((select count(*) from programmes.six_words_wall())::integer, 1, 'A transcribed card is on the wall');
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a1');
 select throws_ok(
-  $$ select programmes.moderate_six_words((select id from programmes.six_words limit 1), true) $$,
+  $$ select programmes.moderate_six_words((select id from programmes.six_words limit 1), false) $$,
   '42501', null, 'Members cannot moderate'
 );
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000f1');
 select lives_ok(
-  $$ select programmes.moderate_six_words(id, true) from programmes.six_words $$,
-  'A programmes.manage holder approves the pieces'
+  $$ select programmes.moderate_six_words(id, false) from programmes.six_words $$,
+  'A programmes.manage holder can take a card down'
 );
 
 select pg_temp.login_anon();
-select is((select count(*) from programmes.six_words_wall())::integer, 2, 'Approved pieces are on the wall');
-select is(
-  (select author_en from programmes.six_words_wall() where text like 'I would%'),
-  null,
-  'The wall hides the name of a writer who asked'
-);
+select is((select count(*) from programmes.six_words_wall())::integer, 0, 'and it leaves the wall');
 
 -- ── Removal requests ────────────────────────────────────────────────────────
 

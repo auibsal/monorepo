@@ -41,6 +41,26 @@ export const isEditionDesk = (desk: Desk) =>
 export const deskCategories = (desk: Desk) =>
   categories.filter((c) => deskOf(c) === desk);
 
+/**
+ * Types that take no new work (owner, 2026-10-25): prose replaces fiction
+ * and creative nonfiction, comics take photo essays, and Six Words come
+ * only from the Typewriter Tour. The database refuses them too.
+ */
+export const closedCategories: readonly Category[] = [
+  "fiction",
+  "creative_nonfiction",
+  "photo_essay",
+  "six_words",
+];
+
+/** The types a member sends on each desk. */
+export const sendableCategories = (desk: Desk) =>
+  deskCategories(desk).filter((c) => !closedCategories.includes(c));
+
+/** The newsroom (always open) and the Edition (open only during a call). */
+export const newsroomDesks = desks.filter((d) => !isEditionDesk(d));
+export const editionDesks = desks.filter((d) => isEditionDesk(d));
+
 export const submissionStatuses = Constants.journal.Enums.submission_status;
 export type SubmissionStatus = Enums<
   { schema: "journal" },
@@ -293,6 +313,39 @@ export const openCalls = async (client: Client, now = new Date()) =>
       .gte("closes_at", now.toISOString())
       .order("closes_at")
   );
+
+/** The next published call that has not opened yet, if any. */
+export const nextCall = async (client: Client, now = new Date()) =>
+  unwrap(
+    await journal(client)
+      .from("calls")
+      .select("id, title_en, title_ar, opens_at, closes_at")
+      .eq("is_published", true)
+      .gt("opens_at", now.toISOString())
+      .order("opens_at")
+      .limit(1)
+      .maybeSingle()
+  );
+
+/** Whether the member asked to hear when a call opens. */
+export const hasCallAlert = async (client: Client) =>
+  (unwrap(
+    await journal(client).from("call_alerts").select("user_id").maybeSingle()
+  ) ?? null) !== null;
+
+export const setCallAlert = async (client: Client, on: boolean) =>
+  on
+    ? unwrap(
+        await journal(client)
+          .from("call_alerts")
+          .upsert({}, { ignoreDuplicates: true })
+      )
+    : unwrap(
+        await journal(client)
+          .from("call_alerts")
+          .delete()
+          .not("user_id", "is", null)
+      );
 
 /**
  * The partner pathway: calls the caller may answer through a partner they

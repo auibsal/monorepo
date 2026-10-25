@@ -2,6 +2,7 @@ import { render } from "@react-email/components";
 import {
   agreementReminder,
   type Built,
+  callOpened,
   cronFailed,
   decision,
   type EventInfo,
@@ -89,6 +90,17 @@ const email = (make: (lang: Lang) => Built): Story => ({
 });
 
 export const AgreementReminder = email((l) => agreementReminder(l, WORK, APP));
+export const CallOpened = email((l) =>
+  callOpened(
+    l,
+    {
+      closes_at: "2026-11-26T20:59:00Z",
+      title_ar: "دعوة الإصدار",
+      title_en: "The Edition call",
+    },
+    APP
+  )
+);
 export const DecisionAccept = email((l) => decision(l, WORK, "accept", APP));
 export const DecisionAcceptWithEdits = email((l) =>
   decision(l, WORK, "accept_with_edits", APP)
