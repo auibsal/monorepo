@@ -12,6 +12,7 @@ import {
   useMemberStatus,
   useProfile,
 } from "@/lib/nexus/queries";
+import { TwoStepPanel, useTwoStep } from "./auth/two-step";
 import { PartnerGuest, PendingVerification } from "./pending-verification";
 import { ErrorState, FullPageSpinner, PageSpinner } from "./states";
 
@@ -156,17 +157,32 @@ export const GuestOnly = ({ children }: GateProps) => {
  */
 export const RequireStaff = ({ children }: GateProps) => {
   const grants = useGrants();
+  const twoStep = useTwoStep();
   const router = useRouter();
-  const staff = (grants.data ?? []).length > 0;
+  // A role that needs two-step sign-in grants nothing until the code is in,
+  // so its holder is staff waiting for the second step, not a member.
+  const waiting = Boolean(twoStep.data?.needs && !twoStep.data.done);
+  const staff = (grants.data ?? []).length > 0 || waiting;
+  const settled = grants.isSuccess && twoStep.isSuccess;
 
   useEffect(() => {
-    if (grants.isSuccess && !staff) {
+    if (settled && !staff) {
       router.replace("/membership");
     }
-  }, [grants.isSuccess, router, staff]);
+  }, [router, settled, staff]);
 
-  if (grants.isError) {
-    return <ErrorState onRetry={() => grants.refetch()} />;
+  if (grants.isError || twoStep.isError) {
+    return (
+      <ErrorState
+        onRetry={() => {
+          grants.refetch();
+          twoStep.refetch();
+        }}
+      />
+    );
   }
-  return grants.isPending || !staff ? <PageSpinner /> : children;
+  if (!(settled && staff)) {
+    return <PageSpinner />;
+  }
+  return waiting ? <TwoStepPanel /> : children;
 };
