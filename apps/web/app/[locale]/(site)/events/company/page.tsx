@@ -22,11 +22,13 @@ export const generateMetadata = async ({
 const CompanyPage = async ({ params, searchParams }: CompanyProps) => {
   const { locale } = await params;
   setRequestLocale(locale);
+  // Read the month first: it makes the page render on request, so a build
+  // that can't find the program never leaves a cached "not found".
+  const { month } = await searchParams;
   const series = await loadSeries("company");
   if (!series) {
     notFound();
   }
-  const { month } = await searchParams;
   return (
     <SeriesView locale={locale} month={month} series={series}>
       <Productions locale={locale} />
