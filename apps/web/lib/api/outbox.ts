@@ -38,6 +38,7 @@ import { type CacheTag, cacheTags } from "@/lib/supabase";
 import type { Sticker } from "./bot/stickers";
 import { pushToUser } from "./push";
 import { telegramToUser } from "./telegram";
+import { expireWalletPass, walletConfigured } from "./wallet";
 
 /**
  * Processes core.outbox rows: the emails and site revalidation queued by
@@ -451,6 +452,23 @@ const handlers: Record<string, Handler> = {
       to,
       sundayPaper(to.lang, items, `${webUrl()}${prefix(to.lang)}/qirtas`)
     );
+  },
+  // From the wallet_passes triggers: a card was reset, a membership ended
+  // or an account was deleted. Each pass is marked expired in Google
+  // Wallet (a pass never saved is simply recorded as expired).
+  "membership.wallet_expire": async (admin, payload) => {
+    const codes = Array.isArray(payload.codes)
+      ? payload.codes.filter((c): c is string => typeof c === "string")
+      : [];
+    if (codes.length === 0 || !walletConfigured()) {
+      return;
+    }
+    await Promise.all(codes.map((code) => expireWalletPass(code)));
+    await admin
+      .schema("membership")
+      .from("wallet_passes")
+      .update({ state: "expired" })
+      .in("code", codes);
   },
   "newsletter.confirm": async (admin, payload) => {
     const row = await subscriber(admin, payload.subscriber_id);

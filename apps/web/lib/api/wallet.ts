@@ -2,14 +2,16 @@ import "server-only";
 
 import { importPKCS8, SignJWT } from "jose";
 import { env } from "@/env";
-import { origin } from "./urls";
+import { api, origin, site } from "./urls";
 
 /**
  * Google Wallet: the membership card as a Generic pass. The pass shows the
  * same live QR as the website card (Google computes the TOTP from the same
  * secret: RFC 6238, SHA-1, 30 seconds, 8 digits), so the door accepts
  * either. The class and the object travel inside the signed "Save to
- * Google Wallet" link; Google creates or updates them when it is opened.
+ * Google Wallet" link; Google creates them when it is opened. A pass that
+ * already exists is brought up to date (and made active again) through the
+ * Wallet API, and a pass whose card stopped being good is marked expired.
  * Runbook: docs/platform/wallet.md.
  */
 export interface WalletCard {
@@ -29,30 +31,60 @@ export const walletConfigured = () =>
       env.GOOGLE_WALLET_PRIVATE_KEY
   );
 
+const WALLET_API = "https://walletobjects.googleapis.com/walletobjects/v1";
+const TOKEN_URL = "https://oauth2.googleapis.com/token";
+const SCOPE = "https://www.googleapis.com/auth/wallet_object.issuer";
+
+const issuer = () => env.GOOGLE_WALLET_ISSUER_ID ?? "";
+
+/** The pass class every membership card belongs to. */
+export const walletClassId = () => `${issuer()}.sal-membership`;
+
+/** The pass for a card code. */
+export const walletObjectId = (code: string) => `${issuer()}.card-${code}`;
+
+/** The card code a pass was issued for, or null for another issuer's. */
+export const walletCodeOf = (objectId: string) => {
+  const prefix = `${issuer()}.card-`;
+  return objectId.startsWith(prefix) ? objectId.slice(prefix.length) : null;
+};
+
 const text = (value: string, locale: string) => ({
   defaultValue: { language: locale === "ar" ? "ar" : "en-US", value },
 });
 
-/** The signed link that adds (or refreshes) the member's pass. */
-export const googleWalletLink = async (card: WalletCard) => {
-  const issuer = env.GOOGLE_WALLET_ISSUER_ID ?? "";
-  const classId = `${issuer}.sal-membership`;
-  const site = origin();
+/** The member's pass: what the card's face shows, in their language. */
+const passFor = (card: WalletCard) => {
+  const base = origin();
   const ar = card.locale === "ar";
   const number = String(card.number).padStart(4, "0");
-  const pass = {
+  return {
     cardTitle: text(
       ar ? "جمعية الفنون والآداب" : "AUIB Society of Arts and Letters",
       card.locale
     ),
-    classId,
+    classId: walletClassId(),
     header: text(card.fullName, card.locale),
     heroImage: {
-      sourceUri: { uri: `${site}/api/wallet/rosette/${card.number}` },
+      sourceUri: { uri: api(`/wallet/rosette/${card.number}`) },
     },
     hexBackgroundColor: "#f5f2ee",
-    id: `${issuer}.card-${card.code}`,
-    logo: { sourceUri: { uri: `${site}/brand/sal-avatar-wallet.png` } },
+    id: walletObjectId(card.code),
+    linksModuleData: {
+      uris: [
+        {
+          description: ar ? "حسابك" : "Your account",
+          id: "account",
+          uri: site(card.locale, "/account"),
+        },
+        {
+          description: ar ? "ما يجري" : "What's on",
+          id: "events",
+          uri: site(card.locale, "/events"),
+        },
+      ],
+    },
+    logo: { sourceUri: { uri: `${base}/brand/sal-avatar-wallet.png` } },
     rotatingBarcode: {
       alternateText: number,
       totpDetails: {
@@ -61,7 +93,7 @@ export const googleWalletLink = async (card: WalletCard) => {
         periodMillis: "30000",
       },
       type: "QR_CODE",
-      valuePattern: `${site}${ar ? "/ar" : ""}/verify/member/${card.code}?t={totp_value_0}`,
+      valuePattern: `${base}${ar ? "/ar" : ""}/verify/member/${card.code}?t={totp_value_0}`,
     },
     state: "ACTIVE",
     subheader: text(card.tier, card.locale),
@@ -78,15 +110,28 @@ export const googleWalletLink = async (card: WalletCard) => {
         : []),
     ],
   };
-  const key = await importPKCS8(
+};
+
+const signingKey = () =>
+  importPKCS8(
     (env.GOOGLE_WALLET_PRIVATE_KEY ?? "").replaceAll("\\n", "\n"),
     "RS256"
   );
+
+/** The signed link that adds the member's pass. */
+export const googleWalletLink = async (card: WalletCard) => {
   const token = await new SignJWT({
-    origins: [site],
+    origins: [origin()],
     payload: {
-      genericClasses: [{ id: classId }],
-      genericObjects: [pass],
+      // Used only when the class doesn't exist yet.
+      genericClasses: [
+        {
+          callbackOptions: { url: api("/wallet/google/callback") },
+          id: walletClassId(),
+          multipleDevicesAndHoldersAllowedStatus: "ONE_USER_ALL_DEVICES",
+        },
+      ],
+      genericObjects: [passFor(card)],
     },
     typ: "savetowallet",
   })
@@ -94,6 +139,80 @@ export const googleWalletLink = async (card: WalletCard) => {
     .setIssuer(env.GOOGLE_WALLET_SERVICE_ACCOUNT_EMAIL ?? "")
     .setAudience("google")
     .setIssuedAt()
-    .sign(key);
+    .sign(await signingKey());
   return `https://pay.google.com/gp/v/save/${token}`;
 };
+
+// ── The Wallet API, as the service account ──────────────────────────────────
+
+let cachedToken: { until: number; value: string } | null = null;
+
+const accessToken = async () => {
+  if (cachedToken && cachedToken.until > Date.now() + 60_000) {
+    return cachedToken.value;
+  }
+  const assertion = await new SignJWT({ scope: SCOPE })
+    .setProtectedHeader({ alg: "RS256", typ: "JWT" })
+    .setIssuer(env.GOOGLE_WALLET_SERVICE_ACCOUNT_EMAIL ?? "")
+    .setAudience(TOKEN_URL)
+    .setIssuedAt()
+    .setExpirationTime("1h")
+    .sign(await signingKey());
+  const response = await fetch(TOKEN_URL, {
+    body: new URLSearchParams({
+      assertion,
+      grant_type: "urn:ietf:params:oauth:grant-type:jwt-bearer",
+    }),
+    method: "POST",
+  });
+  if (!response.ok) {
+    throw new Error(`Google token request failed (${response.status})`);
+  }
+  const body = (await response.json()) as {
+    access_token: string;
+    expires_in: number;
+  };
+  cachedToken = {
+    until: Date.now() + body.expires_in * 1000,
+    value: body.access_token,
+  };
+  return body.access_token;
+};
+
+/** Writes a pass; false when Google has no such pass (never saved). */
+const writePass = async (
+  method: "PATCH" | "PUT",
+  objectId: string,
+  body: object
+) => {
+  const response = await fetch(
+    `${WALLET_API}/genericObject/${encodeURIComponent(objectId)}`,
+    {
+      body: JSON.stringify(body),
+      headers: {
+        authorization: `Bearer ${await accessToken()}`,
+        "content-type": "application/json",
+      },
+      method,
+    }
+  );
+  if (response.status === 404) {
+    return false;
+  }
+  if (!response.ok) {
+    throw new Error(`Google Wallet ${method} failed (${response.status})`);
+  }
+  return true;
+};
+
+/**
+ * Brings an existing pass up to date and active again (a renewed
+ * membership, a new tier or name). False when the member never saved it:
+ * the link creates it.
+ */
+export const refreshWalletPass = (card: WalletCard) =>
+  writePass("PUT", walletObjectId(card.code), passFor(card));
+
+/** Marks a pass expired: Wallet shows it as no longer valid. */
+export const expireWalletPass = (code: string) =>
+  writePass("PATCH", walletObjectId(code), { state: "EXPIRED" });

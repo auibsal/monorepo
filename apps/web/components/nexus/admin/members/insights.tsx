@@ -3,7 +3,7 @@
 import { useAuth } from "@repo/auth/provider";
 import { formatNumber } from "@repo/internationalization/format";
 import { hasPermission } from "@repo/rbac";
-import { membership } from "@repo/sal-data";
+import { membership, unwrap } from "@repo/sal-data";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { Link } from "@/lib/nexus/navigation";
@@ -51,6 +51,21 @@ export const MemberInsights = () => {
     queryFn: () => membership.memberInsights(supabase),
     queryKey: ["admin", "member-insights"],
   });
+  // Members whose card is in their Google Wallet.
+  const inWallet = useQuery({
+    enabled: allowed,
+    queryFn: async () => {
+      const { count, error } = await supabase
+        .schema("membership")
+        .from("wallet_passes")
+        .select("code", { count: "exact", head: true })
+        .eq("state", "saved")
+        .not("user_id", "is", null);
+      unwrap({ data: null, error });
+      return count ?? 0;
+    },
+    queryKey: ["admin", "member-insights", "wallet"],
+  });
 
   if (grants.data && !allowed) {
     return (
@@ -84,13 +99,14 @@ export const MemberInsights = () => {
       >
         {t("lede")}
       </AdminHeading>
-      <dl className="grid grid-cols-2 gap-6 border-line border-y py-6 sm:grid-cols-4">
+      <dl className="grid grid-cols-2 gap-6 border-line border-y py-6 sm:grid-cols-5">
         {(
           [
             ["members", data.members],
             ["answered", data.answered],
             ["counted", data.counted],
             ["volunteers", data.volunteers],
+            ["inWallet", inWallet.data ?? 0],
           ] as const
         ).map(([key, value]) => (
           <div className="grid gap-1" key={key}>

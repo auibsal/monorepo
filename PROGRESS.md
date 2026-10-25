@@ -13,7 +13,10 @@ Branch: `claude/new-session-qosn60`.
       account, then add `GOOGLE_WALLET_ISSUER_ID`,
       `GOOGLE_WALLET_SERVICE_ACCOUNT_EMAIL` and `GOOGLE_WALLET_PRIVATE_KEY`
       in Vercel (steps in `docs/platform/wallet.md`). Until then "Add to
-      Google Wallet" says it isn't available yet.
+      Google Wallet" says it isn't available yet. The Generic class
+      `sal-membership`: one user, all devices; no modules, Smart Tap or
+      redemption issuers; callback URL
+      `https://auibsal.org/api/wallet/google/callback`.
 
 - [ ] **Member pages and the card (2026-10-25), for the owner:**
   - **Public pages for members:** a proposal, nothing built yet (see
@@ -373,6 +376,14 @@ These stop parts of the work. Everything else continues around them.
   certificates get their own rosette (from the serial) and a QR to their
   check; `/verify` checks either a certificate or a card code; a card's
   check lists the member's certificates only when they turn it on.
+  Then (owner, same day: "go ahead with all of it"): the pass carries
+  links to the account and What's on; Google's save and removal messages
+  (signed, checked) mark the pass in `membership.wallet_passes`, so the
+  card says "In your Google Wallet" and the Diwan's member insights count
+  them; a reset card, an ended membership or a deleted account marks the
+  old pass expired in Wallet (outbox `membership.wallet_expire`); adding
+  the card again refreshes a pass the member already holds. No NFC: Smart
+  Tap needs certified readers, and the QR is already live.
 
 - **Personal emails are verified; one address, one person** (owner,
   2026-10-25): the personal email stays optional (it is for keeping in
@@ -1254,6 +1265,10 @@ Written 2026-10-25 (rosettes and one check): `web.verify.title`, `lede`,
 Written 2026-10-25 (the live card): `nexus.home.card.*` (qr, clock,
 wallet, perks, security, reset), `web.verifyCard.live`, `notLive`,
 `perks`, `nexus.admin.checkIn.cardNotLive`.
+
+Written 2026-10-25 (Wallet passes): `nexus.home.card.inWallet` («في Google
+Wallet»), `nexus.admin.members.insights.inWallet`, and the pass's links
+(«حسابك», «ما يجري», from the site's navigation) in `lib/api/wallet.ts`.
 
 Written 2026-10-25 (personal email):
 

@@ -251,6 +251,7 @@
         "issued": "This code was issued on {date}.",
         "clock": "The time now, in Baghdad",
         "wallet": "Add to Google Wallet",
+        "inWallet": "In your Google Wallet",
         "walletUnavailable": "The Google Wallet pass isn't available yet.",
         "perks": "Perks",
         "perksHow": "Show this card at the partner. Their staff can scan it to see that you're a member.",
@@ -835,6 +836,7 @@
           "answered": "Answered",
           "counted": "Agreed to be counted",
           "volunteers": "Would volunteer",
+          "inWallet": "In Google Wallet",
           "none": "No answers yet.",
           "fewerThanFive": "Fewer than 5",
           "facets": {
