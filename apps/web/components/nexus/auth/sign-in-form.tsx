@@ -13,6 +13,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useEffect, useId, useRef, useState } from "react";
 import { useAuthError, usePasskeyError } from "@/lib/nexus/auth-messages";
 import { callbackUrl, safeNextPath } from "@/lib/nexus/navigation";
+import { useScreenTop } from "@/lib/nexus/use-screen-top";
 import { EmailCode } from "./email-code";
 import { useHumanCheck } from "./human-check";
 
@@ -39,6 +40,7 @@ export const SignInForm = () => {
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string>();
   const [linkSent, setLinkSent] = useState(false);
+  useScreenTop(linkSent);
   // Checked after mount: the page is prerendered without a browser.
   const [canUsePasskey, setCanUsePasskey] = useState(false);
   useEffect(() => setCanUsePasskey(passkeysSupported()), []);

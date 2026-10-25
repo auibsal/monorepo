@@ -7,6 +7,9 @@ test("sign up with an AUIB address, confirm by email, finish setup", async ({
   page,
 }) => {
   const email = `e2e-${Date.now()}@auib.edu.iq`;
+  // A phone's screen: the next screen must start at the top, not in the
+  // footer where the button left the page.
+  await page.setViewportSize({ height: 640, width: 390 });
   await page.goto(`${urls.web}/sign-up`);
   await expectAccessible(page);
   // An AUIB address needs only the address and a password.
@@ -15,8 +18,12 @@ test("sign up with an AUIB address, confirm by email, finish setup", async ({
   await expect(
     page.getByRole("group", { name: "Your name in English" })
   ).toHaveCount(0);
+  // Scrolled down to the button, as on a phone.
+  await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
   await page.getByRole("button", { name: "Create account" }).click();
   await expect(page.getByText("Check your inbox")).toBeVisible();
+  expect(await page.evaluate(() => window.scrollY)).toBe(0);
+  await expect(page.getByRole("heading", { level: 1 })).toBeFocused();
 
   const mail = await latestMail(email);
   const link = /href="([^"]*\/auth\/confirm\?[^"]+)"/.exec(mail.HTML)?.[1];
@@ -76,9 +83,12 @@ test("sign up with an AUIB address, confirm by email, finish setup", async ({
   await page.getByRole("button", { name: "Continue" }).click();
   await expectAccessible(page);
   const thanks = page.getByRole("heading", { level: 1, name: "Thank you" });
-  while (!(await thanks.isVisible())) {
+  // Skills, languages, about you, how you heard, then the last one.
+  for (const step of [4, 5, 6, 7, 8]) {
+    await expect(page.getByText(`Question ${step} of 8`)).toBeVisible();
     await page.getByRole("button", { name: "Skip" }).click();
   }
+  await expect(thanks).toBeVisible();
   const users = await admin().auth.admin.listUsers({ perPage: 1000 });
   const id = users.data.users.find((u) => u.email === email)?.id ?? "";
   const { data } = await admin()

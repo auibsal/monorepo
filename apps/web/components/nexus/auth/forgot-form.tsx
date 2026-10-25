@@ -11,6 +11,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useId, useRef, useState } from "react";
 import { useAuthError } from "@/lib/nexus/auth-messages";
 import { callbackUrl } from "@/lib/nexus/navigation";
+import { useScreenTop } from "@/lib/nexus/use-screen-top";
 import { useHumanCheck } from "./human-check";
 
 export const ForgotForm = () => {
@@ -21,6 +22,7 @@ export const ForgotForm = () => {
   const id = useId();
   const [email, setEmail] = useState("");
   const [sent, setSent] = useState(false);
+  useScreenTop(sent);
   const [error, setError] = useState<string>();
   const [pending, setPending] = useState(false);
   // Each request replaces the link before it and the PKCE verifier in this
