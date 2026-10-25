@@ -30,7 +30,11 @@ export const generateMetadata = async ({
   };
 };
 
-/** Check a certificate: type the code printed at its foot. */
+/**
+ * Check a certificate or a membership card: type the code printed at a
+ * certificate's foot, or a card's code (scanning either QR opens its check
+ * directly).
+ */
 const VerifyPage = async ({ params, searchParams }: VerifyParams) => {
   const { locale } = await params;
   setRequestLocale(locale);

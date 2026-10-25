@@ -227,7 +227,7 @@
         "tier": "Tier",
         "voting": "Voting Member",
         "notVoting": "Not yet a Voting Member",
-        "qr": "Scan to check this card. Show it at the door to check in.",
+        "qr": "The code changes every 30 seconds. Show it at the door to check in; any phone camera can check it.",
         "number": "No. {number}",
         "numberLabel": "Number",
         "since": "Member since",
@@ -238,12 +238,23 @@
         "show": "Show the code full screen",
         "showHint": "Hold your phone up to the scanner at the door.",
         "open": "Open the card's page",
-        "reissue": "Lost your card? Get a new code",
-        "reissueTitle": "Get a new code",
-        "reissueBody": "Your card gets a new code. The old QR stops working, so anyone holding a photo of it can no longer use it. Your number stays the same.",
-        "reissueConfirm": "Get a new code",
-        "reissued": "Your card has a new code.",
-        "issued": "This code was issued on {date}."
+        "reissue": "Reset the card code",
+        "reissueTitle": "Reset the card code",
+        "reissueBody": "Your card gets a new code. Earlier codes, links and Wallet passes stop working; add the card to Google Wallet again afterwards. Your number stays the same.",
+        "reissueConfirm": "Reset the code",
+        "reissued": "Done. Your card has a new code.",
+        "issued": "This code was issued on {date}.",
+        "clock": "The time now, in Baghdad",
+        "wallet": "Add to Google Wallet",
+        "walletUnavailable": "The Google Wallet pass isn't available yet.",
+        "perks": "Perks",
+        "perksHow": "Show this card at the partner. Their staff can scan it to see that you're a member.",
+        "perkCode": "Code:",
+        "perkUntil": "Until {date}",
+        "security": "Card security",
+        "securityBody": "Your card's code changes every 30 seconds, so a screenshot stops working within a minute. If someone else may have used your account on their phone, reset the code: every earlier code, link and Wallet pass stops working, and your number stays the same.",
+        "showRecord": "Show my certificates when my card is checked",
+        "showRecordHint": "Off unless you turn it on. Anyone holding your card's link would see them; each certificate can always be checked by its own code."
       },
       "tiers": {
         "member": "Member",
@@ -989,7 +1000,8 @@
         "noRsvp": "No RSVP",
         "checkInPerson": "Check in",
         "count": "{count} checked in",
-        "noResults": "No member found."
+        "noResults": "No member found.",
+        "cardNotLive": "This card's code isn't live (a screenshot?). Ask to see the card on the member's own phone."
       },
       "content": {
         "title": "Content",
@@ -2824,7 +2836,8 @@
         "volunteer": "Recognition · B4",
         "production": "Recognition · B4",
         "partner": "Recognition · B4"
-      }
+      },
+      "qr": "Scan to check this certificate"
     },
     "partnerGuest": {
       "title": "Welcome, partner",
@@ -4101,11 +4114,11 @@
       "work": "The Society partners with clubs, departments, charities and cultural organizations whose aims fit its mission and who treat people fairly. Sponsors are acknowledged and never have editorial influence. Write to the Director of Partnerships through the contact page."
     },
     "verify": {
-      "title": "Check a certificate",
-      "lede": "Certificates from the AUIB Society of Arts and Letters carry a code at the foot. Type it to see whether the certificate stands.",
-      "code": "Certificate code",
+      "title": "Check a certificate or a card",
+      "lede": "Certificates from the AUIB Society of Arts and Letters carry a code and a QR at the foot; membership cards carry a QR that changes every 30 seconds. Scan one, or type a code, to see whether it stands.",
+      "code": "Certificate or card code",
       "check": "Check",
-      "invalid": "That doesn't look like a certificate code.",
+      "invalid": "That doesn't look like a certificate or card code.",
       "notFound": "No certificate has this code. Check it and try again.",
       "again": "Check another code",
       "valid": "This certificate was issued by the Society and stands.",
@@ -4128,7 +4141,9 @@
         "volunteer": "Certificate of Volunteer Service",
         "production": "Certificate of Production Credit",
         "partner": "Certificate of Partnership Service"
-      }
+      },
+      "pattern": "This certificate's pattern. It should match the one printed on the certificate.",
+      "revokedShort": "Revoked"
     },
     "verifyCard": {
       "title": "Membership card",
@@ -4144,7 +4159,12 @@
       "vote": "Vote",
       "votes": "Voting Member",
       "noVote": "Not yet a Voting Member",
-      "note": "Members can replace their card's code at any time; an old code then stops working."
+      "note": "Members can replace their card's code at any time; an old code then stops working.",
+      "live": "This is the live card: its code is from the last minute.",
+      "notLive": "This code isn't live (it may be a screenshot). Ask to see the card on the member's own phone.",
+      "perks": "Partners: this member may use the Society's member perks.",
+      "pattern": "This card's pattern. It should match the one on the member's card.",
+      "record": "Certificates"
     },
     "productions": {
       "title": "The Company",

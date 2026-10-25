@@ -13,6 +13,8 @@ import { localized, recognition, unwrap } from "@repo/sal-data";
 import { useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
+import QRCode from "react-qr-code";
+import { Guilloche, seedFromText } from "@/components/guilloche";
 import { EmptyLine, ErrorState, SectionSpinner } from "../states";
 
 /**
@@ -20,6 +22,47 @@ import { EmptyLine, ErrorState, SectionSpinner } from "../states";
  * "Download PDF" is the browser's own print-to-PDF, so Arabic is shaped
  * correctly. The verification code at the foot lets anyone check it.
  */
+/**
+ * The certificate's foot: its rosette (drawn from the serial, the same one
+ * its check page shows), the serial and address, and a QR to its check.
+ */
+const CertificateSeal = ({
+  code,
+  qrLabel,
+  serial,
+  verifyUrl,
+}: {
+  code: string;
+  qrLabel: string;
+  serial: string | null;
+  verifyUrl: string | null;
+}) => (
+  <div className="flex items-end justify-between gap-6">
+    {serial ? (
+      <Guilloche
+        className="size-20 shrink-0"
+        number={seedFromText(serial)}
+        stroke="stroke-text"
+      />
+    ) : (
+      <span />
+    )}
+    <p className="type-caption self-center" dir="ltr">
+      {[serial, code, verifyUrl].filter(Boolean).join(" · ")}
+    </p>
+    {verifyUrl ? (
+      <QRCode
+        aria-label={qrLabel}
+        className="size-20 shrink-0"
+        size={80}
+        value={verifyUrl}
+      />
+    ) : (
+      <span />
+    )}
+  </div>
+);
+
 export const Certificate = () => {
   const t = useTranslations("nexus.certificate");
   const locale = useLocale();
@@ -196,11 +239,12 @@ export const Certificate = () => {
               <span className="type-caption">{t("date")}</span>
             </div>
           </div>
-          <p className="type-caption" dir="ltr">
-            {row.serial ? `${row.serial} · ` : ""}
-            {t(`codes.${kind}`)}
-            {issued ? ` · ${verifyUrl}` : ""}
-          </p>
+          <CertificateSeal
+            code={t(`codes.${kind}`)}
+            qrLabel={t("qr")}
+            serial={row.serial}
+            verifyUrl={issued ? verifyUrl : null}
+          />
         </footer>
       </article>
     </div>
