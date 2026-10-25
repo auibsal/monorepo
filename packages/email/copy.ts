@@ -58,9 +58,12 @@ const venue = (e: EventInfo, l: Lang) =>
 const eventLines = (e: EventInfo, l: Lang) =>
   [when(e.starts_at, l), venue(e, l)].filter((x): x is string => Boolean(x));
 
+/** Tickets and bookings live on My calendar. */
+const MY_CALENDAR = "/events/book";
+
 export const rsvpConfirmed = (lang: Lang, e: EventInfo, app: string) =>
   build(lang, (l) => ({
-    action: account(app, l),
+    action: account(app, l, MY_CALENDAR),
     heading:
       l === "ar"
         ? `حُجز مكانك: ${title(e, l)}`
@@ -68,14 +71,14 @@ export const rsvpConfirmed = (lang: Lang, e: EventInfo, app: string) =>
     paragraphs: [
       ...eventLines(e, l),
       l === "ar"
-        ? "رمز تذكرتك في الديوان. وإن تغيّرت خططك فألغِ الحجز هناك ليأخذ غيرك المكان."
-        : "Your ticket code is in the Diwan. If your plans change, cancel there so someone else can have the place.",
+        ? "تذكرتك في «تقويمي». وإن تغيّرت خططك فتنازل عن مكانك هناك ليأخذه غيرك."
+        : "Your ticket is on My calendar. If your plans change, give your place back there so someone else can have it.",
     ],
   }));
 
 export const waitlistPromoted = (lang: Lang, e: EventInfo, app: string) =>
   build(lang, (l) => ({
-    action: account(app, l),
+    action: account(app, l, MY_CALENDAR),
     heading:
       l === "ar"
         ? `أصبح لك مكان: ${title(e, l)}`
@@ -83,20 +86,38 @@ export const waitlistPromoted = (lang: Lang, e: EventInfo, app: string) =>
     paragraphs: [
       ...eventLines(e, l),
       l === "ar"
-        ? "كنت على قائمة الانتظار، وقد حُجز لك مكان الآن. رمز تذكرتك في الديوان."
-        : "You were on the waiting list and you now have a place. Your ticket code is in the Diwan.",
+        ? "كنت على قائمة الانتظار، وقد حُجز لك مكان الآن. تذكرتك في «تقويمي»."
+        : "You were on the waiting list and you now have a place. Your ticket is on My calendar.",
     ],
   }));
 
-export const eventReminder = (lang: Lang, e: EventInfo, app: string) =>
+const REMINDER_CLOSE: Record<"booked" | "remindMe", Record<Lang, string>> = {
+  booked: {
+    ar: "إن لم تعد تستطيع الحضور، فتنازل عن مكانك في «تقويمي» ليأخذه غيرك.",
+    en: "If you can no longer come, give your place back on My calendar so someone else can have it.",
+  },
+  remindMe: {
+    ar: "طلبت أن نذكّرك. لا حجز لهذه الفعالية: تعال فحسب.",
+    en: "You asked us to remind you. There's no booking for this one: just come.",
+  },
+};
+
+/**
+ * The day before: to everyone booked (who can give the place back) and to
+ * everyone who asked "Remind me" for an event without booking.
+ */
+export const eventReminder = (
+  lang: Lang,
+  e: EventInfo,
+  app: string,
+  booked = true
+) =>
   build(lang, (l) => ({
-    action: account(app, l),
+    action: account(app, l, MY_CALENDAR),
     heading: l === "ar" ? `غداً: ${title(e, l)}` : `Tomorrow: ${title(e, l)}`,
     paragraphs: [
       ...eventLines(e, l),
-      l === "ar"
-        ? "إن لم تعد تستطيع الحضور، فألغِ حجزك في الديوان."
-        : "If you can no longer come, cancel your place in the Diwan.",
+      REMINDER_CLOSE[booked ? "booked" : "remindMe"][l],
     ],
   }));
 
@@ -107,21 +128,21 @@ const RECEIVED: Record<DeskKind, Record<Lang, string[]>> = {
   blind: {
     ar: [
       "يُقرأ عملك قراءة عمياء: لا يرى القرّاء والمحررون اسمك حتى يُتَّخذ القرار.",
-      "يسمع كل كاتب الجواب في اليوم المعلن، أياً كان القرار. ويمكنك متابعة المراحل في الديوان.",
+      "يسمع كل كاتب الجواب في اليوم المعلن، أياً كان القرار. ويمكنك متابعة المراحل في صفحة الكتابة لقرطاس.",
     ],
     en: [
       "Your work is read blind: readers and editors never see your name until a decision is made.",
-      "Every author hears by the announced date, either way. You can follow its progress in the Diwan.",
+      "Every author hears by the announced date, either way. You can follow its progress on Write for Qirtas.",
     ],
   },
   named: {
     ar: [
       "سيقرؤه محرر القسم ويتواصل معك باسمك بشأن التحرير والتحقق من الوقائع.",
-      "يمكنك متابعة المراحل في الديوان.",
+      "يمكنك متابعة المراحل في صفحة الكتابة لقرطاس.",
     ],
     en: [
       "The desk editor will read it and work with you by name on the edit and the facts.",
-      "You can follow its progress in the Diwan.",
+      "You can follow its progress on Write for Qirtas.",
     ],
   },
 };
@@ -154,8 +175,8 @@ export const returnedForFormatting = (
     paragraphs: [
       ...(note ? [note] : []),
       l === "ar"
-        ? "هذا تعديل واحد وفرصة واحدة قبل الموعد النهائي، ولا يُحسب ضد العمل. عدّله في الديوان ثم احفظ."
-        : "It is one specific fix, one chance, before the deadline, and it won't count against the piece. Revise it in the Diwan and save.",
+        ? "هذا تعديل واحد وفرصة واحدة قبل الموعد النهائي، ولا يُحسب ضد العمل. عدّله في صفحة عملك ثم احفظ."
+        : "It is one specific fix, one chance, before the deadline, and it won't count against the piece. Revise it on its page and save.",
     ],
   }));
 
@@ -203,8 +224,8 @@ export const decision = (
       paragraphs: [
         ACCEPTED[outcome][l],
         l === "ar"
-          ? "خلال سبعة أيام: وقّع اتفاقية النشر وأكمل بياناتك ككاتب في الديوان. توافق أنت على كل تغيير، وترى النص النهائي قبل نشره."
-          : "Within 7 days, sign the Publication Agreement and complete your contributor details in the Diwan. You approve every change and see the final text before it is published.",
+          ? "خلال سبعة أيام: وقّع اتفاقية النشر وأكمل بياناتك ككاتب في صفحة عملك. توافق أنت على كل تغيير، وترى النص النهائي قبل نشره."
+          : "Within 7 days, sign the Publication Agreement and complete your contributor details on your submission's page. You approve every change and see the final text before it is published.",
       ],
     };
   });
@@ -218,8 +239,8 @@ export const agreementReminder = (lang: Lang, work: string, app: string) =>
         : `Waiting for your signature: ${work}`,
     paragraphs: [
       l === "ar"
-        ? "قُبل عملك في قرطاس، ولا يمكن نشره قبل أن توقّع اتفاقية النشر في الديوان."
-        : "Your work is accepted for Qirtas, and it cannot be published until you sign the Publication Agreement in the Diwan.",
+        ? "قُبل عملك في قرطاس، ولا يمكن نشره قبل أن توقّع اتفاقية النشر في صفحة عملك."
+        : "Your work is accepted for Qirtas, and it cannot be published until you sign the Publication Agreement on your submission's page.",
     ],
   }));
 
@@ -262,8 +283,8 @@ export const finalCheck = (
       l === "ar" ? `مراجعتك الأخيرة: ${work}` : `Your final check: ${work}`,
     paragraphs: [
       l === "ar"
-        ? "راجع خلال ٧٢ ساعة اسمك والعنوان وكل فاصل أسطر ونبذتك، ثم وافق على النص في الديوان."
-        : "Within 72 hours, check your name, the title, every line break and your bio, then approve the text in the Diwan.",
+        ? "راجع خلال ٧٢ ساعة اسمك والعنوان وكل فاصل أسطر ونبذتك، ثم وافق على النص في صفحة عملك."
+        : "Within 72 hours, check your name, the title, every line break and your bio, then approve the text on your piece's page.",
       l === "ar"
         ? "الأخطاء فقط، لا تعديلات جديدة."
         : "Errors only, not new revisions.",
@@ -285,8 +306,8 @@ export const pieceNote = (
         : `A note from your editor: ${work}`,
     paragraphs: [
       l === "ar"
-        ? "كتب المحرر إليك عن عملك. اقرأ الملاحظة وردّ عليها في الديوان. الكلمة الأخيرة في كلماتك لك."
-        : "Your editor wrote to you about the piece. Read the note and reply in the Diwan. The final word on the words is yours.",
+        ? "كتب المحرر إليك عن عملك. اقرأ الملاحظة وردّ عليها في صفحة عملك. الكلمة الأخيرة في كلماتك لك."
+        : "Your editor wrote to you about the piece. Read the note and reply on the piece's page. The final word on the words is yours.",
     ],
   }));
 
@@ -323,7 +344,12 @@ export interface SundayItem {
 }
 
 /** The Sunday Paper: the week's pieces, in both languages. */
-export const sundayPaper = (lang: Lang, items: SundayItem[], front: string) =>
+export const sundayPaper = (
+  lang: Lang,
+  items: SundayItem[],
+  front: string,
+  stop: string
+) =>
   build(lang, (l) => ({
     action: {
       href: front,
@@ -338,6 +364,9 @@ export const sundayPaper = (lang: Lang, items: SundayItem[], front: string) =>
           ? `${i.desk_ar}: ${i.title_ar || i.title_en} ${i.url}`
           : `${i.desk_en}: ${i.title_en || i.title_ar} ${i.url}`
       ),
+      l === "ar"
+        ? `لإيقاف صحيفة الأحد: ${stop}`
+        : `To stop the Sunday Paper: ${stop}`,
     ],
   }));
 
@@ -361,6 +390,43 @@ export const newsletterConfirm = (lang: Lang, confirm: string) =>
         : "If it was not you, ignore this email; we will not write again.",
     ],
   }));
+
+/**
+ * The Council's answer to an account from outside AUIB: verified (the
+ * member finishes setting up and is in), or not.
+ */
+export const verificationDecided = (
+  lang: Lang,
+  approved: boolean,
+  app: string
+) =>
+  build(lang, (l) =>
+    approved
+      ? {
+          action: account(app, l, "/membership"),
+          heading:
+            l === "ar" ? "تم التحقق من حسابك" : "Your account is verified",
+          paragraphs: [
+            l === "ar"
+              ? "راجعت الهيئة الإدارية لجمعية الفنون والآداب حسابك ووافقت عليه. أكمل إعداد حسابك، وستجد بطاقتك والفعاليات وكل ما في الجمعية في صفحة العضوية."
+              : "The Council of the AUIB Society of Arts and Letters has checked and approved your account. Finish setting up, and your card, the events and everything else are on your Membership page.",
+          ],
+        }
+      : {
+          heading:
+            l === "ar"
+              ? "تعذّر التحقق من حسابك"
+              : "We couldn't verify your account",
+          paragraphs: [
+            l === "ar"
+              ? "راجعت الهيئة الإدارية لجمعية الفنون والآداب طلبك ولم تتمكن من التحقق منه. يمكنك ما زلت قراءة قرطاس وحضور الفعاليات العامة."
+              : "The Council of the AUIB Society of Arts and Letters looked at your request and couldn't verify it. You can still read Qirtas and come to public events.",
+            l === "ar"
+              ? "إن ظننت أن في الأمر خطأ، فردّ على هذه الرسالة وأخبرنا بصلتك بالجامعة الأمريكية في العراق – بغداد أو بالجمعية."
+              : "If you think this is a mistake, reply to this email and tell us how you're connected to AUIB or the Society.",
+          ],
+        }
+  );
 
 /** A personal email's confirmation: sent to the new address only. */
 export const personalEmailConfirm = (lang: Lang, confirm: string) =>

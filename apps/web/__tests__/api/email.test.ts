@@ -28,7 +28,7 @@ describe("platform email", () => {
     expect(html).toContain("حُجز مكانك");
     expect(html).not.toContain("booked: Charter Day");
     expect(html).toContain("/brand/sal-lockup-horizontal-ar-email.png");
-    expect(html).toContain(`href="${APP}/ar/membership"`);
+    expect(html).toContain(`href="${APP}/ar/events/book"`);
     const english = await render(Notice(rsvpConfirmed("en", event, APP)));
     expect(english).toContain("Tuesday, October 13 · 6:00 PM");
     expect(english).toContain("Main Hall");

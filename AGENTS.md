@@ -330,6 +330,13 @@ any schema change. Integration tests run against a local stack with
   permissions with `hasPermission` (`lib/api/permissions.ts`). The admin
   client (`@repo/database/admin`) bypasses RLS: webhooks, cron and trusted
   server code only.
+- **Email:** Supabase sends the auth emails (templates in
+  `packages/database/supabase/templates`, pasted into the hosted project);
+  the outbox sends the rest through Resend (`packages/email`), each with a
+  plain-text part. Optional emails (the Sunday Paper, booked-event
+  reminders) follow `notify_email` and carry a stop link; sign-in and
+  confirmation emails carry a code beside the link. Runbook:
+  `docs/platform/email.md`.
 - **Files:** use `@repo/storage`. Private buckets (`submissions`, `receipts`,
   `library`) are reached only through signed URLs issued by the API routes.
 - **Analytics:** on `apps/web` only (owner, Oct 15, 2026): Google Tag Manager

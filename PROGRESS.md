@@ -9,6 +9,33 @@ Branch: `claude/new-session-qosn60`.
 
 ## Blocked — needed from the user
 
+- [ ] **Sign-in and email (2026-10-25), urgent:** members report the
+      Cloudflare check spinning on sign-in, and no Society sign-in or
+      confirmation email has gone out since Oct 21. The site now says when
+      the check fails or stalls (with "Try again" and the error code), and
+      every sign-in and confirmation email carries a code as well as a link.
+      In the dashboards (steps in `docs/platform/email.md`):
+      1. **Supabase → Authentication → Emails → SMTP:** a Resend key from the
+         account where `auibsal.org` is verified now (added again on Oct 24);
+         host `smtp.resend.com`, port 465, user `resend`, sender
+         `hello@auibsal.org`.
+      2. **Supabase → Authentication → Emails:** paste all eight templates
+         and subjects from `packages/database/supabase/templates` (the last
+         confirmation email sent still linked to `nexus.auibsal.org`, which
+         no longer exists) and turn on the four security notifications.
+      3. **Supabase → URL Configuration:** Site URL `https://auibsal.org`,
+         Redirect URLs `https://auibsal.org/**`. **Rate limits:** emails per
+         hour 60 or more.
+      4. **Cloudflare → Turnstile:** the widget's hostnames include
+         `auibsal.org` (and `www.auibsal.org`); its secret is the one in
+         Supabase → Attack Protection. **Cloudflare → Security:** no
+         full-page challenge on `/sign-in`, `/sign-up`, `/forgot-password`,
+         `/auth/*`, `/api/*`.
+      5. **Resend:** the free plan's 100 a day is shared with another
+         project on the same account; give the Society its own account or a
+         paid plan before the member list passes about 60.
+      6. **DNS (optional):** `_dmarc.auibsal.org` could use `aspf=r`; mail
+         passes on DKIM today, relaxed SPF alignment adds a second pass.
 - [ ] **Google Wallet (2026-10-25):** set up and working (owner): the
       issuer, the Generic class `sal-membership` with the callback, the
       service account `membership@auibsal.iam.gserviceaccount.com` and the
@@ -74,9 +101,9 @@ Branch: `claude/new-session-qosn60`.
       `NEXT_PUBLIC_VAPID_PUBLIC_KEY` / `VAPID_PRIVATE_KEY`. Left for the owner:
       | Variable | Where to get it | Without it |
       | --- | --- | --- |
-      | `DATABASE_WEBHOOK_SECRET` | Copy the Vault secret `outbox_webhook_secret` (Supabase → Integrations → Vault → reveal) | The outbox route refuses the database: no emails, push or cache refresh |
-      | `CRON_SECRET` | Copy the Vault secret `cron_secret` | The cron routes refuse the database's jobs and Vercel's keep-alive |
-      | `TELEGRAM_LOGIN_CLIENT_SECRET` | BotFather → Bot Settings → Login Widget → OpenID Connect | Linking by one-time code only |
+      | `DATABASE_WEBHOOK_SECRET` | Set (checked 2026-10-25) | |
+      | `CRON_SECRET` | Set (checked 2026-10-25) | |
+      | `TELEGRAM_LOGIN_CLIENT_SECRET` | Set (checked 2026-10-25) | |
       If a Vault secret is missing, make one value with a password generator
       (64 letters and digits, no symbols) and save it in both places. Then
       delete `NEXT_PUBLIC_APP_URL`, `NEXT_PUBLIC_WEB_URL` and
@@ -1269,6 +1296,15 @@ Written 2026-10-25 (rosettes and one check): `web.verify.title`, `lede`,
 Written 2026-10-25 (the live card): `nexus.home.card.*` (qr, clock,
 wallet, perks, security, reset), `web.verifyCard.live`, `notLive`,
 `perks`, `nexus.admin.checkIn.cardNotLive`.
+
+Written 2026-10-25 (sign-in and email): `auth.humanCheck.*` (checking,
+slow, retry, inApp, code), `auth.code.*`, `auth.errors.invalid_code`,
+`auth.signIn.linkSent`, `auth.signUp.checkInboxBody`, `web.stopEmails.*`;
+the auth email templates' code lines and the four security notices
+(`packages/database/supabase/templates`); in `packages/email`: the
+verification emails, the reminder lines, the Sunday Paper's stop line, the
+footer and the pages the emails now point to (My calendar, Write for
+Qirtas, the piece's page).
 
 Written 2026-10-25 (Today's greeting and the live card):
 `nexus.home.greetings.*` («صباح الخير يا», «طاب يومك يا», «مساء الخير يا»,

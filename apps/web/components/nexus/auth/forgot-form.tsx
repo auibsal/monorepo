@@ -81,7 +81,7 @@ export const ForgotForm = () => {
             </p>
           ) : null}
           <Button disabled={pending || !human.ready} type="submit">
-            {pending ? t("forgot.sending") : t("forgot.submit")}
+            {human.label(pending, t("forgot.submit"), t("forgot.sending"))}
           </Button>
         </form>
       )}

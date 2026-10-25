@@ -51,3 +51,23 @@ test("an AUIB address signs in by password, with a link one click away", async (
   await signInWithPassword(page, member.email);
   await expectAccessible(page);
 });
+
+test("a sign-in email's code works where its link can't be opened", async ({
+  page,
+}) => {
+  await page.goto(`${urls.web}/sign-in`);
+  await page.getByLabel("Email").fill(member.email);
+  await page
+    .getByRole("button", { name: "Email me a sign-in link instead" })
+    .click();
+  const sentAt = Date.now();
+  await page.getByRole("button", { name: "Send the link" }).click();
+  await expect(page.getByRole("status")).toContainText("type its code");
+
+  const mail = await latestMail(member.email, sentAt);
+  const code = /letter-spacing:0\.25em[^>]*>(\d{6,10})</.exec(mail.HTML)?.[1];
+  expect(code).toBeTruthy();
+  await page.getByLabel("Code from the email").fill(code ?? "");
+  await page.getByRole("button", { name: "Continue" }).click();
+  await expect(page).toHaveURL(new RegExp(`${urls.web}/membership/?$`));
+});

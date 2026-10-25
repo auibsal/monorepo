@@ -13,6 +13,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useEffect, useId, useRef, useState } from "react";
 import { useAuthError, usePasskeyError } from "@/lib/nexus/auth-messages";
 import { callbackUrl, safeNextPath } from "@/lib/nexus/navigation";
+import { EmailCode } from "./email-code";
 import { useHumanCheck } from "./human-check";
 
 /** The submit button's text, idle and while sending. */
@@ -47,7 +48,11 @@ export const SignInForm = () => {
   const inFlight = useRef<boolean>(false);
   const human = useHumanCheck("sign-in");
 
-  const submitLabel = t(SUBMIT[mode][pending ? 1 : 0]);
+  const submitLabel = human.label(
+    pending,
+    t(SUBMIT[mode][0]),
+    t(SUBMIT[mode][1])
+  );
 
   const request = () =>
     mode === "password"
@@ -100,7 +105,10 @@ export const SignInForm = () => {
         <p role="status">{t("signIn.deleted")}</p>
       ) : null}
       {linkSent ? (
-        <p role="status">{t("signIn.linkSent", { email })}</p>
+        <>
+          <p role="status">{t("signIn.linkSent", { email })}</p>
+          <EmailCode email={email} />
+        </>
       ) : (
         <form className="grid gap-4" noValidate onSubmit={submit}>
           <div className="grid gap-2">

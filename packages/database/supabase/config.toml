@@ -281,11 +281,27 @@ content_path = "./supabase/templates/recovery.html"
 subject = "Confirm your new email · أكّد بريدك الجديد"
 content_path = "./supabase/templates/email_change.html"
 
-# Uncomment to customize notification email template
-# [auth.email.notification.password_changed]
-# enabled = true
-# subject = "Your password has been changed"
-# content_path = "./supabase/templates/password_changed_notification.html"
+# Security notices (Auth → Emails → Security notifications in the hosted
+# project): sent after the change, in the member's language.
+[auth.email.notification.password_changed]
+enabled = true
+subject = "Your password was changed · تغيّرت كلمة مرورك"
+content_path = "./supabase/templates/password_changed_notification.html"
+
+[auth.email.notification.email_changed]
+enabled = true
+subject = "Your sign-in email was changed · تغيّر بريد الدخول"
+content_path = "./supabase/templates/email_changed_notification.html"
+
+[auth.email.notification.mfa_factor_enrolled]
+enabled = true
+subject = "Two-step sign-in was added · أُضيفت خطوة ثانية لتسجيل الدخول"
+content_path = "./supabase/templates/mfa_factor_enrolled_notification.html"
+
+[auth.email.notification.mfa_factor_unenrolled]
+enabled = true
+subject = "Two-step sign-in was removed · أُزيلت خطوة من خطوات الدخول"
+content_path = "./supabase/templates/mfa_factor_unenrolled_notification.html"
 
 [auth.sms]
 # SAL signs in by email only (AUIB address first); phone OTP is off.

@@ -7,22 +7,25 @@ import { useTranslations } from "next-intl";
 import { useState } from "react";
 
 type State = "idle" | "sending" | "done" | "invalid" | "in_use" | "failed";
-type Action = "confirm" | "unsubscribe" | "personalEmail";
+type Action = "confirm" | "unsubscribe" | "personalEmail" | "stopEmails";
 
 const namespaces = {
   confirm: "web.newsletter.confirm",
   personalEmail: "web.personalEmail",
+  stopEmails: "web.stopEmails",
   unsubscribe: "web.newsletter.unsubscribe",
 } as const;
 const paths: Record<Action, string> = {
   confirm: "/newsletter/confirm",
   personalEmail: "/personal-email/confirm",
+  stopEmails: "/email/stop",
   unsubscribe: "/newsletter/unsubscribe",
 };
 
 /**
  * The button behind an emailed link (the newsletter's confirm and
- * unsubscribe, a personal email's confirm). The link only
+ * unsubscribe, a personal email's confirm, a member's "stop these
+ * emails"). The link only
  * opens this page; the button sends the token, so mail scanners that open
  * links change nothing.
  */

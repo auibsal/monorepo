@@ -68,7 +68,8 @@
       "weak_password": "Use at least 10 characters, with letters and numbers.",
       "captcha_failed": "We couldn't confirm you're a person. Reload the page and try again.",
       "names_required": "Enter your first and last name in English and in Arabic.",
-      "email_reserved": "This address is already a member's personal email, so it can't start a new account. Sign in with your own address, or use another one."
+      "email_reserved": "This address is already a member's personal email, so it can't start a new account. Sign in with your own address, or use another one.",
+      "invalid_code": "That code doesn't match or has expired. Check the newest email, or ask for a new one."
     },
     "signIn": {
       "title": "Sign in",
@@ -78,7 +79,7 @@
       "magicLink": "Email me a sign-in link instead",
       "usePassword": "Use my password instead",
       "sendLink": "Send the link",
-      "linkSent": "If an account exists for {email}, a sign-in link is on its way.",
+      "linkSent": "If an account exists for {email}, a sign-in email is on its way. Open its link, or type its code below.",
       "forgot": "Forgot your password?",
       "noAccount": "New to the Society?",
       "createAccount": "Create an account",
@@ -93,7 +94,7 @@
       "submit": "Create account",
       "submitting": "Creating account…",
       "checkInbox": "Check your inbox",
-      "checkInboxBody": "We sent a confirmation link to {email}. Open it on this device to finish signing up.",
+      "checkInboxBody": "We sent a confirmation email to {email}. Open its link, or type its code below to finish signing up.",
       "haveAccount": "Already a member?",
       "signIn": "Sign in",
       "nameEn": "Your name in English",
@@ -139,7 +140,18 @@
       "unknown": "Passkeys aren't working right now. Please sign in with your email."
     },
     "humanCheck": {
-      "failed": "We couldn't confirm you're a person. Reload the page and try again."
+      "failed": "We couldn't confirm you're a person.",
+      "checking": "Checking you're a person…",
+      "slow": "This is taking longer than usual.",
+      "retry": "Try again",
+      "inApp": "Opened from Instagram, Telegram or another app? Open this page in Safari or Chrome instead; the check often can't finish inside apps.",
+      "code": "Code {code}"
+    },
+    "code": {
+      "label": "Code from the email",
+      "hint": "Can't open the link on this device? Type the code from the same email.",
+      "submit": "Continue",
+      "submitting": "Checking…"
     }
   },
   "nexus": {
@@ -4456,6 +4468,14 @@
       "invalid": "This link has expired or was already used. Send a new one from Profile.",
       "in_use": "This address is already someone's, so it can't be confirmed. Use another one in Profile.",
       "failed": "Something went wrong. Please try again."
+    },
+    "stopEmails": {
+      "title": "Stop Society emails",
+      "lede": "Press the button to stop the Sunday Paper and the reminders for events you booked. Emails about your own requests, work and account still come.",
+      "button": "Stop these emails",
+      "done": "Done. You can turn them back on in Settings.",
+      "invalid": "This link is not valid.",
+      "failed": "Something went wrong. Try again later."
     }
   }
 }

@@ -13,6 +13,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useId, useState } from "react";
 import { useAuthError } from "@/lib/nexus/auth-messages";
 import { callbackUrl, safeNextPath } from "@/lib/nexus/navigation";
+import { EmailCode } from "./email-code";
 import { useHumanCheck } from "./human-check";
 
 export const SignUpForm = () => {
@@ -80,6 +81,7 @@ export const SignUpForm = () => {
       <>
         <FormHeader title={t("signUp.checkInbox")} />
         <p role="status">{t("signUp.checkInboxBody", { email: sentTo })}</p>
+        <EmailCode email={sentTo} />
       </>
     );
   }
@@ -216,7 +218,7 @@ export const SignUpForm = () => {
           </p>
         ) : null}
         <Button disabled={pending || !human.ready || !named} type="submit">
-          {pending ? t("signUp.submitting") : t("signUp.submit")}
+          {human.label(pending, t("signUp.submit"), t("signUp.submitting"))}
         </Button>
       </form>
       <p className="type-body">
