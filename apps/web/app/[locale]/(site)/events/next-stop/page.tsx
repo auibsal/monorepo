@@ -22,12 +22,14 @@ export const generateMetadata = async ({
 const NextStopPage = async ({ params, searchParams }: NextStopProps) => {
   const { locale } = await params;
   setRequestLocale(locale);
+  // Read the month first: it makes the page render on request, so a build
+  // that can't find the program never leaves a cached "not found".
+  const { month } = await searchParams;
   const series = await loadSeries("next-stop");
   if (!series) {
     notFound();
   }
   const t = await getTranslations({ locale, namespace: "web.programmes" });
-  const { month } = await searchParams;
   return (
     <SeriesView locale={locale} month={month} series={series}>
       <p>

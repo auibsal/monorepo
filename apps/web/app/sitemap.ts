@@ -1,6 +1,6 @@
 import { project } from "@repo/config";
 import { locales, localizedPath } from "@repo/internationalization";
-import { documents, programmes } from "@repo/sal-data";
+import { documents, journal, programmes } from "@repo/sal-data";
 import type { MetadataRoute } from "next";
 import { readPublished } from "@/lib/supabase";
 
@@ -34,7 +34,14 @@ const staticPaths = [
   "/partners",
 ];
 
-const localized = (path: string): MetadataRoute.Sitemap => {
+// Rebuilt hourly, so a renamed program or a new piece appears without a
+// deploy.
+export const revalidate = 3600;
+
+const localized = (
+  path: string,
+  lastModified = new Date()
+): MetadataRoute.Sitemap => {
   const languages = Object.fromEntries(
     locales.map((locale) => [
       locale,
@@ -44,15 +51,16 @@ const localized = (path: string): MetadataRoute.Sitemap => {
 
   return locales.map((locale) => ({
     alternates: { languages },
-    lastModified: new Date(),
+    lastModified,
     url: languages[locale] ?? project.url,
   }));
 };
 
 const sitemap = async (): Promise<MetadataRoute.Sitemap> => {
-  const [docs, series] = await Promise.all([
+  const [docs, series, pieces] = await Promise.all([
     readPublished(["documents"], (c) => documents.publicDocuments(c), []),
     readPublished(["programmes"], (c) => programmes.programmes(c), []),
+    readPublished(["journal"], (c) => journal.publishedPieceSlugs(c), []),
   ]);
   return [
     ...staticPaths,
@@ -61,7 +69,17 @@ const sitemap = async (): Promise<MetadataRoute.Sitemap> => {
     ...(series ?? [])
       .filter((p) => p.is_active && p.slug !== "waraq")
       .map((p) => `/events/${p.slug}`),
-  ].flatMap(localized);
+  ]
+    .flatMap((path) => localized(path))
+    .concat(
+      // Qirtas: every published piece, dated when it came out.
+      pieces.flatMap((piece) =>
+        localized(
+          `/qirtas/pieces/${piece.slug}`,
+          piece.published_at ? new Date(piece.published_at) : undefined
+        )
+      )
+    );
 };
 
 export default sitemap;

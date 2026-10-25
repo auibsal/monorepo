@@ -670,6 +670,17 @@ export const deskPieces = async (
   );
 };
 
+/** Every published piece's address and date, newest first (the sitemap). */
+export const publishedPieceSlugs = async (client: Client) =>
+  unwrap(
+    await journal(client)
+      .from("pieces")
+      .select("slug, published_at")
+      .eq("status", "published")
+      .lte("published_at", new Date().toISOString())
+      .order("published_at", { ascending: false })
+  ) ?? [];
+
 /** The front page, as the Editor-in-Chief ordered it (1 is the lead). */
 export const frontPieces = async (client: Client) =>
   unwrap(
