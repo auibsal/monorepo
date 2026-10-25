@@ -13,6 +13,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useId, useState } from "react";
 import { useAuthError } from "@/lib/nexus/auth-messages";
 import { callbackUrl, safeNextPath } from "@/lib/nexus/navigation";
+import { useScreenTop } from "@/lib/nexus/use-screen-top";
 import { EmailCode } from "./email-code";
 import { useHumanCheck } from "./human-check";
 
@@ -43,6 +44,7 @@ export const SignUpForm = () => {
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string>();
   const [sentTo, setSentTo] = useState<string>();
+  useScreenTop(sentTo);
   const external = values.email.includes("@") && !isAuibEmail(values.email);
   const human = useHumanCheck("sign-up");
 

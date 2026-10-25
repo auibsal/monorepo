@@ -10,6 +10,7 @@ import { Link } from "@repo/internationalization/navigation";
 import { useTranslations } from "next-intl";
 import { type FormEvent, useId, useState } from "react";
 import { useAuthError } from "@/lib/nexus/auth-messages";
+import { useScreenTop } from "@/lib/nexus/use-screen-top";
 import { RequireAuth } from "../gates";
 
 /** New password after a recovery link (the callback signed the member in). */
@@ -20,6 +21,7 @@ export const ResetForm = () => {
   const id = useId();
   const [password, setPassword] = useState("");
   const [done, setDone] = useState(false);
+  useScreenTop(done);
   const [error, setError] = useState<string>();
 
   const submit = async (event: FormEvent<HTMLFormElement>) => {
