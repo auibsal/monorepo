@@ -30,7 +30,7 @@ const GlobalError = ({ error, reset }: GlobalErrorProperties) => {
 
   return (
     <html className={fonts} dir={getDirection(locale)} lang={locale}>
-      <body className="flex min-h-dvh flex-col items-center justify-center gap-4 p-6 text-center">
+      <body className="flex min-h-svh flex-col items-center justify-center gap-4 p-6 text-center">
         <h1 className="font-semibold text-2xl">{t.error}</h1>
         <p className="text-muted-foreground">{t.errorDescription}</p>
         <Button onClick={() => reset()}>{t.retry}</Button>

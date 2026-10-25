@@ -48,7 +48,7 @@ const AccountLayout = async ({ children, params }: AccountLayoutProperties) => {
   return (
     <NextIntlClientProvider messages={{ auth, common, nexus, web }}>
       <AppProviders>
-        <div className="flex min-h-dvh flex-col">
+        <div className="flex min-h-svh flex-col">
           <AccountFrame>{children}</AccountFrame>
           <Footer consent={false} />
         </div>

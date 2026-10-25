@@ -1,4 +1,4 @@
-import { screen, waitFor } from "@testing-library/react";
+import { fireEvent, screen, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import { RequireStaff } from "@/components/nexus/gates";
 import { fakeSupabase, renderWithApp } from "./render";
@@ -89,6 +89,47 @@ describe("the Diwan's staff gate", () => {
       }
     );
     expect(await screen.findByText("The Diwan")).toBeTruthy();
+  });
+
+  test("after the code, the Diwan opens even when the roles arrive last", async () => {
+    // The level turns aal2 at once; the roles come back 200 ms later.
+    let level: "aal1" | "aal2" = "aal1";
+    const rpc = vi.fn(async (name: string) => {
+      if (name === "needs_two_step") {
+        return { data: true, error: null };
+      }
+      if (level === "aal1") {
+        return { data: [], error: null };
+      }
+      await new Promise((resolve) => setTimeout(resolve, 200));
+      return {
+        data: [{ permission: "members.manage", scope_type: "global" }],
+        error: null,
+      };
+    });
+    const supabase = officer({ grants: [], level: "aal1", needs: true });
+    Object.assign(supabase, { schema: () => ({ rpc }) });
+    Object.assign(supabase.auth.mfa, {
+      challengeAndVerify: vi.fn(() => {
+        level = "aal2";
+        return Promise.resolve({ data: {}, error: null });
+      }),
+      getAuthenticatorAssuranceLevel: vi.fn(async () => ({
+        data: { currentLevel: level },
+      })),
+    });
+    renderWithApp(
+      <RequireStaff>
+        <p>The Diwan</p>
+      </RequireStaff>,
+      { locale: "en", supabase }
+    );
+    fireEvent.change(await screen.findByLabelText("Six-digit code"), {
+      target: { value: "123456" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Confirm" }));
+    expect(await screen.findByText("The Diwan")).toBeTruthy();
+    expect(replace).not.toHaveBeenCalled();
   });
 
   test("a member without a role goes to Membership", async () => {

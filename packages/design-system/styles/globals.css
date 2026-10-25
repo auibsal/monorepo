@@ -220,7 +220,16 @@
     text-rendering: optimizelegibility;
   }
   body {
-    @apply min-h-[100dvh];
+    @apply min-h-[100svh];
+  }
+  /* iPhone zooms the page into any field set under 16px and leaves it
+     zoomed, so later taps shift the page. Never smaller on touch screens. */
+  @media (pointer: coarse) {
+    input,
+    select,
+    textarea {
+      font-size: max(1rem, 1em);
+    }
   }
   input::placeholder,
   textarea::placeholder {
