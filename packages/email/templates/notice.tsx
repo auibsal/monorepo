@@ -166,8 +166,8 @@ Notice.PreviewProps = {
   blocks: [
     {
       action: {
-        href: "https://auibsal.org/account",
-        label: "Open your account",
+        href: "https://auibsal.org/membership",
+        label: "Open Membership",
       },
       heading: "You're booked for the Majlis",
       lang: "en",

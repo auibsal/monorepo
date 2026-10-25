@@ -7,7 +7,7 @@ export const web = (lang: Lang, path = "") => siteUrl(lang, path || "/");
 
 /** The member's account on the site, in their language. */
 export const accountPage = (lang: Lang, path = "") =>
-  siteUrl(lang, `/account${path}`);
+  siteUrl(lang, `/membership${path}`);
 
 export const eventPage = (lang: Lang, slug: string) =>
   web(lang, `/events/${slug}`);

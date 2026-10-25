@@ -165,7 +165,7 @@ export const SetupForm = () => {
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries();
-      router.replace(next ? stripLocale(next) : "/account", {
+      router.replace(next ? stripLocale(next) : "/membership", {
         locale: prefs.locale,
       });
     },

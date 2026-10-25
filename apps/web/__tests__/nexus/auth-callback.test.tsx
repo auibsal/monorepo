@@ -38,7 +38,7 @@ describe("auth callback", () => {
     const supabase = fakeSupabase();
     Object.assign(supabase.auth, { exchangeCodeForSession });
     renderWithApp(<AuthCallback />, { locale: "en", supabase });
-    await waitFor(() => expect(replace).toHaveBeenCalledWith("/account"));
+    await waitFor(() => expect(replace).toHaveBeenCalledWith("/membership"));
     expect(exchangeCodeForSession).toHaveBeenCalledTimes(1);
   });
 
@@ -51,7 +51,7 @@ describe("auth callback", () => {
       getSession: vi.fn(async () => ({ data: { session } })),
     });
     renderWithApp(<AuthCallback />, { locale: "en", supabase });
-    await waitFor(() => expect(replace).toHaveBeenCalledWith("/account"));
+    await waitFor(() => expect(replace).toHaveBeenCalledWith("/membership"));
     expect(screen.queryByRole("alert")).toBeNull();
   });
 

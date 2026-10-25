@@ -121,7 +121,7 @@ export const Footer = async ({ consent = true }: FooterProps = {}) => {
             <li>
               <NextLink
                 className={linkClass}
-                href={localizedPath(locale, "/account")}
+                href={localizedPath(locale, "/membership")}
               >
                 {tn("account")}
               </NextLink>

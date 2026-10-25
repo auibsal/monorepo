@@ -18,7 +18,7 @@ one Next.js app, `apps/web`, deployed once to auibsal.org.
 | Where | What it is |
 | --- | --- |
 | `auibsal.org` (`app/[locale]/(site)`) | The public site, English at `/` and Arabic at `/ar` |
-| `auibsal.org/account`, `/sign-in`, `/events/book`, … (`app/[locale]/(account)`) | **Members' pages** on the site: sign-in and sign-up, the account, booking, shifts, writing for Qirtas, the Society; client-rendered with the member's own token |
+| `auibsal.org/membership`, `/sign-in`, `/events/book`, … (`app/[locale]/(account)`) | **Members' pages** on the site: sign-in and sign-up, Membership, booking, shifts, writing for Qirtas, the Society; client-rendered with the member's own token |
 | `auibsal.org/diwan` (`app/[locale]/diwan`) | **The Diwan**: the officers' administration (anyone holding a role), client-rendered with the officer's own token |
 | `auibsal.org/api` (`app/api`, `lib/api`) | Email, cron (and a daily watch on the cron jobs), calendar feeds, exports, file links, deletion, the `/api/v1` API for apps, Hudhud the Telegram bot |
 | `auibsal.org/developers` | The guide and reference for app builders (Sign in with SAL, the Qirtas API) |

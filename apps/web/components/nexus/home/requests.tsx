@@ -11,7 +11,7 @@ export const Requests = () => {
   return (
     <Section
       action={
-        <Link className="link type-caption" href="/account/requests">
+        <Link className="link type-caption" href="/membership/requests">
           {t("mineAll")}
         </Link>
       }

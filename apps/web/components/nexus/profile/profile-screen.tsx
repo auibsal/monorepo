@@ -102,7 +102,7 @@ export const ProfileScreen = () => {
   return (
     <DiwanPage
       actions={
-        <Link className="link" href="/account/settings">
+        <Link className="link" href="/membership/settings">
           {t("settings.title")}
         </Link>
       }

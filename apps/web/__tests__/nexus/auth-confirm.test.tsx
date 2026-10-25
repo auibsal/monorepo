@@ -80,7 +80,7 @@ describe("auth confirm", () => {
     });
     renderWithApp(<AuthConfirm />, { locale: "en", supabase });
     fireEvent.click(screen.getByRole("button", { name: "Continue" }));
-    await waitFor(() => expect(replace).toHaveBeenCalledWith("/account"));
+    await waitFor(() => expect(replace).toHaveBeenCalledWith("/membership"));
   });
 
   test("a link without a token shows the error", () => {

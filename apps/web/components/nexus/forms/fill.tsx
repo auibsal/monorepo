@@ -154,7 +154,7 @@ export const FillForm = () => {
   const id = params.get("id");
   if (!forms.isFormKey(formKey)) {
     return (
-      <EmptyLine action={{ href: "/account/requests", label: t("back") }}>
+      <EmptyLine action={{ href: "/membership/requests", label: t("back") }}>
         {t("notFound")}
       </EmptyLine>
     );
@@ -229,9 +229,9 @@ const FormEditor = ({
       }
       router.push(
         submit
-          ? { pathname: "/account/requests/view", query: { id: savedId } }
+          ? { pathname: "/membership/requests/view", query: { id: savedId } }
           : {
-              pathname: "/account/requests/new",
+              pathname: "/membership/requests/new",
               query: { form: formKey, id: savedId },
             }
       );
@@ -243,14 +243,14 @@ const FormEditor = ({
   }
   if (id && !existing.data) {
     return (
-      <EmptyLine action={{ href: "/account/requests", label: t("back") }}>
+      <EmptyLine action={{ href: "/membership/requests", label: t("back") }}>
         {t("notFound")}
       </EmptyLine>
     );
   }
   if (sentAnonymously) {
     return (
-      <EmptyLine action={{ href: "/account/requests", label: t("back") }}>
+      <EmptyLine action={{ href: "/membership/requests", label: t("back") }}>
         {t("sentAnonymously")}
       </EmptyLine>
     );
@@ -344,7 +344,7 @@ const FormEditor = ({
           ) : null}
           <Link
             className="link type-caption self-center"
-            href="/account/requests"
+            href="/membership/requests"
           >
             {t("back")}
           </Link>

@@ -116,7 +116,7 @@ And without commands:
    | Edit Bot → Description picture | `brand/mascot/hudhud-description.png` (640 × 360: the reversed Hudhud, as supplied, on crimson) | What people see before they press Start. The name, about and description texts are set by step 4. |
    | Inline Mode | On, placeholder "Events and Qirtas" | Sharing cards. |
    | Guest Mode | On | Answers a mention in chats the bot isn't in. |
-   | Login Widget → OpenID Connect | Redirect URIs `https://auibsal.org/account/profile` and `https://auibsal.org/ar/account/profile` (and `http://localhost:3000/account/profile` for a test bot); Trusted Origins empty; signing RS256 | Linking from the profile. Copy the Client Secret to the auibsal project; the Client ID is the bot's id and needs no variable. |
+   | Login Widget → OpenID Connect | Redirect URIs `https://auibsal.org/membership/profile` and `https://auibsal.org/ar/membership/profile` (and `http://localhost:3000/membership/profile` for a test bot); Trusted Origins empty; signing RS256 | Linking from the profile. Copy the Client Secret to the auibsal project; the Client ID is the bot's id and needs no variable. |
    | Allow Groups | On | |
    | Group Privacy | On | As an admin the bot sees the group anyway. |
    | Group Admin Rights | Invite users via link | Answering join requests is all the bot does as an admin. |

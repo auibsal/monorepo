@@ -79,7 +79,7 @@ export const AuthConfirm = () => {
     }
     const back = returnUrl(params.get("next"));
     const next = safeNextPath(back?.searchParams.get("next"));
-    router.replace(next ? stripLocale(next) : "/account");
+    router.replace(next ? stripLocale(next) : "/membership");
   };
 
   if (failed) {

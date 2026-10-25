@@ -89,9 +89,9 @@ export const PartnerGuest = () => {
     .join(", ");
   const links = [
     ["/qirtas/write", t("journal")],
-    ["/account/profile", t("profile")],
-    ["/account/service", t("service")],
-    ["/account/settings", t("settings")],
+    ["/membership/profile", t("profile")],
+    ["/membership/service", t("service")],
+    ["/membership/settings", t("settings")],
   ] as const;
   return (
     <main className="mx-auto grid w-full max-w-xl gap-6 px-4 py-12" id="main">

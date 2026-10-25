@@ -73,9 +73,9 @@ const passFor = (card: WalletCard) => {
     linksModuleData: {
       uris: [
         {
-          description: ar ? "حسابك" : "Your account",
-          id: "account",
-          uri: site(card.locale, "/account"),
+          description: ar ? "العضوية" : "Membership",
+          id: "membership",
+          uri: site(card.locale, "/membership"),
         },
         {
           description: ar ? "ما يجري" : "What's on",

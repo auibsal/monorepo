@@ -285,7 +285,10 @@ export const Service = () => {
             <li key={c.id}>
               <Link
                 className="link"
-                href={{ pathname: "/account/certificate", query: { id: c.id } }}
+                href={{
+                  pathname: "/membership/certificate",
+                  query: { id: c.id },
+                }}
               >
                 {t(`kinds.${c.kind as recognition.CertificateKind}`)}
                 {c.serial ? ` · ${c.serial}` : ""}

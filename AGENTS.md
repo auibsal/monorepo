@@ -15,21 +15,21 @@ items and decisions) and continue from the first unticked item.
     only, with the publishable key; cached by tag and revalidated on publish.
   - `app/[locale]/(account)` — **the members' pages, on the site** (owner,
     Oct 24, 2026): `/sign-in`, `/sign-up`, `/auth/*`, `/setup`,
-    `/oauth/consent`, and, for members, the account menu (owner, Oct 25,
-    2026): Today (`/account`), My calendar (`/events/book`), Callboard
-    (`/callboard`), Society (`/society`), Record (`/account/service`, with
-    certificates) and Settings (`/account/settings`, which also holds
-    `/account/profile` and `/account/requests`); also `/account/certificate`,
+    `/oauth/consent`, and, for members, the Membership menu (owner, Oct 25,
+    2026): Today (`/membership`), My calendar (`/events/book`), Callboard
+    (`/callboard`), Society (`/society`), Record (`/membership/service`, with
+    certificates) and Settings (`/membership/settings`, which also holds
+    `/membership/profile` and `/membership/requests`); also `/membership/certificate`,
     `/programs/productions/auditions`, `/qirtas/write` (with `/submit`,
     `/submission`, `/work`, `/piece`). Perks are on the card; voting
     eligibility is on Society; the calendar feed is on My calendar. The
-    site's header and footer, an account row (`components/account`), and
+    site's header and footer, a Membership row (`components/account`), and
     the gates in `components/nexus/gates.tsx`. They link with the site's
     `Link` (`@repo/internationalization/navigation`) and full paths.
   - `app/[locale]/diwan` — **the Diwan** (code name `nexus`), auibsal.org/diwan:
     the officers' administration only (anyone holding a role,
     `RequireStaff`): the overview and modules at `/diwan/<module>`, the
-    library, declarations. Members are sent to `/account`. Diwan code names
+    library, declarations. Members are sent to `/membership`. Diwan code names
     pages by their own path (`/events`); `Link`, `useRouter`, `usePathname`
     and `redirect` from `@/lib/nexus/navigation` add the `/diwan` prefix.
   - Both are client-rendered (`components/nexus`, `lib/nexus`, the code
@@ -235,7 +235,7 @@ any schema change. Integration tests run against a local stack with
   each request starts where it belongs with a plain action ("Pitch a
   program", "Raise a concern") through `StartLinks`
   (`components/nexus/forms/forms.tsx`), and what they have sent is under
-  Requests and reports (`/account/requests`) and in Profile. The forms engine and its
+  Requests and reports (`/membership/requests`) and in Profile. The forms engine and its
   codes stay as they are underneath.
 - **Members' and Diwan pages.** Every members' page and Diwan page is
   `DiwanPage` with `DiwanSection`s and `RowList`s
@@ -273,6 +273,10 @@ any schema change. Integration tests run against a local stack with
   - The Council in Arabic is «المجلس التنفيذي» («المجلس» is the Majlis).
   - Honorary Fellow, زميل فخري, and Life Member, عضو مدى الحياة (code: tiers
     `honorary` and `alumni`).
+  - Membership, العضوية, at `/membership` (owner, Oct 25, 2026; was "Your
+    account" at `/account`; code: route group `(account)`,
+    `components/account`, message keys `nav.account`). "Account" still
+    names the sign-in account (create, link, delete).
   The governance documents keep the old titles until the owner amends them;
   never edit the text of ratified documents.
 - **Navigation.** At most five sections per app header; the rest go in the
