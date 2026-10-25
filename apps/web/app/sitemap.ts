@@ -1,6 +1,6 @@
 import { project } from "@repo/config";
 import { locales, localizedPath } from "@repo/internationalization";
-import { documents } from "@repo/sal-data";
+import { documents, programmes } from "@repo/sal-data";
 import type { MetadataRoute } from "next";
 import { readPublished } from "@/lib/supabase";
 
@@ -11,7 +11,6 @@ import { readPublished } from "@/lib/supabase";
 const staticPaths = [
   "",
   "/about",
-  "/programs",
   "/qirtas",
   "/qirtas/news",
   "/qirtas/letters",
@@ -28,12 +27,11 @@ const staticPaths = [
   "/contact",
   "/media-kit",
   "/privacy",
-  "/programs/side-quest/care",
+  "/events/next-stop/care",
   "/events",
   "/documents",
   "/governance",
   "/partners",
-  "/programs/productions",
 ];
 
 const localized = (path: string): MetadataRoute.Sitemap => {
@@ -52,14 +50,17 @@ const localized = (path: string): MetadataRoute.Sitemap => {
 };
 
 const sitemap = async (): Promise<MetadataRoute.Sitemap> => {
-  const docs = await readPublished(
-    ["documents"],
-    (c) => documents.publicDocuments(c),
-    []
-  );
+  const [docs, series] = await Promise.all([
+    readPublished(["documents"], (c) => documents.publicDocuments(c), []),
+    readPublished(["programmes"], (c) => programmes.programmes(c), []),
+  ]);
   return [
     ...staticPaths,
     ...docs.map((doc) => `/documents/${doc.slug}`),
+    // Each program's own calendar (Qirtas, the paper, has its own pages).
+    ...(series ?? [])
+      .filter((p) => p.is_active && p.slug !== "waraq")
+      .map((p) => `/events/${p.slug}`),
   ].flatMap(localized);
 };
 

@@ -1359,7 +1359,8 @@
           "sixWords": "Six Words",
           "rotas": "Rotas",
           "removals": "Removal requests ({count})",
-          "roles": "Roles"
+          "roles": "Roles",
+          "sessions": "Sessions"
         },
         "episodes": {
           "new": "New episode",
@@ -1473,6 +1474,27 @@
           "close": "Close the role",
           "closeConfirm": "Close this role? It leaves the Callboard; the replies stay here.",
           "reopen": "Reopen"
+        },
+        "sessions": {
+          "lede": "How this program repeats. Its sessions appear in What's on, each a date you can still edit or cancel in Events.",
+          "first": "First session",
+          "firstHint": "The others fall on the same weekday after it.",
+          "time": "Starts at",
+          "minutes": "Length (minutes)",
+          "every": "How often",
+          "everyHint": "The Evenings take turns, so each of them comes every four weeks.",
+          "weeks": "{count, plural, =1 {Every week} =2 {Every other week} other {Every {shown} weeks}}",
+          "venue": "Place",
+          "entry": "Way in",
+          "open": "Just come",
+          "rsvp": "Book a place",
+          "capacity": "Places",
+          "membersOnly": "Members only",
+          "addTitle": "Add the sessions",
+          "addBody": "Adds a dated event for each session from today until the day you choose. Dates that already have a session are left alone, so you can run it again after changing the rule.",
+          "until": "Until",
+          "add": "Add the sessions",
+          "added": "{count, plural, =0 {No new dates to add.} one {Added one session.} other {Added {shown} sessions.}}"
         }
       },
       "governance": {
@@ -2298,7 +2320,7 @@
         "fields": {
           "title": "Title",
           "slug": "Web address",
-          "slugHint": "Lowercase letters, numbers and hyphens, for auibsal.org/programs/productions.",
+          "slugHint": "Lowercase letters, numbers and hyphens, for auibsal.org/events/company.",
           "playwright": "Written by",
           "kind": "Kind",
           "origin": "Script",
@@ -2306,7 +2328,7 @@
           "programme": "Program",
           "noProgramme": "No program",
           "poster": "Poster",
-          "isPublic": "Show on auibsal.org/programs/productions",
+          "isPublic": "Show on auibsal.org/events/company",
           "isPublicHint": "Only the title, summary, poster, credits people agreed to, partners and published performances are shown. Rights, auditions and the report never are."
         },
         "tabs": {

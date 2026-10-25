@@ -32,7 +32,7 @@ export const SixWords = () => {
       {entry.isSuccess && !entry.data ? (
         <EmptyLine
           action={{
-            href: "/programs/typewriter-tour",
+            href: "/events/typewriter-tour",
             label: t("tour"),
             site: true,
           }}

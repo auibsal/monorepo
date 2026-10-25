@@ -140,7 +140,7 @@ select throws_ok(
 select pg_temp.logout();
 insert into programmes.removal_requests (requester_name, requester_email, details, programme_id)
 values ('A', 'a@example.com', 'Please remove the clip at 2:10',
-  (select id from core.programmes where slug = 'side-quest'));
+  (select id from core.programmes where slug = 'next-stop'));
 select ok(
   (select due_at = created_at + interval '24 hours' from programmes.removal_requests),
   'A removal request starts a 24-hour clock'

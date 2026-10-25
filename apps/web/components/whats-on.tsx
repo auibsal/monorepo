@@ -6,10 +6,19 @@ import {
   toZonedDateValue,
 } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
-import { type events, localized } from "@repo/sal-data";
+import { type events, localized, programmes } from "@repo/sal-data";
 import { getTranslations } from "next-intl/server";
+import type { ComponentProps, ReactNode } from "react";
 import { type DatedItem, DatedList } from "@/components/event-list";
-import { byDay, type Month, monthWeeks, weekdayColumns } from "@/lib/whats-on";
+import { Section } from "@/components/section";
+import {
+  byDay,
+  type Month,
+  monthParam,
+  monthWeeks,
+  shiftMonth,
+  weekdayColumns,
+} from "@/lib/whats-on";
 
 type Row = events.CalendarEvent;
 type UniversityRow = events.UniversityEvent;
@@ -167,5 +176,136 @@ export const MonthCalendar = async ({
         <DatedList items={items} locale={locale} />
       </div>
     </>
+  );
+};
+
+type Href = ComponentProps<typeof Link>["href"];
+
+/**
+ * A month of What's on with the way to the months either side: the whole
+ * calendar at /events, one program's at /events/<program>.
+ */
+export const MonthSection = async ({
+  children,
+  hrefFor,
+  locale,
+  month,
+}: {
+  children: ReactNode;
+  hrefFor: (month: string) => Href;
+  locale: Locale;
+  month: Month;
+}) => {
+  const t = await getTranslations({ locale, namespace: "web.events" });
+  const previous = shiftMonth(month, -1);
+  const following = shiftMonth(month, 1);
+  return (
+    <section aria-labelledby="month" className="grid gap-space-5">
+      <div className="flex flex-wrap items-baseline justify-between gap-4 border-line border-t pt-space-4">
+        <h2 className="type-title font-light" id="month">
+          {formatMonth(month.from, locale)}
+        </h2>
+        <p className="flex gap-5">
+          <Link
+            aria-label={t("previous", {
+              month: formatMonth(previous.from, locale),
+            })}
+            className="link type-caption"
+            href={hrefFor(monthParam(previous))}
+          >
+            {formatMonth(previous.from, locale)}
+          </Link>
+          <Link
+            aria-label={t("next", {
+              month: formatMonth(following.from, locale),
+            })}
+            className="link type-caption"
+            href={hrefFor(monthParam(following))}
+          >
+            {formatMonth(following.from, locale)}
+          </Link>
+        </p>
+      </div>
+      {children}
+    </section>
+  );
+};
+
+type Programme = NonNullable<
+  Awaited<ReturnType<typeof programmes.programmes>>
+>[number];
+
+/**
+ * Every program, as it used to be listed at /programs: the flagships, the
+ * weekly evenings and the specials, each linking to its own calendar.
+ */
+export const SeriesList = async ({
+  locale,
+  rows,
+}: {
+  locale: Locale;
+  rows: readonly Programme[];
+}) => {
+  const t = await getTranslations({ locale, namespace: "web.programmes" });
+  const group = (name: programmes.ProgrammeGroup) =>
+    rows.filter((p) => programmes.programmeGroup(p) === name);
+
+  // Flagship names in Light Italic accent; the rest in Regular ink.
+  const item = (p: Programme) => {
+    const flagship = programmes.programmeGroup(p) === "flagship";
+    return (
+      <li
+        className="grid content-start gap-2 border-line border-t py-space-4"
+        key={p.id}
+      >
+        <h4
+          className={
+            flagship ? "type-title type-accent font-light!" : "type-heading"
+          }
+        >
+          <Link className="hover:underline" href={`/events/${p.slug}`}>
+            {localized(p, "name", locale)}
+          </Link>
+        </h4>
+        {localized(p, "summary", locale) ? (
+          <p className="type-body max-w-[44ch] text-text-secondary">
+            {localized(p, "summary", locale)}
+          </p>
+        ) : null}
+      </li>
+    );
+  };
+
+  const weekly = group("weekly");
+  const specials = group("special");
+
+  return (
+    <Section id="series" title={t("title")}>
+      <div className="grid gap-12">
+        <div className="grid gap-2" id="flagship">
+          <h3 className="type-heading">{t("major")}</h3>
+          <ul className="grid gap-x-10 sm:grid-cols-2 lg:grid-cols-3">
+            {group("flagship").map(item)}
+          </ul>
+        </div>
+        {weekly.length > 0 ? (
+          <div className="grid gap-2" id="weekly">
+            <h3 className="type-heading">{t("weekly")}</h3>
+            <p className="type-body text-text-secondary">{t("weeklyNote")}</p>
+            <ul className="grid gap-x-10 sm:grid-cols-2 lg:grid-cols-4">
+              {weekly.map(item)}
+            </ul>
+          </div>
+        ) : null}
+        {specials.length > 0 ? (
+          <div className="grid gap-2" id="specials">
+            <h3 className="type-heading">{t("specials")}</h3>
+            <ul className="grid gap-x-10 sm:grid-cols-2 lg:grid-cols-3">
+              {specials.map(item)}
+            </ul>
+          </div>
+        ) : null}
+      </div>
+    </Section>
   );
 };

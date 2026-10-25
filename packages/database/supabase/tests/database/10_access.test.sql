@@ -152,7 +152,7 @@ select ok(access.has_permission('roles.assign'), 'The bootstrapped founder can a
 select lives_ok(
   $$ select access.assign_role(
        '00000000-0000-0000-0000-0000000000a1', 'programme_lead', 'programme',
-       (select id from core.programmes where slug = 'side-quest'),
+       (select id from core.programmes where slug = 'next-stop'),
        now() - interval '1 day') $$,
   'The founder assigns a programme-scoped role'
 );
@@ -160,7 +160,7 @@ select lives_ok(
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a1');
 
 select ok(
-  access.has_permission('events.manage', 'programme', (select id from core.programmes where slug = 'side-quest')),
+  access.has_permission('events.manage', 'programme', (select id from core.programmes where slug = 'next-stop')),
   'A programme-scoped grant covers that programme'
 );
 select ok(

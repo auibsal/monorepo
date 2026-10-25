@@ -13,13 +13,9 @@ import { PieceCardView } from "@/components/waraq/cards";
 import { localizedMetadata } from "@/lib/metadata";
 import { readPublished } from "@/lib/supabase";
 
-/** Where a program's name leads: its own pages, or the programs page. */
-const programmeHref = (slug: string) => {
-  if (slug === "waraq") {
-    return "/qirtas";
-  }
-  return slug === "company" ? "/programs/productions" : "/programs";
-};
+/** Where a program's name leads: its own page in What's on (Qirtas: the paper). */
+const programmeHref = (slug: string) =>
+  slug === "waraq" ? "/qirtas" : `/events/${slug}`;
 
 interface HomeProps {
   readonly params: Promise<{ locale: Locale }>;
@@ -84,8 +80,8 @@ const Home = async ({ params }: HomeProps) => {
     (p) => p.is_active && programmes.programmeGroup(p) === "flagship"
   );
   const groups = [
-    { href: "/programs#weekly", key: "evenings" },
-    { href: "/programs#specials", key: "specials" },
+    { href: "/events#weekly", key: "evenings" },
+    { href: "/events#specials", key: "specials" },
   ] as const;
 
   return (
@@ -162,7 +158,7 @@ const Home = async ({ params }: HomeProps) => {
         >
           <SectionHead
             action={
-              <Link className="link type-caption" href="/programs">
+              <Link className="link type-caption" href="/events#series">
                 {t("allPrograms")}
               </Link>
             }

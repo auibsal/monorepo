@@ -1892,6 +1892,54 @@ export type Database = {
           },
         ];
       };
+      series_rules: {
+        Row: {
+          capacity: number | null;
+          created_at: string;
+          entry: string;
+          every_weeks: number;
+          first_on: string;
+          members_only: boolean;
+          minutes: number;
+          programme_id: string;
+          start_time: string;
+          updated_at: string;
+          updated_by: string | null;
+          venue_ar: string | null;
+          venue_en: string | null;
+        };
+        Insert: {
+          capacity?: number | null;
+          created_at?: string;
+          entry?: string;
+          every_weeks?: number;
+          first_on: string;
+          members_only?: boolean;
+          minutes?: number;
+          programme_id: string;
+          start_time: string;
+          updated_at?: string;
+          updated_by?: string | null;
+          venue_ar?: string | null;
+          venue_en?: string | null;
+        };
+        Update: {
+          capacity?: number | null;
+          created_at?: string;
+          entry?: string;
+          every_weeks?: number;
+          first_on?: string;
+          members_only?: boolean;
+          minutes?: number;
+          programme_id?: string;
+          start_time?: string;
+          updated_at?: string;
+          updated_by?: string | null;
+          venue_ar?: string | null;
+          venue_en?: string | null;
+        };
+        Relationships: [];
+      };
       waitlist: {
         Row: {
           answers: NonNullable<Json>;
@@ -1935,6 +1983,10 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      add_series_sessions: {
+        Args: { programme: string; until: string };
+        Returns: number;
+      };
       calendar: {
         Args: { from_at: string; to_at: string };
         Returns: {

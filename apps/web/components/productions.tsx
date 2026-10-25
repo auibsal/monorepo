@@ -1,16 +1,11 @@
+import type { Locale } from "@repo/internationalization";
 import { formatClock, formatLongDate } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
 import { localized, productions } from "@repo/sal-data";
-import { getTranslations, setRequestLocale } from "next-intl/server";
-import { PageHeader, Section } from "@/components/section";
+import { getTranslations } from "next-intl/server";
+import { Section } from "@/components/section";
 import { mediaUrl } from "@/lib/media";
-import { type LocaleParams, sectionMetadata } from "@/lib/page";
 import { readPublished } from "@/lib/supabase";
-
-export const generateMetadata = sectionMetadata(
-  "web.productions",
-  "/programs/productions"
-);
 
 type Kind = productions.ProductionKind;
 type Department = productions.Department;
@@ -36,23 +31,15 @@ const loadAll = async () =>
  * Staged readings and productions. Only what may be public is read: the
  * title, summary and poster, the credits people agreed to show, partners
  * with a memorandum in force, and published performances once the
- * script's rights are cleared.
+ * script's rights are cleared. Shown on the Company's page in What's on
+ * (/events/company).
  */
-const ProductionsPage = async ({ params }: LocaleParams) => {
-  const { locale } = await params;
-  setRequestLocale(locale);
+export const Productions = async ({ locale }: { locale: Locale }) => {
   const t = await getTranslations({ locale, namespace: "web.productions" });
   const list = await loadAll();
 
   return (
-    <div className="mx-auto grid w-full max-w-6xl gap-20 px-4 py-16 sm:py-24">
-      <PageHeader lede={t("lede")} title={t("title")} />
-      <Link
-        className="type-caption justify-self-start underline underline-offset-4"
-        href="/programs"
-      >
-        {t("allPrograms")}
-      </Link>
+    <>
       {list.length === 0 ? <p className="type-body">{t("empty")}</p> : null}
       {list.map((p) => {
         const poster = mediaUrl(p.poster_path);
@@ -146,8 +133,6 @@ const ProductionsPage = async ({ params }: LocaleParams) => {
           </Section>
         );
       })}
-    </div>
+    </>
   );
 };
-
-export default ProductionsPage;

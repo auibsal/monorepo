@@ -62,6 +62,7 @@ const LOGGED_TABLES = [
   "core.settings",
   "events.check_ins",
   "events.events",
+  "events.series_rules",
   "governance.candidates",
   "governance.election_results",
   "governance.elections",

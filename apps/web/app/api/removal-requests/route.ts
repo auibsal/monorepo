@@ -10,7 +10,7 @@ import { corsHeaders, preflight } from "@/lib/api/cors";
 export const OPTIONS = preflight;
 
 const requestSchema = programmes.removalRequestSchema.extend({
-  programme: z.enum(["side-quest"]).optional(),
+  programme: z.enum(["next-stop"]).optional(),
   /** Left empty by people; filled by bots (the form hides it). */
   website: z.string().max(500).optional(),
 });
@@ -68,7 +68,7 @@ export const POST = async (request: Request) => {
     .schema("core")
     .from("programmes")
     .select("id")
-    .eq("slug", programme ?? "side-quest")
+    .eq("slug", programme ?? "next-stop")
     .maybeSingle();
 
   const { data, error } = await admin

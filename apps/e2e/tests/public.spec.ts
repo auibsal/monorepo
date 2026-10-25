@@ -65,6 +65,29 @@ test.describe("public site", () => {
     ).toHaveCount(0);
   });
 
+  test("each program is a series in What's on, at /events/<program>", async ({
+    page,
+  }) => {
+    await page.goto(`${urls.web}/events`);
+    const majlis = page
+      .getByRole("heading", { exact: true, name: "The Majlis" })
+      .getByRole("link");
+    await expect(majlis).toHaveAttribute("href", /\/events\/majlis$/);
+    await majlis.click();
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText(
+      "The Majlis"
+    );
+    await expect(page.locator("#month")).toBeVisible();
+    await expectAccessible(page);
+    // The Company's page carries its productions; Next Stop its promise.
+    await page.goto(`${urls.web}/events/next-stop`);
+    await page
+      .getByRole("main")
+      .getByRole("link", { name: "Next Stop care" })
+      .click();
+    await expect(page).toHaveURL(/\/events\/next-stop\/care$/);
+  });
+
   test("the Qirtas front page is accessible", async ({ page }) => {
     await page.goto(`${urls.web}/qirtas`);
     await expect(page.getByRole("heading", { level: 1 })).toHaveText("Qirtas");

@@ -7,6 +7,7 @@ import { events, localized, sanitizeRichText } from "@repo/sal-data";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { loadSeries, SeriesView, seriesMetadata } from "@/components/series";
 import { eventLd, JsonLd } from "@/lib/json-ld";
 import { mediaUrl } from "@/lib/media";
 import { localizedMetadata } from "@/lib/metadata";
@@ -14,6 +15,7 @@ import { readPublished } from "@/lib/supabase";
 
 interface EventProps {
   readonly params: Promise<{ locale: Locale; slug: string }>;
+  readonly searchParams: Promise<{ month?: string }>;
 }
 
 const SLUG = /^[a-z0-9]+(-[a-z0-9]+)*$/;
@@ -32,6 +34,10 @@ export const generateMetadata = async ({
   params,
 }: EventProps): Promise<Metadata> => {
   const { locale, slug } = await params;
+  const series = await loadSeries(slug);
+  if (series) {
+    return seriesMetadata(locale, series);
+  }
   const event = await load(slug);
   if (!event) {
     return {};
@@ -43,9 +49,19 @@ export const generateMetadata = async ({
   });
 };
 
-const EventPage = async ({ params }: EventProps) => {
+/**
+ * An event, or a program: programs and events share the addresses under
+ * /events (the database keeps them apart), so /events/majlis is the Majlis
+ * as a series and /events/majlis-2026-11-04 one of its evenings.
+ */
+const EventPage = async ({ params, searchParams }: EventProps) => {
   const { locale, slug } = await params;
   setRequestLocale(locale);
+  const series = await loadSeries(slug);
+  if (series) {
+    const { month } = await searchParams;
+    return <SeriesView locale={locale} month={month} series={series} />;
+  }
   const event = await load(slug);
   if (!event) {
     notFound();

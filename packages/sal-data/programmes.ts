@@ -107,7 +107,7 @@ export const WEEKLY_RHYTHM = [
   "majlis",
   "book-circle",
   "open-pages",
-  "scratch-night",
+  "open-stage",
 ] as const;
 
 export type ProgrammeGroup = "flagship" | "weekly" | "special";

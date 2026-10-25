@@ -9,6 +9,21 @@ Branch: `claude/new-session-qosn60`.
 
 ## Blocked — needed from the user
 
+- [ ] **Program sessions (2026-10-25):** programs now live in What's on
+      (`/events/<program>`; `/programs` is gone, no redirects). The calendar
+      fills only once each program has a repeat rule: in the Diwan,
+      Programs → Sessions, set the first date, time, place, way in and how
+      often (the Evenings take turns: every four weeks each), save, then
+      "Add the sessions" up to the term's end. Single dates are edited or
+      canceled in Events.
+- [ ] **Platform policy text (2026-10-25):** the adopted platform policy on
+      photo removal still names `auibsal.org/programs/side-quest/care`;
+      Next Stop's promise is now at `/events/next-stop/care`. Adopted text
+      isn't edited by the platform: amend it when the Council next adopts.
+- [ ] **Recovery codes (2026-10-25):** every officer whose role needs
+      two-step sign-in makes a set from the Diwan's overview and keeps it
+      away from their phone.
+
 - [ ] **Sign-in and email (2026-10-25), urgent:** members report the
       Cloudflare check spinning on sign-in, and no Society sign-in or
       confirmation email has gone out since Oct 21. The site now says when
@@ -1258,6 +1273,9 @@ Covered by automated tests so far:
 All Arabic written for the platform up to 2026-10-24 was reviewed by the
 owner and approved ("reviewed across the board, it's all good"). List new
 Arabic here as it is written.
+
+Written 2026-10-25 (program sessions): `nexus.admin.programmes.tabs.sessions`
+(«الجلسات»), `nexus.admin.programmes.sessions.*`.
 
 Written 2026-10-25 (recovery codes and resets): `nexus.twoStep.lost`,
 `recoveryBody`, `recoveryLabel`, `recoveryUse`, `recoveryFailed`;
