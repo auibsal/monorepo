@@ -23,14 +23,21 @@ const SUBMIT = {
   password: ["signIn.submit", "signIn.submitting"],
 } as const;
 
-export const SignInForm = () => {
+/**
+ * The email sign-in. With `embedded` (The IDEA Pass's linking step) it is
+ * shown under the Pass's own title, returns to /auth/pass to finish the
+ * link, and leaves out the ways to reset or sign up.
+ */
+export const SignInForm = ({ embedded = false }: { embedded?: boolean }) => {
   const t = useTranslations("auth");
   const errorText = useAuthError();
   const passkeyErrorText = usePasskeyError();
   const { supabase } = useAuth();
   const locale = useLocale();
   const params = useSearchParams();
-  const next = safeNextPath(params.get("next"));
+  const next = embedded
+    ? "/auth/pass?link=1"
+    : safeNextPath(params.get("next"));
   const id = useId();
   const [email, setEmail] = useState("");
   // Password first for everyone; a sign-in link is the fallback. Links
@@ -100,9 +107,11 @@ export const SignInForm = () => {
 
   return (
     <>
-      <FormHeader title={t("signIn.title")}>
-        {t("signIn.description")}
-      </FormHeader>
+      {embedded ? null : (
+        <FormHeader title={t("signIn.title")}>
+          {t("signIn.description")}
+        </FormHeader>
+      )}
       {params.get("deleted") ? (
         <p role="status">{t("signIn.deleted")}</p>
       ) : null}
@@ -177,20 +186,22 @@ export const SignInForm = () => {
           ) : null}
         </form>
       )}
-      <nav className="type-body grid gap-2">
-        <Link className="link" href="/forgot-password">
-          {t("signIn.forgot")}
-        </Link>
-        <p>
-          {t("signIn.noAccount")}{" "}
-          <Link
-            className="link"
-            href={{ pathname: "/sign-up", query: next ? { next } : {} }}
-          >
-            {t("signIn.createAccount")}
+      {embedded ? null : (
+        <nav className="type-body grid gap-2">
+          <Link className="link" href="/forgot-password">
+            {t("signIn.forgot")}
           </Link>
-        </p>
-      </nav>
+          <p>
+            {t("signIn.noAccount")}{" "}
+            <Link
+              className="link"
+              href={{ pathname: "/sign-up", query: next ? { next } : {} }}
+            >
+              {t("signIn.createAccount")}
+            </Link>
+          </p>
+        </nav>
+      )}
     </>
   );
 };

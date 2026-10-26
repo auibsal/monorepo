@@ -7,29 +7,11 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { callApi } from "@/lib/nexus/api";
+import { pkce, randomString } from "@/lib/nexus/pkce";
 import { DiwanSection } from "../page";
 
 const key = ["profile", "telegram"];
 const PENDING = "sal.telegram-login";
-
-const base64url = (bytes: Uint8Array) =>
-  btoa(String.fromCharCode(...bytes))
-    .replaceAll("+", "-")
-    .replaceAll("/", "_")
-    .replaceAll("=", "");
-
-const randomString = () =>
-  base64url(crypto.getRandomValues(new Uint8Array(32)));
-
-/** PKCE (RFC 7636): a verifier kept here, its S256 challenge sent out. */
-const pkce = async () => {
-  const verifier = randomString();
-  const digest = await crypto.subtle.digest(
-    "SHA-256",
-    new TextEncoder().encode(verifier)
-  );
-  return { challenge: base64url(new Uint8Array(digest)), verifier };
-};
 
 /** This page without its query or hash: the address Telegram returns to. */
 const returnAddress = () =>

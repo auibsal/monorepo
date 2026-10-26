@@ -48,6 +48,27 @@ export type Database = {
         };
         Relationships: [];
       };
+      pass_links: {
+        Row: {
+          last_signed_in_at: string;
+          linked_at: string;
+          pass_sub: string;
+          user_id: string;
+        };
+        Insert: {
+          last_signed_in_at?: string;
+          linked_at?: string;
+          pass_sub: string;
+          user_id: string;
+        };
+        Update: {
+          last_signed_in_at?: string;
+          linked_at?: string;
+          pass_sub?: string;
+          user_id?: string;
+        };
+        Relationships: [];
+      };
       permissions: {
         Row: {
           description: string;
@@ -302,6 +323,18 @@ export type Database = {
           term_starts: string;
           user_id: string;
         }[];
+      };
+      pass_account: {
+        Args: {
+          auib_email?: string;
+          pass_sub: string;
+          verified_email?: string;
+        };
+        Returns: string;
+      };
+      pass_link: {
+        Args: { pass_sub: string; user_id: string };
+        Returns: undefined;
       };
       permission_holders: {
         Args: { permission: string; scope_id?: string; scope_type?: string };

@@ -153,6 +153,30 @@
       "hint": "Can't open the link on this device? Type the code from the same email.",
       "submit": "Continue",
       "submitting": "Checking…"
+    },
+    "pass": {
+      "continue": "Continue with The IDEA Pass",
+      "lede": "Sign in or join with The IDEA Pass, the one account for the Society's website.",
+      "forgot": "Passwords are kept on The IDEA Pass. Continue there to sign in or change yours.",
+      "students": "AUIB students: confirm your AUIB address on The IDEA Pass, and your membership follows.",
+      "unavailable": "The IDEA Pass isn't answering right now. Try again in a few minutes.",
+      "signingIn": "Signing you in",
+      "wait": "One moment while we open your account.",
+      "unmatchedTitle": "We couldn't find your account",
+      "unmatchedBody": "There's no Society account under <email>{address}</email> yet.",
+      "unmatchedNoEmail": "There's no Society account under your IDEA Pass yet.",
+      "create": "Create my account",
+      "existing": "I already have an account under another address",
+      "existingTitle": "Sign in once to link your account",
+      "existingBody": "Sign in with the address your account uses. From then on you'll sign in with The IDEA Pass.",
+      "failedTitle": "That didn't work",
+      "tryAgain": "Try again",
+      "errors": {
+        "linked_elsewhere": "That account is already linked to another IDEA Pass. Ask the Membership officers for help.",
+        "no_email": "Your IDEA Pass has no confirmed email address yet. Confirm one there, then come back.",
+        "expired": "This sign-in has expired. Start again from the sign-in page.",
+        "other": "We couldn't sign you in. Start again from the sign-in page."
+      }
     }
   },
   "nexus": {
@@ -3804,7 +3828,9 @@
       "profile": "Profile",
       "profileLine": "Your name in both languages, a short bio, and what you tell us about yourself.",
       "requests": "Requests and reports",
-      "requestsLine": "What you have sent, and starting a new request."
+      "requestsLine": "What you have sent, and starting a new request.",
+      "pass": "The IDEA Pass",
+      "passLine": "You sign in with The IDEA Pass. Your password, passkeys and AUIB student status are kept there; everything else stays here."
     },
     "recoveryCodes": {
       "noneTitle": "Save your recovery codes",
