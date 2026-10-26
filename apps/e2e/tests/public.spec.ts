@@ -83,6 +83,9 @@ test.describe("public site", () => {
       "The Majlis"
     );
     await expect(page.locator("#month")).toBeVisible();
+    // After a client-side navigation the title follows the page (streamed
+    // metadata): wait for it, or axe can run before it lands.
+    await expect(page).toHaveTitle(/The Majlis/);
     await expectAccessible(page);
     // The Company's page carries its productions; Next Stop its promise.
     await page.goto(`${urls.web}/events/next-stop`);
