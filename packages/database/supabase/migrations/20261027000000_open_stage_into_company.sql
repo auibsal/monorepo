@@ -4,9 +4,10 @@
 -- each in turn, so each comes every three weeks. The name "Open Stage" is
 -- retired.
 --
--- Open Stage's row stays, unpublished (as Gallery Wall's did), so its
--- history keeps its place; everything that named it now names the Company.
--- Its repeat rule is removed: the Company sets its own nights.
+-- Everything that named Open Stage now names the Company, so its history
+-- (events, openings, service hours) is the Company's; then the program
+-- itself is removed. Its repeat rule goes with it: the Company sets its
+-- own nights.
 
 do $$
 declare
@@ -34,7 +35,7 @@ begin
       using company, open_stage;
   end loop;
 
-  update core.programmes set is_active = false, sort = 140 where id = open_stage;
+  delete from core.programmes where id = open_stage;
 
   update core.programmes set
     summary_en = 'The Society''s theater company: one staged production a semester, cast from open auditions.',

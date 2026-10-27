@@ -386,8 +386,8 @@ These stop parts of the work. Everything else continues around them.
 - **Open Stage into the Company** (owner, 2026-10-27): Open Stage is no
   longer a program and its name is retired; its events, openings, rotas,
   service records and the rest now belong to the Company (migration
-  `20261027000000`), its row is unpublished and kept, its repeat rule is
-  removed (the Company sets its own nights). The Evenings are three (the
+  `20261027000000`), then the program is removed, with its repeat rule
+  (the Company sets its own nights). The Evenings are three (the
   Majlis, Book Circle, Open Pages), each every three weeks. The adopted
   documents still name Scratch Night; amend them when the Council next
   adopts.

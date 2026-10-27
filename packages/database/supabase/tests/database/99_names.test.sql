@@ -81,8 +81,8 @@ select is((select name_en from core.programmes where slug = 'waraq'), 'Qirtas',
 select is((select name_en from core.programmes where slug = 'next-stop'), 'Next Stop',
   'Side Quest is Next Stop');
 select ok(
-  exists (select 1 from core.programmes where slug = 'open-stage' and not is_active),
-  'Open Stage is merged into the Company: unpublished, not deleted'
+  not exists (select 1 from core.programmes where slug = 'open-stage'),
+  'Open Stage is part of the Company: the program is removed'
 );
 select ok(
   exists (select 1 from core.programmes where slug = 'gallery-wall' and not is_active),
