@@ -1,9 +1,8 @@
 // @vitest-environment node
 /**
  * The IDEA Pass and SAL accounts, against a local stack: an existing member
- * is found by the AUIB address the Pass checked, a student who signed up
- * with another address moves to the AUIB one, and a new person gets an
- * account linked to their Pass.
+ * is found by the Pass's verified address, a student status from the Pass
+ * makes a member, and a new person gets an account linked to their Pass.
  * Needs: SUPABASE_INTEGRATION=1 API_URL=… PUBLISHABLE_KEY=… SECRET_KEY=…
  */
 import type { Database } from "@repo/database";
@@ -27,17 +26,18 @@ process.env.SUPABASE_SECRET_KEY = secretKey;
 const SECRET = "t".repeat(32);
 
 const identity = (fields: Partial<PassIdentity>): PassIdentity => ({
-  auibEmail: null,
   email: null,
   familyName: null,
   givenName: null,
   locale: null,
+  studentUntil: null,
   sub: `pass-${crypto.randomUUID()}`,
   ...fields,
 });
 
 describe.skipIf(!enabled)("signing in with The IDEA Pass", () => {
   const stamp = Date.now();
+  const nextYear = `${new Date().getFullYear() + 1}-06-30`;
   const admin = createClient<Database>(url, secretKey || "skipped", {
     auth: { persistSession: false },
   });
@@ -47,8 +47,7 @@ describe.skipIf(!enabled)("signing in with The IDEA Pass", () => {
     });
 
   const signsIn = async (tokenHash: string) => {
-    const client = browser();
-    const { data, error } = await client.auth.verifyOtp({
+    const { data, error } = await browser().auth.verifyOtp({
       token_hash: tokenHash,
       type: "magiclink",
     });
@@ -56,54 +55,50 @@ describe.skipIf(!enabled)("signing in with The IDEA Pass", () => {
     return data.user;
   };
 
-  test("an existing member is found by their checked AUIB address", async () => {
+  const isMember = async (userId: string) => {
+    const { data } = await admin
+      .schema("membership")
+      .from("memberships")
+      .select("user_id")
+      .eq("user_id", userId)
+      .maybeSingle();
+    return data !== null;
+  };
+
+  test("an existing member is found by the Pass's verified address", async () => {
     const { signInWithPass } = await import("@/lib/api/pass-account");
     const email = `pass-member-${stamp}@auib.edu.iq`;
     const created = await admin.auth.admin.createUser({
       email,
       email_confirm: true,
     });
-    const pass = identity({ auibEmail: email, email: `me-${stamp}@gmail.com` });
+    const pass = identity({ email });
     const result = await signInWithPass(admin, pass, SECRET);
     expect(result.status).toBe("signed_in");
     const user = await signsIn((result as { tokenHash: string }).tokenHash);
     expect(user?.id).toBe(created.data.user?.id);
 
     // Next time the link alone finds them.
-    const again = await signInWithPass(
-      admin,
-      { ...pass, auibEmail: null, email: null },
-      SECRET
-    );
+    const again = await signInWithPass(admin, { ...pass, email: null }, SECRET);
     expect(again.status).toBe("signed_in");
   });
 
-  test("a student who joined with another address moves to the AUIB one", async () => {
+  test("a student status from the Pass makes a member", async () => {
     const { signInWithPass } = await import("@/lib/api/pass-account");
     const personal = `pass-outside-${stamp}@example.com`;
-    const auib = `pass-student-${stamp}@auib.edu.iq`;
     const created = await admin.auth.admin.createUser({
       email: personal,
       email_confirm: true,
     });
+    const id = created.data.user?.id ?? "";
+    expect(await isMember(id)).toBe(false);
     const result = await signInWithPass(
       admin,
-      identity({ auibEmail: auib, email: personal }),
+      identity({ email: personal, studentUntil: nextYear }),
       SECRET
     );
-    // Found by the Pass's own address, then moved to the AUIB one.
     expect(result.status).toBe("signed_in");
-    const { data } = await admin.auth.admin.getUserById(
-      created.data.user?.id ?? ""
-    );
-    expect(data.user?.email).toBe(auib);
-    const { data: verified } = await admin
-      .schema("membership")
-      .from("memberships")
-      .select("user_id")
-      .eq("user_id", created.data.user?.id ?? "")
-      .maybeSingle();
-    expect(verified).not.toBeNull();
+    expect(await isMember(id)).toBe(true);
   });
 
   test("a new person gets an account linked to their Pass", async () => {
@@ -111,20 +106,22 @@ describe.skipIf(!enabled)("signing in with The IDEA Pass", () => {
       "@/lib/api/pass-account"
     );
     const pass = identity({
-      auibEmail: `pass-new-${stamp}@auib.edu.iq`,
+      email: `pass-new-${stamp}@gmail.com`,
       givenName: "New",
+      studentUntil: nextYear,
     });
     const first = await signInWithPass(admin, pass, SECRET);
     expect(first.status).toBe("unmatched");
     const made = await createWithPass(admin, pass, "en");
     const user = await signsIn((made as { tokenHash: string }).tokenHash);
-    expect(user?.email).toBe(pass.auibEmail);
+    expect(user?.email).toBe(pass.email);
     const { data: link } = await admin
       .schema("access")
       .from("pass_links")
-      .select("pass_sub")
+      .select("pass_sub, student_until")
       .eq("user_id", user?.id ?? "")
       .single();
-    expect(link?.pass_sub).toBe(pass.sub);
+    expect(link).toEqual({ pass_sub: pass.sub, student_until: nextYear });
+    expect(await isMember(user?.id ?? "")).toBe(true);
   });
 });

@@ -357,12 +357,14 @@ any schema change. Integration tests run against a local stack with
   installs and runs scripts; Next.js runs on Node (`next build`).
 - **Auth:** The IDEA Pass is the only way to sign in once
   `NEXT_PUBLIC_PASS_ISSUER`, `NEXT_PUBLIC_PASS_CLIENT_ID` and
-  `PASS_CLIENT_SECRET` are set (owner, Oct 26, 2026); students prove their
-  AUIB address there, and everything else stays here. A Pass is linked to
-  one SAL account (`access.pass_links`), found by the AUIB address the
-  Pass checked or its verified address. The sign-in opens an ordinary SAL
-  session, so RLS, roles and the officers' second step are unchanged
-  (`lib/api/pass.ts`, `lib/api/pass-account.ts`, `/api/pass/*`, `/auth/pass`;
+  `PASS_CLIENT_SECRET` are set (owner, Oct 26, 2026); students prove they
+  study at AUIB there (a yes or no, never the address), and everything else
+  stays here. A Pass is linked to one SAL account (`access.pass_links`),
+  found by the link or the Pass's verified address; a current student
+  status makes a member and counts for ballots (`private.is_auib_member`).
+  The sign-in opens an ordinary SAL session, so RLS, roles and the
+  officers' second step are unchanged (`lib/api/pass.ts`,
+  `lib/api/pass-account.ts`, `/api/pass/*`, `/auth/pass`;
   `docs/platform/idea-pass.md`). Until then: email sign-in (AUIB address
   first; magic link or password). In
   the members' pages and the Diwan, query with `useAuth().supabase` so RLS

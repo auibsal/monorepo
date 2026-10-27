@@ -11,18 +11,15 @@ Branch: `claude/new-session-qosn60`.
 
 - [ ] **The IDEA Pass (2026-10-26), the only way to sign in:** the SAL side
       is built and off until three variables are set
-      (`docs/platform/idea-pass.md`). Needed from the Pass:
-      - an OpenID Connect client for SAL, with the redirect URIs
-        `https://auibsal.org/auth/pass` and `https://auibsal.org/ar/auth/pass`;
-      - scopes `openid email profile student`, with a student claim that
-        names the AUIB address the person proved.
-
-      Then, in Vercel, set `NEXT_PUBLIC_PASS_ISSUER`,
-      `NEXT_PUBLIC_PASS_CLIENT_ID` and `PASS_CLIENT_SECRET` and redeploy. In
-      Supabase, turn off **Allow new users to sign up**. Record the Council's
-      decision and the conflicts-register entry, and amend the privacy policy
-      to name The IDEA Pass (adopted text isn't edited in place).
-
+      (`docs/platform/idea-pass.md`). The IDEA's provider is in
+      theideaiq/monorepo PR #1013 (issuer `https://api.theideaiq.com/oidc`).
+      Once it is live, The IDEA registers SAL and gives you the client id and
+      secret privately. Then set `NEXT_PUBLIC_PASS_ISSUER`,
+      `NEXT_PUBLIC_PASS_CLIENT_ID` and `PASS_CLIENT_SECRET` in Vercel and
+      redeploy, and in Supabase turn off **Allow new users to sign up**.
+      Record the Council's decision and the conflicts-register entry, and
+      amend the privacy policy to name The IDEA Pass (adopted text isn't
+      edited in place).
 - [ ] **Program sessions (2026-10-25):** programs now live in What's on
       (`/events/<program>`; `/programs` is gone, no redirects). The calendar
       fills only once each program has a repeat rule: in the Diwan,
@@ -1306,7 +1303,7 @@ All Arabic written for the platform up to 2026-10-24 was reviewed by the
 owner and approved ("reviewed across the board, it's all good"). List new
 Arabic here as it is written.
 
-Written 2026-10-26 (The IDEA Pass): `auth.pass.*`,
+Written 2026-10-26 (The IDEA Pass): `auth.pass.*` (with `unmatchedHint`),
 `nexus.settings.passLine`.
 
 Written 2026-10-25 (sign-up in fewer steps): `auth.signUp.outsideAuib`;

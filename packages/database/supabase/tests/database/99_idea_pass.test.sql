@@ -1,4 +1,4 @@
--- The IDEA Pass links (migration 20261026000000).
+-- The IDEA Pass links and student status (migration 20261026000000).
 begin;
 -- <preamble>
 -- Shared pgTAP preamble. Each test file includes a copy (pg_prove runs files
@@ -73,7 +73,7 @@ insert into core.semesters (code, name_en, name_ar, starts_on, ends_on) values
 -- first-100 rule back on themselves.
 update core.settings set value = '0' where key = 'membership.founding_voters';
 -- </preamble>
-select plan(12);
+select plan(16);
 
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a1', 'student@auib.edu.iq', 'Student');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a2', 'guest@example.com', 'Guest');
@@ -82,7 +82,7 @@ select pg_temp.make_user('00000000-0000-0000-0000-0000000000a3', 'other@auib.edu
 -- Only the API (the secret key) can call these.
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a1');
 select throws_ok(
-  $$ select access.pass_account('pass-1', null, 'student@auib.edu.iq') $$,
+  $$ select access.pass_account('pass-1', 'student@auib.edu.iq') $$,
   '42501', null, 'members cannot match a Pass themselves'
 );
 select throws_ok(
@@ -93,27 +93,27 @@ select pg_temp.logout();
 
 set local role service_role;
 select is(
-  access.pass_account('pass-1', 'someone@gmail.com', 'Student@AUIB.edu.iq'),
+  access.pass_account('pass-1', 'Student@AUIB.edu.iq'),
   '00000000-0000-0000-0000-0000000000a1'::uuid,
-  'the AUIB address the Pass checked finds the member'
+  'the Pass''s verified address finds the account under it'
 );
 select is(
-  access.pass_account('pass-1', null, null),
+  access.pass_account('pass-1', null),
   '00000000-0000-0000-0000-0000000000a1'::uuid,
-  'then the link finds them, whatever the addresses'
+  'then the link finds them, whatever the address'
 );
 select is(
-  access.pass_account('pass-2', 'guest@example.com', null),
+  access.pass_account('pass-2', 'guest@example.com', current_date + 200),
   '00000000-0000-0000-0000-0000000000a2'::uuid,
-  'the Pass''s verified address finds an account outside AUIB'
+  'an account outside AUIB is found by its address'
 );
 select is(
-  access.pass_account('pass-3', 'new@gmail.com', null),
+  access.pass_account('pass-3', 'new@gmail.com'),
   null,
   'no account: nothing is made here'
 );
 select throws_ok(
-  $$ select access.pass_account('pass-4', null, 'student@auib.edu.iq') $$,
+  $$ select access.pass_account('pass-4', 'student@auib.edu.iq') $$,
   '23505', null, 'an account linked to one Pass is not taken by another'
 );
 select lives_ok(
@@ -130,6 +130,27 @@ select is(
   'three links'
 );
 reset role;
+
+-- A student status from the Pass makes a member and counts for ballots.
+select ok(
+  exists (select 1 from membership.memberships where user_id = '00000000-0000-0000-0000-0000000000a2'),
+  'a student status from the Pass makes a member'
+);
+select is(
+  (select status from membership.verification_requests where user_id = '00000000-0000-0000-0000-0000000000a2'),
+  'approved',
+  'and settles the waiting verification request'
+);
+select ok(
+  private.is_auib_member('00000000-0000-0000-0000-0000000000a2'),
+  'it counts as AUIB for ballots while it lasts'
+);
+update access.pass_links set student_until = current_date - 1
+where user_id = '00000000-0000-0000-0000-0000000000a2';
+select ok(
+  not private.is_auib_member('00000000-0000-0000-0000-0000000000a2'),
+  'and not once it has run out'
+);
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a1');
 select is(

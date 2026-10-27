@@ -53,18 +53,21 @@ export type Database = {
           last_signed_in_at: string;
           linked_at: string;
           pass_sub: string;
+          student_until: string | null;
           user_id: string;
         };
         Insert: {
           last_signed_in_at?: string;
           linked_at?: string;
           pass_sub: string;
+          student_until?: string | null;
           user_id: string;
         };
         Update: {
           last_signed_in_at?: string;
           linked_at?: string;
           pass_sub?: string;
+          student_until?: string | null;
           user_id?: string;
         };
         Relationships: [];
@@ -326,14 +329,14 @@ export type Database = {
       };
       pass_account: {
         Args: {
-          auib_email?: string;
           pass_sub: string;
+          student_until?: string;
           verified_email?: string;
         };
         Returns: string;
       };
       pass_link: {
-        Args: { pass_sub: string; user_id: string };
+        Args: { pass_sub: string; student_until?: string; user_id: string };
         Returns: undefined;
       };
       permission_holders: {

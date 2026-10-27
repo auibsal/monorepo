@@ -7,16 +7,17 @@ import {
 
 /**
  * The IDEA Pass (owner, 2026-10-26): the only way to sign in to
- * auibsal.org, and where students prove their AUIB address. OpenID
+ * auibsal.org, and where students prove they study at AUIB. OpenID
  * Connect, authorization code with PKCE, SAL as a confidential client.
- * Only who the person is crosses over (the Pass's id, the addresses it
- * has checked, a name and a language); SAL's own data stays here.
- * docs/platform/idea-pass.md
+ * Only who the person is crosses over (SAL's own id for them at the Pass,
+ * their verified address, a name, a language, and a yes or no for
+ * student status; never the university address); SAL's own data stays
+ * here. docs/platform/idea-pass.md
  */
 
 // The person's addresses, names and language, and their student status.
 const SCOPE = "openid email profile student";
-const AUIB_DOMAIN = "auib.edu.iq";
+const DATE = /^\d{4}-\d{2}-\d{2}$/;
 const TRAILING_SLASH = /\/$/;
 
 interface Discovery {
@@ -114,14 +115,17 @@ export const authorizeUrl = (
 };
 
 export interface PassIdentity {
-  /** An AUIB address the Pass has checked belongs to them (a student). */
-  auibEmail: string | null;
   /** The address the Pass has checked, if it has. */
   email: string | null;
   familyName: string | null;
   givenName: string | null;
   locale: "ar" | "en" | null;
-  /** The Pass's own id for the person: stable, never reused. */
+  /**
+   * The last day the Pass vouches they study at AUIB (YYYY-MM-DD), or null
+   * when it doesn't.
+   */
+  studentUntil: string | null;
+  /** SAL's own id for the person at the Pass: stable, never reused. */
   sub: string;
 }
 
@@ -130,32 +134,21 @@ const text = (value: unknown, max = 120) =>
     ? value.trim().slice(0, max)
     : null;
 
-const isAuib = (address: string) =>
-  address.toLowerCase().endsWith(`@${AUIB_DOMAIN}`);
-
 /**
- * The AUIB address the Pass vouches for: from its student claim (an
- * address checked by a code sent to it), or the person's own verified
- * address when that is an AUIB one.
+ * The Pass's student claim: `{ verified: true, university: "auib", until:
+ * "YYYY-MM-DD" }` or `{ verified: false }`. SAL counts AUIB only.
  */
-const auibAddress = (payload: JWTPayload, email: string | null) => {
-  const students = Array.isArray(payload.students) ? payload.students : [];
-  for (const entry of students) {
-    if (!(entry && typeof entry === "object")) {
-      continue;
-    }
-    const record = entry as Record<string, unknown>;
-    const address = text(record.email, 254)?.toLowerCase();
-    if (
-      record.institution === "auib" &&
-      address &&
-      isAuib(address) &&
-      text(record.verified_at)
-    ) {
-      return address;
-    }
+const auibUntil = (claim: unknown) => {
+  if (!(claim && typeof claim === "object")) {
+    return null;
   }
-  return email && isAuib(email) ? email : null;
+  const { until, university, verified } = claim as Record<string, unknown>;
+  return verified === true &&
+    university === "auib" &&
+    typeof until === "string" &&
+    DATE.test(until)
+    ? until
+    : null;
 };
 
 /** Reads the claims SAL uses from a verified id_token. */
@@ -168,11 +161,11 @@ export const identityFrom = (payload: JWTPayload): PassIdentity => {
   const email = payload.email_verified === true ? address : null;
   const locale = text(payload.locale, 8)?.slice(0, 2);
   return {
-    auibEmail: auibAddress(payload, email),
     email,
     familyName: text(payload.family_name, 60),
     givenName: text(payload.given_name, 60),
     locale: locale === "ar" || locale === "en" ? locale : null,
+    studentUntil: auibUntil(payload.student),
     sub,
   };
 };

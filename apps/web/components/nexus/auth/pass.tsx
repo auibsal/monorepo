@@ -234,7 +234,9 @@ export const PassReturn = () => {
           {t("pass.existing")}
         </Button>
       </div>
-      <p className="type-caption text-text-secondary">{t("pass.students")}</p>
+      <p className="type-caption text-text-secondary">
+        {t("pass.unmatchedHint")}
+      </p>
     </>
   );
 };

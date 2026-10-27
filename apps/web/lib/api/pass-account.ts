@@ -1,12 +1,9 @@
 import type { createAdminClient } from "@repo/database/admin";
-import { parseError } from "@repo/observability/error";
-import { log } from "@repo/observability/log";
 import { jwtVerify, SignJWT } from "jose";
 import type { PassIdentity } from "./pass";
 
 type Admin = ReturnType<typeof createAdminClient>;
 
-const AUIB = /@auib\.edu\.iq$/i;
 const TICKET_AUDIENCE = "sal-pass-ticket";
 
 /**
@@ -69,49 +66,13 @@ const sessionToken = async (admin: Admin, email: string) => {
   return tokenHash;
 };
 
-/**
- * A student whose account still signs in with another address moves to the
- * AUIB address the Pass has checked: membership, ballots and the Council's
- * checks all read the account's address. Left as it is when another
- * account already has that address.
- */
-const moveToAuibAddress = async (
-  admin: Admin,
-  userId: string,
-  current: string,
-  auibEmail: string | null
-) => {
-  if (!auibEmail || AUIB.test(current)) {
-    return current;
-  }
-  const { error } = await admin.auth.admin.updateUserById(userId, {
-    email: auibEmail,
-    email_confirm: true,
-  });
-  if (error) {
-    log.warn(`IDEA Pass: AUIB address not moved: ${parseError(error)}`);
-    return current;
-  }
-  return auibEmail;
-};
-
-const signInTo = async (
-  admin: Admin,
-  userId: string,
-  identity: PassIdentity
-) => {
+const signInTo = async (admin: Admin, userId: string) => {
   const { data, error } = await admin.auth.admin.getUserById(userId);
   const email = data?.user?.email;
   if (error || !email) {
     throw new PassAccountError("sign_in_failed", { cause: error });
   }
-  const address = await moveToAuibAddress(
-    admin,
-    userId,
-    email,
-    identity.auibEmail
-  );
-  return sessionToken(admin, address);
+  return sessionToken(admin, email);
 };
 
 /** Signs in to the account linked to (or found for) this Pass. */
@@ -123,8 +84,8 @@ export const signInWithPass = async (
   const { data: userId, error } = await admin
     .schema("access")
     .rpc("pass_account", {
-      auib_email: identity.auibEmail ?? undefined,
       pass_sub: identity.sub,
+      student_until: identity.studentUntil ?? undefined,
       verified_email: identity.email ?? undefined,
     });
   if (error) {
@@ -135,28 +96,28 @@ export const signInWithPass = async (
   }
   if (!userId) {
     return {
-      email: identity.auibEmail ?? identity.email,
+      email: identity.email,
       status: "unmatched",
       ticket: await issueTicket(identity, secret),
     };
   }
   return {
     status: "signed_in",
-    tokenHash: await signInTo(admin, userId, identity),
+    tokenHash: await signInTo(admin, userId),
   };
 };
 
 /**
- * A new SAL account for someone the Pass knows: its address is the AUIB one
- * the Pass checked (a student: a member at once) or the Pass's verified
- * address (the Council confirms it, as before). Setup asks for the rest.
+ * A new SAL account for someone the Pass knows, under the Pass's verified
+ * address. A student status from the Pass makes them a member at once;
+ * anyone else is confirmed by the Council, as before. Setup asks the rest.
  */
 export const createWithPass = async (
   admin: Admin,
   identity: PassIdentity,
   locale: "ar" | "en"
 ): Promise<PassSignIn> => {
-  const email = identity.auibEmail ?? identity.email;
+  const { email } = identity;
   if (!email) {
     throw new PassAccountError("no_email");
   }
@@ -173,15 +134,24 @@ export const createWithPass = async (
   if (error || !userId) {
     throw new PassAccountError("sign_in_failed", { cause: error });
   }
-  await linkPass(admin, identity.sub, userId);
+  await linkPass(admin, identity, userId);
   return { status: "signed_in", tokenHash: await sessionToken(admin, email) };
 };
 
-/** Links the Pass to an account (just made, or just signed in to). */
-export const linkPass = async (admin: Admin, sub: string, userId: string) => {
-  const { error } = await admin
-    .schema("access")
-    .rpc("pass_link", { pass_sub: sub, user_id: userId });
+/**
+ * Links the Pass to an account (just made, or just signed in to), with the
+ * student status it vouched for.
+ */
+export const linkPass = async (
+  admin: Admin,
+  identity: Pick<PassIdentity, "studentUntil" | "sub">,
+  userId: string
+) => {
+  const { error } = await admin.schema("access").rpc("pass_link", {
+    pass_sub: identity.sub,
+    student_until: identity.studentUntil ?? undefined,
+    user_id: userId,
+  });
   if (error) {
     throw new PassAccountError(
       error.code === "23505" ? "linked_elsewhere" : "sign_in_failed",

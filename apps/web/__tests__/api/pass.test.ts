@@ -68,30 +68,24 @@ describe("The IDEA Pass", () => {
     expect(url.searchParams.get("ui_locales")).toBe("ar");
   });
 
-  it("reads a student's AUIB address from the student claim", async () => {
+  it("reads the person and their AUIB student status", async () => {
     const fetcher = tokenEndpoint({
       id_token: await idToken({
         email: "Someone@Gmail.com",
         email_verified: true,
         given_name: "Shaheen",
         locale: "ar-IQ",
-        students: [
-          {
-            email: "S.Farjo@auib.edu.iq",
-            institution: "auib",
-            verified_at: "2026-10-26T10:00:00Z",
-          },
-        ],
+        student: { university: "auib", until: "2027-06-30", verified: true },
       }),
     });
     expect(
       await exchangeCode(discovery, request, { fetcher, verifyKeys })
     ).toEqual({
-      auibEmail: "s.farjo@auib.edu.iq",
       email: "someone@gmail.com",
       familyName: null,
       givenName: "Shaheen",
       locale: "ar",
+      studentUntil: "2027-06-30",
       sub: "pass-123",
     });
     const [, init] = (fetcher as unknown as ReturnType<typeof vi.fn>).mock
@@ -101,18 +95,27 @@ describe("The IDEA Pass", () => {
     );
   });
 
-  it("trusts only checked addresses", () => {
+  it("counts only checked addresses and AUIB student status", () => {
     expect(
       identityFrom({
         email: "x@auib.edu.iq",
         email_verified: false,
-        students: [{ email: "y@auib.edu.iq", institution: "auib" }],
+        student: { verified: false },
         sub: "p",
       })
-    ).toMatchObject({ auibEmail: null, email: null });
+    ).toMatchObject({ email: null, studentUntil: null });
     expect(
-      identityFrom({ email: "x@auib.edu.iq", email_verified: true, sub: "p" })
-    ).toMatchObject({ auibEmail: "x@auib.edu.iq", email: "x@auib.edu.iq" });
+      identityFrom({
+        student: { university: "other", until: "2027-06-30", verified: true },
+        sub: "p",
+      }).studentUntil
+    ).toBeNull();
+    expect(
+      identityFrom({
+        student: { university: "auib", until: "soon", verified: true },
+        sub: "p",
+      }).studentUntil
+    ).toBeNull();
   });
 
   it("refuses a token for another app, or from another sign-in", async () => {

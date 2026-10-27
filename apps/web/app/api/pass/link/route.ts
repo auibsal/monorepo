@@ -38,7 +38,7 @@ export const POST = async (request: Request) => {
     return json({ error: "expired" }, 400);
   }
   try {
-    await linkPass(createAdminClient(), identity.sub, session.userId);
+    await linkPass(createAdminClient(), identity, session.userId);
     return json({ linked: true });
   } catch (error) {
     if (error instanceof PassAccountError) {
