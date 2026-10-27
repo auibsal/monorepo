@@ -17,7 +17,7 @@ This is SAL-BRD-01, Brand and Identity, Version 1, ratified by the Society. The 
 - Write Arabic for Arabic readers, then have a native speaker check it. Never ship a translation as an afterthought.
 - Names: "AUIB Society of Arts and Letters" in full on first use in formal documents; then "the Society" or "SAL". Never "the club", never "Art and Letter".
 - The Society's paper is **Qirtas** («قرطاس», paper, from the motto «والقرطاسُ والقلم»), "AUIB's paper of news, letters and art." Qirtas is the Society's paper, not a program: its masthead, desks and Launch Night are its own.
-- The programs are four flagships, **Next Stop**, **Second Chapter**, **Typewriter Tour** and **the Company**, plus **the Evenings** (the Majlis, Book Circle, Open Pages and Open Stage, in a four-week cycle on one weekday) and **the Specials** (Bad Poetry Night, Munazara, Mutanabbi Friday).
+- The programs are four flagships, **Next Stop**, **Second Chapter**, **Typewriter Tour** and **the Company**, plus **the Evenings** (the Majlis, Book Circle and Open Pages, in a three-week cycle on one weekday) and **the Specials** (Bad Poetry Night, Munazara, Mutanabbi Friday).
 - Endorsed programs carry the line "a Society of Arts and Letters programme" (Arabic: «من برامج جمعية الفنون والآداب»).
 - Short titles: "Charter Day", "Every Dinar", "The Ribbon".
 - Dates as "Tuesday, October 13"; times as "6:00 PM"; money as "50,000 IQD". Numerals in tables; words in prose for numbers under ten.

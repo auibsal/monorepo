@@ -291,7 +291,9 @@ any schema change. Integration tests run against a local stack with
     its promise at `/events/next-stop/care`).
   - The Company, الفرقة, the fifth flagship (code: `productions`, slug
     `company`; at `/events/company`, with the productions).
-  - Open Stage, المسرح المفتوح (slug `open-stage`).
+  - Open Stage merged into the Company and the name is retired (owner,
+    Oct 27, 2026; slug `open-stage`, kept and unpublished); the Evenings
+    are three, each every three weeks.
   - Munazara, المناظرة (slug `munazara`).
   - Mutanabbi Friday, جمعة المتنبي (slug `mutanabbi-friday`).
   - Gallery Wall merged into Qirtas's Gallery desk, «معرض قرطاس» (code: slug

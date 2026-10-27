@@ -80,8 +80,10 @@ select is((select name_en from core.programmes where slug = 'waraq'), 'Qirtas',
   'The paper is called Qirtas; its slug stays');
 select is((select name_en from core.programmes where slug = 'next-stop'), 'Next Stop',
   'Side Quest is Next Stop');
-select is((select name_en from core.programmes where slug = 'open-stage'), 'Open Stage',
-  'Scratch Night is Open Stage');
+select ok(
+  exists (select 1 from core.programmes where slug = 'open-stage' and not is_active),
+  'Open Stage is merged into the Company: unpublished, not deleted'
+);
 select ok(
   exists (select 1 from core.programmes where slug = 'gallery-wall' and not is_active),
   'Gallery Wall is unpublished, not deleted'

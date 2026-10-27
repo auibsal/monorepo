@@ -27,7 +27,8 @@ Branch: `claude/new-session-qosn60`.
       (`/events/<program>`; `/programs` is gone, no redirects). The calendar
       fills only once each program has a repeat rule: in the Diwan,
       Programs → Sessions, set the first date, time, place, way in and how
-      often (the Evenings take turns: every four weeks each), save, then
+      often (the Evenings take turns: every three weeks each, since Open
+      Stage merged into the Company on Oct 27), save, then
       "Add the sessions" up to the term's end. Single dates are edited or
       canceled in Events.
 - [ ] **Platform policy text (2026-10-25):** the adopted platform policy on
@@ -382,6 +383,14 @@ These stop parts of the work. Everything else continues around them.
 
 ## Decisions
 
+- **Open Stage into the Company** (owner, 2026-10-27): Open Stage is no
+  longer a program and its name is retired; its events, openings, rotas,
+  service records and the rest now belong to the Company (migration
+  `20261027000000`), its row is unpublished and kept, its repeat rule is
+  removed (the Company sets its own nights). The Evenings are three (the
+  Majlis, Book Circle, Open Pages), each every three weeks. The adopted
+  documents still name Scratch Night; amend them when the Council next
+  adopts.
 - **Partners, one register** (owner, 2026-10-25: "go for everything"): the
   Diwan's Partners section keeps the only list; campaigns name their
   partner from it; a partner's verified members are "Guest of [partner]"
@@ -1305,6 +1314,10 @@ Covered by automated tests so far:
 All Arabic written for the platform up to 2026-10-24 was reviewed by the
 owner and approved ("reviewed across the board, it's all good"). List new
 Arabic here as it is written.
+
+Written 2026-10-27 (Open Stage into the Company): the Company's summary
+«فرقة الجمعية المسرحية: عمل مسرحي واحد كل فصل، يُختار ممثلوه من تجارب أداء
+مفتوحة.»; «كل ثلاثة أسابيع», «دورة من ثلاثة أسابيع».
 
 Written 2026-10-26 (The IDEA Pass): `auth.pass.*` (with `unmatchedHint`),
 `nexus.settings.passLine`.

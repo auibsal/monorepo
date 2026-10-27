@@ -100,15 +100,10 @@ export const timeLeft = (dueAt: string, now = new Date()) => {
 };
 
 /**
- * The weekly rhythm: the four formats that rotate through a four-week
+ * The weekly rhythm: the three formats that rotate through a three-week
  * cycle. The other formats are the specials; every other kind is a flagship.
  */
-export const WEEKLY_RHYTHM = [
-  "majlis",
-  "book-circle",
-  "open-pages",
-  "open-stage",
-] as const;
+export const WEEKLY_RHYTHM = ["majlis", "book-circle", "open-pages"] as const;
 
 export type ProgrammeGroup = "flagship" | "weekly" | "special";
 

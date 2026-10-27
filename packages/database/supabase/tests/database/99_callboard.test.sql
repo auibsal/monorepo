@@ -80,26 +80,26 @@ select pg_temp.make_user('00000000-0000-0000-0000-0000000070a1', 'volunteer@auib
 select pg_temp.make_user('00000000-0000-0000-0000-0000000070a2', 'stage.lead@auib.edu.iq', 'Stage Lead');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000070a3', 'outsider@example.com', 'Outsider');
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000070a2', 'programme_lead', 'programme',
-  (select id from core.programmes where slug = 'open-stage'));
+  (select id from core.programmes where slug = 'company'));
 
 -- Openings
 select pg_temp.login_as('00000000-0000-0000-0000-0000000070a1');
 select throws_ok(
   $$ insert into programmes.openings (programme_id, title_en, title_ar)
-     values ((select id from core.programmes where slug = 'open-stage'), 'Photographer', 'مصوّر') $$,
+     values ((select id from core.programmes where slug = 'company'), 'Photographer', 'مصوّر') $$,
   '42501', null, 'Members do not post openings'
 );
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000070a2');
 select lives_ok(
   $$ insert into programmes.openings (id, programme_id, title_en, title_ar, skills)
-     values ('0be00000-0000-0000-0000-0000000070b1', (select id from core.programmes where slug = 'open-stage'),
+     values ('0be00000-0000-0000-0000-0000000070b1', (select id from core.programmes where slug = 'company'),
        'Photographer', 'مصوّر', array['photography']) $$,
   'A program''s managers post openings'
 );
 select throws_ok(
   $$ insert into programmes.openings (programme_id, title_en, title_ar, skills)
-     values ((select id from core.programmes where slug = 'open-stage'), 'Juggler', 'مهرّج', array['juggling']) $$,
+     values ((select id from core.programmes where slug = 'company'), 'Juggler', 'مهرّج', array['juggling']) $$,
   '23514', null, 'Skills come from the Profile list'
 );
 select throws_ok(
@@ -108,7 +108,7 @@ select throws_ok(
   '42501', null, 'but only for their own program'
 );
 insert into programmes.openings (id, programme_id, title_en, title_ar, is_open)
-values ('0be00000-0000-0000-0000-0000000070b2', (select id from core.programmes where slug = 'open-stage'),
+values ('0be00000-0000-0000-0000-0000000070b2', (select id from core.programmes where slug = 'company'),
   'Closed role', 'دور مغلق', false);
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000070a1');
@@ -145,7 +145,7 @@ select lives_ok(
 -- Skills on shifts
 select pg_temp.logout();
 insert into programmes.rotas (id, programme_id, title_en, title_ar)
-values ('0be00000-0000-0000-0000-0000000070c1', (select id from core.programmes where slug = 'open-stage'),
+values ('0be00000-0000-0000-0000-0000000070c1', (select id from core.programmes where slug = 'company'),
   'Door rota', 'مناوبة الباب');
 select throws_ok(
   $$ insert into programmes.shifts (rota_id, role_en, role_ar, starts_at, ends_at, skills)
