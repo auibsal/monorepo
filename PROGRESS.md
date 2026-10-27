@@ -9,11 +9,26 @@ Branch: `claude/new-session-qosn60`.
 
 ## Blocked — needed from the user
 
+- [ ] **The IDEA Pass (2026-10-26), the only way to sign in:** the SAL side
+      is built and off until three variables are set
+      (`docs/platform/idea-pass.md`, "Turning it on"). The IDEA's provider is
+      live (issuer `https://api.theideaiq.com/oidc`), and SAL registers
+      itself: create SAL's company in The IDEA Business
+      (spark.theideaiq.com) → Developers, verify auibsal.org with the DNS TXT
+      record it shows, and register the app (the client id and secret are
+      shown once). Test with the officers while the app is in testing, take
+      it live, then set `NEXT_PUBLIC_PASS_ISSUER`,
+      `NEXT_PUBLIC_PASS_CLIENT_ID` and `PASS_CLIENT_SECRET` in Vercel and
+      redeploy, and in Supabase turn off **Allow new users to sign up**.
+      Record the Council's decision and the conflicts-register entry, and
+      amend the privacy policy to name The IDEA Pass (adopted text isn't
+      edited in place).
 - [ ] **Program sessions (2026-10-25):** programs now live in What's on
       (`/events/<program>`; `/programs` is gone, no redirects). The calendar
       fills only once each program has a repeat rule: in the Diwan,
       Programs → Sessions, set the first date, time, place, way in and how
-      often (the Evenings take turns: every four weeks each), save, then
+      often (the Evenings take turns: every three weeks each, since Open
+      Stage merged into the Company on Oct 27), save, then
       "Add the sessions" up to the term's end. Single dates are edited or
       canceled in Events.
 - [ ] **Platform policy text (2026-10-25):** the adopted platform policy on
@@ -368,6 +383,14 @@ These stop parts of the work. Everything else continues around them.
 
 ## Decisions
 
+- **Open Stage into the Company** (owner, 2026-10-27): Open Stage is no
+  longer a program and its name is retired; its events, openings, rotas,
+  service records and the rest now belong to the Company (migration
+  `20261027000000`), then the program is removed, with its repeat rule
+  (the Company sets its own nights). The Evenings are three (the
+  Majlis, Book Circle, Open Pages), each every three weeks. The adopted
+  documents still name Scratch Night; amend them when the Council next
+  adopts.
 - **Partners, one register** (owner, 2026-10-25: "go for everything"): the
   Diwan's Partners section keeps the only list; campaigns name their
   partner from it; a partner's verified members are "Guest of [partner]"
@@ -1291,6 +1314,13 @@ Covered by automated tests so far:
 All Arabic written for the platform up to 2026-10-24 was reviewed by the
 owner and approved ("reviewed across the board, it's all good"). List new
 Arabic here as it is written.
+
+Written 2026-10-27 (Open Stage into the Company): the Company's summary
+«فرقة الجمعية المسرحية: عمل مسرحي واحد كل فصل، يُختار ممثلوه من تجارب أداء
+مفتوحة.»; «كل ثلاثة أسابيع», «دورة من ثلاثة أسابيع».
+
+Written 2026-10-26 (The IDEA Pass): `auth.pass.*` (with `unmatchedHint`),
+`nexus.settings.passLine`.
 
 Written 2026-10-25 (sign-up in fewer steps): `auth.signUp.outsideAuib`;
 `nexus.setup.stepOf`, `back`, `continue`, `nameEn.title`, `nameAr.title`,

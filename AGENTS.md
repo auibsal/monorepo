@@ -291,7 +291,9 @@ any schema change. Integration tests run against a local stack with
     its promise at `/events/next-stop/care`).
   - The Company, الفرقة, the fifth flagship (code: `productions`, slug
     `company`; at `/events/company`, with the productions).
-  - Open Stage, المسرح المفتوح (slug `open-stage`).
+  - Open Stage is part of the Company and the name is retired (owner,
+    Oct 27, 2026; the program is removed, its history moved to the
+    Company); the Evenings are three, each every three weeks.
   - Munazara, المناظرة (slug `munazara`).
   - Mutanabbi Friday, جمعة المتنبي (slug `mutanabbi-friday`).
   - Gallery Wall merged into Qirtas's Gallery desk, «معرض قرطاس» (code: slug
@@ -355,7 +357,19 @@ any schema change. Integration tests run against a local stack with
 - **Package manager:** Bun with the hoisted linker (`bunfig.toml`). Declare every
   dependency a package imports; keep versions aligned across workspaces. Bun
   installs and runs scripts; Next.js runs on Node (`next build`).
-- **Auth:** email sign-in (AUIB address first; magic link or password). In
+- **Auth:** The IDEA Pass is the only way to sign in once
+  `NEXT_PUBLIC_PASS_ISSUER`, `NEXT_PUBLIC_PASS_CLIENT_ID` and
+  `PASS_CLIENT_SECRET` are set (owner, Oct 26, 2026); students prove they
+  study at AUIB there, and everything else stays here. A Pass is linked to
+  one SAL account (`access.pass_links`), found by the link, the Pass's
+  verified address or the verified AUIB address it shares
+  (`student_email`, used for nothing else); a current student
+  status makes a member and counts for ballots (`private.is_auib_member`).
+  The sign-in opens an ordinary SAL session, so RLS, roles and the
+  officers' second step are unchanged (`lib/api/pass.ts`,
+  `lib/api/pass-account.ts`, `/api/pass/*`, `/auth/pass`;
+  `docs/platform/idea-pass.md`). Until then: email sign-in (AUIB address
+  first; magic link or password). In
   the members' pages and the Diwan, query with `useAuth().supabase` so RLS
   applies. In the API
   routes, identify callers with `authenticateRequest` and re-check

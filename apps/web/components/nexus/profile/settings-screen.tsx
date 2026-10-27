@@ -2,6 +2,7 @@
 
 import { Link } from "@repo/internationalization/navigation";
 import { useTranslations } from "next-intl";
+import { passEnabled } from "@/lib/nexus/pass-enabled";
 import { DiwanPage, DiwanSection, RowList } from "../page";
 import { ConnectedApps } from "./connected-apps";
 import { DeleteAccount } from "./delete-account";
@@ -38,7 +39,14 @@ export const SettingsScreen = () => {
       <PersonalEmailSection />
       <PhoneNotifications />
       <TelegramLink />
-      <Passkeys />
+      {/* Signing in, passwords and passkeys are on The IDEA Pass. */}
+      {passEnabled ? (
+        <DiwanSection description={t("passLine")} id="pass" title={t("pass")}>
+          {null}
+        </DiwanSection>
+      ) : (
+        <Passkeys />
+      )}
       <ConnectedApps />
       <DeleteAccount />
     </DiwanPage>
