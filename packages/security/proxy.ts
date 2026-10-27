@@ -71,6 +71,17 @@ export const telegramMiniApp = (options: Options): Options => {
   };
 };
 
+/**
+ * The same headers for a page that frames a partner's widget which opens a
+ * sign-in window (the IDEA Pass's live card): popups the page or its frames
+ * open keep their link back, so the window can hand its result to the
+ * frame. Pages that open this one stay cut off, as everywhere else.
+ */
+export const allowPopups = (options: Options): Options => ({
+  ...options,
+  crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" },
+});
+
 /** Security headers for every app. */
 export const noseconeOptions: Options = noseconeOptionsWith();
 
