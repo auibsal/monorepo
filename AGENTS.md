@@ -23,7 +23,7 @@ items and decisions) and continue from the first unticked item.
     `/membership/more` ("Tell us more"),
     `/events/company/auditions`, `/qirtas/write` (the two doors, your
     work, and the form itself with `?type=`; then `/submission`, `/work`,
-    `/piece`). Perks are on the card; voting
+    `/piece`). Perks are on the card (until the Pass replaces it); voting
     eligibility is on Society; the calendar feed is on My calendar. The
     site's header and footer, a Membership row (`components/account`), and
     the gates in `components/nexus/gates.tsx`. They link with the site's
@@ -181,6 +181,14 @@ any schema change. Integration tests run against a local stack with
   an AUIB address, anyone's sign-in address or another member's personal
   email, and no sign-in address can be a member's verified personal email
   (triggers on `core.profiles` and `auth.users`, a unique index).
+- **The IDEA Pass card replaces SAL's card** once the Pass is on (owner,
+  Oct 27, 2026; same switch): Today shows the Pass card (`PassCard`,
+  picture from the `card` scope) and links to the live one; the door and
+  the Tour scan the Pass through `POST /api/pass/card` (The IDEA checks
+  it with SAL's secret; the officer's session spends the scan with
+  `events.check_in_pass` / `programmes.*_six_words_pass`); SAL's card,
+  its check page, Google Wallet and the member perks are retired. Until
+  then, SAL's own card works as below (`docs/platform/idea-pass.md`).
 - **The membership card is live.** Its QR is
   `/verify/member/<code>?t=<digits>`: the digits are a TOTP of the card's
   secret (RFC 6238, SHA-1, 30 s, 8 digits; `lib/totp.ts` and

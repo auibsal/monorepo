@@ -3,13 +3,17 @@ import { createLocalJWKSet, exportJWK, generateKeyPair, SignJWT } from "jose";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 import {
   authorizeUrl,
+  CARD_CODE,
+  checkCard,
   exchangeCode,
   identityFrom,
   PassError,
+  readCard,
 } from "@/lib/api/pass";
 import { issueTicket, readTicket } from "@/lib/api/pass-account";
 
 const ISSUER = "https://pass.example";
+const BASIC = /^Basic /;
 const discovery = {
   authorization_endpoint: `${ISSUER}/authorize`,
   issuer: ISSUER,
@@ -63,7 +67,7 @@ describe("The IDEA Pass", () => {
     );
     expect(url.origin + url.pathname).toBe(`${ISSUER}/authorize`);
     expect(url.searchParams.get("scope")).toBe(
-      "openid email profile student student_email"
+      "openid email profile student student_email card"
     );
     expect(url.searchParams.get("code_challenge_method")).toBe("S256");
     expect(url.searchParams.get("nonce")).toBe(request.nonce);
@@ -72,6 +76,7 @@ describe("The IDEA Pass", () => {
 
   it("reads the person and their AUIB student status", async () => {
     const fetcher = tokenEndpoint({
+      access_token: "at",
       id_token: await idToken({
         email: "Someone@Gmail.com",
         email_verified: true,
@@ -82,9 +87,12 @@ describe("The IDEA Pass", () => {
         student_email_verified: true,
       }),
     });
-    expect(
-      await exchangeCode(discovery, request, { fetcher, verifyKeys })
-    ).toEqual({
+    const session = await exchangeCode(discovery, request, {
+      fetcher,
+      verifyKeys,
+    });
+    expect(session.accessToken).toBe("at");
+    expect(session.identity).toEqual({
       email: "someone@gmail.com",
       familyName: null,
       givenName: "Shaheen",
@@ -162,5 +170,62 @@ describe("The IDEA Pass", () => {
     const ticket = await issueTicket(identity, "k".repeat(32));
     expect(await readTicket(ticket, "k".repeat(32))).toEqual(identity);
     expect(await readTicket(ticket, "x".repeat(32))).toBeNull();
+  });
+
+  it("reads the Pass card as an SVG only", async () => {
+    const card = (body: string, status = 200) =>
+      vi.fn(
+        async () => new Response(body, { status })
+      ) as unknown as typeof fetch;
+    const fetcher = card('<svg xmlns="http://www.w3.org/2000/svg"></svg>');
+    expect(await readCard(ISSUER, "at", "ar", fetcher)).toContain("<svg");
+    const [url, init] = (fetcher as unknown as ReturnType<typeof vi.fn>).mock
+      .calls[0] as [string, RequestInit];
+    expect(url).toBe(`${ISSUER}/card?lang=ar`);
+    expect(new Headers(init.headers).get("Authorization")).toBe("Bearer at");
+    expect(
+      await readCard(ISSUER, "at", "en", card("<html></html>"))
+    ).toBeNull();
+    expect(await readCard(ISSUER, "at", "en", card("<svg/>", 401))).toBeNull();
+  });
+
+  it("checks a scanned Pass card with SAL's secret", async () => {
+    expect(CARD_CODE.test("IDEA:1042:123456")).toBe(true);
+    expect(CARD_CODE.test("https://auibsal.org/verify/member/x")).toBe(false);
+    const answer = (body: object, status = 200) =>
+      vi.fn(async () =>
+        Response.json(body, { status })
+      ) as unknown as typeof fetch;
+    const client = { clientId: "sal", clientSecret: "s".repeat(32) };
+
+    const fetcher = answer({ sub: "pass-123", valid: true });
+    expect(
+      await checkCard(ISSUER, client, "IDEA:1042:123456", fetcher)
+    ).toEqual({ sub: "pass-123" });
+    const [url, init] = (fetcher as unknown as ReturnType<typeof vi.fn>).mock
+      .calls[0] as [string, RequestInit];
+    expect(url).toBe(`${ISSUER}/card/check`);
+    expect(new Headers(init.headers).get("Authorization")).toMatch(BASIC);
+    expect(JSON.parse(init.body as string)).toEqual({
+      code: "IDEA:1042:123456",
+    });
+
+    expect(
+      await checkCard(ISSUER, client, "IDEA:1:000000", answer({ valid: false }))
+    ).toBeNull();
+    expect(
+      await checkCard(
+        ISSUER,
+        client,
+        "IDEA:1:000000",
+        answer({ sub: null, valid: true })
+      )
+    ).toEqual({ sub: null });
+    await expect(
+      checkCard(ISSUER, client, "IDEA:1:000000", answer({}, 429))
+    ).rejects.toThrow("rate_limited");
+    await expect(
+      checkCard(ISSUER, client, "IDEA:1:000000", answer({}, 500))
+    ).rejects.toThrow("card_check_failed");
   });
 });

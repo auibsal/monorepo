@@ -16,7 +16,8 @@ Branch: `claude/new-session-qosn60`.
       itself: create SAL's company in The IDEA Business
       (spark.theideaiq.com) → Developers, verify auibsal.org with the DNS TXT
       record it shows, and register the app (the client id and secret are
-      shown once). Test with the officers while the app is in testing, take
+      shown once; tick Name and picture, Email, Verified student, University
+      email and The Pass card). Test with the officers while the app is in testing, take
       it live, then set `NEXT_PUBLIC_PASS_ISSUER`,
       `NEXT_PUBLIC_PASS_CLIENT_ID` and `PASS_CLIENT_SECRET` in Vercel and
       redeploy, and in Supabase turn off **Allow new users to sign up**.
@@ -383,6 +384,13 @@ These stop parts of the work. Everything else continues around them.
 
 ## Decisions
 
+- **The IDEA Pass card replaces SAL's card** (owner, 2026-10-27): with the
+  Pass on, Today shows the Pass card and links to the live one; the door
+  and the Typewriter Tour scan the Pass (checked with The IDEA by the API,
+  spent by the officer's session); SAL's card, its check page, Google
+  Wallet and the member perks are retired (perks come with the Pass).
+  Migration `20261028000000`; `docs/platform/idea-pass.md`, "The card".
+  The card tables go in a later step.
 - **Open Stage into the Company** (owner, 2026-10-27): Open Stage is no
   longer a program and its name is retired; its events, openings, rotas,
   service records and the rest now belong to the Company (migration
@@ -1314,6 +1322,12 @@ Covered by automated tests so far:
 All Arabic written for the platform up to 2026-10-24 was reviewed by the
 owner and approved ("reviewed across the board, it's all good"). List new
 Arabic here as it is written.
+
+Written 2026-10-27 (the Pass card): `nexus.home.passCard.*`,
+`nexus.admin.checkIn.ledePass`, `passNotMember`, `passRateLimited`,
+`cardRetired`; `nexus.admin.programmes.sixWords.ledePass`,
+`problems.notMember`, `problems.rateLimited`, `problems.retired`;
+`web.verifyCard.retired`.
 
 Written 2026-10-27 (Open Stage into the Company): the Company's summary
 «فرقة الجمعية المسرحية: عمل مسرحي واحد كل فصل، يُختار ممثلوه من تجارب أداء

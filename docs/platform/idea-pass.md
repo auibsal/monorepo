@@ -58,7 +58,7 @@ The IDEA's own OpenID Connect provider, live in production:
 - Return addresses registered for SAL: `https://auibsal.org/auth/pass`,
   `https://auibsal.org/ar/auth/pass`, `http://localhost:3000/auth/pass` and
   `http://localhost:3000/ar/auth/pass`.
-- Scopes `openid email profile student student_email`. SAL reads:
+- Scopes `openid email profile student student_email card`. SAL reads:
   - `sub`, SAL's own id for the person (each partner gets its own);
   - `email`, `email_verified`;
   - `given_name`, `family_name`, `locale`;
@@ -66,13 +66,53 @@ The IDEA's own OpenID Connect provider, live in production:
     "YYYY-MM-DD" }` or `{ "verified": false }`;
   - `student_email`, `student_email_verified`: the verified university
     address, used only to find the account a member made with it (an
-    `@auib.edu.iq` address only).
+    `@auib.edu.iq` address only);
+  - `card`: the person's Pass card as an SVG (`GET /oidc/card` with the
+    sign-in's access token, `?lang=ar` for Arabic), read at each sign-in.
 - `student_email` is a sensitive answer: it works while SAL's app is in
   testing, and once live The IDEA reviews it before its consent screen asks
   for it. People can untick any item; whatever isn't shared, SAL does
   without (the linking step finds the account instead).
 - People see a consent screen each time, and can disconnect SAL in Pass →
   Settings → Connected sites.
+
+## The card
+
+The IDEA Pass card replaces SAL's membership card (owner, Oct 27, 2026),
+and the member perks go: they come with the Pass. It all follows the same
+switch as the sign-in, so SAL's card stays until the Pass is on.
+
+- **Today and the welcome screen** show the Pass card picture The IDEA drew
+  (an image, no QR; `access.pass_links.card_svg_en`/`_ar`), a link to the
+  live card at theideaiq.com/pass, and the member's standing (since, tier,
+  vote). No perks, no Google Wallet link, no code reset.
+- **At the door and on the Typewriter Tour** the officer scans the member's
+  Pass. Its QR holds `IDEA:<member number>:<six digits>`, and the digits
+  change every 30 seconds.
+  1. The browser sends the code to `POST /api/pass/card`. Only someone who
+     may scan (`access.can_scan_passes()`: door staff by role or for an
+     event, or whoever runs the Tour) gets an answer.
+  2. The route asks The IDEA (`POST /oidc/card/check`, with SAL's client
+     secret). A live card answers SAL's id for the holder. A Pass that has
+     never signed in to SAL answers none, and the officer is told so.
+  3. The route records the scan (`access.pass_scans`: whose card, who
+     scanned). The officer's own session then spends it within two minutes
+     (`events.check_in_pass`, `programmes.record_six_words_pass`,
+     `programmes.attach_six_words_pass`), where the permissions are checked
+     as before.
+  Each check shows in the holder's Pass settings, and The IDEA stops
+  answering after 30 failed checks in 10 minutes; the officer then looks
+  the member up by name. While the app is in testing, only the cards of
+  members of SAL's company in The IDEA Business check out.
+- **SAL's own card** is retired: scanning one says so, its check page
+  (`/verify/member/...`) says members now show their IDEA Pass, and
+  `/api/wallet/google` answers 410. Signing in with the Pass (or linking
+  it) expires the member's Google Wallet pass for SAL's card.
+- **Partners → Member offers** leaves the Diwan.
+- Certificates, `/verify/<code>` for certificates, the partner register and
+  member numbers stay. SAL's card tables (`membership.cards`,
+  `membership.wallet_passes`, `governance.member_offers`) are removed in a
+  later step, once the Pass has been on for a while.
 
 ## Turning it on
 
@@ -85,7 +125,9 @@ SAL registers itself; The IDEA sends no credentials.
    the value `theidea-pass-verification=<the token shown>` (in Cloudflare →
    DNS).
 3. Register the app with the four return addresses above and
-   `client_secret_basic`. The client id and secret are shown once: put them
+   `client_secret_basic`. Under **What it asks**, tick exactly Name and
+   picture, Email, Verified student, University email and The Pass card:
+   SAL asks for those five and nothing else. The client id and secret are shown once: put them
    straight into Vercel, never in a message. After **New secret**, the old
    one keeps working for 24 hours.
 4. In Vercel → **auibsal** → **Settings** → **Environment Variables**

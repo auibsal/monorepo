@@ -8,3 +8,6 @@ import { clientEnv as env } from "@/env.client";
 export const passEnabled = Boolean(
   env.NEXT_PUBLIC_PASS_ISSUER && env.NEXT_PUBLIC_PASS_CLIENT_ID
 );
+
+/** The member's live Pass card, with the code that changes every 30 seconds. */
+export const PASS_CARD_URL = "https://theideaiq.com/pass";

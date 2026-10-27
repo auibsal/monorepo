@@ -14,20 +14,28 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useCallback, useState } from "react";
 import { Link } from "@/lib/nexus/navigation";
+import { passEnabled } from "@/lib/nexus/pass-enabled";
 import { useQueryParam } from "@/lib/nexus/use-query-param";
 import { SectionSpinner } from "../../states";
 import { CardScanner, parseCard } from "../card-scanner";
 import { AdminHeading, Field } from "../kit";
 import { memberName } from "../members/directory";
+import { isPassCard, passProblem, scanPass } from "../pass-scan";
 import { useAttendeeSearch } from "./attendance";
 
 const TICKET = /^sal:ticket:([0-9a-f]{24})$/;
 
-/** What a scanned code asks for: a ticket, a membership card, or nothing. */
+/**
+ * What a scanned code asks for: a ticket, an IDEA Pass card, SAL's own
+ * card (until the Pass replaces it), or nothing.
+ */
 export const parseScan = (value: string) => {
   const ticket = TICKET.exec(value.trim());
   if (ticket?.[1]) {
     return { ticket_code: ticket[1] } as const;
+  }
+  if (isPassCard(value)) {
+    return { pass: value.trim() } as const;
   }
   return parseCard(value);
 };
@@ -37,6 +45,9 @@ type Outcome =
   | { kind: "already"; name: string }
   | { kind: "invalid" }
   | { kind: "notLive" }
+  | { kind: "notMember" }
+  | { kind: "rateLimited" }
+  | { kind: "retired" }
   | { kind: "unknown" }
   | { kind: "error" };
 
@@ -82,9 +93,18 @@ export const CheckInScreen = () => {
       target:
         | { ticket_code: string }
         | { target_user: string }
+        | { pass: string }
         | { card_code: string; digits: string }
-    ) =>
-      unwrap(
+    ) => {
+      if ("pass" in target) {
+        const scan = await scanPass(supabase, target.pass);
+        return unwrap(
+          await supabase
+            .schema("events")
+            .rpc("check_in_pass", { event_id: eventId, scan })
+        );
+      }
+      return unwrap(
         "card_code" in target
           ? await supabase.schema("events").rpc("check_in_card", {
               card_code: target.card_code,
@@ -94,9 +114,13 @@ export const CheckInScreen = () => {
           : await supabase
               .schema("events")
               .rpc("check_in", { event_id: eventId, ...target })
-      ),
+      );
+    },
     onError: (error) => {
-      if (
+      const pass = passProblem(error);
+      if (pass) {
+        setOutcome({ kind: pass });
+      } else if (
         error instanceof DataError &&
         error.message.includes("card_not_live")
       ) {
@@ -118,7 +142,9 @@ export const CheckInScreen = () => {
   const handleCode = useCallback(
     (value: string) => {
       const target = parseScan(value);
-      if (target) {
+      if (target && "card_code" in target && passEnabled) {
+        setOutcome({ kind: "retired" });
+      } else if (target) {
         checkIn.mutate(target);
       } else {
         setOutcome({ kind: "unknown" });
@@ -143,6 +169,12 @@ export const CheckInScreen = () => {
     message = t("invalidTicket");
   } else if (outcome?.kind === "notLive") {
     message = t("cardNotLive");
+  } else if (outcome?.kind === "notMember") {
+    message = t("passNotMember");
+  } else if (outcome?.kind === "rateLimited") {
+    message = t("passRateLimited");
+  } else if (outcome?.kind === "retired") {
+    message = t("cardRetired");
   } else if (outcome?.kind === "unknown") {
     message = t("unknownCode");
   } else if (outcome?.kind === "error") {
@@ -165,7 +197,9 @@ export const CheckInScreen = () => {
         {formatLongDate(event.data.starts_at, locale)},{" "}
         {formatClock(event.data.starts_at, locale)}
       </AdminHeading>
-      <p className="type-body text-text-secondary">{t("lede")}</p>
+      <p className="type-body text-text-secondary">
+        {passEnabled ? t("ledePass") : t("lede")}
+      </p>
       <p className="font-medium text-text" role="status">
         {t("count", { count: formatNumber(count.data ?? 0) })}
       </p>

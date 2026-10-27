@@ -16,9 +16,9 @@ import {
  * docs/platform/idea-pass.md
  */
 
-// The person's addresses, names and language, their student status, and
-// their university address (people may untick it).
-const SCOPE = "openid email profile student student_email";
+// The person's addresses, names and language, their student status, their
+// university address (people may untick it), and their Pass card.
+const SCOPE = "openid email profile student student_email card";
 const AUIB_EMAIL = /@auib\.edu\.iq$/;
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 const TRAILING_SLASH = /\/$/;
@@ -31,7 +31,12 @@ interface Discovery {
 }
 
 export class PassError extends Error {
-  readonly code: "discovery_failed" | "exchange_failed" | "invalid_token";
+  readonly code:
+    | "card_check_failed"
+    | "discovery_failed"
+    | "exchange_failed"
+    | "invalid_token"
+    | "rate_limited";
 
   constructor(code: PassError["code"], options?: ErrorOptions) {
     super(`The IDEA Pass: ${code}`, options);
@@ -186,10 +191,15 @@ export const identityFrom = (payload: JWTPayload): PassIdentity => {
   };
 };
 
+// SAL authenticates to The IDEA with client_secret_basic.
+const basic = (clientId: string, clientSecret: string) =>
+  `Basic ${btoa(`${encodeURIComponent(clientId)}:${encodeURIComponent(clientSecret)}`)}`;
+
 /**
  * Exchanges the authorization code for tokens and verifies the id_token:
  * signed with the Pass's published keys, issued by it, for SAL, not
- * expired, and carrying the nonce this sign-in started with.
+ * expired, and carrying the nonce this sign-in started with. The access
+ * token (five minutes, never stored) reads the person's Pass card.
  */
 export const exchangeCode = async (
   discovery: Discovery,
@@ -212,7 +222,7 @@ export const exchangeCode = async (
     fetcher = fetch,
     verifyKeys = keysFor(discovery.jwks_uri),
   }: { fetcher?: typeof fetch; verifyKeys?: JWTVerifyGetKey } = {}
-): Promise<PassIdentity> => {
+): Promise<{ accessToken: string | null; identity: PassIdentity }> => {
   const response = await fetcher(discovery.token_endpoint, {
     body: new URLSearchParams({
       client_id: clientId,
@@ -222,13 +232,14 @@ export const exchangeCode = async (
       redirect_uri: redirectUri,
     }),
     headers: {
-      Authorization: `Basic ${btoa(`${encodeURIComponent(clientId)}:${encodeURIComponent(clientSecret)}`)}`,
+      Authorization: basic(clientId, clientSecret),
       "Content-Type": "application/x-www-form-urlencoded",
     },
     method: "POST",
     signal: AbortSignal.timeout(10_000),
   });
   const tokens = (await response.json().catch(() => ({}))) as {
+    access_token?: unknown;
     id_token?: unknown;
   };
   if (!(response.ok && typeof tokens.id_token === "string")) {
@@ -246,5 +257,90 @@ export const exchangeCode = async (
   if (payload.nonce !== nonce) {
     throw new PassError("invalid_token");
   }
-  return identityFrom(payload);
+  return {
+    accessToken:
+      typeof tokens.access_token === "string" ? tokens.access_token : null,
+    identity: identityFrom(payload),
+  };
+};
+
+const SVG = /^\s*(?:<\?xml[^>]*>\s*)?<svg[\s>]/;
+const MAX_CARD = 200_000;
+
+/**
+ * The person's Pass card as The IDEA draws it (an SVG with no QR), in one
+ * language, read with the sign-in's access token; null when it can't be
+ * read. Shown on SAL's pages as an image only.
+ */
+export const readCard = async (
+  issuer: string,
+  accessToken: string,
+  lang: "ar" | "en",
+  fetcher: typeof fetch = fetch
+) => {
+  try {
+    const response = await fetcher(
+      `${issuer.replace(TRAILING_SLASH, "")}/card?lang=${lang}`,
+      {
+        headers: {
+          Accept: "image/svg+xml",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        signal: AbortSignal.timeout(5000),
+      }
+    );
+    const svg = response.ok ? await response.text() : "";
+    return SVG.test(svg) && svg.length <= MAX_CARD ? svg : null;
+  } catch {
+    return null;
+  }
+};
+
+/** What a Pass card's QR holds: `IDEA:<member number>:<six digits>`. */
+export const CARD_CODE = /^IDEA:\d{1,12}:\d{6}$/;
+
+/**
+ * Asks The IDEA whether a scanned Pass card is live (its code changes every
+ * 30 seconds), with SAL's client secret. Answers SAL's id for the holder, or
+ * null when they have never signed in to SAL; nothing for a code that isn't
+ * live. Each check shows in the holder's Pass settings, and The IDEA stops
+ * answering after 30 failed checks in 10 minutes.
+ */
+export const checkCard = async (
+  issuer: string,
+  { clientId, clientSecret }: { clientId: string; clientSecret: string },
+  code: string,
+  fetcher: typeof fetch = fetch
+): Promise<{ sub: string | null } | null> => {
+  let response: Response;
+  try {
+    response = await fetcher(
+      `${issuer.replace(TRAILING_SLASH, "")}/card/check`,
+      {
+        body: JSON.stringify({ code }),
+        headers: {
+          Authorization: basic(clientId, clientSecret),
+          "Content-Type": "application/json",
+        },
+        method: "POST",
+        signal: AbortSignal.timeout(10_000),
+      }
+    );
+  } catch (error) {
+    throw new PassError("card_check_failed", { cause: error });
+  }
+  if (response.status === 429) {
+    throw new PassError("rate_limited");
+  }
+  const answer = (await response.json().catch(() => null)) as {
+    sub?: unknown;
+    valid?: unknown;
+  } | null;
+  if (!(response.ok && answer && typeof answer.valid === "boolean")) {
+    throw new PassError("card_check_failed");
+  }
+  if (!answer.valid) {
+    return null;
+  }
+  return { sub: text(answer.sub, 255) };
 };
