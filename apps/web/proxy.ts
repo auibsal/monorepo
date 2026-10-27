@@ -1,5 +1,5 @@
 import { internationalizationMiddleware } from "@repo/internationalization/proxy";
-import { adsenseCspSources } from "@repo/security/csp";
+import { adsenseCspSources, ideaPassCspSources } from "@repo/security/csp";
 import {
   noseconeOptionsWith,
   telegramMiniApp,
@@ -15,9 +15,11 @@ export const config = {
   ],
 };
 
-// Waraq's AdSense ads need Google's ad hosts, once AdSense is set up.
+// Waraq's AdSense ads need Google's ad hosts, once AdSense is set up; the
+// members' pages frame the live IDEA Pass card once The IDEA allows it.
 const securityOptions = noseconeOptionsWith(
-  ...(process.env.NEXT_PUBLIC_ADSENSE_CLIENT ? [adsenseCspSources] : [])
+  ...(process.env.NEXT_PUBLIC_ADSENSE_CLIENT ? [adsenseCspSources] : []),
+  ...(process.env.NEXT_PUBLIC_PASS_EMBED === "true" ? [ideaPassCspSources] : [])
 );
 
 // The daily word is also the Telegram bot's Main App: Telegram's web app

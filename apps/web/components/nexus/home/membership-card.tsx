@@ -24,7 +24,14 @@ import { type PointerEvent, useEffect, useRef, useState } from "react";
 import QRCode from "react-qr-code";
 import { Guilloche } from "@/components/guilloche";
 import { callApi } from "@/lib/nexus/api";
-import { PASS_CARD_URL, passEnabled } from "@/lib/nexus/pass-enabled";
+import {
+  embedHeight,
+  passCardUrl,
+  passClientId,
+  passEmbedded,
+  passEmbedUrl,
+  passEnabled,
+} from "@/lib/nexus/pass-enabled";
 import { useMemberStatus, useProfile } from "@/lib/nexus/queries";
 import {
   TOTP_PERIOD_SECONDS,
@@ -553,10 +560,40 @@ const SalCard = () => {
 };
 
 /**
+ * The live Pass card, framed from The IDEA once it lets SAL embed it: The
+ * IDEA's own page, signed in to The IDEA, so the code never reaches SAL. It
+ * reports its height (only to SAL's verified domain); nothing else crosses.
+ */
+const LiveCard = () => {
+  const t = useTranslations("nexus.home");
+  const locale = useLocale();
+  const [height, setHeight] = useState(320);
+  useEffect(() => {
+    const listen = (event: MessageEvent) => {
+      const next = embedHeight(event);
+      if (next) {
+        setHeight(next);
+      }
+    };
+    window.addEventListener("message", listen);
+    return () => window.removeEventListener("message", listen);
+  }, []);
+  return (
+    <iframe
+      className="w-full max-w-md border-0"
+      src={passEmbedUrl(locale, passClientId)}
+      style={{ height }}
+      title={t("passCard.live")}
+    />
+  );
+};
+
+/**
  * The IDEA Pass card, which replaces SAL's own once the Pass is on (owner,
- * 2026-10-27): the picture The IDEA drew for this member (read at sign-in,
- * no QR), a link to the live card with its code, and what membership means
- * here. Perks come with the Pass, so the card lists none.
+ * 2026-10-27): the live card framed from The IDEA once it allows that, else
+ * the picture The IDEA drew for this member (read at sign-in, no QR) and a
+ * link to the live card; and what membership means here. Perks come with
+ * the Pass, so the card lists none.
  */
 const PassCard = () => {
   const t = useTranslations("nexus.home");
@@ -565,7 +602,7 @@ const PassCard = () => {
   const { supabase, user } = useAuth();
   const status = useMemberStatus();
   const card = useQuery({
-    enabled: Boolean(user && status.data?.is_member),
+    enabled: Boolean(user && status.data?.is_member) && !passEmbedded,
     queryFn: async () =>
       unwrap(
         await supabase
@@ -591,7 +628,8 @@ const PassCard = () => {
       <h2 className="type-heading" id="pass-card">
         {t("passCard.title")}
       </h2>
-      {svg ? (
+      {passEmbedded ? <LiveCard /> : null}
+      {!passEmbedded && svg ? (
         // biome-ignore lint/performance/noImgElement: The IDEA's drawing of the card, kept as SVG text
         <img
           alt={t("passCard.alt")}
@@ -604,7 +642,7 @@ const PassCard = () => {
       <p className="type-body">{t("passCard.body")}</p>
       <a
         className="link inline-flex items-center gap-1 justify-self-start"
-        href={PASS_CARD_URL}
+        href={passCardUrl(locale)}
         rel="noopener"
         target="_blank"
       >

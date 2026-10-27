@@ -182,8 +182,9 @@ any schema change. Integration tests run against a local stack with
   email, and no sign-in address can be a member's verified personal email
   (triggers on `core.profiles` and `auth.users`, a unique index).
 - **The IDEA Pass card replaces SAL's card** once the Pass is on (owner,
-  Oct 27, 2026; same switch): Today shows the Pass card (`PassCard`,
-  picture from the `card` scope) and links to the live one; the door and
+  Oct 27, 2026; same switch): Today shows the Pass card (`PassCard`:
+  The IDEA's live embed in a frame once `NEXT_PUBLIC_PASS_EMBED=true`,
+  else the picture from the `card` scope) and links to the live one; the door and
   the Tour scan the Pass through `POST /api/pass/card` (The IDEA checks
   it with SAL's secret; the officer's session spends the scan with
   `events.check_in_pass` / `programmes.*_six_words_pass`); SAL's card,

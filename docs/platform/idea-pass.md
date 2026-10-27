@@ -86,6 +86,20 @@ switch as the sign-in, so SAL's card stays until the Pass is on.
   (an image, no QR; `access.pass_links.card_svg_en`/`_ar`), a link to the
   live card at theideaiq.com/pass, and the member's standing (since, tier,
   vote). No perks, no Google Wallet link, no code reset.
+- **The live card on SAL's pages.** Once The IDEA allows it for SAL's app
+  (Developers → "Embed the live card", reviewed by The IDEA) and
+  `NEXT_PUBLIC_PASS_EMBED=true` is set, Today and the welcome screen frame
+  The IDEA's own embed page in place of the picture:
+  `https://theideaiq.com/pass/embed?client_id=…` (`/ar/pass/embed` in
+  Arabic). It is The IDEA's page, signed in to The IDEA, so the live code
+  never reaches SAL; The IDEA sends `frame-ancestors` built from SAL's
+  verified domains, and SAL's policy allows `frame-src
+  https://theideaiq.com` only while the switch is on. The embed posts
+  `{ type: "idea-pass-card", height }` to auibsal.org and SAL sizes the
+  frame to it (messages from anywhere else are ignored). The pink card
+  looks the same in either theme; the words around it follow the browser's
+  setting. "Open your live card" stays as the fallback. The holder's Pass
+  settings show "Shown on AUIB Society of Arts and Letters".
 - **At the door and on the Typewriter Tour** the officer scans the member's
   Pass. Its QR holds `IDEA:<member number>:<six digits>`, and the digits
   change every 30 seconds.
@@ -145,11 +159,15 @@ SAL registers itself; The IDEA sends no credentials.
    then take the app live in Developers. Until it is live, nobody else can
    sign in, so set the variables only once it is (or test on a preview
    deployment).
-6. In Supabase → **Authentication** → **Sign In / Providers**, turn off
+6. For the live card on SAL's pages: in Developers, turn on **Embed the
+   live card** (it works in testing; The IDEA reviews it before live).
+   Once it is approved, set `NEXT_PUBLIC_PASS_EMBED` to `true` in Vercel
+   and redeploy. Until then the pages show the card's picture.
+7. In Supabase → **Authentication** → **Sign In / Providers**, turn off
    **Allow new users to sign up**. SAL still makes accounts itself through
    the API (the admin API isn't affected). Keep the email provider on: the
    one-time sign-in token and the linking step use it.
-7. Check:
+8. Check:
    - sign in as an AUIB member whose Pass uses their AUIB address, as one
      who shares their AUIB address on the consent screen, and as one who
      unticks it (the linking step);
