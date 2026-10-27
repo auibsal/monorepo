@@ -384,7 +384,13 @@
         "tour": "When the Tour comes next",
         "takenDown": "These words were taken down from the wall."
       },
-      "greetingPlain": "Welcome"
+      "greetingPlain": "Welcome",
+      "passCard": {
+        "title": "Your card",
+        "alt": "Your IDEA Pass card",
+        "body": "Your IDEA Pass is your membership card. Show its live code at the door and on the Typewriter Tour; partners' offers come with the Pass.",
+        "open": "Open your live card"
+      }
     },
     "events": {
       "title": "My calendar",
@@ -1109,7 +1115,11 @@
         "checkInPerson": "Check in",
         "count": "{count} checked in",
         "noResults": "No member found.",
-        "cardNotLive": "This card's code isn't live (a screenshot?). Ask to see the card on the member's own phone."
+        "cardNotLive": "This card's code isn't live (a screenshot?). Ask to see the card on the member's own phone.",
+        "ledePass": "Scan the ticket QR in a member's Diwan, or their IDEA Pass card. If the camera won't work, look them up by name.",
+        "passNotMember": "This IDEA Pass hasn't been used with SAL yet. Ask them to sign in at auibsal.org once, or look them up by name.",
+        "passRateLimited": "Too many cards that didn't check out. Wait a few minutes, or look them up by name.",
+        "cardRetired": "SAL's own cards are retired. Scan the member's IDEA Pass instead."
       },
       "content": {
         "title": "Content",
@@ -1458,8 +1468,12 @@
           "problems": {
             "notLive": "That card's code has expired. Ask them to open their card again and scan the live code.",
             "unknownCard": "That card isn't on record.",
-            "notCard": "That isn't a membership card."
-          }
+            "notCard": "That isn't a membership card.",
+            "notMember": "This IDEA Pass hasn't been used with SAL yet. Save the card unsigned and attach it once they have signed in.",
+            "rateLimited": "Too many cards that didn't check out. Wait a few minutes and scan again.",
+            "retired": "SAL's own cards are retired. Scan the writer's IDEA Pass instead."
+          },
+          "ledePass": "Six Words are written on paper at the Typewriter Tour, never on the site. Type each card exactly as written. Scan the writer's IDEA Pass to save it as theirs, or save it unsigned and attach their Pass later. A card goes on the wall at once."
         },
         "rotas": {
           "new": "New rota",
@@ -4452,7 +4466,8 @@
       "notLive": "This code isn't live (it may be a screenshot). Ask to see the card on the member's own phone.",
       "perks": "Partners: this member may use the Society's member perks.",
       "pattern": "This card's pattern. It should match the one on the member's card.",
-      "record": "Certificates"
+      "record": "Certificates",
+      "retired": "SAL's own membership cards are retired: members now show their IDEA Pass, which the Society checks at the door."
     },
     "productions": {
       "title": "The Company",

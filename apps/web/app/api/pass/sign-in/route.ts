@@ -4,7 +4,7 @@ import { log } from "@repo/observability/log";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { corsHeaders, preflight } from "@/lib/api/cors";
-import { discover, exchangeCode, PassError } from "@/lib/api/pass";
+import { discover, exchangeCode, PassError, readCard } from "@/lib/api/pass";
 import {
   createWithPass,
   PassAccountError,
@@ -32,6 +32,33 @@ const body = z.union([
     ticket: z.string().min(1).max(4096),
   }),
 ]);
+
+/**
+ * Keeps the person's Pass card picture for their pages, in both languages.
+ * Best effort: without it, the pages link to the live card on the Pass.
+ */
+const keepCard = async (
+  admin: ReturnType<typeof createAdminClient>,
+  issuer: string,
+  accessToken: string,
+  sub: string
+) => {
+  const [en, ar] = await Promise.all([
+    readCard(issuer, accessToken, "en"),
+    readCard(issuer, accessToken, "ar"),
+  ]);
+  if (!(en || ar)) {
+    return;
+  }
+  const { error } = await admin.schema("access").rpc("pass_card", {
+    pass_sub: sub,
+    svg_ar: ar ?? undefined,
+    svg_en: en ?? undefined,
+  });
+  if (error) {
+    log.warn(`IDEA Pass card not kept: ${error.message}`);
+  }
+};
 
 /**
  * POST /pass/sign-in, on the way back from The IDEA Pass. With `{ code,
@@ -68,12 +95,19 @@ export const POST = async (request: Request) => {
     if (!isReturnPage(parsed.data.redirectUri)) {
       return json({ error: "invalid_body" }, 400);
     }
-    const identity = await exchangeCode(await discover(config.issuer), {
-      clientId: config.clientId,
-      clientSecret: config.clientSecret,
-      ...parsed.data,
-    });
-    return json(await signInWithPass(admin, identity, config.clientSecret));
+    const { accessToken, identity } = await exchangeCode(
+      await discover(config.issuer),
+      {
+        clientId: config.clientId,
+        clientSecret: config.clientSecret,
+        ...parsed.data,
+      }
+    );
+    const result = await signInWithPass(admin, identity, config.clientSecret);
+    if (result.status === "signed_in" && accessToken) {
+      await keepCard(admin, config.issuer, accessToken, identity.sub);
+    }
+    return json(result);
   } catch (error) {
     if (error instanceof PassError || error instanceof PassAccountError) {
       return json({ error: error.code }, 400);

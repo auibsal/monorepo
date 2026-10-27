@@ -3,6 +3,7 @@ import { createAdminClient } from "@repo/database/admin";
 import { membership } from "@repo/sal-data";
 import { NextResponse } from "next/server";
 import { corsHeaders, preflight } from "@/lib/api/cors";
+import { passConfig } from "@/lib/api/pass-config";
 import {
   googleWalletLink,
   refreshWalletPass,
@@ -39,6 +40,10 @@ export const POST = async (request: Request) => {
   const json = (data: object, status = 200) =>
     NextResponse.json(data, { headers, status });
 
+  // The IDEA Pass is the card once it is on, with its own Wallet pass.
+  if (passConfig()) {
+    return json({ error: "retired" }, 410);
+  }
   if (!walletConfigured()) {
     return json({ error: "wallet_not_configured" }, 503);
   }

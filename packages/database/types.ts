@@ -50,6 +50,9 @@ export type Database = {
       };
       pass_links: {
         Row: {
+          card_svg_ar: string | null;
+          card_svg_en: string | null;
+          card_updated_at: string | null;
           last_signed_in_at: string;
           linked_at: string;
           pass_sub: string;
@@ -57,6 +60,9 @@ export type Database = {
           user_id: string;
         };
         Insert: {
+          card_svg_ar?: string | null;
+          card_svg_en?: string | null;
+          card_updated_at?: string | null;
           last_signed_in_at?: string;
           linked_at?: string;
           pass_sub: string;
@@ -64,11 +70,38 @@ export type Database = {
           user_id: string;
         };
         Update: {
+          card_svg_ar?: string | null;
+          card_svg_en?: string | null;
+          card_updated_at?: string | null;
           last_signed_in_at?: string;
           linked_at?: string;
           pass_sub?: string;
           student_until?: string | null;
           user_id?: string;
+        };
+        Relationships: [];
+      };
+      pass_scans: {
+        Row: {
+          created_at: string;
+          holder: string;
+          id: string;
+          scanned_by: string;
+          used_at: string | null;
+        };
+        Insert: {
+          created_at?: string;
+          holder: string;
+          id?: string;
+          scanned_by: string;
+          used_at?: string | null;
+        };
+        Update: {
+          created_at?: string;
+          holder?: string;
+          id?: string;
+          scanned_by?: string;
+          used_at?: string | null;
         };
         Relationships: [];
       };
@@ -275,6 +308,7 @@ export type Database = {
         Returns: string;
       };
       bootstrap_founder: { Args: { email: string }; Returns: string };
+      can_scan_passes: { Args: Record<PropertyKey, never>; Returns: boolean };
       end_role_assignment: {
         Args: { assignment_id: string; ends_at?: string };
         Returns: undefined;
@@ -336,6 +370,10 @@ export type Database = {
         };
         Returns: string;
       };
+      pass_card: {
+        Args: { pass_sub: string; svg_ar?: string; svg_en?: string };
+        Returns: undefined;
+      };
       pass_link: {
         Args: { pass_sub: string; student_until?: string; user_id: string };
         Returns: undefined;
@@ -343,6 +381,15 @@ export type Database = {
       permission_holders: {
         Args: { permission: string; scope_id?: string; scope_type?: string };
         Returns: {
+          user_id: string;
+        }[];
+      };
+      record_pass_scan: {
+        Args: { pass_sub: string; scanned_by: string };
+        Returns: {
+          full_name_ar: string;
+          full_name_en: string;
+          scan: string;
           user_id: string;
         }[];
       };
@@ -2058,6 +2105,15 @@ export type Database = {
       };
       check_in_card: {
         Args: { card_code: string; digits: string; event_id: string };
+        Returns: {
+          already: boolean;
+          full_name_ar: string;
+          full_name_en: string;
+          user_id: string;
+        }[];
+      };
+      check_in_pass: {
+        Args: { event_id: string; scan: string };
         Returns: {
           already: boolean;
           full_name_ar: string;
@@ -5944,6 +6000,10 @@ export type Database = {
         Args: { card_code: string; digits: string; entry_id: string };
         Returns: undefined;
       };
+      attach_six_words_pass: {
+        Args: { entry_id: string; scan: string };
+        Returns: undefined;
+      };
       cancel_audition: { Args: { audition_id: string }; Returns: undefined };
       clear_production_rights: {
         Args: { production_id: string };
@@ -6037,6 +6097,10 @@ export type Database = {
           language: string;
           words: string;
         };
+        Returns: string;
+      };
+      record_six_words_pass: {
+        Args: { language: string; scan: string; words: string };
         Returns: string;
       };
       set_credit_visibility: {
