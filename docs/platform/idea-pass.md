@@ -98,7 +98,13 @@ switch as the sign-in, so SAL's card stays until the Pass is on.
   `{ type: "idea-pass-card", height }` to auibsal.org and SAL sizes the
   frame to it (messages from anywhere else are ignored). The pink card
   looks the same in either theme; the words around it follow the browser's
-  setting. "Open your live card" stays as the fallback. The holder's Pass
+  setting. "Open your live card" stays as the fallback. The embed's
+  sign-in window hands its result back to the frame through
+  `window.opener`, so while the switch is on, Today and the welcome screen
+  (`/membership`, `/setup`) send `Cross-Origin-Opener-Policy:
+  same-origin-allow-popups` (everywhere else keeps `same-origin`). The
+  IDEA's sign-in page must not send `same-origin` itself, or the link is cut
+  from its side. The holder's Pass
   settings show "Shown on AUIB Society of Arts and Letters".
 - **At the door and on the Typewriter Tour** the officer scans the member's
   Pass. Its QR holds `IDEA:<member number>:<six digits>`, and the digits
