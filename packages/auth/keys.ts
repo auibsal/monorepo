@@ -12,6 +12,10 @@ export const keys = () =>
       // Pass's OpenID Connect address, the client id SAL's registration
       // there. Its secret is PASS_CLIENT_SECRET (server only).
       NEXT_PUBLIC_PASS_CLIENT_ID: z.string().min(1).optional(),
+      // "true" once The IDEA allows SAL to embed the live Pass card
+      // (Developers → "Embed the live card"): members' pages then frame it
+      // in place of the card's picture.
+      NEXT_PUBLIC_PASS_EMBED: z.enum(["true", "false"]).optional(),
       NEXT_PUBLIC_PASS_ISSUER: z.url().optional(),
       NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: z
         .string()
@@ -29,6 +33,7 @@ export const keys = () =>
       NEXT_PUBLIC_AUTH_COOKIE_DOMAIN:
         process.env.NEXT_PUBLIC_AUTH_COOKIE_DOMAIN,
       NEXT_PUBLIC_PASS_CLIENT_ID: process.env.NEXT_PUBLIC_PASS_CLIENT_ID,
+      NEXT_PUBLIC_PASS_EMBED: process.env.NEXT_PUBLIC_PASS_EMBED,
       NEXT_PUBLIC_PASS_ISSUER: process.env.NEXT_PUBLIC_PASS_ISSUER,
       NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY:
         process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,

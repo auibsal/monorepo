@@ -389,7 +389,8 @@
         "title": "Your card",
         "alt": "Your IDEA Pass card",
         "body": "Your IDEA Pass is your membership card. Show its live code at the door and on the Typewriter Tour; partners' offers come with the Pass.",
-        "open": "Open your live card"
+        "open": "Open your live card",
+        "live": "Your live IDEA Pass card"
       }
     },
     "events": {

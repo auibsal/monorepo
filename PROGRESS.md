@@ -21,6 +21,9 @@ Branch: `claude/new-session-qosn60`.
       it live, then set `NEXT_PUBLIC_PASS_ISSUER`,
       `NEXT_PUBLIC_PASS_CLIENT_ID` and `PASS_CLIENT_SECRET` in Vercel and
       redeploy, and in Supabase turn off **Allow new users to sign up**.
+      For the live card on Today, also turn on **Embed the live card** in
+      Developers and, once The IDEA approves it, set
+      `NEXT_PUBLIC_PASS_EMBED=true`.
       Record the Council's decision and the conflicts-register entry, and
       amend the privacy policy to name The IDEA Pass (adopted text isn't
       edited in place).
