@@ -4,11 +4,13 @@
 -- sign-in through it opens that account's ordinary session (RLS, roles and
 -- the officers' second step are unchanged).
 --
--- The Pass shares a yes or no for student status, never the university
--- address (The IDEA's decision), and gives SAL its own id for each person.
+-- The Pass shares a yes or no for student status and, if the person allows
+-- it, their verified university address, and gives SAL its own id for each
+-- person.
 -- So an existing account is found by the link, or by the Pass's verified
--- address when that is the account's own; anyone else links their account
--- once from the old sign-in. A student status from the Pass makes a member
+-- address or verified AUIB address (its student_email answer, when the
+-- person shares it) when that is the account's own; anyone else links
+-- their account once from the old sign-in. A student status from the Pass makes a member
 -- (as a confirmed AUIB address does) and counts for ballots while it lasts.
 -- Only the API routes call these, with the secret key.
 
@@ -87,13 +89,15 @@ revoke all on function private.pass_student(uuid, date) from public, anon, authe
 
 -- The SAL account a Pass signs in to, linking it on first use: the account
 -- already linked to it, else the one whose sign-in address is the Pass's
--- verified address. Null when none is found (a new person, or an account
+-- verified address, else the one whose sign-in address is the verified
+-- AUIB address the Pass shared (student_email). Null when none is found (a new person, or an account
 -- under another address). An account already linked to another Pass is
 -- never taken over.
 create function private.pass_account(
   pass_sub text,
   verified_email text default null,
-  student_until date default null
+  student_until date default null,
+  student_email text default null
 )
 returns uuid
 language plpgsql
@@ -114,6 +118,13 @@ begin
     where verified_email is not null
       and lower(u.email) = lower(verified_email)
     limit 1;
+    if found is null then
+      select u.id into found from auth.users u
+      where pass_account.student_email is not null
+        and private.is_auib_email(pass_account.student_email)
+        and lower(u.email) = lower(pass_account.student_email)
+      limit 1;
+    end if;
     if found is null then
       return null;
     end if;
@@ -162,21 +173,22 @@ begin
 end;
 $$;
 
-revoke all on function private.pass_account(text, text, date) from public, anon, authenticated;
+revoke all on function private.pass_account(text, text, date, text) from public, anon, authenticated;
 revoke all on function private.pass_link(text, uuid, date) from public, anon, authenticated;
-grant execute on function private.pass_account(text, text, date) to service_role;
+grant execute on function private.pass_account(text, text, date, text) to service_role;
 grant execute on function private.pass_link(text, uuid, date) to service_role;
 
 create function access.pass_account(
   pass_sub text,
   verified_email text default null,
-  student_until date default null
+  student_until date default null,
+  student_email text default null
 )
 returns uuid
 language sql
 security invoker
 set search_path = ''
-as $$ select private.pass_account(pass_sub, verified_email, student_until) $$;
+as $$ select private.pass_account(pass_sub, verified_email, student_until, student_email) $$;
 
 create function access.pass_link(
   pass_sub text,
@@ -189,9 +201,9 @@ security invoker
 set search_path = ''
 as $$ select private.pass_link(pass_sub, user_id, student_until) $$;
 
-revoke all on function access.pass_account(text, text, date) from public, anon, authenticated;
+revoke all on function access.pass_account(text, text, date, text) from public, anon, authenticated;
 revoke all on function access.pass_link(text, uuid, date) from public, anon, authenticated;
-grant execute on function access.pass_account(text, text, date) to service_role;
+grant execute on function access.pass_account(text, text, date, text) to service_role;
 grant execute on function access.pass_link(text, uuid, date) to service_role;
 
 -- Ballots: an AUIB account, or a current student status from the Pass.

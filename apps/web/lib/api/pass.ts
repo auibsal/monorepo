@@ -10,13 +10,16 @@ import {
  * auibsal.org, and where students prove they study at AUIB. OpenID
  * Connect, authorization code with PKCE, SAL as a confidential client.
  * Only who the person is crosses over (SAL's own id for them at the Pass,
- * their verified address, a name, a language, and a yes or no for
- * student status; never the university address); SAL's own data stays
- * here. docs/platform/idea-pass.md
+ * their verified address, a name, a language, a yes or no for student
+ * status and, if they share it, their verified AUIB address, which finds
+ * the account a member made with it); SAL's own data stays here.
+ * docs/platform/idea-pass.md
  */
 
-// The person's addresses, names and language, and their student status.
-const SCOPE = "openid email profile student";
+// The person's addresses, names and language, their student status, and
+// their university address (people may untick it).
+const SCOPE = "openid email profile student student_email";
+const AUIB_EMAIL = /@auib\.edu\.iq$/;
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 const TRAILING_SLASH = /\/$/;
 
@@ -121,6 +124,11 @@ export interface PassIdentity {
   givenName: string | null;
   locale: "ar" | "en" | null;
   /**
+   * The AUIB address the Pass has checked, when the person shares it: it
+   * finds the account a member made with it.
+   */
+  studentEmail: string | null;
+  /**
    * The last day the Pass vouches they study at AUIB (YYYY-MM-DD), or null
    * when it doesn't.
    */
@@ -159,12 +167,20 @@ export const identityFrom = (payload: JWTPayload): PassIdentity => {
   }
   const address = text(payload.email, 254)?.toLowerCase() ?? null;
   const email = payload.email_verified === true ? address : null;
+  const university = text(payload.student_email, 254)?.toLowerCase() ?? null;
+  const studentEmail =
+    payload.student_email_verified === true &&
+    university &&
+    AUIB_EMAIL.test(university)
+      ? university
+      : null;
   const locale = text(payload.locale, 8)?.slice(0, 2);
   return {
     email,
     familyName: text(payload.family_name, 60),
     givenName: text(payload.given_name, 60),
     locale: locale === "ar" || locale === "en" ? locale : null,
+    studentEmail,
     studentUntil: auibUntil(payload.student),
     sub,
   };

@@ -330,6 +330,7 @@ export type Database = {
       pass_account: {
         Args: {
           pass_sub: string;
+          student_email?: string;
           student_until?: string;
           verified_email?: string;
         };

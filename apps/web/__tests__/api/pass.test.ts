@@ -62,7 +62,9 @@ describe("The IDEA Pass", () => {
       })
     );
     expect(url.origin + url.pathname).toBe(`${ISSUER}/authorize`);
-    expect(url.searchParams.get("scope")).toBe("openid email profile student");
+    expect(url.searchParams.get("scope")).toBe(
+      "openid email profile student student_email"
+    );
     expect(url.searchParams.get("code_challenge_method")).toBe("S256");
     expect(url.searchParams.get("nonce")).toBe(request.nonce);
     expect(url.searchParams.get("ui_locales")).toBe("ar");
@@ -76,6 +78,8 @@ describe("The IDEA Pass", () => {
         given_name: "Shaheen",
         locale: "ar-IQ",
         student: { university: "auib", until: "2027-06-30", verified: true },
+        student_email: "S.Farjo@AUIB.edu.iq",
+        student_email_verified: true,
       }),
     });
     expect(
@@ -85,6 +89,7 @@ describe("The IDEA Pass", () => {
       familyName: null,
       givenName: "Shaheen",
       locale: "ar",
+      studentEmail: "s.farjo@auib.edu.iq",
       studentUntil: "2027-06-30",
       sub: "pass-123",
     });
@@ -101,9 +106,18 @@ describe("The IDEA Pass", () => {
         email: "x@auib.edu.iq",
         email_verified: false,
         student: { verified: false },
+        student_email: "x@auib.edu.iq",
+        student_email_verified: false,
         sub: "p",
       })
-    ).toMatchObject({ email: null, studentUntil: null });
+    ).toMatchObject({ email: null, studentEmail: null, studentUntil: null });
+    expect(
+      identityFrom({
+        student_email: "x@uni.example",
+        student_email_verified: true,
+        sub: "p",
+      }).studentEmail
+    ).toBeNull();
     expect(
       identityFrom({
         student: { university: "other", until: "2027-06-30", verified: true },

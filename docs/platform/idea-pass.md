@@ -4,8 +4,9 @@ The IDEA Pass is the only way to sign in to auibsal.org (owner, Oct 26,
 2026), and the place where students prove they study at AUIB. SAL keeps
 everything else: accounts, membership, roles, Qirtas, the records. Only
 who the person is crosses over from the Pass: SAL's own id for them, their
-verified address, a name, a language, and a yes or no for student status.
-The university address itself is never shared (The IDEA's decision).
+verified address, a name, a language, a yes or no for student status and,
+if they allow it, their verified AUIB address, used only to find the
+account they made with it.
 
 ## How it works
 
@@ -21,8 +22,10 @@ The university address itself is never shared (The IDEA's decision).
 3. The SAL account is found by `access.pass_account()`
    (migration `20261026000000_idea_pass.sql`): the account already linked
    to this Pass, else the account whose sign-in address is the Pass's
-   verified address. The first match is linked (`access.pass_links`, one
-   Pass per account, one account per Pass).
+   verified address, else the account whose sign-in address is the
+   verified AUIB address the Pass shared (`student_email`, which people may
+   untick). The first match is linked (`access.pass_links`, one Pass per
+   account, one account per Pass).
 4. The student status the Pass gave (`student_until` on the link) is
    recorded at every sign-in. A current one makes the person a member, as a
    confirmed AUIB address does, and settles a waiting verification request.
@@ -40,11 +43,12 @@ The university address itself is never shared (The IDEA's decision).
    - **I already have an account under another address** shows the old
      sign-in once. Afterwards `POST /api/pass/link` links that account, so
      every later sign-in goes through the Pass. Members who joined with
-     their AUIB address and use another one on the Pass do this once.
+     their AUIB address, use another one on the Pass and don't share the
+     AUIB address with SAL do this once.
 
 ## What the Pass provides
 
-The IDEA's own OpenID Connect provider (theideaiq/monorepo PR #1013):
+The IDEA's own OpenID Connect provider, live in production:
 
 - Issuer `https://api.theideaiq.com/oidc`; discovery at
   `https://api.theideaiq.com/oidc/.well-known/openid-configuration`.
@@ -54,21 +58,37 @@ The IDEA's own OpenID Connect provider (theideaiq/monorepo PR #1013):
 - Return addresses registered for SAL: `https://auibsal.org/auth/pass`,
   `https://auibsal.org/ar/auth/pass`, `http://localhost:3000/auth/pass` and
   `http://localhost:3000/ar/auth/pass`.
-- Scopes `openid email profile student`. SAL reads:
+- Scopes `openid email profile student student_email`. SAL reads:
   - `sub`, SAL's own id for the person (each partner gets its own);
   - `email`, `email_verified`;
   - `given_name`, `family_name`, `locale`;
   - `student`: `{ "verified": true, "university": "auib", "until":
-    "YYYY-MM-DD" }` or `{ "verified": false }`.
+    "YYYY-MM-DD" }` or `{ "verified": false }`;
+  - `student_email`, `student_email_verified`: the verified university
+    address, used only to find the account a member made with it (an
+    `@auib.edu.iq` address only).
+- `student_email` is a sensitive answer: it works while SAL's app is in
+  testing, and once live The IDEA reviews it before its consent screen asks
+  for it. People can untick any item; whatever isn't shared, SAL does
+  without (the linking step finds the account instead).
 - People see a consent screen each time, and can disconnect SAL in Pass →
   Settings → Connected sites.
 
 ## Turning it on
 
-1. Once The IDEA's PR is live, The IDEA registers SAL in its back office
-   and gives the owner the client id and secret privately (never in a
-   message).
-2. In Vercel → **auibsal** → **Settings** → **Environment Variables**
+SAL registers itself; The IDEA sends no credentials.
+
+1. In The IDEA Business (https://spark.theideaiq.com), create SAL's company
+   (whoever creates it becomes its owner and can invite the developer as an
+   admin), then open **Developers**.
+2. Verify auibsal.org: a DNS TXT record `_theidea-pass.auibsal.org` with
+   the value `theidea-pass-verification=<the token shown>` (in Cloudflare →
+   DNS).
+3. Register the app with the four return addresses above and
+   `client_secret_basic`. The client id and secret are shown once: put them
+   straight into Vercel, never in a message. After **New secret**, the old
+   one keeps working for 24 hours.
+4. In Vercel → **auibsal** → **Settings** → **Environment Variables**
    (Production), set the following, then redeploy:
 
    | Variable | Value |
@@ -78,13 +98,19 @@ The IDEA's own OpenID Connect provider (theideaiq/monorepo PR #1013):
    | `PASS_CLIENT_SECRET` | SAL's client secret (server only) |
 
    Until all three are set, the old email sign-in stays.
-3. In Supabase → **Authentication** → **Sign In / Providers**, turn off
+5. The app starts in testing: only members of SAL's company in The IDEA
+   Business can sign in. Add the officers there and run the checks below,
+   then take the app live in Developers. Until it is live, nobody else can
+   sign in, so set the variables only once it is (or test on a preview
+   deployment).
+6. In Supabase → **Authentication** → **Sign In / Providers**, turn off
    **Allow new users to sign up**. SAL still makes accounts itself through
    the API (the admin API isn't affected). Keep the email provider on: the
    one-time sign-in token and the linking step use it.
-4. Check:
-   - sign in as an AUIB member whose Pass uses their AUIB address, and as
-     one whose Pass uses another address (the linking step);
+7. Check:
+   - sign in as an AUIB member whose Pass uses their AUIB address, as one
+     who shares their AUIB address on the consent screen, and as one who
+     unticks it (the linking step);
    - sign in as a member outside AUIB;
    - sign in as an officer, and the authenticator code is still asked;
    - start with a new Pass and press **Create my account**.

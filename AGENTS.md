@@ -358,9 +358,10 @@ any schema change. Integration tests run against a local stack with
 - **Auth:** The IDEA Pass is the only way to sign in once
   `NEXT_PUBLIC_PASS_ISSUER`, `NEXT_PUBLIC_PASS_CLIENT_ID` and
   `PASS_CLIENT_SECRET` are set (owner, Oct 26, 2026); students prove they
-  study at AUIB there (a yes or no, never the address), and everything else
-  stays here. A Pass is linked to one SAL account (`access.pass_links`),
-  found by the link or the Pass's verified address; a current student
+  study at AUIB there, and everything else stays here. A Pass is linked to
+  one SAL account (`access.pass_links`), found by the link, the Pass's
+  verified address or the verified AUIB address it shares
+  (`student_email`, used for nothing else); a current student
   status makes a member and counts for ballots (`private.is_auib_member`).
   The sign-in opens an ordinary SAL session, so RLS, roles and the
   officers' second step are unchanged (`lib/api/pass.ts`,

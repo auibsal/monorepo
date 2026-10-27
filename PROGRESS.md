@@ -11,10 +11,13 @@ Branch: `claude/new-session-qosn60`.
 
 - [ ] **The IDEA Pass (2026-10-26), the only way to sign in:** the SAL side
       is built and off until three variables are set
-      (`docs/platform/idea-pass.md`). The IDEA's provider is in
-      theideaiq/monorepo PR #1013 (issuer `https://api.theideaiq.com/oidc`).
-      Once it is live, The IDEA registers SAL and gives you the client id and
-      secret privately. Then set `NEXT_PUBLIC_PASS_ISSUER`,
+      (`docs/platform/idea-pass.md`, "Turning it on"). The IDEA's provider is
+      live (issuer `https://api.theideaiq.com/oidc`), and SAL registers
+      itself: create SAL's company in The IDEA Business
+      (spark.theideaiq.com) → Developers, verify auibsal.org with the DNS TXT
+      record it shows, and register the app (the client id and secret are
+      shown once). Test with the officers while the app is in testing, take
+      it live, then set `NEXT_PUBLIC_PASS_ISSUER`,
       `NEXT_PUBLIC_PASS_CLIENT_ID` and `PASS_CLIENT_SECRET` in Vercel and
       redeploy, and in Supabase turn off **Allow new users to sign up**.
       Record the Council's decision and the conflicts-register entry, and

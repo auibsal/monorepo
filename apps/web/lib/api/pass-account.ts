@@ -85,6 +85,7 @@ export const signInWithPass = async (
     .schema("access")
     .rpc("pass_account", {
       pass_sub: identity.sub,
+      student_email: identity.studentEmail ?? undefined,
       student_until: identity.studentUntil ?? undefined,
       verified_email: identity.email ?? undefined,
     });

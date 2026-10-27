@@ -73,11 +73,12 @@ insert into core.semesters (code, name_en, name_ar, starts_on, ends_on) values
 -- first-100 rule back on themselves.
 update core.settings set value = '0' where key = 'membership.founding_voters';
 -- </preamble>
-select plan(16);
+select plan(18);
 
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a1', 'student@auib.edu.iq', 'Student');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a2', 'guest@example.com', 'Guest');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a3', 'other@auib.edu.iq', 'Other');
+select pg_temp.make_user('00000000-0000-0000-0000-0000000000a4', 'third@auib.edu.iq', 'Third');
 
 -- Only the API (the secret key) can call these.
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a1');
@@ -112,6 +113,16 @@ select is(
   null,
   'no account: nothing is made here'
 );
+select is(
+  access.pass_account('pass-5', 'third@gmail.com', current_date + 200, 'Third@auib.edu.iq'),
+  '00000000-0000-0000-0000-0000000000a4'::uuid,
+  'the AUIB address the Pass shares finds the account under it'
+);
+select is(
+  access.pass_account('pass-6', 'x@gmail.com', null, 'guest@example.com'),
+  null,
+  'only an AUIB address counts as one'
+);
 select throws_ok(
   $$ select access.pass_account('pass-4', 'student@auib.edu.iq') $$,
   '23505', null, 'an account linked to one Pass is not taken by another'
@@ -126,8 +137,8 @@ select throws_ok(
 );
 select is(
   (select count(*)::int from access.pass_links),
-  3,
-  'three links'
+  4,
+  'four links'
 );
 reset role;
 

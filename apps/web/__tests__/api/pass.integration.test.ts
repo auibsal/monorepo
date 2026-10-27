@@ -30,6 +30,7 @@ const identity = (fields: Partial<PassIdentity>): PassIdentity => ({
   familyName: null,
   givenName: null,
   locale: null,
+  studentEmail: null,
   studentUntil: null,
   sub: `pass-${crypto.randomUUID()}`,
   ...fields,
@@ -81,6 +82,27 @@ describe.skipIf(!enabled)("signing in with The IDEA Pass", () => {
     // Next time the link alone finds them.
     const again = await signInWithPass(admin, { ...pass, email: null }, SECRET);
     expect(again.status).toBe("signed_in");
+  });
+
+  test("a member is found by the AUIB address the Pass shares", async () => {
+    const { signInWithPass } = await import("@/lib/api/pass-account");
+    const email = `pass-shared-${stamp}@auib.edu.iq`;
+    const created = await admin.auth.admin.createUser({
+      email,
+      email_confirm: true,
+    });
+    const result = await signInWithPass(
+      admin,
+      identity({
+        email: `pass-shared-${stamp}@gmail.com`,
+        studentEmail: email,
+        studentUntil: nextYear,
+      }),
+      SECRET
+    );
+    expect(result.status).toBe("signed_in");
+    const user = await signsIn((result as { tokenHash: string }).tokenHash);
+    expect(user?.id).toBe(created.data.user?.id);
   });
 
   test("a student status from the Pass makes a member", async () => {
