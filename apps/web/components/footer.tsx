@@ -56,7 +56,7 @@ export const Footer = async ({ consent = true }: FooterProps = {}) => {
     ["/privacy", t("privacy")],
     ["/documents/terms-of-use", t("terms")],
     ["/documents/accessibility", t("accessibility")],
-    ["/events/next-stop/care", t("sideQuestCare")],
+    ["/qirtas/next-stop/care", t("sideQuestCare")],
   ] as const;
 
   return (

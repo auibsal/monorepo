@@ -74,26 +74,26 @@ test.describe("public site", () => {
     page,
   }) => {
     await page.goto(`${urls.web}/events`);
-    const majlis = page
-      .getByRole("heading", { exact: true, name: "The Majlis" })
+    const salon = page
+      .getByRole("heading", { exact: true, name: "The Salon" })
       .getByRole("link");
-    await expect(majlis).toHaveAttribute("href", /\/events\/majlis$/);
-    await majlis.click();
+    await expect(salon).toHaveAttribute("href", /\/events\/salon$/);
+    await salon.click();
     await expect(page.getByRole("heading", { level: 1 })).toHaveText(
-      "The Majlis"
+      "The Salon"
     );
     await expect(page.locator("#month")).toBeVisible();
     // After a client-side navigation the title follows the page (streamed
     // metadata): wait for it, or axe can run before it lands.
-    await expect(page).toHaveTitle(/The Majlis/);
+    await expect(page).toHaveTitle(/The Salon/);
     await expectAccessible(page);
-    // The Company's page carries its productions; Next Stop its promise.
-    await page.goto(`${urls.web}/events/next-stop`);
+    // Next Stop is Qirtas's video show, with its promise beside it.
+    await page.goto(`${urls.web}/qirtas/next-stop`);
     await page
       .getByRole("main")
       .getByRole("link", { name: "Next Stop care" })
       .click();
-    await expect(page).toHaveURL(/\/events\/next-stop\/care$/);
+    await expect(page).toHaveURL(/\/qirtas\/next-stop\/care$/);
   });
 
   test("the Qirtas front page is accessible", async ({ page }) => {

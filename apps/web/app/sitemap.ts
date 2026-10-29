@@ -27,7 +27,7 @@ const staticPaths = [
   "/contact",
   "/media-kit",
   "/privacy",
-  "/events/next-stop/care",
+  "/qirtas/next-stop/care",
   "/events",
   "/documents",
   "/governance",

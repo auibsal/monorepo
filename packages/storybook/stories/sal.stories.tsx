@@ -73,7 +73,7 @@ export const Section: Story = {
         title="This term"
       />
       <ul className="grid border-line border-b">
-        {["Open Pages", "The Majlis"].map((title, i) => (
+        {["Open Pages", "The Salon"].map((title, i) => (
           <li
             className="grid grid-cols-[6rem_1fr] gap-x-4 border-line border-t py-space-4"
             key={title}

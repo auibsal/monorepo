@@ -3,61 +3,108 @@ import { z } from "zod";
 import { type Client, unwrap } from "./client";
 import { sanitizeRichText, toPlainText } from "./sanitize";
 
-/** Every type of piece: one list for the forms and the database enum. */
-export const categories = Constants.journal.Enums.category;
 export type Category = Enums<{ schema: "journal" }, "category">;
 
-/** Waraq's five desks (journal.desk). */
-export const desks = Constants.journal.Enums.desk;
+/** Qirtas's six sections (journal.desk). */
+export const desks = [
+  "news",
+  "voices",
+  "letters",
+  "gallery",
+  "video",
+  "games",
+] as const satisfies readonly Enums<{ schema: "journal" }, "desk">[];
 export type Desk = Enums<{ schema: "journal" }, "desk">;
 
-/** The desk each type belongs to: the same mapping as journal.desk_of(). */
-export const deskOf = (category: Category): Desk => {
-  switch (category) {
-    case "article":
-    case "interview":
-    case "review":
-    case "feature":
-      return "news";
-    case "art_photography":
-    case "photo_essay":
-    case "comic":
-      return "gallery";
-    case "video":
-      return "video";
-    case "column":
-    case "letter":
-      return "voices";
-    default:
-      return "letters";
-  }
-};
+/**
+ * Six types a section (owner, Oct 29, 2026), in the order the forms list
+ * them: the same mapping as journal.desk_of(). The enum keeps retired
+ * labels (prose); journal.is_current_category() refuses them.
+ */
+export const sectionTypes = {
+  gallery: [
+    "art",
+    "photography",
+    "illustration",
+    "comic",
+    "calligraphy",
+    "photo_essay",
+  ],
+  games: [
+    "crossword",
+    "quiz",
+    "word_ladder",
+    "riddle",
+    "anagram",
+    "name_the_book",
+  ],
+  letters: [
+    "poetry",
+    "fiction",
+    "creative_nonfiction",
+    "drama",
+    "translation",
+    "six_words",
+  ],
+  news: [
+    "report",
+    "feature",
+    "interview",
+    "profile",
+    "event_coverage",
+    "explainer",
+  ],
+  video: [
+    "next_stop_episode",
+    "reel",
+    "short_film",
+    "video_report",
+    "recorded_performance",
+    "animation",
+  ],
+  voices: [
+    "review",
+    "column",
+    "opinion_essay",
+    "letter_to_editor",
+    "debate",
+    "recommendations",
+  ],
+} as const satisfies Record<Desk, readonly Category[]>;
+
+/** Every current type of piece, section by section. */
+export const categories: readonly Category[] = desks.flatMap(
+  (d) => sectionTypes[d]
+);
+
+/** The section each type belongs to: the same mapping as journal.desk_of(). */
+export const deskOf = (category: Category): Desk =>
+  desks.find((d) =>
+    (sectionTypes[d] as readonly Category[]).includes(category)
+  ) ?? "letters";
 
 /** Letters and Gallery answer a call for an Edition and are read blind. */
 export const isEditionDesk = (desk: Desk) =>
   desk === "letters" || desk === "gallery";
 
-/** The types on each desk, in the order the forms list them. */
-export const deskCategories = (desk: Desk) =>
-  categories.filter((c) => deskOf(c) === desk);
+/** The types in each section, in the order the forms list them. */
+export const deskCategories = (desk: Desk): readonly Category[] =>
+  sectionTypes[desk];
 
 /**
- * Types that take no new work (owner, 2026-10-25): prose replaces fiction
- * and creative nonfiction, comics take photo essays, and Six Words come
- * only from the Typewriter Tour. The database refuses them too.
+ * Types that take no submissions: Six Words come only from the Typewriter
+ * Tour. The database refuses them too.
  */
-export const closedCategories: readonly Category[] = [
-  "fiction",
-  "creative_nonfiction",
-  "photo_essay",
-  "six_words",
-];
+export const closedCategories: readonly Category[] = ["six_words"];
 
-/** The types a member sends on each desk. */
+/** The types a member sends in each section. */
 export const sendableCategories = (desk: Desk) =>
   deskCategories(desk).filter((c) => !closedCategories.includes(c));
 
-/** The newsroom (always open) and the Edition (open only during a call). */
+/**
+ * The newsroom (always open: News, Voices, Video, Games) and the Edition
+ * (Letters and Gallery, open only during a call).
+ */
 export const newsroomDesks = desks.filter((d) => !isEditionDesk(d));
 export const editionDesks = desks.filter((d) => isEditionDesk(d));
 
@@ -184,9 +231,9 @@ export const MAX_FILE_BYTES = 25 * 1024 * 1024;
 export const submissionSchema = z
   .object({
     body_html: z.string().max(200_000).optional(),
-    /** Edition desks only (Letters, Gallery); News, Video and Voices have none. */
+    /** Edition sections only (Letters, Gallery); the newsroom has none. */
     call_id: z.uuid().optional(),
-    category: z.enum(categories),
+    category: z.enum(categories as [Category, ...Category[]]),
     /** Every identifiable person in an image consented (Gallery: required). */
     consent_confirmed: z.boolean().optional(),
     cover_note: z.string().max(2000).optional(),
@@ -232,7 +279,7 @@ export const submissionSchema = z
         path: ["consent_confirmed"],
       });
     }
-    if (value.category === "video" && !value.video_url) {
+    if (desk === "video" && !value.video_url) {
       context.addIssue({
         code: "custom",
         message: "video_required",
@@ -578,7 +625,7 @@ export const approvalPermission = (kind: ApprovalKind, desk: Desk) => {
   return kind === "chief" ? "journal.approve" : "journal.copy";
 };
 
-const DECKED: readonly Category[] = ["article", "feature", "interview"];
+const DECKED: readonly Category[] = ["report", "feature", "interview"];
 
 /**
  * What a type needs before it can publish: the same rules as
@@ -589,8 +636,8 @@ export const typeNeeds = (category: Category) => {
   return {
     deck: DECKED.includes(category),
     media: desk === "gallery",
-    text: desk !== "gallery" && category !== "video",
-    video: category === "video",
+    text: desk !== "gallery" && desk !== "video",
+    video: desk === "video",
   };
 };
 

@@ -143,7 +143,13 @@ export const checkEvent = (
   };
 };
 
-export type WaraqDesk = "news" | "letters" | "gallery" | "video" | "voices";
+export type WaraqDesk =
+  | "news"
+  | "voices"
+  | "letters"
+  | "gallery"
+  | "video"
+  | "games";
 
 export interface WaraqValues {
   deck_ar: string | null;
@@ -156,6 +162,7 @@ export interface WaraqValues {
 
 const DESKS: Record<string, WaraqDesk> = {
   Gallery: "gallery",
+  Games: "games",
   Letters: "letters",
   News: "news",
   Video: "video",

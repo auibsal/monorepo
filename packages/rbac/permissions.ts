@@ -21,6 +21,7 @@ export const permissions = [
   "journal.edit.gallery",
   "journal.edit.video",
   "journal.edit.voices",
+  "journal.edit.games",
   "journal.approve",
   "journal.copy",
   "journal.frontpage",

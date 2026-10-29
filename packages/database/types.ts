@@ -1198,6 +1198,8 @@ export type Database = {
           kind: string;
           name_ar: string;
           name_en: string;
+          rhythm_ar: string | null;
+          rhythm_en: string | null;
           slug: string;
           sort: number;
           summary_ar: string | null;
@@ -1211,6 +1213,8 @@ export type Database = {
           kind: string;
           name_ar: string;
           name_en: string;
+          rhythm_ar?: string | null;
+          rhythm_en?: string | null;
           slug: string;
           sort?: number;
           summary_ar?: string | null;
@@ -1224,6 +1228,8 @@ export type Database = {
           kind?: string;
           name_ar?: string;
           name_en?: string;
+          rhythm_ar?: string | null;
+          rhythm_en?: string | null;
           slug?: string;
           sort?: number;
           summary_ar?: string | null;
@@ -4500,6 +4506,10 @@ export type Database = {
           updated_at: string;
         }[];
       };
+      is_current_category: {
+        Args: { category: Database["journal"]["Enums"]["category"] };
+        Returns: boolean;
+      };
       is_edition_desk: {
         Args: { desk: Database["journal"]["Enums"]["desk"] };
         Returns: boolean;
@@ -4625,20 +4635,40 @@ export type Database = {
         | "prose"
         | "fiction"
         | "creative_nonfiction"
-        | "short_drama"
-        | "art_photography"
+        | "drama"
+        | "art"
         | "translation"
         | "six_words"
-        | "article"
+        | "report"
         | "interview"
         | "review"
         | "feature"
         | "photo_essay"
         | "comic"
-        | "video"
+        | "video_report"
         | "column"
-        | "letter";
-      desk: "news" | "letters" | "gallery" | "video" | "voices";
+        | "letter_to_editor"
+        | "profile"
+        | "event_coverage"
+        | "explainer"
+        | "opinion_essay"
+        | "debate"
+        | "recommendations"
+        | "photography"
+        | "illustration"
+        | "calligraphy"
+        | "next_stop_episode"
+        | "reel"
+        | "short_film"
+        | "recorded_performance"
+        | "animation"
+        | "crossword"
+        | "quiz"
+        | "word_ladder"
+        | "riddle"
+        | "anagram"
+        | "name_the_book";
+      desk: "news" | "letters" | "gallery" | "video" | "voices" | "games";
       language: "en" | "ar" | "bilingual";
       submission_status:
         | "received"
@@ -6216,21 +6246,41 @@ export const Constants = {
         "prose",
         "fiction",
         "creative_nonfiction",
-        "short_drama",
-        "art_photography",
+        "drama",
+        "art",
         "translation",
         "six_words",
-        "article",
+        "report",
         "interview",
         "review",
         "feature",
         "photo_essay",
         "comic",
-        "video",
+        "video_report",
         "column",
-        "letter",
+        "letter_to_editor",
+        "profile",
+        "event_coverage",
+        "explainer",
+        "opinion_essay",
+        "debate",
+        "recommendations",
+        "photography",
+        "illustration",
+        "calligraphy",
+        "next_stop_episode",
+        "reel",
+        "short_film",
+        "recorded_performance",
+        "animation",
+        "crossword",
+        "quiz",
+        "word_ladder",
+        "riddle",
+        "anagram",
+        "name_the_book",
       ],
-      desk: ["news", "letters", "gallery", "video", "voices"],
+      desk: ["news", "letters", "gallery", "video", "voices", "games"],
       language: ["en", "ar", "bilingual"],
       submission_status: [
         "received",

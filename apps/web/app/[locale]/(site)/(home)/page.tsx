@@ -74,15 +74,9 @@ const Home = async ({ params }: HomeProps) => {
   );
   const [lead, ...rest] = pieces;
 
-  // The flagships (Qirtas is the paper, not a program: its row is
-  // unpublished), then the Evenings and the Specials as one entry each.
-  const flagships = (allProgrammes ?? []).filter(
-    (p) => p.is_active && programmes.programmeGroup(p) === "flagship"
-  );
-  const groups = [
-    { href: "/events#weekly", key: "evenings" },
-    { href: "/events#specials", key: "specials" },
-  ] as const;
+  // The six programs (Qirtas is the paper and Next Stop its video show:
+  // their rows are unpublished).
+  const series = (allProgrammes ?? []).filter((p) => p.is_active);
 
   return (
     <>
@@ -151,7 +145,7 @@ const Home = async ({ params }: HomeProps) => {
         </section>
       ) : null}
 
-      {flagships.length > 0 ? (
+      {series.length > 0 ? (
         <section
           aria-labelledby="programs"
           className="mx-auto grid w-full max-w-6xl gap-space-5 px-4 py-16"
@@ -166,7 +160,7 @@ const Home = async ({ params }: HomeProps) => {
             titleId="programs"
           />
           <ul className="grid gap-x-10 sm:grid-cols-2 lg:grid-cols-3">
-            {flagships.map((p) => (
+            {series.map((p) => (
               <li className="border-line border-t py-space-4" key={p.id}>
                 <Link className="group grid gap-2" href={programmeHref(p.slug)}>
                   <h3 className="type-heading type-accent group-hover:underline">
@@ -177,18 +171,11 @@ const Home = async ({ params }: HomeProps) => {
                       {localized(p, "summary", locale)}
                     </p>
                   ) : null}
-                </Link>
-              </li>
-            ))}
-            {groups.map((group) => (
-              <li className="border-line border-t py-space-4" key={group.key}>
-                <Link className="group grid gap-2" href={group.href}>
-                  <h3 className="type-heading group-hover:text-accent">
-                    {t(`${group.key}.title`)}
-                  </h3>
-                  <p className="type-caption max-w-[32ch] text-text-secondary">
-                    {t(`${group.key}.line`)}
-                  </p>
+                  {localized(p, "rhythm", locale) ? (
+                    <p className="type-caption">
+                      {localized(p, "rhythm", locale)}
+                    </p>
+                  ) : null}
                 </Link>
               </li>
             ))}

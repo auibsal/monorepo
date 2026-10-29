@@ -21,7 +21,7 @@ export const removalRequestSchema = z.object({
 
 export type RemovalRequestInput = z.infer<typeof removalRequestSchema>;
 
-/** Side Quest care: removal requests are handled within 24 hours. */
+/** Next Stop care: removal requests are handled within 24 hours. */
 export const REMOVAL_PROMISE_HOURS = 24;
 
 export const youtubeEmbedUrl = (videoId: string) =>
@@ -97,26 +97,6 @@ export const timeLeft = (dueAt: string, now = new Date()) => {
     minutes: abs % 60,
     overdue: minutes < 0,
   };
-};
-
-/**
- * The weekly rhythm: the three formats that rotate through a three-week
- * cycle. The other formats are the specials; every other kind is a flagship.
- */
-export const WEEKLY_RHYTHM = ["majlis", "book-circle", "open-pages"] as const;
-
-export type ProgrammeGroup = "flagship" | "weekly" | "special";
-
-export const programmeGroup = (programme: {
-  kind: string;
-  slug: string;
-}): ProgrammeGroup => {
-  if (programme.kind !== "format") {
-    return "flagship";
-  }
-  return (WEEKLY_RHYTHM as readonly string[]).includes(programme.slug)
-    ? "weekly"
-    : "special";
 };
 
 // ── The Callboard ────────────────────────────────────────────────────────────

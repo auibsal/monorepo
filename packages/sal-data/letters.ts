@@ -165,7 +165,7 @@ export const letters: Record<LetterKey, Letter> = {
     paragraphs: [
       "Dear [name],",
       "The Council of the Society of Arts and Letters has voted to invite you to become an Honorary Member of the Society, in recognition of [reason].",
-      "Honorary Members are our friends and guests: we hope you will join us at the Majlis, at Charter Night each October, and whenever you wish. We would be delighted to present your certificate at [event].",
+      "Honorary Members are our friends and guests: we hope you will join us at the Salon, at the Return each October, and whenever you wish. We would be delighted to present your certificate at [event].",
       "With respect and thanks,",
       "[Name], President, on behalf of the Council",
     ],

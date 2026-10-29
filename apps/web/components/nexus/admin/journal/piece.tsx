@@ -90,7 +90,7 @@ const NewPiece = () => {
   const issues = useIssues();
   const contributors = useContributors();
   const [desk, setDesk] = useState<journal.Desk>(desks[0] ?? "news");
-  const [category, setCategory] = useState<journal.Category>("article");
+  const [category, setCategory] = useState<journal.Category>("report");
   const [language, setLanguage] = useState<Language>("en");
   const [title, setTitle] = useState({ ar: "", en: "" });
   const [contributorId, setContributorId] = useState("");
@@ -98,7 +98,7 @@ const NewPiece = () => {
 
   useEffect(() => {
     if (journal.deskOf(category) !== desk) {
-      setCategory(journal.deskCategories(desk)[0] ?? "article");
+      setCategory(journal.deskCategories(desk)[0] ?? "report");
     }
   }, [desk, category]);
 
@@ -244,7 +244,7 @@ const formFrom = (record: PieceRecord) => {
   const p = record.piece;
   return {
     body: { ar: record.body?.body_ar ?? "", en: record.body?.body_en ?? "" },
-    category: (p?.category ?? "article") as journal.Category,
+    category: (p?.category ?? "report") as journal.Category,
     contributor_id: p?.contributor_id ?? "",
     credit: { ar: p?.credit_ar ?? "", en: p?.credit_en ?? "" },
     deck: { ar: p?.deck_ar ?? "", en: p?.deck_en ?? "" },

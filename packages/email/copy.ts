@@ -329,6 +329,7 @@ export const piecePublished = (lang: Lang, work: string, url: string) =>
 /** Waraq's desks, as the emails name them. */
 export const deskNames = {
   gallery: { ar: "معرض", en: "Gallery" },
+  games: { ar: "ألعاب", en: "Games" },
   letters: { ar: "آداب", en: "Letters" },
   news: { ar: "أخبار", en: "News" },
   video: { ar: "مرئيات", en: "Video" },

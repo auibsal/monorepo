@@ -135,6 +135,14 @@ export const roles = {
     ],
     spendingLimitIqd: null,
   },
+  games_editor: {
+    defaultScope: "global",
+    isCouncil: false,
+    nameAr: "محرر الألعاب",
+    nameEn: "Games Editor",
+    permissions: ["journal.edit.games", "library.read"],
+    spendingLimitIqd: null,
+  },
   general_secretary: {
     defaultScope: "global",
     isCouncil: true,
@@ -266,6 +274,7 @@ export const roles = {
       "journal.edit.gallery",
       "journal.edit.video",
       "journal.edit.voices",
+      "journal.edit.games",
       "journal.approve",
       "journal.copy",
       "journal.frontpage",
@@ -389,6 +398,14 @@ export const roles = {
     nameAr: "محرر المرئيات",
     nameEn: "Video Editor",
     permissions: ["journal.edit.video", "library.read"],
+    spendingLimitIqd: null,
+  },
+  voices_editor: {
+    defaultScope: "global",
+    isCouncil: false,
+    nameAr: "محرر الأصوات",
+    nameEn: "Voices Editor",
+    permissions: ["journal.edit.voices", "library.read"],
     spendingLimitIqd: null,
   },
 } as const satisfies Record<string, RoleDefinition>;

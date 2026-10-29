@@ -67,14 +67,10 @@ const PiecePage = async ({ params }: PieceProps) => {
     0
   );
   const proseTypes: journal.Category[] = [
-    "article",
-    "interview",
-    "review",
-    "feature",
+    ...journal.sectionTypes.news,
+    ...journal.sectionTypes.voices,
     "fiction",
     "creative_nonfiction",
-    "column",
-    "letter",
     "translation",
   ];
   const related = journal
