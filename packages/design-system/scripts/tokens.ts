@@ -146,7 +146,7 @@ export const renderBrandTokens = (tokens: BrandTokens) => {
   return [
     "/* AUIB Society of Arts and Letters, design tokens. Generated from tokens.json by packages/design-system/scripts/tokens.ts; edit that file, not this one. */",
     `@import url('${GOOGLE_FONTS}');`,
-    "/* Ubuntu Arabic is not on Google Fonts; it ships in fonts/ (Ubuntu Font Licence 1.0). */",
+    "/* Ubuntu Arabic is not on Google Fonts; it ships in fonts/ (Ubuntu Font License 1.0). */",
     ...tokens.type.fonts.map(
       (font) =>
         `@font-face { font-family: "${font.family}"; src: url("${font.file}") format("woff2"); font-weight: ${font.weight}; font-style: ${font.style}; font-display: swap; }`
