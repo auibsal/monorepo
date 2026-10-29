@@ -71,7 +71,7 @@ const blank: FormState = {
 const SLUG_TRIM = /^-+|-+$/g;
 const NOT_SLUG = /[^a-z0-9]+/g;
 
-/** "Charter Night 2026" → "charter-night-2026". */
+/** "The Return 2026" → "the-return-2026". */
 export const slugify = (value: string) =>
   value
     .toLowerCase()

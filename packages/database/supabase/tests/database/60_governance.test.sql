@@ -1,4 +1,4 @@
--- Governance: spending thresholds and elections (eligibility snapshot,
+-- Governance: elections (eligibility snapshot,
 -- one ballot per voter, unlinkable ballots, ranked-choice count with RON).
 begin;
 -- <preamble>
@@ -75,69 +75,14 @@ insert into core.semesters (code, name_en, name_ar, starts_on, ends_on) values
 update core.settings set value = '0' where key = 'membership.founding_voters';
 -- </preamble>
 
-select plan(40);
+select plan(30);
 
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000f1', 'founder@auib.edu.iq', 'Founder');
 select access.bootstrap_founder('founder@auib.edu.iq');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000d1', 'director@auib.edu.iq', 'Director');
-select pg_temp.make_user('00000000-0000-0000-0000-0000000000d2', 'treasurer@auib.edu.iq', 'Treasurer');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000e1', 'committee@auib.edu.iq', 'Committee');
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000000d1', 'director');
-select pg_temp.grant_role('00000000-0000-0000-0000-0000000000d2', 'treasurer');
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000000e1', 'elections_committee');
-
--- ── Spending approvals ──────────────────────────────────────────────────────
-
-select pg_temp.login_as('00000000-0000-0000-0000-0000000000d1');
-select lives_ok(
-  $$ select governance.request_spending('Printing', 40000) $$,
-  'A Director raises a request'
-);
-select lives_ok($$ select governance.request_spending('Venue', 100000) $$, 'A larger request');
-select lives_ok($$ select governance.request_spending('Equipment', 300000) $$, 'A request above every limit');
-
-select is(
-  governance.approve_spending((select id from governance.spending_approvals where purpose_en = 'Printing')),
-  'pending',
-  'A Director approves within 50,000 IQD'
-);
-select throws_ok(
-  $$ select governance.approve_spending((select id from governance.spending_approvals where purpose_en = 'Venue')) $$,
-  '23514', null,
-  'A Director cannot lead an approval above 50,000 IQD'
-);
-
-select pg_temp.login_as('00000000-0000-0000-0000-0000000000d2');
-select is(
-  governance.approve_spending((select id from governance.spending_approvals where purpose_en = 'Printing')),
-  'approved',
-  'The Treasurer countersigns and the request is approved'
-);
-
-select pg_temp.login_as('00000000-0000-0000-0000-0000000000f1');
-select is(
-  governance.approve_spending((select id from governance.spending_approvals where purpose_en = 'Venue')),
-  'pending',
-  'The President leads up to 250,000 IQD'
-);
-select throws_ok(
-  $$ select governance.approve_spending((select id from governance.spending_approvals where purpose_en = 'Equipment')) $$,
-  '23514', null,
-  'Above 250,000 IQD needs a Council vote'
-);
-
-select pg_temp.login_as('00000000-0000-0000-0000-0000000000d2');
-select is(
-  governance.approve_spending((select id from governance.spending_approvals where purpose_en = 'Venue')),
-  'approved',
-  'President + Treasurer approve 100,000 IQD'
-);
-
-select throws_ok(
-  $$ insert into governance.spending_approvals (purpose_en, amount_iqd, status) values ('Sneaky', 1, 'approved') $$,
-  '42501', null,
-  'The log cannot be written directly'
-);
 
 -- ── Elections ───────────────────────────────────────────────────────────────
 
@@ -164,19 +109,19 @@ values ('e1000000-0000-0000-0000-000000000001', 'Spring 2027', 'ربيع ٢٠٢�
   now() + interval '8 days', now() + interval '15 days', now() + interval '15 days', now() + interval '17 days');
 insert into governance.positions (id, election_id, role_key, title_en, title_ar) values
   ('b1000000-0000-0000-0000-000000000001', 'e1000000-0000-0000-0000-000000000001', 'president', 'President', 'الرئيس'),
-  ('b1000000-0000-0000-0000-000000000002', 'e1000000-0000-0000-0000-000000000001', 'treasurer', 'Treasurer', 'أمين الصندوق');
+  ('b1000000-0000-0000-0000-000000000002', 'e1000000-0000-0000-0000-000000000001', 'general_secretary', 'General Secretary', 'الأمين العام');
 
 create function pg_temp.candidate(n integer) returns text language sql as $$
   select c.id::text from governance.candidates c where c.user_id = pg_temp.voter(n);
 $$;
 grant execute on function pg_temp.candidate(integer) to public;
 
-create function pg_temp.vote(uid uuid, president jsonb, treasurer jsonb) returns void language plpgsql as $$
+create function pg_temp.vote(uid uuid, president jsonb, secretary jsonb) returns void language plpgsql as $$
 begin
   perform pg_temp.login_as(uid);
   perform governance.cast_ballot('e1000000-0000-0000-0000-000000000001',
     jsonb_build_object('b1000000-0000-0000-0000-000000000001', president,
-      'b1000000-0000-0000-0000-000000000002', treasurer));
+      'b1000000-0000-0000-0000-000000000002', secretary));
 end $$;
 grant execute on function pg_temp.vote(uuid, jsonb, jsonb) to public;
 
@@ -261,7 +206,7 @@ select throws_ok(
   '22023', null, 'A candidate from another race is refused'
 );
 
--- President: v1, v2, v4 stand (3 rounds max). Treasurer: v3 alone, with RON.
+-- President: v1, v2, v4 stand (3 rounds max). General Secretary: v3 alone, with RON.
 select lives_ok($$ select pg_temp.vote(pg_temp.voter(1), jsonb_build_array(pg_temp.candidate(1)),
   jsonb_build_array(pg_temp.candidate(3))) $$, 'A Voting Member casts a ranked ballot');
 select pg_temp.vote(pg_temp.voter(2), jsonb_build_array(pg_temp.candidate(2), pg_temp.candidate(1)), '["RON"]');

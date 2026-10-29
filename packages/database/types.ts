@@ -182,7 +182,6 @@ export type Database = {
           name_en: string;
           requires_mfa: boolean;
           sort: number;
-          spending_limit_iqd: number | null;
         };
         Insert: {
           description?: string | null;
@@ -192,7 +191,6 @@ export type Database = {
           name_en: string;
           requires_mfa?: boolean;
           sort?: number;
-          spending_limit_iqd?: number | null;
         };
         Update: {
           description?: string | null;
@@ -202,7 +200,6 @@ export type Database = {
           name_en?: string;
           requires_mfa?: boolean;
           sort?: number;
-          spending_limit_iqd?: number | null;
         };
         Relationships: [];
       };
@@ -321,66 +318,74 @@ export type Database = {
     Tables: {
       campaigns: {
         Row: {
-          cost_per_unit_iqd: number | null;
           created_at: string;
           ends_on: string | null;
+          handed_over_iqd: number | null;
+          handed_over_on: string | null;
+          handover_note: string | null;
+          handover_receipt_id: string | null;
+          handover_witness: string | null;
           id: string;
           partner_id: string | null;
-          price_list: NonNullable<Json>;
           programme_id: string | null;
           slug: string;
           starts_on: string | null;
           status: string;
           summary_ar: string | null;
           summary_en: string | null;
-          target_units: number | null;
           title_ar: string;
           title_en: string;
-          unit_label_ar: string;
-          unit_label_en: string;
           updated_at: string;
         };
         Insert: {
-          cost_per_unit_iqd?: number | null;
           created_at?: string;
           ends_on?: string | null;
+          handed_over_iqd?: number | null;
+          handed_over_on?: string | null;
+          handover_note?: string | null;
+          handover_receipt_id?: string | null;
+          handover_witness?: string | null;
           id?: string;
           partner_id?: string | null;
-          price_list?: NonNullable<Json>;
           programme_id?: string | null;
           slug: string;
           starts_on?: string | null;
           status?: string;
           summary_ar?: string | null;
           summary_en?: string | null;
-          target_units?: number | null;
           title_ar: string;
           title_en: string;
-          unit_label_ar?: string;
-          unit_label_en?: string;
           updated_at?: string;
         };
         Update: {
-          cost_per_unit_iqd?: number | null;
           created_at?: string;
           ends_on?: string | null;
+          handed_over_iqd?: number | null;
+          handed_over_on?: string | null;
+          handover_note?: string | null;
+          handover_receipt_id?: string | null;
+          handover_witness?: string | null;
           id?: string;
           partner_id?: string | null;
-          price_list?: NonNullable<Json>;
           programme_id?: string | null;
           slug?: string;
           starts_on?: string | null;
           status?: string;
           summary_ar?: string | null;
           summary_en?: string | null;
-          target_units?: number | null;
           title_ar?: string;
           title_en?: string;
-          unit_label_ar?: string;
-          unit_label_en?: string;
           updated_at?: string;
         };
-        Relationships: [];
+        Relationships: [
+          {
+            foreignKeyName: "campaigns_handover_receipt_id_fkey";
+            columns: ["handover_receipt_id"];
+            isOneToOne: false;
+            referencedRelation: "receipts";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       impact_metrics: {
         Row: {
@@ -584,11 +589,8 @@ export type Database = {
         Args: { campaign_id?: string };
         Returns: {
           campaign_id: string;
-          cost_per_unit_iqd: number;
           counted_iqd: number;
           pending_iqd: number;
-          target_units: number;
-          units: number;
         }[];
       };
     };
@@ -2240,6 +2242,50 @@ export type Database = {
           },
         ];
       };
+      council_seats: {
+        Row: {
+          covered_by: string | null;
+          holder_ar: string | null;
+          holder_en: string | null;
+          key: string;
+          kind: string;
+          sort: number;
+          title_ar: string;
+          title_en: string;
+          updated_at: string;
+        };
+        Insert: {
+          covered_by?: string | null;
+          holder_ar?: string | null;
+          holder_en?: string | null;
+          key: string;
+          kind: string;
+          sort?: number;
+          title_ar: string;
+          title_en: string;
+          updated_at?: string;
+        };
+        Update: {
+          covered_by?: string | null;
+          holder_ar?: string | null;
+          holder_en?: string | null;
+          key?: string;
+          kind?: string;
+          sort?: number;
+          title_ar?: string;
+          title_en?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "council_seats_covered_by_fkey";
+            columns: ["covered_by"];
+            isOneToOne: false;
+            referencedRelation: "council_seats";
+            referencedColumns: ["key"];
+          },
+        ];
+      };
       council_terms: {
         Row: {
           created_at: string;
@@ -3030,68 +3076,6 @@ export type Database = {
         };
         Relationships: [];
       };
-      spending_approvals: {
-        Row: {
-          amount_iqd: number;
-          approved_at: string | null;
-          campaign_id: string | null;
-          created_at: string;
-          decision_note: string | null;
-          id: string;
-          lead_approver: string | null;
-          lead_limit_iqd: number | null;
-          programme_id: string | null;
-          purpose_ar: string | null;
-          purpose_en: string;
-          requested_by: string | null;
-          resolution_id: string | null;
-          status: string;
-          treasurer_approver: string | null;
-        };
-        Insert: {
-          amount_iqd: number;
-          approved_at?: string | null;
-          campaign_id?: string | null;
-          created_at?: string;
-          decision_note?: string | null;
-          id?: string;
-          lead_approver?: string | null;
-          lead_limit_iqd?: number | null;
-          programme_id?: string | null;
-          purpose_ar?: string | null;
-          purpose_en: string;
-          requested_by?: string | null;
-          resolution_id?: string | null;
-          status?: string;
-          treasurer_approver?: string | null;
-        };
-        Update: {
-          amount_iqd?: number;
-          approved_at?: string | null;
-          campaign_id?: string | null;
-          created_at?: string;
-          decision_note?: string | null;
-          id?: string;
-          lead_approver?: string | null;
-          lead_limit_iqd?: number | null;
-          programme_id?: string | null;
-          purpose_ar?: string | null;
-          purpose_en?: string;
-          requested_by?: string | null;
-          resolution_id?: string | null;
-          status?: string;
-          treasurer_approver?: string | null;
-        };
-        Relationships: [
-          {
-            foreignKeyName: "spending_approvals_resolution_id_fkey";
-            columns: ["resolution_id"];
-            isOneToOne: false;
-            referencedRelation: "resolutions";
-            referencedColumns: ["id"];
-          },
-        ];
-      };
       voters: {
         Row: {
           election_id: string;
@@ -3120,7 +3104,6 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
-      approve_spending: { Args: { approval_id: string }; Returns: string };
       cast_ballot: {
         Args: { choices: Json; election_id: string };
         Returns: undefined;
@@ -3224,21 +3207,6 @@ export type Database = {
           slug: string;
           url: string;
         }[];
-      };
-      reject_spending: {
-        Args: { approval_id: string; note: string };
-        Returns: undefined;
-      };
-      request_spending: {
-        Args: {
-          amount_iqd: number;
-          campaign_id?: string;
-          programme_id?: string;
-          purpose_ar?: string;
-          purpose_en: string;
-          resolution_id?: string;
-        };
-        Returns: string;
       };
       save_form: {
         Args: {
@@ -4260,23 +4228,35 @@ export type Database = {
       prizes: {
         Row: {
           desk: Database["journal"]["Enums"]["desk"] | null;
+          for_ar: string | null;
+          for_en: string | null;
           key: string;
           name_ar: string;
           name_en: string;
+          named_for_ar: string | null;
+          named_for_en: string | null;
           sort: number;
         };
         Insert: {
           desk?: Database["journal"]["Enums"]["desk"] | null;
+          for_ar?: string | null;
+          for_en?: string | null;
           key: string;
           name_ar: string;
           name_en: string;
+          named_for_ar?: string | null;
+          named_for_en?: string | null;
           sort?: number;
         };
         Update: {
           desk?: Database["journal"]["Enums"]["desk"] | null;
+          for_ar?: string | null;
+          for_en?: string | null;
           key?: string;
           name_ar?: string;
           name_en?: string;
+          named_for_ar?: string | null;
+          named_for_en?: string | null;
           sort?: number;
         };
         Relationships: [];
@@ -5554,23 +5534,89 @@ export type Database = {
         };
         Relationships: [];
       };
+      needs: {
+        Row: {
+          created_at: string;
+          created_by: string | null;
+          event_id: string | null;
+          id: string;
+          item: string;
+          needed_by: string;
+          programme_id: string;
+          provided_note: string | null;
+          provided_on: string | null;
+          purpose: string;
+          quantity: number;
+          requested_on: string | null;
+          status: string;
+          updated_at: string;
+        };
+        Insert: {
+          created_at?: string;
+          created_by?: string | null;
+          event_id?: string | null;
+          id?: string;
+          item: string;
+          needed_by: string;
+          programme_id: string;
+          provided_note?: string | null;
+          provided_on?: string | null;
+          purpose: string;
+          quantity?: number;
+          requested_on?: string | null;
+          status?: string;
+          updated_at?: string;
+        };
+        Update: {
+          created_at?: string;
+          created_by?: string | null;
+          event_id?: string | null;
+          id?: string;
+          item?: string;
+          needed_by?: string;
+          programme_id?: string;
+          provided_note?: string | null;
+          provided_on?: string | null;
+          purpose?: string;
+          quantity?: number;
+          requested_on?: string | null;
+          status?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
       opening_replies: {
         Row: {
           created_at: string;
           note: string | null;
           opening_id: string;
+          picked_at: string | null;
+          picked_by: string | null;
+          status: string;
+          talk_at: string | null;
+          updated_at: string;
           user_id: string;
         };
         Insert: {
           created_at?: string;
           note?: string | null;
           opening_id: string;
+          picked_at?: string | null;
+          picked_by?: string | null;
+          status?: string;
+          talk_at?: string | null;
+          updated_at?: string;
           user_id?: string;
         };
         Update: {
           created_at?: string;
           note?: string | null;
           opening_id?: string;
+          picked_at?: string | null;
+          picked_by?: string | null;
+          status?: string;
+          talk_at?: string | null;
+          updated_at?: string;
           user_id?: string;
         };
         Relationships: [
@@ -5594,6 +5640,7 @@ export type Database = {
           id: string;
           is_open: boolean;
           kind: string;
+          owner: string;
           partner_id: string | null;
           places: number | null;
           programme_id: string | null;
@@ -5614,6 +5661,7 @@ export type Database = {
           id?: string;
           is_open?: boolean;
           kind?: string;
+          owner?: string;
           partner_id?: string | null;
           places?: number | null;
           programme_id?: string | null;
@@ -5634,6 +5682,7 @@ export type Database = {
           id?: string;
           is_open?: boolean;
           kind?: string;
+          owner?: string;
           partner_id?: string | null;
           places?: number | null;
           programme_id?: string | null;

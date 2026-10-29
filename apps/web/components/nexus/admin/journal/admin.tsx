@@ -36,6 +36,7 @@ import {
   SaveButton,
   SelectInput,
 } from "../kit";
+import { Needs } from "../needs";
 import { openSubmissionFile } from "../pipeline/data";
 import { PipelineAdmin } from "../pipeline/pipeline";
 import { Prizes } from "./prizes";
@@ -838,6 +839,7 @@ export const JournalAdmin = () => {
     hasPermissionAnywhere(grants.data, p)
   );
   const prizes = hasPermissionAnywhere(grants.data, "journal.prizes");
+  const needs = hasPermission(grants.data, "journal.manage");
   const tabs = (
     [
       ["newsroom", newsroom],
@@ -847,6 +849,7 @@ export const JournalAdmin = () => {
       ["editions", newsroom],
       ["games", puzzles],
       ["prizes", prizes],
+      ["needs", needs],
       ["contributors", newsroom],
     ] as const
   )
@@ -879,6 +882,27 @@ export const JournalAdmin = () => {
   );
 };
 
+/** The paper's needs list, on Qirtas's own program row. */
+const QirtasNeeds = () => {
+  const { supabase } = useAuth();
+  const row = useQuery({
+    queryFn: async () =>
+      unwrap(
+        await supabase
+          .schema("core")
+          .from("programmes")
+          .select("id")
+          .eq("slug", "waraq")
+          .maybeSingle()
+      ),
+    queryKey: ["admin", "qirtas-programme"],
+  });
+  if (row.isPending) {
+    return <SectionSpinner />;
+  }
+  return row.data ? <Needs programmeId={row.data.id} /> : null;
+};
+
 type JournalTabKey =
   | "newsroom"
   | "review"
@@ -887,6 +911,7 @@ type JournalTabKey =
   | "editions"
   | "games"
   | "prizes"
+  | "needs"
   | "contributors";
 
 const JournalTab = ({ tab }: { tab: JournalTabKey }) => {
@@ -905,6 +930,8 @@ const JournalTab = ({ tab }: { tab: JournalTabKey }) => {
       return <Puzzles />;
     case "prizes":
       return <Prizes />;
+    case "needs":
+      return <QirtasNeeds />;
     default:
       return <Contributors />;
   }

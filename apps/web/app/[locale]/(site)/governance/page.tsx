@@ -5,6 +5,7 @@ import {
 import { Link } from "@repo/internationalization/navigation";
 import { governance, localized } from "@repo/sal-data";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { CouncilSeats } from "@/components/council-seats";
 import { PageHeader, Section } from "@/components/section";
 import { type LocaleParams, sectionMetadata } from "@/lib/page";
 import { readPublished } from "@/lib/supabase";
@@ -29,9 +30,9 @@ const byElection = (rows: Results) => {
 };
 
 /**
- * How the Society is run, in public: the Council in office, the resolutions
- * it adopted and who members elected. Only what the database makes public
- * is read (the roster, adopted resolutions, each published election's
+ * How the Society is run, in public: the Council's seats and who holds
+ * them, the resolutions it adopted and who members elected. Only what the
+ * database makes public is read (the seats, adopted resolutions, each published election's
  * outcome per office); minutes and the counts at each round stay in the
  * Nexus.
  */
@@ -39,8 +40,8 @@ const GovernancePage = async ({ params }: LocaleParams) => {
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "web.governance" });
-  const [roster, resolutions, results] = await Promise.all([
-    readPublished(["governance"], (c) => governance.councilRoster(c), []),
+  const [seats, resolutions, results] = await Promise.all([
+    readPublished(["governance"], (c) => governance.councilSeats(c), []),
     readPublished(["governance"], (c) => governance.adoptedResolutions(c), []),
     readPublished(
       ["governance"],
@@ -55,25 +56,15 @@ const GovernancePage = async ({ params }: LocaleParams) => {
       <PageHeader lede={t("lede")} title={t("title")} />
 
       <Section id="council" title={t("council")}>
-        {roster.length === 0 ? (
+        {seats.length === 0 ? (
           <p className="type-body">{t("councilEmpty")}</p>
         ) : (
-          <ul className="grid gap-4 sm:grid-cols-2">
-            {roster.map((member) => (
-              <li
-                className="grid gap-1 border-line border-t py-space-4"
-                key={`${member.role}-${member.full_name_en}`}
-              >
-                <p className="type-label">
-                  {localized(member, "title", locale) ||
-                    localized(member, "role_name", locale)}
-                </p>
-                <p className="type-subheading">
-                  {localized(member, "full_name", locale)}
-                </p>
-              </li>
-            ))}
-          </ul>
+          <CouncilSeats
+            covered={(title) => t("coveredBy", { title })}
+            locale={locale}
+            open={t("seatOpen")}
+            seats={seats}
+          />
         )}
       </Section>
 

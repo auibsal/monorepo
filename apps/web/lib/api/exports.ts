@@ -173,64 +173,41 @@ const ledgerRows = async (
   };
 };
 
-/** The spending approvals log (RLS: requesters, approvers, governance). */
-const spendingRows = async (session: ApiSession): Promise<ExportTable> => {
-  const rows =
-    unwrap(
-      await session.supabase
-        .schema("governance")
-        .from("spending_approvals")
-        .select(
-          "created_at, purpose_en, purpose_ar, amount_iqd, status, requested_by, lead_approver, lead_limit_iqd, treasurer_approver, approved_at, decision_note"
-        )
-        .order("created_at", { ascending: false })
-    ) ?? [];
-  const ids = [
-    ...new Set(
-      rows.flatMap((r) => [
-        r.requested_by,
-        r.lead_approver,
-        r.treasurer_approver,
-      ])
-    ),
-  ].filter((id): id is string => Boolean(id));
-  const profiles = ids.length
-    ? (unwrap(
-        await session.supabase
-          .schema("core")
-          .from("profiles")
-          .select("id, full_name_en")
-          .in("id", ids)
-      ) ?? [])
-    : [];
-  const name = (id: string | null) =>
-    profiles.find((p) => p.id === id)?.full_name_en ?? "";
+/** The requests to Student Life: every needs list (RLS: governance). */
+const needsRows = async (session: ApiSession): Promise<ExportTable> => {
+  const [rows, programs] = await Promise.all([
+    session.supabase
+      .schema("programmes")
+      .from("needs")
+      .select(
+        "programme_id, item, quantity, needed_by, purpose, status, requested_on, provided_on, provided_note"
+      )
+      .order("needed_by"),
+    session.supabase.schema("core").from("programmes").select("id, name_en"),
+  ]);
+  const names = new Map((unwrap(programs) ?? []).map((p) => [p.id, p.name_en]));
   return {
     header: [
-      "requested_at",
-      "purpose_en",
-      "purpose_ar",
-      "amount_iqd",
+      "program",
+      "item",
+      "quantity",
+      "needed_by",
+      "purpose",
       "status",
-      "requested_by",
-      "lead_approver",
-      "lead_limit_iqd",
-      "treasurer",
-      "approved_at",
-      "decision_note",
+      "requested_on",
+      "provided_on",
+      "provided_note",
     ],
-    rows: rows.map((r) => [
-      r.created_at,
-      r.purpose_en,
-      r.purpose_ar,
-      r.amount_iqd,
+    rows: (unwrap(rows) ?? []).map((r) => [
+      names.get(r.programme_id) ?? "",
+      r.item,
+      r.quantity,
+      r.needed_by,
+      r.purpose,
       r.status,
-      name(r.requested_by),
-      name(r.lead_approver),
-      r.lead_limit_iqd,
-      name(r.treasurer_approver),
-      r.approved_at,
-      r.decision_note,
+      r.requested_on,
+      r.provided_on,
+      r.provided_note,
     ]),
   };
 };
@@ -313,12 +290,8 @@ export const exportsByName: Record<string, ExportDefinition> = {
       };
     },
   },
-  spending: {
-    permissions: [
-      "governance.manage",
-      "spending.request",
-      "spending.countersign",
-    ],
-    run: spendingRows,
+  needs: {
+    permissions: ["governance.manage"],
+    run: needsRows,
   },
 };

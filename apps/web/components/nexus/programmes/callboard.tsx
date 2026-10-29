@@ -373,7 +373,9 @@ const Openings = ({ skills }: { skills: readonly string[] }) => {
       programmes.withdrawReply(supabase, id, user?.id ?? ""),
     onSuccess: refresh,
   });
-  const mine = new Set(replies.data ?? []);
+  const mine = new Map(
+    (replies.data ?? []).map((r) => [r.opening_id, r.status])
+  );
   const rows = programmes.matchedFirst(list.data ?? [], skills);
   type Row = (typeof rows)[number];
   // What it offers, where, and for which term, on one line.
@@ -381,6 +383,8 @@ const Openings = ({ skills }: { skills: readonly string[] }) => {
     let place: string | null = null;
     if (row.desk) {
       place = `${tc("qirtas")} · ${tj(`desks.${row.desk}`)}`;
+    } else if (row.owner !== "program") {
+      place = tc(`owners.${row.owner as "qirtas"}`);
     } else if (row.programme) {
       place = localized(row.programme, "name", locale);
     }
@@ -453,7 +457,7 @@ const Openings = ({ skills }: { skills: readonly string[] }) => {
                 ) : null}
                 {interested && !placed ? (
                   <p className="type-body font-medium" role="status">
-                    {tc("interestedNote")}
+                    {tc(`application.${mine.get(row.id) as "new"}`)}
                   </p>
                 ) : null}
               </div>

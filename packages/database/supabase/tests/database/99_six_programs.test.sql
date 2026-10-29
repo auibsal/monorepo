@@ -91,7 +91,7 @@ select is(
 );
 select is(
   (select summary_en from core.programmes where slug = 'salon'),
-  'A guest, three readings, tea and conversation, every third Tuesday.',
+  'A guest, three readings, tea and conversation. Once a term, from fall 2027, a debate.',
   'The Salon''s summary'
 );
 select ok(

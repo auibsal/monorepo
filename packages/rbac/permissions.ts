@@ -37,8 +37,6 @@ export const permissions = [
   "library.council",
   "audit.read",
   "settings.manage",
-  "spending.request",
-  "spending.countersign",
   "partners.manage",
   "partners.sign",
   "certificates.prepare",

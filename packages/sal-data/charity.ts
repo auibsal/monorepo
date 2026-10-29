@@ -23,14 +23,11 @@ export type LedgerEntryInput = z.infer<typeof ledgerEntrySchema>;
 
 export interface CampaignProgress {
   campaign_id: string;
-  cost_per_unit_iqd: number;
   counted_iqd: number;
   pending_iqd: number;
-  target_units: number | null;
-  units: number;
 }
 
-/** Counted (signed-off) totals and the Warmth Meter. */
+/** Counted (signed-off) totals, and what waits for a sign-off. */
 export const campaignProgress = async (client: Client, campaignId?: string) =>
   (unwrap(
     await client

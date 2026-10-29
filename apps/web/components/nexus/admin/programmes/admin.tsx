@@ -37,6 +37,7 @@ import {
 } from "../kit";
 import { useMemberNames } from "../member-picker";
 import { memberName } from "../members/directory";
+import { Needs } from "../needs";
 import { Openings, SkillsPicker } from "./callboard";
 import { Sessions } from "./sessions";
 import { TourCards } from "./six-words";
@@ -1122,6 +1123,7 @@ export const ProgrammesAdmin = () => {
           <TabsTrigger value="reels">{t("tabs.reels")}</TabsTrigger>
           <TabsTrigger value="rotas">{t("tabs.rotas")}</TabsTrigger>
           <TabsTrigger value="roles">{t("tabs.roles")}</TabsTrigger>
+          <TabsTrigger value="needs">{t("tabs.needs")}</TabsTrigger>
           <TabsTrigger value="six-words">{t("tabs.sixWords")}</TabsTrigger>
           <TabsTrigger value="removals">
             {t("tabs.removals", { count: formatNumber(openRemovals) })}
@@ -1143,6 +1145,9 @@ export const ProgrammesAdmin = () => {
             </TabsContent>
             <TabsContent className="pt-4" value="roles">
               <Openings programmeId={selected} />
+            </TabsContent>
+            <TabsContent className="pt-4" value="needs">
+              <Needs programmeId={selected} />
             </TabsContent>
           </>
         ) : null}

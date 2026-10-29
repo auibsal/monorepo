@@ -683,7 +683,7 @@ const handlers: Record<string, Handler> = {
         admin
           .schema("programmes")
           .from("openings")
-          .select("programme_id, title_en, title_ar")
+          .select("title_en, title_ar")
           .eq("id", String(payload.opening_id))
           .maybeSingle(),
         admin
@@ -703,9 +703,8 @@ const handlers: Record<string, Handler> = {
     if (!(opening && reply && person)) {
       return;
     }
-    const managers = opening.programme_id
-      ? await programmeManagers(admin, opening.programme_id)
-      : await holders(admin, "programmes.manage");
+    // Membership runs every role's applications (owner, Oct 30, 2026).
+    const managers = await holders(admin, "members.manage");
     await Promise.all(
       managers.map((m) =>
         send(

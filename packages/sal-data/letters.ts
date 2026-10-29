@@ -178,7 +178,7 @@ export const letters: Record<LetterKey, Letter> = {
     paragraphs: [
       "Dear members,",
       "The [opening / Annual / Extraordinary] General Assembly of the Society of Arts and Letters will meet on [date] at [time] in [room] [and online: link].",
-      "Agenda: [1. President’s report · 2. Treasurer’s accounts · 3. Program reports · 4. Motions · 5. Any other business].",
+      "Agenda: [1. President’s report · 2. Program reports · 3. Motions · 4. Any other business].",
       "Motions must reach the General Secretary by [date, 5 days before], seconded by a Voting Member (Form F-09).",
       "Voting Members may vote in person or online with AUIB sign-in. The quorum is one-fifth of Voting Members or fifteen, whichever is fewer.",
       "[Name], General Secretary",
@@ -191,7 +191,7 @@ export const letters: Record<LetterKey, Letter> = {
     key: "l10",
     paragraphs: [
       "Dear members,",
-      "Elections for the Society’s officers will be held this spring. The offices are President, Vice President, General Secretary and Treasurer, for the [2027–28] year.",
+      "Elections for the Society’s officers will be held this spring. The offices are President, Vice President and General Secretary, for the [2027–28] year.",
       "Nominations: [Sun, Apr 4 – Sun, Apr 11] · The Candidates’ Reading: [Tue, Apr 13] · Voting: [Wed, Apr 14 – Thu, Apr 15], online with AUIB sign-in · Results: [Thu, Apr 15] · AGM and the Ribbon: [Tue, Apr 20].",
       "Every Voting Member on the register today may vote and stand. The nomination form (F-21), eligibility rules and the Elections Code are here: [link].",
       "The Elections Committee: [names]",

@@ -11,7 +11,7 @@ import {
   TabsTrigger,
 } from "@repo/design-system/components/ui/tabs";
 import type { Locale } from "@repo/internationalization";
-import { formatIqd, formatLongDate } from "@repo/internationalization/format";
+import { formatLongDate } from "@repo/internationalization/format";
 import { hasPermission, hasPermissionAnywhere } from "@repo/rbac";
 import { governance, localized, unwrap } from "@repo/sal-data";
 import { uploadLibraryFile } from "@repo/storage";
@@ -26,7 +26,6 @@ import {
   AdminHeading,
   BilingualField,
   type Column,
-  ConfirmAction,
   DataTable,
   ErrorLine,
   ExportButton,
@@ -34,9 +33,9 @@ import {
   SaveButton,
   SelectInput,
 } from "../kit";
-import { useMemberNames } from "../member-picker";
-import { memberName } from "../members/directory";
+import { Needs } from "../needs";
 import { Elections } from "./elections";
+import { Seats } from "./seats";
 
 const key = ["admin", "governance"];
 const RESOLUTION_CODE = /^R-\d{4}-\d{2,3}$/;
@@ -98,6 +97,7 @@ const Council = () => {
 
   return (
     <div className="grid gap-8">
+      <Seats />
       <section className="grid gap-3">
         <h3 className="type-subheading">{t("roster")}</h3>
         <p className="type-caption">{t("rosterHint")}</p>
@@ -575,233 +575,6 @@ const Resolutions = () => {
   );
 };
 
-// ── Spending ────────────────────────────────────────────────────────────────
-
-const Spending = () => {
-  const t = useTranslations("nexus.admin.governance");
-  const locale = useLocale() as Locale;
-  const { supabase } = useAuth();
-  const queryClient = useQueryClient();
-  const grants = useGrants();
-  const [form, setForm] = useState({
-    amount: "",
-    purpose: { ar: "", en: "" },
-    resolution_id: "",
-  });
-  const [notes, setNotes] = useState<Record<string, string>>({});
-  const data = useQuery({
-    queryFn: async () => {
-      const [approvals, resolutions] = await Promise.all([
-        supabase
-          .schema("governance")
-          .from("spending_approvals")
-          .select("*")
-          .order("created_at", { ascending: false })
-          .limit(200),
-        supabase
-          .schema("governance")
-          .from("resolutions")
-          .select("id, code, title_en, title_ar")
-          .eq("status", "adopted"),
-      ]);
-      return {
-        approvals: unwrap(approvals) ?? [],
-        resolutions: unwrap(resolutions) ?? [],
-      };
-    },
-    queryKey: [...key, "spending"],
-  });
-  const names = useMemberNames(
-    (data.data?.approvals ?? []).flatMap((a) => [
-      a.requested_by,
-      a.lead_approver,
-      a.treasurer_approver,
-    ])
-  );
-  const nameOf = (id: string | null) => {
-    const p = names.data?.find((n) => n.id === id);
-    return p ? memberName(p, locale) : "—";
-  };
-  const invalidate = () => queryClient.invalidateQueries({ queryKey: key });
-
-  const request = useMutation({
-    mutationFn: async () => {
-      const input = governance.spendingRequestSchema.parse({
-        amount_iqd: Number(form.amount),
-        purpose_ar: form.purpose.ar || undefined,
-        purpose_en: form.purpose.en,
-        resolution_id: form.resolution_id || undefined,
-      });
-      unwrap(
-        await supabase.schema("governance").rpc("request_spending", input)
-      );
-    },
-    onSuccess: async () => {
-      setForm({ amount: "", purpose: { ar: "", en: "" }, resolution_id: "" });
-      await invalidate();
-    },
-  });
-  const approve = useMutation({
-    mutationFn: async (id: string) =>
-      unwrap(
-        await supabase
-          .schema("governance")
-          .rpc("approve_spending", { approval_id: id })
-      ),
-    onSuccess: invalidate,
-  });
-  const reject = useMutation({
-    mutationFn: async (id: string) =>
-      unwrap(
-        await supabase
-          .schema("governance")
-          .rpc("reject_spending", { approval_id: id, note: notes[id] ?? "" })
-      ),
-    onSuccess: invalidate,
-  });
-
-  const canRequest = hasPermission(grants.data, "spending.request");
-  const canDecide =
-    hasPermissionAnywhere(grants.data, "spending.countersign") ||
-    hasPermission(grants.data, "spending.request");
-  const amount = Number(form.amount) || 0;
-
-  return (
-    <div className="grid gap-6">
-      <div className="flex flex-wrap items-end justify-between gap-3">
-        <p className="type-body text-text-secondary">{t("spending.lede")}</p>
-        <ExportButton fileName="sal-spending.csv" name="spending" />
-      </div>
-      <ul className="grid gap-3">
-        {data.data?.approvals.map((a) => (
-          <li key={a.id}>
-            <SalCard>
-              <div className="flex flex-wrap items-baseline justify-between gap-2">
-                <p className="font-medium tabular-nums">
-                  {formatIqd(a.amount_iqd, locale)}
-                </p>
-                <p className="type-caption">
-                  {t(`statuses.${a.status as Status}`)}
-                </p>
-              </div>
-              <p>{localized(a, "purpose", locale)}</p>
-              <p className="type-caption">
-                {t("spending.requestedBy", { name: nameOf(a.requested_by) })} ·{" "}
-                {formatLongDate(a.created_at, locale, true)}
-                {a.lead_approver
-                  ? ` · ${t("spending.lead", { name: nameOf(a.lead_approver) })}`
-                  : ""}
-                {a.treasurer_approver
-                  ? ` · ${t("spending.treasurer", { name: nameOf(a.treasurer_approver) })}`
-                  : ""}
-              </p>
-              {a.decision_note ? (
-                <p className="type-caption">{a.decision_note}</p>
-              ) : null}
-              {a.status === "pending" && canDecide ? (
-                <div className="flex flex-wrap items-end gap-3">
-                  <ConfirmAction
-                    confirmLabel={t("spending.approve")}
-                    description={t("spending.approveConfirm", {
-                      amount: formatIqd(a.amount_iqd, locale),
-                      purpose: localized(a, "purpose", locale),
-                    })}
-                    disabled={approve.isPending}
-                    onConfirm={() => approve.mutate(a.id)}
-                    variant="default"
-                  >
-                    {t("spending.approve")}
-                  </ConfirmAction>
-                  <Input
-                    aria-label={t("spending.rejectNote")}
-                    className="h-8 max-w-xs"
-                    onChange={(e) =>
-                      setNotes((n) => ({ ...n, [a.id]: e.target.value }))
-                    }
-                    placeholder={t("spending.rejectNote")}
-                    value={notes[a.id] ?? ""}
-                  />
-                  <ConfirmAction
-                    confirmLabel={t("spending.reject")}
-                    description={t("spending.rejectConfirm")}
-                    disabled={reject.isPending}
-                    onConfirm={() => reject.mutate(a.id)}
-                  >
-                    {t("spending.reject")}
-                  </ConfirmAction>
-                </div>
-              ) : null}
-            </SalCard>
-          </li>
-        ))}
-      </ul>
-      <ErrorLine error={approve.error ?? reject.error} />
-      {canRequest ? (
-        <form
-          className="grid max-w-3xl gap-4"
-          onSubmit={(event) => {
-            event.preventDefault();
-            request.mutate();
-          }}
-        >
-          <h3 className="type-subheading">{t("spending.request")}</h3>
-          <BilingualField
-            label={t("spending.purpose")}
-            maxLength={500}
-            onChange={(purpose) => setForm((f) => ({ ...f, purpose }))}
-            required
-            value={form.purpose}
-          />
-          <Field label={t("spending.amount")}>
-            {(id) => (
-              <Input
-                className="w-48"
-                dir="ltr"
-                id={id}
-                min={1}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, amount: e.target.value }))
-                }
-                required
-                type="number"
-                value={form.amount}
-              />
-            )}
-          </Field>
-          <Field
-            hint={
-              governance.needsCouncilVote(amount)
-                ? t("spending.needsResolution")
-                : undefined
-            }
-            label={t("spending.resolution")}
-          >
-            {(id) => (
-              <SelectInput
-                id={id}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, resolution_id: e.target.value }))
-                }
-                required={governance.needsCouncilVote(amount)}
-                value={form.resolution_id}
-              >
-                <option value="">{t("spending.none")}</option>
-                {data.data?.resolutions.map((r) => (
-                  <option key={r.id} value={r.id}>
-                    {r.code} · {localized(r, "title", locale)}
-                  </option>
-                ))}
-              </SelectInput>
-            )}
-          </Field>
-          <SaveButton pending={request.isPending} />
-          <ErrorLine error={request.error} />
-        </form>
-      ) : null}
-    </div>
-  );
-};
-
 // ── Library ─────────────────────────────────────────────────────────────────
 
 const Library = () => {
@@ -1033,13 +806,7 @@ export const GovernanceAdmin = () => {
       show: has("governance.minutes.write") || has("governance.manage"),
       value: "resolutions",
     },
-    {
-      show:
-        has("governance.manage") ||
-        has("spending.request") ||
-        hasPermissionAnywhere(grants.data, "spending.countersign"),
-      value: "spending",
-    },
+    { show: has("governance.manage"), value: "requests" },
     {
       show:
         hasPermissionAnywhere(grants.data, "library.read") ||
@@ -1074,9 +841,12 @@ export const GovernanceAdmin = () => {
             </TabsContent>
           </>
         ) : null}
-        {shown.some((tab) => tab.value === "spending") ? (
-          <TabsContent className="pt-4" value="spending">
-            <Spending />
+        {shown.some((tab) => tab.value === "requests") ? (
+          <TabsContent className="pt-4" value="requests">
+            <div className="grid gap-4">
+              <ExportButton fileName="sal-needs.csv" name="needs" />
+              <Needs />
+            </div>
           </TabsContent>
         ) : null}
         {shown.some((tab) => tab.value === "library") ? (

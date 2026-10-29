@@ -80,16 +80,16 @@ select plan(20);
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000f1', 'founder@auib.edu.iq', 'Founder');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000c1', 'lead@auib.edu.iq', 'Campaign Lead');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000c2', 'helper@auib.edu.iq', 'Helper');
-select pg_temp.make_user('00000000-0000-0000-0000-0000000000d1', 'treasurer@auib.edu.iq', 'Treasurer');
+select pg_temp.make_user('00000000-0000-0000-0000-0000000000d1', 'gs@auib.edu.iq', 'General Secretary');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a1', 'member@auib.edu.iq', 'Member');
 
 insert into governance.partners (slug, name_en, name_ar, kind) values ('test-partner', 'Test Partner', 'شريك تجريبي', 'charity');
-insert into charity.campaigns (id, slug, title_en, title_ar, status, partner_id, target_units)
+insert into charity.campaigns (id, slug, title_en, title_ar, status, partner_id)
 values ('ca000000-0000-0000-0000-0000000000c1', 'winter-2026', 'Winter 2026', 'شتاء ٢٠٢٦', 'active',
-  (select id from governance.partners where slug = 'test-partner'), 50);
+  (select id from governance.partners where slug = 'test-partner'));
 
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000000c1', 'campaign_lead', 'campaign', 'ca000000-0000-0000-0000-0000000000c1');
-select pg_temp.grant_role('00000000-0000-0000-0000-0000000000d1', 'treasurer');
+select pg_temp.grant_role('00000000-0000-0000-0000-0000000000d1', 'general_secretary');
 
 -- ── Recording ───────────────────────────────────────────────────────────────
 
@@ -171,7 +171,7 @@ select throws_ok(
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000d1');
 select lives_ok(
   $$ insert into charity.ledger_signoffs (entry_id) values (pg_temp.entry('first')) $$,
-  'A different person (the Treasurer) signs it off'
+  'A different person (the General Secretary, who witnesses the counts) signs it off'
 );
 select throws_ok(
   $$ delete from charity.ledger_signoffs where entry_id = pg_temp.entry('first') $$,
@@ -186,9 +186,9 @@ select is(
   'Signed-off entries count'
 );
 select is(
-  (select units from charity.campaign_progress('ca000000-0000-0000-0000-0000000000c1')),
-  2,
-  'The Warmth Meter divides by the cost per winter set (40,000 IQD)'
+  (select pending_iqd from charity.campaign_progress('ca000000-0000-0000-0000-0000000000c1')),
+  15000::bigint,
+  'What waits for a sign-off is shown apart'
 );
 select throws_ok(
   $$ select * from charity.ledger_entries $$,

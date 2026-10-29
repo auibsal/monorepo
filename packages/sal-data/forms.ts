@@ -58,7 +58,6 @@ export const formKeys = [
   "f09",
   "f10",
   "f11",
-  "f13",
   "f14",
   "f17",
   "f19",
@@ -222,8 +221,6 @@ export const forms: Record<FormKey, FormDefinition> = {
         "shadowed",
         "work_plan",
         "dossier_started",
-        "treasurer",
-        "cashier",
         "media_consent",
         "announced",
       ]),
@@ -260,7 +257,7 @@ export const forms: Record<FormKey, FormDefinition> = {
       long("audience", false, 800),
       text("when"),
       text("where"),
-      iqd("cost"),
+      long("needs", false, 800),
       long("risks"),
       long("success"),
     ],
@@ -321,46 +318,12 @@ export const forms: Record<FormKey, FormDefinition> = {
     key: "f11",
     office: [check("approved")],
   },
-  f13: {
-    code: "F-13",
-    fields: [
-      text("phone", false, 40),
-      text("department", true),
-      text("budget_line", true),
-      text("approved_by", true),
-      {
-        columns: [
-          date("date", true),
-          text("item", true),
-          text("shop"),
-          text("receipt"),
-          iqd("amount", true),
-        ],
-        key: "items",
-        max: 30,
-        required: true,
-        type: "table",
-      },
-      text("payment", true, 300),
-      check("receipts_attached", true),
-      check("not_self_approved", true),
-      check("inventory"),
-    ],
-    key: "f13",
-    office: [
-      text("checked_by"),
-      date("paid_on"),
-      iqd("amount"),
-      text("ledger_ref"),
-    ],
-  },
   f14: {
     code: "F-14",
     fields: [
       text("event", true),
       date("date", true),
       choice("count_type", ["float", "close", "day"], true),
-      choice("money_type", ["society", "charity"], true),
       {
         columns: [count("count1"), count("count2")],
         key: "notes",
@@ -444,7 +407,7 @@ export const forms: Record<FormKey, FormDefinition> = {
       long("contacts", false, 3000),
       long("accounts", false, 3000),
       long("open_items", false, 3000),
-      long("money", false, 3000),
+      long("needs", false, 3000),
       long("files", false, 3000),
       long("lessons", false, 3000),
     ],
@@ -462,9 +425,6 @@ export const forms: Record<FormKey, FormDefinition> = {
       count("events"),
       count("attendance"),
       count("volunteer_hours"),
-      iqd("budget"),
-      iqd("spent"),
-      iqd("balance"),
       iqd("charity_handed"),
       count("seats_filled"),
       count("seats_total"),
@@ -488,7 +448,6 @@ export const forms: Record<FormKey, FormDefinition> = {
         "admin_rights",
         "passwords",
         "returned",
-        "claims",
         "exit_conversation",
         "hours",
         "thanks",
@@ -514,7 +473,7 @@ export const forms: Record<FormKey, FormDefinition> = {
       text("deputy"),
       text("reports_to"),
       long("team"),
-      iqd("budget"),
+      long("needs"),
       text("frequency"),
       check("standing"),
       long("key_dates"),
@@ -657,13 +616,6 @@ export const interviewTotal = (data: FormData) =>
 /** F-04: a 1 on Commitment or Teamwork means no, whatever the total. */
 export const interviewVeto = (data: FormData) =>
   num(data.score_commitment) === 1 || num(data.score_teamwork) === 1;
-
-/** F-13: the total claimed. */
-export const claimTotal = (data: FormData) =>
-  (Array.isArray(data.items) ? data.items : []).reduce(
-    (sum: number, row) => sum + num(((row ?? {}) as FormData).amount),
-    0
-  );
 
 /** F-14: each count's total value. */
 export const cashTotals = (data: FormData) => {

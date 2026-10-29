@@ -25,9 +25,9 @@ export const generateMetadata = async ({
 };
 
 /**
- * The Qirtas Prizes (owner, Oct 29, 2026): the six prizes, and for the
- * latest round its dates, its shortlists from their day and its winners
- * from theirs.
+ * The Qirtas Prizes (owner, Oct 29, 2026): the six prizes, what each is
+ * for and whom it is named for (Oct 30), and for the latest round its
+ * dates, its shortlists from their day and its winners from theirs.
  */
 const PrizesPage = async ({ params }: PrizesProps) => {
   const { locale } = await params;
@@ -62,6 +62,8 @@ const PrizesPage = async ({ params }: PrizesProps) => {
             })}
           </p>
         ) : null}
+        <p className="type-body max-w-3xl">{t("judging")}</p>
+        <p className="type-body max-w-3xl">{t("rewards")}</p>
       </header>
       <ul className="grid gap-x-10 sm:grid-cols-2 lg:grid-cols-3">
         {all.map((prize) => {
@@ -79,6 +81,14 @@ const PrizesPage = async ({ params }: PrizesProps) => {
                   ? tj(`desks.${prize.desk as journal.Desk}`)
                   : t("wholePaper")}
               </p>
+              {localized(prize, "for", locale) ? (
+                <p className="type-body">{localized(prize, "for", locale)}</p>
+              ) : null}
+              {localized(prize, "named_for", locale) ? (
+                <p className="type-caption text-text-secondary">
+                  {localized(prize, "named_for", locale)}
+                </p>
+              ) : null}
               {entries.length === 0 ? (
                 <p className="type-body text-text-secondary">
                   {round ? t("shortlistOn") : t("noRound")}

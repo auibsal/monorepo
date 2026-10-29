@@ -25,6 +25,12 @@ export const personas = {
     name: "Founder",
     roles: [{ role: "president" }],
   },
+  generalSecretary: {
+    email: "gs@auib.edu.iq",
+    id: "00000000-0000-0000-0000-0000000000d2",
+    name: "General Secretary",
+    roles: [{ role: "general_secretary" }],
+  },
   guest: {
     email: "guest@gmail.com",
     id: "00000000-0000-0000-0000-0000000000b1",
@@ -48,12 +54,6 @@ export const personas = {
     id: "00000000-0000-0000-0000-0000000005a1",
     name: "Submissions Manager",
     roles: [{ role: "submissions_manager", scope: "issue" }],
-  },
-  treasurer: {
-    email: "treasurer@auib.edu.iq",
-    id: "00000000-0000-0000-0000-0000000000d2",
-    name: "Treasurer",
-    roles: [{ role: "treasurer" }],
   },
 } as const satisfies Record<string, Persona>;
 

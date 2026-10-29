@@ -112,7 +112,7 @@ values ('0be00000-0000-0000-0000-0000000070b2', (select id from core.programmes 
   'Closed role', 'دور مغلق', false);
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000070a1');
-select is((select count(*)::integer from programmes.openings), 1, 'Members see open openings only');
+select is((select count(*)::integer from programmes.openings where programme_id = (select id from core.programmes where slug = 'company')), 1, 'Members see open openings only');
 select lives_ok(
   $$ insert into programmes.opening_replies (opening_id, note)
      values ('0be00000-0000-0000-0000-0000000070b1', 'I have a camera') $$,

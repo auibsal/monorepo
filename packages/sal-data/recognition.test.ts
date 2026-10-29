@@ -23,7 +23,7 @@ describe("recognition", () => {
   });
 
   test("hours are logged in quarter hours, at most a day", () => {
-    const base = { activity: "Side Quest", occurred_on: "2026-10-01" };
+    const base = { activity: "Next Stop", occurred_on: "2026-10-01" };
     expect(serviceEntrySchema.safeParse({ ...base, hours: 2.5 }).success).toBe(
       true
     );

@@ -9,6 +9,34 @@ Branch: `claude/new-session-qosn60`.
 
 ## Blocked — needed from the user
 
+- [ ] **Owner decisions of Oct 30, 2026 (`claude/decisions.md`), what is
+      left for the owner:**
+  - **Arabic spellings of the Council's names** (TODO(content)): Shaheen
+    Farjo, Fajer Saif Khalid Ezzet, Yaqoob Ghassan Al-Azzawi, Mohammed-Ali
+    Ehsan Ohmaid, Ali Hayder. Until then the Arabic Council page shows the
+    English name, marked as English. The General Secretary adds them in
+    the Diwan (Governance → Council → The Council page).
+  - **Times and rooms for the dated events** not yet on the calendar
+    (TODO(content)): Second Chapter's donations (Nov 1–5) and fair
+    (Nov 8–11), the Typewriter Tour (Mar 14–25, 2027), the Company's staged
+    reading (Thu Apr 29, 2027), Launch Night (Wed Feb 24, 2027, or after
+    Eid; decide by Dec 15), the Candidates' Reading (Apr 13) and the AGM
+    (Apr 20). Add them in the Diwan's Events once the times and rooms are
+    known.
+  - **Book Circle's second Friday, Apr 23, 2027:** a draft beside Apr 9;
+    publish one once Student Life approves the trip in writing.
+  - **How fair cash is held overnight and handed over:** confirm with
+    Student Life (the decisions file asks for it); the cash count sheet
+    (F-14) and the collection record are ready.
+  - **Write to Nazik al-Malaika's family** before announcing the Nazik
+    Prize; the Prizes' names are proposed (Oct 29).
+  - **The adopted documents** (Constitution, Bylaws, Roles and Staffing,
+    Policy Manual, Strategic Plan, Operations Playbook, Templates and
+    Forms) still name the Treasurer, budgets, spending limits and claims;
+    the platform does not edit adopted text. Amend them as section 5 of
+    the decisions file lists.
+  - **Native review** of the Arabic written on Oct 30 (listed below).
+
 - [ ] **Owner decisions of Oct 29, 2026, what is left for the owner:**
   - **The room** for the Tuesday series (Open Pages, the Salon, Book
     Circle, 4:00–5:30 PM): TODO(content). The twelve sessions are on the
@@ -383,6 +411,38 @@ These stop parts of the work. Everything else continues around them.
       Realtime since 2026-10-09 (decision below).
 
 ## Decisions
+
+- **The decisions file** (owner, Oct 30, 2026): `claude/decisions.md` is the
+  source of truth; where an older document disagrees, it wins.
+- **No money** (owner, Oct 30, 2026): the Treasurer, the spending
+  approvals and limits, the Expense Claim (F-13), the campaigns' costs,
+  price list and Warmth Meter, and every budget field in the forms are
+  gone (migration `20261030000100`). Needs lists take their place
+  (`programmes.needs`); the General Secretary logs every request to
+  Student Life. Second Chapter's collection record stays: daily counts by
+  two people, sign-off by the General Secretary (who now holds
+  `charity.manage` and `charity.ledger.signoff`), the witnessed handover on
+  the campaign and the impact report. F-14 is handled by
+  `charity.ledger.signoff`. Treasurer positions in elections were removed
+  (none held).
+- **The Council page** (owner, Oct 30, 2026): `governance.council_seats`
+  (migration `20261030000200`), three officers and five directors, each by
+  full title with its holder or its cover: President Shaheen Farjo; Vice
+  President Fajer Saif Khalid Ezzet (covers Partnerships); General
+  Secretary Yaqoob Ghassan Al-Azzawi (covers Membership); Editor of Qirtas
+  Mohammed-Ali Ehsan Ohmaid; Director of Media Ali Hayder; Director of
+  Programs covered by the President. The decisions file's full names are
+  used.
+- **Hiring** (owner, Oct 30, 2026; migration `20261030000300`): openings
+  carry an owner; Membership runs the applications in the Diwan's Hiring
+  section (new → conversation → picked → offer → onboarded); the owner
+  picks. The open masthead seats are posted: News, Voices, Video and Games
+  editors, Producer (Next Stop) and Prizes Coordinator.
+- **Programs and Prizes copy** (owner, Oct 30, 2026; migration
+  `20261030000400`): the rhythm table and the once-a-term items; Open
+  Pages on Mar 30 is the worst-poem contest (4:00–6:00 PM); Book Circle's
+  second Friday is Apr 23 (draft); each prize has what it is for and whom
+  it is named for, with the judging and rewards on `/qirtas/prizes`.
 
 - **Six programs, no groupings** (owner, Oct 29, 2026): Second Chapter,
   Typewriter Tour, the Company, the Salon, Book Circle and Open Pages,
@@ -999,6 +1059,22 @@ These stop parts of the work. Everything else continues around them.
 
 ## Checklist
 
+### Owner decisions (2026-10-30)
+
+- [x] Read and saved `claude/decisions.md`; AGENTS.md points to it
+- [x] No money: Treasurer, spending, claims, costs and budget fields
+      removed; needs lists; the collection record with the witnessed
+      handover; pgTAP `99_no_money` (17)
+- [x] The Council page from `governance.council_seats`; the General
+      Secretary edits it in the Diwan; pgTAP `99_council_seats` (8)
+- [x] Hiring: owners, Membership runs applications, owners pick; the six
+      masthead seats posted; pgTAP `99_hiring` (12)
+- [x] Rhythms, once-a-term items, Mar 30 and Apr 23, the Prizes' lines;
+      retired names out of the copy (Waraq, Scratch Night, BusTalks, Side
+      Quest, the Treasurer)
+- [x] check, typecheck, test, check:i18n, check:rtl, check:placeholders,
+      check:unused, db:test (54 files, 796 tests)
+
 ### Owner decisions (2026-10-29)
 
 - [x] Six programs, rhythm lines, no groupings; the Salon; three folds;
@@ -1406,6 +1482,17 @@ Covered by automated tests so far:
 All Arabic written for the platform up to 2026-10-24 was reviewed by the
 owner and approved ("reviewed across the board, it's all good"). List new
 Arabic here as it is written.
+
+Written 2026-10-30 (owner decisions): the rhythm lines and summaries of
+migration `20261030000400` (e.g. «أيام الثلاثاء، كل ثلاثة أسابيع، من 4:00 إلى
+5:30 مساءً.», «ومرة كل فصل، مسابقة أسوأ قصيدة.»), «صفحات مفتوحة: مسابقة أسوأ
+قصيدة»; the Prizes' "for" and "named for" lines («سُمّيت باسم …»); the Council
+seats' titles («رئيس تحرير قرطاس»، «مدير الإعلام»، «مدير العضوية»); the masthead
+openings («منتج «المحطة القادمة»»، «منسق جوائز قرطاس»); and the new messages
+under `nexus.admin.needs`, `nexus.admin.hiring`, `nexus.callboard.application`,
+`nexus.admin.charity.handover`, `nexus.admin.governance.seats`, `web.give`
+(dates, collection), `web.prizes` (judging, rewards) and
+`web.about.glance.money`.
 
 Written 2026-10-29 (owner decisions): the Salon «الصالون الأدبي» and its
 summary «ضيف وثلاث قراءات وشاي وحديث، كل ثالث ثلاثاء.»; the programs'

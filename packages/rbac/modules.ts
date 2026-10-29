@@ -54,6 +54,19 @@ export const adminModules = [
     ],
   },
   { key: "programs", permissions: ["programmes.manage"] },
+  // Hiring (owner, Oct 30, 2026): Membership runs every role's applications;
+  // each owner (a program, the Editor, a director) picks for their own.
+  {
+    key: "hiring",
+    permissions: [
+      "members.manage",
+      "programmes.manage",
+      "journal.manage",
+      "content.manage",
+      "partners.manage",
+      "governance.manage",
+    ],
+  },
   { key: "productions", permissions: ["productions.manage"] },
   { key: "partners", permissions: ["partners.manage", "partners.sign"] },
   {
@@ -72,8 +85,6 @@ export const adminModules = [
       "governance.manage",
       "governance.minutes.write",
       "elections.manage",
-      "spending.request",
-      "spending.countersign",
     ],
   },
   { key: "documents", permissions: ["governance.manage"] },
@@ -83,7 +94,6 @@ export const adminModules = [
       "members.manage",
       "programmes.manage",
       "events.manage",
-      "spending.countersign",
       "content.manage",
       "governance.manage",
       "concerns.handle",

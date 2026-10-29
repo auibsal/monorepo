@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { describe, expect, test } from "vitest";
 import {
   cashTotals,
-  claimTotal,
+  type FormDefinition,
   formKeys,
   formProblems,
   forms,
@@ -11,19 +11,24 @@ import {
 } from "./forms";
 import { fill, letterKeys, letters, letterText, placeholders } from "./letters";
 
-const migration = readFileSync(
-  new URL(
-    "../database/supabase/migrations/20261009000500_forms.sql",
-    import.meta.url
+const read = (name: string) =>
+  readFileSync(
+    new URL(`../database/supabase/migrations/${name}`, import.meta.url),
+    "utf8"
+  );
+const migration = read("20261009000500_forms.sql");
+// The Expense Claim went with the Society's money (Oct 30, 2026).
+const retired = [
+  ...read("20261030000100_no_money.sql").matchAll(
+    /delete from governance\.form_types where key = '(f\d{2}[a-z]?)'/g
   ),
-  "utf8"
-);
+].map((m) => m[1]);
 
 describe("forms", () => {
   test("every form here is in the database registry, and only those", () => {
-    const registered = [...migration.matchAll(/\('(f\d{2}[a-z]?)', 'F-/g)].map(
-      (m) => m[1]
-    );
+    const registered = [...migration.matchAll(/\('(f\d{2}[a-z]?)', 'F-/g)]
+      .map((m) => m[1])
+      .filter((key) => !retired.includes(key));
     expect(registered.sort()).toEqual([...formKeys].sort());
   });
 
@@ -62,24 +67,27 @@ describe("forms", () => {
   });
 
   test("table rows need their required columns", () => {
-    const base = {
-      approved_by: "VP",
-      budget_line: "Events",
-      department: "Events",
-      not_self_approved: true,
-      payment: "Cash from the Treasurer",
-      receipts_attached: true,
+    const def: FormDefinition = {
+      code: "F-00",
+      fields: [
+        {
+          columns: [
+            { key: "date", required: true, type: "date" },
+            { key: "item", required: true, type: "text" },
+          ],
+          key: "items",
+          max: 30,
+          required: true,
+          type: "table",
+        },
+      ],
+      key: "f10",
     };
-    expect(formProblems(forms.f13, { ...base, items: [] })).toEqual(["items"]);
+    expect(formProblems(def, { items: [] })).toEqual(["items"]);
     expect(
-      formProblems(forms.f13, {
-        ...base,
-        items: [{ amount: 5000, date: "2026-10-01", item: "Tea" }],
-      })
+      formProblems(def, { items: [{ date: "2026-10-01", item: "Tea" }] })
     ).toEqual([]);
-    expect(
-      formProblems(forms.f13, { ...base, items: [{ item: "Tea" }] })
-    ).toEqual(["items"]);
+    expect(formProblems(def, { items: [{ item: "Tea" }] })).toEqual(["items"]);
   });
 
   test("F-04 weighted total and the Commitment/Teamwork rule", () => {
@@ -96,10 +104,7 @@ describe("forms", () => {
     expect(interviewVeto({ ...all5, score_teamwork: 1 })).toBe(true);
   });
 
-  test("F-13 and F-14 totals", () => {
-    expect(claimTotal({ items: [{ amount: 5000 }, { amount: "2500" }] })).toBe(
-      7500
-    );
+  test("F-14 totals", () => {
     expect(
       cashTotals({
         notes: { "250": { count1: 4 }, "50000": { count1: 2, count2: 2 } },

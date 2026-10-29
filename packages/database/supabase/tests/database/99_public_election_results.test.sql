@@ -89,7 +89,7 @@ insert into governance.elections (id, title_en, title_ar, status, nominations_op
     now() - interval '10 days', now() - interval '5 days', now() - interval '5 days', now() - interval '3 days', 40, now() - interval '20 days');
 insert into governance.positions (id, election_id, role_key, title_en, title_ar, sort) values
   ('00000000-0000-0000-0000-0000000e1b01', '00000000-0000-0000-0000-0000000e1e01', 'president', 'President', 'الرئيس', 1),
-  ('00000000-0000-0000-0000-0000000e1b02', '00000000-0000-0000-0000-0000000e1e01', 'treasurer', 'Treasurer', 'أمين الصندوق', 2),
+  ('00000000-0000-0000-0000-0000000e1b02', '00000000-0000-0000-0000-0000000e1e01', 'general_secretary', 'General Secretary', 'الأمين العام', 2),
   ('00000000-0000-0000-0000-0000000e1b03', '00000000-0000-0000-0000-0000000e1e02', 'president', 'President', 'الرئيس', 1);
 insert into governance.candidates (id, position_id, user_id, status) values
   ('00000000-0000-0000-0000-0000000e1c01', '00000000-0000-0000-0000-0000000e1b01', '00000000-0000-0000-0000-0000000e1001', 'approved'),
@@ -105,7 +105,7 @@ select results_eq(
   $$select position_title_en, winner_name_en, ron_won, ballots_counted, eligible_count
     from governance.public_election_results()$$,
   $$values ('President'::text, 'Winner Name'::text, false, 30, 40),
-           ('Treasurer'::text, null::text, true, 30, 40)$$,
+           ('General Secretary'::text, null::text, true, 30, 40)$$,
   'Visitors see the outcome of each office in a published election'
 );
 select is(
