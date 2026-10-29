@@ -7,7 +7,7 @@ import {
   toZonedDateValue,
 } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
-import { events, localized, programmes } from "@repo/sal-data";
+import { events, localized, type programmes } from "@repo/sal-data";
 import { getTranslations } from "next-intl/server";
 import type { ComponentProps, ReactNode } from "react";
 import { type DatedItem, DatedList } from "@/components/event-list";
@@ -277,8 +277,8 @@ type Programme = NonNullable<
 >[number];
 
 /**
- * Every program, as it used to be listed at /programs: the flagships, the
- * weekly evenings and the specials, each linking to its own calendar.
+ * The six programs (owner, Oct 29, 2026: no groupings), each with what it
+ * is and its rhythm in one plain line, linking to its own calendar.
  */
 export const SeriesList = async ({
   locale,
@@ -288,65 +288,31 @@ export const SeriesList = async ({
   rows: readonly Programme[];
 }) => {
   const t = await getTranslations({ locale, namespace: "web.programmes" });
-  const group = (name: programmes.ProgrammeGroup) =>
-    rows.filter((p) => programmes.programmeGroup(p) === name);
-
-  // Flagship names in Light Italic accent; the rest in Regular ink.
-  const item = (p: Programme) => {
-    const flagship = programmes.programmeGroup(p) === "flagship";
-    return (
-      <li
-        className="grid content-start gap-2 border-line border-t py-space-4"
-        key={p.id}
-      >
-        <h4
-          className={
-            flagship ? "type-title type-accent font-light!" : "type-heading"
-          }
-        >
-          <Link className="hover:underline" href={`/events/${p.slug}`}>
-            {localized(p, "name", locale)}
-          </Link>
-        </h4>
-        {localized(p, "summary", locale) ? (
-          <p className="type-body max-w-[44ch] text-text-secondary">
-            {localized(p, "summary", locale)}
-          </p>
-        ) : null}
-      </li>
-    );
-  };
-
-  const weekly = group("weekly");
-  const specials = group("special");
 
   return (
     <Section id="series" title={t("title")}>
-      <div className="grid gap-12">
-        <div className="grid gap-2" id="flagship">
-          <h3 className="type-heading">{t("major")}</h3>
-          <ul className="grid gap-x-10 sm:grid-cols-2 lg:grid-cols-3">
-            {group("flagship").map(item)}
-          </ul>
-        </div>
-        {weekly.length > 0 ? (
-          <div className="grid gap-2" id="weekly">
-            <h3 className="type-heading">{t("weekly")}</h3>
-            <p className="type-body text-text-secondary">{t("weeklyNote")}</p>
-            <ul className="grid gap-x-10 sm:grid-cols-2 lg:grid-cols-4">
-              {weekly.map(item)}
-            </ul>
-          </div>
-        ) : null}
-        {specials.length > 0 ? (
-          <div className="grid gap-2" id="specials">
-            <h3 className="type-heading">{t("specials")}</h3>
-            <ul className="grid gap-x-10 sm:grid-cols-2 lg:grid-cols-3">
-              {specials.map(item)}
-            </ul>
-          </div>
-        ) : null}
-      </div>
+      <ul className="grid gap-x-10 sm:grid-cols-2 lg:grid-cols-3">
+        {rows.map((p) => (
+          <li
+            className="grid content-start gap-2 border-line border-t py-space-4"
+            key={p.id}
+          >
+            <h3 className="type-heading">
+              <Link className="hover:underline" href={`/events/${p.slug}`}>
+                {localized(p, "name", locale)}
+              </Link>
+            </h3>
+            {localized(p, "summary", locale) ? (
+              <p className="type-body max-w-[44ch] text-text-secondary">
+                {localized(p, "summary", locale)}
+              </p>
+            ) : null}
+            {localized(p, "rhythm", locale) ? (
+              <p className="type-caption">{localized(p, "rhythm", locale)}</p>
+            ) : null}
+          </li>
+        ))}
+      </ul>
     </Section>
   );
 };

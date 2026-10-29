@@ -8,14 +8,19 @@ import {
   categories,
   closedCategories,
   criteria,
+  deskCategories,
   deskOf,
+  desks,
+  editionDesks,
   editorMoves,
   isSixWords,
   needsThirdRead,
+  newsroomDesks,
   readingMinutes,
   rubric,
   rubricTotal,
   scoreSchema,
+  sectionTypes,
   sendableCategories,
   submissionObjectPath,
   submissionSchema,
@@ -34,16 +39,8 @@ const migrations = join(
   "supabase",
   "migrations"
 );
-const waraqTypesSql = readFileSync(
-  join(migrations, "20261014000000_waraq_types.sql"),
-  "utf8"
-);
-const doorsSql = readFileSync(
-  join(migrations, "20261025000600_qirtas_doors.sql"),
-  "utf8"
-);
-const waraqSql = readFileSync(
-  join(migrations, "20261014000100_waraq.sql"),
+const sectionsSql = readFileSync(
+  join(migrations, "20261029000300_qirtas_six_sections.sql"),
   "utf8"
 );
 const journalSql = readFileSync(
@@ -54,48 +51,45 @@ const journalSql = readFileSync(
   "utf8"
 );
 
-describe("categories", () => {
-  test("the forms offer exactly the database's seventeen types", () => {
-    expect([...categories]).toEqual([
-      "poetry",
-      "prose",
-      "fiction",
-      "creative_nonfiction",
-      "short_drama",
-      "art_photography",
-      "translation",
-      "six_words",
-      "article",
-      "interview",
-      "review",
-      "feature",
-      "photo_essay",
-      "comic",
+describe("six sections, six types each", () => {
+  test("the forms list the thirty-six types of journal.is_current_category()", () => {
+    expect(desks).toEqual([
+      "news",
+      "voices",
+      "letters",
+      "gallery",
       "video",
-      "column",
-      "letter",
+      "games",
     ]);
+    for (const desk of desks) {
+      expect(deskCategories(desk), desk).toHaveLength(6);
+    }
+    expect(categories).toHaveLength(36);
     for (const category of categories) {
-      expect(`${journalSql}${waraqTypesSql}${doorsSql}`).toContain(
-        `'${category}'`
+      expect(sectionsSql).toContain(`'${category}'`);
+      expect(deskOf(category)).toBe(
+        desks.find((d) =>
+          (sectionTypes[d] as readonly string[]).includes(category)
+        )
       );
     }
+    expect(deskOf("review")).toBe("voices");
   });
 });
 
 describe("the types members send", () => {
-  test("no six words, fiction or photo essays; prose on Letters", () => {
+  test("everything but Six Words; two doors", () => {
     expect(sendableCategories("letters")).toEqual([
       "poetry",
-      "prose",
-      "short_drama",
+      "fiction",
+      "creative_nonfiction",
+      "drama",
       "translation",
     ]);
-    expect(sendableCategories("gallery")).toEqual(["art_photography", "comic"]);
-    expect(deskOf("prose")).toBe("letters");
-    for (const category of closedCategories) {
-      expect(doorsSql).toContain(`'${category}'`);
-    }
+    expect(sendableCategories("games")).toHaveLength(6);
+    expect(closedCategories).toEqual(["six_words"]);
+    expect(newsroomDesks).toEqual(["news", "voices", "video", "games"]);
+    expect(editionDesks).toEqual(["letters", "gallery"]);
   });
 });
 
@@ -155,11 +149,11 @@ describe("submission form", () => {
     expect(deskOf("comic")).toBe("gallery");
     expect(deskOf("interview")).toBe("news");
     expect(
-      submissionSchema.safeParse({ ...base, category: "article" }).success
+      submissionSchema.safeParse({ ...base, category: "report" }).success
     ).toBe(false);
     const { call_id: _call, ...noCall } = base;
     expect(
-      submissionSchema.safeParse({ ...noCall, category: "article" }).success
+      submissionSchema.safeParse({ ...noCall, category: "report" }).success
     ).toBe(true);
     expect(
       submissionSchema.safeParse({ ...noCall, category: "poetry" }).success
@@ -179,27 +173,27 @@ describe("submission form", () => {
     ).toBe(true);
     const { call_id: _call, ...noCall } = base;
     expect(
-      submissionSchema.safeParse({ ...noCall, category: "video" }).success
+      submissionSchema.safeParse({ ...noCall, category: "reel" }).success
     ).toBe(false);
     expect(
       submissionSchema.safeParse({
         ...noCall,
-        category: "video",
+        category: "reel",
         video_url: "https://youtu.be/x",
       }).success
     ).toBe(true);
   });
 
   test("the desk mapping matches journal.desk_of()", () => {
-    const fn = waraqSql.slice(
-      waraqSql.indexOf("create function journal.desk_of"),
-      waraqSql.indexOf("-- Letters and Gallery answer a call")
+    const fn = sectionsSql.slice(
+      sectionsSql.indexOf("create or replace function journal.desk_of"),
+      sectionsSql.indexOf("create function journal.is_current_category")
     );
     for (const category of categories) {
       const desk = deskOf(category);
       if (desk !== "letters") {
         expect(fn, category).toMatch(
-          new RegExp(`'${category}'[^\\n]*then '${desk}'`)
+          new RegExp(`'${category}'[^)]*\\)\\s*then '${desk}'`)
         );
       }
     }
@@ -269,16 +263,16 @@ describe("Waraq helpers", () => {
   });
 
   test("what each type needs mirrors the publish rule", () => {
-    expect(typeNeeds("article")).toEqual({
+    expect(typeNeeds("report")).toEqual({
       deck: true,
       media: false,
       text: true,
       video: false,
     });
     expect(typeNeeds("comic").media).toBe(true);
-    expect(typeNeeds("video")).toMatchObject({ text: false, video: true });
-    expect(waraqSql).toContain(
-      "p.category in ('article', 'feature', 'interview')"
+    expect(typeNeeds("reel")).toMatchObject({ text: false, video: true });
+    expect(sectionsSql).toContain(
+      "p.category in ('report', 'feature', 'interview')"
     );
   });
 

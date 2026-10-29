@@ -21,7 +21,7 @@ export const removalRequestSchema = z.object({
 
 export type RemovalRequestInput = z.infer<typeof removalRequestSchema>;
 
-/** Side Quest care: removal requests are handled within 24 hours. */
+/** Next Stop care: removal requests are handled within 24 hours. */
 export const REMOVAL_PROMISE_HOURS = 24;
 
 export const youtubeEmbedUrl = (videoId: string) =>
@@ -99,26 +99,6 @@ export const timeLeft = (dueAt: string, now = new Date()) => {
   };
 };
 
-/**
- * The weekly rhythm: the three formats that rotate through a three-week
- * cycle. The other formats are the specials; every other kind is a flagship.
- */
-export const WEEKLY_RHYTHM = ["majlis", "book-circle", "open-pages"] as const;
-
-export type ProgrammeGroup = "flagship" | "weekly" | "special";
-
-export const programmeGroup = (programme: {
-  kind: string;
-  slug: string;
-}): ProgrammeGroup => {
-  if (programme.kind !== "format") {
-    return "flagship";
-  }
-  return (WEEKLY_RHYTHM as readonly string[]).includes(programme.slug)
-    ? "weekly"
-    : "special";
-};
-
 // ── The Callboard ────────────────────────────────────────────────────────────
 
 /** Open roles on the Callboard (RLS shows members the open ones). */
@@ -128,9 +108,19 @@ export const openings = async (client: Client) =>
       .schema("programmes")
       .from("openings")
       .select(
-        "id, programme_id, title_en, title_ar, body_en, body_ar, skills, closes_at, is_open, created_at"
+        "id, kind, programme_id, desk, places, term_from, term_to, title_en, title_ar, body_en, body_ar, skills, closes_at, is_open, created_at"
       )
       .order("created_at", { ascending: false })
+  ) ?? [];
+
+/** The Apprenticeship and First Ink places the member holds. */
+export const myPlacements = async (client: Client, userId: string) =>
+  unwrap(
+    await client
+      .schema("programmes")
+      .from("placements")
+      .select("opening_id, status")
+      .eq("user_id", userId)
   ) ?? [];
 
 /** The openings the signed-in member said they are interested in. */

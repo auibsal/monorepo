@@ -268,21 +268,22 @@ export const PieceBody = ({
   switch (piece.category as journal.Category) {
     case "poetry":
       return <PoemBody piece={piece} />;
-    case "short_drama":
+    case "drama":
       return <DramaBody piece={piece} />;
     case "six_words":
       return <SixWordsBody piece={piece} />;
-    case "art_photography":
-    case "photo_essay":
-      return <GalleryBody locale={locale} piece={piece} />;
     case "comic":
+    case "illustration":
       return <ComicBody locale={locale} piece={piece} />;
+    default:
+      break;
+  }
+  switch (journal.deskOf(piece.category as journal.Category)) {
+    case "gallery":
+      return <GalleryBody locale={locale} piece={piece} />;
     case "video":
       return <VideoBody locale={locale} piece={piece} />;
-    case "article":
-    case "interview":
-    case "review":
-    case "feature":
+    case "news":
       return <NewsBody locale={locale} piece={piece} />;
     default:
       return <ProseBody piece={piece} />;

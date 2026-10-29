@@ -329,6 +329,7 @@ export const piecePublished = (lang: Lang, work: string, url: string) =>
 /** Waraq's desks, as the emails name them. */
 export const deskNames = {
   gallery: { ar: "معرض", en: "Gallery" },
+  games: { ar: "ألعاب", en: "Games" },
   letters: { ar: "آداب", en: "Letters" },
   news: { ar: "أخبار", en: "News" },
   video: { ar: "مرئيات", en: "Video" },
@@ -343,33 +344,6 @@ export interface SundayItem {
   url: string;
 }
 
-/** The Sunday Paper: the week's pieces, in both languages. */
-export const sundayPaper = (
-  lang: Lang,
-  items: SundayItem[],
-  front: string,
-  stop: string
-) =>
-  build(lang, (l) => ({
-    action: {
-      href: front,
-      label: l === "ar" ? "افتح قرطاس" : "Open Qirtas",
-    },
-    heading:
-      l === "ar" ? "صحيفة الأحد من قرطاس" : "The Sunday Paper from Qirtas",
-    paragraphs: [
-      l === "ar" ? "ما نُشر في قرطاس هذا الأسبوع:" : "This week in Qirtas:",
-      ...items.map((i) =>
-        l === "ar"
-          ? `${i.desk_ar}: ${i.title_ar || i.title_en} ${i.url}`
-          : `${i.desk_en}: ${i.title_en || i.title_ar} ${i.url}`
-      ),
-      l === "ar"
-        ? `لإيقاف صحيفة الأحد: ${stop}`
-        : `To stop the Sunday Paper: ${stop}`,
-    ],
-  }));
-
 /** The newsletter's double opt-in: nothing is sent until they confirm. */
 export const newsletterConfirm = (lang: Lang, confirm: string) =>
   build(lang, (l) => ({
@@ -379,12 +353,12 @@ export const newsletterConfirm = (lang: Lang, confirm: string) =>
     },
     heading:
       l === "ar"
-        ? "أكّد اشتراكك في «شهر في قرطاس»"
-        : "Confirm your subscription to The Month in Qirtas",
+        ? "أكّد اشتراكك في «صحيفة الأحد»"
+        : "Confirm your subscription to the Sunday Paper",
     paragraphs: [
       l === "ar"
-        ? "طلب أحدهم بهذا العنوان رسالة «شهر في قرطاس» الشهرية من جمعية الفنون والآداب. اضغط الزر للتأكيد."
-        : "Someone asked for The Month in Qirtas, the monthly email from the AUIB Society of Arts and Letters, at this address. Press the button to confirm.",
+        ? "طلب أحدهم بهذا العنوان «صحيفة الأحد»، رسالة قرطاس الشهرية من جمعية الفنون والآداب، في أول أحد من كل شهر. اضغط الزر للتأكيد."
+        : "Someone asked for the Sunday Paper, the monthly email from Qirtas and the AUIB Society of Arts and Letters, sent on the first Sunday of each month, at this address. Press the button to confirm.",
       l === "ar"
         ? "إن لم تطلبه فتجاهل هذه الرسالة؛ لن نراسلك."
         : "If it was not you, ignore this email; we will not write again.",
@@ -488,44 +462,84 @@ export interface MonthEvent {
   url: string;
 }
 
-/** The Month in Waraq: the month's pieces and the coming public events. */
-export const monthInWaraq = (
+export interface OpenPlace {
+  title_ar: string;
+  title_en: string;
+}
+
+const paperPieces = (l: Lang, pieces: SundayItem[]) =>
+  pieces.length === 0
+    ? []
+    : [
+        l === "ar" ? "ما نُشر في قرطاس هذا الشهر:" : "This month in Qirtas:",
+        ...pieces.map((i) =>
+          l === "ar"
+            ? `${i.desk_ar}: ${i.title_ar || i.title_en} ${i.url}`
+            : `${i.desk_en}: ${i.title_en || i.title_ar} ${i.url}`
+        ),
+      ];
+
+const paperEvents = (l: Lang, events: MonthEvent[]) =>
+  events.length === 0
+    ? []
+    : [
+        l === "ar" ? "ما يجري:" : "What's on:",
+        ...events.map((e) =>
+          l === "ar"
+            ? `${formatLongDate(e.starts_at, l)}: ${e.title_ar || e.title_en} ${e.url}`
+            : `${formatLongDate(e.starts_at, l)}: ${e.title_en || e.title_ar} ${e.url}`
+        ),
+      ];
+
+const paperPlaces = (l: Lang, places: OpenPlace[], callboard: string) =>
+  places.length === 0
+    ? []
+    : [
+        l === "ar"
+          ? `أماكن مفتوحة في لوحة النداءات (${callboard}):`
+          : `Open places on the Callboard (${callboard}):`,
+        ...places.map((p) =>
+          l === "ar" ? p.title_ar || p.title_en : p.title_en || p.title_ar
+        ),
+      ];
+
+/**
+ * The Sunday Paper (owner, Oct 29, 2026): monthly, on the first Sunday, to
+ * members and to the public list alike. The month's pieces, What's on, and
+ * the Callboard's open places.
+ */
+export const sundayPaper = (
   lang: Lang,
-  pieces: SundayItem[],
-  events: MonthEvent[],
-  front: string,
-  unsubscribe: string
+  {
+    callboard,
+    events,
+    front,
+    places,
+    pieces,
+    stop,
+  }: {
+    callboard: string;
+    events: MonthEvent[];
+    front: string;
+    places: OpenPlace[];
+    pieces: SundayItem[];
+    stop: string;
+  }
 ) =>
   build(lang, (l) => ({
     action: {
       href: front,
       label: l === "ar" ? "افتح قرطاس" : "Open Qirtas",
     },
-    heading: l === "ar" ? "شهر في قرطاس" : "The Month in Qirtas",
+    heading:
+      l === "ar" ? "صحيفة الأحد من قرطاس" : "The Sunday Paper from Qirtas",
     paragraphs: [
-      ...(pieces.length > 0
-        ? [
-            l === "ar" ? "ما نُشر في قرطاس هذا الشهر:" : "This month in Qirtas:",
-            ...pieces.map((i) =>
-              l === "ar"
-                ? `${i.desk_ar}: ${i.title_ar || i.title_en} ${i.url}`
-                : `${i.desk_en}: ${i.title_en || i.title_ar} ${i.url}`
-            ),
-          ]
-        : []),
-      ...(events.length > 0
-        ? [
-            l === "ar" ? "قادم في الجمعية:" : "Coming up at SAL:",
-            ...events.map((e) =>
-              l === "ar"
-                ? `${formatLongDate(e.starts_at, l)}: ${e.title_ar || e.title_en} ${e.url}`
-                : `${formatLongDate(e.starts_at, l)}: ${e.title_en || e.title_ar} ${e.url}`
-            ),
-          ]
-        : []),
+      ...paperPieces(l, pieces),
+      ...paperEvents(l, events),
+      ...paperPlaces(l, places, callboard),
       l === "ar"
-        ? `لإلغاء الاشتراك: ${unsubscribe}`
-        : `To unsubscribe: ${unsubscribe}`,
+        ? `لإيقاف صحيفة الأحد: ${stop}`
+        : `To stop the Sunday Paper: ${stop}`,
     ],
   }));
 

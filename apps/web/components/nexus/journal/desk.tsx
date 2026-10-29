@@ -22,7 +22,7 @@ import {
 import { AuthorshipPledge, Declarations } from "./form";
 
 /** The desks that are always open: no call, edited by name. */
-export const NAMED_DESKS = ["news", "video", "voices"] as const;
+export const NAMED_DESKS = journal.newsroomDesks;
 export type NamedDesk = (typeof NAMED_DESKS)[number];
 
 export const isNamedDesk = (value: string | null): value is NamedDesk =>
@@ -31,9 +31,9 @@ export const isNamedDesk = (value: string | null): value is NamedDesk =>
 const LANGUAGES = ["en", "ar", "bilingual"] as const;
 
 /**
- * Work for News, Video or Voices: a story or pitch for the News Editor, a
- * video link for the Video desk, a column or letter for Voices. Bylines are
- * real names (no pen names on these desks).
+ * Work for the newsroom (News, Voices, Video, Games): a story or pitch for
+ * the News Editor, a video link for Video, a review, column or letter for
+ * Voices, a puzzle for Games. Bylines are real names (no pen names here).
  */
 export const SendToDesk = ({
   desk,
@@ -50,7 +50,7 @@ export const SendToDesk = ({
   const queryClient = useQueryClient();
   const types = journal.sendableCategories(desk);
   const [category, setCategory] = useState<journal.Category>(
-    initial && types.includes(initial) ? initial : (types[0] ?? "article")
+    initial && types.includes(initial) ? initial : (types[0] ?? "report")
   );
   const [language, setLanguage] = useState<(typeof LANGUAGES)[number]>("en");
   const [title, setTitle] = useState("");

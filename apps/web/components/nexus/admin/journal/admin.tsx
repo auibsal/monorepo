@@ -38,6 +38,7 @@ import {
 } from "../kit";
 import { openSubmissionFile } from "../pipeline/data";
 import { PipelineAdmin } from "../pipeline/pipeline";
+import { Prizes } from "./prizes";
 import { Puzzles } from "./puzzles";
 import { FrontRank } from "./workflow";
 
@@ -554,7 +555,7 @@ const Desks = () => {
               value={desk}
             >
               <option value="">{t("allDesks")}</option>
-              {(["news", "video", "voices"] as const).map((d) => (
+              {journal.newsroomDesks.map((d) => (
                 <option key={d} value={d}>
                   {tj(`desks.${d}`)}
                 </option>
@@ -789,6 +790,7 @@ const puzzleEditorKeys = [
   "journal.edit.gallery",
   "journal.edit.video",
   "journal.edit.voices",
+  "journal.edit.games",
 ] as const;
 
 // Who sees which half: the newsroom keys, and the blind review's.
@@ -802,6 +804,7 @@ const newsroomKeys = [
   "journal.edit.gallery",
   "journal.edit.video",
   "journal.edit.voices",
+  "journal.edit.games",
 ] as const;
 const reviewKeys = [
   "journal.manage",
@@ -824,7 +827,7 @@ export const JournalAdmin = () => {
     keys.some((p) => hasPermissionAnywhere(grants.data, p as "journal.manage"));
   const newsroom = anywhere(newsroomKeys);
   const review = anywhere(reviewKeys);
-  const named = (["news", "video", "voices"] as const).some(
+  const named = journal.newsroomDesks.some(
     (desk) =>
       hasPermissionAnywhere(grants.data, `journal.edit.${desk}`) ||
       hasPermissionAnywhere(grants.data, "journal.approve")
@@ -834,6 +837,7 @@ export const JournalAdmin = () => {
   const puzzles = puzzleEditorKeys.some((p) =>
     hasPermissionAnywhere(grants.data, p)
   );
+  const prizes = hasPermissionAnywhere(grants.data, "journal.prizes");
   const tabs = (
     [
       ["newsroom", newsroom],
@@ -842,6 +846,7 @@ export const JournalAdmin = () => {
       ["front", front],
       ["editions", newsroom],
       ["games", puzzles],
+      ["prizes", prizes],
       ["contributors", newsroom],
     ] as const
   )
@@ -881,6 +886,7 @@ type JournalTabKey =
   | "front"
   | "editions"
   | "games"
+  | "prizes"
   | "contributors";
 
 const JournalTab = ({ tab }: { tab: JournalTabKey }) => {
@@ -897,6 +903,8 @@ const JournalTab = ({ tab }: { tab: JournalTabKey }) => {
       return <Editions />;
     case "games":
       return <Puzzles />;
+    case "prizes":
+      return <Prizes />;
     default:
       return <Contributors />;
   }

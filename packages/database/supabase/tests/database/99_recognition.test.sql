@@ -86,12 +86,12 @@ select pg_temp.make_user('00000000-0000-0000-0000-0000000000a5', 'gs-rc@auib.edu
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000000a2', 'president');
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000000a3', 'faculty_advisor');
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000000a4', 'programme_lead', 'programme',
-  (select id from core.programmes where slug = 'next-stop'));
+  (select id from core.programmes where slug = 'salon'));
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000000a5', 'general_secretary');
 
 insert into programmes.rotas (id, programme_id, title_en, title_ar)
 select '00000000-0000-0000-0000-00000000c001', id, 'Door team', 'فريق الباب'
-from core.programmes where slug = 'next-stop';
+from core.programmes where slug = 'salon';
 insert into programmes.shifts (id, rota_id, role_en, role_ar, starts_at, ends_at, capacity) values
   ('00000000-0000-0000-0000-00000000c101', '00000000-0000-0000-0000-00000000c001', 'Door', 'الباب',
    now() - interval '2 days', now() - interval '2 days' + interval '2 hours 30 minutes', 2),
@@ -106,7 +106,7 @@ select pg_temp.login_as('00000000-0000-0000-0000-0000000000a1');
 select lives_ok(
   $$ insert into membership.service_records (id, programme_id, occurred_on, activity, what, hours)
      select '00000000-0000-0000-0000-00000000e001', id, current_date - 3, 'Side Quest', 'Set up chairs', 3
-     from core.programmes where slug = 'next-stop' $$,
+     from core.programmes where slug = 'salon' $$,
   'A member logs hours as pending'
 );
 select throws_ok(

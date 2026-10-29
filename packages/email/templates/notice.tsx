@@ -188,12 +188,12 @@ Notice.PreviewProps = {
         href: "https://auibsal.org/membership",
         label: "Open Membership",
       },
-      heading: "You're booked for the Majlis",
+      heading: "You're booked for the Salon",
       lang: "en",
       paragraphs: ["Tuesday, October 13 · 6:00 PM", "Library, second floor"],
     },
   ],
-  preview: "You're booked for the Majlis",
+  preview: "You're booked for the Salon",
 } satisfies NoticeProps;
 
 // biome-ignore lint/complexity/noRedundantDefaultExport: React Email's preview server loads templates through their default export.

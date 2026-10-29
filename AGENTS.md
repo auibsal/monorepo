@@ -219,30 +219,68 @@ any schema change. Integration tests run against a local stack with
   dates" (`?auib=off`) and choosing a series leave them out. AUIB publishes
   them in English only, so their titles keep that language (`lang="en"`)
   on the Arabic pages.
+- **Six programs, no groupings** (owner, Oct 29, 2026): Second Chapter,
+  Typewriter Tour, the Company (`company`), the Salon (`salon`), Book
+  Circle and Open Pages. No flagships, Evenings or Specials: each program
+  shows its rhythm in one plain line (`core.programmes.rhythm_en`/`_ar`).
+  Munazara, Mutanabbi Friday and Bad Poetry Night are folded into the
+  Salon, Book Circle and Open Pages (their names retired; their sessions
+  are the parent's events with plain titles). Qirtas and Next Stop keep
+  unpublished program rows (Next Stop is Qirtas's video show). Second
+  Chapter says "our charity partner" until the Council approves one; the
+  charity partner stays unset.
 - **Qirtas is one section.** Members send everything from `/qirtas/write`
-  and the type decides the process (desk editing, or the blind review for
-  Edition work); the Diwan's Qirtas section holds the newsroom and the
-  blind review (`?tab=review`) together.
-  Two doors (owner, Oct 25, 2026): "Send to the newsroom" (News, Video,
-  Voices; always open) and "Submit to the Edition" (Letters, Gallery; only
-  while a call is open, two calls a year, with "Tell me when",
-  `journal.call_alerts`). Members send only `journal.sendableCategories`:
-  Letters poetry, prose, drama, translation; Gallery art and photography,
-  comics and photo essays. Fiction, creative nonfiction, photo essays and
-  Six Words take no new submissions (the database refuses them).
+  and the type decides the process (section editing, or the blind review
+  for Edition work); the Diwan's Qirtas section holds the newsroom, the
+  blind review (`?tab=review`) and the Prizes together.
+  Six sections, six types each (owner, Oct 29, 2026; `journal.sectionTypes`,
+  `journal.desk_of()`, `journal.is_current_category()` refuses any other):
+  News (report, feature, interview, profile, event coverage, explainer),
+  Voices (review, column, opinion essay, letter to the editor, debate,
+  recommendations), Letters (poetry, fiction, creative nonfiction, drama,
+  translation, Six Words), Gallery (art, photography, illustration,
+  comics, calligraphy, photo essay), Video (Next Stop episode, reel, short
+  film, video report, recorded performance, animation), Games (crossword,
+  quiz, word ladder, riddle, anagram, name the book). Two doors: "Send to
+  the newsroom" (News, Voices, Video, Games; always open) and "Submit to
+  the Edition" (Letters, Gallery; only while a call is open, two calls a
+  year, with "Tell me when", `journal.call_alerts`). Six Words take no
+  submissions (the database refuses them). The Edition is printed: its
+  record keeps the print run, printer and date (`journal.issues.print_run`,
+  `printer_en`/`_ar`, `printed_on`), shown on the Edition page as a line.
+- **The Qirtas Prizes** (owner, Oct 29, 2026; `/qirtas/prizes`): six
+  prizes (`journal.prizes`): the Mutanabbi Prize (the whole paper), the
+  Tabari (News), Jahiz (Voices), Nazik (Letters), Wasiti (Gallery) and Ibn
+  al-Haytham (Video) Prizes. Each year a round (`journal.prize_rounds`)
+  with its shortlist and award days; the first: shortlists April 4,
+  awarded April 20, 2027. The Diwan (Qirtas → Prizes, `journal.prizes`
+  permission) records shortlists, judges and winners
+  (`journal.prize_entries`, `journal.prize_judges`, never public) and
+  drafts the certificates (`journal.prepare_prize_certificates`, kind
+  `prize`). The public reads only `journal.prize_results()`, which shows a
+  shortlist from its day and never a winner before the award.
 - **Six Words come only from the Typewriter Tour.** Never written on the
   site: whoever runs the Tour transcribes the card in the Diwan
   (`programmes.record_six_words`) and scans the writer's live membership
   card to make it theirs (`programmes.attach_six_words`); unsigned cards
   show without a name. One entry per member; a new card replaces the old.
 - **The Callboard** (owner, Oct 25, 2026; header link "Get involved",
-  `/callboard`, members only): roles a program needs filled
-  (`programmes.openings`; members reply "I'm interested",
-  `programmes.opening_replies`, and the program's managers are emailed),
-  shifts and auditions on one board. Roles and shifts carry the skills they
-  want, from the same list as Profile (`core.member_details.skills`), and
-  what matches the member comes first. Hours given are recorded as service
-  as before.
+  `/callboard`, members only) is the careers page (owner, Oct 29, 2026):
+  roles a program needs filled (`programmes.openings`, `kind` `role`;
+  members reply "I'm interested", `programmes.opening_replies`, and the
+  program's managers are emailed), shifts and auditions on one board.
+  Roles and shifts carry the skills they want, from the same list as
+  Profile (`core.member_details.skills`), and what matches the member
+  comes first. Hours given are recorded as service as before. Two kinds of
+  place (`programmes.placements`, given by the program's managers): the
+  Apprenticeship (`apprenticeship`: one term in a Qirtas section, on
+  Qirtas's own program row with `desk`, or in a program; its sessions are
+  the shifts of its own rota, so the hours count as service;
+  `programmes.complete_apprenticeship` drafts a certificate, kind
+  `apprenticeship`) and First Ink (`first_ink`: mentor places for AUIB
+  members volunteering with high school students, through the partner
+  school, `partner_id`). High school students never get accounts and
+  nothing about them is stored.
 - **One partner register** (owner, Oct 25, 2026): `governance.partners`,
   kept in the Diwan's Partners section, is the only list of partners;
   charity campaigns, Qirtas calls and productions all name partners from
@@ -274,38 +312,53 @@ any schema change. Integration tests run against a local stack with
   standing alone, hairlines between rows only. Admin pages use
   `AdminHeading`, which matches. Nothing a member does lives in the Diwan.
 - **Names.** The publication is **Qirtas** («قرطاس»; "AUIB's paper of news,
-  letters and art"): news, letters, the gallery, Six Words and Next Stop
-  episodes in one paper with five desks (Waraq until the new names, owner,
-  Oct 24, 2026). The name is read from the settings `journal.name_en`/`_ar`;
+  letters and art"): news, voices, letters, the gallery, video (with Next
+  Stop) and games in one paper with six sections (Waraq until the new
+  names, owner, Oct 24, 2026; six sections, owner, Oct 29, 2026). The name is read from the settings `journal.name_en`/`_ar`;
   the schema keeps the code names `journal` and `waraq`. The Society has no
   charity partner on record (Natrok Athar was removed on Oct 8, 2026).
 - **Renames (owner, Oct 24, 2026).** What people see changed; the code
   kept its names. One line each, "now (the code still says …)":
   - Qirtas, قرطاس, at `/qirtas` (code: `waraq`, `journal`, `components/waraq`).
-  - The Month in Qirtas, «شهر في قرطاس» (code: `monthInWaraq`, newsletter).
+  - The Sunday Paper, «صحيفة الأحد», is monthly, on the first Sunday
+    (owner, Oct 29, 2026), to members who receive email and to the public
+    list; The Month in Qirtas is merged into it and the name retired
+    (code: `content.newsletter_subscribers`, the outbox kind
+    `newsletter.monthly`, `private.queue_sunday_paper`). It carries the
+    month's pieces, What's on and the Callboard's open places.
   - The Diwan, الديوان, at `/diwan`, for officers (code: `nexus`,
     `components/nexus`, `lib/nexus`, `nexusPath`, `paths.nexus`, messages
     namespace `nexus`, which also holds the members' pages' text).
-  - Next Stop, المحطة القادمة, at `/events/next-stop` (code: `side-quest`
-    in component and message names; slug `next-stop` since Oct 25, 2026;
-    its promise at `/events/next-stop/care`).
-  - The Company, الفرقة, the fifth flagship (code: `productions`, slug
-    `company`; at `/events/company`, with the productions).
+  - Next Stop, المحطة القادمة, Qirtas's video show at `/qirtas/next-stop`,
+    with its promise at `/qirtas/next-stop/care` (owner, Oct 29, 2026: no
+    longer a program; code: `side-quest` in component and message names,
+    program row `next-stop`, unpublished).
+  - The Company, الفرقة (code: `productions`, slug `company`; at
+    `/events/company`, with the productions).
   - Open Stage is part of the Company and the name is retired (owner,
     Oct 27, 2026; the program is removed, its history moved to the
-    Company); the Evenings are three, each every three weeks.
-  - Munazara, المناظرة (slug `munazara`).
-  - Mutanabbi Friday, جمعة المتنبي (slug `mutanabbi-friday`).
+    Company).
+  - The Salon, «الصالون الأدبي» (was the Majlis; owner, Oct 29, 2026; slug
+    `salon`, was `majlis`).
+  - Munazara (into the Salon), Mutanabbi Friday (into Book Circle) and Bad
+    Poetry Night (into Open Pages): folded and the names retired (owner,
+    Oct 29, 2026; the programs are removed, their history moved).
   - Gallery Wall merged into Qirtas's Gallery desk, «معرض قرطاس» (code: slug
     `gallery-wall`, kept and unpublished).
   - The Qirtas Prizes, جوائز قرطاس (was "the Prizes").
   - The Register and the Roll of Fellows, السجل ولائحة الزملاء (were the Book
     of Members and the Book of Fellows).
   - The Return, ليلة العودة (was Charter Night).
-  - Editor of Qirtas, Director of the Company, Director of Programs, and the
-    short Media, Partnerships and Membership titles (role assignment titles;
-    role keys unchanged).
-  - The Council in Arabic is «المجلس التنفيذي» («المجلس» is the Majlis).
+  - Editor of Qirtas, Director of Programs, and the short Media,
+    Partnerships and Membership titles (role assignment titles; role keys
+    unchanged). Roles (owner, Oct 29, 2026): the "Director of the Company"
+    title is removed; the Company's lead is a Program Lead (`programme_lead`)
+    titled "Artistic Director". The Director of Programs
+    (`programs_director`) holds the program permissions for every program;
+    Program Leads are scoped to one program; other directors don't manage
+    programs. The masthead adds a Voices Editor (`voices_editor`) and a
+    Games Editor (`games_editor`, `journal.edit.games`).
+  - The Council in Arabic is «المجلس التنفيذي».
   - Honorary Fellow, زميل فخري, and Life Member, عضو مدى الحياة (code: tiers
     `honorary` and `alumni`).
   - Membership, العضوية, at `/membership` (owner, Oct 25, 2026; was "Your
@@ -313,7 +366,8 @@ any schema change. Integration tests run against a local stack with
     `components/account`, message keys `nav.account`). "Account" still
     names the sign-in account (create, link, delete).
   The governance documents keep the old titles until the owner amends them;
-  never edit the text of ratified documents.
+  never edit the text of ratified documents (their spelling follows the
+  American English rule).
 - **Navigation.** At most five sections per app header; the rest go in the
   footer (web) or the Account menu (Diwan). Every Diwan empty state offers one
   next action (`EmptyLine action`).
@@ -343,11 +397,12 @@ any schema change. Integration tests run against a local stack with
   check), each with an accessible label; no decorative icons, no emoji.
   No exclamation marks in headings; "AUIB Society of Arts and Letters" on
   first formal use, then "the Society" or "SAL", never "the club".
-- **American English** (owner's decision, Oct 8 2026) in UI copy, emails,
-  comments, commits and docs: program, color, canceled, judgment. Text quoted
-  verbatim from the Society's documents keeps its spelling ("a Society of
-  Arts and Letters programme", the Policy Manual clauses). Code identifiers
-  stay (the `programmes` schema, `cancelled` status values).
+- **American English across the board, no exceptions** (owner's decision,
+  Oct 8 2026; no exceptions, owner, Oct 29, 2026) in UI copy, emails,
+  comments, commits, docs and the database's text: program, color, center,
+  canceled, judgment. The endorsement line is "a Society of Arts and
+  Letters program". Code identifiers may stay (the `programmes` schema,
+  `programme_id`, `cancelled` status values).
 - **Copy formats.** Dates as "Tuesday, October 13", times as "6:00 PM", money
   as "50,000 IQD": use `formatLongDate`, `formatClock` and `formatIqd` from
   `@repo/internationalization/format` (Latin digits, Baghdad time).

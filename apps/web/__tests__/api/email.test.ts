@@ -2,10 +2,10 @@
 import { render } from "@react-email/components";
 import {
   decision,
-  monthInWaraq,
   newsletterConfirm,
   removalReceived,
   rsvpConfirmed,
+  sundayPaper,
 } from "@repo/email/copy";
 import { Notice } from "@repo/email/templates/notice";
 import { describe, expect, test } from "vitest";
@@ -68,38 +68,38 @@ describe("the newsletter", () => {
       "en",
       "https://auibsal.org/newsletter/confirm?token=abc"
     );
-    expect(built.subject).toBe(
-      "Confirm your subscription to The Month in Qirtas"
-    );
+    expect(built.subject).toBe("Confirm your subscription to the Sunday Paper");
     expect(built.blocks[0]?.action?.href).toBe(
       "https://auibsal.org/newsletter/confirm?token=abc"
     );
   });
 
-  test("the Month in Waraq lists pieces and events and ends with unsubscribe", () => {
-    const built = monthInWaraq(
-      "en",
-      [
+  test("the Sunday Paper lists pieces, What's on and open places, and ends with the stop link", () => {
+    const built = sundayPaper("en", {
+      callboard: "https://auibsal.org/callboard",
+      events: [{ ...event, url: "https://auibsal.org/events/charter-day" }],
+      front: "https://auibsal.org/qirtas",
+      pieces: [
         {
           desk_ar: "أخبار",
           desk_en: "News",
           title_ar: "خبر",
           title_en: "A story",
-          url: "https://auibsal.org/ar/qirtas/pieces/a-story",
+          url: "https://auibsal.org/qirtas/pieces/a-story",
         },
       ],
-      [{ ...event, url: "https://auibsal.org/ar/events/charter-day" }],
-      "https://auibsal.org/ar/qirtas",
-      "https://auibsal.org/ar/newsletter/unsubscribe?token=t"
-    );
-    expect(built.subject).toBe("The Month in Qirtas");
+      places: [{ title_ar: "مصوّر", title_en: "Photographer" }],
+      stop: "https://auibsal.org/newsletter/unsubscribe?token=t",
+    });
+    expect(built.subject).toBe("The Sunday Paper from Qirtas");
     expect(built.blocks.map((b) => b.lang)).toEqual(["en"]);
     const english = built.blocks.find((b) => b.lang === "en");
     expect(english?.paragraphs).toContain(
-      "News: A story https://auibsal.org/ar/qirtas/pieces/a-story"
+      "News: A story https://auibsal.org/qirtas/pieces/a-story"
     );
+    expect(english?.paragraphs).toContain("Photographer");
     expect(english?.paragraphs.at(-1)).toBe(
-      "To unsubscribe: https://auibsal.org/ar/newsletter/unsubscribe?token=t"
+      "To stop the Sunday Paper: https://auibsal.org/newsletter/unsubscribe?token=t"
     );
     expect(
       english?.paragraphs.some((p) => p.startsWith("Tuesday, October 13"))

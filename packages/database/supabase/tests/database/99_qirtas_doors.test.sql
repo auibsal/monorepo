@@ -109,8 +109,8 @@ select pg_temp.login_as('00000000-0000-0000-0000-0000000060a1');
 select lives_ok(
   $$ insert into journal.submissions (call_id, category, language, title, body_html,
        human_authorship_confirmed, first_publication_confirmed)
-     values ('ca000000-0000-0000-0000-0000000060c1', 'prose', 'en', 'A story', '<p>Text</p>', true, true) $$,
-  'Prose goes to the Edition'
+     values ('ca000000-0000-0000-0000-0000000060c1', 'fiction', 'en', 'A story', '<p>Text</p>', true, true) $$,
+  'Fiction goes to the Edition'
 );
 select is((select desk from journal.submissions where title = 'A story'), 'letters'::journal.desk,
   'on the Letters desk');

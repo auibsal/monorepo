@@ -90,7 +90,7 @@ select ok(
 );
 select ok(
   exists (select 1 from core.programmes where slug = 'company' and is_active and kind <> 'format'),
-  'The Company is a flagship'
+  'The Company is one of the programs'
 );
 select ok(
   exists (select 1 from core.programmes where slug = 'waraq' and not is_active),

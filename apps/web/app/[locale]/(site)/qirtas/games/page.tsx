@@ -1,10 +1,11 @@
 import type { Locale } from "@repo/internationalization";
 import { formatLongDate } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
-import { games, localized } from "@repo/sal-data";
+import { games, journal, localized } from "@repo/sal-data";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { GameNumber } from "@/components/games/daily";
+import { PieceCardView } from "@/components/waraq/cards";
 import { Nameplate } from "@/components/waraq/nameplate";
 import { localizedMetadata } from "@/lib/metadata";
 import { readPublished } from "@/lib/supabase";
@@ -28,7 +29,11 @@ export const generateMetadata = async ({
 const card =
   "border border-line grid content-start gap-2  border-t border-line p-6 hover:underline";
 
-/** Waraq's games: two daily games and the editors' puzzles. */
+/**
+ * Qirtas's Games section: two daily games, the editors' puzzles, and the
+ * games members send through the newsroom (crosswords, quizzes, word
+ * ladders, riddles, anagrams, Name the Book).
+ */
 const GamesPage = async ({ params }: GamesProps) => {
   const { locale } = await params;
   setRequestLocale(locale);
@@ -38,6 +43,14 @@ const GamesPage = async ({ params }: GamesProps) => {
     ["journal"],
     (c) => games.publishedPuzzles(c, lang),
     []
+  );
+  const sent = journal.inLanguage(
+    await readPublished(
+      ["journal"],
+      (c) => journal.deskPieces(c, "games", { limit: 24 }),
+      []
+    ),
+    locale
   );
 
   return (
@@ -95,6 +108,21 @@ const GamesPage = async ({ params }: GamesProps) => {
           </ul>
         )}
       </section>
+
+      {sent.length > 0 ? (
+        <section aria-labelledby="sent" className="grid gap-4">
+          <h2 className="type-heading" id="sent">
+            {t("fromMembers")}
+          </h2>
+          <ul className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
+            {sent.map((piece) => (
+              <li key={piece.id}>
+                <PieceCardView locale={locale} piece={piece} />
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
     </div>
   );
 };

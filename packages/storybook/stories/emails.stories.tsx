@@ -9,7 +9,6 @@ import {
   eventReminder,
   finalCheck,
   type Lang,
-  monthInWaraq,
   newsletterConfirm,
   openingReply,
   pieceNote,
@@ -55,7 +54,7 @@ const event: EventInfo = {
 const role: RoleInfo = {
   ends_at: "2027-05-13T20:59:59Z",
   name_ar: "مدير الفعاليات",
-  name_en: "Director of Programs and Events",
+  name_en: "Director of Programs",
 };
 const removal: RemovalInfo = {
   content_url: "https://auibsal.org/qirtas/pieces/example",
@@ -159,9 +158,11 @@ export const PiecePublished = email((l) =>
   piecePublished(l, WORK, "https://auibsal.org/qirtas/pieces/sample")
 );
 export const SundayPaper = email((l) =>
-  sundayPaper(
-    l,
-    [
+  sundayPaper(l, {
+    callboard: "https://auibsal.org/callboard",
+    events: [{ ...event, url: "https://auibsal.org/events/sample" }],
+    front: "https://auibsal.org/qirtas",
+    pieces: [
       {
         desk_ar: "أخبار",
         desk_en: "News",
@@ -170,29 +171,12 @@ export const SundayPaper = email((l) =>
         url: "https://auibsal.org/qirtas/pieces/sample",
       },
     ],
-    "https://auibsal.org/qirtas",
-    "https://auibsal.org/emails/stop?token=sample"
-  )
+    places: [{ title_ar: "مصوّر", title_en: "Photographer" }],
+    stop: "https://auibsal.org/emails/stop?token=sample",
+  })
 );
 export const NewsletterConfirm = email((l) =>
   newsletterConfirm(l, "https://auibsal.org/newsletter/confirm?token=sample")
-);
-export const MonthInWaraq = email((l) =>
-  monthInWaraq(
-    l,
-    [
-      {
-        desk_ar: "أخبار",
-        desk_en: "News",
-        title_ar: "عنوان تجريبي",
-        title_en: "Sample headline",
-        url: "https://auibsal.org/qirtas/pieces/sample",
-      },
-    ],
-    [{ ...event, url: "https://auibsal.org/events/sample" }],
-    "https://auibsal.org/qirtas",
-    "https://auibsal.org/newsletter/unsubscribe?token=sample"
-  )
 );
 export const CronFailed = email((l) =>
   cronFailed(

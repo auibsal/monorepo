@@ -36,7 +36,7 @@ export const seriesMetadata = (locale: Locale, series: Series): Metadata =>
  * A program as a series in What's on (owner, 2026-10-25): what it is, and
  * its own month of the calendar, with the way to the months either side.
  * `children` adds what the program has besides dates (the Company's
- * productions, Next Stop's promise to the people it films).
+ * productions).
  */
 export const SeriesView = async ({
   children,
@@ -65,7 +65,11 @@ export const SeriesView = async ({
       <PageHeader
         lede={localized(series, "summary", locale)}
         title={localized(series, "name", locale)}
-      />
+      >
+        {localized(series, "rhythm", locale) ? (
+          <p className="type-body">{localized(series, "rhythm", locale)}</p>
+        ) : null}
+      </PageHeader>
       <MonthSection
         hrefFor={(m) => ({ pathname, query: { month: m } })}
         locale={locale}

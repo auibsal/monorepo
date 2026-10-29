@@ -17,6 +17,8 @@ export const certificateKinds = [
   "volunteer",
   "production",
   "partner",
+  "prize",
+  "apprenticeship",
 ] as const;
 
 export type CertificateKind = (typeof certificateKinds)[number];
@@ -27,7 +29,10 @@ export const needsResolution = (kind: CertificateKind) =>
 
 /** Kinds that record a role held over a period. */
 export const recordsRole = (kind: CertificateKind) =>
-  kind === "service" || kind === "production" || kind === "partner";
+  kind === "service" ||
+  kind === "production" ||
+  kind === "partner" ||
+  kind === "apprenticeship";
 
 /** The academic year runs from September 1. */
 export const academicYearStart = (on: Date = new Date()) => {
@@ -93,6 +98,13 @@ export const certificateSchema = z
         code: "custom",
         message: "citation_and_resolution",
         path: ["resolution_id"],
+      });
+    }
+    if (c.kind === "prize" && !c.citation_en) {
+      ctx.addIssue({
+        code: "custom",
+        message: "citation",
+        path: ["citation_en"],
       });
     }
     if (c.kind === "volunteer" && !c.hours) {

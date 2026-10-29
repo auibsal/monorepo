@@ -13,11 +13,12 @@ interface DeskProps {
   readonly params: Promise<{ desk: string; locale: Locale }>;
 }
 
+// Games has a page of its own (/qirtas/games), with the daily games.
 const isDesk = (value: string): value is journal.Desk =>
-  (journal.desks as readonly string[]).includes(value);
+  value !== "games" && (journal.desks as readonly string[]).includes(value);
 
 export const generateStaticParams = () =>
-  journal.desks.map((desk) => ({ desk }));
+  journal.desks.filter((desk) => desk !== "games").map((desk) => ({ desk }));
 
 export const generateMetadata = async ({
   params,
@@ -33,7 +34,7 @@ export const generateMetadata = async ({
   });
 };
 
-/** A section of the paper: News, Letters, Gallery, Video or Voices. */
+/** A section of the paper: News, Voices, Letters, Gallery or Video. */
 const DeskPage = async ({ params }: DeskProps) => {
   const { desk, locale } = await params;
   setRequestLocale(locale);

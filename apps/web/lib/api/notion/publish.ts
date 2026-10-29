@@ -266,10 +266,11 @@ const publishEvent = async (
 
 /** The type a Notion piece starts as on each desk (editors change it). */
 const STARTING_TYPE = {
-  gallery: "art_photography",
+  gallery: "art",
+  games: "crossword",
   letters: "creative_nonfiction",
-  news: "article",
-  video: "video",
+  news: "report",
+  video: "video_report",
   voices: "column",
 } as const satisfies Record<WaraqDesk, string>;
 

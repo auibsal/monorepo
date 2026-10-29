@@ -2,7 +2,7 @@
 /**
  * The Notion sync end to end against a local stack, with an in-memory
  * stand-in for Notion: mirrors, publishing with the permission check,
- * refusals, RSVP counts and cancelling.
+ * refusals, RSVP counts and canceling.
  * Needs: SUPABASE_INTEGRATION=1 API_URL=… PUBLISHABLE_KEY=… SECRET_KEY=…
  */
 import { randomUUID } from "node:crypto";

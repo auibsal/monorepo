@@ -127,7 +127,7 @@ export const mirrorProgrammes = async (ctx: SyncContext) => {
       key: p.id,
       props: {
         Active: prop.checkbox(p.is_active),
-        Kind: prop.select(p.kind === "format" ? "format" : "flagship"),
+        Kind: prop.select(p.kind),
         Name: prop.title(p.name_en),
         "Name (Arabic)": prop.text(p.name_ar),
         Nexus: prop.url(app(ctx, "/programs")),
@@ -309,7 +309,7 @@ export const mirrorJournal = async (ctx: SyncContext) => {
       .is("call_id", null),
     ctx.admin.schema("journal").from("pieces").select("desk, status"),
   ]);
-  for (const desk of ["news", "video", "voices"] as const) {
+  for (const desk of ["news", "voices", "video", "games"] as const) {
     const tally = new Map<string, number>();
     for (const s of (named ?? []).filter((x) => x.desk === desk)) {
       tally.set(s.status, (tally.get(s.status) ?? 0) + 1);
@@ -353,6 +353,7 @@ export const mirrorJournal = async (ctx: SyncContext) => {
 
 const DESK_LABEL = {
   gallery: "Gallery",
+  games: "Games",
   letters: "Letters",
   news: "News",
   video: "Video",

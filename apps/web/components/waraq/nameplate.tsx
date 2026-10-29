@@ -8,7 +8,7 @@ import type { ReactNode } from "react";
 /**
  * The paper's nameplate: the name in Medium with the other language's
  * name under it, a dateline between two ink rules, and the desks. Small on
- * the inner pages: the name and the desks.
+ * the inner pages: the name and the sections.
  */
 export const Nameplate = async ({
   current,
@@ -16,7 +16,7 @@ export const Nameplate = async ({
   note,
   small = false,
 }: {
-  current?: journal.Desk | "games";
+  current?: journal.Desk;
   locale: Locale;
   /** The end of the dateline (an open call, the edition). */
   note?: ReactNode;
@@ -75,12 +75,8 @@ export const Nameplate = async ({
             </Link>
           </li>
           <li>
-            <Link
-              aria-current={current === "games" ? "page" : undefined}
-              className={desk}
-              href="/qirtas/games"
-            >
-              {t("games")}
+            <Link className={desk} href="/qirtas/prizes">
+              {t("prizes")}
             </Link>
           </li>
         </ul>

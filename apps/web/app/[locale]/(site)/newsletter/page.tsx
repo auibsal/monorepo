@@ -19,7 +19,7 @@ export const generateMetadata = async ({
   });
 };
 
-/** The Month in Waraq: the public monthly email. */
+/** The Sunday Paper's public list: the monthly email on the first Sunday. */
 const NewsletterPage = async ({ params }: NewsletterProps) => {
   const { locale } = await params;
   setRequestLocale(locale);

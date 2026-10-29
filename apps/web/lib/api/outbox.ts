@@ -16,7 +16,6 @@ import {
   eventReminder,
   type FailedJob,
   finalCheck,
-  monthInWaraq,
   newsletterConfirm,
   openingReply,
   personalEmailConfirm,
@@ -289,6 +288,84 @@ const stopLinks = (lang: Lang, userId: string) => {
   };
 };
 
+/**
+ * What the Sunday Paper carries (owner, Oct 29, 2026): the month's pieces,
+ * What's on for the month ahead, and the Callboard's open places. Null
+ * when there is nothing to send.
+ */
+const paperContents = async (
+  admin: AdminClient,
+  lang: Lang,
+  sinceValue: unknown
+) => {
+  const now = new Date();
+  const since =
+    typeof sinceValue === "string"
+      ? sinceValue
+      : new Date(now.getTime() - 31 * 86_400_000).toISOString();
+  const base = `${webUrl()}${prefix(lang)}`;
+  const [{ data: pieces }, { data: events }, { data: places }] =
+    await Promise.all([
+      admin
+        .schema("journal")
+        .from("pieces")
+        .select("slug, desk, title_en, title_ar, published_at")
+        .eq("status", "published")
+        .gt("published_at", since)
+        .lte("published_at", now.toISOString())
+        .order("published_at", { ascending: false })
+        .limit(20),
+      admin
+        .schema("events")
+        .from("events")
+        .select("slug, title_en, title_ar, starts_at")
+        .eq("status", "published")
+        .eq("members_only", false)
+        .gt("starts_at", now.toISOString())
+        .lte(
+          "starts_at",
+          new Date(now.getTime() + 31 * 86_400_000).toISOString()
+        )
+        .order("starts_at")
+        .limit(10),
+      admin
+        .schema("programmes")
+        .from("openings")
+        .select("title_en, title_ar")
+        .eq("is_open", true)
+        .or(`closes_at.is.null,closes_at.gt.${now.toISOString()}`)
+        .order("created_at", { ascending: false })
+        .limit(10),
+    ]);
+  if ((pieces?.length ?? 0) + (events?.length ?? 0) === 0) {
+    return null;
+  }
+  return {
+    callboard: `${base}/callboard`,
+    events: (events ?? []).map((e) => ({
+      starts_at: e.starts_at,
+      title_ar: e.title_ar ?? "",
+      title_en: e.title_en,
+      url: `${base}/events/${e.slug}`,
+    })),
+    front: `${base}/qirtas`,
+    pieces: (pieces ?? []).map((p) => {
+      const desk = deskNames[p.desk as keyof typeof deskNames];
+      return {
+        desk_ar: desk?.ar ?? "",
+        desk_en: desk?.en ?? "",
+        title_ar: p.title_ar ?? "",
+        title_en: p.title_en ?? "",
+        url: `${base}/qirtas/pieces/${p.slug}`,
+      };
+    }),
+    places: (places ?? []).map((o) => ({
+      title_ar: o.title_ar ?? "",
+      title_en: o.title_en ?? "",
+    })),
+  };
+};
+
 type Handler = (
   admin: AdminClient,
   payload: Record<string, unknown>
@@ -478,44 +555,18 @@ const handlers: Record<string, Handler> = {
     }
   },
   "journal.sunday_paper": async (admin, payload) => {
-    const since =
-      typeof payload.since === "string"
-        ? payload.since
-        : new Date(Date.now() - 7 * 86_400_000).toISOString();
-    const [to, { data: pieces }] = await Promise.all([
-      recipient(admin, payload.user_id),
-      admin
-        .schema("journal")
-        .from("pieces")
-        .select("slug, desk, title_en, title_ar, published_at")
-        .eq("status", "published")
-        .gt("published_at", since)
-        .lte("published_at", new Date().toISOString())
-        .order("published_at", { ascending: false })
-        .limit(20),
-    ]);
-    if (!(to && pieces && pieces.length > 0)) {
+    const to = await recipient(admin, payload.user_id);
+    if (!to) {
       return;
     }
-    const items = pieces.map((p) => {
-      const desk = deskNames[p.desk as keyof typeof deskNames];
-      return {
-        desk_ar: desk?.ar ?? "",
-        desk_en: desk?.en ?? "",
-        title_ar: p.title_ar ?? "",
-        title_en: p.title_en ?? "",
-        url: `${webUrl()}${prefix(to.lang)}/qirtas/pieces/${p.slug}`,
-      };
-    });
+    const paper = await paperContents(admin, to.lang, payload.since);
+    if (!paper) {
+      return;
+    }
     const stop = stopLinks(to.lang, String(payload.user_id));
     await send(
       to,
-      sundayPaper(
-        to.lang,
-        items,
-        `${webUrl()}${prefix(to.lang)}/qirtas`,
-        stop.page
-      ),
+      sundayPaper(to.lang, { ...paper, stop: stop.page }),
       stop.headers
     );
   },
@@ -561,65 +612,21 @@ const handlers: Record<string, Handler> = {
       )
     );
   },
+  // The Sunday Paper for the public list (subscribers without an account).
   "newsletter.monthly": async (admin, payload) => {
-    const since =
-      typeof payload.since === "string"
-        ? payload.since
-        : new Date(Date.now() - 31 * 86_400_000).toISOString();
-    const now = new Date();
-    const [row, { data: pieces }, { data: events }] = await Promise.all([
-      subscriber(admin, payload.subscriber_id),
-      admin
-        .schema("journal")
-        .from("pieces")
-        .select("slug, desk, title_en, title_ar, published_at")
-        .eq("status", "published")
-        .gt("published_at", since)
-        .lte("published_at", now.toISOString())
-        .order("published_at", { ascending: false })
-        .limit(20),
-      admin
-        .schema("events")
-        .from("events")
-        .select("slug, title_en, title_ar, starts_at")
-        .eq("status", "published")
-        .eq("members_only", false)
-        .gt("starts_at", now.toISOString())
-        .lte(
-          "starts_at",
-          new Date(now.getTime() + 31 * 86_400_000).toISOString()
-        )
-        .order("starts_at")
-        .limit(10),
-    ]);
+    const row = await subscriber(admin, payload.subscriber_id);
     if (row?.status !== "subscribed") {
       return;
     }
-    if ((pieces?.length ?? 0) + (events?.length ?? 0) === 0) {
+    const lang: Lang = row.lang === "ar" ? "ar" : "en";
+    const paper = await paperContents(admin, lang, payload.since);
+    if (!paper) {
       return;
     }
-    const lang: Lang = row.lang === "ar" ? "ar" : "en";
-    const base = `${webUrl()}${prefix(lang)}`;
-    const items = (pieces ?? []).map((p) => {
-      const desk = deskNames[p.desk as keyof typeof deskNames];
-      return {
-        desk_ar: desk?.ar ?? "",
-        desk_en: desk?.en ?? "",
-        title_ar: p.title_ar ?? "",
-        title_en: p.title_en ?? "",
-        url: `${base}/qirtas/pieces/${p.slug}`,
-      };
-    });
-    const coming = (events ?? []).map((e) => ({
-      starts_at: e.starts_at,
-      title_ar: e.title_ar ?? "",
-      title_en: e.title_en,
-      url: `${base}/events/${e.slug}`,
-    }));
     const links = unsubscribeLinks(lang, row.unsubscribe_token);
     await send(
       { email: row.email, lang },
-      monthInWaraq(lang, items, coming, `${base}/qirtas`, links.page),
+      sundayPaper(lang, { ...paper, stop: links.page }),
       links.headers
     );
   },

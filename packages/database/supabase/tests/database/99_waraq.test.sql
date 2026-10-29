@@ -122,22 +122,22 @@ insert into journal.calls (id, issue_id, title_en, title_ar, opens_at, closes_at
 
 -- ── Desks ───────────────────────────────────────────────────────────────────
 
-select is(journal.desk_of('article'), 'news'::journal.desk, 'An article is News');
+select is(journal.desk_of('report'), 'news'::journal.desk, 'A report is News');
 select is(journal.desk_of('comic'), 'gallery'::journal.desk, 'A comic is Gallery');
 select is(journal.desk_of('poetry'), 'letters'::journal.desk, 'A poem is Letters');
-select is(journal.desk_of('letter'), 'voices'::journal.desk, 'A letter to the editor is Voices');
+select is(journal.desk_of('letter_to_editor'), 'voices'::journal.desk, 'A letter to the editor is Voices');
 
 -- ── Submitting ──────────────────────────────────────────────────────────────
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a1');
 select lives_ok(
   $$ insert into journal.submissions (category, language, title, deck, body_html, human_authorship_confirmed)
-     values ('article', 'en', 'Book drive results', 'Second Chapter collected books.', '<p>Story</p>', true) $$,
+     values ('report', 'en', 'Book drive results', 'Second Chapter collected books.', '<p>Story</p>', true) $$,
   'A member sends news to the News desk, without a call'
 );
 select throws_ok(
   $$ insert into journal.submissions (call_id, category, language, title, body_html, human_authorship_confirmed)
-     values ('ca000000-0000-0000-0000-000000000001', 'article', 'en', 'News to a call', '<p>x</p>', true) $$,
+     values ('ca000000-0000-0000-0000-000000000001', 'report', 'en', 'News to a call', '<p>x</p>', true) $$,
   '22023', null, 'News is not sent to an Edition call'
 );
 select throws_ok(
@@ -147,7 +147,7 @@ select throws_ok(
 );
 select throws_ok(
   $$ insert into journal.submissions (call_id, category, language, title, human_authorship_confirmed, first_publication_confirmed)
-     values ('ca000000-0000-0000-0000-000000000001', 'art_photography', 'en', 'A photo', true, true) $$,
+     values ('ca000000-0000-0000-0000-000000000001', 'art', 'en', 'A photo', true, true) $$,
   '23514', null, 'Gallery work needs consent for identifiable people'
 );
 select throws_ok(
@@ -296,11 +296,11 @@ select is((select count(*) from journal.pieces)::integer, 0, 'An unpublished pie
 
 select pg_temp.login_as('00000000-0000-0000-0000-00000000ae13');
 create temp table staff as select journal.create_staff_piece(
-  'article', 'en', 'Majlis tonight', 'المجلس الليلة',
+  'report', 'en', 'Salon tonight', 'الصالون الليلة',
   (select id from journal.contributors limit 1)) as id;
 grant select on staff to public;
 update journal.piece_bodies set body_en = '<p>Tonight.</p>' where piece_id = (select id from staff);
-update journal.pieces set deck_en = 'A first Majlis.' where id = (select id from staff);
+update journal.pieces set deck_en = 'A first Salon.' where id = (select id from staff);
 select pg_temp.login_as('00000000-0000-0000-0000-00000000c0b1');
 select lives_ok($$ select journal.approve_piece((select id from staff), 'copy') $$,
   'The Copy Chief may record a style check before the desk');

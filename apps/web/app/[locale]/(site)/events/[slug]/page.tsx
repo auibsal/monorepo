@@ -52,8 +52,8 @@ export const generateMetadata = async ({
 
 /**
  * An event, or a program: programs and events share the addresses under
- * /events (the database keeps them apart), so /events/majlis is the Majlis
- * as a series and /events/majlis-2026-11-04 one of its evenings.
+ * /events (the database keeps them apart), so /events/salon is the Salon
+ * as a series and /events/salon-2026-12-01 one of its sessions.
  */
 const EventPage = async ({ params, searchParams }: EventProps) => {
   const { locale, slug } = await params;

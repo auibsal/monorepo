@@ -75,7 +75,7 @@ update core.settings set value = '0' where key = 'membership.founding_voters';
 
 -- The public newsletter: double opt-in rows only apps/api writes.
 
-select plan(10);
+select plan(14);
 
 select pg_temp.make_user('00000000-0000-0000-0000-00000000b001', 'editor@auib.edu.iq', 'Content Editor');
 select pg_temp.make_user('00000000-0000-0000-0000-00000000b002', 'reader@auib.edu.iq', 'Reader');
@@ -125,17 +125,25 @@ select is((select count(*) from content.newsletter_subscribers where status = 's
 select throws_ok($$select unsubscribe_token from content.newsletter_subscribers$$, '42501', null,
   'Nobody but apps/api reads the tokens');
 
--- The monthly digest goes to confirmed subscribers only, when there is news.
+-- The Sunday Paper, monthly on the first Sunday, goes to confirmed
+-- subscribers (and members who receive email), when there is news.
 select pg_temp.logout();
 insert into content.newsletter_subscribers (email, confirm_token) values ('pending@example.com', repeat('c', 40));
-select is(private.queue_newsletter(),
-  (case when exists (
-    select 1 from journal.pieces p where p.status = 'published' and p.published_at > now() - interval '1 month'
-  ) or exists (
-    select 1 from events.events e where e.status = 'published' and not e.members_only
-      and e.starts_at > now() and e.starts_at <= now() + interval '1 month'
-  ) then 1 else 0 end),
-  'The Month in Waraq goes only to confirmed subscribers');
+insert into journal.pieces (slug, category, language, title_en, title_ar, status, published_at, contributor_id)
+select 'paper-test', 'report', 'en', 'For the paper', 'للصحيفة', 'published', now() - interval '1 day', id
+from journal.contributors limit 1;
+select is(private.queue_sunday_paper(date '2026-11-08'), 0,
+  'Nothing goes out on the second Sunday');
+select is(private.queue_sunday_paper(date '2026-11-02'), 0,
+  'nor on a Monday');
+select is(
+  (select count(*)::integer from core.outbox where kind = 'newsletter.monthly'), 0,
+  'so nothing is queued');
+select cmp_ok(private.queue_sunday_paper(date '2026-11-01'), '>=', 1,
+  'On the first Sunday the paper goes out');
+select is(
+  (select count(*)::integer from core.outbox where kind = 'newsletter.monthly'), 1,
+  'to the one confirmed subscriber, not the pending one');
 
 select * from finish();
 rollback;

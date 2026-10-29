@@ -96,6 +96,8 @@ insert into membership.memberships (user_id) values
   on conflict do nothing;
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000007a3', 'tech_admin');
 
+-- Only this test's events (the Tuesday series is seeded data).
+delete from events.events;
 insert into events.events (id, slug, title_en, title_ar, starts_at, members_only, capacity, status) values
   ('e0000000-0000-0000-0000-0000000007e1', 'tg-open', 'Open', 'مفتوح', now() + interval '2 days', false, 10, 'published'),
   ('e0000000-0000-0000-0000-0000000007e2', 'tg-members', 'Members', 'الأعضاء', now() + interval '3 days', true, 10, 'published');
