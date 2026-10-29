@@ -1,4 +1,4 @@
--- Programmes and content: Six Words, removal requests, published-only
+-- Programs and content: Six Words, removal requests, published-only
 -- news, pieces and search, private settings, the activity log.
 begin;
 -- <preamble>

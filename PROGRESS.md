@@ -355,7 +355,7 @@ These stop parts of the work. Everything else continues around them.
       auibsal project (source maps), Cloudflare Email Routing for
       `hello@auibsal.org` (no MX record today, so replies bounce), Vercel Bot
       Protection on the auibsal project in Log mode.
-- [x] Cancelled by the owner (2026-10-08): leaked-password protection (a
+- [x] Canceled by the owner (2026-10-08): leaked-password protection (a
       paid Supabase feature; everything stays on free plans) and the AUIB IT
       allowlist (mail already reaches AUIB inboxes).
 - [x] AUIB calendar: `https://auib.edu.iq/events/list/?ical=1`. Cloudflare
@@ -718,7 +718,7 @@ These stop parts of the work. Everything else continues around them.
   Office of Student Life per Constitution 1.2, the College of Arts and
   Sciences and AUIB Press as institutional partners, named by the owner),
   the register's listed partners on the home page, al-Mutanabbi's line
-  (the Constitution's motto), "A Society of Arts and Letters programme" on
+  (the Constitution's motto), "A Society of Arts and Letters program" on
   program cards, a footer with copyright, recognition, colophon and
   Instagram, a literary 404 and a console note.
 - **Password first at sign-in** (owner, 2026-10-12): every address,
@@ -973,7 +973,7 @@ These stop parts of the work. Everything else continues around them.
 - [x] Migration `20261025000600_qirtas_doors`: `prose`, retired types,
       call alerts and the "call opened" notice, Six Words only from the
       Tour (transcribe, attach by a live card); pgTAP `99_qirtas_doors` (14),
-      journal and programmes tests updated
+      journal and programs tests updated
 - [x] `/qirtas/write`: two doors, the next call and "Tell me when"
 - [x] Email "A Qirtas call is open" (and its Storybook story)
 - [x] Account: Six Words read-only, pointing to the Typewriter Tour

@@ -28,7 +28,7 @@ type NoticeKey = "signedUp" | "gaveBack" | "full" | "notVerified" | "failed";
  *
  * Rotas with their upcoming shifts. Members sign up through
  * programmes.sign_up_for_shift (it locks the shift, so it can't overfill)
- * and give a shift back by cancelling their own sign-up (RLS).
+ * and give a shift back by canceling their own sign-up (RLS).
  */
 const useRotas = () => {
   const { supabase } = useAuth();

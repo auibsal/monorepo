@@ -346,7 +346,7 @@ any schema change. Integration tests run against a local stack with
 - **American English** (owner's decision, Oct 8 2026) in UI copy, emails,
   comments, commits and docs: program, color, canceled, judgment. Text quoted
   verbatim from the Society's documents keeps its spelling ("a Society of
-  Arts and Letters programme", the Policy Manual clauses). Code identifiers
+  Arts and Letters program", the Policy Manual clauses). Code identifiers
   stay (the `programmes` schema, `cancelled` status values).
 - **Copy formats.** Dates as "Tuesday, October 13", times as "6:00 PM", money
   as "50,000 IQD": use `formatLongDate`, `formatClock` and `formatIqd` from

@@ -109,7 +109,7 @@ export const letters: Record<LetterKey, Letter> = {
     key: "l04",
     paragraphs: [
       "The Society of Arts and Letters is looking for people to help run it.",
-      "From Sunday, October 18, every role is open: directors for Letters, Programmes & Events and Membership; social media and design leads; event coordinators; the masthead of our new literary journal; the crew of our campus video series; and volunteers for Second Chapter, our charity book fair.",
+      "From Sunday, October 18, every role is open: directors for Letters, Programs & Events and Membership; social media and design leads; event coordinators; the masthead of our new literary journal; the crew of our campus video series; and volunteers for Second Chapter, our charity book fair.",
       "You do not need to be a member, a writer or an artist. You need to be curious and honest about your time. Team roles start with a three-week Apprenticeship, so you can try before you commit.",
       "Director applications close Monday, October 26. Journal masthead applications close Thursday, October 29.",
       "Role cards and the form: [link] · Questions: @auibsal",
@@ -151,7 +151,7 @@ export const letters: Record<LetterKey, Letter> = {
     key: "l07",
     paragraphs: [
       "Dear [name],",
-      "On behalf of the Society of Arts and Letters, thank you for partnering with us on [programme]. Together we [result: numbers, people reached, money raised].",
+      "On behalf of the Society of Arts and Letters, thank you for partnering with us on [program]. Together we [result: numbers, people reached, money raised].",
       "[One specific thing they did that made a difference.] We have shared the results with our members and the Office of Student Life, and we hope to work with you again [when].",
       "With gratitude,",
       "[Name], President",
@@ -178,7 +178,7 @@ export const letters: Record<LetterKey, Letter> = {
     paragraphs: [
       "Dear members,",
       "The [opening / Annual / Extraordinary] General Assembly of the Society of Arts and Letters will meet on [date] at [time] in [room] [and online: link].",
-      "Agenda: [1. President’s report · 2. Treasurer’s accounts · 3. Programme reports · 4. Motions · 5. Any other business].",
+      "Agenda: [1. President’s report · 2. Treasurer’s accounts · 3. Program reports · 4. Motions · 5. Any other business].",
       "Motions must reach the General Secretary by [date, 5 days before], seconded by a Voting Member (Form F-09).",
       "Voting Members may vote in person or online with AUIB sign-in. The quorum is one-fifth of Voting Members or fifteen, whichever is fewer.",
       "[Name], General Secretary",

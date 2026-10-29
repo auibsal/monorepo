@@ -1,6 +1,6 @@
 /* AUIB Society of Arts and Letters, design tokens. Generated from tokens.json by packages/design-system/scripts/tokens.ts; edit that file, not this one. */
 @import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400&family=Ubuntu+Mono:wght@400;700&family=Literata:wght@400;500&display=swap');
-/* Ubuntu Arabic is not on Google Fonts; it ships in fonts/ (Ubuntu Font Licence 1.0). */
+/* Ubuntu Arabic is not on Google Fonts; it ships in fonts/ (Ubuntu Font License 1.0). */
 @font-face { font-family: "Ubuntu Arabic"; src: url("fonts/UbuntuArabic-Regular.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
 @font-face { font-family: "Ubuntu Arabic"; src: url("fonts/UbuntuArabic-Bold.woff2") format("woff2"); font-weight: 700; font-style: normal; font-display: swap; }
 :root {

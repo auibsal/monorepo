@@ -1,5 +1,5 @@
 -- RBAC: roles live only in access.role_assignments, written only through
--- assign_role(); has_permission() honours scope and expiry.
+-- assign_role(); has_permission() honors scope and expiry.
 begin;
 -- <preamble>
 -- Shared pgTAP preamble. Each test file includes a copy (pg_prove runs files
