@@ -769,7 +769,8 @@
           "people": "People",
           "publishing": "Publishing and charity",
           "society": "Governance",
-          "system": "System"
+          "system": "System",
+          "yours": "Every officer"
         },
         "hiring": "Hiring"
       },
@@ -4030,27 +4031,26 @@
       "documents": "Documents",
       "signIn": "Sign in",
       "account": "Membership",
-      "involved": "Get involved"
+      "involved": "Get involved",
+      "search": "Search"
     },
     "footer": {
       "contact": "Contact",
       "mediaKit": "Media kit",
       "privacy": "Privacy and photo policy",
       "sideQuestCare": "Next Stop care",
-      "search": "Search",
       "university": "A student society at the American University of Iraq – Baghdad.",
       "partners": "Partners",
-      "productions": "The Company",
-      "newsletter": "Newsletter",
+      "newsletter": "The Sunday Paper",
       "cookieSettings": "Cookie settings",
       "governance": "Governance",
       "terms": "Terms of use",
       "accessibility": "Accessibility",
       "columns": {
         "society": "Society",
-        "read": "Read",
-        "contactHeading": "Contact",
-        "email": "hello@auibsal.org"
+        "contactHeading": "Stay in touch",
+        "email": "hello@auibsal.org",
+        "programs": "Programs"
       }
     },
     "consent": {

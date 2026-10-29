@@ -769,7 +769,8 @@
           "people": "الأشخاص",
           "publishing": "النشر والعمل الخيري",
           "society": "الحوكمة",
-          "system": "النظام"
+          "system": "النظام",
+          "yours": "لكل مسؤول"
         },
         "hiring": "التوظيف"
       },
@@ -4030,27 +4031,26 @@
       "documents": "الوثائق",
       "signIn": "تسجيل الدخول",
       "account": "العضوية",
-      "involved": "شارك"
+      "involved": "شارك",
+      "search": "بحث"
     },
     "footer": {
       "contact": "تواصل معنا",
       "mediaKit": "الحقيبة الإعلامية",
       "privacy": "سياسة الخصوصية والتصوير",
       "sideQuestCare": "رعاية «المحطة القادمة»",
-      "search": "بحث",
       "university": "جمعية طلابية في الجامعة الأمريكية في العراق – بغداد.",
       "partners": "الشركاء",
-      "productions": "الفرقة",
-      "newsletter": "النشرة البريدية",
+      "newsletter": "صحيفة الأحد",
       "cookieSettings": "إعدادات ملفات تعريف الارتباط",
       "governance": "الحوكمة",
       "terms": "شروط الاستخدام",
       "accessibility": "إمكانية الوصول",
       "columns": {
         "society": "الجمعية",
-        "read": "اقرأ",
-        "contactHeading": "تواصل",
-        "email": "hello@auibsal.org"
+        "contactHeading": "ابقَ على تواصل",
+        "email": "hello@auibsal.org",
+        "programs": "البرامج"
       }
     },
     "consent": {

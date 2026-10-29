@@ -1,10 +1,12 @@
 import { BrandLogo } from "@repo/design-system/components/brand-logo";
 import { localizedPath } from "@repo/internationalization";
 import { Link } from "@repo/internationalization/navigation";
+import { localized, programmes } from "@repo/sal-data";
 import NextLink from "next/link";
 import { getLocale, getTranslations } from "next-intl/server";
 import { CookieSettings } from "@/components/cookie-settings";
 import { askedConsent } from "@/lib/consent";
+import { readPublished } from "@/lib/supabase";
 
 const INSTAGRAM = "https://www.instagram.com/auibsal";
 
@@ -16,11 +18,13 @@ interface FooterProps {
 const linkClass = "hover:text-accent hover:underline hover:underline-offset-4";
 
 /**
- * The one footer for the whole site, public pages and the portal alike:
- * ink in both modes. The reversed lockup in the page's language and one sentence,
- * three short columns (Society, Read, Contact) under rose labels, then a
- * hairline and the fine print, which keeps the policies and cookie settings
- * within reach.
+ * The one footer for the whole site, the members' pages and the Diwan
+ * alike: ink in both modes. The reversed lockup in the page's language and
+ * one sentence, three short columns under rose labels (Programs, Society,
+ * Stay in touch), then a hairline and the fine print, which keeps the
+ * policies and cookie settings within reach. Nothing here repeats the
+ * header (owner, Oct 30, 2026): its sections, Search, Sign in and
+ * Membership live only there.
  */
 export const Footer = async ({ consent = true }: FooterProps = {}) => {
   const t = await getTranslations("web.footer");
@@ -29,28 +33,29 @@ export const Footer = async ({ consent = true }: FooterProps = {}) => {
   const locale = await getLocale();
   const email = t("columns.email");
 
+  const programs = await readPublished(
+    ["programmes"],
+    async (c) => (await programmes.programmes(c)) ?? [],
+    []
+  );
+
   const columns = [
+    {
+      heading: t("columns.programs"),
+      links: programs.map(
+        (p) => [`/events/${p.slug}`, localized(p, "name", locale)] as const
+      ),
+    },
     {
       heading: t("columns.society"),
       links: [
-        ["/about", tn("about")],
         ["/governance", t("governance")],
         ["/documents", tn("documents")],
         ["/partners", t("partners")],
         ["/give", tn("give")],
-      ],
+      ] as const,
     },
-    {
-      heading: t("columns.read"),
-      links: [
-        ["/qirtas", tn("journal")],
-        ["/qirtas/news", tn("news")],
-        ["/newsletter", t("newsletter")],
-        ["/events/company", t("productions")],
-        ["/search", t("search")],
-      ],
-    },
-  ] as const;
+  ];
 
   const fine = [
     ["/privacy", t("privacy")],
@@ -73,25 +78,32 @@ export const Footer = async ({ consent = true }: FooterProps = {}) => {
             {tx("recognition")}
           </p>
         </div>
-        {columns.map((column) => (
-          <div className="grid content-start gap-3.5" key={column.heading}>
-            <h2 className="type-label text-accent">{column.heading}</h2>
-            <ul className="grid gap-2">
-              {column.links.map(([href, label]) => (
-                <li key={href}>
-                  <Link className={linkClass} href={href}>
-                    {label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
+        {columns
+          .filter((column) => column.links.length > 0)
+          .map((column) => (
+            <div className="grid content-start gap-3.5" key={column.heading}>
+              <h2 className="type-label text-accent">{column.heading}</h2>
+              <ul className="grid gap-2">
+                {column.links.map(([href, label]) => (
+                  <li key={href}>
+                    <Link className={linkClass} href={href}>
+                      {label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
         <div className="grid content-start gap-3.5">
           <h2 className="type-label text-accent">
             {t("columns.contactHeading")}
           </h2>
           <ul className="grid gap-2">
+            <li>
+              <Link className={linkClass} href="/newsletter">
+                {t("newsletter")}
+              </Link>
+            </li>
             <li>
               <a className={linkClass} href={`mailto:${email}`}>
                 {email}
@@ -116,14 +128,6 @@ export const Footer = async ({ consent = true }: FooterProps = {}) => {
               <Link className={linkClass} href="/media-kit">
                 {t("mediaKit")}
               </Link>
-            </li>
-            <li>
-              <NextLink
-                className={linkClass}
-                href={localizedPath(locale, "/membership")}
-              >
-                {tn("account")}
-              </NextLink>
             </li>
           </ul>
         </div>
