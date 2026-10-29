@@ -1,6 +1,10 @@
 import { apiPath } from "@repo/internationalization";
-import { formatIqd, formatNumber } from "@repo/internationalization/format";
-import { charity, content, localized } from "@repo/sal-data";
+import {
+  formatIqd,
+  formatLongDate,
+  formatNumber,
+} from "@repo/internationalization/format";
+import { charity, localized } from "@repo/sal-data";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { PageHeader, Section } from "@/components/section";
 import { type LocaleParams, sectionMetadata } from "@/lib/page";
@@ -14,17 +18,12 @@ const GivePage = async ({ params }: LocaleParams) => {
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "web.give" });
-  const [campaigns, progress, perSet] = await Promise.all([
+  const [campaigns, progress] = await Promise.all([
     readPublished(["charity"], (c) => charity.activeCampaigns(c), []),
     readPublished(["charity"], (c) => charity.campaignProgress(c), []),
-    readPublished(
-      ["charity"],
-      (c) => content.publicSetting(c, "charity.cost_per_winter_set_iqd"),
-      null
-    ),
   ]);
   const campaign = campaigns?.[0];
-  const meter = campaign
+  const collected = campaign
     ? progress.find((p) => p.campaign_id === campaign.id)
     : undefined;
   const [receipts, impact] = campaign
@@ -41,8 +40,6 @@ const GivePage = async ({ params }: LocaleParams) => {
         ),
       ])
     : [[], []];
-  const unitLabel = campaign ? localized(campaign, "unit_label", locale) : "";
-  const setCost = Number(perSet);
 
   return (
     <div className="mx-auto grid w-full max-w-6xl gap-20 px-4 py-16 sm:py-24">
@@ -59,60 +56,37 @@ const GivePage = async ({ params }: LocaleParams) => {
         <p className="type-body">{t("waysNote")}</p>
       </Section>
 
-      <Section id="meter" title={t("meterTitle")}>
-        {campaign && meter ? (
+      <Section id="dates" title={t("datesTitle")}>
+        <p className="type-body max-w-[60ch]">{t("dates")}</p>
+      </Section>
+
+      <Section id="collection" title={t("collectionTitle")}>
+        {campaign && collected ? (
           <div className="grid gap-3">
             <h3 className="type-subheading">
               {localized(campaign, "title", locale)}
             </h3>
-            {meter.target_units ? (
-              <>
-                <div aria-hidden="true" className="h-1 w-full bg-line">
-                  <div
-                    className="h-1 bg-text"
-                    style={{
-                      width: `${Math.min(100, (meter.units / meter.target_units) * 100)}%`,
-                    }}
-                  />
-                </div>
-                <progress
-                  aria-label={t("meterTitle")}
-                  className="sr-only"
-                  max={meter.target_units}
-                  value={Math.min(meter.units, meter.target_units)}
-                />
-                <p className="type-body font-medium">
-                  {t("meterUnits", {
-                    label: unitLabel,
-                    target: formatNumber(meter.target_units, locale),
-                    units: formatNumber(meter.units, locale),
-                  })}
-                </p>
-              </>
-            ) : (
-              <p className="type-body font-medium">
-                {t("meterUnitsOpen", {
-                  label: unitLabel,
-                  units: formatNumber(meter.units, locale),
-                })}
-              </p>
-            )}
-            <p className="type-caption">
-              {t("counted", { amount: formatIqd(meter.counted_iqd, locale) })}
-              {meter.pending_iqd > 0
-                ? ` · ${t("pending", { amount: formatIqd(meter.pending_iqd, locale) })}`
+            <p className="type-body font-medium">
+              {t("counted", {
+                amount: formatIqd(collected.counted_iqd, locale),
+              })}
+              {collected.pending_iqd > 0
+                ? ` · ${t("pending", { amount: formatIqd(collected.pending_iqd, locale) })}`
                 : ""}
+            </p>
+            <p className="type-body">
+              {campaign.handed_over_on && campaign.handed_over_iqd !== null
+                ? t("handedOver", {
+                    amount: formatIqd(campaign.handed_over_iqd, locale),
+                    date: formatLongDate(campaign.handed_over_on, locale),
+                  })
+                : t("handoverAhead")}
             </p>
             <p className="type-caption">{t("countedNote")}</p>
           </div>
         ) : (
           <p className="type-body text-text-secondary">{t("noCampaign")}</p>
         )}
-        {Number.isFinite(setCost) && setCost > 0 ? (
-          <p className="type-caption">
-            {t("perSet", { amount: formatIqd(setCost, locale) })}
-          </p>
-        ) : null}
       </Section>
 
       <Section id="transparency" title={t("transparencyTitle")}>

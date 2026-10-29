@@ -1,19 +1,5 @@
-import { highestSpendingLimitIqd } from "@repo/rbac";
 import { z } from "zod";
 import { type Client, unwrap } from "./client";
-
-export const spendingRequestSchema = z.object({
-  amount_iqd: z.number().int().positive(),
-  campaign_id: z.uuid().optional(),
-  programme_id: z.uuid().optional(),
-  purpose_ar: z.string().max(500).optional(),
-  purpose_en: z.string().trim().min(1).max(500),
-  resolution_id: z.uuid().optional(),
-});
-
-/** Above the highest lead limit, an adopted Council resolution is required. */
-export const needsCouncilVote = (amountIqd: number) =>
-  amountIqd > highestSpendingLimitIqd;
 
 export const RON = "RON" as const;
 
@@ -43,6 +29,16 @@ export const castBallot = async (
 
 export const councilRoster = async (client: Client) =>
   unwrap(await client.schema("governance").rpc("council_roster")) ?? [];
+
+/** The Council page: every seat, its holder or the seat that covers it. */
+export const councilSeats = async (client: Client) =>
+  unwrap(
+    await client
+      .schema("governance")
+      .from("council_seats")
+      .select("key, kind, title_en, title_ar, holder_en, holder_ar, covered_by")
+      .order("sort")
+  ) ?? [];
 
 /** Resolutions the Council or the General Assembly adopted, newest first. */
 export const adoptedResolutions = async (client: Client) =>

@@ -3,8 +3,10 @@
 Conventions for anyone — human or AI agent — changing this repository: the
 platform of the AUIB Society of Arts and Letters (SAL), live at auibsal.org.
 
-Start every session by reading `PROGRESS.md` (the working checklist, blocked
-items and decisions) and continue from the first unticked item.
+Start every session by reading `claude/decisions.md` (the owner's current
+decisions, the source of truth: where an older document or this file
+disagrees, it wins) and `PROGRESS.md` (the working checklist, blocked items
+and decisions), and continue from the first unticked item.
 
 ## Repository map
 
@@ -266,9 +268,16 @@ any schema change. Integration tests run against a local stack with
   show without a name. One entry per member; a new card replaces the old.
 - **The Callboard** (owner, Oct 25, 2026; header link "Get involved",
   `/callboard`, members only) is the careers page (owner, Oct 29, 2026):
-  roles a program needs filled (`programmes.openings`, `kind` `role`;
-  members reply "I'm interested", `programmes.opening_replies`, and the
-  program's managers are emailed), shifts and auditions on one board.
+  every role the Society is filling (`programmes.openings`, `kind`
+  `role`, with its `owner`: a program, Qirtas, Media, Partnerships,
+  Membership or the Council), shifts and auditions on one board. Hiring
+  (owner, Oct 30, 2026; the Diwan's Hiring section): members reply "I'm
+  interested" (`programmes.opening_replies`, emailed to Membership);
+  Membership (`members.manage`) runs every application (conversation,
+  offer, onboarding with F-06), and the role's owner picks the person
+  (`private.picks_opening`: the Editor the masthead, the Director of
+  Programs the Program Leads, each director their team); a trigger keeps
+  the two apart.
   Roles and shifts carry the skills they want, from the same list as
   Profile (`core.member_details.skills`), and what matches the member
   comes first. Hours given are recorded as service as before. Two kinds of
@@ -289,8 +298,23 @@ any schema change. Integration tests run against a local stack with
   and prospective partners; a partner's guest: their own). Accounts
   verified with a partner but not members are that partner's guests
   ("Guest of …"; `PartnerGuest`, `GUEST_PATHS` in `gates.tsx`).
-- **Money.** The charity ledger is append-only (corrections are reversing
-  entries); only signed-off entries count. No online payments of any kind.
+- **No money** (owner, Oct 30, 2026). The Society holds no budget, no
+  account and no money, and has no Treasurer; Student Life provides. No
+  budgets, costs, prices, spending limits, claims or reimbursements
+  anywhere. Programs and Qirtas keep needs lists (`programmes.needs`:
+  item, quantity, date needed, purpose; the Diwan's Programs → Needs and
+  Qirtas → Needs), and the General Secretary sends each request to
+  Student Life and logs what was provided (Governance → Requests to
+  Student Life). The one exception is Second Chapter's collection: the
+  charity ledger (append-only, corrections are reversing entries, two
+  counters, only signed-off entries count; the General Secretary
+  witnesses and signs off), the witnessed handover on the campaign
+  (`handed_over_on`, amount, witness, receipt) and the impact report. No
+  online payments of any kind.
+- **The Council page** (owner, Oct 30, 2026; `/governance` and the
+  members' Society page) lists each seat by its full title from
+  `governance.council_seats`: its holder, or the officer who covers it
+  while it is open. Three officers and five directors; no Treasurer.
 - **Documents.** Every document is adopted, Version 1 (owner, Oct 24, 2026).
   Visitors and members see the title, summary and text only; codes
   (`SAL-…`, `F-…`), statuses, versions and ratification lines are internal

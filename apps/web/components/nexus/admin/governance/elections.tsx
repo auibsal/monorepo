@@ -29,7 +29,6 @@ const EXECUTIVE_ROLES = [
   "president",
   "vice_president",
   "general_secretary",
-  "treasurer",
 ] as const;
 
 type ElectionStatus =

@@ -187,7 +187,7 @@ describe("crossword layout", () => {
     { answer: "Letters", clue: "Desk of the Editions" },
     { answer: "Voices", clue: "Columns and letters to the editor" },
     { answer: "News", clue: "Always-open desk" },
-    { answer: "Video", clue: "Side Quest's desk" },
+    { answer: "Video", clue: "Next Stop's section" },
   ];
 
   test("crosses every answer and agrees with itself", () => {

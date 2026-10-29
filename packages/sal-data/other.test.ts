@@ -1,7 +1,7 @@
 import { describe, expect, test } from "vitest";
 import { ledgerEntrySchema } from "./charity";
 import { announcementSchema, pageSchema } from "./content";
-import { ballotSchema, needsCouncilVote } from "./governance";
+import { ballotSchema } from "./governance";
 import { profileSchema, wordCount } from "./membership";
 import { isReelUrl, sixWordsSchema, timeLeft, youtubeId } from "./programmes";
 
@@ -56,11 +56,6 @@ describe("schemas", () => {
       false
     );
   });
-
-  test("Council vote above 250,000 IQD", () => {
-    expect(needsCouncilVote(250_000)).toBe(false);
-    expect(needsCouncilVote(250_001)).toBe(true);
-  });
 });
 
 describe("content schemas match the database", () => {
@@ -94,7 +89,7 @@ describe("content schemas match the database", () => {
   });
 });
 
-describe("Side Quest", () => {
+describe("Next Stop", () => {
   test("reads the video id from every YouTube link shape", () => {
     const video = "dQw4w9WgXcQ";
     for (const link of [

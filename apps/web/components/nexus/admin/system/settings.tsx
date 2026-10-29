@@ -569,44 +569,6 @@ const CampusCalendar = ({ settings }: { settings: Record<string, Json> }) => {
   );
 };
 
-const WinterSetCost = ({ settings }: { settings: Record<string, Json> }) => {
-  const t = useTranslations("nexus.admin.settings");
-  const save = useSaveSetting();
-  const [cost, setCost] = useState("");
-  useEffect(
-    () => setCost(String(settings["charity.cost_per_winter_set_iqd"] ?? "")),
-    [settings]
-  );
-  return (
-    <Section title={t("cost")}>
-      <form
-        className="grid gap-4"
-        onSubmit={(event) => {
-          event.preventDefault();
-          save.mutate({ "charity.cost_per_winter_set_iqd": Number(cost) });
-        }}
-      >
-        <Field hint={t("costHint")} label={t("cost")}>
-          {(id) => (
-            <Input
-              className="w-48"
-              dir="ltr"
-              id={id}
-              min={1}
-              onChange={(e) => setCost(e.target.value)}
-              required
-              type="number"
-              value={cost}
-            />
-          )}
-        </Field>
-        <SaveButton pending={save.isPending} success={save.isSuccess} />
-        <ErrorLine error={save.error} />
-      </form>
-    </Section>
-  );
-};
-
 const VERSION_KEYS = [
   ["pledges.human_authorship.version", "humanAuthorship"],
   ["pledges.member.version", "memberPledge"],
@@ -705,7 +667,6 @@ export const SettingsAdmin = () => {
       <JournalName settings={values} />
       <SocietyContacts settings={values} />
       <CampusCalendar settings={values} />
-      <WinterSetCost settings={values} />
       <Versions settings={values} />
       <Flags settings={values} />
       <NotionWorkspace />

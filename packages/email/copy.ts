@@ -471,7 +471,7 @@ const paperPieces = (l: Lang, pieces: SundayItem[]) =>
   pieces.length === 0
     ? []
     : [
-        l === "ar" ? "ما نُشر في قرطاس هذا الشهر:" : "This month in Qirtas:",
+        l === "ar" ? "ما نُشر في قرطاس هذا الشهر:" : "New in Qirtas this month:",
         ...pieces.map((i) =>
           l === "ar"
             ? `${i.desk_ar}: ${i.title_ar || i.title_en} ${i.url}`
@@ -569,22 +569,22 @@ export interface OpeningReplyInfo {
   title: string;
 }
 
-/** Someone answered a Callboard opening (to the program's managers). */
+/** Someone answered a Callboard opening (to Membership, which runs hiring). */
 export const openingReply = (
   lang: Lang,
   reply: OpeningReplyInfo,
   app: string
 ) =>
   build(lang, (l) => ({
-    action: nexus(app, l, "/programs"),
+    action: nexus(app, l, "/hiring"),
     heading:
       l === "ar"
         ? `مهتم بدور: ${reply.title}`
         : `Interested in a role: ${reply.title}`,
     paragraphs: [
       l === "ar"
-        ? `${reply.member} مهتم بهذا الدور في لوحة النداءات. تواصل معه.`
-        : `${reply.member} is interested in this role on the Callboard. Get in touch.`,
+        ? `${reply.member} مهتم بهذا الدور في لوحة النداءات. حدّد موعدًا للحديث في قسم التوظيف.`
+        : `${reply.member} is interested in this role on the Callboard. Set a time to talk in Hiring.`,
       ...(reply.note ? [reply.note] : []),
     ],
   }));

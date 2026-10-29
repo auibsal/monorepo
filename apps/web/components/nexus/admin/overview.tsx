@@ -249,9 +249,7 @@ export const AdminOverview = () => {
         id="for-your-role"
         title={t("forRole.title")}
       >
-        <StartLinks
-          keys={["f11", "f13", "f14", "f24", "f04", "f06", "f27", "f25a"]}
-        />
+        <StartLinks keys={["f11", "f14", "f24", "f04", "f06", "f27", "f25a"]} />
       </DiwanSection>
     </div>
   );

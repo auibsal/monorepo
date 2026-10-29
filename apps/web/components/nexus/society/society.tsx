@@ -6,6 +6,7 @@ import { formatLongDate } from "@repo/internationalization/format";
 import { governance, localized, unwrap } from "@repo/sal-data";
 import { useQuery } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
+import { CouncilSeats } from "@/components/council-seats";
 import { useFlags } from "@/lib/nexus/queries";
 import { StartLinks } from "../forms/forms";
 import { VotingEligibility } from "../home/voting";
@@ -22,8 +23,8 @@ const Council = () => {
   const locale = useLocale() as Lang;
   const { supabase } = useAuth();
   const roster = useQuery({
-    queryFn: () => governance.councilRoster(supabase),
-    queryKey: ["council-roster"],
+    queryFn: () => governance.councilSeats(supabase),
+    queryKey: ["council-seats"],
   });
   const advisor = useQuery({
     queryFn: async () => {
@@ -66,22 +67,14 @@ const Council = () => {
           {t("empty")}
         </EmptyLine>
       ) : null}
-      <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {roster.data?.map((seat) => (
-          <li
-            className="grid gap-1 border-line border-t pt-space-4"
-            key={`${seat.role}-${seat.full_name_en}`}
-          >
-            <p className="type-label">
-              {localized(seat, "title", locale) ||
-                localized(seat, "role_name", locale)}
-            </p>
-            <p className="type-subheading">
-              {localized(seat, "full_name", locale)}
-            </p>
-          </li>
-        ))}
-      </ul>
+      {roster.data?.length ? (
+        <CouncilSeats
+          covered={(title) => t("coveredBy", { title })}
+          locale={locale}
+          open={t("seatOpen")}
+          seats={roster.data}
+        />
+      ) : null}
       {advisorName ? (
         <p className="type-body">
           <span className="type-label me-2">{t("advisor")}</span>

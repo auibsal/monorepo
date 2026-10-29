@@ -45,26 +45,6 @@ import {
 import { MemberPicker, useMemberNames } from "../member-picker";
 import { memberName } from "../members/directory";
 
-const DEFAULT_COST_IQD = 40_000;
-
-/** A key for a form row that has no id yet. */
-const rowKey = () => Math.random().toString(36).slice(2, 10);
-
-interface PriceItem {
-  iqd: number[];
-  label_ar: string;
-  label_en: string;
-}
-
-const asPriceList = (value: unknown): PriceItem[] =>
-  Array.isArray(value) ? (value as PriceItem[]) : [];
-
-const parsePrices = (value: string) =>
-  value
-    .split(",")
-    .map((part) => Number(part.replaceAll(/[^0-9]/g, "")))
-    .filter((n) => Number.isInteger(n) && n > 0);
-
 // ── Settings ────────────────────────────────────────────────────────────────
 
 const CampaignSettings = ({ campaignId }: { campaignId: string | null }) => {
@@ -76,22 +56,14 @@ const CampaignSettings = ({ campaignId }: { campaignId: string | null }) => {
   const queryClient = useQueryClient();
   const programmes = useProgrammeOptions(null);
   const [form, setForm] = useState({
-    cost: "",
     ends_on: "",
     partner_id: "",
-    prices: [] as {
-      key: string;
-      label: { ar: string; en: string };
-      prices: string;
-    }[],
     programme_id: "",
     slug: "",
     starts_on: "",
     status: "draft",
     summary: { ar: "", en: "" },
-    target: "",
     title: { ar: "", en: "" },
-    unit: { ar: "أطفال كُسوا", en: "children clothed" },
   });
 
   const existing = useQuery({
@@ -112,39 +84,18 @@ const CampaignSettings = ({ campaignId }: { campaignId: string | null }) => {
       unwrap(await supabase.schema("governance").rpc("partner_names")) ?? [],
     queryKey: ["admin", "partner-names"],
   });
-  const setting = useQuery({
-    queryFn: async () =>
-      unwrap(
-        await supabase
-          .schema("core")
-          .from("settings")
-          .select("value")
-          .eq("key", "charity.cost_per_winter_set_iqd")
-          .maybeSingle()
-      ),
-    queryKey: ["admin", "setting", "charity.cost_per_winter_set_iqd"],
-  });
-
   useEffect(() => {
     const c = existing.data;
     if (c) {
       setForm({
-        cost: c.cost_per_unit_iqd ? String(c.cost_per_unit_iqd) : "",
         ends_on: c.ends_on ?? "",
         partner_id: c.partner_id ?? "",
-        prices: asPriceList(c.price_list).map((p) => ({
-          key: rowKey(),
-          label: { ar: p.label_ar, en: p.label_en },
-          prices: p.iqd.join(", "),
-        })),
         programme_id: c.programme_id ?? "",
         slug: c.slug,
         starts_on: c.starts_on ?? "",
         status: c.status,
         summary: { ar: c.summary_ar ?? "", en: c.summary_en ?? "" },
-        target: c.target_units ? String(c.target_units) : "",
         title: { ar: c.title_ar, en: c.title_en },
-        unit: { ar: c.unit_label_ar, en: c.unit_label_en },
       });
     }
   }, [existing.data]);
@@ -152,27 +103,16 @@ const CampaignSettings = ({ campaignId }: { campaignId: string | null }) => {
   const save = useMutation({
     mutationFn: async () => {
       const row = {
-        cost_per_unit_iqd: form.cost ? Number(form.cost) : null,
         ends_on: form.ends_on || null,
         partner_id: form.partner_id || null,
-        price_list: form.prices
-          .filter((p) => p.label.en.trim() || p.label.ar.trim())
-          .map((p) => ({
-            iqd: parsePrices(p.prices),
-            label_ar: p.label.ar,
-            label_en: p.label.en,
-          })),
         programme_id: form.programme_id || null,
         slug: form.slug || slugify(form.title.en),
         starts_on: form.starts_on || null,
         status: form.status,
         summary_ar: form.summary.ar || null,
         summary_en: form.summary.en || null,
-        target_units: form.target ? Number(form.target) : null,
         title_ar: form.title.ar,
         title_en: form.title.en,
-        unit_label_ar: form.unit.ar,
-        unit_label_en: form.unit.en,
       };
       const table = supabase.schema("charity").from("campaigns");
       if (campaignId) {
@@ -205,8 +145,6 @@ const CampaignSettings = ({ campaignId }: { campaignId: string | null }) => {
     );
   }
 
-  const defaultCost =
-    Number(setting.data?.value ?? DEFAULT_COST_IQD) || DEFAULT_COST_IQD;
   const submit = (event: FormEvent) => {
     event.preventDefault();
     save.mutate();
@@ -304,119 +242,7 @@ const CampaignSettings = ({ campaignId }: { campaignId: string | null }) => {
             />
           )}
         </Field>
-        <Field
-          hint={t("campaign.costPlaceholder", {
-            amount: formatIqd(defaultCost, locale),
-          })}
-          label={t("campaign.costPerUnit")}
-        >
-          {(id) => (
-            <Input
-              dir="ltr"
-              id={id}
-              inputMode="numeric"
-              min={1}
-              onChange={(e) => setForm((f) => ({ ...f, cost: e.target.value }))}
-              type="number"
-              value={form.cost}
-            />
-          )}
-        </Field>
-        <Field label={t("campaign.target")}>
-          {(id) => (
-            <Input
-              dir="ltr"
-              id={id}
-              inputMode="numeric"
-              min={1}
-              onChange={(e) =>
-                setForm((f) => ({ ...f, target: e.target.value }))
-              }
-              type="number"
-              value={form.target}
-            />
-          )}
-        </Field>
       </div>
-      <BilingualField
-        label={t("campaign.unitLabel")}
-        maxLength={80}
-        onChange={(unit) => setForm((f) => ({ ...f, unit }))}
-        required
-        value={form.unit}
-      />
-      <fieldset className="grid gap-3">
-        <legend className="type-subheading">{t("campaign.priceList")}</legend>
-        <p className="type-caption">{t("campaign.priceListHint")}</p>
-        {form.prices.map((item, index) => (
-          <div
-            className="grid gap-3 border-line border-t p-space-4"
-            key={item.key}
-          >
-            <BilingualField
-              label={t("campaign.priceItem")}
-              maxLength={80}
-              onChange={(label) =>
-                setForm((f) => ({
-                  ...f,
-                  prices: f.prices.map((p, i) =>
-                    i === index ? { ...p, label } : p
-                  ),
-                }))
-              }
-              value={item.label}
-            />
-            <Field label={t("campaign.prices")}>
-              {(id) => (
-                <Input
-                  dir="ltr"
-                  id={id}
-                  onChange={(e) =>
-                    setForm((f) => ({
-                      ...f,
-                      prices: f.prices.map((p, i) =>
-                        i === index ? { ...p, prices: e.target.value } : p
-                      ),
-                    }))
-                  }
-                  value={item.prices}
-                />
-              )}
-            </Field>
-            <Button
-              className="justify-self-start"
-              onClick={() =>
-                setForm((f) => ({
-                  ...f,
-                  prices: f.prices.filter((_, i) => i !== index),
-                }))
-              }
-              size="sm"
-              type="button"
-              variant="ghost"
-            >
-              {t("campaign.removePrice")}
-            </Button>
-          </div>
-        ))}
-        <Button
-          className="justify-self-start"
-          onClick={() =>
-            setForm((f) => ({
-              ...f,
-              prices: [
-                ...f.prices,
-                { key: rowKey(), label: { ar: "", en: "" }, prices: "" },
-              ],
-            }))
-          }
-          size="sm"
-          type="button"
-          variant="outline"
-        >
-          {t("campaign.addPrice")}
-        </Button>
-      </fieldset>
       <Field label={t("campaign.status")}>
         {(id) => (
           <SelectInput
@@ -431,6 +257,170 @@ const CampaignSettings = ({ campaignId }: { campaignId: string | null }) => {
               </option>
             ))}
           </SelectInput>
+        )}
+      </Field>
+      <SaveButton pending={save.isPending} success={save.isSuccess} />
+      <ErrorLine error={save.error} />
+    </form>
+  );
+};
+
+// ── Handover ────────────────────────────────────────────────────────────────
+
+/**
+ * The witnessed handover (owner, Oct 30, 2026): the sealed collection is
+ * handed to the charity partner with a witness and a receipt, and the day,
+ * the amount, the witness and the receipt are kept on the campaign.
+ */
+const Handover = ({ campaignId }: { campaignId: string }) => {
+  const t = useTranslations("nexus.admin.charity.handover");
+  const locale = useLocale() as Locale;
+  const { supabase } = useAuth();
+  const queryClient = useQueryClient();
+  const queryKey = ["admin", "campaign", campaignId, "handover"];
+  const data = useQuery({
+    queryFn: async () => {
+      const [campaign, receipts] = await Promise.all([
+        supabase
+          .schema("charity")
+          .from("campaigns")
+          .select(
+            "handed_over_on, handed_over_iqd, handover_witness, handover_receipt_id, handover_note"
+          )
+          .eq("id", campaignId)
+          .maybeSingle(),
+        supabase
+          .schema("charity")
+          .from("receipts")
+          .select("id, description_en, description_ar")
+          .eq("campaign_id", campaignId)
+          .order("created_at", { ascending: false }),
+      ]);
+      return { campaign: unwrap(campaign), receipts: unwrap(receipts) ?? [] };
+    },
+    queryKey,
+  });
+  const witnessNames = useMemberNames(
+    data.data?.campaign?.handover_witness
+      ? [data.data.campaign.handover_witness]
+      : []
+  );
+  const [form, setForm] = useState<{
+    amount: string;
+    note: string;
+    on: string;
+    receipt: string;
+    witness: {
+      full_name_ar: string | null;
+      full_name_en: string;
+      id: string;
+    } | null;
+  } | null>(null);
+  const current = data.data?.campaign;
+  const savedWitness = witnessNames.data?.[0];
+  const values = form ?? {
+    amount:
+      current?.handed_over_iqd === null ||
+      current?.handed_over_iqd === undefined
+        ? ""
+        : String(current.handed_over_iqd),
+    note: current?.handover_note ?? "",
+    on: current?.handed_over_on ?? "",
+    receipt: current?.handover_receipt_id ?? "",
+    witness: savedWitness ?? null,
+  };
+  const save = useMutation({
+    mutationFn: async () =>
+      unwrap(
+        await supabase
+          .schema("charity")
+          .from("campaigns")
+          .update({
+            handed_over_iqd: values.on ? Number(values.amount) : null,
+            handed_over_on: values.on || null,
+            handover_note: values.note.trim() || null,
+            handover_receipt_id: values.receipt || null,
+            handover_witness: values.witness?.id ?? null,
+          })
+          .eq("id", campaignId)
+      ),
+    onSuccess: async () => {
+      setForm(null);
+      await queryClient.invalidateQueries({ queryKey });
+    },
+  });
+  const change = (patch: Partial<typeof values>) =>
+    setForm({ ...values, ...patch });
+
+  if (data.isPending) {
+    return <SectionSpinner />;
+  }
+
+  return (
+    <form
+      className="grid max-w-3xl gap-4"
+      onSubmit={(event) => {
+        event.preventDefault();
+        save.mutate();
+      }}
+    >
+      <p className="type-body text-text-secondary">{t("lede")}</p>
+      <div className="grid gap-4 sm:grid-cols-2">
+        <Field label={t("on")}>
+          {(id) => (
+            <Input
+              dir="ltr"
+              id={id}
+              onChange={(e) => change({ on: e.target.value })}
+              type="date"
+              value={values.on}
+            />
+          )}
+        </Field>
+        <Field label={t("amount")}>
+          {(id) => (
+            <Input
+              dir="ltr"
+              id={id}
+              inputMode="numeric"
+              min={0}
+              onChange={(e) => change({ amount: e.target.value })}
+              required={Boolean(values.on)}
+              type="number"
+              value={values.amount}
+            />
+          )}
+        </Field>
+      </div>
+      <MemberPicker
+        label={t("witness")}
+        onChange={(person) => change({ witness: person })}
+        value={values.witness}
+      />
+      <Field label={t("receipt")}>
+        {(id) => (
+          <SelectInput
+            id={id}
+            onChange={(e) => change({ receipt: e.target.value })}
+            value={values.receipt}
+          >
+            <option value="">{t("noReceipt")}</option>
+            {data.data?.receipts.map((r) => (
+              <option key={r.id} value={r.id}>
+                {localized(r, "description", locale)}
+              </option>
+            ))}
+          </SelectInput>
+        )}
+      </Field>
+      <Field label={t("note")}>
+        {(id) => (
+          <Input
+            id={id}
+            maxLength={1000}
+            onChange={(e) => change({ note: e.target.value })}
+            value={values.note}
+          />
         )}
       </Field>
       <SaveButton pending={save.isPending} success={save.isSuccess} />
@@ -1311,6 +1301,9 @@ export const CampaignAdmin = () => {
             <TabsTrigger value="receipts">{t("tabs.receipts")}</TabsTrigger>
           ) : null}
           {canManage ? (
+            <TabsTrigger value="handover">{t("tabs.handover")}</TabsTrigger>
+          ) : null}
+          {canManage ? (
             <TabsTrigger value="impact">{t("tabs.impact")}</TabsTrigger>
           ) : null}
         </TabsList>
@@ -1329,6 +1322,9 @@ export const CampaignAdmin = () => {
             </TabsContent>
             <TabsContent className="pt-4" value="receipts">
               <Receipts campaignId={campaignId} />
+            </TabsContent>
+            <TabsContent className="pt-4" value="handover">
+              <Handover campaignId={campaignId} />
             </TabsContent>
             <TabsContent className="pt-4" value="impact">
               <Impact campaignId={campaignId} />

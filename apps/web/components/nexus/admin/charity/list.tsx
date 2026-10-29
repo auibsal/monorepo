@@ -2,7 +2,7 @@
 
 import { useAuth } from "@repo/auth/provider";
 import type { Locale } from "@repo/internationalization";
-import { formatIqd, formatNumber } from "@repo/internationalization/format";
+import { formatIqd, formatLongDate } from "@repo/internationalization/format";
 import { hasPermission } from "@repo/rbac";
 import { charity, localized, unwrap } from "@repo/sal-data";
 import { useQuery } from "@tanstack/react-query";
@@ -21,7 +21,7 @@ export const useCampaigns = () => {
           .schema("charity")
           .from("campaigns")
           .select(
-            "id, slug, title_en, title_ar, status, starts_on, target_units"
+            "id, slug, title_en, title_ar, status, starts_on, handed_over_on"
           )
           .order("created_at", { ascending: false }),
         charity.campaignProgress(supabase),
@@ -75,12 +75,11 @@ export const CharityAdmin = () => {
     },
     {
       cell: (c) =>
-        c.target_units
-          ? `${formatNumber(c.progress?.units ?? 0)} / ${formatNumber(c.target_units)}`
-          : formatNumber(c.progress?.units ?? 0),
-      className: "tabular-nums",
-      header: t("columns.units"),
-      key: "units",
+        c.handed_over_on
+          ? formatLongDate(c.handed_over_on, locale)
+          : t("notHandedOver"),
+      header: t("columns.handover"),
+      key: "handover",
     },
   ];
 

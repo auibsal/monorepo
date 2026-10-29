@@ -37,7 +37,10 @@ const groups: { key: Group; modules: AdminModule[] }[] = [
     key: "work",
     modules: ["events", "programs", "productions", "journal"],
   },
-  { key: "people", modules: ["members", "recognition", "partners"] },
+  {
+    key: "people",
+    modules: ["members", "hiring", "recognition", "partners"],
+  },
   { key: "publishing", modules: ["content", "ads", "documents", "charity"] },
   { key: "society", modules: ["governance", "forms"] },
   { key: "system", modules: ["activity", "settings"] },

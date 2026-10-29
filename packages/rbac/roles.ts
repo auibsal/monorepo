@@ -7,8 +7,6 @@ export interface RoleDefinition {
   nameAr: string;
   nameEn: string;
   permissions: readonly Permission[];
-  /** Largest spend (IQD) the holder may lead with the Treasurer. */
-  spendingLimitIqd: number | null;
 }
 
 /** Role bundles, mirrored from the reference-data migration. */
@@ -19,7 +17,6 @@ export const roles = {
     nameAr: "الهيئة الاستشارية",
     nameEn: "Advisory Board",
     permissions: ["journal.advise"],
-    spendingLimitIqd: null,
   },
   arabic_editor: {
     defaultScope: "issue",
@@ -27,7 +24,6 @@ export const roles = {
     nameAr: "المحرر العربي",
     nameEn: "Arabic Editor",
     permissions: ["journal.manage", "journal.publish", "library.read"],
-    spendingLimitIqd: null,
   },
   campaign_lead: {
     defaultScope: "campaign",
@@ -35,7 +31,6 @@ export const roles = {
     nameAr: "قائد الحملة",
     nameEn: "Campaign Lead",
     permissions: ["charity.manage", "charity.ledger.write", "library.read"],
-    spendingLimitIqd: null,
   },
   communications_lead: {
     defaultScope: "issue",
@@ -43,7 +38,6 @@ export const roles = {
     nameAr: "مسؤول التواصل",
     nameEn: "Communications Lead",
     permissions: ["content.manage", "library.read"],
-    spendingLimitIqd: null,
   },
   copy_editor: {
     defaultScope: "issue",
@@ -51,20 +45,13 @@ export const roles = {
     nameAr: "رئيس التدقيق",
     nameEn: "Copy Chief",
     permissions: ["journal.copy", "library.read"],
-    spendingLimitIqd: null,
   },
   director: {
     defaultScope: "global",
     isCouncil: true,
     nameAr: "مدير",
     nameEn: "Director",
-    permissions: [
-      "events.checkin",
-      "library.read",
-      "library.council",
-      "spending.request",
-    ],
-    spendingLimitIqd: 50_000,
+    permissions: ["events.checkin", "library.read", "library.council"],
   },
   eic: {
     defaultScope: "issue",
@@ -81,7 +68,6 @@ export const roles = {
       "journal.prizes",
       "library.read",
     ],
-    spendingLimitIqd: null,
   },
   elections_committee: {
     defaultScope: "global",
@@ -89,7 +75,6 @@ export const roles = {
     nameAr: "لجنة الانتخابات",
     nameEn: "Elections Committee",
     permissions: ["elections.manage"],
-    spendingLimitIqd: null,
   },
   event_staff: {
     defaultScope: "programme",
@@ -97,7 +82,6 @@ export const roles = {
     nameAr: "فريق الفعالية",
     nameEn: "Event Staff",
     permissions: ["events.checkin"],
-    spendingLimitIqd: null,
   },
   events_lead: {
     defaultScope: "issue",
@@ -105,7 +89,6 @@ export const roles = {
     nameAr: "مسؤول الفعاليات",
     nameEn: "Events Lead",
     permissions: ["events.manage", "events.checkin", "library.read"],
-    spendingLimitIqd: null,
   },
   faculty_advisor: {
     defaultScope: "global",
@@ -121,7 +104,6 @@ export const roles = {
       "concerns.about_vp",
       "concerns.about_president",
     ],
-    spendingLimitIqd: null,
   },
   gallery_editor: {
     defaultScope: "global",
@@ -134,7 +116,6 @@ export const roles = {
       "journal.decide",
       "library.read",
     ],
-    spendingLimitIqd: null,
   },
   games_editor: {
     defaultScope: "global",
@@ -142,7 +123,6 @@ export const roles = {
     nameAr: "محرر الألعاب",
     nameEn: "Games Editor",
     permissions: ["journal.edit.games", "library.read"],
-    spendingLimitIqd: null,
   },
   general_secretary: {
     defaultScope: "global",
@@ -158,10 +138,10 @@ export const roles = {
       "library.read",
       "library.council",
       "audit.read",
-      "spending.request",
       "certificates.prepare",
+      "charity.manage",
+      "charity.ledger.signoff",
     ],
-    spendingLimitIqd: null,
   },
   guest_editor: {
     defaultScope: "issue",
@@ -169,7 +149,6 @@ export const roles = {
     nameAr: "محرر ضيف",
     nameEn: "Guest Editor",
     permissions: ["journal.manage"],
-    spendingLimitIqd: null,
   },
   illustrator: {
     defaultScope: "global",
@@ -177,7 +156,6 @@ export const roles = {
     nameAr: "رسّام",
     nameEn: "Illustrator",
     permissions: ["library.read"],
-    spendingLimitIqd: null,
   },
   letters_editor: {
     defaultScope: "global",
@@ -190,7 +168,6 @@ export const roles = {
       "journal.decide",
       "library.read",
     ],
-    spendingLimitIqd: null,
   },
   managing_editor: {
     defaultScope: "issue",
@@ -206,7 +183,6 @@ export const roles = {
       "journal.prizes",
       "library.read",
     ],
-    spendingLimitIqd: null,
   },
   news_editor: {
     defaultScope: "global",
@@ -214,7 +190,6 @@ export const roles = {
     nameAr: "محرر الأخبار",
     nameEn: "News Editor",
     permissions: ["journal.edit.news", "library.read"],
-    spendingLimitIqd: null,
   },
   partnerships_director: {
     defaultScope: "global",
@@ -226,9 +201,7 @@ export const roles = {
       "events.checkin",
       "library.read",
       "library.council",
-      "spending.request",
     ],
-    spendingLimitIqd: 50_000,
   },
   photographer: {
     defaultScope: "global",
@@ -236,7 +209,6 @@ export const roles = {
     nameAr: "مصوّر",
     nameEn: "Photographer",
     permissions: ["library.read"],
-    spendingLimitIqd: null,
   },
   president: {
     defaultScope: "global",
@@ -258,7 +230,6 @@ export const roles = {
       "library.council",
       "audit.read",
       "settings.manage",
-      "spending.request",
       "partners.manage",
       "partners.sign",
       "certificates.prepare",
@@ -284,7 +255,6 @@ export const roles = {
       "charity.ledger.write",
       "governance.minutes.write",
     ],
-    spendingLimitIqd: 250_000,
   },
   production_lead: {
     defaultScope: "production",
@@ -292,7 +262,6 @@ export const roles = {
     nameAr: "قائد العمل المسرحي",
     nameEn: "Production Lead",
     permissions: ["productions.manage", "events.checkin", "library.read"],
-    spendingLimitIqd: null,
   },
   programme_lead: {
     defaultScope: "programme",
@@ -306,7 +275,6 @@ export const roles = {
       "content.manage",
       "library.read",
     ],
-    spendingLimitIqd: null,
   },
   programs_director: {
     defaultScope: "global",
@@ -320,9 +288,7 @@ export const roles = {
       "content.manage",
       "library.read",
       "library.council",
-      "spending.request",
     ],
-    spendingLimitIqd: 50_000,
   },
   reader: {
     defaultScope: "issue",
@@ -330,7 +296,6 @@ export const roles = {
     nameAr: "قارئ",
     nameEn: "Reader",
     permissions: ["journal.review", "library.read"],
-    spendingLimitIqd: null,
   },
   reporter: {
     defaultScope: "global",
@@ -338,7 +303,6 @@ export const roles = {
     nameAr: "مراسل",
     nameEn: "Reporter",
     permissions: ["library.read"],
-    spendingLimitIqd: null,
   },
   section_editor: {
     defaultScope: "issue",
@@ -346,7 +310,6 @@ export const roles = {
     nameAr: "محرر القسم",
     nameEn: "Section Editor",
     permissions: ["journal.manage", "library.read"],
-    spendingLimitIqd: null,
   },
   submissions_manager: {
     defaultScope: "issue",
@@ -354,7 +317,6 @@ export const roles = {
     nameAr: "مسؤول المشاركات",
     nameEn: "Submissions Manager",
     permissions: ["journal.identity.view", "library.read"],
-    spendingLimitIqd: null,
   },
   tech_admin: {
     defaultScope: "global",
@@ -367,24 +329,6 @@ export const roles = {
       "audit.read",
       "content.manage",
     ],
-    spendingLimitIqd: null,
-  },
-  treasurer: {
-    defaultScope: "global",
-    isCouncil: true,
-    nameAr: "أمين الصندوق",
-    nameEn: "Treasurer",
-    permissions: [
-      "charity.manage",
-      "charity.ledger.write",
-      "charity.ledger.signoff",
-      "spending.request",
-      "spending.countersign",
-      "library.read",
-      "library.council",
-      "audit.read",
-    ],
-    spendingLimitIqd: null,
   },
   vice_president: {
     defaultScope: "global",
@@ -401,7 +345,6 @@ export const roles = {
       "governance.manage",
       "library.read",
       "library.council",
-      "spending.request",
       "partners.manage",
       "partners.sign",
       "certificates.prepare",
@@ -409,7 +352,6 @@ export const roles = {
       "concerns.handle",
       "concerns.about_president",
     ],
-    spendingLimitIqd: null,
   },
   video_editor: {
     defaultScope: "global",
@@ -417,7 +359,6 @@ export const roles = {
     nameAr: "محرر المرئيات",
     nameEn: "Video Editor",
     permissions: ["journal.edit.video", "library.read"],
-    spendingLimitIqd: null,
   },
   voices_editor: {
     defaultScope: "global",
@@ -425,15 +366,9 @@ export const roles = {
     nameAr: "محرر الأصوات",
     nameEn: "Voices Editor",
     permissions: ["journal.edit.voices", "library.read"],
-    spendingLimitIqd: null,
   },
 } as const satisfies Record<string, RoleDefinition>;
 
 export type Role = keyof typeof roles;
 
 export const roleKeys = Object.keys(roles) as Role[];
-
-/** Spending thresholds from the Bylaws, in IQD. Above the highest: Council vote. */
-export const highestSpendingLimitIqd = Math.max(
-  ...roleKeys.map((key) => roles[key].spendingLimitIqd ?? 0)
-);

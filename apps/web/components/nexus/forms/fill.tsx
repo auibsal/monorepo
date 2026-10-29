@@ -81,15 +81,6 @@ const Totals = ({ data, formKey }: { data: Data; formKey: string }) => {
       </p>
     );
   }
-  if (formKey === "f13") {
-    return (
-      <p className="type-body font-medium" role="status">
-        {t("claimTotal", {
-          total: formatIqd(forms.claimTotal(data), locale),
-        })}
-      </p>
-    );
-  }
   if (formKey === "f14") {
     const totals = forms.cashTotals(data);
     return (
