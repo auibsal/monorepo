@@ -23,7 +23,7 @@ items and decisions) and continue from the first unticked item.
     `/membership/more` ("Tell us more"),
     `/events/company/auditions`, `/qirtas/write` (the two doors, your
     work, and the form itself with `?type=`; then `/submission`, `/work`,
-    `/piece`). Perks are on the card (until the Pass replaces it); voting
+    `/piece`). Perks are on the card; voting
     eligibility is on Society; the calendar feed is on My calendar. The
     site's header and footer, a Membership row (`components/account`), and
     the gates in `components/nexus/gates.tsx`. They link with the site's
@@ -181,15 +181,6 @@ any schema change. Integration tests run against a local stack with
   an AUIB address, anyone's sign-in address or another member's personal
   email, and no sign-in address can be a member's verified personal email
   (triggers on `core.profiles` and `auth.users`, a unique index).
-- **The IDEA Pass card replaces SAL's card** once the Pass is on (owner,
-  Oct 27, 2026; same switch): Today shows the Pass card (`PassCard`:
-  The IDEA's live embed in a frame once `NEXT_PUBLIC_PASS_EMBED=true`,
-  else the picture from the `card` scope) and links to the live one; the door and
-  the Tour scan the Pass through `POST /api/pass/card` (The IDEA checks
-  it with SAL's secret; the officer's session spends the scan with
-  `events.check_in_pass` / `programmes.*_six_words_pass`); SAL's card,
-  its check page, Google Wallet and the member perks are retired. Until
-  then, SAL's own card works as below (`docs/platform/idea-pass.md`).
 - **The membership card is live.** Its QR is
   `/verify/member/<code>?t=<digits>`: the digits are a TOTP of the card's
   secret (RFC 6238, SHA-1, 30 s, 8 digits; `lib/totp.ts` and
@@ -366,19 +357,7 @@ any schema change. Integration tests run against a local stack with
 - **Package manager:** Bun with the hoisted linker (`bunfig.toml`). Declare every
   dependency a package imports; keep versions aligned across workspaces. Bun
   installs and runs scripts; Next.js runs on Node (`next build`).
-- **Auth:** The IDEA Pass is the only way to sign in once
-  `NEXT_PUBLIC_PASS_ISSUER`, `NEXT_PUBLIC_PASS_CLIENT_ID` and
-  `PASS_CLIENT_SECRET` are set (owner, Oct 26, 2026); students prove they
-  study at AUIB there, and everything else stays here. A Pass is linked to
-  one SAL account (`access.pass_links`), found by the link, the Pass's
-  verified address or the verified AUIB address it shares
-  (`student_email`, used for nothing else); a current student
-  status makes a member and counts for ballots (`private.is_auib_member`).
-  The sign-in opens an ordinary SAL session, so RLS, roles and the
-  officers' second step are unchanged (`lib/api/pass.ts`,
-  `lib/api/pass-account.ts`, `/api/pass/*`, `/auth/pass`;
-  `docs/platform/idea-pass.md`). Until then: email sign-in (AUIB address
-  first; magic link or password). In
+- **Auth:** email sign-in (AUIB address first; magic link or password). In
   the members' pages and the Diwan, query with `useAuth().supabase` so RLS
   applies. In the API
   routes, identify callers with `authenticateRequest` and re-check
