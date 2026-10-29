@@ -9,24 +9,6 @@ Branch: `claude/new-session-qosn60`.
 
 ## Blocked — needed from the user
 
-- [ ] **The IDEA Pass (2026-10-26), the only way to sign in:** the SAL side
-      is built and off until three variables are set
-      (`docs/platform/idea-pass.md`, "Turning it on"). The IDEA's provider is
-      live (issuer `https://api.theideaiq.com/oidc`), and SAL registers
-      itself: create SAL's company in The IDEA Business
-      (spark.theideaiq.com) → Developers, verify auibsal.org with the DNS TXT
-      record it shows, and register the app (the client id and secret are
-      shown once; tick Name and picture, Email, Verified student, University
-      email and The Pass card). Test with the officers while the app is in testing, take
-      it live, then set `NEXT_PUBLIC_PASS_ISSUER`,
-      `NEXT_PUBLIC_PASS_CLIENT_ID` and `PASS_CLIENT_SECRET` in Vercel and
-      redeploy, and in Supabase turn off **Allow new users to sign up**.
-      For the live card on Today, also turn on **Embed the live card** in
-      Developers and, once The IDEA approves it, set
-      `NEXT_PUBLIC_PASS_EMBED=true`.
-      Record the Council's decision and the conflicts-register entry, and
-      amend the privacy policy to name The IDEA Pass (adopted text isn't
-      edited in place).
 - [ ] **Program sessions (2026-10-25):** programs now live in What's on
       (`/events/<program>`; `/programs` is gone, no redirects). The calendar
       fills only once each program has a repeat rule: in the Diwan,
@@ -387,13 +369,14 @@ These stop parts of the work. Everything else continues around them.
 
 ## Decisions
 
-- **The IDEA Pass card replaces SAL's card** (owner, 2026-10-27): with the
-  Pass on, Today shows the Pass card and links to the live one; the door
-  and the Typewriter Tour scan the Pass (checked with The IDEA by the API,
-  spent by the officer's session); SAL's card, its check page, Google
-  Wallet and the member perks are retired (perks come with the Pass).
-  Migration `20261028000000`; `docs/platform/idea-pass.md`, "The card".
-  The card tables go in a later step.
+- **The IDEA Pass removed** (owner, 2026-10-29): sign-in, sign-up and the
+  membership card are SAL's own again, as before Oct 26. Every piece of
+  the Pass is gone: the code, the runbook, and in the database its links,
+  card pictures and door scans (migration `20261029000000`, which also puts
+  the ballot's check back to a confirmed AUIB sign-in address only).
+  Accounts made through the Pass stay and sign in by email. Members whose
+  Google Wallet pass was expired when they signed in with the Pass add the
+  card to Wallet again from Today.
 - **Open Stage into the Company** (owner, 2026-10-27): Open Stage is no
   longer a program and its name is retired; its events, openings, rotas,
   service records and the rest now belong to the Company (migration
@@ -1326,18 +1309,9 @@ All Arabic written for the platform up to 2026-10-24 was reviewed by the
 owner and approved ("reviewed across the board, it's all good"). List new
 Arabic here as it is written.
 
-Written 2026-10-27 (the Pass card): `nexus.home.passCard.*`,
-`nexus.admin.checkIn.ledePass`, `passNotMember`, `passRateLimited`,
-`cardRetired`; `nexus.admin.programmes.sixWords.ledePass`,
-`problems.notMember`, `problems.rateLimited`, `problems.retired`;
-`web.verifyCard.retired`.
-
 Written 2026-10-27 (Open Stage into the Company): the Company's summary
 «فرقة الجمعية المسرحية: عمل مسرحي واحد كل فصل، يُختار ممثلوه من تجارب أداء
 مفتوحة.»; «كل ثلاثة أسابيع», «دورة من ثلاثة أسابيع».
-
-Written 2026-10-26 (The IDEA Pass): `auth.pass.*` (with `unmatchedHint`),
-`nexus.settings.passLine`.
 
 Written 2026-10-25 (sign-up in fewer steps): `auth.signUp.outsideAuib`;
 `nexus.setup.stepOf`, `back`, `continue`, `nameEn.title`, `nameAr.title`,

@@ -9,26 +9,18 @@ import { DataError, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useId, useState } from "react";
-import { passEnabled } from "@/lib/nexus/pass-enabled";
 import { CardScanner, parseCard } from "../card-scanner";
 import { ErrorLine } from "../kit";
 import { useMemberNames } from "../member-picker";
 import { memberName } from "../members/directory";
-import { isPassCard, passProblem, scanPass } from "../pass-scan";
 
 const ARABIC = /[؀-ۿ]/;
 const SPACE = /\s+/;
 const words = (text: string) => text.trim().split(SPACE).filter(Boolean);
 const queryKey = ["admin", "programmes", "six-words"];
 
-type Card = { card_code: string; digits: string } | { pass: string };
-
-/** The message for a card The IDEA or the database refused. */
+/** The message for a card the database refused. */
 const cardProblem = (error: unknown) => {
-  const pass = passProblem(error);
-  if (pass) {
-    return pass;
-  }
   if (error instanceof DataError && error.message.includes("card_not_live")) {
     return "notLive" as const;
   }
@@ -54,7 +46,7 @@ export const TourCards = () => {
   const [text, setText] = useState("");
   const [scanning, setScanning] = useState<"new" | string | null>(null);
   const [problem, setProblem] = useState<
-    ReturnType<typeof cardProblem> | "notCard" | "retired"
+    "notLive" | "unknownCard" | "notCard" | null
   >(null);
   const count = words(text).length;
 
@@ -74,26 +66,14 @@ export const TourCards = () => {
   const refresh = () => queryClient.invalidateQueries({ queryKey });
 
   const record = useMutation({
-    mutationFn: async (card: Card | null) => {
-      const language = ARABIC.test(text) ? "ar" : "en";
-      if (card && "pass" in card) {
-        const scan = await scanPass(supabase, card.pass);
-        return unwrap(
-          await supabase.schema("programmes").rpc("record_six_words_pass", {
-            language,
-            scan,
-            words: words(text).join(" "),
-          })
-        );
-      }
-      return unwrap(
+    mutationFn: async (card: { card_code: string; digits: string } | null) =>
+      unwrap(
         await supabase.schema("programmes").rpc("record_six_words", {
-          language,
+          language: ARABIC.test(text) ? "ar" : "en",
           words: words(text).join(" "),
           ...(card ?? {}),
         })
-      );
-    },
+      ),
     onError: (error) => setProblem(cardProblem(error)),
     onSuccess: async () => {
       setText("");
@@ -103,21 +83,18 @@ export const TourCards = () => {
     },
   });
   const attach = useMutation({
-    mutationFn: async ({ card, id }: { card: Card; id: string }) => {
-      if ("pass" in card) {
-        const scan = await scanPass(supabase, card.pass);
-        return unwrap(
-          await supabase
-            .schema("programmes")
-            .rpc("attach_six_words_pass", { entry_id: id, scan })
-        );
-      }
-      return unwrap(
+    mutationFn: async ({
+      card,
+      id,
+    }: {
+      card: { card_code: string; digits: string };
+      id: string;
+    }) =>
+      unwrap(
         await supabase
           .schema("programmes")
           .rpc("attach_six_words", { entry_id: id, ...card })
-      );
-    },
+      ),
     onError: (error) => setProblem(cardProblem(error)),
     onSuccess: async () => {
       setScanning(null);
@@ -136,14 +113,7 @@ export const TourCards = () => {
   });
 
   const onScan = (value: string) => {
-    const legacy = parseCard(value);
-    if (legacy && passEnabled) {
-      setProblem("retired");
-      return;
-    }
-    const card: Card | null = isPassCard(value)
-      ? { pass: value.trim() }
-      : legacy;
+    const card = parseCard(value);
     if (!card) {
       setProblem("notCard");
       return;
@@ -162,9 +132,7 @@ export const TourCards = () => {
 
   return (
     <div className="grid gap-8">
-      <p className="type-body max-w-3xl text-text-secondary">
-        {passEnabled ? t("ledePass") : t("lede")}
-      </p>
+      <p className="type-body max-w-3xl text-text-secondary">{t("lede")}</p>
 
       <section className="grid max-w-2xl gap-3">
         <h3 className="type-subheading">{t("transcribe")}</h3>

@@ -18,20 +18,11 @@ import { siteUrl } from "@repo/internationalization";
 import { formatLongDate } from "@repo/internationalization/format";
 import { localized, membership, partners, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { ExternalLink } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { type PointerEvent, useEffect, useRef, useState } from "react";
 import QRCode from "react-qr-code";
 import { Guilloche } from "@/components/guilloche";
 import { callApi } from "@/lib/nexus/api";
-import {
-  embedHeight,
-  passCardUrl,
-  passClientId,
-  passEmbedded,
-  passEmbedUrl,
-  passEnabled,
-} from "@/lib/nexus/pass-enabled";
 import { useMemberStatus, useProfile } from "@/lib/nexus/queries";
 import {
   TOTP_PERIOD_SECONDS,
@@ -360,7 +351,7 @@ const Perks = () => {
  * opens the check, and officers at the door scan it to check members in.
  * The card is an object, like a certificate: it keeps the light theme.
  */
-const SalCard = () => {
+export const MembershipCard = () => {
   const t = useTranslations("nexus.home");
   const locale = useLocale() as "en" | "ar";
   const { supabase, user } = useAuth();
@@ -558,113 +549,3 @@ const SalCard = () => {
     </section>
   );
 };
-
-/**
- * The live Pass card, framed from The IDEA once it lets SAL embed it: The
- * IDEA's own page, signed in to The IDEA, so the code never reaches SAL. It
- * reports its height (only to SAL's verified domain); nothing else crosses.
- */
-const LiveCard = () => {
-  const t = useTranslations("nexus.home");
-  const locale = useLocale();
-  const [height, setHeight] = useState(320);
-  useEffect(() => {
-    const listen = (event: MessageEvent) => {
-      const next = embedHeight(event);
-      if (next) {
-        setHeight(next);
-      }
-    };
-    window.addEventListener("message", listen);
-    return () => window.removeEventListener("message", listen);
-  }, []);
-  return (
-    <iframe
-      className="w-full max-w-md border-0"
-      src={passEmbedUrl(locale, passClientId)}
-      style={{ height }}
-      title={t("passCard.live")}
-    />
-  );
-};
-
-/**
- * The IDEA Pass card, which replaces SAL's own once the Pass is on (owner,
- * 2026-10-27): the live card framed from The IDEA once it allows that, else
- * the picture The IDEA drew for this member (read at sign-in, no QR) and a
- * link to the live card; and what membership means here. Perks come with
- * the Pass, so the card lists none.
- */
-const PassCard = () => {
-  const t = useTranslations("nexus.home");
-  const tc = useTranslations("common");
-  const locale = useLocale() as "en" | "ar";
-  const { supabase, user } = useAuth();
-  const status = useMemberStatus();
-  const card = useQuery({
-    enabled: Boolean(user && status.data?.is_member) && !passEmbedded,
-    queryFn: async () =>
-      unwrap(
-        await supabase
-          .schema("access")
-          .from("pass_links")
-          .select("card_svg_en, card_svg_ar")
-          .maybeSingle()
-      ),
-    queryKey: ["pass-card", user?.id],
-  });
-
-  if (!status.data?.is_member) {
-    return null;
-  }
-  const svg =
-    (locale === "ar" ? card.data?.card_svg_ar : card.data?.card_svg_en) ||
-    card.data?.card_svg_en ||
-    card.data?.card_svg_ar;
-  const tier = status.data.tier ? t(`tiers.${status.data.tier}`) : "";
-
-  return (
-    <section aria-labelledby="pass-card" className="grid max-w-3xl gap-5">
-      <h2 className="type-heading" id="pass-card">
-        {t("passCard.title")}
-      </h2>
-      {passEmbedded ? <LiveCard /> : null}
-      {!passEmbedded && svg ? (
-        // biome-ignore lint/performance/noImgElement: The IDEA's drawing of the card, kept as SVG text
-        <img
-          alt={t("passCard.alt")}
-          className="h-auto w-full max-w-md"
-          height={270}
-          src={`data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`}
-          width={428}
-        />
-      ) : null}
-      <p className="type-body">{t("passCard.body")}</p>
-      <a
-        className="link inline-flex items-center gap-1 justify-self-start"
-        href={passCardUrl(locale)}
-        rel="noopener"
-        target="_blank"
-      >
-        {t("passCard.open")}
-        <ExternalLink aria-label={tc("externalLink")} className="size-3.5" />
-      </a>
-      <dl className="grid grid-cols-2 gap-x-8 gap-y-4 border-line border-t pt-4 sm:grid-cols-3">
-        {status.data.member_since ? (
-          <Field
-            label={t("card.since")}
-            value={sinceMonth(status.data.member_since, locale)}
-          />
-        ) : null}
-        {tier ? <Field label={t("card.tier")} value={tier} /> : null}
-        <Field
-          label={t("card.vote")}
-          value={status.data.voting_member ? t("card.votes") : t("card.noVote")}
-        />
-      </dl>
-    </section>
-  );
-};
-
-/** The member's card: the IDEA Pass once it is on, SAL's own until then. */
-export const MembershipCard = passEnabled ? PassCard : SalCard;

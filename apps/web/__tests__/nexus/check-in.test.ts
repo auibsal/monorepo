@@ -24,12 +24,6 @@ describe("check-in scans", () => {
     ).toEqual({ card_code: "0123456789abcdef0123", digits: "" });
   });
 
-  test("reads an IDEA Pass card QR", () => {
-    expect(parseScan(" IDEA:1042:123456 ")).toEqual({
-      pass: "IDEA:1042:123456",
-    });
-  });
-
   test("ignores anything else", () => {
     for (const value of [
       "https://example.com",
@@ -38,8 +32,6 @@ describe("check-in scans", () => {
       "sal:member:0b6f6d5e-1f2a-4c3b-9d8e-7f6a5b4c3d2e",
       "https://auibsal.org/verify/member/short",
       "https://auibsal.org/verify/0123456789abcdef0123",
-      "IDEA:1042:12345",
-      "IDEA:member:123456",
     ]) {
       expect(parseScan(value), value).toBeNull();
     }

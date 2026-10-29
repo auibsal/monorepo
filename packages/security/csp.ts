@@ -83,14 +83,6 @@ export const turnstileCspSources: CspSources = {
   script: ["https://challenges.cloudflare.com"],
 };
 
-/**
- * The IDEA Pass's live card, framed on the members' pages once The IDEA lets
- * SAL embed it. The frame is The IDEA's page: the code never reaches SAL.
- */
-export const ideaPassCspSources: CspSources = {
-  frame: ["https://theideaiq.com"],
-};
-
 /** Supabase REST, Auth, Storage and Realtime (WebSocket) for a project URL. */
 export const supabaseCspSources = (url: string | undefined): CspSources => {
   if (!url) {

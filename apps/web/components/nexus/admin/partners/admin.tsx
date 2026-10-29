@@ -22,7 +22,6 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useId, useState } from "react";
 import { callApi } from "@/lib/nexus/api";
-import { passEnabled } from "@/lib/nexus/pass-enabled";
 import { useGrants } from "@/lib/nexus/queries";
 import { SectionSpinner } from "../../states";
 import { ImageField } from "../image-field";
@@ -1394,8 +1393,6 @@ export const PartnersAdmin = () => {
   const t = useTranslations("nexus.admin.partners");
   const grants = useGrants();
   const canManage = hasPermissionAnywhere(grants.data, "partners.manage");
-  // Perks come with the IDEA Pass once it is on (owner, 2026-10-27).
-  const offers = canManage && !passEnabled;
   const canSeeDeclarations =
     hasPermissionAnywhere(grants.data, "governance.manage") ||
     hasPermissionAnywhere(grants.data, "partners.sign");
@@ -1414,7 +1411,7 @@ export const PartnersAdmin = () => {
               {t("tabs.affiliations")}
             </TabsTrigger>
           ) : null}
-          {offers ? (
+          {canManage ? (
             <TabsTrigger value="offers">{t("tabs.offers")}</TabsTrigger>
           ) : null}
           {canSeeDeclarations ? (
@@ -1436,7 +1433,7 @@ export const PartnersAdmin = () => {
             <Affiliations />
           </TabsContent>
         ) : null}
-        {offers ? (
+        {canManage ? (
           <TabsContent className="pt-4" value="offers">
             <Offers />
           </TabsContent>

@@ -153,31 +153,6 @@
       "hint": "Can't open the link on this device? Type the code from the same email.",
       "submit": "Continue",
       "submitting": "Checking…"
-    },
-    "pass": {
-      "continue": "Continue with The IDEA Pass",
-      "lede": "Sign in or join with The IDEA Pass, the one account for the Society's website.",
-      "forgot": "Passwords are kept on The IDEA Pass. Continue there to sign in or change yours.",
-      "students": "AUIB students: confirm on The IDEA Pass that you study at AUIB, and your membership follows.",
-      "unavailable": "The IDEA Pass isn't answering right now. Try again in a few minutes.",
-      "signingIn": "Signing you in",
-      "wait": "One moment while we open your account.",
-      "unmatchedTitle": "We couldn't find your account",
-      "unmatchedBody": "There's no Society account under <email>{address}</email> yet.",
-      "unmatchedNoEmail": "There's no Society account under your IDEA Pass yet.",
-      "create": "Create my account",
-      "existing": "I already have an account under another address",
-      "existingTitle": "Sign in once to link your account",
-      "existingBody": "Sign in with the address your account uses. From then on you'll sign in with The IDEA Pass.",
-      "failedTitle": "That didn't work",
-      "tryAgain": "Try again",
-      "errors": {
-        "linked_elsewhere": "That account is already linked to another IDEA Pass. Ask the Membership officers for help.",
-        "no_email": "Your IDEA Pass has no confirmed email address yet. Confirm one there, then come back.",
-        "expired": "This sign-in has expired. Start again from the sign-in page.",
-        "other": "We couldn't sign you in. Start again from the sign-in page."
-      },
-      "unmatchedHint": "Joined before with your AUIB address? Choose \"I already have an account under another address\" and sign in with it once."
     }
   },
   "nexus": {
@@ -384,14 +359,7 @@
         "tour": "When the Tour comes next",
         "takenDown": "These words were taken down from the wall."
       },
-      "greetingPlain": "Welcome",
-      "passCard": {
-        "title": "Your card",
-        "alt": "Your IDEA Pass card",
-        "body": "Your IDEA Pass is your membership card. Show its live code at the door and on the Typewriter Tour; partners' offers come with the Pass.",
-        "open": "Open your live card",
-        "live": "Your live IDEA Pass card"
-      }
+      "greetingPlain": "Welcome"
     },
     "events": {
       "title": "My calendar",
@@ -1116,11 +1084,7 @@
         "checkInPerson": "Check in",
         "count": "{count} checked in",
         "noResults": "No member found.",
-        "cardNotLive": "This card's code isn't live (a screenshot?). Ask to see the card on the member's own phone.",
-        "ledePass": "Scan the ticket QR in a member's Diwan, or their IDEA Pass card. If the camera won't work, look them up by name.",
-        "passNotMember": "This IDEA Pass hasn't been used with SAL yet. Ask them to sign in at auibsal.org once, or look them up by name.",
-        "passRateLimited": "Too many cards that didn't check out. Wait a few minutes, or look them up by name.",
-        "cardRetired": "SAL's own cards are retired. Scan the member's IDEA Pass instead."
+        "cardNotLive": "This card's code isn't live (a screenshot?). Ask to see the card on the member's own phone."
       },
       "content": {
         "title": "Content",
@@ -1469,12 +1433,8 @@
           "problems": {
             "notLive": "That card's code has expired. Ask them to open their card again and scan the live code.",
             "unknownCard": "That card isn't on record.",
-            "notCard": "That isn't a membership card.",
-            "notMember": "This IDEA Pass hasn't been used with SAL yet. Save the card unsigned and attach it once they have signed in.",
-            "rateLimited": "Too many cards that didn't check out. Wait a few minutes and scan again.",
-            "retired": "SAL's own cards are retired. Scan the writer's IDEA Pass instead."
-          },
-          "ledePass": "Six Words are written on paper at the Typewriter Tour, never on the site. Type each card exactly as written. Scan the writer's IDEA Pass to save it as theirs, or save it unsigned and attach their Pass later. A card goes on the wall at once."
+            "notCard": "That isn't a membership card."
+          }
         },
         "rotas": {
           "new": "New rota",
@@ -3844,9 +3804,7 @@
       "profile": "Profile",
       "profileLine": "Your name in both languages, a short bio, and what you tell us about yourself.",
       "requests": "Requests and reports",
-      "requestsLine": "What you have sent, and starting a new request.",
-      "pass": "The IDEA Pass",
-      "passLine": "You sign in with The IDEA Pass. Your password, passkeys and AUIB student status are kept there; everything else stays here."
+      "requestsLine": "What you have sent, and starting a new request."
     },
     "recoveryCodes": {
       "noneTitle": "Save your recovery codes",
@@ -4467,8 +4425,7 @@
       "notLive": "This code isn't live (it may be a screenshot). Ask to see the card on the member's own phone.",
       "perks": "Partners: this member may use the Society's member perks.",
       "pattern": "This card's pattern. It should match the one on the member's card.",
-      "record": "Certificates",
-      "retired": "SAL's own membership cards are retired: members now show their IDEA Pass, which the Society checks at the door."
+      "record": "Certificates"
     },
     "productions": {
       "title": "The Company",
