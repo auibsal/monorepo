@@ -1485,8 +1485,8 @@
           "recent": "Recently closed"
         },
         "callboard": {
-          "lede": "Roles this program needs filled, on the Callboard. Members who say they're interested are listed here, and each one is also emailed to the program's managers. Close a role once it's filled.",
-          "title": "Role",
+          "lede": "This program's openings on the Callboard, the Society's careers page: roles, one-term Apprenticeships and First Ink mentor places. Members who say they're interested are listed here, and each one is also emailed to the program's managers. Give the places, then close the opening once it's filled.",
+          "title": "Title",
           "body": "What it involves",
           "skills": "Skills it wants",
           "closes": "Closes (optional)",
@@ -1497,7 +1497,36 @@
           "replies": "{count, plural, =0 {Nobody has replied yet} one {One member is interested} other {{count} members are interested}}",
           "close": "Close the role",
           "closeConfirm": "Close this role? It leaves the Callboard; the replies stay here.",
-          "reopen": "Reopen"
+          "reopen": "Reopen",
+          "kind": "What it offers",
+          "kinds": {
+            "role": "A role",
+            "apprenticeship": "Apprenticeship",
+            "first_ink": "First Ink"
+          },
+          "kindHints": {
+            "role": "A role the program needs filled.",
+            "apprenticeship": "A one-term place in a Qirtas section or this program. Its sessions are logged as shifts on its own rota, the hours count as service, and completing it drafts a certificate.",
+            "first_ink": "A mentor place for AUIB members who volunteer with high school students, through the partner school. The students never get accounts: record nothing about them here."
+          },
+          "desk": "Qirtas section (optional)",
+          "deskHint": "For an apprenticeship in one of Qirtas's sections.",
+          "noDesk": "None: the program itself",
+          "partner": "Partner school",
+          "partnerHint": "First Ink runs through the partner school, from the one register of partners.",
+          "choosePartner": "Choose the school",
+          "places": "Places",
+          "termFrom": "Term starts",
+          "termTo": "Term ends",
+          "give": "Give the place",
+          "withdraw": "Withdraw",
+          "complete": "Complete the apprenticeship",
+          "completeConfirm": "Complete this apprenticeship? A certificate is drafted with the hours of its sessions, for the President and the Faculty Advisor to sign.",
+          "placement": {
+            "active": "has the place",
+            "completed": "completed",
+            "withdrawn": "withdrawn"
+          }
         },
         "sessions": {
           "lede": "How this program repeats. Its sessions appear in What's on, each a date you can still edit or cancel in Events.",
@@ -3841,7 +3870,7 @@
     },
     "callboard": {
       "title": "The Callboard",
-      "lede": "Roles, shifts and auditions across the Society, on one board. Pick something up; the hours you give count toward your service record.",
+      "lede": "The Society's careers page: roles, apprenticeships, First Ink mentoring, shifts and auditions, on one board. Pick something up; the hours you give count toward your service record.",
       "matched": "What matches the skills in your profile comes first.",
       "noSkills": "Tell us your skills and what matches them comes first.",
       "addSkills": "Add your skills",
@@ -3849,9 +3878,9 @@
       "matches": "Matches your skills: {skills}",
       "wants": "Looking for: {skills}",
       "closes": "Closes {date}",
-      "roles": "Roles",
-      "rolesLede": "Roles a program needs filled. Say you're interested and its lead will be in touch.",
-      "noRoles": "No roles are posted right now.",
+      "roles": "Roles and places",
+      "rolesLede": "Roles a program needs filled, one-term Apprenticeships in a Qirtas section or a program, and First Ink mentor places. Say you're interested and its lead will be in touch.",
+      "noRoles": "Nothing is posted right now.",
       "interested": "I'm interested",
       "interestedNote": "You said you're interested. The program's lead will be in touch.",
       "takeBack": "Take it back",
@@ -3863,7 +3892,21 @@
       "noAuditions": "No auditions are announced right now.",
       "hours": "Your hours",
       "hoursLede": "The hours you give on shifts and roles count toward your service record and the Society's certificates.",
-      "hoursLink": "See your service record"
+      "hoursLink": "See your service record",
+      "qirtas": "Qirtas",
+      "kinds": {
+        "apprenticeship": "Apprenticeship",
+        "first_ink": "First Ink"
+      },
+      "kindLines": {
+        "apprenticeship": "One term. Your sessions are logged as shifts, the hours count as service, and you get a certificate at the end.",
+        "first_ink": "Mentor high school students as an AUIB member, through our partner school."
+      },
+      "term": "{from} to {to}",
+      "placed": {
+        "active": "You have a place.",
+        "completed": "You completed this place."
+      }
     },
     "settings": {
       "title": "Settings",

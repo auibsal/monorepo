@@ -356,6 +356,12 @@ const Openings = ({ skills }: { skills: readonly string[] }) => {
     queryFn: () => programmes.myOpeningReplies(supabase, user?.id ?? ""),
     queryKey: ["opening-replies", user?.id],
   });
+  const placements = useQuery({
+    enabled: Boolean(user),
+    queryFn: () => programmes.myPlacements(supabase, user?.id ?? ""),
+    queryKey: ["placements", user?.id],
+  });
+  const tj = useTranslations("nexus.admin.journal");
   const refresh = () =>
     queryClient.invalidateQueries({ queryKey: ["opening-replies"] });
   const reply = useMutation({
@@ -380,6 +386,9 @@ const Openings = ({ skills }: { skills: readonly string[] }) => {
         {rows.map((row) => {
           const interested = mine.has(row.id);
           const body = localized(row, "body", locale);
+          const placed = placements.data?.find(
+            (pl) => pl.opening_id === row.id && pl.status !== "withdrawn"
+          );
           return (
             <li
               className="grid gap-3 sm:grid-cols-[1fr_auto] sm:items-center"
@@ -389,11 +398,31 @@ const Openings = ({ skills }: { skills: readonly string[] }) => {
                 <p className="type-subheading">
                   {localized(row, "title", locale)}
                 </p>
-                {row.programme ? (
+                <p className="type-caption">
+                  {[
+                    row.kind === "role"
+                      ? null
+                      : tc(`kinds.${row.kind as "apprenticeship"}`),
+                    row.desk
+                      ? `${tc("qirtas")} · ${tj(`desks.${row.desk}`)}`
+                      : row.programme
+                        ? localized(row.programme, "name", locale)
+                        : null,
+                    row.term_from && row.term_to
+                      ? tc("term", {
+                          from: formatLongDate(row.term_from, locale),
+                          to: formatLongDate(row.term_to, locale),
+                        })
+                      : null,
+                  ]
+                    .filter(Boolean)
+                    .join(" · ")}
+                </p>
+                {row.kind === "role" ? null : (
                   <p className="type-caption">
-                    {localized(row.programme, "name", locale)}
+                    {tc(`kindLines.${row.kind as "apprenticeship"}`)}
                   </p>
-                ) : null}
+                )}
                 {body ? <p className="type-body">{body}</p> : null}
                 {row.skills.length > 0 ? (
                   <p className="type-caption">
@@ -414,7 +443,12 @@ const Openings = ({ skills }: { skills: readonly string[] }) => {
                     })}
                   </p>
                 ) : null}
-                {interested ? (
+                {placed ? (
+                  <p className="type-body font-medium" role="status">
+                    {tc(`placed.${placed.status as "active"}`)}
+                  </p>
+                ) : null}
+                {interested && !placed ? (
                   <p className="type-body font-medium" role="status">
                     {tc("interestedNote")}
                   </p>

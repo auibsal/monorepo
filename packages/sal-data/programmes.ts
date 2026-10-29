@@ -108,9 +108,19 @@ export const openings = async (client: Client) =>
       .schema("programmes")
       .from("openings")
       .select(
-        "id, programme_id, title_en, title_ar, body_en, body_ar, skills, closes_at, is_open, created_at"
+        "id, kind, programme_id, desk, places, term_from, term_to, title_en, title_ar, body_en, body_ar, skills, closes_at, is_open, created_at"
       )
       .order("created_at", { ascending: false })
+  ) ?? [];
+
+/** The Apprenticeship and First Ink places the member holds. */
+export const myPlacements = async (client: Client, userId: string) =>
+  unwrap(
+    await client
+      .schema("programmes")
+      .from("placements")
+      .select("opening_id, status")
+      .eq("user_id", userId)
   ) ?? [];
 
 /** The openings the signed-in member said they are interested in. */
