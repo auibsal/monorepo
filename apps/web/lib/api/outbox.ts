@@ -564,7 +564,11 @@ const handlers: Record<string, Handler> = {
       return;
     }
     const stop = stopLinks(to.lang, String(payload.user_id));
-    await send(to, sundayPaper(to.lang, { ...paper, stop: stop.page }), stop.headers);
+    await send(
+      to,
+      sundayPaper(to.lang, { ...paper, stop: stop.page }),
+      stop.headers
+    );
   },
   // The Council decided an account from outside AUIB
   // (membership.decide_verification).

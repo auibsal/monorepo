@@ -9,14 +9,29 @@ Branch: `claude/new-session-qosn60`.
 
 ## Blocked — needed from the user
 
+- [ ] **Owner decisions of Oct 29, 2026, what is left for the owner:**
+  - **The room** for the Tuesday series (Open Pages, the Salon, Book
+    Circle, 4:00–5:30 PM): TODO(content). The twelve sessions are on the
+    calendar without a place; add it in the Diwan's Events (one by one) or
+    tell us and we add it to all of them.
+  - **Book Circle on al-Mutanabbi Street, Friday, April 9, 2027:** a draft
+    event with a placeholder 10:00 AM–2:00 PM until its time is set
+    (TODO(content)); publish it in Events once the trip is approved.
+  - **The charity partner** stays unset; Second Chapter says "our charity
+    partner" until the Council approves one.
+  - **The first Prizes round:** name the judges and shortlist pieces in the
+    Diwan (Qirtas → Prizes) before April 4, 2027.
+  - **The adopted documents** still name the Majlis, Munazara, Mutanabbi
+    Friday, Bad Poetry Night, the Evenings and the Month in Qirtas; amend
+    them when the Council next adopts (their spelling is now American).
+  - **Native review** of the new Arabic (listed below).
 - [ ] **Program sessions (2026-10-25):** programs now live in What's on
-      (`/events/<program>`; `/programs` is gone, no redirects). The calendar
-      fills only once each program has a repeat rule: in the Diwan,
-      Programs → Sessions, set the first date, time, place, way in and how
-      often (the Evenings take turns: every three weeks each, since Open
-      Stage merged into the Company on Oct 27), save, then
-      "Add the sessions" up to the term's end. Single dates are edited or
-      canceled in Events.
+      (`/events/<program>`; `/programs` is gone, no redirects). A program
+      with a steady rhythm gets its calendar from a repeat rule: in the
+      Diwan, Programs → Sessions, set the first date, time, place, way in
+      and how often, save, then "Add the sessions" up to the term's end.
+      Programs on set dates (the Tuesday series) have their sessions as
+      events. Single dates are edited or canceled in Events.
 - [ ] **Platform policy text (2026-10-25):** the adopted platform policy on
       photo removal still names `auibsal.org/programs/side-quest/care`;
       Next Stop's promise is now at `/events/next-stop/care`. Adopted text
@@ -369,6 +384,69 @@ These stop parts of the work. Everything else continues around them.
 
 ## Decisions
 
+- **Six programs, no groupings** (owner, Oct 29, 2026): Second Chapter,
+  Typewriter Tour, the Company, the Salon, Book Circle and Open Pages,
+  each with its rhythm in one plain line; the Flagships, the Evenings and
+  the Specials are gone, with their copy. The Majlis is the Salon (slug
+  `salon`, «الصالون الأدبي»: "A guest, three readings, tea and conversation,
+  every third Tuesday."). Munazara folded into the Salon, Mutanabbi Friday
+  into Book Circle, Bad Poetry Night into Open Pages: their events,
+  openings, rotas and service records moved to the parent, their sessions
+  became ordinary events with plain titles, and the programs, their repeat
+  rules and names are gone; roles held for them ended (migration
+  `20261029000100`). The Tuesday series, 4:00–5:30 PM: Open Pages Nov 17,
+  Mar 2, Mar 30 (to 6:00 PM), May 4; the Salon Dec 1, Feb 16, Mar 16,
+  Apr 6, May 11; Book Circle Feb 23, Mar 23, Apr 27, and Friday, Apr 9 on
+  al-Mutanabbi Street (a draft). The charity partner stays unset: Second
+  Chapter says "our charity partner".
+- **Next Stop is Qirtas's video show** (owner, Oct 29, 2026): its program
+  row is unpublished; its page and care promise are at `/qirtas/next-stop`
+  and `/qirtas/next-stop/care` (no redirects from `/events/next-stop`); the
+  Video section's copy says so.
+- **Qirtas in six sections** (owner, Oct 29, 2026): News, Voices (with the
+  review, from News), Letters, Gallery, Video and Games, six types each.
+  The newsroom door takes News, Voices, Video and Games; the Edition door
+  Letters and Gallery. The types in use were mapped: article → report,
+  letter → letter to the editor, short drama → drama, art and photography
+  → art, video → video report (Next Stop pieces → Next Stop episode),
+  prose → fiction (editors can move a piece to creative nonfiction); the
+  database refuses any other type (migrations `20261029000200`–`0300`).
+  The Games section's interactive puzzles (crosswords, word searches) stay
+  as they were beside the games members send. The masthead adds a Voices
+  Editor and a Games Editor.
+- **The Sunday Paper is monthly** (owner, Oct 29, 2026), on the first
+  Sunday, to members who receive email and to the public list (a
+  subscriber who is also a member gets one copy): the month's pieces,
+  What's on and the Callboard's open places. The Month in Qirtas is merged
+  into it and the name retired (migration `20261029000400`).
+- **The Edition is printed** (owner, Oct 29, 2026): each Edition's record
+  keeps its print run, printer and date, shown on the Edition page as one
+  line (migration `20261029000500`).
+- **The Qirtas Prizes** (owner, Oct 29, 2026): six prizes (Mutanabbi;
+  Tabari for News; Jahiz for Voices; Nazik for Letters; Wasiti for
+  Gallery; Ibn al-Haytham for Video), a page at `/qirtas/prizes` with the
+  shortlists and winners, and the Diwan's Qirtas → Prizes for shortlists,
+  judges, winners and certificates. First round: shortlists April 4,
+  awarded April 20, 2027 (migration `20261029000600`).
+- **The Callboard is the careers page** (owner, Oct 29, 2026): the
+  Apprenticeship (one-term places in a Qirtas section or a program,
+  sessions logged as shifts, hours as service, a certificate at the end)
+  and First Ink mentor places for AUIB members volunteering with high
+  school students, run through the partner school; high school students
+  never get accounts (migration `20261029000700`).
+- **Roles** (owner, Oct 29, 2026): the "Director of the Company" title is
+  removed and the Company's lead is a Program Lead titled "Artistic
+  Director" (a director holding that title becomes that, and leaves the
+  director's seat); the Director of Programs is a role of its own
+  (`programs_director`) with the program permissions for every program;
+  Program Leads are scoped to one program; other directors don't manage
+  programs (migration `20261029000800`).
+- **American English across the board, no exceptions** (owner, Oct 29,
+  2026): the exception for quoted text is gone and the endorsement line is
+  "a Society of Arts and Letters program". The database's English text
+  (every `_en` column, the permission descriptions) was respelled
+  (migration `20261029000900`), as were the messages, comments and docs.
+  Code identifiers stay (`programmes`, `programme_id`, `cancelled`).
 - **The IDEA Pass removed** (owner, 2026-10-29): sign-in, sign-up and the
   membership card are SAL's own again, as before Oct 26. Every piece of
   the Pass is gone: the code, the runbook, and in the database its links,
@@ -921,6 +999,26 @@ These stop parts of the work. Everything else continues around them.
 
 ## Checklist
 
+### Owner decisions (2026-10-29)
+
+- [x] Six programs, rhythm lines, no groupings; the Salon; three folds;
+      the Tuesday series; Next Stop into Qirtas; pgTAP `99_six_programs`
+      (10)
+- [x] Qirtas: six sections and thirty-six types, Games, the review in
+      Voices, two doors, Voices and Games Editors; pgTAP
+      `99_qirtas_sections` (14), journal tests updated
+- [x] The Sunday Paper monthly on the first Sunday, merged with the public
+      list (the Month in Qirtas retired); pgTAP `99_newsletter` (14)
+- [x] The printed edition on each Edition's record and page
+- [x] The Qirtas Prizes: schema, `/qirtas/prizes`, Diwan tab,
+      certificates; pgTAP `99_qirtas_prizes` (13)
+- [x] The Callboard as the careers page: Apprenticeship and First Ink,
+      places, certificates; Director of Programs; pgTAP
+      `99_callboard_careers` (13)
+- [x] American English in the database, messages, comments and docs
+- [ ] Owner: the room, the Friday trip's time, the judges, native review
+      (see Blocked)
+
 ### Sign-up in fewer steps (2026-10-25)
 
 - [x] Sign-up with an AUIB address asks only the address and a password;
@@ -1308,6 +1406,26 @@ Covered by automated tests so far:
 All Arabic written for the platform up to 2026-10-24 was reviewed by the
 owner and approved ("reviewed across the board, it's all good"). List new
 Arabic here as it is written.
+
+Written 2026-10-29 (owner decisions): the Salon «الصالون الأدبي» and its
+summary «ضيف وثلاث قراءات وشاي وحديث، كل ثالث ثلاثاء.»; the programs'
+rhythm lines and new summaries (migration `20261029000100`); the plain
+titles of folded events («مناظرة أدبية»، «شارع المتنبي»، «أسوأ قصيدة»);
+Next Stop's summary and `web.journal.nextStop.*`, `web.care.lede`; the
+section and type labels (`nexus.admin.journal.desks`, `categories`,
+`web.journal.desks`, `categories`, `deskLedes`, `nexus.waraq.deskLines`,
+`nexus.waraq.send.*`, `nexus.journal.write.deskLines`, `newsroomLede`);
+the Sunday Paper (`web.newsletter.*`, `nexus.admin.content.newsletter`,
+`web.privacy.platform.newsletter`, the emails `sundayPaper` and
+`newsletterConfirm`); the printed edition (`web.journal.printed`,
+`nexus.admin.journal.issue.print*`); the Prizes' names («جائزة المتنبي»،
+«جائزة الطبري»، «جائزة الجاحظ»، «جائزة نازك»، «جائزة الواسطي»، «جائزة
+ابن الهيثم»), `web.prizes.*`, `nexus.admin.prizes.*` and the prize
+citations; the Callboard («الحبر الأول» for First Ink, «تدريب مهني» for the
+Apprenticeship, `nexus.callboard.*`, `nexus.admin.programmes.callboard.*`);
+the certificates `prize` and `apprenticeship`; the roles «مدير البرامج»،
+«محرر الأصوات»، «محرر الألعاب»، «المدير الفني»; `web.give.policy`;
+`web.games.fromMembers`; `web.programmes.lede`.
 
 Written 2026-10-27 (Open Stage into the Company): the Company's summary
 «فرقة الجمعية المسرحية: عمل مسرحي واحد كل فصل، يُختار ممثلوه من تجارب أداء

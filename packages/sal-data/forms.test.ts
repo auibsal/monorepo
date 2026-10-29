@@ -116,7 +116,7 @@ describe("letters", () => {
     expect(placeholders(letters.l07)).toEqual([
       "partner contact",
       "name",
-      "programme",
+      "program",
       "result: numbers, people reached, money raised",
       "One specific thing they did that made a difference.",
       "when",
@@ -125,11 +125,11 @@ describe("letters", () => {
   });
 
   test("filled values replace brackets; empty ones stay marked", () => {
-    const parts = fill("Dear [name], thank you for [programme].", {
+    const parts = fill("Dear [name], thank you for [program].", {
       name: "Sara",
     });
     expect(parts.map((p) => p.text).join("")).toBe(
-      "Dear Sara, thank you for [programme]."
+      "Dear Sara, thank you for [program]."
     );
     expect(parts.filter((p) => p.placeholder && !p.filled)).toHaveLength(1);
     expect(letterText(letters.l08, { name: "Dr. Huda" })).toContain(

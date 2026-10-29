@@ -375,6 +375,28 @@ const Openings = ({ skills }: { skills: readonly string[] }) => {
   });
   const mine = new Set(replies.data ?? []);
   const rows = programmes.matchedFirst(list.data ?? [], skills);
+  type Row = (typeof rows)[number];
+  // What it offers, where, and for which term, on one line.
+  const where = (row: Row) => {
+    let place: string | null = null;
+    if (row.desk) {
+      place = `${tc("qirtas")} · ${tj(`desks.${row.desk}`)}`;
+    } else if (row.programme) {
+      place = localized(row.programme, "name", locale);
+    }
+    return [
+      row.kind === "role" ? null : tc(`kinds.${row.kind as "apprenticeship"}`),
+      place,
+      row.term_from && row.term_to
+        ? tc("term", {
+            from: formatLongDate(row.term_from, locale),
+            to: formatLongDate(row.term_to, locale),
+          })
+        : null,
+    ]
+      .filter(Boolean)
+      .join(" · ");
+  };
 
   return (
     <DiwanSection description={tc("rolesLede")} id="roles" title={tc("roles")}>
@@ -398,26 +420,7 @@ const Openings = ({ skills }: { skills: readonly string[] }) => {
                 <p className="type-subheading">
                   {localized(row, "title", locale)}
                 </p>
-                <p className="type-caption">
-                  {[
-                    row.kind === "role"
-                      ? null
-                      : tc(`kinds.${row.kind as "apprenticeship"}`),
-                    row.desk
-                      ? `${tc("qirtas")} · ${tj(`desks.${row.desk}`)}`
-                      : row.programme
-                        ? localized(row.programme, "name", locale)
-                        : null,
-                    row.term_from && row.term_to
-                      ? tc("term", {
-                          from: formatLongDate(row.term_from, locale),
-                          to: formatLongDate(row.term_to, locale),
-                        })
-                      : null,
-                  ]
-                    .filter(Boolean)
-                    .join(" · ")}
-                </p>
+                <p className="type-caption">{where(row)}</p>
                 {row.kind === "role" ? null : (
                   <p className="type-caption">
                     {tc(`kindLines.${row.kind as "apprenticeship"}`)}

@@ -3,9 +3,9 @@ import { render } from "@react-email/components";
 import {
   decision,
   newsletterConfirm,
-  sundayPaper,
   removalReceived,
   rsvpConfirmed,
+  sundayPaper,
 } from "@repo/email/copy";
 import { Notice } from "@repo/email/templates/notice";
 import { describe, expect, test } from "vitest";
@@ -68,9 +68,7 @@ describe("the newsletter", () => {
       "en",
       "https://auibsal.org/newsletter/confirm?token=abc"
     );
-    expect(built.subject).toBe(
-      "Confirm your subscription to the Sunday Paper"
-    );
+    expect(built.subject).toBe("Confirm your subscription to the Sunday Paper");
     expect(built.blocks[0]?.action?.href).toBe(
       "https://auibsal.org/newsletter/confirm?token=abc"
     );

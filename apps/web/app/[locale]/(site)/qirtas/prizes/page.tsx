@@ -71,7 +71,9 @@ const PrizesPage = async ({ params }: PrizesProps) => {
               className="grid content-start gap-3 border-line border-t py-space-4"
               key={prize.key}
             >
-              <h2 className="type-heading">{localized(prize, "name", locale)}</h2>
+              <h2 className="type-heading">
+                {localized(prize, "name", locale)}
+              </h2>
               <p className="type-caption">
                 {prize.desk
                   ? tj(`desks.${prize.desk as journal.Desk}`)

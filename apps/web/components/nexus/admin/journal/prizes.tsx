@@ -11,7 +11,13 @@ import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useState } from "react";
 import { DiwanSection, RowList } from "../../page";
 import { EmptyLine, SectionSpinner } from "../../states";
-import { BilingualField, ConfirmAction, ErrorLine, Field, SelectInput } from "../kit";
+import {
+  BilingualField,
+  ConfirmAction,
+  ErrorLine,
+  Field,
+  SelectInput,
+} from "../kit";
 
 const key = ["admin", "journal", "prizes"];
 
@@ -225,7 +231,6 @@ const PrizeSection = ({
   const theirJudges = (judges.data ?? []).filter(
     (j) => j.prize_key === prize.key
   );
-  const id = `prize-${prize.key}`;
 
   const onShortlist = (event: FormEvent) => {
     event.preventDefault();
@@ -239,7 +244,10 @@ const PrizeSection = ({
   };
 
   return (
-    <DiwanSection id={id} title={localized(prize, "name", locale)}>
+    <DiwanSection
+      id={`prize-${prize.key}`}
+      title={localized(prize, "name", locale)}
+    >
       <div className="grid gap-3">
         <h3 className="type-label">{t("shortlist")}</h3>
         {mine.length === 0 ? (
@@ -318,7 +326,9 @@ const PrizeSection = ({
                 className="flex flex-wrap items-center justify-between gap-3"
                 key={j.id}
               >
-                <span className="type-body">{localized(j, "name", locale)}</span>
+                <span className="type-body">
+                  {localized(j, "name", locale)}
+                </span>
                 <Button
                   disabled={removeJudge.isPending}
                   onClick={() => removeJudge.mutate(j.id)}

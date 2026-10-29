@@ -20,7 +20,7 @@ const requestSchema = z.object({
 const RESEND_AFTER_MS = 10 * 60 * 1000;
 
 /**
- * The public newsletter, step one: anyone may ask for The Month in Waraq.
+ * The public newsletter, step one: anyone may ask for the Sunday Paper.
  * The address gets a confirmation email (double opt-in); nothing else is
  * sent until it is confirmed. The answer is the same whether or not the
  * address was already on the list, so the form never reveals who is.

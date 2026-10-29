@@ -78,6 +78,26 @@ const blank = {
   title: { ar: "", en: "" },
 };
 
+/** The row an opening is saved as; places only for the two kinds of place. */
+const openingRow = (form: typeof blank, programmeId: string) => {
+  const place = form.kind !== "role";
+  return {
+    body_ar: form.body.ar || null,
+    body_en: form.body.en || null,
+    closes_at: form.closes_at,
+    desk: form.kind === "apprenticeship" && form.desk ? form.desk : null,
+    kind: form.kind,
+    partner_id: form.kind === "first_ink" ? form.partner_id : null,
+    places: place && form.places ? Number(form.places) : null,
+    programme_id: programmeId,
+    skills: form.skills,
+    term_from: place && form.term_from ? form.term_from : null,
+    term_to: place && form.term_to ? form.term_to : null,
+    title_ar: form.title.ar,
+    title_en: form.title.en,
+  };
+};
+
 /**
  * The program's openings on the Callboard (owner, Oct 29, 2026: the careers
  * page): roles, one-term Apprenticeships (in a Qirtas section or the
@@ -132,21 +152,7 @@ export const Openings = ({ programmeId }: { programmeId: string }) => {
         await supabase
           .schema("programmes")
           .from("openings")
-          .insert({
-            body_ar: form.body.ar || null,
-            body_en: form.body.en || null,
-            closes_at: form.closes_at,
-            desk: form.kind === "apprenticeship" && form.desk ? form.desk : null,
-            kind: form.kind,
-            partner_id: form.kind === "first_ink" ? form.partner_id : null,
-            places: place && form.places ? Number(form.places) : null,
-            programme_id: programmeId,
-            skills: form.skills,
-            term_from: place && form.term_from ? form.term_from : null,
-            term_to: place && form.term_to ? form.term_to : null,
-            title_ar: form.title.ar,
-            title_en: form.title.en,
-          })
+          .insert(openingRow(form, programmeId))
           .select("id")
           .single()
       );
@@ -375,7 +381,9 @@ export const Openings = ({ programmeId }: { programmeId: string }) => {
             <div className="flex flex-wrap items-baseline justify-between gap-3">
               <p className="type-subheading">
                 {localized(o, "title", locale)}
-                {o.kind === "role" ? "" : ` · ${t(`kinds.${o.kind as OpeningKind}`)}`}
+                {o.kind === "role"
+                  ? ""
+                  : ` · ${t(`kinds.${o.kind as OpeningKind}`)}`}
               </p>
               <p className="type-caption">
                 {o.is_open ? t("open") : t("closed")}
@@ -401,7 +409,9 @@ export const Openings = ({ programmeId }: { programmeId: string }) => {
                     <span className="type-body">
                       {person ? memberName(person, locale) : "—"}
                       {r.note ? ` · ${r.note}` : ""}
-                      {placed ? ` · ${t(`placement.${placed.status as "active"}`)}` : ""}
+                      {placed
+                        ? ` · ${t(`placement.${placed.status as "active"}`)}`
+                        : ""}
                     </span>
                     {o.kind !== "role" && !placed ? (
                       <Button

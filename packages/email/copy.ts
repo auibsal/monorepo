@@ -467,6 +467,42 @@ export interface OpenPlace {
   title_en: string;
 }
 
+const paperPieces = (l: Lang, pieces: SundayItem[]) =>
+  pieces.length === 0
+    ? []
+    : [
+        l === "ar" ? "ما نُشر في قرطاس هذا الشهر:" : "This month in Qirtas:",
+        ...pieces.map((i) =>
+          l === "ar"
+            ? `${i.desk_ar}: ${i.title_ar || i.title_en} ${i.url}`
+            : `${i.desk_en}: ${i.title_en || i.title_ar} ${i.url}`
+        ),
+      ];
+
+const paperEvents = (l: Lang, events: MonthEvent[]) =>
+  events.length === 0
+    ? []
+    : [
+        l === "ar" ? "ما يجري:" : "What's on:",
+        ...events.map((e) =>
+          l === "ar"
+            ? `${formatLongDate(e.starts_at, l)}: ${e.title_ar || e.title_en} ${e.url}`
+            : `${formatLongDate(e.starts_at, l)}: ${e.title_en || e.title_ar} ${e.url}`
+        ),
+      ];
+
+const paperPlaces = (l: Lang, places: OpenPlace[], callboard: string) =>
+  places.length === 0
+    ? []
+    : [
+        l === "ar"
+          ? `أماكن مفتوحة في لوحة النداءات (${callboard}):`
+          : `Open places on the Callboard (${callboard}):`,
+        ...places.map((p) =>
+          l === "ar" ? p.title_ar || p.title_en : p.title_en || p.title_ar
+        ),
+      ];
+
 /**
  * The Sunday Paper (owner, Oct 29, 2026): monthly, on the first Sunday, to
  * members and to the public list alike. The month's pieces, What's on, and
@@ -498,36 +534,9 @@ export const sundayPaper = (
     heading:
       l === "ar" ? "صحيفة الأحد من قرطاس" : "The Sunday Paper from Qirtas",
     paragraphs: [
-      ...(pieces.length > 0
-        ? [
-            l === "ar" ? "ما نُشر في قرطاس هذا الشهر:" : "This month in Qirtas:",
-            ...pieces.map((i) =>
-              l === "ar"
-                ? `${i.desk_ar}: ${i.title_ar || i.title_en} ${i.url}`
-                : `${i.desk_en}: ${i.title_en || i.title_ar} ${i.url}`
-            ),
-          ]
-        : []),
-      ...(events.length > 0
-        ? [
-            l === "ar" ? "ما يجري:" : "What's on:",
-            ...events.map((e) =>
-              l === "ar"
-                ? `${formatLongDate(e.starts_at, l)}: ${e.title_ar || e.title_en} ${e.url}`
-                : `${formatLongDate(e.starts_at, l)}: ${e.title_en || e.title_ar} ${e.url}`
-            ),
-          ]
-        : []),
-      ...(places.length > 0
-        ? [
-            l === "ar"
-              ? `أماكن مفتوحة في لوحة النداءات (${callboard}):`
-              : `Open places on the Callboard (${callboard}):`,
-            ...places.map((p) =>
-              l === "ar" ? p.title_ar || p.title_en : p.title_en || p.title_ar
-            ),
-          ]
-        : []),
+      ...paperPieces(l, pieces),
+      ...paperEvents(l, events),
+      ...paperPlaces(l, places, callboard),
       l === "ar"
         ? `لإيقاف صحيفة الأحد: ${stop}`
         : `To stop the Sunday Paper: ${stop}`,

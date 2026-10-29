@@ -834,8 +834,7 @@ export const inLanguage = <T>(list: readonly T[], locale: string): T[] =>
 
 /** The six prizes, in order (journal.prizes). */
 export const prizes = async (client: Client) =>
-  unwrap(await journal(client).from("prizes").select("*").order("sort")) ??
-  [];
+  unwrap(await journal(client).from("prizes").select("*").order("sort")) ?? [];
 
 /** Published rounds, the latest first (managers also see drafts). */
 export const prizeRounds = async (client: Client) =>
@@ -875,4 +874,3 @@ export const prizeJudges = async (client: Client, roundId: string) =>
       .eq("round_id", roundId)
       .order("created_at")
   ) ?? [];
-
