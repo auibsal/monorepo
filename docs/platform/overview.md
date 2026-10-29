@@ -41,8 +41,7 @@ The platform is one repository, [auibsal/mono](https://github.com/auibsal/mono),
 | sal-daily | 4:45 UTC (7:45 AM Baghdad) | Event reminders, agreement reminders, role-ending notices and overdue removal requests |
 | sal-ballot-retention | 5:15 UTC | Deletes ballots and voter lists one year after an election closes (B6.11) |
 | sal-outbox-prune | 5:30 UTC | Deletes sent outbox rows older than 30 days |
-| sal-newsletter | 1st of the month, 6:00 UTC | The Month in Qirtas to the newsletter list |
-| sal-sunday-paper | Sundays, 6:00 UTC | The Sunday Paper to members |
+| sal-sunday-paper | Sundays, 6:00 UTC (sends on the first Sunday of the month) | The Sunday Paper to members and the public list |
 | sal-notion-sync | Every 15 minutes | Mirrors officers, programs and the registry into Notion |
 | sal-telegram-posts | Every 10 minutes | Hudhud's posts to the Society's group |
 | sal-telegram-tidy | 3:25 UTC | Expired Telegram codes and old posts |

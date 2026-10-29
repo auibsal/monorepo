@@ -3781,6 +3781,10 @@ export type Database = {
           id: string;
           number: number;
           pdf_path: string | null;
+          print_run: number | null;
+          printed_on: string | null;
+          printer_ar: string | null;
+          printer_en: string | null;
           publish_at: string | null;
           published_at: string | null;
           season_ar: string | null;
@@ -3802,6 +3806,10 @@ export type Database = {
           id?: string;
           number: number;
           pdf_path?: string | null;
+          print_run?: number | null;
+          printed_on?: string | null;
+          printer_ar?: string | null;
+          printer_en?: string | null;
           publish_at?: string | null;
           published_at?: string | null;
           season_ar?: string | null;
@@ -3823,6 +3831,10 @@ export type Database = {
           id?: string;
           number?: number;
           pdf_path?: string | null;
+          print_run?: number | null;
+          printed_on?: string | null;
+          printer_ar?: string | null;
+          printer_en?: string | null;
           publish_at?: string | null;
           published_at?: string | null;
           season_ar?: string | null;
@@ -4105,6 +4117,169 @@ export type Database = {
             referencedColumns: ["id"];
           },
         ];
+      };
+      prize_entries: {
+        Row: {
+          certificate_id: string | null;
+          created_at: string;
+          created_by: string | null;
+          id: string;
+          piece_id: string;
+          prize_key: string;
+          round_id: string;
+          updated_at: string;
+          won: boolean;
+        };
+        Insert: {
+          certificate_id?: string | null;
+          created_at?: string;
+          created_by?: string | null;
+          id?: string;
+          piece_id: string;
+          prize_key: string;
+          round_id: string;
+          updated_at?: string;
+          won?: boolean;
+        };
+        Update: {
+          certificate_id?: string | null;
+          created_at?: string;
+          created_by?: string | null;
+          id?: string;
+          piece_id?: string;
+          prize_key?: string;
+          round_id?: string;
+          updated_at?: string;
+          won?: boolean;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "prize_entries_piece_id_fkey";
+            columns: ["piece_id"];
+            isOneToOne: false;
+            referencedRelation: "pieces";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "prize_entries_prize_key_fkey";
+            columns: ["prize_key"];
+            isOneToOne: false;
+            referencedRelation: "prizes";
+            referencedColumns: ["key"];
+          },
+          {
+            foreignKeyName: "prize_entries_round_id_fkey";
+            columns: ["round_id"];
+            isOneToOne: false;
+            referencedRelation: "prize_rounds";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      prize_judges: {
+        Row: {
+          created_at: string;
+          id: string;
+          name_ar: string;
+          name_en: string;
+          prize_key: string;
+          round_id: string;
+          user_id: string | null;
+        };
+        Insert: {
+          created_at?: string;
+          id?: string;
+          name_ar: string;
+          name_en: string;
+          prize_key: string;
+          round_id: string;
+          user_id?: string | null;
+        };
+        Update: {
+          created_at?: string;
+          id?: string;
+          name_ar?: string;
+          name_en?: string;
+          prize_key?: string;
+          round_id?: string;
+          user_id?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "prize_judges_prize_key_fkey";
+            columns: ["prize_key"];
+            isOneToOne: false;
+            referencedRelation: "prizes";
+            referencedColumns: ["key"];
+          },
+          {
+            foreignKeyName: "prize_judges_round_id_fkey";
+            columns: ["round_id"];
+            isOneToOne: false;
+            referencedRelation: "prize_rounds";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      prize_rounds: {
+        Row: {
+          awarded_on: string;
+          created_at: string;
+          id: string;
+          is_published: boolean;
+          shortlist_on: string;
+          slug: string;
+          title_ar: string;
+          title_en: string;
+          updated_at: string;
+        };
+        Insert: {
+          awarded_on: string;
+          created_at?: string;
+          id?: string;
+          is_published?: boolean;
+          shortlist_on: string;
+          slug: string;
+          title_ar: string;
+          title_en: string;
+          updated_at?: string;
+        };
+        Update: {
+          awarded_on?: string;
+          created_at?: string;
+          id?: string;
+          is_published?: boolean;
+          shortlist_on?: string;
+          slug?: string;
+          title_ar?: string;
+          title_en?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      prizes: {
+        Row: {
+          desk: Database["journal"]["Enums"]["desk"] | null;
+          key: string;
+          name_ar: string;
+          name_en: string;
+          sort: number;
+        };
+        Insert: {
+          desk?: Database["journal"]["Enums"]["desk"] | null;
+          key: string;
+          name_ar: string;
+          name_en: string;
+          sort?: number;
+        };
+        Update: {
+          desk?: Database["journal"]["Enums"]["desk"] | null;
+          key?: string;
+          name_ar?: string;
+          name_en?: string;
+          sort?: number;
+        };
+        Relationships: [];
       };
       puzzles: {
         Row: {
@@ -4562,6 +4737,19 @@ export type Database = {
           title_ar: string;
           title_en: string;
           volume: number;
+        }[];
+      };
+      prepare_prize_certificates: { Args: { round: string }; Returns: number };
+      prize_results: {
+        Args: { round_slug: string };
+        Returns: {
+          author_ar: string;
+          author_en: string;
+          piece_slug: string;
+          prize_key: string;
+          title_ar: string;
+          title_en: string;
+          won: boolean;
         }[];
       };
       publish_readiness: { Args: { piece_id: string }; Returns: string };
@@ -5402,10 +5590,16 @@ export type Database = {
           closes_at: string | null;
           created_at: string;
           created_by: string | null;
+          desk: Database["journal"]["Enums"]["desk"] | null;
           id: string;
           is_open: boolean;
+          kind: string;
+          partner_id: string | null;
+          places: number | null;
           programme_id: string | null;
           skills: string[];
+          term_from: string | null;
+          term_to: string | null;
           title_ar: string;
           title_en: string;
           updated_at: string;
@@ -5416,10 +5610,16 @@ export type Database = {
           closes_at?: string | null;
           created_at?: string;
           created_by?: string | null;
+          desk?: Database["journal"]["Enums"]["desk"] | null;
           id?: string;
           is_open?: boolean;
+          kind?: string;
+          partner_id?: string | null;
+          places?: number | null;
           programme_id?: string | null;
           skills?: string[];
+          term_from?: string | null;
+          term_to?: string | null;
           title_ar: string;
           title_en: string;
           updated_at?: string;
@@ -5430,15 +5630,68 @@ export type Database = {
           closes_at?: string | null;
           created_at?: string;
           created_by?: string | null;
+          desk?: Database["journal"]["Enums"]["desk"] | null;
           id?: string;
           is_open?: boolean;
+          kind?: string;
+          partner_id?: string | null;
+          places?: number | null;
           programme_id?: string | null;
           skills?: string[];
+          term_from?: string | null;
+          term_to?: string | null;
           title_ar?: string;
           title_en?: string;
           updated_at?: string;
         };
         Relationships: [];
+      };
+      placements: {
+        Row: {
+          certificate_id: string | null;
+          completed_on: string | null;
+          created_at: string;
+          created_by: string | null;
+          id: string;
+          opening_id: string;
+          started_on: string;
+          status: string;
+          updated_at: string;
+          user_id: string;
+        };
+        Insert: {
+          certificate_id?: string | null;
+          completed_on?: string | null;
+          created_at?: string;
+          created_by?: string | null;
+          id?: string;
+          opening_id: string;
+          started_on?: string;
+          status?: string;
+          updated_at?: string;
+          user_id: string;
+        };
+        Update: {
+          certificate_id?: string | null;
+          completed_on?: string | null;
+          created_at?: string;
+          created_by?: string | null;
+          id?: string;
+          opening_id?: string;
+          started_on?: string;
+          status?: string;
+          updated_at?: string;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "placements_opening_id_fkey";
+            columns: ["opening_id"];
+            isOneToOne: false;
+            referencedRelation: "openings";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       production_credits: {
         Row: {
@@ -5776,6 +6029,7 @@ export type Database = {
           created_at: string;
           ends_on: string | null;
           id: string;
+          opening_id: string | null;
           programme_id: string;
           starts_on: string | null;
           title_ar: string;
@@ -5785,6 +6039,7 @@ export type Database = {
           created_at?: string;
           ends_on?: string | null;
           id?: string;
+          opening_id?: string | null;
           programme_id: string;
           starts_on?: string | null;
           title_ar: string;
@@ -5794,12 +6049,21 @@ export type Database = {
           created_at?: string;
           ends_on?: string | null;
           id?: string;
+          opening_id?: string | null;
           programme_id?: string;
           starts_on?: string | null;
           title_ar?: string;
           title_en?: string;
         };
-        Relationships: [];
+        Relationships: [
+          {
+            foreignKeyName: "rotas_opening_id_fkey";
+            columns: ["opening_id"];
+            isOneToOne: false;
+            referencedRelation: "openings";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       shift_signups: {
         Row: {
@@ -5942,6 +6206,7 @@ export type Database = {
         Args: { production_id: string };
         Returns: undefined;
       };
+      complete_apprenticeship: { Args: { placement: string }; Returns: string };
       draft_production_certificates: {
         Args: { production_id: string };
         Returns: number;

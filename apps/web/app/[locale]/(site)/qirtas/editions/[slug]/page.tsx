@@ -1,5 +1,9 @@
 import { buttonVariants } from "@repo/design-system/components/ui/button";
 import type { Locale } from "@repo/internationalization";
+import {
+  formatLongDate,
+  formatNumber,
+} from "@repo/internationalization/format";
 import { journal, localized } from "@repo/sal-data";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -59,6 +63,16 @@ const EditionPage = async ({ params }: EditionProps) => {
   const cover = mediaUrl(edition.cover_path);
   const pdf = mediaUrl(edition.pdf_path);
   const letter = localized(edition, "editors_note", locale);
+  // The printed edition (owner, Oct 29, 2026), once its record is complete.
+  const printer = localized(edition, "printer", locale);
+  const printed =
+    printer && edition.printed_on && edition.print_run
+      ? t("printed", {
+          copies: formatNumber(edition.print_run, locale),
+          date: formatLongDate(edition.printed_on, locale),
+          printer,
+        })
+      : null;
   const byDesk = journal.desks
     .map((desk) => ({ desk, pieces: pieces.filter((p) => p.desk === desk) }))
     .filter((group) => group.pieces.length > 0);
@@ -87,6 +101,7 @@ const EditionPage = async ({ params }: EditionProps) => {
           {localized(edition, "theme", locale) ? (
             <p className="type-lede">{localized(edition, "theme", locale)}</p>
           ) : null}
+          {printed ? <p className="type-caption">{printed}</p> : null}
           {pdf ? (
             <a
               className={buttonVariants({

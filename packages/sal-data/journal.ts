@@ -829,3 +829,50 @@ export const inLanguage = <T>(list: readonly T[], locale: string): T[] =>
     const { language } = item as { language?: string };
     return !language || language === "bilingual" || language === locale;
   });
+
+// ── The Qirtas Prizes ───────────────────────────────────────────────────────
+
+/** The six prizes, in order (journal.prizes). */
+export const prizes = async (client: Client) =>
+  unwrap(await journal(client).from("prizes").select("*").order("sort")) ??
+  [];
+
+/** Published rounds, the latest first (managers also see drafts). */
+export const prizeRounds = async (client: Client) =>
+  unwrap(
+    await journal(client)
+      .from("prize_rounds")
+      .select("*")
+      .order("awarded_on", { ascending: false })
+  ) ?? [];
+
+/**
+ * A round's shortlists from their day and its winners from theirs; before
+ * the award a winner shows only as shortlisted (journal.prize_results).
+ */
+export const prizeResults = async (client: Client, roundSlug: string) =>
+  unwrap(
+    await journal(client).rpc("prize_results", { round_slug: roundSlug })
+  ) ?? [];
+
+/** The Diwan's view of a round: every entry, with its piece. */
+export const prizeEntries = async (client: Client, roundId: string) =>
+  unwrap(
+    await journal(client)
+      .from("prize_entries")
+      .select(
+        "id, prize_key, won, certificate_id, piece:pieces!prize_entries_piece_id_fkey(id, slug, title_en, title_ar, desk)"
+      )
+      .eq("round_id", roundId)
+      .order("created_at")
+  ) ?? [];
+
+export const prizeJudges = async (client: Client, roundId: string) =>
+  unwrap(
+    await journal(client)
+      .from("prize_judges")
+      .select("id, prize_key, name_en, name_ar")
+      .eq("round_id", roundId)
+      .order("created_at")
+  ) ?? [];
+

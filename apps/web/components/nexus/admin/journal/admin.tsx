@@ -38,6 +38,7 @@ import {
 } from "../kit";
 import { openSubmissionFile } from "../pipeline/data";
 import { PipelineAdmin } from "../pipeline/pipeline";
+import { Prizes } from "./prizes";
 import { Puzzles } from "./puzzles";
 import { FrontRank } from "./workflow";
 
@@ -836,6 +837,7 @@ export const JournalAdmin = () => {
   const puzzles = puzzleEditorKeys.some((p) =>
     hasPermissionAnywhere(grants.data, p)
   );
+  const prizes = hasPermissionAnywhere(grants.data, "journal.prizes");
   const tabs = (
     [
       ["newsroom", newsroom],
@@ -844,6 +846,7 @@ export const JournalAdmin = () => {
       ["front", front],
       ["editions", newsroom],
       ["games", puzzles],
+      ["prizes", prizes],
       ["contributors", newsroom],
     ] as const
   )
@@ -883,6 +886,7 @@ type JournalTabKey =
   | "front"
   | "editions"
   | "games"
+  | "prizes"
   | "contributors";
 
 const JournalTab = ({ tab }: { tab: JournalTabKey }) => {
@@ -899,6 +903,8 @@ const JournalTab = ({ tab }: { tab: JournalTabKey }) => {
       return <Editions />;
     case "games":
       return <Puzzles />;
+    case "prizes":
+      return <Prizes />;
     default:
       return <Contributors />;
   }

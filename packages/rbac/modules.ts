@@ -39,6 +39,7 @@ export const adminModules = [
       "journal.edit.video",
       "journal.edit.voices",
       "journal.edit.games",
+      "journal.prizes",
     ],
   },
   { key: "content", permissions: ["content.manage"] },

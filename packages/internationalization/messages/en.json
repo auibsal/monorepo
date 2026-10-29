@@ -1177,7 +1177,7 @@
           "remove": "Remove"
         },
         "scheduleConfirm": "Schedule this post? It is published on its own at the publish time.",
-        "newsletter": "The Month in Qirtas, the public monthly email, has {count} confirmed subscribers. They sign up at auibsal.org/newsletter."
+        "newsletter": "The Sunday Paper's public list has {count} confirmed subscribers. They sign up at auibsal.org/newsletter; members who receive email get it too."
       },
       "ads": {
         "title": "Ads",
@@ -1880,7 +1880,12 @@
           "cover": "Cover",
           "pdf": "Issue PDF (two-cover print edition)",
           "notFound": "No issue with this link, or your roles don't cover it.",
-          "publishConfirm": "Publish this issue? It appears on auibsal.org at once; its published pieces go with it."
+          "publishConfirm": "Publish this issue? It appears on auibsal.org at once; its published pieces go with it.",
+          "printed": "Printed edition",
+          "printedHint": "How many copies, who printed it and when. The Edition page shows it as one line once all three are filled in.",
+          "printRun": "Print run (copies)",
+          "printedOn": "Printed on",
+          "printer": "Printer"
         },
         "piece": {
           "titleField": "Title",
@@ -2299,7 +2304,9 @@
             "honorary": "Needs the Council's adopted resolution (B4.4).",
             "volunteer": "For volunteer hours. Not in the Bylaws: on only by Council decision.",
             "production": "For cast and crew of a production.",
-            "partner": "For work with one of the Society's partners."
+            "partner": "For work with one of the Society's partners.",
+            "prize": "Drafted from the Prizes in Qirtas: the citation names the prize and the piece.",
+            "apprenticeship": "Drafted when a Callboard apprenticeship is completed: the role and the term."
           },
           "serial": "Serial",
           "status": "Status",
@@ -2610,7 +2617,8 @@
           "front": "Front page",
           "editions": "Editions",
           "contributors": "Contributors",
-          "games": "Games"
+          "games": "Games",
+          "prizes": "Prizes"
         },
         "edition": "Edition",
         "launch": "Launch",
@@ -2814,6 +2822,33 @@
           "delete": "Delete",
           "deleteConfirm": "Delete this puzzle? Readers' saved progress on it is lost."
         }
+      },
+      "prizes": {
+        "lede": "The Qirtas Prizes: for each round, the judges and the shortlist of each prize, and the winners. The public page shows a shortlist from its day and the winners from theirs.",
+        "round": "Round",
+        "dates": "{round}: shortlists on {shortlist}, prizes awarded on {awarded}.",
+        "shortlist": "Shortlist",
+        "noShortlist": "Nothing shortlisted yet.",
+        "winner": "Winner",
+        "markWinner": "Mark as winner",
+        "notWinner": "Not the winner",
+        "remove": "Remove",
+        "addPiece": "Published piece",
+        "choosePiece": "Choose a piece",
+        "shortlistIt": "Shortlist",
+        "judges": "Judges",
+        "noJudges": "No judges named yet.",
+        "judgeName": "Judge's name",
+        "addJudge": "Add the judge",
+        "prepare": "Draft the certificates",
+        "prepareHint": "A certificate for each winner and each shortlisted writer with an account, once the prizes are awarded. The President and the Faculty Advisor sign them in Recognition.",
+        "prepared": "Certificates drafted: {count}.",
+        "newRound": "New round",
+        "roundTitle": "Name of the round",
+        "slug": "Address",
+        "shortlistOn": "Shortlists announced",
+        "awardedOn": "Prizes awarded",
+        "addRound": "Add the round"
       }
     },
     "editor": {
@@ -2952,7 +2987,9 @@
         "honorary": "Honorary Fellow",
         "volunteer": "Certificate of Volunteer Service",
         "production": "Certificate of Production Credit",
-        "partner": "Certificate of Partnership Service"
+        "partner": "Certificate of Partnership Service",
+        "prize": "The Qirtas Prizes",
+        "apprenticeship": "Certificate of Apprenticeship"
       }
     },
     "certificate": {
@@ -2976,7 +3013,9 @@
         "honorary": "Honorary Fellow",
         "volunteer": "Certificate of Volunteer Service",
         "production": "Certificate of Production Credit",
-        "partner": "Certificate of Partnership Service"
+        "partner": "Certificate of Partnership Service",
+        "prize": "The Qirtas Prizes",
+        "apprenticeship": "Certificate of Apprenticeship"
       },
       "bodies": {
         "service": "served the Society as {role} from {from} to {to}, and gave the Society their time and care.",
@@ -2984,7 +3023,9 @@
         "honorary": "has been made an Honorary Fellow of the Society of Arts and Letters by its Council, in recognition of {citation}.",
         "volunteer": "gave the Society {hours} hours of volunteer service from {from} to {to}.",
         "production": "served as {role} in a production of the Society of Arts and Letters, from {from} to {to}.",
-        "partner": "served the Society as {role} in its partnership with {partner}, from {from} to {to}."
+        "partner": "served the Society as {role} in its partnership with {partner}, from {from} to {to}.",
+        "prize": "{citation}, in the Qirtas Prizes of the Society of Arts and Letters.",
+        "apprenticeship": "completed an apprenticeship with the Society as {role}, from {from} to {to}."
       },
       "codes": {
         "service": "Certificate of Service",
@@ -2992,7 +3033,9 @@
         "honorary": "Honorary Fellowship · B4.4",
         "volunteer": "Recognition · B4",
         "production": "Recognition · B4",
-        "partner": "Recognition · B4"
+        "partner": "Recognition · B4",
+        "prize": "The Qirtas Prizes",
+        "apprenticeship": "Recognition · B4"
       },
       "qr": "Scan to check this certificate"
     },
@@ -4129,14 +4172,15 @@
       "noEditions": "Edition 1 launches on February 24, 2027.",
       "edition": "Edition",
       "games": "Games",
-      "newsletter": "The Month in Qirtas",
+      "newsletter": "The Sunday Paper",
       "newsletterLede": "One email a month: what Qirtas published and the Society's coming public events.",
       "nextStop": {
         "title": "Next Stop",
         "lede": "Qirtas's video show about campus: the people, the places and what happens there. Be a guest, or join the crew.",
         "care": "Next Stop care"
       },
-      "prizes": "Prizes"
+      "prizes": "Prizes",
+      "printed": "Printed by {printer}, {date}: {copies} copies."
     },
     "about": {
       "title": "About the Society",
@@ -4361,7 +4405,7 @@
         "analyticsOn": "This website counts visits with Google Analytics 4, through Google Tag Manager served from auibsal.org. Analytics cookies are set only if you allow them (Cookie settings, at the foot of every page).",
         "analyticsOff": "This website uses no analytics cookies.",
         "adsOn": "Qirtas shows ads to visitors who are not signed in: the Society's own, its sponsors' and Google AdSense's. Signed-in members see none. AdSense sets advertising cookies and chooses ads for you only if you allow advertising (Cookie settings); otherwise its ads use no cookies. Sponsors receive nothing about you.",
-        "newsletter": "The Month in Qirtas, the public newsletter, keeps only your email address, your language and when you subscribed. Unsubscribing stops it at once."
+        "newsletter": "The Sunday Paper's public list keeps only your email address, your language and when you subscribed. Unsubscribing stops it at once."
       }
     },
     "care": {
@@ -4441,7 +4485,9 @@
         "honorary": "Honorary Fellow",
         "volunteer": "Certificate of Volunteer Service",
         "production": "Certificate of Production Credit",
-        "partner": "Certificate of Partnership Service"
+        "partner": "Certificate of Partnership Service",
+        "prize": "The Qirtas Prizes",
+        "apprenticeship": "Certificate of Apprenticeship"
       },
       "pattern": "This certificate's pattern. It should match the one printed on the certificate.",
       "revokedShort": "Revoked"
@@ -4577,9 +4623,9 @@
       "fromMembers": "Sent by members"
     },
     "newsletter": {
-      "title": "The Month in Qirtas",
-      "lede": "One email a month, on the 1st: the pieces Qirtas published that month and the AUIB Society of Arts and Letters' coming public events. Anyone can subscribe.",
-      "members": "Members also get the Sunday Paper, a weekly email of the week's pieces.",
+      "title": "The Sunday Paper",
+      "lede": "One email a month, on the first Sunday: the pieces Qirtas published that month, What's on at the AUIB Society of Arts and Letters, and the places open on the Callboard. Anyone can subscribe.",
+      "members": "Members who receive email get it already: no need to sign up here.",
       "email": "Your email address",
       "submit": "Subscribe",
       "sending": "Sending…",
@@ -4593,15 +4639,15 @@
       },
       "confirm": {
         "title": "Confirm your subscription",
-        "lede": "Press the button to start receiving The Month in Qirtas.",
+        "lede": "Press the button to start receiving the Sunday Paper.",
         "button": "Confirm",
-        "done": "You are subscribed. The next email arrives on the 1st of the month.",
+        "done": "You are subscribed. The next Sunday Paper arrives on the first Sunday of the month.",
         "invalid": "This link has expired or was already used. Subscribe again to get a new one.",
         "failed": "Something went wrong. Try again later."
       },
       "unsubscribe": {
         "title": "Unsubscribe",
-        "lede": "Press the button to stop receiving The Month in Qirtas.",
+        "lede": "Press the button to stop receiving the Sunday Paper.",
         "button": "Unsubscribe",
         "done": "You are unsubscribed. You will not get another email from us.",
         "invalid": "This link is not valid.",
@@ -4643,6 +4689,15 @@
       "done": "Done. You can turn them back on in Settings.",
       "invalid": "This link is not valid.",
       "failed": "Something went wrong. Try again later."
+    },
+    "prizes": {
+      "title": "The Qirtas Prizes",
+      "lede": "Six prizes each year for the best of the paper: the Mutanabbi Prize for the whole of Qirtas, and one for each of five sections.",
+      "dates": "{round}: shortlists on {shortlist}, prizes awarded on {awarded}.",
+      "wholePaper": "The whole paper",
+      "shortlistOn": "The shortlist is announced on its day.",
+      "noRound": "The next round is announced here.",
+      "winner": "Winner"
     }
   }
 }

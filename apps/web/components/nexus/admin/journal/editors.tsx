@@ -102,6 +102,9 @@ export const IssueEditor = () => {
     note: { ar: "", en: "" },
     number: "",
     pdf_path: null as string | null,
+    print_run: "",
+    printed_on: "",
+    printer: { ar: "", en: "" },
     publish_at: null as string | null,
     season: { ar: "", en: "" },
     slug: "",
@@ -130,6 +133,9 @@ export const IssueEditor = () => {
         note: { ar: i.editors_note_ar ?? "", en: i.editors_note_en ?? "" },
         number: String(i.number),
         pdf_path: i.pdf_path,
+        print_run: i.print_run ? String(i.print_run) : "",
+        printed_on: i.printed_on ?? "",
+        printer: { ar: i.printer_ar ?? "", en: i.printer_en ?? "" },
         publish_at: i.publish_at,
         season: { ar: i.season_ar ?? "", en: i.season_en ?? "" },
         slug: i.slug,
@@ -149,6 +155,10 @@ export const IssueEditor = () => {
         editors_note_en: form.note.en || null,
         number: Number(form.number),
         pdf_path: form.pdf_path,
+        print_run: form.print_run ? Number(form.print_run) : null,
+        printed_on: form.printed_on || null,
+        printer_ar: form.printer.ar || null,
+        printer_en: form.printer.en || null,
         publish_at: form.publish_at,
         published_at:
           next === "published"
@@ -301,6 +311,45 @@ export const IssueEditor = () => {
           onChange={(pdf_path) => setForm((f) => ({ ...f, pdf_path }))}
           value={form.pdf_path}
         />
+        <fieldset className="grid gap-4">
+          <legend className="type-label pb-2">{t("issue.printed")}</legend>
+          <p className="type-caption">{t("issue.printedHint")}</p>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <Field label={t("issue.printRun")}>
+              {(id) => (
+                <Input
+                  dir="ltr"
+                  id={id}
+                  min={1}
+                  onChange={(e) =>
+                    setForm((f) => ({ ...f, print_run: e.target.value }))
+                  }
+                  type="number"
+                  value={form.print_run}
+                />
+              )}
+            </Field>
+            <Field label={t("issue.printedOn")}>
+              {(id) => (
+                <Input
+                  dir="ltr"
+                  id={id}
+                  onChange={(e) =>
+                    setForm((f) => ({ ...f, printed_on: e.target.value }))
+                  }
+                  type="date"
+                  value={form.printed_on}
+                />
+              )}
+            </Field>
+          </div>
+          <BilingualField
+            label={t("issue.printer")}
+            maxLength={200}
+            onChange={(printer) => setForm((f) => ({ ...f, printer }))}
+            value={form.printer}
+          />
+        </fieldset>
         <DateTimeField
           label={tw("launch")}
           onChange={(publish_at) => setForm((f) => ({ ...f, publish_at }))}
