@@ -59,11 +59,10 @@ and decisions), and continue from the first unticked item.
   Diwan: from `@/lib/nexus/navigation`), or `localizedPath`, `nexusPath`,
   `apiPath` and the absolute `siteUrl`, `nexusUrl`, `apiUrl` from
   `@repo/internationalization`; never write `/en`.
-- **One frame.** The public pages and the Diwan share one header
-  (`components/masthead.tsx`: the site's sections in `site-header.tsx`, the
-  Diwan sections in `components/nexus/app-shell.tsx`) and one footer
-  (`components/footer.tsx`), so moving between them never feels like
-  another app.
+- **One frame.** The public pages, the members' pages and the Diwan share
+  one header (`components/masthead.tsx` with the site's sections from
+  `site-header.tsx`) and one footer (`components/footer.tsx`), so moving
+  between them never feels like another app.
 - `packages/storybook` — the SAL Design System: SAL components, Screens
   and every platform email in both languages. Local only
   (`bun run --cwd packages/storybook dev`); nothing is deployed.
@@ -392,9 +391,19 @@ any schema change. Integration tests run against a local stack with
   The governance documents keep the old titles until the owner amends them;
   never edit the text of ratified documents (their spelling follows the
   American English rule).
-- **Navigation.** At most five sections per app header; the rest go in the
-  footer (web) or the Account menu (Diwan). Every Diwan empty state offers one
-  next action (`EmptyLine action`).
+- **Navigation** (owner, Oct 30, 2026). One main menu everywhere: the
+  site's header (`site-header.tsx`) on the public pages, the members'
+  pages and the Diwan alike: About, What's on, Qirtas, Get involved and
+  Join (for visitors; signed in, the end of the line opens Membership),
+  with Search, the language and the theme. Everything the Diwan had in its
+  own header (the overview, the library, declarations, the Notion links)
+  is in the administration menu (`admin-shell.tsx`, "For your role").
+  Members' pages add their row (Today, My calendar, Society, Record,
+  Settings, the Diwan for officers, Sign out). The footer
+  (`footer.tsx`) holds what the header doesn't: the six programs, the
+  Society's pages and the ways to stay in touch. No link appears twice
+  among the header, a menu row and the footer. Every Diwan empty state
+  offers one next action (`EmptyLine action`).
 - **Content.** Don't invent names, dates, figures or quotes. Missing text is a
   `TODO(content): …` placeholder listed in `PROGRESS.md`. Arabic written for
   this platform (not taken from a source) is listed as `needs-native-review`.

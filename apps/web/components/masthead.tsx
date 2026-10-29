@@ -24,8 +24,8 @@ interface MastheadProps {
   /** Phones: what the menu panel shows under the sections. */
   readonly menu?: (close: () => void) => ReactNode;
   readonly navLabel: string;
-  /** Names the part of the site, beside the logo (the members' portal). */
-  readonly place?: string;
+  /** The search link, an icon with its label, before the language. */
+  readonly search?: ReactNode;
   readonly sections: readonly MastheadSection[];
 }
 
@@ -48,7 +48,7 @@ export const Masthead = ({
   language,
   menu,
   navLabel,
-  place,
+  search,
   sections,
 }: MastheadProps) => {
   const tc = useTranslations("common");
@@ -68,11 +68,6 @@ export const Masthead = ({
       <div className="mx-auto flex h-16 w-full max-w-6xl items-center gap-4 px-4 sm:px-6 lg:h-[4.75rem] lg:gap-10">
         <NextLink className="flex shrink-0 items-center gap-3" href={home}>
           <BrandLogo className="h-10 lg:h-14" height={56} locale={locale} />
-          {place ? (
-            <span className="hidden border-line border-s ps-3 font-medium text-[0.90625rem] text-text-secondary sm:block">
-              {place}
-            </span>
-          ) : null}
         </NextLink>
         <nav aria-label={navLabel} className="ms-auto hidden lg:block">
           <ul className="flex items-center gap-[1.875rem]">
@@ -95,6 +90,7 @@ export const Masthead = ({
           </ul>
         </nav>
         <div className="ms-auto flex shrink-0 items-center gap-4 lg:ms-0 lg:gap-[1.375rem]">
+          {search}
           {language}
           <ThemeToggle className="hidden sm:inline-block" />
           {action}

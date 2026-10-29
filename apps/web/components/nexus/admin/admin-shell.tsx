@@ -6,10 +6,11 @@ import {
   adminModules,
   hasPermissionAnywhere,
 } from "@repo/rbac";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, ExternalLink } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { type ReactNode, useEffect, useState } from "react";
 import { Link, usePathname, useRouter } from "@/lib/nexus/navigation";
+import { useNotionHandbook, useTeamWorkspace } from "@/lib/nexus/notion";
 import { useGrants } from "@/lib/nexus/queries";
 import { TwoStepPanel, useTwoStep } from "../auth/two-step";
 import { SectionSpinner } from "../states";
@@ -52,6 +53,13 @@ const ungrouped = adminModules
     (key) => key !== "overview" && !groups.some((g) => g.modules.includes(key))
   );
 
+// What every officer has besides the modules (owner, Oct 30, 2026: these
+// left the Diwan's header, which is now the site's own).
+const ownPages = [
+  { href: "/library", key: "documents" },
+  { href: "/declarations", key: "declarations" },
+] as const;
+
 const isActive = (module: AdminModule, pathname: string) =>
   module === "overview"
     ? pathname === "/"
@@ -69,8 +77,19 @@ const AdminNav = () => {
   // Open for one page only: moving to another section closes the list.
   const [openOn, setOpenOn] = useState<string | null>(null);
   const open = openOn === pathname;
+  const tn = useTranslations("nexus.nav");
+  const tc = useTranslations("common");
+  const workspace = useTeamWorkspace();
+  const handbook = useNotionHandbook();
   const keys = new Set(visible.map((m) => m.key));
-  const current = visible.find((m) => isActive(m.key, pathname));
+  const own = ownPages.find((page) => pathname.startsWith(page.href));
+  const current = own ? null : visible.find((m) => isActive(m.key, pathname));
+  const notion = [
+    ...(workspace ? [{ href: workspace, key: "workspace" } as const] : []),
+    ...(handbook.home
+      ? [{ href: handbook.home, key: "handbook" } as const]
+      : []),
+  ];
 
   const link = (module: AdminModule) => {
     const active = isActive(module, pathname);
@@ -103,7 +122,7 @@ const AdminNav = () => {
         <span className="grid">
           <span className="type-label">{t("title")}</span>
           <span className="font-medium">
-            {current ? t(`nav.${current.key}`) : t("nav.overview")}
+            {own ? tn(own.key) : t(`nav.${current?.key ?? "overview"}`)}
           </span>
         </span>
         <ChevronDown
@@ -139,6 +158,44 @@ const AdminNav = () => {
             </div>
           );
         })}
+        <div className="grid gap-1">
+          <p className="type-caption">{t("nav.groups.yours")}</p>
+          <ul className="grid grid-cols-2 gap-x-4 sm:grid-cols-3 lg:grid-cols-1">
+            {ownPages.map((page) => {
+              const active = own?.href === page.href;
+              return (
+                <li key={page.href}>
+                  <Link
+                    aria-current={active ? "page" : undefined}
+                    className={cn(
+                      "block py-2 text-sm underline-offset-4 hover:underline lg:py-1",
+                      active && "font-medium text-text"
+                    )}
+                    href={page.href}
+                  >
+                    {tn(page.key)}
+                  </Link>
+                </li>
+              );
+            })}
+            {notion.map((page) => (
+              <li key={page.key}>
+                <a
+                  className="inline-flex items-center gap-1.5 py-2 text-sm underline-offset-4 hover:underline lg:py-1"
+                  href={page.href}
+                  rel="noopener"
+                  target="_blank"
+                >
+                  {tn(page.key)}
+                  <ExternalLink
+                    aria-label={tc("externalLink")}
+                    className="size-3.5"
+                  />
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </nav>
   );

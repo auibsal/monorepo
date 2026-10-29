@@ -412,6 +412,15 @@ These stop parts of the work. Everything else continues around them.
 
 ## Decisions
 
+- **One main menu** (owner, Oct 30, 2026): the Diwan uses the site's own
+  header (About, What's on, Qirtas, Get involved; Join only for visitors;
+  Search; Membership when signed in). The Diwan's former header items (the
+  overview, the library, declarations, the Notion workspace and handbook)
+  are in the administration menu under "Every officer". The members' row
+  drops the Callboard (the header's Get involved). The footer drops what
+  the header has (About, Qirtas, News, Search, Membership) and lists the
+  six programs, the Society's pages and Stay in touch (the Sunday Paper
+  first).
 - **The decisions file** (owner, Oct 30, 2026): `claude/decisions.md` is the
   source of truth; where an older document disagrees, it wins.
 - **No money** (owner, Oct 30, 2026): the Treasurer, the spending
@@ -1061,6 +1070,10 @@ These stop parts of the work. Everything else continues around them.
 
 ### Owner decisions (2026-10-30)
 
+- [x] One main menu across the site, the members' pages and the Diwan;
+      the Diwan's own pages in the administration menu; footer without
+      repeats; the header notices signing in and out at once
+
 - [x] Read and saved `claude/decisions.md`; AGENTS.md points to it
 - [x] No money: Treasurer, spending, claims, costs and budget fields
       removed; needs lists; the collection record with the witnessed
@@ -1482,6 +1495,9 @@ Covered by automated tests so far:
 All Arabic written for the platform up to 2026-10-24 was reviewed by the
 owner and approved ("reviewed across the board, it's all good"). List new
 Arabic here as it is written.
+
+Written 2026-10-30 (menus): «لكل مسؤول» (the administration menu's group),
+«البرامج» and «ابقَ على تواصل» (footer columns), «بحث».
 
 Written 2026-10-30 (owner decisions): the rhythm lines and summaries of
 migration `20261030000400` (e.g. «أيام الثلاثاء، كل ثلاثة أسابيع، من 4:00 إلى

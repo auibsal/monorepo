@@ -21,13 +21,7 @@ interface AccountLink {
   /** Pages that count as this link's own (Settings holds Profile and Requests). */
   readonly also?: readonly string[];
   readonly href: string;
-  readonly key:
-    | "today"
-    | "calendar"
-    | "callboard"
-    | "society"
-    | "record"
-    | "settings";
+  readonly key: "today" | "calendar" | "society" | "record" | "settings";
 }
 
 /** Whether a link is the current page: Today only on itself. */
@@ -40,9 +34,10 @@ const isCurrent = (pathname: string, link: AccountLink) =>
 
 /**
  * The account's own pages, in one row under the site's header (owner,
- * 2026-10-25): Today · My calendar · Callboard · Society · Record ·
- * Settings, and the Diwan for those whose roles open it. Profile and
- * Requests sit under Settings; perks are on the card.
+ * 2026-10-25): Today · My calendar · Society · Record · Settings, and the
+ * Diwan for those whose roles open it. The Callboard is the header's "Get
+ * involved", so it isn't repeated here. Profile and Requests sit under
+ * Settings; perks are on the card.
  */
 const useAccountLinks = () => {
   const { visible } = useVisibleModules();
@@ -55,7 +50,6 @@ const useAccountLinks = () => {
     ...(member
       ? ([
           { href: "/events/book", key: "calendar" },
-          { href: "/callboard", key: "callboard" },
           { href: "/society", key: "society" },
         ] as const)
       : []),
