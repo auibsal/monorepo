@@ -32,7 +32,7 @@ test("sign up with an AUIB address, confirm by email, finish setup", async ({
   await page.getByRole("button", { name: /continue/i }).click();
 
   // One question per screen.
-  await expect(page).toHaveURL(/\/setup\?(.*&)?step=1/);
+  await expect(page).toHaveURL(/\/welcome\?(.*&)?step=1/);
   await expect(page.getByText("Step 1 of 5")).toBeVisible();
   await expectAccessible(page);
   await page.getByLabel("First name in English").fill("New");

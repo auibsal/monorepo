@@ -18,7 +18,7 @@ test("two editors see each other and each other's typing", async ({
   await signInWithPassword(first, editor.email);
   await signInWithPassword(second, editor2.email);
 
-  await first.goto(`${urls.app}/content`);
+  await first.goto(`${urls.app}/site`);
   await first
     .getByRole("button", { name: "New page" })
     .or(first.getByRole("link", { name: "New page" }))
@@ -34,8 +34,8 @@ test("two editors see each other and each other's typing", async ({
     .getByRole("textbox", { name: "Web address (slug)" })
     .fill(`shared-${Date.now()}`);
   await first.getByRole("button", { name: "Save" }).click();
-  // Saving a new page moves the editor to its id; the room opens there.
-  await expect(first).toHaveURL(/id=/);
+  // Saving a new page moves the editor to its own address; the room opens there.
+  await expect(first).toHaveURL(/\/diwan\/site\/pages\/(?!new)[^/?]+$/);
   const url = first.url();
 
   await second.goto(url);
