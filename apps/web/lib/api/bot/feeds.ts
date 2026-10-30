@@ -231,7 +231,7 @@ const newPieces = (run: Run, pieces: PublicPiece[]) =>
           NEW_PIECE_WINDOW
       )
       .map((piece) => () => {
-        const url = piecePage(linkLang(run.group), piece.slug);
+        const url = piecePage(linkLang(run.group), piece);
         return once(run.group, "piece", piece.id, () =>
           postTo(
             run.api,

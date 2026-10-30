@@ -1145,8 +1145,9 @@ in threes (six in the header, so Join stays; D1 changed).
   `/get-involved`.
 - [x] Readable Diwan addresses (`modulePaths`, `RecordRef`, `new` pages)
   and section names (Desk, Site, Second Chapter, Service, Requests).
-- [x] Permanent redirects for every old address (`lib/moved.ts`), English
-  and Arabic; the address alone decides the language.
+- [x] No redirects (owner, Oct 30, 2026): old addresses are not found,
+  and every link the platform makes (pages, emails, the bot, search,
+  the Prizes) uses the new ones; the address alone decides the language.
 - [x] Footer in threes, two columns on phones; no footer in the Diwan.
 - [x] Home: one solid button, the next three weeks, program names in ink,
   the Sunday Paper at the end (the ink band is gone).

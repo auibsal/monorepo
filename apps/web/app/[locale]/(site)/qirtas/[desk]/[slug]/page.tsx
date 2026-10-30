@@ -1,9 +1,7 @@
 import type { Locale } from "@repo/internationalization";
-import { localizedPath } from "@repo/internationalization";
 import type { Metadata } from "next";
-import { notFound, permanentRedirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import { setRequestLocale } from "next-intl/server";
-import { pieceHref } from "@/components/waraq/cards";
 import {
   loadPiece,
   PieceArticle,
@@ -25,8 +23,7 @@ export const generateMetadata = async ({
 
 /**
  * A piece at its section's address (/qirtas/news/<slug>; the overhaul,
- * Oct 30, 2026). A piece asked for under the wrong section is sent to its
- * own.
+ * Oct 30, 2026). Under any other section it isn't found.
  */
 const PiecePage = async ({ params }: PieceProps) => {
   const { desk, locale, slug } = await params;
@@ -36,7 +33,7 @@ const PiecePage = async ({ params }: PieceProps) => {
     notFound();
   }
   if (piece.desk !== desk) {
-    permanentRedirect(localizedPath(locale, pieceHref(piece)));
+    notFound();
   }
   return <PieceArticle locale={locale} piece={piece} />;
 };

@@ -1,4 +1,5 @@
 import { apiUrl, siteUrl } from "@repo/internationalization";
+import { journal } from "@repo/sal-data";
 import { startLink } from "@repo/telegram";
 import type { Lang } from "./copy";
 
@@ -12,8 +13,10 @@ export const accountPage = (lang: Lang, path = "") =>
 export const eventPage = (lang: Lang, slug: string) =>
   web(lang, `/events/${slug}`);
 
-export const piecePage = (lang: Lang, slug: string) =>
-  web(lang, `/qirtas/pieces/${slug}`);
+export const piecePage = (
+  lang: Lang,
+  piece: { readonly desk?: string | null; readonly slug: string }
+) => web(lang, journal.piecePath(piece));
 
 export const eventCalendar = (lang: Lang, slug: string) =>
   apiUrl(`/calendar/events/${slug}.ics${lang === "ar" ? "?lang=ar" : ""}`);

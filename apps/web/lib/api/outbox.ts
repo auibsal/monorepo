@@ -33,6 +33,7 @@ import {
   waitlistPromoted,
 } from "@repo/email/copy";
 import { Notice, noticeText } from "@repo/email/templates/notice";
+import { journal } from "@repo/sal-data";
 import { revalidateTag } from "next/cache";
 import { stopToken } from "@/lib/api/email-stop";
 import { api, origin, site } from "@/lib/api/urls";
@@ -175,7 +176,7 @@ const pieceInfo = async (admin: AdminClient, pieceId: unknown) => {
     .schema("journal")
     .from("pieces")
     .select(
-      "id, slug, title_en, title_ar, contributor:contributors!pieces_contributor_id_fkey(user_id)"
+      "id, slug, desk, title_en, title_ar, contributor:contributors!pieces_contributor_id_fkey(user_id)"
     )
     .eq("id", String(pieceId))
     .maybeSingle();
@@ -517,7 +518,7 @@ const handlers: Record<string, Handler> = {
         piecePublished(
           to.lang,
           pieceTitle(piece, to.lang),
-          `${webUrl()}${prefix(to.lang)}/qirtas/pieces/${piece.slug}`
+          `${webUrl()}${prefix(to.lang)}${journal.piecePath(piece)}`
         )
       );
     }

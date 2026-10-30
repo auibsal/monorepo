@@ -467,12 +467,25 @@ export const publishedIssues = async (client: Client) =>
       .order("number", { ascending: false })
   );
 
+/**
+ * A piece's address: under its section (/qirtas/news/<slug>; the overhaul,
+ * Oct 30, 2026). Games has its own pages (/qirtas/games/<puzzle>), so a
+ * Games piece is at /qirtas/pieces/<slug>.
+ */
+export const piecePath = (piece: {
+  readonly desk?: string | null;
+  readonly slug: string;
+}) =>
+  piece.desk && piece.desk !== "games"
+    ? `/qirtas/${piece.desk}/${piece.slug}`
+    : `/qirtas/pieces/${piece.slug}`;
+
 export const latestPieces = async (client: Client, limit = 6) =>
   unwrap(
     await journal(client)
       .from("pieces")
       .select(
-        "id, slug, title_en, title_ar, category, language, members_only, published_at, contributor:contributors!pieces_contributor_id_fkey(slug, name_en, name_ar)"
+        "id, slug, desk, title_en, title_ar, category, language, members_only, published_at, contributor:contributors!pieces_contributor_id_fkey(slug, name_en, name_ar)"
       )
       .order("published_at", { ascending: false })
       .limit(limit)

@@ -165,7 +165,7 @@ Qirtas, unlike a program, may have several documents:
   - Operations Playbook, Templates and Forms (remove claims, budgets, ledgers), Member Handbook, Printables and the Operations Tracker (remove Budget, Ledger and Claims; add Needs and Requests to Student Life; keep Second Chapter's collection).
 - **The platform's UX overhaul (Oct 30):** the plan "SAL Platform Redesign" is approved as recommended, built in one pull request. Things come in threes (3, 6, 9, 12): six items in the header, six in the members' menu, six Qirtas sections, six programs, three footer columns. Recommendations adopted:
   - Get involved is a public page (`/get-involved`), with the full Callboard for members below it.
-  - Old addresses get permanent redirects, the one exception to "no redirects".
+  - No redirects at all (owner, Oct 30): old addresses are simply not found; the platform links only to the new ones.
   - Members' pages live under `/membership`, the Society's own pages under `/about`, Diwan items at readable addresses (no `?id=`).
   - The Give page folds into Second Chapter's page. A Qirtas piece's address includes its section (`/qirtas/news/[slug]`).
   - Diwan sections are named as officers see them: Qirtas, The Company, Service, Site (with Ads), Second Chapter, Requests.

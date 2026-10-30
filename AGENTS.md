@@ -82,12 +82,12 @@ and decisions), and continue from the first unticked item.
   Notion workspace only (the Diwan's menu links there: settings
   `notion.home_url`, `notion.handbook`; `docs/platform/notion.md`); the platform runbooks in `docs/platform`
   (Markdown). There is no separate docs site. The apps configure no
-  redirects (owner, Oct 14, 2026) except the overhaul's moved addresses
-  (Oct 30, 2026: `apps/web/lib/moved.ts`, permanent, for English and each
-  prefixed language; an old `?id=` becomes the new address's last part).
-  Add a line there whenever a page moves. www.auibsal.org → auibsal.org is
-  a Vercel domain setting. The address alone decides the language
-  (`localeDetection: false`).
+  redirects (owner, Oct 14, 2026; again Oct 30, 2026: none for the
+  overhaul's moved addresses either, and no forwarding pages); an old
+  address is simply not found. www.auibsal.org → auibsal.org is a Vercel
+  domain setting. The address alone decides the language
+  (`localeDetection: false`). A piece's address comes from
+  `journal.piecePath` (its section; Games pieces at `/qirtas/pieces/`).
 - `packages/*` — shared code, imported as `@repo/<name>`. `@repo` is a fixed
   internal scope; never rename it.
   - `@repo/database` — SQL migrations (`supabase/migrations`), pgTAP tests

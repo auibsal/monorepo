@@ -1,28 +1,37 @@
 import type { Locale } from "@repo/internationalization";
-import { localizedPath } from "@repo/internationalization";
-import { notFound, permanentRedirect } from "next/navigation";
-import { pieceHref } from "@/components/waraq/cards";
-import { loadPiece, PieceArticle } from "@/components/waraq/piece-page";
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { setRequestLocale } from "next-intl/server";
+import {
+  loadPiece,
+  PieceArticle,
+  pieceMetadata,
+} from "@/components/waraq/piece-page";
 
 interface PieceProps {
   readonly params: Promise<{ locale: Locale; slug: string }>;
 }
 
-/**
- * The address pieces had before the overhaul (/qirtas/pieces/<slug>), kept
- * so links in old emails, posts and the bot still open: it sends the reader
- * on to the piece's section address. Games pieces are shown here.
- */
-const OldPieceAddress = async ({ params }: PieceProps) => {
+export const generateMetadata = async ({
+  params,
+}: PieceProps): Promise<Metadata> => {
   const { locale, slug } = await params;
-  const piece = await loadPiece(slug);
-  if (!piece) {
-    notFound();
-  }
-  if (piece.desk === "games") {
-    return <PieceArticle locale={locale} piece={piece} />;
-  }
-  permanentRedirect(localizedPath(locale, pieceHref(piece)));
+  return pieceMetadata(locale, slug);
 };
 
-export default OldPieceAddress;
+/**
+ * A Games piece: the section's own pages are the puzzles
+ * (/qirtas/games/<puzzle>), so its pieces live here. Every other piece is
+ * at its section's address.
+ */
+const GamesPiece = async ({ params }: PieceProps) => {
+  const { locale, slug } = await params;
+  setRequestLocale(locale);
+  const piece = await loadPiece(slug);
+  if (piece?.desk !== "games") {
+    notFound();
+  }
+  return <PieceArticle locale={locale} piece={piece} />;
+};
+
+export default GamesPiece;
