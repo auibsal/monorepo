@@ -11,8 +11,34 @@ import { PhoneNotifications } from "./phone-notifications";
 import { TelegramLink } from "./telegram-link";
 
 /**
- * Settings (owner, 2026-10-25): how the Society reaches the member and how
- * they sign in. What they tell us about themselves is in Profile; what
+ * Notices (the overhaul, Oct 30, 2026): every way the Society reaches the
+ * member, on one page: email (kept with the profile), the phone and
+ * Telegram.
+ */
+export const NoticesScreen = () => {
+  const t = useTranslations("nexus.settings");
+  return (
+    <DiwanPage lede={t("noticesLede")} narrow title={t("notices")}>
+      <DiwanSection id="email" title={t("noticesEmail")}>
+        <p className="type-body">
+          {t("noticesEmailLine")}{" "}
+          <Link
+            className="link font-medium"
+            href="/membership/settings/profile"
+          >
+            {t("profile")}
+          </Link>
+        </p>
+      </DiwanSection>
+      <PhoneNotifications />
+      <TelegramLink />
+    </DiwanPage>
+  );
+};
+
+/**
+ * Settings (owner, 2026-10-25): three pages of their own (Profile,
+ * Requests, Notices), then how they sign in. What they tell us about themselves is in Profile; what
  * they have sent is in Requests and reports.
  */
 export const SettingsScreen = () => {
@@ -36,11 +62,18 @@ export const SettingsScreen = () => {
             </Link>
             <p className="type-caption">{t("requestsLine")}</p>
           </li>
+          <li className="grid gap-1">
+            <Link
+              className="link font-medium"
+              href="/membership/settings/notices"
+            >
+              {t("notices")}
+            </Link>
+            <p className="type-caption">{t("noticesLine")}</p>
+          </li>
         </RowList>
       </DiwanSection>
       <PersonalEmailSection />
-      <PhoneNotifications />
-      <TelegramLink />
       <Passkeys />
       <ConnectedApps />
       <DeleteAccount />

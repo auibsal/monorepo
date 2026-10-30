@@ -63,6 +63,19 @@ export const generateMetadata = async ({
   });
 };
 
+/** The program a session belongs to, named in its facts and linked. */
+const programOf = async (programmeId: string | null) => {
+  if (!programmeId) {
+    return;
+  }
+  const all = await readPublished(
+    ["programmes"],
+    async (c) => (await programmes.programmes(c)) ?? [],
+    []
+  );
+  return all.find((p) => p.id === programmeId && programmes.isListedProgram(p));
+};
+
 /**
  * An event, or a program: programs and events share the addresses under
  * /events (the database keeps them apart), so /events/salon is the Salon
@@ -91,18 +104,7 @@ const EventPage = async ({ params, searchParams }: EventProps) => {
   const image = mediaUrl(event.image_path);
   const cancelled = event.status === "cancelled";
   const upcoming = new Date(event.starts_at).getTime() > Date.now();
-  // The program the session belongs to, named in the facts and linked.
-  const program = event.programme_id
-    ? (
-        await readPublished(
-          ["programmes"],
-          async (c) => (await programmes.programmes(c)) ?? [],
-          []
-        )
-      ).find(
-        (p) => p.id === event.programme_id && programmes.isListedProgram(p)
-      )
-    : undefined;
+  const program = await programOf(event.programme_id);
 
   return (
     <article className="mx-auto grid w-full max-w-3xl gap-8 px-4 py-16">

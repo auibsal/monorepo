@@ -105,6 +105,29 @@ type StateKey =
   | "full"
   | "left";
 
+/** Giving a place back (or leaving the waiting list), asked in place. */
+const GiveBack = ({
+  booked,
+  busy,
+  onConfirm,
+}: {
+  readonly booked: boolean;
+  readonly busy: boolean;
+  readonly onConfirm: () => void;
+}) => {
+  const t = useTranslations("nexus.events");
+  const label = booked ? t("cancel") : t("leaveWaitlist");
+  return (
+    <InlineConfirm
+      confirm={label}
+      disabled={busy}
+      label={label}
+      onConfirm={onConfirm}
+      question={booked ? t("cancelAsk") : t("leaveWaitlistAsk")}
+    />
+  );
+};
+
 /** A plain message for each refusal the booking RPC can raise. */
 const errorKey = (error: unknown): NoticeKey => {
   const code = (error as { code?: string } | null)?.code;
@@ -434,14 +457,10 @@ const EventCard = ({
             </Button>
           ) : null}
           {holding ? (
-            <InlineConfirm
-              confirm={state === "booked" ? t("cancel") : t("leaveWaitlist")}
-              disabled={busy}
-              label={state === "booked" ? t("cancel") : t("leaveWaitlist")}
+            <GiveBack
+              booked={state === "booked"}
+              busy={busy}
               onConfirm={onCancel}
-              question={
-                state === "booked" ? t("cancelAsk") : t("leaveWaitlistAsk")
-              }
             />
           ) : null}
         </div>

@@ -3911,7 +3911,12 @@
       "profile": "Profile",
       "profileLine": "Your name in both languages, a short bio, and what you tell us about yourself.",
       "requests": "Requests and reports",
-      "requestsLine": "What you have sent, and starting a new request."
+      "requestsLine": "What you have sent, and starting a new request.",
+      "notices": "Notices",
+      "noticesLine": "Email, your phone and Telegram: how the Society reaches you.",
+      "noticesLede": "Every way the Society reaches you, on one page.",
+      "noticesEmail": "Email",
+      "noticesEmailLine": "Whether optional email reaches you, the Sunday Paper and reminders, is set in"
     },
     "recoveryCodes": {
       "noneTitle": "Save your recovery codes",

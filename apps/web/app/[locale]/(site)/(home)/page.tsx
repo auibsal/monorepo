@@ -68,7 +68,7 @@ const Home = async ({ params }: HomeProps) => {
     })),
     ...eventItems(nextEvents ?? [], locale),
   ]
-    .filter((item) => item.at <= horizon)
+    .filter((item) => !(item.at > horizon))
     .sort((a, b) => a.at.localeCompare(b.at))
     .slice(0, 6);
 

@@ -72,7 +72,7 @@ const useAccountLinks = () => {
       : []),
     { href: "/membership/record", key: "record" },
     {
-      also: ["/membership/settings/profile", "/membership/requests"],
+      also: ["/membership/requests"],
       href: "/membership/settings",
       key: "settings",
     },
