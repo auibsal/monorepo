@@ -408,11 +408,15 @@ any schema change. Integration tests run against a local stack with
   site's header (`site-header.tsx`) on the public pages, the members'
   pages and the Diwan alike: About, What's on, Qirtas, Get involved and
   Join (for visitors; signed in, the end of the line opens Membership),
-  with Search, the language and the theme. Everything the Diwan had in its
+  with Search, the language and the theme. The Diwan sits under
+  Membership, for officers only (`useIsStaff`, remembered for the public
+  pages in the `sal_diwan` hint cookie; UX only). Below the desktop width
+  the bar keeps the logo and the menu button, and everything else opens
+  in the panel. Everything the Diwan had in its
   own header (the overview, the library, declarations, the Notion links)
   is in the administration menu (`admin-shell.tsx`, "For your role").
   Members' pages add their row (Today, My calendar, Society, Record,
-  Settings, the Diwan for officers, Sign out). The footer
+  Settings, Sign out). The footer
   (`footer.tsx`) holds what the header doesn't: the six programs, the
   Society's pages and the ways to stay in touch. No link appears twice
   among the header, a menu row and the footer. Every Diwan empty state

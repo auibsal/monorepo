@@ -4032,7 +4032,9 @@
       "signIn": "Sign in",
       "account": "Membership",
       "involved": "Get involved",
-      "search": "Search"
+      "search": "Search",
+      "diwan": "The Diwan",
+      "accountMenu": "Membership menu"
     },
     "footer": {
       "contact": "Contact",

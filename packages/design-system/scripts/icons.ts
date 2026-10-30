@@ -27,7 +27,7 @@ export const iconDataPath = join(
 );
 
 const SHAPE = /<(path|circle|line|polyline|polygon|rect)\s([^>]*?)\s*\/>/g;
-const ATTRIBUTE = /([a-z-]+)="([^"]*)"/g;
+const ATTRIBUTE = /([a-z][a-z0-9-]*)="([^"]*)"/g;
 const ICON_FILE = /^icon-(.+)\.svg$/;
 
 /** The shapes of one icon file, as [tag, attributes]. */

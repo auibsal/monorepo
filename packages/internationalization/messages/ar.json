@@ -4032,7 +4032,9 @@
       "signIn": "تسجيل الدخول",
       "account": "العضوية",
       "involved": "شارك",
-      "search": "بحث"
+      "search": "بحث",
+      "diwan": "الديوان",
+      "accountMenu": "قائمة العضوية"
     },
     "footer": {
       "contact": "تواصل معنا",

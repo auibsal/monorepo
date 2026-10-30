@@ -4,6 +4,7 @@ import { BrandLogo } from "@repo/design-system/components/brand-logo";
 import { Icon } from "@repo/design-system/components/sal/icon";
 import { cn } from "@repo/design-system/lib/utils";
 import NextLink from "next/link";
+import { usePathname } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { type ReactNode, useEffect, useState } from "react";
 import { ThemeToggle } from "./theme-toggle";
@@ -16,13 +17,13 @@ export interface MastheadSection {
 }
 
 interface MastheadProps {
-  /** Desktop: the text link or menu at the end of the line (Sign in). */
+  /** Desktop: the text link or menu at the end of the line (Sign in, Membership). */
   readonly action?: ReactNode;
   /** Where the logo leads, with the language prefix. */
   readonly home: string;
   /** The language link or button, in words. */
   readonly language: ReactNode;
-  /** Phones: what the menu panel shows under the sections. */
+  /** Phones and tablets: what the menu panel shows under the sections. */
   readonly menu?: (close: () => void) => ReactNode;
   readonly navLabel: string;
   /** The search link, an icon with its label, before the language. */
@@ -40,9 +41,10 @@ export const mastheadLink =
  * five sections in Ubuntu Medium, sentence case, then search, the language,
  * the theme and Sign in (icons from the set, words where they could be
  * misread). A hairline below; the current section carries
- * a 1.5 px accent underline. On phones the sections open in a panel under
- * the bar. Links are plain links, so moving between the site and the portal
- * never reloads the page.
+ * a 1.5 px accent underline. Below the desktop width the bar keeps only the
+ * logo and the menu button: the sections, the way in, search, the language
+ * and the theme open in a panel under it. Links are plain links, so moving
+ * between the site and the portal never reloads the page.
  */
 export const Masthead = ({
   action,
@@ -57,13 +59,13 @@ export const Masthead = ({
   const locale = useLocale();
   const [open, setOpen] = useState(false);
   const close = () => setOpen(false);
-  // A new page closes the panel (the links inside it close it too).
-  const here = sections.find((section) => section.current)?.href;
+  // A new page (or language) closes the panel.
+  const pathname = usePathname();
   useEffect(() => {
-    if (here !== undefined) {
+    if (pathname) {
       setOpen(false);
     }
-  }, [here]);
+  }, [pathname]);
 
   return (
     <header className="sticky top-0 z-40 border-line border-b bg-surface text-text print:hidden">
@@ -92,10 +94,12 @@ export const Masthead = ({
           </ul>
         </nav>
         <div className="ms-auto flex shrink-0 items-center gap-4 lg:ms-0 lg:gap-[1.375rem]">
-          {search}
-          {language}
-          <ThemeToggle className="hidden sm:inline-block" />
-          {action}
+          <div className="hidden lg:contents">
+            {search}
+            {language}
+            <ThemeToggle />
+            {action}
+          </div>
           <button
             aria-expanded={open}
             aria-label={open ? tc("closeMenu") : tc("openMenu")}
@@ -128,8 +132,12 @@ export const Masthead = ({
               ))}
             </ul>
           </nav>
-          <ThemeToggle className="mt-5 sm:hidden" />
-          {menu ? <div className="mt-6 grid gap-5">{menu(close)}</div> : null}
+          {menu ? <div className="mt-6 grid gap-4">{menu(close)}</div> : null}
+          <div className="mt-6 flex items-center gap-6 border-line border-t pt-5">
+            {search}
+            {language}
+            <ThemeToggle />
+          </div>
         </div>
       ) : null}
     </header>
