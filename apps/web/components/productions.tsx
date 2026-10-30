@@ -31,8 +31,7 @@ const loadAll = async () =>
  * Staged readings and productions. Only what may be public is read: the
  * title, summary and poster, the credits people agreed to show, partners
  * with a memorandum in force, and published performances once the
- * script's rights are cleared. Shown on the Company's page in What's on
- * (/events/company).
+ * script's rights are cleared. Shown on the Company's own page (/company).
  */
 export const Productions = async ({ locale }: { locale: Locale }) => {
   const t = await getTranslations({ locale, namespace: "web.productions" });

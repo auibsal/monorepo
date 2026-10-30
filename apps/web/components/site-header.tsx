@@ -12,17 +12,24 @@ import { type ReactNode, useEffect, useRef, useState } from "react";
 import { hasStaffCookie } from "@/lib/staff";
 import { Masthead, mastheadLink } from "./masthead";
 
-// Five sections in the header, the same on the site, the members' pages and
-// the Diwan (owner, Oct 30, 2026); the rest are in the footer, never both.
-type SectionKey = "about" | "involved" | "journal" | "events" | "join";
-// About · What's on · Qirtas · Get involved · Join (owner, 2026-10-25):
-// programs and events are one calendar, and "Get involved" opens the
-// Callboard. Join is for visitors: signed in, the end of the line opens
-// Membership instead.
+// The header's sections, the same on the site, the members' pages and the
+// Diwan (owner, Oct 30, 2026); the rest are in the footer, never both.
+type SectionKey =
+  | "about"
+  | "company"
+  | "involved"
+  | "journal"
+  | "events"
+  | "join";
+// About · What's on · Qirtas · The Company · Get involved · Join: programs
+// and events are one calendar, the Company stands beside Qirtas (owner,
+// Oct 30, 2026), and "Get involved" opens the Callboard. Join is for
+// visitors: signed in, the end of the line opens Membership instead.
 const sections: { href: string; key: SectionKey }[] = [
   { href: "/about", key: "about" },
   { href: "/events", key: "events" },
   { href: "/qirtas", key: "journal" },
+  { href: "/company", key: "company" },
   { href: "/callboard", key: "involved" },
   { href: "/join", key: "join" },
 ];

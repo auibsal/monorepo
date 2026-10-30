@@ -2395,7 +2395,7 @@
         "fields": {
           "title": "Title",
           "slug": "Web address",
-          "slugHint": "Lowercase letters, numbers and hyphens, for auibsal.org/events/company.",
+          "slugHint": "Lowercase letters, numbers and hyphens, for auibsal.org/company.",
           "playwright": "Written by",
           "kind": "Kind",
           "origin": "Script",
@@ -2403,7 +2403,7 @@
           "programme": "Program",
           "noProgramme": "No program",
           "poster": "Poster",
-          "isPublic": "Show on auibsal.org/events/company",
+          "isPublic": "Show on auibsal.org/company",
           "isPublicHint": "Only the title, summary, poster, credits people agreed to, partners and published performances are shown. Rights, auditions and the report never are."
         },
         "tabs": {
@@ -4034,7 +4034,8 @@
       "involved": "Get involved",
       "search": "Search",
       "diwan": "The Diwan",
-      "accountMenu": "Membership menu"
+      "accountMenu": "Membership menu",
+      "company": "The Company"
     },
     "footer": {
       "contact": "Contact",
@@ -4053,8 +4054,7 @@
         "contactHeading": "Stay in touch",
         "email": "hello@auibsal.org",
         "programs": "Programs"
-      },
-      "company": "The Company"
+      }
     },
     "consent": {
       "title": "Cookies",
@@ -4791,6 +4791,11 @@
       "rewards": "A certificate for every winner, and a chapbook for the main prize. No cash prizes.",
       "prizeFor": "The prize for {section}",
       "mainPrize": "The main prize"
+    },
+    "company": {
+      "auditions": "Auditions",
+      "auditionsLede": "The Company casts each production in open auditions. Members sign up for a time.",
+      "auditionsLink": "Sign up for an audition"
     }
   }
 }

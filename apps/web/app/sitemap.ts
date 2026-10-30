@@ -2,6 +2,7 @@ import { project } from "@repo/config";
 import { locales, localizedPath } from "@repo/internationalization";
 import { documents, journal, programmes } from "@repo/sal-data";
 import type { MetadataRoute } from "next";
+import { seriesPath } from "@/components/series";
 import { readPublished } from "@/lib/supabase";
 
 /**
@@ -70,7 +71,7 @@ const sitemap = async (): Promise<MetadataRoute.Sitemap> => {
     // Each program's own calendar (Qirtas, the paper, has its own pages).
     ...(series ?? [])
       .filter((p) => p.is_active && p.slug !== "waraq")
-      .map((p) => `/events/${p.slug}`),
+      .map((p) => seriesPath(p.slug)),
   ]
     .flatMap((path) => localized(path))
     .concat(

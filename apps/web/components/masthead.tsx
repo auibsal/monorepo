@@ -38,7 +38,7 @@ export const mastheadLink =
 /**
  * The one header for the whole site, public pages and the portal alike:
  * one line, the lockup in the page's language (56 px, 40 px on phones), at most
- * five sections in Ubuntu Medium, sentence case, then search, the language,
+ * six sections in Ubuntu Medium, sentence case, then search, the language,
  * the theme and Sign in (icons from the set, words where they could be
  * misread). A hairline below; the current section carries
  * a 1.5 px accent underline. Below the desktop width the bar keeps only the

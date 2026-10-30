@@ -2395,7 +2395,7 @@
         "fields": {
           "title": "العنوان",
           "slug": "عنوان الصفحة",
-          "slugHint": "أحرف إنجليزية صغيرة وأرقام وشرطات، لصفحة auibsal.org/events/company.",
+          "slugHint": "أحرف إنجليزية صغيرة وأرقام وشرطات، لصفحة auibsal.org/company.",
           "playwright": "تأليف",
           "kind": "النوع",
           "origin": "النص",
@@ -2403,7 +2403,7 @@
           "programme": "البرنامج",
           "noProgramme": "بلا برنامج",
           "poster": "الملصق",
-          "isPublic": "اعرضه في auibsal.org/events/company",
+          "isPublic": "اعرضه في auibsal.org/company",
           "isPublicHint": "يظهر العنوان والنبذة والملصق وأسماء من وافقوا على ظهورها والشركاء والعروض المنشورة فقط. لا تظهر الحقوق ولا تجارب الأداء ولا التقرير أبدًا."
         },
         "tabs": {
@@ -4034,7 +4034,8 @@
       "involved": "شارك",
       "search": "بحث",
       "diwan": "الديوان",
-      "accountMenu": "قائمة العضوية"
+      "accountMenu": "قائمة العضوية",
+      "company": "الفرقة"
     },
     "footer": {
       "contact": "تواصل معنا",
@@ -4053,8 +4054,7 @@
         "contactHeading": "ابقَ على تواصل",
         "email": "hello@auibsal.org",
         "programs": "البرامج"
-      },
-      "company": "الفرقة"
+      }
     },
     "consent": {
       "title": "ملفات تعريف الارتباط",
@@ -4791,6 +4791,11 @@
       "rewards": "شهادة لكل فائز، وكتيّب للجائزة الكبرى. بلا جوائز نقدية.",
       "prizeFor": "جائزة {section}",
       "mainPrize": "الجائزة الكبرى"
+    },
+    "company": {
+      "auditions": "تجارب الأداء",
+      "auditionsLede": "تختار الفرقة ممثلي كل عرض في تجارب أداء مفتوحة، ويسجّل الأعضاء في الموعد الذي يناسبهم.",
+      "auditionsLink": "سجّل في تجربة أداء"
     }
   }
 }

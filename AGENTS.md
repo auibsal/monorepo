@@ -23,7 +23,7 @@ and decisions), and continue from the first unticked item.
     certificates) and Settings (`/membership/settings`, which also holds
     `/membership/profile` and `/membership/requests`); also `/membership/certificate`,
     `/membership/more` ("Tell us more"),
-    `/events/company/auditions`, `/qirtas/write` (the two doors, your
+    `/company/auditions`, `/qirtas/write` (the two doors, your
     work, and the form itself with `?type=`; then `/submission`, `/work`,
     `/piece`). Perks are on the card; voting
     eligibility is on Society; the calendar feed is on My calendar. The
@@ -229,7 +229,10 @@ any schema change. Integration tests run against a local stack with
   The Company (`company`) is the Society's theater company, not a
   program, with its Artistic Director on the Council: its row stays live
   for its page, calendar and roles, and every list of programs leaves it
-  out (`programmes.isListedProgram`, `notPrograms`).
+  out (`programmes.isListedProgram`, `notPrograms`). It has its own page
+  at `/company`, beside Qirtas in the header (owner, Oct 30, 2026): its
+  productions, auditions and dates; `/events/company` is not a page
+  (`loadSeries` takes listed programs only; `seriesPath`).
   Munazara, Mutanabbi Friday and Bad Poetry Night are folded into the
   Salon, Book Circle and Open Pages (their names retired; their sessions
   are the parent's events with plain titles). Qirtas and Next Stop keep
@@ -365,7 +368,7 @@ any schema change. Integration tests run against a local stack with
     longer a program; code: `side-quest` in component and message names,
     program row `next-stop`, unpublished).
   - The Company, الفرقة (code: `productions`, slug `company`; at
-    `/events/company`, with the productions).
+    `/company`, its own page beside Qirtas, with the productions).
   - Open Stage is part of the Company and the name is retired (owner,
     Oct 27, 2026; the program is removed, its history moved to the
     Company).
@@ -406,7 +409,8 @@ any schema change. Integration tests run against a local stack with
   American English rule).
 - **Navigation** (owner, Oct 30, 2026). One main menu everywhere: the
   site's header (`site-header.tsx`) on the public pages, the members'
-  pages and the Diwan alike: About, What's on, Qirtas, Get involved and
+  pages and the Diwan alike: About, What's on, Qirtas, The Company, Get
+  involved and
   Join (for visitors; signed in, the end of the line opens Membership),
   with Search, the language and the theme. The Diwan sits under
   Membership, for officers only (`useIsStaff`, remembered for the public

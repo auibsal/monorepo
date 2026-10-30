@@ -16,8 +16,16 @@ export type Series = NonNullable<
   Awaited<ReturnType<typeof programmes.programmes>>
 >[number];
 
-/** The active program at /events/<slug>, or null. */
-export const loadSeries = async (slug: string): Promise<Series | null> => {
+/**
+ * Where a program's page is: /events/<slug>, and the Company's own page at
+ * /company (owner, Oct 30, 2026: the Company is not a program and stands
+ * beside Qirtas).
+ */
+export const seriesPath = (slug: string) =>
+  slug === "company" ? "/company" : `/events/${slug}`;
+
+/** The active program row with this slug, listed or not, or null. */
+export const loadProgramme = async (slug: string): Promise<Series | null> => {
   if (!SLUG.test(slug)) {
     return null;
   }
@@ -26,8 +34,14 @@ export const loadSeries = async (slug: string): Promise<Series | null> => {
   return (all ?? []).find((p) => p.slug === slug && p.is_active) ?? null;
 };
 
+/** The program at /events/<slug>, or null (the Company is at /company). */
+export const loadSeries = async (slug: string): Promise<Series | null> => {
+  const series = await loadProgramme(slug);
+  return series && programmes.isListedProgram(series) ? series : null;
+};
+
 export const seriesMetadata = (locale: Locale, series: Series): Metadata =>
-  localizedMetadata(locale, `/events/${series.slug}`, {
+  localizedMetadata(locale, seriesPath(series.slug), {
     description: localized(series, "summary", locale),
     title: localized(series, "name", locale),
   });
@@ -58,7 +72,7 @@ export const SeriesView = async ({
   );
   const own = rows.filter((row) => row.programme_id === series.id);
   const next = own.length === 0 ? await nextAfter(month, series.id) : null;
-  const pathname = `/events/${series.slug}`;
+  const pathname = seriesPath(series.slug);
 
   return (
     <div className="mx-auto grid w-full max-w-6xl gap-12 px-4 py-16 sm:py-24">

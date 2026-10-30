@@ -39,7 +39,7 @@ const hrefFor = (kind: Kind, slug: string) => {
     return `/qirtas/pieces/${slug}`;
   }
   if (kind === "production") {
-    return `/events/company#${slug}`;
+    return `/company#${slug}`;
   }
   return slug;
 };
