@@ -1,5 +1,5 @@
--- The Council page (migration 20261030000200): every seat by its full
--- title, with its holder or the officer who covers it; no Treasurer.
+-- Council roles (migration 20261030000800): a second Council role only with
+-- an adopted Council resolution; the Artistic Director sits on the Council.
 begin;
 -- <preamble>
 -- Shared pgTAP preamble. Each test file includes a copy (pg_prove runs files
@@ -74,50 +74,51 @@ insert into core.semesters (code, name_en, name_ar, starts_on, ends_on) values
 -- first-100 rule back on themselves.
 update core.settings set value = '0' where key = 'membership.founding_voters';
 -- </preamble>
+select plan(7);
 
-select plan(8);
+select pg_temp.make_user('00000000-0000-0000-0000-0000000000f1', 'pres-cr@auib.edu.iq', 'The President');
+select pg_temp.make_user('00000000-0000-0000-0000-0000000000a1', 'ad-cr@auib.edu.iq', 'The Artistic Director');
+select pg_temp.grant_role('00000000-0000-0000-0000-0000000000f1', 'president');
 
-select pg_temp.make_user('00000000-0000-0000-0000-00000000c5a1', 'gs-cs@auib.edu.iq', 'General Secretary');
-select pg_temp.make_user('00000000-0000-0000-0000-00000000c5a2', 'member-cs@auib.edu.iq', 'Member');
-select pg_temp.grant_role('00000000-0000-0000-0000-00000000c5a1', 'general_secretary');
+insert into governance.resolutions (id, code, title_en, text_en, status, adopted_on) values
+  ('00000000-0000-0000-0000-00000000e101', 'R-2026-95', 'The President covers Programs', 'Agreed.', 'adopted', current_date),
+  ('00000000-0000-0000-0000-00000000e102', 'R-2026-96', 'A draft', 'Not yet.', 'draft', null);
 
-select pg_temp.login_anon();
-select results_eq(
-  $$ select title_en, coalesce(holder_en, 'covered by ' || coalesce(covered_by, '')) from governance.council_seats order by sort $$,
-  $$ values
-    ('President'::text, 'Shaheen Farjo'::text),
-    ('Vice President', 'Fajer Saif Khalid Ezzet'),
-    ('General Secretary', 'Yaqoob Ghassan Al-Azzawi'),
-    ('Editor of Qirtas', 'Mohammed-Ali Ehsan Ohmaid'),
-    ('Artistic Director', 'covered by '),
-    ('Director of Programs', 'covered by president'),
-    ('Director of Media', 'Ali Hayder'),
-    ('Director of Partnerships', 'covered by vice_president'),
-    ('Director of Membership', 'covered by general_secretary') $$,
-  'Visitors read the seats, their holders and who covers the open ones'
-);
-select is((select count(*)::integer from governance.council_seats where title_en ilike '%treasurer%'), 0, 'There is no Treasurer');
-select is((select count(*)::integer from governance.council_seats where kind = 'officer'), 3, 'Three officers');
+select pg_temp.login_as('00000000-0000-0000-0000-0000000000f1');
 
-select pg_temp.login_as('00000000-0000-0000-0000-00000000c5a2');
-select lives_ok(
-  $$ update governance.council_seats set holder_en = 'Someone' where key = 'director_of_media' $$,
-  'A member''s update changes nothing'
-);
-select is((select holder_en from governance.council_seats where key = 'director_of_media'), 'Ali Hayder', 'so the holder stays');
-
-select pg_temp.login_as('00000000-0000-0000-0000-00000000c5a1');
-select lives_ok(
-  $$ update governance.council_seats set holder_en = 'A Director', covered_by = null where key = 'director_of_membership' $$,
-  'The General Secretary names a holder'
+select throws_ok(
+  $$ select access.assign_role('00000000-0000-0000-0000-0000000000f1', 'programs_director') $$,
+  '23P01', 'one_council_seat', 'A second Council role is refused without a resolution'
 );
 select throws_ok(
-  $$ update governance.council_seats set covered_by = 'president' where key = 'director_of_media' $$,
-  '23514', null, 'A seat with a holder is not also covered'
+  $$ select access.assign_role('00000000-0000-0000-0000-0000000000f1', 'programs_director',
+       exception_resolution => '00000000-0000-0000-0000-00000000e102') $$,
+  '23P01', 'exception_needs_adopted_resolution', 'or with one not yet adopted'
 );
-select throws_ok(
-  $$ insert into governance.council_seats (key, kind, title_en, title_ar) values ('treasurer', 'secretary', 'Treasurer', 'أمين الصندوق') $$,
-  '23514', null, 'Seats are officers or directors'
+select lives_ok(
+  $$ select access.assign_role('00000000-0000-0000-0000-0000000000f1', 'programs_director',
+       exception_resolution => '00000000-0000-0000-0000-00000000e101') $$,
+  'and allowed by an adopted Council resolution (Constitution 6.6)'
+);
+select is(
+  (select titles_en from governance.council_members() where full_name_en = 'The President'),
+  array['President', 'Director of Programs'],
+  'The Council page names the President once, with both titles'
+);
+
+select lives_ok(
+  $$ select access.assign_role('00000000-0000-0000-0000-0000000000a1', 'artistic_director') $$,
+  'The Artistic Director is assigned'
+);
+select is(
+  (select titles_en from governance.council_members() where full_name_en = 'The Artistic Director'),
+  array['Artistic Director'], 'and sits on the Council'
+);
+
+select pg_temp.login_as('00000000-0000-0000-0000-0000000000a1');
+select ok(
+  access.has_permission('productions.manage') and not access.has_permission_anywhere('events.manage'),
+  'They run every production, and no other program''s calendar'
 );
 
 select * from finish();

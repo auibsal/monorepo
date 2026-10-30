@@ -39,7 +39,7 @@ const hrefFor = (kind: Kind, slug: string) => {
     return `/qirtas/pieces/${slug}`;
   }
   if (kind === "production") {
-    return `/events/company#${slug}`;
+    return `/company#${slug}`;
   }
   return slug;
 };
@@ -73,7 +73,7 @@ const searchDocuments = async (query: string) => {
       id: doc.code,
       kind: "document" as const,
       occurred_at: null,
-      slug: `/documents/${doc.slug}`,
+      slug: `/library/${doc.slug}`,
       snippet: doc.summary_en ?? "",
       title_ar: doc.title_ar ?? doc.title_en,
       title_en: doc.title_en,

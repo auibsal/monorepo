@@ -4,21 +4,25 @@ import { cn } from "@repo/design-system/lib/utils"
 import { useUiLabels } from "@repo/design-system/lib/labels"
 
 /**
- * Something is loading: a square of hairline that turns, in the text's
- * color. The icon set has no spinner, so it draws none (brand book, Icons).
+ * Something is loading: an open ring that turns, at the icons' 1.5 px line,
+ * in the text's color.
  */
-function Spinner({ className, ...props }: React.ComponentProps<"span">) {
+function Spinner({ className, ...props }: React.ComponentProps<"svg">) {
   const labels = useUiLabels()
   return (
-    <span
+    <svg
       role="status"
       aria-label={labels.loading}
-      className={cn(
-        "inline-block size-4 animate-spin border-[1.5px] border-current border-t-transparent",
-        className
-      )}
+      className={cn("size-4 animate-spin", className)}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.5}
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
       {...props}
-    />
+    >
+      <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+    </svg>
   )
 }
 

@@ -25,6 +25,18 @@ export const roles = {
     nameEn: "Arabic Editor",
     permissions: ["journal.manage", "journal.publish", "library.read"],
   },
+  artistic_director: {
+    defaultScope: "global",
+    isCouncil: true,
+    nameAr: "المدير الفني",
+    nameEn: "Artistic Director",
+    permissions: [
+      "productions.manage",
+      "events.checkin",
+      "library.read",
+      "library.council",
+    ],
+  },
   campaign_lead: {
     defaultScope: "campaign",
     isCouncil: false,

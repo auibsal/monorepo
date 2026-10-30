@@ -1,6 +1,7 @@
 "use client"
 
 import { Icon } from "../sal/icon"
+import { Spinner } from "./spinner"
 import { Toaster as Sonner, type ToasterProps } from "sonner"
 
 const Toaster = ({ ...props }: ToasterProps) => {
@@ -14,12 +15,7 @@ const Toaster = ({ ...props }: ToasterProps) => {
         info: <Icon name="info" />,
         warning: <Icon name="circle-alert" />,
         error: <Icon name="circle-alert" />,
-        loading: (
-          <span
-            aria-hidden="true"
-            className="inline-block size-4 animate-spin border-[1.5px] border-current border-t-transparent"
-          />
-        ),
+        loading: <Spinner aria-hidden="true" role={undefined} />,
       }}
       style={
         {

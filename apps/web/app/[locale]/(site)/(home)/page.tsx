@@ -9,13 +9,14 @@ import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { ReactNode } from "react";
 import { type DatedItem, DatedList, eventItems } from "@/components/event-list";
+import { seriesPath } from "@/components/series";
 import { PieceCardView } from "@/components/waraq/cards";
 import { localizedMetadata } from "@/lib/metadata";
 import { readPublished } from "@/lib/supabase";
 
-/** Where a program's name leads: its own page in What's on (Qirtas: the paper). */
+/** Where a program's name leads: its own page (Qirtas: the paper). */
 const programmeHref = (slug: string) =>
-  slug === "waraq" ? "/qirtas" : `/events/${slug}`;
+  slug === "waraq" ? "/qirtas" : seriesPath(slug);
 
 interface HomeProps {
   readonly params: Promise<{ locale: Locale }>;

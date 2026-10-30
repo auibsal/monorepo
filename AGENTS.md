@@ -23,7 +23,7 @@ and decisions), and continue from the first unticked item.
     certificates) and Settings (`/membership/settings`, which also holds
     `/membership/profile` and `/membership/requests`); also `/membership/certificate`,
     `/membership/more` ("Tell us more"),
-    `/events/company/auditions`, `/qirtas/write` (the two doors, your
+    `/company/auditions`, `/qirtas/write` (the two doors, your
     work, and the form itself with `?type=`; then `/submission`, `/work`,
     `/piece`). Perks are on the card; voting
     eligibility is on Society; the calendar feed is on My calendar. The
@@ -32,8 +32,10 @@ and decisions), and continue from the first unticked item.
     `Link` (`@repo/internationalization/navigation`) and full paths.
   - `app/[locale]/diwan` — **the Diwan** (code name `nexus`), auibsal.org/diwan:
     the officers' administration only (anyone holding a role,
-    `RequireStaff`): the overview and modules at `/diwan/<module>`, the
-    library, declarations. Members are sent to `/membership`. Diwan code names
+    `RequireStaff`): the overview and modules at `/diwan/<module>`
+    (among them the Library, where only `governance.manage`, the President,
+    the Vice President and the General Secretary, keep the documents),
+    declarations. Members are sent to `/membership`. Diwan code names
     pages by their own path (`/events`); `Link`, `useRouter`, `usePathname`
     and `redirect` from `@/lib/nexus/navigation` add the `/diwan` prefix.
   - Both are client-rendered (`components/nexus`, `lib/nexus`, the code
@@ -66,10 +68,11 @@ and decisions), and continue from the first unticked item.
 - `packages/storybook` — the SAL Design System: SAL components, Screens
   and every platform email in both languages. Local only
   (`bun run --cwd packages/storybook dev`); nothing is deployed.
-- Documents live on auibsal.org/documents (`apps/web`); the officer handbook
-  and the internal documents' text in the team's Notion workspace (the Diwan
-  links there: setting `notion.handbook`, `society_documents.notion_url`;
-  `docs/platform/notion.md`); the platform runbooks in `docs/platform`
+- The Society's documents are the Library, auibsal.org/library (`apps/web`;
+  owner, Oct 30, 2026: every document public, kept in the Diwan's Library).
+  The officer handbook and every internal document live in the team's
+  Notion workspace only (the Diwan's menu links there: settings
+  `notion.home_url`, `notion.handbook`; `docs/platform/notion.md`); the platform runbooks in `docs/platform`
   (Markdown). There is no separate docs site. The apps configure no
   redirects (owner, Oct 14, 2026); www.auibsal.org → auibsal.org is a
   Vercel domain setting.
@@ -229,7 +232,10 @@ any schema change. Integration tests run against a local stack with
   The Company (`company`) is the Society's theater company, not a
   program, with its Artistic Director on the Council: its row stays live
   for its page, calendar and roles, and every list of programs leaves it
-  out (`programmes.isListedProgram`, `notPrograms`).
+  out (`programmes.isListedProgram`, `notPrograms`). It has its own page
+  at `/company`, beside Qirtas in the header (owner, Oct 30, 2026): its
+  productions, auditions and dates; `/events/company` is not a page
+  (`loadSeries` takes listed programs only; `seriesPath`).
   Munazara, Mutanabbi Friday and Bad Poetry Night are folded into the
   Salon, Book Circle and Open Pages (their names retired; their sessions
   are the parent's events with plain titles). Qirtas and Next Stop keep
@@ -318,10 +324,17 @@ any schema change. Integration tests run against a local stack with
   witnesses and signs off), the witnessed handover on the campaign
   (`handed_over_on`, amount, witness, receipt) and the impact report. No
   online payments of any kind.
-- **The Council page** (owner, Oct 30, 2026; `/governance` and the
-  members' Society page) lists each seat by its full title from
-  `governance.council_seats`: its holder, or the officer who covers it
-  while it is open. Three officers and five directors; no Treasurer.
+- **The Council page** (owner, Oct 30, 2026; `/governance`, the members'
+  Society page and the Diwan's Governance → Council) comes from the roles
+  people hold (`governance.council_members()`): everyone holding a Council
+  role (`access.roles.is_council`, global, in force), under the role's
+  name or the assignment's display title. Someone holding two roles is
+  named once, with both titles: a second Council role (covering a seat)
+  needs an adopted Council resolution (`exception_resolution`,
+  Constitution 6.6; `private.role_conflict`). Nothing is kept by hand:
+  assign roles on the member's page. Three officers and the directors,
+  among them the Artistic Director (`artistic_director`: every production,
+  the door, the Company's openings; nothing else); no Treasurer.
 - **Documents.** Every document is adopted, Version 1 (owner, Oct 24, 2026).
   Visitors and members see the title, summary and text only; codes
   (`SAL-…`, `F-…`), statuses, versions and ratification lines are internal
@@ -365,7 +378,7 @@ any schema change. Integration tests run against a local stack with
     longer a program; code: `side-quest` in component and message names,
     program row `next-stop`, unpublished).
   - The Company, الفرقة (code: `productions`, slug `company`; at
-    `/events/company`, with the productions).
+    `/company`, its own page beside Qirtas, with the productions).
   - Open Stage is part of the Company and the name is retired (owner,
     Oct 27, 2026; the program is removed, its history moved to the
     Company).
@@ -406,13 +419,18 @@ any schema change. Integration tests run against a local stack with
   American English rule).
 - **Navigation** (owner, Oct 30, 2026). One main menu everywhere: the
   site's header (`site-header.tsx`) on the public pages, the members'
-  pages and the Diwan alike: About, What's on, Qirtas, Get involved and
+  pages and the Diwan alike: About, What's on, Qirtas, The Company, Get
+  involved and
   Join (for visitors; signed in, the end of the line opens Membership),
-  with Search, the language and the theme. Everything the Diwan had in its
+  with Search, the language and the theme. The Diwan sits under
+  Membership, for officers only (`useIsStaff`, remembered for the public
+  pages in the `sal_diwan` hint cookie; UX only). Below the desktop width
+  the bar keeps the logo and the menu button, and everything else opens
+  in the panel. Everything the Diwan had in its
   own header (the overview, the library, declarations, the Notion links)
   is in the administration menu (`admin-shell.tsx`, "For your role").
   Members' pages add their row (Today, My calendar, Society, Record,
-  Settings, the Diwan for officers, Sign out). The footer
+  Settings, Sign out). The footer
   (`footer.tsx`) holds what the header doesn't: the six programs, the
   Society's pages and the ways to stay in touch. No link appears twice
   among the header, a menu row and the footer. Every Diwan empty state

@@ -214,10 +214,10 @@ export const mirrorDocuments = async (ctx: SyncContext) => {
         Code: prop.text(d.code),
         Dated: prop.date(d.dated),
         Kind: prop.select("Document"),
-        Nexus: prop.url(app(ctx, "/documents")),
+        Nexus: prop.url(app(ctx, "/library")),
         "Nexus ID": prop.text(d.id),
         "Public page": prop.url(
-          d.audience === "public" ? `${ctx.webUrl}/documents/${d.slug}` : null
+          d.audience === "public" ? `${ctx.webUrl}/library/${d.slug}` : null
         ),
         Status: prop.select(d.status),
         Title: prop.title(d.title_en),

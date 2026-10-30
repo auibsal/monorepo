@@ -18,4 +18,15 @@ describe("the icon set", () => {
       ).toBeGreaterThan(0);
     }
   });
+
+  test("every shape keeps its attributes (x1, y2 and the rest)", () => {
+    for (const [name, shapes] of Object.entries(iconData)) {
+      for (const [tag, attributes] of shapes) {
+        expect(
+          Object.keys(attributes).length,
+          `${name} ${tag}`
+        ).toBeGreaterThan(0);
+      }
+    }
+  });
 });

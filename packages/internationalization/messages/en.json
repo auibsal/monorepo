@@ -173,7 +173,6 @@
       "declarations": "Declarations",
       "service": "My service",
       "forms": "Requests and reports",
-      "documents": "Library",
       "workspace": "Team workspace",
       "overview": "Overview",
       "diwan": "The Diwan",
@@ -425,10 +424,8 @@
       "council": {
         "title": "The Council",
         "lede": "Three elected officers and five directors.",
-        "empty": "The Council appears here once its seats are set.",
-        "advisor": "Faculty Advisor",
-        "coveredBy": "Covered by the {title}",
-        "seatOpen": "Open"
+        "empty": "The Council appears here once its members hold their roles.",
+        "advisor": "Faculty Advisor"
       },
       "minutes": {
         "title": "Adopted minutes",
@@ -763,7 +760,6 @@
         "recognition": "Recognition",
         "productions": "The Company",
         "forms": "Forms and letters",
-        "documents": "Documents",
         "groups": {
           "work": "Programs and events",
           "people": "People",
@@ -772,7 +768,8 @@
           "system": "System",
           "yours": "Every officer"
         },
-        "hiring": "Hiring"
+        "hiring": "Hiring",
+        "library": "Library"
       },
       "noAccess": "Your roles don't include this section. Ask the President or the General Secretary if you need it.",
       "kit": {
@@ -946,8 +943,8 @@
         "assignButton": "Assign role",
         "assignConfirm": "Give {name} the role {role}? It grants that role's permissions from the start date.",
         "choose": "Choose…",
-        "exception": "Founding-term exception (B5.5)",
-        "exceptionHint": "Only when the Council has agreed that this person may hold more than two roles, or a second leadership role, in the founding term. Choose the adopted resolution.",
+        "exception": "Council resolution allowing it",
+        "exceptionHint": "Only when the Council has adopted a resolution allowing this: a second Council role (to cover a seat, Constitution 6.6), more than two roles, or a second leadership role in the founding term (B5.5). Choose the resolution.",
         "noException": "No exception",
         "rules": {
           "already_holds_role": "They already hold this role for that period.",
@@ -964,6 +961,9 @@
           "confirm": "Reset",
           "description": "Remove {name}'s authenticator app and recovery codes? Do this only when they asked, after checking it's really them.",
           "done": "Reset. {name} sets up a new authenticator at their next sign-in."
+        },
+        "errors": {
+          "one_council_seat": "They already hold a Council seat. A second one needs a Council resolution allowing it (Constitution 6.6): choose it above, or end the other seat first."
         }
       },
       "verification": {
@@ -1558,12 +1558,11 @@
       },
       "governance": {
         "title": "Governance",
-        "lede": "Council terms and seats, minutes and resolutions (draft until adopted), requests to Student Life, the internal library and elections.",
+        "lede": "Council terms, minutes and resolutions (draft until adopted), requests to Student Life and elections.",
         "tabs": {
           "council": "Council",
           "minutes": "Minutes",
           "resolutions": "Resolutions",
-          "library": "Library",
           "elections": "Elections",
           "requests": "Requests to Student Life"
         },
@@ -1617,22 +1616,6 @@
           "noMinutes": "Not linked",
           "adoptedOnError": "An adopted resolution needs its adoption date, and only then."
         },
-        "library": {
-          "lede": "Internal documents in a private bucket. Role-holders read the role library; the Council reads everything.",
-          "upload": "Add a document",
-          "file": "File",
-          "code": "Document code (e.g. SAL-OPS-01)",
-          "titleField": "Title",
-          "audience": "Who may read it",
-          "audiences": {
-            "role": "Members with a role",
-            "council": "The Council only"
-          },
-          "version": "Version",
-          "status": "Status",
-          "open": "Open",
-          "empty": "No documents yet."
-        },
         "elections": {
           "flagOff": "Online elections are off (Settings → Feature flags).",
           "new": "New election",
@@ -1682,14 +1665,6 @@
           "giveNotice": "Give notice",
           "giveNoticeConfirm": "Give notice now? Nominations must open at least a week from today. The voter list is frozen today: everyone on the register of Voting Members right now (Bylaws B6.2).",
           "noticeGiven": "{count, plural, =0 {Notice given {date}. No one is on the voter list.} one {Notice given {date}. {n} person is on the voter list.} other {Notice given {date}. {n} people are on the voter list.}}"
-        },
-        "seats": {
-          "title": "The Council page",
-          "hint": "Each seat by its full title. Give the holder's name, or the officer who covers the seat while it is open. The Arabic spelling of a name can follow later.",
-          "holder": "Holder",
-          "coveredBy": "Covered by",
-          "coverHint": "Only while the seat has no holder.",
-          "noCover": "Open"
         }
       },
       "activity": {
@@ -2395,7 +2370,7 @@
         "fields": {
           "title": "Title",
           "slug": "Web address",
-          "slugHint": "Lowercase letters, numbers and hyphens, for auibsal.org/events/company.",
+          "slugHint": "Lowercase letters, numbers and hyphens, for auibsal.org/company.",
           "playwright": "Written by",
           "kind": "Kind",
           "origin": "Script",
@@ -2403,7 +2378,7 @@
           "programme": "Program",
           "noProgramme": "No program",
           "poster": "Poster",
-          "isPublic": "Show on auibsal.org/events/company",
+          "isPublic": "Show on auibsal.org/company",
           "isPublicHint": "Only the title, summary, poster, credits people agreed to, partners and published performances are shown. Rights, auditions and the report never are."
         },
         "tabs": {
@@ -2578,8 +2553,8 @@
         }
       },
       "documents": {
-        "title": "Society documents",
-        "lede": "The text of every foundational document, edited here. Public documents appear on auibsal.org/documents within a minute of saving; internal ones are read only in the Diwan.",
+        "title": "Library",
+        "lede": "The Society's documents, as the public Library shows them. Saving publishes on auibsal.org/library within a minute. Internal documents are kept in the team's Notion workspace.",
         "new": "New document",
         "closeNew": "Close",
         "newTitle": "Add a document",
@@ -2587,13 +2562,8 @@
         "columns": {
           "title": "Title",
           "code": "Code",
-          "audience": "Who reads it",
           "status": "Status",
           "updated": "Updated"
-        },
-        "audiences": {
-          "public": "Public (auibsal.org and the Diwan)",
-          "internal": "Internal (the Diwan only)"
         },
         "statuses": {
           "draft": "Draft",
@@ -2607,8 +2577,6 @@
           "codeHint": "For example SAL-GOV-01.",
           "slug": "Web address",
           "slugHint": "Lowercase letters, numbers and hyphens.",
-          "audience": "Who reads it",
-          "audienceHint": "Internal documents never appear on auibsal.org.",
           "status": "Status",
           "version": "Version",
           "dated": "Dated",
@@ -2616,14 +2584,11 @@
           "adopted": "Adopted on",
           "adoptedHint": "Only once the Assembly or Council has adopted it.",
           "bodyEn": "Text (English)",
-          "bodyAr": "Text (Arabic)",
-          "notion": "Notion page",
-          "notionHint": "Internal documents only: the address of the page in the team's Notion workspace that holds the text."
+          "bodyAr": "Text (Arabic)"
         },
         "adoptedNoDate": "An adopted document should record the date it was adopted.",
-        "publicNote": "Saving publishes this text on auibsal.org/documents. Its status is shown on the page, so a draft is never presented as adopted.",
-        "internalNote": "Internal: read only in the Diwan by officers who read the internal library.",
-        "notionNote": "The text is kept in Notion. Edit it there; this entry keeps the document's status, version and dates."
+        "publicNote": "Saving publishes this text on auibsal.org/library. Its status is shown on the page, so a draft is never presented as adopted.",
+        "viewPublic": "Open the public Library"
       },
       "notion": {
         "event": "This event is written in the team's Notion workspace. Publishing it from Notion again replaces changes made here.",
@@ -3695,31 +3660,6 @@
         "lede": "In confidence. Your concern goes only to the people who must handle it, never to the person it is about."
       }
     },
-    "documents": {
-      "title": "Library",
-      "lede": "The Constitution, the Bylaws, the policies and handbooks. Officers also find the internal documents here.",
-      "empty": "No documents yet.",
-      "home": "Go to Home",
-      "groups": {
-        "public": "Public documents",
-        "internal": "Internal documents"
-      },
-      "statuses": {
-        "draft": "Draft",
-        "adopted": "Adopted",
-        "superseded": "Superseded"
-      },
-      "updated": "Updated {date}",
-      "back": "All documents",
-      "print": "Print",
-      "notFound": "This document isn’t available. It may not exist, or it is internal.",
-      "contents": "Contents",
-      "adoptedOn": "Adopted on {date}",
-      "englishOnly": "This document is in English; the Arabic version is being prepared.",
-      "noText": "The text of this document has not been entered yet.",
-      "inNotion": "The text of this internal document is kept in the team's Notion workspace. Sign in to Notion with your AUIB address.",
-      "openInNotion": "Read it in Notion"
-    },
     "waraq": {
       "deskLines": {
         "news": "Reports, features, interviews, profiles, event coverage and explainers. Pitch a story or send it.",
@@ -4028,11 +3968,14 @@
       "give": "Give",
       "join": "Join",
       "news": "News",
-      "documents": "Documents",
+      "documents": "Library",
       "signIn": "Sign in",
       "account": "Membership",
       "involved": "Get involved",
-      "search": "Search"
+      "search": "Search",
+      "diwan": "The Diwan",
+      "accountMenu": "Membership menu",
+      "company": "The Company"
     },
     "footer": {
       "contact": "Contact",
@@ -4051,8 +3994,7 @@
         "contactHeading": "Stay in touch",
         "email": "hello@auibsal.org",
         "programs": "Programs"
-      },
-      "company": "The Company"
+      }
     },
     "consent": {
       "title": "Cookies",
@@ -4097,7 +4039,7 @@
       "comeInBody": "Membership is free and open to every AUIB student. No audition, no portfolio, no fee."
     },
     "documents": {
-      "title": "Documents",
+      "title": "Library",
       "lede": "The Society's founding documents: the Constitution, the rules that follow from it, and the plans and handbooks members use. Each page says whether the text is a draft or adopted.",
       "englishOnly": "The documents are in English; the Arabic versions are being prepared.",
       "all": "All documents",
@@ -4743,7 +4685,7 @@
       "title": "Governance",
       "lede": "The Council, what the Society has adopted, and whom members elected.",
       "council": "The Council",
-      "councilEmpty": "The Council appears here once its seats are set.",
+      "councilEmpty": "The Council appears here once its members hold their roles.",
       "resolutions": "Adopted resolutions",
       "resolutionsEmpty": "No resolutions have been adopted yet.",
       "body": {
@@ -4756,9 +4698,7 @@
       "turnout": "{counted} ballots from {eligible} eligible voters",
       "reopened": "Re-open nominations: the office will be filled again",
       "rules": "How the Council works and how elections run is set out in the Constitution and the Bylaws.",
-      "documents": "Read the documents",
-      "coveredBy": "Covered by the {title}",
-      "seatOpen": "Open"
+      "documents": "Read the documents"
     },
     "personalEmail": {
       "title": "Confirm your personal email",
@@ -4789,6 +4729,11 @@
       "rewards": "A certificate for every winner, and a chapbook for the main prize. No cash prizes.",
       "prizeFor": "The prize for {section}",
       "mainPrize": "The main prize"
+    },
+    "company": {
+      "auditions": "Auditions",
+      "auditionsLede": "The Company casts each production in open auditions. Members sign up for a time.",
+      "auditionsLink": "Sign up for an audition"
     }
   }
 }

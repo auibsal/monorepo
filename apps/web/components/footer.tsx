@@ -54,9 +54,8 @@ export const Footer = async ({ consent = true }: FooterProps = {}) => {
     {
       heading: t("columns.society"),
       links: [
-        ["/events/company", t("company")],
         ["/governance", t("governance")],
-        ["/documents", tn("documents")],
+        ["/library", tn("documents")],
         ["/partners", t("partners")],
         ["/give", tn("give")],
       ] as const,
@@ -65,8 +64,8 @@ export const Footer = async ({ consent = true }: FooterProps = {}) => {
 
   const fine = [
     ["/privacy", t("privacy")],
-    ["/documents/terms-of-use", t("terms")],
-    ["/documents/accessibility", t("accessibility")],
+    ["/library/terms-of-use", t("terms")],
+    ["/library/accessibility", t("accessibility")],
     ["/qirtas/next-stop/care", t("sideQuestCare")],
   ] as const;
 

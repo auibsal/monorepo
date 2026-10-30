@@ -27,7 +27,7 @@ const AboutPage = async ({ params }: LocaleParams) => {
       <PageHeader lede={t("lede")} title={t("title")}>
         <Link
           className="link type-caption justify-self-start"
-          href="/documents/constitution"
+          href="/library/constitution"
         >
           {t("constitution")}
         </Link>
@@ -72,7 +72,7 @@ const AboutPage = async ({ params }: LocaleParams) => {
       <div className="grid gap-4 border-line border-t pt-space-4">
         <p className="type-body max-w-[60ch]">{t("nonPartisan")}</p>
         <p className="flex flex-wrap gap-x-8 gap-y-2">
-          <Link className="link" href="/documents">
+          <Link className="link" href="/library">
             {t("documents")}
           </Link>
           <Link className="link" href="/governance">

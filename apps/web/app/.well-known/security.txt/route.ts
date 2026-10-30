@@ -11,7 +11,7 @@ export const GET = () =>
     [
       `Contact: mailto:${project.supportEmail}`,
       `Expires: ${new Date(Date.now() + YEAR_MS).toISOString()}`,
-      `Policy: ${project.url}/documents/security`,
+      `Policy: ${project.url}/library/security`,
       "Preferred-Languages: en, ar",
       `Canonical: ${project.url}/.well-known/security.txt`,
       "",

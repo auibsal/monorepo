@@ -16,7 +16,7 @@ export const generateMetadata = async ({
 }: DocumentsProps): Promise<Metadata> => {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "web.documents" });
-  return localizedMetadata(locale, "/documents", {
+  return localizedMetadata(locale, "/library", {
     description: t("lede"),
     title: t("title"),
   });
@@ -47,10 +47,7 @@ const DocumentsPage = async ({ params }: DocumentsProps) => {
             key={doc.code}
           >
             <h2 className="type-heading">
-              <Link
-                className="hover:text-accent"
-                href={`/documents/${doc.slug}`}
-              >
+              <Link className="hover:text-accent" href={`/library/${doc.slug}`}>
                 {documents.documentTitle(doc, locale)}
               </Link>
             </h2>

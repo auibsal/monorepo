@@ -512,7 +512,7 @@ const Auditions = () => {
   return (
     <DiwanSection
       action={
-        <Link className="link" href="/events/company/auditions">
+        <Link className="link" href="/company/auditions">
           {tc("auditionsLink")}
         </Link>
       }

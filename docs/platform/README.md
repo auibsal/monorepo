@@ -4,7 +4,7 @@ How the AUIB Society of Arts and Letters platform runs, for the technical
 administrator and their successor. Officers' how-to guides are in the
 **Officer handbook** in the team's Notion workspace (the Diwan links to it
 under Account); the Society's documents are on
-[auibsal.org/documents](https://auibsal.org/documents).
+[auibsal.org/library](https://auibsal.org/library).
 
 - [How the platform works](overview.md)
 - [Accounts and access](accounts.md)

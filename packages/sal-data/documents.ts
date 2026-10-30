@@ -2,17 +2,15 @@ import { type Client, unwrap } from "./client";
 import { sanitizeRichText, toPlainText } from "./sanitize";
 
 /**
- * The Society's documents (governance.society_documents): public ones on
- * auibsal.org/documents, internal ones in the Nexus, with their text in the
- * team's Notion workspace (`notion_url`). Each page shows the
+ * The Library (governance.society_documents): the Society's documents, all
+ * public, at auibsal.org/library. Internal documents are kept in the team's
+ * Notion workspace, never here (owner, Oct 30, 2026). Each page shows the
  * status recorded here and nothing else, so a draft is never presented as
- * adopted. Governance managers edit the text and the status in the Nexus.
+ * adopted. Governance managers edit the text and the status in the Diwan's
+ * Library.
  */
 export const documentStatuses = ["draft", "adopted", "superseded"] as const;
 export type DocumentStatus = (typeof documentStatuses)[number];
-
-export const documentAudiences = ["public", "internal"] as const;
-export type DocumentAudience = (typeof documentAudiences)[number];
 
 export interface SalDocument {
   adopted_on: string | null;
@@ -22,8 +20,6 @@ export interface SalDocument {
   code: string;
   dated: string | null;
   id: string;
-  /** Internal documents: where the text is kept in the team's Notion. */
-  notion_url?: string | null;
   ratification: string | null;
   slug: string;
   sort: number;
@@ -37,7 +33,7 @@ export interface SalDocument {
 }
 
 const LISTING =
-  "id, slug, code, title_en, title_ar, summary_en, summary_ar, audience, status, version, dated, ratification, adopted_on, sort, updated_at, notion_url";
+  "id, slug, code, title_en, title_ar, summary_en, summary_ar, audience, status, version, dated, ratification, adopted_on, sort, updated_at";
 
 /** The public documents, without their text (for listings and the sitemap). */
 export const publicDocuments = async (client: Client) =>
@@ -61,8 +57,8 @@ export const documentBySlug = async (client: Client, slug: string) =>
       .maybeSingle()
   ) ?? null) as SalDocument | null;
 
-/** Every document the reader may see (the Nexus). */
-export const readableDocuments = async (client: Client) =>
+/** Every document, drafts included for those who keep them (the Diwan). */
+export const allDocuments = async (client: Client) =>
   (unwrap(
     await client
       .schema("governance")

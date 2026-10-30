@@ -3,19 +3,19 @@
 import { useAuth } from "@repo/auth/provider";
 import { Icon } from "@repo/design-system/components/sal/icon";
 import { cn } from "@repo/design-system/lib/utils";
-import { localizedPath, nexusPath } from "@repo/internationalization";
 import {
   Link,
   usePathname,
   useRouter,
 } from "@repo/internationalization/navigation";
 import { useQueryClient } from "@tanstack/react-query";
-import { useLocale, useTranslations } from "next-intl";
-import type { ReactNode } from "react";
+import { useTranslations } from "next-intl";
+import { type ReactNode, useEffect } from "react";
 import { useVisibleModules } from "@/components/nexus/admin/admin-shell";
 import { useTwoStep } from "@/components/nexus/auth/two-step";
 import { disablePush } from "@/lib/nexus/push";
 import { useMemberStatus } from "@/lib/nexus/queries";
+import { rememberStaff } from "@/lib/staff";
 
 interface AccountLink {
   /** Pages that count as this link's own (Settings holds Profile and Requests). */
@@ -33,17 +33,34 @@ const isCurrent = (pathname: string, link: AccountLink) =>
   );
 
 /**
+ * Whether the signed-in person opens the Diwan (holds a role, or one that
+ * waits on two-step sign-in), for the header's Membership menu. Remembered
+ * in a cookie so the public pages can offer it too; UX only.
+ */
+export const useIsStaff = () => {
+  const { loading, user } = useAuth();
+  const { grants, visible } = useVisibleModules();
+  const twoStep = useTwoStep();
+  const staff =
+    Boolean(user) && (visible.length > 0 || Boolean(twoStep.data?.needs));
+  const known = !loading && (!user || (grants.isSuccess && twoStep.isSuccess));
+  useEffect(() => {
+    if (known) {
+      rememberStaff(staff);
+    }
+  }, [known, staff]);
+  return staff;
+};
+
+/**
  * The account's own pages, in one row under the site's header (owner,
- * 2026-10-25): Today · My calendar · Society · Record · Settings, and the
- * Diwan for those whose roles open it. The Callboard is the header's "Get
- * involved", so it isn't repeated here. Profile and Requests sit under
- * Settings; perks are on the card.
+ * 2026-10-25): Today · My calendar · Society · Record · Settings. The
+ * Callboard is the header's "Get involved" and the Diwan sits under the
+ * header's Membership, so neither is repeated here. Profile and Requests
+ * sit under Settings; perks are on the card.
  */
 const useAccountLinks = () => {
-  const { visible } = useVisibleModules();
-  const twoStep = useTwoStep();
   const status = useMemberStatus();
-  const staff = visible.length > 0 || Boolean(twoStep.data?.needs);
   const member = Boolean(status.data?.is_member);
   const links: AccountLink[] = [
     { href: "/membership", key: "today" },
@@ -60,47 +77,37 @@ const useAccountLinks = () => {
       key: "settings",
     },
   ];
-  return { links, staff };
+  return links;
 };
 
-/** The account's links, sign-out, and the way into the Diwan for officers. */
+/** The account's links and sign-out. */
 const AccountNav = () => {
   const t = useTranslations("nexus.nav");
   const ta = useTranslations("auth");
-  const locale = useLocale();
   const pathname = usePathname();
   const router = useRouter();
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
-  const { links, staff } = useAccountLinks();
+  const links = useAccountLinks();
 
   const signOut = async () => {
     // A shared computer must not show the last member's notices.
     await disablePush(supabase).catch(() => undefined);
     await supabase.auth.signOut();
+    rememberStaff(false);
     queryClient.clear();
     router.replace("/");
   };
 
   const current = links.find((link) => isCurrent(pathname, link));
   const extras = (
-    <>
-      {staff ? (
-        <a
-          className="whitespace-nowrap py-3 font-medium text-sm hover:text-accent"
-          href={localizedPath(locale, nexusPath())}
-        >
-          {t("diwan")}
-        </a>
-      ) : null}
-      <button
-        className="whitespace-nowrap py-3 text-start font-medium text-sm text-text-secondary hover:text-accent"
-        onClick={signOut}
-        type="button"
-      >
-        {ta("signOut")}
-      </button>
-    </>
+    <button
+      className="whitespace-nowrap py-3 text-start font-medium text-sm text-text-secondary hover:text-accent"
+      onClick={signOut}
+      type="button"
+    >
+      {ta("signOut")}
+    </button>
   );
 
   return (

@@ -1,5 +1,6 @@
--- Society documents: public ones readable by everyone, internal ones only
--- by officers who read the internal library, edits by governance managers.
+-- The Library: every document public and readable by everyone, edits only
+-- by governance managers; internal documents are kept in Notion
+-- (migration 20261030000700).
 begin;
 -- <preamble>
 -- Shared pgTAP preamble. Each test file includes a copy (pg_prove runs files
@@ -74,7 +75,7 @@ insert into core.semesters (code, name_en, name_ar, starts_on, ends_on) values
 -- first-100 rule back on themselves.
 update core.settings set value = '0' where key = 'membership.founding_voters';
 -- </preamble>
-select plan(9);
+select plan(10);
 
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a1', 'member-sd@auib.edu.iq', 'A Member');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a2', 'director-sd@auib.edu.iq', 'A Director');
@@ -101,8 +102,8 @@ select is((select title_en from governance.society_documents where slug = 'const
   'nor edits any document');
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a2');
-select is((select count(*)::int from governance.society_documents where audience = 'internal'), 4,
-  'Officers who read the internal library read the internal documents');
+select is((select count(*)::int from governance.society_documents where audience = 'internal'), 0,
+  'No internal documents are kept here, even for officers');
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a3');
 select lives_ok(
@@ -111,6 +112,10 @@ select lives_ok(
 );
 select is((select updated_by from governance.society_documents where slug = 'bylaws'),
   '00000000-0000-0000-0000-0000000000a3'::uuid, 'and is recorded as its last editor');
+select throws_ok(
+  $$ update governance.society_documents set audience = 'internal' where slug = 'constitution' $$,
+  '23514', null, 'No document can be made internal'
+);
 
 select * from finish();
 rollback;
