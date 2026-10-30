@@ -109,7 +109,7 @@ export const MonthCalendar = async ({
     key: row.id,
     lang: "en",
     line: t("auib"),
-    place: universityWhen(row),
+    time: universityWhen(row),
     title: row.title,
   }));
   const societyItems: DatedItem[] = rows.map((row) => ({
@@ -117,13 +117,9 @@ export const MonthCalendar = async ({
     href: rowHref(row),
     key: row.id,
     line: t(`ways.${wayOf(row)}`),
-    place: [
-      row.teaser ? null : localized(row, "venue", locale),
-      formatClock(row.starts_at, locale),
-    ]
-      .filter(Boolean)
-      .join(" · "),
+    time: formatClock(row.starts_at, locale),
     title: localized(row, "title", locale),
+    venue: row.teaser ? null : localized(row, "venue", locale) || null,
   }));
 
   const items = [...societyItems, ...universityItems].sort((a, b) =>

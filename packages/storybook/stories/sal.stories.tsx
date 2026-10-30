@@ -3,6 +3,8 @@ import { SalCard } from "@repo/design-system/components/sal/card";
 import { DocumentFooter } from "@repo/design-system/components/sal/document-footer";
 import { DocumentHeader } from "@repo/design-system/components/sal/document-header";
 import { FormHeader } from "@repo/design-system/components/sal/form-header";
+import { Icon, type IconName } from "@repo/design-system/components/sal/icon";
+import { iconData } from "@repo/design-system/components/sal/icon-data";
 import { SectionHead } from "@repo/design-system/components/sal/section-head";
 import type { Meta, StoryObj } from "@storybook/react";
 
@@ -144,5 +146,22 @@ export const Band: Story = {
       <h2 className="type-title text-on-band">Join the Society</h2>
       <p>At most one crimson band per page; crimson never on ink.</p>
     </section>
+  ),
+};
+
+/** The icon set (brand/icons): 44 icons, one meaning each, in the text's color. */
+export const Icons: Story = {
+  render: () => (
+    <ul className="grid max-w-4xl grid-cols-2 gap-x-6 sm:grid-cols-4">
+      {(Object.keys(iconData) as IconName[]).map((name) => (
+        <li
+          className="flex items-center gap-3 border-line border-t py-3 text-sm"
+          key={name}
+        >
+          <Icon className="text-2xl" name={name} />
+          {name}
+        </li>
+      ))}
+    </ul>
   ),
 };

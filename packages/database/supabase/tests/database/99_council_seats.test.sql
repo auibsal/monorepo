@@ -83,12 +83,13 @@ select pg_temp.grant_role('00000000-0000-0000-0000-00000000c5a1', 'general_secre
 
 select pg_temp.login_anon();
 select results_eq(
-  $$ select title_en, coalesce(holder_en, 'covered by ' || covered_by) from governance.council_seats order by sort $$,
+  $$ select title_en, coalesce(holder_en, 'covered by ' || coalesce(covered_by, '')) from governance.council_seats order by sort $$,
   $$ values
     ('President'::text, 'Shaheen Farjo'::text),
     ('Vice President', 'Fajer Saif Khalid Ezzet'),
     ('General Secretary', 'Yaqoob Ghassan Al-Azzawi'),
     ('Editor of Qirtas', 'Mohammed-Ali Ehsan Ohmaid'),
+    ('Artistic Director', 'covered by '),
     ('Director of Programs', 'covered by president'),
     ('Director of Media', 'Ali Hayder'),
     ('Director of Partnerships', 'covered by vice_president'),

@@ -1,3 +1,4 @@
+import { Icon } from "@repo/design-system/components/sal/icon";
 import { Button } from "@repo/design-system/components/ui/button";
 import type { Locale } from "@repo/internationalization";
 import { apiPath, localizedPath } from "@repo/internationalization";
@@ -95,16 +96,25 @@ const EventPage = async ({ params, searchParams }: EventProps) => {
       </Link>
       <header className="grid gap-3">
         <h1 className="type-display">{localized(event, "title", locale)}</h1>
-        <p className="type-caption">
-          {formatLongDate(event.starts_at, locale)} ·{" "}
-          {formatClock(event.starts_at, locale)}
-          {event.ends_at ? ` – ${formatClock(event.ends_at, locale)}` : ""}
+        <p className="type-caption flex flex-wrap gap-x-4 gap-y-1">
+          <span className="inline-flex items-center gap-1.5">
+            <Icon name="calendar" />
+            {formatLongDate(event.starts_at, locale)}
+          </span>
+          <span className="inline-flex items-center gap-1.5">
+            <Icon name="clock" />
+            {formatClock(event.starts_at, locale)}
+            {event.ends_at ? ` – ${formatClock(event.ends_at, locale)}` : ""}
+          </span>
         </p>
         <p className="type-body">
           {t(`ways.${event.entry === "open" ? "open" : "rsvp"}`)}
         </p>
         {localized(event, "venue", locale) ? (
-          <p className="type-body">{localized(event, "venue", locale)}</p>
+          <p className="type-body inline-flex items-center gap-1.5">
+            <Icon name="map-pin" />
+            {localized(event, "venue", locale)}
+          </p>
         ) : null}
       </header>
       {cancelled ? (

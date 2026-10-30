@@ -1,9 +1,11 @@
+import { Icon, type IconName } from "@repo/design-system/components/sal/icon";
 import { SocialPost } from "@repo/design-system/components/sal/social-post";
 import type { Meta, StoryObj } from "@storybook/react";
 
 /**
  * Social templates (brand/components/previews: SocialPost, Carousel,
- * Story), in English and Arabic: one language per piece, never both. Posts
+ * Story, Highlights), in English and Arabic: one language per piece, never
+ * both (the highlights are English, like the account). Posts
  * are the platform's React component; carousels and stories use the
  * brand's own markup and bundle.css.
  */
@@ -241,3 +243,28 @@ const StoryFrame = ({ lang }: { lang: "ar" | "en" }) => {
 /** 1080 × 1920: every word 250 px clear of the top and 340 px of the bottom. */
 export const StoryEnglish: Story = { render: () => <StoryFrame lang="en" /> };
 export const StoryArabic: Story = { render: () => <StoryFrame lang="ar" /> };
+
+// The six Instagram highlights, in order, each with its icon (Highlights).
+const highlights: [string, IconName][] = [
+  ["What's on", "calendar"],
+  ["Qirtas", "newspaper"],
+  ["Next Stop", "bus"],
+  ["Programs", "layout-grid"],
+  ["Join", "user-plus"],
+  ["Get involved", "hand-helping"],
+];
+
+export const Highlights: Story = {
+  render: () => (
+    <div className="grid max-w-4xl grid-cols-3 gap-6">
+      {highlights.map(([name, icon]) => (
+        <div className="sal-highlight sal-highlight--round" key={name}>
+          <div className="sal-highlight__frame">
+            <Icon className="sal-highlight__icon" name={icon} />
+            <p className="sal-highlight__name">{name}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+  ),
+};

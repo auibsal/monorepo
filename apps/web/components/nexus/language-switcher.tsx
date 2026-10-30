@@ -1,13 +1,15 @@
 "use client";
 
+import { Icon } from "@repo/design-system/components/sal/icon";
+import { cn } from "@repo/design-system/lib/utils";
 import { type Locale, locales } from "@repo/internationalization/config";
 import { usePathname, useRouter } from "@repo/internationalization/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { mastheadLink } from "@/components/masthead";
 
 /**
- * Switches between English and Arabic, in words (the brand prefers words
- * to icons). The proxy remembers the choice in a cookie.
+ * Switches between English and Arabic: the globe and the other language's
+ * name. The proxy remembers the choice in a cookie.
  */
 export const LanguageSwitcher = () => {
   const t = useTranslations("common");
@@ -20,7 +22,7 @@ export const LanguageSwitcher = () => {
   return (
     <button
       aria-label={t("switchLanguage")}
-      className={mastheadLink}
+      className={cn(mastheadLink, "inline-flex items-center gap-1.5")}
       lang={other}
       onClick={() => {
         router.replace(`${pathname}${window.location.search}`, {
@@ -29,6 +31,7 @@ export const LanguageSwitcher = () => {
       }}
       type="button"
     >
+      <Icon name="globe" />
       {t("otherLanguage")}
     </button>
   );

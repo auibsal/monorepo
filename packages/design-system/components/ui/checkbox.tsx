@@ -1,8 +1,8 @@
 "use client"
 
+import { Icon } from "../sal/icon"
 import * as React from "react"
 import { Checkbox as CheckboxPrimitive } from "radix-ui"
-import { CheckIcon } from "lucide-react"
 
 import { cn } from "@repo/design-system/lib/utils"
 
@@ -23,7 +23,7 @@ function Checkbox({
         data-slot="checkbox-indicator"
         className="grid place-content-center text-current transition-none"
       >
-        <CheckIcon className="size-3.5" />
+        <Icon className="size-3.5" name="check" />
       </CheckboxPrimitive.Indicator>
     </CheckboxPrimitive.Root>
   )

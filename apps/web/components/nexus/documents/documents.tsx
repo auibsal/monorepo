@@ -2,12 +2,12 @@
 
 import { useAuth } from "@repo/auth/provider";
 import { SalCard } from "@repo/design-system/components/sal/card";
+import { Icon } from "@repo/design-system/components/sal/icon";
 import { Button } from "@repo/design-system/components/ui/button";
 import type { Locale } from "@repo/internationalization";
 import { formatLongDate } from "@repo/internationalization/format";
 import { documents } from "@repo/sal-data";
 import { useQuery } from "@tanstack/react-query";
-import { ExternalLink } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/lib/nexus/navigation";
@@ -78,9 +78,10 @@ export const Documents = () => {
                         target="_blank"
                       >
                         {documents.documentTitle(d, locale)}
-                        <ExternalLink
-                          aria-label={tc("externalLink")}
+                        <Icon
                           className="size-3.5"
+                          label={tc("externalLink")}
+                          name="arrow-up-right"
                         />
                       </a>
                     ) : (
@@ -207,9 +208,10 @@ export const DocumentView = () => {
           <Button asChild className="justify-self-start">
             <a href={notion} rel="noopener" target="_blank">
               {t("openInNotion")}
-              <ExternalLink
-                aria-label={tc("externalLink")}
+              <Icon
                 className="size-4"
+                label={tc("externalLink")}
+                name="arrow-up-right"
               />
             </a>
           </Button>

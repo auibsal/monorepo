@@ -1,6 +1,7 @@
 "use client";
 
 import { BrandLogo } from "@repo/design-system/components/brand-logo";
+import { Icon } from "@repo/design-system/components/sal/icon";
 import { cn } from "@repo/design-system/lib/utils";
 import NextLink from "next/link";
 import { useLocale, useTranslations } from "next-intl";
@@ -36,8 +37,9 @@ export const mastheadLink =
 /**
  * The one header for the whole site, public pages and the portal alike:
  * one line, the lockup in the page's language (56 px, 40 px on phones), at most
- * five sections in Ubuntu Medium, sentence case, then the language, the
- * theme and Sign in as words. A hairline below; the current section carries
+ * five sections in Ubuntu Medium, sentence case, then search, the language,
+ * the theme and Sign in (icons from the set, words where they could be
+ * misread). A hairline below; the current section carries
  * a 1.5 px accent underline. On phones the sections open in a panel under
  * the bar. Links are plain links, so moving between the site and the portal
  * never reloads the page.
@@ -97,11 +99,11 @@ export const Masthead = ({
           <button
             aria-expanded={open}
             aria-label={open ? tc("closeMenu") : tc("openMenu")}
-            className={cn(mastheadLink, "lg:hidden")}
+            className={cn(mastheadLink, "inline-flex items-center lg:hidden")}
             onClick={() => setOpen(!open)}
             type="button"
           >
-            {open ? tc("menuClose") : tc("menu")}
+            <Icon name={open ? "x" : "menu"} />
           </button>
         </div>
       </div>

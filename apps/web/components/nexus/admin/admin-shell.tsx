@@ -1,12 +1,12 @@
 "use client";
 
+import { Icon } from "@repo/design-system/components/sal/icon";
 import { cn } from "@repo/design-system/lib/utils";
 import {
   type AdminModule,
   adminModules,
   hasPermissionAnywhere,
 } from "@repo/rbac";
-import { ChevronDown, ExternalLink } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { type ReactNode, useEffect, useState } from "react";
 import { Link, usePathname, useRouter } from "@/lib/nexus/navigation";
@@ -125,12 +125,12 @@ const AdminNav = () => {
             {own ? tn(own.key) : t(`nav.${current?.key ?? "overview"}`)}
           </span>
         </span>
-        <ChevronDown
-          aria-hidden="true"
+        <Icon
           className={cn(
             "size-5 shrink-0 transition-transform",
             open && "rotate-180"
           )}
+          name="chevron-down"
         />
       </button>
       <div
@@ -187,9 +187,10 @@ const AdminNav = () => {
                   target="_blank"
                 >
                   {tn(page.key)}
-                  <ExternalLink
-                    aria-label={tc("externalLink")}
+                  <Icon
                     className="size-3.5"
+                    label={tc("externalLink")}
+                    name="arrow-up-right"
                   />
                 </a>
               </li>

@@ -363,7 +363,7 @@ export const roles = {
   voices_editor: {
     defaultScope: "global",
     isCouncil: false,
-    nameAr: "محرر الأصوات",
+    nameAr: "محرّر آراء",
     nameEn: "Voices Editor",
     permissions: ["journal.edit.voices", "library.read"],
   },

@@ -1,7 +1,7 @@
 "use client";
 
+import { Icon } from "@repo/design-system/components/sal/icon";
 import { Button } from "@repo/design-system/components/ui/button";
-import { ExternalLink } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect } from "react";
 import { useNotionHandbook } from "@/lib/nexus/notion";
@@ -49,7 +49,11 @@ export const Handbook = () => {
         <Button asChild className="justify-self-start">
           <a href={target} rel="noopener">
             {t("open")}
-            <ExternalLink aria-label={tc("externalLink")} className="size-4" />
+            <Icon
+              className="size-4"
+              label={tc("externalLink")}
+              name="arrow-up-right"
+            />
           </a>
         </Button>
       ) : (

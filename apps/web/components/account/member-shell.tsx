@@ -1,6 +1,7 @@
 "use client";
 
 import { useAuth } from "@repo/auth/provider";
+import { Icon } from "@repo/design-system/components/sal/icon";
 import { cn } from "@repo/design-system/lib/utils";
 import { localizedPath, nexusPath } from "@repo/internationalization";
 import {
@@ -9,7 +10,6 @@ import {
   useRouter,
 } from "@repo/internationalization/navigation";
 import { useQueryClient } from "@tanstack/react-query";
-import { ChevronDown } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import type { ReactNode } from "react";
 import { useVisibleModules } from "@/components/nexus/admin/admin-shell";
@@ -116,9 +116,9 @@ const AccountNav = () => {
       >
         <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-3 font-medium text-sm [&::-webkit-details-marker]:hidden">
           <span>{t(current?.key ?? "today")}</span>
-          <ChevronDown
-            aria-hidden="true"
+          <Icon
             className="size-4 transition-transform group-open:rotate-180"
+            name="chevron-down"
           />
         </summary>
         <ul className="grid divide-y divide-line border-line border-t">

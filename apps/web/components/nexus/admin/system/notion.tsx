@@ -2,6 +2,7 @@
 
 import { useAuth } from "@repo/auth/provider";
 import { SalCard } from "@repo/design-system/components/sal/card";
+import { Icon } from "@repo/design-system/components/sal/icon";
 import type { Locale } from "@repo/internationalization";
 import {
   formatClock,
@@ -9,7 +10,6 @@ import {
   formatNumber,
 } from "@repo/internationalization/format";
 import { useQuery } from "@tanstack/react-query";
-import { ExternalLink } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { callApi } from "@/lib/nexus/api";
 import { SectionSpinner } from "../../states";
@@ -150,7 +150,11 @@ export const NotionWorkspace = () => {
           target="_blank"
         >
           {t("open")}
-          <ExternalLink aria-label={tc("externalLink")} className="size-3.5" />
+          <Icon
+            className="size-3.5"
+            label={tc("externalLink")}
+            name="arrow-up-right"
+          />
         </a>
       ) : null}
     </SalCard>

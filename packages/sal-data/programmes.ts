@@ -34,6 +34,17 @@ export const sixWordsWall = async (client: Client, limit = 200) =>
       .rpc("six_words_wall", { max_results: limit })
   ) ?? [];
 
+/**
+ * Rows in core.programmes that are not programs (owner, Oct 30, 2026): the
+ * Company is the Society's theater company. Its row stays live for its own
+ * page, calendar and roles; lists of programs leave it out.
+ */
+export const notPrograms: readonly string[] = ["company"];
+
+/** One of the six programs, as the site lists them. */
+export const isListedProgram = (row: { is_active: boolean; slug: string }) =>
+  row.is_active && !notPrograms.includes(row.slug);
+
 export const programmes = async (client: Client) =>
   unwrap(
     await client.schema("core").from("programmes").select("*").order("sort")

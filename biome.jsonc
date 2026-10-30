@@ -25,6 +25,8 @@
       "!packages/design-system/components/ui",
       "!packages/design-system/lib",
       "!packages/design-system/hooks",
+      // Generated from brand/icons by `bun run --cwd packages/design-system icons`.
+      "!packages/design-system/components/sal/icon-data.ts",
       "!apps/email/.react-email",
       // The brand's own export and the source documents, kept as supplied.
       "!brand",

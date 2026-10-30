@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "clean": "git clean -xdf .cache .turbo dist node_modules",
+    "icons": "bun scripts/icons.ts",
     "test": "vitest run",
     "tokens": "bun scripts/tokens.ts",
     "typecheck": "tsc --noEmit --emitDeclarationOnly false"
@@ -13,7 +14,6 @@
     "@repo/observability": "workspace:*",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-    "lucide-react": "^1.53.0",
     "next": "16.4.3",
     "radix-ui": "^1.7.0",
     "react": "19.3.0",
