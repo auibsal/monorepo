@@ -1,7 +1,7 @@
 import type { Locale } from "@repo/internationalization";
 import { formatLongDate } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
-import { journal, localized } from "@repo/sal-data";
+import { content, journal, localized } from "@repo/sal-data";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Nameplate } from "@/components/waraq/nameplate";
@@ -34,10 +34,23 @@ const PrizesPage = async ({ params }: PrizesProps) => {
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "web.prizes" });
   const tj = await getTranslations({ locale, namespace: "web.journal" });
-  const [all, rounds] = await Promise.all([
+  const [all, rounds, namesPublic] = await Promise.all([
     readPublished(["journal"], (c) => journal.prizes(c), []),
     readPublished(["journal"], (c) => journal.prizeRounds(c), []),
+    // The prizes' own names are proposed until the owner confirms them
+    // (Oct 30, 2026): until then each shows its section only.
+    readPublished(
+      ["journal"],
+      (c) => content.publicSetting(c, "journal.prize_names_public"),
+      false
+    ),
   ]);
+  const named = namesPublic === true;
+  // Until the names are confirmed: "The main prize", "The prize for News".
+  const unnamed = (prize: { desk: string | null }) =>
+    prize.desk
+      ? t("prizeFor", { section: tj(`desks.${prize.desk as journal.Desk}`) })
+      : t("mainPrize");
   const round = rounds.find((r) => r.is_published) ?? null;
   const results = round
     ? await readPublished(
@@ -74,17 +87,19 @@ const PrizesPage = async ({ params }: PrizesProps) => {
               key={prize.key}
             >
               <h2 className="type-heading">
-                {localized(prize, "name", locale)}
+                {named ? localized(prize, "name", locale) : unnamed(prize)}
               </h2>
-              <p className="type-caption">
-                {prize.desk
-                  ? tj(`desks.${prize.desk as journal.Desk}`)
-                  : t("wholePaper")}
-              </p>
+              {named ? (
+                <p className="type-caption">
+                  {prize.desk
+                    ? tj(`desks.${prize.desk as journal.Desk}`)
+                    : t("wholePaper")}
+                </p>
+              ) : null}
               {localized(prize, "for", locale) ? (
                 <p className="type-body">{localized(prize, "for", locale)}</p>
               ) : null}
-              {localized(prize, "named_for", locale) ? (
+              {named && localized(prize, "named_for", locale) ? (
                 <p className="type-caption text-text-secondary">
                   {localized(prize, "named_for", locale)}
                 </p>

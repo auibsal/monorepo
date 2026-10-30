@@ -1,8 +1,8 @@
 "use client"
 
+import { Icon } from "../sal/icon"
 import * as React from "react"
 import { Dialog as DialogPrimitive } from "radix-ui"
-import { XIcon } from "lucide-react"
 
 import { cn } from "@repo/design-system/lib/utils"
 import { useUiLabels } from "@repo/design-system/lib/labels"
@@ -73,7 +73,7 @@ function DialogContent({
             data-slot="dialog-close"
             className="ring-offset-background focus:ring-ring data-[state=open]:text-muted-foreground absolute top-4 end-4 rounded-xs opacity-70 transition-opacity hover:opacity-100 focus:ring-2 focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"
           >
-            <XIcon />
+            <Icon name="x" />
             <span className="sr-only">{labels.close}</span>
           </DialogPrimitive.Close>
         )}

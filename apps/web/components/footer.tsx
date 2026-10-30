@@ -1,4 +1,5 @@
 import { BrandLogo } from "@repo/design-system/components/brand-logo";
+import { Icon } from "@repo/design-system/components/sal/icon";
 import { localizedPath } from "@repo/internationalization";
 import { Link } from "@repo/internationalization/navigation";
 import { localized, programmes } from "@repo/sal-data";
@@ -9,6 +10,7 @@ import { askedConsent } from "@/lib/consent";
 import { readPublished } from "@/lib/supabase";
 
 const INSTAGRAM = "https://www.instagram.com/auibsal";
+const INSTAGRAM_HANDLE = "@auibsal";
 
 interface FooterProps {
   /** The cookie settings link: only where the consent card runs (the site). */
@@ -30,6 +32,7 @@ export const Footer = async ({ consent = true }: FooterProps = {}) => {
   const t = await getTranslations("web.footer");
   const tn = await getTranslations("web.nav");
   const tx = await getTranslations("web.footerExtra");
+  const tc = await getTranslations("common");
   const locale = await getLocale();
   const email = t("columns.email");
 
@@ -42,13 +45,16 @@ export const Footer = async ({ consent = true }: FooterProps = {}) => {
   const columns = [
     {
       heading: t("columns.programs"),
-      links: programs.map(
-        (p) => [`/events/${p.slug}`, localized(p, "name", locale)] as const
-      ),
+      links: programs
+        .filter(programmes.isListedProgram)
+        .map(
+          (p) => [`/events/${p.slug}`, localized(p, "name", locale)] as const
+        ),
     },
     {
       heading: t("columns.society"),
       links: [
+        ["/events/company", t("company")],
         ["/governance", t("governance")],
         ["/documents", tn("documents")],
         ["/partners", t("partners")],
@@ -105,8 +111,12 @@ export const Footer = async ({ consent = true }: FooterProps = {}) => {
               </Link>
             </li>
             <li>
-              <a className={linkClass} href={`mailto:${email}`}>
-                {email}
+              <a
+                className={`${linkClass} inline-flex items-center gap-1.5`}
+                href={`mailto:${email}`}
+              >
+                <Icon name="mail" />
+                <bdi dir="ltr">{email}</bdi>
               </a>
             </li>
             <li>
@@ -116,7 +126,12 @@ export const Footer = async ({ consent = true }: FooterProps = {}) => {
                 rel="noopener"
                 target="_blank"
               >
-                {tx("instagram")} @auibsal
+                {tx("instagram")} <bdi dir="ltr">{INSTAGRAM_HANDLE}</bdi>
+                <Icon
+                  className="ms-1.5 align-[-0.15em]"
+                  label={tc("externalLink")}
+                  name="arrow-up-right"
+                />
               </a>
             </li>
             <li>

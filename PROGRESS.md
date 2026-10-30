@@ -9,6 +9,38 @@ Branch: `claude/new-session-qosn60`.
 
 ## Blocked — needed from the user
 
+- [ ] **The brand handoff of Oct 30, 2026, what is left for the owner:**
+  - **The Qirtas Prizes' names** (the Mutanabbi, Tabari, Jahiz, Nazik,
+    Wasiti and Ibn al-Haytham Prizes) are proposed: the public Prizes page
+    shows "The main prize" and "The prize for News" and so on until you
+    confirm them; then set `journal.prize_names_public` to true in the
+    Diwan's Settings. Write to Nazik al-Malaika's family first.
+  - **Old Qirtas pieces with retired names.** The launch pieces from
+    Oct 14 (migration `20261014000300`, e.g. "Waraq launches…") still name
+    Waraq, Gallery Wall, Side Quest and Charter Day, and show on the home
+    page's Qirtas strip. They are published articles, so they were left
+    as written: edit them in the Diwan, add an editor's note, or unpublish?
+  - **Give** (`/give`): the brief asks whether to keep a Give page. It has
+    no payment links, only Second Chapter's dates, collection totals and
+    receipts. Keep, rename or remove?
+  - **The Artistic Director's seat** is on the Council page, open. The
+    Company's lead still holds a Program Lead role for the Company; a
+    Council role for the seat (two-step sign-in, Council permissions) is
+    not made until you say which permissions it carries.
+  - **The Listening Room's room and host** (TODO(content)); its two dates
+    (Mar 16, May 11) are the Salon's former ones.
+  - **Redirects** for `/waraq` and `/nexus`: still none (AGENTS.md); say if
+    you want one permanent redirect for each.
+  - **Telegram:** create the sticker set (docs/platform/telegram.md,
+    "Sticker set") and set the bot's picture with `/setuserpic`
+    (`brand/mascot/hudhud-avatar.png`); give The Green Room
+    `brand/logos/sal-avatar-ink.svg`.
+  - **The decisions file** (`claude/decisions.md`) is now the handoff's
+    copy. It no longer names Mia Hakimi as Managing Editor, the open
+    masthead seats or the journal's applicants; the site still posts the
+    six masthead seats on the Callboard. Say if those lines still stand.
+  - **Native review** of the new Arabic (listed below).
+
 - [ ] **Owner decisions of Oct 30, 2026 (`claude/decisions.md`), what is
       left for the owner:**
   - **Arabic spellings of the Council's names** (TODO(content)): Shaheen
@@ -412,6 +444,18 @@ These stop parts of the work. Everything else continues around them.
 
 ## Decisions
 
+- **The brand handoff** (owner, Oct 30, 2026): one icon set
+  (`brand/icons`, the `Icon` component; `lucide-react` removed), icons in
+  the header (search, language, theme, menu, Sign in), before dates, times
+  and places, and on links that leave the site. The Company is not a
+  program (kept live for its page, left out of every list of programs and
+  linked from the footer). The Listening Room is the sixth program; the
+  Tuesday series meet every fourth week. The Artistic Director has a
+  Council seat. Arabic: «الصالون», «آراء», «جريدة الأحد», «المدير الفني»,
+  «محرّر قرطاس». The Prizes' own names are hidden until confirmed. The
+  footer keeps its columns of Oct 30 (Programs, Society, Stay in touch)
+  rather than the brief's Society, Read and Contact, which repeated the
+  header.
 - **One main menu** (owner, Oct 30, 2026): the Diwan uses the site's own
   header (About, What's on, Qirtas, Get involved; Join only for visitors;
   Search; Membership when signed in). The Diwan's former header items (the
@@ -1070,6 +1114,11 @@ These stop parts of the work. Everything else continues around them.
 
 ### Owner decisions (2026-10-30)
 
+- [x] Brand handoff: brand files, icons and `Icon`, Highlights and Icons
+      stories, the Listening Room, the Company out of the program lists,
+      the Artistic Director's seat, Arabic names, Prize names hidden;
+      pgTAP 54 files pass
+
 - [x] One main menu across the site, the members' pages and the Diwan;
       the Diwan's own pages in the administration menu; footer without
       repeats; the header notices signing in and out at once
@@ -1495,6 +1544,11 @@ Covered by automated tests so far:
 All Arabic written for the platform up to 2026-10-24 was reviewed by the
 owner and approved ("reviewed across the board, it's all good"). List new
 Arabic here as it is written.
+
+Written 2026-10-30 (brand handoff): the Listening Room «غرفة الاستماع» and
+its summary and rhythm («أيام الثلاثاء، كل أربعة أسابيع…»), «الجائزة الكبرى»،
+«جائزة {section}», «الفرقة» (footer), «محرّر قسم آراء», the running uses of
+«الآراء». From NAMES.md (marked †): «الصالون», «جريدة الأحد», «المدير الفني».
 
 Written 2026-10-30 (menus): «لكل مسؤول» (the administration menu's group),
 «البرامج» and «ابقَ على تواصل» (footer columns), «بحث».

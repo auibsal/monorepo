@@ -4051,7 +4051,8 @@
         "contactHeading": "Stay in touch",
         "email": "hello@auibsal.org",
         "programs": "Programs"
-      }
+      },
+      "company": "The Company"
     },
     "consent": {
       "title": "Cookies",
@@ -4784,8 +4785,10 @@
       "shortlistOn": "The shortlist is announced on its day.",
       "noRound": "The next round is announced here.",
       "winner": "Winner",
-      "judging": "Editors draw up the shortlists, each with Arabic and English work. The Mutanabbi Prize is judged blind by one outside judge; the others by two editors and a faculty member.",
-      "rewards": "A certificate for every winner, and a chapbook for the Mutanabbi Prize. No cash prizes."
+      "judging": "Editors draw up the shortlists, each with Arabic and English work. The main prize is judged blind by one outside judge; the others by two editors and a faculty member.",
+      "rewards": "A certificate for every winner, and a chapbook for the main prize. No cash prizes.",
+      "prizeFor": "The prize for {section}",
+      "mainPrize": "The main prize"
     }
   }
 }

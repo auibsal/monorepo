@@ -74,9 +74,9 @@ const Home = async ({ params }: HomeProps) => {
   );
   const [lead, ...rest] = pieces;
 
-  // The six programs (Qirtas is the paper and Next Stop its video show:
-  // their rows are unpublished).
-  const series = (allProgrammes ?? []).filter((p) => p.is_active);
+  // The six programs: Qirtas and Next Stop are unpublished, and the Company
+  // is the theater company, not a program.
+  const series = (allProgrammes ?? []).filter(programmes.isListedProgram);
 
   return (
     <>

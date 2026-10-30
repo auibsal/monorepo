@@ -1,6 +1,6 @@
 "use client"
 
-import { CheckIcon, Loader2Icon } from "lucide-react"
+import { Icon } from "../sal/icon"
 import { Toaster as Sonner, type ToasterProps } from "sonner"
 
 const Toaster = ({ ...props }: ToasterProps) => {
@@ -10,11 +10,16 @@ const Toaster = ({ ...props }: ToasterProps) => {
       theme="light"
       className="toaster group"
       icons={{
-        success: <CheckIcon aria-hidden="true" className="size-4" />,
-        info: null,
-        warning: null,
-        error: null,
-        loading: <Loader2Icon className="size-4 animate-spin" />,
+        success: <Icon name="check" />,
+        info: <Icon name="info" />,
+        warning: <Icon name="circle-alert" />,
+        error: <Icon name="circle-alert" />,
+        loading: (
+          <span
+            aria-hidden="true"
+            className="inline-block size-4 animate-spin border-[1.5px] border-current border-t-transparent"
+          />
+        ),
       }}
       style={
         {

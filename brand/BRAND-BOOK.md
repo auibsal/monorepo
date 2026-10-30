@@ -6,7 +6,7 @@ This is SAL-BRD-01, Brand and Identity, Version 1, ratified by the Society. The 
 
 - **Quiet by default.** White space, hairline rules and sentence case carry the page. Each page gets one loud thing: a headline, one crimson word or one band of color.
 - **One language per piece.** Every page, post and document is in English or in Arabic, with the logo in that language. The two editions are equals: same family, same care, each written for its own readers. Never both on one piece, never a translation tucked underneath.
-- **The page is the brand.** The symbol is a bookmark and appears only as the logo. Everything else is built from what a book is made of: pages, margins, rules and type. Headings stand alone: no markers, no ribbons, no labels above them.
+- **The page is the brand.** The symbol is a bookmark and appears only as the logo. Everything else is built from what a book is made of: pages, margins, rules and type. Headings stand alone: no markers, no ribbons, no labels above them. Icons carry meaning; they never decorate.
 
 ## Content fundamentals
 
@@ -16,13 +16,14 @@ This is SAL-BRD-01, Brand and Identity, Version 1, ratified by the Society. The 
 - Be playful about ideas, never people: "The worst poem at AUIB wins."
 - Write Arabic for Arabic readers, then have a native speaker check it. Never ship a translation as an afterthought.
 - Names: "AUIB Society of Arts and Letters" in full on first use in formal documents; then "the Society" or "SAL". Never "the club", never "Art and Letter".
-- The Society's paper is **Qirtas** («قرطاس», paper, from the motto «والقرطاسُ والقلم»), "AUIB's paper of news, letters and art." Qirtas is the Society's paper, not a program: its masthead, desks and Launch Night are its own.
-- The programs are six, with no groupings: **Second Chapter**, **Typewriter Tour**, **the Company**, **the Salon**, **Book Circle** and **Open Pages**. Each shows its rhythm in one plain line ("Every third Tuesday, 4:00–5:30 PM."). **Next Stop** is Qirtas's video show, not a program.
+- The Society's paper is **Qirtas** («قرطاس», paper, from the motto «والقرطاسُ والقلم»), "AUIB's paper of news, letters and art." Qirtas is the Society's paper, not a program, with its own masthead. It has six sections: News, Voices, Letters, Gallery, Video and Games. Next Stop is its video show, in Video. Each semester's Edition is printed and launched at Launch Night; the Sunday Paper is its monthly newsletter, on the first Sunday of the month.
+- **The Company** is the Society's theater company, not a program, with its own Artistic Director on the Council.
+- There are six programs, listed flat by name: **Second Chapter**, **Typewriter Tour**, **the Salon**, **Book Circle**, **Open Pages** and **the Listening Room**. Never group them into tiers.
 - Endorsed programs carry the line "a Society of Arts and Letters program" (Arabic: «من برامج جمعية الفنون والآداب»).
-- Short titles: "Charter Day", "Every Dinar", "The Ribbon".
-- Dates as "Tuesday, October 13"; times as "6:00 PM"; money as "50,000 IQD". Numerals in tables; words in prose for numbers under ten.
-- American English everywhere, no exceptions: organization, program, color, center, canceled.
-- Partners with Arabic names are named in their own language first. Until the Council approves a charity partner, Second Chapter says "our charity partner".
+- Short titles: "Charter Day", "Launch Night", "The Ribbon".
+- Dates as "Tuesday, October 13"; times as "6:00 PM". Numerals in tables; words in prose for numbers under ten.
+- American English everywhere, with no exceptions: program, color, center, traveled, canceled, catalog, organization.
+- Partners with Arabic names are named in their own language first.
 - No emoji, no exclamation marks in headlines. Tag @auibsal on every post, and always give the date.
 
 ## Color
@@ -100,7 +101,7 @@ This is SAL-BRD-01, Brand and Identity, Version 1, ratified by the Society. The 
 ## Components
 
 - Plain HTML with `components/bundle.css` (classes prefixed `sal-`). Load `tokens.css` first, then `bundle.css`, and copy the markup from each preview.
-- `DocumentCover`, `DocumentFooter`, `FormHeader`, `SocialPost`, `Carousel`, `Story`, `Hudhud`, `HudhudStickers`.
+- `DocumentCover`, `DocumentFooter`, `FormHeader`, `SocialPost`, `Carousel`, `Story`, `Highlights`, `Hudhud`, `HudhudStickers`.
 - Covers and forms are always light (`data-theme="light"`).
 
 ## Social and print
@@ -110,6 +111,9 @@ This is SAL-BRD-01, Brand and Identity, Version 1, ratified by the Society. The 
 - **Photo posts:** the photo above (1080 × 820), the headline and meta on a solid ink or white panel below, the lockup at the bottom end. Never type over a photograph.
 - **Carousels:** a cover post, numbered inside slides ("01", a short title, a few lines), and an end slide with the wordmark alone in the carousel's language: no symbol, no text. One ground and one language throughout. No slide counters or "swipe" prompts.
 - **Stories (1080 × 1920):** the post's parts, with every word 250 px clear of the top and 340 px clear of the bottom.
+- **Profile pictures:** Instagram (@auibsal) and the members' Telegram group use the Bookmark in white on crimson (`sal-avatar.svg`). The Green Room, the working group, uses the Bookmark in white on ink (`sal-avatar-ink.svg`), so the two groups are never confused. Hudhud, the bot, keeps the hoopoe (`hudhud-avatar.png`).
+- **Instagram bio:** "Qirtas, our paper. The Company, our theater. Six programs at @auibaghdad." Links, in order: auibsal.org, auibsal.org/events, auibsal.org/join.
+- **Highlights:** six, in this order: What's on, Qirtas, Next Stop, Programs, Join, Get involved. Covers are plain crimson with the highlight's icon and its name in white Ubuntu Light; no Bookmark. Each highlight opens with a 1080 × 1920 story banner on white: the wordmark alone at the top (no Bookmark), a Light headline with one italic crimson word, a short line, a list split by thin rules, and the link at the bottom. See `components/Highlights`.
 - Three grounds, by purpose: `crimson` for calls and moments, `white` for events, `ink` for words worth keeping and recruiting.
 - Posters A3/A4 follow the post: lockup, Light headline, a QR code at bottom right. Term Card A6; membership cards 85 × 55 mm; certificates A4 landscape with a single hairline frame and the lockup. Print only when current stock runs out.
 
@@ -122,4 +126,9 @@ This is SAL-BRD-01, Brand and Identity, Version 1, ratified by the Society. The 
 
 ## Iconography
 
-- The system has no icon set. Its pictorial elements are the logo and, in one-to-one channels only, Hudhud and his stickers. Use words, not icons or emoji. Mark failures in examples with a plain "×".
+- **One icon set, everywhere:** the site and the Diwan, posts, stories, highlights, documents and printables. It is Lucide (ISC license), redrawn at a 1.5 px line with square ends. The files are in Icons (`assets/Icons/README.md`), one per meaning; see `components/Icons`.
+- **Alone when it says enough.** An icon can stand on its own wherever its meaning is plain: a calendar before a date, a pin before a place, close, menu, search, share, a link arrow. Add a word only when the icon alone could be misread (Join, Get involved, a section name the first time it appears). On screens, a standalone icon carries an `aria-label`.
+- **Same size and color as the text** around it, at 1.15 em: `text` or `text-secondary`, white on crimson and ink. Never crimson on its own, never filled, never in two colors.
+- **Never** in a headline, as a bullet, as decoration or in place of the logo. The Bookmark is never an icon, and Hudhud is never an icon.
+- **One icon, one meaning,** as the Icons list sets out (calendar for a date, map-pin for a place). Don't add an icon from outside the set; ask the Director of Media to add one, drawn the same way.
+- Still no emoji, except the one each Telegram sticker is filed under. Mark failures in examples with a plain "×".

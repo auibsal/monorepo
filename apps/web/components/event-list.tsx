@@ -1,3 +1,4 @@
+import { Icon } from "@repo/design-system/components/sal/icon";
 import type { Locale } from "@repo/internationalization";
 import { formatClock, formatDayParts } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
@@ -15,9 +16,13 @@ export interface DatedItem {
   lang?: string;
   /** One line under the title. */
   line?: string | null;
-  /** Place and time, at the end of the row. */
+  /** Something else for the end of the row (a closing date). */
   place?: string | null;
+  /** The time, after the clock, at the end of the row. */
+  time?: string | null;
   title: string;
+  /** The place, after the pin, at the end of the row. */
+  venue?: string | null;
 }
 
 const ROW =
@@ -44,8 +49,8 @@ const RowLink = ({
 
 /**
  * The dated list: a large Light day number with the weekday and month
- * under it, the title and one line, and the place and time at the end, each
- * row on a hairline.
+ * under it, the title and one line, and the place (a pin) and time (a
+ * clock) at the end, each row on a hairline.
  */
 export const DatedList = ({
   items,
@@ -74,6 +79,12 @@ export const DatedList = ({
                 lang={item.lang}
               >
                 {item.title}
+                {item.external ? (
+                  <Icon
+                    className="ms-1.5 align-[-0.15em]"
+                    name="arrow-up-right"
+                  />
+                ) : null}
               </span>
               {item.line ? (
                 <span className="type-caption text-text-secondary">
@@ -81,9 +92,21 @@ export const DatedList = ({
                 </span>
               ) : null}
             </span>
-            {item.place ? (
-              <span className="type-caption text-text-secondary sm:text-end">
-                {item.place}
+            {item.place || item.venue || item.time ? (
+              <span className="type-caption flex flex-wrap gap-x-4 gap-y-1 text-text-secondary sm:justify-end">
+                {item.venue ? (
+                  <span className="inline-flex items-center gap-1.5">
+                    <Icon name="map-pin" />
+                    {item.venue}
+                  </span>
+                ) : null}
+                {item.time ? (
+                  <span className="inline-flex items-center gap-1.5">
+                    <Icon name="clock" />
+                    {item.time}
+                  </span>
+                ) : null}
+                {item.place ? <span>{item.place}</span> : null}
               </span>
             ) : null}
           </RowLink>
@@ -116,13 +139,9 @@ export const eventItems = (
     href: `/events/${event.slug}`,
     key: event.id,
     line: localized(event, "summary", locale),
-    place: [
-      localized(event, "venue", locale),
-      formatClock(event.starts_at, locale),
-    ]
-      .filter(Boolean)
-      .join(" · "),
+    time: formatClock(event.starts_at, locale),
     title: localized(event, "title", locale),
+    venue: localized(event, "venue", locale) || null,
   }));
 
 export const EventList = ({

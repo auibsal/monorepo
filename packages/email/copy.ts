@@ -353,11 +353,11 @@ export const newsletterConfirm = (lang: Lang, confirm: string) =>
     },
     heading:
       l === "ar"
-        ? "أكّد اشتراكك في «صحيفة الأحد»"
+        ? "أكّد اشتراكك في «جريدة الأحد»"
         : "Confirm your subscription to the Sunday Paper",
     paragraphs: [
       l === "ar"
-        ? "طلب أحدهم بهذا العنوان «صحيفة الأحد»، رسالة قرطاس الشهرية من جمعية الفنون والآداب، في أول أحد من كل شهر. اضغط الزر للتأكيد."
+        ? "طلب أحدهم بهذا العنوان «جريدة الأحد»، رسالة قرطاس الشهرية من جمعية الفنون والآداب، في أول أحد من كل شهر. اضغط الزر للتأكيد."
         : "Someone asked for the Sunday Paper, the monthly email from Qirtas and the AUIB Society of Arts and Letters, sent on the first Sunday of each month, at this address. Press the button to confirm.",
       l === "ar"
         ? "إن لم تطلبه فتجاهل هذه الرسالة؛ لن نراسلك."
@@ -532,13 +532,13 @@ export const sundayPaper = (
       label: l === "ar" ? "افتح قرطاس" : "Open Qirtas",
     },
     heading:
-      l === "ar" ? "صحيفة الأحد من قرطاس" : "The Sunday Paper from Qirtas",
+      l === "ar" ? "جريدة الأحد من قرطاس" : "The Sunday Paper from Qirtas",
     paragraphs: [
       ...paperPieces(l, pieces),
       ...paperEvents(l, events),
       ...paperPlaces(l, places, callboard),
       l === "ar"
-        ? `لإيقاف صحيفة الأحد: ${stop}`
+        ? `لإيقاف جريدة الأحد: ${stop}`
         : `To stop the Sunday Paper: ${stop}`,
     ],
   }));

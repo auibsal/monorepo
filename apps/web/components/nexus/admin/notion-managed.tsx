@@ -1,9 +1,9 @@
 "use client";
 
 import { useAuth } from "@repo/auth/provider";
+import { Icon } from "@repo/design-system/components/sal/icon";
 import { unwrap } from "@repo/sal-data";
 import { useQuery } from "@tanstack/react-query";
-import { ExternalLink } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 /**
@@ -48,7 +48,11 @@ export const NotionManaged = ({
         target="_blank"
       >
         {t("open")}
-        <ExternalLink aria-label={tc("externalLink")} className="size-3.5" />
+        <Icon
+          className="size-3.5"
+          label={tc("externalLink")}
+          name="arrow-up-right"
+        />
       </a>
     </p>
   );

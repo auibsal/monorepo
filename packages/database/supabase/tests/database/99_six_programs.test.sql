@@ -73,12 +73,12 @@ insert into core.semesters (code, name_en, name_ar, starts_on, ends_on) values
 -- first-100 rule back on themselves.
 update core.settings set value = '0' where key = 'membership.founding_voters';
 -- </preamble>
-select plan(10);
+select plan(12);
 
 select is(
   (select array_agg(slug order by sort) from core.programmes where is_active),
-  array['second-chapter', 'typewriter-tour', 'company', 'salon', 'book-circle', 'open-pages'],
-  'Six programs, in order'
+  array['second-chapter', 'typewriter-tour', 'salon', 'book-circle', 'open-pages', 'listening-room', 'company'],
+  'Six programs in order, then the Company (live, not listed as a program)'
 );
 select ok(
   not exists (select 1 from core.programmes where is_active and (rhythm_en is null or rhythm_ar is null)),
@@ -86,7 +86,7 @@ select ok(
 );
 select is(
   (select name_en || ' / ' || name_ar from core.programmes where slug = 'salon'),
-  'The Salon / الصالون الأدبي',
+  'The Salon / الصالون',
   'The Majlis is the Salon'
 );
 select is(
@@ -110,7 +110,7 @@ select ok(
 );
 select is(
   (select count(*)::integer from events.events e join core.programmes p on p.id = e.programme_id
-    where p.slug in ('salon', 'book-circle', 'open-pages') and e.status = 'published'
+    where p.slug in ('salon', 'book-circle', 'open-pages', 'listening-room') and e.status = 'published'
       and (e.starts_at at time zone 'Asia/Baghdad')::time = '16:00'
       and extract(isodow from e.starts_at at time zone 'Asia/Baghdad') = 2),
   12,
@@ -125,6 +125,18 @@ select is(
   (select status from events.events where slug = 'book-circle-2027-04-09'),
   'draft',
   'Book Circle''s Friday on al-Mutanabbi Street waits for its time'
+);
+
+select is(
+  (select array_agg(e.slug order by e.starts_at) from events.events e
+    join core.programmes p on p.id = e.programme_id where p.slug = 'listening-room'),
+  array['listening-room-2027-03-16', 'listening-room-2027-05-11'],
+  'The Listening Room takes the Salon''s March 16 and May 11'
+);
+select is(
+  (select value from core.settings where key = 'journal.prize_names_public'),
+  'false'::jsonb,
+  'The Prizes'' own names stay private until confirmed'
 );
 
 select * from finish();

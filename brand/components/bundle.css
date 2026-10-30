@@ -97,7 +97,7 @@
 .sal-story .sal-post__lede { top: calc(1120 * var(--u)); font-size: calc(44 * var(--u)); }
 .sal-story .sal-post__meta { bottom: calc(340 * var(--u)); font-size: calc(34 * var(--u)); }
 
-/* Arabic: Ubuntu Arabic has no Light and no italic. Display is Regular, the accent word is color only. */
+/* Arabic: Ubuntu Arabic has no Light and no italic. Display is Regular, the accent word is colour only. */
 [dir="rtl"] .sal-post__frame, [dir="rtl"] .sal-story__frame { font-family: var(--font-arabic); }
 [dir="rtl"] .sal-post__headline { font-weight: 400; letter-spacing: 0; line-height: 1.3; font-size: calc(132 * var(--u)); }
 [dir="rtl"].sal-post--photo .sal-post__headline { font-size: calc(92 * var(--u)); }
@@ -117,3 +117,33 @@
 .sal-post--ink .sal-post__frame, .sal-story--ink .sal-story__frame { background: var(--ink); color: var(--white); }
 .sal-post--ink .sal-post__headline i, .sal-post--ink .sal-post__title i, .sal-post--ink .sal-post__meta, .sal-post--ink .sal-post__num,
 .sal-story--ink .sal-post__headline i, .sal-story--ink .sal-post__meta { color: var(--crimson-100); }
+
+/* ---------- Instagram highlights ----------
+   Covers: plain crimson, the highlight's name in white Ubuntu Light, nothing else (no icons, no Bookmark).
+   Banners: the first story in each highlight, 1080 × 1920 on white, with the wordmark alone at the top. */
+.sal-highlight { --u: calc(100cqw / 1080); container-type: inline-size; }
+.sal-highlight__frame { width: 100%; aspect-ratio: 1; background: var(--crimson); color: var(--white); display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.sal-highlight__name { margin: 0; max-width: calc(760 * var(--u)); text-align: center; font-family: var(--font-sans); font-weight: 300; font-size: calc(170 * var(--u)); line-height: 1.02; letter-spacing: -0.03em; }
+.sal-highlight--round .sal-highlight__frame { border-radius: 50%; }
+
+.sal-banner { --u: calc(100cqw / 1080); container-type: inline-size; }
+.sal-banner__frame { position: relative; width: 100%; aspect-ratio: 9 / 16; overflow: hidden; background: var(--white); color: var(--ink); font-family: var(--font-sans); }
+.sal-banner__wordmark { position: absolute; top: calc(250 * var(--u)); inset-inline-start: calc(80 * var(--u)); height: calc(250 * var(--u)); width: auto; }
+.sal-banner__headline { position: absolute; top: calc(580 * var(--u)); inset-inline: calc(80 * var(--u)); margin: 0; font-weight: 300; font-size: calc(150 * var(--u)); line-height: 1; letter-spacing: -0.03em; }
+.sal-banner__headline i { font-weight: 300; color: var(--crimson); }
+.sal-banner__line { position: absolute; top: calc(765 * var(--u)); inset-inline-start: calc(80 * var(--u)); max-width: 24ch; margin: 0; font-size: calc(42 * var(--u)); line-height: 1.4; color: var(--ash); }
+.sal-banner__list { position: absolute; top: calc(910 * var(--u)); inset-inline: calc(80 * var(--u)); margin: 0; padding: 0; list-style: none; border-top: var(--hairline) solid var(--stone); }
+.sal-banner__list li { padding: calc(15 * var(--u)) 0; border-bottom: var(--hairline) solid var(--stone); font-size: calc(38 * var(--u)); line-height: 1.3; }
+.sal-banner__list li span { float: inline-end; color: var(--ash); }
+.sal-banner__link { position: absolute; bottom: calc(340 * var(--u)); inset-inline-start: calc(80 * var(--u)); margin: 0; font-weight: 500; font-size: calc(40 * var(--u)); border-bottom: calc(3 * var(--u)) solid currentColor; padding-bottom: calc(6 * var(--u)); }
+
+/* ---------- Icons ----------
+   One set: Lucide (ISC), redrawn at a 1.5 px line with square ends. Paste the SVG inline so it takes the text's color.
+   An icon stands alone when its meaning is plain (with an aria-label on screens) and takes a word when it could be misread. */
+.sal-icon { display: inline-block; width: 1.15em; height: 1.15em; vertical-align: -0.2em; flex: none; stroke: currentColor; }
+.sal-icon-label { display: inline-flex; align-items: center; gap: 0.45em; }
+.sal-icon-label .sal-icon { vertical-align: 0; }
+.sal-post__meta .sal-icon, .sal-banner__link .sal-icon { margin-inline-end: 0.4em; }
+.sal-highlight__frame { flex-direction: column; gap: calc(36 * var(--u)); }
+.sal-highlight__icon { width: calc(250 * var(--u)); height: calc(250 * var(--u)); stroke: var(--white); }
+.sal-highlight__icon + .sal-highlight__name { font-size: calc(140 * var(--u)); }

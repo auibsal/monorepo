@@ -64,7 +64,7 @@ const EventsPage = async ({ params, searchParams }: EventsProps) => {
       []
     ),
   ]);
-  const series = (all ?? []).filter((p) => p.is_active);
+  const series = (all ?? []).filter(programmes.isListedProgram);
   const upcoming = rows.length === 0 ? await nextAfter(month) : null;
   const feed = `${project.url.replace(HTTP_SCHEME, "webcal:")}/calendar.ics?lang=${locale}`;
 

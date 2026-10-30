@@ -6,16 +6,17 @@ Every chat in this project should follow this file. Where an older document, pro
 
 ## 1. The Society's structure
 - **Qirtas** is the Society's paper. It is not a program. It has its own masthead and editorial independence, and the President, as Publisher, never selects work.
+- **The Company** is the Society's theater company. It is not a program. It has its own director on the Council, the Artistic Director, and its own documents (SAL-CMP-01, the Company book). It keeps its open nights, auditions and productions. Company documents mention programs and Qirtas only in one-line links, and the reverse.
 - There are **six programs**, listed flat by name with their rhythm. Never use "flagships", "the Evenings", "the Specials", "weekly evenings" or "four-week cycle".
 
 | Program | Rhythm | Once a term, as a normal part of the program (no name of its own) |
 |---|---|---|
 | Second Chapter | every November: book drive, then fair | — |
 | Typewriter Tour | every March, after Eid | — |
-| The Company | its own open nights, auditions and productions | — |
-| The Salon | Tuesdays, every third week: a guest, three readings, tea, conversation | a debate (from fall 2027) |
-| Book Circle | Tuesdays, every third week: one book a month | a Friday morning on al-Mutanabbi Street, with written Student Life approval |
-| Open Pages | Tuesdays, every third week: a writing workshop | a worst-poem contest |
+| The Salon | Tuesdays, every fourth week: a guest, three readings, tea, conversation | a debate (from fall 2027) |
+| Book Circle | Tuesdays, every fourth week: one book a month | a Friday morning on al-Mutanabbi Street, with written Student Life approval |
+| Open Pages | Tuesdays, every fourth week: a writing workshop | a worst-poem contest |
+| Listening Room | Tuesdays, every fourth week: an album or recording played in full, then talked about (music, spoken word, recorded poetry) | a live set by student musicians |
 
 - **Retired names.** Never use these in any document: the Majlis (now the Salon), Munazara, Mutanabbi Friday, Bad Poetry Night, Open Stage (now the Company's open nights), Scratch Night, Motion Night, Mutanabbi Walk, Productions, Gallery Wall, Reviews (as a section name), The Month in Qirtas, Side Quest, BusTalks, Waraq, the Nexus, Book of Members, Charter Night, Director of the Company, Director of Letters, Director of Stage and Arts, Treasurer, Deputy Treasurer.
 - **Next Stop is Qirtas's video show,** in its Video section. It is no longer a program.
@@ -28,8 +29,9 @@ Every chat in this project should follow this file. Where an older document, pro
   - **Hudhud** (@auibsal_bot), the Society's messenger: events and RSVPs, Qirtas, a daily word, notices. It removes group members who have not signed up on auibsal.org, except Student Life staff and the Faculty Advisor.
 - **Pictures and Instagram:**
   - Instagram (@auibsal) and the members' group use the Bookmark in white on crimson; The Green Room uses the Bookmark in white on ink; Hudhud keeps the hoopoe.
-  - Instagram bio: "Qirtas, our paper, and six programs at @auibaghdad." Links: auibsal.org, auibsal.org/events, auibsal.org/join.
-  - Six highlights, in order: What's on, Qirtas, Next Stop, Programs, Join, Get involved. Covers are plain crimson with the name in white Ubuntu Light (no icons, no Bookmark). Each opens with a story banner on white with the wordmark alone (no Bookmark).
+  - Instagram bio: "Qirtas, our paper. The Company, our theater. Six programs at @auibaghdad." Links: auibsal.org, auibsal.org/events, auibsal.org/join.
+  - Six highlights, in order: What's on, Qirtas, Next Stop, Programs, Join, Get involved. Covers are plain crimson with the highlight's icon and its name in white Ubuntu Light (no Bookmark). Each opens with a story banner on white with the wordmark alone (no Bookmark).
+- **Icons (decided Oct 30).** The Society uses one icon set across the board: the site and the Diwan, posts, stories, highlights, documents and printables. It is Lucide (ISC license), drawn with a 1.5 px line and square ends, kept in the Design System. An icon may stand alone wherever it says enough by itself (a calendar beside a date, a map pin beside a place, close, menu, search, share, a link arrow); add a word only when the icon alone could be misread. A standalone icon on a screen always carries a label for screen readers. Icons take the color of the text around them. Never in a headline, never as decoration, never the Bookmark as an icon, and still no emoji.
 - **The Typewriter Tour's six words** are published in Qirtas, as Six Words pages in Letters. There is no separate anthology.
 - **Second Chapter's charity partner is to be chosen.** The site has no charity partner on record. Partnerships vets the partner, the Council approves it, and it is kept in the Diwan's partner register.
 
@@ -51,41 +53,37 @@ Every chat in this project should follow this file. Where an older document, pro
 ## 3. People and roles
 - **The Council:**
   - Officers: President, Vice President, General Secretary.
-  - Directors: Editor of Qirtas (also Editor-in-Chief), Director of Programs, Director of Media, Director of Partnerships, Director of Membership.
-  - There is no Director of the Company and no Treasurer.
+  - Six directors: Editor of Qirtas (also Editor-in-Chief), Artistic Director (the Company), Director of Programs, Director of Media, Director of Partnerships, Director of Membership.
+  - There is no Treasurer. The Company's director is titled Artistic Director, never "Director of the Company".
 - **Founding year:** every seat exists; some are held by an officer until filled. The President covers Programs, the Vice President covers Partnerships, and the General Secretary covers Membership. The President keeps Programs for now and decides the handover before leaving on January 24.
 - **Holders on record:**
   - President: Shaheen Farjo.
   - Vice President: Fajer Saif Khalid Ezzet (short form: Fajer Ezzet); also covers Partnerships.
   - General Secretary: Yaqoob Ghassan Al-Azzawi; also covers Membership, and so runs hiring.
   - Editor of Qirtas: Mohammed-Ali Ehsan Ohmaid (short form: Mohammed-Ali Ohmaid).
-  - Managing Editor of Qirtas (masthead, not a Council seat): Mia Hakimi.
   - Director of Media: Ali Hayder.
   - Director of Programs: covered by the President for now.
+  - Artistic Director: open; needed by January (the staged reading is Apr 29).
   - Faculty Advisor: none yet; to be invited through Student Life.
   - Student Life: Ali Najm, Campus Recreation Officer; Jelena Zivkovic, Director of Student Life (staff, not Society roles). Both are Telegram admins with no permissions, titled "Student Life"; Jelena is exempt from Hudhud's removals.
-- **A sixth director seat** may be created later by a Council resolution (at most six directors). It is not named in any document yet, and it is not Web.
 - **The web team** (auibsal.org, the Diwan, Hudhud) is part of the Director of Media's team.
 - **The Director of Programs owns all six programs:** calendar, needs lists, standards and reviews. They appoint and supervise one Program Lead per program:
   - Second Chapter: Shaheen Farjo for Edition 1, then a new lead each edition.
   - Typewriter Tour: the Tour Lead.
-  - The Company: the Artistic Director.
-  - The Salon, Book Circle and Open Pages: a host or lead each.
+  - The Salon, Book Circle, Open Pages and the Listening Room: a host or lead each (the Listening Room Host).
+- **The Artistic Director owns the Company:** its season, casting through auditions, productions, standards and needs list. The Company's team (a Stage Manager, a Producer, crews) is picked by the Artistic Director; Membership runs the process; Media promotes and photographs it.
 - **Central functions stay central.** Anything the Society does centrally is done by its owner, never by a program's or Qirtas's own team:
-  - Media: promotion, photography, design (including the Edition's layout), channels, Instagram, and the web team. Media lays out and promotes Qirtas but never decides its content.
+  - Media: promotion, photography, design (including the Edition's layout), channels, Instagram, and the web team. Media promotes Qirtas but never decides its content.
   - Partnerships: partners, the partner register.
   - Membership: the Register, the welcome, voting rights from attendance, and the hiring process.
   - General Secretary: records, the books, rooms, and every request to Student Life.
 - **Hiring:** Membership runs the process for every role (the Callboard post, applications in the Diwan, scheduling, offers, onboarding, hours logged as shifts). The owner of each role picks the person: the Editor of Qirtas picks the masthead, the Director of Programs picks the Program Leads, each director picks their own team. The Council confirms directors; members elect the three officers.
 - **The Editor of Qirtas (Mohammed-Ali Ohmaid) owns the paper,** including Next Stop, and appoints the masthead:
-  - the Managing Editor (Mia Hakimi) is the Editor's deputy;
   - the Video section editor (open) runs Next Stop day to day;
   - Hassan Sadiq hosts;
-  - the Director of Media (Ali Hayder) helps manage Next Stop as part of his role: filming, editing and channels. He holds no Qirtas title;
+  - the Director of Media (Ali Hayder) helps manage Next Stop as part of his role: filming, editing and channels. He holds no separate Qirtas title;
   - a Producer is the Video editor's deputy;
   - Shaheen Farjo gives writing support.
-- **Open masthead seats (Oct 30), posted on the Callboard:** the News, Voices, Video and Games editors, a Producer (Next Stop) and a Prizes Coordinator. The Editor picks; Membership runs the Callboard post, applications and onboarding.
-- **The journal's applicants:** eight of its 11 applicants still need an answer. The Editor places each one on the masthead, in Edition 1 reading, or in the spring Apprenticeship, and Membership sends the answers.
 - **The President is abroad Jan 24 – May 15, 2027.** The Council names an Acting President (the Vice President) by Tue Dec 1. The written delegation goes to Student Life by Sun Dec 20.
 
 ## 4. Qirtas
@@ -104,7 +102,7 @@ Every chat in this project should follow this file. Where an older document, pro
 - **Six Words** pages come only from the Typewriter Tour.
 
 ### Formats of the paper
-- **The Edition:** one a semester, curated from Letters and Gallery and launched at Launch Night. **Every Edition is also printed** as Qirtas's print edition, with printing requested from Student Life. Media lays it out; the Editor decides its content.
+- **The Edition:** one a semester, curated from Letters and Gallery and launched at Launch Night. **Every Edition is also printed** as Qirtas's print edition, with printing requested from Student Life.
 - **The Sunday Paper:** the members' newsletter, **monthly**, on the first Sunday of each month. It replaces both the weekly Sunday Paper and The Month in Qirtas.
 
 ### The Qirtas Prizes
@@ -123,7 +121,6 @@ Six prizes, awarded every April at the Annual General Meeting. The first round i
 - **Judging:** editors draw up the shortlists. The Mutanabbi Prize is judged blind by one outside judge; the others by a panel of two editors and a faculty member. Each shortlist includes Arabic and English work.
 - **Rewards:** a certificate for every winner, and the chapbook for the main prize. No cash prizes.
 - **Needs (requested from Student Life):** six certificates, 48 chapbook copies, and a thank-you for the outside judge.
-- **The Prizes Coordinator** (masthead, open) runs the round's logistics for the Editor.
 - **Names:** these are proposed (Oct 29). Before announcing the Nazik Prize, write to Nazik al-Malaika's family as a courtesy.
 
 ### The Apprenticeship and First Ink (as soon as approvals allow)
@@ -150,11 +147,12 @@ Qirtas, unlike a program, may have several documents:
 - "Submit to the Edition" for Letters and Gallery: open only during a call, two a year.
 
 ## 5. Documents and the site
-- **Programs:** one book per program, SAL-PRG-01 to 06 (Second Chapter, Typewriter Tour, the Company, the Salon, Book Circle, Open Pages). Each book has a **needs list** in place of a budget. Second Chapter's book keeps its collection, counting and handover procedures.
+- **Programs:** one book per program, SAL-PRG-01 to 06 (01 Second Chapter, 02 Typewriter Tour, 03 the Salon, 04 Book Circle, 05 Open Pages, 06 the Listening Room). **The Company:** SAL-CMP-01, the Company book. Each book has a **needs list** in place of a budget. Second Chapter's book keeps its collection, counting and handover procedures.
 - **Shared procedures live once,** in the Operations Playbook (SAL-OPS-01). Its money procedure becomes "Requests to Student Life" plus Second Chapter's collection.
 - **Rules for every document:**
   - American English. English only; Arabic editions are separate documents, checked by a native speaker.
   - The brand is SAL-BRD-01, Version 1. The Bookmark is only ever the logo. Headings stand alone. The closing page says "Thank you." and nothing else.
+  - Icons come only from the Society's icon set in the Design System; an icon stands alone when it says enough, with a word only when needed (see Icons above).
   - Program documents mention Qirtas only in one-line links. Qirtas documents mention programs only in one-line links.
   - No budgets, costs, prices, spending limits, ledgers, claims or reimbursements, except Second Chapter's collection.
 - **The site (auibsal.org and the Diwan):** no Treasurer on the Council page; no budget, ledger, claims or spending features. Programs show needs, not costs. Keep Second Chapter's collection record (counts, the witnessed handover, the impact report). The Council page lists the officers and directors with full titles.
@@ -183,8 +181,9 @@ Qirtas, unlike a program, may have several documents:
 - **The Qirtas Prizes:** shortlists by Apr 4, 2027; awarded at the AGM, Apr 20, 2027.
 - **Tuesdays, 4:00–5:30 PM, one room (room TBC):**
   - Open Pages: pilot Nov 17; Mar 2; Mar 30 (the worst-poem contest, 4:00–6:00 PM); May 4.
-  - The Salon: pilot Dec 1; Feb 16; Mar 16; Apr 6; May 11.
+  - The Salon: pilot Dec 1; Feb 16; Apr 6.
   - Book Circle: Feb 23; Mar 23; Apr 27.
+  - Listening Room: Mar 16; May 11.
   - Book Circle's book-street Friday: Apr 9, second date Apr 23.
   - No session Feb 9, Mar 9, Apr 13 or Apr 20.
   - These dates assume classes start Sun Feb 7, 2027.

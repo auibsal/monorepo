@@ -1,11 +1,11 @@
 "use client";
 
 import { hasSessionCookie } from "@repo/auth/session-cookie";
+import { Icon } from "@repo/design-system/components/sal/icon";
 import { cn } from "@repo/design-system/lib/utils";
 import { localizedPath } from "@repo/internationalization";
 import { type Locale, locales } from "@repo/internationalization/config";
 import { Link, usePathname } from "@repo/internationalization/navigation";
-import { Search } from "lucide-react";
 import NextLink from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { type ReactNode, useEffect, useState } from "react";
@@ -59,9 +59,13 @@ export const SiteHeader = ({ account = true, language }: SiteHeaderProps) => {
       action={
         account ? (
           <NextLink
-            className={cn(mastheadLink, "hidden sm:inline")}
+            className={cn(
+              mastheadLink,
+              "hidden items-center gap-1.5 sm:inline-flex"
+            )}
             href={way.href}
           >
+            <Icon name={signedIn ? "user" : "log-in"} />
             {way.label}
           </NextLink>
         ) : null
@@ -70,11 +74,12 @@ export const SiteHeader = ({ account = true, language }: SiteHeaderProps) => {
       language={
         language ?? (
           <Link
-            className={mastheadLink}
+            className={cn(mastheadLink, "inline-flex items-center gap-1.5")}
             href={pathname}
             lang={other}
             locale={other}
           >
+            <Icon name="globe" />
             {tc("otherLanguage")}
           </Link>
         )
@@ -95,7 +100,7 @@ export const SiteHeader = ({ account = true, language }: SiteHeaderProps) => {
           className={cn(mastheadLink, "inline-flex items-center")}
           href={localizedPath(locale, "/search")}
         >
-          <Search aria-hidden="true" className="size-[1.125rem]" />
+          <Icon name="search" />
         </NextLink>
       }
       sections={sections
