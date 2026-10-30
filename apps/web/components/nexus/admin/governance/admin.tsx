@@ -11,14 +11,12 @@ import {
 } from "@repo/design-system/components/ui/tabs";
 import type { Locale } from "@repo/internationalization";
 import { formatLongDate } from "@repo/internationalization/format";
-import { hasPermission, hasPermissionAnywhere } from "@repo/rbac";
+import { hasPermission } from "@repo/rbac";
 import { governance, localized, unwrap } from "@repo/sal-data";
-import { uploadLibraryFile } from "@repo/storage";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useState } from "react";
 import { Council as CouncilList } from "@/components/council";
-import { callApi } from "@/lib/nexus/api";
 import { Link } from "@/lib/nexus/navigation";
 import { useGrants } from "@/lib/nexus/queries";
 import { SectionSpinner } from "../../states";
@@ -559,220 +557,6 @@ const Resolutions = () => {
   );
 };
 
-// ── Library ─────────────────────────────────────────────────────────────────
-
-const Library = () => {
-  const t = useTranslations("nexus.admin.governance");
-  const locale = useLocale() as Locale;
-  const { supabase } = useAuth();
-  const queryClient = useQueryClient();
-  const grants = useGrants();
-  const [file, setFile] = useState<File | null>(null);
-  const [form, setForm] = useState({
-    audience: "role" as "role" | "council",
-    code: "",
-    status: "draft" as "draft" | "adopted" | "superseded",
-    title: { ar: "", en: "" },
-    version: "1",
-  });
-  const documents = useQuery({
-    queryFn: async () =>
-      unwrap(
-        await supabase
-          .schema("governance")
-          .from("library_documents")
-          .select("*")
-          .order("code")
-      ) ?? [],
-    queryKey: [...key, "library"],
-  });
-  const upload = useMutation({
-    mutationFn: async () => {
-      if (!file) {
-        return;
-      }
-      const stored = await uploadLibraryFile(supabase, form.audience, file);
-      unwrap(
-        await supabase
-          .schema("governance")
-          .from("library_documents")
-          .insert({
-            audience: form.audience,
-            code: form.code.trim() || null,
-            status: form.status,
-            storage_path: stored.path,
-            title_ar: form.title.ar || null,
-            title_en: form.title.en,
-            version: form.version || "1",
-          })
-      );
-    },
-    onSuccess: async () => {
-      setFile(null);
-      setForm((f) => ({ ...f, code: "", title: { ar: "", en: "" } }));
-      await queryClient.invalidateQueries({ queryKey: key });
-    },
-  });
-  const open = async (id: string) => {
-    const { url } = await callApi<{ url: string }>(supabase, "/files/library", {
-      id,
-    });
-    window.open(url, "_blank", "noopener,noreferrer");
-  };
-
-  type Row = NonNullable<typeof documents.data>[number];
-  const columns: Column<Row>[] = [
-    {
-      cell: (d) => <span className="type-code">{d.code ?? "—"}</span>,
-      header: t("library.code"),
-      key: "code",
-    },
-    {
-      cell: (d) => localized(d, "title", locale),
-      header: t("library.titleField"),
-      key: "title",
-    },
-    {
-      cell: (d) => t(`library.audiences.${d.audience as "role" | "council"}`),
-      header: t("library.audience"),
-      key: "audience",
-    },
-    {
-      cell: (d) => `v${d.version} · ${t(`statuses.${d.status as Status}`)}`,
-      header: t("library.status"),
-      key: "status",
-    },
-    {
-      cell: (d) => (
-        <Button
-          onClick={() => open(d.id)}
-          size="sm"
-          type="button"
-          variant="outline"
-        >
-          {t("library.open")}
-        </Button>
-      ),
-      header: "",
-      key: "open",
-    },
-  ];
-
-  return (
-    <div className="grid gap-6">
-      <p className="type-body text-text-secondary">{t("library.lede")}</p>
-      {documents.data ? (
-        <DataTable
-          columns={columns}
-          empty={t("library.empty")}
-          rowKey={(d) => d.id}
-          rows={documents.data}
-        />
-      ) : (
-        <SectionSpinner />
-      )}
-      {hasPermission(grants.data, "governance.manage") ? (
-        <form
-          className="grid max-w-3xl gap-4"
-          onSubmit={(event) => {
-            event.preventDefault();
-            upload.mutate();
-          }}
-        >
-          <h3 className="type-subheading">{t("library.upload")}</h3>
-          <Field label={t("library.file")}>
-            {(id) => (
-              <Input
-                id={id}
-                onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-                required
-                type="file"
-              />
-            )}
-          </Field>
-          <div className="grid gap-4 sm:grid-cols-2">
-            <Field label={t("library.code")}>
-              {(id) => (
-                <Input
-                  className="type-code"
-                  dir="ltr"
-                  id={id}
-                  maxLength={40}
-                  onChange={(e) =>
-                    setForm((f) => ({ ...f, code: e.target.value }))
-                  }
-                  value={form.code}
-                />
-              )}
-            </Field>
-            <Field label={t("library.version")}>
-              {(id) => (
-                <Input
-                  dir="ltr"
-                  id={id}
-                  maxLength={20}
-                  onChange={(e) =>
-                    setForm((f) => ({ ...f, version: e.target.value }))
-                  }
-                  value={form.version}
-                />
-              )}
-            </Field>
-            <Field label={t("library.audience")}>
-              {(id) => (
-                <SelectInput
-                  id={id}
-                  onChange={(e) =>
-                    setForm((f) => ({
-                      ...f,
-                      audience: e.target.value as "role" | "council",
-                    }))
-                  }
-                  value={form.audience}
-                >
-                  <option value="role">{t("library.audiences.role")}</option>
-                  <option value="council">
-                    {t("library.audiences.council")}
-                  </option>
-                </SelectInput>
-              )}
-            </Field>
-            <Field label={t("library.status")}>
-              {(id) => (
-                <SelectInput
-                  id={id}
-                  onChange={(e) =>
-                    setForm((f) => ({
-                      ...f,
-                      status: e.target.value as typeof form.status,
-                    }))
-                  }
-                  value={form.status}
-                >
-                  {(["draft", "adopted", "superseded"] as const).map((s) => (
-                    <option key={s} value={s}>
-                      {t(`statuses.${s}`)}
-                    </option>
-                  ))}
-                </SelectInput>
-              )}
-            </Field>
-          </div>
-          <BilingualField
-            label={t("library.titleField")}
-            maxLength={300}
-            onChange={(title) => setForm((f) => ({ ...f, title }))}
-            required
-            value={form.title}
-          />
-          <SaveButton disabled={!file} pending={upload.isPending} />
-          <ErrorLine error={upload.error} />
-        </form>
-      ) : null}
-    </div>
-  );
-};
-
 // ── Page ────────────────────────────────────────────────────────────────────
 
 export const GovernanceAdmin = () => {
@@ -791,12 +575,6 @@ export const GovernanceAdmin = () => {
       value: "resolutions",
     },
     { show: has("governance.manage"), value: "requests" },
-    {
-      show:
-        hasPermissionAnywhere(grants.data, "library.read") ||
-        has("governance.manage"),
-      value: "library",
-    },
     { show: has("elections.manage"), value: "elections" },
   ] as const;
   const shown = tabs.filter((tab) => tab.show);
@@ -831,11 +609,6 @@ export const GovernanceAdmin = () => {
               <ExportButton fileName="sal-needs.csv" name="needs" />
               <Needs />
             </div>
-          </TabsContent>
-        ) : null}
-        {shown.some((tab) => tab.value === "library") ? (
-          <TabsContent className="pt-4" value="library">
-            <Library />
           </TabsContent>
         ) : null}
         {shown.some((tab) => tab.value === "elections") ? (

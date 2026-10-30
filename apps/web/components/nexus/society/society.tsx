@@ -60,7 +60,7 @@ const Council = () => {
       {roster.data?.length === 0 ? (
         <EmptyLine
           action={{
-            href: `${localizedPath(locale, "/documents/roles-and-staffing")}`,
+            href: `${localizedPath(locale, "/library/roles-and-staffing")}`,
             label: ta("readRoles"),
           }}
         >
@@ -110,7 +110,7 @@ const Minutes = () => {
       {minutes.data?.length === 0 ? (
         <EmptyLine
           action={{
-            href: `${localizedPath(locale, "/documents")}`,
+            href: `${localizedPath(locale, "/library")}`,
             label: ta("readDocuments"),
           }}
         >

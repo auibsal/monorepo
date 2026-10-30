@@ -32,6 +32,15 @@ Branch: `claude/new-session-qosn60`.
     Media"); until then the page says the Council appears once its members
     hold their roles. The Artistic Director is on it once the Company's
     lead holds a Council role; say which permissions it carries.
+  - **The internal files uploaded in the Diwan** (Governance → Library,
+    `governance.library_documents` and the private `library` bucket) are
+    no longer shown: internal documents live in Notion only. Their files
+    are kept as they were; move any you need to Notion and say when they
+    can be deleted. The four internal entries (Founding the Society,
+    Operations Playbook, Templates & Forms, Printables) left the platform;
+    they are already in Notion.
+  - **Old links to /documents** stop working: the public documents are now
+    the Library at /library (no redirects, AGENTS.md). Say if you want one.
   - **Covering a vacant seat** (the President covering Programs): the
     database still refuses a second Council role (`one_council_seat`,
     Bylaws B5.5 as built on Oct 10). The page already names someone once
@@ -462,7 +471,9 @@ These stop parts of the work. Everything else continues around them.
   Tuesday series meet every fourth week. The Company has its own page at
   /company, in the header. The Council page comes from the roles people
   hold, one name per person with all their titles; the Diwan's Documents
-  and Library are one Library. Arabic: «الصالون», «آراء», «جريدة الأحد», «المدير الفني»,
+  and Library became one Library: public at /library, kept in the
+  Diwan's Library by the President, Vice President and General Secretary
+  only; internal documents are in Notion only. Arabic: «الصالون», «آراء», «جريدة الأحد», «المدير الفني»,
   «محرّر قرطاس». The Prizes' own names are hidden until confirmed. The
   footer keeps its columns of Oct 30 (Programs, Society, Stay in touch)
   rather than the brief's Society, Read and Contact, which repeated the

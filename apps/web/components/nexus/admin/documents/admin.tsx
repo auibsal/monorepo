@@ -3,7 +3,7 @@
 import { useAuth } from "@repo/auth/provider";
 import { Button } from "@repo/design-system/components/ui/button";
 import { Input } from "@repo/design-system/components/ui/input";
-import type { Locale } from "@repo/internationalization";
+import { type Locale, localizedPath } from "@repo/internationalization";
 import { formatLongDate } from "@repo/internationalization/format";
 import { documents, sanitizeRichText, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -12,6 +12,7 @@ import { useState } from "react";
 import { RichTextEditor } from "../../editor/rich-text";
 import { SectionSpinner } from "../../states";
 import {
+  AdminHeading,
   BilingualField,
   type Column,
   DataTable,
@@ -24,19 +25,17 @@ import {
 const key = ["admin", "society-documents"];
 
 type Status = documents.DocumentStatus;
-type Audience = documents.DocumentAudience;
 type Doc = documents.SalDocument;
 
 const useDocumentList = () => {
   const { supabase } = useAuth();
   return useQuery({
-    queryFn: () => documents.readableDocuments(supabase),
+    queryFn: () => documents.allDocuments(supabase),
     queryKey: key,
   });
 };
 
 const blank = {
-  audience: "internal" as Audience,
   code: "",
   slug: "",
   title: { ar: "", en: "" },
@@ -54,7 +53,7 @@ const NewDocument = ({ onDone }: { onDone: (id: string) => void }) => {
           .schema("governance")
           .from("society_documents")
           .insert({
-            audience: form.audience,
+            audience: "public",
             code: form.code.trim(),
             slug: form.slug.trim(),
             title_ar: form.title.ar.trim() || null,
@@ -112,23 +111,6 @@ const NewDocument = ({ onDone }: { onDone: (id: string) => void }) => {
             />
           )}
         </Field>
-        <Field label={t("fields.audience")}>
-          {(id) => (
-            <SelectInput
-              id={id}
-              onChange={(e) =>
-                setForm((f) => ({ ...f, audience: e.target.value as Audience }))
-              }
-              value={form.audience}
-            >
-              {documents.documentAudiences.map((a) => (
-                <option key={a} value={a}>
-                  {t(`audiences.${a}`)}
-                </option>
-              ))}
-            </SelectInput>
-          )}
-        </Field>
       </div>
       <SaveButton pending={create.isPending} />
       <ErrorLine error={create.error} />
@@ -137,14 +119,13 @@ const NewDocument = ({ onDone }: { onDone: (id: string) => void }) => {
 };
 
 /**
- * The library's management (the Library's Manage view, governance.manage):
- * the text of every foundational document, edited in place, with who may
- * read it and its status. Public documents are published on
- * auibsal.org/documents within a minute of saving; internal ones keep their
- * text in the team's Notion workspace (`notion_url`), and only their entry
- * here.
+ * The Library (owner, Oct 30, 2026): the Society's documents, managed in
+ * the Diwan by whoever keeps them (governance.manage: the President, the
+ * Vice President and the General Secretary) and published on the public
+ * Library, auibsal.org/library, within a minute of saving. Internal
+ * documents are kept in the team's Notion workspace, never here.
  */
-export const DocumentsAdmin = () => {
+export const LibraryAdmin = () => {
   const t = useTranslations("nexus.admin.documents");
   const locale = useLocale() as Locale;
   const list = useDocumentList();
@@ -168,11 +149,6 @@ export const DocumentsAdmin = () => {
     },
     { cell: (d) => d.code, header: t("columns.code"), key: "code" },
     {
-      cell: (d) => t(`audiences.${d.audience as Audience}`),
-      header: t("columns.audience"),
-      key: "audience",
-    },
-    {
       cell: (d) => t(`statuses.${d.status as Status}`),
       header: t("columns.status"),
       key: "status",
@@ -187,14 +163,26 @@ export const DocumentsAdmin = () => {
 
   return (
     <div className="grid gap-8">
-      <p className="type-body max-w-[60ch] text-text-secondary">{t("lede")}</p>
-      <Button
-        className="justify-self-start"
-        onClick={() => setCreating((c) => !c)}
-        size="sm"
+      <AdminHeading
+        actions={
+          <>
+            <a
+              className="link"
+              href={localizedPath(locale, "/library")}
+              rel="noopener"
+              target="_blank"
+            >
+              {t("viewPublic")}
+            </a>
+            <Button onClick={() => setCreating((c) => !c)} size="sm">
+              {creating ? t("closeNew") : t("new")}
+            </Button>
+          </>
+        }
+        title={t("title")}
       >
-        {creating ? t("closeNew") : t("new")}
-      </Button>
+        {t("lede")}
+      </AdminHeading>
       {creating ? (
         <NewDocument
           onDone={(id) => {
@@ -262,10 +250,8 @@ const EditorForm = ({
   const { supabase } = useAuth();
   const [form, setForm] = useState({
     adopted_on: doc.adopted_on ?? "",
-    audience: doc.audience as Audience,
     body: { ar: doc.body_ar ?? "", en: doc.body_en ?? "" },
     dated: doc.dated ?? "",
-    notion_url: doc.notion_url ?? "",
     ratification: doc.ratification ?? "",
     status: doc.status as Status,
     summary: { ar: doc.summary_ar ?? "", en: doc.summary_en ?? "" },
@@ -280,17 +266,11 @@ const EditorForm = ({
           .from("society_documents")
           .update({
             adopted_on: optionalDate(form.adopted_on),
-            audience: form.audience,
             body_ar: form.body.ar.trim()
               ? sanitizeRichText(form.body.ar)
               : null,
             body_en: sanitizeRichText(form.body.en),
             dated: optionalDate(form.dated),
-            // Only internal documents keep their text in Notion.
-            notion_url:
-              form.audience === "internal"
-                ? form.notion_url.trim() || null
-                : null,
             ratification: optionalDate(form.ratification),
             status: form.status,
             summary_ar: form.summary.ar.trim() || null,
@@ -304,7 +284,6 @@ const EditorForm = ({
     onSuccess: onSaved,
   });
   const adoptedWithoutDate = form.status === "adopted" && !form.adopted_on;
-  const inNotion = form.audience === "internal" && form.notion_url.trim();
 
   return (
     <form
@@ -333,23 +312,6 @@ const EditorForm = ({
         value={form.summary}
       />
       <div className="grid gap-4 sm:grid-cols-3">
-        <Field hint={t("fields.audienceHint")} label={t("fields.audience")}>
-          {(fieldId) => (
-            <SelectInput
-              id={fieldId}
-              onChange={(e) =>
-                setForm((f) => ({ ...f, audience: e.target.value as Audience }))
-              }
-              value={form.audience}
-            >
-              {documents.documentAudiences.map((a) => (
-                <option key={a} value={a}>
-                  {t(`audiences.${a}`)}
-                </option>
-              ))}
-            </SelectInput>
-          )}
-        </Field>
         <Field label={t("fields.status")}>
           {(fieldId) => (
             <SelectInput
@@ -422,49 +384,21 @@ const EditorForm = ({
       {adoptedWithoutDate ? (
         <p className="type-caption">{t("adoptedNoDate")}</p>
       ) : null}
-      {form.audience === "internal" ? (
-        <Field hint={t("fields.notionHint")} label={t("fields.notion")}>
-          {(fieldId) => (
-            <Input
-              dir="ltr"
-              id={fieldId}
-              onChange={(e) =>
-                setForm((f) => ({ ...f, notion_url: e.target.value }))
-              }
-              pattern="https://(app\.notion\.com|www\.notion\.so)/.+"
-              type="url"
-              value={form.notion_url}
-            />
-          )}
-        </Field>
-      ) : null}
-      {inNotion ? (
-        <p className="type-body">{t("notionNote")}</p>
-      ) : (
-        <>
-          <RichTextEditor
-            document
-            label={t("fields.bodyEn")}
-            lang="en"
-            onChange={(en) =>
-              setForm((f) => ({ ...f, body: { ...f.body, en } }))
-            }
-            value={form.body.en}
-          />
-          <RichTextEditor
-            document
-            label={t("fields.bodyAr")}
-            lang="ar"
-            onChange={(ar) =>
-              setForm((f) => ({ ...f, body: { ...f.body, ar } }))
-            }
-            value={form.body.ar}
-          />
-          <p className="type-caption">
-            {form.audience === "public" ? t("publicNote") : t("internalNote")}
-          </p>
-        </>
-      )}
+      <RichTextEditor
+        document
+        label={t("fields.bodyEn")}
+        lang="en"
+        onChange={(en) => setForm((f) => ({ ...f, body: { ...f.body, en } }))}
+        value={form.body.en}
+      />
+      <RichTextEditor
+        document
+        label={t("fields.bodyAr")}
+        lang="ar"
+        onChange={(ar) => setForm((f) => ({ ...f, body: { ...f.body, ar } }))}
+        value={form.body.ar}
+      />
+      <p className="type-caption">{t("publicNote")}</p>
       <SaveButton pending={save.isPending} success={save.isSuccess} />
       <ErrorLine error={save.error} />
     </form>

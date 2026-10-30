@@ -446,7 +446,7 @@ export const Elections = () => {
       {elections.data?.elections.length === 0 ? (
         <EmptyLine
           action={{
-            href: `${localizedPath(locale, "/documents/constitution")}`,
+            href: `${localizedPath(locale, "/library/constitution")}`,
             label: ta("readConstitution"),
           }}
         >

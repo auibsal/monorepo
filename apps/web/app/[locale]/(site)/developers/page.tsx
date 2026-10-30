@@ -96,7 +96,7 @@ const OverviewPage = () => (
         tools. Every app follows the{" "}
         <a
           className="underline underline-offset-4"
-          href={`${project.url}/documents/api-terms`}
+          href={`${project.url}/library/api-terms`}
         >
           API Terms and Developer Policy
         </a>

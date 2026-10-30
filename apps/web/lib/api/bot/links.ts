@@ -21,7 +21,7 @@ export const eventCalendar = (lang: Lang, slug: string) =>
 export const wordPage = (lang: Lang) => web(lang, "/qirtas/games/word");
 
 export const documentPage = (lang: Lang, slug: string) =>
-  web(lang, `/documents/${slug}`);
+  web(lang, `/library/${slug}`);
 
 /** Where a member connects Telegram: their profile. */
 export const connectPage = (lang: Lang) =>

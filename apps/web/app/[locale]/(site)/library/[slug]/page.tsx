@@ -38,7 +38,7 @@ export const generateMetadata = async ({
   if (!doc) {
     return {};
   }
-  return localizedMetadata(locale, `/documents/${doc.slug}`, {
+  return localizedMetadata(locale, `/library/${doc.slug}`, {
     description:
       documents.documentSummary(doc, locale) ||
       documents.documentTitle(doc, locale),
@@ -61,7 +61,7 @@ const DocumentPage = async ({ params }: DocumentProps) => {
     <article className="mx-auto grid w-full max-w-4xl gap-10 px-4 py-16">
       <Link
         className="type-caption underline underline-offset-4"
-        href="/documents"
+        href="/library"
       >
         {t("all")}
       </Link>

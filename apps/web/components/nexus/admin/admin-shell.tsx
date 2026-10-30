@@ -43,7 +43,7 @@ const groups: { key: Group; modules: AdminModule[] }[] = [
     modules: ["members", "hiring", "recognition", "partners"],
   },
   { key: "publishing", modules: ["content", "ads", "charity"] },
-  { key: "society", modules: ["governance", "forms"] },
+  { key: "society", modules: ["governance", "library", "forms"] },
   { key: "system", modules: ["activity", "settings"] },
 ];
 
@@ -55,10 +55,7 @@ const ungrouped = adminModules
 
 // What every officer has besides the modules (owner, Oct 30, 2026: these
 // left the Diwan's header, which is now the site's own).
-const ownPages = [
-  { href: "/library", key: "documents" },
-  { href: "/declarations", key: "declarations" },
-] as const;
+const ownPages = [{ href: "/declarations", key: "declarations" }] as const;
 
 const isActive = (module: AdminModule, pathname: string) =>
   module === "overview"

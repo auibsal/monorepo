@@ -33,11 +33,11 @@ is added or moved. The old `governance.handbook_pages` table is read only
 (migration `20261010000400`).
 
 The internal documents (Founding Proposal, Operations Playbook, Templates &
-Forms, Printables) keep their **registry entry** in the Diwan
-(Administration → Documents: status, version, dates), and their **text** in
-Notion: the entry's *Notion page* field (`society_documents.notion_url`)
-says where, and the Diwan Documents page opens it there. Public documents
-stay on auibsal.org and are edited in the Diwan.
+Forms, Printables, and any later ones) live in Notion entirely (owner,
+Oct 30, 2026); the Diwan's menu links to the team workspace (setting
+`notion.home_url`). The platform keeps only the public documents: the
+Library, auibsal.org/library, edited in the Diwan's Library by the
+President, the Vice President and the General Secretary.
 
 ## How the sync works
 

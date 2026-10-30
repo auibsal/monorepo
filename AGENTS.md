@@ -32,10 +32,10 @@ and decisions), and continue from the first unticked item.
     `Link` (`@repo/internationalization/navigation`) and full paths.
   - `app/[locale]/diwan` — **the Diwan** (code name `nexus`), auibsal.org/diwan:
     the officers' administration only (anyone holding a role,
-    `RequireStaff`): the overview and modules at `/diwan/<module>`, the
-    Library (every document; whoever holds `governance.manage` also
-    manages them there, `?tab=manage`: owner, Oct 30, 2026, Documents and
-    the Library are one), declarations. Members are sent to `/membership`. Diwan code names
+    `RequireStaff`): the overview and modules at `/diwan/<module>`
+    (among them the Library, where only `governance.manage`, the President,
+    the Vice President and the General Secretary, keep the documents),
+    declarations. Members are sent to `/membership`. Diwan code names
     pages by their own path (`/events`); `Link`, `useRouter`, `usePathname`
     and `redirect` from `@/lib/nexus/navigation` add the `/diwan` prefix.
   - Both are client-rendered (`components/nexus`, `lib/nexus`, the code
@@ -68,10 +68,11 @@ and decisions), and continue from the first unticked item.
 - `packages/storybook` — the SAL Design System: SAL components, Screens
   and every platform email in both languages. Local only
   (`bun run --cwd packages/storybook dev`); nothing is deployed.
-- Documents live on auibsal.org/documents (`apps/web`); the officer handbook
-  and the internal documents' text in the team's Notion workspace (the Diwan
-  links there: setting `notion.handbook`, `society_documents.notion_url`;
-  `docs/platform/notion.md`); the platform runbooks in `docs/platform`
+- The Society's documents are the Library, auibsal.org/library (`apps/web`;
+  owner, Oct 30, 2026: every document public, kept in the Diwan's Library).
+  The officer handbook and every internal document live in the team's
+  Notion workspace only (the Diwan's menu links there: settings
+  `notion.home_url`, `notion.handbook`; `docs/platform/notion.md`); the platform runbooks in `docs/platform`
   (Markdown). There is no separate docs site. The apps configure no
   redirects (owner, Oct 14, 2026); www.auibsal.org → auibsal.org is a
   Vercel domain setting.

@@ -1,8 +1,16 @@
-import { Documents } from "@/components/nexus/documents/documents";
+import { RequireModule } from "@/components/nexus/admin/admin-shell";
+import { LibraryAdmin } from "@/components/nexus/admin/documents/admin";
 import { titleFrom } from "@/lib/nexus/metadata";
 
-export const generateMetadata = titleFrom((t) => t("nexus.documents.title"));
+export const generateMetadata = titleFrom((t) =>
+  t("nexus.admin.documents.title")
+);
 
-const DocumentsPage = () => <Documents />;
+/** The Library's management, for whoever keeps the documents. */
+const LibraryPage = () => (
+  <RequireModule module="library">
+    <LibraryAdmin />
+  </RequireModule>
+);
 
-export default DocumentsPage;
+export default LibraryPage;

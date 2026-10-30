@@ -147,7 +147,7 @@ const GovernancePage = async ({ params }: LocaleParams) => {
 
       <p className="type-body">
         {t("rules")}{" "}
-        <Link className="link" href="/documents">
+        <Link className="link" href="/library">
           {t("documents")}
         </Link>
       </p>
