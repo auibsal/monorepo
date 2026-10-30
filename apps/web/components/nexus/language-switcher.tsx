@@ -9,7 +9,8 @@ import { mastheadLink } from "@/components/masthead";
 
 /**
  * Switches between English and Arabic: the globe and the other language's
- * name. The proxy remembers the choice in a cookie.
+ * name. The address carries the language, so the choice holds as you move
+ * between pages.
  */
 export const LanguageSwitcher = () => {
   const t = useTranslations("common");

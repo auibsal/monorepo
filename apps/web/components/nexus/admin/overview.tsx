@@ -163,7 +163,7 @@ const submissionsFigure = (
           selection: formatNumber(stages.selection ?? 0),
         })
       : t("submissionsNone"),
-    href: "/journal?tab=review",
+    href: "/qirtas?tab=review",
     label: t("openSubmissions"),
     value: o.open_submissions,
   };

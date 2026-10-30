@@ -8,9 +8,9 @@ describe("the icon set", () => {
     expect(readFileSync(iconDataPath, "utf8")).toBe(await renderIconData());
   });
 
-  test("44 icons, each drawn with at least one shape", () => {
+  test("54 icons, each drawn with at least one shape", () => {
     const names = Object.keys(iconData);
-    expect(names).toHaveLength(44);
+    expect(names).toHaveLength(54);
     for (const name of names) {
       expect(
         iconData[name as keyof typeof iconData].length,

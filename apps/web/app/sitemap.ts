@@ -3,6 +3,7 @@ import { locales, localizedPath } from "@repo/internationalization";
 import { documents, journal, programmes } from "@repo/sal-data";
 import type { MetadataRoute } from "next";
 import { seriesPath } from "@/components/series";
+import { pieceHref } from "@/components/waraq/cards";
 import { readPublished } from "@/lib/supabase";
 
 /**
@@ -24,17 +25,16 @@ const staticPaths = [
   "/qirtas/games",
   "/qirtas/games/word",
   "/qirtas/games/search",
-  "/newsletter",
+  "/sunday-paper",
   "/join",
-  "/give",
-  "/contact",
-  "/media-kit",
-  "/privacy",
+  "/about/contact",
+  "/about/press",
+  "/library/privacy",
   "/qirtas/next-stop/care",
   "/events",
   "/library",
-  "/governance",
-  "/partners",
+  "/about/council",
+  "/about/partners",
 ];
 
 // Rebuilt hourly, so a renamed program or a new piece appears without a
@@ -78,7 +78,7 @@ const sitemap = async (): Promise<MetadataRoute.Sitemap> => {
       // Qirtas: every published piece, dated when it came out.
       pieces.flatMap((piece) =>
         localized(
-          `/qirtas/pieces/${piece.slug}`,
+          pieceHref(piece),
           piece.published_at ? new Date(piece.published_at) : undefined
         )
       )

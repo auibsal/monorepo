@@ -7,8 +7,16 @@ import { mediaUrl } from "@/lib/media";
 
 type Card = journal.PieceCard;
 
-export const pieceHref = (piece: { slug: string }) =>
-  `/qirtas/pieces/${piece.slug}`;
+/**
+ * A piece's address: under its section (/qirtas/news/<slug>). Without the
+ * section, the old address, which forwards to it.
+ */
+// Games has its own pages (/qirtas/games/<puzzle>), so a Games piece keeps
+// the old address, which shows it there.
+export const pieceHref = (piece: { desk?: string | null; slug: string }) =>
+  piece.desk && piece.desk !== "games"
+    ? `/qirtas/${piece.desk}/${piece.slug}`
+    : `/qirtas/pieces/${piece.slug}`;
 
 /** The first image of a piece (gallery, photo essay, comic, news photo). */
 export const leadImage = (piece: Card) => {

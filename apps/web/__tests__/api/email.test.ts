@@ -28,7 +28,7 @@ describe("platform email", () => {
     expect(html).toContain("حُجز مكانك");
     expect(html).not.toContain("booked: Charter Day");
     expect(html).toContain("/brand/sal-lockup-horizontal-ar-email.png");
-    expect(html).toContain(`href="${APP}/ar/events/book"`);
+    expect(html).toContain(`href="${APP}/ar/membership/calendar"`);
     const english = await render(Notice(rsvpConfirmed("en", event, APP)));
     expect(english).toContain("Tuesday, October 13 · 6:00 PM");
     expect(english).toContain("Main Hall");
@@ -76,7 +76,7 @@ describe("the newsletter", () => {
 
   test("the Sunday Paper lists pieces, What's on and open places, and ends with the stop link", () => {
     const built = sundayPaper("en", {
-      callboard: "https://auibsal.org/callboard",
+      callboard: "https://auibsal.org/get-involved",
       events: [{ ...event, url: "https://auibsal.org/events/charter-day" }],
       front: "https://auibsal.org/qirtas",
       pieces: [

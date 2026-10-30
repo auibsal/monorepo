@@ -252,7 +252,7 @@ const publishEvent = async (
   }
   await saveLink(ctx, "event", page.id, id, null);
   await ctx.notion.updatePage(page.id, {
-    Nexus: prop.url(`${ctx.appUrl}/admin/events/edit?id=${id}`),
+    Nexus: prop.url(`${ctx.appUrl}/events/${id}`),
     "Nexus ID": prop.text(id),
     "Platform note": prop.text(
       publishedNote(await publisherName(ctx, publisher))
@@ -435,7 +435,7 @@ const importWaraq = async (
   }
   await saveLink(ctx, "piece", page.id, id, null);
   await ctx.notion.updatePage(page.id, {
-    Nexus: prop.url(`${ctx.appUrl}/admin/journal/piece?id=${id}`),
+    Nexus: prop.url(`${ctx.appUrl}/qirtas/pieces/${id}`),
     "Nexus ID": prop.text(id),
     "Platform note": prop.text(
       `In the Qirtas newsroom since ${stamp()}, in Editing: the approvals and publishing happen in the Diwan.`
@@ -527,7 +527,7 @@ const adoptEvents = async (ctx: SyncContext) => {
       // biome-ignore lint/performance/noAwaitInLoops: rate-limited, sequential
       const page = await ctx.notion.createPage(ctx.sources.events, {
         Capacity: prop.number(e.capacity),
-        Nexus: prop.url(`${ctx.appUrl}/admin/events/edit?id=${e.id}`),
+        Nexus: prop.url(`${ctx.appUrl}/events/${e.slug ?? e.id}`),
         "Nexus ID": prop.text(e.id),
         "Platform note": prop.text(ADOPTED_NOTE),
         "Public page": prop.url(

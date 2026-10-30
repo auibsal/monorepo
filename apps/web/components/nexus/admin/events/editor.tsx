@@ -222,10 +222,7 @@ export const EventEditor = () => {
     onSuccess: async (savedId) => {
       await queryClient.invalidateQueries({ queryKey: ["admin"] });
       if (!eventId) {
-        router.replace({
-          pathname: "/events/edit",
-          query: { id: savedId },
-        });
+        router.replace(`/events/${savedId}`);
       }
     },
   });

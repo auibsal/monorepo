@@ -12,7 +12,7 @@ const VALID_FOR_MS = 7 * 24 * 60 * 60 * 1000;
 
 /**
  * The public newsletter, step two: the button on
- * auibsal.org/newsletter/confirm sends the emailed token back. Opening the
+ * auibsal.org/sunday-paper/confirm sends the emailed token back. Opening the
  * link alone confirms nothing, so a mail scanner cannot sign anyone up.
  */
 export const POST = async (request: Request) => {

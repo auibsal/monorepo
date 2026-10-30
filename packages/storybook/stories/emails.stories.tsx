@@ -159,7 +159,7 @@ export const PiecePublished = email((l) =>
 );
 export const SundayPaper = email((l) =>
   sundayPaper(l, {
-    callboard: "https://auibsal.org/callboard",
+    callboard: "https://auibsal.org/get-involved",
     events: [{ ...event, url: "https://auibsal.org/events/sample" }],
     front: "https://auibsal.org/qirtas",
     pieces: [

@@ -6,6 +6,7 @@ import {
   type AdminModule,
   adminModules,
   hasPermissionAnywhere,
+  modulePaths,
 } from "@repo/rbac";
 import { useTranslations } from "next-intl";
 import { type ReactNode, useEffect, useState } from "react";
@@ -15,8 +16,7 @@ import { useGrants } from "@/lib/nexus/queries";
 import { TwoStepPanel, useTwoStep } from "../auth/two-step";
 import { SectionSpinner } from "../states";
 
-const hrefFor = (module: AdminModule) =>
-  module === "overview" ? "/" : `/${module}`;
+const hrefFor = (module: AdminModule) => modulePaths[module];
 
 /** The admin modules the member's grants show (RLS still decides the rows). */
 export const useVisibleModules = () => {
@@ -57,10 +57,16 @@ const ungrouped = adminModules
 // left the Diwan's header, which is now the site's own).
 const ownPages = [{ href: "/declarations", key: "declarations" }] as const;
 
-const isActive = (module: AdminModule, pathname: string) =>
-  module === "overview"
-    ? pathname === "/"
-    : pathname.startsWith(hrefFor(module));
+// Ads sit inside Site (/site/ads), so Site is current everywhere else under it.
+const isActive = (module: AdminModule, pathname: string) => {
+  if (module === "overview") {
+    return pathname === "/";
+  }
+  if (module === "content" && pathname.startsWith(hrefFor("ads"))) {
+    return false;
+  }
+  return pathname.startsWith(hrefFor(module));
+};
 
 /**
  * Section navigation for the administration area: a sidebar on wide

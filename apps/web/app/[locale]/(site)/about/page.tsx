@@ -75,7 +75,7 @@ const AboutPage = async ({ params }: LocaleParams) => {
           <Link className="link" href="/library">
             {t("documents")}
           </Link>
-          <Link className="link" href="/governance">
+          <Link className="link" href="/about/council">
             {t("governance")}
           </Link>
         </p>

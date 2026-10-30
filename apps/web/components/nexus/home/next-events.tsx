@@ -63,7 +63,7 @@ export const NextEvents = () => {
     <Section
       action={
         upcoming.length > 0 ? (
-          <Link className="link type-caption" href="/events/book">
+          <Link className="link type-caption" href="/membership/calendar">
             {t("browse")}
           </Link>
         ) : undefined
@@ -76,7 +76,9 @@ export const NextEvents = () => {
       {rsvps.data &&
       upcoming.length === 0 &&
       (waitlist.data ?? []).length === 0 ? (
-        <EmptyLine action={{ href: "/events/book", label: ta("browseEvents") }}>
+        <EmptyLine
+          action={{ href: "/membership/calendar", label: ta("browseEvents") }}
+        >
           {t("empty")}
         </EmptyLine>
       ) : null}

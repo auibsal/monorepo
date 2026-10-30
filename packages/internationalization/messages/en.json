@@ -49,7 +49,11 @@
       "sidebar": "Sidebar",
       "sidebarDescription": "Displays the mobile sidebar.",
       "toggleSidebar": "Toggle sidebar"
-    }
+    },
+    "youAreHere": "You are here",
+    "keep": "Keep it",
+    "notFoundHere": "This page isn't here. It may have been removed, or the address is wrong.",
+    "backToList": "Back to the list"
   },
   "auth": {
     "signOut": "Sign out",
@@ -644,7 +648,9 @@
         "nextCall": "The next call, {call}, opens {date}.",
         "tellMe": "Tell me when it opens",
         "alertOn": "We'll email you the day a call opens.",
-        "alertOff": "Stop"
+        "alertOff": "Stop",
+        "yourWorkLede": "Everything you have sent to Qirtas, with where each piece stands.",
+        "sendMore": "Write for Qirtas"
       }
     },
     "profile": {
@@ -3957,6 +3963,26 @@
         "link": "Tell us more",
         "line": "Two minutes, optional: the Callboard puts the roles that match your skills first."
       }
+    },
+    "getInvolved": {
+      "title": "Get involved",
+      "lede": "Three ways into the AUIB Society of Arts and Letters: join, give a few hours, or audition for the Company.",
+      "ways": {
+        "join": {
+          "title": "Join the Society",
+          "body": "Membership is free for AUIB students. Sign up with your AUIB address."
+        },
+        "shifts": {
+          "title": "Give a few hours",
+          "body": "Every program needs hands on the night. Members sign up for shifts, and the hours count toward their service record."
+        },
+        "audition": {
+          "title": "Audition for the Company",
+          "body": "The Company casts each production in an audition, open to members."
+        }
+      },
+      "members": "Members see every open role, shift and audition here.",
+      "signIn": "Sign in"
     }
   },
   "web": {

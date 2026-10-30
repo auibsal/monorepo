@@ -139,7 +139,10 @@ export const ConsentBanner = ({ purposes }: ConsentBannerProps) => {
             {t("title")}.
           </span>{" "}
           {body}{" "}
-          <Link className="underline underline-offset-4" href="/privacy">
+          <Link
+            className="underline underline-offset-4"
+            href="/library/privacy"
+          >
             {t("privacy")}
           </Link>
         </p>

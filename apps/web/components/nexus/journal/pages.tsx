@@ -30,7 +30,7 @@ import {
   SaveButton,
   SelectInput,
 } from "../admin/kit";
-import { DiwanSection } from "../page";
+import { DiwanPage, DiwanSection } from "../page";
 import { SectionSpinner } from "../states";
 import {
   attachFile,
@@ -96,10 +96,7 @@ const useMyPieces = () => {
 /** One row of "Your work": an Edition submission or a desk piece. */
 interface Sent {
   date: string;
-  href: {
-    pathname: "/qirtas/submission" | "/qirtas/work";
-    query: { id: string };
-  };
+  href: string;
   id: string;
   process: "desk" | "edition";
   status: string;
@@ -108,18 +105,17 @@ interface Sent {
 }
 
 /**
- * Write for Qirtas: one place for everything sent to the paper. The member
- * picks a type; the type decides the process (edited on a desk, or read
- * blind for an Edition). Below, everything they have sent, either way.
+ * Your work (/membership/work): everything a member has sent to Qirtas,
+ * Edition submissions and newsroom pieces alike, newest first, each with
+ * where it stands and its own page.
  */
-export const JournalHome = () => {
+export const YourWork = () => {
   const t = useTranslations("nexus.journal");
   const tw = useTranslations("nexus.journal.write");
   const tn = useTranslations("nexus.waraq");
   const tp = useTranslations("nexus.admin.waraq");
   const tj = useTranslations("nexus.admin.journal");
   const locale = useLocale() as Locale;
-  const calls = useOpenCalls();
   const submissions = useMySubmissions();
   const pieces = useMyPieces();
 
@@ -127,7 +123,7 @@ export const JournalHome = () => {
     ...(submissions.data ?? []).map(
       (s): Sent => ({
         date: s.created_at,
-        href: { pathname: "/qirtas/submission", query: { id: s.id } },
+        href: `/membership/work/submissions/${s.id}`,
         id: `s-${s.id}`,
         process: "edition",
         status:
@@ -141,7 +137,7 @@ export const JournalHome = () => {
     ...(pieces.data ?? []).map(
       (p): Sent => ({
         date: p.updated_at,
-        href: { pathname: "/qirtas/work", query: { id: p.id } },
+        href: `/membership/work/${p.id}`,
         id: `p-${p.id}`,
         process: "desk",
         status: tp(`statuses.${p.status as journal.PieceStatus}`),
@@ -179,11 +175,54 @@ export const JournalHome = () => {
     },
   ];
 
+  return (
+    <DiwanPage
+      actions={
+        <Link className="link" href="/qirtas/write">
+          {tw("sendMore")}
+        </Link>
+      }
+      lede={tw("yourWorkLede")}
+      title={tw("yourWork")}
+    >
+      {submissions.data && pieces.data ? (
+        <DataTable
+          columns={columns}
+          empty={t("noSubmissions")}
+          rowKey={(row) => row.id}
+          rows={sent}
+        />
+      ) : (
+        <SectionSpinner />
+      )}
+    </DiwanPage>
+  );
+};
+
+/**
+ * Write for Qirtas: one place for everything sent to the paper. The member
+ * picks a type; the type decides the process (edited on a desk, or read
+ * blind for an Edition). What they have sent is under Your work.
+ */
+export const JournalHome = () => {
+  const t = useTranslations("nexus.journal");
+  const tw = useTranslations("nexus.journal.write");
+  const locale = useLocale() as Locale;
+  const calls = useOpenCalls();
   const openCalls = calls.data ?? [];
 
   return (
     <div className="grid gap-8">
-      <AdminHeading title={t("title")}>{tw("lede")}</AdminHeading>
+      <AdminHeading
+        actions={
+          <Link className="link" href="/membership/work">
+            {tw("yourWork")}
+          </Link>
+        }
+        title={t("title")}
+      >
+        {tw("lede")}
+      </AdminHeading>
       <DiwanSection id="newsroom" title={tw("newsroomTitle")}>
         <p className="max-w-3xl text-text-secondary">{tw("newsroomLede")}</p>
         <DeskList desks={journal.newsroomDesks} />
@@ -204,18 +243,6 @@ export const JournalHome = () => {
           <DeskList desks={journal.editionDesks} />
         ) : (
           <NextCall />
-        )}
-      </DiwanSection>
-      <DiwanSection id="mine" title={tw("yourWork")}>
-        {submissions.data && pieces.data ? (
-          <DataTable
-            columns={columns}
-            empty={t("noSubmissions")}
-            rowKey={(row) => row.id}
-            rows={sent}
-          />
-        ) : (
-          <SectionSpinner />
         )}
       </DiwanSection>
     </div>
@@ -466,7 +493,7 @@ export const SubmitWork = () => {
     onSuccess: async (id) => {
       await invalidate();
       if (id) {
-        router.push({ pathname: "/qirtas/submission", query: { id } });
+        router.push(`/membership/work/submissions/${id}`);
       }
     },
   });
@@ -570,10 +597,7 @@ export const SubmitWork = () => {
               {t("filesFailed")}{" "}
               <Link
                 className="link"
-                href={{
-                  pathname: "/qirtas/submission",
-                  query: { id: partial },
-                }}
+                href={`/membership/work/submissions/${partial}`}
               >
                 {t("openSubmission")}
               </Link>
@@ -607,10 +631,7 @@ const PieceLink = ({ submissionId }: { submissionId: string }) => {
     return null;
   }
   return (
-    <Link
-      className={buttonLink}
-      href={{ pathname: "/qirtas/work", query: { id: piece.data.id } }}
-    >
+    <Link className={buttonLink} href={`/membership/work/${piece.data.id}`}>
       {t("openYourPiece")}
     </Link>
   );

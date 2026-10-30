@@ -1,0 +1,208 @@
+import type { Locale } from "@repo/internationalization";
+import { localizedPath } from "@repo/internationalization";
+import { formatNumber } from "@repo/internationalization/format";
+import { Link } from "@repo/internationalization/navigation";
+import { journal, localized } from "@repo/sal-data";
+import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
+import { WaraqAd } from "@/components/waraq/ad";
+import {
+  Byline,
+  leadImage,
+  PieceColumn,
+  pieceHref,
+} from "@/components/waraq/cards";
+import { CorrectionNotes, PieceBody, texts } from "@/components/waraq/layouts";
+import { Nameplate } from "@/components/waraq/nameplate";
+import { articleLd, JsonLd } from "@/lib/json-ld";
+import { localizedMetadata } from "@/lib/metadata";
+import { readPublished } from "@/lib/supabase";
+
+const SLUG = /^[a-z0-9]+(-[a-z0-9]+)*$/;
+type Piece = Awaited<ReturnType<typeof journal.waraqPiece>>;
+
+/** A published piece by its slug, or null. */
+export const loadPiece = (slug: string): Promise<Piece> =>
+  SLUG.test(slug)
+    ? readPublished(["journal"], (c) => journal.waraqPiece(c, slug), null)
+    : Promise.resolve(null);
+
+export const pieceMetadata = async (
+  locale: Locale,
+  slug: string
+): Promise<Metadata> => {
+  const piece = await loadPiece(slug);
+  if (!piece) {
+    return {};
+  }
+  return localizedMetadata(locale, pieceHref(piece), {
+    description:
+      localized(piece, "deck", locale) ||
+      (piece.contributor ? localized(piece.contributor, "name", locale) : ""),
+    image: leadImage(piece)?.url ?? undefined,
+    title: localized(piece, "title", locale),
+  });
+};
+
+/**
+ * A published piece (/qirtas/<section>/<slug>): the masthead, the title and
+ * its facts, the text, corrections, an ad for visitors, and more from the
+ * section.
+ */
+export const PieceArticle = async ({
+  locale,
+  piece,
+}: {
+  locale: Locale;
+  piece: NonNullable<Piece>;
+}) => {
+  const t = await getTranslations({ locale, namespace: "web.journal" });
+  const desk = piece.desk as journal.Desk;
+  const category = piece.category as journal.Category;
+  const deck = localized(piece, "deck", locale);
+  const credit = localized(piece, "credit", locale);
+  const words = texts(piece).reduce(
+    (sum, text) => sum + journal.wordCount(text.html),
+    0
+  );
+  const proseTypes: journal.Category[] = [
+    ...journal.sectionTypes.news,
+    ...journal.sectionTypes.voices,
+    "fiction",
+    "creative_nonfiction",
+    "translation",
+  ];
+  const related = journal
+    .inLanguage(
+      await readPublished(
+        ["journal"],
+        (c) => journal.deskPieces(c, desk, { limit: 4 }),
+        []
+      ),
+      locale
+    )
+    .filter((p) => p.id !== piece.id)
+    .slice(0, 3);
+  const issue = piece.issue as {
+    slug: string;
+    title_ar: string;
+    title_en: string;
+  } | null;
+  const lockedText = piece.members_only && texts(piece).length === 0;
+
+  return (
+    <div className="grid w-full gap-10 py-10">
+      <div className="mx-auto w-full max-w-6xl px-4">
+        <Nameplate current={desk} locale={locale} small />
+      </div>
+      <article className="grid gap-8">
+        <JsonLd
+          data={articleLd(locale, {
+            author: piece.contributor
+              ? localized(piece.contributor, "name", locale)
+              : null,
+            image: leadImage(piece)?.url,
+            path: pieceHref(piece),
+            publishedAt: piece.published_at,
+            title: localized(piece, "title", locale),
+          })}
+        />
+        <header
+          className={
+            category === "poetry" || category === "six_words"
+              ? "mx-auto grid w-full max-w-2xl justify-items-center gap-3 px-4 text-center"
+              : "mx-auto grid w-full max-w-3xl gap-3 px-4"
+          }
+        >
+          <h1 className="type-display text-balance">
+            {localized(piece, "title", locale)}
+          </h1>
+          <p className="type-caption">
+            <Link
+              className="text-accent hover:underline"
+              href={`/qirtas/${desk}`}
+            >
+              {t(`desks.${desk}`)}
+            </Link>
+            {` · ${t(`categories.${category}`)}`}
+            {issue ? (
+              <>
+                {" · "}
+                <Link
+                  className="hover:underline"
+                  href={`/qirtas/editions/${issue.slug}`}
+                >
+                  {localized(issue, "title", locale)}
+                </Link>
+              </>
+            ) : null}
+          </p>
+          {deck ? (
+            <p className="type-lede max-w-[44ch] text-text-secondary">{deck}</p>
+          ) : null}
+          <Byline locale={locale} piece={piece} />
+          {piece.credits.length > 0 ? (
+            <p className="type-caption">
+              {piece.credits
+                .map(
+                  (c) =>
+                    `${t(`roles.${c.role as "reporter"}`)}: ${
+                      c.contributor
+                        ? localized(c.contributor, "name", locale)
+                        : ""
+                    }`
+                )
+                .join(" · ")}
+            </p>
+          ) : null}
+          {credit ? <p className="type-caption">{credit}</p> : null}
+          {proseTypes.includes(category) && words > 0 ? (
+            <p className="type-caption">
+              {t("readingTime", {
+                minutes: formatNumber(
+                  journal.readingMinutes(
+                    texts(piece)
+                      .map((x) => x.html)
+                      .join(" ")
+                  ),
+                  locale
+                ),
+              })}
+            </p>
+          ) : null}
+        </header>
+        {lockedText ? (
+          <div className="mx-auto grid w-full max-w-3xl gap-3 border-line border-t px-4 pt-6">
+            <p className="type-body">{t("membersOnlyBody")}</p>
+            <a
+              className="inline-flex h-12 items-center justify-self-start bg-accent px-6 font-medium text-[0.9375rem] text-on-accent hover:bg-accent/90"
+              href={localizedPath(locale, `/qirtas/read/${piece.slug}`)}
+            >
+              {t("readInNexus")}
+            </a>
+          </div>
+        ) : (
+          <PieceBody locale={locale} piece={piece} />
+        )}
+        <CorrectionNotes locale={locale} piece={piece} />
+        <p className="type-caption mx-auto w-full max-w-3xl px-4">
+          {t("firstPublished")}
+        </p>
+      </article>
+      <div className="mx-auto w-full max-w-3xl px-4">
+        <WaraqAd locale={locale} page={pieceHref(piece)} slot={0} />
+      </div>
+      {related.length > 0 ? (
+        <aside
+          aria-labelledby="related"
+          className="mx-auto grid w-full max-w-3xl gap-4 px-4"
+        >
+          <h2 className="type-heading" id="related">
+            {t("moreFrom", { desk: t(`desks.${desk}`) })}
+          </h2>
+          <PieceColumn locale={locale} pieces={related} />
+        </aside>
+      ) : null}
+    </div>
+  );
+};

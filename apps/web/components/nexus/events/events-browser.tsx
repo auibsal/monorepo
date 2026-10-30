@@ -241,7 +241,7 @@ export const EventsBrowser = () => {
       {upcoming.data.length === 0 ? (
         <EmptyLine
           action={{
-            href: "/events/book#calendar",
+            href: "/membership/calendar",
             label: ta("subscribeCalendar"),
           }}
         >

@@ -59,7 +59,7 @@ const eventLines = (e: EventInfo, l: Lang) =>
   [when(e.starts_at, l), venue(e, l)].filter((x): x is string => Boolean(x));
 
 /** Tickets and bookings live on My calendar. */
-const MY_CALENDAR = "/events/book";
+const MY_CALENDAR = "/membership/calendar";
 
 export const rsvpConfirmed = (lang: Lang, e: EventInfo, app: string) =>
   build(lang, (l) => ({
@@ -268,7 +268,7 @@ export const callOpened = (lang: Lang, call: CallInfo, app: string) =>
     ],
   }));
 
-const piecePath = (pieceId: string) => `/qirtas/work?id=${pieceId}`;
+const piecePath = (pieceId: string) => `/membership/work/${pieceId}`;
 
 /** Final check (72 hours): errors only, not new revisions. */
 export const finalCheck = (

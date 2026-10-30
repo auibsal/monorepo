@@ -48,6 +48,18 @@ The Society's icon set: Lucide (ISC license, lucide.dev), redrawn for the brand 
 | `icon-layout-grid.svg` | Programs | The Society |
 | `icon-user-plus.svg` | Join | The Society |
 | `icon-hand-helping.svg` | Get involved | The Society |
+| `icon-plus.svg` | Add, new | Interface |
+| `icon-pencil.svg` | Edit | Interface |
+| `icon-trash-2.svg` | Remove (always with the word) | Interface |
+| `icon-ellipsis.svg` | More actions | Interface |
+| `icon-sliders-horizontal.svg` | Filters | Interface |
+| `icon-settings.svg` | Settings | Interface |
+| `icon-lock.svg` | Members only | Interface |
+| `icon-scan-line.svg` | The Door, scan a card | The Society |
+| `icon-id-card.svg` | Membership card | The Society |
+| `icon-award.svg` | Prizes, certificates | The Society |
+
+**Added Oct 30, 2026** (the platform overhaul, approved by the owner; for the Director of Media to confirm): plus, pencil, trash-2, ellipsis, sliders-horizontal, settings, lock, scan-line, id-card, award.
 
 **Adding one:** take it from Lucide, set `stroke-width` to 1.5, `stroke-linecap` to square and `stroke-linejoin` to miter, remove corner radii, and give it one meaning in this table. The Director of Media approves additions.
 

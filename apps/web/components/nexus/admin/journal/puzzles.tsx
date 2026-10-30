@@ -177,10 +177,7 @@ export const Puzzles = () => {
   const columns: Column<Row>[] = [
     {
       cell: (p) => (
-        <Link
-          className="link"
-          href={{ pathname: "/journal/puzzle", query: { id: p.id } }}
-        >
+        <Link className="link" href={`/qirtas/games/${p.id}`}>
           {localized(p, "title", locale) || t("untitled")}
         </Link>
       ),
@@ -209,7 +206,7 @@ export const Puzzles = () => {
   return (
     <div className="grid gap-4">
       <p className="type-caption">{t("lede")}</p>
-      <Link className={buttonLink} href="/journal/puzzle">
+      <Link className={buttonLink} href="/qirtas/games/new">
         {t("new")}
       </Link>
       {puzzles.data ? (
@@ -330,7 +327,7 @@ const PuzzleForm = ({ initial }: { initial: Draft }) => {
       setSaved(true);
       await queryClient.invalidateQueries({ queryKey: key });
       if (!draft.id) {
-        router.replace({ pathname: "/journal/puzzle", query: { id } });
+        router.replace(`/qirtas/games/${id}`);
       }
     },
   });
@@ -349,7 +346,7 @@ const PuzzleForm = ({ initial }: { initial: Draft }) => {
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: key });
-      router.push("/journal");
+      router.push("/qirtas");
     },
   });
 
@@ -624,7 +621,7 @@ export const PuzzleEditor = () => {
   }, [id, record.data]);
 
   const back = (
-    <Link className="text-sm underline underline-offset-4" href="/journal">
+    <Link className="text-sm underline underline-offset-4" href="/qirtas">
       {tk("back")}
     </Link>
   );

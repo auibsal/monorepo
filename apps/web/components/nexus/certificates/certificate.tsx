@@ -11,10 +11,10 @@ import {
 } from "@repo/internationalization/format";
 import { localized, recognition, unwrap } from "@repo/sal-data";
 import { useQuery } from "@tanstack/react-query";
-import { useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import QRCode from "react-qr-code";
 import { Guilloche, seedFromText } from "@/components/guilloche";
+import { useQueryParam } from "@/lib/nexus/use-query-param";
 import { EmptyLine, ErrorState, SectionSpinner } from "../states";
 
 /**
@@ -67,7 +67,7 @@ export const Certificate = () => {
   const t = useTranslations("nexus.certificate");
   const locale = useLocale();
   const { supabase } = useAuth();
-  const id = useSearchParams().get("id") ?? "";
+  const id = useQueryParam("id") ?? "";
 
   const certificate = useQuery({
     enabled: Boolean(id),
@@ -120,7 +120,7 @@ export const Certificate = () => {
 
   if (!id) {
     return (
-      <EmptyLine action={{ href: "/membership/service", label: t("back") }}>
+      <EmptyLine action={{ href: "/membership/record", label: t("back") }}>
         {t("missing")}
       </EmptyLine>
     );
@@ -133,7 +133,7 @@ export const Certificate = () => {
   }
   if (!certificate.data) {
     return (
-      <EmptyLine action={{ href: "/membership/service", label: t("back") }}>
+      <EmptyLine action={{ href: "/membership/record", label: t("back") }}>
         {t("missing")}
       </EmptyLine>
     );

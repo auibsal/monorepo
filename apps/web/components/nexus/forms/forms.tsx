@@ -148,7 +148,7 @@ export const SentList = ({ limit }: { readonly limit?: number }) => {
                     pathname: "/membership/requests/new",
                     query: { form: s.form_key, id: s.id },
                   }
-                : { pathname: "/membership/requests/view", query: { id: s.id } }
+                : `/membership/requests/${s.id}`
             }
           >
             <FormTitle formKey={s.form_key} />

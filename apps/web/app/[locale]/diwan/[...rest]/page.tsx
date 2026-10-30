@@ -9,15 +9,13 @@ interface CatchAllProps {
 // Their old addresses, in emails already sent and in the sign-in emails,
 // forward to the new ones.
 const MOVED: Record<string, string> = {
-  certificate: "/membership/certificate",
+  certificate: "/membership/record",
   forms: "/membership/requests",
   "forms/fill": "/membership/requests/new",
-  "forms/view": "/membership/requests/view",
+  "forms/view": "/membership/requests",
   offers: "/membership",
-  profile: "/membership/profile",
-  qirtas: "/qirtas/write",
-  service: "/membership/service",
-  society: "/society",
+  profile: "/membership/settings/profile",
+  society: "/membership/society",
 };
 const SAME =
   /^(auth\/(callback|confirm|reset)|oauth\/consent|sign-in|sign-up|forgot-password|setup|continue|qirtas\/(submit|submission|work|piece))$/;

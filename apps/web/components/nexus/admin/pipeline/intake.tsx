@@ -66,10 +66,7 @@ export const IntakeQueue = ({ issueId }: { issueId: string }) => {
       cell: (s) => (
         <Link
           className="font-medium underline underline-offset-4"
-          href={{
-            pathname: "/journal/submission",
-            query: { id: s.submission_id },
-          }}
+          href={`/qirtas/submissions/${s.submission_id}`}
         >
           {s.title}
         </Link>
@@ -383,7 +380,7 @@ export const SubmissionView = () => {
   const back = (
     <Link
       className="text-sm underline underline-offset-4"
-      href={{ pathname: "/journal", query: { tab: "review" } }}
+      href={"/qirtas?tab=review"}
     >
       {tk("back")}
     </Link>

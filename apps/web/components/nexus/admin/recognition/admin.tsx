@@ -581,14 +581,7 @@ const Certificates = () => {
     return (
       <div className="flex flex-wrap gap-2">
         <Button asChild size="sm" variant="outline">
-          <SiteLink
-            href={{
-              pathname: "/membership/certificate",
-              query: { id: row.id },
-            }}
-          >
-            {t("open")}
-          </SiteLink>
+          <SiteLink href={`/membership/record/${row.id}`}>{t("open")}</SiteLink>
         </Button>
         {mySignatureDue(row) ? (
           <Button

@@ -31,7 +31,7 @@ test.describe("public site", () => {
     const book = page.getByRole("link", { name: /rsvp|book/i }).first();
     await expect(book).toHaveAttribute(
       "href",
-      new RegExp(`/events/book#${event.slug}$`)
+      new RegExp(`/membership/calendar#${event.slug}$`)
     );
     const ld = await page
       .locator('script[type="application/ld+json"]')

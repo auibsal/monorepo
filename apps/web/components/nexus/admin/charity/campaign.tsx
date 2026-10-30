@@ -128,10 +128,7 @@ const CampaignSettings = ({ campaignId }: { campaignId: string | null }) => {
     onSuccess: async (savedId) => {
       await queryClient.invalidateQueries({ queryKey: ["admin"] });
       if (!campaignId) {
-        router.replace({
-          pathname: "/charity/campaign",
-          query: { id: savedId },
-        });
+        router.replace(`/second-chapter/${savedId}`);
       }
     },
   });
@@ -1246,7 +1243,10 @@ export const CampaignAdmin = () => {
   });
 
   const back = (
-    <Link className="text-sm underline underline-offset-4" href="/charity">
+    <Link
+      className="text-sm underline underline-offset-4"
+      href="/second-chapter"
+    >
       {tk("back")}
     </Link>
   );

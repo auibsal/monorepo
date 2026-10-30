@@ -61,7 +61,7 @@ const useContributors = () => {
 };
 
 const back = (label: string) => (
-  <Link className="text-sm underline underline-offset-4" href="/journal">
+  <Link className="text-sm underline underline-offset-4" href="/qirtas">
     {label}
   </Link>
 );
@@ -116,7 +116,7 @@ const NewPiece = () => {
       ),
     onSuccess: (id) => {
       if (id) {
-        router.replace({ pathname: "/journal/piece", query: { id } });
+        router.replace(`/qirtas/pieces/${id}`);
       }
     },
   });

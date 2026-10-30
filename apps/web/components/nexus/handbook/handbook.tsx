@@ -35,7 +35,11 @@ export const Handbook = () => {
     return (
       <DiwanPage narrow title={t("title")}>
         <EmptyLine
-          action={{ href: "/society", label: t("seeSociety"), site: true }}
+          action={{
+            href: "/membership/society",
+            label: t("seeSociety"),
+            site: true,
+          }}
         >
           {t("forOfficers")}
         </EmptyLine>

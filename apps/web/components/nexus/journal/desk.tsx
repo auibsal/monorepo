@@ -99,7 +99,7 @@ export const SendToDesk = ({
       await queryClient.invalidateQueries({
         queryKey: queryKeys.submissions(user?.id ?? ""),
       });
-      router.push({ pathname: "/qirtas/submission", query: { id } });
+      router.push(`/membership/work/submissions/${id}`);
     },
   });
 

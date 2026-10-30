@@ -69,7 +69,7 @@ export const VotingEligibility = () => {
           </table>
         ) : (
           <EmptyLine
-            action={{ href: "/events/book", label: ta("browseEvents") }}
+            action={{ href: "/membership/calendar", label: ta("browseEvents") }}
           >
             {t("noHistory")}
           </EmptyLine>

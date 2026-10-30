@@ -5,7 +5,7 @@ import { expectAccessible, signInWithPassword } from "./helpers";
 
 test("a member books a place and gives it back", async ({ page }) => {
   await signInWithPassword(page, member.email);
-  await page.goto(`${urls.web}/events/book`);
+  await page.goto(`${urls.web}/membership/calendar`);
   const card = page.locator(`li#${event.slug}`);
   await expect(card).toBeVisible();
   await expectAccessible(page);

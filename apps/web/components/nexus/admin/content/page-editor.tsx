@@ -104,10 +104,7 @@ export const PageEditor = () => {
     onSuccess: async (savedId) => {
       await queryClient.invalidateQueries({ queryKey: ["admin"] });
       if (!pageId) {
-        router.replace({
-          pathname: "/content/page",
-          query: { id: savedId },
-        });
+        router.replace(`/site/pages/${savedId}`);
       }
     },
   });
@@ -123,7 +120,7 @@ export const PageEditor = () => {
       ),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["admin"] });
-      router.replace("/content");
+      router.replace("/site");
     },
   });
 
@@ -146,10 +143,7 @@ export const PageEditor = () => {
     <div className="grid gap-8">
       <AdminHeading
         actions={
-          <Link
-            className="text-sm underline underline-offset-4"
-            href="/content"
-          >
+          <Link className="text-sm underline underline-offset-4" href="/site">
             {tk("back")}
           </Link>
         }

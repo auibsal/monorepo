@@ -8,9 +8,9 @@ import { formatLongDate } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
 import { forms, unwrap } from "@repo/sal-data";
 import { useQuery } from "@tanstack/react-query";
-import { useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import type { ReactNode } from "react";
+import { useQueryParam } from "@/lib/nexus/use-query-param";
 import { useMemberNames } from "../admin/member-picker";
 import { memberName } from "../admin/members/directory";
 import { EmptyLine, SectionSpinner } from "../states";
@@ -123,7 +123,7 @@ export const SubmissionSheet = ({
 export const ViewForm = () => {
   const t = useTranslations("nexus.forms");
   const { supabase } = useAuth();
-  const id = useSearchParams().get("id") ?? "";
+  const id = useQueryParam("id") ?? "";
   const types = useFormTypes();
   const submission = useQuery({
     enabled: Boolean(id),

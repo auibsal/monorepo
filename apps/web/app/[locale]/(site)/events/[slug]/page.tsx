@@ -8,6 +8,7 @@ import { events, localized, sanitizeRichText } from "@repo/sal-data";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { SecondChapterGive } from "@/components/second-chapter-give";
 import { loadSeries, SeriesView, seriesMetadata } from "@/components/series";
 import { eventLd, JsonLd } from "@/lib/json-ld";
 import { mediaUrl } from "@/lib/media";
@@ -62,7 +63,13 @@ const EventPage = async ({ params, searchParams }: EventProps) => {
   const series = await loadSeries(slug);
   if (series) {
     const { month } = await searchParams;
-    return <SeriesView locale={locale} month={month} series={series} />;
+    return (
+      <SeriesView locale={locale} month={month} series={series}>
+        {series.slug === "second-chapter" ? (
+          <SecondChapterGive locale={locale} />
+        ) : null}
+      </SeriesView>
+    );
   }
   const event = await load(slug);
   if (!event) {
@@ -142,7 +149,9 @@ const EventPage = async ({ params, searchParams }: EventProps) => {
       {cancelled || !upcoming ? null : (
         <div className="flex flex-wrap gap-3">
           <Button asChild>
-            <a href={`${localizedPath(locale, "/events/book")}#${event.slug}`}>
+            <a
+              href={`${localizedPath(locale, "/membership/calendar")}#${event.slug}`}
+            >
               {event.entry === "open" ? t("remind") : t("rsvp")}
             </a>
           </Button>
