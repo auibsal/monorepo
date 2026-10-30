@@ -42,7 +42,7 @@ test.describe("Qirtas games", () => {
   test("a starter crossword takes letters and says it was made with an AI tool", async ({
     page,
   }) => {
-    await page.goto(`${urls.web}/qirtas/puzzles/first-crossword`);
+    await page.goto(`${urls.web}/qirtas/games/first-crossword`);
     await expect(page.getByText(/Made with an AI tool/)).toBeVisible();
     const square = page.getByRole("textbox").first();
     await square.click();

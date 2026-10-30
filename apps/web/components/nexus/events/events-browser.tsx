@@ -22,6 +22,7 @@ import { events, localized, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useEffect, useState } from "react";
+import { InlineConfirm } from "@/components/frame/inline-confirm";
 import { queryKeys, useMyRsvps, useMyWaitlist } from "@/lib/nexus/queries";
 import { CalendarFeed } from "../home/calendar-feed";
 import { DiwanPage } from "../page";
@@ -433,9 +434,15 @@ const EventCard = ({
             </Button>
           ) : null}
           {holding ? (
-            <Button disabled={busy} onClick={onCancel} variant="ghost">
-              {state === "booked" ? t("cancel") : t("leaveWaitlist")}
-            </Button>
+            <InlineConfirm
+              confirm={state === "booked" ? t("cancel") : t("leaveWaitlist")}
+              disabled={busy}
+              label={state === "booked" ? t("cancel") : t("leaveWaitlist")}
+              onConfirm={onCancel}
+              question={
+                state === "booked" ? t("cancelAsk") : t("leaveWaitlistAsk")
+              }
+            />
           ) : null}
         </div>
         {notice ? <NoticeLine notice={notice} /> : null}

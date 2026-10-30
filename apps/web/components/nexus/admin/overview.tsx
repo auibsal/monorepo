@@ -2,16 +2,19 @@
 
 import { useAuth } from "@repo/auth/provider";
 import { SalCard } from "@repo/design-system/components/sal/card";
+import { Icon, type IconName } from "@repo/design-system/components/sal/icon";
 import type { Locale } from "@repo/internationalization";
 import {
   formatIqd,
   formatLongDate,
   formatNumber,
 } from "@repo/internationalization/format";
+import { hasPermissionAnywhere, type Permission } from "@repo/rbac";
 import { localized, unwrap } from "@repo/sal-data";
 import { useQuery } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/lib/nexus/navigation";
+import { useGrants } from "@/lib/nexus/queries";
 import { RecoveryCodes } from "../auth/recovery-codes";
 import { StartLinks } from "../forms/forms";
 import { DiwanSection } from "../page";
@@ -178,6 +181,64 @@ const buildFigures = (o: Overview, t: T, locale: Locale) =>
     submissionsFigure(o, t, locale),
   ].filter((figure): figure is FigureProps => figure !== null);
 
+// The Desk's quick actions (the overview, Oct 30, 2026): the first three
+// the officer's grants allow, as text links beside the title.
+const QUICK: readonly {
+  readonly href: string;
+  readonly icon: IconName;
+  readonly key: "door" | "event" | "piece" | "verify" | "requests";
+  readonly permission: Permission;
+}[] = [
+  {
+    href: "/events/door",
+    icon: "scan-line",
+    key: "door",
+    permission: "events.checkin",
+  },
+  {
+    href: "/events/new",
+    icon: "plus",
+    key: "event",
+    permission: "events.manage",
+  },
+  {
+    href: "/qirtas/pieces/new",
+    icon: "pencil",
+    key: "piece",
+    permission: "journal.manage",
+  },
+  {
+    href: "/members/verification",
+    icon: "id-card",
+    key: "verify",
+    permission: "members.verify",
+  },
+  {
+    href: "/requests",
+    icon: "ellipsis",
+    key: "requests",
+    permission: "members.manage",
+  },
+];
+
+const QuickActions = () => {
+  const t = useTranslations("nexus.admin.overview.quick");
+  const grants = useGrants();
+  const actions = QUICK.filter((action) =>
+    hasPermissionAnywhere(grants.data, action.permission)
+  ).slice(0, 3);
+  return actions.map((action) => (
+    <Link
+      className="inline-flex items-center gap-1.5 font-medium text-sm hover:text-accent"
+      href={action.href}
+      key={action.key}
+    >
+      <Icon name={action.icon} />
+      {t(action.key)}
+    </Link>
+  ));
+};
+
 export const AdminOverview = () => {
   const t = useTranslations("nexus.admin.overview");
   const locale = useLocale() as Locale;
@@ -201,7 +262,7 @@ export const AdminOverview = () => {
 
   return (
     <div className="grid gap-14">
-      <AdminHeading title={t("title")} />
+      <AdminHeading actions={<QuickActions />} title={t("title")} />
       <RecoveryCodes />
       {figures.length === 0 && !o.campaigns ? (
         <p className="type-body text-text-secondary">{t("nothing")}</p>

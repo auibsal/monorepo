@@ -133,7 +133,7 @@ Leave `NEXT_PUBLIC_GA_ID` empty: GA4 lives in the GTM container.
    visit appears within a minute.
 4. GTM's **Preview** (Tag Assistant) shows consent `analytics_storage`
    changing from denied to granted.
-5. The privacy page (auibsal.org/privacy, Platform section) now says the site
+5. The privacy page (auibsal.org/library/privacy, Platform section) now says the site
    uses GA4 through GTM and sets cookies only with consent.
 
 ## Events

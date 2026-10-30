@@ -29,22 +29,20 @@ export const useVisibleModules = () => {
   return { grants, visible };
 };
 
-// The sections in five groups, so the list reads as a map rather than a
-// wall of links. Modules not listed here fall into the last group.
-type Group = "work" | "people" | "publishing" | "society" | "system";
+// Six groups (the Society's threes, owner, Oct 30, 2026): five of sections
+// under the Desk, then "For your role". Modules not listed here fall into
+// the fifth.
+type Group = "whatsOn" | "publishing" | "people" | "society" | "office";
 
 const groups: { key: Group; modules: AdminModule[] }[] = [
   {
-    key: "work",
-    modules: ["events", "programs", "productions", "journal"],
+    key: "whatsOn",
+    modules: ["events", "programs", "productions", "charity"],
   },
-  {
-    key: "people",
-    modules: ["members", "hiring", "recognition", "partners"],
-  },
-  { key: "publishing", modules: ["content", "ads", "charity"] },
-  { key: "society", modules: ["governance", "library", "forms"] },
-  { key: "system", modules: ["activity", "settings"] },
+  { key: "publishing", modules: ["journal", "content", "ads"] },
+  { key: "people", modules: ["members", "hiring", "recognition"] },
+  { key: "society", modules: ["governance", "library", "partners"] },
+  { key: "office", modules: ["forms", "activity", "settings"] },
 ];
 
 const ungrouped = adminModules

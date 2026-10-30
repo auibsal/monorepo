@@ -1,11 +1,14 @@
 "use client";
 
 import { useAuth } from "@repo/auth/provider";
+import { adminModules, modulePaths } from "@repo/rbac";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import type { ReactNode } from "react";
+import { PathLine } from "@/components/frame/path-line";
+import { SkeletonRows } from "@/components/frame/skeleton";
 import { RouteParams } from "@/lib/nexus/use-query-param";
-import { EmptyLine, SectionSpinner } from "./states";
+import { EmptyLine } from "./states";
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
@@ -15,6 +18,28 @@ interface Lookup {
   readonly schema: string;
   readonly table: string;
 }
+
+/** The Diwan section a list address belongs to: /qirtas?tab=games → Qirtas. */
+const sectionOf = (back: string) => {
+  const path = back.split("?")[0] ?? back;
+  return adminModules
+    .map((module) => module.key)
+    .filter((key) => key !== "overview")
+    .sort((a, b) => modulePaths[b].length - modulePaths[a].length)
+    .find(
+      (key) =>
+        path === modulePaths[key] || path.startsWith(`${modulePaths[key]}/`)
+    );
+};
+
+/** Where the record sits, above its page: its section, as a link back. */
+const Where = ({ back }: { readonly back: string }) => {
+  const t = useTranslations("nexus.admin.nav");
+  const section = sectionOf(back);
+  return section ? (
+    <PathLine items={[{ href: back, label: t(section) }]} />
+  ) : null;
+};
 
 /**
  * A page addressed by a readable name (/diwan/events/salon-2026-12-01):
@@ -57,12 +82,15 @@ export const RecordRef = ({
   if (direct) {
     return (
       <RouteParams.Provider value={{ id: value }}>
-        {children}
+        <div className="grid gap-4">
+          <Where back={back} />
+          {children}
+        </div>
       </RouteParams.Provider>
     );
   }
   if (found.isPending) {
-    return <SectionSpinner />;
+    return <SkeletonRows />;
   }
   if (!found.data) {
     return (
@@ -73,7 +101,10 @@ export const RecordRef = ({
   }
   return (
     <RouteParams.Provider value={{ id: found.data }}>
-      {children}
+      <div className="grid gap-4">
+        <Where back={back} />
+        {children}
+      </div>
     </RouteParams.Provider>
   );
 };

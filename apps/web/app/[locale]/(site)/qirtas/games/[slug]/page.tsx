@@ -27,7 +27,7 @@ export const generateMetadata = async ({
     return {};
   }
   const t = await getTranslations({ locale, namespace: "web.games" });
-  return localizedMetadata(locale, `/qirtas/puzzles/${slug}`, {
+  return localizedMetadata(locale, `/qirtas/games/${slug}`, {
     description: t(`kinds.${puzzle.kind}`),
     title: `${localized(puzzle, "title", locale)} · ${t("title")}`,
   });

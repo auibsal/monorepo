@@ -3,12 +3,6 @@
 import { useAuth } from "@repo/auth/provider";
 import { Button } from "@repo/design-system/components/ui/button";
 import { Input } from "@repo/design-system/components/ui/input";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@repo/design-system/components/ui/tabs";
 import { Textarea } from "@repo/design-system/components/ui/textarea";
 import type { Locale } from "@repo/internationalization";
 import {
@@ -21,6 +15,7 @@ import { journal, localized, sanitizeRichText, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
+import { TabLinks } from "@/components/frame/tab-links";
 import { Link } from "@/lib/nexus/navigation";
 import { useGrants } from "@/lib/nexus/queries";
 import { useQueryParam } from "@/lib/nexus/use-query-param";
@@ -861,20 +856,15 @@ export const JournalAdmin = () => {
   return (
     <div className="grid gap-6">
       <AdminHeading title={t("title")}>{t("lede")}</AdminHeading>
-      <Tabs defaultValue={first}>
-        <TabsList className="flex-wrap">
-          {tabs.map((tab) => (
-            <TabsTrigger key={tab} value={tab}>
-              {t(`tabs.${tab}`)}
-            </TabsTrigger>
-          ))}
-        </TabsList>
-        {tabs.map((tab) => (
-          <TabsContent className="pt-4" key={tab} value={tab}>
-            <JournalTab tab={tab} />
-          </TabsContent>
-        ))}
-      </Tabs>
+      {/* Each view has its own address (?tab=), so it can be shared. */}
+      <TabLinks
+        label={t("title")}
+        pathname="/qirtas"
+        tabs={tabs.map((tab) => ({ key: tab, label: t(`tabs.${tab}`) }))}
+      />
+      <div className="pt-4">
+        <JournalTab key={first} tab={first} />
+      </div>
     </div>
   );
 };

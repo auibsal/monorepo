@@ -56,9 +56,12 @@ const useGreeting = () => {
 };
 
 /**
- * Today, mobile-first: the card, what to do next (notices only when there
- * are some), what the member has sent, and the Register. Voting
- * eligibility is on the Society page; the calendar feed on My calendar.
+ * Today, mobile-first (the overhaul, Oct 30, 2026): the card, then what
+ * needs the member (notices, only when there are some), what's next, their
+ * shifts and the Callboard, Qirtas, what they have sent, and their six
+ * words once the Tour has them. Sections in twos, so a full page reads in
+ * threes. Voting eligibility is on Society; the calendar feed on My
+ * calendar.
  */
 export const MemberHome = () => {
   const t = useTranslations("nexus.home");
@@ -84,8 +87,8 @@ export const MemberHome = () => {
       <div className="grid gap-x-16 gap-y-14 lg:grid-cols-2">
         <Notices />
         <NextEvents />
-        <JournalSection />
         <MyProgrammes />
+        <JournalSection />
         <Requests />
         <SixWords />
       </div>

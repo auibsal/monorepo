@@ -9,6 +9,7 @@ import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { ReactNode } from "react";
 import { type DatedItem, DatedList, eventItems } from "@/components/event-list";
+import { NewsletterSignup } from "@/components/newsletter/signup";
 import { seriesPath } from "@/components/series";
 import { PieceCardView } from "@/components/waraq/cards";
 import { localizedMetadata } from "@/lib/metadata";
@@ -46,15 +47,16 @@ const Home = async ({ params }: HomeProps) => {
   const join = localizedPath(locale, "/sign-up");
 
   const [nextEvents, calls, front, news, allProgrammes] = await Promise.all([
-    readPublished(["events"], (c) => events.publicEvents(c, { limit: 4 }), []),
+    readPublished(["events"], (c) => events.publicEvents(c, { limit: 6 }), []),
     readPublished(["journal"], (c) => journal.openCalls(c), []),
     readPublished(["journal"], (c) => journal.frontPieces(c), []),
     readPublished(["journal"], (c) => journal.deskPieces(c, "news"), []),
     readPublished(["programmes"], (c) => programmes.programmes(c), []),
   ]);
 
-  // This term: open calls (filed under the day they close) and the next
-  // events, in date order.
+  // The next three weeks (the overhaul, Oct 30, 2026): open calls (filed
+  // under the day they close) and the events, in date order, six at most.
+  const horizon = new Date(Date.now() + 21 * 24 * 60 * 60 * 1000).toISOString();
   const term: DatedItem[] = [
     ...(calls ?? []).map((call) => ({
       at: call.closes_at,
@@ -66,8 +68,9 @@ const Home = async ({ params }: HomeProps) => {
     })),
     ...eventItems(nextEvents ?? [], locale),
   ]
+    .filter((item) => item.at <= horizon)
     .sort((a, b) => a.at.localeCompare(b.at))
-    .slice(0, 5);
+    .slice(0, 6);
 
   const pieces = journal.inLanguage(
     ((front ?? []).length > 0 ? front : news) ?? [],
@@ -164,7 +167,7 @@ const Home = async ({ params }: HomeProps) => {
             {series.map((p) => (
               <li className="border-line border-t py-space-4" key={p.id}>
                 <Link className="group grid gap-2" href={programmeHref(p.slug)}>
-                  <h3 className="type-heading type-accent group-hover:underline">
+                  <h3 className="type-heading group-hover:text-accent group-hover:underline">
                     {localized(p, "name", locale)}
                   </h3>
                   {localized(p, "summary", locale) ? (
@@ -185,24 +188,16 @@ const Home = async ({ params }: HomeProps) => {
       ) : null}
 
       <section
-        aria-labelledby="come-in"
-        className="bg-footer text-text"
-        data-theme="dark"
+        aria-labelledby="sunday-paper"
+        className="mx-auto grid w-full max-w-6xl gap-4 border-line border-t px-4 py-16 md:grid-cols-[1fr_1.4fr] md:items-start"
       >
-        <div className="mx-auto grid w-full max-w-6xl gap-8 px-4 py-20">
-          <div className="grid gap-6">
-            <h2 className="type-display-xl" id="come-in">
-              {t.rich("comeIn", { accent })}
-            </h2>
-            <p className="type-lede max-w-[36ch]">{t("comeInBody")}</p>
-            <Button
-              asChild
-              className="justify-self-start bg-paper text-ink hover:bg-paper/90"
-            >
-              <a href={join}>{t("join")}</a>
-            </Button>
-          </div>
+        <div className="grid gap-2">
+          <h2 className="type-heading" id="sunday-paper">
+            {t("sundayPaper")}
+          </h2>
+          <p className="type-body">{t("sundayPaperLede")}</p>
         </div>
+        <NewsletterSignup compact />
       </section>
     </>
   );
