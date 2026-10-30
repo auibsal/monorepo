@@ -425,10 +425,8 @@
       "council": {
         "title": "The Council",
         "lede": "Three elected officers and five directors.",
-        "empty": "The Council appears here once its seats are set.",
-        "advisor": "Faculty Advisor",
-        "coveredBy": "Covered by the {title}",
-        "seatOpen": "Open"
+        "empty": "The Council appears here once its members hold their roles.",
+        "advisor": "Faculty Advisor"
       },
       "minutes": {
         "title": "Adopted minutes",
@@ -763,7 +761,6 @@
         "recognition": "Recognition",
         "productions": "The Company",
         "forms": "Forms and letters",
-        "documents": "Documents",
         "groups": {
           "work": "Programs and events",
           "people": "People",
@@ -1682,14 +1679,6 @@
           "giveNotice": "Give notice",
           "giveNoticeConfirm": "Give notice now? Nominations must open at least a week from today. The voter list is frozen today: everyone on the register of Voting Members right now (Bylaws B6.2).",
           "noticeGiven": "{count, plural, =0 {Notice given {date}. No one is on the voter list.} one {Notice given {date}. {n} person is on the voter list.} other {Notice given {date}. {n} people are on the voter list.}}"
-        },
-        "seats": {
-          "title": "The Council page",
-          "hint": "Each seat by its full title. Give the holder's name, or the officer who covers the seat while it is open. The Arabic spelling of a name can follow later.",
-          "holder": "Holder",
-          "coveredBy": "Covered by",
-          "coverHint": "Only while the seat has no holder.",
-          "noCover": "Open"
         }
       },
       "activity": {
@@ -2579,7 +2568,7 @@
       },
       "documents": {
         "title": "Society documents",
-        "lede": "The text of every foundational document, edited here. Public documents appear on auibsal.org/documents within a minute of saving; internal ones are read only in the Diwan.",
+        "lede": "Edit any document here. Public documents appear on auibsal.org/documents within a minute of saving; internal ones keep their text in the team's Notion workspace, linked from here.",
         "new": "New document",
         "closeNew": "Close",
         "newTitle": "Add a document",
@@ -3718,7 +3707,9 @@
       "englishOnly": "This document is in English; the Arabic version is being prepared.",
       "noText": "The text of this document has not been entered yet.",
       "inNotion": "The text of this internal document is kept in the team's Notion workspace. Sign in to Notion with your AUIB address.",
-      "openInNotion": "Read it in Notion"
+      "openInNotion": "Read it in Notion",
+      "read": "Documents",
+      "manage": "Manage"
     },
     "waraq": {
       "deskLines": {
@@ -4745,7 +4736,7 @@
       "title": "Governance",
       "lede": "The Council, what the Society has adopted, and whom members elected.",
       "council": "The Council",
-      "councilEmpty": "The Council appears here once its seats are set.",
+      "councilEmpty": "The Council appears here once its members hold their roles.",
       "resolutions": "Adopted resolutions",
       "resolutionsEmpty": "No resolutions have been adopted yet.",
       "body": {
@@ -4758,9 +4749,7 @@
       "turnout": "{counted} ballots from {eligible} eligible voters",
       "reopened": "Re-open nominations: the office will be filled again",
       "rules": "How the Council works and how elections run is set out in the Constitution and the Bylaws.",
-      "documents": "Read the documents",
-      "coveredBy": "Covered by the {title}",
-      "seatOpen": "Open"
+      "documents": "Read the documents"
     },
     "personalEmail": {
       "title": "Confirm your personal email",

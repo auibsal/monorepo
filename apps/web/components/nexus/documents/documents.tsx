@@ -6,22 +6,28 @@ import { Icon } from "@repo/design-system/components/sal/icon";
 import { Button } from "@repo/design-system/components/ui/button";
 import type { Locale } from "@repo/internationalization";
 import { formatLongDate } from "@repo/internationalization/format";
+import { hasPermission } from "@repo/rbac";
 import { documents } from "@repo/sal-data";
 import { useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/lib/nexus/navigation";
 import { isNotionUrl } from "@/lib/nexus/notion";
+import { useGrants } from "@/lib/nexus/queries";
+import { DocumentsAdmin } from "../admin/documents/admin";
 import { DiwanPage, DiwanSection } from "../page";
 import { EmptyLine, ErrorState, SectionSpinner } from "../states";
 
 type Audience = documents.DocumentAudience;
 
 /**
- * The Society's documents in the Nexus: the public ones (also on
- * auibsal.org) and, for officers who read the internal library, the
+ * The Library, the Diwan's one place for the Society's documents (owner,
+ * Oct 30, 2026: Documents and the Library merged): the public ones (also
+ * on auibsal.org) and, for officers who read the internal library, the
  * internal ones (Row Level Security decides). An internal document's text
- * is kept in the team's Notion workspace; it opens there.
+ * is kept in the team's Notion workspace; it opens there. Whoever keeps
+ * the documents (governance.manage) also has the Manage view
+ * (`?tab=manage`).
  */
 
 /** Where an internal document's text is, if it is kept in Notion. */
@@ -30,6 +36,39 @@ const notionPage = (doc: documents.SalDocument) =>
     ? doc.notion_url
     : null;
 export const Documents = () => {
+  const t = useTranslations("nexus.documents");
+  const grants = useGrants();
+  const canManage = hasPermission(grants.data, "governance.manage");
+  const tab = useSearchParams().get("tab");
+  const manage = canManage && tab === "manage";
+  const views = canManage ? (
+    <>
+      <Link
+        aria-current={manage ? undefined : "page"}
+        className="link aria-[current=page]:text-accent"
+        href="/library"
+      >
+        {t("read")}
+      </Link>
+      <Link
+        aria-current={manage ? "page" : undefined}
+        className="link aria-[current=page]:text-accent"
+        href={{ pathname: "/library", query: { tab: "manage" } }}
+      >
+        {t("manage")}
+      </Link>
+    </>
+  ) : undefined;
+
+  return (
+    <DiwanPage actions={views} lede={t("lede")} title={t("title")}>
+      {manage ? <DocumentsAdmin /> : <Shelves />}
+    </DiwanPage>
+  );
+};
+
+/** The documents an officer may read, by audience. */
+const Shelves = () => {
   const t = useTranslations("nexus.documents");
   const tc = useTranslations("common");
   const locale = useLocale() as Locale;
@@ -53,7 +92,7 @@ export const Documents = () => {
     .filter((g) => g.docs.length > 0);
 
   return (
-    <DiwanPage lede={t("lede")} title={t("title")}>
+    <>
       {groups.length === 0 ? (
         <EmptyLine action={{ href: "/", label: t("home") }}>
           {t("empty")}
@@ -107,7 +146,7 @@ export const Documents = () => {
           </ul>
         </DiwanSection>
       ))}
-    </DiwanPage>
+    </>
   );
 };
 

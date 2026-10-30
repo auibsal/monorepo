@@ -1,7 +1,6 @@
 "use client";
 
 import { useAuth } from "@repo/auth/provider";
-import { SalCard } from "@repo/design-system/components/sal/card";
 import { Button } from "@repo/design-system/components/ui/button";
 import { Input } from "@repo/design-system/components/ui/input";
 import {
@@ -18,6 +17,7 @@ import { uploadLibraryFile } from "@repo/storage";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useState } from "react";
+import { Council as CouncilList } from "@/components/council";
 import { callApi } from "@/lib/nexus/api";
 import { Link } from "@/lib/nexus/navigation";
 import { useGrants } from "@/lib/nexus/queries";
@@ -35,7 +35,6 @@ import {
 } from "../kit";
 import { Needs } from "../needs";
 import { Elections } from "./elections";
-import { Seats } from "./seats";
 
 const key = ["admin", "governance"];
 const RESOLUTION_CODE = /^R-\d{4}-\d{2,3}$/;
@@ -63,8 +62,8 @@ const Council = () => {
     starts_on: "",
   });
   const roster = useQuery({
-    queryFn: () => governance.councilRoster(supabase),
-    queryKey: [...key, "roster"],
+    queryFn: () => governance.councilMembers(supabase),
+    queryKey: [...key, "members"],
   });
   const terms = useQuery({
     queryFn: async () =>
@@ -93,33 +92,18 @@ const Council = () => {
     },
   });
 
-  const rows = (roster.data ?? []) as Record<string, unknown>[];
-
   return (
     <div className="grid gap-8">
-      <Seats />
       <section className="grid gap-3">
         <h3 className="type-subheading">{t("roster")}</h3>
         <p className="type-caption">{t("rosterHint")}</p>
         {roster.isPending ? <SectionSpinner /> : null}
-        {roster.data && rows.length === 0 ? (
+        {roster.data?.length === 0 ? (
           <p className="type-body text-text-secondary">{t("empty")}</p>
         ) : null}
-        <ul className="grid gap-space-4 sm:grid-cols-2 lg:grid-cols-3">
-          {rows.map((row) => (
-            <li key={`${String(row.role)}-${String(row.full_name_en)}`}>
-              <SalCard>
-                <p className="type-label">
-                  {localized(row, "title", locale) ||
-                    localized(row, "role_name", locale)}
-                </p>
-                <p className="font-medium">
-                  {localized(row, "full_name", locale)}
-                </p>
-              </SalCard>
-            </li>
-          ))}
-        </ul>
+        {roster.data?.length ? (
+          <CouncilList locale={locale} members={roster.data} />
+        ) : null}
       </section>
       <section className="grid gap-3">
         <h3 className="type-subheading">{t("terms")}</h3>

@@ -7,8 +7,6 @@
 --   out of every list of programs (`programmes.notPrograms`).
 -- * The Tuesday series meet every fourth week. The Listening Room takes the
 --   Salon's March 16 and May 11 dates.
--- * The Company's director, the Artistic Director, has a seat on the
---   Council (open).
 -- * Arabic names (needs-native-review): the Salon «الصالون», the Artistic
 --   Director «المدير الفني», the Editor of Qirtas «محرّر قرطاس».
 -- * The Qirtas Prizes' own names are proposed: the public pages show only
@@ -50,12 +48,6 @@ update events.events e set
 where e.slug in ('salon-2027-03-16', 'salon-2027-05-11');
 
 -- ── The Council ─────────────────────────────────────────────────────────────
-
-insert into governance.council_seats (key, kind, title_en, title_ar, sort)
-values ('artistic_director', 'director', 'Artistic Director', 'المدير الفني', 45)
-on conflict (key) do nothing;
-
-update governance.council_seats set title_ar = 'محرّر قرطاس' where key = 'editor_of_qirtas';
 
 -- The Company's lead is titled Artistic Director in both languages.
 update access.role_assignments set title_ar = 'المدير الفني'

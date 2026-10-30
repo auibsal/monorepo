@@ -6,7 +6,7 @@ import { formatLongDate } from "@repo/internationalization/format";
 import { governance, localized, unwrap } from "@repo/sal-data";
 import { useQuery } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
-import { CouncilSeats } from "@/components/council-seats";
+import { Council as CouncilList } from "@/components/council";
 import { useFlags } from "@/lib/nexus/queries";
 import { StartLinks } from "../forms/forms";
 import { VotingEligibility } from "../home/voting";
@@ -23,8 +23,8 @@ const Council = () => {
   const locale = useLocale() as Lang;
   const { supabase } = useAuth();
   const roster = useQuery({
-    queryFn: () => governance.councilSeats(supabase),
-    queryKey: ["council-seats"],
+    queryFn: () => governance.councilMembers(supabase),
+    queryKey: ["council-members"],
   });
   const advisor = useQuery({
     queryFn: async () => {
@@ -68,12 +68,7 @@ const Council = () => {
         </EmptyLine>
       ) : null}
       {roster.data?.length ? (
-        <CouncilSeats
-          covered={(title) => t("coveredBy", { title })}
-          locale={locale}
-          open={t("seatOpen")}
-          seats={roster.data}
-        />
+        <CouncilList locale={locale} members={roster.data} />
       ) : null}
       {advisorName ? (
         <p className="type-body">

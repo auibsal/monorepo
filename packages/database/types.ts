@@ -2242,50 +2242,6 @@ export type Database = {
           },
         ];
       };
-      council_seats: {
-        Row: {
-          covered_by: string | null;
-          holder_ar: string | null;
-          holder_en: string | null;
-          key: string;
-          kind: string;
-          sort: number;
-          title_ar: string;
-          title_en: string;
-          updated_at: string;
-        };
-        Insert: {
-          covered_by?: string | null;
-          holder_ar?: string | null;
-          holder_en?: string | null;
-          key: string;
-          kind: string;
-          sort?: number;
-          title_ar: string;
-          title_en: string;
-          updated_at?: string;
-        };
-        Update: {
-          covered_by?: string | null;
-          holder_ar?: string | null;
-          holder_en?: string | null;
-          key?: string;
-          kind?: string;
-          sort?: number;
-          title_ar?: string;
-          title_en?: string;
-          updated_at?: string;
-        };
-        Relationships: [
-          {
-            foreignKeyName: "council_seats_covered_by_fkey";
-            columns: ["covered_by"];
-            isOneToOne: false;
-            referencedRelation: "council_seats";
-            referencedColumns: ["key"];
-          },
-        ];
-      };
       council_terms: {
         Row: {
           created_at: string;
@@ -3107,6 +3063,15 @@ export type Database = {
       cast_ballot: {
         Args: { choices: Json; election_id: string };
         Returns: undefined;
+      };
+      council_members: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          full_name_ar: string;
+          full_name_en: string;
+          titles_ar: string[];
+          titles_en: string[];
+        }[];
       };
       council_roster: {
         Args: Record<PropertyKey, never>;

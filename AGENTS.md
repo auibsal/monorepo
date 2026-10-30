@@ -33,7 +33,9 @@ and decisions), and continue from the first unticked item.
   - `app/[locale]/diwan` — **the Diwan** (code name `nexus`), auibsal.org/diwan:
     the officers' administration only (anyone holding a role,
     `RequireStaff`): the overview and modules at `/diwan/<module>`, the
-    library, declarations. Members are sent to `/membership`. Diwan code names
+    Library (every document; whoever holds `governance.manage` also
+    manages them there, `?tab=manage`: owner, Oct 30, 2026, Documents and
+    the Library are one), declarations. Members are sent to `/membership`. Diwan code names
     pages by their own path (`/events`); `Link`, `useRouter`, `usePathname`
     and `redirect` from `@/lib/nexus/navigation` add the `/diwan` prefix.
   - Both are client-rendered (`components/nexus`, `lib/nexus`, the code
@@ -321,10 +323,13 @@ any schema change. Integration tests run against a local stack with
   witnesses and signs off), the witnessed handover on the campaign
   (`handed_over_on`, amount, witness, receipt) and the impact report. No
   online payments of any kind.
-- **The Council page** (owner, Oct 30, 2026; `/governance` and the
-  members' Society page) lists each seat by its full title from
-  `governance.council_seats`: its holder, or the officer who covers it
-  while it is open. Three officers and five directors; no Treasurer.
+- **The Council page** (owner, Oct 30, 2026; `/governance`, the members'
+  Society page and the Diwan's Governance → Council) comes from the roles
+  people hold (`governance.council_members()`): everyone holding a Council
+  role (`access.roles.is_council`, global, in force), under the role's
+  name or the assignment's display title. Someone holding two roles is
+  named once, with both titles. Nothing is kept by hand: assign roles on
+  the member's page. Three officers and five directors; no Treasurer.
 - **Documents.** Every document is adopted, Version 1 (owner, Oct 24, 2026).
   Visitors and members see the title, summary and text only; codes
   (`SAL-…`, `F-…`), statuses, versions and ratification lines are internal

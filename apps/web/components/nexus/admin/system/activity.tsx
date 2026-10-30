@@ -64,7 +64,6 @@ const LOGGED_TABLES = [
   "events.events",
   "events.series_rules",
   "governance.candidates",
-  "governance.council_seats",
   "governance.election_results",
   "governance.elections",
   "governance.handbook_pages",

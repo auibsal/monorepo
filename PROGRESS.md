@@ -23,10 +23,20 @@ Branch: `claude/new-session-qosn60`.
   - **Give** (`/give`): the brief asks whether to keep a Give page. It has
     no payment links, only Second Chapter's dates, collection totals and
     receipts. Keep, rename or remove?
-  - **The Artistic Director's seat** is on the Council page, open. The
-    Company's lead still holds a Program Lead role for the Company; a
-    Council role for the seat (two-step sign-in, Council permissions) is
-    not made until you say which permissions it carries.
+  - **The Council page now comes from roles** (no hand-kept seats). It
+    shows only people who hold a Council role (President, Vice President,
+    General Secretary, Director, Director of Programs, Director of
+    Partnerships), so on the live site it lists whoever has those roles
+    assigned in the Diwan. Assign each holder their role on their member
+    page (directors: Director, with the display title, e.g. "Director of
+    Media"); until then the page says the Council appears once its members
+    hold their roles. The Artistic Director is on it once the Company's
+    lead holds a Council role; say which permissions it carries.
+  - **Covering a vacant seat** (the President covering Programs): the
+    database still refuses a second Council role (`one_council_seat`,
+    Bylaws B5.5 as built on Oct 10). The page already names someone once
+    with both titles, so say if covering should be allowed as a second
+    role.
   - **The Listening Room's room and host** (TODO(content)); its two dates
     (Mar 16, May 11) are the Salon's former ones.
   - **Redirects** for `/waraq` and `/nexus`: still none (AGENTS.md); say if
@@ -448,10 +458,11 @@ These stop parts of the work. Everything else continues around them.
   (`brand/icons`, the `Icon` component; `lucide-react` removed), icons in
   the header (search, language, theme, menu, Sign in), before dates, times
   and places, and on links that leave the site. The Company is not a
-  program (kept live for its page, left out of every list of programs and
-  linked from the footer). The Listening Room is the sixth program; the
-  Tuesday series meet every fourth week. The Artistic Director has a
-  Council seat. Arabic: «الصالون», «آراء», «جريدة الأحد», «المدير الفني»,
+  program (kept live for its page, left out of every list of programs). The Listening Room is the sixth program; the
+  Tuesday series meet every fourth week. The Company has its own page at
+  /company, in the header. The Council page comes from the roles people
+  hold, one name per person with all their titles; the Diwan's Documents
+  and Library are one Library. Arabic: «الصالون», «آراء», «جريدة الأحد», «المدير الفني»,
   «محرّر قرطاس». The Prizes' own names are hidden until confirmed. The
   footer keeps its columns of Oct 30 (Programs, Society, Stay in touch)
   rather than the brief's Society, Read and Contact, which repeated the

@@ -5,7 +5,7 @@ import {
 import { Link } from "@repo/internationalization/navigation";
 import { governance, localized } from "@repo/sal-data";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { CouncilSeats } from "@/components/council-seats";
+import { Council } from "@/components/council";
 import { PageHeader, Section } from "@/components/section";
 import { type LocaleParams, sectionMetadata } from "@/lib/page";
 import { readPublished } from "@/lib/supabase";
@@ -30,9 +30,9 @@ const byElection = (rows: Results) => {
 };
 
 /**
- * How the Society is run, in public: the Council's seats and who holds
- * them, the resolutions it adopted and who members elected. Only what the
- * database makes public is read (the seats, adopted resolutions, each published election's
+ * How the Society is run, in public: the Council, from the roles people
+ * hold, the resolutions it adopted and who members elected. Only what the
+ * database makes public is read (the Council, adopted resolutions, each published election's
  * outcome per office); minutes and the counts at each round stay in the
  * Nexus.
  */
@@ -40,8 +40,8 @@ const GovernancePage = async ({ params }: LocaleParams) => {
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "web.governance" });
-  const [seats, resolutions, results] = await Promise.all([
-    readPublished(["governance"], (c) => governance.councilSeats(c), []),
+  const [council, resolutions, results] = await Promise.all([
+    readPublished(["governance"], (c) => governance.councilMembers(c), []),
     readPublished(["governance"], (c) => governance.adoptedResolutions(c), []),
     readPublished(
       ["governance"],
@@ -56,15 +56,10 @@ const GovernancePage = async ({ params }: LocaleParams) => {
       <PageHeader lede={t("lede")} title={t("title")} />
 
       <Section id="council" title={t("council")}>
-        {seats.length === 0 ? (
+        {council.length === 0 ? (
           <p className="type-body">{t("councilEmpty")}</p>
         ) : (
-          <CouncilSeats
-            covered={(title) => t("coveredBy", { title })}
-            locale={locale}
-            open={t("seatOpen")}
-            seats={seats}
-          />
+          <Council locale={locale} members={council} />
         )}
       </Section>
 

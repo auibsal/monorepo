@@ -27,18 +27,12 @@ export const castBallot = async (
     })
   );
 
-export const councilRoster = async (client: Client) =>
-  unwrap(await client.schema("governance").rpc("council_roster")) ?? [];
-
-/** The Council page: every seat, its holder or the seat that covers it. */
-export const councilSeats = async (client: Client) =>
-  unwrap(
-    await client
-      .schema("governance")
-      .from("council_seats")
-      .select("key, kind, title_en, title_ar, holder_en, holder_ar, covered_by")
-      .order("sort")
-  ) ?? [];
+/**
+ * The Council page: each person holding a Council role, once, with every
+ * title they hold (from their role assignments; officers first).
+ */
+export const councilMembers = async (client: Client) =>
+  unwrap(await client.schema("governance").rpc("council_members")) ?? [];
 
 /** Resolutions the Council or the General Assembly adopted, newest first. */
 export const adoptedResolutions = async (client: Client) =>

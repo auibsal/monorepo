@@ -87,7 +87,6 @@ export const adminModules = [
       "elections.manage",
     ],
   },
-  { key: "documents", permissions: ["governance.manage"] },
   {
     key: "forms",
     permissions: [

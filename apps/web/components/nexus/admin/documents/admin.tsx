@@ -12,7 +12,6 @@ import { useState } from "react";
 import { RichTextEditor } from "../../editor/rich-text";
 import { SectionSpinner } from "../../states";
 import {
-  AdminHeading,
   BilingualField,
   type Column,
   DataTable,
@@ -138,11 +137,12 @@ const NewDocument = ({ onDone }: { onDone: (id: string) => void }) => {
 };
 
 /**
- * Society documents (Nexus admin): the text of every foundational
- * document, edited in place, with who may read it and its status. Public
- * documents are published on auibsal.org/documents within a minute of
- * saving; internal ones keep their text in the team's Notion workspace
- * (`notion_url`), and only their registry entry here.
+ * The library's management (the Library's Manage view, governance.manage):
+ * the text of every foundational document, edited in place, with who may
+ * read it and its status. Public documents are published on
+ * auibsal.org/documents within a minute of saving; internal ones keep their
+ * text in the team's Notion workspace (`notion_url`), and only their entry
+ * here.
  */
 export const DocumentsAdmin = () => {
   const t = useTranslations("nexus.admin.documents");
@@ -187,16 +187,14 @@ export const DocumentsAdmin = () => {
 
   return (
     <div className="grid gap-8">
-      <AdminHeading
-        actions={
-          <Button onClick={() => setCreating((c) => !c)} size="sm">
-            {creating ? t("closeNew") : t("new")}
-          </Button>
-        }
-        title={t("title")}
+      <p className="type-body max-w-[60ch] text-text-secondary">{t("lede")}</p>
+      <Button
+        className="justify-self-start"
+        onClick={() => setCreating((c) => !c)}
+        size="sm"
       >
-        {t("lede")}
-      </AdminHeading>
+        {creating ? t("closeNew") : t("new")}
+      </Button>
       {creating ? (
         <NewDocument
           onDone={(id) => {
