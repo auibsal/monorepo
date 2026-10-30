@@ -49,7 +49,11 @@
       "sidebar": "Sidebar",
       "sidebarDescription": "Displays the mobile sidebar.",
       "toggleSidebar": "Toggle sidebar"
-    }
+    },
+    "youAreHere": "You are here",
+    "keep": "Keep it",
+    "notFoundHere": "This page isn't here. It may have been removed, or the address is wrong.",
+    "backToList": "Back to the list"
   },
   "auth": {
     "signOut": "Sign out",
@@ -394,7 +398,9 @@
       "byInvitation": "By invitation",
       "remind": "Remind me",
       "forget": "Don't remind me",
-      "whatsOn": "What's on"
+      "whatsOn": "What's on",
+      "cancelAsk": "Give your place to someone else?",
+      "leaveWaitlistAsk": "Leave the waiting list?"
     },
     "programs": {
       "title": "Programs",
@@ -644,7 +650,9 @@
         "nextCall": "The next call, {call}, opens {date}.",
         "tellMe": "Tell me when it opens",
         "alertOn": "We'll email you the day a call opens.",
-        "alertOff": "Stop"
+        "alertOff": "Stop",
+        "yourWorkLede": "Everything you have sent to Qirtas, with where each piece stands.",
+        "sendMore": "Write for Qirtas"
       }
     },
     "profile": {
@@ -745,28 +753,28 @@
       "title": "Administration",
       "nav": {
         "label": "Administration sections",
-        "overview": "Overview",
+        "overview": "Desk",
         "members": "Members",
         "events": "Events",
         "journal": "Qirtas",
-        "content": "Content",
+        "content": "Site",
         "ads": "Ads",
-        "charity": "Charity",
+        "charity": "Second Chapter",
         "programs": "Programs",
         "governance": "Governance",
         "activity": "Activity log",
         "settings": "Settings",
         "partners": "Partners",
-        "recognition": "Recognition",
+        "recognition": "Service",
         "productions": "The Company",
-        "forms": "Forms and letters",
+        "forms": "Requests",
         "groups": {
-          "work": "Programs and events",
+          "whatsOn": "What’s on",
+          "publishing": "Qirtas and the site",
           "people": "People",
-          "publishing": "Publishing and charity",
-          "society": "Governance",
-          "system": "System",
-          "yours": "Every officer"
+          "society": "The Society",
+          "office": "Requests and settings",
+          "yours": "For your role"
         },
         "hiring": "Hiring",
         "library": "Library"
@@ -827,7 +835,7 @@
         "addressEvent": "That address belongs to an event; choose another."
       },
       "overview": {
-        "title": "Overview",
+        "title": "Desk",
         "members": "Members",
         "votingMembers": "Voting Members",
         "verificationPending": "Waiting for verification",
@@ -852,6 +860,13 @@
         "forRole": {
           "title": "For your role",
           "lede": "Plan an event, count the collection, and hand a role over. Each goes to the officers who sign it off."
+        },
+        "quick": {
+          "door": "Open the door",
+          "event": "New event",
+          "piece": "New piece",
+          "verify": "Verify members",
+          "requests": "Requests"
         }
       },
       "members": {
@@ -1181,7 +1196,7 @@
           "remove": "Remove"
         },
         "scheduleConfirm": "Schedule this post? It is published on its own at the publish time.",
-        "newsletter": "The Sunday Paper's public list has {count} confirmed subscribers. They sign up at auibsal.org/newsletter; members who receive email get it too."
+        "newsletter": "The Sunday Paper's public list has {count} confirmed subscribers. They sign up at auibsal.org/sunday-paper; members who receive email get it too."
       },
       "ads": {
         "title": "Ads",
@@ -2107,7 +2122,7 @@
           "status": "Status",
           "description": "Public description",
           "logo": "Logo",
-          "listed": "List on auibsal.org/partners",
+          "listed": "List on auibsal.org/about/partners",
           "listedShort": "Listed",
           "listedHint": "A partner appears publicly only while it is active and has a signed memorandum in force.",
           "contact": "Partner contact (internal)",
@@ -2785,7 +2800,7 @@
             "slug": "Address"
           },
           "languageHint": "The language of the answers. The puzzle appears on that language's games page.",
-          "slugHint": "auibsal.org/qirtas/puzzles/… Leave empty to use the English title.",
+          "slugHint": "auibsal.org/qirtas/games/… Leave empty to use the English title.",
           "clues": "Answers and clues",
           "cluesHint": "One answer per row, from 2 to 15 letters. Spaces and hamzas on alif are dropped.",
           "answer": "Answer",
@@ -3896,7 +3911,12 @@
       "profile": "Profile",
       "profileLine": "Your name in both languages, a short bio, and what you tell us about yourself.",
       "requests": "Requests and reports",
-      "requestsLine": "What you have sent, and starting a new request."
+      "requestsLine": "What you have sent, and starting a new request.",
+      "notices": "Notices",
+      "noticesLine": "Email, your phone and Telegram: how the Society reaches you.",
+      "noticesLede": "Every way the Society reaches you, on one page.",
+      "noticesEmail": "Email",
+      "noticesEmailLine": "Whether optional email reaches you, the Sunday Paper and reminders, is set in"
     },
     "recoveryCodes": {
       "noneTitle": "Save your recovery codes",
@@ -3957,6 +3977,26 @@
         "link": "Tell us more",
         "line": "Two minutes, optional: the Callboard puts the roles that match your skills first."
       }
+    },
+    "getInvolved": {
+      "title": "Get involved",
+      "lede": "Three ways into the AUIB Society of Arts and Letters: join, give a few hours, or audition for the Company.",
+      "ways": {
+        "join": {
+          "title": "Join the Society",
+          "body": "Membership is free for AUIB students. Sign up with your AUIB address."
+        },
+        "shifts": {
+          "title": "Give a few hours",
+          "body": "Every program needs hands on the night. Members sign up for shifts, and the hours count toward their service record."
+        },
+        "audition": {
+          "title": "Audition for the Company",
+          "body": "The Company casts each production in an audition, open to members."
+        }
+      },
+      "members": "Members see every open role, shift and audition here.",
+      "signIn": "Sign in"
     }
   },
   "web": {
@@ -3979,14 +4019,14 @@
     },
     "footer": {
       "contact": "Contact",
-      "mediaKit": "Media kit",
+      "mediaKit": "Press kit",
       "privacy": "Privacy and photo policy",
       "sideQuestCare": "Next Stop care",
       "university": "A student society at the American University of Iraq – Baghdad.",
       "partners": "Partners",
       "newsletter": "The Sunday Paper",
       "cookieSettings": "Cookie settings",
-      "governance": "Governance",
+      "governance": "The Council",
       "terms": "Terms of use",
       "accessibility": "Accessibility",
       "columns": {
@@ -3994,7 +4034,8 @@
         "contactHeading": "Stay in touch",
         "email": "hello@auibsal.org",
         "programs": "Programs"
-      }
+      },
+      "verify": "Verify a card or certificate"
     },
     "consent": {
       "title": "Cookies",
@@ -4028,15 +4069,15 @@
       "title": "The paper and the <accent>pen.</accent>",
       "lede": "A society for literature, theater and the arts at the American University of Iraq – Baghdad. Our motto is a line of al‑Mutanabbi.",
       "join": "Join the Society",
-      "whatsOn": "What’s on this term",
-      "thisTerm": "This term",
-      "noEvents": "No events announced yet.",
-      "allEvents": "All events",
+      "whatsOn": "What’s on",
+      "thisTerm": "The next three weeks",
+      "noEvents": "Nothing is announced for the next three weeks.",
+      "allEvents": "The whole calendar",
       "closes": "Closes {date}",
       "programs": "Programs",
       "allPrograms": "All programs",
-      "comeIn": "Come <accent>in.</accent>",
-      "comeInBody": "Membership is free and open to every AUIB student. No audition, no portfolio, no fee."
+      "sundayPaper": "The Sunday Paper",
+      "sundayPaperLede": "One email a month, on the first Sunday: what Qirtas published, what’s on and the places open to members."
     },
     "documents": {
       "title": "Library",

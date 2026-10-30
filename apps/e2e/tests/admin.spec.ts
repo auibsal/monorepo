@@ -8,12 +8,12 @@ test("a News desk editor starts a piece, and it waits in Editing, unpublished", 
 }) => {
   const title = `Society notes ${Date.now()}`;
   await signInWithPassword(page, editor.email);
-  // The Diwan opens on the overview for every officer.
+  // The Diwan opens on the Desk for every officer.
   await page.goto(urls.app);
-  await expect(page.getByRole("heading", { name: "Overview" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Desk" })).toBeVisible();
   await expectAccessible(page);
 
-  await page.goto(`${urls.app}/journal`);
+  await page.goto(`${urls.app}/qirtas`);
   await page
     .getByRole("link", { name: "New staff piece" })
     .or(page.getByRole("button", { name: "New staff piece" }))
@@ -28,7 +28,7 @@ test("a News desk editor starts a piece, and it waits in Editing, unpublished", 
     .getByRole("combobox", { name: "Contributor" })
     .selectOption({ label: "Qirtas News Desk" });
   await page.getByRole("button", { name: "Create the piece" }).click();
-  await expect(page).toHaveURL(/\/diwan\/journal\/piece\?id=/);
+  await expect(page).toHaveURL(/\/diwan\/qirtas\/pieces\/(?!new)[^/?]+$/);
 
   // The publish rule keeps it off the site until it is approved.
   await page.goto(`${urls.web}/qirtas/news`);

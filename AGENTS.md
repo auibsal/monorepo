@@ -16,23 +16,31 @@ and decisions), and continue from the first unticked item.
   - `app/[locale]/(site)` — the public site, `/` and `/ar`. Published reads
     only, with the publishable key; cached by tag and revalidated on publish.
   - `app/[locale]/(account)` — **the members' pages, on the site** (owner,
-    Oct 24, 2026): `/sign-in`, `/sign-up`, `/auth/*`, `/setup`,
-    `/oauth/consent`, and, for members, the Membership menu (owner, Oct 25,
-    2026): Today (`/membership`), My calendar (`/events/book`), Callboard
-    (`/callboard`), Society (`/society`), Record (`/membership/service`, with
-    certificates) and Settings (`/membership/settings`, which also holds
-    `/membership/profile` and `/membership/requests`); also `/membership/certificate`,
-    `/membership/more` ("Tell us more"),
-    `/company/auditions`, `/qirtas/write` (the two doors, your
-    work, and the form itself with `?type=`; then `/submission`, `/work`,
-    `/piece`). Perks are on the card; voting
+    Oct 24, 2026): `/sign-in`, `/sign-up`, `/auth/*`, `/welcome` (was
+    `/setup`), `/oauth/consent`, Get involved (`/get-involved`, public: the
+    three ways in for visitors, the Callboard for members), and, for
+    members, everything under `/membership` (the overhaul, Oct 30, 2026):
+    Today (`/membership`), My calendar (`/membership/calendar`), Society
+    (`/membership/society`), Record (`/membership/record`, a certificate at
+    `/membership/record/<id>`), Settings (`/membership/settings`, with
+    `/settings/profile`, `/settings/more` ("Tell us more") and
+    `/settings/notices`), Requests (`/membership/requests/<id>`) and Your
+    work (`/membership/work`, `/work/<id>`, `/work/submissions/<id>`);
+    also `/company/auditions`, `/qirtas/write` (the two doors and the form
+    itself with `?type=`) and `/qirtas/read/<slug>` (a members-only
+    piece). Perks are on the card; voting
     eligibility is on Society; the calendar feed is on My calendar. The
     site's header and footer, a Membership row (`components/account`), and
     the gates in `components/nexus/gates.tsx`. They link with the site's
     `Link` (`@repo/internationalization/navigation`) and full paths.
   - `app/[locale]/diwan` — **the Diwan** (code name `nexus`), auibsal.org/diwan:
     the officers' administration only (anyone holding a role,
-    `RequireStaff`): the overview and modules at `/diwan/<module>`
+    `RequireStaff`): the Desk and the sections at their own addresses
+    (`modulePaths` in `@repo/rbac`: `/diwan/qirtas`, `/diwan/company`,
+    `/diwan/site`, `/diwan/second-chapter`, `/diwan/service`,
+    `/diwan/requests`, …), records by name where they have one
+    (`/diwan/events/<slug>`, `/diwan/qirtas/pieces/<slug>`; `RecordRef`
+    in `components/nexus/record-ref.tsx`), `new` for a blank one
     (among them the Library, where only `governance.manage`, the President,
     the Vice President and the General Secretary, keep the documents),
     declarations. Members are sent to `/membership`. Diwan code names
@@ -74,8 +82,12 @@ and decisions), and continue from the first unticked item.
   Notion workspace only (the Diwan's menu links there: settings
   `notion.home_url`, `notion.handbook`; `docs/platform/notion.md`); the platform runbooks in `docs/platform`
   (Markdown). There is no separate docs site. The apps configure no
-  redirects (owner, Oct 14, 2026); www.auibsal.org → auibsal.org is a
-  Vercel domain setting.
+  redirects (owner, Oct 14, 2026; again Oct 30, 2026: none for the
+  overhaul's moved addresses either, and no forwarding pages); an old
+  address is simply not found. www.auibsal.org → auibsal.org is a Vercel
+  domain setting. The address alone decides the language
+  (`localeDetection: false`). A piece's address comes from
+  `journal.piecePath` (its section; Games pieces at `/qirtas/pieces/`).
 - `packages/*` — shared code, imported as `@repo/<name>`. `@repo` is a fixed
   internal scope; never rename it.
   - `@repo/database` — SQL migrations (`supabase/migrations`), pgTAP tests
@@ -171,12 +183,12 @@ any schema change. Integration tests run against a local stack with
   (owner, Oct 25, 2026).
 - **Sign-up asks little** (owner, Oct 25, 2026). An AUIB address signs up
   with the address and a password; an outside address also gives the four
-  names and a few words for the Council. `/setup` then asks one question
+  names and a few words for the Council. `/welcome` then asks one question
   per screen (`planSetup` in `components/nexus/setup-form.tsx`): each name
   not yet given, each pledge not yet made in its current version, and, the
   first time, photos; then the welcome screen with the card. Language
   follows the sign-up page and email notices start on (both in Settings).
-  The optional details are "Tell us more" (`/membership/more`, a question
+  The optional details are "Tell us more" (`/membership/settings/more`, a question
   at a time with Skip), offered on Today; Profile keeps the full form.
   Each screen starts at the top with its heading focused, never scrolled.
 - **One address, one person.** The personal email (optional, for after
@@ -280,7 +292,7 @@ any schema change. Integration tests run against a local stack with
   card to make it theirs (`programmes.attach_six_words`); unsigned cards
   show without a name. One entry per member; a new card replaces the old.
 - **The Callboard** (owner, Oct 25, 2026; header link "Get involved",
-  `/callboard`, members only) is the careers page (owner, Oct 29, 2026):
+  `/get-involved`, the board for members) is the careers page (owner, Oct 29, 2026):
   every role the Society is filling (`programmes.openings`, `kind`
   `role`, with its `owner`: a program, Qirtas, Media, Partnerships,
   Membership or the Council), shifts and auditions on one board. Hiring
@@ -324,7 +336,7 @@ any schema change. Integration tests run against a local stack with
   witnesses and signs off), the witnessed handover on the campaign
   (`handed_over_on`, amount, witness, receipt) and the impact report. No
   online payments of any kind.
-- **The Council page** (owner, Oct 30, 2026; `/governance`, the members'
+- **The Council page** (owner, Oct 30, 2026; `/about/council`, the members'
   Society page and the Diwan's Governance → Council) comes from the roles
   people hold (`governance.council_members()`): everyone holding a Council
   role (`access.roles.is_council`, global, in force), under the role's
@@ -431,10 +443,17 @@ any schema change. Integration tests run against a local stack with
   is in the administration menu (`admin-shell.tsx`, "For your role").
   Members' pages add their row (Today, My calendar, Society, Record,
   Settings, Sign out). The footer
-  (`footer.tsx`) holds what the header doesn't: the six programs, the
-  Society's pages and the ways to stay in touch. No link appears twice
+  (`footer.tsx`, not in the Diwan) holds what the header doesn't, in
+  threes: the six programs, six of the Society's pages (the Council, the
+  Library, Partners, Contact, the press kit, Verify) and three ways to
+  stay in touch, then three lines of fine print. The Diwan's menu has six
+  groups (`admin-shell.tsx`); the Desk three quick actions. No link appears twice
   among the header, a menu row and the footer. Every Diwan empty state
   offers one next action (`EmptyLine action`).
+- **Threes** (owner, Oct 30, 2026). The Society's things come in threes:
+  3, 6, 9, 12. Menus, columns, groups, rows of cards and quick actions
+  keep to them (six in the header, three footer columns, six Diwan
+  groups, three quick actions).
 - **Content.** Don't invent names, dates, figures or quotes. Missing text is a
   `TODO(content): …` placeholder listed in `PROGRESS.md`. Arabic written for
   this platform (not taken from a source) is listed as `needs-native-review`.

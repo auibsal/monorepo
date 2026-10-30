@@ -514,7 +514,7 @@ const Done = ({
         <Button onClick={() => router.push("/membership")} type="button">
           {t("done.open")}
         </Button>
-        <Link className="link" href="/membership/profile">
+        <Link className="link" href="/membership/settings/profile">
           {t("done.profile")}
         </Link>
       </div>
@@ -536,7 +536,7 @@ export const TellUsMoreLine = () => {
   }
   return (
     <p className="type-body border-line border-y py-space-3">
-      <Link className="link font-medium" href="/membership/more">
+      <Link className="link font-medium" href="/membership/settings/more">
         {t("today.link")}
       </Link>{" "}
       <span className="text-text-secondary">{t("today.line")}</span>

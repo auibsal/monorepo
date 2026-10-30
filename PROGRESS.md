@@ -1133,6 +1133,41 @@ These stop parts of the work. Everything else continues around them.
 
 ## Checklist
 
+### The overhaul (2026-10-30)
+
+Plan: "SAL Platform Redesign" (D1–D12); owner: all adopted, one PR, things
+in threes (six in the header, so Join stays; D1 changed).
+
+- [x] Addresses: the Society's pages under `/about` (council, partners,
+  contact, press), `/sunday-paper`, `/library/privacy`, `/qirtas/games/<slug>`,
+  pieces at `/qirtas/<section>/<slug>`, Give folded into Second Chapter's
+  page, members' pages under `/membership`, `/welcome`, public
+  `/get-involved`.
+- [x] Readable Diwan addresses (`modulePaths`, `RecordRef`, `new` pages)
+  and section names (Desk, Site, Second Chapter, Service, Requests).
+- [x] No redirects (owner, Oct 30, 2026): old addresses are not found,
+  and every link the platform makes (pages, emails, the bot, search,
+  the Prizes) uses the new ones; the address alone decides the language.
+- [x] Footer in threes, two columns on phones; no footer in the Diwan.
+- [x] Home: one solid button, the next three weeks, program names in ink,
+  the Sunday Paper at the end (the ink band is gone).
+- [x] Event page: the program linked, the action under the title and
+  following on phones (`ActionBar`).
+- [x] Desk: three quick actions; the Diwan's menu in six groups; a path
+  line on record pages; Qirtas's views at their own addresses (`TabLinks`).
+- [x] Today: card, notices, next up, shifts, Qirtas, requests; Six Words
+  only once there is one. Settings: Profile, Requests, Notices (new page).
+- [x] Ten new icons; shared `PathLine`, `ResultLine`, `SkeletonRows`,
+  `InlineConfirm` (giving a place back), `TabLinks`, `ActionBar`.
+- [ ] Member pages by card number in the Diwan (`/diwan/members/<number>`):
+  needs a SECURITY DEFINER lookup for `members.verify`; ids for now.
+- [ ] `/company/<production>` pages; search grouped by kind; the About hub
+  page and the Library's groups as drawn in the plan.
+- [ ] Programs, Qirtas and Hiring reshuffle in the Diwan (episodes and
+  reels to Qirtas Video, roles to Hiring); the Door full screen; a sticky
+  save bar on long editors.
+- [ ] e2e and axe pass over the new addresses with the local stack.
+
 ### Owner decisions (2026-10-30)
 
 - [x] Brand handoff: brand files, icons and `Icon`, Highlights and Icons
@@ -1561,6 +1596,13 @@ Covered by automated tests so far:
   use (as the form says).
 
 ## needs-native-review (Arabic written for the platform)
+
+- The overhaul (2026-10-30): `nexus.getInvolved.*`, `web.home.thisTerm`,
+  `noEvents`, `allEvents`, `sundayPaperLede`, `web.footer.verify`,
+  `mediaKit` («الملف الصحفي»), `governance` («المجلس التنفيذي»),
+  `nexus.admin.nav.groups.*`, `nav.overview` («المكتب»), `content`,
+  `recognition`, `forms`, `nexus.admin.overview.quick.*`,
+  `nexus.settings.notices*`, `nexus.events.cancelAsk`, `leaveWaitlistAsk`.
 
 All Arabic written for the platform up to 2026-10-24 was reviewed by the
 owner and approved ("reviewed across the board, it's all good"). List new

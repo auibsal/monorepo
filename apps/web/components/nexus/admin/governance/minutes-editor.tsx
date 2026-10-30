@@ -103,10 +103,7 @@ export const MinutesEditor = () => {
         queryKey: ["admin", "governance"],
       });
       if (!minutesId) {
-        router.replace({
-          pathname: "/governance/minutes",
-          query: { id: savedId },
-        });
+        router.replace(`/governance/minutes/${savedId}`);
       }
     },
   });

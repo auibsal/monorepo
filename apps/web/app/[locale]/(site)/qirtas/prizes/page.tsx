@@ -59,6 +59,14 @@ const PrizesPage = async ({ params }: PrizesProps) => {
         []
       )
     : [];
+  // Each entry links to its piece, whose address carries its section.
+  const desks = new Map(
+    results.length > 0
+      ? (await readPublished(["journal"], journal.publishedPieceSlugs, [])).map(
+          (piece) => [piece.slug, piece.desk] as const
+        )
+      : []
+  );
 
   return (
     <div className="mx-auto grid w-full max-w-6xl gap-10 px-4 py-10">
@@ -114,7 +122,10 @@ const PrizesPage = async ({ params }: PrizesProps) => {
                     <li key={entry.piece_slug}>
                       <Link
                         className="link"
-                        href={`/qirtas/pieces/${entry.piece_slug}`}
+                        href={journal.piecePath({
+                          desk: desks.get(entry.piece_slug),
+                          slug: entry.piece_slug,
+                        })}
                       >
                         {localized(entry, "title", locale)}
                       </Link>

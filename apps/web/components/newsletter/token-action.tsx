@@ -16,10 +16,10 @@ const namespaces = {
   unsubscribe: "web.newsletter.unsubscribe",
 } as const;
 const paths: Record<Action, string> = {
-  confirm: "/newsletter/confirm",
+  confirm: "/sunday-paper/confirm",
   personalEmail: "/personal-email/confirm",
   stopEmails: "/email/stop",
-  unsubscribe: "/newsletter/unsubscribe",
+  unsubscribe: "/sunday-paper/unsubscribe",
 };
 
 /**

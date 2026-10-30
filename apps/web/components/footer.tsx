@@ -23,8 +23,8 @@ const linkClass = "hover:text-accent hover:underline hover:underline-offset-4";
  * The one footer for the whole site, the members' pages and the Diwan
  * alike: ink in both modes. The reversed lockup in the page's language and
  * one sentence, three short columns under rose labels (Programs, Society,
- * Stay in touch), then a hairline and the fine print, which keeps the
- * policies and cookie settings within reach. Nothing here repeats the
+ * Stay in touch; two side by side on phones), then a hairline and the fine
+ * print, which keeps the policies and cookie settings within reach. Nothing here repeats the
  * header (owner, Oct 30, 2026): its sections, Search, Sign in and
  * Membership live only there.
  */
@@ -42,6 +42,8 @@ export const Footer = async ({ consent = true }: FooterProps = {}) => {
     []
   );
 
+  // Threes (owner, Oct 30, 2026): three columns, six programs, six of the
+  // Society's pages, three ways to stay in touch, three lines of fine print.
   const columns = [
     {
       heading: t("columns.programs"),
@@ -54,25 +56,26 @@ export const Footer = async ({ consent = true }: FooterProps = {}) => {
     {
       heading: t("columns.society"),
       links: [
-        ["/governance", t("governance")],
+        ["/about/council", t("governance")],
         ["/library", tn("documents")],
-        ["/partners", t("partners")],
-        ["/give", tn("give")],
+        ["/about/partners", t("partners")],
+        ["/about/contact", t("contact")],
+        ["/about/press", t("mediaKit")],
+        ["/verify", t("verify")],
       ] as const,
     },
   ];
 
   const fine = [
-    ["/privacy", t("privacy")],
+    ["/library/privacy", t("privacy")],
     ["/library/terms-of-use", t("terms")],
     ["/library/accessibility", t("accessibility")],
-    ["/qirtas/next-stop/care", t("sideQuestCare")],
   ] as const;
 
   return (
     <footer className="bg-footer text-text print:hidden" data-theme="dark">
-      <div className="mx-auto grid w-full max-w-6xl gap-10 px-4 pt-14 pb-10 text-[0.90625rem] sm:grid-cols-2 sm:px-6 lg:grid-cols-[1.4fr_1fr_1fr_1fr] lg:gap-8">
-        <div className="grid content-start gap-4 sm:col-span-2 lg:col-span-1">
+      <div className="mx-auto grid w-full max-w-6xl grid-cols-2 gap-10 px-4 pt-14 pb-10 text-[0.90625rem] sm:px-6 lg:grid-cols-[1.4fr_1fr_1fr_1fr] lg:gap-8">
+        <div className="col-span-2 grid content-start gap-4 lg:col-span-1">
           <NextLink
             className="justify-self-start"
             href={localizedPath(locale, "/")}
@@ -99,13 +102,13 @@ export const Footer = async ({ consent = true }: FooterProps = {}) => {
               </ul>
             </div>
           ))}
-        <div className="grid content-start gap-3.5">
+        <div className="col-span-2 grid content-start gap-3.5 lg:col-span-1">
           <h2 className="type-label text-accent">
             {t("columns.contactHeading")}
           </h2>
           <ul className="grid gap-2">
             <li>
-              <Link className={linkClass} href="/newsletter">
+              <Link className={linkClass} href="/sunday-paper">
                 {t("newsletter")}
               </Link>
             </li>
@@ -133,19 +136,9 @@ export const Footer = async ({ consent = true }: FooterProps = {}) => {
                 />
               </a>
             </li>
-            <li>
-              <Link className={linkClass} href="/contact">
-                {t("contact")}
-              </Link>
-            </li>
-            <li>
-              <Link className={linkClass} href="/media-kit">
-                {t("mediaKit")}
-              </Link>
-            </li>
           </ul>
         </div>
-        <div className="flex flex-col gap-3 border-line border-t pt-5 text-[0.8125rem] text-text-secondary sm:col-span-2 lg:col-span-4 lg:flex-row lg:flex-wrap lg:items-baseline lg:justify-between">
+        <div className="col-span-2 flex flex-col gap-3 border-line border-t pt-5 text-[0.8125rem] text-text-secondary lg:col-span-4 lg:flex-row lg:flex-wrap lg:items-baseline lg:justify-between">
           <p>{tx("copyright", { year: String(new Date().getFullYear()) })}</p>
           <ul className="flex flex-wrap gap-x-5 gap-y-1">
             {fine.map(([href, label]) => (

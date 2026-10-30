@@ -107,3 +107,27 @@ export const adminModules = [
 }[];
 
 export type AdminModule = (typeof adminModules)[number]["key"];
+
+/**
+ * Where each section lives under /diwan, named as officers see it (the
+ * overhaul, Oct 30, 2026). The keys keep their code names.
+ */
+export const modulePaths: Record<AdminModule, string> = {
+  activity: "/activity",
+  ads: "/site/ads",
+  charity: "/second-chapter",
+  content: "/site",
+  events: "/events",
+  forms: "/requests",
+  governance: "/governance",
+  hiring: "/hiring",
+  journal: "/qirtas",
+  library: "/library",
+  members: "/members",
+  overview: "/",
+  partners: "/partners",
+  productions: "/company",
+  programs: "/programs",
+  recognition: "/service",
+  settings: "/settings",
+};

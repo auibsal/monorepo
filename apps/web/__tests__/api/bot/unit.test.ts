@@ -106,11 +106,11 @@ describe("formatting", () => {
 
 describe("links", () => {
   it("never writes /en", () => {
-    expect(piecePage("en", "a-poem")).toBe(
-      "https://auibsal.org/qirtas/pieces/a-poem"
+    expect(piecePage("en", { desk: "letters", slug: "a-poem" })).toBe(
+      "https://auibsal.org/qirtas/letters/a-poem"
     );
-    expect(piecePage("ar", "a-poem")).toBe(
-      "https://auibsal.org/ar/qirtas/pieces/a-poem"
+    expect(piecePage("ar", { desk: "letters", slug: "a-poem" })).toBe(
+      "https://auibsal.org/ar/qirtas/letters/a-poem"
     );
     expect(eventCalendar("ar", "open-mic")).toBe(
       "https://auibsal.org/api/calendar/events/open-mic.ics?lang=ar"

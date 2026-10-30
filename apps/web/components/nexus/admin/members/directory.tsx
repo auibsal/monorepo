@@ -87,10 +87,7 @@ export const MembersDirectory = () => {
       cell: (row) => (
         <Link
           className="font-medium underline underline-offset-4"
-          href={{
-            pathname: "/members/member",
-            query: { id: row.user_id },
-          }}
+          href={`/members/${row.user_id}`}
         >
           {memberName(row, locale) || t("unnamed")}
         </Link>

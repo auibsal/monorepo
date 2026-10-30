@@ -220,7 +220,7 @@ const FormEditor = ({
       }
       router.push(
         submit
-          ? { pathname: "/membership/requests/view", query: { id: savedId } }
+          ? `/membership/requests/${savedId}`
           : {
               pathname: "/membership/requests/new",
               query: { form: formKey, id: savedId },

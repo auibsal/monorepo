@@ -420,7 +420,7 @@ export const EntryView = () => {
   const back = (
     <Link
       className="text-sm underline underline-offset-4"
-      href={{ pathname: "/journal", query: { tab: "review" } }}
+      href={"/qirtas?tab=review"}
     >
       {tk("back")}
     </Link>

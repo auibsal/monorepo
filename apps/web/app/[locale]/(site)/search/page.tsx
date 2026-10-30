@@ -3,7 +3,13 @@ import { Input } from "@repo/design-system/components/ui/input";
 import type { Locale } from "@repo/internationalization";
 import { formatLongDate } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
-import { content, documents, localized, toPlainText } from "@repo/sal-data";
+import {
+  content,
+  documents,
+  journal,
+  localized,
+  toPlainText,
+} from "@repo/sal-data";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { PageHeader } from "@/components/section";
@@ -31,12 +37,16 @@ export const generateMetadata = async ({
 
 type Kind = "event" | "piece" | "production" | "document";
 
-const hrefFor = (kind: Kind, slug: string) => {
+const hrefFor = (
+  kind: Kind,
+  slug: string,
+  desks: ReadonlyMap<string, string | null>
+) => {
   if (kind === "event") {
     return `/events/${slug}`;
   }
   if (kind === "piece") {
-    return `/qirtas/pieces/${slug}`;
+    return journal.piecePath({ desk: desks.get(slug), slug });
   }
   if (kind === "production") {
     return `/company#${slug}`;
@@ -93,6 +103,14 @@ const SearchPage = async ({ params, searchParams }: SearchProps) => {
         []
       )
     : [];
+  // A piece's address carries its section; search returns the slug only.
+  const desks = new Map(
+    (found ?? []).some((r) => r.kind === "piece")
+      ? (await readPublished(["journal"], journal.publishedPieceSlugs, [])).map(
+          (piece) => [piece.slug, piece.desk] as const
+        )
+      : []
+  );
   const results = [
     ...(long ? await searchDocuments(query) : []),
     ...(found ?? []).filter((r) => r.kind !== "document"),
@@ -138,7 +156,7 @@ const SearchPage = async ({ params, searchParams }: SearchProps) => {
                 </p>
                 <Link
                   className="type-subheading underline-offset-4 hover:underline"
-                  href={hrefFor(r.kind as Kind, r.slug)}
+                  href={hrefFor(r.kind as Kind, r.slug, desks)}
                 >
                   {localized(r, "title", locale)}
                 </Link>

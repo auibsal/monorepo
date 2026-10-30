@@ -32,7 +32,7 @@ The pages and the Diwan read only the public keys; the database enforces the rul
 
 ## Passkeys
 
-Members can sign in with a passkey (fingerprint, face or screen lock) and manage them under Membership, Profile (auibsal.org/membership/profile). The settings live in Supabase → Authentication → Passkeys:
+Members can sign in with a passkey (fingerprint, face or screen lock) and manage them under Membership, Profile (auibsal.org/membership/settings/profile). The settings live in Supabase → Authentication → Passkeys:
 
 | Setting | Value | Why |
 | --- | --- | --- |

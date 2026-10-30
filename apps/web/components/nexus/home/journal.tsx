@@ -62,10 +62,7 @@ export const JournalSection = () => {
               <li className="flex justify-between gap-4" key={submission.id}>
                 <Link
                   className="link"
-                  href={{
-                    pathname: "/qirtas/submission",
-                    query: { id: submission.id },
-                  }}
+                  href={`/membership/work/submissions/${submission.id}`}
                 >
                   {submission.title}
                 </Link>

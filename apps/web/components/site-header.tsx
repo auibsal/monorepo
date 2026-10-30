@@ -30,7 +30,7 @@ const sections: { href: string; key: SectionKey }[] = [
   { href: "/events", key: "events" },
   { href: "/qirtas", key: "journal" },
   { href: "/company", key: "company" },
-  { href: "/callboard", key: "involved" },
+  { href: "/get-involved", key: "involved" },
   { href: "/join", key: "join" },
 ];
 

@@ -92,7 +92,7 @@ const GamesPage = async ({ params }: GamesProps) => {
           <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {puzzles.map((p) => (
               <li key={p.id}>
-                <Link className={card} href={`/qirtas/puzzles/${p.slug}`}>
+                <Link className={card} href={`/qirtas/games/${p.slug}`}>
                   <span className="type-caption">{t(`kinds.${p.kind}`)}</span>
                   <span className="type-heading">
                     {localized(p, "title", locale)}

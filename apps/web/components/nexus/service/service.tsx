@@ -234,7 +234,7 @@ export const Service = () => {
       <DiwanSection id="recordstitle" title={t("recordsTitle")}>
         {records.isPending ? <SectionSpinner /> : null}
         {records.data?.length === 0 ? (
-          <EmptyLine action={{ href: "/callboard", label: t("findShift") }}>
+          <EmptyLine action={{ href: "/get-involved", label: t("findShift") }}>
             {t("noRecords")}
           </EmptyLine>
         ) : null}
@@ -283,13 +283,7 @@ export const Service = () => {
         <ul className="grid gap-2">
           {(certificates.data ?? []).map((c) => (
             <li key={c.id}>
-              <Link
-                className="link"
-                href={{
-                  pathname: "/membership/certificate",
-                  query: { id: c.id },
-                }}
-              >
+              <Link className="link" href={`/membership/record/${c.id}`}>
                 {t(`kinds.${c.kind as recognition.CertificateKind}`)}
                 {c.serial ? ` · ${c.serial}` : ""}
               </Link>

@@ -5,19 +5,25 @@ import { expectAccessible, signInWithPassword } from "./helpers";
 
 test("a member books a place and gives it back", async ({ page }) => {
   await signInWithPassword(page, member.email);
-  await page.goto(`${urls.web}/events/book`);
+  await page.goto(`${urls.web}/membership/calendar`);
   const card = page.locator(`li#${event.slug}`);
   await expect(card).toBeVisible();
   await expectAccessible(page);
   if (
     await card.getByRole("button", { name: "Give my place back" }).isVisible()
   ) {
+    // Asked in place: the link, then the confirmation.
+    await card.getByRole("button", { name: "Give my place back" }).click();
     await card.getByRole("button", { name: "Give my place back" }).click();
     await expect(card.getByRole("status")).toBeVisible();
   }
   await card.getByRole("button", { name: "Book a place" }).click();
   await expect(card.getByRole("status")).toContainText("Booked");
   await expect(card.getByText("You have a place.")).toBeVisible();
+  await card.getByRole("button", { name: "Give my place back" }).click();
+  await expect(
+    card.getByText("Give your place to someone else?")
+  ).toBeVisible();
   await card.getByRole("button", { name: "Give my place back" }).click();
   await expect(card.getByRole("status")).toContainText("Done");
 });
@@ -33,7 +39,7 @@ test("a member sends work to Qirtas and sees the reading timeline", async ({
   await page.getByLabel(/has not appeared in another journal/i).check();
   await page.getByRole("checkbox", { name: /human authorship/i }).check();
   await page.getByRole("button", { name: "Send my work" }).click();
-  await expect(page).toHaveURL(/\/qirtas\/submission/);
+  await expect(page).toHaveURL(/\/membership\/work\/submissions\//);
   await expect(page.getByRole("heading", { name: "Progress" })).toBeVisible();
   await expect(page.locator('[aria-current="step"]')).toContainText("Received");
   await expectAccessible(page);

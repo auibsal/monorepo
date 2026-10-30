@@ -33,6 +33,7 @@ import {
   waitlistPromoted,
 } from "@repo/email/copy";
 import { Notice, noticeText } from "@repo/email/templates/notice";
+import { journal } from "@repo/sal-data";
 import { revalidateTag } from "next/cache";
 import { stopToken } from "@/lib/api/email-stop";
 import { api, origin, site } from "@/lib/api/urls";
@@ -175,7 +176,7 @@ const pieceInfo = async (admin: AdminClient, pieceId: unknown) => {
     .schema("journal")
     .from("pieces")
     .select(
-      "id, slug, title_en, title_ar, contributor:contributors!pieces_contributor_id_fkey(user_id)"
+      "id, slug, desk, title_en, title_ar, contributor:contributors!pieces_contributor_id_fkey(user_id)"
     )
     .eq("id", String(pieceId))
     .maybeSingle();
@@ -265,7 +266,7 @@ const subscriber = async (admin: AdminClient, id: unknown) => {
 };
 
 const unsubscribeLinks = (lang: Lang, token: string) => {
-  const page = `${webUrl()}${prefix(lang)}/newsletter/unsubscribe?token=${token}`;
+  const page = `${webUrl()}${prefix(lang)}/sunday-paper/unsubscribe?token=${token}`;
   const oneClick = api(`/newsletter/unsubscribe?token=${token}`);
   return {
     headers: {
@@ -341,7 +342,7 @@ const paperContents = async (
     return null;
   }
   return {
-    callboard: `${base}/callboard`,
+    callboard: `${base}/get-involved`,
     events: (events ?? []).map((e) => ({
       starts_at: e.starts_at,
       title_ar: e.title_ar ?? "",
@@ -356,7 +357,7 @@ const paperContents = async (
         desk_en: desk?.en ?? "",
         title_ar: p.title_ar ?? "",
         title_en: p.title_en ?? "",
-        url: `${base}/qirtas/pieces/${p.slug}`,
+        url: `${base}/qirtas/${p.desk}/${p.slug}`,
       };
     }),
     places: (places ?? []).map((o) => ({
@@ -517,7 +518,7 @@ const handlers: Record<string, Handler> = {
         piecePublished(
           to.lang,
           pieceTitle(piece, to.lang),
-          `${webUrl()}${prefix(to.lang)}/qirtas/pieces/${piece.slug}`
+          `${webUrl()}${prefix(to.lang)}${journal.piecePath(piece)}`
         )
       );
     }
@@ -608,7 +609,7 @@ const handlers: Record<string, Handler> = {
       { email: row.email, lang },
       newsletterConfirm(
         lang,
-        `${webUrl()}${prefix(lang)}/newsletter/confirm?token=${row.confirm_token}`
+        `${webUrl()}${prefix(lang)}/sunday-paper/confirm?token=${row.confirm_token}`
       )
     );
   },

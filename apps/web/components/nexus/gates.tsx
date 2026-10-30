@@ -52,9 +52,8 @@ export const RequireAuth = ({ children }: GateProps) => {
  */
 const GUEST_PATHS = [
   "/qirtas",
-  "/membership/profile",
-  "/membership/service",
-  "/membership/certificate",
+  "/membership/work",
+  "/membership/record",
   "/membership/settings",
 ];
 
@@ -79,7 +78,7 @@ const usePartnerGuest = (enabled: boolean) => {
 /**
  * Members only: unverified accounts see the verification notice (where they
  * can also say they belong to a partner), and members with a pledge to
- * (re-)accept or setup to finish go to /setup first. People verified as a
+ * (re-)accept or setup to finish go to /welcome first. People verified as a
  * partner's members get the guest pages (`isGuestPath`), after the same
  * pledges and setup.
  */
@@ -101,7 +100,7 @@ export const RequireMember = ({ children }: GateProps) => {
   useEffect(() => {
     if (needsSetup && profile.data) {
       router.replace({
-        pathname: "/setup",
+        pathname: "/welcome",
         query: {
           next: `${pathname}${window.location.search}${window.location.hash}`,
         },

@@ -22,6 +22,7 @@ import { events, localized, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useEffect, useState } from "react";
+import { InlineConfirm } from "@/components/frame/inline-confirm";
 import { queryKeys, useMyRsvps, useMyWaitlist } from "@/lib/nexus/queries";
 import { CalendarFeed } from "../home/calendar-feed";
 import { DiwanPage } from "../page";
@@ -103,6 +104,29 @@ type StateKey =
   | "open"
   | "full"
   | "left";
+
+/** Giving a place back (or leaving the waiting list), asked in place. */
+const GiveBack = ({
+  booked,
+  busy,
+  onConfirm,
+}: {
+  readonly booked: boolean;
+  readonly busy: boolean;
+  readonly onConfirm: () => void;
+}) => {
+  const t = useTranslations("nexus.events");
+  const label = booked ? t("cancel") : t("leaveWaitlist");
+  return (
+    <InlineConfirm
+      confirm={label}
+      disabled={busy}
+      label={label}
+      onConfirm={onConfirm}
+      question={booked ? t("cancelAsk") : t("leaveWaitlistAsk")}
+    />
+  );
+};
 
 /** A plain message for each refusal the booking RPC can raise. */
 const errorKey = (error: unknown): NoticeKey => {
@@ -241,7 +265,7 @@ export const EventsBrowser = () => {
       {upcoming.data.length === 0 ? (
         <EmptyLine
           action={{
-            href: "/events/book#calendar",
+            href: "/membership/calendar",
             label: ta("subscribeCalendar"),
           }}
         >
@@ -433,9 +457,11 @@ const EventCard = ({
             </Button>
           ) : null}
           {holding ? (
-            <Button disabled={busy} onClick={onCancel} variant="ghost">
-              {state === "booked" ? t("cancel") : t("leaveWaitlist")}
-            </Button>
+            <GiveBack
+              booked={state === "booked"}
+              busy={busy}
+              onConfirm={onCancel}
+            />
           ) : null}
         </div>
         {notice ? <NoticeLine notice={notice} /> : null}

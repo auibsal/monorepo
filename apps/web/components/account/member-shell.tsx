@@ -66,13 +66,13 @@ const useAccountLinks = () => {
     { href: "/membership", key: "today" },
     ...(member
       ? ([
-          { href: "/events/book", key: "calendar" },
-          { href: "/society", key: "society" },
+          { href: "/membership/calendar", key: "calendar" },
+          { href: "/membership/society", key: "society" },
         ] as const)
       : []),
-    { href: "/membership/service", key: "record" },
+    { href: "/membership/record", key: "record" },
     {
-      also: ["/membership/profile", "/membership/requests"],
+      also: ["/membership/requests"],
       href: "/membership/settings",
       key: "settings",
     },

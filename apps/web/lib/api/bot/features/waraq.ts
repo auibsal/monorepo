@@ -40,7 +40,7 @@ const view = async (ctx: BotContext) => {
   const lines = pieces.map((piece) => {
     const author = pieceAuthor(ctx.lang, piece);
     const title = link(
-      piecePage(ctx.lang, piece.slug),
+      piecePage(ctx.lang, piece),
       pick(ctx.lang, piece.title_en, piece.title_ar)
     );
     return author ? `${title}\n${escapeHtml(ctx.t.by(author))}` : title;

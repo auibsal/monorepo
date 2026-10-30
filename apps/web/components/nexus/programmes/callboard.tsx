@@ -156,7 +156,7 @@ export const Callboard = () => {
     <DiwanPage lede={tc("lede")} title={tc("title")}>
       <p className="type-body max-w-3xl text-text-secondary">
         {skills.length > 0 ? tc("matched") : tc("noSkills")}{" "}
-        <Link className="link" href="/membership/profile#details">
+        <Link className="link" href="/membership/settings/profile#details">
           {skills.length > 0 ? tc("editSkills") : tc("addSkills")}
         </Link>
       </p>
@@ -201,7 +201,7 @@ export const Callboard = () => {
         id="hours"
         title={tc("hours")}
       >
-        <Link className="link justify-self-start" href="/membership/service">
+        <Link className="link justify-self-start" href="/membership/record">
           {tc("hoursLink")}
         </Link>
       </DiwanSection>

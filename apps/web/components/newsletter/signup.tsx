@@ -6,6 +6,7 @@ import { Label } from "@repo/design-system/components/ui/label";
 import { apiPath } from "@repo/internationalization";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useId, useState } from "react";
+import { ResultLine } from "@/components/frame/result-line";
 
 type State =
   | "idle"
@@ -15,7 +16,11 @@ type State =
   | "rate_limited"
   | "failed";
 
-/** Signs up for The Month in Waraq; the API routes send the confirmation email. */
+/**
+ * Signs up for the Sunday Paper; the API routes send the confirmation
+ * email. Compact, where the page already has its one solid button, the
+ * submit is a text link.
+ */
 export const NewsletterSignup = ({
   compact = false,
 }: {
@@ -58,11 +63,7 @@ export const NewsletterSignup = ({
   };
 
   if (state === "sent") {
-    return (
-      <p className="type-body" role="status">
-        {t("sent")}
-      </p>
-    );
+    return <ResultLine kind="done">{t("sent")}</ResultLine>;
   }
 
   return (
@@ -78,7 +79,11 @@ export const NewsletterSignup = ({
           required
           type="email"
         />
-        <Button disabled={state === "sending"} type="submit">
+        <Button
+          disabled={state === "sending"}
+          type="submit"
+          variant={compact ? "link" : "default"}
+        >
           {state === "sending" ? t("sending") : t("submit")}
         </Button>
       </div>

@@ -4,11 +4,23 @@ import type { Locale } from "@repo/internationalization";
 import { apiPath, localizedPath } from "@repo/internationalization";
 import { formatClock, formatLongDate } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
-import { events, localized, sanitizeRichText } from "@repo/sal-data";
+import {
+  events,
+  localized,
+  programmes,
+  sanitizeRichText,
+} from "@repo/sal-data";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { loadSeries, SeriesView, seriesMetadata } from "@/components/series";
+import { ActionBar } from "@/components/frame/action-bar";
+import { SecondChapterGive } from "@/components/second-chapter-give";
+import {
+  loadSeries,
+  SeriesView,
+  seriesMetadata,
+  seriesPath,
+} from "@/components/series";
 import { eventLd, JsonLd } from "@/lib/json-ld";
 import { mediaUrl } from "@/lib/media";
 import { localizedMetadata } from "@/lib/metadata";
@@ -51,6 +63,19 @@ export const generateMetadata = async ({
   });
 };
 
+/** The program a session belongs to, named in its facts and linked. */
+const programOf = async (programmeId: string | null) => {
+  if (!programmeId) {
+    return;
+  }
+  const all = await readPublished(
+    ["programmes"],
+    async (c) => (await programmes.programmes(c)) ?? [],
+    []
+  );
+  return all.find((p) => p.id === programmeId && programmes.isListedProgram(p));
+};
+
 /**
  * An event, or a program: programs and events share the addresses under
  * /events (the database keeps them apart), so /events/salon is the Salon
@@ -62,7 +87,13 @@ const EventPage = async ({ params, searchParams }: EventProps) => {
   const series = await loadSeries(slug);
   if (series) {
     const { month } = await searchParams;
-    return <SeriesView locale={locale} month={month} series={series} />;
+    return (
+      <SeriesView locale={locale} month={month} series={series}>
+        {series.slug === "second-chapter" ? (
+          <SecondChapterGive locale={locale} />
+        ) : null}
+      </SeriesView>
+    );
   }
   const event = await load(slug);
   if (!event) {
@@ -73,6 +104,7 @@ const EventPage = async ({ params, searchParams }: EventProps) => {
   const image = mediaUrl(event.image_path);
   const cancelled = event.status === "cancelled";
   const upcoming = new Date(event.starts_at).getTime() > Date.now();
+  const program = await programOf(event.programme_id);
 
   return (
     <article className="mx-auto grid w-full max-w-3xl gap-8 px-4 py-16">
@@ -107,6 +139,16 @@ const EventPage = async ({ params, searchParams }: EventProps) => {
             {event.ends_at ? ` – ${formatClock(event.ends_at, locale)}` : ""}
           </span>
         </p>
+        {program ? (
+          <p className="type-body">
+            <Link
+              className="underline underline-offset-4 hover:text-accent"
+              href={seriesPath(program.slug)}
+            >
+              {localized(program, "name", locale)}
+            </Link>
+          </p>
+        ) : null}
         <p className="type-body">
           {t(`ways.${event.entry === "open" ? "open" : "rsvp"}`)}
         </p>
@@ -117,6 +159,31 @@ const EventPage = async ({ params, searchParams }: EventProps) => {
           </p>
         ) : null}
       </header>
+      {cancelled || !upcoming ? null : (
+        <ActionBar>
+          <Button asChild>
+            <a
+              href={`${localizedPath(locale, "/membership/calendar")}#${event.slug}`}
+            >
+              {event.entry === "open" ? t("remind") : t("rsvp")}
+            </a>
+          </Button>
+          <Button asChild variant="outline">
+            <a
+              href={apiPath(
+                `/calendar/events/${event.slug}.ics?lang=${locale}`
+              )}
+            >
+              {t("addToCalendar")}
+            </a>
+          </Button>
+        </ActionBar>
+      )}
+      {upcoming && !cancelled ? (
+        <p className="type-caption">
+          {event.entry === "open" ? t("remindHint") : t("rsvpHint")}
+        </p>
+      ) : null}
       {cancelled ? (
         <p
           className="type-body border-line border-s-4 border-t p-4"
@@ -138,29 +205,6 @@ const EventPage = async ({ params, searchParams }: EventProps) => {
           // biome-ignore lint/security/noDangerouslySetInnerHtml: sanitized with the one rich-text policy
           dangerouslySetInnerHTML={{ __html: sanitizeRichText(body) }}
         />
-      ) : null}
-      {cancelled || !upcoming ? null : (
-        <div className="flex flex-wrap gap-3">
-          <Button asChild>
-            <a href={`${localizedPath(locale, "/events/book")}#${event.slug}`}>
-              {event.entry === "open" ? t("remind") : t("rsvp")}
-            </a>
-          </Button>
-          <Button asChild variant="outline">
-            <a
-              href={apiPath(
-                `/calendar/events/${event.slug}.ics?lang=${locale}`
-              )}
-            >
-              {t("addToCalendar")}
-            </a>
-          </Button>
-        </div>
-      )}
-      {upcoming && !cancelled ? (
-        <p className="type-caption">
-          {event.entry === "open" ? t("remindHint") : t("rsvpHint")}
-        </p>
       ) : null}
     </article>
   );

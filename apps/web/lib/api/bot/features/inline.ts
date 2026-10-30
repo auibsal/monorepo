@@ -62,7 +62,7 @@ const pieceResults = async (lang: Lang, query: string) =>
     .map((piece) => {
       const title = pick(lang, piece.title_en, piece.title_ar);
       const author = pieceAuthor(lang, piece);
-      const url = piecePage(lang, piece.slug);
+      const url = piecePage(lang, piece);
       return InlineQueryResultBuilder.article(`p:${piece.id}`, title, {
         description: author || undefined,
         reply_markup: new InlineKeyboard().url(copy[lang].buttons.read, url),

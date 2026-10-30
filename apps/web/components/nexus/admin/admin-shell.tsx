@@ -6,6 +6,7 @@ import {
   type AdminModule,
   adminModules,
   hasPermissionAnywhere,
+  modulePaths,
 } from "@repo/rbac";
 import { useTranslations } from "next-intl";
 import { type ReactNode, useEffect, useState } from "react";
@@ -15,8 +16,7 @@ import { useGrants } from "@/lib/nexus/queries";
 import { TwoStepPanel, useTwoStep } from "../auth/two-step";
 import { SectionSpinner } from "../states";
 
-const hrefFor = (module: AdminModule) =>
-  module === "overview" ? "/" : `/${module}`;
+const hrefFor = (module: AdminModule) => modulePaths[module];
 
 /** The admin modules the member's grants show (RLS still decides the rows). */
 export const useVisibleModules = () => {
@@ -29,22 +29,20 @@ export const useVisibleModules = () => {
   return { grants, visible };
 };
 
-// The sections in five groups, so the list reads as a map rather than a
-// wall of links. Modules not listed here fall into the last group.
-type Group = "work" | "people" | "publishing" | "society" | "system";
+// Six groups (the Society's threes, owner, Oct 30, 2026): five of sections
+// under the Desk, then "For your role". Modules not listed here fall into
+// the fifth.
+type Group = "whatsOn" | "publishing" | "people" | "society" | "office";
 
 const groups: { key: Group; modules: AdminModule[] }[] = [
   {
-    key: "work",
-    modules: ["events", "programs", "productions", "journal"],
+    key: "whatsOn",
+    modules: ["events", "programs", "productions", "charity"],
   },
-  {
-    key: "people",
-    modules: ["members", "hiring", "recognition", "partners"],
-  },
-  { key: "publishing", modules: ["content", "ads", "charity"] },
-  { key: "society", modules: ["governance", "library", "forms"] },
-  { key: "system", modules: ["activity", "settings"] },
+  { key: "publishing", modules: ["journal", "content", "ads"] },
+  { key: "people", modules: ["members", "hiring", "recognition"] },
+  { key: "society", modules: ["governance", "library", "partners"] },
+  { key: "office", modules: ["forms", "activity", "settings"] },
 ];
 
 const ungrouped = adminModules
@@ -57,10 +55,16 @@ const ungrouped = adminModules
 // left the Diwan's header, which is now the site's own).
 const ownPages = [{ href: "/declarations", key: "declarations" }] as const;
 
-const isActive = (module: AdminModule, pathname: string) =>
-  module === "overview"
-    ? pathname === "/"
-    : pathname.startsWith(hrefFor(module));
+// Ads sit inside Site (/site/ads), so Site is current everywhere else under it.
+const isActive = (module: AdminModule, pathname: string) => {
+  if (module === "overview") {
+    return pathname === "/";
+  }
+  if (module === "content" && pathname.startsWith(hrefFor("ads"))) {
+    return false;
+  }
+  return pathname.startsWith(hrefFor(module));
+};
 
 /**
  * Section navigation for the administration area: a sidebar on wide

@@ -89,8 +89,8 @@ export const PartnerGuest = () => {
     .join(", ");
   const links = [
     ["/qirtas/write", t("journal")],
-    ["/membership/profile", t("profile")],
-    ["/membership/service", t("service")],
+    ["/membership/settings/profile", t("profile")],
+    ["/membership/record", t("service")],
     ["/membership/settings", t("settings")],
   ] as const;
   return (

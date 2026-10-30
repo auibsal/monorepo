@@ -6,7 +6,8 @@ import { env } from "@/env";
 
 const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
 
-// No redirects: www.auibsal.org → auibsal.org is a Vercel domain setting.
+// No redirects (owner, Oct 14 and Oct 30, 2026): www.auibsal.org →
+// auibsal.org is a Vercel domain setting.
 let nextConfig: NextConfig = { ...config };
 
 if (env.VERCEL) {

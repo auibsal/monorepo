@@ -8,7 +8,7 @@ const TOKEN = /^[0-9a-f]{32,128}$/;
 
 /**
  * Leaves the newsletter. Two callers: the button on
- * auibsal.org/newsletter/unsubscribe (JSON body), and mail apps' one-click
+ * auibsal.org/sunday-paper/unsubscribe (JSON body), and mail apps' one-click
  * unsubscribe (RFC 8058: a form POST to the List-Unsubscribe address, the
  * token in its query). The answer is the same for an unknown token.
  */
