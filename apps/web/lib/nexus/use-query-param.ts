@@ -6,13 +6,13 @@ import { createContext, useContext } from "react";
 /**
  * Values a page's own address carries (the overhaul, Oct 30, 2026: every
  * Diwan item and member record has a path, /diwan/events/<slug>), provided
- * by the page around its content.
+ * by the page around its content (`RouteParamsProvider`).
  */
 export const RouteParams = createContext<Readonly<Record<string, string>>>({});
 
 /**
  * A record's id or a view's setting: from the page's address first
- * (RouteParams), then from the query string (?tab=, ?kind=, and old links).
+ * (RouteParams), then from the query string (?tab=, ?kind=).
  */
 export const useQueryParam = (name: string) => {
   const fromPath = useContext(RouteParams)[name];

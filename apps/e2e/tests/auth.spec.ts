@@ -66,7 +66,7 @@ test("sign up with an AUIB address, confirm by email, finish setup", async ({
 
   // The optional details, one question at a time, each with Skip.
   await page.getByRole("link", { name: /Tell us more about yourself/ }).click();
-  await expect(page).toHaveURL(/\/membership\/more/);
+  await expect(page).toHaveURL(/\/membership\/settings\/more/);
   await expect(page.getByText("Question 1 of 7")).toBeVisible();
   await page.getByRole("button", { name: "A student at AUIB" }).click();
   await expect(

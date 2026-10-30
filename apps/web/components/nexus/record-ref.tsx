@@ -19,6 +19,18 @@ interface Lookup {
   readonly table: string;
 }
 
+/**
+ * A page's own address values for the client components inside it: server
+ * pages can't render a client context's Provider themselves.
+ */
+export const RouteParamsProvider = ({
+  children,
+  value,
+}: {
+  readonly children: ReactNode;
+  readonly value: Readonly<Record<string, string>>;
+}) => <RouteParams.Provider value={value}>{children}</RouteParams.Provider>;
+
 /** The Diwan section a list address belongs to: /qirtas?tab=games → Qirtas. */
 const sectionOf = (back: string) => {
   const path = back.split("?")[0] ?? back;

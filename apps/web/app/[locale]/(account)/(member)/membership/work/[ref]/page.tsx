@@ -1,8 +1,8 @@
 import { Suspense } from "react";
 import { MyPiece } from "@/components/nexus/journal/work";
+import { RouteParamsProvider } from "@/components/nexus/record-ref";
 import { SectionSpinner } from "@/components/nexus/states";
 import { titleFrom } from "@/lib/nexus/metadata";
-import { RouteParams } from "@/lib/nexus/use-query-param";
 
 export const generateMetadata = titleFrom((t) => t("nexus.waraq.pieceTitle"));
 
@@ -14,9 +14,9 @@ const Page = async ({
   const { ref } = await params;
   return (
     <Suspense fallback={<SectionSpinner />}>
-      <RouteParams.Provider value={{ id: decodeURIComponent(ref) }}>
+      <RouteParamsProvider value={{ id: decodeURIComponent(ref) }}>
         <MyPiece />
-      </RouteParams.Provider>
+      </RouteParamsProvider>
     </Suspense>
   );
 };
