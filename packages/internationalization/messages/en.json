@@ -943,8 +943,8 @@
         "assignButton": "Assign role",
         "assignConfirm": "Give {name} the role {role}? It grants that role's permissions from the start date.",
         "choose": "Choose…",
-        "exception": "Founding-term exception (B5.5)",
-        "exceptionHint": "Only when the Council has agreed that this person may hold more than two roles, or a second leadership role, in the founding term. Choose the adopted resolution.",
+        "exception": "Council resolution allowing it",
+        "exceptionHint": "Only when the Council has adopted a resolution allowing this: a second Council role (to cover a seat, Constitution 6.6), more than two roles, or a second leadership role in the founding term (B5.5). Choose the resolution.",
         "noException": "No exception",
         "rules": {
           "already_holds_role": "They already hold this role for that period.",
@@ -961,6 +961,9 @@
           "confirm": "Reset",
           "description": "Remove {name}'s authenticator app and recovery codes? Do this only when they asked, after checking it's really them.",
           "done": "Reset. {name} sets up a new authenticator at their next sign-in."
+        },
+        "errors": {
+          "one_council_seat": "They already hold a Council seat. A second one needs a Council resolution allowing it (Constitution 6.6): choose it above, or end the other seat first."
         }
       },
       "verification": {

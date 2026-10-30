@@ -329,8 +329,12 @@ any schema change. Integration tests run against a local stack with
   people hold (`governance.council_members()`): everyone holding a Council
   role (`access.roles.is_council`, global, in force), under the role's
   name or the assignment's display title. Someone holding two roles is
-  named once, with both titles. Nothing is kept by hand: assign roles on
-  the member's page. Three officers and five directors; no Treasurer.
+  named once, with both titles: a second Council role (covering a seat)
+  needs an adopted Council resolution (`exception_resolution`,
+  Constitution 6.6; `private.role_conflict`). Nothing is kept by hand:
+  assign roles on the member's page. Three officers and the directors,
+  among them the Artistic Director (`artistic_director`: every production,
+  the door, the Company's openings; nothing else); no Treasurer.
 - **Documents.** Every document is adopted, Version 1 (owner, Oct 24, 2026).
   Visitors and members see the title, summary and text only; codes
   (`SAL-…`, `F-…`), statuses, versions and ratification lines are internal

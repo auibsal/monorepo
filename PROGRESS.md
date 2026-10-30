@@ -30,8 +30,8 @@ Branch: `claude/new-session-qosn60`.
     assigned in the Diwan. Assign each holder their role on their member
     page (directors: Director, with the display title, e.g. "Director of
     Media"); until then the page says the Council appears once its members
-    hold their roles. The Artistic Director is on it once the Company's
-    lead holds a Council role; say which permissions it carries.
+    hold their roles. The Artistic Director (Council role
+    `artistic_director`) is on it once assigned.
   - **The internal files uploaded in the Diwan** (Governance → Library,
     `governance.library_documents` and the private `library` bucket) are
     no longer shown: internal documents live in Notion only. Their files
@@ -41,11 +41,6 @@ Branch: `claude/new-session-qosn60`.
     they are already in Notion.
   - **Old links to /documents** stop working: the public documents are now
     the Library at /library (no redirects, AGENTS.md). Say if you want one.
-  - **Covering a vacant seat** (the President covering Programs): the
-    database still refuses a second Council role (`one_council_seat`,
-    Bylaws B5.5 as built on Oct 10). The page already names someone once
-    with both titles, so say if covering should be allowed as a second
-    role.
   - **The Listening Room's room and host** (TODO(content)); its two dates
     (Mar 16, May 11) are the Salon's former ones.
   - **Redirects** for `/waraq` and `/nexus`: still none (AGENTS.md); say if
@@ -473,7 +468,11 @@ These stop parts of the work. Everything else continues around them.
   hold, one name per person with all their titles; the Diwan's Documents
   and Library became one Library: public at /library, kept in the
   Diwan's Library by the President, Vice President and General Secretary
-  only; internal documents are in Notion only. Arabic: «الصالون», «آراء», «جريدة الأحد», «المدير الفني»,
+  only; internal documents are in Notion only. A second Council role (to
+  cover a seat) is allowed with an adopted Council resolution (Constitution
+  6.6). The Artistic Director is a Council role: every production, the
+  door, the Council's library and the Company's openings; no other
+  program's calendar or the site's content. Arabic: «الصالون», «آراء», «جريدة الأحد», «المدير الفني»,
   «محرّر قرطاس». The Prizes' own names are hidden until confirmed. The
   footer keeps its columns of Oct 30 (Programs, Society, Stay in touch)
   rather than the brief's Society, Read and Contact, which repeated the
