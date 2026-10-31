@@ -75,7 +75,7 @@ insert into core.semesters (code, name_en, name_ar, starts_on, ends_on) values
 -- first-100 rule back on themselves.
 update core.settings set value = '0' where key = 'membership.founding_voters';
 
-select plan(40);
+select plan(41);
 
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a1', 'director-pa@auib.edu.iq');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a2', 'president-pa@auib.edu.iq');
@@ -107,6 +107,14 @@ select lives_ok(
        'Club Head', 'Chair', true) $$,
   'An organization applies, its signatory signing by name'
 );
+select pg_temp.logout();
+select is(
+  (select partner_signatory from governance.partner_agreements a
+   join governance.partners p on p.id = a.partner_id where p.name_en = 'Poetry Club'),
+  'Club Head',
+  'The memorandum is signed in the applicant''s name on the platform, not a typed one'
+);
+select pg_temp.login_as('00000000-0000-0000-0000-0000000000c1');
 select throws_ok(
   $$ select governance.apply_as_partner('Poetry Club', null, 'cultural', 'iraq', null, null, null,
        'Again.', null, '{}', 'Club Head', null, true) $$,

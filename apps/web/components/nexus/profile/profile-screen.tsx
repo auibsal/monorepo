@@ -144,15 +144,21 @@ export const ProfileScreen = () => {
           </div>
           <div className="flex items-start gap-3">
             <Checkbox
-              checked={form.camera_shy}
-              id={`${id}-shy`}
+              aria-describedby={`${id}-photos-hint`}
+              checked={!form.camera_shy}
+              id={`${id}-photos`}
               onCheckedChange={(v) =>
-                setForm((f) => ({ ...f, camera_shy: v === true }))
+                setForm((f) => ({ ...f, camera_shy: v !== true }))
               }
             />
-            <Label className="leading-normal" htmlFor={`${id}-shy`}>
-              {t("setup.cameraShy")}
-            </Label>
+            <div className="grid gap-1">
+              <Label className="leading-normal" htmlFor={`${id}-photos`}>
+                {t("profile.photos")}
+              </Label>
+              <p className="type-caption" id={`${id}-photos-hint`}>
+                {t("profile.photosHint")}
+              </p>
+            </div>
           </div>
           {save.isError ? (
             <p className="text-text" role="alert">

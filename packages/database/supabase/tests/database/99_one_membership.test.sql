@@ -76,7 +76,7 @@ insert into core.semesters (code, name_en, name_ar, starts_on, ends_on) values
 update core.settings set value = '0' where key = 'membership.founding_voters';
 -- </preamble>
 
-select plan(25);
+select plan(27);
 
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a1', 'membership-om@auib.edu.iq', 'Membership');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a2', 'member-om@auib.edu.iq', 'Plain Member');
@@ -163,9 +163,14 @@ select throws_ok(
   '42501', 'one_membership', 'A member cannot also be a guest'
 );
 select pg_temp.logout();
-select throws_ok(
+select lives_ok(
   $$ select pg_temp.grant_role('00000000-0000-0000-0000-0000000000a2', 'partner_rep', 'partner', '00000000-0000-0000-0000-00000000d001') $$,
-  '42501', 'one_membership', 'A member cannot also be on a partner''s team'
+  'A member may also be on their club''s team'
+);
+select is(private.membership_kind('00000000-0000-0000-0000-0000000000a2'), 'member', 'and stays a member');
+select throws_ok(
+  $$ select pg_temp.grant_role('00000000-0000-0000-0000-0000000000b1', 'partner_rep', 'partner', '00000000-0000-0000-0000-00000000d001') $$,
+  '42501', 'one_membership', 'A guest is never on a partner''s team'
 );
 select throws_ok(
   $$ insert into governance.partner_affiliations (partner_id, user_id, status)

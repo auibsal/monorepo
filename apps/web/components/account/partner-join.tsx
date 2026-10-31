@@ -83,12 +83,13 @@ const ApplicationForm = () => {
     partnerWill: "",
     purpose: "",
     reach: "iraq" as (typeof REACHES)[number],
-    signatory: "",
     url: "",
   });
-  const signatory =
-    form.signatory ||
-    (profile.data ? localized(profile.data, "full_name", locale) : "");
+  // A signature is the signer's name on the platform, dated today (owner,
+  // Oct 31, 2026); the database signs in that name whatever is sent.
+  const signatory = profile.data
+    ? localized(profile.data, "full_name", locale)
+    : "";
   const apply = useMutation({
     mutationFn: async () =>
       unwrap(
@@ -276,18 +277,16 @@ const ApplicationForm = () => {
       <Memorandum name={form.nameEn.trim()} />
 
       <DiwanSection id="sign" title={t("sign")}>
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className="grid gap-4 sm:grid-cols-3">
           <Field label={t("signatory")}>
+            {(id) => <Input dir="auto" id={id} readOnly value={signatory} />}
+          </Field>
+          <Field label={t("signedOn")}>
             {(id) => (
               <Input
-                dir="auto"
                 id={id}
-                maxLength={200}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, signatory: e.target.value }))
-                }
-                required
-                value={signatory}
+                readOnly
+                value={formatLongDate(new Date(), locale, true)}
               />
             )}
           </Field>
@@ -352,6 +351,17 @@ export const PartnerJoin = () => {
     // its address need not be AUIB's (owner, Oct 31, 2026).
     return (
       <DiwanPage lede={t("lede")} narrow title={t("title")}>
+        {/* A member applies as themselves, so they stay a member (owner,
+            Oct 31, 2026); a new account here is for someone who isn't. */}
+        <p className="type-body">
+          {t("members")}{" "}
+          <Link
+            className="font-medium text-accent hover:underline"
+            href={{ pathname: "/sign-in", query: { next: PATH } }}
+          >
+            {t("membersSignIn")}
+          </Link>
+        </p>
         <p className="type-body">{t("account")}</p>
         <div className="grid gap-6">
           <SignUpForm
@@ -362,10 +372,9 @@ export const PartnerJoin = () => {
       </DiwanPage>
     );
   }
-  // One membership per account (owner, Oct 31, 2026): a member or a guest
-  // applies with the organization's own address, never with their own.
-  const kind = mine.data?.kind;
-  if (kind === "member" || kind === "guest") {
+  // A member may lead their club's partnership (owner, Oct 31, 2026); a
+  // guest may not, and applies with the organization's own address.
+  if (mine.data?.kind === "guest") {
     return (
       <DiwanPage lede={t("lede")} narrow title={t("title")}>
         <p className="type-body">{t("oneMembership")}</p>

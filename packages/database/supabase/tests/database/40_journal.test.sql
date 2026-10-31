@@ -78,7 +78,7 @@ update core.settings set value = '0' where key = 'membership.founding_voters';
 -- Start from an empty journal: migrations seed the real Issue 1 call.
 delete from journal.issues;
 
-select plan(39);
+select plan(40);
 
 -- People: founder, Submissions Manager, EIC, three readers, authors.
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000f1', 'founder@auib.edu.iq', 'Founder');
@@ -309,8 +309,15 @@ select is(
 select pg_temp.login_as(pg_temp.author(1));
 select lives_ok(
   $$ select journal.sign_agreement(
-       (select id from journal.submissions where category = 'fiction' and status = 'accepted'), 'Author One') $$,
+       (select id from journal.submissions where category = 'fiction' and status = 'accepted'), 'Someone Else') $$,
   'The author signs the agreement once accepted'
+);
+select is(
+  (select a.signer_name from journal.agreements a
+     join journal.submissions s on s.id = a.submission_id
+    where s.category = 'fiction' and s.author_id = pg_temp.author(1)),
+  'Author 1',
+  'The agreement is signed in the author''s name on the platform, not a typed one'
 );
 
 select * from finish();

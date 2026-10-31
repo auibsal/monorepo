@@ -759,7 +759,6 @@ export type Database = {
           interests: string[];
           languages: string[];
           major: string | null;
-          photo_consent: boolean;
           research_consent: boolean;
           skills: string[];
           student_id: string | null;
@@ -780,7 +779,6 @@ export type Database = {
           interests?: string[];
           languages?: string[];
           major?: string | null;
-          photo_consent?: boolean;
           research_consent?: boolean;
           skills?: string[];
           student_id?: string | null;
@@ -801,7 +799,6 @@ export type Database = {
           interests?: string[];
           languages?: string[];
           major?: string | null;
-          photo_consent?: boolean;
           research_consent?: boolean;
           skills?: string[];
           student_id?: string | null;

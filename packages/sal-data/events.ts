@@ -99,6 +99,22 @@ export const publicEvent = async (client: Client, eventSlug: string) =>
       .maybeSingle()
   );
 
+const NAME_EN = /\bname\b/i;
+const NAME_AR = /اسم/;
+
+/**
+ * Whether a booking question asks for the person's name. A booking carries
+ * the member's name on the platform (owner, Oct 31, 2026), so such a question
+ * is answered with it rather than typed.
+ */
+export const asksForName = (question: {
+  id: string;
+  label_ar?: string | null;
+  label_en?: string | null;
+}) =>
+  NAME_EN.test(`${question.id} ${question.label_en ?? ""}`) ||
+  NAME_AR.test(question.label_ar ?? "");
+
 export const rsvp = async (
   client: Client,
   eventId: string,

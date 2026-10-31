@@ -235,7 +235,6 @@ export const detailsSchema = z.object({
   interests: z.array(z.enum(interests)),
   languages: z.array(z.enum(memberLanguages)),
   major: z.string().trim().max(120).nullable(),
-  photo_consent: z.boolean(),
   research_consent: z.boolean(),
   skills: z.array(z.enum(skills)),
   student_id: z.string().trim().max(20).nullable(),
@@ -256,7 +255,6 @@ export const emptyDetails: MemberDetails = {
   interests: [],
   languages: [],
   major: null,
-  photo_consent: false,
   research_consent: false,
   skills: [],
   student_id: null,
@@ -265,7 +263,7 @@ export const emptyDetails: MemberDetails = {
 };
 
 const detailColumns =
-  "affiliation, birth_year, city, college, gender, graduation_year, heard_from, interests, languages, major, photo_consent, research_consent, skills, student_id, study_level, volunteer";
+  "affiliation, birth_year, city, college, gender, graduation_year, heard_from, interests, languages, major, research_consent, skills, student_id, study_level, volunteer";
 
 /** The member's own answers (RLS: only theirs, or members.manage). */
 export const myDetails = async (
