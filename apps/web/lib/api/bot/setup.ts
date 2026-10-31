@@ -22,7 +22,13 @@ const PRIVATE: (keyof Copy["commands"])[] = [
   "help",
 ];
 const GROUP: (keyof Copy["commands"])[] = ["events", "help"];
-const ADMINS: (keyof Copy["commands"])[] = [...GROUP, "topic", "lang", "setup"];
+const ADMINS: (keyof Copy["commands"])[] = [
+  ...GROUP,
+  "topic",
+  "lang",
+  "audience",
+  "setup",
+];
 
 export const configure = async (
   api: Api,

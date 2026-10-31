@@ -57,7 +57,16 @@ const Memorandum = ({ name }: { name: string }) => {
         {(["one", "two", "three", "four", "five", "six"] as const).map(
           (key) => (
             <li className="type-body" key={key}>
-              {t(key, { name: name || t("yourOrganization") })}
+              {t(key, {
+                // "one" and "five" open with the name, so a capital there.
+                name:
+                  name ||
+                  t(
+                    key === "one" || key === "five"
+                      ? "yourOrganizationStart"
+                      : "yourOrganization"
+                  ),
+              })}
             </li>
           )
         )}

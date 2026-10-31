@@ -13,7 +13,7 @@ import {
 /**
  * Connecting a group and telling the bot about it. /setup takes the code an
  * officer made in the Nexus (settings.manage); the rest is for the group's
- * Telegram admins: /topic, /lang.
+ * Telegram admins: /topic, /lang, /audience.
  */
 export const setup = new Composer<BotContext>();
 const groups = setup.chatType(["group", "supergroup"]);
@@ -98,6 +98,24 @@ adminCommand("topic", async (ctx, arg, group) => {
     arg === "none"
       ? ctx.t.topicCleared
       : ctx.t.topicOk(ctx.t.purposeNames[arg as Purpose])
+  );
+});
+
+// Who the group is for: the main group (members) or the Diwan group
+// (staff: officers only, with the morning brief and event summaries).
+adminCommand("audience", async (ctx, arg) => {
+  if (!(arg === "staff" || arg === "members")) {
+    await replyHere(ctx, ctx.t.audienceUsage);
+    return;
+  }
+  await db()
+    .schema("core")
+    .from("telegram_groups")
+    .update({ audience: arg })
+    .eq("chat_id", ctx.chat.id);
+  await replyHere(
+    ctx,
+    arg === "staff" ? ctx.t.audienceStaff : ctx.t.audienceMembers
   );
 });
 

@@ -48,7 +48,11 @@ describe.skipIf(!enabled)("Hudhud", () => {
   let messageId = 1;
   // Imported after the environment is set.
   let bot: Awaited<ReturnType<typeof loadBot>>;
-  let runFeeds: (api: unknown, username: string) => Promise<{ posted: number }>;
+  let runFeeds: (
+    api: unknown,
+    username: string,
+    now?: Date
+  ) => Promise<{ posted: number }>;
 
   const fake = (method: string, payload: Record<string, unknown>) => {
     if (method === "getChatMember") {
@@ -314,6 +318,37 @@ describe.skipIf(!enabled)("Hudhud", () => {
     // Without Guard mode a linked member is approved directly.
     await bot.handleUpdate(joinRequest(tgUser));
     expect(sent("approveChatJoinRequest").at(-1)?.payload.user_id).toBe(tgUser);
+  });
+
+  test("in the Diwan group, lets in only officers and posts the brief", async () => {
+    await bot.handleUpdate(message("/audience staff", { chat: chatId }));
+    expect(lastText()).toContain("for the Society's officers now");
+
+    // A linked member without a Society role waits for the admins.
+    await bot.handleUpdate(joinRequest(tgUser, "q3"));
+    expect(guardAnswer()).toBe("queue");
+    expect(String(sent().at(-1)?.payload.text)).toContain(
+      "is for the Society's officers"
+    );
+
+    // The morning brief, once a day, from 8:00 AM in Baghdad.
+    const morning = new Date();
+    morning.setUTCHours(6, 0, 0, 0);
+    const before = sent().length;
+    await runFeeds(bot.api, "sal_test_bot", morning);
+    await runFeeds(bot.api, "sal_test_bot", morning);
+    const briefs = sent()
+      .slice(before)
+      .filter(
+        (call) =>
+          call.payload.chat_id === chatId &&
+          String(call.payload.text).includes("Good morning")
+      );
+    expect(briefs).toHaveLength(1);
+    expect(String(briefs[0]?.payload.text)).toContain("Waiting in the Diwan");
+
+    await bot.handleUpdate(message("/audience members", { chat: chatId }));
+    expect(lastText()).toContain("for the Society's members now");
   });
 
   test("answers a guest mention with the matching event", async () => {

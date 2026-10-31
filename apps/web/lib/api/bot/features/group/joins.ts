@@ -2,7 +2,13 @@ import type { Api } from "grammy";
 import { Composer, GrammyError, InlineKeyboard } from "grammy";
 import type { BotContext } from "../../context";
 import { copy, langOf } from "../../copy";
-import { db, group as loadGroup, whoami } from "../../db";
+import {
+  db,
+  type Group,
+  isStaffAccount,
+  group as loadGroup,
+  whoami,
+} from "../../db";
 import { connectPage } from "../../links";
 
 /**
@@ -13,6 +19,11 @@ import { connectPage } from "../../links";
  * inviting them to link (the moment they do, they're let in). Welcome
  * messages, anti-spam, restrictions and bans are Telegram's own (group
  * settings and admin tools), not the bot's.
+ *
+ * A staff group (/audience staff, the Diwan group) lets in only linked
+ * accounts that hold a Society role: a member without one, or anyone not
+ * linked, waits for the group's admins, and linking later lets in only
+ * those who hold a role.
  */
 export const joins = new Composer<BotContext>();
 
@@ -34,6 +45,12 @@ const approve = async (api: Api, chatId: number, telegramId: number) => {
   await forget(chatId, telegramId);
 };
 
+/** Whether this linked person may come straight in. */
+const mayEnter = (group: Group, telegramId: number) =>
+  group.audience === "staff"
+    ? isStaffAccount(telegramId)
+    : Promise.resolve(true);
+
 joins.on("chat_join_request", async (ctx) => {
   const request = ctx.chatJoinRequest;
   const person = request.from;
@@ -50,7 +67,7 @@ joins.on("chat_join_request", async (ctx) => {
     await answer("queue");
     return;
   }
-  if (me) {
+  if (me && (await mayEnter(group, person.id))) {
     await (request.query_id
       ? answer("approve")
       : approve(ctx.api, group.chat_id, person.id));
@@ -63,18 +80,19 @@ joins.on("chat_join_request", async (ctx) => {
   );
   const lang = langOf(person.language_code);
   const t = copy[lang];
+  const title = request.chat.title ?? "SAL";
+  let note = t.joinWaiting(title);
+  if (group.audience === "staff") {
+    note = me ? t.joinStaffOnly(title) : t.joinStaffWaiting(title);
+  }
   // Bots may write to someone who asked to join, even before /start.
   await ctx.api
-    .sendMessage(
-      request.user_chat_id,
-      t.joinWaiting(request.chat.title ?? "SAL"),
-      {
-        reply_markup: new InlineKeyboard().url(
-          t.buttons.link,
-          connectPage(lang)
-        ),
-      }
-    )
+    .sendMessage(request.user_chat_id, note, {
+      // A linked member without a role has nothing to link.
+      reply_markup: me
+        ? undefined
+        : new InlineKeyboard().url(t.buttons.link, connectPage(lang)),
+    })
     .catch(() => undefined);
 });
 
@@ -84,7 +102,14 @@ export const admitPending = async (api: Api, telegramId: number) => {
     .select("chat_id")
     .eq("telegram_id", telegramId);
   await Promise.all(
-    (rows ?? []).map(({ chat_id }) => approve(api, chat_id, telegramId))
+    (rows ?? []).map(async ({ chat_id }) => {
+      const group = await loadGroup(chat_id);
+      // A staff group waits for its admins unless the person holds a role.
+      if (group && !(await mayEnter(group, telegramId))) {
+        return;
+      }
+      await approve(api, chat_id, telegramId);
+    })
   );
 };
 

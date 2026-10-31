@@ -71,7 +71,10 @@ and decisions), and continue from the first unticked item.
     code that reads the secret key. The bot acts for a member only through
     the `core.telegram_*` functions, which run the Diwan functions under the
     member's claims (aal1) so RLS still decides. Bot copy in
-    `lib/api/bot/copy.ts`; the mascot in `brand/mascot`.
+    `lib/api/bot/copy.ts`; the mascot in `brand/mascot`. A group is for
+    members or, with `/audience staff`, the Diwan group: officers only
+    (`core.telegram_is_staff`), a morning brief and event summaries
+    (`lib/api/bot/staff.ts`).
 - **Paths, never queries** (owner, Oct 31, 2026). Every view has its own
   path: tabs are pages (`SectionTabs` matches by path), a month is
   `/events/2026-11` (`/events/2026-11/society`, `/events/<series>/2026-11`,

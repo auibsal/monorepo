@@ -1144,6 +1144,7 @@ export type Database = {
       };
       telegram_groups: {
         Row: {
+          audience: string;
           chat_id: number;
           join_policy: string;
           lang: string;
@@ -1153,6 +1154,7 @@ export type Database = {
           topics: NonNullable<Json>;
         };
         Insert: {
+          audience?: string;
           chat_id: number;
           join_policy?: string;
           lang?: string;
@@ -1162,6 +1164,7 @@ export type Database = {
           topics?: NonNullable<Json>;
         };
         Update: {
+          audience?: string;
           chat_id?: number;
           join_policy?: string;
           lang?: string;
@@ -1382,6 +1385,10 @@ export type Database = {
         Args: { event_id: string; telegram_id: number };
         Returns: undefined;
       };
+      telegram_event_summaries: {
+        Args: { since: string; until: string };
+        Returns: Json;
+      };
       telegram_events: {
         Args: { event_id?: string; max_rows?: number; telegram_id: number };
         Returns: Json;
@@ -1390,6 +1397,7 @@ export type Database = {
         Args: Record<PropertyKey, never>;
         Returns: string;
       };
+      telegram_is_staff: { Args: { telegram_id: number }; Returns: boolean };
       telegram_link_account: {
         Args: { telegram_id: number; user_id: string; username?: string };
         Returns: undefined;
@@ -1407,6 +1415,7 @@ export type Database = {
         Args: { event_id: string; telegram_id: number };
         Returns: string;
       };
+      telegram_staff_brief: { Args: { at?: string }; Returns: Json };
       telegram_whoami: { Args: { telegram_id: number }; Returns: Json };
     };
     Enums: {

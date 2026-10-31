@@ -1670,6 +1670,11 @@ Covered by automated tests so far:
 
 ## needs-native-review (Arabic written for the platform)
 
+- Hudhud in the Diwan group (2026-10-31, section 15): `lib/api/bot/copy.ts`
+  (`audience*`, `brief*`, `briefCounts.*`, `joinStaff*`, `summary*`,
+  `buttons.diwan`, `commands.audience`, `purposeNames.brief`), and
+  `nexus.partnerJoin.memorandum.yourOrganizationStart`.
+
 - Meetings, partners asking, choices, one flow (2026-10-31, section 14):
   `nexus.admin.society.meetings.*`, `nexus.admin.sections.tabs.meetings`,
   `nexus.admin.governance.resolutions.{title,none}`,

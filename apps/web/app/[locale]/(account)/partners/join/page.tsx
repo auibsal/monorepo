@@ -9,6 +9,13 @@ export const generateMetadata: typeof metadataFrom = async (props) => ({
   robots: { follow: true, index: true },
 });
 
-const PartnerJoinPage = () => <PartnerJoin />;
+const PartnerJoinPage = () => (
+  <main
+    className="mx-auto w-full max-w-6xl flex-1 px-4 pt-12 pb-20 sm:pt-16 sm:pb-24"
+    id="main"
+  >
+    <PartnerJoin />
+  </main>
+);
 
 export default PartnerJoinPage;

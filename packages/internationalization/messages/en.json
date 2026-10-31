@@ -4065,7 +4065,8 @@
         "three": "The Society does not accept sponsorship from political parties, religious or sectarian bodies, tobacco, alcohol or gambling businesses, or any sponsor that would compromise its independence.",
         "four": "Sponsors get acknowledgement, never editorial influence.",
         "five": "{name} verifies its own people on the platform, and only people who belong to it. What it turns on for itself and its guests, and what it publishes, waits for the Society's approval.",
-        "six": "Nothing is paid through the platform: the Society takes no online payments."
+        "six": "Nothing is paid through the platform: the Society takes no online payments.",
+        "yourOrganizationStart": "Your organization"
       },
       "oneMembership": "You are the Society's guest, and a guest is never on a partner's team. Apply with your organization's own address: sign out, then come back here.",
       "signedOn": "Date",

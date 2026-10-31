@@ -12,16 +12,45 @@ export type Lang = "en" | "ar";
 export const langOf = (code: string | undefined): Lang =>
   code?.toLowerCase().startsWith("ar") ? "ar" : "en";
 
-export const purposes = ["announcements", "events", "waraq", "word"] as const;
+export const purposes = [
+  "announcements",
+  "events",
+  "waraq",
+  "word",
+  "brief",
+] as const;
 export type Purpose = (typeof purposes)[number];
 
 const en = {
   alreadyLinked: (name: string) => `You're linked as ${name}.`,
+  audienceMembers:
+    "This group is for the Society's members now: I let in anyone with a linked SAL account.",
+  audienceStaff:
+    "This group is for the Society's officers now: I let in only linked accounts that hold a Society role, post the morning brief at 8:00 AM and a short summary after each event. /topic brief chooses where they go.",
+  audienceUsage: "Use /audience staff or /audience members.",
+  briefBooked: (booked: string, capacity: string) =>
+    `${booked} booked of ${capacity}`,
+  briefBookedOpen: (booked: string) => `${booked} booked`,
+  briefCounts: {
+    grantsAsked: "Partners asking to turn something on",
+    hiringNew: "New replies to openings",
+    partnerApplications: "Partner applications",
+    perksWaiting: "Perks waiting to be published",
+    requestsOpen: "Requests open",
+    submissionsNew: "New submissions to Qirtas",
+  },
+  briefEvent: (title: string, time: string) => `${title} · ${time}`,
+  briefNoEvents: "No events today.",
+  briefNothing: "Nothing waits in the Diwan.",
+  briefTitle: (date: string) => `<b>Good morning. Today, ${date}</b>`,
+  briefWaiting: "<b>Waiting in the Diwan</b>",
+  briefWaitlist: (n: string) => `${n} on the waitlist`,
   buttons: {
     back: "Back",
     calendar: "Add to calendar",
     cancel: "Cancel my place",
     details: "Details",
+    diwan: "Open the Diwan",
     events: "Events",
     link: "Link my account",
     me: "My membership",
@@ -38,6 +67,7 @@ const en = {
   },
   by: (author: string) => `by ${author}`,
   commands: {
+    audience: "Who this group is for: staff or members",
     events: "What's coming up",
     help: "What I can do",
     lang: "Language of my posts: en, ar or both",
@@ -78,6 +108,10 @@ const en = {
   // Inline
   inlineEvent: "Event",
   inlinePiece: "Qirtas",
+  joinStaffOnly: (group: string) =>
+    `${group} is for the Society's officers. An admin will look at your request.`,
+  joinStaffWaiting: (group: string) =>
+    `${group} is for the Society's officers. If you hold a Society role, link your SAL account and I'll let you in right away; otherwise an admin will look at your request.`,
   joinWaiting: (group: string) =>
     `Thank you for asking to join ${group}. An admin will look at your request soon. If you have a SAL account, link it and I'll let you in right away.`,
   langOk: "I'll post in this language from now on.",
@@ -117,6 +151,7 @@ const en = {
   postWord: (n: string) => `<b>Word No. ${n}</b> is ready.`,
   purposeNames: {
     announcements: "announcements",
+    brief: "the morning brief and event summaries",
     events: "events",
     waraq: "Qirtas",
     word: "the daily word",
@@ -139,10 +174,14 @@ const en = {
   setupUsage: "Send /setup with the code from the Diwan (Settings, Telegram).",
   shortDescription:
     "The messenger of the AUIB Society of Arts and Letters: events, Qirtas and a daily word.",
+  summaryCame: (came: string, booked: string, walkIns: string) =>
+    `${came} came: ${booked} who booked, ${walkIns} without a booking`,
+  summaryNoShows: (n: string) => `${n} booked and didn't come`,
+  summaryTitle: "<b>After the event</b>",
   topicCleared: "This topic is no longer for anything in particular.",
   topicOk: (purpose: string) => `This topic is now for ${purpose}.`,
   topicUsage:
-    "Send it inside a topic: /topic announcements, events, waraq or word. /topic none clears it.",
+    "Send it inside a topic: /topic announcements, events, waraq, word or brief. /topic none clears it.",
   unlinked:
     "Unlinked. Your SAL account no longer gets notices here. You can link it again from your profile.",
   waitlisted: "You're on the waitlist.",
@@ -166,11 +205,34 @@ type Copy = {
 
 const ar: Copy = {
   alreadyLinked: (name: string) => `أنت مرتبط باسم ${name}.`,
+  audienceMembers:
+    "هذه المجموعة لأعضاء الجمعية الآن: أُدخل كل من ربط حسابه في الجمعية.",
+  audienceStaff:
+    "هذه المجموعة لمسؤولي الجمعية الآن: لا أُدخل إلا الحسابات المرتبطة التي تشغل دوراً في الجمعية، وأنشر موجز الصباح في الثامنة وملخصاً قصيراً بعد كل فعالية. اختر مكانهما بـ /topic brief.",
+  audienceUsage: "استخدم /audience staff أو /audience members.",
+  briefBooked: (booked: string, capacity: string) =>
+    `${booked} حجزاً من ${capacity}`,
+  briefBookedOpen: (booked: string) => `${booked} حجزاً`,
+  briefCounts: {
+    grantsAsked: "شركاء يطلبون تفعيل أمر",
+    hiringNew: "ردود جديدة على الفرص",
+    partnerApplications: "طلبات شراكة",
+    perksWaiting: "مزايا بانتظار النشر",
+    requestsOpen: "طلبات مفتوحة",
+    submissionsNew: "مشاركات جديدة في قرطاس",
+  },
+  briefEvent: (title: string, time: string) => `${title} · ${time}`,
+  briefNoEvents: "لا فعاليات اليوم.",
+  briefNothing: "لا شيء ينتظر في الديوان.",
+  briefTitle: (date: string) => `<b>صباح الخير. اليوم ${date}</b>`,
+  briefWaiting: "<b>ما ينتظر في الديوان</b>",
+  briefWaitlist: (n: string) => `${n} في قائمة الانتظار`,
   buttons: {
     back: "رجوع",
     calendar: "أضف إلى التقويم",
     cancel: "ألغِ مقعدي",
     details: "التفاصيل",
+    diwan: "افتح الديوان",
     events: "الفعاليات",
     link: "اربط حسابي",
     me: "عضويتي",
@@ -187,6 +249,7 @@ const ar: Copy = {
   },
   by: (author: string) => `بقلم ${author}`,
   commands: {
+    audience: "لمن هذه المجموعة: staff أو members",
     events: "ما الذي سيأتي",
     help: "ما الذي أستطيع فعله",
     lang: "لغة منشوراتي: en أو ar أو both",
@@ -224,6 +287,10 @@ const ar: Copy = {
 
   inlineEvent: "فعالية",
   inlinePiece: "قرطاس",
+  joinStaffOnly: (group: string) =>
+    `${group} لمسؤولي الجمعية. سينظر أحد المشرفين في طلبك.`,
+  joinStaffWaiting: (group: string) =>
+    `${group} لمسؤولي الجمعية. إن كنت تشغل دوراً في الجمعية فاربط حسابك وسأدخلك فوراً، وإلا فسينظر أحد المشرفين في طلبك.`,
   joinWaiting: (group: string) =>
     `شكراً لطلبك الانضمام إلى ${group}. سينظر أحد المشرفين في طلبك قريباً. وإن كان لديك حساب في الجمعية فاربطه وسأدخلك فوراً.`,
   langOk: "سأنشر بهذه اللغة من الآن.",
@@ -260,6 +327,7 @@ const ar: Copy = {
   postWord: (n: string) => `<b>الكلمة رقم ${n}</b> جاهزة.`,
   purposeNames: {
     announcements: "الإعلانات",
+    brief: "موجز الصباح وملخصات الفعاليات",
     events: "الفعاليات",
     waraq: "قرطاس",
     word: "كلمة اليوم",
@@ -279,10 +347,14 @@ const ar: Copy = {
   setupUsage: "أرسل /setup مع الرمز من الديوان (الإعدادات، تيليغرام).",
   shortDescription:
     "حامل رسائل جمعية الفنون والآداب: الفعاليات وقرطاس وكلمة كل يوم.",
+  summaryCame: (came: string, booked: string, walkIns: string) =>
+    `حضر ${came}: ${booked} ممن حجزوا و${walkIns} دون حجز`,
+  summaryNoShows: (n: string) => `${n} حجزوا ولم يحضروا`,
+  summaryTitle: "<b>بعد الفعالية</b>",
   topicCleared: "لم يعد هذا الموضوع مخصصاً لشيء بعينه.",
   topicOk: (purpose: string) => `صار هذا الموضوع مخصصاً لـ${purpose}.`,
   topicUsage:
-    "أرسله داخل موضوع: /topic announcements أو events أو waraq أو word. و/topic none يلغي التخصيص.",
+    "أرسله داخل موضوع: /topic announcements أو events أو waraq أو word أو brief. و/topic none يلغي التخصيص.",
   unlinked:
     "تم الفصل. لن تصل إشعارات حسابك في الجمعية إلى هنا بعد الآن. يمكنك الربط مجدداً من ملفك الشخصي.",
   waitlisted: "أنت في قائمة الانتظار.",
