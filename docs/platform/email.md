@@ -51,16 +51,38 @@ phone and Telegram too when they turned those on.
 | `journal.sunday_paper` | Every member who takes the optional emails | Yes: a stop link and one-click unsubscribe (`/emails/stop`) |
 | `newsletter.confirm`, `newsletter.monthly` | Newsletter subscribers | Double opt-in; unsubscribe link and one-click |
 | `personal_email.confirm` | The new personal address | No |
-| `membership.verification_decided` | An account from outside AUIB | No |
+| `membership.verification_decided` | An account from outside AUIB (requests from before partners verified their own) | No |
 | `access.role_ending`, `programmes.*`, `platform.cron_failed` | Officers | No |
 | `access.two_step_reset` | The person whose authenticator was removed (by an officer or a recovery code) | No |
 
-"Email me about events, calls and Society notices" (`notify_email`, in
-Profile and in setup) covers the optional ones: the Sunday Paper and
+"Email me about events, calls and Society notices" (`notify_email`, on
+Membership → Settings → Notices) covers the optional ones: the Sunday Paper and
 booked-event reminders. The stop link turns it off without signing in; the
 link is signed (`lib/api/email-stop.ts`) and the page needs a button press.
 
 ## Settings to keep right
+
+**Supabase → the database (the outbox and the scheduled jobs)**
+
+The outbox trigger and every scheduled job reach the site through
+`private.call_api`: the address `platform.api_url` (in `core.settings`,
+`https://auibsal.org/api`, set by migration `20261101000300`) plus a
+bearer token read from Vault. With the address or a token missing, it
+does nothing at all: emails wait in `core.outbox` and no error shows
+anywhere. That is why the personal-email link was never sent (Oct 31,
+2026). In the Supabase dashboard, Project Settings → Vault, add two
+secrets, each with the same value as the app's environment variable in
+Vercel:
+
+| Vault secret | Same value as (Vercel) |
+| --- | --- |
+| `outbox_webhook_secret` | `DATABASE_WEBHOOK_SECRET` |
+| `cron_secret` | `CRON_SECRET` |
+
+The Desk's Connected panel (Email) says which of the three is missing,
+how many emails wait and when the last one left (`core.outbox_health()`,
+`settings.manage`). Waiting emails go out on their own once the secrets
+are in: the next outbox row or scheduled run calls the route again.
 
 **Supabase → Authentication**
 

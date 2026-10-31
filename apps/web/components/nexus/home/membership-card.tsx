@@ -211,6 +211,28 @@ const WalletLink = ({ code }: { code: string }) => {
       ),
     queryKey: ["membership", "wallet", code],
   });
+  // Google's save message may never have come: ask Google once whether the
+  // pass is held, and record it.
+  const queryClient = useQueryClient();
+  useQuery({
+    enabled: pass.isSuccess && pass.data?.state !== "saved",
+    queryFn: async () => {
+      const { saved } = await callApi<{ saved: boolean }>(
+        supabase,
+        "/wallet/google",
+        { check: true }
+      );
+      if (saved) {
+        await queryClient.invalidateQueries({
+          queryKey: ["membership", "wallet", code],
+        });
+      }
+      return saved;
+    },
+    queryKey: ["membership", "wallet-check", code],
+    retry: false,
+    staleTime: Number.POSITIVE_INFINITY,
+  });
   const add = async () => {
     setState("busy");
     try {

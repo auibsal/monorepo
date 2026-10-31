@@ -13,7 +13,8 @@ import { Link, useRouter } from "@repo/internationalization/navigation";
 import { journal, localized, toPlainText } from "@repo/sal-data";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
-import { type FormEvent, useState } from "react";
+import { type FormEvent, type ReactNode, useState } from "react";
+import { manuscriptHtml } from "@/lib/manuscript";
 import { queryKeys, useOpenCalls } from "@/lib/nexus/queries";
 import { AdminHeading, ErrorLine, Field, SelectInput } from "../admin/kit";
 import { RichTextEditor } from "../editor/rich-text";
@@ -251,7 +252,13 @@ export const WriteType = ({ type }: { type: journal.Category }) => {
             <TranslationFields onChange={setSource} value={source} />
           ) : null}
           {needs.video ? null : (
-            <FilesField files={files} kinds={kinds} onChange={setFiles} />
+            <FilesField
+              body={body}
+              files={files}
+              kinds={kinds}
+              onBody={setBody}
+              onChange={setFiles}
+            />
           )}
           <Field hint={t("noteHint")} label={t("note")}>
             {(id) => (
@@ -522,25 +529,92 @@ const DeckAndVideo = ({
   );
 };
 
+/**
+ * The files, and the manuscript read into the editor (owner, Oct 31,
+ * 2026): a Word file or a PDF fills the editor when it is empty, or offers
+ * to; the file itself goes with the work as the original.
+ */
 const FilesField = ({
+  body,
   files,
   kinds,
+  onBody,
   onChange,
 }: {
+  readonly body: string;
   readonly files: PendingFile[];
   readonly kinds: ReturnType<typeof kindsFor>;
+  readonly onBody: (html: string) => void;
   readonly onChange: (
     update: (current: PendingFile[]) => PendingFile[]
   ) => void;
 }) => {
   const t = useTranslations("nexus.journal.write");
+  const [read, setRead] = useState<{
+    html: string | null;
+    name: string;
+    used: boolean;
+  } | null>(null);
+  const [reading, setReading] = useState(false);
+  const readManuscript = async (file: File) => {
+    setReading(true);
+    try {
+      const html = await manuscriptHtml(file);
+      const empty = !toPlainText(body).trim();
+      if (html && empty) {
+        onBody(html);
+      }
+      setRead({ html, name: file.name, used: Boolean(html && empty) });
+    } catch {
+      setRead({ html: null, name: file.name, used: false });
+    } finally {
+      setReading(false);
+    }
+  };
+  let line: ReactNode = null;
+  if (reading) {
+    line = t("manuscript.reading");
+  } else if (read?.used) {
+    line = t("manuscript.read", { name: read.name });
+  } else if (read?.html) {
+    const { html } = read;
+    line = (
+      <>
+        {t("manuscript.offer", { name: read.name })}{" "}
+        <Button
+          className="h-auto px-0"
+          onClick={() => {
+            onBody(html);
+            setRead({ ...read, used: true });
+          }}
+          type="button"
+          variant="link"
+        >
+          {t("manuscript.use")}
+        </Button>
+      </>
+    );
+  } else if (read) {
+    line = t("manuscript.unreadable", { name: read.name });
+  }
   return (
     <fieldset className="grid gap-3">
       <legend className="mb-2 font-medium">{t("files")}</legend>
       <FilePicker
         kinds={kinds}
-        onAdd={(added) => onChange((current) => [...current, ...added])}
+        onAdd={(added) => {
+          onChange((current) => [...current, ...added]);
+          const manuscript = added.find((f) => f.kind === "manuscript");
+          if (manuscript) {
+            readManuscript(manuscript.file);
+          }
+        }}
       />
+      {line ? (
+        <p className="type-caption" role="status">
+          {line}
+        </p>
+      ) : null}
       <PendingList
         files={files}
         onRemove={(index) =>

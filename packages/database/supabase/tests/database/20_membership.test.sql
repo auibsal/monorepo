@@ -102,10 +102,13 @@ select ok(
   'Another domain is not verified at sign-up'
 );
 select is(
-  (select status from membership.verification_requests where user_id = '00000000-0000-0000-0000-0000000000b1'),
-  'pending',
-  'Another domain lands in the verification queue'
+  (select count(*) from membership.verification_requests where user_id = '00000000-0000-0000-0000-0000000000b1')::integer,
+  0,
+  'Another domain opens no request in the Society''s queue (partners verify their own)'
 );
+-- A request from before partners verified their own stays decidable.
+insert into membership.verification_requests (user_id, email)
+values ('00000000-0000-0000-0000-0000000000b1', 'alum@gmail.com');
 select ok(
   (select verified_at is null from core.profiles where id = '00000000-0000-0000-0000-0000000000a3'),
   'An unconfirmed AUIB address is not verified'

@@ -306,6 +306,13 @@ export const RichTextEditor = (props: RichTextProps) => {
     [starterKit(false, document), ...documentExtensions(document)],
     true
   );
+  // Text set from outside (a manuscript read into the editor) replaces
+  // what is there; the editor's own typing comes back equal and is left.
+  useEffect(() => {
+    if (editor && props.value !== editor.getHTML()) {
+      editor.commands.setContent(props.value, { emitUpdate: false });
+    }
+  }, [editor, props.value]);
   return (
     <Frame
       document={document}

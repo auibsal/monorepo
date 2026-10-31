@@ -41,14 +41,16 @@ test("a News desk editor starts a piece, and it waits in Editing, unpublished", 
   await expect(page.getByText(title)).toHaveCount(0);
 });
 
-test("the door offers today's events, and each opens its own check-in", async ({
+test("each event has its own door, and the Desk opens the next one", async ({
   page,
 }) => {
   await signInWithPassword(page, editor.email);
-  await page.goto(`${urls.app}/events/door`);
-  await expect(page.getByText("Choose the event at the door.")).toBeVisible();
-  await page.getByRole("link", { name: event.title }).click();
-  await expect(page).toHaveURL(new RegExp(`/diwan/events/${event.slug}/door$`));
+  await page.goto(urls.app);
+  // The Desk's quick action goes straight to the next event's door.
+  await expect(
+    page.getByRole("link", { name: "Open the door" })
+  ).toHaveAttribute("href", /\/diwan\/events\/[^/]+\/door$/);
+  await page.goto(`${urls.app}/events/${event.slug}/door`);
   await expect(page.getByRole("status")).toContainText("checked in");
   await expectAccessible(page);
 });

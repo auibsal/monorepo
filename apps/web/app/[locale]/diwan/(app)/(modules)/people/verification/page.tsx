@@ -7,7 +7,7 @@ export const generateMetadata = titleFrom((t) =>
 );
 
 const VerificationPage = () => (
-  <RequireModule module="members">
+  <RequireModule module="partners">
     <VerificationQueue />
   </RequireModule>
 );

@@ -6,8 +6,12 @@ import {
 } from "@/components/nexus/profile/tell-us-more";
 import { planSetup } from "@/components/nexus/setup-form";
 
-const none = { ar: "", en: "" };
-const all = { ar: "شاهين فرجو", en: "Shaheen Farjo" };
+const blank = { father: "", first: "", grandfather: "", last: "" };
+const none = { ar: blank, en: blank };
+const all = {
+  ar: { father: "كريم", first: "لينا", grandfather: "حسن", last: "التميمي" },
+  en: { father: "Kareem", first: "Lina", grandfather: "Hasan", last: "Tamimi" },
+};
 
 describe("setup, one question per screen", () => {
   test("a new member: both names, each pledge, photos, then welcome", () => {
@@ -44,14 +48,28 @@ describe("setup, one question per screen", () => {
     });
   });
 
-  test("a name missing in one language asks that language again", () => {
+  test("a part missing in one language asks that language again", () => {
     expect(
       planSetup({
-        names: { ...all, ar: " " },
+        names: { ...all, ar: { ...all.ar, grandfather: " " } },
         pending: [],
         setupDone: true,
       }).steps
     ).toEqual([{ kind: "nameAr" }]);
+  });
+
+  test("a partner's representative who is not a member gives names only", () => {
+    expect(
+      planSetup({
+        member: false,
+        names: none,
+        pending: ["member"],
+        setupDone: false,
+      })
+    ).toEqual({
+      steps: [{ kind: "nameEn" }, { kind: "nameAr" }],
+      welcome: false,
+    });
   });
 });
 

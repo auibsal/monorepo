@@ -124,7 +124,7 @@ select is(
 select ok(
   exists (
     select 1 from access.officer_directory()
-    where email = 'events.lead@auib.edu.iq' and 'Events Lead' = any (roles)
+    where email = 'events.lead@auib.edu.iq' and 'Event Coordinator' = any (roles)
   ) and not exists (select 1 from access.officer_directory() where email = 'member@auib.edu.iq'),
   'the officer directory lists role holders only'
 );

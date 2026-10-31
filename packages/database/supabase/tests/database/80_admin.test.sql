@@ -116,8 +116,8 @@ select is(core.admin_overview(), '{}'::jsonb, 'A plain member gets no figures');
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000f1');
 select ok(core.admin_overview() ? 'members', 'A member manager sees member counts');
-select is((core.admin_overview() ->> 'verification_pending')::integer, 1,
-  'The overview counts the pending verification request');
+select is((core.admin_overview() ->> 'verification_pending')::integer, 0,
+  'The overview counts partner applications, not individual requests');
 select ok(core.admin_overview() ? 'campaigns', 'A charity manager sees campaign totals');
 
 select * from finish();

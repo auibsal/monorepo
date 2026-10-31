@@ -1,3 +1,4 @@
+import { Link } from "@repo/internationalization/navigation";
 import { localized, partners } from "@repo/sal-data";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Institutions } from "@/components/institutions";
@@ -84,6 +85,12 @@ const PartnersPage = async ({ params }: LocaleParams) => {
       })}
       <Section id="work-with-us" title={t("workTitle")}>
         <p className="type-body">{t("work")}</p>
+        <Link
+          className="font-medium text-accent hover:underline"
+          href="/about/partners/join"
+        >
+          {t("apply")}
+        </Link>
       </Section>
     </div>
   );

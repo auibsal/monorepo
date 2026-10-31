@@ -75,7 +75,7 @@ insert into core.semesters (code, name_en, name_ar, starts_on, ends_on) values
 update core.settings set value = '0' where key = 'membership.founding_voters';
 -- </preamble>
 
-select plan(12);
+select plan(16);
 
 select pg_temp.make_user('00000000-0000-0000-0000-00000000d1a1', 'gs-h@auib.edu.iq', 'General Secretary');
 select pg_temp.make_user('00000000-0000-0000-0000-00000000d1a2', 'editor-h@auib.edu.iq', 'Editor');
@@ -153,8 +153,41 @@ select lives_ok(
   'Membership makes the offer'
 );
 select lives_ok(
-  $$ insert into programmes.openings (owner, kind, title_en, title_ar) values ('media', 'role', 'Photographer', 'مصوّر') $$,
+  $$ insert into programmes.openings (kind, role, title_en, title_ar) values ('role', 'photo_video_lead', '', '') $$,
   'Membership posts a role for any owner'
+);
+
+-- Every Society role (owner, Oct 31, 2026): an opening names its role,
+-- the role decides who picks, and whoever is onboarded holds it.
+select is(
+  (select role from programmes.openings where title_en = 'Games Editor'),
+  'games_editor', 'The masthead seats already posted name their role'
+);
+select pg_temp.login_as('00000000-0000-0000-0000-00000000d1a1');
+insert into programmes.openings (id, kind, role, title_en, title_ar)
+values ('00000000-0000-0000-0000-00000000d1b9', 'role', 'onboarding_lead', '', '');
+select is(
+  (select owner || ' / ' || title_en from programmes.openings where id = '00000000-0000-0000-0000-00000000d1b9'),
+  'membership / Onboarding Lead', 'A role opening takes its owner and title from the role'
+);
+select throws_ok(
+  $$ insert into programmes.openings (kind, role, title_en, title_ar) values ('role', 'president', '', '') $$,
+  '22023', null, 'Elected roles are not posted on the Callboard'
+);
+select pg_temp.login_as('00000000-0000-0000-0000-00000000d1a3');
+insert into programmes.opening_replies (opening_id) values ('00000000-0000-0000-0000-00000000d1b9');
+select pg_temp.login_as('00000000-0000-0000-0000-00000000d1a1');
+update programmes.opening_replies set status = 'picked'
+where opening_id = '00000000-0000-0000-0000-00000000d1b9';
+update programmes.opening_replies set status = 'offered'
+where opening_id = '00000000-0000-0000-0000-00000000d1b9';
+update programmes.opening_replies set status = 'onboarded'
+where opening_id = '00000000-0000-0000-0000-00000000d1b9';
+select pg_temp.logout();
+select ok(
+  exists (select 1 from access.role_assignments
+    where user_id = '00000000-0000-0000-0000-00000000d1a3' and role = 'onboarding_lead'),
+  'Whoever is onboarded holds the role'
 );
 
 select * from finish();

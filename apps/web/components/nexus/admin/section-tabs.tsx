@@ -21,7 +21,6 @@ type TabKey =
   | "ads"
   | "calendar"
   | "programs"
-  | "door"
   | "members"
   | "verification"
   | "hiring"
@@ -54,10 +53,9 @@ const useTabs = (tabs: readonly Tab[], labels: (key: TabKey) => string) => {
 const EVENTS: readonly Tab[] = [
   { href: "/events", key: "calendar", module: "events" },
   { href: "/events/programs", key: "programs", module: "programs" },
-  { href: "/events/door", key: "door", module: "events" },
 ];
 
-/** What's on: the calendar, the six programs (Second Chapter among them), the door. */
+/** What's on: the calendar and the six programs (Second Chapter among them); each event has its own door. */
 export const EventsTabs = () => {
   const t = useTranslations("nexus.admin.sections.tabs");
   const tabs = useTabs(EVENTS, (key) => t(key));
@@ -109,8 +107,7 @@ const PEOPLE: readonly Tab[] = [
   {
     href: "/people/verification",
     key: "verification",
-    module: "members",
-    permission: "members.verify",
+    module: "partners",
   },
   { href: "/people/hiring", key: "hiring", module: "hiring" },
   { href: "/people/service", key: "service", module: "recognition" },

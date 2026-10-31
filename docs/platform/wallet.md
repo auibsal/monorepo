@@ -27,6 +27,14 @@ page accept either.
   `lib/api/wallet-callback.ts`; anything else is refused. A saved pass
   shows as "In your Google Wallet" on the card, and the Diwan's member
   insights count them.
+- Google sends that callback only to a class that names the callback
+  address, and a class keeps what it was created with. Each save request
+  therefore patches the class's `callbackOptions` once
+  (`ensureWalletCallback`). And the card does not wait for the callback:
+  while it shows "Add to Google Wallet" it asks the route (`{check:
+  true}`), which reads the pass object from the Wallet API
+  (`walletPassHeld`: `hasUsers`, not expired) and records it as saved
+  (owner, Oct 31, 2026: "I've already added the card, still shows Add").
 - Retiring passes: resetting the card code (Card security on `/membership`),
   the end of a membership (or of the account's verification) and deleting
   the account queue `membership.wallet_expire`; the outbox marks each pass

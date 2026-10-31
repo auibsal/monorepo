@@ -2,7 +2,7 @@
 
 import { useAuth } from "@repo/auth/provider";
 import type { Grant } from "@repo/rbac";
-import { journal, membership, unwrap } from "@repo/sal-data";
+import { journal, membership, names, unwrap } from "@repo/sal-data";
 import { useQuery } from "@tanstack/react-query";
 
 /**
@@ -21,7 +21,6 @@ export const queryKeys = {
   sixWords: (userId: string) => ["six-words", userId] as const,
   status: (userId: string) => ["status", userId] as const,
   submissions: (userId: string) => ["submissions", userId] as const,
-  verification: (userId: string) => ["verification", userId] as const,
   waitlist: (userId: string) => ["waitlist", userId] as const,
 };
 
@@ -45,9 +44,10 @@ export const useMemberStatus = () => {
 export const useProfile = () => {
   const { supabase } = useAuth();
   return useUserQuery(queryKeys.profile, async (userId) => {
-    // Private columns (personal email, email preference) are not readable
-    // from the table, even for the owner: they come from a function.
-    const [profile, extra] = await Promise.all([
+    // Private columns (personal email, email preference, the four parts
+    // of each name) are not readable from the table, even for the owner:
+    // they come from functions.
+    const [profile, extra, parts] = await Promise.all([
       supabase
         .schema("core")
         .from("profiles")
@@ -57,6 +57,7 @@ export const useProfile = () => {
         .eq("id", userId)
         .single(),
       supabase.schema("core").rpc("my_private_profile"),
+      supabase.schema("core").rpc("my_name_parts"),
     ]);
     const row = unwrap(profile);
     if (!row) {
@@ -65,19 +66,18 @@ export const useProfile = () => {
     const own = unwrap(extra)?.[0];
     return {
       ...row,
+      ...(unwrap(parts)?.[0] ?? {}),
       notify_email: own?.notify_email ?? true,
       personal_email: own?.personal_email ?? null,
     };
   });
 };
 
-/** Whether a profile has its name in English and in Arabic. */
-export const hasAllNames = (
-  profile:
-    | { full_name_ar: string | null; full_name_en: string }
-    | null
-    | undefined
-) => Boolean(profile?.full_name_en.trim() && profile.full_name_ar?.trim());
+/**
+ * Both names in all four parts (owner, Oct 31, 2026): anyone without them
+ * is asked at /welcome the next time they come in.
+ */
+export const hasAllNames = names.hasFourPartNames;
 
 /** The member's active grants (for showing admin modules; RLS still decides). */
 export const useGrants = () => {
@@ -87,21 +87,6 @@ export const useGrants = () => {
     async () =>
       (unwrap(await supabase.schema("access").rpc("my_permissions")) ??
         []) as Grant[]
-  );
-};
-
-export const useVerificationRequest = () => {
-  const { supabase } = useAuth();
-  return useUserQuery(queryKeys.verification, async () =>
-    unwrap(
-      await supabase
-        .schema("membership")
-        .from("verification_requests")
-        .select("id, status, statement, created_at")
-        .order("created_at", { ascending: false })
-        .limit(1)
-        .maybeSingle()
-    )
   );
 };
 

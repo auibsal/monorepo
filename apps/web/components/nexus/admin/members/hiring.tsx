@@ -174,26 +174,54 @@ const Application = ({
   );
 };
 
-/** Membership posts a role for any owner; owners post their own. */
+/** The roles the Callboard hires for (access.roles.hiring_owner). */
+const useHiredRoles = () => {
+  const { supabase } = useAuth();
+  return useQuery({
+    queryFn: async () =>
+      (
+        unwrap(
+          await supabase
+            .schema("access")
+            .from("roles")
+            .select("key, name_en, name_ar, hiring_owner, sort")
+            .not("hiring_owner", "is", null)
+            .order("sort")
+        ) ?? []
+      ).map((r) => ({ ...r, owner: r.hiring_owner as Owner })),
+    queryKey: [...key, "roles"],
+  });
+};
+
+/**
+ * Posting a role (owner, Oct 31, 2026): the role is chosen from the
+ * Society's roles, never typed; it decides who picks the person, and
+ * whoever is onboarded holds it. Membership posts any role; owners post
+ * their own. A program role names its program and may carry its own title
+ * ("Salon Host" for a Program Lead).
+ */
 const NewRole = () => {
   const t = useTranslations("nexus.admin.hiring");
+  const locale = useLocale() as Locale;
   const { supabase } = useAuth();
   const grants = useGrants();
   const queryClient = useQueryClient();
   const programs = useProgrammeOptions("programmes.manage");
+  const roles = useHiredRoles();
   const blank = {
     body: { ar: "", en: "" },
     closes_at: null as string | null,
-    owner: "program" as Owner,
     programme_id: "",
+    role: "",
     skills: [] as Parameters<typeof SkillsPicker>[0]["value"][number][],
     title: { ar: "", en: "" },
   };
   const [form, setForm] = useState(blank);
   const runs = hasPermission(grants.data, "members.manage");
-  const choices = owners.filter(
-    (owner) => runs || picks(grants.data, owner, null) || owner === "program"
+  const choices = (roles.data ?? []).filter(
+    (r) => runs || picks(grants.data, r.owner, null) || r.owner === "program"
   );
+  const role = choices.find((r) => r.key === form.role) ?? choices[0];
   const add = useMutation({
     mutationFn: async () =>
       unwrap(
@@ -205,12 +233,15 @@ const NewRole = () => {
             body_en: form.body.en || null,
             closes_at: form.closes_at,
             kind: "role",
-            owner: form.owner,
+            // The role decides the owner (private.opening_role).
+            owner: role?.owner ?? "program",
             programme_id:
-              form.owner === "program"
+              role?.owner === "program"
                 ? form.programme_id || programs.options[0]?.id || null
                 : null,
+            role: role?.key ?? null,
             skills: form.skills as string[],
+            // Empty: the role's own name.
             title_ar: form.title.ar,
             title_en: form.title.en,
           })
@@ -230,24 +261,29 @@ const NewRole = () => {
       }}
     >
       <h2 className="type-heading">{t("post")}</h2>
-      <Field hint={t("ownerHint")} label={t("owner")}>
+      <Field hint={t("roleHint")} label={t("role")}>
         {(id) => (
           <SelectInput
             id={id}
-            onChange={(e) =>
-              setForm((f) => ({ ...f, owner: e.target.value as Owner }))
-            }
-            value={form.owner}
+            onChange={(e) => setForm((f) => ({ ...f, role: e.target.value }))}
+            value={role?.key ?? ""}
           >
-            {choices.map((owner) => (
-              <option key={owner} value={owner}>
-                {t(`owners.${owner}`)}
-              </option>
-            ))}
+            {owners.map((owner) => {
+              const group = choices.filter((r) => r.owner === owner);
+              return group.length > 0 ? (
+                <optgroup key={owner} label={t(`owners.${owner}`)}>
+                  {group.map((r) => (
+                    <option key={r.key} value={r.key}>
+                      {localized(r, "name", locale)}
+                    </option>
+                  ))}
+                </optgroup>
+              ) : null;
+            })}
           </SelectInput>
         )}
       </Field>
-      {form.owner === "program" ? (
+      {role?.owner === "program" ? (
         <Field label={t("program")}>
           {(id) => (
             <SelectInput
@@ -270,9 +306,9 @@ const NewRole = () => {
         label={t("roleTitle")}
         maxLength={200}
         onChange={(title) => setForm((f) => ({ ...f, title }))}
-        required
         value={form.title}
       />
+      <p className="type-caption">{t("roleTitleHint")}</p>
       <BilingualField
         label={t("roleBody")}
         maxLength={2000}
@@ -290,7 +326,11 @@ const NewRole = () => {
         onChange={(closes_at) => setForm((f) => ({ ...f, closes_at }))}
         value={form.closes_at}
       />
-      <SaveButton pending={add.isPending} success={add.isSuccess} />
+      <SaveButton
+        disabled={!role}
+        pending={add.isPending}
+        success={add.isSuccess}
+      />
       <ErrorLine error={add.error} />
     </form>
   );

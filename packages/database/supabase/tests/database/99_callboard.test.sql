@@ -85,31 +85,31 @@ select pg_temp.grant_role('00000000-0000-0000-0000-0000000070a2', 'programme_lea
 -- Openings
 select pg_temp.login_as('00000000-0000-0000-0000-0000000070a1');
 select throws_ok(
-  $$ insert into programmes.openings (programme_id, title_en, title_ar)
-     values ((select id from core.programmes where slug = 'company'), 'Photographer', 'مصوّر') $$,
+  $$ insert into programmes.openings (programme_id, role, title_en, title_ar)
+     values ((select id from core.programmes where slug = 'company'), 'stage_manager', 'Stage Manager', 'مدير الخشبة') $$,
   '42501', null, 'Members do not post openings'
 );
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000070a2');
 select lives_ok(
-  $$ insert into programmes.openings (id, programme_id, title_en, title_ar, skills)
+  $$ insert into programmes.openings (id, programme_id, role, title_en, title_ar, skills)
      values ('0be00000-0000-0000-0000-0000000070b1', (select id from core.programmes where slug = 'company'),
-       'Photographer', 'مصوّر', array['photography']) $$,
+       'stage_manager', 'Stage Manager', 'مدير الخشبة', array['photography']) $$,
   'A program''s managers post openings'
 );
 select throws_ok(
-  $$ insert into programmes.openings (programme_id, title_en, title_ar, skills)
-     values ((select id from core.programmes where slug = 'company'), 'Juggler', 'مهرّج', array['juggling']) $$,
+  $$ insert into programmes.openings (programme_id, role, title_en, title_ar, skills)
+     values ((select id from core.programmes where slug = 'company'), 'stage_manager', 'Juggler', 'مهرّج', array['juggling']) $$,
   '23514', null, 'Skills come from the Profile list'
 );
 select throws_ok(
-  $$ insert into programmes.openings (programme_id, title_en, title_ar)
-     values ((select id from core.programmes where slug = 'salon'), 'Host', 'مضيف') $$,
+  $$ insert into programmes.openings (programme_id, role, title_en, title_ar)
+     values ((select id from core.programmes where slug = 'salon'), 'programme_lead', 'Salon Host', 'مضيف الصالون') $$,
   '42501', null, 'but only for their own program'
 );
-insert into programmes.openings (id, programme_id, title_en, title_ar, is_open)
+insert into programmes.openings (id, programme_id, role, title_en, title_ar, is_open)
 values ('0be00000-0000-0000-0000-0000000070b2', (select id from core.programmes where slug = 'company'),
-  'Closed role', 'دور مغلق', false);
+  'stage_manager', 'Closed role', 'دور مغلق', false);
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000070a1');
 select is((select count(*)::integer from programmes.openings where programme_id = (select id from core.programmes where slug = 'company')), 1, 'Members see open openings only');

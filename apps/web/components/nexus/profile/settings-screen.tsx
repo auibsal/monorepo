@@ -6,6 +6,7 @@ import { useIsStaff } from "@/components/account/member-shell";
 import { RecoveryCodes } from "../auth/recovery-codes";
 import { DiwanPage, DiwanSection, RowList } from "../page";
 import { DeleteAccount } from "./delete-account";
+import { EmailNotices } from "./email-notices";
 import { Passkeys } from "./passkeys";
 import { PersonalEmail } from "./personal-email";
 import { PhoneNotifications } from "./phone-notifications";
@@ -13,23 +14,14 @@ import { TelegramLink } from "./telegram-link";
 
 /**
  * Notices (the overhaul, Oct 30, 2026): every way the Society reaches the
- * member, on one page: email (kept with the profile), the phone and
- * Telegram.
+ * member, on one page: email, the phone and Telegram.
  */
 export const NoticesScreen = () => {
   const t = useTranslations("nexus.settings");
   return (
     <DiwanPage lede={t("noticesLede")} narrow title={t("notices")}>
       <DiwanSection id="email" title={t("noticesEmail")}>
-        <p className="type-body">
-          {t("noticesEmailLine")}{" "}
-          <Link
-            className="link font-medium"
-            href="/membership/settings/profile"
-          >
-            {t("profile")}
-          </Link>
-        </p>
+        <EmailNotices />
       </DiwanSection>
       <PhoneNotifications />
       <TelegramLink />

@@ -163,10 +163,12 @@ select is(private.totp(convert_to('12345678901234567890', 'UTF8'), 66666666), '6
 
 -- Names
 select pg_temp.login_as('00000000-0000-0000-0000-00000000ca01');
-update core.profiles set full_name_en = '  Layla Hassan ', full_name_ar = 'ليلى حسن'
+update core.profiles set first_name_en = '  Layla ', father_name_en = 'Omar',
+  grandfather_name_en = 'Ali', last_name_en = 'Hassan',
+  first_name_ar = 'ليلى', father_name_ar = 'عمر', grandfather_name_ar = 'علي', last_name_ar = 'حسن'
 where id = '00000000-0000-0000-0000-00000000ca01';
 select is((select full_name_en from core.profiles where id = '00000000-0000-0000-0000-00000000ca01'),
-  'Layla Hassan', 'A member gives their name in English, whole');
+  'Layla Hassan', 'A member gives their name in four parts; the first and fourth show');
 select is((select full_name_ar from core.profiles where id = '00000000-0000-0000-0000-00000000ca01'),
   'ليلى حسن', 'and in Arabic');
 
