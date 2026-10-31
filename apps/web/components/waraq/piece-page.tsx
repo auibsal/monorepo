@@ -118,11 +118,7 @@ export const PieceArticle = async ({
           <h1 className="type-display text-balance">
             {localized(piece, "title", locale)}
           </h1>
-          <ManageLinks
-            diwan={`/qirtas/pieces/${piece.slug}`}
-            membership="/membership/work"
-            membershipLabel="work"
-          />
+          <ManageLinks diwan={`/qirtas/pieces/${piece.slug}`} />
           <p className="type-caption">
             <Link
               className="text-accent hover:underline"

@@ -1670,6 +1670,20 @@ Covered by automated tests so far:
 
 ## needs-native-review (Arabic written for the platform)
 
+- Author pages, the memorandum, signatures (2026-10-31, section 16):
+  `web.journal.{authorKinds.*,nothingYet}`, `common.signature.number`,
+  `nexus.partnerJoin.{stepOne,stepTwo,signInTitle,signUpTitle}`,
+  `nexus.partnerJoin.memorandum.{society,title,dated,preamble,nameBlank,
+  nameArBlank,kindClause,kindOther,reachClause,aboutClause,website,
+  purposeClause,forPartner,role,forSociety,presidentSigns}`,
+  `nexus.admin.verification.signingAs`,
+  `nexus.admin.partners.agreements.signingAs`.
+
+- Hudhud in the Diwan group (2026-10-31, section 15): `lib/api/bot/copy.ts`
+  (`audience*`, `brief*`, `briefCounts.*`, `joinStaff*`, `summary*`,
+  `buttons.diwan`, `commands.audience`, `purposeNames.brief`), and
+  `nexus.partnerJoin.memorandum.yourOrganizationStart`.
+
 - Meetings, partners asking, choices, one flow (2026-10-31, section 14):
   `nexus.admin.society.meetings.*`, `nexus.admin.sections.tabs.meetings`,
   `nexus.admin.governance.resolutions.{title,none}`,

@@ -46,10 +46,11 @@ test("an organization applies, the President signs, and its dashboard opens", as
     .fill("Joint poetry readings each term.");
   // A club is at AUIB: where it works is not asked.
   await expect(applicant.getByLabel("Where", { exact: true })).toHaveCount(0);
-  // Signed in the applicant's name on the platform, never typed.
-  const signedBy = applicant.getByLabel("Signed by");
-  await expect(signedBy).toHaveValue("E2E Partner");
-  await expect(signedBy).not.toBeEditable();
+  // Signed in the applicant's name on the platform, never typed: a
+  // signature in the signature face, with their card number and the date.
+  await expect(
+    applicant.getByRole("figure").filter({ hasText: "E2E Partner" })
+  ).toBeVisible();
   await applicant
     .getByRole("checkbox", { name: /I sign this memorandum/ })
     .click();

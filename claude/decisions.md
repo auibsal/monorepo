@@ -273,3 +273,16 @@ Qirtas, unlike a program, may have several documents:
 - **What a partner turns on or publishes waits for the Society.** A partner asks for what it turns on for itself and its guests (perks, Qirtas submissions, co-hosting …) from its dashboard, and Partnerships approves in the Diwan (People → Partners → Memoranda). A partner's perk shows to members and guests only once Partnerships publishes it; a change takes it down until it is published again.
 - **Choices are made on the page.** Wherever there are several options, they open on the page itself, in the Society's style: a few short ones in one row (the chosen one underlined), more as a list under the field that pushes the page down, with a line to type in when there are many. Never a dialog or the browser's own pop-up list.
 - **New is one flow.** A new record is written in full on one page and created when saved: never a first step for its name and a second for the rest. The Library's documents (/diwan/society/library/new, each at /diwan/society/library/<slug>) and staff pieces follow it.
+
+## 15. Hudhud in the Diwan group (decided Oct 31, after section 14)
+- **The Diwan group is for officers only.** Hudhud lets in only linked accounts that hold a Society role; anyone else waits for the group's admins.
+- **A morning brief** every day from 8:00 AM: today's events with their bookings, and what waits in the Diwan, as counts.
+- **A summary after each event:** who came, how many had booked, walk-ins, no-shows and the waitlist.
+- The group's admins send `/audience staff` once; `/topic brief` chooses the topic.
+
+## 16. Newsroom and Review as one; author pages; the memorandum; signatures (decided Oct 31, after section 15)
+- **Newsroom and Review are one** in the Diwan's Qirtas: each section's page has what members sent to it (read blind) above what staff write; the Edition's reading is on the all-sections page. There is no Review tab.
+- **Your work is the author page.** Each person's own byline is at /qirtas/authors/<their name with dashes> (shaheen-farjo). It says Member, Partner or Guest and the roles they hold; the person alone sees their submissions and drafts there. Pen names show published work only.
+- **Library documents' codes and addresses can be changed** in the Diwan.
+- **Partnering starts with signing in or making an account,** then the memorandum itself, laid out like a contract with blanks to fill in, signed by the applicant; the President signs for the Society in the Diwan.
+- **Signatures are digital signatures:** the name on the platform in a signature face, the card number, the date, a pattern drawn from the number and a short seal. Nobody types their own name.

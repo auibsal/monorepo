@@ -18,7 +18,7 @@ const Page = async ({
   return (
     <RequireModule module="journal">
       <Suspense fallback={<SectionSpinner />}>
-        <RecordRef back="/qirtas/review" value={decodeURIComponent(ref)}>
+        <RecordRef back="/qirtas" value={decodeURIComponent(ref)}>
           <EntryView />
         </RecordRef>
       </Suspense>

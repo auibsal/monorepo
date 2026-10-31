@@ -34,8 +34,9 @@ places, Qirtas decisions). A member who blocks the bot has them turned off.
 | Command | Who | What it does |
 | --- | --- | --- |
 | `/setup <code>` | Group admins | Connects the group. The code comes from the Diwan. |
-| `/topic <purpose>` | Group admins | Sent inside a topic: what it is for. Purposes: `announcements`, `events`, `waraq`, `word`. `/topic none` clears it. In General it sets General. |
+| `/topic <purpose>` | Group admins | Sent inside a topic: what it is for. Purposes: `announcements`, `events`, `waraq`, `word`, `brief` (the staff group's morning brief and event summaries). `/topic none` clears it. In General it sets General. |
 | `/lang en \| ar \| both` | Group admins | The language of the bot's posts (default `both`). |
+| `/audience staff \| members` | Group admins | Who the group is for (default `members`). `staff` makes it the Diwan group: see below. |
 | `/events` | Everyone | What's coming up, with buttons that open the bot. |
 
 And without commands:
@@ -62,6 +63,29 @@ And without commands:
 | Moderating | Restrict (with a duration), Ban, Delete, Report; every action in Recent Actions | Long-press a message; Group → Edit → Recent Actions |
 | The daily word | The bot's Main App: the web game in Telegram | BotFather → Mini Apps |
 | Logging in | Telegram's login (OpenID Connect), to link accounts only | BotFather → Login Widget |
+
+**In the Diwan group** (`/audience staff`; owner, Oct 31, 2026):
+
+- **Officers only.** A join request is approved at once only for a linked
+  account that holds a Society role (`core.telegram_is_staff`); a linked
+  member without one, and anyone not linked, waits in Telegram's request
+  list for the group's admins, with a note saying the group is for
+  officers. Linking later lets in only those who hold a role. Someone
+  whose role ends is not removed automatically: the admins remove them.
+- **The morning brief,** once a day from 8:00 AM Baghdad time: today's
+  events (members-only and invitation events too) with their bookings and
+  waitlists, and what waits in the Diwan as counts (partner applications,
+  partners asking to turn something on, perks to publish, new Qirtas
+  submissions, new replies to openings, open requests), with *Open the
+  Diwan* (`core.telegram_staff_brief`).
+- **After each event,** half an hour after it ends (three hours after it
+  starts when it has no end): who came, how many of them had booked, the
+  walk-ins, the no-shows and the waitlist, with a link to the event in the
+  Diwan (`core.telegram_event_summaries`).
+- Both go to the topic set with `/topic brief`, else `announcements`, else
+  General. The Diwan group gets none of the public posts. The functions are
+  callable with the secret key only. Names never appear, only titles and
+  counts.
 
 ## How it works
 
@@ -144,7 +168,8 @@ And without commands:
    admin with the rights above. In the Diwan, the Desk → Connected → Hudhud →
    *Make a setup code*, and send the `/setup …` line in the group. Then
    `/topic …` in each topic, and turn on *Approve new members* on the
-   invite link. In the group's settings: the Welcome Message, Aggressive
+   invite link. For the officers' group, also send `/audience staff` and
+   `/topic brief` in the topic for the brief. In the group's settings: the Welcome Message, Aggressive
    Anti-Spam, and the members' permissions (the table above).
 
 ## Sticker set

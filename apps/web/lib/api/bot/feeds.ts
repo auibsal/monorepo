@@ -9,6 +9,7 @@ import { groupText, postTo } from "./features/group/common";
 import { pieceAuthor, publicPieces } from "./features/waraq";
 import { label, pick, when } from "./format";
 import { botLink, eventPage, mainApp, piecePage } from "./links";
+import { staffPosts } from "./staff";
 
 /**
  * What the bot posts to connected groups, every ten minutes (pg_cron calls
@@ -26,7 +27,13 @@ const NEW_PIECE_WINDOW = 72 * HOUR;
 const MAX_PER_RUN = 3;
 const WORD_HOUR = 9;
 
-type Kind = "event" | "event_soon" | "piece" | "word";
+export type Kind =
+  | "event"
+  | "event_soon"
+  | "piece"
+  | "word"
+  | "brief"
+  | "event_summary";
 
 const posts = () => db().schema("core").from("telegram_posts");
 
@@ -54,7 +61,7 @@ const posted = async (chatId: number, kind: Kind, ref: string) => {
 };
 
 /** Claims, sends and records one post. Returns whether it went out. */
-const once = async (
+export const once = async (
   group: Group,
   kind: Kind,
   ref: string,
@@ -85,11 +92,12 @@ const once = async (
   }
 };
 
-const copyFor = (group: Group, build: (lang: Lang) => string) =>
+export const copyFor = (group: Group, build: (lang: Lang) => string) =>
   groupText(group, (_t, lang) => build(lang));
 
 /** Links in a group post: Arabic pages for Arabic groups, else English. */
-const linkLang = (group: Group): Lang => (group.lang === "ar" ? "ar" : "en");
+export const linkLang = (group: Group): Lang =>
+  group.lang === "ar" ? "ar" : "en";
 
 type PublicEvent = NonNullable<
   Awaited<ReturnType<typeof publicEvents>>
@@ -137,7 +145,7 @@ export interface FeedResult {
   posted: number;
 }
 
-interface Run {
+export interface Run {
   api: Api;
   group: Group;
   now: Date;
@@ -148,7 +156,10 @@ const startsIn = (event: PublicEvent, now: Date) =>
   Date.parse(event.starts_at) - now.getTime();
 
 /** Claims and sends posts one after another (Telegram limits each chat). */
-const sequence = async (jobs: (() => Promise<boolean>)[], max: number) => {
+export const sequence = async (
+  jobs: (() => Promise<boolean>)[],
+  max: number
+) => {
   let sent = 0;
   for (const job of jobs) {
     if (sent >= max) {
@@ -308,6 +319,10 @@ export const runFeeds = async (
   const counts = await Promise.all(
     connected.map(async (group) => {
       const run = { api, group, now, username };
+      // The Diwan group gets the morning brief and event summaries.
+      if (group.audience === "staff") {
+        return staffPosts(run);
+      }
       const soon = await soonEvents(run, events);
       const fresh = await newEvents(run, events);
       const written = await newPieces(run, pieces);

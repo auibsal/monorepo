@@ -15,7 +15,6 @@ interface Tab {
 
 type TabKey =
   | "newsroom"
-  | "review"
   | "editions"
   | "awards"
   | "ads"
@@ -50,18 +49,6 @@ const useTabs = (tabs: readonly Tab[], labels: (key: TabKey) => string) => {
 const QIRTAS: readonly Tab[] = [
   { href: "/qirtas", key: "newsroom", module: "journal" },
   {
-    href: "/qirtas/review",
-    key: "review",
-    module: "journal",
-    permission: [
-      "journal.manage",
-      "journal.review",
-      "journal.identity.view",
-      "journal.decide",
-      "journal.advise",
-    ],
-  },
-  {
     href: "/qirtas/editions",
     key: "editions",
     module: "journal",
@@ -77,9 +64,10 @@ const QIRTAS: readonly Tab[] = [
 ];
 
 /**
- * Qirtas (owner, Oct 31, 2026): the newsroom, where staff write and
- * publish; the blind review of what members send; and the three features
- * with pages of their own (Editions, Awards, ads).
+ * Qirtas (owner, Oct 31, 2026): the newsroom, one page per section,
+ * where staff write and publish and what members send is read blind
+ * (Newsroom and Review merged, owner, Oct 31, 2026); and the three
+ * features with pages of their own (Editions, Awards, ads).
  */
 export const QirtasTabs = () => {
   const t = useTranslations("nexus.admin.sections.tabs");

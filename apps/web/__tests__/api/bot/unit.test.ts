@@ -15,6 +15,7 @@ import {
   piecePage,
   wordPage,
 } from "@/lib/api/bot/links";
+import { briefText, summaryText } from "@/lib/api/bot/staff";
 
 const EXCLAMATION = /[!！]/;
 const EMOJI = /\p{Extended_Pictographic}/u;
@@ -128,5 +129,78 @@ describe("daily word", () => {
   it("opens auibsal.org's game as the bot's Main App", () => {
     expect(mainApp("sal_test_bot")).toBe("https://t.me/sal_test_bot?startapp");
     expect(wordPage("ar")).toBe("https://auibsal.org/ar/qirtas/games/word");
+  });
+});
+
+describe("the Diwan group", () => {
+  const waiting = {
+    grants_asked: 0,
+    hiring_new: 2,
+    partner_applications: 1,
+    perks_waiting: 0,
+    requests_open: 0,
+    submissions_new: 0,
+  };
+  it("briefs the morning with today's events and only what waits", () => {
+    const text = briefText(
+      { lang: "en" },
+      {
+        events: [
+          {
+            booked: 12,
+            capacity: 30,
+            entry: "rsvp",
+            slug: "salon",
+            starts_at: "2026-11-01T15:00:00Z",
+            title_ar: "الصالون",
+            title_en: "The Salon <live>",
+            venue_ar: null,
+            venue_en: "Hall B",
+            waitlisted: 3,
+          },
+        ],
+        waiting,
+      },
+      new Date("2026-11-01T06:00:00Z")
+    );
+    expect(text).toContain("The Salon &lt;live&gt;");
+    expect(text).toContain("6:00 PM");
+    expect(text).toContain("12 booked of 30");
+    expect(text).toContain("3 on the waitlist");
+    expect(text).toContain("Partner applications: 1");
+    expect(text).toContain("New replies to openings: 2");
+    expect(text).not.toContain("Perks waiting");
+  });
+
+  it("says when nothing is on and nothing waits", () => {
+    const text = briefText(
+      { lang: "ar" },
+      {
+        events: [],
+        waiting: { ...waiting, hiring_new: 0, partner_applications: 0 },
+      },
+      new Date("2026-11-01T06:00:00Z")
+    );
+    expect(text).toContain(copy.ar.briefNoEvents);
+    expect(text).toContain(copy.ar.briefNothing);
+  });
+
+  it("sums up an event: who came, walk-ins and no-shows", () => {
+    const text = summaryText(
+      { lang: "en" },
+      {
+        booked: 10,
+        booked_and_came: 8,
+        checked_in: 11,
+        id: "x",
+        slug: "salon",
+        title_ar: "الصالون",
+        title_en: "The Salon",
+        waitlisted: 0,
+      }
+    );
+    expect(text).toContain("11 came: 8 who booked, 3 without a booking");
+    expect(text).toContain("2 booked and didn't come");
+    expect(text).not.toContain("waitlist");
   });
 });

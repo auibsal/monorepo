@@ -76,6 +76,8 @@ export interface EventRow {
 }
 
 export interface Group {
+  /** members: the main group; staff: officers only (the Diwan group). */
+  audience: "members" | "staff";
   chat_id: number;
   lang: "en" | "ar" | "both";
   title: string | null;
@@ -111,7 +113,7 @@ export const group = async (chatId: number) => {
   const { data, error } = await db()
     .schema("core")
     .from("telegram_groups")
-    .select("chat_id, title, lang, topics")
+    .select("audience, chat_id, title, lang, topics")
     .eq("chat_id", chatId)
     .maybeSingle();
   if (error) {
@@ -124,11 +126,22 @@ export const groups = async () => {
   const { data, error } = await db()
     .schema("core")
     .from("telegram_groups")
-    .select("chat_id, title, lang, topics");
+    .select("audience, chat_id, title, lang, topics");
   if (error) {
     throw error;
   }
   return (data ?? []) as Group[];
+};
+
+/** Whether a Telegram account is linked to someone holding a Society role. */
+export const isStaffAccount = async (telegramId: number) => {
+  const { data, error } = await db()
+    .schema("core")
+    .rpc("telegram_is_staff", { telegram_id: telegramId });
+  if (error) {
+    throw error;
+  }
+  return data === true;
 };
 
 /** A public setting's value, or null. */

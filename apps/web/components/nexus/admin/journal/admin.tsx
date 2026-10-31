@@ -492,7 +492,7 @@ const QueueItem = ({ item }: { item: QueueRow }) => {
  * Work a section editor took up before the one door (Oct 31, 2026), until
  * it is decided. Everything sent since is read blind under Review.
  */
-const Desks = () => {
+const Desks = ({ desk }: { readonly desk?: journal.Desk }) => {
   const t = useTranslations("nexus.admin.waraq.queue");
   const { supabase } = useAuth();
   const queue = useQuery({
@@ -500,7 +500,9 @@ const Desks = () => {
     queryKey: [...key, "queue"],
   });
   const rows = (queue.data ?? []).filter(
-    (q) => !["accepted", "declined", "withdrawn"].includes(q.status)
+    (q) =>
+      !["accepted", "declined", "withdrawn"].includes(q.status) &&
+      (desk === undefined || q.desk === desk)
   );
   if (rows.length === 0) {
     return null;
@@ -807,6 +809,15 @@ const newsroomKeys: readonly Permission[] = [
 ];
 
 /** Whether the caller holds any of these keys, anywhere. */
+/** Who reads what members send (the blind review). */
+const reviewKeys = [
+  "journal.manage",
+  "journal.review",
+  "journal.identity.view",
+  "journal.decide",
+  "journal.advise",
+] as const satisfies readonly Permission[];
+
 const useAnyOf = (keys: readonly Permission[]) => {
   const grants = useGrants();
   return keys.some((p) => hasPermissionAnywhere(grants.data, p));
@@ -824,13 +835,19 @@ export const QirtasNewsroom = ({ desk }: { readonly desk?: journal.Desk }) => {
     hasPermissionAnywhere(grants.data, permission);
   const writes = useAnyOf(newsroomKeys);
   const puzzles = useAnyOf(puzzleEditorKeys);
+  const reads = useAnyOf(reviewKeys);
   if (grants.isPending) {
     return <SectionSpinner />;
   }
+  // Newsroom and Review are one (owner, Oct 31, 2026): each section's page
+  // has what members sent to it, read blind, above what staff write; the
+  // Edition's reading (its calls) is on the all-sections page.
   return (
     <div className="grid gap-14">
       <SectionsNav />
+      {reads ? <Desks desk={desk} /> : null}
       {writes ? <Newsroom desk={desk} /> : null}
+      {desk === undefined && reads ? <PipelineAdmin embedded /> : null}
       {desk === "video" &&
       (has("programmes.manage") || has("journal.edit.video")) ? (
         <NextStopAdmin />
@@ -856,14 +873,6 @@ const SectionsNav = () => {
   ];
   return <SectionTabs label={t("sections")} tabs={tabs} />;
 };
-
-/** The blind review: everything members send, read without names. */
-export const QirtasReview = () => (
-  <div className="grid gap-14">
-    <PipelineAdmin embedded />
-    <Desks />
-  </div>
-);
 
 /** The printed Editions. */
 export const QirtasEditions = () => <Editions />;

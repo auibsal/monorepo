@@ -61,6 +61,9 @@
       "membership": "In your Membership",
       "booking": "Your bookings",
       "work": "Your work"
+    },
+    "signature": {
+      "number": "No. {number}"
     }
   },
   "auth": {
@@ -1013,7 +1016,8 @@
         "signConfirm": "Sign the memorandum with {name} for the Society? It becomes an active partner, and whoever applied keeps its page in the Diwan.",
         "declineConfirm": "Decline {name}'s application? It stays on record.",
         "earlier": "Earlier requests",
-        "earlierLede": "People who asked before partners verified their own. Approve only people you can place."
+        "earlierLede": "People who asked before partners verified their own. Approve only people you can place.",
+        "signingAs": "You sign for the Society as"
       },
       "events": {
         "title": "Events",
@@ -2174,7 +2178,8 @@
           "back": "All memoranda",
           "missing": "This memorandum is not here",
           "asked": "Asked for: {grants}",
-          "give": "Approve what they asked for"
+          "give": "Approve what they asked for",
+          "signingAs": "You sign for the Society as"
         },
         "affiliations": {
           "lede": "People who say they belong to a partner. Check with the partner's contact before verifying. Lists are never shared with partners.",
@@ -2238,7 +2243,8 @@
           "title": "Title",
           "body": "What it involves",
           "post": "Post the place"
-        }
+        },
+        "verification": {}
       },
       "recognition": {
         "title": "Recognition",
@@ -2904,7 +2910,6 @@
           "society": "Society",
           "qirtas": "Qirtas",
           "newsroom": "Newsroom",
-          "review": "Review",
           "editions": "Editions",
           "awards": "Awards",
           "ads": "Ads",
@@ -4036,17 +4041,12 @@
       "title": "Partner with the Society",
       "lede": "For clubs, departments and organizations whose aims fit the Society's and who treat people fairly. Apply here and sign the memorandum by name; the President signs for the Society.",
       "account": "Not a member? Applying takes an account, for the person who signs for the organization. Any email address will do.",
-      "organization": "Your organization",
       "nameEn": "Name in English",
       "nameAr": "Name in Arabic",
-      "optional": "Optional",
-      "urlHint": "Its website, starting with https://",
       "description": "About the organization",
       "descriptionHint": "A few lines for the Partners page, shown once the partnership is signed.",
-      "proposal": "The partnership",
       "purpose": "What the partnership is for, and what your organization will do",
       "purposeHint": "What you will do together, and your side of it: hosting, sharing, offers for members. Whatever you turn on later, for yourselves or your guests, and whatever you publish, waits for the Society's approval.",
-      "sign": "Sign",
       "signatory": "Signed by",
       "contactRole": "Your role at the organization",
       "accept": "I sign this memorandum for {name}, and I may sign for it.",
@@ -4058,20 +4058,39 @@
       "openDesk": "Open the dashboard",
       "declined": "Your earlier application was not taken forward. You may apply again.",
       "memorandum": {
-        "title": "The memorandum",
+        "title": "Memorandum of Partnership",
         "yourOrganization": "your organization",
         "one": "{name} and the AUIB Society of Arts and Letters agree to the partnership described above.",
         "two": "Every partnership that involves money, shared branding or shared responsibility has a written memorandum, signed by the President. This is that memorandum, once the President signs.",
         "three": "The Society does not accept sponsorship from political parties, religious or sectarian bodies, tobacco, alcohol or gambling businesses, or any sponsor that would compromise its independence.",
         "four": "Sponsors get acknowledgement, never editorial influence.",
         "five": "{name} verifies its own people on the platform, and only people who belong to it. What it turns on for itself and its guests, and what it publishes, waits for the Society's approval.",
-        "six": "Nothing is paid through the platform: the Society takes no online payments."
+        "six": "Nothing is paid through the platform: the Society takes no online payments.",
+        "yourOrganizationStart": "Your organization",
+        "society": "AUIB Society of Arts and Letters",
+        "dated": "Made on {date}",
+        "preamble": "This memorandum is made on {date} between the AUIB Society of Arts and Letters (“the Society”) and <name></name>, in Arabic <ar></ar> (“the Partner”).",
+        "nameBlank": "name of the organization",
+        "nameArBlank": "optional",
+        "kindClause": "{name} is:",
+        "kindOther": "namely, <blank></blank>.",
+        "reachClause": "and it works:",
+        "aboutClause": "{name} describes itself, for the Partners page once this memorandum is signed, as follows:",
+        "website": "Its website is <blank></blank>.",
+        "purposeClause": "The partnership is for the following, and {name} will do the following as its side of it:",
+        "forPartner": "For {name}",
+        "role": "Signing as <blank></blank> of the organization.",
+        "forSociety": "For the Society",
+        "presidentSigns": "The President signs here once the Society approves.",
+        "urlBlank": "https://"
       },
       "oneMembership": "You are the Society's guest, and a guest is never on a partner's team. Apply with your organization's own address: sign out, then come back here.",
-      "signedOn": "Date",
       "members": "Leading an AUIB club and already a member? Apply signed in as yourself: you stay a member, and the club's dashboard opens beside Membership.",
-      "membersSignIn": "Sign in to apply",
-      "kindOther": "What kind of organization"
+      "kindOther": "What kind of organization",
+      "stepOne": "Step 1 of 2: who signs",
+      "stepTwo": "Step 2 of 2: the memorandum",
+      "signInTitle": "Sign in",
+      "signUpTitle": "Create an account"
     },
     "partnerDesk": {
       "none": "You are not on a partner's team.",
@@ -4462,7 +4481,13 @@
         "care": "Next Stop care"
       },
       "prizes": "Awards",
-      "printed": "Printed by {printer}, {date}: {copies} copies."
+      "printed": "Printed by {printer}, {date}: {copies} copies.",
+      "authorKinds": {
+        "member": "Member",
+        "partner": "Partner",
+        "guest": "Guest"
+      },
+      "nothingYet": "Nothing published yet."
     },
     "about": {
       "title": "About the Society",

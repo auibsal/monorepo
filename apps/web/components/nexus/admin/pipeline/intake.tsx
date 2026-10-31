@@ -378,10 +378,7 @@ export const SubmissionView = () => {
     return <SectionSpinner />;
   }
   const back = (
-    <Link
-      className="text-sm underline underline-offset-4"
-      href={"/qirtas/review"}
-    >
+    <Link className="text-sm underline underline-offset-4" href={"/qirtas"}>
       {tk("back")}
     </Link>
   );

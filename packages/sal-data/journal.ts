@@ -821,14 +821,14 @@ export const waraqPiece = async (client: Client, slug: string) => {
 };
 
 /** A contributor's page: bio and every published piece. */
+/**
+ * An author page: the byline, and for a person's own byline what they are
+ * to the Society (kind) and the roles they hold; never for a pen name.
+ */
 export const authorPage = async (client: Client, slug: string) => {
-  const contributor = unwrap(
-    await journal(client)
-      .from("contributors")
-      .select("id, slug, name_en, name_ar, bio_en, bio_ar")
-      .eq("slug", slug)
-      .maybeSingle()
-  );
+  const contributor =
+    (unwrap(await journal(client).rpc("author_card", { author_slug: slug })) ??
+      [])[0] ?? null;
   if (!contributor) {
     return null;
   }

@@ -28,7 +28,7 @@ import {
   PendingList,
 } from "./files";
 import { AuthorshipPledge, Declarations } from "./form";
-import { PartnerPathway, useSubmitPathway } from "./pages";
+import { MyWorkLink, PartnerPathway, useSubmitPathway } from "./pages";
 
 const LANGUAGES = ["en", "ar", "bilingual"] as const;
 
@@ -49,14 +49,7 @@ export const WriteHome = () => {
 
   return (
     <div className="grid gap-8">
-      <AdminHeading
-        actions={
-          <Link className="link" href="/membership/work">
-            {tw("yourWork")}
-          </Link>
-        }
-        title={t("title")}
-      >
+      <AdminHeading actions={<MyWorkLink />} title={t("title")}>
         {tw("lede")}
       </AdminHeading>
       <DiwanSection id="sections" title={tw("sectionsTitle")}>

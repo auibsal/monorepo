@@ -12,6 +12,7 @@ import { journal, localized, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
+import { MySignature } from "@/components/signature";
 import {
   queryKeys,
   useMemberStatus,
@@ -30,7 +31,7 @@ import {
   SaveButton,
   SelectInput,
 } from "../admin/kit";
-import { DiwanPage, DiwanSection } from "../page";
+import { DiwanSection } from "../page";
 import { SectionSpinner } from "../states";
 import {
   attachFile,
@@ -166,15 +167,8 @@ export const YourWork = () => {
   ];
 
   return (
-    <DiwanPage
-      actions={
-        <Link className="link" href="/qirtas/write">
-          {tw("sendMore")}
-        </Link>
-      }
-      lede={tw("yourWorkLede")}
-      title={tw("yourWork")}
-    >
+    <DiwanSection id="your-work" title={tw("yourWork")}>
+      <p className="type-body text-text-secondary">{tw("yourWorkLede")}</p>
       {submissions.data && pieces.data ? (
         <DataTable
           columns={columns}
@@ -185,8 +179,45 @@ export const YourWork = () => {
       ) : (
         <SectionSpinner />
       )}
-    </DiwanPage>
+      <Link className="link justify-self-start" href="/qirtas/write">
+        {tw("sendMore")}
+      </Link>
+    </DiwanSection>
   );
+};
+
+/** The address of the signed-in person's own author page. */
+export const useMyAuthorPage = () => {
+  const { supabase, user } = useAuth();
+  return useQuery({
+    enabled: Boolean(user),
+    queryFn: async () =>
+      (unwrap(await supabase.schema("journal").rpc("my_author_page")) ??
+        null) as string | null,
+    queryKey: ["journal", "my-author-page", user?.id ?? ""],
+    staleTime: Number.POSITIVE_INFINITY,
+  });
+};
+
+/**
+ * On an author page, the person's own work in progress: what they sent and
+ * what is being edited with them, seen only by them (owner, Oct 31, 2026:
+ * Your work is the author page). Everyone else sees the public page alone.
+ */
+export const OwnWork = ({ slug }: { readonly slug: string }) => {
+  const mine = useMyAuthorPage();
+  return mine.data === slug ? <YourWork /> : null;
+};
+
+/** A link to the signed-in person's own author page, where their work is. */
+export const MyWorkLink = ({ className = "link" }: { className?: string }) => {
+  const tw = useTranslations("nexus.journal.write");
+  const mine = useMyAuthorPage();
+  return mine.data ? (
+    <Link className={className} href={`/qirtas/authors/${mine.data}`}>
+      {tw("yourWork")}
+    </Link>
+  ) : null;
 };
 
 // ── Submit ────────────────────────────────────────────────────────────────
@@ -339,12 +370,15 @@ export const Agreement = ({ submissionId }: { submissionId: string }) => {
     <section className="grid max-w-3xl gap-3 border-line border-t p-4">
       <h2 className="type-subheading">{t("title")}</h2>
       {agreement.data ? (
-        <p>
-          {t("signed", {
-            date: formatLongDate(agreement.data.signed_at, locale),
-            name: name || agreement.data.signer_name,
-          })}
-        </p>
+        <>
+          <p>
+            {t("signed", {
+              date: formatLongDate(agreement.data.signed_at, locale),
+              name: name || agreement.data.signer_name,
+            })}
+          </p>
+          <MySignature date={agreement.data.signed_at} />
+        </>
       ) : (
         <form
           className="grid gap-3"
@@ -360,6 +394,7 @@ export const Agreement = ({ submissionId }: { submissionId: string }) => {
               name,
             })}
           </p>
+          <MySignature />
           <Button
             className="justify-self-start"
             disabled={!name || sign.isPending}
