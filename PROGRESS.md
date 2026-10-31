@@ -9,12 +9,25 @@ Branch: `claude/new-session-qosn60`.
 
 ## Blocked — needed from the user
 
+- [ ] **The Diwan, rebuilt (Oct 30, 2026), what is left for the owner:**
+  - **Switch off the OAuth server** in the Supabase dashboard
+    (Authentication → OAuth Server): Sign in with SAL is gone, and the
+    database already refuses any app token, but no new app should be able
+    to ask for one.
+  - **Notion templates** for the retired papers (incident report, role
+    handover, interview score sheet, offboarding checklist, the standard
+    letters): add them to the team workspace's Templates page, or tell us
+    which you want and we add them through the Notion connector.
+  - **Confirm the AUIB calendar address** in `packages/config/project.json`
+    (`campusCalendar`); the hourly sync now writes the terms from it, and
+    the hand-typed semesters stay until the feed names the same ones.
+
 - [ ] **The brand handoff of Oct 30, 2026, what is left for the owner:**
   - **The Qirtas Prizes' names** (the Mutanabbi, Tabari, Jahiz, Nazik,
     Wasiti and Ibn al-Haytham Prizes) are proposed: the public Prizes page
     shows "The main prize" and "The prize for News" and so on until you
-    confirm them; then set `journal.prize_names_public` to true in the
-    Diwan's Settings. Write to Nazik al-Malaika's family first.
+    confirm them; then choose "Use the names" in the Diwan's Qirtas →
+    Editions and prizes. Write to Nazik al-Malaika's family first.
   - **Old Qirtas pieces with retired names.** The launch pieces from
     Oct 14 (migration `20261014000300`, e.g. "Waraq launches…") still name
     Waraq, Gallery Wall, Side Quest and Charter Day, and show on the home
@@ -1133,6 +1146,35 @@ These stop parts of the work. Everything else continues around them.
 
 ## Checklist
 
+### The Diwan, rebuilt (2026-10-30)
+
+Plan: "The Diwan, Rebuilt" (owner: implement; D1 elections a tab in
+Society, D2 concerns, pitches and motions stay digital, D3 no
+announcements, D4 past forms readable, D5 one PR).
+
+- [x] One row of six sections (`adminSections`, `DiwanNav`,
+  `SectionTabs`); Desk with what needs you, three quick actions, what
+  happened, Notion links and the Connected panel (Notion, Hudhud).
+- [x] What's on: Calendar, Programs (each program: sessions, shifts,
+  places, needs; Six Words for the Tour; Collection for Second Chapter;
+  pitches), The door.
+- [x] Qirtas: Newsroom, Review, Editions and prizes (with the prize names
+  switch), Next Stop, Games, Ads.
+- [x] People: Members, Verification, Hiring, Service, Partners, Insights.
+- [x] Society: Minutes, Resolutions (with motions), Requests to Student
+  Life, Elections, Concerns, Library; no Council tab (the Council comes
+  from roles).
+- [x] Terms from the AUIB feed (`lib/api/terms.ts`); roles run to the
+  year's end unless ended; the Faculty Advisor from the role.
+- [x] Removed: Settings page, Site section (pages, announcements,
+  homepage slots, media), feature switches, `/api/v1`, Sign in with SAL,
+  the developers' pages, the letters, every form but F-09, F-10, F-20.
+- [x] Declarations and recovery codes in Membership → Settings; photo
+  consent in Profile (was the Media Release).
+- [x] Activity log in sentences; the Library in two shelves.
+- [ ] The About hub, a page per Company production, and search results
+  grouped by kind: next, after this PR.
+
 ### The overhaul (2026-10-30)
 
 Plan: "SAL Platform Redesign" (D1–D12); owner: all adopted, one PR, things
@@ -1596,6 +1638,14 @@ Covered by automated tests so far:
   use (as the form says).
 
 ## needs-native-review (Arabic written for the platform)
+
+- The Diwan, rebuilt (2026-10-30): `nexus.admin.sections.*`,
+  `nexus.admin.society.*`, `nexus.admin.activity.*` (the sentences and
+  `things.*`), `nexus.admin.overview.{activity,allActivity,connected,
+  connectedLede}`, `quick.minutes`, `nexus.admin.prizes.names.*`,
+  `nexus.admin.programmes.pitches.*`, `nexus.home.needs.*`,
+  `nexus.settings.declarations*`, `nexus.details.photos*`,
+  `web.documents.shelves.*`, `lede`, the term names («خريف 2026»).
 
 - The overhaul (2026-10-30): `nexus.getInvolved.*`, `web.home.thisTerm`,
   `noEvents`, `allEvents`, `sundayPaperLede`, `web.footer.verify`,

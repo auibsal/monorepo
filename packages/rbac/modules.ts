@@ -1,19 +1,10 @@
 import type { Permission } from "./permissions";
 
 /**
- * Nexus admin modules and the permission (held in any scope) that shows
+ * The Diwan's modules and the permission (held in any scope) that shows
  * each one. Pages still scope their rows by program, issue or campaign.
  */
 export const adminModules = [
-  {
-    key: "overview",
-    permissions: [
-      "members.manage",
-      "events.manage",
-      "journal.manage",
-      "charity.manage",
-    ],
-  },
   {
     key: "members",
     permissions: ["members.verify", "members.manage", "roles.assign"],
@@ -42,7 +33,6 @@ export const adminModules = [
       "journal.prizes",
     ],
   },
-  { key: "content", permissions: ["content.manage"] },
   // Waraq's ads: Society ads (content) and sponsor ads (partnerships).
   { key: "ads", permissions: ["content.manage", "partners.manage"] },
   {
@@ -100,7 +90,6 @@ export const adminModules = [
     ],
   },
   { key: "activity", permissions: ["audit.read"] },
-  { key: "settings", permissions: ["settings.manage"] },
 ] as const satisfies readonly {
   key: string;
   permissions: readonly Permission[];
@@ -109,25 +98,44 @@ export const adminModules = [
 export type AdminModule = (typeof adminModules)[number]["key"];
 
 /**
- * Where each section lives under /diwan, named as officers see it (the
- * overhaul, Oct 30, 2026). The keys keep their code names.
+ * The Diwan's six sections (the overhaul, Oct 30, 2026), in one row like
+ * the members' pages. A section shows when any of its modules does; the
+ * Desk shows for every officer.
  */
-export const modulePaths: Record<AdminModule, string> = {
-  activity: "/activity",
-  ads: "/site/ads",
-  charity: "/second-chapter",
-  content: "/site",
-  events: "/events",
-  forms: "/requests",
-  governance: "/governance",
-  hiring: "/hiring",
-  journal: "/qirtas",
-  library: "/library",
-  members: "/members",
-  overview: "/",
-  partners: "/partners",
-  productions: "/company",
-  programs: "/programs",
-  recognition: "/service",
-  settings: "/settings",
+export const adminSections = [
+  { key: "desk", modules: ["activity"], path: "/" },
+  {
+    key: "events",
+    modules: ["events", "programs", "charity"],
+    path: "/events",
+  },
+  { key: "qirtas", modules: ["journal", "ads"], path: "/qirtas" },
+  { key: "company", modules: ["productions"], path: "/company" },
+  {
+    key: "people",
+    modules: ["members", "hiring", "recognition", "partners"],
+    path: "/people",
+  },
+  {
+    key: "society",
+    modules: ["governance", "library", "forms"],
+    path: "/society",
+  },
+] as const satisfies readonly {
+  key: string;
+  modules: readonly AdminModule[];
+  path: string;
+}[];
+
+export type AdminSection = (typeof adminSections)[number]["key"];
+
+/** The section a Diwan path belongs to: /people/hiring → people. */
+export const sectionOfPath = (pathname: string): AdminSection => {
+  const path = pathname.split("?")[0] ?? pathname;
+  const found = adminSections.find(
+    (section) =>
+      section.path !== "/" &&
+      (path === section.path || path.startsWith(`${section.path}/`))
+  );
+  return found?.key ?? "desk";
 };

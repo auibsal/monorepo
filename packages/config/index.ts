@@ -23,11 +23,13 @@ export type SupportedLocale = (typeof supportedLocales)[number];
 
 const projectSchema = z
   .object({
-    domain: z.string().min(1),
     /**
-     * Default journal name. The live value is the `journal.name_*` setting in
-     * the database, so the name can change without a code edit.
+     * AUIB's public calendar (iCal): its dates sit beside the Society's on
+     * What's on, and its semesters are the Society's terms.
      */
+    campusCalendar: z.url(),
+    domain: z.string().min(1),
+    /** Qirtas, the Society's paper (owner, Oct 30, 2026: set, not a setting). */
     journal: z.object({
       name_ar: z.string().min(1),
       name_en: z.string().min(1),

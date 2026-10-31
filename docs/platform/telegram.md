@@ -130,19 +130,19 @@ And without commands:
    | Mini Apps → Menu Button | Open the Main App, title "Daily word" (or leave it on Commands) | BotFather decides it; the bot no longer overrides it. |
    | Payments, Affiliate Program, Games, Serverless | Not used | No online payments of any kind (platform rule); the daily word is the Main App, not a Telegram game; the bot runs in the API routes. |
 
-4. **Connect it.** In the Diwan, Settings → Telegram → *Connect the bot
-   to Telegram* (settings managers). It sets the webhook (with the updates
+4. **Connect it.** In the Diwan, the Desk → Connected → Hudhud → *Connect
+   the bot to Telegram* (settings managers). It sets the webhook (with the updates
    the bot uses, Guest Mode's among them), the commands in English and
    Arabic, and the descriptions; do it again whenever the commands, the
    secret or the updates change. (Without the Diwan:
    `curl -X POST https://auibsal.org/api/telegram/setup -H "Authorization: Bearer $CRON_SECRET" -d '{"connect":true}'`.)
    The scheduled posts need nothing more: the database already calls
    the API routes.
-5. **The Diwan.** Settings → Telegram: the bot's username (this shows
+5. **The Diwan.** The Desk → Connected → Hudhud: the bot's username (this shows
    *Connect Telegram* in members' profiles).
 6. **The group.** Make it a supergroup with topics. Add the bot as an
-   admin with the rights above. In the Diwan, Settings → Telegram → *Make
-   a setup code*, and send the `/setup …` line in the group. Then
+   admin with the rights above. In the Diwan, the Desk → Connected → Hudhud →
+   *Make a setup code*, and send the `/setup …` line in the group. Then
    `/topic …` in each topic, and turn on *Approve new members* on the
    invite link. In the group's settings: the Welcome Message, Aggressive
    Anti-Spam, and the members' permissions (the table above).

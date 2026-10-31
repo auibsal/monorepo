@@ -5,10 +5,12 @@ import { Button } from "@repo/design-system/components/ui/button";
 import { Input } from "@repo/design-system/components/ui/input";
 import type { Locale } from "@repo/internationalization";
 import { formatLongDate } from "@repo/internationalization/format";
+import { hasPermissionAnywhere } from "@repo/rbac";
 import { journal, localized, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useState } from "react";
+import { useGrants } from "@/lib/nexus/queries";
 import { DiwanSection, RowList } from "../../page";
 import { EmptyLine, SectionSpinner } from "../../states";
 import {
@@ -26,6 +28,59 @@ const baghdadToday = () =>
   new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Baghdad" }).format(
     new Date()
   );
+
+/**
+ * The prizes' own names (the Mutanabbi Prize and the rest) are proposed; the
+ * public pages show them only once this is on (owner to confirm).
+ */
+const PrizeNames = () => {
+  const t = useTranslations("nexus.admin.prizes.names");
+  const { supabase, user } = useAuth();
+  const queryClient = useQueryClient();
+  const grants = useGrants();
+  const nameKey = [...key, "names-public"];
+  const shown = useQuery({
+    queryFn: async () =>
+      unwrap(
+        await supabase
+          .schema("core")
+          .from("settings")
+          .select("value")
+          .eq("key", "journal.prize_names_public")
+          .maybeSingle()
+      )?.value === true,
+    queryKey: nameKey,
+  });
+  const toggle = useMutation({
+    mutationFn: async (value: boolean) =>
+      unwrap(
+        await supabase
+          .schema("core")
+          .from("settings")
+          .update({ updated_by: user?.id ?? null, value })
+          .eq("key", "journal.prize_names_public")
+      ),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: nameKey }),
+  });
+  if (
+    !(hasPermissionAnywhere(grants.data, "settings.manage") && shown.isSuccess)
+  ) {
+    return null;
+  }
+  return (
+    <div className="grid gap-2">
+      <p className="type-body">{shown.data ? t("shown") : t("hidden")}</p>
+      <ConfirmAction
+        confirmLabel={shown.data ? t("hide") : t("show")}
+        description={shown.data ? t("hideAsk") : t("showAsk")}
+        onConfirm={() => toggle.mutate(!shown.data)}
+      >
+        {shown.data ? t("hide") : t("show")}
+      </ConfirmAction>
+      <ErrorLine error={toggle.error} />
+    </div>
+  );
+};
 
 /**
  * The Qirtas Prizes in the Diwan (owner, Oct 29, 2026): a round's dates,
@@ -67,6 +122,7 @@ export const Prizes = () => {
   return (
     <div className="grid gap-10">
       <p className="type-caption">{t("lede")}</p>
+      <PrizeNames />
       {rounds.data.length > 1 ? (
         <Field label={t("round")}>
           {(id) => (

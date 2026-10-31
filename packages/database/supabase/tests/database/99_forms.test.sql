@@ -75,7 +75,7 @@ insert into core.semesters (code, name_en, name_ar, starts_on, ends_on) values
 -- first-100 rule back on themselves.
 update core.settings set value = '0' where key = 'membership.founding_voters';
 -- </preamble>
-select plan(25);
+select plan(21);
 
 -- a1 a member, a2 the President, a3 the Vice President, a4 the Faculty
 -- Advisor, a5 a program lead (events.manage for one program), a6 the
@@ -100,17 +100,17 @@ grant all on ids to public;
 -- ── Who may fill in what ──
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a1');
 select lives_ok(
-  $$ insert into ids select 'f03', governance.save_form('f03', '{"first_choice":"Events Coordinator"}') $$,
-  'Anyone signed in applies for a role (F-03)'
+  $$ insert into ids select 'f09', governance.save_form('f09', '{"motion":"Hold the AGM in the library"}') $$,
+  'A member proposes a General Assembly motion (F-09)'
 );
-select is((select count(*)::int from governance.form_submissions), 1, 'and reads their own application');
+select is((select count(*)::int from governance.form_submissions), 1, 'and reads their own motion');
 select throws_ok(
-  $$ select governance.save_form('f04', '{"candidate":"x"}') $$,
+  $$ select governance.save_form('f03', '{"first_choice":"Events Coordinator"}') $$,
   '42501', 'not_allowed',
-  'Only the panel fills in interview score sheets (F-04)'
+  'Retired forms take no new submissions (F-03 is the Callboard now)'
 );
 select throws_ok(
-  $$ select governance.save_form('f03', '{}', null, true, true) $$,
+  $$ select governance.save_form('f09', '{}', null, true, true) $$,
   '22023', 'anonymous_not_allowed',
   'Only concerns may be anonymous'
 );
@@ -121,7 +121,7 @@ select throws_ok(
 );
 select throws_ok(
   $$ insert into governance.form_submissions (form_key, submitted_by, data)
-     values ('f03', auth.uid(), '{}') $$,
+     values ('f09', auth.uid(), '{}') $$,
   '42501', null,
   'Nobody writes submissions directly'
 );
@@ -150,15 +150,14 @@ select pg_temp.login_as('00000000-0000-0000-0000-0000000000a4');
 select is((select count(*)::int from governance.form_submissions where form_key = 'f20'), 2,
   'and so does the Faculty Advisor');
 
--- ── Incident reports (F-19): Society-wide handlers only ──
+-- ── Incident reports (F-19) are retired: the officer on duty writes them up
+-- in Notion's template, and past ones stay readable. ──
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a1');
-select governance.save_form('f19', '{"what":"A fall on the stairs"}');
-select pg_temp.login_as('00000000-0000-0000-0000-0000000000a5');
-select is((select count(*)::int from governance.form_submissions where form_key = 'f19'), 0,
-  'A program-scoped lead never sees incident reports');
-select pg_temp.login_as('00000000-0000-0000-0000-0000000000a2');
-select is((select count(*)::int from governance.form_submissions where form_key = 'f19'), 1,
-  'the President does');
+select throws_ok(
+  $$ select governance.save_form('f19', '{"what":"A fall on the stairs"}') $$,
+  '42501', 'not_allowed',
+  'No new incident reports are sent here'
+);
 
 -- ── Drafts and handling ──
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a1');
@@ -190,24 +189,6 @@ select ok((select closed_at is not null from governance.form_submissions where i
   'and closes it');
 select ok((select waiting >= 1 from governance.form_queue() where form_key = 'f20'),
   'The queue counts what is waiting');
-
--- ── Checklists with a subject (F-27) ──
-select pg_temp.login_as('00000000-0000-0000-0000-0000000000a6');
-insert into ids select 'offboard', governance.save_form('f27', '{"role":"Events Coordinator"}', null, true, false,
-  '00000000-0000-0000-0000-0000000000a1');
-select pg_temp.login_as('00000000-0000-0000-0000-0000000000a1');
-select is((select count(*)::int from governance.form_submissions where form_key = 'f27'), 1,
-  'The person leaving reads their offboarding checklist');
-select lives_ok(
-  format($$ select governance.save_form('f27', '{"role":"Events Coordinator","items":["dossier"]}', %L) $$,
-    (select id from ids where name = 'offboard')),
-  'and ticks items while it is open'
-);
-select throws_ok(
-  $$ select governance.save_form('f27', '{}') $$,
-  '42501', 'not_allowed',
-  'but only the General Secretary starts one'
-);
 
 select pg_temp.login_anon();
 select throws_ok(

@@ -7,7 +7,7 @@ import { Button } from "@repo/design-system/components/ui/button";
 import { Input } from "@repo/design-system/components/ui/input";
 import { Label } from "@repo/design-system/components/ui/label";
 import { Link, useRouter } from "@repo/internationalization/navigation";
-import { content, membership } from "@repo/sal-data";
+import { membership, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -111,13 +111,14 @@ const usePledgeVersions = () => {
   const { supabase } = useAuth();
   return useQuery({
     queryFn: async () => {
-      const [human, member] = await Promise.all([
-        content.publicSetting(supabase, "pledges.human_authorship.version"),
-        content.publicSetting(supabase, "pledges.member.version"),
-      ]);
+      // Internal versions (never shown), read only by signed-in members.
+      const rows =
+        unwrap(await supabase.schema("core").rpc("pledge_versions")) ?? [];
+      const version = (key: string) =>
+        String(rows.find((r) => r.key === key)?.value ?? "1");
       return {
-        human_authorship: String(human ?? "1"),
-        member: String(member ?? "1"),
+        human_authorship: version("pledges.human_authorship.version"),
+        member: version("pledges.member.version"),
       } as Record<PledgeKind, string>;
     },
     queryKey: ["pledge-versions"],

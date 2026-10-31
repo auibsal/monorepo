@@ -96,8 +96,8 @@ select ok(
   exists (select 1 from core.programmes where slug = 'waraq' and not is_active),
   'Qirtas is the paper, not a program: its row is unpublished'
 );
-select is((select value #>> '{}' from core.settings where key = 'journal.name_ar'), 'قرطاس',
-  'The Arabic name of the paper');
+select is((select count(*) from core.settings where key like 'journal.name_%')::integer, 0,
+  'The paper''s name is fixed in the project file, not kept as a setting');
 
 select * from finish();
 rollback;

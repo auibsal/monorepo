@@ -149,7 +149,7 @@ export const AdsAdmin = () => {
   const columns: Column<KeptAd>[] = [
     {
       cell: (ad) => (
-        <Link className="link" href={`/site/ads/${ad.id}`}>
+        <Link className="link" href={`/qirtas/ads/${ad.id}`}>
           {localized(ad, "headline", locale) || t("untitled")}
         </Link>
       ),
@@ -171,7 +171,7 @@ export const AdsAdmin = () => {
         {kinds.map((kind) => (
           <Link
             className={buttonLink}
-            href={{ pathname: "/site/ads/new", query: { kind } }}
+            href={{ pathname: "/qirtas/ads/new", query: { kind } }}
             key={kind}
           >
             {t(`new.${kind}`)}
@@ -184,7 +184,7 @@ export const AdsAdmin = () => {
           action={
             kinds[0]
               ? {
-                  href: `/site/ads/new?kind=${kinds[0]}`,
+                  href: `/qirtas/ads/new?kind=${kinds[0]}`,
                   label: t(`new.${kinds[0]}`),
                 }
               : undefined
@@ -261,7 +261,7 @@ const AdForm = ({ initial }: { initial: Draft }) => {
       await queryClient.invalidateQueries({ queryKey: key });
       if (!draft.id) {
         setDraft((d) => ({ ...d, id }));
-        router.replace(`/site/ads/${id}`);
+        router.replace(`/qirtas/ads/${id}`);
       }
     },
   });
@@ -280,7 +280,7 @@ const AdForm = ({ initial }: { initial: Draft }) => {
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: key });
-      router.replace("/site/ads");
+      router.replace("/qirtas?tab=ads");
     },
   });
 
@@ -450,7 +450,10 @@ export const AdEditor = () => {
   }, [id, record.data, newKind]);
 
   const back = (
-    <Link className="text-sm underline underline-offset-4" href="/site/ads">
+    <Link
+      className="text-sm underline underline-offset-4"
+      href="/qirtas?tab=ads"
+    >
       {t("back")}
     </Link>
   );

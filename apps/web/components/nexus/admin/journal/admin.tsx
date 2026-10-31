@@ -20,6 +20,7 @@ import { Link } from "@/lib/nexus/navigation";
 import { useGrants } from "@/lib/nexus/queries";
 import { useQueryParam } from "@/lib/nexus/use-query-param";
 import { SectionSpinner } from "../../states";
+import { AdsAdmin } from "../ads";
 import { slugify } from "../events/editor";
 import {
   AdminHeading,
@@ -34,6 +35,7 @@ import {
 import { Needs } from "../needs";
 import { openSubmissionFile } from "../pipeline/data";
 import { PipelineAdmin } from "../pipeline/pipeline";
+import { NextStopAdmin } from "../programmes/admin";
 import { Prizes } from "./prizes";
 import { Puzzles } from "./puzzles";
 import { FrontRank } from "./workflow";
@@ -831,18 +833,23 @@ export const JournalAdmin = () => {
     hasPermissionAnywhere(grants.data, p)
   );
   const prizes = hasPermissionAnywhere(grants.data, "journal.prizes");
-  const needs = hasPermission(grants.data, "journal.manage");
+  const nextStop =
+    hasPermissionAnywhere(grants.data, "programmes.manage") ||
+    hasPermissionAnywhere(grants.data, "journal.edit.video");
+  const ads =
+    hasPermissionAnywhere(grants.data, "content.manage") ||
+    hasPermissionAnywhere(grants.data, "partners.manage");
+  // Six views (the overhaul, Oct 30, 2026): the front page, the desks, the
+  // contributors and the needs list sit in the Newsroom; the Prizes beside
+  // the Editions; Next Stop and the ads came from Programs and Site.
   const tabs = (
     [
-      ["newsroom", newsroom],
+      ["newsroom", newsroom || named || front],
       ["review", review],
-      ["desks", named],
-      ["front", front],
-      ["editions", newsroom],
+      ["editions", newsroom || prizes],
+      ["next-stop", nextStop],
       ["games", puzzles],
-      ["prizes", prizes],
-      ["needs", needs],
-      ["contributors", newsroom],
+      ["ads", ads],
     ] as const
   )
     .filter(([, shown]) => shown)
@@ -893,33 +900,49 @@ const QirtasNeeds = () => {
 type JournalTabKey =
   | "newsroom"
   | "review"
-  | "desks"
-  | "front"
   | "editions"
+  | "next-stop"
   | "games"
-  | "prizes"
-  | "needs"
-  | "contributors";
+  | "ads";
 
 const JournalTab = ({ tab }: { tab: JournalTabKey }) => {
+  const grants = useGrants();
+  const has = (permission: Parameters<typeof hasPermission>[1]) =>
+    hasPermissionAnywhere(grants.data, permission);
+  const inNewsroom = newsroomKeys.some((permission) => has(permission));
   switch (tab) {
     case "newsroom":
-      return <Newsroom />;
+      return (
+        <div className="grid gap-14">
+          {inNewsroom ? <Newsroom /> : null}
+          {journal.newsroomDesks.some(
+            (desk) => has(`journal.edit.${desk}`) || has("journal.approve")
+          ) ? (
+            <Desks />
+          ) : null}
+          {hasPermission(grants.data, "journal.frontpage") ? (
+            <FrontPage />
+          ) : null}
+          {inNewsroom ? <Contributors /> : null}
+          {hasPermission(grants.data, "journal.manage") ? (
+            <QirtasNeeds />
+          ) : null}
+        </div>
+      );
     case "review":
       return <PipelineAdmin embedded />;
-    case "desks":
-      return <Desks />;
-    case "front":
-      return <FrontPage />;
     case "editions":
-      return <Editions />;
+      return (
+        <div className="grid gap-14">
+          <Editions />
+          {has("journal.prizes") ? <Prizes /> : null}
+        </div>
+      );
+    case "next-stop":
+      return <NextStopAdmin />;
     case "games":
       return <Puzzles />;
-    case "prizes":
-      return <Prizes />;
-    case "needs":
-      return <QirtasNeeds />;
     default:
-      return <Contributors />;
+      return <AdsAdmin />;
   }
 };

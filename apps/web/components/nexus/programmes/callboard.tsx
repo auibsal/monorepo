@@ -211,7 +211,7 @@ export const Callboard = () => {
         id="ideas"
         title={t("ideas.title")}
       >
-        <StartLinks keys={["f10", "f11", "f29"]} />
+        <StartLinks keys={["f10"]} />
       </DiwanSection>
     </DiwanPage>
   );

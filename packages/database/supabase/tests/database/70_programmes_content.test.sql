@@ -159,10 +159,9 @@ select hasnt_table('content', 'news_posts', 'The old news table is gone (Waraq''
 select pg_temp.login_anon();
 select is((select count(*) from content.search('Night') where kind = 'news')::integer, 0,
   'Search no longer lists the old news posts (Waraq''s News desk has them)');
-select is((select count(*) from core.settings where key = 'auib.calendar_url')::integer, 0,
-  'Private settings are hidden from visitors');
-select is((select value #>> '{}' from core.settings where key = 'journal.name_en'), 'Qirtas',
-  'The journal name is a public setting');
+select is((select count(*) from core.settings where key = 'pledges.member.version')::integer, 0,
+  'Pledge versions are not public');
+select hasnt_table('content', 'pages', 'The Site section''s pages are gone (page text lives with the page)');
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a1');
 select is((select count(*) from core.activity_log)::integer, 0, 'Members cannot read the activity log');

@@ -1,7 +1,6 @@
 import { env } from "@/env";
 
-// The Nexus and the public pages share this origin; /v1 (third-party apps)
-// sets its own CORS in lib/api/v1.ts.
+// The Diwan, the members' pages and the public pages share this origin.
 const allowedOrigins = () =>
   new Set([new URL(env.NEXT_PUBLIC_SITE_URL).origin]);
 

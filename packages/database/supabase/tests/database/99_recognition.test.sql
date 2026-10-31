@@ -171,11 +171,10 @@ select throws_ok(
   '23514', null,
   'A Fellowship certificate needs the Council''s resolution'
 );
-select throws_ok(
+select lives_ok(
   $$ insert into membership.certificates (user_id, kind, hours)
      values ('00000000-0000-0000-0000-0000000000a1', 'volunteer', 12) $$,
-  '22023', 'volunteer_certificates_off',
-  'Volunteer certificates stay off until the Council decides'
+  'Volunteer certificates are on (no switch to keep)'
 );
 select throws_ok(
   $$ select membership.sign_certificate('00000000-0000-0000-0000-00000000f001') $$,

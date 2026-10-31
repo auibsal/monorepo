@@ -4,12 +4,6 @@ import { useAuth } from "@repo/auth/provider";
 import { SalCard } from "@repo/design-system/components/sal/card";
 import { Button } from "@repo/design-system/components/ui/button";
 import { Input } from "@repo/design-system/components/ui/input";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@repo/design-system/components/ui/tabs";
 import { Textarea } from "@repo/design-system/components/ui/textarea";
 import type { Locale } from "@repo/internationalization";
 import {
@@ -18,13 +12,22 @@ import {
   formatLongDate,
   formatNumber,
 } from "@repo/internationalization/format";
+import { hasPermissionAnywhere } from "@repo/rbac";
 import { localized, programmes, recognition, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useEffect, useState } from "react";
-import { SectionSpinner } from "../../states";
+import { PathLine } from "@/components/frame/path-line";
+import { TabLinks } from "@/components/frame/tab-links";
+import { Link } from "@/lib/nexus/navigation";
+import { useGrants } from "@/lib/nexus/queries";
+import { useQueryParam } from "@/lib/nexus/use-query-param";
+import { DiwanSection, RowList } from "../../page";
+import { EmptyLine, SectionSpinner } from "../../states";
+import { CharityAdmin } from "../charity/list";
 import { useProgrammeOptions } from "../events/data";
 import { slugify } from "../events/editor";
+import { RequestQueue } from "../forms/admin";
 import {
   AdminHeading,
   BilingualField,
@@ -1083,81 +1086,139 @@ const Removals = () => {
 
 // ── Page ────────────────────────────────────────────────────────────────────
 
-export const ProgrammesAdmin = () => {
+/**
+ * What's on → Programs (the overhaul, Oct 30, 2026): the six programs this
+ * officer runs, each opening its own page, and the pitches members send for
+ * new ones.
+ */
+export const ProgramsIndex = () => {
   const t = useTranslations("nexus.admin.programmes");
-  const programmeOptions = useProgrammeOptions("programmes.manage");
-  const [programmeId, setProgrammeId] = useState("");
-  const removals = useOpenRemovals();
-  const selected = programmeId || programmeOptions.options[0]?.id || "";
-  const openRemovals = (removals.data ?? []).filter(
-    (r) => r.status === "open" || r.status === "in_progress"
-  ).length;
-
-  if (programmeOptions.isPending) {
+  const options = useProgrammeOptions("programmes.manage");
+  if (options.isPending) {
     return <SectionSpinner />;
   }
+  const listed = options.options.filter((p) =>
+    programmes.isListedProgram({ is_active: p.isActive, slug: p.slug })
+  );
+  return (
+    <div className="grid gap-10">
+      <AdminHeading title={t("title")}>{t("lede")}</AdminHeading>
+      {listed.length === 0 ? (
+        <EmptyLine>{t("none")}</EmptyLine>
+      ) : (
+        <RowList>
+          {listed.map((p) => (
+            <li key={p.id}>
+              <Link
+                className="link font-medium"
+                href={`/events/programs/${p.slug}`}
+              >
+                {p.label}
+              </Link>
+            </li>
+          ))}
+        </RowList>
+      )}
+      <DiwanSection
+        description={t("pitches.lede")}
+        id="pitches"
+        title={t("pitches.title")}
+      >
+        <RequestQueue keys={["f10"]} />
+      </DiwanSection>
+    </div>
+  );
+};
 
+type ProgramTab =
+  | "sessions"
+  | "shifts"
+  | "places"
+  | "needs"
+  | "six-words"
+  | "collection";
+
+/**
+ * One program, its tabs at their own addresses: Sessions (the repeat
+ * rule), Shifts (the rota), Places (Apprenticeships and First Ink), Needs.
+ * The Typewriter Tour adds Six Words; Second Chapter adds Collection (its
+ * campaigns, the ledger, the handover).
+ */
+export const ProgramPage = ({ slug }: { readonly slug: string }) => {
+  const t = useTranslations("nexus.admin.programmes");
+  const options = useProgrammeOptions("programmes.manage");
+  const grants = useGrants();
+  const requested = useQueryParam("tab");
+  if (options.isPending || grants.isPending) {
+    return <SectionSpinner />;
+  }
+  const programme = options.options.find((p) => p.slug === slug);
+  if (!programme) {
+    return (
+      <EmptyLine action={{ href: "/events/programs", label: t("all") }}>
+        {t("notYours")}
+      </EmptyLine>
+    );
+  }
+  const tabs: ProgramTab[] = [
+    "sessions",
+    "shifts",
+    "places",
+    "needs",
+    ...(slug === "typewriter-tour" ? (["six-words"] as const) : []),
+    ...(slug === "second-chapter" &&
+    hasPermissionAnywhere(grants.data, "charity.manage")
+      ? (["collection"] as const)
+      : []),
+  ];
+  const tab = tabs.find((x) => x === requested) ?? "sessions";
   return (
     <div className="grid gap-6">
-      <AdminHeading title={t("title")}>{t("lede")}</AdminHeading>
-      <Field label={t("programme")}>
-        {(id) => (
-          <SelectInput
-            className="max-w-sm"
-            id={id}
-            onChange={(e) => setProgrammeId(e.target.value)}
-            value={selected}
-          >
-            {programmeOptions.options.map((p) => (
-              <option key={p.id} value={p.id}>
-                {p.label}
-              </option>
-            ))}
-          </SelectInput>
-        )}
-      </Field>
-      <Tabs defaultValue="sessions">
-        <TabsList className="flex-wrap">
-          <TabsTrigger value="sessions">{t("tabs.sessions")}</TabsTrigger>
-          <TabsTrigger value="episodes">{t("tabs.episodes")}</TabsTrigger>
-          <TabsTrigger value="reels">{t("tabs.reels")}</TabsTrigger>
-          <TabsTrigger value="rotas">{t("tabs.rotas")}</TabsTrigger>
-          <TabsTrigger value="roles">{t("tabs.roles")}</TabsTrigger>
-          <TabsTrigger value="needs">{t("tabs.needs")}</TabsTrigger>
-          <TabsTrigger value="six-words">{t("tabs.sixWords")}</TabsTrigger>
-          <TabsTrigger value="removals">
-            {t("tabs.removals", { count: formatNumber(openRemovals) })}
-          </TabsTrigger>
-        </TabsList>
-        {selected ? (
-          <>
-            <TabsContent className="pt-4" value="sessions">
-              <Sessions programmeId={selected} />
-            </TabsContent>
-            <TabsContent className="pt-4" value="episodes">
-              <Episodes programmeId={selected} />
-            </TabsContent>
-            <TabsContent className="pt-4" value="reels">
-              <Reels programmeId={selected} />
-            </TabsContent>
-            <TabsContent className="pt-4" value="rotas">
-              <Rotas programmeId={selected} />
-            </TabsContent>
-            <TabsContent className="pt-4" value="roles">
-              <Openings programmeId={selected} />
-            </TabsContent>
-            <TabsContent className="pt-4" value="needs">
-              <Needs programmeId={selected} />
-            </TabsContent>
-          </>
-        ) : null}
-        <TabsContent className="pt-4" value="six-words">
-          <TourCards />
-        </TabsContent>
-        <TabsContent className="pt-4" value="removals">
-          <Removals />
-        </TabsContent>
-      </Tabs>
+      <PathLine items={[{ href: "/events/programs", label: t("title") }]} />
+      <AdminHeading title={programme.label} />
+      <TabLinks
+        label={programme.label}
+        pathname={`/events/programs/${slug}`}
+        tabs={tabs.map((key) => ({ key, label: t(`tabs.${key}`) }))}
+      />
+      <div className="pt-2">
+        {tab === "sessions" ? <Sessions programmeId={programme.id} /> : null}
+        {tab === "shifts" ? <Rotas programmeId={programme.id} /> : null}
+        {tab === "places" ? <Openings programmeId={programme.id} /> : null}
+        {tab === "needs" ? <Needs programmeId={programme.id} /> : null}
+        {tab === "six-words" ? <TourCards /> : null}
+        {tab === "collection" ? <CharityAdmin /> : null}
+      </div>
+    </div>
+  );
+};
+
+/**
+ * Next Stop, Qirtas's video show (Qirtas → Next Stop): its episodes, its
+ * reels and the takedown requests its promise allows.
+ */
+export const NextStopAdmin = () => {
+  const t = useTranslations("nexus.admin.programmes");
+  const options = useProgrammeOptions(null);
+  if (options.isPending) {
+    return <SectionSpinner />;
+  }
+  const nextStop = options.options.find((p) => p.slug === "next-stop");
+  return (
+    <div className="grid gap-10">
+      {nextStop ? (
+        <>
+          <DiwanSection id="episodes" title={t("tabs.episodes")}>
+            <Episodes programmeId={nextStop.id} />
+          </DiwanSection>
+          <DiwanSection id="reels" title={t("tabs.reels")}>
+            <Reels programmeId={nextStop.id} />
+          </DiwanSection>
+        </>
+      ) : null}
+      <DiwanSection id="removals" title={t("removalsTitle")}>
+        <Removals />
+      </DiwanSection>
     </div>
   );
 };

@@ -6,26 +6,15 @@ import { keys } from "./keys";
 
 const BEARER = /^Bearer\s+(.+)$/i;
 
-interface AuthenticateOptions {
-  /**
-   * Accept tokens issued to third-party apps (Sign in with SAL). Off by
-   * default: only the public `/v1` API takes them. Account deletion,
-   * exports and signed URLs answer the Society's own apps only.
-   */
-  readonly apps?: boolean;
-}
-
 /**
  * Authenticates an API request by its `Authorization: Bearer <access token>`
- * header, how the Nexus (client-rendered) calls the API routes and how
- * third-party apps call /api/v1. Returns the verified claims and a client that acts
- * as that user, so Row Level Security applies to its queries. `clientId` is
- * the third-party app the token was issued to, or null for the Nexus.
+ * header, how the site's own pages (client-rendered) call the API routes.
+ * Returns the verified claims and a client that acts as that user, so Row
+ * Level Security applies to its queries. There are no third-party apps
+ * (owner, Oct 30, 2026): a token issued to one (it carries a client_id) is
+ * refused.
  */
-export const authenticateRequest = async (
-  request: Request,
-  { apps = false }: AuthenticateOptions = {}
-) => {
+export const authenticateRequest = async (request: Request) => {
   const token = BEARER.exec(request.headers.get("authorization") ?? "")?.[1];
   const { NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY } =
     keys();
@@ -54,13 +43,9 @@ export const authenticateRequest = async (
     return null;
   }
 
-  const clientId =
-    typeof data.claims.client_id === "string" && data.claims.client_id
-      ? data.claims.client_id
-      : null;
-  if (clientId && !apps) {
+  if (typeof data.claims.client_id === "string" && data.claims.client_id) {
     return null;
   }
 
-  return { claims: data.claims, clientId, supabase, userId: data.claims.sub };
+  return { claims: data.claims, supabase, userId: data.claims.sub };
 };

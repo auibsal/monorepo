@@ -37,7 +37,7 @@ const total = (counts: Record<string, number>, suffix: string) =>
     .reduce((sum, [, n]) => sum + n, 0);
 
 /**
- * Settings: the team's Notion workspace. Whether the connection is set up,
+ * The Desk's Connected panel: the team's Notion workspace. Whether the connection is set up,
  * what the last sync did, and who to invite or remove (Notion's API cannot
  * do either, so a workspace owner does it from these lists).
  */

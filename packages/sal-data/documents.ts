@@ -67,6 +67,14 @@ export const allDocuments = async (client: Client) =>
       .order("sort")
   ) ?? []) as SalDocument[];
 
+/**
+ * The Library keeps two shelves (owner, Oct 30, 2026): the Society's own
+ * documents, and the website's policies (terms, accessibility, and the
+ * privacy page beside them), which carry the platform codes.
+ */
+export const isWebsitePolicy = (doc: Pick<SalDocument, "code">) =>
+  doc.code.startsWith("SAL-PLT-");
+
 /** The title in the page's language (English when there is no Arabic). */
 export const documentTitle = (
   doc: Pick<SalDocument, "title_ar" | "title_en">,

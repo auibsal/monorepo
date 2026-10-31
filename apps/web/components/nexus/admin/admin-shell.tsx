@@ -5,18 +5,17 @@ import { cn } from "@repo/design-system/lib/utils";
 import {
   type AdminModule,
   adminModules,
+  adminSections,
   hasPermissionAnywhere,
-  modulePaths,
+  sectionOfPath,
 } from "@repo/rbac";
+import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { type ReactNode, useEffect, useState } from "react";
-import { Link, usePathname, useRouter } from "@/lib/nexus/navigation";
-import { useNotionHandbook, useTeamWorkspace } from "@/lib/nexus/notion";
+import type { ReactNode } from "react";
+import { Link, usePathname } from "@/lib/nexus/navigation";
 import { useGrants } from "@/lib/nexus/queries";
 import { TwoStepPanel, useTwoStep } from "../auth/two-step";
 import { SectionSpinner } from "../states";
-
-const hrefFor = (module: AdminModule) => modulePaths[module];
 
 /** The admin modules the member's grants show (RLS still decides the rows). */
 export const useVisibleModules = () => {
@@ -29,181 +28,169 @@ export const useVisibleModules = () => {
   return { grants, visible };
 };
 
-// Six groups (the Society's threes, owner, Oct 30, 2026): five of sections
-// under the Desk, then "For your role". Modules not listed here fall into
-// the fifth.
-type Group = "whatsOn" | "publishing" | "people" | "society" | "office";
-
-const groups: { key: Group; modules: AdminModule[] }[] = [
-  {
-    key: "whatsOn",
-    modules: ["events", "programs", "productions", "charity"],
-  },
-  { key: "publishing", modules: ["journal", "content", "ads"] },
-  { key: "people", modules: ["members", "hiring", "recognition"] },
-  { key: "society", modules: ["governance", "library", "partners"] },
-  { key: "office", modules: ["forms", "activity", "settings"] },
-];
-
-const ungrouped = adminModules
-  .map((m) => m.key)
-  .filter(
-    (key) => key !== "overview" && !groups.some((g) => g.modules.includes(key))
+/** The sections this officer opens: the Desk, then any with a module. */
+export const useVisibleSections = () => {
+  const { grants, visible } = useVisibleModules();
+  const keys = new Set<string>(visible.map((m) => m.key));
+  const sections = adminSections.filter((section) =>
+    section.key === "desk"
+      ? visible.length > 0
+      : section.modules.some((module) => keys.has(module))
   );
-
-// What every officer has besides the modules (owner, Oct 30, 2026: these
-// left the Diwan's header, which is now the site's own).
-const ownPages = [{ href: "/declarations", key: "declarations" }] as const;
-
-// Ads sit inside Site (/site/ads), so Site is current everywhere else under it.
-const isActive = (module: AdminModule, pathname: string) => {
-  if (module === "overview") {
-    return pathname === "/";
-  }
-  if (module === "content" && pathname.startsWith(hrefFor("ads"))) {
-    return false;
-  }
-  return pathname.startsWith(hrefFor(module));
+  return { grants, sections };
 };
 
 /**
- * Section navigation for the administration area: a sidebar on wide
- * screens; on phones and tablets a single "Section" button that opens the
- * same grouped list, so it never wraps into a block of links.
+ * The Diwan's row (the overhaul, Oct 30, 2026), like the members' own:
+ * Desk · What's on · Qirtas · The Company · People · Society, only those
+ * the officer's roles reach. On phones, one line naming the section opens
+ * the list.
  */
-const AdminNav = () => {
-  const t = useTranslations("nexus.admin");
+export const DiwanNav = () => {
+  const t = useTranslations("nexus.admin.sections");
   const pathname = usePathname();
-  const { visible } = useVisibleModules();
-  // Open for one page only: moving to another section closes the list.
-  const [openOn, setOpenOn] = useState<string | null>(null);
-  const open = openOn === pathname;
-  const tn = useTranslations("nexus.nav");
-  const tc = useTranslations("common");
-  const workspace = useTeamWorkspace();
-  const handbook = useNotionHandbook();
-  const keys = new Set(visible.map((m) => m.key));
-  const own = ownPages.find((page) => pathname.startsWith(page.href));
-  const current = own ? null : visible.find((m) => isActive(m.key, pathname));
-  const notion = [
-    ...(workspace ? [{ href: workspace, key: "workspace" } as const] : []),
-    ...(handbook.home
-      ? [{ href: handbook.home, key: "handbook" } as const]
-      : []),
-  ];
-
-  const link = (module: AdminModule) => {
-    const active = isActive(module, pathname);
+  const { sections } = useVisibleSections();
+  if (sections.length === 0) {
+    return null;
+  }
+  const current = sectionOfPath(pathname);
+  const link = (section: (typeof sections)[number], phone: boolean) => {
+    const here = section.key === current;
     return (
-      <li key={module}>
+      <li className={phone ? undefined : "shrink-0"} key={section.key}>
         <Link
-          aria-current={active ? "page" : undefined}
+          aria-current={here ? "page" : undefined}
           className={cn(
-            "block py-2 text-sm underline-offset-4 hover:underline lg:py-1",
-            active && "font-medium text-text"
+            phone
+              ? "block py-3 text-sm hover:text-accent"
+              : "block whitespace-nowrap border-b-[1.5px] py-3 font-medium text-sm hover:text-accent",
+            phone && (here ? "font-medium text-accent" : "text-text"),
+            !phone &&
+              (here
+                ? "border-accent text-text"
+                : "border-transparent text-text-secondary")
           )}
-          href={hrefFor(module)}
+          href={section.path}
         >
-          {t(`nav.${module}`)}
+          {t(section.key)}
         </Link>
       </li>
     );
   };
-
   return (
-    <nav aria-label={t("nav.label")}>
-      <p className="type-label mb-2 hidden lg:block">{t("title")}</p>
-      <button
-        aria-controls="admin-sections"
-        aria-expanded={open}
-        className="flex w-full items-center justify-between gap-3 border border-line bg-surface px-4 py-3 text-start lg:hidden"
-        onClick={() => setOpenOn(open ? null : pathname)}
-        type="button"
+    <nav aria-label={t("label")} className="border-line border-b print:hidden">
+      <details
+        className="group mx-auto w-full max-w-6xl px-4 md:hidden"
+        key={pathname}
       >
-        <span className="grid">
-          <span className="type-label">{t("title")}</span>
-          <span className="font-medium">
-            {own ? tn(own.key) : t(`nav.${current?.key ?? "overview"}`)}
-          </span>
-        </span>
-        <Icon
-          className={cn(
-            "size-5 shrink-0 transition-transform",
-            open && "rotate-180"
-          )}
-          name="chevron-down"
-        />
-      </button>
-      <div
-        className={cn(
-          "mt-2 grid gap-4 lg:mt-0 lg:grid",
-          open ? "grid" : "hidden"
-        )}
-        id="admin-sections"
-      >
-        {keys.has("overview") ? <ul>{link("overview")}</ul> : null}
-        {groups.map((group, index) => {
-          const items = [
-            ...group.modules,
-            ...(index === groups.length - 1 ? ungrouped : []),
-          ].filter((m) => keys.has(m));
-          if (items.length === 0) {
-            return null;
-          }
-          return (
-            <div className="grid gap-1" key={group.key}>
-              <p className="type-caption">{t(`nav.groups.${group.key}`)}</p>
-              <ul className="grid grid-cols-2 gap-x-4 sm:grid-cols-3 lg:grid-cols-1">
-                {items.map(link)}
-              </ul>
-            </div>
-          );
-        })}
-        <div className="grid gap-1">
-          <p className="type-caption">{t("nav.groups.yours")}</p>
-          <ul className="grid grid-cols-2 gap-x-4 sm:grid-cols-3 lg:grid-cols-1">
-            {ownPages.map((page) => {
-              const active = own?.href === page.href;
-              return (
-                <li key={page.href}>
-                  <Link
-                    aria-current={active ? "page" : undefined}
-                    className={cn(
-                      "block py-2 text-sm underline-offset-4 hover:underline lg:py-1",
-                      active && "font-medium text-text"
-                    )}
-                    href={page.href}
-                  >
-                    {tn(page.key)}
-                  </Link>
-                </li>
-              );
-            })}
-            {notion.map((page) => (
-              <li key={page.key}>
-                <a
-                  className="inline-flex items-center gap-1.5 py-2 text-sm underline-offset-4 hover:underline lg:py-1"
-                  href={page.href}
-                  rel="noopener"
-                  target="_blank"
-                >
-                  {tn(page.key)}
-                  <Icon
-                    className="size-3.5"
-                    label={tc("externalLink")}
-                    name="arrow-up-right"
-                  />
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
+        <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-3 font-medium text-sm [&::-webkit-details-marker]:hidden">
+          <span>{t(current)}</span>
+          <Icon
+            className="size-4 transition-transform group-open:rotate-180"
+            name="chevron-down"
+          />
+        </summary>
+        <ul className="grid divide-y divide-line border-line border-t">
+          {sections.map((section) => link(section, true))}
+        </ul>
+      </details>
+      <div className="mx-auto hidden w-full max-w-6xl px-4 md:block">
+        <ul className="flex min-w-0 gap-x-6 overflow-x-auto">
+          {sections.map((section) => link(section, false))}
+        </ul>
       </div>
     </nav>
   );
 };
 
-/** The administration area: grouped section navigation and the section. */
+export interface SectionTab {
+  /** Waiting items, shown in the accent. */
+  readonly count?: number;
+  /** A path inside the Diwan, with `?tab=` where the view is a tab. */
+  readonly href: string;
+  readonly label: string;
+}
+
+/**
+ * The tab for the page shown: a `?tab=` tab when its path and tab match,
+ * otherwise the tab whose path holds this page most closely (so an event's
+ * page keeps "Calendar" lit and a program's page "Programs").
+ */
+const tabHere = (
+  tabs: readonly SectionTab[],
+  pathname: string,
+  current: string | null
+) => {
+  let best = -1;
+  let bestLength = -1;
+  tabs.forEach((tab, index) => {
+    const [path = "/", query] = tab.href.split("?");
+    const wanted = new URLSearchParams(query ?? "").get("tab");
+    if (wanted) {
+      if (pathname === path && current === wanted) {
+        best = index;
+        bestLength = Number.POSITIVE_INFINITY;
+      }
+      return;
+    }
+    const holds =
+      pathname === path || (path !== "/" && pathname.startsWith(`${path}/`));
+    if (holds && path.length > bestLength && !(pathname === path && current)) {
+      best = index;
+      bestLength = path.length;
+    }
+  });
+  return best === -1 ? 0 : best;
+};
+
+/**
+ * A section's own views, under its title: links, so every view has its
+ * own address and can be shared.
+ */
+export const SectionTabs = ({
+  label,
+  tabs,
+}: {
+  readonly label: string;
+  readonly tabs: readonly SectionTab[];
+}) => {
+  const pathname = usePathname();
+  const current = useSearchParams().get("tab");
+  if (tabs.length < 2) {
+    return null;
+  }
+  const hereIndex = tabHere(tabs, pathname, current);
+  return (
+    <nav aria-label={label} className="overflow-x-auto border-line border-b">
+      <ul className="flex gap-x-6">
+        {tabs.map((tab, index) => {
+          const here = index === hereIndex;
+          return (
+            <li className="shrink-0" key={tab.href}>
+              <Link
+                aria-current={here ? "page" : undefined}
+                className={cn(
+                  "block whitespace-nowrap border-b-[1.5px] py-3 font-medium text-sm hover:text-accent",
+                  here
+                    ? "border-accent text-text"
+                    : "border-transparent text-text-secondary"
+                )}
+                href={tab.href}
+              >
+                {tab.label}
+                {tab.count ? (
+                  <span className="ms-1.5 text-accent">{tab.count}</span>
+                ) : null}
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
+    </nav>
+  );
+};
+
+/** The administration area: two-step sign-in first where a role needs it. */
 export const AdminShell = ({ children }: { children: ReactNode }) => {
   const { grants } = useVisibleModules();
   const twoStep = useTwoStep();
@@ -216,12 +203,7 @@ export const AdminShell = ({ children }: { children: ReactNode }) => {
     return <TwoStepPanel />;
   }
 
-  return (
-    <div className="grid gap-6 lg:grid-cols-[14rem_1fr] lg:gap-8">
-      <AdminNav />
-      <div className="min-w-0">{children}</div>
-    </div>
-  );
+  return children;
 };
 
 /**
@@ -242,21 +224,7 @@ export const RequireModule = ({
     return <SectionSpinner />;
   }
   if (!visible.some((m) => m.key === module)) {
-    // The Overview is only for some roles: open the first section this
-    // member can use instead of a dead end.
-    const [first] = visible;
-    if (module === "overview" && first) {
-      return <OpenFirst href={hrefFor(first.key)} />;
-    }
     return <p className="type-body text-text-secondary">{t("noAccess")}</p>;
   }
   return children;
-};
-
-const OpenFirst = ({ href }: { href: string }) => {
-  const router = useRouter();
-  useEffect(() => {
-    router.replace(href);
-  }, [href, router]);
-  return <SectionSpinner />;
 };

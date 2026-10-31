@@ -17,14 +17,15 @@ and decisions), and continue from the first unticked item.
     only, with the publishable key; cached by tag and revalidated on publish.
   - `app/[locale]/(account)` — **the members' pages, on the site** (owner,
     Oct 24, 2026): `/sign-in`, `/sign-up`, `/auth/*`, `/welcome` (was
-    `/setup`), `/oauth/consent`, Get involved (`/get-involved`, public: the
+    `/setup`), Get involved (`/get-involved`, public: the
     three ways in for visitors, the Callboard for members), and, for
     members, everything under `/membership` (the overhaul, Oct 30, 2026):
     Today (`/membership`), My calendar (`/membership/calendar`), Society
     (`/membership/society`), Record (`/membership/record`, a certificate at
     `/membership/record/<id>`), Settings (`/membership/settings`, with
     `/settings/profile`, `/settings/more` ("Tell us more") and
-    `/settings/notices`), Requests (`/membership/requests/<id>`) and Your
+    `/settings/notices`; officers also `/settings/declarations`, and
+    their recovery codes on Settings), Requests (`/membership/requests/<id>`) and Your
     work (`/membership/work`, `/work/<id>`, `/work/submissions/<id>`);
     also `/company/auditions`, `/qirtas/write` (the two doors and the form
     itself with `?type=`) and `/qirtas/read/<slug>` (a members-only
@@ -35,15 +36,22 @@ and decisions), and continue from the first unticked item.
     `Link` (`@repo/internationalization/navigation`) and full paths.
   - `app/[locale]/diwan` — **the Diwan** (code name `nexus`), auibsal.org/diwan:
     the officers' administration only (anyone holding a role,
-    `RequireStaff`): the Desk and the sections at their own addresses
-    (`modulePaths` in `@repo/rbac`: `/diwan/qirtas`, `/diwan/company`,
-    `/diwan/site`, `/diwan/second-chapter`, `/diwan/service`,
-    `/diwan/requests`, …), records by name where they have one
+    `RequireStaff`), in six sections, one row like Membership's
+    (`adminSections` in `@repo/rbac`, `DiwanNav` and `SectionTabs` in
+    `admin-shell.tsx`; owner, Oct 30, 2026): the Desk (`/diwan`: what
+    needs you, three quick actions, what happened, and the Connected panel
+    for Notion and Hudhud), What's on (`/diwan/events`, `/events/programs`
+    with each program's page, `/events/door`; Second Chapter's collection
+    is a tab of its program), Qirtas (`/diwan/qirtas`, its tabs and the
+    ads), The Company (`/diwan/company`), People (`/diwan/people`,
+    verification, hiring, service, partners, insights) and Society
+    (`/diwan/society`: minutes, resolutions, requests to Student Life,
+    elections, concerns, the Library, where only `governance.manage`, the
+    President, the Vice President and the General Secretary, keep the
+    documents). Records by name where they have one
     (`/diwan/events/<slug>`, `/diwan/qirtas/pieces/<slug>`; `RecordRef`
-    in `components/nexus/record-ref.tsx`), `new` for a blank one
-    (among them the Library, where only `governance.manage`, the President,
-    the Vice President and the General Secretary, keep the documents),
-    declarations. Members are sent to `/membership`. Diwan code names
+    in `components/nexus/record-ref.tsx`), `new` for a blank one. Members
+    are sent to `/membership`. Diwan code names
     pages by their own path (`/events`); `Link`, `useRouter`, `usePathname`
     and `redirect` from `@/lib/nexus/navigation` add the `/diwan` prefix.
   - Both are client-rendered (`components/nexus`, `lib/nexus`, the code
@@ -53,15 +61,12 @@ and decisions), and continue from the first unticked item.
     `useAppLink` (`lib/link-context.tsx`): the site's link outside the Diwan,
     the Diwan's inside it.
   - `app/api` and `lib/api` — the API routes, auibsal.org/api: email, cron,
-    calendar feeds, exports, signed URLs, account deletion, `/api/v1` for
-    third-party apps, and Hudhud, the Society's Telegram bot (`lib/api/bot`,
+    calendar feeds, exports, signed URLs, account deletion, and Hudhud, the Society's Telegram bot (`lib/api/bot`,
     grammY; webhook `/api/telegram`; `docs/platform/telegram.md`). The only
     code that reads the secret key. The bot acts for a member only through
     the `core.telegram_*` functions, which run the Diwan functions under the
     member's claims (aal1) so RLS still decides. Bot copy in
     `lib/api/bot/copy.ts`; the mascot in `brand/mascot`.
-  - `app/[locale]/(site)/developers` — the guide and reference for app
-    builders, English only (like the API and the runbooks).
 - **URLs.** English, the default language, has no prefix (`/events`,
   `/diwan/events`); other languages do (`/ar/events`, `/ar/diwan/events`)
   (owner, Oct 14, 2026). API routes carry no language (`/api/...`). Build
@@ -77,9 +82,11 @@ and decisions), and continue from the first unticked item.
   and every platform email in both languages. Local only
   (`bun run --cwd packages/storybook dev`); nothing is deployed.
 - The Society's documents are the Library, auibsal.org/library (`apps/web`;
+  two shelves, owner, Oct 30, 2026: Society documents, and Website
+  policies, the `SAL-PLT-` documents with the privacy page;
   owner, Oct 30, 2026: every document public, kept in the Diwan's Library).
   The officer handbook and every internal document live in the team's
-  Notion workspace only (the Diwan's menu links there: settings
+  Notion workspace only (the Desk links there: settings
   `notion.home_url`, `notion.handbook`; `docs/platform/notion.md`); the platform runbooks in `docs/platform`
   (Markdown). There is no separate docs site. The apps configure no
   redirects (owner, Oct 14, 2026; again Oct 30, 2026: none for the
@@ -141,18 +148,20 @@ any schema change. Integration tests run against a local stack with
 - **Migrations ship through CI.** Add a file to `supabase/migrations`; after
   merge, `.github/workflows/migrate.yml` runs `supabase db push` against
   production once CI passes. Never paste SQL into the production database.
-- **Third-party apps.** Tokens from apps (Sign in with SAL) carry a
-  `client_id` and reach only the areas granted in `access.oauth_clients`.
-  Every new table needs the restrictive policy "Third-party apps reach only
-  their areas" (see migration `20261008001500`; `99_oauth_clients.test.sql`
-  fails without it). API routes refuse app tokens unless they pass
-  `authenticateRequest(request, { apps: true })`, which only `/api/v1` does.
+- **No third-party apps** (owner, Oct 30, 2026: no Sign in with SAL, no
+  `/api/v1`). A token issued to an app carries a `client_id` and reaches
+  nothing: every table keeps the restrictive policy "No third-party apps"
+  (`private.client_allows`, migration `20261031000000`;
+  `99_no_third_party_apps.test.sql` fails without it, so every new table
+  needs it), the pre-request gate refuses the Data API, and
+  `authenticateRequest` returns no one. The Society's connected platforms
+  are Notion and Telegram (Hudhud), reached from the API routes.
 - **Two-step sign-in for sensitive roles.** Roles with `requires_mfa`
   (Council officers, directors, Elections Committee) count only on an `aal2`
   session; `access.has_permission` enforces it. Don't add bypasses. A
   passkey is a first step only (owner, Oct 25, 2026). A lost authenticator
   is recovered with one of ten recovery codes (`access.recovery_codes`,
-  keyed hashes; made on the Diwan overview, used at the code prompt through
+  keyed hashes; made on Membership → Settings, used at the code prompt through
   `/api/two-step/recover`) or reset by whoever holds `roles.assign` (the
   member's page in the Diwan, `/api/two-step/reset`); either removes the
   authenticator so a new one is set up, is recorded in
@@ -170,6 +179,26 @@ any schema change. Integration tests run against a local stack with
   `lib/api`, never in a page or client component; CI greps the client bundle
   for their names. New env vars go in the package's `keys.ts` and in
   `apps/web/.env.example`.
+- **Terms come from the AUIB calendar** (owner, Oct 30, 2026). The hourly
+  sync (`/api/cron/calendar-sync`, `campusCalendar` in the project file)
+  writes each semester the feed opens and closes into `core.semesters`
+  (`lib/api/terms.ts`); nobody types terms in. Everything runs for a term
+  unless it is an event or given its own dates: a role assigned without an
+  end runs to the end of the Society's year, the end of the Spring
+  semester (`private.year_end()`, trigger `runs_for_the_year`), unless
+  ended sooner; the Faculty Advisor (a role, named with the Council)
+  serves until ended. `core.current_term()` names today's term.
+- **Nothing kept by hand that is known elsewhere** (owner, Oct 30, 2026).
+  There is no Settings page: the paper's name, hello@auibsal.org and the
+  AUIB calendar are in `packages/config/project.json`; Hudhud invites
+  members to the Telegram group; the Faculty Advisor is a role; pledge and
+  agreement versions are internal (`core.pledge_versions()`, members
+  only); no feature switches. Notion and Hudhud are checked from the
+  Desk's Connected panel. No announcements, site pages or homepage slots:
+  each page carries its own text, and notices go out through Hudhud and
+  the Sunday Paper. The activity log reads as sentences ("Lina changed
+  the event …"; `components/nexus/admin/system/activity.tsx`), and a new
+  logged table needs its line there.
 - **Paired fields.** Translatable columns come in pairs (`title_en`,
   `title_ar`, …). Store times as `timestamptz` (UTC); display Asia/Baghdad.
 - **Blind review.** Readers never receive author identity before a decision;
@@ -356,12 +385,17 @@ any schema change. Integration tests run against a local stack with
   Arabic pages no English (owner, Oct 24, 2026); the only exceptions are
   the language switcher, fields meant for the other language, and a
   document that exists in one language only.
-- **No forms, as such.** Members never see the word "form" or a form code:
-  each request starts where it belongs with a plain action ("Pitch a
-  program", "Raise a concern") through `StartLinks`
-  (`components/nexus/forms/forms.tsx`), and what they have sent is under
-  Requests and reports (`/membership/requests`) and in Profile. The forms engine and its
-  codes stay as they are underneath.
+- **No forms, as such** (owner, Oct 30, 2026). Members never see the word
+  "form" or a form code. Three requests stay, each a plain action where it
+  belongs (`startableKeys` in `@repo/sal-data/forms`, `StartLinks`):
+  raise a concern (F-20; Society → Concerns), pitch a program (F-10;
+  What's on → Programs) and propose a General Assembly motion (F-09;
+  Society → Resolutions). Every other kind is `retired` (no new
+  submissions; past ones stay readable under Requests and reports): it is
+  done elsewhere on the platform (roles on the Callboard, service hours,
+  certificates, the conflict-of-interest declaration in Settings, photo
+  consent in Profile) or is an officers' paper kept as a Notion template.
+  No standard letters: emails and certificates carry what letters did.
 - **Members' and Diwan pages.** Every members' page and Diwan page is
   `DiwanPage` with `DiwanSection`s and `RowList`s
   (`components/nexus/page.tsx`): the Light title, one line, section titles
@@ -370,7 +404,7 @@ any schema change. Integration tests run against a local stack with
 - **Names.** The publication is **Qirtas** («قرطاس»; "AUIB's paper of news,
   letters and art"): news, voices, letters, the gallery, video (with Next
   Stop) and games in one paper with six sections (Waraq until the new
-  names, owner, Oct 24, 2026; six sections, owner, Oct 29, 2026). The name is read from the settings `journal.name_en`/`_ar`;
+  names, owner, Oct 24, 2026; six sections, owner, Oct 29, 2026). The name is set (owner, Oct 30, 2026), in `packages/config/project.json`;
   the schema keeps the code names `journal` and `waraq`. The Society has no
   charity partner on record (Natrok Athar was removed on Oct 8, 2026).
 - **Renames (owner, Oct 24, 2026).** What people see changed; the code
@@ -438,22 +472,21 @@ any schema change. Integration tests run against a local stack with
   Membership, for officers only (`useIsStaff`, remembered for the public
   pages in the `sal_diwan` hint cookie; UX only). Below the desktop width
   the bar keeps the logo and the menu button, and everything else opens
-  in the panel. Everything the Diwan had in its
-  own header (the overview, the library, declarations, the Notion links)
-  is in the administration menu (`admin-shell.tsx`, "For your role").
+  in the panel. Inside the Diwan, its own row of six sections follows the
+  header (`DiwanNav`), and each section's tabs follow that.
   Members' pages add their row (Today, My calendar, Society, Record,
   Settings, Sign out). The footer
   (`footer.tsx`, not in the Diwan) holds what the header doesn't, in
   threes: the six programs, six of the Society's pages (the Council, the
   Library, Partners, Contact, the press kit, Verify) and three ways to
-  stay in touch, then three lines of fine print. The Diwan's menu has six
-  groups (`admin-shell.tsx`); the Desk three quick actions. No link appears twice
+  stay in touch, then three lines of fine print. The Diwan's row has six
+  sections; the Desk three quick actions. No link appears twice
   among the header, a menu row and the footer. Every Diwan empty state
   offers one next action (`EmptyLine action`).
 - **Threes** (owner, Oct 30, 2026). The Society's things come in threes:
   3, 6, 9, 12. Menus, columns, groups, rows of cards and quick actions
   keep to them (six in the header, three footer columns, six Diwan
-  groups, three quick actions).
+  sections, three quick actions).
 - **Content.** Don't invent names, dates, figures or quotes. Missing text is a
   `TODO(content): …` placeholder listed in `PROGRESS.md`. Arabic written for
   this platform (not taken from a source) is listed as `needs-native-review`.

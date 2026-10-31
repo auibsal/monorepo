@@ -2,8 +2,9 @@
 
 import { Link } from "@repo/internationalization/navigation";
 import { useTranslations } from "next-intl";
+import { useIsStaff } from "@/components/account/member-shell";
+import { RecoveryCodes } from "../auth/recovery-codes";
 import { DiwanPage, DiwanSection, RowList } from "../page";
-import { ConnectedApps } from "./connected-apps";
 import { DeleteAccount } from "./delete-account";
 import { Passkeys } from "./passkeys";
 import { PersonalEmail } from "./personal-email";
@@ -38,11 +39,13 @@ export const NoticesScreen = () => {
 
 /**
  * Settings (owner, 2026-10-25): three pages of their own (Profile,
- * Requests, Notices), then how they sign in. What they tell us about themselves is in Profile; what
+ * Requests, Notices; officers also declare conflicts of interest here),
+ * then how they sign in, with recovery codes for two-step roles. What they tell us about themselves is in Profile; what
  * they have sent is in Requests and reports.
  */
 export const SettingsScreen = () => {
   const t = useTranslations("nexus.settings");
+  const staff = useIsStaff();
   return (
     <DiwanPage lede={t("lede")} narrow title={t("title")}>
       <DiwanSection id="yours" title={t("yours")}>
@@ -71,11 +74,22 @@ export const SettingsScreen = () => {
             </Link>
             <p className="type-caption">{t("noticesLine")}</p>
           </li>
+          {staff ? (
+            <li className="grid gap-1">
+              <Link
+                className="link font-medium"
+                href="/membership/settings/declarations"
+              >
+                {t("declarations")}
+              </Link>
+              <p className="type-caption">{t("declarationsLine")}</p>
+            </li>
+          ) : null}
         </RowList>
       </DiwanSection>
       <PersonalEmailSection />
       <Passkeys />
-      <ConnectedApps />
+      <RecoveryCodes />
       <DeleteAccount />
     </DiwanPage>
   );

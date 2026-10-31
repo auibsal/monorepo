@@ -3,23 +3,16 @@
 import { useAuth } from "@repo/auth/provider";
 import { Button } from "@repo/design-system/components/ui/button";
 import { Input } from "@repo/design-system/components/ui/input";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@repo/design-system/components/ui/tabs";
 import type { Locale } from "@repo/internationalization";
 import { formatLongDate } from "@repo/internationalization/format";
-import { hasPermission } from "@repo/rbac";
-import { governance, localized, unwrap } from "@repo/sal-data";
+import { localized, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useState } from "react";
-import { Council as CouncilList } from "@/components/council";
 import { Link } from "@/lib/nexus/navigation";
-import { useGrants } from "@/lib/nexus/queries";
 import { SectionSpinner } from "../../states";
+import { LibraryAdmin } from "../documents/admin";
+import { RequestQueue } from "../forms/admin";
 import {
   AdminHeading,
   BilingualField,
@@ -48,131 +41,6 @@ type Status =
 
 // ── Council ─────────────────────────────────────────────────────────────────
 
-const Council = () => {
-  const t = useTranslations("nexus.admin.governance.council");
-  const locale = useLocale() as Locale;
-  const { supabase } = useAuth();
-  const queryClient = useQueryClient();
-  const grants = useGrants();
-  const [form, setForm] = useState({
-    ends_on: "",
-    name: { ar: "", en: "" },
-    starts_on: "",
-  });
-  const roster = useQuery({
-    queryFn: () => governance.councilMembers(supabase),
-    queryKey: [...key, "members"],
-  });
-  const terms = useQuery({
-    queryFn: async () =>
-      unwrap(
-        await supabase
-          .schema("governance")
-          .from("council_terms")
-          .select("*")
-          .order("starts_on", { ascending: false })
-      ) ?? [],
-    queryKey: [...key, "terms"],
-  });
-  const add = useMutation({
-    mutationFn: async () =>
-      unwrap(
-        await supabase.schema("governance").from("council_terms").insert({
-          ends_on: form.ends_on,
-          name_ar: form.name.ar,
-          name_en: form.name.en,
-          starts_on: form.starts_on,
-        })
-      ),
-    onSuccess: async () => {
-      setForm({ ends_on: "", name: { ar: "", en: "" }, starts_on: "" });
-      await queryClient.invalidateQueries({ queryKey: key });
-    },
-  });
-
-  return (
-    <div className="grid gap-8">
-      <section className="grid gap-3">
-        <h3 className="type-subheading">{t("roster")}</h3>
-        <p className="type-caption">{t("rosterHint")}</p>
-        {roster.isPending ? <SectionSpinner /> : null}
-        {roster.data?.length === 0 ? (
-          <p className="type-body text-text-secondary">{t("empty")}</p>
-        ) : null}
-        {roster.data?.length ? (
-          <CouncilList locale={locale} members={roster.data} />
-        ) : null}
-      </section>
-      <section className="grid gap-3">
-        <h3 className="type-subheading">{t("terms")}</h3>
-        <ul className="grid gap-1">
-          {terms.data?.map((term) => (
-            <li key={term.id}>
-              <span className="font-medium">
-                {localized(term, "name", locale)}
-              </span>{" "}
-              · {formatLongDate(term.starts_on, locale, true)} –{" "}
-              {formatLongDate(term.ends_on, locale, true)}
-            </li>
-          ))}
-        </ul>
-        {hasPermission(grants.data, "governance.manage") ? (
-          <form
-            className="grid max-w-3xl gap-4"
-            onSubmit={(event) => {
-              event.preventDefault();
-              add.mutate();
-            }}
-          >
-            <h4 className="font-medium text-sm">{t("newTerm")}</h4>
-            <BilingualField
-              label={t("name")}
-              maxLength={120}
-              onChange={(name) => setForm((f) => ({ ...f, name }))}
-              required
-              value={form.name}
-            />
-            <div className="grid gap-4 sm:grid-cols-2">
-              <Field label={t("startsOn")}>
-                {(id) => (
-                  <Input
-                    dir="ltr"
-                    id={id}
-                    onChange={(e) =>
-                      setForm((f) => ({ ...f, starts_on: e.target.value }))
-                    }
-                    required
-                    type="date"
-                    value={form.starts_on}
-                  />
-                )}
-              </Field>
-              <Field label={t("endsOn")}>
-                {(id) => (
-                  <Input
-                    dir="ltr"
-                    id={id}
-                    onChange={(e) =>
-                      setForm((f) => ({ ...f, ends_on: e.target.value }))
-                    }
-                    required
-                    type="date"
-                    value={form.ends_on}
-                  />
-                )}
-              </Field>
-            </div>
-            <SaveButton pending={add.isPending} />
-            <ErrorLine error={add.error} />
-          </form>
-        ) : null}
-      </section>
-    </div>
-  );
-};
-
-// ── Minutes list ────────────────────────────────────────────────────────────
-
 const MinutesList = () => {
   const t = useTranslations("nexus.admin.governance");
   const locale = useLocale() as Locale;
@@ -196,7 +64,7 @@ const MinutesList = () => {
       cell: (m) => (
         <Link
           className="font-medium underline underline-offset-4"
-          href={`/governance/minutes/${m.id}`}
+          href={`/society/minutes/${m.id}`}
         >
           {localized(m, "title", locale)}
         </Link>
@@ -228,7 +96,7 @@ const MinutesList = () => {
     <div className="grid gap-4">
       <Link
         className="inline-flex h-8 items-center justify-self-start rounded-md bg-primary px-3 text-primary-foreground text-sm"
-        href="/governance/minutes/new"
+        href="/society/minutes/new"
       >
         {t("minutes.new")}
       </Link>
@@ -559,64 +427,46 @@ const Resolutions = () => {
 
 // ── Page ────────────────────────────────────────────────────────────────────
 
-export const GovernanceAdmin = () => {
-  const t = useTranslations("nexus.admin.governance");
-  const grants = useGrants();
-  const has = (permission: Parameters<typeof hasPermission>[1]) =>
-    hasPermission(grants.data, permission);
-  const tabs = [
-    { show: true, value: "council" },
-    {
-      show: has("governance.minutes.write") || has("governance.manage"),
-      value: "minutes",
-    },
-    {
-      show: has("governance.minutes.write") || has("governance.manage"),
-      value: "resolutions",
-    },
-    { show: has("governance.manage"), value: "requests" },
-    { show: has("elections.manage"), value: "elections" },
-  ] as const;
-  const shown = tabs.filter((tab) => tab.show);
+export type SocietyViewKey =
+  | "minutes"
+  | "resolutions"
+  | "requests"
+  | "elections"
+  | "concerns"
+  | "library";
 
+/**
+ * Society in the Diwan (the overhaul, Oct 30, 2026), one view per address.
+ * The Council is whoever holds a Council role (the member's page assigns
+ * them; the public Council page and Membership → Society list them), so it
+ * has no view of its own here.
+ */
+export const SocietyView = ({ view }: { readonly view: SocietyViewKey }) => {
+  const t = useTranslations("nexus.admin.society");
   return (
     <div className="grid gap-6">
-      <AdminHeading title={t("title")}>{t("lede")}</AdminHeading>
-      <Tabs defaultValue="council">
-        <TabsList className="flex-wrap">
-          {shown.map((tab) => (
-            <TabsTrigger key={tab.value} value={tab.value}>
-              {t(`tabs.${tab.value}`)}
-            </TabsTrigger>
-          ))}
-        </TabsList>
-        <TabsContent className="pt-4" value="council">
-          <Council />
-        </TabsContent>
-        {shown.some((tab) => tab.value === "minutes") ? (
-          <>
-            <TabsContent className="pt-4" value="minutes">
-              <MinutesList />
-            </TabsContent>
-            <TabsContent className="pt-4" value="resolutions">
-              <Resolutions />
-            </TabsContent>
-          </>
-        ) : null}
-        {shown.some((tab) => tab.value === "requests") ? (
-          <TabsContent className="pt-4" value="requests">
-            <div className="grid gap-4">
-              <ExportButton fileName="sal-needs.csv" name="needs" />
-              <Needs />
-            </div>
-          </TabsContent>
-        ) : null}
-        {shown.some((tab) => tab.value === "elections") ? (
-          <TabsContent className="pt-4" value="elections">
-            <Elections />
-          </TabsContent>
-        ) : null}
-      </Tabs>
+      {/* The Library's own page has its heading. */}
+      {view === "library" ? null : (
+        <AdminHeading title={t(`${view}.title`)}>
+          {t(`${view}.lede`)}
+        </AdminHeading>
+      )}
+      {view === "minutes" ? <MinutesList /> : null}
+      {view === "resolutions" ? (
+        <>
+          <Resolutions />
+          <RequestQueue keys={["f09"]} />
+        </>
+      ) : null}
+      {view === "requests" ? (
+        <div className="grid gap-4">
+          <ExportButton fileName="sal-needs.csv" name="needs" />
+          <Needs />
+        </div>
+      ) : null}
+      {view === "elections" ? <Elections /> : null}
+      {view === "concerns" ? <RequestQueue keys={["f19", "f20"]} /> : null}
+      {view === "library" ? <LibraryAdmin /> : null}
     </div>
   );
 };

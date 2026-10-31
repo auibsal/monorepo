@@ -79,10 +79,10 @@ select plan(7);
 
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000f1', 'editor-rt@auib.edu.iq');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000f2', 'member-rt@auib.edu.iq');
-select pg_temp.grant_role('00000000-0000-0000-0000-0000000000f1', 'communications_lead');
+select pg_temp.grant_role('00000000-0000-0000-0000-0000000000f1', 'general_secretary');
 
-insert into content.pages (id, slug, title_en, title_ar)
-values ('00000000-0000-0000-0000-00000000b001', 'room-test', 'Room test', 'اختبار');
+insert into governance.minutes (id, meeting_on, title_en)
+values ('00000000-0000-0000-0000-00000000b001', current_date, 'Room test');
 
 select ok(
   exists (select 1 from pg_policy p where p.polrelid = 'realtime.messages'::regclass
@@ -90,21 +90,21 @@ select ok(
   'Realtime messages are guarded by the room policy');
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000f1');
-select ok(private.can_edit_room('sal:page:00000000-0000-0000-0000-00000000b001'),
-  'A content editor joins the page''s room');
-select ok(not private.can_edit_room('sal:page:00000000-0000-0000-0000-00000000b999'),
+select ok(private.can_edit_room('sal:minutes:00000000-0000-0000-0000-00000000b001'),
+  'Whoever writes minutes joins their room');
+select ok(not private.can_edit_room('sal:minutes:00000000-0000-0000-0000-00000000b999'),
   'No room for a record that does not exist');
-select ok(not private.can_edit_room('sal:submission:00000000-0000-0000-0000-00000000b001'),
-  'No room for kinds that are not co-edited (blind submissions)');
+select ok(not private.can_edit_room('sal:page:00000000-0000-0000-0000-00000000b001'),
+  'No rooms for the old Site pages');
 select ok(not private.can_edit_room('anything'), 'Malformed topics are refused');
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000f2');
-select ok(not private.can_edit_room('sal:page:00000000-0000-0000-0000-00000000b001'),
-  'A member without content.manage stays out');
+select ok(not private.can_edit_room('sal:minutes:00000000-0000-0000-0000-00000000b001'),
+  'A member who does not write minutes stays out');
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000f1',
   '{"client_id": "00000000-0000-0000-0000-00000000a001"}');
-select ok(not private.can_edit_room('sal:page:00000000-0000-0000-0000-00000000b001'),
+select ok(not private.can_edit_room('sal:minutes:00000000-0000-0000-0000-00000000b001'),
   'Third-party app tokens never join a room');
 
 select * from finish();

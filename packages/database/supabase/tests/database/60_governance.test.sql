@@ -101,7 +101,6 @@ insert into membership.activity_records (user_id, kind, occurred_at, note)
 select '00000000-0000-0000-0000-0000000000e1', 'manual', now() - (k || ' days')::interval, 'Activity'
 from generate_series(1, 2) k;
 
-update core.settings set value = 'true' where key = 'features.elections';
 
 insert into governance.elections (id, title_en, title_ar, status, nominations_open_at, nominations_close_at,
   voting_opens_at, voting_closes_at)

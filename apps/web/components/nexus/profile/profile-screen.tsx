@@ -13,7 +13,6 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { type FormEvent, useEffect, useId, useState } from "react";
 import { queryKeys, useProfile } from "@/lib/nexus/queries";
-import { StartLinks } from "../forms/forms";
 import { DiwanPage, DiwanSection } from "../page";
 import { ErrorState, SectionSpinner } from "../states";
 import { Affiliations } from "./affiliations";
@@ -239,13 +238,6 @@ export const ProfileScreen = () => {
       </DiwanSection>
       <DetailsSection />
       <Affiliations />
-      <DiwanSection
-        description={t("profile.consent.lede")}
-        id="consent"
-        title={t("profile.consent.title")}
-      >
-        <StartLinks keys={["f17"]} />
-      </DiwanSection>
     </DiwanPage>
   );
 };

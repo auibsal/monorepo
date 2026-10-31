@@ -87,7 +87,7 @@ export const MembersDirectory = () => {
       cell: (row) => (
         <Link
           className="font-medium underline underline-offset-4"
-          href={`/members/${row.user_id}`}
+          href={`/people/${row.user_id}`}
         >
           {memberName(row, locale) || t("unnamed")}
         </Link>
@@ -142,7 +142,7 @@ export const MembersDirectory = () => {
             {hasPermission(grants.data, "members.verify") ? (
               <Link
                 className={buttonVariants({ size: "sm", variant: "outline" })}
-                href="/members/verification"
+                href="/people/verification"
               >
                 {t("queue", { count: formatNumber(pending) })}
               </Link>
@@ -150,7 +150,7 @@ export const MembersDirectory = () => {
             {hasPermission(grants.data, "members.manage") ? (
               <Link
                 className={buttonVariants({ size: "sm", variant: "outline" })}
-                href="/members/insights"
+                href="/people/insights"
               >
                 {t("insights.link")}
               </Link>

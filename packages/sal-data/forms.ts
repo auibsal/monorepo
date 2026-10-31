@@ -70,6 +70,18 @@ export const formKeys = [
 
 export type FormKey = (typeof formKeys)[number];
 
+/**
+ * What can still be started (the overhaul, Oct 30, 2026): a General
+ * Assembly motion, a program pitch and a concern. The rest are done
+ * elsewhere on the platform or are officers' papers in Notion; their past
+ * submissions stay readable (the database marks them `retired`).
+ */
+export const startableKeys = [
+  "f09",
+  "f10",
+  "f20",
+] as const satisfies readonly FormKey[];
+
 export const formStatuses = [
   "draft",
   "submitted",
