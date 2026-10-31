@@ -58,7 +58,7 @@ export const Footer = async ({ consent = true }: FooterProps = {}) => {
       links: [
         ["/about/council", t("governance")],
         ["/library", tn("documents")],
-        ["/about/partners", t("partners")],
+        ["/partners", t("partners")],
         ["/about/contact", t("contact")],
         ["/about/press", t("mediaKit")],
         ["/verify", t("verify")],

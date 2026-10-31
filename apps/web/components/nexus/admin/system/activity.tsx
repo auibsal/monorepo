@@ -42,6 +42,7 @@ const THINGS = {
   "governance.minutes": "society",
   "governance.partner_affiliations": "people",
   "governance.partner_agreements": "people",
+  "governance.partner_invitations": "people",
   "governance.partners": "people",
   "governance.resolutions": "society",
   "governance.society_documents": "society",

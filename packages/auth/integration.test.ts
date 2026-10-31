@@ -30,7 +30,12 @@ describe.skipIf(
           email,
           email_confirm: true,
           password,
-          user_metadata: { full_name_en: "Integration" },
+          // An outside address signs up only with a reason (owner, Oct 31,
+          // 2026): here, an application to partner.
+          user_metadata: {
+            full_name_en: "Integration",
+            partner_applicant: "true",
+          },
         })
       )
     );

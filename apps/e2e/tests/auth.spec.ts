@@ -6,14 +6,16 @@ import { expectAccessible, latestMail, signInWithPassword } from "./helpers";
 test("sign up with an AUIB address, confirm by email, finish setup", async ({
   page,
 }) => {
-  const email = `e2e-${Date.now()}@auib.edu.iq`;
+  const local = `e2e-${Date.now()}`;
+  const email = `${local}@auib.edu.iq`;
   // A phone's screen: the next screen must start at the top, not in the
   // footer where the button left the page.
   await page.setViewportSize({ height: 640, width: 390 });
   await page.goto(`${urls.web}/sign-up`);
   await expectAccessible(page);
-  // An AUIB address needs only the address and a password.
-  await page.getByLabel("Email").fill(email);
+  // Membership is for AUIB addresses: the field takes what goes before
+  // @auib.edu.iq, and needs only a password beside it.
+  await page.getByLabel("Your AUIB email").fill(local);
   await page.getByLabel("Password").fill(PASSWORD);
   await expect(page.getByLabel("Family name")).toHaveCount(0);
   // Scrolled down to the button, as on a phone.
@@ -108,30 +110,14 @@ test("sign up with an AUIB address, confirm by email, finish setup", async ({
   expect(data?.interests).toEqual(["poetry", "theater"]);
 });
 
-test("an outside address gives its names, for its partner to verify", async ({
-  page,
-}) => {
+test("sign-up takes only AUIB addresses", async ({ page }) => {
   await page.goto(`${urls.web}/sign-up`);
-  await page.getByLabel("Email").fill(`e2e-${Date.now()}@example.com`);
-  await page.getByLabel("Password").fill(PASSWORD);
-  const create = page.getByRole("button", { name: "Create account" });
-  // Four parts in each language.
-  const english = page.getByRole("group", { name: "Your name in English" });
-  const arabic = page.getByRole("group", { name: "Your name in Arabic" });
-  await expect(english).toBeVisible();
-  await expect(create).toBeDisabled();
-  for (const [group, parts] of [
-    [english, ["Guest", "Ali", "Omar", "Writer"]],
-    [arabic, ["ضيف", "علي", "عمر", "كاتب"]],
-  ] as const) {
-    await group.getByLabel("Name", { exact: true }).fill(parts[0]);
-    await group.getByLabel("Father's name", { exact: true }).fill(parts[1]);
-    await group.getByLabel("Grandfather's name").fill(parts[2]);
-    await expect(create).toBeDisabled();
-    await group.getByLabel("Family name").fill(parts[3]);
-  }
-  await expectAccessible(page);
-  await expect(create).toBeEnabled();
+  const field = page.getByLabel("Your AUIB email");
+  // Whatever is typed stays before @auib.edu.iq.
+  await field.fill("someone@example.com");
+  await expect(field).toHaveValue("someoneexample.com");
+  await expect(page.getByText("@auib.edu.iq", { exact: true })).toBeVisible();
+  await expect(page.getByLabel("Family name")).toHaveCount(0);
 });
 
 test("an AUIB address signs in by password, with a link one click away", async ({

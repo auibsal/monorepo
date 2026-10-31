@@ -321,8 +321,11 @@ const RecordSetting = () => {
   );
 };
 
-/** Perks: what partners offer members who show this card. */
-const Perks = () => {
+/**
+ * Perks: what partners offer members who show this card, and their own
+ * guests (owner, Oct 31, 2026), who say how they show theirs (`how`).
+ */
+export const Perks = ({ how }: { how?: string }) => {
   const t = useTranslations("nexus.home.card");
   const locale = useLocale();
   const { supabase } = useAuth();
@@ -336,7 +339,7 @@ const Perks = () => {
   return (
     <div className="grid max-w-3xl gap-3">
       <h3 className="type-heading">{t("perks")}</h3>
-      <p className="type-caption">{t("perksHow")}</p>
+      <p className="type-caption">{how ?? t("perksHow")}</p>
       <ul className="grid divide-y divide-line border-line border-y">
         {offers.data.map((offer) => (
           <li className="grid gap-1 py-3" key={offer.id}>

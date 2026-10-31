@@ -17,7 +17,7 @@ import {
   formatLongDate,
   formatNumber,
 } from "@repo/internationalization/format";
-import { Link } from "@repo/internationalization/navigation";
+import { Link, usePathname } from "@repo/internationalization/navigation";
 import { events, localized, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
@@ -417,6 +417,8 @@ const EventCard = ({
   const venue = localized(event, "venue", locale);
   const summary = localized(event, "summary", locale);
   const canBook = ["open", "left", "full"].includes(state);
+  // A partner's guest books from /account/calendar; the ticket is members'.
+  const guest = usePathname().startsWith("/account");
   const holding = state === "booked" || state === "waiting";
 
   return (
@@ -441,7 +443,7 @@ const EventCard = ({
               {state === "full" ? t("joinWaitlist") : t("book")}
             </Button>
           ) : null}
-          {state === "booked" ? (
+          {state === "booked" && !guest ? (
             <Button asChild variant="outline">
               <Link href="/membership#next-events">{t("ticket")}</Link>
             </Button>

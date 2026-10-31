@@ -73,7 +73,8 @@
       "captcha_failed": "We couldn't confirm you're a person. Reload the page and try again.",
       "names_required": "Enter your first and last name in English and in Arabic.",
       "email_reserved": "This address is already a member's personal email, so it can't start a new account. Sign in with your own address, or use another one.",
-      "invalid_code": "That code doesn't match or has expired. Check the newest email, or ask for a new one."
+      "invalid_code": "That code doesn't match or has expired. Check the newest email, or ask for a new one.",
+      "auib_only": "Membership is for AUIB addresses. Use your @auib.edu.iq email."
     },
     "signIn": {
       "title": "Sign in",
@@ -92,7 +93,7 @@
     },
     "signUp": {
       "title": "Join the Society",
-      "description": "Membership is free and open. AUIB addresses are verified straight away; other addresses are verified by one of the Society's partners.",
+      "description": "Membership is free and open to everyone with an AUIB email.",
       "submit": "Create account",
       "submitting": "Creating account…",
       "checkInbox": "Check your inbox",
@@ -102,7 +103,7 @@
       "nameEn": "Your name in English",
       "nameAr": "Your name in Arabic",
       "namesHint": "In both languages and in four parts, as on your ID. Your card and certificates show your first and last.",
-      "outsideAuib": "Not an AUIB address, so one of the Society's partners confirms these accounts. Tell us your full name."
+      "haveAnAccount": "Already have an account?"
     },
     "forgot": {
       "title": "Reset your password",
@@ -153,7 +154,9 @@
       "hint": "Can't open the link on this device? Type the code from the same email.",
       "submit": "Continue",
       "submitting": "Checking…"
-    }
+    },
+    "auibEmail": "Your AUIB email",
+    "auibEmailHint": "What comes before @auib.edu.iq: usually your ID number, or your name and ID number."
   },
   "nexus": {
     "name": "The Diwan",
@@ -181,7 +184,8 @@
       "callboard": "Callboard",
       "record": "Record",
       "settings": "Settings",
-      "templates": "Templates and papers"
+      "templates": "Templates and papers",
+      "accountHome": "Account"
     },
     "errors": {
       "loadFailed": "We couldn't load this. Check your connection and try again.",
@@ -195,12 +199,6 @@
       "readConstitution": "Read how elections work",
       "readRoles": "Read how the Council is formed",
       "readDocuments": "Read the founding documents"
-    },
-    "pending": {
-      "title": "Your account is not verified yet",
-      "body": "AUIB addresses are verified once confirmed. Other accounts are verified by one of the Society's partners: choose yours below, and they confirm you.",
-      "organization": "Here for an organization?",
-      "apply": "Apply to partner with the Society"
     },
     "setup": {
       "title": "Before you begin",
@@ -737,22 +735,6 @@
         "lastUsed": "Last used {date}",
         "remove": "Remove",
         "removeNamed": "Remove {name}"
-      },
-      "affiliations": {
-        "title": "Partner organizations",
-        "description": "If you belong to one of the Society's partners, tell us. Once we verify it with the partner, you can take part in what our agreement with them covers.",
-        "partner": "Partner",
-        "choose": "Choose a partner",
-        "note": "Your role or membership there (optional)",
-        "noteHint": "Helps us check with the partner. We never share member lists.",
-        "ask": "Ask to be verified",
-        "withdraw": "Withdraw",
-        "statuses": {
-          "pending": "Waiting for verification",
-          "verified": "Verified",
-          "declined": "Not verified",
-          "ended": "Ended"
-        }
       },
       "telegram": {
         "title": "Telegram",
@@ -2134,7 +2116,7 @@
             "journal_submissions": "Their members may send work to Qirtas",
             "guest_editing": "A guest editor for an issue",
             "event_cohosting": "Co-hosted events",
-            "member_offer": "An offer for SAL members",
+            "member_offer": "Perks for members and guests",
             "shared_branding": "Shared branding",
             "productions": "Productions together",
             "volunteering": "Their members may volunteer on rotas",
@@ -2955,7 +2937,8 @@
           "programmes_reels": "the reel",
           "programmes_removal_requests": "a takedown request",
           "programmes_six_words": "a Six Words card",
-          "membership_activity_records": "an activity record"
+          "membership_activity_records": "an activity record",
+          "governance_partner_invitations": "a partner invitation"
         }
       }
     },
@@ -3115,15 +3098,6 @@
         "apprenticeship": "Recognition · B4"
       },
       "qr": "Scan to check this certificate"
-    },
-    "partnerGuest": {
-      "title": "Welcome, partner",
-      "body": "You are verified as a member of one of the Society's partners. You can answer Qirtas calls opened to your partner, keep your profile, and see your service and certificates. The rest is for members of the Society.",
-      "journal": "Qirtas",
-      "profile": "My profile",
-      "service": "Your record",
-      "guestOf": "Guest of {partner}",
-      "settings": "Settings"
     },
     "productions": {
       "title": "The Company",
@@ -4004,9 +3978,7 @@
     "partnerJoin": {
       "title": "Partner with the Society",
       "lede": "For clubs, departments and organizations whose aims fit the Society's and who treat people fairly. Apply here and sign the memorandum by name; the President signs for the Society.",
-      "account": "Applying takes an account, for the person who signs for the organization.",
-      "signUp": "Create an account",
-      "signIn": "Sign in",
+      "account": "Applying takes an account, for the person who signs for the organization. Any email address will do. Already have an account? Sign in below.",
       "organization": "Your organization",
       "nameEn": "Name in English",
       "nameAr": "Name in Arabic",
@@ -4026,10 +3998,10 @@
       "accept": "I sign this memorandum for {name}, and I may sign for it.",
       "submit": "Apply and sign",
       "receivedTitle": "Application received",
-      "waiting": "{name}'s application, signed on {date}, is with the Society. Once the President signs, {name}'s page opens for you in the Diwan.",
+      "waiting": "{name}'s application, signed on {date}, is with the Society. Once the President signs, {name}'s dashboard opens for you.",
       "partneredTitle": "You are a partner",
-      "partnered": "{name} is a partner of the Society. Its page in the Diwan keeps its profile, member perks, team and guests.",
-      "openDesk": "Open your partner's page",
+      "partnered": "{name} is a partner of the Society. Its dashboard keeps its profile, perks, guests and team.",
+      "openDesk": "Open the dashboard",
       "declined": "Your earlier application was not taken forward. You may apply again.",
       "memorandum": {
         "title": "The memorandum",
@@ -4043,15 +4015,15 @@
       }
     },
     "partnerDesk": {
-      "none": "You do not keep a partner's page.",
-      "lede": "Your organization's page: its profile, the perks it offers members, its team and the people it verifies.",
+      "none": "You are not on a partner's team.",
+      "lede": "Your organization's dashboard: its profile, the perks it offers, its guests and its team.",
       "tabsLabel": "Partner",
       "tabs": {
         "profile": "Profile",
         "perks": "Perks",
         "people": "People"
       },
-      "open": "Open {name}'s page in the Diwan",
+      "open": "Open the dashboard of {name}",
       "profile": {
         "title": "Profile",
         "listing": "The Partners page shows the name, website and description once the partnership is signed and the Society lists it."
@@ -4067,9 +4039,9 @@
         "grants": "It includes"
       },
       "perks": {
-        "title": "Perks for members",
-        "lede": "Members see published perks with their membership card.",
-        "notGranted": "Members see perks once your memorandum includes an offer for SAL members. Ask the Society to add it.",
+        "title": "Perks",
+        "lede": "Members and your guests see published perks.",
+        "notGranted": "Members and guests see perks once your memorandum includes them. Ask the Society to add them.",
         "empty": "No perks yet.",
         "hidden": "Not published",
         "until": "until {date}",
@@ -4080,8 +4052,8 @@
       },
       "guests": {
         "title": "Guests",
-        "lede": "People who say they belong to your organization. Verify only those who do: they become your guests on the platform and may answer Qirtas calls opened to you.",
-        "empty": "No one has asked yet.",
+        "lede": "Your guests may book places at events, write for Qirtas calls opened to you and use your perks. Invite them by email or with a link; verify only people who belong to your organization.",
+        "empty": "No guests yet.",
         "verify": "Verify",
         "decline": "Decline",
         "end": "End",
@@ -4095,15 +4067,77 @@
       },
       "team": {
         "title": "Team",
-        "lede": "Up to six people keep this page. Each needs an account on the site.",
-        "email": "Their sign-in address",
-        "addHint": "They must have signed up already.",
-        "add": "Add to the team",
+        "lede": "Up to six people keep this dashboard. Leads invite and remove; everyone keeps the profile, perks and guests.",
         "remove": "Remove",
         "removeConfirm": "Remove {name} from the team?",
         "leave": "Leave",
         "leaveConfirm": "Leave the team? You will no longer keep this page.",
-        "full": "The team is full (six people)."
+        "full": "The team is full (six people).",
+        "lead": "Lead",
+        "member": "Team",
+        "makeLead": "Make lead",
+        "makeMember": "Make team"
+      },
+      "invite": {
+        "teamHint": "They get an email with a link to join. Invitations last fourteen days.",
+        "guestHint": "They are your guest as soon as they accept with this address.",
+        "email": "Their email",
+        "inviteTeam": "Invite to the team",
+        "inviteGuest": "Invite a guest",
+        "sent": "Invitation sent.",
+        "open": "Open invitations",
+        "link": "Shareable link",
+        "until": "Until {date}",
+        "copy": "Copy link",
+        "copied": "Copied",
+        "withdraw": "Withdraw",
+        "withdrawConfirm": "Withdraw this invitation? Its link stops working.",
+        "linkHint": "Or make a link to share with your people. Whoever signs up with it waits here until you verify them.",
+        "makeLink": "Make a link"
+      }
+    },
+    "accountHome": {
+      "title": "Your account",
+      "lede": "Membership is for AUIB students and alumni. Your account is for what you do with the Society through its partners.",
+      "partners": "With our partners",
+      "team": "On the team of {name}",
+      "teamLine": "Open its dashboard: its profile, perks, guests and team.",
+      "guest": "Guest of {name}",
+      "guestLine": "{name} confirmed you. You may book places at events and write for Qirtas.",
+      "pending": "Waiting for {name}",
+      "pendingLine": "Your partner confirms that you belong to it; then you are its guest.",
+      "applied": "{name} has applied to partner",
+      "appliedLine": "The application is with the Society until the President signs.",
+      "nothing": "Nothing here yet. Partners invite their guests and team by email or by link.",
+      "aboutPartners": "About our partners",
+      "do": "What you can do",
+      "book": "Book a place",
+      "bookLine": "Events that take bookings, on your calendar.",
+      "write": "Write for Qirtas",
+      "writeLine": "Calls opened to your partner.",
+      "perksHow": "Show this page to claim a perk.",
+      "settingsLede": "Your name, the emails you get, how you sign in, and deleting your account.",
+      "name": "Your name",
+      "record": "Your record: service and certificates",
+      "work": "Your work",
+      "workLine": "What you have sent to Qirtas, and where it stands."
+    },
+    "partnerInvite": {
+      "title": "An invitation",
+      "unusable": "This invitation has been used, withdrawn or has expired. Ask whoever sent it for a new one.",
+      "partners": "About our partners",
+      "team": "{partner} invites you to its team, to keep its dashboard with the Society.",
+      "guest": "{partner} invites you to be its guest of the Society: book places at events, write for Qirtas and use its perks.",
+      "signUp": "Create your account to accept. Already have one? Sign in below.",
+      "otherAddress": "This invitation is for {email}. Sign in with that address to accept it.",
+      "acceptTeam": "Accept to join the team.",
+      "acceptGuest": "Accept to become its guest.",
+      "accept": "Accept the invitation",
+      "errors": {
+        "invitation_for_another_address": "This invitation is for another address.",
+        "invitation_unusable": "This invitation can no longer be used.",
+        "team_full": "The team is full (six people).",
+        "unknown": "Something went wrong. Try again."
       }
     }
   },
@@ -4123,7 +4157,9 @@
       "search": "Search",
       "diwan": "The Diwan",
       "accountMenu": "Membership menu",
-      "company": "The Company"
+      "company": "The Company",
+      "yourAccount": "Account",
+      "partner": "Partner dashboard"
     },
     "footer": {
       "contact": "Contact",
@@ -4650,7 +4686,7 @@
     },
     "partners": {
       "title": "Partners",
-      "lede": "The clubs, departments and organizations the AUIB Society of Arts and Letters works with. Every partnership listed here has a signed memorandum.",
+      "lede": "The AUIB Society of Arts and Letters works with clubs, departments, charities and cultural organizations whose aims fit its own. Every partnership has a memorandum, signed by both sides.",
       "empty": "Our first partnerships are being agreed. They will appear here once signed.",
       "reach": {
         "auib": "At AUIB",
@@ -4659,8 +4695,24 @@
       },
       "visit": "Visit {name}",
       "workTitle": "Work with us",
-      "work": "The Society partners with clubs, departments, charities and cultural organizations whose aims fit its mission and who treat people fairly. Sponsors are acknowledged and never have editorial influence. Organizations apply on the platform and sign the memorandum there.",
-      "apply": "Apply to partner"
+      "work": "Clubs, departments, charities and cultural organizations apply here and sign the memorandum by name; the President signs for the Society. Sponsors are acknowledged and never have editorial influence.",
+      "apply": "Apply to partner",
+      "teamSignIn": "Partner team sign in",
+      "means": {
+        "title": "What partnering means",
+        "together": {
+          "title": "Work together",
+          "body": "Events, Qirtas calls and productions made with the Society, as the memorandum sets out."
+        },
+        "guests": {
+          "title": "Bring your people",
+          "body": "Invite your people as guests: they book places at events and write for calls opened to you."
+        },
+        "perks": {
+          "title": "Offer perks",
+          "body": "Offers for the Society's members and your guests, kept on your own dashboard with your team."
+        }
+      }
     },
     "verify": {
       "title": "Check a certificate or a card",

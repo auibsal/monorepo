@@ -5,13 +5,15 @@ import { Button } from "@repo/design-system/components/ui/button";
 import { Checkbox } from "@repo/design-system/components/ui/checkbox";
 import { Input } from "@repo/design-system/components/ui/input";
 import { Label } from "@repo/design-system/components/ui/label";
+import { cn } from "@repo/design-system/lib/utils";
 import type { Locale } from "@repo/internationalization";
 import { formatLongDate } from "@repo/internationalization/format";
+import { Link, usePathname } from "@repo/internationalization/navigation";
 import { localized, type partners, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, type ReactNode, useState } from "react";
-import { SectionTabs } from "../admin/admin-shell";
+import { type MyPartner, useMyPartners } from "@/lib/nexus/partners";
 import {
   BilingualField,
   ConfirmAction,
@@ -22,28 +24,19 @@ import {
 import { DiwanPage, DiwanSection, RowList } from "../page";
 import { ErrorState, SectionSpinner } from "../states";
 
-interface MyPartner extends Record<string, unknown> {
-  id: string;
-  name_ar: string | null;
-  name_en: string;
-  slug: string;
-  status: string;
-}
-
 const KEY = ["partner-desk"] as const;
 
-/** The partner this representative keeps (the first, if several). */
-const useMyPartner = () => {
-  const { supabase, user } = useAuth();
-  return useQuery({
-    queryFn: async () =>
-      ((unwrap(await supabase.schema("governance").rpc("my_partners")) ??
-        [])[0] ?? null) as MyPartner | null,
-    queryKey: [...KEY, "mine", user?.id ?? ""],
-  });
-};
+const TABS = [
+  { href: "/partners/dashboard", key: "profile" },
+  { href: "/partners/dashboard/perks", key: "perks" },
+  { href: "/partners/dashboard/people", key: "people" },
+] as const;
 
-/** The partner's page: its title and three tabs, Profile, Perks, People. */
+/**
+ * The partner's dashboard (owner, Oct 31, 2026: one fixed address,
+ * /partners/dashboard): its title and three tabs, Profile, Perks, People.
+ * Someone on two partners' teams keeps the first.
+ */
 const PartnerFrame = ({
   children,
 }: {
@@ -51,27 +44,47 @@ const PartnerFrame = ({
 }) => {
   const t = useTranslations("nexus.partnerDesk");
   const locale = useLocale() as Locale;
-  const partner = useMyPartner();
-  if (partner.isPending) {
+  const pathname = usePathname();
+  const mine = useMyPartners();
+  if (mine.isPending) {
     return <SectionSpinner />;
   }
-  if (partner.isError) {
-    return <ErrorState onRetry={() => partner.refetch()} />;
+  if (mine.isError) {
+    return <ErrorState onRetry={() => mine.refetch()} />;
   }
-  if (!partner.data) {
+  const [partner] = mine.data;
+  if (!partner) {
     return <p className="type-body">{t("none")}</p>;
   }
   return (
-    <DiwanPage lede={t("lede")} title={localized(partner.data, "name", locale)}>
-      <SectionTabs
-        label={t("tabsLabel")}
-        tabs={[
-          { href: "/partner", label: t("tabs.profile") },
-          { href: "/partner/perks", label: t("tabs.perks") },
-          { href: "/partner/people", label: t("tabs.people") },
-        ]}
-      />
-      {children(partner.data)}
+    <DiwanPage lede={t("lede")} title={localized(partner, "name", locale)}>
+      <nav
+        aria-label={t("tabsLabel")}
+        className="overflow-x-auto border-line border-b"
+      >
+        <ul className="flex gap-x-6">
+          {TABS.map((tab) => {
+            const here = pathname === tab.href;
+            return (
+              <li className="shrink-0" key={tab.href}>
+                <Link
+                  aria-current={here ? "page" : undefined}
+                  className={cn(
+                    "block whitespace-nowrap border-b-[1.5px] py-3 font-medium text-sm hover:text-accent",
+                    here
+                      ? "border-accent text-text"
+                      : "border-transparent text-text-secondary"
+                  )}
+                  href={tab.href}
+                >
+                  {t(`tabs.${tab.key}`)}
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      </nav>
+      {children(partner)}
     </DiwanPage>
   );
 };
@@ -286,7 +299,7 @@ const Memoranda = ({ partnerId }: { partnerId: string }) => {
   );
 };
 
-/** /diwan/partner: the partner's profile and its memoranda. */
+/** /partners/dashboard: the partner's profile and its memoranda. */
 export const PartnerProfile = () => {
   const t = useTranslations("nexus.partnerDesk");
   return (
@@ -446,7 +459,7 @@ const NewPerk = ({ partnerId }: { partnerId: string }) => {
   );
 };
 
-/** /diwan/partner/perks: what the partner offers the Society's members. */
+/** /partners/dashboard/perks: what the partner offers members and guests. */
 export const PartnerPerks = () => (
   <PartnerFrame>
     {(partner) => <PerksList partnerId={partner.id} />}
@@ -579,6 +592,7 @@ interface Teammate {
   email: string;
   full_name_ar: string | null;
   full_name_en: string | null;
+  lead: boolean;
   user_id: string;
 }
 
@@ -700,12 +714,283 @@ const Guests = ({ partnerId }: { partnerId: string }) => {
   );
 };
 
-const Team = ({ partnerId }: { partnerId: string }) => {
-  const t = useTranslations("nexus.partnerDesk.team");
-  const locale = useLocale() as Locale;
-  const { supabase, user } = useAuth();
+interface Invitation {
+  code: string;
+  created_at: string;
+  email: string | null;
+  expires_at: string;
+  id: string;
+  kind: "team" | "guest";
+}
+
+/** The link an invitation is, on this site. */
+const inviteUrl = (code: string, locale: string) =>
+  `${window.location.origin}${locale === "en" ? "" : `/${locale}`}/partners/invite/${code}`;
+
+/**
+ * An email invitation: to the team (the Lead's) or as a guest. The person
+ * gets an email; the link works for fourteen days.
+ */
+const InviteByEmail = ({
+  kind,
+  partnerId,
+}: {
+  kind: "team" | "guest";
+  partnerId: string;
+}) => {
+  const t = useTranslations("nexus.partnerDesk.invite");
+  const { supabase } = useAuth();
   const queryClient = useQueryClient();
   const [email, setEmail] = useState("");
+  const invite = useMutation({
+    mutationFn: async () =>
+      unwrap(
+        await supabase
+          .schema("governance")
+          .from("partner_invitations")
+          .insert({ email: email.trim(), kind, partner_id: partnerId })
+      ),
+    onSuccess: async () => {
+      setEmail("");
+      await queryClient.invalidateQueries({ queryKey: KEY });
+    },
+  });
+  return (
+    <form
+      className="grid max-w-xl gap-3"
+      onSubmit={(event: FormEvent) => {
+        event.preventDefault();
+        invite.mutate();
+      }}
+    >
+      <Field
+        hint={kind === "team" ? t("teamHint") : t("guestHint")}
+        label={t("email")}
+      >
+        {(id) => (
+          <Input
+            dir="ltr"
+            id={id}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            type="email"
+            value={email}
+          />
+        )}
+      </Field>
+      <Button
+        className="justify-self-start"
+        disabled={invite.isPending}
+        type="submit"
+        variant="outline"
+      >
+        {kind === "team" ? t("inviteTeam") : t("inviteGuest")}
+      </Button>
+      {invite.isSuccess ? (
+        <p className="type-caption" role="status">
+          {t("sent")}
+        </p>
+      ) : null}
+      <ErrorLine error={invite.error} />
+    </form>
+  );
+};
+
+/** Invitations not yet accepted: copy the link again, or withdraw. */
+const OpenInvitations = ({
+  kind,
+  partnerId,
+}: {
+  kind: "team" | "guest";
+  partnerId: string;
+}) => {
+  const t = useTranslations("nexus.partnerDesk.invite");
+  const locale = useLocale() as Locale;
+  const { supabase } = useAuth();
+  const queryClient = useQueryClient();
+  const [copied, setCopied] = useState<string | null>(null);
+  const open = useQuery({
+    queryFn: async () =>
+      (unwrap(
+        await supabase
+          .schema("governance")
+          .from("partner_invitations")
+          .select("id, kind, email, code, created_at, expires_at")
+          .eq("partner_id", partnerId)
+          .eq("kind", kind)
+          .is("accepted_at", null)
+          .is("revoked_at", null)
+          .gt("expires_at", new Date().toISOString())
+          .order("created_at", { ascending: false })
+      ) ?? []) as Invitation[],
+    queryKey: [...KEY, "invitations", partnerId, kind],
+  });
+  const withdraw = useMutation({
+    mutationFn: async (id: string) =>
+      unwrap(
+        await supabase
+          .schema("governance")
+          .from("partner_invitations")
+          .update({ revoked_at: new Date().toISOString() })
+          .eq("id", id)
+      ),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: KEY }),
+  });
+  const copy = async (code: string) => {
+    await navigator.clipboard.writeText(inviteUrl(code, locale));
+    setCopied(code);
+  };
+  if (!open.data?.length) {
+    return null;
+  }
+  return (
+    <div className="grid gap-2">
+      <p className="type-label">{t("open")}</p>
+      <RowList>
+        {open.data.map((invitation) => (
+          <li
+            className="flex flex-wrap items-baseline justify-between gap-2 py-3"
+            key={invitation.id}
+          >
+            <span className="grid gap-1">
+              <span className="break-all text-sm" dir="ltr">
+                {invitation.email ?? t("link")}
+              </span>
+              <span className="type-caption">
+                {t("until", {
+                  date: formatLongDate(invitation.expires_at, locale),
+                })}
+              </span>
+            </span>
+            <span className="flex flex-wrap gap-2">
+              <Button
+                onClick={() => copy(invitation.code)}
+                size="sm"
+                type="button"
+                variant="outline"
+              >
+                {copied === invitation.code ? t("copied") : t("copy")}
+              </Button>
+              <ConfirmAction
+                confirmLabel={t("withdraw")}
+                description={t("withdrawConfirm")}
+                disabled={withdraw.isPending}
+                onConfirm={() => withdraw.mutate(invitation.id)}
+              >
+                {t("withdraw")}
+              </ConfirmAction>
+            </span>
+          </li>
+        ))}
+      </RowList>
+      <ErrorLine error={withdraw.error} />
+    </div>
+  );
+};
+
+/**
+ * A shareable guest link, for the partner's own group: whoever joins
+ * through it waits until the partner verifies them.
+ */
+const ShareableLink = ({ partnerId }: { partnerId: string }) => {
+  const t = useTranslations("nexus.partnerDesk.invite");
+  const { supabase } = useAuth();
+  const queryClient = useQueryClient();
+  const make = useMutation({
+    mutationFn: async () =>
+      unwrap(
+        await supabase
+          .schema("governance")
+          .from("partner_invitations")
+          .insert({ kind: "guest", partner_id: partnerId })
+      ),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: KEY }),
+  });
+  return (
+    <div className="grid gap-2">
+      <p className="type-caption">{t("linkHint")}</p>
+      <Button
+        className="justify-self-start"
+        disabled={make.isPending}
+        onClick={() => make.mutate()}
+        type="button"
+        variant="outline"
+      >
+        {t("makeLink")}
+      </Button>
+      <ErrorLine error={make.error} />
+    </div>
+  );
+};
+
+/** One person on the team, with what the signed-in person may do. */
+const TeamMate = ({
+  busy,
+  canLeave,
+  iLead,
+  mate,
+  me,
+  onLead,
+  onRemove,
+}: {
+  busy: boolean;
+  canLeave: boolean;
+  iLead: boolean;
+  mate: Teammate;
+  me: boolean;
+  onLead: () => void;
+  onRemove: () => void;
+}) => {
+  const t = useTranslations("nexus.partnerDesk.team");
+  const locale = useLocale() as Locale;
+  return (
+    <li className="flex flex-wrap items-baseline justify-between gap-2 py-4">
+      <span className="grid gap-1">
+        <span>
+          <span className="font-medium">{personName(mate, locale)}</span>{" "}
+          <span className="break-all text-sm text-text-secondary" dir="ltr">
+            {mate.email}
+          </span>
+        </span>
+        <span className="type-caption">
+          {mate.lead ? t("lead") : t("member")}
+        </span>
+      </span>
+      <span className="flex flex-wrap gap-2">
+        {iLead && !me ? (
+          <Button
+            disabled={busy}
+            onClick={onLead}
+            size="sm"
+            type="button"
+            variant="outline"
+          >
+            {mate.lead ? t("makeMember") : t("makeLead")}
+          </Button>
+        ) : null}
+        {(iLead || me) && canLeave ? (
+          <ConfirmAction
+            confirmLabel={me ? t("leave") : t("remove")}
+            description={
+              me
+                ? t("leaveConfirm")
+                : t("removeConfirm", { name: personName(mate, locale) })
+            }
+            disabled={busy}
+            onConfirm={onRemove}
+          >
+            {me ? t("leave") : t("remove")}
+          </ConfirmAction>
+        ) : null}
+      </span>
+    </li>
+  );
+};
+
+const Team = ({ partnerId }: { partnerId: string }) => {
+  const t = useTranslations("nexus.partnerDesk.team");
+  const { supabase, user } = useAuth();
+  const queryClient = useQueryClient();
   const team = useQuery({
     queryFn: async () =>
       (unwrap(
@@ -716,19 +1001,6 @@ const Team = ({ partnerId }: { partnerId: string }) => {
     queryKey: [...KEY, "team", partnerId],
   });
   const done = () => queryClient.invalidateQueries({ queryKey: KEY });
-  const add = useMutation({
-    mutationFn: async () =>
-      unwrap(
-        await supabase.schema("governance").rpc("add_partner_teammate", {
-          email: email.trim(),
-          partner: partnerId,
-        })
-      ),
-    onSuccess: async () => {
-      setEmail("");
-      await done();
-    },
-  });
   const remove = useMutation({
     mutationFn: async (member: string) =>
       unwrap(
@@ -738,77 +1010,50 @@ const Team = ({ partnerId }: { partnerId: string }) => {
       ),
     onSuccess: done,
   });
+  const lead = useMutation({
+    mutationFn: async ({ member, on }: { member: string; on: boolean }) =>
+      unwrap(
+        await supabase
+          .schema("governance")
+          .rpc("set_partner_lead", { lead: on, member, partner: partnerId })
+      ),
+    onSuccess: done,
+  });
+  const iLead = Boolean(
+    team.data?.find((mate) => mate.user_id === user?.id)?.lead
+  );
   return (
     <>
       {team.isPending ? <SectionSpinner /> : null}
       <RowList>
         {(team.data ?? []).map((mate) => (
-          <li
-            className="flex flex-wrap items-baseline justify-between gap-2 py-4"
+          <TeamMate
+            busy={lead.isPending || remove.isPending}
+            canLeave={(team.data?.length ?? 0) > 1}
+            iLead={iLead}
             key={mate.user_id}
-          >
-            <span>
-              <span className="font-medium">{personName(mate, locale)}</span>{" "}
-              <span className="break-all text-sm text-text-secondary" dir="ltr">
-                {mate.email}
-              </span>
-            </span>
-            {(team.data?.length ?? 0) > 1 ? (
-              <ConfirmAction
-                confirmLabel={t("remove")}
-                description={
-                  mate.user_id === user?.id
-                    ? t("leaveConfirm")
-                    : t("removeConfirm", { name: personName(mate, locale) })
-                }
-                disabled={remove.isPending}
-                onConfirm={() => remove.mutate(mate.user_id)}
-              >
-                {mate.user_id === user?.id ? t("leave") : t("remove")}
-              </ConfirmAction>
-            ) : null}
-          </li>
+            mate={mate}
+            me={mate.user_id === user?.id}
+            onLead={() => lead.mutate({ member: mate.user_id, on: !mate.lead })}
+            onRemove={() => remove.mutate(mate.user_id)}
+          />
         ))}
       </RowList>
-      <ErrorLine error={remove.error} />
-      {(team.data?.length ?? 0) < 6 ? (
-        <form
-          className="grid max-w-xl gap-3"
-          onSubmit={(event: FormEvent) => {
-            event.preventDefault();
-            add.mutate();
-          }}
-        >
-          <Field hint={t("addHint")} label={t("email")}>
-            {(id) => (
-              <Input
-                dir="ltr"
-                id={id}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                type="email"
-                value={email}
-              />
-            )}
-          </Field>
-          <Button
-            className="justify-self-start"
-            disabled={add.isPending}
-            type="submit"
-            variant="outline"
-          >
-            {t("add")}
-          </Button>
-          <ErrorLine error={add.error} />
-        </form>
-      ) : (
+      <ErrorLine error={remove.error ?? lead.error} />
+      {iLead && (team.data?.length ?? 0) < 6 ? (
+        <>
+          <InviteByEmail kind="team" partnerId={partnerId} />
+          <OpenInvitations kind="team" partnerId={partnerId} />
+        </>
+      ) : null}
+      {(team.data?.length ?? 0) >= 6 ? (
         <p className="type-caption">{t("full")}</p>
-      )}
+      ) : null}
     </>
   );
 };
 
-/** /diwan/partner/people: who the partner verifies, and its own team. */
+/** /partners/dashboard/people: the partner's guests and its own team. */
 export const PartnerPeople = () => {
   const t = useTranslations("nexus.partnerDesk");
   return (
@@ -821,6 +1066,9 @@ export const PartnerPeople = () => {
             title={t("guests.title")}
           >
             <Guests partnerId={partner.id} />
+            <InviteByEmail kind="guest" partnerId={partner.id} />
+            <ShareableLink partnerId={partner.id} />
+            <OpenInvitations kind="guest" partnerId={partner.id} />
           </DiwanSection>
           <DiwanSection
             description={t("team.lede")}

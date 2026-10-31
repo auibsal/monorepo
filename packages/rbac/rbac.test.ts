@@ -123,6 +123,7 @@ describe("mirror of the reference data in the migrations", () => {
     // its representatives' (they hold partners.manage anyway).
     const withheld = new Set([
       "partners.own",
+      "partners.lead",
       "concerns.about_president",
       "journal.review",
       "journal.identity.view",

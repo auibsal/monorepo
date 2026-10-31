@@ -257,7 +257,15 @@ export const roles = {
     nameEn: "Onboarding Lead",
     permissions: ["events.checkin", "library.read"],
   },
-  // A partner's own people (owner, Oct 31, 2026): scoped to the partner.
+  // A partner's team (owner, Oct 31, 2026), scoped to the partner: the
+  // Lead invites and removes; Team keeps the page.
+  partner_lead: {
+    defaultScope: "partner",
+    isCouncil: false,
+    nameAr: "مسؤول الشريك",
+    nameEn: "Partner Lead",
+    permissions: ["partners.own", "partners.lead"],
+  },
   partner_rep: {
     defaultScope: "partner",
     isCouncil: false,

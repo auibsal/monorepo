@@ -15,7 +15,6 @@ import { queryKeys, useProfile } from "@/lib/nexus/queries";
 import { DiwanPage, DiwanSection } from "../page";
 import { NamePartsFields } from "../setup-form";
 import { ErrorState, SectionSpinner } from "../states";
-import { Affiliations } from "./affiliations";
 import { DetailsSection } from "./details-fields";
 
 export const ProfileScreen = () => {
@@ -170,7 +169,6 @@ export const ProfileScreen = () => {
         </form>
       </DiwanSection>
       <DetailsSection />
-      <Affiliations />
     </DiwanPage>
   );
 };

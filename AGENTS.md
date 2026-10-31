@@ -241,10 +241,13 @@ any schema change. Integration tests run against a local stack with
   and never show a group smaller than five (`core.member_insights()`).
   Public pages never show it. No phone numbers until they can be verified
   (owner, Oct 25, 2026).
-- **Sign-up asks little** (owner, Oct 25, 2026). An AUIB address signs up
-  with the address and a password; an outside address also gives its
-  name in four parts in each language, and one of the partners verifies it (owner, Oct
-  31, 2026: the Society verifies partners only). `/welcome` then asks one question
+- **Sign-up asks little** (owner, Oct 25, 2026). Membership is for AUIB
+  addresses only (owner, Oct 31, 2026): the sign-up field takes what goes
+  before @auib.edu.iq, and a password. An outside address signs up only
+  from a partner's invitation or to apply to partner (`outside` in
+  `signUpWithEmail`), giving its name in four parts in each language;
+  `handle_new_user` refuses any other (`private.sign_up_allowed`,
+  `auib_address_required`). Alumni stay members for good. `/welcome` then asks one question
   per screen (`planSetup` in `components/nexus/setup-form.tsx`): each
   language's four parts not yet given, each pledge not yet made in its current version, and, the
   first time, photos; then the welcome screen with the card. Language
@@ -405,26 +408,46 @@ any schema change. Integration tests run against a local stack with
   work reads names through `governance.partner_names()` (members: active
   and prospective partners; a partner's guest: their own). Accounts
   verified with a partner but not members are that partner's guests
-  ("Guest of …"; `PartnerGuest`, `GUEST_PATHS` in `gates.tsx`).
-- **Partners on the platform** (owner, Oct 31, 2026). An organization
-  applies at `/about/partners/join` (`governance.apply_as_partner`): its
+  (`private.is_partner_guest()`; `GUEST_PATHS` in `gates.tsx`).
+- **Partners on the platform** (owner, Oct 31, 2026). `/partners` is
+  the partners' front door: what partnering means, the partners, Apply
+  and the team's sign-in; there are no pages for single partners. An
+  organization applies at `/partners/join` (`governance.apply_as_partner`;
+  signed out, the page signs the applicant up with any address): its
   profile, the partnership's purpose and its side, the grants it asks for,
   and its signatory signs the memorandum by name. No PDFs: memoranda are
   signed by name on both sides (`sign_partner_agreement` takes no file).
   The Diwan's verification queue holds these applications
   (`governance.partner_applications()`); the President signs, the partner
-  turns active and whoever applied gets `partner_rep`, a role scoped to
-  the partner (`scope_type` `partner`) with `partners.own`. Each partner
-  keeps its own page at `/diwan/partner` (Profile and memorandum, Perks,
-  People: guests and a team of up to six; `components/nexus/partner`,
-  route group `diwan/(partner)` with `RequirePartner`, no membership
-  gate). Row Level Security keeps a representative to its own partner;
-  its listing, status and address stay the Society's
-  (`guard_partner_self_edit`). Partners verify their own people
-  (`partner_affiliations`, `governance.partner_guests`); outside sign-ups
-  no longer open a Society request. Representatives are not officers:
-  `RequireStaff` sends a representative-only account to its partner's
-  page, and the Notion directory leaves them out.
+  turns active and whoever applied gets `partner_lead` (`partners.own`
+  and `partners.lead`, scoped `partner`). Each partner keeps one
+  dashboard at `/partners/dashboard` (Profile and memorandum, Perks,
+  People; `components/nexus/partner/workspace.tsx`, `RequirePartner`, no
+  membership gate), in the header's menu as "Partner dashboard" where
+  officers see the Diwan (`useWays`, the `sal_ways` hint cookie). The
+  team is up to six, Lead or Team (`partner_rep`): Leads invite, make
+  Leads (`set_partner_lead`) and remove; anyone leaves, never the last
+  Lead. People join only by invitation (`governance.partner_invitations`,
+  fourteen days, codes made by the database; emailed by the outbox kind
+  `partners.invitation`): team by email, guests by email (verified on
+  accepting with that address) or by a shareable link (pending until the
+  partner verifies). Invitations open at `/partners/invite/<code>`
+  (`governance.partner_invitation`, `accept_partner_invitation`). Row Level
+  Security keeps the team to its own partner; its listing, status and
+  address stay the Society's (`guard_partner_self_edit`). Partners verify
+  their own people (`partner_affiliations`, `governance.partner_guests`);
+  nobody asks to be a guest. Guests book places (`events.rsvp`) and see
+  perks (`member_offers`, only with the `member_offer` grant) like
+  members. The team are not officers: `RequireStaff` sends a team-only
+  account to the dashboard, and the Notion directory leaves them out.
+- **Accounts for everyone else** (owner, Oct 31, 2026). Membership is
+  AUIB's: non-members (guests, partners' teams, applicants) have
+  `/account` (`RequireAccount`): Account (their partners, what they may
+  do, perks; the record at `/account/record`), My calendar
+  (`/account/calendar`, booking) and Settings (`/account/settings`: name,
+  emails, passkeys, deleting the account). `RequireMember` sends them
+  there, and a guest following an event's booking link to
+  `/account/calendar`.
 - **No money** (owner, Oct 30, 2026). The Society holds no budget, no
   account and no money, and has no Treasurer; Student Life provides. No
   budgets, costs, prices, spending limits, claims or reimbursements
@@ -542,8 +565,10 @@ any schema change. Integration tests run against a local stack with
   involved and
   Join (for visitors; signed in, the end of the line opens Membership),
   with Search, the language and the theme. The Diwan sits under
-  Membership, for officers only (`useIsStaff`, remembered for the public
-  pages in the `sal_diwan` hint cookie; UX only). Below the desktop width
+  Membership, for officers only, and the Partner dashboard for a partner's
+  team (`useWays` in `member-shell.tsx`, remembered for the public pages
+  in the `sal_ways` hint cookie; UX only). Non-members' end of the line
+  opens Account (`/account`) instead of Membership. Below the desktop width
   the bar keeps the logo and the menu button, and everything else opens
   in the panel. Inside the Diwan, its own row of six sections follows the
   header (`DiwanNav`), and each section's tabs follow that.

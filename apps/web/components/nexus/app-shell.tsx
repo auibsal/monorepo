@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import type { ReactNode } from "react";
-import { useIsStaff } from "@/components/account/member-shell";
+import { useWays } from "@/components/account/member-shell";
 import { SiteHeader } from "@/components/site-header";
 import { LinkProvider } from "@/lib/link-context";
 import { Link } from "@/lib/nexus/navigation";
@@ -25,7 +25,7 @@ export const AppShell = ({ children }: { children: ReactNode }) => {
       >
         {t("skipToContent")}
       </a>
-      <SiteHeader language={<LanguageSwitcher />} staff={useIsStaff()} />
+      <SiteHeader language={<LanguageSwitcher />} ways={useWays()} />
       <DiwanNav />
       <main
         className="mx-auto w-full max-w-6xl flex-1 px-4 pt-12 pb-20 sm:pt-16 sm:pb-24"

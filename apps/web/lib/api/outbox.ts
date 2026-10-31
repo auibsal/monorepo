@@ -18,6 +18,7 @@ import {
   finalCheck,
   newsletterConfirm,
   openingReply,
+  partnerInvitation,
   personalEmailConfirm,
   pieceNote,
   piecePublished,
@@ -629,6 +630,50 @@ const handlers: Record<string, Handler> = {
       { email: row.email, lang },
       sundayPaper(lang, { ...paper, stop: links.page }),
       links.headers
+    );
+  },
+  // A partner's email invitation, in the inviter's language: the link is
+  // the invitation (/partners/invite/<code>).
+  "partners.invitation": async (admin, payload) => {
+    const { data: invitation } = await admin
+      .schema("governance")
+      .from("partner_invitations")
+      .select(
+        "email, code, kind, created_by, accepted_at, revoked_at, partner_id"
+      )
+      .eq("id", String(payload.invitation_id))
+      .maybeSingle();
+    if (!invitation?.email || invitation.accepted_at || invitation.revoked_at) {
+      return;
+    }
+    const [{ data: partner }, { data: inviter }] = await Promise.all([
+      admin
+        .schema("governance")
+        .from("partners")
+        .select("name_en, name_ar")
+        .eq("id", invitation.partner_id)
+        .maybeSingle(),
+      admin
+        .schema("core")
+        .from("profiles")
+        .select("locale")
+        .eq("id", invitation.created_by ?? "")
+        .maybeSingle(),
+    ]);
+    if (!partner) {
+      return;
+    }
+    const lang: Lang = inviter?.locale === "ar" ? "ar" : "en";
+    const name =
+      lang === "ar" ? (partner.name_ar ?? partner.name_en) : partner.name_en;
+    await send(
+      { email: invitation.email, lang },
+      partnerInvitation(
+        lang,
+        name,
+        invitation.kind === "team" ? "team" : "guest",
+        `${webUrl()}${prefix(lang)}/partners/invite/${invitation.code}`
+      )
     );
   },
   // Only to the new address, never the sign-in one: the link proves the

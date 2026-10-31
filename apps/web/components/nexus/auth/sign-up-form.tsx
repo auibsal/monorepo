@@ -1,6 +1,6 @@
 "use client";
 
-import { isAuibEmail, signUpWithEmail } from "@repo/auth/email";
+import { AUIB_DOMAIN, signUpWithEmail } from "@repo/auth/email";
 import { useAuth } from "@repo/auth/provider";
 import { FormHeader } from "@repo/design-system/components/sal/form-header";
 import { Button } from "@repo/design-system/components/ui/button";
@@ -18,20 +18,41 @@ import { NamePartsFields } from "../setup-form";
 import { EmailCode } from "./email-code";
 import { useHumanCheck } from "./human-check";
 
-export const SignUpForm = () => {
+/**
+ * Why someone without an AUIB address may sign up (owner, Oct 31, 2026):
+ * a partner's invitation (its address, when it names one, is fixed) or an
+ * application to partner. Without one, the form takes AUIB addresses only.
+ */
+export interface OutsideSignUp {
+  readonly email?: string | null;
+  readonly reason: { invitation: string } | { partnerApplicant: true };
+}
+
+interface SignUpFormProps {
+  /** Where the confirmation link brings them back to. */
+  readonly next?: string;
+  readonly outside?: OutsideSignUp;
+}
+
+/** Only what goes before @auib.edu.iq: an ID number or name.idnumber. */
+const localPart = (value: string) => value.replace(/[@\s]/g, "");
+
+export const SignUpForm = ({ next: given, outside }: SignUpFormProps) => {
   const t = useTranslations("auth");
   const errorText = useAuthError();
   const { supabase } = useAuth();
   const locale = useLocale();
-  const next = safeNextPath(useSearchParams().get("next"));
+  const asked = safeNextPath(useSearchParams().get("next"));
+  const next = given ?? asked;
   const id = useId();
   const [values, setValues] = useState({
-    email: "",
+    email: outside?.email ?? "",
     password: "",
   });
-  // AUIB addresses give their names in setup; a partner verifies others
-  // (owner, Oct 31, 2026) by theirs, so they give them here, in four
-  // parts in each language as on their papers.
+  // Membership is for AUIB addresses (owner, Oct 31, 2026): the field takes
+  // what goes before @auib.edu.iq. Those invited by a partner, or applying
+  // for one, give their own address and, since no AUIB record names them,
+  // their name in four parts in each language as on their papers.
   const [fullNames, setFullNames] = useState<nameParts.FourPartNames>({
     ar: nameParts.emptyParts(),
     en: nameParts.emptyParts(),
@@ -43,7 +64,10 @@ export const SignUpForm = () => {
   const [error, setError] = useState<string>();
   const [sentTo, setSentTo] = useState<string>();
   useScreenTop(sentTo);
-  const external = values.email.includes("@") && !isAuibEmail(values.email);
+  const external = Boolean(outside);
+  const email = external
+    ? values.email.trim()
+    : `${localPart(values.email)}@${AUIB_DOMAIN}`;
   const human = useHumanCheck("sign-up");
 
   const set =
@@ -56,9 +80,10 @@ export const SignUpForm = () => {
     setError(undefined);
     const result = await signUpWithEmail(supabase, {
       captchaToken: human.token,
-      email: values.email,
+      email,
       locale: locale === "ar" ? "ar" : "en",
       names: external ? fullNames : undefined,
+      outside: outside?.reason,
       password: values.password,
       // The confirmation link brings the member back to what they started.
       redirectTo: callbackUrl(locale, next),
@@ -66,7 +91,7 @@ export const SignUpForm = () => {
     setPending(false);
     human.reset();
     if (result.ok) {
-      setSentTo(values.email);
+      setSentTo(email);
     } else {
       setError(errorText(result.code));
     }
@@ -84,27 +109,57 @@ export const SignUpForm = () => {
 
   return (
     <>
-      <FormHeader title={t("signUp.title")}>
-        {t("signUp.description")}
-      </FormHeader>
+      {/* Invited or applying, the page around the form says what it is for. */}
+      {external ? null : (
+        <FormHeader title={t("signUp.title")}>
+          {t("signUp.description")}
+        </FormHeader>
+      )}
       <form className="grid gap-4" noValidate onSubmit={submit}>
-        <div className="grid gap-2">
-          <Label htmlFor={`${id}-email`}>{t("email")}</Label>
-          <Input
-            aria-describedby={`${id}-email-hint`}
-            autoComplete="email"
-            dir="ltr"
-            id={`${id}-email`}
-            inputMode="email"
-            onChange={set("email")}
-            required
-            type="email"
-            value={values.email}
-          />
-          <p className="type-caption" id={`${id}-email-hint`}>
-            {t("emailHint")}
-          </p>
-        </div>
+        {external ? (
+          <div className="grid gap-2">
+            <Label htmlFor={`${id}-email`}>{t("email")}</Label>
+            <Input
+              autoComplete="email"
+              dir="ltr"
+              id={`${id}-email`}
+              inputMode="email"
+              onChange={set("email")}
+              readOnly={Boolean(outside?.email)}
+              required
+              type="email"
+              value={values.email}
+            />
+          </div>
+        ) : (
+          <div className="grid gap-2">
+            <Label htmlFor={`${id}-email`}>{t("auibEmail")}</Label>
+            <div className="flex items-stretch" dir="ltr">
+              <Input
+                aria-describedby={`${id}-email-hint`}
+                autoCapitalize="none"
+                autoComplete="username"
+                className="min-w-0 flex-1"
+                id={`${id}-email`}
+                onChange={(event) =>
+                  setValues((current) => ({
+                    ...current,
+                    email: localPart(event.target.value),
+                  }))
+                }
+                required
+                spellCheck={false}
+                value={values.email}
+              />
+              <span className="flex items-center border-line border-y border-e px-3 text-sm text-text-secondary">
+                @{AUIB_DOMAIN}
+              </span>
+            </div>
+            <p className="type-caption" id={`${id}-email-hint`}>
+              {t("auibEmailHint")}
+            </p>
+          </div>
+        )}
         <div className="grid gap-2">
           <Label htmlFor={`${id}-password`}>{t("password")}</Label>
           <Input
@@ -124,7 +179,6 @@ export const SignUpForm = () => {
         </div>
         {external ? (
           <div className="grid gap-4">
-            <p className="type-body">{t("signUp.outsideAuib")}</p>
             <p className="type-caption" id={`${id}-names-hint`}>
               {t("signUp.namesHint")}
             </p>
@@ -152,14 +206,18 @@ export const SignUpForm = () => {
           </p>
         ) : null}
         <Button
-          disabled={pending || !human.ready || (external && !named)}
+          disabled={
+            pending ||
+            !human.ready ||
+            (external ? !named : localPart(values.email) === "")
+          }
           type="submit"
         >
           {human.label(pending, t("signUp.submit"), t("signUp.submitting"))}
         </Button>
       </form>
       <p className="type-body">
-        {t("signUp.haveAccount")}{" "}
+        {external ? t("signUp.haveAnAccount") : t("signUp.haveAccount")}{" "}
         <Link
           className="link"
           href={{ pathname: "/sign-in", query: next ? { next } : {} }}

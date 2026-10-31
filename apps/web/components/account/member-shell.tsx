@@ -13,44 +13,69 @@ import { useTranslations } from "next-intl";
 import { type ReactNode, useEffect } from "react";
 import { useVisibleModules } from "@/components/nexus/admin/admin-shell";
 import { useTwoStep } from "@/components/nexus/auth/two-step";
+import { useMyPartners } from "@/lib/nexus/partners";
 import { disablePush } from "@/lib/nexus/push";
 import { useMemberStatus } from "@/lib/nexus/queries";
-import { rememberStaff } from "@/lib/staff";
+import { rememberWays, type Ways } from "@/lib/staff";
 
 interface AccountLink {
   /** Pages that count as this link's own (Settings holds Profile and Requests). */
   readonly also?: readonly string[];
   readonly href: string;
-  readonly key: "today" | "calendar" | "society" | "record" | "settings";
+  readonly key:
+    | "today"
+    | "calendar"
+    | "society"
+    | "record"
+    | "settings"
+    | "accountHome";
 }
 
 /** Whether a link is the current page: Today only on itself. */
 const isCurrent = (pathname: string, link: AccountLink) =>
   [link.href, ...(link.also ?? [])].some((href) =>
-    href === "/membership"
+    href === "/membership" || href === "/account"
       ? pathname === href
       : pathname === href || pathname.startsWith(`${href}/`)
   );
 
 /**
- * Whether the signed-in person opens the Diwan (holds a role, or one that
- * waits on two-step sign-in), for the header's Membership menu. Remembered
- * in a cookie so the public pages can offer it too; UX only.
+ * Where the signed-in person goes beyond the public site (owner, Oct 31,
+ * 2026): Membership for members, Account for everyone else, the Diwan for
+ * officers (a role, or one waiting on two-step sign-in) and Partner for a
+ * partner's team. Remembered in a cookie so the public pages can show the
+ * same; UX only.
  */
-export const useIsStaff = () => {
+export const useWays = (): Ways => {
   const { loading, user } = useAuth();
   const { grants, visible } = useVisibleModules();
   const twoStep = useTwoStep();
-  const staff =
-    Boolean(user) && (visible.length > 0 || Boolean(twoStep.data?.needs));
-  const known = !loading && (!user || (grants.isSuccess && twoStep.isSuccess));
+  const status = useMemberStatus();
+  const partners = useMyPartners();
+  const ways: Ways = {
+    diwan:
+      Boolean(user) && (visible.length > 0 || Boolean(twoStep.data?.needs)),
+    member: Boolean(user) && (status.data?.verified ?? true),
+    partner: Boolean(user) && (partners.data?.length ?? 0) > 0,
+  };
+  const known =
+    !loading &&
+    (!user ||
+      (grants.isSuccess &&
+        twoStep.isSuccess &&
+        status.isSuccess &&
+        partners.isSuccess));
+  // biome-ignore lint/correctness/useExhaustiveDependencies: the three flags, not the object made each render
   useEffect(() => {
     if (known) {
-      rememberStaff(staff);
+      rememberWays(user ? ways : null);
     }
-  }, [known, staff]);
-  return staff;
+  }, [known, user, ways.diwan, ways.member, ways.partner]);
+  return ways;
 };
+
+/** Whether the signed-in person opens the Diwan. */
+export const useIsStaff = () => useWays().diwan;
 
 /**
  * The account's own pages, in one row under the site's header (owner,
@@ -59,8 +84,23 @@ export const useIsStaff = () => {
  * header's Membership, so neither is repeated here. Profile and Requests
  * sit under Settings; perks are on the card.
  */
-const useAccountLinks = () => {
+const useAccountLinks = (): AccountLink[] => {
   const status = useMemberStatus();
+  const pathname = usePathname();
+  // Everyone else's account (owner, Oct 31, 2026), also on the guests'
+  // pages among Membership's: three pages; the record opens from Account.
+  const notMember = status.isSuccess && !status.data?.verified;
+  if (
+    notMember ||
+    pathname === "/account" ||
+    pathname.startsWith("/account/")
+  ) {
+    return [
+      { also: ["/account/record"], href: "/account", key: "accountHome" },
+      { href: "/account/calendar", key: "calendar" },
+      { href: "/account/settings", key: "settings" },
+    ];
+  }
   const member = Boolean(status.data?.is_member);
   const links: AccountLink[] = [
     { href: "/membership", key: "today" },
@@ -94,7 +134,7 @@ const AccountNav = () => {
     // A shared computer must not show the last member's notices.
     await disablePush(supabase).catch(() => undefined);
     await supabase.auth.signOut();
-    rememberStaff(false);
+    rememberWays(null);
     queryClient.clear();
     router.replace("/");
   };
@@ -122,7 +162,7 @@ const AccountNav = () => {
         key={pathname}
       >
         <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-3 font-medium text-sm [&::-webkit-details-marker]:hidden">
-          <span>{t(current?.key ?? "today")}</span>
+          <span>{t(current?.key ?? links[0]?.key ?? "today")}</span>
           <Icon
             className="size-4 transition-transform group-open:rotate-180"
             name="chevron-down"
@@ -180,7 +220,7 @@ const AccountNav = () => {
 };
 
 /** Pages that show the account's row of links. */
-const ACCOUNT_PAGES = /^\/(membership|society)(\/|$)/;
+const ACCOUNT_PAGES = /^\/(membership|society|account)(\/|$)/;
 
 /** The members' pages: the account row where it belongs, then the page. */
 export const MemberShell = ({ children }: { children: ReactNode }) => {
