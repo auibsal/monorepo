@@ -31,7 +31,7 @@ import {
   useProfile,
 } from "@/lib/nexus/queries";
 import { CalendarFeed } from "../home/calendar-feed";
-import { DiwanPage } from "../page";
+import { DiwanPage, DiwanSection } from "../page";
 import { EmptyLine, ErrorState, SectionSpinner } from "../states";
 
 interface Question {
@@ -236,6 +236,13 @@ export const EventsBrowser = () => {
     (waitlist.data ?? []).map((w) => w.event?.id).filter(Boolean)
   );
 
+  // My calendar is the member's own first: what they booked, wait for or
+  // asked to be reminded of; then everything else coming up.
+  const isMine = (event: UpcomingEvent) =>
+    booked.has(event.id) || waiting.has(event.id) || reminded.has(event.id);
+  const mine = (upcoming.data ?? []).filter(isMine);
+  const others = (upcoming.data ?? []).filter((event) => !isMine(event));
+
   const start = (event: UpcomingEvent) => {
     setNotice(null);
     if (event.questions.length > 0) {
@@ -285,26 +292,40 @@ export const EventsBrowser = () => {
         </EmptyLine>
       ) : null}
 
-      <ul className="grid gap-6 md:grid-cols-2">
-        {upcoming.data.map((event) => (
-          <EventCard
-            busy={book.isPending || cancel.isPending || remind.isPending}
-            event={event}
-            isBooked={booked.has(event.id)}
-            isWaiting={waiting.has(event.id)}
-            key={event.id}
-            notice={notice?.id === event.id ? notice.key : null}
-            onBook={() => start(event)}
-            onCancel={() =>
-              cancel.mutate({ id: event.id, waiting: waiting.has(event.id) })
-            }
-            onRemind={() =>
-              remind.mutate({ id: event.id, on: !reminded.has(event.id) })
-            }
-            reminded={reminded.has(event.id)}
-          />
-        ))}
-      </ul>
+      {(
+        [
+          ["mine", mine],
+          ["others", others],
+        ] as const
+      ).map(([key, list]) =>
+        list.length > 0 ? (
+          <DiwanSection id={key} key={key} title={t(`sections.${key}`)}>
+            <ul className="grid gap-6 md:grid-cols-2">
+              {list.map((event) => (
+                <EventCard
+                  busy={book.isPending || cancel.isPending || remind.isPending}
+                  event={event}
+                  isBooked={booked.has(event.id)}
+                  isWaiting={waiting.has(event.id)}
+                  key={event.id}
+                  notice={notice?.id === event.id ? notice.key : null}
+                  onBook={() => start(event)}
+                  onCancel={() =>
+                    cancel.mutate({
+                      id: event.id,
+                      waiting: waiting.has(event.id),
+                    })
+                  }
+                  onRemind={() =>
+                    remind.mutate({ id: event.id, on: !reminded.has(event.id) })
+                  }
+                  reminded={reminded.has(event.id)}
+                />
+              ))}
+            </ul>
+          </DiwanSection>
+        ) : null
+      )}
 
       <Dialog
         onOpenChange={(open) => (open ? null : setAsking(null))}

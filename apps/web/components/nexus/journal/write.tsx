@@ -40,7 +40,6 @@ const LANGUAGES = ["en", "ar", "bilingual"] as const;
  * call for the printed Edition.
  */
 export const WriteHome = () => {
-  const t = useTranslations("nexus.journal");
   const tw = useTranslations("nexus.journal.write");
   const tj = useTranslations("nexus.admin.journal");
   const locale = useLocale() as Locale;
@@ -49,7 +48,7 @@ export const WriteHome = () => {
 
   return (
     <div className="grid gap-8">
-      <AdminHeading title={t("title")}>{tw("lede")}</AdminHeading>
+      <AdminHeading title={tw("title")}>{tw("lede")}</AdminHeading>
       {/* Private work lives here alone, as drafts (owner, Oct 31, 2026):
           what the member sent and what is edited with them. Their author
           page shows only what is published. */}
@@ -98,6 +97,37 @@ export const WriteHome = () => {
   );
 };
 
+/** Send, and what it waits for when it can't yet. */
+const SendRow = ({
+  missing,
+  sending,
+}: {
+  readonly missing: ReturnType<typeof missingReason> | null;
+  readonly sending: boolean;
+}) => {
+  const t = useTranslations("nexus.journal.write");
+  return (
+    <>
+      {missing ? <p className="type-caption">{t(missing)}</p> : null}
+      <Button
+        className="justify-self-start"
+        disabled={missing !== null || sending}
+        type="submit"
+      >
+        {sending ? t("sending") : t("send")}
+      </Button>
+    </>
+  );
+};
+
+/** What the Send button waits for, said under it. */
+const missingReason = (pledged: boolean, work: boolean) => {
+  if (!pledged) {
+    return "missingPledge" as const;
+  }
+  return work ? ("missingDetails" as const) : ("missingWork" as const);
+};
+
 /** The form for one type, at /qirtas/write/<type>. */
 export const WriteType = ({ type }: { type: journal.Category }) => {
   const t = useTranslations("nexus.journal.write");
@@ -144,6 +174,10 @@ export const WriteType = ({ type }: { type: journal.Category }) => {
     type,
     videoUrl,
   });
+  const missing = missingReason(
+    pledged,
+    hasWork({ body, files, kinds, video: needs.video })
+  );
   const ready =
     Boolean(call) &&
     pledged &&
@@ -236,6 +270,15 @@ export const WriteType = ({ type }: { type: journal.Category }) => {
             onVideo={setVideoUrl}
             video={needs.video ? videoUrl : null}
           />
+          {needs.video ? null : (
+            <FilesField
+              body={body}
+              files={files}
+              kinds={kinds}
+              onBody={setBody}
+              onChange={setFiles}
+            />
+          )}
           <RichTextEditor
             label={needs.video ? t("summary") : tf("body")}
             lang={language === "ar" ? "ar" : "en"}
@@ -246,15 +289,6 @@ export const WriteType = ({ type }: { type: journal.Category }) => {
           {type === "translation" ? (
             <TranslationFields onChange={setSource} value={source} />
           ) : null}
-          {needs.video ? null : (
-            <FilesField
-              body={body}
-              files={files}
-              kinds={kinds}
-              onBody={setBody}
-              onChange={setFiles}
-            />
-          )}
           <Field hint={t("noteHint")} label={t("note")}>
             {(id) => (
               <Textarea
@@ -283,13 +317,7 @@ export const WriteType = ({ type }: { type: journal.Category }) => {
               max: formatNumber(call.max_per_person),
             })}
           </p>
-          <Button
-            className="justify-self-start"
-            disabled={!ready || send.isPending}
-            type="submit"
-          >
-            {send.isPending ? t("sending") : t("send")}
-          </Button>
+          <SendRow missing={ready ? null : missing} sending={send.isPending} />
           <ErrorLine error={send.error} />
           <PartialSend id={partial} />
         </form>
@@ -649,7 +677,8 @@ const useWriteCall = (desk: journal.Desk) => {
   const pathway = useSubmitPathway(open, callId, partnerId);
   const call =
     pathway.callable.find((c) => c.id === callId) ??
-    pathway.callable.find((c) => c.issue_id) ??
+    // Qirtas, all year, first: an Edition call is the member's choice.
+    pathway.callable.find((c) => !c.issue_id) ??
     pathway.callable[0];
   return {
     call,

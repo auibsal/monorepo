@@ -7,8 +7,7 @@ import {
 import { Link } from "@repo/internationalization/navigation";
 import { localized } from "@repo/sal-data";
 import { useLocale, useTranslations } from "next-intl";
-import { useMySubmissions, useOpenCalls } from "@/lib/nexus/queries";
-import { RowList } from "../page";
+import { useOpenCalls } from "@/lib/nexus/queries";
 import { EmptyLine } from "../states";
 import { Section } from "./section";
 
@@ -16,18 +15,15 @@ const DAY = 86_400_000;
 
 export const JournalSection = () => {
   const t = useTranslations("nexus.home.journal");
-  const ta = useTranslations("nexus.next");
-  const tw = useTranslations("nexus.journal");
   const locale = useLocale() as "en" | "ar";
   // Edition calls only: the standing call is always open.
   const open = useOpenCalls();
   const calls = { data: open.data?.filter((call) => call.issue_id) };
-  const submissions = useMySubmissions();
 
   return (
     <Section id="journal" title={t("title")}>
       {calls.data?.length === 0 ? (
-        <EmptyLine action={{ href: "/qirtas/write", label: ta("readJournal") }}>
+        <EmptyLine action={{ href: "/qirtas/write", label: t("submit") }}>
           {t("none")}
         </EmptyLine>
       ) : null}
@@ -56,26 +52,6 @@ export const JournalSection = () => {
           </div>
         );
       })}
-      {submissions.data?.length ? (
-        <>
-          <h3 className="type-label mt-2">{t("mine")}</h3>
-          <RowList>
-            {submissions.data.map((submission) => (
-              <li className="flex justify-between gap-4" key={submission.id}>
-                <Link
-                  className="link"
-                  href={`/membership/work/submissions/${submission.id}`}
-                >
-                  {submission.title}
-                </Link>
-                <span className="type-caption">
-                  {tw(`status.${submission.status}`)}
-                </span>
-              </li>
-            ))}
-          </RowList>
-        </>
-      ) : null}
     </Section>
   );
 };

@@ -113,7 +113,7 @@ export const Service = () => {
       <SalCard>
         <div className="grid gap-3">
           <p className="type-label">{t("thisYear")}</p>
-          <p className="font-medium text-3xl">
+          <p className="font-light text-3xl tabular-nums">
             {t("hours", { hours: formatNumber(total) })}
           </p>
           <div
@@ -141,6 +141,51 @@ export const Service = () => {
           </p>
         </div>
       </SalCard>
+
+      <DiwanSection id="recordstitle" title={t("recordsTitle")}>
+        {records.isPending ? <SectionSpinner /> : null}
+        {records.data?.length === 0 ? (
+          <EmptyLine action={{ href: "/get-involved", label: t("findShift") }}>
+            {t("noRecords")}
+          </EmptyLine>
+        ) : null}
+        <ul className="grid gap-2">
+          {(records.data ?? []).map((r) => (
+            <li
+              className="flex flex-wrap items-baseline justify-between gap-2 border-line border-b pb-2"
+              key={r.id}
+            >
+              <span className="grid">
+                <span className="font-medium" dir="auto">
+                  {r.activity}
+                </span>
+                <span className="type-caption">
+                  {formatLongDate(r.occurred_on, locale, true)}
+                  {r.programme_id ? ` · ${programmeName(r.programme_id)}` : ""}
+                  {" · "}
+                  {t(`statuses.${r.status as RecordStatus}`)}
+                  {r.reject_reason ? ` · ${r.reject_reason}` : ""}
+                </span>
+              </span>
+              <span className="flex items-center gap-2">
+                <span className="font-medium">
+                  {t("hours", { hours: formatNumber(Number(r.hours)) })}
+                </span>
+                {r.status === "pending" ? (
+                  <Button
+                    disabled={withdraw.isPending}
+                    onClick={() => withdraw.mutate(r.id)}
+                    size="sm"
+                    variant="ghost"
+                  >
+                    {t("withdraw")}
+                  </Button>
+                ) : null}
+              </span>
+            </li>
+          ))}
+        </ul>
+      </DiwanSection>
 
       <DiwanSection id="logtitle" title={t("logTitle")}>
         <p className="type-body">{t("logLede")}</p>
@@ -229,51 +274,6 @@ export const Service = () => {
           </Button>
           <ErrorLine error={log.error} />
         </form>
-      </DiwanSection>
-
-      <DiwanSection id="recordstitle" title={t("recordsTitle")}>
-        {records.isPending ? <SectionSpinner /> : null}
-        {records.data?.length === 0 ? (
-          <EmptyLine action={{ href: "/get-involved", label: t("findShift") }}>
-            {t("noRecords")}
-          </EmptyLine>
-        ) : null}
-        <ul className="grid gap-2">
-          {(records.data ?? []).map((r) => (
-            <li
-              className="flex flex-wrap items-baseline justify-between gap-2 border-line border-b pb-2"
-              key={r.id}
-            >
-              <span className="grid">
-                <span className="font-medium" dir="auto">
-                  {r.activity}
-                </span>
-                <span className="type-caption">
-                  {formatLongDate(r.occurred_on, locale, true)}
-                  {r.programme_id ? ` · ${programmeName(r.programme_id)}` : ""}
-                  {" · "}
-                  {t(`statuses.${r.status as RecordStatus}`)}
-                  {r.reject_reason ? ` · ${r.reject_reason}` : ""}
-                </span>
-              </span>
-              <span className="flex items-center gap-2">
-                <span className="font-medium">
-                  {t("hours", { hours: formatNumber(Number(r.hours)) })}
-                </span>
-                {r.status === "pending" ? (
-                  <Button
-                    disabled={withdraw.isPending}
-                    onClick={() => withdraw.mutate(r.id)}
-                    size="sm"
-                    variant="ghost"
-                  >
-                    {t("withdraw")}
-                  </Button>
-                ) : null}
-              </span>
-            </li>
-          ))}
-        </ul>
       </DiwanSection>
 
       <DiwanSection id="certificatestitle" title={t("certificatesTitle")}>

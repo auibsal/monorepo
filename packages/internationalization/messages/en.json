@@ -192,7 +192,7 @@
       "diwan": "The Diwan",
       "today": "Today",
       "calendar": "My calendar",
-      "callboard": "Callboard",
+      "callboard": "Get involved",
       "record": "Record",
       "settings": "Settings",
       "templates": "Templates and papers"
@@ -205,7 +205,6 @@
     "next": {
       "browseEvents": "Browse events",
       "openShifts": "See open shifts",
-      "readJournal": "Read Qirtas",
       "subscribeCalendar": "Add the Society calendar to your phone",
       "readConstitution": "Read how elections work",
       "readRoles": "Read how the Council is formed",
@@ -342,13 +341,12 @@
         "title": "Qirtas",
         "openCall": "{call} closes {date}",
         "daysLeft": "{days, plural, one {{daysText} day left} other {{daysText} days left}}",
-        "submit": "Submit work",
-        "mine": "My submissions",
-        "none": "No open call at the moment."
+        "submit": "Write for Qirtas",
+        "none": "No Edition call is open. Qirtas takes work all year."
       },
       "programmes": {
         "title": "My programs",
-        "empty": "You're not on any rota yet.",
+        "empty": "You haven't signed up for a shift yet.",
         "confirm": "Confirm",
         "swap": "Ask to swap"
       },
@@ -378,7 +376,7 @@
     },
     "events": {
       "title": "My calendar",
-      "lede": "Book a place, ask for a reminder, or give your place back. Your tickets are under Membership, and everything is in your calendar feed below.",
+      "lede": "What you booked, wait for or asked to be reminded of, then everything else coming up. Your calendar feed is at the end.",
       "empty": "No events are announced yet. They appear here as soon as they're published.",
       "membersOnly": "Members only",
       "book": "Book a place",
@@ -413,7 +411,11 @@
       "whatsOn": "What's on",
       "cancelAsk": "Give your place to someone else?",
       "leaveWaitlistAsk": "Leave the waiting list?",
-      "bookingAs": "Booking as {name}. A few questions first."
+      "bookingAs": "Booking as {name}. A few questions first.",
+      "sections": {
+        "mine": "Yours",
+        "others": "Everything else coming up"
+      }
     },
     "programs": {
       "title": "Programs",
@@ -424,7 +426,7 @@
       "yours": "You're on this shift. It's also under Membership.",
       "left": "{count, plural, =0 {No places left} one {{places} place left} other {{places} places left}}",
       "notice": {
-        "signedUp": "You're on the rota. Confirm the shift under Membership closer to the day.",
+        "signedUp": "You're signed up. Confirm the shift on My calendar closer to the day.",
         "gaveBack": "Done. The place is open for someone else.",
         "full": "Someone took the last place first.",
         "notVerified": "Shifts open once your membership is verified.",
@@ -686,7 +688,11 @@
           "offer": "The text of {name} can replace what you wrote.",
           "use": "Use it",
           "unreadable": "{name} has no text we can read (a scan?). It goes with your work as it is."
-        }
+        },
+        "missingPledge": "To send, make the Human Authorship pledge.",
+        "missingWork": "To send, add the work: write it in the editor or attach the file.",
+        "missingDetails": "To send, fill in the title and the fields marked as needed.",
+        "title": "Write for Qirtas"
       }
     },
     "profile": {
@@ -1442,7 +1448,7 @@
           "recent": "Recently closed"
         },
         "callboard": {
-          "lede": "This program's openings on the Callboard, the Society's careers page: roles, one-term Apprenticeships and First Ink mentor places. Members who say they're interested are listed here, and each one is also emailed to the program's managers. Give the places, then close the opening once it's filled.",
+          "lede": "This program's openings on Get involved, the Society's careers page: roles, one-term Apprenticeships and First Ink mentor places. Members who say they're interested are listed here, and each one is also emailed to the program's managers. Give the places, then close the opening once it's filled.",
           "title": "Title",
           "body": "What it involves",
           "skills": "Skills it wants",
@@ -1453,7 +1459,7 @@
           "closesOn": "closes {date}",
           "replies": "{count, plural, =0 {Nobody has replied yet} one {One member is interested} other {{count} members are interested}}",
           "close": "Close the role",
-          "closeConfirm": "Close this role? It leaves the Callboard; the replies stay here.",
+          "closeConfirm": "Close this role? It leaves Get involved; the replies stay here.",
           "reopen": "Reopen",
           "kind": "What it offers",
           "kinds": {
@@ -2198,7 +2204,7 @@
             "production": "For cast and crew of a production.",
             "partner": "For work with one of the Society's partners.",
             "prize": "Drafted from the Awards in Qirtas: the citation names the award and the piece.",
-            "apprenticeship": "Drafted when a Callboard apprenticeship is completed: the role and the term."
+            "apprenticeship": "Drafted when an apprenticeship from Get involved is completed: the role and the term."
           },
           "serial": "Serial",
           "status": "Status",
@@ -2731,7 +2737,7 @@
       },
       "hiring": {
         "title": "Hiring",
-        "lede": "Every role on the Callboard. Membership runs each one: the applications, the conversations, the offer and the onboarding. The role's owner picks the person: the Editor the masthead, the Director of Programs the Program Leads, each director their team.",
+        "lede": "Every role on Get involved. Membership runs each one: the applications, the conversations, the offer and the onboarding. The role's owner picks the person: the Editor the masthead, the Director of Programs the Program Leads, each director their team.",
         "empty": "No roles posted yet.",
         "open": "Open",
         "closed": "Closed",
@@ -2741,7 +2747,7 @@
         "schedule": "Schedule",
         "post": "Post a role",
         "program": "Program",
-        "roleTitle": "Title on the Callboard",
+        "roleTitle": "Title on Get involved",
         "roleBody": "What it involves",
         "closes": "Applications close",
         "owners": {
@@ -3727,7 +3733,7 @@
       }
     },
     "callboard": {
-      "title": "The Callboard",
+      "title": "Get involved",
       "lede": "The Society's careers page: roles, apprenticeships, First Ink mentoring, shifts and auditions, on one board. Pick something up; the hours you give count toward your service record.",
       "matched": "What matches the skills in your profile comes first.",
       "noSkills": "Tell us your skills and what matches them comes first.",
@@ -3795,7 +3801,13 @@
       "noticesLede": "Every way the Society reaches you, on one page.",
       "noticesEmail": "Email",
       "declarations": "Conflict of interest",
-      "declarationsLine": "For officers: what you declare each semester, and anything new."
+      "declarationsLine": "For officers: what you declare each semester, and anything new.",
+      "password": {
+        "title": "Password",
+        "new": "New password",
+        "submit": "Change the password",
+        "done": "Your password is changed. Use it next time you sign in."
+      }
     },
     "recoveryCodes": {
       "noneTitle": "Save your recovery codes",
@@ -3830,7 +3842,7 @@
       },
       "skills": {
         "title": "What can you help with?",
-        "body": "The Callboard puts the roles and shifts that match these first."
+        "body": "Get involved puts the roles and shifts that match these first."
       },
       "languages": {
         "title": "Which languages do you read or write?"
@@ -3854,7 +3866,7 @@
       },
       "today": {
         "link": "Tell us more",
-        "line": "Two minutes, optional: the Callboard puts the roles that match your skills first."
+        "line": "Two minutes, optional: Get involved puts the roles that match your skills first."
       }
     },
     "getInvolved": {
@@ -4791,7 +4803,7 @@
     },
     "newsletter": {
       "title": "The Sunday Paper",
-      "lede": "One email a month, on the first Sunday: the pieces Qirtas published that month, What's on at the AUIB Society of Arts and Letters, and the places open on the Callboard. Anyone can subscribe.",
+      "lede": "One email a month, on the first Sunday: the pieces Qirtas published that month, What's on at the AUIB Society of Arts and Letters, and the places open on Get involved. Anyone can subscribe.",
       "members": "Members who receive email get it already: no need to sign up here.",
       "email": "Your email address",
       "submit": "Subscribe",
