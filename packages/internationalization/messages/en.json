@@ -670,8 +670,6 @@
         "closed": "Qirtas is not taking this type of work right now.",
         "where": "Where",
         "whereHint": "The printed Edition, while its call is open, or Qirtas online.",
-        "anonymous": "Publish without my name",
-        "anonymousHint": "The byline reads Anonymous. The editors still know it is yours.",
         "send": "Send to Qirtas"
       }
     },
@@ -1830,7 +1828,9 @@
         },
         "byline": {
           "change": "Change",
-          "anonymous": "Anonymous"
+          "penName": "Pen name",
+          "penNameOptional": "Pen name (optional)",
+          "penNameHint": "Fill this in first if the piece runs under a pen name, then choose the member who wrote it. Readers see only the pen name."
         }
       },
       "pipeline": {

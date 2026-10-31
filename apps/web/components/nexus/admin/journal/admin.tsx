@@ -18,7 +18,6 @@ import { Link } from "@/lib/nexus/navigation";
 import { useGrants } from "@/lib/nexus/queries";
 import { SectionSpinner } from "../../states";
 import { type SectionTab, SectionTabs } from "../admin-shell";
-import { slugify } from "../events/editor";
 import {
   BilingualField,
   type Column,
@@ -28,11 +27,12 @@ import {
   SaveButton,
   SelectInput,
 } from "../kit";
-import { MemberPicker, type Person } from "../member-picker";
+import { MemberPicker } from "../member-picker";
 import { Needs } from "../needs";
 import { openSubmissionFile } from "../pipeline/data";
 import { PipelineAdmin } from "../pipeline/pipeline";
 import { NextStopAdmin } from "../programmes/admin";
+import { useBylineFor } from "./byline";
 import { Puzzles } from "./puzzles";
 import { FrontRank } from "./workflow";
 
@@ -606,8 +606,8 @@ const FrontPage = () => {
 
 /**
  * Bylines (owner, Oct 31, 2026): a contributor is a member, chosen from the
- * register, whose names follow their profile; or Anonymous. Only the bio is
- * written here.
+ * register, under their own name (which follows their profile) or a pen
+ * name. Only the bio is written here.
  */
 const Contributors = () => {
   const t = useTranslations("nexus.admin.journal.contributor");
@@ -626,37 +626,13 @@ const Contributors = () => {
         await supabase
           .schema("journal")
           .from("contributors")
-          .select(
-            "id, slug, name_en, name_ar, bio_en, bio_ar, is_pen_name, is_anonymous, user_id"
-          )
+          .select("id, slug, name_en, name_ar, bio_en, bio_ar, is_pen_name")
           .order("name_en")
       ) ?? [],
     queryKey: [...key, "contributors"],
   });
   const refresh = () => queryClient.invalidateQueries({ queryKey: key });
-  const add = useMutation({
-    mutationFn: async (person: Person) => {
-      if (
-        contributors.data?.some(
-          (c) => c.user_id === person.id && !c.is_pen_name
-        )
-      ) {
-        return;
-      }
-      unwrap(
-        await supabase
-          .schema("journal")
-          .from("contributors")
-          .insert({
-            name_ar: person.full_name_ar,
-            name_en: person.full_name_en,
-            slug: `${slugify(person.full_name_en)}-${person.id.slice(0, 4)}`,
-            user_id: person.id,
-          })
-      );
-    },
-    onSuccess: refresh,
-  });
+  const byline = useBylineFor();
   const saveBio = useMutation({
     mutationFn: async () => {
       if (!editing) {
@@ -688,20 +664,18 @@ const Contributors = () => {
             {c.is_pen_name ? (
               <span className="type-caption">{tw("penName")}</span>
             ) : null}
-            {c.is_anonymous ? null : (
-              <Button
-                onClick={() =>
-                  setEditing({
-                    bio: { ar: c.bio_ar ?? "", en: c.bio_en ?? "" },
-                    id: c.id,
-                  })
-                }
-                size="sm"
-                variant="ghost"
-              >
-                {t("editBio")}
-              </Button>
-            )}
+            <Button
+              onClick={() =>
+                setEditing({
+                  bio: { ar: c.bio_ar ?? "", en: c.bio_en ?? "" },
+                  id: c.id,
+                })
+              }
+              size="sm"
+              variant="ghost"
+            >
+              {t("editBio")}
+            </Button>
           </li>
         ))}
       </ul>
@@ -738,12 +712,12 @@ const Contributors = () => {
         label={t("new")}
         onChange={(person) => {
           if (person) {
-            add.mutate(person);
+            byline.mutate({ person }, { onSuccess: refresh });
           }
         }}
         value={null}
       />
-      <ErrorLine error={add.error} />
+      <ErrorLine error={byline.error} />
     </div>
   );
 };

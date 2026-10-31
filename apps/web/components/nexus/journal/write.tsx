@@ -2,9 +2,7 @@
 
 import { useAuth } from "@repo/auth/provider";
 import { Button } from "@repo/design-system/components/ui/button";
-import { Checkbox } from "@repo/design-system/components/ui/checkbox";
 import { Input } from "@repo/design-system/components/ui/input";
-import { Label } from "@repo/design-system/components/ui/label";
 import { Textarea } from "@repo/design-system/components/ui/textarea";
 import type { Locale } from "@repo/internationalization";
 import {
@@ -15,7 +13,7 @@ import { Link, useRouter } from "@repo/internationalization/navigation";
 import { journal, localized, toPlainText } from "@repo/sal-data";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
-import { type FormEvent, useId, useState } from "react";
+import { type FormEvent, useState } from "react";
 import { queryKeys, useOpenCalls } from "@/lib/nexus/queries";
 import { AdminHeading, ErrorLine, Field, SelectInput } from "../admin/kit";
 import { RichTextEditor } from "../editor/rich-text";
@@ -34,11 +32,6 @@ import { PartnerPathway, useSubmitPathway } from "./pages";
 const LANGUAGES = ["en", "ar", "bilingual"] as const;
 
 /** The types a member may send, in section order. */
-export const writableTypes = journal.desks.flatMap(journal.sendableCategories);
-
-export const isWritableType = (value: string): value is journal.Category =>
-  (writableTypes as readonly string[]).includes(value);
-
 /**
  * /qirtas/write (owner, Oct 31, 2026): one door. Every section takes work
  * all year, and everything sent is read blind before an editor takes it
@@ -133,7 +126,7 @@ export const WriteType = ({ type }: { type: journal.Category }) => {
     text: "",
   });
   const [note, setNote] = useState("");
-  const [anonymous, setAnonymous] = useState(false);
+  const [penName, setPenName] = useState("");
   const [files, setFiles] = useState<PendingFile[]>([]);
   const [pledged, setPledged] = useState(false);
   const [firstPublication, setFirstPublication] = useState(false);
@@ -141,7 +134,6 @@ export const WriteType = ({ type }: { type: journal.Category }) => {
   const [partial, setPartial] = useState<string | null>(null);
 
   const input = submissionInput({
-    anonymous,
     body,
     callId: call?.id,
     consent,
@@ -150,6 +142,7 @@ export const WriteType = ({ type }: { type: journal.Category }) => {
     language,
     note,
     partnerId: pathway.throughPartner,
+    penName,
     source,
     title,
     type,
@@ -271,7 +264,7 @@ export const WriteType = ({ type }: { type: journal.Category }) => {
               />
             )}
           </Field>
-          <AnonymousChoice checked={anonymous} onChange={setAnonymous} />
+          <PenNameField onChange={setPenName} value={penName} />
           {desk === "news" ? null : (
             <Declarations
               category={type}
@@ -361,28 +354,30 @@ const TranslationFields = ({
   );
 };
 
-/** Publish without the author's name: the byline reads Anonymous. */
-const AnonymousChoice = ({
-  checked,
+/**
+ * Publish under a pen name (owner, Oct 31, 2026): the byline shows it in
+ * place of the author's name; only the Submissions Manager knows whose it is.
+ */
+const PenNameField = ({
   onChange,
+  value,
 }: {
-  readonly checked: boolean;
-  readonly onChange: (checked: boolean) => void;
+  readonly onChange: (value: string) => void;
+  readonly value: string;
 }) => {
-  const t = useTranslations("nexus.journal.write");
-  const id = useId();
+  const tf = useTranslations("nexus.journal.form");
   return (
-    <div className="flex items-start gap-3">
-      <Checkbox
-        checked={checked}
-        id={id}
-        onCheckedChange={(v) => onChange(v === true)}
-      />
-      <Label className="grid gap-1 leading-normal" htmlFor={id}>
-        {t("anonymous")}
-        <span className="type-caption">{t("anonymousHint")}</span>
-      </Label>
-    </div>
+    <Field hint={tf("penNameHint")} label={tf("penName")}>
+      {(id) => (
+        <Input
+          className="max-w-sm"
+          id={id}
+          maxLength={80}
+          onChange={(e) => onChange(e.target.value)}
+          value={value}
+        />
+      )}
+    </Field>
   );
 };
 
@@ -421,7 +416,6 @@ const WhereField = ({
 };
 
 interface InputState {
-  anonymous: boolean;
   body: string;
   callId: string | undefined;
   consent: boolean;
@@ -430,6 +424,7 @@ interface InputState {
   language: (typeof LANGUAGES)[number];
   note: string;
   partnerId: string | undefined;
+  penName: string;
   source: Source;
   title: string;
   type: journal.Category;
@@ -443,7 +438,6 @@ const submissionInput = (state: InputState) => {
   const desk = journal.deskOf(state.type);
   const needs = journal.typeNeeds(state.type);
   return {
-    anonymous: state.anonymous,
     body_html: state.body || undefined,
     call_id: state.callId,
     category: state.type,
@@ -455,6 +449,7 @@ const submissionInput = (state: InputState) => {
     human_authorship_confirmed: true as const,
     language: state.language,
     partner_id: state.partnerId,
+    pen_name: orNothing(state.penName),
     rights_note: orNothing(state.source.rights),
     source_author: orNothing(state.source.author),
     source_text: orNothing(state.source.text),

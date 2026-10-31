@@ -3355,7 +3355,6 @@ export type Database = {
           bio_en: string | null;
           created_at: string;
           id: string;
-          is_anonymous: boolean;
           is_pen_name: boolean;
           name_ar: string | null;
           name_en: string;
@@ -3368,7 +3367,6 @@ export type Database = {
           bio_en?: string | null;
           created_at?: string;
           id?: string;
-          is_anonymous?: boolean;
           is_pen_name?: boolean;
           name_ar?: string | null;
           name_en: string;
@@ -3381,7 +3379,6 @@ export type Database = {
           bio_en?: string | null;
           created_at?: string;
           id?: string;
-          is_anonymous?: boolean;
           is_pen_name?: boolean;
           name_ar?: string | null;
           name_en?: string;
@@ -4178,7 +4175,6 @@ export type Database = {
       };
       submissions: {
         Row: {
-          anonymous: boolean;
           author_id: string;
           body_html: string | null;
           call_id: string | null;
@@ -4205,7 +4201,6 @@ export type Database = {
           video_url: string | null;
         };
         Insert: {
-          anonymous?: boolean;
           author_id?: string;
           body_html?: string | null;
           call_id?: string | null;
@@ -4232,7 +4227,6 @@ export type Database = {
           video_url?: string | null;
         };
         Update: {
-          anonymous?: boolean;
           author_id?: string;
           body_html?: string | null;
           call_id?: string | null;
@@ -4300,6 +4294,10 @@ export type Database = {
         Returns: string;
       };
       author_approve: { Args: { piece_id: string }; Returns: string };
+      byline_for: {
+        Args: { pen_name?: string; person: string };
+        Returns: string;
+      };
       call_partner_names: {
         Args: { call_id: string };
         Returns: {

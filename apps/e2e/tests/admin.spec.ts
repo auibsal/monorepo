@@ -28,8 +28,11 @@ test("a News desk editor starts a piece, and it waits in Editing, unpublished", 
     .getByRole("textbox", { name: "Arabic" })
     .first()
     .fill("ملاحظات الجمعية");
-  // A byline is a member or Anonymous.
-  await page.getByRole("button", { name: "Anonymous" }).click();
+  // A byline is a member, here under a pen name, chosen from the register.
+  await page.getByLabel("Pen name (optional)").fill("The Night Editor");
+  await page.getByRole("searchbox", { name: "Contributor" }).fill("E2E Tester");
+  await page.getByRole("button", { name: "Choose" }).first().click();
+  await expect(page.getByText("The Night Editor")).toBeVisible();
   await page.getByRole("button", { name: "Create the piece" }).click();
   await expect(page).toHaveURL(/\/diwan\/qirtas\/pieces\/(?!new)[^/?]+$/);
 

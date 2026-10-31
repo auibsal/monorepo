@@ -308,14 +308,16 @@ any schema change. Integration tests run against a local stack with
   year" (`journal.calls` with no `issue_id`, `calls_one_standing`) takes
   every section, never closes and counts `max_per_person` per term; a
   submission that names no call goes to it. The global masthead reads
-  and decides it. An author may choose Anonymous (`submissions.anonymous`;
-  the piece gets the Anonymous byline). The newsroom is where staff write
+  and decides it. An author may publish under a pen name, never Anonymous
+  (owner, Oct 31, 2026; `submissions.pen_name`, made a pen-name byline by
+  `make_piece`). The newsroom is where staff write
   and publish directly: the Diwan's Qirtas section is the Newsroom
   (`/diwan/qirtas`, one page per section, `/diwan/qirtas/news` …
   `/games`; Next Stop is in Video, puzzles in Games), Review, Editions,
-  Awards and Ads, each its own page. Bylines are people (a member, or a
-  pen name the member chose) or Anonymous (`contributors.is_anonymous`),
-  picked with `BylinePicker`, never typed.
+  Awards and Ads, each its own page. Bylines are people: a member under
+  their own name or a pen name, picked with `BylinePicker` and made by
+  `journal.byline_for()`, never typed. Clients never read
+  `contributors.user_id`, so a pen name can't be traced to its author.
   Six sections, six types each (owner, Oct 29, 2026; `journal.sectionTypes`,
   `journal.desk_of()`, `journal.is_current_category()` refuses any other):
   News (report, feature, interview, profile, event coverage, explainer),
