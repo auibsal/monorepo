@@ -64,7 +64,10 @@ export const totp = (secret: string, at = Date.now()) => {
   const counter = Buffer.alloc(8);
   counter.writeBigUInt64BE(BigInt(Math.floor(at / 30_000)));
   const mac = createHmac("sha1", key).update(counter).digest();
+  // RFC 4226 truncation works on bits, as in apps/web/lib/totp.ts.
+  // biome-ignore lint/suspicious/noBitwiseOperators: RFC 4226 truncation
   const offset = (mac.at(-1) ?? 0) & 0x0f;
+  // biome-ignore lint/suspicious/noBitwiseOperators: RFC 4226 truncation
   const value = (mac.readUInt32BE(offset) & 0x7f_ff_ff_ff) % 1_000_000;
   return String(value).padStart(6, "0");
 };

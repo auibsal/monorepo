@@ -23,6 +23,7 @@ test("two officers see each other and each other's typing", async ({
   await setUpTwoStep(first);
   const title = `Shared minutes ${Date.now()}`;
   await first.getByRole("textbox", { name: "English" }).first().fill(title);
+  await first.getByRole("textbox", { name: "Arabic" }).first().fill("محضر مشترك");
   await first.getByRole("button", { name: "Save" }).click();
   // Saving new minutes moves the editor to their own address; the room opens there.
   await expect(first).toHaveURL(/\/diwan\/society\/minutes\/(?!new)[^/?]+$/);
@@ -31,9 +32,9 @@ test("two officers see each other and each other's typing", async ({
   await second.goto(url);
   await setUpTwoStep(second);
   await expect(first.getByText(/Also here:/)).toBeVisible({ timeout: 20_000 });
-  await first.getByRole("textbox", { name: "Text in English" }).click();
+  await first.getByRole("textbox", { name: "Minutes (English)" }).click();
   await first.keyboard.type("Typed in the first window.");
   await expect(
-    second.getByRole("textbox", { name: "Text in English" })
+    second.getByRole("textbox", { name: "Minutes (English)" })
   ).toContainText("Typed in the first window.", { timeout: 20_000 });
 });
