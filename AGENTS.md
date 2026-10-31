@@ -50,7 +50,7 @@ and decisions), and continue from the first unticked item.
     is a tab of its program), Qirtas (`/diwan/qirtas`, its tabs and the
     ads; calls are on each Edition's page), The Company (`/diwan/company`), People (`/diwan/people`,
     verification (partner applications only), hiring, service, partners, insights) and Society
-    (`/diwan/society`: minutes, resolutions, requests to Student Life,
+    (`/diwan/society`: meetings with their resolutions, requests to Student Life,
     elections, concerns, the Library, where only `governance.manage`, the
     President, the Vice President and the General Secretary, keep the
     documents). Records by name where they have one
@@ -89,11 +89,22 @@ and decisions), and continue from the first unticked item.
   (`/people/partners/<slug>`, each view of Partners its own path),
   memoranda (`/people/partners/agreements/<id>`), calls
   (`/qirtas/editions/<edition>/calls/<id>`), resolutions
-  (`/society/resolutions/<code>`), contributors
+  (`/society/meetings/<id>/resolutions/<code>`: minutes and resolutions
+  are one, meetings of the Council or the General Assembly; every new
+  resolution names its meeting), contributors
   (`/qirtas/contributors/<slug>`), Next Stop episodes
   (`/qirtas/video/episodes/<slug>`) and productions (`/company/<slug>`
   and `/company/<slug>/<tab>`). Tab lists the server pages read live in
   `components/nexus/admin/tabs.ts`, not in a client module.
+- **Choices on the page** (owner, Oct 31, 2026). Several options are
+  chosen on the page, never in a dialog or the browser's pop-up list:
+  `SelectInput` (`ChoiceInput`, `components/nexus/admin/choice-input.tsx`)
+  takes option children and shows a few short ones as a row, more as a
+  list under the field (with a find line from ten). Never write `<select>`.
+- **New is one flow** (owner, Oct 31, 2026). A blank record is the full
+  editor at `new`, created on save (Library documents at
+  `/society/library/new`, staff pieces at `/qirtas/pieces/new`); never a
+  short form that creates and then opens the editor.
 - **Links both ways** (owner, Oct 31, 2026). A Diwan, partner or
   Membership page whose record has a public page links to it with
   `OnTheSite` (`components/nexus/site-links.tsx`); public pages carry
@@ -449,6 +460,10 @@ any schema change. Integration tests run against a local stack with
   profile, the partnership's purpose and its side, the grants it asks for,
   and its signatory signs the memorandum by name. No PDFs: memoranda are
   signed by name on both sides (`sign_partner_agreement` takes no file).
+  An application asks for no grants: a partner asks from its dashboard
+  (`governance.ask_for_grants`) and Partnerships gives them
+  (`give_grants`); a partner's perk shows only once Partnerships publishes
+  it (`private.perks_wait_for_the_society`, `submitted_at`).
   The Diwan's verification queue holds these applications
   (`governance.partner_applications()`); the President signs, the partner
   turns active and whoever applied gets `partner_lead` (`partners.own`

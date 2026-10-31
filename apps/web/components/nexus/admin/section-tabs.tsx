@@ -25,8 +25,7 @@ type TabKey =
   | "service"
   | "partners"
   | "insights"
-  | "minutes"
-  | "resolutions"
+  | "meetings"
   | "requests"
   | "elections"
   | "concerns"
@@ -114,13 +113,7 @@ export const PeopleTabs = () => {
 };
 
 const SOCIETY: readonly Tab[] = [
-  {
-    href: "/society",
-    key: "minutes",
-    module: "governance",
-    permission: "governance.minutes.write",
-  },
-  { href: "/society/resolutions", key: "resolutions", module: "governance" },
+  { href: "/society", key: "meetings", module: "governance" },
   {
     href: "/society/requests",
     key: "requests",
@@ -142,7 +135,7 @@ const SOCIETY: readonly Tab[] = [
   { href: "/society/library", key: "library", module: "library" },
 ];
 
-/** Society: minutes, resolutions, requests, elections, concerns, the Library. */
+/** Society: meetings, requests, elections, concerns, the Library. */
 export const SocietyTabs = () => {
   const t = useTranslations("nexus.admin.sections.tabs");
   const tabs = useTabs(SOCIETY, (key) => t(key));

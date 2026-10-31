@@ -11,6 +11,7 @@ import { governance, localized, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useState } from "react";
+import { SelectInput } from "@/components/nexus/admin/kit";
 import { EmptyLine, ErrorState, SectionSpinner } from "../states";
 import { SocietySection } from "./section";
 
@@ -266,8 +267,7 @@ const Ballot = ({
                 <Label htmlFor={`${position.id}-${rank}`}>
                   {t("rank", { rank: String(rank + 1) })}
                 </Label>
-                <select
-                  className="h-12 border border-line bg-surface px-3 text-text"
+                <SelectInput
                   defaultValue=""
                   id={`${position.id}-${rank}`}
                   name={position.id}
@@ -278,7 +278,7 @@ const Ballot = ({
                       {option.label}
                     </option>
                   ))}
-                </select>
+                </SelectInput>
               </div>
             ))}
           </fieldset>

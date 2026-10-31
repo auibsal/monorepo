@@ -75,7 +75,7 @@ insert into core.semesters (code, name_en, name_ar, starts_on, ends_on) values
 -- first-100 rule back on themselves.
 update core.settings set value = '0' where key = 'membership.founding_voters';
 
-select plan(41);
+select plan(48);
 
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a1', 'director-pa@auib.edu.iq');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a2', 'president-pa@auib.edu.iq');
@@ -90,20 +90,20 @@ select pg_temp.grant_role('00000000-0000-0000-0000-0000000000a2', 'president');
 -- ── Applying ────────────────────────────────────────────────────────────────
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000c1');
 select throws_ok(
-  $$ select governance.apply_as_partner('Poetry Club', null, 'cultural', 'iraq', null, 'Poetry in Erbil.', null,
-       'Joint readings.', 'We host readings.', '{member_offer}', 'Club Head', 'Chair', false) $$,
+  $$ select governance.apply_as_partner('Poetry Club', null, 'cultural', null, 'iraq', null, 'Poetry in Erbil.', null,
+       'Joint readings; we host them.', 'Club Head', 'Chair', false) $$,
   '22023', 'memorandum_not_accepted',
   'An application needs the memorandum accepted'
 );
 select throws_ok(
-  $$ select governance.apply_as_partner('Poetry Club', null, 'cultural', 'iraq', null, null, null,
-       'Joint readings.', null, '{guest_editing}', 'Club Head', null, true) $$,
-  '22023', 'invalid_grants',
-  'Guest editing is offered by the Society, never asked for'
+  $$ select governance.apply_as_partner('Poetry Club', null, 'other', null, 'iraq', null, null, null,
+       'Joint readings.', 'Club Head', null, true) $$,
+  '22023', 'kind_other_required',
+  'An organization of another kind says what it is'
 );
 select lives_ok(
-  $$ select governance.apply_as_partner('Poetry Club', 'نادي الشعر', 'cultural', 'iraq', 'https://poetryclub.org',
-       'Poetry in Erbil.', null, 'Joint readings.', 'We host readings.', '{member_offer,journal_submissions}',
+  $$ select governance.apply_as_partner('Poetry Club', 'نادي الشعر', 'cultural', null, 'iraq', 'https://poetryclub.org',
+       'Poetry in Erbil.', null, 'Joint readings; we host them.',
        'Club Head', 'Chair', true) $$,
   'An organization applies, its signatory signing by name'
 );
@@ -116,8 +116,8 @@ select is(
 );
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000c1');
 select throws_ok(
-  $$ select governance.apply_as_partner('Poetry Club', null, 'cultural', 'iraq', null, null, null,
-       'Again.', null, '{}', 'Club Head', null, true) $$,
+  $$ select governance.apply_as_partner('Poetry Club', null, 'cultural', null, 'iraq', null, null, null,
+       'Again.', 'Club Head', null, true) $$,
   '23505', 'already_applied',
   'and cannot apply twice while it waits'
 );
@@ -131,8 +131,8 @@ select is((select count(*)::int from governance.partners), 0,
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000c3');
 select lives_ok(
-  $$ select governance.apply_as_partner('Other Club', null, 'club', 'auib', null, null, null,
-       'Something.', null, '{}', 'Other Head', null, true) $$,
+  $$ select governance.apply_as_partner('Other Club', null, 'club', null, null, null, null, null,
+       'Something.', 'Other Head', null, true) $$,
   'A second organization applies'
 );
 
@@ -150,6 +150,7 @@ select lives_ok(
   'and declines one'
 );
 select set_config('test.other_club', (select id::text from governance.partners where slug = 'other-club'), false);
+select set_config('test.agreement', (select agreement_id::text from governance.partner_applications() where slug = 'poetry-club'), false);
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a2');
 select lives_ok(
@@ -161,6 +162,29 @@ select is((select count(*)::int from governance.partner_applications()), 0,
   'and the queue is empty');
 
 -- ── The partner keeps its own ───────────────────────────────────────────────
+select pg_temp.login_as('00000000-0000-0000-0000-0000000000c1');
+-- What a partner turns on, it asks for; Partnerships gives it.
+update governance.partner_agreements set grants = array['member_offer']
+where id = current_setting('test.agreement')::uuid;
+select is(
+  (select cardinality(grants) from governance.partner_agreements where id = current_setting('test.agreement')::uuid),
+  0,
+  'A partner cannot turn on grants itself'
+);
+select lives_ok(
+  $$ select governance.ask_for_grants(current_setting('test.agreement')::uuid, array['member_offer', 'volunteering']) $$,
+  'but asks for them'
+);
+select pg_temp.login_as('00000000-0000-0000-0000-0000000000a1');
+select lives_ok(
+  $$ select governance.give_grants(current_setting('test.agreement')::uuid, array['member_offer']) $$,
+  'and Partnerships gives what it approves'
+);
+select is(
+  (select grants from governance.partner_agreements where id = current_setting('test.agreement')::uuid),
+  array['member_offer'],
+  'so the memorandum carries it'
+);
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000c1');
 select is((select array_agg(slug) from governance.my_partners()), array['poetry-club'],
   'Whoever applied becomes the partner''s representative');
@@ -186,6 +210,24 @@ select throws_ok(
   '42501', null,
   'but never to another partner'
 );
+select ok(
+  (select not is_published and submitted_at is not null from governance.member_offers where title_en = 'Free readings'),
+  'and the perk waits for the Society'
+);
+select pg_temp.login_as('00000000-0000-0000-0000-0000000000a1');
+select lives_ok(
+  $$ update governance.member_offers set is_published = true where title_en = 'Free readings' $$,
+  'Partnerships publishes it'
+);
+select pg_temp.login_as('00000000-0000-0000-0000-0000000000c1');
+update governance.member_offers set details_en = 'Show your card at the door.' where title_en = 'Free readings';
+select ok(
+  (select not is_published and submitted_at is not null from governance.member_offers where title_en = 'Free readings'),
+  'A change by the partner takes it down until it is published again'
+);
+select pg_temp.login_as('00000000-0000-0000-0000-0000000000a1');
+update governance.member_offers set is_published = true where title_en = 'Free readings';
+select pg_temp.login_as('00000000-0000-0000-0000-0000000000c1');
 
 -- Guests come through the partner's invitations: a shareable link leaves
 -- them waiting for the partner to verify them.

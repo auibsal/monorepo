@@ -21,10 +21,12 @@ import { useMyMembership, useProfile } from "@/lib/nexus/queries";
 
 const PATH = "/partners/join";
 
-/** What a partner may ask for; guest editing is the Society's to offer. */
-const ASKABLE = partners.agreementGrants.filter((g) => g !== "guest_editing");
-
-const REACHES = ["auib", "iraq", "international"] as const;
+/**
+ * Where an organization outside AUIB works; an AUIB club or department is
+ * at AUIB, so it is not asked.
+ */
+const REACHES = ["iraq", "international"] as const;
+const AT_AUIB = new Set(["club", "department"]);
 
 interface Application extends Record<string, unknown> {
   agreement_status: string;
@@ -46,7 +48,7 @@ const useMyApplication = () => {
   });
 };
 
-/** The memorandum, as the applicant signs it: their words and P11's rules. */
+/** The memorandum, as the applicant signs it: their words and the Society's rules. */
 const Memorandum = ({ name }: { name: string }) => {
   const t = useTranslations("nexus.partnerJoin.memorandum");
   return (
@@ -67,7 +69,6 @@ const Memorandum = ({ name }: { name: string }) => {
 const ApplicationForm = () => {
   const t = useTranslations("nexus.partnerJoin");
   const tr = useTranslations("nexus.admin.partners.register");
-  const tg = useTranslations("nexus.admin.partners.agreements.grants");
   const locale = useLocale() as Locale;
   const { supabase, user } = useAuth();
   const profile = useProfile();
@@ -76,11 +77,10 @@ const ApplicationForm = () => {
     accepted: false,
     contactRole: "",
     description: "",
-    grants: [] as string[],
     kind: "club" as (typeof partners.partnerKinds)[number],
+    kindOther: "",
     nameAr: "",
     nameEn: "",
-    partnerWill: "",
     purpose: "",
     reach: "iraq" as (typeof REACHES)[number],
     url: "",
@@ -98,13 +98,12 @@ const ApplicationForm = () => {
           contact_role: form.contactRole,
           description_ar: "",
           description_en: form.description,
-          grants: form.grants,
           kind: form.kind,
+          kind_other: form.kind === "other" ? form.kindOther : "",
           name_ar: form.nameAr,
           name_en: form.nameEn,
-          partner_will: form.partnerWill,
           purpose_en: form.purpose,
-          reach: form.reach,
+          reach: AT_AUIB.has(form.kind) ? "auib" : form.reach,
           signatory,
           url: form.url,
         })
@@ -115,7 +114,7 @@ const ApplicationForm = () => {
       }),
   });
   const text =
-    (key: "contactRole" | "description" | "partnerWill" | "purpose") =>
+    (key: "contactRole" | "description" | "kindOther" | "purpose") =>
     (event: { target: { value: string } }) =>
       setForm((f) => ({ ...f, [key]: event.target.value }));
 
@@ -178,26 +177,42 @@ const ApplicationForm = () => {
               </SelectInput>
             )}
           </Field>
-          <Field label={tr("reach")}>
-            {(id) => (
-              <SelectInput
-                id={id}
-                onChange={(e) =>
-                  setForm((f) => ({
-                    ...f,
-                    reach: e.target.value as typeof form.reach,
-                  }))
-                }
-                value={form.reach}
-              >
-                {REACHES.map((reach) => (
-                  <option key={reach} value={reach}>
-                    {tr(`reaches.${reach}`)}
-                  </option>
-                ))}
-              </SelectInput>
-            )}
-          </Field>
+          {form.kind === "other" ? (
+            <Field label={t("kindOther")}>
+              {(id) => (
+                <Input
+                  dir="auto"
+                  id={id}
+                  maxLength={120}
+                  onChange={text("kindOther")}
+                  required
+                  value={form.kindOther}
+                />
+              )}
+            </Field>
+          ) : null}
+          {AT_AUIB.has(form.kind) ? null : (
+            <Field label={tr("reach")}>
+              {(id) => (
+                <SelectInput
+                  id={id}
+                  onChange={(e) =>
+                    setForm((f) => ({
+                      ...f,
+                      reach: e.target.value as typeof form.reach,
+                    }))
+                  }
+                  value={form.reach}
+                >
+                  {REACHES.map((reach) => (
+                    <option key={reach} value={reach}>
+                      {tr(`reaches.${reach}`)}
+                    </option>
+                  ))}
+                </SelectInput>
+              )}
+            </Field>
+          )}
         </div>
         <Field hint={t("urlHint")} label={tr("url")}>
           {(id) => (
@@ -239,39 +254,6 @@ const ApplicationForm = () => {
             />
           )}
         </Field>
-        <Field hint={t("partnerWillHint")} label={t("partnerWill")}>
-          {(id) => (
-            <Textarea
-              dir="auto"
-              id={id}
-              maxLength={4000}
-              onChange={text("partnerWill")}
-              rows={4}
-              value={form.partnerWill}
-            />
-          )}
-        </Field>
-        <fieldset className="grid gap-3">
-          <legend className="mb-2 font-medium text-sm">{t("asks")}</legend>
-          {ASKABLE.map((grant) => (
-            <div className="flex items-center gap-2" key={grant}>
-              <Checkbox
-                checked={form.grants.includes(grant)}
-                id={`ask-${grant}`}
-                onCheckedChange={(checked) =>
-                  setForm((f) => ({
-                    ...f,
-                    grants:
-                      checked === true
-                        ? [...f.grants, grant]
-                        : f.grants.filter((g) => g !== grant),
-                  }))
-                }
-              />
-              <Label htmlFor={`ask-${grant}`}>{tg(grant)}</Label>
-            </div>
-          ))}
-        </fieldset>
       </DiwanSection>
 
       <Memorandum name={form.nameEn.trim()} />

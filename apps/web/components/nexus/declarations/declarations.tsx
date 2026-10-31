@@ -12,6 +12,7 @@ import { localized, partners, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useState } from "react";
+import { SelectInput } from "@/components/nexus/admin/kit";
 import { ErrorLine } from "../admin/kit";
 import { DiwanPage, DiwanSection } from "../page";
 import { EmptyLine, SectionSpinner } from "../states";
@@ -129,8 +130,7 @@ export const Declarations = () => {
           </div>
           <div className="grid gap-2">
             <Label htmlFor="declaration-semester">{t("semester")}</Label>
-            <select
-              className="h-12 border border-line bg-surface px-3"
+            <SelectInput
               id="declaration-semester"
               onChange={(e) => setSemesterId(e.target.value)}
               value={semesterId}
@@ -141,7 +141,7 @@ export const Declarations = () => {
                   {localized(s, "name", locale)}
                 </option>
               ))}
-            </select>
+            </SelectInput>
           </div>
         </div>
 
@@ -180,8 +180,7 @@ export const Declarations = () => {
                         <Label htmlFor={`conflict-${kind}-partner`}>
                           {t("partner")}
                         </Label>
-                        <select
-                          className="h-12 border border-line bg-surface px-3"
+                        <SelectInput
                           id={`conflict-${kind}-partner`}
                           onChange={(e) =>
                             setItem(kind, { partner_id: e.target.value })
@@ -194,7 +193,7 @@ export const Declarations = () => {
                               {localized(p, "name", locale)}
                             </option>
                           ))}
-                        </select>
+                        </SelectInput>
                       </div>
                     ) : null}
                     {(["what", "affects", "handling"] as const).map((field) => (

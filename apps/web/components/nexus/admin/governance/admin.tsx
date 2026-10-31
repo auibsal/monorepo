@@ -39,9 +39,14 @@ type Status =
   | "pending"
   | "approved";
 
-// ── Council ─────────────────────────────────────────────────────────────────
+// ── Meetings ────────────────────────────────────────────────────────────────
 
-const MinutesList = () => {
+/**
+ * Meetings of the Council and the General Assembly (owner, Oct 31, 2026:
+ * minutes and resolutions are one thing): each meeting is its minutes, and
+ * its resolutions are on its page.
+ */
+const MeetingsList = () => {
   const t = useTranslations("nexus.admin.governance");
   const locale = useLocale() as Locale;
   const { supabase } = useAuth();
@@ -64,7 +69,7 @@ const MinutesList = () => {
       cell: (m) => (
         <Link
           className="font-medium underline underline-offset-4"
-          href={`/society/minutes/${m.id}`}
+          href={`/society/meetings/${m.id}`}
         >
           {localized(m, "title", locale)}
         </Link>
@@ -94,10 +99,7 @@ const MinutesList = () => {
   ];
   return (
     <div className="grid gap-4">
-      <Link
-        className="inline-flex h-8 items-center justify-self-start rounded-md bg-primary px-3 text-primary-foreground text-sm"
-        href="/society/minutes/new"
-      >
+      <Link className="link justify-self-start" href="/society/meetings/new">
         {t("minutes.new")}
       </Link>
       <p className="type-caption">{t("minutes.draftNote")}</p>
@@ -114,10 +116,8 @@ const MinutesList = () => {
 
 interface ResolutionForm {
   adopted_on: string;
-  body: "council" | "general_assembly";
   code: string;
   id: string | null;
-  minutes_id: string;
   status: "draft" | "adopted" | "rejected" | "withdrawn";
   text: { ar: string; en: string };
   title: { ar: string; en: string };
@@ -126,10 +126,8 @@ interface ResolutionForm {
 
 const blankResolution = (): ResolutionForm => ({
   adopted_on: "",
-  body: "council",
   code: `R-${new Date().getFullYear()}-`,
   id: null,
-  minutes_id: "",
   status: "draft",
   text: { ar: "", en: "" },
   title: { ar: "", en: "" },
@@ -138,41 +136,41 @@ const blankResolution = (): ResolutionForm => ({
 
 const toCount = (value: string) => (value === "" ? null : Number(value));
 
-/** Resolutions and the minutes they may cite. */
-const useResolutions = () => {
+/** A meeting and the resolutions it adopted. */
+const useMeeting = (meetingId: string) => {
   const { supabase } = useAuth();
   return useQuery({
     queryFn: async () => {
-      const [resolutions, minutes] = await Promise.all([
+      const [meeting, resolutions] = await Promise.all([
+        supabase
+          .schema("governance")
+          .from("minutes")
+          .select("id, body, meeting_on, title_en, title_ar")
+          .eq("id", meetingId)
+          .maybeSingle(),
         supabase
           .schema("governance")
           .from("resolutions")
           .select("*")
-          .order("code", { ascending: false }),
-        supabase
-          .schema("governance")
-          .from("minutes")
-          .select("id, title_en, title_ar, meeting_on")
-          .order("meeting_on", { ascending: false }),
+          .eq("minutes_id", meetingId)
+          .order("code", { ascending: true }),
       ]);
       return {
-        minutes: unwrap(minutes) ?? [],
+        meeting: unwrap(meeting),
         resolutions: unwrap(resolutions) ?? [],
       };
     },
-    queryKey: [...key, "resolutions"],
+    queryKey: [...key, "meeting", meetingId],
   });
 };
 
-type ResolutionsData = NonNullable<ReturnType<typeof useResolutions>["data"]>;
-type ResolutionRow = ResolutionsData["resolutions"][number];
+type MeetingData = NonNullable<ReturnType<typeof useMeeting>["data"]>;
+type ResolutionRow = MeetingData["resolutions"][number];
 
 const formOf = (r: ResolutionRow): ResolutionForm => ({
   adopted_on: r.adopted_on ?? "",
-  body: r.body as "council" | "general_assembly",
   code: r.code,
   id: r.id,
-  minutes_id: r.minutes_id ?? "",
   status: r.status as ResolutionForm["status"],
   text: { ar: r.text_ar ?? "", en: r.text_en },
   title: { ar: r.title_ar ?? "", en: r.title_en },
@@ -184,15 +182,20 @@ const formOf = (r: ResolutionRow): ResolutionForm => ({
 });
 
 /**
- * The resolutions, each opening on its own page by its code
- * (/society/resolutions/R-2026-01), or /new for a blank one (owner, Oct
- * 31, 2026: editing in the Diwan opens its own address).
+ * A meeting's resolutions, on the meeting's page: each opens on its own
+ * page by its code (/society/meetings/<meeting>/resolutions/R-2026-01), or
+ * /new for a blank one. A resolution always belongs to a meeting.
  */
-const Resolutions = () => {
+export const MeetingResolutions = ({
+  meetingId,
+}: {
+  readonly meetingId: string;
+}) => {
   const t = useTranslations("nexus.admin.governance");
   const tk = useTranslations("nexus.admin.kit");
   const locale = useLocale() as Locale;
-  const data = useResolutions();
+  const data = useMeeting(meetingId);
+  const base = `/society/meetings/${meetingId}/resolutions`;
   const columns: Column<ResolutionRow>[] = [
     {
       cell: (r) => <span className="type-code">{r.code}</span>,
@@ -203,7 +206,7 @@ const Resolutions = () => {
       cell: (r) => (
         <Link
           className="font-medium hover:underline"
-          href={`/society/resolutions/${r.code}`}
+          href={`${base}/${r.code}`}
         >
           {localized(r, "title", locale)}
         </Link>
@@ -221,29 +224,39 @@ const Resolutions = () => {
     },
   ];
   return (
-    <div className="grid gap-6">
+    <section aria-labelledby="meeting-resolutions" className="grid gap-4">
+      <h2 className="type-heading" id="meeting-resolutions">
+        {t("resolutions.title")}
+      </h2>
       {data.data ? (
         <DataTable
           columns={columns}
+          empty={t("resolutions.none")}
           rowKey={(r) => r.id}
           rows={data.data.resolutions}
         />
       ) : (
         <SectionSpinner />
       )}
-      <Link className="link justify-self-start" href="/society/resolutions/new">
+      <Link className="link justify-self-start" href={`${base}/new`}>
         {t("resolutions.new")}
       </Link>
-    </div>
+    </section>
   );
 };
 
 /** One resolution on its own page, by its code; new for a blank one. */
-export const ResolutionPage = ({ code }: { readonly code: string }) => {
+export const ResolutionPage = ({
+  code,
+  meetingId,
+}: {
+  readonly code: string;
+  readonly meetingId: string;
+}) => {
   const t = useTranslations("nexus.admin.governance");
   const locale = useLocale() as Locale;
-  const data = useResolutions();
-  const back = "/society/resolutions";
+  const data = useMeeting(meetingId);
+  const back = `/society/meetings/${meetingId}`;
   if (data.isPending) {
     return <SectionSpinner />;
   }
@@ -251,7 +264,8 @@ export const ResolutionPage = ({ code }: { readonly code: string }) => {
     code === "new"
       ? undefined
       : data.data?.resolutions.find((r) => r.code === code || r.id === code);
-  if (code !== "new" && !row) {
+  const meeting = data.data?.meeting;
+  if (!meeting || (code !== "new" && !row)) {
     return (
       <EmptyLine action={{ href: back, label: t("resolutions.back") }}>
         {t("resolutions.missing")}
@@ -272,24 +286,28 @@ export const ResolutionPage = ({ code }: { readonly code: string }) => {
           </>
         }
         title={row ? localized(row, "title", locale) : t("resolutions.new")}
-      />
+      >
+        {`${t(`bodies.${meeting.body as "council" | "general_assembly"}`)} · ${formatLongDate(meeting.meeting_on, locale, true)}`}
+      </AdminHeading>
       <ResolutionEditor
+        back={back}
         initial={row ? formOf(row) : blankResolution()}
-        minutes={data.data?.minutes ?? []}
+        meeting={meeting}
       />
     </div>
   );
 };
 
 const ResolutionEditor = ({
+  back,
   initial,
-  minutes,
+  meeting,
 }: {
+  readonly back: string;
   readonly initial: ResolutionForm;
-  readonly minutes: ResolutionsData["minutes"];
+  readonly meeting: NonNullable<MeetingData["meeting"]>;
 }) => {
   const t = useTranslations("nexus.admin.governance");
-  const locale = useLocale() as Locale;
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
   const tk = useTranslations("nexus.admin.kit");
@@ -309,9 +327,9 @@ const ResolutionEditor = ({
       setProblem(null);
       const row = {
         adopted_on: form.adopted_on || null,
-        body: form.body,
+        body: meeting.body,
         code: form.code,
-        minutes_id: form.minutes_id || null,
+        minutes_id: meeting.id,
         status: form.status,
         text_ar: form.text.ar || null,
         text_en: form.text.en,
@@ -330,7 +348,7 @@ const ResolutionEditor = ({
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: key });
-      router.push("/society/resolutions");
+      router.push(back);
     },
   });
 
@@ -353,25 +371,6 @@ const ResolutionEditor = ({
               required
               value={form.code}
             />
-          )}
-        </Field>
-        <Field label={t("minutes.body")}>
-          {(id) => (
-            <SelectInput
-              id={id}
-              onChange={(e) =>
-                setForm((f) => ({
-                  ...f,
-                  body: e.target.value as ResolutionForm["body"],
-                }))
-              }
-              value={form.body}
-            >
-              <option value="council">{t("bodies.council")}</option>
-              <option value="general_assembly">
-                {t("bodies.general_assembly")}
-              </option>
-            </SelectInput>
           )}
         </Field>
       </div>
@@ -448,25 +447,6 @@ const ResolutionEditor = ({
             />
           )}
         </Field>
-        <Field label={t("resolutions.minutes")}>
-          {(id) => (
-            <SelectInput
-              id={id}
-              onChange={(e) =>
-                setForm((f) => ({ ...f, minutes_id: e.target.value }))
-              }
-              value={form.minutes_id}
-            >
-              <option value="">{t("resolutions.noMinutes")}</option>
-              {minutes.map((m) => (
-                <option key={m.id} value={m.id}>
-                  {formatLongDate(m.meeting_on, locale, true)} ·{" "}
-                  {localized(m, "title", locale)}
-                </option>
-              ))}
-            </SelectInput>
-          )}
-        </Field>
       </div>
       {problem ? (
         <p className="text-sm text-text" role="alert">
@@ -486,8 +466,7 @@ const ResolutionEditor = ({
 // ── Page ────────────────────────────────────────────────────────────────────
 
 export type SocietyViewKey =
-  | "minutes"
-  | "resolutions"
+  | "meetings"
   | "requests"
   | "elections"
   | "concerns"
@@ -509,10 +488,9 @@ export const SocietyView = ({ view }: { readonly view: SocietyViewKey }) => {
           {t(`${view}.lede`)}
         </AdminHeading>
       )}
-      {view === "minutes" ? <MinutesList /> : null}
-      {view === "resolutions" ? (
+      {view === "meetings" ? (
         <>
-          <Resolutions />
+          <MeetingsList />
           <RequestQueue keys={["f09"]} />
         </>
       ) : null}

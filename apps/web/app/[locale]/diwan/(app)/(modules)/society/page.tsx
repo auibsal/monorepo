@@ -3,13 +3,13 @@ import { SocietyView } from "@/components/nexus/admin/governance/admin";
 import { titleFrom } from "@/lib/nexus/metadata";
 
 export const generateMetadata = titleFrom((t) =>
-  t("nexus.admin.society.minutes.title")
+  t("nexus.admin.society.meetings.title")
 );
 
-const SocietyMinutesPage = () => (
+const SocietyMeetingsPage = () => (
   <RequireModule module="governance">
-    <SocietyView view="minutes" />
+    <SocietyView view="meetings" />
   </RequireModule>
 );
 
-export default SocietyMinutesPage;
+export default SocietyMeetingsPage;

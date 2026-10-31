@@ -2382,6 +2382,7 @@ export type Database = {
           is_published: boolean;
           partner_id: string;
           starts_on: string;
+          submitted_at: string | null;
           title_ar: string | null;
           title_en: string;
           updated_at: string;
@@ -2396,6 +2397,7 @@ export type Database = {
           is_published?: boolean;
           partner_id: string;
           starts_on?: string;
+          submitted_at?: string | null;
           title_ar?: string | null;
           title_en: string;
           updated_at?: string;
@@ -2410,6 +2412,7 @@ export type Database = {
           is_published?: boolean;
           partner_id?: string;
           starts_on?: string;
+          submitted_at?: string | null;
           title_ar?: string | null;
           title_en?: string;
           updated_at?: string;
@@ -2516,6 +2519,7 @@ export type Database = {
       partner_agreements: {
         Row: {
           applied_by: string | null;
+          asked_grants: string[] | null;
           branding: string | null;
           code: string | null;
           created_at: string;
@@ -2547,6 +2551,7 @@ export type Database = {
         };
         Insert: {
           applied_by?: string | null;
+          asked_grants?: string[] | null;
           branding?: string | null;
           code?: string | null;
           created_at?: string;
@@ -2578,6 +2583,7 @@ export type Database = {
         };
         Update: {
           applied_by?: string | null;
+          asked_grants?: string[] | null;
           branding?: string | null;
           code?: string | null;
           created_at?: string;
@@ -2678,6 +2684,7 @@ export type Database = {
           id: string;
           is_listed: boolean;
           kind: string;
+          kind_other: string | null;
           lead_id: string | null;
           logo_path: string | null;
           name_ar: string | null;
@@ -2699,6 +2706,7 @@ export type Database = {
           id?: string;
           is_listed?: boolean;
           kind: string;
+          kind_other?: string | null;
           lead_id?: string | null;
           logo_path?: string | null;
           name_ar?: string | null;
@@ -2720,6 +2728,7 @@ export type Database = {
           id?: string;
           is_listed?: boolean;
           kind?: string;
+          kind_other?: string | null;
           lead_id?: string | null;
           logo_path?: string | null;
           name_ar?: string | null;
@@ -2937,17 +2946,20 @@ export type Database = {
           contact_role: string;
           description_ar: string;
           description_en: string;
-          grants: string[];
           kind: string;
+          kind_other: string;
           name_ar: string;
           name_en: string;
-          partner_will: string;
           purpose_en: string;
           reach: string;
           signatory: string;
           url: string;
         };
         Returns: string;
+      };
+      ask_for_grants: {
+        Args: { agreement_id: string; grants: string[] };
+        Returns: undefined;
       };
       cast_ballot: {
         Args: { choices: Json; election_id: string };
@@ -3003,6 +3015,10 @@ export type Database = {
           overdue: number;
           waiting: number;
         }[];
+      };
+      give_grants: {
+        Args: { agreement_id: string; grants: string[] };
+        Returns: undefined;
       };
       give_notice: { Args: { election_id: string }; Returns: number };
       handle_form: {
