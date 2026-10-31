@@ -39,6 +39,7 @@ export const permissions = [
   "settings.manage",
   "partners.manage",
   "partners.sign",
+  "partners.own",
   "certificates.prepare",
   "certificates.sign",
   "certificates.countersign",
@@ -56,6 +57,7 @@ export const scopeTypes = [
   "issue",
   "campaign",
   "production",
+  "partner",
 ] as const;
 
 export type ScopeType = (typeof scopeTypes)[number];

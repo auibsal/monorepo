@@ -40,11 +40,13 @@ and decisions), and continue from the first unticked item.
     (`adminSections` in `@repo/rbac`, `DiwanNav` and `SectionTabs` in
     `admin-shell.tsx`; owner, Oct 30, 2026): the Desk (`/diwan`: what
     needs you, three quick actions, what happened, and the Connected panel
-    for Notion and Hudhud), What's on (`/diwan/events`, `/events/programs`
-    with each program's page, `/events/door`; Second Chapter's collection
+    for Notion, Hudhud and email), What's on (`/diwan/events`, `/events/programs`
+    with each program's page; each event has its own door,
+    `/events/<slug>/door`, and the Desk opens the next one (owner, Oct 31,
+    2026: no general door); Second Chapter's collection
     is a tab of its program), Qirtas (`/diwan/qirtas`, its tabs and the
-    ads), The Company (`/diwan/company`), People (`/diwan/people`,
-    verification, hiring, service, partners, insights) and Society
+    ads; calls are on each Edition's page), The Company (`/diwan/company`), People (`/diwan/people`,
+    verification (partner applications only), hiring, service, partners, insights) and Society
     (`/diwan/society`: minutes, resolutions, requests to Student Life,
     elections, concerns, the Library, where only `governance.manage`, the
     President, the Vice President and the General Secretary, keep the
@@ -230,7 +232,8 @@ any schema change. Integration tests run against a local stack with
   (owner, Oct 25, 2026).
 - **Sign-up asks little** (owner, Oct 25, 2026). An AUIB address signs up
   with the address and a password; an outside address also gives its
-  name in each language and a few words for the Council. `/welcome` then asks one question
+  name in each language, and one of the partners verifies it (owner, Oct
+  31, 2026: the Society verifies partners only). `/welcome` then asks one question
   per screen (`planSetup` in `components/nexus/setup-form.tsx`): each
   language's name not yet given, each pledge not yet made in its current version, and, the
   first time, photos; then the welcome screen with the card. Language
@@ -258,7 +261,9 @@ any schema change. Integration tests run against a local stack with
   compared with its check. One check for both: `/verify/<code>` takes a
   certificate or a card code. A card's check lists the member's
   certificates only if they turn it on (`show_certificates_on_card`, off by
-  default). Google Wallet only (`docs/platform/wallet.md`). Never put an
+  default). Google Wallet only (`docs/platform/wallet.md`); the card asks
+  the Wallet API whether the pass is saved rather than waiting for
+  Google's callback. Never put an
   account id in a QR.
 - **What's on is one calendar** (owner, Oct 25, 2026): programs and events
   together at `/events`, a month at a time, each program a series with its
@@ -310,7 +315,9 @@ any schema change. Integration tests run against a local stack with
   submission that names no call goes to it. The global masthead reads
   and decides it. An author may publish under a pen name, never Anonymous
   (owner, Oct 31, 2026; `submissions.pen_name`, made a pen-name byline by
-  `make_piece`). The newsroom is where staff write
+  `make_piece`). A manuscript sent as Word or PDF fills the editor with
+  its text in the browser (`lib/manuscript.ts`, mammoth and pdf.js), and
+  the file still goes with the work. The newsroom is where staff write
   and publish directly: the Diwan's Qirtas section is the Newsroom
   (`/diwan/qirtas`, one page per section, `/diwan/qirtas/news` …
   `/games`; Next Stop is in Video, puzzles in Games), Review, Editions,
@@ -356,7 +363,11 @@ any schema change. Integration tests run against a local stack with
   `/get-involved`, the board for members) is the careers page (owner, Oct 29, 2026):
   every role the Society is filling (`programmes.openings`, `kind`
   `role`, with its `owner`: a program, Qirtas, Media, Partnerships,
-  Membership or the Council), shifts and auditions on one board. Hiring
+  Membership or the Council), shifts and auditions on one board. A role
+  opening names its role (`programmes.openings.role`; owner, Oct 31,
+  2026: every role in Roles and Staffing is on the platform, each with
+  `access.roles.hiring_owner`), which sets its owner, and whoever is
+  onboarded holds the role (`private.onboarded_takes_role`). Hiring
   (owner, Oct 30, 2026; the Diwan's Hiring section): members reply "I'm
   interested" (`programmes.opening_replies`, emailed to Membership);
   Membership (`members.manage`) runs every application (conversation,
@@ -384,6 +395,25 @@ any schema change. Integration tests run against a local stack with
   and prospective partners; a partner's guest: their own). Accounts
   verified with a partner but not members are that partner's guests
   ("Guest of …"; `PartnerGuest`, `GUEST_PATHS` in `gates.tsx`).
+- **Partners on the platform** (owner, Oct 31, 2026). An organization
+  applies at `/about/partners/join` (`governance.apply_as_partner`): its
+  profile, the partnership's purpose and its side, the grants it asks for,
+  and its signatory signs the memorandum by name. No PDFs: memoranda are
+  signed by name on both sides (`sign_partner_agreement` takes no file).
+  The Diwan's verification queue holds these applications
+  (`governance.partner_applications()`); the President signs, the partner
+  turns active and whoever applied gets `partner_rep`, a role scoped to
+  the partner (`scope_type` `partner`) with `partners.own`. Each partner
+  keeps its own page at `/diwan/partner` (Profile and memorandum, Perks,
+  People: guests and a team of up to six; `components/nexus/partner`,
+  route group `diwan/(partner)` with `RequirePartner`, no membership
+  gate). Row Level Security keeps a representative to its own partner;
+  its listing, status and address stay the Society's
+  (`guard_partner_self_edit`). Partners verify their own people
+  (`partner_affiliations`, `governance.partner_guests`); outside sign-ups
+  no longer open a Society request. Representatives are not officers:
+  `RequireStaff` sends a representative-only account to its partner's
+  page, and the Notion directory leaves them out.
 - **No money** (owner, Oct 30, 2026). The Society holds no budget, no
   account and no money, and has no Treasurer; Student Life provides. No
   budgets, costs, prices, spending limits, claims or reimbursements

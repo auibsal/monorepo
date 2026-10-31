@@ -134,6 +134,28 @@ export const RequireMember = ({ children }: GateProps) => {
   return children;
 };
 
+/**
+ * A partner's own page in the Diwan (owner, Oct 31, 2026): for its
+ * representatives (partners.own on the partner), members or not. A
+ * convenience: Row Level Security keeps each to its own partner.
+ */
+export const RequirePartner = ({ children }: GateProps) => {
+  const grants = useGrants();
+  const router = useRouter();
+  const holds = (grants.data ?? []).some(
+    (g) => g.permission === "partners.own"
+  );
+  useEffect(() => {
+    if (grants.isSuccess && !grants.isFetching && !holds) {
+      router.replace("/membership");
+    }
+  }, [grants.isFetching, grants.isSuccess, holds, router]);
+  if (grants.isError) {
+    return <ErrorState onRetry={() => grants.refetch()} />;
+  }
+  return grants.isSuccess && holds ? children : <PageSpinner />;
+};
+
 /** Sign-in and sign-up pages: signed-in users go on to their account. */
 export const GuestOnly = ({ children }: GateProps) => {
   const { loading, user } = useAuth();
@@ -161,7 +183,14 @@ export const RequireStaff = ({ children }: GateProps) => {
   // A role that needs two-step sign-in grants nothing until the code is in,
   // so its holder is staff waiting for the second step, not a member.
   const waiting = Boolean(twoStep.data?.needs && !twoStep.data.done);
-  const staff = (grants.data ?? []).length > 0 || waiting;
+  // A partner's representative holds partners.own only: their partner's
+  // page (/diwan/partner) is theirs, the officers' Diwan is not.
+  const officerGrants = (grants.data ?? []).filter(
+    (g) => g.permission !== "partners.own"
+  );
+  const partnerOnly =
+    officerGrants.length === 0 && (grants.data ?? []).length > 0;
+  const staff = officerGrants.length > 0 || waiting;
   // Decide only on fresh answers: right after the second step both reload,
   // and the new level can arrive before the new grants.
   const settled =
@@ -172,9 +201,9 @@ export const RequireStaff = ({ children }: GateProps) => {
 
   useEffect(() => {
     if (settled && !staff) {
-      router.replace("/membership");
+      router.replace(partnerOnly ? "/diwan/partner" : "/membership");
     }
-  }, [router, settled, staff]);
+  }, [partnerOnly, router, settled, staff]);
 
   if (grants.isError || twoStep.isError) {
     return (

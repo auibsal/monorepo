@@ -21,7 +21,6 @@ export const queryKeys = {
   sixWords: (userId: string) => ["six-words", userId] as const,
   status: (userId: string) => ["status", userId] as const,
   submissions: (userId: string) => ["submissions", userId] as const,
-  verification: (userId: string) => ["verification", userId] as const,
   waitlist: (userId: string) => ["waitlist", userId] as const,
 };
 
@@ -87,21 +86,6 @@ export const useGrants = () => {
     async () =>
       (unwrap(await supabase.schema("access").rpc("my_permissions")) ??
         []) as Grant[]
-  );
-};
-
-export const useVerificationRequest = () => {
-  const { supabase } = useAuth();
-  return useUserQuery(queryKeys.verification, async () =>
-    unwrap(
-      await supabase
-        .schema("membership")
-        .from("verification_requests")
-        .select("id, status, statement, created_at")
-        .order("created_at", { ascending: false })
-        .limit(1)
-        .maybeSingle()
-    )
   );
 };
 

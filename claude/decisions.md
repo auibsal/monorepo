@@ -225,3 +225,10 @@ Qirtas, unlike a program, may have several documents:
 - **Addresses, not queries.** Every view has its own address: /events/2026-11, /company/<production>, /search/<words>, each Diwan tab its own page.
 - **The About page** is the hub for the Society's pages: the Council, the Library, Partners, Contact, the press kit and Verify.
 - **Notion holds what the platform retired** (forms, letters, officers' papers), as templates linked from the Desk; Diwan pages with a Notion counterpart say so.
+
+## 9. Partners on the platform, and smaller moves (decided Oct 31)
+- **Partners sign up.** An organization applies at auibsal.org/about/partners/join: its profile, what the partnership is for and what it will do, the benefits it asks for, and its signatory signs the memorandum by name. Nothing is uploaded. The President signs for the Society in the Diwan (People → Verification); the partner then becomes active.
+- **Each partner keeps its own page** in the Diwan (/diwan/partner): its profile and memorandum, the perks it offers members, its team (up to six people with accounts) and its guests. Whoever applied is its first Partner Representative; the team adds the rest.
+- **The Society verifies partners; partners verify their own people.** The Diwan's verification queue holds partner applications only. Someone signing up with an address outside AUIB picks their partner, and that partner verifies them; they become its guest.
+- **Hiring picks from the Society's roles.** Every role in Roles and Staffing is on the platform, each with who hires for it; a role opening names its role, and whoever is onboarded holds it.
+- **Smaller moves.** Calls live on each Edition's page. "Email me about events" is on Settings → Notices only. Each event has its own door; the general door is gone, and the Desk opens the next event's door. A manuscript sent as Word or PDF fills the editor with its text, and the original file still goes with the work.

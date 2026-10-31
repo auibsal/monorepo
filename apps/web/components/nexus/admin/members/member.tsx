@@ -41,29 +41,36 @@ const useScopeOptions = () => {
   const locale = useLocale();
   return useQuery({
     queryFn: async () => {
-      const [programmes, issues, campaigns, shows] = await Promise.all([
-        supabase
-          .schema("core")
-          .from("programmes")
-          .select("id, name_en, name_ar")
-          .order("sort"),
-        supabase
-          .schema("journal")
-          .from("issues")
-          .select("id, volume, number, title_en, title_ar")
-          .order("volume", { ascending: false })
-          .order("number", { ascending: false }),
-        supabase
-          .schema("charity")
-          .from("campaigns")
-          .select("id, title_en, title_ar")
-          .order("created_at", { ascending: false }),
-        supabase
-          .schema("programmes")
-          .from("productions")
-          .select("id, title_en, title_ar")
-          .order("created_at", { ascending: false }),
-      ]);
+      const [programmes, issues, campaigns, shows, partnerRows] =
+        await Promise.all([
+          supabase
+            .schema("core")
+            .from("programmes")
+            .select("id, name_en, name_ar")
+            .order("sort"),
+          supabase
+            .schema("journal")
+            .from("issues")
+            .select("id, volume, number, title_en, title_ar")
+            .order("volume", { ascending: false })
+            .order("number", { ascending: false }),
+          supabase
+            .schema("charity")
+            .from("campaigns")
+            .select("id, title_en, title_ar")
+            .order("created_at", { ascending: false }),
+          supabase
+            .schema("programmes")
+            .from("productions")
+            .select("id, title_en, title_ar")
+            .order("created_at", { ascending: false }),
+          // A partner's representatives (partner_rep) hold their role for it.
+          supabase
+            .schema("governance")
+            .from("partners")
+            .select("id, name_en, name_ar")
+            .order("name_en"),
+        ]);
       const options: Record<
         Exclude<ScopeType, "global">,
         { id: string; label: string }[]
@@ -75,6 +82,10 @@ const useScopeOptions = () => {
         issue: (unwrap(issues) ?? []).map((i) => ({
           id: i.id,
           label: `${i.volume}.${i.number} · ${localized(i, "title", locale)}`,
+        })),
+        partner: (unwrap(partnerRows) ?? []).map((p) => ({
+          id: p.id,
+          label: localized(p, "name", locale),
         })),
         production: (unwrap(shows) ?? []).map((p) => ({
           id: p.id,

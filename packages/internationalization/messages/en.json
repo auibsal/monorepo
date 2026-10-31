@@ -92,9 +92,7 @@
     },
     "signUp": {
       "title": "Join the Society",
-      "description": "Membership is free and open. AUIB addresses are verified straight away; other addresses are checked by the Council.",
-      "statement": "Who are you to the Society?",
-      "statementHint": "For non-AUIB addresses: alumni, guest writer, partner… This helps the Council verify you.",
+      "description": "Membership is free and open. AUIB addresses are verified straight away; other addresses are verified by one of the Society's partners.",
       "submit": "Create account",
       "submitting": "Creating account…",
       "checkInbox": "Check your inbox",
@@ -199,10 +197,10 @@
       "readDocuments": "Read the founding documents"
     },
     "pending": {
-      "title": "Your account is waiting for verification",
-      "body": "Accounts on addresses outside AUIB are checked by the Council. We'll email you as soon as yours is approved.",
-      "statement": "What you told us",
-      "editStatement": "Update what you told us"
+      "title": "Your account is not verified yet",
+      "body": "AUIB addresses are verified once confirmed. Other accounts are verified by one of the Society's partners: choose yours below, and they confirm you.",
+      "organization": "Here for an organization?",
+      "apply": "Apply to partner with the Society"
     },
     "setup": {
       "title": "Before you begin",
@@ -941,7 +939,8 @@
           "programme": "Program",
           "issue": "Qirtas Edition",
           "campaign": "Campaign",
-          "production": "Production"
+          "production": "Production",
+          "partner": "Partner"
         },
         "endRole": "End now",
         "endRoleConfirm": "End this assignment now? The permissions it grants stop at once.",
@@ -979,9 +978,9 @@
         }
       },
       "verification": {
-        "title": "Verification queue",
-        "lede": "Accounts from outside @auib.edu.iq (alumni, guests, external contributors). Approve only people you can place.",
-        "empty": "No one is waiting.",
+        "title": "Partner applications",
+        "lede": "Organizations that applied to partner with the Society, each with its memorandum signed by name. The President signs for the Society; each partner then verifies its own people.",
+        "empty": "No applications are waiting.",
         "statement": "Their note",
         "noStatement": "No note.",
         "applied": "Applied",
@@ -989,7 +988,16 @@
         "approve": "Approve",
         "reject": "Decline",
         "approveConfirm": "Verify {email}? They become a member and can use the Diwan.",
-        "rejectConfirm": "Decline {email}? They will be told by email."
+        "rejectConfirm": "Decline {email}? They will be told by email.",
+        "appliedBy": "Signed by {name} on {date}",
+        "purpose": "Purpose",
+        "partnerWill": "What they will do",
+        "asks": "They ask for",
+        "sign": "Sign for the Society",
+        "signConfirm": "Sign the memorandum with {name} for the Society? It becomes an active partner, and whoever applied keeps its page in the Diwan.",
+        "declineConfirm": "Decline {name}'s application? It stays on record.",
+        "earlier": "Earlier requests",
+        "earlierLede": "People who asked before partners verified their own. Approve only people you can place."
       },
       "events": {
         "title": "Events",
@@ -2092,9 +2100,8 @@
           "status": "Status",
           "noGrants": "Nothing on the platform",
           "sign": "Sign",
-          "signIntro": "Sign for the Society (F-26: For SAL, President). Upload the copy signed by both sides as a PDF.",
+          "signIntro": "Sign for the Society (P11.2: the President signs). The partner's signatory signs by name; nothing is uploaded.",
           "partnerSignatory": "Signed for the partner by (name, role)",
-          "signedCopy": "Signed copy (PDF)",
           "openSigned": "Open signed copy",
           "informedStudentLife": "Student Life told",
           "end": "End",
@@ -3987,6 +3994,111 @@
       },
       "members": "Members see every open role, shift and audition here.",
       "signIn": "Sign in"
+    },
+    "partnerJoin": {
+      "title": "Partner with the Society",
+      "lede": "For clubs, departments and organizations whose aims fit the Society's and who treat people fairly. Apply here and sign the memorandum by name; the President signs for the Society.",
+      "account": "Applying takes an account, for the person who signs for the organization.",
+      "signUp": "Create an account",
+      "signIn": "Sign in",
+      "organization": "Your organization",
+      "nameEn": "Name in English",
+      "nameAr": "Name in Arabic",
+      "optional": "Optional",
+      "urlHint": "Its website, starting with https://",
+      "description": "About the organization",
+      "descriptionHint": "A few lines for the Partners page, shown once the partnership is signed.",
+      "proposal": "The partnership",
+      "purpose": "What the partnership is for",
+      "purposeHint": "What you will do together, in a few sentences.",
+      "partnerWill": "What your organization will do",
+      "partnerWillHint": "Your commitments: hosting, sharing, offers for members.",
+      "asks": "What you would like it to include",
+      "sign": "Sign",
+      "signatory": "Your name, as you sign",
+      "contactRole": "Your role at the organization",
+      "accept": "I sign this memorandum for {name}, and I may sign for it.",
+      "submit": "Apply and sign",
+      "receivedTitle": "Application received",
+      "waiting": "{name}'s application, signed on {date}, is with the Society. Once the President signs, {name}'s page opens for you in the Diwan.",
+      "partneredTitle": "You are a partner",
+      "partnered": "{name} is a partner of the Society. Its page in the Diwan keeps its profile, member perks, team and guests.",
+      "openDesk": "Open your partner's page",
+      "declined": "Your earlier application was not taken forward. You may apply again.",
+      "memorandum": {
+        "title": "The memorandum",
+        "yourOrganization": "your organization",
+        "one": "{name} and the AUIB Society of Arts and Letters agree to the partnership described above.",
+        "two": "Every partnership that involves money, shared branding or shared responsibility has a written memorandum, signed by the President (Policy Manual P11.2). This is that memorandum, once the President signs.",
+        "three": "The Society does not accept sponsorship from political parties, religious or sectarian bodies, tobacco, alcohol or gambling businesses, or any sponsor that would compromise its independence (P11.3).",
+        "four": "Sponsors get acknowledgement, never editorial influence (P11.4).",
+        "five": "{name} verifies its own people on the platform, and only people who belong to it.",
+        "six": "Nothing is paid through the platform: the Society takes no online payments."
+      }
+    },
+    "partnerDesk": {
+      "none": "You do not keep a partner's page.",
+      "lede": "Your organization's page: its profile, the perks it offers members, its team and the people it verifies.",
+      "tabsLabel": "Partner",
+      "tabs": {
+        "profile": "Profile",
+        "perks": "Perks",
+        "people": "People"
+      },
+      "open": "Open {name}'s page in the Diwan",
+      "profile": {
+        "title": "Profile",
+        "listing": "The Partners page shows the name, website and description once the partnership is signed and the Society lists it."
+      },
+      "memorandum": {
+        "title": "Memorandum",
+        "signed": "Signed for the partner by {name}; signed for the Society on {date}.",
+        "waiting": "Waiting for the Society's signature.",
+        "ended": "Ended.",
+        "purpose": "Purpose",
+        "partnerWill": "What the partner will do",
+        "salWill": "What the Society will do",
+        "grants": "It includes"
+      },
+      "perks": {
+        "title": "Perks for members",
+        "lede": "Members see published perks with their membership card.",
+        "notGranted": "Members see perks once your memorandum includes an offer for SAL members. Ask the Society to add it.",
+        "empty": "No perks yet.",
+        "hidden": "Not published",
+        "until": "until {date}",
+        "remove": "Remove",
+        "removeConfirm": "Remove this perk? Members no longer see it.",
+        "new": "Add a perk",
+        "add": "Add perk"
+      },
+      "guests": {
+        "title": "Guests",
+        "lede": "People who say they belong to your organization. Verify only those who do: they become your guests on the platform and may answer Qirtas calls opened to you.",
+        "empty": "No one has asked yet.",
+        "verify": "Verify",
+        "decline": "Decline",
+        "end": "End",
+        "endConfirm": "End {name}'s verification? They are no longer your guest.",
+        "statuses": {
+          "pending": "Waiting",
+          "verified": "Verified",
+          "declined": "Declined",
+          "ended": "Ended"
+        }
+      },
+      "team": {
+        "title": "Team",
+        "lede": "Up to six people keep this page. Each needs an account on the site.",
+        "email": "Their sign-in address",
+        "addHint": "They must have signed up already.",
+        "add": "Add to the team",
+        "remove": "Remove",
+        "removeConfirm": "Remove {name} from the team?",
+        "leave": "Leave",
+        "leaveConfirm": "Leave the team? You will no longer keep this page.",
+        "full": "The team is full (six people)."
+      }
     }
   },
   "web": {
@@ -4541,7 +4653,8 @@
       },
       "visit": "Visit {name}",
       "workTitle": "Work with us",
-      "work": "The Society partners with clubs, departments, charities and cultural organizations whose aims fit its mission and who treat people fairly. Sponsors are acknowledged and never have editorial influence. Write to the Director of Partnerships through the contact page."
+      "work": "The Society partners with clubs, departments, charities and cultural organizations whose aims fit its mission and who treat people fairly. Sponsors are acknowledged and never have editorial influence. Organizations apply on the platform and sign the memorandum there.",
+      "apply": "Apply to partner"
     },
     "verify": {
       "title": "Check a certificate or a card",

@@ -109,7 +109,7 @@ describe("signing up", () => {
     expect(sent.options.data).toEqual({ locale: "en" });
   });
 
-  test("an address outside AUIB gives its name in both languages, for the Council to verify", async () => {
+  test("an address outside AUIB gives its name in both languages, for its partner to verify", async () => {
     const { signUp, supabase } = client();
     expect(
       await signUpWithEmail(supabase, { ...base, email: "s@gmail.com" })
@@ -119,7 +119,6 @@ describe("signing up", () => {
       ...base,
       email: "s@gmail.com",
       names,
-      verificationStatement: "AUIB alumnus, 2024",
     });
     expect(result.ok).toBe(true);
     const sent = (signUp.mock.calls[0] as unknown[])[0] as {
@@ -128,7 +127,6 @@ describe("signing up", () => {
     expect(sent.options.data).toMatchObject({
       full_name_ar: "شاهين فرجو",
       full_name_en: "Shaheen Farjo",
-      verification_statement: "AUIB alumnus, 2024",
     });
   });
 });

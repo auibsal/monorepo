@@ -257,6 +257,14 @@ export const roles = {
     nameEn: "Onboarding Lead",
     permissions: ["events.checkin", "library.read"],
   },
+  // A partner's own people (owner, Oct 31, 2026): scoped to the partner.
+  partner_rep: {
+    defaultScope: "partner",
+    isCouncil: false,
+    nameAr: "ممثل الشريك",
+    nameEn: "Partner Representative",
+    permissions: ["partners.own"],
+  },
   partnerships_director: {
     defaultScope: "global",
     isCouncil: true,

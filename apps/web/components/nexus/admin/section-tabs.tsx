@@ -107,8 +107,7 @@ const PEOPLE: readonly Tab[] = [
   {
     href: "/people/verification",
     key: "verification",
-    module: "members",
-    permission: "members.verify",
+    module: "partners",
   },
   { href: "/people/hiring", key: "hiring", module: "hiring" },
   { href: "/people/service", key: "service", module: "recognition" },

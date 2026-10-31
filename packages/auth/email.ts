@@ -105,8 +105,6 @@ export interface SignUpDetails {
   password: string;
   /** Where the confirmation link lands (the Nexus /auth/callback). */
   redirectTo: string;
-  /** For non-AUIB addresses: who the applicant is (alumni, guest…). */
-  verificationStatement?: string;
 }
 
 /**
@@ -142,9 +140,6 @@ export const signUpWithEmail = async (
       data: {
         ...(named ? { full_name_ar: names.ar, full_name_en: names.en } : {}),
         locale: details.locale,
-        verification_statement: auib
-          ? undefined
-          : details.verificationStatement?.trim() || undefined,
       },
       emailRedirectTo: details.redirectTo,
     },

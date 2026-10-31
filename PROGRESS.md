@@ -32,6 +32,19 @@ Branch: `claude/new-session-qosn60`.
 
 ## Blocked — needed from the user
 
+- [ ] **Site emails never leave (Oct 31, 2026): two Vault secrets.** The
+  personal-email link, booking confirmations and every other site email
+  wait in `core.outbox` because the database cannot call the site. The
+  address is now set by migration (`platform.api_url`); in the Supabase
+  dashboard (Project Settings → Vault) add `outbox_webhook_secret` with
+  the value of Vercel's `DATABASE_WEBHOOK_SECRET`, and `cron_secret` with
+  the value of `CRON_SECRET`. The Desk's Connected panel (Email) then
+  shows email flowing. Steps in `docs/platform/email.md`.
+- [ ] **Partners (Oct 31, 2026):** the memorandum a partner signs at
+  `/about/partners/join` is made of its own words and the Policy Manual's
+  P11 lines (`nexus.partnerJoin.memorandum.*`). If the Society has a
+  standard memorandum text, send it and it replaces those lines.
+
 - [ ] **The Diwan, rebuilt (Oct 30, 2026), what is left for the owner:**
   - **Switch off the OAuth server** in the Supabase dashboard
     (Authentication → OAuth Server): Sign in with SAL is gone, and the
@@ -1656,6 +1669,15 @@ Covered by automated tests so far:
   use (as the form says).
 
 ## needs-native-review (Arabic written for the platform)
+
+- Partners and the smaller moves (2026-10-31): `nexus.partnerJoin.*`,
+  `nexus.partnerDesk.*`, `nexus.admin.verification.*`, `nexus.pending.*`,
+  `nexus.admin.member.scopes.partner`, `web.partners.{apply,work}`,
+  `auth.signUp.description`, `nexus.admin.hiring.{role,roleHint,
+  roleTitleHint}`, `nexus.admin.settings.email.*`, `nexus.checkIn.otherDoors`,
+  `nexus.journal.write.manuscript.*`, `nexus.admin.waraq.calls`, and in
+  the database the new role names (`20261101000400`, `20261101000500`:
+  «مدير الإعلام», «مدير العضوية», «ممثل الشريك» and the team leads).
 
 - The Diwan, rebuilt (2026-10-30): `nexus.admin.sections.*`,
   `nexus.admin.society.*`, `nexus.admin.activity.*` (the sentences and

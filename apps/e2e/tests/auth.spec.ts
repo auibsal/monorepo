@@ -102,7 +102,7 @@ test("sign up with an AUIB address, confirm by email, finish setup", async ({
   expect(data?.interests).toEqual(["poetry", "theater"]);
 });
 
-test("an outside address gives its names and a few words", async ({ page }) => {
+test("an outside address gives its names, for its partner to verify", async ({ page }) => {
   await page.goto(`${urls.web}/sign-up`);
   await page.getByLabel("Email").fill(`e2e-${Date.now()}@example.com`);
   await page.getByLabel("Password").fill(PASSWORD);

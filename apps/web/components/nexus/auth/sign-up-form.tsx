@@ -6,7 +6,6 @@ import { FormHeader } from "@repo/design-system/components/sal/form-header";
 import { Button } from "@repo/design-system/components/ui/button";
 import { Input } from "@repo/design-system/components/ui/input";
 import { Label } from "@repo/design-system/components/ui/label";
-import { Textarea } from "@repo/design-system/components/ui/textarea";
 import { Link } from "@repo/internationalization/navigation";
 import { useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
@@ -29,10 +28,9 @@ export const SignUpForm = () => {
     nameAr: "",
     nameEn: "",
     password: "",
-    statement: "",
   });
-  // AUIB addresses give their names in setup; the Council verifies others
-  // by theirs, so they give them here.
+  // AUIB addresses give their names in setup; a partner verifies others
+  // (owner, Oct 31, 2026) by theirs, so they give them here.
   const named = [values.nameEn, values.nameAr].every(
     (name) => name.trim() !== ""
   );
@@ -59,7 +57,6 @@ export const SignUpForm = () => {
       password: values.password,
       // The confirmation link brings the member back to what they started.
       redirectTo: callbackUrl(locale, next),
-      verificationStatement: values.statement,
     });
     setPending(false);
     human.reset();
@@ -154,20 +151,6 @@ export const SignUpForm = () => {
                   value={values.nameAr}
                 />
               </div>
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor={`${id}-statement`}>{t("signUp.statement")}</Label>
-              <Textarea
-                aria-describedby={`${id}-statement-hint`}
-                id={`${id}-statement`}
-                maxLength={1000}
-                onChange={set("statement")}
-                rows={3}
-                value={values.statement}
-              />
-              <p className="type-caption" id={`${id}-statement-hint`}>
-                {t("signUp.statementHint")}
-              </p>
             </div>
           </div>
         ) : null}

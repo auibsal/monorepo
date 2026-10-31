@@ -315,13 +315,14 @@ export const declareConflicts = async (
 export const signAgreement = async (
   client: Client,
   agreementId: string,
-  partnerSignatory: string,
-  signedDocumentPath: string
+  partnerSignatory: string
 ) =>
   unwrap(
     await client.schema("governance").rpc("sign_partner_agreement", {
       agreement_id: agreementId,
       partner_signatory: partnerSignatory,
-      signed_document_path: signedDocumentPath,
+      // No uploaded copy (owner, Oct 31, 2026): the signatures are the
+      // record. The argument stays for memoranda signed before.
+      signed_document_path: null as unknown as string,
     })
   );

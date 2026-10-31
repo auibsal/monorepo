@@ -119,8 +119,10 @@ describe("mirror of the reference data in the migrations", () => {
     // Owner, Oct 15, 2026: concerns about the President go elsewhere
     // (F-20); Waraq reads blind; the Elections Committee runs elections;
     // the General Secretary signs off the collection's ledger and the
-    // Faculty Advisor countersigns certificates.
+    // Faculty Advisor countersigns certificates; a partner's own page is
+    // its representatives' (they hold partners.manage anyway).
     const withheld = new Set([
+      "partners.own",
       "concerns.about_president",
       "journal.review",
       "journal.identity.view",

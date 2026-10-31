@@ -17,10 +17,9 @@ import type { Locale } from "@repo/internationalization";
 import { formatLongDate } from "@repo/internationalization/format";
 import { hasPermissionAnywhere } from "@repo/rbac";
 import { localized, partners, unwrap } from "@repo/sal-data";
-import { uploadLibraryFile } from "@repo/storage";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
-import { type FormEvent, useId, useState } from "react";
+import { type FormEvent, useState } from "react";
 import { callApi } from "@/lib/nexus/api";
 import { useGrants } from "@/lib/nexus/queries";
 import { SectionSpinner } from "../../states";
@@ -648,22 +647,16 @@ const SignForm = ({
   const t = useTranslations("nexus.admin.partners.agreements");
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
-  const fileId = useId();
-  const [signatory, setSignatory] = useState("");
-  const [file, setFile] = useState<File | null>(null);
+  // An application arrives signed by the partner's signatory; a memorandum
+  // the Society drafted takes the name here. No uploaded copy.
+  const [signatory, setSignatory] = useState(
+    typeof agreement.partner_signatory === "string"
+      ? agreement.partner_signatory
+      : ""
+  );
   const sign = useMutation({
-    mutationFn: async () => {
-      if (!file) {
-        throw new Error("missing_file");
-      }
-      const stored = await uploadLibraryFile(supabase, "partners", file);
-      await partners.signAgreement(
-        supabase,
-        agreement.id,
-        signatory,
-        stored.path
-      );
-    },
+    mutationFn: () =>
+      partners.signAgreement(supabase, agreement.id, signatory.trim()),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: key });
       onDone();
@@ -689,16 +682,6 @@ const SignForm = ({
           />
         )}
       </Field>
-      <div className="grid gap-2">
-        <Label htmlFor={fileId}>{t("signedCopy")}</Label>
-        <Input
-          accept="application/pdf"
-          id={fileId}
-          onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-          required
-          type="file"
-        />
-      </div>
       <div className="flex flex-wrap gap-2">
         <Button disabled={sign.isPending} type="submit">
           {t("sign")}

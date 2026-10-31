@@ -2479,6 +2479,7 @@ export type Database = {
       };
       partner_agreements: {
         Row: {
+          applied_by: string | null;
           branding: string | null;
           code: string | null;
           created_at: string;
@@ -2492,6 +2493,7 @@ export type Database = {
           partner_contact: string | null;
           partner_id: string;
           partner_signatory: string | null;
+          partner_signed_at: string | null;
           partner_will: string | null;
           people_safety: string | null;
           purpose_ar: string | null;
@@ -2508,6 +2510,7 @@ export type Database = {
           updated_at: string;
         };
         Insert: {
+          applied_by?: string | null;
           branding?: string | null;
           code?: string | null;
           created_at?: string;
@@ -2521,6 +2524,7 @@ export type Database = {
           partner_contact?: string | null;
           partner_id: string;
           partner_signatory?: string | null;
+          partner_signed_at?: string | null;
           partner_will?: string | null;
           people_safety?: string | null;
           purpose_ar?: string | null;
@@ -2537,6 +2541,7 @@ export type Database = {
           updated_at?: string;
         };
         Update: {
+          applied_by?: string | null;
           branding?: string | null;
           code?: string | null;
           created_at?: string;
@@ -2550,6 +2555,7 @@ export type Database = {
           partner_contact?: string | null;
           partner_id?: string;
           partner_signatory?: string | null;
+          partner_signed_at?: string | null;
           partner_will?: string | null;
           people_safety?: string | null;
           purpose_ar?: string | null;
@@ -2838,6 +2844,28 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      add_partner_teammate: {
+        Args: { email: string; partner: string };
+        Returns: string;
+      };
+      apply_as_partner: {
+        Args: {
+          accepted: boolean;
+          contact_role: string;
+          description_ar: string;
+          description_en: string;
+          grants: string[];
+          kind: string;
+          name_ar: string;
+          name_en: string;
+          partner_will: string;
+          purpose_en: string;
+          reach: string;
+          signatory: string;
+          url: string;
+        };
+        Returns: string;
+      };
       cast_ballot: {
         Args: { choices: Json; election_id: string };
         Returns: undefined;
@@ -2877,6 +2905,10 @@ export type Database = {
           name_en: string;
         }[];
       };
+      decline_partner_application: {
+        Args: { partner: string; reason?: string };
+        Returns: undefined;
+      };
       discard_form_draft: {
         Args: { submission_id: string };
         Returns: undefined;
@@ -2902,6 +2934,28 @@ export type Database = {
           name_en: string;
         }[];
       };
+      my_partner_application: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          agreement_status: string;
+          applied_at: string;
+          name_ar: string;
+          name_en: string;
+          partner_id: string;
+          partner_status: string;
+          slug: string;
+        }[];
+      };
+      my_partners: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          id: string;
+          name_ar: string;
+          name_en: string;
+          slug: string;
+          status: string;
+        }[];
+      };
       nominate: {
         Args: {
           position_id: string;
@@ -2911,6 +2965,35 @@ export type Database = {
         Returns: string;
       };
       open_voting: { Args: { election_id: string }; Returns: number };
+      partner_applications: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          agreement_id: string;
+          applied_at: string;
+          applied_by: string;
+          kind: string;
+          name_ar: string;
+          name_en: string;
+          partner_id: string;
+          partner_signatory: string;
+          reach: string;
+          slug: string;
+        }[];
+      };
+      partner_guests: {
+        Args: { partner: string };
+        Returns: {
+          created_at: string;
+          decided_at: string;
+          email: string;
+          full_name_ar: string;
+          full_name_en: string;
+          id: string;
+          note: string;
+          status: string;
+          user_id: string;
+        }[];
+      };
       partner_names: {
         Args: Record<PropertyKey, never>;
         Returns: {
@@ -2918,6 +3001,16 @@ export type Database = {
           kind: string;
           name_ar: string;
           name_en: string;
+        }[];
+      };
+      partner_team: {
+        Args: { partner: string };
+        Returns: {
+          email: string;
+          full_name_ar: string;
+          full_name_en: string;
+          since: string;
+          user_id: string;
         }[];
       };
       public_election_results: {
@@ -2950,6 +3043,10 @@ export type Database = {
           slug: string;
           url: string;
         }[];
+      };
+      remove_partner_teammate: {
+        Args: { member: string; partner: string };
+        Returns: undefined;
       };
       save_form: {
         Args: {
