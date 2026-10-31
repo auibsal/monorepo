@@ -59,6 +59,7 @@ const THINGS = {
   "journal.puzzles": "qirtas",
   "membership.activity_records": "people",
   "membership.certificates": "people",
+  "membership.guests": "people",
   "membership.memberships": "people",
   "membership.service_records": "people",
   "membership.verification_requests": "people",

@@ -17,7 +17,7 @@ import { ErrorLine, Field, SelectInput } from "@/components/nexus/admin/kit";
 import { SignUpForm } from "@/components/nexus/auth/sign-up-form";
 import { DiwanPage, DiwanSection } from "@/components/nexus/page";
 import { PageSpinner } from "@/components/nexus/states";
-import { useProfile } from "@/lib/nexus/queries";
+import { useMyMembership, useProfile } from "@/lib/nexus/queries";
 
 const PATH = "/partners/join";
 
@@ -342,8 +342,9 @@ export const PartnerJoin = () => {
   const locale = useLocale() as Locale;
   const { loading, user } = useAuth();
   const application = useMyApplication();
+  const mine = useMyMembership();
 
-  if (loading || (user && application.isPending)) {
+  if (loading || (user && (application.isPending || mine.isPending))) {
     return <PageSpinner />;
   }
   if (!user) {
@@ -358,6 +359,16 @@ export const PartnerJoin = () => {
             outside={{ reason: { partnerApplicant: true } }}
           />
         </div>
+      </DiwanPage>
+    );
+  }
+  // One membership per account (owner, Oct 31, 2026): a member or a guest
+  // applies with the organization's own address, never with their own.
+  const kind = mine.data?.kind;
+  if (kind === "member" || kind === "guest") {
+    return (
+      <DiwanPage lede={t("lede")} narrow title={t("title")}>
+        <p className="type-body">{t("oneMembership")}</p>
       </DiwanPage>
     );
   }

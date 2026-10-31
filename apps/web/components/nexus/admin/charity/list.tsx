@@ -48,7 +48,7 @@ export const CharityAdmin = () => {
       cell: (c) => (
         <Link
           className="font-medium underline underline-offset-4"
-          href={`/events/programs/second-chapter/campaigns/${c.id}`}
+          href={`/events/second-chapter/campaigns/${c.id}`}
         >
           {localized(c, "title", locale)}
         </Link>
@@ -90,7 +90,7 @@ export const CharityAdmin = () => {
           isGlobal ? (
             <Link
               className="inline-flex h-8 items-center rounded-md bg-primary px-3 text-primary-foreground text-sm"
-              href="/events/programs/second-chapter/campaigns/new"
+              href="/events/second-chapter/campaigns/new"
             >
               {t("newCampaign")}
             </Link>

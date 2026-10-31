@@ -1,4 +1,4 @@
-import { PartnerInvite } from "@/components/account/partner-invite";
+import { Invite } from "@/components/account/invite";
 import { titleFrom } from "@/lib/nexus/metadata";
 
 export const generateMetadata = titleFrom((t) =>
@@ -12,7 +12,7 @@ const Page = async ({ params }: { params: Promise<{ code: string }> }) => {
       className="mx-auto w-full max-w-6xl flex-1 px-4 pt-12 pb-20 sm:pt-16 sm:pb-24"
       id="main"
     >
-      <PartnerInvite code={code} />
+      <Invite code={code} />
     </main>
   );
 };

@@ -10,7 +10,7 @@ import {
   formatLongDate,
   formatNumber,
 } from "@repo/internationalization/format";
-import { Link, usePathname } from "@repo/internationalization/navigation";
+import { Link } from "@repo/internationalization/navigation";
 import { localized, recognition, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
@@ -31,10 +31,6 @@ const today = () => new Date().toISOString().slice(0, 10);
  * member eligible to be nominated as a Fellow (B4.1).
  */
 export const Service = () => {
-  // The same record for members and for everyone else's account.
-  const recordBase = usePathname().startsWith("/account")
-    ? "/account/record"
-    : "/membership/record";
   const t = useTranslations("nexus.service");
   const locale = useLocale();
   const { supabase } = useAuth();
@@ -287,7 +283,7 @@ export const Service = () => {
         <ul className="grid gap-2">
           {(certificates.data ?? []).map((c) => (
             <li key={c.id}>
-              <Link className="link" href={`${recordBase}/${c.id}`}>
+              <Link className="link" href={`/membership/record/${c.id}`}>
                 {t(`kinds.${c.kind as recognition.CertificateKind}`)}
                 {c.serial ? ` · ${c.serial}` : ""}
               </Link>

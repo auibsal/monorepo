@@ -154,21 +154,12 @@ export const SiteHeader = ({
     }
   }, [pathname]);
   const known = ways ?? waysHint;
-  // Members open Membership; everyone else their Account (owner, Oct 31,
-  // 2026). Before anything is known, Membership: its gate sends a
-  // non-member on.
-  let way: Way = {
-    href: localizedPath(locale, "/sign-in"),
-    label: t("signIn"),
-  };
-  if (signedIn) {
-    way =
-      known?.member === false
-        ? { href: localizedPath(locale, "/account"), label: t("yourAccount") }
-        : { href: localizedPath(locale, "/membership"), label: t("account") };
-  }
-  // The Diwan sits under Membership, for officers only (owner, Oct 30,
-  // 2026); a partner's team has its dashboard there instead (Oct 31).
+  // One Membership for everyone (owner, Oct 31, 2026).
+  const way: Way = signedIn
+    ? { href: localizedPath(locale, "/membership"), label: t("account") }
+    : { href: localizedPath(locale, "/sign-in"), label: t("signIn") };
+  // The Diwan sits under Membership, for staff only (owner, Oct 30,
+  // 2026); a partner's people have their dashboard there instead (Oct 31).
   const extras: Way[] = signedIn
     ? [
         ...(known?.diwan

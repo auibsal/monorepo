@@ -7,6 +7,7 @@ import { FormHeader } from "@repo/design-system/components/sal/form-header";
 import { Button } from "@repo/design-system/components/ui/button";
 import { Input } from "@repo/design-system/components/ui/input";
 import { Label } from "@repo/design-system/components/ui/label";
+import { apiPath } from "@repo/internationalization";
 import { Link } from "@repo/internationalization/navigation";
 import { useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
@@ -22,6 +23,21 @@ const SUBMIT = {
   link: ["signIn.sendLink", "forgot.sending"],
   password: ["signIn.submit", "signIn.submitting"],
 } as const;
+
+/** Whether an address has an account; null when the check can't answer. */
+const knownAddress = async (email: string): Promise<boolean | null> => {
+  try {
+    const response = await fetch(apiPath("/sign-in/known"), {
+      body: JSON.stringify({ email }),
+      headers: { "content-type": "application/json" },
+      method: "POST",
+    });
+    const body = (await response.json()) as { known?: boolean };
+    return typeof body.known === "boolean" ? body.known : null;
+  } catch {
+    return null;
+  }
+};
 
 export const SignInForm = () => {
   const t = useTranslations("auth");
@@ -69,7 +85,15 @@ export const SignInForm = () => {
     inFlight.current = true;
     setPending(true);
     setError(undefined);
-    const result = await request();
+    let result = await request();
+    // No account with this address says so (owner, Oct 31, 2026), rather
+    // than "wrong password" or a link that never comes.
+    const unsure =
+      (!result.ok && result.code === "invalid_credentials") ||
+      (result.ok && mode === "link");
+    if (unsure && (await knownAddress(email)) === false) {
+      result = { code: "no_account", ok: false };
+    }
     inFlight.current = false;
     human.reset();
     setPending(false);

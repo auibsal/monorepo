@@ -2,14 +2,14 @@
 
 import { useAuth } from "@repo/auth/provider";
 import { usePathname, useRouter } from "@repo/internationalization/navigation";
-import { partners } from "@repo/sal-data";
-import { useQuery } from "@tanstack/react-query";
+import type { membership } from "@repo/sal-data";
 import { type ReactNode, useEffect } from "react";
 import { safeNextPath } from "@/lib/nexus/navigation";
 import {
   hasAllNames,
   useGrants,
   useMemberStatus,
+  useMyMembership,
   useProfile,
 } from "@/lib/nexus/queries";
 import { TwoStepPanel, useTwoStep } from "./auth/two-step";
@@ -44,62 +44,69 @@ export const RequireAuth = ({ children }: GateProps) => {
 };
 
 /**
- * Where a partner's guests go among the members' pages: Qirtas, to write
- * for calls opened to their partner, and their work sent there.
- * Everything else of theirs is under /account (owner, Oct 31, 2026). Row
- * Level Security still decides every row.
+ * The pages each kind of membership opens (owner, Oct 31, 2026: one
+ * Membership for everyone, of one kind). Members open everything; guests
+ * their Today, calendar, record, settings and Qirtas (their work and the
+ * calls open to them); a partner's people their Today, record and
+ * settings (the dashboard is theirs too, behind its own gate). An account
+ * with no membership yet (an invitation waiting on its partner, an
+ * application waiting on the President) has Today and Settings. Row Level
+ * Security still decides every row.
  */
-const GUEST_PATHS = ["/qirtas", "/membership/work"];
+const KIND_PATHS: Record<
+  membership.MembershipKind | "none",
+  readonly string[]
+> = {
+  guest: [
+    "/membership/calendar",
+    "/membership/record",
+    "/membership/settings",
+    "/membership/work",
+    "/qirtas",
+  ],
+  member: [],
+  none: ["/membership/settings"],
+  partner: ["/membership/record", "/membership/settings"],
+};
 
-export const isGuestPath = (pathname: string) =>
-  GUEST_PATHS.some(
+/** Whether a kind of membership opens a members' page. */
+export const kindOpens = (
+  kind: membership.MembershipKind | null,
+  pathname: string
+) =>
+  kind === "member" ||
+  pathname === "/membership" ||
+  KIND_PATHS[kind ?? "none"].some(
     (path) => pathname === path || pathname.startsWith(`${path}/`)
   );
 
-/** True when the signed-in person is verified as a partner's guest. */
-const usePartnerGuest = (enabled: boolean) => {
-  const { supabase, user } = useAuth();
-  return useQuery({
-    enabled,
-    queryFn: async () =>
-      (await partners.myAffiliations(supabase)).some(
-        (a) => a.status === "verified"
-      ),
-    queryKey: ["affiliations", "guest", user?.id ?? ""],
-  });
-};
-
 /**
- * Members only (owner, Oct 31, 2026): anyone else has /account. Members
- * with a pledge to (re-)accept, setup to finish or a name not in four
- * parts go to /welcome first; a partner's guests may write for Qirtas
- * (`isGuestPath`), after the same.
+ * Membership, for every kind (owner, Oct 31, 2026): a page the kind doesn't
+ * open goes to Today. Members and guests with a pledge to (re-)accept or
+ * setup to finish, and anyone whose name is not in four parts, go to
+ * /welcome first.
  */
 export const RequireMember = ({ children }: GateProps) => {
   const status = useMemberStatus();
+  const mine = useMyMembership();
   const profile = useProfile();
   const router = useRouter();
   const pathname = usePathname();
-  const unverified = status.isSuccess && !status.data?.verified;
-  const guest = usePartnerGuest(unverified);
-  const isGuest = unverified && guest.data === true;
-  const elsewhere =
-    unverified && guest.isSuccess && !(isGuest && isGuestPath(pathname));
+  const kind = mine.data?.kind ?? null;
+  const elsewhere = mine.isSuccess && !kindOpens(kind, pathname);
+  const pledges = kind === "member" || kind === "guest";
 
   const needsSetup =
-    (status.data?.verified || isGuest) &&
-    ((status.data?.pending_pledges.length ?? 0) > 0 ||
-      !profile.data?.setup_completed_at ||
-      !hasAllNames(profile.data));
+    mine.isSuccess &&
+    profile.isSuccess &&
+    (!hasAllNames(profile.data) ||
+      (pledges &&
+        ((status.data?.pending_pledges.length ?? 0) > 0 ||
+          !profile.data?.setup_completed_at)));
 
   useEffect(() => {
     if (elsewhere) {
-      // A guest booking from an event's page books from their account.
-      router.replace(
-        pathname.startsWith("/membership/calendar")
-          ? `/account/calendar${window.location.hash}`
-          : "/account"
-      );
+      router.replace("/membership");
     } else if (needsSetup && profile.data) {
       router.replace({
         pathname: "/welcome",
@@ -110,11 +117,11 @@ export const RequireMember = ({ children }: GateProps) => {
     }
   }, [elsewhere, needsSetup, pathname, profile.data, router]);
 
-  if (status.isError || profile.isError || guest.isError) {
+  if (status.isError || profile.isError || mine.isError) {
     return (
       <ErrorState
         onRetry={() =>
-          Promise.all([status.refetch(), profile.refetch(), guest.refetch()])
+          Promise.all([status.refetch(), profile.refetch(), mine.refetch()])
         }
       />
     );
@@ -122,9 +129,9 @@ export const RequireMember = ({ children }: GateProps) => {
   if (
     status.isPending ||
     profile.isPending ||
+    mine.isPending ||
     needsSetup ||
-    elsewhere ||
-    (unverified && guest.isPending)
+    elsewhere
   ) {
     return <PageSpinner />;
   }
@@ -132,43 +139,8 @@ export const RequireMember = ({ children }: GateProps) => {
 };
 
 /**
- * The account of someone who is not a member (owner, Oct 31, 2026): a
- * partner's guests and team, and anyone waiting on a partner application.
- * Members go to Membership. Everyone gives their name in four parts first
- * (at /welcome; a partner's guests also make the pledges there).
- */
-export const RequireAccount = ({ children }: GateProps) => {
-  const status = useMemberStatus();
-  const profile = useProfile();
-  const router = useRouter();
-  const pathname = usePathname();
-  const member = status.isSuccess && Boolean(status.data?.verified);
-  const unnamed = profile.isSuccess && !hasAllNames(profile.data);
-
-  useEffect(() => {
-    if (member) {
-      router.replace("/membership");
-    } else if (unnamed) {
-      router.replace({ pathname: "/welcome", query: { next: pathname } });
-    }
-  }, [member, pathname, router, unnamed]);
-
-  if (status.isError || profile.isError) {
-    return (
-      <ErrorState
-        onRetry={() => Promise.all([status.refetch(), profile.refetch()])}
-      />
-    );
-  }
-  if (status.isPending || profile.isPending || member || unnamed) {
-    return <PageSpinner />;
-  }
-  return children;
-};
-
-/**
  * A partner's dashboard (/partners/dashboard; owner, Oct 31, 2026): for its
- * team (partners.own on the partner), members or not. A convenience: Row
+ * team (partners.own on the partner), who hold a partner's membership. A convenience: Row
  * Level Security keeps each to its own partner.
  */
 export const RequirePartner = ({ children }: GateProps) => {
@@ -184,7 +156,7 @@ export const RequirePartner = ({ children }: GateProps) => {
   const unnamed = profile.isSuccess && !hasAllNames(profile.data);
   useEffect(() => {
     if (grants.isSuccess && !grants.isFetching && !holds) {
-      router.replace("/account");
+      router.replace("/membership");
     } else if (holds && unnamed) {
       router.replace({ pathname: "/welcome", query: { next: pathname } });
     }

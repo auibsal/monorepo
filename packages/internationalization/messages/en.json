@@ -68,13 +68,14 @@
       "rate_limited": "Too many attempts. Please wait a moment and try again.",
       "signups_disabled": "New sign-ups are currently closed.",
       "unknown": "Something went wrong. Please try again.",
-      "user_exists": "An account with this email already exists. Sign in instead.",
+      "user_exists": "An account already uses this address. Sign in instead.",
       "weak_password": "Use at least 10 characters, with letters and numbers.",
       "captcha_failed": "We couldn't confirm you're a person. Reload the page and try again.",
       "names_required": "Enter your first and last name in English and in Arabic.",
       "email_reserved": "This address is already a member's personal email, so it can't start a new account. Sign in with your own address, or use another one.",
       "invalid_code": "That code doesn't match or has expired. Check the newest email, or ask for a new one.",
-      "auib_only": "Membership is for AUIB addresses. Use your @auib.edu.iq email."
+      "auib_only": "Membership is for AUIB addresses. Use your @auib.edu.iq email.",
+      "no_account": "No account uses this address. Check it, or create your account if you study at AUIB."
     },
     "signIn": {
       "title": "Sign in",
@@ -84,7 +85,7 @@
       "magicLink": "Email me a sign-in link instead",
       "usePassword": "Use my password instead",
       "sendLink": "Send the link",
-      "linkSent": "If an account exists for {email}, a sign-in email is on its way. Open its link, or type its code below.",
+      "linkSent": "A sign-in email is on its way to {email}. Open its link, or type its code below.",
       "forgot": "Forgot your password?",
       "noAccount": "New to the Society?",
       "createAccount": "Create an account",
@@ -184,8 +185,7 @@
       "callboard": "Callboard",
       "record": "Record",
       "settings": "Settings",
-      "templates": "Templates and papers",
-      "accountHome": "Account"
+      "templates": "Templates and papers"
     },
     "errors": {
       "loadFailed": "We couldn't load this. Check your connection and try again.",
@@ -303,7 +303,8 @@
         "security": "Card security",
         "securityBody": "Your card's code changes every 30 seconds, so a screenshot stops working within a minute. If someone else may have used your account on their phone, reset the code: every earlier code, link and Wallet pass stops working, and your number stays the same.",
         "showRecord": "Show my certificates when my card is checked",
-        "showRecordHint": "Off unless you turn it on. Anyone holding your card's link would see them; each certificate can always be checked by its own code."
+        "showRecordHint": "Off unless you turn it on. Anyone holding your card's link would see them; each certificate can always be checked by its own code.",
+        "staff": "Staff"
       },
       "tiers": {
         "member": "Member",
@@ -363,6 +364,10 @@
         "returned": "Qirtas sent “{title}” back for a fix",
         "agreement": "Sign the agreement for “{title}”",
         "offer": "You have an offer for a role"
+      },
+      "kinds": {
+        "guest": "Guest",
+        "partner": "Partner"
       }
     },
     "events": {
@@ -897,6 +902,17 @@
             "gender": "Gender"
           },
           "membersManageOnly": "Only the Membership officers see these counts."
+        },
+        "guests": {
+          "link": "Guests",
+          "title": "The Society's guests",
+          "lede": "People outside AUIB whom Membership invites, with no partner. They hold a guest's membership and card: they book places, use perks and write for calls open to them. A partner's guests are on its dashboard.",
+          "current": "Guests now",
+          "empty": "No guests yet.",
+          "since": "Since {date}",
+          "end": "End",
+          "endConfirm": "End {name}'s guest membership? Their card stops.",
+          "invite": "Invite"
         }
       },
       "member": {
@@ -1389,7 +1405,7 @@
       },
       "programmes": {
         "title": "Programs",
-        "lede": "The six programs you run, each with its sessions, shifts, places and needs, and the pitches members send for new ones.",
+        "lede": "The six programs are event series: each keeps its sessions, shifts, places and needs on its own page.",
         "programme": "Program",
         "tabs": {
           "episodes": "Episodes",
@@ -1517,18 +1533,22 @@
           "kinds": {
             "role": "A role",
             "apprenticeship": "Apprenticeship",
-            "first_ink": "First Ink"
+            "first_ink": "First Ink",
+            "volunteer": "A volunteer place",
+            "partner": "With a partner"
           },
           "kindHints": {
             "role": "A role the program needs filled.",
             "apprenticeship": "A one-term place in a Qirtas section or this program. Its sessions are logged as shifts on its own rota, the hours count as service, and completing it drafts a certificate.",
-            "first_ink": "A mentor place for AUIB members who volunteer with high school students, through the partner school. The students never get accounts: record nothing about them here."
+            "first_ink": "A mentor place for AUIB members who volunteer with high school students, through the partner school. The students never get accounts: record nothing about them here.",
+            "volunteer": "A standing place to volunteer with the program, for a term. Its sessions are logged as shifts on its own rota, and the hours count as service.",
+            "partner": "A place with one of the Society's partners: an internship, a volunteer place or a role at the partner, from the one register of partners."
           },
           "desk": "Qirtas section (optional)",
           "deskHint": "For an apprenticeship in one of Qirtas's sections.",
           "noDesk": "None: the program itself",
           "partner": "Partner school",
-          "partnerHint": "First Ink runs through the partner school, from the one register of partners.",
+          "partnerHint": "First Ink runs through the partner school; a place with a partner names the partner. Both from the one register of partners.",
           "choosePartner": "Choose the school",
           "places": "Places",
           "termFrom": "Term starts",
@@ -1571,7 +1591,8 @@
         "pitches": {
           "title": "Pitches",
           "lede": "Ideas for new programs that members sent. The Director of Programs answers each one."
-        }
+        },
+        "whatsOn": "What's on"
       },
       "governance": {
         "title": "Governance",
@@ -2018,7 +2039,8 @@
           "agreements": "Memoranda",
           "affiliations": "Affiliations",
           "offers": "Member offers",
-          "declarations": "Declarations"
+          "declarations": "Declarations",
+          "places": "Places"
         },
         "register": {
           "lede": "Clubs, departments and organizations the Society works with or is talking to. Contacts and notes stay internal.",
@@ -2177,6 +2199,19 @@
           "closed": "closed",
           "receive": "Mark received",
           "notReceived": "Not yet received"
+        },
+        "places": {
+          "lede": "Places with partners on Get involved: an internship, a volunteer place or a role at one of our partners. Anyone can read them; members reply.",
+          "empty": "No places with partners yet.",
+          "closed": "Closed",
+          "close": "Close",
+          "reopen": "Reopen",
+          "new": "Post a place with a partner",
+          "partner": "Partner",
+          "choose": "Choose a partner",
+          "title": "Title",
+          "body": "What it involves",
+          "post": "Post the place"
         }
       },
       "recognition": {
@@ -2938,7 +2973,8 @@
           "programmes_removal_requests": "a takedown request",
           "programmes_six_words": "a Six Words card",
           "membership_activity_records": "an activity record",
-          "governance_partner_invitations": "a partner invitation"
+          "governance_partner_invitations": "an invitation",
+          "membership_guests": "a guest of the Society"
         }
       }
     },
@@ -3851,11 +3887,15 @@
       "qirtas": "Qirtas",
       "kinds": {
         "apprenticeship": "Apprenticeship",
-        "first_ink": "First Ink"
+        "first_ink": "First Ink",
+        "volunteer": "Volunteer",
+        "partner": "With a partner"
       },
       "kindLines": {
         "apprenticeship": "One term. Your sessions are logged as shifts, the hours count as service, and you get a certificate at the end.",
-        "first_ink": "Mentor high school students as an AUIB member, through our partner school."
+        "first_ink": "Mentor high school students as an AUIB member, through our partner school.",
+        "volunteer": "A volunteer place for a term. Your sessions are logged as shifts and the hours count as service.",
+        "partner": "A place with one of the Society's partners."
       },
       "term": "{from} to {to}",
       "placed": {
@@ -3957,23 +3997,40 @@
     },
     "getInvolved": {
       "title": "Get involved",
-      "lede": "Three ways into the AUIB Society of Arts and Letters: join, give a few hours, or audition for the Company.",
-      "ways": {
-        "join": {
-          "title": "Join the Society",
-          "body": "Membership is free for AUIB students. Sign up with your AUIB address."
+      "lede": "Every open place with the AUIB Society of Arts and Letters and its partners: roles on the Council's teams and in Qirtas, the Apprenticeship, First Ink, volunteering, places with our partners, and the Company's auditions.",
+      "members": "Members reply and sign up for shifts once signed in.",
+      "signIn": "Sign in",
+      "join": "Not a member yet? Join",
+      "none": "Nothing open right now.",
+      "society": "The Society",
+      "closes": "closes {date}",
+      "groups": {
+        "role": {
+          "title": "Roles",
+          "lede": "Places on the Society's teams: the Council's directors' teams, Qirtas's masthead and the programs. Membership runs every application."
         },
-        "shifts": {
-          "title": "Give a few hours",
-          "body": "Every program needs hands on the night. Members sign up for shifts, and the hours count toward their service record."
+        "apprenticeship": {
+          "title": "The Apprenticeship",
+          "lede": "One term in a Qirtas section or a program, with a mentor: training, real assignments, service hours and a certificate. The way onto a team."
+        },
+        "first_ink": {
+          "title": "First Ink",
+          "lede": "Mentor places for AUIB members who volunteer with high school students, through our partner school."
+        },
+        "volunteer": {
+          "title": "Volunteering",
+          "lede": "Standing places to volunteer with a program for a term; members also sign up for single shifts. The hours count as service."
+        },
+        "partner": {
+          "title": "With our partners",
+          "lede": "Internships, volunteer places and roles with the clubs, departments and organizations the Society partners with."
         },
         "audition": {
-          "title": "Audition for the Company",
-          "body": "The Company casts each production in an audition, open to members."
+          "title": "Auditions",
+          "lede": "The Company casts each production in an audition, open to members.",
+          "link": "The Company and its auditions"
         }
-      },
-      "members": "Members see every open role, shift and audition here.",
-      "signIn": "Sign in"
+      }
     },
     "partnerJoin": {
       "title": "Partner with the Society",
@@ -4012,7 +4069,8 @@
         "four": "Sponsors get acknowledgement, never editorial influence (P11.4).",
         "five": "{name} verifies its own people on the platform, and only people who belong to it.",
         "six": "Nothing is paid through the platform: the Society takes no online payments."
-      }
+      },
+      "oneMembership": "Your account already holds a membership. An account is one kind only, so apply with your organization's own address: sign out, then come back here."
     },
     "partnerDesk": {
       "none": "You are not on a partner's team.",
@@ -4093,13 +4151,12 @@
         "withdraw": "Withdraw",
         "withdrawConfirm": "Withdraw this invitation? Its link stops working.",
         "linkHint": "Or make a link to share with your people. Whoever signs up with it waits here until you verify them.",
-        "makeLink": "Make a link"
+        "makeLink": "Make a link",
+        "societyLinkHint": "Or make a link to share. Whoever signs up with it is the Society's guest at once."
       }
     },
     "accountHome": {
-      "title": "Your account",
-      "lede": "Membership is for AUIB students and alumni. Your account is for what you do with the Society through its partners.",
-      "partners": "With our partners",
+      "partners": "Your membership",
       "team": "On the team of {name}",
       "teamLine": "Open its dashboard: its profile, perks, guests and team.",
       "guest": "Guest of {name}",
@@ -4108,7 +4165,7 @@
       "pendingLine": "Your partner confirms that you belong to it; then you are its guest.",
       "applied": "{name} has applied to partner",
       "appliedLine": "The application is with the Society until the President signs.",
-      "nothing": "Nothing here yet. Partners invite their guests and team by email or by link.",
+      "nothing": "No membership yet. Membership is for AUIB students; others join as a guest, by invitation from the Society or one of its partners.",
       "aboutPartners": "About our partners",
       "do": "What you can do",
       "book": "Book a place",
@@ -4116,11 +4173,12 @@
       "write": "Write for Qirtas",
       "writeLine": "Calls opened to your partner.",
       "perksHow": "Show this page to claim a perk.",
-      "settingsLede": "Your name, the emails you get, how you sign in, and deleting your account.",
-      "name": "Your name",
-      "record": "Your record: service and certificates",
-      "work": "Your work",
-      "workLine": "What you have sent to Qirtas, and where it stands."
+      "record": "Your record",
+      "societyGuest": "Guest of the Society",
+      "societyGuestLine": "You may book places at events, use our partners' perks and write for calls open to you.",
+      "recordLine": "Service and certificates.",
+      "involved": "Get involved",
+      "involvedLine": "Every open place, with the Society and its partners."
     },
     "partnerInvite": {
       "title": "An invitation",
@@ -4137,8 +4195,10 @@
         "invitation_for_another_address": "This invitation is for another address.",
         "invitation_unusable": "This invitation can no longer be used.",
         "team_full": "The team is full (six people).",
-        "unknown": "Something went wrong. Try again."
-      }
+        "unknown": "Something went wrong. Try again.",
+        "one_membership": "This account already holds a membership of another kind. An account is one kind only: a member, a guest or a partner's."
+      },
+      "society": "The AUIB Society of Arts and Letters invites you as its guest: book places at events, use our partners' perks and carry a guest's card."
     }
   },
   "web": {
@@ -4158,7 +4218,6 @@
       "diwan": "The Diwan",
       "accountMenu": "Membership menu",
       "company": "The Company",
-      "yourAccount": "Account",
       "partner": "Partner dashboard"
     },
     "footer": {
@@ -4258,7 +4317,7 @@
       "all": "What's on",
       "cancelled": "This event has been canceled.",
       "rsvp": "Book a place",
-      "rsvpHint": "Sign in with your AUIB email to reserve a place.",
+      "rsvpHint": "Sign in to book a place: members and the Society's guests book.",
       "addToCalendar": "Add to calendar",
       "series": "Series",
       "everything": "Everything",
@@ -4437,7 +4496,7 @@
         },
         "council": {
           "title": "A Council runs the work",
-          "body": "Three elected officers and five directors meet every two weeks and greenlight programs."
+          "body": "Three elected officers and six directors meet every two weeks and greenlight programs."
         },
         "elections": {
           "title": "Elections every April",
@@ -4538,9 +4597,11 @@
         }
       },
       "firstMonthTitle": "Your first month",
-      "firstMonth": "Register · join The Common Room · type your six words · come to the Salon with your buddy · tell us after your second event what you would like to do here.",
+      "firstMonth": "Register · join The Common Room · come to the Salon with your buddy · tell us after your second event what you would like to do here.",
       "cta": "Sign up",
-      "ctaHint": "Use your AUIB email address."
+      "ctaHint": "Use your AUIB email address.",
+      "others": "Not at AUIB? A guest's membership comes by invitation, from the Society or one of its partners; an organization applies to partner.",
+      "othersLink": "Partners"
     },
     "programmes": {
       "title": "Programs",
@@ -4585,7 +4646,7 @@
       "telegramName": "The Common Room",
       "email": "Email",
       "concernTitle": "Raising a concern",
-      "concern": "If something is wrong, tell any officer, our Faculty Advisor or the Office of Student Life, in person or with the concern form. Harassment, safety and anything involving a child go straight to Student Life.",
+      "concern": "If something is wrong, tell any officer, our Faculty Advisor or the Office of Student Life, in person, or raise a concern under Membership, Society. Harassment, safety and anything involving a child go straight to Student Life.",
       "concernSource": "Member Handbook",
       "photoTitle": "A photo or video of you",
       "photo": "Ask and it comes down within 24 hours.",
@@ -4755,7 +4816,7 @@
       "join": "Join the Society",
       "valid": "This membership stands today.",
       "lapsed": "This card belongs to the Society's records, but the membership does not stand today.",
-      "holder": "Member",
+      "holder": "Card holder",
       "number": "Card number",
       "tier": "Membership",
       "since": "Member since",
@@ -4765,9 +4826,11 @@
       "note": "Members can replace their card's code at any time; an old code then stops working.",
       "live": "This is the live card: its code is from the last minute.",
       "notLive": "This code isn't live (it may be a screenshot). Ask to see the card on the member's own phone.",
-      "perks": "Partners: this member may use the Society's member perks.",
+      "perks": "Partners: this card's holder may use the Society's perks.",
       "pattern": "This card's pattern. It should match the one on the member's card.",
-      "record": "Certificates"
+      "record": "Certificates",
+      "staff": "Staff",
+      "staffYes": "Holds a role in the Society"
     },
     "productions": {
       "title": "Productions",

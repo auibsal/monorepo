@@ -14,6 +14,7 @@ export const queryKeys = {
   activity: (userId: string) => ["activity", userId] as const,
   calendarToken: (userId: string) => ["calendar-token", userId] as const,
   grants: (userId: string) => ["grants", userId] as const,
+  membership: (userId: string) => ["membership", "kind", userId] as const,
   openCalls: ["open-calls"] as const,
   profile: (userId: string) => ["profile", userId] as const,
   rsvps: (userId: string) => ["rsvps", userId] as const,
@@ -34,6 +35,14 @@ const useUserQuery = <T>(
     queryFn: () => fn(user?.id ?? ""),
     queryKey: key(user?.id ?? ""),
   });
+};
+
+/** Which membership the account holds, and whether it is staff. */
+export const useMyMembership = () => {
+  const { supabase } = useAuth();
+  return useUserQuery(queryKeys.membership, () =>
+    membership.myMembership(supabase)
+  );
 };
 
 export const useMemberStatus = () => {

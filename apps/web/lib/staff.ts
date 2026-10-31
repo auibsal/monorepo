@@ -1,8 +1,7 @@
 // Which ways the signed-in person has beyond the public site, remembered in
 // a cookie so the public pages (which have no session client) can show
-// them in the header: Membership for members, Account for everyone else
-// (owner, Oct 31, 2026), the Diwan for officers, and Partner for a
-// partner's team. A hint for the header, never for access: each area's own
+// them in the header: Membership for everyone (owner, Oct 31, 2026), the
+// Diwan for staff, and the dashboard for a partner's people. A hint for the header, never for access: each area's own
 // gate and Row Level Security decide.
 
 export const WAYS_COOKIE = "sal_ways";
@@ -10,13 +9,11 @@ export const WAYS_COOKIE = "sal_ways";
 export interface Ways {
   /** Holds a role in the Society (the Diwan). */
   readonly diwan: boolean;
-  /** A member (an AUIB address, alumni among them): Membership, not Account. */
-  readonly member: boolean;
   /** On a partner's team: the partner's dashboard. */
   readonly partner: boolean;
 }
 
-const FLAGS = ["diwan", "member", "partner"] as const;
+const FLAGS = ["diwan", "partner"] as const;
 
 /** What the cookies say, or null when nothing is remembered yet. */
 export const readWays = (cookies: string): Ways | null => {
@@ -32,7 +29,6 @@ export const readWays = (cookies: string): Ways | null => {
   );
   return {
     diwan: held.has("diwan"),
-    member: held.has("member"),
     partner: held.has("partner"),
   };
 };

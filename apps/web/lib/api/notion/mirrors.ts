@@ -130,7 +130,7 @@ export const mirrorProgrammes = async (ctx: SyncContext) => {
         Kind: prop.select(p.kind),
         Name: prop.title(p.name_en),
         "Name (Arabic)": prop.text(p.name_ar),
-        Nexus: prop.url(app(ctx, "/events/programs")),
+        Nexus: prop.url(app(ctx, "/events")),
         "Nexus ID": prop.text(p.id),
         Summary: prop.text(p.summary_en),
       },

@@ -148,12 +148,20 @@ export const MembersDirectory = () => {
               </Link>
             ) : null}
             {hasPermission(grants.data, "members.manage") ? (
-              <Link
-                className={buttonVariants({ size: "sm", variant: "outline" })}
-                href="/people/insights"
-              >
-                {t("insights.link")}
-              </Link>
+              <>
+                <Link
+                  className={buttonVariants({ size: "sm", variant: "outline" })}
+                  href="/people/guests"
+                >
+                  {t("guests.link")}
+                </Link>
+                <Link
+                  className={buttonVariants({ size: "sm", variant: "outline" })}
+                  href="/people/insights"
+                >
+                  {t("insights.link")}
+                </Link>
+              </>
             ) : null}
             <ExportButton fileName="sal-members.csv" name="members" />
           </>

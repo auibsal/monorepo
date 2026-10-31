@@ -23,7 +23,11 @@ import { type PointerEvent, useEffect, useRef, useState } from "react";
 import QRCode from "react-qr-code";
 import { Guilloche } from "@/components/guilloche";
 import { callApi } from "@/lib/nexus/api";
-import { useMemberStatus, useProfile } from "@/lib/nexus/queries";
+import {
+  useMemberStatus,
+  useMyMembership,
+  useProfile,
+} from "@/lib/nexus/queries";
 import {
   TOTP_PERIOD_SECONDS,
   totp,
@@ -382,9 +386,12 @@ export const MembershipCard = () => {
   const { supabase, user } = useAuth();
   const queryClient = useQueryClient();
   const status = useMemberStatus();
+  const mine = useMyMembership();
+  const kind = mine.data?.kind ?? null;
   const profile = useProfile();
   const card = useQuery({
-    enabled: Boolean(user && status.data?.is_member),
+    // Every membership carries the card (owner, Oct 31, 2026).
+    enabled: Boolean(user && kind),
     queryFn: () => membership.myCard(supabase),
     queryKey: [...cardKey, user?.id],
   });
@@ -396,7 +403,7 @@ export const MembershipCard = () => {
   const live = useLiveCode(card.data?.secret);
   const motion = useCardMotion();
 
-  if (!(status.data?.is_member && profile.data && card.data)) {
+  if (!(kind && status.data && profile.data && card.data)) {
     return null;
   }
 
@@ -405,7 +412,13 @@ export const MembershipCard = () => {
   const link = live.digits
     ? siteUrl(locale, membership.livePath(card.data.code, live.digits))
     : null;
-  const tier = status.data.tier ? t(`tiers.${status.data.tier}`) : "";
+  // A member's tier; a guest's or a partner's card says which it is.
+  let tier = "";
+  if (kind !== "member") {
+    tier = t(`kinds.${kind}`);
+  } else if (status.data.tier) {
+    tier = t(`tiers.${status.data.tier}`);
+  }
   const left = (live.secondsLeft / TOTP_PERIOD_SECONDS) * 100;
 
   const code = (size: number) =>
@@ -443,8 +456,12 @@ export const MembershipCard = () => {
         <div className="relative grid content-between gap-8">
           <div className="flex items-start justify-between gap-4">
             <BrandLogo ground="light" height={44} locale={locale} />
-            <p className="type-label pt-1 text-end text-text-secondary">
-              {t("card.title")}
+            <p className="type-label grid gap-1 pt-1 text-end text-text-secondary">
+              <span>{t("card.title")}</span>
+              {/* Staff: a member holding a Society role. */}
+              {mine.data?.staff ? (
+                <span className="text-accent">{t("card.staff")}</span>
+              ) : null}
             </p>
           </div>
           <p className="type-display text-balance" dir="auto">
@@ -455,19 +472,21 @@ export const MembershipCard = () => {
               label={t("card.numberLabel")}
               value={cardNumber(card.data.number)}
             />
-            {status.data.member_since ? (
+            {kind === "member" && status.data.member_since ? (
               <Field
                 label={t("card.since")}
                 value={sinceMonth(status.data.member_since, locale)}
               />
             ) : null}
             {tier ? <Field label={t("card.tier")} value={tier} /> : null}
-            <Field
-              label={t("card.vote")}
-              value={
-                status.data.voting_member ? t("card.votes") : t("card.noVote")
-              }
-            />
+            {kind === "member" ? (
+              <Field
+                label={t("card.vote")}
+                value={
+                  status.data.voting_member ? t("card.votes") : t("card.noVote")
+                }
+              />
+            ) : null}
           </dl>
         </div>
         <figure className="relative grid content-start justify-items-center gap-2 sm:border-line sm:border-s sm:ps-8">

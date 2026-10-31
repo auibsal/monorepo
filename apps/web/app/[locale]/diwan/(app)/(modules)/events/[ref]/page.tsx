@@ -1,33 +1,20 @@
-import { Suspense } from "react";
-import { RequireModule } from "@/components/nexus/admin/admin-shell";
-import { EventEditor } from "@/components/nexus/admin/events/editor";
-import { RecordRef } from "@/components/nexus/record-ref";
-import { SectionSpinner } from "@/components/nexus/states";
+import { EventOrProgram } from "@/components/nexus/admin/events/event-or-program";
 import { titleFrom } from "@/lib/nexus/metadata";
 
-export const generateMetadata = titleFrom((t) =>
-  t("nexus.admin.event.editTitle")
-);
+export const generateMetadata = titleFrom((t) => t("nexus.admin.events.title"));
 
-const EventEditPage = async ({
+/**
+ * One address for an event or a program (owner, Oct 31, 2026: What's on is
+ * one thing): a program is an event series, at /diwan/events/<slug> like
+ * its public page; a slug names one or the other, never both.
+ */
+const Page = async ({
   params,
 }: {
   readonly params: Promise<{ ref: string }>;
 }) => {
   const { ref } = await params;
-  return (
-    <RequireModule module="events">
-      <Suspense fallback={<SectionSpinner />}>
-        <RecordRef
-          back="/events"
-          lookup={{ column: "slug", schema: "events", table: "events" }}
-          value={decodeURIComponent(ref)}
-        >
-          <EventEditor />
-        </RecordRef>
-      </Suspense>
-    </RequireModule>
-  );
+  return <EventOrProgram value={decodeURIComponent(ref)} />;
 };
 
-export default EventEditPage;
+export default Page;

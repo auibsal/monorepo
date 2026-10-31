@@ -19,8 +19,6 @@ type TabKey =
   | "editions"
   | "awards"
   | "ads"
-  | "calendar"
-  | "programs"
   | "members"
   | "verification"
   | "hiring"
@@ -48,18 +46,6 @@ const useTabs = (tabs: readonly Tab[], labels: (key: TabKey) => string) => {
           ).some((p) => hasPermissionAnywhere(grants.data, p)))
     )
     .map((tab): SectionTab => ({ href: tab.href, label: labels(tab.key) }));
-};
-
-const EVENTS: readonly Tab[] = [
-  { href: "/events", key: "calendar", module: "events" },
-  { href: "/events/programs", key: "programs", module: "programs" },
-];
-
-/** What's on: the calendar and the six programs (Second Chapter among them); each event has its own door. */
-export const EventsTabs = () => {
-  const t = useTranslations("nexus.admin.sections.tabs");
-  const tabs = useTabs(EVENTS, (key) => t(key));
-  return <SectionTabs label={t("events")} tabs={tabs} />;
 };
 
 const QIRTAS: readonly Tab[] = [

@@ -120,6 +120,16 @@ test("sign-up takes only AUIB addresses", async ({ page }) => {
   await expect(page.getByLabel("Family name")).toHaveCount(0);
 });
 
+test("signing in with an address that has no account says so", async ({
+  page,
+}) => {
+  await page.goto(`${urls.web}/sign-in`);
+  await page.getByLabel("Email").fill(`nobody-${Date.now()}@auib.edu.iq`);
+  await page.getByLabel("Password").fill(PASSWORD);
+  await page.getByRole("button", { exact: true, name: "Sign in" }).click();
+  await expect(page.getByText("No account uses this address.")).toBeVisible();
+});
+
 test("an AUIB address signs in by password, with a link one click away", async ({
   page,
 }) => {

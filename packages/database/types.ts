@@ -1268,6 +1268,7 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      account_exists: { Args: { email: string }; Returns: boolean };
       admin_overview: { Args: Record<PropertyKey, never>; Returns: Json };
       confirm_personal_email: { Args: { token: string }; Returns: string };
       current_semester: {
@@ -2630,7 +2631,7 @@ export type Database = {
           expires_at: string;
           id: string;
           kind: string;
-          partner_id: string;
+          partner_id: string | null;
           revoked_at: string | null;
         };
         Insert: {
@@ -2643,7 +2644,7 @@ export type Database = {
           expires_at?: string;
           id?: string;
           kind: string;
-          partner_id: string;
+          partner_id?: string | null;
           revoked_at?: string | null;
         };
         Update: {
@@ -2656,7 +2657,7 @@ export type Database = {
           expires_at?: string;
           id?: string;
           kind?: string;
-          partner_id?: string;
+          partner_id?: string | null;
           revoked_at?: string | null;
         };
         Relationships: [
@@ -4960,6 +4961,27 @@ export type Database = {
         };
         Relationships: [];
       };
+      guests: {
+        Row: {
+          created_at: string;
+          ended_at: string | null;
+          invited_by: string | null;
+          user_id: string;
+        };
+        Insert: {
+          created_at?: string;
+          ended_at?: string | null;
+          invited_by?: string | null;
+          user_id: string;
+        };
+        Update: {
+          created_at?: string;
+          ended_at?: string | null;
+          invited_by?: string | null;
+          user_id?: string;
+        };
+        Relationships: [];
+      };
       memberships: {
         Row: {
           created_at: string;
@@ -5204,6 +5226,13 @@ export type Database = {
           secret: string;
         }[];
       };
+      my_membership: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          kind: string;
+          staff: boolean;
+        }[];
+      };
       my_status: {
         Args: Record<PropertyKey, never>;
         Returns: {
@@ -5271,9 +5300,11 @@ export type Database = {
           active: boolean;
           full_name_ar: string;
           full_name_en: string;
+          kind: string;
           live: boolean;
           member_since: string;
           number: number;
+          staff: boolean;
           tier: Database["membership"]["Enums"]["tier"];
           voting: boolean;
         }[];
@@ -6225,6 +6256,30 @@ export type Database = {
       moderate_six_words: {
         Args: { approve: boolean; entry_id: string };
         Returns: undefined;
+      };
+      open_places: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          body_ar: string;
+          body_en: string;
+          closes_at: string;
+          created_at: string;
+          desk: Database["journal"]["Enums"]["desk"];
+          id: string;
+          kind: string;
+          owner: string;
+          partner_name_ar: string;
+          partner_name_en: string;
+          places: number;
+          programme_name_ar: string;
+          programme_name_en: string;
+          programme_slug: string;
+          skills: string[];
+          term_from: string;
+          term_to: string;
+          title_ar: string;
+          title_en: string;
+        }[];
       };
       production_partner_choices: {
         Args: Record<PropertyKey, never>;

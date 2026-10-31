@@ -124,6 +124,14 @@ export const openings = async (client: Client) =>
       .order("created_at", { ascending: false })
   ) ?? [];
 
+/**
+ * Every open place, for anyone (owner, Oct 31, 2026: Get involved is the
+ * careers page): roles, Apprenticeships, First Ink, volunteering and places
+ * with partners, with the program's and the partner's names.
+ */
+export const openPlaces = async (client: Client) =>
+  unwrap(await client.schema("programmes").rpc("open_places")) ?? [];
+
 /** The Apprenticeship and First Ink places the member holds. */
 export const myPlacements = async (client: Client, userId: string) =>
   unwrap(

@@ -1670,6 +1670,20 @@ Covered by automated tests so far:
 
 ## needs-native-review (Arabic written for the platform)
 
+- One Membership (2026-10-31, the last): `nexus.home.kinds.*`,
+  `nexus.home.card.staff`, `nexus.accountHome.*`, `nexus.partnerInvite.
+  {society,errors.one_membership}`, `nexus.partnerJoin.oneMembership`,
+  `nexus.partnerDesk.invite.societyLinkHint`, `nexus.admin.members.
+  guests.*`, `nexus.admin.partners.{tabs.places,places.*}`,
+  `nexus.admin.programmes.{lede,whatsOn,callboard.kinds.*,
+  callboard.kindHints.*,callboard.partnerHint}`, `nexus.callboard.
+  {kinds,kindLines}.{volunteer,partner}`, `nexus.getInvolved.*`,
+  `auth.errors.{no_account,user_exists}`, `auth.signIn.linkSent`,
+  `web.join.{firstMonth,others,othersLink}`, `web.about.glance.council.
+  body`, `web.events.rsvpHint`, `web.contact.concern`, `web.verifyCard.
+  {holder,perks,staff,staffYes}` and the Society's invitation email
+  (`invitationLines` in `packages/email/copy.ts`).
+
 - Partners, guests and accounts (2026-10-31): `nexus.accountHome.*`,
   `nexus.partnerInvite.*`, `nexus.partnerDesk.{invite.*,team.*,guests.*,
   perks.*,lede,open,none}`, `nexus.partnerJoin.{account,waiting,partnered,

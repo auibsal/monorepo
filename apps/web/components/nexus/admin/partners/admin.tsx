@@ -37,6 +37,7 @@ import {
 } from "../kit";
 import { useMemberNames } from "../member-picker";
 import { memberName } from "../members/directory";
+import { PartnerPlaces } from "./places";
 
 const key = ["admin", "partners"];
 
@@ -1397,6 +1398,9 @@ export const PartnersAdmin = () => {
           {canManage ? (
             <TabsTrigger value="offers">{t("tabs.offers")}</TabsTrigger>
           ) : null}
+          {canManage ? (
+            <TabsTrigger value="places">{t("tabs.places")}</TabsTrigger>
+          ) : null}
           {canSeeDeclarations ? (
             <TabsTrigger value="declarations">
               {t("tabs.declarations")}
@@ -1419,6 +1423,11 @@ export const PartnersAdmin = () => {
         {canManage ? (
           <TabsContent className="pt-4" value="offers">
             <Offers />
+          </TabsContent>
+        ) : null}
+        {canManage ? (
+          <TabsContent className="pt-4" value="places">
+            <PartnerPlaces />
           </TabsContent>
         ) : null}
         {canSeeDeclarations ? (

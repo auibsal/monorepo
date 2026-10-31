@@ -723,20 +723,21 @@ interface Invitation {
   kind: "team" | "guest";
 }
 
-/** The link an invitation is, on this site. */
+/** The link an invitation is, on this site (/invite/<code>). */
 const inviteUrl = (code: string, locale: string) =>
-  `${window.location.origin}${locale === "en" ? "" : `/${locale}`}/partners/invite/${code}`;
+  `${window.location.origin}${locale === "en" ? "" : `/${locale}`}/invite/${code}`;
 
 /**
  * An email invitation: to the team (the Lead's) or as a guest. The person
- * gets an email; the link works for fourteen days.
+ * gets an email; the link works for fourteen days. With no partner, the
+ * Society's own guest (Membership, in the Diwan).
  */
-const InviteByEmail = ({
+export const InviteByEmail = ({
   kind,
   partnerId,
 }: {
   kind: "team" | "guest";
-  partnerId: string;
+  partnerId: string | null;
 }) => {
   const t = useTranslations("nexus.partnerDesk.invite");
   const { supabase } = useAuth();
@@ -797,12 +798,12 @@ const InviteByEmail = ({
 };
 
 /** Invitations not yet accepted: copy the link again, or withdraw. */
-const OpenInvitations = ({
+export const OpenInvitations = ({
   kind,
   partnerId,
 }: {
   kind: "team" | "guest";
-  partnerId: string;
+  partnerId: string | null;
 }) => {
   const t = useTranslations("nexus.partnerDesk.invite");
   const locale = useLocale() as Locale;
@@ -810,20 +811,24 @@ const OpenInvitations = ({
   const queryClient = useQueryClient();
   const [copied, setCopied] = useState<string | null>(null);
   const open = useQuery({
-    queryFn: async () =>
-      (unwrap(
-        await supabase
-          .schema("governance")
-          .from("partner_invitations")
-          .select("id, kind, email, code, created_at, expires_at")
-          .eq("partner_id", partnerId)
+    queryFn: async () => {
+      const query = supabase
+        .schema("governance")
+        .from("partner_invitations")
+        .select("id, kind, email, code, created_at, expires_at");
+      return (unwrap(
+        await (partnerId
+          ? query.eq("partner_id", partnerId)
+          : query.is("partner_id", null)
+        )
           .eq("kind", kind)
           .is("accepted_at", null)
           .is("revoked_at", null)
           .gt("expires_at", new Date().toISOString())
           .order("created_at", { ascending: false })
-      ) ?? []) as Invitation[],
-    queryKey: [...KEY, "invitations", partnerId, kind],
+      ) ?? []) as Invitation[];
+    },
+    queryKey: [...KEY, "invitations", partnerId ?? "society", kind],
   });
   const withdraw = useMutation({
     mutationFn: async (id: string) =>
@@ -890,9 +895,10 @@ const OpenInvitations = ({
 
 /**
  * A shareable guest link, for the partner's own group: whoever joins
- * through it waits until the partner verifies them.
+ * through it waits until the partner verifies them. The Society's own link
+ * (no partner) welcomes its guests at once.
  */
-const ShareableLink = ({ partnerId }: { partnerId: string }) => {
+export const ShareableLink = ({ partnerId }: { partnerId: string | null }) => {
   const t = useTranslations("nexus.partnerDesk.invite");
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
@@ -908,7 +914,9 @@ const ShareableLink = ({ partnerId }: { partnerId: string }) => {
   });
   return (
     <div className="grid gap-2">
-      <p className="type-caption">{t("linkHint")}</p>
+      <p className="type-caption">
+        {partnerId ? t("linkHint") : t("societyLinkHint")}
+      </p>
       <Button
         className="justify-self-start"
         disabled={make.isPending}

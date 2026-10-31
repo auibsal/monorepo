@@ -1101,18 +1101,14 @@ export const ProgramsIndex = () => {
     programmes.isListedProgram({ is_active: p.isActive, slug: p.slug })
   );
   return (
-    <div className="grid gap-10">
-      <AdminHeading title={t("title")}>{t("lede")}</AdminHeading>
+    <DiwanSection description={t("lede")} id="programs" title={t("title")}>
       {listed.length === 0 ? (
         <EmptyLine>{t("none")}</EmptyLine>
       ) : (
         <RowList>
           {listed.map((p) => (
             <li key={p.id}>
-              <Link
-                className="link font-medium"
-                href={`/events/programs/${p.slug}`}
-              >
+              <Link className="link font-medium" href={`/events/${p.slug}`}>
                 {p.label}
               </Link>
             </li>
@@ -1126,7 +1122,7 @@ export const ProgramsIndex = () => {
       >
         <RequestQueue keys={["f10"]} />
       </DiwanSection>
-    </div>
+    </DiwanSection>
   );
 };
 
@@ -1162,7 +1158,7 @@ export const ProgramPage = ({
   const programme = options.options.find((p) => p.slug === slug);
   if (!programme) {
     return (
-      <EmptyLine action={{ href: "/events/programs", label: t("all") }}>
+      <EmptyLine action={{ href: "/events", label: t("all") }}>
         {t("notYours")}
       </EmptyLine>
     );
@@ -1181,16 +1177,14 @@ export const ProgramPage = ({
   const tab = tabs.find((x) => x === requested) ?? "sessions";
   return (
     <div className="grid gap-6">
-      <PathLine items={[{ href: "/events/programs", label: t("title") }]} />
+      <PathLine items={[{ href: "/events", label: t("whatsOn") }]} />
       <AdminHeading title={programme.label} />
       <NotionManaged kind="programme" recordId={programme.id} />
       <SectionTabs
         label={programme.label}
         tabs={tabs.map((key) => ({
           href:
-            key === "sessions"
-              ? `/events/programs/${slug}`
-              : `/events/programs/${slug}/${key}`,
+            key === "sessions" ? `/events/${slug}` : `/events/${slug}/${key}`,
           label: t(`tabs.${key}`),
         }))}
       />

@@ -120,7 +120,7 @@ test("an organization applies, the President signs, and its dashboard opens", as
   expect(invitation?.code).toBeTruthy();
 
   const guest = await (await browser.newContext()).newPage();
-  await guest.goto(`${urls.web}/partners/invite/${invitation?.code}`);
+  await guest.goto(`${urls.web}/invite/${invitation?.code}`);
   await expect(guest.getByLabel("Email")).toHaveValue(guestEmail);
   await guest.getByLabel("Password").fill(PASSWORD);
   for (const [name, parts] of [
@@ -142,18 +142,20 @@ test("an organization applies, the President signs, and its dashboard opens", as
   await guest.goto((link ?? "").replaceAll("&amp;", "&"));
   await guest.getByRole("button", { name: /continue/i }).click();
   await guest.getByRole("button", { name: "Accept the invitation" }).click();
-  await expect(guest).toHaveURL(/\/(welcome|account)/);
-  // Guests make the pledges, then their account shows the partner's perk.
-  for (const pledge of [
-    "I make the Human Authorship pledge",
-    "I make the Member Pledge",
-  ]) {
-    const button = guest.getByRole("button", { name: pledge });
-    if (await button.isVisible().catch(() => false)) {
-      await button.click();
-    }
-  }
-  await guest.goto(`${urls.web}/account`);
+  // A guest makes the pledges and answers the photo question, like a
+  // member, then meets their card.
+  await expect(guest).toHaveURL(/\/welcome/);
+  await guest
+    .getByRole("button", { name: "I make the Human Authorship pledge" })
+    .click();
+  await guest.getByRole("button", { name: "I make the Member Pledge" }).click();
+  await guest.getByRole("button", { name: "Yes, that's fine" }).click();
+  await expect(guest.getByRole("heading", { level: 1 })).toContainText(
+    "Welcome"
+  );
+  // One Membership for everyone: the guest's Today, with a guest's card.
+  await guest.goto(`${urls.web}/membership`);
+  await expect(guest.getByText("Guest", { exact: true }).first()).toBeVisible();
   await expect(guest.getByText(`Guest of ${organization}`)).toBeVisible();
   await expect(
     guest.getByText(`Free entry to readings ${stamp}`)

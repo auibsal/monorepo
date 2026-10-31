@@ -45,6 +45,7 @@ const MemberCardPage = async ({ params, searchParams }: CardParams) => {
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "web.verifyCard" });
   const tt = await getTranslations({ locale, namespace: "nexus.home.tiers" });
+  const tk = await getTranslations({ locale, namespace: "nexus.home.kinds" });
   const valid = membership.CARD_CODE.test(code);
   const [card, record] = valid
     ? await Promise.all([
@@ -70,17 +71,26 @@ const MemberCardPage = async ({ params, searchParams }: CardParams) => {
     [t("holder"), localized(card, "full_name", locale), "auto"],
     [t("number"), String(card.number).padStart(4, "0"), undefined],
   ];
-  if (card.tier) {
+  // One membership of one kind (owner, Oct 31, 2026): a member's tier, or
+  // that the card is a guest's or a partner's; Staff for a member holding a
+  // Society role.
+  const member = card.kind === "member";
+  if (member && card.tier) {
     rows.push([t("tier"), tt(card.tier), undefined]);
+  } else if (card.kind === "guest" || card.kind === "partner") {
+    rows.push([t("tier"), tk(card.kind), undefined]);
   }
-  if (card.member_since) {
+  if (card.staff) {
+    rows.push([t("staff"), t("staffYes"), undefined]);
+  }
+  if (member && card.member_since) {
     rows.push([
       t("since"),
       formatLongDate(card.member_since, locale, true),
       undefined,
     ]);
   }
-  if (card.active) {
+  if (card.active && member) {
     rows.push([t("vote"), card.voting ? t("votes") : t("noVote"), undefined]);
   }
 

@@ -460,9 +460,21 @@ const SOCIETY_AR = "جمعية الفنون والآداب في الجامعة �
 /** A partner invitation's heading and first lines, by kind and language. */
 const invitationLines = (
   l: Lang,
-  kind: "team" | "guest",
+  kind: "team" | "guest" | "society",
   partner: string
 ): { body: string; heading: string } => {
+  // The Society's own guest, invited by Membership (owner, Oct 31, 2026).
+  if (kind === "society") {
+    return l === "ar"
+      ? {
+          body: `تدعوك ${SOCIETY_AR} لتكون ضيفها: تحجز مقاعد في الفعاليات، وتستفيد من امتيازات الشركاء، وتحمل بطاقة الضيف الحيّة.`,
+          heading: "أنت مدعو ضيفًا للجمعية",
+        }
+      : {
+          body: "The AUIB Society of Arts and Letters invites you as its guest: you book places at events, use our partners' perks, and carry a guest's live card.",
+          heading: "You are invited as the Society's guest",
+        };
+  }
   if (kind === "team") {
     return l === "ar"
       ? {
@@ -492,7 +504,7 @@ const invitationLines = (
 export const partnerInvitation = (
   lang: Lang,
   partner: string,
-  kind: "team" | "guest",
+  kind: "team" | "guest" | "society",
   link: string
 ) =>
   build(lang, (l) => ({

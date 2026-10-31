@@ -7,12 +7,7 @@ import { Button } from "@repo/design-system/components/ui/button";
 import { Input } from "@repo/design-system/components/ui/input";
 import { Label } from "@repo/design-system/components/ui/label";
 import { Link, useRouter } from "@repo/internationalization/navigation";
-import {
-  membership,
-  names as nameParts,
-  partners,
-  unwrap,
-} from "@repo/sal-data";
+import { membership, names as nameParts, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -26,7 +21,11 @@ import {
   useState,
 } from "react";
 import { safeNextPath, stripLocale } from "@/lib/nexus/navigation";
-import { useMemberStatus, useProfile } from "@/lib/nexus/queries";
+import {
+  useMemberStatus,
+  useMyMembership,
+  useProfile,
+} from "@/lib/nexus/queries";
 import { MembershipCard } from "./home/membership-card";
 import { ErrorState, FullPageSpinner } from "./states";
 
@@ -88,19 +87,6 @@ const namesFrom = (
   en: nameParts.partsFrom(profile, "en"),
 });
 
-/** Verified as one of the partners' people (who make the pledges too). */
-const useIsPartnerGuest = () => {
-  const { supabase, user } = useAuth();
-  return useQuery({
-    enabled: Boolean(user),
-    queryFn: async () =>
-      (await partners.myAffiliations(supabase)).some(
-        (a) => a.status === "verified"
-      ),
-    queryKey: ["affiliations", "guest", user?.id ?? ""],
-  });
-};
-
 const usePledgeVersions = () => {
   const { supabase } = useAuth();
   return useQuery({
@@ -149,30 +135,30 @@ export const SetupForm = () => {
     ar: nameParts.emptyParts(),
     en: nameParts.emptyParts(),
   });
-  const guest = useIsPartnerGuest();
+  const mine = useMyMembership();
   const [index, setIndex] = useState(0);
   const [welcome, setWelcome] = useState(false);
 
   // The plan is taken once, from what was saved when setup opened, so the
   // steps don't shift as the answers are saved.
   useEffect(() => {
-    if (plan || !profile.data || !status.data || guest.isPending) {
+    if (plan || !profile.data || !status.data || !mine.data) {
       return;
     }
     const current = namesFrom(profile.data);
     setNames(current);
+    const { kind } = mine.data;
     const planned = planSetup({
-      // Members and partners' guests make the pledges; a partner's
-      // team who are neither only give their names.
-      member: status.data.verified || guest.data === true,
+      // Members and guests make the pledges; a partner's people, and
+      // anyone with no membership yet, only give their names.
+      member: kind === "member" || kind === "guest",
       names: current,
       pending: (status.data.pending_pledges ?? []) as PledgeKind[],
       setupDone: Boolean(profile.data.setup_completed_at),
     });
-    // The welcome shows the membership card: members only.
-    setPlan({ ...planned, welcome: planned.welcome && status.data.verified });
+    setPlan(planned);
     window.history.replaceState(null, "", stepUrl(0));
-  }, [guest.data, guest.isPending, plan, profile.data, status.data]);
+  }, [mine.data, plan, profile.data, status.data]);
 
   // The browser's Back and Forward move between the steps.
   useEffect(() => {
@@ -194,11 +180,9 @@ export const SetupForm = () => {
     heading.current?.focus({ preventScroll: true });
   }, [index, welcome]);
 
-  // Members go on to Membership, everyone else to their account (owner,
-  // Oct 31, 2026).
-  const home = status.data?.verified ? "/membership" : "/account";
+  // Everyone goes on to Membership (owner, Oct 31, 2026).
   const leave = () =>
-    router.replace(next ? stripLocale(next) : home, {
+    router.replace(next ? stripLocale(next) : "/membership", {
       locale: profile.data?.locale === "ar" ? "ar" : "en",
     });
 
