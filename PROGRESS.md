@@ -27,9 +27,11 @@ Branch: `claude/new-session-qosn60`.
 - [x] Shared: a date field that writes the date out in the house format,
   and a file field in the brand.
 - [ ] The Salon's dates (owner: later).
-- [ ] The October News Desk archive (migration `20261014000300`): the
-  Society pieces in it still describe Waraq and the old structure; the
-  owner decides whether to correct or unpublish them.
+- [x] The October archive (owner, Oct 31: rewritten as if the paper had
+  always been Qirtas; migration `20261101001700`): the Society's pieces
+  describe Qirtas, the Company and the six programs, the launch piece is
+  at `qirtas-launches-as-one-paper`, and every note credits Qirtas.
+- [x] The IDEA is no longer a partner (owner, Oct 31; same migration).
 
 ## Qirtas, one door (2026-10-31)
 
@@ -69,9 +71,8 @@ Branch: `claude/new-session-qosn60`.
       `0 issue "sectigo.com"` and `0 iodef "mailto:hello@auibsal.org"`.
       (4) A separate Resend account for SAL (later). (5) Amend the Society
       documents' retired names (later). (6) Tag `v1.0.0` once the PR merges.
-      (7) Four accounts share the name Shaheen Karam Muwafaq Farjo: keep
-      one, delete the others (each from its own Settings, or tell Claude
-      which addresses); no new account can copy a name now.
+      (7) Done (migration `20261101001700`): of the accounts named
+      Shaheen Farjo, only the one holding the President's role is kept.
 - [ ] **Site emails never leave (Oct 31, 2026): two Vault secrets.** The
   personal-email link, booking confirmations and every other site email
   wait in `core.outbox` because the database cannot call the site. The
