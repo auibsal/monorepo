@@ -197,15 +197,11 @@ const EditorForm = ({
         version: form.version.trim() || null,
       };
       const table = supabase.schema("governance").from("society_documents");
+      const named = { code: form.code.trim(), slug: form.slug.trim() };
       return unwrap(
         doc
-          ? await table.update(row).eq("id", doc.id)
-          : await table.insert({
-              ...row,
-              audience: "public",
-              code: form.code.trim(),
-              slug: form.slug.trim(),
-            })
+          ? await table.update({ ...row, ...named }).eq("id", doc.id)
+          : await table.insert({ ...row, ...named, audience: "public" })
       );
     },
     onSuccess: async () => {
@@ -251,7 +247,6 @@ const EditorForm = ({
               id={id}
               onChange={(e) => setForm((f) => ({ ...f, code: e.target.value }))}
               pattern="SAL-[A-Z]{3}-[0-9]{2}"
-              readOnly={doc !== null}
               required
               value={form.code}
             />
@@ -264,7 +259,6 @@ const EditorForm = ({
               id={id}
               onChange={(e) => setForm((f) => ({ ...f, slug: e.target.value }))}
               pattern="[a-z0-9]+(-[a-z0-9]+)*"
-              readOnly={doc !== null}
               required
               value={form.slug}
             />

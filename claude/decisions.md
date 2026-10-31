@@ -279,3 +279,10 @@ Qirtas, unlike a program, may have several documents:
 - **A morning brief** every day from 8:00 AM: today's events with their bookings, and what waits in the Diwan, as counts.
 - **A summary after each event:** who came, how many had booked, walk-ins, no-shows and the waitlist.
 - The group's admins send `/audience staff` once; `/topic brief` chooses the topic.
+
+## 16. Newsroom and Review as one; author pages; the memorandum; signatures (decided Oct 31, after section 15)
+- **Newsroom and Review are one** in the Diwan's Qirtas: each section's page has what members sent to it (read blind) above what staff write; the Edition's reading is on the all-sections page. There is no Review tab.
+- **Your work is the author page.** Each person's own byline is at /qirtas/authors/<their name with dashes> (shaheen-farjo). It says Member, Partner or Guest and the roles they hold; the person alone sees their submissions and drafts there. Pen names show published work only.
+- **Library documents' codes and addresses can be changed** in the Diwan.
+- **Partnering starts with signing in or making an account,** then the memorandum itself, laid out like a contract with blanks to fill in, signed by the applicant; the President signs for the Society in the Diwan.
+- **Signatures are digital signatures:** the name on the platform in a signature face, the card number, the date, a pattern drawn from the number and a short seal. Nobody types their own name.

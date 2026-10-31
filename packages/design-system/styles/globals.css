@@ -87,6 +87,8 @@
   --font-mono: var(--font-ubuntu-mono), ui-monospace, monospace;
   /* Qirtas's article text (dek and body) only. */
   --font-read: var(--font-literata), Georgia, serif;
+  /* A signed name only (the Signature component). */
+  --font-signature: var(--font-mrs-saint), cursive;
 
   /* Role tokens as Tailwind colors: bg-surface, text-accent, border-line… */
   --color-surface: var(--surface);

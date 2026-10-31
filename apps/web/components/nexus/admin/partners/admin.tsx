@@ -14,6 +14,7 @@ import { localized, partners, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useState } from "react";
+import { MySignature } from "@/components/signature";
 import { callApi } from "@/lib/nexus/api";
 import { Link, useRouter } from "@/lib/nexus/navigation";
 import { useGrants } from "@/lib/nexus/queries";
@@ -717,6 +718,10 @@ const SignForm = ({
           />
         )}
       </Field>
+      <div className="grid gap-1">
+        <p className="type-label">{t("signingAs")}</p>
+        <MySignature />
+      </div>
       <div className="flex flex-wrap gap-2">
         <Button disabled={sign.isPending} type="submit">
           {t("sign")}

@@ -10,6 +10,7 @@ import { localized, membership, partners, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
+import { MySignature, Signature } from "@/components/signature";
 import { Link } from "@/lib/nexus/navigation";
 import { useGrants } from "@/lib/nexus/queries";
 import { DiwanSection } from "../../page";
@@ -195,6 +196,18 @@ const ApplicationCard = ({
           />
         )}
       </Field>
+      {application.partner_signatory ? (
+        <Signature
+          date={application.applied_at ?? undefined}
+          name={application.partner_signatory}
+        />
+      ) : null}
+      {hasPermissionAnywhere(grants.data, "partners.sign") ? (
+        <div className="grid gap-1">
+          <p className="type-label">{t("signingAs")}</p>
+          <MySignature />
+        </div>
+      ) : null}
       <div className="flex flex-wrap gap-2">
         {hasPermissionAnywhere(grants.data, "partners.sign") ? (
           <ConfirmAction

@@ -13,6 +13,7 @@ import { localized, partners, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, type ReactNode, useState } from "react";
+import { Signature } from "@/components/signature";
 import { type MyPartner, useMyPartners } from "@/lib/nexus/partners";
 import {
   BilingualField,
@@ -265,6 +266,12 @@ const Memoranda = ({ partnerId }: { partnerId: string }) => {
                 })
               : t(a.status === "draft" ? "waiting" : "ended")}
           </p>
+          {a.partner_signatory ? (
+            <Signature
+              date={a.signed_at ?? undefined}
+              name={a.partner_signatory}
+            />
+          ) : null}
           <dl className="grid gap-3">
             <div>
               <dt className="type-label">{t("purpose")}</dt>

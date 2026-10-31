@@ -4529,6 +4529,21 @@ export type Database = {
         Returns: string;
       };
       author_approve: { Args: { piece_id: string }; Returns: string };
+      author_card: {
+        Args: { author_slug: string };
+        Returns: {
+          bio_ar: string;
+          bio_en: string;
+          id: string;
+          is_pen_name: boolean;
+          kind: string;
+          name_ar: string;
+          name_en: string;
+          roles_ar: string[];
+          roles_en: string[];
+          slug: string;
+        }[];
+      };
       byline_for: {
         Args: { pen_name?: string; person: string };
         Returns: string;
@@ -4636,6 +4651,7 @@ export type Database = {
         Args: { desk: Database["journal"]["Enums"]["desk"] };
         Returns: boolean;
       };
+      my_author_page: { Args: Record<PropertyKey, never>; Returns: string };
       my_call_pathways: {
         Args: Record<PropertyKey, never>;
         Returns: {

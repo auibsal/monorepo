@@ -25,8 +25,10 @@ and decisions), and continue from the first unticked item.
     `/membership/record/<id>`), Settings (`/membership/settings`, with
     `/settings/profile`, `/settings/more` ("Tell us more") and
     `/settings/notices`; officers also `/settings/declarations`, and
-    their recovery codes on Settings), Requests (`/membership/requests/<id>`) and Your
-    work (`/membership/work`, `/work/<id>`, `/work/submissions/<id>`);
+    their recovery codes on Settings), Requests (`/membership/requests/<id>`) and
+    their work (`/membership/work/<id>`, `/work/submissions/<id>`; the list
+    is on their author page, `/qirtas/authors/<name>`, seen only by them,
+    `OwnWork`);
     also `/company/auditions`, `/qirtas/write` (every section, and the form
     at `/qirtas/write/<type>`) and `/qirtas/read/<slug>` (a members-only
     piece). Perks are on the card; voting
@@ -104,6 +106,17 @@ and decisions), and continue from the first unticked item.
   `SelectInput` (`ChoiceInput`, `components/nexus/admin/choice-input.tsx`)
   takes option children and shows a few short ones as a row, more as a
   list under the field (with a find line from ten). Never write `<select>`.
+- **Signatures** (owner, Oct 31, 2026). Wherever someone signs, the
+  signature is `Signature`/`MySignature` (`components/signature.tsx`):
+  their name on the platform in the signature face (`font-signature`, Mrs
+  Saint Delafield, for signatures only), their card number, the date, a
+  guilloche drawn from the number and a short seal. Never typed.
+- **Author pages are people's pages** (owner, Oct 31, 2026). A person's own
+  byline lives at `/qirtas/authors/<first-last>` (the slug follows the
+  English name, `private.own_byline_slug`); it shows Member, Partner or
+  Guest and the roles they hold (`journal.author_card`), and to them alone
+  their work in progress (`journal.my_author_page`). Pen names show
+  published work only, never a kind or a role.
 - **New is one flow** (owner, Oct 31, 2026). A blank record is the full
   editor at `new`, created on save (Library documents at
   `/society/library/new`, staff pieces at `/qirtas/pieces/new`); never a
@@ -372,7 +385,10 @@ any schema change. Integration tests run against a local stack with
   the file still goes with the work. The newsroom is where staff write
   and publish directly: the Diwan's Qirtas section is the Newsroom
   (`/diwan/qirtas`, one page per section, `/diwan/qirtas/news` …
-  `/games`; Next Stop is in Video, puzzles in Games), Review, Editions,
+  `/games`; Next Stop is in Video, puzzles in Games; what members send is
+  read blind on the same pages, submissions at `/qirtas/submissions/<id>`
+  and the Edition's entries at `/qirtas/entries/<id>`: Newsroom and Review
+  are one, owner, Oct 31, 2026), Editions,
   Awards and Ads, each its own page. Bylines are people: a member under
   their own name or a pen name, picked with `BylinePicker` and made by
   `journal.byline_for()`, never typed. Clients never read

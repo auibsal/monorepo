@@ -170,7 +170,7 @@ const submissionsFigure = (
           selection: formatNumber(stages.selection ?? 0),
         })
       : t("submissionsNone"),
-    href: "/qirtas/review",
+    href: "/qirtas",
     label: t("openSubmissions"),
     value: o.open_submissions,
   };

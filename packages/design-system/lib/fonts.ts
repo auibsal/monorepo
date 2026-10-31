@@ -1,5 +1,10 @@
 import { cn } from "@repo/design-system/lib/utils";
-import { Literata, Ubuntu, Ubuntu_Mono } from "next/font/google";
+import {
+  Literata,
+  Mrs_Saint_Delafield,
+  Ubuntu,
+  Ubuntu_Mono,
+} from "next/font/google";
 import localFont from "next/font/local";
 
 /**
@@ -11,6 +16,10 @@ import localFont from "next/font/local";
  * Ubuntu Arabic (400/700) is self-hosted with next/font/local from
  * ../fonts, byte-for-byte copies of brand/fonts (tokens.test.ts checks).
  * Never another Arabic face. It has no Light: Arabic display is Regular.
+ *
+ * One more face, for signatures only (owner, Oct 31, 2026): a person's
+ * name, signed, is set in Mrs Saint Delafield (`font-signature`, the
+ * `Signature` component), never for text.
  */
 const ubuntu = Ubuntu({
   display: "swap",
@@ -43,7 +52,15 @@ const literata = Literata({
   weight: ["400", "500"],
 });
 
+const signature = Mrs_Saint_Delafield({
+  display: "swap",
+  subsets: ["latin"],
+  variable: "--font-mrs-saint",
+  weight: "400",
+});
+
 export const fonts = cn(
+  signature.variable,
   ubuntu.variable,
   ubuntuMono.variable,
   ubuntuArabic.variable,

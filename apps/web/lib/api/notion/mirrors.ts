@@ -291,7 +291,7 @@ export const mirrorJournal = async (ctx: SyncContext) => {
           Call: prop.text(call.title_en),
           Closes: prop.date(day(call.closes_at)),
           Count: prop.number(tally.get(stage) ?? 0),
-          Nexus: prop.url(app(ctx, "/qirtas/review")),
+          Nexus: prop.url(app(ctx, "/qirtas")),
           "Nexus ID": prop.text(`${call.id}:${stage}`),
           Order: prop.number(index + 1),
           Stage: prop.title(label),
