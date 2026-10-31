@@ -9,7 +9,6 @@ import { formatIqd, formatNumber } from "@repo/internationalization/format";
 import { Link, useRouter } from "@repo/internationalization/navigation";
 import { forms, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useEffect, useState } from "react";
 import { ErrorLine, Field, SelectInput } from "../admin/kit";
@@ -138,11 +137,14 @@ const ProblemsLine = ({
 };
 
 /** Fill in a form, save a draft, or send it. */
-export const FillForm = () => {
+export const FillForm = ({
+  formKey,
+  id = null,
+}: {
+  readonly formKey: string;
+  readonly id?: string | null;
+}) => {
   const t = useTranslations("nexus.forms");
-  const params = useSearchParams();
-  const formKey = params.get("form");
-  const id = params.get("id");
   if (!forms.isFormKey(formKey)) {
     return (
       <EmptyLine action={{ href: "/membership/requests", label: t("back") }}>
@@ -221,10 +223,7 @@ const FormEditor = ({
       router.push(
         submit
           ? `/membership/requests/${savedId}`
-          : {
-              pathname: "/membership/requests/new",
-              query: { form: formKey, id: savedId },
-            }
+          : `/membership/requests/new/${formKey}/${savedId}`
       );
     },
   });

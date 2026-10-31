@@ -1,15 +1,15 @@
 import { RequireModule } from "@/components/nexus/admin/admin-shell";
-import { JournalAdmin } from "@/components/nexus/admin/journal/admin";
+import { QirtasNewsroom } from "@/components/nexus/admin/journal/admin";
 import { titleFrom } from "@/lib/nexus/metadata";
 
 export const generateMetadata = titleFrom((t) =>
-  t("nexus.admin.journal.title")
+  t("nexus.admin.sections.tabs.newsroom")
 );
 
-const JournalPage = () => (
+const NewsroomPage = () => (
   <RequireModule module="journal">
-    <JournalAdmin />
+    <QirtasNewsroom />
   </RequireModule>
 );
 
-export default JournalPage;
+export default NewsroomPage;

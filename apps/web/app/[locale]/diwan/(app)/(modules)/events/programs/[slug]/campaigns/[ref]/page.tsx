@@ -19,7 +19,7 @@ const CampaignPage = async ({
     <RequireModule module="charity">
       <Suspense fallback={<SectionSpinner />}>
         <RecordRef
-          back="/events/programs/second-chapter?tab=collection"
+          back="/events/programs/second-chapter/collection"
           lookup={{ column: "slug", schema: "charity", table: "campaigns" }}
           value={decodeURIComponent(ref)}
         >

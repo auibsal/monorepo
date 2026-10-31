@@ -67,6 +67,14 @@ and decisions), and continue from the first unticked item.
     the `core.telegram_*` functions, which run the Diwan functions under the
     member's claims (aal1) so RLS still decides. Bot copy in
     `lib/api/bot/copy.ts`; the mascot in `brand/mascot`.
+- **Paths, never queries** (owner, Oct 31, 2026). Every view has its own
+  path: tabs are pages (`SectionTabs` matches by path), a month is
+  `/events/2026-11` (`/events/2026-11/society`, `/events/<series>/2026-11`,
+  `/company/2026-11`; no event or production slug may read as a month),
+  a production is `/company/<slug>`, search is `/search/<words>` (results
+  grouped by kind), a welcome step `/welcome/2`, a request
+  `/membership/requests/new/<form>`. Never add `?tab=` or a query for
+  what a path can say.
 - **URLs.** English, the default language, has no prefix (`/events`,
   `/diwan/events`); other languages do (`/ar/events`, `/ar/diwan/events`)
   (owner, Oct 14, 2026). API routes carry no language (`/api/...`). Build
@@ -87,7 +95,13 @@ and decisions), and continue from the first unticked item.
   owner, Oct 30, 2026: every document public, kept in the Diwan's Library).
   The officer handbook and every internal document live in the team's
   Notion workspace only (the Desk links there: settings
-  `notion.home_url`, `notion.handbook`; `docs/platform/notion.md`); the platform runbooks in `docs/platform`
+  `notion.home_url`, `notion.handbook`; `docs/platform/notion.md`). What
+  the platform retired (forms, letters, officers' papers) lives on as
+  Notion templates (the Desk's "Templates and papers",
+  `notion.handbook.pages.templates`), and Diwan pages with a Notion
+  counterpart (events, programs, documents, minutes, officers) say so
+  with `NotionManaged`. The About page (`/about`) is the hub for the
+  Society's pages. The platform runbooks in `docs/platform`
   (Markdown). There is no separate docs site. The apps configure no
   redirects (owner, Oct 14, 2026; again Oct 30, 2026: none for the
   overhaul's moved addresses either, and no forwarding pages); an old
@@ -203,18 +217,22 @@ any schema change. Integration tests run against a local stack with
   `title_ar`, …). Store times as `timestamptz` (UTC); display Asia/Baghdad.
 - **Blind review.** Readers never receive author identity before a decision;
   verify against network responses, not the UI.
-- **Member data.** Names come in four parts (first and last, English and
-  Arabic), all required; the full names are built from them. Everything in
+- **Member data.** One name per language (owner, Oct 31, 2026:
+  `full_name_en` and `full_name_ar`, both required; the given and family
+  parts are gone). Wherever a person is named (judges, bylines, hosts,
+  roles), pick them from the register (`MemberPicker`) and never type
+  their names: a trigger copies the profile's names and keeps them in
+  step (`private.profile_names_to_bylines`). Everything in
   `core.member_details` is optional and read only by the member and
   `members.manage`; reports count only members with `research_consent`
   and never show a group smaller than five (`core.member_insights()`).
   Public pages never show it. No phone numbers until they can be verified
   (owner, Oct 25, 2026).
 - **Sign-up asks little** (owner, Oct 25, 2026). An AUIB address signs up
-  with the address and a password; an outside address also gives the four
-  names and a few words for the Council. `/welcome` then asks one question
-  per screen (`planSetup` in `components/nexus/setup-form.tsx`): each name
-  not yet given, each pledge not yet made in its current version, and, the
+  with the address and a password; an outside address also gives its
+  name in each language and a few words for the Council. `/welcome` then asks one question
+  per screen (`planSetup` in `components/nexus/setup-form.tsx`): each
+  language's name not yet given, each pledge not yet made in its current version, and, the
   first time, photos; then the welcome screen with the card. Language
   follows the sign-up page and email notices start on (both in Settings).
   The optional details are "Tell us more" (`/membership/settings/more`, a question
@@ -283,10 +301,21 @@ any schema change. Integration tests run against a local stack with
   unpublished program rows (Next Stop is Qirtas's video show). Second
   Chapter says "our charity partner" until the Council approves one; the
   charity partner stays unset.
-- **Qirtas is one section.** Members send everything from `/qirtas/write`
-  and the type decides the process (section editing, or the blind review
-  for Edition work); the Diwan's Qirtas section holds the newsroom, the
-  blind review (`?tab=review`) and the Prizes together.
+- **Qirtas, one door** (owner, Oct 31, 2026). Members send everything,
+  every section, from `/qirtas/write` (`/qirtas/write/<type>` is the
+  form), and everything they send is read blind. Edition calls (Letters,
+  Gallery, two a year) stay; beside them the standing call "Qirtas, all
+  year" (`journal.calls` with no `issue_id`, `calls_one_standing`) takes
+  every section, never closes and counts `max_per_person` per term; a
+  submission that names no call goes to it. The global masthead reads
+  and decides it. An author may choose Anonymous (`submissions.anonymous`;
+  the piece gets the Anonymous byline). The newsroom is where staff write
+  and publish directly: the Diwan's Qirtas section is the Newsroom
+  (`/diwan/qirtas`, one page per section, `/diwan/qirtas/news` …
+  `/games`; Next Stop is in Video, puzzles in Games), Review, Editions,
+  Awards and Ads, each its own page. Bylines are people (a member, or a
+  pen name the member chose) or Anonymous (`contributors.is_anonymous`),
+  picked with `BylinePicker`, never typed.
   Six sections, six types each (owner, Oct 29, 2026; `journal.sectionTypes`,
   `journal.desk_of()`, `journal.is_current_category()` refuses any other):
   News (report, feature, interview, profile, event coverage, explainer),
@@ -302,15 +331,16 @@ any schema change. Integration tests run against a local stack with
   submissions (the database refuses them). The Edition is printed: its
   record keeps the print run, printer and date (`journal.issues.print_run`,
   `printer_en`/`_ar`, `printed_on`), shown on the Edition page as a line.
-- **The Qirtas Prizes** (owner, Oct 29, 2026; `/qirtas/prizes`): six
-  prizes (`journal.prizes`): the Mutanabbi Prize (the whole paper), the
+- **The Qirtas Awards** (owner, Oct 29, 2026; "Awards", never "Prizes",
+  owner, Oct 31, 2026; `/qirtas/awards`): six awards (`journal.prizes`,
+  the code keeps `prize`): the Mutanabbi Award (the whole paper), the
   Tabari (News), Jahiz (Voices), Nazik (Letters), Wasiti (Gallery) and Ibn
-  al-Haytham (Video) Prizes. Each year a round (`journal.prize_rounds`)
+  al-Haytham (Video) Awards. Each year a round (`journal.prize_rounds`)
   with its shortlist and award days; the first: shortlists April 4,
-  awarded April 20, 2027. The prizes' own names are proposed: the public
-  pages show them only once `journal.prize_names_public` is true (owner
-  to confirm). The Diwan (Qirtas → Prizes, `journal.prizes`
-  permission) records shortlists, judges and winners
+  awarded April 20, 2027. The names are confirmed (owner, Oct 31,
+  2026). The Diwan (Qirtas → Awards, `journal.prizes`
+  permission) records shortlists, judges (members, picked from the
+  register) and winners
   (`journal.prize_entries`, `journal.prize_judges`, never public) and
   drafts the certificates (`journal.prepare_prize_certificates`, kind
   `prize`). The public reads only `journal.prize_results()`, which shows a
@@ -440,7 +470,7 @@ any schema change. Integration tests run against a local stack with
     Oct 29, 2026; the programs are removed, their history moved).
   - Gallery Wall merged into Qirtas's Gallery desk, «معرض قرطاس» (code: slug
     `gallery-wall`, kept and unpublished).
-  - The Qirtas Prizes, جوائز قرطاس (was "the Prizes").
+  - The Qirtas Awards, جوائز قرطاس (were "the Prizes"; code: `prize`).
   - The Register and the Roll of Fellows, السجل ولائحة الزملاء (were the Book
     of Members and the Book of Fellows).
   - The Return, ليلة العودة (was Charter Night).

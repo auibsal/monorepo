@@ -9,10 +9,16 @@ interface Tab {
   readonly key: TabKey;
   /** The module that shows it; with `permission`, held as well. */
   readonly module: string;
-  readonly permission?: Permission;
+  /** Held as well, any one of them. */
+  readonly permission?: Permission | readonly Permission[];
 }
 
 type TabKey =
+  | "newsroom"
+  | "review"
+  | "editions"
+  | "awards"
+  | "ads"
   | "calendar"
   | "programs"
   | "door"
@@ -36,7 +42,11 @@ const useTabs = (tabs: readonly Tab[], labels: (key: TabKey) => string) => {
     .filter(
       (tab) =>
         modules.has(tab.module) &&
-        (!tab.permission || hasPermissionAnywhere(grants.data, tab.permission))
+        (!tab.permission ||
+          (Array.isArray(tab.permission)
+            ? tab.permission
+            : [tab.permission]
+          ).some((p) => hasPermissionAnywhere(grants.data, p)))
     )
     .map((tab): SectionTab => ({ href: tab.href, label: labels(tab.key) }));
 };
@@ -52,6 +62,46 @@ export const EventsTabs = () => {
   const t = useTranslations("nexus.admin.sections.tabs");
   const tabs = useTabs(EVENTS, (key) => t(key));
   return <SectionTabs label={t("events")} tabs={tabs} />;
+};
+
+const QIRTAS: readonly Tab[] = [
+  { href: "/qirtas", key: "newsroom", module: "journal" },
+  {
+    href: "/qirtas/review",
+    key: "review",
+    module: "journal",
+    permission: [
+      "journal.manage",
+      "journal.review",
+      "journal.identity.view",
+      "journal.decide",
+      "journal.advise",
+    ],
+  },
+  {
+    href: "/qirtas/editions",
+    key: "editions",
+    module: "journal",
+    permission: ["journal.manage", "journal.publish"],
+  },
+  {
+    href: "/qirtas/awards",
+    key: "awards",
+    module: "journal",
+    permission: "journal.prizes",
+  },
+  { href: "/qirtas/ads", key: "ads", module: "ads" },
+];
+
+/**
+ * Qirtas (owner, Oct 31, 2026): the newsroom, where staff write and
+ * publish; the blind review of what members send; and the three features
+ * with pages of their own (Editions, Awards, ads).
+ */
+export const QirtasTabs = () => {
+  const t = useTranslations("nexus.admin.sections.tabs");
+  const tabs = useTabs(QIRTAS, (key) => t(key));
+  return <SectionTabs label={t("qirtas")} tabs={tabs} />;
 };
 
 const PEOPLE: readonly Tab[] = [

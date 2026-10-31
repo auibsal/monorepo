@@ -21,6 +21,7 @@ import {
   SaveButton,
   SelectInput,
 } from "../kit";
+import { NotionManaged } from "../notion-managed";
 
 const key = ["admin", "society-documents"];
 
@@ -236,11 +237,14 @@ const DocumentEditor = ({ id }: { id: string }) => {
     return <ErrorLine error={full.error} />;
   }
   return (
-    <EditorForm
-      doc={full.data}
-      onSaved={() => queryClient.invalidateQueries({ queryKey: key })}
-      t={t}
-    />
+    <>
+      <NotionManaged kind="document" recordId={id} />
+      <EditorForm
+        doc={full.data}
+        onSaved={() => queryClient.invalidateQueries({ queryKey: key })}
+        t={t}
+      />
+    </>
   );
 };
 

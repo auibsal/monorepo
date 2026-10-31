@@ -230,8 +230,13 @@ export const MAX_FILE_BYTES = 25 * 1024 * 1024;
 
 export const submissionSchema = z
   .object({
+    /** Publish without the author's name: the byline reads Anonymous. */
+    anonymous: z.boolean().optional(),
     body_html: z.string().max(200_000).optional(),
-    /** Edition sections only (Letters, Gallery); the newsroom has none. */
+    /**
+     * An Edition call (Letters, Gallery); without one the work goes to the
+     * standing call. Either way it is read blind (owner, Oct 31, 2026).
+     */
     call_id: z.uuid().optional(),
     category: z.enum(categories as [Category, ...Category[]]),
     /** Every identifiable person in an image consented (Gallery: required). */
@@ -258,13 +263,6 @@ export const submissionSchema = z
   })
   .superRefine((value, context) => {
     const desk = deskOf(value.category);
-    if (isEditionDesk(desk) !== Boolean(value.call_id)) {
-      context.addIssue({
-        code: "custom",
-        message: isEditionDesk(desk) ? "call_required" : "no_call",
-        path: ["call_id"],
-      });
-    }
     if (desk !== "news" && value.first_publication_confirmed !== true) {
       context.addIssue({
         code: "custom",
@@ -360,6 +358,13 @@ export const openCalls = async (client: Client, now = new Date()) =>
       .gte("closes_at", now.toISOString())
       .order("closes_at")
   );
+
+/**
+ * Open calls for the printed Edition: the standing call (no Edition, always
+ * open) is left out wherever calls are announced.
+ */
+export const editionCalls = async (client: Client, now = new Date()) =>
+  (await openCalls(client, now))?.filter((call) => call.issue_id) ?? [];
 
 /** The next published call that has not opened yet, if any. */
 export const nextCall = async (client: Client, now = new Date()) =>

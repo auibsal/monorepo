@@ -4,7 +4,6 @@ import { useAuth } from "@repo/auth/provider";
 import { Button } from "@repo/design-system/components/ui/button";
 import type { Locale } from "@repo/internationalization";
 import { formatClock, formatLongDate } from "@repo/internationalization/format";
-import { Link } from "@repo/internationalization/navigation";
 import { type Grant, hasPermission } from "@repo/rbac";
 import { localized, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -164,20 +163,7 @@ const Application = ({
           ) : null}
           {canPick && open ? [step("picked"), step("not_picked")] : null}
           {runs && reply.status === "picked" ? step("offered") : null}
-          {runs && reply.status === "offered" ? (
-            <>
-              {step("onboarded")}
-              <Link
-                className="link type-caption"
-                href={{
-                  pathname: "/membership/requests/new",
-                  query: { form: "f06" },
-                }}
-              >
-                {t("onboardingChecklist")}
-              </Link>
-            </>
-          ) : null}
+          {runs && reply.status === "offered" ? step("onboarded") : null}
           {runs && reply.status !== "onboarded" && reply.status !== "withdrawn"
             ? step("withdrawn")
             : null}

@@ -5,12 +5,10 @@ import { Button } from "@repo/design-system/components/ui/button";
 import { Input } from "@repo/design-system/components/ui/input";
 import type { Locale } from "@repo/internationalization";
 import { formatLongDate } from "@repo/internationalization/format";
-import { hasPermissionAnywhere } from "@repo/rbac";
 import { journal, localized, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useState } from "react";
-import { useGrants } from "@/lib/nexus/queries";
 import { DiwanSection, RowList } from "../../page";
 import { EmptyLine, SectionSpinner } from "../../states";
 import {
@@ -20,6 +18,7 @@ import {
   Field,
   SelectInput,
 } from "../kit";
+import { MemberPicker, type Person } from "../member-picker";
 
 const key = ["admin", "journal", "prizes"];
 
@@ -28,59 +27,6 @@ const baghdadToday = () =>
   new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Baghdad" }).format(
     new Date()
   );
-
-/**
- * The prizes' own names (the Mutanabbi Prize and the rest) are proposed; the
- * public pages show them only once this is on (owner to confirm).
- */
-const PrizeNames = () => {
-  const t = useTranslations("nexus.admin.prizes.names");
-  const { supabase, user } = useAuth();
-  const queryClient = useQueryClient();
-  const grants = useGrants();
-  const nameKey = [...key, "names-public"];
-  const shown = useQuery({
-    queryFn: async () =>
-      unwrap(
-        await supabase
-          .schema("core")
-          .from("settings")
-          .select("value")
-          .eq("key", "journal.prize_names_public")
-          .maybeSingle()
-      )?.value === true,
-    queryKey: nameKey,
-  });
-  const toggle = useMutation({
-    mutationFn: async (value: boolean) =>
-      unwrap(
-        await supabase
-          .schema("core")
-          .from("settings")
-          .update({ updated_by: user?.id ?? null, value })
-          .eq("key", "journal.prize_names_public")
-      ),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: nameKey }),
-  });
-  if (
-    !(hasPermissionAnywhere(grants.data, "settings.manage") && shown.isSuccess)
-  ) {
-    return null;
-  }
-  return (
-    <div className="grid gap-2">
-      <p className="type-body">{shown.data ? t("shown") : t("hidden")}</p>
-      <ConfirmAction
-        confirmLabel={shown.data ? t("hide") : t("show")}
-        description={shown.data ? t("hideAsk") : t("showAsk")}
-        onConfirm={() => toggle.mutate(!shown.data)}
-      >
-        {shown.data ? t("hide") : t("show")}
-      </ConfirmAction>
-      <ErrorLine error={toggle.error} />
-    </div>
-  );
-};
 
 /**
  * The Qirtas Prizes in the Diwan (owner, Oct 29, 2026): a round's dates,
@@ -122,7 +68,6 @@ export const Prizes = () => {
   return (
     <div className="grid gap-10">
       <p className="type-caption">{t("lede")}</p>
-      <PrizeNames />
       {rounds.data.length > 1 ? (
         <Field label={t("round")}>
           {(id) => (
@@ -217,7 +162,6 @@ const PrizeSection = ({
     queryKey: [...key, "candidates", prize.desk ?? "all"],
   });
   const [piece, setPiece] = useState("");
-  const [judge, setJudge] = useState({ ar: "", en: "" });
   const refresh = () => queryClient.invalidateQueries({ queryKey: key });
 
   const shortlist = useMutation({
@@ -256,20 +200,23 @@ const PrizeSection = ({
       ),
     onSuccess: refresh,
   });
+  // A judge is chosen from the register; the database keeps their names
+  // in step with their profile.
   const addJudge = useMutation({
-    mutationFn: async () =>
+    mutationFn: async (person: Person) =>
       unwrap(
-        await supabase.schema("journal").from("prize_judges").insert({
-          name_ar: judge.ar,
-          name_en: judge.en,
-          prize_key: prize.key,
-          round_id: roundId,
-        })
+        await supabase
+          .schema("journal")
+          .from("prize_judges")
+          .insert({
+            name_ar: person.full_name_ar ?? person.full_name_en,
+            name_en: person.full_name_en,
+            prize_key: prize.key,
+            round_id: roundId,
+            user_id: person.id,
+          })
       ),
-    onSuccess: async () => {
-      setJudge({ ar: "", en: "" });
-      await refresh();
-    },
+    onSuccess: refresh,
   });
   const removeJudge = useMutation({
     mutationFn: async (id: string) =>
@@ -293,10 +240,6 @@ const PrizeSection = ({
     if (piece) {
       shortlist.mutate();
     }
-  };
-  const onJudge = (event: FormEvent) => {
-    event.preventDefault();
-    addJudge.mutate();
   };
 
   return (
@@ -397,24 +340,15 @@ const PrizeSection = ({
             ))}
           </RowList>
         )}
-        <form className="grid gap-3" onSubmit={onJudge}>
-          <BilingualField
-            label={t("judgeName")}
-            maxLength={200}
-            onChange={setJudge}
-            required
-            value={judge}
-          />
-          <Button
-            className="justify-self-start"
-            disabled={addJudge.isPending}
-            size="sm"
-            type="submit"
-            variant="outline"
-          >
-            {t("addJudge")}
-          </Button>
-        </form>
+        <MemberPicker
+          label={t("addJudge")}
+          onChange={(person) => {
+            if (person) {
+              addJudge.mutate(person);
+            }
+          }}
+          value={null}
+        />
         <ErrorLine error={addJudge.error ?? removeJudge.error} />
       </div>
     </DiwanSection>

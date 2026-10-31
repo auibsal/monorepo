@@ -26,21 +26,16 @@ export const SignUpForm = () => {
   const id = useId();
   const [values, setValues] = useState({
     email: "",
-    familyAr: "",
-    familyEn: "",
-    givenAr: "",
-    givenEn: "",
+    nameAr: "",
+    nameEn: "",
     password: "",
     statement: "",
   });
   // AUIB addresses give their names in setup; the Council verifies others
   // by theirs, so they give them here.
-  const named = [
-    values.givenEn,
-    values.familyEn,
-    values.givenAr,
-    values.familyAr,
-  ].every((part) => part.trim() !== "");
+  const named = [values.nameEn, values.nameAr].every(
+    (name) => name.trim() !== ""
+  );
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string>();
   const [sentTo, setSentTo] = useState<string>();
@@ -60,14 +55,7 @@ export const SignUpForm = () => {
       captchaToken: human.token,
       email: values.email,
       locale: locale === "ar" ? "ar" : "en",
-      names: external
-        ? {
-            familyAr: values.familyAr,
-            familyEn: values.familyEn,
-            givenAr: values.givenAr,
-            givenEn: values.givenEn,
-          }
-        : undefined,
+      names: external ? { ar: values.nameAr, en: values.nameEn } : undefined,
       password: values.password,
       // The confirmation link brings the member back to what they started.
       redirectTo: callbackUrl(locale, next),
@@ -138,80 +126,35 @@ export const SignUpForm = () => {
             <p className="type-caption" id={`${id}-names-hint`}>
               {t("signUp.namesHint")}
             </p>
-            <fieldset
-              aria-describedby={`${id}-names-hint`}
-              className="grid gap-3 sm:grid-cols-2"
-            >
-              <legend className="mb-2 font-medium text-sm">
-                {t("signUp.nameEn")}
-              </legend>
+            <div className="grid gap-3 sm:grid-cols-2">
               <div className="grid gap-2">
-                <Label htmlFor={`${id}-given-en`}>
-                  {t("signUp.givenName")}
-                </Label>
+                <Label htmlFor={`${id}-name-en`}>{t("signUp.nameEn")}</Label>
                 <Input
-                  autoComplete="given-name"
+                  aria-describedby={`${id}-names-hint`}
+                  autoComplete="name"
                   dir="ltr"
-                  id={`${id}-given-en`}
+                  id={`${id}-name-en`}
                   lang="en"
-                  maxLength={60}
-                  onChange={set("givenEn")}
+                  maxLength={120}
+                  onChange={set("nameEn")}
                   required
-                  value={values.givenEn}
+                  value={values.nameEn}
                 />
               </div>
               <div className="grid gap-2">
-                <Label htmlFor={`${id}-family-en`}>
-                  {t("signUp.familyName")}
-                </Label>
+                <Label htmlFor={`${id}-name-ar`}>{t("signUp.nameAr")}</Label>
                 <Input
-                  autoComplete="family-name"
-                  dir="ltr"
-                  id={`${id}-family-en`}
-                  lang="en"
-                  maxLength={60}
-                  onChange={set("familyEn")}
-                  required
-                  value={values.familyEn}
-                />
-              </div>
-            </fieldset>
-            <fieldset
-              aria-describedby={`${id}-names-hint`}
-              className="grid gap-3 sm:grid-cols-2"
-            >
-              <legend className="mb-2 font-medium text-sm">
-                {t("signUp.nameAr")}
-              </legend>
-              <div className="grid gap-2">
-                <Label htmlFor={`${id}-given-ar`}>
-                  {t("signUp.givenName")}
-                </Label>
-                <Input
+                  aria-describedby={`${id}-names-hint`}
                   dir="rtl"
-                  id={`${id}-given-ar`}
+                  id={`${id}-name-ar`}
                   lang="ar"
-                  maxLength={60}
-                  onChange={set("givenAr")}
+                  maxLength={120}
+                  onChange={set("nameAr")}
                   required
-                  value={values.givenAr}
+                  value={values.nameAr}
                 />
               </div>
-              <div className="grid gap-2">
-                <Label htmlFor={`${id}-family-ar`}>
-                  {t("signUp.familyName")}
-                </Label>
-                <Input
-                  dir="rtl"
-                  id={`${id}-family-ar`}
-                  lang="ar"
-                  maxLength={60}
-                  onChange={set("familyAr")}
-                  required
-                  value={values.familyAr}
-                />
-              </div>
-            </fieldset>
+            </div>
             <div className="grid gap-2">
               <Label htmlFor={`${id}-statement`}>{t("signUp.statement")}</Label>
               <Textarea

@@ -6,6 +6,16 @@ import { type LocaleParams, sectionMetadata } from "@/lib/page";
 export const generateMetadata = sectionMetadata("web.about", "/about");
 
 const PILLARS = ["connecting", "fostering", "celebrating", "building"] as const;
+
+/** The Society's own pages, in a row of six (owner, Oct 30, 2026: threes). */
+const HUB = [
+  ["council", "/about/council"],
+  ["library", "/library"],
+  ["partners", "/about/partners"],
+  ["contact", "/about/contact"],
+  ["press", "/about/press"],
+  ["verify", "/verify"],
+] as const;
 const GLANCE = [
   "open",
   "power",
@@ -32,6 +42,21 @@ const AboutPage = async ({ params }: LocaleParams) => {
           {t("constitution")}
         </Link>
       </PageHeader>
+
+      <Section id="society" title={t("hubTitle")}>
+        <RuledList
+          columns={3}
+          items={HUB.map(([key, href]) => ({
+            body: t(`hub.${key}.body`),
+            key,
+            title: (
+              <Link className="hover:text-accent" href={href}>
+                {t(`hub.${key}.title`)}
+              </Link>
+            ),
+          }))}
+        />
+      </Section>
 
       <Section id="preamble" title={t("preambleTitle")}>
         <p className="type-lede max-w-[60ch]">{t("preamble")}</p>
@@ -71,14 +96,6 @@ const AboutPage = async ({ params }: LocaleParams) => {
 
       <div className="grid gap-4 border-line border-t pt-space-4">
         <p className="type-body max-w-[60ch]">{t("nonPartisan")}</p>
-        <p className="flex flex-wrap gap-x-8 gap-y-2">
-          <Link className="link" href="/library">
-            {t("documents")}
-          </Link>
-          <Link className="link" href="/about/council">
-            {t("governance")}
-          </Link>
-        </p>
       </div>
     </div>
   );

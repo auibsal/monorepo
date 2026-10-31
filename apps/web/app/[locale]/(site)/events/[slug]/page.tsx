@@ -21,21 +21,22 @@ import {
   seriesMetadata,
   seriesPath,
 } from "@/components/series";
+import { WhatsOn } from "@/components/whats-on-page";
 import { eventLd, JsonLd } from "@/lib/json-ld";
 import { mediaUrl } from "@/lib/media";
 import { localizedMetadata } from "@/lib/metadata";
 import { readPublished } from "@/lib/supabase";
+import { isMonthSegment, monthFrom } from "@/lib/whats-on";
 
 interface EventProps {
   readonly params: Promise<{ locale: Locale; slug: string }>;
-  readonly searchParams: Promise<{ month?: string }>;
 }
 
 const SLUG = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 
-// Rendered on request: a program's page reads the month it shows from
-// `?month=`. The Supabase reads behind it stay cached by tag until an event
-// or program is published.
+// /events/<slug> is an event, a program (its own calendar), or a month of
+// What's on (/events/2026-11). The Supabase reads stay cached by tag until
+// an event or program is published.
 
 type PublicEvent = Awaited<ReturnType<typeof events.publicEvent>>;
 
@@ -48,6 +49,13 @@ export const generateMetadata = async ({
   params,
 }: EventProps): Promise<Metadata> => {
   const { locale, slug } = await params;
+  if (isMonthSegment(slug)) {
+    const t = await getTranslations({ locale, namespace: "web.events" });
+    return localizedMetadata(locale, `/events/${slug}`, {
+      description: t("lede"),
+      title: t("title"),
+    });
+  }
   const series = await loadSeries(slug);
   if (series) {
     return seriesMetadata(locale, series);
@@ -81,20 +89,33 @@ const programOf = async (programmeId: string | null) => {
  * /events (the database keeps them apart), so /events/salon is the Salon
  * as a series and /events/salon-2026-12-01 one of its sessions.
  */
-const EventPage = async ({ params, searchParams }: EventProps) => {
+const EventPage = async ({ params }: EventProps) => {
   const { locale, slug } = await params;
   setRequestLocale(locale);
+  if (isMonthSegment(slug)) {
+    return <WhatsOn locale={locale} month={monthFrom(slug)} />;
+  }
   const series = await loadSeries(slug);
   if (series) {
-    const { month } = await searchParams;
     return (
-      <SeriesView locale={locale} month={month} series={series}>
+      <SeriesView locale={locale} series={series}>
         {series.slug === "second-chapter" ? (
           <SecondChapterGive locale={locale} />
         ) : null}
       </SeriesView>
     );
   }
+  return <EventView locale={locale} slug={slug} />;
+};
+
+/** One event's page. */
+const EventView = async ({
+  locale,
+  slug,
+}: {
+  locale: Locale;
+  slug: string;
+}) => {
   const event = await load(slug);
   if (!event) {
     notFound();

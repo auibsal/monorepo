@@ -128,9 +128,9 @@ select throws_ok(
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000065a2');
 select is(
-  (select title from journal.desk_queue() where desk = 'games' limit 1),
-  'What has pages',
-  'The Games Editor sees it in the queue'
+  (select count(*) from journal.desk_queue() where desk = 'games')::integer,
+  0,
+  'Games work is read blind, not by name in a section queue'
 );
 select ok(
   access.has_permission('journal.edit.games') and not access.has_permission('journal.edit.voices'),

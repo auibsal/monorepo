@@ -171,7 +171,7 @@ export const AdsAdmin = () => {
         {kinds.map((kind) => (
           <Link
             className={buttonLink}
-            href={{ pathname: "/qirtas/ads/new", query: { kind } }}
+            href={`/qirtas/ads/new/${kind}`}
             key={kind}
           >
             {t(`new.${kind}`)}
@@ -184,7 +184,7 @@ export const AdsAdmin = () => {
           action={
             kinds[0]
               ? {
-                  href: `/qirtas/ads/new?kind=${kinds[0]}`,
+                  href: `/qirtas/ads/new/${kinds[0]}`,
                   label: t(`new.${kinds[0]}`),
                 }
               : undefined
@@ -280,7 +280,7 @@ const AdForm = ({ initial }: { initial: Draft }) => {
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: key });
-      router.replace("/qirtas?tab=ads");
+      router.replace("/qirtas/ads");
     },
   });
 
@@ -425,13 +425,12 @@ const AdForm = ({ initial }: { initial: Draft }) => {
   );
 };
 
-/** Administration → Ads → one ad (new with ?kind=, or ?id= to edit). */
-export const AdEditor = () => {
+/** Qirtas → Ads → one ad (new at /qirtas/ads/new/<kind>, or by its id). */
+export const AdEditor = ({ kind: kindParam }: { readonly kind?: string }) => {
   const t = useTranslations("nexus.admin.ads");
   const locale = useLocale() as Locale;
   const { supabase } = useAuth();
   const id = useQueryParam("id");
-  const kindParam = useQueryParam("kind");
   const { kinds, ready } = useKinds();
   const record = useQuery({
     enabled: id !== null,
@@ -450,10 +449,7 @@ export const AdEditor = () => {
   }, [id, record.data, newKind]);
 
   const back = (
-    <Link
-      className="text-sm underline underline-offset-4"
-      href="/qirtas?tab=ads"
-    >
+    <Link className="text-sm underline underline-offset-4" href="/qirtas/ads">
       {t("back")}
     </Link>
   );

@@ -85,7 +85,7 @@ export const SeriesView = async ({
         ) : null}
       </PageHeader>
       <MonthSection
-        hrefFor={(m) => ({ pathname, query: { month: m } })}
+        hrefFor={(m) => `${pathname}/${m}`}
         locale={locale}
         month={month}
       >

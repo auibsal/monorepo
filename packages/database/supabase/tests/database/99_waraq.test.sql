@@ -133,17 +133,17 @@ select pg_temp.login_as('00000000-0000-0000-0000-0000000000a1');
 select lives_ok(
   $$ insert into journal.submissions (category, language, title, deck, body_html, human_authorship_confirmed)
      values ('report', 'en', 'Book drive results', 'Second Chapter collected books.', '<p>Story</p>', true) $$,
-  'A member sends news to the News desk, without a call'
+  'A member sends news, naming no call'
 );
 select throws_ok(
   $$ insert into journal.submissions (call_id, category, language, title, body_html, human_authorship_confirmed)
      values ('ca000000-0000-0000-0000-000000000001', 'report', 'en', 'News to a call', '<p>x</p>', true) $$,
   '22023', null, 'News is not sent to an Edition call'
 );
-select throws_ok(
-  $$ insert into journal.submissions (category, language, title, body_html, human_authorship_confirmed, first_publication_confirmed)
-     values ('poetry', 'en', 'A poem without a call', '<p>x</p>', true, true) $$,
-  'P0002', null, 'Letters answer a call'
+select is(
+  (select c.issue_id is null from journal.submissions s join journal.calls c on c.id = s.call_id
+   where s.title = 'Book drive results'),
+  true, 'Work that names no call goes to the standing call, read blind like the rest'
 );
 select throws_ok(
   $$ insert into journal.submissions (call_id, category, language, title, human_authorship_confirmed, first_publication_confirmed)
@@ -181,6 +181,10 @@ create function pg_temp.poem_sub() returns uuid language sql as $$
   select id from journal.submissions where title = 'Night River';
 $$;
 grant execute on function pg_temp.news_sub(), pg_temp.poem_sub() to public;
+
+-- A story a section editor took up before the one door (Oct 31, 2026)
+-- finishes on the old route: by name, with its section editor.
+update journal.submissions set call_id = null where title = 'Book drive results';
 
 -- ── The News desk ───────────────────────────────────────────────────────────
 

@@ -7,6 +7,26 @@ first session); section numbers (§) refer to it.
 
 Branch: `claude/new-session-qosn60`.
 
+## Qirtas, one door (2026-10-31)
+
+- [x] One door: every section through `/qirtas/write/<type>`, read blind;
+  the standing call "Qirtas, all year" beside the Edition calls
+  (migration `20261101000000`, `99_qirtas_one_door.test.sql`).
+- [x] The Diwan's Qirtas: Newsroom by section (Next Stop in Video,
+  puzzles in Games), Review, Editions, Awards, Ads, each a page.
+- [x] Awards, never Prizes; the names are confirmed (setting removed).
+- [x] Judges and bylines picked from the register; Anonymous byline and
+  the author's Anonymous choice; names follow the profile.
+- [x] One name per language (migration `20261101000100`): sign-up,
+  welcome, Profile, the invite email.
+- [x] Paths, never `?tab`: Diwan tabs, months, programs, requests,
+  welcome steps, search.
+- [x] About hub; the Company's productions at `/company/<slug>`; search
+  grouped by kind at `/search/<words>`.
+- [x] Notion: the Desk's "Templates and papers" link; `NotionManaged` on
+  programs, documents, minutes and officers; the handbook's Qirtas page
+  and the templates page updated.
+
 ## Blocked — needed from the user
 
 - [ ] **The Diwan, rebuilt (Oct 30, 2026), what is left for the owner:**
@@ -14,7 +34,7 @@ Branch: `claude/new-session-qosn60`.
     (Authentication → OAuth Server): Sign in with SAL is gone, and the
     database already refuses any app token, but no new app should be able
     to ask for one.
-  - **Notion templates** for the retired papers (incident report, role
+  - **Notion templates** (still open on Oct 31) for the retired papers (incident report, role
     handover, interview score sheet, offboarding checklist, the standard
     letters): add them to the team workspace's Templates page, or tell us
     which you want and we add them through the Notion connector.
@@ -23,11 +43,6 @@ Branch: `claude/new-session-qosn60`.
     the hand-typed semesters stay until the feed names the same ones.
 
 - [ ] **The brand handoff of Oct 30, 2026, what is left for the owner:**
-  - **The Qirtas Prizes' names** (the Mutanabbi, Tabari, Jahiz, Nazik,
-    Wasiti and Ibn al-Haytham Prizes) are proposed: the public Prizes page
-    shows "The main prize" and "The prize for News" and so on until you
-    confirm them; then choose "Use the names" in the Diwan's Qirtas →
-    Editions and prizes. Write to Nazik al-Malaika's family first.
   - **Old Qirtas pieces with retired names.** The launch pieces from
     Oct 14 (migration `20261014000300`, e.g. "Waraq launches…") still name
     Waraq, Gallery Wall, Side Quest and Charter Day, and show on the home
@@ -1836,3 +1851,11 @@ Written 2026-10-25 (the brand, Version 1):
   `nexus.admin.settings.emails`.
 - The four Supabase auth emails (`packages/database/supabase/templates`),
   the Arabic sample copy in the Storybook stories (SAL/Social, SAL/Screens).
+- Qirtas, one door (2026-10-31): `nexus.journal.write.*`,
+  `nexus.admin.sections.tabs.{qirtas,newsroom,review,editions,awards,ads}`,
+  `nexus.admin.waraq.{sections,allDesks,queue}`,
+  `nexus.admin.journal.{contributor,byline}.*`, `web.productions.*`,
+  `web.search.groups.*`, `web.about.{hubTitle,hub}`,
+  `nexus.setup.name.*`, `nexus.admin.notion.mirror`, `nexus.nav.templates`,
+  and in the database the
+  standing call «قرطاس طوال العام» and the byline «مجهول».

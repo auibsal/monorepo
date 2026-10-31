@@ -93,15 +93,14 @@ export interface SignUpDetails {
   email: string;
   locale: "ar" | "en";
   /**
-   * First and last name, in English and in Arabic. Required (all four) for
-   * addresses outside AUIB, which the Council verifies by them; AUIB
-   * addresses give their names in setup, after confirming the email.
+   * The name in English and the name in Arabic, each whole (owner, Oct 31,
+   * 2026). Required for addresses outside AUIB, which the Council verifies
+   * by them; AUIB addresses give their names in setup, after confirming the
+   * email.
    */
   names?: {
-    familyAr: string;
-    familyEn: string;
-    givenAr: string;
-    givenEn: string;
+    ar: string;
+    en: string;
   };
   password: string;
   /** Where the confirmation link lands (the Nexus /auth/callback). */
@@ -128,10 +127,8 @@ export const signUpWithEmail = async (
   }
   const auib = isAuibEmail(email);
   const names = {
-    familyAr: details.names?.familyAr.trim() ?? "",
-    familyEn: details.names?.familyEn.trim() ?? "",
-    givenAr: details.names?.givenAr.trim() ?? "",
-    givenEn: details.names?.givenEn.trim() ?? "",
+    ar: details.names?.ar.trim() ?? "",
+    en: details.names?.en.trim() ?? "",
   };
   const named = Object.values(names).every((part) => part !== "");
   if (!(auib || named)) {
@@ -143,16 +140,7 @@ export const signUpWithEmail = async (
     options: {
       ...captcha(details.captchaToken),
       data: {
-        ...(named
-          ? {
-              family_name_ar: names.familyAr,
-              family_name_en: names.familyEn,
-              full_name_ar: `${names.givenAr} ${names.familyAr}`,
-              full_name_en: `${names.givenEn} ${names.familyEn}`,
-              given_name_ar: names.givenAr,
-              given_name_en: names.givenEn,
-            }
-          : {}),
+        ...(named ? { full_name_ar: names.ar, full_name_en: names.en } : {}),
         locale: details.locale,
         verification_statement: auib
           ? undefined

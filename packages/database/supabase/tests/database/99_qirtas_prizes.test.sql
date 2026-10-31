@@ -129,9 +129,9 @@ select throws_ok(
   '22023', 'prize_piece_unpublished', 'Only published work is shortlisted'
 );
 select lives_ok(
-  $$ insert into journal.prize_judges (round_id, prize_key, name_en, name_ar)
-     values ('e0000000-0000-0000-0000-0000000066e1', 'nazik', 'A Judge', 'حكم') $$,
-  'and names a judge'
+  $$ insert into journal.prize_judges (round_id, prize_key, user_id)
+     values ('e0000000-0000-0000-0000-0000000066e1', 'nazik', '00000000-0000-0000-0000-0000000066a3') $$,
+  'and chooses a judge from the register, whose names follow the profile'
 );
 
 select pg_temp.login_anon();
@@ -157,7 +157,7 @@ select pg_temp.logout();
 select is(
   (select citation_en from membership.certificates
    where user_id = '00000000-0000-0000-0000-0000000066a2' and kind = 'prize'),
-  'won the Nazik Prize for “A Poem”',
+  'won the Nazik Award for “A Poem”',
   'naming the prize and the piece'
 );
 
