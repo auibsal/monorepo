@@ -90,7 +90,7 @@ select pg_temp.logout();
 select set_eq(
   $$ select title_en from programmes.openings where owner = 'qirtas' $$,
   $$ values ('News Editor'), ('Voices Editor'), ('Video Editor'), ('Games Editor'),
-     ('Producer, Next Stop'), ('Prizes Coordinator') $$,
+     ('Producer, Next Stop'), ('Awards Coordinator') $$,
   'The open masthead seats are on the Callboard'
 );
 create function pg_temp.seat(t text) returns uuid language sql as $$

@@ -2389,6 +2389,7 @@ export type Database = {
           signed_at: string | null;
           signed_by: string | null;
           signed_document_path: string | null;
+          society_signatory: string | null;
           starts_on: string;
           status: string;
           student_life_informed_on: string | null;
@@ -2421,6 +2422,7 @@ export type Database = {
           signed_at?: string | null;
           signed_by?: string | null;
           signed_document_path?: string | null;
+          society_signatory?: string | null;
           starts_on: string;
           status?: string;
           student_life_informed_on?: string | null;
@@ -2453,6 +2455,7 @@ export type Database = {
           signed_at?: string | null;
           signed_by?: string | null;
           signed_document_path?: string | null;
+          society_signatory?: string | null;
           starts_on?: string;
           status?: string;
           student_life_informed_on?: string | null;

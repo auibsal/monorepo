@@ -402,12 +402,11 @@ export const PartnerJoin = () => {
     // member signs in as themselves and stays a member.
     return (
       <DiwanPage lede={t("lede")} title={t("title")}>
-        <p className="type-label">{t("stepOne")}</p>
         <div className="grid gap-12 lg:grid-cols-2">
           <DiwanSection id="sign-in" title={t("signInTitle")}>
             <p className="type-body text-text-secondary">{t("members")}</p>
             <Suspense fallback={<PageSpinner />}>
-              <SignInForm />
+              <SignInForm embedded />
             </Suspense>
           </DiwanSection>
           <DiwanSection id="sign-up" title={t("signUpTitle")}>

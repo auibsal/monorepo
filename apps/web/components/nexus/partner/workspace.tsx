@@ -98,9 +98,6 @@ const PartnerFrame = ({
 // ── Profile and memorandum ──────────────────────────────────────────────────
 
 interface PartnerRow {
-  contact_email: string | null;
-  contact_name: string | null;
-  contact_role: string | null;
   description_ar: string | null;
   description_en: string | null;
   id: string;
@@ -118,8 +115,18 @@ interface AgreementRow {
   purpose_en: string;
   sal_will: string | null;
   signed_at: string | null;
+  society_signatory: string | null;
   status: string;
 }
+
+/**
+ * A signatory is kept as "English name · Arabic name": each page shows
+ * the name in its own language (one language per page).
+ */
+const inLanguage = (signatory: string, locale: Locale) => {
+  const [en, ar] = signatory.split(" · ");
+  return (locale === "ar" ? ar || en : en || ar) ?? signatory;
+};
 
 const ProfileForm = ({ row }: { row: PartnerRow }) => {
   const t = useTranslations("nexus.partnerDesk.profile");
@@ -127,9 +134,6 @@ const ProfileForm = ({ row }: { row: PartnerRow }) => {
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
   const [form, setForm] = useState({
-    contact_email: row.contact_email ?? "",
-    contact_name: row.contact_name ?? "",
-    contact_role: row.contact_role ?? "",
     description: { ar: row.description_ar ?? "", en: row.description_en ?? "" },
     name: { ar: row.name_ar ?? "", en: row.name_en },
     url: row.url ?? "",
@@ -141,9 +145,6 @@ const ProfileForm = ({ row }: { row: PartnerRow }) => {
           .schema("governance")
           .from("partners")
           .update({
-            contact_email: form.contact_email.trim() || null,
-            contact_name: form.contact_name.trim() || null,
-            contact_role: form.contact_role.trim() || null,
             description_ar: form.description.ar.trim() || null,
             description_en: form.description.en.trim() || null,
             name_ar: form.name.ar.trim() || null,
@@ -154,10 +155,8 @@ const ProfileForm = ({ row }: { row: PartnerRow }) => {
       ),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: KEY }),
   });
-  const set =
-    (key: "contact_email" | "contact_name" | "contact_role" | "url") =>
-    (event: { target: { value: string } }) =>
-      setForm((f) => ({ ...f, [key]: event.target.value }));
+  const set = (key: "url") => (event: { target: { value: string } }) =>
+    setForm((f) => ({ ...f, [key]: event.target.value }));
   return (
     <form
       className="grid gap-6"
@@ -192,40 +191,6 @@ const ProfileForm = ({ row }: { row: PartnerRow }) => {
         value={form.description}
       />
       <p className="type-caption">{t("listing")}</p>
-      <fieldset className="grid gap-4 sm:grid-cols-3">
-        <legend className="type-label mb-2">{tr("contact")}</legend>
-        <Field label={tr("contactName")}>
-          {(id) => (
-            <Input
-              dir="auto"
-              id={id}
-              onChange={set("contact_name")}
-              value={form.contact_name}
-            />
-          )}
-        </Field>
-        <Field label={tr("contactRole")}>
-          {(id) => (
-            <Input
-              dir="auto"
-              id={id}
-              onChange={set("contact_role")}
-              value={form.contact_role}
-            />
-          )}
-        </Field>
-        <Field label={tr("contactEmail")}>
-          {(id) => (
-            <Input
-              dir="ltr"
-              id={id}
-              onChange={set("contact_email")}
-              type="email"
-              value={form.contact_email}
-            />
-          )}
-        </Field>
-      </fieldset>
       <SaveButton pending={save.isPending} success={save.isSuccess} />
       <ErrorLine error={save.error} />
     </form>
@@ -244,7 +209,7 @@ const Memoranda = ({ partnerId }: { partnerId: string }) => {
           .schema("governance")
           .from("partner_agreements")
           .select(
-            "id, purpose_en, partner_will, sal_will, grants, asked_grants, status, partner_signatory, signed_at"
+            "id, purpose_en, partner_will, sal_will, grants, asked_grants, status, partner_signatory, society_signatory, signed_at"
           )
           .eq("partner_id", partnerId)
           .order("created_at", { ascending: false })
@@ -260,18 +225,31 @@ const Memoranda = ({ partnerId }: { partnerId: string }) => {
         <li className="grid gap-3 py-5" key={a.id}>
           <p className="type-caption">
             {a.status === "signed" && a.signed_at
-              ? t("signed", {
-                  date: formatLongDate(a.signed_at, locale),
-                  name: a.partner_signatory ?? "",
+              ? t("signedBoth", {
+                  date: formatLongDate(a.signed_at, locale, true),
                 })
               : t(a.status === "draft" ? "waiting" : "ended")}
           </p>
-          {a.partner_signatory ? (
-            <Signature
-              date={a.signed_at ?? undefined}
-              name={a.partner_signatory}
-            />
-          ) : null}
+          <div className="flex flex-wrap gap-x-10 gap-y-4">
+            {a.partner_signatory ? (
+              <div className="grid gap-1">
+                <span className="type-caption">{t("forPartner")}</span>
+                <Signature
+                  date={a.signed_at ?? undefined}
+                  name={inLanguage(a.partner_signatory, locale)}
+                />
+              </div>
+            ) : null}
+            {a.society_signatory ? (
+              <div className="grid gap-1">
+                <span className="type-caption">{t("forSociety")}</span>
+                <Signature
+                  date={a.signed_at ?? undefined}
+                  name={inLanguage(a.society_signatory, locale)}
+                />
+              </div>
+            ) : null}
+          </div>
           <dl className="grid gap-3">
             <div>
               <dt className="type-label">{t("purpose")}</dt>
@@ -384,15 +362,17 @@ const AskForGrants = ({
       {agreement.asked_grants ? (
         <p className="type-caption">{t("asked")}</p>
       ) : null}
-      <Button
-        className="justify-self-start"
-        disabled={ask.isPending || same}
-        size="sm"
-        type="submit"
-        variant="outline"
-      >
-        {t("askButton")}
-      </Button>
+      {same ? null : (
+        <Button
+          className="justify-self-start"
+          disabled={ask.isPending}
+          size="sm"
+          type="submit"
+          variant="outline"
+        >
+          {t("askButton")}
+        </Button>
+      )}
       <ErrorLine error={ask.error} />
     </form>
   );
@@ -425,9 +405,7 @@ const ProfileLoader = ({ id }: { id: string }) => {
         await supabase
           .schema("governance")
           .from("partners")
-          .select(
-            "id, name_en, name_ar, url, description_en, description_ar, contact_name, contact_role, contact_email"
-          )
+          .select("id, name_en, name_ar, url, description_en, description_ar")
           .eq("id", id)
           .single()
       ) as PartnerRow,

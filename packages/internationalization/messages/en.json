@@ -2107,7 +2107,7 @@
           "title": "Offer",
           "details": "How to redeem it",
           "code": "Code (optional)",
-          "codeHint": "If the partner gave the Society a code.",
+          "codeHint": "A code to give at the counter or type online, if the perk has one.",
           "starts_on": "From",
           "ends_on": "Until",
           "publishNow": "Publish now",
@@ -3927,7 +3927,6 @@
       "oneMembership": "You are the Society's guest, and a guest is never on a partner's team. Apply with your organization's own address: sign out, then come back here.",
       "members": "Leading an AUIB club and already a member? Apply signed in as yourself: you stay a member, and the club's dashboard opens beside Membership.",
       "kindOther": "What kind of organization",
-      "stepOne": "Step 1 of 2: who signs",
       "stepTwo": "Step 2 of 2: the memorandum",
       "signInTitle": "Sign in",
       "signUpTitle": "Create an account"
@@ -3948,7 +3947,6 @@
       },
       "memorandum": {
         "title": "Memorandum",
-        "signed": "Signed for the partner by {name}; signed for the Society on {date}.",
         "waiting": "Waiting for the Society's signature.",
         "ended": "Ended.",
         "purpose": "Purpose",
@@ -3958,7 +3956,10 @@
         "ask": "What you turn on",
         "askHint": "For your organization and its guests. The Society approves each before it turns on.",
         "asked": "Asked for, and waiting for the Society.",
-        "askButton": "Ask the Society"
+        "askButton": "Ask the Society",
+        "signedBoth": "Signed by both sides on {date}.",
+        "forPartner": "For your organization",
+        "forSociety": "For the Society"
       },
       "perks": {
         "title": "Perks",

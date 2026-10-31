@@ -79,8 +79,13 @@ export const POST = async (request: Request) => {
   const json = (data: object, status = 200) =>
     NextResponse.json(data, { headers, status });
 
+  const body = (await request.json().catch(() => ({}))) as { check?: unknown };
   if (!walletConfigured()) {
-    return json({ error: "wallet_not_configured" }, 503);
+    // The card asks first; while Wallet isn't set up it simply hides the
+    // button (no failed request on every visit).
+    return body.check === true
+      ? json({ configured: false, saved: false })
+      : json({ error: "wallet_not_configured" }, 503);
   }
   const session = await authenticateRequest(request);
   if (!session) {
@@ -99,9 +104,11 @@ export const POST = async (request: Request) => {
   if (!(card && standing?.is_member && profile.data)) {
     return json({ error: "not_a_member" }, 403);
   }
-  const body = (await request.json().catch(() => ({}))) as { check?: unknown };
   if (body.check === true) {
-    return json({ saved: await syncHeld(session.userId, card.code) });
+    return json({
+      configured: true,
+      saved: await syncHeld(session.userId, card.code),
+    });
   }
   const locale = profile.data.locale === "ar" ? "ar" : "en";
   const pass: WalletCard = {
