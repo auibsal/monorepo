@@ -3,23 +3,21 @@ import { formatLongDate } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
 import { journal } from "@repo/sal-data";
 import { getTranslations } from "next-intl/server";
-import type { ReactNode } from "react";
 
 /**
- * The paper's nameplate: the name in Medium with the other language's
- * name under it, a dateline between two ink rules, and the desks. Small on
- * the inner pages: the name and the sections.
+ * The paper's nameplate: the name in Medium, a dateline between two ink
+ * rules ending in the Editions and the Awards (owner, Oct 31, 2026: they
+ * take the place of the call's closing date), and the desks. Small on the
+ * inner pages: the name and the sections, with Editions and Awards after
+ * them.
  */
 export const Nameplate = async ({
   current,
   locale,
-  note,
   small = false,
 }: {
   current?: journal.Desk;
   locale: Locale;
-  /** The end of the dateline (an open call, the edition). */
-  note?: ReactNode;
   small?: boolean;
 }) => {
   const t = await getTranslations({ locale, namespace: "web.journal" });
@@ -49,7 +47,14 @@ export const Nameplate = async ({
               {formatLongDate(new Date().toISOString(), locale, true)}
             </span>
             <span className="sm:text-center">{t("tagline")}</span>
-            <span className="sm:text-end">{note}</span>
+            <span className="flex gap-x-5 sm:justify-end">
+              <Link className="hover:text-accent" href="/qirtas/editions">
+                {t("editions")}
+              </Link>
+              <Link className="hover:text-accent" href="/qirtas/awards">
+                {t("prizes")}
+              </Link>
+            </span>
           </p>
         </>
       )}
@@ -69,16 +74,20 @@ export const Nameplate = async ({
               </Link>
             </li>
           ))}
-          <li>
-            <Link className={desk} href="/qirtas/editions">
-              {t("editions")}
-            </Link>
-          </li>
-          <li>
-            <Link className={desk} href="/qirtas/awards">
-              {t("prizes")}
-            </Link>
-          </li>
+          {small ? (
+            <>
+              <li>
+                <Link className={desk} href="/qirtas/editions">
+                  {t("editions")}
+                </Link>
+              </li>
+              <li>
+                <Link className={desk} href="/qirtas/awards">
+                  {t("prizes")}
+                </Link>
+              </li>
+            </>
+          ) : null}
         </ul>
       </nav>
     </header>

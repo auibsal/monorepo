@@ -148,43 +148,33 @@ const WaraqFrontPage = async ({ params }: WaraqProps) => {
       (rows) =>
         (Array.isArray(rows) ? journal.inLanguage(rows, locale) : rows) as T
     );
-  const [
-    front,
-    news,
-    letters,
-    gallery,
-    sixWords,
-    video,
-    voices,
-    edition,
-    calls,
-  ] = await Promise.all([
-    read((c) => journal.frontPieces(c), []),
-    read((c) => journal.deskPieces(c, "news", { limit: 6 }), []),
-    read(
-      (c) =>
-        journal.deskPieces(c, "letters", {
-          categories: journal
-            .deskCategories("letters")
-            .filter((x) => x !== "six_words"),
-          limit: 4,
-        }),
-      []
-    ),
-    read((c) => journal.deskPieces(c, "gallery", { limit: 6 }), []),
-    read(
-      (c) =>
-        journal.deskPieces(c, "letters", {
-          categories: ["six_words"],
-          limit: 1,
-        }),
-      []
-    ),
-    read((c) => journal.deskPieces(c, "video", { limit: 2 }), []),
-    read((c) => journal.deskPieces(c, "voices", { limit: 3 }), []),
-    read((c) => journal.currentEdition(c), null),
-    read((c) => journal.editionCalls(c), []),
-  ]);
+  const [front, news, letters, gallery, sixWords, video, voices, edition] =
+    await Promise.all([
+      read((c) => journal.frontPieces(c), []),
+      read((c) => journal.deskPieces(c, "news", { limit: 6 }), []),
+      read(
+        (c) =>
+          journal.deskPieces(c, "letters", {
+            categories: journal
+              .deskCategories("letters")
+              .filter((x) => x !== "six_words"),
+            limit: 4,
+          }),
+        []
+      ),
+      read((c) => journal.deskPieces(c, "gallery", { limit: 6 }), []),
+      read(
+        (c) =>
+          journal.deskPieces(c, "letters", {
+            categories: ["six_words"],
+            limit: 1,
+          }),
+        []
+      ),
+      read((c) => journal.deskPieces(c, "video", { limit: 2 }), []),
+      read((c) => journal.deskPieces(c, "voices", { limit: 3 }), []),
+      read((c) => journal.currentEdition(c), null),
+    ]);
   // With nothing set as front, the newest news leads so the page has a
   // top rather than a gap.
   const top = front.length > 0 ? front : news.slice(0, 5);
@@ -202,21 +192,10 @@ const WaraqFrontPage = async ({ params }: WaraqProps) => {
     front.length + news.length + letters.length + gallery.length === 0;
   const cover = mediaUrl(edition?.cover_path);
 
-  const [openCall] = calls ?? [];
-
   return (
     <>
       <div className="mx-auto grid w-full max-w-6xl gap-12 px-4 py-10">
-        <Nameplate
-          locale={locale}
-          note={
-            openCall
-              ? t("closes", {
-                  date: formatLongDate(openCall.closes_at, locale),
-                })
-              : null
-          }
-        />
+        <Nameplate locale={locale} />
         <h1 className="sr-only">{t("title")}</h1>
 
         {nothing ? (

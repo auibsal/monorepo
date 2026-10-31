@@ -27,8 +27,7 @@ and decisions), and continue from the first unticked item.
     `/settings/notices`; officers also `/settings/declarations`, and
     their recovery codes on Settings), Requests (`/membership/requests/<id>`) and
     their work (`/membership/work/<id>`, `/work/submissions/<id>`; the list
-    is on their author page, `/qirtas/authors/<name>`, seen only by them,
-    `OwnWork`);
+    is their drafts on `/qirtas/write`, private work lives nowhere else);
     also `/company/auditions`, `/qirtas/write` (every section, and the form
     at `/qirtas/write/<type>`) and `/qirtas/read/<slug>` (a members-only
     piece). Perks are on the card; voting
@@ -114,9 +113,9 @@ and decisions), and continue from the first unticked item.
 - **Author pages are people's pages** (owner, Oct 31, 2026). A person's own
   byline lives at `/qirtas/authors/<first-last>` (the slug follows the
   English name, `private.own_byline_slug`); it shows Member, Partner or
-  Guest and the roles they hold (`journal.author_card`), and to them alone
-  their work in progress (`journal.my_author_page`). Pen names show
-  published work only, never a kind or a role.
+  Guest and the roles they hold (`journal.author_card`) and published work
+  only: private work is drafts on `/qirtas/write` (owner, Oct 31, 2026).
+  Pen names show published work only, never a kind or a role.
 - **New is one flow** (owner, Oct 31, 2026). A blank record is the full
   editor at `new`, created on save (Library documents at
   `/society/library/new`, staff pieces at `/qirtas/pieces/new`); never a
