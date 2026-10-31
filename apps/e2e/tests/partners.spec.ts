@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { admin, PASSWORD, president } from "../fixtures";
+import { admin, member, PASSWORD, president } from "../fixtures";
 import { urls } from "../playwright.config";
 import { latestMail, setUpTwoStep, signInWithPassword } from "./helpers";
 
@@ -161,4 +161,90 @@ test("an organization applies, the President signs, and its dashboard opens", as
   await expect(
     guest.getByText(`Free entry to readings ${stamp}`)
   ).toBeVisible();
+});
+
+/**
+ * A member may lead their club's partnership (owner, Oct 31, 2026): they
+ * apply signed in as themselves, the President signs, and they keep every
+ * member's page and a Member card, with the dashboard beside Membership.
+ */
+test("a member who leads their club's partnership stays a member", async ({
+  browser,
+}) => {
+  const db = admin();
+  const organization = `E2E Member Club ${Date.now()}`;
+  const page = await (await browser.newContext()).newPage();
+  await signInWithPassword(page, member.email);
+  await page.goto(`${urls.web}/partners/join`);
+  await page.getByLabel("Name in English").fill(organization);
+  await page
+    .getByLabel("What the partnership is for")
+    .fill("Readings with the club.");
+  await page.getByRole("checkbox", { name: /I sign this memorandum/ }).click();
+  await page.getByRole("button", { name: "Apply and sign" }).click();
+  await expect(
+    page.getByRole("heading", { name: "Application received" })
+  ).toBeVisible();
+
+  const { data: partner } = await db
+    .schema("governance")
+    .from("partners")
+    .select("id")
+    .eq("name_en", organization)
+    .single();
+  const partnerId = partner?.id ?? "";
+  try {
+    // The President's signature, as in the queue: the partner turns active
+    // and whoever applied leads it.
+    const { data: agreement } = await db
+      .schema("governance")
+      .from("partner_agreements")
+      .select("id")
+      .eq("partner_id", partnerId)
+      .single();
+    const { data: users } = await db.auth.admin.listUsers({ perPage: 1000 });
+    const memberId = users.users.find((u) => u.email === member.email)?.id;
+    await db
+      .schema("governance")
+      .from("partner_agreements")
+      .update({ signed_at: new Date().toISOString(), status: "signed" })
+      .eq("id", agreement?.id ?? "");
+    await db
+      .schema("governance")
+      .from("partners")
+      .update({ status: "active" })
+      .eq("id", partnerId);
+    const assigned = await db
+      .schema("access")
+      .from("role_assignments")
+      .insert({
+        role: "partner_lead",
+        scope_id: partnerId,
+        scope_type: "partner",
+        user_id: memberId ?? "",
+      });
+    expect(assigned.error).toBeNull();
+
+    // Still a member: the whole row, the Member card, and the dashboard.
+    await page.goto(`${urls.web}/membership`);
+    const row = page.getByRole("navigation", { name: "Membership" });
+    for (const name of ["My calendar", "Society", "Record"]) {
+      await expect(row.getByRole("link", { name })).toBeVisible();
+    }
+    await page.goto(`${urls.web}/membership/society`);
+    await expect(page).toHaveURL(/\/membership\/society$/);
+    // Leading a partner is not an officer's role: no Diwan.
+    await page.goto(`${urls.app}`);
+    await expect(page).toHaveURL(/\/partners\/dashboard$/);
+    await expect(
+      page.getByRole("heading", { level: 1, name: organization })
+    ).toBeVisible();
+  } finally {
+    await db
+      .schema("access")
+      .from("role_assignments")
+      .delete()
+      .eq("scope_id", partnerId);
+    await db.schema("governance").from("partners").delete().eq("id", partnerId);
+  }
 });

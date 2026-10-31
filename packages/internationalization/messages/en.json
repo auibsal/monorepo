@@ -4034,7 +4034,7 @@
     "partnerJoin": {
       "title": "Partner with the Society",
       "lede": "For clubs, departments and organizations whose aims fit the Society's and who treat people fairly. Apply here and sign the memorandum by name; the President signs for the Society.",
-      "account": "Applying takes an account, for the person who signs for the organization. Any email address will do. Already have an account? Sign in below.",
+      "account": "Not a member? Applying takes an account, for the person who signs for the organization. Any email address will do.",
       "organization": "Your organization",
       "nameEn": "Name in English",
       "nameAr": "Name in Arabic",
@@ -4070,7 +4070,9 @@
         "six": "Nothing is paid through the platform: the Society takes no online payments."
       },
       "oneMembership": "You are the Society's guest, and a guest is never on a partner's team. Apply with your organization's own address: sign out, then come back here.",
-      "signedOn": "Date"
+      "signedOn": "Date",
+      "members": "Leading an AUIB club and already a member? Apply signed in as yourself: you stay a member, and the club's dashboard opens beside Membership.",
+      "membersSignIn": "Sign in to apply"
     },
     "partnerDesk": {
       "none": "You are not on a partner's team.",

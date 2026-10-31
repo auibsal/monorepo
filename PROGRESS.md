@@ -1673,7 +1673,8 @@ Covered by automated tests so far:
 - Signatures and photos (2026-10-31, after One Membership):
   `nexus.partnerJoin.{signatory,signedOn,oneMembership}`,
   `nexus.journal.agreement.signAs`, `nexus.events.bookingAs`,
-  `nexus.admin.event.questionsHint`.
+  `nexus.admin.event.questionsHint`, `nexus.partnerJoin.{members,
+  membersSignIn,account}`.
 - One Membership (2026-10-31, the last): `nexus.home.kinds.*`,
   `nexus.home.card.staff`, `nexus.accountHome.*`, `nexus.partnerInvite.
   {society,errors.one_membership}`, `nexus.partnerJoin.oneMembership`,

@@ -351,6 +351,17 @@ export const PartnerJoin = () => {
     // its address need not be AUIB's (owner, Oct 31, 2026).
     return (
       <DiwanPage lede={t("lede")} narrow title={t("title")}>
+        {/* A member applies as themselves, so they stay a member (owner,
+            Oct 31, 2026); a new account here is for someone who isn't. */}
+        <p className="type-body">
+          {t("members")}{" "}
+          <Link
+            className="font-medium text-accent hover:underline"
+            href={{ pathname: "/sign-in", query: { next: PATH } }}
+          >
+            {t("membersSignIn")}
+          </Link>
+        </p>
         <p className="type-body">{t("account")}</p>
         <div className="grid gap-6">
           <SignUpForm

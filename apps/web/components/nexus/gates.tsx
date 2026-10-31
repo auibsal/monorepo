@@ -195,6 +195,8 @@ export const GuestOnly = ({ children }: GateProps) => {
  * Everyone else goes to their account on the site. A convenience: Row
  * Level Security still decides every row.
  */
+const PARTNER_PERMISSIONS = new Set(["partners.own", "partners.lead"]);
+
 export const RequireStaff = ({ children }: GateProps) => {
   const grants = useGrants();
   const twoStep = useTwoStep();
@@ -202,10 +204,11 @@ export const RequireStaff = ({ children }: GateProps) => {
   // A role that needs two-step sign-in grants nothing until the code is in,
   // so its holder is staff waiting for the second step, not a member.
   const waiting = Boolean(twoStep.data?.needs && !twoStep.data.done);
-  // A partner's representative holds partners.own only: their partner's
-  // dashboard (/partners/dashboard) is theirs, the officers' Diwan is not.
+  // A partner's team holds partners.own (and its Leads partners.lead):
+  // their partner's dashboard (/partners/dashboard) is theirs, the
+  // officers' Diwan is not, even for a member who leads their club.
   const officerGrants = (grants.data ?? []).filter(
-    (g) => g.permission !== "partners.own"
+    (g) => !PARTNER_PERMISSIONS.has(g.permission)
   );
   const partnerOnly =
     officerGrants.length === 0 && (grants.data ?? []).length > 0;
