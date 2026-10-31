@@ -1,131 +1,30 @@
 "use client";
 
-import { hasPermissionAnywhere, type Permission } from "@repo/rbac";
+import type { AdminSection } from "@repo/rbac";
 import { useTranslations } from "next-intl";
-import { type SectionTab, SectionTabs, useVisibleModules } from "./admin-shell";
+import { SectionTabs, useVisibleModules } from "./admin-shell";
+import { allowedViews } from "./section-views";
 
-interface Tab {
-  readonly href: string;
-  readonly key: TabKey;
-  /** The module that shows it; with `permission`, held as well. */
-  readonly module: string;
-  /** Held as well, any one of them. */
-  readonly permission?: Permission | readonly Permission[];
-}
-
-type TabKey =
-  | "newsroom"
-  | "editions"
-  | "awards"
-  | "ads"
-  | "members"
-  | "verification"
-  | "hiring"
-  | "service"
-  | "partners"
-  | "insights"
-  | "meetings"
-  | "requests"
-  | "elections"
-  | "concerns"
-  | "library";
-
-const useTabs = (tabs: readonly Tab[], labels: (key: TabKey) => string) => {
+const Tabs = ({ section }: { readonly section: AdminSection }) => {
+  const t = useTranslations("nexus.admin.sections.tabs");
   const { grants, visible } = useVisibleModules();
   const modules = new Set<string>(visible.map((m) => m.key));
-  return tabs
-    .filter(
-      (tab) =>
-        modules.has(tab.module) &&
-        (!tab.permission ||
-          (Array.isArray(tab.permission)
-            ? tab.permission
-            : [tab.permission]
-          ).some((p) => hasPermissionAnywhere(grants.data, p)))
-    )
-    .map((tab): SectionTab => ({ href: tab.href, label: labels(tab.key) }));
+  const tabs = allowedViews(section, modules, grants.data).map((view) => ({
+    href: view.href,
+    label: t(view.key as never),
+  }));
+  return <SectionTabs label={t(section as never)} tabs={tabs} />;
 };
-
-const QIRTAS: readonly Tab[] = [
-  { href: "/qirtas", key: "newsroom", module: "journal" },
-  {
-    href: "/qirtas/editions",
-    key: "editions",
-    module: "journal",
-    permission: ["journal.manage", "journal.publish"],
-  },
-  {
-    href: "/qirtas/awards",
-    key: "awards",
-    module: "journal",
-    permission: "journal.prizes",
-  },
-  { href: "/qirtas/ads", key: "ads", module: "ads" },
-];
 
 /**
- * Qirtas (owner, Oct 31, 2026): the newsroom, one page per section,
- * where staff write and publish and what members send is read blind
- * (Newsroom and Review merged, owner, Oct 31, 2026); and the three
- * features with pages of their own (Editions, Awards, ads).
+ * Qirtas (owner, Oct 31, 2026): the newsroom, one page per section, where
+ * staff write and publish and what members send is read blind; and
+ * Editions, Awards and ads, each its own page.
  */
-export const QirtasTabs = () => {
-  const t = useTranslations("nexus.admin.sections.tabs");
-  const tabs = useTabs(QIRTAS, (key) => t(key));
-  return <SectionTabs label={t("qirtas")} tabs={tabs} />;
-};
-
-const PEOPLE: readonly Tab[] = [
-  { href: "/people", key: "members", module: "members" },
-  {
-    href: "/people/verification",
-    key: "verification",
-    module: "partners",
-  },
-  { href: "/people/hiring", key: "hiring", module: "hiring" },
-  { href: "/people/service", key: "service", module: "recognition" },
-  { href: "/people/partners", key: "partners", module: "partners" },
-  {
-    href: "/people/insights",
-    key: "insights",
-    module: "members",
-    permission: "members.manage",
-  },
-];
+export const QirtasTabs = () => <Tabs section="qirtas" />;
 
 /** People: members, verification, hiring, service, partners, insights. */
-export const PeopleTabs = () => {
-  const t = useTranslations("nexus.admin.sections.tabs");
-  const tabs = useTabs(PEOPLE, (key) => t(key));
-  return <SectionTabs label={t("people")} tabs={tabs} />;
-};
-
-const SOCIETY: readonly Tab[] = [
-  { href: "/society", key: "meetings", module: "governance" },
-  {
-    href: "/society/requests",
-    key: "requests",
-    module: "governance",
-    permission: "governance.manage",
-  },
-  {
-    href: "/society/elections",
-    key: "elections",
-    module: "governance",
-    permission: "elections.manage",
-  },
-  {
-    href: "/society/concerns",
-    key: "concerns",
-    module: "forms",
-    permission: "concerns.handle",
-  },
-  { href: "/society/library", key: "library", module: "library" },
-];
+export const PeopleTabs = () => <Tabs section="people" />;
 
 /** Society: meetings, requests, elections, concerns, the Library. */
-export const SocietyTabs = () => {
-  const t = useTranslations("nexus.admin.sections.tabs");
-  const tabs = useTabs(SOCIETY, (key) => t(key));
-  return <SectionTabs label={t("society")} tabs={tabs} />;
-};
+export const SocietyTabs = () => <Tabs section="society" />;

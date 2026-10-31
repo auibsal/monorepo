@@ -95,7 +95,7 @@ test.describe("public site", () => {
     await page.goto(`${urls.web}/qirtas/next-stop`);
     await page
       .getByRole("main")
-      .getByRole("link", { name: "Next Stop care" })
+      .getByRole("link", { name: "Next Stop's promise" })
       .click();
     await expect(page).toHaveURL(/\/qirtas\/next-stop\/care$/);
   });

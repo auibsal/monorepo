@@ -4,8 +4,8 @@ import { useAuth } from "@repo/auth/provider";
 import { Button } from "@repo/design-system/components/ui/button";
 import type { Locale } from "@repo/internationalization";
 import { formatDateTime } from "@repo/internationalization/format";
-import { unwrap } from "@repo/sal-data";
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { localized, unwrap } from "@repo/sal-data";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 import { RowList } from "../../page";
@@ -37,7 +37,6 @@ const THINGS = {
   "governance.candidates": "society",
   "governance.election_results": "society",
   "governance.elections": "society",
-  "governance.library_documents": "society",
   "governance.member_offers": "people",
   "governance.minutes": "society",
   "governance.partner_affiliations": "people",
@@ -84,7 +83,6 @@ export const LEFT_OUT = [
   "access.role_permissions",
   "core.semesters",
   "core.settings",
-  "governance.handbook_pages",
   "journal.call_partners",
   "journal.prize_judges",
 ] as const;
@@ -172,7 +170,26 @@ const useActivity = (area: "" | Area, limit = PAGE) => {
 const Feed = ({ entries }: { readonly entries: readonly Entry[] }) => {
   const t = useTranslations("nexus.admin.activity");
   const locale = useLocale() as Locale;
-  const names = useMemberNames(entries.map((e) => e.actor_id));
+  const { supabase } = useAuth();
+  // A role assignment reads as the role and the person it's for.
+  const holders = entries.flatMap((e) =>
+    e.table_name === "role_assignments"
+      ? [((e.new_row ?? e.old_row) as { user_id?: string } | null)?.user_id]
+      : []
+  );
+  const names = useMemberNames([...entries.map((e) => e.actor_id), ...holders]);
+  const roles = useQuery({
+    enabled: holders.length > 0,
+    queryFn: async () =>
+      unwrap(
+        await supabase
+          .schema("access")
+          .from("roles")
+          .select("key, name_en, name_ar")
+      ) ?? [],
+    queryKey: ["admin", "role-names"],
+    staleTime: Number.POSITIVE_INFINITY,
+  });
   const who = (id: string | null) => {
     const person = names.data?.find((n) => n.id === id);
     return person ? memberName(person, locale) : t("platform");
@@ -185,7 +202,17 @@ const Feed = ({ entries }: { readonly entries: readonly Entry[] }) => {
           string,
           unknown
         > | null;
-        const name = nameOf(row, locale);
+        let name = nameOf(row, locale);
+        if (entry.table_name === "role_assignments" && row) {
+          const role = roles.data?.find((r) => r.key === row.role);
+          const holder = names.data?.find((n) => n.id === row.user_id);
+          if (role && holder) {
+            name = t("roleFor", {
+              person: memberName(holder, locale),
+              role: localized(role, "name", locale),
+            });
+          }
+        }
         const verb = entry.operation as Operation;
         return (
           <li className="grid gap-0.5" key={entry.id}>

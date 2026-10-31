@@ -19,6 +19,7 @@ import {
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useId, useState } from "react";
+import { DateInput } from "@/components/fields/date-input";
 import { Link, useRouter } from "@/lib/nexus/navigation";
 import { useGrants } from "@/lib/nexus/queries";
 import { useQueryParam } from "@/lib/nexus/use-query-param";
@@ -37,7 +38,7 @@ import {
 
 const key = ["admin", "ads"];
 const buttonLink =
-  "inline-flex h-8 items-center justify-self-start rounded-md bg-primary px-3 text-primary-foreground text-sm";
+  "inline-flex h-8 items-center justify-self-start bg-accent px-3 font-medium text-on-accent text-sm hover:bg-accent/90";
 
 const today = () => new Date().toISOString().slice(0, 10);
 
@@ -168,9 +169,9 @@ export const AdsAdmin = () => {
     <div className="grid gap-8">
       <AdminHeading title={t("title")}>{t("lede")}</AdminHeading>
       <div className="flex flex-wrap gap-2">
-        {kinds.map((kind) => (
+        {kinds.map((kind, index) => (
           <Link
-            className={buttonLink}
+            className={index === 0 ? buttonLink : "link self-center"}
             href={`/qirtas/ads/new/${kind}`}
             key={kind}
           >
@@ -180,18 +181,7 @@ export const AdsAdmin = () => {
       </div>
       {ads.isError ? <ErrorState onRetry={() => ads.refetch()} /> : null}
       {ads.data && ads.data.length === 0 ? (
-        <EmptyLine
-          action={
-            kinds[0]
-              ? {
-                  href: `/qirtas/ads/new/${kinds[0]}`,
-                  label: t(`new.${kinds[0]}`),
-                }
-              : undefined
-          }
-        >
-          {t("none")}
-        </EmptyLine>
+        <EmptyLine>{t("none")}</EmptyLine>
       ) : null}
       {ads.data && ads.data.length > 0 ? (
         <DataTable columns={columns} rowKey={(ad) => ad.id} rows={ads.data} />
@@ -360,23 +350,19 @@ const AdForm = ({ initial }: { initial: Draft }) => {
       <div className="grid gap-4 sm:grid-cols-2">
         <Field label={t("fields.startsOn")}>
           {(id) => (
-            <Input
-              dir="ltr"
+            <DateInput
               id={id}
               onChange={(e) => set({ startsOn: e.target.value })}
               required
-              type="date"
               value={draft.startsOn}
             />
           )}
         </Field>
         <Field hint={t("endsOnHint")} label={t("fields.endsOn")}>
           {(id) => (
-            <Input
-              dir="ltr"
+            <DateInput
               id={id}
               onChange={(e) => set({ endsOn: e.target.value })}
-              type="date"
               value={draft.endsOn}
             />
           )}

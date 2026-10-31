@@ -2,14 +2,13 @@ import { keys as analytics } from "@repo/analytics/keys";
 import { keys as auth } from "@repo/auth/keys";
 import { envPresets, withPresets } from "@repo/next-config/env";
 import { keys as core } from "@repo/next-config/keys";
-import { keys as observability } from "@repo/observability/keys";
 import { createEnv } from "@t3-oss/env-nextjs";
 import { z } from "zod";
 
-const presets = envPresets(analytics(), auth(), core(), observability());
+const presets = envPresets(analytics(), auth(), core());
 
 /**
- * The public half of the environment, for client components and the Nexus:
+ * The public half of the environment, for client components, Membership and the Diwan:
  * NEXT_PUBLIC_* values only. Importing `@/env` from client code would carry
  * the server keys' names into the browser bundle (CI greps for them).
  */

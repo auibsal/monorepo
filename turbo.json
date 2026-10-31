@@ -48,9 +48,6 @@
     "SUPABASE_URL",
     "SUPABASE_SECRET_KEY",
     "E2E_*",
-    "PLAYWRIGHT_*",
-    "SENTRY_AUTH_TOKEN",
-    "SENTRY_ORG",
-    "SENTRY_PROJECT"
+    "PLAYWRIGHT_*"
   ]
 }

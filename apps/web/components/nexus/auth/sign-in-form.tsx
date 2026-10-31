@@ -39,7 +39,15 @@ const knownAddress = async (email: string): Promise<boolean | null> => {
   }
 };
 
-export const SignInForm = () => {
+/**
+ * `embedded`: inside another page (the partner application), which has
+ * its own title and its own way to make an account.
+ */
+export const SignInForm = ({
+  embedded = false,
+}: {
+  readonly embedded?: boolean;
+} = {}) => {
   const t = useTranslations("auth");
   const errorText = useAuthError();
   const passkeyErrorText = usePasskeyError();
@@ -124,9 +132,11 @@ export const SignInForm = () => {
 
   return (
     <>
-      <FormHeader title={t("signIn.title")}>
-        {t("signIn.description")}
-      </FormHeader>
+      {embedded ? null : (
+        <FormHeader title={t("signIn.title")}>
+          {t("signIn.description")}
+        </FormHeader>
+      )}
       {params.get("deleted") ? (
         <p role="status">{t("signIn.deleted")}</p>
       ) : null}
@@ -205,15 +215,17 @@ export const SignInForm = () => {
         <Link className="link" href="/forgot-password">
           {t("signIn.forgot")}
         </Link>
-        <p>
-          {t("signIn.noAccount")}{" "}
-          <Link
-            className="link"
-            href={{ pathname: "/sign-up", query: next ? { next } : {} }}
-          >
-            {t("signIn.createAccount")}
-          </Link>
-        </p>
+        {embedded ? null : (
+          <p>
+            {t("signIn.noAccount")}{" "}
+            <Link
+              className="link"
+              href={{ pathname: "/sign-up", query: next ? { next } : {} }}
+            >
+              {t("signIn.createAccount")}
+            </Link>
+          </p>
+        )}
       </nav>
     </>
   );

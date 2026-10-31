@@ -185,13 +185,26 @@ const buildFigures = (o: Overview, t: T, locale: Locale) =>
     submissionsFigure(o, t, locale),
   ].filter((figure): figure is FigureProps => figure !== null);
 
+const newsroomPermissions: readonly Permission[] = [
+  "journal.manage",
+  "journal.publish",
+  "journal.approve",
+  "journal.copy",
+  "journal.edit.news",
+  "journal.edit.voices",
+  "journal.edit.letters",
+  "journal.edit.gallery",
+  "journal.edit.video",
+  "journal.edit.games",
+];
+
 // The Desk's quick actions (the overview, Oct 30, 2026): the first three
 // the officer's grants allow, as text links beside the title.
 const QUICK: readonly {
   readonly href: string;
   readonly icon: IconName;
   readonly key: "door" | "event" | "piece" | "verify" | "minutes";
-  readonly permission: Permission;
+  readonly permission: Permission | readonly Permission[];
 }[] = [
   {
     href: "/events",
@@ -209,7 +222,7 @@ const QUICK: readonly {
     href: "/qirtas/pieces/new",
     icon: "pencil",
     key: "piece",
-    permission: "journal.manage",
+    permission: newsroomPermissions,
   },
   {
     href: "/people/verification",
@@ -233,7 +246,9 @@ const QuickActions = () => {
   const next = useDoorEvents().data?.[0];
   const actions = QUICK.filter(
     (action) =>
-      hasPermissionAnywhere(grants.data, action.permission) &&
+      [action.permission]
+        .flat()
+        .some((p) => hasPermissionAnywhere(grants.data, p)) &&
       (action.key !== "door" || next)
   ).slice(0, 3);
   return actions.map((action) => (
@@ -299,8 +314,26 @@ export const AdminOverview = () => {
         {}) as Overview,
     queryKey: ["admin", "overview"],
   });
+  const writes = newsroomPermissions.some((p) =>
+    hasPermissionAnywhere(grants.data, p)
+  );
+  const editing = useQuery({
+    enabled: grants.isSuccess,
+    queryFn: async () => {
+      if (!writes) {
+        return null;
+      }
+      const { count } = await supabase
+        .schema("journal")
+        .from("pieces")
+        .select("id", { count: "exact", head: true })
+        .in("status", ["editing", "author_approved", "approved"]);
+      return count ?? 0;
+    },
+    queryKey: ["admin", "overview", "editing", writes],
+  });
 
-  if (overview.isPending) {
+  if (overview.isPending || editing.isPending) {
     return <SectionSpinner />;
   }
   if (overview.isError) {
@@ -309,6 +342,17 @@ export const AdminOverview = () => {
 
   const o = overview.data;
   const figures = buildFigures(o, t, locale);
+  // The newsroom's own queue: pieces still being edited, on the desks the
+  // officer's roles reach (RLS scopes the count).
+  if (editing.data !== undefined && editing.data !== null) {
+    figures.push({
+      action: editing.data ? t("openNewsroom") : undefined,
+      detail: editing.data ? t("editingDetail") : t("editingNone"),
+      href: "/qirtas",
+      label: t("editing"),
+      value: editing.data,
+    });
+  }
   const can = (permission: Permission) =>
     hasPermissionAnywhere(grants.data, permission);
 

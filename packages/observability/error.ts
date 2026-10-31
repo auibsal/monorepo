@@ -1,7 +1,6 @@
-// biome-ignore lint/performance/noNamespaceImport: Sentry SDK convention
-import * as Sentry from "@sentry/nextjs";
 import { log } from "./log";
 
+/** An error's message, logged once (the Vercel runtime log keeps it). */
 export const parseError = (error: unknown): string => {
   let message: string;
 
@@ -18,12 +17,6 @@ export const parseError = (error: unknown): string => {
     message = String(error);
   }
 
-  try {
-    Sentry.captureException(error);
-    log.error(`Parsing error: ${message}`);
-  } catch (newError) {
-    console.error("Error parsing error:", newError);
-  }
-
+  log.error(`Parsing error: ${message}`);
   return message;
 };

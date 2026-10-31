@@ -11,6 +11,7 @@ import { journal, localized, membership, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useId, useState } from "react";
+import { DateInput } from "@/components/fields/date-input";
 import { Link } from "@/lib/nexus/navigation";
 import {
   BilingualField,
@@ -361,28 +362,24 @@ export const Openings = ({
             </Field>
             <Field label={t("termFrom")}>
               {(id) => (
-                <Input
-                  dir="ltr"
+                <DateInput
                   id={id}
                   onChange={(e) =>
                     setForm((f) => ({ ...f, term_from: e.target.value }))
                   }
                   required={form.kind === "apprenticeship"}
-                  type="date"
                   value={form.term_from}
                 />
               )}
             </Field>
             <Field label={t("termTo")}>
               {(id) => (
-                <Input
-                  dir="ltr"
+                <DateInput
                   id={id}
                   onChange={(e) =>
                     setForm((f) => ({ ...f, term_to: e.target.value }))
                   }
                   required={form.kind === "apprenticeship"}
-                  type="date"
                   value={form.term_to}
                 />
               )}

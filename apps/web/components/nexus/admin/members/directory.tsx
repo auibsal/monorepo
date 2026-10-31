@@ -1,7 +1,6 @@
 "use client";
 
 import { useAuth } from "@repo/auth/provider";
-import { buttonVariants } from "@repo/design-system/components/ui/button";
 import { Checkbox } from "@repo/design-system/components/ui/checkbox";
 import { Input } from "@repo/design-system/components/ui/input";
 import { Label } from "@repo/design-system/components/ui/label";
@@ -57,7 +56,6 @@ export const MembersDirectory = () => {
   const [query, setQuery] = useState("");
   const [tier, setTier] = useState<"" | membership.Tier>("");
   const [votingOnly, setVotingOnly] = useState(false);
-  const [unverifiedOnly, setUnverifiedOnly] = useState(false);
   const deferred = useDeferredValue(query);
 
   const rows = useMemo(() => {
@@ -69,10 +67,9 @@ export const MembersDirectory = () => {
           row.full_name_en.toLowerCase().includes(needle) ||
           (row.full_name_ar ?? "").includes(deferred.trim())) &&
         (!tier || row.tier === tier) &&
-        (!votingOnly || row.voting_member) &&
-        !(unverifiedOnly && row.verified_at)
+        (!votingOnly || row.voting_member)
     );
-  }, [deferred, directory.data, tier, unverifiedOnly, votingOnly]);
+  }, [deferred, directory.data, tier, votingOnly]);
 
   if (directory.isPending) {
     return <SectionSpinner />;
@@ -81,7 +78,6 @@ export const MembersDirectory = () => {
     return <ErrorState onRetry={() => directory.refetch()} />;
   }
 
-  const pending = directory.data.filter((row) => !row.verified_at).length;
   const columns: Column<Row>[] = [
     {
       cell: (row) => (
@@ -105,7 +101,8 @@ export const MembersDirectory = () => {
       key: "email",
     },
     {
-      cell: (row) => (row.tier ? tt(row.tier) : "—"),
+      // Guests and partners' people hold no tier (one membership kind).
+      cell: (row) => (row.tier ? tt(row.tier) : t("notAMember")),
       header: t("columns.tier"),
       key: "tier",
     },
@@ -127,11 +124,6 @@ export const MembersDirectory = () => {
       header: t("columns.voting"),
       key: "voting",
     },
-    {
-      cell: (row) => (row.verified_at ? t("verified") : t("unverified")),
-      header: t("columns.status"),
-      key: "status",
-    },
   ];
 
   return (
@@ -139,29 +131,10 @@ export const MembersDirectory = () => {
       <AdminHeading
         actions={
           <>
-            {hasPermission(grants.data, "members.verify") ? (
-              <Link
-                className={buttonVariants({ size: "sm", variant: "outline" })}
-                href="/people/verification"
-              >
-                {t("queue", { count: formatNumber(pending) })}
-              </Link>
-            ) : null}
             {hasPermission(grants.data, "members.manage") ? (
-              <>
-                <Link
-                  className={buttonVariants({ size: "sm", variant: "outline" })}
-                  href="/people/guests"
-                >
-                  {t("guests.link")}
-                </Link>
-                <Link
-                  className={buttonVariants({ size: "sm", variant: "outline" })}
-                  href="/people/insights"
-                >
-                  {t("insights.link")}
-                </Link>
-              </>
+              <Link className="link" href="/people/guests">
+                {t("guests.link")}
+              </Link>
             ) : null}
             <ExportButton fileName="sal-members.csv" name="members" />
           </>
@@ -205,14 +178,6 @@ export const MembersDirectory = () => {
             onCheckedChange={(v) => setVotingOnly(v === true)}
           />
           <Label htmlFor={`${id}-voting`}>{t("filters.voting")}</Label>
-        </div>
-        <div className="flex items-center gap-2 pb-2">
-          <Checkbox
-            checked={unverifiedOnly}
-            id={`${id}-unverified`}
-            onCheckedChange={(v) => setUnverifiedOnly(v === true)}
-          />
-          <Label htmlFor={`${id}-unverified`}>{t("filters.unverified")}</Label>
         </div>
       </div>
       <RowCount count={rows.length} />

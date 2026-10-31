@@ -44,6 +44,13 @@ export const roles = {
       "library.council",
     ],
   },
+  awards_coordinator: {
+    defaultScope: "global",
+    isCouncil: false,
+    nameAr: "منسق جوائز قرطاس",
+    nameEn: "Awards Coordinator",
+    permissions: ["journal.prizes", "library.read"],
+  },
   campaign_lead: {
     defaultScope: "campaign",
     isCouncil: false,

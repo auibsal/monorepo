@@ -14,6 +14,7 @@ import {
 import type { forms } from "@repo/sal-data";
 import { useLocale, useTranslations } from "next-intl";
 import { useId } from "react";
+import { DateInput } from "@/components/fields/date-input";
 import { DateTimeField, SelectInput } from "../admin/kit";
 
 type Field = forms.FormField;
@@ -83,12 +84,10 @@ const Control = ({
       );
     case "date":
       return (
-        <Input
+        <DateInput
           aria-invalid={invalid}
-          dir="ltr"
           id={id}
           onChange={(e) => onChange(e.target.value)}
-          type="date"
           value={asText(value)}
         />
       );

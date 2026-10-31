@@ -14,6 +14,7 @@ import { localized, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
+import { DateInput } from "@/components/fields/date-input";
 import { useGrants } from "@/lib/nexus/queries";
 import { EmptyLine, SectionSpinner } from "../states";
 import { ConfirmAction, ErrorLine, Field, SaveButton } from "./kit";
@@ -244,15 +245,13 @@ const NewNeed = ({ programmeId }: { readonly programmeId: string }) => {
       </div>
       <Field label={t("neededByLabel")}>
         {(id) => (
-          <Input
+          <DateInput
             className="max-w-xs"
-            dir="ltr"
             id={id}
             onChange={(e) =>
               setForm((f) => ({ ...f, needed_by: e.target.value }))
             }
             required
-            type="date"
             value={form.needed_by}
           />
         )}

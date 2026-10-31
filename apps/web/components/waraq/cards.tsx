@@ -56,11 +56,14 @@ export const Byline = ({
 
 /** One piece in a list: type, headline, deck, byline, and an image if any. */
 export const PieceCardView = async ({
+  heading = "h3",
   image = false,
   large = false,
   locale,
   piece,
 }: {
+  /** h2 where the list sits right under the page's title. */
+  heading?: "h2" | "h3";
   image?: boolean;
   large?: boolean;
   locale: Locale;
@@ -71,6 +74,7 @@ export const PieceCardView = async ({
   const deck = localized(piece, "deck", locale);
   // Headlines keep their own language and direction on either page.
   const lang = piece.language === "ar" ? "ar" : "en";
+  const Heading = heading;
   return (
     <article className="grid content-start gap-2">
       {picture?.url ? (
@@ -86,7 +90,7 @@ export const PieceCardView = async ({
           />
         </Link>
       ) : null}
-      <h3
+      <Heading
         className={
           large ? "type-title text-balance font-light!" : "type-heading"
         }
@@ -96,7 +100,7 @@ export const PieceCardView = async ({
         <Link className="hover:text-accent" href={pieceHref(piece)}>
           {localized(piece, "title", locale)}
         </Link>
-      </h3>
+      </Heading>
       <p className="type-caption">
         {t(`categories.${piece.category}`)}
         {piece.members_only ? ` · ${t("membersOnly")}` : ""}

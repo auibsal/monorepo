@@ -2,12 +2,12 @@
 
 import { useAuth } from "@repo/auth/provider";
 import { Button } from "@repo/design-system/components/ui/button";
-import { Input } from "@repo/design-system/components/ui/input";
 import { Label } from "@repo/design-system/components/ui/label";
 import { getMediaUrl, uploadMedia } from "@repo/storage";
 import { StorageError } from "@repo/storage/files";
 import { useTranslations } from "next-intl";
 import { useId, useState } from "react";
+import { FileInput } from "@/components/fields/file-input";
 
 interface ImageFieldProps {
   /** Folder in the public media bucket, e.g. "events". */
@@ -99,14 +99,13 @@ export const ImageField = ({
           </Button>
         </div>
       ) : null}
-      <Input
+      <FileInput
         accept={
           kind === "pdf" ? "application/pdf" : "image/jpeg,image/png,image/webp"
         }
         disabled={busy}
         id={id}
         onChange={(e) => upload(e.target.files?.[0])}
-        type="file"
       />
       <p className="type-caption">
         {busy ? t("uploading") : null}

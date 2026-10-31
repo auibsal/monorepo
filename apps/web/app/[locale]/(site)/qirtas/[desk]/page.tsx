@@ -72,6 +72,7 @@ const DeskPage = async ({ params }: DeskProps) => {
           {pieces.map((piece) => (
             <li key={piece.id}>
               <PieceCardView
+                heading="h2"
                 image={pictures || desk === "news"}
                 locale={locale}
                 piece={piece}

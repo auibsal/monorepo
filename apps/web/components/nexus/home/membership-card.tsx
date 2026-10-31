@@ -23,6 +23,7 @@ import { type PointerEvent, useEffect, useRef, useState } from "react";
 import QRCode from "react-qr-code";
 import { Guilloche } from "@/components/guilloche";
 import { callApi } from "@/lib/nexus/api";
+import { useMyPartners } from "@/lib/nexus/partners";
 import {
   useMemberStatus,
   useMyMembership,
@@ -195,20 +196,20 @@ const WalletLink = ({ code }: { code: string }) => {
   // Google's save message may never have come: ask Google once whether the
   // pass is held, and record it.
   const queryClient = useQueryClient();
-  useQuery({
+  const check = useQuery({
     enabled: pass.isSuccess && pass.data?.state !== "saved",
     queryFn: async () => {
-      const { saved } = await callApi<{ saved: boolean }>(
+      const result = await callApi<{ configured: boolean; saved: boolean }>(
         supabase,
         "/wallet/google",
         { check: true }
       );
-      if (saved) {
+      if (result.saved) {
         await queryClient.invalidateQueries({
           queryKey: ["membership", "wallet", code],
         });
       }
-      return saved;
+      return result;
     },
     queryKey: ["membership", "wallet-check", code],
     retry: false,
@@ -229,6 +230,10 @@ const WalletLink = ({ code }: { code: string }) => {
   };
   if (pass.data?.state === "saved") {
     return <p className="type-caption">{t("inWallet")}</p>;
+  }
+  // Until Google Wallet is set up for the Society, there is nothing to add.
+  if (check.data?.configured === false) {
+    return null;
   }
   return (
     <>
@@ -314,7 +319,12 @@ export const Perks = ({ how }: { how?: string }) => {
     queryFn: () => partners.memberOffers(supabase),
     queryKey: ["offers"],
   });
-  if (!offers.data?.length) {
+  // A partner's own people aren't offered their own perks.
+  const own = new Set((useMyPartners().data ?? []).map((p) => p.id));
+  const shown = (offers.data ?? []).filter(
+    (offer) => !(offer.partner_id && own.has(offer.partner_id))
+  );
+  if (shown.length === 0) {
     return null;
   }
   return (
@@ -322,7 +332,7 @@ export const Perks = ({ how }: { how?: string }) => {
       <h3 className="type-heading">{t("perks")}</h3>
       <p className="type-caption">{how ?? t("perksHow")}</p>
       <ul className="grid divide-y divide-line border-line border-y">
-        {offers.data.map((offer) => (
+        {shown.map((offer) => (
           <li className="grid gap-1 py-3" key={offer.id}>
             <p className="font-medium">{localized(offer, "title", locale)}</p>
             <p className="type-body whitespace-pre-line" dir="auto">

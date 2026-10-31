@@ -9,6 +9,7 @@ import { DiwanPage, DiwanSection, RowList } from "../page";
 import { DeleteAccount } from "./delete-account";
 import { EmailNotices } from "./email-notices";
 import { Passkeys } from "./passkeys";
+import { ChangePassword } from "./password";
 import { PersonalEmail } from "./personal-email";
 import { PhoneNotifications } from "./phone-notifications";
 import { TelegramLink } from "./telegram-link";
@@ -86,6 +87,7 @@ export const SettingsScreen = () => {
         </RowList>
       </DiwanSection>
       {member ? <PersonalEmailSection /> : null}
+      <ChangePassword />
       <Passkeys />
       <RecoveryCodes />
       <DeleteAccount />

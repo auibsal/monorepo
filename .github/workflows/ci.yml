@@ -183,7 +183,14 @@ jobs:
         working-directory: apps/e2e
         run: bunx playwright install --with-deps chromium
       # The journeys run against production builds (next start), not the dev
-      # server: faster, and what actually ships.
+      # server: faster, and what actually ships. Their data is seeded first:
+      # the build caches what it reads (What's on's current month, for one),
+      # and seeded rows bypass the publish path that would revalidate it.
+      - name: Seed the journeys' data
+        run: |
+          eval "$(cd packages/database && bunx supabase status -o env | grep -E '^(API_URL|SECRET_KEY)=' | sed 's/^/export /')"
+          export SUPABASE_URL="$API_URL" SUPABASE_SECRET_KEY="$SECRET_KEY"
+          bun run --cwd apps/e2e seed
       - name: Build the app against the local stack
         run: |
           eval "$(cd packages/database && bunx supabase status -o env | grep -E '^(API_URL|PUBLISHABLE_KEY)=' | sed 's/^/export /')"

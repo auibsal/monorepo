@@ -565,45 +565,6 @@ export type Database = {
   };
   content: {
     Tables: {
-      document_sections: {
-        Row: {
-          anchor: string;
-          body: string;
-          code: string;
-          id: string;
-          locale: string;
-          path: string;
-          search: unknown;
-          status: string;
-          title: string;
-          updated_at: string;
-        };
-        Insert: {
-          anchor?: string;
-          body: string;
-          code: string;
-          id?: string;
-          locale: string;
-          path: string;
-          search?: never;
-          status: string;
-          title: string;
-          updated_at?: string;
-        };
-        Update: {
-          anchor?: string;
-          body?: string;
-          code?: string;
-          id?: string;
-          locale?: string;
-          path?: string;
-          search?: never;
-          status?: string;
-          title?: string;
-          updated_at?: string;
-        };
-        Relationships: [];
-      };
       newsletter_subscribers: {
         Row: {
           confirm_sent_at: string | null;
@@ -1381,6 +1342,10 @@ export type Database = {
         };
         Returns: string;
       };
+      take_rate: {
+        Args: { bucket: string; max_hits: number; window_seconds: number };
+        Returns: boolean;
+      };
       telegram_cancel_rsvp: {
         Args: { event_id: string; telegram_id: number };
         Returns: undefined;
@@ -1427,45 +1392,6 @@ export type Database = {
   };
   events: {
     Tables: {
-      campus_events: {
-        Row: {
-          all_day: boolean;
-          description: string | null;
-          ends_at: string | null;
-          fetched_at: string;
-          id: string;
-          location: string | null;
-          starts_at: string;
-          title: string;
-          uid: string;
-          url: string | null;
-        };
-        Insert: {
-          all_day?: boolean;
-          description?: string | null;
-          ends_at?: string | null;
-          fetched_at?: string;
-          id?: string;
-          location?: string | null;
-          starts_at: string;
-          title: string;
-          uid: string;
-          url?: string | null;
-        };
-        Update: {
-          all_day?: boolean;
-          description?: string | null;
-          ends_at?: string | null;
-          fetched_at?: string;
-          id?: string;
-          location?: string | null;
-          starts_at?: string;
-          title?: string;
-          uid?: string;
-          url?: string | null;
-        };
-        Relationships: [];
-      };
       check_ins: {
         Row: {
           checked_in_at: string;
@@ -2290,96 +2216,6 @@ export type Database = {
         };
         Relationships: [];
       };
-      handbook_pages: {
-        Row: {
-          body_ar: string | null;
-          body_en: string;
-          created_at: string;
-          id: string;
-          section: string;
-          slug: string;
-          sort: number;
-          summary_ar: string | null;
-          summary_en: string | null;
-          title_ar: string | null;
-          title_en: string;
-          updated_at: string;
-          updated_by: string | null;
-        };
-        Insert: {
-          body_ar?: string | null;
-          body_en?: string;
-          created_at?: string;
-          id?: string;
-          section: string;
-          slug: string;
-          sort?: number;
-          summary_ar?: string | null;
-          summary_en?: string | null;
-          title_ar?: string | null;
-          title_en: string;
-          updated_at?: string;
-          updated_by?: string | null;
-        };
-        Update: {
-          body_ar?: string | null;
-          body_en?: string;
-          created_at?: string;
-          id?: string;
-          section?: string;
-          slug?: string;
-          sort?: number;
-          summary_ar?: string | null;
-          summary_en?: string | null;
-          title_ar?: string | null;
-          title_en?: string;
-          updated_at?: string;
-          updated_by?: string | null;
-        };
-        Relationships: [];
-      };
-      library_documents: {
-        Row: {
-          audience: string;
-          code: string | null;
-          created_at: string;
-          id: string;
-          status: string;
-          storage_path: string;
-          title_ar: string | null;
-          title_en: string;
-          updated_at: string;
-          uploaded_by: string | null;
-          version: string;
-        };
-        Insert: {
-          audience: string;
-          code?: string | null;
-          created_at?: string;
-          id?: string;
-          status?: string;
-          storage_path: string;
-          title_ar?: string | null;
-          title_en: string;
-          updated_at?: string;
-          uploaded_by?: string | null;
-          version?: string;
-        };
-        Update: {
-          audience?: string;
-          code?: string | null;
-          created_at?: string;
-          id?: string;
-          status?: string;
-          storage_path?: string;
-          title_ar?: string | null;
-          title_en?: string;
-          updated_at?: string;
-          uploaded_by?: string | null;
-          version?: string;
-        };
-        Relationships: [];
-      };
       member_offers: {
         Row: {
           code: string | null;
@@ -2553,6 +2389,7 @@ export type Database = {
           signed_at: string | null;
           signed_by: string | null;
           signed_document_path: string | null;
+          society_signatory: string | null;
           starts_on: string;
           status: string;
           student_life_informed_on: string | null;
@@ -2585,6 +2422,7 @@ export type Database = {
           signed_at?: string | null;
           signed_by?: string | null;
           signed_document_path?: string | null;
+          society_signatory?: string | null;
           starts_on: string;
           status?: string;
           student_life_informed_on?: string | null;
@@ -2617,6 +2455,7 @@ export type Database = {
           signed_at?: string | null;
           signed_by?: string | null;
           signed_document_path?: string | null;
+          society_signatory?: string | null;
           starts_on?: string;
           status?: string;
           student_life_informed_on?: string | null;
@@ -2983,19 +2822,6 @@ export type Database = {
           titles_en: string[];
         }[];
       };
-      council_roster: {
-        Args: Record<PropertyKey, never>;
-        Returns: {
-          full_name_ar: string;
-          full_name_en: string;
-          role: string;
-          role_name_ar: string;
-          role_name_en: string;
-          sort: number;
-          title_ar: string;
-          title_en: string;
-        }[];
-      };
       count_election: { Args: { election_id: string }; Returns: undefined };
       decide_candidate: {
         Args: { approve: boolean; candidate_id: string };
@@ -3033,14 +2859,6 @@ export type Database = {
       handle_form: {
         Args: { office?: Json; status: string; submission_id: string };
         Returns: undefined;
-      };
-      joinable_partners: {
-        Args: Record<PropertyKey, never>;
-        Returns: {
-          id: string;
-          name_ar: string;
-          name_en: string;
-        }[];
       };
       my_partner_application: {
         Args: Record<PropertyKey, never>;
@@ -4651,7 +4469,6 @@ export type Database = {
         Args: { desk: Database["journal"]["Enums"]["desk"] };
         Returns: boolean;
       };
-      my_author_page: { Args: Record<PropertyKey, never>; Returns: string };
       my_call_pathways: {
         Args: Record<PropertyKey, never>;
         Returns: {

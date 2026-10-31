@@ -31,14 +31,16 @@ const sync = async (request: Request) => {
         accept: "text/calendar",
         "user-agent": "auibsal.org calendar sync (+https://auibsal.org)",
       },
-      signal: AbortSignal.timeout(20_000),
+      // AUIB's server is sometimes slow; the run has a minute in all.
+      signal: AbortSignal.timeout(40_000),
     });
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}`);
     }
     text = await response.text();
   } catch (error) {
-    log.error(`AUIB calendar fetch failed: ${parseError(error)}`);
+    // The next hourly run tries again; nothing is lost in between.
+    log.warn(`AUIB calendar fetch failed: ${parseError(error)}`);
     return Response.json({ error: "fetch_failed" }, { status: 502 });
   }
 

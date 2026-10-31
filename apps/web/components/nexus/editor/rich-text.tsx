@@ -265,7 +265,7 @@ const Frame = ({
   undo: boolean;
 }) => (
   <div
-    className="rounded-md border border-input bg-surface"
+    className="border border-input bg-surface"
     dir={lang === "ar" ? "rtl" : "ltr"}
     lang={lang}
   >

@@ -92,7 +92,11 @@ const JoinPage = async ({ params }: LocaleParams) => {
       <Section id="first-month" title={t("firstMonthTitle")}>
         <p className="type-lede max-w-[60ch]">{t("firstMonth")}</p>
       </Section>
-      {cta}
+      <p>
+        <a className="link" href={localizedPath(locale, "/sign-up")}>
+          {t("cta")}
+        </a>
+      </p>
     </div>
   );
 };

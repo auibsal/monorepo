@@ -8,6 +8,7 @@ import { documents, sanitizeRichText, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
+import { DateInput } from "@/components/fields/date-input";
 import { Link, useRouter } from "@/lib/nexus/navigation";
 import { RichTextEditor } from "../../editor/rich-text";
 import { OnTheSite } from "../../site-links";
@@ -305,39 +306,33 @@ const EditorForm = ({
         </Field>
         <Field label={t("fields.dated")}>
           {(fieldId) => (
-            <Input
-              dir="ltr"
+            <DateInput
               id={fieldId}
               onChange={(e) =>
                 setForm((f) => ({ ...f, dated: e.target.value }))
               }
-              type="date"
               value={form.dated}
             />
           )}
         </Field>
         <Field label={t("fields.ratification")}>
           {(fieldId) => (
-            <Input
-              dir="ltr"
+            <DateInput
               id={fieldId}
               onChange={(e) =>
                 setForm((f) => ({ ...f, ratification: e.target.value }))
               }
-              type="date"
               value={form.ratification}
             />
           )}
         </Field>
         <Field hint={t("fields.adoptedHint")} label={t("fields.adopted")}>
           {(fieldId) => (
-            <Input
-              dir="ltr"
+            <DateInput
               id={fieldId}
               onChange={(e) =>
                 setForm((f) => ({ ...f, adopted_on: e.target.value }))
               }
-              type="date"
               value={form.adopted_on}
             />
           )}

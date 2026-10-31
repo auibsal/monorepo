@@ -5,7 +5,6 @@ import { fonts } from "@repo/design-system/lib/fonts";
 import { getDirection, isLocale } from "@repo/internationalization/config";
 import ar from "@repo/internationalization/messages/ar.json";
 import en from "@repo/internationalization/messages/en.json";
-import { captureException } from "@sentry/nextjs";
 import type NextError from "next/error";
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
@@ -25,14 +24,15 @@ const GlobalError = ({ error, reset }: GlobalErrorProperties) => {
   const t = texts[locale];
 
   useEffect(() => {
-    captureException(error);
+    // The Vercel runtime log keeps server errors; this one is the browser's.
+    console.error(error);
   }, [error]);
 
   return (
     <html className={fonts} dir={getDirection(locale)} lang={locale}>
       <body className="flex min-h-svh flex-col items-center justify-center gap-4 p-6 text-center">
-        <h1 className="font-semibold text-2xl">{t.error}</h1>
-        <p className="text-muted-foreground">{t.errorDescription}</p>
+        <h1 className="font-light text-2xl">{t.error}</h1>
+        <p className="text-text-secondary">{t.errorDescription}</p>
         <Button onClick={() => reset()}>{t.retry}</Button>
       </body>
     </html>

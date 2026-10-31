@@ -62,8 +62,6 @@ describe("productions", () => {
   test("the report (F-25 B) needs what happened, lessons and a verdict", () => {
     const report = {
       report_lessons: "Book the hall early.",
-      report_money_in_iqd: null,
-      report_money_out_iqd: 50_000,
       report_people_reached: 80,
       report_repeat: "Yes.",
       report_what_happened: "Two readings.",

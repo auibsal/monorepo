@@ -7,6 +7,9 @@ test("sign up with an AUIB address, confirm by email, finish setup", async ({
   page,
 }) => {
   const local = `e2e-${Date.now()}`;
+  // One person, one name: each run's new member has a grandfather's name of
+  // their own (letters from the clock).
+  const grandfather = `Hasan${String(Date.now()).replace(/\d/g, (d) => "abcdefghij"[Number(d)])}`;
   const email = `${local}@auib.edu.iq`;
   // A phone's screen: the next screen must start at the top, not in the
   // footer where the button left the page.
@@ -39,7 +42,7 @@ test("sign up with an AUIB address, confirm by email, finish setup", async ({
   // The name in four parts, in English, then in Arabic.
   await page.getByLabel("Name", { exact: true }).fill("New");
   await page.getByLabel("Father's name", { exact: true }).fill("Kareem");
-  await page.getByLabel("Grandfather's name").fill("Hasan");
+  await page.getByLabel("Grandfather's name").fill(grandfather);
   await page.getByLabel("Family name").fill("Member");
   await page.getByLabel("Family name").press("Enter");
 
@@ -47,7 +50,11 @@ test("sign up with an AUIB address, confirm by email, finish setup", async ({
   await expect(page).toHaveURL(/\/welcome\/2(\?|$)/);
   await page.getByLabel("Name", { exact: true }).fill("عضو");
   await page.getByLabel("Father's name", { exact: true }).fill("كريم");
-  await page.getByLabel("Grandfather's name").fill("حسن");
+  await page
+    .getByLabel("Grandfather's name")
+    .fill(
+      `حسن${grandfather.slice(5).replace(/[a-j]/g, (c) => "ابتثجحخدذر"[c.charCodeAt(0) - 97])}`
+    );
   await page.getByLabel("Family name").fill("جديد");
   // The browser's Back goes to the last screen, answers kept.
   await page.goBack();

@@ -1,11 +1,9 @@
 "use client";
 
 import { useAuth } from "@repo/auth/provider";
-import { adminSections, sectionOfPath } from "@repo/rbac";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import type { ReactNode } from "react";
-import { PathLine } from "@/components/frame/path-line";
 import { SkeletonRows } from "@/components/frame/skeleton";
 import { RouteParams } from "@/lib/nexus/use-query-param";
 import { EmptyLine } from "./states";
@@ -30,22 +28,6 @@ export const RouteParamsProvider = ({
   readonly children: ReactNode;
   readonly value: Readonly<Record<string, string>>;
 }) => <RouteParams.Provider value={value}>{children}</RouteParams.Provider>;
-
-/** Where the record sits, above its page: its section, as a link back. */
-const Where = ({ back }: { readonly back: string }) => {
-  const t = useTranslations("nexus.admin.sections");
-  const section = sectionOfPath(back);
-  return section === "desk" ? null : (
-    <PathLine
-      items={[
-        {
-          href: back,
-          label: t(adminSections.find((s) => s.key === section)?.key ?? "desk"),
-        },
-      ]}
-    />
-  );
-};
 
 /**
  * A page addressed by a readable name (/diwan/events/salon-2026-12-01):
@@ -88,10 +70,7 @@ export const RecordRef = ({
   if (direct) {
     return (
       <RouteParams.Provider value={{ id: value }}>
-        <div className="grid gap-4">
-          <Where back={back} />
-          {children}
-        </div>
+        {children}
       </RouteParams.Provider>
     );
   }
@@ -107,10 +86,7 @@ export const RecordRef = ({
   }
   return (
     <RouteParams.Provider value={{ id: found.data }}>
-      <div className="grid gap-4">
-        <Where back={back} />
-        {children}
-      </div>
+      {children}
     </RouteParams.Provider>
   );
 };

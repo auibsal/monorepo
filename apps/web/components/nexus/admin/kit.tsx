@@ -25,6 +25,7 @@ import {
 import { DataError } from "@repo/sal-data";
 import { useTranslations } from "next-intl";
 import { type ReactNode, useId, useState } from "react";
+import { DateInput } from "@/components/fields/date-input";
 import { callApiText } from "@/lib/nexus/api";
 import { ChoiceInput } from "./choice-input";
 
@@ -269,8 +270,7 @@ export const DateTimeField = ({
   return (
     <Field hint={t("baghdadTime")} label={label}>
       {(id) => (
-        <Input
-          dir="ltr"
+        <DateInput
           id={id}
           onChange={(e) => onChange(fromZonedInputValue(e.target.value))}
           required={required}
@@ -373,12 +373,15 @@ export const ConfirmAction = ({
 interface SaveButtonProps {
   readonly disabled?: boolean;
   readonly pending: boolean;
+  /** Beside the page's one accent action (Publish), Save steps back. */
+  readonly quiet?: boolean;
   readonly success?: boolean;
 }
 
 export const SaveButton = ({
   disabled = false,
   pending,
+  quiet = false,
   success = false,
 }: SaveButtonProps) => {
   const t = useTranslations("common");
@@ -392,7 +395,9 @@ export const SaveButton = ({
     <Button
       className="justify-self-start"
       disabled={disabled || pending}
+      size={quiet ? "sm" : "default"}
       type="submit"
+      variant={quiet ? "outline" : "default"}
     >
       {label}
     </Button>

@@ -6,7 +6,7 @@ import { siteUrl } from "@repo/internationalization";
 import type { IcsEvent } from "./ics";
 
 const eventColumns =
-  "id, slug, title_en, title_ar, summary_en, venue_en, venue_ar, starts_at, ends_at, members_only, entry";
+  "id, slug, title_en, title_ar, summary_en, summary_ar, venue_en, venue_ar, starts_at, ends_at, members_only, entry";
 
 interface EventRow {
   ends_at: string | null;
@@ -15,6 +15,7 @@ interface EventRow {
   members_only: boolean;
   slug: string;
   starts_at: string;
+  summary_ar: string | null;
   summary_en: string | null;
   title_ar: string;
   title_en: string;
@@ -27,7 +28,10 @@ const toIcs = (
   locale: "en" | "ar",
   tag?: string
 ): IcsEvent => ({
-  description: event.summary_en,
+  description:
+    locale === "ar"
+      ? (event.summary_ar ?? event.summary_en)
+      : (event.summary_en ?? event.summary_ar),
   end: event.ends_at,
   location:
     locale === "ar"
@@ -132,10 +136,12 @@ export const memberFeed = async (admin: AdminClient, token: string) => {
   }
   const [{ data: events }, { data: campus }] = await Promise.all([
     query,
+    // AUIB's own dates, synced hourly from the University's public calendar.
     admin
-      .schema("events")
-      .from("campus_events")
-      .select("*")
+      .schema("core")
+      .from("external_events")
+      .select("uid, title, location, url, starts_at, ends_at, all_day")
+      .eq("source", "auib")
       .gte("starts_at", since())
       .order("starts_at"),
   ]);
@@ -150,7 +156,7 @@ export const memberFeed = async (admin: AdminClient, token: string) => {
         ),
       ...(campus ?? []).map(
         (event): IcsEvent => ({
-          description: event.description,
+          allDay: event.all_day,
           end: event.ends_at,
           location: event.location,
           start: event.starts_at,

@@ -20,6 +20,7 @@ import { localized, recognition, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
+import { DateInput } from "@/components/fields/date-input";
 import { useGrants } from "@/lib/nexus/queries";
 import { SectionSpinner } from "../../states";
 import {
@@ -443,8 +444,7 @@ const PrepareForm = ({ onDone }: { onDone: () => void }) => {
         {(["period_from", "period_to"] as const).map((field) => (
           <Field key={field} label={t(field)}>
             {(id) => (
-              <Input
-                dir="ltr"
+              <DateInput
                 id={id}
                 onChange={(e) =>
                   setForm((f) => ({ ...f, [field]: e.target.value }))
@@ -452,7 +452,6 @@ const PrepareForm = ({ onDone }: { onDone: () => void }) => {
                 required={
                   field === "period_from" && recognition.recordsRole(form.kind)
                 }
-                type="date"
                 value={form[field]}
               />
             )}

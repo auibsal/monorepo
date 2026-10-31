@@ -50,7 +50,7 @@ import {
 } from "./form";
 
 const buttonLink =
-  "inline-flex h-9 items-center justify-self-start rounded-md bg-primary px-4 text-primary-foreground text-sm";
+  "inline-flex h-9 items-center justify-self-start bg-accent px-4 font-medium text-on-accent text-sm hover:bg-accent/90";
 const FINAL: journal.SubmissionStatus[] = ["accepted", "declined", "withdrawn"];
 
 const useInvalidate = () => {

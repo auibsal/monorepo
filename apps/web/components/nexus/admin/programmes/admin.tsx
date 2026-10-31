@@ -17,7 +17,7 @@ import { localized, programmes, recognition, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useEffect, useState } from "react";
-import { PathLine } from "@/components/frame/path-line";
+import { DateInput } from "@/components/fields/date-input";
 import { Link, useRouter } from "@/lib/nexus/navigation";
 import { useGrants } from "@/lib/nexus/queries";
 import { DiwanSection } from "../../page";
@@ -939,26 +939,22 @@ const Rotas = ({ programmeId }: { programmeId: string }) => {
         <div className="grid gap-4 sm:grid-cols-2">
           <Field label={t("startsOn")}>
             {(id) => (
-              <Input
-                dir="ltr"
+              <DateInput
                 id={id}
                 onChange={(e) =>
                   setForm((f) => ({ ...f, starts_on: e.target.value }))
                 }
-                type="date"
                 value={form.starts_on}
               />
             )}
           </Field>
           <Field label={t("endsOn")}>
             {(id) => (
-              <Input
-                dir="ltr"
+              <DateInput
                 id={id}
                 onChange={(e) =>
                   setForm((f) => ({ ...f, ends_on: e.target.value }))
                 }
-                type="date"
                 value={form.ends_on}
               />
             )}
@@ -1189,6 +1185,11 @@ export const ProgramLinks = () => {
 /** Program pitches (F-10) waiting for the Director of Programs. */
 export const ProgramPitches = () => {
   const t = useTranslations("nexus.admin.programmes");
+  const grants = useGrants();
+  // Only those who answer pitches see them (the Director of Programs).
+  if (!hasPermissionAnywhere(grants.data, "programmes.manage")) {
+    return null;
+  }
   return (
     <DiwanSection
       description={t("pitches.lede")}
@@ -1241,9 +1242,15 @@ export const ProgramPage = ({
   const tab = tabs.find((x) => x === requested) ?? "sessions";
   return (
     <div className="grid gap-6">
-      <PathLine items={[{ href: "/events", label: t("whatsOn") }]} />
       <AdminHeading
-        actions={<OnTheSite href={`/events/${programme.slug}`} />}
+        actions={
+          <>
+            <Link className="link" href="/events">
+              {t("all")}
+            </Link>
+            <OnTheSite href={`/events/${programme.slug}`} />
+          </>
+        }
         title={programme.label}
       />
       <NotionManaged kind="programme" recordId={programme.id} />

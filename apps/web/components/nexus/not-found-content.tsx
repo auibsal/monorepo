@@ -27,8 +27,9 @@ export const NotFoundContent = () => {
       dir={getDirection(locale)}
       lang={locale}
     >
+      <title>{t.title}</title>
       <h1 className="type-title">{t.title}</h1>
-      <p className="max-w-md text-muted-foreground">{t.description}</p>
+      <p className="max-w-md text-text-secondary">{t.description}</p>
       <Button asChild>
         <Link href={localizedPath(locale, nexusPath())}>{t.home}</Link>
       </Button>

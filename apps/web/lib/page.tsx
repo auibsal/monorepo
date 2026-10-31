@@ -11,14 +11,11 @@ type SectionNamespace =
   | "web.about"
   | "web.care"
   | "web.contact"
-  | "web.give"
   | "web.governance"
   | "web.join"
   | "web.mediaKit"
   | "web.partners"
-  | "web.privacy"
-  | "web.productions"
-  | "web.programmes";
+  | "web.privacy";
 
 /** Metadata for a simple section page: its `title` and `lede` messages. */
 export const sectionMetadata =

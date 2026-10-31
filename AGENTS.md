@@ -18,7 +18,7 @@ and decisions), and continue from the first unticked item.
   - `app/[locale]/(account)` — **the members' pages, on the site** (owner,
     Oct 24, 2026): `/sign-in`, `/sign-up`, `/auth/*`, `/welcome` (was
     `/setup`), Get involved (`/get-involved`, public: the
-    three ways in for visitors, the Callboard for members), and, for
+    three ways in for visitors, the open places for members), and, for
     members, everything under `/membership` (the overhaul, Oct 30, 2026):
     Today (`/membership`), My calendar (`/membership/calendar`), Society
     (`/membership/society`), Record (`/membership/record`, a certificate at
@@ -211,9 +211,13 @@ any schema change. Integration tests run against a local stack with
   `events.manage` for program X?"). Roles live only in
   `access.role_assignments`, written only through `access.assign_role()`.
   Never read roles from `user_metadata` or `app_metadata`.
-- **Migrations ship through CI.** Add a file to `supabase/migrations`; after
-  merge, `.github/workflows/migrate.yml` runs `supabase db push` against
-  production once CI passes. Never paste SQL into the production database.
+- **Migrations ship through CI, and the site follows them.** Add a file to
+  `supabase/migrations`; after merge, `.github/workflows/migrate.yml` runs
+  `supabase db push` against production once CI passes, then deploys the
+  site through the Vercel Deploy Hook (Vercel's own deploys from `main` are
+  off in `apps/web/vercel.json`), so new code never runs on an old
+  database (owner, Oct 31, 2026). Never paste SQL into the production
+  database.
 - **No third-party apps** (owner, Oct 30, 2026: no Sign in with SAL, no
   `/api/v1`). A token issued to an app carries a `client_id` and reaches
   nothing: every table keeps the restrictive policy "No third-party apps"
@@ -240,6 +244,11 @@ any schema change. Integration tests run against a local stack with
   `20261024000000`). The Supabase advisors stay at zero findings:
   `00_advisors.test.sql` fails otherwise (one permissive policy per role and
   action, every foreign key indexed, no exposed SECURITY DEFINER function).
+- **No third-party monitoring or protection** (owner, Oct 31, 2026): no
+  Sentry, Arcjet or Better Stack. Errors and logs go to the Vercel runtime
+  log (`@repo/observability` prints only); the security headers are the
+  app's own (`@repo/security`); the public forms are rate limited in the
+  database (`withinRateLimit`, `core.take_rate`).
 - **Secrets are server-only.** The secret key, Resend, the cron and webhook
   secrets and the Telegram token are read only in route handlers and
   `lib/api`, never in a page or client component; CI greps the client bundle
@@ -282,7 +291,9 @@ any schema change. Integration tests run against a local stack with
   else reads a father's or grandfather's name. Anyone without all eight
   is sent to `/welcome` at their next sign-in (`hasAllNames`,
   `RequireMember`, `RequirePartner`), with the first and last words of
-  their old name offered. Wherever a person is named (judges, bylines, hosts,
+  their old name offered. One person, one name (owner, Oct 31, 2026): a
+  full four-part name, in English or in Arabic, belongs to one account
+  (`private.one_person_one_name`, error `name_taken`). Wherever a person is named (judges, bylines, hosts,
   roles), pick them from the register (`MemberPicker`) and never type
   their names: a trigger copies the profile's names and keeps them in
   step (`private.profile_names_to_bylines`). Everything in
@@ -426,8 +437,9 @@ any schema change. Integration tests run against a local stack with
   (`programmes.record_six_words`) and scans the writer's live membership
   card to make it theirs (`programmes.attach_six_words`); unsigned cards
   show without a name. One entry per member; a new card replaces the old.
-- **The Callboard** (owner, Oct 25, 2026; header link "Get involved",
-  `/get-involved`) is the careers page (owner, Oct 29, 2026), read by
+- **Get involved** (`/get-involved`; the Callboard until Oct 31, 2026,
+  owner: one name, Get involved, in every language and title; the code
+  keeps `callboard`) is the careers page (owner, Oct 29, 2026), read by
   anyone (Oct 31: `programmes.open_places()`, `OpenPlaces`; replying and
   shifts are for members), as one list without sections (owner, Oct 31,
   2026; migration `20261101001000`), soonest first: roles, the
@@ -579,7 +591,7 @@ any schema change. Integration tests run against a local stack with
   What's on → Programs) and propose a General Assembly motion (F-09;
   Society → Resolutions). Every other kind is `retired` (no new
   submissions; past ones stay readable under Requests and reports): it is
-  done elsewhere on the platform (roles on the Callboard, service hours,
+  done elsewhere on the platform (roles on Get involved, service hours,
   certificates, the conflict-of-interest declaration in Settings, photo
   consent in Profile) or is an officers' paper kept as a Notion template.
   No standard letters: emails and certificates carry what letters did.
@@ -602,7 +614,7 @@ any schema change. Integration tests run against a local stack with
     list; The Month in Qirtas is merged into it and the name retired
     (code: `content.newsletter_subscribers`, the outbox kind
     `newsletter.monthly`, `private.queue_sunday_paper`). It carries the
-    month's pieces, What's on and the Callboard's open places.
+    month's pieces, What's on and the open places on Get involved.
   - The Diwan, الديوان, at `/diwan`, for officers (code: `nexus`,
     `components/nexus`, `lib/nexus`, `nexusPath`, `paths.nexus`, messages
     namespace `nexus`, which also holds the members' pages' text).
@@ -665,17 +677,18 @@ any schema change. Integration tests run against a local stack with
   header (`DiwanNav`), and each section's tabs follow that.
   Members' pages add their row (Today, My calendar, Society, Record,
   Settings, Sign out). The footer
-  (`footer.tsx`, not in the Diwan) holds what the header doesn't, in
-  threes: the six programs, six of the Society's pages (the Council, the
-  Library, Partners, Contact, the press kit, Verify) and three ways to
-  stay in touch, then three lines of fine print. The Diwan's row has six
-  sections; the Desk three quick actions. No link appears twice
+  (`footer.tsx`, not in the Diwan) holds what the header doesn't: the
+  programs, the Society's pages (the Council, the Library, Partners,
+  Contact, the press kit, Verify) and the ways to stay in touch, then
+  the fine print. The Diwan's row has its sections, each linked to the
+  first view the officer's roles include (`section-views.ts`); the Desk
+  its quick actions. No link appears twice
   among the header, a menu row and the footer. Every Diwan empty state
   offers one next action (`EmptyLine action`).
-- **Threes** (owner, Oct 30, 2026). The Society's things come in threes:
-  3, 6, 9, 12. Menus, columns, groups, rows of cards and quick actions
-  keep to them (six in the header, three footer columns, six Diwan
-  sections, three quick actions).
+- **What is needed, no more** (owner, Oct 31, 2026, replacing the rule
+  of threes). Menus, columns, groups, rows of cards and quick actions
+  hold what is needed: what isn't is merged or removed, and nothing is
+  padded or cut to reach a count.
 - **Content.** Don't invent names, dates, figures or quotes. Missing text is a
   `TODO(content): …` placeholder listed in `PROGRESS.md`. Arabic written for
   this platform (not taken from a source) is listed as `needs-native-review`.

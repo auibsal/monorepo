@@ -158,8 +158,8 @@ select throws_ok(
 
 select pg_temp.logout();
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000000f1', 'president');
-select is((select count(*)::int from governance.council_roster() where full_name_en = 'The President'), 1,
-  'The roster lists a person once per office, however often it was assigned');
+select is((select count(*)::int from governance.council_members() where full_name_en = 'The President'), 1,
+  'The Council lists a person once, however often their office was assigned');
 
 select * from finish();
 rollback;

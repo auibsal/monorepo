@@ -25,10 +25,10 @@ Every chat in this project should follow this file. Where an older document, pro
 - **The Callboard** ("Get involved") is the Society's careers page. It lists roles, shifts, auditions, Apprenticeship places and volunteer places.
 - **Telegram.** Two groups and a bot, all in the AUIB Clubs community:
   - **AUIB Society of Arts and Letters**, the members' group, with topics: The Common Room (members' chat), Help Desk, Announcements (closed), and The Council. "The Common Room" is this topic, not a separate channel.
-  - **The Green Room**, the working group (Council, Qirtas masthead, program teams; renamed from The Archive). Topics, not separate groups. Nothing about a named person (appointments, concerns) is posted there; that goes by direct message between Council members.
-  - **Hudhud** (@auibsal_bot), the Society's messenger: events and RSVPs, Qirtas, a daily word, notices. It removes group members who have not signed up on auibsal.org, except Student Life staff and the Faculty Advisor.
+  - **The Diwan group**, the officers' working group (Council, Qirtas masthead, program teams; was The Green Room, and The Archive before it; owner, Oct 31, 2026). Topics, not separate groups. Nothing about a named person (appointments, concerns) is posted there; that goes by direct message between Council members.
+  - **Hudhud** (@auibsal_bot), the Society's messenger: events and RSVPs, Qirtas, a daily word, notices. It lets members straight into the members' group and holds everyone else for the group's admins; it removes no one (owner, Oct 31, 2026: Telegram doesn't let a bot list a large group's members, so removal could never be complete).
 - **Pictures and Instagram:**
-  - Instagram (@auibsal) and the members' group use the Bookmark in white on crimson; The Green Room uses the Bookmark in white on ink; Hudhud keeps the hoopoe.
+  - Instagram (@auibsal) and the members' group use the Bookmark in white on crimson; the Diwan group uses the Bookmark in white on ink; Hudhud keeps the hoopoe.
   - Instagram bio: "Qirtas, our paper. The Company, our theater. Six programs at @auibaghdad." Links: auibsal.org, auibsal.org/events, auibsal.org/join.
   - Six highlights, in order: What's on, Qirtas, Next Stop, Programs, Join, Get involved. Covers are plain crimson with the highlight's icon and its name in white Ubuntu Light (no Bookmark). Each opens with a story banner on white with the wordmark alone (no Bookmark).
 - **Icons (decided Oct 30).** The Society uses one icon set across the board: the site and the Diwan, posts, stories, highlights, documents and printables. It is Lucide (ISC license), drawn with a 1.5 px line and square ends, kept in the Design System. An icon may stand alone wherever it says enough by itself (a calendar beside a date, a map pin beside a place, close, menu, search, share, a link arrow); add a word only when the icon alone could be misread. A standalone icon on a screen always carries a label for screen readers. Icons take the color of the text around them. Never in a headline, never as decoration, never the Bookmark as an icon, and still no emoji.
@@ -142,7 +142,7 @@ Qirtas, unlike a program, may have several documents:
 - SAL-QRT-04, The Apprenticeship and First Ink: the training term, mentoring and safeguarding.
 - Optional: an Edition and print playbook.
 
-### Two doors on the site
+### Two doors on the site *(replaced by §8: one door, /qirtas/write)*
 - "Send to the newsroom" for News, Voices, Video and Games: always open.
 - "Submit to the Edition" for Letters and Gallery: open only during a call, two a year.
 
@@ -218,7 +218,7 @@ Qirtas, unlike a program, may have several documents:
 
 ## 8. Qirtas, one door (decided Oct 31)
 - **One door for members.** Everything a member sends, in every section, goes through auibsal.org/qirtas/write and is read blind. Members can send work to Qirtas at any time ("Qirtas, all year", every section, never closes); only the printed Editions take work at set times (their calls, Letters and Gallery, two a year).
-- **The newsroom is for staff.** The masthead writes and publishes there directly, one page per section: News, Voices, Letters, Gallery, Video (with Next Stop) and Games. Only features get their own pages: Review, Editions, Awards and Ads.
+- **The newsroom is for staff.** The masthead writes and publishes there directly, one page per section: News, Voices, Letters, Gallery, Video (with Next Stop) and Games. Only features get their own pages: Review, Editions, Awards and Ads. *(Review joined the section pages, §16.)*
 - **Awards, never Prizes.** The Qirtas Awards: the Mutanabbi Award and the Tabari, Jahiz, Nazik, Wasiti and Ibn al-Haytham Awards. The names are confirmed.
 - **People are chosen, not typed.** Judges, bylines and anyone else the platform names are picked from the register, and their names follow their profile. A byline is a member, under their own name or a pen name; an author may choose a pen name when sending work. There is no Anonymous byline.
 - **Names in four parts** (revised the same day). A name in English and in Arabic, both required, each in four parts as on the person's ID: name, father's name, grandfather's name, and the fourth (family) name. The card, the Register and everywhere else a name shows use the first and the fourth. Members who signed up before are asked for the parts the next time they sign in; the same goes for partners' people (not their organizations' names).
@@ -227,7 +227,7 @@ Qirtas, unlike a program, may have several documents:
 - **Notion holds what the platform retired** (forms, letters, officers' papers), as templates linked from the Desk; Diwan pages with a Notion counterpart say so.
 
 ## 9. Partners on the platform, and smaller moves (decided Oct 31)
-- **Partners sign up.** An organization applies at auibsal.org/partners/join: its profile, what the partnership is for and what it will do, the benefits it asks for, and its signatory signs the memorandum by name. Nothing is uploaded. The President signs for the Society in the Diwan (People → Verification); the partner then becomes active.
+- **Partners sign up.** An organization applies at auibsal.org/partners/join: its profile, what the partnership is for and what it will do, the benefits it asks for, and its signatory signs the memorandum by name. *(§14: the application asks for no benefits; a partner asks from its dashboard.)* Nothing is uploaded. The President signs for the Society in the Diwan (People → Verification); the partner then becomes active.
 - **Each partner keeps its own dashboard,** auibsal.org/partners/dashboard (replaced the Diwan page the same day): its profile and memorandum, its perks, its guests and its team. It sits in the header's menu where officers see the Diwan.
 - **The Society verifies partners; partners verify their own people.** The Diwan's verification queue holds partner applications only.
 
@@ -237,7 +237,7 @@ Qirtas, unlike a program, may have several documents:
 - **A partner's team:** up to six people, Lead or Team. Whoever applied is the first Lead. Leads invite by email, make others Lead and remove people; everyone keeps the profile, perks and guests; anyone may leave, but never the last Lead.
 - **Guests join only by a partner's invitation:** by email (a guest as soon as they accept with that address) or by a shareable link (waiting until the partner verifies them). Invitations open at /invite/<code> and last fourteen days. Nobody asks a partner to be its guest any more.
 - **Perks are for members and guests only.** Guests may book places at events and write for calls opened to their partner.
-- **Non-members get /account, not /membership:** Account (their partners, what they can do, perks), My calendar (booking) and Settings (name, emails, sign-in, deleting the account); the record opens from Account.
+- *(Replaced by §11: one Membership for everyone, no /account.)* **Non-members get /account, not /membership:** Account (their partners, what they can do, perks), My calendar (booking) and Settings (name, emails, sign-in, deleting the account); the record opens from Account.
 - **Hiring picks from the Society's roles.** Every role in Roles and Staffing is on the platform, each with who hires for it; a role opening names its role, and whoever is onboarded holds it.
 - **Smaller moves.** Calls live on each Edition's page. "Email me about events" is on Settings → Notices only. Each event has its own door; the general door is gone, and the Desk opens the next event's door. A manuscript sent as Word or PDF fills the editor with its text, and the original file still goes with the work.
 
@@ -288,3 +288,36 @@ Qirtas, unlike a program, may have several documents:
 - **Library documents' codes and addresses can be changed** in the Diwan.
 - **Partnering starts with signing in or making an account,** then the memorandum itself, laid out like a contract with blanks to fill in, signed by the applicant; the President signs for the Society in the Diwan.
 - **Signatures are digital signatures:** the name on the platform in a signature face, the card number, the date, a pattern drawn from the number and a short seal. Nobody types their own name.
+
+## 17. The final audit (Oct 31, 2026, last)
+Where an earlier line above is marked as replaced, the later section holds. What the audit settled without a new decision:
+- **No money anywhere, including forms.** The partner memorandum lost its Money clause and the Company's Program Report its Money in and Money out; the columns stay only as records of what was already signed.
+- **AUIB's dates reach the members' calendar feed** (they were on What's on only), as whole days where the University gives whole days.
+- **The members' Telegram group lets members straight in;** a linked guest or partner's person waits for the admins, as anyone unlinked does. Hudhud removes nobody: removal stays with the group's admins (Telegram's own tools).
+- **The certificate signing page is People → Service** (it was titled Recognition); the hints that send officers there say so.
+- **Search covers events, Qirtas and the Company in the database, and the Library in the app;** the unused search index, AUIB's empty old table, three functions nothing called and the last feature switch (volunteer certificates) are gone (migration `20261101001400`).
+- Kept for the owner to decide: the old handbook pages (read only, each now in Notion), the old uploaded library files and their bucket, and SAL-PLT-10 (the API terms, though the API is gone).
+
+## 18. After the audit (decided Oct 31, 2026, last)
+- **Every recommendation in the audit's decisions table is taken,** with two left for later: a separate Resend account for SAL, and amending the Society documents' retired names.
+- **The officers' Telegram group is the Diwan group.**
+- **New code goes live only after its migration:** the migrate workflow deploys the site.
+- **No Sentry, Arcjet or Better Stack.** Vercel's runtime logs keep errors; the app sets its own security headers and rate limits its public forms in the database.
+- **One person, one name.** A full name in four parts belongs to one account; four accounts named Shaheen Karam Muwafaq Farjo are to be reduced to one.
+- **Version 1.0.0** is tagged when the audit PR merges; CHANGELOG.md records each release.
+- **SAL-PLT-10 is retired;** the other website policies no longer describe the API. The old handbook pages and the old library uploads are gone.
+
+## 19. The experience audit (decided Oct 31, 2026, last)
+- **Every recommendation of the experience audit is done,** but these:
+  - The Salon's dates are adjusted later.
+  - The October news pieces (the Waraq News Desk archive, migration `20261014000300`) wait for the owner's call.
+- **Get involved** is the one name for the careers page, everywhere. "The Callboard" is retired.
+- **No rule of threes.** What is needed stays or is added; what isn't is merged or removed.
+- **The Diwan opens on what an officer can use.** Each section links to its first view the officer's roles include.
+- **Smaller decisions:**
+  - Private work is never on Today.
+  - My calendar lists the member's own events first.
+  - Settings changes the password.
+  - Memoranda show both signatures by name.
+  - Dates in fields are written out in the house format.
+  - The Awards Coordinator is a role.

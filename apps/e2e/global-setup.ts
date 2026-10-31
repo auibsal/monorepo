@@ -40,6 +40,15 @@ export default async function globalSetup() {
   const editor2Id = await ensureUser(editor2.email, editor2.name);
   const presidentId = await ensureUser(president.email, president.name);
 
+  // One person, one name (owner, Oct 31, 2026): each account's grandfather's
+  // name differs, so no two share all four parts. The name shown (the first
+  // and the fourth) stays "E2E Tester".
+  const grandfathers: Record<string, [string, string]> = {
+    [editor2Id]: ["Second", "ثان"],
+    [editorId]: ["Editor", "محرر"],
+    [memberId]: ["Auto", "آلي"],
+    [presidentId]: ["Chair", "رئيس"],
+  };
   for (const id of [memberId, editorId, editor2Id, presidentId]) {
     const versions = await db
       .schema("core")
@@ -73,8 +82,8 @@ export default async function globalSetup() {
         father_name_en: "Test",
         first_name_ar: "اختبار",
         first_name_en: "E2E",
-        grandfather_name_ar: "آلي",
-        grandfather_name_en: "Auto",
+        grandfather_name_ar: grandfathers[id][1],
+        grandfather_name_en: grandfathers[id][0],
         last_name_ar: "تجريبي",
         last_name_en: "Tester",
         setup_completed_at: new Date().toISOString(),

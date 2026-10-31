@@ -266,9 +266,6 @@ export const PerformancesTab = ({
 
 // ── Program Report (Form F-25, section B) ───────────────────────────────────
 
-const toNumber = (value: string) =>
-  value.trim() === "" ? null : Number(value);
-
 export const ReportTab = ({ production }: { production: ProductionRow }) => {
   const t = useTranslations("nexus.admin.productions.reportTab");
   const locale = useLocale();
@@ -278,8 +275,6 @@ export const ReportTab = ({ production }: { production: ProductionRow }) => {
   const signer = useMemberNames([production.report_signed_by]);
   const [form, setForm] = useState({
     lessons: production.report_lessons ?? "",
-    money_in: production.report_money_in_iqd?.toString() ?? "",
-    money_out: production.report_money_out_iqd?.toString() ?? "",
     people: production.report_people_reached?.toString() ?? "",
     repeat: production.report_repeat ?? "",
     what: production.report_what_happened ?? "",
@@ -292,8 +287,6 @@ export const ReportTab = ({ production }: { production: ProductionRow }) => {
     mutationFn: () =>
       productions.saveReport(supabase, production.id, {
         report_lessons: form.lessons,
-        report_money_in_iqd: toNumber(form.money_in),
-        report_money_out_iqd: toNumber(form.money_out),
         report_people_reached: Number(form.people),
         report_repeat: form.repeat,
         report_what_happened: form.what,
@@ -339,38 +332,6 @@ export const ReportTab = ({ production }: { production: ProductionRow }) => {
                 required
                 type="number"
                 value={form.people}
-              />
-            )}
-          </Field>
-          <Field hint={t("iqd")} label={t("moneyIn")}>
-            {(id) => (
-              <Input
-                dir="ltr"
-                disabled={signed}
-                id={id}
-                inputMode="numeric"
-                min={0}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, money_in: e.target.value }))
-                }
-                type="number"
-                value={form.money_in}
-              />
-            )}
-          </Field>
-          <Field hint={t("iqd")} label={t("moneyOut")}>
-            {(id) => (
-              <Input
-                dir="ltr"
-                disabled={signed}
-                id={id}
-                inputMode="numeric"
-                min={0}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, money_out: e.target.value }))
-                }
-                type="number"
-                value={form.money_out}
               />
             )}
           </Field>

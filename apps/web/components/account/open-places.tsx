@@ -2,7 +2,11 @@
 
 import { useAuth } from "@repo/auth/provider";
 import type { Locale } from "@repo/internationalization";
-import { formatClock, formatLongDate } from "@repo/internationalization/format";
+import {
+  formatClock,
+  formatLongDate,
+  formatNumber,
+} from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
 import { localized, programmes } from "@repo/sal-data";
 import { useQuery } from "@tanstack/react-query";
@@ -60,6 +64,7 @@ const KINDS = [
 
 const PlaceRow = ({ locale, row }: { locale: Locale; row: Place }) => {
   const t = useTranslations("nexus.getInvolved");
+  const td = useTranslations("nexus.details");
   // Who it is with: the partner, the program, or the Society.
   const partner = row.partner_name_en
     ? localized(
@@ -103,6 +108,35 @@ const PlaceRow = ({ locale, row }: { locale: Locale; row: Place }) => {
       {localized(row, "body", locale) ? (
         <p className="type-body whitespace-pre-line" dir="auto">
           {localized(row, "body", locale)}
+        </p>
+      ) : null}
+      {/* What a reader weighs before replying: the term, how many places
+          and the skills it wants. */}
+      {row.term_from || row.places > 1 || row.skills.length > 0 ? (
+        <p className="type-caption text-text-secondary">
+          {[
+            row.term_from && row.term_to
+              ? t("term", {
+                  from: formatLongDate(row.term_from, locale),
+                  to: formatLongDate(row.term_to, locale),
+                })
+              : null,
+            row.places > 1
+              ? t("places", {
+                  count: row.places,
+                  n: formatNumber(row.places),
+                })
+              : null,
+            row.skills.length > 0
+              ? t("skills", {
+                  skills: row.skills
+                    .map((skill) => td(`skills.${skill}` as never))
+                    .join(", "),
+                })
+              : null,
+          ]
+            .filter(Boolean)
+            .join(" · ")}
         </p>
       ) : null}
     </li>

@@ -98,8 +98,10 @@ const MemberCardPage = async ({ params, searchParams }: CardParams) => {
     <div className="mx-auto grid w-full max-w-xl gap-8 px-4 py-16">
       <PageHeader lede={t("lede")} title={t("title")} />
       <div className="grid gap-2" role="status">
-        <p className="type-heading">{card.active ? t("valid") : t("lapsed")}</p>
-        <p className="type-body">{card.live ? t("live") : t("notLive")}</p>
+        {/* The code's state first: a stale code never opens on a
+            reassuring line. */}
+        <p className="type-heading">{card.live ? t("live") : t("notLive")}</p>
+        <p className="type-body">{card.active ? t("valid") : t("lapsed")}</p>
         {card.active && card.live ? (
           <p className="type-body text-text-secondary">{t("perks")}</p>
         ) : null}

@@ -42,10 +42,12 @@ places, Qirtas decisions). A member who blocks the bot has them turned off.
 And without commands:
 
 - **Join requests** (Guard mode). With *Approve new members* on the
-  invite link, Telegram asks the bot first: a linked Diwan account is
+  invite link, Telegram asks the bot first: a linked member's account is
   approved at once; everyone else waits in Telegram's own request list for
-  an admin, and gets a private note inviting them to link (the moment they
-  do, they're let in).
+  an admin. Someone not linked gets a private note inviting them to link
+  (the moment they do, a member is let in); a linked account that isn't a
+  member's (a partner's guest or team) is told the group is for members.
+  Hudhud removes nobody: removing people stays with the group's admins.
 - **Posts, every ten minutes** (pg_cron → `/cron/telegram`): new public events
   in the next 45 days (to `events`, else `announcements`), a "starting
   soon" reply three hours before, new Qirtas pieces of the last three days
@@ -136,7 +138,7 @@ And without commands:
 
    | Setting | Choose | Why |
    | --- | --- | --- |
-   | Edit Bot → Profile picture | `brand/mascot/hudhud-avatar.png`: white Hudhud on crimson | The bot's picture only. The members' group ("AUIB Society of Arts and Letters") uses `brand/logos/sal-avatar.svg`, the white Bookmark on crimson; The Green Room, the working group, uses `brand/logos/sal-avatar-ink.svg`, the white Bookmark on ink, so the two are never confused. Never Hudhud on either. |
+   | Edit Bot → Profile picture | `brand/mascot/hudhud-avatar.png`: white Hudhud on crimson | The bot's picture only. The members' group ("AUIB Society of Arts and Letters") uses `brand/logos/sal-avatar.svg`, the white Bookmark on crimson; the Diwan group, the officers' working group, uses `brand/logos/sal-avatar-ink.svg`, the white Bookmark on ink, so the two are never confused. Never Hudhud on either. |
    | Edit Bot → Description picture | `brand/mascot/hudhud-description.png` (640 × 360: the reversed Hudhud, as supplied, on crimson) | What people see before they press Start. The name, about and description texts are set by step 4. |
    | Inline Mode | On, placeholder "Events and Qirtas" | Sharing cards. |
    | Guest Mode | On | Answers a mention in chats the bot isn't in. |

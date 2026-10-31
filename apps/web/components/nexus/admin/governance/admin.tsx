@@ -8,6 +8,7 @@ import { localized, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useState } from "react";
+import { DateInput } from "@/components/fields/date-input";
 import { Link, useRouter } from "@/lib/nexus/navigation";
 import { OnTheSite } from "../../site-links";
 import { EmptyLine, SectionSpinner } from "../../states";
@@ -436,13 +437,11 @@ const ResolutionEditor = ({
         </Field>
         <Field label={t("minutes.adoptedOn")}>
           {(id) => (
-            <Input
-              dir="ltr"
+            <DateInput
               id={id}
               onChange={(e) =>
                 setForm((f) => ({ ...f, adopted_on: e.target.value }))
               }
-              type="date"
               value={form.adopted_on}
             />
           )}

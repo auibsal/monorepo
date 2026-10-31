@@ -12,6 +12,7 @@ import { getMediaUrl, uploadMedia } from "@repo/storage";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useEffect, useId, useState } from "react";
+import { FileInput } from "@/components/fields/file-input";
 import { Link, useRouter } from "@/lib/nexus/navigation";
 import { useGrants } from "@/lib/nexus/queries";
 import { useQueryParam } from "@/lib/nexus/use-query-param";
@@ -537,7 +538,7 @@ const Media = ({ record }: { record: PieceRecord }) => {
       </ol>
       <div className="grid gap-2">
         <Label htmlFor={id}>{t("add")}</Label>
-        <Input
+        <FileInput
           accept="image/jpeg,image/png,image/webp"
           disabled={upload.isPending}
           id={id}
@@ -549,7 +550,6 @@ const Media = ({ record }: { record: PieceRecord }) => {
             }
             e.target.value = "";
           }}
-          type="file"
         />
         <p className="type-caption">{t("hint")}</p>
       </div>

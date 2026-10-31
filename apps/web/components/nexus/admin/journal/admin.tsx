@@ -5,7 +5,6 @@ import { Button } from "@repo/design-system/components/ui/button";
 import { Textarea } from "@repo/design-system/components/ui/textarea";
 import type { Locale } from "@repo/internationalization";
 import {
-  formatDate,
   formatLongDate,
   formatNumber,
 } from "@repo/internationalization/format";
@@ -27,7 +26,6 @@ import {
   ErrorLine,
   Field,
   SaveButton,
-  SelectInput,
 } from "../kit";
 import { MemberPicker } from "../member-picker";
 import { Needs } from "../needs";
@@ -40,7 +38,7 @@ import { FrontRank } from "./workflow";
 
 const key = ["admin", "journal"];
 const buttonLink =
-  "inline-flex h-8 items-center justify-self-start rounded-md bg-primary px-3 text-primary-foreground text-sm";
+  "inline-flex h-8 items-center justify-self-start bg-accent px-3 font-medium text-on-accent text-sm hover:bg-accent/90";
 
 export const useIssues = () => {
   const { supabase } = useAuth();
@@ -64,6 +62,7 @@ export const useIssues = () => {
 
 const Editions = () => {
   const t = useTranslations("nexus.admin.waraq");
+  const tt = useTranslations("nexus.admin.sections.tabs");
   const tk = useTranslations("nexus.admin.kit");
   const locale = useLocale() as Locale;
   const issues = useIssues();
@@ -96,13 +95,24 @@ const Editions = () => {
     },
   ];
   return (
-    <div className="grid gap-4">
-      <p className="type-caption">{t("editionsLede")}</p>
-      <Link className={buttonLink} href="/qirtas/editions/new">
-        {t("newEdition")}
-      </Link>
+    <div className="grid gap-8">
+      <AdminHeading
+        actions={
+          <Link className={buttonLink} href="/qirtas/editions/new">
+            {t("newEdition")}
+          </Link>
+        }
+        title={tt("editions")}
+      >
+        {t("editionsLede")}
+      </AdminHeading>
       {issues.data ? (
-        <DataTable columns={columns} rowKey={(i) => i.id} rows={issues.data} />
+        <DataTable
+          columns={columns}
+          empty={t("noEditions")}
+          rowKey={(i) => i.id}
+          rows={issues.data}
+        />
       ) : (
         <SectionSpinner />
       )}
@@ -117,7 +127,6 @@ const Newsroom = ({ desk }: { readonly desk?: journal.Desk }) => {
   const tj = useTranslations("nexus.admin.journal");
   const locale = useLocale() as Locale;
   const { supabase } = useAuth();
-  const [status, setStatus] = useState<journal.PieceStatus | "">("");
   const pieces = useQuery({
     queryFn: async () => {
       let query = supabase
@@ -130,9 +139,6 @@ const Newsroom = ({ desk }: { readonly desk?: journal.Desk }) => {
         .limit(200);
       if (desk) {
         query = query.eq("desk", desk);
-      }
-      if (status) {
-        query = query.eq("status", status);
       }
       // Work in progress first, then what is scheduled, then the published
       // by date: the order the newsroom reads in.
@@ -147,7 +153,7 @@ const Newsroom = ({ desk }: { readonly desk?: journal.Desk }) => {
           rank(a.status) - rank(b.status) || when(b).localeCompare(when(a))
       );
     },
-    queryKey: [...key, "pieces", desk ?? "", status],
+    queryKey: [...key, "pieces", desk ?? ""],
   });
   type Row = NonNullable<typeof pieces.data>[number];
   const columns: Column<Row>[] = [
@@ -182,9 +188,9 @@ const Newsroom = ({ desk }: { readonly desk?: journal.Desk }) => {
         const s = p.status as journal.PieceStatus;
         let when = "";
         if (s === "published" && p.published_at) {
-          when = ` · ${formatDate(p.published_at, locale)}`;
+          when = ` · ${formatLongDate(p.published_at, locale, true)}`;
         } else if (s === "scheduled" && p.publish_at) {
-          when = ` · ${formatDate(p.publish_at, locale)}`;
+          when = ` · ${formatLongDate(p.publish_at, locale, true)}`;
         }
         const lead = p.front_rank === 1 ? ` · ${t("workflow.lead")}` : "";
         return `${t(`statuses.${s}`)}${when}${lead}`;
@@ -196,30 +202,12 @@ const Newsroom = ({ desk }: { readonly desk?: journal.Desk }) => {
   ];
   return (
     <div className="grid gap-4">
-      <div className="flex flex-wrap items-end gap-4">
-        <Field label={t("stage")}>
-          {(id) => (
-            <SelectInput
-              className="w-48"
-              id={id}
-              onChange={(e) =>
-                setStatus(e.target.value as journal.PieceStatus | "")
-              }
-              value={status}
-            >
-              <option value="">{t("allStages")}</option>
-              {journal.pieceStatuses.map((s) => (
-                <option key={s} value={s}>
-                  {t(`statuses.${s}`)}
-                </option>
-              ))}
-            </SelectInput>
-          )}
-        </Field>
-        <Link className={buttonLink} href="/qirtas/pieces/new">
-          {t("newPiece")}
-        </Link>
-      </div>
+      <Link
+        className={`${buttonLink} justify-self-start`}
+        href="/qirtas/pieces/new"
+      >
+        {t("newPiece")}
+      </Link>
       {pieces.data ? (
         <DataTable
           caption={t("sortedBy")}
@@ -830,6 +818,8 @@ const useAnyOf = (keys: readonly Permission[]) => {
  * on the first page; Next Stop is part of Video, and the puzzles of Games.
  */
 export const QirtasNewsroom = ({ desk }: { readonly desk?: journal.Desk }) => {
+  const tj = useTranslations("nexus.admin.journal");
+  const tt = useTranslations("nexus.admin.sections.tabs");
   const grants = useGrants();
   const has = (permission: Permission) =>
     hasPermissionAnywhere(grants.data, permission);
@@ -844,6 +834,7 @@ export const QirtasNewsroom = ({ desk }: { readonly desk?: journal.Desk }) => {
   // Edition's reading (its calls) is on the all-sections page.
   return (
     <div className="grid gap-14">
+      <AdminHeading title={desk ? tj(`desks.${desk}`) : tt("newsroom")} />
       <SectionsNav />
       {reads ? <Desks desk={desk} /> : null}
       {writes ? <Newsroom desk={desk} /> : null}

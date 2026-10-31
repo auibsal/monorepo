@@ -523,8 +523,12 @@ export const EventEditor = () => {
         {save.error && save.error.message !== "invalid" ? (
           <ErrorLine error={save.error} />
         ) : null}
-        <div className="flex flex-wrap gap-3">
-          <SaveButton pending={save.isPending} success={save.isSuccess} />
+        <div className="flex flex-wrap items-center gap-3">
+          <SaveButton
+            pending={save.isPending}
+            quiet={status === "draft"}
+            success={save.isSuccess}
+          />
           {status === "draft" ? (
             <ConfirmAction
               confirmLabel={t("publish")}

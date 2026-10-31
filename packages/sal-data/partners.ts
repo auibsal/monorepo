@@ -108,7 +108,6 @@ export const agreementSchema = z
       .nullable()
       .optional(),
     grants: z.array(z.enum(agreementGrants)),
-    money: optionalText(4000),
     partner_contact: optionalText(400),
     partner_id: z.uuid(),
     partner_will: optionalText(4000),

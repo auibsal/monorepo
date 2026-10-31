@@ -18,6 +18,8 @@ export interface DatedItem {
   line?: string | null;
   /** Something else for the end of the row (a closing date). */
   place?: string | null;
+  /** Someone else's date beside the Society's (AUIB's): set quieter. */
+  quiet?: boolean;
   /** The time, after the clock, at the end of the row. */
   time?: string | null;
   title: string;
@@ -66,7 +68,13 @@ export const DatedList = ({
         <li key={item.key}>
           <RowLink external={item.external} href={item.href}>
             <span className="row-span-3 grid content-start gap-1 sm:row-span-1">
-              <span className="font-light text-[2.75rem] leading-none tracking-tight">
+              <span
+                className={
+                  item.quiet
+                    ? "font-light text-[2.75rem] text-text-secondary leading-none tracking-tight"
+                    : "font-light text-[2.75rem] leading-none tracking-tight"
+                }
+              >
                 {day}
               </span>
               <span className="type-label text-text-secondary">
@@ -75,7 +83,11 @@ export const DatedList = ({
             </span>
             <span className="grid gap-1">
               <span
-                className="font-normal text-xl leading-snug group-hover:text-accent"
+                className={
+                  item.quiet
+                    ? "text-base text-text-secondary leading-snug group-hover:text-accent"
+                    : "font-normal text-xl leading-snug group-hover:text-accent"
+                }
                 lang={item.lang}
               >
                 {item.title}

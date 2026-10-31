@@ -12,9 +12,6 @@ Policy P15 and Bylaws B11.3 apply to the platform too: **every account has at le
 | Cloudflare | DNS for auibsal.org; the Google tag gateway once auibsal.org is proxied ([Analytics](analytics.md)) | Free |
 | Google Analytics 4 and Tag Manager | Visit counts on auibsal.org, with consent ([Analytics](analytics.md)) | Free |
 | Resend | Every email the platform sends, including sign-in links | Free: 100 emails a day, 3,000 a month. Emails over the limit wait in the outbox until it resets |
-| Sentry (EU) | Errors and server logs from the app | Free Developer plan: 5,000 errors a month, one user |
-| BetterStack | Uptime monitors for the site, the sign-in page and the API health check | Free |
-| Arcjet | Protects the public removal-request form | Free after the trial: 10,000 requests a month, then a hard stop (no bill); the form keeps working when it is spent |
 | Google Analytics 4 | Visitor counts on the public site only | Free |
 | Cloudflare Turnstile | The human check on sign-up, sign-in and password reset (Supabase Auth → Attack Protection; site key `NEXT_PUBLIC_TURNSTILE_SITE_KEY` on the auibsal project, secret in Supabase) | Free |
 | Cloudflare Email Routing | Forwards mail to hello@auibsal.org (and any role addresses) to officers' inboxes | Free |
@@ -24,7 +21,7 @@ Policy P15 and Bylaws B11.3 apply to the platform too: **every account has at le
 
 | Secret | Held by |
 | --- | --- |
-| Supabase secret key, Resend token, cron and webhook secrets, Arcjet key, Notion token, Telegram token and secrets, Web Push private key (`VAPID_PRIVATE_KEY`), revalidation secret | The auibsal project in Vercel, Production, marked sensitive; read only by the API routes |
+| Supabase secret key, Resend token, cron and webhook secrets, Notion token, Telegram token and secrets, Web Push private key (`VAPID_PRIVATE_KEY`), revalidation secret | The auibsal project in Vercel, Production, marked sensitive; read only by the API routes |
 | Supabase access token and database password | GitHub → Settings → Environments → production (used by the migration workflow) |
 | Backup passphrase | GitHub production environment; also kept in the password manager, since a backup is useless without it |
 
@@ -55,7 +52,7 @@ The hashes are keyed with `SUPABASE_SECRET_KEY`. Rotating that key makes every s
 
 ## Handing the platform over
 
-1. **Add the incoming administrator.** Invite them to the GitHub organization, the Vercel team, the Supabase organization, Cloudflare, Resend, Sentry, BetterStack and Arcjet, with admin rights.
+1. **Add the incoming administrator.** Invite them to the GitHub organization, the Vercel team, the Supabase organization, Cloudflare and Resend, with admin rights.
 2. **Walk through a release.** Merge one small pull request together and watch CI, the migration workflow and the Vercel deployments go green. See [Releases and migrations](releases.md).
 3. **Restore a backup together.** Practice the [restore](backups.md) into a scratch project once, so it is not new on the day it matters.
 4. **Remove the outgoing administrator.** Within seven days of the handover (B11.3), unless they stay on as one of the two required administrators.

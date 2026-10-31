@@ -7,6 +7,30 @@ first session); section numbers (§) refer to it.
 
 Branch: `claude/new-session-qosn60`.
 
+## The experience audit (2026-10-31)
+
+- [x] Diwan: each section opens on the first view the officer's roles
+  include; locked views have a title and a way out; every Qirtas page
+  has its title; the Desk shows writers their pieces in editing; What's
+  on is one page (coming, drafts, past); house dates; the activity log
+  names role and person.
+- [x] Partners: one sign-in on the application; both signatures by name
+  (migration `20261101001600`, `99_experience_audit.test.sql`); no
+  typed contact; a partner's own perks hidden from its people.
+- [x] Membership: Today without private work or requests; My calendar
+  yours first; password in Settings; Record order; Write for Qirtas
+  defaults to Qirtas, all year, and says what Send waits for; Wallet
+  hidden until it's set up.
+- [x] Public: Get involved everywhere (no Callboard); The Council and
+  Press kit titles; one solid button per view; AUIB dates quieter;
+  openings show term, places and skills; the 404 page has a title.
+- [x] Shared: a date field that writes the date out in the house format,
+  and a file field in the brand.
+- [ ] The Salon's dates (owner: later).
+- [ ] The October News Desk archive (migration `20261014000300`): the
+  Society pieces in it still describe Waraq and the old structure; the
+  owner decides whether to correct or unpublish them.
+
 ## Qirtas, one door (2026-10-31)
 
 - [x] One door: every section through `/qirtas/write/<type>`, read blind;
@@ -32,6 +56,22 @@ Branch: `claude/new-session-qosn60`.
 
 ## Blocked — needed from the user
 
+- [ ] **Final audit, owner steps (2026-10-31):** (1) **Before merging the
+      audit PR:** Vercel → the auibsal project → Settings → Git → Deploy
+      Hooks → create one for `main`, and save its URL as `VERCEL_DEPLOY_HOOK`
+      in GitHub → Settings → Environments → production. From then on the
+      migrate workflow deploys the site (Vercel's own deploys from `main` are
+      off). (2) Remove the Sentry, Arcjet and Better Stack accounts and their
+      Vercel variables (`NEXT_PUBLIC_SENTRY_DSN`, `SENTRY_ORG`,
+      `SENTRY_PROJECT`, `SENTRY_AUTH_TOKEN`, `ARCJET_KEY`) and the GitHub
+      secret `BACKUP_HEARTBEAT_URL`. (3) Cloudflare DNS for auibsal.org: CAA
+      records `0 issue "letsencrypt.org"`, `0 issue "pki.goog"`,
+      `0 issue "sectigo.com"` and `0 iodef "mailto:hello@auibsal.org"`.
+      (4) A separate Resend account for SAL (later). (5) Amend the Society
+      documents' retired names (later). (6) Tag `v1.0.0` once the PR merges.
+      (7) Four accounts share the name Shaheen Karam Muwafaq Farjo: keep
+      one, delete the others (each from its own Settings, or tell Claude
+      which addresses); no new account can copy a name now.
 - [ ] **Site emails never leave (Oct 31, 2026): two Vault secrets.** The
   personal-email link, booking confirmations and every other site email
   wait in `core.outbox` because the database cannot call the site. The
@@ -91,7 +131,7 @@ Branch: `claude/new-session-qosn60`.
     you want one permanent redirect for each.
   - **Telegram:** create the sticker set (docs/platform/telegram.md,
     "Sticker set") and set the bot's picture with `/setuserpic`
-    (`brand/mascot/hudhud-avatar.png`); give The Green Room
+    (`brand/mascot/hudhud-avatar.png`); give the Diwan group
     `brand/logos/sal-avatar-ink.svg`.
   - **The decisions file** (`claude/decisions.md`) is now the handoff's
     copy. It no longer names Mia Hakimi as Managing Editor, the open
@@ -226,8 +266,7 @@ Branch: `claude/new-session-qosn60`.
   - **Members' pages left the Diwan (2026-10-24), three settings to move:**
     BotFather → Bot Settings → Login Widget → OpenID Connect → Redirect
     URIs (now `/membership/profile`, see the Membership item above); Supabase →
-    Authentication → OAuth Server → authorization path `/oauth/consent`;
-    BetterStack's sign-in monitor → `https://auibsal.org/sign-in`.
+    Authentication → OAuth Server → authorization path `/oauth/consent`.
   - **BotFather → Edit Bot → Description picture:**
     `brand/mascot/hudhud-description.png`, then *Connect the bot to
     Telegram* in the Diwan so the descriptions update.
@@ -245,7 +284,7 @@ Branch: `claude/new-session-qosn60`.
 - [ ] **Environment variables on Vercel (2026-10-24):** the one project is
       `auibsal`. Set on 2026-10-24 (Production; secrets sensitive):
       `RESEND_TOKEN` (a new sending-only key for auibsal.org, "auibsal
-      (Vercel, one app)"), `ARCJET_KEY` (site sal-api), `TELEGRAM_BOT_USERNAME`,
+      (Vercel, one app)"), `TELEGRAM_BOT_USERNAME`,
       `TELEGRAM_WEBHOOK_SECRET` (generated), and a new Web Push pair
       `NEXT_PUBLIC_VAPID_PUBLIC_KEY` / `VAPID_PRIVATE_KEY`. Left for the owner:
       | Variable | Where to get it | Without it |
@@ -270,10 +309,7 @@ Branch: `claude/new-session-qosn60`.
       Supabase (Auth URLs, templates). Left: **Telegram:** BotFather → Login
       Widget → OpenID Connect: Redirect URIs
       `https://auibsal.org/nexus/profile` and
-      `https://auibsal.org/ar/nexus/profile`. **BetterStack:** monitors on
-      `auibsal.org`, `auibsal.org/nexus/sign-in` and
-      `auibsal.org/api/health`. **Sentry:** the sal-nexus and sal-api
-      projects can go. **Cloudflare:** the configuration rule for the API
+      `https://auibsal.org/ar/nexus/profile`. **Cloudflare:** the configuration rule for the API
       matches "URI Path starts with /api/" (`docs/platform/analytics.md`).
 
 - [ ] **Telegram bot, Hudhud (2026-10-22; in the API routes since 2026-10-23):**
@@ -382,13 +418,14 @@ Branch: `claude/new-session-qosn60`.
       the platform owner's own organizations (Baghdad College Foundation,
       The IDEA IQ, which hosts the Vercel team) belong on it, and whoever
       declares a conflict with a partner cannot sign its memorandum.
-- [ ] **Recognition (B4):** the Faculty Advisor needs a Nexus account with
+- [ ] **Certificates (B4):** the Faculty Advisor needs an account with
       the `faculty_advisor` role to countersign certificates (B4.5: signed
-      by the President and the Faculty Advisor). Decide in Council whether
-      volunteers (hours, not a term) get certificates; if yes, switch on
-      `features.volunteer_certificates` in Administration → Settings.
-      Approve the certificate wording for the kinds the Printables do not
-      cover (Honorary Membership, volunteer, production, partner).
+      by the President and the Faculty Advisor, under People → Service).
+      Volunteer certificates are allowed (no switch since the final audit,
+      migration `20261101001400`); the Council may still decide not to
+      draft them. Approve the certificate wording for the kinds the
+      Printables do not cover (Honorary Membership, volunteer, production,
+      partner).
 - [ ] **Backups:** add `BACKUP_PASSPHRASE` (a long random passphrase kept in
       your password manager) to the GitHub `production` environment. Then
       `.github/workflows/backup.yml` stores an encrypted dump every night

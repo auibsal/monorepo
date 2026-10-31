@@ -11,7 +11,6 @@ import { NextEvents } from "./next-events";
 import { Notices } from "./notices";
 import { OtherHome } from "./other-home";
 import { MyProgrammes } from "./programmes";
-import { Requests } from "./requests";
 import { SixWords } from "./six-words";
 
 type Greeting = "morning" | "afternoon" | "evening" | "late" | "friday";
@@ -96,7 +95,6 @@ export const MemberHome = () => {
             <NextEvents />
             <MyProgrammes />
             <JournalSection />
-            <Requests />
             <SixWords />
           </div>
         </>
