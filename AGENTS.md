@@ -27,8 +27,8 @@ and decisions), and continue from the first unticked item.
     `/settings/notices`; officers also `/settings/declarations`, and
     their recovery codes on Settings), Requests (`/membership/requests/<id>`) and Your
     work (`/membership/work`, `/work/<id>`, `/work/submissions/<id>`);
-    also `/company/auditions`, `/qirtas/write` (the two doors and the form
-    itself with `?type=`) and `/qirtas/read/<slug>` (a members-only
+    also `/company/auditions`, `/qirtas/write` (every section, and the form
+    at `/qirtas/write/<type>`) and `/qirtas/read/<slug>` (a members-only
     piece). Perks are on the card; voting
     eligibility is on Society; the calendar feed is on My calendar. The
     site's header and footer, a Membership row (`components/account`), and
@@ -308,14 +308,16 @@ any schema change. Integration tests run against a local stack with
   year" (`journal.calls` with no `issue_id`, `calls_one_standing`) takes
   every section, never closes and counts `max_per_person` per term; a
   submission that names no call goes to it. The global masthead reads
-  and decides it. An author may choose Anonymous (`submissions.anonymous`;
-  the piece gets the Anonymous byline). The newsroom is where staff write
+  and decides it. An author may publish under a pen name, never Anonymous
+  (owner, Oct 31, 2026; `submissions.pen_name`, made a pen-name byline by
+  `make_piece`). The newsroom is where staff write
   and publish directly: the Diwan's Qirtas section is the Newsroom
   (`/diwan/qirtas`, one page per section, `/diwan/qirtas/news` …
   `/games`; Next Stop is in Video, puzzles in Games), Review, Editions,
-  Awards and Ads, each its own page. Bylines are people (a member, or a
-  pen name the member chose) or Anonymous (`contributors.is_anonymous`),
-  picked with `BylinePicker`, never typed.
+  Awards and Ads, each its own page. Bylines are people: a member under
+  their own name or a pen name, picked with `BylinePicker` and made by
+  `journal.byline_for()`, never typed. Clients never read
+  `contributors.user_id`, so a pen name can't be traced to its author.
   Six sections, six types each (owner, Oct 29, 2026; `journal.sectionTypes`,
   `journal.desk_of()`, `journal.is_current_category()` refuses any other):
   News (report, feature, interview, profile, event coverage, explainer),
@@ -324,10 +326,10 @@ any schema change. Integration tests run against a local stack with
   translation, Six Words), Gallery (art, photography, illustration,
   comics, calligraphy, photo essay), Video (Next Stop episode, reel, short
   film, video report, recorded performance, animation), Games (crossword,
-  quiz, word ladder, riddle, anagram, name the book). Two doors: "Send to
-  the newsroom" (News, Voices, Video, Games; always open) and "Submit to
-  the Edition" (Letters, Gallery; only while a call is open, two calls a
-  year, with "Tell me when", `journal.call_alerts`). Six Words take no
+  quiz, word ladder, riddle, anagram, name the book). Members may send
+  to Qirtas at any time; only the printed Edition takes work at set times
+  (its calls, Letters and Gallery, two a year, with "Tell me when",
+  `journal.call_alerts`). Six Words take no
   submissions (the database refuses them). The Edition is printed: its
   record keeps the print run, printer and date (`journal.issues.print_run`,
   `printer_en`/`_ar`, `printed_on`), shown on the Edition page as a line.

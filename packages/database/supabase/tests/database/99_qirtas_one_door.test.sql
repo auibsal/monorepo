@@ -1,7 +1,8 @@
 -- Qirtas, one door, and one name per language (owner, Oct 31, 2026):
 -- everything members send is read blind through a call (the standing call
--- when none is named), bylines and judges are people from the register or
--- Anonymous, and a member's name is one name in each language.
+-- when none is named), bylines and judges are people from the register
+-- (under their name or a pen name), and a member's name is one name in
+-- each language.
 begin;
 -- <preamble>
 -- Shared pgTAP preamble. Each test file includes a copy (pg_prove runs files
@@ -77,7 +78,7 @@ insert into core.semesters (code, name_en, name_ar, starts_on, ends_on) values
 update core.settings set value = '0' where key = 'membership.founding_voters';
 -- </preamble>
 
-select plan(10);
+select plan(13);
 
 select is((select count(*) from journal.calls where issue_id is null)::integer, 1,
   'There is one standing call, which belongs to no Edition');
@@ -90,16 +91,15 @@ select '00000000-0000-0000-0000-0000000099a1', t, '1'
 from unnest(enum_range(null::membership.pledge_type)) t;
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000099a1');
-insert into journal.submissions (category, language, title, deck, body_html, human_authorship_confirmed, anonymous)
-values ('report', 'en', 'One door story', 'A deck.', '<p>Story</p>', true, true);
+insert into journal.submissions (category, language, title, deck, body_html, human_authorship_confirmed, pen_name)
+values ('report', 'en', 'One door story', 'A deck.', '<p>Story</p>', true, 'Night Owl');
 select ok((select c.issue_id is null from journal.submissions s join journal.calls c on c.id = s.call_id
   where s.title = 'One door story'), 'News sent without a call goes to the standing call, to be read blind');
 select pg_temp.logout();
 
-select ok(exists (select 1 from journal.contributors where is_anonymous), 'Anonymous is a byline');
 select throws_ok(
   $$ insert into journal.contributors (slug, name_en) values ('a-desk', 'A Desk') $$,
-  '23514', null, 'A new byline is a member or Anonymous, never a name typed in'
+  '23514', null, 'A new byline is a member, never a name typed in'
 );
 
 insert into journal.contributors (slug, name_en, user_id)
@@ -119,6 +119,32 @@ select throws_ok(
   $$ insert into events.events (slug, title_en, title_ar, starts_at, ends_at)
      values ('2026-11', 'A month', 'شهر', now(), now() + interval '1 hour') $$,
   '23514', null, 'No event takes a slug that reads as a month (/events/2026-11 is a month)'
+);
+
+-- The newsroom names a byline by member (and pen name); only the id comes back.
+select pg_temp.login_as('00000000-0000-0000-0000-0000000099a1');
+select throws_ok(
+  $$ select journal.byline_for('00000000-0000-0000-0000-0000000099a1', 'Owl') $$,
+  '42501', null, 'Only the newsroom finds or makes bylines'
+);
+select pg_temp.logout();
+select pg_temp.make_user('00000000-0000-0000-0000-0000000099a2', 'desk@auib.edu.iq', 'Desk Editor');
+select pg_temp.grant_role('00000000-0000-0000-0000-0000000099a2', 'news_editor');
+select pg_temp.login_as('00000000-0000-0000-0000-0000000099a2');
+create temp table owl as
+  select journal.byline_for('00000000-0000-0000-0000-0000000099a1', 'Night Owl') as id;
+select is(
+  journal.byline_for('00000000-0000-0000-0000-0000000099a1', 'Night Owl'),
+  (select id from owl), 'The newsroom finds a pen-name byline again instead of making another'
+);
+select pg_temp.logout();
+select is(
+  (select c.name_en || '/' || c.is_pen_name::text from journal.contributors c join owl on owl.id = c.id),
+  'Night Owl/true', 'A pen name is a byline of its own for the same member'
+);
+select is(
+  has_column_privilege('authenticated', 'journal.contributors', 'user_id', 'select'),
+  false, 'Clients never read which member a byline belongs to'
 );
 
 select * from finish();

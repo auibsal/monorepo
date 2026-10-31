@@ -670,8 +670,6 @@
         "closed": "Qirtas is not taking this type of work right now.",
         "where": "Where",
         "whereHint": "The printed Edition, while its call is open, or Qirtas online.",
-        "anonymous": "Publish without my name",
-        "anonymousHint": "The byline reads Anonymous. The editors still know it is yours.",
         "send": "Send to Qirtas"
       }
     },
@@ -1095,7 +1093,10 @@
         "checkInPerson": "Check in",
         "count": "{count} checked in",
         "noResults": "No member found.",
-        "cardNotLive": "This card's code isn't live (a screenshot?). Ask to see the card on the member's own phone."
+        "cardNotLive": "This card's code isn't live (a screenshot?). Ask to see the card on the member's own phone.",
+        "choose": "Choose the event at the door.",
+        "noEvents": "No events from today on.",
+        "allEvents": "All events"
       },
       "content": {
         "title": "Content",
@@ -1830,7 +1831,9 @@
         },
         "byline": {
           "change": "Change",
-          "anonymous": "Anonymous"
+          "penName": "Pen name",
+          "penNameOptional": "Pen name (optional)",
+          "penNameHint": "Fill this in first if the piece runs under a pen name, then choose the member who wrote it. Readers see only the pen name."
         }
       },
       "pipeline": {

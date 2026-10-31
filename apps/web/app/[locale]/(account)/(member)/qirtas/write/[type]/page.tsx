@@ -1,5 +1,6 @@
+import { journal } from "@repo/sal-data";
 import { notFound } from "next/navigation";
-import { isWritableType, WriteType } from "@/components/nexus/journal/write";
+import { WriteType } from "@/components/nexus/journal/write";
 import { titleFrom } from "@/lib/nexus/metadata";
 
 export const generateMetadata = titleFrom((t) => t("nexus.journal.title"));
@@ -11,7 +12,7 @@ interface PageProps {
 /** /qirtas/write/<type>: the form for one type. */
 const Page = async ({ params }: PageProps) => {
   const { type } = await params;
-  if (!isWritableType(type)) {
+  if (!journal.isWritableType(type)) {
     notFound();
   }
   return <WriteType type={type} />;

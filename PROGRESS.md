@@ -15,8 +15,11 @@ Branch: `claude/new-session-qosn60`.
 - [x] The Diwan's Qirtas: Newsroom by section (Next Stop in Video,
   puzzles in Games), Review, Editions, Awards, Ads, each a page.
 - [x] Awards, never Prizes; the names are confirmed (setting removed).
-- [x] Judges and bylines picked from the register; Anonymous byline and
-  the author's Anonymous choice; names follow the profile.
+- [x] Judges and bylines picked from the register (`journal.byline_for`);
+  pen names in place of Anonymous; names follow the profile.
+- [x] Fixed: `/qirtas/write/<type>` never loaded (the page called a
+  client function on the server); the Diwan's byline lists read a hidden
+  column (403).
 - [x] One name per language (migration `20261101000100`): sign-up,
   welcome, Profile, the invite email.
 - [x] Paths, never `?tab`: Diwan tabs, months, programs, requests,
@@ -1857,5 +1860,5 @@ Written 2026-10-25 (the brand, Version 1):
   `nexus.admin.journal.{contributor,byline}.*`, `web.productions.*`,
   `web.search.groups.*`, `web.about.{hubTitle,hub}`,
   `nexus.setup.name.*`, `nexus.admin.notion.mirror`, `nexus.nav.templates`,
-  and in the database the
-  standing call «قرطاس طوال العام» and the byline «مجهول».
+  `nexus.admin.journal.byline.penName*`, and in the database the
+  standing call «قرطاس طوال العام».

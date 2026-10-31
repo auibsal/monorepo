@@ -217,10 +217,10 @@ Qirtas, unlike a program, may have several documents:
 - **The Library has two shelves:** Society documents, and Website policies (terms of use, accessibility and the privacy page).
 
 ## 8. Qirtas, one door (decided Oct 31)
-- **One door for members.** Everything a member sends, in every section, goes through auibsal.org/qirtas/write and is read blind. Edition calls (Letters and Gallery, two a year) stay; beside them, "Qirtas, all year" takes every section and never closes.
+- **One door for members.** Everything a member sends, in every section, goes through auibsal.org/qirtas/write and is read blind. Members can send work to Qirtas at any time ("Qirtas, all year", every section, never closes); only the printed Editions take work at set times (their calls, Letters and Gallery, two a year).
 - **The newsroom is for staff.** The masthead writes and publishes there directly, one page per section: News, Voices, Letters, Gallery, Video (with Next Stop) and Games. Only features get their own pages: Review, Editions, Awards and Ads.
 - **Awards, never Prizes.** The Qirtas Awards: the Mutanabbi Award and the Tabari, Jahiz, Nazik, Wasiti and Ibn al-Haytham Awards. The names are confirmed.
-- **People are chosen, not typed.** Judges, bylines and anyone else the platform names are picked from the register, and their names follow their profile. A byline is a member (or a pen name they chose) or Anonymous; an author may choose Anonymous when sending work.
+- **People are chosen, not typed.** Judges, bylines and anyone else the platform names are picked from the register, and their names follow their profile. A byline is a member, under their own name or a pen name; an author may choose a pen name when sending work. There is no Anonymous byline.
 - **One name per language.** A member has one full name in English and one in Arabic; no separate first and last names.
 - **Addresses, not queries.** Every view has its own address: /events/2026-11, /company/<production>, /search/<words>, each Diwan tab its own page.
 - **The About page** is the hub for the Society's pages: the Council, the Library, Partners, Contact, the press kit and Verify.

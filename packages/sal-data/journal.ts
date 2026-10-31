@@ -101,9 +101,15 @@ export const closedCategories: readonly Category[] = ["six_words"];
 export const sendableCategories = (desk: Desk) =>
   deskCategories(desk).filter((c) => !closedCategories.includes(c));
 
+/** Every type a member can send, at /qirtas/write/<type>. */
+export const writableTypes = desks.flatMap(sendableCategories);
+
+export const isWritableType = (value: string): value is Category =>
+  (writableTypes as readonly string[]).includes(value);
+
 /**
- * The newsroom (always open: News, Voices, Video, Games) and the Edition
- * (Letters and Gallery, open only during a call).
+ * The sections whose work may also answer an Edition call (Letters and
+ * Gallery, while a call is open), and the rest.
  */
 export const newsroomDesks = desks.filter((d) => !isEditionDesk(d));
 export const editionDesks = desks.filter((d) => isEditionDesk(d));
@@ -230,8 +236,6 @@ export const MAX_FILE_BYTES = 25 * 1024 * 1024;
 
 export const submissionSchema = z
   .object({
-    /** Publish without the author's name: the byline reads Anonymous. */
-    anonymous: z.boolean().optional(),
     body_html: z.string().max(200_000).optional(),
     /**
      * An Edition call (Letters, Gallery); without one the work goes to the

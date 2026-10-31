@@ -5,6 +5,7 @@ import {
   event,
   member,
   PASSWORD,
+  president,
   universityDate,
 } from "./fixtures";
 
@@ -37,8 +38,9 @@ export default async function globalSetup() {
   const memberId = await ensureUser(member.email, member.name);
   const editorId = await ensureUser(editor.email, editor.name);
   const editor2Id = await ensureUser(editor2.email, editor2.name);
+  const presidentId = await ensureUser(president.email, president.name);
 
-  for (const id of [memberId, editorId, editor2Id]) {
+  for (const id of [memberId, editorId, editor2Id, presidentId]) {
     const versions = await db
       .schema("core")
       .from("settings")
@@ -81,10 +83,39 @@ export default async function globalSetup() {
         { role: "tech_admin", scope_type: "global", user_id: editorId },
         // Waraq's News desk (journal.edit.news), for the newsroom journey.
         { role: "news_editor", scope_type: "global", user_id: editorId },
+        // What's on (events.manage), for the door.
+        { role: "events_lead", scope_type: "global", user_id: editorId },
         { role: "tech_admin", scope_type: "global", user_id: editor2Id },
       ],
       { ignoreDuplicates: true }
     );
+  // The co-editing journey's officers (minutes are theirs alone). Their
+  // roles need two-step sign-in, which the journey sets up afresh each run.
+  for (const [userId, role] of [
+    [presidentId, "president"],
+    [editor2Id, "general_secretary"],
+  ] as const) {
+    const held = await db
+      .schema("access")
+      .from("role_assignments")
+      .select("id")
+      .eq("user_id", userId)
+      .eq("role", role)
+      .maybeSingle();
+    if (!held.data) {
+      const given = await db
+        .schema("access")
+        .from("role_assignments")
+        .insert({ role, scope_type: "global", user_id: userId });
+      if (given.error) {
+        throw given.error;
+      }
+    }
+    const factors = await db.auth.admin.mfa.listFactors({ userId });
+    for (const factor of factors.data?.factors ?? []) {
+      await db.auth.admin.mfa.deleteFactor({ id: factor.id, userId });
+    }
+  }
 
   const start = new Date(Date.now() + 5 * 86_400_000);
   await db.schema("events").from("events").upsert(
