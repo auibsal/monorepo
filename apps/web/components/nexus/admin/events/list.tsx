@@ -1,38 +1,29 @@
 "use client";
 
 import { useAuth } from "@repo/auth/provider";
-import {
-  Tabs,
-  TabsList,
-  TabsTrigger,
-} from "@repo/design-system/components/ui/tabs";
 import type { Locale } from "@repo/internationalization";
 import {
   formatClock,
   formatLongDate,
   formatNumber,
 } from "@repo/internationalization/format";
+import { hasPermissionAnywhere } from "@repo/rbac";
 import { localized, unwrap } from "@repo/sal-data";
 import { useQuery } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
-import { useState } from "react";
 import { Link } from "@/lib/nexus/navigation";
+import { useGrants } from "@/lib/nexus/queries";
+import { DiwanSection } from "../../page";
 import { ErrorState, SectionSpinner } from "../../states";
 import { AdminHeading, type Column, DataTable } from "../kit";
 import { ProgramLinks } from "../programmes/admin";
 import { adminEventColumns, useProgrammeOptions } from "./data";
 
-type Tab = "upcoming" | "past" | "drafts";
+type Kind = "upcoming" | "past" | "drafts";
 
-export const EventsList = () => {
-  const t = useTranslations("nexus.admin.events");
-  const ts = useTranslations("nexus.admin.kit.statuses");
-  const locale = useLocale() as Locale;
+const useEventRows = (tab: Kind) => {
   const { supabase } = useAuth();
-  const programmes = useProgrammeOptions();
-  const [tab, setTab] = useState<Tab>("upcoming");
-
-  const events = useQuery({
+  return useQuery({
     queryFn: async () => {
       const now = new Date().toISOString();
       let query = supabase
@@ -72,8 +63,25 @@ export const EventsList = () => {
     },
     queryKey: ["admin", "events", tab],
   });
+};
 
-  type Row = NonNullable<typeof events.data>[number];
+type Row = NonNullable<ReturnType<typeof useEventRows>["data"]>[number];
+
+/**
+ * What's on in the Diwan: what's coming, then drafts, then what's past,
+ * one page (no tabs held in the page's state).
+ */
+export const EventsList = () => {
+  const t = useTranslations("nexus.admin.events");
+  const ts = useTranslations("nexus.admin.kit.statuses");
+  const locale = useLocale() as Locale;
+  const grants = useGrants();
+  const programmes = useProgrammeOptions();
+  const upcoming = useEventRows("upcoming");
+  const drafts = useEventRows("drafts");
+  const past = useEventRows("past");
+  const manages = hasPermissionAnywhere(grants.data, "events.manage");
+
   const columns: Column<Row>[] = [
     {
       cell: (e) => (
@@ -134,45 +142,61 @@ export const EventsList = () => {
             {t("checkIn")}
           </Link>
         ) : null,
-      header: "",
+      header: t("columns.door"),
       key: "check-in",
     },
   ];
 
+  const table = (
+    query: ReturnType<typeof useEventRows>,
+    caption: string,
+    empty: string
+  ) => (
+    <>
+      {query.isPending ? <SectionSpinner /> : null}
+      {query.isError ? <ErrorState onRetry={() => query.refetch()} /> : null}
+      {query.data ? (
+        <DataTable
+          caption={caption}
+          columns={columns}
+          empty={empty}
+          rowKey={(e) => e.id}
+          rows={query.data}
+        />
+      ) : null}
+    </>
+  );
+
   return (
-    <div className="grid gap-6">
+    <div className="grid gap-10">
       <AdminHeading
         actions={
-          <Link
-            className="inline-flex h-8 items-center bg-accent px-3 font-medium text-on-accent text-sm hover:bg-accent/90"
-            href="/events/new"
-          >
-            {t("new")}
-          </Link>
+          manages ? (
+            <Link
+              className="inline-flex h-8 items-center bg-accent px-3 font-medium text-on-accent text-sm hover:bg-accent/90"
+              href="/events/new"
+            >
+              {t("new")}
+            </Link>
+          ) : null
         }
         title={t("title")}
       >
         {t("lede")}
       </AdminHeading>
       <ProgramLinks />
-      <Tabs onValueChange={(v) => setTab(v as Tab)} value={tab}>
-        <TabsList>
-          <TabsTrigger value="upcoming">{t("tabs.upcoming")}</TabsTrigger>
-          <TabsTrigger value="past">{t("tabs.past")}</TabsTrigger>
-          <TabsTrigger value="drafts">{t("tabs.drafts")}</TabsTrigger>
-        </TabsList>
-      </Tabs>
-      {events.isPending ? <SectionSpinner /> : null}
-      {events.isError ? <ErrorState onRetry={() => events.refetch()} /> : null}
-      {events.data ? (
-        <DataTable
-          caption={t("title")}
-          columns={columns}
-          rowKey={(e) => e.id}
-          rows={events.data}
-        />
+      <div className="grid gap-4">
+        {table(upcoming, t("tabs.upcoming"), t("noUpcoming"))}
+        <p className="type-caption">{t("campusNote")}</p>
+      </div>
+      {drafts.data && drafts.data.length > 0 ? (
+        <DiwanSection id="drafts" title={t("tabs.drafts")}>
+          {table(drafts, t("tabs.drafts"), "")}
+        </DiwanSection>
       ) : null}
-      <p className="type-caption">{t("campusNote")}</p>
+      <DiwanSection id="past" title={t("tabs.past")}>
+        {table(past, t("tabs.past"), t("noPast"))}
+      </DiwanSection>
     </div>
   );
 };

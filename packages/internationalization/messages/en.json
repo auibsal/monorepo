@@ -322,11 +322,11 @@
       },
       "events": {
         "title": "My next events",
-        "empty": "You haven't RSVPed to anything yet.",
+        "empty": "You haven't booked anything yet.",
         "browse": "Browse events",
         "ticket": "Ticket",
         "waitlist": "Waitlist place {position}",
-        "cancel": "Cancel RSVP",
+        "cancel": "Cancel booking",
         "cancelConfirm": "Cancel your place at {event}? Someone on the waitlist will get it.",
         "addToCalendar": "Add to calendar"
       },
@@ -354,7 +354,7 @@
       },
       "calendar": {
         "title": "My calendar feed",
-        "description": "A private link with your RSVPs, every SAL event and the AUIB campus calendar. Subscribe in Apple Calendar, Google Calendar or Outlook.",
+        "description": "A private link with your bookings, every SAL event and the AUIB campus calendar. Subscribe in Apple Calendar, Google Calendar or Outlook.",
         "copy": "Copy link",
         "reset": "Reset link",
         "resetConfirm": "The old link will stop working in every calendar that uses it."
@@ -695,7 +695,7 @@
       "bioCount": "{count} of 50 words",
       "delete": {
         "title": "Delete account",
-        "description": "Deletes your account, your RSVPs and your profile. Published Qirtas pieces stay under the agreement you signed.",
+        "description": "Deletes your account, your bookings and your profile. Published Qirtas pieces stay under the agreement you signed.",
         "phrase": "delete my account",
         "prompt": "Type “{phrase}” to confirm.",
         "submit": "Delete my account",
@@ -737,7 +737,7 @@
       },
       "telegram": {
         "title": "Telegram",
-        "description": "Link Telegram and Hudhud, the Society's bot, brings your notices there too: reminders, RSVPs and Qirtas decisions. You can RSVP from Telegram as well.",
+        "description": "Link Telegram and Hudhud, the Society's bot, brings your notices there too: reminders, bookings and Qirtas decisions. You can book from Telegram as well.",
         "connect": "Connect Telegram",
         "open": "Open Telegram to finish",
         "codeHint": "The link works once, for 15 minutes.",
@@ -759,7 +759,7 @@
     },
     "admin": {
       "title": "Administration",
-      "noAccess": "Your roles don't include this section. Ask the President or the General Secretary if you need it.",
+      "noAccess": "This page belongs to a role you don't hold. Ask the President or the General Secretary if you need it.",
       "kit": {
         "search": "Search",
         "searchPlaceholder": "Name or email",
@@ -800,7 +800,7 @@
         "imageAlt": "Current image",
         "noImageNote": "Use our own photos, taken with consent. No identifiable children, no stock images.",
         "slug": "Web address (slug)",
-        "slugHint": "Lowercase letters, numbers and hyphens, e.g. charter-night.",
+        "slugHint": "Lowercase letters, numbers and hyphens, e.g. the-return.",
         "programme": "Program",
         "noProgramme": "Society-wide (no program)",
         "status": "Status",
@@ -824,7 +824,7 @@
         "members": "Members",
         "votingMembers": "Voting Members",
         "verificationPending": "Waiting for verification",
-        "upcomingRsvps": "RSVPs to upcoming events",
+        "upcomingRsvps": "Bookings for upcoming events",
         "openSubmissions": "Open Qirtas submissions",
         "campaigns": "Funds counted, active campaigns",
         "counted": "{amount} counted",
@@ -852,11 +852,15 @@
         "activity": "What happened",
         "allActivity": "Everything that happened",
         "connected": "Connected",
-        "connectedLede": "The team works in Notion and talks through Hudhud on Telegram. Both keep in step with the Diwan on their own; this is where to check them."
+        "connectedLede": "The team works in Notion and talks through Hudhud on Telegram. Both keep in step with the Diwan on their own; this is where to check them.",
+        "editing": "Pieces in editing",
+        "editingDetail": "Pieces on your sections that aren't published yet.",
+        "editingNone": "Nothing is waiting in your sections.",
+        "openNewsroom": "Open the newsroom"
       },
       "members": {
         "title": "Members",
-        "lede": "Everyone with an account. Applicants from other email domains wait in the verification queue.",
+        "lede": "Everyone with an account: members, the Society's guests and partners' people.",
         "queue": "Verification queue ({count})",
         "columns": {
           "name": "Name",
@@ -910,7 +914,8 @@
           "end": "End",
           "endConfirm": "End {name}'s guest membership? Their card stops.",
           "invite": "Invite"
-        }
+        },
+        "notAMember": "Guest or partner"
       },
       "member": {
         "title": "Member",
@@ -1000,7 +1005,7 @@
       },
       "events": {
         "title": "Events",
-        "lede": "Events with capacity, a waitlist and QR check-in, written in English and Arabic for each site. Members-only events never appear on the public site.",
+        "lede": "Every event and program session: what's coming, drafts and what's past. Open one to edit it, see who booked and run its door.",
         "new": "New event",
         "tabs": {
           "upcoming": "Upcoming",
@@ -1012,14 +1017,17 @@
           "when": "When",
           "programme": "Program",
           "access": "Who",
-          "rsvps": "RSVPs",
-          "status": "Status"
+          "rsvps": "Bookings",
+          "status": "Status",
+          "door": "Door"
         },
         "membersOnly": "Members only",
         "public": "Public",
         "rsvpCount": "{confirmed} of {capacity}",
         "checkIn": "Check-in",
-        "campusNote": "AUIB campus events are imported every hour from the calendar URL in Settings."
+        "campusNote": "AUIB's own dates come in every hour from the University's public calendar.",
+        "noUpcoming": "Nothing coming is published.",
+        "noPast": "No past events yet."
       },
       "event": {
         "newTitle": "New event",
@@ -1044,7 +1052,7 @@
         "publish": "Publish",
         "publishConfirm": "Publish this event? It appears at once on the site (or to members, if members only) and in calendar feeds.",
         "cancelEvent": "Cancel event",
-        "cancelConfirm": "Cancel this event? It stays listed as canceled; tell people who RSVPed.",
+        "cancelConfirm": "Cancel this event? It stays listed as canceled; tell people who booked.",
         "deleteDraft": "Delete draft",
         "deleteConfirm": "Delete this draft for good?",
         "errors": {
@@ -1055,7 +1063,7 @@
           "questions": "Each question needs its English and Arabic wording."
         },
         "attendance": "Attendance",
-        "rsvps": "RSVPs ({count})",
+        "rsvps": "Bookings ({count})",
         "waitlist": "Waitlist ({count})",
         "checkedIn": "Checked in",
         "answers": "Answers",
@@ -1069,7 +1077,7 @@
         "findPerson": "Find a member",
         "findHint": "Type at least two letters of a name or the start of an email.",
         "person": "Member",
-        "rsvpedAt": "RSVPed",
+        "rsvpedAt": "Booked",
         "serviceHours": "Hours {name} gave",
         "recordHours": "Record hours",
         "hoursRecorded": "Hours recorded",
@@ -1102,8 +1110,8 @@
         "invalidTicket": "That ticket isn't valid for this event.",
         "unknownCode": "That isn't a SAL ticket or membership card.",
         "lookup": "Look up by name or email",
-        "hasRsvp": "Has an RSVP",
-        "noRsvp": "No RSVP",
+        "hasRsvp": "Has a booking",
+        "noRsvp": "No booking",
         "checkInPerson": "Check in",
         "count": "{count} checked in",
         "noResults": "No member found.",
@@ -1136,7 +1144,7 @@
       },
       "ads": {
         "title": "Ads",
-        "lede": "Ads in Qirtas, shown on auibsal.org to visitors who are not signed in. Society ads promote events, open calls and joining SAL; sponsor ads come from partners whose signed memorandum grants advertising. Google AdSense fills the spaces no running ad takes.",
+        "lede": "Ads in Qirtas, shown only to visitors who aren't signed in: the Society's own, and sponsors' where a memorandum allows them. Where no ad runs, Google fills the space.",
         "new": {
           "society": "New Society ad",
           "sponsor": "New sponsor ad"
@@ -1744,7 +1752,7 @@
           "category": "Category",
           "language": "Language",
           "contributor": "Contributor",
-          "membersOnly": "Members only (listed publicly with a sign-in prompt; the text stays private)",
+          "membersOnly": "For members (listed publicly; only signed-in members read the text)",
           "sort": "Order in the issue",
           "image": "Artwork or photograph",
           "issue": "Issue",
@@ -1777,7 +1785,8 @@
           "change": "Change",
           "penName": "Pen name",
           "penNameOptional": "Pen name (optional)",
-          "penNameHint": "Fill this in first if the piece runs under a pen name, then choose the member who wrote it. Readers see only the pen name."
+          "penNameHint": "Only if the piece runs under a pen name. Readers see only the pen name.",
+          "use": "Use this byline"
         }
       },
       "pipeline": {
@@ -2478,7 +2487,7 @@
         "allStages": "All stages",
         "sortedBy": "Pieces in order of stage (work in progress first), then date",
         "newPiece": "New staff piece",
-        "noPieces": "No pieces here yet. Accepted work and staff pieces appear here.",
+        "noPieces": "No pieces in this section yet. Write one with New staff piece; work members send appears above, read blind.",
         "newPieceLede": "A piece written by the newsroom, in any section. It needs no submission and no Publication Agreement.",
         "choose": "Choose…",
         "noEdition": "No Edition",
@@ -2660,7 +2669,8 @@
           "deleteConfirm": "Delete this puzzle? Readers' saved progress on it is lost."
         },
         "sections": "Sections",
-        "calls": "Calls"
+        "calls": "Calls",
+        "noEditions": "No Editions yet. Start one with New Edition."
       },
       "prizes": {
         "lede": "The Qirtas Awards: for each round, the judges and the shortlist of each award, and the winners. The public page shows a shortlist from its day and the winners from theirs.",
@@ -2686,7 +2696,8 @@
         "slug": "Address",
         "shortlistOn": "Shortlists announced",
         "awardedOn": "Awards awarded",
-        "addRound": "Add the round"
+        "addRound": "Add the round",
+        "title": "The Qirtas Awards"
       },
       "needs": {
         "lede": "What this program needs from Student Life: the item, how many, by when and what for. No costs. The General Secretary sends each request and records what was provided.",
@@ -2879,8 +2890,11 @@
           "membership_activity_records": "an activity record",
           "governance_partner_invitations": "an invitation",
           "membership_guests": "a guest of the Society"
-        }
-      }
+        },
+        "roleFor": "{role} for {person}"
+      },
+      "noAccessTitle": "Not in your roles",
+      "noAccessGo": "Go to what you can open here"
     },
     "editor": {
       "toolbar": "Formatting",
@@ -4536,7 +4550,7 @@
         "signIn": "You sign in with your email address. The sign-in cookie is shared across auibsal.org and its subdomains, and is used only to keep you signed in.",
         "storage": "Member records are stored with Supabase in the European Union (Frankfurt). Who can see each record is enforced in the database itself, by role.",
         "email": "Email from the platform is sent by Resend from the European Union (Ireland). Links in it are not tracked.",
-        "hosting": "The website and the API are hosted on Vercel.",
+        "hosting": "The website is hosted on Vercel.",
         "analytics": "This website uses no analytics or advertising cookies.",
         "delete": "You can delete your account under Membership, Settings.",
         "analyticsOn": "This website counts visits with Google Analytics 4, through Google Tag Manager served from auibsal.org. Analytics cookies are set only if you allow them (Cookie settings, at the foot of every page).",

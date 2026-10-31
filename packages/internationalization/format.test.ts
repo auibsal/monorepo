@@ -32,7 +32,9 @@ describe("regional formatting", () => {
   test("formats dates in Baghdad time with Iraqi month names", () => {
     expect(formatDate(lateEvening, "ar", "long")).toBe("4 تشرين الأول 2026");
     expect(formatDate(lateEvening, "en", "long")).toBe("4 October 2026");
-    expect(formatDateTime(lateEvening, "en")).toContain("00:30");
+    expect(formatDateTime(lateEvening, "en")).toBe(
+      "Sunday, October 4, 2026, 12:30 AM"
+    );
   });
 
   test("formats IQD without fractional digits", () => {

@@ -168,9 +168,9 @@ export const AdsAdmin = () => {
     <div className="grid gap-8">
       <AdminHeading title={t("title")}>{t("lede")}</AdminHeading>
       <div className="flex flex-wrap gap-2">
-        {kinds.map((kind) => (
+        {kinds.map((kind, index) => (
           <Link
-            className={buttonLink}
+            className={index === 0 ? buttonLink : "link self-center"}
             href={`/qirtas/ads/new/${kind}`}
             key={kind}
           >
@@ -180,18 +180,7 @@ export const AdsAdmin = () => {
       </div>
       {ads.isError ? <ErrorState onRetry={() => ads.refetch()} /> : null}
       {ads.data && ads.data.length === 0 ? (
-        <EmptyLine
-          action={
-            kinds[0]
-              ? {
-                  href: `/qirtas/ads/new/${kinds[0]}`,
-                  label: t(`new.${kinds[0]}`),
-                }
-              : undefined
-          }
-        >
-          {t("none")}
-        </EmptyLine>
+        <EmptyLine>{t("none")}</EmptyLine>
       ) : null}
       {ads.data && ads.data.length > 0 ? (
         <DataTable columns={columns} rowKey={(ad) => ad.id} rows={ads.data} />

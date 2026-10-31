@@ -12,6 +12,7 @@ import { type FormEvent, useState } from "react";
 import { DiwanSection, RowList } from "../../page";
 import { EmptyLine, SectionSpinner } from "../../states";
 import {
+  AdminHeading,
   BilingualField,
   ConfirmAction,
   ErrorLine,
@@ -67,7 +68,7 @@ export const Prizes = () => {
 
   return (
     <div className="grid gap-10">
-      <p className="type-caption">{t("lede")}</p>
+      <AdminHeading title={t("title")}>{t("lede")}</AdminHeading>
       {rounds.data.length > 1 ? (
         <Field label={t("round")}>
           {(id) => (

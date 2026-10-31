@@ -373,12 +373,15 @@ export const ConfirmAction = ({
 interface SaveButtonProps {
   readonly disabled?: boolean;
   readonly pending: boolean;
+  /** Beside the page's one accent action (Publish), Save steps back. */
+  readonly quiet?: boolean;
   readonly success?: boolean;
 }
 
 export const SaveButton = ({
   disabled = false,
   pending,
+  quiet = false,
   success = false,
 }: SaveButtonProps) => {
   const t = useTranslations("common");
@@ -392,7 +395,9 @@ export const SaveButton = ({
     <Button
       className="justify-self-start"
       disabled={disabled || pending}
+      size={quiet ? "sm" : "default"}
       type="submit"
+      variant={quiet ? "outline" : "default"}
     >
       {label}
     </Button>

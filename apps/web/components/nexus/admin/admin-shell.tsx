@@ -15,6 +15,8 @@ import { Link, usePathname } from "@/lib/nexus/navigation";
 import { useGrants } from "@/lib/nexus/queries";
 import { TwoStepPanel, useTwoStep } from "../auth/two-step";
 import { SectionSpinner } from "../states";
+import { AdminHeading } from "./kit";
+import { allowedViews, viewOfPath } from "./section-views";
 
 /** The admin modules the member's grants show (RLS still decides the rows). */
 export const useVisibleModules = () => {
@@ -27,15 +29,17 @@ export const useVisibleModules = () => {
   return { grants, visible };
 };
 
-/** The sections this officer opens: the Desk, then any with a module. */
+/**
+ * The sections this officer opens, each linked to the first of its views
+ * their roles include: a section never opens on a page they can't use.
+ */
 export const useVisibleSections = () => {
   const { grants, visible } = useVisibleModules();
   const keys = new Set<string>(visible.map((m) => m.key));
-  const sections = adminSections.filter((section) =>
-    section.key === "desk"
-      ? visible.length > 0
-      : section.modules.some((module) => keys.has(module))
-  );
+  const sections = adminSections.flatMap((section) => {
+    const [first] = allowedViews(section.key, keys, grants.data);
+    return first ? [{ ...section, path: first.href }] : [];
+  });
   return { grants, sections };
 };
 
@@ -204,13 +208,37 @@ export const RequireModule = ({
   module: AdminModule;
 }) => {
   const t = useTranslations("nexus.admin");
+  const pathname = usePathname();
   const { grants, visible } = useVisibleModules();
+  const { sections } = useVisibleSections();
 
   if (grants.isPending) {
     return <SectionSpinner />;
   }
-  if (!visible.some((m) => m.key === module)) {
-    return <p className="type-body text-text-secondary">{t("noAccess")}</p>;
+  const keys = new Set<string>(visible.map((m) => m.key));
+  // A section's own view may ask for more than its module (Editions,
+  // Awards, Insights): the same rule as its tab.
+  const view = viewOfPath(pathname);
+  const viewOpens =
+    !view ||
+    allowedViews(sectionOfPath(pathname), keys, grants.data).some(
+      (v) => v.href === view.href
+    );
+  if (!(keys.has(module) && viewOpens)) {
+    const here = sections.find((s) => s.key === sectionOfPath(pathname));
+    const elsewhere = here ?? sections[0];
+    return (
+      <div className="grid gap-6">
+        <AdminHeading title={t("noAccessTitle")}>{t("noAccess")}</AdminHeading>
+        {elsewhere ? (
+          <p>
+            <Link className="link" href={elsewhere.path}>
+              {t("noAccessGo")}
+            </Link>
+          </p>
+        ) : null}
+      </div>
+    );
   }
   return children;
 };

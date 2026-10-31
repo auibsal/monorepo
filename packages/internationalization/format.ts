@@ -48,15 +48,12 @@ export const formatDate = (
     timeZone: TIME_ZONE,
   }).format(toDate(value));
 
+/** "Sunday, November 1, 2026, 6:00 PM": the house date with its time. */
 export const formatDateTime = (
   value: DateInput,
   locale: Locale = defaultLocale
 ) =>
-  new Intl.DateTimeFormat(intlLocale(locale), {
-    dateStyle: "medium",
-    timeStyle: "short",
-    timeZone: TIME_ZONE,
-  }).format(toDate(value));
+  `${formatLongDate(value, locale, true)}${locale === "ar" ? "، " : ", "}${formatClock(value, locale)}`;
 
 export const formatTime = (value: DateInput, locale: Locale = defaultLocale) =>
   new Intl.DateTimeFormat(intlLocale(locale), {

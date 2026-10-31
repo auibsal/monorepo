@@ -74,6 +74,7 @@ export const BylinePicker = ({
   const bylines = useBylines();
   const choose = useBylineFor();
   const [penName, setPenName] = useState("");
+  const [person, setPerson] = useState<Person | null>(null);
   const current = bylines.data?.find((c) => c.id === value);
 
   if (current) {
@@ -97,38 +98,51 @@ export const BylinePicker = ({
       </div>
     );
   }
+  const use = () => {
+    if (person) {
+      choose.mutate(
+        { penName, person },
+        {
+          onSuccess: (id) => {
+            if (id) {
+              setPenName("");
+              setPerson(null);
+              onChange(id);
+            }
+          },
+        }
+      );
+    }
+  };
+  // The member first, then (if the piece runs under one) their pen name.
   return (
     <div className="grid gap-3">
-      <Field hint={t("penNameHint")} label={t("penNameOptional")}>
-        {(id) => (
-          <Input
-            className="max-w-sm"
-            id={id}
-            maxLength={80}
-            onChange={(e) => setPenName(e.target.value)}
-            value={penName}
-          />
-        )}
-      </Field>
-      <MemberPicker
-        label={label}
-        onChange={(person) => {
-          if (person) {
-            choose.mutate(
-              { penName, person },
-              {
-                onSuccess: (id) => {
-                  if (id) {
-                    setPenName("");
-                    onChange(id);
-                  }
-                },
-              }
-            );
-          }
-        }}
-        value={null}
-      />
+      <MemberPicker label={label} onChange={setPerson} value={person} />
+      {person ? (
+        <>
+          <Field hint={t("penNameHint")} label={t("penNameOptional")}>
+            {(id) => (
+              <Input
+                className="max-w-sm"
+                id={id}
+                maxLength={80}
+                onChange={(e) => setPenName(e.target.value)}
+                value={penName}
+              />
+            )}
+          </Field>
+          <Button
+            className="justify-self-start"
+            disabled={choose.isPending}
+            onClick={use}
+            size="sm"
+            type="button"
+            variant="outline"
+          >
+            {t("use")}
+          </Button>
+        </>
+      ) : null}
       <ErrorLine error={choose.error} />
     </div>
   );
