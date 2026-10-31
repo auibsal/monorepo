@@ -670,7 +670,14 @@
         "closed": "Qirtas is not taking this type of work right now.",
         "where": "Where",
         "whereHint": "The printed Edition, while its call is open, or Qirtas online.",
-        "send": "Send to Qirtas"
+        "send": "Send to Qirtas",
+        "manuscript": {
+          "reading": "Reading your file…",
+          "read": "The text of {name} is in the editor above. Check it; the file goes with your work as the original.",
+          "offer": "The text of {name} can replace what you wrote.",
+          "use": "Use it",
+          "unreadable": "{name} has no text we can read (a scan?). It goes with your work as it is."
+        }
       }
     },
     "profile": {
@@ -1094,9 +1101,7 @@
         "count": "{count} checked in",
         "noResults": "No member found.",
         "cardNotLive": "This card's code isn't live (a screenshot?). Ask to see the card on the member's own phone.",
-        "choose": "Choose the event at the door.",
-        "noEvents": "No events from today on.",
-        "allEvents": "All events"
+        "otherDoors": "Other doors"
       },
       "content": {
         "title": "Content",
@@ -1711,6 +1716,14 @@
           "notConnected": "Set up but not connected to Telegram yet.",
           "connect": "Connect the bot to Telegram",
           "reconnect": "Connect again (after changing commands or the secret)"
+        },
+        "email": {
+          "title": "Email",
+          "lede": "The Society's own emails: bookings, Qirtas, the personal address link and the Sunday Paper.",
+          "notConfigured": "Not sending: set {missing} (Supabase → Vault for the secrets).",
+          "stuck": "{count} emails are waiting to be sent.",
+          "flowing": "Emails are going out.",
+          "lastSent": "Last sent {when}."
         }
       },
       "journal": {
@@ -1847,8 +1860,7 @@
           "board": "Board",
           "selection": "Selection",
           "decided": "Decided",
-          "flagged": "Flagged",
-          "calls": "Calls"
+          "flagged": "Flagged"
         },
         "columns": {
           "blindId": "Blind id",
@@ -2704,7 +2716,8 @@
           "delete": "Delete",
           "deleteConfirm": "Delete this puzzle? Readers' saved progress on it is lost."
         },
-        "sections": "Sections"
+        "sections": "Sections",
+        "calls": "Calls"
       },
       "prizes": {
         "lede": "The Qirtas Awards: for each round, the judges and the shortlist of each award, and the winners. The public page shows a shortlist from its day and the winners from theirs.",
@@ -2775,10 +2788,8 @@
         "schedule": "Schedule",
         "onboardingChecklist": "Onboarding checklist",
         "post": "Post a role",
-        "owner": "Who picks",
-        "ownerHint": "The role's owner picks the person; Membership runs the rest.",
         "program": "Program",
-        "roleTitle": "Role",
+        "roleTitle": "Title on the Callboard",
         "roleBody": "What it involves",
         "closes": "Applications close",
         "owners": {
@@ -2804,7 +2815,10 @@
           "offered": "Offer made",
           "onboarded": "Onboarded",
           "withdrawn": "Withdraw"
-        }
+        },
+        "role": "Role",
+        "roleHint": "Every role the Society has, by who picks the person. Whoever is onboarded holds it.",
+        "roleTitleHint": "Leave empty to use the role's name, or give its own title (\"Salon Host\")."
       },
       "sections": {
         "label": "The Diwan’s sections",
@@ -2817,7 +2831,6 @@
         "tabs": {
           "calendar": "Calendar",
           "programs": "Programs",
-          "door": "The door",
           "events": "What’s on",
           "members": "Members",
           "verification": "Verification",
@@ -3892,7 +3905,6 @@
       "noticesLine": "Email, your phone and Telegram: how the Society reaches you.",
       "noticesLede": "Every way the Society reaches you, on one page.",
       "noticesEmail": "Email",
-      "noticesEmailLine": "Whether optional email reaches you, the Sunday Paper and reminders, is set in",
       "declarations": "Conflict of interest",
       "declarationsLine": "For officers: what you declare each semester, and anything new."
     },

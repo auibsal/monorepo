@@ -22,7 +22,6 @@ import {
   SelectInput,
 } from "../kit";
 import { Board, Decided, Selection } from "./board";
-import { Calls } from "./calls";
 import {
   type Category,
   type PipelineIssue,
@@ -150,8 +149,7 @@ type TabKey =
   | "board"
   | "selection"
   | "decided"
-  | "flagged"
-  | "calls";
+  | "flagged";
 
 const tabsFor = (issue: PipelineIssue): TabKey[] => {
   const editor = issue.can_manage || issue.can_decide;
@@ -163,7 +161,6 @@ const tabsFor = (issue: PipelineIssue): TabKey[] => {
     ["selection", editor],
     ["decided", editor || issue.can_identity],
     ["flagged", issue.can_advise],
-    ["calls", issue.can_manage],
   ];
   return tabs.filter(([, shown]) => shown).map(([key]) => key);
 };
@@ -182,10 +179,8 @@ const TabBody = ({ issue, tab }: { issue: PipelineIssue; tab: TabKey }) => {
       return <Selection canDecide={issue.can_decide} issueId={issue.id} />;
     case "decided":
       return <Decided issueId={issue.id} />;
-    case "flagged":
-      return <Flagged issueId={issue.id} />;
     default:
-      return <Calls issueId={issue.id} />;
+      return <Flagged issueId={issue.id} />;
   }
 };
 

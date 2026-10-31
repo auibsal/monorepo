@@ -18,8 +18,10 @@ import { useNotionHandbook, useTeamWorkspace } from "@/lib/nexus/notion";
 import { useGrants } from "@/lib/nexus/queries";
 import { DiwanSection } from "../page";
 import { ErrorState, SectionSpinner } from "../states";
+import { doorPath, useDoorEvents } from "./events/check-in";
 import { AdminHeading } from "./kit";
 import { RecentActivity } from "./system/activity";
+import { EmailDelivery } from "./system/email";
 import { NotionWorkspace } from "./system/notion";
 import { TelegramBot } from "./system/telegram";
 
@@ -192,7 +194,7 @@ const QUICK: readonly {
   readonly permission: Permission;
 }[] = [
   {
-    href: "/events/door",
+    href: "/events",
     icon: "scan-line",
     key: "door",
     permission: "events.checkin",
@@ -226,13 +228,18 @@ const QUICK: readonly {
 const QuickActions = () => {
   const t = useTranslations("nexus.admin.overview.quick");
   const grants = useGrants();
-  const actions = QUICK.filter((action) =>
-    hasPermissionAnywhere(grants.data, action.permission)
+  // The door is today's or the next event's own door; without one ahead,
+  // the action stands aside for the next.
+  const next = useDoorEvents().data?.[0];
+  const actions = QUICK.filter(
+    (action) =>
+      hasPermissionAnywhere(grants.data, action.permission) &&
+      (action.key !== "door" || next)
   ).slice(0, 3);
   return actions.map((action) => (
     <Link
       className="inline-flex items-center gap-1.5 font-medium text-sm hover:text-accent"
-      href={action.href}
+      href={action.key === "door" && next ? doorPath(next) : action.href}
       key={action.key}
     >
       <Icon name={action.icon} />
@@ -368,6 +375,7 @@ export const AdminOverview = () => {
           <p className="type-body">{t("connectedLede")}</p>
           <NotionWorkspace />
           <TelegramBot />
+          <EmailDelivery />
         </DiwanSection>
       ) : null}
     </div>

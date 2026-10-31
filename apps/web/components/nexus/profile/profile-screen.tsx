@@ -30,7 +30,6 @@ export const ProfileScreen = () => {
     camera_shy: false,
     full_name_ar: "",
     full_name_en: "",
-    notify_email: true,
   });
 
   useEffect(() => {
@@ -40,7 +39,6 @@ export const ProfileScreen = () => {
         camera_shy: profile.data.camera_shy,
         full_name_ar: profile.data.full_name_ar ?? "",
         full_name_en: profile.data.full_name_en,
-        notify_email: profile.data.notify_email,
       });
     }
   }, [profile.data]);
@@ -147,18 +145,6 @@ export const ProfileScreen = () => {
             >
               {t("profile.bioCount", { count: formatNumber(words) })}
             </p>
-          </div>
-          <div className="flex items-start gap-3">
-            <Checkbox
-              checked={form.notify_email}
-              id={`${id}-notify`}
-              onCheckedChange={(v) =>
-                setForm((f) => ({ ...f, notify_email: v === true }))
-              }
-            />
-            <Label className="leading-normal" htmlFor={`${id}-notify`}>
-              {t("setup.notifications")}
-            </Label>
           </div>
           <div className="flex items-start gap-3">
             <Checkbox

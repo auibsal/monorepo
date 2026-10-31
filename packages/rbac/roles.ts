@@ -18,6 +18,13 @@ export const roles = {
     nameEn: "Advisory Board",
     permissions: ["journal.advise"],
   },
+  alumni_lead: {
+    defaultScope: "global",
+    isCouncil: false,
+    nameAr: "مسؤول الخريجين",
+    nameEn: "Alumni Lead",
+    permissions: ["library.read"],
+  },
   arabic_editor: {
     defaultScope: "issue",
     isCouncil: false,
@@ -44,11 +51,18 @@ export const roles = {
     nameEn: "Campaign Lead",
     permissions: ["charity.manage", "charity.ledger.write", "library.read"],
   },
+  club_relations_lead: {
+    defaultScope: "global",
+    isCouncil: false,
+    nameAr: "مسؤول العلاقات مع الأندية",
+    nameEn: "Club Relations Lead",
+    permissions: ["library.read"],
+  },
   communications_lead: {
     defaultScope: "issue",
     isCouncil: false,
-    nameAr: "مسؤول التواصل",
-    nameEn: "Communications Lead",
+    nameAr: "مسؤول وسائل التواصل",
+    nameEn: "Social Media Lead",
     permissions: ["content.manage", "library.read"],
   },
   copy_editor: {
@@ -57,6 +71,13 @@ export const roles = {
     nameAr: "رئيس التدقيق",
     nameEn: "Copy Chief",
     permissions: ["journal.copy", "library.read"],
+  },
+  design_lead: {
+    defaultScope: "global",
+    isCouncil: false,
+    nameAr: "مسؤول التصميم",
+    nameEn: "Design Lead",
+    permissions: ["content.manage", "library.read"],
   },
   director: {
     defaultScope: "global",
@@ -98,8 +119,8 @@ export const roles = {
   events_lead: {
     defaultScope: "issue",
     isCouncil: false,
-    nameAr: "مسؤول الفعاليات",
-    nameEn: "Events Lead",
+    nameAr: "منسق الفعاليات",
+    nameEn: "Event Coordinator",
     permissions: ["events.manage", "events.checkin", "library.read"],
   },
   faculty_advisor: {
@@ -196,12 +217,45 @@ export const roles = {
       "library.read",
     ],
   },
+  media_director: {
+    defaultScope: "global",
+    isCouncil: true,
+    nameAr: "مدير الإعلام",
+    nameEn: "Director of Media",
+    permissions: [
+      "content.manage",
+      "events.checkin",
+      "library.read",
+      "library.council",
+    ],
+  },
+  membership_director: {
+    defaultScope: "global",
+    isCouncil: true,
+    nameAr: "مدير العضوية",
+    nameEn: "Director of Membership",
+    permissions: [
+      "members.manage",
+      "members.verify",
+      "certificates.prepare",
+      "events.checkin",
+      "library.read",
+      "library.council",
+    ],
+  },
   news_editor: {
     defaultScope: "global",
     isCouncil: false,
     nameAr: "محرر الأخبار",
     nameEn: "News Editor",
     permissions: ["journal.edit.news", "library.read"],
+  },
+  onboarding_lead: {
+    defaultScope: "global",
+    isCouncil: false,
+    nameAr: "مسؤول الترحيب",
+    nameEn: "Onboarding Lead",
+    permissions: ["events.checkin", "library.read"],
   },
   partnerships_director: {
     defaultScope: "global",
@@ -214,6 +268,13 @@ export const roles = {
       "library.read",
       "library.council",
     ],
+  },
+  photo_video_lead: {
+    defaultScope: "global",
+    isCouncil: false,
+    nameAr: "مسؤول التصوير والفيديو",
+    nameEn: "Photo and Video Lead",
+    permissions: ["content.manage", "events.checkin", "library.read"],
   },
   photographer: {
     defaultScope: "global",
@@ -309,6 +370,13 @@ export const roles = {
     nameEn: "Reader",
     permissions: ["journal.review", "library.read"],
   },
+  records_lead: {
+    defaultScope: "global",
+    isCouncil: false,
+    nameAr: "مسؤول السجلات والتقدير",
+    nameEn: "Records and Recognition Lead",
+    permissions: ["certificates.prepare", "library.read"],
+  },
   reporter: {
     defaultScope: "global",
     isCouncil: false,
@@ -322,6 +390,13 @@ export const roles = {
     nameAr: "محرر القسم",
     nameEn: "Section Editor",
     permissions: ["journal.manage", "library.read"],
+  },
+  stage_manager: {
+    defaultScope: "global",
+    isCouncil: false,
+    nameAr: "مدير الخشبة",
+    nameEn: "Stage Manager",
+    permissions: ["productions.manage", "events.checkin", "library.read"],
   },
   submissions_manager: {
     defaultScope: "issue",
@@ -341,6 +416,13 @@ export const roles = {
       "audit.read",
       "content.manage",
     ],
+  },
+  venues_lead: {
+    defaultScope: "global",
+    isCouncil: false,
+    nameAr: "مسؤول القاعات والتجهيزات",
+    nameEn: "Venues and Logistics Lead",
+    permissions: ["events.checkin", "library.read"],
   },
   vice_president: {
     defaultScope: "global",
@@ -378,6 +460,13 @@ export const roles = {
     nameAr: "محرّر آراء",
     nameEn: "Voices Editor",
     permissions: ["journal.edit.voices", "library.read"],
+  },
+  volunteer_coordinator: {
+    defaultScope: "global",
+    isCouncil: false,
+    nameAr: "منسق المتطوعين",
+    nameEn: "Volunteer Coordinator",
+    permissions: ["events.checkin", "library.read"],
   },
 } as const satisfies Record<string, RoleDefinition>;
 

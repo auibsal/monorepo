@@ -1,3 +1,4 @@
+import { join } from "node:path";
 import { expect, test } from "@playwright/test";
 import { event, member } from "../fixtures";
 import { urls } from "../playwright.config";
@@ -43,4 +44,26 @@ test("a member sends work to Qirtas and sees the reading timeline", async ({
   await expect(page.getByRole("heading", { name: "Progress" })).toBeVisible();
   await expect(page.locator('[aria-current="step"]')).toContainText("Received");
   await expectAccessible(page);
+});
+
+test("a manuscript's text fills the editor, and the file goes with the work", async ({
+  page,
+}) => {
+  await signInWithPassword(page, member.email);
+  await page.goto(`${urls.web}/qirtas/write/poetry`);
+  const editor = page.locator('[contenteditable="true"]').first();
+  await page
+    .getByLabel("Manuscript (PDF or Word)")
+    .setInputFiles(join(import.meta.dirname, "..", "files", "manuscript.docx"));
+  await expect(editor).toContainText("The river keeps the city's letters.");
+  await expect(editor.locator("em")).toContainText("A second stanza");
+  // A second file offers to replace what is there.
+  await page
+    .getByLabel("Manuscript (PDF or Word)")
+    .setInputFiles(join(import.meta.dirname, "..", "files", "manuscript.pdf"));
+  await page.getByRole("button", { name: "Use it" }).click();
+  await expect(editor).toContainText("The paper remembers every hand.");
+  await expect(
+    page.getByText("Manuscript (PDF or Word): manuscript.pdf")
+  ).toBeVisible();
 });

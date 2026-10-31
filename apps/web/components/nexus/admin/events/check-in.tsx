@@ -16,7 +16,7 @@ import { useCallback, useState } from "react";
 import { Link } from "@/lib/nexus/navigation";
 import { useQueryParam } from "@/lib/nexus/use-query-param";
 import { RowList } from "../../page";
-import { EmptyLine, ErrorState, SectionSpinner } from "../../states";
+import { SectionSpinner } from "../../states";
 import { CardScanner, parseCard } from "../card-scanner";
 import { AdminHeading, Field } from "../kit";
 import { memberName } from "../members/directory";
@@ -42,22 +42,20 @@ type Outcome =
   | { kind: "error" };
 
 /**
- * The door: at /events/<slug>/door, the event's own check-in; at
- * /events/door, a choice of the events from today on, each to its door.
+ * The door (owner, Oct 31, 2026: one door per event, at
+ * /events/<slug>/door). The Desk's quick action opens today's or the next
+ * event's door; each door lists the events after it, to switch.
  */
 export const CheckInScreen = () => {
   const eventId = useQueryParam("id");
-  return eventId ? <EventDoor eventId={eventId} /> : <DoorChooser />;
+  return eventId ? <EventDoor eventId={eventId} /> : null;
 };
 
-/** Today's events and the next ones, each a link to its own door. */
-const DoorChooser = () => {
-  const t = useTranslations("nexus.admin.checkIn");
-  const locale = useLocale() as Locale;
+/** The published events from the start of today (Baghdad), soonest first. */
+export const useDoorEvents = () => {
   const { supabase } = useAuth();
-  const events = useQuery({
+  return useQuery({
     queryFn: async () => {
-      // From the start of today in Baghdad (UTC+3).
       const now = new Date();
       const today = new Date(
         Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()) -
@@ -72,42 +70,46 @@ const DoorChooser = () => {
             .eq("status", "published")
             .gte("starts_at", today.toISOString())
             .order("starts_at")
-            .limit(6)
+            .limit(7)
         ) ?? []
       );
     },
     queryKey: ["admin", "door-events"],
   });
+};
 
+/** The address of a door: the event's own, by its name. */
+export const doorPath = (e: { id: string; slug: string | null }) =>
+  `/events/${e.slug ?? e.id}/door`;
+
+/** The other doors, to switch without leaving the door. */
+const OtherDoors = ({ eventId }: { readonly eventId: string }) => {
+  const t = useTranslations("nexus.admin.checkIn");
+  const locale = useLocale() as Locale;
+  const events = useDoorEvents();
+  const others = (events.data ?? []).filter((e) => e.id !== eventId);
+  if (others.length === 0) {
+    return null;
+  }
   return (
-    <div className="grid max-w-2xl gap-6">
-      <AdminHeading title={t("title")}>{t("choose")}</AdminHeading>
-      {events.isPending ? <SectionSpinner /> : null}
-      {events.isError ? <ErrorState onRetry={() => events.refetch()} /> : null}
-      {events.data?.length === 0 ? (
-        <EmptyLine action={{ href: "/events", label: t("allEvents") }}>
-          {t("noEvents")}
-        </EmptyLine>
-      ) : null}
-      {events.data?.length ? (
-        <RowList>
-          {events.data.map((e) => (
-            <li className="flex flex-wrap items-baseline gap-x-4" key={e.id}>
-              <Link
-                className="link font-medium"
-                href={`/events/${e.slug ?? e.id}/door`}
-              >
-                {localized(e, "title", locale)}
-              </Link>
-              <span className="type-caption">
-                {formatLongDate(e.starts_at, locale)},{" "}
-                {formatClock(e.starts_at, locale)}
-              </span>
-            </li>
-          ))}
-        </RowList>
-      ) : null}
-    </div>
+    <section aria-labelledby="other-doors" className="grid gap-3">
+      <h2 className="type-subheading" id="other-doors">
+        {t("otherDoors")}
+      </h2>
+      <RowList>
+        {others.slice(0, 6).map((e) => (
+          <li className="flex flex-wrap items-baseline gap-x-4" key={e.id}>
+            <Link className="link font-medium" href={doorPath(e)}>
+              {localized(e, "title", locale)}
+            </Link>
+            <span className="type-caption">
+              {formatLongDate(e.starts_at, locale)},{" "}
+              {formatClock(e.starts_at, locale)}
+            </span>
+          </li>
+        ))}
+      </RowList>
+    </section>
   );
 };
 
@@ -293,6 +295,7 @@ const EventDoor = ({ eventId }: { readonly eventId: string }) => {
           ))}
         </ul>
       </section>
+      <OtherDoors eventId={eventId} />
     </div>
   );
 };

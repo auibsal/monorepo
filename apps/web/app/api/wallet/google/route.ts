@@ -4,10 +4,12 @@ import { membership } from "@repo/sal-data";
 import { NextResponse } from "next/server";
 import { corsHeaders, preflight } from "@/lib/api/cors";
 import {
+  ensureWalletCallback,
   googleWalletLink,
   refreshWalletPass,
   type WalletCard,
   walletConfigured,
+  walletPassHeld,
 } from "@/lib/api/wallet";
 
 export const OPTIONS = preflight;
@@ -34,6 +36,44 @@ const tiers = {
  * be retired when the card stops being good), and a pass the member
  * already holds is brought up to date and made active again.
  */
+/**
+ * "Is it in my Wallet?": asks Google whether the pass is held and records
+ * the answer, for when the save callback never came. Unknown (Google not
+ * reachable) leaves the record as it was.
+ */
+const syncHeld = async (userId: string, code: string) => {
+  const held = await walletPassHeld(code).catch(() => null);
+  if (held === null) {
+    return false;
+  }
+  const admin = createAdminClient();
+  const { data: recorded } = await admin
+    .schema("membership")
+    .from("wallet_passes")
+    .select("state")
+    .eq("code", code)
+    .maybeSingle();
+  const state = held ? "saved" : "removed";
+  if (!recorded && held) {
+    await admin
+      .schema("membership")
+      .from("wallet_passes")
+      .insert({ code, state, user_id: userId });
+  } else if (
+    recorded &&
+    recorded.state !== "expired" &&
+    recorded.state !== state &&
+    (held || recorded.state === "saved")
+  ) {
+    await admin
+      .schema("membership")
+      .from("wallet_passes")
+      .update({ event_at: new Date().toISOString(), state })
+      .eq("code", code);
+  }
+  return held;
+};
+
 export const POST = async (request: Request) => {
   const headers = corsHeaders(request);
   const json = (data: object, status = 200) =>
@@ -58,6 +98,10 @@ export const POST = async (request: Request) => {
   ]);
   if (!(card && standing?.is_member && profile.data)) {
     return json({ error: "not_a_member" }, 403);
+  }
+  const body = (await request.json().catch(() => ({}))) as { check?: unknown };
+  if (body.check === true) {
+    return json({ saved: await syncHeld(session.userId, card.code) });
   }
   const locale = profile.data.locale === "ar" ? "ar" : "en";
   const pass: WalletCard = {
@@ -100,6 +144,7 @@ export const POST = async (request: Request) => {
   // The link only creates a pass; one already in Google Wallet is updated
   // here. A failure leaves the old pass as it was; the link still works.
   await refreshWalletPass(pass).catch(() => false);
+  await ensureWalletCallback().catch(() => undefined);
 
   return json({ url: await googleWalletLink(pass) });
 };

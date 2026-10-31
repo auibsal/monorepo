@@ -137,6 +137,7 @@ export type Database = {
       roles: {
         Row: {
           description: string | null;
+          hiring_owner: string | null;
           is_council: boolean;
           key: string;
           name_ar: string;
@@ -146,6 +147,7 @@ export type Database = {
         };
         Insert: {
           description?: string | null;
+          hiring_owner?: string | null;
           is_council?: boolean;
           key: string;
           name_ar: string;
@@ -155,6 +157,7 @@ export type Database = {
         };
         Update: {
           description?: string | null;
+          hiring_owner?: string | null;
           is_council?: boolean;
           key?: string;
           name_ar?: string;
@@ -1286,6 +1289,18 @@ export type Database = {
         Returns: {
           notify_email: boolean;
           personal_email: string;
+        }[];
+      };
+      outbox_health: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          api_url_set: boolean;
+          cron_secret_set: boolean;
+          failing: number;
+          last_sent: string;
+          oldest_waiting: string;
+          outbox_secret_set: boolean;
+          waiting: number;
         }[];
       };
       pledge_versions: {
@@ -5376,6 +5391,7 @@ export type Database = {
           partner_id: string | null;
           places: number | null;
           programme_id: string | null;
+          role: string | null;
           skills: string[];
           term_from: string | null;
           term_to: string | null;
@@ -5397,6 +5413,7 @@ export type Database = {
           partner_id?: string | null;
           places?: number | null;
           programme_id?: string | null;
+          role?: string | null;
           skills?: string[];
           term_from?: string | null;
           term_to?: string | null;
@@ -5418,6 +5435,7 @@ export type Database = {
           partner_id?: string | null;
           places?: number | null;
           programme_id?: string | null;
+          role?: string | null;
           skills?: string[];
           term_from?: string | null;
           term_to?: string | null;

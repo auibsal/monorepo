@@ -216,3 +216,55 @@ export const refreshWalletPass = (card: WalletCard) =>
 /** Marks a pass expired: Wallet shows it as no longer valid. */
 export const expireWalletPass = (code: string) =>
   writePass("PATCH", walletObjectId(code), { state: "EXPIRED" });
+
+/**
+ * Whether the member holds the pass, from Google's own record: true when
+ * it is saved, false when there is no such pass or nobody holds it, null
+ * when Google can't be asked. Used when the save callback never came.
+ */
+export const walletPassHeld = async (code: string) => {
+  const response = await fetch(
+    `${WALLET_API}/genericObject/${encodeURIComponent(walletObjectId(code))}`,
+    { headers: { authorization: `Bearer ${await accessToken()}` } }
+  );
+  if (response.status === 404) {
+    return false;
+  }
+  if (!response.ok) {
+    return null;
+  }
+  const body = (await response.json()) as {
+    hasUsers?: boolean;
+    state?: string;
+  };
+  return Boolean(body.hasUsers) && body.state !== "EXPIRED";
+};
+
+let callbackSet = false;
+
+/**
+ * Makes sure the pass class calls back on saves and removals. The signed
+ * link sets this only when it creates the class, so a class made before
+ * the callback existed never called; this brings it up to date once per
+ * server instance.
+ */
+export const ensureWalletCallback = async () => {
+  if (callbackSet) {
+    return;
+  }
+  const response = await fetch(
+    `${WALLET_API}/genericClass/${encodeURIComponent(walletClassId())}`,
+    {
+      body: JSON.stringify({
+        callbackOptions: { url: api("/wallet/google/callback") },
+      }),
+      headers: {
+        authorization: `Bearer ${await accessToken()}`,
+        "content-type": "application/json",
+      },
+      method: "PATCH",
+    }
+  );
+  // 404: no class yet; the link creates it with the callback.
+  callbackSet = response.ok || response.status === 404;
+};
