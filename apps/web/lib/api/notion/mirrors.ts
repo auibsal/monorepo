@@ -236,7 +236,7 @@ export const mirrorDocuments = async (ctx: SyncContext) => {
         Code: prop.text(m.body === "council" ? "Council" : "General Assembly"),
         Dated: prop.date(m.meeting_on),
         Kind: prop.select("Minutes"),
-        Nexus: prop.url(app(ctx, `/society/minutes/${m.id}`)),
+        Nexus: prop.url(app(ctx, `/society/meetings/${m.id}`)),
         "Nexus ID": prop.text(m.id),
         "Public page": prop.url(null),
         Status: prop.select(m.status),

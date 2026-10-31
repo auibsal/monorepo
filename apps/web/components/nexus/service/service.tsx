@@ -15,6 +15,7 @@ import { localized, recognition, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useId, useState } from "react";
+import { SelectInput } from "@/components/nexus/admin/kit";
 import { ErrorLine } from "../admin/kit";
 import { DiwanPage, DiwanSection } from "../page";
 import { EmptyLine, SectionSpinner } from "../states";
@@ -178,8 +179,7 @@ export const Service = () => {
             </div>
             <div className="grid gap-2">
               <Label htmlFor={`${id}-programme`}>{t("programme")}</Label>
-              <select
-                className="h-12 border border-line bg-surface px-3"
+              <SelectInput
                 id={`${id}-programme`}
                 onChange={(e) =>
                   setForm((f) => ({ ...f, programme_id: e.target.value }))
@@ -192,7 +192,7 @@ export const Service = () => {
                     {localized(p, "name", locale)}
                   </option>
                 ))}
-              </select>
+              </SelectInput>
             </div>
           </div>
           <div className="grid gap-2">

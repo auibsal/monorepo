@@ -66,159 +66,33 @@ const useMyDesks = () => {
 
 // ── A new staff piece ───────────────────────────────────────────────────────
 
+/**
+ * A staff piece written from the start on one page (owner, Oct 31, 2026:
+ * never a first step for the name and a second for the text): the same
+ * form as an existing piece, with its section, created when saved.
+ */
 const NewPiece = () => {
   const t = useTranslations("nexus.admin.waraq");
-  const tj = useTranslations("nexus.admin.journal");
   const tk = useTranslations("nexus.admin.kit");
-  const locale = useLocale() as Locale;
-  const router = useRouter();
-  const { supabase } = useAuth();
-  const desks = useMyDesks();
-  const issues = useIssues();
-  const [desk, setDesk] = useState<journal.Desk>(desks[0] ?? "news");
-  const [category, setCategory] = useState<journal.Category>("report");
-  const [language, setLanguage] = useState<Language>("en");
-  const [title, setTitle] = useState({ ar: "", en: "" });
-  const [contributorId, setContributorId] = useState("");
-  const [issueId, setIssueId] = useState("");
-
-  useEffect(() => {
-    if (journal.deskOf(category) !== desk) {
-      setCategory(journal.deskCategories(desk)[0] ?? "report");
-    }
-  }, [desk, category]);
-
-  const create = useMutation({
-    mutationFn: async () =>
-      unwrap(
-        await supabase.schema("journal").rpc("create_staff_piece", {
-          category,
-          contributor_id: contributorId,
-          issue_id: issueId || undefined,
-          language,
-          title_ar: title.ar,
-          title_en: title.en,
-        })
-      ),
-    onSuccess: (id) => {
-      if (id) {
-        router.replace(`/qirtas/pieces/${id}`);
-      }
-    },
-  });
-
-  const submit = (event: FormEvent) => {
-    event.preventDefault();
-    create.mutate();
-  };
   return (
     <div className="grid gap-8">
       <AdminHeading actions={back(tk("back"))} title={t("newPiece")}>
         {t("newPieceLede")}
       </AdminHeading>
-      <form className="grid max-w-3xl gap-6" onSubmit={submit}>
-        <div className="grid gap-4 sm:grid-cols-3">
-          <Field label={t("desk")}>
-            {(id) => (
-              <SelectInput
-                id={id}
-                onChange={(e) => setDesk(e.target.value as journal.Desk)}
-                value={desk}
-              >
-                {desks.map((d) => (
-                  <option key={d} value={d}>
-                    {tj(`desks.${d}`)}
-                  </option>
-                ))}
-              </SelectInput>
-            )}
-          </Field>
-          <Field label={t("type")}>
-            {(id) => (
-              <SelectInput
-                id={id}
-                onChange={(e) =>
-                  setCategory(e.target.value as journal.Category)
-                }
-                value={category}
-              >
-                {journal.deskCategories(desk).map((c) => (
-                  <option key={c} value={c}>
-                    {tj(`categories.${c}`)}
-                  </option>
-                ))}
-              </SelectInput>
-            )}
-          </Field>
-          <Field label={tj("piece.language")}>
-            {(id) => (
-              <SelectInput
-                id={id}
-                onChange={(e) => setLanguage(e.target.value as Language)}
-                value={language}
-              >
-                {LANGUAGES.map((l) => (
-                  <option key={l} value={l}>
-                    {tj(`languages.${l}`)}
-                  </option>
-                ))}
-              </SelectInput>
-            )}
-          </Field>
-        </div>
-        <BilingualField
-          label={tj("piece.titleField")}
-          maxLength={300}
-          onChange={setTitle}
-          value={title}
-        />
-        <div className="grid gap-4 sm:grid-cols-2">
-          <BylinePicker
-            label={tj("piece.contributor")}
-            onChange={setContributorId}
-            value={contributorId}
-          />
-          <Field label={t("edition")}>
-            {(id) => (
-              <SelectInput
-                id={id}
-                onChange={(e) => setIssueId(e.target.value)}
-                value={issueId}
-              >
-                <option value="">{t("noEdition")}</option>
-                {issues.data?.map((i) => (
-                  <option key={i.id} value={i.id}>
-                    {localized(i, "title", locale)}
-                  </option>
-                ))}
-              </SelectInput>
-            )}
-          </Field>
-        </div>
-        <Button
-          className="justify-self-start"
-          disabled={
-            create.isPending ||
-            !contributorId ||
-            !(title.en.trim() || title.ar.trim())
-          }
-          type="submit"
-        >
-          {t("create")}
-        </Button>
-        <ErrorLine error={create.error} />
-      </form>
+      <PieceForm record={null} />
     </div>
   );
 };
 
 // ── The piece ───────────────────────────────────────────────────────────────
 
-const formFrom = (record: PieceRecord) => {
-  const p = record.piece;
+const formFrom = (record: PieceRecord | null, desk: journal.Desk) => {
+  const p = record?.piece;
   return {
-    body: { ar: record.body?.body_ar ?? "", en: record.body?.body_en ?? "" },
-    category: (p?.category ?? "report") as journal.Category,
+    body: { ar: record?.body?.body_ar ?? "", en: record?.body?.body_en ?? "" },
+    category: (p?.category ??
+      journal.deskCategories(desk)[0] ??
+      "report") as journal.Category,
     contributor_id: p?.contributor_id ?? "",
     credit: { ar: p?.credit_ar ?? "", en: p?.credit_en ?? "" },
     deck: { ar: p?.deck_ar ?? "", en: p?.deck_en ?? "" },
@@ -231,7 +105,7 @@ const formFrom = (record: PieceRecord) => {
   };
 };
 
-const PieceForm = ({ record }: { record: PieceRecord }) => {
+const PieceForm = ({ record }: { record: PieceRecord | null }) => {
   const t = useTranslations("nexus.admin.waraq");
   const tj = useTranslations("nexus.admin.journal");
   const tk = useTranslations("nexus.admin.kit");
@@ -241,18 +115,37 @@ const PieceForm = ({ record }: { record: PieceRecord }) => {
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
   const issues = useIssues();
-  const [form, setForm] = useState(() => formFrom(record));
-  const { piece } = record;
+  const router = useRouter();
+  const myDesks = useMyDesks();
+  const [form, setForm] = useState(() =>
+    formFrom(record, myDesks[0] ?? "news")
+  );
+  const piece = record?.piece ?? null;
   const desk = journal.deskOf(form.category);
   const needs = journal.typeNeeds(form.category);
 
   useEffect(() => {
-    setForm(formFrom(record));
+    if (record) {
+      setForm(formFrom(record, "news"));
+    }
   }, [record]);
 
   const save = useMutation({
     mutationFn: async () => {
-      const pieceId = piece?.id ?? "";
+      // A new piece is made first in the newsroom's name, then filled in
+      // the same save.
+      const pieceId = piece
+        ? piece.id
+        : ((unwrap(
+            await supabase.schema("journal").rpc("create_staff_piece", {
+              category: form.category,
+              contributor_id: form.contributor_id,
+              issue_id: form.issue_id || undefined,
+              language: form.language,
+              title_ar: form.title.ar,
+              title_en: form.title.en,
+            })
+          ) ?? "") as string);
       unwrap(
         await supabase
           .schema("journal")
@@ -288,9 +181,14 @@ const PieceForm = ({ record }: { record: PieceRecord }) => {
           })
           .eq("piece_id", pieceId)
       );
+      return pieceId;
     },
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: ["admin", "journal"] }),
+    onSuccess: async (pieceId) => {
+      await queryClient.invalidateQueries({ queryKey: ["admin", "journal"] });
+      if (!piece && pieceId) {
+        router.replace(`/qirtas/pieces/${pieceId}`);
+      }
+    },
   });
 
   const submit = (event: FormEvent) => {
@@ -307,7 +205,7 @@ const PieceForm = ({ record }: { record: PieceRecord }) => {
 
   return (
     <form className="grid max-w-4xl gap-6" onSubmit={submit}>
-      <h2 className="type-subheading">{t("text")}</h2>
+      {piece ? <h2 className="type-subheading">{t("text")}</h2> : null}
       {approved ? (
         <p className="type-caption" role="note">
           {t("changeClearsApprovals")}
@@ -336,6 +234,29 @@ const PieceForm = ({ record }: { record: PieceRecord }) => {
         />
       ) : null}
       <div className="grid gap-4 sm:grid-cols-3">
+        {piece ? null : (
+          <Field label={t("desk")}>
+            {(fieldId) => (
+              <SelectInput
+                id={fieldId}
+                onChange={(e) =>
+                  set(
+                    "category",
+                    journal.deskCategories(e.target.value as journal.Desk)[0] ??
+                      form.category
+                  )
+                }
+                value={desk}
+              >
+                {myDesks.map((d) => (
+                  <option key={d} value={d}>
+                    {tj(`desks.${d}`)}
+                  </option>
+                ))}
+              </SelectInput>
+            )}
+          </Field>
+        )}
         <Field label={t("type")}>
           {(fieldId) => (
             <SelectInput
@@ -449,7 +370,21 @@ const PieceForm = ({ record }: { record: PieceRecord }) => {
           {tj("piece.membersOnly")}
         </Label>
       </div>
-      <SaveButton pending={save.isPending} success={save.isSuccess} />
+      {piece ? (
+        <SaveButton pending={save.isPending} success={save.isSuccess} />
+      ) : (
+        <Button
+          className="justify-self-start"
+          disabled={
+            save.isPending ||
+            !form.contributor_id ||
+            !(form.title.en.trim() || form.title.ar.trim())
+          }
+          type="submit"
+        >
+          {t("create")}
+        </Button>
+      )}
       <ErrorLine error={save.error} />
     </form>
   );

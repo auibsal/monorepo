@@ -84,9 +84,12 @@ select pg_temp.make_user('00000000-0000-0000-0000-0000000000a2', 'two-rr@auib.ed
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a3', 'adv-rr@auib.edu.iq', 'Advisor Three');
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000000f1', 'president');
 
-insert into governance.resolutions (id, code, title_en, text_en, status, adopted_on) values
-  ('00000000-0000-0000-0000-00000000e001', 'R-2026-90', 'Founding-term exception', 'Agreed.', 'adopted', current_date),
-  ('00000000-0000-0000-0000-00000000e002', 'R-2026-91', 'A draft', 'Not yet.', 'draft', null);
+-- A resolution belongs to a meeting (its minutes).
+insert into governance.minutes (id, body, meeting_on, title_en, text_en, status)
+values ('00000000-0000-0000-0000-00000000e0ff', 'council', current_date, 'Council meeting', 'Minutes.', 'draft');
+insert into governance.resolutions (id, code, title_en, text_en, status, adopted_on, minutes_id) values
+  ('00000000-0000-0000-0000-00000000e001', 'R-2026-90', 'Founding-term exception', 'Agreed.', 'adopted', current_date, '00000000-0000-0000-0000-00000000e0ff'),
+  ('00000000-0000-0000-0000-00000000e002', 'R-2026-91', 'A draft', 'Not yet.', 'draft', null, '00000000-0000-0000-0000-00000000e0ff');
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000f1');
 

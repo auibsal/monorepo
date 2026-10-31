@@ -827,7 +827,12 @@
           "archived": "Archived"
         },
         "addressProgram": "That address belongs to a program; choose another.",
-        "addressEvent": "That address belongs to an event; choose another."
+        "addressEvent": "That address belongs to an event; choose another.",
+        "choices": {
+          "choose": "Choose",
+          "find": "Type to find",
+          "none": "Nothing matches."
+        }
       },
       "overview": {
         "title": "Desk",
@@ -1630,7 +1635,7 @@
           "approved": "Approved"
         },
         "minutes": {
-          "new": "New minutes",
+          "new": "New meeting",
           "meetingOn": "Meeting date",
           "body": "Body",
           "titleField": "Title",
@@ -1638,7 +1643,7 @@
           "adopt": "Mark adopted",
           "adoptedOn": "Adopted on",
           "adoptConfirm": "Mark these minutes adopted? Members will see them in the Diwan. Only do this after the vote.",
-          "notFound": "No minutes with this link.",
+          "notFound": "No meeting with this link.",
           "draftNote": "Drafts are visible only to minute-takers and governance managers."
         },
         "resolutions": {
@@ -1651,11 +1656,11 @@
           "for": "For",
           "against": "Against",
           "abstain": "Abstain",
-          "minutes": "Recorded in minutes",
-          "noMinutes": "Not linked",
           "adoptedOnError": "An adopted resolution needs its adoption date, and only then.",
-          "back": "All resolutions",
-          "missing": "This resolution is not here"
+          "back": "The meeting",
+          "missing": "This resolution or its meeting is not here",
+          "title": "Resolutions of this meeting",
+          "none": "No resolutions recorded for this meeting."
         },
         "elections": {
           "flagOff": "Online elections are off (Settings → Feature flags).",
@@ -2167,7 +2172,9 @@
             "ended": "Ended"
           },
           "back": "All memoranda",
-          "missing": "This memorandum is not here"
+          "missing": "This memorandum is not here",
+          "asked": "Asked for: {grants}",
+          "give": "Approve what they asked for"
         },
         "affiliations": {
           "lede": "People who say they belong to a partner. Check with the partner's contact before verifying. Lists are never shared with partners.",
@@ -2514,8 +2521,7 @@
         "title": "Library",
         "lede": "The Society's documents, as the public Library shows them. Saving publishes on auibsal.org/library within a minute. Internal documents are kept in the team's Notion workspace.",
         "new": "New document",
-        "closeNew": "Close",
-        "newTitle": "Add a document",
+        "newTitle": "New document",
         "empty": "No documents yet.",
         "columns": {
           "title": "Title",
@@ -2546,11 +2552,13 @@
         },
         "adoptedNoDate": "An adopted document should record the date it was adopted.",
         "publicNote": "Saving publishes this text on auibsal.org/library. Its status is shown on the page, so a draft is never presented as adopted.",
-        "viewPublic": "Open the public Library",
         "shelves": {
           "society": "Society documents",
           "policies": "Website policies"
-        }
+        },
+        "newLede": "The whole document on one page: its code, address, text and dates. Saving adds it to the Library.",
+        "back": "Back to the Library",
+        "missing": "No such document"
       },
       "notion": {
         "event": "This event is written in the team's Notion workspace. Publishing it from Notion again replaces changes made here.",
@@ -2889,8 +2897,6 @@
           "partners": "Partners",
           "insights": "Insights",
           "people": "People",
-          "minutes": "Minutes",
-          "resolutions": "Resolutions",
           "requests": "Requests",
           "elections": "Elections",
           "concerns": "Concerns",
@@ -2901,18 +2907,11 @@
           "review": "Review",
           "editions": "Editions",
           "awards": "Awards",
-          "ads": "Ads"
+          "ads": "Ads",
+          "meetings": "Meetings"
         }
       },
       "society": {
-        "minutes": {
-          "title": "Minutes",
-          "lede": "Adopted minutes of the Council and the General Assembly. Agendas and working notes stay in Notion’s Meetings."
-        },
-        "resolutions": {
-          "title": "Resolutions",
-          "lede": "Adopted resolutions, and the motions members propose for the General Assembly."
-        },
         "requests": {
           "title": "Requests to Student Life",
           "lede": "Every section’s needs, for the General Secretary to send to Student Life and log what was provided."
@@ -2928,6 +2927,10 @@
         "library": {
           "title": "Library",
           "lede": "Library"
+        },
+        "meetings": {
+          "title": "Meetings",
+          "lede": "Meetings of the Council and the General Assembly: each meeting's minutes and the resolutions it adopted, and the motions members propose. Agendas and working notes stay in Notion."
         }
       },
       "activity": {
@@ -4041,11 +4044,8 @@
       "description": "About the organization",
       "descriptionHint": "A few lines for the Partners page, shown once the partnership is signed.",
       "proposal": "The partnership",
-      "purpose": "What the partnership is for",
-      "purposeHint": "What you will do together, in a few sentences.",
-      "partnerWill": "What your organization will do",
-      "partnerWillHint": "Your commitments: hosting, sharing, offers for members.",
-      "asks": "What you would like it to include",
+      "purpose": "What the partnership is for, and what your organization will do",
+      "purposeHint": "What you will do together, and your side of it: hosting, sharing, offers for members. Whatever you turn on later, for yourselves or your guests, and whatever you publish, waits for the Society's approval.",
       "sign": "Sign",
       "signatory": "Signed by",
       "contactRole": "Your role at the organization",
@@ -4061,16 +4061,17 @@
         "title": "The memorandum",
         "yourOrganization": "your organization",
         "one": "{name} and the AUIB Society of Arts and Letters agree to the partnership described above.",
-        "two": "Every partnership that involves money, shared branding or shared responsibility has a written memorandum, signed by the President (Policy Manual P11.2). This is that memorandum, once the President signs.",
-        "three": "The Society does not accept sponsorship from political parties, religious or sectarian bodies, tobacco, alcohol or gambling businesses, or any sponsor that would compromise its independence (P11.3).",
-        "four": "Sponsors get acknowledgement, never editorial influence (P11.4).",
-        "five": "{name} verifies its own people on the platform, and only people who belong to it.",
+        "two": "Every partnership that involves money, shared branding or shared responsibility has a written memorandum, signed by the President. This is that memorandum, once the President signs.",
+        "three": "The Society does not accept sponsorship from political parties, religious or sectarian bodies, tobacco, alcohol or gambling businesses, or any sponsor that would compromise its independence.",
+        "four": "Sponsors get acknowledgement, never editorial influence.",
+        "five": "{name} verifies its own people on the platform, and only people who belong to it. What it turns on for itself and its guests, and what it publishes, waits for the Society's approval.",
         "six": "Nothing is paid through the platform: the Society takes no online payments."
       },
       "oneMembership": "You are the Society's guest, and a guest is never on a partner's team. Apply with your organization's own address: sign out, then come back here.",
       "signedOn": "Date",
       "members": "Leading an AUIB club and already a member? Apply signed in as yourself: you stay a member, and the club's dashboard opens beside Membership.",
-      "membersSignIn": "Sign in to apply"
+      "membersSignIn": "Sign in to apply",
+      "kindOther": "What kind of organization"
     },
     "partnerDesk": {
       "none": "You are not on a partner's team.",
@@ -4094,7 +4095,11 @@
         "purpose": "Purpose",
         "partnerWill": "What the partner will do",
         "salWill": "What the Society will do",
-        "grants": "It includes"
+        "grants": "It includes",
+        "ask": "What you turn on",
+        "askHint": "For your organization and its guests. The Society approves each before it turns on.",
+        "asked": "Asked for, and waiting for the Society.",
+        "askButton": "Ask the Society"
       },
       "perks": {
         "title": "Perks",
@@ -4106,7 +4111,10 @@
         "remove": "Remove",
         "removeConfirm": "Remove this perk? Members no longer see it.",
         "new": "Add a perk",
-        "add": "Add perk"
+        "add": "Add perk",
+        "askNow": "Ask the Society to publish it",
+        "ask": "Ask to publish",
+        "waiting": "Waiting for the Society"
       },
       "guests": {
         "title": "Guests",

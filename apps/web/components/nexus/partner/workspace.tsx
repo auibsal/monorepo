@@ -9,7 +9,7 @@ import { cn } from "@repo/design-system/lib/utils";
 import type { Locale } from "@repo/internationalization";
 import { formatLongDate } from "@repo/internationalization/format";
 import { Link, usePathname } from "@repo/internationalization/navigation";
-import { localized, type partners, unwrap } from "@repo/sal-data";
+import { localized, partners, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, type ReactNode, useState } from "react";
@@ -109,6 +109,7 @@ interface PartnerRow {
 }
 
 interface AgreementRow {
+  asked_grants: string[] | null;
   grants: string[];
   id: string;
   partner_signatory: string | null;
@@ -242,7 +243,7 @@ const Memoranda = ({ partnerId }: { partnerId: string }) => {
           .schema("governance")
           .from("partner_agreements")
           .select(
-            "id, purpose_en, partner_will, sal_will, grants, status, partner_signatory, signed_at"
+            "id, purpose_en, partner_will, sal_will, grants, asked_grants, status, partner_signatory, signed_at"
           )
           .eq("partner_id", partnerId)
           .order("created_at", { ascending: false })
@@ -298,9 +299,95 @@ const Memoranda = ({ partnerId }: { partnerId: string }) => {
               </div>
             ) : null}
           </dl>
+          {a.status === "signed" ? (
+            <AskForGrants agreement={a} partnerId={partnerId} />
+          ) : null}
         </li>
       ))}
     </RowList>
+  );
+};
+
+/** What a partner may ask to turn on; guest editing is the Society's to offer. */
+const ASKABLE = partners.agreementGrants.filter((g) => g !== "guest_editing");
+
+/**
+ * A partner turns things on for itself and its guests by asking; the
+ * Society approves (owner, Oct 31, 2026). Leads ask; the database refuses
+ * anyone else.
+ */
+const AskForGrants = ({
+  agreement,
+  partnerId,
+}: {
+  agreement: AgreementRow;
+  partnerId: string;
+}) => {
+  const t = useTranslations("nexus.partnerDesk.memorandum");
+  const tg = useTranslations("nexus.admin.partners.agreements.grants");
+  const { supabase } = useAuth();
+  const queryClient = useQueryClient();
+  const [chosen, setChosen] = useState<string[]>(
+    agreement.asked_grants ?? agreement.grants
+  );
+  const ask = useMutation({
+    mutationFn: async () =>
+      unwrap(
+        await supabase.schema("governance").rpc("ask_for_grants", {
+          agreement_id: agreement.id,
+          grants: chosen,
+        })
+      ),
+    onSuccess: () =>
+      queryClient.invalidateQueries({
+        queryKey: [...KEY, "agreements", partnerId],
+      }),
+  });
+  const same =
+    [...chosen].sort().join() ===
+    [...(agreement.asked_grants ?? agreement.grants)].sort().join();
+  return (
+    <form
+      className="grid gap-3"
+      onSubmit={(event) => {
+        event.preventDefault();
+        ask.mutate();
+      }}
+    >
+      <fieldset className="grid gap-3">
+        <legend className="type-label mb-1">{t("ask")}</legend>
+        <p className="type-caption">{t("askHint")}</p>
+        {ASKABLE.map((grant) => (
+          <div className="flex items-center gap-2" key={grant}>
+            <Checkbox
+              checked={chosen.includes(grant)}
+              id={`ask-${agreement.id}-${grant}`}
+              onCheckedChange={(checked) =>
+                setChosen((c) =>
+                  checked === true
+                    ? [...c, grant]
+                    : c.filter((g) => g !== grant)
+                )
+              }
+            />
+            <Label htmlFor={`ask-${agreement.id}-${grant}`}>{tg(grant)}</Label>
+          </div>
+        ))}
+      </fieldset>
+      {agreement.asked_grants ? (
+        <p className="type-caption">{t("asked")}</p>
+      ) : null}
+      <Button
+        className="justify-self-start"
+        disabled={ask.isPending || same}
+        size="sm"
+        type="submit"
+        variant="outline"
+      >
+        {t("askButton")}
+      </Button>
+      <ErrorLine error={ask.error} />
+    </form>
   );
 };
 
@@ -356,6 +443,7 @@ interface Offer extends Record<string, unknown> {
   ends_on: string | null;
   id: string;
   is_published: boolean;
+  submitted_at: string | null;
   title_ar: string | null;
   title_en: string;
 }
@@ -450,7 +538,7 @@ const NewPerk = ({ partnerId }: { partnerId: string }) => {
             setForm((f) => ({ ...f, publish: checked === true }))
           }
         />
-        <Label htmlFor="perk-publish">{to("publishNow")}</Label>
+        <Label htmlFor="perk-publish">{t("askNow")}</Label>
       </div>
       <Button
         className="justify-self-start"
@@ -500,13 +588,23 @@ const PerksList = ({ partnerId }: { partnerId: string }) => {
           .schema("governance")
           .from("member_offers")
           .select(
-            "id, title_en, title_ar, details_en, code, ends_on, is_published"
+            "id, title_en, title_ar, details_en, code, ends_on, is_published, submitted_at"
           )
           .eq("partner_id", partnerId)
           .order("created_at", { ascending: false })
       ) ?? []) as Offer[],
     queryKey: [...KEY, "perks", partnerId],
   });
+  // Published by the Society, waiting for it, or kept to the partner.
+  const perkState = (offer: {
+    is_published: boolean;
+    submitted_at: string | null;
+  }) => {
+    if (offer.is_published) {
+      return to("published");
+    }
+    return offer.submitted_at ? t("waiting") : t("hidden");
+  };
   const granted = useQuery({
     queryFn: async () =>
       (
@@ -539,25 +637,27 @@ const PerksList = ({ partnerId }: { partnerId: string }) => {
                 {offer.details_en}
               </p>
               <p className="type-caption">
-                {offer.is_published ? to("published") : t("hidden")}
+                {perkState(offer)}
                 {offer.ends_on
                   ? ` · ${t("until", { date: formatLongDate(offer.ends_on, locale) })}`
                   : ""}
               </p>
               <div className="flex flex-wrap gap-2">
-                <Button
-                  disabled={change.isPending}
-                  onClick={() =>
-                    change.mutate({
-                      id: offer.id,
-                      publish: !offer.is_published,
-                    })
-                  }
-                  size="sm"
-                  variant="outline"
-                >
-                  {offer.is_published ? to("unpublish") : to("publish")}
-                </Button>
+                {offer.submitted_at && !offer.is_published ? null : (
+                  <Button
+                    disabled={change.isPending}
+                    onClick={() =>
+                      change.mutate({
+                        id: offer.id,
+                        publish: !offer.is_published,
+                      })
+                    }
+                    size="sm"
+                    variant="outline"
+                  >
+                    {offer.is_published ? to("unpublish") : t("ask")}
+                  </Button>
+                )}
                 <ConfirmAction
                   confirmLabel={t("remove")}
                   description={t("removeConfirm")}

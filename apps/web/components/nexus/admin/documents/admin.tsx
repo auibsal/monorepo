@@ -1,15 +1,16 @@
 "use client";
 
 import { useAuth } from "@repo/auth/provider";
-import { Button } from "@repo/design-system/components/ui/button";
 import { Input } from "@repo/design-system/components/ui/input";
-import { type Locale, localizedPath } from "@repo/internationalization";
+import type { Locale } from "@repo/internationalization";
 import { formatLongDate } from "@repo/internationalization/format";
 import { documents, sanitizeRichText, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
+import { Link, useRouter } from "@/lib/nexus/navigation";
 import { RichTextEditor } from "../../editor/rich-text";
+import { OnTheSite } from "../../site-links";
 import { SectionSpinner } from "../../states";
 import {
   AdminHeading,
@@ -24,6 +25,7 @@ import {
 import { NotionManaged } from "../notion-managed";
 
 const key = ["admin", "society-documents"];
+const LIBRARY = "/society/library";
 
 type Status = documents.DocumentStatus;
 type Doc = documents.SalDocument;
@@ -34,89 +36,6 @@ const useDocumentList = () => {
     queryFn: () => documents.allDocuments(supabase),
     queryKey: key,
   });
-};
-
-const blank = {
-  code: "",
-  slug: "",
-  title: { ar: "", en: "" },
-};
-
-const NewDocument = ({ onDone }: { onDone: (id: string) => void }) => {
-  const t = useTranslations("nexus.admin.documents");
-  const { supabase } = useAuth();
-  const queryClient = useQueryClient();
-  const [form, setForm] = useState(blank);
-  const create = useMutation({
-    mutationFn: async () =>
-      unwrap(
-        await supabase
-          .schema("governance")
-          .from("society_documents")
-          .insert({
-            audience: "public",
-            code: form.code.trim(),
-            slug: form.slug.trim(),
-            title_ar: form.title.ar.trim() || null,
-            title_en: form.title.en.trim(),
-          })
-          .select("id")
-          .single()
-      ),
-    onSuccess: async (row) => {
-      setForm(blank);
-      await queryClient.invalidateQueries({ queryKey: key });
-      if (row) {
-        onDone(row.id);
-      }
-    },
-  });
-  return (
-    <form
-      className="grid max-w-3xl gap-4"
-      onSubmit={(e) => {
-        e.preventDefault();
-        create.mutate();
-      }}
-    >
-      <h2 className="type-subheading">{t("newTitle")}</h2>
-      <BilingualField
-        label={t("fields.title")}
-        maxLength={200}
-        onChange={(title) => setForm((f) => ({ ...f, title }))}
-        required
-        value={form.title}
-      />
-      <div className="grid gap-4 sm:grid-cols-3">
-        <Field hint={t("fields.codeHint")} label={t("fields.code")}>
-          {(id) => (
-            <Input
-              dir="ltr"
-              id={id}
-              onChange={(e) => setForm((f) => ({ ...f, code: e.target.value }))}
-              pattern="SAL-[A-Z]{3}-[0-9]{2}"
-              required
-              value={form.code}
-            />
-          )}
-        </Field>
-        <Field hint={t("fields.slugHint")} label={t("fields.slug")}>
-          {(id) => (
-            <Input
-              dir="ltr"
-              id={id}
-              onChange={(e) => setForm((f) => ({ ...f, slug: e.target.value }))}
-              pattern="[a-z0-9]+(-[a-z0-9]+)*"
-              required
-              value={form.slug}
-            />
-          )}
-        </Field>
-      </div>
-      <SaveButton pending={create.isPending} />
-      <ErrorLine error={create.error} />
-    </form>
-  );
 };
 
 /**
@@ -131,20 +50,13 @@ export const LibraryAdmin = () => {
   const t = useTranslations("nexus.admin.documents");
   const locale = useLocale() as Locale;
   const list = useDocumentList();
-  const [selected, setSelected] = useState<string | null>(null);
-  const [creating, setCreating] = useState(false);
-  const current = list.data?.find((d) => d.id === selected) ?? null;
 
   const columns: Column<Doc>[] = [
     {
       cell: (d) => (
-        <Button
-          className="h-auto p-0 text-start underline underline-offset-4"
-          onClick={() => setSelected(d.id)}
-          variant="link"
-        >
+        <Link className="link" href={`${LIBRARY}/${d.slug}`}>
           {documents.documentTitle(d, locale)}
-        </Button>
+        </Link>
       ),
       header: t("columns.title"),
       key: "title",
@@ -168,31 +80,16 @@ export const LibraryAdmin = () => {
       <AdminHeading
         actions={
           <>
-            <a
-              className="link"
-              href={localizedPath(locale, "/library")}
-              rel="noopener"
-              target="_blank"
-            >
-              {t("viewPublic")}
-            </a>
-            <Button onClick={() => setCreating((c) => !c)} size="sm">
-              {creating ? t("closeNew") : t("new")}
-            </Button>
+            <OnTheSite href="/library" />
+            <Link className="link" href={`${LIBRARY}/new`}>
+              {t("new")}
+            </Link>
           </>
         }
         title={t("title")}
       >
         {t("lede")}
       </AdminHeading>
-      {creating ? (
-        <NewDocument
-          onDone={(id) => {
-            setCreating(false);
-            setSelected(id);
-          }}
-        />
-      ) : null}
       {list.isPending ? <SectionSpinner /> : null}
       {(["society", "policies"] as const).map((shelf) => (
         <DataTable
@@ -206,106 +103,139 @@ export const LibraryAdmin = () => {
           )}
         />
       ))}
-      {current ? <DocumentEditor id={current.id} key={current.id} /> : null}
     </div>
   );
 };
 
 const optionalDate = (value: string) => value || null;
 
-const DocumentEditor = ({ id }: { id: string }) => {
+type FullDoc = Doc & { body_ar: string | null; body_en: string };
+
+/**
+ * One document on its own page, `/society/library/<slug>`, or a blank one
+ * at `/society/library/new` (owner, Oct 31, 2026: one flow for new: the
+ * whole document, its code, address, text and dates, is written on one page
+ * and created when saved). Saving returns to the Library.
+ */
+export const LibraryDocument = ({ slug }: { slug: string | null }) => {
   const t = useTranslations("nexus.admin.documents");
   const { supabase } = useAuth();
-  const queryClient = useQueryClient();
   const full = useQuery({
+    enabled: slug !== null,
     queryFn: async () =>
       unwrap(
         await supabase
           .schema("governance")
           .from("society_documents")
           .select("*")
-          .eq("id", id)
-          .single()
-      ),
-    queryKey: [...key, id],
+          .eq("slug", slug ?? "")
+          .maybeSingle()
+      ) as FullDoc | null,
+    queryKey: [...key, "slug", slug],
   });
 
+  if (slug === null) {
+    return <EditorForm doc={null} t={t} />;
+  }
   if (full.isPending) {
     return <SectionSpinner />;
   }
   if (!full.data) {
-    return <ErrorLine error={full.error} />;
+    return (
+      <div className="grid gap-4">
+        <AdminHeading title={t("missing")} />
+        <ErrorLine error={full.error} />
+        <Link className="link justify-self-start" href={LIBRARY}>
+          {t("back")}
+        </Link>
+      </div>
+    );
   }
   return (
-    <>
-      <NotionManaged kind="document" recordId={id} />
-      <EditorForm
-        doc={full.data}
-        onSaved={() => queryClient.invalidateQueries({ queryKey: key })}
-        t={t}
-      />
-    </>
+    <div className="grid gap-6">
+      <NotionManaged kind="document" recordId={full.data.id} />
+      <EditorForm doc={full.data} key={full.data.id} t={t} />
+    </div>
   );
 };
 
 const EditorForm = ({
   doc,
-  onSaved,
   t,
 }: {
-  doc: Doc & { body_ar: string | null; body_en: string };
-  onSaved: () => void;
+  doc: FullDoc | null;
   t: ReturnType<typeof useTranslations<"nexus.admin.documents">>;
 }) => {
   const { supabase } = useAuth();
+  const queryClient = useQueryClient();
+  const router = useRouter();
   const [form, setForm] = useState({
-    adopted_on: doc.adopted_on ?? "",
-    body: { ar: doc.body_ar ?? "", en: doc.body_en ?? "" },
-    dated: doc.dated ?? "",
-    ratification: doc.ratification ?? "",
-    status: doc.status as Status,
-    summary: { ar: doc.summary_ar ?? "", en: doc.summary_en ?? "" },
-    title: { ar: doc.title_ar ?? "", en: doc.title_en },
-    version: doc.version ?? "",
+    adopted_on: doc?.adopted_on ?? "",
+    body: { ar: doc?.body_ar ?? "", en: doc?.body_en ?? "" },
+    code: doc?.code ?? "",
+    dated: doc?.dated ?? "",
+    ratification: doc?.ratification ?? "",
+    slug: doc?.slug ?? "",
+    status: (doc?.status ?? "adopted") as Status,
+    summary: { ar: doc?.summary_ar ?? "", en: doc?.summary_en ?? "" },
+    title: { ar: doc?.title_ar ?? "", en: doc?.title_en ?? "" },
+    version: doc?.version ?? "",
   });
   const save = useMutation({
-    mutationFn: async () =>
-      unwrap(
-        await supabase
-          .schema("governance")
-          .from("society_documents")
-          .update({
-            adopted_on: optionalDate(form.adopted_on),
-            body_ar: form.body.ar.trim()
-              ? sanitizeRichText(form.body.ar)
-              : null,
-            body_en: sanitizeRichText(form.body.en),
-            dated: optionalDate(form.dated),
-            ratification: optionalDate(form.ratification),
-            status: form.status,
-            summary_ar: form.summary.ar.trim() || null,
-            summary_en: form.summary.en.trim() || null,
-            title_ar: form.title.ar.trim() || null,
-            title_en: form.title.en.trim(),
-            version: form.version.trim() || null,
-          })
-          .eq("id", doc.id)
-      ),
-    onSuccess: onSaved,
+    mutationFn: async () => {
+      const row = {
+        adopted_on: optionalDate(form.adopted_on),
+        body_ar: form.body.ar.trim() ? sanitizeRichText(form.body.ar) : null,
+        body_en: sanitizeRichText(form.body.en),
+        dated: optionalDate(form.dated),
+        ratification: optionalDate(form.ratification),
+        status: form.status,
+        summary_ar: form.summary.ar.trim() || null,
+        summary_en: form.summary.en.trim() || null,
+        title_ar: form.title.ar.trim() || null,
+        title_en: form.title.en.trim(),
+        version: form.version.trim() || null,
+      };
+      const table = supabase.schema("governance").from("society_documents");
+      return unwrap(
+        doc
+          ? await table.update(row).eq("id", doc.id)
+          : await table.insert({
+              ...row,
+              audience: "public",
+              code: form.code.trim(),
+              slug: form.slug.trim(),
+            })
+      );
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: key });
+      router.push(LIBRARY);
+    },
   });
   const adoptedWithoutDate = form.status === "adopted" && !form.adopted_on;
 
   return (
     <form
-      className="grid gap-5 border-line border-t pt-6"
+      className="grid max-w-4xl gap-5"
       onSubmit={(e) => {
         e.preventDefault();
         save.mutate();
       }}
     >
-      <h2 className="type-heading">
-        {doc.code} · {doc.title_en}
-      </h2>
+      <AdminHeading
+        actions={
+          <>
+            <Link className="link" href={LIBRARY}>
+              {t("back")}
+            </Link>
+            {doc ? <OnTheSite href={`/library/${doc.slug}`} /> : null}
+          </>
+        }
+        title={doc ? doc.title_en : t("newTitle")}
+      >
+        {doc ? doc.code : t("newLede")}
+      </AdminHeading>
       <BilingualField
         label={t("fields.title")}
         maxLength={200}
@@ -313,6 +243,34 @@ const EditorForm = ({
         required
         value={form.title}
       />
+      <div className="grid gap-4 sm:grid-cols-3">
+        <Field hint={t("fields.codeHint")} label={t("fields.code")}>
+          {(id) => (
+            <Input
+              dir="ltr"
+              id={id}
+              onChange={(e) => setForm((f) => ({ ...f, code: e.target.value }))}
+              pattern="SAL-[A-Z]{3}-[0-9]{2}"
+              readOnly={doc !== null}
+              required
+              value={form.code}
+            />
+          )}
+        </Field>
+        <Field hint={t("fields.slugHint")} label={t("fields.slug")}>
+          {(id) => (
+            <Input
+              dir="ltr"
+              id={id}
+              onChange={(e) => setForm((f) => ({ ...f, slug: e.target.value }))}
+              pattern="[a-z0-9]+(-[a-z0-9]+)*"
+              readOnly={doc !== null}
+              required
+              value={form.slug}
+            />
+          )}
+        </Field>
+      </div>
       <BilingualField
         label={t("fields.summary")}
         maxLength={600}

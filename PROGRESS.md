@@ -1670,6 +1670,16 @@ Covered by automated tests so far:
 
 ## needs-native-review (Arabic written for the platform)
 
+- Meetings, partners asking, choices, one flow (2026-10-31, section 14):
+  `nexus.admin.society.meetings.*`, `nexus.admin.sections.tabs.meetings`,
+  `nexus.admin.governance.resolutions.{title,none}`,
+  `nexus.admin.governance.minutes.new`, `nexus.admin.kit.choices.*`,
+  `nexus.partnerJoin.{kindOther,purpose,purposeHint,memorandum.two..five}`,
+  `nexus.partnerDesk.perks.{askNow,ask,waiting}`,
+  `nexus.partnerDesk.memorandum.{ask,askHint,asked,askButton}`,
+  `nexus.admin.partners.agreements.{asked,give}`,
+  `nexus.admin.documents.{newTitle,newLede,back,missing}`.
+
 - One list, own pages, links (2026-10-31, after the signatures):
   `common.onTheSite`, `common.manage.*`, `nexus.getInvolved.{kinds.*,on,
   audition}`, `nexus.callboard.{kinds.role,kinds.shift,kinds.audition,

@@ -19,7 +19,7 @@ test("two officers see each other and each other's typing", async ({
   await signInWithPassword(first, president.email);
   await signInWithPassword(second, editor2.email);
 
-  await first.goto(`${urls.app}/society/minutes/new`);
+  await first.goto(`${urls.app}/society/meetings/new`);
   await setUpTwoStep(first);
   const title = `Shared minutes ${Date.now()}`;
   await first.getByRole("textbox", { name: "English" }).first().fill(title);
@@ -29,7 +29,7 @@ test("two officers see each other and each other's typing", async ({
     .fill("محضر مشترك");
   await first.getByRole("button", { name: "Save" }).click();
   // Saving new minutes moves the editor to their own address; the room opens there.
-  await expect(first).toHaveURL(/\/diwan\/society\/minutes\/(?!new)[^/?]+$/);
+  await expect(first).toHaveURL(/\/diwan\/society\/meetings\/(?!new)[^/?]+$/);
   const url = first.url();
 
   await second.goto(url);

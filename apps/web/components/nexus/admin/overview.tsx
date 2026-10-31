@@ -218,7 +218,7 @@ const QUICK: readonly {
     permission: "members.verify",
   },
   {
-    href: "/society/minutes/new",
+    href: "/society/meetings/new",
     icon: "file-text",
     key: "minutes",
     permission: "governance.minutes.write",

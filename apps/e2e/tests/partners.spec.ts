@@ -42,11 +42,10 @@ test("an organization applies, the President signs, and its dashboard opens", as
   await applicant.goto(`${urls.web}/partners/join`);
   await applicant.getByLabel("Name in English").fill(organization);
   await applicant
-    .getByLabel("What the partnership is for")
+    .getByLabel(/What the partnership is for/)
     .fill("Joint poetry readings each term.");
-  await applicant
-    .getByRole("checkbox", { name: "Perks for members and guests" })
-    .click();
+  // A club is at AUIB: where it works is not asked.
+  await expect(applicant.getByLabel("Where", { exact: true })).toHaveCount(0);
   // Signed in the applicant's name on the platform, never typed.
   const signedBy = applicant.getByLabel("Signed by");
   await expect(signedBy).toHaveValue("E2E Partner");
@@ -89,6 +88,14 @@ test("an organization applies, the President signs, and its dashboard opens", as
   await expect(
     applicant.getByRole("heading", { level: 1, name: organization })
   ).toBeVisible();
+  // A partner turns perks on by asking; the Society approves below.
+  await applicant
+    .getByRole("checkbox", { name: "Perks for members and guests" })
+    .click();
+  await applicant.getByRole("button", { name: "Ask the Society" }).click();
+  await expect(
+    applicant.getByText("Asked for, and waiting for the Society.")
+  ).toBeVisible();
   await applicant.getByRole("link", { name: "Perks" }).click();
   await applicant
     .getByRole("group", { name: "Offer" })
@@ -102,6 +109,27 @@ test("an organization applies, the President signs, and its dashboard opens", as
   await expect(
     applicant.getByText(`Free entry to readings ${stamp}`)
   ).toBeVisible();
+  // What a partner publishes waits for the Society: Partnerships turns on
+  // perks for the partner and publishes this one.
+  await expect(applicant.getByText("Waiting for the Society")).toBeVisible();
+  const { data: applied } = await db
+    .schema("governance")
+    .from("partners")
+    .select("id")
+    .eq("name_en", organization)
+    .single();
+  const given = await db
+    .schema("governance")
+    .from("partner_agreements")
+    .update({ asked_grants: null, grants: ["member_offer"] })
+    .eq("partner_id", applied?.id ?? "");
+  expect(given.error).toBeNull();
+  const published = await db
+    .schema("governance")
+    .from("member_offers")
+    .update({ is_published: true })
+    .eq("title_en", `Free entry to readings ${stamp}`);
+  expect(published.error).toBeNull();
 
   // The lead invites a guest by email; the invitation's link signs them up.
   await applicant.getByRole("link", { name: "People" }).click();
@@ -178,7 +206,7 @@ test("a member who leads their club's partnership stays a member", async ({
   await page.goto(`${urls.web}/partners/join`);
   await page.getByLabel("Name in English").fill(organization);
   await page
-    .getByLabel("What the partnership is for")
+    .getByLabel(/What the partnership is for/)
     .fill("Readings with the club.");
   await page.getByRole("checkbox", { name: /I sign this memorandum/ }).click();
   await page.getByRole("button", { name: "Apply and sign" }).click();

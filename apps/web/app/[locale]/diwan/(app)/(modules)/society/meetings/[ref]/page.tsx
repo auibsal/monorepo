@@ -6,7 +6,7 @@ import { SectionSpinner } from "@/components/nexus/states";
 import { titleFrom } from "@/lib/nexus/metadata";
 
 export const generateMetadata = titleFrom((t) =>
-  t("nexus.admin.governance.tabs.minutes")
+  t("nexus.admin.society.meetings.title")
 );
 
 const MinutesPage = async ({

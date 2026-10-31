@@ -26,10 +26,15 @@ import {
   SelectInput,
 } from "../kit";
 import { NotionManaged } from "../notion-managed";
+import { MeetingResolutions } from "./admin";
 
 type Body = "council" | "general_assembly";
 
-/** Minutes, co-edited by the General Secretary and the Council; draft until adopted. */
+/**
+ * A meeting of the Council or the General Assembly: its minutes, co-edited
+ * by the General Secretary and the Council and draft until adopted, and
+ * under them the resolutions it adopted.
+ */
 export const MinutesEditor = () => {
   const t = useTranslations("nexus.admin.governance");
   const tk = useTranslations("nexus.admin.kit");
@@ -104,7 +109,7 @@ export const MinutesEditor = () => {
         queryKey: ["admin", "governance"],
       });
       if (!minutesId) {
-        router.replace(`/society/minutes/${savedId}`);
+        router.replace(`/society/meetings/${savedId}`);
       }
     },
   });
@@ -264,6 +269,8 @@ export const MinutesEditor = () => {
         </div>
         <ErrorLine error={save.error} />
       </form>
+      {/* The resolutions this meeting adopted. */}
+      {minutesId ? <MeetingResolutions meetingId={minutesId} /> : null}
     </div>
   );
 };

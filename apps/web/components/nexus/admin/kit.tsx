@@ -26,6 +26,7 @@ import { DataError } from "@repo/sal-data";
 import { useTranslations } from "next-intl";
 import { type ReactNode, useId, useState } from "react";
 import { callApiText } from "@/lib/nexus/api";
+import { ChoiceInput } from "./choice-input";
 
 // ── Page heading ────────────────────────────────────────────────────────────
 
@@ -180,7 +181,9 @@ export const Field = ({ children, className, hint, label }: FieldProps) => {
   const id = useId();
   return (
     <div className={cn("grid content-start gap-2", className)}>
-      <Label htmlFor={id}>{label}</Label>
+      <Label htmlFor={id} id={`${id}-label`}>
+        {label}
+      </Label>
       {children(id)}
       {hint ? <p className="type-caption">{hint}</p> : null}
     </div>
@@ -280,18 +283,11 @@ export const DateTimeField = ({
 };
 
 /** A native select, styled like the inputs (works with keyboards and RTL). */
-export const SelectInput = ({
-  className,
-  ...props
-}: React.ComponentProps<"select">) => (
-  <select
-    className={cn(
-      "h-12 w-full border border-input bg-surface px-3 text-base focus-visible:outline-2",
-      className
-    )}
-    {...props}
-  />
-);
+/**
+ * One of several choices, on the page (owner, Oct 31, 2026: never the
+ * browser's pop-up list or a dialog). See `ChoiceInput`.
+ */
+export const SelectInput = ChoiceInput;
 
 // ── Actions ─────────────────────────────────────────────────────────────────
 

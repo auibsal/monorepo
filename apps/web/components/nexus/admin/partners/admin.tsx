@@ -465,6 +465,7 @@ export const PartnerPage = ({ partnerRef: ref }: { partnerRef: string }) => {
 type AgreementRow = {
   code: string | null;
   ends_on: string | null;
+  asked_grants: string[] | null;
   grants: string[];
   id: string;
   partner_id: string;
@@ -770,6 +771,21 @@ const Agreements = () => {
       ),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: key }),
   });
+  const give = useMutation({
+    mutationFn: async ({
+      grants: given,
+      id,
+    }: {
+      grants: string[];
+      id: string;
+    }) =>
+      unwrap(
+        await supabase
+          .schema("governance")
+          .rpc("give_grants", { agreement_id: id, grants: given })
+      ),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: key }),
+  });
   const open = async (id: string) => {
     const { url } = await callApi<{ url: string }>(
       supabase,
@@ -815,12 +831,28 @@ const Agreements = () => {
       key: "dates",
     },
     {
-      cell: (row) =>
-        row.grants.length > 0
-          ? row.grants
-              .map((g) => t(`grants.${g as partners.AgreementGrant}`))
-              .join(" · ")
-          : t("noGrants"),
+      cell: (row) => (
+        <div className="grid gap-1">
+          <span>
+            {row.grants.length > 0
+              ? row.grants
+                  .map((g) => t(`grants.${g as partners.AgreementGrant}`))
+                  .join(" · ")
+              : t("noGrants")}
+          </span>
+          {/* What the partner asked to turn on waits for Partnerships. */}
+          {row.asked_grants ? (
+            <span className="type-caption">
+              {t("asked", {
+                grants:
+                  row.asked_grants
+                    .map((g) => t(`grants.${g as partners.AgreementGrant}`))
+                    .join(" · ") || t("noGrants"),
+              })}
+            </span>
+          ) : null}
+        </div>
+      ),
       header: t("fields.grants"),
       key: "grants",
     },
@@ -843,6 +875,17 @@ const Agreements = () => {
           {row.status !== "draft" && row.signed_document_path ? (
             <Button onClick={() => open(row.id)} size="sm" variant="outline">
               {t("openSigned")}
+            </Button>
+          ) : null}
+          {row.status === "signed" && canManage && row.asked_grants ? (
+            <Button
+              onClick={() =>
+                give.mutate({ grants: row.asked_grants ?? [], id: row.id })
+              }
+              size="sm"
+              variant="outline"
+            >
+              {t("give")}
             </Button>
           ) : null}
           {row.status === "signed" &&
@@ -912,7 +955,7 @@ const Agreements = () => {
           {t("draft")}
         </Link>
       ) : null}
-      <ErrorLine error={update.error} />
+      <ErrorLine error={update.error ?? give.error} />
       <DataTable
         columns={columns}
         empty={t("empty")}

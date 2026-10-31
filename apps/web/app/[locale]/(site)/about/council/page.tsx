@@ -55,10 +55,7 @@ const GovernancePage = async ({ params }: LocaleParams) => {
   return (
     <div className="mx-auto grid w-full max-w-6xl gap-20 px-4 py-16 sm:py-24">
       <PageHeader lede={t("lede")} title={t("title")}>
-        <ManageLinks
-          diwan="/society/resolutions"
-          membership="/membership/society"
-        />
+        <ManageLinks diwan="/society" membership="/membership/society" />
       </PageHeader>
 
       <Section id="council" title={t("council")}>
