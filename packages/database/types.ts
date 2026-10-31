@@ -893,9 +893,17 @@ export type Database = {
           bio: string | null;
           camera_shy: boolean;
           created_at: string;
+          father_name_ar: string | null;
+          father_name_en: string | null;
+          first_name_ar: string | null;
+          first_name_en: string | null;
           full_name_ar: string | null;
           full_name_en: string;
+          grandfather_name_ar: string | null;
+          grandfather_name_en: string | null;
           id: string;
+          last_name_ar: string | null;
+          last_name_en: string | null;
           locale: string;
           notify_email: boolean;
           personal_email: string | null;
@@ -910,9 +918,17 @@ export type Database = {
           bio?: string | null;
           camera_shy?: boolean;
           created_at?: string;
+          father_name_ar?: string | null;
+          father_name_en?: string | null;
+          first_name_ar?: string | null;
+          first_name_en?: string | null;
           full_name_ar?: string | null;
           full_name_en?: string;
+          grandfather_name_ar?: string | null;
+          grandfather_name_en?: string | null;
           id: string;
+          last_name_ar?: string | null;
+          last_name_en?: string | null;
           locale?: string;
           notify_email?: boolean;
           personal_email?: string | null;
@@ -927,9 +943,17 @@ export type Database = {
           bio?: string | null;
           camera_shy?: boolean;
           created_at?: string;
+          father_name_ar?: string | null;
+          father_name_en?: string | null;
+          first_name_ar?: string | null;
+          first_name_en?: string | null;
           full_name_ar?: string | null;
           full_name_en?: string;
+          grandfather_name_ar?: string | null;
+          grandfather_name_en?: string | null;
           id?: string;
+          last_name_ar?: string | null;
+          last_name_en?: string | null;
           locale?: string;
           notify_email?: boolean;
           personal_email?: string | null;
@@ -1275,6 +1299,19 @@ export type Database = {
         }[];
       };
       member_insights: { Args: Record<PropertyKey, never>; Returns: Json };
+      my_name_parts: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          father_name_ar: string;
+          father_name_en: string;
+          first_name_ar: string;
+          first_name_en: string;
+          grandfather_name_ar: string;
+          grandfather_name_en: string;
+          last_name_ar: string;
+          last_name_en: string;
+        }[];
+      };
       my_personal_email: {
         Args: Record<PropertyKey, never>;
         Returns: {

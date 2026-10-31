@@ -94,7 +94,15 @@ describe("signing up", () => {
     password: "a-long-password",
     redirectTo: "https://x/cb",
   };
-  const names = { ar: "شاهين فرجو", en: "Shaheen Farjo" };
+  const names = {
+    ar: { father: "كريم", first: "لينا", grandfather: "حسن", last: "التميمي" },
+    en: {
+      father: "Kareem",
+      first: "Lina",
+      grandfather: "Hasan",
+      last: "Tamimi",
+    },
+  };
 
   test("an AUIB address needs only email and password; names come in setup", async () => {
     const { signUp, supabase } = client();
@@ -125,8 +133,12 @@ describe("signing up", () => {
       options: { data: Record<string, unknown> };
     };
     expect(sent.options.data).toMatchObject({
-      full_name_ar: "شاهين فرجو",
-      full_name_en: "Shaheen Farjo",
+      father_name_en: "Kareem",
+      first_name_ar: "لينا",
+      first_name_en: "Lina",
+      grandfather_name_ar: "حسن",
+      last_name_ar: "التميمي",
+      last_name_en: "Tamimi",
     });
   });
 });

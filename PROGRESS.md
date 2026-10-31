@@ -1670,6 +1670,8 @@ Covered by automated tests so far:
 
 ## needs-native-review (Arabic written for the platform)
 
+- Four-part names (2026-10-31): `nexus.setup.name.{hint,needed,parts.*}`,
+  `auth.signUp.{namesHint,outsideAuib}`.
 - Partners and the smaller moves (2026-10-31): `nexus.partnerJoin.*`,
   `nexus.partnerDesk.*`, `nexus.admin.verification.*`, `nexus.pending.*`,
   `nexus.admin.member.scopes.partner`, `web.partners.{apply,work}`,

@@ -7,12 +7,14 @@ import { Button } from "@repo/design-system/components/ui/button";
 import { Input } from "@repo/design-system/components/ui/input";
 import { Label } from "@repo/design-system/components/ui/label";
 import { Link } from "@repo/internationalization/navigation";
+import { names as nameParts } from "@repo/sal-data";
 import { useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useId, useState } from "react";
 import { useAuthError } from "@/lib/nexus/auth-messages";
 import { callbackUrl, safeNextPath } from "@/lib/nexus/navigation";
 import { useScreenTop } from "@/lib/nexus/use-screen-top";
+import { NamePartsFields } from "../setup-form";
 import { EmailCode } from "./email-code";
 import { useHumanCheck } from "./human-check";
 
@@ -25,15 +27,18 @@ export const SignUpForm = () => {
   const id = useId();
   const [values, setValues] = useState({
     email: "",
-    nameAr: "",
-    nameEn: "",
     password: "",
   });
   // AUIB addresses give their names in setup; a partner verifies others
-  // (owner, Oct 31, 2026) by theirs, so they give them here.
-  const named = [values.nameEn, values.nameAr].every(
-    (name) => name.trim() !== ""
-  );
+  // (owner, Oct 31, 2026) by theirs, so they give them here, in four
+  // parts in each language as on their papers.
+  const [fullNames, setFullNames] = useState<nameParts.FourPartNames>({
+    ar: nameParts.emptyParts(),
+    en: nameParts.emptyParts(),
+  });
+  const named =
+    nameParts.partsComplete(fullNames.en) &&
+    nameParts.partsComplete(fullNames.ar);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string>();
   const [sentTo, setSentTo] = useState<string>();
@@ -53,7 +58,7 @@ export const SignUpForm = () => {
       captchaToken: human.token,
       email: values.email,
       locale: locale === "ar" ? "ar" : "en",
-      names: external ? { ar: values.nameAr, en: values.nameEn } : undefined,
+      names: external ? fullNames : undefined,
       password: values.password,
       // The confirmation link brings the member back to what they started.
       redirectTo: callbackUrl(locale, next),
@@ -123,35 +128,21 @@ export const SignUpForm = () => {
             <p className="type-caption" id={`${id}-names-hint`}>
               {t("signUp.namesHint")}
             </p>
-            <div className="grid gap-3 sm:grid-cols-2">
-              <div className="grid gap-2">
-                <Label htmlFor={`${id}-name-en`}>{t("signUp.nameEn")}</Label>
-                <Input
-                  aria-describedby={`${id}-names-hint`}
-                  autoComplete="name"
-                  dir="ltr"
-                  id={`${id}-name-en`}
-                  lang="en"
-                  maxLength={120}
-                  onChange={set("nameEn")}
-                  required
-                  value={values.nameEn}
+            {(["en", "ar"] as const).map((lang) => (
+              <fieldset className="grid gap-3" key={lang}>
+                <legend className="mb-2 font-medium text-sm">
+                  {lang === "en" ? t("signUp.nameEn") : t("signUp.nameAr")}
+                </legend>
+                <NamePartsFields
+                  describedBy={`${id}-names-hint`}
+                  language={lang}
+                  onChange={(parts) =>
+                    setFullNames((current) => ({ ...current, [lang]: parts }))
+                  }
+                  parts={fullNames[lang]}
                 />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor={`${id}-name-ar`}>{t("signUp.nameAr")}</Label>
-                <Input
-                  aria-describedby={`${id}-names-hint`}
-                  dir="rtl"
-                  id={`${id}-name-ar`}
-                  lang="ar"
-                  maxLength={120}
-                  onChange={set("nameAr")}
-                  required
-                  value={values.nameAr}
-                />
-              </div>
-            </div>
+              </fieldset>
+            ))}
           </div>
         ) : null}
         {human.element}

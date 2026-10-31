@@ -101,8 +101,8 @@
       "signIn": "Sign in",
       "nameEn": "Your name in English",
       "nameAr": "Your name in Arabic",
-      "namesHint": "In both languages, as they should appear on your membership card and certificates.",
-      "outsideAuib": "Not an AUIB address, so the Council confirms these accounts. Tell us your name and a few words about yourself."
+      "namesHint": "In both languages and in four parts, as on your ID. Your card and certificates show your first and last.",
+      "outsideAuib": "Not an AUIB address, so one of the Society's partners confirms these accounts. Tell us your full name."
     },
     "forgot": {
       "title": "Reset your password",
@@ -229,10 +229,16 @@
       "submit": "Continue",
       "name": {
         "title": "Your name",
-        "hint": "Your name as it should appear on your card, certificates and bylines.",
-        "needed": "Tell us your name in English and in Arabic. It appears on your membership card, the Council page, the Register and your certificates.",
+        "hint": "Your full name in four parts, as on your ID. Your card, the Register, certificates and bylines show your first and last.",
+        "needed": "Tell us your full name in English and in Arabic, in four parts. Your first and last appear on your membership card, the Council page, the Register and your certificates.",
         "en": "Your name in English",
-        "ar": "Your name in Arabic"
+        "ar": "Your name in Arabic",
+        "parts": {
+          "first": "Name",
+          "father": "Father's name",
+          "grandfather": "Grandfather's name",
+          "last": "Family name"
+        }
       },
       "personalEmailLater": "After graduation? You can add a personal email in Profile once you're in.",
       "stepOf": "Step {step} of {count}",

@@ -7,7 +7,12 @@ import { Button } from "@repo/design-system/components/ui/button";
 import { Input } from "@repo/design-system/components/ui/input";
 import { Label } from "@repo/design-system/components/ui/label";
 import { Link, useRouter } from "@repo/internationalization/navigation";
-import { membership, unwrap } from "@repo/sal-data";
+import {
+  membership,
+  names as nameParts,
+  partners,
+  unwrap,
+} from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -27,13 +32,11 @@ import { ErrorState, FullPageSpinner } from "./states";
 
 type PledgeKind = "human_authorship" | "member";
 
-const SPACES = /\s+/;
-
-/** The name in each language, each whole (owner, Oct 31, 2026). */
-export interface Names {
-  ar: string;
-  en: string;
-}
+/**
+ * The name in each language, in four parts as on the person's papers
+ * (owner, Oct 31, 2026): name, father's, grandfather's and last.
+ */
+export type Names = nameParts.FourPartNames;
 
 export type SetupStep =
   | { kind: "nameEn" }
@@ -47,12 +50,6 @@ export interface SetupPlan {
   welcome: boolean;
 }
 
-/** The first word of a name, for a greeting. */
-const firstWord = (name: string) => name.trim().split(SPACES)[0] ?? "";
-
-const filled = (...parts: string[]) =>
-  parts.every((part) => part.trim() !== "");
-
 /**
  * What setup still asks, one question per screen (owner, 2026-10-25): each
  * name the member hasn't given (English, then Arabic), each pledge not yet
@@ -62,27 +59,47 @@ const filled = (...parts: string[]) =>
  * follow the language signed up in and start on (both in Settings).
  */
 export const planSetup = ({
+  member = true,
   names,
   pending,
   setupDone,
 }: {
+  /** False for a partner's representative who is not a member: names only. */
+  member?: boolean;
   names: Names;
   pending: readonly PledgeKind[];
   setupDone: boolean;
 }): SetupPlan => ({
   steps: [
-    ...(filled(names.en) ? [] : [{ kind: "nameEn" } as const]),
-    ...(filled(names.ar) ? [] : [{ kind: "nameAr" } as const]),
-    ...pending.map((pledge) => ({ kind: "pledge", pledge }) as const),
-    ...(setupDone ? [] : [{ kind: "photos" } as const]),
+    ...(nameParts.partsComplete(names.en) ? [] : [{ kind: "nameEn" } as const]),
+    ...(nameParts.partsComplete(names.ar) ? [] : [{ kind: "nameAr" } as const]),
+    ...(member
+      ? pending.map((pledge) => ({ kind: "pledge", pledge }) as const)
+      : []),
+    ...(setupDone || !member ? [] : [{ kind: "photos" } as const]),
   ],
-  welcome: !setupDone,
+  welcome: member && !setupDone,
 });
 
-const namesFrom = (profile: {
-  full_name_ar: string | null;
-  full_name_en: string;
-}): Names => ({ ar: profile.full_name_ar ?? "", en: profile.full_name_en });
+const namesFrom = (
+  profile: Parameters<typeof nameParts.partsFrom>[0]
+): Names => ({
+  ar: nameParts.partsFrom(profile, "ar"),
+  en: nameParts.partsFrom(profile, "en"),
+});
+
+/** Verified as one of the partners' people (who make the pledges too). */
+const useIsPartnerGuest = () => {
+  const { supabase, user } = useAuth();
+  return useQuery({
+    enabled: Boolean(user),
+    queryFn: async () =>
+      (await partners.myAffiliations(supabase)).some(
+        (a) => a.status === "verified"
+      ),
+    queryKey: ["affiliations", "guest", user?.id ?? ""],
+  });
+};
 
 const usePledgeVersions = () => {
   const { supabase } = useAuth();
@@ -128,27 +145,34 @@ export const SetupForm = () => {
   const versions = usePledgeVersions();
   const heading = useRef<HTMLHeadingElement>(null);
   const [plan, setPlan] = useState<SetupPlan | null>(null);
-  const [names, setNames] = useState<Names>({ ar: "", en: "" });
+  const [names, setNames] = useState<Names>({
+    ar: nameParts.emptyParts(),
+    en: nameParts.emptyParts(),
+  });
+  const guest = useIsPartnerGuest();
   const [index, setIndex] = useState(0);
   const [welcome, setWelcome] = useState(false);
 
   // The plan is taken once, from what was saved when setup opened, so the
   // steps don't shift as the answers are saved.
   useEffect(() => {
-    if (plan || !profile.data || !status.data) {
+    if (plan || !profile.data || !status.data || guest.isPending) {
       return;
     }
     const current = namesFrom(profile.data);
     setNames(current);
     setPlan(
       planSetup({
+        // Members and partners' guests make the pledges; a partner's
+        // representative who is neither only gives their name.
+        member: status.data.verified || guest.data === true,
         names: current,
         pending: (status.data.pending_pledges ?? []) as PledgeKind[],
         setupDone: Boolean(profile.data.setup_completed_at),
       })
     );
     window.history.replaceState(null, "", stepUrl(0));
-  }, [plan, profile.data, status.data]);
+  }, [guest.data, guest.isPending, plan, profile.data, status.data]);
 
   // The browser's Back and Forward move between the steps.
   useEffect(() => {
@@ -190,9 +214,9 @@ export const SetupForm = () => {
         }
       };
       if (answer.kind === "nameEn") {
-        await update({ full_name_en: answer.names.en.trim() });
+        await update(nameParts.partsUpdate(answer.names.en, "en"));
       } else if (answer.kind === "nameAr") {
-        await update({ full_name_ar: answer.names.ar.trim() });
+        await update(nameParts.partsUpdate(answer.names.ar, "ar"));
       } else if (answer.kind === "pledge") {
         await membership.acceptPledge(
           supabase,
@@ -240,7 +264,7 @@ export const SetupForm = () => {
           tabIndex={-1}
         >
           {t("welcome.title", {
-            name: firstWord(names.en) || firstWord(names.ar),
+            name: names.en.first.trim() || names.ar.first.trim(),
           })}
         </h1>
         <p className="type-body">{t("welcome.body")}</p>
@@ -354,7 +378,7 @@ const StepHeading = ({
   </h2>
 );
 
-/** One language's first and last name; Enter moves on. */
+/** One language's four parts, as on the person's papers; Enter moves on. */
 const NameStep = ({
   back,
   failed,
@@ -372,7 +396,7 @@ const NameStep = ({
 }) => {
   const t = useTranslations("nexus.setup");
   const id = useId();
-  const ready = filled(names[language]);
+  const ready = nameParts.partsComplete(names[language]);
   const submit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (ready && !pending) {
@@ -389,24 +413,12 @@ const NameStep = ({
           {t("name.hint")}
         </p>
       </div>
-      <div className="grid max-w-md gap-2">
-        <Label htmlFor={`${id}-name`}>
-          {language === "en" ? t("name.en") : t("name.ar")}
-        </Label>
-        <Input
-          aria-describedby={`${id}-hint`}
-          autoComplete={language === "en" ? "name" : "off"}
-          dir={language === "en" ? "ltr" : "rtl"}
-          id={`${id}-name`}
-          lang={language}
-          maxLength={120}
-          onChange={(event) =>
-            onChange({ ...names, [language]: event.target.value })
-          }
-          required
-          value={names[language]}
-        />
-      </div>
+      <NamePartsFields
+        describedBy={`${id}-hint`}
+        language={language}
+        onChange={(parts) => onChange({ ...names, [language]: parts })}
+        parts={names[language]}
+      />
       {failed}
       <div className="flex items-center gap-6">
         <Button disabled={!ready || pending} type="submit">
@@ -415,6 +427,55 @@ const NameStep = ({
         {back}
       </div>
     </form>
+  );
+};
+
+/** What the browser may fill: the given and family names, in English. */
+const autoComplete = (language: "en" | "ar", part: nameParts.NamePart) => {
+  if (language !== "en") {
+    return "off";
+  }
+  if (part === "first") {
+    return "given-name";
+  }
+  return part === "last" ? "family-name" : "off";
+};
+
+/** The four parts of a name in one language, all required. */
+export const NamePartsFields = ({
+  describedBy,
+  language,
+  onChange,
+  parts,
+}: {
+  describedBy?: string;
+  language: "en" | "ar";
+  onChange: (parts: nameParts.NameParts) => void;
+  parts: nameParts.NameParts;
+}) => {
+  const t = useTranslations("nexus.setup.name.parts");
+  const id = useId();
+  return (
+    <div className="grid max-w-xl gap-4 sm:grid-cols-2">
+      {nameParts.nameParts.map((part) => (
+        <div className="grid gap-2" key={part}>
+          <Label htmlFor={`${id}-${part}`}>{t(part)}</Label>
+          <Input
+            aria-describedby={describedBy}
+            autoComplete={autoComplete(language, part)}
+            dir={language === "en" ? "ltr" : "rtl"}
+            id={`${id}-${part}`}
+            lang={language}
+            maxLength={60}
+            onChange={(event) =>
+              onChange({ ...parts, [part]: event.target.value })
+            }
+            required
+            value={parts[part]}
+          />
+        </div>
+      ))}
+    </div>
   );
 };
 

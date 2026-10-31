@@ -15,7 +15,7 @@ test("sign up with an AUIB address, confirm by email, finish setup", async ({
   // An AUIB address needs only the address and a password.
   await page.getByLabel("Email").fill(email);
   await page.getByLabel("Password").fill(PASSWORD);
-  await expect(page.getByLabel("Your name in English")).toHaveCount(0);
+  await expect(page.getByLabel("Family name")).toHaveCount(0);
   // Scrolled down to the button, as on a phone.
   await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
   await page.getByRole("button", { name: "Create account" }).click();
@@ -34,20 +34,26 @@ test("sign up with an AUIB address, confirm by email, finish setup", async ({
   await expect(page).toHaveURL(/\/welcome\/1(\?|$)/);
   await expect(page.getByText("Step 1 of 5")).toBeVisible();
   await expectAccessible(page);
-  // One name in each language.
-  await page.getByLabel("Your name in English").fill("New Member");
-  await page.getByLabel("Your name in English").press("Enter");
+  // The name in four parts, in English, then in Arabic.
+  await page.getByLabel("Name", { exact: true }).fill("New");
+  await page.getByLabel("Father's name", { exact: true }).fill("Kareem");
+  await page.getByLabel("Grandfather's name").fill("Hasan");
+  await page.getByLabel("Family name").fill("Member");
+  await page.getByLabel("Family name").press("Enter");
 
   await expect(page.getByText("Step 2 of 5")).toBeVisible();
   await expect(page).toHaveURL(/\/welcome\/2(\?|$)/);
-  await page.getByLabel("Your name in Arabic").fill("عضو جديد");
+  await page.getByLabel("Name", { exact: true }).fill("عضو");
+  await page.getByLabel("Father's name", { exact: true }).fill("كريم");
+  await page.getByLabel("Grandfather's name").fill("حسن");
+  await page.getByLabel("Family name").fill("جديد");
   // The browser's Back goes to the last screen, answers kept.
   await page.goBack();
-  await expect(page.getByLabel("Your name in English")).toHaveValue(
-    "New Member"
+  await expect(page.getByLabel("Father's name", { exact: true })).toHaveValue(
+    "Kareem"
   );
   await page.getByRole("button", { name: "Continue" }).click();
-  await expect(page.getByLabel("Your name in Arabic")).toHaveValue("عضو جديد");
+  await expect(page.getByLabel("Family name")).toHaveValue("جديد");
   await page.getByRole("button", { name: "Continue" }).click();
 
   await expect(page.getByText("Step 3 of 5")).toBeVisible();
@@ -102,17 +108,28 @@ test("sign up with an AUIB address, confirm by email, finish setup", async ({
   expect(data?.interests).toEqual(["poetry", "theater"]);
 });
 
-test("an outside address gives its names, for its partner to verify", async ({ page }) => {
+test("an outside address gives its names, for its partner to verify", async ({
+  page,
+}) => {
   await page.goto(`${urls.web}/sign-up`);
   await page.getByLabel("Email").fill(`e2e-${Date.now()}@example.com`);
   await page.getByLabel("Password").fill(PASSWORD);
   const create = page.getByRole("button", { name: "Create account" });
-  // One name in each language.
-  const english = page.getByLabel("Your name in English");
+  // Four parts in each language.
+  const english = page.getByRole("group", { name: "Your name in English" });
+  const arabic = page.getByRole("group", { name: "Your name in Arabic" });
   await expect(english).toBeVisible();
   await expect(create).toBeDisabled();
-  await english.fill("Guest Writer");
-  await page.getByLabel("Your name in Arabic").fill("ضيف كاتب");
+  for (const [group, parts] of [
+    [english, ["Guest", "Ali", "Omar", "Writer"]],
+    [arabic, ["ضيف", "علي", "عمر", "كاتب"]],
+  ] as const) {
+    await group.getByLabel("Name", { exact: true }).fill(parts[0]);
+    await group.getByLabel("Father's name", { exact: true }).fill(parts[1]);
+    await group.getByLabel("Grandfather's name").fill(parts[2]);
+    await expect(create).toBeDisabled();
+    await group.getByLabel("Family name").fill(parts[3]);
+  }
   await expectAccessible(page);
   await expect(create).toBeEnabled();
 });
@@ -147,4 +164,47 @@ test("a sign-in email's code works where its link can't be opened", async ({
   await page.getByLabel("Code from the email").fill(code ?? "");
   await page.getByRole("button", { name: "Continue" }).click();
   await expect(page).toHaveURL(new RegExp(`${urls.web}/membership/?$`));
+});
+
+test("a member with a name from before the four parts is asked for them at sign-in", async ({
+  page,
+}) => {
+  const db = admin();
+  const { data: users } = await db.auth.admin.listUsers({ perPage: 1000 });
+  const id = users.users.find((u) => u.email === member.email)?.id ?? "";
+  // As members kept them until Oct 31, 2026: one whole name per language.
+  await db
+    .schema("core")
+    .from("profiles")
+    .update({
+      father_name_ar: null,
+      father_name_en: null,
+      first_name_ar: null,
+      first_name_en: null,
+      full_name_ar: "اختبار تجريبي",
+      full_name_en: "E2E Tester",
+      grandfather_name_ar: null,
+      grandfather_name_en: null,
+      last_name_ar: null,
+      last_name_en: null,
+    })
+    .eq("id", id);
+
+  await page.goto(`${urls.web}/sign-in`);
+  await page.getByLabel("Email").fill(member.email);
+  await page.getByLabel("Password").fill(PASSWORD);
+  await page.getByRole("button", { exact: true, name: "Sign in" }).click();
+  await expect(page).toHaveURL(/\/welcome\/1/);
+  // The first and last words are offered as the first and fourth parts.
+  await expect(page.getByLabel("Name", { exact: true })).toHaveValue("E2E");
+  await expect(page.getByLabel("Family name")).toHaveValue("Tester");
+  await page.getByLabel("Father's name", { exact: true }).fill("Test");
+  await page.getByLabel("Grandfather's name").fill("Auto");
+  await page.getByRole("button", { name: "Continue" }).click();
+  await expect(page.getByLabel("Family name")).toHaveValue("تجريبي");
+  await page.getByLabel("Father's name", { exact: true }).fill("تجريبي");
+  await page.getByLabel("Grandfather's name").fill("آلي");
+  await page.getByRole("button", { name: "Continue" }).click();
+  await expect(page).toHaveURL(new RegExp(`${urls.web}/membership/?$`));
+  await expect(page.getByText("E2E Tester").first()).toBeVisible();
 });

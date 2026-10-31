@@ -221,7 +221,7 @@ Qirtas, unlike a program, may have several documents:
 - **The newsroom is for staff.** The masthead writes and publishes there directly, one page per section: News, Voices, Letters, Gallery, Video (with Next Stop) and Games. Only features get their own pages: Review, Editions, Awards and Ads.
 - **Awards, never Prizes.** The Qirtas Awards: the Mutanabbi Award and the Tabari, Jahiz, Nazik, Wasiti and Ibn al-Haytham Awards. The names are confirmed.
 - **People are chosen, not typed.** Judges, bylines and anyone else the platform names are picked from the register, and their names follow their profile. A byline is a member, under their own name or a pen name; an author may choose a pen name when sending work. There is no Anonymous byline.
-- **One name per language.** A member has one full name in English and one in Arabic; no separate first and last names.
+- **Names in four parts** (revised the same day). A name in English and in Arabic, both required, each in four parts as on the person's ID: name, father's name, grandfather's name, and the fourth (family) name. The card, the Register and everywhere else a name shows use the first and the fourth. Members who signed up before are asked for the parts the next time they sign in; the same goes for partners' people (not their organizations' names).
 - **Addresses, not queries.** Every view has its own address: /events/2026-11, /company/<production>, /search/<words>, each Diwan tab its own page.
 - **The About page** is the hub for the Society's pages: the Council, the Library, Partners, Contact, the press kit and Verify.
 - **Notion holds what the platform retired** (forms, letters, officers' papers), as templates linked from the Desk; Diwan pages with a Notion counterpart say so.

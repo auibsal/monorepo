@@ -219,9 +219,20 @@ any schema change. Integration tests run against a local stack with
   `title_ar`, …). Store times as `timestamptz` (UTC); display Asia/Baghdad.
 - **Blind review.** Readers never receive author identity before a decision;
   verify against network responses, not the UI.
-- **Member data.** One name per language (owner, Oct 31, 2026:
-  `full_name_en` and `full_name_ar`, both required; the given and family
-  parts are gone). Wherever a person is named (judges, bylines, hosts,
+- **Member data.** A name in four parts in each language, as on the
+  person's papers (owner, Oct 31, 2026, the second decision that day):
+  name, father's, grandfather's and last (`first_name_en`,
+  `father_name_en`, `grandfather_name_en`, `last_name_en` and the `_ar`
+  four), all eight required, for members, partners' representatives and
+  their guests alike (`names` in `@repo/sal-data`, `NamePartsFields`).
+  Wherever a name shows (the card, the Register, bylines, certificates)
+  it is the first and the fourth: `full_name_en` and `full_name_ar` are
+  kept from the parts by `private.tidy_names`, and members write only the
+  parts. The parts are the owner's alone (`core.my_name_parts()`); no one
+  else reads a father's or grandfather's name. Anyone without all eight
+  is sent to `/welcome` at their next sign-in (`hasAllNames`,
+  `RequireMember`, `RequirePartner`), with the first and last words of
+  their old name offered. Wherever a person is named (judges, bylines, hosts,
   roles), pick them from the register (`MemberPicker`) and never type
   their names: a trigger copies the profile's names and keeps them in
   step (`private.profile_names_to_bylines`). Everything in
@@ -232,10 +243,10 @@ any schema change. Integration tests run against a local stack with
   (owner, Oct 25, 2026).
 - **Sign-up asks little** (owner, Oct 25, 2026). An AUIB address signs up
   with the address and a password; an outside address also gives its
-  name in each language, and one of the partners verifies it (owner, Oct
+  name in four parts in each language, and one of the partners verifies it (owner, Oct
   31, 2026: the Society verifies partners only). `/welcome` then asks one question
   per screen (`planSetup` in `components/nexus/setup-form.tsx`): each
-  language's name not yet given, each pledge not yet made in its current version, and, the
+  language's four parts not yet given, each pledge not yet made in its current version, and, the
   first time, photos; then the welcome screen with the card. Language
   follows the sign-up page and email notices start on (both in Settings).
   The optional details are "Tell us more" (`/membership/settings/more`, a question

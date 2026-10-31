@@ -93,19 +93,22 @@ export interface SignUpDetails {
   email: string;
   locale: "ar" | "en";
   /**
-   * The name in English and the name in Arabic, each whole (owner, Oct 31,
-   * 2026). Required for addresses outside AUIB, which the Council verifies
-   * by them; AUIB addresses give their names in setup, after confirming the
+   * The name in English and in Arabic, each in four parts as on the
+   * person's papers: name, father's, grandfather's and last (owner, Oct 31,
+   * 2026). Required for addresses outside AUIB, which a partner verifies by
+   * them; AUIB addresses give their names in setup, after confirming the
    * email.
    */
-  names?: {
-    ar: string;
-    en: string;
-  };
+  names?: Record<"ar" | "en", NameParts>;
   password: string;
   /** Where the confirmation link lands (the Nexus /auth/callback). */
   redirectTo: string;
 }
+
+const NAME_PARTS = ["first", "father", "grandfather", "last"] as const;
+
+/** One language's name: name, father's, grandfather's and last. */
+export type NameParts = Record<(typeof NAME_PARTS)[number], string>;
 
 /**
  * Creates an account. Metadata here only fills in the profile; it is never
@@ -124,11 +127,15 @@ export const signUpWithEmail = async (
     return { code: "weak_password", ok: false };
   }
   const auib = isAuibEmail(email);
-  const names = {
-    ar: details.names?.ar.trim() ?? "",
-    en: details.names?.en.trim() ?? "",
-  };
-  const named = Object.values(names).every((part) => part !== "");
+  const parts = Object.fromEntries(
+    (["en", "ar"] as const).flatMap((language) =>
+      NAME_PARTS.map((part) => [
+        `${part}_name_${language}`,
+        details.names?.[language][part].trim() ?? "",
+      ])
+    )
+  );
+  const named = Object.values(parts).every((part) => part !== "");
   if (!(auib || named)) {
     return { code: "names_required", ok: false };
   }
@@ -138,7 +145,7 @@ export const signUpWithEmail = async (
     options: {
       ...captcha(details.captchaToken),
       data: {
-        ...(named ? { full_name_ar: names.ar, full_name_en: names.en } : {}),
+        ...(named ? parts : {}),
         locale: details.locale,
       },
       emailRedirectTo: details.redirectTo,

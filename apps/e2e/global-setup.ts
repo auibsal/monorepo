@@ -67,9 +67,16 @@ export default async function globalSetup() {
       .schema("core")
       .from("profiles")
       .update({
-        // A name in each language: the gate asks for both.
-        full_name_ar: "اختبار تجريبي",
-        full_name_en: "E2E Tester",
+        // A name in each language, in four parts: the gate asks for all
+        // eight; the name shown is the first and the fourth.
+        father_name_ar: "تجريبي",
+        father_name_en: "Test",
+        first_name_ar: "اختبار",
+        first_name_en: "E2E",
+        grandfather_name_ar: "آلي",
+        grandfather_name_en: "Auto",
+        last_name_ar: "تجريبي",
+        last_name_en: "Tester",
         setup_completed_at: new Date().toISOString(),
       })
       .eq("id", id);

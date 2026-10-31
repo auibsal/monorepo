@@ -3,17 +3,17 @@
 import { useAuth } from "@repo/auth/provider";
 import { Button } from "@repo/design-system/components/ui/button";
 import { Checkbox } from "@repo/design-system/components/ui/checkbox";
-import { Input } from "@repo/design-system/components/ui/input";
 import { Label } from "@repo/design-system/components/ui/label";
 import { Textarea } from "@repo/design-system/components/ui/textarea";
 import { formatNumber } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
-import { membership } from "@repo/sal-data";
+import { membership, names } from "@repo/sal-data";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { type FormEvent, useEffect, useId, useState } from "react";
 import { queryKeys, useProfile } from "@/lib/nexus/queries";
 import { DiwanPage, DiwanSection } from "../page";
+import { NamePartsFields } from "../setup-form";
 import { ErrorState, SectionSpinner } from "../states";
 import { Affiliations } from "./affiliations";
 import { DetailsSection } from "./details-fields";
@@ -28,8 +28,7 @@ export const ProfileScreen = () => {
   const [form, setForm] = useState({
     bio: "",
     camera_shy: false,
-    full_name_ar: "",
-    full_name_en: "",
+    names: { ar: names.emptyParts(), en: names.emptyParts() },
   });
 
   useEffect(() => {
@@ -37,8 +36,10 @@ export const ProfileScreen = () => {
       setForm({
         bio: profile.data.bio ?? "",
         camera_shy: profile.data.camera_shy,
-        full_name_ar: profile.data.full_name_ar ?? "",
-        full_name_en: profile.data.full_name_en,
+        names: {
+          ar: names.partsFrom(profile.data, "ar"),
+          en: names.partsFrom(profile.data, "en"),
+        },
       });
     }
   }, [profile.data]);
@@ -51,8 +52,10 @@ export const ProfileScreen = () => {
         .schema("core")
         .from("profiles")
         .update({
-          ...form,
+          ...names.partsUpdate(form.names.en, "en"),
+          ...names.partsUpdate(form.names.ar, "ar"),
           bio: form.bio.trim() || null,
+          camera_shy: form.camera_shy,
         })
         .eq("id", user?.id ?? "");
       if (error) {
@@ -81,9 +84,8 @@ export const ProfileScreen = () => {
 
   const submit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const named = [form.full_name_en, form.full_name_ar].every(
-      (name) => name.trim() !== ""
-    );
+    const named =
+      names.partsComplete(form.names.en) && names.partsComplete(form.names.ar);
     if (words <= membership.BIO_MAX_WORDS && named) {
       save.mutate();
     }
@@ -102,29 +104,24 @@ export const ProfileScreen = () => {
     >
       <DiwanSection id="about-you" title={t("profile.aboutYou")}>
         <form className="grid gap-4" onSubmit={submit}>
-          <div className="grid gap-4 sm:grid-cols-2">
-            {(["en", "ar"] as const).map((lang) => (
-              <div className="grid gap-2" key={lang}>
-                <Label htmlFor={`${id}-name-${lang}`}>
-                  {t(`setup.name.${lang}`)}
-                </Label>
-                <Input
-                  dir={lang === "en" ? "ltr" : "rtl"}
-                  id={`${id}-name-${lang}`}
-                  lang={lang}
-                  maxLength={120}
-                  onChange={(e) =>
-                    setForm((f) => ({
-                      ...f,
-                      [`full_name_${lang}`]: e.target.value,
-                    }))
-                  }
-                  required
-                  value={form[`full_name_${lang}`]}
-                />
-              </div>
-            ))}
-          </div>
+          {(["en", "ar"] as const).map((lang) => (
+            <fieldset className="grid gap-3" key={lang}>
+              <legend className="mb-2 font-medium text-sm">
+                {t(`setup.name.${lang}`)}
+              </legend>
+              <NamePartsFields
+                language={lang}
+                onChange={(parts) =>
+                  setForm((f) => ({
+                    ...f,
+                    names: { ...f.names, [lang]: parts },
+                  }))
+                }
+                parts={form.names[lang]}
+              />
+            </fieldset>
+          ))}
+          <p className="type-caption">{t("setup.name.hint")}</p>
           <div className="grid gap-2">
             <Label htmlFor={`${id}-bio`}>{t("profile.bio")}</Label>
             <Textarea

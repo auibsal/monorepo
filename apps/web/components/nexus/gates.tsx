@@ -141,19 +141,34 @@ export const RequireMember = ({ children }: GateProps) => {
  */
 export const RequirePartner = ({ children }: GateProps) => {
   const grants = useGrants();
+  const profile = useProfile();
   const router = useRouter();
+  const pathname = usePathname();
   const holds = (grants.data ?? []).some(
     (g) => g.permission === "partners.own"
   );
+  // A partner's people give their names in four parts too (owner, Oct 31,
+  // 2026), at /welcome, before their partner's page.
+  const unnamed = profile.isSuccess && !hasAllNames(profile.data);
   useEffect(() => {
     if (grants.isSuccess && !grants.isFetching && !holds) {
       router.replace("/membership");
+    } else if (holds && unnamed) {
+      router.replace({ pathname: "/welcome", query: { next: pathname } });
     }
-  }, [grants.isFetching, grants.isSuccess, holds, router]);
-  if (grants.isError) {
-    return <ErrorState onRetry={() => grants.refetch()} />;
+  }, [grants.isFetching, grants.isSuccess, holds, pathname, router, unnamed]);
+  if (grants.isError || profile.isError) {
+    return (
+      <ErrorState
+        onRetry={() => Promise.all([grants.refetch(), profile.refetch()])}
+      />
+    );
   }
-  return grants.isSuccess && holds ? children : <PageSpinner />;
+  return grants.isSuccess && holds && profile.isSuccess && !unnamed ? (
+    children
+  ) : (
+    <PageSpinner />
+  );
 };
 
 /** Sign-in and sign-up pages: signed-in users go on to their account. */

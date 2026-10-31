@@ -19,7 +19,17 @@ test("an organization applies, the President signs, and its page opens", async (
     email,
     email_confirm: true,
     password: PASSWORD,
-    user_metadata: { full_name_ar: "ممثل تجريبي", full_name_en: "E2E Partner" },
+    // A partner's people give their names in four parts, like members.
+    user_metadata: {
+      father_name_ar: "تجريبي",
+      father_name_en: "Test",
+      first_name_ar: "ممثل",
+      first_name_en: "E2E",
+      grandfather_name_ar: "آلي",
+      grandfather_name_en: "Auto",
+      last_name_ar: "الشريك",
+      last_name_en: "Partner",
+    },
   });
   expect(created.error).toBeNull();
 
@@ -33,7 +43,9 @@ test("an organization applies, the President signs, and its page opens", async (
   await expect(applicant.getByLabel("Your name, as you sign")).toHaveValue(
     "E2E Partner"
   );
-  await applicant.getByRole("checkbox", { name: /I sign this memorandum/ }).click();
+  await applicant
+    .getByRole("checkbox", { name: /I sign this memorandum/ })
+    .click();
   await applicant.getByRole("button", { name: "Apply and sign" }).click();
   await expect(
     applicant.getByRole("heading", { name: "Application received" })
@@ -43,9 +55,14 @@ test("an organization applies, the President signs, and its page opens", async (
   const { data: users } = await db.auth.admin.listUsers({ perPage: 1000 });
   const presidentId = users.users.find((u) => u.email === president.email)?.id;
   if (presidentId) {
-    const factors = await db.auth.admin.mfa.listFactors({ userId: presidentId });
+    const factors = await db.auth.admin.mfa.listFactors({
+      userId: presidentId,
+    });
     for (const factor of factors.data?.factors ?? []) {
-      await db.auth.admin.mfa.deleteFactor({ id: factor.id, userId: presidentId });
+      await db.auth.admin.mfa.deleteFactor({
+        id: factor.id,
+        userId: presidentId,
+      });
     }
   }
   const signer = await (await browser.newContext()).newPage();
