@@ -75,7 +75,7 @@ insert into core.semesters (code, name_en, name_ar, starts_on, ends_on) values
 -- first-100 rule back on themselves.
 update core.settings set value = '0' where key = 'membership.founding_voters';
 
-select plan(27);
+select plan(40);
 
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a1', 'director-pa@auib.edu.iq');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a2', 'president-pa@auib.edu.iq');
@@ -179,26 +179,29 @@ select throws_ok(
   'but never to another partner'
 );
 
--- Guests: the partner verifies its own people.
+-- Guests come through the partner's invitations: a shareable link leaves
+-- them waiting for the partner to verify them.
+select lives_ok(
+  $$ insert into governance.partner_invitations (partner_id, kind)
+     values ((select id from governance.my_partners() limit 1), 'guest') $$,
+  'The Lead makes a shareable guest link'
+);
+select set_config('test.link', (select code from governance.partner_invitations where kind = 'guest'), false);
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000b1');
-insert into governance.partner_affiliations (partner_id, note)
-values ((select id from governance.joinable_partners() limit 1), 'Member since 2024');
+select is(governance.accept_partner_invitation(current_setting('test.link')), 'guest',
+  'Someone follows the link');
+select ok(not core.is_partner_guest(), 'and waits for the partner');
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000c1');
 select is(
   (select email from governance.partner_guests((select id from governance.my_partners() limit 1))),
   'poet@poetryclub.org',
-  'The partner sees who asked to be verified'
+  'The partner sees who is waiting'
 );
 select lives_ok(
   $$ update governance.partner_affiliations set status = 'verified'
      where user_id = '00000000-0000-0000-0000-0000000000b1' $$,
   'and verifies them'
-);
-select is(
-  (select decided_by from governance.partner_affiliations where user_id = '00000000-0000-0000-0000-0000000000b1'),
-  '00000000-0000-0000-0000-0000000000c1'::uuid,
-  'recorded as the partner''s decision'
 );
 select throws_ok(
   $$ update governance.partner_affiliations set note = 'Changed'
@@ -207,29 +210,79 @@ select throws_ok(
   'but cannot rewrite what the person said'
 );
 
--- Team.
+-- A verified guest sees perks and books places, like a member.
+select pg_temp.login_as('00000000-0000-0000-0000-0000000000b1');
+select ok(core.is_partner_guest(), 'A verified guest is a partner''s guest');
+select is((select count(*)::int from governance.member_offers), 1,
+  'and sees partners'' perks');
+select pg_temp.logout();
+insert into events.events (id, slug, title_en, title_ar, starts_at, members_only, capacity, status, entry)
+values ('e0000000-0000-0000-0000-0000000000f1', 'guest-reading', 'Reading', 'قراءة',
+  now() + interval '3 days', false, 10, 'published', 'rsvp');
+select pg_temp.login_as('00000000-0000-0000-0000-0000000000b1');
+select is(events.rsvp('e0000000-0000-0000-0000-0000000000f1'), 'confirmed',
+  'and books a place at an event');
+
+-- Team: the Lead invites by address; only that address may accept.
+select pg_temp.login_as('00000000-0000-0000-0000-0000000000c1');
 select lives_ok(
-  $$ select governance.add_partner_teammate((select id from governance.my_partners() limit 1), 'Deputy@PoetryClub.org') $$,
-  'The representative adds a teammate by sign-in address'
+  $$ insert into governance.partner_invitations (partner_id, kind, email)
+     values ((select id from governance.my_partners() limit 1), 'team', 'Deputy@PoetryClub.org') $$,
+  'The Lead invites a teammate by address'
+);
+select set_config('test.team', (select code from governance.partner_invitations where kind = 'team'), false);
+select pg_temp.login_as('00000000-0000-0000-0000-0000000000c3');
+select throws_ok(
+  $$ select governance.accept_partner_invitation(current_setting('test.team')) $$,
+  '42501', 'invitation_for_another_address',
+  'Nobody else can use it'
+);
+select pg_temp.login_as('00000000-0000-0000-0000-0000000000c2');
+select is(governance.accept_partner_invitation(current_setting('test.team')), 'team',
+  'The teammate accepts');
+select throws_ok(
+  $$ insert into governance.partner_invitations (partner_id, kind, email)
+     values ((select id from governance.my_partners() limit 1), 'team', 'third@poetryclub.org') $$,
+  '42501', null,
+  'Team members do not invite to the team'
 );
 select throws_ok(
-  $$ select governance.add_partner_teammate((select id from governance.my_partners() limit 1), 'nobody@poetryclub.org') $$,
-  'P0002', 'no_account',
-  'who must have an account'
+  $$ select governance.remove_partner_teammate((select id from governance.my_partners() limit 1),
+       '00000000-0000-0000-0000-0000000000c1') $$,
+  '42501', 'not_allowed',
+  'or remove the Lead'
 );
 
-select pg_temp.login_as('00000000-0000-0000-0000-0000000000c2');
+select pg_temp.login_as('00000000-0000-0000-0000-0000000000c1');
+select throws_ok(
+  $$ select governance.remove_partner_teammate((select id from governance.my_partners() limit 1),
+       '00000000-0000-0000-0000-0000000000c1') $$,
+  '22023', 'last_lead',
+  'A partner always keeps a Lead'
+);
+select lives_ok(
+  $$ select governance.set_partner_lead((select id from governance.my_partners() limit 1),
+       '00000000-0000-0000-0000-0000000000c2', true) $$,
+  'The Lead makes a teammate Lead'
+);
 select lives_ok(
   $$ select governance.remove_partner_teammate((select id from governance.my_partners() limit 1),
        '00000000-0000-0000-0000-0000000000c1') $$,
-  'A teammate removes another'
+  'and may then leave'
 );
-select throws_ok(
-  $$ select governance.remove_partner_teammate((select id from governance.my_partners() limit 1),
-       '00000000-0000-0000-0000-0000000000c2') $$,
-  '22023', 'last_teammate',
-  'but a partner always keeps one representative'
-);
+
+-- Membership is for AUIB addresses: an outside sign-up needs an invitation
+-- or a partner application.
+select pg_temp.logout();
+select ok(not private.sign_up_allowed('someone@gmail.com', '{}'),
+  'An outside address cannot sign up on its own');
+select ok(private.sign_up_allowed('friend@gmail.com',
+  jsonb_build_object('invitation', current_setting('test.link'))),
+  'but can with a partner''s invitation');
+select ok(private.sign_up_allowed('club@example.org', '{"partner_applicant":"true"}'),
+  'or to apply as a partner');
+select ok(private.sign_up_allowed('student.2025@auib.edu.iq', '{}'),
+  'and an AUIB address always can');
 
 select pg_temp.logout();
 set local role service_role;

@@ -14,11 +14,12 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useState } from "react";
 import { ErrorLine, Field, SelectInput } from "@/components/nexus/admin/kit";
+import { SignUpForm } from "@/components/nexus/auth/sign-up-form";
 import { DiwanPage, DiwanSection } from "@/components/nexus/page";
 import { PageSpinner } from "@/components/nexus/states";
 import { useProfile } from "@/lib/nexus/queries";
 
-const PATH = "/about/partners/join";
+const PATH = "/partners/join";
 
 /** What a partner may ask for; guest editing is the Society's to offer. */
 const ASKABLE = partners.agreementGrants.filter((g) => g !== "guest_editing");
@@ -333,8 +334,8 @@ const ApplicationForm = () => {
 /**
  * Partner with the Society (owner, Oct 31, 2026): an organization signs up,
  * proposes the partnership and signs the memorandum by name; the President
- * signs for the Society in the Diwan. Whoever applied then keeps the
- * partner's page in the Diwan.
+ * signs for the Society in the Diwan. Whoever applied then leads the
+ * partner's team, on its dashboard at /partners/dashboard.
  */
 export const PartnerJoin = () => {
   const t = useTranslations("nexus.partnerJoin");
@@ -346,23 +347,17 @@ export const PartnerJoin = () => {
     return <PageSpinner />;
   }
   if (!user) {
+    // Applying takes an account, for whoever signs for the organization;
+    // its address need not be AUIB's (owner, Oct 31, 2026).
     return (
       <DiwanPage lede={t("lede")} narrow title={t("title")}>
         <p className="type-body">{t("account")}</p>
-        <p className="flex flex-wrap gap-x-6 gap-y-2">
-          <Link
-            className="font-medium text-accent hover:underline"
-            href={{ pathname: "/sign-up", query: { next: PATH } }}
-          >
-            {t("signUp")}
-          </Link>
-          <Link
-            className="link"
-            href={{ pathname: "/sign-in", query: { next: PATH } }}
-          >
-            {t("signIn")}
-          </Link>
-        </p>
+        <div className="grid gap-6">
+          <SignUpForm
+            next={PATH}
+            outside={{ reason: { partnerApplicant: true } }}
+          />
+        </div>
       </DiwanPage>
     );
   }
@@ -386,7 +381,7 @@ export const PartnerJoin = () => {
         title={waiting ? t("receivedTitle") : t("partneredTitle")}
       >
         {waiting ? null : (
-          <Link className="link justify-self-start" href="/diwan/partner">
+          <Link className="link justify-self-start" href="/partners/dashboard">
             {t("openDesk")}
           </Link>
         )}

@@ -13,7 +13,6 @@ import {
   useProfile,
 } from "@/lib/nexus/queries";
 import { TwoStepPanel, useTwoStep } from "./auth/two-step";
-import { PartnerGuest, PendingVerification } from "./pending-verification";
 import { ErrorState, FullPageSpinner, PageSpinner } from "./states";
 
 interface GateProps {
@@ -45,24 +44,19 @@ export const RequireAuth = ({ children }: GateProps) => {
 };
 
 /**
- * Where people verified as a partner's members (not Society members) may
- * go: Qirtas (calls opened to their partner), their profile, their service
- * and certificates.
- * Row Level Security still decides every row.
+ * Where a partner's guests go among the members' pages: Qirtas, to write
+ * for calls opened to their partner, and their work sent there.
+ * Everything else of theirs is under /account (owner, Oct 31, 2026). Row
+ * Level Security still decides every row.
  */
-const GUEST_PATHS = [
-  "/qirtas",
-  "/membership/work",
-  "/membership/record",
-  "/membership/settings",
-];
+const GUEST_PATHS = ["/qirtas", "/membership/work"];
 
 export const isGuestPath = (pathname: string) =>
   GUEST_PATHS.some(
     (path) => pathname === path || pathname.startsWith(`${path}/`)
   );
 
-/** True when the signed-in person is verified as a partner's member. */
+/** True when the signed-in person is verified as a partner's guest. */
 const usePartnerGuest = (enabled: boolean) => {
   const { supabase, user } = useAuth();
   return useQuery({
@@ -76,11 +70,10 @@ const usePartnerGuest = (enabled: boolean) => {
 };
 
 /**
- * Members only: unverified accounts see the verification notice (where they
- * can also say they belong to a partner), and members with a pledge to
- * (re-)accept or setup to finish go to /welcome first. People verified as a
- * partner's members get the guest pages (`isGuestPath`), after the same
- * pledges and setup.
+ * Members only (owner, Oct 31, 2026): anyone else has /account. Members
+ * with a pledge to (re-)accept, setup to finish or a name not in four
+ * parts go to /welcome first; a partner's guests may write for Qirtas
+ * (`isGuestPath`), after the same.
  */
 export const RequireMember = ({ children }: GateProps) => {
   const status = useMemberStatus();
@@ -90,6 +83,8 @@ export const RequireMember = ({ children }: GateProps) => {
   const unverified = status.isSuccess && !status.data?.verified;
   const guest = usePartnerGuest(unverified);
   const isGuest = unverified && guest.data === true;
+  const elsewhere =
+    unverified && guest.isSuccess && !(isGuest && isGuestPath(pathname));
 
   const needsSetup =
     (status.data?.verified || isGuest) &&
@@ -98,7 +93,14 @@ export const RequireMember = ({ children }: GateProps) => {
       !hasAllNames(profile.data));
 
   useEffect(() => {
-    if (needsSetup && profile.data) {
+    if (elsewhere) {
+      // A guest booking from an event's page books from their account.
+      router.replace(
+        pathname.startsWith("/membership/calendar")
+          ? `/account/calendar${window.location.hash}`
+          : "/account"
+      );
+    } else if (needsSetup && profile.data) {
       router.replace({
         pathname: "/welcome",
         query: {
@@ -106,7 +108,7 @@ export const RequireMember = ({ children }: GateProps) => {
         },
       });
     }
-  }, [needsSetup, pathname, profile.data, router]);
+  }, [elsewhere, needsSetup, pathname, profile.data, router]);
 
   if (status.isError || profile.isError || guest.isError) {
     return (
@@ -121,23 +123,53 @@ export const RequireMember = ({ children }: GateProps) => {
     status.isPending ||
     profile.isPending ||
     needsSetup ||
+    elsewhere ||
     (unverified && guest.isPending)
   ) {
     return <PageSpinner />;
-  }
-  if (isGuest) {
-    return isGuestPath(pathname) ? children : <PartnerGuest />;
-  }
-  if (!status.data?.verified) {
-    return <PendingVerification />;
   }
   return children;
 };
 
 /**
- * A partner's own page in the Diwan (owner, Oct 31, 2026): for its
- * representatives (partners.own on the partner), members or not. A
- * convenience: Row Level Security keeps each to its own partner.
+ * The account of someone who is not a member (owner, Oct 31, 2026): a
+ * partner's guests and team, and anyone waiting on a partner application.
+ * Members go to Membership. Everyone gives their name in four parts first
+ * (at /welcome; a partner's guests also make the pledges there).
+ */
+export const RequireAccount = ({ children }: GateProps) => {
+  const status = useMemberStatus();
+  const profile = useProfile();
+  const router = useRouter();
+  const pathname = usePathname();
+  const member = status.isSuccess && Boolean(status.data?.verified);
+  const unnamed = profile.isSuccess && !hasAllNames(profile.data);
+
+  useEffect(() => {
+    if (member) {
+      router.replace("/membership");
+    } else if (unnamed) {
+      router.replace({ pathname: "/welcome", query: { next: pathname } });
+    }
+  }, [member, pathname, router, unnamed]);
+
+  if (status.isError || profile.isError) {
+    return (
+      <ErrorState
+        onRetry={() => Promise.all([status.refetch(), profile.refetch()])}
+      />
+    );
+  }
+  if (status.isPending || profile.isPending || member || unnamed) {
+    return <PageSpinner />;
+  }
+  return children;
+};
+
+/**
+ * A partner's dashboard (/partners/dashboard; owner, Oct 31, 2026): for its
+ * team (partners.own on the partner), members or not. A convenience: Row
+ * Level Security keeps each to its own partner.
  */
 export const RequirePartner = ({ children }: GateProps) => {
   const grants = useGrants();
@@ -152,7 +184,7 @@ export const RequirePartner = ({ children }: GateProps) => {
   const unnamed = profile.isSuccess && !hasAllNames(profile.data);
   useEffect(() => {
     if (grants.isSuccess && !grants.isFetching && !holds) {
-      router.replace("/membership");
+      router.replace("/account");
     } else if (holds && unnamed) {
       router.replace({ pathname: "/welcome", query: { next: pathname } });
     }
@@ -199,7 +231,7 @@ export const RequireStaff = ({ children }: GateProps) => {
   // so its holder is staff waiting for the second step, not a member.
   const waiting = Boolean(twoStep.data?.needs && !twoStep.data.done);
   // A partner's representative holds partners.own only: their partner's
-  // page (/diwan/partner) is theirs, the officers' Diwan is not.
+  // dashboard (/partners/dashboard) is theirs, the officers' Diwan is not.
   const officerGrants = (grants.data ?? []).filter(
     (g) => g.permission !== "partners.own"
   );
@@ -216,7 +248,7 @@ export const RequireStaff = ({ children }: GateProps) => {
 
   useEffect(() => {
     if (settled && !staff) {
-      router.replace(partnerOnly ? "/diwan/partner" : "/membership");
+      router.replace(partnerOnly ? "/partners/dashboard" : "/membership");
     }
   }, [partnerOnly, router, settled, staff]);
 

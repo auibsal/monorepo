@@ -117,16 +117,30 @@ describe("signing up", () => {
     expect(sent.options.data).toEqual({ locale: "en" });
   });
 
-  test("an address outside AUIB gives its name in both languages, for its partner to verify", async () => {
+  test("membership is for AUIB addresses: an outside one needs a reason", async () => {
     const { signUp, supabase } = client();
     expect(
-      await signUpWithEmail(supabase, { ...base, email: "s@gmail.com" })
+      await signUpWithEmail(supabase, { ...base, email: "s@gmail.com", names })
+    ).toEqual({ code: "auib_only", ok: false });
+    expect(signUp).not.toHaveBeenCalled();
+  });
+
+  test("an invited outside address gives its name in both languages", async () => {
+    const { signUp, supabase } = client();
+    const outside = { invitation: "abc123" };
+    expect(
+      await signUpWithEmail(supabase, {
+        ...base,
+        email: "s@gmail.com",
+        outside,
+      })
     ).toEqual({ code: "names_required", ok: false });
     expect(signUp).not.toHaveBeenCalled();
     const result = await signUpWithEmail(supabase, {
       ...base,
       email: "s@gmail.com",
       names,
+      outside,
     });
     expect(result.ok).toBe(true);
     const sent = (signUp.mock.calls[0] as unknown[])[0] as {
@@ -137,6 +151,7 @@ describe("signing up", () => {
       first_name_ar: "لينا",
       first_name_en: "Lina",
       grandfather_name_ar: "حسن",
+      invitation: "abc123",
       last_name_ar: "التميمي",
       last_name_en: "Tamimi",
     });

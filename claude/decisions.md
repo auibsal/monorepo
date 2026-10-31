@@ -227,8 +227,16 @@ Qirtas, unlike a program, may have several documents:
 - **Notion holds what the platform retired** (forms, letters, officers' papers), as templates linked from the Desk; Diwan pages with a Notion counterpart say so.
 
 ## 9. Partners on the platform, and smaller moves (decided Oct 31)
-- **Partners sign up.** An organization applies at auibsal.org/about/partners/join: its profile, what the partnership is for and what it will do, the benefits it asks for, and its signatory signs the memorandum by name. Nothing is uploaded. The President signs for the Society in the Diwan (People → Verification); the partner then becomes active.
-- **Each partner keeps its own page** in the Diwan (/diwan/partner): its profile and memorandum, the perks it offers members, its team (up to six people with accounts) and its guests. Whoever applied is its first Partner Representative; the team adds the rest.
-- **The Society verifies partners; partners verify their own people.** The Diwan's verification queue holds partner applications only. Someone signing up with an address outside AUIB picks their partner, and that partner verifies them; they become its guest.
+- **Partners sign up.** An organization applies at auibsal.org/partners/join: its profile, what the partnership is for and what it will do, the benefits it asks for, and its signatory signs the memorandum by name. Nothing is uploaded. The President signs for the Society in the Diwan (People → Verification); the partner then becomes active.
+- **Each partner keeps its own dashboard,** auibsal.org/partners/dashboard (replaced the Diwan page the same day): its profile and memorandum, its perks, its guests and its team. It sits in the header's menu where officers see the Diwan.
+- **The Society verifies partners; partners verify their own people.** The Diwan's verification queue holds partner applications only.
+
+## 10. Partners, guests and accounts (decided Oct 31, later the same day)
+- **Membership is for AUIB addresses only.** The sign-up field takes what comes before @auib.edu.iq (usually an ID number, or name.idnumber). Alumni stay members for good and may add a personal email, as before.
+- **auibsal.org/partners is the partners' front door:** what partnering means, the partners (moved from /about/partners), the way to apply (/partners/join) and the team's sign-in. There are no pages for single partners.
+- **A partner's team:** up to six people, Lead or Team. Whoever applied is the first Lead. Leads invite by email, make others Lead and remove people; everyone keeps the profile, perks and guests; anyone may leave, but never the last Lead.
+- **Guests join only by a partner's invitation:** by email (a guest as soon as they accept with that address) or by a shareable link (waiting until the partner verifies them). Invitations open at /partners/invite/<code> and last fourteen days. Nobody asks a partner to be its guest any more.
+- **Perks are for members and guests only.** Guests may book places at events and write for calls opened to their partner.
+- **Non-members get /account, not /membership:** Account (their partners, what they can do, perks), My calendar (booking) and Settings (name, emails, sign-in, deleting the account); the record opens from Account.
 - **Hiring picks from the Society's roles.** Every role in Roles and Staffing is on the platform, each with who hires for it; a role opening names its role, and whoever is onboarded holds it.
 - **Smaller moves.** Calls live on each Edition's page. "Email me about events" is on Settings → Notices only. Each event has its own door; the general door is gone, and the Desk opens the next event's door. A manuscript sent as Word or PDF fills the editor with its text, and the original file still goes with the work.

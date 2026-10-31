@@ -41,7 +41,7 @@ Branch: `claude/new-session-qosn60`.
   the value of `CRON_SECRET`. The Desk's Connected panel (Email) then
   shows email flowing. Steps in `docs/platform/email.md`.
 - [ ] **Partners (Oct 31, 2026):** the memorandum a partner signs at
-  `/about/partners/join` is made of its own words and the Policy Manual's
+  `/partners/join` is made of its own words and the Policy Manual's
   P11 lines (`nexus.partnerJoin.memorandum.*`). If the Society has a
   standard memorandum text, send it and it replaces those lines.
 
@@ -1670,10 +1670,20 @@ Covered by automated tests so far:
 
 ## needs-native-review (Arabic written for the platform)
 
+- Partners, guests and accounts (2026-10-31): `nexus.accountHome.*`,
+  `nexus.partnerInvite.*`, `nexus.partnerDesk.{invite.*,team.*,guests.*,
+  perks.*,lede,open,none}`, `nexus.partnerJoin.{account,waiting,partnered,
+  openDesk}`, `nexus.nav.accountHome`, `web.nav.{yourAccount,partner}`,
+  `web.partners.{lede,work,teamSignIn,means.*}`, `auth.{auibEmail,
+  auibEmailHint,errors.auib_only,signUp.description,signUp.haveAnAccount}`,
+  `nexus.admin.partners.agreements.grants.member_offer`, the invitation
+  email (`partnerInvitation` in `packages/email/copy.ts`) and the role
+  name «مسؤول الشريك» (`20261101000700`).
+
 - Four-part names (2026-10-31): `nexus.setup.name.{hint,needed,parts.*}`,
-  `auth.signUp.{namesHint,outsideAuib}`.
+  `auth.signUp.namesHint`.
 - Partners and the smaller moves (2026-10-31): `nexus.partnerJoin.*`,
-  `nexus.partnerDesk.*`, `nexus.admin.verification.*`, `nexus.pending.*`,
+  `nexus.partnerDesk.*`, `nexus.admin.verification.*`,
   `nexus.admin.member.scopes.partner`, `web.partners.{apply,work}`,
   `auth.signUp.description`, `nexus.admin.hiring.{role,roleHint,
   roleTitleHint}`, `nexus.admin.settings.email.*`, `nexus.checkIn.otherDoors`,

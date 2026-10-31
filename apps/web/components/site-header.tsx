@@ -9,7 +9,7 @@ import { Link, usePathname } from "@repo/internationalization/navigation";
 import NextLink from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { type ReactNode, useEffect, useRef, useState } from "react";
-import { hasStaffCookie } from "@/lib/staff";
+import { readWays, type Ways } from "@/lib/staff";
 import { Masthead, mastheadLink } from "./masthead";
 
 // The header's sections, the same on the site, the members' pages and the
@@ -40,10 +40,11 @@ interface SiteHeaderProps {
   /** Replaces the language link (the account pages keep their query). */
   readonly language?: ReactNode;
   /**
-   * Whether the visitor opens the Diwan, where the page knows it (the
-   * members' pages and the Diwan); elsewhere the remembered hint decides.
+   * Where the visitor goes beyond the site, where the page knows it (the
+   * members' pages, the account, the Diwan and the partners' dashboard);
+   * elsewhere the remembered hint decides.
    */
-  readonly staff?: boolean;
+  readonly ways?: Ways;
 }
 
 interface Way {
@@ -52,10 +53,17 @@ interface Way {
 }
 
 /**
- * Desktop, for officers: Membership opens a short menu, Membership itself
- * and the Diwan under it. Closes on a choice, Escape or a click elsewhere.
+ * Desktop, for officers and partners' teams: Membership (or Account) opens
+ * a short menu, itself and the Diwan or the partner's dashboard under it.
+ * Closes on a choice, Escape or a click elsewhere.
  */
-const MembershipMenu = ({ diwan, way }: { diwan: Way; way: Way }) => {
+const MembershipMenu = ({
+  extras,
+  way,
+}: {
+  extras: readonly Way[];
+  way: Way;
+}) => {
   const t = useTranslations("web.nav");
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -105,7 +113,7 @@ const MembershipMenu = ({ diwan, way }: { diwan: Way; way: Way }) => {
       </button>
       {open ? (
         <ul className="absolute end-0 top-full z-50 mt-3 grid min-w-48 divide-y divide-line border border-line bg-surface">
-          {[way, diwan].map((item) => (
+          {[way, ...extras].map((item) => (
             <li key={item.href}>
               <NextLink
                 className="block whitespace-nowrap px-4 py-3 font-medium text-sm hover:text-accent"
@@ -126,7 +134,7 @@ const MembershipMenu = ({ diwan, way }: { diwan: Way; way: Way }) => {
 export const SiteHeader = ({
   account = true,
   language,
-  staff,
+  ways,
 }: SiteHeaderProps) => {
   const t = useTranslations("web.nav");
   const tc = useTranslations("common");
@@ -137,22 +145,45 @@ export const SiteHeader = ({
   // asking to sign in, and Join steps aside. Read after the first render,
   // so the page itself stays the same for everyone.
   const [signedIn, setSignedIn] = useState(false);
-  const [staffHint, setStaffHint] = useState(false);
+  const [waysHint, setWaysHint] = useState<Ways | null>(null);
   // Checked again on each new page, so signing in or out shows at once.
   useEffect(() => {
     if (pathname) {
       setSignedIn(hasSessionCookie(document.cookie));
-      setStaffHint(hasStaffCookie(document.cookie));
+      setWaysHint(readWays(document.cookie));
     }
   }, [pathname]);
-  const way: Way = signedIn
-    ? { href: localizedPath(locale, "/membership"), label: t("account") }
-    : { href: localizedPath(locale, "/sign-in"), label: t("signIn") };
-  // The Diwan sits under Membership, for officers only (owner, Oct 30, 2026).
-  const diwan: Way | null =
-    signedIn && (staff ?? staffHint)
-      ? { href: localizedPath(locale, nexusPath()), label: t("diwan") }
-      : null;
+  const known = ways ?? waysHint;
+  // Members open Membership; everyone else their Account (owner, Oct 31,
+  // 2026). Before anything is known, Membership: its gate sends a
+  // non-member on.
+  let way: Way = {
+    href: localizedPath(locale, "/sign-in"),
+    label: t("signIn"),
+  };
+  if (signedIn) {
+    way =
+      known?.member === false
+        ? { href: localizedPath(locale, "/account"), label: t("yourAccount") }
+        : { href: localizedPath(locale, "/membership"), label: t("account") };
+  }
+  // The Diwan sits under Membership, for officers only (owner, Oct 30,
+  // 2026); a partner's team has its dashboard there instead (Oct 31).
+  const extras: Way[] = signedIn
+    ? [
+        ...(known?.diwan
+          ? [{ href: localizedPath(locale, nexusPath()), label: t("diwan") }]
+          : []),
+        ...(known?.partner
+          ? [
+              {
+                href: localizedPath(locale, "/partners/dashboard"),
+                label: t("partner"),
+              },
+            ]
+          : []),
+      ]
+    : [];
 
   return (
     <Masthead
@@ -160,8 +191,8 @@ export const SiteHeader = ({
         if (!account) {
           return null;
         }
-        if (diwan) {
-          return <MembershipMenu diwan={diwan} way={way} />;
+        if (extras.length > 0) {
+          return <MembershipMenu extras={extras} way={way} />;
         }
         return (
           <NextLink
@@ -199,15 +230,16 @@ export const SiteHeader = ({
                   <Icon name={signedIn ? "user" : "log-in"} />
                   {way.label}
                 </NextLink>
-                {diwan ? (
+                {extras.map((extra) => (
                   <NextLink
                     className="ms-7 font-medium text-text-secondary hover:text-accent"
-                    href={diwan.href}
+                    href={extra.href}
+                    key={extra.href}
                     onClick={close}
                   >
-                    {diwan.label}
+                    {extra.label}
                   </NextLink>
-                ) : null}
+                ))}
               </>
             )
           : undefined

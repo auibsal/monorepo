@@ -151,8 +151,11 @@ select throws_ok(
   '42501', null,
   'A partner''s member cannot submit before the Society verifies the affiliation'
 );
-insert into governance.partner_affiliations (partner_id, note)
-values ('00000000-0000-0000-0000-00000000d001', 'Member since 2024');
+-- People reach a partner through its invitations (owner, Oct 31, 2026):
+-- here the affiliation waits as a shareable link leaves it.
+select pg_temp.logout();
+insert into governance.partner_affiliations (partner_id, user_id, note)
+values ('00000000-0000-0000-0000-00000000d001', '00000000-0000-0000-0000-0000000000b1', 'Member since 2024');
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a7');
 update governance.partner_affiliations set status = 'verified'

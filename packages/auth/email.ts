@@ -26,6 +26,7 @@ export type EmailAuthErrorCode =
   | "unknown"
   | "user_exists"
   | "names_required"
+  | "auib_only"
   | "email_reserved"
   | "invalid_code"
   | "weak_password";
@@ -100,6 +101,12 @@ export interface SignUpDetails {
    * email.
    */
   names?: Record<"ar" | "en", NameParts>;
+  /**
+   * Why an outside address may sign up (owner, Oct 31, 2026: membership is
+   * for AUIB addresses): a partner's invitation code, or an application to
+   * partner. The database refuses an outside address with neither.
+   */
+  outside?: { invitation: string } | { partnerApplicant: true };
   password: string;
   /** Where the confirmation link lands (the Nexus /auth/callback). */
   redirectTo: string;
@@ -127,6 +134,11 @@ export const signUpWithEmail = async (
     return { code: "weak_password", ok: false };
   }
   const auib = isAuibEmail(email);
+  // Membership is for AUIB addresses (owner, Oct 31, 2026); an outside one
+  // comes only with a partner's invitation or an application to partner.
+  if (!(auib || details.outside)) {
+    return { code: "auib_only", ok: false };
+  }
   const parts = Object.fromEntries(
     (["en", "ar"] as const).flatMap((language) =>
       NAME_PARTS.map((part) => [
@@ -146,6 +158,12 @@ export const signUpWithEmail = async (
       ...captcha(details.captchaToken),
       data: {
         ...(named ? parts : {}),
+        ...(details.outside && "invitation" in details.outside
+          ? { invitation: details.outside.invitation }
+          : {}),
+        ...(details.outside && "partnerApplicant" in details.outside
+          ? { partner_applicant: "true" }
+          : {}),
         locale: details.locale,
       },
       emailRedirectTo: details.redirectTo,

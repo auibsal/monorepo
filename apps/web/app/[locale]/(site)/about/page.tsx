@@ -11,7 +11,7 @@ const PILLARS = ["connecting", "fostering", "celebrating", "building"] as const;
 const HUB = [
   ["council", "/about/council"],
   ["library", "/library"],
-  ["partners", "/about/partners"],
+  ["partners", "/partners"],
   ["contact", "/about/contact"],
   ["press", "/about/press"],
   ["verify", "/verify"],

@@ -221,9 +221,6 @@ export const memberOffers = async (client: Client) =>
       .order("starts_on", { ascending: false })
   ) ?? [];
 
-export const joinablePartners = async (client: Client) =>
-  unwrap(await client.schema("governance").rpc("joinable_partners")) ?? [];
-
 /** Partner names for a role holder's declaration (F-18). */
 export const declarablePartners = async (client: Client) =>
   unwrap(await client.schema("governance").rpc("declarable_partners")) ?? [];
@@ -257,18 +254,6 @@ export const myAffiliations = async (client: Client) =>
       .select("id, partner_id, status, note, created_at")
       .order("created_at", { ascending: false })
   ) ?? [];
-
-export const requestAffiliation = async (
-  client: Client,
-  partnerId: string,
-  note: string
-) =>
-  unwrap(
-    await client
-      .schema("governance")
-      .from("partner_affiliations")
-      .insert({ note: note.trim() || null, partner_id: partnerId })
-  );
 
 /** Saves a Form F-18 declaration and its items. */
 export const declareConflicts = async (

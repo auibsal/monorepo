@@ -51,6 +51,7 @@ phone and Telegram too when they turned those on.
 | `journal.sunday_paper` | Every member who takes the optional emails | Yes: a stop link and one-click unsubscribe (`/emails/stop`) |
 | `newsletter.confirm`, `newsletter.monthly` | Newsletter subscribers | Double opt-in; unsubscribe link and one-click |
 | `personal_email.confirm` | The new personal address | No |
+| `partners.invitation` | Whoever a partner's Lead or team invited by email (to its team, or as its guest) | No |
 | `membership.verification_decided` | An account from outside AUIB (requests from before partners verified their own) | No |
 | `access.role_ending`, `programmes.*`, `platform.cron_failed` | Officers | No |
 | `access.two_step_reset` | The person whose authenticator was removed (by an officer or a recovery code) | No |

@@ -7,17 +7,19 @@ import { mediaUrl } from "@/lib/media";
 import { type LocaleParams, sectionMetadata } from "@/lib/page";
 import { readPublished } from "@/lib/supabase";
 
-export const generateMetadata = sectionMetadata(
-  "web.partners",
-  "/about/partners"
-);
+export const generateMetadata = sectionMetadata("web.partners", "/partners");
 
 const REACH = ["auib", "iraq", "international"] as const;
 
+/** What a partnership brings, in three (owner, Oct 31, 2026). */
+const MEANS = ["together", "guests", "perks"] as const;
+
 /**
- * The Society's partners (Policy Manual P11). Only partners that are
- * active and have a signed memorandum in force appear; the register itself
- * is internal.
+ * The partners' front door (owner, Oct 31, 2026: /partners, in place of
+ * /about/partners): what partnering with the Society means, the way to
+ * apply (/partners/join) and in for a partner's team, then the partners
+ * (Policy Manual P11). Only partners that are active and have a signed
+ * memorandum in force appear; the register itself is internal.
  */
 const PartnersPage = async ({ params }: LocaleParams) => {
   const { locale } = await params;
@@ -32,6 +34,39 @@ const PartnersPage = async ({ params }: LocaleParams) => {
   return (
     <div className="mx-auto grid w-full max-w-6xl gap-20 px-4 py-16 sm:py-24">
       <PageHeader lede={t("lede")} title={t("title")} />
+      <Section id="what-it-means" title={t("means.title")}>
+        <ul className="grid gap-8 sm:grid-cols-3">
+          {MEANS.map((key) => (
+            <li
+              className="grid content-start gap-2 border-line border-t pt-4"
+              key={key}
+            >
+              <h3 className="type-subheading">{t(`means.${key}.title`)}</h3>
+              <p className="type-body">{t(`means.${key}.body`)}</p>
+            </li>
+          ))}
+        </ul>
+      </Section>
+      <Section id="work-with-us" title={t("workTitle")}>
+        <p className="type-body">{t("work")}</p>
+        <p className="flex flex-wrap items-center gap-x-6 gap-y-2">
+          <Link
+            className="font-medium text-accent hover:underline"
+            href="/partners/join"
+          >
+            {t("apply")}
+          </Link>
+          <Link
+            className="link"
+            href={{
+              pathname: "/sign-in",
+              query: { next: "/partners/dashboard" },
+            }}
+          >
+            {t("teamSignIn")}
+          </Link>
+        </p>
+      </Section>
       <Institutions />
       {list.length === 0 ? <p className="type-body">{t("empty")}</p> : null}
       {REACH.map((reach) => {
@@ -83,15 +118,6 @@ const PartnersPage = async ({ params }: LocaleParams) => {
           </Section>
         );
       })}
-      <Section id="work-with-us" title={t("workTitle")}>
-        <p className="type-body">{t("work")}</p>
-        <Link
-          className="font-medium text-accent hover:underline"
-          href="/about/partners/join"
-        >
-          {t("apply")}
-        </Link>
-      </Section>
     </div>
   );
 };

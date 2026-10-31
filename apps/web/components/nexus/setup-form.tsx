@@ -161,16 +161,16 @@ export const SetupForm = () => {
     }
     const current = namesFrom(profile.data);
     setNames(current);
-    setPlan(
-      planSetup({
-        // Members and partners' guests make the pledges; a partner's
-        // representative who is neither only gives their name.
-        member: status.data.verified || guest.data === true,
-        names: current,
-        pending: (status.data.pending_pledges ?? []) as PledgeKind[],
-        setupDone: Boolean(profile.data.setup_completed_at),
-      })
-    );
+    const planned = planSetup({
+      // Members and partners' guests make the pledges; a partner's
+      // team who are neither only give their names.
+      member: status.data.verified || guest.data === true,
+      names: current,
+      pending: (status.data.pending_pledges ?? []) as PledgeKind[],
+      setupDone: Boolean(profile.data.setup_completed_at),
+    });
+    // The welcome shows the membership card: members only.
+    setPlan({ ...planned, welcome: planned.welcome && status.data.verified });
     window.history.replaceState(null, "", stepUrl(0));
   }, [guest.data, guest.isPending, plan, profile.data, status.data]);
 
@@ -194,8 +194,11 @@ export const SetupForm = () => {
     heading.current?.focus({ preventScroll: true });
   }, [index, welcome]);
 
+  // Members go on to Membership, everyone else to their account (owner,
+  // Oct 31, 2026).
+  const home = status.data?.verified ? "/membership" : "/account";
   const leave = () =>
-    router.replace(next ? stripLocale(next) : "/membership", {
+    router.replace(next ? stripLocale(next) : home, {
       locale: profile.data?.locale === "ar" ? "ar" : "en",
     });
 

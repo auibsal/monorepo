@@ -40,6 +40,7 @@ export const permissions = [
   "partners.manage",
   "partners.sign",
   "partners.own",
+  "partners.lead",
   "certificates.prepare",
   "certificates.sign",
   "certificates.countersign",

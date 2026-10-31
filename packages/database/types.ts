@@ -1298,6 +1298,7 @@ export type Database = {
           starts_on: string;
         }[];
       };
+      is_partner_guest: { Args: Record<PropertyKey, never>; Returns: boolean };
       member_insights: { Args: Record<PropertyKey, never>; Returns: Json };
       my_name_parts: {
         Args: Record<PropertyKey, never>;
@@ -2618,6 +2619,56 @@ export type Database = {
           },
         ];
       };
+      partner_invitations: {
+        Row: {
+          accepted_at: string | null;
+          accepted_by: string | null;
+          code: string;
+          created_at: string;
+          created_by: string | null;
+          email: string | null;
+          expires_at: string;
+          id: string;
+          kind: string;
+          partner_id: string;
+          revoked_at: string | null;
+        };
+        Insert: {
+          accepted_at?: string | null;
+          accepted_by?: string | null;
+          code?: string;
+          created_at?: string;
+          created_by?: string | null;
+          email?: string | null;
+          expires_at?: string;
+          id?: string;
+          kind: string;
+          partner_id: string;
+          revoked_at?: string | null;
+        };
+        Update: {
+          accepted_at?: string | null;
+          accepted_by?: string | null;
+          code?: string;
+          created_at?: string;
+          created_by?: string | null;
+          email?: string | null;
+          expires_at?: string;
+          id?: string;
+          kind?: string;
+          partner_id?: string;
+          revoked_at?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "partner_invitations_partner_id_fkey";
+            columns: ["partner_id"];
+            isOneToOne: false;
+            referencedRelation: "partners";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       partners: {
         Row: {
           contact_email: string | null;
@@ -2881,10 +2932,7 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
-      add_partner_teammate: {
-        Args: { email: string; partner: string };
-        Returns: string;
-      };
+      accept_partner_invitation: { Args: { code: string }; Returns: string };
       apply_as_partner: {
         Args: {
           accepted: boolean;
@@ -3031,6 +3079,16 @@ export type Database = {
           user_id: string;
         }[];
       };
+      partner_invitation: {
+        Args: { code: string };
+        Returns: {
+          email: string;
+          kind: string;
+          partner_name_ar: string;
+          partner_name_en: string;
+          usable: boolean;
+        }[];
+      };
       partner_names: {
         Args: Record<PropertyKey, never>;
         Returns: {
@@ -3046,6 +3104,7 @@ export type Database = {
           email: string;
           full_name_ar: string;
           full_name_en: string;
+          lead: boolean;
           since: string;
           user_id: string;
         }[];
@@ -3096,6 +3155,10 @@ export type Database = {
           submit?: boolean;
         };
         Returns: string;
+      };
+      set_partner_lead: {
+        Args: { lead: boolean; member: string; partner: string };
+        Returns: undefined;
       };
       sign_partner_agreement: {
         Args: {

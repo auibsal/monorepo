@@ -34,7 +34,7 @@ const staticPaths = [
   "/events",
   "/library",
   "/about/council",
-  "/about/partners",
+  "/partners",
 ];
 
 // Rebuilt hourly, so a renamed program or a new piece appears without a

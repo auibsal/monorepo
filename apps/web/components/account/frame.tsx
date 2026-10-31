@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import type { ReactNode } from "react";
-import { useIsStaff } from "@/components/account/member-shell";
+import { useWays } from "@/components/account/member-shell";
 import { LanguageSwitcher } from "@/components/nexus/language-switcher";
 import { SiteHeader } from "@/components/site-header";
 
@@ -17,7 +17,7 @@ export const AccountFrame = ({ children }: { children: ReactNode }) => {
       >
         {t("skipToContent")}
       </a>
-      <SiteHeader language={<LanguageSwitcher />} staff={useIsStaff()} />
+      <SiteHeader language={<LanguageSwitcher />} ways={useWays()} />
       {children}
     </>
   );

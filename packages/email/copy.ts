@@ -455,6 +455,60 @@ export const personalEmailConfirm = (lang: Lang, confirm: string) =>
     ],
   }));
 
+const SOCIETY_AR = "جمعية الفنون والآداب في الجامعة الأمريكية في بغداد";
+
+/** A partner invitation's heading and first lines, by kind and language. */
+const invitationLines = (
+  l: Lang,
+  kind: "team" | "guest",
+  partner: string
+): { body: string; heading: string } => {
+  if (kind === "team") {
+    return l === "ar"
+      ? {
+          body: `${partner} شريك لـ${SOCIETY_AR}، ويدعوك إلى فريقه على منصة الجمعية: ملف الشريك وامتيازاته وضيوفه.`,
+          heading: `انضم إلى فريق ${partner}`,
+        }
+      : {
+          body: `${partner} is a partner of the AUIB Society of Arts and Letters and invites you to its team on the Society's platform: the partner's profile, its perks and its guests.`,
+          heading: `Join ${partner}'s team`,
+        };
+  }
+  return l === "ar"
+    ? {
+        body: `${partner} شريك لـ${SOCIETY_AR}. بصفتك ضيفه تحجز مقاعد في الفعاليات، وترى امتيازاته، وتكتب لقرطاس حين تُفتح دعوة لـ${partner}.`,
+        heading: `يدعوك ${partner} ضيفًا`,
+      }
+    : {
+        body: `${partner} is a partner of the AUIB Society of Arts and Letters. As its guest you book places at events, use its perks, and write for Qirtas when a call is open to ${partner}.`,
+        heading: `${partner} invites you as its guest`,
+      };
+};
+
+/**
+ * A partner's invitation (owner, Oct 31, 2026): to join its team on the
+ * platform, or to be its guest. The link is the invitation.
+ */
+export const partnerInvitation = (
+  lang: Lang,
+  partner: string,
+  kind: "team" | "guest",
+  link: string
+) =>
+  build(lang, (l) => ({
+    action: {
+      href: link,
+      label: l === "ar" ? "اقبل الدعوة" : "Accept the invitation",
+    },
+    heading: invitationLines(l, kind, partner).heading,
+    paragraphs: [
+      invitationLines(l, kind, partner).body,
+      l === "ar"
+        ? "اضغط الزر لإنشاء حسابك أو الدخول إليه؛ تعمل الدعوة أربعة عشر يومًا. إن لم تكن تتوقعها فتجاهل هذه الرسالة."
+        : "Press the button to create your account or sign in; the invitation works for fourteen days. If you weren't expecting it, ignore this email.",
+    ],
+  }));
+
 export interface MonthEvent {
   starts_at: string;
   title_ar: string;
