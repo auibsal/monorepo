@@ -98,7 +98,9 @@ test("an organization applies, the President signs, and its dashboard opens", as
     .getByLabel("English")
     .fill("Show your membership card at the door.");
   await applicant.getByRole("button", { name: "Add perk" }).click();
-  await expect(applicant.getByText(`Free entry to readings ${stamp}`)).toBeVisible();
+  await expect(
+    applicant.getByText(`Free entry to readings ${stamp}`)
+  ).toBeVisible();
 
   // The lead invites a guest by email; the invitation's link signs them up.
   await applicant.getByRole("link", { name: "People" }).click();
@@ -153,5 +155,7 @@ test("an organization applies, the President signs, and its dashboard opens", as
   }
   await guest.goto(`${urls.web}/account`);
   await expect(guest.getByText(`Guest of ${organization}`)).toBeVisible();
-  await expect(guest.getByText(`Free entry to readings ${stamp}`)).toBeVisible();
+  await expect(
+    guest.getByText(`Free entry to readings ${stamp}`)
+  ).toBeVisible();
 });
