@@ -144,7 +144,7 @@ export const EventsList = () => {
       <AdminHeading
         actions={
           <Link
-            className="inline-flex h-8 items-center rounded-md bg-primary px-3 text-primary-foreground text-sm"
+            className="inline-flex h-8 items-center bg-accent px-3 font-medium text-on-accent text-sm hover:bg-accent/90"
             href="/events/new"
           >
             {t("new")}

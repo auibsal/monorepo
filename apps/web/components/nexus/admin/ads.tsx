@@ -37,7 +37,7 @@ import {
 
 const key = ["admin", "ads"];
 const buttonLink =
-  "inline-flex h-8 items-center justify-self-start rounded-md bg-primary px-3 text-primary-foreground text-sm";
+  "inline-flex h-8 items-center justify-self-start bg-accent px-3 font-medium text-on-accent text-sm hover:bg-accent/90";
 
 const today = () => new Date().toISOString().slice(0, 10);
 

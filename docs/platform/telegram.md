@@ -42,10 +42,12 @@ places, Qirtas decisions). A member who blocks the bot has them turned off.
 And without commands:
 
 - **Join requests** (Guard mode). With *Approve new members* on the
-  invite link, Telegram asks the bot first: a linked Diwan account is
+  invite link, Telegram asks the bot first: a linked member's account is
   approved at once; everyone else waits in Telegram's own request list for
-  an admin, and gets a private note inviting them to link (the moment they
-  do, they're let in).
+  an admin. Someone not linked gets a private note inviting them to link
+  (the moment they do, a member is let in); a linked account that isn't a
+  member's (a partner's guest or team) is told the group is for members.
+  Hudhud removes nobody: removing people stays with the group's admins.
 - **Posts, every ten minutes** (pg_cron → `/cron/telegram`): new public events
   in the next 45 days (to `events`, else `announcements`), a "starting
   soon" reply three hours before, new Qirtas pieces of the last three days

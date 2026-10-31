@@ -3,6 +3,7 @@ import { Composer, GrammyError, InlineKeyboard } from "grammy";
 import type { BotContext } from "../../context";
 import { copy, langOf } from "../../copy";
 import {
+  type Account,
   db,
   type Group,
   isStaffAccount,
@@ -14,11 +15,12 @@ import { connectPage } from "../../links";
 /**
  * Join requests to a connected group ("Approve new members" on the invite
  * link). With BotFather's Guard mode, Telegram asks the bot first: a linked
- * Nexus account is approved at once, and everyone else is queued for the
+ * member's account is approved at once, and everyone else is queued for the
  * group's admins in Telegram's own request list, with a private note
- * inviting them to link (the moment they do, they're let in). Welcome
- * messages, anti-spam, restrictions and bans are Telegram's own (group
- * settings and admin tools), not the bot's.
+ * inviting them to link (the moment they do, they're let in). A linked
+ * account that isn't a member's (a partner's guest or team) waits for the
+ * admins too. Welcome messages, anti-spam, restrictions and bans are
+ * Telegram's own (group settings and admin tools), not the bot's.
  *
  * A staff group (/audience staff, the Diwan group) lets in only linked
  * accounts that hold a Society role: a member without one, or anyone not
@@ -46,10 +48,10 @@ const approve = async (api: Api, chatId: number, telegramId: number) => {
 };
 
 /** Whether this linked person may come straight in. */
-const mayEnter = (group: Group, telegramId: number) =>
+const mayEnter = (group: Group, telegramId: number, me: Account) =>
   group.audience === "staff"
     ? isStaffAccount(telegramId)
-    : Promise.resolve(true);
+    : Promise.resolve(me.member);
 
 joins.on("chat_join_request", async (ctx) => {
   const request = ctx.chatJoinRequest;
@@ -67,7 +69,7 @@ joins.on("chat_join_request", async (ctx) => {
     await answer("queue");
     return;
   }
-  if (me && (await mayEnter(group, person.id))) {
+  if (me && (await mayEnter(group, person.id, me))) {
     await (request.query_id
       ? answer("approve")
       : approve(ctx.api, group.chat_id, person.id));
@@ -81,14 +83,14 @@ joins.on("chat_join_request", async (ctx) => {
   const lang = langOf(person.language_code);
   const t = copy[lang];
   const title = request.chat.title ?? "SAL";
-  let note = t.joinWaiting(title);
+  let note = me ? t.joinMembersOnly(title) : t.joinWaiting(title);
   if (group.audience === "staff") {
     note = me ? t.joinStaffOnly(title) : t.joinStaffWaiting(title);
   }
   // Bots may write to someone who asked to join, even before /start.
   await ctx.api
     .sendMessage(request.user_chat_id, note, {
-      // A linked member without a role has nothing to link.
+      // A linked account has nothing left to link.
       reply_markup: me
         ? undefined
         : new InlineKeyboard().url(t.buttons.link, connectPage(lang)),
@@ -98,14 +100,18 @@ joins.on("chat_join_request", async (ctx) => {
 
 /** After someone links their account: approve their waiting requests. */
 export const admitPending = async (api: Api, telegramId: number) => {
-  const { data: rows } = await waiting()
-    .select("chat_id")
-    .eq("telegram_id", telegramId);
+  const [{ data: rows }, me] = await Promise.all([
+    waiting().select("chat_id").eq("telegram_id", telegramId),
+    whoami(telegramId),
+  ]);
+  if (!me) {
+    return;
+  }
   await Promise.all(
     (rows ?? []).map(async ({ chat_id }) => {
       const group = await loadGroup(chat_id);
-      // A staff group waits for its admins unless the person holds a role.
-      if (group && !(await mayEnter(group, telegramId))) {
+      // Admins decide for anyone who may not come straight in.
+      if (group && !(await mayEnter(group, telegramId, me))) {
         return;
       }
       await approve(api, chat_id, telegramId);

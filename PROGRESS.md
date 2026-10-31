@@ -382,13 +382,14 @@ Branch: `claude/new-session-qosn60`.
       the platform owner's own organizations (Baghdad College Foundation,
       The IDEA IQ, which hosts the Vercel team) belong on it, and whoever
       declares a conflict with a partner cannot sign its memorandum.
-- [ ] **Recognition (B4):** the Faculty Advisor needs a Nexus account with
+- [ ] **Certificates (B4):** the Faculty Advisor needs an account with
       the `faculty_advisor` role to countersign certificates (B4.5: signed
-      by the President and the Faculty Advisor). Decide in Council whether
-      volunteers (hours, not a term) get certificates; if yes, switch on
-      `features.volunteer_certificates` in Administration → Settings.
-      Approve the certificate wording for the kinds the Printables do not
-      cover (Honorary Membership, volunteer, production, partner).
+      by the President and the Faculty Advisor, under People → Service).
+      Volunteer certificates are allowed (no switch since the final audit,
+      migration `20261101001400`); the Council may still decide not to
+      draft them. Approve the certificate wording for the kinds the
+      Printables do not cover (Honorary Membership, volunteer, production,
+      partner).
 - [ ] **Backups:** add `BACKUP_PASSPHRASE` (a long random passphrase kept in
       your password manager) to the GitHub `production` environment. Then
       `.github/workflows/backup.yml` stores an encrypted dump every night

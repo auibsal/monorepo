@@ -27,10 +27,35 @@ test("renders a valid calendar with CRLF and UTC times", () => {
 });
 
 test("folds long lines at 75 octets without splitting Arabic letters", () => {
-  const line = `SUMMARY:${"ورق ".repeat(30)}`;
+  const line = `SUMMARY:${"قرطاس ".repeat(30)}`;
   const folded = fold(line).split("\r\n");
   for (const part of folded) {
     expect(new TextEncoder().encode(part).length).toBeLessThanOrEqual(75);
   }
   expect(folded.map((p, i) => (i === 0 ? p : p.slice(1))).join("")).toBe(line);
+});
+
+test("writes AUIB's whole days as dates, the end exclusive", () => {
+  const ics = renderCalendar("SAL", [
+    {
+      allDay: true,
+      end: "2026-11-03T00:00:00.000Z",
+      start: "2026-11-01T00:00:00.000Z",
+      tag: "[AUIB]",
+      title: "Fall break",
+      uid: "auib-1@auibsal.org",
+    },
+    {
+      allDay: true,
+      start: "2026-11-10T00:00:00.000Z",
+      title: "Advising day",
+      uid: "auib-2@auibsal.org",
+    },
+  ]);
+  expect(ics).toContain("DTSTART;VALUE=DATE:20261101\r\n");
+  expect(ics).toContain("DTEND;VALUE=DATE:20261103\r\n");
+  // A day without an end runs to the next day.
+  expect(ics).toContain("DTSTART;VALUE=DATE:20261110\r\n");
+  expect(ics).toContain("DTEND;VALUE=DATE:20261111\r\n");
+  expect(ics).not.toContain("DTSTART:20261101");
 });

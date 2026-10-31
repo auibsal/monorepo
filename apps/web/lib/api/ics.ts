@@ -3,6 +3,8 @@
  * line endings and UTC timestamps.
  */
 export interface IcsEvent {
+  /** A whole day (or days): written as dates, not times. */
+  allDay?: boolean;
   description?: string | null;
   end?: string | null;
   location?: string | null;
@@ -35,6 +37,12 @@ const stamp = (value: string | Date) =>
     .replace(DASH_OR_COLON, "")
     .replace(MILLISECONDS, "");
 
+/** A date value (YYYYMMDD) for a whole-day event. */
+const day = (value: string | Date) =>
+  new Date(value).toISOString().slice(0, 10).replace(DASH_OR_COLON, "");
+
+const DAY = 86_400_000;
+
 const encoder = new TextEncoder();
 
 /** Folds a content line at 75 octets without splitting a UTF-8 character. */
@@ -64,7 +72,7 @@ export const renderCalendar = (
   const lines = [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
-    "PRODID:-//AUIB Society of Arts and Letters//Nexus//EN",
+    "PRODID:-//AUIB Society of Arts and Letters//auibsal.org//EN",
     "CALSCALE:GREGORIAN",
     "METHOD:PUBLISH",
     `X-WR-CALNAME:${escapeText(name)}`,
@@ -72,15 +80,24 @@ export const renderCalendar = (
     "REFRESH-INTERVAL;VALUE=DURATION:PT1H",
   ];
   for (const event of events) {
-    const end =
-      event.end ??
-      new Date(new Date(event.start).getTime() + 2 * 3_600_000).toISOString();
+    lines.push("BEGIN:VEVENT", `UID:${event.uid}`, `DTSTAMP:${stamp(now)}`);
+    if (event.allDay) {
+      // DTEND of a date is exclusive (as the AUIB feed gives it); a day
+      // without an end runs to the next day.
+      const start = new Date(event.start);
+      const end = event.end ? new Date(event.end) : start;
+      const until = end > start ? end : new Date(start.getTime() + DAY);
+      lines.push(
+        `DTSTART;VALUE=DATE:${day(start)}`,
+        `DTEND;VALUE=DATE:${day(until)}`
+      );
+    } else {
+      const end =
+        event.end ??
+        new Date(new Date(event.start).getTime() + 2 * 3_600_000).toISOString();
+      lines.push(`DTSTART:${stamp(event.start)}`, `DTEND:${stamp(end)}`);
+    }
     lines.push(
-      "BEGIN:VEVENT",
-      `UID:${event.uid}`,
-      `DTSTAMP:${stamp(now)}`,
-      `DTSTART:${stamp(event.start)}`,
-      `DTEND:${stamp(end)}`,
       `SUMMARY:${escapeText(event.tag ? `${event.tag} ${event.title}` : event.title)}`
     );
     if (event.location) {

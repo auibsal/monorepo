@@ -483,7 +483,6 @@ const emptyAgreement = {
   code: "",
   ends_on: "",
   grants: [] as (typeof partners.agreementGrants)[number][],
-  money: "",
   partner_contact: "",
   partner_id: "",
   partner_will: "",
@@ -509,7 +508,6 @@ const AgreementForm = ({ onDone }: { onDone: () => void }) => {
         code: form.code,
         ends_on: form.ends_on,
         grants: form.grants,
-        money: form.money,
         partner_contact: form.partner_contact,
         partner_id: form.partner_id,
         partner_will: form.partner_will,
@@ -535,7 +533,7 @@ const AgreementForm = ({ onDone }: { onDone: () => void }) => {
   });
 
   const text = (
-    field: "sal_will" | "partner_will" | "money" | "branding" | "people_safety",
+    field: "sal_will" | "partner_will" | "branding" | "people_safety",
     hint?: string
   ) => (
     <Field hint={hint} label={t(`fields.${field}`)}>
@@ -621,7 +619,6 @@ const AgreementForm = ({ onDone }: { onDone: () => void }) => {
       </div>
       {text("sal_will")}
       {text("partner_will")}
-      {text("money", t("moneyHint"))}
       {text("branding", t("brandingHint"))}
       {text("people_safety", t("safetyHint"))}
       <div className="grid gap-4 sm:grid-cols-2">

@@ -565,45 +565,6 @@ export type Database = {
   };
   content: {
     Tables: {
-      document_sections: {
-        Row: {
-          anchor: string;
-          body: string;
-          code: string;
-          id: string;
-          locale: string;
-          path: string;
-          search: unknown;
-          status: string;
-          title: string;
-          updated_at: string;
-        };
-        Insert: {
-          anchor?: string;
-          body: string;
-          code: string;
-          id?: string;
-          locale: string;
-          path: string;
-          search?: never;
-          status: string;
-          title: string;
-          updated_at?: string;
-        };
-        Update: {
-          anchor?: string;
-          body?: string;
-          code?: string;
-          id?: string;
-          locale?: string;
-          path?: string;
-          search?: never;
-          status?: string;
-          title?: string;
-          updated_at?: string;
-        };
-        Relationships: [];
-      };
       newsletter_subscribers: {
         Row: {
           confirm_sent_at: string | null;
@@ -1427,45 +1388,6 @@ export type Database = {
   };
   events: {
     Tables: {
-      campus_events: {
-        Row: {
-          all_day: boolean;
-          description: string | null;
-          ends_at: string | null;
-          fetched_at: string;
-          id: string;
-          location: string | null;
-          starts_at: string;
-          title: string;
-          uid: string;
-          url: string | null;
-        };
-        Insert: {
-          all_day?: boolean;
-          description?: string | null;
-          ends_at?: string | null;
-          fetched_at?: string;
-          id?: string;
-          location?: string | null;
-          starts_at: string;
-          title: string;
-          uid: string;
-          url?: string | null;
-        };
-        Update: {
-          all_day?: boolean;
-          description?: string | null;
-          ends_at?: string | null;
-          fetched_at?: string;
-          id?: string;
-          location?: string | null;
-          starts_at?: string;
-          title?: string;
-          uid?: string;
-          url?: string | null;
-        };
-        Relationships: [];
-      };
       check_ins: {
         Row: {
           checked_in_at: string;
@@ -2983,19 +2905,6 @@ export type Database = {
           titles_en: string[];
         }[];
       };
-      council_roster: {
-        Args: Record<PropertyKey, never>;
-        Returns: {
-          full_name_ar: string;
-          full_name_en: string;
-          role: string;
-          role_name_ar: string;
-          role_name_en: string;
-          sort: number;
-          title_ar: string;
-          title_en: string;
-        }[];
-      };
       count_election: { Args: { election_id: string }; Returns: undefined };
       decide_candidate: {
         Args: { approve: boolean; candidate_id: string };
@@ -3033,14 +2942,6 @@ export type Database = {
       handle_form: {
         Args: { office?: Json; status: string; submission_id: string };
         Returns: undefined;
-      };
-      joinable_partners: {
-        Args: Record<PropertyKey, never>;
-        Returns: {
-          id: string;
-          name_ar: string;
-          name_en: string;
-        }[];
       };
       my_partner_application: {
         Args: Record<PropertyKey, never>;
@@ -4651,7 +4552,6 @@ export type Database = {
         Args: { desk: Database["journal"]["Enums"]["desk"] };
         Returns: boolean;
       };
-      my_author_page: { Args: Record<PropertyKey, never>; Returns: string };
       my_call_pathways: {
         Args: Record<PropertyKey, never>;
         Returns: {

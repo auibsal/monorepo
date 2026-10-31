@@ -108,6 +108,8 @@ const en = {
   // Inline
   inlineEvent: "Event",
   inlinePiece: "Qirtas",
+  joinMembersOnly: (group: string) =>
+    `${group} is for the Society's members. An admin will look at your request.`,
   joinStaffOnly: (group: string) =>
     `${group} is for the Society's officers. An admin will look at your request.`,
   joinStaffWaiting: (group: string) =>
@@ -287,6 +289,8 @@ const ar: Copy = {
 
   inlineEvent: "فعالية",
   inlinePiece: "قرطاس",
+  joinMembersOnly: (group: string) =>
+    `${group} لأعضاء الجمعية. سينظر أحد المشرفين في طلبك.`,
   joinStaffOnly: (group: string) =>
     `${group} لمسؤولي الجمعية. سينظر أحد المشرفين في طلبك.`,
   joinStaffWaiting: (group: string) =>

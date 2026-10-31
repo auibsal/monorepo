@@ -80,10 +80,20 @@ select pg_temp.make_user('00000000-0000-0000-0000-0000000009a1', 'au1@auib.edu.i
 insert into membership.memberships (user_id) values ('00000000-0000-0000-0000-0000000009a1') on conflict do nothing;
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000009a1', 'tech_admin');
 
-select pg_temp.login_as('00000000-0000-0000-0000-0000000009a1');
-select is(journal.my_author_page(), 'layla-haddad',
-  'A member''s own page is at their name with dashes');
-select is(journal.my_author_page(), 'layla-haddad', 'and asking again gives the same page');
+-- Their own byline, as the newsroom makes it when they first publish.
+select pg_temp.logout();
+insert into journal.contributors (slug, user_id, name_en, is_pen_name)
+values ('tmp-own-byline', '00000000-0000-0000-0000-0000000009a1', '', false);
+select is(
+  (select slug from journal.contributors where user_id = '00000000-0000-0000-0000-0000000009a1' and not is_pen_name),
+  'layla-haddad',
+  'A member''s own page is at their name with dashes'
+);
+select is(
+  (select name_en from journal.contributors where user_id = '00000000-0000-0000-0000-0000000009a1' and not is_pen_name),
+  'Layla Haddad',
+  'and carries their name from the profile'
+);
 
 select pg_temp.login_anon();
 select is((select kind from journal.author_card('layla-haddad')), 'member',
