@@ -15,26 +15,20 @@ import { useVisibleModules } from "@/components/nexus/admin/admin-shell";
 import { useTwoStep } from "@/components/nexus/auth/two-step";
 import { useMyPartners } from "@/lib/nexus/partners";
 import { disablePush } from "@/lib/nexus/push";
-import { useMemberStatus } from "@/lib/nexus/queries";
+import { useMemberStatus, useMyMembership } from "@/lib/nexus/queries";
 import { rememberWays, type Ways } from "@/lib/staff";
 
 interface AccountLink {
   /** Pages that count as this link's own (Settings holds Profile and Requests). */
   readonly also?: readonly string[];
   readonly href: string;
-  readonly key:
-    | "today"
-    | "calendar"
-    | "society"
-    | "record"
-    | "settings"
-    | "accountHome";
+  readonly key: "today" | "calendar" | "society" | "record" | "settings";
 }
 
 /** Whether a link is the current page: Today only on itself. */
 const isCurrent = (pathname: string, link: AccountLink) =>
   [link.href, ...(link.also ?? [])].some((href) =>
-    href === "/membership" || href === "/account"
+    href === "/membership"
       ? pathname === href
       : pathname === href || pathname.startsWith(`${href}/`)
   );
@@ -55,7 +49,6 @@ export const useWays = (): Ways => {
   const ways: Ways = {
     diwan:
       Boolean(user) && (visible.length > 0 || Boolean(twoStep.data?.needs)),
-    member: Boolean(user) && (status.data?.verified ?? true),
     partner: Boolean(user) && (partners.data?.length ?? 0) > 0,
   };
   const known =
@@ -70,7 +63,7 @@ export const useWays = (): Ways => {
     if (known) {
       rememberWays(user ? ways : null);
     }
-  }, [known, user, ways.diwan, ways.member, ways.partner]);
+  }, [known, user, ways.diwan, ways.partner]);
   return ways;
 };
 
@@ -85,39 +78,35 @@ export const useIsStaff = () => useWays().diwan;
  * sit under Settings; perks are on the card.
  */
 const useAccountLinks = (): AccountLink[] => {
-  const status = useMemberStatus();
-  const pathname = usePathname();
-  // Everyone else's account (owner, Oct 31, 2026), also on the guests'
-  // pages among Membership's: three pages; the record opens from Account.
-  const notMember = status.isSuccess && !status.data?.verified;
-  if (
-    notMember ||
-    pathname === "/account" ||
-    pathname.startsWith("/account/")
-  ) {
+  const kind = useMyMembership().data?.kind ?? null;
+  const today: AccountLink = {
+    // A guest's or a partner's record opens from Today.
+    also: kind === "member" ? [] : ["/membership/record"],
+    href: "/membership",
+    key: "today",
+  };
+  const settings: AccountLink = {
+    also: ["/membership/requests"],
+    href: "/membership/settings",
+    key: "settings",
+  };
+  const calendar: AccountLink = {
+    href: "/membership/calendar",
+    key: "calendar",
+  };
+  // One Membership, its row by kind (owner, Oct 31, 2026): members have
+  // all five; guests book, so keep their calendar; a partner's people and
+  // anyone with no membership yet have Today and Settings.
+  if (kind === "member") {
     return [
-      { also: ["/account/record"], href: "/account", key: "accountHome" },
-      { href: "/account/calendar", key: "calendar" },
-      { href: "/account/settings", key: "settings" },
+      today,
+      calendar,
+      { href: "/membership/society", key: "society" },
+      { href: "/membership/record", key: "record" },
+      settings,
     ];
   }
-  const member = Boolean(status.data?.is_member);
-  const links: AccountLink[] = [
-    { href: "/membership", key: "today" },
-    ...(member
-      ? ([
-          { href: "/membership/calendar", key: "calendar" },
-          { href: "/membership/society", key: "society" },
-        ] as const)
-      : []),
-    { href: "/membership/record", key: "record" },
-    {
-      also: ["/membership/requests"],
-      href: "/membership/settings",
-      key: "settings",
-    },
-  ];
-  return links;
+  return kind === "guest" ? [today, calendar, settings] : [today, settings];
 };
 
 /** The account's links and sign-out. */
@@ -162,7 +151,7 @@ const AccountNav = () => {
         key={pathname}
       >
         <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-3 font-medium text-sm [&::-webkit-details-marker]:hidden">
-          <span>{t(current?.key ?? links[0]?.key ?? "today")}</span>
+          <span>{t(current?.key ?? "today")}</span>
           <Icon
             className="size-4 transition-transform group-open:rotate-180"
             name="chevron-down"
@@ -220,7 +209,7 @@ const AccountNav = () => {
 };
 
 /** Pages that show the account's row of links. */
-const ACCOUNT_PAGES = /^\/(membership|society|account)(\/|$)/;
+const ACCOUNT_PAGES = /^\/(membership|society)(\/|$)/;
 
 /** The members' pages: the account row where it belongs, then the page. */
 export const MemberShell = ({ children }: { children: ReactNode }) => {

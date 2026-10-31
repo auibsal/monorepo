@@ -3,6 +3,7 @@
 import { Link } from "@repo/internationalization/navigation";
 import { useTranslations } from "next-intl";
 import { useIsStaff } from "@/components/account/member-shell";
+import { useMyMembership } from "@/lib/nexus/queries";
 import { RecoveryCodes } from "../auth/recovery-codes";
 import { DiwanPage, DiwanSection, RowList } from "../page";
 import { DeleteAccount } from "./delete-account";
@@ -38,6 +39,9 @@ export const NoticesScreen = () => {
 export const SettingsScreen = () => {
   const t = useTranslations("nexus.settings");
   const staff = useIsStaff();
+  // Requests and the personal email are a member's (an AUIB address that
+  // ends at graduation); everyone has Profile and Notices.
+  const member = useMyMembership().data?.kind === "member";
   return (
     <DiwanPage lede={t("lede")} narrow title={t("title")}>
       <DiwanSection id="yours" title={t("yours")}>
@@ -51,12 +55,14 @@ export const SettingsScreen = () => {
             </Link>
             <p className="type-caption">{t("profileLine")}</p>
           </li>
-          <li className="grid gap-1">
-            <Link className="link font-medium" href="/membership/requests">
-              {t("requests")}
-            </Link>
-            <p className="type-caption">{t("requestsLine")}</p>
-          </li>
+          {member ? (
+            <li className="grid gap-1">
+              <Link className="link font-medium" href="/membership/requests">
+                {t("requests")}
+              </Link>
+              <p className="type-caption">{t("requestsLine")}</p>
+            </li>
+          ) : null}
           <li className="grid gap-1">
             <Link
               className="link font-medium"
@@ -79,7 +85,7 @@ export const SettingsScreen = () => {
           ) : null}
         </RowList>
       </DiwanSection>
-      <PersonalEmailSection />
+      {member ? <PersonalEmailSection /> : null}
       <Passkeys />
       <RecoveryCodes />
       <DeleteAccount />

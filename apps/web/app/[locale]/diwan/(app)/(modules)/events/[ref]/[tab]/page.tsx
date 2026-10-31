@@ -18,15 +18,15 @@ const isTab = (value: string): value is ProgramTab =>
 const Page = async ({
   params,
 }: {
-  readonly params: Promise<{ slug: string; tab: string }>;
+  readonly params: Promise<{ ref: string; tab: string }>;
 }) => {
-  const { slug, tab } = await params;
+  const { ref, tab } = await params;
   if (!isTab(tab) || tab === "sessions") {
     notFound();
   }
   return (
     <RequireModule module="programs">
-      <ProgramPage slug={decodeURIComponent(slug)} tab={tab} />
+      <ProgramPage slug={decodeURIComponent(ref)} tab={tab} />
     </RequireModule>
   );
 };

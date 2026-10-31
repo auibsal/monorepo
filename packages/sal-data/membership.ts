@@ -81,6 +81,21 @@ export const CARD_CODE = /^[0-9a-f]{20}$/;
 export const myCard = async (client: Client) =>
   unwrap(await membership(client).rpc("my_card"))?.[0] ?? null;
 
+/**
+ * The one kind of membership the signed-in account holds (owner, Oct 31,
+ * 2026): a member (an AUIB address), a guest, or a partner's; null when it
+ * holds none yet. Staff: a member holding a Society role.
+ */
+export type MembershipKind = "member" | "guest" | "partner";
+
+export const myMembership = async (client: Client) => {
+  const row = unwrap(await membership(client).rpc("my_membership"))?.[0];
+  return {
+    kind: (row?.kind ?? null) as MembershipKind | null,
+    staff: Boolean(row?.staff),
+  };
+};
+
 /** A new code for a lost or shared card; the old link stops working. */
 export const reissueCard = async (client: Client) =>
   unwrap(await membership(client).rpc("reissue_card"))?.[0] ?? null;

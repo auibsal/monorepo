@@ -40,8 +40,10 @@ and decisions), and continue from the first unticked item.
     (`adminSections` in `@repo/rbac`, `DiwanNav` and `SectionTabs` in
     `admin-shell.tsx`; owner, Oct 30, 2026): the Desk (`/diwan`: what
     needs you, three quick actions, what happened, and the Connected panel
-    for Notion, Hudhud and email), What's on (`/diwan/events`, `/events/programs`
-    with each program's page; each event has its own door,
+    for Notion, Hudhud and email), What's on (`/diwan/events`, one page:
+    the events, then the programs, each an event series whose page is
+    `/diwan/events/<slug>` like its public page, `EventOrProgram`, with
+    its tabs at `/diwan/events/<slug>/<tab>`; each event has its own door,
     `/events/<slug>/door`, and the Desk opens the next one (owner, Oct 31,
     2026: no general door); Second Chapter's collection
     is a tab of its program), Qirtas (`/diwan/qirtas`, its tabs and the
@@ -374,7 +376,12 @@ any schema change. Integration tests run against a local stack with
   card to make it theirs (`programmes.attach_six_words`); unsigned cards
   show without a name. One entry per member; a new card replaces the old.
 - **The Callboard** (owner, Oct 25, 2026; header link "Get involved",
-  `/get-involved`, the board for members) is the careers page (owner, Oct 29, 2026):
+  `/get-involved`) is the careers page (owner, Oct 29, 2026), read by
+  anyone (Oct 31: `programmes.open_places()`, `OpenPlaces`; replying and
+  shifts are for members): roles, the Apprenticeship, First Ink, volunteer
+  places (`kind` `volunteer`, with a rota) and places with partners (`kind`
+  `partner`, posted by Partnerships in the Diwan's Partners → Places),
+  then auditions. Before that:
   every role the Society is filling (`programmes.openings`, `kind`
   `role`, with its `owner`: a program, Qirtas, Media, Partnerships,
   Membership or the Council), shifts and auditions on one board. A role
@@ -431,7 +438,7 @@ any schema change. Integration tests run against a local stack with
   fourteen days, codes made by the database; emailed by the outbox kind
   `partners.invitation`): team by email, guests by email (verified on
   accepting with that address) or by a shareable link (pending until the
-  partner verifies). Invitations open at `/partners/invite/<code>`
+  partner verifies). Invitations open at `/invite/<code>`
   (`governance.partner_invitation`, `accept_partner_invitation`). Row Level
   Security keeps the team to its own partner; its listing, status and
   address stay the Society's (`guard_partner_self_edit`). Partners verify
@@ -440,14 +447,29 @@ any schema change. Integration tests run against a local stack with
   perks (`member_offers`, only with the `member_offer` grant) like
   members. The team are not officers: `RequireStaff` sends a team-only
   account to the dashboard, and the Notion directory leaves them out.
-- **Accounts for everyone else** (owner, Oct 31, 2026). Membership is
-  AUIB's: non-members (guests, partners' teams, applicants) have
-  `/account` (`RequireAccount`): Account (their partners, what they may
-  do, perks; the record at `/account/record`), My calendar
-  (`/account/calendar`, booking) and Settings (`/account/settings`: name,
-  emails, passkeys, deleting the account). `RequireMember` sends them
-  there, and a guest following an event's booking link to
-  `/account/calendar`.
+- **One Membership, of one kind** (owner, Oct 31, 2026; migration
+  `20261101000800`). Everyone has `/membership`; there is no `/account`.
+  An account is one kind (`private.membership_kind`,
+  `membership.my_membership()`, `useMyMembership`): `member` (an AUIB
+  address; tiers Member, Fellow, Honorary Fellow, Life Member; Voting
+  Member is earned), `guest` (the Society's, `membership.guests`, or a
+  partner's verified affiliation; `private.is_guest`) or `partner` (a
+  partner's Lead or Team). Triggers named `one_membership` refuse a
+  second kind (`private.may_become`); a guest may still be one Edition's
+  guest editor. Staff is a member holding a Society role
+  (`private.is_staff`): the card's Staff tag and the Diwan. Every kind
+  has the live card (`my_card`; `verify_card` returns `kind` and
+  `staff`). The members' pages open by kind (`kindOpens` in
+  `gates.tsx`): members everything; guests Today, My calendar, Record,
+  Settings, their work and Qirtas; a partner's people Today, Record and
+  Settings; no kind yet, Today and Settings. Today for a guest or a
+  partner's person is `OtherHome`. The Society's guests are invited from
+  the Diwan (People → Guests, `/diwan/people/guests`, `members.manage`)
+  with the same invitations as partners (`partner_id` null); every
+  invitation opens at `/invite/<code>`. Signing up refuses an address
+  that has an account (no identities in the answer); signing in asks
+  `/api/sign-in/known` (`core.account_exists`, the secret key) after a
+  failure, to say "no account with this address".
 - **No money** (owner, Oct 30, 2026). The Society holds no budget, no
   account and no money, and has no Treasurer; Student Life provides. No
   budgets, costs, prices, spending limits, claims or reimbursements
@@ -568,7 +590,7 @@ any schema change. Integration tests run against a local stack with
   Membership, for officers only, and the Partner dashboard for a partner's
   team (`useWays` in `member-shell.tsx`, remembered for the public pages
   in the `sal_ways` hint cookie; UX only). Non-members' end of the line
-  opens Account (`/account`) instead of Membership. Below the desktop width
+  opens Membership, for every kind. Below the desktop width
   the bar keeps the logo and the menu button, and everything else opens
   in the panel. Inside the Diwan, its own row of six sections follows the
   header (`DiwanNav`), and each section's tabs follow that.

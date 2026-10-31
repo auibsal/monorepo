@@ -104,6 +104,20 @@ describe("signing up", () => {
     },
   };
 
+  test("an address that already has an account is refused, not sent a new email", async () => {
+    // Supabase answers a second sign-up with a user that has no identities.
+    const signUp = vi.fn(() =>
+      Promise.resolve({
+        data: { session: null, user: { identities: [] } },
+        error: null,
+      })
+    );
+    const supabase = { auth: { signUp } } as never;
+    expect(
+      await signUpWithEmail(supabase, { ...base, email: "s@auib.edu.iq" })
+    ).toEqual({ code: "user_exists", ok: false });
+  });
+
   test("an AUIB address needs only email and password; names come in setup", async () => {
     const { signUp, supabase } = client();
     const result = await signUpWithEmail(supabase, {

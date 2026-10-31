@@ -12,16 +12,16 @@ export const generateMetadata = titleFrom((t) =>
 const CampaignPage = async ({
   params,
 }: {
-  readonly params: Promise<{ ref: string }>;
+  readonly params: Promise<{ campaign: string }>;
 }) => {
-  const { ref } = await params;
+  const { campaign } = await params;
   return (
     <RequireModule module="charity">
       <Suspense fallback={<SectionSpinner />}>
         <RecordRef
-          back="/events/programs/second-chapter/collection"
+          back="/events/second-chapter/collection"
           lookup={{ column: "slug", schema: "charity", table: "campaigns" }}
-          value={decodeURIComponent(ref)}
+          value={decodeURIComponent(campaign)}
         >
           <CampaignAdmin />
         </RecordRef>

@@ -632,8 +632,8 @@ const handlers: Record<string, Handler> = {
       links.headers
     );
   },
-  // A partner's email invitation, in the inviter's language: the link is
-  // the invitation (/partners/invite/<code>).
+  // An email invitation, from a partner or from the Society (Membership),
+  // in the inviter's language: the link is the invitation (/invite/<code>).
   "partners.invitation": async (admin, payload) => {
     const { data: invitation } = await admin
       .schema("governance")
@@ -647,12 +647,14 @@ const handlers: Record<string, Handler> = {
       return;
     }
     const [{ data: partner }, { data: inviter }] = await Promise.all([
-      admin
-        .schema("governance")
-        .from("partners")
-        .select("name_en, name_ar")
-        .eq("id", invitation.partner_id)
-        .maybeSingle(),
+      invitation.partner_id
+        ? admin
+            .schema("governance")
+            .from("partners")
+            .select("name_en, name_ar")
+            .eq("id", invitation.partner_id)
+            .maybeSingle()
+        : Promise.resolve({ data: null }),
       admin
         .schema("core")
         .from("profiles")
@@ -660,19 +662,26 @@ const handlers: Record<string, Handler> = {
         .eq("id", invitation.created_by ?? "")
         .maybeSingle(),
     ]);
-    if (!partner) {
+    if (invitation.partner_id && !partner) {
       return;
     }
     const lang: Lang = inviter?.locale === "ar" ? "ar" : "en";
-    const name =
-      lang === "ar" ? (partner.name_ar ?? partner.name_en) : partner.name_en;
+    let name: string | null = null;
+    if (partner) {
+      name =
+        lang === "ar" ? (partner.name_ar ?? partner.name_en) : partner.name_en;
+    }
+    let kind: "team" | "guest" | "society" = "society";
+    if (name) {
+      kind = invitation.kind === "team" ? "team" : "guest";
+    }
     await send(
       { email: invitation.email, lang },
       partnerInvitation(
         lang,
-        name,
-        invitation.kind === "team" ? "team" : "guest",
-        `${webUrl()}${prefix(lang)}/partners/invite/${invitation.code}`
+        name ?? "",
+        kind,
+        `${webUrl()}${prefix(lang)}/invite/${invitation.code}`
       )
     );
   },

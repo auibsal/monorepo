@@ -235,8 +235,20 @@ Qirtas, unlike a program, may have several documents:
 - **Membership is for AUIB addresses only.** The sign-up field takes what comes before @auib.edu.iq (usually an ID number, or name.idnumber). Alumni stay members for good and may add a personal email, as before.
 - **auibsal.org/partners is the partners' front door:** what partnering means, the partners (moved from /about/partners), the way to apply (/partners/join) and the team's sign-in. There are no pages for single partners.
 - **A partner's team:** up to six people, Lead or Team. Whoever applied is the first Lead. Leads invite by email, make others Lead and remove people; everyone keeps the profile, perks and guests; anyone may leave, but never the last Lead.
-- **Guests join only by a partner's invitation:** by email (a guest as soon as they accept with that address) or by a shareable link (waiting until the partner verifies them). Invitations open at /partners/invite/<code> and last fourteen days. Nobody asks a partner to be its guest any more.
+- **Guests join only by a partner's invitation:** by email (a guest as soon as they accept with that address) or by a shareable link (waiting until the partner verifies them). Invitations open at /invite/<code> and last fourteen days. Nobody asks a partner to be its guest any more.
 - **Perks are for members and guests only.** Guests may book places at events and write for calls opened to their partner.
 - **Non-members get /account, not /membership:** Account (their partners, what they can do, perks), My calendar (booking) and Settings (name, emails, sign-in, deleting the account); the record opens from Account.
 - **Hiring picks from the Society's roles.** Every role in Roles and Staffing is on the platform, each with who hires for it; a role opening names its role, and whoever is onboarded holds it.
 - **Smaller moves.** Calls live on each Edition's page. "Email me about events" is on Settings → Notices only. Each event has its own door; the general door is gone, and the Desk opens the next event's door. A manuscript sent as Word or PDF fills the editor with its text, and the original file still goes with the work.
+
+## 11. One Membership, of one kind; What's on as one; Get involved for everyone (decided Oct 31, the last that day)
+- **One Membership for everyone,** at auibsal.org/membership; there is no /account. An account holds one kind only:
+  - **Member:** an AUIB address. The tiers stay: Member (everyone who signs up), Fellow (named by the Council for outstanding service, for life, in the Roll of Fellows), Honorary Fellow (faculty, staff, alumni or guest artists honored by the Council; no vote) and Life Member (alumni, members for good). **Voting Member** is not a tier but a standing: two recorded activities this semester or last (the first 100 members vote from the day they join, for the founding year).
+  - **Guest:** someone outside AUIB, invited by the Society (Membership, in the Diwan) or by one of its partners. Guests don't depend on a partner.
+  - **Partner:** a partner's Lead or Team, with the partner's dashboard.
+  - A member is never also a guest or a partner's person; a partner's person is never a guest. An AUIB club's team signs in with the club's own address. Overlaps that already existed were ended (a member keeps their membership).
+- **Every kind carries the live card,** saying Member (with the tier), Guest or Partner. **Staff** is a tag on a member's card for anyone holding a Society role, with the Diwan.
+- **One sign-in for everyone; sign-up for AUIB students.** Guests sign up only from an invitation (email or link, at /invite/<code>); organizations from /partners/join. Signing up with an address that already has an account is refused ("sign in instead"); signing in with an address that has none says so.
+- **What's on is one thing.** A program is an event series. The Diwan's What's on is one page (the events, then the six programs), and a program's page is /diwan/events/<slug>, like its public page.
+- **Get involved is the careers page, for everyone:** every open place inside the Society and with its partners, readable without signing in: roles, the Apprenticeship (the internship), First Ink, volunteering (standing places and shifts), places with partners (posted by Partnerships) and the Company's auditions. Replying takes membership.
+

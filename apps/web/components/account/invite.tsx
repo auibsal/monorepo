@@ -15,12 +15,13 @@ interface Invitation {
   email: string | null;
   kind: string;
   partner_name_ar: string | null;
-  partner_name_en: string;
+  partner_name_en: string | null;
   usable: boolean;
 }
 
 /** Why accepting failed, as the database says it. */
 const REASONS = [
+  "one_membership",
   "invitation_for_another_address",
   "invitation_unusable",
   "team_full",
@@ -32,12 +33,12 @@ const reasonOf = (error: unknown) => {
 };
 
 /**
- * /partners/invite/<code> (owner, Oct 31, 2026): a partner's invitation to
- * its team or to be its guest. Signed out, the visitor creates an account
+ * /invite/<code> (owner, Oct 31, 2026): an invitation to a partner's team,
+ * or to be a guest of a partner or of the Society itself (Membership). Signed out, the visitor creates an account
  * here, whatever their address (the invitation is why it may be outside
  * AUIB); signed in, they accept it.
  */
-export const PartnerInvite = ({ code }: { code: string }) => {
+export const Invite = ({ code }: { code: string }) => {
   const t = useTranslations("nexus.partnerInvite");
   const locale = useLocale() as Locale;
   const { loading, supabase, user } = useAuth();
@@ -59,7 +60,7 @@ export const PartnerInvite = ({ code }: { code: string }) => {
       ),
     onSuccess: async (kind) => {
       await queryClient.invalidateQueries();
-      router.replace(kind === "team" ? "/partners/dashboard" : "/account");
+      router.replace(kind === "team" ? "/partners/dashboard" : "/membership");
     },
   });
 
@@ -82,8 +83,11 @@ export const PartnerInvite = ({ code }: { code: string }) => {
   const partner =
     (locale === "ar" && found.partner_name_ar) || found.partner_name_en;
   const team = found.kind === "team";
-  const lede = team ? t("team", { partner }) : t("guest", { partner });
-  const path = `/partners/invite/${code}`;
+  let lede = t("society");
+  if (partner) {
+    lede = team ? t("team", { partner }) : t("guest", { partner });
+  }
+  const path = `/invite/${code}`;
 
   if (!user) {
     return (

@@ -2,14 +2,14 @@
 
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
-import { useProfile } from "@/lib/nexus/queries";
+import { useMyMembership, useProfile } from "@/lib/nexus/queries";
 import { DiwanPage } from "../page";
-import { PartnerDeskLink } from "../partner/desk-link";
 import { TellUsMoreLine } from "../profile/tell-us-more";
 import { JournalSection } from "./journal";
 import { MembershipCard } from "./membership-card";
 import { NextEvents } from "./next-events";
 import { Notices } from "./notices";
+import { OtherHome } from "./other-home";
 import { MyProgrammes } from "./programmes";
 import { Requests } from "./requests";
 import { SixWords } from "./six-words";
@@ -68,6 +68,7 @@ export const MemberHome = () => {
   const t = useTranslations("nexus.home");
   const locale = useLocale();
   const profile = useProfile();
+  const mine = useMyMembership();
   const greeting = useGreeting();
   // The first word of the name, in the page's language.
   const [name] = (
@@ -87,16 +88,21 @@ export const MemberHome = () => {
       }
     >
       <MembershipCard />
-      <PartnerDeskLink />
-      <TellUsMoreLine />
-      <div className="grid gap-x-16 gap-y-14 lg:grid-cols-2">
-        <Notices />
-        <NextEvents />
-        <MyProgrammes />
-        <JournalSection />
-        <Requests />
-        <SixWords />
-      </div>
+      {mine.data?.kind === "member" ? (
+        <>
+          <TellUsMoreLine />
+          <div className="grid gap-x-16 gap-y-14 lg:grid-cols-2">
+            <Notices />
+            <NextEvents />
+            <MyProgrammes />
+            <JournalSection />
+            <Requests />
+            <SixWords />
+          </div>
+        </>
+      ) : null}
+      {/* A guest, a partner's person, or someone not yet either. */}
+      {mine.isSuccess && mine.data.kind !== "member" ? <OtherHome /> : null}
     </DiwanPage>
   );
 };

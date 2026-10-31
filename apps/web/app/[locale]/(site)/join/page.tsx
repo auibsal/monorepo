@@ -1,5 +1,6 @@
 import { buttonVariants } from "@repo/design-system/components/ui/button";
 import { localizedPath } from "@repo/internationalization";
+import { Link } from "@repo/internationalization/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { PageHeader, RuledList, Section } from "@/components/section";
 import { type LocaleParams, sectionMetadata } from "@/lib/page";
@@ -78,6 +79,14 @@ const JoinPage = async ({ params }: LocaleParams) => {
             </tbody>
           </table>
         </div>
+        {/* Not at AUIB (owner, Oct 31, 2026): a guest's membership, by
+            invitation, or a partner's, by applying. */}
+        <p className="type-body max-w-[60ch] text-text-secondary">
+          {t("others")}{" "}
+          <Link className="link" href="/partners">
+            {t("othersLink")}
+          </Link>
+        </p>
       </Section>
 
       <Section id="first-month" title={t("firstMonthTitle")}>

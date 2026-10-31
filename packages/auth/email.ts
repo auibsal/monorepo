@@ -27,6 +27,7 @@ export type EmailAuthErrorCode =
   | "user_exists"
   | "names_required"
   | "auib_only"
+  | "no_account"
   | "email_reserved"
   | "invalid_code"
   | "weak_password";
@@ -173,6 +174,12 @@ export const signUpWithEmail = async (
 
   if (error) {
     return { code: toEmailAuthError(error), ok: false };
+  }
+  // An address that already has an account comes back with no identities
+  // (Supabase hides it so as not to say so); here it is said (owner, Oct
+  // 31, 2026): sign in instead.
+  if (data.user && (data.user.identities ?? []).length === 0) {
+    return { code: "user_exists", ok: false };
   }
 
   return { ok: true, value: { needsConfirmation: !data.session } };

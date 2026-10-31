@@ -61,9 +61,27 @@ export const SkillsPicker = ({
   );
 };
 
-/** What an opening offers: a role, an Apprenticeship or a First Ink place. */
-export const openingKinds = ["role", "apprenticeship", "first_ink"] as const;
+/**
+ * What an opening offers (owner, Oct 31, 2026: every open place, inside the
+ * Society and out): a role, an Apprenticeship, a First Ink place, a
+ * volunteer place, or a place with one of the Society's partners.
+ */
+export const openingKinds = [
+  "role",
+  "apprenticeship",
+  "first_ink",
+  "volunteer",
+  "partner",
+] as const;
 type OpeningKind = (typeof openingKinds)[number];
+
+/** Places held by people over a term, with a rota whose hours count. */
+const withRota = (kind: OpeningKind) =>
+  kind === "apprenticeship" || kind === "first_ink" || kind === "volunteer";
+
+/** Places that name a partner: the school for First Ink, or the partner. */
+const namesPartner = (kind: OpeningKind) =>
+  kind === "first_ink" || kind === "partner";
 
 const blank = {
   body: { ar: "", en: "" },
@@ -87,7 +105,7 @@ const openingRow = (form: typeof blank, programmeId: string) => {
     closes_at: form.closes_at,
     desk: form.kind === "apprenticeship" && form.desk ? form.desk : null,
     kind: form.kind,
-    partner_id: form.kind === "first_ink" ? form.partner_id : null,
+    partner_id: namesPartner(form.kind) ? form.partner_id : null,
     places: place && form.places ? Number(form.places) : null,
     programme_id: programmeId,
     skills: form.skills,
@@ -138,7 +156,7 @@ export const Openings = ({ programmeId }: { programmeId: string }) => {
     (list.data ?? []).flatMap((o) => o.opening_replies.map((r) => r.user_id))
   );
   const partners = useQuery({
-    enabled: form.kind === "first_ink",
+    enabled: namesPartner(form.kind),
     queryFn: async () =>
       unwrap(await supabase.schema("governance").rpc("partner_names")) ?? [],
     queryKey: ["admin", "partner-names"],
@@ -147,7 +165,7 @@ export const Openings = ({ programmeId }: { programmeId: string }) => {
 
   const add = useMutation({
     mutationFn: async () => {
-      const place = form.kind !== "role";
+      const place = withRota(form.kind);
       const opening = unwrap(
         await supabase
           .schema("programmes")
@@ -295,7 +313,7 @@ export const Openings = ({ programmeId }: { programmeId: string }) => {
             )}
           </Field>
         ) : null}
-        {form.kind === "first_ink" ? (
+        {namesPartner(form.kind) ? (
           <Field hint={t("partnerHint")} label={t("partner")}>
             {(id) => (
               <SelectInput

@@ -17,13 +17,18 @@ import {
   formatLongDate,
   formatNumber,
 } from "@repo/internationalization/format";
-import { Link, usePathname } from "@repo/internationalization/navigation";
+import { Link } from "@repo/internationalization/navigation";
 import { events, localized, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useEffect, useState } from "react";
 import { InlineConfirm } from "@/components/frame/inline-confirm";
-import { queryKeys, useMyRsvps, useMyWaitlist } from "@/lib/nexus/queries";
+import {
+  queryKeys,
+  useMyMembership,
+  useMyRsvps,
+  useMyWaitlist,
+} from "@/lib/nexus/queries";
 import { CalendarFeed } from "../home/calendar-feed";
 import { DiwanPage } from "../page";
 import { EmptyLine, ErrorState, SectionSpinner } from "../states";
@@ -417,8 +422,8 @@ const EventCard = ({
   const venue = localized(event, "venue", locale);
   const summary = localized(event, "summary", locale);
   const canBook = ["open", "left", "full"].includes(state);
-  // A partner's guest books from /account/calendar; the ticket is members'.
-  const guest = usePathname().startsWith("/account");
+  // The ticket on Today is a member's; a guest shows the card at the door.
+  const guest = useMyMembership().data?.kind !== "member";
   const holding = state === "booked" || state === "waiting";
 
   return (
