@@ -19,7 +19,9 @@ export const JournalSection = () => {
   const ta = useTranslations("nexus.next");
   const tw = useTranslations("nexus.journal");
   const locale = useLocale() as "en" | "ar";
-  const calls = useOpenCalls();
+  // Edition calls only: the standing call is always open.
+  const open = useOpenCalls();
+  const calls = { data: open.data?.filter((call) => call.issue_id) };
   const submissions = useMySubmissions();
 
   return (
@@ -47,7 +49,7 @@ export const JournalSection = () => {
             </p>
             <Link
               className="link type-caption justify-self-start"
-              href={{ pathname: "/qirtas/write", query: { call: call.id } }}
+              href="/qirtas/write"
             >
               {t("submit")}
             </Link>

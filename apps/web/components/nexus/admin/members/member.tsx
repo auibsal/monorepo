@@ -31,6 +31,7 @@ import {
   SaveButton,
   SelectInput,
 } from "../kit";
+import { NotionManaged } from "../notion-managed";
 import { memberName, useDirectory } from "./directory";
 
 // ── Scope options (programs, Journal issues, campaigns, productions) ────────
@@ -625,6 +626,7 @@ export const MemberDetail = () => {
       >
         <span dir="ltr">{row.email}</span>
       </AdminHeading>
+      <NotionManaged kind="officer" recordId={userId} />
       <SalCard>
         <dl className="grid gap-3 sm:grid-cols-4">
           <div>

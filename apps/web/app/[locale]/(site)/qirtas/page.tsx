@@ -40,7 +40,7 @@ const heading = "type-label text-text! border-text border-b pb-2";
 const Calls = async ({ locale }: { locale: Locale }) => {
   const t = await getTranslations({ locale, namespace: "web.journal" });
   const [open, upcoming] = await Promise.all([
-    readPublished(["journal"], (c) => journal.openCalls(c), []),
+    readPublished(["journal"], (c) => journal.editionCalls(c), []),
     readPublished(["journal"], (c) => journal.upcomingCalls(c), []),
   ]);
   const calls = [...(open ?? []), ...(upcoming ?? [])];
@@ -78,7 +78,7 @@ const Calls = async ({ locale }: { locale: Locale }) => {
               {isOpen ? (
                 <a
                   className="inline-flex h-12 items-center justify-self-start bg-on-band px-6 font-medium text-[0.9375rem] text-band hover:bg-on-band/90"
-                  href={`${localizedPath(locale, "/qirtas/write")}?call=${call.id}`}
+                  href={localizedPath(locale, "/qirtas/write")}
                 >
                   {t("submit")}
                 </a>
@@ -183,7 +183,7 @@ const WaraqFrontPage = async ({ params }: WaraqProps) => {
     read((c) => journal.deskPieces(c, "video", { limit: 2 }), []),
     read((c) => journal.deskPieces(c, "voices", { limit: 3 }), []),
     read((c) => journal.currentEdition(c), null),
-    read((c) => journal.openCalls(c), []),
+    read((c) => journal.editionCalls(c), []),
   ]);
   // With nothing set as front, the newest news leads so the page has a
   // top rather than a gap.

@@ -380,7 +380,7 @@ export const SubmissionView = () => {
   const back = (
     <Link
       className="text-sm underline underline-offset-4"
-      href={"/qirtas?tab=review"}
+      href={"/qirtas/review"}
     >
       {tk("back")}
     </Link>

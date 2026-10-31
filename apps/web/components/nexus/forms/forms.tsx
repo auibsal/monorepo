@@ -72,10 +72,7 @@ export const StartLinks = ({ keys }: { readonly keys?: readonly string[] }) => {
         <li key={type.key}>
           <Link
             className="group grid gap-1"
-            href={{
-              pathname: "/membership/requests/new",
-              query: { form: type.key },
-            }}
+            href={`/membership/requests/new/${type.key}`}
           >
             <span className="font-medium underline-offset-4 group-hover:text-accent group-hover:underline group-focus-visible:text-accent">
               {td(`${type.key}.action` as Parameters<typeof td>[0])}
@@ -144,10 +141,7 @@ export const SentList = ({ limit }: { readonly limit?: number }) => {
             className="link"
             href={
               s.status === "draft"
-                ? {
-                    pathname: "/membership/requests/new",
-                    query: { form: s.form_key, id: s.id },
-                  }
+                ? `/membership/requests/new/${s.form_key}/${s.id}`
                 : `/membership/requests/${s.id}`
             }
           >

@@ -48,7 +48,7 @@ const Home = async ({ params }: HomeProps) => {
 
   const [nextEvents, calls, front, news, allProgrammes] = await Promise.all([
     readPublished(["events"], (c) => events.publicEvents(c, { limit: 6 }), []),
-    readPublished(["journal"], (c) => journal.openCalls(c), []),
+    readPublished(["journal"], (c) => journal.editionCalls(c), []),
     readPublished(["journal"], (c) => journal.frontPieces(c), []),
     readPublished(["journal"], (c) => journal.deskPieces(c, "news"), []),
     readPublished(["programmes"], (c) => programmes.programmes(c), []),

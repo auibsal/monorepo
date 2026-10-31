@@ -29,7 +29,10 @@ const make = (year: number, monthIndex: number): Month => {
   };
 };
 
-/** The month a `?month=YYYY-MM` names, or the current one in Baghdad. */
+/** A month in an address: /events/2026-11, /company/2026-11. */
+export const isMonthSegment = (value: string) => MONTH.test(value);
+
+/** The month a `YYYY-MM` path segment names, or the current one in Baghdad. */
 export const monthFrom = (value: string | undefined, now = new Date()) => {
   const match = MONTH.exec(value ?? "");
   const year = Number(match?.[1]);
@@ -44,7 +47,7 @@ export const monthFrom = (value: string | undefined, now = new Date()) => {
 export const shiftMonth = (month: Month, by: number) =>
   make(month.year, month.monthIndex + by);
 
-/** "2026-11", for the query string. */
+/** "2026-11", for the address. */
 export const monthParam = (month: Month) =>
   `${month.year}-${String(month.monthIndex + 1).padStart(2, "0")}`;
 

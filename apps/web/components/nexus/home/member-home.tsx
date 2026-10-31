@@ -68,11 +68,14 @@ export const MemberHome = () => {
   const locale = useLocale();
   const profile = useProfile();
   const greeting = useGreeting();
-  // The first name only, in the page's language.
-  const name =
-    (locale === "ar" && profile.data?.given_name_ar) ||
-    profile.data?.given_name_en ||
-    "";
+  // The first word of the name, in the page's language.
+  const [name] = (
+    (locale === "ar" && profile.data?.full_name_ar) ||
+    profile.data?.full_name_en ||
+    ""
+  )
+    .trim()
+    .split(" ");
 
   return (
     <DiwanPage

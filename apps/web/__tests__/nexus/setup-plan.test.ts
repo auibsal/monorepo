@@ -6,13 +6,8 @@ import {
 } from "@/components/nexus/profile/tell-us-more";
 import { planSetup } from "@/components/nexus/setup-form";
 
-const none = { familyAr: "", familyEn: "", givenAr: "", givenEn: "" };
-const all = {
-  familyAr: "فرجو",
-  familyEn: "Farjo",
-  givenAr: "شاهين",
-  givenEn: "Shaheen",
-};
+const none = { ar: "", en: "" };
+const all = { ar: "شاهين فرجو", en: "Shaheen Farjo" };
 
 describe("setup, one question per screen", () => {
   test("a new member: both names, each pledge, photos, then welcome", () => {
@@ -49,10 +44,10 @@ describe("setup, one question per screen", () => {
     });
   });
 
-  test("a missing half of a name asks that language again", () => {
+  test("a name missing in one language asks that language again", () => {
     expect(
       planSetup({
-        names: { ...all, familyAr: " " },
+        names: { ...all, ar: " " },
         pending: [],
         setupDone: true,
       }).steps

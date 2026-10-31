@@ -28,10 +28,8 @@ export const ProfileScreen = () => {
   const [form, setForm] = useState({
     bio: "",
     camera_shy: false,
-    family_name_ar: "",
-    family_name_en: "",
-    given_name_ar: "",
-    given_name_en: "",
+    full_name_ar: "",
+    full_name_en: "",
     notify_email: true,
   });
 
@@ -40,10 +38,8 @@ export const ProfileScreen = () => {
       setForm({
         bio: profile.data.bio ?? "",
         camera_shy: profile.data.camera_shy,
-        family_name_ar: profile.data.family_name_ar ?? "",
-        family_name_en: profile.data.family_name_en ?? "",
-        given_name_ar: profile.data.given_name_ar ?? "",
-        given_name_en: profile.data.given_name_en ?? "",
+        full_name_ar: profile.data.full_name_ar ?? "",
+        full_name_en: profile.data.full_name_en,
         notify_email: profile.data.notify_email,
       });
     }
@@ -87,12 +83,9 @@ export const ProfileScreen = () => {
 
   const submit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const named = [
-      form.given_name_en,
-      form.family_name_en,
-      form.given_name_ar,
-      form.family_name_ar,
-    ].every((part) => part.trim() !== "");
+    const named = [form.full_name_en, form.full_name_ar].every(
+      (name) => name.trim() !== ""
+    );
     if (words <= membership.BIO_MAX_WORDS && named) {
       save.mutate();
     }
@@ -112,70 +105,27 @@ export const ProfileScreen = () => {
       <DiwanSection id="about-you" title={t("profile.aboutYou")}>
         <form className="grid gap-4" onSubmit={submit}>
           <div className="grid gap-4 sm:grid-cols-2">
-            <div className="grid gap-2">
-              <Label htmlFor={`${id}-given_name_en`}>
-                {t("setup.name.givenEn")}
-              </Label>
-              <Input
-                dir="ltr"
-                id={`${id}-given_name_en`}
-                lang="en"
-                maxLength={60}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, given_name_en: e.target.value }))
-                }
-                required
-                value={form.given_name_en}
-              />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor={`${id}-family_name_en`}>
-                {t("setup.name.familyEn")}
-              </Label>
-              <Input
-                dir="ltr"
-                id={`${id}-family_name_en`}
-                lang="en"
-                maxLength={60}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, family_name_en: e.target.value }))
-                }
-                required
-                value={form.family_name_en}
-              />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor={`${id}-given_name_ar`}>
-                {t("setup.name.givenAr")}
-              </Label>
-              <Input
-                dir="rtl"
-                id={`${id}-given_name_ar`}
-                lang="ar"
-                maxLength={60}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, given_name_ar: e.target.value }))
-                }
-                required
-                value={form.given_name_ar}
-              />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor={`${id}-family_name_ar`}>
-                {t("setup.name.familyAr")}
-              </Label>
-              <Input
-                dir="rtl"
-                id={`${id}-family_name_ar`}
-                lang="ar"
-                maxLength={60}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, family_name_ar: e.target.value }))
-                }
-                required
-                value={form.family_name_ar}
-              />
-            </div>
+            {(["en", "ar"] as const).map((lang) => (
+              <div className="grid gap-2" key={lang}>
+                <Label htmlFor={`${id}-name-${lang}`}>
+                  {t(`setup.name.${lang}`)}
+                </Label>
+                <Input
+                  dir={lang === "en" ? "ltr" : "rtl"}
+                  id={`${id}-name-${lang}`}
+                  lang={lang}
+                  maxLength={120}
+                  onChange={(e) =>
+                    setForm((f) => ({
+                      ...f,
+                      [`full_name_${lang}`]: e.target.value,
+                    }))
+                  }
+                  required
+                  value={form[`full_name_${lang}`]}
+                />
+              </div>
+            ))}
           </div>
           <div className="grid gap-2">
             <Label htmlFor={`${id}-bio`}>{t("profile.bio")}</Label>

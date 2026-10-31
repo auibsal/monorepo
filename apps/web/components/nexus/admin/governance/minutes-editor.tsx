@@ -25,6 +25,7 @@ import {
   SaveButton,
   SelectInput,
 } from "../kit";
+import { NotionManaged } from "../notion-managed";
 
 type Body = "council" | "general_assembly";
 
@@ -165,6 +166,7 @@ export const MinutesEditor = () => {
           ? `${t("statuses.adopted")}, ${formatLongDate(existing.data.adopted_on, locale, true)}`
           : t("statuses.draft")}
       </AdminHeading>
+      <NotionManaged kind="minutes" recordId={minutesId} />
       <form className="grid max-w-4xl gap-6" onSubmit={submit}>
         <BilingualField
           label={t("minutes.titleField")}

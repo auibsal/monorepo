@@ -144,20 +144,20 @@ describe("submission form", () => {
     title: "Firsts",
   };
 
-  test("desks: Letters and Gallery answer a call, News does not", () => {
+  test("one door: every section may name a call or leave it to the standing call", () => {
     expect(deskOf("poetry")).toBe("letters");
     expect(deskOf("comic")).toBe("gallery");
     expect(deskOf("interview")).toBe("news");
     expect(
       submissionSchema.safeParse({ ...base, category: "report" }).success
-    ).toBe(false);
+    ).toBe(true);
     const { call_id: _call, ...noCall } = base;
     expect(
       submissionSchema.safeParse({ ...noCall, category: "report" }).success
     ).toBe(true);
     expect(
       submissionSchema.safeParse({ ...noCall, category: "poetry" }).success
-    ).toBe(false);
+    ).toBe(true);
   });
 
   test("Gallery work needs consent; video needs its link", () => {

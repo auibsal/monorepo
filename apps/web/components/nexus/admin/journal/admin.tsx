@@ -2,7 +2,6 @@
 
 import { useAuth } from "@repo/auth/provider";
 import { Button } from "@repo/design-system/components/ui/button";
-import { Input } from "@repo/design-system/components/ui/input";
 import { Textarea } from "@repo/design-system/components/ui/textarea";
 import type { Locale } from "@repo/internationalization";
 import {
@@ -10,20 +9,17 @@ import {
   formatLongDate,
   formatNumber,
 } from "@repo/internationalization/format";
-import { hasPermission, hasPermissionAnywhere } from "@repo/rbac";
+import { hasPermissionAnywhere, type Permission } from "@repo/rbac";
 import { journal, localized, sanitizeRichText, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
-import { TabLinks } from "@/components/frame/tab-links";
 import { Link } from "@/lib/nexus/navigation";
 import { useGrants } from "@/lib/nexus/queries";
-import { useQueryParam } from "@/lib/nexus/use-query-param";
 import { SectionSpinner } from "../../states";
-import { AdsAdmin } from "../ads";
+import { type SectionTab, SectionTabs } from "../admin-shell";
 import { slugify } from "../events/editor";
 import {
-  AdminHeading,
   BilingualField,
   type Column,
   DataTable,
@@ -32,11 +28,11 @@ import {
   SaveButton,
   SelectInput,
 } from "../kit";
+import { MemberPicker, type Person } from "../member-picker";
 import { Needs } from "../needs";
 import { openSubmissionFile } from "../pipeline/data";
 import { PipelineAdmin } from "../pipeline/pipeline";
 import { NextStopAdmin } from "../programmes/admin";
-import { Prizes } from "./prizes";
 import { Puzzles } from "./puzzles";
 import { FrontRank } from "./workflow";
 
@@ -114,24 +110,11 @@ const Editions = () => {
 
 // ── The newsroom: pieces by stage ───────────────────────────────────────────
 
-const useDesks = () => {
-  const grants = useGrants();
-  const all =
-    hasPermissionAnywhere(grants.data, "journal.approve") ||
-    hasPermissionAnywhere(grants.data, "journal.publish") ||
-    hasPermissionAnywhere(grants.data, "journal.copy");
-  return journal.desks.filter(
-    (desk) => all || hasPermissionAnywhere(grants.data, `journal.edit.${desk}`)
-  );
-};
-
-const Newsroom = () => {
+const Newsroom = ({ desk }: { readonly desk?: journal.Desk }) => {
   const t = useTranslations("nexus.admin.waraq");
   const tj = useTranslations("nexus.admin.journal");
   const locale = useLocale() as Locale;
   const { supabase } = useAuth();
-  const desks = useDesks();
-  const [desk, setDesk] = useState<journal.Desk | "">("");
   const [status, setStatus] = useState<journal.PieceStatus | "">("");
   const pieces = useQuery({
     queryFn: async () => {
@@ -162,7 +145,7 @@ const Newsroom = () => {
           rank(a.status) - rank(b.status) || when(b).localeCompare(when(a))
       );
     },
-    queryKey: [...key, "pieces", desk, status],
+    queryKey: [...key, "pieces", desk ?? "", status],
   });
   type Row = NonNullable<typeof pieces.data>[number];
   const columns: Column<Row>[] = [
@@ -212,23 +195,6 @@ const Newsroom = () => {
   return (
     <div className="grid gap-4">
       <div className="flex flex-wrap items-end gap-4">
-        <Field label={t("desk")}>
-          {(id) => (
-            <SelectInput
-              className="w-48"
-              id={id}
-              onChange={(e) => setDesk(e.target.value as journal.Desk | "")}
-              value={desk}
-            >
-              <option value="">{t("allDesks")}</option>
-              {desks.map((d) => (
-                <option key={d} value={d}>
-                  {tj(`desks.${d}`)}
-                </option>
-              ))}
-            </SelectInput>
-          )}
-        </Field>
         <Field label={t("stage")}>
           {(id) => (
             <SelectInput
@@ -520,58 +486,33 @@ const QueueItem = ({ item }: { item: QueueRow }) => {
   );
 };
 
+/**
+ * Work a section editor took up before the one door (Oct 31, 2026), until
+ * it is decided. Everything sent since is read blind under Review.
+ */
 const Desks = () => {
   const t = useTranslations("nexus.admin.waraq.queue");
-  const tj = useTranslations("nexus.admin.journal");
   const { supabase } = useAuth();
-  const [desk, setDesk] = useState<journal.Desk | "">("");
-  const [done, setDone] = useState(false);
   const queue = useQuery({
     queryFn: () => journal.deskQueue(supabase),
     queryKey: [...key, "queue"],
   });
   const rows = (queue.data ?? []).filter(
-    (q) =>
-      (!desk || q.desk === desk) &&
-      (done
-        ? ["accepted", "declined", "withdrawn"].includes(q.status)
-        : !["accepted", "declined", "withdrawn"].includes(q.status))
+    (q) => !["accepted", "declined", "withdrawn"].includes(q.status)
   );
+  if (rows.length === 0) {
+    return null;
+  }
   return (
-    <div className="grid gap-4">
+    <section className="grid gap-4">
+      <h2 className="type-subheading">{t("title")}</h2>
       <p className="type-caption">{t("lede")}</p>
-      <div className="flex flex-wrap items-end gap-4">
-        <Field label={t("desk")}>
-          {(id) => (
-            <SelectInput
-              className="w-48"
-              id={id}
-              onChange={(e) => setDesk(e.target.value as journal.Desk | "")}
-              value={desk}
-            >
-              <option value="">{t("allDesks")}</option>
-              {journal.newsroomDesks.map((d) => (
-                <option key={d} value={d}>
-                  {tj(`desks.${d}`)}
-                </option>
-              ))}
-            </SelectInput>
-          )}
-        </Field>
-        <Button onClick={() => setDone((d) => !d)} size="sm" variant="ghost">
-          {done ? t("showOpen") : t("showDone")}
-        </Button>
-      </div>
-      {queue.data ? null : <SectionSpinner />}
-      {queue.data && rows.length === 0 ? (
-        <p className="type-body text-text-secondary">{t("empty")}</p>
-      ) : null}
       <ul className="grid gap-4">
         {rows.map((item) => (
           <QueueItem item={item} key={item.submission_id} />
         ))}
       </ul>
-    </div>
+    </section>
   );
 };
 
@@ -663,54 +604,83 @@ const FrontPage = () => {
 
 // ── Contributors ────────────────────────────────────────────────────────────
 
+/**
+ * Bylines (owner, Oct 31, 2026): a contributor is a member, chosen from the
+ * register, whose names follow their profile; or Anonymous. Only the bio is
+ * written here.
+ */
 const Contributors = () => {
   const t = useTranslations("nexus.admin.journal.contributor");
   const tw = useTranslations("nexus.admin.waraq");
-  const tk = useTranslations("nexus.admin.kit");
+  const tc = useTranslations("common");
   const locale = useLocale() as Locale;
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
-  const blank = {
-    bio: { ar: "", en: "" },
-    id: null as string | null,
-    name: { ar: "", en: "" },
-    slug: "",
-  };
-  const [form, setForm] = useState(blank);
+  const [editing, setEditing] = useState<{
+    bio: { ar: string; en: string };
+    id: string;
+  } | null>(null);
   const contributors = useQuery({
     queryFn: async () =>
       unwrap(
         await supabase
           .schema("journal")
           .from("contributors")
-          .select("id, slug, name_en, name_ar, bio_en, bio_ar, is_pen_name")
+          .select(
+            "id, slug, name_en, name_ar, bio_en, bio_ar, is_pen_name, is_anonymous, user_id"
+          )
           .order("name_en")
       ) ?? [],
     queryKey: [...key, "contributors"],
   });
-  const save = useMutation({
-    mutationFn: async () => {
-      const row = {
-        bio_ar: form.bio.ar || null,
-        bio_en: form.bio.en || null,
-        name_ar: form.name.ar || null,
-        name_en: form.name.en,
-        slug: form.slug || slugify(form.name.en),
-      };
-      const table = supabase.schema("journal").from("contributors");
+  const refresh = () => queryClient.invalidateQueries({ queryKey: key });
+  const add = useMutation({
+    mutationFn: async (person: Person) => {
+      if (
+        contributors.data?.some(
+          (c) => c.user_id === person.id && !c.is_pen_name
+        )
+      ) {
+        return;
+      }
       unwrap(
-        form.id
-          ? await table.update(row).eq("id", form.id)
-          : await table.insert(row)
+        await supabase
+          .schema("journal")
+          .from("contributors")
+          .insert({
+            name_ar: person.full_name_ar,
+            name_en: person.full_name_en,
+            slug: `${slugify(person.full_name_en)}-${person.id.slice(0, 4)}`,
+            user_id: person.id,
+          })
+      );
+    },
+    onSuccess: refresh,
+  });
+  const saveBio = useMutation({
+    mutationFn: async () => {
+      if (!editing) {
+        return;
+      }
+      unwrap(
+        await supabase
+          .schema("journal")
+          .from("contributors")
+          .update({
+            bio_ar: editing.bio.ar || null,
+            bio_en: editing.bio.en || null,
+          })
+          .eq("id", editing.id)
       );
     },
     onSuccess: async () => {
-      setForm(blank);
-      await queryClient.invalidateQueries({ queryKey: key });
+      setEditing(null);
+      await refresh();
     },
   });
   return (
     <div className="grid gap-6">
+      <h3 className="type-subheading">{t("title")}</h3>
       <ul className="grid gap-2">
         {contributors.data?.map((c) => (
           <li className="flex flex-wrap items-center gap-3" key={c.id}>
@@ -718,60 +688,62 @@ const Contributors = () => {
             {c.is_pen_name ? (
               <span className="type-caption">{tw("penName")}</span>
             ) : null}
-            <Button
-              onClick={() =>
-                setForm({
-                  bio: { ar: c.bio_ar ?? "", en: c.bio_en ?? "" },
-                  id: c.id,
-                  name: { ar: c.name_ar ?? "", en: c.name_en },
-                  slug: c.slug,
-                })
-              }
-              size="sm"
-              variant="ghost"
-            >
-              {tk("edit")}
-            </Button>
+            {c.is_anonymous ? null : (
+              <Button
+                onClick={() =>
+                  setEditing({
+                    bio: { ar: c.bio_ar ?? "", en: c.bio_en ?? "" },
+                    id: c.id,
+                  })
+                }
+                size="sm"
+                variant="ghost"
+              >
+                {t("editBio")}
+              </Button>
+            )}
           </li>
         ))}
       </ul>
-      <form
-        className="grid max-w-3xl gap-4"
-        onSubmit={(event) => {
-          event.preventDefault();
-          save.mutate();
+      {editing ? (
+        <form
+          className="grid max-w-3xl gap-4"
+          onSubmit={(event) => {
+            event.preventDefault();
+            saveBio.mutate();
+          }}
+        >
+          <BilingualField
+            label={t("bio")}
+            maxLength={1000}
+            multiline
+            onChange={(bio) => setEditing((e) => (e ? { ...e, bio } : e))}
+            rows={3}
+            value={editing.bio}
+          />
+          <div className="flex gap-3">
+            <SaveButton pending={saveBio.isPending} />
+            <Button
+              onClick={() => setEditing(null)}
+              type="button"
+              variant="ghost"
+            >
+              {tc("cancel")}
+            </Button>
+          </div>
+          <ErrorLine error={saveBio.error} />
+        </form>
+      ) : null}
+      <MemberPicker
+        label={t("new")}
+        onChange={(person) => {
+          if (person) {
+            add.mutate(person);
+          }
         }}
-      >
-        <h3 className="type-subheading">{form.id ? t("edit") : t("new")}</h3>
-        <BilingualField
-          label={t("name")}
-          maxLength={200}
-          onChange={(name) => setForm((f) => ({ ...f, name }))}
-          value={form.name}
-        />
-        <Field hint={tk("slugHint")} label={tk("slug")}>
-          {(id) => (
-            <Input
-              dir="ltr"
-              id={id}
-              maxLength={80}
-              onChange={(e) => setForm((f) => ({ ...f, slug: e.target.value }))}
-              placeholder={slugify(form.name.en)}
-              value={form.slug}
-            />
-          )}
-        </Field>
-        <BilingualField
-          label={t("bio")}
-          maxLength={1000}
-          multiline
-          onChange={(bio) => setForm((f) => ({ ...f, bio }))}
-          rows={3}
-          value={form.bio}
-        />
-        <SaveButton disabled={!form.name.en.trim()} pending={save.isPending} />
-        <ErrorLine error={save.error} />
-      </form>
+        value={null}
+      />
+      <ErrorLine error={add.error} />
     </div>
   );
 };
@@ -787,94 +759,6 @@ const puzzleEditorKeys = [
   "journal.edit.voices",
   "journal.edit.games",
 ] as const;
-
-// Who sees which half: the newsroom keys, and the blind review's.
-const newsroomKeys = [
-  "journal.publish",
-  "journal.approve",
-  "journal.copy",
-  "journal.frontpage",
-  "journal.edit.news",
-  "journal.edit.letters",
-  "journal.edit.gallery",
-  "journal.edit.video",
-  "journal.edit.voices",
-  "journal.edit.games",
-] as const;
-const reviewKeys = [
-  "journal.manage",
-  "journal.review",
-  "journal.identity.view",
-  "journal.decide",
-  "journal.advise",
-] as const;
-
-/**
- * Qirtas in the Diwan: everything sent to the paper, in one place. The
- * type decides the process: desk pieces go straight to the newsroom;
- * Edition work goes through the blind review first, then joins it.
- */
-export const JournalAdmin = () => {
-  const t = useTranslations("nexus.admin.waraq");
-  const grants = useGrants();
-  const requested = useQueryParam("tab");
-  const anywhere = (keys: readonly string[]) =>
-    keys.some((p) => hasPermissionAnywhere(grants.data, p as "journal.manage"));
-  const newsroom = anywhere(newsroomKeys);
-  const review = anywhere(reviewKeys);
-  const named = journal.newsroomDesks.some(
-    (desk) =>
-      hasPermissionAnywhere(grants.data, `journal.edit.${desk}`) ||
-      hasPermissionAnywhere(grants.data, "journal.approve")
-  );
-  const front = hasPermission(grants.data, "journal.frontpage");
-  // The same keys as private.can_edit_puzzles().
-  const puzzles = puzzleEditorKeys.some((p) =>
-    hasPermissionAnywhere(grants.data, p)
-  );
-  const prizes = hasPermissionAnywhere(grants.data, "journal.prizes");
-  const nextStop =
-    hasPermissionAnywhere(grants.data, "programmes.manage") ||
-    hasPermissionAnywhere(grants.data, "journal.edit.video");
-  const ads =
-    hasPermissionAnywhere(grants.data, "content.manage") ||
-    hasPermissionAnywhere(grants.data, "partners.manage");
-  // Six views (the overhaul, Oct 30, 2026): the front page, the desks, the
-  // contributors and the needs list sit in the Newsroom; the Prizes beside
-  // the Editions; Next Stop and the ads came from Programs and Site.
-  const tabs = (
-    [
-      ["newsroom", newsroom || named || front],
-      ["review", review],
-      ["editions", newsroom || prizes],
-      ["next-stop", nextStop],
-      ["games", puzzles],
-      ["ads", ads],
-    ] as const
-  )
-    .filter(([, shown]) => shown)
-    .map(([tab]) => tab);
-  const first = tabs.find((tab) => tab === requested) ?? tabs[0];
-
-  if (!(grants.data && first)) {
-    return <SectionSpinner />;
-  }
-
-  return (
-    <div className="grid gap-6">
-      <AdminHeading title={t("title")}>{t("lede")}</AdminHeading>
-      {/* Each view has its own address (?tab=), so it can be shared. */}
-      <TabLinks
-        label={t("title")}
-        pathname="/qirtas"
-        tabs={tabs.map((tab) => ({ key: tab, label: t(`tabs.${tab}`) }))}
-      />
-      <div className="pt-4">
-        <JournalTab key={first} tab={first} />
-      </div>
-    </div>
-  );
-};
 
 /** The paper's needs list, on Qirtas's own program row. */
 const QirtasNeeds = () => {
@@ -897,52 +781,78 @@ const QirtasNeeds = () => {
   return row.data ? <Needs programmeId={row.data.id} /> : null;
 };
 
-type JournalTabKey =
-  | "newsroom"
-  | "review"
-  | "editions"
-  | "next-stop"
-  | "games"
-  | "ads";
+// Who writes in the newsroom: the masthead and every section editor.
+const newsroomKeys: readonly Permission[] = [
+  "journal.publish",
+  "journal.approve",
+  "journal.copy",
+  "journal.frontpage",
+  "journal.edit.news",
+  "journal.edit.letters",
+  "journal.edit.gallery",
+  "journal.edit.video",
+  "journal.edit.voices",
+  "journal.edit.games",
+];
 
-const JournalTab = ({ tab }: { tab: JournalTabKey }) => {
+/** Whether the caller holds any of these keys, anywhere. */
+const useAnyOf = (keys: readonly Permission[]) => {
   const grants = useGrants();
-  const has = (permission: Parameters<typeof hasPermission>[1]) =>
-    hasPermissionAnywhere(grants.data, permission);
-  const inNewsroom = newsroomKeys.some((permission) => has(permission));
-  switch (tab) {
-    case "newsroom":
-      return (
-        <div className="grid gap-14">
-          {inNewsroom ? <Newsroom /> : null}
-          {journal.newsroomDesks.some(
-            (desk) => has(`journal.edit.${desk}`) || has("journal.approve")
-          ) ? (
-            <Desks />
-          ) : null}
-          {hasPermission(grants.data, "journal.frontpage") ? (
-            <FrontPage />
-          ) : null}
-          {inNewsroom ? <Contributors /> : null}
-          {hasPermission(grants.data, "journal.manage") ? (
-            <QirtasNeeds />
-          ) : null}
-        </div>
-      );
-    case "review":
-      return <PipelineAdmin embedded />;
-    case "editions":
-      return (
-        <div className="grid gap-14">
-          <Editions />
-          {has("journal.prizes") ? <Prizes /> : null}
-        </div>
-      );
-    case "next-stop":
-      return <NextStopAdmin />;
-    case "games":
-      return <Puzzles />;
-    default:
-      return <AdsAdmin />;
-  }
+  return keys.some((p) => hasPermissionAnywhere(grants.data, p));
 };
+
+/**
+ * The newsroom (owner, Oct 31, 2026): where staff write and publish
+ * directly, a section at a time at its own address (/qirtas/news …
+ * /qirtas/games). The front page, the contributors and the needs list are
+ * on the first page; Next Stop is part of Video, and the puzzles of Games.
+ */
+export const QirtasNewsroom = ({ desk }: { readonly desk?: journal.Desk }) => {
+  const grants = useGrants();
+  const has = (permission: Permission) =>
+    hasPermissionAnywhere(grants.data, permission);
+  const writes = useAnyOf(newsroomKeys);
+  const puzzles = useAnyOf(puzzleEditorKeys);
+  if (grants.isPending) {
+    return <SectionSpinner />;
+  }
+  return (
+    <div className="grid gap-14">
+      <SectionsNav />
+      {writes ? <Newsroom desk={desk} /> : null}
+      {desk === "video" &&
+      (has("programmes.manage") || has("journal.edit.video")) ? (
+        <NextStopAdmin />
+      ) : null}
+      {desk === "games" && puzzles ? <Puzzles /> : null}
+      {desk === undefined && has("journal.frontpage") ? <FrontPage /> : null}
+      {desk === undefined && writes ? <Contributors /> : null}
+      {desk === undefined && has("journal.manage") ? <QirtasNeeds /> : null}
+    </div>
+  );
+};
+
+/** The six sections, each at its own address. */
+const SectionsNav = () => {
+  const t = useTranslations("nexus.admin.waraq");
+  const tj = useTranslations("nexus.admin.journal");
+  const tabs: SectionTab[] = [
+    { href: "/qirtas", label: t("allDesks") },
+    ...journal.desks.map((d) => ({
+      href: `/qirtas/${d}`,
+      label: tj(`desks.${d}`),
+    })),
+  ];
+  return <SectionTabs label={t("sections")} tabs={tabs} />;
+};
+
+/** The blind review: everything members send, read without names. */
+export const QirtasReview = () => (
+  <div className="grid gap-14">
+    <PipelineAdmin embedded />
+    <Desks />
+  </div>
+);
+
+/** The printed Editions. */
+export const QirtasEditions = () => <Editions />;

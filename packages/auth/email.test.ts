@@ -94,12 +94,7 @@ describe("signing up", () => {
     password: "a-long-password",
     redirectTo: "https://x/cb",
   };
-  const names = {
-    familyAr: "فرجو",
-    familyEn: "Farjo",
-    givenAr: "شاهين",
-    givenEn: "Shaheen",
-  };
+  const names = { ar: "شاهين فرجو", en: "Shaheen Farjo" };
 
   test("an AUIB address needs only email and password; names come in setup", async () => {
     const { signUp, supabase } = client();
@@ -114,7 +109,7 @@ describe("signing up", () => {
     expect(sent.options.data).toEqual({ locale: "en" });
   });
 
-  test("an address outside AUIB gives all four names, for the Council to verify", async () => {
+  test("an address outside AUIB gives its name in both languages, for the Council to verify", async () => {
     const { signUp, supabase } = client();
     expect(
       await signUpWithEmail(supabase, { ...base, email: "s@gmail.com" })
@@ -131,8 +126,8 @@ describe("signing up", () => {
       options: { data: Record<string, unknown> };
     };
     expect(sent.options.data).toMatchObject({
+      full_name_ar: "شاهين فرجو",
       full_name_en: "Shaheen Farjo",
-      given_name_ar: "شاهين",
       verification_statement: "AUIB alumnus, 2024",
     });
   });

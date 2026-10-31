@@ -12,7 +12,7 @@ export const RouteParams = createContext<Readonly<Record<string, string>>>({});
 
 /**
  * A record's id or a view's setting: from the page's address first
- * (RouteParams), then from the query string (?tab=, ?kind=).
+ * (RouteParams), then from the query string.
  */
 export const useQueryParam = (name: string) => {
   const fromPath = useContext(RouteParams)[name];

@@ -890,12 +890,8 @@ export type Database = {
           bio: string | null;
           camera_shy: boolean;
           created_at: string;
-          family_name_ar: string | null;
-          family_name_en: string | null;
           full_name_ar: string | null;
           full_name_en: string;
-          given_name_ar: string | null;
-          given_name_en: string | null;
           id: string;
           locale: string;
           notify_email: boolean;
@@ -911,12 +907,8 @@ export type Database = {
           bio?: string | null;
           camera_shy?: boolean;
           created_at?: string;
-          family_name_ar?: string | null;
-          family_name_en?: string | null;
           full_name_ar?: string | null;
           full_name_en?: string;
-          given_name_ar?: string | null;
-          given_name_en?: string | null;
           id: string;
           locale?: string;
           notify_email?: boolean;
@@ -932,12 +924,8 @@ export type Database = {
           bio?: string | null;
           camera_shy?: boolean;
           created_at?: string;
-          family_name_ar?: string | null;
-          family_name_en?: string | null;
           full_name_ar?: string | null;
           full_name_en?: string;
-          given_name_ar?: string | null;
-          given_name_en?: string | null;
           id?: string;
           locale?: string;
           notify_email?: boolean;
@@ -3162,7 +3150,7 @@ export type Database = {
           flag_note: string | null;
           flagged: boolean;
           id: string;
-          issue_id: string;
+          issue_id: string | null;
           language: Database["journal"]["Enums"]["language"];
           source_text: string | null;
           status: Database["journal"]["Enums"]["submission_status"];
@@ -3180,7 +3168,7 @@ export type Database = {
           flag_note?: string | null;
           flagged?: boolean;
           id?: string;
-          issue_id: string;
+          issue_id?: string | null;
           language: Database["journal"]["Enums"]["language"];
           source_text?: string | null;
           status?: Database["journal"]["Enums"]["submission_status"];
@@ -3198,7 +3186,7 @@ export type Database = {
           flag_note?: string | null;
           flagged?: boolean;
           id?: string;
-          issue_id?: string;
+          issue_id?: string | null;
           language?: Database["journal"]["Enums"]["language"];
           source_text?: string | null;
           status?: Database["journal"]["Enums"]["submission_status"];
@@ -3306,7 +3294,7 @@ export type Database = {
           eligibility_en: string | null;
           id: string;
           is_published: boolean;
-          issue_id: string;
+          issue_id: string | null;
           max_per_person: number;
           opens_at: string;
           theme_ar: string | null;
@@ -3324,7 +3312,7 @@ export type Database = {
           eligibility_en?: string | null;
           id?: string;
           is_published?: boolean;
-          issue_id: string;
+          issue_id?: string | null;
           max_per_person?: number;
           opens_at: string;
           theme_ar?: string | null;
@@ -3342,7 +3330,7 @@ export type Database = {
           eligibility_en?: string | null;
           id?: string;
           is_published?: boolean;
-          issue_id?: string;
+          issue_id?: string | null;
           max_per_person?: number;
           opens_at?: string;
           theme_ar?: string | null;
@@ -3367,6 +3355,7 @@ export type Database = {
           bio_en: string | null;
           created_at: string;
           id: string;
+          is_anonymous: boolean;
           is_pen_name: boolean;
           name_ar: string | null;
           name_en: string;
@@ -3379,6 +3368,7 @@ export type Database = {
           bio_en?: string | null;
           created_at?: string;
           id?: string;
+          is_anonymous?: boolean;
           is_pen_name?: boolean;
           name_ar?: string | null;
           name_en: string;
@@ -3391,6 +3381,7 @@ export type Database = {
           bio_en?: string | null;
           created_at?: string;
           id?: string;
+          is_anonymous?: boolean;
           is_pen_name?: boolean;
           name_ar?: string | null;
           name_en?: string;
@@ -4187,6 +4178,7 @@ export type Database = {
       };
       submissions: {
         Row: {
+          anonymous: boolean;
           author_id: string;
           body_html: string | null;
           call_id: string | null;
@@ -4213,6 +4205,7 @@ export type Database = {
           video_url: string | null;
         };
         Insert: {
+          anonymous?: boolean;
           author_id?: string;
           body_html?: string | null;
           call_id?: string | null;
@@ -4239,6 +4232,7 @@ export type Database = {
           video_url?: string | null;
         };
         Update: {
+          anonymous?: boolean;
           author_id?: string;
           body_html?: string | null;
           call_id?: string | null;

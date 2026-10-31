@@ -21,7 +21,7 @@ const staticPaths = [
   "/qirtas/video",
   "/qirtas/next-stop",
   "/qirtas/editions",
-  "/qirtas/prizes",
+  "/qirtas/awards",
   "/qirtas/games",
   "/qirtas/games/word",
   "/qirtas/games/search",

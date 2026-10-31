@@ -9,7 +9,7 @@ import type { Locale } from "@repo/internationalization";
 import { hasPermission } from "@repo/rbac";
 import { journal, localized, sanitizeRichText, unwrap } from "@repo/sal-data";
 import { getMediaUrl, uploadMedia } from "@repo/storage";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useEffect, useId, useState } from "react";
 import { Link, useRouter } from "@/lib/nexus/navigation";
@@ -27,6 +27,7 @@ import {
   SelectInput,
 } from "../kit";
 import { useIssues } from "./admin";
+import { BylinePicker } from "./byline";
 import {
   Corrections,
   type PieceRecord,
@@ -44,21 +45,6 @@ const CREDIT_ROLES = [
   "author",
 ] as const;
 type Language = (typeof LANGUAGES)[number];
-
-const useContributors = () => {
-  const { supabase } = useAuth();
-  return useQuery({
-    queryFn: async () =>
-      unwrap(
-        await supabase
-          .schema("journal")
-          .from("contributors")
-          .select("id, name_en, name_ar, is_pen_name")
-          .order("name_en")
-      ) ?? [],
-    queryKey: ["admin", "journal", "contributors"],
-  });
-};
 
 const back = (label: string) => (
   <Link className="text-sm underline underline-offset-4" href="/qirtas">
@@ -88,7 +74,6 @@ const NewPiece = () => {
   const { supabase } = useAuth();
   const desks = useMyDesks();
   const issues = useIssues();
-  const contributors = useContributors();
   const [desk, setDesk] = useState<journal.Desk>(desks[0] ?? "news");
   const [category, setCategory] = useState<journal.Category>("report");
   const [language, setLanguage] = useState<Language>("en");
@@ -187,23 +172,11 @@ const NewPiece = () => {
           value={title}
         />
         <div className="grid gap-4 sm:grid-cols-2">
-          <Field hint={t("contributorHint")} label={tj("piece.contributor")}>
-            {(id) => (
-              <SelectInput
-                id={id}
-                onChange={(e) => setContributorId(e.target.value)}
-                required
-                value={contributorId}
-              >
-                <option value="">{t("choose")}</option>
-                {contributors.data?.map((c) => (
-                  <option key={c.id} value={c.id}>
-                    {localized(c, "name", locale)}
-                  </option>
-                ))}
-              </SelectInput>
-            )}
-          </Field>
+          <BylinePicker
+            label={tj("piece.contributor")}
+            onChange={setContributorId}
+            value={contributorId}
+          />
           <Field label={t("edition")}>
             {(id) => (
               <SelectInput
@@ -267,7 +240,6 @@ const PieceForm = ({ record }: { record: PieceRecord }) => {
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
   const issues = useIssues();
-  const contributors = useContributors();
   const [form, setForm] = useState(() => formFrom(record));
   const { piece } = record;
   const desk = journal.deskOf(form.category);
@@ -411,22 +383,11 @@ const PieceForm = ({ record }: { record: PieceRecord }) => {
             </SelectInput>
           )}
         </Field>
-        <Field label={tj("piece.contributor")}>
-          {(fieldId) => (
-            <SelectInput
-              id={fieldId}
-              onChange={(e) => set("contributor_id", e.target.value)}
-              required
-              value={form.contributor_id}
-            >
-              {contributors.data?.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {localized(c, "name", locale)}
-                </option>
-              ))}
-            </SelectInput>
-          )}
-        </Field>
+        <BylinePicker
+          label={tj("piece.contributor")}
+          onChange={(contributor) => set("contributor_id", contributor)}
+          value={form.contributor_id}
+        />
         <Field hint={tk("slugHint")} label={tk("slug")}>
           {(fieldId) => (
             <Input
@@ -667,7 +628,6 @@ const Credits = ({ record }: { record: PieceRecord }) => {
   const locale = useLocale() as Locale;
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
-  const contributors = useContributors();
   const [contributorId, setContributorId] = useState("");
   const [role, setRole] = useState<(typeof CREDIT_ROLES)[number]>("reporter");
   const pieceId = record.piece?.id ?? "";
@@ -728,23 +688,11 @@ const Credits = ({ record }: { record: PieceRecord }) => {
         ))}
       </ul>
       <div className="flex flex-wrap items-end gap-3">
-        <Field label={t("person")}>
-          {(id) => (
-            <SelectInput
-              className="w-64"
-              id={id}
-              onChange={(e) => setContributorId(e.target.value)}
-              value={contributorId}
-            >
-              <option value="">{t("choose")}</option>
-              {contributors.data?.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {localized(c, "name", locale)}
-                </option>
-              ))}
-            </SelectInput>
-          )}
-        </Field>
+        <BylinePicker
+          label={t("person")}
+          onChange={setContributorId}
+          value={contributorId}
+        />
         <Field label={t("role")}>
           {(id) => (
             <SelectInput

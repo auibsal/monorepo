@@ -19,7 +19,7 @@ const Page = async ({
     <RequireModule module="journal">
       <Suspense fallback={<SectionSpinner />}>
         <RecordRef
-          back="/qirtas?tab=games"
+          back="/qirtas/games"
           lookup={{ column: "slug", schema: "journal", table: "puzzles" }}
           value={decodeURIComponent(ref)}
         >

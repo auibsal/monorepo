@@ -65,11 +65,9 @@ export default async function globalSetup() {
       .schema("core")
       .from("profiles")
       .update({
-        // First and last name in both languages: the gate asks for all four.
-        family_name_ar: "تجريبي",
-        family_name_en: "Tester",
-        given_name_ar: "اختبار",
-        given_name_en: "E2E",
+        // A name in each language: the gate asks for both.
+        full_name_ar: "اختبار تجريبي",
+        full_name_en: "E2E Tester",
         setup_completed_at: new Date().toISOString(),
       })
       .eq("id", id);

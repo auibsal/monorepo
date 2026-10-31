@@ -1,4 +1,4 @@
-# SAL: current decisions (source of truth, Friday, October 30, 2026)
+# SAL: current decisions (source of truth, Saturday, October 31, 2026)
 
 Every chat in this project should follow this file. Where an older document, project doc or chat disagrees, this file wins. All Society documents are **Version 1**: there are no earlier versions, no change histories and no old names.
 
@@ -40,7 +40,7 @@ Every chat in this project should follow this file. Where an older document, pro
 - **Needs, not numbers.** Every program, Qirtas and the Council keep a **needs list**: the item, the quantity, the date it is needed, and what it is for. No document, page or form shows budgets, costs, prices, spending limits, ledgers, expense claims or reimbursements.
 - **Who asks:**
   - the Director of Programs gathers the six programs' needs;
-  - the Editor of Qirtas gathers the paper's needs (printing the Edition, the Prizes' certificates and chapbook);
+  - the Editor of Qirtas gathers the paper's needs (printing the Edition, the Awards' certificates and chapbook);
   - the General Secretary sends every request to Student Life and logs what was asked, what was provided and when.
 - **Plan around the answer.** Student Life gives what it can. A program is designed to run with what is provided; anything not provided is dropped or found through a partner (Partnerships, with the Council's approval).
 - **The one exception: Second Chapter's collection.** Money collected at the fair belongs to the charity, never to the Society, and is never used for costs.
@@ -105,23 +105,23 @@ Every chat in this project should follow this file. Where an older document, pro
 - **The Edition:** one a semester, curated from Letters and Gallery and launched at Launch Night. **Every Edition is also printed** as Qirtas's print edition, with printing requested from Student Life.
 - **The Sunday Paper:** the members' newsletter, **monthly**, on the first Sunday of each month. It replaces both the weekly Sunday Paper and The Month in Qirtas.
 
-### The Qirtas Prizes
-Six prizes, awarded every April at the Annual General Meeting. The first round is **Tuesday, April 20, 2027**, for work published from October 2026 to March 2027, including Edition 1.
+### The Qirtas Awards
+Six awards, awarded every April at the Annual General Meeting. The first round is **Tuesday, April 20, 2027**, for work published from October 2026 to March 2027, including Edition 1.
 
-| Prize | For | Named for |
+| Award | For | Named for |
 |---|---|---|
-| **The Mutanabbi Prize** (the main prize) | the best body of work published in Qirtas that year, in any section; the winner's work is printed as a chapbook (48 copies) and launched in public | al-Mutanabbi, whose line gives the Society its motto |
-| The Tabari Prize | reporting (News) | al-Tabari, Baghdad's great chronicler |
-| The Jahiz Prize | criticism and opinion (Voices) | al-Jahiz, master of the essay |
-| The Nazik Prize | poetry and prose (Letters) | Nazik al-Malaika, the Baghdad-born pioneer of free verse |
-| The Wasiti Prize | art and photography (Gallery) | Yahya al-Wasiti, the Baghdad painter of the Maqamat |
-| The Ibn al-Haytham Prize | film and video (Video) | Ibn al-Haytham, who explained the camera obscura |
+| **The Mutanabbi Award** (the main award) | the best body of work published in Qirtas that year, in any section; the winner's work is printed as a chapbook (48 copies) and launched in public | al-Mutanabbi, whose line gives the Society its motto |
+| The Tabari Award | reporting (News) | al-Tabari, Baghdad's great chronicler |
+| The Jahiz Award | criticism and opinion (Voices) | al-Jahiz, master of the essay |
+| The Nazik Award | poetry and prose (Letters) | Nazik al-Malaika, the Baghdad-born pioneer of free verse |
+| The Wasiti Award | art and photography (Gallery) | Yahya al-Wasiti, the Baghdad painter of the Maqamat |
+| The Ibn al-Haytham Award | film and video (Video) | Ibn al-Haytham, who explained the camera obscura |
 
 - **Entry:** no forms and no fees. Everything published in the year is eligible.
-- **Judging:** editors draw up the shortlists. The Mutanabbi Prize is judged blind by one outside judge; the others by a panel of two editors and a faculty member. Each shortlist includes Arabic and English work.
-- **Rewards:** a certificate for every winner, and the chapbook for the main prize. No cash prizes.
+- **Judging:** editors draw up the shortlists. The Mutanabbi Award is judged blind by one outside judge; the others by a panel of two editors and a faculty member. Each shortlist includes Arabic and English work.
+- **Rewards:** a certificate for every winner, and the chapbook for the main award. No cash awards.
 - **Needs (requested from Student Life):** six certificates, 48 chapbook copies, and a thank-you for the outside judge.
-- **Names:** these are proposed (Oct 29). Before announcing the Nazik Prize, write to Nazik al-Malaika's family as a courtesy.
+- **Names:** these are proposed (Oct 29). Before announcing the Nazik Award, write to Nazik al-Malaika's family as a courtesy.
 
 ### The Apprenticeship and First Ink (as soon as approvals allow)
 - **The Apprenticeship** is for AUIB students, modeled on the Harvard Crimson's "comp".
@@ -138,7 +138,7 @@ Six prizes, awarded every April at the Annual General Meeting. The first round i
 Qirtas, unlike a program, may have several documents:
 - SAL-QRT-01, Qirtas House Book: the paper, the masthead, sections and types, pipeline, policies, house style, author letters, the Sunday Paper.
 - SAL-QRT-02, Next Stop: the show book.
-- SAL-QRT-03, the Qirtas Prizes: rules, judging, calendar, certificate and letters.
+- SAL-QRT-03, the Qirtas Awards: rules, judging, calendar, certificate and letters.
 - SAL-QRT-04, The Apprenticeship and First Ink: the training term, mentoring and safeguarding.
 - Optional: an Edition and print playbook.
 
@@ -157,7 +157,7 @@ Qirtas, unlike a program, may have several documents:
   - No budgets, costs, prices, spending limits, ledgers, claims or reimbursements, except Second Chapter's collection.
 - **The site (auibsal.org and the Diwan):** no Treasurer on the Council page; no budget, ledger, claims or spending features. Programs show needs, not costs. Keep Second Chapter's collection record (counts, the witnessed handover, the impact report). The Council page lists the officers and directors with full titles.
 - **Governance documents to amend:**
-  - Constitution: three officers, seven founding seats, no Treasurer, no Society funds except Second Chapter's collection; the Qirtas Prizes without a budget.
+  - Constitution: three officers, seven founding seats, no Treasurer, no Society funds except Second Chapter's collection; the Qirtas Awards without a budget.
   - Bylaws: remove budgets, spending limits and claims; requests to Student Life through the General Secretary.
   - Roles and Staffing: remove the Treasurer, Deputy Treasurer and cashiers (fair cashiers become Second Chapter volunteers).
   - Policy Manual: the money policy becomes Second Chapter's collection policy.
@@ -187,7 +187,7 @@ Qirtas, unlike a program, may have several documents:
   - Launch Night Wed Feb 24, 2027, or after Eid. Ramadan runs about Feb 8 – Mar 9; decide by Dec 15.
   - Edition 1 is printed.
 - **The Sunday Paper:** first Sundays of the month (Nov 1, Dec 6, …).
-- **The Qirtas Prizes:** shortlists by Apr 4, 2027; awarded at the AGM, Apr 20, 2027.
+- **The Qirtas Awards:** shortlists by Apr 4, 2027; awarded at the AGM, Apr 20, 2027.
 - **Tuesdays, 4:00–5:30 PM, one room (room TBC):**
   - Open Pages: pilot Nov 17; Mar 2; Mar 30 (the worst-poem contest, 4:00–6:00 PM); May 4.
   - The Salon: pilot Dec 1; Feb 16; Apr 6.
@@ -203,7 +203,7 @@ Qirtas, unlike a program, may have several documents:
   - nominations Apr 4–11;
   - Candidates' Reading Apr 13;
   - voting Apr 14–15;
-  - AGM, the Ribbon and the Qirtas Prizes Apr 20;
+  - AGM, the Ribbon and the Qirtas Awards Apr 20;
   - new Council May 13.
 
 ## 7. The Diwan, rebuilt (decided Oct 30)
@@ -215,3 +215,13 @@ Qirtas, unlike a program, may have several documents:
 - **No forms, no letters.** Three requests stay, each a plain action where it belongs: raise a concern, pitch a program, propose a General Assembly motion. Everything else is done elsewhere on the platform (roles on the Callboard, service hours, certificates, the conflict-of-interest declaration in Settings, photo consent in Profile) or is an officers' paper kept as a Notion template. Past submissions stay readable.
 - **Announcements are gone.** Notices go out through Hudhud and the Sunday Paper.
 - **The Library has two shelves:** Society documents, and Website policies (terms of use, accessibility and the privacy page).
+
+## 8. Qirtas, one door (decided Oct 31)
+- **One door for members.** Everything a member sends, in every section, goes through auibsal.org/qirtas/write and is read blind. Edition calls (Letters and Gallery, two a year) stay; beside them, "Qirtas, all year" takes every section and never closes.
+- **The newsroom is for staff.** The masthead writes and publishes there directly, one page per section: News, Voices, Letters, Gallery, Video (with Next Stop) and Games. Only features get their own pages: Review, Editions, Awards and Ads.
+- **Awards, never Prizes.** The Qirtas Awards: the Mutanabbi Award and the Tabari, Jahiz, Nazik, Wasiti and Ibn al-Haytham Awards. The names are confirmed.
+- **People are chosen, not typed.** Judges, bylines and anyone else the platform names are picked from the register, and their names follow their profile. A byline is a member (or a pen name they chose) or Anonymous; an author may choose Anonymous when sending work.
+- **One name per language.** A member has one full name in English and one in Arabic; no separate first and last names.
+- **Addresses, not queries.** Every view has its own address: /events/2026-11, /company/<production>, /search/<words>, each Diwan tab its own page.
+- **The About page** is the hub for the Society's pages: the Council, the Library, Partners, Contact, the press kit and Verify.
+- **Notion holds what the platform retired** (forms, letters, officers' papers), as templates linked from the Desk; Diwan pages with a Notion counterpart say so.

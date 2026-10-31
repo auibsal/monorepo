@@ -10,7 +10,7 @@ import { useDeferredValue, useState } from "react";
 import { Field } from "./kit";
 import { memberName } from "./members/directory";
 
-interface Person {
+export interface Person {
   full_name_ar: string | null;
   full_name_en: string;
   id: string;

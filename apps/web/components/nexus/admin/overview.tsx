@@ -168,7 +168,7 @@ const submissionsFigure = (
           selection: formatNumber(stages.selection ?? 0),
         })
       : t("submissionsNone"),
-    href: "/qirtas?tab=review",
+    href: "/qirtas/review",
     label: t("openSubmissions"),
     value: o.open_submissions,
   };
@@ -251,6 +251,9 @@ const NotionLinks = () => {
     ...(workspace ? [{ href: workspace, key: "workspace" } as const] : []),
     ...(handbook.home
       ? [{ href: handbook.home, key: "handbook" } as const]
+      : []),
+    ...(handbook.templates
+      ? [{ href: handbook.templates, key: "templates" } as const]
       : []),
   ];
   if (links.length === 0) {

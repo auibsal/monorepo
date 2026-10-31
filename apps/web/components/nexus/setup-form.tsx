@@ -29,11 +29,10 @@ type PledgeKind = "human_authorship" | "member";
 
 const SPACES = /\s+/;
 
+/** The name in each language, each whole (owner, Oct 31, 2026). */
 export interface Names {
-  familyAr: string;
-  familyEn: string;
-  givenAr: string;
-  givenEn: string;
+  ar: string;
+  en: string;
 }
 
 export type SetupStep =
@@ -47,6 +46,9 @@ export interface SetupPlan {
   /** First setup ends on the welcome screen; a renewal goes straight on. */
   welcome: boolean;
 }
+
+/** The first word of a name, for a greeting. */
+const firstWord = (name: string) => name.trim().split(SPACES)[0] ?? "";
 
 const filled = (...parts: string[]) =>
   parts.every((part) => part.trim() !== "");
@@ -69,43 +71,18 @@ export const planSetup = ({
   setupDone: boolean;
 }): SetupPlan => ({
   steps: [
-    ...(filled(names.givenEn, names.familyEn)
-      ? []
-      : [{ kind: "nameEn" } as const]),
-    ...(filled(names.givenAr, names.familyAr)
-      ? []
-      : [{ kind: "nameAr" } as const]),
+    ...(filled(names.en) ? [] : [{ kind: "nameEn" } as const]),
+    ...(filled(names.ar) ? [] : [{ kind: "nameAr" } as const]),
     ...pending.map((pledge) => ({ kind: "pledge", pledge }) as const),
     ...(setupDone ? [] : [{ kind: "photos" } as const]),
   ],
   welcome: !setupDone,
 });
 
-/**
- * The four name parts, or a first guess from a full name given before the
- * parts were asked for (first word, then the rest), for the member to fix.
- */
 const namesFrom = (profile: {
-  family_name_ar: string | null;
-  family_name_en: string | null;
   full_name_ar: string | null;
   full_name_en: string;
-  given_name_ar: string | null;
-  given_name_en: string | null;
-}): Names => {
-  const split = (full: string | null) => {
-    const [first = "", ...rest] = (full ?? "").trim().split(SPACES);
-    return { family: rest.join(" "), given: first };
-  };
-  const en = split(profile.full_name_en);
-  const ar = split(profile.full_name_ar);
-  return {
-    familyAr: profile.family_name_ar ?? ar.family,
-    familyEn: profile.family_name_en ?? en.family,
-    givenAr: profile.given_name_ar ?? ar.given,
-    givenEn: profile.given_name_en ?? en.given,
-  };
-};
+}): Names => ({ ar: profile.full_name_ar ?? "", en: profile.full_name_en });
 
 const usePledgeVersions = () => {
   const { supabase } = useAuth();
@@ -126,11 +103,12 @@ const usePledgeVersions = () => {
 };
 
 /** The step in the address, so the browser's Back button goes back. */
-const stepUrl = (index: number) => {
-  const params = new URLSearchParams(window.location.search);
-  params.set("step", String(index + 1));
-  return `${window.location.pathname}?${params.toString()}`;
-};
+const STEP_PATH = /\/welcome(?:\/\d+)?$/;
+const STEP_NUMBER = /\/welcome\/(\d+)$/;
+
+/** Each screen at its own address: /welcome/1, /welcome/2 … */
+const stepUrl = (index: number) =>
+  `${window.location.pathname.replace(STEP_PATH, `/welcome/${index + 1}`)}${window.location.search}`;
 
 type Answer =
   | { kind: "nameEn"; names: Names }
@@ -150,12 +128,7 @@ export const SetupForm = () => {
   const versions = usePledgeVersions();
   const heading = useRef<HTMLHeadingElement>(null);
   const [plan, setPlan] = useState<SetupPlan | null>(null);
-  const [names, setNames] = useState<Names>({
-    familyAr: "",
-    familyEn: "",
-    givenAr: "",
-    givenEn: "",
-  });
+  const [names, setNames] = useState<Names>({ ar: "", en: "" });
   const [index, setIndex] = useState(0);
   const [welcome, setWelcome] = useState(false);
 
@@ -169,12 +142,7 @@ export const SetupForm = () => {
     setNames(current);
     setPlan(
       planSetup({
-        names: {
-          familyAr: profile.data.family_name_ar ?? "",
-          familyEn: profile.data.family_name_en ?? "",
-          givenAr: profile.data.given_name_ar ?? "",
-          givenEn: profile.data.given_name_en ?? "",
-        },
+        names: current,
         pending: (status.data.pending_pledges ?? []) as PledgeKind[],
         setupDone: Boolean(profile.data.setup_completed_at),
       })
@@ -185,9 +153,7 @@ export const SetupForm = () => {
   // The browser's Back and Forward move between the steps.
   useEffect(() => {
     const onPop = () => {
-      const step = Number(
-        new URLSearchParams(window.location.search).get("step")
-      );
+      const step = Number(STEP_NUMBER.exec(window.location.pathname)?.[1]);
       if (Number.isInteger(step) && step >= 1) {
         setIndex(step - 1);
       }
@@ -224,15 +190,9 @@ export const SetupForm = () => {
         }
       };
       if (answer.kind === "nameEn") {
-        await update({
-          family_name_en: answer.names.familyEn.trim(),
-          given_name_en: answer.names.givenEn.trim(),
-        });
+        await update({ full_name_en: answer.names.en.trim() });
       } else if (answer.kind === "nameAr") {
-        await update({
-          family_name_ar: answer.names.familyAr.trim(),
-          given_name_ar: answer.names.givenAr.trim(),
-        });
+        await update({ full_name_ar: answer.names.ar.trim() });
       } else if (answer.kind === "pledge") {
         await membership.acceptPledge(
           supabase,
@@ -279,7 +239,9 @@ export const SetupForm = () => {
           ref={heading}
           tabIndex={-1}
         >
-          {t("welcome.title", { name: names.givenEn || names.givenAr })}
+          {t("welcome.title", {
+            name: firstWord(names.en) || firstWord(names.ar),
+          })}
         </h1>
         <p className="type-body">{t("welcome.body")}</p>
         <MembershipCard />
@@ -410,9 +372,7 @@ const NameStep = ({
 }) => {
   const t = useTranslations("nexus.setup");
   const id = useId();
-  const given = language === "en" ? "givenEn" : "givenAr";
-  const family = language === "en" ? "familyEn" : "familyAr";
-  const ready = filled(names[given], names[family]);
+  const ready = filled(names[language]);
   const submit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (ready && !pending) {
@@ -429,43 +389,23 @@ const NameStep = ({
           {t("name.hint")}
         </p>
       </div>
-      <div className="grid gap-4 sm:grid-cols-2">
-        <div className="grid gap-2">
-          <Label htmlFor={`${id}-given`}>
-            {language === "en" ? t("name.givenEn") : t("name.givenAr")}
-          </Label>
-          <Input
-            aria-describedby={`${id}-hint`}
-            autoComplete={language === "en" ? "given-name" : "off"}
-            dir={language === "en" ? "ltr" : "rtl"}
-            id={`${id}-given`}
-            lang={language}
-            maxLength={60}
-            onChange={(event) =>
-              onChange({ ...names, [given]: event.target.value })
-            }
-            required
-            value={names[given]}
-          />
-        </div>
-        <div className="grid gap-2">
-          <Label htmlFor={`${id}-family`}>
-            {language === "en" ? t("name.familyEn") : t("name.familyAr")}
-          </Label>
-          <Input
-            aria-describedby={`${id}-hint`}
-            autoComplete={language === "en" ? "family-name" : "off"}
-            dir={language === "en" ? "ltr" : "rtl"}
-            id={`${id}-family`}
-            lang={language}
-            maxLength={60}
-            onChange={(event) =>
-              onChange({ ...names, [family]: event.target.value })
-            }
-            required
-            value={names[family]}
-          />
-        </div>
+      <div className="grid max-w-md gap-2">
+        <Label htmlFor={`${id}-name`}>
+          {language === "en" ? t("name.en") : t("name.ar")}
+        </Label>
+        <Input
+          aria-describedby={`${id}-hint`}
+          autoComplete={language === "en" ? "name" : "off"}
+          dir={language === "en" ? "ltr" : "rtl"}
+          id={`${id}-name`}
+          lang={language}
+          maxLength={120}
+          onChange={(event) =>
+            onChange({ ...names, [language]: event.target.value })
+          }
+          required
+          value={names[language]}
+        />
       </div>
       {failed}
       <div className="flex items-center gap-6">

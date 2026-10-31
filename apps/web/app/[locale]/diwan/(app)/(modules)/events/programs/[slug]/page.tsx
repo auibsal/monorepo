@@ -1,7 +1,5 @@
-import { Suspense } from "react";
 import { RequireModule } from "@/components/nexus/admin/admin-shell";
 import { ProgramPage } from "@/components/nexus/admin/programmes/admin";
-import { SectionSpinner } from "@/components/nexus/states";
 import { titleFrom } from "@/lib/nexus/metadata";
 
 export const generateMetadata = titleFrom((t) =>
@@ -16,9 +14,7 @@ const Page = async ({
   const { slug } = await params;
   return (
     <RequireModule module="programs">
-      <Suspense fallback={<SectionSpinner />}>
-        <ProgramPage slug={decodeURIComponent(slug)} />
-      </Suspense>
+      <ProgramPage slug={decodeURIComponent(slug)} />
     </RequireModule>
   );
 };

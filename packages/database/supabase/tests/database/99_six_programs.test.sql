@@ -134,9 +134,9 @@ select is(
   'The Listening Room takes the Salon''s March 16 and May 11'
 );
 select is(
-  (select value from core.settings where key = 'journal.prize_names_public'),
-  'false'::jsonb,
-  'The Prizes'' own names stay private until confirmed'
+  (select count(*) from core.settings where key = 'journal.prize_names_public')::integer,
+  0,
+  'The Awards'' names are confirmed: no switch is kept'
 );
 
 select * from finish();

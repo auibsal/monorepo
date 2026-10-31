@@ -16,7 +16,7 @@ const AdPage = async ({
   return (
     <RequireModule module="ads">
       <Suspense fallback={<SectionSpinner />}>
-        <RecordRef back="/qirtas?tab=ads" value={decodeURIComponent(ref)}>
+        <RecordRef back="/qirtas/ads" value={decodeURIComponent(ref)}>
           <AdEditor />
         </RecordRef>
       </Suspense>

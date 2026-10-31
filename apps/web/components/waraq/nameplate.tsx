@@ -75,7 +75,7 @@ export const Nameplate = async ({
             </Link>
           </li>
           <li>
-            <Link className={desk} href="/qirtas/prizes">
+            <Link className={desk} href="/qirtas/awards">
               {t("prizes")}
             </Link>
           </li>

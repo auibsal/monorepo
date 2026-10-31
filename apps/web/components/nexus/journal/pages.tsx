@@ -8,16 +8,16 @@ import {
   formatLongDate,
   formatNumber,
 } from "@repo/internationalization/format";
-import { Link, useRouter } from "@repo/internationalization/navigation";
+import { Link } from "@repo/internationalization/navigation";
 import { journal, localized, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
-import { type FormEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   queryKeys,
   useMemberStatus,
   useMySubmissions,
-  useOpenCalls,
+  type useOpenCalls,
 } from "@/lib/nexus/queries";
 import { useQueryParam } from "@/lib/nexus/use-query-param";
 import {
@@ -41,9 +41,7 @@ import {
   PendingList,
 } from "./files";
 import {
-  AuthorshipPledge,
   blankWork,
-  Declarations,
   revisableColumns,
   WorkFields,
   type WorkValue,
@@ -98,7 +96,6 @@ interface Sent {
   date: string;
   href: string;
   id: string;
-  process: "desk" | "edition";
   status: string;
   title: string;
   type: string;
@@ -125,7 +122,6 @@ export const YourWork = () => {
         date: s.created_at,
         href: `/membership/work/submissions/${s.id}`,
         id: `s-${s.id}`,
-        process: "edition",
         status:
           s.status === "intake_check" && s.intake_returned_at
             ? t("returned")
@@ -139,7 +135,6 @@ export const YourWork = () => {
         date: p.updated_at,
         href: `/membership/work/${p.id}`,
         id: `p-${p.id}`,
-        process: "desk",
         status: tp(`statuses.${p.status as journal.PieceStatus}`),
         title: localized(p, "title", locale) || tn("pieceTitle"),
         type: tj(`categories.${p.category}`),
@@ -161,11 +156,6 @@ export const YourWork = () => {
       key: "title",
     },
     { cell: (row) => row.type, header: t("columns.category"), key: "type" },
-    {
-      cell: (row) => tw(`processes.${row.process}`),
-      header: tw("process"),
-      key: "process",
-    },
     { cell: (row) => row.status, header: t("columns.status"), key: "status" },
     {
       cell: (row) => formatLongDate(row.date, locale),
@@ -199,159 +189,7 @@ export const YourWork = () => {
   );
 };
 
-/**
- * Write for Qirtas: one place for everything sent to the paper. The member
- * picks a type; the type decides the process (edited on a desk, or read
- * blind for an Edition). What they have sent is under Your work.
- */
-export const JournalHome = () => {
-  const t = useTranslations("nexus.journal");
-  const tw = useTranslations("nexus.journal.write");
-  const locale = useLocale() as Locale;
-  const calls = useOpenCalls();
-  const openCalls = calls.data ?? [];
-
-  return (
-    <div className="grid gap-8">
-      <AdminHeading
-        actions={
-          <Link className="link" href="/membership/work">
-            {tw("yourWork")}
-          </Link>
-        }
-        title={t("title")}
-      >
-        {tw("lede")}
-      </AdminHeading>
-      <DiwanSection id="newsroom" title={tw("newsroomTitle")}>
-        <p className="max-w-3xl text-text-secondary">{tw("newsroomLede")}</p>
-        <DeskList desks={journal.newsroomDesks} />
-      </DiwanSection>
-      <DiwanSection id="edition" title={tw("editionTitle")}>
-        <p className="max-w-3xl text-text-secondary">{tw("editionLede")}</p>
-        {calls.data ? null : <SectionSpinner />}
-        {openCalls.map((call) => (
-          <p className="type-body" key={call.id}>
-            {tw("callCloses", {
-              call: localized(call, "title", locale),
-              date: formatLongDate(call.closes_at, locale, true),
-              max: formatNumber(call.max_per_person),
-            })}
-          </p>
-        ))}
-        {openCalls.length > 0 ? (
-          <DeskList desks={journal.editionDesks} />
-        ) : (
-          <NextCall />
-        )}
-      </DiwanSection>
-    </div>
-  );
-};
-
-/** The desks behind a door, each with the types a member sends. */
-const DeskList = ({ desks }: { desks: readonly journal.Desk[] }) => {
-  const tw = useTranslations("nexus.journal.write");
-  const tn = useTranslations("nexus.waraq");
-  const tj = useTranslations("nexus.admin.journal");
-  return (
-    <ul className="grid divide-y divide-line border-line border-y">
-      {desks.map((desk) => (
-        <li className="grid gap-3 py-5 md:grid-cols-[12rem_1fr]" key={desk}>
-          <h3 className="type-heading">{tj(`desks.${desk}`)}</h3>
-          <div className="grid gap-2">
-            <p className="type-body">
-              {journal.isEditionDesk(desk)
-                ? tw(`deskLines.${desk as "letters"}`)
-                : tn(`deskLines.${desk as "news"}`)}
-            </p>
-            <ul className="flex flex-wrap gap-x-5 gap-y-2 pt-1">
-              {journal.sendableCategories(desk).map((category) => (
-                <li key={category}>
-                  <Link
-                    className="link font-medium text-sm"
-                    href={{
-                      pathname: "/qirtas/write",
-                      query: { type: category },
-                    }}
-                  >
-                    {tj(`categories.${category}`)}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </li>
-      ))}
-    </ul>
-  );
-};
-
-/**
- * No call is open: when the next one opens (if announced), and "Tell me
- * when", an email the day it opens.
- */
-const NextCall = () => {
-  const tw = useTranslations("nexus.journal.write");
-  const locale = useLocale() as Locale;
-  const { supabase } = useAuth();
-  const queryClient = useQueryClient();
-  const next = useQuery({
-    queryFn: () => journal.nextCall(supabase),
-    queryKey: ["journal", "next-call"],
-  });
-  const alert = useQuery({
-    queryFn: () => journal.hasCallAlert(supabase),
-    queryKey: ["journal", "call-alert"],
-  });
-  const toggle = useMutation({
-    mutationFn: (on: boolean) => journal.setCallAlert(supabase, on),
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: ["journal", "call-alert"] }),
-  });
-  return (
-    <div className="grid gap-3">
-      <p className="type-body">
-        {next.data
-          ? tw("nextCall", {
-              call: localized(next.data, "title", locale),
-              date: formatLongDate(next.data.opens_at, locale, true),
-            })
-          : tw("noCall")}
-      </p>
-      {alert.data ? (
-        <p className="type-caption" role="status">
-          {tw("alertOn")}{" "}
-          <button
-            className="link"
-            disabled={toggle.isPending}
-            onClick={() => toggle.mutate(false)}
-            type="button"
-          >
-            {tw("alertOff")}
-          </button>
-        </p>
-      ) : (
-        <Button
-          className="justify-self-start"
-          disabled={toggle.isPending || alert.isPending}
-          onClick={() => toggle.mutate(true)}
-          variant="outline"
-        >
-          {tw("tellMe")}
-        </Button>
-      )}
-      <ErrorLine error={toggle.error} />
-    </div>
-  );
-};
-
 // ── Submit ────────────────────────────────────────────────────────────────
-
-/** A type that answers an Edition call (Letters and Gallery). */
-const isEditionType = (value: string | null): value is journal.Category =>
-  (journal.categories as readonly string[]).includes(value ?? "") &&
-  journal.isEditionDesk(journal.deskOf(value as journal.Category));
 
 type OpenCall = NonNullable<ReturnType<typeof useOpenCalls>["data"]>[number];
 type Pathway = Awaited<ReturnType<typeof journal.myCallPathways>>[number];
@@ -361,7 +199,7 @@ type Pathway = Awaited<ReturnType<typeof journal.myCallPathways>>[number];
  * verified as a partner's members answer only the calls opened to that
  * partner, and always through it.
  */
-const useSubmitPathway = (
+export const useSubmitPathway = (
   calls: OpenCall[] | null | undefined,
   callId: string,
   partnerId: string
@@ -394,7 +232,7 @@ const useSubmitPathway = (
   };
 };
 
-const PartnerPathway = ({
+export const PartnerPathway = ({
   isMember,
   onChange,
   pathways,
@@ -430,182 +268,6 @@ const PartnerPathway = ({
         </SelectInput>
       )}
     </Field>
-  );
-};
-
-export const SubmitWork = () => {
-  const t = useTranslations("nexus.journal");
-  const locale = useLocale() as Locale;
-  const router = useRouter();
-  const { supabase } = useAuth();
-  const invalidate = useInvalidate();
-  const calls = useOpenCalls();
-  const requestedCall = useQueryParam("call");
-  const requestedType = useQueryParam("type");
-  const [callId, setCallId] = useState(requestedCall ?? "");
-  const [work, setWork] = useState<WorkValue>(() =>
-    isEditionType(requestedType)
-      ? { ...blankWork, category: requestedType }
-      : blankWork
-  );
-  const [files, setFiles] = useState<PendingFile[]>([]);
-  const [pledged, setPledged] = useState(false);
-  const [firstPublication, setFirstPublication] = useState(false);
-  const [consent, setConsent] = useState(false);
-  const [partial, setPartial] = useState<string | null>(null);
-  const [partnerId, setPartnerId] = useState("");
-  const pathway = useSubmitPathway(calls.data, callId, partnerId);
-  const { call, callable, callPathways, isMember, throughPartner } = pathway;
-  const kinds = kindsFor(work.category);
-
-  const send = useMutation({
-    mutationFn: async () => {
-      const created = await journal.createSubmission(supabase, {
-        body_html: work.body_html || undefined,
-        call_id: call?.id ?? "",
-        category: work.category,
-        consent_confirmed: consent,
-        cover_note: work.cover_note || undefined,
-        first_publication_confirmed: firstPublication,
-        human_authorship_confirmed: true,
-        language: work.language,
-        partner_id: throughPartner,
-        pen_name: work.pen_name.trim() || undefined,
-        rights_note: work.rights_note || undefined,
-        source_author: work.source_author || undefined,
-        source_text: work.source_text || undefined,
-        title: work.title.trim(),
-      });
-      if (!created) {
-        throw new Error("not_created");
-      }
-      const results = await Promise.allSettled(
-        files
-          .filter((f) => kinds.includes(f.kind))
-          .map((f) => attachFile(supabase, created.id, f))
-      );
-      if (results.some((r) => r.status === "rejected")) {
-        setPartial(created.id);
-        return null;
-      }
-      return created.id;
-    },
-    onSuccess: async (id) => {
-      await invalidate();
-      if (id) {
-        router.push(`/membership/work/submissions/${id}`);
-      }
-    },
-  });
-
-  if (!calls.data || pathway.pending) {
-    return <SectionSpinner />;
-  }
-  const submit = (event: FormEvent) => {
-    event.preventDefault();
-    send.mutate();
-  };
-  const ready =
-    Boolean(call) &&
-    pledged &&
-    firstPublication &&
-    (journal.deskOf(work.category) !== "gallery" || consent) &&
-    workIsReady(work, files.filter((f) => kinds.includes(f.kind)).length);
-
-  return (
-    <div className="grid gap-8">
-      <AdminHeading
-        actions={
-          <Link
-            className="text-sm underline underline-offset-4"
-            href="/qirtas/write"
-          >
-            {t("back")}
-          </Link>
-        }
-        title={t("submitTitle")}
-      >
-        {t("submitLede")}
-      </AdminHeading>
-      {call ? null : <p>{t("noCall")}</p>}
-      {call ? (
-        <form className="grid max-w-3xl gap-6" onSubmit={submit}>
-          <Field label={t("call")}>
-            {(id) => (
-              <SelectInput
-                id={id}
-                onChange={(e) => setCallId(e.target.value)}
-                value={call.id}
-              >
-                {callable.map((c) => (
-                  <option key={c.id} value={c.id}>
-                    {localized(c, "title", locale)}
-                  </option>
-                ))}
-              </SelectInput>
-            )}
-          </Field>
-          <PartnerPathway
-            isMember={isMember}
-            onChange={setPartnerId}
-            pathways={callPathways}
-            value={throughPartner}
-          />
-          <WorkFields onChange={setWork} value={work} />
-          <fieldset className="grid gap-3">
-            <legend className="mb-2 font-medium">{t("files.title")}</legend>
-            <p className="type-caption">{t("files.note")}</p>
-            <FilePicker
-              kinds={kinds}
-              onAdd={(added) => setFiles((current) => [...current, ...added])}
-            />
-            <PendingList
-              files={files.filter((f) => kinds.includes(f.kind))}
-              onRemove={(index) =>
-                setFiles((current) =>
-                  current
-                    .filter((f) => kinds.includes(f.kind))
-                    .filter((_, i) => i !== index)
-                )
-              }
-            />
-          </fieldset>
-          <Declarations
-            category={work.category}
-            consent={consent}
-            firstPublication={firstPublication}
-            onConsent={setConsent}
-            onFirstPublication={setFirstPublication}
-          />
-          <AuthorshipPledge checked={pledged} onChange={setPledged} />
-          <p className="type-caption">
-            {t("limits", {
-              hour: formatNumber(journal.MAX_SUBMISSIONS_PER_HOUR),
-              max: formatNumber(call.max_per_person),
-            })}
-          </p>
-          <Button
-            className="justify-self-start"
-            disabled={!ready || send.isPending}
-            type="submit"
-          >
-            {send.isPending ? t("sending") : t("send")}
-          </Button>
-          <ErrorLine error={send.error} />
-          {partial ? (
-            <p className="text-sm text-text" role="alert">
-              {t("filesFailed")}{" "}
-              <Link
-                className="link"
-                href={`/membership/work/submissions/${partial}`}
-              >
-                {t("openSubmission")}
-              </Link>
-            </p>
-          ) : null}
-        </form>
-      ) : null}
-    </div>
   );
 };
 

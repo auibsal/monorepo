@@ -1245,7 +1245,7 @@ export const CampaignAdmin = () => {
   const back = (
     <Link
       className="text-sm underline underline-offset-4"
-      href="/events/programs/second-chapter?tab=collection"
+      href="/events/programs/second-chapter/collection"
     >
       {tk("back")}
     </Link>

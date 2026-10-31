@@ -18,12 +18,11 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useEffect, useState } from "react";
 import { PathLine } from "@/components/frame/path-line";
-import { TabLinks } from "@/components/frame/tab-links";
 import { Link } from "@/lib/nexus/navigation";
 import { useGrants } from "@/lib/nexus/queries";
-import { useQueryParam } from "@/lib/nexus/use-query-param";
 import { DiwanSection, RowList } from "../../page";
 import { EmptyLine, SectionSpinner } from "../../states";
+import { SectionTabs } from "../admin-shell";
 import { CharityAdmin } from "../charity/list";
 import { useProgrammeOptions } from "../events/data";
 import { slugify } from "../events/editor";
@@ -41,6 +40,7 @@ import {
 import { useMemberNames } from "../member-picker";
 import { memberName } from "../members/directory";
 import { Needs } from "../needs";
+import { NotionManaged } from "../notion-managed";
 import { Openings, SkillsPicker } from "./callboard";
 import { Sessions } from "./sessions";
 import { TourCards } from "./six-words";
@@ -1130,13 +1130,15 @@ export const ProgramsIndex = () => {
   );
 };
 
-type ProgramTab =
-  | "sessions"
-  | "shifts"
-  | "places"
-  | "needs"
-  | "six-words"
-  | "collection";
+export const programTabs = [
+  "sessions",
+  "shifts",
+  "places",
+  "needs",
+  "six-words",
+  "collection",
+] as const;
+export type ProgramTab = (typeof programTabs)[number];
 
 /**
  * One program, its tabs at their own addresses: Sessions (the repeat
@@ -1144,11 +1146,16 @@ type ProgramTab =
  * The Typewriter Tour adds Six Words; Second Chapter adds Collection (its
  * campaigns, the ledger, the handover).
  */
-export const ProgramPage = ({ slug }: { readonly slug: string }) => {
+export const ProgramPage = ({
+  slug,
+  tab: requested = "sessions",
+}: {
+  readonly slug: string;
+  readonly tab?: ProgramTab;
+}) => {
   const t = useTranslations("nexus.admin.programmes");
   const options = useProgrammeOptions("programmes.manage");
   const grants = useGrants();
-  const requested = useQueryParam("tab");
   if (options.isPending || grants.isPending) {
     return <SectionSpinner />;
   }
@@ -1176,10 +1183,16 @@ export const ProgramPage = ({ slug }: { readonly slug: string }) => {
     <div className="grid gap-6">
       <PathLine items={[{ href: "/events/programs", label: t("title") }]} />
       <AdminHeading title={programme.label} />
-      <TabLinks
+      <NotionManaged kind="programme" recordId={programme.id} />
+      <SectionTabs
         label={programme.label}
-        pathname={`/events/programs/${slug}`}
-        tabs={tabs.map((key) => ({ key, label: t(`tabs.${key}`) }))}
+        tabs={tabs.map((key) => ({
+          href:
+            key === "sessions"
+              ? `/events/programs/${slug}`
+              : `/events/programs/${slug}/${key}`,
+          label: t(`tabs.${key}`),
+        }))}
       />
       <div className="pt-2">
         {tab === "sessions" ? <Sessions programmeId={programme.id} /> : null}

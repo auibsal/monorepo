@@ -53,6 +53,9 @@ export const useNotionHandbook = () => {
   const setting = useSetting("notion.handbook", reader);
   const value = (setting.data ?? null) as HandbookSetting | null;
   const home = isNotionUrl(value?.home) ? value.home : null;
+  const templates = isNotionUrl(value?.pages?.templates)
+    ? value.pages.templates
+    : null;
   return {
     home: reader ? home : null,
     isPending: grants.isPending || (reader && setting.isPending),
@@ -61,5 +64,7 @@ export const useNotionHandbook = () => {
       return isNotionUrl(page) ? page : home;
     },
     reader,
+    /** The retired forms and letters, kept as the team's templates. */
+    templates: reader ? templates : null,
   };
 };

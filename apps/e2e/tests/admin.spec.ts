@@ -28,9 +28,8 @@ test("a News desk editor starts a piece, and it waits in Editing, unpublished", 
     .getByRole("textbox", { name: "Arabic" })
     .first()
     .fill("ملاحظات الجمعية");
-  await page
-    .getByRole("combobox", { name: "Contributor" })
-    .selectOption({ label: "Qirtas News Desk" });
+  // A byline is a member or Anonymous.
+  await page.getByRole("button", { name: "Anonymous" }).click();
   await page.getByRole("button", { name: "Create the piece" }).click();
   await expect(page).toHaveURL(/\/diwan\/qirtas\/pieces\/(?!new)[^/?]+$/);
 

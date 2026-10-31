@@ -9,7 +9,6 @@ import {
   hasPermissionAnywhere,
   sectionOfPath,
 } from "@repo/rbac";
-import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import type { ReactNode } from "react";
 import { Link, usePathname } from "@/lib/nexus/navigation";
@@ -106,36 +105,24 @@ export const DiwanNav = () => {
 export interface SectionTab {
   /** Waiting items, shown in the accent. */
   readonly count?: number;
-  /** A path inside the Diwan, with `?tab=` where the view is a tab. */
+  /** A path inside the Diwan: every view has its own address. */
   readonly href: string;
   readonly label: string;
 }
 
 /**
- * The tab for the page shown: a `?tab=` tab when its path and tab match,
- * otherwise the tab whose path holds this page most closely (so an event's
- * page keeps "Calendar" lit and a program's page "Programs").
+ * The tab for the page shown: the one whose path holds this page most
+ * closely (so an event's page keeps "Calendar" lit and a program's page
+ * "Programs").
  */
-const tabHere = (
-  tabs: readonly SectionTab[],
-  pathname: string,
-  current: string | null
-) => {
+const tabHere = (tabs: readonly SectionTab[], pathname: string) => {
   let best = -1;
   let bestLength = -1;
   tabs.forEach((tab, index) => {
-    const [path = "/", query] = tab.href.split("?");
-    const wanted = new URLSearchParams(query ?? "").get("tab");
-    if (wanted) {
-      if (pathname === path && current === wanted) {
-        best = index;
-        bestLength = Number.POSITIVE_INFINITY;
-      }
-      return;
-    }
+    const path = tab.href;
     const holds =
       pathname === path || (path !== "/" && pathname.startsWith(`${path}/`));
-    if (holds && path.length > bestLength && !(pathname === path && current)) {
+    if (holds && path.length > bestLength) {
       best = index;
       bestLength = path.length;
     }
@@ -155,11 +142,10 @@ export const SectionTabs = ({
   readonly tabs: readonly SectionTab[];
 }) => {
   const pathname = usePathname();
-  const current = useSearchParams().get("tab");
   if (tabs.length < 2) {
     return null;
   }
-  const hereIndex = tabHere(tabs, pathname, current);
+  const hereIndex = tabHere(tabs, pathname);
   return (
     <nav aria-label={label} className="overflow-x-auto border-line border-b">
       <ul className="flex gap-x-6">

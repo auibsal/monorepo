@@ -1,56 +1,44 @@
 import type { Locale } from "@repo/internationalization";
 import { formatLongDate } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
-import { content, journal, localized } from "@repo/sal-data";
+import { journal, localized } from "@repo/sal-data";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Nameplate } from "@/components/waraq/nameplate";
 import { localizedMetadata } from "@/lib/metadata";
 import { readPublished } from "@/lib/supabase";
 
-interface PrizesProps {
+interface AwardsProps {
   readonly params: Promise<{ locale: Locale }>;
 }
 
 export const generateMetadata = async ({
   params,
-}: PrizesProps): Promise<Metadata> => {
+}: AwardsProps): Promise<Metadata> => {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "web.prizes" });
   const paper = await getTranslations({ locale, namespace: "web.journal" });
-  return localizedMetadata(locale, "/qirtas/prizes", {
+  return localizedMetadata(locale, "/qirtas/awards", {
     description: t("lede"),
     title: `${t("title")} · ${paper("title")}`,
   });
 };
 
 /**
- * The Qirtas Prizes (owner, Oct 29, 2026): the six prizes, what each is
- * for and whom it is named for (Oct 30), and for the latest round its
- * dates, its shortlists from their day and its winners from theirs.
+ * The Qirtas Awards (owner, Oct 29, 2026; "Awards", Oct 31): the six
+ * awards, what each is for and whom it is named for, and for the latest
+ * round its dates, its shortlists from their day and its winners from
+ * theirs. The code keeps the name `prizes`.
  */
-const PrizesPage = async ({ params }: PrizesProps) => {
+const AwardsPage = async ({ params }: AwardsProps) => {
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "web.prizes" });
   const tj = await getTranslations({ locale, namespace: "web.journal" });
-  const [all, rounds, namesPublic] = await Promise.all([
+  const [all, rounds] = await Promise.all([
     readPublished(["journal"], (c) => journal.prizes(c), []),
     readPublished(["journal"], (c) => journal.prizeRounds(c), []),
-    // The prizes' own names are proposed until the owner confirms them
-    // (Oct 30, 2026): until then each shows its section only.
-    readPublished(
-      ["journal"],
-      (c) => content.publicSetting(c, "journal.prize_names_public"),
-      false
-    ),
   ]);
-  const named = namesPublic === true;
-  // Until the names are confirmed: "The main prize", "The prize for News".
-  const unnamed = (prize: { desk: string | null }) =>
-    prize.desk
-      ? t("prizeFor", { section: tj(`desks.${prize.desk as journal.Desk}`) })
-      : t("mainPrize");
   const round = rounds.find((r) => r.is_published) ?? null;
   const results = round
     ? await readPublished(
@@ -95,19 +83,17 @@ const PrizesPage = async ({ params }: PrizesProps) => {
               key={prize.key}
             >
               <h2 className="type-heading">
-                {named ? localized(prize, "name", locale) : unnamed(prize)}
+                {localized(prize, "name", locale)}
               </h2>
-              {named ? (
-                <p className="type-caption">
-                  {prize.desk
-                    ? tj(`desks.${prize.desk as journal.Desk}`)
-                    : t("wholePaper")}
-                </p>
-              ) : null}
+              <p className="type-caption">
+                {prize.desk
+                  ? tj(`desks.${prize.desk as journal.Desk}`)
+                  : t("wholePaper")}
+              </p>
               {localized(prize, "for", locale) ? (
                 <p className="type-body">{localized(prize, "for", locale)}</p>
               ) : null}
-              {named && localized(prize, "named_for", locale) ? (
+              {localized(prize, "named_for", locale) ? (
                 <p className="type-caption text-text-secondary">
                   {localized(prize, "named_for", locale)}
                 </p>
@@ -153,4 +139,4 @@ const PrizesPage = async ({ params }: PrizesProps) => {
   );
 };
 
-export default PrizesPage;
+export default AwardsPage;

@@ -6,16 +6,25 @@ import { unwrap } from "@repo/sal-data";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 
+type NotionKind =
+  | "event"
+  | "news"
+  | "programme"
+  | "document"
+  | "minutes"
+  | "officer";
+
 /**
- * On a record written in the team's Notion workspace (core.notion_links):
- * says so and links to the page, since publishing from Notion again
- * replaces what is edited here.
+ * A record's page in the team's Notion workspace (core.notion_links), where
+ * the team plans around it: events and news are written there (publishing
+ * from Notion again replaces what is edited here); programs, documents,
+ * minutes and officers are mirrored there for the team's own pages to link.
  */
 export const NotionManaged = ({
   kind,
   recordId,
 }: {
-  kind: "event" | "news";
+  kind: NotionKind;
   recordId: string | null;
 }) => {
   const t = useTranslations("nexus.admin.notion");
@@ -40,7 +49,7 @@ export const NotionManaged = ({
   }
   return (
     <p className="border-line border-t pt-space-4 text-sm" role="note">
-      {t(kind === "event" ? "event" : "news")}{" "}
+      {t(kind === "event" || kind === "news" ? kind : "mirror")}{" "}
       <a
         className="inline-flex items-center gap-1 underline underline-offset-4"
         href={`https://www.notion.so/${link.data.notion_page_id}`}

@@ -164,10 +164,7 @@ export const ViewForm = () => {
         {ongoing && row.status !== "closed" ? (
           <Link
             className="type-body underline"
-            href={{
-              pathname: "/membership/requests/new",
-              query: { form: row.form_key, id: row.id },
-            }}
+            href={`/membership/requests/new/${row.form_key}/${row.id}`}
           >
             {t("update")}
           </Link>
