@@ -10,6 +10,7 @@ import { unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useEffect, useState } from "react";
+import { DateInput } from "@/components/fields/date-input";
 import { SectionSpinner } from "../../states";
 import {
   BilingualField,
@@ -141,11 +142,10 @@ export const Sessions = ({ programmeId }: { programmeId: string }) => {
         <div className="grid gap-4 sm:grid-cols-3">
           <Field hint={t("firstHint")} label={t("first")}>
             {(id) => (
-              <Input
+              <DateInput
                 id={id}
                 onChange={(e) => set("first_on", e.target.value)}
                 required
-                type="date"
                 value={form.first_on}
               />
             )}
@@ -254,11 +254,10 @@ export const Sessions = ({ programmeId }: { programmeId: string }) => {
           <p className="type-body text-text-secondary">{t("addBody")}</p>
           <Field label={t("until")}>
             {(id) => (
-              <Input
+              <DateInput
                 className="max-w-xs"
                 id={id}
                 onChange={(e) => setUntil(e.target.value)}
-                type="date"
                 value={until}
               />
             )}

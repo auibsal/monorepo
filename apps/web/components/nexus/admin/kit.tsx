@@ -25,6 +25,7 @@ import {
 import { DataError } from "@repo/sal-data";
 import { useTranslations } from "next-intl";
 import { type ReactNode, useId, useState } from "react";
+import { DateInput } from "@/components/fields/date-input";
 import { callApiText } from "@/lib/nexus/api";
 import { ChoiceInput } from "./choice-input";
 
@@ -269,8 +270,7 @@ export const DateTimeField = ({
   return (
     <Field hint={t("baghdadTime")} label={label}>
       {(id) => (
-        <Input
-          dir="ltr"
+        <DateInput
           id={id}
           onChange={(e) => onChange(fromZonedInputValue(e.target.value))}
           required={required}

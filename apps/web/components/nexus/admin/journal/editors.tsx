@@ -7,6 +7,7 @@ import { localized, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, type ReactNode, useEffect, useState } from "react";
+import { DateInput } from "@/components/fields/date-input";
 import { Link, useRouter } from "@/lib/nexus/navigation";
 import { useQueryParam } from "@/lib/nexus/use-query-param";
 import { OnTheSite } from "../../site-links";
@@ -337,13 +338,11 @@ export const IssueEditor = () => {
             </Field>
             <Field label={t("issue.printedOn")}>
               {(id) => (
-                <Input
-                  dir="ltr"
+                <DateInput
                   id={id}
                   onChange={(e) =>
                     setForm((f) => ({ ...f, printed_on: e.target.value }))
                   }
-                  type="date"
                   value={form.printed_on}
                 />
               )}

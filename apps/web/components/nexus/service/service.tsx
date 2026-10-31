@@ -15,6 +15,7 @@ import { localized, recognition, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useId, useState } from "react";
+import { DateInput } from "@/components/fields/date-input";
 import { SelectInput } from "@/components/nexus/admin/kit";
 import { ErrorLine } from "../admin/kit";
 import { DiwanPage, DiwanSection } from "../page";
@@ -193,15 +194,13 @@ export const Service = () => {
           <div className="grid gap-4 sm:grid-cols-3">
             <div className="grid gap-2">
               <Label htmlFor={`${id}-date`}>{t("date")}</Label>
-              <Input
-                dir="ltr"
+              <DateInput
                 id={`${id}-date`}
                 max={today()}
                 onChange={(e) =>
                   setForm((f) => ({ ...f, occurred_on: e.target.value }))
                 }
                 required
-                type="date"
                 value={form.occurred_on}
               />
             </div>

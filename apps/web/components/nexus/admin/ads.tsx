@@ -19,6 +19,7 @@ import {
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useId, useState } from "react";
+import { DateInput } from "@/components/fields/date-input";
 import { Link, useRouter } from "@/lib/nexus/navigation";
 import { useGrants } from "@/lib/nexus/queries";
 import { useQueryParam } from "@/lib/nexus/use-query-param";
@@ -349,23 +350,19 @@ const AdForm = ({ initial }: { initial: Draft }) => {
       <div className="grid gap-4 sm:grid-cols-2">
         <Field label={t("fields.startsOn")}>
           {(id) => (
-            <Input
-              dir="ltr"
+            <DateInput
               id={id}
               onChange={(e) => set({ startsOn: e.target.value })}
               required
-              type="date"
               value={draft.startsOn}
             />
           )}
         </Field>
         <Field hint={t("endsOnHint")} label={t("fields.endsOn")}>
           {(id) => (
-            <Input
-              dir="ltr"
+            <DateInput
               id={id}
               onChange={(e) => set({ endsOn: e.target.value })}
-              type="date"
               value={draft.endsOn}
             />
           )}

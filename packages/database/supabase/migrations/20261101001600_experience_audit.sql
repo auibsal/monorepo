@@ -11,8 +11,9 @@
 -- ── 1. Names ────────────────────────────────────────────────────────────────
 -- The seat is a role on the platform like every role the documents name
 -- (Oct 31, 2026): it runs the Awards (journal.prizes) and the Editor hires.
-insert into access.roles (key, name_en, name_ar, is_council, sort, hiring_owner) values
-  ('awards_coordinator', 'Awards Coordinator', 'منسق جوائز قرطاس', false, 129, 'qirtas');
+insert into access.roles (key, name_en, name_ar, is_council, sort) values
+  ('awards_coordinator', 'Awards Coordinator', 'منسق جوائز قرطاس', false, 129);
+update access.roles set hiring_owner = 'qirtas' where key = 'awards_coordinator';
 insert into access.role_permissions (role, permission) values
   ('awards_coordinator', 'journal.prizes'),
   ('awards_coordinator', 'library.read');

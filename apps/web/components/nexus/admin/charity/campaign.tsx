@@ -23,6 +23,8 @@ import { removeFiles, uploadReceipt } from "@repo/storage";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useEffect, useId, useState } from "react";
+import { DateInput } from "@/components/fields/date-input";
+import { FileInput } from "@/components/fields/file-input";
 import { callApi } from "@/lib/nexus/api";
 import { Link, useRouter } from "@/lib/nexus/navigation";
 import { useGrants } from "@/lib/nexus/queries";
@@ -215,26 +217,22 @@ const CampaignSettings = ({ campaignId }: { campaignId: string | null }) => {
         </Field>
         <Field label={t("campaign.startsOn")}>
           {(id) => (
-            <Input
-              dir="ltr"
+            <DateInput
               id={id}
               onChange={(e) =>
                 setForm((f) => ({ ...f, starts_on: e.target.value }))
               }
-              type="date"
               value={form.starts_on}
             />
           )}
         </Field>
         <Field label={t("campaign.endsOn")}>
           {(id) => (
-            <Input
-              dir="ltr"
+            <DateInput
               id={id}
               onChange={(e) =>
                 setForm((f) => ({ ...f, ends_on: e.target.value }))
               }
-              type="date"
               value={form.ends_on}
             />
           )}
@@ -365,11 +363,9 @@ const Handover = ({ campaignId }: { campaignId: string }) => {
       <div className="grid gap-4 sm:grid-cols-2">
         <Field label={t("on")}>
           {(id) => (
-            <Input
-              dir="ltr"
+            <DateInput
               id={id}
               onChange={(e) => change({ on: e.target.value })}
-              type="date"
               value={values.on}
             />
           )}
@@ -678,14 +674,12 @@ const Ledger = ({ campaignId, slug }: { campaignId: string; slug: string }) => {
             </Field>
             <Field label={t("ledger.occurredOn")}>
               {(id) => (
-                <Input
-                  dir="ltr"
+                <DateInput
                   id={id}
                   onChange={(e) =>
                     setForm((f) => ({ ...f, occurred_on: e.target.value }))
                   }
                   required
-                  type="date"
                   value={form.occurred_on}
                 />
               )}
@@ -991,12 +985,11 @@ const Receipts = ({ campaignId }: { campaignId: string }) => {
         <h3 className="type-subheading">{t("receipts.upload")}</h3>
         <Field hint={t("receipts.noPhotos")} label={t("receipts.file")}>
           {(fieldId) => (
-            <Input
+            <FileInput
               accept="application/pdf,image/jpeg,image/png"
               id={fieldId}
               onChange={(e) => setFile(e.target.files?.[0] ?? null)}
               required
-              type="file"
             />
           )}
         </Field>

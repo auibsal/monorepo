@@ -8,6 +8,7 @@ import {
   formatDate,
   formatDateTime,
   formatDayParts,
+  formatFieldValue,
   formatIqd,
   formatLongDate,
   formatMonthYear,
@@ -35,6 +36,16 @@ describe("regional formatting", () => {
     expect(formatDateTime(lateEvening, "en")).toBe(
       "Sunday, October 4, 2026, 12:30 AM"
     );
+  });
+
+  test("reads a date field as written", () => {
+    expect(formatFieldValue("2026-11-06", "en")).toBe(
+      "Friday, November 6, 2026"
+    );
+    expect(formatFieldValue("2026-11-06T18:00", "en")).toBe(
+      "Friday, November 6, 2026, 6:00 PM"
+    );
+    expect(formatFieldValue("", "en")).toBe("");
   });
 
   test("formats IQD without fractional digits", () => {

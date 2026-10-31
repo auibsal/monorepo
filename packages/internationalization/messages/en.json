@@ -64,6 +64,10 @@
     },
     "signature": {
       "number": "No. {number}"
+    },
+    "file": {
+      "choose": "Choose a file",
+      "drop": "Or drop it here."
     }
   },
   "auth": {

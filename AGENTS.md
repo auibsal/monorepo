@@ -18,7 +18,7 @@ and decisions), and continue from the first unticked item.
   - `app/[locale]/(account)` — **the members' pages, on the site** (owner,
     Oct 24, 2026): `/sign-in`, `/sign-up`, `/auth/*`, `/welcome` (was
     `/setup`), Get involved (`/get-involved`, public: the
-    three ways in for visitors, the Callboard for members), and, for
+    three ways in for visitors, the open places for members), and, for
     members, everything under `/membership` (the overhaul, Oct 30, 2026):
     Today (`/membership`), My calendar (`/membership/calendar`), Society
     (`/membership/society`), Record (`/membership/record`, a certificate at
@@ -437,8 +437,9 @@ any schema change. Integration tests run against a local stack with
   (`programmes.record_six_words`) and scans the writer's live membership
   card to make it theirs (`programmes.attach_six_words`); unsigned cards
   show without a name. One entry per member; a new card replaces the old.
-- **The Callboard** (owner, Oct 25, 2026; header link "Get involved",
-  `/get-involved`) is the careers page (owner, Oct 29, 2026), read by
+- **Get involved** (`/get-involved`; the Callboard until Oct 31, 2026,
+  owner: one name, Get involved, in every language and title; the code
+  keeps `callboard`) is the careers page (owner, Oct 29, 2026), read by
   anyone (Oct 31: `programmes.open_places()`, `OpenPlaces`; replying and
   shifts are for members), as one list without sections (owner, Oct 31,
   2026; migration `20261101001000`), soonest first: roles, the
@@ -590,7 +591,7 @@ any schema change. Integration tests run against a local stack with
   What's on → Programs) and propose a General Assembly motion (F-09;
   Society → Resolutions). Every other kind is `retired` (no new
   submissions; past ones stay readable under Requests and reports): it is
-  done elsewhere on the platform (roles on the Callboard, service hours,
+  done elsewhere on the platform (roles on Get involved, service hours,
   certificates, the conflict-of-interest declaration in Settings, photo
   consent in Profile) or is an officers' paper kept as a Notion template.
   No standard letters: emails and certificates carry what letters did.
@@ -613,7 +614,7 @@ any schema change. Integration tests run against a local stack with
     list; The Month in Qirtas is merged into it and the name retired
     (code: `content.newsletter_subscribers`, the outbox kind
     `newsletter.monthly`, `private.queue_sunday_paper`). It carries the
-    month's pieces, What's on and the Callboard's open places.
+    month's pieces, What's on and the open places on Get involved.
   - The Diwan, الديوان, at `/diwan`, for officers (code: `nexus`,
     `components/nexus`, `lib/nexus`, `nexusPath`, `paths.nexus`, messages
     namespace `nexus`, which also holds the members' pages' text).
@@ -676,17 +677,18 @@ any schema change. Integration tests run against a local stack with
   header (`DiwanNav`), and each section's tabs follow that.
   Members' pages add their row (Today, My calendar, Society, Record,
   Settings, Sign out). The footer
-  (`footer.tsx`, not in the Diwan) holds what the header doesn't, in
-  threes: the six programs, six of the Society's pages (the Council, the
-  Library, Partners, Contact, the press kit, Verify) and three ways to
-  stay in touch, then three lines of fine print. The Diwan's row has six
-  sections; the Desk three quick actions. No link appears twice
+  (`footer.tsx`, not in the Diwan) holds what the header doesn't: the
+  programs, the Society's pages (the Council, the Library, Partners,
+  Contact, the press kit, Verify) and the ways to stay in touch, then
+  the fine print. The Diwan's row has its sections, each linked to the
+  first view the officer's roles include (`section-views.ts`); the Desk
+  its quick actions. No link appears twice
   among the header, a menu row and the footer. Every Diwan empty state
   offers one next action (`EmptyLine action`).
-- **Threes** (owner, Oct 30, 2026). The Society's things come in threes:
-  3, 6, 9, 12. Menus, columns, groups, rows of cards and quick actions
-  keep to them (six in the header, three footer columns, six Diwan
-  sections, three quick actions).
+- **What is needed, no more** (owner, Oct 31, 2026, replacing the rule
+  of threes). Menus, columns, groups, rows of cards and quick actions
+  hold what is needed: what isn't is merged or removed, and nothing is
+  padded or cut to reach a count.
 - **Content.** Don't invent names, dates, figures or quotes. Missing text is a
   `TODO(content): …` placeholder listed in `PROGRESS.md`. Arabic written for
   this platform (not taken from a source) is listed as `needs-native-review`.

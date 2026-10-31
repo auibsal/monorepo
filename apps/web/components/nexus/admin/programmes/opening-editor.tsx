@@ -8,6 +8,7 @@ import { journal, localized, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useEffect, useState } from "react";
+import { DateInput } from "@/components/fields/date-input";
 import { Link } from "@/lib/nexus/navigation";
 import { OnTheSite } from "../../site-links";
 import { ErrorState, PageSpinner } from "../../states";
@@ -272,26 +273,22 @@ export const OpeningEditor = ({ back, id }: OpeningEditorProps) => {
             </Field>
             <Field label={t("termFrom")}>
               {(fieldId) => (
-                <Input
-                  dir="ltr"
+                <DateInput
                   id={fieldId}
                   onChange={(e) =>
                     setForm((f) => ({ ...f, term_from: e.target.value }))
                   }
-                  type="date"
                   value={form.term_from}
                 />
               )}
             </Field>
             <Field label={t("termTo")}>
               {(fieldId) => (
-                <Input
-                  dir="ltr"
+                <DateInput
                   id={fieldId}
                   onChange={(e) =>
                     setForm((f) => ({ ...f, term_to: e.target.value }))
                   }
-                  type="date"
                   value={form.term_to}
                 />
               )}

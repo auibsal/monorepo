@@ -2,12 +2,12 @@
 
 import type { useAuth } from "@repo/auth/provider";
 import { Button } from "@repo/design-system/components/ui/button";
-import { Input } from "@repo/design-system/components/ui/input";
 import { formatNumber } from "@repo/internationalization/format";
 import { journal, unwrap } from "@repo/sal-data";
 import { removeFiles, uploadSubmissionFile } from "@repo/storage";
 import { useTranslations } from "next-intl";
 import { useId } from "react";
+import { FileInput } from "@/components/fields/file-input";
 
 export type FileKind = "manuscript" | "image" | "source";
 
@@ -92,7 +92,7 @@ export const FilePicker = ({
           <label className="font-medium text-sm" htmlFor={`${id}-${kind}`}>
             {t(`kinds.${kind}`)}
           </label>
-          <Input
+          <FileInput
             accept={acceptFor(kind)}
             disabled={disabled}
             id={`${id}-${kind}`}
@@ -105,7 +105,6 @@ export const FilePicker = ({
               onAdd(files);
               e.target.value = "";
             }}
-            type="file"
           />
           <p className="type-caption">
             {t(`hints.${kind}`, {

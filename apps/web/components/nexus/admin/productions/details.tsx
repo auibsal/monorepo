@@ -12,6 +12,7 @@ import { uploadLibraryFile } from "@repo/storage";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useId, useState } from "react";
+import { FileInput } from "@/components/fields/file-input";
 import { callApi } from "@/lib/nexus/api";
 import { ImageField } from "../image-field";
 import {
@@ -329,12 +330,11 @@ export const RightsTab = ({ production }: { production: ProductionRow }) => {
         </Field>
         <div className="grid gap-2">
           <Label htmlFor={`${id}-file`}>{t("document")}</Label>
-          <Input
+          <FileInput
             accept="application/pdf,image/jpeg,image/png"
             disabled={locked}
             id={`${id}-file`}
             onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-            type="file"
           />
           {production.rights_document_path ? (
             <Button

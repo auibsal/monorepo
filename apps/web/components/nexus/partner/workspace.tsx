@@ -13,6 +13,7 @@ import { localized, partners, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, type ReactNode, useState } from "react";
+import { DateInput } from "@/components/fields/date-input";
 import { Signature } from "@/components/signature";
 import { type MyPartner, useMyPartners } from "@/lib/nexus/partners";
 import {
@@ -503,13 +504,11 @@ const NewPerk = ({ partnerId }: { partnerId: string }) => {
         </Field>
         <Field label={to("ends_on")}>
           {(id) => (
-            <Input
-              dir="ltr"
+            <DateInput
               id={id}
               onChange={(e) =>
                 setForm((f) => ({ ...f, ends_on: e.target.value }))
               }
-              type="date"
               value={form.ends_on}
             />
           )}

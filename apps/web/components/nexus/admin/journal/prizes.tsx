@@ -9,6 +9,7 @@ import { journal, localized, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useState } from "react";
+import { DateInput } from "@/components/fields/date-input";
 import { DiwanSection, RowList } from "../../page";
 import { EmptyLine, SectionSpinner } from "../../states";
 import {
@@ -421,28 +422,24 @@ const NewRound = () => {
           </Field>
           <Field label={t("shortlistOn")}>
             {(id) => (
-              <Input
-                dir="ltr"
+              <DateInput
                 id={id}
                 onChange={(e) =>
                   setForm((f) => ({ ...f, shortlist_on: e.target.value }))
                 }
                 required
-                type="date"
                 value={form.shortlist_on}
               />
             )}
           </Field>
           <Field label={t("awardedOn")}>
             {(id) => (
-              <Input
-                dir="ltr"
+              <DateInput
                 id={id}
                 onChange={(e) =>
                   setForm((f) => ({ ...f, awarded_on: e.target.value }))
                 }
                 required
-                type="date"
                 value={form.awarded_on}
               />
             )}

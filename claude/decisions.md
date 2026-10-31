@@ -307,3 +307,17 @@ Where an earlier line above is marked as replaced, the later section holds. What
 - **Version 1.0.0** is tagged when the audit PR merges; CHANGELOG.md records each release.
 - **SAL-PLT-10 is retired;** the other website policies no longer describe the API. The old handbook pages and the old library uploads are gone.
 
+## 19. The experience audit (decided Oct 31, 2026, last)
+- **Every recommendation of the experience audit is done,** but these:
+  - The Salon's dates are adjusted later.
+  - The October news pieces (the Waraq News Desk archive, migration `20261014000300`) wait for the owner's call.
+- **Get involved** is the one name for the careers page, everywhere. "The Callboard" is retired.
+- **No rule of threes.** What is needed stays or is added; what isn't is merged or removed.
+- **The Diwan opens on what an officer can use.** Each section links to its first view the officer's roles include.
+- **Smaller decisions:**
+  - Private work is never on Today.
+  - My calendar lists the member's own events first.
+  - Settings changes the password.
+  - Memoranda show both signatures by name.
+  - Dates in fields are written out in the house format.
+  - The Awards Coordinator is a role.

@@ -64,6 +64,10 @@
     },
     "signature": {
       "number": "رقم {number}"
+    },
+    "file": {
+      "choose": "اختر ملفًا",
+      "drop": "أو أفلته هنا."
     }
   },
   "auth": {

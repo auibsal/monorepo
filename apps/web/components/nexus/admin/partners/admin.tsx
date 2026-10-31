@@ -14,6 +14,7 @@ import { localized, partners, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useState } from "react";
+import { DateInput } from "@/components/fields/date-input";
 import { MySignature } from "@/components/signature";
 import { callApi } from "@/lib/nexus/api";
 import { Link, useRouter } from "@/lib/nexus/navigation";
@@ -603,14 +604,12 @@ const AgreementForm = ({ onDone }: { onDone: () => void }) => {
         {(["starts_on", "ends_on", "renew_by"] as const).map((field) => (
           <Field key={field} label={t(`fields.${field}`)}>
             {(id) => (
-              <Input
-                dir="ltr"
+              <DateInput
                 id={id}
                 onChange={(e) =>
                   setForm((f) => ({ ...f, [field]: e.target.value }))
                 }
                 required={field === "starts_on"}
-                type="date"
                 value={form[field]}
               />
             )}
@@ -1324,14 +1323,12 @@ const Offers = () => {
           {(["starts_on", "ends_on"] as const).map((field) => (
             <Field key={field} label={t(field)}>
               {(id) => (
-                <Input
-                  dir="ltr"
+                <DateInput
                   id={id}
                   onChange={(e) =>
                     setForm((f) => ({ ...f, [field]: e.target.value }))
                   }
                   required={field === "starts_on"}
-                  type="date"
                   value={form[field]}
                 />
               )}

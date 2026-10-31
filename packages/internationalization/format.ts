@@ -160,6 +160,50 @@ export const formatLongDate = (
     ...(withYear ? { year: "numeric" } : {}),
   }).format(toDate(value));
 
+const FIELD_VALUE = /^(\d{4})-(\d{2})-(\d{2})(?:T(\d{2}):(\d{2}))?/;
+
+/**
+ * What a date field holds ("2026-11-06" or "2026-11-06T18:00", Baghdad's
+ * wall clock), in the house format: "Friday, November 6, 2026, 6:00 PM".
+ * Read as written, with no time zone shift.
+ */
+export const formatFieldValue = (
+  value: string,
+  locale: Locale = defaultLocale
+) => {
+  const match = FIELD_VALUE.exec(value);
+  if (!match) {
+    return "";
+  }
+  const [, y, m, d, h, min] = match;
+  const at = new Date(
+    Date.UTC(
+      Number(y),
+      Number(m) - 1,
+      Number(d),
+      Number(h ?? 0),
+      Number(min ?? 0)
+    )
+  );
+  const date = new Intl.DateTimeFormat(brandIntl(locale), {
+    day: "numeric",
+    month: "long",
+    timeZone: "UTC",
+    weekday: "long",
+    year: "numeric",
+  }).format(at);
+  if (h === undefined) {
+    return date;
+  }
+  const time = new Intl.DateTimeFormat(brandIntl(locale), {
+    hour: "numeric",
+    hour12: true,
+    minute: "2-digit",
+    timeZone: "UTC",
+  }).format(at);
+  return `${date}${locale === "ar" ? "، " : ", "}${time}`;
+};
+
 /** "6:00 PM" (12-hour clock in both languages). */
 export const formatClock = (value: DateInput, locale: Locale = defaultLocale) =>
   new Intl.DateTimeFormat(brandIntl(locale), {

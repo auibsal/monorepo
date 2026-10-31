@@ -1,13 +1,13 @@
 "use client";
 
 import { useAuth } from "@repo/auth/provider";
-import { Input } from "@repo/design-system/components/ui/input";
 import type { Locale } from "@repo/internationalization";
 import { formatLongDate } from "@repo/internationalization/format";
 import { localized, sanitizeRichText, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useEffect, useState } from "react";
+import { DateInput } from "@/components/fields/date-input";
 import { Link, useRouter } from "@/lib/nexus/navigation";
 import { useQueryParam } from "@/lib/nexus/use-query-param";
 import { Collaboration } from "../../editor/collaboration";
@@ -183,14 +183,12 @@ export const MinutesEditor = () => {
         <div className="grid gap-4 sm:grid-cols-2">
           <Field label={t("minutes.meetingOn")}>
             {(id) => (
-              <Input
-                dir="ltr"
+              <DateInput
                 id={id}
                 onChange={(e) =>
                   setForm((f) => ({ ...f, meeting_on: e.target.value }))
                 }
                 required
-                type="date"
                 value={form.meeting_on}
               />
             )}
@@ -246,11 +244,9 @@ export const MinutesEditor = () => {
             <>
               <Field className="w-44" label={t("minutes.adoptedOn")}>
                 {(id) => (
-                  <Input
-                    dir="ltr"
+                  <DateInput
                     id={id}
                     onChange={(e) => setAdoptedOn(e.target.value)}
-                    type="date"
                     value={adoptedOn}
                   />
                 )}

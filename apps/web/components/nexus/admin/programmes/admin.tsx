@@ -17,6 +17,7 @@ import { localized, programmes, recognition, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useEffect, useState } from "react";
+import { DateInput } from "@/components/fields/date-input";
 import { Link, useRouter } from "@/lib/nexus/navigation";
 import { useGrants } from "@/lib/nexus/queries";
 import { DiwanSection } from "../../page";
@@ -938,26 +939,22 @@ const Rotas = ({ programmeId }: { programmeId: string }) => {
         <div className="grid gap-4 sm:grid-cols-2">
           <Field label={t("startsOn")}>
             {(id) => (
-              <Input
-                dir="ltr"
+              <DateInput
                 id={id}
                 onChange={(e) =>
                   setForm((f) => ({ ...f, starts_on: e.target.value }))
                 }
-                type="date"
                 value={form.starts_on}
               />
             )}
           </Field>
           <Field label={t("endsOn")}>
             {(id) => (
-              <Input
-                dir="ltr"
+              <DateInput
                 id={id}
                 onChange={(e) =>
                   setForm((f) => ({ ...f, ends_on: e.target.value }))
                 }
-                type="date"
                 value={form.ends_on}
               />
             )}

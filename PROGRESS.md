@@ -7,6 +7,30 @@ first session); section numbers (§) refer to it.
 
 Branch: `claude/new-session-qosn60`.
 
+## The experience audit (2026-10-31)
+
+- [x] Diwan: each section opens on the first view the officer's roles
+  include; locked views have a title and a way out; every Qirtas page
+  has its title; the Desk shows writers their pieces in editing; What's
+  on is one page (coming, drafts, past); house dates; the activity log
+  names role and person.
+- [x] Partners: one sign-in on the application; both signatures by name
+  (migration `20261101001600`, `99_experience_audit.test.sql`); no
+  typed contact; a partner's own perks hidden from its people.
+- [x] Membership: Today without private work or requests; My calendar
+  yours first; password in Settings; Record order; Write for Qirtas
+  defaults to Qirtas, all year, and says what Send waits for; Wallet
+  hidden until it's set up.
+- [x] Public: Get involved everywhere (no Callboard); The Council and
+  Press kit titles; one solid button per view; AUIB dates quieter;
+  openings show term, places and skills; the 404 page has a title.
+- [x] Shared: a date field that writes the date out in the house format,
+  and a file field in the brand.
+- [ ] The Salon's dates (owner: later).
+- [ ] The October News Desk archive (migration `20261014000300`): the
+  Society pieces in it still describe Waraq and the old structure; the
+  owner decides whether to correct or unpublish them.
+
 ## Qirtas, one door (2026-10-31)
 
 - [x] One door: every section through `/qirtas/write/<type>`, read blind;
