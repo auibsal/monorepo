@@ -23,7 +23,10 @@ test("two officers see each other and each other's typing", async ({
   await setUpTwoStep(first);
   const title = `Shared minutes ${Date.now()}`;
   await first.getByRole("textbox", { name: "English" }).first().fill(title);
-  await first.getByRole("textbox", { name: "Arabic" }).first().fill("محضر مشترك");
+  await first
+    .getByRole("textbox", { name: "Arabic" })
+    .first()
+    .fill("محضر مشترك");
   await first.getByRole("button", { name: "Save" }).click();
   // Saving new minutes moves the editor to their own address; the room opens there.
   await expect(first).toHaveURL(/\/diwan\/society\/minutes\/(?!new)[^/?]+$/);
