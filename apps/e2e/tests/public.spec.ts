@@ -47,7 +47,8 @@ test.describe("public site", () => {
     const month = new Date(Date.now() + 5 * 86_400_000 + 3 * 3_600_000)
       .toISOString()
       .slice(0, 7);
-    await page.goto(`${urls.web}/events?month=${month}`);
+    // A month has its own address.
+    await page.goto(`${urls.web}/events/${month}`);
     await expect(page.getByRole("heading", { level: 1 })).toHaveText(
       "What's on"
     );
@@ -59,12 +60,12 @@ test.describe("public site", () => {
     await expect(auib).toHaveAttribute("href", universityDate.url);
     await expectAccessible(page);
     await page.getByRole("link", { name: "Hide AUIB dates" }).click();
-    await expect(page).toHaveURL(/auib=off/);
+    await expect(page).toHaveURL(new RegExp(`/events/${month}/society$`));
     await expect(
       page.getByRole("link", { name: universityDate.title })
     ).toHaveCount(0);
     // A month with nothing in it points to what comes next.
-    await page.goto(`${urls.web}/events?month=2026-01&auib=off`);
+    await page.goto(`${urls.web}/events/2026-01/society`);
     const next = page.getByText("Next:");
     await expect(next).toBeVisible();
     await expect(next.getByRole("link")).toHaveAttribute("href", /\/events\//);

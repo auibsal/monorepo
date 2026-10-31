@@ -1,3 +1,4 @@
+import { createHmac } from "node:crypto";
 import AxeBuilder from "@axe-core/playwright";
 import { expect, type Page } from "@playwright/test";
 import { MAILPIT_URL, PASSWORD } from "../fixtures";
@@ -48,4 +49,34 @@ export const latestMail = async (to: string, after = 0) => {
     await new Promise((resolve) => setTimeout(resolve, 1000));
   }
   throw new Error(`No email for ${to}`);
+};
+
+/** The six-digit code an authenticator app shows for a key (RFC 6238). */
+export const totp = (secret: string, at = Date.now()) => {
+  const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
+  let bits = "";
+  for (const char of secret.replace(/[=]+$/, "").toUpperCase()) {
+    bits += alphabet.indexOf(char).toString(2).padStart(5, "0");
+  }
+  const key = Buffer.from(
+    (bits.match(/.{8}/g) ?? []).map((byte) => Number.parseInt(byte, 2))
+  );
+  const counter = Buffer.alloc(8);
+  counter.writeBigUInt64BE(BigInt(Math.floor(at / 30_000)));
+  const mac = createHmac("sha1", key).update(counter).digest();
+  const offset = (mac.at(-1) ?? 0) & 0x0f;
+  const value = (mac.readUInt32BE(offset) & 0x7f_ff_ff_ff) % 1_000_000;
+  return String(value).padStart(6, "0");
+};
+
+/**
+ * An officer whose role needs two-step sign-in sets up an authenticator
+ * where the Diwan asks for it, reading the key off the screen as they
+ * would type it into the app.
+ */
+export const setUpTwoStep = async (page: Page) => {
+  await page.getByRole("button", { name: "Set up my authenticator" }).click();
+  const key = await page.locator("code").first().innerText();
+  await page.getByLabel("Six-digit code").fill(totp(key.trim()));
+  await page.getByRole("button", { name: "Confirm" }).click();
 };

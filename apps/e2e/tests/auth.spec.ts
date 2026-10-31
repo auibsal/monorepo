@@ -15,9 +15,7 @@ test("sign up with an AUIB address, confirm by email, finish setup", async ({
   // An AUIB address needs only the address and a password.
   await page.getByLabel("Email").fill(email);
   await page.getByLabel("Password").fill(PASSWORD);
-  await expect(
-    page.getByRole("group", { name: "Your name in English" })
-  ).toHaveCount(0);
+  await expect(page.getByLabel("Your name in English")).toHaveCount(0);
   // Scrolled down to the button, as on a phone.
   await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
   await page.getByRole("button", { name: "Create account" }).click();
@@ -32,21 +30,24 @@ test("sign up with an AUIB address, confirm by email, finish setup", async ({
   await page.getByRole("button", { name: /continue/i }).click();
 
   // One question per screen.
-  await expect(page).toHaveURL(/\/welcome\?(.*&)?step=1/);
+  // One question per screen, each at its own address.
+  await expect(page).toHaveURL(/\/welcome\/1(\?|$)/);
   await expect(page.getByText("Step 1 of 5")).toBeVisible();
   await expectAccessible(page);
-  await page.getByLabel("First name in English").fill("New");
-  await page.getByLabel("Last name in English").fill("Member");
-  await page.getByLabel("Last name in English").press("Enter");
+  // One name in each language.
+  await page.getByLabel("Your name in English").fill("New Member");
+  await page.getByLabel("Your name in English").press("Enter");
 
   await expect(page.getByText("Step 2 of 5")).toBeVisible();
-  await page.getByLabel("First name in Arabic").fill("عضو");
-  await page.getByLabel("Last name in Arabic").fill("جديد");
+  await expect(page).toHaveURL(/\/welcome\/2(\?|$)/);
+  await page.getByLabel("Your name in Arabic").fill("عضو جديد");
   // The browser's Back goes to the last screen, answers kept.
   await page.goBack();
-  await expect(page.getByLabel("First name in English")).toHaveValue("New");
+  await expect(page.getByLabel("Your name in English")).toHaveValue(
+    "New Member"
+  );
   await page.getByRole("button", { name: "Continue" }).click();
-  await expect(page.getByLabel("Last name in Arabic")).toHaveValue("جديد");
+  await expect(page.getByLabel("Your name in Arabic")).toHaveValue("عضو جديد");
   await page.getByRole("button", { name: "Continue" }).click();
 
   await expect(page.getByText("Step 3 of 5")).toBeVisible();
@@ -106,14 +107,12 @@ test("an outside address gives its names and a few words", async ({ page }) => {
   await page.getByLabel("Email").fill(`e2e-${Date.now()}@example.com`);
   await page.getByLabel("Password").fill(PASSWORD);
   const create = page.getByRole("button", { name: "Create account" });
-  const english = page.getByRole("group", { name: "Your name in English" });
+  // One name in each language.
+  const english = page.getByLabel("Your name in English");
   await expect(english).toBeVisible();
   await expect(create).toBeDisabled();
-  await english.getByLabel("First name").fill("Guest");
-  await english.getByLabel("Last name").fill("Writer");
-  const arabic = page.getByRole("group", { name: "Your name in Arabic" });
-  await arabic.getByLabel("First name").fill("ضيف");
-  await arabic.getByLabel("Last name").fill("كاتب");
+  await english.fill("Guest Writer");
+  await page.getByLabel("Your name in Arabic").fill("ضيف كاتب");
   await expectAccessible(page);
   await expect(create).toBeEnabled();
 });

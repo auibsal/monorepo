@@ -13,7 +13,14 @@ export const admin = () =>
 export const PASSWORD = "E2e-pass-12345";
 export const member = { email: "e2e-member@auib.edu.iq", name: "E2E Member" };
 export const editor = { email: "e2e-editor@auib.edu.iq", name: "E2E Editor" };
-/** A second editor, for the co-editing journey (presence hides your own tabs). */
+/**
+ * The co-editing journey's two officers: minutes are written only by the
+ * President and the General Secretary, whose roles need two-step sign-in.
+ */
+export const president = {
+  email: "e2e-president@auib.edu.iq",
+  name: "E2E President",
+};
 export const editor2 = {
   email: "e2e-editor-2@auib.edu.iq",
   name: "E2E Second Editor",
