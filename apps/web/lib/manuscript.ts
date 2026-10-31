@@ -1,6 +1,6 @@
 "use client";
 
-import { sanitizeRichText } from "@repo/sal-data";
+import { sanitizeRichText, toPlainText } from "@repo/sal-data";
 
 const DOCX =
   "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
@@ -96,5 +96,5 @@ export const manuscriptHtml = async (file: File) => {
     html = await pdfHtml(file);
   }
   const clean = sanitizeRichText(html);
-  return clean.replace(/<[^>]*>/g, "").trim() ? clean : null;
+  return toPlainText(clean) ? clean : null;
 };
