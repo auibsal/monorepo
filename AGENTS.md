@@ -456,7 +456,10 @@ any schema change. Integration tests run against a local stack with
   partner's verified affiliation; `private.is_guest`) or `partner` (a
   partner's Lead or Team). Triggers named `one_membership` refuse a
   second kind (`private.may_become`); a guest may still be one Edition's
-  guest editor. Staff is a member holding a Society role
+  guest editor. A member may also lead their club's partnership (owner,
+  Oct 31, 2026, migration `20261101000900`): they stay a `member`, with
+  the partner's dashboard beside Membership; a guest is never on a
+  partner's team. Staff is a member holding a Society role
   (`private.is_staff`): the card's Staff tag and the Diwan. Every kind
   has the live card (`my_card`; `verify_card` returns `kind` and
   `staff`). The members' pages open by kind (`kindOpens` in
@@ -470,6 +473,14 @@ any schema change. Integration tests run against a local stack with
   that has an account (no identities in the answer); signing in asks
   `/api/sign-in/known` (`core.account_exists`, the secret key) after a
   failure, to say "no account with this address".
+- **Signatures are names on the platform** (owner, Oct 31, 2026). Nobody
+  types their own name to sign or book: the partner application
+  (`private.sign_as_applicant`) and a Qirtas agreement
+  (`private.sign_in_own_name`) are signed in the profile's names, dated
+  when signed, and a booking question asking for a name
+  (`events.asksForName`) is answered with it. One photo setting:
+  "Photos of me at the Society's events may be shared" on Profile is
+  `camera_shy` read the other way round (`photo_consent` is gone).
 - **No money** (owner, Oct 30, 2026). The Society holds no budget, no
   account and no money, and has no Treasurer; Student Life provides. No
   budgets, costs, prices, spending limits, claims or reimbursements

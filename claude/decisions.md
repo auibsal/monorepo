@@ -252,3 +252,9 @@ Qirtas, unlike a program, may have several documents:
 - **What's on is one thing.** A program is an event series. The Diwan's What's on is one page (the events, then the six programs), and a program's page is /diwan/events/<slug>, like its public page.
 - **Get involved is the careers page, for everyone:** every open place inside the Society and with its partners, readable without signing in: roles, the Apprenticeship (the internship), First Ink, volunteering (standing places and shifts), places with partners (posted by Partnerships) and the Company's auditions. Replying takes membership.
 
+
+## 12. Members lead their club's partnership; partners start afresh; one photo setting; signatures are names on the platform (decided Oct 31, after section 11)
+- **A member may lead their club's partnership.** A member may apply at /partners/join and be a partner's Lead or Team while staying a member (their card still says Member). The partner's dashboard sits beside Membership in the header's menu. A guest is still never on a partner's team, and a partner's person who is not a member is never a guest. This replaces "an AUIB club's team signs in with the club's own address" in section 11.
+- **Every partner on record was removed,** with its memoranda, perks, places, invitations and guests, and the guest account shaheen.farjo@gmail.com was deleted (migration `20261101000900`).
+- **One photo setting.** "Photos of me at the Society's events may be shared" is on Profile; it is the camera-shy setting read the other way round. The separate setting in the optional details is gone.
+- **A signature is the signer's name on the platform, dated when signed.** Nobody types their own name: the partner application and a Qirtas author's agreement are signed in the name the person holds on the platform, with the date beside it, and a booking question that asks for a name is answered with it.

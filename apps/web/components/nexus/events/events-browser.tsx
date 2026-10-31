@@ -28,6 +28,7 @@ import {
   useMyMembership,
   useMyRsvps,
   useMyWaitlist,
+  useProfile,
 } from "@/lib/nexus/queries";
 import { CalendarFeed } from "../home/calendar-feed";
 import { DiwanPage } from "../page";
@@ -149,6 +150,12 @@ export const EventsBrowser = () => {
   const t = useTranslations("nexus.events");
   const ta = useTranslations("nexus.next");
   const locale = useLocale() as "en" | "ar";
+  // A booking is in the member's name on the platform; a question asking for
+  // a name is answered with it (owner, Oct 31, 2026).
+  const profile = useProfile();
+  const myName = profile.data
+    ? localized(profile.data, "full_name", locale)
+    : "";
   const { supabase, user } = useAuth();
   const queryClient = useQueryClient();
   const upcoming = useUpcomingEvents();
@@ -309,7 +316,9 @@ export const EventsBrowser = () => {
               <DialogTitle>
                 {asking ? localized(asking, "title", locale) : ""}
               </DialogTitle>
-              <DialogDescription>{t("questions")}</DialogDescription>
+              <DialogDescription>
+                {myName ? t("bookingAs", { name: myName }) : t("questions")}
+              </DialogDescription>
             </DialogHeader>
             {asking?.questions.map((question) => (
               <div className="grid gap-2" key={question.id}>
@@ -318,11 +327,20 @@ export const EventsBrowser = () => {
                     question.label_en ??
                     question.id}
                 </Label>
-                <Input
-                  id={`q-${question.id}`}
-                  name={question.id}
-                  required={question.required}
-                />
+                {events.asksForName(question) && myName ? (
+                  <Input
+                    defaultValue={myName}
+                    id={`q-${question.id}`}
+                    name={question.id}
+                    readOnly
+                  />
+                ) : (
+                  <Input
+                    id={`q-${question.id}`}
+                    name={question.id}
+                    required={question.required}
+                  />
+                )}
               </div>
             ))}
             <DialogFooter>

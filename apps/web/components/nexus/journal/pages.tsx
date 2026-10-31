@@ -2,7 +2,6 @@
 
 import { useAuth } from "@repo/auth/provider";
 import { Button } from "@repo/design-system/components/ui/button";
-import { Input } from "@repo/design-system/components/ui/input";
 import type { Locale } from "@repo/internationalization";
 import {
   formatLongDate,
@@ -18,6 +17,7 @@ import {
   useMemberStatus,
   useMySubmissions,
   type useOpenCalls,
+  useProfile,
 } from "@/lib/nexus/queries";
 import { useQueryParam } from "@/lib/nexus/use-query-param";
 import {
@@ -304,7 +304,10 @@ export const Agreement = ({ submissionId }: { submissionId: string }) => {
   const locale = useLocale() as Locale;
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
-  const [name, setName] = useState("");
+  // A signature is the author's name on the platform, dated when signed
+  // (owner, Oct 31, 2026); the database signs in that name.
+  const profile = useProfile();
+  const name = profile.data ? localized(profile.data, "full_name", locale) : "";
   const agreement = useQuery({
     queryFn: async () =>
       unwrap(
@@ -321,7 +324,7 @@ export const Agreement = ({ submissionId }: { submissionId: string }) => {
     mutationFn: async () =>
       unwrap(
         await supabase.schema("journal").rpc("sign_agreement", {
-          signer_name: name.trim(),
+          signer_name: name,
           submission_id: submissionId,
         })
       ),
@@ -339,7 +342,7 @@ export const Agreement = ({ submissionId }: { submissionId: string }) => {
         <p>
           {t("signed", {
             date: formatLongDate(agreement.data.signed_at, locale),
-            name: agreement.data.signer_name,
+            name: name || agreement.data.signer_name,
           })}
         </p>
       ) : (
@@ -351,20 +354,15 @@ export const Agreement = ({ submissionId }: { submissionId: string }) => {
           }}
         >
           <p className="whitespace-pre-wrap">{t("body")}</p>
-          <Field hint={t("nameHint")} label={t("name")}>
-            {(id) => (
-              <Input
-                autoComplete="name"
-                id={id}
-                maxLength={200}
-                onChange={(e) => setName(e.target.value)}
-                value={name}
-              />
-            )}
-          </Field>
+          <p className="type-caption">
+            {t("signAs", {
+              date: formatLongDate(new Date(), locale, true),
+              name,
+            })}
+          </p>
           <Button
             className="justify-self-start"
-            disabled={name.trim().length < 2 || sign.isPending}
+            disabled={!name || sign.isPending}
             type="submit"
           >
             {t("sign")}

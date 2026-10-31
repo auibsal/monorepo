@@ -47,9 +47,10 @@ test("an organization applies, the President signs, and its dashboard opens", as
   await applicant
     .getByRole("checkbox", { name: "Perks for members and guests" })
     .click();
-  await expect(applicant.getByLabel("Your name, as you sign")).toHaveValue(
-    "E2E Partner"
-  );
+  // Signed in the applicant's name on the platform, never typed.
+  const signedBy = applicant.getByLabel("Signed by");
+  await expect(signedBy).toHaveValue("E2E Partner");
+  await expect(signedBy).not.toBeEditable();
   await applicant
     .getByRole("checkbox", { name: /I sign this memorandum/ })
     .click();

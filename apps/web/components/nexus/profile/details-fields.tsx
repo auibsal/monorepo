@@ -285,24 +285,6 @@ export const DetailsFields = ({ onChange, value }: DetailsFieldsProps) => {
         </Field>
         <div className="flex items-start gap-3">
           <Checkbox
-            aria-describedby={`${id}-photos-hint`}
-            checked={value.photo_consent}
-            id={`${id}-photos`}
-            onCheckedChange={(checked) =>
-              set("photo_consent", checked === true)
-            }
-          />
-          <div className="grid gap-1">
-            <Label className="leading-normal" htmlFor={`${id}-photos`}>
-              {t("photos")}
-            </Label>
-            <p className="type-caption" id={`${id}-photos-hint`}>
-              {t("photosHint")}
-            </p>
-          </div>
-        </div>
-        <div className="flex items-start gap-3">
-          <Checkbox
             aria-describedby={`${id}-consent-hint`}
             checked={value.research_consent}
             id={`${id}-consent`}
