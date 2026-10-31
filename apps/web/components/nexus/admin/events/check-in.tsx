@@ -15,7 +15,8 @@ import { useLocale, useTranslations } from "next-intl";
 import { useCallback, useState } from "react";
 import { Link } from "@/lib/nexus/navigation";
 import { useQueryParam } from "@/lib/nexus/use-query-param";
-import { SectionSpinner } from "../../states";
+import { RowList } from "../../page";
+import { EmptyLine, ErrorState, SectionSpinner } from "../../states";
 import { CardScanner, parseCard } from "../card-scanner";
 import { AdminHeading, Field } from "../kit";
 import { memberName } from "../members/directory";
@@ -40,18 +41,87 @@ type Outcome =
   | { kind: "unknown" }
   | { kind: "error" };
 
+/**
+ * The door: at /events/<slug>/door, the event's own check-in; at
+ * /events/door, a choice of the events from today on, each to its door.
+ */
 export const CheckInScreen = () => {
+  const eventId = useQueryParam("id");
+  return eventId ? <EventDoor eventId={eventId} /> : <DoorChooser />;
+};
+
+/** Today's events and the next ones, each a link to its own door. */
+const DoorChooser = () => {
+  const t = useTranslations("nexus.admin.checkIn");
+  const locale = useLocale() as Locale;
+  const { supabase } = useAuth();
+  const events = useQuery({
+    queryFn: async () => {
+      // From the start of today in Baghdad (UTC+3).
+      const now = new Date();
+      const today = new Date(
+        Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()) -
+          3 * 3_600_000
+      );
+      return (
+        unwrap(
+          await supabase
+            .schema("events")
+            .from("events")
+            .select("id, slug, title_en, title_ar, starts_at")
+            .eq("status", "published")
+            .gte("starts_at", today.toISOString())
+            .order("starts_at")
+            .limit(6)
+        ) ?? []
+      );
+    },
+    queryKey: ["admin", "door-events"],
+  });
+
+  return (
+    <div className="grid max-w-2xl gap-6">
+      <AdminHeading title={t("title")}>{t("choose")}</AdminHeading>
+      {events.isPending ? <SectionSpinner /> : null}
+      {events.isError ? <ErrorState onRetry={() => events.refetch()} /> : null}
+      {events.data?.length === 0 ? (
+        <EmptyLine action={{ href: "/events", label: t("allEvents") }}>
+          {t("noEvents")}
+        </EmptyLine>
+      ) : null}
+      {events.data?.length ? (
+        <RowList>
+          {events.data.map((e) => (
+            <li className="flex flex-wrap items-baseline gap-x-4" key={e.id}>
+              <Link
+                className="link font-medium"
+                href={`/events/${e.slug ?? e.id}/door`}
+              >
+                {localized(e, "title", locale)}
+              </Link>
+              <span className="type-caption">
+                {formatLongDate(e.starts_at, locale)},{" "}
+                {formatClock(e.starts_at, locale)}
+              </span>
+            </li>
+          ))}
+        </RowList>
+      ) : null}
+    </div>
+  );
+};
+
+/** One event's door: scan tickets and cards, or look people up by name. */
+const EventDoor = ({ eventId }: { readonly eventId: string }) => {
   const t = useTranslations("nexus.admin.checkIn");
   const tk = useTranslations("nexus.admin.kit");
   const locale = useLocale() as Locale;
-  const eventId = useQueryParam("id") ?? "";
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
   const [outcome, setOutcome] = useState<Outcome | null>(null);
   const [query, setQuery] = useState("");
 
   const event = useQuery({
-    enabled: Boolean(eventId),
     queryFn: async () =>
       unwrap(
         await supabase
@@ -64,7 +134,6 @@ export const CheckInScreen = () => {
     queryKey: ["admin", "check-in-event", eventId],
   });
   const count = useQuery({
-    enabled: Boolean(eventId),
     queryFn: async () =>
       (
         await supabase

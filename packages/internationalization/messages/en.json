@@ -1093,7 +1093,10 @@
         "checkInPerson": "Check in",
         "count": "{count} checked in",
         "noResults": "No member found.",
-        "cardNotLive": "This card's code isn't live (a screenshot?). Ask to see the card on the member's own phone."
+        "cardNotLive": "This card's code isn't live (a screenshot?). Ask to see the card on the member's own phone.",
+        "choose": "Choose the event at the door.",
+        "noEvents": "No events from today on.",
+        "allEvents": "All events"
       },
       "content": {
         "title": "Content",

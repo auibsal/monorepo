@@ -83,6 +83,8 @@ export default async function globalSetup() {
         { role: "tech_admin", scope_type: "global", user_id: editorId },
         // Waraq's News desk (journal.edit.news), for the newsroom journey.
         { role: "news_editor", scope_type: "global", user_id: editorId },
+        // What's on (events.manage), for the door.
+        { role: "events_lead", scope_type: "global", user_id: editorId },
         { role: "tech_admin", scope_type: "global", user_id: editor2Id },
       ],
       { ignoreDuplicates: true }

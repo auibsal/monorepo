@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { editor } from "../fixtures";
+import { editor, event } from "../fixtures";
 import { urls } from "../playwright.config";
 import { expectAccessible, signInWithPassword } from "./helpers";
 
@@ -39,4 +39,16 @@ test("a News desk editor starts a piece, and it waits in Editing, unpublished", 
   // The publish rule keeps it off the site until it is approved.
   await page.goto(`${urls.web}/qirtas/news`);
   await expect(page.getByText(title)).toHaveCount(0);
+});
+
+test("the door offers today's events, and each opens its own check-in", async ({
+  page,
+}) => {
+  await signInWithPassword(page, editor.email);
+  await page.goto(`${urls.app}/events/door`);
+  await expect(page.getByText("Choose the event at the door.")).toBeVisible();
+  await page.getByRole("link", { name: event.title }).click();
+  await expect(page).toHaveURL(new RegExp(`/diwan/events/${event.slug}/door$`));
+  await expect(page.getByRole("status")).toContainText("checked in");
+  await expectAccessible(page);
 });
