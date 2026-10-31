@@ -236,8 +236,6 @@ export const MAX_FILE_BYTES = 25 * 1024 * 1024;
 
 export const submissionSchema = z
   .object({
-    /** Publish without the author's name: the byline reads Anonymous. */
-    anonymous: z.boolean().optional(),
     body_html: z.string().max(200_000).optional(),
     /**
      * An Edition call (Letters, Gallery); without one the work goes to the

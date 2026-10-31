@@ -1,7 +1,7 @@
 -- Qirtas, one door (owner, Oct 31, 2026). Everything members send goes
 -- through the blind review; the newsroom is where staff write and publish
 -- directly. The Awards' names are confirmed. Judges and contributors are
--- people chosen from the register; an author may publish under a pen name.
+-- people chosen from the register (or Anonymous).
 
 -- ── A standing call ─────────────────────────────────────────────────────────
 -- Edition calls stay as they are (an Edition, Letters and Gallery, a closing
@@ -147,78 +147,20 @@ revoke all on function private.judge_names() from public, anon, authenticated;
 create trigger judge_names before insert or update of user_id on journal.prize_judges
   for each row execute function private.judge_names();
 
--- ── Contributors are people ─────────────────────────────────────────────────
--- A byline is a member: under their own name, or under a pen name they
--- chose when sending work (`submissions.pen_name`, made into a pen-name
--- byline by `make_piece`). The desk bylines already published stay.
+-- ── Contributors are people, or Anonymous ───────────────────────────────────
+-- A byline is a member (their own name, or a pen name they chose when
+-- sending work) or Anonymous. The desk bylines already published stay.
 alter table journal.contributors
-  add constraint contributors_person check (user_id is not null) not valid;
+  add column is_anonymous boolean not null default false;
 
--- The newsroom names a byline by choosing a member (and, if they write
--- under one, a pen name). Clients never read `contributors.user_id`, so a
--- pen name can't be traced back to its author; this finds the member's
--- byline, or makes it, and returns only its id.
-create function private.byline_for(person uuid, pen_name text default null)
-returns uuid
-language plpgsql
-security definer
-set search_path = ''
-as $$
-declare
-  pen text := nullif(btrim(pen_name), '');
-  found_id uuid;
-  base_slug text;
-  candidate text;
-  n integer := 1;
-begin
-  if not private.can_edit_puzzles() then
-    raise exception 'Not allowed' using errcode = '42501';
-  end if;
-  if not exists (select 1 from core.profiles p where p.id = person) then
-    raise exception 'Member not found' using errcode = 'P0002';
-  end if;
-  if pen is not null and char_length(pen) not between 2 and 80 then
-    raise exception 'A pen name is 2 to 80 characters' using errcode = '22023';
-  end if;
+alter table journal.contributors
+  add constraint contributors_person check (user_id is not null or is_anonymous) not valid;
 
-  select c.id into found_id from journal.contributors c
-  where c.user_id = person
-    and c.is_pen_name = (pen is not null)
-    and (pen is null or c.name_en = pen)
-  order by c.created_at
-  limit 1;
-  if found_id is not null then
-    return found_id;
-  end if;
+insert into journal.contributors (slug, name_en, name_ar, is_anonymous)
+values ('anonymous', 'Anonymous', 'مجهول', true)
+on conflict (slug) do update set is_anonymous = true;
 
-  base_slug := coalesce(
-    nullif(trim(both '-' from regexp_replace(lower(coalesce(pen,
-      (select p.full_name_en from core.profiles p where p.id = person))),
-      '[^a-z0-9]+', '-', 'g')), ''),
-    'contributor'
-  );
-  candidate := base_slug;
-  while exists (select 1 from journal.contributors c where c.slug = candidate) loop
-    n := n + 1;
-    candidate := base_slug || '-' || n;
-  end loop;
-  insert into journal.contributors (slug, user_id, name_en, name_ar, is_pen_name)
-  values (candidate, person, coalesce(pen, ''), pen, pen is not null)
-  returning id into found_id;
-  return found_id;
-end;
-$$;
-revoke all on function private.byline_for(uuid, text) from public, anon;
-grant execute on function private.byline_for(uuid, text) to authenticated;
-
-create function journal.byline_for(person uuid, pen_name text default null)
-returns uuid
-language sql volatile
-security invoker
-set search_path = ''
-as $$ select private.byline_for($1, $2) $$;
-revoke all on function journal.byline_for(uuid, text) from public, anon;
-grant execute on function journal.byline_for(uuid, text) to authenticated;
+create unique index contributors_one_anonymous on journal.contributors ((true)) where is_anonymous;
 
 -- A member's own byline follows their profile.
 create function private.contributor_names()
@@ -267,6 +209,33 @@ create trigger names_to_bylines after update of full_name_en, full_name_ar on co
   when (old.full_name_en is distinct from new.full_name_en
     or old.full_name_ar is distinct from new.full_name_ar)
   execute function private.profile_names_to_bylines();
+
+-- An author may choose to publish without their name: the piece made from
+-- the work is bylined Anonymous. The Society still knows who wrote it (the
+-- submission, the agreement), as with any byline.
+alter table journal.submissions
+  add column anonymous boolean not null default false;
+
+create function private.anonymous_byline()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $$
+begin
+  if new.submission_id is not null and exists (
+    select 1 from journal.submissions s where s.id = new.submission_id and s.anonymous
+  ) then
+    select c.id into new.contributor_id from journal.contributors c where c.is_anonymous;
+  end if;
+  return new;
+end;
+$$;
+revoke all on function private.anonymous_byline() from public, anon, authenticated;
+
+create trigger anonymous_byline before insert on journal.pieces
+  for each row execute function private.anonymous_byline();
+grant insert (anonymous) on journal.submissions to authenticated;
 
 -- "Awards", not "Prizes", everywhere people read it (owner, Oct 31, 2026).
 -- The code keeps prize_* names.
