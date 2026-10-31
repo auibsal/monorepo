@@ -167,7 +167,7 @@ export const YourWork = () => {
   ];
 
   return (
-    <DiwanSection id="your-work" title={tw("yourWork")}>
+    <DiwanSection id="drafts" title={tw("yourWork")}>
       <p className="type-body text-text-secondary">{tw("yourWorkLede")}</p>
       {submissions.data && pieces.data ? (
         <DataTable
@@ -179,45 +179,8 @@ export const YourWork = () => {
       ) : (
         <SectionSpinner />
       )}
-      <Link className="link justify-self-start" href="/qirtas/write">
-        {tw("sendMore")}
-      </Link>
     </DiwanSection>
   );
-};
-
-/** The address of the signed-in person's own author page. */
-export const useMyAuthorPage = () => {
-  const { supabase, user } = useAuth();
-  return useQuery({
-    enabled: Boolean(user),
-    queryFn: async () =>
-      (unwrap(await supabase.schema("journal").rpc("my_author_page")) ??
-        null) as string | null,
-    queryKey: ["journal", "my-author-page", user?.id ?? ""],
-    staleTime: Number.POSITIVE_INFINITY,
-  });
-};
-
-/**
- * On an author page, the person's own work in progress: what they sent and
- * what is being edited with them, seen only by them (owner, Oct 31, 2026:
- * Your work is the author page). Everyone else sees the public page alone.
- */
-export const OwnWork = ({ slug }: { readonly slug: string }) => {
-  const mine = useMyAuthorPage();
-  return mine.data === slug ? <YourWork /> : null;
-};
-
-/** A link to the signed-in person's own author page, where their work is. */
-export const MyWorkLink = ({ className = "link" }: { className?: string }) => {
-  const tw = useTranslations("nexus.journal.write");
-  const mine = useMyAuthorPage();
-  return mine.data ? (
-    <Link className={className} href={`/qirtas/authors/${mine.data}`}>
-      {tw("yourWork")}
-    </Link>
-  ) : null;
 };
 
 // ── Submit ────────────────────────────────────────────────────────────────

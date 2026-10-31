@@ -3,7 +3,6 @@ import { journal, localized } from "@repo/sal-data";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { OwnWork } from "@/components/nexus/journal/pages";
 import { PieceColumn } from "@/components/waraq/cards";
 import { Nameplate } from "@/components/waraq/nameplate";
 import { localizedMetadata } from "@/lib/metadata";
@@ -32,21 +31,17 @@ export const generateMetadata = async ({
   if (!author) {
     return {};
   }
-  return {
-    ...localizedMetadata(locale, `/qirtas/authors/${author.slug}`, {
-      description: localized(author, "bio", locale),
-      title: localized(author, "name", locale),
-    }),
-    // Public, unlike the members' pages around it.
-    robots: { follow: true, index: true },
-  };
+  return localizedMetadata(locale, `/qirtas/authors/${author.slug}`, {
+    description: localized(author, "bio", locale),
+    title: localized(author, "name", locale),
+  });
 };
 
 /**
  * A person's author page, at their name (owner, Oct 31, 2026): who they are
  * to the Society (Member, Partner or Guest) and the roles they hold, their
- * published work, and, for them alone, their work in progress (what was
- * Your work in Membership). A pen name shows its published work only.
+ * published work. Work in progress stays private, as drafts on
+ * /qirtas/write. A pen name shows its published work only.
  */
 const AuthorPage = async ({ params }: AuthorProps) => {
   const { locale, slug } = await params;
@@ -63,10 +58,7 @@ const AuthorPage = async ({ params }: AuthorProps) => {
     ...roles,
   ].join(" · ");
   return (
-    <main
-      className="mx-auto grid w-full max-w-4xl flex-1 gap-10 px-4 pt-10 pb-20"
-      id="main"
-    >
+    <div className="mx-auto grid w-full max-w-4xl gap-10 px-4 py-10">
       <Nameplate locale={locale} small />
       <header className="grid gap-3">
         <h1 className="type-display">{localized(author, "name", locale)}</h1>
@@ -83,8 +75,7 @@ const AuthorPage = async ({ params }: AuthorProps) => {
           <p className="type-body text-text-secondary">{t("nothingYet")}</p>
         )}
       </section>
-      <OwnWork slug={author.slug} />
-    </main>
+    </div>
   );
 };
 

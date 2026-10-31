@@ -28,7 +28,7 @@ import {
   PendingList,
 } from "./files";
 import { AuthorshipPledge, Declarations } from "./form";
-import { MyWorkLink, PartnerPathway, useSubmitPathway } from "./pages";
+import { PartnerPathway, useSubmitPathway, YourWork } from "./pages";
 
 const LANGUAGES = ["en", "ar", "bilingual"] as const;
 
@@ -49,9 +49,11 @@ export const WriteHome = () => {
 
   return (
     <div className="grid gap-8">
-      <AdminHeading actions={<MyWorkLink />} title={t("title")}>
-        {tw("lede")}
-      </AdminHeading>
+      <AdminHeading title={t("title")}>{tw("lede")}</AdminHeading>
+      {/* Private work lives here alone, as drafts (owner, Oct 31, 2026):
+          what the member sent and what is edited with them. Their author
+          page shows only what is published. */}
+      <YourWork />
       <DiwanSection id="sections" title={tw("sectionsTitle")}>
         <ul className="grid divide-y divide-line border-line border-y">
           {journal.desks.map((desk) => (
