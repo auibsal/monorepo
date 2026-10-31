@@ -2,10 +2,10 @@ import { createAdminClient } from "@repo/database/admin";
 import { parseError } from "@repo/observability/error";
 import { log } from "@repo/observability/log";
 import { programmes } from "@repo/sal-data";
-import { protectForm } from "@repo/security/form";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { corsHeaders, preflight } from "@/lib/api/cors";
+import { withinRateLimit } from "@/lib/api/rate-limit";
 
 export const OPTIONS = preflight;
 
@@ -41,15 +41,8 @@ export const POST = async (request: Request) => {
     return json({ ok: true });
   }
 
-  const verdict = await protectForm(request, fields.requester_email);
-  if (verdict === "rate_limited") {
+  if (!(await withinRateLimit(request, "removal-request", { max: 10 }))) {
     return json({ error: "rate_limited" }, 429);
-  }
-  if (verdict === "invalid_email") {
-    return json({ error: "invalid_email" }, 400);
-  }
-  if (verdict === "bot") {
-    return json({ error: "forbidden" }, 403);
   }
 
   const admin = createAdminClient();

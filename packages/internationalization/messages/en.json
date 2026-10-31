@@ -199,7 +199,8 @@
     },
     "errors": {
       "loadFailed": "We couldn't load this. Check your connection and try again.",
-      "saveFailed": "We couldn't save your changes. Please try again."
+      "saveFailed": "We couldn't save your changes. Please try again.",
+      "nameTaken": "Another account already has this full name. If it's yours, sign in with that account instead; if not, write to hello@auibsal.org and we'll sort it out."
     },
     "next": {
       "browseEvents": "Browse events",
@@ -2843,7 +2844,6 @@
           "governance_candidates": "a candidate",
           "governance_election_results": "election results",
           "governance_elections": "the election",
-          "governance_library_documents": "the document",
           "governance_member_offers": "a member offer",
           "governance_minutes": "the minutes",
           "governance_partner_affiliations": "a partner affiliation",

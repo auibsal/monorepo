@@ -20,6 +20,7 @@ import {
   useRef,
   useState,
 } from "react";
+import { isNameTaken } from "@/lib/nexus/errors";
 import { safeNextPath, stripLocale } from "@/lib/nexus/navigation";
 import {
   useMemberStatus,
@@ -288,7 +289,7 @@ export const SetupForm = () => {
     ) : null;
   const failed = save.isError ? (
     <p className="text-text" role="alert">
-      {te("saveFailed")}
+      {isNameTaken(save.error) ? te("nameTaken") : te("saveFailed")}
     </p>
   ) : null;
 

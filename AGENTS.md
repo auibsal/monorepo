@@ -211,9 +211,13 @@ any schema change. Integration tests run against a local stack with
   `events.manage` for program X?"). Roles live only in
   `access.role_assignments`, written only through `access.assign_role()`.
   Never read roles from `user_metadata` or `app_metadata`.
-- **Migrations ship through CI.** Add a file to `supabase/migrations`; after
-  merge, `.github/workflows/migrate.yml` runs `supabase db push` against
-  production once CI passes. Never paste SQL into the production database.
+- **Migrations ship through CI, and the site follows them.** Add a file to
+  `supabase/migrations`; after merge, `.github/workflows/migrate.yml` runs
+  `supabase db push` against production once CI passes, then deploys the
+  site through the Vercel Deploy Hook (Vercel's own deploys from `main` are
+  off in `apps/web/vercel.json`), so new code never runs on an old
+  database (owner, Oct 31, 2026). Never paste SQL into the production
+  database.
 - **No third-party apps** (owner, Oct 30, 2026: no Sign in with SAL, no
   `/api/v1`). A token issued to an app carries a `client_id` and reaches
   nothing: every table keeps the restrictive policy "No third-party apps"
@@ -240,6 +244,11 @@ any schema change. Integration tests run against a local stack with
   `20261024000000`). The Supabase advisors stay at zero findings:
   `00_advisors.test.sql` fails otherwise (one permissive policy per role and
   action, every foreign key indexed, no exposed SECURITY DEFINER function).
+- **No third-party monitoring or protection** (owner, Oct 31, 2026): no
+  Sentry, Arcjet or Better Stack. Errors and logs go to the Vercel runtime
+  log (`@repo/observability` prints only); the security headers are the
+  app's own (`@repo/security`); the public forms are rate limited in the
+  database (`withinRateLimit`, `core.take_rate`).
 - **Secrets are server-only.** The secret key, Resend, the cron and webhook
   secrets and the Telegram token are read only in route handlers and
   `lib/api`, never in a page or client component; CI greps the client bundle
@@ -282,7 +291,9 @@ any schema change. Integration tests run against a local stack with
   else reads a father's or grandfather's name. Anyone without all eight
   is sent to `/welcome` at their next sign-in (`hasAllNames`,
   `RequireMember`, `RequirePartner`), with the first and last words of
-  their old name offered. Wherever a person is named (judges, bylines, hosts,
+  their old name offered. One person, one name (owner, Oct 31, 2026): a
+  full four-part name, in English or in Arabic, belongs to one account
+  (`private.one_person_one_name`, error `name_taken`). Wherever a person is named (judges, bylines, hosts,
   roles), pick them from the register (`MemberPicker`) and never type
   their names: a trigger copies the profile's names and keeps them in
   step (`private.profile_names_to_bylines`). Everything in

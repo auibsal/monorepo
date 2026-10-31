@@ -11,6 +11,7 @@ import { membership, names } from "@repo/sal-data";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { type FormEvent, useEffect, useId, useState } from "react";
+import { isNameTaken } from "@/lib/nexus/errors";
 import { queryKeys, useProfile } from "@/lib/nexus/queries";
 import { DiwanPage, DiwanSection } from "../page";
 import { NamePartsFields } from "../setup-form";
@@ -162,7 +163,9 @@ export const ProfileScreen = () => {
           </div>
           {save.isError ? (
             <p className="text-text" role="alert">
-              {t("errors.saveFailed")}
+              {isNameTaken(save.error)
+                ? t("errors.nameTaken")
+                : t("errors.saveFailed")}
             </p>
           ) : null}
           <Button

@@ -138,7 +138,7 @@ And without commands:
 
    | Setting | Choose | Why |
    | --- | --- | --- |
-   | Edit Bot → Profile picture | `brand/mascot/hudhud-avatar.png`: white Hudhud on crimson | The bot's picture only. The members' group ("AUIB Society of Arts and Letters") uses `brand/logos/sal-avatar.svg`, the white Bookmark on crimson; The Green Room, the working group, uses `brand/logos/sal-avatar-ink.svg`, the white Bookmark on ink, so the two are never confused. Never Hudhud on either. |
+   | Edit Bot → Profile picture | `brand/mascot/hudhud-avatar.png`: white Hudhud on crimson | The bot's picture only. The members' group ("AUIB Society of Arts and Letters") uses `brand/logos/sal-avatar.svg`, the white Bookmark on crimson; the Diwan group, the officers' working group, uses `brand/logos/sal-avatar-ink.svg`, the white Bookmark on ink, so the two are never confused. Never Hudhud on either. |
    | Edit Bot → Description picture | `brand/mascot/hudhud-description.png` (640 × 360: the reversed Hudhud, as supplied, on crimson) | What people see before they press Start. The name, about and description texts are set by step 4. |
    | Inline Mode | On, placeholder "Events and Qirtas" | Sharing cards. |
    | Guest Mode | On | Answers a mention in chats the bot isn't in. |

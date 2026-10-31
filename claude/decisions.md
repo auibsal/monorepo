@@ -25,10 +25,10 @@ Every chat in this project should follow this file. Where an older document, pro
 - **The Callboard** ("Get involved") is the Society's careers page. It lists roles, shifts, auditions, Apprenticeship places and volunteer places.
 - **Telegram.** Two groups and a bot, all in the AUIB Clubs community:
   - **AUIB Society of Arts and Letters**, the members' group, with topics: The Common Room (members' chat), Help Desk, Announcements (closed), and The Council. "The Common Room" is this topic, not a separate channel.
-  - **The Green Room**, the working group (Council, Qirtas masthead, program teams; renamed from The Archive). Topics, not separate groups. Nothing about a named person (appointments, concerns) is posted there; that goes by direct message between Council members.
-  - **Hudhud** (@auibsal_bot), the Society's messenger: events and RSVPs, Qirtas, a daily word, notices. It removes group members who have not signed up on auibsal.org, except Student Life staff and the Faculty Advisor. *(As built, see §17: Hudhud lets members straight in and holds everyone else for the group's admins; it removes no one.)*
+  - **The Diwan group**, the officers' working group (Council, Qirtas masthead, program teams; was The Green Room, and The Archive before it; owner, Oct 31, 2026). Topics, not separate groups. Nothing about a named person (appointments, concerns) is posted there; that goes by direct message between Council members.
+  - **Hudhud** (@auibsal_bot), the Society's messenger: events and RSVPs, Qirtas, a daily word, notices. It lets members straight into the members' group and holds everyone else for the group's admins; it removes no one (owner, Oct 31, 2026: Telegram doesn't let a bot list a large group's members, so removal could never be complete).
 - **Pictures and Instagram:**
-  - Instagram (@auibsal) and the members' group use the Bookmark in white on crimson; The Green Room uses the Bookmark in white on ink; Hudhud keeps the hoopoe.
+  - Instagram (@auibsal) and the members' group use the Bookmark in white on crimson; the Diwan group uses the Bookmark in white on ink; Hudhud keeps the hoopoe.
   - Instagram bio: "Qirtas, our paper. The Company, our theater. Six programs at @auibaghdad." Links: auibsal.org, auibsal.org/events, auibsal.org/join.
   - Six highlights, in order: What's on, Qirtas, Next Stop, Programs, Join, Get involved. Covers are plain crimson with the highlight's icon and its name in white Ubuntu Light (no Bookmark). Each opens with a story banner on white with the wordmark alone (no Bookmark).
 - **Icons (decided Oct 30).** The Society uses one icon set across the board: the site and the Diwan, posts, stories, highlights, documents and printables. It is Lucide (ISC license), drawn with a 1.5 px line and square ends, kept in the Design System. An icon may stand alone wherever it says enough by itself (a calendar beside a date, a map pin beside a place, close, menu, search, share, a link arrow); add a word only when the icon alone could be misread. A standalone icon on a screen always carries a label for screen readers. Icons take the color of the text around them. Never in a headline, never as decoration, never the Bookmark as an icon, and still no emoji.
@@ -297,3 +297,13 @@ Where an earlier line above is marked as replaced, the later section holds. What
 - **The certificate signing page is People → Service** (it was titled Recognition); the hints that send officers there say so.
 - **Search covers events, Qirtas and the Company in the database, and the Library in the app;** the unused search index, AUIB's empty old table, three functions nothing called and the last feature switch (volunteer certificates) are gone (migration `20261101001400`).
 - Kept for the owner to decide: the old handbook pages (read only, each now in Notion), the old uploaded library files and their bucket, and SAL-PLT-10 (the API terms, though the API is gone).
+
+## 18. After the audit (decided Oct 31, 2026, last)
+- **Every recommendation in the audit's decisions table is taken,** with two left for later: a separate Resend account for SAL, and amending the Society documents' retired names.
+- **The officers' Telegram group is the Diwan group.**
+- **New code goes live only after its migration:** the migrate workflow deploys the site.
+- **No Sentry, Arcjet or Better Stack.** Vercel's runtime logs keep errors; the app sets its own security headers and rate limits its public forms in the database.
+- **One person, one name.** A full name in four parts belongs to one account; four accounts named Shaheen Karam Muwafaq Farjo are to be reduced to one.
+- **Version 1.0.0** is tagged when the audit PR merges; CHANGELOG.md records each release.
+- **SAL-PLT-10 is retired;** the other website policies no longer describe the API. The old handbook pages and the old library uploads are gone.
+

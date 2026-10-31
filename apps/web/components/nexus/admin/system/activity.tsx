@@ -37,7 +37,6 @@ const THINGS = {
   "governance.candidates": "society",
   "governance.election_results": "society",
   "governance.elections": "society",
-  "governance.library_documents": "society",
   "governance.member_offers": "people",
   "governance.minutes": "society",
   "governance.partner_affiliations": "people",
@@ -84,7 +83,6 @@ export const LEFT_OUT = [
   "access.role_permissions",
   "core.semesters",
   "core.settings",
-  "governance.handbook_pages",
   "journal.call_partners",
   "journal.prize_judges",
 ] as const;

@@ -32,6 +32,22 @@ Branch: `claude/new-session-qosn60`.
 
 ## Blocked — needed from the user
 
+- [ ] **Final audit, owner steps (2026-10-31):** (1) **Before merging the
+      audit PR:** Vercel → the auibsal project → Settings → Git → Deploy
+      Hooks → create one for `main`, and save its URL as `VERCEL_DEPLOY_HOOK`
+      in GitHub → Settings → Environments → production. From then on the
+      migrate workflow deploys the site (Vercel's own deploys from `main` are
+      off). (2) Remove the Sentry, Arcjet and Better Stack accounts and their
+      Vercel variables (`NEXT_PUBLIC_SENTRY_DSN`, `SENTRY_ORG`,
+      `SENTRY_PROJECT`, `SENTRY_AUTH_TOKEN`, `ARCJET_KEY`) and the GitHub
+      secret `BACKUP_HEARTBEAT_URL`. (3) Cloudflare DNS for auibsal.org: CAA
+      records `0 issue "letsencrypt.org"`, `0 issue "pki.goog"`,
+      `0 issue "sectigo.com"` and `0 iodef "mailto:hello@auibsal.org"`.
+      (4) A separate Resend account for SAL (later). (5) Amend the Society
+      documents' retired names (later). (6) Tag `v1.0.0` once the PR merges.
+      (7) Four accounts share the name Shaheen Karam Muwafaq Farjo: keep
+      one, delete the others (each from its own Settings, or tell Claude
+      which addresses); no new account can copy a name now.
 - [ ] **Site emails never leave (Oct 31, 2026): two Vault secrets.** The
   personal-email link, booking confirmations and every other site email
   wait in `core.outbox` because the database cannot call the site. The
@@ -91,7 +107,7 @@ Branch: `claude/new-session-qosn60`.
     you want one permanent redirect for each.
   - **Telegram:** create the sticker set (docs/platform/telegram.md,
     "Sticker set") and set the bot's picture with `/setuserpic`
-    (`brand/mascot/hudhud-avatar.png`); give The Green Room
+    (`brand/mascot/hudhud-avatar.png`); give the Diwan group
     `brand/logos/sal-avatar-ink.svg`.
   - **The decisions file** (`claude/decisions.md`) is now the handoff's
     copy. It no longer names Mia Hakimi as Managing Editor, the open
@@ -226,8 +242,7 @@ Branch: `claude/new-session-qosn60`.
   - **Members' pages left the Diwan (2026-10-24), three settings to move:**
     BotFather → Bot Settings → Login Widget → OpenID Connect → Redirect
     URIs (now `/membership/profile`, see the Membership item above); Supabase →
-    Authentication → OAuth Server → authorization path `/oauth/consent`;
-    BetterStack's sign-in monitor → `https://auibsal.org/sign-in`.
+    Authentication → OAuth Server → authorization path `/oauth/consent`.
   - **BotFather → Edit Bot → Description picture:**
     `brand/mascot/hudhud-description.png`, then *Connect the bot to
     Telegram* in the Diwan so the descriptions update.
@@ -245,7 +260,7 @@ Branch: `claude/new-session-qosn60`.
 - [ ] **Environment variables on Vercel (2026-10-24):** the one project is
       `auibsal`. Set on 2026-10-24 (Production; secrets sensitive):
       `RESEND_TOKEN` (a new sending-only key for auibsal.org, "auibsal
-      (Vercel, one app)"), `ARCJET_KEY` (site sal-api), `TELEGRAM_BOT_USERNAME`,
+      (Vercel, one app)"), `TELEGRAM_BOT_USERNAME`,
       `TELEGRAM_WEBHOOK_SECRET` (generated), and a new Web Push pair
       `NEXT_PUBLIC_VAPID_PUBLIC_KEY` / `VAPID_PRIVATE_KEY`. Left for the owner:
       | Variable | Where to get it | Without it |
@@ -270,10 +285,7 @@ Branch: `claude/new-session-qosn60`.
       Supabase (Auth URLs, templates). Left: **Telegram:** BotFather → Login
       Widget → OpenID Connect: Redirect URIs
       `https://auibsal.org/nexus/profile` and
-      `https://auibsal.org/ar/nexus/profile`. **BetterStack:** monitors on
-      `auibsal.org`, `auibsal.org/nexus/sign-in` and
-      `auibsal.org/api/health`. **Sentry:** the sal-nexus and sal-api
-      projects can go. **Cloudflare:** the configuration rule for the API
+      `https://auibsal.org/ar/nexus/profile`. **Cloudflare:** the configuration rule for the API
       matches "URI Path starts with /api/" (`docs/platform/analytics.md`).
 
 - [ ] **Telegram bot, Hudhud (2026-10-22; in the API routes since 2026-10-23):**

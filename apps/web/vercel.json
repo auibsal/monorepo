@@ -7,5 +7,10 @@
       "schedule": "0 1 * * *"
     }
   ],
-  "regions": ["fra1"]
+  "regions": ["fra1"],
+  "git": {
+    "deploymentEnabled": {
+      "main": false
+    }
+  }
 }

@@ -10,7 +10,7 @@ The Supabase project is on the Free plan, which keeps no downloadable backups. T
 
 Each backup is encrypted (GPG, AES-256) with `BACKUP_PASSPHRASE` before it leaves the runner, because the repository is public. Without the passphrase the file is useless, so keep it in the password manager as well as in GitHub.
 
-> **Warning.** The workflow fails until `BACKUP_PASSPHRASE` is added to the GitHub production environment. Add `BACKUP_HEARTBEAT_URL` (a BetterStack heartbeat) too, so a missed night raises an alert.
+> **Warning.** The workflow fails until `BACKUP_PASSPHRASE` is added to the GitHub production environment. GitHub emails the repository's admins when a nightly run fails.
 
 ## Restore
 

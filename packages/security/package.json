@@ -7,12 +7,6 @@
     "clean": "git clean -xdf .cache .turbo dist node_modules",
     "typecheck": "tsc --noEmit --emitDeclarationOnly false"
   },
-  "dependencies": {
-    "@arcjet/next": "1.14.1",
-    "@nosecone/next": "1.14.1",
-    "@t3-oss/env-nextjs": "^0.13.10",
-    "zod": "^4.3.6"
-  },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
     "typescript": "^7.0.2"

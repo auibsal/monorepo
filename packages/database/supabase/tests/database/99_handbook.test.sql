@@ -76,47 +76,17 @@ insert into core.semesters (code, name_en, name_ar, starts_on, ends_on) values
 update core.settings set value = '0' where key = 'membership.founding_voters';
 -- </preamble>
 
-select plan(8);
+select plan(3);
 
-select pg_temp.make_user('00000000-0000-0000-0000-0000000000a1', 'reader-hb@auib.edu.iq');
-select pg_temp.make_user('00000000-0000-0000-0000-0000000000a2', 'member-hb@auib.edu.iq');
-select pg_temp.make_user('00000000-0000-0000-0000-0000000000a3', 'secretary-hb@auib.edu.iq');
-select pg_temp.grant_role('00000000-0000-0000-0000-0000000000a1', 'reader');
-select pg_temp.grant_role('00000000-0000-0000-0000-0000000000a3', 'general_secretary');
-
-select pg_temp.login_as('00000000-0000-0000-0000-0000000000a1');
-select ok((select count(*) from governance.handbook_pages) >= 9,
-  'An officer with library.read still reads the old pages');
-
-select pg_temp.login_as('00000000-0000-0000-0000-0000000000a2');
-select is((select count(*)::int from governance.handbook_pages), 0,
-  'A member without a role sees nothing');
-
-select pg_temp.login_as('00000000-0000-0000-0000-0000000000a3');
-select throws_ok(
-  $$ update governance.handbook_pages set title_en = 'Changed' where slug = 'events' $$,
-  '42501', null,
-  'Not even a governance manager edits the old pages');
-select throws_ok(
-  $$ insert into governance.handbook_pages (slug, section, title_en) values ('new', 'start', 'New') $$,
-  '42501', null,
-  'or adds one');
-
-select pg_temp.login_as('00000000-0000-0000-0000-0000000000a1',
-  '{"client_id": "00000000-0000-0000-0000-00000000a002"}');
-select is((select count(*)::int from governance.handbook_pages), 0,
-  'Third-party apps never read the handbook');
+-- The handbook lives in Notion only; the old pages' table is gone
+-- (migration 20261101001500).
+select hasnt_table('governance', 'handbook_pages', 'The old handbook pages are gone');
 
 select pg_temp.login_anon();
 select ok(
   (select value->>'home' from core.settings where key = 'notion.handbook') like 'https://app.notion.com/p/%',
   'The handbook''s Notion home is a public setting');
 select pg_temp.logout();
-select is(
-  (select count(*)::int from governance.handbook_pages p, core.settings s
-    where s.key = 'notion.handbook' and s.value->'pages' ? p.slug),
-  (select count(*)::int from governance.handbook_pages),
-  'Every old page has a Notion page');
 select is(
   (select count(*)::int from governance.society_documents
     where audience = 'internal' and notion_url is null),

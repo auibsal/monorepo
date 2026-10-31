@@ -1342,6 +1342,10 @@ export type Database = {
         };
         Returns: string;
       };
+      take_rate: {
+        Args: { bucket: string; max_hits: number; window_seconds: number };
+        Returns: boolean;
+      };
       telegram_cancel_rsvp: {
         Args: { event_id: string; telegram_id: number };
         Returns: undefined;
@@ -2209,96 +2213,6 @@ export type Database = {
           sort?: number;
           subject_reads?: boolean;
           submit_rule?: string;
-        };
-        Relationships: [];
-      };
-      handbook_pages: {
-        Row: {
-          body_ar: string | null;
-          body_en: string;
-          created_at: string;
-          id: string;
-          section: string;
-          slug: string;
-          sort: number;
-          summary_ar: string | null;
-          summary_en: string | null;
-          title_ar: string | null;
-          title_en: string;
-          updated_at: string;
-          updated_by: string | null;
-        };
-        Insert: {
-          body_ar?: string | null;
-          body_en?: string;
-          created_at?: string;
-          id?: string;
-          section: string;
-          slug: string;
-          sort?: number;
-          summary_ar?: string | null;
-          summary_en?: string | null;
-          title_ar?: string | null;
-          title_en: string;
-          updated_at?: string;
-          updated_by?: string | null;
-        };
-        Update: {
-          body_ar?: string | null;
-          body_en?: string;
-          created_at?: string;
-          id?: string;
-          section?: string;
-          slug?: string;
-          sort?: number;
-          summary_ar?: string | null;
-          summary_en?: string | null;
-          title_ar?: string | null;
-          title_en?: string;
-          updated_at?: string;
-          updated_by?: string | null;
-        };
-        Relationships: [];
-      };
-      library_documents: {
-        Row: {
-          audience: string;
-          code: string | null;
-          created_at: string;
-          id: string;
-          status: string;
-          storage_path: string;
-          title_ar: string | null;
-          title_en: string;
-          updated_at: string;
-          uploaded_by: string | null;
-          version: string;
-        };
-        Insert: {
-          audience: string;
-          code?: string | null;
-          created_at?: string;
-          id?: string;
-          status?: string;
-          storage_path: string;
-          title_ar?: string | null;
-          title_en: string;
-          updated_at?: string;
-          uploaded_by?: string | null;
-          version?: string;
-        };
-        Update: {
-          audience?: string;
-          code?: string | null;
-          created_at?: string;
-          id?: string;
-          status?: string;
-          storage_path?: string;
-          title_ar?: string | null;
-          title_en?: string;
-          updated_at?: string;
-          uploaded_by?: string | null;
-          version?: string;
         };
         Relationships: [];
       };
