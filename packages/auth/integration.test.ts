@@ -58,7 +58,7 @@ describe.skipIf(
     expect(data?.[0]).toMatchObject({ is_member: true, verified: true });
   });
 
-  test("another domain waits in the verification queue", async () => {
+  test("another domain is not a member, and waits for a partner, not the Society", async () => {
     const supabase = createClient<Database>(
       url,
       publishableKey || placeholderKey,
@@ -71,11 +71,13 @@ describe.skipIf(
     const { data } = await supabase.schema("membership").rpc("my_status");
     expect(data?.[0]).toMatchObject({ is_member: false, verified: false });
 
+    // Partners verify their own people (owner, Oct 31, 2026): no request
+    // waits in the Society's queue.
     const { data: requests } = await supabase
       .schema("membership")
       .from("verification_requests")
       .select("status");
-    expect(requests).toEqual([{ status: "pending" }]);
+    expect(requests).toEqual([]);
   });
 
   test("a wrong password is reported as invalid credentials", async () => {
