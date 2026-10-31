@@ -53,8 +53,10 @@ const Calls = async ({ locale }: { locale: Locale }) => {
         {t("calls")}
       </h2>
       <div className="mx-auto grid w-full max-w-6xl gap-8 px-4 py-12">
-        {calls.map((call) => {
-          const isOpen = new Date(call.opens_at) <= new Date();
+        {calls.map((call, index) => {
+          const isOpen = opened(call);
+          // One solid button in the band: the first open call's.
+          const first = calls.findIndex(opened) === index;
           return (
             <div
               className="grid gap-6 md:grid-cols-[1fr_auto] md:items-center"
@@ -77,7 +79,11 @@ const Calls = async ({ locale }: { locale: Locale }) => {
               </div>
               {isOpen ? (
                 <a
-                  className="inline-flex h-12 items-center justify-self-start bg-on-band px-6 font-medium text-[0.9375rem] text-band hover:bg-on-band/90"
+                  className={
+                    first
+                      ? "inline-flex h-12 items-center justify-self-start bg-on-band px-6 font-medium text-[0.9375rem] text-band hover:bg-on-band/90"
+                      : "justify-self-start font-medium text-on-band underline decoration-1 underline-offset-4"
+                  }
                   href={localizedPath(locale, "/qirtas/write")}
                 >
                   {t("submit")}
@@ -96,6 +102,9 @@ const Calls = async ({ locale }: { locale: Locale }) => {
     </section>
   );
 };
+
+const opened = (call: { opens_at: string }) =>
+  new Date(call.opens_at).getTime() <= Date.now();
 
 /** Latest news: a column beside Letters, or a full row of cards alone. */
 const News = async ({

@@ -83,6 +83,12 @@ export const WhatsOn = async ({
             {localized(p, "name", locale)}
           </Link>
         ))}
+        <Link
+          className="link type-caption ms-auto"
+          href={href({ university: !withUniversity })}
+        >
+          {withUniversity ? t("hideAuib") : t("showAuib")}
+        </Link>
       </nav>
 
       <MonthSection
@@ -97,11 +103,6 @@ export const WhatsOn = async ({
           rows={rows}
           university={withUniversity ? university : []}
         />
-        <p className="type-caption">
-          <Link className="link" href={href({ university: !withUniversity })}>
-            {withUniversity ? t("hideAuib") : t("showAuib")}
-          </Link>
-        </p>
       </MonthSection>
 
       <p className="type-caption border-line border-t pt-space-4">

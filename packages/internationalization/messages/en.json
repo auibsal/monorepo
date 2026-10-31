@@ -441,7 +441,7 @@
       "lede": "Who serves on the Council, what it has decided, and everyone who belongs.",
       "council": {
         "title": "The Council",
-        "lede": "Three elected officers and five directors.",
+        "lede": "The elected officers and the directors, from the roles they hold.",
         "empty": "The Council appears here once its members hold their roles."
       },
       "minutes": {
@@ -547,7 +547,7 @@
       },
       "returned": "Returned for formatting",
       "back": "Back to Qirtas",
-      "submitTitle": "Submit work",
+      "submitTitle": "Send work",
       "submitLede": "Paste or type your work, or attach it as a file. Keep your name out of the work itself and its file names: the Submissions Manager checks formatting before blind review.",
       "noCall": "No call is open at the moment.",
       "call": "Call",
@@ -3887,7 +3887,10 @@
         "audition": "Audition"
       },
       "on": "{date}, {time}",
-      "audition": "Auditions for {title}"
+      "audition": "Auditions for {title}",
+      "term": "{from} to {to}",
+      "places": "{count, plural, one {One place} other {{n} places}}",
+      "skills": "Wants: {skills}"
     },
     "partnerJoin": {
       "title": "Partner with the Society",
@@ -4217,7 +4220,7 @@
       "noCalls": "No call is open at the moment.",
       "closes": "Closes {date}",
       "opensCloses": "Opens {opens}. Closes {closes}.",
-      "submit": "Submit your work",
+      "submit": "Write for Qirtas",
       "issues": "Issues",
       "volumeNumber": "Vol. {volume}, No. {number}",
       "latest": "Latest pieces",
@@ -4316,7 +4319,7 @@
       "nextStop": {
         "title": "Next Stop",
         "lede": "Qirtas's video show about campus: the people, the places and what happens there. Be a guest, or join the crew.",
-        "care": "Next Stop care"
+        "care": "Next Stop's promise"
       },
       "prizes": "Awards",
       "printed": "Printed by {printer}, {date}: {copies} copies.",
@@ -4367,7 +4370,7 @@
         },
         "council": {
           "title": "A Council runs the work",
-          "body": "Three elected officers and six directors meet every two weeks and greenlight programs."
+          "body": "The elected officers and the directors meet every two weeks and greenlight programs."
         },
         "elections": {
           "title": "Elections every April",
@@ -4428,7 +4431,7 @@
           "body": "Sign up with your AUIB email and sign the Member Pledge."
         },
         "commonRoom": {
-          "title": "Join The Common Room",
+          "title": "Join the members' group on Telegram",
           "body": "Our Telegram channel, where reminders and room changes go first. Follow @auibsal too."
         },
         "twoThings": {
@@ -4468,7 +4471,7 @@
         }
       },
       "firstMonthTitle": "Your first month",
-      "firstMonth": "Register · join The Common Room · come to the Salon with your buddy · tell us after your second event what you would like to do here.",
+      "firstMonth": "Sign up · join the members' group on Telegram · come to an event with a friend · tell us after your second event what you would like to do here.",
       "cta": "Sign up",
       "ctaHint": "Use your AUIB email address.",
       "others": "Not at AUIB? A guest's membership comes by invitation, from the Society or one of its partners; an organization applies to partner.",
@@ -4503,7 +4506,7 @@
     },
     "contact": {
       "title": "Contact",
-      "lede": "Find us on Instagram and in The Common Room, or talk to us at any event.",
+      "lede": "Find us on Instagram and in the members' group on Telegram, or talk to us at any event.",
       "instagram": "Instagram",
       "telegram": "Telegram",
       "telegramName": "The Common Room",
@@ -4516,7 +4519,7 @@
       "photoLink": "Ask for a removal"
     },
     "mediaKit": {
-      "title": "Media kit",
+      "title": "Press kit",
       "lede": "The Society's name, logos and colors, for partners and the press.",
       "nameTitle": "Our name",
       "name": "\"AUIB Society of Arts and Letters\" in full on first use in formal documents; then \"the Society\" or \"SAL\". Never \"the club\".",
@@ -4573,7 +4576,7 @@
       }
     },
     "care": {
-      "title": "Next Stop care",
+      "title": "Next Stop's promise",
       "lede": "Next Stop is Qirtas's video show about campus. Here is how we look after the people in it.",
       "promiseTitle": "Our promise",
       "source": "Policy Manual",
@@ -4834,7 +4837,7 @@
       }
     },
     "governance": {
-      "title": "Governance",
+      "title": "The Council",
       "lede": "The Council, what the Society has adopted, and whom members elected.",
       "council": "The Council",
       "councilEmpty": "The Council appears here once its members hold their roles.",

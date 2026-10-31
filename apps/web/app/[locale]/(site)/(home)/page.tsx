@@ -156,7 +156,7 @@ const Home = async ({ params }: HomeProps) => {
         >
           <SectionHead
             action={
-              <Link className="link type-caption" href="/events#series">
+              <Link className="link type-caption" href="/events">
                 {t("allPrograms")}
               </Link>
             }

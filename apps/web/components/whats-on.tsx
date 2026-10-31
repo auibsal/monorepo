@@ -108,6 +108,7 @@ export const MonthCalendar = async ({
     key: row.id,
     lang: "en",
     line: t("auib"),
+    quiet: true,
     time: universityWhen(row),
     title: row.title,
   }));
