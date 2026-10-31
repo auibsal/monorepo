@@ -13,12 +13,14 @@ import { hasPermissionAnywhere, type Permission } from "@repo/rbac";
 import { journal, localized, sanitizeRichText, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
-import { useState } from "react";
-import { Link } from "@/lib/nexus/navigation";
+import { useEffect, useState } from "react";
+import { Link, useRouter } from "@/lib/nexus/navigation";
 import { useGrants } from "@/lib/nexus/queries";
-import { SectionSpinner } from "../../states";
+import { OnTheSite } from "../../site-links";
+import { EmptyLine, SectionSpinner } from "../../states";
 import { type SectionTab, SectionTabs } from "../admin-shell";
 import {
+  AdminHeading,
   BilingualField,
   type Column,
   DataTable,
@@ -612,14 +614,9 @@ const FrontPage = () => {
 const Contributors = () => {
   const t = useTranslations("nexus.admin.journal.contributor");
   const tw = useTranslations("nexus.admin.waraq");
-  const tc = useTranslations("common");
   const locale = useLocale() as Locale;
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
-  const [editing, setEditing] = useState<{
-    bio: { ar: string; en: string };
-    id: string;
-  } | null>(null);
   const contributors = useQuery({
     queryFn: async () =>
       unwrap(
@@ -633,81 +630,24 @@ const Contributors = () => {
   });
   const refresh = () => queryClient.invalidateQueries({ queryKey: key });
   const byline = useBylineFor();
-  const saveBio = useMutation({
-    mutationFn: async () => {
-      if (!editing) {
-        return;
-      }
-      unwrap(
-        await supabase
-          .schema("journal")
-          .from("contributors")
-          .update({
-            bio_ar: editing.bio.ar || null,
-            bio_en: editing.bio.en || null,
-          })
-          .eq("id", editing.id)
-      );
-    },
-    onSuccess: async () => {
-      setEditing(null);
-      await refresh();
-    },
-  });
   return (
     <div className="grid gap-6">
       <h3 className="type-subheading">{t("title")}</h3>
       <ul className="grid gap-2">
         {contributors.data?.map((c) => (
           <li className="flex flex-wrap items-center gap-3" key={c.id}>
-            <span className="font-medium">{localized(c, "name", locale)}</span>
+            <Link
+              className="font-medium hover:underline"
+              href={`/qirtas/contributors/${c.slug ?? c.id}`}
+            >
+              {localized(c, "name", locale)}
+            </Link>
             {c.is_pen_name ? (
               <span className="type-caption">{tw("penName")}</span>
             ) : null}
-            <Button
-              onClick={() =>
-                setEditing({
-                  bio: { ar: c.bio_ar ?? "", en: c.bio_en ?? "" },
-                  id: c.id,
-                })
-              }
-              size="sm"
-              variant="ghost"
-            >
-              {t("editBio")}
-            </Button>
           </li>
         ))}
       </ul>
-      {editing ? (
-        <form
-          className="grid max-w-3xl gap-4"
-          onSubmit={(event) => {
-            event.preventDefault();
-            saveBio.mutate();
-          }}
-        >
-          <BilingualField
-            label={t("bio")}
-            maxLength={1000}
-            multiline
-            onChange={(bio) => setEditing((e) => (e ? { ...e, bio } : e))}
-            rows={3}
-            value={editing.bio}
-          />
-          <div className="flex gap-3">
-            <SaveButton pending={saveBio.isPending} />
-            <Button
-              onClick={() => setEditing(null)}
-              type="button"
-              variant="ghost"
-            >
-              {tc("cancel")}
-            </Button>
-          </div>
-          <ErrorLine error={saveBio.error} />
-        </form>
-      ) : null}
       <MemberPicker
         label={t("new")}
         onChange={(person) => {
@@ -721,6 +661,103 @@ const Contributors = () => {
     </div>
   );
 };
+
+/**
+ * A contributor's page in the Diwan (/qirtas/contributors/<slug>): only
+ * the bio is written here; the name follows the member's profile or is
+ * their pen name. Links to their public author page.
+ */
+export const ContributorPage = ({ slug }: { readonly slug: string }) => {
+  const t = useTranslations("nexus.admin.journal.contributor");
+  const locale = useLocale() as Locale;
+  const { supabase } = useAuth();
+  const queryClient = useQueryClient();
+  const router = useRouter();
+  const back = "/qirtas";
+  const contributor = useQuery({
+    queryFn: async () =>
+      unwrap(
+        await supabase
+          .schema("journal")
+          .from("contributors")
+          .select("id, slug, name_en, name_ar, bio_en, bio_ar")
+          .eq(UUID_LIKE.test(slug) ? "id" : "slug", slug)
+          .maybeSingle()
+      ),
+    queryKey: [...key, "contributor", slug],
+  });
+  const [bio, setBio] = useState({ ar: "", en: "" });
+  useEffect(() => {
+    if (contributor.data) {
+      setBio({
+        ar: contributor.data.bio_ar ?? "",
+        en: contributor.data.bio_en ?? "",
+      });
+    }
+  }, [contributor.data]);
+  const save = useMutation({
+    mutationFn: async () =>
+      unwrap(
+        await supabase
+          .schema("journal")
+          .from("contributors")
+          .update({ bio_ar: bio.ar || null, bio_en: bio.en || null })
+          .eq("id", contributor.data?.id ?? "")
+      ),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: key });
+      router.push(back);
+    },
+  });
+  if (contributor.isPending) {
+    return <SectionSpinner />;
+  }
+  if (!contributor.data) {
+    return (
+      <EmptyLine action={{ href: back, label: t("back") }}>
+        {t("missing")}
+      </EmptyLine>
+    );
+  }
+  const row = contributor.data;
+  return (
+    <div className="grid max-w-3xl gap-8">
+      <AdminHeading
+        actions={
+          <>
+            <Link className="link" href={back}>
+              {t("back")}
+            </Link>
+            {row.slug ? (
+              <OnTheSite href={`/qirtas/authors/${row.slug}`} />
+            ) : null}
+          </>
+        }
+        title={localized(row, "name", locale)}
+      />
+      <form
+        className="grid gap-4"
+        onSubmit={(event) => {
+          event.preventDefault();
+          save.mutate();
+        }}
+      >
+        <BilingualField
+          label={t("bio")}
+          maxLength={1000}
+          multiline
+          onChange={setBio}
+          rows={4}
+          value={bio}
+        />
+        <SaveButton pending={save.isPending} />
+        <ErrorLine error={save.error} />
+      </form>
+    </div>
+  );
+};
+
+const UUID_LIKE = /^[0-9a-f-]{36}$/i;
 
 const puzzleEditorKeys = [
   "journal.approve",

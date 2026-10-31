@@ -1,7 +1,6 @@
 "use client";
 
 import { useAuth } from "@repo/auth/provider";
-import { Button } from "@repo/design-system/components/ui/button";
 import { Checkbox } from "@repo/design-system/components/ui/checkbox";
 import { Input } from "@repo/design-system/components/ui/input";
 import { Label } from "@repo/design-system/components/ui/label";
@@ -10,9 +9,13 @@ import { formatLongDate } from "@repo/internationalization/format";
 import { journal, localized, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
-import { useId, useState } from "react";
-import { SectionSpinner } from "../../states";
+import { useEffect, useId, useState } from "react";
+import { Link, usePathname, useRouter } from "@/lib/nexus/navigation";
+import { useQueryParam } from "@/lib/nexus/use-query-param";
+import { OnTheSite } from "../../site-links";
+import { EmptyLine, SectionSpinner } from "../../states";
 import {
+  AdminHeading,
   BilingualField,
   type Column,
   DataTable,
@@ -51,15 +54,18 @@ const callRow = (issueId: string, form: CallForm) => ({
   title_en: form.title.en,
 });
 
-/** Calls for submissions (journal.manage for the issue). */
+/**
+ * An Edition's calls (journal.manage for the issue), each opening on its
+ * own page under the Edition's (owner, Oct 31, 2026: editing in the Diwan
+ * opens its own address): the Edition's path, then /calls/ and the id
+ * (or /calls/new).
+ */
 export const Calls = ({ issueId }: { issueId: string }) => {
   const t = useTranslations("nexus.admin.pipeline.calls");
   const tk = useTranslations("nexus.admin.kit");
   const locale = useLocale() as Locale;
-  const id = useId();
   const { supabase } = useAuth();
-  const queryClient = useQueryClient();
-  const [form, setForm] = useState(blank);
+  const base = usePathname();
   const calls = useQuery({
     queryFn: async () =>
       unwrap(
@@ -72,37 +78,18 @@ export const Calls = ({ issueId }: { issueId: string }) => {
       ) ?? [],
     queryKey: [...pipelineKey, "calls", issueId],
   });
-  const partnerOptions = useQuery({
-    queryFn: () => journal.submissionPartners(supabase),
-    queryKey: [...pipelineKey, "submission-partners"],
-  });
-  const save = useMutation({
-    mutationFn: async () => {
-      const table = supabase.schema("journal").from("calls");
-      const row = callRow(issueId, form);
-      let callId = form.id;
-      if (callId) {
-        unwrap(await table.update(row).eq("id", callId));
-      } else {
-        callId =
-          unwrap(await table.insert(row).select("id").single())?.id ?? null;
-      }
-      if (callId) {
-        await journal.setCallPartners(supabase, callId, form.partners);
-      }
-    },
-    onSuccess: async () => {
-      setForm(blank);
-      await queryClient.invalidateQueries({
-        queryKey: [...pipelineKey, "calls", issueId],
-      });
-    },
-  });
 
   type Row = NonNullable<typeof calls.data>[number];
   const columns: Column<Row>[] = [
     {
-      cell: (c) => localized(c, "title", locale),
+      cell: (c) => (
+        <Link
+          className="font-medium hover:underline"
+          href={`${base}/calls/${c.id}`}
+        >
+          {localized(c, "title", locale)}
+        </Link>
+      ),
       header: t("titleField"),
       key: "title",
     },
@@ -117,43 +104,7 @@ export const Calls = ({ issueId }: { issueId: string }) => {
       header: tk("status"),
       key: "status",
     },
-    {
-      cell: (c) => (
-        <Button
-          onClick={async () => {
-            const partners = await journal.callPartnerIds(supabase, c.id);
-            setForm({
-              closes_at: c.closes_at,
-              eligibility: {
-                ar: c.eligibility_ar ?? "",
-                en: c.eligibility_en ?? "",
-              },
-              id: c.id,
-              is_published: c.is_published,
-              max_per_person: String(c.max_per_person),
-              opens_at: c.opens_at,
-              partners,
-              theme: { ar: c.theme_ar ?? "", en: c.theme_en ?? "" },
-              title: { ar: c.title_ar, en: c.title_en },
-            });
-          }}
-          size="sm"
-          variant="ghost"
-        >
-          {tk("edit")}
-        </Button>
-      ),
-      header: "",
-      key: "edit",
-    },
   ];
-
-  const ready =
-    form.title.en.trim() &&
-    form.title.ar.trim() &&
-    form.opens_at &&
-    form.closes_at &&
-    Date.parse(form.closes_at) > Date.parse(form.opens_at);
 
   return (
     <div className="grid gap-6">
@@ -167,6 +118,133 @@ export const Calls = ({ issueId }: { issueId: string }) => {
       ) : (
         <SectionSpinner />
       )}
+      <Link className="link justify-self-start" href={`${base}/calls/new`}>
+        {t("new")}
+      </Link>
+    </div>
+  );
+};
+
+/**
+ * One call on its own page: the Edition's id comes from the page's
+ * address (RecordRef), the call's from the last step ("new" for a blank
+ * one). Saving returns to the Edition; a published call links to Qirtas,
+ * where readers find it.
+ */
+export const CallPage = ({
+  back,
+  callId,
+}: {
+  readonly back: string;
+  readonly callId: string;
+}) => {
+  const issueId = useQueryParam("id") ?? "";
+  const t = useTranslations("nexus.admin.pipeline.calls");
+  const locale = useLocale() as Locale;
+  const id = useId();
+  const { supabase } = useAuth();
+  const router = useRouter();
+  const queryClient = useQueryClient();
+  const isNew = callId === "new";
+  const [form, setForm] = useState(blank);
+  const existing = useQuery({
+    enabled: !isNew,
+    queryFn: async () => {
+      const c = unwrap(
+        await supabase
+          .schema("journal")
+          .from("calls")
+          .select("*")
+          .eq("id", callId)
+          .maybeSingle()
+      );
+      if (!c) {
+        return null;
+      }
+      const partners = await journal.callPartnerIds(supabase, c.id);
+      return {
+        closes_at: c.closes_at,
+        eligibility: {
+          ar: c.eligibility_ar ?? "",
+          en: c.eligibility_en ?? "",
+        },
+        id: c.id,
+        is_published: c.is_published,
+        max_per_person: String(c.max_per_person),
+        opens_at: c.opens_at,
+        partners,
+        theme: { ar: c.theme_ar ?? "", en: c.theme_en ?? "" },
+        title: { ar: c.title_ar, en: c.title_en },
+      } satisfies CallForm;
+    },
+    queryKey: [...pipelineKey, "call", callId],
+  });
+  // The form starts from the call as saved.
+  useEffect(() => {
+    if (existing.data) {
+      setForm(existing.data);
+    }
+  }, [existing.data]);
+  const partnerOptions = useQuery({
+    queryFn: () => journal.submissionPartners(supabase),
+    queryKey: [...pipelineKey, "submission-partners"],
+  });
+  const save = useMutation({
+    mutationFn: async () => {
+      const table = supabase.schema("journal").from("calls");
+      const row = callRow(issueId, form);
+      let savedId = form.id;
+      if (savedId) {
+        unwrap(await table.update(row).eq("id", savedId));
+      } else {
+        savedId =
+          unwrap(await table.insert(row).select("id").single())?.id ?? null;
+      }
+      if (savedId) {
+        await journal.setCallPartners(supabase, savedId, form.partners);
+      }
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: pipelineKey });
+      router.push(back);
+    },
+  });
+
+  if (!isNew && existing.isPending) {
+    return <SectionSpinner />;
+  }
+  if (!(isNew || existing.data)) {
+    return (
+      <EmptyLine action={{ href: back, label: t("back") }}>
+        {t("missing")}
+      </EmptyLine>
+    );
+  }
+  const ready =
+    form.title.en.trim() &&
+    form.title.ar.trim() &&
+    form.opens_at &&
+    form.closes_at &&
+    Date.parse(form.closes_at) > Date.parse(form.opens_at);
+
+  return (
+    <div className="grid max-w-3xl gap-8">
+      <AdminHeading
+        actions={
+          <>
+            <Link className="link" href={back}>
+              {t("back")}
+            </Link>
+            {existing.data?.is_published ? <OnTheSite href="/qirtas" /> : null}
+          </>
+        }
+        title={
+          existing.data
+            ? (locale === "ar" && existing.data.title.ar) ||
+              existing.data.title.en
+            : t("new")
+        }
+      />
       <form
         className="grid max-w-3xl gap-4"
         onSubmit={(event) => {
@@ -174,7 +252,6 @@ export const Calls = ({ issueId }: { issueId: string }) => {
           save.mutate();
         }}
       >
-        <h3 className="type-subheading">{form.id ? t("edit") : t("new")}</h3>
         <BilingualField
           label={t("titleField")}
           maxLength={200}
@@ -264,15 +341,6 @@ export const Calls = ({ issueId }: { issueId: string }) => {
         </div>
         <div className="flex flex-wrap gap-2">
           <SaveButton disabled={!ready} pending={save.isPending} />
-          {form.id ? (
-            <Button
-              onClick={() => setForm(blank)}
-              type="button"
-              variant="ghost"
-            >
-              {t("cancelEdit")}
-            </Button>
-          ) : null}
         </div>
         <ErrorLine error={save.error} />
       </form>

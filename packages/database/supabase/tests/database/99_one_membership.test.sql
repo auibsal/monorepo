@@ -76,7 +76,7 @@ insert into core.semesters (code, name_en, name_ar, starts_on, ends_on) values
 update core.settings set value = '0' where key = 'membership.founding_voters';
 -- </preamble>
 
-select plan(27);
+select plan(29);
 
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a1', 'membership-om@auib.edu.iq', 'Membership');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a2', 'member-om@auib.edu.iq', 'Plain Member');
@@ -203,6 +203,27 @@ select results_eq(
   $$ select kind, title_en from programmes.open_places() where title_en = 'Fair volunteers' $$,
   $$ values ('volunteer'::text, 'Fair volunteers'::text) $$,
   'A visitor reads the open places, volunteering among them'
+);
+
+-- Get involved is one list (owner, Oct 31, 2026): the Company's coming
+-- auditions are in it, for a public production that is auditioning only.
+select pg_temp.logout();
+insert into programmes.productions (slug, programme_id, title_en, title_ar, stage, is_public, rights_status)
+values
+  ('om-open-play', (select id from core.programmes where slug = 'company'), 'Open Play', 'مسرحية مفتوحة', 'auditions', true, 'pending'),
+  ('om-hidden-play', (select id from core.programmes where slug = 'company'), 'Hidden Play', 'مسرحية خفية', 'auditions', false, 'pending');
+insert into programmes.auditions (production_id, starts_at, ends_at)
+select id, now() + interval '3 days', now() + interval '3 days 2 hours'
+from programmes.productions where slug in ('om-open-play', 'om-hidden-play');
+select pg_temp.login_anon();
+select results_eq(
+  $$ select kind, title_en from programmes.open_places() where kind = 'audition' and title_en like '%Play' $$,
+  $$ values ('audition'::text, 'Open Play'::text) $$,
+  'A public production''s coming audition is among the open places'
+);
+select ok(
+  (select closes_at from programmes.open_places() where title_en = 'Open Play') > now(),
+  'and it is listed by its day'
 );
 
 -- ── Signing in ──────────────────────────────────────────────────────────────

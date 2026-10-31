@@ -22,6 +22,7 @@ import {
   SaveButton,
 } from "../admin/kit";
 import { DiwanPage, DiwanSection, RowList } from "../page";
+import { OnTheSite } from "../site-links";
 import { ErrorState, SectionSpinner } from "../states";
 
 const KEY = ["partner-desk"] as const;
@@ -57,7 +58,11 @@ const PartnerFrame = ({
     return <p className="type-body">{t("none")}</p>;
   }
   return (
-    <DiwanPage lede={t("lede")} title={localized(partner, "name", locale)}>
+    <DiwanPage
+      actions={partner.is_listed ? <OnTheSite href="/partners" /> : null}
+      lede={t("lede")}
+      title={localized(partner, "name", locale)}
+    >
       <nav
         aria-label={t("tabsLabel")}
         className="overflow-x-auto border-line border-b"

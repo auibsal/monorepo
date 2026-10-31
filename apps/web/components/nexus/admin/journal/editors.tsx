@@ -9,6 +9,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, type ReactNode, useEffect, useState } from "react";
 import { Link, useRouter } from "@/lib/nexus/navigation";
 import { useQueryParam } from "@/lib/nexus/use-query-param";
+import { OnTheSite } from "../../site-links";
 import { ErrorState, SectionSpinner } from "../../states";
 import { ImageField } from "../image-field";
 import {
@@ -214,7 +215,14 @@ export const IssueEditor = () => {
   return (
     <div className="grid gap-8">
       <AdminHeading
-        actions={back(tk("back"))}
+        actions={
+          <>
+            {back(tk("back"))}
+            {existing.data?.slug && status === "published" ? (
+              <OnTheSite href={`/qirtas/editions/${existing.data.slug}`} />
+            ) : null}
+          </>
+        }
         title={
           existing.data
             ? localized(existing.data, "title", locale)

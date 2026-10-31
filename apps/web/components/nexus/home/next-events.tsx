@@ -88,7 +88,12 @@ export const NextEvents = () => {
             <li className="grid grid-cols-[1fr_auto] gap-4" key={rsvp.id}>
               <div className="grid content-start gap-1">
                 <h3 className="type-subheading">
-                  {localized(rsvp.event, "title", locale)}
+                  <Link
+                    className="hover:underline"
+                    href={`/events/${rsvp.event.slug}`}
+                  >
+                    {localized(rsvp.event, "title", locale)}
+                  </Link>
                 </h3>
                 <p className="type-body">
                   {formatLongDate(rsvp.event.starts_at, locale)} ·{" "}

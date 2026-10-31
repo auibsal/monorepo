@@ -48,15 +48,6 @@ const sinceMonth = (date: string, locale: string) =>
     year: "numeric",
   }).format(new Date(date));
 
-/** The card's ticking clock, Baghdad time with seconds. */
-const clock = (at: number, locale: string) =>
-  new Intl.DateTimeFormat(locale === "ar" ? "ar-IQ-u-nu-latn" : "en-GB", {
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-    timeZone: "Asia/Baghdad",
-  }).format(at);
-
 const Field = ({ label, value }: { label: string; value: string }) => (
   <div className="grid content-start gap-1">
     <dt className="type-label text-text-secondary">{label}</dt>
@@ -180,20 +171,6 @@ const Sheen = () => (
     className="pointer-events-none absolute inset-0 bg-[linear-gradient(105deg,transparent_calc(var(--sheen,50%)-16%),color-mix(in_oklab,var(--surface)_85%,transparent)_var(--sheen,50%),transparent_calc(var(--sheen,50%)+16%))] opacity-70 mix-blend-overlay"
   />
 );
-
-/** "Live", with a slow beat, beside the ticking clock. */
-const LiveMark = () => {
-  const t = useTranslations("nexus.home.card");
-  return (
-    <span className="type-label inline-flex items-center gap-1.5 text-text">
-      <span
-        aria-hidden="true"
-        className="size-1.5 rounded-full bg-accent motion-safe:animate-pulse"
-      />
-      {t("live")}
-    </span>
-  );
-};
 
 /**
  * Add to Google Wallet: the pass carries the same live code. Once Google
@@ -472,12 +449,6 @@ export const MembershipCard = () => {
               label={t("card.numberLabel")}
               value={cardNumber(card.data.number)}
             />
-            {kind === "member" && status.data.member_since ? (
-              <Field
-                label={t("card.since")}
-                value={sinceMonth(status.data.member_since, locale)}
-              />
-            ) : null}
             {tier ? <Field label={t("card.tier")} value={tier} /> : null}
             {kind === "member" ? (
               <Field
@@ -500,16 +471,15 @@ export const MembershipCard = () => {
               />
             </span>
           </div>
-          <p className="flex items-center gap-3">
-            <LiveMark />
-            <span className="type-code text-text tabular-nums" dir="ltr">
-              <span className="sr-only">{t("card.clock")} </span>
-              {clock(live.now, locale)}
-            </span>
-          </p>
-          <figcaption className="type-caption max-w-44 text-center">
-            {t("card.qr")}
-          </figcaption>
+          {/* Member since, under the code (owner, Oct 31, 2026: no "Live"
+              and clock on the card). */}
+          {kind === "member" && status.data.member_since ? (
+            <figcaption className="type-label text-center text-text-secondary">
+              {t("card.since", {
+                date: sinceMonth(status.data.member_since, locale),
+              })}
+            </figcaption>
+          ) : null}
         </figure>
         {/* The one accent on the card: a crimson rule along its foot. */}
         <span
@@ -517,6 +487,8 @@ export const MembershipCard = () => {
           className="absolute inset-x-0 bottom-0 h-1.5 bg-accent"
         />
       </div>
+      {/* How it is used, under the card rather than on it. */}
+      <p className="type-caption max-w-3xl">{t("card.qr")}</p>
       <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
         <Dialog>
           <DialogTrigger asChild>
@@ -531,9 +503,6 @@ export const MembershipCard = () => {
             </DialogHeader>
             <div className="grid justify-items-center gap-3 bg-surface p-6">
               <div className="w-full max-w-72">{code(288)}</div>
-              <p className="type-code tabular-nums" dir="ltr">
-                {clock(live.now, locale)}
-              </p>
               <p className="type-label text-text-secondary">
                 {t("card.number", { number: cardNumber(card.data.number) })}
               </p>

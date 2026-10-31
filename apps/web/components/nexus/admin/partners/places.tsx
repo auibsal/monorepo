@@ -7,6 +7,7 @@ import { localized, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useState } from "react";
+import { Link } from "@/lib/nexus/navigation";
 import { RowList } from "../../page";
 import { EmptyLine, SectionSpinner } from "../../states";
 import { BilingualField, ErrorLine, Field, SelectInput } from "../kit";
@@ -99,9 +100,12 @@ export const PartnerPlaces = () => {
               key={place.id}
             >
               <span className="grid gap-1">
-                <span className="font-medium">
+                <Link
+                  className="font-medium hover:underline"
+                  href={`/people/partners/places/${place.id}`}
+                >
                   {localized(place, "title", locale)}
-                </span>
+                </Link>
                 <span className="type-caption">
                   {partnerName(place.partner_id)}
                   {place.is_open ? "" : ` · ${t("closed")}`}

@@ -3,13 +3,9 @@ import type { Locale } from "@repo/internationalization";
 import { Link } from "@repo/internationalization/navigation";
 import { events, localized, programmes } from "@repo/sal-data";
 import { getTranslations } from "next-intl/server";
+import { ManageLinks } from "@/components/manage-links";
 import { PageHeader } from "@/components/section";
-import {
-  MonthCalendar,
-  MonthSection,
-  nextAfter,
-  SeriesList,
-} from "@/components/whats-on";
+import { MonthCalendar, MonthSection, nextAfter } from "@/components/whats-on";
 import { readPublished } from "@/lib/supabase";
 import { type Month, monthFrom, monthParam } from "@/lib/whats-on";
 
@@ -21,8 +17,8 @@ export const whatsOnPath = (month: Month, withUniversity: boolean) =>
 
 /**
  * What's on: programs and events in one calendar, a month at a time. Each
- * program has its own calendar at /events/<program>; every program is listed
- * under the month. The public see members-only events as teasers; members
+ * program has its own calendar at /events/<program>, linked above the month
+ * (owner, Oct 31, 2026: no list of programs below it). The public see members-only events as teasers; members
  * book from the members' events page. AUIB's own dates (the hourly sync of
  * the University's calendar) sit beside the Society's unless the visitor
  * hides them.
@@ -62,7 +58,13 @@ export const WhatsOn = async ({
 
   return (
     <div className="mx-auto grid w-full max-w-6xl gap-12 px-4 py-16 sm:py-24">
-      <PageHeader lede={t("lede")} title={t("title")} />
+      <PageHeader lede={t("lede")} title={t("title")}>
+        <ManageLinks
+          diwan="/events"
+          membership="/membership/calendar"
+          membershipLabel="booking"
+        />
+      </PageHeader>
 
       <nav aria-label={t("series")} className="flex flex-wrap gap-x-5 gap-y-2">
         <Link
@@ -101,8 +103,6 @@ export const WhatsOn = async ({
           </Link>
         </p>
       </MonthSection>
-
-      <SeriesList locale={locale} rows={series} />
 
       <p className="type-caption border-line border-t pt-space-4">
         <a className="link" href={feed}>

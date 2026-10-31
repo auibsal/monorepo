@@ -4,6 +4,7 @@ import { events, localized, programmes } from "@repo/sal-data";
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import type { ReactNode } from "react";
+import { ManageLinks } from "@/components/manage-links";
 import { PageHeader } from "@/components/section";
 import { MonthCalendar, MonthSection, nextAfter } from "@/components/whats-on";
 import { localizedMetadata } from "@/lib/metadata";
@@ -83,6 +84,7 @@ export const SeriesView = async ({
         {localized(series, "rhythm", locale) ? (
           <p className="type-body">{localized(series, "rhythm", locale)}</p>
         ) : null}
+        <ManageLinks diwan={`/events/${series.slug}`} />
       </PageHeader>
       <MonthSection
         hrefFor={(m) => `${pathname}/${m}`}

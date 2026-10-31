@@ -16,6 +16,7 @@ import { Link, useRouter } from "@/lib/nexus/navigation";
 import { useGrants } from "@/lib/nexus/queries";
 import { useQueryParam } from "@/lib/nexus/use-query-param";
 import { RichTextEditor } from "../../editor/rich-text";
+import { OnTheSite } from "../../site-links";
 import { ErrorState, SectionSpinner } from "../../states";
 import { slugify } from "../events/editor";
 import {
@@ -752,7 +753,14 @@ export const WaraqPieceEditor = () => {
   return (
     <div className="grid gap-10">
       <AdminHeading
-        actions={back(tk("back"))}
+        actions={
+          <>
+            {back(tk("back"))}
+            {piece.status === "published" && piece.slug ? (
+              <OnTheSite href={journal.piecePath(piece)} />
+            ) : null}
+          </>
+        }
         title={localized(piece, "title", locale) || t("untitled")}
       >
         {`${tj(`desks.${piece.desk as journal.Desk}`)} · ${tj(`categories.${category}`)}`}

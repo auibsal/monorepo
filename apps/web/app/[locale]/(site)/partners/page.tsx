@@ -2,6 +2,7 @@ import { Link } from "@repo/internationalization/navigation";
 import { localized, partners } from "@repo/sal-data";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Institutions } from "@/components/institutions";
+import { ManageLinks } from "@/components/manage-links";
 import { PageHeader, Section } from "@/components/section";
 import { mediaUrl } from "@/lib/media";
 import { type LocaleParams, sectionMetadata } from "@/lib/page";
@@ -33,7 +34,9 @@ const PartnersPage = async ({ params }: LocaleParams) => {
 
   return (
     <div className="mx-auto grid w-full max-w-6xl gap-20 px-4 py-16 sm:py-24">
-      <PageHeader lede={t("lede")} title={t("title")} />
+      <PageHeader lede={t("lede")} title={t("title")}>
+        <ManageLinks diwan="/people/partners" partner />
+      </PageHeader>
       <Section id="what-it-means" title={t("means.title")}>
         <ul className="grid gap-8 sm:grid-cols-3">
           {MEANS.map((key) => (

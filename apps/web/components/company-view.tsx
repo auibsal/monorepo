@@ -3,6 +3,7 @@ import { Link } from "@repo/internationalization/navigation";
 import { events, localized } from "@repo/sal-data";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
+import { ManageLinks } from "@/components/manage-links";
 import { Productions } from "@/components/productions";
 import { PageHeader, Section } from "@/components/section";
 import { loadProgramme } from "@/components/series";
@@ -45,6 +46,7 @@ export const CompanyView = async ({
         {localized(company, "rhythm", locale) ? (
           <p className="type-body">{localized(company, "rhythm", locale)}</p>
         ) : null}
+        <ManageLinks diwan="/company" />
       </PageHeader>
       <Productions locale={locale} />
       <Section id="auditions" title={t("auditions")}>

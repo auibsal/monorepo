@@ -8,6 +8,7 @@ import { journal, localized } from "@repo/sal-data";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { ManageLinks } from "@/components/manage-links";
 import { PieceCardView } from "@/components/waraq/cards";
 import { Nameplate } from "@/components/waraq/nameplate";
 import { mediaUrl } from "@/lib/media";
@@ -98,6 +99,7 @@ const EditionPage = async ({ params }: EditionProps) => {
           <p className="type-caption">
             {localized(edition, "season", locale) || t("edition")}
           </p>
+          <ManageLinks diwan={`/qirtas/editions/${edition.slug}`} />
           {localized(edition, "theme", locale) ? (
             <p className="type-lede">{localized(edition, "theme", locale)}</p>
           ) : null}

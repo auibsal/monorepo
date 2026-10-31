@@ -6,6 +6,7 @@ import { Link } from "@repo/internationalization/navigation";
 import { governance, localized } from "@repo/sal-data";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Council } from "@/components/council";
+import { ManageLinks } from "@/components/manage-links";
 import { PageHeader, Section } from "@/components/section";
 import { type LocaleParams, sectionMetadata } from "@/lib/page";
 import { readPublished } from "@/lib/supabase";
@@ -53,7 +54,12 @@ const GovernancePage = async ({ params }: LocaleParams) => {
 
   return (
     <div className="mx-auto grid w-full max-w-6xl gap-20 px-4 py-16 sm:py-24">
-      <PageHeader lede={t("lede")} title={t("title")} />
+      <PageHeader lede={t("lede")} title={t("title")}>
+        <ManageLinks
+          diwan="/society/resolutions"
+          membership="/membership/society"
+        />
+      </PageHeader>
 
       <Section id="council" title={t("council")}>
         {council.length === 0 ? (

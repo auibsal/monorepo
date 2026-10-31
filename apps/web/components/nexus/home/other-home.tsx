@@ -107,7 +107,9 @@ export const OtherHome = () => {
               <p className="font-medium">
                 {t("guest", { name: localized(guest, "name", locale) })}
               </p>
-              <p className="type-caption">{t("guestLine")}</p>
+              <p className="type-caption">
+                {t("guestLine", { name: localized(guest, "name", locale) })}
+              </p>
             </li>
           ))}
           {pending.map((guest) => (

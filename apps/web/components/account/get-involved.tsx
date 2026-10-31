@@ -3,6 +3,7 @@
 import { useAuth } from "@repo/auth/provider";
 import { Link } from "@repo/internationalization/navigation";
 import { useTranslations } from "next-intl";
+import { ManageLinks } from "@/components/manage-links";
 import { RequireMember } from "@/components/nexus/gates";
 import { DiwanPage } from "@/components/nexus/page";
 import { Callboard } from "@/components/nexus/programmes/callboard";
@@ -48,6 +49,7 @@ export const GetInvolved = () => {
           </Link>
         </p>
       )}
+      <ManageLinks diwan="/people/hiring" />
       <OpenPlaces />
     </DiwanPage>
   );

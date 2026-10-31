@@ -1,10 +1,7 @@
 import { notFound } from "next/navigation";
 import { RequireModule } from "@/components/nexus/admin/admin-shell";
-import {
-  ProgramPage,
-  type ProgramTab,
-  programTabs,
-} from "@/components/nexus/admin/programmes/admin";
+import { ProgramPage } from "@/components/nexus/admin/programmes/admin";
+import { type ProgramTab, programTabs } from "@/components/nexus/admin/tabs";
 import { titleFrom } from "@/lib/nexus/metadata";
 
 export const generateMetadata = titleFrom((t) =>

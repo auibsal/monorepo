@@ -11,6 +11,7 @@ import { journal, localized, membership, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useId, useState } from "react";
+import { Link } from "@/lib/nexus/navigation";
 import {
   BilingualField,
   ConfirmAction,
@@ -126,7 +127,14 @@ const openingRow = (form: typeof blank, programmeId: string) => {
  * made with it, so their hours count as service; completing an
  * apprenticeship drafts its certificate.
  */
-export const Openings = ({ programmeId }: { programmeId: string }) => {
+export const Openings = ({
+  base,
+  programmeId,
+}: {
+  /** The list's own path; each opening is edited at base/<id>. */
+  base: string;
+  programmeId: string;
+}) => {
   const t = useTranslations("nexus.admin.programmes.callboard");
   const tj = useTranslations("nexus.admin.journal");
   const locale = useLocale() as Locale;
@@ -398,7 +406,9 @@ export const Openings = ({ programmeId }: { programmeId: string }) => {
           <li className="grid gap-2 py-4" key={o.id}>
             <div className="flex flex-wrap items-baseline justify-between gap-3">
               <p className="type-subheading">
-                {localized(o, "title", locale)}
+                <Link className="hover:underline" href={`${base}/${o.id}`}>
+                  {localized(o, "title", locale)}
+                </Link>
                 {o.kind === "role"
                   ? ""
                   : ` · ${t(`kinds.${o.kind as OpeningKind}`)}`}

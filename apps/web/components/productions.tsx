@@ -3,6 +3,7 @@ import { formatClock, formatLongDate } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
 import { localized, productions } from "@repo/sal-data";
 import { getTranslations } from "next-intl/server";
+import { ManageLinks } from "@/components/manage-links";
 import { PageHeader, Section } from "@/components/section";
 import { mediaUrl } from "@/lib/media";
 import { readPublished } from "@/lib/supabase";
@@ -88,7 +89,9 @@ export const ProductionView = async ({
   const summary = localized(p, "summary", locale);
   return (
     <div className="mx-auto grid w-full max-w-6xl gap-12 px-4 py-16 sm:py-24">
-      <PageHeader lede={summary} title={localized(p, "title", locale)} />
+      <PageHeader lede={summary} title={localized(p, "title", locale)}>
+        <ManageLinks diwan={`/company/${p.slug}`} />
+      </PageHeader>
       <div className="grid gap-6 sm:grid-cols-[1fr_2fr]">
         {poster ? (
           // biome-ignore lint/performance/noImgElement: a poster from the media bucket

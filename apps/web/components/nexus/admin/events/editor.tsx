@@ -12,6 +12,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useEffect, useId, useState } from "react";
 import { Link, useRouter } from "@/lib/nexus/navigation";
 import { useQueryParam } from "@/lib/nexus/use-query-param";
+import { OnTheSite } from "../../site-links";
 import { ErrorState, SectionSpinner } from "../../states";
 import { ImageField } from "../image-field";
 import {
@@ -111,6 +112,18 @@ const problemKey = (
 };
 
 const newQuestionId = () => `q${Math.random().toString(36).slice(2, 8)}`;
+
+/** A published event's public page, from its editor. */
+const PublicPage = ({
+  slug,
+  status,
+}: {
+  readonly slug?: string | null;
+  readonly status: string;
+}) =>
+  slug && status === "published" ? (
+    <OnTheSite href={`/events/${slug}`} />
+  ) : null;
 
 export const EventEditor = () => {
   const t = useTranslations("nexus.admin.event");
@@ -269,9 +282,15 @@ export const EventEditor = () => {
     <div className="grid gap-10">
       <AdminHeading
         actions={
-          <Link className="text-sm underline underline-offset-4" href="/events">
-            {tk("back")}
-          </Link>
+          <>
+            <Link
+              className="text-sm underline underline-offset-4"
+              href="/events"
+            >
+              {tk("back")}
+            </Link>
+            <PublicPage slug={existing.data?.slug} status={status} />
+          </>
         }
         title={
           existing.data
