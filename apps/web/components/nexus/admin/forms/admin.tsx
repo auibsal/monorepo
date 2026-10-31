@@ -2,12 +2,6 @@
 
 import { useAuth } from "@repo/auth/provider";
 import { Button } from "@repo/design-system/components/ui/button";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@repo/design-system/components/ui/tabs";
 import type { Locale } from "@repo/internationalization";
 import {
   formatLongDate,
@@ -23,17 +17,9 @@ import { FormFieldInput, useFormLabels } from "../../forms/field";
 import { useFormTypes } from "../../forms/forms";
 import { type Submission, SubmissionSheet } from "../../forms/view";
 import { SectionSpinner } from "../../states";
-import {
-  AdminHeading,
-  type Column,
-  DataTable,
-  ErrorLine,
-  Field,
-  SelectInput,
-} from "../kit";
+import { type Column, DataTable, ErrorLine, Field, SelectInput } from "../kit";
 import { useMemberNames } from "../member-picker";
 import { memberName } from "../members/directory";
-import { Letters } from "./letters";
 
 const key = ["admin", "forms"];
 
@@ -45,32 +31,16 @@ const FormName = ({ formKey }: { formKey: string }) => {
 };
 
 /**
- * Forms and letters (Nexus admin): the forms sent to you to handle, by
- * form, with their answer dates and office-use boxes; and the standard
- * letters to fill in and print.
+ * Requests sent to the officer who handles them (the overhaul, Oct 30,
+ * 2026): concerns in Society → Concerns, program pitches in What's on →
+ * Programs, motions in Society → Resolutions. The queue shows only the
+ * kinds given, and only those this officer handles.
  */
-export const FormsAdmin = () => {
-  const t = useTranslations("nexus.admin.forms");
-  return (
-    <div className="grid gap-8">
-      <AdminHeading title={t("title")}>{t("lede")}</AdminHeading>
-      <Tabs defaultValue="submissions">
-        <TabsList className="h-auto flex-wrap justify-start gap-1">
-          <TabsTrigger value="submissions">{t("tabs.submissions")}</TabsTrigger>
-          <TabsTrigger value="letters">{t("tabs.letters")}</TabsTrigger>
-        </TabsList>
-        <TabsContent value="submissions">
-          <Submissions />
-        </TabsContent>
-        <TabsContent value="letters">
-          <Letters />
-        </TabsContent>
-      </Tabs>
-    </div>
-  );
-};
-
-const Submissions = () => {
+export const RequestQueue = ({
+  keys,
+}: {
+  readonly keys: readonly string[];
+}) => {
   const t = useTranslations("nexus.admin.forms");
   const tf = useTranslations("nexus.forms");
   const locale = useLocale() as Locale;
@@ -81,8 +51,10 @@ const Submissions = () => {
   const [show, setShow] = useState<Show>("open");
   const [selected, setSelected] = useState<string | null>(null);
 
-  const handled = (types.data ?? []).filter((ty) =>
-    hasPermission(grants.data, ty.handle_permission as Permission)
+  const handled = (types.data ?? []).filter(
+    (ty) =>
+      keys.includes(ty.key) &&
+      hasPermission(grants.data, ty.handle_permission as Permission)
   );
   const handledKeys = handled.map((ty) => ty.key);
 

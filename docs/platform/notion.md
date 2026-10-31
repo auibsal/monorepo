@@ -75,7 +75,7 @@ every fifteen minutes with the cron secret:
 4. **RSVP counts** go back to each event's page.
 
 The result is stored in `core.settings` `notion.sync_state` and shown in
-Administration → Settings → Notion, with who to invite to and remove from
+the Desk's Connected panel, with who to invite to and remove from
 the workspace (Notion's API cannot invite people).
 
 ## Setup (done once)

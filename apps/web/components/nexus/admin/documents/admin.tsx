@@ -122,7 +122,8 @@ const NewDocument = ({ onDone }: { onDone: (id: string) => void }) => {
  * The Library (owner, Oct 30, 2026): the Society's documents, managed in
  * the Diwan by whoever keeps them (governance.manage: the President, the
  * Vice President and the General Secretary) and published on the public
- * Library, auibsal.org/library, within a minute of saving. Internal
+ * Library, auibsal.org/library, within a minute of saving, on two shelves:
+ * the Society's documents and the website's policies. Internal
  * documents are kept in the team's Notion workspace, never here.
  */
 export const LibraryAdmin = () => {
@@ -192,13 +193,18 @@ export const LibraryAdmin = () => {
         />
       ) : null}
       {list.isPending ? <SectionSpinner /> : null}
-      <DataTable
-        caption={t("title")}
-        columns={columns}
-        empty={t("empty")}
-        rowKey={(d) => d.id}
-        rows={list.data ?? []}
-      />
+      {(["society", "policies"] as const).map((shelf) => (
+        <DataTable
+          caption={t(`shelves.${shelf}`)}
+          columns={columns}
+          empty={t("empty")}
+          key={shelf}
+          rowKey={(d) => d.id}
+          rows={(list.data ?? []).filter(
+            (d) => documents.isWebsitePolicy(d) === (shelf === "policies")
+          )}
+        />
+      ))}
       {current ? <DocumentEditor id={current.id} key={current.id} /> : null}
     </div>
   );

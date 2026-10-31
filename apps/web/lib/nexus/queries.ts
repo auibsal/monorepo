@@ -3,7 +3,6 @@
 import { useAuth } from "@repo/auth/provider";
 import type { Grant } from "@repo/rbac";
 import { journal, membership, unwrap } from "@repo/sal-data";
-import { readFlags } from "@repo/sal-data/flags";
 import { useQuery } from "@tanstack/react-query";
 
 /**
@@ -13,9 +12,7 @@ import { useQuery } from "@tanstack/react-query";
  */
 export const queryKeys = {
   activity: (userId: string) => ["activity", userId] as const,
-  announcements: (userId: string) => ["announcements", userId] as const,
   calendarToken: (userId: string) => ["calendar-token", userId] as const,
-  flags: ["flags"] as const,
   grants: (userId: string) => ["grants", userId] as const,
   openCalls: ["open-calls"] as const,
   profile: (userId: string) => ["profile", userId] as const,
@@ -104,14 +101,6 @@ export const useGrants = () => {
   );
 };
 
-export const useFlags = () => {
-  const { supabase } = useAuth();
-  return useQuery({
-    queryFn: () => readFlags(supabase),
-    queryKey: queryKeys.flags,
-  });
-};
-
 export const useVerificationRequest = () => {
   const { supabase } = useAuth();
   return useUserQuery(queryKeys.verification, async () =>
@@ -189,20 +178,6 @@ export const useMyWaitlist = () => {
         .select("id, event:events(id, slug, title_en, title_ar, starts_at)")
         .eq("status", "waiting")
         .eq("user_id", userId)
-    )
-  );
-};
-
-export const useAnnouncements = () => {
-  const { supabase } = useAuth();
-  return useUserQuery(queryKeys.announcements, async () =>
-    unwrap(
-      await supabase
-        .schema("content")
-        .from("announcements")
-        .select("id, title_en, title_ar, body_en, body_ar, link, starts_at")
-        .order("starts_at", { ascending: false })
-        .limit(10)
     )
   );
 };

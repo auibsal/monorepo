@@ -88,10 +88,7 @@ export const MemberInsights = () => {
     <div className="grid gap-10">
       <AdminHeading
         actions={
-          <Link
-            className="text-sm underline underline-offset-4"
-            href="/members"
-          >
+          <Link className="text-sm underline underline-offset-4" href="/people">
             {tk("back")}
           </Link>
         }

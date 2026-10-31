@@ -20,7 +20,7 @@ import { localized, recognition, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
-import { useFlags, useGrants } from "@/lib/nexus/queries";
+import { useGrants } from "@/lib/nexus/queries";
 import { SectionSpinner } from "../../states";
 import {
   AdminHeading,
@@ -267,7 +267,6 @@ const PrepareForm = ({ onDone }: { onDone: () => void }) => {
   const locale = useLocale();
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
-  const flags = useFlags();
   const [person, setPerson] = useState<{
     full_name_ar: string | null;
     full_name_en: string;
@@ -297,9 +296,7 @@ const PrepareForm = ({ onDone }: { onDone: () => void }) => {
       ) ?? [],
     queryKey: [...key, "partners"],
   });
-  const kinds = recognition.certificateKinds.filter(
-    (kind) => kind !== "volunteer" || flags.data?.volunteer_certificates
-  );
+  const kinds = recognition.certificateKinds;
   const save = useMutation({
     mutationFn: async () => {
       const row = recognition.certificateSchema.parse({

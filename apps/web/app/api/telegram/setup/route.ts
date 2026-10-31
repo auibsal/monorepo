@@ -17,7 +17,7 @@ const body = z.object({ connect: z.boolean().default(false) });
 const webhookUrl = () => api("/telegram");
 
 /**
- * POST /telegram/setup, for Administration → Settings → Telegram (settings
+ * POST /telegram/setup, for the Desk's Connected panel (settings
  * managers) or with Bearer CRON_SECRET. `{ connect: true }` points Telegram
  * at <api>/telegram and sets the bot's commands and profile texts in both
  * languages; without it, it only reports whether the bot is set up and

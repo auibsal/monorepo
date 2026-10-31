@@ -4,13 +4,15 @@ import { urls } from "../playwright.config";
 import { signInWithPassword } from "./helpers";
 
 /**
- * Two editors on one site page (Supabase Realtime). Needs Realtime with
- * private channels on the stack under test; set E2E_COLLAB=1 to run it (for
- * example against a preview).
+ * Two officers on one set of draft minutes (Supabase Realtime). Minutes are
+ * written by the President and the General Secretary, whose roles need
+ * two-step sign-in, so this runs only against a stack where both test
+ * accounts hold such a role with two-step done, and with Realtime private
+ * channels on; set E2E_COLLAB=1 to run it (for example against a preview).
  */
 test.skip(!process.env.E2E_COLLAB, "Co-editing is not checked here");
 
-test("two editors see each other and each other's typing", async ({
+test("two officers see each other and each other's typing", async ({
   browser,
 }) => {
   const first = await (await browser.newContext()).newPage();
@@ -18,24 +20,12 @@ test("two editors see each other and each other's typing", async ({
   await signInWithPassword(first, editor.email);
   await signInWithPassword(second, editor2.email);
 
-  await first.goto(`${urls.app}/site`);
-  await first
-    .getByRole("button", { name: "New page" })
-    .or(first.getByRole("link", { name: "New page" }))
-    .first()
-    .click();
-  const title = `Shared draft ${Date.now()}`;
+  await first.goto(`${urls.app}/society/minutes/new`);
+  const title = `Shared minutes ${Date.now()}`;
   await first.getByRole("textbox", { name: "English" }).first().fill(title);
-  await first
-    .getByRole("textbox", { name: "Arabic" })
-    .first()
-    .fill("مسودة مشتركة");
-  await first
-    .getByRole("textbox", { name: "Web address (slug)" })
-    .fill(`shared-${Date.now()}`);
   await first.getByRole("button", { name: "Save" }).click();
-  // Saving a new page moves the editor to its own address; the room opens there.
-  await expect(first).toHaveURL(/\/diwan\/site\/pages\/(?!new)[^/?]+$/);
+  // Saving new minutes moves the editor to their own address; the room opens there.
+  await expect(first).toHaveURL(/\/diwan\/society\/minutes\/(?!new)[^/?]+$/);
   const url = first.url();
 
   await second.goto(url);

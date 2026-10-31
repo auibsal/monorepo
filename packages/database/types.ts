@@ -9,45 +9,6 @@ export type Json =
 export type Database = {
   access: {
     Tables: {
-      oauth_clients: {
-        Row: {
-          areas: string[];
-          client_id: string;
-          contact_email: string;
-          created_at: string;
-          created_by: string | null;
-          enabled: boolean;
-          name_ar: string | null;
-          name_en: string;
-          note: string | null;
-          updated_at: string;
-        };
-        Insert: {
-          areas?: string[];
-          client_id: string;
-          contact_email: string;
-          created_at?: string;
-          created_by?: string | null;
-          enabled?: boolean;
-          name_ar?: string | null;
-          name_en: string;
-          note?: string | null;
-          updated_at?: string;
-        };
-        Update: {
-          areas?: string[];
-          client_id?: string;
-          contact_email?: string;
-          created_at?: string;
-          created_by?: string | null;
-          enabled?: boolean;
-          name_ar?: string | null;
-          name_en?: string;
-          note?: string | null;
-          updated_at?: string;
-        };
-        Relationships: [];
-      };
       permissions: {
         Row: {
           description: string;
@@ -277,15 +238,6 @@ export type Database = {
           scope_type?: string;
         };
         Returns: string;
-      };
-      oauth_client_info: {
-        Args: { client_id: string };
-        Returns: {
-          areas: string[];
-          enabled: boolean;
-          name_ar: string;
-          name_en: string;
-        }[];
       };
       officer_directory: {
         Args: Record<PropertyKey, never>;
@@ -610,51 +562,6 @@ export type Database = {
   };
   content: {
     Tables: {
-      announcements: {
-        Row: {
-          audience: string;
-          body_ar: string | null;
-          body_en: string | null;
-          created_at: string;
-          created_by: string | null;
-          ends_at: string | null;
-          id: string;
-          is_banner: boolean;
-          link: string | null;
-          starts_at: string;
-          title_ar: string;
-          title_en: string;
-        };
-        Insert: {
-          audience?: string;
-          body_ar?: string | null;
-          body_en?: string | null;
-          created_at?: string;
-          created_by?: string | null;
-          ends_at?: string | null;
-          id?: string;
-          is_banner?: boolean;
-          link?: string | null;
-          starts_at?: string;
-          title_ar: string;
-          title_en: string;
-        };
-        Update: {
-          audience?: string;
-          body_ar?: string | null;
-          body_en?: string | null;
-          created_at?: string;
-          created_by?: string | null;
-          ends_at?: string | null;
-          id?: string;
-          is_banner?: boolean;
-          link?: string | null;
-          starts_at?: string;
-          title_ar?: string;
-          title_en?: string;
-        };
-        Relationships: [];
-      };
       document_sections: {
         Row: {
           anchor: string;
@@ -694,84 +601,6 @@ export type Database = {
         };
         Relationships: [];
       };
-      homepage_slots: {
-        Row: {
-          body_ar: string | null;
-          body_en: string | null;
-          key: string;
-          link: string | null;
-          ref_id: string | null;
-          ref_type: string | null;
-          sort: number;
-          title_ar: string | null;
-          title_en: string | null;
-          updated_at: string;
-        };
-        Insert: {
-          body_ar?: string | null;
-          body_en?: string | null;
-          key: string;
-          link?: string | null;
-          ref_id?: string | null;
-          ref_type?: string | null;
-          sort?: number;
-          title_ar?: string | null;
-          title_en?: string | null;
-          updated_at?: string;
-        };
-        Update: {
-          body_ar?: string | null;
-          body_en?: string | null;
-          key?: string;
-          link?: string | null;
-          ref_id?: string | null;
-          ref_type?: string | null;
-          sort?: number;
-          title_ar?: string | null;
-          title_en?: string | null;
-          updated_at?: string;
-        };
-        Relationships: [];
-      };
-      media_assets: {
-        Row: {
-          alt_ar: string;
-          alt_en: string;
-          consent_note: string | null;
-          created_at: string;
-          height: number | null;
-          id: string;
-          mime_type: string;
-          storage_path: string;
-          uploaded_by: string | null;
-          width: number | null;
-        };
-        Insert: {
-          alt_ar?: string;
-          alt_en?: string;
-          consent_note?: string | null;
-          created_at?: string;
-          height?: number | null;
-          id?: string;
-          mime_type: string;
-          storage_path: string;
-          uploaded_by?: string | null;
-          width?: number | null;
-        };
-        Update: {
-          alt_ar?: string;
-          alt_en?: string;
-          consent_note?: string | null;
-          created_at?: string;
-          height?: number | null;
-          id?: string;
-          mime_type?: string;
-          storage_path?: string;
-          uploaded_by?: string | null;
-          width?: number | null;
-        };
-        Relationships: [];
-      };
       newsletter_subscribers: {
         Row: {
           confirm_sent_at: string | null;
@@ -808,45 +637,6 @@ export type Database = {
           status?: string;
           unsubscribe_token?: string;
           unsubscribed_at?: string | null;
-        };
-        Relationships: [];
-      };
-      pages: {
-        Row: {
-          body_ar: string | null;
-          body_en: string | null;
-          created_at: string;
-          id: string;
-          published_at: string | null;
-          slug: string;
-          status: string;
-          title_ar: string;
-          title_en: string;
-          updated_at: string;
-        };
-        Insert: {
-          body_ar?: string | null;
-          body_en?: string | null;
-          created_at?: string;
-          id?: string;
-          published_at?: string | null;
-          slug: string;
-          status?: string;
-          title_ar: string;
-          title_en: string;
-          updated_at?: string;
-        };
-        Update: {
-          body_ar?: string | null;
-          body_en?: string | null;
-          created_at?: string;
-          id?: string;
-          published_at?: string | null;
-          slug?: string;
-          status?: string;
-          title_ar?: string;
-          title_en?: string;
-          updated_at?: string;
         };
         Relationships: [];
       };
@@ -914,41 +704,6 @@ export type Database = {
         };
         Relationships: [];
       };
-      blackouts: {
-        Row: {
-          ends_on: string;
-          id: string;
-          label_ar: string;
-          label_en: string;
-          semester_id: string;
-          starts_on: string;
-        };
-        Insert: {
-          ends_on: string;
-          id?: string;
-          label_ar: string;
-          label_en: string;
-          semester_id: string;
-          starts_on: string;
-        };
-        Update: {
-          ends_on?: string;
-          id?: string;
-          label_ar?: string;
-          label_en?: string;
-          semester_id?: string;
-          starts_on?: string;
-        };
-        Relationships: [
-          {
-            foreignKeyName: "blackouts_semester_id_fkey";
-            columns: ["semester_id"];
-            isOneToOne: false;
-            referencedRelation: "semesters";
-            referencedColumns: ["id"];
-          },
-        ];
-      };
       external_events: {
         Row: {
           all_day: boolean;
@@ -1001,6 +756,7 @@ export type Database = {
           interests: string[];
           languages: string[];
           major: string | null;
+          photo_consent: boolean;
           research_consent: boolean;
           skills: string[];
           student_id: string | null;
@@ -1021,6 +777,7 @@ export type Database = {
           interests?: string[];
           languages?: string[];
           major?: string | null;
+          photo_consent?: boolean;
           research_consent?: boolean;
           skills?: string[];
           student_id?: string | null;
@@ -1041,6 +798,7 @@ export type Database = {
           interests?: string[];
           languages?: string[];
           major?: string | null;
+          photo_consent?: boolean;
           research_consent?: boolean;
           skills?: string[];
           student_id?: string | null;
@@ -1515,6 +1273,16 @@ export type Database = {
           isSetofReturn: false;
         };
       };
+      current_term: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          code: string;
+          ends_on: string;
+          name_ar: string;
+          name_en: string;
+          starts_on: string;
+        }[];
+      };
       member_insights: { Args: Record<PropertyKey, never>; Returns: Json };
       my_personal_email: {
         Args: Record<PropertyKey, never>;
@@ -1530,6 +1298,13 @@ export type Database = {
         Returns: {
           notify_email: boolean;
           personal_email: string;
+        }[];
+      };
+      pledge_versions: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          key: string;
+          value: Json;
         }[];
       };
       previous_semester: {

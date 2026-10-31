@@ -19,6 +19,10 @@ test("a News desk editor starts a piece, and it waits in Editing, unpublished", 
     .or(page.getByRole("button", { name: "New staff piece" }))
     .first()
     .click();
+  await expect(page).toHaveURL(/\/diwan\/qirtas\/pieces\/new$/);
+  await expect(
+    page.getByRole("button", { name: "Create the piece" })
+  ).toBeVisible();
   await page.getByRole("textbox", { name: "English" }).first().fill(title);
   await page
     .getByRole("textbox", { name: "Arabic" })

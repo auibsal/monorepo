@@ -11,7 +11,6 @@ under Account); the Society's documents are on
 - [Releases and migrations](releases.md)
 - [Backups and restore](backups.md)
 - [When something breaks](incidents.md)
-- [Sign in with SAL and the API](api.md)
 - [Notifications](notifications.md)
 - [Email: every email, its sender and its settings](email.md)
 - [Analytics and consent](analytics.md)

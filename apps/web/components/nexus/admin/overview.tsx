@@ -14,12 +14,14 @@ import { localized, unwrap } from "@repo/sal-data";
 import { useQuery } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/lib/nexus/navigation";
+import { useNotionHandbook, useTeamWorkspace } from "@/lib/nexus/notion";
 import { useGrants } from "@/lib/nexus/queries";
-import { RecoveryCodes } from "../auth/recovery-codes";
-import { StartLinks } from "../forms/forms";
 import { DiwanSection } from "../page";
 import { ErrorState, SectionSpinner } from "../states";
 import { AdminHeading } from "./kit";
+import { RecentActivity } from "./system/activity";
+import { NotionWorkspace } from "./system/notion";
+import { TelegramBot } from "./system/telegram";
 
 interface Overview {
   campaigns?: {
@@ -105,7 +107,7 @@ const verificationFigure = (
           date: formatLongDate(o.verification_oldest_at ?? "", locale),
         })
       : t("verificationNone"),
-    href: "/members",
+    href: "/people/verification",
     label: t("verificationPending"),
     value: o.verification_pending,
   };
@@ -186,7 +188,7 @@ const buildFigures = (o: Overview, t: T, locale: Locale) =>
 const QUICK: readonly {
   readonly href: string;
   readonly icon: IconName;
-  readonly key: "door" | "event" | "piece" | "verify" | "requests";
+  readonly key: "door" | "event" | "piece" | "verify" | "minutes";
   readonly permission: Permission;
 }[] = [
   {
@@ -208,16 +210,16 @@ const QUICK: readonly {
     permission: "journal.manage",
   },
   {
-    href: "/members/verification",
+    href: "/people/verification",
     icon: "id-card",
     key: "verify",
     permission: "members.verify",
   },
   {
-    href: "/requests",
-    icon: "ellipsis",
-    key: "requests",
-    permission: "members.manage",
+    href: "/society/minutes/new",
+    icon: "file-text",
+    key: "minutes",
+    permission: "governance.minutes.write",
   },
 ];
 
@@ -239,10 +241,48 @@ const QuickActions = () => {
   ));
 };
 
+/** Where the team's own papers are: the Notion workspace and the handbook. */
+const NotionLinks = () => {
+  const tn = useTranslations("nexus.nav");
+  const tc = useTranslations("common");
+  const workspace = useTeamWorkspace();
+  const handbook = useNotionHandbook();
+  const links = [
+    ...(workspace ? [{ href: workspace, key: "workspace" } as const] : []),
+    ...(handbook.home
+      ? [{ href: handbook.home, key: "handbook" } as const]
+      : []),
+  ];
+  if (links.length === 0) {
+    return null;
+  }
+  return (
+    <p className="flex flex-wrap gap-x-6 gap-y-2">
+      {links.map((link) => (
+        <a
+          className="inline-flex items-center gap-1.5 text-sm underline-offset-4 hover:underline"
+          href={link.href}
+          key={link.key}
+          rel="noopener"
+          target="_blank"
+        >
+          {tn(link.key)}
+          <Icon
+            className="size-3.5"
+            label={tc("externalLink")}
+            name="arrow-up-right"
+          />
+        </a>
+      ))}
+    </p>
+  );
+};
+
 export const AdminOverview = () => {
   const t = useTranslations("nexus.admin.overview");
   const locale = useLocale() as Locale;
   const { supabase } = useAuth();
+  const grants = useGrants();
   const overview = useQuery({
     queryFn: async () =>
       (unwrap(await supabase.schema("core").rpc("admin_overview")) ??
@@ -259,11 +299,15 @@ export const AdminOverview = () => {
 
   const o = overview.data;
   const figures = buildFigures(o, t, locale);
+  const can = (permission: Permission) =>
+    hasPermissionAnywhere(grants.data, permission);
 
   return (
     <div className="grid gap-14">
-      <AdminHeading actions={<QuickActions />} title={t("title")} />
-      <RecoveryCodes />
+      <div className="grid gap-4">
+        <AdminHeading actions={<QuickActions />} title={t("title")} />
+        <NotionLinks />
+      </div>
       {figures.length === 0 && !o.campaigns ? (
         <p className="type-body text-text-secondary">{t("nothing")}</p>
       ) : null}
@@ -305,13 +349,24 @@ export const AdminOverview = () => {
           )}
         </DiwanSection>
       ) : null}
-      <DiwanSection
-        description={t("forRole.lede")}
-        id="for-your-role"
-        title={t("forRole.title")}
-      >
-        <StartLinks keys={["f11", "f14", "f24", "f04", "f06", "f27", "f25a"]} />
-      </DiwanSection>
+      {can("audit.read") ? (
+        <DiwanSection id="activity" title={t("activity")}>
+          <RecentActivity />
+          <Link
+            className="link type-caption justify-self-start"
+            href="/activity"
+          >
+            {t("allActivity")}
+          </Link>
+        </DiwanSection>
+      ) : null}
+      {can("settings.manage") ? (
+        <DiwanSection id="connected" title={t("connected")}>
+          <p className="type-body">{t("connectedLede")}</p>
+          <NotionWorkspace />
+          <TelegramBot />
+        </DiwanSection>
+      ) : null}
     </div>
   );
 };

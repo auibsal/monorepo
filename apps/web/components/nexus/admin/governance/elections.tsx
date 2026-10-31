@@ -12,7 +12,6 @@ import { governance, localized, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
-import { useFlags } from "@/lib/nexus/queries";
 import { SectionSpinner } from "../../states";
 import {
   BilingualField,
@@ -431,7 +430,6 @@ export const Elections = () => {
   const t = useTranslations("nexus.admin.governance.elections");
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
-  const flags = useFlags();
   const [form, setForm] = useState({
     nominations_close_at: null as string | null,
     nominations_open_at: null as string | null,
@@ -486,11 +484,6 @@ export const Elections = () => {
 
   return (
     <div className="grid gap-6">
-      {flags.data && !flags.data.elections ? (
-        <p className="type-body border-line border-t p-space-4">
-          {t("flagOff")}
-        </p>
-      ) : null}
       {elections.isPending ? <SectionSpinner /> : null}
       {elections.data?.map((election) => (
         <ElectionCard election={election} key={election.id} />

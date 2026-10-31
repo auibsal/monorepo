@@ -25,24 +25,32 @@ const asText = (value: Json | undefined) =>
   typeof value === "string" ? value : "";
 
 /**
- * Settings: Hudhud, the Society's Telegram bot. Its username (members see
+ * The Desk's Connected panel: Hudhud, the Society's Telegram bot. Its username (members see
  * "Connect Telegram" once it is set) and a one-time /setup code for
  * connecting a group. The group's rules and welcome live in Telegram itself
  * (its welcome message and description).
  */
-export const TelegramBot = ({
-  settings,
-}: {
-  settings: Record<string, Json>;
-}) => {
+export const TelegramBot = () => {
   const t = useTranslations("nexus.admin.settings.telegram");
   const { supabase, user } = useAuth();
   const queryClient = useQueryClient();
   const [username, setUsername] = useState("");
   const [code, setCode] = useState<string | null>(null);
+  const saved = useQuery({
+    queryFn: async () =>
+      unwrap(
+        await supabase
+          .schema("core")
+          .from("settings")
+          .select("value")
+          .eq("key", "telegram.bot_username")
+          .maybeSingle()
+      )?.value as Json | undefined,
+    queryKey: ["admin", "settings", "telegram.bot_username"],
+  });
   useEffect(() => {
-    setUsername(asText(settings["telegram.bot_username"]));
-  }, [settings]);
+    setUsername(asText(saved.data));
+  }, [saved.data]);
 
   const save = useMutation({
     mutationFn: async () => {

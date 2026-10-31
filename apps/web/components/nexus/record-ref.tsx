@@ -1,7 +1,7 @@
 "use client";
 
 import { useAuth } from "@repo/auth/provider";
-import { adminModules, modulePaths } from "@repo/rbac";
+import { adminSections, sectionOfPath } from "@repo/rbac";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import type { ReactNode } from "react";
@@ -31,26 +31,20 @@ export const RouteParamsProvider = ({
   readonly value: Readonly<Record<string, string>>;
 }) => <RouteParams.Provider value={value}>{children}</RouteParams.Provider>;
 
-/** The Diwan section a list address belongs to: /qirtas?tab=games → Qirtas. */
-const sectionOf = (back: string) => {
-  const path = back.split("?")[0] ?? back;
-  return adminModules
-    .map((module) => module.key)
-    .filter((key) => key !== "overview")
-    .sort((a, b) => modulePaths[b].length - modulePaths[a].length)
-    .find(
-      (key) =>
-        path === modulePaths[key] || path.startsWith(`${modulePaths[key]}/`)
-    );
-};
-
 /** Where the record sits, above its page: its section, as a link back. */
 const Where = ({ back }: { readonly back: string }) => {
-  const t = useTranslations("nexus.admin.nav");
-  const section = sectionOf(back);
-  return section ? (
-    <PathLine items={[{ href: back, label: t(section) }]} />
-  ) : null;
+  const t = useTranslations("nexus.admin.sections");
+  const section = sectionOfPath(back);
+  return section === "desk" ? null : (
+    <PathLine
+      items={[
+        {
+          href: back,
+          label: t(adminSections.find((s) => s.key === section)?.key ?? "desk"),
+        },
+      ]}
+    />
+  );
 };
 
 /**

@@ -17,7 +17,7 @@ import { SocietySection } from "./section";
 type Lang = "en" | "ar";
 
 /**
- * Elections (behind the `features.elections` flag): stand during
+ * Elections: stand during
  * nominations, rank candidates while voting is open, read the results once
  * published. RLS shows only announced elections, approved candidates (and
  * the member's own nomination); cast_ballot enforces eligibility and the

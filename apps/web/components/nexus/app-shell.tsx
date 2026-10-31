@@ -6,14 +6,13 @@ import { useIsStaff } from "@/components/account/member-shell";
 import { SiteHeader } from "@/components/site-header";
 import { LinkProvider } from "@/lib/link-context";
 import { Link } from "@/lib/nexus/navigation";
+import { DiwanNav } from "./admin/admin-shell";
 import { LanguageSwitcher } from "./language-switcher";
 
 /**
  * The Diwan frame (officers only): skip link, the site's own header (owner,
- * Oct 30, 2026: the same main menu everywhere), main. The Diwan's own pages,
- * the overview, the modules, the library and declarations, are in the
- * administration's menu beside each page. Members' own pages are on the
- * site (/membership).
+ * Oct 30, 2026: the same main menu everywhere), the Diwan's row of six
+ * sections, main. Members' own pages are on the site (/membership).
  */
 export const AppShell = ({ children }: { children: ReactNode }) => {
   const t = useTranslations("common");
@@ -27,6 +26,7 @@ export const AppShell = ({ children }: { children: ReactNode }) => {
         {t("skipToContent")}
       </a>
       <SiteHeader language={<LanguageSwitcher />} staff={useIsStaff()} />
+      <DiwanNav />
       <main
         className="mx-auto w-full max-w-6xl flex-1 px-4 pt-12 pb-20 sm:pt-16 sm:pb-24"
         id="main"

@@ -1,3 +1,4 @@
+import { project } from "@repo/config";
 import { Link } from "@repo/internationalization/navigation";
 import { content } from "@repo/sal-data";
 import { getTranslations, setRequestLocale } from "next-intl/server";
@@ -18,19 +19,15 @@ const ContactPage = async ({ params }: LocaleParams) => {
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "web.contact" });
-  // Edited by officers in Nexus → Settings.
-  const [email, telegram] = await Promise.all([
-    readPublished(
-      ["about"],
-      (c) => content.publicSetting(c, "contact.email"),
-      null
-    ),
-    readPublished(
-      ["about"],
-      (c) => content.publicSetting(c, "contact.telegram_url"),
-      null
-    ),
-  ]);
+  // The Society's address is in the project file; the Telegram group is
+  // joined through Hudhud, who sends the invite to members.
+  const email = project.supportEmail;
+  const bot = await readPublished(
+    ["about"],
+    (c) => content.publicSetting(c, "telegram.bot_username"),
+    null
+  );
+  const telegram = text(bot) ? `https://t.me/${text(bot)}` : "";
 
   return (
     <div className="mx-auto grid w-full max-w-6xl gap-20 px-4 py-16 sm:py-24">
@@ -53,10 +50,10 @@ const ContactPage = async ({ params }: LocaleParams) => {
         <div className="grid gap-1 border-line border-t py-space-4">
           <dt className="type-caption">{t("telegram")}</dt>
           <dd className="type-subheading" dir="ltr" lang="en">
-            {text(telegram) ? (
+            {telegram ? (
               <a
                 className="underline-offset-4 hover:underline"
-                href={text(telegram)}
+                href={telegram}
                 rel="noopener noreferrer"
                 target="_blank"
               >
@@ -70,17 +67,13 @@ const ContactPage = async ({ params }: LocaleParams) => {
         <div className="grid gap-1 border-line border-t py-space-4">
           <dt className="type-caption">{t("email")}</dt>
           <dd>
-            {text(email) ? (
-              <a
-                className="type-subheading break-all underline-offset-4 hover:underline"
-                dir="ltr"
-                href={`mailto:${text(email)}`}
-              >
-                {text(email)}
-              </a>
-            ) : (
-              <span className="type-body">{t("emailPending")}</span>
-            )}
+            <a
+              className="type-subheading break-all underline-offset-4 hover:underline"
+              dir="ltr"
+              href={`mailto:${email}`}
+            >
+              {email}
+            </a>
           </dd>
         </div>
       </dl>

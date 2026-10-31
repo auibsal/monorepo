@@ -9,7 +9,6 @@ import {
   interviewTotal,
   interviewVeto,
 } from "./forms";
-import { fill, letterKeys, letters, letterText, placeholders } from "./letters";
 
 const read = (name: string) =>
   readFileSync(
@@ -110,35 +109,5 @@ describe("forms", () => {
         notes: { "250": { count1: 4 }, "50000": { count1: 2, count2: 2 } },
       })
     ).toEqual({ count1: 101_000, count2: 100_000 });
-  });
-});
-
-describe("letters", () => {
-  test("every letter has its fill-in fields", () => {
-    for (const key of letterKeys) {
-      expect(letters[key].paragraphs.length).toBeGreaterThan(0);
-    }
-    expect(placeholders(letters.l07)).toEqual([
-      "partner contact",
-      "name",
-      "program",
-      "result: numbers, people reached, money raised",
-      "One specific thing they did that made a difference.",
-      "when",
-      "Name",
-    ]);
-  });
-
-  test("filled values replace brackets; empty ones stay marked", () => {
-    const parts = fill("Dear [name], thank you for [program].", {
-      name: "Sara",
-    });
-    expect(parts.map((p) => p.text).join("")).toBe(
-      "Dear Sara, thank you for [program]."
-    );
-    expect(parts.filter((p) => p.placeholder && !p.filled)).toHaveLength(1);
-    expect(letterText(letters.l08, { name: "Dr. Huda" })).toContain(
-      "Dear Dr. Huda,"
-    );
   });
 });

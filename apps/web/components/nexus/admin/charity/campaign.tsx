@@ -128,7 +128,7 @@ const CampaignSettings = ({ campaignId }: { campaignId: string | null }) => {
     onSuccess: async (savedId) => {
       await queryClient.invalidateQueries({ queryKey: ["admin"] });
       if (!campaignId) {
-        router.replace(`/second-chapter/${savedId}`);
+        router.replace(`/events/programs/second-chapter/campaigns/${savedId}`);
       }
     },
   });
@@ -1245,7 +1245,7 @@ export const CampaignAdmin = () => {
   const back = (
     <Link
       className="text-sm underline underline-offset-4"
-      href="/second-chapter"
+      href="/events/programs/second-chapter?tab=collection"
     >
       {tk("back")}
     </Link>

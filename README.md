@@ -20,8 +20,7 @@ one Next.js app, `apps/web`, deployed once to auibsal.org.
 | `auibsal.org` (`app/[locale]/(site)`) | The public site, English at `/` and Arabic at `/ar` |
 | `auibsal.org/membership`, `/sign-in`, `/events/book`, … (`app/[locale]/(account)`) | **Members' pages** on the site: sign-in and sign-up, Membership, booking, shifts, writing for Qirtas, the Society; client-rendered with the member's own token |
 | `auibsal.org/diwan` (`app/[locale]/diwan`) | **The Diwan**: the officers' administration (anyone holding a role), client-rendered with the officer's own token |
-| `auibsal.org/api` (`app/api`, `lib/api`) | Email, cron (and a daily watch on the cron jobs), calendar feeds, exports, file links, deletion, the `/api/v1` API for apps, Hudhud the Telegram bot |
-| `auibsal.org/developers` | The guide and reference for app builders (Sign in with SAL, the Qirtas API) |
+| `auibsal.org/api` (`app/api`, `lib/api`) | Email, cron (and a daily watch on the cron jobs), calendar feeds, exports, file links, deletion, Hudhud the Telegram bot, the Notion sync |
 | `packages/storybook` | The SAL Design System: components, Screens and every platform email, run locally (`bun run --cwd packages/storybook dev`) |
 | `apps/e2e` | Playwright + axe journeys, in CI |
 

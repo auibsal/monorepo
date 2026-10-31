@@ -7,7 +7,6 @@ import { governance, localized, unwrap } from "@repo/sal-data";
 import { useQuery } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { Council as CouncilList } from "@/components/council";
-import { useFlags } from "@/lib/nexus/queries";
 import { StartLinks } from "../forms/forms";
 import { VotingEligibility } from "../home/voting";
 import { DiwanPage, DiwanSection, RowList } from "../page";
@@ -26,33 +25,6 @@ const Council = () => {
     queryFn: () => governance.councilMembers(supabase),
     queryKey: ["council-members"],
   });
-  const advisor = useQuery({
-    queryFn: async () => {
-      const rows =
-        unwrap(
-          await supabase
-            .schema("core")
-            .from("settings")
-            .select("key, value")
-            .in("key", [
-              "society.faculty_advisor_en",
-              "society.faculty_advisor_ar",
-            ])
-        ) ?? [];
-      const get = (k: string) => {
-        const value = rows.find((r) => r.key === k)?.value;
-        return typeof value === "string" ? value : "";
-      };
-      return {
-        ar: get("society.faculty_advisor_ar"),
-        en: get("society.faculty_advisor_en"),
-      };
-    },
-    queryKey: ["faculty-advisor"],
-  });
-  const advisorName =
-    locale === "ar" ? advisor.data?.ar || advisor.data?.en : advisor.data?.en;
-
   return (
     <SocietySection id="council" lede={t("lede")} title={t("title")}>
       {roster.isPending ? <SectionSpinner /> : null}
@@ -69,12 +41,6 @@ const Council = () => {
       ) : null}
       {roster.data?.length ? (
         <CouncilList locale={locale} members={roster.data} />
-      ) : null}
-      {advisorName ? (
-        <p className="type-body">
-          <span className="type-label me-2">{t("advisor")}</span>
-          {advisorName}
-        </p>
       ) : null}
     </SocietySection>
   );
@@ -218,19 +184,17 @@ const BookOfMembers = () => {
 /** The Society page: who serves, what was decided, and who belongs. */
 export const Society = () => {
   const t = useTranslations("nexus.society");
-  const flags = useFlags();
-
   return (
     <DiwanPage lede={t("lede")} title={t("title")}>
       <VotingEligibility />
       <Council />
-      {flags.data?.elections ? <Elections /> : null}
+      <Elections />
       <DiwanSection
         description={t("takePart.lede")}
         id="take-part"
         title={t("takePart.title")}
       >
-        <StartLinks keys={["f03", "f09", "f20", "f19"]} />
+        <StartLinks keys={["f20", "f09"]} />
       </DiwanSection>
       <Minutes />
       <BookOfMembers />

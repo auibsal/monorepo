@@ -205,3 +205,13 @@ Qirtas, unlike a program, may have several documents:
   - voting Apr 14–15;
   - AGM, the Ribbon and the Qirtas Prizes Apr 20;
   - new Council May 13.
+
+## 7. The Diwan, rebuilt (decided Oct 30)
+- **Six sections in one row,** like Membership's: Desk, What's on, Qirtas, The Company, People, Society. Programs, events and Second Chapter are one section (What's on); Qirtas and the Company each stand alone; ads are part of Qirtas. There is no Site section and no Settings page.
+- **Terms come from the AUIB calendar.** Every date runs for a term unless it is an event or given its own dates. A role assigned to someone runs for the Society's year, to the end of the Spring semester, unless it is ended sooner. The Faculty Advisor is a role, named with the Council, and serves until ended.
+- **Nothing kept by hand that is known elsewhere.** The paper's name is Qirtas; the contact address is hello@auibsal.org; members join the Telegram group through Hudhud. Pledge and agreement versions are internal, never public. There are no feature switches: online elections are simply on, in Society → Elections.
+- **No third-party apps.** Sign in with SAL and the public API are gone. The connected platforms are Notion (the team's workspace and handbook) and Telegram (Hudhud); both are checked from the Desk.
+- **The activity log reads as sentences** ("Lina changed the event …"), not database rows.
+- **No forms, no letters.** Three requests stay, each a plain action where it belongs: raise a concern, pitch a program, propose a General Assembly motion. Everything else is done elsewhere on the platform (roles on the Callboard, service hours, certificates, the conflict-of-interest declaration in Settings, photo consent in Profile) or is an officers' paper kept as a Notion template. Past submissions stay readable.
+- **Announcements are gone.** Notices go out through Hudhud and the Sunday Paper.
+- **The Library has two shelves:** Society documents, and Website policies (terms of use, accessibility and the privacy page).

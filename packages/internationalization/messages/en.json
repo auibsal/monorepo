@@ -330,10 +330,6 @@
         "history": "Activity history",
         "noHistory": "No activities recorded yet. Checking in at an event counts."
       },
-      "notices": {
-        "title": "Society notices",
-        "vote": "Vote"
-      },
       "journal": {
         "title": "Qirtas",
         "openCall": "{call} closes {date}",
@@ -362,7 +358,13 @@
         "tour": "When the Tour comes next",
         "takenDown": "These words were taken down from the wall."
       },
-      "greetingPlain": "Welcome"
+      "greetingPlain": "Welcome",
+      "needs": {
+        "title": "Needs you",
+        "returned": "Qirtas sent “{title}” back for a fix",
+        "agreement": "Sign the agreement for “{title}”",
+        "offer": "You have an offer for a role"
+      }
     },
     "events": {
       "title": "My calendar",
@@ -430,8 +432,7 @@
       "council": {
         "title": "The Council",
         "lede": "Three elected officers and five directors.",
-        "empty": "The Council appears here once its members hold their roles.",
-        "advisor": "Faculty Advisor"
+        "empty": "The Council appears here once its members hold their roles."
       },
       "minutes": {
         "title": "Adopted minutes",
@@ -751,34 +752,6 @@
     },
     "admin": {
       "title": "Administration",
-      "nav": {
-        "label": "Administration sections",
-        "overview": "Desk",
-        "members": "Members",
-        "events": "Events",
-        "journal": "Qirtas",
-        "content": "Site",
-        "ads": "Ads",
-        "charity": "Second Chapter",
-        "programs": "Programs",
-        "governance": "Governance",
-        "activity": "Activity log",
-        "settings": "Settings",
-        "partners": "Partners",
-        "recognition": "Service",
-        "productions": "The Company",
-        "forms": "Requests",
-        "groups": {
-          "whatsOn": "What’s on",
-          "publishing": "Qirtas and the site",
-          "people": "People",
-          "society": "The Society",
-          "office": "Requests and settings",
-          "yours": "For your role"
-        },
-        "hiring": "Hiring",
-        "library": "Library"
-      },
       "noAccess": "Your roles don't include this section. Ask the President or the General Secretary if you need it.",
       "kit": {
         "search": "Search",
@@ -857,17 +830,17 @@
         "submissionsDetail": "{intake} waiting for intake (the oldest since {oldest}), {reading} with readers, {selection} at selection.",
         "submissionsNone": "No submission is waiting.",
         "openPipeline": "Open the blind review",
-        "forRole": {
-          "title": "For your role",
-          "lede": "Plan an event, count the collection, and hand a role over. Each goes to the officers who sign it off."
-        },
         "quick": {
           "door": "Open the door",
           "event": "New event",
           "piece": "New piece",
           "verify": "Verify members",
-          "requests": "Requests"
-        }
+          "minutes": "New minutes"
+        },
+        "activity": "What happened",
+        "allActivity": "Everything that happened",
+        "connected": "Connected",
+        "connectedLede": "The team works in Notion and talks through Hudhud on Telegram. Both keep in step with the Diwan on their own; this is where to check them."
       },
       "members": {
         "title": "Members",
@@ -1395,17 +1368,17 @@
       },
       "programmes": {
         "title": "Programs",
-        "lede": "Next Stop episodes and reels, Six Words moderation, rotas and shifts, and removal requests.",
+        "lede": "The six programs you run, each with its sessions, shifts, places and needs, and the pitches members send for new ones.",
         "programme": "Program",
         "tabs": {
           "episodes": "Episodes",
           "reels": "Reels",
-          "sixWords": "Six Words",
-          "rotas": "Rotas",
-          "removals": "Removal requests ({count})",
-          "roles": "Roles",
           "sessions": "Sessions",
-          "needs": "Needs"
+          "needs": "Needs",
+          "shifts": "Shifts",
+          "places": "Places",
+          "six-words": "Six Words",
+          "collection": "Collection"
         },
         "episodes": {
           "new": "New episode",
@@ -1569,6 +1542,14 @@
           "until": "Until",
           "add": "Add the sessions",
           "added": "{count, plural, =0 {No new dates to add.} one {Added one session.} other {Added {shown} sessions.}}"
+        },
+        "removalsTitle": "Takedown requests",
+        "none": "No program is yours to run yet. Roles are assigned on a member’s page.",
+        "notYours": "This program isn’t one you run.",
+        "all": "All programs",
+        "pitches": {
+          "title": "Pitches",
+          "lede": "Ideas for new programs that members sent. The Director of Programs answers each one."
         }
       },
       "governance": {
@@ -1593,16 +1574,6 @@
           "superseded": "Superseded",
           "pending": "Pending",
           "approved": "Approved"
-        },
-        "council": {
-          "roster": "Current Council",
-          "rosterHint": "From active role assignments; change it in Members → a member → Roles.",
-          "empty": "No Council roles are assigned.",
-          "terms": "Council terms",
-          "newTerm": "Add a term",
-          "name": "Name (e.g. Founding Council 2026–27)",
-          "startsOn": "Starts on",
-          "endsOn": "Ends on"
         },
         "minutes": {
           "new": "New minutes",
@@ -1682,98 +1653,7 @@
           "noticeGiven": "{count, plural, =0 {Notice given {date}. No one is on the voter list.} one {Notice given {date}. {n} person is on the voter list.} other {Notice given {date}. {n} people are on the voter list.}}"
         }
       },
-      "activity": {
-        "title": "Activity log",
-        "lede": "Who changed what and when, on every table that holds roles, money, decisions or published content. Ballots are never logged.",
-        "table": "Table",
-        "operation": "Change",
-        "actor": "By",
-        "when": "When",
-        "changes": "What changed",
-        "operations": {
-          "INSERT": "Added",
-          "UPDATE": "Changed",
-          "DELETE": "Removed"
-        },
-        "system": "System",
-        "allTables": "All tables",
-        "allChanges": "All changes",
-        "more": "Show older",
-        "fields": "{count, plural, one {{countText} field} other {{countText} fields}}",
-        "export": "Export"
-      },
       "settings": {
-        "title": "Settings",
-        "lede": "Semesters and exam weeks, the journal's name, the AUIB calendar, pledge versions and feature flags.",
-        "semesters": "Semesters",
-        "semesterHint": "Voting eligibility counts activities in the current and previous semester, so keep these dates right.",
-        "code": "Code (e.g. fall-2026)",
-        "codeError": "Use fall-YYYY, spring-YYYY or summer-YYYY.",
-        "name": "Name",
-        "startsOn": "Starts on",
-        "endsOn": "Ends on",
-        "addSemester": "Add semester",
-        "noSemesters": "No semesters yet. Voting eligibility needs them.",
-        "blackouts": "Exam weeks and other blackouts",
-        "addBlackout": "Add a blackout",
-        "label": "Label",
-        "remove": "Remove",
-        "removeConfirm": "Remove this? Voting eligibility may change.",
-        "journal": "Publication name",
-        "journalHint": "Shown everywhere the publication is named. The name is confirmed by Oct 22.",
-        "calendar": "AUIB campus calendar (iCal URL)",
-        "calendarHint": "Fetched every hour; events appear beside SAL's, marked as AUIB.",
-        "lastSync": "{count} AUIB events, last fetched {time}",
-        "neverSynced": "Not fetched yet.",
-        "pledges": "Pledge and agreement versions",
-        "pledgesHint": "Raising a pledge version asks every member to accept it again on their next visit.",
-        "humanAuthorship": "Human Authorship pledge",
-        "memberPledge": "Member Pledge (SAL-POL-01)",
-        "agreement": "Qirtas Publication Agreement",
-        "versionConfirm": "Change the version to {version}? Members will be asked to accept it again.",
-        "flags": "Feature flags",
-        "elections": "Online elections",
-        "electionsHint": "Off until the Elections Committee and Student Life decide to use the online ballot.",
-        "on": "On",
-        "off": "Off",
-        "turnOn": "Turn on",
-        "turnOff": "Turn off",
-        "flagConfirm": "Change this for everyone, at once?",
-        "banner": "The site-wide banner is a public notice: Content → Notices.",
-        "emails": "Email templates are part of the code (packages/email), in English and Arabic and on brand; each member gets their own language. Ask the technical administrator to change them.",
-        "contacts": {
-          "title": "Contact and the Faculty Advisor",
-          "email": "Society email",
-          "telegram": "The Common Room on Telegram",
-          "telegramInvalid": "Use the full Telegram link, starting https://t.me/.",
-          "advisor": "Faculty Advisor",
-          "hint": "Shown on auibsal.org (Contact) and in the Diwan (Society). Leave a field empty to hide it.",
-          "telegramPlaceholder": "https://t.me/…"
-        },
-        "apps": {
-          "title": "Third-party apps (Sign in with SAL)",
-          "hint": "Apps outside the Diwan that members can sign in to with their Society account, such as a Qirtas team's own tool. Register the app in Supabase first (Authentication → OAuth Apps), then list it here with what it may reach. An app that isn't listed, or is switched off, sees nothing.",
-          "name": "App name",
-          "contact": "Contact email",
-          "clientId": "Client ID",
-          "clientIdHint": "From Supabase → Authentication → OAuth Apps.",
-          "areasLabel": "May reach",
-          "areas": {
-            "profile": "Name and language",
-            "journal": "Qirtas",
-            "events": "Events",
-            "programmes": "Programs",
-            "content": "Pages and news"
-          },
-          "never": "Membership records, elections, the charity ledger and roles are never available to apps.",
-          "status": "Status",
-          "switchOn": "Switch on",
-          "switchOff": "Switch off",
-          "switchOnConfirm": "The app can act for members who allow it, within the areas listed.",
-          "switchOffConfirm": "The app loses access straight away, for every member.",
-          "none": "No apps yet.",
-          "add": "Add an app"
-        },
         "notion": {
           "title": "Notion",
           "lede": "The team's workspace: projects, tasks, meetings and the handbook live there, and events and news are written and published from there. Every five minutes the platform copies officers, programs, documents and Journal counts into it and publishes what is marked Ready to publish.",
@@ -2540,32 +2420,7 @@
         "saveOffice": "Save office use",
         "acknowledge": "Acknowledge",
         "takeUp": "Mark as being handled",
-        "close": "Close",
-        "letters": {
-          "lede": "The standard letters from Templates & Forms, word for word. Fill in each bracket, then copy the text into an email or print it.",
-          "choose": "Letter",
-          "fill": "Fill in",
-          "to": "To",
-          "subject": "Subject",
-          "copy": "Copy the text",
-          "copied": "Copied.",
-          "print": "Print",
-          "missing": "{count, plural, one {{countText} bracket still empty.} other {{countText} brackets still empty.}}",
-          "englishOnly": "The letters exist in English only for now; the Arabic versions are still to be written.",
-          "names": {
-            "l01": "Registration letter to Student Life",
-            "l02": "Faculty Advisor invitation",
-            "l03": "Charter Day notice to members",
-            "l04": "SAL Open Call, all-student email",
-            "f05": "Appointment Letter",
-            "l05": "Welcome to new members",
-            "l06": "Application outcome (not selected)",
-            "l07": "Thank-you to a partner",
-            "l08": "Honorary Fellowship invitation",
-            "l09": "Notice of General Assembly",
-            "l10": "Notice of Election"
-          }
-        }
+        "close": "Close"
       },
       "documents": {
         "title": "Library",
@@ -2603,7 +2458,11 @@
         },
         "adoptedNoDate": "An adopted document should record the date it was adopted.",
         "publicNote": "Saving publishes this text on auibsal.org/library. Its status is shown on the page, so a draft is never presented as adopted.",
-        "viewPublic": "Open the public Library"
+        "viewPublic": "Open the public Library",
+        "shelves": {
+          "society": "Society documents",
+          "policies": "Website policies"
+        }
       },
       "notion": {
         "event": "This event is written in the team's Notion workspace. Publishing it from Notion again replaces changes made here.",
@@ -2616,13 +2475,10 @@
         "tabs": {
           "newsroom": "Newsroom",
           "review": "Blind review",
-          "desks": "Desk queue",
-          "front": "Front page",
-          "editions": "Editions",
-          "contributors": "Contributors",
+          "editions": "Editions and prizes",
           "games": "Games",
-          "prizes": "Prizes",
-          "needs": "Needs"
+          "next-stop": "Next Stop",
+          "ads": "Ads"
         },
         "edition": "Edition",
         "launch": "Launch",
@@ -2852,7 +2708,15 @@
         "slug": "Address",
         "shortlistOn": "Shortlists announced",
         "awardedOn": "Prizes awarded",
-        "addRound": "Add the round"
+        "addRound": "Add the round",
+        "names": {
+          "hidden": "The public pages say \"the main prize\" and \"the prize for News\" until the prizes' names are confirmed.",
+          "shown": "The public pages use the prizes' names.",
+          "show": "Use the names",
+          "hide": "Stop using the names",
+          "showAsk": "The Mutanabbi Prize and the five section prizes will be named on the public pages.",
+          "hideAsk": "The public pages will go back to plain descriptions."
+        }
       },
       "needs": {
         "lede": "What this program needs from Student Life: the item, how many, by when and what for. No costs. The General Secretary sends each request and records what was provided.",
@@ -2926,6 +2790,126 @@
           "onboarded": "Onboarded",
           "withdrawn": "Withdraw"
         }
+      },
+      "sections": {
+        "label": "The Diwan’s sections",
+        "desk": "Desk",
+        "events": "What’s on",
+        "qirtas": "Qirtas",
+        "company": "The Company",
+        "people": "People",
+        "society": "Society",
+        "tabs": {
+          "calendar": "Calendar",
+          "programs": "Programs",
+          "door": "The door",
+          "events": "What’s on",
+          "members": "Members",
+          "verification": "Verification",
+          "hiring": "Hiring",
+          "service": "Service",
+          "partners": "Partners",
+          "insights": "Insights",
+          "people": "People",
+          "minutes": "Minutes",
+          "resolutions": "Resolutions",
+          "requests": "Requests",
+          "elections": "Elections",
+          "concerns": "Concerns",
+          "library": "Library",
+          "society": "Society"
+        }
+      },
+      "society": {
+        "minutes": {
+          "title": "Minutes",
+          "lede": "Adopted minutes of the Council and the General Assembly. Agendas and working notes stay in Notion’s Meetings."
+        },
+        "resolutions": {
+          "title": "Resolutions",
+          "lede": "Adopted resolutions, and the motions members propose for the General Assembly."
+        },
+        "requests": {
+          "title": "Requests to Student Life",
+          "lede": "Every section’s needs, for the General Secretary to send to Student Life and log what was provided."
+        },
+        "elections": {
+          "title": "Elections",
+          "lede": "For the Elections Committee: the register, nominations, the ballot and the results. Members vote from their Society page."
+        },
+        "concerns": {
+          "title": "Concerns",
+          "lede": "Concerns and incident reports, routed to whoever handles them and kept confidential."
+        },
+        "library": {
+          "title": "Library",
+          "lede": "Library"
+        }
+      },
+      "activity": {
+        "title": "What happened",
+        "lede": "Who did what in the Diwan, newest first.",
+        "area": "Section",
+        "everywhere": "Every section",
+        "none": "Nothing yet.",
+        "more": "Show earlier",
+        "platform": "The platform",
+        "all": "Everything that happened",
+        "named": " “{name}”",
+        "sentence": {
+          "INSERT": "{who} added {thing}{name}",
+          "UPDATE": "{who} changed {thing}{name}",
+          "DELETE": "{who} removed {thing}{name}"
+        },
+        "things": {
+          "access_role_assignments": "a role",
+          "access_two_step_resets": "a two-step reset",
+          "charity_campaigns": "a Second Chapter campaign",
+          "charity_impact_metrics": "an impact figure",
+          "charity_ledger_entries": "a ledger entry",
+          "charity_ledger_signoffs": "a ledger sign-off",
+          "charity_receipts": "a receipt",
+          "events_check_ins": "a check-in at the door",
+          "events_events": "the event",
+          "events_series_rules": "a program’s repeat rule",
+          "governance_candidates": "a candidate",
+          "governance_election_results": "election results",
+          "governance_elections": "the election",
+          "governance_library_documents": "the document",
+          "governance_member_offers": "a member offer",
+          "governance_minutes": "the minutes",
+          "governance_partner_affiliations": "a partner affiliation",
+          "governance_partner_agreements": "a partner agreement",
+          "governance_partners": "the partner",
+          "governance_resolutions": "the resolution",
+          "governance_society_documents": "the document",
+          "journal_ads": "the ad",
+          "journal_agreements": "an author agreement",
+          "journal_approvals": "an approval",
+          "journal_calls": "the call",
+          "journal_corrections": "a correction",
+          "journal_decisions": "a decision",
+          "journal_issues": "the Edition",
+          "journal_pieces": "the piece",
+          "journal_prize_entries": "a prize entry",
+          "journal_prize_rounds": "the prize round",
+          "journal_puzzles": "the game",
+          "membership_certificates": "a certificate",
+          "membership_memberships": "a membership",
+          "membership_service_records": "service hours",
+          "membership_verification_requests": "a verification request",
+          "programmes_episodes": "the episode",
+          "programmes_needs": "a need",
+          "programmes_opening_replies": "an application",
+          "programmes_placements": "a place",
+          "programmes_production_credits": "a credit",
+          "programmes_production_events": "a performance date",
+          "programmes_productions": "the production",
+          "programmes_reels": "the reel",
+          "programmes_removal_requests": "a takedown request",
+          "programmes_six_words": "a Six Words card",
+          "membership_activity_records": "an activity record"
+        }
       }
     },
     "editor": {
@@ -2953,37 +2937,6 @@
       "deleteRow": "Delete row",
       "deleteColumn": "Delete column",
       "deleteTable": "Delete table"
-    },
-    "oauth": {
-      "title": "Sign in with SAL",
-      "intro": "{app} wants to sign you in with your Society account.",
-      "account": "You're signed in as {email}.",
-      "canTitle": "If you allow it, {app} can:",
-      "always": "See your email address and what you're allowed to do in the Society",
-      "areas": {
-        "profile": "See your name and language",
-        "journal": "Act for you in Qirtas: submit work, read the entries assigned to you, score them and, if you're an editor, record decisions. Readers never see who wrote a piece.",
-        "events": "See events and book or cancel places for you",
-        "programmes": "See program rotas and sign you up for shifts",
-        "content": "See and, if you're allowed, edit the Society's pages and news"
-      },
-      "never": "It can never see or do anything with your membership record, elections, ballots or the charity ledger.",
-      "notApproved": "The Society hasn't approved {app}, so it can't be used with your account. If you think it should be, write to {email}.",
-      "disconnectLater": "You can disconnect it at any time in Profile and privacy.",
-      "allow": "Allow",
-      "deny": "Don't allow",
-      "working": "One moment…",
-      "invalid": "This sign-in link has expired or is incomplete. Go back to the app and start again.",
-      "failed": "We couldn't finish signing you in. Go back to the app and try again."
-    },
-    "handbook": {
-      "title": "Officer handbook",
-      "forOfficers": "The handbook is for Society officers. It opens when you hold a role.",
-      "seeSociety": "See who runs the Society",
-      "inNotion": "The handbook is kept in the team's Notion workspace, the only copy, edited there. Sign in to Notion with your AUIB address.",
-      "open": "Open the handbook in Notion",
-      "notConnected": "The handbook isn't linked from the Diwan yet.",
-      "home": "Back to home"
     },
     "declarations": {
       "title": "Conflict of interest",
@@ -3828,7 +3781,9 @@
       "consent": "Count my answers in the Society's anonymous reports",
       "consentHint": "Reports show only totals (for example, how many members are interested in theater), never a name, and never a group smaller than five.",
       "save": "Save",
-      "saved": "Saved."
+      "saved": "Saved.",
+      "photos": "Photos of me at the Society’s events may be shared",
+      "photosHint": "On the Society’s website, its channels and in Qirtas. Change your mind at any time; photos already shared stay up unless you ask us to take them down."
     },
     "personalEmail": {
       "title": "Personal email",
@@ -3916,7 +3871,9 @@
       "noticesLine": "Email, your phone and Telegram: how the Society reaches you.",
       "noticesLede": "Every way the Society reaches you, on one page.",
       "noticesEmail": "Email",
-      "noticesEmailLine": "Whether optional email reaches you, the Sunday Paper and reminders, is set in"
+      "noticesEmailLine": "Whether optional email reaches you, the Sunday Paper and reminders, is set in",
+      "declarations": "Conflict of interest",
+      "declarationsLine": "For officers: what you declare each semester, and anything new."
     },
     "recoveryCodes": {
       "noneTitle": "Save your recovery codes",
@@ -4081,7 +4038,7 @@
     },
     "documents": {
       "title": "Library",
-      "lede": "The Society's founding documents: the Constitution, the rules that follow from it, and the plans and handbooks members use. Each page says whether the text is a draft or adopted.",
+      "lede": "The Constitution and the rules, plans and handbooks that follow from it, and the policies of this website.",
       "englishOnly": "The documents are in English; the Arabic versions are being prepared.",
       "all": "All documents",
       "statusLabel": "Status of this document",
@@ -4100,7 +4057,11 @@
       "dated": "Dated {date}",
       "contents": "Contents",
       "empty": "The documents will appear here.",
-      "noText": "The text of this document has not been entered yet."
+      "noText": "The text of this document has not been entered yet.",
+      "shelves": {
+        "society": "Society documents",
+        "policies": "Website policies"
+      }
     },
     "events": {
       "title": "What's on",
@@ -4411,7 +4372,6 @@
       "telegram": "Telegram",
       "telegramName": "The Common Room",
       "email": "Email",
-      "emailPending": "The Society's email address will be listed here.",
       "concernTitle": "Raising a concern",
       "concern": "If something is wrong, tell any officer, our Faculty Advisor or the Office of Student Life, in person or with the concern form. Harassment, safety and anything involving a child go straight to Student Life.",
       "concernSource": "Member Handbook",

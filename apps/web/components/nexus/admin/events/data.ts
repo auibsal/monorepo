@@ -20,7 +20,7 @@ export const useProgrammeOptions = (
         await supabase
           .schema("core")
           .from("programmes")
-          .select("id, slug, name_en, name_ar")
+          .select("id, slug, name_en, name_ar, is_active")
           .order("sort")
       ) ?? [],
     queryKey: ["admin", "programmes"],
@@ -30,7 +30,12 @@ export const useProgrammeOptions = (
     : ("all" as const);
   const options = (programmes.data ?? [])
     .filter((p) => scopes === "all" || scopes.includes(p.id))
-    .map((p) => ({ id: p.id, label: localized(p, "name", locale) }));
+    .map((p) => ({
+      id: p.id,
+      isActive: p.is_active,
+      label: localized(p, "name", locale),
+      slug: p.slug,
+    }));
   return {
     canChooseNone: scopes === "all",
     isPending: programmes.isPending || grants.isPending,
