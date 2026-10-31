@@ -18,9 +18,10 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useEffect, useState } from "react";
 import { PathLine } from "@/components/frame/path-line";
-import { Link } from "@/lib/nexus/navigation";
+import { Link, useRouter } from "@/lib/nexus/navigation";
 import { useGrants } from "@/lib/nexus/queries";
-import { DiwanSection, RowList } from "../../page";
+import { DiwanSection } from "../../page";
+import { OnTheSite } from "../../site-links";
 import { EmptyLine, SectionSpinner } from "../../states";
 import { SectionTabs } from "../admin-shell";
 import { CharityAdmin } from "../charity/list";
@@ -41,6 +42,7 @@ import { useMemberNames } from "../member-picker";
 import { memberName } from "../members/directory";
 import { Needs } from "../needs";
 import { NotionManaged } from "../notion-managed";
+import type { ProgramTab } from "../tabs";
 import { Openings, SkillsPicker } from "./callboard";
 import { Sessions } from "./sessions";
 import { TourCards } from "./six-words";
@@ -71,14 +73,15 @@ const blankEpisode: EpisodeForm = {
   youtube: "",
 };
 
+/**
+ * Next Stop's episodes, each edited on its own page
+ * (/qirtas/video/episodes/<slug>, or /new), published from the list.
+ */
 const Episodes = ({ programmeId }: { programmeId: string }) => {
   const t = useTranslations("nexus.admin.programmes.episodes");
-  const tk = useTranslations("nexus.admin.kit");
   const locale = useLocale() as Locale;
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
-  const [form, setForm] = useState<EpisodeForm>(blankEpisode);
-  const [problem, setProblem] = useState<string | null>(null);
   const episodes = useQuery({
     queryFn: async () =>
       unwrap(
@@ -95,6 +98,148 @@ const Episodes = ({ programmeId }: { programmeId: string }) => {
   const invalidate = () =>
     queryClient.invalidateQueries({ queryKey: invalidateKey });
 
+  const publish = useMutation({
+    mutationFn: async (episode: { id: string; published_at: string | null }) =>
+      unwrap(
+        await supabase
+          .schema("programmes")
+          .from("episodes")
+          .update({
+            published_at: episode.published_at
+              ? null
+              : new Date().toISOString(),
+          })
+          .eq("id", episode.id)
+      ),
+    onSuccess: invalidate,
+  });
+
+  return (
+    <div className="grid gap-6">
+      <ul className="grid gap-3">
+        {episodes.data?.map((e) => (
+          <li
+            className="flex flex-wrap items-center justify-between gap-3 border-line border-b pb-3"
+            key={e.id}
+          >
+            <div>
+              <Link
+                className="font-medium hover:underline"
+                href={`/qirtas/video/episodes/${e.slug}`}
+              >
+                {e.season && e.number ? `${e.season}.${e.number} · ` : ""}
+                {localized(e, "title", locale)}
+              </Link>
+              <p className="type-caption">
+                {e.segment ? `${e.segment} · ` : ""}
+                {e.published_at ? t("published") : t("draft")}
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <ConfirmAction
+                confirmLabel={e.published_at ? t("unpublish") : t("publish")}
+                description={
+                  e.published_at ? localized(e, "title", locale) : t("careNote")
+                }
+                disabled={publish.isPending}
+                onConfirm={() => publish.mutate(e)}
+                variant={e.published_at ? "ghost" : "default"}
+              >
+                {e.published_at ? t("unpublish") : t("publish")}
+              </ConfirmAction>
+            </div>
+          </li>
+        ))}
+      </ul>
+      <Link
+        className="link justify-self-start"
+        href="/qirtas/video/episodes/new"
+      >
+        {t("new")}
+      </Link>
+      <ErrorLine error={publish.error} />
+    </div>
+  );
+};
+
+/** One Next Stop episode on its own page, by its slug; new for a blank one. */
+export const EpisodePage = ({ slug }: { readonly slug: string }) => {
+  const t = useTranslations("nexus.admin.programmes.episodes");
+  const locale = useLocale() as Locale;
+  const { supabase } = useAuth();
+  const options = useProgrammeOptions(null);
+  const programmeId = options.options.find((p) => p.slug === "next-stop")?.id;
+  const back = "/qirtas/video";
+  const episode = useQuery({
+    enabled: slug !== "new",
+    queryFn: async () =>
+      unwrap(
+        await supabase
+          .schema("programmes")
+          .from("episodes")
+          .select("*")
+          .eq("slug", slug)
+          .maybeSingle()
+      ),
+    queryKey: [...invalidateKey, "episode", slug],
+  });
+  if (options.isPending || (slug !== "new" && episode.isPending)) {
+    return <SectionSpinner />;
+  }
+  const e = episode.data;
+  if (!programmeId || (slug !== "new" && !e)) {
+    return (
+      <EmptyLine action={{ href: back, label: t("back") }}>
+        {t("missing")}
+      </EmptyLine>
+    );
+  }
+  const initial: EpisodeForm = e
+    ? {
+        id: e.id,
+        number: e.number ? String(e.number) : "",
+        season: e.season ? String(e.season) : "",
+        segment: e.segment ?? "",
+        slug: e.slug,
+        summary: { ar: e.summary_ar ?? "", en: e.summary_en ?? "" },
+        title: { ar: e.title_ar, en: e.title_en },
+        youtube: e.youtube_id,
+      }
+    : blankEpisode;
+  return (
+    <div className="grid max-w-3xl gap-8">
+      <AdminHeading
+        actions={
+          <>
+            <Link className="link" href={back}>
+              {t("back")}
+            </Link>
+            {e?.published_at ? <OnTheSite href="/qirtas/next-stop" /> : null}
+          </>
+        }
+        title={e ? localized(e, "title", locale) : t("new")}
+      />
+      <EpisodeEditor initial={initial} programmeId={programmeId} />
+    </div>
+  );
+};
+
+const EpisodeEditor = ({
+  initial,
+  programmeId,
+}: {
+  readonly initial: EpisodeForm;
+  readonly programmeId: string;
+}) => {
+  const t = useTranslations("nexus.admin.programmes.episodes");
+  const tk = useTranslations("nexus.admin.kit");
+  const { supabase } = useAuth();
+  const queryClient = useQueryClient();
+  const router = useRouter();
+  const [form, setForm] = useState<EpisodeForm>(initial);
+  const [problem, setProblem] = useState<string | null>(null);
+  const invalidate = () =>
+    queryClient.invalidateQueries({ queryKey: invalidateKey });
   const save = useMutation({
     mutationFn: async () => {
       const id = programmes.youtubeId(form.youtube);
@@ -123,190 +268,111 @@ const Episodes = ({ programmeId }: { programmeId: string }) => {
       );
     },
     onSuccess: async () => {
-      setForm(blankEpisode);
       await invalidate();
+      router.push("/qirtas/video");
     },
   });
-  const publish = useMutation({
-    mutationFn: async (episode: { id: string; published_at: string | null }) =>
-      unwrap(
-        await supabase
-          .schema("programmes")
-          .from("episodes")
-          .update({
-            published_at: episode.published_at
-              ? null
-              : new Date().toISOString(),
-          })
-          .eq("id", episode.id)
-      ),
-    onSuccess: invalidate,
-  });
-
   const submit = (event: FormEvent) => {
     event.preventDefault();
     save.mutate();
   };
 
   return (
-    <div className="grid gap-6">
-      <ul className="grid gap-3">
-        {episodes.data?.map((e) => (
-          <li
-            className="flex flex-wrap items-center justify-between gap-3 border-line border-b pb-3"
-            key={e.id}
-          >
-            <div>
-              <p className="font-medium">
-                {e.season && e.number ? `${e.season}.${e.number} · ` : ""}
-                {localized(e, "title", locale)}
-              </p>
-              <p className="type-caption">
-                {e.segment ? `${e.segment} · ` : ""}
-                {e.published_at ? t("published") : t("draft")}
-              </p>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              <Button
-                onClick={() =>
-                  setForm({
-                    id: e.id,
-                    number: e.number ? String(e.number) : "",
-                    season: e.season ? String(e.season) : "",
-                    segment: e.segment ?? "",
-                    slug: e.slug,
-                    summary: { ar: e.summary_ar ?? "", en: e.summary_en ?? "" },
-                    title: { ar: e.title_ar, en: e.title_en },
-                    youtube: e.youtube_id,
-                  })
-                }
-                size="sm"
-                variant="ghost"
-              >
-                {tk("edit")}
-              </Button>
-              <ConfirmAction
-                confirmLabel={e.published_at ? t("unpublish") : t("publish")}
-                description={
-                  e.published_at ? localized(e, "title", locale) : t("careNote")
-                }
-                disabled={publish.isPending}
-                onConfirm={() => publish.mutate(e)}
-                variant={e.published_at ? "ghost" : "default"}
-              >
-                {e.published_at ? t("unpublish") : t("publish")}
-              </ConfirmAction>
-            </div>
-          </li>
-        ))}
-      </ul>
-      <form className="grid max-w-3xl gap-4" onSubmit={submit}>
-        <h3 className="type-subheading">{form.id ? t("edit") : t("new")}</h3>
-        <BilingualField
-          label={t("titleField")}
-          maxLength={200}
-          onChange={(title) => setForm((f) => ({ ...f, title }))}
-          required
-          value={form.title}
-        />
-        <div className="grid gap-4 sm:grid-cols-3">
-          <Field label={t("season")}>
-            {(id) => (
-              <Input
-                dir="ltr"
-                id={id}
-                min={1}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, season: e.target.value }))
-                }
-                type="number"
-                value={form.season}
-              />
-            )}
-          </Field>
-          <Field label={t("number")}>
-            {(id) => (
-              <Input
-                dir="ltr"
-                id={id}
-                min={1}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, number: e.target.value }))
-                }
-                type="number"
-                value={form.number}
-              />
-            )}
-          </Field>
-          <Field label={t("segment")}>
-            {(id) => (
-              <Input
-                id={id}
-                maxLength={80}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, segment: e.target.value }))
-                }
-                value={form.segment}
-              />
-            )}
-          </Field>
-        </div>
-        <Field hint={t("youtubeHint")} label={t("youtube")}>
+    <form className="grid gap-4" onSubmit={submit}>
+      <BilingualField
+        label={t("titleField")}
+        maxLength={200}
+        onChange={(title) => setForm((f) => ({ ...f, title }))}
+        required
+        value={form.title}
+      />
+      <div className="grid gap-4 sm:grid-cols-3">
+        <Field label={t("season")}>
           {(id) => (
             <Input
               dir="ltr"
               id={id}
+              min={1}
               onChange={(e) =>
-                setForm((f) => ({ ...f, youtube: e.target.value }))
+                setForm((f) => ({ ...f, season: e.target.value }))
               }
-              required
-              value={form.youtube}
+              type="number"
+              value={form.season}
             />
           )}
         </Field>
-        <Field hint={tk("slugHint")} label={tk("slug")}>
+        <Field label={t("number")}>
           {(id) => (
             <Input
               dir="ltr"
+              id={id}
+              min={1}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, number: e.target.value }))
+              }
+              type="number"
+              value={form.number}
+            />
+          )}
+        </Field>
+        <Field label={t("segment")}>
+          {(id) => (
+            <Input
               id={id}
               maxLength={80}
-              onChange={(e) => setForm((f) => ({ ...f, slug: e.target.value }))}
-              placeholder={slugify(form.title.en)}
-              value={form.slug}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, segment: e.target.value }))
+              }
+              value={form.segment}
             />
           )}
         </Field>
-        <BilingualField
-          label={t("summary")}
-          maxLength={600}
-          multiline
-          onChange={(summary) => setForm((f) => ({ ...f, summary }))}
-          rows={3}
-          value={form.summary}
-        />
-        {problem ? (
-          <p className="text-sm text-text" role="alert">
-            {problem}
-          </p>
-        ) : null}
-        <div className="flex gap-3">
-          <SaveButton pending={save.isPending} />
-          {form.id ? (
-            <Button
-              onClick={() => setForm(blankEpisode)}
-              type="button"
-              variant="ghost"
-            >
-              {t("new")}
-            </Button>
-          ) : null}
-        </div>
-        {save.error && save.error.message !== "invalid" ? (
-          <ErrorLine error={save.error} />
-        ) : null}
-        <ErrorLine error={publish.error} />
-      </form>
-    </div>
+      </div>
+      <Field hint={t("youtubeHint")} label={t("youtube")}>
+        {(id) => (
+          <Input
+            dir="ltr"
+            id={id}
+            onChange={(e) =>
+              setForm((f) => ({ ...f, youtube: e.target.value }))
+            }
+            required
+            value={form.youtube}
+          />
+        )}
+      </Field>
+      <Field hint={tk("slugHint")} label={tk("slug")}>
+        {(id) => (
+          <Input
+            dir="ltr"
+            id={id}
+            maxLength={80}
+            onChange={(e) => setForm((f) => ({ ...f, slug: e.target.value }))}
+            placeholder={slugify(form.title.en)}
+            value={form.slug}
+          />
+        )}
+      </Field>
+      <BilingualField
+        label={t("summary")}
+        maxLength={600}
+        multiline
+        onChange={(summary) => setForm((f) => ({ ...f, summary }))}
+        rows={3}
+        value={form.summary}
+      />
+      {problem ? (
+        <p className="text-sm text-text" role="alert">
+          {problem}
+        </p>
+      ) : null}
+      <div className="flex gap-3">
+        <SaveButton pending={save.isPending} />
+      </div>
+      {save.error && save.error.message !== "invalid" ? (
+        <ErrorLine error={save.error} />
+      ) : null}
+    </form>
   );
 };
 
@@ -1091,50 +1157,48 @@ const Removals = () => {
  * officer runs, each opening its own page, and the pitches members send for
  * new ones.
  */
-export const ProgramsIndex = () => {
+/**
+ * The programs, each an event series with its page at /diwan/events/<slug>,
+ * as one line of links under What's on's title (owner, Oct 31, 2026: no
+ * programs section below the events).
+ */
+export const ProgramLinks = () => {
   const t = useTranslations("nexus.admin.programmes");
   const options = useProgrammeOptions("programmes.manage");
-  if (options.isPending) {
-    return <SectionSpinner />;
-  }
   const listed = options.options.filter((p) =>
     programmes.isListedProgram({ is_active: p.isActive, slug: p.slug })
   );
+  if (listed.length === 0) {
+    return null;
+  }
   return (
-    <DiwanSection description={t("lede")} id="programs" title={t("title")}>
-      {listed.length === 0 ? (
-        <EmptyLine>{t("none")}</EmptyLine>
-      ) : (
-        <RowList>
-          {listed.map((p) => (
-            <li key={p.id}>
-              <Link className="link font-medium" href={`/events/${p.slug}`}>
-                {p.label}
-              </Link>
-            </li>
-          ))}
-        </RowList>
-      )}
-      <DiwanSection
-        description={t("pitches.lede")}
-        id="pitches"
-        title={t("pitches.title")}
-      >
-        <RequestQueue keys={["f10"]} />
-      </DiwanSection>
-    </DiwanSection>
+    <nav aria-label={t("title")} className="flex flex-wrap gap-x-5 gap-y-2">
+      {listed.map((p) => (
+        <Link
+          className="link type-caption"
+          href={`/events/${p.slug}`}
+          key={p.id}
+        >
+          {p.label}
+        </Link>
+      ))}
+    </nav>
   );
 };
 
-export const programTabs = [
-  "sessions",
-  "shifts",
-  "places",
-  "needs",
-  "six-words",
-  "collection",
-] as const;
-export type ProgramTab = (typeof programTabs)[number];
+/** Program pitches (F-10) waiting for the Director of Programs. */
+export const ProgramPitches = () => {
+  const t = useTranslations("nexus.admin.programmes");
+  return (
+    <DiwanSection
+      description={t("pitches.lede")}
+      id="pitches"
+      title={t("pitches.title")}
+    >
+      <RequestQueue keys={["f10"]} />
+    </DiwanSection>
+  );
+};
 
 /**
  * One program, its tabs at their own addresses: Sessions (the repeat
@@ -1178,7 +1242,10 @@ export const ProgramPage = ({
   return (
     <div className="grid gap-6">
       <PathLine items={[{ href: "/events", label: t("whatsOn") }]} />
-      <AdminHeading title={programme.label} />
+      <AdminHeading
+        actions={<OnTheSite href={`/events/${programme.slug}`} />}
+        title={programme.label}
+      />
       <NotionManaged kind="programme" recordId={programme.id} />
       <SectionTabs
         label={programme.label}
@@ -1191,7 +1258,12 @@ export const ProgramPage = ({
       <div className="pt-2">
         {tab === "sessions" ? <Sessions programmeId={programme.id} /> : null}
         {tab === "shifts" ? <Rotas programmeId={programme.id} /> : null}
-        {tab === "places" ? <Openings programmeId={programme.id} /> : null}
+        {tab === "places" ? (
+          <Openings
+            base={`/events/${programme.slug}/places`}
+            programmeId={programme.id}
+          />
+        ) : null}
         {tab === "needs" ? <Needs programmeId={programme.id} /> : null}
         {tab === "six-words" ? <TourCards /> : null}
         {tab === "collection" ? <CharityAdmin /> : null}

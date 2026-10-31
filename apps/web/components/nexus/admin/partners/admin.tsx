@@ -6,12 +6,6 @@ import { Button } from "@repo/design-system/components/ui/button";
 import { Checkbox } from "@repo/design-system/components/ui/checkbox";
 import { Input } from "@repo/design-system/components/ui/input";
 import { Label } from "@repo/design-system/components/ui/label";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@repo/design-system/components/ui/tabs";
 import { Textarea } from "@repo/design-system/components/ui/textarea";
 import type { Locale } from "@repo/internationalization";
 import { formatLongDate } from "@repo/internationalization/format";
@@ -21,8 +15,11 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useState } from "react";
 import { callApi } from "@/lib/nexus/api";
+import { Link, useRouter } from "@/lib/nexus/navigation";
 import { useGrants } from "@/lib/nexus/queries";
+import { OnTheSite } from "../../site-links";
 import { SectionSpinner } from "../../states";
+import { SectionTabs } from "../admin-shell";
 import { ImageField } from "../image-field";
 import {
   AdminHeading,
@@ -355,12 +352,16 @@ const Register = () => {
   const t = useTranslations("nexus.admin.partners.register");
   const locale = useLocale() as Locale;
   const register = usePartners();
-  const [editing, setEditing] = useState<PartnerRow | "new" | null>(null);
 
   const columns: Column<PartnerRow>[] = [
     {
       cell: (row) => (
-        <span className="font-medium">{localized(row, "name", locale)}</span>
+        <Link
+          className="font-medium hover:underline"
+          href={`/people/partners/${partnerRef(row)}`}
+        >
+          {localized(row, "name", locale)}
+        </Link>
       ),
       header: t("name"),
       key: "name",
@@ -385,15 +386,6 @@ const Register = () => {
       header: t("listedShort"),
       key: "listed",
     },
-    {
-      cell: (row) => (
-        <Button onClick={() => setEditing(row)} size="sm" variant="outline">
-          {t("edit")}
-        </Button>
-      ),
-      header: "",
-      key: "actions",
-    },
   ];
 
   if (register.isPending) {
@@ -403,25 +395,66 @@ const Register = () => {
   return (
     <div className="grid gap-6">
       <p className="type-body">{t("lede")}</p>
-      {editing ? (
-        <PartnerForm
-          initial={editing === "new" ? undefined : editing}
-          key={editing === "new" ? "new" : editing.id}
-          onDone={() => setEditing(null)}
-        />
-      ) : (
-        <Button
-          className="justify-self-start"
-          onClick={() => setEditing("new")}
-        >
-          {t("add")}
-        </Button>
-      )}
+      <Link className="link justify-self-start" href="/people/partners/new">
+        {t("add")}
+      </Link>
       <DataTable
         columns={columns}
         empty={t("empty")}
         rowKey={(row) => row.id}
         rows={register.data ?? []}
+      />
+    </div>
+  );
+};
+
+/** A partner's address in the Diwan: its slug, or its id before it has one. */
+const partnerRef = (row: PartnerRow) => String(row.slug || row.id);
+
+/**
+ * One partner in the register, edited on its own page (owner, Oct 31,
+ * 2026): /diwan/people/partners/<slug>, or /new for a blank one. Saving
+ * returns to the register; a listed partner links to the public Partners
+ * page.
+ */
+export const PartnerPage = ({ partnerRef: ref }: { partnerRef: string }) => {
+  const t = useTranslations("nexus.admin.partners.register");
+  const locale = useLocale() as Locale;
+  const router = useRouter();
+  const register = usePartners();
+  if (register.isPending) {
+    return <SectionSpinner />;
+  }
+  const isNew = ref === "new";
+  const row = isNew
+    ? undefined
+    : (register.data ?? []).find((p) => partnerRef(p) === ref);
+  if (!(isNew || row)) {
+    return (
+      <div className="grid gap-4">
+        <AdminHeading title={t("missing")} />
+        <Link className="link justify-self-start" href="/people/partners">
+          {t("back")}
+        </Link>
+      </div>
+    );
+  }
+  return (
+    <div className="grid max-w-3xl gap-8">
+      <AdminHeading
+        actions={
+          <>
+            <Link className="link" href="/people/partners">
+              {t("back")}
+            </Link>
+            {row?.is_listed ? <OnTheSite href="/partners" /> : null}
+          </>
+        }
+        title={row ? localized(row, "name", locale) : t("add")}
+      />
+      <PartnerForm
+        initial={row}
+        onDone={() => router.push("/people/partners")}
       />
     </div>
   );
@@ -705,8 +738,6 @@ const Agreements = () => {
   const partnerName = usePartnerNames();
   const canManage = hasPermissionAnywhere(grants.data, "partners.manage");
   const canSign = hasPermissionAnywhere(grants.data, "partners.sign");
-  const [drafting, setDrafting] = useState(false);
-  const [signing, setSigning] = useState<AgreementRow | null>(null);
   const agreements = useQuery({
     queryFn: async () =>
       (unwrap(
@@ -802,9 +833,12 @@ const Agreements = () => {
       cell: (row) => (
         <div className="flex flex-wrap gap-2">
           {row.status === "draft" && canSign ? (
-            <Button onClick={() => setSigning(row)} size="sm">
+            <Link
+              className="link"
+              href={`/people/partners/agreements/${row.id}`}
+            >
               {t("sign")}
-            </Button>
+            </Link>
           ) : null}
           {row.status !== "draft" && row.signed_document_path ? (
             <Button onClick={() => open(row.id)} size="sm" variant="outline">
@@ -870,17 +904,13 @@ const Agreements = () => {
           </ul>
         </SalCard>
       ) : null}
-      {signing ? (
-        <SignForm agreement={signing} onDone={() => setSigning(null)} />
-      ) : null}
-      {drafting ? <AgreementForm onDone={() => setDrafting(false)} /> : null}
-      {!(drafting || signing) && canManage ? (
-        <Button
-          className="justify-self-start"
-          onClick={() => setDrafting(true)}
+      {canManage ? (
+        <Link
+          className="link justify-self-start"
+          href="/people/partners/agreements/new"
         >
           {t("draft")}
-        </Button>
+        </Link>
       ) : null}
       <ErrorLine error={update.error} />
       <DataTable
@@ -889,6 +919,58 @@ const Agreements = () => {
         rowKey={(row) => row.id}
         rows={rows}
       />
+    </div>
+  );
+};
+
+/**
+ * A memorandum on its own page: /people/partners/agreements/new drafts
+ * one; /people/partners/agreements/<id> is where the President signs a
+ * draft. Both return to the memoranda.
+ */
+export const AgreementPage = ({ id }: { id: string }) => {
+  const t = useTranslations("nexus.admin.partners.agreements");
+  const { supabase } = useAuth();
+  const router = useRouter();
+  const partnerName = usePartnerNames();
+  const back = "/people/partners/agreements";
+  const done = () => router.push(back);
+  const agreement = useQuery({
+    enabled: id !== "new",
+    queryFn: async () =>
+      (unwrap(
+        await supabase
+          .schema("governance")
+          .from("partner_agreements")
+          .select("*")
+          .eq("id", id)
+          .maybeSingle()
+      ) ?? null) as AgreementRow | null,
+    queryKey: [...key, "agreement", id],
+  });
+  if (id !== "new" && agreement.isPending) {
+    return <SectionSpinner />;
+  }
+  let title = t("draft");
+  if (agreement.data) {
+    title = partnerName(agreement.data.partner_id);
+  } else if (id !== "new") {
+    title = t("missing");
+  }
+  return (
+    <div className="grid max-w-3xl gap-8">
+      <AdminHeading
+        actions={
+          <Link className="link" href={back}>
+            {t("back")}
+          </Link>
+        }
+        title={title}
+      />
+      {id === "new" ? <AgreementForm onDone={done} /> : null}
+      {agreement.data?.status === "draft" ? (
+        <SignForm agreement={agreement.data} onDone={done} />
+      ) : null}
     </div>
   );
 };
@@ -1373,69 +1455,55 @@ const Declarations = () => {
 
 // ── Page ────────────────────────────────────────────────────────────────────
 
-export const PartnersAdmin = () => {
+export const partnerViews = [
+  "register",
+  "agreements",
+  "affiliations",
+  "offers",
+  "places",
+  "declarations",
+] as const;
+export type PartnerView = (typeof partnerViews)[number];
+
+const viewPath = (view: PartnerView) =>
+  view === "register" ? "/people/partners" : `/people/partners/${view}`;
+
+/**
+ * Partners, each view at its own address (/people/partners for the
+ * register, /people/partners/agreements and so on), so an edit page can
+ * return to the view it came from.
+ */
+export const PartnersAdmin = ({ view }: { view?: PartnerView }) => {
   const t = useTranslations("nexus.admin.partners");
   const grants = useGrants();
   const canManage = hasPermissionAnywhere(grants.data, "partners.manage");
   const canSeeDeclarations =
     hasPermissionAnywhere(grants.data, "governance.manage") ||
     hasPermissionAnywhere(grants.data, "partners.sign");
+  const shown = partnerViews.filter((v) => {
+    if (v === "agreements") {
+      return true;
+    }
+    if (v === "declarations") {
+      return canSeeDeclarations;
+    }
+    return canManage;
+  });
+  const here = view ?? (canManage ? "register" : "agreements");
 
   return (
     <div className="grid gap-6">
       <AdminHeading title={t("title")}>{t("lede")}</AdminHeading>
-      <Tabs defaultValue={canManage ? "register" : "agreements"}>
-        <TabsList className="flex-wrap">
-          {canManage ? (
-            <TabsTrigger value="register">{t("tabs.register")}</TabsTrigger>
-          ) : null}
-          <TabsTrigger value="agreements">{t("tabs.agreements")}</TabsTrigger>
-          {canManage ? (
-            <TabsTrigger value="affiliations">
-              {t("tabs.affiliations")}
-            </TabsTrigger>
-          ) : null}
-          {canManage ? (
-            <TabsTrigger value="offers">{t("tabs.offers")}</TabsTrigger>
-          ) : null}
-          {canManage ? (
-            <TabsTrigger value="places">{t("tabs.places")}</TabsTrigger>
-          ) : null}
-          {canSeeDeclarations ? (
-            <TabsTrigger value="declarations">
-              {t("tabs.declarations")}
-            </TabsTrigger>
-          ) : null}
-        </TabsList>
-        {canManage ? (
-          <TabsContent className="pt-4" value="register">
-            <Register />
-          </TabsContent>
-        ) : null}
-        <TabsContent className="pt-4" value="agreements">
-          <Agreements />
-        </TabsContent>
-        {canManage ? (
-          <TabsContent className="pt-4" value="affiliations">
-            <Affiliations />
-          </TabsContent>
-        ) : null}
-        {canManage ? (
-          <TabsContent className="pt-4" value="offers">
-            <Offers />
-          </TabsContent>
-        ) : null}
-        {canManage ? (
-          <TabsContent className="pt-4" value="places">
-            <PartnerPlaces />
-          </TabsContent>
-        ) : null}
-        {canSeeDeclarations ? (
-          <TabsContent className="pt-4" value="declarations">
-            <Declarations />
-          </TabsContent>
-        ) : null}
-      </Tabs>
+      <SectionTabs
+        label={t("title")}
+        tabs={shown.map((v) => ({ href: viewPath(v), label: t(`tabs.${v}`) }))}
+      />
+      {here === "register" && canManage ? <Register /> : null}
+      {here === "agreements" ? <Agreements /> : null}
+      {here === "affiliations" && canManage ? <Affiliations /> : null}
+      {here === "offers" && canManage ? <Offers /> : null}
+      {here === "places" && canManage ? <PartnerPlaces /> : null}
+      {here === "declarations" && canSeeDeclarations ? <Declarations /> : null}
     </div>
   );
 };

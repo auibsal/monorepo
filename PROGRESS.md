@@ -1670,6 +1670,16 @@ Covered by automated tests so far:
 
 ## needs-native-review (Arabic written for the platform)
 
+- One list, own pages, links (2026-10-31, after the signatures):
+  `common.onTheSite`, `common.manage.*`, `nexus.getInvolved.{kinds.*,on,
+  audition}`, `nexus.callboard.{kinds.role,kinds.shift,kinds.audition,
+  noRoles}`, `nexus.admin.programmes.callboard.{back,missing,untitled,
+  editTitle}`, `nexus.admin.partners.{register,agreements}.{back,
+  missing}`, `nexus.admin.pipeline.calls.{back,missing,title}`,
+  `nexus.admin.governance.resolutions.{back,missing}`,
+  `nexus.admin.journal.contributor.{back,missing}`,
+  `nexus.admin.programmes.episodes.{back,missing}`,
+  `nexus.admin.productions.{back,missing}`.
 - Signatures and photos (2026-10-31, after One Membership):
   `nexus.partnerJoin.{signatory,signedOn,oneMembership}`,
   `nexus.journal.agreement.signAs`, `nexus.events.bookingAs`,

@@ -12,10 +12,11 @@ import { localized, membership, programmes, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
+import { ManageLinks } from "@/components/manage-links";
 import { queryKeys, useMyShifts } from "@/lib/nexus/queries";
 import { ErrorLine } from "../admin/kit";
 import { StartLinks } from "../forms/forms";
-import { DiwanPage, DiwanSection, RowList } from "../page";
+import { DiwanPage, RowList } from "../page";
 import { EmptyLine, ErrorState, SectionSpinner } from "../states";
 
 type NoticeKey = "signedUp" | "gaveBack" | "full" | "notVerified" | "failed";
@@ -91,6 +92,8 @@ export const Callboard = () => {
   const rotas = useRotas();
   const mySkills = useMySkills();
   const mine = useMyShifts();
+  const openings = useOpenings();
+  const auditions = useUpcomingAuditions();
   const [notice, setNotice] = useState<{ id: string; key: NoticeKey } | null>(
     null
   );
@@ -152,8 +155,19 @@ export const Callboard = () => {
     skills
   );
 
+  const nothing =
+    openings.isSuccess &&
+    auditions.isSuccess &&
+    openings.data.length === 0 &&
+    shifts.length === 0 &&
+    auditions.data.length === 0;
+
   return (
-    <DiwanPage lede={tc("lede")} title={tc("title")}>
+    <DiwanPage
+      actions={<ManageLinks diwan="/people/hiring" />}
+      lede={tc("lede")}
+      title={tc("title")}
+    >
       <p className="type-body max-w-3xl text-text-secondary">
         {skills.length > 0 ? tc("matched") : tc("noSkills")}{" "}
         <Link className="link" href="/membership/settings/profile#details">
@@ -161,58 +175,51 @@ export const Callboard = () => {
         </Link>
       </p>
 
-      <Openings skills={skills} />
+      {/* One list of everything open (owner, Oct 31, 2026: no sections):
+          roles and places, shifts and auditions, each saying what it is. */}
+      {openings.isPending || auditions.isPending ? <SectionSpinner /> : null}
+      {nothing ? (
+        <EmptyLine action={{ href: "/events", label: tc("whatsOn") }}>
+          {tc("noRoles")}
+        </EmptyLine>
+      ) : (
+        <RowList>
+          <OpeningRows rows={openings.data ?? []} skills={skills} />
+          {shifts.map((shift) => (
+            <ShiftRow
+              busy={busy}
+              isMine={held.has(shift.id)}
+              key={shift.id}
+              matches={programmes.matchingSkills(shift.skills, skills)}
+              notice={notice?.id === shift.id ? notice.key : null}
+              onGiveBack={() => giveBack.mutate(shift.id)}
+              onSignUp={() => signUp.mutate(shift.id)}
+              rota={[
+                tc("kinds.shift"),
+                localized(shift.rota, "title", locale),
+                shift.rota.programme
+                  ? localized(shift.rota.programme, "name", locale)
+                  : null,
+              ]
+                .filter(Boolean)
+                .join(" · ")}
+              shift={shift}
+            />
+          ))}
+          <AuditionRows rows={auditions.data ?? []} />
+        </RowList>
+      )}
 
-      <DiwanSection description={t("lede")} id="shifts" title={tc("shifts")}>
-        {shifts.length === 0 ? (
-          <EmptyLine action={{ href: "/events", label: tc("whatsOn") }}>
-            {t("empty")}
-          </EmptyLine>
-        ) : (
-          <RowList>
-            {shifts.map((shift) => (
-              <ShiftRow
-                busy={busy}
-                isMine={held.has(shift.id)}
-                key={shift.id}
-                matches={programmes.matchingSkills(shift.skills, skills)}
-                notice={notice?.id === shift.id ? notice.key : null}
-                onGiveBack={() => giveBack.mutate(shift.id)}
-                onSignUp={() => signUp.mutate(shift.id)}
-                rota={[
-                  localized(shift.rota, "title", locale),
-                  shift.rota.programme
-                    ? localized(shift.rota.programme, "name", locale)
-                    : null,
-                ]
-                  .filter(Boolean)
-                  .join(" · ")}
-                shift={shift}
-              />
-            ))}
-          </RowList>
-        )}
-      </DiwanSection>
-
-      <Auditions />
-
-      <DiwanSection
-        description={tc("hoursLede")}
-        id="hours"
-        title={tc("hours")}
-      >
-        <Link className="link justify-self-start" href="/membership/record">
+      <p className="type-caption border-line border-t pt-space-4">
+        {tc("hoursLede")}{" "}
+        <Link className="link" href="/membership/record">
           {tc("hoursLink")}
         </Link>
-      </DiwanSection>
-
-      <DiwanSection
-        description={t("ideas.lede")}
-        id="ideas"
-        title={t("ideas.title")}
-      >
+      </p>
+      <div className="grid gap-2">
+        <p className="type-caption">{t("ideas.lede")}</p>
         <StartLinks keys={["f10"]} />
-      </DiwanSection>
+      </div>
     </DiwanPage>
   );
 };
@@ -325,14 +332,10 @@ const Matches = ({ skills }: { skills: readonly string[] }) => {
   );
 };
 
-/** Roles a program needs filled: "I'm interested", and the managers follow up. */
-const Openings = ({ skills }: { skills: readonly string[] }) => {
-  const tc = useTranslations("nexus.callboard");
-  const ts = useTranslations("nexus.details.skills");
-  const locale = useLocale() as "en" | "ar";
-  const { supabase, user } = useAuth();
-  const queryClient = useQueryClient();
-  const list = useQuery({
+/** The open roles and places, with their program's name. */
+const useOpenings = () => {
+  const { supabase } = useAuth();
+  return useQuery({
     queryFn: async () => {
       const [rows, names] = await Promise.all([
         programmes.openings(supabase),
@@ -351,6 +354,23 @@ const Openings = ({ skills }: { skills: readonly string[] }) => {
     },
     queryKey: ["openings"],
   });
+};
+
+type Opening = NonNullable<ReturnType<typeof useOpenings>["data"]>[number];
+
+/** Roles and places: "I'm interested", and Membership follows up. */
+const OpeningRows = ({
+  rows: list,
+  skills,
+}: {
+  rows: readonly Opening[];
+  skills: readonly string[];
+}) => {
+  const tc = useTranslations("nexus.callboard");
+  const ts = useTranslations("nexus.details.skills");
+  const locale = useLocale() as "en" | "ar";
+  const { supabase, user } = useAuth();
+  const queryClient = useQueryClient();
   const replies = useQuery({
     enabled: Boolean(user),
     queryFn: () => programmes.myOpeningReplies(supabase, user?.id ?? ""),
@@ -376,7 +396,7 @@ const Openings = ({ skills }: { skills: readonly string[] }) => {
   const mine = new Map(
     (replies.data ?? []).map((r) => [r.opening_id, r.status])
   );
-  const rows = programmes.matchedFirst(list.data ?? [], skills);
+  const rows = programmes.matchedFirst([...list], skills);
   type Row = (typeof rows)[number];
   // What it offers, where, and for which term, on one line.
   const where = (row: Row) => {
@@ -389,7 +409,7 @@ const Openings = ({ skills }: { skills: readonly string[] }) => {
       place = localized(row.programme, "name", locale);
     }
     return [
-      row.kind === "role" ? null : tc(`kinds.${row.kind as "apprenticeship"}`),
+      tc(`kinds.${row.kind as "apprenticeship"}`),
       place,
       row.term_from && row.term_to
         ? tc("term", {
@@ -403,98 +423,92 @@ const Openings = ({ skills }: { skills: readonly string[] }) => {
   };
 
   return (
-    <DiwanSection description={tc("rolesLede")} id="roles" title={tc("roles")}>
-      {list.isPending ? <SectionSpinner /> : null}
-      {list.data?.length === 0 ? (
-        <p className="type-body text-text-secondary">{tc("noRoles")}</p>
-      ) : null}
-      <RowList>
-        {rows.map((row) => {
-          const interested = mine.has(row.id);
-          const body = localized(row, "body", locale);
-          const placed = placements.data?.find(
-            (pl) => pl.opening_id === row.id && pl.status !== "withdrawn"
-          );
-          return (
-            <li
-              className="grid gap-3 sm:grid-cols-[1fr_auto] sm:items-center"
-              key={row.id}
-            >
-              <div className="grid gap-1">
-                <p className="type-subheading">
-                  {localized(row, "title", locale)}
+    <>
+      {rows.map((row) => {
+        const interested = mine.has(row.id);
+        const body = localized(row, "body", locale);
+        const placed = placements.data?.find(
+          (pl) => pl.opening_id === row.id && pl.status !== "withdrawn"
+        );
+        return (
+          <li
+            className="grid gap-3 sm:grid-cols-[1fr_auto] sm:items-center"
+            key={row.id}
+          >
+            <div className="grid gap-1">
+              <p className="type-subheading">
+                {localized(row, "title", locale)}
+              </p>
+              <p className="type-caption">{where(row)}</p>
+              {row.kind === "role" ? null : (
+                <p className="type-caption">
+                  {tc(`kindLines.${row.kind as "apprenticeship"}`)}
                 </p>
-                <p className="type-caption">{where(row)}</p>
-                {row.kind === "role" ? null : (
-                  <p className="type-caption">
-                    {tc(`kindLines.${row.kind as "apprenticeship"}`)}
-                  </p>
-                )}
-                {body ? <p className="type-body">{body}</p> : null}
-                {row.skills.length > 0 ? (
-                  <p className="type-caption">
-                    {tc("wants", {
-                      skills: row.skills
-                        .map((s) => ts(s as (typeof membership.skills)[number]))
-                        .join(", "),
-                    })}
-                  </p>
-                ) : null}
-                <Matches
-                  skills={programmes.matchingSkills(row.skills, skills)}
-                />
-                {row.closes_at ? (
-                  <p className="type-caption">
-                    {tc("closes", {
-                      date: formatLongDate(row.closes_at, locale),
-                    })}
-                  </p>
-                ) : null}
-                {placed ? (
-                  <p className="type-body font-medium" role="status">
-                    {tc(`placed.${placed.status as "active"}`)}
-                  </p>
-                ) : null}
-                {interested && !placed ? (
-                  <p className="type-body font-medium" role="status">
-                    {tc(`application.${mine.get(row.id) as "new"}`)}
-                  </p>
-                ) : null}
-              </div>
-              {interested ? (
-                <Button
-                  className="justify-self-start"
-                  disabled={withdraw.isPending}
-                  onClick={() => withdraw.mutate(row.id)}
-                  variant="ghost"
-                >
-                  {tc("takeBack")}
-                </Button>
-              ) : (
-                <Button
-                  className="justify-self-start"
-                  disabled={reply.isPending}
-                  onClick={() => reply.mutate(row.id)}
-                  variant="outline"
-                >
-                  {tc("interested")}
-                </Button>
               )}
-            </li>
-          );
-        })}
-      </RowList>
-      <ErrorLine error={reply.error ?? withdraw.error} />
-    </DiwanSection>
+              {body ? <p className="type-body">{body}</p> : null}
+              {row.skills.length > 0 ? (
+                <p className="type-caption">
+                  {tc("wants", {
+                    skills: row.skills
+                      .map((s) => ts(s as (typeof membership.skills)[number]))
+                      .join(", "),
+                  })}
+                </p>
+              ) : null}
+              <Matches skills={programmes.matchingSkills(row.skills, skills)} />
+              {row.closes_at ? (
+                <p className="type-caption">
+                  {tc("closes", {
+                    date: formatLongDate(row.closes_at, locale),
+                  })}
+                </p>
+              ) : null}
+              {placed ? (
+                <p className="type-body font-medium" role="status">
+                  {tc(`placed.${placed.status as "active"}`)}
+                </p>
+              ) : null}
+              {interested && !placed ? (
+                <p className="type-body font-medium" role="status">
+                  {tc(`application.${mine.get(row.id) as "new"}`)}
+                </p>
+              ) : null}
+            </div>
+            {interested ? (
+              <Button
+                className="justify-self-start"
+                disabled={withdraw.isPending}
+                onClick={() => withdraw.mutate(row.id)}
+                variant="ghost"
+              >
+                {tc("takeBack")}
+              </Button>
+            ) : (
+              <Button
+                className="justify-self-start"
+                disabled={reply.isPending}
+                onClick={() => reply.mutate(row.id)}
+                variant="outline"
+              >
+                {tc("interested")}
+              </Button>
+            )}
+          </li>
+        );
+      })}
+      {reply.error || withdraw.error ? (
+        <li>
+          <ErrorLine error={reply.error ?? withdraw.error} />
+        </li>
+      ) : null}
+    </>
   );
 };
 
-/** Coming auditions, with the way to sign up on the Company's page. */
-const Auditions = () => {
-  const tc = useTranslations("nexus.callboard");
-  const locale = useLocale() as "en" | "ar";
+/** Coming auditions: signing up is on the Company's page. */
+const useUpcomingAuditions = () => {
   const { supabase } = useAuth();
-  const list = useQuery({
+  return useQuery({
     queryFn: async () =>
       unwrap(
         await supabase
@@ -505,43 +519,47 @@ const Auditions = () => {
           )
           .gte("starts_at", new Date().toISOString())
           .order("starts_at")
-          .limit(10)
+          .limit(12)
       ) ?? [],
     queryKey: ["callboard-auditions"],
   });
+};
+
+type Audition = NonNullable<
+  ReturnType<typeof useUpcomingAuditions>["data"]
+>[number];
+
+const AuditionRows = ({ rows }: { rows: readonly Audition[] }) => {
+  const tc = useTranslations("nexus.callboard");
+  const locale = useLocale() as "en" | "ar";
   return (
-    <DiwanSection
-      action={
-        <Link className="link" href="/company/auditions">
-          {tc("auditionsLink")}
-        </Link>
-      }
-      description={tc("auditionsLede")}
-      id="auditions"
-      title={tc("auditions")}
-    >
-      {list.data?.length === 0 ? (
-        <p className="type-body text-text-secondary">{tc("noAuditions")}</p>
-      ) : null}
-      <RowList>
-        {list.data?.map((row) => {
-          const location = localized(row, "location", locale);
-          return (
-            <li className="grid gap-1" key={row.id}>
+    <>
+      {rows.map((row) => {
+        const location = localized(row, "location", locale);
+        return (
+          <li
+            className="grid gap-3 sm:grid-cols-[1fr_auto] sm:items-center"
+            key={row.id}
+          >
+            <div className="grid gap-1">
               <p className="type-subheading">
                 {row.productions
                   ? localized(row.productions, "title", locale)
                   : null}
               </p>
+              <p className="type-caption">{tc("kinds.audition")}</p>
               <p className="type-body">
                 {formatLongDate(row.starts_at, locale)} ·{" "}
                 {formatClock(row.starts_at, locale)}
                 {location ? ` · ${location}` : ""}
               </p>
-            </li>
-          );
-        })}
-      </RowList>
-    </DiwanSection>
+            </div>
+            <Link className="link justify-self-start" href="/company/auditions">
+              {tc("auditionsLink")}
+            </Link>
+          </li>
+        );
+      })}
+    </>
   );
 };

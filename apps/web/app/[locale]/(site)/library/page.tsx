@@ -3,6 +3,7 @@ import { Link } from "@repo/internationalization/navigation";
 import { documents } from "@repo/sal-data";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { ManageLinks } from "@/components/manage-links";
 import { PageHeader, Section } from "@/components/section";
 import { localizedMetadata } from "@/lib/metadata";
 import { readPublished } from "@/lib/supabase";
@@ -52,6 +53,7 @@ const DocumentsPage = async ({ params }: DocumentsProps) => {
         {locale === "ar" ? (
           <p className="type-body text-text-secondary">{t("englishOnly")}</p>
         ) : null}
+        <ManageLinks diwan="/society/library" />
       </PageHeader>
       {shelves.map((shelf) => (
         <Section

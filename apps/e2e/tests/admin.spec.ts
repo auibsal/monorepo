@@ -54,3 +54,25 @@ test("each event has its own door, and the Desk opens the next one", async ({
   await expect(page.getByRole("status")).toContainText("checked in");
   await expectAccessible(page);
 });
+
+test("editing in the Diwan opens its own page, one step under its list", async ({
+  page,
+}) => {
+  await signInWithPassword(page, editor.email);
+  await page.goto(`${urls.app}/qirtas`);
+  const contributor = page
+    .getByRole("link", { name: "The Night Editor" })
+    .first();
+  await contributor.click();
+  await expect(page).toHaveURL(/\/diwan\/qirtas\/contributors\/[^/]+$/);
+  await expect(
+    page.getByRole("heading", { level: 1, name: "The Night Editor" })
+  ).toBeVisible();
+  await page
+    .getByRole("textbox", { name: "English" })
+    .first()
+    .fill("Writes the Society's notes at night.");
+  await page.getByRole("button", { name: "Save" }).click();
+  // Saving returns to the list it came from.
+  await expect(page).toHaveURL(/\/diwan\/qirtas$/);
+});

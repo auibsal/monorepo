@@ -18,6 +18,7 @@ import {
   ErrorLine,
 } from "../admin/kit";
 import { DiwanSection } from "../page";
+import { OnTheSite } from "../site-links";
 import { SectionSpinner } from "../states";
 import { Agreement } from "./pages";
 
@@ -166,7 +167,14 @@ export const MyPiece = () => {
   return (
     <div className="grid gap-10">
       <AdminHeading
-        actions={back}
+        actions={
+          <>
+            {back}
+            {status === "published" && piece.slug ? (
+              <OnTheSite href={journal.piecePath(piece)} />
+            ) : null}
+          </>
+        }
         title={localized(piece, "title", locale) || t("pieceTitle")}
       >
         {`${tj(`categories.${piece.category as journal.Category}`)} · ${tw(`statuses.${status}`)}`}

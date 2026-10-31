@@ -75,9 +75,12 @@ test.describe("public site", () => {
     page,
   }) => {
     await page.goto(`${urls.web}/events`);
+    // The programs are the row above the month; no list of them below it.
     const salon = page
-      .getByRole("heading", { exact: true, name: "The Salon" })
-      .getByRole("link");
+      .getByRole("main")
+      .getByRole("navigation")
+      .getByRole("link", { exact: true, name: "The Salon" });
+    await expect(page.locator("#series")).toHaveCount(0);
     await expect(salon).toHaveAttribute("href", /\/events\/salon$/);
     await salon.click();
     await expect(page.getByRole("heading", { level: 1 })).toHaveText(
@@ -95,6 +98,23 @@ test.describe("public site", () => {
       .getByRole("link", { name: "Next Stop care" })
       .click();
     await expect(page).toHaveURL(/\/qirtas\/next-stop\/care$/);
+  });
+
+  test("Get involved is one list of every open opportunity", async ({
+    page,
+  }) => {
+    await page.goto(`${urls.web}/get-involved`);
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText(
+      "Get involved"
+    );
+    // No sections: one list, each place saying what it is.
+    await expect(
+      page.getByRole("main").getByRole("heading", { level: 2 })
+    ).toHaveCount(0);
+    await expect(
+      page.getByRole("main").getByRole("listitem").first()
+    ).toBeVisible();
+    await expectAccessible(page);
   });
 
   test("the Qirtas front page is accessible", async ({ page }) => {

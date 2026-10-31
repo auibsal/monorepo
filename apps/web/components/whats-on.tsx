@@ -7,11 +7,10 @@ import {
   toZonedDateValue,
 } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
-import { events, localized, type programmes } from "@repo/sal-data";
+import { events, localized } from "@repo/sal-data";
 import { getTranslations } from "next-intl/server";
 import type { ComponentProps, ReactNode } from "react";
 import { type DatedItem, DatedList } from "@/components/event-list";
-import { Section } from "@/components/section";
 import { readPublished } from "@/lib/supabase";
 import {
   byDay,
@@ -265,50 +264,5 @@ export const MonthSection = async ({
       </div>
       {children}
     </section>
-  );
-};
-
-type Programme = NonNullable<
-  Awaited<ReturnType<typeof programmes.programmes>>
->[number];
-
-/**
- * The six programs (owner, Oct 29, 2026: no groupings), each with what it
- * is and its rhythm in one plain line, linking to its own calendar.
- */
-export const SeriesList = async ({
-  locale,
-  rows,
-}: {
-  locale: Locale;
-  rows: readonly Programme[];
-}) => {
-  const t = await getTranslations({ locale, namespace: "web.programmes" });
-
-  return (
-    <Section id="series" title={t("title")}>
-      <ul className="grid gap-x-10 sm:grid-cols-2 lg:grid-cols-3">
-        {rows.map((p) => (
-          <li
-            className="grid content-start gap-2 border-line border-t py-space-4"
-            key={p.id}
-          >
-            <h3 className="type-heading">
-              <Link className="hover:underline" href={`/events/${p.slug}`}>
-                {localized(p, "name", locale)}
-              </Link>
-            </h3>
-            {localized(p, "summary", locale) ? (
-              <p className="type-body max-w-[44ch] text-text-secondary">
-                {localized(p, "summary", locale)}
-              </p>
-            ) : null}
-            {localized(p, "rhythm", locale) ? (
-              <p className="type-caption">{localized(p, "rhythm", locale)}</p>
-            ) : null}
-          </li>
-        ))}
-      </ul>
-    </Section>
   );
 };

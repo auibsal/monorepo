@@ -9,6 +9,7 @@ import { localized, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
+import { Link } from "@/lib/nexus/navigation";
 import { useGrants } from "@/lib/nexus/queries";
 import { useProgrammeOptions } from "../events/data";
 import {
@@ -377,7 +378,11 @@ export const HiringAdmin = () => {
         ) : null}
         {list.data?.map((o) => (
           <li className="grid gap-2 border-line border-t py-space-4" key={o.id}>
-            <h2 className="type-subheading">{localized(o, "title", locale)}</h2>
+            <h2 className="type-subheading">
+              <Link className="hover:underline" href={`/people/hiring/${o.id}`}>
+                {localized(o, "title", locale)}
+              </Link>
+            </h2>
             <p className="type-caption">
               {o.owner === "program"
                 ? programs.label(o.programme_id)

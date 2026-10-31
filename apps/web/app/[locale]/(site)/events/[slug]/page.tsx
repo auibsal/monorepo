@@ -14,6 +14,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { ActionBar } from "@/components/frame/action-bar";
+import { ManageLinks } from "@/components/manage-links";
 import { SecondChapterGive } from "@/components/second-chapter-give";
 import {
   loadSeries,
@@ -173,6 +174,11 @@ const EventView = async ({
         <p className="type-body">
           {t(`ways.${event.entry === "open" ? "open" : "rsvp"}`)}
         </p>
+        <ManageLinks
+          diwan={`/events/${event.slug}`}
+          membership="/membership/calendar"
+          membershipLabel="booking"
+        />
         {localized(event, "venue", locale) ? (
           <p className="type-body inline-flex items-center gap-1.5">
             <Icon name="map-pin" />

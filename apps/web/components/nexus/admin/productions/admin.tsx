@@ -1,21 +1,17 @@
 "use client";
 
 import { useAuth } from "@repo/auth/provider";
-import { Button } from "@repo/design-system/components/ui/button";
 import { Input } from "@repo/design-system/components/ui/input";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@repo/design-system/components/ui/tabs";
 import { hasPermission } from "@repo/rbac";
 import { localized, productions, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
+import { Link, useRouter } from "@/lib/nexus/navigation";
 import { useGrants } from "@/lib/nexus/queries";
-import { SectionSpinner } from "../../states";
+import { OnTheSite } from "../../site-links";
+import { EmptyLine, SectionSpinner } from "../../states";
+import { SectionTabs } from "../admin-shell";
 import {
   AdminHeading,
   BilingualField,
@@ -26,6 +22,7 @@ import {
   SaveButton,
   SelectInput,
 } from "../kit";
+import { type ProductionTab, productionTabs } from "../tabs";
 import { AuditionsTab, CreditsTab, RehearsalsTab } from "./company";
 import { DetailsTab, RightsTab } from "./details";
 import { PerformancesTab, ReportTab } from "./performances";
@@ -184,21 +181,17 @@ export const ProductionsAdmin = () => {
   const locale = useLocale();
   const grants = useGrants();
   const list = useProductionList();
-  const [selected, setSelected] = useState<string | null>(null);
-  const [creating, setCreating] = useState(false);
   const canPropose = hasPermission(grants.data, "productions.manage");
-  const current = list.data?.find((p) => p.id === selected) ?? null;
 
   const columns: Column<ProductionRow>[] = [
     {
       cell: (p) => (
-        <Button
-          className="h-auto p-0 text-start underline underline-offset-4"
-          onClick={() => setSelected(p.id)}
-          variant="link"
+        <Link
+          className="font-medium hover:underline"
+          href={`/company/${p.slug ?? p.id}`}
         >
           {localized(p, "title", locale)}
-        </Button>
+        </Link>
       ),
       header: t("columns.title"),
       key: "title",
@@ -224,24 +217,19 @@ export const ProductionsAdmin = () => {
     <div className="grid gap-8">
       <AdminHeading
         actions={
-          canPropose ? (
-            <Button onClick={() => setCreating((c) => !c)} size="sm">
-              {creating ? t("closeNew") : t("new")}
-            </Button>
-          ) : null
+          <>
+            <OnTheSite href="/company" />
+            {canPropose ? (
+              <Link className="link" href="/company/new">
+                {t("new")}
+              </Link>
+            ) : null}
+          </>
         }
         title={t("title")}
       >
         {t("lede")}
       </AdminHeading>
-      {creating ? (
-        <NewProduction
-          onDone={(id) => {
-            setCreating(false);
-            setSelected(id);
-          }}
-        />
-      ) : null}
       {list.isPending ? <SectionSpinner /> : null}
       <DataTable
         caption={t("title")}
@@ -250,56 +238,85 @@ export const ProductionsAdmin = () => {
         rowKey={(p) => p.id}
         rows={list.data ?? []}
       />
-      {current ? <ProductionEditor production={current} /> : null}
     </div>
   );
 };
 
-const ProductionEditor = ({ production }: { production: ProductionRow }) => {
+/**
+ * One production on its own page, like its public page: /company/<slug>
+ * for its details, /company/<slug>/<tab> for the rest (owner, Oct 31,
+ * 2026: editing in the Diwan opens its own address); /company/new
+ * proposes one.
+ */
+export const ProductionPage = ({
+  productionRef,
+  tab = "details",
+}: {
+  readonly productionRef: string;
+  readonly tab?: ProductionTab;
+}) => {
   const t = useTranslations("nexus.admin.productions");
   const locale = useLocale();
+  const router = useRouter();
+  const list = useProductionList();
+  if (productionRef === "new") {
+    return (
+      <div className="grid max-w-3xl gap-8">
+        <AdminHeading
+          actions={
+            <Link className="link" href="/company">
+              {t("back")}
+            </Link>
+          }
+          title={t("new")}
+        />
+        <NewProduction onDone={(id) => router.push(`/company/${id}`)} />
+      </div>
+    );
+  }
+  if (list.isPending) {
+    return <SectionSpinner />;
+  }
+  const production = list.data?.find(
+    (p) => p.slug === productionRef || p.id === productionRef
+  );
+  if (!production) {
+    return (
+      <EmptyLine action={{ href: "/company", label: t("back") }}>
+        {t("missing")}
+      </EmptyLine>
+    );
+  }
+  const base = `/company/${production.slug ?? production.id}`;
   return (
-    <section
-      aria-labelledby="production-title"
-      className="grid gap-4 border-line border-t pt-6"
-    >
-      <h2 className="type-heading" id="production-title">
-        {localized(production, "title", locale)}
-      </h2>
-      <Tabs defaultValue="details" key={production.id}>
-        <TabsList className="h-auto flex-wrap justify-start gap-1">
-          <TabsTrigger value="details">{t("tabs.details")}</TabsTrigger>
-          <TabsTrigger value="rights">{t("tabs.rights")}</TabsTrigger>
-          <TabsTrigger value="auditions">{t("tabs.auditions")}</TabsTrigger>
-          <TabsTrigger value="credits">{t("tabs.credits")}</TabsTrigger>
-          <TabsTrigger value="rehearsals">{t("tabs.rehearsals")}</TabsTrigger>
-          <TabsTrigger value="performances">
-            {t("tabs.performances")}
-          </TabsTrigger>
-          <TabsTrigger value="report">{t("tabs.report")}</TabsTrigger>
-        </TabsList>
-        <TabsContent value="details">
-          <DetailsTab production={production} />
-        </TabsContent>
-        <TabsContent value="rights">
-          <RightsTab production={production} />
-        </TabsContent>
-        <TabsContent value="auditions">
-          <AuditionsTab production={production} />
-        </TabsContent>
-        <TabsContent value="credits">
-          <CreditsTab production={production} />
-        </TabsContent>
-        <TabsContent value="rehearsals">
-          <RehearsalsTab production={production} />
-        </TabsContent>
-        <TabsContent value="performances">
-          <PerformancesTab production={production} />
-        </TabsContent>
-        <TabsContent value="report">
-          <ReportTab production={production} />
-        </TabsContent>
-      </Tabs>
-    </section>
+    <div className="grid gap-8">
+      <AdminHeading
+        actions={
+          <>
+            <Link className="link" href="/company">
+              {t("back")}
+            </Link>
+            {production.is_public ? <OnTheSite href={base} /> : null}
+          </>
+        }
+        title={localized(production, "title", locale)}
+      />
+      <SectionTabs
+        label={localized(production, "title", locale)}
+        tabs={productionTabs.map((key) => ({
+          href: key === "details" ? base : `${base}/${key}`,
+          label: t(`tabs.${key}`),
+        }))}
+      />
+      {tab === "details" ? <DetailsTab production={production} /> : null}
+      {tab === "rights" ? <RightsTab production={production} /> : null}
+      {tab === "auditions" ? <AuditionsTab production={production} /> : null}
+      {tab === "credits" ? <CreditsTab production={production} /> : null}
+      {tab === "rehearsals" ? <RehearsalsTab production={production} /> : null}
+      {tab === "performances" ? (
+        <PerformancesTab production={production} />
+      ) : null}
+      {tab === "report" ? <ReportTab production={production} /> : null}
+    </div>
   );
 };

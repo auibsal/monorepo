@@ -1,7 +1,6 @@
 "use client";
 
 import { useAuth } from "@repo/auth/provider";
-import { Button } from "@repo/design-system/components/ui/button";
 import { Input } from "@repo/design-system/components/ui/input";
 import type { Locale } from "@repo/internationalization";
 import { formatLongDate } from "@repo/internationalization/format";
@@ -9,8 +8,9 @@ import { localized, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useState } from "react";
-import { Link } from "@/lib/nexus/navigation";
-import { SectionSpinner } from "../../states";
+import { Link, useRouter } from "@/lib/nexus/navigation";
+import { OnTheSite } from "../../site-links";
+import { EmptyLine, SectionSpinner } from "../../states";
 import { LibraryAdmin } from "../documents/admin";
 import { RequestQueue } from "../forms/admin";
 import {
@@ -138,15 +138,10 @@ const blankResolution = (): ResolutionForm => ({
 
 const toCount = (value: string) => (value === "" ? null : Number(value));
 
-const Resolutions = () => {
-  const t = useTranslations("nexus.admin.governance");
-  const tk = useTranslations("nexus.admin.kit");
-  const locale = useLocale() as Locale;
+/** Resolutions and the minutes they may cite. */
+const useResolutions = () => {
   const { supabase } = useAuth();
-  const queryClient = useQueryClient();
-  const [form, setForm] = useState<ResolutionForm>(blankResolution);
-  const [problem, setProblem] = useState<string | null>(null);
-  const data = useQuery({
+  return useQuery({
     queryFn: async () => {
       const [resolutions, minutes] = await Promise.all([
         supabase
@@ -167,6 +162,140 @@ const Resolutions = () => {
     },
     queryKey: [...key, "resolutions"],
   });
+};
+
+type ResolutionsData = NonNullable<ReturnType<typeof useResolutions>["data"]>;
+type ResolutionRow = ResolutionsData["resolutions"][number];
+
+const formOf = (r: ResolutionRow): ResolutionForm => ({
+  adopted_on: r.adopted_on ?? "",
+  body: r.body as "council" | "general_assembly",
+  code: r.code,
+  id: r.id,
+  minutes_id: r.minutes_id ?? "",
+  status: r.status as ResolutionForm["status"],
+  text: { ar: r.text_ar ?? "", en: r.text_en },
+  title: { ar: r.title_ar ?? "", en: r.title_en },
+  votes: {
+    abstain: r.votes_abstain?.toString() ?? "",
+    against: r.votes_against?.toString() ?? "",
+    for: r.votes_for?.toString() ?? "",
+  },
+});
+
+/**
+ * The resolutions, each opening on its own page by its code
+ * (/society/resolutions/R-2026-01), or /new for a blank one (owner, Oct
+ * 31, 2026: editing in the Diwan opens its own address).
+ */
+const Resolutions = () => {
+  const t = useTranslations("nexus.admin.governance");
+  const tk = useTranslations("nexus.admin.kit");
+  const locale = useLocale() as Locale;
+  const data = useResolutions();
+  const columns: Column<ResolutionRow>[] = [
+    {
+      cell: (r) => <span className="type-code">{r.code}</span>,
+      header: t("resolutions.code"),
+      key: "code",
+    },
+    {
+      cell: (r) => (
+        <Link
+          className="font-medium hover:underline"
+          href={`/society/resolutions/${r.code}`}
+        >
+          {localized(r, "title", locale)}
+        </Link>
+      ),
+      header: t("resolutions.titleField"),
+      key: "title",
+    },
+    {
+      cell: (r) =>
+        r.status === "adopted" && r.adopted_on
+          ? `${t("statuses.adopted")}, ${formatLongDate(r.adopted_on, locale, true)}`
+          : t(`statuses.${r.status as Status}`),
+      header: tk("status"),
+      key: "status",
+    },
+  ];
+  return (
+    <div className="grid gap-6">
+      {data.data ? (
+        <DataTable
+          columns={columns}
+          rowKey={(r) => r.id}
+          rows={data.data.resolutions}
+        />
+      ) : (
+        <SectionSpinner />
+      )}
+      <Link className="link justify-self-start" href="/society/resolutions/new">
+        {t("resolutions.new")}
+      </Link>
+    </div>
+  );
+};
+
+/** One resolution on its own page, by its code; new for a blank one. */
+export const ResolutionPage = ({ code }: { readonly code: string }) => {
+  const t = useTranslations("nexus.admin.governance");
+  const locale = useLocale() as Locale;
+  const data = useResolutions();
+  const back = "/society/resolutions";
+  if (data.isPending) {
+    return <SectionSpinner />;
+  }
+  const row =
+    code === "new"
+      ? undefined
+      : data.data?.resolutions.find((r) => r.code === code || r.id === code);
+  if (code !== "new" && !row) {
+    return (
+      <EmptyLine action={{ href: back, label: t("resolutions.back") }}>
+        {t("resolutions.missing")}
+      </EmptyLine>
+    );
+  }
+  return (
+    <div className="grid max-w-3xl gap-8">
+      <AdminHeading
+        actions={
+          <>
+            <Link className="link" href={back}>
+              {t("resolutions.back")}
+            </Link>
+            {row?.status === "adopted" ? (
+              <OnTheSite href="/about/council" />
+            ) : null}
+          </>
+        }
+        title={row ? localized(row, "title", locale) : t("resolutions.new")}
+      />
+      <ResolutionEditor
+        initial={row ? formOf(row) : blankResolution()}
+        minutes={data.data?.minutes ?? []}
+      />
+    </div>
+  );
+};
+
+const ResolutionEditor = ({
+  initial,
+  minutes,
+}: {
+  readonly initial: ResolutionForm;
+  readonly minutes: ResolutionsData["minutes"];
+}) => {
+  const t = useTranslations("nexus.admin.governance");
+  const locale = useLocale() as Locale;
+  const { supabase } = useAuth();
+  const queryClient = useQueryClient();
+  const tk = useTranslations("nexus.admin.kit");
+  const router = useRouter();
+  const [form, setForm] = useState<ResolutionForm>(initial);
+  const [problem, setProblem] = useState<string | null>(null);
   const save = useMutation({
     mutationFn: async () => {
       if (!RESOLUTION_CODE.test(form.code)) {
@@ -200,228 +329,157 @@ const Resolutions = () => {
       );
     },
     onSuccess: async () => {
-      setForm(blankResolution());
       await queryClient.invalidateQueries({ queryKey: key });
+      router.push("/society/resolutions");
     },
   });
 
-  type Row = NonNullable<typeof data.data>["resolutions"][number];
-  const columns: Column<Row>[] = [
-    {
-      cell: (r) => <span className="type-code">{r.code}</span>,
-      header: t("resolutions.code"),
-      key: "code",
-    },
-    {
-      cell: (r) => (
-        <button
-          className="text-start font-medium underline underline-offset-4"
-          onClick={() =>
-            setForm({
-              adopted_on: r.adopted_on ?? "",
-              body: r.body as "council" | "general_assembly",
-              code: r.code,
-              id: r.id,
-              minutes_id: r.minutes_id ?? "",
-              status: r.status as ResolutionForm["status"],
-              text: { ar: r.text_ar ?? "", en: r.text_en },
-              title: { ar: r.title_ar ?? "", en: r.title_en },
-              votes: {
-                abstain: r.votes_abstain?.toString() ?? "",
-                against: r.votes_against?.toString() ?? "",
-                for: r.votes_for?.toString() ?? "",
-              },
-            })
-          }
-          type="button"
-        >
-          {localized(r, "title", locale)}
-        </button>
-      ),
-      header: t("resolutions.titleField"),
-      key: "title",
-    },
-    {
-      cell: (r) =>
-        r.status === "adopted" && r.adopted_on
-          ? `${t("statuses.adopted")}, ${formatLongDate(r.adopted_on, locale, true)}`
-          : t(`statuses.${r.status as Status}`),
-      header: tk("status"),
-      key: "status",
-    },
-  ];
-
   return (
-    <div className="grid gap-6">
-      {data.data ? (
-        <DataTable
-          columns={columns}
-          rowKey={(r) => r.id}
-          rows={data.data.resolutions}
-        />
-      ) : (
-        <SectionSpinner />
-      )}
-      <form
-        className="grid max-w-3xl gap-4"
-        onSubmit={(event: FormEvent) => {
-          event.preventDefault();
-          save.mutate();
-        }}
-      >
-        <h3 className="type-subheading">
-          {form.id ? t("resolutions.edit") : t("resolutions.new")}
-        </h3>
-        <div className="grid gap-4 sm:grid-cols-2">
-          <Field label={t("resolutions.code")}>
-            {(id) => (
-              <Input
-                className="type-code"
-                dir="ltr"
-                id={id}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, code: e.target.value }))
-                }
-                required
-                value={form.code}
-              />
-            )}
-          </Field>
-          <Field label={t("minutes.body")}>
-            {(id) => (
-              <SelectInput
-                id={id}
-                onChange={(e) =>
-                  setForm((f) => ({
-                    ...f,
-                    body: e.target.value as ResolutionForm["body"],
-                  }))
-                }
-                value={form.body}
-              >
-                <option value="council">{t("bodies.council")}</option>
-                <option value="general_assembly">
-                  {t("bodies.general_assembly")}
-                </option>
-              </SelectInput>
-            )}
-          </Field>
-        </div>
-        <BilingualField
-          label={t("resolutions.titleField")}
-          maxLength={300}
-          onChange={(title) => setForm((f) => ({ ...f, title }))}
-          value={form.title}
-        />
-        <BilingualField
-          label={t("resolutions.text")}
-          multiline
-          onChange={(text) => setForm((f) => ({ ...f, text }))}
-          rows={5}
-          value={form.text}
-        />
-        <fieldset className="grid gap-3 sm:grid-cols-3">
-          <legend className="mb-2 font-medium text-sm">
-            {t("resolutions.votes")}
-          </legend>
-          {(["for", "against", "abstain"] as const).map((vote) => (
-            <Field key={vote} label={t(`resolutions.${vote}`)}>
-              {(id) => (
-                <Input
-                  dir="ltr"
-                  id={id}
-                  min={0}
-                  onChange={(e) =>
-                    setForm((f) => ({
-                      ...f,
-                      votes: { ...f.votes, [vote]: e.target.value },
-                    }))
-                  }
-                  type="number"
-                  value={form.votes[vote]}
-                />
-              )}
-            </Field>
-          ))}
-        </fieldset>
-        <div className="grid gap-4 sm:grid-cols-3">
-          <Field label={tk("status")}>
-            {(id) => (
-              <SelectInput
-                id={id}
-                onChange={(e) =>
-                  setForm((f) => ({
-                    ...f,
-                    status: e.target.value as ResolutionForm["status"],
-                  }))
-                }
-                value={form.status}
-              >
-                {(["draft", "adopted", "rejected", "withdrawn"] as const).map(
-                  (s) => (
-                    <option key={s} value={s}>
-                      {t(`statuses.${s}`)}
-                    </option>
-                  )
-                )}
-              </SelectInput>
-            )}
-          </Field>
-          <Field label={t("minutes.adoptedOn")}>
-            {(id) => (
-              <Input
-                dir="ltr"
-                id={id}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, adopted_on: e.target.value }))
-                }
-                type="date"
-                value={form.adopted_on}
-              />
-            )}
-          </Field>
-          <Field label={t("resolutions.minutes")}>
-            {(id) => (
-              <SelectInput
-                id={id}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, minutes_id: e.target.value }))
-                }
-                value={form.minutes_id}
-              >
-                <option value="">{t("resolutions.noMinutes")}</option>
-                {data.data?.minutes.map((m) => (
-                  <option key={m.id} value={m.id}>
-                    {formatLongDate(m.meeting_on, locale, true)} ·{" "}
-                    {localized(m, "title", locale)}
-                  </option>
-                ))}
-              </SelectInput>
-            )}
-          </Field>
-        </div>
-        {problem ? (
-          <p className="text-sm text-text" role="alert">
-            {problem}
-          </p>
-        ) : null}
-        <div className="flex gap-3">
-          <SaveButton pending={save.isPending} />
-          {form.id ? (
-            <Button
-              onClick={() => setForm(blankResolution())}
-              type="button"
-              variant="ghost"
+    <form
+      className="grid max-w-3xl gap-4"
+      onSubmit={(event: FormEvent) => {
+        event.preventDefault();
+        save.mutate();
+      }}
+    >
+      <div className="grid gap-4 sm:grid-cols-2">
+        <Field label={t("resolutions.code")}>
+          {(id) => (
+            <Input
+              className="type-code"
+              dir="ltr"
+              id={id}
+              onChange={(e) => setForm((f) => ({ ...f, code: e.target.value }))}
+              required
+              value={form.code}
+            />
+          )}
+        </Field>
+        <Field label={t("minutes.body")}>
+          {(id) => (
+            <SelectInput
+              id={id}
+              onChange={(e) =>
+                setForm((f) => ({
+                  ...f,
+                  body: e.target.value as ResolutionForm["body"],
+                }))
+              }
+              value={form.body}
             >
-              {t("resolutions.new")}
-            </Button>
-          ) : null}
-        </div>
-        {save.error && save.error.message !== "invalid" ? (
-          <ErrorLine error={save.error} />
-        ) : null}
-      </form>
-    </div>
+              <option value="council">{t("bodies.council")}</option>
+              <option value="general_assembly">
+                {t("bodies.general_assembly")}
+              </option>
+            </SelectInput>
+          )}
+        </Field>
+      </div>
+      <BilingualField
+        label={t("resolutions.titleField")}
+        maxLength={300}
+        onChange={(title) => setForm((f) => ({ ...f, title }))}
+        value={form.title}
+      />
+      <BilingualField
+        label={t("resolutions.text")}
+        multiline
+        onChange={(text) => setForm((f) => ({ ...f, text }))}
+        rows={5}
+        value={form.text}
+      />
+      <fieldset className="grid gap-3 sm:grid-cols-3">
+        <legend className="mb-2 font-medium text-sm">
+          {t("resolutions.votes")}
+        </legend>
+        {(["for", "against", "abstain"] as const).map((vote) => (
+          <Field key={vote} label={t(`resolutions.${vote}`)}>
+            {(id) => (
+              <Input
+                dir="ltr"
+                id={id}
+                min={0}
+                onChange={(e) =>
+                  setForm((f) => ({
+                    ...f,
+                    votes: { ...f.votes, [vote]: e.target.value },
+                  }))
+                }
+                type="number"
+                value={form.votes[vote]}
+              />
+            )}
+          </Field>
+        ))}
+      </fieldset>
+      <div className="grid gap-4 sm:grid-cols-3">
+        <Field label={tk("status")}>
+          {(id) => (
+            <SelectInput
+              id={id}
+              onChange={(e) =>
+                setForm((f) => ({
+                  ...f,
+                  status: e.target.value as ResolutionForm["status"],
+                }))
+              }
+              value={form.status}
+            >
+              {(["draft", "adopted", "rejected", "withdrawn"] as const).map(
+                (s) => (
+                  <option key={s} value={s}>
+                    {t(`statuses.${s}`)}
+                  </option>
+                )
+              )}
+            </SelectInput>
+          )}
+        </Field>
+        <Field label={t("minutes.adoptedOn")}>
+          {(id) => (
+            <Input
+              dir="ltr"
+              id={id}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, adopted_on: e.target.value }))
+              }
+              type="date"
+              value={form.adopted_on}
+            />
+          )}
+        </Field>
+        <Field label={t("resolutions.minutes")}>
+          {(id) => (
+            <SelectInput
+              id={id}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, minutes_id: e.target.value }))
+              }
+              value={form.minutes_id}
+            >
+              <option value="">{t("resolutions.noMinutes")}</option>
+              {minutes.map((m) => (
+                <option key={m.id} value={m.id}>
+                  {formatLongDate(m.meeting_on, locale, true)} ·{" "}
+                  {localized(m, "title", locale)}
+                </option>
+              ))}
+            </SelectInput>
+          )}
+        </Field>
+      </div>
+      {problem ? (
+        <p className="text-sm text-text" role="alert">
+          {problem}
+        </p>
+      ) : null}
+      <div className="flex gap-3">
+        <SaveButton pending={save.isPending} />
+      </div>
+      {save.error && save.error.message !== "invalid" ? (
+        <ErrorLine error={save.error} />
+      ) : null}
+    </form>
   );
 };
 

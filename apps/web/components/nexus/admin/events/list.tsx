@@ -19,6 +19,7 @@ import { useState } from "react";
 import { Link } from "@/lib/nexus/navigation";
 import { ErrorState, SectionSpinner } from "../../states";
 import { AdminHeading, type Column, DataTable } from "../kit";
+import { ProgramLinks } from "../programmes/admin";
 import { adminEventColumns, useProgrammeOptions } from "./data";
 
 type Tab = "upcoming" | "past" | "drafts";
@@ -153,6 +154,7 @@ export const EventsList = () => {
       >
         {t("lede")}
       </AdminHeading>
+      <ProgramLinks />
       <Tabs onValueChange={(v) => setTab(v as Tab)} value={tab}>
         <TabsList>
           <TabsTrigger value="upcoming">{t("tabs.upcoming")}</TabsTrigger>

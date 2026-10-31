@@ -41,7 +41,8 @@ and decisions), and continue from the first unticked item.
     `admin-shell.tsx`; owner, Oct 30, 2026): the Desk (`/diwan`: what
     needs you, three quick actions, what happened, and the Connected panel
     for Notion, Hudhud and email), What's on (`/diwan/events`, one page:
-    the events, then the programs, each an event series whose page is
+    the events with the programs linked above them, then pitches; each
+    program an event series whose page is
     `/diwan/events/<slug>` like its public page, `EventOrProgram`, with
     its tabs at `/diwan/events/<slug>/<tab>`; each event has its own door,
     `/events/<slug>/door`, and the Desk opens the next one (owner, Oct 31,
@@ -79,6 +80,27 @@ and decisions), and continue from the first unticked item.
   grouped by kind), a welcome step `/welcome/2`, a request
   `/membership/requests/new/<form>`. Never add `?tab=` or a query for
   what a path can say.
+- **Editing opens its own page** (owner, Oct 31, 2026). In the Diwan a
+  record is edited at its list's path, then "/" and its name (or id),
+  "new" for a blank one, and saving returns to the list: never a form
+  opened in place under a list, a dialog or a tab held in state. Openings
+  (`OpeningEditor`: `/events/<program>/places/<id>`,
+  `/people/hiring/<id>`, `/people/partners/places/<id>`), partners
+  (`/people/partners/<slug>`, each view of Partners its own path),
+  memoranda (`/people/partners/agreements/<id>`), calls
+  (`/qirtas/editions/<edition>/calls/<id>`), resolutions
+  (`/society/resolutions/<code>`), contributors
+  (`/qirtas/contributors/<slug>`), Next Stop episodes
+  (`/qirtas/video/episodes/<slug>`) and productions (`/company/<slug>`
+  and `/company/<slug>/<tab>`). Tab lists the server pages read live in
+  `components/nexus/admin/tabs.ts`, not in a client module.
+- **Links both ways** (owner, Oct 31, 2026). A Diwan, partner or
+  Membership page whose record has a public page links to it with
+  `OnTheSite` (`components/nexus/site-links.tsx`); public pages carry
+  `ManageLinks` (`components/manage-links.tsx`): "Manage in the Diwan"
+  for officers, the partner dashboard for a partner's team, bookings or
+  work for members, read from the `sal_ways` and sign-in cookies after
+  the first render (UX only).
 - **URLs.** English, the default language, has no prefix (`/events`,
   `/diwan/events`); other languages do (`/ar/events`, `/ar/diwan/events`)
   (owner, Oct 14, 2026). API routes carry no language (`/api/...`). Build
@@ -378,10 +400,13 @@ any schema change. Integration tests run against a local stack with
 - **The Callboard** (owner, Oct 25, 2026; header link "Get involved",
   `/get-involved`) is the careers page (owner, Oct 29, 2026), read by
   anyone (Oct 31: `programmes.open_places()`, `OpenPlaces`; replying and
-  shifts are for members): roles, the Apprenticeship, First Ink, volunteer
-  places (`kind` `volunteer`, with a rota) and places with partners (`kind`
-  `partner`, posted by Partnerships in the Diwan's Partners → Places),
-  then auditions. Before that:
+  shifts are for members), as one list without sections (owner, Oct 31,
+  2026; migration `20261101001000`), soonest first: roles, the
+  Apprenticeship, First Ink, volunteer places (`kind` `volunteer`, with a
+  rota), places with partners (`kind` `partner`, posted by Partnerships
+  in the Diwan's Partners → Places) and the Company's coming auditions
+  (`kind` `audition`, for a public production in auditions); members get
+  the same one list with their actions. Before that:
   every role the Society is filling (`programmes.openings`, `kind`
   `role`, with its `owner`: a program, Qirtas, Media, Partnerships,
   Membership or the Council), shifts and auditions on one board. A role

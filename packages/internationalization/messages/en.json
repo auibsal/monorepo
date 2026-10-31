@@ -53,7 +53,15 @@
     "youAreHere": "You are here",
     "keep": "Keep it",
     "notFoundHere": "This page isn't here. It may have been removed, or the address is wrong.",
-    "backToList": "Back to the list"
+    "backToList": "Back to the list",
+    "onTheSite": "See it on the site",
+    "manage": {
+      "diwan": "Manage in the Diwan",
+      "partner": "Your partner dashboard",
+      "membership": "In your Membership",
+      "booking": "Your bookings",
+      "work": "Your work"
+    }
   },
   "auth": {
     "signOut": "Sign out",
@@ -1420,7 +1428,6 @@
         },
         "episodes": {
           "new": "New episode",
-          "edit": "Edit episode",
           "titleField": "Title",
           "summary": "Summary",
           "season": "Season",
@@ -1433,7 +1440,9 @@
           "draft": "Not published",
           "publish": "Publish",
           "unpublish": "Unpublish",
-          "careNote": "Before publishing: releases signed, camera-shy members not shown, guests given their 48-hour review."
+          "careNote": "Before publishing: releases signed, camera-shy members not shown, guests given their 48-hour review.",
+          "back": "Video",
+          "missing": "This episode is not here"
         },
         "reels": {
           "new": "New reel",
@@ -1562,7 +1571,11 @@
             "active": "has the place",
             "completed": "completed",
             "withdrawn": "withdrawn"
-          }
+          },
+          "back": "All openings",
+          "missing": "This opening is not here",
+          "untitled": "Untitled opening",
+          "editTitle": "Edit an opening"
         },
         "sessions": {
           "lede": "How this program repeats. Its sessions appear in What's on, each a date you can still edit or cancel in Events.",
@@ -1632,7 +1645,6 @@
         },
         "resolutions": {
           "new": "New resolution",
-          "edit": "Edit resolution",
           "code": "Code (R-2026-01)",
           "codeError": "Use the form R-YYYY-NN, e.g. R-2026-01.",
           "titleField": "Title",
@@ -1643,7 +1655,9 @@
           "abstain": "Abstain",
           "minutes": "Recorded in minutes",
           "noMinutes": "Not linked",
-          "adoptedOnError": "An adopted resolution needs its adoption date, and only then."
+          "adoptedOnError": "An adopted resolution needs its adoption date, and only then.",
+          "back": "All resolutions",
+          "missing": "This resolution is not here"
         },
         "elections": {
           "flagOff": "Online elections are off (Settings → Feature flags).",
@@ -1844,7 +1858,8 @@
           "bio": "Bio",
           "new": "Add a member as a contributor",
           "title": "Contributors",
-          "editBio": "Edit the bio"
+          "back": "The newsroom",
+          "missing": "This contributor is not here"
         },
         "desks": {
           "news": "News",
@@ -2026,10 +2041,11 @@
           "hidden": "Not published",
           "empty": "No calls for this issue yet.",
           "new": "New call",
-          "edit": "Edit call",
-          "cancelEdit": "Cancel",
           "partners": "Also open to partners' members",
-          "partnersHint": "Members of these partners may answer the call once the Society has verified them, under the same rules and blind review. Only partners whose signed memorandum allows Journal submissions are listed."
+          "partnersHint": "Members of these partners may answer the call once the Society has verified them, under the same rules and blind review. Only partners whose signed memorandum allows Journal submissions are listed.",
+          "back": "The Edition",
+          "missing": "This call is not here",
+          "title": "A call"
         }
       },
       "partners": {
@@ -2093,7 +2109,9 @@
             "active": "Active",
             "lapsed": "Lapsed",
             "ended": "Ended"
-          }
+          },
+          "back": "The register",
+          "missing": "This partner is not in the register"
         },
         "agreements": {
           "lede": "Partnership memoranda (Form F-26). Drafts are written here; the President signs and uploads the signed copy. Someone who has declared a conflict with the partner cannot sign (P8.3).",
@@ -2149,7 +2167,9 @@
             "draft": "Draft",
             "signed": "Signed",
             "ended": "Ended"
-          }
+          },
+          "back": "All memoranda",
+          "missing": "This memorandum is not here"
         },
         "affiliations": {
           "lede": "People who say they belong to a partner. Check with the partner's contact before verifying. Lists are never shared with partners.",
@@ -2294,7 +2314,6 @@
         "title": "The Company",
         "lede": "Staged readings and productions, from proposal to the Program Report (Form F-25). The script's rights are cleared before any performance.",
         "new": "New production",
-        "closeNew": "Close",
         "newTitle": "Propose a production",
         "empty": "No productions yet. The President or Vice President proposes one; a Production Lead runs it.",
         "stageNow": "Stage",
@@ -2459,7 +2478,9 @@
           "certificatesHint": "Drafts a certificate (F-28) for each credited member. The President and the Faculty Advisor then sign them in Recognition.",
           "draftCertificates": "Draft certificates",
           "drafted": "{count, plural, =0 {No new certificates: everyone credited has one.} one {{countText} certificate drafted.} other {{countText} certificates drafted.}}"
-        }
+        },
+        "back": "All productions",
+        "missing": "This production is not here"
       },
       "forms": {
         "title": "Forms and letters",
@@ -3869,18 +3890,11 @@
       "matches": "Matches your skills: {skills}",
       "wants": "Looking for: {skills}",
       "closes": "Closes {date}",
-      "roles": "Roles and places",
-      "rolesLede": "Roles a program needs filled, one-term Apprenticeships in a Qirtas section or a program, and First Ink mentor places. Say you're interested and its lead will be in touch.",
-      "noRoles": "Nothing is posted right now.",
+      "noRoles": "Nothing is open right now.",
       "interested": "I'm interested",
       "takeBack": "Take it back",
-      "shifts": "Shifts",
       "whatsOn": "See what's on",
-      "auditions": "Auditions",
-      "auditionsLede": "The Company casts each production in an audition. Sign up on the Company's page.",
       "auditionsLink": "Sign up for an audition",
-      "noAuditions": "No auditions are announced right now.",
-      "hours": "Your hours",
       "hoursLede": "The hours you give on shifts and roles count toward your service record and the Society's certificates.",
       "hoursLink": "See your service record",
       "qirtas": "Qirtas",
@@ -3888,7 +3902,10 @@
         "apprenticeship": "Apprenticeship",
         "first_ink": "First Ink",
         "volunteer": "Volunteer",
-        "partner": "With a partner"
+        "partner": "With a partner",
+        "role": "Role",
+        "shift": "Shift",
+        "audition": "Audition"
       },
       "kindLines": {
         "apprenticeship": "One term. Your sessions are logged as shifts, the hours count as service, and you get a certificate at the end.",
@@ -4003,33 +4020,16 @@
       "none": "Nothing open right now.",
       "society": "The Society",
       "closes": "closes {date}",
-      "groups": {
-        "role": {
-          "title": "Roles",
-          "lede": "Places on the Society's teams: the Council's directors' teams, Qirtas's masthead and the programs. Membership runs every application."
-        },
-        "apprenticeship": {
-          "title": "The Apprenticeship",
-          "lede": "One term in a Qirtas section or a program, with a mentor: training, real assignments, service hours and a certificate. The way onto a team."
-        },
-        "first_ink": {
-          "title": "First Ink",
-          "lede": "Mentor places for AUIB members who volunteer with high school students, through our partner school."
-        },
-        "volunteer": {
-          "title": "Volunteering",
-          "lede": "Standing places to volunteer with a program for a term; members also sign up for single shifts. The hours count as service."
-        },
-        "partner": {
-          "title": "With our partners",
-          "lede": "Internships, volunteer places and roles with the clubs, departments and organizations the Society partners with."
-        },
-        "audition": {
-          "title": "Auditions",
-          "lede": "The Company casts each production in an audition, open to members.",
-          "link": "The Company and its auditions"
-        }
-      }
+      "kinds": {
+        "role": "Role",
+        "apprenticeship": "Apprenticeship",
+        "first_ink": "First Ink",
+        "volunteer": "Volunteering",
+        "partner": "With a partner",
+        "audition": "Audition"
+      },
+      "on": "{date}, {time}",
+      "audition": "Auditions for {title}"
     },
     "partnerJoin": {
       "title": "Partner with the Society",
