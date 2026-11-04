@@ -52,9 +52,10 @@ and decisions), and continue from the first unticked item.
     2026: no general door); Second Chapter's collection
     is a tab of its program), Qirtas (`/diwan/qirtas` and its tabs;
     calls are on each Edition's page), The Company (`/diwan/company`), People (`/diwan/people`,
-    hiring, service, partners, insights; Partners in one place: applications,
-    the register (each partner's page holds its guests), memoranda, perks
-    and places) and Society
+    openings (every opening of every kind, `/diwan/people/openings`),
+    service, partners, insights; Partners in one place: applications, the
+    register (each partner's page holds its guests), memoranda and perks)
+    and Society
     (`/diwan/society`: meetings with their resolutions, requests to Student Life,
     elections, concerns, officers' conflict-of-interest declarations, the Library, where only `governance.manage`, the
     President, the Vice President and the General Secretary, keep the
@@ -511,7 +512,7 @@ any schema change. Integration tests run against a local stack with
   2026; migration `20261101001000`), soonest first: roles, the
   Apprenticeship, First Ink, volunteer places (`kind` `volunteer`, with a
   rota), places with partners (`kind` `partner`, posted by Partnerships
-  in the Diwan's Partners → Places) and the Company's coming auditions
+  in the Diwan's People → Openings) and the Company's coming auditions
   (`kind` `audition`, for a public production in auditions); members get
   the same one list with their actions. Before that:
   every role the Society is filling (`programmes.openings`, `kind`
@@ -521,7 +522,8 @@ any schema change. Integration tests run against a local stack with
   2026: every role in Roles and Staffing is on the platform, each with
   `access.roles.hiring_owner`), which sets its owner, and whoever is
   onboarded holds the role (`private.onboarded_takes_role`). Hiring
-  (owner, Oct 30, 2026; the Diwan's Hiring section): members reply "I'm
+  (owner, Oct 30, 2026; the Diwan's People → Openings, every opening
+  of every kind in one list since Nov 4, 2026): members reply "I'm
   interested" (`programmes.opening_replies`, emailed to Membership);
   Membership (`members.manage`) runs every application (conversation,
   offer, onboarding with F-06), and the role's owner picks the person

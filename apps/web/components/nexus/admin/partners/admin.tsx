@@ -40,7 +40,6 @@ import {
 import { useMemberNames } from "../member-picker";
 import { memberName } from "../members/directory";
 import { VerificationQueue } from "../members/verification";
-import { PartnerPlaces } from "./places";
 
 const key = ["admin", "partners"];
 
@@ -1525,7 +1524,6 @@ export const partnerViews = [
   "register",
   "agreements",
   "offers",
-  "places",
 ] as const;
 export type PartnerView = (typeof partnerViews)[number];
 
@@ -1535,7 +1533,8 @@ const viewPath = (view: PartnerView) =>
 /**
  * Partners in one place (Nov 4, 2026): applications waiting for the
  * President, the register (each partner's page holds its guests),
- * memoranda, perks and places, each view at its own address.
+ * memoranda and perks, each view at its own address; places with partners
+ * are among every opening at People → Openings.
  */
 export const PartnersAdmin = ({ view }: { view?: PartnerView }) => {
   const t = useTranslations("nexus.admin.partners");
@@ -1566,7 +1565,6 @@ export const PartnersAdmin = ({ view }: { view?: PartnerView }) => {
       {here === "register" && canManage ? <Register /> : null}
       {here === "agreements" ? <Agreements /> : null}
       {here === "offers" && canManage ? <Offers /> : null}
-      {here === "places" && canManage ? <PartnerPlaces /> : null}
     </div>
   );
 };

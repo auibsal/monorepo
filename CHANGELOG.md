@@ -9,6 +9,9 @@ own versions in the Library.
 - The Sunday Paper's past issues, each on its own page in a newspaper's
   layout; Next Stop's page with its episodes, team and how to send a
   reel; search opens on the newest pieces and what is coming up.
+- The Diwan: every opening (roles, Apprenticeships, First Ink, volunteer
+  places, places with partners) in one list at People → Openings, with
+  filters by kind and program, in place of three separate lists.
 - The Diwan: small rows (needs, rotas, shifts, credits, rehearsals,
   audition times, ledger lines, receipts, impact figures, a member's
   activities and roles) are added right on their list instead of on a

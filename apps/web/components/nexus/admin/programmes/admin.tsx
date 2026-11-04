@@ -16,7 +16,7 @@ import { hasPermissionAnywhere } from "@repo/rbac";
 import { localized, programmes, recognition, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
-import { type FormEvent, type ReactNode, useEffect, useState } from "react";
+import { type FormEvent, useEffect, useState } from "react";
 import { DateInput } from "@/components/fields/date-input";
 import { Link, useRouter } from "@/lib/nexus/navigation";
 import { useGrants } from "@/lib/nexus/queries";
@@ -46,9 +46,9 @@ import { memberName } from "../members/directory";
 import { Needs } from "../needs";
 import { NotionManaged } from "../notion-managed";
 import type { ProgramTab } from "../tabs";
-import { NewOpening, Openings, SkillsPicker } from "./openings";
 import { Sessions } from "./sessions";
 import { TourCards } from "./six-words";
+import { SkillsPicker } from "./skills-picker";
 
 const invalidateKey = ["admin", "programmes-module"];
 
@@ -1306,7 +1306,6 @@ export const ProgramPage = ({
   const tabs: ProgramTab[] = [
     "sessions",
     "shifts",
-    "places",
     "needs",
     ...(slug === "typewriter-tour" ? (["six-words"] as const) : []),
     ...(slug === "second-chapter" &&
@@ -1322,6 +1321,9 @@ export const ProgramPage = ({
           <>
             <Link className="link" href="/events">
               {t("all")}
+            </Link>
+            <Link className="link" href={`/people/openings?program=${slug}`}>
+              {t("openingsLink")}
             </Link>
             <OnTheSite href={`/events/${programme.slug}`} />
           </>
@@ -1340,80 +1342,11 @@ export const ProgramPage = ({
       <div className="pt-2">
         {tab === "sessions" ? <Sessions programmeId={programme.id} /> : null}
         {tab === "shifts" ? <Rotas programmeId={programme.id} /> : null}
-        {tab === "places" ? (
-          <Openings
-            base={`/events/${programme.slug}/places`}
-            programmeId={programme.id}
-          />
-        ) : null}
         {tab === "needs" ? <Needs programmeId={programme.id} /> : null}
         {tab === "six-words" ? <TourCards /> : null}
         {tab === "collection" ? <CharityAdmin /> : null}
       </div>
     </div>
-  );
-};
-
-interface ProgramRef {
-  readonly id: string;
-  readonly label: string;
-  readonly slug: string;
-}
-
-/**
- * A record's own page under one of a program's tabs (owner, Nov 4, 2026:
- * every new or edited record opens its own page; saving returns to the
- * tab). Resolves the program from its address.
- */
-const ProgramRecord = ({
-  children,
-  slug,
-  tab,
-  title,
-}: {
-  readonly children: (programme: ProgramRef, back: string) => ReactNode;
-  readonly slug: string;
-  readonly tab: ProgramTab;
-  readonly title: string;
-}) => {
-  const t = useTranslations("nexus.admin.programmes");
-  const options = useProgrammeOptions("programs.manage");
-  if (options.isPending) {
-    return <SectionSpinner />;
-  }
-  const programme = options.options.find((p) => p.slug === slug);
-  if (!programme) {
-    return (
-      <EmptyLine action={{ href: "/events", label: t("all") }}>
-        {t("notYours")}
-      </EmptyLine>
-    );
-  }
-  const back =
-    tab === "sessions" ? `/events/${slug}` : `/events/${slug}/${tab}`;
-  return (
-    <RecordPage
-      back={back}
-      backLabel={t("backToTab", {
-        program: programme.label,
-        tab: t(`tabs.${tab}`),
-      })}
-      title={title}
-    >
-      {children(programme, back)}
-    </RecordPage>
-  );
-};
-
-/** A program's new opening, at /events/<program>/places/new. */
-export const NewProgramOpening = ({ slug }: { readonly slug: string }) => {
-  const t = useTranslations("nexus.admin.programmes.openings");
-  return (
-    <ProgramRecord slug={slug} tab="places" title={t("new")}>
-      {(programme, back) => (
-        <NewOpening back={back} programmeId={programme.id} />
-      )}
-    </ProgramRecord>
   );
 };
 

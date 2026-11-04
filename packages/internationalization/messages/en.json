@@ -1344,7 +1344,6 @@
           "sessions": "Sessions",
           "needs": "Needs",
           "shifts": "Shifts",
-          "places": "Places",
           "six-words": "Six Words",
           "collection": "Collection"
         },
@@ -1454,13 +1453,13 @@
           "body": "What it involves",
           "skills": "Skills it wants",
           "closes": "Closes (optional)",
-          "empty": "No roles posted for this program.",
+          "empty": "No openings here yet.",
           "open": "Open",
           "closed": "Closed",
           "closesOn": "closes {date}",
           "replies": "{count, plural, =0 {Nobody has replied yet} one {One member is interested} other {{count} members are interested}}",
-          "close": "Close the role",
-          "closeConfirm": "Close this role? It leaves Get involved; the replies stay here.",
+          "close": "Close the opening",
+          "closeConfirm": "Close this opening? It leaves Get involved; the replies stay here.",
           "reopen": "Reopen",
           "kind": "What it offers",
           "kinds": {
@@ -1471,7 +1470,7 @@
             "partner": "With a partner"
           },
           "kindHints": {
-            "role": "A role the program needs filled.",
+            "role": "A role the Society needs filled, chosen from its roles.",
             "apprenticeship": "A one-term place in a Qirtas section or this program. Its sessions are logged as shifts on its own rota, the hours count as service, and completing it drafts a certificate.",
             "first_ink": "A mentor place for AUIB members who volunteer with high school students, through the partner school. The students never get accounts: record nothing about them here.",
             "volunteer": "A standing place to volunteer with the program, for a term. Its sessions are logged as shifts on its own rota, and the hours count as service.",
@@ -1499,7 +1498,11 @@
           "missing": "This opening is not here",
           "untitled": "Untitled opening",
           "editTitle": "Edit an opening",
-          "new": "New opening"
+          "new": "New opening",
+          "listTitle": "Openings",
+          "listLede": "Every opening on Get involved, inside the Society and out: roles, Apprenticeships, First Ink, volunteer places and places with partners. A role's replies go through hiring: Membership runs it, and the role's owner picks the person. A place's replies are given the place.",
+          "allKinds": "Every kind",
+          "allPrograms": "Every program"
         },
         "sessions": {
           "lede": "How this program repeats. Its sessions appear in What's on, each a date you can still edit or cancel in Events.",
@@ -1531,7 +1534,8 @@
           "lede": "Ideas for new programs that members sent. The Director of Programs answers each one."
         },
         "whatsOn": "What's on",
-        "backToTab": "{program}: {tab}"
+        "backToTab": "{program}: {tab}",
+        "openingsLink": "Openings"
       },
       "governance": {
         "title": "Governance",
@@ -1977,7 +1981,6 @@
           "register": "Register",
           "agreements": "Memoranda",
           "offers": "Member offers",
-          "places": "Places",
           "applications": "Applications"
         },
         "register": {
@@ -2801,7 +2804,7 @@
           "programs": "Programs",
           "events": "What's on",
           "members": "Members",
-          "hiring": "Hiring",
+          "openings": "Openings",
           "service": "Service",
           "partners": "Partners",
           "insights": "Insights",

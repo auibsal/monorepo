@@ -1430,7 +1430,7 @@ export interface ReplyLine {
 /** Membership: the day's replies on Get involved, in one email. */
 export const repliesDigest = (lang: Lang, replies: ReplyLine[], app: string) =>
   build(lang, (l) => ({
-    action: nexus(app, l, "/people/hiring"),
+    action: nexus(app, l, "/people/openings"),
     heading:
       l === "ar"
         ? `ردود جديدة في «شارك» (${replies.length})`
@@ -1446,7 +1446,7 @@ export const repliesDigest = (lang: Lang, replies: ReplyLine[], app: string) =>
     ],
     paragraphs: [
       l === "ar"
-        ? "أعضاء قالوا «أنا مهتم». حدّد مواعيد الحديث في قسم التوظيف."
-        : "Members who said they're interested. Set times to talk in Hiring.",
+        ? "أعضاء قالوا «أنا مهتم». حدّد مواعيد الحديث في «الفرص»."
+        : "Members who said they're interested. Set times to talk in Openings.",
     ],
   }));

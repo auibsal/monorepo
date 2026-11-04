@@ -164,7 +164,7 @@ export const PlacesBoard = () => {
 
   return (
     <DiwanPage
-      actions={<ManageLinks diwan="/people/hiring" />}
+      actions={<ManageLinks diwan="/people/openings" />}
       lede={tc("lede")}
       title={tc("title")}
     >
