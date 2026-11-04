@@ -12,7 +12,7 @@ import {
 
 /**
  * Connecting a group and telling the bot about it. /setup takes the code an
- * officer made in the Nexus (settings.manage); the rest is for the group's
+ * officer made in the Diwan (settings.manage); the rest is for the group's
  * Telegram admins: /topic, /lang, /audience.
  */
 export const setup = new Composer<BotContext>();

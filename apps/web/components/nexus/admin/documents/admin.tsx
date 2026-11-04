@@ -10,12 +10,10 @@ import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 import { DateInput } from "@/components/fields/date-input";
 import { Link, useRouter } from "@/lib/nexus/navigation";
-import { RichTextEditor } from "../../editor/rich-text";
 import { OnTheSite } from "../../site-links";
 import { SectionSpinner } from "../../states";
 import {
   AdminHeading,
-  BilingualField,
   type Column,
   DataTable,
   ErrorLine,
@@ -40,12 +38,12 @@ const useDocumentList = () => {
 };
 
 /**
- * The Library (owner, Oct 30, 2026): the Society's documents, managed in
- * the Diwan by whoever keeps them (governance.manage: the President, the
- * Vice President and the General Secretary) and published on the public
- * Library, auibsal.org/library, within a minute of saving, on two shelves:
- * the Society's documents and the website's policies. Internal
- * documents are kept in the team's Notion workspace, never here.
+ * The Library (owner, Oct 30, 2026): the Society's documents on two
+ * shelves, the Society's documents and the website's policies. Since Nov 4,
+ * 2026 their text is written in Notion and published from there; the
+ * Diwan keeps each one's adoption record, kept by whoever holds
+ * governance.manage (the President, the Vice President and the General
+ * Secretary). Internal documents stay in Notion.
  */
 export const LibraryAdmin = () => {
   const t = useTranslations("nexus.admin.documents");
@@ -78,17 +76,7 @@ export const LibraryAdmin = () => {
 
   return (
     <div className="grid gap-8">
-      <AdminHeading
-        actions={
-          <>
-            <OnTheSite href="/library" />
-            <Link className="link" href={`${LIBRARY}/new`}>
-              {t("new")}
-            </Link>
-          </>
-        }
-        title={t("title")}
-      >
+      <AdminHeading actions={<OnTheSite href="/library" />} title={t("title")}>
         {t("lede")}
       </AdminHeading>
       {list.isPending ? <SectionSpinner /> : null}
@@ -113,31 +101,27 @@ const optionalDate = (value: string) => value || null;
 type FullDoc = Doc & { body_ar: string | null; body_en: string };
 
 /**
- * One document on its own page, `/society/library/<slug>`, or a blank one
- * at `/society/library/new` (owner, Oct 31, 2026: one flow for new: the
- * whole document, its code, address, text and dates, is written on one page
- * and created when saved). Saving returns to the Library.
+ * One document on its own page, `/society/library/<slug>`: its adoption
+ * record, and its text as Notion has it. New documents are written in
+ * Notion (Publishing, Documents) since Nov 4, 2026. Saving returns to the
+ * Library.
  */
-export const LibraryDocument = ({ slug }: { slug: string | null }) => {
+export const LibraryDocument = ({ slug }: { slug: string }) => {
   const t = useTranslations("nexus.admin.documents");
   const { supabase } = useAuth();
   const full = useQuery({
-    enabled: slug !== null,
     queryFn: async () =>
       unwrap(
         await supabase
           .schema("governance")
           .from("society_documents")
           .select("*")
-          .eq("slug", slug ?? "")
+          .eq("slug", slug)
           .maybeSingle()
       ) as FullDoc | null,
     queryKey: [...key, "slug", slug],
   });
 
-  if (slug === null) {
-    return <EditorForm doc={null} t={t} />;
-  }
   if (full.isPending) {
     return <SectionSpinner />;
   }
@@ -160,51 +144,42 @@ export const LibraryDocument = ({ slug }: { slug: string | null }) => {
   );
 };
 
+/**
+ * A document's adoption record (owner, Nov 4, 2026): the text is written in
+ * Notion (Publishing, Documents) and rendered here and on the Library by the
+ * sync, read-only; the Diwan keeps when and how it was adopted (status,
+ * version, the date and the vote), which goes back to the row in Notion.
+ */
 const EditorForm = ({
   doc,
   t,
 }: {
-  doc: FullDoc | null;
+  doc: FullDoc;
   t: ReturnType<typeof useTranslations<"nexus.admin.documents">>;
 }) => {
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
   const router = useRouter();
   const [form, setForm] = useState({
-    adopted_on: doc?.adopted_on ?? "",
-    body: { ar: doc?.body_ar ?? "", en: doc?.body_en ?? "" },
-    code: doc?.code ?? "",
-    dated: doc?.dated ?? "",
-    ratification: doc?.ratification ?? "",
-    slug: doc?.slug ?? "",
-    status: (doc?.status ?? "adopted") as Status,
-    summary: { ar: doc?.summary_ar ?? "", en: doc?.summary_en ?? "" },
-    title: { ar: doc?.title_ar ?? "", en: doc?.title_en ?? "" },
-    version: doc?.version ?? "",
+    adopted_on: doc.adopted_on ?? "",
+    status: doc.status as Status,
+    version: doc.version ?? "",
+    vote: doc.vote ?? "",
   });
   const save = useMutation({
-    mutationFn: async () => {
-      const row = {
-        adopted_on: optionalDate(form.adopted_on),
-        body_ar: form.body.ar.trim() ? sanitizeRichText(form.body.ar) : null,
-        body_en: sanitizeRichText(form.body.en),
-        dated: optionalDate(form.dated),
-        ratification: optionalDate(form.ratification),
-        status: form.status,
-        summary_ar: form.summary.ar.trim() || null,
-        summary_en: form.summary.en.trim() || null,
-        title_ar: form.title.ar.trim() || null,
-        title_en: form.title.en.trim(),
-        version: form.version.trim() || null,
-      };
-      const table = supabase.schema("governance").from("society_documents");
-      const named = { code: form.code.trim(), slug: form.slug.trim() };
-      return unwrap(
-        doc
-          ? await table.update({ ...row, ...named }).eq("id", doc.id)
-          : await table.insert({ ...row, ...named, audience: "public" })
-      );
-    },
+    mutationFn: async () =>
+      unwrap(
+        await supabase
+          .schema("governance")
+          .from("society_documents")
+          .update({
+            adopted_on: optionalDate(form.adopted_on),
+            status: form.status,
+            version: form.version.trim() || null,
+            vote: form.vote.trim() || null,
+          })
+          .eq("id", doc.id)
+      ),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: key });
       router.push(LIBRARY);
@@ -226,54 +201,13 @@ const EditorForm = ({
             <Link className="link" href={LIBRARY}>
               {t("back")}
             </Link>
-            {doc ? <OnTheSite href={`/library/${doc.slug}`} /> : null}
+            <OnTheSite href={`/library/${doc.slug}`} />
           </>
         }
-        title={doc ? doc.title_en : t("newTitle")}
+        title={doc.title_en}
       >
-        {doc ? doc.code : t("newLede")}
+        {doc.code}
       </AdminHeading>
-      <BilingualField
-        label={t("fields.title")}
-        maxLength={200}
-        onChange={(title) => setForm((f) => ({ ...f, title }))}
-        required
-        value={form.title}
-      />
-      <div className="grid gap-4 sm:grid-cols-3">
-        <Field hint={t("fields.codeHint")} label={t("fields.code")}>
-          {(id) => (
-            <Input
-              dir="ltr"
-              id={id}
-              onChange={(e) => setForm((f) => ({ ...f, code: e.target.value }))}
-              pattern="SAL-[A-Z]{3}-[0-9]{2}"
-              required
-              value={form.code}
-            />
-          )}
-        </Field>
-        <Field hint={t("fields.slugHint")} label={t("fields.slug")}>
-          {(id) => (
-            <Input
-              dir="ltr"
-              id={id}
-              onChange={(e) => setForm((f) => ({ ...f, slug: e.target.value }))}
-              pattern="[a-z0-9]+(-[a-z0-9]+)*"
-              required
-              value={form.slug}
-            />
-          )}
-        </Field>
-      </div>
-      <BilingualField
-        label={t("fields.summary")}
-        maxLength={600}
-        multiline
-        onChange={(summary) => setForm((f) => ({ ...f, summary }))}
-        rows={2}
-        value={form.summary}
-      />
       <div className="grid gap-4 sm:grid-cols-3">
         <Field label={t("fields.status")}>
           {(fieldId) => (
@@ -304,28 +238,6 @@ const EditorForm = ({
             />
           )}
         </Field>
-        <Field label={t("fields.dated")}>
-          {(fieldId) => (
-            <DateInput
-              id={fieldId}
-              onChange={(e) =>
-                setForm((f) => ({ ...f, dated: e.target.value }))
-              }
-              value={form.dated}
-            />
-          )}
-        </Field>
-        <Field label={t("fields.ratification")}>
-          {(fieldId) => (
-            <DateInput
-              id={fieldId}
-              onChange={(e) =>
-                setForm((f) => ({ ...f, ratification: e.target.value }))
-              }
-              value={form.ratification}
-            />
-          )}
-        </Field>
         <Field hint={t("fields.adoptedHint")} label={t("fields.adopted")}>
           {(fieldId) => (
             <DateInput
@@ -338,26 +250,32 @@ const EditorForm = ({
           )}
         </Field>
       </div>
+      <Field hint={t("fields.voteHint")} label={t("fields.vote")}>
+        {(fieldId) => (
+          <Input
+            id={fieldId}
+            maxLength={300}
+            onChange={(e) => setForm((f) => ({ ...f, vote: e.target.value }))}
+            value={form.vote}
+          />
+        )}
+      </Field>
       {adoptedWithoutDate ? (
         <p className="type-caption">{t("adoptedNoDate")}</p>
       ) : null}
-      <RichTextEditor
-        document
-        label={t("fields.bodyEn")}
-        lang="en"
-        onChange={(en) => setForm((f) => ({ ...f, body: { ...f.body, en } }))}
-        value={form.body.en}
-      />
-      <RichTextEditor
-        document
-        label={t("fields.bodyAr")}
-        lang="ar"
-        onChange={(ar) => setForm((f) => ({ ...f, body: { ...f.body, ar } }))}
-        value={form.body.ar}
-      />
-      <p className="type-caption">{t("publicNote")}</p>
       <SaveButton pending={save.isPending} success={save.isSuccess} />
       <ErrorLine error={save.error} />
+      <section aria-labelledby="document-text" className="grid gap-3">
+        <h2 className="type-heading" id="document-text">
+          {t("textTitle")}
+        </h2>
+        <p className="type-caption">{t("textFromNotion")}</p>
+        <div
+          className="prose max-w-none border-line border-t pt-space-4"
+          // biome-ignore lint/security/noDangerouslySetInnerHtml: rendered from Notion and sanitized by the sync
+          dangerouslySetInnerHTML={{ __html: sanitizeRichText(doc.body_en) }}
+        />
+      </section>
     </form>
   );
 };

@@ -23,7 +23,7 @@ type SectionKey =
   | "join";
 // About · What's on · Qirtas · The Company · Get involved · Join: programs
 // and events are one calendar, the Company stands beside Qirtas (owner,
-// Oct 30, 2026), and "Get involved" opens the Callboard. Join is for
+// Oct 30, 2026), and "Get involved" opens the careers page. Join is for
 // visitors: signed in, the end of the line opens Membership instead.
 const sections: { href: string; key: SectionKey }[] = [
   { href: "/about", key: "about" },

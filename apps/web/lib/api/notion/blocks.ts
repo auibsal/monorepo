@@ -90,6 +90,24 @@ const TAGS: Record<string, string> = {
   quote: "blockquote",
 };
 
+/** A table block's rows (loaded with `withChildren`), as an HTML table. */
+const tableHtml = (block: NotionBlock) => {
+  const rows = (block.children as NotionBlock[] | undefined) ?? [];
+  const header = (block.table as { has_column_header?: boolean } | undefined)
+    ?.has_column_header;
+  const cellsOf = (row: NotionBlock) =>
+    ((row.table_row as { cells?: RichText[][] } | undefined)?.cells ?? []).map(
+      inline
+    );
+  const body = rows.map((row, index) => {
+    const tag = header && index === 0 ? "th" : "td";
+    return `<tr>${cellsOf(row)
+      .map((cell) => `<${tag}>${cell}</${tag}>`)
+      .join("")}</tr>`;
+  });
+  return body.length > 0 ? `<table>${body.join("")}</table>` : "";
+};
+
 const toHtml = (blocks: NotionBlock[]) => {
   const out: string[] = [];
   let list: "ol" | "ul" | null = null;
@@ -115,6 +133,10 @@ const toHtml = (blocks: NotionBlock[]) => {
       out.push("<hr>");
       continue;
     }
+    if (block.type === "table") {
+      out.push(tableHtml(block));
+      continue;
+    }
     const tag = TAGS[block.type];
     const html = inline(textOf(block));
     if (tag && html) {
@@ -138,3 +160,9 @@ export const pageBodies = (blocks: NotionBlock[]) => {
   }
   return { ar: toHtml(parts.ar), en: toHtml(parts.en) };
 };
+
+/**
+ * A page in one language (a document, minutes, a program): all of its
+ * text as HTML, with no language headings (one language per piece).
+ */
+export const pageHtml = (blocks: NotionBlock[]) => toHtml(blocks);

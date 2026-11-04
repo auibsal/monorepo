@@ -9,18 +9,22 @@ export type Admin = ReturnType<typeof createAdminClient>;
 export type LinkKind =
   | "document"
   | "event"
+  | "event_ar"
   | "journal_stage"
   | "minutes"
   | "news"
   | "officer"
   | "piece"
-  | "programme";
+  | "programme"
+  | "programme_ar";
 
 /** The workspace's data sources (core.settings `notion.data_sources`). */
 export interface Sources {
   documents: string;
   events: string;
   journal: string;
+  /** Work, Meetings: minutes written there go to the Diwan (Nov 4, 2026). */
+  meetings?: string;
   news: string;
   officers: string;
   programmes: string;
@@ -65,7 +69,7 @@ export const linksOf = async (ctx: SyncContext, kind: LinkKind) => {
   return new Map((data ?? []).map((l: Link) => [l.record_key, l]));
 };
 
-/** The Nexus record a Notion page stands for, if any. */
+/** The Diwan record a Notion page stands for, if any. */
 export const recordFor = async (
   ctx: SyncContext,
   kind: LinkKind,

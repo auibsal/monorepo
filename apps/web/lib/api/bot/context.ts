@@ -3,7 +3,7 @@ import { type Copy, copy, type Lang, langOf } from "./copy";
 import { type Account, whoami } from "./db";
 
 export interface Flavor {
-  /** The linked Nexus account, loaded once per update when first asked for. */
+  /** The linked Diwan account, loaded once per update when first asked for. */
   account: () => Promise<Account | null>;
   /** The bot's username, for start links. */
   botUsername: string;
@@ -14,7 +14,7 @@ export interface Flavor {
 export type BotContext = Context & Flavor;
 
 /**
- * Language: the linked account's choice in the Nexus, otherwise the
+ * Language: the linked account's choice in the Diwan, otherwise the
  * language of the person's Telegram app. Nothing is looked up until a
  * handler asks for the account, so most updates cost no database call.
  */

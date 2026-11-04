@@ -6,6 +6,11 @@ own versions in the Library.
 
 ## Unreleased
 
+- The Diwan in three rooms: events, programs, documents and minutes are
+  written in Notion and published to the site; an Arabic edition is its
+  own row; the officers' copy in Notion shows each seat's full title.
+- The Diwan's Library keeps each document's adoption record (with the
+  vote); adopted minutes are locked.
 - Second Chapter's page follows the collection through its stages and
   lists its drop-off points, from the campaign's record.
 - Hudhud's Qirtas command is `/qirtas`.

@@ -12,7 +12,7 @@ let publicClient: SupabaseClient<Database> | undefined;
  * The privileged client (secret key, bypasses RLS). One per instance: it
  * holds no session, and warm instances serve many updates. Acting for a
  * member goes through the core.telegram_* functions, which set the member's
- * claims so RLS and permissions apply as they would in the Nexus.
+ * claims so RLS and permissions apply as they would in the Diwan.
  */
 export const db = () => {
   client ??= createAdminClient();
@@ -22,7 +22,7 @@ export const db = () => {
 export type Db = Admin;
 
 /**
- * The publishable-key client for public reads (events, Waraq pieces): RLS
+ * The publishable-key client for public reads (events, Qirtas pieces): RLS
  * runs as a guest, so nothing members-only or unpublished can reach a group
  * post or an inline result whatever the query says.
  */

@@ -344,3 +344,13 @@ Where an earlier line above is marked as replaced, the later section holds. What
 - **A translation may show its original beside it,** an exception to one language per page. (D11)
 - **Book Circle members vote among three books chosen by the host.** (D12)
 - **Done first:** Hudhud's command is `/qirtas` (was `/waraq`); the homepage links to What's on once; the Qirtas front page has one way to Write for Qirtas and ends with the Sunday Paper; Second Chapter's page follows the collection through its five stages (boxes, donations, the fair, the witnessed handover, the impact report) from the campaign's record, with only signed-off figures, and lists its drop-off points when they are entered.
+
+## 23. Where things live: the Diwan in three rooms (decided Nov 4, 2026)
+- **The Diwan is the Society's administration, in three rooms:** Notion for the work (teamspace The Diwan), the site at auibsal.org/diwan for people and private records, and the Telegram group The Diwan for talk. Every piece of information has one home; anywhere else it appears is a read-only view.
+- **"The Nexus" is retired everywhere,** with "The Green Room", "The Archive" as a group name and "AUIB SAL HQ". Notion's properties are Diwan and Diwan ID.
+- **Written in Notion, published to the site:** events; the six programs (Publishing, Programs; Qirtas, Next Stop and the Company are not programs); the Society's documents and the website policies (Publishing, Documents; the site keeps only the adoption record: adopted on and the vote); minutes (Work, Meetings; Status "Minutes in the Diwan" sends them; the official copy is locked once adopted).
+- **Kept on the site, copied to Notion read-only:** the officers, each seat by its full title; Qirtas's counts.
+- **One language per piece in Notion:** an Arabic edition is its own row (Language Arabic, Edition of the English row).
+- **The officers on record:** Fajer Ezzet (Vice President); Mohammed-Ali Ohmaid, Editor of Qirtas, on the Council.
+- **SAL-PLT-10 stays retired** with the public API; ten website policies are published.
+

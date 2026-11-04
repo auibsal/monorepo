@@ -1,8 +1,9 @@
 // @vitest-environment node
 /**
  * The Notion sync end to end against a local stack, with an in-memory
- * stand-in for Notion: mirrors, publishing with the permission check,
- * refusals, RSVP counts and canceling.
+ * stand-in for Notion: the officers' copy, programs, events and their
+ * Arabic editions published with the permission check, refusals, RSVP
+ * counts and canceling.
  * Needs: SUPABASE_INTEGRATION=1 API_URL=… PUBLISHABLE_KEY=… SECRET_KEY=…
  */
 import { randomUUID } from "node:crypto";
@@ -136,6 +137,14 @@ const fakeNotion = (users: { email: string; id: string }[]) => {
           type: "paragraph",
         },
       ],
+      // One-language pages (Arabic editions, programs, documents).
+      blocksWithTables: () => [
+        {
+          id: "c1",
+          paragraph: { rich_text: [{ plain_text: "نص الصفحة." }] },
+          type: "paragraph",
+        },
+      ],
       comment: (pageId: string, text: string) => {
         find(pageId).comments.push(text);
         return {};
@@ -192,6 +201,7 @@ describe.skipIf(!enabled)("Notion sync", () => {
   let run: typeof import("@/lib/api/notion/run").runNotionSync;
   let sources: Record<string, string>;
   let leadId = "";
+  let salonId = "";
 
   const getProp = (page: FakePage, name: string) => page.properties[name] ?? {};
   const statusOf = (page: FakePage) =>
@@ -225,15 +235,30 @@ describe.skipIf(!enabled)("Notion sync", () => {
         leadId = created.user?.id ?? "";
       }
     }
+    const { data: salon } = await admin
+      .schema("core")
+      .from("programmes")
+      .select("id")
+      .eq("slug", "salon")
+      .single();
+    salonId = salon?.id ?? "";
     await admin
       .schema("access")
       .from("role_assignments")
-      .insert({ role: "events_lead", scope_type: "global", user_id: leadId });
+      .insert([
+        { role: "events_lead", scope_type: "global", user_id: leadId },
+        {
+          role: "programme_lead",
+          scope_id: salonId,
+          scope_type: "programme",
+          user_id: leadId,
+        },
+      ]);
   });
 
   const sync = () => run(fake.client as never);
 
-  test("mirrors programs and officers, matching Notion people by email", async () => {
+  test("copies the officers, matching Notion people by email", async () => {
     const state = await sync();
     expect(state).not.toHaveProperty("skipped");
     const officers = [...fake.pages.values()].filter(
@@ -246,53 +271,114 @@ describe.skipIf(!enabled)("Notion sync", () => {
     expect(getProp(ours as FakePage, "Notion person").people).toEqual([
       { id: `n-lead-${stamp}`, object: "user" },
     ]);
+    expect(getProp(ours as FakePage, "Diwan ID").rich_text).toBeDefined();
     expect(
       officers.some(
         (p) => (getProp(p, "AUIB email").email as string) === member
       )
     ).toBe(false);
-    const { count } = await admin
-      .schema("core")
-      .from("programmes")
-      .select("id", { count: "exact", head: true });
+    // Programs are written in Notion now: none are copied there.
     expect(
       [...fake.pages.values()].filter(
         (p) => p.dataSource === sources.programmes
       )
-    ).toHaveLength(count ?? 0);
+    ).toHaveLength(0);
   });
 
-  const eventProps = (title: string, arabic: string) => ({
-    Status: { select: { name: "Ready to publish" } },
-    Summary: { rich_text: [{ text: { content: "An evening of poems." } }] },
-    "Summary (Arabic)": { rich_text: [{ text: { content: "أمسية شعر." } }] },
-    Title: { title: [{ text: { content: title } }] },
-    "Title (Arabic)": { rich_text: [{ text: { content: arabic } }] },
-    When: { date: { end: null, start: "2031-03-04T18:00:00.000+03:00" } },
-  });
-
-  test("publishes an event set to Ready to publish by an events officer", async () => {
+  test("publishes a program's row from Notion to its program", async () => {
     const page = fake.make(
-      sources.events,
-      eventProps(`Open Pages ${stamp}`, "صفحات مفتوحة"),
+      sources.programmes,
+      {
+        "Diwan ID": { rich_text: [{ text: { content: salonId } }] },
+        Language: { select: { name: "English" } },
+        Name: { title: [{ text: { content: "The Salon" } }] },
+        Rhythm: {
+          rich_text: [
+            { text: { content: `Tuesdays, every fourth week ${stamp}` } },
+          ],
+        },
+        Status: { select: { name: "Ready to publish" } },
+      },
       `n-lead-${stamp}`
     );
     await sync();
     expect(statusOf(page)).toBe("Published");
-    const id = (
-      getProp(page, "Nexus ID").rich_text as { plain_text: string }[]
-    )[0]?.plain_text;
+    const { data } = await admin
+      .schema("core")
+      .from("programmes")
+      .select("rhythm_en, slug")
+      .eq("id", salonId)
+      .single();
+    expect(data).toEqual({
+      rhythm_en: `Tuesdays, every fourth week ${stamp}`,
+      slug: "salon",
+    });
+  });
+
+  test("refuses a document from someone without governance.manage", async () => {
+    const page = fake.make(
+      sources.documents,
+      {
+        Audience: { select: { name: "public" } },
+        Code: { rich_text: [{ text: { content: "SAL-PLT-07" } }] },
+        Slug: { rich_text: [{ text: { content: "accessibility" } }] },
+        Status: { select: { name: "Ready to publish" } },
+        Title: { title: [{ text: { content: "Accessibility Statement" } }] },
+      },
+      `n-lead-${stamp}`
+    );
+    await sync();
+    expect(statusOf(page)).toBe("Needs changes");
+    expect(page.comments[0]).toContain("does not hold governance.manage");
+  });
+
+  const eventProps = (title: string) => ({
+    Language: { select: { name: "English" } },
+    Status: { select: { name: "Ready to publish" } },
+    Summary: { rich_text: [{ text: { content: "An evening of poems." } }] },
+    Title: { title: [{ text: { content: title } }] },
+    When: { date: { end: null, start: "2031-03-04T18:00:00.000+03:00" } },
+  });
+  const arabicEdition = (of: string, title: string) => ({
+    "Edition of": { relation: [{ id: of }] },
+    Language: { select: { name: "Arabic" } },
+    Status: { select: { name: "Ready to publish" } },
+    Summary: { rich_text: [{ text: { content: "أمسية شعر." } }] },
+    Title: { title: [{ text: { content: title } }] },
+  });
+  const diwanId = (page: FakePage) =>
+    (getProp(page, "Diwan ID").rich_text as { plain_text: string }[])[0]
+      ?.plain_text;
+
+  test("publishes an event's English row, then its Arabic edition", async () => {
+    const page = fake.make(
+      sources.events,
+      eventProps(`Open Pages ${stamp}`),
+      `n-lead-${stamp}`
+    );
+    const edition = fake.make(
+      sources.events,
+      arabicEdition(page.id, "صفحات مفتوحة"),
+      `n-lead-${stamp}`
+    );
+    await sync();
+    expect(statusOf(page)).toBe("Published");
+    expect(statusOf(edition)).toBe("Published");
+    expect(diwanId(edition)).toBe(diwanId(page));
     const { data: event } = await admin
       .schema("events")
       .from("events")
-      .select("status, title_ar, body_en, body_ar, created_by, starts_at")
-      .eq("id", id ?? "")
+      .select(
+        "status, title_ar, summary_ar, body_en, body_ar, created_by, starts_at"
+      )
+      .eq("id", diwanId(page) ?? "")
       .single();
     expect(event).toMatchObject({
-      body_ar: "<p>أحضر قصيدة.</p>",
+      body_ar: "<p>نص الصفحة.</p>",
       body_en: "<p>Bring a poem.</p>",
       created_by: leadId,
       status: "published",
+      summary_ar: "أمسية شعر.",
       title_ar: "صفحات مفتوحة",
     });
     expect(new Date(event?.starts_at ?? "").toISOString()).toBe(
@@ -300,26 +386,31 @@ describe.skipIf(!enabled)("Notion sync", () => {
     );
   });
 
+  test("refuses an Arabic edition whose English row is not published", async () => {
+    const english = fake.make(sources.events, {
+      Language: { select: { name: "English" } },
+      Status: { select: { name: "Planning" } },
+      Title: { title: [{ text: { content: `Draft ${stamp}` } }] },
+    });
+    const edition = fake.make(
+      sources.events,
+      arabicEdition(english.id, "مسودة"),
+      `n-lead-${stamp}`
+    );
+    await sync();
+    expect(statusOf(edition)).toBe("Needs changes");
+    expect(edition.comments[0]).toContain("Publish the English row");
+  });
+
   test("refuses a page edited by someone without the permission, and says why", async () => {
     const page = fake.make(
       sources.events,
-      eventProps(`Not mine ${stamp}`, "ليست لي"),
+      eventProps(`Not mine ${stamp}`),
       `n-member-${stamp}`
     );
     await sync();
     expect(statusOf(page)).toBe("Needs changes");
     expect(page.comments[0]).toContain("does not hold events.manage");
-  });
-
-  test("refuses an event without its Arabic title", async () => {
-    const page = fake.make(
-      sources.events,
-      eventProps(`No Arabic ${stamp}`, ""),
-      `n-lead-${stamp}`
-    );
-    await sync();
-    expect(statusOf(page)).toBe("Needs changes");
-    expect(page.comments[0]).toContain("Add the Arabic title");
   });
 
   test("writes the RSVP count back and cancels on request", async () => {
@@ -330,9 +421,7 @@ describe.skipIf(!enabled)("Notion sync", () => {
         (getProp(p, "Title").title as { plain_text: string }[])[0]
           ?.plain_text === `Open Pages ${stamp}`
     ) as FakePage;
-    const eventId = (
-      getProp(page, "Nexus ID").rich_text as { plain_text: string }[]
-    )[0]?.plain_text as string;
+    const eventId = diwanId(page) as string;
     const { data: users } = await admin.auth.admin.listUsers({ perPage: 200 });
     const memberId = users.users.find((u) => u.email === member)?.id as string;
     await admin
