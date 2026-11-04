@@ -4490,6 +4490,15 @@ export type Database = {
           slug: string;
         }[];
       };
+      next_stop_team: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          full_name_ar: string;
+          full_name_en: string;
+          title_ar: string;
+          title_en: string;
+        }[];
+      };
       piece_from_entry: { Args: { blind_entry_id: string }; Returns: string };
       piece_thread: {
         Args: { piece_id: string };

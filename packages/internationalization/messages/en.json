@@ -4334,7 +4334,13 @@
       "nextStop": {
         "title": "Next Stop",
         "lede": "Qirtas's video show about campus: the people, the places and what happens there. Be a guest, or join the crew.",
-        "care": "Next Stop's promise"
+        "care": "Next Stop's promise",
+        "episodes": "Episodes",
+        "asList": "Every episode, as a list",
+        "team": "The team",
+        "sendTitle": "Send a reel",
+        "sendBody": "Members send reels from Write for Qirtas, like any other work, and every one is read blind.",
+        "sendReel": "Send a reel"
       },
       "awards": "Awards",
       "printed": "Printed by {printer}, {date}: {copies} copies.",
@@ -4676,7 +4682,9 @@
         "event": "What's on",
         "production": "The Company",
         "document": "The Library"
-      }
+      },
+      "recent": "Recently in Qirtas",
+      "coming": "Coming up"
     },
     "partners": {
       "title": "Partners",
@@ -4908,6 +4916,14 @@
         "done": "You are unsubscribed. You will not get another email from us.",
         "invalid": "This link is not valid.",
         "failed": "Something went wrong. Try again later."
+      },
+      "archive": {
+        "title": "Past issues",
+        "issueLine": "Qirtas, What's on and the Society's news",
+        "whatsOn": "What's on",
+        "noPieces": "Qirtas published nothing new that month.",
+        "noEvents": "Nothing was on the calendar.",
+        "subscribe": "Get the next one by email"
       }
     },
     "governance": {

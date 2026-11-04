@@ -6,6 +6,9 @@ own versions in the Library.
 
 ## Unreleased
 
+- The Sunday Paper's past issues, each on its own page in a newspaper's
+  layout; Next Stop's page with its episodes, team and how to send a
+  reel; search opens on the newest pieces and what is coming up.
 - The Diwan: every opening (roles, Apprenticeships, First Ink, volunteer
   places, places with partners) in one list at People → Openings, with
   filters by kind and program, in place of three separate lists.
