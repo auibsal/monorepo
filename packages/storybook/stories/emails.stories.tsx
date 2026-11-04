@@ -1,30 +1,47 @@
 import { render } from "@react-email/components";
 import {
+  accountDeleted,
   agreementReminder,
+  applicationDecided,
+  applicationReceived,
+  applicationWaiting,
+  auditionUpdate,
+  award,
   type Built,
   callOpened,
+  candidacyDecided,
+  certificateIssued,
   cronFailed,
   decision,
   type EventInfo,
+  electionStage,
+  eventChanged,
   eventReminder,
   finalCheck,
   type Lang,
   newsletterConfirm,
-  openingReply,
   pieceNote,
   piecePublished,
+  placementGiven,
   type RemovalInfo,
   type RoleInfo,
+  removalDone,
   removalReceived,
   removalRequested,
+  repliesDigest,
+  replyUpdate,
+  requestUpdated,
   returnedForFormatting,
+  roleAssigned,
   roleEnding,
   rsvpConfirmed,
+  shiftReminder,
   submissionReceived,
   sundayPaper,
   twoStepReset,
   verificationDecided,
   waitlistPromoted,
+  welcome,
 } from "@repo/email/copy";
 import { Notice } from "@repo/email/templates/notice";
 import type { Meta, StoryObj } from "@storybook/react";
@@ -133,17 +150,6 @@ export const ReturnedForFormatting = email((l) =>
   returnedForFormatting(l, WORK, "Please send it as one document.", APP)
 );
 export const RoleEnding = email((l) => roleEnding(l, role, APP));
-export const OpeningReply = email((l) =>
-  openingReply(
-    l,
-    {
-      member: l === "ar" ? "اسم العضو" : "A member's name",
-      note: null,
-      title: l === "ar" ? "مصوّر" : "Photographer",
-    },
-    APP
-  )
-);
 export const RsvpConfirmed = email((l) => rsvpConfirmed(l, event, APP));
 export const SubmissionReceived = email((l) =>
   submissionReceived(l, WORK, APP)
@@ -172,7 +178,6 @@ export const SundayPaper = email((l) =>
       },
     ],
     places: [{ title_ar: "مصوّر", title_en: "Photographer" }],
-    stop: "https://auibsal.org/emails/stop?token=sample",
   })
 );
 export const NewsletterConfirm = email((l) =>
@@ -183,5 +188,134 @@ export const CronFailed = email((l) =>
     l,
     [{ failures: 2, job: "daily-notices", last_error: "Sample error" }],
     "2026-10-13T15:00:00Z"
+  )
+);
+
+// ── Added in the email audit (Nov 4, 2026) ─────────────────────────────────
+
+const PARTNER = { ar: "نادي الكتاب", en: "The Book Club" };
+const election = {
+  nominations_close_at: "2027-04-11T20:59:59Z",
+  nominations_open_at: "2027-04-04T05:00:00Z",
+  title_ar: "انتخابات المجلس التنفيذي 2027",
+  title_en: "Council elections 2027",
+  voting_closes_at: "2027-04-15T20:59:59Z",
+  voting_opens_at: "2027-04-14T05:00:00Z",
+};
+const audition = {
+  ends_at: "2027-01-20T15:00:00Z",
+  location_ar: "المسرح",
+  location_en: "The theater",
+  prepare_ar: "مقطع قصير تحفظه",
+  prepare_en: "A short piece you know by heart",
+  production_ar: "قراءة مسرحية",
+  production_en: "A staged reading",
+  starts_at: "2027-01-20T13:00:00Z",
+};
+
+export const EventCanceled = email((l) =>
+  eventChanged(l, event, "cancelled", APP)
+);
+export const EventMoved = email((l) => eventChanged(l, event, "moved", APP));
+export const ApplicationReceived = email((l) =>
+  applicationReceived(l, PARTNER[l], APP)
+);
+export const ApplicationWaiting = email((l) =>
+  applicationWaiting(l, PARTNER[l], APP)
+);
+export const ApplicationApproved = email((l) =>
+  applicationDecided(l, PARTNER[l], true, APP)
+);
+export const ApplicationDeclined = email((l) =>
+  applicationDecided(l, PARTNER[l], false, APP)
+);
+export const ElectionNotice = email((l) =>
+  electionStage(l, election, "notice", APP)
+);
+export const ElectionVoting = email((l) =>
+  electionStage(l, election, "voting", APP)
+);
+export const ElectionResults = email((l) =>
+  electionStage(l, election, "published", APP)
+);
+export const CandidacyApproved = email((l) =>
+  candidacyDecided(l, { title_ar: "الرئيس", title_en: "President" }, true, APP)
+);
+export const CertificateIssued = email((l) =>
+  certificateIssued(
+    l,
+    l === "ar" ? "مدير الإعلام" : "Director of Media",
+    PIECE,
+    APP
+  )
+);
+export const RequestAcknowledged = email((l) =>
+  requestUpdated(l, "f20", "acknowledged", PIECE, APP)
+);
+export const RequestClosed = email((l) =>
+  requestUpdated(l, "f10", "closed", PIECE, APP)
+);
+export const RemovalDone = email((l) => removalDone(l, "removed", null));
+export const ReplyTalking = email((l) =>
+  replyUpdate(
+    l,
+    l === "ar" ? "مصوّر" : "Photographer",
+    "talking",
+    "2026-11-10T13:00:00Z",
+    APP
+  )
+);
+export const ReplyOffered = email((l) =>
+  replyUpdate(l, l === "ar" ? "مصوّر" : "Photographer", "offered", null, APP)
+);
+export const PlacementGiven = email((l) =>
+  placementGiven(
+    l,
+    l === "ar" ? "تلمذة في قسم الأخبار" : "Apprenticeship in News",
+    APP
+  )
+);
+export const AuditionBooked = email((l) =>
+  auditionUpdate(l, audition, "signed_up", APP)
+);
+export const AuditionCast = email((l) =>
+  auditionUpdate(l, audition, "cast", APP)
+);
+export const RoleAssigned = email((l) => roleAssigned(l, role, true, APP));
+export const Welcome = email((l) => welcome(l, APP));
+export const ShiftReminder = email((l) =>
+  shiftReminder(
+    l,
+    {
+      location_ar: "معرض الكتب",
+      location_en: "The book fair",
+      role_ar: "استقبال",
+      role_en: "Welcome desk",
+      starts_at: "2026-11-09T07:00:00Z",
+    },
+    APP
+  )
+);
+export const AwardShortlisted = email((l) =>
+  award(
+    l,
+    WORK,
+    { name_ar: "جائزة المتنبي", name_en: "Mutanabbi Award" },
+    "shortlisted",
+    APP
+  )
+);
+export const AccountDeleted = email((l) => accountDeleted(l));
+export const RepliesDigest = email((l) =>
+  repliesDigest(
+    l,
+    [
+      {
+        member: l === "ar" ? "اسم العضو" : "A member's name",
+        note: l === "ar" ? "أحب التصوير" : "I take photos for my club",
+        role: l === "ar" ? "مصوّر" : "Photographer",
+      },
+    ],
+    APP
   )
 );

@@ -74,10 +74,10 @@ describe("the newsletter", () => {
     );
   });
 
-  test("the Sunday Paper lists pieces, What's on and open places, and ends with the stop link", () => {
+  test("the Sunday Paper lists pieces, What's on and open places as links", () => {
     const built = sundayPaper("en", {
       callboard: "https://auibsal.org/get-involved",
-      events: [{ ...event, url: "https://auibsal.org/events/charter-day" }],
+      events: [{ ...event, url: "https://auibsal.org/events/the-salon" }],
       front: "https://auibsal.org/qirtas",
       pieces: [
         {
@@ -89,20 +89,23 @@ describe("the newsletter", () => {
         },
       ],
       places: [{ title_ar: "مصوّر", title_en: "Photographer" }],
-      stop: "https://auibsal.org/newsletter/unsubscribe?token=t",
     });
-    expect(built.subject).toBe("The Sunday Paper from Qirtas");
+    expect(built.subject).toBe("The Sunday Paper");
     expect(built.blocks.map((b) => b.lang)).toEqual(["en"]);
-    const english = built.blocks.find((b) => b.lang === "en");
-    expect(english?.paragraphs).toContain(
-      "News: A story https://auibsal.org/qirtas/pieces/a-story"
+    const [pieces, events, places] = built.blocks[0]?.lists ?? [];
+    expect(pieces?.items[0]).toEqual({
+      href: "https://auibsal.org/qirtas/pieces/a-story",
+      meta: "News",
+      title: "A story",
+    });
+    expect(events?.items[0]?.meta?.startsWith("Tuesday, October 13")).toBe(
+      true
     );
-    expect(english?.paragraphs).toContain("Photographer");
-    expect(english?.paragraphs.at(-1)).toBe(
-      "To stop the Sunday Paper: https://auibsal.org/newsletter/unsubscribe?token=t"
-    );
-    expect(
-      english?.paragraphs.some((p) => p.startsWith("Tuesday, October 13"))
-    ).toBe(true);
+    expect(places?.items[0]).toEqual({
+      href: "https://auibsal.org/get-involved",
+      title: "Photographer",
+    });
+    // The preview is the first line, not the subject again.
+    expect(built.preview).not.toBe(built.subject);
   });
 });

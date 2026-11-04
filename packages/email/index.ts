@@ -17,6 +17,8 @@ type SendEmailOptions = EmailContent & {
   idempotencyKey?: string;
   replyTo?: string;
   subject: string;
+  /** Resend tags (letters, digits, "_" and "-"): which journey sent it. */
+  tags?: { name: string; value: string }[];
   to: string | string[];
 };
 
@@ -41,6 +43,7 @@ export const sendEmail = async ({
   replyTo,
   idempotencyKey,
   headers,
+  tags,
   ...content
 }: SendEmailOptions) => {
   if (!(resend && RESEND_FROM)) {
@@ -55,6 +58,7 @@ export const sendEmail = async ({
       headers,
       replyTo,
       subject,
+      tags,
       to,
       ...(content.react
         ? { react: content.react, text: content.text }

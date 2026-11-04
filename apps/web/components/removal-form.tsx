@@ -32,6 +32,8 @@ export const RemovalForm = () => {
           details: data.get("details"),
           programme: "next-stop",
           requester_email: data.get("requester_email"),
+          // The receipt and the done notice come in this language.
+          requester_lang: locale,
           requester_name: data.get("requester_name"),
           website: data.get("website") || undefined,
         }),

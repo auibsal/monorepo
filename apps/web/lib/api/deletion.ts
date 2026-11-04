@@ -25,9 +25,31 @@ export const deleteAccount = async (
     `avatars/${userId}`
   );
 
+  // The last email goes to the address the account had, once it is gone
+  // (the outbox holds the address, not the account).
+  const [{ data: user }, { data: profile }] = await Promise.all([
+    admin.auth.admin.getUserById(userId),
+    admin
+      .schema("core")
+      .from("profiles")
+      .select("locale")
+      .eq("id", userId)
+      .maybeSingle(),
+  ]);
+
   const { error } = await admin.auth.admin.deleteUser(userId);
   if (error) {
     throw error;
+  }
+  const email = user?.user?.email;
+  if (email) {
+    await admin
+      .schema("core")
+      .from("outbox")
+      .insert({
+        kind: "account.deleted",
+        payload: { email, lang: profile?.locale === "ar" ? "ar" : "en" },
+      });
   }
 
   return { removedFiles, status: "deleted" };

@@ -5,35 +5,56 @@ import { project } from "@repo/config";
 import type { AdminClient } from "@repo/database/admin";
 import { EmailQuotaError, sendEmail } from "@repo/email";
 import {
+  accountDeleted,
   agreementReminder,
+  applicationDecided,
+  applicationReceived,
+  applicationWaiting,
+  auditionUpdate,
+  award,
   type Built,
   type Lang as CopyLang,
   callOpened,
+  candidacyDecided,
+  certificateIssued,
   cronFailed,
   type Decision,
   decision,
   deskNames,
+  electionStage,
+  eventChanged,
   eventReminder,
   type FailedJob,
   finalCheck,
   newsletterConfirm,
-  openingReply,
   partnerInvitation,
   personalEmailConfirm,
   pieceNote,
   piecePublished,
+  placementGiven,
+  removalDone,
   removalReceived,
   removalRequested,
+  repliesDigest,
+  replyUpdate,
+  requestUpdated,
   returnedForFormatting,
+  roleAssigned,
   roleEnding,
   rsvpConfirmed,
+  shiftReminder,
   submissionReceived,
   sundayPaper,
   twoStepReset,
   verificationDecided,
   waitlistPromoted,
+  welcome,
 } from "@repo/email/copy";
-import { Notice, noticeText } from "@repo/email/templates/notice";
+import {
+  Notice,
+  type NoticeFooterLine,
+  noticeText,
+} from "@repo/email/templates/notice";
 import { journal } from "@repo/sal-data";
 import { revalidateTag } from "next/cache";
 import { stopToken } from "@/lib/api/email-stop";
@@ -68,6 +89,9 @@ interface OutboxRow {
 // English pages have no language prefix; other languages do ("/ar").
 const prefix = (lang: string) =>
   lang === project.locale.default ? "" : `/${lang}`;
+
+/** A stored language, as one the emails are written in. */
+const langOf = (value: unknown): Lang => (value === "ar" ? "ar" : "en");
 
 // The email templates add /diwan and the language themselves.
 const appUrl = origin;
@@ -110,7 +134,11 @@ const recipient = async (
 };
 
 /** The outbox row being processed: for idempotency keys and push. */
-const current = new AsyncLocalStorage<{ admin: AdminClient; row: number }>();
+const current = new AsyncLocalStorage<{
+  admin: AdminClient;
+  kind: string;
+  row: number;
+}>();
 
 /** The push version of a notice: its heading and first line, in their language. */
 const pushNotice = (built: Built, lang: Lang, row: number | undefined) => {
@@ -124,20 +152,107 @@ const pushNotice = (built: Built, lang: Lang, row: number | undefined) => {
   };
 };
 
+/**
+ * Why an email came, said in its footer:
+ * - `service`: something the member did or that concerns them (bookings,
+ *   their work, their roles); they choose their emails on Notices;
+ * - `optional`: an email they may stop (the Sunday Paper, reminders of
+ *   what they booked), with a one-click stop link and header;
+ * - `officer`: their role's work;
+ * - `direct`: to an address with no account behind it (an invitation, a
+ *   confirmation, a removal request): nothing to manage.
+ */
+type Category = "direct" | "officer" | "optional" | "service";
+
+const FOOTER_LINES: Record<
+  Exclude<Category, "direct">,
+  Record<Lang, { link: string; text: string }>
+> = {
+  officer: {
+    ar: { link: "الإشعارات", text: "وصلتك لأنك تحمل دوراً في الجمعية." },
+    en: {
+      link: "Notices",
+      text: "You get this because you hold a role in the Society.",
+    },
+  },
+  optional: {
+    ar: { link: "أوقفها", text: "وصلتك لأنك اخترت هذه الرسائل." },
+    en: {
+      link: "Stop these",
+      text: "You get this because you chose these emails.",
+    },
+  },
+  service: {
+    ar: {
+      link: "الإشعارات",
+      text: "وصلتك لأن لك حساباً في الجمعية. تختار رسائلك في",
+    },
+    en: {
+      link: "Notices",
+      text: "You get this because you have an account with the Society. Choose your emails on",
+    },
+  },
+};
+
+const footerFor = (
+  to: Recipient,
+  category: Category
+): { footer: NoticeFooterLine[]; headers?: Record<string, string> } => {
+  if (category === "direct" || !to.userId) {
+    return { footer: [] };
+  }
+  const line = FOOTER_LINES[category][to.lang];
+  if (category === "optional") {
+    const stop = stopLinks(to.lang, to.userId);
+    return {
+      footer: [{ href: stop.page, link: line.link, text: line.text }],
+      headers: stop.headers,
+    };
+  }
+  return {
+    footer: [
+      {
+        href: site(to.lang, "/membership/settings/notices"),
+        link: line.link,
+        text: line.text,
+      },
+    ],
+  };
+};
+
+interface SendOptions {
+  /** Why it came (the footer); defaults to `service`. */
+  readonly category?: Category;
+  /** Footer and headers given whole (the public Sunday Paper list). */
+  readonly footer?: NoticeFooterLine[];
+  readonly headers?: Record<string, string>;
+  readonly sticker?: Sticker;
+}
+
 const send = async (
   to: Recipient,
   built: Built,
-  headers?: Record<string, string>,
-  sticker?: Sticker
+  { category = "service", footer, headers, sticker }: SendOptions = {}
 ) => {
   const run = current.getStore();
   const row = run?.row;
+  const made = footerFor(to, category);
+  const lines = footer ?? made.footer;
   await sendEmail({
-    headers,
+    headers: headers ?? made.headers,
     idempotencyKey: row === undefined ? undefined : `outbox-${row}-${to.email}`,
-    react: Notice({ blocks: built.blocks, preview: built.preview }),
+    react: Notice({
+      blocks: built.blocks,
+      footer: lines,
+      preview: built.preview,
+    }),
+    // Replies reach a person, never a no-reply box.
+    replyTo: project.supportEmail,
     subject: built.subject,
-    text: noticeText(built),
+    tags: run
+      ? [{ name: "kind", value: run.kind.replace(/[^\w-]/g, "_") }]
+      : [],
+    text: noticeText({ blocks: built.blocks, footer: lines }),
     to: to.email,
   });
   if (run && to.userId) {
@@ -237,7 +352,9 @@ const removalInfo = async (admin: AdminClient, requestId: unknown) => {
   const { data } = await admin
     .schema("programmes")
     .from("removal_requests")
-    .select("requester_name, requester_email, content_url, details, due_at")
+    .select(
+      "requester_name, requester_email, requester_lang, content_url, details, due_at, status, action_taken"
+    )
     .eq("id", String(requestId))
     .maybeSingle();
   return data;
@@ -386,6 +503,36 @@ const eventNotice =
   };
 
 const handlers: Record<string, Handler> = {
+  // ── Journeys added in the email audit (owner, Nov 4, 2026) ──────────
+  "access.role_assigned": async (admin, payload) => {
+    const [to, { data }] = await Promise.all([
+      recipient(admin, payload.user_id),
+      admin
+        .schema("access")
+        .from("role_assignments")
+        .select(
+          "ends_at, title_en, title_ar, role:roles(name_en, name_ar, requires_mfa)"
+        )
+        .eq("id", String(payload.assignment_id))
+        .maybeSingle(),
+    ]);
+    if (to && data?.role) {
+      await send(
+        to,
+        roleAssigned(
+          to.lang,
+          {
+            ends_at: data.ends_at,
+            name_ar: data.title_ar ?? data.role.name_ar,
+            name_en: data.title_en ?? data.role.name_en,
+          },
+          data.role.requires_mfa,
+          appUrl()
+        ),
+        { category: "officer" }
+      );
+    }
+  },
   "access.role_ending": async (admin, payload) => {
     const to = await recipient(admin, payload.user_id);
     const { data } = await admin
@@ -405,7 +552,8 @@ const handlers: Record<string, Handler> = {
             name_en: data.title_en ?? data.role.name_en,
           },
           appUrl()
-        )
+        ),
+        { category: "officer" }
       );
     }
   },
@@ -419,6 +567,30 @@ const handlers: Record<string, Handler> = {
         twoStepReset(
           to.lang,
           payload.via === "officer" ? "officer" : "recovery_code",
+          appUrl()
+        )
+      );
+    }
+  },
+  // Sent to the address the account had (it is gone by now).
+  "account.deleted": async (_admin, payload) => {
+    if (typeof payload.email === "string") {
+      const lang = langOf(payload.lang);
+      await send({ email: payload.email, lang }, accountDeleted(lang));
+    }
+  },
+  "events.changed": async (admin, payload) => {
+    const [to, event] = await Promise.all([
+      recipient(admin, payload.user_id),
+      eventInfo(admin, payload.event_id),
+    ]);
+    if (to && event) {
+      await send(
+        to,
+        eventChanged(
+          to.lang,
+          event,
+          payload.change === "cancelled" ? "cancelled" : "moved",
           appUrl()
         )
       );
@@ -444,10 +616,85 @@ const handlers: Record<string, Handler> = {
     if (!(to && event) || (booked && to.optional === false)) {
       return;
     }
-    await send(to, eventReminder(to.lang, event, appUrl(), booked));
+    // Reminders of what they booked are optional; "Remind me" was asked for.
+    await send(to, eventReminder(to.lang, event, appUrl(), booked), {
+      category: booked ? "optional" : "service",
+    });
   },
   "events.rsvp_confirmed": eventNotice(rsvpConfirmed),
   "events.waitlist_promoted": eventNotice(waitlistPromoted),
+  "forms.updated": async (admin, payload) => {
+    const [to, { data: request }] = await Promise.all([
+      recipient(admin, payload.user_id),
+      admin
+        .schema("governance")
+        .from("form_submissions")
+        .select("id, form_key, status")
+        .eq("id", String(payload.submission_id))
+        .maybeSingle(),
+    ]);
+    const status = payload.status === "closed" ? "closed" : "acknowledged";
+    if (to && request) {
+      await send(
+        to,
+        requestUpdated(to.lang, request.form_key, status, request.id, appUrl())
+      );
+    }
+  },
+  "governance.candidacy_decided": async (admin, payload) => {
+    const [to, { data }] = await Promise.all([
+      recipient(admin, payload.user_id),
+      admin
+        .schema("governance")
+        .from("candidates")
+        .select("position:positions(title_en, title_ar)")
+        .eq("id", String(payload.candidate_id))
+        .maybeSingle(),
+    ]);
+    if (to && data?.position) {
+      await send(
+        to,
+        candidacyDecided(
+          to.lang,
+          {
+            title_ar: data.position.title_ar ?? "",
+            title_en: data.position.title_en,
+          },
+          payload.approved === true,
+          appUrl()
+        )
+      );
+    }
+  },
+  "governance.election": async (admin, payload) => {
+    const [to, { data: election }] = await Promise.all([
+      recipient(admin, payload.user_id),
+      admin
+        .schema("governance")
+        .from("elections")
+        .select(
+          "title_en, title_ar, nominations_open_at, nominations_close_at, voting_opens_at, voting_closes_at"
+        )
+        .eq("id", String(payload.election_id))
+        .maybeSingle(),
+    ]);
+    const { stage } = payload;
+    if (
+      to &&
+      election &&
+      (stage === "notice" || stage === "voting" || stage === "published")
+    ) {
+      await send(
+        to,
+        electionStage(
+          to.lang,
+          { ...election, title_ar: election.title_ar ?? "" },
+          stage,
+          appUrl()
+        )
+      );
+    }
+  },
   "journal.agreement_reminder": async (admin, payload) => {
     const [to, work] = await Promise.all([
       recipient(admin, payload.user_id),
@@ -455,6 +702,32 @@ const handlers: Record<string, Handler> = {
     ]);
     if (to && work) {
       await send(to, agreementReminder(to.lang, work, appUrl()));
+    }
+  },
+  "journal.award": async (admin, payload) => {
+    const { data: entry } = await admin
+      .schema("journal")
+      .from("prize_entries")
+      .select(
+        "piece_id, prize:prizes(name_en, name_ar), piece:pieces(title_en, title_ar)"
+      )
+      .eq("id", String(payload.entry_id))
+      .maybeSingle();
+    const to = await recipient(admin, payload.user_id);
+    if (to && entry?.prize && entry.piece) {
+      await send(
+        to,
+        award(
+          to.lang,
+          pieceTitle(entry.piece, to.lang),
+          {
+            name_ar: entry.prize.name_ar ?? "",
+            name_en: entry.prize.name_en,
+          },
+          payload.stage === "won" ? "won" : "shortlisted",
+          appUrl()
+        )
+      );
     }
   },
   "journal.call_opened": async (admin, payload) => {
@@ -548,12 +821,9 @@ const handlers: Record<string, Handler> = {
       submissionDesk(admin, payload.submission_id),
     ]);
     if (to && work) {
-      await send(
-        to,
-        submissionReceived(to.lang, work, appUrl(), desk),
-        undefined,
-        "sent"
-      );
+      await send(to, submissionReceived(to.lang, work, appUrl(), desk), {
+        sticker: "sent",
+      });
     }
   },
   "journal.sunday_paper": async (admin, payload) => {
@@ -565,12 +835,28 @@ const handlers: Record<string, Handler> = {
     if (!paper) {
       return;
     }
-    const stop = stopLinks(to.lang, String(payload.user_id));
-    await send(
-      to,
-      sundayPaper(to.lang, { ...paper, stop: stop.page }),
-      stop.headers
-    );
+    await send(to, sundayPaper(to.lang, paper), { category: "optional" });
+  },
+  "membership.certificate_issued": async (admin, payload) => {
+    const [to, { data: certificate }] = await Promise.all([
+      recipient(admin, payload.user_id),
+      admin
+        .schema("membership")
+        .from("certificates")
+        .select("id, role_en, role_ar, status")
+        .eq("id", String(payload.certificate_id))
+        .maybeSingle(),
+    ]);
+    if (to && certificate?.status === "issued") {
+      const role =
+        (to.lang === "ar" ? certificate.role_ar : certificate.role_en) ??
+        certificate.role_en ??
+        "";
+      await send(
+        to,
+        certificateIssued(to.lang, role, certificate.id, appUrl())
+      );
+    }
   },
   // The Council decided an account from outside AUIB
   // (membership.decide_verification).
@@ -600,6 +886,12 @@ const handlers: Record<string, Handler> = {
       .update({ state: "expired" })
       .in("code", codes);
   },
+  "membership.welcome": async (admin, payload) => {
+    const to = await recipient(admin, payload.user_id);
+    if (to) {
+      await send(to, welcome(to.lang, appUrl()));
+    }
+  },
   "newsletter.confirm": async (admin, payload) => {
     const row = await subscriber(admin, payload.subscriber_id);
     if (!(row?.confirm_token && row.status === "pending")) {
@@ -626,11 +918,66 @@ const handlers: Record<string, Handler> = {
       return;
     }
     const links = unsubscribeLinks(lang, row.unsubscribe_token);
-    await send(
-      { email: row.email, lang },
-      sundayPaper(lang, { ...paper, stop: links.page }),
-      links.headers
+    const line = FOOTER_LINES.optional[lang];
+    await send({ email: row.email, lang }, sundayPaper(lang, paper), {
+      footer: [{ href: links.page, link: line.link, text: line.text }],
+      headers: links.headers,
+    });
+  },
+  "partners.application_decided": async (admin, payload) => {
+    const [to, { data: partner }] = await Promise.all([
+      recipient(admin, payload.user_id),
+      admin
+        .schema("governance")
+        .from("partners")
+        .select("name_en, name_ar")
+        .eq("id", String(payload.partner_id))
+        .maybeSingle(),
+    ]);
+    if (to && partner) {
+      const name =
+        to.lang === "ar"
+          ? (partner.name_ar ?? partner.name_en)
+          : partner.name_en;
+      await send(
+        to,
+        applicationDecided(to.lang, name, payload.approved === true, appUrl())
+      );
+    }
+  },
+  // The applicant hears it arrived; Partnerships and the President, that
+  // it waits.
+  "partners.application_received": async (admin, payload) => {
+    const { data: agreement } = await admin
+      .schema("governance")
+      .from("partner_agreements")
+      .select("partner:partners(name_en, name_ar)")
+      .eq("id", String(payload.agreement_id))
+      .maybeSingle();
+    if (!agreement?.partner) {
+      return;
+    }
+    const { partner } = agreement;
+    const nameIn = (lang: Lang) =>
+      lang === "ar" ? (partner.name_ar ?? partner.name_en) : partner.name_en;
+    const [to, managers, signers] = await Promise.all([
+      recipient(admin, payload.user_id),
+      holders(admin, "partners.manage"),
+      holders(admin, "partners.sign"),
+    ]);
+    const officers = [...managers, ...signers].filter(
+      (o, i, all) => all.findIndex((x) => x.email === o.email) === i
     );
+    await Promise.all([
+      ...(to
+        ? [send(to, applicationReceived(to.lang, nameIn(to.lang), appUrl()))]
+        : []),
+      ...officers.map((o) =>
+        send(o, applicationWaiting(o.lang, nameIn(o.lang), appUrl()), {
+          category: "officer",
+        })
+      ),
+    ]);
   },
   // An email invitation, from a partner or from the Society (Membership),
   // in the inviter's language: the link is the invitation (/invite/<code>).
@@ -729,56 +1076,79 @@ const handlers: Record<string, Handler> = {
         : new Date().toISOString().slice(0, 10);
     const admins = await holders(admin, "settings.manage");
     await Promise.all(
-      admins.map((a) => send(a, cronFailed(a.lang, jobs, day)))
-    );
-  },
-  "programmes.opening_reply": async (admin, payload) => {
-    const [{ data: opening }, { data: reply }, { data: person }] =
-      await Promise.all([
-        admin
-          .schema("programmes")
-          .from("openings")
-          .select("title_en, title_ar")
-          .eq("id", String(payload.opening_id))
-          .maybeSingle(),
-        admin
-          .schema("programmes")
-          .from("opening_replies")
-          .select("note")
-          .eq("opening_id", String(payload.opening_id))
-          .eq("user_id", String(payload.user_id))
-          .maybeSingle(),
-        admin
-          .schema("core")
-          .from("profiles")
-          .select("full_name_en, full_name_ar")
-          .eq("id", String(payload.user_id))
-          .maybeSingle(),
-      ]);
-    if (!(opening && reply && person)) {
-      return;
-    }
-    // Membership runs every role's applications (owner, Oct 30, 2026).
-    const managers = await holders(admin, "members.manage");
-    await Promise.all(
-      managers.map((m) =>
-        send(
-          m,
-          openingReply(
-            m.lang,
-            {
-              member:
-                m.lang === "ar"
-                  ? (person.full_name_ar ?? person.full_name_en)
-                  : person.full_name_en,
-              note: reply.note,
-              title: m.lang === "ar" ? opening.title_ar : opening.title_en,
-            },
-            appUrl()
-          )
-        )
+      admins.map((a) =>
+        send(a, cronFailed(a.lang, jobs, day), { category: "officer" })
       )
     );
+  },
+  "programmes.audition_update": async (admin, payload) => {
+    const [to, { data: audition }] = await Promise.all([
+      recipient(admin, payload.user_id),
+      admin
+        .schema("programmes")
+        .from("auditions")
+        .select(
+          "starts_at, ends_at, location_en, location_ar, prepare_en, prepare_ar, production:productions(title_en, title_ar)"
+        )
+        .eq("id", String(payload.audition_id))
+        .maybeSingle(),
+    ]);
+    const { status } = payload;
+    if (
+      to &&
+      audition?.production &&
+      (status === "signed_up" ||
+        status === "called_back" ||
+        status === "cast" ||
+        status === "not_cast")
+    ) {
+      await send(
+        to,
+        auditionUpdate(
+          to.lang,
+          {
+            ...audition,
+            production_ar: audition.production.title_ar ?? "",
+            production_en: audition.production.title_en,
+          },
+          status,
+          appUrl()
+        )
+      );
+    }
+  },
+  "programmes.placement_given": async (admin, payload) => {
+    const [to, { data }] = await Promise.all([
+      recipient(admin, payload.user_id),
+      admin
+        .schema("programmes")
+        .from("placements")
+        .select("opening:openings(title_en, title_ar)")
+        .eq("id", String(payload.placement_id))
+        .maybeSingle(),
+    ]);
+    if (to && data?.opening) {
+      const place =
+        (to.lang === "ar" ? data.opening.title_ar : data.opening.title_en) ??
+        data.opening.title_en ??
+        "";
+      await send(to, placementGiven(to.lang, place, appUrl()));
+    }
+  },
+  "programmes.removal_done": async (admin, payload) => {
+    const request = await removalInfo(admin, payload.request_id);
+    if (
+      request &&
+      (request.status === "removed" ||
+        request.status === "declined" ||
+        request.status === "closed")
+    ) {
+      const lang = langOf(request.requester_lang);
+      await send(
+        { email: request.requester_email, lang },
+        removalDone(lang, request.status, request.action_taken)
+      );
+    }
   },
   "programmes.removal_overdue": async (admin, payload) => {
     const [request, managers] = await Promise.all([
@@ -788,7 +1158,9 @@ const handlers: Record<string, Handler> = {
     if (request) {
       await Promise.all(
         managers.map((m) =>
-          send(m, removalRequested(m.lang, request, appUrl(), true))
+          send(m, removalRequested(m.lang, request, appUrl(), true), {
+            category: "officer",
+          })
         )
       );
     }
@@ -803,14 +1175,111 @@ const handlers: Record<string, Handler> = {
     }
     await Promise.all([
       ...managers.map((m) =>
-        send(m, removalRequested(m.lang, request, appUrl()))
+        send(m, removalRequested(m.lang, request, appUrl()), {
+          category: "officer",
+        })
       ),
-      // The requester has no account; write in English with Arabic below.
+      // The requester has no account: their language is the request's.
       send(
-        { email: request.requester_email, lang: "en" },
-        removalReceived("en", request.due_at)
+        {
+          email: request.requester_email,
+          lang: langOf(request.requester_lang),
+        },
+        removalReceived(langOf(request.requester_lang), request.due_at)
       ),
     ]);
+  },
+  // One email a day to Membership, which runs every role's applications.
+  "programmes.replies_digest": async (admin) => {
+    const since = new Date(Date.now() - 86_400_000).toISOString();
+    const { data: replies } = await admin
+      .schema("programmes")
+      .from("opening_replies")
+      .select("user_id, note, opening:openings(title_en, title_ar)")
+      .gt("created_at", since)
+      .order("created_at");
+    if (!replies?.length) {
+      return;
+    }
+    const { data: people } = await admin
+      .schema("core")
+      .from("profiles")
+      .select("id, full_name_en, full_name_ar")
+      .in(
+        "id",
+        replies.map((r) => r.user_id)
+      );
+    const managers = await holders(admin, "members.manage");
+    await Promise.all(
+      managers.map((m) => {
+        const lines = replies.map((r) => {
+          const person = people?.find((p) => p.id === r.user_id);
+          return {
+            member:
+              (m.lang === "ar" ? person?.full_name_ar : person?.full_name_en) ??
+              person?.full_name_en ??
+              "",
+            note: r.note,
+            role:
+              (m.lang === "ar" ? r.opening?.title_ar : r.opening?.title_en) ??
+              r.opening?.title_en ??
+              "",
+          };
+        });
+        return send(m, repliesDigest(m.lang, lines, appUrl()), {
+          category: "officer",
+        });
+      })
+    );
+  },
+  "programmes.reply_update": async (admin, payload) => {
+    const [to, { data: reply }] = await Promise.all([
+      recipient(admin, payload.user_id),
+      admin
+        .schema("programmes")
+        .from("opening_replies")
+        .select("status, talk_at, opening:openings(title_en, title_ar)")
+        .eq("opening_id", String(payload.opening_id))
+        .eq("user_id", String(payload.user_id))
+        .maybeSingle(),
+    ]);
+    const status = reply?.status;
+    if (
+      to &&
+      reply?.opening &&
+      (status === "talking" || status === "offered" || status === "not_picked")
+    ) {
+      const role =
+        (to.lang === "ar" ? reply.opening.title_ar : reply.opening.title_en) ??
+        reply.opening.title_en ??
+        "";
+      await send(
+        to,
+        replyUpdate(to.lang, role, status, reply.talk_at, appUrl())
+      );
+    }
+  },
+  "programmes.shift_reminder": async (admin, payload) => {
+    const [to, { data: shift }] = await Promise.all([
+      recipient(admin, payload.user_id),
+      admin
+        .schema("programmes")
+        .from("shifts")
+        .select("role_en, role_ar, location_en, location_ar, starts_at")
+        .eq("id", String(payload.shift_id))
+        .maybeSingle(),
+    ]);
+    if (to && shift && to.optional !== false) {
+      await send(
+        to,
+        shiftReminder(
+          to.lang,
+          { ...shift, role_ar: shift.role_ar ?? "", role_en: shift.role_en },
+          appUrl()
+        ),
+        { category: "optional" }
+      );
+    }
   },
   revalidate: async (_admin, payload) => {
     await revalidate(payload.tags);
@@ -864,7 +1333,7 @@ export const processRow = async (admin: AdminClient, id: number) => {
     : undefined;
   try {
     if (handler) {
-      await current.run({ admin, row: id }, () =>
+      await current.run({ admin, kind: row.kind, row: id }, () =>
         handler(admin, (row as OutboxRow).payload)
       );
     }
