@@ -6,7 +6,6 @@
 export const programTabs = [
   "sessions",
   "shifts",
-  "places",
   "needs",
   "six-words",
   "collection",

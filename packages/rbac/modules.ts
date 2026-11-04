@@ -127,7 +127,7 @@ export const adminSections = [
 
 export type AdminSection = (typeof adminSections)[number]["key"];
 
-/** The section a Diwan path belongs to: /people/hiring → people. */
+/** The section a Diwan path belongs to: /people/openings → people. */
 export const sectionOfPath = (pathname: string): AdminSection => {
   const path = pathname.split("?")[0] ?? pathname;
   const found = adminSections.find(

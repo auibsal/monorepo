@@ -9,25 +9,20 @@ import { localized, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
-import { Link, useRouter } from "@/lib/nexus/navigation";
 import { useGrants } from "@/lib/nexus/queries";
 import { useProgrammeOptions } from "../events/data";
 import {
-  AdminHeading,
   BilingualField,
   DateTimeField,
   ErrorLine,
   Field,
-  NewLink,
-  RecordPage,
   SaveButton,
   SelectInput,
 } from "../kit";
-import { useMemberNames } from "../member-picker";
-import { SkillsPicker } from "../programmes/openings";
-import { memberName } from "./directory";
+import { SkillsPicker } from "../programmes/skills-picker";
 
-const key = ["admin", "hiring"];
+/** Every opening list in the Diwan reads and refreshes under this key. */
+export const key = ["admin", "openings"];
 
 export const owners = [
   "program",
@@ -37,7 +32,7 @@ export const owners = [
   "membership",
   "council",
 ] as const;
-type Owner = (typeof owners)[number];
+export type Owner = (typeof owners)[number];
 
 type Status =
   | "new"
@@ -49,7 +44,7 @@ type Status =
   | "withdrawn";
 
 /** Mirrors private.picks_opening: who picks the person for an opening. */
-const picks = (
+export const picks = (
   grants: readonly Grant[] | undefined,
   owner: string,
   programmeId: string | null
@@ -74,7 +69,7 @@ const picks = (
   }
 };
 
-interface Reply {
+export interface Reply {
   created_at: string;
   note: string | null;
   opening_id: string;
@@ -84,7 +79,7 @@ interface Reply {
 }
 
 /** One application and the next steps open to whoever is looking. */
-const Application = ({
+export const Application = ({
   canPick,
   name,
   reply,
@@ -203,13 +198,12 @@ const useHiredRoles = () => {
  * their own. A program role names its program and may carry its own title
  * ("Salon Host" for a Program Lead).
  */
-const NewRole = () => {
+export const NewRole = ({ onDone }: { readonly onDone: () => void }) => {
   const t = useTranslations("nexus.admin.hiring");
   const locale = useLocale() as Locale;
   const { supabase } = useAuth();
   const grants = useGrants();
   const queryClient = useQueryClient();
-  const router = useRouter();
   const programs = useProgrammeOptions("programs.manage");
   const roles = useHiredRoles();
   const blank = {
@@ -252,7 +246,7 @@ const NewRole = () => {
       ),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: key });
-      router.push("/people/hiring");
+      onDone();
     },
   });
 
@@ -336,97 +330,5 @@ const NewRole = () => {
       />
       <ErrorLine error={add.error} />
     </form>
-  );
-};
-
-/**
- * Hiring (owner, Oct 30, 2026). Get involved lists every role; Membership
- * runs the process for each (applications, conversations, the offer,
- * onboarding), and the owner of the role picks the person: the Editor the
- * masthead, the Director of Programs the Program Leads, each director
- * their team. RLS shows each person the roles they run or own.
- */
-export const HiringAdmin = () => {
-  const t = useTranslations("nexus.admin.hiring");
-  const locale = useLocale() as Locale;
-  const { supabase } = useAuth();
-  const grants = useGrants();
-  const programs = useProgrammeOptions(null);
-  const list = useQuery({
-    queryFn: async () =>
-      unwrap(
-        await supabase
-          .schema("programmes")
-          .from("openings")
-          .select(
-            "id, owner, programme_id, kind, title_en, title_ar, is_open, closes_at, opening_replies(opening_id, user_id, note, status, talk_at, created_at)"
-          )
-          .eq("kind", "role")
-          .order("created_at", { ascending: false })
-      ) ?? [],
-    queryKey: key,
-  });
-  const names = useMemberNames(
-    (list.data ?? []).flatMap((o) => o.opening_replies.map((r) => r.user_id))
-  );
-  const runs = hasPermission(grants.data, "members.manage");
-
-  return (
-    <div className="grid gap-10">
-      <AdminHeading
-        actions={<NewLink href="/people/hiring/new">{t("post")}</NewLink>}
-        title={t("title")}
-      >
-        {t("lede")}
-      </AdminHeading>
-      <ul className="grid">
-        {list.data?.length === 0 ? (
-          <li className="type-body text-text-secondary">{t("empty")}</li>
-        ) : null}
-        {list.data?.map((o) => (
-          <li className="grid gap-2 border-line border-t py-space-4" key={o.id}>
-            <h2 className="type-subheading">
-              <Link className="hover:underline" href={`/people/hiring/${o.id}`}>
-                {localized(o, "title", locale)}
-              </Link>
-            </h2>
-            <p className="type-caption">
-              {o.owner === "program"
-                ? programs.label(o.programme_id)
-                : t(`owners.${o.owner as Owner}`)}
-              {" · "}
-              {o.is_open ? t("open") : t("closed")}
-              {o.closes_at
-                ? ` · ${t("closesOn", { date: formatLongDate(o.closes_at, locale) })}`
-                : ""}
-            </p>
-            <ul className="grid">
-              {o.opening_replies.map((reply) => {
-                const person = names.data?.find((n) => n.id === reply.user_id);
-                return (
-                  <Application
-                    canPick={picks(grants.data, o.owner, o.programme_id)}
-                    key={reply.user_id}
-                    name={person ? memberName(person, locale) : "—"}
-                    reply={reply as Reply}
-                    runs={runs}
-                  />
-                );
-              })}
-            </ul>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-};
-
-/** Posting a role, on its own page under Hiring; saving returns there. */
-export const NewRolePage = () => {
-  const t = useTranslations("nexus.admin.hiring");
-  return (
-    <RecordPage back="/people/hiring" backLabel={t("back")} title={t("post")}>
-      <NewRole />
-    </RecordPage>
   );
 };

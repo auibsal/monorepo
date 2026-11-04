@@ -6,7 +6,7 @@ export const generateMetadata = titleFrom((t) =>
   t("nexus.admin.programmes.openings.editTitle")
 );
 
-/** A role opening, edited on its own page. */
+/** One opening, of any kind, edited on its own page. */
 const Page = async ({
   params,
 }: {
@@ -15,7 +15,7 @@ const Page = async ({
   const { opening } = await params;
   return (
     <RequireModule module="hiring">
-      <OpeningEditor back="/people/hiring" id={opening} />
+      <OpeningEditor back="/people/openings" id={opening} />
     </RequireModule>
   );
 };
