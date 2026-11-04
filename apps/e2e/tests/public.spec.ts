@@ -122,4 +122,22 @@ test.describe("public site", () => {
     await expect(page.getByRole("heading", { level: 1 })).toHaveText("Qirtas");
     await expectAccessible(page);
   });
+
+  test("before the first Edition, the Editions page shows its call, and the list has its own path", async ({
+    page,
+  }) => {
+    await page.goto(`${urls.web}/qirtas/editions`);
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText(
+      "Editions"
+    );
+    await expect(
+      page.getByRole("heading", { level: 2, name: "Open calls" })
+    ).toBeVisible();
+    await expectAccessible(page);
+    await page.goto(`${urls.web}/qirtas/editions/list`);
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText(
+      "Editions"
+    );
+    await expectAccessible(page);
+  });
 });

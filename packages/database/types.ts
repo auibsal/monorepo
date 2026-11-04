@@ -3555,6 +3555,7 @@ export type Database = {
           editors_note_ar: string | null;
           editors_note_en: string | null;
           id: string;
+          launch_event_id: string | null;
           number: number;
           pdf_path: string | null;
           print_run: number | null;
@@ -3580,6 +3581,7 @@ export type Database = {
           editors_note_ar?: string | null;
           editors_note_en?: string | null;
           id?: string;
+          launch_event_id?: string | null;
           number: number;
           pdf_path?: string | null;
           print_run?: number | null;
@@ -3605,6 +3607,7 @@ export type Database = {
           editors_note_ar?: string | null;
           editors_note_en?: string | null;
           id?: string;
+          launch_event_id?: string | null;
           number?: number;
           pdf_path?: string | null;
           print_run?: number | null;
@@ -4493,6 +4496,7 @@ export type Database = {
           title: string;
         }[];
       };
+      edition_launch: { Args: { issue_id: string }; Returns: string };
       entry_author: {
         Args: { blind_entry_id: string };
         Returns: {

@@ -6,6 +6,7 @@ import { FormHeader } from "@repo/design-system/components/sal/form-header";
 import { Icon, type IconName } from "@repo/design-system/components/sal/icon";
 import { iconData } from "@repo/design-system/components/sal/icon-data";
 import { SectionHead } from "@repo/design-system/components/sal/section-head";
+import { Shelf } from "@repo/design-system/components/sal/shelf";
 import type { Meta, StoryObj } from "@storybook/react";
 
 /**
@@ -163,5 +164,60 @@ export const Icons: Story = {
         </li>
       ))}
     </ul>
+  ),
+};
+
+const shelfItems = (titles: readonly string[]) =>
+  titles.map((title) => ({
+    key: title,
+    node: (
+      <a className="grid gap-2 hover:underline" href="#shelf">
+        <span className="grid aspect-[3/4] place-items-center border border-line p-4 text-center">
+          <span className="type-heading">{title}</span>
+        </span>
+        <span className="type-caption text-text-secondary">{title}</span>
+      </a>
+    ),
+  }));
+
+/**
+ * The shelf (owner, Nov 4, 2026): one row that scrolls sideways and snaps,
+ * moved by swiping or the arrow keys; the item at the start carries the ink
+ * hairline. The plain list is always one link away.
+ */
+export const ShelfRow: Story = {
+  render: () => (
+    <div className="max-w-4xl">
+      <Shelf
+        items={shelfItems(["One", "Two", "Three", "Four", "Five", "Six"])}
+        label="Shelf"
+        listLink={
+          <a className="link" href="#list">
+            See them as a list
+          </a>
+        }
+        nextLabel="Next"
+        previousLabel="Previous"
+      />
+    </div>
+  ),
+};
+
+/** On Arabic pages the shelf runs right to left, and so do its keys. */
+export const ShelfArabic: Story = {
+  render: () => (
+    <div className="max-w-4xl" dir="rtl" lang="ar">
+      <Shelf
+        items={shelfItems(["واحد", "اثنان", "ثلاثة", "أربعة", "خمسة"])}
+        label="رف"
+        listLink={
+          <a className="link" href="#list">
+            اعرضها قائمةً
+          </a>
+        }
+        nextLabel="التالي"
+        previousLabel="السابق"
+      />
+    </div>
   ),
 };

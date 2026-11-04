@@ -776,6 +776,14 @@ any schema change. Integration tests run against a local stack with
   canceled, judgment. The endorsement line is "a Society of Arts and
   Letters program". Code identifiers may stay (the `programmes` schema,
   `programme_id`, `cancelled` status values).
+- **Motion and shelves** (owner, Nov 4, 2026). Movement follows the brand
+  book's Motion section: native CSS, `duration-quick`, `duration-base`,
+  `duration-slow` and `ease-standard`, nothing when reduced motion is on.
+  A row of things to browse (Editions, and later playbills and episodes)
+  is `Shelf` (`@repo/design-system/components/sal/shelf`), always with the
+  same items as a plain list at its own path (`/qirtas/editions/list`).
+  Edition covers are scans or a typographic cover, never drawn 3D. Share
+  is `ShareLink` (`components/share.tsx`).
 - **Copy formats.** Dates as "Tuesday, October 13", times as "6:00 PM", money
   as "50,000 IQD": use `formatLongDate`, `formatClock` and `formatIqd` from
   `@repo/internationalization/format` (Latin digits, Baghdad time).

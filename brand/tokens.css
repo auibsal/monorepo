@@ -28,6 +28,10 @@
   --radius-avatar: 50%;
   --hairline: 1px;
   --rule-strong: 1px;
+  --duration-quick: 120ms;
+  --duration-base: 200ms;
+  --duration-slow: 320ms;
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
   --font-sans: "Ubuntu", "Ubuntu Arabic", system-ui, sans-serif;
   --font-arabic: "Ubuntu Arabic", "Ubuntu", sans-serif;
   --font-mono: "Ubuntu Mono", ui-monospace, monospace;

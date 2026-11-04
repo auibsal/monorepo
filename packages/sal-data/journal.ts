@@ -896,3 +896,27 @@ export const prizeJudges = async (client: Client, roundId: string) =>
       .eq("round_id", roundId)
       .order("created_at")
   ) ?? [];
+
+/**
+ * An Edition's Launch Night (Nov 4, 2026): the event the masthead named,
+ * read only for a published Edition or one with a published call, and then
+ * read as any public event is.
+ */
+export const editionLaunch = async (client: Client, issueId: string) => {
+  const id = unwrap(
+    await journal(client).rpc("edition_launch", { issue_id: issueId })
+  );
+  if (!id) {
+    return null;
+  }
+  return unwrap(
+    await client
+      .schema("events")
+      .from("events")
+      .select("id, slug, title_en, title_ar, starts_at, venue_en, venue_ar")
+      .eq("id", id)
+      .eq("status", "published")
+      .eq("members_only", false)
+      .maybeSingle()
+  );
+};

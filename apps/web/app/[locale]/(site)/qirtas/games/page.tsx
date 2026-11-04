@@ -5,6 +5,7 @@ import { games, journal, localized } from "@repo/sal-data";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { GameNumber } from "@/components/games/daily";
+import { WordGuess } from "@/components/games/word-guess";
 import { PieceCardView } from "@/components/waraq/cards";
 import { Nameplate } from "@/components/waraq/nameplate";
 import { localizedMetadata } from "@/lib/metadata";
@@ -26,8 +27,9 @@ export const generateMetadata = async ({
   });
 };
 
+// Rows under hairlines, not boxed cards (brand book: lists over cards).
 const card =
-  "border border-line grid content-start gap-2  border-t border-line p-6 hover:underline";
+  "grid content-start gap-2 border-line border-t py-space-4 hover:underline";
 
 /**
  * Qirtas's Games section: two daily games, the editors' puzzles, and the
@@ -61,17 +63,25 @@ const GamesPage = async ({ params }: GamesProps) => {
         <p className="type-lede max-w-3xl">{t("lede")}</p>
       </header>
 
+      {/* Today's word first (design review A18, C21), with its streak and a
+          result to share; its own page stays the plain route. */}
+      <section aria-labelledby="today" className="grid gap-6">
+        <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
+          <h2 className="type-heading" id="today">
+            {t("todaysPuzzle")} · <GameNumber />
+          </h2>
+          <Link className="link type-caption" href="/qirtas/games/word">
+            {t("ownPage")}
+          </Link>
+        </div>
+        <WordGuess lang={lang} />
+      </section>
+
       <section aria-labelledby="daily" className="grid gap-4">
         <h2 className="type-heading" id="daily">
-          {t("daily")} · <GameNumber />
+          {t("alsoDaily")}
         </h2>
-        <ul className="grid gap-4 sm:grid-cols-2">
-          <li>
-            <Link className={card} href="/qirtas/games/word">
-              <span className="type-heading">{t("kinds.word_guess")}</span>
-              <span className="type-body">{t("guessLede")}</span>
-            </Link>
-          </li>
+        <ul className="grid gap-x-8 sm:grid-cols-2">
           <li>
             <Link className={card} href="/qirtas/games/search">
               <span className="type-heading">{t("kinds.word_search")}</span>
@@ -89,7 +99,7 @@ const GamesPage = async ({ params }: GamesProps) => {
         {puzzles.length === 0 ? (
           <p className="type-body text-text-secondary">{t("none")}</p>
         ) : (
-          <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <ul className="grid gap-x-8 sm:grid-cols-2 lg:grid-cols-3">
             {puzzles.map((p) => (
               <li key={p.id}>
                 <Link className={card} href={`/qirtas/games/${p.slug}`}>

@@ -2,11 +2,13 @@
 
 import { Button } from "@repo/design-system/components/ui/button";
 import { cn } from "@repo/design-system/lib/utils";
+import { localizedPath } from "@repo/internationalization";
 import {
   currentStreak,
   dailyAnswer,
   type GameLang,
   gameDay,
+  gameNumber,
   keyboardRows,
   MAX_GUESSES,
   type Mark,
@@ -18,6 +20,7 @@ import {
 } from "@repo/sal-data/games";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { ShareLink } from "@/components/share";
 import { loadProgress, saveProgress } from "./storage";
 
 const tile: Record<Mark | "empty" | "typed", string> = {
@@ -116,7 +119,11 @@ export const WordGuess = ({ lang }: { lang: GameLang }) => {
         return;
       }
       const target = event.target as HTMLElement | null;
-      if (target?.closest("input, textarea, button")) {
+      // Keys meant for a link, field or control elsewhere on the page are
+      // left alone (the Games page shows today's word among its links).
+      if (
+        target?.closest("a, input, textarea, select, button, [contenteditable]")
+      ) {
         return;
       }
       if (
@@ -135,6 +142,18 @@ export const WordGuess = ({ lang }: { lang: GameLang }) => {
   if (day === null) {
     return null;
   }
+
+  // The result to share says how it went and never the word (design
+  // review C21): plain text, no grid of colored squares.
+  const number = String(gameNumber(day));
+  const resultText = [
+    won
+      ? t("guess.result", { number, tries: String(guesses.length) })
+      : t("guess.resultLost", { number }),
+    streak > 1 ? t("guess.streak", { days: String(streak) }) : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
 
   const rows = Array.from({ length: MAX_GUESSES }, (_, row) => {
     const letters =
@@ -169,7 +188,7 @@ export const WordGuess = ({ lang }: { lang: GameLang }) => {
                 <span
                   aria-label={label}
                   className={cn(
-                    "grid size-12 place-items-center rounded-md border-2 font-semibold text-2xl sm:size-14",
+                    "grid size-12 place-items-center border-2 font-semibold text-2xl sm:size-14",
                     tile[mark ?? (letter ? "typed" : "empty")]
                   )}
                   // biome-ignore lint/suspicious/noArrayIndexKey: squares are positions
@@ -194,6 +213,15 @@ export const WordGuess = ({ lang }: { lang: GameLang }) => {
         {over ? ` ${t("guess.tomorrow")}` : null}
       </p>
 
+      {over ? (
+        <ShareLink
+          href={localizedPath(lang, "/qirtas/games/word")}
+          label={t("guess.share")}
+          text={resultText}
+          title={t("kinds.word_guess")}
+        />
+      ) : null}
+
       <fieldset className="m-0 grid w-full min-w-0 max-w-xl gap-2 border-0 p-0">
         <legend className="sr-only">{t("guess.keyboard")}</legend>
         {keyboardRows[lang].map((line, i) => (
@@ -216,7 +244,7 @@ export const WordGuess = ({ lang }: { lang: GameLang }) => {
                 <button
                   aria-label={mark ? t(`guess.${mark}`, { letter: key }) : key}
                   className={cn(
-                    "h-12 min-w-0 flex-1 rounded-md border font-semibold text-lg disabled:opacity-60",
+                    "h-12 min-w-0 flex-1 border font-semibold text-lg disabled:opacity-60",
                     mark ? tile[mark] : "border-line border-t"
                   )}
                   disabled={over}
