@@ -84,7 +84,9 @@ test("sign up with an AUIB address, confirm by email, finish setup", async ({
   await page.getByRole("link", { name: /Tell us more about yourself/ }).click();
   await expect(page).toHaveURL(/\/membership\/settings\/profile/);
   const details = page.getByRole("region", { name: "More about you" });
-  await details.getByRole("radio", { name: "A student at AUIB" }).click();
+  // Five answers: chosen from a list under the field, not a row.
+  await details.getByRole("button", { name: /You are/ }).click();
+  await details.getByRole("option", { name: "A student at AUIB" }).click();
   await details.getByRole("checkbox", { name: "Poetry" }).check();
   await details.getByRole("checkbox", { name: "Theater" }).check();
   await details.getByRole("button", { name: "Save" }).click();
