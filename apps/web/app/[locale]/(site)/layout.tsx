@@ -51,7 +51,7 @@ const SiteLayout = async ({ children, params }: SiteLayoutProperties) => {
           </main>
           <Footer />
           <ConsoleNote />
-          {consentPurposes.ads || consentPurposes.analytics ? (
+          {consentPurposes.analytics ? (
             <ConsentBanner purposes={consentPurposes} />
           ) : null}
         </AnalyticsProvider>

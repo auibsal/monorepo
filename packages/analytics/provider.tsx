@@ -11,7 +11,6 @@ interface AnalyticsProviderProps {
 const analyticsSettings = () => {
   const env = keys();
   return {
-    adsense: Boolean(env.NEXT_PUBLIC_ADSENSE_CLIENT),
     gaId: env.NEXT_PUBLIC_GA_ID,
     gatewayPath: env.NEXT_PUBLIC_TAG_GATEWAY_PATH,
     gtmId: env.NEXT_PUBLIC_GTM_ID,
@@ -23,20 +22,18 @@ const analyticsSettings = () => {
  * the container) or GA4 alone, loaded only when NEXT_PUBLIC_GTM_ID or
  * NEXT_PUBLIC_GA_ID is set, through the Google tag gateway when
  * NEXT_PUBLIC_TAG_GATEWAY_PATH is set. Consent comes from the site's own card;
- * nothing is stored until the visitor allows analytics, and no ad cookies
- * until they allow advertising (Waraq's AdSense ads). Render once, in
- * apps/web's layout.
+ * nothing is stored until the visitor allows analytics, and there are no
+ * ads. Render once, in apps/web's layout.
  */
 export const AnalyticsProvider = ({ children }: AnalyticsProviderProps) => {
-  const { adsense, ...settings } = analyticsSettings();
+  const settings = analyticsSettings();
   const src = loaderSrc(settings);
 
-  // Consent mode is set up whenever Google loads anything: GTM or GA4, or
-  // Waraq's AdSense ads (which read the same consent signals).
+  // Consent mode is set up whenever Google loads anything (GTM or GA4).
   return (
     <>
       {children}
-      {src || adsense ? (
+      {src ? (
         <Script id="analytics-consent" strategy="afterInteractive">
           {bootScript(settings)}
         </Script>

@@ -45,7 +45,6 @@ const THINGS = {
   "governance.partners": "people",
   "governance.resolutions": "society",
   "governance.society_documents": "society",
-  "journal.ads": "qirtas",
   "journal.agreements": "qirtas",
   "journal.approvals": "qirtas",
   "journal.calls": "qirtas",

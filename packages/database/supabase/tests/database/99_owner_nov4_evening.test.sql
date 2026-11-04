@@ -1,5 +1,6 @@
 -- The owner's Notion follow-up (Nov 4, 2026, evening): the program
--- permission is programs.manage everywhere; Qirtas Arabic editions link.
+-- permission is programs.manage everywhere; Qirtas Arabic editions link;
+-- there are no ads and memoranda grant no advertising.
 begin;
 -- <preamble>
 -- Shared pgTAP preamble. Each test file includes a copy (pg_prove runs files
@@ -75,7 +76,7 @@ insert into core.semesters (code, name_en, name_ar, starts_on, ends_on) values
 update core.settings set value = '0' where key = 'membership.founding_voters';
 -- </preamble>
 
-select plan(5);
+select plan(7);
 
 select ok(
   exists (select 1 from access.permissions where key = 'programs.manage'),
@@ -110,6 +111,21 @@ select lives_ok(
   $$insert into core.notion_links (kind, record_key, notion_page_id)
     values ('piece_ar', gen_random_uuid()::text, 'aaaaaaaabbbbccccddddeeeeeeeeeeee')$$,
   'a Qirtas Arabic edition can be linked'
+);
+
+select ok(
+  to_regclass('journal.ads') is null
+  and not exists (select 1 from pg_proc where proname = 'current_ads'),
+  'no ads table and no ad reader'
+);
+
+select ok(
+  not exists (
+    select 1 from pg_constraint
+    where conrelid = 'governance.partner_agreements'::regclass
+      and pg_get_constraintdef(oid) like '%advertising%'
+  ),
+  'a memorandum cannot grant or ask for advertising'
 );
 
 select * from finish();

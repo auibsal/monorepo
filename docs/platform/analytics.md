@@ -17,9 +17,8 @@ its own card, and passes each visitor's choice to Google through consent mode
   to denied.
 - **Analytics is granted only by the visitor.** That happens when they allow
   Analytics on the consent card. If they change their mind later, the site
-  updates consent again. The advertising signals follow a separate
-  Advertising choice, asked only while Qirtas's AdSense ads are switched on
-  (`docs/platform/ads.md`); without it they stay denied.
+  updates consent again. The advertising signals always stay denied: the
+  site carries no ads (owner, Nov 4, 2026).
 - **The site asks and remembers.** A small card at the bottom of the page
   (never in the way of the page) asks each new visitor about what is
   switched on. Their answers are kept in the site's own cookie,

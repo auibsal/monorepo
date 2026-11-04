@@ -47,9 +47,8 @@ const start = ({ gaId, gtmId }: AnalyticsSettings) => {
 /**
  * Runs before the loader. Every consent signal starts denied. Analytics is
  * granted only when the visitor allowed "analytics" in the site's consent
- * cookie; the three advertising signals only when they allowed "ads"
- * (AdSense shows limited, cookieless ads until then). Each follows the
- * visitor when they change their mind, and neither ever grants the other.
+ * cookie, and follows them when they change their mind. The three
+ * advertising signals stay denied: the site carries no ads.
  */
 export const bootScript = (settings: AnalyticsSettings) =>
   [
@@ -58,7 +57,7 @@ export const bootScript = (settings: AnalyticsSettings) =>
     "gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied',wait_for_update:500});",
     "gtag('set','ads_data_redaction',true);",
     `function on(p){var m=(document.cookie||'').match(/(?:^|; )${SITE_CONSENT_COOKIE}=([^;]*)/);if(!m){return 'denied';}try{return JSON.parse(decodeURIComponent(m[1]))[p]===true?'granted':'denied';}catch(e){return 'denied';}}`,
-    "function salConsent(){var a=on('ads');gtag('consent','update',{analytics_storage:on('analytics'),ad_storage:a,ad_user_data:a,ad_personalization:a});}",
+    "function salConsent(){gtag('consent','update',{analytics_storage:on('analytics')});}",
     `document.addEventListener(${inline(CONSENT_SAVED)},salConsent);`,
     "salConsent();",
     start(settings),

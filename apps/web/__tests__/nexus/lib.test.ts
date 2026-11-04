@@ -43,8 +43,8 @@ describe("return paths", () => {
     );
     expect(nexusHref("#telegram")).toBe("#telegram");
     expect(
-      nexusHref({ pathname: "/admin/ads/ad", query: { id: "1" } })
-    ).toEqual({ pathname: "/diwan/admin/ads/ad", query: { id: "1" } });
+      nexusHref({ pathname: "/admin/events/edit", query: { id: "1" } })
+    ).toEqual({ pathname: "/diwan/admin/events/edit", query: { id: "1" } });
     expect(stripNexus("/diwan/events")).toBe("/events");
     expect(stripNexus("/diwan")).toBe("/");
     expect(stripNexus("/events")).toBe("/events");

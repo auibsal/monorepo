@@ -6,7 +6,6 @@ import { journal, localized, sanitizeRichText } from "@repo/sal-data";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { NewsletterSignup } from "@/components/newsletter/signup";
-import { WaraqAd } from "@/components/waraq/ad";
 import {
   LeadStory,
   leadImage,
@@ -207,8 +206,6 @@ const WaraqFrontPage = async ({ params }: WaraqProps) => {
           </section>
         ) : null}
 
-        <WaraqAd locale={locale} page="/qirtas" slot={0} />
-
         <div className="grid gap-12 md:grid-cols-3">
           <News
             alone={letters.length === 0}
@@ -350,8 +347,6 @@ const WaraqFrontPage = async ({ params }: WaraqProps) => {
             </div>
           </section>
         ) : null}
-
-        <WaraqAd locale={locale} page="/qirtas" slot={1} />
       </div>
       <Calls locale={locale} />
       <div className="mx-auto w-full max-w-6xl px-4 py-12">

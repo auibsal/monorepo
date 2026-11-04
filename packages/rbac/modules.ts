@@ -33,8 +33,6 @@ export const adminModules = [
       "journal.prizes",
     ],
   },
-  // Waraq's ads: Society ads (content) and sponsor ads (partnerships).
-  { key: "ads", permissions: ["content.manage", "partners.manage"] },
   {
     key: "charity",
     permissions: [
@@ -109,7 +107,7 @@ export const adminSections = [
     modules: ["events", "programs", "charity"],
     path: "/events",
   },
-  { key: "qirtas", modules: ["journal", "ads"], path: "/qirtas" },
+  { key: "qirtas", modules: ["journal"], path: "/qirtas" },
   { key: "company", modules: ["productions"], path: "/company" },
   {
     key: "people",

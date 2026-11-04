@@ -49,8 +49,8 @@ and decisions), and continue from the first unticked item.
     its tabs at `/diwan/events/<slug>/<tab>`; each event has its own door,
     `/events/<slug>/door`, and the Desk opens the next one (owner, Oct 31,
     2026: no general door); Second Chapter's collection
-    is a tab of its program), Qirtas (`/diwan/qirtas`, its tabs and the
-    ads; calls are on each Edition's page), The Company (`/diwan/company`), People (`/diwan/people`,
+    is a tab of its program), Qirtas (`/diwan/qirtas` and its tabs;
+    calls are on each Edition's page), The Company (`/diwan/company`), People (`/diwan/people`,
     verification (partner applications only), hiring, service, partners, insights) and Society
     (`/diwan/society`: meetings with their resolutions, requests to Student Life,
     elections, concerns, the Library, where only `governance.manage`, the
@@ -442,7 +442,7 @@ any schema change. Integration tests run against a local stack with
   read blind on the same pages, submissions at `/qirtas/submissions/<id>`
   and the Edition's entries at `/qirtas/entries/<id>`: Newsroom and Review
   are one, owner, Oct 31, 2026), Editions,
-  Awards and Ads, each its own page. Bylines are people: a member under
+  and Awards, each its own page. Bylines are people: a member under
   their own name or a pen name, picked with `BylinePicker` and made by
   `journal.byline_for()`, never typed. Clients never read
   `contributors.user_id`, so a pen name can't be traced to its author.
@@ -839,11 +839,11 @@ any schema change. Integration tests run against a local stack with
   2026). Record events with
   `track()` from `@repo/analytics/client`. Runbook:
   `docs/platform/analytics.md`.
-- **Ads:** in Qirtas on `apps/web` only, never for signed-in visitors (owner,
-  Oct 16, 2026): Society ads, sponsor ads (only with a signed memorandum
-  granting `advertising`; Policy Manual 11.3 applies) and Google AdSense for
-  the rest. Readers get ads only through `journal.current_ads()`. No ads in
-  the Diwan, in emails or on other pages. Runbook: `docs/platform/ads.md`.
+- **No ads, no money in advertising** (owner, Nov 4, 2026; SAL-PLT-06 as
+  amended): no ads anywhere (no AdSense, no Society or sponsor ad slots),
+  and sponsors give in kind only, never money. A memorandum grants no
+  advertising. The consent card asks about analytics only; Google's ad
+  signals stay denied.
 - **Translations:** every UI string comes from
   `packages/internationalization/messages/{ar,en}.json`, checked by
   `bun run check:i18n`. Pass numbers and dates into messages already

@@ -1172,64 +1172,6 @@
         "scheduleConfirm": "Schedule this post? It is published on its own at the publish time.",
         "newsletter": "The Sunday Paper's public list has {count} confirmed subscribers. They sign up at auibsal.org/sunday-paper; members who receive email get it too."
       },
-      "ads": {
-        "title": "Ads",
-        "lede": "Ads in Qirtas, shown only to visitors who aren't signed in: the Society's own, and sponsors' where a memorandum allows them. Where no ad runs, Google fills the space.",
-        "new": {
-          "society": "New Society ad",
-          "sponsor": "New sponsor ad"
-        },
-        "none": "No ads yet.",
-        "untitled": "Untitled ad",
-        "back": "All ads",
-        "notFound": "This ad was not found, or you do not keep ads of its kind.",
-        "noKind": "Only the people who keep the site's content or the partners register write ads.",
-        "kinds": {
-          "society": "Society",
-          "sponsor": "Sponsor"
-        },
-        "states": {
-          "draft": "Draft",
-          "ended": "Ended",
-          "running": "Running",
-          "scheduled": "Starts {date}"
-        },
-        "editorLede": {
-          "society": "A Society ad: an event, an open call, or joining SAL. Short and plain, in both languages where you can.",
-          "sponsor": "A sponsor ad. It runs only while the partner is active and its signed memorandum grants advertising; the Policy Manual's limits on sponsors (11.3) apply."
-        },
-        "fields": {
-          "headline": "Headline",
-          "kind": "Kind",
-          "state": "State",
-          "partner": "Partner",
-          "body": "Text",
-          "action": "Button text",
-          "url": "Link",
-          "image": "Image (optional)",
-          "imageAlt": "Image description",
-          "startsOn": "From",
-          "endsOn": "Until",
-          "published": "Published"
-        },
-        "partnerHint": "From the partners register.",
-        "choosePartner": "Choose a partner",
-        "urlHint": "An auibsal.org path such as /join, or a full https:// address.",
-        "endsOnHint": "Leave empty to run until you stop it.",
-        "publishedHint": "Shown on Qirtas from the start date while published.",
-        "save": "Save",
-        "saved": "Saved.",
-        "delete": "Delete ad",
-        "deleteConfirm": "Delete this ad? It stops showing on Qirtas at once.",
-        "problems": {
-          "partner": "Choose the partner this ad is from.",
-          "dates": "The end date is before the start date.",
-          "headline": "Write a headline in English or Arabic.",
-          "alt": "Describe the image for people who cannot see it.",
-          "url": "The link starts with / or https://.",
-          "invalid": "Check the fields above."
-        }
-      },
       "charity": {
         "title": "Charity",
         "lede": "Second Chapter campaigns. Money is recorded, never collected online: cash is counted by two people, and an entry counts only after a different person signs it off.",
@@ -2125,8 +2067,7 @@
             "member_offer": "Perks for members and guests",
             "shared_branding": "Shared branding",
             "productions": "Productions together",
-            "volunteering": "Their members may volunteer on rotas",
-            "advertising": "Sponsor ads in Qirtas"
+            "volunteering": "Their members may volunteer on rotas"
           },
           "statuses": {
             "draft": "Draft",
@@ -2858,7 +2799,6 @@
           "newsroom": "Newsroom",
           "editions": "Editions",
           "awards": "Awards",
-          "ads": "Ads",
           "meetings": "Meetings"
         }
       },
@@ -4180,7 +4120,6 @@
     "consent": {
       "title": "Cookies",
       "body": "auibsal.org counts visits with Google Analytics only if you allow it.",
-      "bodyWithAds": "auibsal.org counts visits with Google Analytics, and Qirtas shows ads to visitors who are not signed in. Cookies for either are set only if you allow them.",
       "privacy": "Privacy policy",
       "allow": "Allow",
       "allowAll": "Allow all",
@@ -4192,17 +4131,7 @@
       "analytics": {
         "name": "Analytics",
         "description": "Counting visits with Google Analytics."
-      },
-      "ads": {
-        "name": "Advertising",
-        "description": "Ad cookies and ads chosen for you in Qirtas. Without them, Qirtas's ads use no cookies."
       }
-    },
-    "ads": {
-      "advertisement": "Advertisement",
-      "fromTheSociety": "From the Society",
-      "sponsoredBy": "Sponsored by {name}",
-      "learnMore": "Learn more"
     },
     "home": {
       "metaTitle": "The paper and the pen",
@@ -4644,8 +4573,6 @@
         "analytics": "This website uses no analytics or advertising cookies.",
         "delete": "You can delete your account under Membership, Settings.",
         "analyticsOn": "This website counts visits with Google Analytics 4, through Google Tag Manager served from auibsal.org. Analytics cookies are set only if you allow them (Cookie settings, at the foot of every page).",
-        "analyticsOff": "This website uses no analytics cookies.",
-        "adsOn": "Qirtas shows ads to visitors who are not signed in: the Society's own, its sponsors' and Google AdSense's. Signed-in members see none. AdSense sets advertising cookies and chooses ads for you only if you allow advertising (Cookie settings); otherwise its ads use no cookies. Sponsors receive nothing about you.",
         "newsletter": "The Sunday Paper's public list keeps only your email address, your language and when you subscribed. Unsubscribing stops it at once."
       }
     },

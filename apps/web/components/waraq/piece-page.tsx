@@ -7,7 +7,6 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { ManageLinks } from "@/components/manage-links";
 import { ShareLink } from "@/components/share";
-import { WaraqAd } from "@/components/waraq/ad";
 import {
   Byline,
   leadImage,
@@ -193,9 +192,6 @@ export const PieceArticle = async ({
           {t("firstPublished")}
         </p>
       </article>
-      <div className="mx-auto w-full max-w-3xl px-4">
-        <WaraqAd locale={locale} page={pieceHref(piece)} slot={0} />
-      </div>
       {related.length > 0 ? (
         <aside
           aria-labelledby="related"

@@ -1,5 +1,4 @@
 import { internationalizationMiddleware } from "@repo/internationalization/proxy";
-import { adsenseCspSources } from "@repo/security/csp";
 import {
   securityOptionsWith,
   telegramMiniApp,
@@ -12,14 +11,11 @@ export const config = {
   // API routes, the design system's build (/_design, framed by the Diwan),
   // the service worker, the manifest, the feeds or static files.
   matcher: [
-    "/((?!api/|_design/|_next/static|_next/image|ingest|favicon.ico|robots.txt|ads.txt|calendar.ics|sw.js|manifest.webmanifest|icons/|\\.well-known|sitemap.xml|.*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|pdf|docx?|xlsx?|zip|webmanifest)).*)",
+    "/((?!api/|_design/|_next/static|_next/image|ingest|favicon.ico|robots.txt|calendar.ics|sw.js|manifest.webmanifest|icons/|\\.well-known|sitemap.xml|.*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|pdf|docx?|xlsx?|zip|webmanifest)).*)",
   ],
 };
 
-// Qirtas's AdSense ads need Google's ad hosts, once AdSense is set up.
-const securityOptions = securityOptionsWith(
-  ...(process.env.NEXT_PUBLIC_ADSENSE_CLIENT ? [adsenseCspSources] : [])
-);
+const securityOptions = securityOptionsWith();
 
 // The daily word is also the Telegram bot's Main App: Telegram's web app
 // shows Mini Apps in a frame, so that page (and only that page) may be framed

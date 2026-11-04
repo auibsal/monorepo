@@ -40,12 +40,16 @@ const run = (
   };
 };
 
+/** The consent default, then every update, in the order Google got them. */
 const consentUpdates = (layer: unknown[]) =>
   layer.filter(
-    (e) => Array.isArray(e) && e[0] === "consent" && e[1] === "update"
+    (e) =>
+      Array.isArray(e) &&
+      e[0] === "consent" &&
+      (e[1] === "default" || e[1] === "update")
   ) as [string, string, Record<string, string>][];
 
-/** The last value Google was told for a consent signal. */
+/** The last value Google was told for a consent signal (default or update). */
 const lastSignal = (layer: unknown[], signal: string) =>
   consentUpdates(layer)
     .filter(([, , update]) => signal in update)
@@ -99,25 +103,22 @@ describe("consent", () => {
     }
   });
 
-  test("analytics and ads each follow only their own answer", () => {
-    const analytics = run(
-      { gtmId: "GTM-ABC1" },
-      { ads: false, analytics: true }
-    );
+  test("analytics follows its answer; the ad signals stay denied", () => {
+    const analytics = run({ gtmId: "GTM-ABC1" }, { analytics: true });
     expect(lastSignal(analytics.layer(), "analytics_storage")).toBe("granted");
     for (const signal of AD_SIGNALS) {
       expect(lastSignal(analytics.layer(), signal)).toBe("denied");
     }
-    const ads = run({ gtmId: "GTM-ABC1" }, { ads: true, analytics: false });
-    expect(lastSignal(ads.layer(), "analytics_storage")).toBe("denied");
-    for (const signal of AD_SIGNALS) {
-      expect(lastSignal(ads.layer(), signal)).toBe("granted");
+    // An answer kept from when the site asked about ads grants nothing.
+    const old = run({ gtmId: "GTM-ABC1" }, { ads: true, analytics: false });
+    for (const signal of [...AD_SIGNALS, "analytics_storage"]) {
+      expect(lastSignal(old.layer(), signal)).toBe("denied");
     }
   });
 
   test("follows the visitor when they change their mind", () => {
-    const page = run({ gtmId: "GTM-ABC1" }, { ads: true, analytics: true });
-    page.change({ ads: false, analytics: false });
+    const page = run({ gtmId: "GTM-ABC1" }, { analytics: true });
+    page.change({ analytics: false });
     expect(lastSignal(page.layer(), "analytics_storage")).toBe("denied");
     expect(lastSignal(page.layer(), "ad_storage")).toBe("denied");
   });

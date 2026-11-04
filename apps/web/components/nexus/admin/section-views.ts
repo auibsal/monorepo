@@ -26,7 +26,6 @@ export type ViewKey =
   | "newsroom"
   | "editions"
   | "awards"
-  | "ads"
   | "members"
   | "verification"
   | "hiring"
@@ -74,7 +73,6 @@ export const sectionViews: Record<AdminSection, readonly SectionView[]> = {
       module: "journal",
       permission: "journal.prizes",
     },
-    { href: "/qirtas/ads", key: "ads", module: "ads" },
   ],
   society: [
     {
