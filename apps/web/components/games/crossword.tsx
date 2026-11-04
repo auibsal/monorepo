@@ -173,7 +173,7 @@ export const CrosswordGame = ({
       lang={lang}
     >
       <div className="grid content-start gap-4">
-        <p aria-live="polite" className="type-subheading min-h-8">
+        <p aria-live="polite" className="type-subheading min-h-8 print:hidden">
           {activeEntry
             ? `${activeEntry.number} ${activeEntry.across ? t("across") : t("down")}: ${activeEntry.clue}`
             : null}
@@ -212,7 +212,7 @@ export const CrosswordGame = ({
                     autoCapitalize="characters"
                     autoComplete="off"
                     className={cn(
-                      "size-full bg-transparent text-center font-semibold text-base uppercase caret-transparent outline-none focus:text-accent sm:text-xl",
+                      "size-full bg-transparent text-center font-semibold text-base uppercase caret-transparent outline-none focus:text-accent sm:text-xl print:text-transparent print:ring-0",
                       activeCells.has(k) && "border-line border-t",
                       k === active.cell && "ring-2 ring-accent ring-inset",
                       wrong(k, sq.letter) && "text-text line-through"
@@ -243,7 +243,7 @@ export const CrosswordGame = ({
             })
           )}
         </fieldset>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-2 print:hidden">
           <Button
             onClick={() => setChecked(true)}
             type="button"
@@ -258,11 +258,19 @@ export const CrosswordGame = ({
             {t("clear")}
           </Button>
         </div>
-        <p aria-live="polite" className="min-h-6" role="status">
+        <p aria-live="polite" className="min-h-6 print:hidden" role="status">
           {solved ? t("solved") : null}
           {!solved && checked ? t("checked") : null}
         </p>
-        <p className="type-caption">{t("howTo")}</p>
+        <p className="type-caption print:hidden">{t("howTo")}</p>
+        {/* A19: the grid and its clues on one sheet, the letters left blank. */}
+        <button
+          className="link type-caption justify-self-start print:hidden"
+          onClick={() => window.print()}
+          type="button"
+        >
+          {t("print")}
+        </button>
       </div>
 
       <div className="grid content-start gap-8 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">

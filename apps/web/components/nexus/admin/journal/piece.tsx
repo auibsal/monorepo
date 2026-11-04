@@ -6,10 +6,11 @@ import { Checkbox } from "@repo/brand/components/ui/checkbox";
 import { Input } from "@repo/brand/components/ui/input";
 import { Label } from "@repo/brand/components/ui/label";
 import type { Locale } from "@repo/internationalization";
+import { formatLongDate } from "@repo/internationalization/format";
 import { hasPermission } from "@repo/rbac";
 import { journal, localized, sanitizeRichText, unwrap } from "@repo/sal-data";
 import { getMediaUrl, uploadMedia } from "@repo/storage";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useEffect, useId, useState } from "react";
 import { FileInput } from "@/components/fields/file-input";
@@ -97,6 +98,7 @@ const formFrom = (record: PieceRecord | null, desk: journal.Desk) => {
     contributor_id: p?.contributor_id ?? "",
     credit: { ar: p?.credit_ar ?? "", en: p?.credit_en ?? "" },
     deck: { ar: p?.deck_ar ?? "", en: p?.deck_en ?? "" },
+    event_id: p?.event_id ?? "",
     issue_id: p?.issue_id ?? "",
     language: (p?.language ?? "en") as Language,
     members_only: p?.members_only ?? false,
@@ -122,6 +124,26 @@ const PieceForm = ({ record }: { record: PieceRecord | null }) => {
     formFrom(record, myDesks[0] ?? "news")
   );
   const piece = record?.piece ?? null;
+  // C16: the event the piece came from, among the last half year's and
+  // the coming ones, and the one already chosen.
+  const events = useQuery({
+    queryFn: async () =>
+      unwrap(
+        await supabase
+          .schema("events")
+          .from("events")
+          .select("id, title_en, title_ar, starts_at")
+          .or(
+            `starts_at.gte.${new Date(Date.now() - 183 * 24 * 60 * 60 * 1000).toISOString()}${
+              form.event_id ? `,id.eq.${form.event_id}` : ""
+            }`
+          )
+          .neq("status", "draft")
+          .order("starts_at", { ascending: false })
+          .limit(120)
+      ) ?? [],
+    queryKey: ["admin", "journal", "piece-events", form.event_id],
+  });
   const desk = journal.deskOf(form.category);
   const needs = journal.typeNeeds(form.category);
 
@@ -158,6 +180,7 @@ const PieceForm = ({ record }: { record: PieceRecord | null }) => {
             credit_en: form.credit.en.trim() || null,
             deck_ar: form.deck.ar.trim() || null,
             deck_en: form.deck.en.trim() || null,
+            event_id: form.event_id || null,
             issue_id: form.issue_id || null,
             language: form.language,
             members_only: form.members_only,
@@ -301,6 +324,22 @@ const PieceForm = ({ record }: { record: PieceRecord | null }) => {
               {issues.data?.map((i) => (
                 <option key={i.id} value={i.id}>
                   {localized(i, "title", locale)}
+                </option>
+              ))}
+            </SelectInput>
+          )}
+        </Field>
+        <Field label={t("event")}>
+          {(fieldId) => (
+            <SelectInput
+              id={fieldId}
+              onChange={(e) => set("event_id", e.target.value)}
+              value={form.event_id}
+            >
+              <option value="">{t("noEvent")}</option>
+              {events.data?.map((e) => (
+                <option key={e.id} value={e.id}>
+                  {`${localized(e, "title", locale)} · ${formatLongDate(e.starts_at, locale)}`}
                 </option>
               ))}
             </SelectInput>

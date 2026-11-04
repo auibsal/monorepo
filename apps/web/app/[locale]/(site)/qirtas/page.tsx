@@ -29,6 +29,7 @@ export const generateMetadata = async ({
   const t = await getTranslations({ locale, namespace: "web.journal" });
   return localizedMetadata(locale, "/qirtas", {
     description: t("lede"),
+    feed: "/qirtas/feed.xml",
     title: t("title"),
   });
 };

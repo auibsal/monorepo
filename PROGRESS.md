@@ -5,7 +5,32 @@ Every session starts here and continues from the first unticked item. The
 brief is `sal-platform-claude-code-prompt.md` (uploaded at the start of the
 first session); section numbers (§) refer to it.
 
-Branch: `claude/edition-book` (PR 4a of the design review).
+Branch: `claude/qirtas-reading` (PR 4b of the design review).
+
+## The design review: PR 4b, reading Qirtas (2026-11-04)
+
+- [x] A13 Pull quotes (`<aside>`) and notes (`<small>`, numbered and
+  listed after the text) in the editor and the reader, kept by the
+  rich-text policy (tests in `sanitize.test.ts`).
+- [x] A14 The photo essay layout: words first, then each photograph full
+  width with its caption and "n of total".
+- [x] C16 A piece names its event (migration `20261101002900`,
+  `99_piece_events.test.sql`), picked in the Diwan, shown on the piece;
+  the Edition link already existed.
+- [x] A5 Print styles for pieces (and every page: white paper, ink, no
+  frame); A19 the crossword prints a blank sheet with its clues.
+- [x] A6 RSS for Qirtas and each section, linked from the pages' head and
+  the section pages.
+- [x] A20 The archive by month and section, at paths.
+- [x] A7 Already there: every page without its own image gets one drawn
+  from its title at `/og`; pieces use their lead image, Editions their
+  cover.
+- needs-native-review: `web.journal.reading.notes`, `photoOf`,
+  `archive.*`, `feed`; `web.games.crossword.print`; `nexus.editor`
+  pullQuote and note; `nexus.admin.waraq` event and noEvent.
+- Next: PR 4c (C17, C20, A9/C22, C9, C24), 4d (C3, A31, A32, A35), 4e
+  (C5, C7, C26, A8). The Sunday Paper issues' print styles come with
+  their archive (C17).
 
 ## The design review: PR 4a, the Edition as a book (2026-11-04)
 

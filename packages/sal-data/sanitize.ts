@@ -36,6 +36,11 @@ const options: sanitizeHtml.IOptions = {
     "span",
     "figure",
     "figcaption",
+    // Pull quotes and notes (design review A13): a pull quote is an aside;
+    // a note is written where it belongs, in <small>, and the reader numbers
+    // it and lists it after the text (`withNotes`).
+    "aside",
+    "small",
     "pre",
     "code",
     // Society documents (Constitution, Bylaws, handbooks).
@@ -62,3 +67,23 @@ export const toPlainText = (html: string | null | undefined) =>
   sanitizeHtml(html ?? "", { allowedAttributes: {}, allowedTags: [] })
     .replace(/\s+/g, " ")
     .trim();
+
+const NOTE = /<small(?:\s[^>]*)?>([\s\S]*?)<\/small>/g;
+
+/**
+ * Notes in rich text (design review A13): each <small> written in the text
+ * becomes a numbered reference, and its words a note after the text. Runs
+ * on sanitized HTML; `prefix` keeps the anchors apart when a page shows
+ * more than one text.
+ */
+export const withNotes = (html: string, prefix: string) => {
+  const notes: { html: string; id: string; ref: string }[] = [];
+  const body = html.replace(NOTE, (_match, note: string) => {
+    const n = notes.length + 1;
+    const id = `${prefix}-note-${n}`;
+    const ref = `${prefix}-ref-${n}`;
+    notes.push({ html: note, id, ref });
+    return `<sup id="${ref}"><a href="#${id}">${n}</a></sup>`;
+  });
+  return { body, notes };
+};

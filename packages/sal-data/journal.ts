@@ -705,7 +705,7 @@ const cardColumns =
   "id, slug, desk, category, language, title_en, title_ar, deck_en, deck_ar, members_only, published_at, front_rank, video_url, image_path, contributor:contributors!pieces_contributor_id_fkey(slug, name_en, name_ar), media:piece_media(storage_path, alt_en, alt_ar, width, height, sort)";
 
 const fullColumns =
-  "id, slug, desk, category, language, title_en, title_ar, deck_en, deck_ar, members_only, published_at, front_rank, video_url, image_path, credit_en, credit_ar, issue_id, contributor:contributors!pieces_contributor_id_fkey(slug, name_en, name_ar), media:piece_media(storage_path, alt_en, alt_ar, caption_en, caption_ar, width, height, sort), issue:issues(slug, title_en, title_ar)";
+  "id, slug, desk, category, language, title_en, title_ar, deck_en, deck_ar, members_only, published_at, front_rank, video_url, image_path, credit_en, credit_ar, issue_id, event_id, contributor:contributors!pieces_contributor_id_fkey(slug, name_en, name_ar), media:piece_media(storage_path, alt_en, alt_ar, caption_en, caption_ar, width, height, sort), issue:issues(slug, title_en, title_ar)";
 
 const publishedPieces = (client: Client) =>
   journal(client)
@@ -846,6 +846,43 @@ export const authorPage = async (client: Client, slug: string) => {
  * pieces written in English (or in both), the Arabic site those in Arabic.
  * Rows without a language (calls, editions) pass through.
  */
+/** The public event a piece came from (design review C16), or null. */
+export const pieceEvent = async (client: Client, eventId: string | null) =>
+  eventId
+    ? unwrap(
+        await client
+          .schema("events")
+          .from("events")
+          .select("id, slug, title_en, title_ar, starts_at")
+          .eq("id", eventId)
+          .eq("status", "published")
+          .eq("members_only", false)
+          .maybeSingle()
+      )
+    : null;
+
+/** Published pieces between two instants (an archive month), newest first. */
+export const piecesBetween = async (client: Client, from: Date, to: Date) =>
+  unwrap(
+    await publishedPieces(client)
+      .gte("published_at", from.toISOString())
+      .lt("published_at", to.toISOString())
+      .order("published_at", { ascending: false })
+      .limit(500)
+  ) ?? [];
+
+/** When each published piece came out, with its section and language (the archive's months). */
+export const publishedDates = async (client: Client) =>
+  unwrap(
+    await journal(client)
+      .from("pieces")
+      .select("published_at, desk, language")
+      .eq("status", "published")
+      .lte("published_at", new Date().toISOString())
+      .order("published_at", { ascending: false })
+      .limit(5000)
+  ) ?? [];
+
 export const inLanguage = <T>(list: readonly T[], locale: string): T[] =>
   list.filter((item) => {
     const { language } = item as { language?: string };

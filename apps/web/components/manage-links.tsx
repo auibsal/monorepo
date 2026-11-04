@@ -69,7 +69,7 @@ export const ManageLinks = ({
     return null;
   }
   return (
-    <p className="type-caption flex flex-wrap gap-x-5 gap-y-1">
+    <p className="type-caption flex flex-wrap gap-x-5 gap-y-1 print:hidden">
       {links.map((link) => (
         <a className="link" href={link.href} key={link.key}>
           {link.label}

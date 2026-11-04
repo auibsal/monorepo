@@ -3907,6 +3907,7 @@ export type Database = {
           deck_en: string | null;
           desk: Database["journal"]["Enums"]["desk"] | null;
           edit_note: string | null;
+          event_id: string | null;
           front_rank: number | null;
           id: string;
           image_path: string | null;
@@ -3939,6 +3940,7 @@ export type Database = {
           deck_en?: string | null;
           desk?: never;
           edit_note?: string | null;
+          event_id?: string | null;
           front_rank?: number | null;
           id?: string;
           image_path?: string | null;
@@ -3971,6 +3973,7 @@ export type Database = {
           deck_en?: string | null;
           desk?: never;
           edit_note?: string | null;
+          event_id?: string | null;
           front_rank?: number | null;
           id?: string;
           image_path?: string | null;

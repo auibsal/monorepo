@@ -96,11 +96,20 @@ export const PieceArticle = async ({
     title_en: string;
   } | null;
   const lockedText = piece.members_only && texts(piece).length === 0;
+  // The event the piece came from (design review C16), when it is public.
+  const [event] = await readPublished(
+    ["journal", "events"],
+    async (c) => {
+      const found = await journal.pieceEvent(c, piece.event_id);
+      return found ? [found] : [];
+    },
+    []
+  );
 
   return (
     <div className="grid w-full gap-10 py-10">
       <ReadingProgress />
-      <div className="mx-auto w-full max-w-6xl px-4">
+      <div className="mx-auto w-full max-w-6xl px-4 print:hidden">
         <Nameplate current={desk} locale={locale} small />
       </div>
       <article className="grid gap-8">
@@ -135,6 +144,17 @@ export const PieceArticle = async ({
               {t(`desks.${desk}`)}
             </Link>
             {` · ${t(`categories.${category}`)}`}
+            {event ? (
+              <>
+                {" · "}
+                <Link
+                  className="hover:underline"
+                  href={`/events/${event.slug}`}
+                >
+                  {localized(event, "title", locale)}
+                </Link>
+              </>
+            ) : null}
             {issue ? (
               <>
                 {" · "}
@@ -204,7 +224,7 @@ export const PieceArticle = async ({
       {related.length > 0 ? (
         <aside
           aria-labelledby="related"
-          className="mx-auto grid w-full max-w-3xl gap-4 px-4"
+          className="mx-auto grid w-full max-w-3xl gap-4 px-4 print:hidden"
         >
           <h2 className="type-heading" id="related">
             {t("moreFrom", { desk: t(`desks.${desk}`) })}
@@ -233,7 +253,7 @@ const ReadOn = async ({
   return (
     <nav
       aria-label={t("reading.after")}
-      className="mx-auto grid w-full max-w-3xl gap-4 border-text border-t px-4 pt-6 sm:grid-cols-2"
+      className="mx-auto grid w-full max-w-3xl gap-4 border-text border-t px-4 pt-6 sm:grid-cols-2 print:hidden"
     >
       {next ? (
         <Link className="group grid gap-1" href={pieceHref(next)}>

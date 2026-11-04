@@ -5,6 +5,8 @@ import { createMetadata } from "./create-metadata";
 
 interface PageMetadata {
   description: string;
+  /** An RSS feed for this page, a site path (design review A6). */
+  feed?: string;
   /** A share image; otherwise one is drawn from the title (`/[locale]/og`). */
   image?: string;
   title: string;
@@ -27,15 +29,24 @@ export const localizedMetadata = (
   locale: Locale,
   path: string,
   page: PageMetadata
-): Metadata =>
-  createMetadata({
-    ...page,
+): Metadata => {
+  const { feed, ...rest } = page;
+  return createMetadata({
+    ...rest,
     alternates: {
       canonical: localizedPath(locale, path),
       languages: Object.fromEntries(
         locales.map((language) => [language, localizedPath(language, path)])
       ),
+      ...(feed
+        ? {
+            types: {
+              "application/rss+xml": localizedPath(locale, feed),
+            },
+          }
+        : {}),
     },
     image: page.image ?? ogImagePath(locale, { title: page.title }),
     locale,
   });
+};
