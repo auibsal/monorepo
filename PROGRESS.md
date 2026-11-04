@@ -5,7 +5,7 @@ Every session starts here and continues from the first unticked item. The
 brief is `sal-platform-claude-code-prompt.md` (uploaded at the start of the
 first session); section numbers (§) refer to it.
 
-Branch: `claude/reading-and-diwan` (PR 3 of the design review).
+Branch: `claude/edition-book` (PR 4a of the design review).
 
 ## The design review: PR 4a, the Edition as a book (2026-11-04)
 
