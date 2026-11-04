@@ -6244,18 +6244,7 @@ export type Database = {
   };
   public: {
     Tables: {
-      pg_temp_backup: {
-        Row: {
-          "?column?": number | null;
-        };
-        Insert: {
-          "?column?"?: number | null;
-        };
-        Update: {
-          "?column?"?: number | null;
-        };
-        Relationships: [];
-      };
+      [_ in never]: never;
     };
     Views: {
       [_ in never]: never;
