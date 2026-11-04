@@ -79,7 +79,7 @@ select plan(5);
 
 select results_eq(
   $$ select permission from access.role_permissions where role = 'awards_coordinator' order by 1 $$,
-  $$ values ('journal.prizes'), ('library.read') $$,
+  $$ values ('journal.awards'), ('library.read') $$,
   'The Awards Coordinator runs the Awards'
 );
 select is(

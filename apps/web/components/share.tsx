@@ -1,6 +1,6 @@
 "use client";
 
-import { Icon } from "@repo/design-system/components/sal/icon";
+import { Icon } from "@repo/brand/components/sal/icon";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 

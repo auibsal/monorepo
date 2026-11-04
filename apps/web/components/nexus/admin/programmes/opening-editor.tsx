@@ -1,8 +1,8 @@
 "use client";
 
 import { useAuth } from "@repo/auth/provider";
-import { Button } from "@repo/design-system/components/ui/button";
-import { Input } from "@repo/design-system/components/ui/input";
+import { Button } from "@repo/brand/components/ui/button";
+import { Input } from "@repo/brand/components/ui/input";
 import type { Locale } from "@repo/internationalization";
 import { journal, localized, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -22,7 +22,7 @@ import {
   SaveButton,
   SelectInput,
 } from "../kit";
-import { type openingKinds, SkillsPicker } from "./callboard";
+import { type openingKinds, SkillsPicker } from "./openings";
 
 type Kind = (typeof openingKinds)[number];
 
@@ -45,7 +45,7 @@ export interface OpeningEditorProps {
  * posted. Closing takes it off Get involved; reopening puts it back.
  */
 export const OpeningEditor = ({ back, id }: OpeningEditorProps) => {
-  const t = useTranslations("nexus.admin.programmes.callboard");
+  const t = useTranslations("nexus.admin.programmes.openings");
   const tj = useTranslations("nexus.admin.journal");
   const locale = useLocale() as Locale;
   const { supabase } = useAuth();

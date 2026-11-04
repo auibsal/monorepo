@@ -29,10 +29,9 @@ describe("has the visitor answered", () => {
     );
   });
 
-  test("yes, allowed or declined, for each purpose on its own", () => {
+  test("yes, allowed or declined", () => {
     const cookies = `NEXT_LOCALE=ar; ${cookie({ analytics: false })}`;
     expect(hasChoice(cookies, "analytics")).toBe(true);
-    expect(hasChoice(cookies, "ads")).toBe(false);
   });
 
   test("ignores other cookies, unknown keys and broken values", () => {
@@ -43,18 +42,18 @@ describe("has the visitor answered", () => {
 });
 
 describe("saving the answers", () => {
-  test("keeps both answers, and a later answer for one keeps the other", () => {
+  test("a later answer replaces the earlier one; old ad answers are ignored", () => {
     const cookies = jar();
-    saveChoice({ ads: true, analytics: true }, cookies, true);
+    saveChoice({ analytics: true }, cookies, true);
     saveChoice({ analytics: false }, cookies, true);
-    expect(siteChoices(cookies.read())).toEqual({
-      ads: true,
-      analytics: false,
+    expect(siteChoices(cookies.read())).toEqual({ analytics: false });
+    expect(siteChoices(cookie({ ads: true, analytics: true }))).toEqual({
+      analytics: true,
     });
   });
 
   test("a year, this site only, Secure on https", () => {
-    const text = siteConsentCookie({ ads: false }, true);
+    const text = siteConsentCookie({ analytics: false }, true);
     expect(text).toContain("Max-Age=31536000");
     expect(text).toContain("SameSite=Lax");
     expect(text).toContain("Secure");

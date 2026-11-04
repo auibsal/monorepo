@@ -17,7 +17,9 @@ const migrations = join(
 // later migrations add permissions, roles and grants, or retire them with a
 // plain `delete from access.roles where key in (...)`, `delete from
 // access.permissions where key in (...)` or `delete from
-// access.role_permissions where role = '...' and permission = '...'`.
+// access.role_permissions where role = '...' and permission = '...'`. A
+// renamed permission moves its grants with `update access.role_permissions
+// set permission = 'new' where permission = 'old'`.
 const sql = readdirSync(migrations)
   .filter((f) => f.endsWith(".sql"))
   .sort()
@@ -47,6 +49,16 @@ const retiredPermissions = new Set(
     ),
   ].flatMap((m) => [...m[1].matchAll(/'([a-z_.]+)'/g)].map((k) => k[1]))
 );
+/** Old key to new, from the migrations that renamed a permission. */
+const renamed = new Map(
+  [
+    ...sql.matchAll(
+      /update access\.role_permissions\s+set permission = '([a-z_.]+)'\s+where permission = '([a-z_.]+)'/g
+    ),
+  ].map((m) => [m[2], m[1]])
+);
+const current = (key: string) => renamed.get(key) ?? key;
+
 const revokedGrants = new Set(
   [
     ...sql.matchAll(
@@ -59,7 +71,7 @@ describe("mirror of the reference data in the migrations", () => {
   test("permission keys match", () => {
     const keys = inserts("access.permissions")
       .flatMap((body) =>
-        [...body.matchAll(/\('([a-z_.]+)', '/g)].map((m) => m[1])
+        [...body.matchAll(/\('([a-z_.]+)', '/g)].map((m) => current(m[1]))
       )
       .filter((key) => !retiredPermissions.has(key));
     expect(keys.sort()).toEqual([...permissions].sort());
@@ -82,7 +94,8 @@ describe("mirror of the reference data in the migrations", () => {
 
   test("role bundles match", () => {
     const fromSql = new Map<string, Set<string>>();
-    const grant = (role: string, permission: string) => {
+    const grant = (role: string, given: string) => {
+      const permission = current(given);
       if (
         !(
           revokedGrants.has(`${role}:${permission}`) ||

@@ -122,6 +122,27 @@ export const peopleByEmail = (users: NotionUser[]) =>
 
 const day = (value: string | null) => (value ? value.slice(0, 10) : null);
 
+/**
+ * The Council's nine seats (decisions, section 3), the only options of the
+ * Officers database's Roles (owner, Nov 4, 2026). A role that is not a seat
+ * (the Editor-in-Chief beside the Editor of Qirtas, a Program Lead) is not
+ * listed there.
+ */
+const SEATS = [
+  "President",
+  "Vice President",
+  "General Secretary",
+  "Editor of Qirtas",
+  "Artistic Director",
+  "Director of Programs",
+  "Director of Media",
+  "Director of Partnerships",
+  "Director of Membership",
+] as const;
+
+const seatsOf = (roles: readonly string[] | null) =>
+  SEATS.filter((seat) => (roles ?? []).includes(seat));
+
 export const mirrorOfficers = async (
   ctx: SyncContext,
   people: ReadonlyMap<string, string>
@@ -148,7 +169,7 @@ export const mirrorOfficers = async (
           Name: prop.title(o.full_name_en?.trim() || o.email || ""),
           "Name (Arabic)": prop.text(o.full_name_ar),
           "Notion person": prop.people(person ? [person] : []),
-          Roles: prop.multi(o.roles ?? []),
+          Roles: prop.multi(seatsOf(o.roles)),
           "Term ends": prop.date(day(o.term_ends)),
           "Term starts": prop.date(day(o.term_starts)),
         },

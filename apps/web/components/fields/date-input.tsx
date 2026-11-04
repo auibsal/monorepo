@@ -1,6 +1,6 @@
 "use client";
 
-import { Input } from "@repo/design-system/components/ui/input";
+import { Input } from "@repo/brand/components/ui/input";
 import type { Locale } from "@repo/internationalization";
 import { formatFieldValue } from "@repo/internationalization/format";
 import { useLocale } from "next-intl";

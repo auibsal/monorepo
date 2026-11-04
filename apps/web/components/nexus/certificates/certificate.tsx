@@ -1,9 +1,9 @@
 "use client";
 
 import { useAuth } from "@repo/auth/provider";
+import { BrandLogo } from "@repo/brand/components/brand-logo";
+import { Button } from "@repo/brand/components/ui/button";
 import { project } from "@repo/config";
-import { BrandLogo } from "@repo/design-system/components/brand-logo";
-import { Button } from "@repo/design-system/components/ui/button";
 import { localizedPath } from "@repo/internationalization";
 import {
   formatLongDate,

@@ -1,8 +1,8 @@
 "use client";
 
 import { useAuth } from "@repo/auth/provider";
-import { SalCard } from "@repo/design-system/components/sal/card";
-import { Icon, type IconName } from "@repo/design-system/components/sal/icon";
+import { SalCard } from "@repo/brand/components/sal/card";
+import { Icon, type IconName } from "@repo/brand/components/sal/icon";
 import type { Locale } from "@repo/internationalization";
 import {
   formatIqd,

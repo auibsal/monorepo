@@ -5,8 +5,11 @@
 // stores only purposes that have a Zaraz tool, and rejects a whole save that
 // names another), so the site keeps the record on its own.
 
-/** What the site asks about. */
-export const consentPurposes = ["analytics", "ads"] as const;
+/**
+ * What the site asks about: analytics only. The site carries no ads and
+ * asks about no advertising cookies (owner, Nov 4, 2026; SAL-PLT-06).
+ */
+export const consentPurposes = ["analytics"] as const;
 export type ConsentPurpose = (typeof consentPurposes)[number];
 
 /** The site's record of the visitor's answers: {"analytics": true, …}. */

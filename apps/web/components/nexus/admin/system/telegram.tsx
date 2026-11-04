@@ -1,10 +1,10 @@
 "use client";
 
 import { useAuth } from "@repo/auth/provider";
+import { SalCard } from "@repo/brand/components/sal/card";
+import { Button } from "@repo/brand/components/ui/button";
+import { Input } from "@repo/brand/components/ui/input";
 import type { Json } from "@repo/database";
-import { SalCard } from "@repo/design-system/components/sal/card";
-import { Button } from "@repo/design-system/components/ui/button";
-import { Input } from "@repo/design-system/components/ui/input";
 import { unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";

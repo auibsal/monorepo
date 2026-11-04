@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@repo/design-system/components/ui/button";
+import { Button } from "@repo/brand/components/ui/button";
 import { apiPath } from "@repo/internationalization";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";

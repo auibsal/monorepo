@@ -53,30 +53,6 @@ const textOf = (block: NotionBlock): RichText[] => {
   return body?.rich_text ?? [];
 };
 
-const plain = (block: NotionBlock) =>
-  textOf(block)
-    .map((p) => p.plain_text)
-    .join("")
-    .trim();
-
-const HEADINGS = new Set(["heading_1", "heading_2", "heading_3"]);
-const ENGLISH = /^english$/i;
-const ARABIC = /^(arabic|العربية)$/i;
-
-type Lang = "ar" | "en";
-
-/** Which language heading this block is, if it is one. */
-const languageHeading = (block: NotionBlock): Lang | null => {
-  if (!HEADINGS.has(block.type)) {
-    return null;
-  }
-  const text = plain(block);
-  if (ENGLISH.test(text)) {
-    return "en";
-  }
-  return ARABIC.test(text) ? "ar" : null;
-};
-
 const LISTS: Record<string, "ol" | "ul"> = {
   bulleted_list_item: "ul",
   numbered_list_item: "ol",
@@ -145,20 +121,6 @@ const toHtml = (blocks: NotionBlock[]) => {
   }
   closeList();
   return out.join("");
-};
-
-export const pageBodies = (blocks: NotionBlock[]) => {
-  const parts: Record<Lang, NotionBlock[]> = { ar: [], en: [] };
-  let current: Lang = "en";
-  for (const block of blocks) {
-    const heading = languageHeading(block);
-    if (heading) {
-      current = heading;
-      continue;
-    }
-    parts[current].push(block);
-  }
-  return { ar: toHtml(parts.ar), en: toHtml(parts.en) };
 };
 
 /**

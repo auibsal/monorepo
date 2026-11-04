@@ -1,7 +1,7 @@
 "use client";
 
 import { useAuth } from "@repo/auth/provider";
-import { Button } from "@repo/design-system/components/ui/button";
+import { Button } from "@repo/brand/components/ui/button";
 import { formatClock, formatLongDate } from "@repo/internationalization/format";
 import { localized } from "@repo/sal-data";
 import { useMutation, useQueryClient } from "@tanstack/react-query";

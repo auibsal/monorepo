@@ -1,5 +1,5 @@
-import { Icon } from "@repo/design-system/components/sal/icon";
-import { Button } from "@repo/design-system/components/ui/button";
+import { Icon } from "@repo/brand/components/sal/icon";
+import { Button } from "@repo/brand/components/ui/button";
 import type { Locale } from "@repo/internationalization";
 import { apiPath, localizedPath } from "@repo/internationalization";
 import { formatClock, formatLongDate } from "@repo/internationalization/format";

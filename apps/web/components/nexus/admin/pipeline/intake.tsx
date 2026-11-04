@@ -1,8 +1,8 @@
 "use client";
 
 import { useAuth } from "@repo/auth/provider";
-import { Button } from "@repo/design-system/components/ui/button";
-import { Textarea } from "@repo/design-system/components/ui/textarea";
+import { Button } from "@repo/brand/components/ui/button";
+import { Textarea } from "@repo/brand/components/ui/textarea";
 import type { Locale } from "@repo/internationalization";
 import {
   formatLongDate,

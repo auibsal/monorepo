@@ -3,7 +3,7 @@ import { OpeningEditor } from "@/components/nexus/admin/programmes/opening-edito
 import { titleFrom } from "@/lib/nexus/metadata";
 
 export const generateMetadata = titleFrom((t) =>
-  t("nexus.admin.programmes.callboard.editTitle")
+  t("nexus.admin.programmes.openings.editTitle")
 );
 
 /** A role opening, edited on its own page. */

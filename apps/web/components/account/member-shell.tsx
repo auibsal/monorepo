@@ -1,8 +1,8 @@
 "use client";
 
 import { useAuth } from "@repo/auth/provider";
-import { Icon } from "@repo/design-system/components/sal/icon";
-import { cn } from "@repo/design-system/lib/utils";
+import { Icon } from "@repo/brand/components/sal/icon";
+import { cn } from "@repo/brand/lib/utils";
 import {
   Link,
   usePathname,
@@ -73,7 +73,7 @@ export const useIsStaff = () => useWays().diwan;
 /**
  * The account's own pages, in one row under the site's header (owner,
  * 2026-10-25): Today · My calendar · Society · Record · Settings. The
- * Callboard is the header's "Get involved" and the Diwan sits under the
+ * Get involved is the header's "Get involved" and the Diwan sits under the
  * header's Membership, so neither is repeated here. Profile and Requests
  * sit under Settings; perks are on the card.
  */

@@ -1,10 +1,10 @@
-import { BrandLogo } from "@repo/design-system/components/brand-logo";
-import { SalCard } from "@repo/design-system/components/sal/card";
-import { DocumentFooter } from "@repo/design-system/components/sal/document-footer";
-import { DocumentHeader } from "@repo/design-system/components/sal/document-header";
-import { FormHeader } from "@repo/design-system/components/sal/form-header";
-import { SectionHead } from "@repo/design-system/components/sal/section-head";
-import { Shelf } from "@repo/design-system/components/sal/shelf";
+import { BrandLogo } from "@repo/brand/components/brand-logo";
+import { SalCard } from "@repo/brand/components/sal/card";
+import { DocumentFooter } from "@repo/brand/components/sal/document-footer";
+import { DocumentHeader } from "@repo/brand/components/sal/document-header";
+import { FormHeader } from "@repo/brand/components/sal/form-header";
+import { SectionHead } from "@repo/brand/components/sal/section-head";
+import { Shelf } from "@repo/brand/components/sal/shelf";
 import type { Meta, StoryObj } from "@storybook/react";
 
 /**

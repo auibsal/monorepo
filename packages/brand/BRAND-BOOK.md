@@ -15,6 +15,7 @@ This is SAL-BRD-01, Brand and Identity, Version 1, ratified by the Society, in s
 - Be confident, not grand: "A paper read blind and printed with care." Never "Iraq's premier literary institution."
 - Be playful about ideas, never people: "The worst poem at AUIB wins."
 - Write Arabic for Arabic readers, then have a native speaker check it. Never ship a translation as an afterthought.
+- Iraqi Arabic where the Society chats with members (Hudhud, social captions and stories, the members' group, signs at the door), spelled as Iraqis write it (گ); standard Arabic for the site, the Diwan, emails, documents, certificates and Qirtas. Never both in one message.
 - Names: "AUIB Society of Arts and Letters" in full on first use in formal documents; then "the Society" or "SAL". Never "the club", never "Art and Letter".
 - The Society's paper is **Qirtas** («قرطاس», paper, from the motto «والقرطاسُ والقلم»), "AUIB's paper of news, letters and art." Qirtas is the Society's paper, not a program, with its own masthead. It has six sections: News, Voices, Letters, Gallery, Video and Games. Next Stop is its video show, in Video. Each semester's Edition is printed and launched at Launch Night; the Sunday Paper is its monthly newsletter, on the first Sunday of the month.
 - **The Company** is the Society's theater company, not a program, with its own Artistic Director on the Council.

@@ -3053,72 +3053,6 @@ export type Database = {
   };
   journal: {
     Tables: {
-      ads: {
-        Row: {
-          action_ar: string | null;
-          action_en: string | null;
-          body_ar: string | null;
-          body_en: string | null;
-          created_at: string;
-          created_by: string | null;
-          ends_on: string | null;
-          headline_ar: string;
-          headline_en: string;
-          id: string;
-          image_alt_ar: string | null;
-          image_alt_en: string | null;
-          image_path: string | null;
-          is_published: boolean;
-          kind: string;
-          partner_id: string | null;
-          starts_on: string;
-          updated_at: string;
-          url: string;
-        };
-        Insert: {
-          action_ar?: string | null;
-          action_en?: string | null;
-          body_ar?: string | null;
-          body_en?: string | null;
-          created_at?: string;
-          created_by?: string | null;
-          ends_on?: string | null;
-          headline_ar?: string;
-          headline_en?: string;
-          id?: string;
-          image_alt_ar?: string | null;
-          image_alt_en?: string | null;
-          image_path?: string | null;
-          is_published?: boolean;
-          kind: string;
-          partner_id?: string | null;
-          starts_on?: string;
-          updated_at?: string;
-          url: string;
-        };
-        Update: {
-          action_ar?: string | null;
-          action_en?: string | null;
-          body_ar?: string | null;
-          body_en?: string | null;
-          created_at?: string;
-          created_by?: string | null;
-          ends_on?: string | null;
-          headline_ar?: string;
-          headline_en?: string;
-          id?: string;
-          image_alt_ar?: string | null;
-          image_alt_en?: string | null;
-          image_path?: string | null;
-          is_published?: boolean;
-          kind?: string;
-          partner_id?: string | null;
-          starts_on?: string;
-          updated_at?: string;
-          url?: string;
-        };
-        Relationships: [];
-      };
       agreements: {
         Row: {
           id: string;
@@ -3217,6 +3151,181 @@ export type Database = {
             referencedColumns: ["id"];
           },
         ];
+      };
+      award_entries: {
+        Row: {
+          award_key: string;
+          certificate_id: string | null;
+          created_at: string;
+          created_by: string | null;
+          id: string;
+          piece_id: string;
+          round_id: string;
+          updated_at: string;
+          won: boolean;
+        };
+        Insert: {
+          award_key: string;
+          certificate_id?: string | null;
+          created_at?: string;
+          created_by?: string | null;
+          id?: string;
+          piece_id: string;
+          round_id: string;
+          updated_at?: string;
+          won?: boolean;
+        };
+        Update: {
+          award_key?: string;
+          certificate_id?: string | null;
+          created_at?: string;
+          created_by?: string | null;
+          id?: string;
+          piece_id?: string;
+          round_id?: string;
+          updated_at?: string;
+          won?: boolean;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "award_entries_award_key_fkey";
+            columns: ["award_key"];
+            isOneToOne: false;
+            referencedRelation: "awards";
+            referencedColumns: ["key"];
+          },
+          {
+            foreignKeyName: "award_entries_piece_id_fkey";
+            columns: ["piece_id"];
+            isOneToOne: false;
+            referencedRelation: "pieces";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "award_entries_round_id_fkey";
+            columns: ["round_id"];
+            isOneToOne: false;
+            referencedRelation: "award_rounds";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      award_judges: {
+        Row: {
+          award_key: string;
+          created_at: string;
+          id: string;
+          name_ar: string;
+          name_en: string;
+          round_id: string;
+          user_id: string | null;
+        };
+        Insert: {
+          award_key: string;
+          created_at?: string;
+          id?: string;
+          name_ar: string;
+          name_en: string;
+          round_id: string;
+          user_id?: string | null;
+        };
+        Update: {
+          award_key?: string;
+          created_at?: string;
+          id?: string;
+          name_ar?: string;
+          name_en?: string;
+          round_id?: string;
+          user_id?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "award_judges_award_key_fkey";
+            columns: ["award_key"];
+            isOneToOne: false;
+            referencedRelation: "awards";
+            referencedColumns: ["key"];
+          },
+          {
+            foreignKeyName: "award_judges_round_id_fkey";
+            columns: ["round_id"];
+            isOneToOne: false;
+            referencedRelation: "award_rounds";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      award_rounds: {
+        Row: {
+          awarded_on: string;
+          created_at: string;
+          id: string;
+          is_published: boolean;
+          shortlist_on: string;
+          slug: string;
+          title_ar: string;
+          title_en: string;
+          updated_at: string;
+        };
+        Insert: {
+          awarded_on: string;
+          created_at?: string;
+          id?: string;
+          is_published?: boolean;
+          shortlist_on: string;
+          slug: string;
+          title_ar: string;
+          title_en: string;
+          updated_at?: string;
+        };
+        Update: {
+          awarded_on?: string;
+          created_at?: string;
+          id?: string;
+          is_published?: boolean;
+          shortlist_on?: string;
+          slug?: string;
+          title_ar?: string;
+          title_en?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      awards: {
+        Row: {
+          desk: Database["journal"]["Enums"]["desk"] | null;
+          for_ar: string | null;
+          for_en: string | null;
+          key: string;
+          name_ar: string;
+          name_en: string;
+          named_for_ar: string | null;
+          named_for_en: string | null;
+          sort: number;
+        };
+        Insert: {
+          desk?: Database["journal"]["Enums"]["desk"] | null;
+          for_ar?: string | null;
+          for_en?: string | null;
+          key: string;
+          name_ar: string;
+          name_en: string;
+          named_for_ar?: string | null;
+          named_for_en?: string | null;
+          sort?: number;
+        };
+        Update: {
+          desk?: Database["journal"]["Enums"]["desk"] | null;
+          for_ar?: string | null;
+          for_en?: string | null;
+          key?: string;
+          name_ar?: string;
+          name_en?: string;
+          named_for_ar?: string | null;
+          named_for_en?: string | null;
+          sort?: number;
+        };
+        Relationships: [];
       };
       blind_entries: {
         Row: {
@@ -3897,181 +4006,6 @@ export type Database = {
           },
         ];
       };
-      prize_entries: {
-        Row: {
-          certificate_id: string | null;
-          created_at: string;
-          created_by: string | null;
-          id: string;
-          piece_id: string;
-          prize_key: string;
-          round_id: string;
-          updated_at: string;
-          won: boolean;
-        };
-        Insert: {
-          certificate_id?: string | null;
-          created_at?: string;
-          created_by?: string | null;
-          id?: string;
-          piece_id: string;
-          prize_key: string;
-          round_id: string;
-          updated_at?: string;
-          won?: boolean;
-        };
-        Update: {
-          certificate_id?: string | null;
-          created_at?: string;
-          created_by?: string | null;
-          id?: string;
-          piece_id?: string;
-          prize_key?: string;
-          round_id?: string;
-          updated_at?: string;
-          won?: boolean;
-        };
-        Relationships: [
-          {
-            foreignKeyName: "prize_entries_piece_id_fkey";
-            columns: ["piece_id"];
-            isOneToOne: false;
-            referencedRelation: "pieces";
-            referencedColumns: ["id"];
-          },
-          {
-            foreignKeyName: "prize_entries_prize_key_fkey";
-            columns: ["prize_key"];
-            isOneToOne: false;
-            referencedRelation: "prizes";
-            referencedColumns: ["key"];
-          },
-          {
-            foreignKeyName: "prize_entries_round_id_fkey";
-            columns: ["round_id"];
-            isOneToOne: false;
-            referencedRelation: "prize_rounds";
-            referencedColumns: ["id"];
-          },
-        ];
-      };
-      prize_judges: {
-        Row: {
-          created_at: string;
-          id: string;
-          name_ar: string;
-          name_en: string;
-          prize_key: string;
-          round_id: string;
-          user_id: string | null;
-        };
-        Insert: {
-          created_at?: string;
-          id?: string;
-          name_ar: string;
-          name_en: string;
-          prize_key: string;
-          round_id: string;
-          user_id?: string | null;
-        };
-        Update: {
-          created_at?: string;
-          id?: string;
-          name_ar?: string;
-          name_en?: string;
-          prize_key?: string;
-          round_id?: string;
-          user_id?: string | null;
-        };
-        Relationships: [
-          {
-            foreignKeyName: "prize_judges_prize_key_fkey";
-            columns: ["prize_key"];
-            isOneToOne: false;
-            referencedRelation: "prizes";
-            referencedColumns: ["key"];
-          },
-          {
-            foreignKeyName: "prize_judges_round_id_fkey";
-            columns: ["round_id"];
-            isOneToOne: false;
-            referencedRelation: "prize_rounds";
-            referencedColumns: ["id"];
-          },
-        ];
-      };
-      prize_rounds: {
-        Row: {
-          awarded_on: string;
-          created_at: string;
-          id: string;
-          is_published: boolean;
-          shortlist_on: string;
-          slug: string;
-          title_ar: string;
-          title_en: string;
-          updated_at: string;
-        };
-        Insert: {
-          awarded_on: string;
-          created_at?: string;
-          id?: string;
-          is_published?: boolean;
-          shortlist_on: string;
-          slug: string;
-          title_ar: string;
-          title_en: string;
-          updated_at?: string;
-        };
-        Update: {
-          awarded_on?: string;
-          created_at?: string;
-          id?: string;
-          is_published?: boolean;
-          shortlist_on?: string;
-          slug?: string;
-          title_ar?: string;
-          title_en?: string;
-          updated_at?: string;
-        };
-        Relationships: [];
-      };
-      prizes: {
-        Row: {
-          desk: Database["journal"]["Enums"]["desk"] | null;
-          for_ar: string | null;
-          for_en: string | null;
-          key: string;
-          name_ar: string;
-          name_en: string;
-          named_for_ar: string | null;
-          named_for_en: string | null;
-          sort: number;
-        };
-        Insert: {
-          desk?: Database["journal"]["Enums"]["desk"] | null;
-          for_ar?: string | null;
-          for_en?: string | null;
-          key: string;
-          name_ar: string;
-          name_en: string;
-          named_for_ar?: string | null;
-          named_for_en?: string | null;
-          sort?: number;
-        };
-        Update: {
-          desk?: Database["journal"]["Enums"]["desk"] | null;
-          for_ar?: string | null;
-          for_en?: string | null;
-          key?: string;
-          name_ar?: string;
-          name_en?: string;
-          named_for_ar?: string | null;
-          named_for_en?: string | null;
-          sort?: number;
-        };
-        Relationships: [];
-      };
       puzzles: {
         Row: {
           created_at: string;
@@ -4422,6 +4356,18 @@ export type Database = {
           slug: string;
         }[];
       };
+      award_results: {
+        Args: { round_slug: string };
+        Returns: {
+          author_ar: string;
+          author_en: string;
+          award_key: string;
+          piece_slug: string;
+          title_ar: string;
+          title_en: string;
+          won: boolean;
+        }[];
+      };
       byline_for: {
         Args: { pen_name?: string; person: string };
         Returns: string;
@@ -4443,25 +4389,6 @@ export type Database = {
           title_en: string;
         };
         Returns: string;
-      };
-      current_ads: {
-        Args: Record<PropertyKey, never>;
-        Returns: {
-          action_ar: string;
-          action_en: string;
-          body_ar: string;
-          body_en: string;
-          headline_ar: string;
-          headline_en: string;
-          id: string;
-          image_alt_ar: string;
-          image_alt_en: string;
-          image_path: string;
-          kind: string;
-          sponsor_ar: string;
-          sponsor_en: string;
-          url: string;
-        }[];
       };
       decide: {
         Args: { blind_entry_id: string; decision: string; notes?: string };
@@ -4580,19 +4507,7 @@ export type Database = {
           volume: number;
         }[];
       };
-      prepare_prize_certificates: { Args: { round: string }; Returns: number };
-      prize_results: {
-        Args: { round_slug: string };
-        Returns: {
-          author_ar: string;
-          author_en: string;
-          piece_slug: string;
-          prize_key: string;
-          title_ar: string;
-          title_en: string;
-          won: boolean;
-        }[];
-      };
+      prepare_award_certificates: { Args: { round: string }; Returns: number };
       publish_readiness: { Args: { piece_id: string }; Returns: string };
       reopen_piece: { Args: { piece_id: string }; Returns: undefined };
       request_author_approval: {

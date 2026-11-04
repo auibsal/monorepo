@@ -1,9 +1,9 @@
 "use client";
 
 import { useAuth } from "@repo/auth/provider";
-import { BrandLogo } from "@repo/design-system/components/brand-logo";
-import { Button } from "@repo/design-system/components/ui/button";
-import { Checkbox } from "@repo/design-system/components/ui/checkbox";
+import { BrandLogo } from "@repo/brand/components/brand-logo";
+import { Button } from "@repo/brand/components/ui/button";
+import { Checkbox } from "@repo/brand/components/ui/checkbox";
 import {
   Dialog,
   DialogContent,
@@ -12,8 +12,8 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@repo/design-system/components/ui/dialog";
-import { Label } from "@repo/design-system/components/ui/label";
+} from "@repo/brand/components/ui/dialog";
+import { Label } from "@repo/brand/components/ui/label";
 import { siteUrl } from "@repo/internationalization";
 import { formatLongDate } from "@repo/internationalization/format";
 import { localized, membership, partners, unwrap } from "@repo/sal-data";

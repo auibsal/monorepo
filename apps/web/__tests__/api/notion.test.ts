@@ -3,7 +3,7 @@ import { describe, expect, test, vi } from "vitest";
 
 vi.mock("server-only", () => ({}));
 
-const { pageBodies, pageHtml } = await import("@/lib/api/notion/blocks");
+const { pageHtml } = await import("@/lib/api/notion/blocks");
 const { createNotion, bareId } = await import("@/lib/api/notion/client");
 const { slugify, toInstant } = await import("@/lib/api/notion/props");
 const {
@@ -40,27 +40,23 @@ const when = (start: string, end: string | null = null) => ({
 });
 
 describe("Notion page text", () => {
-  test("splits English and Arabic under their headings, with formatting", () => {
-    const { ar, en } = pageBodies([
-      block("heading_2", "English"),
+  test("is one language: the whole page, with its formatting", () => {
+    const html = pageHtml([
       block("paragraph", "Bring a poem", { annotations: { bold: true } }),
       block("bulleted_list_item", "one"),
       block("bulleted_list_item", "two"),
-      block("heading_2", "العربية"),
-      block("paragraph", "أحضر قصيدة"),
     ] as never);
-    expect(en).toBe(
+    expect(html).toBe(
       "<p><strong>Bring a poem</strong></p><ul><li>one</li><li>two</li></ul>"
     );
-    expect(ar).toBe("<p>أحضر قصيدة</p>");
   });
 
   test("escapes HTML and keeps only web links", () => {
-    const { en } = pageBodies([
+    const html = pageHtml([
       block("paragraph", "<script>x</script>", { href: "javascript:alert(1)" }),
       block("paragraph", "site", { href: "https://auibsal.org" }),
     ] as never);
-    expect(en).toBe(
+    expect(html).toBe(
       '<p>&lt;script&gt;x&lt;/script&gt;</p><p><a href="https://auibsal.org">site</a></p>'
     );
   });
@@ -232,26 +228,58 @@ describe("publishing rules", () => {
     );
   });
 
-  test("a Waraq page needs its desk and both titles", () => {
-    const desk = (name: string) => ({
-      select: { name },
-      type: "select",
-    });
+  test("a Qirtas row is one language and needs its desk", () => {
+    const select = (name: string) => ({ select: { name }, type: "select" });
     expect(
       checkWaraq(page({ Title: title("Book drive results") }))
     ).toMatchObject({ ok: false });
     expect(
       checkWaraq(
         page({
-          Desk: desk("News"),
+          Desk: select("News"),
           Excerpt: text("Second Chapter collected books."),
           Title: title("Book drive results"),
-          "Title (Arabic)": text("نتائج حملة الكتب"),
         })
       )
     ).toMatchObject({
       ok: true,
-      values: { deck_en: "Second Chapter collected books.", desk: "news" },
+      values: {
+        deck: "Second Chapter collected books.",
+        desk: "news",
+        language: "en",
+        of: null,
+      },
+    });
+    // An Arabic row on its own is an Arabic piece, with its own desk.
+    expect(
+      checkWaraq(
+        page({
+          Desk: select("Letters"),
+          Language: select("Arabic"),
+          Title: title("نتائج حملة الكتب"),
+        })
+      )
+    ).toMatchObject({ ok: true, values: { desk: "letters", language: "ar" } });
+  });
+
+  test("a Qirtas Arabic edition names its English row and takes its desk", () => {
+    const result = checkWaraq(
+      page({
+        "Edition of": {
+          relation: [{ id: "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee" }],
+          type: "relation",
+        },
+        Language: { select: { name: "Arabic" }, type: "select" },
+        Title: title("نتائج حملة الكتب"),
+      })
+    );
+    expect(result).toMatchObject({
+      ok: true,
+      values: {
+        desk: null,
+        language: "ar",
+        of: "aaaaaaaabbbbccccddddeeeeeeeeeeee",
+      },
     });
   });
 
@@ -263,7 +291,6 @@ describe("publishing rules", () => {
           type: "date",
         },
         Title: title("Edition 1 is out"),
-        "Title (Arabic)": text("صدر الإصدار الأول"),
       }),
       "news"
     );

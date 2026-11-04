@@ -1,14 +1,14 @@
 name: Migrate production database
 
 # Applies new migrations to the production Supabase project once CI has
-# passed on main, then deploys the site, so new code never goes live before
-# the database it needs (owner, Oct 31, 2026; vercel.json turns off Vercel's
-# own production deploys from main). Runs in the protected `production`
+# passed on main. The site is deployed by Vercel itself from main (owner,
+# Nov 4, 2026: no deploy hook is needed); a Deploy Hook, if one is set,
+# is still called after the migrations. Runs in the protected `production`
 # environment, which holds the secrets (Settings → Environments → production):
 #   SUPABASE_ACCESS_TOKEN  a personal access token (supabase.com/dashboard/account/tokens)
 #   SUPABASE_DB_PASSWORD   the database password (Project Settings → Database)
-#   VERCEL_DEPLOY_HOOK     a Deploy Hook for main (Vercel → the project →
-#                          Settings → Git → Deploy Hooks)
+#   VERCEL_DEPLOY_HOOK     optional: a Deploy Hook for main (Vercel → the
+#                          project → Settings → Git → Deploy Hooks)
 # `supabase db push` applies only migrations not yet recorded in
 # supabase_migrations.schema_migrations, in order, and stops at the first error.
 
@@ -51,8 +51,8 @@ jobs:
       - run: bun install --frozen-lockfile
       - name: Secrets are set
         run: |
-          if [ -z "$SUPABASE_ACCESS_TOKEN" ] || [ -z "$SUPABASE_DB_PASSWORD" ] || [ -z "$VERCEL_DEPLOY_HOOK" ]; then
-            echo "Add SUPABASE_ACCESS_TOKEN, SUPABASE_DB_PASSWORD and VERCEL_DEPLOY_HOOK to the production environment."
+          if [ -z "$SUPABASE_ACCESS_TOKEN" ] || [ -z "$SUPABASE_DB_PASSWORD" ]; then
+            echo "Add SUPABASE_ACCESS_TOKEN and SUPABASE_DB_PASSWORD to the production environment."
             exit 1
           fi
       - name: Link the project
@@ -64,6 +64,8 @@ jobs:
       - name: Apply
         working-directory: packages/database
         run: bunx supabase db push --password "$SUPABASE_DB_PASSWORD"
-      # The site goes live only now, on the database it was built for.
+      # Vercel deploys main on its own; a Deploy Hook, when one is set,
+      # deploys again now that the database has caught up.
       - name: Deploy the site
+        if: env.VERCEL_DEPLOY_HOOK != ''
         run: curl -fsS --retry 3 -X POST "$VERCEL_DEPLOY_HOOK" > /dev/null

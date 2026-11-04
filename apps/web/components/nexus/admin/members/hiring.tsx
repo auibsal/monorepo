@@ -1,7 +1,7 @@
 "use client";
 
 import { useAuth } from "@repo/auth/provider";
-import { Button } from "@repo/design-system/components/ui/button";
+import { Button } from "@repo/brand/components/ui/button";
 import type { Locale } from "@repo/internationalization";
 import { formatClock, formatLongDate } from "@repo/internationalization/format";
 import { type Grant, hasPermission } from "@repo/rbac";
@@ -24,7 +24,7 @@ import {
   SelectInput,
 } from "../kit";
 import { useMemberNames } from "../member-picker";
-import { SkillsPicker } from "../programmes/callboard";
+import { SkillsPicker } from "../programmes/openings";
 import { memberName } from "./directory";
 
 const key = ["admin", "hiring"];
@@ -57,8 +57,8 @@ const picks = (
   switch (owner) {
     case "program":
       return programmeId
-        ? hasPermission(grants, "programmes.manage", "programme", programmeId)
-        : hasPermission(grants, "programmes.manage");
+        ? hasPermission(grants, "programs.manage", "programme", programmeId)
+        : hasPermission(grants, "programs.manage");
     case "qirtas":
       return hasPermission(grants, "journal.manage");
     case "media":
@@ -177,7 +177,7 @@ const Application = ({
   );
 };
 
-/** The roles the Callboard hires for (access.roles.hiring_owner). */
+/** The roles Get involved hires for (access.roles.hiring_owner). */
 const useHiredRoles = () => {
   const { supabase } = useAuth();
   return useQuery({
@@ -210,7 +210,7 @@ const NewRole = () => {
   const grants = useGrants();
   const queryClient = useQueryClient();
   const router = useRouter();
-  const programs = useProgrammeOptions("programmes.manage");
+  const programs = useProgrammeOptions("programs.manage");
   const roles = useHiredRoles();
   const blank = {
     body: { ar: "", en: "" },
@@ -340,7 +340,7 @@ const NewRole = () => {
 };
 
 /**
- * Hiring (owner, Oct 30, 2026). The Callboard lists every role; Membership
+ * Hiring (owner, Oct 30, 2026). Get involved lists every role; Membership
  * runs the process for each (applications, conversations, the offer,
  * onboarding), and the owner of the role picks the person: the Editor the
  * masthead, the Director of Programs the Program Leads, each director

@@ -1,5 +1,5 @@
-import { SectionHead } from "@repo/design-system/components/sal/section-head";
-import { Button } from "@repo/design-system/components/ui/button";
+import { SectionHead } from "@repo/brand/components/sal/section-head";
+import { Button } from "@repo/brand/components/ui/button";
 import type { Locale } from "@repo/internationalization";
 import { localizedPath } from "@repo/internationalization";
 import { formatLongDate } from "@repo/internationalization/format";

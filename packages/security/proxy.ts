@@ -14,10 +14,7 @@ export interface SecurityOptions {
   readonly frameable?: boolean;
 }
 
-/**
- * Security headers, with any extra CSP sources a page needs (Qirtas's
- * AdSense).
- */
+/** Security headers, with any extra CSP sources a page needs. */
 export const securityOptionsWith = (
   ...extra: CspSources[]
 ): SecurityOptions => ({

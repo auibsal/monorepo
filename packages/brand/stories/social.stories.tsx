@@ -1,5 +1,5 @@
-import { Icon, type IconName } from "@repo/design-system/components/sal/icon";
-import { SocialPost } from "@repo/design-system/components/sal/social-post";
+import { Icon, type IconName } from "@repo/brand/components/sal/icon";
+import { SocialPost } from "@repo/brand/components/sal/social-post";
 import type { Meta, StoryObj } from "@storybook/react";
 
 /**

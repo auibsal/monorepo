@@ -3,7 +3,7 @@ import "server-only";
 import { formatClock, formatLongDate } from "@repo/internationalization/format";
 import { sanitizeRichText } from "@repo/sal-data";
 import { uploadMedia } from "@repo/storage";
-import { pageBodies, pageHtml } from "./blocks";
+import { pageHtml } from "./blocks";
 import { bareId, type NotionPage } from "./client";
 import {
   count,
@@ -21,6 +21,7 @@ import {
   checkWaraq,
   languageOf,
   type WaraqDesk,
+  type WaraqValues,
 } from "./rules";
 
 /**
@@ -155,16 +156,6 @@ const slugTaken = async (
   return (data ?? []).length > 0;
 };
 
-const bodiesOf = async (ctx: SyncContext, page: NotionPage) => {
-  const bodies = pageBodies(await ctx.notion.blocks(page.id));
-  // An empty page keeps the text already in the Diwan (rows that started
-  // there, before anyone wrote them in Notion).
-  return {
-    ...(bodies.en ? { body_en: sanitizeRichText(bodies.en) } : {}),
-    ...(bodies.ar ? { body_ar: sanitizeRichText(bodies.ar) } : {}),
-  };
-};
-
 /** A one-language page's text as sanitized HTML, or null when it is empty. */
 export const bodyOf = async (ctx: SyncContext, page: NotionPage) => {
   const html = pageHtml(await ctx.notion.blocksWithTables(page.id));
@@ -235,13 +226,17 @@ const publishEvent = async (
     ]);
     return;
   }
+  // One language per row: the English text is the page itself; the Arabic
+  // comes from its Arabic edition, so nothing here blanks it.
+  const bodyEn = await bodyOf(ctx, page);
+  if (!bodyEn) {
+    await needsChanges(ctx, page, [NO_TEXT]);
+    return;
+  }
   const image = await copyImage(ctx, page, "Image", "events");
-  // The English row gives the English text only; the Arabic comes from its
-  // Arabic edition, so nothing here blanks it.
-  const { body_en: bodyEn } = await bodiesOf(ctx, page);
   const row = {
     ...v,
-    ...(bodyEn ? { body_en: bodyEn } : {}),
+    body_en: bodyEn,
     ...(image ? { image_path: image } : {}),
     status: "published",
   };
@@ -429,13 +424,105 @@ const pieceSlug = async (ctx: SyncContext, title: string) => {
   return slug;
 };
 
+/** Who may send a row to a desk: the desk's editor or the Editor-in-Chief. */
+const deskPublisher = async (
+  ctx: SyncContext,
+  email: string,
+  desk: WaraqDesk
+) => {
+  const rpc = (permission: string) =>
+    ctx.admin.schema("access").rpc("notion_publisher", {
+      email,
+      permission,
+      scope_type: "global",
+    });
+  const [editor, chief] = await Promise.all([
+    rpc(`journal.edit.${desk}`),
+    rpc("journal.approve"),
+  ]);
+  return (editor.data ?? chief.data) as string | null;
+};
+
+const STILL_EDITING = ["editing", "author_approved"];
+
+const PAST_EDITING =
+  "This piece is past editing in the Diwan. Change it there (or reopen it there first).";
+
+const editingNote = () =>
+  `In the Qirtas newsroom since ${stamp()}, in Editing: the approvals and publishing happen in the Diwan.`;
+
 /**
- * Staff writing for Qirtas (Kind "Qirtas", or "News post" for the News desk):
- * imported as a piece in Editing,
- * where it goes through the same approvals as everything else. The person
- * who set Ready to publish needs the desk's permission (or journal.approve)
- * and becomes the byline. A page already imported updates its piece while
- * it is still in editing.
+ * An Arabic edition of a Qirtas row: its title, excerpt and page text
+ * become the Arabic of the English row's piece, which must be imported
+ * first and still be in editing.
+ */
+const importWaraqEdition = async (
+  ctx: SyncContext,
+  page: NotionPage,
+  email: string,
+  v: WaraqValues & { of: string }
+) => {
+  const j = ctx.admin.schema("journal");
+  const pieceId = await recordFor(ctx, "piece", v.of);
+  const { data: piece } = pieceId
+    ? await j
+        .from("pieces")
+        .select("desk, status")
+        .eq("id", pieceId)
+        .maybeSingle()
+    : { data: null };
+  if (!(pieceId && piece?.desk)) {
+    await needsChanges(ctx, page, [
+      "Send the English row (Edition of) first; this edition then adds its Arabic.",
+    ]);
+    return;
+  }
+  if (!(await deskPublisher(ctx, email, piece.desk as WaraqDesk))) {
+    await needsChanges(ctx, page, [
+      `${email} does not edit the ${piece.desk} desk in the Diwan. Ask its editor or the Editor-in-Chief to set Ready to publish.`,
+    ]);
+    return;
+  }
+  if (!STILL_EDITING.includes(piece.status)) {
+    await needsChanges(ctx, page, [PAST_EDITING]);
+    return;
+  }
+  const body = await bodyOf(ctx, page);
+  const { error } = await j
+    .from("pieces")
+    .update({
+      language: "bilingual",
+      title_ar: v.title,
+      ...(v.deck ? { deck_ar: v.deck } : {}),
+    })
+    .eq("id", pieceId);
+  if (error) {
+    throw error;
+  }
+  if (body) {
+    await j
+      .from("piece_bodies")
+      .update({ body_ar: body })
+      .eq("piece_id", pieceId);
+  }
+  await saveLink(ctx, "piece_ar", page.id, pieceId, null);
+  await ctx.notion.updatePage(page.id, {
+    Diwan: prop.url(`${ctx.appUrl}/qirtas/pieces/${pieceId}`),
+    "Diwan ID": prop.text(pieceId),
+    "Platform note": prop.text(editingNote()),
+    Status: prop.select("In editing"),
+  });
+  count(ctx, "waraq.edition");
+};
+
+/**
+ * Staff writing for Qirtas (Kind "Qirtas", or "News post" for the News
+ * desk), one language per row: imported as a piece in Editing, where it
+ * goes through the same approvals as everything else. The person who set
+ * Ready to publish needs the desk's permission (or journal.approve) and
+ * becomes the byline. A page already imported updates its piece while it
+ * is still in editing. An Arabic edition adds its Arabic to the English
+ * row's piece.
  */
 const importWaraq = async (
   ctx: SyncContext,
@@ -449,29 +536,26 @@ const importWaraq = async (
     return;
   }
   const v = checked.values;
-  const rpc = (permission: string) =>
-    ctx.admin.schema("access").rpc("notion_publisher", {
-      email,
-      permission,
-      scope_type: "global",
-    });
-  const [desk, chief] = await Promise.all([
-    rpc(`journal.edit.${v.desk}`),
-    rpc("journal.approve"),
-  ]);
-  const publisher = (desk.data ?? chief.data) as string | null;
+  if (v.of) {
+    await importWaraqEdition(ctx, page, email, { ...v, of: v.of });
+    return;
+  }
+  const desk = v.desk as WaraqDesk;
+  const publisher = await deskPublisher(ctx, email, desk);
   if (!publisher) {
     await needsChanges(ctx, page, [
-      `${email} does not edit the ${v.desk} desk in the Diwan. Ask its editor or the Editor-in-Chief to set Ready to publish.`,
+      `${email} does not edit the ${desk} desk in the Diwan. Ask its editor or the Editor-in-Chief to set Ready to publish.`,
     ]);
     return;
   }
-  const bodies = await bodiesOf(ctx, page);
-  let language: "en" | "ar" | "bilingual" = "en";
-  if (bodies.body_ar && bodies.body_en) {
-    language = "bilingual";
-  } else if (bodies.body_ar) {
-    language = "ar";
+  const body = await bodyOf(ctx, page);
+  const ar = v.language === "ar";
+  const text = ar
+    ? { deck_ar: v.deck, title_ar: v.title }
+    : { deck_en: v.deck, title_en: v.title };
+  let bodies: { body_ar?: string; body_en?: string } = {};
+  if (body) {
+    bodies = ar ? { body_ar: body } : { body_en: body };
   }
   const j = ctx.admin.schema("journal");
   const existing = await recordFor(ctx, "piece", page.id);
@@ -482,42 +566,31 @@ const importWaraq = async (
       .select("status")
       .eq("id", id)
       .maybeSingle();
-    if (piece && !["editing", "author_approved"].includes(piece.status)) {
-      await needsChanges(ctx, page, [
-        "This piece is past editing in the Diwan. Change it there (or reopen it there first).",
-      ]);
+    if (piece && !STILL_EDITING.includes(piece.status)) {
+      await needsChanges(ctx, page, [PAST_EDITING]);
       return;
     }
     const { error } = await j
       .from("pieces")
-      .update({
-        deck_ar: v.deck_ar,
-        deck_en: v.deck_en,
-        publish_at: v.publish_at,
-        title_ar: v.title_ar,
-        title_en: v.title_en,
-      })
+      .update({ ...text, publish_at: v.publish_at })
       .eq("id", id);
     if (error) {
       throw error;
     }
-    if (Object.keys(bodies).length > 0) {
+    if (body) {
       await j.from("piece_bodies").update(bodies).eq("piece_id", id);
     }
   } else {
     const { data, error } = await j
       .from("pieces")
       .insert({
-        category: STARTING_TYPE[v.desk],
+        ...text,
+        category: STARTING_TYPE[desk],
         contributor_id: await bylineFor(ctx, publisher),
-        deck_ar: v.deck_ar,
-        deck_en: v.deck_en,
-        language,
+        language: v.language,
         publish_at: v.publish_at,
-        slug: await pieceSlug(ctx, v.title_en),
+        slug: await pieceSlug(ctx, v.title),
         status: "editing",
-        title_ar: v.title_ar,
-        title_en: v.title_en,
       })
       .select("id")
       .single();
@@ -531,9 +604,7 @@ const importWaraq = async (
   await ctx.notion.updatePage(page.id, {
     Diwan: prop.url(`${ctx.appUrl}/qirtas/pieces/${id}`),
     "Diwan ID": prop.text(id),
-    "Platform note": prop.text(
-      `In the Qirtas newsroom since ${stamp()}, in Editing: the approvals and publishing happen in the Diwan.`
-    ),
+    "Platform note": prop.text(editingNote()),
     Status: prop.select("In editing"),
   });
   count(ctx, existing ? "waraq.updated" : "waraq.imported");
@@ -612,8 +683,11 @@ const EVENT_STATUS: Record<string, string> = {
   published: "Published",
 };
 
-const ADOPTED_NOTE =
-  "Made in the Diwan; its text is still there. Write the English text in this page (and an Arabic edition as its own row) before publishing from here.";
+/** The one-language rule, said where a row has no text yet. */
+const NO_TEXT =
+  "Write the event's text in English in this page. An Arabic edition is its own row: Language Arabic, Edition of this row.";
+
+const ADOPTED_NOTE = `Made in the Diwan. ${NO_TEXT}`;
 
 const adoptEvents = async (ctx: SyncContext) => {
   const [events, links] = await Promise.all([

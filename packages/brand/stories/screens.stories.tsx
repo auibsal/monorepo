@@ -1,8 +1,8 @@
-import { SectionHead } from "@repo/design-system/components/sal/section-head";
-import { Button } from "@repo/design-system/components/ui/button";
-import { Checkbox } from "@repo/design-system/components/ui/checkbox";
-import { Input } from "@repo/design-system/components/ui/input";
-import { Label } from "@repo/design-system/components/ui/label";
+import { SectionHead } from "@repo/brand/components/sal/section-head";
+import { Button } from "@repo/brand/components/ui/button";
+import { Checkbox } from "@repo/brand/components/ui/checkbox";
+import { Input } from "@repo/brand/components/ui/input";
+import { Label } from "@repo/brand/components/ui/label";
 import type { Meta, StoryObj } from "@storybook/react";
 import type { ReactNode } from "react";
 

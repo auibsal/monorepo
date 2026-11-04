@@ -1,4 +1,4 @@
-import { SectionHead } from "@repo/design-system/components/sal/section-head";
+import { SectionHead } from "@repo/brand/components/sal/section-head";
 import type { Locale } from "@repo/internationalization";
 import { formatClock, formatLongDate } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";

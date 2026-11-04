@@ -1,11 +1,11 @@
 "use client";
 
 import { useAuth } from "@repo/auth/provider";
-import { FormHeader } from "@repo/design-system/components/sal/form-header";
-import { Button } from "@repo/design-system/components/ui/button";
-import { Input } from "@repo/design-system/components/ui/input";
-import { Label } from "@repo/design-system/components/ui/label";
-import { cn } from "@repo/design-system/lib/utils";
+import { FormHeader } from "@repo/brand/components/sal/form-header";
+import { Button } from "@repo/brand/components/ui/button";
+import { Input } from "@repo/brand/components/ui/input";
+import { Label } from "@repo/brand/components/ui/label";
+import { cn } from "@repo/brand/lib/utils";
 import { Link, useRouter } from "@repo/internationalization/navigation";
 import { membership } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";

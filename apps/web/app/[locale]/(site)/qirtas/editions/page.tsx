@@ -1,4 +1,4 @@
-import { Shelf } from "@repo/design-system/components/sal/shelf";
+import { Shelf } from "@repo/brand/components/sal/shelf";
 import type { Locale } from "@repo/internationalization";
 import { Link } from "@repo/internationalization/navigation";
 import type { Metadata } from "next";

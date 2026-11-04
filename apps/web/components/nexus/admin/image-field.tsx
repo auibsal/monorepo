@@ -1,8 +1,8 @@
 "use client";
 
 import { useAuth } from "@repo/auth/provider";
-import { Button } from "@repo/design-system/components/ui/button";
-import { Label } from "@repo/design-system/components/ui/label";
+import { Button } from "@repo/brand/components/ui/button";
+import { Label } from "@repo/brand/components/ui/label";
 import { getMediaUrl, uploadMedia } from "@repo/storage";
 import { StorageError } from "@repo/storage/files";
 import { useTranslations } from "next-intl";

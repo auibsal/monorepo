@@ -39,7 +39,6 @@ export const agreementGrants = [
   "shared_branding",
   "productions",
   "volunteering",
-  "advertising",
 ] as const;
 
 export type AgreementGrant = (typeof agreementGrants)[number];

@@ -7,6 +7,44 @@ first session); section numbers (§) refer to it.
 
 Branch: `claude/new-session-qosn60`.
 
+## The Notion check, evening (2026-11-04)
+
+- [x] Migrations reach production again: `migrate.yml` no longer needs a
+  deploy hook; Vercel deploys `main` itself.
+- [x] One language per row: events, programs and Qirtas pieces publish
+  from the page body; an Arabic edition is its own row (`event_ar`,
+  `programme_ar`, `piece_ar`). The two Listening Room evenings have their
+  text in Notion and move to `listening-room-2027-03-16` / `-05-11`, with
+  redirects from the `salon-` addresses.
+- [x] Officers: Notion's Roles are the nine seat titles; Fajer Ezzet,
+  Mohammed-Ali Ohmaid (Editor of Qirtas, Council), Ali Hayder (Director
+  of Media).
+- [x] Content calendar: Language and Edition of in place of the Arabic
+  fields (no rows held values).
+- [x] The Qirtas Awards and Get involved in the code, the database
+  (tables, functions, the permission `journal.awards`, certificate kind
+  `award`), emails, Hudhud and the brand; redirects from the old
+  addresses.
+- [x] `programs.manage` (was `programmes.manage`).
+- [x] No ads: the ads table, AdSense, slots, ads.txt and the Advertising
+  consent choice removed; SAL-PLT-03 updated in Notion (Ready to publish).
+- [x] Brand: the Charter poster, the Open Call poster and the camera-shy
+  stickers as stories; the zip's one new asset (the Instagram QR) in
+  `assets/social`; the document PDFs removed from the repository (the
+  e2e manuscript fixture stays: it tests the manuscript import).
+- [x] `@repo/design-system` merged into `@repo/brand`; one brand package.
+- [x] Iraqi Arabic where we chat: Hudhud's Arabic rewritten in Iraqi
+  (`lib/api/bot/copy.ts`, the mascot story); the rule in Guide → Voice,
+  the brand book and AGENTS.
+- [ ] needs-native-review: Hudhud's Iraqi Arabic, every line of `ar` in
+  `apps/web/lib/api/bot/copy.ts`.
+- [ ] After merge: the founding documents, SAL-PLT-03 and -06 and the two
+  Listening Room evenings publish once the migrations have run; check the
+  sync's next run.
+- [ ] The staging loop (create, publish, edit an event, a document and a
+  program from Notion) once the Notion token, Supabase service key and
+  staging URL are in the environment.
+
 ## The design system (2026-11-04)
 
 - [x] `packages/storybook` and `brand/` are one package, `packages/brand`:

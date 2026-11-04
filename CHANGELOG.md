@@ -9,8 +9,21 @@ own versions in the Library.
 - The design system in the Diwan (/diwan/design, linked from the Desk):
   SAL-BRD-01 in full as its Guide (the PDF is gone), foundations, logos,
   components, every email (the sign-in emails too), the social files as
-  PNGs and the printables as a PDF, from `packages/brand` (was
-  `packages/storybook` and `brand/`).
+  PNGs and the printables (the Charter poster, the Open Call poster and
+  the camera-shy stickers drawn as stories, no PDFs), from
+  `packages/brand` (was `packages/storybook`, `brand/` and
+  `packages/design-system`, now one package, `@repo/brand`).
+- No ads: AdSense, the Society's ad slots and the Advertising consent
+  choice are gone; the consent card asks about analytics only.
+- The Qirtas Awards (was the Qirtas Prizes) at /qirtas/awards, and Get
+  involved (was the Callboard) in the code, emails and Hudhud too; the
+  old addresses go to the new ones.
+- An event, program or Qirtas piece in Notion is written in one language;
+  an Arabic edition is its own row. The Listening Room's two evenings
+  moved to `/events/listening-room-2027-03-16` and `-05-11`.
+- The permission `programmes.manage` is `programs.manage`.
+- Migrations run on production again after each merge (the deploy hook is
+  optional; Vercel deploys `main` itself).
 - The Diwan in three rooms: events, programs, documents and minutes are
   written in Notion and published to the site; an Arabic edition is its
   own row; the officers' copy in Notion shows each seat's full title.

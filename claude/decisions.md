@@ -22,7 +22,7 @@ Every chat in this project should follow this file. Where an older document, pro
 - **Next Stop is Qirtas's video show,** in its Video section. It is no longer a program.
 - **Programs and events are one calendar** on the site, What's on (auibsal.org/events). Each program is a series at /events/<slug>.
 - **Site addresses:** auibsal.org/join is the landing page for new members (use it in public copy); auibsal.org/membership is the sign-up and account page (/sign-up also works).
-- **The Callboard** ("Get involved") is the Society's careers page. It lists roles, shifts, auditions, Apprenticeship places and volunteer places.
+- **Get involved** is the Society's careers page. It lists roles, shifts, auditions, Apprenticeship places and volunteer places.
 - **Telegram.** Two groups and a bot, all in the AUIB Clubs community:
   - **AUIB Society of Arts and Letters**, the members' group, with topics: The Common Room (members' chat), Help Desk, Announcements (closed), and The Council. "The Common Room" is this topic, not a separate channel.
   - **The Diwan group**, the officers' working group (Council, Qirtas masthead, program teams; was The Green Room, and The Archive before it; owner, Oct 31, 2026). Topics, not separate groups. Nothing about a named person (appointments, concerns) is posted there; that goes by direct message between Council members.
@@ -77,7 +77,7 @@ Every chat in this project should follow this file. Where an older document, pro
   - Partnerships: partners, the partner register.
   - Membership: the Register, the welcome, voting rights from attendance, and the hiring process.
   - General Secretary: records, the books, rooms, and every request to Student Life.
-- **Hiring:** Membership runs the process for every role (the Callboard post, applications in the Diwan, scheduling, offers, onboarding, hours logged as shifts). The owner of each role picks the person: the Editor of Qirtas picks the masthead, the Director of Programs picks the Program Leads, each director picks their own team. The Council confirms directors; members elect the three officers.
+- **Hiring:** Membership runs the process for every role (the post on Get involved, applications in the Diwan, scheduling, offers, onboarding, hours logged as shifts). The owner of each role picks the person: the Editor of Qirtas picks the masthead, the Director of Programs picks the Program Leads, each director picks their own team. The Council confirms directors; members elect the three officers.
 - **The Editor of Qirtas (Mohammed-Ali Ohmaid) owns the paper,** including Next Stop, and appoints the masthead:
   - the Video section editor (open) runs Next Stop day to day;
   - Hassan Sadiq hosts;
@@ -127,11 +127,11 @@ Six awards, awarded every April at the Annual General Meeting. The first round i
 - **The Apprenticeship** is for AUIB students, modeled on the Harvard Crimson's "comp".
   - One term in a Qirtas section or a program: training sessions plus real assignments, with a mentor.
   - Finishing it is the way onto the masthead or a program team, with a certificate and service hours.
-  - Places are posted on the Callboard. Hours are logged as shifts and count toward service records and voting rights.
+  - Places are posted on Get involved. Hours are logged as shifts and count toward service records and voting rights.
   - It starts spring 2027.
 - **First Ink** is for high school students: a term of writing workshops with one partner school. The best work appears in Letters with the school's and parents' consent.
   - Safeguards: a partner school; parents' written consent; two adults at every session; contact only through the teacher; no one-to-one meetings; written Student Life approval.
-  - AUIB members volunteer as First Ink mentors through the Callboard. High school students never use the Diwan or the Callboard.
+  - AUIB members volunteer as First Ink mentors through Get involved. High school students never use the Diwan or Get involved.
   - Pilot as soon as Student Life approves; aim for spring 2027.
 
 ### Documents
@@ -164,13 +164,13 @@ Qirtas, unlike a program, may have several documents:
   - Strategic Plan: needs in place of the budget.
   - Operations Playbook, Templates and Forms (remove claims, budgets, ledgers), Member Handbook, Printables and the Operations Tracker (remove Budget, Ledger and Claims; add Needs and Requests to Student Life; keep Second Chapter's collection).
 - **The platform's UX overhaul (Oct 30):** the plan "SAL Platform Redesign" is approved as recommended, built in one pull request. Things come in threes (3, 6, 9, 12): six items in the header, six in the members' menu, six Qirtas sections, six programs, three footer columns. Recommendations adopted:
-  - Get involved is a public page (`/get-involved`), with the full Callboard for members below it.
+  - Get involved is a public page (`/get-involved`), with the full list for members below it.
   - No redirects at all (owner, Oct 30): old addresses are simply not found; the platform links only to the new ones.
   - Members' pages live under `/membership`, the Society's own pages under `/about`, Diwan items at readable addresses (no `?id=`).
   - The Give page folds into Second Chapter's page. A Qirtas piece's address includes its section (`/qirtas/news/[slug]`).
   - Diwan sections are named as officers see them: Qirtas, The Company, Service, Site (with Ads), Second Chapter, Requests.
   - Ten icons are added to the set (plus, pencil, trash-2, scan-line, id-card, sliders-horizontal, settings, lock, ellipsis, award), for the Director of Media to confirm.
-  - Today: card, Needs you, Next up, Callboard matches, Qirtas; no solid button.
+  - Today: card, Needs you, Next up, Get involved matches, Qirtas; no solid button.
   - One Notices page for every kind of message and channel.
 - **Old artifacts:** delete every superseded artifact. The only SAL artifact kept is the Design System ("AUIB Society of Arts and Letters").
 
@@ -212,7 +212,7 @@ Qirtas, unlike a program, may have several documents:
 - **Nothing kept by hand that is known elsewhere.** The paper's name is Qirtas; the contact address is hello@auibsal.org; members join the Telegram group through Hudhud. Pledge and agreement versions are internal, never public. There are no feature switches: online elections are simply on, in Society → Elections.
 - **No third-party apps.** Sign in with SAL and the public API are gone. The connected platforms are Notion (the team's workspace and handbook) and Telegram (Hudhud); both are checked from the Desk.
 - **The activity log reads as sentences** ("Lina changed the event …"), not database rows.
-- **No forms, no letters.** Three requests stay, each a plain action where it belongs: raise a concern, pitch a program, propose a General Assembly motion. Everything else is done elsewhere on the platform (roles on the Callboard, service hours, certificates, the conflict-of-interest declaration in Settings, photo consent in Profile) or is an officers' paper kept as a Notion template. Past submissions stay readable.
+- **No forms, no letters.** Three requests stay, each a plain action where it belongs: raise a concern, pitch a program, propose a General Assembly motion. Everything else is done elsewhere on the platform (roles on Get involved, service hours, certificates, the conflict-of-interest declaration in Settings, photo consent in Profile) or is an officers' paper kept as a Notion template. Past submissions stay readable.
 - **Announcements are gone.** Notices go out through Hudhud and the Sunday Paper.
 - **The Library has two shelves:** Society documents, and Website policies (terms of use, accessibility and the privacy page).
 
@@ -338,7 +338,7 @@ Where an earlier line above is marked as replaced, the later section holds. What
 - **Edition shelves** show real scans or photos of the printed Edition, never fake 3D; with no scan, a plain typographic cover. (D5)
 - **The daily word guess and word search** stay daily puzzles, outside the six Games types. (D6)
 - **The public API stays retired.** (D7)
-- **No AdSense on Letters and Voices reading pages;** other ads stay under the current rules. (D8)
+- ~~No AdSense on Letters and Voices reading pages; other ads stay under the current rules. (D8)~~ Superseded by §25: no ads at all.
 - **Retired code names** are renamed only in the last pull request of this work; database schema names stay. (D9)
 - **Audio** starts with a few short readings on the current plans, after checking storage limits; nothing is paid for. (D10)
 - **A translation may show its original beside it,** an exception to one language per page. (D11)
@@ -361,3 +361,15 @@ Where an earlier line above is marked as replaced, the later section holds. What
 - **No PDF:** what SAL-BRD-01's PDF held is the design system's Guide, one page per part; the PDF is removed.
 - **Its sections, in order:** Guide, Foundations, Logos, Components, Emails, Social, Print.
 
+
+## 25. The Notion check, evening (decided Nov 4, 2026)
+- **Production runs `main`,** deployed by Vercel directly; no deploy hook is needed. The migrations run after each merge (`migrate.yml`), the hook only if one is set.
+- **One language per page in Notion:** an event's, program's or piece's text is the page body in English; an Arabic edition is its own row (Language Arabic, Edition of). The old "write it under English and العربية" check is gone.
+- **The Listening Room's evenings** are `/events/listening-room-2027-03-16` and `/events/listening-room-2027-05-11`; the old `salon-…` addresses redirect to them.
+- **Officers:** Fajer Ezzet (Vice President); Mohammed-Ali Ohmaid, Editor of Qirtas, on the Council; Ali Hayder, Director of Media. Notion's Roles are the nine seat titles only.
+- **The content calendar** has Language and Edition of in place of the Arabic title and excerpt.
+- **Retired names, in the code too:** the Callboard is Get involved (its route stays `/get-involved`); the Qirtas Prizes are the Qirtas Awards, at `/qirtas/awards` (`/awards`, `/prizes` and `/qirtas/prizes` go there).
+- **`programmes.manage` is `programs.manage`.**
+- **No money in advertising** (SAL-PLT-06 as amended): no AdSense, no ad slots, no advertising cookie or consent choice (SAL-PLT-03).
+- **Brand:** the design system stays at /diwan/design for officers; the public sees the brand on the press page only. No document PDFs or files in the repository; the brand guide is the Storybook. The Charter poster, the Open Call poster and the camera-shy stickers are Storybook stories. `packages/brand` is the only brand package (`@repo/design-system` merged into it).
+- **Iraqi Arabic where we chat:** Hudhud, social captions and stories, the members' group and signs at the door speak Iraqi Arabic (spelled with گ); the site, the Diwan, emails, documents, certificates, Qirtas and the bot's Telegram profile stay in standard Arabic. Never both in one message.

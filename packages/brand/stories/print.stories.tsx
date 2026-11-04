@@ -1,9 +1,13 @@
 import type { Meta, StoryObj } from "@storybook/react";
+import type { ReactNode } from "react";
+import QRCode from "react-qr-code";
 
 /**
- * Print (SAL-PRT-01, packages/brand/assets/print): the printables as one
- * HTML file and its PDF, and the sizes each piece is printed at (Notion,
- * Brand essentials). Print only when current stock runs out.
+ * Print (SAL-PRT-01, packages/brand/assets/print): the Charter poster, the
+ * Open Call poster and the camera-shy stickers drawn here at their printed
+ * size, the rest of the printables as one HTML page, and the sizes each
+ * piece is printed at (Notion, Brand essentials). No PDFs: print a story
+ * from the browser. Print only when current stock runs out.
  */
 const meta = {
   title: "Print",
@@ -13,7 +17,6 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-const PDF = "brand-kit/print/sal-prt-01-printables.pdf";
 const HTML = "brand-kit/print/sal-prt-01-printables.html";
 
 export const Printables: Story = {
@@ -24,9 +27,6 @@ export const Printables: Story = {
         certificates (Service, Fellow, the Qirtas Awards, the Apprenticeship,
         Honorary Fellow), the Register's half-sheet, name badges and the
         photography notice.{" "}
-        <a className="underline" download href={PDF}>
-          Download PDF
-        </a>{" "}
         <a className="underline" href={HTML}>
           Open the HTML
         </a>
@@ -40,6 +40,168 @@ export const Printables: Story = {
   ),
 };
 
+const label =
+  "font-medium text-[7.6pt] text-[#7c8487] uppercase tracking-[0.12em]";
+
+/** A sheet at its printed size, on paper whatever the theme. */
+const Sheet = ({
+  children,
+  height,
+  width,
+}: {
+  children: ReactNode;
+  height: string;
+  width: string;
+}) => (
+  <div className="overflow-auto">
+    <section
+      className="relative bg-white text-[#273236]"
+      data-theme="light"
+      style={{ height, width }}
+    >
+      {children}
+    </section>
+  </div>
+);
+
+/** The Charter poster, A3: the Charter's purpose, pillars and values. */
+export const CharterPoster: Story = {
+  render: () => (
+    <Sheet height="420mm" width="297mm">
+      <div className="absolute start-[30mm] top-[27mm]">
+        {/* biome-ignore lint/performance/noImgElement: the logo file as supplied */}
+        <img
+          alt="AUIB Society of Arts and Letters"
+          className="block h-[29mm] w-auto"
+          height={110}
+          src="brand/sal-lockup-horizontal.svg"
+          width={400}
+        />
+      </div>
+      <p className="absolute inset-x-[30mm] top-[120mm] font-light text-[76pt] leading-none tracking-[-0.03em]">
+        The paper and
+        <br />
+        the <i className="text-[#9c213e]">pen.</i>
+      </p>
+      <div className="absolute inset-x-[30mm] top-[200mm] grid grid-cols-2 gap-[17mm] border-[#273236] border-t-[0.6pt] pt-[11mm]">
+        <div>
+          <p className={label}>We exist</p>
+          <p className="mt-[3mm] font-light text-[21pt] leading-[1.4]">
+            To cultivate a culture of literature and creative expression across
+            AUIB.
+          </p>
+          <p className={`${label} mt-[11mm]`}>Our pillars</p>
+          <p className="mt-[3mm] text-[16pt] leading-[1.7]">
+            Connecting students
+            <br />
+            Fostering creativity
+            <br />
+            Celebrating culture
+            <br />
+            Building a community
+          </p>
+        </div>
+        <div>
+          <p className={label}>Our values</p>
+          <p className="mt-[3mm] text-[16pt] leading-[1.7]">
+            Open door. Free, for every student.
+            <br />
+            Craft. Serious, even when fun.
+            <br />
+            Two languages, equal care.
+            <br />
+            Care. Consent before cameras.
+            <br />
+            Needs, not money.
+            <br />
+            Built to last.
+          </p>
+        </div>
+      </div>
+      <div className="absolute inset-x-[30mm] bottom-[27mm] flex items-end justify-between text-[11pt]">
+        <span>Ratified on Charter Day, Tuesday, October 13, 2026</span>
+        <span>@auibsal</span>
+      </div>
+    </Sheet>
+  ),
+};
+
+/**
+ * The Open Call poster, A3 (or A4 at 71%): the Edition's call, in the copy
+ * of the Instagram post, with a QR to auibsal.org/qirtas/write.
+ */
+export const OpenCallPoster: Story = {
+  render: () => (
+    <Sheet height="420mm" width="297mm">
+      <div className="absolute start-[30mm] top-[27mm]">
+        {/* biome-ignore lint/performance/noImgElement: the logo file as supplied */}
+        <img
+          alt="The Bookmark"
+          className="block h-[34mm] w-auto"
+          height={130}
+          src="brand/sal-symbol.svg"
+          width={80}
+        />
+      </div>
+      <p className="absolute inset-x-[30mm] top-[120mm] font-light text-[96pt] leading-none tracking-[-0.03em]">
+        Write for
+        <br />
+        <i className="text-[#9c213e]">Qirtas.</i>
+      </p>
+      <div className="absolute inset-x-[30mm] top-[245mm] border-[#273236] border-t-[0.6pt] pt-[11mm]">
+        <p className="max-w-[180mm] font-light text-[24pt] leading-[1.4]">
+          Poems, stories, essays, art and photography for Edition 1, printed
+          this spring.
+        </p>
+        <p className="mt-[8mm] text-[16pt]">Until Thursday, December 3</p>
+      </div>
+      <div className="absolute inset-x-[30mm] bottom-[27mm] flex items-end justify-between text-[11pt]">
+        <span>auibsal.org · @auibsal</span>
+        <QRCode
+          bgColor="#ffffff"
+          fgColor="#273236"
+          size={150}
+          title="auibsal.org/qirtas/write"
+          value="https://auibsal.org/qirtas/write"
+        />
+      </div>
+    </Sheet>
+  ),
+};
+
+/** Camera-shy stickers, 40 mm round on sticker paper, twenty to a sheet. */
+export const CameraShyStickers: Story = {
+  render: () => (
+    <Sheet height="297mm" width="210mm">
+      <p className={`${label} absolute start-[15mm] top-[15mm]`}>
+        Camera-shy stickers · 40 mm round · print on sticker paper
+      </p>
+      <div className="absolute start-[15mm] top-[30mm] grid grid-cols-[repeat(4,40mm)] gap-[6mm]">
+        {Array.from({ length: 20 }, (_, i) => i).map((i) => (
+          <div
+            className="flex size-[40mm] flex-col items-center justify-center gap-[2mm] rounded-full bg-[#273236] text-center text-white"
+            key={i}
+          >
+            {/* biome-ignore lint/performance/noImgElement: the logo file as supplied */}
+            <img
+              alt=""
+              className="block h-[9mm] w-auto"
+              height={34}
+              src="brand/sal-symbol-white.svg"
+              width={20}
+            />
+            <span className="font-light text-[11pt] leading-[1.1]">
+              Camera
+              <br />
+              shy
+            </span>
+          </div>
+        ))}
+      </div>
+    </Sheet>
+  ),
+};
+
 const SIZES: [string, string][] = [
   ["Charter poster", "A3"],
   ["Open Call poster", "A3 or A4"],
@@ -49,7 +211,7 @@ const SIZES: [string, string][] = [
   ["Fellow certificate", "A4 landscape"],
   ["Name badges", "90 × 55 mm"],
   ["Photography notice", "A4"],
-  ["Camera-shy stickers", "40 mm round"],
+  ["Camera-shy stickers", "40 mm round, twenty to an A4 sheet"],
 ];
 
 export const Sizes: Story = {

@@ -8,8 +8,8 @@ import {
   saveChoice,
   siteChoices,
 } from "@repo/analytics/consent";
-import { Checkbox } from "@repo/design-system/components/ui/checkbox";
-import { Label } from "@repo/design-system/components/ui/label";
+import { Checkbox } from "@repo/brand/components/ui/checkbox";
+import { Label } from "@repo/brand/components/ui/label";
 import { Link } from "@repo/internationalization/navigation";
 import { useTranslations } from "next-intl";
 import { useEffect, useId, useRef, useState } from "react";
@@ -25,7 +25,7 @@ type State = "hidden" | "first" | "choose";
 type Topic = ConsentPurpose;
 
 const topics = (purposes: ConsentPurposes) =>
-  (["analytics", "ads"] as const).filter((topic) => purposes[topic]);
+  (["analytics"] as const).filter((topic) => purposes[topic]);
 
 /**
  * The consent bar: a slim bar along the bottom edge; the page ends
@@ -39,7 +39,6 @@ export const ConsentBanner = ({ purposes }: ConsentBannerProps) => {
   const id = useId();
   const [state, setState] = useState<State>("hidden");
   const [allowed, setAllowed] = useState<Record<Topic, boolean>>({
-    ads: false,
     analytics: false,
   });
   const [answered, setAnswered] = useState(false);
@@ -62,7 +61,6 @@ export const ConsentBanner = ({ purposes }: ConsentBannerProps) => {
           : null;
       const choices = siteChoices(document.cookie);
       setAllowed({
-        ads: choices.ads === true,
         analytics: choices.analytics === true,
       });
       setAnswered(allAnswered());
@@ -122,7 +120,7 @@ export const ConsentBanner = ({ purposes }: ConsentBannerProps) => {
     return null;
   }
 
-  const body = purposes.ads ? t("bodyWithAds") : t("body");
+  const body = t("body");
   const action =
     "font-medium text-[0.90625rem] underline decoration-1 underline-offset-4 hover:text-accent";
 
@@ -186,14 +184,14 @@ export const ConsentBanner = ({ purposes }: ConsentBannerProps) => {
           <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
             <button
               className={action}
-              onClick={() => save({ ads: true, analytics: true })}
+              onClick={() => save({ analytics: true })}
               type="button"
             >
               {asked.length > 1 ? t("allowAll") : t("allow")}
             </button>
             <button
               className={action}
-              onClick={() => save({ ads: false, analytics: false })}
+              onClick={() => save({ analytics: false })}
               type="button"
             >
               {t("decline")}

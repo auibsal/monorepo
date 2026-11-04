@@ -115,33 +115,25 @@ const fakeNotion = (users: { email: string; id: string }[]) => {
   };
   return {
     client: promised({
-      blocks: () => [
-        {
-          heading_2: { rich_text: [{ plain_text: "English" }] },
-          id: "b1",
-          type: "heading_2",
-        },
-        {
-          id: "b2",
-          paragraph: { rich_text: [{ plain_text: "Bring a poem." }] },
-          type: "paragraph",
-        },
-        {
-          heading_2: { rich_text: [{ plain_text: "العربية" }] },
-          id: "b3",
-          type: "heading_2",
-        },
-        {
-          id: "b4",
-          paragraph: { rich_text: [{ plain_text: "أحضر قصيدة." }] },
-          type: "paragraph",
-        },
-      ],
-      // One-language pages (Arabic editions, programs, documents).
-      blocksWithTables: () => [
+      // One language per page: an Arabic row's text is Arabic, every other
+      // row's English.
+      blocksWithTables: (pageId: string) => [
         {
           id: "c1",
-          paragraph: { rich_text: [{ plain_text: "نص الصفحة." }] },
+          paragraph: {
+            rich_text: [
+              {
+                plain_text:
+                  (
+                    find(pageId).properties.Language as {
+                      select?: { name?: string };
+                    }
+                  ).select?.name === "Arabic"
+                    ? "نص الصفحة."
+                    : "Bring a poem.",
+              },
+            ],
+          },
           type: "paragraph",
         },
       ],

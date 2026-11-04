@@ -1,7 +1,7 @@
 "use client";
 
 import type { useAuth } from "@repo/auth/provider";
-import { Button } from "@repo/design-system/components/ui/button";
+import { Button } from "@repo/brand/components/ui/button";
 import { formatNumber } from "@repo/internationalization/format";
 import { journal, unwrap } from "@repo/sal-data";
 import { removeFiles, uploadSubmissionFile } from "@repo/storage";

@@ -3,7 +3,6 @@ import { journal } from "@repo/sal-data";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { WaraqAd } from "@/components/waraq/ad";
 import { PieceCardView } from "@/components/waraq/cards";
 import { Nameplate } from "@/components/waraq/nameplate";
 import { localizedMetadata } from "@/lib/metadata";
@@ -81,7 +80,6 @@ const DeskPage = async ({ params }: DeskProps) => {
           ))}
         </ul>
       )}
-      <WaraqAd locale={locale} page={`/qirtas/${desk}`} slot={0} />
     </div>
   );
 };

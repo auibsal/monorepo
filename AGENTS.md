@@ -49,8 +49,8 @@ and decisions), and continue from the first unticked item.
     its tabs at `/diwan/events/<slug>/<tab>`; each event has its own door,
     `/events/<slug>/door`, and the Desk opens the next one (owner, Oct 31,
     2026: no general door); Second Chapter's collection
-    is a tab of its program), Qirtas (`/diwan/qirtas`, its tabs and the
-    ads; calls are on each Edition's page), The Company (`/diwan/company`), People (`/diwan/people`,
+    is a tab of its program), Qirtas (`/diwan/qirtas` and its tabs;
+    calls are on each Edition's page), The Company (`/diwan/company`), People (`/diwan/people`,
     verification (partner applications only), hiring, service, partners, insights) and Society
     (`/diwan/society`: meetings with their resolutions, requests to Student Life,
     elections, concerns, the Library, where only `governance.manage`, the
@@ -163,19 +163,24 @@ and decisions), and continue from the first unticked item.
   `site-header.tsx`) and one footer (`components/footer.tsx`), so moving
   between them never feels like another app.
 - `packages/brand` — **the design system**, SAL-BRD-01 (owner, Nov 4,
-  2026): the single source of the brand. The guide (`guide/`, SAL-BRD-01
-  in full, one Markdown page per part; there is no PDF), the rules in
-  short (`BRAND-BOOK.md`), and in `assets` the tokens (`tokens.json`,
-  from which `@repo/design-system`'s `tokens.css` is generated), fonts,
-  icons, logos, Hudhud, the social templates with their PNGs and the
-  printables. Its Storybook is part of the Diwan, at `/diwan/design`
+  2026): the single source of the brand, and the only brand package
+  (owner, Nov 4, 2026, evening: `@repo/design-system` is merged into it).
+  The guide (`guide/`, SAL-BRD-01 in full, one Markdown page per part;
+  there is no PDF), the rules in short (`BRAND-BOOK.md`), in `assets` the
+  tokens (`tokens.json`, from which `styles/tokens.css` is generated),
+  fonts, icons, logos, Hudhud, the social templates with their PNGs and
+  the printables' HTML, and the code the app imports as `@repo/brand`:
+  `styles/globals.css`, `components/ui` (shadcn), `components/sal`, `lib`
+  (fonts, logos, utils) and `DesignSystemProvider`. The Charter poster,
+  the Open Call poster and the camera-shy stickers are stories in Print,
+  printed from the browser. No PDFs or document files in the repository. Its Storybook is part of the Diwan, at `/diwan/design`
   (linked from the Desk; there is no /brand or /design): Guide,
   Foundations, Logos, Components, Emails, Social, Print. The web build
   runs `bun run --cwd packages/brand build:site`, which builds it into
   `apps/web/public/_design` (ignored by git, never indexed, framed only
   by the site); the Diwan's page frames it. The components and emails it
-  shows are imported from `@repo/design-system` and `@repo/email`, as
-  the app imports them.
+  shows are its own and `@repo/email`'s, as the app imports them. The
+  public sees the brand only on the press page (`/about/press`).
 - The Society's documents are the Library, auibsal.org/library (`apps/web`;
   two shelves, owner, Oct 30, 2026: Society documents, and Website
   policies, the `SAL-PLT-` documents with the privacy page;
@@ -229,8 +234,8 @@ bun run db:start | db:reset | db:test | db:types
 bun run --cwd apps/e2e e2e   # Playwright journeys + axe (local stack running)
 bun run --cwd packages/brand dev       # the design system, locally (the Diwan's /design)
 bun run --cwd packages/database db:test:sync     # copy the pgTAP preamble
-bun run --cwd packages/design-system tokens      # regenerate tokens.css
-bun run --cwd packages/design-system icons       # regenerate the icon data from packages/brand/assets/icons
+bun run --cwd packages/brand tokens      # regenerate tokens.css
+bun run --cwd packages/brand icons       # regenerate the icon data from packages/brand/assets/icons
 bun run gen:package         # scaffold packages/<name>
 ```
 
@@ -249,13 +254,11 @@ any schema change. Integration tests run against a local stack with
   `events.manage` for program X?"). Roles live only in
   `access.role_assignments`, written only through `access.assign_role()`.
   Never read roles from `user_metadata` or `app_metadata`.
-- **Migrations ship through CI, and the site follows them.** Add a file to
-  `supabase/migrations`; after merge, `.github/workflows/migrate.yml` runs
-  `supabase db push` against production once CI passes, then deploys the
-  site through the Vercel Deploy Hook (Vercel's own deploys from `main` are
-  off in `apps/web/vercel.json`), so new code never runs on an old
-  database (owner, Oct 31, 2026). Never paste SQL into the production
-  database.
+- **Migrations ship through CI.** Add a file to `supabase/migrations`;
+  after merge, `.github/workflows/migrate.yml` runs `supabase db push`
+  against production once CI passes. Vercel deploys `main` itself (owner,
+  Nov 4, 2026: no deploy hook is needed; a Deploy Hook, if set, is called
+  after the migrations). Never paste SQL into the production database.
 - **No third-party apps** (owner, Oct 30, 2026: no Sign in with SAL, no
   `/api/v1`). A token issued to an app carries a `client_id` and reaches
   nothing: every table keeps the restrictive policy "No third-party apps"
@@ -444,7 +447,7 @@ any schema change. Integration tests run against a local stack with
   read blind on the same pages, submissions at `/qirtas/submissions/<id>`
   and the Edition's entries at `/qirtas/entries/<id>`: Newsroom and Review
   are one, owner, Oct 31, 2026), Editions,
-  Awards and Ads, each its own page. Bylines are people: a member under
+  and Awards, each its own page. Bylines are people: a member under
   their own name or a pen name, picked with `BylinePicker` and made by
   `journal.byline_for()`, never typed. Clients never read
   `contributors.user_id`, so a pen name can't be traced to its author.
@@ -464,27 +467,29 @@ any schema change. Integration tests run against a local stack with
   record keeps the print run, printer and date (`journal.issues.print_run`,
   `printer_en`/`_ar`, `printed_on`), shown on the Edition page as a line.
 - **The Qirtas Awards** (owner, Oct 29, 2026; "Awards", never "Prizes",
-  owner, Oct 31, 2026; `/qirtas/awards`): six awards (`journal.prizes`,
-  the code keeps `prize`): the Mutanabbi Award (the whole paper), the
+  owner, Oct 31, 2026, and in the code too since Nov 4, 2026; at
+  `/qirtas/awards`, and `/prizes`, `/awards` and `/qirtas/prizes` go
+  there): six awards (`journal.awards`): the Mutanabbi Award (the whole paper), the
   Tabari (News), Jahiz (Voices), Nazik (Letters), Wasiti (Gallery) and Ibn
-  al-Haytham (Video) Awards. Each year a round (`journal.prize_rounds`)
+  al-Haytham (Video) Awards. Each year a round (`journal.award_rounds`)
   with its shortlist and award days; the first: shortlists April 4,
   awarded April 20, 2027. The names are confirmed (owner, Oct 31,
-  2026). The Diwan (Qirtas → Awards, `journal.prizes`
+  2026). The Diwan (Qirtas → Awards, `journal.awards`
   permission) records shortlists, judges (members, picked from the
   register) and winners
-  (`journal.prize_entries`, `journal.prize_judges`, never public) and
-  drafts the certificates (`journal.prepare_prize_certificates`, kind
-  `prize`). The public reads only `journal.prize_results()`, which shows a
+  (`journal.award_entries`, `journal.award_judges`, never public) and
+  drafts the certificates (`journal.prepare_award_certificates`, kind
+  `award`). The public reads only `journal.award_results()`, which shows a
   shortlist from its day and never a winner before the award.
 - **Six Words come only from the Typewriter Tour.** Never written on the
   site: whoever runs the Tour transcribes the card in the Diwan
   (`programmes.record_six_words`) and scans the writer's live membership
   card to make it theirs (`programmes.attach_six_words`); unsigned cards
   show without a name. One entry per member; a new card replaces the old.
-- **Get involved** (`/get-involved`; the Callboard until Oct 31, 2026,
-  owner: one name, Get involved, in every language and title; the code
-  keeps `callboard`) is the careers page (owner, Oct 29, 2026), read by
+- **Get involved** (`/get-involved`, and `/callboard` goes there; one name
+  in every language, title and the code, owner, Oct 31 and Nov 4, 2026:
+  the members' board is `PlacesBoard`, a program's openings `openings`)
+  is the careers page (owner, Oct 29, 2026), read by
   anyone (Oct 31: `programmes.open_places()`, `OpenPlaces`; replying and
   shifts are for members), as one list without sections (owner, Oct 31,
   2026; migration `20261101001000`), soonest first: roles, the
@@ -642,6 +647,13 @@ any schema change. Integration tests run against a local stack with
   (`SAL-…`, `F-…`), statuses, versions and ratification lines are internal
   and appear only in the admin. A later draft stays in the admin until it
   is adopted.
+- **Iraqi Arabic where we chat** (owner, Nov 4, 2026). Hudhud
+  (`lib/api/bot/copy.ts`), social captions and stories, the members' group
+  and signs at the door speak Iraqi Arabic, spelled as Iraqis write it (گ);
+  the site, the Diwan, emails, documents, certificates, Qirtas and the
+  bot's Telegram profile stay in standard Arabic. Never both in one
+  message (Guide → Voice, "Which Arabic"). Iraqi lines are
+  needs-native-review like any Arabic written here.
 - **One language per page.** The English pages carry no Arabic and the
   Arabic pages no English (owner, Oct 24, 2026); the only exceptions are
   the language switcher, fields meant for the other language, and a
@@ -701,7 +713,7 @@ any schema change. Integration tests run against a local stack with
     Oct 29, 2026; the programs are removed, their history moved).
   - Gallery Wall merged into Qirtas's Gallery desk, «معرض قرطاس» (code: slug
     `gallery-wall`, kept and unpublished).
-  - The Qirtas Awards, جوائز قرطاس (were "the Prizes"; code: `prize`).
+  - The Qirtas Awards, جوائز قرطاس (the code says `award` too, Nov 4, 2026).
   - The Register and the Roll of Fellows, السجل ولائحة الزملاء (were the Book
     of Members and the Book of Fellows).
   - The Return, ليلة العودة (was Charter Night).
@@ -775,8 +787,8 @@ any schema change. Integration tests run against a local stack with
   Logos are used exactly as supplied in `packages/brand/assets/logos`, never redrawn.
   Icons (owner, Oct 30, 2026): only the Society's set, `packages/brand/assets/icons`
   (Lucide redrawn at 1.5 px with square ends, one meaning each), through
-  `Icon` (`@repo/design-system/components/sal/icon`, data generated by
-  `bun run --cwd packages/design-system icons`); never `lucide-react`. An
+  `Icon` (`@repo/brand/components/sal/icon`, data generated by
+  `bun run --cwd packages/brand icons`); never `lucide-react`. An
   icon stands alone when its meaning is plain (with a `label`), beside a
   word when it could be misread; never in a headline, as a bullet or as
   decoration; no emoji.
@@ -792,7 +804,7 @@ any schema change. Integration tests run against a local stack with
   book's Motion section: native CSS, `duration-quick`, `duration-base`,
   `duration-slow` and `ease-standard`, nothing when reduced motion is on.
   A row of things to browse (Editions, and later playbills and episodes)
-  is `Shelf` (`@repo/design-system/components/sal/shelf`), always with the
+  is `Shelf` (`@repo/brand/components/sal/shelf`), always with the
   same items as a plain list at its own path (`/qirtas/editions/list`).
   Edition covers are scans or a typographic cover, never drawn 3D. Share
   is `ShareLink` (`components/share.tsx`).
@@ -841,11 +853,11 @@ any schema change. Integration tests run against a local stack with
   2026). Record events with
   `track()` from `@repo/analytics/client`. Runbook:
   `docs/platform/analytics.md`.
-- **Ads:** in Qirtas on `apps/web` only, never for signed-in visitors (owner,
-  Oct 16, 2026): Society ads, sponsor ads (only with a signed memorandum
-  granting `advertising`; Policy Manual 11.3 applies) and Google AdSense for
-  the rest. Readers get ads only through `journal.current_ads()`. No ads in
-  the Diwan, in emails or on other pages. Runbook: `docs/platform/ads.md`.
+- **No ads, no money in advertising** (owner, Nov 4, 2026; SAL-PLT-06 as
+  amended): no ads anywhere (no AdSense, no Society or sponsor ad slots),
+  and sponsors give in kind only, never money. A memorandum grants no
+  advertising. The consent card asks about analytics only; Google's ad
+  signals stay denied.
 - **Translations:** every UI string comes from
   `packages/internationalization/messages/{ar,en}.json`, checked by
   `bun run check:i18n`. Pass numbers and dates into messages already
@@ -859,9 +871,9 @@ any schema change. Integration tests run against a local stack with
 - **Optional modules:** code belonging to an optional module is wrapped in
   `// <module:id>` … `// </module:id>` markers. Keep markers balanced;
   `bun run check:placeholders` verifies them.
-- **shadcn/ui:** files in `packages/design-system/components/ui` are generated;
+- **shadcn/ui:** files in `packages/brand/components/ui` are generated;
   update them with the shadcn CLI rather than hand-editing where possible.
-  SAL components live in `packages/design-system/components/sal`.
+  SAL components live in `packages/brand/components/sal`.
 
 # This is NOT the Turborepo you know
 

@@ -4,7 +4,11 @@
  * exclamation marks, no emoji). Dynamic values arrive already escaped for
  * Telegram HTML and already formatted (Latin digits, Baghdad time).
  *
- * The Arabic was written for the platform: needs-native-review.
+ * Hudhud speaks Iraqi Arabic (owner, Nov 4, 2026): he is the Society's
+ * voice in the chat, so his Arabic is the Arabic members speak to each
+ * other, with the Iraqi spelling (گ for the g sound). Only the bot's
+ * Telegram profile (description, shortDescription) stays in standard
+ * Arabic. Written for the platform: needs-native-review.
  */
 
 export type Lang = "en" | "ar";
@@ -206,168 +210,170 @@ type Copy = {
 };
 
 const ar: Copy = {
-  alreadyLinked: (name: string) => `أنت مرتبط باسم ${name}.`,
+  alreadyLinked: (name: string) => `انت مربوط باسم ${name}.`,
   audienceMembers:
-    "هذه المجموعة لأعضاء الجمعية الآن: أُدخل كل من ربط حسابه في الجمعية.",
+    "هالمجموعة هسه لأعضاء الجمعية: أدخّل كل واحد رابط حسابه بالجمعية.",
   audienceStaff:
-    "هذه المجموعة لمسؤولي الجمعية الآن: لا أُدخل إلا الحسابات المرتبطة التي تشغل دوراً في الجمعية، وأنشر موجز الصباح في الثامنة وملخصاً قصيراً بعد كل فعالية. اختر مكانهما بـ /topic brief.",
-  audienceUsage: "استخدم /audience staff أو /audience members.",
+    "هالمجموعة هسه لمسؤولي الجمعية: ما أدخّل غير الحسابات المربوطة اللي عدها دور بالجمعية، وأنزّل موجز الصبح الساعة 8:00 وملخص قصير بعد كل فعالية. /topic brief يحدد وين ينزلن.",
+  audienceUsage: "اكتب /audience staff أو /audience members.",
   briefBooked: (booked: string, capacity: string) =>
-    `${booked} حجزاً من ${capacity}`,
-  briefBookedOpen: (booked: string) => `${booked} حجزاً`,
+    `${booked} حاجزين من ${capacity}`,
+  briefBookedOpen: (booked: string) => `${booked} حاجزين`,
   briefCounts: {
-    grantsAsked: "شركاء يطلبون تفعيل أمر",
-    hiringNew: "ردود جديدة على الفرص",
+    grantsAsked: "شركاء يريدون يفعّلون شي",
+    hiringNew: "ردود جديدة عالفرص",
     partnerApplications: "طلبات شراكة",
-    perksWaiting: "مزايا بانتظار النشر",
+    perksWaiting: "مزايا تنتظر النشر",
     requestsOpen: "طلبات مفتوحة",
-    submissionsNew: "مشاركات جديدة في قرطاس",
+    submissionsNew: "مشاركات جديدة لقرطاس",
   },
   briefEvent: (title: string, time: string) => `${title} · ${time}`,
-  briefNoEvents: "لا فعاليات اليوم.",
-  briefNothing: "لا شيء ينتظر في الديوان.",
+  briefNoEvents: "ماكو فعاليات اليوم.",
+  briefNothing: "ماكو شي ينتظر بالديوان.",
   briefTitle: (date: string) => `<b>صباح الخير. اليوم ${date}</b>`,
-  briefWaiting: "<b>ما ينتظر في الديوان</b>",
-  briefWaitlist: (n: string) => `${n} في قائمة الانتظار`,
+  briefWaiting: "<b>شنو ينتظر بالديوان</b>",
+  briefWaitlist: (n: string) => `${n} بقائمة الانتظار`,
   buttons: {
     back: "رجوع",
-    calendar: "أضف إلى التقويم",
-    cancel: "ألغِ مقعدي",
+    calendar: "ضيفها للتقويم",
+    cancel: "ألغي مقعدي",
     details: "التفاصيل",
     diwan: "افتح الديوان",
     events: "الفعاليات",
     link: "اربط حسابي",
     me: "عضويتي",
     nexus: "افتح «العضوية»",
-    notifyOff: "الإشعارات هنا: متوقفة",
-    notifyOn: "الإشعارات هنا: مفعّلة",
-    play: "العب",
+    notifyOff: "الإشعارات هنا: مطفية",
+    notifyOn: "الإشعارات هنا: شغّالة",
+    play: "إلعب",
     qirtas: "قرطاس",
-    read: "اقرأ",
-    rsvp: "احجز مقعداً",
+    read: "إقرا",
+    rsvp: "احجزلي مقعد",
     site: "auibsal.org",
     unlink: "افصل تيليغرام",
     word: "كلمة اليوم",
   },
   by: (author: string) => `بقلم ${author}`,
   commands: {
-    audience: "لمن هذه المجموعة: staff أو members",
-    events: "ما الذي سيأتي",
-    help: "ما الذي أستطيع فعله",
+    audience: "هالمجموعة لمنو: staff أو members",
+    events: "شنو جاي",
+    help: "شنو أگدر أسوي",
     lang: "لغة منشوراتي: en أو ar أو both",
     me: "عضويتك ومقاعدك",
-    qirtas: "الجديد في قرطاس",
-    setup: "اربط هذه المجموعة (رمز من الديوان)",
-    start: "ألقِ التحية",
-    topic: "أخبرني بالغرض من هذا الموضوع",
-    word: "العب كلمة اليوم",
+    qirtas: "الجديد بقرطاس",
+    setup: "اربط هالمجموعة (رمز من الديوان)",
+    start: "سلّم عليّ",
+    topic: "گلّي هالموضوع لشنو",
+    word: "إلعب كلمة اليوم",
   },
+  // The bot's profile in Telegram is read by people who don't know the
+  // Society yet, so it stays in standard Arabic.
   description:
     "هدهد، حامل رسائل جمعية الفنون والآداب في الجامعة الأمريكية في العراق - بغداد. الفعاليات والحجز، وقرطاس، وكلمة كل يوم، وإشعاراتك من الجمعية، كلها في تيليغرام.",
-  eventMissing: "لم أجد هذه الفعالية. ربما نُقلت أو أُلغيت.",
+  eventMissing: "ما لگيت هالفعالية. يمكن انتقلت أو انلغت.",
   eventsNone:
-    "لا شيء في التقويم بعد. سأنشر الفعاليات الجديدة في المجموعة فور الإعلان عنها.",
+    "بعد ماكو شي بالتقويم. أول ما تنعلن فعالية جديدة أنزّلها بالمجموعة.",
 
-  eventsTitle: "<b>ما الذي سيأتي</b>",
-  full: "اكتمل العدد: الحجز يضعك في قائمة الانتظار",
-  generic: "حدث خطأ من جهتي. حاول مجدداً بعد دقيقة.",
-  going: "لديك مقعد.",
+  eventsTitle: "<b>شنو جاي</b>",
+  full: "العدد اكتمل: الحجز يحطك بقائمة الانتظار",
+  generic: "صار خلل من صوبي. عيدها بعد دقيقة.",
+  going: "عندك مقعد.",
 
   greeting: (name?: string) =>
-    `${name ? `أهلاً يا ${name}.` : "أهلاً."} أنا هدهد، حامل رسائل جمعية الفنون والآداب.\n\nأحمل إليك أخبار الجمعية: ما الذي يجري وكيف تحجز مقعدك، والجديد في قرطاس، وكلمة تخمّنها كل يوم. من أين نبدأ؟`,
+    `${name ? `هلا ${name}.` : "هلا."} آني هدهد، حامل رسائل جمعية الفنون والآداب.\n\nأجيبلك أخبار الجمعية: شنو دا يصير وشلون تحجز مقعدك، والجديد بقرطاس، وكلمة تحزرها كل يوم. منين نبدي؟`,
   help: [
-    "<b>ما الذي أستطيع فعله</b>",
-    "/events: ما الذي سيأتي، ومقعدك بنقرة واحدة",
-    "/qirtas: الجديد في صحيفة الجمعية",
-    "/word: العب كلمة اليوم",
+    "<b>شنو أگدر أسوي</b>",
+    "/events: شنو جاي، ومقعدك بكبسة وحدة",
+    "/qirtas: الجديد بجريدة الجمعية",
+    "/word: إلعب كلمة اليوم",
     "/me: عضويتك ومقاعدك",
     "",
-    "اربط حسابك في الجمعية وسأحمل إليك إشعاراتك هنا أيضاً: التذكيرات والحجوزات وقرارات قرطاس.",
+    "اربط حسابك بالجمعية وأجيبلك إشعاراتك هنا هم: التذكيرات والحجوزات وقرارات قرطاس.",
     "",
-    "في أي محادثة، اكتب اسمي وبضع كلمات لتشارك فعالية أو نصاً من قرطاس.",
+    "بأي محادثة، اكتب اسمي ويّا كم كلمة حتى تشارك فعالية أو نص من قرطاس.",
   ].join("\n"),
 
   inlineEvent: "فعالية",
   inlinePiece: "قرطاس",
   joinMembersOnly: (group: string) =>
-    `${group} لأعضاء الجمعية. سينظر أحد المشرفين في طلبك.`,
+    `${group} لأعضاء الجمعية. واحد من المشرفين راح يشوف طلبك.`,
   joinStaffOnly: (group: string) =>
-    `${group} لمسؤولي الجمعية. سينظر أحد المشرفين في طلبك.`,
+    `${group} لمسؤولي الجمعية. واحد من المشرفين راح يشوف طلبك.`,
   joinStaffWaiting: (group: string) =>
-    `${group} لمسؤولي الجمعية. إن كنت تشغل دوراً في الجمعية فاربط حسابك وسأدخلك فوراً، وإلا فسينظر أحد المشرفين في طلبك.`,
+    `${group} لمسؤولي الجمعية. إذا عندك دور بالجمعية اربط حسابك وأدخّلك هسه، وإلا واحد من المشرفين راح يشوف طلبك.`,
   joinWaiting: (group: string) =>
-    `شكراً لطلبك الانضمام إلى ${group}. سينظر أحد المشرفين في طلبك قريباً. وإن كان لديك حساب في الجمعية فاربطه وسأدخلك فوراً.`,
-  langOk: "سأنشر بهذه اللغة من الآن.",
-  langUsage: "استخدم /lang en أو /lang ar أو /lang both.",
+    `شكراً لأنك طلبت تنضم لـ${group}. واحد من المشرفين راح يشوف طلبك قريب. وإذا عندك حساب بالجمعية اربطه وأدخّلك هسه.`,
+  langOk: "من هسه أنزّل بهاللغة.",
+  langUsage: "اكتب /lang en أو /lang ar أو /lang both.",
   linked: (name: string) =>
-    `تم الربط. سعيد بالتعرّف إليك حقاً يا ${name}. ستصلك إشعاراتك هنا أيضاً؛ ويمكنك إيقافها من /me.`,
+    `انربط. تشرفنا صدگ يا ${name}. إشعاراتك هم راح توصلك هنا، وتگدر تطفيها من /me.`,
   linkFailed:
-    "انتهت صلاحية هذا الرابط أو استُخدم من قبل. أنشئ رابطاً جديداً من ملفك على auibsal.org.",
+    "هالرابط خلص وقته أو انستخدم قبل. سوّي رابط جديد من ملفك على auibsal.org.",
 
   linkHow:
-    "لتربط حسابك، افتح «العضوية» على auibsal.org واذهب إلى ملفك الشخصي واختر <b>اربط تيليغرام</b>. يكفي ذلك نقرة واحدة.",
-  memberNo: "لم يُوثَّق حسابك بعد: أكمل انضمامك على auibsal.org لتحجز.",
-  membersOnly: "للأعضاء فقط",
-  memberYes: "عضو موثَّق",
+    "حتى تربط حسابك، افتح «العضوية» على auibsal.org، روح لملفك الشخصي واختار <b>اربط تيليغرام</b>. بس كبسة وحدة.",
+  memberNo: "حسابك بعده ما توثّق: كمّل انضمامك على auibsal.org حتى تحجز.",
+  membersOnly: "للأعضاء بس",
+  memberYes: "عضو موثّق",
 
   meTitle: (name: string) => `<b>${name}</b>`,
   myPlaces: "<b>مقاعدك</b>",
-  needLink: "اربط حسابك في الجمعية أولاً، وبعدها أحجز لك.",
+  needLink: "اربط حسابك بالجمعية أول، وبعدين أحجزلك.",
 
-  noPlaces: "لا مقاعد بعد. اكتب /events لترى ما يجري.",
-  notAdmin: "هذا لمشرفي المجموعة فقط.",
+  noPlaces: "بعد ما عندك مقاعد. /events يراويك شنو اكو.",
+  notAdmin: "هاي بس لمشرفين المجموعة.",
   notConnected:
-    "هذه المجموعة غير مرتبطة بالجمعية بعد. يستطيع أحد المسؤولين ربطها من الديوان (الإعدادات، تيليغرام).",
-  notifyOff: "ستصلك الإشعارات بالبريد الإلكتروني فقط.",
-  notifyOn: "ستصلك الإشعارات هنا مجدداً.",
+    "هالمجموعة بعدها مو مربوطة بالجمعية. واحد من المسؤولين يگدر يربطها من الديوان (الإعدادات، تيليغرام).",
+  notifyOff: "الإشعارات راح توصلك بالإيميل بس.",
+  notifyOn: "الإشعارات رجعت توصلك هنا.",
   notLinked:
-    "حساب تيليغرام هذا غير مرتبط بحساب في الجمعية بعد، لذا لا أعرف عنك سوى اسمك في تيليغرام.",
-  onePlaceLeft: "بقي مقعد واحد",
-  placesLeft: (n: string) => `بقي ${n} مقعد`,
+    "تيليغرامك بعده مو مربوط بحساب بالجمعية، فما أعرف عنك غير اسمك بتيليغرام.",
+  onePlaceLeft: "باقي مقعد واحد",
+  placesLeft: (n: string) => `باقي ${n} مقعد`,
 
   postEventNew: "<b>فعالية جديدة</b>",
-  postEventSoon: (time: string) => `<b>تبدأ قريباً</b>، في ${time}`,
-  postPiece: "<b>جديد في قرطاس</b>",
+  postEventSoon: (time: string) => `<b>تبدي قريب</b>، الساعة ${time}`,
+  postPiece: "<b>جديد بقرطاس</b>",
   postWord: (n: string) => `<b>الكلمة رقم ${n}</b> جاهزة.`,
   purposeNames: {
     announcements: "الإعلانات",
-    brief: "موجز الصباح وملخصات الفعاليات",
+    brief: "موجز الصبح وملخصات الفعاليات",
     events: "الفعاليات",
     qirtas: "قرطاس",
     word: "كلمة اليوم",
   },
-  rsvpAlready: "لديك مقعد بالفعل.",
-  rsvpCancelled: "تم. صار مقعدك متاحاً لغيرك.",
-  rsvpClosed: "لا تقبل هذه الفعالية الحجز.",
-  rsvpConfirmed: "حُجز مقعدك. سأذكّرك قبل أن تبدأ.",
-  rsvpEnded: "انتهت هذه الفعالية.",
-  rsvpNotMember: "الحجز للأعضاء الموثَّقين. أكمل انضمامك على auibsal.org أولاً.",
-  rsvpWaitlisted: "اكتمل العدد، فوضعتك في قائمة الانتظار. سأخبرك إن فرغ مقعد.",
+  rsvpAlready: "عندك مقعد من قبل.",
+  rsvpCancelled: "تم. مقعدك صار فارغ لغيرك.",
+  rsvpClosed: "هالفعالية ما بيها حجز.",
+  rsvpConfirmed: "انحجزلك مقعد. أذكّرك قبل ما تبدي.",
+  rsvpEnded: "هالفعالية خلصت.",
+  rsvpNotMember: "الحجز للأعضاء الموثّقين. كمّل انضمامك على auibsal.org أول.",
+  rsvpWaitlisted: "العدد اكتمل، فحطيتك بقائمة الانتظار. أخبرك إذا فرغ مقعد.",
   setupBad:
-    "لم يعمل هذا الرمز. يستطيع أحد المسؤولين إنشاء رمز جديد من الديوان: الإعدادات، تيليغرام.",
+    "هالرمز ما اشتغل. واحد من المسؤولين يگدر يسوي رمز جديد من الديوان: الإعدادات، تيليغرام.",
 
   setupOk:
-    "تم الربط. أنا حامل رسائل الجمعية هنا من الآن.\n\nالخطوات التالية:\n1. اجعلني مشرفاً يستطيع دعوة المستخدمين.\n2. في كل موضوع، أرسل /topic مع الغرض منه: announcements أو events أو qirtas أو word.\n3. فعّل <b>الموافقة على الأعضاء الجدد</b> في رابط الدعوة: أُدخل الأعضاء المرتبطين فوراً وأترك الباقين لكم.",
-  setupUsage: "أرسل /setup مع الرمز من الديوان (الإعدادات، تيليغرام).",
+    "انربطت. من هسه آني حامل رسائل الجمعية هنا.\n\nبعدين:\n1. سوّوني مشرف يگدر يدعي مستخدمين.\n2. بكل موضوع، دزّوا /topic ويّا الغرض منه: announcements أو events أو qirtas أو word.\n3. فعّلوا <b>الموافقة على الأعضاء الجدد</b> لرابط الدعوة: أدخّل الأعضاء المربوطين هسه وأخلّي الباقين عليكم.",
+  setupUsage: "دز /setup ويّا الرمز من الديوان (الإعدادات، تيليغرام).",
   shortDescription:
     "حامل رسائل جمعية الفنون والآداب: الفعاليات وقرطاس وكلمة كل يوم.",
   summaryCame: (came: string, booked: string, walkIns: string) =>
-    `حضر ${came}: ${booked} ممن حجزوا و${walkIns} دون حجز`,
-  summaryNoShows: (n: string) => `${n} حجزوا ولم يحضروا`,
+    `إجو ${came}: ${booked} من اللي حجزوا و${walkIns} بلا حجز`,
+  summaryNoShows: (n: string) => `${n} حجزوا وما إجو`,
   summaryTitle: "<b>بعد الفعالية</b>",
-  topicCleared: "لم يعد هذا الموضوع مخصصاً لشيء بعينه.",
-  topicOk: (purpose: string) => `صار هذا الموضوع مخصصاً لـ${purpose}.`,
+  topicCleared: "هالموضوع ما بقى مخصص لشي معيّن.",
+  topicOk: (purpose: string) => `هالموضوع صار مخصص لـ${purpose}.`,
   topicUsage:
-    "أرسله داخل موضوع: /topic announcements أو events أو qirtas أو word أو brief. و/topic none يلغي التخصيص.",
+    "دزها داخل موضوع: /topic announcements أو events أو qirtas أو word أو brief. و/topic none يشيل التخصيص.",
   unlinked:
-    "تم الفصل. لن تصل إشعارات حسابك في الجمعية إلى هنا بعد الآن. يمكنك الربط مجدداً من ملفك الشخصي.",
-  waitlisted: "أنت في قائمة الانتظار.",
-  waraqNone: "لا جديد في قرطاس الآن. النصوص القادمة في الطريق.",
+    "انفصل. حسابك بالجمعية ما راح توصله إشعارات هنا بعد. تگدر تربطه مرة لخ من ملفك الشخصي.",
+  waitlisted: "انت بقائمة الانتظار.",
+  waraqNone: "ماكو شي جديد بقرطاس هسه. النصوص الجاية بالطريق.",
 
-  waraqTitle: "<b>الجديد في قرطاس</b>",
+  waraqTitle: "<b>الجديد بقرطاس</b>",
 
   when: (date: string, time: string) => `${date} · ${time}`,
-  wordOpen: "تُفتح كلمة اليوم هنا في تيليغرام.",
+  wordOpen: "كلمة اليوم تنفتح هنا بتيليغرام.",
 };
 
 export const copy: Record<Lang, Copy> = { ar, en };

@@ -1,8 +1,8 @@
 "use client";
 
 import { useAuth } from "@repo/auth/provider";
-import { SalCard } from "@repo/design-system/components/sal/card";
-import { Input } from "@repo/design-system/components/ui/input";
+import { SalCard } from "@repo/brand/components/sal/card";
+import { Input } from "@repo/brand/components/ui/input";
 import type { Locale } from "@repo/internationalization";
 import { formatLongDate } from "@repo/internationalization/format";
 import { hasPermissionAnywhere } from "@repo/rbac";

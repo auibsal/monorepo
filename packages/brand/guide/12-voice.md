@@ -18,6 +18,14 @@ We sound like a well-read friend: warm, precise and never grand.
 - American English everywhere, with no exceptions: program, color, center, traveled, canceled, catalog, organization.
 - No emoji; no exclamation marks in headlines.
 
+## Which Arabic
+
+We speak two kinds of Arabic, as our members do (owner, Nov 4, 2026).
+
+- **Iraqi Arabic** where the Society talks with members as a friend would: Hudhud in Telegram, captions and stories on social media, the members' group, a sign at the door. Spell it as Iraqis write it, with گ for the g sound ("أگدر", "صدگ"), and keep it warm and brief.
+- **Standard Arabic** for everything meant to last or to be read beyond the chat: the website and the Diwan, emails, the Society's documents and policies, certificates, Qirtas's pages and articles (a writer's own piece keeps the Arabic they wrote it in), the press kit, and the bot's Telegram profile.
+- Never mix the two in one message. Every Iraqi line is checked by a native speaker before it ships, like any Arabic written for the platform.
+
 ## Names and pictures
 
 - "AUIB Society of Arts and Letters" in full on first use; then "the Society" or "SAL". Never "the club", never "Art and Letter".

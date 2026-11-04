@@ -154,15 +154,6 @@ export const createNotion = (
   };
 
   return {
-    /** A page's top-level blocks (its text). */
-    blocks: (pageId: string) =>
-      all<NotionBlock>((cursor) =>
-        request(
-          "GET",
-          `/blocks/${pageId}/children?page_size=100${cursor ? `&start_cursor=${cursor}` : ""}`
-        )
-      ),
-
     /**
      * A page's blocks, with each table's rows attached as `children` (a
      * table's cells are its child rows in Notion).

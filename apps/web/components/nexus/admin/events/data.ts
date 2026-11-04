@@ -9,7 +9,7 @@ import { useGrants } from "@/lib/nexus/queries";
 
 /** Programs, limited to the ones a permission covers (all for a global grant). */
 export const useProgrammeOptions = (
-  permission: "events.manage" | "programmes.manage" | null = "events.manage"
+  permission: "events.manage" | "programs.manage" | null = "events.manage"
 ) => {
   const { supabase } = useAuth();
   const locale = useLocale();

@@ -91,7 +91,7 @@ select set_eq(
   $$ select title_en from programmes.openings where owner = 'qirtas' $$,
   $$ values ('News Editor'), ('Voices Editor'), ('Video Editor'), ('Games Editor'),
      ('Producer, Next Stop'), ('Awards Coordinator') $$,
-  'The open masthead seats are on the Callboard'
+  'The open masthead seats are on the GetInvolved'
 );
 create function pg_temp.seat(t text) returns uuid language sql as $$
   select id from programmes.openings where title_en = t;
@@ -172,7 +172,7 @@ select is(
 );
 select throws_ok(
   $$ insert into programmes.openings (kind, role, title_en, title_ar) values ('role', 'president', '', '') $$,
-  '22023', null, 'Elected roles are not posted on the Callboard'
+  '22023', null, 'Elected roles are not posted on the GetInvolved'
 );
 select pg_temp.login_as('00000000-0000-0000-0000-00000000d1a3');
 insert into programmes.opening_replies (opening_id) values ('00000000-0000-0000-0000-00000000d1b9');

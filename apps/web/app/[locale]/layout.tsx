@@ -1,14 +1,13 @@
 import "./styles.css";
-import { DesignSystemProvider } from "@repo/design-system";
-import { fonts } from "@repo/design-system/lib/fonts";
+import { DesignSystemProvider } from "@repo/brand";
+import { fonts } from "@repo/brand/lib/fonts";
 import { getDirection, locales } from "@repo/internationalization";
 import { routing } from "@repo/internationalization/routing";
-import type { Metadata, Viewport } from "next";
+import type { Viewport } from "next";
 import { notFound } from "next/navigation";
 import { hasLocale } from "next-intl";
 import { getMessages, setRequestLocale } from "next-intl/server";
 import type { ReactNode } from "react";
-import { env } from "@/env";
 import { themeScript } from "@/lib/theme";
 
 interface LocaleLayoutProperties {
@@ -19,12 +18,6 @@ interface LocaleLayoutProperties {
 }
 
 export const generateStaticParams = () => locales.map((locale) => ({ locale }));
-
-// AdSense checks this tag to confirm the site is the Society's (ads.txt
-// says the same); it loads nothing.
-export const metadata: Metadata = env.NEXT_PUBLIC_ADSENSE_CLIENT
-  ? { other: { "google-adsense-account": env.NEXT_PUBLIC_ADSENSE_CLIENT } }
-  : {};
 
 // The browser bar follows the mode: white in light, ink in dark.
 export const viewport: Viewport = {

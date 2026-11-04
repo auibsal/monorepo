@@ -1,4 +1,4 @@
-import { SalCard } from "@repo/design-system/components/sal/card";
+import { SalCard } from "@repo/brand/components/sal/card";
 import type { Meta, StoryObj } from "@storybook/react";
 import Image from "next/image";
 
@@ -149,7 +149,7 @@ export const Voice: Story = {
       </SalCard>
       <SalCard>
         <p className="type-body" lang="ar">
-          حُجز مقعدك. سأذكّرك قبل أن تبدأ.
+          انحجزلك مقعد. أذكّرك قبل ما تبدي.
         </p>
       </SalCard>
       <p className="type-caption">

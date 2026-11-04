@@ -1,8 +1,8 @@
 "use client";
 
 import { useAuth } from "@repo/auth/provider";
-import { Button } from "@repo/design-system/components/ui/button";
-import { Input } from "@repo/design-system/components/ui/input";
+import { Button } from "@repo/brand/components/ui/button";
+import { Input } from "@repo/brand/components/ui/input";
 import type { Locale } from "@repo/internationalization";
 import {
   formatLongDate,
@@ -361,7 +361,7 @@ const PrepareForm = ({ onDone }: { onDone: () => void }) => {
           value={form.role}
         />
       ) : null}
-      {form.kind === "prize" ? (
+      {form.kind === "award" ? (
         <BilingualField
           label={t("citation")}
           maxLength={500}
@@ -698,7 +698,7 @@ export const RecognitionAdmin = ({
   const grants = useGrants();
   const canConfirm =
     hasPermissionAnywhere(grants.data, "members.manage") ||
-    hasPermissionAnywhere(grants.data, "programmes.manage");
+    hasPermissionAnywhere(grants.data, "programs.manage");
   const canTotals = hasPermissionAnywhere(grants.data, "members.manage");
   const canCertificates =
     hasPermissionAnywhere(grants.data, "certificates.prepare") ||

@@ -1,8 +1,8 @@
 "use client";
 
-import { BrandLogo } from "@repo/design-system/components/brand-logo";
-import { Icon } from "@repo/design-system/components/sal/icon";
-import { cn } from "@repo/design-system/lib/utils";
+import { BrandLogo } from "@repo/brand/components/brand-logo";
+import { Icon } from "@repo/brand/components/sal/icon";
+import { cn } from "@repo/brand/lib/utils";
 import NextLink from "next/link";
 import { usePathname } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";

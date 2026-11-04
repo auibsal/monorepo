@@ -1,4 +1,4 @@
-import { buttonVariants } from "@repo/design-system/components/ui/button";
+import { buttonVariants } from "@repo/brand/components/ui/button";
 import type { Locale } from "@repo/internationalization";
 import {
   formatLongDate,

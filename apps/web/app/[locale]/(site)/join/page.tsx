@@ -1,4 +1,4 @@
-import { buttonVariants } from "@repo/design-system/components/ui/button";
+import { buttonVariants } from "@repo/brand/components/ui/button";
 import { localizedPath } from "@repo/internationalization";
 import { Link } from "@repo/internationalization/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";

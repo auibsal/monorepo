@@ -2,9 +2,9 @@
 
 import { isAuibEmail } from "@repo/auth/email";
 import { useAuth } from "@repo/auth/provider";
-import { Button } from "@repo/design-system/components/ui/button";
-import { Label } from "@repo/design-system/components/ui/label";
-import { Textarea } from "@repo/design-system/components/ui/textarea";
+import { Button } from "@repo/brand/components/ui/button";
+import { Label } from "@repo/brand/components/ui/label";
+import { Textarea } from "@repo/brand/components/ui/textarea";
 import { localizedPath } from "@repo/internationalization";
 import { formatClock, formatLongDate } from "@repo/internationalization/format";
 import { Link, useRouter } from "@repo/internationalization/navigation";

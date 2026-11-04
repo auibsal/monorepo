@@ -30,11 +30,9 @@ export const adminModules = [
       "journal.edit.video",
       "journal.edit.voices",
       "journal.edit.games",
-      "journal.prizes",
+      "journal.awards",
     ],
   },
-  // Waraq's ads: Society ads (content) and sponsor ads (partnerships).
-  { key: "ads", permissions: ["content.manage", "partners.manage"] },
   {
     key: "charity",
     permissions: [
@@ -43,14 +41,14 @@ export const adminModules = [
       "charity.ledger.signoff",
     ],
   },
-  { key: "programs", permissions: ["programmes.manage"] },
+  { key: "programs", permissions: ["programs.manage"] },
   // Hiring (owner, Oct 30, 2026): Membership runs every role's applications;
   // each owner (a program, the Editor, a director) picks for their own.
   {
     key: "hiring",
     permissions: [
       "members.manage",
-      "programmes.manage",
+      "programs.manage",
       "journal.manage",
       "content.manage",
       "partners.manage",
@@ -66,7 +64,7 @@ export const adminModules = [
       "certificates.sign",
       "certificates.countersign",
       "members.manage",
-      "programmes.manage",
+      "programs.manage",
     ],
   },
   {
@@ -82,7 +80,7 @@ export const adminModules = [
     key: "forms",
     permissions: [
       "members.manage",
-      "programmes.manage",
+      "programs.manage",
       "events.manage",
       "content.manage",
       "governance.manage",
@@ -109,7 +107,7 @@ export const adminSections = [
     modules: ["events", "programs", "charity"],
     path: "/events",
   },
-  { key: "qirtas", modules: ["journal", "ads"], path: "/qirtas" },
+  { key: "qirtas", modules: ["journal"], path: "/qirtas" },
   { key: "company", modules: ["productions"], path: "/company" },
   {
     key: "people",

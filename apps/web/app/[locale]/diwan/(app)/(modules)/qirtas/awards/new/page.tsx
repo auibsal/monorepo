@@ -1,9 +1,9 @@
 import { RequireModule } from "@/components/nexus/admin/admin-shell";
-import { NewRound } from "@/components/nexus/admin/journal/prizes";
+import { NewRound } from "@/components/nexus/admin/journal/awards";
 import { titleFrom } from "@/lib/nexus/metadata";
 
 export const generateMetadata = titleFrom((t) =>
-  t("nexus.admin.prizes.newRound")
+  t("nexus.admin.awards.newRound")
 );
 
 /** A new round of the Awards, on its own page. */

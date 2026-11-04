@@ -17,7 +17,7 @@ export const certificateKinds = [
   "volunteer",
   "production",
   "partner",
-  "prize",
+  "award",
   "apprenticeship",
 ] as const;
 
@@ -100,7 +100,7 @@ export const certificateSchema = z
         path: ["resolution_id"],
       });
     }
-    if (c.kind === "prize" && !c.citation_en) {
+    if (c.kind === "award" && !c.citation_en) {
       ctx.addIssue({
         code: "custom",
         message: "citation",

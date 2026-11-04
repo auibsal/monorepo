@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@repo/design-system/components/ui/button";
+import { Button } from "@repo/brand/components/ui/button";
 import jsQR from "jsqr";
 import { useTranslations } from "next-intl";
 import {

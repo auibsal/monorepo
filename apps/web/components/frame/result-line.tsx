@@ -1,5 +1,5 @@
-import { Icon } from "@repo/design-system/components/sal/icon";
-import { cn } from "@repo/design-system/lib/utils";
+import { Icon } from "@repo/brand/components/sal/icon";
+import { cn } from "@repo/brand/lib/utils";
 import type { ReactNode } from "react";
 
 const icons = { done: "check", error: "circle-alert", note: "info" } as const;

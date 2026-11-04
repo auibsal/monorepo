@@ -1,7 +1,7 @@
 "use client";
 
 import { useAuth } from "@repo/auth/provider";
-import { Button } from "@repo/design-system/components/ui/button";
+import { Button } from "@repo/brand/components/ui/button";
 import type { Locale } from "@repo/internationalization";
 import { formatDateTime } from "@repo/internationalization/format";
 import { localized, unwrap } from "@repo/sal-data";
@@ -45,16 +45,15 @@ const THINGS = {
   "governance.partners": "people",
   "governance.resolutions": "society",
   "governance.society_documents": "society",
-  "journal.ads": "qirtas",
   "journal.agreements": "qirtas",
   "journal.approvals": "qirtas",
+  "journal.award_entries": "qirtas",
+  "journal.award_rounds": "qirtas",
   "journal.calls": "qirtas",
   "journal.corrections": "qirtas",
   "journal.decisions": "qirtas",
   "journal.issues": "qirtas",
   "journal.pieces": "qirtas",
-  "journal.prize_entries": "qirtas",
-  "journal.prize_rounds": "qirtas",
   "journal.puzzles": "qirtas",
   "membership.activity_records": "people",
   "membership.certificates": "people",
@@ -77,14 +76,14 @@ const THINGS = {
 /**
  * Logged, but not news to officers: permission bundles and settings change
  * with the platform, terms come from the AUIB calendar, and judges and call
- * partners are recorded with their prize or call.
+ * partners are recorded with their award or call.
  */
 export const LEFT_OUT = [
   "access.role_permissions",
   "core.semesters",
   "core.settings",
   "journal.call_partners",
-  "journal.prize_judges",
+  "journal.award_judges",
 ] as const;
 
 type Thing = keyof typeof THINGS;

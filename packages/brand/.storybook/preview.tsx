@@ -1,8 +1,8 @@
-import { DesignSystemProvider } from "@repo/design-system";
+import { DesignSystemProvider } from "@repo/brand";
 import { withThemeByDataAttribute } from "@storybook/addon-themes";
 import type { Preview } from "@storybook/react";
 
-import "@repo/design-system/styles/globals.css";
+import "@repo/brand/styles/globals.css";
 
 /**
  * The design system (SAL-BRD-01). Light and dark mode (ink, data-theme="dark")
