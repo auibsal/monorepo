@@ -1274,7 +1274,22 @@
           "startsOn": "Starts on",
           "endsOn": "Ends on",
           "status": "Status",
-          "notFound": "No campaign with this link, or your roles don't cover it."
+          "notFound": "No campaign with this link, or your roles don't cover it.",
+          "stagesTitle": "Stages",
+          "stageDates": {
+            "boxes_on": "Boxes go out",
+            "donations_starts_on": "Donations start",
+            "donations_ends_on": "Donations end",
+            "fair_starts_on": "The fair starts",
+            "fair_ends_on": "The fair ends",
+            "handover_due_on": "Handover planned",
+            "impact_due_on": "Impact report due"
+          },
+          "dropOffTitle": "Drop-off points",
+          "dropOffPlace": "Place {n}",
+          "dropOffHours": "When it is open",
+          "dropOffAdd": "Add a drop-off point",
+          "dropOffRemove": "Remove this point"
         },
         "ledger": {
           "lede": "Entries can't be edited or deleted. To correct one, record a reversing entry, then the right amount.",
@@ -4192,7 +4207,6 @@
       "allEvents": "The whole calendar",
       "closes": "Closes {date}",
       "programs": "Programs",
-      "allPrograms": "All programs",
       "sundayPaper": "The Sunday Paper",
       "sundayPaperLede": "One email a month, on the first Sunday: what Qirtas published, what’s on and the places open to members."
     },
@@ -4254,7 +4268,6 @@
       "noCalls": "No call is open at the moment.",
       "closes": "Closes {date}",
       "opensCloses": "Opens {opens}. Closes {closes}.",
-      "submit": "Write for Qirtas",
       "issues": "Issues",
       "volumeNumber": "Vol. {volume}, No. {number}",
       "latest": "Latest pieces",
@@ -4521,7 +4534,6 @@
       },
       "waysNote": "We take no payments online. Give in person at the drive and the fair, where every amount is counted and recorded.",
       "counted": "{amount} counted and signed off",
-      "pending": "{amount} waiting to be counted",
       "noCampaign": "No campaign is running at the moment.",
       "transparencyTitle": "Every dinar",
       "transparencyLede": "Every dinar is counted twice and reported.",
@@ -4532,11 +4544,23 @@
       "noReceipts": "No receipts published yet.",
       "openReceipt": "View receipt",
       "impactTitle": "Impact",
-      "datesTitle": "Edition 1",
-      "dates": "Boxes go out October 29. Donations November 1–5. The fair November 8–11. The witnessed handover November 15. The impact report December 20.",
       "collectionTitle": "The collection",
       "handedOver": "Handed over on {date}: {amount}, witnessed, with a receipt.",
-      "handoverAhead": "Handed over in full to the charity partner at a witnessed handover, with a receipt."
+      "handoverAhead": "Handed over in full to our charity partner, witnessed, with a receipt.",
+      "dropOffTitle": "Where to leave books",
+      "range": "{from} to {to}",
+      "stages": {
+        "boxes": "Boxes go out",
+        "donations": "Donations",
+        "fair": "The fair",
+        "handover": "The witnessed handover",
+        "impact": "The impact report"
+      },
+      "states": {
+        "ahead": "Ahead",
+        "now": "Now",
+        "done": "Done"
+      }
     },
     "contact": {
       "title": "Contact",

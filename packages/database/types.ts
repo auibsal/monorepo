@@ -273,14 +273,22 @@ export type Database = {
     Tables: {
       campaigns: {
         Row: {
+          boxes_on: string | null;
           created_at: string;
+          donations_ends_on: string | null;
+          donations_starts_on: string | null;
+          drop_off_points: NonNullable<Json>;
           ends_on: string | null;
+          fair_ends_on: string | null;
+          fair_starts_on: string | null;
           handed_over_iqd: number | null;
           handed_over_on: string | null;
+          handover_due_on: string | null;
           handover_note: string | null;
           handover_receipt_id: string | null;
           handover_witness: string | null;
           id: string;
+          impact_due_on: string | null;
           partner_id: string | null;
           programme_id: string | null;
           slug: string;
@@ -293,14 +301,22 @@ export type Database = {
           updated_at: string;
         };
         Insert: {
+          boxes_on?: string | null;
           created_at?: string;
+          donations_ends_on?: string | null;
+          donations_starts_on?: string | null;
+          drop_off_points?: NonNullable<Json>;
           ends_on?: string | null;
+          fair_ends_on?: string | null;
+          fair_starts_on?: string | null;
           handed_over_iqd?: number | null;
           handed_over_on?: string | null;
+          handover_due_on?: string | null;
           handover_note?: string | null;
           handover_receipt_id?: string | null;
           handover_witness?: string | null;
           id?: string;
+          impact_due_on?: string | null;
           partner_id?: string | null;
           programme_id?: string | null;
           slug: string;
@@ -313,14 +329,22 @@ export type Database = {
           updated_at?: string;
         };
         Update: {
+          boxes_on?: string | null;
           created_at?: string;
+          donations_ends_on?: string | null;
+          donations_starts_on?: string | null;
+          drop_off_points?: NonNullable<Json>;
           ends_on?: string | null;
+          fair_ends_on?: string | null;
+          fair_starts_on?: string | null;
           handed_over_iqd?: number | null;
           handed_over_on?: string | null;
+          handover_due_on?: string | null;
           handover_note?: string | null;
           handover_receipt_id?: string | null;
           handover_witness?: string | null;
           id?: string;
+          impact_due_on?: string | null;
           partner_id?: string | null;
           programme_id?: string | null;
           slug?: string;

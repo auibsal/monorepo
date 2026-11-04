@@ -16,7 +16,7 @@ const list = (t: Copy, names: (keyof Copy["commands"])[]): BotCommand[] =>
 const PRIVATE: (keyof Copy["commands"])[] = [
   "start",
   "events",
-  "waraq",
+  "qirtas",
   "word",
   "me",
   "help",

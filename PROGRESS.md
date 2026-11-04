@@ -7,6 +7,32 @@ first session); section numbers (§) refer to it.
 
 Branch: `claude/new-session-qosn60`.
 
+## The design review: PR 1, now (2026-11-04)
+
+- [x] Owner decisions D3–D12 recorded (decisions §22).
+- [x] F4 Hudhud's `/waraq` is `/qirtas`, with its help line, button and
+  topic purpose in both languages (groups' old `waraq` topics still work).
+- [x] R1 One homepage link to `/events` (the Programs heading's repeat is gone).
+- [x] R2 One Write for Qirtas on the Qirtas front page: the calls band's
+  button (a text link while no call is open).
+- [x] C14 The Sunday Paper signup ends the Qirtas front page.
+- [x] C4 Second Chapter's stage tracker from the campaign's record:
+  stage days (`boxes_on`, `donations_*`, `fair_*`, `handover_due_on`,
+  `impact_due_on`, migration `20261101002000`), the handover only once
+  recorded, the impact report only once published, signed-off figures
+  only (the "waiting to be counted" figure is gone), "our charity partner".
+- [x] A25 Drop-off points: a repeating field on the campaign (the Diwan's
+  campaign settings), shown on the program's page only when entered.
+- [ ] Owner: enter Second Chapter's campaign with its stage days and
+  drop-off points (F3). The page no longer carries the hand-written Edition 1
+  dates; until a campaign is entered it says no campaign is running.
+- [ ] Owner: add `VERCEL_DEPLOY_HOOK` to the GitHub `production`
+  environment (F1). Every migrate run since #168 stops at "Secrets are
+  set", so nothing after Oct 31's `8c68031` is migrated or deployed.
+- needs-native-review: the new Arabic in `web.give` (stages, states,
+  drop-off points) and `nexus.admin.charity.campaign` (stage days,
+  drop-off fields).
+
 ## Every email audited (2026-11-04)
 
 - [x] One standard for every email (`packages/email`): preview line,

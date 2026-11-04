@@ -46,7 +46,10 @@ export const replyHere = (ctx: BotContext, text: string, other: Other = {}) =>
 /** The topic for a purpose: undefined when none is set, 0 for General. */
 export const topicOf = (group: Group, ...wanted: Purpose[]) => {
   for (const purpose of wanted) {
-    const thread = group.topics[purpose];
+    // Topics chosen before the rename (Nov 4, 2026) are stored as "waraq".
+    const thread =
+      group.topics[purpose] ??
+      (purpose === "qirtas" ? group.topics.waraq : undefined);
     if (typeof thread === "number") {
       return thread;
     }

@@ -592,8 +592,12 @@ any schema change. Integration tests run against a local stack with
   charity ledger (append-only, corrections are reversing entries, two
   counters, only signed-off entries count; the General Secretary
   witnesses and signs off), the witnessed handover on the campaign
-  (`handed_over_on`, amount, witness, receipt) and the impact report. No
-  online payments of any kind.
+  (`handed_over_on`, amount, witness, receipt) and the impact report. The
+  program's page follows the campaign through five stages (boxes,
+  donations, the fair, the handover, the impact report;
+  `charity.campaignStages`) from the days kept on the campaign, and lists
+  its drop-off points (`drop_off_points`) when entered (owner, Nov 4,
+  2026); it shows signed-off figures only. No online payments of any kind.
 - **The Council page** (owner, Oct 30, 2026; `/about/council`, the members'
   Society page and the Diwan's Governance → Council) comes from the roles
   people hold (`governance.council_members()`): everyone holding a Council

@@ -4,6 +4,14 @@ The platform of the AUIB Society of Arts and Letters, auibsal.org. Each
 release is tagged in git (`v1.0.0`, …); the Society's documents keep their
 own versions in the Library.
 
+## Unreleased
+
+- Second Chapter's page follows the collection through its stages and
+  lists its drop-off points, from the campaign's record.
+- Hudhud's Qirtas command is `/qirtas`.
+- The homepage and the Qirtas front page drop repeated links; the Sunday
+  Paper signup ends the Qirtas front page.
+
 ## 1.0.0 (November 2026)
 
 The final production version, after the platform audit of October 31,

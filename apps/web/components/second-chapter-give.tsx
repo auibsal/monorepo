@@ -4,6 +4,7 @@ import {
   formatIqd,
   formatLongDate,
   formatNumber,
+  toZonedDateValue,
 } from "@repo/internationalization/format";
 import { charity, localized } from "@repo/sal-data";
 import { getTranslations } from "next-intl/server";
@@ -16,7 +17,9 @@ const WAYS = ["books", "volunteer", "warm"] as const;
  * Second Chapter's collection, on the program's own page (the overhaul,
  * Oct 30, 2026: the Give page folded into it, since the collection is the
  * only giving the Society does): the ways to give, the dates, what was
- * counted and handed over, and the receipts.
+ * counted and handed over, and the receipts. Since Nov 4, 2026 the dates
+ * are the campaign's stages, read from its record, and only signed-off
+ * figures show.
  */
 export const SecondChapterGive = async ({ locale }: { locale: Locale }) => {
   const t = await getTranslations({ locale, namespace: "web.give" });
@@ -42,6 +45,7 @@ export const SecondChapterGive = async ({ locale }: { locale: Locale }) => {
         ),
       ])
     : [[], []];
+  const points = charity.dropOffPoints(campaign?.drop_off_points);
 
   return (
     <div className="grid gap-20">
@@ -56,33 +60,49 @@ export const SecondChapterGive = async ({ locale }: { locale: Locale }) => {
         <p className="type-body">{t("waysNote")}</p>
       </Section>
 
-      <Section id="dates" title={t("datesTitle")}>
-        <p className="type-body max-w-[60ch]">{t("dates")}</p>
-      </Section>
+      {points.length > 0 ? (
+        <Section id="drop-off" title={t("dropOffTitle")}>
+          <ul className="grid gap-x-10 sm:grid-cols-2">
+            {points.map((p) => (
+              <li
+                className="grid gap-1 border-line border-t py-space-4"
+                key={`${p.place_en}-${p.place_ar}`}
+              >
+                <span className="type-subheading">
+                  {locale === "ar" ? p.place_ar : p.place_en}
+                </span>
+                {(locale === "ar" ? p.hours_ar : p.hours_en) ? (
+                  <span className="type-caption text-text-secondary">
+                    {locale === "ar" ? p.hours_ar : p.hours_en}
+                  </span>
+                ) : null}
+              </li>
+            ))}
+          </ul>
+        </Section>
+      ) : null}
 
       <Section id="collection" title={t("collectionTitle")}>
-        {campaign && collected ? (
-          <div className="grid gap-3">
+        {campaign ? (
+          <div className="grid gap-6">
             <h3 className="type-subheading">
               {localized(campaign, "title", locale)}
             </h3>
-            <p className="type-body font-medium">
-              {t("counted", {
-                amount: formatIqd(collected.counted_iqd, locale),
-              })}
-              {collected.pending_iqd > 0
-                ? ` · ${t("pending", { amount: formatIqd(collected.pending_iqd, locale) })}`
-                : ""}
-            </p>
-            <p className="type-body">
-              {campaign.handed_over_on && campaign.handed_over_iqd !== null
-                ? t("handedOver", {
-                    amount: formatIqd(campaign.handed_over_iqd, locale),
-                    date: formatLongDate(campaign.handed_over_on, locale),
-                  })
-                : t("handoverAhead")}
-            </p>
-            <p className="type-caption">{t("countedNote")}</p>
+            <StageList
+              campaign={campaign}
+              impactPublished={impact.length > 0}
+              locale={locale}
+            />
+            {collected && collected.counted_iqd > 0 ? (
+              <div className="grid gap-1">
+                <p className="type-body font-medium">
+                  {t("counted", {
+                    amount: formatIqd(collected.counted_iqd, locale),
+                  })}
+                </p>
+                <p className="type-caption">{t("countedNote")}</p>
+              </div>
+            ) : null}
           </div>
         ) : (
           <p className="type-body text-text-secondary">{t("noCampaign")}</p>
@@ -147,5 +167,84 @@ export const SecondChapterGive = async ({ locale }: { locale: Locale }) => {
         </div>
       </Section>
     </div>
+  );
+};
+
+type Campaign = NonNullable<
+  Awaited<ReturnType<typeof charity.activeCampaigns>>
+>[number];
+
+/**
+ * The collection's five stages as a plain list, the current one marked by
+ * an ink hairline and `aria-current` (owner, Nov 4, 2026).
+ */
+const StageList = async ({
+  campaign,
+  impactPublished,
+  locale,
+}: {
+  campaign: Campaign;
+  impactPublished: boolean;
+  locale: Locale;
+}) => {
+  const t = await getTranslations({ locale, namespace: "web.give" });
+  const stages = charity.campaignStages(
+    campaign,
+    toZonedDateValue(new Date()),
+    impactPublished
+  );
+  const current = stages.find((s) => s.state === "now");
+  const when = (stage: charity.Stage) => {
+    if (!stage.from) {
+      return null;
+    }
+    if (stage.to && stage.to !== stage.from) {
+      return t("range", {
+        from: formatLongDate(stage.from, locale),
+        to: formatLongDate(stage.to, locale),
+      });
+    }
+    return formatLongDate(stage.from, locale);
+  };
+  const handover =
+    campaign.handed_over_on && campaign.handed_over_iqd !== null
+      ? t("handedOver", {
+          amount: formatIqd(campaign.handed_over_iqd, locale),
+          date: formatLongDate(campaign.handed_over_on, locale),
+        })
+      : t("handoverAhead");
+  return (
+    <ol className="grid gap-x-8 sm:grid-cols-5">
+      {stages.map((stage) => {
+        const isCurrent = stage === current;
+        // A recorded handover says its own day.
+        const date =
+          stage.key === "handover" && campaign.handed_over_on
+            ? null
+            : when(stage);
+        return (
+          <li
+            aria-current={isCurrent ? "step" : undefined}
+            className={
+              isCurrent
+                ? "grid content-start gap-1 border-text border-t py-space-4"
+                : "grid content-start gap-1 border-line border-t py-space-4"
+            }
+            key={stage.key}
+          >
+            <span className="type-label text-text-secondary">
+              {t(`states.${stage.state}`)}
+            </span>
+            <span className="type-subheading">{t(`stages.${stage.key}`)}</span>
+            {stage.key === "handover" ? (
+              <span className="type-caption">{handover}</span>
+            ) : null}
+            {date ? (
+              <span className="type-caption text-text-secondary">{date}</span>
+            ) : null}
+          </li>
+        );
+      })}
+    </ol>
   );
 };

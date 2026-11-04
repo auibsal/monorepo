@@ -34,7 +34,7 @@ places, Qirtas decisions). A member who blocks the bot has them turned off.
 | Command | Who | What it does |
 | --- | --- | --- |
 | `/setup <code>` | Group admins | Connects the group. The code comes from the Diwan. |
-| `/topic <purpose>` | Group admins | Sent inside a topic: what it is for. Purposes: `announcements`, `events`, `waraq`, `word`, `brief` (the staff group's morning brief and event summaries). `/topic none` clears it. In General it sets General. |
+| `/topic <purpose>` | Group admins | Sent inside a topic: what it is for. Purposes: `announcements`, `events`, `qirtas` (groups set up before Nov 4, 2026 keep their `waraq` topic), `word`, `brief` (the staff group's morning brief and event summaries). `/topic none` clears it. In General it sets General. |
 | `/lang en \| ar \| both` | Group admins | The language of the bot's posts (default `both`). |
 | `/audience staff \| members` | Group admins | Who the group is for (default `members`). `staff` makes it the Diwan group: see below. |
 | `/events` | Everyone | What's coming up, with buttons that open the bot. |
@@ -51,8 +51,8 @@ And without commands:
 - **Posts, every ten minutes** (pg_cron → `/cron/telegram`): new public events
   in the next 45 days (to `events`, else `announcements`), a "starting
   soon" reply three hours before, new Qirtas pieces of the last three days
-  (`waraq`, else `announcements`), and the daily word at 9:00 AM Baghdad
-  time (`word`, else `waraq`; its Play button opens the Main App). A
+  (`qirtas`, else `announcements`), and the daily word at 9:00 AM Baghdad
+  time (`word`, else `qirtas`; its Play button opens the Main App). A
   purpose without a topic gets no posts. Each post goes out once
   (`core.telegram_posts`).
 

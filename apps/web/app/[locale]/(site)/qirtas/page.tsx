@@ -53,47 +53,31 @@ const Calls = async ({ locale }: { locale: Locale }) => {
         {t("calls")}
       </h2>
       <div className="mx-auto grid w-full max-w-6xl gap-8 px-4 py-12">
-        {calls.map((call, index) => {
-          const isOpen = opened(call);
-          // One solid button in the band: the first open call's.
-          const first = calls.findIndex(opened) === index;
-          return (
-            <div
-              className="grid gap-6 md:grid-cols-[1fr_auto] md:items-center"
-              key={call.id}
-            >
-              <div className="grid gap-2">
-                <h3 className="type-title text-on-band">
-                  {localized(call, "title", locale)}
-                </h3>
-                <p className="text-on-band/85">
-                  {isOpen
-                    ? t("closes", {
-                        date: formatLongDate(call.closes_at, locale),
-                      })
-                    : t("opensCloses", {
-                        closes: formatLongDate(call.closes_at, locale),
-                        opens: formatLongDate(call.opens_at, locale),
-                      })}
-                </p>
-              </div>
-              {isOpen ? (
-                <a
-                  className={
-                    first
-                      ? "inline-flex h-12 items-center justify-self-start bg-on-band px-6 font-medium text-[0.9375rem] text-band hover:bg-on-band/90"
-                      : "justify-self-start font-medium text-on-band underline decoration-1 underline-offset-4"
-                  }
-                  href={localizedPath(locale, "/qirtas/write")}
-                >
-                  {t("submit")}
-                </a>
-              ) : null}
-            </div>
-          );
-        })}
+        {calls.map((call) => (
+          <div className="grid gap-2" key={call.id}>
+            <h3 className="type-title text-on-band">
+              {localized(call, "title", locale)}
+            </h3>
+            <p className="text-on-band/85">
+              {opened(call)
+                ? t("closes", {
+                    date: formatLongDate(call.closes_at, locale),
+                  })
+                : t("opensCloses", {
+                    closes: formatLongDate(call.closes_at, locale),
+                    opens: formatLongDate(call.opens_at, locale),
+                  })}
+            </p>
+          </div>
+        ))}
+        {/* One way in for every call (Nov 4, 2026): the band's one solid
+            button while a call is open, a text link otherwise. */}
         <a
-          className="justify-self-start text-on-band underline decoration-1 underline-offset-4"
+          className={
+            calls.some(opened)
+              ? "inline-flex h-12 items-center justify-self-start bg-on-band px-6 font-medium text-[0.9375rem] text-band hover:bg-on-band/90"
+              : "justify-self-start text-on-band underline decoration-1 underline-offset-4"
+          }
           href={localizedPath(locale, "/qirtas/write")}
         >
           {t("sendNews")}
@@ -368,7 +352,9 @@ const WaraqFrontPage = async ({ params }: WaraqProps) => {
         ) : null}
 
         <WaraqAd locale={locale} page="/qirtas" slot={1} />
-
+      </div>
+      <Calls locale={locale} />
+      <div className="mx-auto w-full max-w-6xl px-4 py-12">
         <section
           aria-labelledby="newsletter"
           className="grid gap-4 border-line border-t pt-space-4 md:grid-cols-[1fr_1.4fr] md:items-start"
@@ -382,7 +368,6 @@ const WaraqFrontPage = async ({ params }: WaraqProps) => {
           <NewsletterSignup compact />
         </section>
       </div>
-      <Calls locale={locale} />
     </>
   );
 };

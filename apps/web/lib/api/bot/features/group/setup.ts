@@ -84,6 +84,9 @@ adminCommand("topic", async (ctx, arg, group) => {
     }
   } else if (purposes.includes(arg as Purpose)) {
     topics[arg] = thread;
+    if (arg === "qirtas") {
+      Reflect.deleteProperty(topics, "waraq");
+    }
   } else {
     await replyHere(ctx, ctx.t.topicUsage);
     return;
