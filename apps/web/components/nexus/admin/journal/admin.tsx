@@ -25,11 +25,10 @@ import {
   DataTable,
   ErrorLine,
   Field,
-  RecordPage,
   SaveButton,
 } from "../kit";
 import { MemberPicker } from "../member-picker";
-import { Needs, NewNeed } from "../needs";
+import { Needs } from "../needs";
 import { openSubmissionFile } from "../pipeline/data";
 import { PipelineAdmin } from "../pipeline/pipeline";
 import { NextStopAdmin } from "../programmes/admin";
@@ -789,33 +788,7 @@ const QirtasNeeds = () => {
   if (row.isPending) {
     return <SectionSpinner />;
   }
-  return row.data ? (
-    <Needs base="/qirtas/needs" programmeId={row.data.id} />
-  ) : null;
-};
-
-/** A new need for the paper, at /qirtas/needs/new. */
-export const NewQirtasNeed = () => {
-  const t = useTranslations("nexus.admin.needs");
-  const { supabase } = useAuth();
-  const row = useQuery({
-    queryFn: async () =>
-      unwrap(
-        await supabase
-          .schema("core")
-          .from("programmes")
-          .select("id")
-          .eq("slug", "waraq")
-          .maybeSingle()
-      ),
-    queryKey: ["admin", "qirtas-programme"],
-  });
-  return (
-    <RecordPage back="/qirtas" backLabel={t("backToQirtas")} title={t("new")}>
-      {row.isPending ? <SectionSpinner /> : null}
-      {row.data ? <NewNeed back="/qirtas" programmeId={row.data.id} /> : null}
-    </RecordPage>
-  );
+  return row.data ? <Needs programmeId={row.data.id} /> : null;
 };
 
 // Who writes in the newsroom: the masthead and every section editor.

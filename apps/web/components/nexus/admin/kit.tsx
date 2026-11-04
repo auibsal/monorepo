@@ -24,7 +24,7 @@ import {
 } from "@repo/internationalization/format";
 import { DataError } from "@repo/sal-data";
 import { useTranslations } from "next-intl";
-import { type ReactNode, useId, useState } from "react";
+import { type ReactNode, useEffect, useId, useRef, useState } from "react";
 import { DateInput } from "@/components/fields/date-input";
 import { useAppLink } from "@/lib/link-context";
 import { callApiText } from "@/lib/nexus/api";
@@ -62,9 +62,9 @@ export const AdminHeading = ({
 );
 
 /**
- * The way to a blank record (owner, Nov 4, 2026: every new record opens
- * its own page, at its list's path and "/new"; never a form under the
- * list). A text link, so the page keeps its one accent action.
+ * The way to a blank big record (an event, a piece, a partner …): its own
+ * page at its list's path and "/new". A text link, so the page keeps its
+ * one accent action. Small rows use `AddInPlace` instead (decisions §26).
  */
 export const NewLink = ({
   children,
@@ -78,6 +78,66 @@ export const NewLink = ({
     <AppLink className="link justify-self-start font-medium" href={href}>
       {children}
     </AppLink>
+  );
+};
+
+/**
+ * A small row added on its own list (a need, a shift, a credit, a ledger
+ * line …; decisions §26): a text link that opens the form in place, under
+ * the list, pushing the page down (never a dialog). The form gets `close`,
+ * which it calls once saved; Cancel closes it too. Focus moves into the
+ * form when it opens and back to the link when it closes.
+ */
+export const AddInPlace = ({
+  children,
+  label,
+}: {
+  readonly children: (close: () => void) => ReactNode;
+  readonly label: string;
+}) => {
+  const t = useTranslations("nexus.admin.kit");
+  const [open, setOpen] = useState(false);
+  const region = useRef<HTMLDivElement>(null);
+  const opener = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    if (open) {
+      region.current
+        ?.querySelector<HTMLElement>("input, textarea, button, [tabindex]")
+        ?.focus();
+    }
+  }, [open]);
+  const close = () => {
+    setOpen(false);
+    // The link is back once React has rendered; return focus to it.
+    requestAnimationFrame(() => opener.current?.focus());
+  };
+  if (!open) {
+    return (
+      <button
+        className="link justify-self-start font-medium"
+        onClick={() => setOpen(true)}
+        ref={opener}
+        type="button"
+      >
+        {label}
+      </button>
+    );
+  }
+  return (
+    <section
+      aria-label={label}
+      className="grid max-w-3xl gap-4 border-line border-t pt-space-4"
+      ref={region}
+    >
+      {children(close)}
+      <button
+        className="link justify-self-start text-text-secondary"
+        onClick={close}
+        type="button"
+      >
+        {t("cancel")}
+      </button>
+    </section>
   );
 };
 
