@@ -261,7 +261,7 @@ export const SetupForm = () => {
           <Button onClick={leave} type="button">
             {t("welcome.open")}
           </Button>
-          <Link className="link" href="/membership/settings/more">
+          <Link className="link" href="/membership/settings/profile#details">
             {t("welcome.more")}
           </Link>
         </div>

@@ -16,7 +16,7 @@ import { DiwanSection, RowList } from "../page";
 const WHERE: Record<string, string> = {
   grants_asked: "/people/partners",
   hiring_new: "/people/hiring",
-  partner_applications: "/people/verification",
+  partner_applications: "/people/partners/applications",
   perks_waiting: "/people/partners",
   requests_open: "/society/requests",
   submissions_new: "/qirtas",

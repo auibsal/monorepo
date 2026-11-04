@@ -5,7 +5,28 @@ Every session starts here and continues from the first unticked item. The
 brief is `sal-platform-claude-code-prompt.md` (uploaded at the start of the
 first session); section numbers (§) refer to it.
 
-Branch: `claude/qirtas-reading` (PR 4b of the design review).
+Branch: `claude/simpler-diwan` (simpler Diwan, Membership and Partners).
+
+## Simpler Diwan, Membership and Partners: phase 1 (2026-11-04)
+
+The owner relaxed the house rules (decisions §26): counts, paths for
+everything, a page for every record and links both ways are guidelines
+now; one place for each thing.
+
+- [x] Partners in one place: Applications (was People → Verification) is
+  Partners' first view, `/diwan/people/partners/applications`; each
+  partner's guests are on its page (the Affiliations tab is gone).
+- [x] Officers' conflict-of-interest declarations moved to Society
+  (`/diwan/society/declarations`).
+- [x] "Tell us more" merged into Profile's details; Today and the welcome
+  screen open `/membership/settings/profile#details`.
+- [ ] Phase 2: small rows edited in place (needs, shifts, credits,
+  rehearsals, audition slots, ledger lines, receipts, impact figures,
+  hours, activities, roles) instead of their `new` pages.
+- [ ] Phase 3: one Openings list in place of three (a program's Places,
+  People → Hiring, Partners → Places).
+- needs-native-review: `nexus.admin.partners.tabs.applications`,
+  `register.guests`, `nexus.admin.society.declarations.title`.
 
 ## The design review: PR 4b, reading Qirtas (2026-11-04)
 

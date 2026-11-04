@@ -23,8 +23,8 @@ and decisions), and continue from the first unticked item.
     Today (`/membership`), My calendar (`/membership/calendar`), Society
     (`/membership/society`), Record (`/membership/record`, a certificate at
     `/membership/record/<id>`), Settings (`/membership/settings`, with
-    `/settings/profile`, `/settings/more` ("Tell us more") and
-    `/settings/notices`; officers also `/settings/declarations`, and
+    `/settings/profile` (with the optional details, once "Tell us more")
+    and `/settings/notices`; officers also `/settings/declarations`, and
     their recovery codes on Settings), Requests (`/membership/requests/<id>`) and
     their work (`/membership/work/<id>`, `/work/submissions/<id>`; the list
     is their drafts on `/qirtas/write`, private work lives nowhere else);
@@ -52,9 +52,11 @@ and decisions), and continue from the first unticked item.
     2026: no general door); Second Chapter's collection
     is a tab of its program), Qirtas (`/diwan/qirtas` and its tabs;
     calls are on each Edition's page), The Company (`/diwan/company`), People (`/diwan/people`,
-    verification (partner applications only), hiring, service, partners, insights) and Society
+    hiring, service, partners, insights; Partners in one place: applications,
+    the register (each partner's page holds its guests), memoranda, perks
+    and places) and Society
     (`/diwan/society`: meetings with their resolutions, requests to Student Life,
-    elections, concerns, the Library, where only `governance.manage`, the
+    elections, concerns, officers' conflict-of-interest declarations, the Library, where only `governance.manage`, the
     President, the Vice President and the General Secretary, keep the
     documents). Records by name where they have one
     (`/diwan/events/<slug>`, `/diwan/qirtas/pieces/<slug>`; `RecordRef`
@@ -78,53 +80,29 @@ and decisions), and continue from the first unticked item.
     members or, with `/audience staff`, the Diwan group: officers only
     (`core.telegram_is_staff`), a morning brief and event summaries
     (`lib/api/bot/staff.ts`).
-- **Paths, never queries** (owner, Oct 31, 2026). Every view has its own
-  path: tabs are pages (`SectionTabs` matches by path), a month is
-  `/events/2026-11` (`/events/2026-11/society`, `/events/<series>/2026-11`,
-  `/company/2026-11`; no event or production slug may read as a month),
-  a production is `/company/<slug>`, search is `/search/<words>` (results
-  grouped by kind), a welcome step `/welcome/2`, a request
-  `/membership/requests/new/<form>`. Never add `?tab=` or a query for
-  what a path can say.
-- **Every new or edited record opens its own page** (owner, Oct 31,
-  2026, for the Diwan; Nov 4, 2026, across the whole platform: the
-  Diwan, Membership and the partner dashboard). A record is edited at its
-  list's path, then "/" and its name (or id), "new" for a blank one, and
-  saving returns to the list: never a form opened in place under a list,
-  a dialog or a tab held in state. The list links to it with `NewLink`;
-  the page is `RecordPage` (both `components/nexus/admin/kit.tsx`).
-  What stays where it is: one-step actions on a record (pick and attach
-  a member, partner, event or piece; publish, close, sign, confirm; a
-  note in a thread) and the sign-in and settings forms that are pages
-  themselves. Openings (`OpeningEditor`: `/events/<program>/places/<id>`,
-  `/people/hiring/<id>`, `/people/partners/places/<id>`; new ones at
-  `…/places/new` and `/people/hiring/new`), partners
-  (`/people/partners/<slug>`, each view of Partners its own path; perks
-  at `/people/partners/offers/new`), memoranda
-  (`/people/partners/agreements/<id>`), calls
-  (`/qirtas/editions/<edition>/calls/<id>`), resolutions
-  (`/society/meetings/<id>/resolutions/<code>`: minutes and resolutions
-  are one, meetings of the Council or the General Assembly; every new
-  resolution names its meeting), requests (`/society/concerns/<id>`,
-  `/society/motions/<id>`, `/events/pitches/<id>`), elections
-  (`/society/elections/new`), contributors
-  (`/qirtas/contributors/<slug>`), Next Stop episodes
-  (`/qirtas/video/episodes/<slug>`; reels at `/qirtas/video/reels/new`),
-  Awards rounds (`/qirtas/awards/new`), needs (`/events/<program>/needs/new`,
-  `/qirtas/needs/new`), rotas and shifts (`/events/<program>/shifts/new`,
-  `/events/<program>/shifts/<rota>/new`), productions (`/company/<slug>`,
-  `/company/<slug>/<tab>`, and `/company/<slug>/<tab>/new` for an audition
-  slot, credit or rehearsal), Second Chapter campaigns
-  (`/events/second-chapter/campaigns/<slug>/<tab>`, with `ledger/new`,
-  `receipts/new` and `impact/new`), Service
-  (`/people/service/totals`, `/people/service/certificates`,
-  `/people/service/certificates/new`) and a member's activity and roles
-  (`/people/<id>/activity/new`, `/people/<id>/roles/new`). For members:
-  hours at `/membership/record/new`, standing for office at
-  `/membership/society/stand/<position>`, a partner's perk at
-  `/partners/dashboard/perks/new`, and Qirtas drafts at
-  `/qirtas/write/<type>/<draft>`. Tab lists the server pages read live in
-  `components/nexus/admin/tabs.ts`, not in a client module.
+- **Standard practice over house rules** (owner, Nov 4, 2026, evening;
+  decisions §26). These are guidelines, not laws: keep what helps, change
+  what doesn't, merge what repeats.
+  - **Addresses.** Pages people share, bookmark or come back to have
+    their own path (tabs, a month at `/events/2026-11`, a production, a
+    search at `/search/<words>`, an issue, an archive month). Filters,
+    toggles and other passing state may use a query string or stay in
+    the page.
+  - **Big records get pages; small rows are edited in place.** A record
+    with many fields or its own life (an event, a piece, a production, a
+    partner, a memorandum, a campaign, a document, an election, an
+    opening, a call, a meeting and its resolutions) is edited on its own
+    page (`RecordPage`, `NewLink`, `components/nexus/admin/kit.tsx`),
+    "new" for a blank one. A small row on a list (a need, a shift, a
+    credit, a rehearsal, an audition slot, a ledger line, a receipt, an
+    impact figure, hours, an activity, a role) may be added and edited in
+    place on its list, as most admin tools do.
+  - **One place for each thing.** Nothing is kept or managed in two
+    places; when two views show the same records, merge them.
+  - **Counts are not rules.** Sections, types, programs and tabs are as
+    many as the work needs; add, merge or retire them freely.
+  - **Links between the site and the Diwan** (`OnTheSite`, `ManageLinks`)
+    are added where they help, not required on every page.
 - **Choices on the page** (owner, Oct 31, 2026). Several options are
   chosen on the page, never in a dialog or the browser's pop-up list:
   `SelectInput` (`ChoiceInput`, `components/nexus/admin/choice-input.tsx`)
@@ -141,17 +119,6 @@ and decisions), and continue from the first unticked item.
   Guest and the roles they hold (`journal.author_card`) and published work
   only: private work is drafts on `/qirtas/write` (owner, Oct 31, 2026).
   Pen names show published work only, never a kind or a role.
-- **New is one flow** (owner, Oct 31, 2026). A blank record is the full
-  editor at `new`, created on save (Library documents at
-  `/society/library/new`, staff pieces at `/qirtas/pieces/new`); never a
-  short form that creates and then opens the editor.
-- **Links both ways** (owner, Oct 31, 2026). A Diwan, partner or
-  Membership page whose record has a public page links to it with
-  `OnTheSite` (`components/nexus/site-links.tsx`); public pages carry
-  `ManageLinks` (`components/manage-links.tsx`): "Manage in the Diwan"
-  for officers, the partner dashboard for a partner's team, bookings or
-  work for members, read from the `sal_ways` and sign-in cookies after
-  the first render (UX only).
 - **URLs.** English, the default language, has no prefix (`/events`,
   `/diwan/events`); other languages do (`/ar/events`, `/ar/diwan/events`)
   (owner, Oct 14, 2026). API routes carry no language (`/api/...`). Build
@@ -355,8 +322,9 @@ any schema change. Integration tests run against a local stack with
   language's four parts not yet given, each pledge not yet made in its current version, and, the
   first time, photos; then the welcome screen with the card. Language
   follows the sign-up page and email notices start on (both in Settings).
-  The optional details are "Tell us more" (`/membership/settings/more`, a question
-  at a time with Skip), offered on Today; Profile keeps the full form.
+  The optional details are on Profile (`/membership/settings/profile`,
+  Details), offered on Today while they are thin (Nov 4, 2026: the
+  separate "Tell us more" pages were merged into Profile).
   Each screen starts at the top with its heading focused, never scrolled.
 - **One address, one person.** The personal email (optional, for after
   graduation) is set only through `core.request_personal_email` and counts
@@ -580,7 +548,7 @@ any schema change. Integration tests run against a local stack with
   (`governance.ask_for_grants`) and Partnerships gives them
   (`give_grants`); a partner's perk shows only once Partnerships publishes
   it (`private.perks_wait_for_the_society`, `submitted_at`).
-  The Diwan's verification queue holds these applications
+  Partners → Applications (`/diwan/people/partners/applications`) holds these applications
   (`governance.partner_applications()`); the President signs, the partner
   turns active and whoever applied gets `partner_lead` (`partners.own`
   and `partners.lead`, scoped `partner`). Each partner keeps one

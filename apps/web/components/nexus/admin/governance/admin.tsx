@@ -26,6 +26,7 @@ import {
   SelectInput,
 } from "../kit";
 import { Needs } from "../needs";
+import { Declarations } from "../partners/admin";
 import { Elections } from "./elections";
 
 const key = ["admin", "governance"];
@@ -469,6 +470,7 @@ export type SocietyViewKey =
   | "requests"
   | "elections"
   | "concerns"
+  | "declarations"
   | "library";
 
 /**
@@ -503,6 +505,7 @@ export const SocietyView = ({ view }: { readonly view: SocietyViewKey }) => {
       {view === "concerns" ? (
         <RequestQueue base="/society/concerns" keys={["f19", "f20"]} />
       ) : null}
+      {view === "declarations" ? <Declarations /> : null}
       {view === "library" ? <LibraryAdmin /> : null}
     </div>
   );

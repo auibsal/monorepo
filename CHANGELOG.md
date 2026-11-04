@@ -6,6 +6,9 @@ own versions in the Library.
 
 ## Unreleased
 
+- The Diwan's Partners in one place: applications, the register (each
+  partner's page with its guests), memoranda, perks and places; officers'
+  declarations are under Society. "Tell us more" is part of Profile.
 - Qirtas: pull quotes and numbered notes; a photo essay layout; pieces
   link to their event; RSS for the paper and each section; an archive by
   month and section; pieces and crosswords print cleanly.
