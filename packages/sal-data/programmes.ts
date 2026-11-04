@@ -110,9 +110,9 @@ export const timeLeft = (dueAt: string, now = new Date()) => {
   };
 };
 
-// ── The Callboard ────────────────────────────────────────────────────────────
+// ── Get involved ────────────────────────────────────────────────────────────
 
-/** Open roles on the Callboard (RLS shows members the open ones). */
+/** Open roles on Get involved (RLS shows members the open ones). */
 export const openings = async (client: Client) =>
   unwrap(
     await client

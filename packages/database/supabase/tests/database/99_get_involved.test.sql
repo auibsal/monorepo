@@ -1,4 +1,4 @@
--- The Callboard: openings, replies, and skills on shifts.
+-- The GetInvolved: openings, replies, and skills on shifts.
 begin;
 -- <preamble>
 -- Shared pgTAP preamble. Each test file includes a copy (pg_prove runs files

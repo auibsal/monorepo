@@ -58,7 +58,7 @@ const useGreeting = () => {
 /**
  * Today, mobile-first (the overhaul, Oct 30, 2026): the card, then what
  * needs the member (notices, only when there are some), what's next, their
- * shifts and the Callboard, Qirtas, what they have sent, and their six
+ * shifts and Get involved, Qirtas, what they have sent, and their six
  * words once the Tour has them. Sections in twos, so a full page reads in
  * threes. Voting eligibility is on Society; the calendar feed on My
  * calendar.

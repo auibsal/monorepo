@@ -107,7 +107,7 @@ select is((select count(*)::int from governance.form_submissions), 1, 'and reads
 select throws_ok(
   $$ select governance.save_form('f03', '{"first_choice":"Events Coordinator"}') $$,
   '42501', 'not_allowed',
-  'Retired forms take no new submissions (F-03 is the Callboard now)'
+  'Retired forms take no new submissions (F-03 is the GetInvolved now)'
 );
 select throws_ok(
   $$ select governance.save_form('f09', '{}', null, true, true) $$,

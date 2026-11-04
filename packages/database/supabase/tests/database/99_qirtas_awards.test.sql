@@ -1,4 +1,4 @@
--- The Qirtas Prizes (migration 20261029000600).
+-- The Qirtas Awards (migration 20261029000600).
 begin;
 -- <preamble>
 -- Shared pgTAP preamble. Each test file includes a copy (pg_prove runs files
@@ -76,89 +76,89 @@ update core.settings set value = '0' where key = 'membership.founding_voters';
 select plan(13);
 
 select is(
-  (select array_agg(key order by sort) from journal.prizes),
+  (select array_agg(key order by sort) from journal.awards),
   array['mutanabbi', 'tabari', 'jahiz', 'nazik', 'wasiti', 'ibn_al_haytham'],
-  'Six prizes'
+  'Six awards'
 );
 select is(
-  (select shortlist_on::text || ' ' || awarded_on::text from journal.prize_rounds where slug = '2027'),
+  (select shortlist_on::text || ' ' || awarded_on::text from journal.award_rounds where slug = '2027'),
   '2027-04-04 2027-04-20',
   'The first round: shortlists April 4, awarded April 20, 2027'
 );
 
-select pg_temp.make_user('00000000-0000-0000-0000-0000000066a1', 'eic.prize@auib.edu.iq', 'Editor in Chief');
-select pg_temp.make_user('00000000-0000-0000-0000-0000000066a2', 'writer.prize@auib.edu.iq', 'Prize Writer');
-select pg_temp.make_user('00000000-0000-0000-0000-0000000066a3', 'member.prize@auib.edu.iq', 'Member');
+select pg_temp.make_user('00000000-0000-0000-0000-0000000066a1', 'eic.award@auib.edu.iq', 'Editor in Chief');
+select pg_temp.make_user('00000000-0000-0000-0000-0000000066a2', 'writer.award@auib.edu.iq', 'Award Writer');
+select pg_temp.make_user('00000000-0000-0000-0000-0000000066a3', 'member.award@auib.edu.iq', 'Member');
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000066a1', 'eic');
 
 insert into journal.contributors (id, slug, name_en, name_ar, user_id) values
-  ('c0000000-0000-0000-0000-0000000066c1', 'prize-writer', 'Prize Writer', 'كاتب الجائزة',
+  ('c0000000-0000-0000-0000-0000000066c1', 'award-writer', 'Award Writer', 'كاتب الجائزة',
    '00000000-0000-0000-0000-0000000066a2');
 insert into journal.pieces (id, slug, category, language, title_en, title_ar, status, published_at, contributor_id) values
-  ('d0000000-0000-0000-0000-0000000066d1', 'prize-poem', 'poetry', 'en', 'A Poem', 'قصيدة', 'published',
+  ('d0000000-0000-0000-0000-0000000066d1', 'award-poem', 'poetry', 'en', 'A Poem', 'قصيدة', 'published',
    now() - interval '10 days', 'c0000000-0000-0000-0000-0000000066c1'),
-  ('d0000000-0000-0000-0000-0000000066d2', 'prize-draft', 'poetry', 'en', 'A Draft', 'مسودة', 'editing',
+  ('d0000000-0000-0000-0000-0000000066d2', 'award-draft', 'poetry', 'en', 'A Draft', 'مسودة', 'editing',
    null, 'c0000000-0000-0000-0000-0000000066c1');
 -- A round already past its days, to see what the public sees.
-insert into journal.prize_rounds (id, slug, title_en, title_ar, shortlist_on, awarded_on, is_published) values
+insert into journal.award_rounds (id, slug, title_en, title_ar, shortlist_on, awarded_on, is_published) values
   ('e0000000-0000-0000-0000-0000000066e1', 'past', 'Past', 'سابقة', current_date - 20, current_date - 5, true),
   ('e0000000-0000-0000-0000-0000000066e2', 'soon', 'Soon', 'قريبًا', current_date - 2, current_date + 10, true);
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000066a3');
 select throws_ok(
-  $$ insert into journal.prize_entries (round_id, prize_key, piece_id)
+  $$ insert into journal.award_entries (round_id, award_key, piece_id)
      values ('e0000000-0000-0000-0000-0000000066e1', 'nazik', 'd0000000-0000-0000-0000-0000000066d1') $$,
   '42501', null, 'Members do not shortlist'
 );
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000066a1');
 select lives_ok(
-  $$ insert into journal.prize_entries (round_id, prize_key, piece_id, won) values
+  $$ insert into journal.award_entries (round_id, award_key, piece_id, won) values
        ('e0000000-0000-0000-0000-0000000066e1', 'nazik', 'd0000000-0000-0000-0000-0000000066d1', true),
        ('e0000000-0000-0000-0000-0000000066e2', 'nazik', 'd0000000-0000-0000-0000-0000000066d1', true) $$,
   'The Editor-in-Chief shortlists and records a winner'
 );
 select throws_ok(
-  $$ insert into journal.prize_entries (round_id, prize_key, piece_id)
+  $$ insert into journal.award_entries (round_id, award_key, piece_id)
      values ('e0000000-0000-0000-0000-0000000066e1', 'tabari', 'd0000000-0000-0000-0000-0000000066d1') $$,
-  '22023', 'prize_wrong_section', 'A prize takes work from its own section'
+  '22023', 'award_wrong_section', 'A award takes work from its own section'
 );
 select throws_ok(
-  $$ insert into journal.prize_entries (round_id, prize_key, piece_id)
+  $$ insert into journal.award_entries (round_id, award_key, piece_id)
      values ('e0000000-0000-0000-0000-0000000066e1', 'nazik', 'd0000000-0000-0000-0000-0000000066d2') $$,
-  '22023', 'prize_piece_unpublished', 'Only published work is shortlisted'
+  '22023', 'award_piece_unpublished', 'Only published work is shortlisted'
 );
 select lives_ok(
-  $$ insert into journal.prize_judges (round_id, prize_key, user_id)
+  $$ insert into journal.award_judges (round_id, award_key, user_id)
      values ('e0000000-0000-0000-0000-0000000066e1', 'nazik', '00000000-0000-0000-0000-0000000066a3') $$,
   'and chooses a judge from the register, whose names follow the profile'
 );
 
 select pg_temp.login_anon();
 select is(
-  (select won from journal.prize_results('past') where piece_slug = 'prize-poem'), true,
+  (select won from journal.award_results('past') where piece_slug = 'award-poem'), true,
   'After the award the public sees the winner'
 );
 select is(
-  (select won from journal.prize_results('soon') where piece_slug = 'prize-poem'), false,
+  (select won from journal.award_results('soon') where piece_slug = 'award-poem'), false,
   'Before it, a winner shows only as shortlisted'
 );
-select throws_ok($$ select * from journal.prize_judges $$, '42501', null,
+select throws_ok($$ select * from journal.award_judges $$, '42501', null,
   'The judges are kept in the Diwan');
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000066a1');
 select throws_ok(
-  $$ select journal.prepare_prize_certificates('e0000000-0000-0000-0000-0000000066e2') $$,
-  '22023', 'prizes_not_awarded', 'No certificates before the award'
+  $$ select journal.prepare_award_certificates('e0000000-0000-0000-0000-0000000066e2') $$,
+  '22023', 'awards_not_awarded', 'No certificates before the award'
 );
-select is(journal.prepare_prize_certificates('e0000000-0000-0000-0000-0000000066e1'), 1,
+select is(journal.prepare_award_certificates('e0000000-0000-0000-0000-0000000066e1'), 1,
   'After it, a certificate is drafted for the winner');
 select pg_temp.logout();
 select is(
   (select citation_en from membership.certificates
-   where user_id = '00000000-0000-0000-0000-0000000066a2' and kind = 'prize'),
+   where user_id = '00000000-0000-0000-0000-0000000066a2' and kind = 'award'),
   'won the Nazik Award for “A Poem”',
-  'naming the prize and the piece'
+  'naming the award and the piece'
 );
 
 select * from finish();

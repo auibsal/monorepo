@@ -1,5 +1,5 @@
 import { RequireModule } from "@/components/nexus/admin/admin-shell";
-import { Prizes } from "@/components/nexus/admin/journal/prizes";
+import { Awards } from "@/components/nexus/admin/journal/awards";
 import { titleFrom } from "@/lib/nexus/metadata";
 
 export const generateMetadata = titleFrom((t) =>
@@ -8,7 +8,7 @@ export const generateMetadata = titleFrom((t) =>
 
 const AwardsPage = () => (
   <RequireModule module="journal">
-    <Prizes />
+    <Awards />
   </RequireModule>
 );
 

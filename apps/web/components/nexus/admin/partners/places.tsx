@@ -28,7 +28,7 @@ const blank = {
 };
 
 /**
- * Places with partners on the Callboard (owner, Oct 31, 2026: Get involved
+ * Places with partners on Get involved (owner, Oct 31, 2026: Get involved
  * lists every open place, inside the Society and out): an internship, a
  * volunteer place or a role at one of the Society's partners, posted by
  * Partnerships and read by anyone.

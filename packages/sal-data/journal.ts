@@ -852,47 +852,47 @@ export const inLanguage = <T>(list: readonly T[], locale: string): T[] =>
     return !language || language === "bilingual" || language === locale;
   });
 
-// ── The Qirtas Prizes ───────────────────────────────────────────────────────
+// ── The Qirtas Awards ───────────────────────────────────────────────────────
 
-/** The six prizes, in order (journal.prizes). */
-export const prizes = async (client: Client) =>
-  unwrap(await journal(client).from("prizes").select("*").order("sort")) ?? [];
+/** The six awards, in order (journal.awards). */
+export const awards = async (client: Client) =>
+  unwrap(await journal(client).from("awards").select("*").order("sort")) ?? [];
 
 /** Published rounds, the latest first (managers also see drafts). */
-export const prizeRounds = async (client: Client) =>
+export const awardRounds = async (client: Client) =>
   unwrap(
     await journal(client)
-      .from("prize_rounds")
+      .from("award_rounds")
       .select("*")
       .order("awarded_on", { ascending: false })
   ) ?? [];
 
 /**
  * A round's shortlists from their day and its winners from theirs; before
- * the award a winner shows only as shortlisted (journal.prize_results).
+ * the award a winner shows only as shortlisted (journal.award_results).
  */
-export const prizeResults = async (client: Client, roundSlug: string) =>
+export const awardResults = async (client: Client, roundSlug: string) =>
   unwrap(
-    await journal(client).rpc("prize_results", { round_slug: roundSlug })
+    await journal(client).rpc("award_results", { round_slug: roundSlug })
   ) ?? [];
 
 /** The Diwan's view of a round: every entry, with its piece. */
-export const prizeEntries = async (client: Client, roundId: string) =>
+export const awardEntries = async (client: Client, roundId: string) =>
   unwrap(
     await journal(client)
-      .from("prize_entries")
+      .from("award_entries")
       .select(
-        "id, prize_key, won, certificate_id, piece:pieces!prize_entries_piece_id_fkey(id, slug, title_en, title_ar, desk)"
+        "id, award_key, won, certificate_id, piece:pieces!award_entries_piece_id_fkey(id, slug, title_en, title_ar, desk)"
       )
       .eq("round_id", roundId)
       .order("created_at")
   ) ?? [];
 
-export const prizeJudges = async (client: Client, roundId: string) =>
+export const awardJudges = async (client: Client, roundId: string) =>
   unwrap(
     await journal(client)
-      .from("prize_judges")
-      .select("id, prize_key, name_en, name_ar")
+      .from("award_judges")
+      .select("id, award_key, name_en, name_ar")
       .eq("round_id", roundId)
       .order("created_at")
   ) ?? [];

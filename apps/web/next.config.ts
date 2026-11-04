@@ -14,11 +14,18 @@ const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
 // it: only the site may frame it, and search engines never index it.
 /**
  * The owner's redirects (Nov 4, 2026): the two Listening Room evenings
- * published under the Salon's addresses before the programs were split.
+ * published under the Salon's addresses before the programs were split,
+ * and the retired names' old addresses (the Callboard is Get involved; the
+ * Prizes are the Qirtas Awards).
  */
 const MOVED: [from: string, to: string][] = [
   ["/events/salon-2027-03-16", "/events/listening-room-2027-03-16"],
   ["/events/salon-2027-05-11", "/events/listening-room-2027-05-11"],
+  ["/callboard", "/get-involved"],
+  ["/prizes", "/qirtas/awards"],
+  ["/awards", "/qirtas/awards"],
+  ["/qirtas/prizes", "/qirtas/awards"],
+  ["/diwan/qirtas/prizes", "/diwan/qirtas/awards"],
 ];
 
 let nextConfig: NextConfig = {

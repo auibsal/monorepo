@@ -45,7 +45,7 @@ import { memberName } from "../members/directory";
 import { Needs, NewNeed } from "../needs";
 import { NotionManaged } from "../notion-managed";
 import type { ProgramTab } from "../tabs";
-import { NewOpening, Openings, SkillsPicker } from "./callboard";
+import { NewOpening, Openings, SkillsPicker } from "./openings";
 import { Sessions } from "./sessions";
 import { TourCards } from "./six-words";
 
@@ -1418,7 +1418,7 @@ const ProgramRecord = ({
 
 /** A program's new opening, at /events/<program>/places/new. */
 export const NewProgramOpening = ({ slug }: { readonly slug: string }) => {
-  const t = useTranslations("nexus.admin.programmes.callboard");
+  const t = useTranslations("nexus.admin.programmes.openings");
   return (
     <ProgramRecord slug={slug} tab="places" title={t("new")}>
       {(programme, back) => (

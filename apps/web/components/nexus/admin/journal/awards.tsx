@@ -25,7 +25,7 @@ import {
 } from "../kit";
 import { MemberPicker, type Person } from "../member-picker";
 
-const key = ["admin", "journal", "prizes"];
+const key = ["admin", "journal", "awards"];
 
 /** Today in Baghdad, as YYYY-MM-DD. */
 const baghdadToday = () =>
@@ -34,22 +34,22 @@ const baghdadToday = () =>
   );
 
 /**
- * The Qirtas Prizes in the Diwan (owner, Oct 29, 2026): a round's dates,
- * and for each of the six prizes its judges and its shortlist, with the
- * winners marked; once the prizes are awarded, the certificates are
+ * The Qirtas Awards in the Diwan (owner, Oct 29, 2026): a round's dates,
+ * and for each of the six awards its judges and its shortlist, with the
+ * winners marked; once the awards are awarded, the certificates are
  * drafted for the President and the Faculty Advisor to sign.
  */
-export const Prizes = () => {
-  const t = useTranslations("nexus.admin.prizes");
+export const Awards = () => {
+  const t = useTranslations("nexus.admin.awards");
   const locale = useLocale() as Locale;
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
   const rounds = useQuery({
-    queryFn: () => journal.prizeRounds(supabase),
+    queryFn: () => journal.awardRounds(supabase),
     queryKey: [...key, "rounds"],
   });
   const all = useQuery({
-    queryFn: () => journal.prizes(supabase),
+    queryFn: () => journal.awards(supabase),
     queryKey: [...key, "all"],
   });
   const [chosen, setChosen] = useState<string | null>(null);
@@ -61,7 +61,7 @@ export const Prizes = () => {
       unwrap(
         await supabase
           .schema("journal")
-          .rpc("prepare_prize_certificates", { round: roundId })
+          .rpc("prepare_award_certificates", { round: roundId })
       ),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: key }),
   });
@@ -100,8 +100,8 @@ export const Prizes = () => {
               shortlist: formatLongDate(round.shortlist_on, locale),
             })}
           </p>
-          {all.data.map((prize) => (
-            <PrizeSection key={prize.key} prize={prize} roundId={round.id} />
+          {all.data.map((award) => (
+            <AwardSection award={award} key={award.key} roundId={round.id} />
           ))}
           <div className="grid gap-2">
             <ConfirmAction
@@ -127,29 +127,29 @@ export const Prizes = () => {
   );
 };
 
-type Prize = Awaited<ReturnType<typeof journal.prizes>>[number];
+type Award = Awaited<ReturnType<typeof journal.awards>>[number];
 
-const PrizeSection = ({
-  prize,
+const AwardSection = ({
+  award,
   roundId,
 }: {
-  prize: Prize;
+  award: Award;
   roundId: string;
 }) => {
-  const t = useTranslations("nexus.admin.prizes");
+  const t = useTranslations("nexus.admin.awards");
   const locale = useLocale() as Locale;
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
   const entries = useQuery({
-    queryFn: () => journal.prizeEntries(supabase, roundId),
+    queryFn: () => journal.awardEntries(supabase, roundId),
     queryKey: [...key, "entries", roundId],
   });
   const judges = useQuery({
-    queryFn: () => journal.prizeJudges(supabase, roundId),
+    queryFn: () => journal.awardJudges(supabase, roundId),
     queryKey: [...key, "judges", roundId],
   });
-  // Published pieces from the prize's section (any section for the
-  // Mutanabbi Prize), the latest first.
+  // Published pieces from the award's section (any section for the
+  // Mutanabbi Award), the latest first.
   const candidates = useQuery({
     queryFn: async () => {
       let query = supabase
@@ -159,12 +159,12 @@ const PrizeSection = ({
         .eq("status", "published")
         .order("published_at", { ascending: false })
         .limit(100);
-      if (prize.desk) {
-        query = query.eq("desk", prize.desk);
+      if (award.desk) {
+        query = query.eq("desk", award.desk);
       }
       return unwrap(await query) ?? [];
     },
-    queryKey: [...key, "candidates", prize.desk ?? "all"],
+    queryKey: [...key, "candidates", award.desk ?? "all"],
   });
   const [piece, setPiece] = useState("");
   const refresh = () => queryClient.invalidateQueries({ queryKey: key });
@@ -172,9 +172,9 @@ const PrizeSection = ({
   const shortlist = useMutation({
     mutationFn: async () =>
       unwrap(
-        await supabase.schema("journal").from("prize_entries").insert({
+        await supabase.schema("journal").from("award_entries").insert({
+          award_key: award.key,
           piece_id: piece,
-          prize_key: prize.key,
           round_id: roundId,
         })
       ),
@@ -188,7 +188,7 @@ const PrizeSection = ({
       unwrap(
         await supabase
           .schema("journal")
-          .from("prize_entries")
+          .from("award_entries")
           .update({ won })
           .eq("id", id)
       ),
@@ -199,7 +199,7 @@ const PrizeSection = ({
       unwrap(
         await supabase
           .schema("journal")
-          .from("prize_entries")
+          .from("award_entries")
           .delete()
           .eq("id", id)
       ),
@@ -212,11 +212,11 @@ const PrizeSection = ({
       unwrap(
         await supabase
           .schema("journal")
-          .from("prize_judges")
+          .from("award_judges")
           .insert({
+            award_key: award.key,
             name_ar: person.full_name_ar ?? person.full_name_en,
             name_en: person.full_name_en,
-            prize_key: prize.key,
             round_id: roundId,
             user_id: person.id,
           })
@@ -228,16 +228,16 @@ const PrizeSection = ({
       unwrap(
         await supabase
           .schema("journal")
-          .from("prize_judges")
+          .from("award_judges")
           .delete()
           .eq("id", id)
       ),
     onSuccess: refresh,
   });
 
-  const mine = (entries.data ?? []).filter((e) => e.prize_key === prize.key);
+  const mine = (entries.data ?? []).filter((e) => e.award_key === award.key);
   const theirJudges = (judges.data ?? []).filter(
-    (j) => j.prize_key === prize.key
+    (j) => j.award_key === award.key
   );
 
   const onShortlist = (event: FormEvent) => {
@@ -249,8 +249,8 @@ const PrizeSection = ({
 
   return (
     <DiwanSection
-      id={`prize-${prize.key}`}
-      title={localized(prize, "name", locale)}
+      id={`award-${award.key}`}
+      title={localized(award, "name", locale)}
     >
       <div className="grid gap-3">
         <h3 className="type-label">{t("shortlist")}</h3>
@@ -362,7 +362,7 @@ const PrizeSection = ({
 
 /** A new round: its name and its two days. */
 export const NewRound = () => {
-  const t = useTranslations("nexus.admin.prizes");
+  const t = useTranslations("nexus.admin.awards");
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
   const router = useRouter();
@@ -375,7 +375,7 @@ export const NewRound = () => {
   const create = useMutation({
     mutationFn: async () =>
       unwrap(
-        await supabase.schema("journal").from("prize_rounds").insert({
+        await supabase.schema("journal").from("award_rounds").insert({
           awarded_on: form.awarded_on,
           is_published: true,
           shortlist_on: form.shortlist_on,

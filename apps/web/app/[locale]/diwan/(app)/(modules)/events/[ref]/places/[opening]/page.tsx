@@ -3,7 +3,7 @@ import { OpeningEditor } from "@/components/nexus/admin/programmes/opening-edito
 import { titleFrom } from "@/lib/nexus/metadata";
 
 export const generateMetadata = titleFrom((t) =>
-  t("nexus.admin.programmes.callboard.editTitle")
+  t("nexus.admin.programmes.openings.editTitle")
 );
 
 /** One of a program's openings, edited on its own page. */

@@ -22,7 +22,7 @@ export const permissions = [
   "journal.edit.video",
   "journal.edit.voices",
   "journal.edit.games",
-  "journal.prizes",
+  "journal.awards",
   "journal.approve",
   "journal.copy",
   "journal.frontpage",

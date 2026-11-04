@@ -1,6 +1,7 @@
 -- The owner's Notion follow-up (Nov 4, 2026, evening): the program
 -- permission is programs.manage everywhere; Qirtas Arabic editions link;
--- there are no ads and memoranda grant no advertising.
+-- there are no ads and memoranda grant no advertising; the retired names
+-- (the Prizes, the Callboard) are gone from the database's own names.
 begin;
 -- <preamble>
 -- Shared pgTAP preamble. Each test file includes a copy (pg_prove runs files
@@ -76,7 +77,7 @@ insert into core.semesters (code, name_en, name_ar, starts_on, ends_on) values
 update core.settings set value = '0' where key = 'membership.founding_voters';
 -- </preamble>
 
-select plan(7);
+select plan(10);
 
 select ok(
   exists (select 1 from access.permissions where key = 'programs.manage'),
@@ -126,6 +127,34 @@ select ok(
       and pg_get_constraintdef(oid) like '%advertising%'
   ),
   'a memorandum cannot grant or ask for advertising'
+);
+
+select ok(
+  to_regclass('journal.awards') is not null
+  and to_regclass('journal.award_rounds') is not null
+  and to_regclass('journal.award_entries') is not null
+  and to_regclass('journal.award_judges') is not null
+  and to_regclass('journal.prizes') is null,
+  'the Awards'' tables have their names'
+);
+
+select ok(
+  exists (select 1 from access.permissions where key = 'journal.awards')
+  and not exists (select 1 from access.permissions where key = 'journal.prizes'),
+  'journal.awards is the permission'
+);
+
+select ok(
+  not exists (
+    select 1 from pg_proc p join pg_namespace n on n.oid = p.pronamespace
+    where n.nspname in ('private', 'journal', 'core', 'access', 'programmes', 'membership')
+      and (p.proname ~ 'prize|callboard' or p.prosrc ~ 'prize|callboard')
+  )
+  and not exists (
+    select 1 from pg_policies
+    where (policyname || coalesce(qual, '') || coalesce(with_check, '')) ~* 'prize|callboard'
+  ),
+  'no function or policy keeps a retired name'
 );
 
 select * from finish();

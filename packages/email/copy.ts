@@ -579,7 +579,7 @@ const PAPER_TITLES = {
 export const sundayPaper = (
   lang: Lang,
   paper: {
-    callboard: string;
+    getInvolved: string;
     events: MonthEvent[];
     front: string;
     places: OpenPlace[];
@@ -607,7 +607,7 @@ export const sundayPaper = (
       },
       {
         items: paper.places.map((o) => ({
-          href: paper.callboard,
+          href: paper.getInvolved,
           title: pick(l, o.title_ar, o.title_en),
         })),
         title: titles.places,
@@ -1390,12 +1390,12 @@ const AWARD_LINES: Record<
 export const award = (
   lang: Lang,
   work: string,
-  prize: { name_ar: string; name_en: string },
+  award: { name_ar: string; name_en: string },
   stage: "shortlisted" | "won",
   app: string
 ) =>
   build(lang, (l) => {
-    const name = pick(l, prize.name_ar, prize.name_en);
+    const name = pick(l, award.name_ar, award.name_en);
     const [heading, body] = AWARD_LINES[stage](l, work, name);
     return {
       action: {

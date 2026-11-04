@@ -409,7 +409,7 @@ const stopLinks = (lang: Lang, userId: string) => {
 
 /**
  * What the Sunday Paper carries (owner, Oct 29, 2026): the month's pieces,
- * What's on for the month ahead, and the Callboard's open places. Null
+ * What's on for the month ahead, and Get involved's open places. Null
  * when there is nothing to send.
  */
 const paperContents = async (
@@ -460,7 +460,6 @@ const paperContents = async (
     return null;
   }
   return {
-    callboard: `${base}/get-involved`,
     events: (events ?? []).map((e) => ({
       starts_at: e.starts_at,
       title_ar: e.title_ar ?? "",
@@ -468,6 +467,7 @@ const paperContents = async (
       url: `${base}/events/${e.slug}`,
     })),
     front: `${base}/qirtas`,
+    getInvolved: `${base}/get-involved`,
     pieces: (pieces ?? []).map((p) => {
       const desk = deskNames[p.desk as keyof typeof deskNames];
       return {
@@ -707,22 +707,22 @@ const handlers: Record<string, Handler> = {
   "journal.award": async (admin, payload) => {
     const { data: entry } = await admin
       .schema("journal")
-      .from("prize_entries")
+      .from("award_entries")
       .select(
-        "piece_id, prize:prizes(name_en, name_ar), piece:pieces(title_en, title_ar)"
+        "piece_id, award:awards(name_en, name_ar), piece:pieces(title_en, title_ar)"
       )
       .eq("id", String(payload.entry_id))
       .maybeSingle();
     const to = await recipient(admin, payload.user_id);
-    if (to && entry?.prize && entry.piece) {
+    if (to && entry?.award && entry.piece) {
       await send(
         to,
         award(
           to.lang,
           pieceTitle(entry.piece, to.lang),
           {
-            name_ar: entry.prize.name_ar ?? "",
-            name_en: entry.prize.name_en,
+            name_ar: entry.award.name_ar ?? "",
+            name_en: entry.award.name_en,
           },
           payload.stage === "won" ? "won" : "shortlisted",
           appUrl()

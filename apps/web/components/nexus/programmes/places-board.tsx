@@ -22,7 +22,7 @@ import { EmptyLine, ErrorState, SectionSpinner } from "../states";
 type NoticeKey = "signedUp" | "gaveBack" | "full" | "notVerified" | "failed";
 
 /**
- * The Callboard (owner, 2026-10-25; "Get involved"): roles a program needs
+ * Get involved (owner, 2026-10-25; "Get involved"): roles a program needs
  * filled, shifts on the rotas and auditions, on one board, with what
  * matches the member's skills first. The hours given count toward the
  * service record and certificates.
@@ -83,9 +83,9 @@ const errorKey = (error: unknown): NoticeKey => {
   return "failed";
 };
 
-export const Callboard = () => {
+export const PlacesBoard = () => {
   const t = useTranslations("nexus.programs");
-  const tc = useTranslations("nexus.callboard");
+  const tc = useTranslations("nexus.places");
   const locale = useLocale() as "en" | "ar";
   const { supabase, user } = useAuth();
   const queryClient = useQueryClient();
@@ -316,7 +316,7 @@ const useMySkills = () => {
 
 /** "Matches your skills: Photography", when it does. */
 const Matches = ({ skills }: { skills: readonly string[] }) => {
-  const tc = useTranslations("nexus.callboard");
+  const tc = useTranslations("nexus.places");
   const ts = useTranslations("nexus.details.skills");
   if (skills.length === 0) {
     return null;
@@ -366,7 +366,7 @@ const OpeningRows = ({
   rows: readonly Opening[];
   skills: readonly string[];
 }) => {
-  const tc = useTranslations("nexus.callboard");
+  const tc = useTranslations("nexus.places");
   const ts = useTranslations("nexus.details.skills");
   const locale = useLocale() as "en" | "ar";
   const { supabase, user } = useAuth();
@@ -521,7 +521,7 @@ const useUpcomingAuditions = () => {
           .order("starts_at")
           .limit(12)
       ) ?? [],
-    queryKey: ["callboard-auditions"],
+    queryKey: ["get-involved-auditions"],
   });
 };
 
@@ -530,7 +530,7 @@ type Audition = NonNullable<
 >[number];
 
 const AuditionRows = ({ rows }: { rows: readonly Audition[] }) => {
-  const tc = useTranslations("nexus.callboard");
+  const tc = useTranslations("nexus.places");
   const locale = useLocale() as "en" | "ar";
   return (
     <>

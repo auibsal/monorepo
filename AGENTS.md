@@ -462,27 +462,29 @@ any schema change. Integration tests run against a local stack with
   record keeps the print run, printer and date (`journal.issues.print_run`,
   `printer_en`/`_ar`, `printed_on`), shown on the Edition page as a line.
 - **The Qirtas Awards** (owner, Oct 29, 2026; "Awards", never "Prizes",
-  owner, Oct 31, 2026; `/qirtas/awards`): six awards (`journal.prizes`,
-  the code keeps `prize`): the Mutanabbi Award (the whole paper), the
+  owner, Oct 31, 2026, and in the code too since Nov 4, 2026; at
+  `/qirtas/awards`, and `/prizes`, `/awards` and `/qirtas/prizes` go
+  there): six awards (`journal.awards`): the Mutanabbi Award (the whole paper), the
   Tabari (News), Jahiz (Voices), Nazik (Letters), Wasiti (Gallery) and Ibn
-  al-Haytham (Video) Awards. Each year a round (`journal.prize_rounds`)
+  al-Haytham (Video) Awards. Each year a round (`journal.award_rounds`)
   with its shortlist and award days; the first: shortlists April 4,
   awarded April 20, 2027. The names are confirmed (owner, Oct 31,
-  2026). The Diwan (Qirtas → Awards, `journal.prizes`
+  2026). The Diwan (Qirtas → Awards, `journal.awards`
   permission) records shortlists, judges (members, picked from the
   register) and winners
-  (`journal.prize_entries`, `journal.prize_judges`, never public) and
-  drafts the certificates (`journal.prepare_prize_certificates`, kind
-  `prize`). The public reads only `journal.prize_results()`, which shows a
+  (`journal.award_entries`, `journal.award_judges`, never public) and
+  drafts the certificates (`journal.prepare_award_certificates`, kind
+  `award`). The public reads only `journal.award_results()`, which shows a
   shortlist from its day and never a winner before the award.
 - **Six Words come only from the Typewriter Tour.** Never written on the
   site: whoever runs the Tour transcribes the card in the Diwan
   (`programmes.record_six_words`) and scans the writer's live membership
   card to make it theirs (`programmes.attach_six_words`); unsigned cards
   show without a name. One entry per member; a new card replaces the old.
-- **Get involved** (`/get-involved`; the Callboard until Oct 31, 2026,
-  owner: one name, Get involved, in every language and title; the code
-  keeps `callboard`) is the careers page (owner, Oct 29, 2026), read by
+- **Get involved** (`/get-involved`, and `/callboard` goes there; one name
+  in every language, title and the code, owner, Oct 31 and Nov 4, 2026:
+  the members' board is `PlacesBoard`, a program's openings `openings`)
+  is the careers page (owner, Oct 29, 2026), read by
   anyone (Oct 31: `programmes.open_places()`, `OpenPlaces`; replying and
   shifts are for members), as one list without sections (owner, Oct 31,
   2026; migration `20261101001000`), soonest first: roles, the
@@ -699,7 +701,7 @@ any schema change. Integration tests run against a local stack with
     Oct 29, 2026; the programs are removed, their history moved).
   - Gallery Wall merged into Qirtas's Gallery desk, «معرض قرطاس» (code: slug
     `gallery-wall`, kept and unpublished).
-  - The Qirtas Awards, جوائز قرطاس (were "the Prizes"; code: `prize`).
+  - The Qirtas Awards, جوائز قرطاس (the code says `award` too, Nov 4, 2026).
   - The Register and the Roll of Fellows, السجل ولائحة الزملاء (were the Book
     of Members and the Book of Fellows).
   - The Return, ليلة العودة (was Charter Night).

@@ -17,7 +17,7 @@ export const generateMetadata = async ({
   params,
 }: AwardsProps): Promise<Metadata> => {
   const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: "web.prizes" });
+  const t = await getTranslations({ locale, namespace: "web.awards" });
   const paper = await getTranslations({ locale, namespace: "web.journal" });
   return localizedMetadata(locale, "/qirtas/awards", {
     description: t("lede"),
@@ -29,22 +29,22 @@ export const generateMetadata = async ({
  * The Qirtas Awards (owner, Oct 29, 2026; "Awards", Oct 31): the six
  * awards, what each is for and whom it is named for, and for the latest
  * round its dates, its shortlists from their day and its winners from
- * theirs. The code keeps the name `prizes`.
+ * theirs. The code keeps the name `awards`.
  */
 const AwardsPage = async ({ params }: AwardsProps) => {
   const { locale } = await params;
   setRequestLocale(locale);
-  const t = await getTranslations({ locale, namespace: "web.prizes" });
+  const t = await getTranslations({ locale, namespace: "web.awards" });
   const tj = await getTranslations({ locale, namespace: "web.journal" });
   const [all, rounds] = await Promise.all([
-    readPublished(["journal"], (c) => journal.prizes(c), []),
-    readPublished(["journal"], (c) => journal.prizeRounds(c), []),
+    readPublished(["journal"], (c) => journal.awards(c), []),
+    readPublished(["journal"], (c) => journal.awardRounds(c), []),
   ]);
   const round = rounds.find((r) => r.is_published) ?? null;
   const results = round
     ? await readPublished(
         ["journal"],
-        (c) => journal.prizeResults(c, round.slug),
+        (c) => journal.awardResults(c, round.slug),
         []
       )
     : [];
@@ -77,27 +77,27 @@ const AwardsPage = async ({ params }: AwardsProps) => {
         <ShareLink title={t("title")} />
       </header>
       <ul className="grid gap-x-10 sm:grid-cols-2 lg:grid-cols-3">
-        {all.map((prize) => {
-          const entries = results.filter((r) => r.prize_key === prize.key);
+        {all.map((award) => {
+          const entries = results.filter((r) => r.award_key === award.key);
           return (
             <li
               className="grid content-start gap-3 border-line border-t py-space-4"
-              key={prize.key}
+              key={award.key}
             >
               <h2 className="type-heading">
-                {localized(prize, "name", locale)}
+                {localized(award, "name", locale)}
               </h2>
               <p className="type-caption">
-                {prize.desk
-                  ? tj(`desks.${prize.desk as journal.Desk}`)
+                {award.desk
+                  ? tj(`desks.${award.desk as journal.Desk}`)
                   : t("wholePaper")}
               </p>
-              {localized(prize, "for", locale) ? (
-                <p className="type-body">{localized(prize, "for", locale)}</p>
+              {localized(award, "for", locale) ? (
+                <p className="type-body">{localized(award, "for", locale)}</p>
               ) : null}
-              {localized(prize, "named_for", locale) ? (
+              {localized(award, "named_for", locale) ? (
                 <p className="type-caption text-text-secondary">
-                  {localized(prize, "named_for", locale)}
+                  {localized(award, "named_for", locale)}
                 </p>
               ) : null}
               {entries.length === 0 ? (

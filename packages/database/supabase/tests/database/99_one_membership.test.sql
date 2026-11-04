@@ -1,6 +1,6 @@
 -- One membership, of one kind: member, guest or partner. The Society
 -- invites its own guests; every kind carries the card; staff is a member
--- holding a Society role; the Callboard is read by anyone.
+-- holding a Society role; the GetInvolved is read by anyone.
 begin;
 -- <preamble>
 -- Shared pgTAP preamble. Each test file includes a copy (pg_prove runs files
@@ -194,7 +194,7 @@ select results_eq(
   'The check says the card is a guest''s'
 );
 
--- ── The Callboard, read by anyone ───────────────────────────────────────────
+-- ── The GetInvolved, read by anyone ───────────────────────────────────────────
 select pg_temp.logout();
 insert into programmes.openings (kind, owner, title_en, title_ar)
 values ('volunteer', 'membership', 'Fair volunteers', 'متطوعو المعرض');

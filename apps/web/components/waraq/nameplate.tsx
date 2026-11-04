@@ -52,7 +52,7 @@ export const Nameplate = async ({
                 {t("editions")}
               </Link>
               <Link className="hover:text-accent" href="/qirtas/awards">
-                {t("prizes")}
+                {t("awards")}
               </Link>
             </span>
           </p>
@@ -83,7 +83,7 @@ export const Nameplate = async ({
               </li>
               <li>
                 <Link className={desk} href="/qirtas/awards">
-                  {t("prizes")}
+                  {t("awards")}
                 </Link>
               </li>
             </>

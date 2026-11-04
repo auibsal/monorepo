@@ -36,7 +36,7 @@ export const SkillsPicker = ({
   onChange: (skills: Skill[]) => void;
   value: readonly string[];
 }) => {
-  const t = useTranslations("nexus.admin.programmes.callboard");
+  const t = useTranslations("nexus.admin.programmes.openings");
   const ts = useTranslations("nexus.details.skills");
   const id = useId();
   return (
@@ -120,7 +120,7 @@ const openingRow = (form: typeof blank, programmeId: string) => {
 };
 
 /**
- * The program's openings on the Callboard (owner, Oct 29, 2026: the careers
+ * The program's openings on Get involved (owner, Oct 29, 2026: the careers
  * page): roles, one-term Apprenticeships (in a Qirtas section or the
  * program) and First Ink mentor places with the partner school. Post one,
  * see who is interested (each reply is also emailed to the program's
@@ -137,7 +137,7 @@ export const Openings = ({
   base: string;
   programmeId: string;
 }) => {
-  const t = useTranslations("nexus.admin.programmes.callboard");
+  const t = useTranslations("nexus.admin.programmes.openings");
   const locale = useLocale() as Locale;
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
@@ -343,7 +343,7 @@ export const NewOpening = ({
   readonly back: string;
   readonly programmeId: string;
 }) => {
-  const t = useTranslations("nexus.admin.programmes.callboard");
+  const t = useTranslations("nexus.admin.programmes.openings");
   const tj = useTranslations("nexus.admin.journal");
   const locale = useLocale() as Locale;
   const { supabase } = useAuth();

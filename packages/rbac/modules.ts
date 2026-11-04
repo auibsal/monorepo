@@ -30,7 +30,7 @@ export const adminModules = [
       "journal.edit.video",
       "journal.edit.voices",
       "journal.edit.games",
-      "journal.prizes",
+      "journal.awards",
     ],
   },
   {

@@ -24,7 +24,7 @@ import {
   SelectInput,
 } from "../kit";
 import { useMemberNames } from "../member-picker";
-import { SkillsPicker } from "../programmes/callboard";
+import { SkillsPicker } from "../programmes/openings";
 import { memberName } from "./directory";
 
 const key = ["admin", "hiring"];
@@ -177,7 +177,7 @@ const Application = ({
   );
 };
 
-/** The roles the Callboard hires for (access.roles.hiring_owner). */
+/** The roles Get involved hires for (access.roles.hiring_owner). */
 const useHiredRoles = () => {
   const { supabase } = useAuth();
   return useQuery({
@@ -340,7 +340,7 @@ const NewRole = () => {
 };
 
 /**
- * Hiring (owner, Oct 30, 2026). The Callboard lists every role; Membership
+ * Hiring (owner, Oct 30, 2026). Get involved lists every role; Membership
  * runs the process for each (applications, conversations, the offer,
  * onboarding), and the owner of the role picks the person: the Editor the
  * masthead, the Director of Programs the Program Leads, each director

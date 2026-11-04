@@ -361,7 +361,7 @@ const PrepareForm = ({ onDone }: { onDone: () => void }) => {
           value={form.role}
         />
       ) : null}
-      {form.kind === "prize" ? (
+      {form.kind === "award" ? (
         <BilingualField
           label={t("citation")}
           maxLength={500}

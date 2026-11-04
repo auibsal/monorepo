@@ -1,4 +1,4 @@
--- The Callboard as the careers page: the Apprenticeship and First Ink
+-- The GetInvolved as the careers page: the Apprenticeship and First Ink
 -- (migration 20261029000700), and the Director of Programs (20261029000800).
 begin;
 -- <preamble>
