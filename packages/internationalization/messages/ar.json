@@ -4396,7 +4396,13 @@
         "after": "تابع القراءة",
         "next": "التالي",
         "inEdition": "في الإصدار"
-      }
+      },
+      "contents": "المحتويات",
+      "launchPage": "صفحة الإطلاق",
+      "otherEditions": "إصدارات أخرى",
+      "previousEdition": "الإصدار السابق",
+      "nextEdition": "الإصدار التالي",
+      "theEdition": "الإصدار"
     },
     "about": {
       "title": "عن الجمعية",

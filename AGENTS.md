@@ -443,6 +443,14 @@ any schema change. Integration tests run against a local stack with
   Chapter's impact report is `/events/second-chapter/impact/<campaign>`,
   from published figures only; the Apprenticeship is explained at
   `/get-involved/apprenticeship`, from facts on record only.
+- **The Edition as a book** (design review PR 4a, Nov 4, 2026). An
+  Edition's page is its cover, print line, letter, a contents page by
+  section and the Editions before and after; its launch page is
+  `/qirtas/editions/<slug>/launch` (large type, contents, Launch Night).
+  The cover moves from the shelf to the page with React's
+  `ViewTransition` (`share="morph"`), nothing without support or with
+  reduced motion. The Qirtas front page follows the Editor's `front_rank`;
+  with none set, the newest from all six sections lead.
 - **Qirtas, one door** (owner, Oct 31, 2026). Members send everything,
   every section, from `/qirtas/write` (`/qirtas/write/<type>` is the
   form), and everything they send is read blind. Edition calls (Letters,

@@ -140,36 +140,54 @@ const WaraqFrontPage = async ({ params }: WaraqProps) => {
       (rows) =>
         (Array.isArray(rows) ? journal.inLanguage(rows, locale) : rows) as T
     );
-  const [front, news, letters, gallery, sixWords, video, voices, edition] =
-    await Promise.all([
-      read((c) => journal.frontPieces(c), []),
-      read((c) => journal.deskPieces(c, "news", { limit: 6 }), []),
-      read(
-        (c) =>
-          journal.deskPieces(c, "letters", {
-            categories: journal
-              .deskCategories("letters")
-              .filter((x) => x !== "six_words"),
-            limit: 4,
-          }),
-        []
-      ),
-      read((c) => journal.deskPieces(c, "gallery", { limit: 6 }), []),
-      read(
-        (c) =>
-          journal.deskPieces(c, "letters", {
-            categories: ["six_words"],
-            limit: 1,
-          }),
-        []
-      ),
-      read((c) => journal.deskPieces(c, "video", { limit: 2 }), []),
-      read((c) => journal.deskPieces(c, "voices", { limit: 3 }), []),
-      read((c) => journal.currentEdition(c), null),
-    ]);
-  // With nothing set as front, the newest news leads so the page has a
-  // top rather than a gap.
-  const top = front.length > 0 ? front : news.slice(0, 5);
+  const [
+    front,
+    news,
+    letters,
+    gallery,
+    sixWords,
+    video,
+    voices,
+    edition,
+    games,
+  ] = await Promise.all([
+    read((c) => journal.frontPieces(c), []),
+    read((c) => journal.deskPieces(c, "news", { limit: 6 }), []),
+    read(
+      (c) =>
+        journal.deskPieces(c, "letters", {
+          categories: journal
+            .deskCategories("letters")
+            .filter((x) => x !== "six_words"),
+          limit: 4,
+        }),
+      []
+    ),
+    read((c) => journal.deskPieces(c, "gallery", { limit: 6 }), []),
+    read(
+      (c) =>
+        journal.deskPieces(c, "letters", {
+          categories: ["six_words"],
+          limit: 1,
+        }),
+      []
+    ),
+    read((c) => journal.deskPieces(c, "video", { limit: 2 }), []),
+    read((c) => journal.deskPieces(c, "voices", { limit: 3 }), []),
+    read((c) => journal.currentEdition(c), null),
+    read((c) => journal.deskPieces(c, "games", { limit: 2 }), []),
+  ]);
+  // The Editor's front_rank decides the top. With nothing set as front,
+  // the newest work from all six sections leads (design review C13), so
+  // the page has a top rather than a gap.
+  const newest = [
+    ...new Map(
+      [...news, ...voices, ...letters, ...gallery, ...video, ...games].map(
+        (p) => [p.id, p]
+      )
+    ).values(),
+  ].sort((a, b) => (b.published_at ?? "").localeCompare(a.published_at ?? ""));
+  const top = front.length > 0 ? front : newest.slice(0, 5);
   const [lead, ...ranked] = top;
   const onFront = new Set(top.slice(0, 5).map((p) => p.id));
   const latestNews = news.filter((p) => !onFront.has(p.id));

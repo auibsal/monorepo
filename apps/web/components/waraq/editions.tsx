@@ -4,6 +4,7 @@ import { formatClock, formatLongDate } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
 import { journal, localized } from "@repo/sal-data";
 import { getTranslations } from "next-intl/server";
+import { ViewTransition } from "react";
 import { mediaUrl } from "@/lib/media";
 import { readPublished } from "@/lib/supabase";
 
@@ -27,6 +28,21 @@ export const loadEditions = async () =>
  * name and the number, inside a hairline (the title is printed under it). Never a drawn 3D book.
  */
 export const EditionCover = async ({
+  edition,
+  locale,
+}: {
+  edition: Edition;
+  locale: Locale;
+}) => (
+  // The same cover on the shelf and on the Edition's page: where the
+  // browser can, it moves from one to the other (design review A3; native
+  // view transitions, nothing when unsupported or with reduced motion).
+  <ViewTransition default="none" name={`edition-${edition.id}`} share="morph">
+    <CoverArt edition={edition} locale={locale} />
+  </ViewTransition>
+);
+
+const CoverArt = async ({
   edition,
   locale,
 }: {
