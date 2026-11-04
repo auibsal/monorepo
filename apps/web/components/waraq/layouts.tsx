@@ -1,6 +1,11 @@
 import type { Locale } from "@repo/internationalization";
 import { formatLongDate } from "@repo/internationalization/format";
-import { journal, localized, sanitizeRichText } from "@repo/sal-data";
+import {
+  journal,
+  localized,
+  sanitizeRichText,
+  withNotes,
+} from "@repo/sal-data";
 import { getTranslations } from "next-intl/server";
 import { mediaUrl } from "@/lib/media";
 
@@ -15,7 +20,12 @@ export const texts = (piece: Full) =>
     Boolean(text.html)
   );
 
-const Html = ({
+/**
+ * A text, sanitized, with its notes numbered and listed after it (design
+ * review A13: a note is written in place, in <small>; a pull quote is an
+ * <aside>, set by `prose` in the design system).
+ */
+const Html = async ({
   className,
   html,
   lang,
@@ -23,15 +33,47 @@ const Html = ({
   className: string;
   html: string;
   lang: "en" | "ar";
-}) => (
-  <div
-    className={className}
-    // biome-ignore lint/security/noDangerouslySetInnerHtml: sanitized with the one rich-text policy
-    dangerouslySetInnerHTML={{ __html: sanitizeRichText(html) }}
-    dir={lang === "ar" ? "rtl" : "ltr"}
-    lang={lang}
-  />
-);
+}) => {
+  const { body, notes } = withNotes(sanitizeRichText(html), lang);
+  const dir = lang === "ar" ? "rtl" : "ltr";
+  if (notes.length === 0) {
+    return (
+      <div
+        className={className}
+        // biome-ignore lint/security/noDangerouslySetInnerHtml: sanitized with the one rich-text policy
+        dangerouslySetInnerHTML={{ __html: body }}
+        dir={dir}
+        lang={lang}
+      />
+    );
+  }
+  const t = await getTranslations("web.journal.reading");
+  return (
+    <div className="grid gap-8" dir={dir} lang={lang}>
+      <div
+        className={className}
+        // biome-ignore lint/security/noDangerouslySetInnerHtml: sanitized with the one rich-text policy
+        dangerouslySetInnerHTML={{ __html: body }}
+      />
+      <ol
+        aria-label={t("notes")}
+        className="type-caption grid gap-2 border-line border-t pt-4 font-sans"
+      >
+        {notes.map((note, index) => (
+          <li className="flex gap-2" id={note.id} key={note.id}>
+            <a className="link shrink-0" href={`#${note.ref}`}>
+              {`${index + 1}.`}
+            </a>
+            <span
+              // biome-ignore lint/security/noDangerouslySetInnerHtml: part of the sanitized text above
+              dangerouslySetInnerHTML={{ __html: note.html }}
+            />
+          </li>
+        ))}
+      </ol>
+    </div>
+  );
+};
 
 const images = (piece: Full) =>
   [...(piece.media ?? [])]
@@ -175,6 +217,74 @@ const GalleryBody = ({ locale, piece }: { locale: Locale; piece: Full }) => (
   </div>
 );
 
+/**
+ * A photo essay (design review A14): the essay's words first, in the
+ * reading column, then the photographs in sequence, each the full width of
+ * the page with its caption and its place in the sequence beneath.
+ */
+const PhotoEssayBody = async ({
+  locale,
+  piece,
+}: {
+  locale: Locale;
+  piece: Full;
+}) => {
+  const t = await getTranslations({ locale, namespace: "web.journal" });
+  const all = images(piece);
+  return (
+    <div className="grid gap-16">
+      <div className="reading mx-auto grid w-full max-w-2xl gap-6 px-4 py-12">
+        {texts(piece).map((text) => (
+          <Html
+            className="prose max-w-none"
+            html={text.html}
+            key={text.lang}
+            lang={text.lang}
+          />
+        ))}
+      </div>
+      <ol className="grid gap-16">
+        {all.map((image, index) => {
+          const caption = localized(
+            {
+              caption_ar: image.caption_ar ?? "",
+              caption_en: image.caption_en ?? "",
+            },
+            "caption",
+            locale
+          );
+          return (
+            <li key={image.storage_path}>
+              <figure className="grid gap-3">
+                {/* biome-ignore lint/performance/noImgElement: a published image from the media bucket */}
+                <img
+                  alt={localized(image, "alt", locale)}
+                  className="w-full"
+                  height={image.height ?? 900}
+                  loading={index === 0 ? "eager" : "lazy"}
+                  src={image.url}
+                  width={image.width ?? 1200}
+                />
+                <figcaption className="mx-auto grid w-full max-w-2xl gap-1 px-4">
+                  <span className="type-caption text-text-secondary">
+                    {t("photoOf", {
+                      n: String(index + 1),
+                      total: String(all.length),
+                    })}
+                  </span>
+                  {caption ? (
+                    <span className="type-body">{caption}</span>
+                  ) : null}
+                </figcaption>
+              </figure>
+            </li>
+          );
+        })}
+      </ol>
+    </div>
+  );
+};
+
 /** A comic: panels in sequence; tap a panel to see it full size. */
 const ComicBody = ({ locale, piece }: { locale: Locale; piece: Full }) => (
   <div className="mx-auto grid w-full max-w-3xl gap-6 px-4">
@@ -272,6 +382,8 @@ export const PieceBody = ({
       return <DramaBody piece={piece} />;
     case "six_words":
       return <SixWordsBody piece={piece} />;
+    case "photo_essay":
+      return <PhotoEssayBody locale={locale} piece={piece} />;
     case "comic":
     case "illustration":
       return <ComicBody locale={locale} piece={piece} />;

@@ -51,7 +51,7 @@ export const TextSize = () => {
   };
 
   return (
-    <fieldset className="type-caption flex flex-wrap items-baseline gap-x-4 gap-y-1">
+    <fieldset className="type-caption flex flex-wrap items-baseline gap-x-4 gap-y-1 print:hidden">
       <legend className="float-start me-4">{t("textSize")}</legend>
       {SIZES.map((s) => (
         <button
@@ -78,5 +78,5 @@ export const TextSize = () => {
  * design system); browsers without it, and reduced motion, show nothing.
  */
 export const ReadingProgress = () => (
-  <div aria-hidden className="reading-progress" />
+  <div aria-hidden className="reading-progress print:hidden" />
 );

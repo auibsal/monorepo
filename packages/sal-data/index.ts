@@ -14,4 +14,4 @@ export * as partners from "./partners";
 export * as productions from "./productions";
 export * as programmes from "./programmes";
 export * as recognition from "./recognition";
-export { sanitizeRichText, toPlainText } from "./sanitize";
+export { sanitizeRichText, toPlainText, withNotes } from "./sanitize";

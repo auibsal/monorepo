@@ -2687,7 +2687,9 @@
         },
         "sections": "Sections",
         "calls": "Calls",
-        "noEditions": "No Editions yet. Start one with New Edition."
+        "noEditions": "No Editions yet. Start one with New Edition.",
+        "event": "Event",
+        "noEvent": "No event"
       },
       "awards": {
         "lede": "The Qirtas Awards: for each round, the judges and the shortlist of each award, and the winners. The public page shows a shortlist from its day and the winners from theirs.",
@@ -2957,7 +2959,9 @@
       "addColumn": "Add column",
       "deleteRow": "Delete row",
       "deleteColumn": "Delete column",
-      "deleteTable": "Delete table"
+      "deleteTable": "Delete table",
+      "pullQuote": "Pull quote",
+      "note": "Note"
     },
     "declarations": {
       "title": "Conflict of interest",
@@ -4395,14 +4399,26 @@
         },
         "after": "Read on",
         "next": "Next",
-        "inEdition": "In the Edition"
+        "inEdition": "In the Edition",
+        "notes": "Notes"
       },
       "contents": "Contents",
       "launchPage": "The launch page",
       "otherEditions": "Other Editions",
       "previousEdition": "The Edition before",
       "nextEdition": "The Edition after",
-      "theEdition": "The Edition"
+      "theEdition": "The Edition",
+      "photoOf": "{n} of {total}",
+      "archive": {
+        "title": "The archive",
+        "lede": "Everything Qirtas has published, a month at a time.",
+        "all": "Every month",
+        "sections": "Sections this month",
+        "everySection": "Every section",
+        "count": "{count, plural, one {{n} piece} other {{n} pieces}}",
+        "open": "The archive"
+      },
+      "feed": "RSS feed"
     },
     "about": {
       "title": "About the Society",
@@ -4892,7 +4908,8 @@
         "clear": "Clear",
         "solved": "Solved.",
         "checked": "Wrong letters are crossed out.",
-        "howTo": "Type in the squares. Choose a clue, or the same square twice, to change direction."
+        "howTo": "Type in the squares. Choose a clue, or the same square twice, to change direction.",
+        "print": "Print a blank sheet"
       },
       "fromMembers": "Sent by members",
       "todaysPuzzle": "Today's word",

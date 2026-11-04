@@ -4,6 +4,7 @@ import { Button } from "@repo/brand/components/ui/button";
 import { Input } from "@repo/brand/components/ui/input";
 import { cn } from "@repo/brand/lib/utils";
 import { useRoom } from "@repo/collaboration/room";
+import { Mark, Node } from "@tiptap/core";
 import Collaboration from "@tiptap/extension-collaboration";
 import { TableKit } from "@tiptap/extension-table";
 import {
@@ -46,6 +47,31 @@ const starterKit = (collaborative: boolean, document = false) =>
     ...(collaborative ? { undoRedo: false } : {}),
   });
 
+/**
+ * A pull quote (design review A13): a line from the text repeated large,
+ * saved as <aside>.
+ */
+const PullQuote = Node.create({
+  content: "paragraph+",
+  defining: true,
+  group: "block",
+  name: "pullQuote",
+  parseHTML: () => [{ tag: "aside" }],
+  renderHTML: () => ["aside", 0],
+});
+
+/**
+ * A note (design review A13): written where it belongs and saved as
+ * <small>; the reader numbers it and lists it after the text.
+ */
+const Note = Mark.create({
+  name: "note",
+  parseHTML: () => [{ tag: "small" }],
+  renderHTML: () => ["small", { class: "text-text-secondary" }, 0],
+});
+
+const readingExtensions: Extensions = [PullQuote, Note];
+
 const ToolbarButton = ({
   active = false,
   children,
@@ -71,7 +97,9 @@ const ToolbarButton = ({
 );
 
 const documentExtensions = (document: boolean): Extensions =>
-  document ? [TableKit.configure({ table: { resizable: false } })] : [];
+  document
+    ? [TableKit.configure({ table: { resizable: false } })]
+    : readingExtensions;
 
 /** Tables for Society documents: insert, grow, shrink. */
 const TableTools = ({ editor }: { editor: Editor }) => {
@@ -189,6 +217,26 @@ const Toolbar = ({
         >
           {t("quote")}
         </ToolbarButton>
+        {document ? null : (
+          <>
+            <ToolbarButton
+              active={editor.isActive("pullQuote")}
+              onClick={() =>
+                editor.isActive("pullQuote")
+                  ? chain().lift("pullQuote").run()
+                  : chain().wrapIn("pullQuote").run()
+              }
+            >
+              {t("pullQuote")}
+            </ToolbarButton>
+            <ToolbarButton
+              active={editor.isActive("note")}
+              onClick={() => chain().toggleMark("note").run()}
+            >
+              {t("note")}
+            </ToolbarButton>
+          </>
+        )}
         <ToolbarButton
           active={editor.isActive("link")}
           onClick={() =>

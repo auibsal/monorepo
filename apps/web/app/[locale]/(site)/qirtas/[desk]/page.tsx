@@ -1,4 +1,6 @@
 import type { Locale } from "@repo/internationalization";
+import { localizedPath } from "@repo/internationalization";
+import { Link } from "@repo/internationalization/navigation";
 import { journal } from "@repo/sal-data";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -29,6 +31,7 @@ export const generateMetadata = async ({
   const t = await getTranslations({ locale, namespace: "web.journal" });
   return localizedMetadata(locale, `/qirtas/${desk}`, {
     description: t(`deskLedes.${desk}`),
+    feed: `/qirtas/${desk}/feed.xml`,
     title: `${t(`desks.${desk}`)} · ${t("title")}`,
   });
 };
@@ -57,6 +60,17 @@ const DeskPage = async ({ params }: DeskProps) => {
       <header className="grid gap-2">
         <h1 className="type-display">{t(`desks.${desk}`)}</h1>
         <p className="type-lede max-w-3xl">{t(`deskLedes.${desk}`)}</p>
+        <p className="type-caption flex flex-wrap gap-x-5">
+          <Link className="link" href="/qirtas/archive">
+            {t("archive.open")}
+          </Link>
+          <a
+            className="link"
+            href={localizedPath(locale, `/qirtas/${desk}/feed.xml`)}
+          >
+            {t("feed")}
+          </a>
+        </p>
       </header>
       {pieces.length === 0 ? (
         <p className="type-body text-text-secondary">{t("noPieces")}</p>

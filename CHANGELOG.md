@@ -6,6 +6,9 @@ own versions in the Library.
 
 ## Unreleased
 
+- Qirtas: pull quotes and numbered notes; a photo essay layout; pieces
+  link to their event; RSS for the paper and each section; an archive by
+  month and section; pieces and crosswords print cleanly.
 - An Edition reads as a book: cover, contents page, and the Editions
   before and after; each Edition has a launch page. Covers move from the
   shelf to the page where the browser can.

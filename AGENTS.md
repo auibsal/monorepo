@@ -451,6 +451,20 @@ any schema change. Integration tests run against a local stack with
   `ViewTransition` (`share="morph"`), nothing without support or with
   reduced motion. The Qirtas front page follows the Editor's `front_rank`;
   with none set, the newest from all six sections lead.
+- **Reading Qirtas** (design review PR 4b, Nov 4, 2026). A pull quote is
+  an `<aside>` and a note is written in place in `<small>` (the editor's
+  "Pull quote" and "Note"; the one rich-text policy keeps both); the
+  reader numbers the notes and lists them after the text (`withNotes` in
+  `@repo/sal-data`). A photo essay is its words, then each photograph full
+  width with its caption and place in the sequence. A piece may name its
+  event (`journal.pieces.event_id`, picked on the piece's page in the
+  Diwan), shown beside its section and Edition when the event is public.
+  Pieces, Sunday Paper issues and crosswords print on white in ink without
+  the site's frame (`print:hidden`; a crossword prints a blank sheet).
+  RSS: `/qirtas/feed.xml` and `/qirtas/<section>/feed.xml`, titles, decks
+  and bylines only. The archive is `/qirtas/archive`, a month at
+  `/qirtas/archive/<yyyy-mm>` and a section's month at
+  `/qirtas/archive/<yyyy-mm>/<section>`.
 - **Qirtas, one door** (owner, Oct 31, 2026). Members send everything,
   every section, from `/qirtas/write` (`/qirtas/write/<type>` is the
   form), and everything they send is read blind. Edition calls (Letters,
