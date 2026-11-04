@@ -29,6 +29,7 @@ import {
   SaveButton,
   SelectInput,
 } from "../kit";
+import { RecordHistory } from "../record-history";
 import { useIssues } from "./admin";
 import { BylinePicker } from "./byline";
 import {
@@ -749,6 +750,7 @@ export const WaraqPieceEditor = () => {
         <Corrections record={record.data} />
       ) : null}
       <Thread pieceId={piece.id} />
+      <RecordHistory id={piece.id} table="journal.pieces" />
     </div>
   );
 };

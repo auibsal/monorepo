@@ -7,6 +7,22 @@ first session); section numbers (§) refer to it.
 
 Branch: `claude/sunday-paper-archive` (PR 4c of the design review).
 
+
+## The design review: PR 4d, saved reading and history (2026-11-04)
+
+Branch: `claude/saved-reading`.
+
+- [x] A9 Saved reading: `journal.saved_pieces` (RLS: the reader's own rows,
+  only published pieces they can read; migration `20261101003100`,
+  `99_saved_reading_history.test.sql`), "Save for later" on each piece, the
+  list at `/membership/saved`.
+- [x] C22 Today shows the latest three saved, published pieces only.
+- [x] C24 History on record pages from the activity log
+  (`core.record_history()`: who, what, when and which fields, never the
+  values; officers who can see the record): events, pieces, productions,
+  partners, campaigns.
+- needs-native-review: `web.journal.saved.*`, `nexus.admin.history.*`.
+- Next: PR 4e (C3, A31, A32, A35), 4f (C5, C7, C26, A8).
 ## The design review: PR 4c, the Sunday Paper's archive, Next Stop and search (2026-11-04)
 
 - [x] C17 Past issues on `/sunday-paper`, each at `/sunday-paper/<yyyy-mm>`

@@ -2936,6 +2936,33 @@
           "piece": "Piece",
           "production": "Production"
         }
+      },
+      "history": {
+        "title": "History",
+        "sentence": {
+          "INSERT": "{who} added it",
+          "UPDATE": "{who} changed it",
+          "DELETE": "{who} removed it"
+        },
+        "fieldsList": "({fields})",
+        "and": ", ",
+        "fields": {
+          "title": "title",
+          "deck": "deck",
+          "body": "text",
+          "summary": "summary",
+          "status": "status",
+          "slug": "address",
+          "published_at": "publishing date",
+          "starts_at": "start",
+          "ends_at": "end",
+          "location": "place",
+          "capacity": "places",
+          "entry": "way in",
+          "is_public": "who sees it",
+          "image": "image",
+          "other": "other details"
+        }
       }
     },
     "editor": {
@@ -4386,7 +4413,18 @@
         "count": "{count, plural, one {{n} piece} other {{n} pieces}}",
         "open": "The archive"
       },
-      "feed": "RSS feed"
+      "feed": "RSS feed",
+      "saved": {
+        "save": "Save for later",
+        "unsave": "Remove from saved",
+        "list": "Your saved reading",
+        "failed": "That did not save. Try again.",
+        "title": "Saved reading",
+        "all": "Everything saved",
+        "lede": "Pieces from Qirtas you saved to read later. Only you see this list.",
+        "empty": "Nothing saved yet. Save a piece from Qirtas to read it later.",
+        "browse": "Read Qirtas"
+      }
     },
     "about": {
       "title": "About the Society",

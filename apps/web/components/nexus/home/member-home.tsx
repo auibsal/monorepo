@@ -11,6 +11,7 @@ import { NextEvents } from "./next-events";
 import { Notices } from "./notices";
 import { OtherHome } from "./other-home";
 import { MyProgrammes } from "./programmes";
+import { SavedReadingSection } from "./saved-reading";
 import { SixWords } from "./six-words";
 
 type Greeting = "morning" | "afternoon" | "evening" | "late" | "friday";
@@ -95,12 +96,14 @@ export const MemberHome = () => {
             <NextEvents />
             <MyProgrammes />
             <JournalSection />
+            <SavedReadingSection />
             <SixWords />
           </div>
         </>
       ) : null}
       {/* A guest, a partner's person, or someone not yet either. */}
       {mine.isSuccess && mine.data.kind !== "member" ? <OtherHome /> : null}
+      {mine.data?.kind === "guest" ? <SavedReadingSection /> : null}
     </DiwanPage>
   );
 };

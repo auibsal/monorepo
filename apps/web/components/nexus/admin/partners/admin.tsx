@@ -40,6 +40,7 @@ import {
 import { useMemberNames } from "../member-picker";
 import { memberName } from "../members/directory";
 import { VerificationQueue } from "../members/verification";
+import { RecordHistory } from "../record-history";
 
 const key = ["admin", "partners"];
 
@@ -466,6 +467,7 @@ export const PartnerPage = ({ partnerRef: ref }: { partnerRef: string }) => {
           <Affiliations partnerId={row.id} />
         </DiwanSection>
       ) : null}
+      {row ? <RecordHistory id={row.id} table="governance.partners" /> : null}
     </div>
   );
 };

@@ -22,6 +22,7 @@ import {
   SaveButton,
   SelectInput,
 } from "../kit";
+import { RecordHistory } from "../record-history";
 import { type ProductionTab, productionTabs } from "../tabs";
 import { AuditionsTab, CreditsTab, RehearsalsTab } from "./company";
 import { DetailsTab, RightsTab } from "./details";
@@ -317,6 +318,9 @@ export const ProductionPage = ({
         <PerformancesTab production={production} />
       ) : null}
       {tab === "report" ? <ReportTab production={production} /> : null}
+      {tab === "details" ? (
+        <RecordHistory id={production.id} table="programmes.productions" />
+      ) : null}
     </div>
   );
 };

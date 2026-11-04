@@ -16,6 +16,7 @@ import {
 import { CorrectionNotes, PieceBody, texts } from "@/components/waraq/layouts";
 import { Nameplate } from "@/components/waraq/nameplate";
 import { ReadingProgress, TextSize } from "@/components/waraq/reading-tools";
+import { SaveForLater } from "@/components/waraq/save-for-later";
 import { articleLd, JsonLd } from "@/lib/json-ld";
 import { localizedMetadata } from "@/lib/metadata";
 import { readPublished } from "@/lib/supabase";
@@ -136,6 +137,7 @@ export const PieceArticle = async ({
           </h1>
           <ManageLinks diwan={`/qirtas/pieces/${piece.slug}`} />
           <ShareLink title={localized(piece, "title", locale)} />
+          <SaveForLater pieceId={piece.id} />
           <p className="type-caption">
             <Link
               className="text-accent hover:underline"
