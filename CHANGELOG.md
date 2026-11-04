@@ -6,6 +6,8 @@ own versions in the Library.
 
 ## Unreleased
 
+- Membership: hours are logged right on Record; partners add a perk right
+  on their Perks list.
 - The Sunday Paper's past issues, each on its own page in a newspaper's
   layout; Next Stop's page with its episodes, team and how to send a
   reel; search opens on the newest pieces and what is coming up.
