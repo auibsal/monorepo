@@ -9,9 +9,10 @@ import type { NextRequest } from "next/server";
 
 export const config = {
   // Every page, in both languages: the public site, Membership and the Diwan. Not the
-  // API routes, the service worker, the manifest, the feeds or static files.
+  // API routes, the brand kit (/brand, and /design, which goes there), the
+  // service worker, the manifest, the feeds or static files.
   matcher: [
-    "/((?!api/|_next/static|_next/image|ingest|favicon.ico|robots.txt|ads.txt|calendar.ics|sw.js|manifest.webmanifest|icons/|\\.well-known|sitemap.xml|.*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|pdf|docx?|xlsx?|zip|webmanifest)).*)",
+    "/((?!api/|brand|_brand/|design|_next/static|_next/image|ingest|favicon.ico|robots.txt|ads.txt|calendar.ics|sw.js|manifest.webmanifest|icons/|\\.well-known|sitemap.xml|.*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|pdf|docx?|xlsx?|zip|webmanifest)).*)",
   ],
 };
 

@@ -1,6 +1,6 @@
 /**
  * The SAL logo files , used exactly as supplied in
- * brand/logos and copied byte-for-byte to the app's public/brand
+ * packages/brand/assets/logos and copied byte-for-byte to the app's public/brand
  * (tokens.test.ts checks). Never redrawn, recolored or rebuilt in code. The
  * light files are for white and paper; the reversed files for crimson and
  * ink. The logo appears once per page.
@@ -47,7 +47,7 @@ export const logos = {
 
 export type LogoVariant = keyof typeof logos;
 
-/** Every file in brand/logos, as published under public/brand. */
+/** Every file in packages/brand/assets/logos, as published under public/brand. */
 export const logoFiles = [
   "sal-avatar.svg",
   "sal-lockup-bilingual-reversed.svg",

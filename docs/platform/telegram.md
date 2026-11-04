@@ -4,7 +4,7 @@ Hudhud (هدهد), the hoopoe, is the AUIB Society of Arts and Letters'
 Telegram bot. The code is in apps/web
 (`lib/api/bot`, routes `/api/telegram`, `/api/telegram/setup`,
 `/api/telegram/link`, `/api/cron/telegram`);
-the mascot and its rules are in `brand/mascot`.
+the mascot and its rules are in `packages/brand/assets/mascot`.
 
 ## What it does
 
@@ -138,8 +138,8 @@ And without commands:
 
    | Setting | Choose | Why |
    | --- | --- | --- |
-   | Edit Bot → Profile picture | `brand/mascot/hudhud-avatar.png`: white Hudhud on crimson | The bot's picture only. The members' group ("AUIB Society of Arts and Letters") uses `brand/logos/sal-avatar.svg`, the white Bookmark on crimson; the Diwan group, the officers' working group, uses `brand/logos/sal-avatar-ink.svg`, the white Bookmark on ink, so the two are never confused. Never Hudhud on either. |
-   | Edit Bot → Description picture | `brand/mascot/hudhud-description.png` (640 × 360: the reversed Hudhud, as supplied, on crimson) | What people see before they press Start. The name, about and description texts are set by step 4. |
+   | Edit Bot → Profile picture | `packages/brand/assets/mascot/hudhud-avatar.png`: white Hudhud on crimson | The bot's picture only. The members' group ("AUIB Society of Arts and Letters") uses `packages/brand/assets/logos/sal-avatar.svg`, the white Bookmark on crimson; the Diwan group, the officers' working group, uses `packages/brand/assets/logos/sal-avatar-ink.svg`, the white Bookmark on ink, so the two are never confused. Never Hudhud on either. |
+   | Edit Bot → Description picture | `packages/brand/assets/mascot/hudhud-description.png` (640 × 360: the reversed Hudhud, as supplied, on crimson) | What people see before they press Start. The name, about and description texts are set by step 4. |
    | Inline Mode | On, placeholder "Events and Qirtas" | Sharing cards. |
    | Guest Mode | On | Answers a mention in chats the bot isn't in. |
    | Login Widget → OpenID Connect | Redirect URIs `https://auibsal.org/membership/settings/profile` and `https://auibsal.org/ar/membership/profile` (and `http://localhost:3000/membership/profile` for a test bot); Trusted Origins empty; signing RS256 | Linking from the profile. Copy the Client Secret to the auibsal project; the Client ID is the bot's id and needs no variable. |
@@ -176,7 +176,7 @@ And without commands:
 
 ## Sticker set
 
-Hudhud's twelve stickers are in `brand/mascot/stickers` (512 × 512 PNG and
+Hudhud's twelve stickers are in `packages/brand/assets/mascot/stickers` (512 × 512 PNG and
 WebP, a 100 × 100 `pack-icon.png`, a contact sheet), published as
 t.me/addstickers/auibsal; the set's short name is `telegram.stickerSet` in
 `packages/config/project.json`. The bot reads the set itself (Bot API
@@ -187,7 +187,7 @@ list → 05 (😴). It finds each by its emoji, or else by its place in the
 set, so no file_ids are kept anywhere; an empty set name sends none.
 
 To change the set: @Stickers `/replacesticker`, `/editsticker` (keep the
-emoji in `brand/mascot/README.md`) or `/ordersticker`. A new set needs only
+emoji in `packages/brand/assets/mascot/README.md`) or `/ordersticker`. A new set needs only
 its short name in config.
 
 ## Development

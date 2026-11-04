@@ -20,7 +20,7 @@
 );
 
 /*
- * "the page" (brand/BRAND-BOOK.md). Components use only the role
+ * "the page" (packages/brand/BRAND-BOOK.md). Components use only the role
  * tokens in tokens.css; the shadcn variables below are aliases of them.
  * Quiet by default: Light headlines in `text`, hairlines in `line` and space
  * between things, square corners, no shadows, no frames, no tinted cards,
@@ -330,7 +330,7 @@
 }
 
 /*
- * Type styles: the screen styles of brand/tokens.json. Display is Light
+ * Type styles: the screen styles of packages/brand/assets/tokens.json. Display is Light
  * (300), tightly spaced, in `text`; text is Regular at 1.6; labels are
  * Medium, small, tracked capitals in `text-secondary`. Arabic (ar-*): Ubuntu
  * Arabic has no Light or italic, so its display is Regular through

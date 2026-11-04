@@ -2,14 +2,14 @@ import { project } from "@repo/config";
 import type { BotContext } from "./context";
 
 /**
- * Hudhud's stickers after a reply (brand/mascot/stickers): 02 for a place
+ * Hudhud's stickers after a reply (packages/brand/assets/mascot/stickers): 02 for a place
  * booked, 05 for nothing new, 06 for work sent, 07 for an error. Only ever
  * after the text, at most one per reply, and only in a private chat, so
  * never in a group unprompted.
  *
  * The bot reads the set named in config (t.me/addstickers/auibsal) once per
  * instance and picks each sticker by the emoji paired with it in
- * brand/mascot/README.md, or else by its place in the set (01–12). If the
+ * packages/brand/assets/mascot/README.md, or else by its place in the set (01–12). If the
  * set can't be read, nothing extra is sent.
  */
 const PICKS = {

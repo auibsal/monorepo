@@ -1,1 +1,3 @@
 .vercel
+# The brand kit, built by packages/brand (bun run build:site)
+/public/_brand

@@ -2,11 +2,11 @@ import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { ImageResponse } from "next/og";
 
-// The brand's post on the white ground (brand/components/previews/
+// The brand's post on the white ground (packages/brand/assets/components/previews/
 // SocialPost.md), at the Open Graph size: the lockup in the page's language
 // at the top start, a Light headline in ink with nothing above it, and the
 // link and @auibsal at the bottom start. One language per image. Colors from
-// brand/tokens.json; logos as supplied. assets-og/ holds Ubuntu Light (Latin)
+// packages/brand/assets/tokens.json; logos as supplied. assets-og/ holds Ubuntu Light (Latin)
 // and Ubuntu Arabic with its Extension lookups rewritten as direct ones
 // (Satori cannot read type 7).
 const WHITE = "#ffffff";

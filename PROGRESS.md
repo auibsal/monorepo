@@ -7,6 +7,38 @@ first session); section numbers (§) refer to it.
 
 Branch: `claude/new-session-qosn60`.
 
+## The brand kit (2026-11-04)
+
+- [x] `packages/storybook` and `brand/` are one package, `packages/brand`:
+  the brand book, `assets/` (tokens, fonts, icons, logos, mascot, social,
+  print) and the Storybook; the token and icon generators read from it.
+- [x] Sections in the owner's order: Guide (Introduction; the brand book,
+  rendered from `BRAND-BOOK.md`, and its PDF), Foundations (color, type,
+  space and shape, icons, from `tokens.json`), Logos (each file with its
+  download), Components (brand, screens, Hudhud), Emails (the platform's
+  and the eight sign-in emails from the Supabase templates, both
+  languages), Social (templates; posts, the six highlight covers, the six
+  story banners and both avatars as PNGs), Print (SAL-PRT-01 as HTML and
+  PDF, and the print sizes).
+- [x] From SAL_Document_Sources.zip: the posts, covers, stories, avatars
+  and printables, with the fonts from Google Fonts and the kit's own
+  Ubuntu Arabic; "the Callboard" is Get involved and "the Qirtas Prizes"
+  the Qirtas Awards; every PNG and the PDF rendered again.
+- [x] Built into the site at /brand (`build:site`, public/_brand,
+  rewrites), `X-Robots-Tag: noindex` and robots.txt until reviewed;
+  /design goes to /brand (owner, Nov 4, 2026).
+- [ ] Owner: review the kit, then drop the noindex header and the robots
+  line.
+- [ ] Missing from the kit: the Qirtas Edition's layout specs (none
+  exist yet; Media designs the Edition), the Charter and Open Call
+  posters (sizes only), camera-shy stickers (size only), Arabic posts
+  and stories as files (the templates show them), a Hudhud sticker
+  sheet download. TODO(content).
+- [ ] SAL-BRD-01's own text still says "the Diwan (the members'
+  portal)" under Screens and points to "the PDF in Other"; the logos
+  README calls the bilingual lockup "for anything public" where the book
+  keeps it for signage. Ratified text: the owner amends it.
+
 ## The Diwan in three rooms (2026-11-04)
 
 - [x] Notion: Nexus and Nexus ID are Diwan and Diwan ID in Events,

@@ -14,7 +14,7 @@ import {
   type StickerSet,
 } from "@/lib/api/bot/stickers";
 
-// The twelve stickers in the order of brand/mascot/README.md.
+// The twelve stickers in the order of packages/brand/assets/mascot/README.md.
 const EMOJI = [
   "👋",
   "🎉",

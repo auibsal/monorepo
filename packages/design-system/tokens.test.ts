@@ -32,7 +32,7 @@ const ratio = (a: string, b: string) => {
 };
 
 /**
- * Every text pair the brand's roles allow, in both modes (brand/tokens.json,
+ * Every text pair the brand's roles allow, in both modes (packages/brand/assets/tokens.json,
  * "Color roles"): text and secondary text on the page and on Qirtas's
  * reading ground, the accent as text, text on the accent button and on the
  * band. Rules (`line`) carry no words and are not checked.
@@ -57,7 +57,7 @@ const fixedPairs: [string, string][] = [
   ["ash", "paper"],
 ];
 
-describe("SAL tokens (brand/tokens.json)", () => {
+describe("SAL tokens (packages/brand/assets/tokens.json)", () => {
   test("the palette is the brand's six colors and four reserved tones", () => {
     expect(Object.keys(palette).sort()).toEqual(
       [
@@ -151,7 +151,7 @@ describe("SAL tokens (brand/tokens.json)", () => {
     }
   });
 
-  test("tokens.css files are generated from brand/tokens.json", () => {
+  test("tokens.css files are generated from packages/brand/assets/tokens.json", () => {
     expect(
       readFileSync(join(import.meta.dirname, "styles", "tokens.css"), "utf8")
     ).toBe(renderTokens(tokens));
@@ -172,7 +172,7 @@ describe("SAL tokens (brand/tokens.json)", () => {
   });
 });
 
-describe("SAL logos (brand/logos)", () => {
+describe("SAL logos (packages/brand/assets/logos)", () => {
   const brandDir = join(brandTokensPath, "..", "logos");
   for (const app of ["web"]) {
     test(`apps/${app}/public/brand holds the brand's files unchanged`, () => {

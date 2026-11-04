@@ -1,0 +1,11 @@
+import { Markdown, Meta } from "@storybook/addon-docs/blocks";
+
+import book from "../../BRAND-BOOK.md?raw";
+
+<Meta title="Guide/Brand book" />
+
+# Brand and Identity
+
+{/* "Room [x]" is a placeholder, not a task-list box. */}
+
+<Markdown>{book.replaceAll("[x]", "\\[x\\]")}</Markdown>
