@@ -27,7 +27,7 @@ export type ViewKey =
   | "editions"
   | "awards"
   | "members"
-  | "hiring"
+  | "openings"
   | "service"
   | "partners"
   | "insights"
@@ -44,7 +44,7 @@ export const sectionViews: Record<AdminSection, readonly SectionView[]> = {
   events: [{ href: "/events", key: "events", module: "events" }],
   people: [
     { href: "/people", key: "members", module: "members" },
-    { href: "/people/hiring", key: "hiring", module: "hiring" },
+    { href: "/people/openings", key: "openings", module: "hiring" },
     { href: "/people/service", key: "service", module: "recognition" },
     { href: "/people/partners", key: "partners", module: "partners" },
     {

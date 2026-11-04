@@ -1,14 +1,15 @@
 import { RequireModule } from "@/components/nexus/admin/admin-shell";
-import { PartnersAdmin } from "@/components/nexus/admin/partners/admin";
+import { NewOpeningPage } from "@/components/nexus/admin/programmes/openings";
 import { titleFrom } from "@/lib/nexus/metadata";
 
 export const generateMetadata = titleFrom((t) =>
-  t("nexus.admin.partners.tabs.places")
+  t("nexus.admin.programmes.openings.new")
 );
 
+/** Posting an opening of any kind, on its own page. */
 const Page = () => (
-  <RequireModule module="partners">
-    <PartnersAdmin view="places" />
+  <RequireModule module="hiring">
+    <NewOpeningPage />
   </RequireModule>
 );
 

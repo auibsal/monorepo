@@ -39,8 +39,17 @@ now; one place for each thing.
   activities and roles); their nine `new` pages are gone. The needs list
   loads again (it embedded `core.programmes` across schemas, which the
   Data API refuses, since #151).
-- [ ] Phase 3: one Openings list in place of three (a program's Places,
-  People → Hiring, Partners → Places).
+- [x] Phase 3 (branch `claude/one-openings`): one Openings list,
+  `/diwan/people/openings`, in place of a program's Places, People →
+  Hiring and Partners → Places; filtered by kind and program (a program's
+  page links there with `?program=`). Posting starts with the kind: a role
+  from the Society's roles, a program's place with its program, a place
+  with a partner. A program's Places tab could post a "role" without a
+  role key, which the database refuses; that form is gone.
+- needs-native-review: `nexus.admin.programmes.openings.listTitle`,
+  `listLede`, `allKinds`, `allPrograms`, `openingsLink`,
+  `nexus.admin.sections.tabs.openings`, the Openings digest line in
+  `packages/email/copy.ts`.
 - needs-native-review: `nexus.admin.partners.tabs.applications`,
   `register.guests`, `nexus.admin.society.declarations.title`.
 

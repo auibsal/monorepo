@@ -50,7 +50,7 @@ export const GetInvolved = () => {
           </Link>
         </p>
       )}
-      <ManageLinks diwan="/people/hiring" />
+      <ManageLinks diwan="/people/openings" />
       <p className="type-body">
         <Link className="link" href="/get-involved/apprenticeship">
           {ta("learn")}
