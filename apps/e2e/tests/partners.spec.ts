@@ -98,19 +98,19 @@ test("an organization applies, the President signs, and its dashboard opens", as
     applicant.getByText("Asked for, and waiting for the Society.")
   ).toBeVisible();
   await applicant.getByRole("link", { name: "Perks" }).click();
-  // A new perk opens its own page; adding it returns to Perks.
-  await applicant.getByRole("link", { name: "Add a perk" }).click();
-  await expect(applicant).toHaveURL(/\/partners\/dashboard\/perks\/new$/);
-  await applicant
+  // A new perk is added in place, under the list of perks.
+  await applicant.getByRole("button", { name: "Add a perk" }).click();
+  const perk = applicant.getByRole("region", { name: "Add a perk" });
+  await perk
     .getByRole("group", { name: "Offer" })
     .getByLabel("English")
     .fill(`Free entry to readings ${stamp}`);
-  await applicant
+  await perk
     .getByRole("group", { name: "How to redeem it" })
     .getByLabel("English")
     .fill("Show your membership card at the door.");
-  await applicant.getByRole("button", { name: "Add perk" }).click();
-  await expect(applicant).toHaveURL(/\/partners\/dashboard\/perks$/);
+  await perk.getByRole("button", { name: "Add perk" }).click();
+  await expect(perk).toBeHidden();
   await expect(
     applicant.getByText(`Free entry to readings ${stamp}`)
   ).toBeVisible();
