@@ -1980,10 +1980,9 @@
         "tabs": {
           "register": "Register",
           "agreements": "Memoranda",
-          "affiliations": "Affiliations",
           "offers": "Member offers",
-          "declarations": "Declarations",
-          "places": "Places"
+          "places": "Places",
+          "applications": "Applications"
         },
         "register": {
           "lede": "Clubs, departments and organizations the Society works with or is talking to. Contacts and notes stay internal.",
@@ -2037,7 +2036,8 @@
             "ended": "Ended"
           },
           "back": "The register",
-          "missing": "This partner is not in the register"
+          "missing": "This partner is not in the register",
+          "guests": "Guests"
         },
         "agreements": {
           "lede": "Partnership memoranda (Form F-26). Drafts are written here; the President and the partner's signatory each sign by name, and nothing is uploaded. Someone who has declared a conflict with the partner cannot sign (P8.3).",
@@ -2806,7 +2806,6 @@
           "programs": "Programs",
           "events": "What’s on",
           "members": "Members",
-          "verification": "Verification",
           "hiring": "Hiring",
           "service": "Service",
           "partners": "Partners",
@@ -2821,7 +2820,8 @@
           "newsroom": "Newsroom",
           "editions": "Editions",
           "awards": "Awards",
-          "meetings": "Meetings"
+          "meetings": "Meetings",
+          "declarations": "Declarations"
         }
       },
       "society": {
@@ -2844,6 +2844,10 @@
         "meetings": {
           "title": "Meetings",
           "lede": "Meetings of the Council and the General Assembly: each meeting's minutes and the resolutions it adopted, and the motions members propose. Agendas and working notes stay in Notion."
+        },
+        "declarations": {
+          "title": "Declarations",
+          "lede": "Conflict of Interest Declarations (Form F-18) from role holders. The General Secretary records receipt."
         }
       },
       "activity": {
@@ -3860,46 +3864,6 @@
       "failed": "We couldn't make the codes. Please try again."
     },
     "more": {
-      "title": "Tell us more",
-      "stepOf": "Question {step} of {count}",
-      "skip": "Skip",
-      "continue": "Continue",
-      "finish": "Finish",
-      "back": "Back",
-      "many": "Choose as many as you like.",
-      "affiliation": {
-        "title": "Which of these are you?"
-      },
-      "study": {
-        "title": "What do you study?"
-      },
-      "interests": {
-        "title": "What would you like to take part in?"
-      },
-      "skills": {
-        "title": "What can you help with?",
-        "body": "Get involved puts the roles and shifts that match these first."
-      },
-      "languages": {
-        "title": "Which languages do you read or write?"
-      },
-      "about": {
-        "title": "A little about you"
-      },
-      "heard": {
-        "title": "How did you hear about the Society?"
-      },
-      "consent": {
-        "title": "May we count your answers in anonymous reports?",
-        "yes": "Yes, count them",
-        "no": "No, leave them out"
-      },
-      "done": {
-        "title": "Thank you",
-        "body": "Only you and the Membership officers see these answers. You can change any of them in Profile.",
-        "open": "Back to Membership",
-        "profile": "Open Profile"
-      },
       "today": {
         "link": "Tell us more",
         "line": "Two minutes, optional: Get involved puts the roles that match your skills first."

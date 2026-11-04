@@ -781,7 +781,7 @@ export const applicationReceived = (lang: Lang, partner: string, app: string) =>
 /** Partnerships and the President: an application waits. */
 export const applicationWaiting = (lang: Lang, partner: string, app: string) =>
   build(lang, (l) => ({
-    action: nexus(app, l, "/people/verification"),
+    action: nexus(app, l, "/people/partners/applications"),
     heading:
       l === "ar"
         ? `طلب شراكة: ${partner}`

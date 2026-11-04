@@ -3,12 +3,13 @@ import { PartnersAdmin } from "@/components/nexus/admin/partners/admin";
 import { titleFrom } from "@/lib/nexus/metadata";
 
 export const generateMetadata = titleFrom((t) =>
-  t("nexus.admin.partners.tabs.declarations")
+  t("nexus.admin.partners.tabs.applications")
 );
 
+/** Partner applications, the first view of Partners. */
 const Page = () => (
   <RequireModule module="partners">
-    <PartnersAdmin view="declarations" />
+    <PartnersAdmin view="applications" />
   </RequireModule>
 );
 

@@ -110,7 +110,7 @@ const verificationFigure = (
           date: formatLongDate(o.verification_oldest_at ?? "", locale),
         })
       : t("verificationNone"),
-    href: "/people/verification",
+    href: "/people/partners/applications",
     label: t("verificationPending"),
     value: o.verification_pending,
   };
@@ -226,7 +226,7 @@ const QUICK: readonly {
     permission: newsroomPermissions,
   },
   {
-    href: "/people/verification",
+    href: "/people/partners/applications",
     icon: "id-card",
     key: "verify",
     permission: "members.verify",

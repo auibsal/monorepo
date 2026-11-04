@@ -373,3 +373,12 @@ Where an earlier line above is marked as replaced, the later section holds. What
 - **No money in advertising** (SAL-PLT-06 as amended): no AdSense, no ad slots, no advertising cookie or consent choice (SAL-PLT-03).
 - **Brand:** the design system stays at /diwan/design for officers; the public sees the brand on the press page only. No document PDFs or files in the repository; the brand guide is the Storybook. The Charter poster, the Open Call poster and the camera-shy stickers are Storybook stories. `packages/brand` is the only brand package (`@repo/design-system` merged into it).
 - **Iraqi Arabic where we chat:** Hudhud, social captions and stories, the members' group and signs at the door speak Iraqi Arabic (spelled with گ); the site, the Diwan, emails, documents, certificates, Qirtas and the bot's Telegram profile stay in standard Arabic. Never both in one message.
+
+## 26. Standard practice over house rules (decided Nov 4, 2026, evening)
+- **The rules are guidelines.** Keep what helps, change what doesn't, merge what repeats, add what improves, following common good practice.
+- **Counts are not rules:** the "sixes" (six sections, six types each, six programs) and any fixed number of tabs or quick actions no longer bind; sections, types and programs are as many as the work needs.
+- **Addresses:** pages people share or return to keep their own path; filters and passing state may use a query string or stay in the page. (Replaces "paths, never queries".)
+- **Records:** big records keep their own pages; small rows on a list (needs, shifts, credits, rehearsals, audition slots, ledger lines, receipts, impact figures, hours, activities, roles) may be added and edited in place. (Replaces "every new or edited record opens its own page" and "new is one flow".)
+- **Links between the site and the Diwan** are added where they help, not required everywhere. (Replaces "links both ways".)
+- **No redundancy:** one place for each thing, above all in the Diwan, Membership and the partner dashboard. First merges: partner applications join Partners; each partner's guests are on its page; officers' declarations move to Society; "Tell us more" is part of Profile.
+

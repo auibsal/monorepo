@@ -27,7 +27,6 @@ export type ViewKey =
   | "editions"
   | "awards"
   | "members"
-  | "verification"
   | "hiring"
   | "service"
   | "partners"
@@ -36,6 +35,7 @@ export type ViewKey =
   | "requests"
   | "elections"
   | "concerns"
+  | "declarations"
   | "library";
 
 export const sectionViews: Record<AdminSection, readonly SectionView[]> = {
@@ -44,11 +44,6 @@ export const sectionViews: Record<AdminSection, readonly SectionView[]> = {
   events: [{ href: "/events", key: "events", module: "events" }],
   people: [
     { href: "/people", key: "members", module: "members" },
-    {
-      href: "/people/verification",
-      key: "verification",
-      module: "partners",
-    },
     { href: "/people/hiring", key: "hiring", module: "hiring" },
     { href: "/people/service", key: "service", module: "recognition" },
     { href: "/people/partners", key: "partners", module: "partners" },
@@ -98,6 +93,12 @@ export const sectionViews: Record<AdminSection, readonly SectionView[]> = {
       key: "concerns",
       module: "forms",
       permission: "concerns.handle",
+    },
+    {
+      href: "/society/declarations",
+      key: "declarations",
+      module: "governance",
+      permission: ["governance.manage", "partners.sign"],
     },
     { href: "/society/library", key: "library", module: "library" },
   ],
