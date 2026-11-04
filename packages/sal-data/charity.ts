@@ -57,6 +57,18 @@ export const publicReceipts = async (client: Client, campaignId: string) =>
       .order("created_at", { ascending: false })
   ) ?? [];
 
+/** A campaign by its address, unless it is a draft (Row Level Security). */
+export const campaignBySlug = async (client: Client, slug: string) =>
+  unwrap(
+    await client
+      .schema("charity")
+      .from("campaigns")
+      .select("*")
+      .eq("slug", slug)
+      .neq("status", "draft")
+      .maybeSingle()
+  );
+
 /** Published impact figures, in order. */
 export const impactMetrics = async (client: Client, campaignId: string) =>
   unwrap(

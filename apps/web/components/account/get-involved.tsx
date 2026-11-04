@@ -20,6 +20,7 @@ import { OpenPlaces } from "./open-places";
  */
 export const GetInvolved = () => {
   const t = useTranslations("nexus.getInvolved");
+  const ta = useTranslations("nexus.apprenticeship");
   const { loading, user } = useAuth();
   const mine = useMyMembership();
 
@@ -50,6 +51,11 @@ export const GetInvolved = () => {
         </p>
       )}
       <ManageLinks diwan="/people/hiring" />
+      <p className="type-body">
+        <Link className="link" href="/get-involved/apprenticeship">
+          {ta("learn")}
+        </Link>
+      </p>
       <OpenPlaces />
     </DiwanPage>
   );

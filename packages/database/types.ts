@@ -1284,6 +1284,15 @@ export type Database = {
           starts_on: string;
         }[];
       };
+      handover: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          item: string;
+          oldest_at: string;
+          owners: Json;
+          waiting: number;
+        }[];
+      };
       is_partner_guest: { Args: Record<PropertyKey, never>; Returns: boolean };
       member_insights: { Args: Record<PropertyKey, never>; Returns: Json };
       my_name_parts: {

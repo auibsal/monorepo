@@ -146,7 +146,7 @@ select is((select count(*) from journal.accepted_unplaced())::integer, 0,
   'Nothing to place before a decision');
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000005e1');
-select journal.decide(pg_temp.entry(), 'accept');
+select journal.decide(pg_temp.entry(), 'accept', 'Ready for the Edition');
 
 -- ── After acceptance ────────────────────────────────────────────────────────
 -- Accepting makes the piece straight away (Waraq: nobody places anything

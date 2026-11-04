@@ -6,6 +6,14 @@ own versions in the Library.
 
 ## Unreleased
 
+- Articles: a reading progress line, a text size choice, and the next
+  piece and its Edition at the end.
+- The homepage names the next event and lists the six programs in large
+  type with their rhythm.
+- Second Chapter's impact report has its own page; the Apprenticeship is
+  explained at /get-involved/apprenticeship.
+- The Diwan: find anything with "/" or Ctrl+K; the Desk's handover shows
+  what waits and who owns it; every Qirtas decision needs its reason.
 - The design system in the Diwan (/diwan/design, linked from the Desk):
   SAL-BRD-01 in full as its Guide (the PDF is gone), foundations, logos,
   components, every email (the sign-in emails too), the social files as

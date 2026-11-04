@@ -7,12 +7,14 @@ import { SiteHeader } from "@/components/site-header";
 import { LinkProvider } from "@/lib/link-context";
 import { Link } from "@/lib/nexus/navigation";
 import { DiwanNav } from "./admin/admin-shell";
+import { FindPanel } from "./admin/find-panel";
 import { LanguageSwitcher } from "./language-switcher";
 
 /**
  * The Diwan frame (officers only): skip link, the site's own header (owner,
  * Oct 30, 2026: the same main menu everywhere), the Diwan's row of six
- * sections, main. Members' own pages are on the site (/membership).
+ * sections, the find-anything line (it opens in place, pushing the page
+ * down), main. Members' own pages are on the site (/membership).
  */
 export const AppShell = ({ children }: { children: ReactNode }) => {
   const t = useTranslations("common");
@@ -27,6 +29,7 @@ export const AppShell = ({ children }: { children: ReactNode }) => {
       </a>
       <SiteHeader language={<LanguageSwitcher />} ways={useWays()} />
       <DiwanNav />
+      <FindPanel />
       <main
         className="mx-auto w-full max-w-6xl flex-1 px-4 pt-12 pb-20 sm:pt-16 sm:pb-24"
         id="main"

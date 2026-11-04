@@ -489,13 +489,57 @@
 /* Qirtas's reading pages: paper ground; Literata for English article text. */
 @utility reading {
   font-family: var(--font-read);
-  font-size: 1.09375rem;
+  font-size: calc(1.09375rem * var(--reading-scale, 1));
   line-height: 1.68;
   background-color: var(--surface-reading);
   &:lang(ar),
   & :lang(ar) {
     font-family: var(--font-arabic);
     line-height: 1.9;
+  }
+}
+
+/* The reader's text size (TextSize in apps/web): it scales the reading column only. */
+:root[data-reading-size="small"] {
+  --reading-scale: 0.9;
+}
+:root[data-reading-size="large"] {
+  --reading-scale: 1.18;
+}
+
+/*
+ * The article's progress: a hairline across the top, filled from the start
+ * of the line as the page scrolls (scroll-driven animation). Without
+ * support, or with reduced motion, it is not shown.
+ */
+.reading-progress {
+  display: none;
+}
+@supports (animation-timeline: scroll()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .reading-progress {
+      position: fixed;
+      inset-block-start: 0;
+      inset-inline: 0;
+      z-index: 50;
+      display: block;
+      height: 2px;
+      background-color: var(--text);
+      transform-origin: left;
+      animation: sal-reading-progress linear both;
+      animation-timeline: scroll(root block);
+    }
+    :root[dir="rtl"] .reading-progress {
+      transform-origin: right;
+    }
+  }
+}
+@keyframes sal-reading-progress {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
   }
 }
 

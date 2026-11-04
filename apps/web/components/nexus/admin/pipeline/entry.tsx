@@ -356,7 +356,7 @@ const DecisionPanel = ({ entryId }: { entryId: string }) => {
         await supabase.schema("journal").rpc("decide", {
           blind_entry_id: entryId,
           decision,
-          notes: notes || undefined,
+          notes: notes.trim(),
         })
       ),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: pipelineKey }),
@@ -385,17 +385,22 @@ const DecisionPanel = ({ entryId }: { entryId: string }) => {
         {(id) => (
           <Textarea
             id={id}
+            maxLength={4000}
             onChange={(e) => setNotes(e.target.value)}
+            required
             rows={3}
             value={notes}
           />
         )}
       </Field>
+      {notes.trim() ? null : (
+        <p className="type-caption">{t("entry.reasonNeeded")}</p>
+      )}
       <div>
         <ConfirmAction
           confirmLabel={t(`decisions.${decision}`)}
           description={t("entry.decideConfirm")}
-          disabled={decide.isPending}
+          disabled={decide.isPending || !notes.trim()}
           onConfirm={() => decide.mutate()}
           variant="default"
         >
