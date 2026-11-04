@@ -15,7 +15,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useState } from "react";
 import { callApi } from "@/lib/nexus/api";
-import { Link } from "@/lib/nexus/navigation";
+import { Link, useRouter } from "@/lib/nexus/navigation";
 import { useGrants } from "@/lib/nexus/queries";
 import { useQueryParam } from "@/lib/nexus/use-query-param";
 import { ErrorState, SectionSpinner } from "../../states";
@@ -28,6 +28,8 @@ import {
   DateTimeField,
   ErrorLine,
   Field,
+  NewLink,
+  RecordPage,
   SaveButton,
   SelectInput,
 } from "../kit";
@@ -160,10 +162,6 @@ const ActivitySection = ({ userId }: { userId: string }) => {
   const t = useTranslations("nexus.admin.member");
   const locale = useLocale() as Locale;
   const { supabase } = useAuth();
-  const queryClient = useQueryClient();
-  const [note, setNote] = useState("");
-  const [when, setWhen] = useState<string | null>(new Date().toISOString());
-
   const records = useQuery({
     queryFn: async () =>
       unwrap(
@@ -175,19 +173,6 @@ const ActivitySection = ({ userId }: { userId: string }) => {
           .order("occurred_at", { ascending: false })
       ) ?? [],
     queryKey: ["admin", "activity-records", userId],
-  });
-
-  const add = useMutation({
-    mutationFn: () =>
-      membership.addManualActivity(supabase, {
-        note,
-        occurred_at: when ?? new Date().toISOString(),
-        target_user: userId,
-      }),
-    onSuccess: async () => {
-      setNote("");
-      await queryClient.invalidateQueries({ queryKey: ["admin"] });
-    },
   });
 
   type Record = NonNullable<typeof records.data>[number];
@@ -206,13 +191,6 @@ const ActivitySection = ({ userId }: { userId: string }) => {
     { cell: (r) => r.note ?? "", header: t("note"), key: "note" },
   ];
 
-  const submit = (event: FormEvent) => {
-    event.preventDefault();
-    if (note.trim()) {
-      add.mutate();
-    }
-  };
-
   return (
     <section className="grid gap-4">
       <h2 className="type-heading">{t("activity")}</h2>
@@ -221,35 +199,69 @@ const ActivitySection = ({ userId }: { userId: string }) => {
       {records.data ? (
         <DataTable columns={columns} rowKey={(r) => r.id} rows={records.data} />
       ) : null}
-      <form className="grid max-w-2xl gap-3" onSubmit={submit}>
-        <h3 className="type-subheading">{t("addActivity")}</h3>
-        <Field label={t("note")}>
-          {(id) => (
-            <Input
-              id={id}
-              maxLength={500}
-              onChange={(e) => setNote(e.target.value)}
-              required
-              value={note}
-            />
-          )}
-        </Field>
-        <DateTimeField
-          label={t("when")}
-          onChange={setWhen}
-          required
-          value={when}
-        />
-        <SaveButton pending={add.isPending} />
-        <ErrorLine error={add.error} />
-      </form>
+      <NewLink href={`/people/${userId}/activity/new`}>
+        {t("addActivity")}
+      </NewLink>
     </section>
+  );
+};
+
+/** Activity recorded by hand, on its own page under the member's page. */
+const NewActivity = ({ userId }: { readonly userId: string }) => {
+  const t = useTranslations("nexus.admin.member");
+  const { supabase } = useAuth();
+  const queryClient = useQueryClient();
+  const router = useRouter();
+  const [note, setNote] = useState("");
+  const [when, setWhen] = useState<string | null>(new Date().toISOString());
+
+  const add = useMutation({
+    mutationFn: () =>
+      membership.addManualActivity(supabase, {
+        note,
+        occurred_at: when ?? new Date().toISOString(),
+        target_user: userId,
+      }),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["admin"] });
+      router.push(`/people/${userId}`);
+    },
+  });
+  const submit = (event: FormEvent) => {
+    event.preventDefault();
+    if (note.trim()) {
+      add.mutate();
+    }
+  };
+
+  return (
+    <form className="grid gap-4" onSubmit={submit}>
+      <Field label={t("note")}>
+        {(id) => (
+          <Input
+            id={id}
+            maxLength={500}
+            onChange={(e) => setNote(e.target.value)}
+            required
+            value={note}
+          />
+        )}
+      </Field>
+      <DateTimeField
+        label={t("when")}
+        onChange={setWhen}
+        required
+        value={when}
+      />
+      <SaveButton pending={add.isPending} />
+      <ErrorLine error={add.error} />
+    </form>
   );
 };
 
 // ── Roles ───────────────────────────────────────────────────────────────────
 
-const RolesSection = ({ name, userId }: { name: string; userId: string }) => {
+const RolesSection = ({ userId }: { userId: string }) => {
   const t = useTranslations("nexus.admin.member");
   const locale = useLocale() as Locale;
   const { supabase } = useAuth();
@@ -266,53 +278,8 @@ const RolesSection = ({ name, userId }: { name: string; userId: string }) => {
     queryKey: ["admin", "assignments", userId],
   });
 
-  const empty = {
-    ends_at: null as string | null,
-    exception_resolution: "",
-    note: "",
-    role_key: "",
-    scope_id: "",
-    scope_type: "global" as ScopeType,
-    starts_at: new Date().toISOString(),
-    title: { ar: "", en: "" },
-  };
-  const [form, setForm] = useState(empty);
-
   const invalidate = () =>
     queryClient.invalidateQueries({ queryKey: ["admin"] });
-  const assign = useMutation({
-    mutationFn: () =>
-      access.assignRole(supabase, {
-        ends_at: form.ends_at,
-        exception_resolution: form.exception_resolution || null,
-        note: form.note,
-        role_key: form.role_key,
-        scope_id: form.scope_type === "global" ? null : form.scope_id || null,
-        scope_type: form.scope_type,
-        starts_at: form.starts_at,
-        target_user: userId,
-        title_ar: form.title.ar,
-        title_en: form.title.en,
-      }),
-    onSuccess: async () => {
-      setForm(empty);
-      await invalidate();
-    },
-  });
-  const brokenRule = access.brokenRoleRule(assign.error);
-  const resolutions = useQuery({
-    queryFn: async () =>
-      unwrap(
-        await supabase
-          .schema("governance")
-          .from("resolutions")
-          .select("id, code, title_en, title_ar")
-          .eq("status", "adopted")
-          .eq("body", "council")
-          .order("adopted_on", { ascending: false })
-      ) ?? [],
-    queryKey: ["admin", "council-resolutions"],
-  });
   const end = useMutation({
     mutationFn: (assignmentId: string) =>
       access.endRoleAssignment(supabase, assignmentId),
@@ -391,12 +358,6 @@ const RolesSection = ({ name, userId }: { name: string; userId: string }) => {
     },
   ];
 
-  const scopeChoices =
-    form.scope_type === "global" ? [] : (scopes.data?.[form.scope_type] ?? []);
-  const ready =
-    form.role_key !== "" &&
-    (form.scope_type === "global" || form.scope_id !== "");
-
   return (
     <section className="grid gap-4">
       <h2 className="type-heading">{t("roles")}</h2>
@@ -411,152 +372,231 @@ const RolesSection = ({ name, userId }: { name: string; userId: string }) => {
         />
       ) : null}
       {canAssign ? (
-        <form
-          className="grid max-w-3xl gap-4"
-          onSubmit={(event) => event.preventDefault()}
-        >
-          <h3 className="type-subheading">{t("assign")}</h3>
-          <div className="grid gap-4 sm:grid-cols-3">
-            <Field label={t("role")}>
-              {(id) => (
-                <SelectInput
-                  id={id}
-                  onChange={(e) =>
-                    setForm((f) => ({ ...f, role_key: e.target.value }))
-                  }
-                  required
-                  value={form.role_key}
-                >
-                  <option value="">{t("choose")}</option>
-                  {roles.data?.map((role) => (
-                    <option key={role.key} value={role.key}>
-                      {localized(role, "name", locale)}
-                    </option>
-                  ))}
-                </SelectInput>
-              )}
-            </Field>
-            <Field label={t("scope")}>
-              {(id) => (
-                <SelectInput
-                  id={id}
-                  onChange={(e) =>
-                    setForm((f) => ({
-                      ...f,
-                      scope_id: "",
-                      scope_type: e.target.value as ScopeType,
-                    }))
-                  }
-                  value={form.scope_type}
-                >
-                  {scopeTypes.map((type) => (
-                    <option key={type} value={type}>
-                      {t(`scopes.${type}`)}
-                    </option>
-                  ))}
-                </SelectInput>
-              )}
-            </Field>
-            {form.scope_type === "global" ? null : (
-              <Field label={t("scopeItem")}>
-                {(id) => (
-                  <SelectInput
-                    id={id}
-                    onChange={(e) =>
-                      setForm((f) => ({ ...f, scope_id: e.target.value }))
-                    }
-                    required
-                    value={form.scope_id}
-                  >
-                    <option value="">{t("choose")}</option>
-                    {scopeChoices.map((option) => (
-                      <option key={option.id} value={option.id}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </SelectInput>
-                )}
-              </Field>
-            )}
-          </div>
-          <div className="grid gap-4 sm:grid-cols-2">
-            <DateTimeField
-              label={t("starts")}
-              onChange={(v) =>
-                setForm((f) => ({ ...f, starts_at: v ?? f.starts_at }))
+        <NewLink href={`/people/${userId}/roles/new`}>{t("assign")}</NewLink>
+      ) : null}
+      <ErrorLine error={end.error} />
+    </section>
+  );
+};
+
+/**
+ * A role assigned on its own page under the member's page (owner, Nov 4,
+ * 2026: every new record opens its own page); confirmed before it counts.
+ */
+const AssignRole = ({
+  name,
+  userId,
+}: {
+  readonly name: string;
+  readonly userId: string;
+}) => {
+  const t = useTranslations("nexus.admin.member");
+  const locale = useLocale() as Locale;
+  const { supabase } = useAuth();
+  const queryClient = useQueryClient();
+  const router = useRouter();
+  const roles = useQuery({
+    queryFn: () => access.roles(supabase),
+    queryKey: ["admin", "roles"],
+  });
+  const scopes = useScopeOptions();
+  const empty = {
+    ends_at: null as string | null,
+    exception_resolution: "",
+    note: "",
+    role_key: "",
+    scope_id: "",
+    scope_type: "global" as ScopeType,
+    starts_at: new Date().toISOString(),
+    title: { ar: "", en: "" },
+  };
+  const [form, setForm] = useState(empty);
+
+  const assign = useMutation({
+    mutationFn: () =>
+      access.assignRole(supabase, {
+        ends_at: form.ends_at,
+        exception_resolution: form.exception_resolution || null,
+        note: form.note,
+        role_key: form.role_key,
+        scope_id: form.scope_type === "global" ? null : form.scope_id || null,
+        scope_type: form.scope_type,
+        starts_at: form.starts_at,
+        target_user: userId,
+        title_ar: form.title.ar,
+        title_en: form.title.en,
+      }),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["admin"] });
+      router.push(`/people/${userId}`);
+    },
+  });
+  const brokenRule = access.brokenRoleRule(assign.error);
+  const resolutions = useQuery({
+    queryFn: async () =>
+      unwrap(
+        await supabase
+          .schema("governance")
+          .from("resolutions")
+          .select("id, code, title_en, title_ar")
+          .eq("status", "adopted")
+          .eq("body", "council")
+          .order("adopted_on", { ascending: false })
+      ) ?? [],
+    queryKey: ["admin", "council-resolutions"],
+  });
+  const roleName = (key: string) => {
+    const role = roles.data?.find((r) => r.key === key);
+    return role ? localized(role, "name", locale) : key;
+  };
+  const scopeChoices =
+    form.scope_type === "global" ? [] : (scopes.data?.[form.scope_type] ?? []);
+  const ready =
+    form.role_key !== "" &&
+    (form.scope_type === "global" || form.scope_id !== "");
+
+  return (
+    <form
+      className="grid max-w-3xl gap-4"
+      onSubmit={(event) => event.preventDefault()}
+    >
+      <div className="grid gap-4 sm:grid-cols-3">
+        <Field label={t("role")}>
+          {(id) => (
+            <SelectInput
+              id={id}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, role_key: e.target.value }))
               }
               required
-              value={form.starts_at}
-            />
-            <DateTimeField
-              label={t("ends")}
-              onChange={(v) => setForm((f) => ({ ...f, ends_at: v }))}
-              value={form.ends_at}
-            />
-          </div>
-          <BilingualField
-            label={t("titleLabel")}
-            maxLength={120}
-            onChange={(title) => setForm((f) => ({ ...f, title }))}
-            value={form.title}
-          />
-          <Field label={t("note")}>
-            {(id) => (
-              <Input
-                id={id}
-                maxLength={500}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, note: e.target.value }))
-                }
-                value={form.note}
-              />
-            )}
-          </Field>
-          <Field hint={t("exceptionHint")} label={t("exception")}>
+              value={form.role_key}
+            >
+              <option value="">{t("choose")}</option>
+              {roles.data?.map((role) => (
+                <option key={role.key} value={role.key}>
+                  {localized(role, "name", locale)}
+                </option>
+              ))}
+            </SelectInput>
+          )}
+        </Field>
+        <Field label={t("scope")}>
+          {(id) => (
+            <SelectInput
+              id={id}
+              onChange={(e) =>
+                setForm((f) => ({
+                  ...f,
+                  scope_id: "",
+                  scope_type: e.target.value as ScopeType,
+                }))
+              }
+              value={form.scope_type}
+            >
+              {scopeTypes.map((type) => (
+                <option key={type} value={type}>
+                  {t(`scopes.${type}`)}
+                </option>
+              ))}
+            </SelectInput>
+          )}
+        </Field>
+        {form.scope_type === "global" ? null : (
+          <Field label={t("scopeItem")}>
             {(id) => (
               <SelectInput
                 id={id}
                 onChange={(e) =>
-                  setForm((f) => ({
-                    ...f,
-                    exception_resolution: e.target.value,
-                  }))
+                  setForm((f) => ({ ...f, scope_id: e.target.value }))
                 }
-                value={form.exception_resolution}
+                required
+                value={form.scope_id}
               >
-                <option value="">{t("noException")}</option>
-                {(resolutions.data ?? []).map((r) => (
-                  <option key={r.id} value={r.id}>
-                    {r.code} · {localized(r, "title", locale)}
+                <option value="">{t("choose")}</option>
+                {scopeChoices.map((option) => (
+                  <option key={option.id} value={option.id}>
+                    {option.label}
                   </option>
                 ))}
               </SelectInput>
             )}
           </Field>
-          <div>
-            <ConfirmAction
-              confirmLabel={t("assignButton")}
-              description={t("assignConfirm", {
-                name,
-                role: roleName(form.role_key),
-              })}
-              disabled={!ready || assign.isPending}
-              onConfirm={() => assign.mutate()}
-              variant="default"
-            >
-              {t("assignButton")}
-            </ConfirmAction>
-          </div>
-          {brokenRule ? (
-            <p className="text-sm text-text" role="alert">
-              {t(`rules.${brokenRule}`)}
-            </p>
-          ) : (
-            <ErrorLine error={assign.error ?? end.error} />
-          )}
-        </form>
-      ) : null}
-    </section>
+        )}
+      </div>
+      <div className="grid gap-4 sm:grid-cols-2">
+        <DateTimeField
+          label={t("starts")}
+          onChange={(v) =>
+            setForm((f) => ({ ...f, starts_at: v ?? f.starts_at }))
+          }
+          required
+          value={form.starts_at}
+        />
+        <DateTimeField
+          label={t("ends")}
+          onChange={(v) => setForm((f) => ({ ...f, ends_at: v }))}
+          value={form.ends_at}
+        />
+      </div>
+      <BilingualField
+        label={t("titleLabel")}
+        maxLength={120}
+        onChange={(title) => setForm((f) => ({ ...f, title }))}
+        value={form.title}
+      />
+      <Field label={t("note")}>
+        {(id) => (
+          <Input
+            id={id}
+            maxLength={500}
+            onChange={(e) => setForm((f) => ({ ...f, note: e.target.value }))}
+            value={form.note}
+          />
+        )}
+      </Field>
+      <Field hint={t("exceptionHint")} label={t("exception")}>
+        {(id) => (
+          <SelectInput
+            id={id}
+            onChange={(e) =>
+              setForm((f) => ({
+                ...f,
+                exception_resolution: e.target.value,
+              }))
+            }
+            value={form.exception_resolution}
+          >
+            <option value="">{t("noException")}</option>
+            {(resolutions.data ?? []).map((r) => (
+              <option key={r.id} value={r.id}>
+                {r.code} · {localized(r, "title", locale)}
+              </option>
+            ))}
+          </SelectInput>
+        )}
+      </Field>
+      <div>
+        <ConfirmAction
+          confirmLabel={t("assignButton")}
+          description={t("assignConfirm", {
+            name,
+            role: roleName(form.role_key),
+          })}
+          disabled={!ready || assign.isPending}
+          onConfirm={() => assign.mutate()}
+          variant="default"
+        >
+          {t("assignButton")}
+        </ConfirmAction>
+      </div>
+      {brokenRule ? (
+        <p className="text-sm text-text" role="alert">
+          {t(`rules.${brokenRule}`)}
+        </p>
+      ) : (
+        <ErrorLine error={assign.error} />
+      )}
+    </form>
   );
 };
 
@@ -599,7 +639,12 @@ const TwoStepReset = ({ name, userId }: { name: string; userId: string }) => {
 
 // ── Page ────────────────────────────────────────────────────────────────────
 
-export const MemberDetail = () => {
+export const MemberDetail = ({
+  part,
+}: {
+  /** A new activity record or role assignment, on its own page. */
+  readonly part?: "activity" | "roles";
+}) => {
   const t = useTranslations("nexus.admin.member");
   const tm = useTranslations("nexus.admin.members");
   const tk = useTranslations("nexus.admin.kit");
@@ -624,6 +669,29 @@ export const MemberDetail = () => {
   const name = memberName(row, locale) || tm("unnamed");
   const canManage = hasPermission(grants.data, "members.manage");
   const canAssign = hasPermission(grants.data, "roles.assign");
+
+  if (part === "activity" && canManage) {
+    return (
+      <RecordPage
+        back={`/people/${userId}`}
+        backLabel={name}
+        title={t("addActivity")}
+      >
+        <NewActivity userId={userId} />
+      </RecordPage>
+    );
+  }
+  if (part === "roles" && canAssign) {
+    return (
+      <RecordPage
+        back={`/people/${userId}`}
+        backLabel={name}
+        title={t("assign")}
+      >
+        <AssignRole name={name} userId={userId} />
+      </RecordPage>
+    );
+  }
 
   return (
     <div className="grid gap-10">
@@ -668,7 +736,7 @@ export const MemberDetail = () => {
         <TierForm tier={row.tier} userId={userId} />
       ) : null}
       {canManage ? <ActivitySection userId={userId} /> : null}
-      <RolesSection name={name} userId={userId} />
+      <RolesSection userId={userId} />
       {canAssign && userId !== user?.id ? (
         <TwoStepReset name={name} userId={userId} />
       ) : null}

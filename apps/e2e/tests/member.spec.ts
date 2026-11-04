@@ -46,6 +46,41 @@ test("a member sends work to Qirtas and sees the reading timeline", async ({
   await expectAccessible(page);
 });
 
+test("a member saves a draft, comes back to it and sends it", async ({
+  page,
+}) => {
+  const title = `A draft poem ${Date.now()}`;
+  await signInWithPassword(page, member.email);
+  await page.goto(`${urls.web}/qirtas/write/poetry`);
+  await page.getByLabel("Title").fill(title);
+  await page.locator('[contenteditable="true"]').first().click();
+  await page.keyboard.type("Half a line, kept for later.");
+  await page.getByRole("button", { name: "Save draft" }).click();
+  // The first save gives the draft its own address.
+  await expect(page).toHaveURL(/\/qirtas\/write\/poetry\/[0-9a-f-]{36}$/);
+  await expect(page.getByRole("button", { name: "Draft saved" })).toBeVisible();
+
+  await page.goto(`${urls.web}/qirtas/write`);
+  const row = page.getByRole("row", { name: new RegExp(title) });
+  await expect(row).toContainText("Draft, not sent");
+  await row.getByRole("link", { name: title }).click();
+  await expect(page.getByLabel("Title")).toHaveValue(title);
+  await expect(page.locator('[contenteditable="true"]').first()).toContainText(
+    "Half a line, kept for later."
+  );
+  await expectAccessible(page);
+
+  await page.getByLabel(/has not appeared in another journal/i).check();
+  await page.getByRole("checkbox", { name: /human authorship/i }).check();
+  await page.getByRole("button", { name: "Send to Qirtas" }).click();
+  await expect(page).toHaveURL(/\/membership\/work\/submissions\//);
+  // Sent, it is a submission; the draft is gone.
+  await page.goto(`${urls.web}/qirtas/write`);
+  await expect(
+    page.getByRole("row", { name: new RegExp(title) })
+  ).not.toContainText("Draft, not sent");
+});
+
 test("a manuscript's text fills the editor, and the file goes with the work", async ({
   page,
 }) => {

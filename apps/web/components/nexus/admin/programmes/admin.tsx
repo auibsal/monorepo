@@ -16,7 +16,7 @@ import { hasPermissionAnywhere } from "@repo/rbac";
 import { localized, programmes, recognition, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
-import { type FormEvent, useEffect, useState } from "react";
+import { type FormEvent, type ReactNode, useEffect, useState } from "react";
 import { DateInput } from "@/components/fields/date-input";
 import { Link, useRouter } from "@/lib/nexus/navigation";
 import { useGrants } from "@/lib/nexus/queries";
@@ -35,15 +35,17 @@ import {
   DateTimeField,
   ErrorLine,
   Field,
+  NewLink,
+  RecordPage,
   SaveButton,
   SelectInput,
 } from "../kit";
 import { useMemberNames } from "../member-picker";
 import { memberName } from "../members/directory";
-import { Needs } from "../needs";
+import { Needs, NewNeed } from "../needs";
 import { NotionManaged } from "../notion-managed";
 import type { ProgramTab } from "../tabs";
-import { Openings, SkillsPicker } from "./callboard";
+import { NewOpening, Openings, SkillsPicker } from "./callboard";
 import { Sessions } from "./sessions";
 import { TourCards } from "./six-words";
 
@@ -386,13 +388,6 @@ const Reels = ({ programmeId }: { programmeId: string }) => {
   const locale = useLocale() as Locale;
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
-  const [form, setForm] = useState({
-    caption: { ar: "", en: "" },
-    episode_id: "",
-    platform: "instagram" as (typeof platforms)[number],
-    url: "",
-  });
-  const [problem, setProblem] = useState<string | null>(null);
   const data = useQuery({
     queryFn: async () => {
       const [reels, episodes] = await Promise.all([
@@ -414,32 +409,6 @@ const Reels = ({ programmeId }: { programmeId: string }) => {
   });
   const invalidate = () =>
     queryClient.invalidateQueries({ queryKey: invalidateKey });
-  const add = useMutation({
-    mutationFn: async () => {
-      if (!programmes.isReelUrl(form.url)) {
-        setProblem(t("urlError"));
-        throw new Error("invalid");
-      }
-      setProblem(null);
-      unwrap(
-        await supabase
-          .schema("programmes")
-          .from("reels")
-          .insert({
-            caption_ar: form.caption.ar || null,
-            caption_en: form.caption.en || null,
-            episode_id: form.episode_id || null,
-            platform: form.platform,
-            programme_id: programmeId,
-            url: form.url.trim(),
-          })
-      );
-    },
-    onSuccess: async () => {
-      setForm((f) => ({ ...f, caption: { ar: "", en: "" }, url: "" }));
-      await invalidate();
-    },
-  });
   const publish = useMutation({
     mutationFn: async (reel: { id: string; published_at: string | null }) =>
       unwrap(
@@ -487,84 +456,153 @@ const Reels = ({ programmeId }: { programmeId: string }) => {
           </li>
         ))}
       </ul>
-      <form
-        className="grid max-w-3xl gap-4"
-        onSubmit={(event) => {
-          event.preventDefault();
-          add.mutate();
-        }}
-      >
-        <h3 className="type-subheading">{t("new")}</h3>
-        <div className="grid gap-4 sm:grid-cols-2">
-          <Field label={t("platform")}>
-            {(id) => (
-              <SelectInput
-                id={id}
-                onChange={(e) =>
-                  setForm((f) => ({
-                    ...f,
-                    platform: e.target.value as (typeof platforms)[number],
-                  }))
-                }
-                value={form.platform}
-              >
-                {platforms.map((p) => (
-                  <option key={p} value={p}>
-                    {t(`platforms.${p}`)}
-                  </option>
-                ))}
-              </SelectInput>
-            )}
-          </Field>
-          <Field label={t("episode")}>
-            {(id) => (
-              <SelectInput
-                id={id}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, episode_id: e.target.value }))
-                }
-                value={form.episode_id}
-              >
-                <option value="">{t("none")}</option>
-                {data.data?.episodes.map((e) => (
-                  <option key={e.id} value={e.id}>
-                    {localized(e, "title", locale)}
-                  </option>
-                ))}
-              </SelectInput>
-            )}
-          </Field>
-        </div>
-        <Field label={t("url")}>
+      <NewLink href="/qirtas/video/reels/new">{t("new")}</NewLink>
+      <ErrorLine error={publish.error} />
+    </div>
+  );
+};
+
+/** A new reel for Next Stop, at /qirtas/video/reels/new. */
+const NewReel = ({ programmeId }: { readonly programmeId: string }) => {
+  const t = useTranslations("nexus.admin.programmes.reels");
+  const locale = useLocale() as Locale;
+  const { supabase } = useAuth();
+  const queryClient = useQueryClient();
+  const router = useRouter();
+  const [form, setForm] = useState({
+    caption: { ar: "", en: "" },
+    episode_id: "",
+    platform: "instagram" as (typeof platforms)[number],
+    url: "",
+  });
+  const [problem, setProblem] = useState<string | null>(null);
+  const episodes = useQuery({
+    queryFn: async () =>
+      unwrap(
+        await supabase
+          .schema("programmes")
+          .from("episodes")
+          .select("id, title_en, title_ar")
+          .eq("programme_id", programmeId)
+      ) ?? [],
+    queryKey: [...invalidateKey, "episodes", programmeId],
+  });
+  const add = useMutation({
+    mutationFn: async () => {
+      if (!programmes.isReelUrl(form.url)) {
+        setProblem(t("urlError"));
+        throw new Error("invalid");
+      }
+      setProblem(null);
+      unwrap(
+        await supabase
+          .schema("programmes")
+          .from("reels")
+          .insert({
+            caption_ar: form.caption.ar || null,
+            caption_en: form.caption.en || null,
+            episode_id: form.episode_id || null,
+            platform: form.platform,
+            programme_id: programmeId,
+            url: form.url.trim(),
+          })
+      );
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: invalidateKey });
+      router.push("/qirtas/video");
+    },
+  });
+  return (
+    <form
+      className="grid max-w-3xl gap-4"
+      onSubmit={(event) => {
+        event.preventDefault();
+        add.mutate();
+      }}
+    >
+      <div className="grid gap-4 sm:grid-cols-2">
+        <Field label={t("platform")}>
           {(id) => (
-            <Input
-              dir="ltr"
+            <SelectInput
               id={id}
-              onChange={(e) => setForm((f) => ({ ...f, url: e.target.value }))}
-              required
-              type="url"
-              value={form.url}
-            />
+              onChange={(e) =>
+                setForm((f) => ({
+                  ...f,
+                  platform: e.target.value as (typeof platforms)[number],
+                }))
+              }
+              value={form.platform}
+            >
+              {platforms.map((p) => (
+                <option key={p} value={p}>
+                  {t(`platforms.${p}`)}
+                </option>
+              ))}
+            </SelectInput>
           )}
         </Field>
-        <BilingualField
-          label={t("caption")}
-          maxLength={300}
-          onChange={(caption) => setForm((f) => ({ ...f, caption }))}
-          value={form.caption}
-        />
-        {problem ? (
-          <p className="text-sm text-text" role="alert">
-            {problem}
-          </p>
-        ) : null}
-        <SaveButton pending={add.isPending} />
-        {add.error && add.error.message !== "invalid" ? (
-          <ErrorLine error={add.error} />
-        ) : null}
-        <ErrorLine error={publish.error} />
-      </form>
-    </div>
+        <Field label={t("episode")}>
+          {(id) => (
+            <SelectInput
+              id={id}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, episode_id: e.target.value }))
+              }
+              value={form.episode_id}
+            >
+              <option value="">{t("none")}</option>
+              {episodes.data?.map((e) => (
+                <option key={e.id} value={e.id}>
+                  {localized(e, "title", locale)}
+                </option>
+              ))}
+            </SelectInput>
+          )}
+        </Field>
+      </div>
+      <Field label={t("url")}>
+        {(id) => (
+          <Input
+            dir="ltr"
+            id={id}
+            onChange={(e) => setForm((f) => ({ ...f, url: e.target.value }))}
+            required
+            type="url"
+            value={form.url}
+          />
+        )}
+      </Field>
+      <BilingualField
+        label={t("caption")}
+        maxLength={300}
+        onChange={(caption) => setForm((f) => ({ ...f, caption }))}
+        value={form.caption}
+      />
+      {problem ? (
+        <p className="text-sm text-text" role="alert">
+          {problem}
+        </p>
+      ) : null}
+      <SaveButton pending={add.isPending} />
+      {add.error && add.error.message !== "invalid" ? (
+        <ErrorLine error={add.error} />
+      ) : null}
+    </form>
+  );
+};
+
+export const NewReelPage = () => {
+  const t = useTranslations("nexus.admin.programmes.reels");
+  const options = useProgrammeOptions(null);
+  if (options.isPending) {
+    return <SectionSpinner />;
+  }
+  const nextStop = options.options.find((p) => p.slug === "next-stop");
+  return (
+    <RecordPage back="/qirtas/video" backLabel={t("back")} title={t("new")}>
+      {nextStop ? <NewReel programmeId={nextStop.id} /> : null}
+    </RecordPage>
   );
 };
 
@@ -572,19 +610,11 @@ const Reels = ({ programmeId }: { programmeId: string }) => {
 
 type SignupStatus = "signed_up" | "confirmed" | "swap_requested" | "cancelled";
 
-const Shifts = ({ rotaId }: { rotaId: string }) => {
+const Shifts = ({ base, rotaId }: { base: string; rotaId: string }) => {
   const t = useTranslations("nexus.admin.programmes.rotas");
   const locale = useLocale() as Locale;
   const { supabase, user } = useAuth();
   const queryClient = useQueryClient();
-  const [form, setForm] = useState({
-    capacity: "1",
-    ends_at: null as string | null,
-    location: { ar: "", en: "" },
-    role: { ar: "", en: "" },
-    skills: [] as string[],
-    starts_at: null as string | null,
-  });
   const data = useQuery({
     queryFn: async () => {
       const shifts =
@@ -630,29 +660,6 @@ const Shifts = ({ rotaId }: { rotaId: string }) => {
   const invalidate = () =>
     queryClient.invalidateQueries({ queryKey: invalidateKey });
 
-  const add = useMutation({
-    mutationFn: async () =>
-      unwrap(
-        await supabase
-          .schema("programmes")
-          .from("shifts")
-          .insert({
-            capacity: Number(form.capacity) || 1,
-            ends_at: form.ends_at ?? "",
-            location_ar: form.location.ar || null,
-            location_en: form.location.en || null,
-            role_ar: form.role.ar,
-            role_en: form.role.en,
-            rota_id: rotaId,
-            skills: form.skills,
-            starts_at: form.starts_at ?? "",
-          })
-      ),
-    onSuccess: async () => {
-      setForm((f) => ({ ...f, role: { ar: "", en: "" } }));
-      await invalidate();
-    },
-  });
   const setStatus = useMutation({
     mutationFn: async (input: {
       shift_id: string;
@@ -798,79 +805,22 @@ const Shifts = ({ rotaId }: { rotaId: string }) => {
           );
         })}
       </ul>
-      <form
-        className="grid gap-3"
-        onSubmit={(event) => {
-          event.preventDefault();
-          add.mutate();
-        }}
-      >
-        <h4 className="font-medium text-sm">{t("addShift")}</h4>
-        <BilingualField
-          label={t("role")}
-          maxLength={120}
-          onChange={(role) => setForm((f) => ({ ...f, role }))}
-          required
-          value={form.role}
-        />
-        <BilingualField
-          label={t("location")}
-          maxLength={120}
-          onChange={(location) => setForm((f) => ({ ...f, location }))}
-          value={form.location}
-        />
-        <div className="grid gap-4 sm:grid-cols-3">
-          <DateTimeField
-            label={t("starts")}
-            onChange={(starts_at) => setForm((f) => ({ ...f, starts_at }))}
-            required
-            value={form.starts_at}
-          />
-          <DateTimeField
-            label={t("ends")}
-            onChange={(ends_at) => setForm((f) => ({ ...f, ends_at }))}
-            required
-            value={form.ends_at}
-          />
-          <Field label={t("capacity")}>
-            {(id) => (
-              <Input
-                dir="ltr"
-                id={id}
-                min={1}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, capacity: e.target.value }))
-                }
-                type="number"
-                value={form.capacity}
-              />
-            )}
-          </Field>
-        </div>
-        <SkillsPicker
-          onChange={(skills) => setForm((f) => ({ ...f, skills }))}
-          value={form.skills}
-        />
-        <SaveButton
-          disabled={!(form.starts_at && form.ends_at)}
-          pending={add.isPending}
-        />
-        <ErrorLine error={add.error ?? setStatus.error ?? remove.error} />
-      </form>
+      <NewLink href={`${base}/${rotaId}/new`}>{t("addShift")}</NewLink>
+      <ErrorLine error={setStatus.error ?? remove.error} />
     </div>
   );
 };
 
-const Rotas = ({ programmeId }: { programmeId: string }) => {
+const Rotas = ({
+  base,
+  programmeId,
+}: {
+  base: string;
+  programmeId: string;
+}) => {
   const t = useTranslations("nexus.admin.programmes.rotas");
   const locale = useLocale() as Locale;
   const { supabase } = useAuth();
-  const queryClient = useQueryClient();
-  const [form, setForm] = useState({
-    ends_on: "",
-    starts_on: "",
-    title: { ar: "", en: "" },
-  });
   const rotas = useQuery({
     queryFn: async () =>
       unwrap(
@@ -882,6 +832,151 @@ const Rotas = ({ programmeId }: { programmeId: string }) => {
           .order("created_at", { ascending: false })
       ) ?? [],
     queryKey: [...invalidateKey, "rotas", programmeId],
+  });
+  return (
+    <div className="grid gap-6">
+      {rotas.data?.map((rota) => (
+        <SalCard key={rota.id}>
+          <h3 className="type-subheading">
+            {localized(rota, "title", locale)}
+          </h3>
+          {rota.starts_on ? (
+            <p className="type-caption">
+              {formatLongDate(rota.starts_on, locale, true)}
+              {rota.ends_on
+                ? ` – ${formatLongDate(rota.ends_on, locale, true)}`
+                : ""}
+            </p>
+          ) : null}
+          <Shifts base={base} rotaId={rota.id} />
+        </SalCard>
+      ))}
+      <NewLink href={`${base}/new`}>{t("new")}</NewLink>
+    </div>
+  );
+};
+
+/** A new shift on a rota, at the rota's address and "/new". */
+const NewShift = ({
+  back,
+  rotaId,
+}: {
+  readonly back: string;
+  readonly rotaId: string;
+}) => {
+  const t = useTranslations("nexus.admin.programmes.rotas");
+  const { supabase } = useAuth();
+  const queryClient = useQueryClient();
+  const router = useRouter();
+  const [form, setForm] = useState({
+    capacity: "1",
+    ends_at: null as string | null,
+    location: { ar: "", en: "" },
+    role: { ar: "", en: "" },
+    skills: [] as string[],
+    starts_at: null as string | null,
+  });
+  const add = useMutation({
+    mutationFn: async () =>
+      unwrap(
+        await supabase
+          .schema("programmes")
+          .from("shifts")
+          .insert({
+            capacity: Number(form.capacity) || 1,
+            ends_at: form.ends_at ?? "",
+            location_ar: form.location.ar || null,
+            location_en: form.location.en || null,
+            role_ar: form.role.ar,
+            role_en: form.role.en,
+            rota_id: rotaId,
+            skills: form.skills,
+            starts_at: form.starts_at ?? "",
+          })
+      ),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: invalidateKey });
+      router.push(back);
+    },
+  });
+  return (
+    <form
+      className="grid gap-4"
+      onSubmit={(event) => {
+        event.preventDefault();
+        add.mutate();
+      }}
+    >
+      <BilingualField
+        label={t("role")}
+        maxLength={120}
+        onChange={(role) => setForm((f) => ({ ...f, role }))}
+        required
+        value={form.role}
+      />
+      <BilingualField
+        label={t("location")}
+        maxLength={120}
+        onChange={(location) => setForm((f) => ({ ...f, location }))}
+        value={form.location}
+      />
+      <div className="grid gap-4 sm:grid-cols-3">
+        <DateTimeField
+          label={t("starts")}
+          onChange={(starts_at) => setForm((f) => ({ ...f, starts_at }))}
+          required
+          value={form.starts_at}
+        />
+        <DateTimeField
+          label={t("ends")}
+          onChange={(ends_at) => setForm((f) => ({ ...f, ends_at }))}
+          required
+          value={form.ends_at}
+        />
+        <Field label={t("capacity")}>
+          {(id) => (
+            <Input
+              dir="ltr"
+              id={id}
+              min={1}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, capacity: e.target.value }))
+              }
+              type="number"
+              value={form.capacity}
+            />
+          )}
+        </Field>
+      </div>
+      <SkillsPicker
+        onChange={(skills) => setForm((f) => ({ ...f, skills }))}
+        value={form.skills}
+      />
+      <SaveButton
+        disabled={!(form.starts_at && form.ends_at)}
+        pending={add.isPending}
+      />
+      <ErrorLine error={add.error} />
+    </form>
+  );
+};
+
+/** A new rota, at /events/<program>/shifts/new. */
+const NewRota = ({
+  back,
+  programmeId,
+}: {
+  readonly back: string;
+  readonly programmeId: string;
+}) => {
+  const t = useTranslations("nexus.admin.programmes.rotas");
+  const { supabase } = useAuth();
+  const queryClient = useQueryClient();
+  const router = useRouter();
+  const [form, setForm] = useState({
+    ends_on: "",
+    starts_on: "",
+    title: { ar: "", en: "" },
   });
   const add = useMutation({
     mutationFn: async () =>
@@ -898,72 +993,53 @@ const Rotas = ({ programmeId }: { programmeId: string }) => {
           })
       ),
     onSuccess: async () => {
-      setForm({ ends_on: "", starts_on: "", title: { ar: "", en: "" } });
       await queryClient.invalidateQueries({ queryKey: invalidateKey });
+      router.push(back);
     },
   });
 
   return (
-    <div className="grid gap-6">
-      {rotas.data?.map((rota) => (
-        <SalCard key={rota.id}>
-          <h3 className="type-subheading">
-            {localized(rota, "title", locale)}
-          </h3>
-          {rota.starts_on ? (
-            <p className="type-caption">
-              {formatLongDate(rota.starts_on, locale, true)}
-              {rota.ends_on
-                ? ` – ${formatLongDate(rota.ends_on, locale, true)}`
-                : ""}
-            </p>
-          ) : null}
-          <Shifts rotaId={rota.id} />
-        </SalCard>
-      ))}
-      <form
-        className="grid max-w-3xl gap-4"
-        onSubmit={(event) => {
-          event.preventDefault();
-          add.mutate();
-        }}
-      >
-        <h3 className="type-subheading">{t("new")}</h3>
-        <BilingualField
-          label={t("titleField")}
-          maxLength={200}
-          onChange={(title) => setForm((f) => ({ ...f, title }))}
-          required
-          value={form.title}
-        />
-        <div className="grid gap-4 sm:grid-cols-2">
-          <Field label={t("startsOn")}>
-            {(id) => (
-              <DateInput
-                id={id}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, starts_on: e.target.value }))
-                }
-                value={form.starts_on}
-              />
-            )}
-          </Field>
-          <Field label={t("endsOn")}>
-            {(id) => (
-              <DateInput
-                id={id}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, ends_on: e.target.value }))
-                }
-                value={form.ends_on}
-              />
-            )}
-          </Field>
-        </div>
-        <SaveButton pending={add.isPending} />
-        <ErrorLine error={add.error} />
-      </form>
-    </div>
+    <form
+      className="grid max-w-3xl gap-4"
+      onSubmit={(event) => {
+        event.preventDefault();
+        add.mutate();
+      }}
+    >
+      <BilingualField
+        label={t("titleField")}
+        maxLength={200}
+        onChange={(title) => setForm((f) => ({ ...f, title }))}
+        required
+        value={form.title}
+      />
+      <div className="grid gap-4 sm:grid-cols-2">
+        <Field label={t("startsOn")}>
+          {(id) => (
+            <DateInput
+              id={id}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, starts_on: e.target.value }))
+              }
+              value={form.starts_on}
+            />
+          )}
+        </Field>
+        <Field label={t("endsOn")}>
+          {(id) => (
+            <DateInput
+              id={id}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, ends_on: e.target.value }))
+              }
+              value={form.ends_on}
+            />
+          )}
+        </Field>
+      </div>
+      <SaveButton pending={add.isPending} />
+      <ErrorLine error={add.error} />
+    </form>
   );
 };
 
@@ -1196,7 +1272,7 @@ export const ProgramPitches = () => {
       id="pitches"
       title={t("pitches.title")}
     >
-      <RequestQueue keys={["f10"]} />
+      <RequestQueue base="/events/pitches" keys={["f10"]} />
     </DiwanSection>
   );
 };
@@ -1264,18 +1340,127 @@ export const ProgramPage = ({
       />
       <div className="pt-2">
         {tab === "sessions" ? <Sessions programmeId={programme.id} /> : null}
-        {tab === "shifts" ? <Rotas programmeId={programme.id} /> : null}
+        {tab === "shifts" ? (
+          <Rotas
+            base={`/events/${programme.slug}/shifts`}
+            programmeId={programme.id}
+          />
+        ) : null}
         {tab === "places" ? (
           <Openings
             base={`/events/${programme.slug}/places`}
             programmeId={programme.id}
           />
         ) : null}
-        {tab === "needs" ? <Needs programmeId={programme.id} /> : null}
+        {tab === "needs" ? (
+          <Needs
+            base={`/events/${programme.slug}/needs`}
+            programmeId={programme.id}
+          />
+        ) : null}
         {tab === "six-words" ? <TourCards /> : null}
         {tab === "collection" ? <CharityAdmin /> : null}
       </div>
     </div>
+  );
+};
+
+interface ProgramRef {
+  readonly id: string;
+  readonly label: string;
+  readonly slug: string;
+}
+
+/**
+ * A record's own page under one of a program's tabs (owner, Nov 4, 2026:
+ * every new or edited record opens its own page; saving returns to the
+ * tab). Resolves the program from its address.
+ */
+const ProgramRecord = ({
+  children,
+  slug,
+  tab,
+  title,
+}: {
+  readonly children: (programme: ProgramRef, back: string) => ReactNode;
+  readonly slug: string;
+  readonly tab: ProgramTab;
+  readonly title: string;
+}) => {
+  const t = useTranslations("nexus.admin.programmes");
+  const options = useProgrammeOptions("programmes.manage");
+  if (options.isPending) {
+    return <SectionSpinner />;
+  }
+  const programme = options.options.find((p) => p.slug === slug);
+  if (!programme) {
+    return (
+      <EmptyLine action={{ href: "/events", label: t("all") }}>
+        {t("notYours")}
+      </EmptyLine>
+    );
+  }
+  const back =
+    tab === "sessions" ? `/events/${slug}` : `/events/${slug}/${tab}`;
+  return (
+    <RecordPage
+      back={back}
+      backLabel={t("backToTab", {
+        program: programme.label,
+        tab: t(`tabs.${tab}`),
+      })}
+      title={title}
+    >
+      {children(programme, back)}
+    </RecordPage>
+  );
+};
+
+/** A program's new opening, at /events/<program>/places/new. */
+export const NewProgramOpening = ({ slug }: { readonly slug: string }) => {
+  const t = useTranslations("nexus.admin.programmes.callboard");
+  return (
+    <ProgramRecord slug={slug} tab="places" title={t("new")}>
+      {(programme, back) => (
+        <NewOpening back={back} programmeId={programme.id} />
+      )}
+    </ProgramRecord>
+  );
+};
+
+/** A program's new rota, at /events/<program>/shifts/new. */
+export const NewProgramRota = ({ slug }: { readonly slug: string }) => {
+  const t = useTranslations("nexus.admin.programmes.rotas");
+  return (
+    <ProgramRecord slug={slug} tab="shifts" title={t("new")}>
+      {(programme, back) => <NewRota back={back} programmeId={programme.id} />}
+    </ProgramRecord>
+  );
+};
+
+/** A new shift on a program's rota, at the rota's address and "/new". */
+export const NewProgramShift = ({
+  rotaId,
+  slug,
+}: {
+  readonly rotaId: string;
+  readonly slug: string;
+}) => {
+  const t = useTranslations("nexus.admin.programmes.rotas");
+  return (
+    <ProgramRecord slug={slug} tab="shifts" title={t("addShift")}>
+      {(_programme, back) => <NewShift back={back} rotaId={rotaId} />}
+    </ProgramRecord>
+  );
+};
+
+/** A program's new need, at /events/<program>/needs/new. */
+export const NewProgramNeed = ({ slug }: { readonly slug: string }) => {
+  const t = useTranslations("nexus.admin.needs");
+  return (
+    <ProgramRecord slug={slug} tab="needs" title={t("new")}>
+      {(programme, back) => <NewNeed back={back} programmeId={programme.id} />}
+    </ProgramRecord>
   );
 };
 

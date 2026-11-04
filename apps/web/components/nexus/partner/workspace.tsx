@@ -8,7 +8,11 @@ import { Label } from "@repo/design-system/components/ui/label";
 import { cn } from "@repo/design-system/lib/utils";
 import type { Locale } from "@repo/internationalization";
 import { formatLongDate } from "@repo/internationalization/format";
-import { Link, usePathname } from "@repo/internationalization/navigation";
+import {
+  Link,
+  usePathname,
+  useRouter,
+} from "@repo/internationalization/navigation";
 import { localized, partners, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
@@ -21,6 +25,8 @@ import {
   ConfirmAction,
   ErrorLine,
   Field,
+  NewLink,
+  RecordPage,
   SaveButton,
 } from "../admin/kit";
 import { DiwanPage, DiwanSection, RowList } from "../page";
@@ -439,6 +445,7 @@ const NewPerk = ({ partnerId }: { partnerId: string }) => {
   const to = useTranslations("nexus.admin.partners.offers");
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
+  const router = useRouter();
   const empty = {
     code: "",
     details: { ar: "", en: "" },
@@ -465,8 +472,8 @@ const NewPerk = ({ partnerId }: { partnerId: string }) => {
           })
       ),
     onSuccess: async () => {
-      setForm(empty);
       await queryClient.invalidateQueries({ queryKey: KEY });
+      router.push("/partners/dashboard/perks");
     },
   });
   return (
@@ -533,6 +540,26 @@ const NewPerk = ({ partnerId }: { partnerId: string }) => {
       </Button>
       <ErrorLine error={add.error} />
     </form>
+  );
+};
+
+/**
+ * /partners/dashboard/perks/new: a new perk on its own page (owner, Nov 4,
+ * 2026: every new record opens its own page); saving returns to Perks.
+ */
+export const PartnerNewPerk = () => {
+  const t = useTranslations("nexus.partnerDesk.perks");
+  const mine = useMyPartners();
+  const [partner] = mine.data ?? [];
+  return (
+    <RecordPage
+      back="/partners/dashboard/perks"
+      backLabel={t("title")}
+      title={t("new")}
+    >
+      {mine.isPending ? <SectionSpinner /> : null}
+      {partner ? <NewPerk partnerId={partner.id} /> : null}
+    </RecordPage>
   );
 };
 
@@ -658,9 +685,7 @@ const PerksList = ({ partnerId }: { partnerId: string }) => {
         </RowList>
         <ErrorLine error={change.error} />
       </DiwanSection>
-      <DiwanSection id="new-perk" title={t("new")}>
-        <NewPerk partnerId={partnerId} />
-      </DiwanSection>
+      <NewLink href="/partners/dashboard/perks/new">{t("new")}</NewLink>
     </>
   );
 };

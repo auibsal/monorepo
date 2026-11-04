@@ -7,6 +7,21 @@ first session); section numbers (§) refer to it.
 
 Branch: `claude/new-session-qosn60`.
 
+## Every page its own; Qirtas drafts (2026-11-04)
+
+- [x] Every new or edited record opens its own page across the platform
+  (`NewLink`, `RecordPage`): openings, hiring posts, partner places,
+  perks (Diwan and dashboard), needs, rotas, shifts, Next Stop reels,
+  the Company's auditions, credits and rehearsals, campaign ledger
+  entries, receipts and impact figures, Awards rounds, elections,
+  certificates, a member's activity and roles, requests (concerns,
+  motions, pitches), service hours and standing for office.
+- [x] Tabs held in state are paths: a campaign's tabs and People →
+  Service.
+- [x] Drafts in Write for Qirtas: `journal.submission_drafts`
+  (migration `20261101001800`, `99_qirtas_drafts.test.sql`), Save draft,
+  drafts under Your work, `/qirtas/write/<type>/<draft>`.
+
 ## The experience audit (2026-10-31)
 
 - [x] Diwan: each section opens on the first view the officer's roles
@@ -1707,6 +1722,8 @@ Covered by automated tests so far:
   use (as the form says).
 
 ## needs-native-review (Arabic written for the platform)
+
+- Every page its own, Qirtas drafts (2026-11-04): `nexus.admin.charity.newOn.impact`, `nexus.admin.charity.newOn.ledger`, `nexus.admin.charity.newOn.receipts`, `nexus.admin.forms.back`, `nexus.admin.forms.missing`, `nexus.admin.forms.requestTitle`, `nexus.admin.governance.elections.back`, `nexus.admin.hiring.back`, `nexus.admin.needs.backToQirtas`, `nexus.admin.partners.offers.back`, `nexus.admin.partners.places.back`, `nexus.admin.programmes.backToTab`, `nexus.admin.programmes.callboard.new`, `nexus.admin.programmes.reels.back`, `nexus.journal.write.deleteDraft`, `nexus.journal.write.deleteDraftConfirm`, `nexus.journal.write.draftHint`, `nexus.journal.write.draftMissing`, `nexus.journal.write.draftSaved`, `nexus.journal.write.draftStatus`, `nexus.journal.write.draftTitle`, `nexus.journal.write.saveDraft`, `nexus.journal.write.savingDraft`, `nexus.journal.write.untitledDraft`, `nexus.society.elections.alreadyStanding`, `nexus.society.elections.backToSociety`, `nexus.society.elections.notOpen`, `nexus.society.elections.standFor`.
 
 - Author pages, the memorandum, signatures (2026-10-31, section 16):
   `web.journal.{authorKinds.*,nothingYet}`, `common.signature.number`,

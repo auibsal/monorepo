@@ -26,6 +26,7 @@ import { DataError } from "@repo/sal-data";
 import { useTranslations } from "next-intl";
 import { type ReactNode, useId, useState } from "react";
 import { DateInput } from "@/components/fields/date-input";
+import { useAppLink } from "@/lib/link-context";
 import { callApiText } from "@/lib/nexus/api";
 import { ChoiceInput } from "./choice-input";
 
@@ -59,6 +60,61 @@ export const AdminHeading = ({
     ) : null}
   </header>
 );
+
+/**
+ * The way to a blank record (owner, Nov 4, 2026: every new record opens
+ * its own page, at its list's path and "/new"; never a form under the
+ * list). A text link, so the page keeps its one accent action.
+ */
+export const NewLink = ({
+  children,
+  href,
+}: {
+  readonly children: ReactNode;
+  readonly href: string;
+}) => {
+  const AppLink = useAppLink();
+  return (
+    <AppLink className="link justify-self-start font-medium" href={href}>
+      {children}
+    </AppLink>
+  );
+};
+
+/**
+ * A new or edited record's own page: its title, the way back to its list,
+ * and the form. Saving returns to the list.
+ */
+export const RecordPage = ({
+  back,
+  backLabel,
+  children,
+  lede,
+  title,
+}: {
+  readonly back: string;
+  readonly backLabel: string;
+  readonly children: ReactNode;
+  readonly lede?: ReactNode;
+  readonly title: string;
+}) => {
+  const AppLink = useAppLink();
+  return (
+    <div className="grid max-w-3xl gap-8">
+      <AdminHeading
+        actions={
+          <AppLink className="link" href={back}>
+            {backLabel}
+          </AppLink>
+        }
+        title={title}
+      >
+        {lede}
+      </AdminHeading>
+      {children}
+    </div>
+  );
+};
 
 // ── Tables ──────────────────────────────────────────────────────────────────
 

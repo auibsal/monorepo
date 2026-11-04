@@ -3,12 +3,6 @@
 import { useAuth } from "@repo/auth/provider";
 import { Button } from "@repo/design-system/components/ui/button";
 import { Input } from "@repo/design-system/components/ui/input";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@repo/design-system/components/ui/tabs";
 import type { Locale } from "@repo/internationalization";
 import {
   formatLongDate,
@@ -21,8 +15,10 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 import { DateInput } from "@/components/fields/date-input";
+import { useRouter } from "@/lib/nexus/navigation";
 import { useGrants } from "@/lib/nexus/queries";
 import { SectionSpinner } from "../../states";
+import { SectionTabs } from "../admin-shell";
 import {
   AdminHeading,
   BilingualField,
@@ -31,11 +27,14 @@ import {
   DataTable,
   ErrorLine,
   Field,
+  NewLink,
+  RecordPage,
   SaveButton,
   SelectInput,
 } from "../kit";
 import { MemberPicker, useMemberNames } from "../member-picker";
 import { memberName } from "../members/directory";
+import { type ServiceTab, serviceTabs } from "../tabs";
 
 const key = ["admin", "recognition"];
 
@@ -482,7 +481,6 @@ const Certificates = () => {
     grants.data,
     "certificates.countersign"
   );
-  const [preparing, setPreparing] = useState(false);
   const [revoking, setRevoking] = useState<{
     id: string;
     reason: string;
@@ -651,14 +649,10 @@ const Certificates = () => {
   return (
     <div className="grid gap-6">
       <p className="type-body">{t("lede")}</p>
-      {preparing ? <PrepareForm onDone={() => setPreparing(false)} /> : null}
-      {!preparing && canPrepare ? (
-        <Button
-          className="justify-self-start"
-          onClick={() => setPreparing(true)}
-        >
+      {canPrepare ? (
+        <NewLink href="/people/service/certificates/new">
           {t("prepare")}
-        </Button>
+        </NewLink>
       ) : null}
       <ErrorLine error={sign.error ?? revoke.error ?? remove.error} />
       <DataTable
@@ -673,7 +667,33 @@ const Certificates = () => {
 
 // ── Page ────────────────────────────────────────────────────────────────────
 
-export const RecognitionAdmin = () => {
+/** A certificate drafted on its own page under Certificates. */
+export const NewCertificate = () => {
+  const t = useTranslations("nexus.admin.recognition");
+  const router = useRouter();
+  const back = "/people/service/certificates";
+  return (
+    <RecordPage
+      back={back}
+      backLabel={t("tabs.certificates")}
+      title={t("certificates.prepare")}
+    >
+      <PrepareForm onDone={() => router.push(back)} />
+    </RecordPage>
+  );
+};
+
+const servicePaths: Record<ServiceTab, string> = {
+  certificates: "/people/service/certificates",
+  pending: "/people/service",
+  totals: "/people/service/totals",
+};
+
+export const RecognitionAdmin = ({
+  tab = "pending",
+}: {
+  readonly tab?: ServiceTab;
+}) => {
   const t = useTranslations("nexus.admin.recognition");
   const grants = useGrants();
   const canConfirm =
@@ -684,44 +704,29 @@ export const RecognitionAdmin = () => {
     hasPermissionAnywhere(grants.data, "certificates.prepare") ||
     hasPermissionAnywhere(grants.data, "certificates.sign") ||
     hasPermissionAnywhere(grants.data, "certificates.countersign");
-  let first = "certificates";
-  if (canConfirm) {
-    first = "pending";
-  }
+  const allowed = serviceTabs.filter(
+    (view) =>
+      (view === "pending" && canConfirm) ||
+      (view === "totals" && canTotals) ||
+      (view === "certificates" && canCertificates)
+  );
+  const shown = allowed.find((view) => view === tab) ?? allowed[0];
 
   return (
     <div className="grid gap-6">
       <AdminHeading title={t("title")}>{t("lede")}</AdminHeading>
-      <Tabs defaultValue={first}>
-        <TabsList className="flex-wrap">
-          {canConfirm ? (
-            <TabsTrigger value="pending">{t("tabs.pending")}</TabsTrigger>
-          ) : null}
-          {canTotals ? (
-            <TabsTrigger value="totals">{t("tabs.totals")}</TabsTrigger>
-          ) : null}
-          {canCertificates ? (
-            <TabsTrigger value="certificates">
-              {t("tabs.certificates")}
-            </TabsTrigger>
-          ) : null}
-        </TabsList>
-        {canConfirm ? (
-          <TabsContent className="pt-4" value="pending">
-            <PendingHours />
-          </TabsContent>
-        ) : null}
-        {canTotals ? (
-          <TabsContent className="pt-4" value="totals">
-            <Totals />
-          </TabsContent>
-        ) : null}
-        {canCertificates ? (
-          <TabsContent className="pt-4" value="certificates">
-            <Certificates />
-          </TabsContent>
-        ) : null}
-      </Tabs>
+      <SectionTabs
+        label={t("title")}
+        tabs={allowed.map((view) => ({
+          href: servicePaths[view],
+          label: t(`tabs.${view}`),
+        }))}
+      />
+      <div className="pt-2">
+        {shown === "pending" ? <PendingHours /> : null}
+        {shown === "totals" ? <Totals /> : null}
+        {shown === "certificates" ? <Certificates /> : null}
+      </div>
     </div>
   );
 };

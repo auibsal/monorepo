@@ -15,9 +15,10 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 import { DateInput } from "@/components/fields/date-input";
+import { useRouter } from "@/lib/nexus/navigation";
 import { useGrants } from "@/lib/nexus/queries";
 import { EmptyLine, SectionSpinner } from "../states";
-import { ConfirmAction, ErrorLine, Field, SaveButton } from "./kit";
+import { ConfirmAction, ErrorLine, Field, NewLink, SaveButton } from "./kit";
 
 const key = ["admin", "needs"];
 
@@ -179,12 +180,24 @@ const NeedRow = ({
   );
 };
 
-const NewNeed = ({ programmeId }: { readonly programmeId: string }) => {
+export const NewNeed = ({
+  back,
+  programmeId,
+}: {
+  /** The list it joins, where saving returns. */
+  readonly back: string;
+  readonly programmeId: string;
+}) => {
   const t = useTranslations("nexus.admin.needs");
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
-  const blank = { item: "", needed_by: "", purpose: "", quantity: "1" };
-  const [form, setForm] = useState(blank);
+  const router = useRouter();
+  const [form, setForm] = useState({
+    item: "",
+    needed_by: "",
+    purpose: "",
+    quantity: "1",
+  });
   const add = useMutation({
     mutationFn: async () =>
       unwrap(
@@ -200,8 +213,8 @@ const NewNeed = ({ programmeId }: { readonly programmeId: string }) => {
           })
       ),
     onSuccess: async () => {
-      setForm(blank);
       await queryClient.invalidateQueries({ queryKey: key });
+      router.push(back);
     },
   });
 
@@ -213,7 +226,6 @@ const NewNeed = ({ programmeId }: { readonly programmeId: string }) => {
         add.mutate();
       }}
     >
-      <h4 className="type-subheading">{t("new")}</h4>
       <div className="grid gap-4 sm:grid-cols-3">
         <Field className="sm:col-span-2" label={t("item")}>
           {(id) => (
@@ -282,7 +294,14 @@ const NewNeed = ({ programmeId }: { readonly programmeId: string }) => {
  * no program, every list: the General Secretary's log of requests to
  * Student Life.
  */
-export const Needs = ({ programmeId }: { readonly programmeId?: string }) => {
+export const Needs = ({
+  base,
+  programmeId,
+}: {
+  /** The list's own path; a new need is at base/new. */
+  readonly base?: string;
+  readonly programmeId?: string;
+}) => {
   const t = useTranslations("nexus.admin.needs");
   const { supabase } = useAuth();
   const grants = useGrants();
@@ -321,7 +340,9 @@ export const Needs = ({ programmeId }: { readonly programmeId?: string }) => {
           />
         ))}
       </ul>
-      {programmeId ? <NewNeed programmeId={programmeId} /> : null}
+      {programmeId && base ? (
+        <NewLink href={`${base}/new`}>{t("new")}</NewLink>
+      ) : null}
     </div>
   );
 };

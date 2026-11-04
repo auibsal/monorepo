@@ -1,22 +1,29 @@
 "use client";
 
 import { useAuth } from "@repo/auth/provider";
+import type { Json } from "@repo/database";
 import { Button } from "@repo/design-system/components/ui/button";
 import { Input } from "@repo/design-system/components/ui/input";
 import { Textarea } from "@repo/design-system/components/ui/textarea";
-import type { Locale } from "@repo/internationalization";
+import { type Locale, localizedPath } from "@repo/internationalization";
 import {
   formatLongDate,
   formatNumber,
 } from "@repo/internationalization/format";
 import { Link, useRouter } from "@repo/internationalization/navigation";
-import { journal, localized, toPlainText } from "@repo/sal-data";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { journal, localized, toPlainText, unwrap } from "@repo/sal-data";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, type ReactNode, useState } from "react";
 import { manuscriptHtml } from "@/lib/manuscript";
 import { queryKeys, useOpenCalls } from "@/lib/nexus/queries";
-import { AdminHeading, ErrorLine, Field, SelectInput } from "../admin/kit";
+import {
+  AdminHeading,
+  ConfirmAction,
+  ErrorLine,
+  Field,
+  SelectInput,
+} from "../admin/kit";
 import { RichTextEditor } from "../editor/rich-text";
 import { DiwanSection } from "../page";
 import { SectionSpinner } from "../states";
@@ -128,8 +135,43 @@ const missingReason = (pledged: boolean, work: boolean) => {
   return work ? ("missingDetails" as const) : ("missingWork" as const);
 };
 
-/** The form for one type, at /qirtas/write/<type>. */
-export const WriteType = ({ type }: { type: journal.Category }) => {
+/**
+ * The form for one type, at /qirtas/write/<type>; a saved draft opens at
+ * /qirtas/write/<type>/<draft> (owner, Nov 4, 2026: drafts in their work).
+ */
+export const WriteType = ({
+  draftId,
+  type,
+}: {
+  readonly draftId?: string;
+  readonly type: journal.Category;
+}) => {
+  const saved = useSavedDraft(draftId);
+  if (saved.isPending && draftId) {
+    return <SectionSpinner />;
+  }
+  // A draft opens under its own type only.
+  if (draftId && saved.data?.category !== type) {
+    return <MissingDraft type={type} />;
+  }
+  return (
+    <WriteForm
+      draftId={draftId}
+      initial={fromDraft((saved.data?.content ?? {}) as DraftContent)}
+      type={type}
+    />
+  );
+};
+
+const WriteForm = ({
+  draftId,
+  initial,
+  type,
+}: {
+  readonly draftId?: string;
+  readonly initial: ReturnType<typeof fromDraft>;
+  readonly type: journal.Category;
+}) => {
   const t = useTranslations("nexus.journal.write");
   const tf = useTranslations("nexus.journal.form");
   const tj = useTranslations("nexus.admin.journal");
@@ -139,25 +181,36 @@ export const WriteType = ({ type }: { type: journal.Category }) => {
   const desk = journal.deskOf(type);
   const needs = journal.typeNeeds(type);
   const kinds = kindsFor(type);
-  const { call, loading, pathway, setCallId, setPartnerId } =
-    useWriteCall(desk);
-  const [language, setLanguage] = useState<(typeof LANGUAGES)[number]>("en");
-  const [title, setTitle] = useState("");
-  const [deck, setDeck] = useState("");
-  const [body, setBody] = useState("");
-  const [videoUrl, setVideoUrl] = useState("");
-  const [source, setSource] = useState<Source>({
-    author: "",
-    rights: "",
-    text: "",
-  });
-  const [note, setNote] = useState("");
-  const [penName, setPenName] = useState("");
+  const { call, loading, pathway, setCallId, setPartnerId } = useWriteCall(
+    desk,
+    initial
+  );
+  const [language, setLanguage] = useState(initial.language);
+  const [title, setTitle] = useState(initial.title);
+  const [deck, setDeck] = useState(initial.deck);
+  const [body, setBody] = useState(initial.body);
+  const [videoUrl, setVideoUrl] = useState(initial.videoUrl);
+  const [source, setSource] = useState<Source>(initial.source);
+  const [note, setNote] = useState(initial.note);
+  const [penName, setPenName] = useState(initial.penName);
   const [files, setFiles] = useState<PendingFile[]>([]);
   const [pledged, setPledged] = useState(false);
   const [firstPublication, setFirstPublication] = useState(false);
   const [consent, setConsent] = useState(false);
   const [partial, setPartial] = useState<string | null>(null);
+  const draft = useDraft(type, draftId);
+  const draftContent: DraftContent = {
+    body,
+    callId: call?.id,
+    deck,
+    language,
+    note,
+    partnerId: pathway.throughPartner,
+    penName,
+    source,
+    title,
+    videoUrl,
+  };
 
   const input = submissionInput({
     body,
@@ -202,6 +255,7 @@ export const WriteType = ({ type }: { type: journal.Category }) => {
       return created.id;
     },
     onSuccess: async (id) => {
+      await draft.discard();
       await queryClient.invalidateQueries({
         queryKey: queryKeys.submissions(user?.id ?? ""),
       });
@@ -318,6 +372,11 @@ export const WriteType = ({ type }: { type: journal.Category }) => {
             })}
           </p>
           <SendRow missing={ready ? null : missing} sending={send.isPending} />
+          <DraftRow
+            content={draftContent}
+            draft={draft}
+            saved={draft.savedId !== undefined}
+          />
           <ErrorLine error={send.error} />
           <PartialSend id={partial} />
         </form>
@@ -669,11 +728,195 @@ const PartialSend = ({ id }: { readonly id: string | null }) => {
  * standing call, and an Edition call while one is open for Letters or
  * Gallery), the Edition's first.
  */
-const useWriteCall = (desk: journal.Desk) => {
+// ── Drafts ──────────────────────────────────────────────────────────────────
+
+/** What a draft keeps: the form as the member left it (files go on sending). */
+interface DraftContent {
+  readonly body?: string;
+  readonly callId?: string;
+  readonly deck?: string;
+  readonly language?: (typeof LANGUAGES)[number];
+  readonly note?: string;
+  readonly partnerId?: string;
+  readonly penName?: string;
+  readonly source?: Source;
+  readonly title?: string;
+  readonly videoUrl?: string;
+}
+
+/** A saved draft, read under the member's own rights (RLS: theirs only). */
+const useSavedDraft = (draftId: string | undefined) => {
+  const { supabase } = useAuth();
+  return useQuery({
+    enabled: Boolean(draftId),
+    queryFn: async () =>
+      unwrap(
+        await supabase
+          .schema("journal")
+          .from("submission_drafts")
+          .select("id, category, content")
+          .eq("id", draftId ?? "")
+          .maybeSingle()
+      ),
+    queryKey: [...queryKeys.drafts, draftId],
+  });
+};
+
+/**
+ * Saving a draft (journal.submission_drafts, the member's alone). The
+ * first save gives it its own address without leaving the form, so files
+ * already chosen stay; sending the work drops the draft.
+ */
+const useDraft = (type: journal.Category, draftId: string | undefined) => {
+  const { supabase } = useAuth();
+  const locale = useLocale() as Locale;
+  const queryClient = useQueryClient();
+  const [savedId, setSavedId] = useState(draftId);
+  const save = useMutation({
+    mutationFn: async (content: DraftContent) => {
+      const row = {
+        category: type,
+        content: content as NonNullable<Json>,
+        title: (content.title ?? "").trim().slice(0, 300),
+      };
+      if (savedId) {
+        unwrap(
+          await supabase
+            .schema("journal")
+            .from("submission_drafts")
+            .update(row)
+            .eq("id", savedId)
+        );
+        return savedId;
+      }
+      const created = unwrap(
+        await supabase
+          .schema("journal")
+          .from("submission_drafts")
+          .insert(row)
+          .select("id")
+          .single()
+      );
+      return created?.id;
+    },
+    onSuccess: async (id) => {
+      if (id && !savedId) {
+        setSavedId(id);
+        window.history.replaceState(
+          null,
+          "",
+          localizedPath(locale, `/qirtas/write/${type}/${id}`)
+        );
+      }
+      await queryClient.invalidateQueries({ queryKey: queryKeys.drafts });
+    },
+  });
+  const discard = async () => {
+    if (!savedId) {
+      return;
+    }
+    unwrap(
+      await supabase
+        .schema("journal")
+        .from("submission_drafts")
+        .delete()
+        .eq("id", savedId)
+    );
+    await queryClient.invalidateQueries({ queryKey: queryKeys.drafts });
+  };
+  return { discard, save, savedId };
+};
+
+type Draft = ReturnType<typeof useDraft>;
+
+/** A saved draft's fields, with the form's own defaults for what it lacks. */
+const fromDraft = (saved: DraftContent) => ({
+  body: saved.body ?? "",
+  // Empty: the default call (Qirtas, all year).
+  callId: saved.callId ?? "",
+  deck: saved.deck ?? "",
+  language: saved.language ?? "en",
+  note: saved.note ?? "",
+  partnerId: saved.partnerId ?? "",
+  penName: saved.penName ?? "",
+  source: saved.source ?? { author: "", rights: "", text: "" },
+  title: saved.title ?? "",
+  videoUrl: saved.videoUrl ?? "",
+});
+
+/** Save draft beside Send, and Delete draft once it has one. */
+const DraftRow = ({
+  content,
+  draft,
+  saved,
+}: {
+  readonly content: DraftContent;
+  readonly draft: Draft;
+  readonly saved: boolean;
+}) => {
+  const t = useTranslations("nexus.journal.write");
+  const router = useRouter();
+  const remove = useMutation({
+    mutationFn: draft.discard,
+    onSuccess: () => router.push("/qirtas/write"),
+  });
+  let label = t("saveDraft");
+  if (draft.save.isPending) {
+    label = t("savingDraft");
+  } else if (draft.save.isSuccess) {
+    label = t("draftSaved");
+  }
+  return (
+    <div className="grid gap-2 border-line border-t pt-4">
+      <p className="type-caption">{t("draftHint")}</p>
+      <div className="flex flex-wrap items-center gap-3">
+        <Button
+          disabled={draft.save.isPending}
+          onClick={() => draft.save.mutate(content)}
+          type="button"
+          variant="outline"
+        >
+          {label}
+        </Button>
+        {saved ? (
+          <ConfirmAction
+            confirmLabel={t("deleteDraft")}
+            description={t("deleteDraftConfirm")}
+            disabled={remove.isPending}
+            onConfirm={() => remove.mutate()}
+            variant="ghost"
+          >
+            {t("deleteDraft")}
+          </ConfirmAction>
+        ) : null}
+      </div>
+      <ErrorLine error={draft.save.error ?? remove.error} />
+    </div>
+  );
+};
+
+/** A draft address that isn't the member's (or was sent or deleted). */
+const MissingDraft = ({ type }: { readonly type: journal.Category }) => {
+  const t = useTranslations("nexus.journal.write");
+  return (
+    <div className="grid gap-4">
+      <WriteHeading type={type} />
+      <p className="type-body">{t("draftMissing")}</p>
+      <Link className="link justify-self-start" href="/qirtas/write">
+        {t("back")}
+      </Link>
+    </div>
+  );
+};
+
+const useWriteCall = (
+  desk: journal.Desk,
+  initial: { readonly callId: string; readonly partnerId: string }
+) => {
   const calls = useOpenCalls();
   const open = (calls.data ?? []).filter((c) => c.desks.includes(desk));
-  const [callId, setCallId] = useState("");
-  const [partnerId, setPartnerId] = useState("");
+  const [callId, setCallId] = useState(initial.callId);
+  const [partnerId, setPartnerId] = useState(initial.partnerId);
   const pathway = useSubmitPathway(open, callId, partnerId);
   const call =
     pathway.callable.find((c) => c.id === callId) ??

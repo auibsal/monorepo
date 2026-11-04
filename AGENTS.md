@@ -84,21 +84,44 @@ and decisions), and continue from the first unticked item.
   grouped by kind), a welcome step `/welcome/2`, a request
   `/membership/requests/new/<form>`. Never add `?tab=` or a query for
   what a path can say.
-- **Editing opens its own page** (owner, Oct 31, 2026). In the Diwan a
-  record is edited at its list's path, then "/" and its name (or id),
-  "new" for a blank one, and saving returns to the list: never a form
-  opened in place under a list, a dialog or a tab held in state. Openings
-  (`OpeningEditor`: `/events/<program>/places/<id>`,
-  `/people/hiring/<id>`, `/people/partners/places/<id>`), partners
-  (`/people/partners/<slug>`, each view of Partners its own path),
-  memoranda (`/people/partners/agreements/<id>`), calls
+- **Every new or edited record opens its own page** (owner, Oct 31,
+  2026, for the Diwan; Nov 4, 2026, across the whole platform: the
+  Diwan, Membership and the partner dashboard). A record is edited at its
+  list's path, then "/" and its name (or id), "new" for a blank one, and
+  saving returns to the list: never a form opened in place under a list,
+  a dialog or a tab held in state. The list links to it with `NewLink`;
+  the page is `RecordPage` (both `components/nexus/admin/kit.tsx`).
+  What stays where it is: one-step actions on a record (pick and attach
+  a member, partner, event or piece; publish, close, sign, confirm; a
+  note in a thread) and the sign-in and settings forms that are pages
+  themselves. Openings (`OpeningEditor`: `/events/<program>/places/<id>`,
+  `/people/hiring/<id>`, `/people/partners/places/<id>`; new ones at
+  `…/places/new` and `/people/hiring/new`), partners
+  (`/people/partners/<slug>`, each view of Partners its own path; perks
+  at `/people/partners/offers/new`), memoranda
+  (`/people/partners/agreements/<id>`), calls
   (`/qirtas/editions/<edition>/calls/<id>`), resolutions
   (`/society/meetings/<id>/resolutions/<code>`: minutes and resolutions
   are one, meetings of the Council or the General Assembly; every new
-  resolution names its meeting), contributors
+  resolution names its meeting), requests (`/society/concerns/<id>`,
+  `/society/motions/<id>`, `/events/pitches/<id>`), elections
+  (`/society/elections/new`), contributors
   (`/qirtas/contributors/<slug>`), Next Stop episodes
-  (`/qirtas/video/episodes/<slug>`) and productions (`/company/<slug>`
-  and `/company/<slug>/<tab>`). Tab lists the server pages read live in
+  (`/qirtas/video/episodes/<slug>`; reels at `/qirtas/video/reels/new`),
+  Awards rounds (`/qirtas/awards/new`), needs (`/events/<program>/needs/new`,
+  `/qirtas/needs/new`), rotas and shifts (`/events/<program>/shifts/new`,
+  `/events/<program>/shifts/<rota>/new`), productions (`/company/<slug>`,
+  `/company/<slug>/<tab>`, and `/company/<slug>/<tab>/new` for an audition
+  slot, credit or rehearsal), Second Chapter campaigns
+  (`/events/second-chapter/campaigns/<slug>/<tab>`, with `ledger/new`,
+  `receipts/new` and `impact/new`), Service
+  (`/people/service/totals`, `/people/service/certificates`,
+  `/people/service/certificates/new`) and a member's activity and roles
+  (`/people/<id>/activity/new`, `/people/<id>/roles/new`). For members:
+  hours at `/membership/record/new`, standing for office at
+  `/membership/society/stand/<position>`, a partner's perk at
+  `/partners/dashboard/perks/new`, and Qirtas drafts at
+  `/qirtas/write/<type>/<draft>`. Tab lists the server pages read live in
   `components/nexus/admin/tabs.ts`, not in a client module.
 - **Choices on the page** (owner, Oct 31, 2026). Several options are
   chosen on the page, never in a dialog or the browser's pop-up list:
@@ -381,6 +404,13 @@ any schema change. Integration tests run against a local stack with
   unpublished program rows (Next Stop is Qirtas's video show). Second
   Chapter says "our charity partner" until the Council approves one; the
   charity partner stays unset.
+- **Drafts in Write for Qirtas** (owner, Nov 4, 2026). A member saves
+  work before sending it ("Save draft" beside Send): `journal.submission_drafts`,
+  read and written by its writer alone (RLS; fifty at most), holds the
+  form as they left it (files are attached when they send). The first
+  save gives it its address, `/qirtas/write/<type>/<draft>`; their drafts
+  head Your work on `/qirtas/write` ("Draft, not sent"); sending makes it
+  a submission and drops the draft. Nobody reads a draft, blind or not.
 - **Qirtas, one door** (owner, Oct 31, 2026). Members send everything,
   every section, from `/qirtas/write` (`/qirtas/write/<type>` is the
   form), and everything they send is read blind. Edition calls (Letters,

@@ -12,12 +12,20 @@ import { forms, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
+import { Link } from "@/lib/nexus/navigation";
 import { useGrants } from "@/lib/nexus/queries";
 import { FormFieldInput, useFormLabels } from "../../forms/field";
 import { useFormTypes } from "../../forms/forms";
 import { type Submission, SubmissionSheet } from "../../forms/view";
-import { SectionSpinner } from "../../states";
-import { type Column, DataTable, ErrorLine, Field, SelectInput } from "../kit";
+import { EmptyLine, SectionSpinner } from "../../states";
+import {
+  type Column,
+  DataTable,
+  ErrorLine,
+  Field,
+  RecordPage,
+  SelectInput,
+} from "../kit";
 import { useMemberNames } from "../member-picker";
 import { memberName } from "../members/directory";
 
@@ -37,8 +45,11 @@ const FormName = ({ formKey }: { formKey: string }) => {
  * kinds given, and only those this officer handles.
  */
 export const RequestQueue = ({
+  base,
   keys,
 }: {
+  /** The queue's own path; each request opens at base/<id>. */
+  readonly base: string;
   readonly keys: readonly string[];
 }) => {
   const t = useTranslations("nexus.admin.forms");
@@ -49,7 +60,6 @@ export const RequestQueue = ({
   const types = useFormTypes();
   const [form, setForm] = useState("");
   const [show, setShow] = useState<Show>("open");
-  const [selected, setSelected] = useState<string | null>(null);
 
   const handled = (types.data ?? []).filter(
     (ty) =>
@@ -91,18 +101,13 @@ export const RequestQueue = ({
       // What you sent yourself is in Forms, not your queue.
       s.submitted_by !== user?.id
   );
-  const current = rows.find((s) => s.id === selected) ?? null;
 
   const columns: Column<Submission>[] = [
     {
       cell: (s) => (
-        <Button
-          className="h-auto p-0 text-start underline underline-offset-4"
-          onClick={() => setSelected(s.id)}
-          variant="link"
-        >
+        <Link className="underline underline-offset-4" href={`${base}/${s.id}`}>
           <FormName formKey={s.form_key} />
-        </Button>
+        </Link>
       ),
       header: t("columns.form"),
       key: "form",
@@ -195,7 +200,6 @@ export const RequestQueue = ({
         rowKey={(s) => s.id}
         rows={rows}
       />
-      {current ? <Handle submission={current} /> : null}
     </div>
   );
 };
@@ -223,10 +227,7 @@ const Handle = ({ submission }: { submission: Submission }) => {
       : (submission.status as "acknowledged" | "in_progress" | "closed");
 
   return (
-    <section
-      className="grid gap-4 border-line border-t pt-6"
-      key={submission.id}
-    >
+    <section className="grid gap-4">
       <div className="flex flex-wrap gap-2 print:hidden">
         <Button onClick={() => window.print()} size="sm" variant="outline">
           {tf("print")}
@@ -300,5 +301,60 @@ const Handle = ({ submission }: { submission: Submission }) => {
         submission={submission}
       />
     </section>
+  );
+};
+
+/**
+ * One request, on its own page under its queue (owner, Nov 4, 2026: every
+ * record opens its own page): what was sent, and the office's part.
+ */
+export const RequestPage = ({
+  back,
+  id,
+}: {
+  readonly back: string;
+  readonly id: string;
+}) => {
+  const t = useTranslations("nexus.admin.forms");
+  const { supabase } = useAuth();
+  const request = useQuery({
+    queryFn: async () =>
+      (unwrap(
+        await supabase
+          .schema("governance")
+          .from("form_submissions")
+          .select("*")
+          .eq("id", id)
+          .neq("status", "draft")
+          .maybeSingle()
+      ) ?? null) as Submission | null,
+    queryKey: [...key, "request", id],
+  });
+  if (request.isPending) {
+    return <SectionSpinner />;
+  }
+  if (!request.data) {
+    return (
+      <EmptyLine action={{ href: back, label: t("back") }}>
+        {t("missing")}
+      </EmptyLine>
+    );
+  }
+  return <RequestRecord back={back} submission={request.data} />;
+};
+
+const RequestRecord = ({
+  back,
+  submission,
+}: {
+  readonly back: string;
+  readonly submission: Submission;
+}) => {
+  const t = useTranslations("nexus.admin.forms");
+  const labels = useFormLabels(submission.form_key);
+  return (
+    <RecordPage back={back} backLabel={t("back")} title={labels.title()}>
+      <Handle submission={submission} />
+    </RecordPage>
   );
 };

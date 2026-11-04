@@ -7,11 +7,13 @@ import { Label } from "@repo/design-system/components/ui/label";
 import { Textarea } from "@repo/design-system/components/ui/textarea";
 import { localizedPath } from "@repo/internationalization";
 import { formatClock, formatLongDate } from "@repo/internationalization/format";
+import { Link, useRouter } from "@repo/internationalization/navigation";
 import { governance, localized, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useState } from "react";
 import { SelectInput } from "@/components/nexus/admin/kit";
+import { DiwanPage } from "../page";
 import { EmptyLine, ErrorState, SectionSpinner } from "../states";
 import { SocietySection } from "./section";
 
@@ -112,11 +114,16 @@ const errorKey = (error: unknown) => {
   return "failed";
 };
 
+/**
+ * Standing for a position, on its own page (owner, Nov 4, 2026: every new
+ * record opens its own page): the statement in each language, then back
+ * to Society, where the nomination shows as the member's own.
+ */
 const Nominate = ({ position }: { readonly position: Position }) => {
   const t = useTranslations("nexus.society.elections");
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
-  const [open, setOpen] = useState(false);
+  const router = useRouter();
   const [notice, setNotice] = useState<string | null>(null);
   const nominate = useMutation({
     mutationFn: async ({ ar, en }: { ar: string; en: string }) =>
@@ -128,10 +135,9 @@ const Nominate = ({ position }: { readonly position: Position }) => {
         })
       ),
     onError: (error) => setNotice(errorKey(error)),
-    onSuccess: () => {
-      setNotice("nominated");
-      setOpen(false);
-      return queryClient.invalidateQueries({ queryKey: ["elections"] });
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["elections"] });
+      router.push("/membership/society");
     },
   });
 
@@ -145,54 +151,88 @@ const Nominate = ({ position }: { readonly position: Position }) => {
   };
 
   return (
-    <div className="grid gap-3">
-      {open ? (
-        <form className="grid gap-3" onSubmit={submit}>
-          <div className="grid gap-2">
-            <Label htmlFor={`en-${position.id}`}>{t("statementEn")}</Label>
-            <Textarea
-              id={`en-${position.id}`}
-              maxLength={4000}
-              name="en"
-              required
-            />
-          </div>
-          <div className="grid gap-2">
-            <Label htmlFor={`ar-${position.id}`}>{t("statementAr")}</Label>
-            <Textarea
-              dir="rtl"
-              id={`ar-${position.id}`}
-              lang="ar"
-              maxLength={4000}
-              name="ar"
-            />
-          </div>
-          <Button
-            className="justify-self-start"
-            disabled={nominate.isPending}
-            type="submit"
-          >
-            {t("submitNomination")}
-          </Button>
-        </form>
-      ) : (
-        <Button
-          className="justify-self-start"
-          onClick={() => setOpen(true)}
-          variant="outline"
-        >
-          {t("stand")}
-        </Button>
-      )}
+    <form className="grid gap-4" onSubmit={submit}>
+      <div className="grid gap-2">
+        <Label htmlFor={`en-${position.id}`}>{t("statementEn")}</Label>
+        <Textarea
+          id={`en-${position.id}`}
+          maxLength={4000}
+          name="en"
+          required
+          rows={6}
+        />
+      </div>
+      <div className="grid gap-2">
+        <Label htmlFor={`ar-${position.id}`}>{t("statementAr")}</Label>
+        <Textarea
+          dir="rtl"
+          id={`ar-${position.id}`}
+          lang="ar"
+          maxLength={4000}
+          name="ar"
+          rows={6}
+        />
+      </div>
+      <Button
+        className="justify-self-start"
+        disabled={nominate.isPending}
+        type="submit"
+      >
+        {t("submitNomination")}
+      </Button>
       {notice ? (
-        <p
-          className="type-body font-medium"
-          role={notice === "nominated" ? "status" : "alert"}
-        >
+        <p className="type-body font-medium" role="alert">
           {t(`notice.${notice as "nominated"}`)}
         </p>
       ) : null}
-    </div>
+    </form>
+  );
+};
+
+/** /membership/society/stand/<position>: standing for one position. */
+export const StandForOffice = ({
+  positionId,
+}: {
+  readonly positionId: string;
+}) => {
+  const t = useTranslations("nexus.society.elections");
+  const locale = useLocale() as Lang;
+  const data = useElections();
+  if (data.isPending) {
+    return <SectionSpinner />;
+  }
+  if (data.isError) {
+    return <ErrorState onRetry={() => data.refetch()} />;
+  }
+  const election = data.data.elections.find((e) =>
+    e.positions.some((p) => p.id === positionId)
+  );
+  const position = election?.positions.find((p) => p.id === positionId);
+  const mine = position?.candidates.some((c) => c.user_id === data.data.me);
+  const open =
+    election &&
+    between(election.nominations_open_at, election.nominations_close_at);
+  const back = (
+    <Link className="link" href="/membership/society">
+      {t("backToSociety")}
+    </Link>
+  );
+  if (!(election && position && open) || mine) {
+    return (
+      <DiwanPage actions={back} narrow title={t("stand")}>
+        <p className="type-body">{t(mine ? "alreadyStanding" : "notOpen")}</p>
+      </DiwanPage>
+    );
+  }
+  return (
+    <DiwanPage
+      actions={back}
+      lede={localized(election, "title", locale)}
+      narrow
+      title={t("standFor", { position: localized(position, "title", locale) })}
+    >
+      <Nominate position={position} />
+    </DiwanPage>
   );
 };
 
@@ -395,7 +435,14 @@ const ElectionCard = ({
                     {t(`yourNomination.${mine.status as "nominated"}`)}
                   </p>
                 ) : null}
-                {nominating && !mine ? <Nominate position={position} /> : null}
+                {nominating && !mine ? (
+                  <Link
+                    className="link justify-self-start font-medium"
+                    href={`/membership/society/stand/${position.id}`}
+                  >
+                    {t("stand")}
+                  </Link>
+                ) : null}
               </section>
             );
           })

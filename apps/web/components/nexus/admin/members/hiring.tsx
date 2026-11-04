@@ -9,7 +9,7 @@ import { localized, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
-import { Link } from "@/lib/nexus/navigation";
+import { Link, useRouter } from "@/lib/nexus/navigation";
 import { useGrants } from "@/lib/nexus/queries";
 import { useProgrammeOptions } from "../events/data";
 import {
@@ -18,6 +18,8 @@ import {
   DateTimeField,
   ErrorLine,
   Field,
+  NewLink,
+  RecordPage,
   SaveButton,
   SelectInput,
 } from "../kit";
@@ -207,6 +209,7 @@ const NewRole = () => {
   const { supabase } = useAuth();
   const grants = useGrants();
   const queryClient = useQueryClient();
+  const router = useRouter();
   const programs = useProgrammeOptions("programmes.manage");
   const roles = useHiredRoles();
   const blank = {
@@ -248,8 +251,8 @@ const NewRole = () => {
           })
       ),
     onSuccess: async () => {
-      setForm(blank);
       await queryClient.invalidateQueries({ queryKey: key });
+      router.push("/people/hiring");
     },
   });
 
@@ -261,7 +264,6 @@ const NewRole = () => {
         add.mutate();
       }}
     >
-      <h2 className="type-heading">{t("post")}</h2>
       <Field hint={t("roleHint")} label={t("role")}>
         {(id) => (
           <SelectInput
@@ -371,7 +373,12 @@ export const HiringAdmin = () => {
 
   return (
     <div className="grid gap-10">
-      <AdminHeading title={t("title")}>{t("lede")}</AdminHeading>
+      <AdminHeading
+        actions={<NewLink href="/people/hiring/new">{t("post")}</NewLink>}
+        title={t("title")}
+      >
+        {t("lede")}
+      </AdminHeading>
       <ul className="grid">
         {list.data?.length === 0 ? (
           <li className="type-body text-text-secondary">{t("empty")}</li>
@@ -410,7 +417,16 @@ export const HiringAdmin = () => {
           </li>
         ))}
       </ul>
-      <NewRole />
     </div>
+  );
+};
+
+/** Posting a role, on its own page under Hiring; saving returns there. */
+export const NewRolePage = () => {
+  const t = useTranslations("nexus.admin.hiring");
+  return (
+    <RecordPage back="/people/hiring" backLabel={t("back")} title={t("post")}>
+      <NewRole />
+    </RecordPage>
   );
 };

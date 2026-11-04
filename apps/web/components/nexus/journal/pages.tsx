@@ -107,6 +107,23 @@ interface Sent {
  * Edition submissions and newsroom pieces alike, newest first, each with
  * where it stands and its own page.
  */
+/** The member's drafts in Write for Qirtas, newest first. */
+const useMyDrafts = () => {
+  const { supabase, user } = useAuth();
+  return useQuery({
+    enabled: Boolean(user),
+    queryFn: async () =>
+      unwrap(
+        await supabase
+          .schema("journal")
+          .from("submission_drafts")
+          .select("id, category, title, updated_at")
+          .order("updated_at", { ascending: false })
+      ) ?? [],
+    queryKey: queryKeys.drafts,
+  });
+};
+
 export const YourWork = () => {
   const t = useTranslations("nexus.journal");
   const tw = useTranslations("nexus.journal.write");
@@ -116,8 +133,20 @@ export const YourWork = () => {
   const locale = useLocale() as Locale;
   const submissions = useMySubmissions();
   const pieces = useMyPieces();
+  const drafts = useMyDrafts();
 
   const sent: Sent[] = [
+    // Drafts first among equals: work not sent yet, kept for its writer.
+    ...(drafts.data ?? []).map(
+      (d): Sent => ({
+        date: d.updated_at,
+        href: `/qirtas/write/${d.category}/${d.id}`,
+        id: `d-${d.id}`,
+        status: tw("draftStatus"),
+        title: d.title || tw("untitledDraft"),
+        type: tj(`categories.${d.category}`),
+      })
+    ),
     ...(submissions.data ?? []).map(
       (s): Sent => ({
         date: s.created_at,
@@ -169,7 +198,7 @@ export const YourWork = () => {
   return (
     <DiwanSection id="drafts" title={tw("yourWork")}>
       <p className="type-body text-text-secondary">{tw("yourWorkLede")}</p>
-      {submissions.data && pieces.data ? (
+      {submissions.data && pieces.data && drafts.data ? (
         <DataTable
           columns={columns}
           empty={t("noSubmissions")}
