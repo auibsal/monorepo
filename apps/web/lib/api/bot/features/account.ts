@@ -57,7 +57,7 @@ export const redeemLink = async (ctx: BotContext, payload: string) => {
 const menuFor = (t: Copy, lang: Lang) =>
   new InlineKeyboard()
     .text(t.buttons.events, "evs")
-    .text(t.buttons.waraq, "waraq")
+    .text(t.buttons.qirtas, "qirtas")
     .row()
     .webApp(t.buttons.word, wordPage(lang))
     .text(t.buttons.me, "me")

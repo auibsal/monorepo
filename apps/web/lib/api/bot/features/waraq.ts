@@ -8,7 +8,7 @@ import { pick } from "../format";
 import { piecePage, web } from "../links";
 import { followWithSticker } from "../stickers";
 
-/** What's new in Waraq: the latest public pieces, read on auibsal.org. */
+/** What's new in Qirtas: the latest public pieces, read on auibsal.org. */
 export const waraq = new Composer<BotContext>();
 
 export type Piece = NonNullable<
@@ -34,7 +34,7 @@ const view = async (ctx: BotContext) => {
   const pieces = await publicPieces(6);
   const keyboard = new InlineKeyboard();
   if (!pieces.length) {
-    keyboard.url(ctx.t.buttons.waraq, web(ctx.lang, "/qirtas"));
+    keyboard.url(ctx.t.buttons.qirtas, web(ctx.lang, "/qirtas"));
     return { empty: true, keyboard, text: ctx.t.waraqNone };
   }
   const lines = pieces.map((piece) => {
@@ -45,7 +45,7 @@ const view = async (ctx: BotContext) => {
     );
     return author ? `${title}\n${escapeHtml(ctx.t.by(author))}` : title;
   });
-  keyboard.url(ctx.t.buttons.waraq, web(ctx.lang, "/qirtas"));
+  keyboard.url(ctx.t.buttons.qirtas, web(ctx.lang, "/qirtas"));
   return {
     empty: false,
     keyboard,
@@ -53,7 +53,7 @@ const view = async (ctx: BotContext) => {
   };
 };
 
-waraq.command("waraq", async (ctx) => {
+waraq.command("qirtas", async (ctx) => {
   const { empty, keyboard, text } = await view(ctx);
   await ctx.reply(text, { reply_markup: keyboard });
   if (empty) {
@@ -61,7 +61,7 @@ waraq.command("waraq", async (ctx) => {
   }
 });
 
-waraq.chatType("private").callbackQuery("waraq", async (ctx) => {
+waraq.chatType("private").callbackQuery(["qirtas", "waraq"], async (ctx) => {
   const { empty, keyboard, text } = await view(ctx);
   await ctx.answerCallbackQuery();
   await ctx.editMessageText(text, { reply_markup: keyboard });

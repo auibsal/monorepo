@@ -331,3 +331,16 @@ Where an earlier line above is marked as replaced, the later section holds. What
 - **Every email follows one standard:** the recipient's language only, a heading and a first line that say different things, links listed rather than pasted, one button (with its address written under it for confirmations and invitations), replies reaching hello@auibsal.org, and a footer that says why it came and how to change it.
 - **Added:** a welcome for new members; an event canceled or moved; partner applications received and decided; the election notice, voting open and the results; a nominee's answer; a certificate issued; a concern, motion or pitch taken up and closed; a removal request done (in the requester's language); a time to talk, an offer or a decision on a role; a place given; an audition booked and the Company's answer; a new role (with two-step sign-in when needed); tomorrow's shifts; the Awards' shortlist and winners; an account deleted.
 - **Merged:** replies on Get involved reach Membership as one daily digest. **Trimmed:** "in progress" on a request sends nothing, and an unsigned agreement is reminded for four weeks at most.
+
+## 22. The design review (decided Nov 4, 2026)
+- **Motion** gets a short section in the brand book: quiet, native CSS, a few durations, reduced motion respected. (D3)
+- **The Diwan's find-anything panel** pushes the page down; it is not a dialog. (D4)
+- **Edition shelves** show real scans or photos of the printed Edition, never fake 3D; with no scan, a plain typographic cover. (D5)
+- **The daily word guess and word search** stay daily puzzles, outside the six Games types. (D6)
+- **The public API stays retired.** (D7)
+- **No AdSense on Letters and Voices reading pages;** other ads stay under the current rules. (D8)
+- **Retired code names** are renamed only in the last pull request of this work; database schema names stay. (D9)
+- **Audio** starts with a few short readings on the current plans, after checking storage limits; nothing is paid for. (D10)
+- **A translation may show its original beside it,** an exception to one language per page. (D11)
+- **Book Circle members vote among three books chosen by the host.** (D12)
+- **Done first:** Hudhud's command is `/qirtas` (was `/waraq`); the homepage links to What's on once; the Qirtas front page has one way to Write for Qirtas and ends with the Sunday Paper; Second Chapter's page follows the collection through its five stages (boxes, donations, the fair, the witnessed handover, the impact report) from the campaign's record, with only signed-off figures, and lists its drop-off points when they are entered.

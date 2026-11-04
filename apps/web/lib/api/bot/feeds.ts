@@ -247,7 +247,7 @@ const newPieces = (run: Run, pieces: PublicPiece[]) =>
           postTo(
             run.api,
             run.group,
-            ["waraq", "announcements"],
+            ["qirtas", "announcements"],
             copyFor(run.group, (lang) => {
               const author = pieceAuthor(lang, piece);
               return [
@@ -284,7 +284,7 @@ const dailyWord = (run: Run) => {
           postTo(
             run.api,
             run.group,
-            ["word", "waraq"],
+            ["word", "qirtas"],
             copyFor(run.group, (lang) =>
               copy[lang].postWord(String(gameNumber(day)))
             ),

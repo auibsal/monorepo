@@ -15,7 +15,7 @@ export const langOf = (code: string | undefined): Lang =>
 export const purposes = [
   "announcements",
   "events",
-  "waraq",
+  "qirtas",
   "word",
   "brief",
 ] as const;
@@ -58,11 +58,11 @@ const en = {
     notifyOff: "Notices here: off",
     notifyOn: "Notices here: on",
     play: "Play",
+    qirtas: "Qirtas",
     read: "Read",
     rsvp: "RSVP",
     site: "auibsal.org",
     unlink: "Unlink Telegram",
-    waraq: "Qirtas",
     word: "Daily word",
   },
   by: (author: string) => `by ${author}`,
@@ -72,10 +72,10 @@ const en = {
     help: "What I can do",
     lang: "Language of my posts: en, ar or both",
     me: "Your membership and your places",
+    qirtas: "New in Qirtas",
     setup: "Connect this group (code from the Diwan)",
     start: "Say hello",
     topic: "Tell me what this topic is for",
-    waraq: "New in Qirtas",
     word: "Play today's word",
   },
   description:
@@ -96,7 +96,7 @@ const en = {
   help: [
     "<b>What I can do</b>",
     "/events: what's coming up, and your place in one tap",
-    "/waraq: new in the Society's paper",
+    "/qirtas: new in the Society's paper",
     "/word: play today's word",
     "/me: your membership and your places",
     "",
@@ -155,7 +155,7 @@ const en = {
     announcements: "announcements",
     brief: "the morning brief and event summaries",
     events: "events",
-    waraq: "Qirtas",
+    qirtas: "Qirtas",
     word: "the daily word",
   } satisfies Record<Purpose, string>,
   rsvpAlready: "You already have a place.",
@@ -172,7 +172,7 @@ const en = {
 
   // Group: connecting
   setupOk:
-    "Connected. I'm the Society's messenger here now.\n\nNext:\n1. Make me an admin who can invite users.\n2. In each topic, send /topic with what it's for: announcements, events, waraq or word.\n3. Turn on <b>Approve new members</b> for the invite link: I let linked members in at once and leave everyone else to you.",
+    "Connected. I'm the Society's messenger here now.\n\nNext:\n1. Make me an admin who can invite users.\n2. In each topic, send /topic with what it's for: announcements, events, qirtas or word.\n3. Turn on <b>Approve new members</b> for the invite link: I let linked members in at once and leave everyone else to you.",
   setupUsage: "Send /setup with the code from the Diwan (Settings, Telegram).",
   shortDescription:
     "The messenger of the AUIB Society of Arts and Letters: events, Qirtas and a daily word.",
@@ -183,7 +183,7 @@ const en = {
   topicCleared: "This topic is no longer for anything in particular.",
   topicOk: (purpose: string) => `This topic is now for ${purpose}.`,
   topicUsage:
-    "Send it inside a topic: /topic announcements, events, waraq, word or brief. /topic none clears it.",
+    "Send it inside a topic: /topic announcements, events, qirtas, word or brief. /topic none clears it.",
   unlinked:
     "Unlinked. Your SAL account no longer gets notices here. You can link it again from your profile.",
   waitlisted: "You're on the waitlist.",
@@ -242,11 +242,11 @@ const ar: Copy = {
     notifyOff: "الإشعارات هنا: متوقفة",
     notifyOn: "الإشعارات هنا: مفعّلة",
     play: "العب",
+    qirtas: "قرطاس",
     read: "اقرأ",
     rsvp: "احجز مقعداً",
     site: "auibsal.org",
     unlink: "افصل تيليغرام",
-    waraq: "قرطاس",
     word: "كلمة اليوم",
   },
   by: (author: string) => `بقلم ${author}`,
@@ -256,10 +256,10 @@ const ar: Copy = {
     help: "ما الذي أستطيع فعله",
     lang: "لغة منشوراتي: en أو ar أو both",
     me: "عضويتك ومقاعدك",
+    qirtas: "الجديد في قرطاس",
     setup: "اربط هذه المجموعة (رمز من الديوان)",
     start: "ألقِ التحية",
     topic: "أخبرني بالغرض من هذا الموضوع",
-    waraq: "الجديد في قرطاس",
     word: "العب كلمة اليوم",
   },
   description:
@@ -278,7 +278,7 @@ const ar: Copy = {
   help: [
     "<b>ما الذي أستطيع فعله</b>",
     "/events: ما الذي سيأتي، ومقعدك بنقرة واحدة",
-    "/waraq: الجديد في صحيفة الجمعية",
+    "/qirtas: الجديد في صحيفة الجمعية",
     "/word: العب كلمة اليوم",
     "/me: عضويتك ومقاعدك",
     "",
@@ -333,7 +333,7 @@ const ar: Copy = {
     announcements: "الإعلانات",
     brief: "موجز الصباح وملخصات الفعاليات",
     events: "الفعاليات",
-    waraq: "قرطاس",
+    qirtas: "قرطاس",
     word: "كلمة اليوم",
   },
   rsvpAlready: "لديك مقعد بالفعل.",
@@ -347,7 +347,7 @@ const ar: Copy = {
     "لم يعمل هذا الرمز. يستطيع أحد المسؤولين إنشاء رمز جديد من الديوان: الإعدادات، تيليغرام.",
 
   setupOk:
-    "تم الربط. أنا حامل رسائل الجمعية هنا من الآن.\n\nالخطوات التالية:\n1. اجعلني مشرفاً يستطيع دعوة المستخدمين.\n2. في كل موضوع، أرسل /topic مع الغرض منه: announcements أو events أو waraq أو word.\n3. فعّل <b>الموافقة على الأعضاء الجدد</b> في رابط الدعوة: أُدخل الأعضاء المرتبطين فوراً وأترك الباقين لكم.",
+    "تم الربط. أنا حامل رسائل الجمعية هنا من الآن.\n\nالخطوات التالية:\n1. اجعلني مشرفاً يستطيع دعوة المستخدمين.\n2. في كل موضوع، أرسل /topic مع الغرض منه: announcements أو events أو qirtas أو word.\n3. فعّل <b>الموافقة على الأعضاء الجدد</b> في رابط الدعوة: أُدخل الأعضاء المرتبطين فوراً وأترك الباقين لكم.",
   setupUsage: "أرسل /setup مع الرمز من الديوان (الإعدادات، تيليغرام).",
   shortDescription:
     "حامل رسائل جمعية الفنون والآداب: الفعاليات وقرطاس وكلمة كل يوم.",
@@ -358,7 +358,7 @@ const ar: Copy = {
   topicCleared: "لم يعد هذا الموضوع مخصصاً لشيء بعينه.",
   topicOk: (purpose: string) => `صار هذا الموضوع مخصصاً لـ${purpose}.`,
   topicUsage:
-    "أرسله داخل موضوع: /topic announcements أو events أو waraq أو word أو brief. و/topic none يلغي التخصيص.",
+    "أرسله داخل موضوع: /topic announcements أو events أو qirtas أو word أو brief. و/topic none يلغي التخصيص.",
   unlinked:
     "تم الفصل. لن تصل إشعارات حسابك في الجمعية إلى هنا بعد الآن. يمكنك الربط مجدداً من ملفك الشخصي.",
   waitlisted: "أنت في قائمة الانتظار.",

@@ -52,6 +52,36 @@ import {
 
 // ── Settings ────────────────────────────────────────────────────────────────
 
+/** The days of each stage (owner, Nov 4, 2026), shown on the program's page. */
+const STAGE_DATES = [
+  "boxes_on",
+  "donations_starts_on",
+  "donations_ends_on",
+  "fair_starts_on",
+  "fair_ends_on",
+  "handover_due_on",
+  "impact_due_on",
+] as const;
+type StageDate = (typeof STAGE_DATES)[number];
+const noStageDates = Object.fromEntries(
+  STAGE_DATES.map((k) => [k, ""])
+) as Record<StageDate, string>;
+
+interface PointRow {
+  readonly hours: { ar: string; en: string };
+  readonly key: string;
+  readonly place: { ar: string; en: string };
+}
+let pointKey = 0;
+const newPoint = (p?: charity.DropOffPoint): PointRow => {
+  pointKey += 1;
+  return {
+    hours: { ar: p?.hours_ar ?? "", en: p?.hours_en ?? "" },
+    key: `point-${pointKey}`,
+    place: { ar: p?.place_ar ?? "", en: p?.place_en ?? "" },
+  };
+};
+
 const CampaignSettings = ({ campaignId }: { campaignId: string | null }) => {
   const t = useTranslations("nexus.admin.charity");
   const tk = useTranslations("nexus.admin.kit");
@@ -61,6 +91,7 @@ const CampaignSettings = ({ campaignId }: { campaignId: string | null }) => {
   const queryClient = useQueryClient();
   const programmes = useProgrammeOptions(null);
   const [form, setForm] = useState({
+    ...noStageDates,
     ends_on: "",
     partner_id: "",
     programme_id: "",
@@ -70,6 +101,7 @@ const CampaignSettings = ({ campaignId }: { campaignId: string | null }) => {
     summary: { ar: "", en: "" },
     title: { ar: "", en: "" },
   });
+  const [points, setPoints] = useState<PointRow[]>([]);
 
   const existing = useQuery({
     enabled: Boolean(campaignId),
@@ -93,6 +125,9 @@ const CampaignSettings = ({ campaignId }: { campaignId: string | null }) => {
     const c = existing.data;
     if (c) {
       setForm({
+        ...(Object.fromEntries(
+          STAGE_DATES.map((k) => [k, c[k] ?? ""])
+        ) as Record<StageDate, string>),
         ends_on: c.ends_on ?? "",
         partner_id: c.partner_id ?? "",
         programme_id: c.programme_id ?? "",
@@ -102,12 +137,24 @@ const CampaignSettings = ({ campaignId }: { campaignId: string | null }) => {
         summary: { ar: c.summary_ar ?? "", en: c.summary_en ?? "" },
         title: { ar: c.title_ar, en: c.title_en },
       });
+      setPoints(charity.dropOffPoints(c.drop_off_points).map(newPoint));
     }
   }, [existing.data]);
 
   const save = useMutation({
     mutationFn: async () => {
       const row = {
+        ...(Object.fromEntries(
+          STAGE_DATES.map((k) => [k, form[k] || null])
+        ) as Record<StageDate, string | null>),
+        drop_off_points: points
+          .filter((p) => p.place.en.trim() || p.place.ar.trim())
+          .map((p) => ({
+            place_ar: p.place.ar.trim(),
+            place_en: p.place.en.trim(),
+            ...(p.hours.en.trim() ? { hours_en: p.hours.en.trim() } : {}),
+            ...(p.hours.ar.trim() ? { hours_ar: p.hours.ar.trim() } : {}),
+          })),
         ends_on: form.ends_on || null,
         partner_id: form.partner_id || null,
         programme_id: form.programme_id || null,
@@ -241,6 +288,79 @@ const CampaignSettings = ({ campaignId }: { campaignId: string | null }) => {
           )}
         </Field>
       </div>
+      <fieldset className="grid gap-4">
+        <legend className="type-subheading pb-2">
+          {t("campaign.stagesTitle")}
+        </legend>
+        <div className="grid gap-4 sm:grid-cols-2">
+          {STAGE_DATES.map((key) => (
+            <Field key={key} label={t(`campaign.stageDates.${key}`)}>
+              {(id) => (
+                <DateInput
+                  id={id}
+                  onChange={(e) =>
+                    setForm((f) => ({ ...f, [key]: e.target.value }))
+                  }
+                  value={form[key]}
+                />
+              )}
+            </Field>
+          ))}
+        </div>
+      </fieldset>
+      <fieldset className="grid gap-4">
+        <legend className="type-subheading pb-2">
+          {t("campaign.dropOffTitle")}
+        </legend>
+        {points.map((point, index) => (
+          <div
+            className="grid gap-4 border-line border-t pt-space-4"
+            key={point.key}
+          >
+            <BilingualField
+              label={t("campaign.dropOffPlace", { n: String(index + 1) })}
+              maxLength={200}
+              onChange={(place) =>
+                setPoints((ps) =>
+                  ps.map((p) => (p.key === point.key ? { ...p, place } : p))
+                )
+              }
+              required
+              value={point.place}
+            />
+            <BilingualField
+              label={t("campaign.dropOffHours")}
+              maxLength={200}
+              onChange={(hours) =>
+                setPoints((ps) =>
+                  ps.map((p) => (p.key === point.key ? { ...p, hours } : p))
+                )
+              }
+              value={point.hours}
+            />
+            <Button
+              className="justify-self-start"
+              onClick={() =>
+                setPoints((ps) => ps.filter((p) => p.key !== point.key))
+              }
+              type="button"
+              variant="link"
+            >
+              {t("campaign.dropOffRemove")}
+            </Button>
+          </div>
+        ))}
+        {points.length < 20 ? (
+          <Button
+            className="justify-self-start"
+            onClick={() => setPoints((ps) => [...ps, newPoint()])}
+            type="button"
+            variant="link"
+          >
+            {t("campaign.dropOffAdd")}
+          </Button>
+        ) : null}
+      </fieldset>
       <Field label={t("campaign.status")}>
         {(id) => (
           <SelectInput

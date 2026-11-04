@@ -154,15 +154,7 @@ const Home = async ({ params }: HomeProps) => {
           aria-labelledby="programs"
           className="mx-auto grid w-full max-w-6xl gap-space-5 px-4 py-16"
         >
-          <SectionHead
-            action={
-              <Link className="link type-caption" href="/events">
-                {t("allPrograms")}
-              </Link>
-            }
-            title={t("programs")}
-            titleId="programs"
-          />
+          <SectionHead title={t("programs")} titleId="programs" />
           <ul className="grid gap-x-10 sm:grid-cols-2 lg:grid-cols-3">
             {series.map((p) => (
               <li className="border-line border-t py-space-4" key={p.id}>

@@ -70,3 +70,125 @@ export const impactMetrics = async (client: Client, campaignId: string) =>
       .not("published_at", "is", null)
       .order("sort")
   ) ?? [];
+
+// ── Stages (owner, Nov 4, 2026) ─────────────────────────────────────────────
+
+export const stageKeys = [
+  "boxes",
+  "donations",
+  "fair",
+  "handover",
+  "impact",
+] as const;
+export type StageKey = (typeof stageKeys)[number];
+export type StageState = "ahead" | "now" | "done";
+
+export interface Stage {
+  readonly from: string | null;
+  readonly key: StageKey;
+  readonly state: StageState;
+  readonly to: string | null;
+}
+
+export interface StageFields {
+  readonly boxes_on: string | null;
+  readonly donations_ends_on: string | null;
+  readonly donations_starts_on: string | null;
+  readonly fair_ends_on: string | null;
+  readonly fair_starts_on: string | null;
+  readonly handed_over_on: string | null;
+  readonly handover_due_on: string | null;
+  readonly impact_due_on: string | null;
+}
+
+const byDates = (
+  from: string | null,
+  to: string | null,
+  today: string
+): StageState => {
+  if (!from) {
+    return "ahead";
+  }
+  if ((to ?? from) < today) {
+    return "done";
+  }
+  return from <= today ? "now" : "ahead";
+};
+
+/** Reached on the record, else "now" from its day on, never done by date. */
+const byRecord = (done: boolean, due: string | null, today: string) => {
+  if (done) {
+    return "done";
+  }
+  return due && due <= today ? "now" : "ahead";
+};
+
+/**
+ * Where the collection stands, from the campaign's record alone: the boxes,
+ * donations and fair by their days; the handover only once it is recorded;
+ * the impact report only once a figure is published. A recorded handover
+ * closes every stage before it. `today` is Baghdad's "YYYY-MM-DD".
+ */
+export const campaignStages = (
+  c: StageFields,
+  today: string,
+  impactPublished: boolean
+): Stage[] => {
+  const handedOver = Boolean(c.handed_over_on);
+  const stages: Stage[] = [
+    {
+      from: c.boxes_on,
+      key: "boxes",
+      state: byDates(c.boxes_on, c.boxes_on, today),
+      to: null,
+    },
+    {
+      from: c.donations_starts_on,
+      key: "donations",
+      state: byDates(c.donations_starts_on, c.donations_ends_on, today),
+      to: c.donations_ends_on,
+    },
+    {
+      from: c.fair_starts_on,
+      key: "fair",
+      state: byDates(c.fair_starts_on, c.fair_ends_on, today),
+      to: c.fair_ends_on,
+    },
+    {
+      from: c.handed_over_on ?? c.handover_due_on,
+      key: "handover",
+      state: byRecord(handedOver, c.handover_due_on, today),
+      to: null,
+    },
+    {
+      from: c.impact_due_on,
+      key: "impact",
+      state: byRecord(impactPublished, c.impact_due_on, today),
+      to: null,
+    },
+  ];
+  return handedOver
+    ? stages.map((s) =>
+        s.key === "handover" || s.key === "impact" ? s : { ...s, state: "done" }
+      )
+    : stages;
+};
+
+export interface DropOffPoint {
+  readonly hours_ar?: string;
+  readonly hours_en?: string;
+  readonly place_ar: string;
+  readonly place_en: string;
+}
+
+/** The campaign's drop-off points, as stored (checked by the database). */
+export const dropOffPoints = (value: unknown): DropOffPoint[] =>
+  Array.isArray(value)
+    ? value.filter(
+        (p): p is DropOffPoint =>
+          typeof p === "object" &&
+          p !== null &&
+          typeof (p as DropOffPoint).place_en === "string" &&
+          typeof (p as DropOffPoint).place_ar === "string"
+      )
+    : [];
