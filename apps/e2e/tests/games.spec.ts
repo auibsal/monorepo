@@ -3,16 +3,40 @@ import { urls } from "../playwright.config";
 import { expectAccessible } from "./helpers";
 
 test.describe("Qirtas games", () => {
-  test("the games page lists the daily games and the starter puzzles", async ({
+  test("the games page opens on today's word and lists the starter puzzles", async ({
     page,
   }) => {
     await page.goto(`${urls.web}/qirtas/games`);
     await expect(page.getByRole("heading", { level: 1 })).toHaveText("Games");
-    await expect(page.getByRole("link", { name: /Word guess/ })).toBeVisible();
+    await expect(
+      page.getByRole("heading", { level: 2, name: /Today's word/ })
+    ).toBeVisible();
+    await expect(page.getByRole("button", { name: "Enter" })).toBeVisible();
+    await expect(
+      page.getByRole("link", { name: "Play it on its own page" })
+    ).toBeVisible();
+    await expect(
+      page.getByRole("link", { name: /Find the eight hidden words/ })
+    ).toBeVisible();
     await expect(
       page.getByRole("link", { name: /The first crossword/ })
     ).toBeVisible();
     await expectAccessible(page);
+  });
+
+  test("a finished word guess offers a result that keeps the word", async ({
+    page,
+  }) => {
+    await page.goto(`${urls.web}/qirtas/games/word`);
+    await expect(page.getByRole("button", { name: "Enter" })).toBeVisible();
+    // Six wrong guesses end the game.
+    for (const _ of Array.from({ length: 6 })) {
+      await page.keyboard.type("QWERT");
+      await page.keyboard.press("Enter");
+    }
+    await expect(
+      page.getByRole("button", { name: "Share your result" })
+    ).toBeVisible();
   });
 
   test("a guess in the daily word guess is marked letter by letter", async ({

@@ -68,6 +68,11 @@
     "file": {
       "choose": "Choose a file",
       "drop": "Or drop it here."
+    },
+    "share": {
+      "share": "Share",
+      "copied": "Link copied.",
+      "failed": "The link could not be copied. Copy it from the address bar."
     }
   },
   "auth": {
@@ -1791,7 +1796,10 @@
           "printedHint": "How many copies, who printed it and when. The Edition page shows it as one line once all three are filled in.",
           "printRun": "Print run (copies)",
           "printedOn": "Printed on",
-          "printer": "Printer"
+          "printer": "Printer",
+          "launchNight": "Launch Night",
+          "launchNightHint": "The event that launches this Edition. The Editions page shows it beside the call.",
+          "noLaunchNight": "Not chosen yet"
         },
         "piece": {
           "titleField": "Title",
@@ -4358,7 +4366,7 @@
       "firstPublished": "First published in Qirtas. The author keeps the copyright.",
       "moreFrom": "More from {desk}",
       "editionsLede": "Each semester an Edition gathers the best Letters and Gallery work, launched at Launch Night.",
-      "noEditions": "Edition 1 launches on February 24, 2027.",
+      "noEditions": "No Edition has been published yet.",
       "edition": "Edition",
       "games": "Games",
       "newsletter": "The Sunday Paper",
@@ -4375,7 +4383,15 @@
         "partner": "Partner",
         "guest": "Guest"
       },
-      "nothingYet": "Nothing published yet."
+      "nothingYet": "Nothing published yet.",
+      "editionsAsList": "See the Editions as a list",
+      "editionsOnShelf": "See the Editions on the shelf",
+      "editionNumber": "Edition {number}",
+      "launchTitle": "Launch Night",
+      "shelfPrevious": "Previous Edition",
+      "shelfNext": "Next Edition",
+      "comingLede": "The first Edition is being made. Send your work while the call is open.",
+      "writeForEdition": "Write for Qirtas"
     },
     "about": {
       "title": "About the Society",
@@ -4834,7 +4850,10 @@
         "lost": "The word was {word}.",
         "tomorrow": "A new word tomorrow.",
         "howTo": "A dark square is the right letter in the right place. A tinted square is in the word, somewhere else.",
-        "streak": "Streak: {days} days in a row."
+        "streak": "Streak: {days} days in a row.",
+        "share": "Share your result",
+        "result": "Qirtas word guess, No. {number}: solved in {tries} of 6.",
+        "resultLost": "Qirtas word guess, No. {number}: not today."
       },
       "search": {
         "grid": "Letter grid",
@@ -4860,7 +4879,10 @@
         "checked": "Wrong letters are crossed out.",
         "howTo": "Type in the squares. Choose a clue, or the same square twice, to change direction."
       },
-      "fromMembers": "Sent by members"
+      "fromMembers": "Sent by members",
+      "todaysPuzzle": "Today's word",
+      "alsoDaily": "Also every day",
+      "ownPage": "Play it on its own page"
     },
     "newsletter": {
       "title": "The Sunday Paper",

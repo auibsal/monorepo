@@ -165,6 +165,7 @@
   --radius-4xl: var(--radius);
   --radius-avatar: var(--sal-radius-avatar);
   /* The brand's spacing scale: py-space-7, gap-space-5, px-page-margin… */
+  --ease-standard: var(--sal-ease-standard);
   --spacing-space-1: var(--sal-space-1);
   --spacing-space-2: var(--sal-space-2);
   --spacing-space-3: var(--sal-space-3);
@@ -327,6 +328,20 @@
       transition-duration: 0.01ms !important;
     }
   }
+}
+
+/*
+ * Motion (brand book, Motion; owner, Nov 4, 2026): three durations and one
+ * easing, native CSS only. Reduced motion turns them off above.
+ */
+@utility duration-quick {
+  transition-duration: var(--sal-duration-quick);
+}
+@utility duration-base {
+  transition-duration: var(--sal-duration-base);
+}
+@utility duration-slow {
+  transition-duration: var(--sal-duration-slow);
 }
 
 /*
