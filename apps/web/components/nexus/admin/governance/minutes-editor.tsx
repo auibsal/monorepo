@@ -239,7 +239,13 @@ export const MinutesEditor = () => {
         </fieldset>
         <p className="type-caption">{t("minutes.draftNote")}</p>
         <div className="flex flex-wrap items-end gap-3">
-          <SaveButton pending={save.isPending} success={save.isSuccess} />
+          {/* Adopted minutes are the official copy; the database refuses
+              any change to them (Nov 4, 2026). */}
+          {adopted ? (
+            <p className="type-caption">{t("minutes.locked")}</p>
+          ) : (
+            <SaveButton pending={save.isPending} success={save.isSuccess} />
+          )}
           {minutesId && !adopted ? (
             <>
               <Field className="w-44" label={t("minutes.adoptedOn")}>

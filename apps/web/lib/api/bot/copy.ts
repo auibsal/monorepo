@@ -190,7 +190,7 @@ const en = {
   waraqNone:
     "Qirtas has nothing new just now. The next pieces are on their way.",
 
-  // Waraq
+  // Qirtas
   waraqTitle: "<b>New in Qirtas</b>",
 
   when: (date: string, time: string) => `${date} · ${time}`,

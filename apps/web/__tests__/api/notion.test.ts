@@ -3,10 +3,17 @@ import { describe, expect, test, vi } from "vitest";
 
 vi.mock("server-only", () => ({}));
 
-const { pageBodies } = await import("@/lib/api/notion/blocks");
+const { pageBodies, pageHtml } = await import("@/lib/api/notion/blocks");
 const { createNotion, bareId } = await import("@/lib/api/notion/client");
 const { slugify, toInstant } = await import("@/lib/api/notion/props");
-const { checkEvent, checkWaraq } = await import("@/lib/api/notion/rules");
+const {
+  checkArabicEdition,
+  checkDocument,
+  checkEvent,
+  checkProgram,
+  checkWaraq,
+  languageOf,
+} = await import("@/lib/api/notion/rules");
 
 const rt = (content: string, extra: object = {}) => ({
   plain_text: content,
@@ -59,6 +66,35 @@ describe("Notion page text", () => {
   });
 });
 
+describe("one-language pages", () => {
+  test("a document's tables carry over, the first row as its header", () => {
+    const html = pageHtml([
+      block("heading_2", "1. Schedule"),
+      {
+        children: [
+          {
+            id: "r1",
+            table_row: { cells: [[rt("Data")], [rt("Kept")]] },
+            type: "table_row",
+          },
+          {
+            id: "r2",
+            table_row: { cells: [[rt("Ballots")], [rt("One year")]] },
+            type: "table_row",
+          },
+        ],
+        has_children: true,
+        id: "t",
+        table: { has_column_header: true },
+        type: "table",
+      },
+    ] as never);
+    expect(html).toBe(
+      "<h2>1. Schedule</h2><table><tr><th>Data</th><th>Kept</th></tr><tr><td>Ballots</td><td>One year</td></tr></table>"
+    );
+  });
+});
+
 describe("Notion values", () => {
   test("times without an offset are Baghdad time; dates alone are not instants", () => {
     expect(toInstant("2026-10-20T18:00:00.000+03:00")).toBe(
@@ -82,7 +118,7 @@ describe("Notion values", () => {
 describe("publishing rules", () => {
   const programmes = new Map([["aaaaaaaabbbbccccddddeeeeeeeeeeee", "prog-1"]]);
 
-  test("a complete event passes, with its program mapped to the Nexus", () => {
+  test("a complete event passes, with its program mapped to the Diwan", () => {
     const result = checkEvent(
       page({
         Capacity: { number: 40, type: "number" },
@@ -91,9 +127,7 @@ describe("publishing rules", () => {
           type: "relation",
         },
         Summary: text("Bring a poem."),
-        "Summary (Arabic)": text("أحضر قصيدة."),
         Title: title("Open Pages"),
-        "Title (Arabic)": text("صفحات مفتوحة"),
         When: when(
           "2026-10-20T18:00:00.000+03:00",
           "2026-10-20T20:00:00.000+03:00"
@@ -113,7 +147,7 @@ describe("publishing rules", () => {
     });
   });
 
-  test("an event without Arabic or a start time says what to fix", () => {
+  test("an event without a start time or a Latin slug says what to fix", () => {
     const result = checkEvent(
       page({
         Summary: text("Bring a poem."),
@@ -126,10 +160,74 @@ describe("publishing rules", () => {
     const problems = result.ok ? [] : result.problems;
     expect(problems).toEqual(
       expect.arrayContaining([
-        "Add the Arabic title (Title (Arabic)).",
         "Add a start time to When, not only a date.",
-        "Add the Arabic summary to match the English one.",
         expect.stringContaining("Set a Slug in Latin letters"),
+      ])
+    );
+    // One language per row: the English row never asks for Arabic.
+    expect(problems.join(" ")).not.toContain("Arabic");
+  });
+
+  test("an Arabic edition is its own row, linked to its English row", () => {
+    const edition = page({
+      "Edition of": {
+        relation: [{ id: "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee" }],
+        type: "relation",
+      },
+      Language: { select: { name: "Arabic" }, type: "select" },
+      Title: title("صفحات مفتوحة"),
+      Venue: text("المكتبة"),
+    });
+    expect(languageOf(edition)).toBe("ar");
+    expect(checkArabicEdition(edition)).toEqual({
+      ok: true,
+      values: {
+        of: "aaaaaaaabbbbccccddddeeeeeeeeeeee",
+        summary: null,
+        title: "صفحات مفتوحة",
+        venue: "المكتبة",
+      },
+    });
+    const loose = checkArabicEdition(page({ Title: title("صفحات") }));
+    expect(loose.ok ? [] : loose.problems).toContain(
+      "An Arabic edition links exactly one English row in Edition of."
+    );
+  });
+
+  test("a program row gives its name, rhythm and summary", () => {
+    expect(
+      checkProgram(
+        page({
+          Name: title("Listening Room"),
+          Rhythm: text("Tuesdays, every fourth week"),
+          Summary: text("An album played in full, then talked about."),
+        })
+      )
+    ).toMatchObject({
+      ok: true,
+      values: { rhythm: "Tuesdays, every fourth week", slug: "listening-room" },
+    });
+  });
+
+  test("a document row needs its code, address and audience", () => {
+    expect(
+      checkDocument(
+        page({
+          Audience: { select: { name: "public" }, type: "select" },
+          Code: text("SAL-PLT-03"),
+          Slug: text("cookies"),
+          Title: title("Cookie and Consent Policy"),
+        })
+      )
+    ).toMatchObject({
+      ok: true,
+      values: { audience: "public", code: "SAL-PLT-03", slug: "cookies" },
+    });
+    const bad = checkDocument(page({ Code: text("PLT3"), Title: title("X") }));
+    expect(bad.ok ? [] : bad.problems).toEqual(
+      expect.arrayContaining([
+        "Set the Code, for example SAL-GOV-01.",
+        "Set Audience to public or internal.",
       ])
     );
   });

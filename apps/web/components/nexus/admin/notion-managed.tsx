@@ -15,10 +15,10 @@ type NotionKind =
   | "officer";
 
 /**
- * A record's page in the team's Notion workspace (core.notion_links), where
- * the team plans around it: events and news are written there (publishing
- * from Notion again replaces what is edited here); programs, documents,
- * minutes and officers are mirrored there for the team's own pages to link.
+ * A record's page in the team's Notion workspace (core.notion_links). Since
+ * Nov 4, 2026 events, news, programs, documents and minutes are written
+ * there and published here (publishing again replaces what is edited
+ * here); officers are copied there, read-only, for the team's pages to link.
  */
 export const NotionManaged = ({
   kind,
@@ -49,7 +49,7 @@ export const NotionManaged = ({
   }
   return (
     <p className="border-line border-t pt-space-4 text-sm" role="note">
-      {t(kind === "event" || kind === "news" ? kind : "mirror")}{" "}
+      {t(kind === "officer" ? "mirror" : kind)}{" "}
       <a
         className="inline-flex items-center gap-1 underline underline-offset-4"
         href={`https://www.notion.so/${link.data.notion_page_id}`}

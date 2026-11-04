@@ -17,9 +17,11 @@ import {
 import { prop } from "./props";
 
 /**
- * Read-only copies in Notion ("From the Nexus"). Each row is written only
- * when it changed (by hash) and removed from Notion when its record is
- * gone. Nothing here is read back: the Nexus stays the source.
+ * Read-only copies in Notion ("From the site (read-only)"): the officers
+ * and Qirtas's counts. Each row is written only when it changed (by hash)
+ * and removed from Notion when its record is gone. Nothing here is read
+ * back: the Diwan stays the source. Programs and documents are written in
+ * Notion since Nov 4, 2026 (programs.ts, documents.ts).
  */
 interface Row {
   key: string;
@@ -59,7 +61,7 @@ const writeRow = async (
   count(ctx, `${kind}.created`);
 };
 
-/** Removes the copy of a record that no longer exists in the Nexus. */
+/** Removes the copy of a record that no longer exists in the Diwan. */
 const removeRow = async (
   ctx: SyncContext,
   kind: LinkKind,
@@ -110,34 +112,6 @@ const mirror = async (
 
 const app = (ctx: SyncContext, path: string) => `${ctx.appUrl}${path}`;
 
-export const mirrorProgrammes = async (ctx: SyncContext) => {
-  const { data, error } = await ctx.admin
-    .schema("core")
-    .from("programmes")
-    .select("id, kind, name_en, name_ar, summary_en, is_active, sort")
-    .order("sort");
-  if (error) {
-    throw error;
-  }
-  await mirror(
-    ctx,
-    "programme",
-    ctx.sources.programmes,
-    (data ?? []).map((p) => ({
-      key: p.id,
-      props: {
-        Active: prop.checkbox(p.is_active),
-        Kind: prop.select(p.kind),
-        Name: prop.title(p.name_en),
-        "Name (Arabic)": prop.text(p.name_ar),
-        Nexus: prop.url(app(ctx, "/events")),
-        "Nexus ID": prop.text(p.id),
-        Summary: prop.text(p.summary_en),
-      },
-    }))
-  );
-};
-
 /** Notion members by AUIB address, to fill the People column. */
 export const peopleByEmail = (users: NotionUser[]) =>
   new Map(
@@ -169,10 +143,10 @@ export const mirrorOfficers = async (
         props: {
           "AUIB email": prop.email(o.email),
           Council: prop.checkbox(o.council === true),
+          Diwan: prop.url(app(ctx, `/people/${o.user_id}`)),
+          "Diwan ID": prop.text(o.user_id),
           Name: prop.title(o.full_name_en?.trim() || o.email || ""),
           "Name (Arabic)": prop.text(o.full_name_ar),
-          Nexus: prop.url(app(ctx, `/people/${o.user_id}`)),
-          "Nexus ID": prop.text(o.user_id),
           "Notion person": prop.people(person ? [person] : []),
           Roles: prop.multi(o.roles ?? []),
           "Term ends": prop.date(day(o.term_ends)),
@@ -180,69 +154,6 @@ export const mirrorOfficers = async (
         },
       };
     })
-  );
-};
-
-export const mirrorDocuments = async (ctx: SyncContext) => {
-  const [documents, minutes] = await Promise.all([
-    ctx.admin
-      .schema("governance")
-      .from("society_documents")
-      .select("id, slug, code, title_en, audience, status, dated, adopted_on")
-      .order("sort"),
-    ctx.admin
-      .schema("governance")
-      .from("minutes")
-      .select("id, body, meeting_on, title_en, status, adopted_on")
-      .order("meeting_on", { ascending: false }),
-  ]);
-  if (documents.error) {
-    throw documents.error;
-  }
-  if (minutes.error) {
-    throw minutes.error;
-  }
-  await mirror(
-    ctx,
-    "document",
-    ctx.sources.documents,
-    (documents.data ?? []).map((d) => ({
-      key: d.id,
-      props: {
-        "Adopted on": prop.date(d.adopted_on),
-        Audience: prop.select(d.audience),
-        Code: prop.text(d.code),
-        Dated: prop.date(d.dated),
-        Kind: prop.select("Document"),
-        Nexus: prop.url(app(ctx, "/society/library")),
-        "Nexus ID": prop.text(d.id),
-        "Public page": prop.url(
-          d.audience === "public" ? `${ctx.webUrl}/library/${d.slug}` : null
-        ),
-        Status: prop.select(d.status),
-        Title: prop.title(d.title_en),
-      },
-    }))
-  );
-  await mirror(
-    ctx,
-    "minutes",
-    ctx.sources.documents,
-    (minutes.data ?? []).map((m) => ({
-      key: m.id,
-      props: {
-        "Adopted on": prop.date(m.adopted_on),
-        Audience: prop.select("internal"),
-        Code: prop.text(m.body === "council" ? "Council" : "General Assembly"),
-        Dated: prop.date(m.meeting_on),
-        Kind: prop.select("Minutes"),
-        Nexus: prop.url(app(ctx, `/society/meetings/${m.id}`)),
-        "Nexus ID": prop.text(m.id),
-        "Public page": prop.url(null),
-        Status: prop.select(m.status),
-        Title: prop.title(m.title_en),
-      },
-    }))
   );
 };
 
@@ -260,7 +171,7 @@ export const STAGES = [
 
 /**
  * Counts per stage for calls that are open or closed in the last 90 days.
- * Only numbers leave the Nexus: no titles, no authors (review is blind).
+ * Only numbers leave the Diwan: no titles, no authors (review is blind).
  */
 export const mirrorJournal = async (ctx: SyncContext) => {
   const since = new Date(Date.now() - 90 * 86_400_000).toISOString();
@@ -291,15 +202,15 @@ export const mirrorJournal = async (ctx: SyncContext) => {
           Call: prop.text(call.title_en),
           Closes: prop.date(day(call.closes_at)),
           Count: prop.number(tally.get(stage) ?? 0),
-          Nexus: prop.url(app(ctx, "/qirtas")),
-          "Nexus ID": prop.text(`${call.id}:${stage}`),
+          Diwan: prop.url(app(ctx, "/qirtas")),
+          "Diwan ID": prop.text(`${call.id}:${stage}`),
           Order: prop.number(index + 1),
           Stage: prop.title(label),
         },
       });
     });
   }
-  // Waraq: News, Video and Voices work in each stage, and every desk's
+  // Qirtas: News, Video and Voices work in each stage, and every desk's
   // pieces by stage of the newsroom (counts only; no titles or names).
   const [{ data: named }, { data: pieces }] = await Promise.all([
     ctx.admin
@@ -321,8 +232,8 @@ export const mirrorJournal = async (ctx: SyncContext) => {
           Call: prop.text(`${DESK_LABEL[desk]} desk`),
           Closes: prop.date(null),
           Count: prop.number(tally.get(stage) ?? 0),
-          Nexus: prop.url(app(ctx, "/journal")),
-          "Nexus ID": prop.text(`desk:${desk}:${stage}`),
+          Diwan: prop.url(app(ctx, "/qirtas")),
+          "Diwan ID": prop.text(`desk:${desk}:${stage}`),
           Order: prop.number(index + 1),
           Stage: prop.title(label),
         },
@@ -340,8 +251,8 @@ export const mirrorJournal = async (ctx: SyncContext) => {
             (pieces ?? []).filter((p) => p.desk === desk && p.status === stage)
               .length
           ),
-          Nexus: prop.url(app(ctx, "/journal")),
-          "Nexus ID": prop.text(`pieces:${desk}:${stage}`),
+          Diwan: prop.url(app(ctx, "/qirtas")),
+          "Diwan ID": prop.text(`pieces:${desk}:${stage}`),
           Order: prop.number(index + 1),
           Stage: prop.title(label),
         },

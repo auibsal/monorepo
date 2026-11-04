@@ -11,7 +11,7 @@ import { pieceAuthor, publicPieces } from "./waraq";
 
 /**
  * Inline mode: in any chat, "@<bot> poetry" offers the public events and
- * Waraq pieces that match, to share as a card with its buttons. Guest mode:
+ * Qirtas pieces that match, to share as a card with its buttons. Guest mode:
  * mentioning the bot in a chat it isn't in ("@<bot> open mic") answers there
  * with the best match, or with what's coming up. Guests' reads only (RLS as
  * anon); inline answers are cached by Telegram for five minutes.

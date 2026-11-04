@@ -14,7 +14,7 @@ import { staffPosts } from "./staff";
 /**
  * What the bot posts to connected groups, every ten minutes (pg_cron calls
  * /cron/telegram): new public events (to the events topic), a "starting soon"
- * reply to each event's post three hours before, new Waraq pieces, and the
+ * reply to each event's post three hours before, new Qirtas pieces, and the
  * daily word at 9:00 AM Baghdad time. Each post is claimed in
  * core.telegram_posts before it is sent, so overlapping runs never post
  * twice; a failed send gives the claim back for the next run.
@@ -232,7 +232,7 @@ const soonEvents = (run: Run, events: PublicEvent[]) =>
 
 type PublicPiece = Awaited<ReturnType<typeof publicPieces>>[number];
 
-/** Waraq pieces published in the last three days. */
+/** Qirtas pieces published in the last three days. */
 const newPieces = (run: Run, pieces: PublicPiece[]) =>
   sequence(
     pieces

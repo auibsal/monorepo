@@ -163,6 +163,31 @@ export const createNotion = (
         )
       ),
 
+    /**
+     * A page's blocks, with each table's rows attached as `children` (a
+     * table's cells are its child rows in Notion).
+     */
+    blocksWithTables: async (pageId: string) => {
+      const blocks = await all<NotionBlock>((cursor) =>
+        request(
+          "GET",
+          `/blocks/${pageId}/children?page_size=100${cursor ? `&start_cursor=${cursor}` : ""}`
+        )
+      );
+      for (const block of blocks) {
+        if (block.type === "table" && block.has_children) {
+          // biome-ignore lint/performance/noAwaitInLoops: rate-limited, sequential
+          block.children = await all<NotionBlock>((cursor) =>
+            request(
+              "GET",
+              `/blocks/${block.id}/children?page_size=100${cursor ? `&start_cursor=${cursor}` : ""}`
+            )
+          );
+        }
+      }
+      return blocks;
+    },
+
     comment: (pageId: string, text: string) =>
       request("POST", "/comments", {
         parent: { page_id: pageId },

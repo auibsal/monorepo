@@ -3,7 +3,7 @@ import "server-only";
 import { formatClock, formatLongDate } from "@repo/internationalization/format";
 import { sanitizeRichText } from "@repo/sal-data";
 import { uploadMedia } from "@repo/storage";
-import { pageBodies } from "./blocks";
+import { pageBodies, pageHtml } from "./blocks";
 import { bareId, type NotionPage } from "./client";
 import {
   count,
@@ -15,13 +15,22 @@ import {
   saveLink,
 } from "./context";
 import { prop, read, slugify } from "./props";
-import { checkEvent, checkWaraq, type WaraqDesk } from "./rules";
+import {
+  checkArabicEdition,
+  checkEvent,
+  checkWaraq,
+  languageOf,
+  type WaraqDesk,
+} from "./rules";
 
 /**
- * Events and Waraq pieces are written in Notion (Publishing). An event set
+ * Events and Qirtas pieces are written in Notion (Publishing). An event set
  * to "Ready to publish" is checked and published; "Cancel on the site"
- * cancels a published event. News ("News post" or "Waraq" pages) goes to
- * Waraq's newsroom, in Editing. The person who last edited the page must
+ * cancels a published event. One language per row (Nov 4, 2026): the
+ * English row publishes the event, and its Arabic edition (Language
+ * Arabic, Edition of the English row) gives the event its Arabic title,
+ * summary, venue and text. News ("News post" or "Qirtas" pages) goes to
+ * Qirtas's newsroom, in Editing. The person who last edited the page must
  * hold the permission in the Diwan, matched by email.
  * Results go back to the page: status, links, and a note saying what was
  * done or what to fix (also left as a comment).
@@ -36,12 +45,15 @@ const PERMISSION: Record<Kind, "events.manage"> = {
   event: "events.manage",
 };
 
-const stamp = () => {
+export const stamp = () => {
   const now = new Date().toISOString();
   return `${formatLongDate(now, "en")}, ${formatClock(now, "en")}`;
 };
 
-const needsChanges = async (
+export const needsChangesNote = (problems: string[]) =>
+  `Not published (${stamp()}): ${problems.join(" ")}`;
+
+export const needsChanges = async (
   ctx: SyncContext,
   page: NotionPage,
   problems: string[]
@@ -56,7 +68,7 @@ const needsChanges = async (
 };
 
 /** The email of the person who last edited the page, if Notion shares it. */
-const editorEmail = async (ctx: SyncContext, page: NotionPage) => {
+export const editorEmail = async (ctx: SyncContext, page: NotionPage) => {
   const id = page.last_edited_by?.id;
   if (!id) {
     return null;
@@ -65,7 +77,7 @@ const editorEmail = async (ctx: SyncContext, page: NotionPage) => {
   return user?.type === "person" ? (user.person?.email ?? null) : null;
 };
 
-const NO_EMAIL =
+export const NO_EMAIL =
   "The platform could not see who set the status. In Notion, open Settings, Connections, SAL Platform, and allow it to read user information including email addresses.";
 
 const publisherFor = async (
@@ -83,7 +95,7 @@ const publisherFor = async (
   return (data as string | null) ?? null;
 };
 
-const publisherName = async (ctx: SyncContext, userId: string) => {
+export const publisherName = async (ctx: SyncContext, userId: string) => {
   const { data } = await ctx.admin
     .schema("core")
     .from("profiles")
@@ -153,7 +165,13 @@ const bodiesOf = async (ctx: SyncContext, page: NotionPage) => {
   };
 };
 
-const publishedNote = (who: string) => `Published ${stamp()} by ${who}.`;
+/** A one-language page's text as sanitized HTML, or null when it is empty. */
+export const bodyOf = async (ctx: SyncContext, page: NotionPage) => {
+  const html = pageHtml(await ctx.notion.blocksWithTables(page.id));
+  return html ? sanitizeRichText(html) : null;
+};
+
+export const publishedNote = (who: string) => `Published ${stamp()} by ${who}.`;
 
 const cancelEvent = async (
   ctx: SyncContext,
@@ -218,9 +236,12 @@ const publishEvent = async (
     return;
   }
   const image = await copyImage(ctx, page, "Image", "events");
+  // The English row gives the English text only; the Arabic comes from its
+  // Arabic edition, so nothing here blanks it.
+  const { body_en: bodyEn } = await bodiesOf(ctx, page);
   const row = {
     ...v,
-    ...(await bodiesOf(ctx, page)),
+    ...(bodyEn ? { body_en: bodyEn } : {}),
     ...(image ? { image_path: image } : {}),
     status: "published",
   };
@@ -242,6 +263,9 @@ const publishEvent = async (
         ...row,
         created_by: publisher,
         published_at: new Date().toISOString(),
+        // Until its Arabic edition is published, the event carries its
+        // English title in the Arabic column (the column is required).
+        title_ar: v.title_en,
       })
       .select("id")
       .single();
@@ -252,8 +276,8 @@ const publishEvent = async (
   }
   await saveLink(ctx, "event", page.id, id, null);
   await ctx.notion.updatePage(page.id, {
-    Nexus: prop.url(`${ctx.appUrl}/events/${id}`),
-    "Nexus ID": prop.text(id),
+    Diwan: prop.url(`${ctx.appUrl}/events/${v.slug}`),
+    "Diwan ID": prop.text(id),
     "Platform note": prop.text(
       publishedNote(await publisherName(ctx, publisher))
     ),
@@ -262,6 +286,76 @@ const publishEvent = async (
     Status: prop.select("Published"),
   });
   count(ctx, existing ? "event.republished" : "event.published");
+};
+
+/**
+ * An event's Arabic edition: its own row, linked to the English row in
+ * Edition of. It fills the event's Arabic title, summary, venue and text;
+ * the English row must be published first.
+ */
+const publishArabicEvent = async (
+  ctx: SyncContext,
+  page: NotionPage,
+  email: string
+) => {
+  const checked = checkArabicEdition(page);
+  if (!checked.ok) {
+    await needsChanges(ctx, page, checked.problems);
+    return;
+  }
+  const v = checked.values;
+  const eventId = await recordFor(ctx, "event", v.of);
+  if (!eventId) {
+    await needsChanges(ctx, page, [
+      "Publish the English row (Edition of) first; this edition then adds its Arabic.",
+    ]);
+    return;
+  }
+  const { data: event } = await ctx.admin
+    .schema("events")
+    .from("events")
+    .select("slug, programme_id")
+    .eq("id", eventId)
+    .maybeSingle();
+  const publisher = await publisherFor(
+    ctx,
+    "event",
+    email,
+    event?.programme_id ?? null
+  );
+  if (!publisher) {
+    await needsChanges(ctx, page, [
+      `${email} does not hold events.manage in the Diwan for this event. Ask someone who does to set Ready to publish.`,
+    ]);
+    return;
+  }
+  const body = await bodyOf(ctx, page);
+  const { error } = await ctx.admin
+    .schema("events")
+    .from("events")
+    .update({
+      summary_ar: v.summary,
+      title_ar: v.title,
+      venue_ar: v.venue,
+      ...(body ? { body_ar: body } : {}),
+    })
+    .eq("id", eventId);
+  if (error) {
+    throw error;
+  }
+  await saveLink(ctx, "event_ar", page.id, eventId, null);
+  await ctx.notion.updatePage(page.id, {
+    Diwan: prop.url(`${ctx.appUrl}/events/${event?.slug ?? eventId}`),
+    "Diwan ID": prop.text(eventId),
+    "Platform note": prop.text(
+      publishedNote(await publisherName(ctx, publisher))
+    ),
+    "Public page": prop.url(
+      event?.slug ? `${ctx.webUrl}/ar/events/${event.slug}` : null
+    ),
+    Status: prop.select("Published"),
+  });
+  count(ctx, "event_ar.published");
 };
 
 /** The type a Notion piece starts as on each desk (editors change it). */
@@ -293,7 +387,7 @@ const bylineFor = async (ctx: SyncContext, userId: string) => {
     .select("full_name_en, full_name_ar")
     .eq("id", userId)
     .maybeSingle();
-  const name = profile?.full_name_en?.trim() || "Waraq";
+  const name = profile?.full_name_en?.trim() || "Qirtas";
   const base = slugify(name) || "contributor";
   const { data: taken } = await j
     .from("contributors")
@@ -336,7 +430,7 @@ const pieceSlug = async (ctx: SyncContext, title: string) => {
 };
 
 /**
- * Staff writing for Waraq (Kind "Waraq", or "News post" for the News desk):
+ * Staff writing for Qirtas (Kind "Qirtas", or "News post" for the News desk):
  * imported as a piece in Editing,
  * where it goes through the same approvals as everything else. The person
  * who set Ready to publish needs the desk's permission (or journal.approve)
@@ -435,8 +529,8 @@ const importWaraq = async (
   }
   await saveLink(ctx, "piece", page.id, id, null);
   await ctx.notion.updatePage(page.id, {
-    Nexus: prop.url(`${ctx.appUrl}/qirtas/pieces/${id}`),
-    "Nexus ID": prop.text(id),
+    Diwan: prop.url(`${ctx.appUrl}/qirtas/pieces/${id}`),
+    "Diwan ID": prop.text(id),
     "Platform note": prop.text(
       `In the Qirtas newsroom since ${stamp()}, in Editing: the approvals and publishing happen in the Diwan.`
     ),
@@ -462,13 +556,24 @@ export const publishWaiting = async (ctx: SyncContext) => {
     }),
     ctx.notion.query(ctx.sources.news, {
       and: [
-        { property: "Kind", select: { equals: "Waraq" } },
+        {
+          // "Waraq" is the kind's name before Qirtas, kept for older rows.
+          or: [
+            { property: "Kind", select: { equals: "Qirtas" } },
+            { property: "Kind", select: { equals: "Waraq" } },
+          ],
+        },
         statusFilter([READY]),
       ],
     }),
   ]);
+  // English rows before their Arabic editions, so an edition finds its
+  // event published in the same run.
+  const byLanguage = [...events].sort(
+    (a, b) => Number(languageOf(a) === "ar") - Number(languageOf(b) === "ar")
+  );
   const queue: [Kind | "news" | "waraq", NotionPage][] = [
-    ...events.map((p): [Kind, NotionPage] => ["event", p]),
+    ...byLanguage.map((p): [Kind, NotionPage] => ["event", p]),
     ...news.map((p): ["news", NotionPage] => ["news", p]),
     ...waraq.map((p): ["waraq", NotionPage] => ["waraq", p]),
   ];
@@ -486,8 +591,10 @@ export const publishWaiting = async (ctx: SyncContext) => {
       if (kind === "waraq") {
         await importWaraq(ctx, page, email);
       } else if (kind === "news") {
-        // The old news posts are Waraq's News desk now.
+        // The old news posts are Qirtas's News desk now.
         await importWaraq(ctx, page, email, "news");
+      } else if (languageOf(page) === "ar") {
+        await publishArabicEvent(ctx, page, email);
       } else if (read.select(page, "Status") === CANCEL) {
         await cancelEvent(ctx, page, email);
       } else {
@@ -506,16 +613,14 @@ const EVENT_STATUS: Record<string, string> = {
 };
 
 const ADOPTED_NOTE =
-  "Made in the Diwan; its text is still there. Write it here under English and العربية before publishing from here.";
+  "Made in the Diwan; its text is still there. Write the English text in this page (and an Arabic edition as its own row) before publishing from here.";
 
 const adoptEvents = async (ctx: SyncContext) => {
   const [events, links] = await Promise.all([
     ctx.admin
       .schema("events")
       .from("events")
-      .select(
-        "id, slug, title_en, title_ar, starts_at, ends_at, status, capacity"
-      )
+      .select("id, slug, title_en, starts_at, ends_at, status, capacity")
       .gte("starts_at", new Date(Date.now() - 30 * 86_400_000).toISOString()),
     linksOf(ctx, "event"),
   ]);
@@ -527,8 +632,9 @@ const adoptEvents = async (ctx: SyncContext) => {
       // biome-ignore lint/performance/noAwaitInLoops: rate-limited, sequential
       const page = await ctx.notion.createPage(ctx.sources.events, {
         Capacity: prop.number(e.capacity),
-        Nexus: prop.url(`${ctx.appUrl}/events/${e.slug ?? e.id}`),
-        "Nexus ID": prop.text(e.id),
+        Diwan: prop.url(`${ctx.appUrl}/events/${e.slug ?? e.id}`),
+        "Diwan ID": prop.text(e.id),
+        Language: prop.select("English"),
         "Platform note": prop.text(ADOPTED_NOTE),
         "Public page": prop.url(
           e.status === "published" ? `${ctx.webUrl}/events/${e.slug}` : null
@@ -536,7 +642,6 @@ const adoptEvents = async (ctx: SyncContext) => {
         Slug: prop.text(e.slug),
         Status: prop.select(EVENT_STATUS[e.status] ?? "Planning"),
         Title: prop.title(e.title_en),
-        "Title (Arabic)": prop.text(e.title_ar),
         When: prop.date(e.starts_at, e.ends_at),
       });
       await saveLink(ctx, "event", page.id, e.id, null);
@@ -550,9 +655,9 @@ const adoptEvents = async (ctx: SyncContext) => {
 /**
  * Events made in the Diwan get a page in Notion too, so the calendar is
  * complete and the team can take them over there. Their text stays in the
- * Nexus until someone writes it in the page.
+ * Diwan until someone writes it in the page.
  */
-export const adoptNexusItems = async (ctx: SyncContext) => {
+export const adoptDiwanItems = async (ctx: SyncContext) => {
   await adoptEvents(ctx);
 };
 

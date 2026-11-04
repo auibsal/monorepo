@@ -10,7 +10,7 @@ import { linkKeyboard } from "./account";
 /**
  * Events: the list, one card per event, and RSVPs in one tap. A linked
  * member's RSVP runs core.telegram_rsvp, which calls events.rsvp() as the
- * member: the same rules as the Nexus (members only, capacity, waitlist).
+ * member: the same rules as the Diwan (members only, capacity, waitlist).
  */
 export const events = new Composer<BotContext>();
 

@@ -167,9 +167,12 @@ and decisions), and continue from the first unticked item.
 - The Society's documents are the Library, auibsal.org/library (`apps/web`;
   two shelves, owner, Oct 30, 2026: Society documents, and Website
   policies, the `SAL-PLT-` documents with the privacy page;
-  owner, Oct 30, 2026: every document public, kept in the Diwan's Library).
-  The officer handbook and every internal document live in the team's
-  Notion workspace only (the Desk links there: settings
+  owner, Oct 30, 2026: every document public). Since Nov 4, 2026 every
+  document's text is written in Notion (Publishing, Documents) and
+  rendered to the Library by the sync; the Diwan's Library keeps only each
+  document's adoption record (status, version, adopted on, `vote`), written
+  back to Notion. The officer handbook and every internal document live in
+  the team's Notion workspace only (the Desk links there: settings
   `notion.home_url`, `notion.handbook`; `docs/platform/notion.md`). What
   the platform retired (forms, letters, officers' papers) lives on as
   Notion templates (the Desk's "Templates and papers",
@@ -609,6 +612,19 @@ any schema change. Integration tests run against a local stack with
   assign roles on the member's page. Three officers and the directors,
   among them the Artistic Director (`artistic_director`: every production,
   the door, the Company's openings; nothing else); no Treasurer.
+- **The Diwan in three rooms** (owner, Nov 4, 2026). Notion for the work
+  (teamspace The Diwan), the site for people and private records, the
+  Telegram group The Diwan for talk; every piece of information has one
+  home and anywhere else it is a read-only view. Written in Notion and
+  published by the sync (`lib/api/notion`, `docs/platform/notion.md`):
+  events, the six programs (`/events/<program>` is built from their rows),
+  documents, minutes (Work, Meetings, Status "Minutes in the Diwan"; locked
+  once adopted, `private.lock_adopted_minutes`) and the content calendar.
+  Kept on the site and copied to Notion read-only: the officers (each seat
+  by its full title) and Qirtas's counts. One language per piece: an
+  Arabic edition is its own row (Language Arabic, Edition of the English
+  row). The sync reads and writes Diwan and Diwan ID (never Nexus); rename
+  a property only with the sync in the same change.
 - **Documents.** Every document is adopted, Version 1 (owner, Oct 24, 2026).
   Visitors and members see the title, summary and text only; codes
   (`SAL-…`, `F-…`), statuses, versions and ratification lines are internal

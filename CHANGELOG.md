@@ -6,6 +6,11 @@ own versions in the Library.
 
 ## Unreleased
 
+- The Diwan in three rooms: events, programs, documents and minutes are
+  written in Notion and published to the site; an Arabic edition is its
+  own row; the officers' copy in Notion shows each seat's full title.
+- The Diwan's Library keeps each document's adoption record (with the
+  vote); adopted minutes are locked.
 - The brand book has a Motion section, with motion tokens.
 - The Editions are on a shelf (and a plain list); before the first Edition
   the page shows its call and Launch Night.

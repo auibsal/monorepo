@@ -8,8 +8,8 @@ import { accountPage, connectPage, wordPage } from "../links";
 import { admitPending } from "./group/joins";
 
 /**
- * Linking a Telegram account to the Nexus, and the member's own corner:
- * /start link_<code> from the Nexus, /me, notices on or off, unlinking.
+ * Linking a Telegram account to the Diwan, and the member's own corner:
+ * /start link_<code> from the Diwan, /me, notices on or off, unlinking.
  */
 export const account = new Composer<BotContext>();
 const dm = account.chatType("private");
@@ -25,7 +25,7 @@ export const accountName = (
   nameAr: string | null
 ) => escapeHtml(pick(ctx.lang, nameEn, nameAr) || ctx.from?.first_name || "");
 
-/** /start link_<code>: redeem the one-time code the Nexus made. */
+/** /start link_<code>: redeem the one-time code the Diwan made. */
 export const redeemLink = async (ctx: BotContext, payload: string) => {
   const code = LINK.exec(payload)?.[1];
   if (!(code && ctx.from)) {
@@ -67,7 +67,7 @@ const menuFor = (t: Copy, lang: Lang) =>
 export const menu = (ctx: BotContext) => menuFor(ctx.t, ctx.lang);
 
 /**
- * After a member links Telegram from the Nexus (Telegram's login): the same
+ * After a member links Telegram from the Diwan (Telegram's login): the same
  * greeting as a redeemed code, and anyone waiting at a group's door is let
  * in. The login's bot_access scope lets the bot write first.
  */

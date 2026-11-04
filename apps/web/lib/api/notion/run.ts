@@ -7,14 +7,11 @@ import { env } from "@/env";
 import { nexus, origin } from "@/lib/api/urls";
 import { createNotion, type Notion, type NotionUser } from "./client";
 import type { Admin, Sources, SyncContext } from "./context";
-import {
-  mirrorDocuments,
-  mirrorJournal,
-  mirrorOfficers,
-  mirrorProgrammes,
-  peopleByEmail,
-} from "./mirrors";
-import { adoptNexusItems, publishWaiting, syncRsvpCounts } from "./publish";
+import { publishDocuments, syncAdoptionRecords } from "./documents";
+import { sendMinutesToDiwan } from "./minutes";
+import { mirrorJournal, mirrorOfficers, peopleByEmail } from "./mirrors";
+import { publishPrograms } from "./programs";
+import { adoptDiwanItems, publishWaiting, syncRsvpCounts } from "./publish";
 
 const SOURCE_KEYS = [
   "documents",
@@ -40,9 +37,13 @@ const sourcesFrom = (value: unknown): Sources | null => {
     return null;
   }
   const v = value as Record<string, unknown>;
-  return SOURCE_KEYS.every((k) => typeof v[k] === "string")
-    ? (v as unknown as Sources)
-    : null;
+  if (!SOURCE_KEYS.every((k) => typeof v[k] === "string")) {
+    return null;
+  }
+  return {
+    ...(v as unknown as Sources),
+    meetings: typeof v.meetings === "string" ? v.meetings : undefined,
+  };
 };
 
 export interface SyncState {
@@ -52,17 +53,24 @@ export interface SyncState {
   problems: string[];
 }
 
-/** Everything one sync does, in order: mirrors first, then publishing. */
+/**
+ * Everything one sync does, in order (Nov 4, 2026): the read-only copies
+ * (officers, Qirtas's counts), then what Notion authors (programs before
+ * the events that link them, documents and their adoption record,
+ * minutes), then the Diwan's own events and the RSVP counts.
+ */
 const steps: [
   string,
   (ctx: SyncContext, users: NotionUser[]) => Promise<void>,
 ][] = [
-  ["programs", (ctx) => mirrorProgrammes(ctx)],
   ["officers", (ctx, users) => mirrorOfficers(ctx, peopleByEmail(users))],
-  ["documents", (ctx) => mirrorDocuments(ctx)],
   ["journal", (ctx) => mirrorJournal(ctx)],
+  ["programs", (ctx) => publishPrograms(ctx)],
   ["publishing", (ctx) => publishWaiting(ctx)],
-  ["nexus items", (ctx) => adoptNexusItems(ctx)],
+  ["documents", (ctx) => publishDocuments(ctx)],
+  ["adoption", (ctx) => syncAdoptionRecords(ctx)],
+  ["minutes", (ctx) => sendMinutesToDiwan(ctx)],
+  ["diwan items", (ctx) => adoptDiwanItems(ctx)],
   ["rsvps", (ctx) => syncRsvpCounts(ctx)],
 ];
 
@@ -82,7 +90,7 @@ export const runNotionSync = async (
   const started = Date.now();
   const ctx: SyncContext = {
     admin,
-    // English Nexus pages (no language prefix): <origin>/nexus.
+    // English Diwan pages (no language prefix): <origin>/diwan.
     appUrl: nexus("en"),
     counts: {},
     deadline: started + 45_000,
@@ -129,14 +137,14 @@ export const runNotionSync = async (
 };
 
 export interface AccessLists {
-  /** Officers in the Nexus with no Notion account under their address. */
+  /** Officers in the Diwan with no Notion account under their address. */
   invite: { email: string; name: string; roles: string[] }[];
-  /** Notion members who hold no role in the Nexus. */
+  /** Notion members who hold no role in the Diwan. */
   remove: { email: string; name: string }[];
 }
 
 /**
- * Who should be in the workspace (everyone holding a role in the Nexus)
+ * Who should be in the workspace (everyone holding a role in the Diwan)
  * against who is. Notion's API cannot invite or remove people, so these
  * are lists for a workspace owner to act on.
  */

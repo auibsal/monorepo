@@ -2736,6 +2736,7 @@ export type Database = {
           updated_at: string;
           updated_by: string | null;
           version: string | null;
+          vote: string | null;
         };
         Insert: {
           adopted_on?: string | null;
@@ -2758,6 +2759,7 @@ export type Database = {
           updated_at?: string;
           updated_by?: string | null;
           version?: string | null;
+          vote?: string | null;
         };
         Update: {
           adopted_on?: string | null;
@@ -2780,6 +2782,7 @@ export type Database = {
           updated_at?: string;
           updated_by?: string | null;
           version?: string | null;
+          vote?: string | null;
         };
         Relationships: [];
       };

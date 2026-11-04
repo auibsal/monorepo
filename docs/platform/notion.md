@@ -1,78 +1,77 @@
 # The team's Notion workspace
 
-The officers' working space is the Notion workspace **AUIB Society of Arts
-and Letters**, teamspace **HQ** (Notion Plus for education clubs). Team work
-lives there; anything that needs privacy between people, a tamper-proof
-record or members taking part lives in the Diwan. Nothing is kept in both.
+The Diwan is the Society's administration, in three rooms (owner, Nov 4,
+2026): **Notion** for the work (the workspace **AUIB Society of Arts and
+Letters**, teamspace **The Diwan**), **the site** at auibsal.org/diwan for
+people and private records, and the Telegram group **The Diwan** for talk.
+Every piece of information has one home; anywhere else it appears is a
+read-only view.
 
 ## What lives where
 
-| In Notion (the only home) | In the Diwan (the only home) |
+| Written in Notion (the only home) | Kept on the site (the only home) |
 | --- | --- |
-| Projects, tasks, meetings (agendas, working notes) | Members, verification, roles |
-| Events (published from Notion) and Qirtas pieces (imported for editing) | RSVPs, check-in, the waitlist |
-| The content calendar (Instagram, newsletters) | Elections and ballots |
-| The officer handbook and the internal documents' text | Journal submissions and blind review |
-| | The charity ledger, certificates, service hours |
-| | Forms (including confidential ones), adopted minutes, the public foundational documents, the document registry (status, version, dates) |
+| Projects, tasks, meetings: agendas, working notes and the minutes' text | Members, verification, roles and the officers |
+| Events (Publishing, Events), published from there | RSVPs, check-in, the waitlist |
+| The six programs (Publishing, Programs), published from there | Elections and ballots |
+| The Society's documents and website policies (Publishing, Documents), published from there | Each document's adoption record: status, version, adopted on, the vote |
+| The content calendar (news posts and Qirtas pieces start there) | Qirtas submissions and blind review |
+| The handbook and the internal documents | The charity ledger, certificates, service hours |
+| | Adopted minutes (the official copy, locked) |
 
-Notion also holds **read-only copies** ("From the Nexus", its name in the workspace): the officer
-directory, programs, the document and minutes registry, and Journal counts
-per stage (numbers only; review is blind). Edit them in the Diwan; each row
-links there.
+**From the site (read-only)** holds the copies the platform writes for
+planning: **Officers** and **Qirtas pipeline** (counts only; review is
+blind). Edit them on the site; each row links there.
 
-## The handbook and the internal documents
-
-The officer handbook is **Handbook and internal documents → Officer
-handbook**, one page per topic, edited only there. The Diwan links to it
-from Account → Officer handbook for people who may read the internal
-library. The public setting `notion.handbook` holds its first page and each
-page by its old Nexus slug, so `/handbook?page=events` and the old
-docs.auibsal.org links still land on the right page; update it when a page
-is added or moved. The old `governance.handbook_pages` table is read only
-(migration `20261010000400`).
-
-The internal documents (Founding Proposal, Operations Playbook, Templates &
-Forms, Printables, and any later ones) live in Notion entirely (owner,
-Oct 30, 2026); the Diwan's menu links to the team workspace (setting
-`notion.home_url`). The platform keeps only the public documents: the
-Library, auibsal.org/library, edited in the Diwan's Library by the
-President, the Vice President and the General Secretary.
+**One language per piece.** In Events and Programs an English row
+publishes the record and an **Arabic edition** is its own row (Language
+Arabic, **Edition of** the English row): its title, summary, venue (or
+rhythm) and page text become the record's Arabic. An empty field never
+blanks what the site already has.
 
 ## How the sync works
 
 The route `/api/cron/notion-sync`, called by pg_cron (`sal-notion-sync`)
-every fifteen minutes with the cron secret:
+every fifteen minutes with the cron secret, runs these steps in order
+(`apps/web/lib/api/notion/run.ts`):
 
-1. **Mirrors.** Programs, officers (`access.officer_directory()`), documents
-   and minutes, Qirtas pipeline counts (each call's stages, the News, Video
-   and Voices desks' stages, and each desk's pieces by newsroom stage). A row is written only when it changed
-   (hash in `core.notion_links`) and moved to the trash when its record is
-   gone. Officers are matched to Notion people by AUIB email.
-2. **Publishing.** Pages in Events with
-   Status **Ready to publish** are checked (`lib/notion/rules.ts`): titles in
-   both languages, a start time, lengths, slug, program. The page's last
-   editor is matched by email and must hold `events.manage` or
-   `content.manage` (`access.notion_publisher()`; roles that need two-step
-   sign-in count only when that account has a verified second factor). The
-   text is read from the page under the headings **English** and **العربية**,
-   converted to HTML and sanitized; the first image is copied to the media
-   bucket. The page gets Status **Published**, the Diwan and public links and
-   a note; problems set **Needs changes**, a note and a comment.
-   **Cancel on the site** cancels a published event.
-   **Qirtas** (kind `Waraq` in the workspace, with a **Desk**: News, Letters, Gallery, Video or
-   Voices): Ready to publish imports the page as a staff piece in **Editing**
-   in Administration → Qirtas, bylined to the person who set it (they need
-   `journal.edit.<desk>` or `journal.approve`). It is not published from
-   Notion: the approvals and the publish rule happen in the Diwan. The page
-   gets Status **In editing** and the Diwan link; while the piece is still in
-   editing, setting Ready to publish again updates its title, deck and text.
-   **News post** pages (the old news, Oct 14, 2026) are imported the same
-   way, to the News desk.
-3. **Diwan items.** Events made in the Diwan get a page in Notion
-   too (their text stays in the Diwan until written in the page; an empty
-   page never blanks it).
-4. **RSVP counts** go back to each event's page.
+1. **Officers** (`mirrors.ts`): `access.officer_directory()`, each seat by
+   its full title (Editor of Qirtas, Director of Media, …), matched to
+   Notion people by AUIB email. Written only when changed (hash in
+   `core.notion_links`); removed when the record is gone.
+2. **Qirtas pipeline** (`mirrors.ts`): counts per stage, never titles or
+   names.
+3. **Programs** (`programs.ts`): rows with Status **Ready to publish**
+   give their program's name, summary and rhythm to `core.programmes`; the
+   site builds `/events/<program>` from them. A program keeps its address.
+   Needs `programmes.manage` (the Director of Programs, or the program's
+   Lead for their own).
+4. **Events** (`publish.ts`): **Ready to publish** checks the row
+   (`rules.ts`: title, start time, lengths, slug, program) and publishes
+   the event; the Arabic edition then fills its Arabic. **Cancel on the
+   site** cancels it. Needs `events.manage`. Content calendar rows of kind
+   **News post** or **Qirtas** are imported into the Qirtas newsroom, in
+   Editing (`journal.edit.<desk>` or `journal.approve`).
+5. **Documents** (`documents.ts`): **Ready to publish** renders the page
+   (headings, lists, tables, quotes, links) to auibsal.org/library/<slug>
+   for public documents; internal ones stay in Notion. Needs
+   `governance.manage` (the President, the Vice President, the General
+   Secretary). The site keeps only the adoption record, kept in the Diwan's
+   Library, and writes **Adopted on** and **Vote** back to the row whenever
+   they change there.
+6. **Minutes** (`minutes.ts`): a Council or General Assembly meeting in
+   Work, Meetings with Status **Minutes in the Diwan** goes to the Diwan as
+   that meeting's draft minutes (and is updated while it changes). Once the
+   Council adopts them there, the official copy is locked (the database
+   refuses any change) and the page says so. Needs `governance.manage`.
+7. **Diwan items**: events made on the site get a row in Events too.
+8. **RSVP counts** go back to each event's row.
+
+Every published row gets back **Status**, **Public page**, **Diwan**,
+**Diwan ID** and a **Platform note**; a refusal sets **Needs changes**, a
+note and a comment saying what to fix. The person who set the status is
+matched by email and must hold the permission on the site (roles that need
+two-step sign-in count only with a verified second factor).
 
 The result is stored in `core.settings` `notion.sync_state` and shown in
 the Desk's Connected panel, with who to invite to and remove from
@@ -88,14 +87,18 @@ the workspace (Notion's API cannot invite people).
 2. Vercel → **auibsal** → Environment Variables: `NOTION_TOKEN` (Production,
    marked sensitive). It is read only by the API routes.
 3. In Notion, on **Start here**: ••• → Connections → add **SAL Platform**.
-4. The databases' ids are in `core.settings` `notion.data_sources` (migration
-   `20261010000300`). If a database is recreated, update that setting.
+4. The databases' ids are in `core.settings` `notion.data_sources`
+   (migrations `20261010000300` and `20261101002200`, which adds
+   `meetings`). Moving a database keeps its id; if one is recreated, update
+   that setting.
 
 ## Rules
 
-- Never rename the properties the sync reads or writes (Title, Title
-  (Arabic), Status and its options, When, Summary, Nexus ID, …); add new ones
-  freely.
+- Never rename the properties the sync reads or writes (Title, Status
+  and its options, When, Summary, Language, Edition of, Diwan, Diwan ID,
+  Public page, Platform note, Rhythm, Code, Slug, Audience, Adopted on,
+  Vote, Body, Minutes (Diwan), …) without changing the sync in the same
+  change; add new ones freely.
 - Do not turn on the allowed email domain setting for auib.edu.iq: it would
   let every AUIB student and staff member into the workspace.
 - Volunteers (rotas, crews) are added as **guests** on their project's pages

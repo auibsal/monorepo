@@ -7,6 +7,48 @@ first session); section numbers (§) refer to it.
 
 Branch: `claude/new-session-qosn60`.
 
+## The Diwan in three rooms (2026-11-04)
+
+- [x] Notion: Nexus and Nexus ID are Diwan and Diwan ID in Events,
+  Content calendar, Documents, Officers, Programs and Qirtas pipeline; the
+  Events Slug example is listening-room-2027-03-16.
+- [x] Notion: Programs under Publishing, six rows (Gallery Wall, Next Stop,
+  Qirtas and The Company removed), Kind dropped, Rhythm, Lead, Summary,
+  Status, Language and Edition of; page ids kept.
+- [x] Notion: Documents and minutes is Documents, under Publishing: the
+  seven founding documents moved in as rows (Code, Audience, Status, Slug,
+  Diwan ID), the ten live SAL-PLT policies with their text copied from the
+  site, SAL-PLT-10 marked Retired. Summary, Vote and Platform note added.
+- [x] Notion: Meetings has Diwan ID and Platform note; Minutes (Diwan) is
+  written by the platform.
+- [x] Notion: Events has Language and Edition of; the twelve filled Arabic
+  titles became Arabic edition rows; Title, Summary and Venue (Arabic) are
+  gone.
+- [x] Code: the sync publishes programs, documents (adoption record written
+  back) and minutes, and Arabic editions of events and programs; the
+  Programs and Documents mirrors are gone (migration `20261101002200`:
+  link kinds, the Meetings source, `vote`, locked adopted minutes, the
+  officers' titles and names).
+- [x] Retired names swept from copy and Hudhud (the Publication Agreement's
+  quotation of Policy Manual 10.1).
+- [ ] Owner: deploy (F1: `VERCEL_DEPLOY_HOOK`); until then production runs
+  the Oct 31 code, whose sync reads the old Notion names and will report
+  problems in the Desk's Connected panel.
+- [ ] After deploy: set every Documents row to Ready to publish once, so
+  the Library shows Notion's text; set the program rows to Ready to
+  publish; republish the two Listening Room events (Mar 16, May 11).
+- [ ] Content: the founding documents in Notion still name retired things
+  (the Member Handbook's "Qirtas Prizes" and "Callboard"; the Policy
+  Manual's "Qirtas Prizes"); SAL-PLT-06 still mentions money ("Treasury",
+  "250,000 IQD") and SAL-PLT-08 the retired SAL-PLT-10. Amend in Notion.
+- [ ] Arabic names: Fajer Ezzet's and Mohammed-Ali Ohmaid's Arabic name
+  parts are not on record (his shows محمد جاسم); they set them on Profile.
+- needs-native-review: `nexus.admin.notion` (programme, document,
+  minutes, mirror), `nexus.admin.documents` (lede, textTitle,
+  textFromNotion, fields.vote, fields.voteHint),
+  `nexus.admin.governance.minutes.locked`, the Publication Agreement's
+  10.1 in Arabic.
+
 ## The design review: PR 2, foundations and the Edition shelf (2026-11-04)
 
 - [x] A2 Motion: the brand book's Motion section; `duration-quick`,
