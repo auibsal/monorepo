@@ -20,9 +20,9 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "next": "16.4.3",
-    "radix-ui": "^1.7.0",
-    "react": "19.3.0",
-    "react-dom": "19.3.0",
+    "radix-ui": "^1.8.1",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
     "react-qr-code": "^2.0.18",
     "sonner": "^2.0.7",
     "tailwind-merge": "^3.5.0",
@@ -31,18 +31,18 @@
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
     "@storybook/addon-docs": "^10.6.3",
-    "@storybook/addon-themes": "^10.6.3",
-    "@storybook/nextjs": "^10.6.3",
+    "@storybook/addon-themes": "^10.6.5",
+    "@storybook/nextjs": "^10.6.5",
     "@storybook/react": "^10.6.3",
     "@tailwindcss/postcss": "^4.2.1",
     "@tailwindcss/typography": "^0.5.19",
-    "@types/node": "24.19.1",
+    "@types/node": "24.19.2",
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0",
-    "postcss": "^8.5.29",
-    "storybook": "^10.6.3",
+    "postcss": "^8.5.32",
+    "storybook": "^10.6.5",
     "tailwindcss": "^4.2.1",
     "typescript": "^7.0.2",
-    "vitest": "^5.0.3"
+    "vitest": "^5.0.5"
   }
 }
