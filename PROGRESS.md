@@ -5,7 +5,20 @@ Every session starts here and continues from the first unticked item. The
 brief is `sal-platform-claude-code-prompt.md` (uploaded at the start of the
 first session); section numbers (§) refer to it.
 
-Branch: `claude/simpler-diwan` (simpler Diwan, Membership and Partners).
+Branch: `claude/language-standard` (one language standard).
+
+## One language standard (2026-11-04)
+
+Decisions §27; Guide → Voice, "Language standard" and the glossary.
+
+- [x] `scripts/check-language.ts`, run by `check:i18n` in CI.
+- [x] Arabic: tanween before the alif (169 lines in the messages, emails,
+  outbox and Hudhud), Latin digits, Iraqi month names, Edition الإصدار,
+  piece عمل, version النسخة, «شارك معنا», قرطاس without quotes.
+- [x] English: straight quotes and apostrophes, no em dash, "for example".
+- needs-native-review: every Arabic line this changed (the glossary terms
+  above, `nexus.admin.journal.*`, `nexus.admin.overview.editing*`,
+  `nexus.admin.find.*`, `web.journal.archive.count`).
 
 ## Simpler Diwan, Membership and Partners: phase 1 (2026-11-04)
 

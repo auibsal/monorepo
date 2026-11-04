@@ -6,6 +6,10 @@ own versions in the Library.
 
 ## Unreleased
 
+- One language standard, written in the design system's Voice page with an
+  English–Arabic glossary and checked in CI: Latin digits, Iraqi month
+  names, Arabic punctuation and tanween, one Arabic word per term; English
+  with straight quotes and "for example". Iraqi Arabic stays in Hudhud.
 - The Diwan's Partners in one place: applications, the register (each
   partner's page with its guests), memoranda, perks and places; officers'
   declarations are under Society. "Tell us more" is part of Profile.

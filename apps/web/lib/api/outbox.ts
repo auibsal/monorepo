@@ -169,7 +169,7 @@ const FOOTER_LINES: Record<
   Record<Lang, { link: string; text: string }>
 > = {
   officer: {
-    ar: { link: "الإشعارات", text: "وصلتك لأنك تحمل دوراً في الجمعية." },
+    ar: { link: "الإشعارات", text: "وصلتك لأنك تحمل دورًا في الجمعية." },
     en: {
       link: "Notices",
       text: "You get this because you hold a role in the Society.",
@@ -185,7 +185,7 @@ const FOOTER_LINES: Record<
   service: {
     ar: {
       link: "الإشعارات",
-      text: "وصلتك لأن لك حساباً في الجمعية. تختار رسائلك في",
+      text: "وصلتك لأن لك حسابًا في الجمعية. تختار رسائلك في",
     },
     en: {
       link: "Notices",

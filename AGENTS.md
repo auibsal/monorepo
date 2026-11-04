@@ -196,7 +196,7 @@ bun run typecheck           # every workspace
 bun run test                # Vitest in every workspace
 bun run check:placeholders
 bun run check:rtl           # physical Tailwind utilities (--fix rewrites them)
-bun run check:i18n          # UI text that isn't in the messages files
+bun run check:i18n          # UI text not in the messages files; the language standard
 bun run check:unused        # unused files and dependencies (Knip)
 bun run db:start | db:reset | db:test | db:types
 bun run --cwd apps/e2e e2e   # Playwright journeys + axe (local stack running)
@@ -658,6 +658,15 @@ any schema change. Integration tests run against a local stack with
   bot's Telegram profile stay in standard Arabic. Never both in one
   message (Guide → Voice, "Which Arabic"). Iraqi lines are
   needs-native-review like any Arabic written here.
+- **One language standard** (owner, Nov 4, 2026; Guide → Voice,
+  "Language standard", with the glossary). English: American, sentence
+  case, straight quotes, the ellipsis character, en dashes for ranges, "for
+  example" over "e.g.". Arabic: Latin digits, the Iraqi month names
+  (`ar-IQ`), ، ؛ ؟ and «», tanween before the alif (شكرًا), one word per
+  term (Edition الإصدار, piece عمل, event فعالية, version النسخة, Get
+  involved «شارك معنا»). `bun run check:i18n` runs
+  `scripts/check-language.ts`, which also keeps Iraqi spellings in
+  Hudhud's copy only.
 - **One language per page.** The English pages carry no Arabic and the
   Arabic pages no English (owner, Oct 24, 2026); the only exceptions are
   the language switcher, fields meant for the other language, and a
