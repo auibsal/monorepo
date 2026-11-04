@@ -249,13 +249,11 @@ any schema change. Integration tests run against a local stack with
   `events.manage` for program X?"). Roles live only in
   `access.role_assignments`, written only through `access.assign_role()`.
   Never read roles from `user_metadata` or `app_metadata`.
-- **Migrations ship through CI, and the site follows them.** Add a file to
-  `supabase/migrations`; after merge, `.github/workflows/migrate.yml` runs
-  `supabase db push` against production once CI passes, then deploys the
-  site through the Vercel Deploy Hook (Vercel's own deploys from `main` are
-  off in `apps/web/vercel.json`), so new code never runs on an old
-  database (owner, Oct 31, 2026). Never paste SQL into the production
-  database.
+- **Migrations ship through CI.** Add a file to `supabase/migrations`;
+  after merge, `.github/workflows/migrate.yml` runs `supabase db push`
+  against production once CI passes. Vercel deploys `main` itself (owner,
+  Nov 4, 2026: no deploy hook is needed; a Deploy Hook, if set, is called
+  after the migrations). Never paste SQL into the production database.
 - **No third-party apps** (owner, Oct 30, 2026: no Sign in with SAL, no
   `/api/v1`). A token issued to an app carries a `client_id` and reaches
   nothing: every table keeps the restrictive policy "No third-party apps"

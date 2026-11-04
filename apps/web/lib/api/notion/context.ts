@@ -15,6 +15,7 @@ export type LinkKind =
   | "news"
   | "officer"
   | "piece"
+  | "piece_ar"
   | "programme"
   | "programme_ar";
 

@@ -60,22 +60,6 @@ const programmeFor = (
   return id ?? null;
 };
 
-const titles = (page: NotionPage, problems: string[]) => {
-  const titleEn = read.text(page, "Title");
-  const titleAr = read.text(page, "Title (Arabic)");
-  if (!titleEn) {
-    problems.push("Add the English title.");
-  }
-  if (!titleAr) {
-    problems.push("Add the Arabic title (Title (Arabic)).");
-  }
-  problems.push(
-    ...lengthProblem("The title", titleEn, 200),
-    ...lengthProblem("The Arabic title", titleAr, 200)
-  );
-  return { titleAr, titleEn };
-};
-
 const slugProblems = (slug: string) =>
   SLUG.test(slug)
     ? []
@@ -281,13 +265,19 @@ export type WaraqDesk =
   | "video"
   | "games";
 
+/**
+ * A Qirtas row, in one language. An English row (or an Arabic row on its
+ * own) makes a piece; an Arabic edition (Edition of the English row) adds
+ * its Arabic to the English row's piece.
+ */
 export interface WaraqValues {
-  deck_ar: string | null;
-  deck_en: string | null;
-  desk: WaraqDesk;
+  deck: string | null;
+  desk: WaraqDesk | null;
+  language: "ar" | "en";
+  /** The English row an Arabic edition translates (bare page id). */
+  of: string | null;
   publish_at: string | null;
-  title_ar: string;
-  title_en: string;
+  title: string;
 }
 
 const DESKS: Record<string, WaraqDesk> = {
@@ -300,40 +290,53 @@ const DESKS: Record<string, WaraqDesk> = {
 };
 
 /**
- * A Waraq page in the content calendar (Kind "Waraq"): it is imported as a
- * piece in Editing, so it needs only what a piece starts with. The editing,
- * approvals and publishing happen in the Diwan.
+ * A Qirtas row in the content calendar (Kind "Qirtas", or "News post" for
+ * the News desk): it is imported as a piece in Editing, so it needs only
+ * what a piece starts with. The editing, approvals and publishing happen in
+ * the Diwan.
  */
 export const checkWaraq = (
   page: NotionPage,
   fallbackDesk?: WaraqDesk
 ): Checked<WaraqValues> => {
   const problems: string[] = [];
-  const { titleAr, titleEn } = titles(page, problems);
-  const desk = DESKS[read.select(page, "Desk") ?? ""] ?? fallbackDesk;
-  if (!desk) {
-    problems.push("Choose the Desk: News, Letters, Gallery, Video or Voices.");
+  const language = languageOf(page);
+  // An Arabic row is an edition when it names its English row; on its own
+  // it is an Arabic piece.
+  const of =
+    language === "ar" && read.relation(page, "Edition of").length > 0
+      ? editionOf(page, problems)
+      : null;
+  const title = read.text(page, "Title");
+  if (!title) {
+    problems.push("Add the title.");
   }
-  const deckEn = read.text(page, "Excerpt");
-  const deckAr = read.text(page, "Excerpt (Arabic)");
-  problems.push(
-    ...lengthProblem("The excerpt (the deck)", deckEn, 400),
-    ...lengthProblem("The Arabic excerpt", deckAr, 400)
-  );
+  problems.push(...lengthProblem("The title", title, 200));
+  // An edition goes where its English row went.
+  const desk = of
+    ? null
+    : (DESKS[read.select(page, "Desk") ?? ""] ?? fallbackDesk ?? null);
+  if (!(of || desk)) {
+    problems.push(
+      "Choose the Desk: News, Voices, Letters, Gallery, Video or Games."
+    );
+  }
+  const deck = read.text(page, "Excerpt");
+  problems.push(...lengthProblem("The excerpt (the deck)", deck, 400));
   const on = read.date(page, "Publish on")?.start ?? null;
   const publishAt = on ? (toInstant(on) ?? toInstant(`${on}T09:00:00`)) : null;
-  if (problems.length > 0 || !desk) {
+  if (problems.length > 0) {
     return { ok: false, problems };
   }
   return {
     ok: true,
     values: {
-      deck_ar: optional(deckAr),
-      deck_en: optional(deckEn),
+      deck: optional(deck),
       desk,
+      language,
+      of,
       publish_at: publishAt,
-      title_ar: titleAr,
-      title_en: titleEn,
+      title,
     },
   };
 };
