@@ -29,6 +29,7 @@ import { useProgrammeOptions } from "../events/data";
 import { slugify } from "../events/editor";
 import { RequestQueue } from "../forms/admin";
 import {
+  AddInPlace,
   AdminHeading,
   BilingualField,
   ConfirmAction,
@@ -42,7 +43,7 @@ import {
 } from "../kit";
 import { useMemberNames } from "../member-picker";
 import { memberName } from "../members/directory";
-import { Needs, NewNeed } from "../needs";
+import { Needs } from "../needs";
 import { NotionManaged } from "../notion-managed";
 import type { ProgramTab } from "../tabs";
 import { NewOpening, Openings, SkillsPicker } from "./openings";
@@ -610,7 +611,7 @@ export const NewReelPage = () => {
 
 type SignupStatus = "signed_up" | "confirmed" | "swap_requested" | "cancelled";
 
-const Shifts = ({ base, rotaId }: { base: string; rotaId: string }) => {
+const Shifts = ({ rotaId }: { rotaId: string }) => {
   const t = useTranslations("nexus.admin.programmes.rotas");
   const locale = useLocale() as Locale;
   const { supabase, user } = useAuth();
@@ -805,19 +806,15 @@ const Shifts = ({ base, rotaId }: { base: string; rotaId: string }) => {
           );
         })}
       </ul>
-      <NewLink href={`${base}/${rotaId}/new`}>{t("addShift")}</NewLink>
+      <AddInPlace label={t("addShift")}>
+        {(close) => <NewShift onDone={close} rotaId={rotaId} />}
+      </AddInPlace>
       <ErrorLine error={setStatus.error ?? remove.error} />
     </div>
   );
 };
 
-const Rotas = ({
-  base,
-  programmeId,
-}: {
-  base: string;
-  programmeId: string;
-}) => {
+const Rotas = ({ programmeId }: { programmeId: string }) => {
   const t = useTranslations("nexus.admin.programmes.rotas");
   const locale = useLocale() as Locale;
   const { supabase } = useAuth();
@@ -848,26 +845,28 @@ const Rotas = ({
                 : ""}
             </p>
           ) : null}
-          <Shifts base={base} rotaId={rota.id} />
+          <Shifts rotaId={rota.id} />
         </SalCard>
       ))}
-      <NewLink href={`${base}/new`}>{t("new")}</NewLink>
+      <AddInPlace label={t("new")}>
+        {(close) => <NewRota onDone={close} programmeId={programmeId} />}
+      </AddInPlace>
     </div>
   );
 };
 
-/** A new shift on a rota, at the rota's address and "/new". */
+/** A new shift on a rota, added in place under its shifts. */
 const NewShift = ({
-  back,
+  onDone,
   rotaId,
 }: {
-  readonly back: string;
+  /** Called once saved: closes the form in place. */
+  readonly onDone: () => void;
   readonly rotaId: string;
 }) => {
   const t = useTranslations("nexus.admin.programmes.rotas");
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
-  const router = useRouter();
   const [form, setForm] = useState({
     capacity: "1",
     ends_at: null as string | null,
@@ -896,7 +895,7 @@ const NewShift = ({
       ),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: invalidateKey });
-      router.push(back);
+      onDone();
     },
   });
   return (
@@ -961,18 +960,18 @@ const NewShift = ({
   );
 };
 
-/** A new rota, at /events/<program>/shifts/new. */
+/** A new rota, added in place under the program's shifts. */
 const NewRota = ({
-  back,
+  onDone,
   programmeId,
 }: {
-  readonly back: string;
+  /** Called once saved: closes the form in place. */
+  readonly onDone: () => void;
   readonly programmeId: string;
 }) => {
   const t = useTranslations("nexus.admin.programmes.rotas");
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
-  const router = useRouter();
   const [form, setForm] = useState({
     ends_on: "",
     starts_on: "",
@@ -994,7 +993,7 @@ const NewRota = ({
       ),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: invalidateKey });
-      router.push(back);
+      onDone();
     },
   });
 
@@ -1340,24 +1339,14 @@ export const ProgramPage = ({
       />
       <div className="pt-2">
         {tab === "sessions" ? <Sessions programmeId={programme.id} /> : null}
-        {tab === "shifts" ? (
-          <Rotas
-            base={`/events/${programme.slug}/shifts`}
-            programmeId={programme.id}
-          />
-        ) : null}
+        {tab === "shifts" ? <Rotas programmeId={programme.id} /> : null}
         {tab === "places" ? (
           <Openings
             base={`/events/${programme.slug}/places`}
             programmeId={programme.id}
           />
         ) : null}
-        {tab === "needs" ? (
-          <Needs
-            base={`/events/${programme.slug}/needs`}
-            programmeId={programme.id}
-          />
-        ) : null}
+        {tab === "needs" ? <Needs programmeId={programme.id} /> : null}
         {tab === "six-words" ? <TourCards /> : null}
         {tab === "collection" ? <CharityAdmin /> : null}
       </div>
@@ -1424,42 +1413,6 @@ export const NewProgramOpening = ({ slug }: { readonly slug: string }) => {
       {(programme, back) => (
         <NewOpening back={back} programmeId={programme.id} />
       )}
-    </ProgramRecord>
-  );
-};
-
-/** A program's new rota, at /events/<program>/shifts/new. */
-export const NewProgramRota = ({ slug }: { readonly slug: string }) => {
-  const t = useTranslations("nexus.admin.programmes.rotas");
-  return (
-    <ProgramRecord slug={slug} tab="shifts" title={t("new")}>
-      {(programme, back) => <NewRota back={back} programmeId={programme.id} />}
-    </ProgramRecord>
-  );
-};
-
-/** A new shift on a program's rota, at the rota's address and "/new". */
-export const NewProgramShift = ({
-  rotaId,
-  slug,
-}: {
-  readonly rotaId: string;
-  readonly slug: string;
-}) => {
-  const t = useTranslations("nexus.admin.programmes.rotas");
-  return (
-    <ProgramRecord slug={slug} tab="shifts" title={t("addShift")}>
-      {(_programme, back) => <NewShift back={back} rotaId={rotaId} />}
-    </ProgramRecord>
-  );
-};
-
-/** A program's new need, at /events/<program>/needs/new. */
-export const NewProgramNeed = ({ slug }: { readonly slug: string }) => {
-  const t = useTranslations("nexus.admin.needs");
-  return (
-    <ProgramRecord slug={slug} tab="needs" title={t("new")}>
-      {(programme, back) => <NewNeed back={back} programmeId={programme.id} />}
     </ProgramRecord>
   );
 };

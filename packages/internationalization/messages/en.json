@@ -806,6 +806,7 @@
         "baghdadTime": "Baghdad time",
         "new": "New",
         "edit": "Edit",
+        "cancel": "Cancel",
         "open": "Open",
         "delete": "Delete",
         "actionFailed": "That didn't work: {reason}",
@@ -1324,11 +1325,6 @@
           "receipt": "Receipt",
           "noReceipt": "No receipt yet",
           "note": "Note (optional)"
-        },
-        "newOn": {
-          "ledger": "Record money counted",
-          "receipts": "Upload a receipt",
-          "impact": "Add a figure"
         }
       },
       "picker": {
@@ -2746,8 +2742,7 @@
           "provided": "Provided",
           "partly_provided": "Partly provided",
           "not_provided": "Not provided"
-        },
-        "backToQirtas": "Qirtas"
+        }
       },
       "hiring": {
         "title": "Hiring",

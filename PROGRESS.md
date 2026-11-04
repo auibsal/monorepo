@@ -33,9 +33,12 @@ now; one place for each thing.
   (`/diwan/society/declarations`).
 - [x] "Tell us more" merged into Profile's details; Today and the welcome
   screen open `/membership/settings/profile#details`.
-- [ ] Phase 2: small rows edited in place (needs, shifts, credits,
-  rehearsals, audition slots, ledger lines, receipts, impact figures,
-  hours, activities, roles) instead of their `new` pages.
+- [x] Phase 2 (branch `claude/rows-in-place`): small rows are added in
+  place with `AddInPlace` (needs, rotas, shifts, credits, rehearsals,
+  audition slots, ledger lines, receipts, impact figures, a member's
+  activities and roles); their nine `new` pages are gone. The needs list
+  loads again (it embedded `core.programmes` across schemas, which the
+  Data API refuses, since #151).
 - [ ] Phase 3: one Openings list in place of three (a program's Places,
   People → Hiring, Partners → Places).
 - needs-native-review: `nexus.admin.partners.tabs.applications`,

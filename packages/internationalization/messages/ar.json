@@ -806,6 +806,7 @@
         "baghdadTime": "بتوقيت بغداد",
         "new": "جديد",
         "edit": "تعديل",
+        "cancel": "إلغاء",
         "open": "فتح",
         "delete": "حذف",
         "actionFailed": "لم ينجح ذلك: {reason}",
@@ -1324,11 +1325,6 @@
           "receipt": "الإيصال",
           "noReceipt": "لا إيصال بعد",
           "note": "ملاحظة (اختيارية)"
-        },
-        "newOn": {
-          "ledger": "تسجيل مبلغ معدود",
-          "receipts": "رفع إيصال",
-          "impact": "إضافة رقم"
         }
       },
       "picker": {
@@ -2746,8 +2742,7 @@
           "provided": "قُدّم",
           "partly_provided": "قُدّم جزئيًا",
           "not_provided": "لم يُقدَّم"
-        },
-        "backToQirtas": "قرطاس"
+        }
       },
       "hiring": {
         "title": "التوظيف",
