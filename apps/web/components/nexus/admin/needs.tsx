@@ -15,10 +15,9 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 import { DateInput } from "@/components/fields/date-input";
-import { useRouter } from "@/lib/nexus/navigation";
 import { useGrants } from "@/lib/nexus/queries";
 import { EmptyLine, SectionSpinner } from "../states";
-import { ConfirmAction, ErrorLine, Field, NewLink, SaveButton } from "./kit";
+import { AddInPlace, ConfirmAction, ErrorLine, Field, SaveButton } from "./kit";
 
 const key = ["admin", "needs"];
 
@@ -181,17 +180,16 @@ const NeedRow = ({
 };
 
 export const NewNeed = ({
-  back,
+  onDone,
   programmeId,
 }: {
-  /** The list it joins, where saving returns. */
-  readonly back: string;
+  /** Called once saved: closes the form in place. */
+  readonly onDone: () => void;
   readonly programmeId: string;
 }) => {
   const t = useTranslations("nexus.admin.needs");
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
-  const router = useRouter();
   const [form, setForm] = useState({
     item: "",
     needed_by: "",
@@ -214,7 +212,7 @@ export const NewNeed = ({
       ),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: key });
-      router.push(back);
+      onDone();
     },
   });
 
@@ -294,14 +292,7 @@ export const NewNeed = ({
  * no program, every list: the General Secretary's log of requests to
  * Student Life.
  */
-export const Needs = ({
-  base,
-  programmeId,
-}: {
-  /** The list's own path; a new need is at base/new. */
-  readonly base?: string;
-  readonly programmeId?: string;
-}) => {
+export const Needs = ({ programmeId }: { readonly programmeId?: string }) => {
   const t = useTranslations("nexus.admin.needs");
   const { supabase } = useAuth();
   const grants = useGrants();
@@ -311,13 +302,29 @@ export const Needs = ({
         .schema("programmes")
         .from("needs")
         .select(
-          "id, item, quantity, needed_by, purpose, status, requested_on, provided_on, provided_note, programme_id, programme:programmes(name_en, name_ar, slug)"
+          "id, item, quantity, needed_by, purpose, status, requested_on, provided_on, provided_note, programme_id"
         )
         .order("needed_by");
       if (programmeId) {
         query = query.eq("programme_id", programmeId);
       }
-      return (unwrap(await query) ?? []) as unknown as Need[];
+      const rows = unwrap(await query) ?? [];
+      // The programs live in another schema (core), which the Data API
+      // can't embed across; read their names beside the needs.
+      const ids = [...new Set(rows.map((r) => r.programme_id))];
+      const programmes = ids.length
+        ? (unwrap(
+            await supabase
+              .schema("core")
+              .from("programmes")
+              .select("id, name_en, name_ar, slug")
+              .in("id", ids)
+          ) ?? [])
+        : [];
+      return rows.map((r) => ({
+        ...r,
+        programme: programmes.find((p) => p.id === r.programme_id) ?? null,
+      })) as Need[];
     },
     queryKey: [...key, programmeId ?? "all"],
   });
@@ -340,8 +347,10 @@ export const Needs = ({
           />
         ))}
       </ul>
-      {programmeId && base ? (
-        <NewLink href={`${base}/new`}>{t("new")}</NewLink>
+      {programmeId ? (
+        <AddInPlace label={t("new")}>
+          {(close) => <NewNeed onDone={close} programmeId={programmeId} />}
+        </AddInPlace>
       ) : null}
     </div>
   );

@@ -382,3 +382,10 @@ Where an earlier line above is marked as replaced, the later section holds. What
 - **Links between the site and the Diwan** are added where they help, not required everywhere. (Replaces "links both ways".)
 - **No redundancy:** one place for each thing, above all in the Diwan, Membership and the partner dashboard. First merges: partner applications join Partners; each partner's guests are on its page; officers' declarations move to Society; "Tell us more" is part of Profile.
 
+## 27. One language standard (decided Nov 4, 2026, evening)
+- **Standardize language across the platform:** one style for English and one for Arabic, written in Guide → Voice ("Language standard") with an English–Arabic glossary, and checked by `scripts/check-language.ts` (part of `check:i18n`).
+- **Iraqi Arabic vs standard Arabic:** unchanged from §25: Iraqi only where the Society chats (Hudhud, social, the members' group, signs at the door); standard Arabic everywhere else. The checker keeps Iraqi spellings out of everything but Hudhud's copy.
+- **Arabic formats:** Latin digits; the Iraqi month names, as `ar-IQ` writes dates; Arabic punctuation and «» quotes; tanween on the letter before the alif.
+- **English formats:** American spelling, sentence case, straight quotes and apostrophes, the ellipsis character, en dashes for ranges, "for example" in place of "e.g.".
+- **One word per term:** Edition is الإصدار (not العدد), a piece is عمل, an event فعالية, a document's version النسخة, Get involved «شارك معنا».
+

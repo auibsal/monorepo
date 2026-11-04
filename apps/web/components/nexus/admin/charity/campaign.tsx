@@ -28,6 +28,7 @@ import { SectionTabs } from "../admin-shell";
 import { useProgrammeOptions } from "../events/data";
 import { slugify } from "../events/editor";
 import {
+  AddInPlace,
   AdminHeading,
   BilingualField,
   type Column,
@@ -36,19 +37,12 @@ import {
   ErrorLine,
   ExportButton,
   Field,
-  NewLink,
-  RecordPage,
   SaveButton,
   SelectInput,
 } from "../kit";
 import { MemberPicker, useMemberNames } from "../member-picker";
 import { memberName } from "../members/directory";
-import {
-  type CampaignNewTab,
-  type CampaignTab,
-  campaignNewTabs,
-  campaignTabs,
-} from "../tabs";
+import { type CampaignTab, campaignTabs } from "../tabs";
 
 // ── Settings ────────────────────────────────────────────────────────────────
 
@@ -579,15 +573,7 @@ const useLedger = (campaignId: string) => {
 
 type LedgerRow = NonNullable<ReturnType<typeof useLedger>["data"]>[number];
 
-const Ledger = ({
-  base,
-  campaignId,
-  slug,
-}: {
-  base: string;
-  campaignId: string;
-  slug: string;
-}) => {
+const Ledger = ({ campaignId, slug }: { campaignId: string; slug: string }) => {
   const t = useTranslations("nexus.admin.charity");
   const locale = useLocale() as Locale;
   const { supabase, user } = useAuth();
@@ -713,7 +699,9 @@ const Ledger = ({
         <DataTable columns={columns} rowKey={(e) => e.id} rows={ledger.data} />
       ) : null}
       {canWrite ? (
-        <NewLink href={`${base}/ledger/new`}>{t("ledger.record")}</NewLink>
+        <AddInPlace label={t("ledger.record")}>
+          {(close) => <NewLedgerEntry campaignId={campaignId} onDone={close} />}
+        </AddInPlace>
       ) : null}
       <ErrorLine error={reverse.error} />
     </div>
@@ -721,21 +709,21 @@ const Ledger = ({
 };
 
 /**
- * A new ledger entry, on its own page under the ledger (owner, Nov 4,
+ * A new ledger entry, added in place under the ledger (owner, Nov 4,
  * 2026): counted by two, confirmed before it is recorded.
  */
 const NewLedgerEntry = ({
-  back,
+  onDone,
   campaignId,
 }: {
-  readonly back: string;
+  /** Called once saved: closes the form in place. */
+  readonly onDone: () => void;
   readonly campaignId: string;
 }) => {
   const t = useTranslations("nexus.admin.charity");
   const locale = useLocale() as Locale;
   const { supabase, user } = useAuth();
   const queryClient = useQueryClient();
-  const router = useRouter();
   const me = useMemberNames([user?.id]);
   const [form, setForm] = useState({
     amount: "",
@@ -780,7 +768,7 @@ const NewLedgerEntry = ({
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["admin"] });
-      router.push(back);
+      onDone();
     },
   });
   const submit = (event: FormEvent) => event.preventDefault();
@@ -965,13 +953,7 @@ const SignoffQueue = ({ campaignId }: { campaignId: string }) => {
 
 // ── Receipts ────────────────────────────────────────────────────────────────
 
-const Receipts = ({
-  base,
-  campaignId,
-}: {
-  base: string;
-  campaignId: string;
-}) => {
+const Receipts = ({ campaignId }: { campaignId: string }) => {
   const t = useTranslations("nexus.admin.charity");
   const tm = useTranslations("nexus.admin.members");
   const locale = useLocale() as Locale;
@@ -1087,7 +1069,9 @@ const Receipts = ({
           rows={receipts.data}
         />
       ) : null}
-      <NewLink href={`${base}/new`}>{t("receipts.upload")}</NewLink>
+      <AddInPlace label={t("receipts.upload")}>
+        {(close) => <NewReceipt campaignId={campaignId} onDone={close} />}
+      </AddInPlace>
       <ErrorLine error={toggle.error ?? remove.error} />
     </div>
   );
@@ -1095,7 +1079,7 @@ const Receipts = ({
 
 // ── Impact ──────────────────────────────────────────────────────────────────
 
-const Impact = ({ base, campaignId }: { base: string; campaignId: string }) => {
+const Impact = ({ campaignId }: { campaignId: string }) => {
   const t = useTranslations("nexus.admin.charity.impact");
   const locale = useLocale() as Locale;
   const { supabase } = useAuth();
@@ -1159,25 +1143,27 @@ const Impact = ({ base, campaignId }: { base: string; campaignId: string }) => {
           </li>
         ))}
       </ul>
-      <NewLink href={`${base}/new`}>{t("add")}</NewLink>
+      <AddInPlace label={t("add")}>
+        {(close) => <NewImpact campaignId={campaignId} onDone={close} />}
+      </AddInPlace>
       <ErrorLine error={publish.error} />
     </div>
   );
 };
 
-/** A new receipt, uploaded on its own page under Receipts. */
+/** A new receipt, uploaded in place under Receipts. */
 const NewReceipt = ({
-  back,
+  onDone,
   campaignId,
 }: {
-  readonly back: string;
+  /** Called once saved: closes the form in place. */
+  readonly onDone: () => void;
   readonly campaignId: string;
 }) => {
   const t = useTranslations("nexus.admin.charity");
   const id = useId();
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
-  const router = useRouter();
   const [file, setFile] = useState<File | null>(null);
   const [form, setForm] = useState({
     amount: "",
@@ -1208,7 +1194,7 @@ const NewReceipt = ({
     },
     onSuccess: async () => {
       await invalidate();
-      router.push(back);
+      onDone();
     },
   });
   return (
@@ -1268,18 +1254,18 @@ const NewReceipt = ({
   );
 };
 
-/** A new impact figure, on its own page under Impact. */
+/** A new impact figure, added in place under Impact. */
 const NewImpact = ({
-  back,
+  onDone,
   campaignId,
 }: {
-  readonly back: string;
+  /** Called once saved: closes the form in place. */
+  readonly onDone: () => void;
   readonly campaignId: string;
 }) => {
   const t = useTranslations("nexus.admin.charity.impact");
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
-  const router = useRouter();
   const [form, setForm] = useState({
     label: { ar: "", en: "" },
     report: { ar: "", en: "" },
@@ -1320,7 +1306,7 @@ const NewImpact = ({
       ),
     onSuccess: async () => {
       await invalidate();
-      router.push(back);
+      onDone();
     },
   });
   return (
@@ -1374,11 +1360,8 @@ const NewImpact = ({
 // ── Page ────────────────────────────────────────────────────────────────────
 
 export const CampaignAdmin = ({
-  item,
   tab = "ledger",
 }: {
-  /** "new": a blank entry, receipt or figure under the tab. */
-  readonly item?: "new";
   readonly tab?: CampaignTab;
 }) => {
   const t = useTranslations("nexus.admin.charity");
@@ -1480,28 +1463,6 @@ export const CampaignAdmin = ({
       ? t("tabs.signoff", { count: formatNumber(ledger.data ?? 0) })
       : t(`tabs.${key}`);
 
-  // A new entry, receipt or figure opens its own page under its tab.
-  if (item === "new" && campaignNewTabs.some((key) => key === shown)) {
-    const tabPath = pathOf(shown);
-    return (
-      <RecordPage
-        back={tabPath}
-        backLabel={`${title}: ${t(`tabs.${shown}`)}`}
-        title={t(`newOn.${shown as CampaignNewTab}`)}
-      >
-        {shown === "ledger" ? (
-          <NewLedgerEntry back={tabPath} campaignId={campaignId} />
-        ) : null}
-        {shown === "receipts" ? (
-          <NewReceipt back={tabPath} campaignId={campaignId} />
-        ) : null}
-        {shown === "impact" ? (
-          <NewImpact back={tabPath} campaignId={campaignId} />
-        ) : null}
-      </RecordPage>
-    );
-  }
-
   return (
     <div className="grid gap-8">
       <AdminHeading actions={back} title={title} />
@@ -1511,23 +1472,15 @@ export const CampaignAdmin = ({
       />
       <div className="pt-2">
         {shown === "ledger" ? (
-          <Ledger
-            base={base}
-            campaignId={campaignId}
-            slug={campaign.data.slug}
-          />
+          <Ledger campaignId={campaignId} slug={campaign.data.slug} />
         ) : null}
         {shown === "signoff" ? <SignoffQueue campaignId={campaignId} /> : null}
         {shown === "settings" ? (
           <CampaignSettings campaignId={campaignId} />
         ) : null}
-        {shown === "receipts" ? (
-          <Receipts base={`${base}/receipts`} campaignId={campaignId} />
-        ) : null}
+        {shown === "receipts" ? <Receipts campaignId={campaignId} /> : null}
         {shown === "handover" ? <Handover campaignId={campaignId} /> : null}
-        {shown === "impact" ? (
-          <Impact base={`${base}/impact`} campaignId={campaignId} />
-        ) : null}
+        {shown === "impact" ? <Impact campaignId={campaignId} /> : null}
       </div>
     </div>
   );

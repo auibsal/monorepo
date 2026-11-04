@@ -9,6 +9,14 @@ own versions in the Library.
 - The Sunday Paper's past issues, each on its own page in a newspaper's
   layout; Next Stop's page with its episodes, team and how to send a
   reel; search opens on the newest pieces and what is coming up.
+- The Diwan: small rows (needs, rotas, shifts, credits, rehearsals,
+  audition times, ledger lines, receipts, impact figures, a member's
+  activities and roles) are added right on their list instead of on a
+  page of their own. Programs' and Qirtas's needs lists load again.
+- One language standard, written in the design system's Voice page with an
+  English–Arabic glossary and checked in CI: Latin digits, Iraqi month
+  names, Arabic punctuation and tanween, one Arabic word per term; English
+  with straight quotes and "for example". Iraqi Arabic stays in Hudhud.
 - The Diwan's Partners in one place: applications, the register (each
   partner's page with its guests), memoranda, perks and places; officers'
   declarations are under Society. "Tell us more" is part of Profile.

@@ -11,15 +11,14 @@ import { localized, productions, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
-import { useRouter } from "@/lib/nexus/navigation";
 import { SectionSpinner } from "../../states";
 import {
+  AddInPlace,
   BilingualField,
   ConfirmAction,
   DateTimeField,
   ErrorLine,
   Field,
-  NewLink,
   SaveButton,
   SelectInput,
 } from "../kit";
@@ -52,13 +51,7 @@ const emptySlot = {
   starts_at: null as string | null,
 };
 
-export const AuditionsTab = ({
-  base,
-  production,
-}: {
-  base: string;
-  production: ProductionRow;
-}) => {
+export const AuditionsTab = ({ production }: { production: ProductionRow }) => {
   const t = useTranslations("nexus.admin.productions.auditionsTab");
   const tp = useTranslations("nexus.productions");
   const locale = useLocale() as Locale;
@@ -157,7 +150,9 @@ export const AuditionsTab = ({
       {production.stage === "auditions" ? null : (
         <p className="type-caption">{t("openWhen")}</p>
       )}
-      <NewLink href={`${base}/auditions/new`}>{t("add")}</NewLink>
+      <AddInPlace label={t("add")}>
+        {(close) => <NewAuditionSlot onDone={close} production={production} />}
+      </AddInPlace>
 
       {data.isPending ? <SectionSpinner /> : null}
       {(data.data?.auditions ?? []).map((a) => {
@@ -290,13 +285,7 @@ const emptyCredit = {
   who: "member" as "member" | "outside",
 };
 
-export const CreditsTab = ({
-  base,
-  production,
-}: {
-  base: string;
-  production: ProductionRow;
-}) => {
+export const CreditsTab = ({ production }: { production: ProductionRow }) => {
   const t = useTranslations("nexus.admin.productions.creditsTab");
   const tp = useTranslations("nexus.productions");
   const locale = useLocale() as Locale;
@@ -362,7 +351,9 @@ export const CreditsTab = ({
   return (
     <div className="grid max-w-3xl gap-8 pt-4">
       <p className="type-body">{t("lede")}</p>
-      <NewLink href={`${base}/credits/new`}>{t("add")}</NewLink>
+      <AddInPlace label={t("add")}>
+        {(close) => <NewCredit onDone={close} production={production} />}
+      </AddInPlace>
 
       {credits.isPending ? <SectionSpinner /> : null}
       {credits.data?.length === 0 ? (
@@ -473,10 +464,8 @@ const emptyRehearsal = {
 };
 
 export const RehearsalsTab = ({
-  base,
   production,
 }: {
-  base: string;
   production: ProductionRow;
 }) => {
   const t = useTranslations("nexus.admin.productions.rehearsalsTab");
@@ -513,7 +502,9 @@ export const RehearsalsTab = ({
   return (
     <div className="grid max-w-3xl gap-8 pt-4">
       <p className="type-body">{t("lede")}</p>
-      <NewLink href={`${base}/rehearsals/new`}>{t("add")}</NewLink>
+      <AddInPlace label={t("add")}>
+        {(close) => <NewRehearsal onDone={close} production={production} />}
+      </AddInPlace>
       {rehearsals.isPending ? <SectionSpinner /> : null}
       {rehearsals.data?.length === 0 ? (
         <p className="type-caption">{t("none")}</p>
@@ -547,18 +538,18 @@ export const RehearsalsTab = ({
   );
 };
 
-/** A new auditionslot, on its own page under the production's tab. */
+/** A new audition slot, added in place on the production's tab. */
 export const NewAuditionSlot = ({
-  back,
+  onDone,
   production,
 }: {
-  readonly back: string;
+  /** Called once saved: closes the form in place. */
+  readonly onDone: () => void;
   readonly production: ProductionRow;
 }) => {
   const t = useTranslations("nexus.admin.productions.auditionsTab");
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
-  const router = useRouter();
   const key = [...productionKey(production.id), "auditions"];
   const [form, setForm] = useState(emptySlot);
   const add = useMutation({
@@ -580,7 +571,7 @@ export const NewAuditionSlot = ({
       ),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: key });
-      router.push(back);
+      onDone();
     },
   });
   return (
@@ -641,18 +632,18 @@ export const NewAuditionSlot = ({
   );
 };
 
-/** A new credit, on its own page under the production's tab. */
+/** A new credit, added in place on the production's tab. */
 export const NewCredit = ({
-  back,
+  onDone,
   production,
 }: {
-  readonly back: string;
+  /** Called once saved: closes the form in place. */
+  readonly onDone: () => void;
   readonly production: ProductionRow;
 }) => {
   const t = useTranslations("nexus.admin.productions.creditsTab");
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
-  const router = useRouter();
   const key = [...productionKey(production.id), "credits"];
   const tp = useTranslations("nexus.productions");
   const [form, setForm] = useState(emptyCredit);
@@ -667,7 +658,7 @@ export const NewCredit = ({
       }),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: key });
-      router.push(back);
+      onDone();
     },
   });
   return (
@@ -754,18 +745,18 @@ export const NewCredit = ({
   );
 };
 
-/** A new rehearsal, on its own page under the production's tab. */
+/** A new rehearsal, added in place on the production's tab. */
 export const NewRehearsal = ({
-  back,
+  onDone,
   production,
 }: {
-  readonly back: string;
+  /** Called once saved: closes the form in place. */
+  readonly onDone: () => void;
   readonly production: ProductionRow;
 }) => {
   const t = useTranslations("nexus.admin.productions.rehearsalsTab");
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
-  const router = useRouter();
   const key = [...productionKey(production.id), "rehearsals"];
   const [form, setForm] = useState(emptyRehearsal);
   const add = useMutation({
@@ -786,7 +777,7 @@ export const NewRehearsal = ({
       ),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: key });
-      router.push(back);
+      onDone();
     },
   });
   return (

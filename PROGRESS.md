@@ -26,6 +26,19 @@ Branch: `claude/sunday-paper-archive` (PR 4c of the design review).
 - Next: PR 4d (A9/C22 saved reading, C24 history), 4e (C3, A31, A32,
   A35), 4f (C5, C7, C26, A8).
 
+## One language standard (2026-11-04)
+
+Decisions §27; Guide → Voice, "Language standard" and the glossary.
+
+- [x] `scripts/check-language.ts`, run by `check:i18n` in CI.
+- [x] Arabic: tanween before the alif (169 lines in the messages, emails,
+  outbox and Hudhud), Latin digits, Iraqi month names, Edition الإصدار,
+  piece عمل, version النسخة, «شارك معنا», قرطاس without quotes.
+- [x] English: straight quotes and apostrophes, no em dash, "for example".
+- needs-native-review: every Arabic line this changed (the glossary terms
+  above, `nexus.admin.journal.*`, `nexus.admin.overview.editing*`,
+  `nexus.admin.find.*`, `web.journal.archive.count`).
+
 ## Simpler Diwan, Membership and Partners: phase 1 (2026-11-04)
 
 The owner relaxed the house rules (decisions §26): counts, paths for
@@ -39,9 +52,12 @@ now; one place for each thing.
   (`/diwan/society/declarations`).
 - [x] "Tell us more" merged into Profile's details; Today and the welcome
   screen open `/membership/settings/profile#details`.
-- [ ] Phase 2: small rows edited in place (needs, shifts, credits,
-  rehearsals, audition slots, ledger lines, receipts, impact figures,
-  hours, activities, roles) instead of their `new` pages.
+- [x] Phase 2 (branch `claude/rows-in-place`): small rows are added in
+  place with `AddInPlace` (needs, rotas, shifts, credits, rehearsals,
+  audition slots, ledger lines, receipts, impact figures, a member's
+  activities and roles); their nine `new` pages are gone. The needs list
+  loads again (it embedded `core.programmes` across schemas, which the
+  Data API refuses, since #151).
 - [ ] Phase 3: one Openings list in place of three (a program's Places,
   People → Hiring, Partners → Places).
 - needs-native-review: `nexus.admin.partners.tabs.applications`,

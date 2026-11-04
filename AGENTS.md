@@ -93,10 +93,11 @@ and decisions), and continue from the first unticked item.
     partner, a memorandum, a campaign, a document, an election, an
     opening, a call, a meeting and its resolutions) is edited on its own
     page (`RecordPage`, `NewLink`, `components/nexus/admin/kit.tsx`),
-    "new" for a blank one. A small row on a list (a need, a shift, a
-    credit, a rehearsal, an audition slot, a ledger line, a receipt, an
-    impact figure, hours, an activity, a role) may be added and edited in
-    place on its list, as most admin tools do.
+    "new" for a blank one. A small row on a list (a need, a rota, a
+    shift, a credit, a rehearsal, an audition slot, a ledger line, a
+    receipt, an impact figure, an activity, a role) is added in place on
+    its list with `AddInPlace` (the form opens under the list, never a
+    dialog or a `new` page), as most admin tools do.
   - **One place for each thing.** Nothing is kept or managed in two
     places; when two views show the same records, merge them.
   - **Counts are not rules.** Sections, types, programs and tabs are as
@@ -196,7 +197,7 @@ bun run typecheck           # every workspace
 bun run test                # Vitest in every workspace
 bun run check:placeholders
 bun run check:rtl           # physical Tailwind utilities (--fix rewrites them)
-bun run check:i18n          # UI text that isn't in the messages files
+bun run check:i18n          # UI text not in the messages files; the language standard
 bun run check:unused        # unused files and dependencies (Knip)
 bun run db:start | db:reset | db:test | db:types
 bun run --cwd apps/e2e e2e   # Playwright journeys + axe (local stack running)
@@ -669,6 +670,15 @@ any schema change. Integration tests run against a local stack with
   bot's Telegram profile stay in standard Arabic. Never both in one
   message (Guide → Voice, "Which Arabic"). Iraqi lines are
   needs-native-review like any Arabic written here.
+- **One language standard** (owner, Nov 4, 2026; Guide → Voice,
+  "Language standard", with the glossary). English: American, sentence
+  case, straight quotes, the ellipsis character, en dashes for ranges, "for
+  example" over "e.g.". Arabic: Latin digits, the Iraqi month names
+  (`ar-IQ`), ، ؛ ؟ and «», tanween before the alif (شكرًا), one word per
+  term (Edition الإصدار, piece عمل, event فعالية, version النسخة, Get
+  involved «شارك معنا»). `bun run check:i18n` runs
+  `scripts/check-language.ts`, which also keeps Iraqi spellings in
+  Hudhud's copy only.
 - **One language per page.** The English pages carry no Arabic and the
   Arabic pages no English (owner, Oct 24, 2026); the only exceptions are
   the language switcher, fields meant for the other language, and a

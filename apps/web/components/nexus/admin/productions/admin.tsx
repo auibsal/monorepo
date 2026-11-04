@@ -19,23 +19,11 @@ import {
   DataTable,
   ErrorLine,
   Field,
-  RecordPage,
   SaveButton,
   SelectInput,
 } from "../kit";
-import {
-  type ProductionNewTab,
-  type ProductionTab,
-  productionTabs,
-} from "../tabs";
-import {
-  AuditionsTab,
-  CreditsTab,
-  NewAuditionSlot,
-  NewCredit,
-  NewRehearsal,
-  RehearsalsTab,
-} from "./company";
+import { type ProductionTab, productionTabs } from "../tabs";
+import { AuditionsTab, CreditsTab, RehearsalsTab } from "./company";
 import { DetailsTab, RightsTab } from "./details";
 import { PerformancesTab, ReportTab } from "./performances";
 import { type ProductionRow, productionsKey } from "./shared";
@@ -322,71 +310,13 @@ export const ProductionPage = ({
       />
       {tab === "details" ? <DetailsTab production={production} /> : null}
       {tab === "rights" ? <RightsTab production={production} /> : null}
-      {tab === "auditions" ? (
-        <AuditionsTab base={base} production={production} />
-      ) : null}
-      {tab === "credits" ? (
-        <CreditsTab base={base} production={production} />
-      ) : null}
-      {tab === "rehearsals" ? (
-        <RehearsalsTab base={base} production={production} />
-      ) : null}
+      {tab === "auditions" ? <AuditionsTab production={production} /> : null}
+      {tab === "credits" ? <CreditsTab production={production} /> : null}
+      {tab === "rehearsals" ? <RehearsalsTab production={production} /> : null}
       {tab === "performances" ? (
         <PerformancesTab production={production} />
       ) : null}
       {tab === "report" ? <ReportTab production={production} /> : null}
     </div>
-  );
-};
-
-const newOnTab: Record<
-  ProductionNewTab,
-  {
-    Form: typeof NewCredit;
-    title: "auditionsTab.add" | "creditsTab.add" | "rehearsalsTab.add";
-  }
-> = {
-  auditions: { Form: NewAuditionSlot, title: "auditionsTab.add" },
-  credits: { Form: NewCredit, title: "creditsTab.add" },
-  rehearsals: { Form: NewRehearsal, title: "rehearsalsTab.add" },
-};
-
-/**
- * A new audition slot, credit or rehearsal, on its own page under the
- * production's tab (owner, Nov 4, 2026); saving returns to the tab.
- */
-export const NewProductionRecord = ({
-  productionRef,
-  tab,
-}: {
-  readonly productionRef: string;
-  readonly tab: ProductionNewTab;
-}) => {
-  const t = useTranslations("nexus.admin.productions");
-  const locale = useLocale();
-  const list = useProductionList();
-  if (list.isPending) {
-    return <SectionSpinner />;
-  }
-  const production = list.data?.find(
-    (p) => p.slug === productionRef || p.id === productionRef
-  );
-  if (!production) {
-    return (
-      <EmptyLine action={{ href: "/company", label: t("back") }}>
-        {t("missing")}
-      </EmptyLine>
-    );
-  }
-  const back = `/company/${production.slug ?? production.id}/${tab}`;
-  const { Form, title } = newOnTab[tab];
-  return (
-    <RecordPage
-      back={back}
-      backLabel={`${localized(production, "title", locale)}: ${t(`tabs.${tab}`)}`}
-      title={t(title)}
-    >
-      <Form back={back} production={production} />
-    </RecordPage>
   );
 };

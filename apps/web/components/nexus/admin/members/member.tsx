@@ -15,11 +15,12 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useState } from "react";
 import { callApi } from "@/lib/nexus/api";
-import { Link, useRouter } from "@/lib/nexus/navigation";
+import { Link } from "@/lib/nexus/navigation";
 import { useGrants } from "@/lib/nexus/queries";
 import { useQueryParam } from "@/lib/nexus/use-query-param";
 import { ErrorState, SectionSpinner } from "../../states";
 import {
+  AddInPlace,
   AdminHeading,
   BilingualField,
   type Column,
@@ -28,8 +29,6 @@ import {
   DateTimeField,
   ErrorLine,
   Field,
-  NewLink,
-  RecordPage,
   SaveButton,
   SelectInput,
 } from "../kit";
@@ -199,19 +198,24 @@ const ActivitySection = ({ userId }: { userId: string }) => {
       {records.data ? (
         <DataTable columns={columns} rowKey={(r) => r.id} rows={records.data} />
       ) : null}
-      <NewLink href={`/people/${userId}/activity/new`}>
-        {t("addActivity")}
-      </NewLink>
+      <AddInPlace label={t("addActivity")}>
+        {(close) => <NewActivity onDone={close} userId={userId} />}
+      </AddInPlace>
     </section>
   );
 };
 
-/** Activity recorded by hand, on its own page under the member's page. */
-const NewActivity = ({ userId }: { readonly userId: string }) => {
+/** Activity recorded by hand, added in place on the member's page. */
+const NewActivity = ({
+  onDone,
+  userId,
+}: {
+  readonly onDone: () => void;
+  readonly userId: string;
+}) => {
   const t = useTranslations("nexus.admin.member");
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
-  const router = useRouter();
   const [note, setNote] = useState("");
   const [when, setWhen] = useState<string | null>(new Date().toISOString());
 
@@ -224,7 +228,7 @@ const NewActivity = ({ userId }: { readonly userId: string }) => {
       }),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["admin"] });
-      router.push(`/people/${userId}`);
+      onDone();
     },
   });
   const submit = (event: FormEvent) => {
@@ -261,7 +265,7 @@ const NewActivity = ({ userId }: { readonly userId: string }) => {
 
 // ── Roles ───────────────────────────────────────────────────────────────────
 
-const RolesSection = ({ userId }: { userId: string }) => {
+const RolesSection = ({ name, userId }: { name: string; userId: string }) => {
   const t = useTranslations("nexus.admin.member");
   const locale = useLocale() as Locale;
   const { supabase } = useAuth();
@@ -372,7 +376,9 @@ const RolesSection = ({ userId }: { userId: string }) => {
         />
       ) : null}
       {canAssign ? (
-        <NewLink href={`/people/${userId}/roles/new`}>{t("assign")}</NewLink>
+        <AddInPlace label={t("assign")}>
+          {(close) => <AssignRole name={name} onDone={close} userId={userId} />}
+        </AddInPlace>
       ) : null}
       <ErrorLine error={end.error} />
     </section>
@@ -381,20 +387,21 @@ const RolesSection = ({ userId }: { userId: string }) => {
 
 /**
  * A role assigned on its own page under the member's page (owner, Nov 4,
- * 2026: every new record opens its own page); confirmed before it counts.
+ * 2026; added in place since §26); confirmed before it counts.
  */
 const AssignRole = ({
   name,
+  onDone,
   userId,
 }: {
   readonly name: string;
+  readonly onDone: () => void;
   readonly userId: string;
 }) => {
   const t = useTranslations("nexus.admin.member");
   const locale = useLocale() as Locale;
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
-  const router = useRouter();
   const roles = useQuery({
     queryFn: () => access.roles(supabase),
     queryKey: ["admin", "roles"],
@@ -428,7 +435,7 @@ const AssignRole = ({
       }),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["admin"] });
-      router.push(`/people/${userId}`);
+      onDone();
     },
   });
   const brokenRule = access.brokenRoleRule(assign.error);
@@ -639,12 +646,7 @@ const TwoStepReset = ({ name, userId }: { name: string; userId: string }) => {
 
 // ── Page ────────────────────────────────────────────────────────────────────
 
-export const MemberDetail = ({
-  part,
-}: {
-  /** A new activity record or role assignment, on its own page. */
-  readonly part?: "activity" | "roles";
-}) => {
+export const MemberDetail = () => {
   const t = useTranslations("nexus.admin.member");
   const tm = useTranslations("nexus.admin.members");
   const tk = useTranslations("nexus.admin.kit");
@@ -669,29 +671,6 @@ export const MemberDetail = ({
   const name = memberName(row, locale) || tm("unnamed");
   const canManage = hasPermission(grants.data, "members.manage");
   const canAssign = hasPermission(grants.data, "roles.assign");
-
-  if (part === "activity" && canManage) {
-    return (
-      <RecordPage
-        back={`/people/${userId}`}
-        backLabel={name}
-        title={t("addActivity")}
-      >
-        <NewActivity userId={userId} />
-      </RecordPage>
-    );
-  }
-  if (part === "roles" && canAssign) {
-    return (
-      <RecordPage
-        back={`/people/${userId}`}
-        backLabel={name}
-        title={t("assign")}
-      >
-        <AssignRole name={name} userId={userId} />
-      </RecordPage>
-    );
-  }
 
   return (
     <div className="grid gap-10">
@@ -736,7 +715,7 @@ export const MemberDetail = ({
         <TierForm tier={row.tier} userId={userId} />
       ) : null}
       {canManage ? <ActivitySection userId={userId} /> : null}
-      <RolesSection userId={userId} />
+      <RolesSection name={name} userId={userId} />
       {canAssign && userId !== user?.id ? (
         <TwoStepReset name={name} userId={userId} />
       ) : null}
