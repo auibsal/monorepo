@@ -465,6 +465,17 @@ any schema change. Integration tests run against a local stack with
   and bylines only. The archive is `/qirtas/archive`, a month at
   `/qirtas/archive/<yyyy-mm>` and a section's month at
   `/qirtas/archive/<yyyy-mm>/<section>`.
+- **The Sunday Paper's archive, Next Stop, search** (design review PR 4c,
+  Nov 4, 2026). Past issues are listed on `/sunday-paper` and each is
+  `/sunday-paper/<yyyy-mm>`, in a newspaper's layout. Issues are not
+  stored: a page is rebuilt from the records the way the email is made
+  (the pieces of the month before its first Sunday, the public events of
+  the month after; `lib/sunday-paper.ts`), and the open places of the time
+  are not kept, so they are not shown. Next Stop's page has its episodes
+  on a Shelf (the list at `/qirtas/next-stop/episodes`), its team from the
+  roles people hold (`journal.next_stop_team()`: the Video Editor and the
+  Photo and Video Lead) and how to send a reel. `/search` opens on the
+  newest from Qirtas and what is coming up.
 - **Qirtas, one door** (owner, Oct 31, 2026). Members send everything,
   every section, from `/qirtas/write` (`/qirtas/write/<type>` is the
   form), and everything they send is read blind. Edition calls (Letters,

@@ -5,7 +5,26 @@ Every session starts here and continues from the first unticked item. The
 brief is `sal-platform-claude-code-prompt.md` (uploaded at the start of the
 first session); section numbers (§) refer to it.
 
-Branch: `claude/qirtas-reading` (PR 4b of the design review).
+Branch: `claude/sunday-paper-archive` (PR 4c of the design review).
+
+## The design review: PR 4c, the Sunday Paper's archive, Next Stop and search (2026-11-04)
+
+- [x] C17 Past issues on `/sunday-paper`, each at `/sunday-paper/<yyyy-mm>`
+  in a newspaper's layout, rebuilt from the records the email is made from
+  (`lib/sunday-paper.ts`, tests). An issue that carried nothing is not
+  found. Open places of the time aren't kept, so they aren't shown.
+- [x] C20 Next Stop: episodes on a Shelf with the plain list at
+  `/qirtas/next-stop/episodes`; the team from roles
+  (`journal.next_stop_team()`, migration `20261101003000`,
+  `99_next_stop_team.test.sql`); how to send a reel.
+- [x] C9 `/search` opens on the newest from Qirtas and what is coming up.
+- [ ] Owner: confirm Next Stop's team is the Video Editor and the Photo
+  and Video Lead (the roles the page reads).
+- needs-native-review: `web.newsletter.archive.*`,
+  `web.journal.nextStop` (episodes, asList, team, sendTitle, sendBody,
+  sendReel), `web.search` recent and coming.
+- Next: PR 4d (A9/C22 saved reading, C24 history), 4e (C3, A31, A32,
+  A35), 4f (C5, C7, C26, A8).
 
 ## The design review: PR 4b, reading Qirtas (2026-11-04)
 

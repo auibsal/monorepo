@@ -6,6 +6,9 @@ own versions in the Library.
 
 ## Unreleased
 
+- The Sunday Paper's past issues, each on its own page in a newspaper's
+  layout; Next Stop's page with its episodes, team and how to send a
+  reel; search opens on the newest pieces and what is coming up.
 - Qirtas: pull quotes and numbered notes; a photo essay layout; pieces
   link to their event; RSS for the paper and each section; an archive by
   month and section; pieces and crosswords print cleanly.
