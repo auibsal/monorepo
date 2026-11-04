@@ -1,4 +1,4 @@
-import { SectionHead } from "@repo/design-system/components/sal/section-head";
+import { SectionHead } from "@repo/brand/components/sal/section-head";
 import type { ReactNode } from "react";
 
 /**

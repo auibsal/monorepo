@@ -1,12 +1,12 @@
-import { Icon, type IconName } from "@repo/design-system/components/sal/icon";
-import { iconData } from "@repo/design-system/components/sal/icon-data";
+import { Icon, type IconName } from "@repo/brand/components/sal/icon";
+import { iconData } from "@repo/brand/components/sal/icon-data";
 import type { Meta, StoryObj } from "@storybook/react";
 import tokens from "../assets/tokens.json";
 
 /**
  * Foundations, read from packages/brand/assets/tokens.json: the one source
  * the design system's tokens.css is generated from (`bun run --cwd
- * packages/design-system tokens`), so the site and this page never differ.
+ * packages/brand tokens`), so the site and this page never differ.
  */
 const meta = {
   title: "Foundations",

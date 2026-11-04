@@ -1390,12 +1390,12 @@ const AWARD_LINES: Record<
 export const award = (
   lang: Lang,
   work: string,
-  award: { name_ar: string; name_en: string },
+  which: { name_ar: string; name_en: string },
   stage: "shortlisted" | "won",
   app: string
 ) =>
   build(lang, (l) => {
-    const name = pick(l, award.name_ar, award.name_en);
+    const name = pick(l, which.name_ar, which.name_en);
     const [heading, body] = AWARD_LINES[stage](l, work, name);
     return {
       action: {

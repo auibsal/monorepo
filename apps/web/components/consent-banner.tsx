@@ -8,8 +8,8 @@ import {
   saveChoice,
   siteChoices,
 } from "@repo/analytics/consent";
-import { Checkbox } from "@repo/design-system/components/ui/checkbox";
-import { Label } from "@repo/design-system/components/ui/label";
+import { Checkbox } from "@repo/brand/components/ui/checkbox";
+import { Label } from "@repo/brand/components/ui/label";
 import { Link } from "@repo/internationalization/navigation";
 import { useTranslations } from "next-intl";
 import { useEffect, useId, useRef, useState } from "react";

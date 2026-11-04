@@ -11,12 +11,12 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@repo/design-system/components/ui/alert-dialog";
-import { Button } from "@repo/design-system/components/ui/button";
-import { Input } from "@repo/design-system/components/ui/input";
-import { Label } from "@repo/design-system/components/ui/label";
-import { Textarea } from "@repo/design-system/components/ui/textarea";
-import { cn } from "@repo/design-system/lib/utils";
+} from "@repo/brand/components/ui/alert-dialog";
+import { Button } from "@repo/brand/components/ui/button";
+import { Input } from "@repo/brand/components/ui/input";
+import { Label } from "@repo/brand/components/ui/label";
+import { Textarea } from "@repo/brand/components/ui/textarea";
+import { cn } from "@repo/brand/lib/utils";
 import {
   formatNumber,
   fromZonedInputValue,

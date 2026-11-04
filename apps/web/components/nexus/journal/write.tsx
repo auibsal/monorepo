@@ -1,10 +1,10 @@
 "use client";
 
 import { useAuth } from "@repo/auth/provider";
+import { Button } from "@repo/brand/components/ui/button";
+import { Input } from "@repo/brand/components/ui/input";
+import { Textarea } from "@repo/brand/components/ui/textarea";
 import type { Json } from "@repo/database";
-import { Button } from "@repo/design-system/components/ui/button";
-import { Input } from "@repo/design-system/components/ui/input";
-import { Textarea } from "@repo/design-system/components/ui/textarea";
 import { type Locale, localizedPath } from "@repo/internationalization";
 import {
   formatLongDate,

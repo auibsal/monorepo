@@ -1,8 +1,8 @@
 "use client";
 
-import { Button } from "@repo/design-system/components/ui/button";
-import { Spinner } from "@repo/design-system/components/ui/spinner";
-import { cn } from "@repo/design-system/lib/utils";
+import { Button } from "@repo/brand/components/ui/button";
+import { Spinner } from "@repo/brand/components/ui/spinner";
+import { cn } from "@repo/brand/lib/utils";
 import { Link as SiteLink } from "@repo/internationalization/navigation";
 import { useTranslations } from "next-intl";
 import { useAppLink } from "@/lib/link-context";

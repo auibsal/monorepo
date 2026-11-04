@@ -75,7 +75,7 @@ jobs:
       - run: bun run check:rtl
       - run: bun run check:i18n
       - run: bun run check:unused
-      - run: bun run --cwd packages/design-system tokens --check
+      - run: bun run --cwd packages/brand tokens --check
       - name: Upload coverage artifact
         if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
         uses: actions/upload-artifact@v6

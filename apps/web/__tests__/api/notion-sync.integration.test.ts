@@ -128,7 +128,7 @@ const fakeNotion = (users: { email: string; id: string }[]) => {
                     find(pageId).properties.Language as {
                       select?: { name?: string };
                     }
-                  )?.select?.name === "Arabic"
+                  ).select?.name === "Arabic"
                     ? "نص الصفحة."
                     : "Bring a poem.",
               },

@@ -1,7 +1,7 @@
 "use client";
 
 import { useAuth } from "@repo/auth/provider";
-import { cn } from "@repo/design-system/lib/utils";
+import { cn } from "@repo/brand/lib/utils";
 import type { Locale } from "@repo/internationalization";
 import {
   formatLongDate,

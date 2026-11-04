@@ -1,7 +1,7 @@
 "use client";
 
 import { useAuth } from "@repo/auth/provider";
-import { Button } from "@repo/design-system/components/ui/button";
+import { Button } from "@repo/brand/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -10,8 +10,8 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@repo/design-system/components/ui/dialog";
-import { Input } from "@repo/design-system/components/ui/input";
+} from "@repo/brand/components/ui/dialog";
+import { Input } from "@repo/brand/components/ui/input";
 import { apiUrl } from "@repo/internationalization";
 import { membership } from "@repo/sal-data";
 import { useMutation, useQueryClient } from "@tanstack/react-query";

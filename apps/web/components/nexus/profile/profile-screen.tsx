@@ -1,10 +1,10 @@
 "use client";
 
 import { useAuth } from "@repo/auth/provider";
-import { Button } from "@repo/design-system/components/ui/button";
-import { Checkbox } from "@repo/design-system/components/ui/checkbox";
-import { Label } from "@repo/design-system/components/ui/label";
-import { Textarea } from "@repo/design-system/components/ui/textarea";
+import { Button } from "@repo/brand/components/ui/button";
+import { Checkbox } from "@repo/brand/components/ui/checkbox";
+import { Label } from "@repo/brand/components/ui/label";
+import { Textarea } from "@repo/brand/components/ui/textarea";
 import { formatNumber } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
 import { membership, names } from "@repo/sal-data";

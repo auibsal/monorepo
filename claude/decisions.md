@@ -338,7 +338,7 @@ Where an earlier line above is marked as replaced, the later section holds. What
 - **Edition shelves** show real scans or photos of the printed Edition, never fake 3D; with no scan, a plain typographic cover. (D5)
 - **The daily word guess and word search** stay daily puzzles, outside the six Games types. (D6)
 - **The public API stays retired.** (D7)
-- **No AdSense on Letters and Voices reading pages;** other ads stay under the current rules. (D8)
+- ~~No AdSense on Letters and Voices reading pages; other ads stay under the current rules. (D8)~~ Superseded by §25: no ads at all.
 - **Retired code names** are renamed only in the last pull request of this work; database schema names stay. (D9)
 - **Audio** starts with a few short readings on the current plans, after checking storage limits; nothing is paid for. (D10)
 - **A translation may show its original beside it,** an exception to one language per page. (D11)
@@ -361,3 +361,14 @@ Where an earlier line above is marked as replaced, the later section holds. What
 - **No PDF:** what SAL-BRD-01's PDF held is the design system's Guide, one page per part; the PDF is removed.
 - **Its sections, in order:** Guide, Foundations, Logos, Components, Emails, Social, Print.
 
+
+## 25. The Notion check, evening (decided Nov 4, 2026)
+- **Production runs `main`,** deployed by Vercel directly; no deploy hook is needed. The migrations run after each merge (`migrate.yml`), the hook only if one is set.
+- **One language per page in Notion:** an event's, program's or piece's text is the page body in English; an Arabic edition is its own row (Language Arabic, Edition of). The old "write it under English and العربية" check is gone.
+- **The Listening Room's evenings** are `/events/listening-room-2027-03-16` and `/events/listening-room-2027-05-11`; the old `salon-…` addresses redirect to them.
+- **Officers:** Fajer Ezzet (Vice President); Mohammed-Ali Ohmaid, Editor of Qirtas, on the Council; Ali Hayder, Director of Media. Notion's Roles are the nine seat titles only.
+- **The content calendar** has Language and Edition of in place of the Arabic title and excerpt.
+- **Retired names, in the code too:** the Callboard is Get involved (its route stays `/get-involved`); the Qirtas Prizes are the Qirtas Awards, at `/qirtas/awards` (`/awards`, `/prizes` and `/qirtas/prizes` go there).
+- **`programmes.manage` is `programs.manage`.**
+- **No money in advertising** (SAL-PLT-06 as amended): no AdSense, no ad slots, no advertising cookie or consent choice (SAL-PLT-03).
+- **Brand:** the design system stays at /diwan/design for officers; the public sees the brand on the press page only. No document PDFs or files in the repository; the brand guide is the Storybook. The Charter poster, the Open Call poster and the camera-shy stickers are Storybook stories. `packages/brand` is the only brand package (`@repo/design-system` merged into it).

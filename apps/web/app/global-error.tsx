@@ -1,7 +1,7 @@
 "use client";
 
-import { Button } from "@repo/design-system/components/ui/button";
-import { fonts } from "@repo/design-system/lib/fonts";
+import { Button } from "@repo/brand/components/ui/button";
+import { fonts } from "@repo/brand/lib/fonts";
 import { getDirection, isLocale } from "@repo/internationalization/config";
 import ar from "@repo/internationalization/messages/ar.json";
 import en from "@repo/internationalization/messages/en.json";

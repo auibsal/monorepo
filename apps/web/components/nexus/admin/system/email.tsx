@@ -1,7 +1,7 @@
 "use client";
 
 import { useAuth } from "@repo/auth/provider";
-import { SalCard } from "@repo/design-system/components/sal/card";
+import { SalCard } from "@repo/brand/components/sal/card";
 import type { Locale } from "@repo/internationalization";
 import { formatClock, formatLongDate } from "@repo/internationalization/format";
 import { unwrap } from "@repo/sal-data";

@@ -15,7 +15,7 @@ export default defineConfig({
       "packages/auth",
       "packages/config",
       "packages/sal-data",
-      "packages/design-system",
+      "packages/brand",
       "packages/rbac",
       "packages/internationalization",
       "packages/next-config",

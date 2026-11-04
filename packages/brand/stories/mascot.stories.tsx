@@ -1,4 +1,4 @@
-import { SalCard } from "@repo/design-system/components/sal/card";
+import { SalCard } from "@repo/brand/components/sal/card";
 import type { Meta, StoryObj } from "@storybook/react";
 import Image from "next/image";
 

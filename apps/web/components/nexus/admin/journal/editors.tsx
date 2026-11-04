@@ -1,7 +1,7 @@
 "use client";
 
 import { useAuth } from "@repo/auth/provider";
-import { Input } from "@repo/design-system/components/ui/input";
+import { Input } from "@repo/brand/components/ui/input";
 import type { Locale } from "@repo/internationalization";
 import { formatLongDate } from "@repo/internationalization/format";
 import { localized, unwrap } from "@repo/sal-data";

@@ -1,5 +1,5 @@
-import { BrandLogo } from "@repo/design-system/components/brand-logo";
-import { Icon } from "@repo/design-system/components/sal/icon";
+import { BrandLogo } from "@repo/brand/components/brand-logo";
+import { Icon } from "@repo/brand/components/sal/icon";
 import { localizedPath } from "@repo/internationalization";
 import { Link } from "@repo/internationalization/navigation";
 import { localized, programmes } from "@repo/sal-data";

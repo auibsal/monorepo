@@ -1,7 +1,7 @@
 "use client";
 
 import { useAuth } from "@repo/auth/provider";
-import { Button } from "@repo/design-system/components/ui/button";
+import { Button } from "@repo/brand/components/ui/button";
 import { Link, useRouter } from "@repo/internationalization/navigation";
 import type { AuthError } from "@supabase/supabase-js";
 import { useSearchParams } from "next/navigation";

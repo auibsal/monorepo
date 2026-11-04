@@ -34,7 +34,7 @@ SOFTWARE.
 ## shadcn/ui
 
 Source: https://github.com/shadcn-ui/ui — components in
-`packages/design-system/components/ui` are generated from shadcn/ui.
+`packages/brand/components/ui` are generated from shadcn/ui.
 
 ```
 MIT License

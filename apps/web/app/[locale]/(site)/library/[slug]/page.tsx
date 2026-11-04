@@ -1,4 +1,4 @@
-import { DocumentHeader } from "@repo/design-system/components/sal/document-header";
+import { DocumentHeader } from "@repo/brand/components/sal/document-header";
 import type { Locale } from "@repo/internationalization";
 import { formatLongDate } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";

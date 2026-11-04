@@ -1,9 +1,9 @@
 "use client";
 
 import { useAuth } from "@repo/auth/provider";
-import { Checkbox } from "@repo/design-system/components/ui/checkbox";
-import { Input } from "@repo/design-system/components/ui/input";
-import { Label } from "@repo/design-system/components/ui/label";
+import { Checkbox } from "@repo/brand/components/ui/checkbox";
+import { Input } from "@repo/brand/components/ui/input";
+import { Label } from "@repo/brand/components/ui/label";
 import type { Locale } from "@repo/internationalization";
 import { formatLongDate } from "@repo/internationalization/format";
 import { journal, localized, unwrap } from "@repo/sal-data";

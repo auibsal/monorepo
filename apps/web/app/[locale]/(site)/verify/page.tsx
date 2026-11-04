@@ -1,6 +1,6 @@
-import { Button } from "@repo/design-system/components/ui/button";
-import { Input } from "@repo/design-system/components/ui/input";
-import { Label } from "@repo/design-system/components/ui/label";
+import { Button } from "@repo/brand/components/ui/button";
+import { Input } from "@repo/brand/components/ui/input";
+import { Label } from "@repo/brand/components/ui/label";
 import type { Locale } from "@repo/internationalization";
 import { localizedPath } from "@repo/internationalization";
 import type { Metadata } from "next";

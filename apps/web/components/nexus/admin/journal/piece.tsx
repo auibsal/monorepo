@@ -1,10 +1,10 @@
 "use client";
 
 import { useAuth } from "@repo/auth/provider";
-import { Button } from "@repo/design-system/components/ui/button";
-import { Checkbox } from "@repo/design-system/components/ui/checkbox";
-import { Input } from "@repo/design-system/components/ui/input";
-import { Label } from "@repo/design-system/components/ui/label";
+import { Button } from "@repo/brand/components/ui/button";
+import { Checkbox } from "@repo/brand/components/ui/checkbox";
+import { Input } from "@repo/brand/components/ui/input";
+import { Label } from "@repo/brand/components/ui/label";
 import type { Locale } from "@repo/internationalization";
 import { hasPermission } from "@repo/rbac";
 import { journal, localized, sanitizeRichText, unwrap } from "@repo/sal-data";

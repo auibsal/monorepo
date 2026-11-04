@@ -1,7 +1,7 @@
 "use client";
 
-import { Button } from "@repo/design-system/components/ui/button";
-import { cn } from "@repo/design-system/lib/utils";
+import { Button } from "@repo/brand/components/ui/button";
+import { cn } from "@repo/brand/lib/utils";
 import {
   cellsOf,
   type GameLang,

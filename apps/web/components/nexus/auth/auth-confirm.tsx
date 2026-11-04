@@ -1,8 +1,8 @@
 "use client";
 
 import { useAuth } from "@repo/auth/provider";
-import { FormHeader } from "@repo/design-system/components/sal/form-header";
-import { Button } from "@repo/design-system/components/ui/button";
+import { FormHeader } from "@repo/brand/components/sal/form-header";
+import { Button } from "@repo/brand/components/ui/button";
 import { isLocale } from "@repo/internationalization";
 import { Link, useRouter } from "@repo/internationalization/navigation";
 import type { EmailOtpType } from "@supabase/supabase-js";

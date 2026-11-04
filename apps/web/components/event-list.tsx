@@ -1,4 +1,4 @@
-import { Icon } from "@repo/design-system/components/sal/icon";
+import { Icon } from "@repo/brand/components/sal/icon";
 import type { Locale } from "@repo/internationalization";
 import { formatClock, formatDayParts } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";

@@ -1,6 +1,6 @@
 import "./styles.css";
-import { DesignSystemProvider } from "@repo/design-system";
-import { fonts } from "@repo/design-system/lib/fonts";
+import { DesignSystemProvider } from "@repo/brand";
+import { fonts } from "@repo/brand/lib/fonts";
 import { getDirection, locales } from "@repo/internationalization";
 import { routing } from "@repo/internationalization/routing";
 import type { Viewport } from "next";

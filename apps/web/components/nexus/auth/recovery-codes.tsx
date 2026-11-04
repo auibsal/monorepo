@@ -1,7 +1,7 @@
 "use client";
 
 import { useAuth } from "@repo/auth/provider";
-import { Button } from "@repo/design-system/components/ui/button";
+import { Button } from "@repo/brand/components/ui/button";
 import { formatNumber } from "@repo/internationalization/format";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";

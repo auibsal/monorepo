@@ -1,7 +1,7 @@
 "use client";
 
 import { useAuth } from "@repo/auth/provider";
-import { Input } from "@repo/design-system/components/ui/input";
+import { Input } from "@repo/brand/components/ui/input";
 import { hasPermission } from "@repo/rbac";
 import { localized, productions, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
