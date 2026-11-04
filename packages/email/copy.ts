@@ -126,7 +126,7 @@ export const eventReminder = (
 ) =>
   build(lang, (l) => ({
     action: account(app, l, MY_CALENDAR),
-    heading: l === "ar" ? `غداً: ${title(e, l)}` : `Tomorrow: ${title(e, l)}`,
+    heading: l === "ar" ? `غدًا: ${title(e, l)}` : `Tomorrow: ${title(e, l)}`,
     paragraphs: [
       ...eventLines(e, l),
       REMINDER_CLOSE[booked ? "booked" : "remindMe"][l],
@@ -140,7 +140,7 @@ const RECEIVED: Record<DeskKind, Record<Lang, string[]>> = {
   blind: {
     ar: [
       "يُقرأ عملك قراءة عمياء: لا يرى القرّاء والمحررون اسمك حتى يُتَّخذ القرار.",
-      "يسمع كل كاتب الجواب في اليوم المعلن، أياً كان القرار. ويمكنك متابعة المراحل في صفحة الكتابة لقرطاس.",
+      "يسمع كل كاتب الجواب في اليوم المعلن، أيًا كان القرار. ويمكنك متابعة المراحل في صفحة الكتابة لقرطاس.",
     ],
     en: [
       "Your work is read blind: readers and editors never see your name until a decision is made.",
@@ -168,7 +168,7 @@ export const submissionReceived = (
   build(lang, (l) => ({
     action: account(app, l, "/qirtas/write"),
     heading:
-      l === "ar" ? `شكراً، وصلنا ${work}` : `Thank you: we received ${work}`,
+      l === "ar" ? `شكرًا، وصلنا ${work}` : `Thank you: we received ${work}`,
     paragraphs: RECEIVED[desk][l],
   }));
 
@@ -216,12 +216,12 @@ export const decision = (
       return {
         action: account(app, l, "/qirtas/write"),
         heading:
-          l === "ar" ? `شكراً لإرسالك ${work}` : `Thank you for sending ${work}`,
+          l === "ar" ? `شكرًا لإرسالك ${work}` : `Thank you for sending ${work}`,
         paragraphs:
           l === "ar"
             ? [
                 "لم يختر المحررون هذا العمل لقرطاس هذه المرة.",
-                "هذا قرار يخص إصداراً واحداً، لا قيمة كتابتك. نرجو أن ترسل إلينا مجدداً.",
+                "هذا قرار يخص إصدارًا واحدًا، لا قيمة كتابتك. نرجو أن ترسل إلينا مجددًا.",
               ]
             : [
                 "This time the editors have not selected it for Qirtas.",
@@ -295,7 +295,7 @@ export const finalCheck = (
       l === "ar" ? `مراجعتك الأخيرة: ${work}` : `Your final check: ${work}`,
     paragraphs: [
       l === "ar"
-        ? "راجع خلال ٧٢ ساعة اسمك والعنوان وكل فاصل أسطر ونبذتك، ثم وافق على النص في صفحة عملك."
+        ? "راجع خلال 72 ساعة اسمك والعنوان وكل فاصل أسطر ونبذتك، ثم وافق على النص في صفحة عملك."
         : "Within 72 hours, check your name, the title, every line break and your bio, then approve the text on your piece's page.",
       l === "ar"
         ? "الأخطاء فقط، لا تعديلات جديدة."
@@ -333,7 +333,7 @@ export const piecePublished = (lang: Lang, work: string, url: string) =>
     heading: l === "ar" ? `نُشر ${work}` : `${work} is published`,
     paragraphs: [
       l === "ar"
-        ? "شكراً لك. إن أعدت نشره في مكان آخر فاكتب: «نُشر أولاً في قرطاس»."
+        ? "شكرًا لك. إن أعدت نشره في مكان آخر فاكتب: «نُشر أولًا في قرطاس»."
         : "Thank you. If you republish it anywhere, add: \u201cFirst published in Qirtas.\u201d",
     ],
   }));
@@ -632,7 +632,7 @@ export const roleEnding = (lang: Lang, role: RoleInfo, app: string) =>
     action: account(app, l),
     heading:
       l === "ar"
-        ? `ينتهي دورك قريباً: ${role.name_ar}`
+        ? `ينتهي دورك قريبًا: ${role.name_ar}`
         : `Your role ends soon: ${role.name_en}`,
     paragraphs: [
       l === "ar"
@@ -770,7 +770,7 @@ export const applicationReceived = (lang: Lang, partner: string, app: string) =>
       l === "ar" ? `وصلنا طلب ${partner}` : `We have ${partner}'s application`,
     paragraphs: [
       l === "ar"
-        ? "شكراً لطلبك الشراكة مع جمعية الفنون والآداب. تقرأ «الشراكات» الطلب، وإن مضى يوقّع رئيس الجمعية مذكرة التفاهم."
+        ? "شكرًا لطلبك الشراكة مع جمعية الفنون والآداب. تقرأ «الشراكات» الطلب، وإن مضى يوقّع رئيس الجمعية مذكرة التفاهم."
         : "Thank you for applying to partner with the AUIB Society of Arts and Letters. Partnerships reads the application, and if it goes ahead, the President signs the memorandum.",
       l === "ar"
         ? "سنكتب إليك حين يُتّخذ القرار. ويمكنك رؤية الطلب في أي وقت من الرابط أدناه."
@@ -825,7 +825,7 @@ export const applicationDecided = (
               : `About ${partner}'s application`,
           paragraphs: [
             l === "ar"
-              ? "شكراً لاهتمامك. لا تستطيع الجمعية المضيّ في هذه الشراكة الآن."
+              ? "شكرًا لاهتمامك. لا تستطيع الجمعية المضيّ في هذه الشراكة الآن."
               : "Thank you for your interest. The Society can't take this partnership forward now.",
             l === "ar"
               ? "إن أردت الحديث في الأمر، فردّ على هذه الرسالة."
@@ -868,7 +868,7 @@ const ELECTION_LINES: Record<
       ? {
           heading: "النتائج",
           paragraphs: [
-            "نُشرت نتائج الانتخابات في صفحة «الجمعية». شكراً لكل من ترشّح وصوّت.",
+            "نُشرت نتائج الانتخابات في صفحة «الجمعية». شكرًا لكل من ترشّح وصوّت.",
           ],
         }
       : {
@@ -1000,7 +1000,7 @@ export const requestUpdated = (
         heading: l === "ar" ? `أُغلق ${thing}` : `We've closed ${thing}`,
         paragraphs: [
           l === "ar"
-            ? "انتهى العمل عليه، وما آل إليه في صفحته. شكراً لأنك كتبت إلينا."
+            ? "انتهى العمل عليه، وما آل إليه في صفحته. شكرًا لأنك كتبت إلينا."
             : "The work on it is done, and the outcome is on its page. Thank you for writing to us.",
         ],
       };
@@ -1075,7 +1075,7 @@ const REPLY_LINES: Record<
   not_picked: {
     ar: {
       at: () => "",
-      body: "اختير غيرك لهذا الدور هذه المرة. شكراً لاهتمامك؛ تُنشر أدوار وأماكن جديدة في «شارك» طوال العام.",
+      body: "اختير غيرك لهذا الدور هذه المرة. شكرًا لاهتمامك؛ تُنشر أدوار وأماكن جديدة في «شارك» طوال العام.",
       heading: "بشأن",
       soon: "",
     },
@@ -1200,7 +1200,7 @@ const AUDITION_LINES: Record<
     l === "ar"
       ? [
           `بشأن ${play}`,
-          "شكراً لتجربة أدائك. لم يُختر لك دور هذه المرة؛ تُعلن تجارب الأداء القادمة في «شارك».",
+          "شكرًا لتجربة أدائك. لم يُختر لك دور هذه المرة؛ تُعلن تجارب الأداء القادمة في «شارك».",
         ]
       : [
           `About ${play}`,
@@ -1288,7 +1288,7 @@ export const welcome = (lang: Lang, app: string) =>
       action: account(app, l),
       heading:
         l === "ar"
-          ? "أهلاً بك في جمعية الفنون والآداب"
+          ? "أهلًا بك في جمعية الفنون والآداب"
           : "Welcome to the AUIB Society of Arts and Letters",
       lists: [
         {
@@ -1347,7 +1347,7 @@ export const shiftReminder = (lang: Lang, s: ShiftInfo, app: string) =>
     action: account(app, l, MY_CALENDAR),
     heading:
       l === "ar"
-        ? `غداً مناوبتك: ${pick(l, s.role_ar, s.role_en)}`
+        ? `غدًا مناوبتك: ${pick(l, s.role_ar, s.role_en)}`
         : `Your shift tomorrow: ${pick(l, s.role_ar, s.role_en)}`,
     paragraphs: [
       when(s.starts_at, l),
@@ -1355,7 +1355,7 @@ export const shiftReminder = (lang: Lang, s: ShiftInfo, app: string) =>
         ? [pick(l, s.location_ar ?? "", s.location_en ?? "")]
         : []),
       l === "ar"
-        ? "إن لم تعد تستطيع، فاطلب تبديلاً في «تقويمي» ليغطيها غيرك."
+        ? "إن لم تعد تستطيع، فاطلب تبديلًا في «تقويمي» ليغطيها غيرك."
         : "If you can no longer make it, ask for a swap on My calendar so someone can cover it.",
     ],
   }));
@@ -1416,7 +1416,7 @@ export const accountDeleted = (lang: Lang) =>
         ? "حذفنا حسابك في جمعية الفنون والآداب وما كان فيه، كما طلبت. لن تصلك منا رسائل بعد هذه."
         : "We've deleted your account with the AUIB Society of Arts and Letters and what it held, as you asked. This is the last email you'll get from us.",
       l === "ar"
-        ? "إن لم تطلب ذلك، فردّ على هذه الرسالة فوراً."
+        ? "إن لم تطلب ذلك، فردّ على هذه الرسالة فورًا."
         : "If you didn't ask for this, reply to this email right away.",
     ],
   }));
