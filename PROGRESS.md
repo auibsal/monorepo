@@ -5,7 +5,7 @@ Every session starts here and continues from the first unticked item. The
 brief is `sal-platform-claude-code-prompt.md` (uploaded at the start of the
 first session); section numbers (§) refer to it.
 
-Branch: `claude/new-session-qosn60`.
+Branch: `claude/reading-and-diwan` (PR 3 of the design review).
 
 ## The design review: PR 3, reading and the Diwan (2026-11-04)
 
