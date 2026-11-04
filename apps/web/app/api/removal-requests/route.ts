@@ -11,6 +11,7 @@ export const OPTIONS = preflight;
 
 const requestSchema = programmes.removalRequestSchema.extend({
   programme: z.enum(["next-stop"]).optional(),
+  requester_lang: z.enum(["en", "ar"]).optional(),
   /** Left empty by people; filled by bots (the form hides it). */
   website: z.string().max(500).optional(),
 });
@@ -35,7 +36,7 @@ export const POST = async (request: Request) => {
   if (!parsed.success) {
     return json({ error: "invalid_request" }, 400);
   }
-  const { programme, website, ...fields } = parsed.data;
+  const { programme, requester_lang, website, ...fields } = parsed.data;
   if (website) {
     // Pretend success so the bot learns nothing.
     return json({ ok: true });
@@ -72,6 +73,7 @@ export const POST = async (request: Request) => {
       details: fields.details,
       programme_id: programmeRow?.id ?? null,
       requester_email: fields.requester_email,
+      requester_lang: requester_lang ?? "en",
       requester_name: fields.requester_name,
     })
     .select("due_at")

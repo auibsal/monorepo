@@ -3,9 +3,11 @@ import {
   Button,
   Container,
   Head,
+  Heading,
   Hr,
   Html,
   Img,
+  Link,
   Preview,
   Section,
   Text,
@@ -28,18 +30,50 @@ const LOCKUP = {
 
 const FONT = "'Ubuntu Arabic', Ubuntu, 'Segoe UI', Tahoma, Arial, sans-serif";
 
+/** A line in a list: a title that links, and what it is (a date, a section). */
+export interface NoticeItem {
+  readonly href?: string;
+  readonly meta?: string;
+  readonly title: string;
+}
+
+/** A titled list of links (the Sunday Paper's pieces, a digest's replies). */
+export interface NoticeList {
+  readonly items: readonly NoticeItem[];
+  readonly title: string;
+}
+
 export interface NoticeBlock {
-  readonly action?: { readonly href: string; readonly label: string };
+  readonly action?: {
+    /** Repeat the address under the button, for clients that block it. */
+    readonly fallback?: boolean;
+    readonly href: string;
+    readonly label: string;
+  };
   readonly heading: string;
   readonly lang: "en" | "ar";
+  readonly lists?: readonly NoticeList[];
   readonly paragraphs: readonly string[];
+}
+
+/** A line above the sign-off: why this came, and how to change it. */
+export interface NoticeFooterLine {
+  readonly href?: string;
+  readonly link?: string;
+  readonly text: string;
 }
 
 export interface NoticeProps {
   /** The recipient's language first, then the other one. */
   readonly blocks: readonly NoticeBlock[];
+  readonly footer?: readonly NoticeFooterLine[];
   readonly preview: string;
 }
+
+const FALLBACK = {
+  ar: "إن لم يعمل الزر، فافتح هذا الرابط:",
+  en: "If the button doesn't work, open this link:",
+};
 
 const NAME = {
   ar: "جمعية الفنون والآداب",
@@ -56,17 +90,30 @@ const FOOTER = {
  * every screen reader in plain-text mode read this one, and spam filters
  * trust a message more when both parts say the same.
  */
-export const noticeText = ({ blocks }: Pick<NoticeProps, "blocks">) =>
+export const noticeText = ({
+  blocks,
+  footer = [],
+}: Pick<NoticeProps, "blocks" | "footer">) =>
   [
     ...blocks.flatMap((block) => [
       block.heading,
       "",
       ...block.paragraphs.flatMap((p) => [p, ""]),
+      ...(block.lists ?? []).flatMap((list) => [
+        list.title,
+        ...list.items.map((item) =>
+          [item.meta, item.title, item.href].filter(Boolean).join(" · ")
+        ),
+        "",
+      ]),
       ...(block.action
         ? [`${block.action.label}: ${block.action.href}`, ""]
         : []),
     ]),
     "--",
+    ...footer.map((line) =>
+      line.href ? `${line.text} ${line.link ?? ""}: ${line.href}` : line.text
+    ),
     ...blocks.map((block) => FOOTER[block.lang]),
   ].join("\n");
 
@@ -83,7 +130,8 @@ const Block = ({ block }: { block: NoticeBlock }) => {
   };
   return (
     <Section dir={rtl ? "rtl" : "ltr"} lang={block.lang}>
-      <Text
+      <Heading
+        as="h1"
         style={{
           ...text,
           color: INK,
@@ -95,11 +143,41 @@ const Block = ({ block }: { block: NoticeBlock }) => {
         }}
       >
         {block.heading}
-      </Text>
+      </Heading>
       {block.paragraphs.map((paragraph) => (
         <Text key={paragraph} style={text}>
           {paragraph}
         </Text>
+      ))}
+      {(block.lists ?? []).map((list) => (
+        <Section key={list.title} style={{ margin: "8px 0 16px" }}>
+          <Text style={{ ...text, fontWeight: 500, margin: "0 0 8px" }}>
+            {list.title}
+          </Text>
+          {list.items.map((item) => (
+            <Text
+              key={`${item.title}-${item.href ?? ""}`}
+              style={{ ...text, margin: "0 0 8px" }}
+            >
+              {item.meta ? (
+                <span style={{ color: ASH, fontSize: 14 }}>
+                  {item.meta}
+                  <br />
+                </span>
+              ) : null}
+              {item.href ? (
+                <Link
+                  href={item.href}
+                  style={{ color: CRIMSON, textDecoration: "underline" }}
+                >
+                  {item.title}
+                </Link>
+              ) : (
+                item.title
+              )}
+            </Text>
+          ))}
+        </Section>
       ))}
       {block.action ? (
         <Section style={{ textAlign: rtl ? "right" : "left" }}>
@@ -119,6 +197,22 @@ const Block = ({ block }: { block: NoticeBlock }) => {
           >
             {block.action.label}
           </Button>
+          {block.action.fallback ? (
+            <Text
+              style={{
+                ...text,
+                color: ASH,
+                fontSize: 13,
+                margin: "16px 0 0",
+                wordBreak: "break-all",
+              }}
+            >
+              {FALLBACK[block.lang]}{" "}
+              <Link href={block.action.href} style={{ color: ASH }}>
+                {block.action.href}
+              </Link>
+            </Text>
+          ) : null}
         </Section>
       ) : null}
     </Section>
@@ -131,11 +225,24 @@ const Block = ({ block }: { block: NoticeBlock }) => {
  * one crimson button and a hairline footer. No other images, no tracking,
  * no exclamation marks.
  */
-export const Notice = ({ blocks, preview }: NoticeProps) => {
+export const Notice = ({ blocks, footer = [], preview }: NoticeProps) => {
   const first = blocks[0]?.lang ?? "en";
+  const small = {
+    color: ASH,
+    direction: first === "ar" ? ("rtl" as const) : ("ltr" as const),
+    fontFamily: FONT,
+    fontSize: 12,
+    lineHeight: 1.6,
+    margin: "0 0 4px",
+    textAlign: first === "ar" ? ("right" as const) : ("left" as const),
+  };
   return (
     <Html dir={first === "ar" ? "rtl" : "ltr"} lang={first}>
-      <Head />
+      <Head>
+        {/* The brand is white paper: dark-mode mail apps leave it as it is. */}
+        <meta content="light only" name="color-scheme" />
+        <meta content="light" name="supported-color-schemes" />
+      </Head>
       <Preview>{preview}</Preview>
       <Body style={{ backgroundColor: WHITE, margin: 0, padding: "24px 0" }}>
         <Container style={{ maxWidth: 600, padding: "8px 32px 32px" }}>
@@ -158,6 +265,22 @@ export const Notice = ({ blocks, preview }: NoticeProps) => {
             </Section>
           ))}
           <Hr style={{ borderColor: STONE, margin: "40px 0 16px" }} />
+          {footer.map((line) => (
+            <Text key={line.text} style={small}>
+              {line.text}
+              {line.href ? (
+                <>
+                  {" "}
+                  <Link
+                    href={line.href}
+                    style={{ color: ASH, textDecoration: "underline" }}
+                  >
+                    {line.link ?? line.href}
+                  </Link>
+                </>
+              ) : null}
+            </Text>
+          ))}
           {blocks.map((block) => (
             <Text
               key={`footer-${block.lang}`}

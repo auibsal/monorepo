@@ -1,6 +1,6 @@
 import { localizedPath, nexusPath } from "@repo/internationalization";
 import { formatClock, formatLongDate } from "@repo/internationalization/format";
-import type { NoticeBlock, NoticeProps } from "./templates/notice";
+import type { NoticeBlock, NoticeList, NoticeProps } from "./templates/notice";
 
 /**
  * The words of every platform email, in both languages. Each email goes
@@ -11,8 +11,9 @@ import type { NoticeBlock, NoticeProps } from "./templates/notice";
 export type Lang = "en" | "ar";
 
 interface Copy {
-  action?: { href: string; label: string };
+  action?: { fallback?: boolean; href: string; label: string };
   heading: string;
+  lists?: NoticeList[];
   paragraphs: string[];
 }
 
@@ -20,11 +21,22 @@ export interface Built extends NoticeProps {
   subject: string;
 }
 
-/** Builds the notice in the recipient's language only. */
+/**
+ * Builds the notice in the recipient's language only. The subject is the
+ * heading; the preview line (what the inbox shows after it) is the first
+ * sentence, so the two never repeat each other.
+ */
 const build = (lang: Lang, make: (l: Lang) => Copy): Built => {
   const copy = make(lang);
   const blocks: NoticeBlock[] = [{ lang, ...copy }];
-  return { blocks, preview: copy.heading, subject: copy.heading };
+  const preview = (copy.paragraphs[0] ?? copy.lists?.[0]?.title ?? "")
+    .slice(0, 140)
+    .trim();
+  return {
+    blocks,
+    preview: preview || copy.heading,
+    subject: copy.heading,
+  };
 };
 
 const when = (iso: string, l: Lang) =>
@@ -326,14 +338,14 @@ export const piecePublished = (lang: Lang, work: string, url: string) =>
     ],
   }));
 
-/** Waraq's desks, as the emails name them. */
+/** Qirtas's sections, as the emails name them. */
 export const deskNames = {
   gallery: { ar: "معرض", en: "Gallery" },
   games: { ar: "ألعاب", en: "Games" },
   letters: { ar: "آداب", en: "Letters" },
   news: { ar: "أخبار", en: "News" },
   video: { ar: "مرئيات", en: "Video" },
-  voices: { ar: "أصوات", en: "Voices" },
+  voices: { ar: "آراء", en: "Voices" },
 } as const;
 
 export interface SundayItem {
@@ -348,6 +360,7 @@ export interface SundayItem {
 export const newsletterConfirm = (lang: Lang, confirm: string) =>
   build(lang, (l) => ({
     action: {
+      fallback: true,
       href: confirm,
       label: l === "ar" ? "أكّد اشتراكك" : "Confirm your subscription",
     },
@@ -441,6 +454,7 @@ export const verificationDecided = (
 export const personalEmailConfirm = (lang: Lang, confirm: string) =>
   build(lang, (l) => ({
     action: {
+      fallback: true,
       href: confirm,
       label: l === "ar" ? "أكّد العنوان" : "Confirm the address",
     },
@@ -509,6 +523,7 @@ export const partnerInvitation = (
 ) =>
   build(lang, (l) => ({
     action: {
+      fallback: true,
       href: link,
       label: l === "ar" ? "اقبل الدعوة" : "Accept the invitation",
     },
@@ -533,81 +548,78 @@ export interface OpenPlace {
   title_en: string;
 }
 
-const paperPieces = (l: Lang, pieces: SundayItem[]) =>
-  pieces.length === 0
-    ? []
-    : [
-        l === "ar" ? "ما نُشر في قرطاس هذا الشهر:" : "New in Qirtas this month:",
-        ...pieces.map((i) =>
-          l === "ar"
-            ? `${i.desk_ar}: ${i.title_ar || i.title_en} ${i.url}`
-            : `${i.desk_en}: ${i.title_en || i.title_ar} ${i.url}`
-        ),
-      ];
+const pick = (l: Lang, ar: string, en: string) =>
+  l === "ar" ? ar || en : en || ar;
 
-const paperEvents = (l: Lang, events: MonthEvent[]) =>
-  events.length === 0
-    ? []
-    : [
-        l === "ar" ? "ما يجري:" : "What's on:",
-        ...events.map((e) =>
-          l === "ar"
-            ? `${formatLongDate(e.starts_at, l)}: ${e.title_ar || e.title_en} ${e.url}`
-            : `${formatLongDate(e.starts_at, l)}: ${e.title_en || e.title_ar} ${e.url}`
-        ),
-      ];
-
-const paperPlaces = (l: Lang, places: OpenPlace[], callboard: string) =>
-  places.length === 0
-    ? []
-    : [
-        l === "ar"
-          ? `أماكن مفتوحة في لوحة النداءات (${callboard}):`
-          : `Open places on the Callboard (${callboard}):`,
-        ...places.map((p) =>
-          l === "ar" ? p.title_ar || p.title_en : p.title_en || p.title_ar
-        ),
-      ];
+const PAPER_TITLES = {
+  ar: {
+    events: "ما يجري هذا الشهر",
+    heading: "جريدة الأحد",
+    lede: "ما نُشر في قرطاس هذا الشهر، وما يجري في الجمعية، والأماكن المفتوحة لمن يريد أن يشارك.",
+    open: "افتح قرطاس",
+    pieces: "جديد قرطاس",
+    places: "أماكن مفتوحة في «شارك»",
+  },
+  en: {
+    events: "What's on this month",
+    heading: "The Sunday Paper",
+    lede: "This month in Qirtas, what's on at the Society, and the places open to anyone who wants to get involved.",
+    open: "Open Qirtas",
+    pieces: "New in Qirtas",
+    places: "Open on Get involved",
+  },
+} as const;
 
 /**
  * The Sunday Paper (owner, Oct 29, 2026): monthly, on the first Sunday, to
- * members and to the public list alike. The month's pieces, What's on, and
- * the Callboard's open places.
+ * members and to the public list alike: the month's pieces, What's on and
+ * the open places on Get involved, each a list of links. The stop link is
+ * in the footer and the List-Unsubscribe header.
  */
 export const sundayPaper = (
   lang: Lang,
-  {
-    callboard,
-    events,
-    front,
-    places,
-    pieces,
-    stop,
-  }: {
+  paper: {
     callboard: string;
     events: MonthEvent[];
     front: string;
     places: OpenPlace[];
     pieces: SundayItem[];
-    stop: string;
   }
 ) =>
-  build(lang, (l) => ({
-    action: {
-      href: front,
-      label: l === "ar" ? "افتح قرطاس" : "Open Qirtas",
-    },
-    heading:
-      l === "ar" ? "جريدة الأحد من قرطاس" : "The Sunday Paper from Qirtas",
-    paragraphs: [
-      ...paperPieces(l, pieces),
-      ...paperEvents(l, events),
-      ...paperPlaces(l, places, callboard),
-      l === "ar"
-        ? `لإيقاف جريدة الأحد: ${stop}`
-        : `To stop the Sunday Paper: ${stop}`,
-    ],
-  }));
+  build(lang, (l) => {
+    const titles = PAPER_TITLES[l];
+    const lists: NoticeList[] = [
+      {
+        items: paper.pieces.map((i) => ({
+          href: i.url,
+          meta: l === "ar" ? i.desk_ar : i.desk_en,
+          title: pick(l, i.title_ar, i.title_en),
+        })),
+        title: titles.pieces,
+      },
+      {
+        items: paper.events.map((e) => ({
+          href: e.url,
+          meta: formatLongDate(e.starts_at, l),
+          title: pick(l, e.title_ar, e.title_en),
+        })),
+        title: titles.events,
+      },
+      {
+        items: paper.places.map((o) => ({
+          href: paper.callboard,
+          title: pick(l, o.title_ar, o.title_en),
+        })),
+        title: titles.places,
+      },
+    ];
+    return {
+      action: { href: paper.front, label: titles.open },
+      heading: titles.heading,
+      lists: lists.filter((list) => list.items.length > 0),
+      paragraphs: [titles.lede],
+    };
+  });
 
 export interface RoleInfo {
   ends_at: string;
@@ -626,32 +638,6 @@ export const roleEnding = (lang: Lang, role: RoleInfo, app: string) =>
       l === "ar"
         ? `ينتهي في ${formatLongDate(role.ends_at, l)}. سلّم ما لديك لمن يخلفك، وراجع المجلس إن كان يجب تمديده.`
         : `It ends on ${formatLongDate(role.ends_at, l)}. Hand over to your successor, and speak to the Council if it should be extended.`,
-    ],
-  }));
-
-export interface OpeningReplyInfo {
-  member: string;
-  note: string | null;
-  title: string;
-}
-
-/** Someone answered a Callboard opening (to Membership, which runs hiring). */
-export const openingReply = (
-  lang: Lang,
-  reply: OpeningReplyInfo,
-  app: string
-) =>
-  build(lang, (l) => ({
-    action: nexus(app, l, "/hiring"),
-    heading:
-      l === "ar"
-        ? `مهتم بدور: ${reply.title}`
-        : `Interested in a role: ${reply.title}`,
-    paragraphs: [
-      l === "ar"
-        ? `${reply.member} مهتم بهذا الدور في لوحة النداءات. حدّد موعدًا للحديث في قسم التوظيف.`
-        : `${reply.member} is interested in this role on the Callboard. Set a time to talk in Hiring.`,
-      ...(reply.note ? [reply.note] : []),
     ],
   }));
 
@@ -733,3 +719,734 @@ export const pushTest = (lang: Lang) =>
         body: "Event reminders, Qirtas news and decisions will arrive here.",
         title: "Notifications are on",
       };
+
+// ── Journeys added in the email audit (owner, Nov 4, 2026) ────────────────
+
+/** An event that is canceled, or moved to another day, time or place. */
+export const eventChanged = (
+  lang: Lang,
+  e: EventInfo,
+  change: "cancelled" | "moved",
+  app: string
+) =>
+  build(lang, (l) =>
+    change === "cancelled"
+      ? {
+          action: account(app, l, MY_CALENDAR),
+          heading:
+            l === "ar" ? `أُلغيت: ${title(e, l)}` : `Canceled: ${title(e, l)}`,
+          paragraphs: [
+            l === "ar"
+              ? `لن تُقام ${title(e, l)} في ${when(e.starts_at, l)}. ألغينا حجزك، ولا شيء عليك أن تفعله.`
+              : `${title(e, l)} on ${when(e.starts_at, l)} won't take place. Your booking is canceled; there's nothing you need to do.`,
+            l === "ar"
+              ? "نأسف لذلك. ما يجري بعدها في «تقويمي» وفي صفحة «ما يجري»."
+              : "We're sorry. What's coming up next is on My calendar and What's on.",
+          ],
+        }
+      : {
+          action: account(app, l, MY_CALENDAR),
+          heading:
+            l === "ar"
+              ? `تغيّر موعد: ${title(e, l)}`
+              : `Changed: ${title(e, l)}`,
+          paragraphs: [
+            l === "ar"
+              ? "تغيّر يوم الفعالية أو وقتها أو مكانها. هذا موعدها الآن:"
+              : "The day, time or place has changed. This is when and where it is now:",
+            ...eventLines(e, l),
+            l === "ar"
+              ? "مكانك محفوظ. إن لم يعد الموعد يناسبك، فتنازل عنه في «تقويمي» ليأخذه غيرك."
+              : "Your place is kept. If the new time doesn't suit you, give it back on My calendar so someone else can have it.",
+          ],
+        }
+  );
+
+/** The applicant: the application to partner has arrived. */
+export const applicationReceived = (lang: Lang, partner: string, app: string) =>
+  build(lang, (l) => ({
+    action: account(app, l, "/partners/join"),
+    heading:
+      l === "ar" ? `وصلنا طلب ${partner}` : `We have ${partner}'s application`,
+    paragraphs: [
+      l === "ar"
+        ? "شكراً لطلبك الشراكة مع جمعية الفنون والآداب. تقرأ «الشراكات» الطلب، وإن مضى يوقّع رئيس الجمعية مذكرة التفاهم."
+        : "Thank you for applying to partner with the AUIB Society of Arts and Letters. Partnerships reads the application, and if it goes ahead, the President signs the memorandum.",
+      l === "ar"
+        ? "سنكتب إليك حين يُتّخذ القرار. ويمكنك رؤية الطلب في أي وقت من الرابط أدناه."
+        : "We'll write to you when it's decided. You can see the application at any time from the link below.",
+    ],
+  }));
+
+/** Partnerships and the President: an application waits. */
+export const applicationWaiting = (lang: Lang, partner: string, app: string) =>
+  build(lang, (l) => ({
+    action: nexus(app, l, "/people/verification"),
+    heading:
+      l === "ar"
+        ? `طلب شراكة: ${partner}`
+        : `A partner application: ${partner}`,
+    paragraphs: [
+      l === "ar"
+        ? `تقدّم ${partner} بطلب الشراكة مع الجمعية، ووقّع ممثله مذكرة التفاهم. الطلب في الديوان بانتظار القرار.`
+        : `${partner} has applied to partner with the Society, and its signatory has signed the memorandum. It waits in the Diwan for a decision.`,
+    ],
+  }));
+
+/** The applicant: the partnership is signed, or not taken forward. */
+export const applicationDecided = (
+  lang: Lang,
+  partner: string,
+  approved: boolean,
+  app: string
+) =>
+  build(lang, (l) =>
+    approved
+      ? {
+          action: {
+            href: `${app}${localizedPath(l, "/partners/dashboard")}`,
+            label:
+              l === "ar" ? "افتح لوحة الشريك" : "Open the partner dashboard",
+          },
+          heading:
+            l === "ar"
+              ? `${partner} شريك للجمعية`
+              : `${partner} is a partner of the Society`,
+          paragraphs: [
+            l === "ar"
+              ? "وقّع رئيس الجمعية مذكرة التفاهم. لوحة الشريك مفتوحة لك الآن: الملف والمذكرة، والامتيازات، والفريق والضيوف."
+              : "The President has signed the memorandum. Your partner dashboard is open: the profile and memorandum, perks, and your team and guests.",
+          ],
+        }
+      : {
+          heading:
+            l === "ar"
+              ? `بشأن طلب ${partner}`
+              : `About ${partner}'s application`,
+          paragraphs: [
+            l === "ar"
+              ? "شكراً لاهتمامك. لا تستطيع الجمعية المضيّ في هذه الشراكة الآن."
+              : "Thank you for your interest. The Society can't take this partnership forward now.",
+            l === "ar"
+              ? "إن أردت الحديث في الأمر، فردّ على هذه الرسالة."
+              : "If you'd like to talk about it, reply to this email.",
+          ],
+        }
+  );
+
+export interface ElectionInfo {
+  nominations_close_at: string;
+  nominations_open_at: string;
+  title_ar: string;
+  title_en: string;
+  voting_closes_at: string;
+  voting_opens_at: string;
+}
+
+const ELECTION_LINES: Record<
+  "notice" | "voting" | "published",
+  (l: Lang, e: ElectionInfo) => { heading: string; paragraphs: string[] }
+> = {
+  notice: (l, e) =>
+    l === "ar"
+      ? {
+          heading: "إشعار انتخابات",
+          paragraphs: [
+            `الترشيح من ${when(e.nominations_open_at, l)} حتى ${when(e.nominations_close_at, l)}، والتصويت من ${when(e.voting_opens_at, l)} حتى ${when(e.voting_closes_at, l)}.`,
+            "تترشّح لمقعد من صفحة «الجمعية» حين يُفتح الترشيح. ويصوّت من في سجل الناخبين اليوم.",
+          ],
+        }
+      : {
+          heading: "Election notice",
+          paragraphs: [
+            `Nominations run from ${when(e.nominations_open_at, l)} to ${when(e.nominations_close_at, l)}, and voting from ${when(e.voting_opens_at, l)} to ${when(e.voting_closes_at, l)}.`,
+            "Stand for a seat from Society once nominations open. Everyone on today's register of voters votes.",
+          ],
+        },
+  published: (l) =>
+    l === "ar"
+      ? {
+          heading: "النتائج",
+          paragraphs: [
+            "نُشرت نتائج الانتخابات في صفحة «الجمعية». شكراً لكل من ترشّح وصوّت.",
+          ],
+        }
+      : {
+          heading: "The results",
+          paragraphs: [
+            "The results are published on Society. Thank you to everyone who stood and voted.",
+          ],
+        },
+  voting: (l, e) =>
+    l === "ar"
+      ? {
+          heading: "بدأ التصويت",
+          paragraphs: [
+            `رتّب المرشحين في صفحة «الجمعية» حتى ${when(e.voting_closes_at, l)}. اقتراعك سرّي.`,
+          ],
+        }
+      : {
+          heading: "Voting is open",
+          paragraphs: [
+            `Rank the candidates on Society by ${when(e.voting_closes_at, l)}. Your ballot is secret.`,
+          ],
+        },
+};
+
+/** The notice to every member, voting open, and the results. */
+export const electionStage = (
+  lang: Lang,
+  e: ElectionInfo,
+  stage: "notice" | "voting" | "published",
+  app: string
+) =>
+  build(lang, (l) => {
+    const name = pick(l, e.title_ar, e.title_en);
+    const lines = ELECTION_LINES[stage](l, e);
+    return {
+      action: account(app, l, "/membership/society"),
+      heading: `${lines.heading}: ${name}`,
+      paragraphs: lines.paragraphs,
+    };
+  });
+
+const CANDIDACY: Record<
+  "approved" | "declined",
+  Record<Lang, [string, string]>
+> = {
+  approved: {
+    ar: [
+      "أنت مرشّح",
+      "قبلت لجنة الانتخابات ترشّحك، ويظهر بيانك للناخبين في صفحة «الجمعية». بالتوفيق.",
+    ],
+    en: [
+      "You're on the ballot",
+      "The Elections Committee approved your nomination, and your statement is on Society for the voters. Good luck.",
+    ],
+  },
+  declined: {
+    ar: [
+      "بشأن ترشّحك",
+      "لم تقبل لجنة الانتخابات ترشّحك لهذا المقعد. إن كان لديك سؤال، فردّ على هذه الرسالة.",
+    ],
+    en: [
+      "About your nomination",
+      "The Elections Committee didn't approve your nomination for this seat. If you have a question, reply to this email.",
+    ],
+  },
+};
+
+/** A nominee: the Elections Committee's answer. */
+export const candidacyDecided = (
+  lang: Lang,
+  seat: { title_ar: string; title_en: string },
+  approved: boolean,
+  app: string
+) =>
+  build(lang, (l) => {
+    const lines = CANDIDACY[approved ? "approved" : "declined"][l];
+    return {
+      action: account(app, l, "/membership/society"),
+      heading: `${lines[0]}: ${pick(l, seat.title_ar, seat.title_en)}`,
+      paragraphs: [lines[1]],
+    };
+  });
+
+/** A certificate, signed by both and issued. */
+export const certificateIssued = (
+  lang: Lang,
+  what: string,
+  certificateId: string,
+  app: string
+) =>
+  build(lang, (l) => ({
+    action: {
+      href: `${app}${localizedPath(l, `/membership/record/${certificateId}`)}`,
+      label: l === "ar" ? "افتح الشهادة" : "Open the certificate",
+    },
+    heading: l === "ar" ? "شهادتك جاهزة" : "Your certificate is ready",
+    paragraphs: [
+      ...(what ? [what] : []),
+      l === "ar"
+        ? "وقّعها رئيس الجمعية والمستشار الأكاديمي. تجدها في «السجل»، ويمكن لأي أحد التحقق منها برمزها."
+        : "The President and the Faculty Advisor have signed it. It's on your Record, and anyone can check it with its code.",
+    ],
+  }));
+
+const REQUEST_NAMES: Record<string, Record<Lang, string>> = {
+  f09: { ar: "مقترحك للجمعية العمومية", en: "your General Assembly motion" },
+  f10: { ar: "مقترح البرنامج", en: "your program pitch" },
+  f19: { ar: "ما رفعته من قلق", en: "your concern" },
+  f20: { ar: "ما رفعته من قلق", en: "your concern" },
+};
+
+/** A concern, a motion or a pitch: taken up, then closed. */
+export const requestUpdated = (
+  lang: Lang,
+  formKey: string,
+  status: "acknowledged" | "closed",
+  requestId: string,
+  app: string
+) =>
+  build(lang, (l) => {
+    const thing = (REQUEST_NAMES[formKey] ?? {
+      ar: "طلبك",
+      en: "your request",
+    })[l];
+    const action = account(app, l, `/membership/requests/${requestId}`);
+    if (status === "closed") {
+      return {
+        action,
+        heading: l === "ar" ? `أُغلق ${thing}` : `We've closed ${thing}`,
+        paragraphs: [
+          l === "ar"
+            ? "انتهى العمل عليه، وما آل إليه في صفحته. شكراً لأنك كتبت إلينا."
+            : "The work on it is done, and the outcome is on its page. Thank you for writing to us.",
+        ],
+      };
+    }
+    return {
+      action,
+      heading: l === "ar" ? `وصلنا ${thing}` : `We have ${thing}`,
+      paragraphs: [
+        l === "ar"
+          ? "استلمه المسؤول عنه وبدأ العمل عليه. سنكتب إليك حين يُغلق، وترى حاله في صفحته متى شئت."
+          : "The officer who handles it has taken it up. We'll write when it's closed, and you can see where it stands on its page at any time.",
+      ],
+    };
+  });
+
+const REMOVAL_DONE: Record<
+  "removed" | "closed",
+  Record<Lang, [string, string, string]>
+> = {
+  closed: {
+    ar: [
+      "أغلقنا طلب الحذف",
+      "راجعنا طلبك وأغلقناه.",
+      "إن كان لديك سؤال، فردّ على هذه الرسالة.",
+    ],
+    en: [
+      "We've closed your removal request",
+      "We've looked at your request and closed it.",
+      "If you have a question, reply to this email.",
+    ],
+  },
+  removed: {
+    ar: [
+      "حُذف المحتوى",
+      "حذفنا ما طلبت حذفه من صفحاتنا وقنواتنا، كما وعدنا.",
+      "إن بقي شيء، فردّ على هذه الرسالة.",
+    ],
+    en: [
+      "It has been taken down",
+      "We've taken down what you asked, from our pages and channels, as promised.",
+      "If anything is still up, reply to this email.",
+    ],
+  },
+};
+
+/** The requester: their removal request is done. */
+export const removalDone = (
+  lang: Lang,
+  outcome: "removed" | "declined" | "closed",
+  note: string | null
+) =>
+  build(lang, (l) => {
+    const lines = REMOVAL_DONE[outcome === "removed" ? "removed" : "closed"][l];
+    return {
+      heading: lines[0],
+      paragraphs: [lines[1], ...(note ? [note] : []), lines[2]],
+    };
+  });
+
+const REPLY_LINES: Record<
+  "talking" | "offered" | "not_picked",
+  Record<
+    Lang,
+    {
+      at: (time: string) => string;
+      body: string;
+      heading: string;
+      soon: string;
+    }
+  >
+> = {
+  not_picked: {
+    ar: {
+      at: () => "",
+      body: "اختير غيرك لهذا الدور هذه المرة. شكراً لاهتمامك؛ تُنشر أدوار وأماكن جديدة في «شارك» طوال العام.",
+      heading: "بشأن",
+      soon: "",
+    },
+    en: {
+      at: () => "",
+      body: "Someone else was chosen for this role this time. Thank you for your interest; new roles and places open on Get involved all year.",
+      heading: "About",
+      soon: "",
+    },
+  },
+  offered: {
+    ar: {
+      at: () => "",
+      body: "الدور لك إن أردته. ستتواصل معك «العضوية» لتبدأ.",
+      heading: "عرض",
+      soon: "",
+    },
+    en: {
+      at: () => "",
+      body: "The role is yours if you'd like it. Membership will be in touch to get you started.",
+      heading: "An offer",
+      soon: "",
+    },
+  },
+  talking: {
+    ar: {
+      at: (time) => `تودّ «العضوية» الحديث معك عن هذا الدور في ${time}.`,
+      body: "إن لم يناسبك الموعد، فردّ على هذه الرسالة.",
+      heading: "لنتحدث",
+      soon: "تودّ «العضوية» الحديث معك عن هذا الدور، وستتواصل معك لتحديد موعد.",
+    },
+    en: {
+      at: (time) =>
+        `Membership would like to talk with you about this role on ${time}.`,
+      body: "If the time doesn't suit you, reply to this email.",
+      heading: "Let's talk",
+      soon: "Membership would like to talk with you about this role and will be in touch to set a time.",
+    },
+  },
+};
+
+/** A member who said "I'm interested" in a role: what happens next. */
+export const replyUpdate = (
+  lang: Lang,
+  role: string,
+  status: "talking" | "offered" | "not_picked",
+  talkAt: string | null,
+  app: string
+) =>
+  build(lang, (l) => {
+    const lines = REPLY_LINES[status][l];
+    const time = talkAt ? when(talkAt, l) : null;
+    return {
+      action: account(app, l, "/get-involved"),
+      heading: `${lines.heading}: ${role}`,
+      paragraphs: [
+        ...(status === "talking" ? [time ? lines.at(time) : lines.soon] : []),
+        lines.body,
+      ],
+    };
+  });
+
+/** A place given: an Apprenticeship, a First Ink place, a volunteer place. */
+export const placementGiven = (lang: Lang, place: string, app: string) =>
+  build(lang, (l) => ({
+    action: account(app, l, MY_CALENDAR),
+    heading: l === "ar" ? `لك مكان: ${place}` : `You have a place: ${place}`,
+    paragraphs: [
+      l === "ar"
+        ? "أُعطيت هذا المكان. مناوباته في «تقويمي»، وتُحسب ساعاته خدمةً في «السجل»."
+        : "You've been given this place. Its shifts are on My calendar, and its hours count as service on your Record.",
+    ],
+  }));
+
+export interface AuditionInfo {
+  ends_at: string;
+  location_ar: string | null;
+  location_en: string | null;
+  prepare_ar: string | null;
+  prepare_en: string | null;
+  production_ar: string;
+  production_en: string;
+  starts_at: string;
+}
+
+const AUDITION_BOOKED = {
+  ar: {
+    cancel: "إن تغيّرت خططك، فألغِ موعدك من صفحة تجارب الأداء ليأخذه غيرك.",
+    heading: "موعد تجربة أدائك",
+    prepare: "ما تحضّره:",
+  },
+  en: {
+    cancel:
+      "If your plans change, cancel from Auditions so someone else can take the time.",
+    heading: "Your audition",
+    prepare: "To prepare:",
+  },
+} as const;
+
+const AUDITION_LINES: Record<
+  "called_back" | "cast" | "not_cast",
+  (l: Lang, play: string) => [string, string]
+> = {
+  called_back: (l, play) =>
+    l === "ar"
+      ? [
+          `استدعاء ثانٍ: ${play}`,
+          "تودّ الفرقة رؤيتك مرة أخرى. ستتواصل معك لتحديد الموعد.",
+        ]
+      : [
+          `A callback: ${play}`,
+          "The Company would like to see you again and will be in touch about the time.",
+        ],
+  cast: (l, play) =>
+    l === "ar"
+      ? [`أنت ضمن فريق ${play}`, "مبارك. ستتواصل معك الفرقة بمواعيد التمارين."]
+      : [
+          `You're cast in ${play}`,
+          "Congratulations. The Company will be in touch with the rehearsal times.",
+        ],
+  not_cast: (l, play) =>
+    l === "ar"
+      ? [
+          `بشأن ${play}`,
+          "شكراً لتجربة أدائك. لم يُختر لك دور هذه المرة؛ تُعلن تجارب الأداء القادمة في «شارك».",
+        ]
+      : [
+          `About ${play}`,
+          "Thank you for auditioning. There isn't a part for you this time; the next auditions are on Get involved.",
+        ],
+};
+
+/** An audition time booked, and the Company's answer. */
+export const auditionUpdate = (
+  lang: Lang,
+  a: AuditionInfo,
+  status: "signed_up" | "called_back" | "cast" | "not_cast",
+  app: string
+) =>
+  build(lang, (l) => {
+    const play = pick(l, a.production_ar, a.production_en);
+    const action = account(app, l, "/company/auditions");
+    if (status !== "signed_up") {
+      const [heading, body] = AUDITION_LINES[status](l, play);
+      return { action, heading, paragraphs: [body] };
+    }
+    const where = pick(l, a.location_ar ?? "", a.location_en ?? "");
+    const prepare = pick(l, a.prepare_ar ?? "", a.prepare_en ?? "");
+    const booked = AUDITION_BOOKED[l];
+    return {
+      action,
+      heading: `${booked.heading}: ${play}`,
+      paragraphs: [
+        when(a.starts_at, l),
+        ...(where ? [where] : []),
+        ...(prepare ? [`${booked.prepare} ${prepare}`] : []),
+        booked.cancel,
+      ],
+    };
+  });
+
+const ROLE_LINES = {
+  ar: {
+    heading: "دورك الجديد",
+    starts: "يبدأ الآن. ما يحتاجه منك في الديوان.",
+    team: "دليل الضباط وقوالب العمل في مساحة الفريق على Notion، ويصلك جديد الفريق في مجموعة الديوان على Telegram.",
+    twoStep:
+      "يتطلب هذا الدور خطوة ثانية لتسجيل الدخول: اضبط تطبيق المصادقة عند دخولك القادم إلى الديوان، واحفظ رموز الاسترداد.",
+    until: (date: string) =>
+      `يبدأ الآن ويستمر حتى ${date}. ما يحتاجه منك في الديوان.`,
+  },
+  en: {
+    heading: "Your new role",
+    starts: "It starts now. What it needs from you is in the Diwan.",
+    team: "The officer handbook and templates are in the team's Notion, and the team's news comes through the Diwan group on Telegram.",
+    twoStep:
+      "This role needs two-step sign-in: set up your authenticator app the next time you open the Diwan, and save your recovery codes.",
+    until: (date: string) =>
+      `It starts now and runs until ${date}. What it needs from you is in the Diwan.`,
+  },
+} as const;
+
+/** A new role: what it opens, and two-step sign-in first if it needs it. */
+export const roleAssigned = (
+  lang: Lang,
+  role: { ends_at: string | null; name_ar: string; name_en: string },
+  twoStep: boolean,
+  app: string
+) =>
+  build(lang, (l) => {
+    const lines = ROLE_LINES[l];
+    return {
+      action: nexus(app, l),
+      heading: `${lines.heading}: ${pick(l, role.name_ar, role.name_en)}`,
+      paragraphs: [
+        role.ends_at
+          ? lines.until(formatLongDate(role.ends_at, l))
+          : lines.starts,
+        ...(twoStep ? [lines.twoStep] : []),
+        lines.team,
+      ],
+    };
+  });
+
+/** The end of the welcome: the member's first pledge is made. */
+export const welcome = (lang: Lang, app: string) =>
+  build(lang, (l) => {
+    const link = (path: string) => `${app}${localizedPath(l, path)}`;
+    return {
+      action: account(app, l),
+      heading:
+        l === "ar"
+          ? "أهلاً بك في جمعية الفنون والآداب"
+          : "Welcome to the AUIB Society of Arts and Letters",
+      lists: [
+        {
+          items: [
+            {
+              href: link("/events"),
+              title:
+                l === "ar"
+                  ? "ما يجري: الصالون، ودائرة الكتاب، والصفحات المفتوحة، وغيرها"
+                  : "What's on: the Salon, Book Circle, Open Pages and more",
+            },
+            {
+              href: link("/qirtas/write"),
+              title:
+                l === "ar"
+                  ? "اكتب لقرطاس: أي قسم، في أي وقت"
+                  : "Write for Qirtas: any section, any time",
+            },
+            {
+              href: link("/get-involved"),
+              title:
+                l === "ar"
+                  ? "شارك: الأدوار والمناوبات وتجارب الأداء"
+                  : "Get involved: roles, shifts and auditions",
+            },
+            {
+              href: "https://t.me/auibsal_bot",
+              title:
+                l === "ar"
+                  ? "هدهد على Telegram: يدخلك مجموعة الأعضاء"
+                  : "Hudhud on Telegram: lets you into the members' group",
+            },
+          ],
+          title: l === "ar" ? "من أين تبدأ" : "Where to start",
+        },
+      ],
+      paragraphs: [
+        l === "ar"
+          ? "أنت عضو الآن. بطاقتك الحيّة في صفحة «العضوية»: تُظهرها عند الباب، وتحمل امتيازات الشركاء."
+          : "You're a member now. Your live card is on Membership: show it at the door, and it carries our partners' perks.",
+      ],
+    };
+  });
+
+export interface ShiftInfo {
+  location_ar: string | null;
+  location_en: string | null;
+  role_ar: string;
+  role_en: string;
+  starts_at: string;
+}
+
+/** The day before a shift (optional, like booked events). */
+export const shiftReminder = (lang: Lang, s: ShiftInfo, app: string) =>
+  build(lang, (l) => ({
+    action: account(app, l, MY_CALENDAR),
+    heading:
+      l === "ar"
+        ? `غداً مناوبتك: ${pick(l, s.role_ar, s.role_en)}`
+        : `Your shift tomorrow: ${pick(l, s.role_ar, s.role_en)}`,
+    paragraphs: [
+      when(s.starts_at, l),
+      ...(pick(l, s.location_ar ?? "", s.location_en ?? "")
+        ? [pick(l, s.location_ar ?? "", s.location_en ?? "")]
+        : []),
+      l === "ar"
+        ? "إن لم تعد تستطيع، فاطلب تبديلاً في «تقويمي» ليغطيها غيرك."
+        : "If you can no longer make it, ask for a swap on My calendar so someone can cover it.",
+    ],
+  }));
+
+const AWARD_LINES: Record<
+  "shortlisted" | "won",
+  (l: Lang, work: string, name: string) => [string, string]
+> = {
+  shortlisted: (l, work, name) =>
+    l === "ar"
+      ? [
+          `${work} في القائمة القصيرة لـ${name}`,
+          "مبارك. تُعلن الجوائز في الجمعية العمومية السنوية.",
+        ]
+      : [
+          `${work} is shortlisted for the ${name}`,
+          "Congratulations. The Awards are given at the Annual General Meeting.",
+        ],
+  won: (l, work, name) =>
+    l === "ar"
+      ? [
+          `فاز ${work} بـ${name}`,
+          "مبارك. تُعدّ الجمعية شهادتك، وتصلك رسالة حين تُوقَّع.",
+        ]
+      : [
+          `${work} wins the ${name}`,
+          "Congratulations. The Society is preparing your certificate, and you'll hear when it's signed.",
+        ],
+};
+
+/** The Qirtas Awards: shortlisted on the shortlist day, winning on the day. */
+export const award = (
+  lang: Lang,
+  work: string,
+  prize: { name_ar: string; name_en: string },
+  stage: "shortlisted" | "won",
+  app: string
+) =>
+  build(lang, (l) => {
+    const name = pick(l, prize.name_ar, prize.name_en);
+    const [heading, body] = AWARD_LINES[stage](l, work, name);
+    return {
+      action: {
+        href: `${app}${localizedPath(l, "/qirtas/awards")}`,
+        label: l === "ar" ? "جوائز قرطاس" : "The Qirtas Awards",
+      },
+      heading,
+      paragraphs: [body],
+    };
+  });
+
+/** After an account is deleted: to the address it had. */
+export const accountDeleted = (lang: Lang) =>
+  build(lang, (l) => ({
+    heading: l === "ar" ? "حُذف حسابك" : "Your account is deleted",
+    paragraphs: [
+      l === "ar"
+        ? "حذفنا حسابك في جمعية الفنون والآداب وما كان فيه، كما طلبت. لن تصلك منا رسائل بعد هذه."
+        : "We've deleted your account with the AUIB Society of Arts and Letters and what it held, as you asked. This is the last email you'll get from us.",
+      l === "ar"
+        ? "إن لم تطلب ذلك، فردّ على هذه الرسالة فوراً."
+        : "If you didn't ask for this, reply to this email right away.",
+    ],
+  }));
+
+export interface ReplyLine {
+  member: string;
+  note: string | null;
+  role: string;
+}
+
+/** Membership: the day's replies on Get involved, in one email. */
+export const repliesDigest = (lang: Lang, replies: ReplyLine[], app: string) =>
+  build(lang, (l) => ({
+    action: nexus(app, l, "/people/hiring"),
+    heading:
+      l === "ar"
+        ? `ردود جديدة في «شارك» (${replies.length})`
+        : `New replies on Get involved (${replies.length})`,
+    lists: [
+      {
+        items: replies.map((r) => ({
+          meta: r.role,
+          title: r.note ? `${r.member}: ${r.note}` : r.member,
+        })),
+        title: l === "ar" ? "منذ الأمس" : "Since yesterday",
+      },
+    ],
+    paragraphs: [
+      l === "ar"
+        ? "أعضاء قالوا «أنا مهتم». حدّد مواعيد الحديث في قسم التوظيف."
+        : "Members who said they're interested. Set times to talk in Hiring.",
+    ],
+  }));

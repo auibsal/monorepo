@@ -7,6 +7,23 @@ first session); section numbers (§) refer to it.
 
 Branch: `claude/new-session-qosn60`.
 
+## Every email audited (2026-11-04)
+
+- [x] One standard for every email (`packages/email`): preview line,
+  `h1`, link lists, fallback link under confirmation buttons, footer by
+  category (service, optional, officer, direct), Reply-To, Resend tags,
+  one-click stop on every optional email (booked reminders too).
+- [x] New journeys (migration `20261101001900`, `99_email_journeys.test.sql`):
+  welcome, event canceled or moved, partner applications, elections and
+  candidacies, certificates, requests, removal done, hiring replies,
+  places, auditions, roles, shift reminders, the Awards, account deleted.
+- [x] Merged: replies on Get involved as a daily digest. Trimmed:
+  "in progress" requests, agreement reminders after four weeks.
+- [x] Catalog of every email in `docs/platform/email.md`; every email in
+  Storybook (SAL/Emails).
+- [ ] Owner: hello@auibsal.org must receive mail (Email Routing, see
+  "Blocked") now that every email's Reply-To is that address.
+
 ## Every page its own; Qirtas drafts (2026-11-04)
 
 - [x] Every new or edited record opens its own page across the platform
@@ -1722,6 +1739,16 @@ Covered by automated tests so far:
   use (as the form says).
 
 ## needs-native-review (Arabic written for the platform)
+
+- Every email audited (2026-11-04): the new builders in
+  `packages/email/copy.ts` (`eventChanged`, `applicationReceived`,
+  `applicationWaiting`, `applicationDecided`, `ELECTION_LINES`,
+  `CANDIDACY`, `certificateIssued`, `REQUEST_NAMES`, `requestUpdated`,
+  `REMOVAL_DONE`, `REPLY_LINES`, `placementGiven`, `AUDITION_BOOKED`,
+  `AUDITION_LINES`, `ROLE_LINES`, `welcome`, `shiftReminder`,
+  `AWARD_LINES`, `accountDeleted`, `repliesDigest`, `PAPER_TITLES`), the
+  footer lines in `apps/web/lib/api/outbox.ts` (`FOOTER_LINES`) and the
+  fallback line in `templates/notice.tsx`.
 
 - Every page its own, Qirtas drafts (2026-11-04): `nexus.admin.charity.newOn.impact`, `nexus.admin.charity.newOn.ledger`, `nexus.admin.charity.newOn.receipts`, `nexus.admin.forms.back`, `nexus.admin.forms.missing`, `nexus.admin.forms.requestTitle`, `nexus.admin.governance.elections.back`, `nexus.admin.hiring.back`, `nexus.admin.needs.backToQirtas`, `nexus.admin.partners.offers.back`, `nexus.admin.partners.places.back`, `nexus.admin.programmes.backToTab`, `nexus.admin.programmes.callboard.new`, `nexus.admin.programmes.reels.back`, `nexus.journal.write.deleteDraft`, `nexus.journal.write.deleteDraftConfirm`, `nexus.journal.write.draftHint`, `nexus.journal.write.draftMissing`, `nexus.journal.write.draftSaved`, `nexus.journal.write.draftStatus`, `nexus.journal.write.draftTitle`, `nexus.journal.write.saveDraft`, `nexus.journal.write.savingDraft`, `nexus.journal.write.untitledDraft`, `nexus.society.elections.alreadyStanding`, `nexus.society.elections.backToSociety`, `nexus.society.elections.notOpen`, `nexus.society.elections.standFor`.
 

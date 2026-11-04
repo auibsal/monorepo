@@ -5903,6 +5903,7 @@ export type Database = {
           id: string;
           programme_id: string | null;
           requester_email: string;
+          requester_lang: string;
           requester_name: string;
           status: string;
         };
@@ -5917,6 +5918,7 @@ export type Database = {
           id?: string;
           programme_id?: string | null;
           requester_email: string;
+          requester_lang?: string;
           requester_name: string;
           status?: string;
         };
@@ -5931,6 +5933,7 @@ export type Database = {
           id?: string;
           programme_id?: string | null;
           requester_email?: string;
+          requester_lang?: string;
           requester_name?: string;
           status?: string;
         };

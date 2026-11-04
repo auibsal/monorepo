@@ -1,7 +1,8 @@
 # Email
 
 Every email the platform sends, who sends it, and the settings that keep it
-working. Checked end to end on 2026-10-25 (`apps/e2e`: sign-up by link,
+working. Audited end to end on 2026-11-04 (journeys added, merged and
+removed below); sign-in checked on 2026-10-25 (`apps/e2e`: sign-up by link,
 sign-in by emailed code).
 
 ## Two senders, one domain
@@ -38,28 +39,74 @@ the member presses the button, so scanners that open links change nothing.
 
 Database triggers and the daily notices queue a row in `core.outbox`; the
 database calls `/api/hooks/outbox` (`DATABASE_WEBHOOK_SECRET`) and the
-route sends it. Each email has an HTML and a plain-text part, an
-idempotency key (a retry never sends twice), and goes to the member's
-phone and Telegram too when they turned those on.
+route sends it. Every email (audited end to end on 2026-11-04):
 
-| Kind | To | Optional? |
-| --- | --- | --- |
-| `events.rsvp_confirmed`, `events.waitlist_promoted` | The member | No |
-| `events.reminder` | Booked: the member; "Remind me": whoever asked | Booked reminders follow "Email me about events…"; "Remind me" was asked for |
-| `journal.*` (received, decision, agreement, final check, notes, published, returned for formatting) | The author | No |
-| `journal.call_opened` | Whoever asked "Tell me when" | They turn it off on the page |
-| `journal.sunday_paper` | Every member who takes the optional emails | Yes: a stop link and one-click unsubscribe (`/emails/stop`) |
-| `newsletter.confirm`, `newsletter.monthly` | Newsletter subscribers | Double opt-in; unsubscribe link and one-click |
-| `personal_email.confirm` | The new personal address | No |
-| `partners.invitation` | Whoever a partner's Lead or team invited by email (to its team, or as its guest) | No |
-| `membership.verification_decided` | An account from outside AUIB (requests from before partners verified their own) | No |
-| `access.role_ending`, `programmes.*`, `platform.cron_failed` | Officers | No |
-| `access.two_step_reset` | The person whose authenticator was removed (by an officer or a recovery code) | No |
+- **One template** (`templates/notice.tsx`): white paper, the lockup in the
+  email's language, a Light `h1`, the message in the recipient's language
+  only, lists of links where there are several things (the Sunday Paper,
+  the welcome, digests), one crimson button, and for confirmations and
+  invitations the same address written under it for mail apps that block
+  buttons. An HTML and a plain-text part that say the same.
+- **The inbox line**: the subject is the heading; the preview (what the
+  inbox shows after it) is the first sentence, never the subject again.
+- **Replies reach a person**: every email has `Reply-To:
+  hello@auibsal.org` (`project.supportEmail`); several ask the reader to
+  reply.
+- **Why it came** (the footer): *service* (it concerns the member; they
+  choose their emails on Membership → Settings → Notices), *optional*
+  (they may stop it: a stop link and `List-Unsubscribe` one-click), *officer*
+  (their role's work) or *direct* (no account behind the address).
+- **Safe retries**: an idempotency key per row and address; a spent daily
+  quota gives the row back to wait for the next drain.
+- **Tagged** in Resend by kind (`kind`), so each journey's delivery can be
+  read on its own.
+- Members who turned them on also get the notice on their phone and in
+  Telegram.
+
+### Every email
+
+| Kind | When | To | Footer |
+| --- | --- | --- | --- |
+| `membership.welcome` | The first member pledge (the end of `/welcome`) | The new member: their card and where to start | Service |
+| `events.rsvp_confirmed`, `events.waitlist_promoted` | A place booked, or freed from the waiting list | The member | Service |
+| `events.reminder` | The day before | Booked: the member; "Remind me": whoever asked | Optional when booked; service for "Remind me" |
+| `events.changed` | A published event canceled, or its day, time or place changed | Everyone booked, waiting or asking to be reminded; edits within ten minutes make one email | Service |
+| `programmes.shift_reminder` | The day before a shift | Whoever is on it | Optional |
+| `programmes.audition_update` | An audition time booked; called back, cast or not cast | The member | Service |
+| `programmes.reply_update` | Membership sets a time to talk, makes an offer, or picks someone else | The member who said "I'm interested" | Service |
+| `programmes.placement_given` | An Apprenticeship, First Ink or volunteer place given | The member | Service |
+| `access.role_assigned` | A Society role assigned (not a partner's team role) | The holder: what it opens; two-step sign-in first when it needs it | Officer |
+| `access.role_ending` | Seven days before a role ends | The holder | Officer |
+| `access.two_step_reset` | An authenticator removed (by an officer or a recovery code) | The person | Service |
+| `journal.submission_received`, `journal.returned_for_formatting`, `journal.decision`, `journal.agreement_reminder` (weekly, four weeks at most), `journal.final_check`, `journal.piece_note`, `journal.piece_published` | Work sent to Qirtas, through to publication | The author | Service |
+| `journal.call_opened` | A Qirtas call opens | Whoever asked "Tell me when" | Service (they stop it on the page) |
+| `journal.award` | The Awards' shortlist day; the award day | Shortlisted and winning authors | Service |
+| `membership.certificate_issued` | A certificate signed by both and issued | The holder | Service |
+| `forms.updated` | A concern, motion or pitch taken up, then closed | Its sender | Service |
+| `governance.election` | The notice; voting open; the results | Every member; then everyone on the register | Service |
+| `governance.candidacy_decided` | The Elections Committee's answer | The nominee | Service |
+| `partners.application_received` | An application to partner | The applicant; Partnerships and the President (that it waits) | Direct; officer |
+| `partners.application_decided` | Signed (active) or not taken forward | The applicant | Direct |
+| `partners.invitation` | A partner's or the Society's email invitation | The invited address | Direct |
+| `journal.sunday_paper`, `newsletter.monthly` | The first Sunday of the month | Members who take optional emails; the public list | Optional (stop link and one-click) |
+| `newsletter.confirm` | A public sign-up | The address (double opt-in) | Direct |
+| `personal_email.confirm` | A personal email added | The new address only | Direct |
+| `programmes.removal_requested`, `programmes.removal_overdue` | A Next Stop removal request; past its 24 hours | The program's managers; the requester gets a receipt in the language they asked in | Officer; direct |
+| `programmes.removal_done` | The request removed, declined or closed | The requester, in their language (the receipt promises it) | Direct |
+| `programmes.replies_digest` | Daily, when there were replies on Get involved | Membership (`members.manage`) | Officer |
+| `membership.verification_decided` | An account from outside AUIB decided (requests from before partners verified their own) | The account | Service |
+| `platform.cron_failed` | A database job failed in the last day | Administrators | Officer |
+| `account.deleted` | An account deleted | The address it had (the last email) | Direct |
 
 "Email me about events, calls and Society notices" (`notify_email`, on
-Membership → Settings → Notices) covers the optional ones: the Sunday Paper and
-booked-event reminders. The stop link turns it off without signing in; the
-link is signed (`lib/api/email-stop.ts`) and the page needs a button press.
+Membership → Settings → Notices) covers the optional ones: the Sunday
+Paper and reminders of booked events and shifts. The stop link turns it
+off without signing in; the link is signed (`lib/api/email-stop.ts`) and
+the page needs a button press.
+
+Merged or removed in the audit: one email per reply on Get involved
+became the daily digest; "in progress" on a request sends nothing (taken
+up and closed do); the agreement reminder stops after four weeks.
 
 ## Settings to keep right
 

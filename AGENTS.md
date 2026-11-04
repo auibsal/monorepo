@@ -775,10 +775,20 @@ any schema change. Integration tests run against a local stack with
 - **Email:** Supabase sends the auth emails (templates in
   `packages/database/supabase/templates`, pasted into the hosted project);
   the outbox sends the rest through Resend (`packages/email`), each with a
-  plain-text part. Optional emails (the Sunday Paper, booked-event
-  reminders) follow `notify_email` and carry a stop link; sign-in and
-  confirmation emails carry a code beside the link. Runbook:
-  `docs/platform/email.md`.
+  plain-text part. Every journey is a kind in `core.outbox`, queued by a
+  trigger or the daily notices and written in `@repo/email/copy` (both
+  languages; the email goes in the recipient's only); the catalog of every
+  email is in `docs/platform/email.md`, and a new journey adds its row there
+  and its story in `packages/storybook/stories/emails.stories.tsx`. Each
+  email has Reply-To hello@auibsal.org, a preview line that isn't the
+  subject, a Resend tag with its kind and a footer saying why it came:
+  service (Notices), optional (a stop link and one-click unsubscribe),
+  officer or direct. Optional emails (the Sunday Paper, reminders of
+  booked events and shifts) follow `notify_email`; sign-in and
+  confirmation emails carry a code beside the link, and confirmations and
+  invitations write the address under the button. Notices many people
+  would get one by one go as a daily digest (replies on Get involved).
+  Runbook: `docs/platform/email.md`.
 - **Files:** use `@repo/storage`. Private buckets (`submissions`, `receipts`,
   `library`) are reached only through signed URLs issued by the API routes.
 - **Analytics:** on `apps/web` only (owner, Oct 15, 2026): Google Tag Manager

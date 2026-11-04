@@ -74,7 +74,7 @@ insert into core.semesters (code, name_en, name_ar, starts_on, ends_on) values
 update core.settings set value = '0' where key = 'membership.founding_voters';
 -- </preamble>
 
-select plan(12);
+select plan(13);
 
 select pg_temp.make_user('00000000-0000-0000-0000-0000000070a1', 'volunteer@auib.edu.iq', 'Volunteer');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000070a2', 'stage.lead@auib.edu.iq', 'Stage Lead');
@@ -130,10 +130,10 @@ select pg_temp.login_as('00000000-0000-0000-0000-0000000070a2');
 select is((select note from programmes.opening_replies), 'I have a camera', 'The program''s managers read the replies');
 
 select pg_temp.logout();
+select ok(private.daily_notices() >= 1, 'The daily notices run');
 select ok(
-  exists (select 1 from core.outbox o where o.kind = 'programmes.opening_reply'
-    and o.payload->>'opening_id' = '0be00000-0000-0000-0000-0000000070b1'),
-  'and are told of each one'
+  exists (select 1 from core.outbox o where o.kind = 'programmes.replies_digest'),
+  'and tell them of the replies in one digest a day'
 );
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000070a1');
