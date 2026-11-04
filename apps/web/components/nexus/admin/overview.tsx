@@ -263,8 +263,11 @@ const QuickActions = () => {
   ));
 };
 
-/** Where the team's own papers are: the Notion workspace and the handbook. */
-const NotionLinks = () => {
+/**
+ * Where the team's own papers are: the design system here in the Diwan,
+ * then the Notion workspace and the handbook.
+ */
+const PaperLinks = () => {
   const tn = useTranslations("nexus.nav");
   const tc = useTranslations("common");
   const workspace = useTeamWorkspace();
@@ -278,11 +281,14 @@ const NotionLinks = () => {
       ? [{ href: handbook.templates, key: "templates" } as const]
       : []),
   ];
-  if (links.length === 0) {
-    return null;
-  }
   return (
     <p className="flex flex-wrap gap-x-6 gap-y-2">
+      <Link
+        className="text-sm underline-offset-4 hover:underline"
+        href="/design"
+      >
+        {tn("designSystem")}
+      </Link>
       {links.map((link) => (
         <a
           className="inline-flex items-center gap-1.5 text-sm underline-offset-4 hover:underline"
@@ -360,7 +366,7 @@ export const AdminOverview = () => {
     <div className="grid gap-14">
       <div className="grid gap-4">
         <AdminHeading actions={<QuickActions />} title={t("title")} />
-        <NotionLinks />
+        <PaperLinks />
       </div>
       {figures.length === 0 && !o.campaigns ? (
         <p className="type-body text-text-secondary">{t("nothing")}</p>

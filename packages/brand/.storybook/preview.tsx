@@ -5,7 +5,7 @@ import type { Preview } from "@storybook/react";
 import "@repo/design-system/styles/globals.css";
 
 /**
- * The brand kit (SAL-BRD-01). Light and dark mode (ink, data-theme="dark")
+ * The design system (SAL-BRD-01). Light and dark mode (ink, data-theme="dark")
  * across the site and the Diwan: every story can be checked in both modes
  * (Theme) and in both directions (Direction).
  */
@@ -63,7 +63,24 @@ const preview: Preview = {
       storySort: {
         order: [
           "Guide",
-          ["Introduction", "Brand book"],
+          [
+            "Introduction",
+            "Principles",
+            "The logo",
+            "Color",
+            "Type",
+            "Space, icons and interface parts",
+            "Screens",
+            "Qirtas",
+            "The family of programs",
+            "Documents and forms",
+            "Social and print",
+            "Hudhud",
+            "Voice",
+            "Photography",
+            "Files and templates",
+            "Rules in short",
+          ],
           "Foundations",
           ["Color", "Type", "Space and shape", "Icons"],
           "Logos",

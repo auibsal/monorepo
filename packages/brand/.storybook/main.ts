@@ -12,11 +12,10 @@ const getAbsolutePath = (value: string) =>
   dirname(require.resolve(join(value, "package.json")));
 
 /**
- * The brand kit, SAL-BRD-01, published at auibsal.org/brand (owner, Nov 4,
- * 2026). `bun run build:site` builds it into apps/web/public/_brand and
- * gives its pages <base href="/brand/"> (scripts/base.ts); the site serves
- * it at /brand. Every path in the stories is relative ("brand-kit/…",
- * "brand/…"), so the same stories work in `bun run dev` at the root.
+ * The design system, SAL-BRD-01, in the Diwan at /diwan/design (owner, Nov
+ * 4, 2026). `bun run build:site` builds it into apps/web/public/_design,
+ * which the Diwan's page frames. Every path in the stories is relative
+ * ("brand-kit/…", "brand/…"), so the same stories work in `bun run dev`.
  */
 const config: StorybookConfig = {
   addons: [
@@ -32,7 +31,7 @@ const config: StorybookConfig = {
   staticDirs: [
     { from: "../assets/logos", to: "/brand" },
     { from: "../assets/mascot", to: "/mascot" },
-    // The brand kit's own files: tokens, CSS, fonts, icons, the social
+    // The design system's own files: tokens, CSS, fonts, icons, the social
     // templates and their PNGs, and the printables, for viewing and download.
     { from: "../assets", to: "/brand-kit" },
     // The sign-in emails' templates (Emails/Sign-in).

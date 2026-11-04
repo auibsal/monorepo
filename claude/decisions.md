@@ -354,8 +354,9 @@ Where an earlier line above is marked as replaced, the later section holds. What
 - **The officers on record:** Fajer Ezzet (Vice President); Mohammed-Ali Ohmaid, Editor of Qirtas, on the Council.
 - **SAL-PLT-10 stays retired** with the public API; ten website policies are published.
 
-## 24. The brand kit (decided Nov 4, 2026)
-- **`packages/brand` is the single source of SAL-BRD-01:** the brand book, tokens, fonts, icons, logos, Hudhud, the social templates and the printables. The apps take tokens, components and emails from the packages it is built from.
-- **Published at auibsal.org/brand,** public and read-only, with downloads, and not indexed until it is reviewed; /design goes there (the one redirect, the owner's own).
+## 24. The design system (decided Nov 4, 2026)
+- **`packages/brand` is the single source of SAL-BRD-01:** its guide, tokens, fonts, icons, logos, Hudhud, the social templates and the printables. The apps take tokens, components and emails from the packages it is built from.
+- **Part of the Diwan, at /diwan/design,** linked from the Desk; read-only, with downloads, never indexed. There is no /brand and no /design.
+- **No PDF:** what SAL-BRD-01's PDF held is the design system's Guide, one page per part; the PDF is removed.
 - **Its sections, in order:** Guide, Foundations, Logos, Components, Emails, Social, Print.
 

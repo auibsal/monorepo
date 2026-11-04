@@ -6,10 +6,11 @@ own versions in the Library.
 
 ## Unreleased
 
-- The brand kit at auibsal.org/brand: the brand book, foundations,
-  logos, components, every email (the sign-in emails too), the social
-  files as PNGs and the printables as a PDF, from `packages/brand`
-  (was `packages/storybook` and `brand/`). /design goes there.
+- The design system in the Diwan (/diwan/design, linked from the Desk):
+  SAL-BRD-01 in full as its Guide (the PDF is gone), foundations, logos,
+  components, every email (the sign-in emails too), the social files as
+  PNGs and the printables as a PDF, from `packages/brand` (was
+  `packages/storybook` and `brand/`).
 - The Diwan in three rooms: events, programs, documents and minutes are
   written in Notion and published to the site; an Arabic edition is its
   own row; the officers' copy in Notion shows each seat's full title.

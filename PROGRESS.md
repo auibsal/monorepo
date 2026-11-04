@@ -7,13 +7,18 @@ first session); section numbers (§) refer to it.
 
 Branch: `claude/new-session-qosn60`.
 
-## The brand kit (2026-11-04)
+## The design system (2026-11-04)
 
 - [x] `packages/storybook` and `brand/` are one package, `packages/brand`:
-  the brand book, `assets/` (tokens, fonts, icons, logos, mascot, social,
-  print) and the Storybook; the token and icon generators read from it.
-- [x] Sections in the owner's order: Guide (Introduction; the brand book,
-  rendered from `BRAND-BOOK.md`, and its PDF), Foundations (color, type,
+  the guide, the rules in short (`BRAND-BOOK.md`), `assets/` (tokens,
+  fonts, icons, logos, mascot, social, print) and the Storybook; the
+  token and icon generators read from it.
+- [x] SAL-BRD-01's PDF is the Guide, one page per part (`guide/`:
+  principles, the logo, color, type, space, icons and interface parts,
+  screens, Qirtas, programs, documents and forms, social and print,
+  Hudhud, voice, photography, files); the PDF is removed. "The Green
+  Room" reads as the Diwan group.
+- [x] Sections in the owner's order: Guide, Foundations (color, type,
   space and shape, icons, from `tokens.json`), Logos (each file with its
   download), Components (brand, screens, Hudhud), Emails (the platform's
   and the eight sign-in emails from the Supabase templates, both
@@ -24,20 +29,21 @@ Branch: `claude/new-session-qosn60`.
   and printables, with the fonts from Google Fonts and the kit's own
   Ubuntu Arabic; "the Callboard" is Get involved and "the Qirtas Prizes"
   the Qirtas Awards; every PNG and the PDF rendered again.
-- [x] Built into the site at /brand (`build:site`, public/_brand,
-  rewrites), `X-Robots-Tag: noindex` and robots.txt until reviewed;
-  /design goes to /brand (owner, Nov 4, 2026).
-- [ ] Owner: review the kit, then drop the noindex header and the robots
-  line.
-- [ ] Missing from the kit: the Qirtas Edition's layout specs (none
-  exist yet; Media designs the Edition), the Charter and Open Call
-  posters (sizes only), camera-shy stickers (size only), Arabic posts
-  and stories as files (the templates show them), a Hudhud sticker
-  sheet download. TODO(content).
-- [ ] SAL-BRD-01's own text still says "the Diwan (the members'
-  portal)" under Screens and points to "the PDF in Other"; the logos
-  README calls the bilingual lockup "for anything public" where the book
-  keeps it for signage. Ratified text: the owner amends it.
+- [x] Part of the Diwan at /diwan/design (owner, Nov 4, 2026), linked
+  from the Desk: the build in public/_design (`build:site`), framed by
+  the page, `X-Robots-Tag: noindex`, `X-Frame-Options: SAMEORIGIN` and
+  robots.txt. No /brand, no /design.
+- [ ] The built files under /_design are static: the Diwan's page is for
+  officers, but the files themselves need no sign-in to load.
+- [ ] Missing: the Qirtas Edition's layout specs (none exist yet; Media
+  designs the Edition), the Charter and Open Call posters (sizes only),
+  camera-shy stickers (size only), Arabic posts and stories as files
+  (the templates show them), a Hudhud sticker sheet download.
+  TODO(content).
+- [ ] The logos README calls the bilingual lockup "for anything public"
+  where the Guide keeps it for signage.
+- [ ] needs-native-review: `nexus.admin.design` and `nexus.nav.designSystem`
+  (Arabic).
 
 ## The Diwan in three rooms (2026-11-04)
 

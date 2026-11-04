@@ -199,7 +199,8 @@
       "callboard": "Get involved",
       "record": "Record",
       "settings": "Settings",
-      "templates": "Templates and papers"
+      "templates": "Templates and papers",
+      "designSystem": "Design system"
     },
     "errors": {
       "loadFailed": "We couldn't load this. Check your connection and try again.",
@@ -2943,7 +2944,12 @@
         "roleFor": "{role} for {person}"
       },
       "noAccessTitle": "Not in your roles",
-      "noAccessGo": "Go to what you can open here"
+      "noAccessGo": "Go to what you can open here",
+      "design": {
+        "title": "Design system",
+        "lede": "SAL-BRD-01, Brand and Identity, in full: the guide, colors, type, logos, components and every email, and the social and print files to download.",
+        "open": "Open in a new tab"
+      }
     },
     "editor": {
       "toolbar": "Formatting",

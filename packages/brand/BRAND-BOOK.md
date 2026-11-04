@@ -1,6 +1,6 @@
 Use this system for anything carrying the Society's name: screens, posts, documents and print. The Society sounds like a well-read friend: warm, precise and never grand. It looks like the best-made page on campus: wide margins, light type, one crimson mark. Modern in its restraint, literary in its words, and plainly part of AUIB.
 
-This is SAL-BRD-01, Brand and Identity, Version 1, ratified by the Society. The full guide is the PDF in Other.
+This is SAL-BRD-01, Brand and Identity, Version 1, ratified by the Society, in short. The full guide is the design system's Guide, in the Diwan at /diwan/design (`packages/brand/guide`).
 
 ## Three principles
 
@@ -65,7 +65,7 @@ This is SAL-BRD-01, Brand and Identity, Version 1, ratified by the Society. The 
 
 ## Screens
 
-- **Grounds.** One ground for the whole platform, public site and the Diwan (the members' portal) alike, in two modes: light is white; dark is ink. The visitor's system setting picks the mode until they choose. The footer is ink in both. Qirtas pages sit on `paper`. Certificates and printouts stay white sheets in dark mode.
+- **Grounds.** One ground for the whole platform, public site, the members' pages and the Diwan alike, in two modes: light is white; dark is ink. The visitor's system setting picks the mode until they choose. The footer is ink in both. Qirtas pages sit on `paper`. Certificates and printouts stay white sheets in dark mode.
 - **Header.** One line: the lockup in the page's language (English lockup on `/`, Arabic lockup on `/ar`), at most five sections, the other language as a text link (العربية or English) and Sign in. A hairline below it. Nothing boxed.
 - **Section titles** stand alone: the title, and at most a text link at the end of its line. No marker, no label or kicker above it.
 - **One language per page.** The English site is English only and the Arabic site Arabic only, mirrored. The motto appears as "The paper and the pen." on English pages and «والقرطاسُ والقلم» on Arabic pages.

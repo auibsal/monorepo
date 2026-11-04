@@ -40,8 +40,9 @@ and decisions), and continue from the first unticked item.
     `RequireStaff`), in six sections, one row like Membership's
     (`adminSections` in `@repo/rbac`, `DiwanNav` and `SectionTabs` in
     `admin-shell.tsx`; owner, Oct 30, 2026): the Desk (`/diwan`: what
-    needs you, three quick actions, what happened, and the Connected panel
-    for Notion, Hudhud and email), What's on (`/diwan/events`, one page:
+    needs you, three quick actions, what happened, the Connected panel
+    for Notion, Hudhud and email, and the design system at
+    `/diwan/design`), What's on (`/diwan/events`, one page:
     the events with the programs linked above them, then pitches; each
     program an event series whose page is
     `/diwan/events/<slug>` like its public page, `EventOrProgram`, with
@@ -161,18 +162,20 @@ and decisions), and continue from the first unticked item.
   one header (`components/masthead.tsx` with the site's sections from
   `site-header.tsx`) and one footer (`components/footer.tsx`), so moving
   between them never feels like another app.
-- `packages/brand` — **the brand kit**, SAL-BRD-01 (owner, Nov 4, 2026):
-  the single source of the brand. `BRAND-BOOK.md`, and in `assets` the
-  tokens (`tokens.json`, from which the design system's `tokens.css` is
-  generated), fonts, icons, logos, Hudhud, the social templates with
-  their PNGs and the printables. Its Storybook is published, public and
-  read-only, at auibsal.org/brand (`/design` goes there; not indexed
-  until reviewed): Guide, Foundations, Logos, Components, Emails, Social,
-  Print. The web build runs `bun run --cwd packages/brand build:site`,
-  which builds it into `apps/web/public/_brand` (ignored by git); the
-  site rewrites `/brand` to it. The components and emails it shows are
-  imported from `@repo/design-system` and `@repo/email`, as the app
-  imports them.
+- `packages/brand` — **the design system**, SAL-BRD-01 (owner, Nov 4,
+  2026): the single source of the brand. The guide (`guide/`, SAL-BRD-01
+  in full, one Markdown page per part; there is no PDF), the rules in
+  short (`BRAND-BOOK.md`), and in `assets` the tokens (`tokens.json`,
+  from which `@repo/design-system`'s `tokens.css` is generated), fonts,
+  icons, logos, Hudhud, the social templates with their PNGs and the
+  printables. Its Storybook is part of the Diwan, at `/diwan/design`
+  (linked from the Desk; there is no /brand or /design): Guide,
+  Foundations, Logos, Components, Emails, Social, Print. The web build
+  runs `bun run --cwd packages/brand build:site`, which builds it into
+  `apps/web/public/_design` (ignored by git, never indexed, framed only
+  by the site); the Diwan's page frames it. The components and emails it
+  shows are imported from `@repo/design-system` and `@repo/email`, as
+  the app imports them.
 - The Society's documents are the Library, auibsal.org/library (`apps/web`;
   two shelves, owner, Oct 30, 2026: Society documents, and Website
   policies, the `SAL-PLT-` documents with the privacy page;
@@ -224,7 +227,7 @@ bun run check:i18n          # UI text that isn't in the messages files
 bun run check:unused        # unused files and dependencies (Knip)
 bun run db:start | db:reset | db:test | db:types
 bun run --cwd apps/e2e e2e   # Playwright journeys + axe (local stack running)
-bun run --cwd packages/brand dev       # the brand kit, locally (auibsal.org/brand)
+bun run --cwd packages/brand dev       # the design system, locally (the Diwan's /design)
 bun run --cwd packages/database db:test:sync     # copy the pgTAP preamble
 bun run --cwd packages/design-system tokens      # regenerate tokens.css
 bun run --cwd packages/design-system icons       # regenerate the icon data from packages/brand/assets/icons
