@@ -372,3 +372,4 @@ Where an earlier line above is marked as replaced, the later section holds. What
 - **`programmes.manage` is `programs.manage`.**
 - **No money in advertising** (SAL-PLT-06 as amended): no AdSense, no ad slots, no advertising cookie or consent choice (SAL-PLT-03).
 - **Brand:** the design system stays at /diwan/design for officers; the public sees the brand on the press page only. No document PDFs or files in the repository; the brand guide is the Storybook. The Charter poster, the Open Call poster and the camera-shy stickers are Storybook stories. `packages/brand` is the only brand package (`@repo/design-system` merged into it).
+- **Iraqi Arabic where we chat:** Hudhud, social captions and stories, the members' group and signs at the door speak Iraqi Arabic (spelled with گ); the site, the Diwan, emails, documents, certificates, Qirtas and the bot's Telegram profile stay in standard Arabic. Never both in one message.

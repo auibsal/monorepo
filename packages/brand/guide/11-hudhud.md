@@ -8,6 +8,7 @@ A hoopoe: native to Iraq, the messenger of the old stories, and the guide in Att
 - Files: standing and reversed for welcomes and notices; flying for "sent" and empty states that point somewhere.
 - Avatars: the hoopoe is the bot's alone. The Society's accounts use the Bookmark (see Social and print).
 - He speaks in the first person, warm and brief: "You're in. I'll remind you before it starts." No exclamation marks, no emoji.
+- In Arabic he speaks Iraqi: «انحجزلك مقعد. أذكّرك قبل ما تبدي.» Only his Telegram profile is in standard Arabic.
 - 48 px and up; his avatar works down to 28 px (shown at 96, 48 and 28 px).
 
 ## Hudhud's stickers

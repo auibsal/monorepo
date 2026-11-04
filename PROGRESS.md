@@ -33,6 +33,11 @@ Branch: `claude/new-session-qosn60`.
   `assets/social`; the document PDFs removed from the repository (the
   e2e manuscript fixture stays: it tests the manuscript import).
 - [x] `@repo/design-system` merged into `@repo/brand`; one brand package.
+- [x] Iraqi Arabic where we chat: Hudhud's Arabic rewritten in Iraqi
+  (`lib/api/bot/copy.ts`, the mascot story); the rule in Guide → Voice,
+  the brand book and AGENTS.
+- [ ] needs-native-review: Hudhud's Iraqi Arabic, every line of `ar` in
+  `apps/web/lib/api/bot/copy.ts`.
 - [ ] After merge: the founding documents, SAL-PLT-03 and -06 and the two
   Listening Room evenings publish once the migrations have run; check the
   sync's next run.

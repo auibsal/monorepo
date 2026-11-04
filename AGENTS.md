@@ -647,6 +647,13 @@ any schema change. Integration tests run against a local stack with
   (`SAL-…`, `F-…`), statuses, versions and ratification lines are internal
   and appear only in the admin. A later draft stays in the admin until it
   is adopted.
+- **Iraqi Arabic where we chat** (owner, Nov 4, 2026). Hudhud
+  (`lib/api/bot/copy.ts`), social captions and stories, the members' group
+  and signs at the door speak Iraqi Arabic, spelled as Iraqis write it (گ);
+  the site, the Diwan, emails, documents, certificates, Qirtas and the
+  bot's Telegram profile stay in standard Arabic. Never both in one
+  message (Guide → Voice, "Which Arabic"). Iraqi lines are
+  needs-native-review like any Arabic written here.
 - **One language per page.** The English pages carry no Arabic and the
   Arabic pages no English (owner, Oct 24, 2026); the only exceptions are
   the language switcher, fields meant for the other language, and a

@@ -149,7 +149,7 @@ export const Voice: Story = {
       </SalCard>
       <SalCard>
         <p className="type-body" lang="ar">
-          حُجز مقعدك. سأذكّرك قبل أن تبدأ.
+          انحجزلك مقعد. أذكّرك قبل ما تبدي.
         </p>
       </SalCard>
       <p className="type-caption">
