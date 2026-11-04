@@ -4,6 +4,7 @@ import { Link } from "@repo/internationalization/navigation";
 import {
   content,
   documents,
+  events,
   journal,
   localized,
   toPlainText,
@@ -139,6 +140,7 @@ export const SearchPage = async ({ params, searchParams }: SearchProps) => {
         </search>
       </PageHeader>
       {query && !long ? <p className="type-body">{t("short")}</p> : null}
+      {query ? null : <SearchStart locale={locale} />}
       {long ? (
         <section aria-live="polite" className="grid gap-4">
           <h2 className="type-heading">
@@ -180,6 +182,94 @@ export const SearchPage = async ({ params, searchParams }: SearchProps) => {
               </div>
             );
           })}
+        </section>
+      ) : null}
+    </div>
+  );
+};
+
+/**
+ * Before a search (design review C9): the newest from Qirtas and what is
+ * coming up, so the page opens on something to read or attend.
+ */
+const SearchStart = async ({ locale }: { locale: Locale }) => {
+  const t = await getTranslations({ locale, namespace: "web.search" });
+  const [lists, upcoming] = await Promise.all([
+    Promise.all(
+      journal.desks.map((desk) =>
+        readPublished(
+          ["journal"],
+          (c) => journal.deskPieces(c, desk, { limit: 6 }),
+          []
+        )
+      )
+    ),
+    readPublished(["events"], (c) => events.publicEvents(c, { limit: 6 }), []),
+  ]);
+  const recent = journal
+    .inLanguage(lists.flat(), locale)
+    .sort((a, b) => (b.published_at ?? "").localeCompare(a.published_at ?? ""))
+    .slice(0, 6);
+  const coming = upcoming ?? [];
+  if (recent.length + coming.length === 0) {
+    return null;
+  }
+  return (
+    <div className="grid gap-10 md:grid-cols-2">
+      {recent.length > 0 ? (
+        <section
+          aria-labelledby="search-recent"
+          className="grid content-start gap-3"
+        >
+          <h2 className="type-heading" id="search-recent">
+            {t("recent")}
+          </h2>
+          <ul className="grid border-line border-b">
+            {recent.map((p) => (
+              <li className="border-line border-t" key={p.id}>
+                <Link
+                  className="grid gap-1 py-3 hover:text-accent"
+                  href={journal.piecePath(p)}
+                >
+                  {p.published_at ? (
+                    <span className="type-caption">
+                      {formatLongDate(p.published_at, locale)}
+                    </span>
+                  ) : null}
+                  <span className="type-subheading">
+                    {localized(p, "title", locale)}
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
+      {coming.length > 0 ? (
+        <section
+          aria-labelledby="search-coming"
+          className="grid content-start gap-3"
+        >
+          <h2 className="type-heading" id="search-coming">
+            {t("coming")}
+          </h2>
+          <ul className="grid border-line border-b">
+            {coming.map((e) => (
+              <li className="border-line border-t" key={e.id}>
+                <Link
+                  className="grid gap-1 py-3 hover:text-accent"
+                  href={`/events/${e.slug}`}
+                >
+                  <span className="type-caption">
+                    {formatLongDate(e.starts_at, locale)}
+                  </span>
+                  <span className="type-subheading">
+                    {localized(e, "title", locale)}
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
         </section>
       ) : null}
     </div>

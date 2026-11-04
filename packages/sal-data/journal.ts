@@ -846,6 +846,10 @@ export const authorPage = async (client: Client, slug: string) => {
  * pieces written in English (or in both), the Arabic site those in Arabic.
  * Rows without a language (calls, editions) pass through.
  */
+/** Next Stop's team, from the roles people hold (design review C20). */
+export const nextStopTeam = async (client: Client) =>
+  unwrap(await journal(client).rpc("next_stop_team")) ?? [];
+
 /** The public event a piece came from (design review C16), or null. */
 export const pieceEvent = async (client: Client, eventId: string | null) =>
   eventId
