@@ -4396,7 +4396,13 @@
         "after": "Read on",
         "next": "Next",
         "inEdition": "In the Edition"
-      }
+      },
+      "contents": "Contents",
+      "launchPage": "The launch page",
+      "otherEditions": "Other Editions",
+      "previousEdition": "The Edition before",
+      "nextEdition": "The Edition after",
+      "theEdition": "The Edition"
     },
     "about": {
       "title": "About the Society",

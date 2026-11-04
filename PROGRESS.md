@@ -7,6 +7,21 @@ first session); section numbers (§) refer to it.
 
 Branch: `claude/reading-and-diwan` (PR 3 of the design review).
 
+## The design review: PR 4a, the Edition as a book (2026-11-04)
+
+- [x] C12 The Edition's page: cover (scan or typographic), print line,
+  letter, contents by section with names, the Editions before and after.
+- [x] A22 `/qirtas/editions/<slug>/launch`: large type, contents and
+  Launch Night (from `journal.edition_launch()`).
+- [x] A3 The cover morphs from the shelf to the page (React
+  `ViewTransition`), only where supported and without reduced motion.
+- [x] C13 The front page keeps `front_rank`; the fallback takes the
+  newest from all six sections, not News alone.
+- needs-native-review: `web.journal` contents, launchPage, otherEditions,
+  previousEdition, nextEdition, theEdition.
+- Next: PR 4b (C16, A5/A19, A6, A7, A13, A14, A20), 4c (C17, C20, A9/C22,
+  C9, C24), 4d (C3, A31, A32, A35), 4e (C5, C7, C26, A8).
+
 ## The design review: PR 3, reading and the Diwan (2026-11-04)
 
 - [x] C25 A decision needs its reason: the database refuses a blank one

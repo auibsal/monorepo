@@ -534,6 +534,19 @@
     }
   }
 }
+/* An Edition's cover moving from the shelf to its page (React's ViewTransition, `share="morph"`). */
+::view-transition-group(.morph) {
+  animation-duration: var(--sal-duration-slow);
+  animation-timing-function: var(--sal-ease-standard);
+}
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}
+
 @keyframes sal-reading-progress {
   from {
     transform: scaleX(0);

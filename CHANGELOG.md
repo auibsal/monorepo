@@ -6,6 +6,11 @@ own versions in the Library.
 
 ## Unreleased
 
+- An Edition reads as a book: cover, contents page, and the Editions
+  before and after; each Edition has a launch page. Covers move from the
+  shelf to the page where the browser can.
+- With nothing set as front, the Qirtas front page leads with the newest
+  from all six sections.
 - Articles: a reading progress line, a text size choice, and the next
   piece and its Edition at the end.
 - The homepage names the next event and lists the six programs in large
