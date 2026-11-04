@@ -37,7 +37,7 @@ export const logos = {
     onDark: "/brand/sal-lockup-stacked-reversed.svg",
     onLight: "/brand/sal-lockup-stacked.svg",
   },
-  /** The symbol alone, once the name appears elsewhere (24 px tall minimum). */
+  /** The symbol alone, once the name appears elsewhere (16 px tall minimum, SAL-BRD-01). */
   symbol: {
     aspect: 864 / 1039,
     onDark: "/brand/sal-symbol-white.svg",

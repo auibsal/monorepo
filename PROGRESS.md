@@ -40,8 +40,10 @@ Branch: `claude/new-session-qosn60`.
   camera-shy stickers (size only), Arabic posts and stories as files
   (the templates show them), a Hudhud sticker sheet download.
   TODO(content).
-- [ ] The logos README calls the bilingual lockup "for anything public"
-  where the Guide keeps it for signage.
+- [x] The logos README follows SAL-BRD-01: the bilingual lockup for
+  signage only, the minimum sizes (16 px / 5 mm), the ink avatar.
+- [x] Notion, Brand essentials: points to the design system in the Diwan
+  (no PDF); the ink avatar is the Diwan group's.
 - [ ] needs-native-review: `nexus.admin.design` and `nexus.nav.designSystem`
   (Arabic).
 
