@@ -80,31 +80,16 @@ test("sign up with an AUIB address, confirm by email, finish setup", async ({
   ).toBeVisible();
   await expectAccessible(page);
 
-  // The optional details, one question at a time, each with Skip.
+  // The optional details are part of Profile (Nov 4, 2026).
   await page.getByRole("link", { name: /Tell us more about yourself/ }).click();
-  await expect(page).toHaveURL(/\/membership\/settings\/more/);
-  await expect(page.getByText("Question 1 of 7")).toBeVisible();
-  await page.getByRole("button", { name: "A student at AUIB" }).click();
-  await expect(
-    page.getByRole("button", { name: "A student at AUIB" })
-  ).toHaveAttribute("aria-pressed", "true");
-  await page.getByRole("button", { name: "Continue" }).click();
-  await expect(page.getByText("Question 2 of 8")).toBeVisible();
-  await expect(
-    page.getByRole("heading", { name: "What do you study?" })
-  ).toBeVisible();
-  await page.getByRole("button", { name: "Skip" }).click();
-  await page.getByRole("button", { name: "Poetry" }).click();
-  await page.getByRole("button", { name: "Theater" }).click();
-  await page.getByRole("button", { name: "Continue" }).click();
+  await expect(page).toHaveURL(/\/membership\/settings\/profile/);
+  const details = page.getByRole("region", { name: "More about you" });
+  await details.getByRole("radio", { name: "A student at AUIB" }).click();
+  await details.getByRole("checkbox", { name: "Poetry" }).check();
+  await details.getByRole("checkbox", { name: "Theater" }).check();
+  await details.getByRole("button", { name: "Save" }).click();
+  await expect(details.getByRole("status")).toHaveText("Saved.");
   await expectAccessible(page);
-  const thanks = page.getByRole("heading", { level: 1, name: "Thank you" });
-  // Skills, languages, about you, how you heard, then the last one.
-  for (const step of [4, 5, 6, 7, 8]) {
-    await expect(page.getByText(`Question ${step} of 8`)).toBeVisible();
-    await page.getByRole("button", { name: "Skip" }).click();
-  }
-  await expect(thanks).toBeVisible();
   const users = await admin().auth.admin.listUsers({ perPage: 1000 });
   const id = users.data.users.find((u) => u.email === email)?.id ?? "";
   const { data } = await admin()

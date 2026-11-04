@@ -19,6 +19,7 @@ import { MySignature } from "@/components/signature";
 import { callApi } from "@/lib/nexus/api";
 import { Link, useRouter } from "@/lib/nexus/navigation";
 import { useGrants } from "@/lib/nexus/queries";
+import { DiwanSection } from "../../page";
 import { OnTheSite } from "../../site-links";
 import { SectionSpinner } from "../../states";
 import { SectionTabs } from "../admin-shell";
@@ -38,6 +39,7 @@ import {
 } from "../kit";
 import { useMemberNames } from "../member-picker";
 import { memberName } from "../members/directory";
+import { VerificationQueue } from "../members/verification";
 import { PartnerPlaces } from "./places";
 
 const key = ["admin", "partners"];
@@ -460,6 +462,11 @@ export const PartnerPage = ({ partnerRef: ref }: { partnerRef: string }) => {
         initial={row}
         onDone={() => router.push("/people/partners")}
       />
+      {row ? (
+        <DiwanSection id="guests" title={t("guests")}>
+          <Affiliations partnerId={row.id} />
+        </DiwanSection>
+      ) : null}
     </div>
   );
 };
@@ -1032,12 +1039,12 @@ interface AffiliationRow {
   user_id: string;
 }
 
-const Affiliations = () => {
+/** A partner's guests, on the partner's page (Nov 4, 2026). */
+const Affiliations = ({ partnerId }: { partnerId: string }) => {
   const t = useTranslations("nexus.admin.partners.affiliations");
   const locale = useLocale() as Locale;
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
-  const partnerName = usePartnerNames();
   const affiliations = useQuery({
     queryFn: async () =>
       (unwrap(
@@ -1045,9 +1052,10 @@ const Affiliations = () => {
           .schema("governance")
           .from("partner_affiliations")
           .select("id, partner_id, user_id, status, note, created_at")
+          .eq("partner_id", partnerId)
           .order("created_at", { ascending: false })
       ) ?? []) as AffiliationRow[],
-    queryKey: [...key, "affiliations"],
+    queryKey: [...key, "affiliations", partnerId],
   });
   const rows = affiliations.data ?? [];
   const names = useMemberNames(rows.map((r) => r.user_id));
@@ -1103,11 +1111,6 @@ const Affiliations = () => {
 
   const columns: Column<AffiliationRow>[] = [
     { cell: (row) => nameOf(row.user_id), header: t("person"), key: "person" },
-    {
-      cell: (row) => partnerName(row.partner_id),
-      header: t("partner"),
-      key: "partner",
-    },
     {
       cell: (row) => <span dir="auto">{row.note}</span>,
       header: t("note"),
@@ -1397,7 +1400,8 @@ interface DeclarationRow {
   user_id: string;
 }
 
-const Declarations = () => {
+/** Officers' conflict-of-interest declarations: Society → Declarations. */
+export const Declarations = () => {
   const t = useTranslations("nexus.admin.partners.declarations");
   const tKinds = useTranslations("nexus.declarations.kinds");
   const locale = useLocale() as Locale;
@@ -1503,7 +1507,6 @@ const Declarations = () => {
   }
   return (
     <div className="grid gap-4">
-      <p className="type-body">{t("lede")}</p>
       <ErrorLine error={receive.error} />
       <DataTable
         columns={columns}
@@ -1518,12 +1521,11 @@ const Declarations = () => {
 // ── Page ────────────────────────────────────────────────────────────────────
 
 export const partnerViews = [
+  "applications",
   "register",
   "agreements",
-  "affiliations",
   "offers",
   "places",
-  "declarations",
 ] as const;
 export type PartnerView = (typeof partnerViews)[number];
 
@@ -1531,23 +1533,21 @@ const viewPath = (view: PartnerView) =>
   view === "register" ? "/people/partners" : `/people/partners/${view}`;
 
 /**
- * Partners, each view at its own address (/people/partners for the
- * register, /people/partners/agreements and so on), so an edit page can
- * return to the view it came from.
+ * Partners in one place (Nov 4, 2026): applications waiting for the
+ * President, the register (each partner's page holds its guests),
+ * memoranda, perks and places, each view at its own address.
  */
 export const PartnersAdmin = ({ view }: { view?: PartnerView }) => {
   const t = useTranslations("nexus.admin.partners");
   const grants = useGrants();
   const canManage = hasPermissionAnywhere(grants.data, "partners.manage");
-  const canSeeDeclarations =
-    hasPermissionAnywhere(grants.data, "governance.manage") ||
-    hasPermissionAnywhere(grants.data, "partners.sign");
+  const canSign = hasPermissionAnywhere(grants.data, "partners.sign");
   const shown = partnerViews.filter((v) => {
     if (v === "agreements") {
       return true;
     }
-    if (v === "declarations") {
-      return canSeeDeclarations;
+    if (v === "applications") {
+      return canManage || canSign;
     }
     return canManage;
   });
@@ -1560,12 +1560,13 @@ export const PartnersAdmin = ({ view }: { view?: PartnerView }) => {
         label={t("title")}
         tabs={shown.map((v) => ({ href: viewPath(v), label: t(`tabs.${v}`) }))}
       />
+      {here === "applications" && (canManage || canSign) ? (
+        <VerificationQueue />
+      ) : null}
       {here === "register" && canManage ? <Register /> : null}
       {here === "agreements" ? <Agreements /> : null}
-      {here === "affiliations" && canManage ? <Affiliations /> : null}
       {here === "offers" && canManage ? <Offers /> : null}
       {here === "places" && canManage ? <PartnerPlaces /> : null}
-      {here === "declarations" && canSeeDeclarations ? <Declarations /> : null}
     </div>
   );
 };

@@ -11,11 +11,10 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 import { MySignature, Signature } from "@/components/signature";
-import { Link } from "@/lib/nexus/navigation";
 import { useGrants } from "@/lib/nexus/queries";
 import { DiwanSection } from "../../page";
 import { ErrorState, SectionSpinner } from "../../states";
-import { AdminHeading, ConfirmAction, ErrorLine, Field } from "../kit";
+import { ConfirmAction, ErrorLine, Field } from "../kit";
 import { memberName } from "./directory";
 
 interface Request {
@@ -290,11 +289,12 @@ const EarlierRequests = () => {
 
 /**
  * The Society verifies partners; partners verify their own people (owner,
- * Oct 31, 2026). What waits here is partner applications.
+ * Oct 31, 2026). What waits here is partner applications: the first view
+ * of Partners (/people/partners/applications; Nov 4, 2026, one place for
+ * partners).
  */
 export const VerificationQueue = () => {
   const t = useTranslations("nexus.admin.verification");
-  const tk = useTranslations("nexus.admin.kit");
   const { supabase } = useAuth();
   const applications = useQuery({
     queryFn: async () =>
@@ -326,16 +326,7 @@ export const VerificationQueue = () => {
 
   return (
     <div className="grid gap-6">
-      <AdminHeading
-        actions={
-          <Link className="text-sm underline underline-offset-4" href="/people">
-            {tk("back")}
-          </Link>
-        }
-        title={t("title")}
-      >
-        {t("lede")}
-      </AdminHeading>
+      <p className="type-body">{t("lede")}</p>
       {applications.data.length === 0 ? (
         <p className="type-body text-text-secondary">{t("empty")}</p>
       ) : (

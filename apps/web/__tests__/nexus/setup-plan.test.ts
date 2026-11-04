@@ -1,9 +1,6 @@
 import { membership } from "@repo/sal-data";
 import { describe, expect, test } from "vitest";
-import {
-  detailsThin,
-  moreSteps,
-} from "@/components/nexus/profile/tell-us-more";
+import { detailsThin } from "@/components/nexus/profile/tell-us-more";
 import { planSetup } from "@/components/nexus/setup-form";
 
 const blank = { father: "", first: "", grandfather: "", last: "" };
@@ -74,14 +71,6 @@ describe("setup, one question per screen", () => {
 });
 
 describe("Tell us more", () => {
-  test("study is asked only of AUIB students and graduates", () => {
-    const base = membership.emptyDetails;
-    expect(moreSteps(base)).not.toContain("study");
-    expect(moreSteps({ ...base, affiliation: "student" })).toContain("study");
-    expect(moreSteps({ ...base, affiliation: "alumni" })).toContain("study");
-    expect(moreSteps({ ...base, affiliation: "staff" })).not.toContain("study");
-  });
-
   test("Today offers it until there are interests or skills", () => {
     expect(detailsThin(membership.emptyDetails)).toBe(true);
     expect(
