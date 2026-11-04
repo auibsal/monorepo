@@ -61,4 +61,4 @@ begin
 end;
 $$;
 
-delete from access.permissions where key = 'programmes.manage';
+delete from access.permissions where key in ('programmes.manage');
