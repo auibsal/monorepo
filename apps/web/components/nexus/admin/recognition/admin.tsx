@@ -698,7 +698,7 @@ export const RecognitionAdmin = ({
   const grants = useGrants();
   const canConfirm =
     hasPermissionAnywhere(grants.data, "members.manage") ||
-    hasPermissionAnywhere(grants.data, "programmes.manage");
+    hasPermissionAnywhere(grants.data, "programs.manage");
   const canTotals = hasPermissionAnywhere(grants.data, "members.manage");
   const canCertificates =
     hasPermissionAnywhere(grants.data, "certificates.prepare") ||

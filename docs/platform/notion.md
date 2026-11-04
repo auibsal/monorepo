@@ -44,7 +44,7 @@ every fifteen minutes with the cron secret, runs these steps in order
 3. **Programs** (`programs.ts`): rows with Status **Ready to publish**
    give their program's name, summary and rhythm to `core.programmes`; the
    site builds `/events/<program>` from them. A program keeps its address.
-   Needs `programmes.manage` (the Director of Programs, or the program's
+   Needs `programs.manage` (the Director of Programs, or the program's
    Lead for their own).
 4. **Events** (`publish.ts`): **Ready to publish** checks the row
    (`rules.ts`: title, start time, lengths, slug, program) and publishes

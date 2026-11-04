@@ -43,14 +43,14 @@ export const adminModules = [
       "charity.ledger.signoff",
     ],
   },
-  { key: "programs", permissions: ["programmes.manage"] },
+  { key: "programs", permissions: ["programs.manage"] },
   // Hiring (owner, Oct 30, 2026): Membership runs every role's applications;
   // each owner (a program, the Editor, a director) picks for their own.
   {
     key: "hiring",
     permissions: [
       "members.manage",
-      "programmes.manage",
+      "programs.manage",
       "journal.manage",
       "content.manage",
       "partners.manage",
@@ -66,7 +66,7 @@ export const adminModules = [
       "certificates.sign",
       "certificates.countersign",
       "members.manage",
-      "programmes.manage",
+      "programs.manage",
     ],
   },
   {
@@ -82,7 +82,7 @@ export const adminModules = [
     key: "forms",
     permissions: [
       "members.manage",
-      "programmes.manage",
+      "programs.manage",
       "events.manage",
       "content.manage",
       "governance.manage",

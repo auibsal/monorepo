@@ -57,8 +57,8 @@ const picks = (
   switch (owner) {
     case "program":
       return programmeId
-        ? hasPermission(grants, "programmes.manage", "programme", programmeId)
-        : hasPermission(grants, "programmes.manage");
+        ? hasPermission(grants, "programs.manage", "programme", programmeId)
+        : hasPermission(grants, "programs.manage");
     case "qirtas":
       return hasPermission(grants, "journal.manage");
     case "media":
@@ -210,7 +210,7 @@ const NewRole = () => {
   const grants = useGrants();
   const queryClient = useQueryClient();
   const router = useRouter();
-  const programs = useProgrammeOptions("programmes.manage");
+  const programs = useProgrammeOptions("programs.manage");
   const roles = useHiredRoles();
   const blank = {
     body: { ar: "", en: "" },

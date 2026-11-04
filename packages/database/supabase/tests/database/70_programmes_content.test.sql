@@ -123,7 +123,7 @@ select throws_ok(
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000f1');
 select lives_ok(
   $$ select programmes.moderate_six_words(id, false) from programmes.six_words $$,
-  'A programmes.manage holder can take a card down'
+  'A programs.manage holder can take a card down'
 );
 
 select pg_temp.login_anon();

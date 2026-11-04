@@ -29,7 +29,7 @@ export const permissions = [
   "charity.manage",
   "charity.ledger.write",
   "charity.ledger.signoff",
-  "programmes.manage",
+  "programs.manage",
   "governance.manage",
   "governance.minutes.write",
   "elections.manage",

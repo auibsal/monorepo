@@ -867,7 +867,7 @@ export const QirtasNewsroom = ({ desk }: { readonly desk?: journal.Desk }) => {
       {writes ? <Newsroom desk={desk} /> : null}
       {desk === undefined && reads ? <PipelineAdmin embedded /> : null}
       {desk === "video" &&
-      (has("programmes.manage") || has("journal.edit.video")) ? (
+      (has("programs.manage") || has("journal.edit.video")) ? (
         <NextStopAdmin />
       ) : null}
       {desk === "games" && puzzles ? <Puzzles /> : null}

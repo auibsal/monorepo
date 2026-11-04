@@ -320,7 +320,7 @@ const submissionTitle = async (admin: AdminClient, submissionId: unknown) => {
   return data?.title ?? null;
 };
 
-/** Holders of programmes.manage for the program (or globally). */
+/** Holders of programs.manage for the program (or globally). */
 /** Everyone holding a permission, globally or for one scope. */
 const holders = async (
   admin: AdminClient,
@@ -339,7 +339,7 @@ const holders = async (
 };
 
 const programmeManagers = (admin: AdminClient, programmeId: unknown) =>
-  holders(admin, "programmes.manage", { id: programmeId, type: "programme" });
+  holders(admin, "programs.manage", { id: programmeId, type: "programme" });
 
 const isFailedJob = (x: unknown): x is FailedJob =>
   typeof x === "object" &&

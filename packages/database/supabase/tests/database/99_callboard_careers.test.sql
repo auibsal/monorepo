@@ -171,13 +171,13 @@ select lives_ok(
   'The Director of Programs posts a First Ink place for any program'
 );
 select ok(
-  access.has_permission('programmes.manage', 'programme', (select id from core.programmes where slug = 'salon'))
+  access.has_permission('programs.manage', 'programme', (select id from core.programmes where slug = 'salon'))
   and access.has_permission('events.manage', 'programme', (select id from core.programmes where slug = 'company')),
   'and holds the program permissions for every program'
 );
 select ok(
   not exists (select 1 from access.role_permissions
-    where role = 'director' and permission in ('programmes.manage', 'events.manage')),
+    where role = 'director' and permission in ('programs.manage', 'events.manage')),
   'Other directors do not manage programs'
 );
 

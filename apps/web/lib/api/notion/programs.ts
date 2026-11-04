@@ -26,7 +26,7 @@ import { checkProgram, editionOf, languageOf } from "./rules";
  * them; an Arabic edition row gives their Arabic. Rows keep the page ids
  * the Events and Projects databases link to, matched to core.programmes
  * through core.notion_links. The person who set the status needs
- * programmes.manage in the Diwan.
+ * programs.manage in the Diwan.
  */
 
 const READY = "Ready to publish";
@@ -38,7 +38,7 @@ const publisherFor = async (
 ) => {
   const { data } = await ctx.admin.schema("access").rpc("notion_publisher", {
     email,
-    permission: "programmes.manage",
+    permission: "programs.manage",
     scope_id: programmeId ?? undefined,
     scope_type: programmeId ? "programme" : "global",
   });
@@ -79,7 +79,7 @@ const publishEnglish = async (
   const publisher = await publisherFor(ctx, email, existing);
   if (!publisher) {
     await needsChanges(ctx, page, [
-      `${email} does not hold programmes.manage in the Diwan${existing ? " for this program" : ""}. Ask the Director of Programs to set Ready to publish.`,
+      `${email} does not hold programs.manage in the Diwan${existing ? " for this program" : ""}. Ask the Director of Programs to set Ready to publish.`,
     ]);
     return;
   }
@@ -152,7 +152,7 @@ const publishArabic = async (
   const publisher = await publisherFor(ctx, email, programmeId);
   if (!publisher) {
     await needsChanges(ctx, page, [
-      `${email} does not hold programmes.manage in the Diwan for this program.`,
+      `${email} does not hold programs.manage in the Diwan for this program.`,
     ]);
     return;
   }

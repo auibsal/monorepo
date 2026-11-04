@@ -1236,7 +1236,7 @@ const Removals = () => {
  */
 export const ProgramLinks = () => {
   const t = useTranslations("nexus.admin.programmes");
-  const options = useProgrammeOptions("programmes.manage");
+  const options = useProgrammeOptions("programs.manage");
   const listed = options.options.filter((p) =>
     programmes.isListedProgram({ is_active: p.isActive, slug: p.slug })
   );
@@ -1263,7 +1263,7 @@ export const ProgramPitches = () => {
   const t = useTranslations("nexus.admin.programmes");
   const grants = useGrants();
   // Only those who answer pitches see them (the Director of Programs).
-  if (!hasPermissionAnywhere(grants.data, "programmes.manage")) {
+  if (!hasPermissionAnywhere(grants.data, "programs.manage")) {
     return null;
   }
   return (
@@ -1291,7 +1291,7 @@ export const ProgramPage = ({
   readonly tab?: ProgramTab;
 }) => {
   const t = useTranslations("nexus.admin.programmes");
-  const options = useProgrammeOptions("programmes.manage");
+  const options = useProgrammeOptions("programs.manage");
   const grants = useGrants();
   if (options.isPending || grants.isPending) {
     return <SectionSpinner />;
@@ -1388,7 +1388,7 @@ const ProgramRecord = ({
   readonly title: string;
 }) => {
   const t = useTranslations("nexus.admin.programmes");
-  const options = useProgrammeOptions("programmes.manage");
+  const options = useProgrammeOptions("programs.manage");
   if (options.isPending) {
     return <SectionSpinner />;
   }
