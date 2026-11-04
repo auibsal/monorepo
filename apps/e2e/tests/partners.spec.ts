@@ -98,6 +98,9 @@ test("an organization applies, the President signs, and its dashboard opens", as
     applicant.getByText("Asked for, and waiting for the Society.")
   ).toBeVisible();
   await applicant.getByRole("link", { name: "Perks" }).click();
+  // A new perk opens its own page; adding it returns to Perks.
+  await applicant.getByRole("link", { name: "Add a perk" }).click();
+  await expect(applicant).toHaveURL(/\/partners\/dashboard\/perks\/new$/);
   await applicant
     .getByRole("group", { name: "Offer" })
     .getByLabel("English")
@@ -107,6 +110,7 @@ test("an organization applies, the President signs, and its dashboard opens", as
     .getByLabel("English")
     .fill("Show your membership card at the door.");
   await applicant.getByRole("button", { name: "Add perk" }).click();
+  await expect(applicant).toHaveURL(/\/partners\/dashboard\/perks$/);
   await expect(
     applicant.getByText(`Free entry to readings ${stamp}`)
   ).toBeVisible();

@@ -12,13 +12,14 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useId, useState } from "react";
 import { DateInput } from "@/components/fields/date-input";
-import { Link } from "@/lib/nexus/navigation";
+import { Link, useRouter } from "@/lib/nexus/navigation";
 import {
   BilingualField,
   ConfirmAction,
   DateTimeField,
   ErrorLine,
   Field,
+  NewLink,
   SaveButton,
   SelectInput,
 } from "../kit";
@@ -137,11 +138,9 @@ export const Openings = ({
   programmeId: string;
 }) => {
   const t = useTranslations("nexus.admin.programmes.callboard");
-  const tj = useTranslations("nexus.admin.journal");
   const locale = useLocale() as Locale;
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
-  const [form, setForm] = useState(blank);
   const queryKey = ["admin", "programmes", "openings", programmeId];
 
   const list = useQuery({
@@ -164,47 +163,8 @@ export const Openings = ({
   const names = useMemberNames(
     (list.data ?? []).flatMap((o) => o.opening_replies.map((r) => r.user_id))
   );
-  const partners = useQuery({
-    enabled: namesPartner(form.kind),
-    queryFn: async () =>
-      unwrap(await supabase.schema("governance").rpc("partner_names")) ?? [],
-    queryKey: ["admin", "partner-names"],
-  });
   const refresh = () => queryClient.invalidateQueries({ queryKey });
 
-  const add = useMutation({
-    mutationFn: async () => {
-      const place = withRota(form.kind);
-      const opening = unwrap(
-        await supabase
-          .schema("programmes")
-          .from("openings")
-          .insert(openingRow(form, programmeId))
-          .select("id")
-          .single()
-      );
-      // Its sessions: a rota of its own, whose shifts count as service.
-      if (place && opening) {
-        unwrap(
-          await supabase
-            .schema("programmes")
-            .from("rotas")
-            .insert({
-              ends_on: form.term_to || null,
-              opening_id: opening.id,
-              programme_id: programmeId,
-              starts_on: form.term_from || null,
-              title_ar: form.title.ar,
-              title_en: form.title.en,
-            })
-        );
-      }
-    },
-    onSuccess: async () => {
-      setForm(blank);
-      await refresh();
-    },
-  });
   const close = useMutation({
     mutationFn: async ({ id, open }: { id: string; open: boolean }) =>
       unwrap(
@@ -254,14 +214,189 @@ export const Openings = ({
     onSuccess: refresh,
   });
 
+  return (
+    <div className="grid gap-8">
+      <p className="type-body max-w-3xl text-text-secondary">{t("lede")}</p>
+      <NewLink href={`${base}/new`}>{t("new")}</NewLink>
+
+      <ul className="grid divide-y divide-line">
+        {list.data?.length === 0 ? (
+          <li className="type-body py-3 text-text-secondary">{t("empty")}</li>
+        ) : null}
+        {list.data?.map((o) => (
+          <li className="grid gap-2 py-4" key={o.id}>
+            <div className="flex flex-wrap items-baseline justify-between gap-3">
+              <p className="type-subheading">
+                <Link className="hover:underline" href={`${base}/${o.id}`}>
+                  {localized(o, "title", locale)}
+                </Link>
+                {o.kind === "role"
+                  ? ""
+                  : ` · ${t(`kinds.${o.kind as OpeningKind}`)}`}
+              </p>
+              <p className="type-caption">
+                {o.is_open ? t("open") : t("closed")}
+                {o.closes_at
+                  ? ` · ${t("closesOn", { date: formatLongDate(o.closes_at, locale) })}`
+                  : ""}
+              </p>
+            </div>
+            <p className="type-caption">
+              {t("replies", { count: o.opening_replies.length })}
+            </p>
+            <ul className="grid gap-1">
+              {o.opening_replies.map((r) => {
+                const person = names.data?.find((n) => n.id === r.user_id);
+                const placed = o.placements.find(
+                  (pl) => pl.user_id === r.user_id && pl.status !== "withdrawn"
+                );
+                return (
+                  <li
+                    className="flex flex-wrap items-center gap-x-4 gap-y-1"
+                    key={r.user_id}
+                  >
+                    <span className="type-body">
+                      {person ? memberName(person, locale) : "—"}
+                      {r.note ? ` · ${r.note}` : ""}
+                      {placed
+                        ? ` · ${t(`placement.${placed.status as "active"}`)}`
+                        : ""}
+                    </span>
+                    {o.kind !== "role" && !placed ? (
+                      <Button
+                        disabled={give.isPending}
+                        onClick={() =>
+                          give.mutate({ openingId: o.id, userId: r.user_id })
+                        }
+                        size="sm"
+                        variant="ghost"
+                      >
+                        {t("give")}
+                      </Button>
+                    ) : null}
+                    {placed?.status === "active" &&
+                    o.kind === "apprenticeship" ? (
+                      <ConfirmAction
+                        confirmLabel={t("complete")}
+                        description={t("completeConfirm")}
+                        disabled={complete.isPending}
+                        onConfirm={() => complete.mutate(placed.id)}
+                        variant="ghost"
+                      >
+                        {t("complete")}
+                      </ConfirmAction>
+                    ) : null}
+                    {placed?.status === "active" ? (
+                      <Button
+                        disabled={withdraw.isPending}
+                        onClick={() => withdraw.mutate(placed.id)}
+                        size="sm"
+                        variant="ghost"
+                      >
+                        {t("withdraw")}
+                      </Button>
+                    ) : null}
+                  </li>
+                );
+              })}
+            </ul>
+            {o.is_open ? (
+              <ConfirmAction
+                confirmLabel={t("close")}
+                description={t("closeConfirm")}
+                disabled={close.isPending}
+                onConfirm={() => close.mutate({ id: o.id, open: false })}
+                variant="ghost"
+              >
+                {t("close")}
+              </ConfirmAction>
+            ) : (
+              <Button
+                className="justify-self-start"
+                disabled={close.isPending}
+                onClick={() => close.mutate({ id: o.id, open: true })}
+                size="sm"
+                variant="ghost"
+              >
+                {t("reopen")}
+              </Button>
+            )}
+          </li>
+        ))}
+      </ul>
+      <ErrorLine
+        error={close.error ?? give.error ?? withdraw.error ?? complete.error}
+      />
+    </div>
+  );
+};
+
+/**
+ * A new opening, on its own page under its list (owner, Nov 4, 2026: every
+ * new record opens its own page); saving returns to the list.
+ */
+export const NewOpening = ({
+  back,
+  programmeId,
+}: {
+  /** The list it is posted on, where saving returns. */
+  readonly back: string;
+  readonly programmeId: string;
+}) => {
+  const t = useTranslations("nexus.admin.programmes.callboard");
+  const tj = useTranslations("nexus.admin.journal");
+  const locale = useLocale() as Locale;
+  const { supabase } = useAuth();
+  const queryClient = useQueryClient();
+  const router = useRouter();
+  const [form, setForm] = useState(blank);
+  const queryKey = ["admin", "programmes", "openings", programmeId];
+  const partners = useQuery({
+    enabled: namesPartner(form.kind),
+    queryFn: async () =>
+      unwrap(await supabase.schema("governance").rpc("partner_names")) ?? [],
+    queryKey: ["admin", "partner-names"],
+  });
+  const add = useMutation({
+    mutationFn: async () => {
+      const place = withRota(form.kind);
+      const opening = unwrap(
+        await supabase
+          .schema("programmes")
+          .from("openings")
+          .insert(openingRow(form, programmeId))
+          .select("id")
+          .single()
+      );
+      // Its sessions: a rota of its own, whose shifts count as service.
+      if (place && opening) {
+        unwrap(
+          await supabase
+            .schema("programmes")
+            .from("rotas")
+            .insert({
+              ends_on: form.term_to || null,
+              opening_id: opening.id,
+              programme_id: programmeId,
+              starts_on: form.term_from || null,
+              title_ar: form.title.ar,
+              title_en: form.title.en,
+            })
+        );
+      }
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey });
+      router.push(back);
+    },
+  });
   const submit = (event: FormEvent) => {
     event.preventDefault();
     add.mutate();
   };
 
   return (
-    <div className="grid gap-8">
-      <p className="type-body max-w-3xl text-text-secondary">{t("lede")}</p>
+    <div className="grid gap-6">
       <form className="grid max-w-3xl gap-4" onSubmit={submit}>
         <Field hint={t(`kindHints.${form.kind}`)} label={t("kind")}>
           {(id) => (
@@ -391,118 +526,9 @@ export const Openings = ({
           onChange={(closes_at) => setForm((f) => ({ ...f, closes_at }))}
           value={form.closes_at}
         />
-        <SaveButton pending={add.isPending} success={add.isSuccess} />
+        <SaveButton pending={add.isPending} />
         <ErrorLine error={add.error} />
       </form>
-
-      <ul className="grid divide-y divide-line">
-        {list.data?.length === 0 ? (
-          <li className="type-body py-3 text-text-secondary">{t("empty")}</li>
-        ) : null}
-        {list.data?.map((o) => (
-          <li className="grid gap-2 py-4" key={o.id}>
-            <div className="flex flex-wrap items-baseline justify-between gap-3">
-              <p className="type-subheading">
-                <Link className="hover:underline" href={`${base}/${o.id}`}>
-                  {localized(o, "title", locale)}
-                </Link>
-                {o.kind === "role"
-                  ? ""
-                  : ` · ${t(`kinds.${o.kind as OpeningKind}`)}`}
-              </p>
-              <p className="type-caption">
-                {o.is_open ? t("open") : t("closed")}
-                {o.closes_at
-                  ? ` · ${t("closesOn", { date: formatLongDate(o.closes_at, locale) })}`
-                  : ""}
-              </p>
-            </div>
-            <p className="type-caption">
-              {t("replies", { count: o.opening_replies.length })}
-            </p>
-            <ul className="grid gap-1">
-              {o.opening_replies.map((r) => {
-                const person = names.data?.find((n) => n.id === r.user_id);
-                const placed = o.placements.find(
-                  (pl) => pl.user_id === r.user_id && pl.status !== "withdrawn"
-                );
-                return (
-                  <li
-                    className="flex flex-wrap items-center gap-x-4 gap-y-1"
-                    key={r.user_id}
-                  >
-                    <span className="type-body">
-                      {person ? memberName(person, locale) : "—"}
-                      {r.note ? ` · ${r.note}` : ""}
-                      {placed
-                        ? ` · ${t(`placement.${placed.status as "active"}`)}`
-                        : ""}
-                    </span>
-                    {o.kind !== "role" && !placed ? (
-                      <Button
-                        disabled={give.isPending}
-                        onClick={() =>
-                          give.mutate({ openingId: o.id, userId: r.user_id })
-                        }
-                        size="sm"
-                        variant="ghost"
-                      >
-                        {t("give")}
-                      </Button>
-                    ) : null}
-                    {placed?.status === "active" &&
-                    o.kind === "apprenticeship" ? (
-                      <ConfirmAction
-                        confirmLabel={t("complete")}
-                        description={t("completeConfirm")}
-                        disabled={complete.isPending}
-                        onConfirm={() => complete.mutate(placed.id)}
-                        variant="ghost"
-                      >
-                        {t("complete")}
-                      </ConfirmAction>
-                    ) : null}
-                    {placed?.status === "active" ? (
-                      <Button
-                        disabled={withdraw.isPending}
-                        onClick={() => withdraw.mutate(placed.id)}
-                        size="sm"
-                        variant="ghost"
-                      >
-                        {t("withdraw")}
-                      </Button>
-                    ) : null}
-                  </li>
-                );
-              })}
-            </ul>
-            {o.is_open ? (
-              <ConfirmAction
-                confirmLabel={t("close")}
-                description={t("closeConfirm")}
-                disabled={close.isPending}
-                onConfirm={() => close.mutate({ id: o.id, open: false })}
-                variant="ghost"
-              >
-                {t("close")}
-              </ConfirmAction>
-            ) : (
-              <Button
-                className="justify-self-start"
-                disabled={close.isPending}
-                onClick={() => close.mutate({ id: o.id, open: true })}
-                size="sm"
-                variant="ghost"
-              >
-                {t("reopen")}
-              </Button>
-            )}
-          </li>
-        ))}
-      </ul>
-      <ErrorLine
-        error={close.error ?? give.error ?? withdraw.error ?? complete.error}
-      />
     </div>
   );
 };

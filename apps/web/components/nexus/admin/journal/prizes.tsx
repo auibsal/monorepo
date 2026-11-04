@@ -10,6 +10,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useState } from "react";
 import { DateInput } from "@/components/fields/date-input";
+import { useRouter } from "@/lib/nexus/navigation";
 import { DiwanSection, RowList } from "../../page";
 import { EmptyLine, SectionSpinner } from "../../states";
 import {
@@ -18,6 +19,8 @@ import {
   ConfirmAction,
   ErrorLine,
   Field,
+  NewLink,
+  RecordPage,
   SelectInput,
 } from "../kit";
 import { MemberPicker, type Person } from "../member-picker";
@@ -119,7 +122,7 @@ export const Prizes = () => {
           </div>
         </>
       ) : null}
-      <NewRound />
+      <NewLink href="/qirtas/awards/new">{t("newRound")}</NewLink>
     </div>
   );
 };
@@ -358,10 +361,11 @@ const PrizeSection = ({
 };
 
 /** A new round: its name and its two days. */
-const NewRound = () => {
+export const NewRound = () => {
   const t = useTranslations("nexus.admin.prizes");
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
+  const router = useRouter();
   const [form, setForm] = useState({
     awarded_on: "",
     shortlist_on: "",
@@ -381,13 +385,8 @@ const NewRound = () => {
         })
       ),
     onSuccess: async () => {
-      setForm({
-        awarded_on: "",
-        shortlist_on: "",
-        slug: "",
-        title: { ar: "", en: "" },
-      });
       await queryClient.invalidateQueries({ queryKey: key });
+      router.push("/qirtas/awards");
     },
   });
   const submit = (event: FormEvent) => {
@@ -395,7 +394,11 @@ const NewRound = () => {
     create.mutate();
   };
   return (
-    <DiwanSection id="new-round" title={t("newRound")}>
+    <RecordPage
+      back="/qirtas/awards"
+      backLabel={t("title")}
+      title={t("newRound")}
+    >
       <form className="grid max-w-3xl gap-4" onSubmit={submit}>
         <BilingualField
           label={t("roundTitle")}
@@ -449,12 +452,11 @@ const NewRound = () => {
           className="justify-self-start"
           disabled={create.isPending}
           type="submit"
-          variant="outline"
         >
           {t("addRound")}
         </Button>
         <ErrorLine error={create.error} />
       </form>
-    </DiwanSection>
+    </RecordPage>
   );
 };

@@ -321,3 +321,8 @@ Where an earlier line above is marked as replaced, the later section holds. What
   - Memoranda show both signatures by name.
   - Dates in fields are written out in the house format.
   - The Awards Coordinator is a role.
+
+## 20. Every page its own (decided Nov 4, 2026)
+- **Every draft, edit and new record opens its own page,** across the whole platform: the Diwan, Membership and the partner dashboard. A record is at its list's address with "/new" or its own name; saving returns to the list. Nothing opens as a form under a list, in a dialog or in a tab held on the page.
+- **Members save drafts of their work** in Write for Qirtas. A draft is theirs alone, listed first under Your work, and becomes a submission when sent.
+- **Done since section 19:** the October news pieces read as Qirtas (rewritten as if it had always had its name); only the President's Shaheen Farjo account remains; The IDEA is no longer a partner.

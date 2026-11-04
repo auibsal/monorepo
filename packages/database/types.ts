@@ -4185,6 +4185,36 @@ export type Database = {
           },
         ];
       };
+      submission_drafts: {
+        Row: {
+          category: Database["journal"]["Enums"]["category"];
+          content: NonNullable<Json>;
+          created_at: string;
+          id: string;
+          title: string;
+          updated_at: string;
+          user_id: string;
+        };
+        Insert: {
+          category: Database["journal"]["Enums"]["category"];
+          content?: NonNullable<Json>;
+          created_at?: string;
+          id?: string;
+          title?: string;
+          updated_at?: string;
+          user_id?: string;
+        };
+        Update: {
+          category?: Database["journal"]["Enums"]["category"];
+          content?: NonNullable<Json>;
+          created_at?: string;
+          id?: string;
+          title?: string;
+          updated_at?: string;
+          user_id?: string;
+        };
+        Relationships: [];
+      };
       submission_files: {
         Row: {
           blind_path: string | null;

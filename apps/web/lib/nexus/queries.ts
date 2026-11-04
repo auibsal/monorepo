@@ -13,6 +13,7 @@ import { useQuery } from "@tanstack/react-query";
 export const queryKeys = {
   activity: (userId: string) => ["activity", userId] as const,
   calendarToken: (userId: string) => ["calendar-token", userId] as const,
+  drafts: ["submission-drafts"] as const,
   grants: (userId: string) => ["grants", userId] as const,
   membership: (userId: string) => ["membership", "kind", userId] as const,
   openCalls: ["open-calls"] as const,

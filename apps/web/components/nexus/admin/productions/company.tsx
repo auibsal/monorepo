@@ -11,6 +11,7 @@ import { localized, productions, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
+import { useRouter } from "@/lib/nexus/navigation";
 import { SectionSpinner } from "../../states";
 import {
   BilingualField,
@@ -18,6 +19,7 @@ import {
   DateTimeField,
   ErrorLine,
   Field,
+  NewLink,
   SaveButton,
   SelectInput,
 } from "../kit";
@@ -50,14 +52,19 @@ const emptySlot = {
   starts_at: null as string | null,
 };
 
-export const AuditionsTab = ({ production }: { production: ProductionRow }) => {
+export const AuditionsTab = ({
+  base,
+  production,
+}: {
+  base: string;
+  production: ProductionRow;
+}) => {
   const t = useTranslations("nexus.admin.productions.auditionsTab");
   const tp = useTranslations("nexus.productions");
   const locale = useLocale() as Locale;
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
   const key = [...productionKey(production.id), "auditions"];
-  const [form, setForm] = useState(emptySlot);
   const [drafts, setDrafts] = useState<Record<string, string>>({});
 
   const data = useQuery({
@@ -99,28 +106,6 @@ export const AuditionsTab = ({ production }: { production: ProductionRow }) => {
     ...(data.data?.notes ?? []).map((n) => n.author_id),
   ]);
 
-  const add = useMutation({
-    mutationFn: async () =>
-      unwrap(
-        await supabase
-          .schema("programmes")
-          .from("auditions")
-          .insert({
-            capacity: Number(form.capacity),
-            ends_at: form.ends_at ?? "",
-            location_ar: form.location.ar.trim() || null,
-            location_en: form.location.en.trim() || null,
-            prepare_ar: form.prepare.ar.trim() || null,
-            prepare_en: form.prepare.en.trim() || null,
-            production_id: production.id,
-            starts_at: form.starts_at ?? "",
-          })
-      ),
-    onSuccess: async () => {
-      setForm(emptySlot);
-      await refresh();
-    },
-  });
   const remove = useMutation({
     mutationFn: async (id: string) =>
       unwrap(
@@ -172,61 +157,7 @@ export const AuditionsTab = ({ production }: { production: ProductionRow }) => {
       {production.stage === "auditions" ? null : (
         <p className="type-caption">{t("openWhen")}</p>
       )}
-      <form
-        className="grid gap-4"
-        onSubmit={(event) => {
-          event.preventDefault();
-          add.mutate();
-        }}
-      >
-        <h3 className="type-subheading">{t("add")}</h3>
-        <div className="grid gap-4 sm:grid-cols-3">
-          <DateTimeField
-            label={t("starts")}
-            onChange={(starts_at) => setForm((f) => ({ ...f, starts_at }))}
-            required
-            value={form.starts_at}
-          />
-          <DateTimeField
-            label={t("ends")}
-            onChange={(ends_at) => setForm((f) => ({ ...f, ends_at }))}
-            required
-            value={form.ends_at}
-          />
-          <Field label={t("capacity")}>
-            {(id) => (
-              <Input
-                dir="ltr"
-                id={id}
-                inputMode="numeric"
-                min={1}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, capacity: e.target.value }))
-                }
-                required
-                type="number"
-                value={form.capacity}
-              />
-            )}
-          </Field>
-        </div>
-        <BilingualField
-          label={t("location")}
-          maxLength={200}
-          onChange={(location) => setForm((f) => ({ ...f, location }))}
-          value={form.location}
-        />
-        <BilingualField
-          label={t("prepare")}
-          maxLength={1000}
-          multiline
-          onChange={(prepare) => setForm((f) => ({ ...f, prepare }))}
-          rows={2}
-          value={form.prepare}
-        />
-        <SaveButton pending={add.isPending} />
-        <ErrorLine error={add.error} />
-      </form>
+      <NewLink href={`${base}/auditions/new`}>{t("add")}</NewLink>
 
       {data.isPending ? <SectionSpinner /> : null}
       {(data.data?.auditions ?? []).map((a) => {
@@ -359,14 +290,19 @@ const emptyCredit = {
   who: "member" as "member" | "outside",
 };
 
-export const CreditsTab = ({ production }: { production: ProductionRow }) => {
+export const CreditsTab = ({
+  base,
+  production,
+}: {
+  base: string;
+  production: ProductionRow;
+}) => {
   const t = useTranslations("nexus.admin.productions.creditsTab");
   const tp = useTranslations("nexus.productions");
   const locale = useLocale() as Locale;
   const { supabase, user } = useAuth();
   const queryClient = useQueryClient();
   const key = [...productionKey(production.id), "credits"];
-  const [form, setForm] = useState(emptyCredit);
   const [hours, setHours] = useState<Record<string, string>>({});
   const [recorded, setRecorded] = useState<string | null>(null);
 
@@ -386,20 +322,6 @@ export const CreditsTab = ({ production }: { production: ProductionRow }) => {
   const nameOf = useNameOf((credits.data ?? []).map((c) => c.user_id));
   const refresh = () => queryClient.invalidateQueries({ queryKey: key });
 
-  const add = useMutation({
-    mutationFn: () =>
-      productions.addCredit(supabase, production.id, {
-        department: form.department,
-        person_name: form.who === "outside" ? form.person_name : null,
-        role_ar: form.role.ar,
-        role_en: form.role.en,
-        user_id: form.who === "member" ? (form.member?.id ?? null) : null,
-      }),
-    onSuccess: async () => {
-      setForm(emptyCredit);
-      await refresh();
-    },
-  });
   const remove = useMutation({
     mutationFn: async (id: string) =>
       unwrap(
@@ -440,87 +362,7 @@ export const CreditsTab = ({ production }: { production: ProductionRow }) => {
   return (
     <div className="grid max-w-3xl gap-8 pt-4">
       <p className="type-body">{t("lede")}</p>
-      <form
-        className="grid gap-4"
-        onSubmit={(event) => {
-          event.preventDefault();
-          add.mutate();
-        }}
-      >
-        <h3 className="type-subheading">{t("add")}</h3>
-        <div className="grid gap-4 sm:grid-cols-2">
-          <Field label={t("department")}>
-            {(id) => (
-              <SelectInput
-                id={id}
-                onChange={(e) =>
-                  setForm((f) => ({
-                    ...f,
-                    department: e.target.value as Department,
-                  }))
-                }
-                value={form.department}
-              >
-                {productions.departments.map((d) => (
-                  <option key={d} value={d}>
-                    {tp(`departments.${d}`)}
-                  </option>
-                ))}
-              </SelectInput>
-            )}
-          </Field>
-          <Field label={t("who")}>
-            {(id) => (
-              <SelectInput
-                id={id}
-                onChange={(e) =>
-                  setForm((f) => ({
-                    ...f,
-                    who: e.target.value as "member" | "outside",
-                  }))
-                }
-                value={form.who}
-              >
-                <option value="member">{t("aMember")}</option>
-                <option value="outside">{t("someoneOutside")}</option>
-              </SelectInput>
-            )}
-          </Field>
-        </div>
-        {form.who === "member" ? (
-          <MemberPicker
-            label={t("member")}
-            onChange={(member) => setForm((f) => ({ ...f, member }))}
-            value={form.member}
-          />
-        ) : (
-          <Field hint={t("outsideHint")} label={t("personName")}>
-            {(id) => (
-              <Input
-                dir="auto"
-                id={id}
-                maxLength={200}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, person_name: e.target.value }))
-                }
-                required
-                value={form.person_name}
-              />
-            )}
-          </Field>
-        )}
-        <BilingualField
-          label={t("role")}
-          maxLength={200}
-          onChange={(role) => setForm((f) => ({ ...f, role }))}
-          value={form.role}
-        />
-        <SaveButton
-          disabled={form.who === "member" && !form.member}
-          pending={add.isPending}
-        />
-        <ErrorLine error={add.error} />
-      </form>
+      <NewLink href={`${base}/credits/new`}>{t("add")}</NewLink>
 
       {credits.isPending ? <SectionSpinner /> : null}
       {credits.data?.length === 0 ? (
@@ -631,8 +473,10 @@ const emptyRehearsal = {
 };
 
 export const RehearsalsTab = ({
+  base,
   production,
 }: {
+  base: string;
   production: ProductionRow;
 }) => {
   const t = useTranslations("nexus.admin.productions.rehearsalsTab");
@@ -640,7 +484,6 @@ export const RehearsalsTab = ({
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
   const key = [...productionKey(production.id), "rehearsals"];
-  const [form, setForm] = useState(emptyRehearsal);
 
   const rehearsals = useQuery({
     queryFn: async () =>
@@ -655,27 +498,6 @@ export const RehearsalsTab = ({
     queryKey: key,
   });
   const refresh = () => queryClient.invalidateQueries({ queryKey: key });
-  const add = useMutation({
-    mutationFn: async () =>
-      unwrap(
-        await supabase
-          .schema("programmes")
-          .from("rehearsals")
-          .insert({
-            called: form.called.trim() || null,
-            ends_at: form.ends_at ?? "",
-            location_ar: form.location.ar.trim() || null,
-            location_en: form.location.en.trim() || null,
-            notes: form.notes.trim() || null,
-            production_id: production.id,
-            starts_at: form.starts_at ?? "",
-          })
-      ),
-    onSuccess: async () => {
-      setForm(emptyRehearsal);
-      await refresh();
-    },
-  });
   const remove = useMutation({
     mutationFn: async (id: string) =>
       unwrap(
@@ -691,63 +513,7 @@ export const RehearsalsTab = ({
   return (
     <div className="grid max-w-3xl gap-8 pt-4">
       <p className="type-body">{t("lede")}</p>
-      <form
-        className="grid gap-4"
-        onSubmit={(event) => {
-          event.preventDefault();
-          add.mutate();
-        }}
-      >
-        <h3 className="type-subheading">{t("add")}</h3>
-        <div className="grid gap-4 sm:grid-cols-2">
-          <DateTimeField
-            label={t("starts")}
-            onChange={(starts_at) => setForm((f) => ({ ...f, starts_at }))}
-            required
-            value={form.starts_at}
-          />
-          <DateTimeField
-            label={t("ends")}
-            onChange={(ends_at) => setForm((f) => ({ ...f, ends_at }))}
-            required
-            value={form.ends_at}
-          />
-        </div>
-        <BilingualField
-          label={t("location")}
-          maxLength={200}
-          onChange={(location) => setForm((f) => ({ ...f, location }))}
-          value={form.location}
-        />
-        <Field hint={t("calledHint")} label={t("called")}>
-          {(id) => (
-            <Input
-              dir="auto"
-              id={id}
-              maxLength={500}
-              onChange={(e) =>
-                setForm((f) => ({ ...f, called: e.target.value }))
-              }
-              value={form.called}
-            />
-          )}
-        </Field>
-        <Field label={t("notes")}>
-          {(id) => (
-            <Input
-              dir="auto"
-              id={id}
-              maxLength={2000}
-              onChange={(e) =>
-                setForm((f) => ({ ...f, notes: e.target.value }))
-              }
-              value={form.notes}
-            />
-          )}
-        </Field>
-        <SaveButton pending={add.isPending} />
-        <ErrorLine error={add.error} />
-      </form>
+      <NewLink href={`${base}/rehearsals/new`}>{t("add")}</NewLink>
       {rehearsals.isPending ? <SectionSpinner /> : null}
       {rehearsals.data?.length === 0 ? (
         <p className="type-caption">{t("none")}</p>
@@ -778,5 +544,303 @@ export const RehearsalsTab = ({
         ))}
       </ul>
     </div>
+  );
+};
+
+/** A new auditionslot, on its own page under the production's tab. */
+export const NewAuditionSlot = ({
+  back,
+  production,
+}: {
+  readonly back: string;
+  readonly production: ProductionRow;
+}) => {
+  const t = useTranslations("nexus.admin.productions.auditionsTab");
+  const { supabase } = useAuth();
+  const queryClient = useQueryClient();
+  const router = useRouter();
+  const key = [...productionKey(production.id), "auditions"];
+  const [form, setForm] = useState(emptySlot);
+  const add = useMutation({
+    mutationFn: async () =>
+      unwrap(
+        await supabase
+          .schema("programmes")
+          .from("auditions")
+          .insert({
+            capacity: Number(form.capacity),
+            ends_at: form.ends_at ?? "",
+            location_ar: form.location.ar.trim() || null,
+            location_en: form.location.en.trim() || null,
+            prepare_ar: form.prepare.ar.trim() || null,
+            prepare_en: form.prepare.en.trim() || null,
+            production_id: production.id,
+            starts_at: form.starts_at ?? "",
+          })
+      ),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: key });
+      router.push(back);
+    },
+  });
+  return (
+    <form
+      className="grid gap-4"
+      onSubmit={(event) => {
+        event.preventDefault();
+        add.mutate();
+      }}
+    >
+      <div className="grid gap-4 sm:grid-cols-3">
+        <DateTimeField
+          label={t("starts")}
+          onChange={(starts_at) => setForm((f) => ({ ...f, starts_at }))}
+          required
+          value={form.starts_at}
+        />
+        <DateTimeField
+          label={t("ends")}
+          onChange={(ends_at) => setForm((f) => ({ ...f, ends_at }))}
+          required
+          value={form.ends_at}
+        />
+        <Field label={t("capacity")}>
+          {(id) => (
+            <Input
+              dir="ltr"
+              id={id}
+              inputMode="numeric"
+              min={1}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, capacity: e.target.value }))
+              }
+              required
+              type="number"
+              value={form.capacity}
+            />
+          )}
+        </Field>
+      </div>
+      <BilingualField
+        label={t("location")}
+        maxLength={200}
+        onChange={(location) => setForm((f) => ({ ...f, location }))}
+        value={form.location}
+      />
+      <BilingualField
+        label={t("prepare")}
+        maxLength={1000}
+        multiline
+        onChange={(prepare) => setForm((f) => ({ ...f, prepare }))}
+        rows={2}
+        value={form.prepare}
+      />
+      <SaveButton pending={add.isPending} />
+      <ErrorLine error={add.error} />
+    </form>
+  );
+};
+
+/** A new credit, on its own page under the production's tab. */
+export const NewCredit = ({
+  back,
+  production,
+}: {
+  readonly back: string;
+  readonly production: ProductionRow;
+}) => {
+  const t = useTranslations("nexus.admin.productions.creditsTab");
+  const { supabase } = useAuth();
+  const queryClient = useQueryClient();
+  const router = useRouter();
+  const key = [...productionKey(production.id), "credits"];
+  const tp = useTranslations("nexus.productions");
+  const [form, setForm] = useState(emptyCredit);
+  const add = useMutation({
+    mutationFn: () =>
+      productions.addCredit(supabase, production.id, {
+        department: form.department,
+        person_name: form.who === "outside" ? form.person_name : null,
+        role_ar: form.role.ar,
+        role_en: form.role.en,
+        user_id: form.who === "member" ? (form.member?.id ?? null) : null,
+      }),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: key });
+      router.push(back);
+    },
+  });
+  return (
+    <form
+      className="grid gap-4"
+      onSubmit={(event) => {
+        event.preventDefault();
+        add.mutate();
+      }}
+    >
+      <div className="grid gap-4 sm:grid-cols-2">
+        <Field label={t("department")}>
+          {(id) => (
+            <SelectInput
+              id={id}
+              onChange={(e) =>
+                setForm((f) => ({
+                  ...f,
+                  department: e.target.value as Department,
+                }))
+              }
+              value={form.department}
+            >
+              {productions.departments.map((d) => (
+                <option key={d} value={d}>
+                  {tp(`departments.${d}`)}
+                </option>
+              ))}
+            </SelectInput>
+          )}
+        </Field>
+        <Field label={t("who")}>
+          {(id) => (
+            <SelectInput
+              id={id}
+              onChange={(e) =>
+                setForm((f) => ({
+                  ...f,
+                  who: e.target.value as "member" | "outside",
+                }))
+              }
+              value={form.who}
+            >
+              <option value="member">{t("aMember")}</option>
+              <option value="outside">{t("someoneOutside")}</option>
+            </SelectInput>
+          )}
+        </Field>
+      </div>
+      {form.who === "member" ? (
+        <MemberPicker
+          label={t("member")}
+          onChange={(member) => setForm((f) => ({ ...f, member }))}
+          value={form.member}
+        />
+      ) : (
+        <Field hint={t("outsideHint")} label={t("personName")}>
+          {(id) => (
+            <Input
+              dir="auto"
+              id={id}
+              maxLength={200}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, person_name: e.target.value }))
+              }
+              required
+              value={form.person_name}
+            />
+          )}
+        </Field>
+      )}
+      <BilingualField
+        label={t("role")}
+        maxLength={200}
+        onChange={(role) => setForm((f) => ({ ...f, role }))}
+        value={form.role}
+      />
+      <SaveButton
+        disabled={form.who === "member" && !form.member}
+        pending={add.isPending}
+      />
+      <ErrorLine error={add.error} />
+    </form>
+  );
+};
+
+/** A new rehearsal, on its own page under the production's tab. */
+export const NewRehearsal = ({
+  back,
+  production,
+}: {
+  readonly back: string;
+  readonly production: ProductionRow;
+}) => {
+  const t = useTranslations("nexus.admin.productions.rehearsalsTab");
+  const { supabase } = useAuth();
+  const queryClient = useQueryClient();
+  const router = useRouter();
+  const key = [...productionKey(production.id), "rehearsals"];
+  const [form, setForm] = useState(emptyRehearsal);
+  const add = useMutation({
+    mutationFn: async () =>
+      unwrap(
+        await supabase
+          .schema("programmes")
+          .from("rehearsals")
+          .insert({
+            called: form.called.trim() || null,
+            ends_at: form.ends_at ?? "",
+            location_ar: form.location.ar.trim() || null,
+            location_en: form.location.en.trim() || null,
+            notes: form.notes.trim() || null,
+            production_id: production.id,
+            starts_at: form.starts_at ?? "",
+          })
+      ),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: key });
+      router.push(back);
+    },
+  });
+  return (
+    <form
+      className="grid gap-4"
+      onSubmit={(event) => {
+        event.preventDefault();
+        add.mutate();
+      }}
+    >
+      <div className="grid gap-4 sm:grid-cols-2">
+        <DateTimeField
+          label={t("starts")}
+          onChange={(starts_at) => setForm((f) => ({ ...f, starts_at }))}
+          required
+          value={form.starts_at}
+        />
+        <DateTimeField
+          label={t("ends")}
+          onChange={(ends_at) => setForm((f) => ({ ...f, ends_at }))}
+          required
+          value={form.ends_at}
+        />
+      </div>
+      <BilingualField
+        label={t("location")}
+        maxLength={200}
+        onChange={(location) => setForm((f) => ({ ...f, location }))}
+        value={form.location}
+      />
+      <Field hint={t("calledHint")} label={t("called")}>
+        {(id) => (
+          <Input
+            dir="auto"
+            id={id}
+            maxLength={500}
+            onChange={(e) => setForm((f) => ({ ...f, called: e.target.value }))}
+            value={form.called}
+          />
+        )}
+      </Field>
+      <Field label={t("notes")}>
+        {(id) => (
+          <Input
+            dir="auto"
+            id={id}
+            maxLength={2000}
+            onChange={(e) => setForm((f) => ({ ...f, notes: e.target.value }))}
+            value={form.notes}
+          />
+        )}
+      </Field>
+      <SaveButton pending={add.isPending} />
+      <ErrorLine error={add.error} />
+    </form>
   );
 };

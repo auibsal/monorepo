@@ -5,12 +5,6 @@ import { Button } from "@repo/design-system/components/ui/button";
 import { Checkbox } from "@repo/design-system/components/ui/checkbox";
 import { Input } from "@repo/design-system/components/ui/input";
 import { Label } from "@repo/design-system/components/ui/label";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@repo/design-system/components/ui/tabs";
 import type { Locale } from "@repo/internationalization";
 import {
   formatIqd,
@@ -30,6 +24,7 @@ import { Link, useRouter } from "@/lib/nexus/navigation";
 import { useGrants } from "@/lib/nexus/queries";
 import { useQueryParam } from "@/lib/nexus/use-query-param";
 import { ErrorState, SectionSpinner } from "../../states";
+import { SectionTabs } from "../admin-shell";
 import { useProgrammeOptions } from "../events/data";
 import { slugify } from "../events/editor";
 import {
@@ -41,11 +36,19 @@ import {
   ErrorLine,
   ExportButton,
   Field,
+  NewLink,
+  RecordPage,
   SaveButton,
   SelectInput,
 } from "../kit";
 import { MemberPicker, useMemberNames } from "../member-picker";
 import { memberName } from "../members/directory";
+import {
+  type CampaignNewTab,
+  type CampaignTab,
+  campaignNewTabs,
+  campaignTabs,
+} from "../tabs";
 
 // ── Settings ────────────────────────────────────────────────────────────────
 
@@ -456,7 +459,15 @@ const useLedger = (campaignId: string) => {
 
 type LedgerRow = NonNullable<ReturnType<typeof useLedger>["data"]>[number];
 
-const Ledger = ({ campaignId, slug }: { campaignId: string; slug: string }) => {
+const Ledger = ({
+  base,
+  campaignId,
+  slug,
+}: {
+  base: string;
+  campaignId: string;
+  slug: string;
+}) => {
   const t = useTranslations("nexus.admin.charity");
   const locale = useLocale() as Locale;
   const { supabase, user } = useAuth();
@@ -476,20 +487,6 @@ const Ledger = ({ campaignId, slug }: { campaignId: string; slug: string }) => {
       e.signoff?.signed_by,
     ])
   );
-  const me = useMemberNames([user?.id]);
-  const [form, setForm] = useState({
-    amount: "",
-    counted_with: null as {
-      full_name_ar: string | null;
-      full_name_en: string;
-      id: string;
-    } | null,
-    note: "",
-    occurred_on: new Date().toISOString().slice(0, 10),
-    source: "table_cash" as (typeof charity.ledgerSources)[number],
-  });
-  const [problem, setProblem] = useState<string | null>(null);
-
   const nameOf = (id: string | null | undefined) => {
     const p = names.data?.find((n) => n.id === id);
     return p ? memberName(p, locale) : "—";
@@ -497,39 +494,6 @@ const Ledger = ({ campaignId, slug }: { campaignId: string; slug: string }) => {
   const invalidate = () =>
     queryClient.invalidateQueries({ queryKey: ["admin"] });
 
-  const record = useMutation({
-    mutationFn: async () => {
-      const parsed = charity.ledgerEntrySchema.safeParse({
-        amount_iqd: Number(form.amount),
-        campaign_id: campaignId,
-        counted_by: user?.id,
-        counted_with: form.counted_with?.id,
-        note: form.note.trim() || undefined,
-        occurred_on: form.occurred_on,
-        source: form.source,
-      });
-      if (!parsed.success) {
-        const [issue] = parsed.error.issues;
-        setProblem(
-          issue?.message === "two_counters"
-            ? t("ledger.twoCounters")
-            : t("ledger.amountError")
-        );
-        throw new Error("invalid");
-      }
-      setProblem(null);
-      unwrap(
-        await supabase
-          .schema("charity")
-          .from("ledger_entries")
-          .insert(parsed.data)
-      );
-    },
-    onSuccess: async () => {
-      setForm((f) => ({ ...f, amount: "", counted_with: null, note: "" }));
-      await invalidate();
-    },
-  });
   const reverse = useMutation({
     mutationFn: async (entry: LedgerRow) =>
       unwrap(
@@ -614,9 +578,6 @@ const Ledger = ({ campaignId, slug }: { campaignId: string; slug: string }) => {
     },
   ];
 
-  const submit = (event: FormEvent) => event.preventDefault();
-  const myName = me.data?.[0] ? memberName(me.data[0], locale) : t("ledger.me");
-
   return (
     <div className="grid gap-6">
       <div className="flex flex-wrap items-end justify-between gap-3">
@@ -632,117 +593,179 @@ const Ledger = ({ campaignId, slug }: { campaignId: string; slug: string }) => {
         <DataTable columns={columns} rowKey={(e) => e.id} rows={ledger.data} />
       ) : null}
       {canWrite ? (
-        <form className="grid max-w-3xl gap-4" onSubmit={submit}>
-          <h3 className="type-subheading">{t("ledger.record")}</h3>
-          <div className="grid gap-4 sm:grid-cols-3">
-            <Field label={t("ledger.amount")}>
-              {(id) => (
-                <Input
-                  dir="ltr"
-                  id={id}
-                  inputMode="numeric"
-                  min={1}
-                  onChange={(e) =>
-                    setForm((f) => ({ ...f, amount: e.target.value }))
-                  }
-                  required
-                  type="number"
-                  value={form.amount}
-                />
-              )}
-            </Field>
-            <Field label={t("ledger.source")}>
-              {(id) => (
-                <SelectInput
-                  id={id}
-                  onChange={(e) =>
-                    setForm((f) => ({
-                      ...f,
-                      source: e.target
-                        .value as (typeof charity.ledgerSources)[number],
-                    }))
-                  }
-                  value={form.source}
-                >
-                  {charity.ledgerSources.map((s) => (
-                    <option key={s} value={s}>
-                      {t(`sources.${s}`)}
-                    </option>
-                  ))}
-                </SelectInput>
-              )}
-            </Field>
-            <Field label={t("ledger.occurredOn")}>
-              {(id) => (
-                <DateInput
-                  id={id}
-                  onChange={(e) =>
-                    setForm((f) => ({ ...f, occurred_on: e.target.value }))
-                  }
-                  required
-                  value={form.occurred_on}
-                />
-              )}
-            </Field>
-          </div>
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div className="grid gap-2">
-              <span className="font-medium text-sm">
-                {t("ledger.countedBy")}
-              </span>
-              <span>{myName}</span>
-              <span className="type-caption">{t("ledger.countedHint")}</span>
-            </div>
-            <MemberPicker
-              excludeId={user?.id}
-              label={t("ledger.countedWith")}
-              onChange={(counted_with) =>
-                setForm((f) => ({ ...f, counted_with }))
-              }
-              value={form.counted_with}
-            />
-          </div>
-          <Field label={t("ledger.note")}>
-            {(id) => (
-              <Input
-                id={id}
-                maxLength={1000}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, note: e.target.value }))
-                }
-                value={form.note}
-              />
-            )}
-          </Field>
-          {problem ? (
-            <p className="text-sm text-text" role="alert">
-              {problem}
-            </p>
-          ) : null}
-          <div>
-            <ConfirmAction
-              confirmLabel={t("ledger.recordButton")}
-              description={t("ledger.recordConfirm", {
-                a: myName,
-                amount: formatIqd(Number(form.amount) || 0, locale),
-                b: form.counted_with
-                  ? memberName(form.counted_with, locale)
-                  : "—",
-              })}
-              disabled={!(form.amount && form.counted_with) || record.isPending}
-              onConfirm={() => record.mutate()}
-              variant="default"
-            >
-              {t("ledger.recordButton")}
-            </ConfirmAction>
-          </div>
-          {record.error && record.error.message !== "invalid" ? (
-            <ErrorLine error={record.error} />
-          ) : null}
-          <ErrorLine error={reverse.error} />
-        </form>
+        <NewLink href={`${base}/ledger/new`}>{t("ledger.record")}</NewLink>
       ) : null}
+      <ErrorLine error={reverse.error} />
     </div>
+  );
+};
+
+/**
+ * A new ledger entry, on its own page under the ledger (owner, Nov 4,
+ * 2026): counted by two, confirmed before it is recorded.
+ */
+const NewLedgerEntry = ({
+  back,
+  campaignId,
+}: {
+  readonly back: string;
+  readonly campaignId: string;
+}) => {
+  const t = useTranslations("nexus.admin.charity");
+  const locale = useLocale() as Locale;
+  const { supabase, user } = useAuth();
+  const queryClient = useQueryClient();
+  const router = useRouter();
+  const me = useMemberNames([user?.id]);
+  const [form, setForm] = useState({
+    amount: "",
+    counted_with: null as {
+      full_name_ar: string | null;
+      full_name_en: string;
+      id: string;
+    } | null,
+    note: "",
+    occurred_on: new Date().toISOString().slice(0, 10),
+    source: "table_cash" as (typeof charity.ledgerSources)[number],
+  });
+  const [problem, setProblem] = useState<string | null>(null);
+
+  const record = useMutation({
+    mutationFn: async () => {
+      const parsed = charity.ledgerEntrySchema.safeParse({
+        amount_iqd: Number(form.amount),
+        campaign_id: campaignId,
+        counted_by: user?.id,
+        counted_with: form.counted_with?.id,
+        note: form.note.trim() || undefined,
+        occurred_on: form.occurred_on,
+        source: form.source,
+      });
+      if (!parsed.success) {
+        const [issue] = parsed.error.issues;
+        setProblem(
+          issue?.message === "two_counters"
+            ? t("ledger.twoCounters")
+            : t("ledger.amountError")
+        );
+        throw new Error("invalid");
+      }
+      setProblem(null);
+      unwrap(
+        await supabase
+          .schema("charity")
+          .from("ledger_entries")
+          .insert(parsed.data)
+      );
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["admin"] });
+      router.push(back);
+    },
+  });
+  const submit = (event: FormEvent) => event.preventDefault();
+  const myName = me.data?.[0] ? memberName(me.data[0], locale) : t("ledger.me");
+
+  return (
+    <form className="grid max-w-3xl gap-4" onSubmit={submit}>
+      <div className="grid gap-4 sm:grid-cols-3">
+        <Field label={t("ledger.amount")}>
+          {(id) => (
+            <Input
+              dir="ltr"
+              id={id}
+              inputMode="numeric"
+              min={1}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, amount: e.target.value }))
+              }
+              required
+              type="number"
+              value={form.amount}
+            />
+          )}
+        </Field>
+        <Field label={t("ledger.source")}>
+          {(id) => (
+            <SelectInput
+              id={id}
+              onChange={(e) =>
+                setForm((f) => ({
+                  ...f,
+                  source: e.target
+                    .value as (typeof charity.ledgerSources)[number],
+                }))
+              }
+              value={form.source}
+            >
+              {charity.ledgerSources.map((s) => (
+                <option key={s} value={s}>
+                  {t(`sources.${s}`)}
+                </option>
+              ))}
+            </SelectInput>
+          )}
+        </Field>
+        <Field label={t("ledger.occurredOn")}>
+          {(id) => (
+            <DateInput
+              id={id}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, occurred_on: e.target.value }))
+              }
+              required
+              value={form.occurred_on}
+            />
+          )}
+        </Field>
+      </div>
+      <div className="grid gap-4 sm:grid-cols-2">
+        <div className="grid gap-2">
+          <span className="font-medium text-sm">{t("ledger.countedBy")}</span>
+          <span>{myName}</span>
+          <span className="type-caption">{t("ledger.countedHint")}</span>
+        </div>
+        <MemberPicker
+          excludeId={user?.id}
+          label={t("ledger.countedWith")}
+          onChange={(counted_with) => setForm((f) => ({ ...f, counted_with }))}
+          value={form.counted_with}
+        />
+      </div>
+      <Field label={t("ledger.note")}>
+        {(id) => (
+          <Input
+            id={id}
+            maxLength={1000}
+            onChange={(e) => setForm((f) => ({ ...f, note: e.target.value }))}
+            value={form.note}
+          />
+        )}
+      </Field>
+      {problem ? (
+        <p className="text-sm text-text" role="alert">
+          {problem}
+        </p>
+      ) : null}
+      <div>
+        <ConfirmAction
+          confirmLabel={t("ledger.recordButton")}
+          description={t("ledger.recordConfirm", {
+            a: myName,
+            amount: formatIqd(Number(form.amount) || 0, locale),
+            b: form.counted_with ? memberName(form.counted_with, locale) : "—",
+          })}
+          disabled={!(form.amount && form.counted_with) || record.isPending}
+          onConfirm={() => record.mutate()}
+          variant="default"
+        >
+          {t("ledger.recordButton")}
+        </ConfirmAction>
+      </div>
+      {record.error && record.error.message !== "invalid" ? (
+        <ErrorLine error={record.error} />
+      ) : null}
+    </form>
   );
 };
 
@@ -822,19 +845,18 @@ const SignoffQueue = ({ campaignId }: { campaignId: string }) => {
 
 // ── Receipts ────────────────────────────────────────────────────────────────
 
-const Receipts = ({ campaignId }: { campaignId: string }) => {
+const Receipts = ({
+  base,
+  campaignId,
+}: {
+  base: string;
+  campaignId: string;
+}) => {
   const t = useTranslations("nexus.admin.charity");
   const tm = useTranslations("nexus.admin.members");
   const locale = useLocale() as Locale;
-  const id = useId();
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
-  const [file, setFile] = useState<File | null>(null);
-  const [form, setForm] = useState({
-    amount: "",
-    description: { ar: "", en: "" },
-    is_public: false,
-  });
   const receipts = useQuery({
     queryFn: async () =>
       unwrap(
@@ -850,36 +872,6 @@ const Receipts = ({ campaignId }: { campaignId: string }) => {
   const invalidate = () =>
     queryClient.invalidateQueries({ queryKey: ["admin", "receipts"] });
 
-  const upload = useMutation({
-    mutationFn: async () => {
-      if (!file) {
-        return;
-      }
-      const stored = await uploadReceipt(supabase, campaignId, file);
-      unwrap(
-        await supabase
-          .schema("charity")
-          .from("receipts")
-          .insert({
-            amount_iqd: form.amount ? Number(form.amount) : null,
-            campaign_id: campaignId,
-            description_ar: form.description.ar || null,
-            description_en: form.description.en,
-            is_public: form.is_public,
-            storage_path: stored.path,
-          })
-      );
-    },
-    onSuccess: async () => {
-      setFile(null);
-      setForm({
-        amount: "",
-        description: { ar: "", en: "" },
-        is_public: false,
-      });
-      await invalidate();
-    },
-  });
   const toggle = useMutation({
     mutationFn: async (receipt: { id: string; is_public: boolean }) =>
       unwrap(
@@ -975,79 +967,19 @@ const Receipts = ({ campaignId }: { campaignId: string }) => {
           rows={receipts.data}
         />
       ) : null}
-      <form
-        className="grid max-w-3xl gap-4"
-        onSubmit={(event) => {
-          event.preventDefault();
-          upload.mutate();
-        }}
-      >
-        <h3 className="type-subheading">{t("receipts.upload")}</h3>
-        <Field hint={t("receipts.noPhotos")} label={t("receipts.file")}>
-          {(fieldId) => (
-            <FileInput
-              accept="application/pdf,image/jpeg,image/png"
-              id={fieldId}
-              onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-              required
-            />
-          )}
-        </Field>
-        <BilingualField
-          label={t("receipts.description")}
-          maxLength={300}
-          onChange={(description) => setForm((f) => ({ ...f, description }))}
-          value={form.description}
-        />
-        <Field label={t("receipts.amount")}>
-          {(fieldId) => (
-            <Input
-              className="w-48"
-              dir="ltr"
-              id={fieldId}
-              inputMode="numeric"
-              min={1}
-              onChange={(e) =>
-                setForm((f) => ({ ...f, amount: e.target.value }))
-              }
-              type="number"
-              value={form.amount}
-            />
-          )}
-        </Field>
-        <div className="flex items-center gap-2">
-          <Checkbox
-            checked={form.is_public}
-            id={`${id}-public`}
-            onCheckedChange={(v) =>
-              setForm((f) => ({ ...f, is_public: v === true }))
-            }
-          />
-          <Label htmlFor={`${id}-public`}>{t("receipts.public")}</Label>
-        </div>
-        <SaveButton
-          disabled={!(file && form.description.en.trim())}
-          pending={upload.isPending}
-        />
-        <ErrorLine error={upload.error ?? toggle.error ?? remove.error} />
-      </form>
+      <NewLink href={`${base}/new`}>{t("receipts.upload")}</NewLink>
+      <ErrorLine error={toggle.error ?? remove.error} />
     </div>
   );
 };
 
 // ── Impact ──────────────────────────────────────────────────────────────────
 
-const Impact = ({ campaignId }: { campaignId: string }) => {
+const Impact = ({ base, campaignId }: { base: string; campaignId: string }) => {
   const t = useTranslations("nexus.admin.charity.impact");
   const locale = useLocale() as Locale;
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
-  const [form, setForm] = useState({
-    label: { ar: "", en: "" },
-    report: { ar: "", en: "" },
-    unit: { ar: "", en: "" },
-    value: "",
-  });
   const metrics = useQuery({
     queryFn: async () =>
       unwrap(
@@ -1062,34 +994,6 @@ const Impact = ({ campaignId }: { campaignId: string }) => {
   });
   const invalidate = () =>
     queryClient.invalidateQueries({ queryKey: ["admin", "impact"] });
-  const add = useMutation({
-    mutationFn: async () =>
-      unwrap(
-        await supabase
-          .schema("charity")
-          .from("impact_metrics")
-          .insert({
-            campaign_id: campaignId,
-            label_ar: form.label.ar,
-            label_en: form.label.en,
-            report_ar: form.report.ar || null,
-            report_en: form.report.en || null,
-            sort: metrics.data?.length ?? 0,
-            unit_ar: form.unit.ar || null,
-            unit_en: form.unit.en || null,
-            value: Number(form.value),
-          })
-      ),
-    onSuccess: async () => {
-      setForm({
-        label: { ar: "", en: "" },
-        report: { ar: "", en: "" },
-        unit: { ar: "", en: "" },
-        value: "",
-      });
-      await invalidate();
-    },
-  });
   const publish = useMutation({
     mutationFn: async (metric: { id: string; published_at: string | null }) =>
       unwrap(
@@ -1135,60 +1039,228 @@ const Impact = ({ campaignId }: { campaignId: string }) => {
           </li>
         ))}
       </ul>
-      <form
-        className="grid max-w-3xl gap-4"
-        onSubmit={(event) => {
-          event.preventDefault();
-          add.mutate();
-        }}
-      >
-        <h3 className="type-subheading">{t("add")}</h3>
-        <BilingualField
-          label={t("label")}
-          maxLength={200}
-          onChange={(label) => setForm((f) => ({ ...f, label }))}
-          required
-          value={form.label}
-        />
-        <Field label={t("value")}>
-          {(id) => (
-            <Input
-              className="w-48"
-              dir="ltr"
-              id={id}
-              inputMode="decimal"
-              onChange={(e) =>
-                setForm((f) => ({ ...f, value: e.target.value }))
-              }
-              required
-              type="number"
-              value={form.value}
-            />
-          )}
-        </Field>
-        <BilingualField
-          label={t("unit")}
-          maxLength={60}
-          onChange={(unit) => setForm((f) => ({ ...f, unit }))}
-          value={form.unit}
-        />
-        <BilingualField
-          label={t("report")}
-          multiline
-          onChange={(report) => setForm((f) => ({ ...f, report }))}
-          rows={4}
-          value={form.report}
-        />
-        <SaveButton pending={add.isPending} />
-        <ErrorLine error={add.error ?? publish.error} />
-      </form>
+      <NewLink href={`${base}/new`}>{t("add")}</NewLink>
+      <ErrorLine error={publish.error} />
     </div>
+  );
+};
+
+/** A new receipt, uploaded on its own page under Receipts. */
+const NewReceipt = ({
+  back,
+  campaignId,
+}: {
+  readonly back: string;
+  readonly campaignId: string;
+}) => {
+  const t = useTranslations("nexus.admin.charity");
+  const id = useId();
+  const { supabase } = useAuth();
+  const queryClient = useQueryClient();
+  const router = useRouter();
+  const [file, setFile] = useState<File | null>(null);
+  const [form, setForm] = useState({
+    amount: "",
+    description: { ar: "", en: "" },
+    is_public: false,
+  });
+  const invalidate = () =>
+    queryClient.invalidateQueries({ queryKey: ["admin", "receipts"] });
+  const upload = useMutation({
+    mutationFn: async () => {
+      if (!file) {
+        return;
+      }
+      const stored = await uploadReceipt(supabase, campaignId, file);
+      unwrap(
+        await supabase
+          .schema("charity")
+          .from("receipts")
+          .insert({
+            amount_iqd: form.amount ? Number(form.amount) : null,
+            campaign_id: campaignId,
+            description_ar: form.description.ar || null,
+            description_en: form.description.en,
+            is_public: form.is_public,
+            storage_path: stored.path,
+          })
+      );
+    },
+    onSuccess: async () => {
+      await invalidate();
+      router.push(back);
+    },
+  });
+  return (
+    <form
+      className="grid max-w-3xl gap-4"
+      onSubmit={(event) => {
+        event.preventDefault();
+        upload.mutate();
+      }}
+    >
+      <Field hint={t("receipts.noPhotos")} label={t("receipts.file")}>
+        {(fieldId) => (
+          <FileInput
+            accept="application/pdf,image/jpeg,image/png"
+            id={fieldId}
+            onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+            required
+          />
+        )}
+      </Field>
+      <BilingualField
+        label={t("receipts.description")}
+        maxLength={300}
+        onChange={(description) => setForm((f) => ({ ...f, description }))}
+        value={form.description}
+      />
+      <Field label={t("receipts.amount")}>
+        {(fieldId) => (
+          <Input
+            className="w-48"
+            dir="ltr"
+            id={fieldId}
+            inputMode="numeric"
+            min={1}
+            onChange={(e) => setForm((f) => ({ ...f, amount: e.target.value }))}
+            type="number"
+            value={form.amount}
+          />
+        )}
+      </Field>
+      <div className="flex items-center gap-2">
+        <Checkbox
+          checked={form.is_public}
+          id={`${id}-public`}
+          onCheckedChange={(v) =>
+            setForm((f) => ({ ...f, is_public: v === true }))
+          }
+        />
+        <Label htmlFor={`${id}-public`}>{t("receipts.public")}</Label>
+      </div>
+      <SaveButton
+        disabled={!(file && form.description.en.trim())}
+        pending={upload.isPending}
+      />
+      <ErrorLine error={upload.error} />
+    </form>
+  );
+};
+
+/** A new impact figure, on its own page under Impact. */
+const NewImpact = ({
+  back,
+  campaignId,
+}: {
+  readonly back: string;
+  readonly campaignId: string;
+}) => {
+  const t = useTranslations("nexus.admin.charity.impact");
+  const { supabase } = useAuth();
+  const queryClient = useQueryClient();
+  const router = useRouter();
+  const [form, setForm] = useState({
+    label: { ar: "", en: "" },
+    report: { ar: "", en: "" },
+    unit: { ar: "", en: "" },
+    value: "",
+  });
+  const metrics = useQuery({
+    queryFn: async () =>
+      unwrap(
+        await supabase
+          .schema("charity")
+          .from("impact_metrics")
+          .select("*")
+          .eq("campaign_id", campaignId)
+          .order("sort")
+      ) ?? [],
+    queryKey: ["admin", "impact", campaignId],
+  });
+  const invalidate = () =>
+    queryClient.invalidateQueries({ queryKey: ["admin", "impact"] });
+  const add = useMutation({
+    mutationFn: async () =>
+      unwrap(
+        await supabase
+          .schema("charity")
+          .from("impact_metrics")
+          .insert({
+            campaign_id: campaignId,
+            label_ar: form.label.ar,
+            label_en: form.label.en,
+            report_ar: form.report.ar || null,
+            report_en: form.report.en || null,
+            sort: metrics.data?.length ?? 0,
+            unit_ar: form.unit.ar || null,
+            unit_en: form.unit.en || null,
+            value: Number(form.value),
+          })
+      ),
+    onSuccess: async () => {
+      await invalidate();
+      router.push(back);
+    },
+  });
+  return (
+    <form
+      className="grid max-w-3xl gap-4"
+      onSubmit={(event) => {
+        event.preventDefault();
+        add.mutate();
+      }}
+    >
+      <BilingualField
+        label={t("label")}
+        maxLength={200}
+        onChange={(label) => setForm((f) => ({ ...f, label }))}
+        required
+        value={form.label}
+      />
+      <Field label={t("value")}>
+        {(id) => (
+          <Input
+            className="w-48"
+            dir="ltr"
+            id={id}
+            inputMode="decimal"
+            onChange={(e) => setForm((f) => ({ ...f, value: e.target.value }))}
+            required
+            type="number"
+            value={form.value}
+          />
+        )}
+      </Field>
+      <BilingualField
+        label={t("unit")}
+        maxLength={60}
+        onChange={(unit) => setForm((f) => ({ ...f, unit }))}
+        value={form.unit}
+      />
+      <BilingualField
+        label={t("report")}
+        multiline
+        onChange={(report) => setForm((f) => ({ ...f, report }))}
+        rows={4}
+        value={form.report}
+      />
+      <SaveButton pending={add.isPending} />
+      <ErrorLine error={add.error} />
+    </form>
   );
 };
 
 // ── Page ────────────────────────────────────────────────────────────────────
 
-export const CampaignAdmin = () => {
+export const CampaignAdmin = ({
+  item,
+  tab = "ledger",
+}: {
+  /** "new": a blank entry, receipt or figure under the tab. */
+  readonly item?: "new";
+  readonly tab?: CampaignTab;
+}) => {
   const t = useTranslations("nexus.admin.charity");
   const tk = useTranslations("nexus.admin.kit");
   const locale = useLocale() as Locale;
@@ -1272,59 +1344,71 @@ export const CampaignAdmin = () => {
   ) => hasPermission(grants.data, permission, "campaign", campaignId);
   const canManage = can("charity.manage");
   const canSign = can("charity.ledger.signoff");
+  const base = `/events/second-chapter/campaigns/${campaign.data.slug}`;
+  const pathOf = (key: CampaignTab) =>
+    key === "ledger" ? base : `${base}/${key}`;
+  const tabs = campaignTabs.filter((key) => {
+    if (key === "ledger") {
+      return true;
+    }
+    return key === "signoff" ? canSign : canManage;
+  });
+  const shown = tabs.find((key) => key === tab) ?? "ledger";
+  const title = localized(campaign.data, "title", locale);
+  const labelOf = (key: CampaignTab) =>
+    key === "signoff"
+      ? t("tabs.signoff", { count: formatNumber(ledger.data ?? 0) })
+      : t(`tabs.${key}`);
+
+  // A new entry, receipt or figure opens its own page under its tab.
+  if (item === "new" && campaignNewTabs.some((key) => key === shown)) {
+    const tabPath = pathOf(shown);
+    return (
+      <RecordPage
+        back={tabPath}
+        backLabel={`${title}: ${t(`tabs.${shown}`)}`}
+        title={t(`newOn.${shown as CampaignNewTab}`)}
+      >
+        {shown === "ledger" ? (
+          <NewLedgerEntry back={tabPath} campaignId={campaignId} />
+        ) : null}
+        {shown === "receipts" ? (
+          <NewReceipt back={tabPath} campaignId={campaignId} />
+        ) : null}
+        {shown === "impact" ? (
+          <NewImpact back={tabPath} campaignId={campaignId} />
+        ) : null}
+      </RecordPage>
+    );
+  }
 
   return (
     <div className="grid gap-8">
-      <AdminHeading
-        actions={back}
-        title={localized(campaign.data, "title", locale)}
+      <AdminHeading actions={back} title={title} />
+      <SectionTabs
+        label={title}
+        tabs={tabs.map((key) => ({ href: pathOf(key), label: labelOf(key) }))}
       />
-      <Tabs defaultValue="ledger">
-        <TabsList className="flex-wrap">
-          <TabsTrigger value="ledger">{t("tabs.ledger")}</TabsTrigger>
-          {canSign ? (
-            <TabsTrigger value="signoff">
-              {t("tabs.signoff", { count: formatNumber(ledger.data ?? 0) })}
-            </TabsTrigger>
-          ) : null}
-          {canManage ? (
-            <TabsTrigger value="settings">{t("tabs.settings")}</TabsTrigger>
-          ) : null}
-          {canManage ? (
-            <TabsTrigger value="receipts">{t("tabs.receipts")}</TabsTrigger>
-          ) : null}
-          {canManage ? (
-            <TabsTrigger value="handover">{t("tabs.handover")}</TabsTrigger>
-          ) : null}
-          {canManage ? (
-            <TabsTrigger value="impact">{t("tabs.impact")}</TabsTrigger>
-          ) : null}
-        </TabsList>
-        <TabsContent className="pt-4" value="ledger">
-          <Ledger campaignId={campaignId} slug={campaign.data.slug} />
-        </TabsContent>
-        {canSign ? (
-          <TabsContent className="pt-4" value="signoff">
-            <SignoffQueue campaignId={campaignId} />
-          </TabsContent>
+      <div className="pt-2">
+        {shown === "ledger" ? (
+          <Ledger
+            base={base}
+            campaignId={campaignId}
+            slug={campaign.data.slug}
+          />
         ) : null}
-        {canManage ? (
-          <>
-            <TabsContent className="pt-4" value="settings">
-              <CampaignSettings campaignId={campaignId} />
-            </TabsContent>
-            <TabsContent className="pt-4" value="receipts">
-              <Receipts campaignId={campaignId} />
-            </TabsContent>
-            <TabsContent className="pt-4" value="handover">
-              <Handover campaignId={campaignId} />
-            </TabsContent>
-            <TabsContent className="pt-4" value="impact">
-              <Impact campaignId={campaignId} />
-            </TabsContent>
-          </>
+        {shown === "signoff" ? <SignoffQueue campaignId={campaignId} /> : null}
+        {shown === "settings" ? (
+          <CampaignSettings campaignId={campaignId} />
         ) : null}
-      </Tabs>
+        {shown === "receipts" ? (
+          <Receipts base={`${base}/receipts`} campaignId={campaignId} />
+        ) : null}
+        {shown === "handover" ? <Handover campaignId={campaignId} /> : null}
+        {shown === "impact" ? (
+          <Impact base={`${base}/impact`} campaignId={campaignId} />
+        ) : null}
+      </div>
     </div>
   );
 };

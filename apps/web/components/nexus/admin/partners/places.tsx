@@ -7,10 +7,17 @@ import { localized, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useState } from "react";
-import { Link } from "@/lib/nexus/navigation";
+import { Link, useRouter } from "@/lib/nexus/navigation";
 import { RowList } from "../../page";
 import { EmptyLine, SectionSpinner } from "../../states";
-import { BilingualField, ErrorLine, Field, SelectInput } from "../kit";
+import {
+  BilingualField,
+  ErrorLine,
+  Field,
+  NewLink,
+  RecordPage,
+  SelectInput,
+} from "../kit";
 
 const KEY = ["admin", "partner-places"] as const;
 
@@ -31,7 +38,6 @@ export const PartnerPlaces = () => {
   const locale = useLocale() as Locale;
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
-  const [form, setForm] = useState(blank);
   const partnerNames = useQuery({
     queryFn: async () =>
       unwrap(await supabase.schema("governance").rpc("partner_names")) ?? [],
@@ -50,27 +56,6 @@ export const PartnerPlaces = () => {
     queryKey: KEY,
   });
   const refresh = () => queryClient.invalidateQueries({ queryKey: KEY });
-  const add = useMutation({
-    mutationFn: async () =>
-      unwrap(
-        await supabase
-          .schema("programmes")
-          .from("openings")
-          .insert({
-            body_ar: form.body.ar || null,
-            body_en: form.body.en || null,
-            kind: "partner",
-            owner: "partnerships",
-            partner_id: form.partner_id,
-            title_ar: form.title.ar,
-            title_en: form.title.en,
-          })
-      ),
-    onSuccess: async () => {
-      setForm(blank);
-      await refresh();
-    },
-  });
   const toggle = useMutation({
     mutationFn: async ({ id, open }: { id: string; open: boolean }) =>
       unwrap(
@@ -126,6 +111,53 @@ export const PartnerPlaces = () => {
           ))}
         </RowList>
       ) : null}
+      <NewLink href="/people/partners/places/new">{t("new")}</NewLink>
+      <ErrorLine error={toggle.error} />
+    </div>
+  );
+};
+
+/** A new place with a partner, on its own page under Places. */
+export const NewPartnerPlace = () => {
+  const t = useTranslations("nexus.admin.partners.places");
+  const locale = useLocale() as Locale;
+  const { supabase } = useAuth();
+  const queryClient = useQueryClient();
+  const router = useRouter();
+  const [form, setForm] = useState(blank);
+  const partnerNames = useQuery({
+    queryFn: async () =>
+      unwrap(await supabase.schema("governance").rpc("partner_names")) ?? [],
+    queryKey: ["admin", "partner-names"],
+  });
+  const add = useMutation({
+    mutationFn: async () =>
+      unwrap(
+        await supabase
+          .schema("programmes")
+          .from("openings")
+          .insert({
+            body_ar: form.body.ar || null,
+            body_en: form.body.en || null,
+            kind: "partner",
+            owner: "partnerships",
+            partner_id: form.partner_id,
+            title_ar: form.title.ar,
+            title_en: form.title.en,
+          })
+      ),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: KEY });
+      router.push("/people/partners/places");
+    },
+  });
+
+  return (
+    <RecordPage
+      back="/people/partners/places"
+      backLabel={t("back")}
+      title={t("new")}
+    >
       <form
         className="grid max-w-3xl gap-4"
         onSubmit={(event: FormEvent) => {
@@ -133,7 +165,6 @@ export const PartnerPlaces = () => {
           add.mutate();
         }}
       >
-        <h2 className="type-heading">{t("new")}</h2>
         <Field label={t("partner")}>
           {(id) => (
             <SelectInput
@@ -174,8 +205,8 @@ export const PartnerPlaces = () => {
         >
           {t("post")}
         </Button>
-        <ErrorLine error={add.error ?? toggle.error} />
+        <ErrorLine error={add.error} />
       </form>
-    </div>
+    </RecordPage>
   );
 };

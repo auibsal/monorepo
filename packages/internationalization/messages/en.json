@@ -504,7 +504,11 @@
         },
         "onList": "You're on the voter list for this election.",
         "notOnList": "You're not on this election's voter list. It is the register of Voting Members on the day notice was given.",
-        "auibOnly": "Online voting needs your AUIB account (@auib.edu.iq). Sign in with it, or ask the Elections Committee whether there will be a paper ballot box."
+        "auibOnly": "Online voting needs your AUIB account (@auib.edu.iq). Sign in with it, or ask the Elections Committee whether there will be a paper ballot box.",
+        "backToSociety": "Society",
+        "standFor": "Stand for {position}",
+        "alreadyStanding": "You're already standing for this seat.",
+        "notOpen": "Nominations for this seat aren't open."
       },
       "takePart": {
         "title": "Take part",
@@ -696,7 +700,17 @@
         "missingPledge": "To send, make the Human Authorship pledge.",
         "missingWork": "To send, add the work: write it in the editor or attach the file.",
         "missingDetails": "To send, fill in the title and the fields marked as needed.",
-        "title": "Write for Qirtas"
+        "title": "Write for Qirtas",
+        "saveDraft": "Save draft",
+        "savingDraft": "Saving…",
+        "draftSaved": "Draft saved",
+        "draftHint": "Not ready to send? Save it as a draft and come back to it from Write for Qirtas. Only you see your drafts. Files are added when you send.",
+        "deleteDraft": "Delete draft",
+        "deleteDraftConfirm": "Delete this draft? It can't be brought back.",
+        "draftMissing": "This draft isn't here. It may have been sent or deleted.",
+        "draftStatus": "Draft, not sent",
+        "untitledDraft": "Untitled draft",
+        "draftTitle": "Your draft"
       }
     },
     "profile": {
@@ -1329,6 +1343,11 @@
           "receipt": "Receipt",
           "noReceipt": "No receipt yet",
           "note": "Note (optional)"
+        },
+        "newOn": {
+          "ledger": "Record money counted",
+          "receipts": "Upload a receipt",
+          "impact": "Add a figure"
         }
       },
       "picker": {
@@ -1382,7 +1401,8 @@
           "urlError": "Use an Instagram, TikTok or YouTube link (https://…).",
           "caption": "Caption",
           "episode": "From episode (optional)",
-          "none": "None"
+          "none": "None",
+          "back": "Video"
         },
         "sixWords": {
           "lede": "Six Words are written on paper at the Typewriter Tour, never on the site. Type each card exactly as written. Scan the writer's membership card to save it as theirs, or save it unsigned and attach their card later. A card goes on the wall at once.",
@@ -1501,7 +1521,8 @@
           "back": "All openings",
           "missing": "This opening is not here",
           "untitled": "Untitled opening",
-          "editTitle": "Edit an opening"
+          "editTitle": "Edit an opening",
+          "new": "New opening"
         },
         "sessions": {
           "lede": "How this program repeats. Its sessions appear in What's on, each a date you can still edit or cancel in Events.",
@@ -1532,7 +1553,8 @@
           "title": "Pitches",
           "lede": "Ideas for new programs that members sent. The Director of Programs answers each one."
         },
-        "whatsOn": "What's on"
+        "whatsOn": "What's on",
+        "backToTab": "{program}: {tab}"
       },
       "governance": {
         "title": "Governance",
@@ -1626,7 +1648,8 @@
           "dateError": "Check the dates: nominations close after they open, voting opens after nominations close, and closes after it opens.",
           "giveNotice": "Give notice",
           "giveNoticeConfirm": "Give notice now? Nominations must open at least a week from today. The voter list is frozen today: everyone on the register of Voting Members right now (Bylaws B6.2).",
-          "noticeGiven": "{count, plural, =0 {Notice given {date}. No one is on the voter list.} one {Notice given {date}. {n} person is on the voter list.} other {Notice given {date}. {n} people are on the voter list.}}"
+          "noticeGiven": "{count, plural, =0 {Notice given {date}. No one is on the voter list.} one {Notice given {date}. {n} person is on the voter list.} other {Notice given {date}. {n} people are on the voter list.}}",
+          "back": "All elections"
         }
       },
       "settings": {
@@ -2127,7 +2150,8 @@
           "published": "Published",
           "publish": "Publish",
           "unpublish": "Unpublish",
-          "empty": "No offers yet."
+          "empty": "No offers yet.",
+          "back": "All perks"
         },
         "declarations": {
           "lede": "Conflict of Interest Declarations (Form F-18) from role holders. The General Secretary records receipt.",
@@ -2152,7 +2176,8 @@
           "choose": "Choose a partner",
           "title": "Title",
           "body": "What it involves",
-          "post": "Post the place"
+          "post": "Post the place",
+          "back": "All places with partners"
         }
       },
       "recognition": {
@@ -2424,7 +2449,10 @@
         "saveOffice": "Save office use",
         "acknowledge": "Acknowledge",
         "takeUp": "Mark as being handled",
-        "close": "Close"
+        "close": "Close",
+        "back": "Back to the list",
+        "missing": "This request isn't here, or isn't yours to handle.",
+        "requestTitle": "A request"
       },
       "documents": {
         "title": "Library",
@@ -2737,7 +2765,8 @@
           "provided": "Provided",
           "partly_provided": "Partly provided",
           "not_provided": "Not provided"
-        }
+        },
+        "backToQirtas": "Qirtas"
       },
       "hiring": {
         "title": "Hiring",
@@ -2780,7 +2809,8 @@
         },
         "role": "Role",
         "roleHint": "Every role the Society has, by who picks the person. Whoever is onboarded holds it.",
-        "roleTitleHint": "Leave empty to use the role's name, or give its own title (\"Salon Host\")."
+        "roleTitleHint": "Leave empty to use the role's name, or give its own title (\"Salon Host\").",
+        "back": "All roles"
       },
       "sections": {
         "label": "The Diwan’s sections",

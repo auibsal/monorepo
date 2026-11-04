@@ -10,14 +10,14 @@ import {
   formatLongDate,
   formatNumber,
 } from "@repo/internationalization/format";
-import { Link } from "@repo/internationalization/navigation";
+import { Link, useRouter } from "@repo/internationalization/navigation";
 import { localized, recognition, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useId, useState } from "react";
 import { DateInput } from "@/components/fields/date-input";
 import { SelectInput } from "@/components/nexus/admin/kit";
-import { ErrorLine } from "../admin/kit";
+import { ErrorLine, NewLink } from "../admin/kit";
 import { DiwanPage, DiwanSection } from "../page";
 import { EmptyLine, SectionSpinner } from "../states";
 
@@ -37,16 +37,6 @@ export const Service = () => {
   const locale = useLocale();
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
-  const id = useId();
-  const empty = {
-    activity: "",
-    hours: "",
-    occurred_on: today(),
-    programme_id: "",
-    what: "",
-  };
-  const [form, setForm] = useState(empty);
-
   const hours = useQuery({
     queryFn: () => recognition.serviceHours(supabase),
     queryKey: [...KEY, "hours"],
@@ -54,10 +44,6 @@ export const Service = () => {
   const records = useQuery({
     queryFn: () => recognition.myService(supabase),
     queryKey: [...KEY, "records"],
-  });
-  const certificates = useQuery({
-    queryFn: () => recognition.myCertificates(supabase),
-    queryKey: [...KEY, "certificates"],
   });
   const programmes = useQuery({
     queryFn: async () =>
@@ -71,19 +57,9 @@ export const Service = () => {
     queryKey: [...KEY, "programmes"],
   });
 
-  const log = useMutation({
-    mutationFn: () =>
-      recognition.logHours(supabase, {
-        activity: form.activity,
-        hours: Number(form.hours),
-        occurred_on: form.occurred_on,
-        programme_id: form.programme_id || null,
-        what: form.what,
-      }),
-    onSuccess: async () => {
-      setForm(empty);
-      await queryClient.invalidateQueries({ queryKey: KEY });
-    },
+  const certificates = useQuery({
+    queryFn: () => recognition.myCertificates(supabase),
+    queryKey: [...KEY, "certificates"],
   });
   const withdraw = useMutation({
     mutationFn: async (recordId: string) =>
@@ -102,11 +78,6 @@ export const Service = () => {
   const programmeName = (programmeId: string | null) => {
     const row = programmes.data?.find((p) => p.id === programmeId);
     return row ? localized(row, "name", locale) : "";
-  };
-
-  const onSubmit = (event: FormEvent) => {
-    event.preventDefault();
-    log.mutate();
   };
 
   return (
@@ -190,89 +161,7 @@ export const Service = () => {
 
       <DiwanSection id="logtitle" title={t("logTitle")}>
         <p className="type-body">{t("logLede")}</p>
-        <form className="grid gap-4" onSubmit={onSubmit}>
-          <div className="grid gap-4 sm:grid-cols-3">
-            <div className="grid gap-2">
-              <Label htmlFor={`${id}-date`}>{t("date")}</Label>
-              <DateInput
-                id={`${id}-date`}
-                max={today()}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, occurred_on: e.target.value }))
-                }
-                required
-                value={form.occurred_on}
-              />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor={`${id}-hours`}>{t("hoursLabel")}</Label>
-              <Input
-                dir="ltr"
-                id={`${id}-hours`}
-                inputMode="decimal"
-                max={24}
-                min={0.25}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, hours: e.target.value }))
-                }
-                required
-                step={0.25}
-                type="number"
-                value={form.hours}
-              />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor={`${id}-programme`}>{t("programme")}</Label>
-              <SelectInput
-                id={`${id}-programme`}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, programme_id: e.target.value }))
-                }
-                value={form.programme_id}
-              >
-                <option value="">{t("noProgramme")}</option>
-                {(programmes.data ?? []).map((p) => (
-                  <option key={p.id} value={p.id}>
-                    {localized(p, "name", locale)}
-                  </option>
-                ))}
-              </SelectInput>
-            </div>
-          </div>
-          <div className="grid gap-2">
-            <Label htmlFor={`${id}-activity`}>{t("activity")}</Label>
-            <Input
-              dir="auto"
-              id={`${id}-activity`}
-              maxLength={200}
-              onChange={(e) =>
-                setForm((f) => ({ ...f, activity: e.target.value }))
-              }
-              required
-              value={form.activity}
-            />
-          </div>
-          <div className="grid gap-2">
-            <Label htmlFor={`${id}-what`}>{t("what")}</Label>
-            <Textarea
-              dir="auto"
-              id={`${id}-what`}
-              maxLength={1000}
-              onChange={(e) => setForm((f) => ({ ...f, what: e.target.value }))}
-              rows={2}
-              value={form.what}
-            />
-          </div>
-          <p className="type-caption">{t("confirmNote")}</p>
-          <Button
-            className="justify-self-start"
-            disabled={log.isPending}
-            type="submit"
-          >
-            {t("log")}
-          </Button>
-          <ErrorLine error={log.error} />
-        </form>
+        <NewLink href="/membership/record/new">{t("log")}</NewLink>
       </DiwanSection>
 
       <DiwanSection id="certificatestitle" title={t("certificatesTitle")}>
@@ -293,6 +182,155 @@ export const Service = () => {
           ))}
         </ul>
       </DiwanSection>
+    </DiwanPage>
+  );
+};
+
+/**
+ * /membership/record/new: hours logged on their own page (owner, Nov 4,
+ * 2026: every new record opens its own page); saving returns to Record.
+ */
+export const LogHours = () => {
+  const t = useTranslations("nexus.service");
+  const locale = useLocale();
+  const { supabase } = useAuth();
+  const queryClient = useQueryClient();
+  const router = useRouter();
+  const id = useId();
+  const empty = {
+    activity: "",
+    hours: "",
+    occurred_on: today(),
+    programme_id: "",
+    what: "",
+  };
+  const [form, setForm] = useState(empty);
+
+  const programmes = useQuery({
+    queryFn: async () =>
+      unwrap(
+        await supabase
+          .schema("core")
+          .from("programmes")
+          .select("id, name_en, name_ar")
+          .order("sort")
+      ) ?? [],
+    queryKey: [...KEY, "programmes"],
+  });
+
+  const log = useMutation({
+    mutationFn: () =>
+      recognition.logHours(supabase, {
+        activity: form.activity,
+        hours: Number(form.hours),
+        occurred_on: form.occurred_on,
+        programme_id: form.programme_id || null,
+        what: form.what,
+      }),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: KEY });
+      router.push("/membership/record");
+    },
+  });
+  const onSubmit = (event: FormEvent) => {
+    event.preventDefault();
+    log.mutate();
+  };
+
+  return (
+    <DiwanPage
+      actions={
+        <Link className="link" href="/membership/record">
+          {t("title")}
+        </Link>
+      }
+      lede={t("logLede")}
+      narrow
+      title={t("logTitle")}
+    >
+      <form className="grid gap-4" onSubmit={onSubmit}>
+        <div className="grid gap-4 sm:grid-cols-3">
+          <div className="grid gap-2">
+            <Label htmlFor={`${id}-date`}>{t("date")}</Label>
+            <DateInput
+              id={`${id}-date`}
+              max={today()}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, occurred_on: e.target.value }))
+              }
+              required
+              value={form.occurred_on}
+            />
+          </div>
+          <div className="grid gap-2">
+            <Label htmlFor={`${id}-hours`}>{t("hoursLabel")}</Label>
+            <Input
+              dir="ltr"
+              id={`${id}-hours`}
+              inputMode="decimal"
+              max={24}
+              min={0.25}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, hours: e.target.value }))
+              }
+              required
+              step={0.25}
+              type="number"
+              value={form.hours}
+            />
+          </div>
+          <div className="grid gap-2">
+            <Label htmlFor={`${id}-programme`}>{t("programme")}</Label>
+            <SelectInput
+              id={`${id}-programme`}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, programme_id: e.target.value }))
+              }
+              value={form.programme_id}
+            >
+              <option value="">{t("noProgramme")}</option>
+              {(programmes.data ?? []).map((p) => (
+                <option key={p.id} value={p.id}>
+                  {localized(p, "name", locale)}
+                </option>
+              ))}
+            </SelectInput>
+          </div>
+        </div>
+        <div className="grid gap-2">
+          <Label htmlFor={`${id}-activity`}>{t("activity")}</Label>
+          <Input
+            dir="auto"
+            id={`${id}-activity`}
+            maxLength={200}
+            onChange={(e) =>
+              setForm((f) => ({ ...f, activity: e.target.value }))
+            }
+            required
+            value={form.activity}
+          />
+        </div>
+        <div className="grid gap-2">
+          <Label htmlFor={`${id}-what`}>{t("what")}</Label>
+          <Textarea
+            dir="auto"
+            id={`${id}-what`}
+            maxLength={1000}
+            onChange={(e) => setForm((f) => ({ ...f, what: e.target.value }))}
+            rows={2}
+            value={form.what}
+          />
+        </div>
+        <p className="type-caption">{t("confirmNote")}</p>
+        <Button
+          className="justify-self-start"
+          disabled={log.isPending}
+          type="submit"
+        >
+          {t("log")}
+        </Button>
+        <ErrorLine error={log.error} />
+      </form>
     </DiwanPage>
   );
 };

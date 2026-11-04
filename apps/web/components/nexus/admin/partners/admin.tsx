@@ -31,6 +31,8 @@ import {
   DataTable,
   ErrorLine,
   Field,
+  NewLink,
+  RecordPage,
   SaveButton,
   SelectInput,
 } from "../kit";
@@ -1163,18 +1165,7 @@ const Offers = () => {
   const locale = useLocale() as Locale;
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
-  const register = usePartners();
   const partnerName = usePartnerNames();
-  const empty = {
-    code: "",
-    details: { ar: "", en: "" },
-    ends_on: "",
-    is_published: false,
-    partner_id: "",
-    starts_on: today(),
-    title: { ar: "", en: "" },
-  };
-  const [form, setForm] = useState(empty);
   const offers = useQuery({
     queryFn: async () =>
       (unwrap(
@@ -1185,31 +1176,6 @@ const Offers = () => {
           .order("starts_on", { ascending: false })
       ) ?? []) as OfferRow[],
     queryKey: [...key, "offers"],
-  });
-  const add = useMutation({
-    mutationFn: async () =>
-      unwrap(
-        await supabase
-          .schema("governance")
-          .from("member_offers")
-          .insert(
-            partners.offerSchema.parse({
-              code: form.code,
-              details_ar: form.details.ar,
-              details_en: form.details.en,
-              ends_on: form.ends_on,
-              is_published: form.is_published,
-              partner_id: form.partner_id,
-              starts_on: form.starts_on,
-              title_ar: form.title.ar,
-              title_en: form.title.en,
-            })
-          )
-      ),
-    onSuccess: async () => {
-      setForm(empty);
-      await queryClient.invalidateQueries({ queryKey: key });
-    },
   });
   const toggle = useMutation({
     mutationFn: async (row: OfferRow) =>
@@ -1264,6 +1230,67 @@ const Offers = () => {
   return (
     <div className="grid gap-6">
       <p className="type-body">{t("lede")}</p>
+      <NewLink href="/people/partners/offers/new">{t("new")}</NewLink>
+      <ErrorLine error={toggle.error} />
+      <DataTable
+        columns={columns}
+        empty={t("empty")}
+        rowKey={(row) => row.id}
+        rows={offers.data ?? []}
+      />
+    </div>
+  );
+};
+
+/** A new perk, on its own page under Perks (owner, Nov 4, 2026). */
+export const NewOffer = () => {
+  const t = useTranslations("nexus.admin.partners.offers");
+  const locale = useLocale() as Locale;
+  const { supabase } = useAuth();
+  const queryClient = useQueryClient();
+  const router = useRouter();
+  const register = usePartners();
+  const empty = {
+    code: "",
+    details: { ar: "", en: "" },
+    ends_on: "",
+    is_published: false,
+    partner_id: "",
+    starts_on: today(),
+    title: { ar: "", en: "" },
+  };
+  const [form, setForm] = useState(empty);
+  const add = useMutation({
+    mutationFn: async () =>
+      unwrap(
+        await supabase
+          .schema("governance")
+          .from("member_offers")
+          .insert(
+            partners.offerSchema.parse({
+              code: form.code,
+              details_ar: form.details.ar,
+              details_en: form.details.en,
+              ends_on: form.ends_on,
+              is_published: form.is_published,
+              partner_id: form.partner_id,
+              starts_on: form.starts_on,
+              title_ar: form.title.ar,
+              title_en: form.title.en,
+            })
+          )
+      ),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: key });
+      router.push("/people/partners/offers");
+    },
+  });
+  return (
+    <RecordPage
+      back="/people/partners/offers"
+      backLabel={t("back")}
+      title={t("new")}
+    >
       <form
         className="grid max-w-3xl gap-4"
         onSubmit={(event) => {
@@ -1271,7 +1298,6 @@ const Offers = () => {
           add.mutate();
         }}
       >
-        <h3 className="font-medium text-sm">{t("new")}</h3>
         <Field label={t("partner")}>
           {(id) => (
             <SelectInput
@@ -1347,15 +1373,9 @@ const Offers = () => {
         </div>
         <p className="type-caption">{t("grantHint")}</p>
         <SaveButton pending={add.isPending} />
-        <ErrorLine error={add.error ?? toggle.error} />
+        <ErrorLine error={add.error} />
       </form>
-      <DataTable
-        columns={columns}
-        empty={t("empty")}
-        rowKey={(row) => row.id}
-        rows={offers.data ?? []}
-      />
-    </div>
+    </RecordPage>
   );
 };
 

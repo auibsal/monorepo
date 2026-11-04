@@ -23,3 +23,30 @@ export const productionTabs = [
   "report",
 ] as const;
 export type ProductionTab = (typeof productionTabs)[number];
+
+/** The production tabs that add records of their own, each at <tab>/new. */
+export const productionNewTabs = [
+  "auditions",
+  "credits",
+  "rehearsals",
+] as const;
+export type ProductionNewTab = (typeof productionNewTabs)[number];
+
+/** A Second Chapter campaign's tabs, each at its own address. */
+export const campaignTabs = [
+  "ledger",
+  "signoff",
+  "settings",
+  "receipts",
+  "handover",
+  "impact",
+] as const;
+export type CampaignTab = (typeof campaignTabs)[number];
+
+/** The campaign tabs that add records of their own, each at <tab>/new. */
+export const campaignNewTabs = ["ledger", "receipts", "impact"] as const;
+export type CampaignNewTab = (typeof campaignNewTabs)[number];
+
+/** People → Service's tabs: hours to confirm, totals, certificates. */
+export const serviceTabs = ["pending", "totals", "certificates"] as const;
+export type ServiceTab = (typeof serviceTabs)[number];

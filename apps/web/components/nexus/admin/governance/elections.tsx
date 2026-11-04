@@ -12,12 +12,15 @@ import { governance, localized, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
+import { useRouter } from "@/lib/nexus/navigation";
 import { SectionSpinner } from "../../states";
 import {
   BilingualField,
   ConfirmAction,
   DateTimeField,
   ErrorLine,
+  NewLink,
+  RecordPage,
   SaveButton,
 } from "../kit";
 import { useMemberNames } from "../member-picker";
@@ -429,15 +432,6 @@ const ElectionCard = ({
 export const Elections = () => {
   const t = useTranslations("nexus.admin.governance.elections");
   const { supabase } = useAuth();
-  const queryClient = useQueryClient();
-  const [form, setForm] = useState({
-    nominations_close_at: null as string | null,
-    nominations_open_at: null as string | null,
-    title: { ar: "", en: "" },
-    voting_closes_at: null as string | null,
-    voting_opens_at: null as string | null,
-  });
-  const [problem, setProblem] = useState<string | null>(null);
   const elections = useQuery({
     queryFn: async () =>
       unwrap(
@@ -449,6 +443,32 @@ export const Elections = () => {
       ) ?? [],
     queryKey: key,
   });
+
+  return (
+    <div className="grid gap-6">
+      {elections.isPending ? <SectionSpinner /> : null}
+      {elections.data?.map((election) => (
+        <ElectionCard election={election} key={election.id} />
+      ))}
+      <NewLink href="/society/elections/new">{t("new")}</NewLink>
+    </div>
+  );
+};
+
+/** A new election, on its own page under Elections (owner, Nov 4, 2026). */
+export const NewElection = () => {
+  const t = useTranslations("nexus.admin.governance.elections");
+  const { supabase } = useAuth();
+  const queryClient = useQueryClient();
+  const router = useRouter();
+  const [form, setForm] = useState({
+    nominations_close_at: null as string | null,
+    nominations_open_at: null as string | null,
+    title: { ar: "", en: "" },
+    voting_closes_at: null as string | null,
+    voting_opens_at: null as string | null,
+  });
+  const [problem, setProblem] = useState<string | null>(null);
   const create = useMutation({
     mutationFn: async () => {
       const times = [
@@ -479,15 +499,17 @@ export const Elections = () => {
           })
       );
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: key }),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: key });
+      router.push("/society/elections");
+    },
   });
-
   return (
-    <div className="grid gap-6">
-      {elections.isPending ? <SectionSpinner /> : null}
-      {elections.data?.map((election) => (
-        <ElectionCard election={election} key={election.id} />
-      ))}
+    <RecordPage
+      back="/society/elections"
+      backLabel={t("back")}
+      title={t("new")}
+    >
       <form
         className="grid max-w-3xl gap-4"
         onSubmit={(event) => {
@@ -495,7 +517,6 @@ export const Elections = () => {
           create.mutate();
         }}
       >
-        <h3 className="type-subheading">{t("new")}</h3>
         <BilingualField
           label={t("titleField")}
           maxLength={200}
@@ -541,6 +562,6 @@ export const Elections = () => {
           <ErrorLine error={create.error} />
         ) : null}
       </form>
-    </div>
+    </RecordPage>
   );
 };
