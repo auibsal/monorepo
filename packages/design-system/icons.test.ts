@@ -4,7 +4,7 @@ import { iconData } from "./components/sal/icon-data";
 import { iconDataPath, renderIconData } from "./scripts/icons";
 
 describe("the icon set", () => {
-  test("icon-data.ts is generated from brand/icons", async () => {
+  test("icon-data.ts is generated from packages/brand/assets/icons", async () => {
     expect(readFileSync(iconDataPath, "utf8")).toBe(await renderIconData());
   });
 

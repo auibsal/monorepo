@@ -7,7 +7,22 @@ const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
 
 // No redirects (owner, Oct 14 and Oct 30, 2026): www.auibsal.org →
 // auibsal.org is a Vercel domain setting.
-let nextConfig: NextConfig = { ...config };
+//
+// The design system (packages/brand, `bun run build:site`) is built into
+// public/_design and shown inside the Diwan at /diwan/design, which frames
+// it: only the site may frame it, and search engines never index it.
+let nextConfig: NextConfig = {
+  ...config,
+  headers: async () => [
+    {
+      headers: [
+        { key: "X-Robots-Tag", value: "noindex, nofollow" },
+        { key: "X-Frame-Options", value: "SAMEORIGIN" },
+      ],
+      source: "/_design/:path*",
+    },
+  ],
+};
 
 if (env.ANALYZE === "true") {
   nextConfig = withAnalyzer(nextConfig);

@@ -19,7 +19,7 @@ interface BrandLogoProps {
 }
 
 /**
- * The SAL logo from brand/logos, exactly as supplied: an <img> of the SVG,
+ * The SAL logo from packages/brand/assets/logos, exactly as supplied: an <img> of the SVG,
  * never redrawn. The alt text is the Society's name in the page language.
  */
 export const BrandLogo = ({

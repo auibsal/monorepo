@@ -16,7 +16,7 @@ const LOGOS = [
   ["avatar", "sal-avatar.svg", false],
 ] as const;
 
-// The six colors (brand/tokens.json).
+// The six colors (packages/brand/assets/tokens.json).
 const COLORS = [
   ["White", "#ffffff"],
   ["Ink", "#273236"],

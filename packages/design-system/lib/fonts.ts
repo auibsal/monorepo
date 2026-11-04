@@ -14,7 +14,7 @@ import localFont from "next/font/local";
  * Qirtas's article text (dek and body) only.
  *
  * Ubuntu Arabic (400/700) is self-hosted with next/font/local from
- * ../fonts, byte-for-byte copies of brand/fonts (tokens.test.ts checks).
+ * ../fonts, byte-for-byte copies of packages/brand/assets/fonts (tokens.test.ts checks).
  * Never another Arabic face. It has no Light: Arabic display is Regular.
  *
  * One more face, for signatures only (owner, Oct 31, 2026): a person's

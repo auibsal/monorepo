@@ -14,10 +14,14 @@
       "ignoreDependencies": ["@repo/typescript-config"]
     },
     "apps/web": {
-      "entry": ["scripts/*.ts", "public/sw.js"]
+      "entry": ["scripts/*.ts", "public/sw.js"],
+      "ignoreDependencies": ["@repo/brand"]
     },
     "packages/email": {
       "ignoreDependencies": ["react-dom", "@types/react-dom"]
+    },
+    "packages/brand": {
+      "ignore": ["assets/**"]
     }
   }
 }

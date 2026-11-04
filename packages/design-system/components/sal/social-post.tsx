@@ -57,7 +57,7 @@ const grounds: Record<
 const u = (n: number) => `calc(${n} * 100cqw / 1080)`;
 
 /**
- * The brand's Social Post (brand/components/previews/SocialPost.md): 1080 ×
+ * The brand's Social Post (packages/brand/assets/components/previews/SocialPost.md): 1080 ×
  * 1350 at any width, in one language. The lockup in the post's language at
  * the top start; a headline (Light in English, Regular in Arabic) with one
  * accent word at most and nothing above it; one sentence; the date and

@@ -15,7 +15,7 @@ interface IconProps {
 }
 
 /**
- * One of the Society's icons (brand/icons: Lucide, redrawn at a 1.5 px line
+ * One of the Society's icons (packages/brand/assets/icons: Lucide, redrawn at a 1.5 px line
  * with square ends). At the text's size (1.15 em) and in its color. Never in
  * a headline, as a bullet or as decoration (brand book, Icons).
  */

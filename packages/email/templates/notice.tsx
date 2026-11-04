@@ -14,7 +14,7 @@ import {
 } from "@react-email/components";
 import { siteUrl } from "@repo/internationalization";
 
-// Brand colors (brand/tokens.json). Email clients need inline styles.
+// Brand colors (packages/brand/assets/tokens.json). Email clients need inline styles.
 const CRIMSON = "#9c213e";
 const INK = "#273236";
 const ASH = "#5c6568";

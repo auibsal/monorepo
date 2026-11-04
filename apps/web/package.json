@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "analyze": "ANALYZE=true npm run build",
-    "build": "next build",
+    "build": "bun run --cwd ../../packages/brand build:site && next build",
     "clean": "git clean -xdf .cache .turbo dist node_modules",
     "dev": "next dev -p 3000",
     "start": "next start -p 3000",
@@ -60,6 +60,7 @@
   },
   "devDependencies": {
     "@react-email/components": "1.0.12",
+    "@repo/brand": "workspace:*",
     "@repo/typescript-config": "workspace:*",
     "@tailwindcss/postcss": "^4.2.1",
     "@testing-library/dom": "^10.4.1",

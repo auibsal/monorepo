@@ -117,7 +117,7 @@ jobs:
         with:
           node-version-file: .nvmrc
       - run: bun install --frozen-lockfile
-      - run: bunx turbo build --filter=web --filter=@repo/storybook
+      - run: bunx turbo build --filter=web
       # No secret may reach a browser bundle: the client chunks must not
       # contain the secret-key prefix or the server-only names. The directory
       # must exist, or the check is not checking anything.
