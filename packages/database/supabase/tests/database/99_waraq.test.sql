@@ -197,7 +197,7 @@ select is((select author_name_en from journal.desk_queue()), 'Sara Reporter',
   'The News Editor sees news by name');
 select journal.transition_submission(pg_temp.news_sub(), 'intake_check');
 select journal.transition_submission(pg_temp.news_sub(), 'in_review');
-select lives_ok($$ select journal.decide_named(pg_temp.news_sub(), 'accept') $$,
+select lives_ok($$ select journal.decide_named(pg_temp.news_sub(), 'accept', 'Clear and checked') $$,
   'The News Editor accepts the story');
 
 select pg_temp.logout();
@@ -328,7 +328,7 @@ grant execute on function pg_temp.poem_entry() to public;
 
 select pg_temp.login_as('00000000-0000-0000-0000-00000000ae12');
 select journal.transition_submission(pg_temp.poem_entry(), 'selection');
-select lives_ok($$ select journal.decide(pg_temp.poem_entry(), 'accept') $$,
+select lives_ok($$ select journal.decide(pg_temp.poem_entry(), 'accept', 'A strong poem') $$,
   'The Letters Editor decides by blind id');
 select pg_temp.logout();
 select is(

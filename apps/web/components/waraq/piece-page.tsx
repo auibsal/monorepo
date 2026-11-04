@@ -15,6 +15,7 @@ import {
 } from "@/components/waraq/cards";
 import { CorrectionNotes, PieceBody, texts } from "@/components/waraq/layouts";
 import { Nameplate } from "@/components/waraq/nameplate";
+import { ReadingProgress, TextSize } from "@/components/waraq/reading-tools";
 import { articleLd, JsonLd } from "@/lib/json-ld";
 import { localizedMetadata } from "@/lib/metadata";
 import { readPublished } from "@/lib/supabase";
@@ -73,16 +74,21 @@ export const PieceArticle = async ({
     "creative_nonfiction",
     "translation",
   ];
-  const related = journal
-    .inLanguage(
-      await readPublished(
-        ["journal"],
-        (c) => journal.deskPieces(c, desk, { limit: 4 }),
-        []
-      ),
-      locale
-    )
-    .filter((p) => p.id !== piece.id)
+  const section = journal.inLanguage(
+    await readPublished(
+      ["journal"],
+      (c) => journal.deskPieces(c, desk, { limit: 24 }),
+      []
+    ),
+    locale
+  );
+  // The next piece (design review C15): the one published before this in
+  // its section, or the section's newest once this is the oldest.
+  const at = section.findIndex((p) => p.id === piece.id);
+  const following = section[at + 1] ?? (at > 0 ? section[0] : undefined);
+  const next = following && following.id !== piece.id ? following : null;
+  const related = section
+    .filter((p) => p.id !== piece.id && p.id !== next?.id)
     .slice(0, 3);
   const issue = piece.issue as {
     slug: string;
@@ -93,6 +99,7 @@ export const PieceArticle = async ({
 
   return (
     <div className="grid w-full gap-10 py-10">
+      <ReadingProgress />
       <div className="mx-auto w-full max-w-6xl px-4">
         <Nameplate current={desk} locale={locale} small />
       </div>
@@ -159,6 +166,7 @@ export const PieceArticle = async ({
             </p>
           ) : null}
           {credit ? <p className="type-caption">{credit}</p> : null}
+          {lockedText ? null : <TextSize />}
           {proseTypes.includes(category) && words > 0 ? (
             <p className="type-caption">
               {t("readingTime", {
@@ -192,6 +200,7 @@ export const PieceArticle = async ({
           {t("firstPublished")}
         </p>
       </article>
+      <ReadOn issue={issue} locale={locale} next={next} />
       {related.length > 0 ? (
         <aside
           aria-labelledby="related"
@@ -204,5 +213,47 @@ export const PieceArticle = async ({
         </aside>
       ) : null}
     </div>
+  );
+};
+
+/** After the article: the next piece in its section, and its Edition (C15). */
+const ReadOn = async ({
+  issue,
+  locale,
+  next,
+}: {
+  issue: { slug: string; title_ar: string; title_en: string } | null;
+  locale: Locale;
+  next: journal.PieceCard | null;
+}) => {
+  if (!(next || issue)) {
+    return null;
+  }
+  const t = await getTranslations({ locale, namespace: "web.journal" });
+  return (
+    <nav
+      aria-label={t("reading.after")}
+      className="mx-auto grid w-full max-w-3xl gap-4 border-text border-t px-4 pt-6 sm:grid-cols-2"
+    >
+      {next ? (
+        <Link className="group grid gap-1" href={pieceHref(next)}>
+          <span className="type-caption">{t("reading.next")}</span>
+          <span className="type-title group-hover:text-accent">
+            {localized(next, "title", locale)}
+          </span>
+        </Link>
+      ) : null}
+      {issue ? (
+        <Link
+          className="group grid gap-1"
+          href={`/qirtas/editions/${issue.slug}`}
+        >
+          <span className="type-caption">{t("reading.inEdition")}</span>
+          <span className="type-title group-hover:text-accent">
+            {localized(issue, "title", locale)}
+          </span>
+        </Link>
+      ) : null}
+    </nav>
   );
 };

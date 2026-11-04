@@ -19,6 +19,7 @@ import { useGrants } from "@/lib/nexus/queries";
 import { DiwanSection } from "../page";
 import { ErrorState, SectionSpinner } from "../states";
 import { doorPath, useDoorEvents } from "./events/check-in";
+import { Handover } from "./handover";
 import { AdminHeading } from "./kit";
 import { RecentActivity } from "./system/activity";
 import { EmailDelivery } from "./system/email";
@@ -378,6 +379,7 @@ export const AdminOverview = () => {
           ))}
         </div>
       ) : null}
+      <Handover />
       {o.campaigns ? (
         <DiwanSection id="campaigns" title={t("campaigns")}>
           {o.campaigns.length === 0 ? (

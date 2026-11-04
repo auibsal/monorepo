@@ -284,7 +284,7 @@ select is((select count(*) from journal.scores)::integer, 2, 'Readers see only t
 -- ── Decisions and the reveal ────────────────────────────────────────────────
 
 select throws_ok(
-  $$ select journal.decide((select id from journal.blind_entries where category = 'fiction'), 'accept') $$,
+  $$ select journal.decide((select id from journal.blind_entries where category = 'fiction'), 'accept', 'Strong') $$,
   '42501', null,
   'Readers cannot decide'
 );

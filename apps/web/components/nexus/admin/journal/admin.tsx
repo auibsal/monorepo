@@ -329,7 +329,7 @@ const QueueActions = ({ item }: { item: QueueRow }) => {
     act.mutate(() =>
       j.rpc("decide_named", {
         decision,
-        notes: note.trim() || undefined,
+        notes: note.trim(),
         submission_id: id,
       })
     );
@@ -339,6 +339,8 @@ const QueueActions = ({ item }: { item: QueueRow }) => {
     );
   const reviewing = item.status === "in_review" || item.status === "selection";
   const busy = act.isPending;
+  // C25: every decision carries its reason (the database refuses one without).
+  const noReason = !note.trim();
 
   return (
     <div className="grid gap-2">
@@ -384,13 +386,20 @@ const QueueActions = ({ item }: { item: QueueRow }) => {
             {t("askFix")}
           </Button>
         ) : null}
+        {reviewing && noReason ? (
+          <p className="type-caption basis-full">{t("reasonNeeded")}</p>
+        ) : null}
         {reviewing ? (
           <>
-            <Button disabled={busy} onClick={() => decide("accept")} size="sm">
+            <Button
+              disabled={busy || noReason}
+              onClick={() => decide("accept")}
+              size="sm"
+            >
               {t("accept")}
             </Button>
             <Button
-              disabled={busy}
+              disabled={busy || noReason}
               onClick={() => decide("accept_with_edits")}
               size="sm"
               variant="outline"
@@ -398,7 +407,7 @@ const QueueActions = ({ item }: { item: QueueRow }) => {
               {t("acceptWithEdits")}
             </Button>
             <Button
-              disabled={busy}
+              disabled={busy || noReason}
               onClick={() => decide("decline")}
               size="sm"
               variant="ghost"

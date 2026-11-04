@@ -5,7 +5,34 @@ Every session starts here and continues from the first unticked item. The
 brief is `sal-platform-claude-code-prompt.md` (uploaded at the start of the
 first session); section numbers (§) refer to it.
 
-Branch: `claude/new-session-qosn60`.
+Branch: `claude/reading-and-diwan` (PR 3 of the design review).
+
+## The design review: PR 3, reading and the Diwan (2026-11-04)
+
+- [x] C25 A decision needs its reason: the database refuses a blank one
+  (migration `20261101002700`), the Diwan's decision forms require it and
+  say the writer reads it; the readers' rubric and the decision stay on
+  the entry's one page, blind.
+- [x] C15 Articles: a progress hairline (scroll timeline, none with
+  reduced motion), text size (Small, Medium, Large; this browser only),
+  the next piece in the section and the Edition at the end.
+- [x] R3 Nothing to do: no ads anywhere since Nov 4, evening (§25).
+- [x] C1 The homepage names the next event from the calendar, under the
+  lede. C2 The programs are one large typographic list with each rhythm.
+- [x] A26 `/events/second-chapter/impact/<campaign>`: published figures,
+  the witnessed handover, the signed-off total and public receipts;
+  linked from Second Chapter's page once a figure is published.
+- [x] A23 `/get-involved/apprenticeship`, from facts on record (one term,
+  a Qirtas section or a program, a mentor, shifts that count as service,
+  the certificate, places on Get involved); linked from Get involved.
+- [x] A38 The Diwan's find-anything line ("/" or Ctrl+K), in place.
+- [x] A39 The Desk's handover: what waits, since when, and who owns it
+  (`core.handover()`, migration `20261101002800`).
+- needs-native-review: `web.journal.reading`, `web.home.nextEvent`,
+  `web.give.report`, `nexus.apprenticeship`, `nexus.admin.find`,
+  `nexus.admin.overview.handover`, the decision-reason lines
+  (`nexus.admin.pipeline.entry.decisionNotes`, `reasonNeeded`,
+  `nexus.admin.waraq.queue.note`, `reasonNeeded`).
 
 ## The Notion check, evening (2026-11-04)
 

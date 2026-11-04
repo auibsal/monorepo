@@ -40,7 +40,8 @@ and decisions), and continue from the first unticked item.
     `RequireStaff`), in six sections, one row like Membership's
     (`adminSections` in `@repo/rbac`, `DiwanNav` and `SectionTabs` in
     `admin-shell.tsx`; owner, Oct 30, 2026): the Desk (`/diwan`: what
-    needs you, three quick actions, what happened, the Connected panel
+    needs you, three quick actions, the handover (what waits across the
+    Society and who owns it, `core.handover()`), what happened, the Connected panel
     for Notion, Hudhud and email, and the design system at
     `/diwan/design`), What's on (`/diwan/events`, one page:
     the events with the programs linked above them, then pitches; each
@@ -429,6 +430,19 @@ any schema change. Integration tests run against a local stack with
   save gives it its address, `/qirtas/write/<type>/<draft>`; their drafts
   head Your work on `/qirtas/write` ("Draft, not sent"); sending makes it
   a submission and drops the draft. Nobody reads a draft, blind or not.
+- **The design review, PR 3** (owner, Nov 4, 2026). Every decision on
+  work sent to Qirtas carries its reason (`journal.decide`,
+  `journal.decide_named` refuse a blank one; the writer reads it in their
+  work's history). The Diwan's find-anything line (`FindPanel`,
+  `components/nexus/admin/find-panel.tsx`) sits under the row and opens
+  in place with "/" or Ctrl+K, pushing the page down (never a dialog): the
+  views the officer's roles open, then `content.search` results their
+  modules include. Articles carry a progress hairline (CSS scroll
+  timeline, none with reduced motion), a text size (`TextSize`, this
+  browser only) and the next piece and Edition at the end. Second
+  Chapter's impact report is `/events/second-chapter/impact/<campaign>`,
+  from published figures only; the Apprenticeship is explained at
+  `/get-involved/apprenticeship`, from facts on record only.
 - **Qirtas, one door** (owner, Oct 31, 2026). Members send everything,
   every section, from `/qirtas/write` (`/qirtas/write/<type>` is the
   form), and everything they send is read blind. Edition calls (Letters,

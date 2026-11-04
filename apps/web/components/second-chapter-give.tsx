@@ -6,6 +6,7 @@ import {
   formatNumber,
   toZonedDateValue,
 } from "@repo/internationalization/format";
+import { Link } from "@repo/internationalization/navigation";
 import { charity, localized } from "@repo/sal-data";
 import { getTranslations } from "next-intl/server";
 import { Section } from "@/components/section";
@@ -131,6 +132,14 @@ export const SecondChapterGive = async ({ locale }: { locale: Locale }) => {
                 </div>
               ))}
             </dl>
+            <p className="type-body">
+              <Link
+                className="link"
+                href={`/events/second-chapter/impact/${campaign?.slug ?? ""}`}
+              >
+                {t("report.open")}
+              </Link>
+            </p>
           </div>
         ) : null}
         <div className="grid gap-3">

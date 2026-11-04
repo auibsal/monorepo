@@ -2,7 +2,7 @@ import { SectionHead } from "@repo/brand/components/sal/section-head";
 import { Button } from "@repo/brand/components/ui/button";
 import type { Locale } from "@repo/internationalization";
 import { localizedPath } from "@repo/internationalization";
-import { formatLongDate } from "@repo/internationalization/format";
+import { formatClock, formatLongDate } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
 import { events, journal, localized, programmes } from "@repo/sal-data";
 import type { Metadata } from "next";
@@ -77,6 +77,8 @@ const Home = async ({ params }: HomeProps) => {
     locale
   );
   const [lead, ...rest] = pieces;
+  // The next event, from the calendar (design review C1): never typed in.
+  const [soonest] = nextEvents ?? [];
 
   // The six programs: Qirtas and Next Stop are unpublished, and the Company
   // is the theater company, not a program.
@@ -91,6 +93,17 @@ const Home = async ({ params }: HomeProps) => {
               {t.rich("title", { accent })}
             </h1>
             <p className="type-lede max-w-[34ch]">{t("lede")}</p>
+            {soonest ? (
+              <p className="type-body">
+                <Link className="link" href={`/events/${soonest.slug}`}>
+                  {t("nextEvent", {
+                    date: formatLongDate(soonest.starts_at, locale),
+                    time: formatClock(soonest.starts_at, locale),
+                    title: localized(soonest, "title", locale),
+                  })}
+                </Link>
+              </p>
+            ) : null}
             <div className="flex flex-wrap items-center gap-x-8 gap-y-4 pt-2">
               <Button asChild>
                 <a href={join}>{t("join")}</a>
@@ -155,22 +168,21 @@ const Home = async ({ params }: HomeProps) => {
           className="mx-auto grid w-full max-w-6xl gap-space-5 px-4 py-16"
         >
           <SectionHead title={t("programs")} titleId="programs" />
-          <ul className="grid gap-x-10 sm:grid-cols-2 lg:grid-cols-3">
+          {/* One large typographic list, the rhythm beside each (C2). */}
+          <ul className="border-line border-b">
             {series.map((p) => (
-              <li className="border-line border-t py-space-4" key={p.id}>
-                <Link className="group grid gap-2" href={programmeHref(p.slug)}>
-                  <h3 className="type-heading group-hover:text-accent group-hover:underline">
+              <li className="border-line border-t" key={p.id}>
+                <Link
+                  className="group grid gap-x-8 gap-y-1 py-space-4 sm:grid-cols-[1fr_auto] sm:items-baseline"
+                  href={programmeHref(p.slug)}
+                >
+                  <span className="type-display group-hover:text-accent">
                     {localized(p, "name", locale)}
-                  </h3>
-                  {localized(p, "summary", locale) ? (
-                    <p className="type-caption max-w-[32ch] text-text-secondary">
-                      {localized(p, "summary", locale)}
-                    </p>
-                  ) : null}
+                  </span>
                   {localized(p, "rhythm", locale) ? (
-                    <p className="type-caption">
+                    <span className="type-body text-text-secondary sm:text-end">
                       {localized(p, "rhythm", locale)}
-                    </p>
+                    </span>
                   ) : null}
                 </Link>
               </li>
