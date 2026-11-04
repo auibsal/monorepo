@@ -6,6 +6,11 @@ own versions in the Library.
 
 ## Unreleased
 
+- The brand book has a Motion section, with motion tokens.
+- The Editions are on a shelf (and a plain list); before the first Edition
+  the page shows its call and Launch Night.
+- Share on pieces, Editions and the Awards; today's word opens the Games
+  page, with a result to share.
 - Second Chapter's page follows the collection through its stages and
   lists its drop-off points, from the campaign's record.
 - Hudhud's Qirtas command is `/qirtas`.

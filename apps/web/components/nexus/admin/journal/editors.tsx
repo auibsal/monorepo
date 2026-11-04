@@ -3,6 +3,7 @@
 import { useAuth } from "@repo/auth/provider";
 import { Input } from "@repo/design-system/components/ui/input";
 import type { Locale } from "@repo/internationalization";
+import { formatLongDate } from "@repo/internationalization/format";
 import { localized, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
@@ -21,6 +22,7 @@ import {
   ErrorLine,
   Field,
   SaveButton,
+  SelectInput,
 } from "../kit";
 import { Calls } from "../pipeline/calls";
 
@@ -102,6 +104,7 @@ export const IssueEditor = () => {
   const queryClient = useQueryClient();
   const [form, setForm] = useState({
     cover_path: null as string | null,
+    launch_event_id: "",
     note: { ar: "", en: "" },
     number: "",
     pdf_path: null as string | null,
@@ -133,6 +136,7 @@ export const IssueEditor = () => {
     if (i) {
       setForm({
         cover_path: i.cover_path,
+        launch_event_id: i.launch_event_id ?? "",
         note: { ar: i.editors_note_ar ?? "", en: i.editors_note_en ?? "" },
         number: String(i.number),
         pdf_path: i.pdf_path,
@@ -149,6 +153,26 @@ export const IssueEditor = () => {
     }
   }, [existing.data]);
   const status = (existing.data?.status ?? "draft") as Status;
+  // Launch Night (Nov 4, 2026): picked from the events still to come, and
+  // the one already chosen.
+  const launchEvents = useQuery({
+    queryFn: async () =>
+      unwrap(
+        await supabase
+          .schema("events")
+          .from("events")
+          .select("id, title_en, title_ar, starts_at")
+          .or(
+            `starts_at.gte.${new Date().toISOString()}${
+              form.launch_event_id ? `,id.eq.${form.launch_event_id}` : ""
+            }`
+          )
+          .neq("status", "draft")
+          .order("starts_at")
+          .limit(60)
+      ) ?? [],
+    queryKey: ["admin", "journal", "launch-events", form.launch_event_id],
+  });
 
   const save = useMutation({
     mutationFn: async (next: Status) => {
@@ -156,6 +180,7 @@ export const IssueEditor = () => {
         cover_path: form.cover_path,
         editors_note_ar: form.note.ar || null,
         editors_note_en: form.note.en || null,
+        launch_event_id: form.launch_event_id || null,
         number: Number(form.number),
         pdf_path: form.pdf_path,
         print_run: form.print_run ? Number(form.print_run) : null,
@@ -355,6 +380,24 @@ export const IssueEditor = () => {
             value={form.printer}
           />
         </fieldset>
+        <Field hint={t("issue.launchNightHint")} label={t("issue.launchNight")}>
+          {(id) => (
+            <SelectInput
+              id={id}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, launch_event_id: e.target.value }))
+              }
+              value={form.launch_event_id}
+            >
+              <option value="">{t("issue.noLaunchNight")}</option>
+              {(launchEvents.data ?? []).map((event) => (
+                <option key={event.id} value={event.id}>
+                  {`${localized(event, "title", locale)} · ${formatLongDate(event.starts_at, locale)}`}
+                </option>
+              ))}
+            </SelectInput>
+          )}
+        </Field>
         <DateTimeField
           label={tw("launch")}
           onChange={(publish_at) => setForm((f) => ({ ...f, publish_at }))}

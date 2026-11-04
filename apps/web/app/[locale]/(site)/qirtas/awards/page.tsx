@@ -4,6 +4,7 @@ import { Link } from "@repo/internationalization/navigation";
 import { journal, localized } from "@repo/sal-data";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { ShareLink } from "@/components/share";
 import { Nameplate } from "@/components/waraq/nameplate";
 import { localizedMetadata } from "@/lib/metadata";
 import { readPublished } from "@/lib/supabase";
@@ -73,6 +74,7 @@ const AwardsPage = async ({ params }: AwardsProps) => {
         ) : null}
         <p className="type-body max-w-3xl">{t("judging")}</p>
         <p className="type-body max-w-3xl">{t("rewards")}</p>
+        <ShareLink title={t("title")} />
       </header>
       <ul className="grid gap-x-10 sm:grid-cols-2 lg:grid-cols-3">
         {all.map((prize) => {
