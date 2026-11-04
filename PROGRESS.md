@@ -74,6 +74,13 @@ now; one place for each thing.
   activities and roles); their nine `new` pages are gone. The needs list
   loads again (it embedded `core.programmes` across schemas, which the
   Data API refuses, since #151).
+- [x] Sweep of Membership and the partner dashboard (branch
+  `claude/membership-sweep`): hours given are logged in place on Record and
+  a partner adds a perk in place on Perks; `/membership/record/new` and
+  `/partners/dashboard/perks/new` are gone. Checked and kept: Get
+  involved's auditions link to the Company's one sign-up page; Requests
+  holds past requests only; a submission and its piece are different
+  records.
 - [x] Phase 3 (branch `claude/one-openings`): one Openings list,
   `/diwan/people/openings`, in place of a program's Places, People →
   Hiring and Partners → Places; filtered by kind and program (a program's

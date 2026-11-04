@@ -96,7 +96,8 @@ and decisions), and continue from the first unticked item.
     page (`RecordPage`, `NewLink`, `components/nexus/admin/kit.tsx`),
     "new" for a blank one. A small row on a list (a need, a rota, a
     shift, a credit, a rehearsal, an audition slot, a ledger line, a
-    receipt, an impact figure, an activity, a role) is added in place on
+    receipt, an impact figure, an activity, a role, a member's hours, a
+    partner's perk) is added in place on
     its list with `AddInPlace` (the form opens under the list, never a
     dialog or a `new` page), as most admin tools do.
   - **One place for each thing.** Nothing is kept or managed in two
