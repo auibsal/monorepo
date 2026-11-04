@@ -87,6 +87,37 @@ Branch: `claude/new-session-qosn60`.
   `nexus.admin.governance.minutes.locked`, the Publication Agreement's
   10.1 in Arabic.
 
+## The design review: PR 2, foundations and the Edition shelf (2026-11-04)
+
+- [x] A2 Motion: the brand book's Motion section; `duration-quick`,
+  `duration-base`, `duration-slow` and `ease-standard` in
+  `brand/tokens.json` (generated into `tokens.css`; utilities in
+  `globals.css`). Reduced motion stays global.
+- [x] A1 `Shelf` (`@repo/design-system/components/sal/shelf`): scroll-snap,
+  swipe, arrow keys, Home and End, a plain `<ul>`, the ink hairline on the
+  item at the start, right to left on Arabic pages, `listLink` to a plain
+  list; stories in SAL/Brand (ShelfRow, ShelfArabic).
+- [x] C11 Editions on a Shelf (`/qirtas/editions`), the plain list at
+  `/qirtas/editions/list` (`list` is refused as an Edition's slug). Covers
+  are the uploaded scan or a typographic cover (D5). Before the first
+  Edition: the Edition's calls and its Launch Night, which the masthead
+  picks on the Edition's page in the Diwan (`journal.issues.launch_event_id`,
+  read through `journal.edition_launch()`, migration `20261101002100`).
+  The hand-written "Edition 1 launches on February 24, 2027" is gone: the
+  date is not decided (decisions §6).
+- [x] A4 `ShareLink` (`components/share.tsx`): the device's share sheet,
+  else the link is copied; on pieces, Editions and the Awards.
+- [x] A18, C21 Today's word first on the Games page, with its streak and
+  "Share your result" (plain text, never the word). The word guess no
+  longer takes Enter from links on the page; its tiles are square.
+- [ ] Owner: pick Edition 1's Launch Night in the Diwan once the event
+  exists and its date is decided.
+- needs-native-review: `web.journal` (editionsAsList, editionsOnShelf,
+  editionNumber, launchTitle, shelfPrevious, shelfNext, comingLede,
+  writeForEdition, noEditions), `web.games` (todaysPuzzle, alsoDaily,
+  ownPage, guess.share, guess.result, guess.resultLost), `common.share`,
+  `nexus.admin.journal.issue` (launchNight, launchNightHint, noLaunchNight).
+
 ## The design review: PR 1, now (2026-11-04)
 
 - [x] Owner decisions D3–D12 recorded (decisions §22).

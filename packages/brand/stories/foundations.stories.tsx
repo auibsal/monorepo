@@ -142,7 +142,7 @@ export const Type: Story = {
   ),
 };
 
-/** The spacing scale, the two radii and the hairline. */
+/** The spacing scale, the two radii, the hairline and the motion tokens. */
 export const SpaceAndShape: Story = {
   name: "Space and shape",
   render: () => (
@@ -158,7 +158,11 @@ export const SpaceAndShape: Story = {
         ))}
       </ul>
       <ul>
-        {[...tokens.radius.tokens, ...tokens.stroke.tokens].map((t) => (
+        {[
+          ...tokens.radius.tokens,
+          ...tokens.stroke.tokens,
+          ...tokens.motion.tokens,
+        ].map((t) => (
           <Row key={t.name} name={`${t.name} ${t.value}`} usage={t.usage} />
         ))}
       </ul>

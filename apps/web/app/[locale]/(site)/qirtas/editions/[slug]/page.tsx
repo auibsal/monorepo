@@ -9,6 +9,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { ManageLinks } from "@/components/manage-links";
+import { ShareLink } from "@/components/share";
 import { PieceCardView } from "@/components/waraq/cards";
 import { Nameplate } from "@/components/waraq/nameplate";
 import { mediaUrl } from "@/lib/media";
@@ -100,6 +101,7 @@ const EditionPage = async ({ params }: EditionProps) => {
             {localized(edition, "season", locale) || t("edition")}
           </p>
           <ManageLinks diwan={`/qirtas/editions/${edition.slug}`} />
+          <ShareLink title={localized(edition, "title", locale)} />
           {localized(edition, "theme", locale) ? (
             <p className="type-lede">{localized(edition, "theme", locale)}</p>
           ) : null}

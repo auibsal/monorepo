@@ -6,6 +6,7 @@ import { journal, localized } from "@repo/sal-data";
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { ManageLinks } from "@/components/manage-links";
+import { ShareLink } from "@/components/share";
 import { WaraqAd } from "@/components/waraq/ad";
 import {
   Byline,
@@ -119,6 +120,7 @@ export const PieceArticle = async ({
             {localized(piece, "title", locale)}
           </h1>
           <ManageLinks diwan={`/qirtas/pieces/${piece.slug}`} />
+          <ShareLink title={localized(piece, "title", locale)} />
           <p className="type-caption">
             <Link
               className="text-accent hover:underline"

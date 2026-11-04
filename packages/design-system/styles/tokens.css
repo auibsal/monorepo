@@ -24,6 +24,10 @@
   --sal-radius-avatar: 50%;
   --sal-hairline: 1px;
   --sal-rule-strong: 1px;
+  --sal-duration-quick: 120ms;
+  --sal-duration-base: 200ms;
+  --sal-duration-slow: 320ms;
+  --sal-ease-standard: cubic-bezier(0.2, 0, 0, 1);
   --sal-font-sans: "Ubuntu", "Ubuntu Arabic", system-ui, sans-serif;
   --sal-font-arabic: "Ubuntu Arabic", "Ubuntu", sans-serif;
   --sal-font-mono: "Ubuntu Mono", ui-monospace, monospace;

@@ -1,4 +1,4 @@
-# Space, icons and interface parts
+# Space, motion, icons and interface parts
 
 ## Space and shape
 
@@ -23,6 +23,17 @@ Space is the main material. Things are separated by margins and hairlines, never
 - Lists over cards. Use a card only for a separate object, such as a ticket.
 - One band of full-bleed color per page at most.
 - One solid button; everything else a text link.
+
+## Motion
+
+_Added Nov 4, 2026 (owner)._
+
+- **Quiet, and only to explain.** Movement shows where something came from or went: a panel opening, a shelf moving one item, one page becoming another. Nothing moves to decorate, loop or draw the eye.
+- **Native CSS and the browser's own tools:** transitions, scroll snapping, view transitions. No 3D and no animation library.
+- **Three durations and one easing,** from the tokens: `duration-quick` (120 ms) for hover and focus, `duration-base` (200 ms) for a part of the page appearing or moving, `duration-slow` (320 ms) for one page becoming another, all on `ease-standard`. Nothing longer.
+- **Opacity and position only.** No bouncing, spinning, scaling of text, parallax or motion tied to scrolling.
+- **Reduced motion is respected everywhere:** with the system setting on, everything arrives at once. Nothing depends on movement to be understood.
+- **Direction follows the language.** Sliding and paging run right to left on Arabic pages.
 
 ## Icons
 

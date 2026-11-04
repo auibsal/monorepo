@@ -53,6 +53,15 @@ This is SAL-BRD-01, Brand and Identity, Version 1, ratified by the Society, in s
 - No shadows, no frames around controls, no tinted cards. Separate things with `hairline` rules in `line` and with space.
 - At most one full-bleed `band` per page.
 
+## Motion
+
+- **Quiet, and only to explain.** Movement shows where something came from or went: a panel opening, a shelf moving one item, one page becoming another. Nothing moves to decorate, loop or draw the eye.
+- **Native CSS and the browser's own tools:** transitions, scroll snapping, view transitions. No 3D and no animation library.
+- **Three durations and one easing,** from the tokens: `duration-quick` (120 ms) for hover and focus, `duration-base` (200 ms) for a part of the page appearing or moving, `duration-slow` (320 ms) for one page becoming another, all on `ease-standard`. Nothing longer.
+- **Opacity and position only.** No bouncing, spinning, scaling of text, parallax or motion tied to scrolling.
+- **Reduced motion is respected everywhere:** with the system setting on, everything arrives at once. Nothing depends on movement to be understood.
+- **Direction follows the language.** Sliding and paging run right to left on Arabic pages.
+
 ## The symbol, wordmarks and lockups
 
 - The **symbol** is a crimson panel with a V-notch cut into its top; turned over, it is the tail of a ribbon bookmark, and its name is **the Bookmark** (Arabic «العلامة»). The **English wordmark** is "AUIB / Society of / Arts and / Letters" in Ubuntu Bold, on four lines. The **Arabic wordmark** is «جمعيةُ الفنونِ / والآدابِ في / الجامعةِ / الأمريكيةِ» in Ubuntu Arabic Bold, on four lines.

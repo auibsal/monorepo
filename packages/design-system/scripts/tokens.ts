@@ -35,6 +35,7 @@ interface TypeStyle {
 
 export interface BrandTokens {
   color: { tokens: Token<string | Themed>[] };
+  motion: { tokens: Token[] };
   radius: { tokens: Token[] };
   spacing: { tokens: Token[] };
   stroke: { tokens: Token[] };
@@ -68,11 +69,12 @@ export const splitColors = (tokens: BrandTokens) => {
   return { palette, roles };
 };
 
-/** Spacing, radii and strokes: one list, in the file's order. */
+/** Spacing, radii, strokes and motion: one list, in the file's order. */
 export const sizeTokens = (tokens: BrandTokens) => [
   ...tokens.spacing.tokens,
   ...tokens.radius.tokens,
   ...tokens.stroke.tokens,
+  ...tokens.motion.tokens,
 ];
 
 const roleLines = (

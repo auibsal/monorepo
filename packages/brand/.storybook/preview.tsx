@@ -69,7 +69,7 @@ const preview: Preview = {
             "The logo",
             "Color",
             "Type",
-            "Space, icons and interface parts",
+            "Space, motion, icons and parts",
             "Screens",
             "Qirtas",
             "The family of programs",

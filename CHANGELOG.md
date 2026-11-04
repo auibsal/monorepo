@@ -16,6 +16,11 @@ own versions in the Library.
   own row; the officers' copy in Notion shows each seat's full title.
 - The Diwan's Library keeps each document's adoption record (with the
   vote); adopted minutes are locked.
+- The brand book has a Motion section, with motion tokens.
+- The Editions are on a shelf (and a plain list); before the first Edition
+  the page shows its call and Launch Night.
+- Share on pieces, Editions and the Awards; today's word opens the Games
+  page, with a result to share.
 - Second Chapter's page follows the collection through its stages and
   lists its drop-off points, from the campaign's record.
 - Hudhud's Qirtas command is `/qirtas`.
