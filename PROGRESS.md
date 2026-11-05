@@ -10,7 +10,7 @@ Branch: `claude/tour-and-listening` (PR 5b of the design review).
 
 ## The design review: PR 5b, the Tour's wall, the typewriter, session links (2026-11-05)
 
-Branch: `claude/tour-and-listening`, on PR 4e (`claude/program-pages`).
+Branch: `claude/tour-and-listening`.
 
 - [x] A29 The Six Words wall on the Typewriter Tour's page, from the
   approved cards, in Ubuntu Mono, one language per page.
@@ -24,6 +24,26 @@ Branch: `claude/tour-and-listening`, on PR 4e (`claude/program-pages`).
   `nexus.admin.event.links.*`; `nexus.admin.activity.things.events_session_links`.
 - Next: PR 5b continued (A33 Book Circle vote, A34 the Mutanabbi Street
   trip, A36 the worst-poem contest), then 5c (A17) and 5d (A10, A11, A12).
+
+Branch: `claude/awards-authors-playbills` (PR 5a of the design review).
+
+
+## The design review: PR 5a, Awards by year, author pages, playbills (2026-11-05)
+
+Branch: `claude/awards-authors-playbills`. PR 5 is split: 5a (C19, C18,
+C8), 5b (A29, A30, A33, A34, A36, A37), 5c (A17), 5d (A10, A11, A12).
+
+- [x] C19 Awards by year: `/qirtas/awards/<round>`, the latest round on
+  `/qirtas/awards` with the others listed; `journal.award_results()` keeps
+  its rules (shortlists from their day, winners from theirs).
+- [x] C18 Author pages: the Editions their work appeared in and their
+  shortlists and wins.
+- [x] C8 The Company's productions as a playbill Shelf, the list at
+  `/company/productions`.
+- needs-native-review: `web.awards.byYear`, `web.awards.roundTitle`,
+  `web.journal.authorEditions`, `authorShortlisted`, `authorWon`,
+  `web.productions.asList`.
+- Next: PR 5b.
 
 ## The design review: PR 4f, Join, Partners, Hudhud and the budget (2026-11-05)
 
