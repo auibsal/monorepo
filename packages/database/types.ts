@@ -366,6 +366,53 @@ export type Database = {
           },
         ];
       };
+      catalog_books: {
+        Row: {
+          author: string | null;
+          campaign_id: string;
+          copies: number;
+          created_at: string;
+          created_by: string | null;
+          id: string;
+          is_listed: boolean;
+          language: string;
+          note: string | null;
+          title: string;
+        };
+        Insert: {
+          author?: string | null;
+          campaign_id: string;
+          copies?: number;
+          created_at?: string;
+          created_by?: string | null;
+          id?: string;
+          is_listed?: boolean;
+          language?: string;
+          note?: string | null;
+          title: string;
+        };
+        Update: {
+          author?: string | null;
+          campaign_id?: string;
+          copies?: number;
+          created_at?: string;
+          created_by?: string | null;
+          id?: string;
+          is_listed?: boolean;
+          language?: string;
+          note?: string | null;
+          title?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "catalog_books_campaign_id_fkey";
+            columns: ["campaign_id"];
+            isOneToOne: false;
+            referencedRelation: "campaigns";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       impact_metrics: {
         Row: {
           campaign_id: string;

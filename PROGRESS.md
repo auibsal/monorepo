@@ -38,7 +38,18 @@ Branch: `claude/pr6b-topics-translations`.
 - needs-native-review: `web.journal.reading.contents`,
   `web.journal.figures.*`, `nexus.admin.waraq.figures.*`.
 - The owner, Nov 5, 2026: "All in one PR": the rest of PR 6 goes in this
-  one pull request (#220). Next: A27, A28, A40, A41, then R4.
+  one pull request (#220).
+- [x] A27 Second Chapter's catalog, `/events/second-chapter/catalog`: the
+  books given to the current campaign (title, author, language, copies, a
+  note), by language, browse only, never a price (`charity.catalog_books`,
+  kept on the campaign's Catalog tab in the Diwan by its managers;
+  migration `20261101004800`, `99_second_chapter_catalog.test.sql`).
+  Second Chapter's page links to it once it has books.
+- [ ] A28 The book-travel scroll piece: waits for data (where the
+  collected books went), which the platform does not keep yet.
+- needs-native-review: `web.give.catalog.*`,
+  `nexus.admin.charity.catalog.*`, `nexus.admin.charity.tabs.catalog`.
+- Next: A40, A41, then R4.
 
 ## The design review: PR 6a, About, the 404 page and a member's year (2026-11-05)
 

@@ -44,6 +44,7 @@ import { MemberPicker, useMemberNames } from "../member-picker";
 import { memberName } from "../members/directory";
 import { RecordHistory } from "../record-history";
 import { type CampaignTab, campaignTabs } from "../tabs";
+import { CampaignCatalog } from "./catalog";
 
 // ── Settings ────────────────────────────────────────────────────────────────
 
@@ -1478,6 +1479,9 @@ export const CampaignAdmin = ({
         {shown === "signoff" ? <SignoffQueue campaignId={campaignId} /> : null}
         {shown === "settings" ? (
           <CampaignSettings campaignId={campaignId} />
+        ) : null}
+        {shown === "catalog" ? (
+          <CampaignCatalog campaignId={campaignId} />
         ) : null}
         {shown === "receipts" ? <Receipts campaignId={campaignId} /> : null}
         {shown === "handover" ? <Handover campaignId={campaignId} /> : null}

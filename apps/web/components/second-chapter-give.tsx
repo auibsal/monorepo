@@ -9,6 +9,7 @@ import {
 import { Link } from "@repo/internationalization/navigation";
 import { charity, localized } from "@repo/sal-data";
 import { getTranslations } from "next-intl/server";
+import { CatalogLink } from "@/components/second-chapter-catalog";
 import { Section } from "@/components/section";
 import { readPublished } from "@/lib/supabase";
 
@@ -59,6 +60,7 @@ export const SecondChapterGive = async ({ locale }: { locale: Locale }) => {
           ))}
         </ul>
         <p className="type-body">{t("waysNote")}</p>
+        <CatalogLink locale={locale} />
       </Section>
 
       {points.length > 0 ? (

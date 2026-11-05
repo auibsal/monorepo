@@ -204,3 +204,20 @@ export const dropOffPoints = (value: unknown): DropOffPoint[] =>
           typeof (p as DropOffPoint).place_ar === "string"
       )
     : [];
+
+// ── The catalog (the design review A27) ─────────────────────────────────────
+
+export const CATALOG_LANGUAGES = ["ar", "en", "other"] as const;
+export type CatalogLanguage = (typeof CATALOG_LANGUAGES)[number];
+
+/** A campaign's listed books, by title: to browse, never priced. */
+export const catalogBooks = async (client: Client, campaignId: string) =>
+  unwrap(
+    await client
+      .schema("charity")
+      .from("catalog_books")
+      .select("id, title, author, language, note, copies")
+      .eq("campaign_id", campaignId)
+      .eq("is_listed", true)
+      .order("title")
+  ) ?? [];

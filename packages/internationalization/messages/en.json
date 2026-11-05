@@ -1278,7 +1278,8 @@
           "signoff": "Sign-off queue ({count})",
           "receipts": "Receipts",
           "impact": "Impact reports",
-          "handover": "Handover"
+          "handover": "Handover",
+          "catalog": "Catalog"
         },
         "campaign": {
           "titleField": "Title",
@@ -1372,6 +1373,23 @@
           "receipt": "Receipt",
           "noReceipt": "No receipt yet",
           "note": "Note (optional)"
+        },
+        "catalog": {
+          "title": "Catalog",
+          "lede": "The books given for the fair, for readers to browse on Second Chapter's page. Never a price; a book shows while it is listed.",
+          "new": "Add a book",
+          "bookTitle": "Title",
+          "author": "Author (optional)",
+          "language": "Language",
+          "copies": "Copies",
+          "note": "Note (optional)",
+          "noteHint": "A line about the edition or condition, for example \"First edition, 1985\".",
+          "copiesCount": "{count} copies",
+          "unlisted": "Not listed",
+          "list": "List",
+          "unlist": "Unlist",
+          "remove": "Remove",
+          "removeConfirm": "Remove this book from the catalog?"
         }
       },
       "picker": {
@@ -4848,6 +4866,22 @@
         "lede": "What the collection did, in the figures the campaign published, with the witnessed handover and the receipts.",
         "back": "Second Chapter",
         "open": "Read the impact report"
+      },
+      "catalog": {
+        "title": "The fair's books",
+        "link": "Browse the books given so far ({count})",
+        "lede": "The books given to {campaign}, to see what the fair will hold. Listed as they arrive; come to the fair for them.",
+        "none": "The books will be listed here once the next collection begins.",
+        "empty": "No books in this language yet.",
+        "languages": "Languages",
+        "all": "Every language",
+        "language": {
+          "ar": "Arabic",
+          "en": "English",
+          "other": "Another language"
+        },
+        "copies": "{count} copies",
+        "noPrices": "To browse only: books are not reserved or priced here."
       }
     },
     "contact": {

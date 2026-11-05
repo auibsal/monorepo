@@ -10,6 +10,7 @@ own versions in the Library.
   tag pieces with topics, each with its own page.
 - Long reads in Qirtas show their contents beside the text; explainers
   carry figures a reader can explore as bars or read as a table.
+- Second Chapter lists the books given for its fair, to browse before it.
 - About tells how the Society began, a dated line each; the page-not-found
   page carries a line of al-Mutanabbi's; members can keep or print their
   year at the Society from Record.

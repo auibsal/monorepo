@@ -763,7 +763,9 @@ any schema change. Integration tests run against a local stack with
   donations, the fair, the handover, the impact report;
   `charity.campaignStages`) from the days kept on the campaign, and lists
   its drop-off points (`drop_off_points`) when entered (owner, Nov 4,
-  2026); it shows signed-off figures only. No online payments of any kind.
+  2026); it shows signed-off figures only. The fair's books are listed to
+  browse, never priced, at `/events/second-chapter/catalog`
+  (`charity.catalog_books`, the campaign's Catalog tab; design review A27). No online payments of any kind.
 - **The Council page** (owner, Oct 30, 2026; `/about/council`, the members'
   Society page and the Diwan's Governance → Council) comes from the roles
   people hold (`governance.council_members()`): everyone holding a Council
