@@ -24,12 +24,18 @@ production migrations stopping (see #213, merge first).
 - [x] Editor-in-Chief on the Council in place of the Editor of Qirtas;
   Mohammed-Ali Ohmaid holds it (migration `20261101003900`,
   `99_editor_in_chief.test.sql`); Notion's Officers option renamed.
-- [ ] Mohammed-Ali's name in the four parts he wrote: waiting on the
-  owner for the parts (the earlier migration overwrote them and nothing
-  kept the old values).
+- [x] Mohammed-Ali's name: the three English parts migration
+  `20261101002200` overwrote are cleared (`20261101004200`); he writes them
+  again at his next sign-in. His Arabic parts were never changed.
+- [x] Calls to action: a public `/qirtas/write` gateway (how it works,
+  sections, calls; sign in or join), section links to it, `PieceEnd` on
+  every piece, the Sunday Paper sign-up on every past issue and aware of
+  signed-in members.
 - needs-native-review: `clueWords.ar` (`game-words.ts`),
   `web.games.lede`, `crosswordLede`, `anagramLede`,
-  `web.journal.masthead.*`, `nexus.admin.waraq.games.lede`, `editorLede`.
+  `web.journal.masthead.*`, `nexus.admin.waraq.games.lede`, `editorLede`,
+  `web.journal.sendTo`, `web.journal.end.*`, `web.newsletter.notices`,
+  `nexus.journal.write.lede`, `door.*`, `how.*`, `gamesNote`, `gamesLink`.
 
 ## The design review: PR 5d, readings, clips and Gallery selections (2026-11-05)
 

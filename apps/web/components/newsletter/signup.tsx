@@ -1,11 +1,13 @@
 "use client";
 
+import { hasSessionCookie } from "@repo/auth/session-cookie";
 import { Button } from "@repo/brand/components/ui/button";
 import { Input } from "@repo/brand/components/ui/input";
 import { Label } from "@repo/brand/components/ui/label";
 import { apiPath } from "@repo/internationalization";
+import { Link } from "@repo/internationalization/navigation";
 import { useLocale, useTranslations } from "next-intl";
-import { type FormEvent, useId, useState } from "react";
+import { type FormEvent, useEffect, useId, useState } from "react";
 import { ResultLine } from "@/components/frame/result-line";
 
 type State =
@@ -19,7 +21,10 @@ type State =
 /**
  * Signs up for the Sunday Paper; the API routes send the confirmation
  * email. Compact, where the page already has its one solid button, the
- * submit is a text link.
+ * submit is a text link. A signed-in member already gets it while email
+ * notices are on (owner, Nov 5, 2026: never ask them to subscribe again),
+ * so they see where to turn it on or off instead. Read after the first
+ * render, so the cached page is the same for everyone.
  */
 export const NewsletterSignup = ({
   compact = false,
@@ -30,6 +35,30 @@ export const NewsletterSignup = ({
   const locale = useLocale();
   const id = useId();
   const [state, setState] = useState<State>("idle");
+  const [member, setMember] = useState(false);
+  useEffect(() => {
+    if (!hasSessionCookie(document.cookie)) {
+      return;
+    }
+    let live = true;
+    // Only for someone signed in, and loaded then: visitors never fetch it.
+    import("@/lib/nexus/supabase")
+      .then(({ getSupabase }) =>
+        getSupabase().schema("membership").rpc("my_membership")
+      )
+      .then(({ data }) => {
+        const row = (Array.isArray(data) ? data[0] : data) as {
+          kind?: string;
+        } | null;
+        if (live && row?.kind === "member") {
+          setMember(true);
+        }
+      })
+      .catch(() => undefined);
+    return () => {
+      live = false;
+    };
+  }, []);
 
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -61,6 +90,17 @@ export const NewsletterSignup = ({
       setState("failed");
     }
   };
+
+  if (member) {
+    return (
+      <p className="type-body">
+        {t("members")}{" "}
+        <Link className="link" href="/membership/settings/notices">
+          {t("notices")}
+        </Link>
+      </p>
+    );
+  }
 
   if (state === "sent") {
     return <ResultLine kind="done">{t("sent")}</ResultLine>;

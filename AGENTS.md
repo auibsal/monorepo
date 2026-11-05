@@ -535,6 +535,19 @@ any schema change. Integration tests run against a local stack with
   `/qirtas/selection/<slug>/<slug>…`: the address is the selection,
   nothing is stored and nobody signs in (`journal.gallerySelection`,
   not indexed).
+- **Calls to action: writing and the Sunday Paper** (owner, Nov 5, 2026).
+  `/qirtas/write` is public (`(account)/qirtas/write`, the members' frame
+  without the gates, indexed): visitors read what each section takes, how
+  work is read and edited, and the Edition's calls, with one button, "Sign
+  in to send" (back to the page), and Join; signed in, their work comes
+  first. The forms behind it (`/qirtas/write/<type>`) stay gated and return
+  the reader to the type they chose. Each section page links to its part of
+  the gateway (`/qirtas/write#<section>`), and every piece ends with
+  `PieceEnd`: write for that section, beside the Sunday Paper. The Sunday
+  Paper sign-up (`NewsletterSignup`) is on the home page, the Qirtas front
+  page, the end of every piece and every past issue (the form itself, not a
+  link); a signed-in member is never asked to subscribe (they get it with
+  email notices on) and is pointed to Settings → Notices instead.
 - **Qirtas, one door** (owner, Oct 31, 2026). Members send everything,
   every section, from `/qirtas/write` (`/qirtas/write/<type>` is the
   form), and everything they send is read blind. Edition calls (Letters,
