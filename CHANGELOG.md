@@ -6,6 +6,9 @@ own versions in the Library.
 
 ## Unreleased
 
+- Readers save Qirtas pieces to read later: on Today and in Membership.
+- The Diwan: events, pieces, productions, partners and campaigns show their
+  history: who added or changed them, when, and which fields.
 - Membership: hours are logged right on Record; partners add a perk right
   on their Perks list.
 - The Sunday Paper's past issues, each on its own page in a newspaper's

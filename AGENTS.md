@@ -447,6 +447,16 @@ any schema change. Integration tests run against a local stack with
   roles people hold (`journal.next_stop_team()`: the Video Editor and the
   Photo and Video Lead) and how to send a reel. `/search` opens on the
   newest from Qirtas and what is coming up.
+- **Saved reading and a record's history** (design review PR 4d, Nov 4,
+  2026). A reader saves a published piece to read later ("Save for
+  later" on the piece, `SaveForLater`; `journal.saved_pieces`, their own
+  rows only, and only pieces they can read); Today shows the latest three
+  and `/membership/saved` holds them all, never their own work. Record
+  pages in the Diwan (events, pieces, productions, partners, campaigns)
+  end with their History (`RecordHistory`, `core.record_history()`): who
+  added or changed the record and when, and which fields, never the
+  values; officers only, for records they can see
+  (`private.history_tables()` lists the tables).
 - **Qirtas, one door** (owner, Oct 31, 2026). Members send everything,
   every section, from `/qirtas/write` (`/qirtas/write/<type>` is the
   form), and everything they send is read blind. Edition calls (Letters,

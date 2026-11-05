@@ -42,6 +42,7 @@ import {
 } from "../kit";
 import { MemberPicker, useMemberNames } from "../member-picker";
 import { memberName } from "../members/directory";
+import { RecordHistory } from "../record-history";
 import { type CampaignTab, campaignTabs } from "../tabs";
 
 // ── Settings ────────────────────────────────────────────────────────────────
@@ -1482,6 +1483,9 @@ export const CampaignAdmin = ({
         {shown === "handover" ? <Handover campaignId={campaignId} /> : null}
         {shown === "impact" ? <Impact campaignId={campaignId} /> : null}
       </div>
+      {shown === "settings" ? (
+        <RecordHistory id={campaignId} table="charity.campaigns" />
+      ) : null}
     </div>
   );
 };

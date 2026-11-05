@@ -26,6 +26,7 @@ import {
   SelectInput,
 } from "../kit";
 import { NotionManaged } from "../notion-managed";
+import { RecordHistory } from "../record-history";
 import { Attendance } from "./attendance";
 import { useProgrammeOptions } from "./data";
 import { Invitations } from "./invitations";
@@ -576,6 +577,7 @@ export const EventEditor = () => {
           slug={existing.data.slug}
         />
       ) : null}
+      <RecordHistory id={eventId} table="events.events" />
     </div>
   );
 };

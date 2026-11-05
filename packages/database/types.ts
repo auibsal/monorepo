@@ -1361,6 +1361,15 @@ export type Database = {
           isSetofReturn: false;
         };
       };
+      record_history: {
+        Args: { record_id: string; record_table: string };
+        Returns: {
+          actor_id: string;
+          changed: string[];
+          occurred_at: string;
+          operation: string;
+        }[];
+      };
       remove_personal_email: {
         Args: Record<PropertyKey, never>;
         Returns: undefined;
@@ -4071,6 +4080,32 @@ export type Database = {
           updated_at?: string;
         };
         Relationships: [];
+      };
+      saved_pieces: {
+        Row: {
+          piece_id: string;
+          saved_at: string;
+          user_id: string;
+        };
+        Insert: {
+          piece_id: string;
+          saved_at?: string;
+          user_id?: string;
+        };
+        Update: {
+          piece_id?: string;
+          saved_at?: string;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "saved_pieces_piece_id_fkey";
+            columns: ["piece_id"];
+            isOneToOne: false;
+            referencedRelation: "pieces";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       scores: {
         Row: {

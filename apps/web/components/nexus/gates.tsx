@@ -60,6 +60,7 @@ const KIND_PATHS: Record<
   guest: [
     "/membership/calendar",
     "/membership/record",
+    "/membership/saved",
     "/membership/settings",
     "/membership/work",
     "/qirtas",
