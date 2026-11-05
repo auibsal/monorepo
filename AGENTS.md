@@ -99,7 +99,10 @@ and decisions), and continue from the first unticked item.
     receipt, an impact figure, an activity, a role, a member's hours, a
     partner's perk) is added in place on
     its list with `AddInPlace` (the form opens under the list, never a
-    dialog or a `new` page), as most admin tools do.
+    dialog or a `new` page), as most admin tools do. A long list whose
+    rows are acted on together uses `SelectableTable`
+    (`components/nexus/admin/selectable-table.tsx`, design review A40):
+    hours to confirm, an event's bookings.
   - **One place for each thing.** Nothing is kept or managed in two
     places; when two views show the same records, merge them.
   - **Counts are not rules.** Sections, types, programs and tabs are as
