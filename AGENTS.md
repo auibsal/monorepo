@@ -503,6 +503,17 @@ any schema change. Integration tests run against a local stack with
   and the Awards it was shortlisted for or won, from the same results.
   The Company's productions are a Shelf of playbills (the poster, or the
   title as type), with the list at `/company/productions`.
+- **More games to play** (design review PR 5c, A17, Nov 4, 2026). Beside
+  crosswords and word searches, the Games editors write quizzes, word
+  ladders, riddles, anagrams and name the book in the Diwan (Qirtas →
+  Games, `journal.puzzles` kinds `quiz`, `word_ladder`, `riddle`,
+  `anagram`, `name_the_book`; one language each), and readers play them at
+  `/qirtas/games/<slug>` (`components/games/choices.tsx`, `answers.tsx`,
+  `ladder.tsx`). Each kind's data has its schema in `@repo/sal-data`
+  (`games.ts`: `choicesSchema`, `riddlesSchema`, `anagramsSchema`,
+  `ladderSchema`); typed answers compare letters only (`sameAnswer`), an
+  anagram is scrambled the same way for everyone, and progress stays in
+  the reader's browser.
 - **Qirtas, one door** (owner, Oct 31, 2026). Members send everything,
   every section, from `/qirtas/write` (`/qirtas/write/<type>` is the
   form), and everything they send is read blind. Edition calls (Letters,

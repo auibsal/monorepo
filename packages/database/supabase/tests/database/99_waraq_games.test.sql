@@ -75,7 +75,7 @@ update core.settings set value = '0' where key = 'membership.founding_voters';
 
 -- Waraq's games: editor-written puzzles and the starter puzzles.
 
-select plan(14);
+select plan(16);
 
 select pg_temp.make_user('00000000-0000-0000-0000-00000000a001', 'puzzler@auib.edu.iq', 'Puzzle Editor');
 select pg_temp.make_user('00000000-0000-0000-0000-00000000a002', 'reader@auib.edu.iq', 'Reader');
@@ -106,6 +106,16 @@ select lives_ok(
   $$insert into journal.puzzles (slug, kind, language, title_en, data)
     values ('draft-crossword', 'crossword', 'en', 'Draft', '{"rows": 2}')$$,
   'A desk editor adds a draft puzzle'
+);
+select lives_ok(
+  $$insert into journal.puzzles (slug, kind, language, title_ar, data)
+    values ('draft-quiz', 'quiz', 'ar', 'مسابقة', '{"items": []}')$$,
+  'A desk editor adds a quiz, one of the Games section''s other kinds'
+);
+select throws_ok(
+  $$insert into journal.puzzles (slug, kind, language, title_en)
+    values ('draft-bingo', 'bingo', 'en', 'Bingo')$$,
+  '23514', null, 'An unknown kind of puzzle is refused'
 );
 select is((select created_by from journal.puzzles where slug = 'draft-crossword'),
   '00000000-0000-0000-0000-00000000a001'::uuid, 'The puzzle records who made it');

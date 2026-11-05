@@ -6,6 +6,8 @@ own versions in the Library.
 
 ## Unreleased
 
+- More games in Qirtas: quizzes, word ladders, riddles, anagrams and name
+  the book, written by the Games editors and played on the site.
 - Book Circle votes on its next book: the host chooses three in the
   Diwan, members vote on the program's page, and the page names the
   circle's choice once voting closes.

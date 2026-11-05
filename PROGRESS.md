@@ -5,8 +5,24 @@ Every session starts here and continues from the first unticked item. The
 brief is `sal-platform-claude-code-prompt.md` (uploaded at the start of the
 first session); section numbers (§) refer to it.
 
-Branch: `claude/book-circle-vote` (PR 5b, the vote).
+Branch: `claude/game-players` (PR 5c of the design review).
 
+
+## The design review: PR 5c, more games to play (2026-11-05)
+
+Branch: `claude/game-players`.
+
+- [x] A17 Quizzes, word ladders, riddles, anagrams and name the book, in
+  English or Arabic: written in the Diwan's Games editor, played at
+  `/qirtas/games/<slug>` (migration `20261101003700`,
+  `99_waraq_games.test.sql`, unit tests in `games.test.ts`).
+- needs-native-review: `web.games.kinds.*` (the new five), `web.games.lede`,
+  `web.games.choices.*`, `answers.*`, `ladder.*`;
+  `nexus.admin.waraq.games.lede`, `editorLede`, `kinds.*`, `ladder`,
+  `ladderHint`, `needs.*`, `entries.*`.
+- Next: 5d (A10 shareable Gallery selections, A11 audio readings, A12 a
+  paired Next Stop clip). Waiting on the owner: A34 (where the trip's
+  Student Life approval is recorded) and A36 (the contest page's text).
 
 ## The design review: PR 5b, Book Circle's vote (2026-11-05)
 
