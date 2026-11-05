@@ -42,7 +42,7 @@ Headlines in Ubuntu, reading in Literata. Every article page is built the same w
 
 ## Editions
 
-- One curated Edition a semester, from Letters and Gallery, printed and online, on paper with the masthead on the cover; the lockup small at the foot.
+- One curated Edition a semester, from Letters and Gallery, printed and online, on paper with the nameplate on the cover; the lockup small at the foot.
 - **Launch Night:** each Edition opens in a room, with readings; its posts use the crimson ground.
 - The call for an Edition is a post; how to submit is a carousel.
 - **Read blind:** every piece is read without its author's name. Arabic and English pieces run in their own editions of the page.
