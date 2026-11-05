@@ -331,6 +331,7 @@ describe.skipIf(!enabled)("Notion sync", () => {
     Status: { select: { name: "Ready to publish" } },
     Summary: { rich_text: [{ text: { content: "An evening of poems." } }] },
     Title: { title: [{ text: { content: title } }] },
+    "Way in": { select: { name: "RSVP" } },
     When: { date: { end: null, start: "2031-03-04T18:00:00.000+03:00" } },
   });
   const arabicEdition = (of: string, title: string) => ({
