@@ -194,3 +194,15 @@ export const matchedFirst = <T extends { skills: readonly string[] }>(
       Number(matchingSkills(b.skills, mine).length > 0) -
       Number(matchingSkills(a.skills, mine).length > 0)
   );
+
+/** A program's published prompt cards (Open Pages; design review A35). */
+export const publishedPrompts = async (client: Client, programmeId: string) =>
+  unwrap(
+    await client
+      .schema("programmes")
+      .from("prompts")
+      .select("id, text_en, text_ar")
+      .eq("programme_id", programmeId)
+      .eq("is_published", true)
+      .order("created_at", { ascending: false })
+  ) ?? [];

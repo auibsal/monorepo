@@ -1345,7 +1345,8 @@
           "needs": "الاحتياجات",
           "shifts": "المناوبات",
           "six-words": "ست كلمات",
-          "collection": "الجمع"
+          "collection": "الجمع",
+          "prompts": "بطاقات الكتابة"
         },
         "episodes": {
           "new": "حلقة جديدة",
@@ -1535,7 +1536,19 @@
         },
         "whatsOn": "ما يجري",
         "backToTab": "{program}: {tab}",
-        "openingsLink": "الفرص"
+        "openingsLink": "الفرص",
+        "prompts": {
+          "lede": "بطاقات الكتابة للأمسية. انشر منها ما تريد أن يظهر على صفحة البرنامج.",
+          "empty": "لا بطاقات بعد.",
+          "text": "البطاقة",
+          "new": "اكتب بطاقة",
+          "published": "على الصفحة",
+          "notPublished": "ليست على الصفحة",
+          "publish": "أظهرها على الصفحة",
+          "unpublish": "أزلها من الصفحة",
+          "remove": "احذف",
+          "removeConfirm": "حذف هذه البطاقة؟"
+        }
       },
       "governance": {
         "title": "الحوكمة",
@@ -2911,7 +2924,8 @@
           "programmes_six_words": "بطاقة «ست كلمات»",
           "membership_activity_records": "سجل نشاط",
           "governance_partner_invitations": "دعوة",
-          "membership_guests": "ضيفًا للجمعية"
+          "membership_guests": "ضيفًا للجمعية",
+          "programmes_prompts": "بطاقة كتابة"
         },
         "roleFor": "{role} لـ{person}"
       },
@@ -5049,6 +5063,21 @@
       "auditions": "تجارب الأداء",
       "auditionsLede": "تختار الفرقة ممثلي كل عرض في تجارب أداء مفتوحة، ويسجّل الأعضاء في الموعد الذي يناسبهم.",
       "auditionsLink": "سجّل في تجربة أداء"
+    },
+    "programs": {
+      "page": {
+        "next": "الجلسة القادمة:",
+        "nextLine": "{title}، {date} الساعة {time}",
+        "past": "الجلسات السابقة",
+        "allPast": "كل الجلسات السابقة",
+        "read": "اقرأ",
+        "pastTitle": "{program}: الجلسات السابقة",
+        "noPast": "لا جلسات بعد.",
+        "shelf": "الرف",
+        "asList": "الرف في قائمة",
+        "noShelf": "لا مراجعات على الرف بعد.",
+        "prompts": "بطاقات الكتابة"
+      }
     }
   }
 }

@@ -5811,6 +5811,36 @@ export type Database = {
         };
         Relationships: [];
       };
+      prompts: {
+        Row: {
+          created_at: string;
+          created_by: string | null;
+          id: string;
+          is_published: boolean;
+          programme_id: string;
+          text_ar: string;
+          text_en: string;
+        };
+        Insert: {
+          created_at?: string;
+          created_by?: string | null;
+          id?: string;
+          is_published?: boolean;
+          programme_id: string;
+          text_ar?: string;
+          text_en?: string;
+        };
+        Update: {
+          created_at?: string;
+          created_by?: string | null;
+          id?: string;
+          is_published?: boolean;
+          programme_id?: string;
+          text_ar?: string;
+          text_en?: string;
+        };
+        Relationships: [];
+      };
       reels: {
         Row: {
           caption_ar: string | null;

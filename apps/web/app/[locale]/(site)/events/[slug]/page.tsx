@@ -15,7 +15,6 @@ import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { ActionBar } from "@/components/frame/action-bar";
 import { ManageLinks } from "@/components/manage-links";
-import { SecondChapterGive } from "@/components/second-chapter-give";
 import {
   loadSeries,
   SeriesView,
@@ -98,13 +97,7 @@ const EventPage = async ({ params }: EventProps) => {
   }
   const series = await loadSeries(slug);
   if (series) {
-    return (
-      <SeriesView locale={locale} series={series}>
-        {series.slug === "second-chapter" ? (
-          <SecondChapterGive locale={locale} />
-        ) : null}
-      </SeriesView>
-    );
+    return <SeriesView locale={locale} series={series} />;
   }
   return <EventView locale={locale} slug={slug} />;
 };

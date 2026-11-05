@@ -865,6 +865,35 @@ export const pieceEvent = async (client: Client, eventId: string | null) =>
       )
     : null;
 
+/**
+ * The published pieces written from these events (a session's write-up, a
+ * Book Circle review), newest first (design review C3, A31, A32).
+ */
+export const piecesFromEvents = async (
+  client: Client,
+  eventIds: readonly string[],
+  only?: { category?: Category; desk?: Desk }
+) => {
+  if (eventIds.length === 0) {
+    return [];
+  }
+  let query = journal(client)
+    .from("pieces")
+    .select(
+      "id, slug, desk, category, title_en, title_ar, published_at, event_id"
+    )
+    .eq("status", "published")
+    .in("event_id", [...eventIds])
+    .order("published_at", { ascending: false });
+  if (only?.desk) {
+    query = query.eq("desk", only.desk);
+  }
+  if (only?.category) {
+    query = query.eq("category", only.category);
+  }
+  return unwrap(await query) ?? [];
+};
+
 /** Published pieces between two instants (an archive month), newest first. */
 export const piecesBetween = async (client: Client, from: Date, to: Date) =>
   unwrap(

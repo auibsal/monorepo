@@ -75,18 +75,25 @@ export const publicEvents = async (
 /** Public events that have started, most recent first. */
 export const pastPublicEvents = async (
   client: Client,
-  { before = new Date(), limit = 20 }: { before?: Date; limit?: number } = {}
-) =>
-  unwrap(
-    await events(client)
-      .from("events")
-      .select(eventColumns)
-      .eq("status", "published")
-      .eq("members_only", false)
-      .lt("starts_at", before.toISOString())
-      .order("starts_at", { ascending: false })
-      .limit(limit)
-  );
+  {
+    before = new Date(),
+    limit = 20,
+    programmeId,
+  }: { before?: Date; limit?: number; programmeId?: string } = {}
+) => {
+  let query = events(client)
+    .from("events")
+    .select(eventColumns)
+    .eq("status", "published")
+    .eq("members_only", false)
+    .lt("starts_at", before.toISOString())
+    .order("starts_at", { ascending: false })
+    .limit(limit);
+  if (programmeId) {
+    query = query.eq("programme_id", programmeId);
+  }
+  return unwrap(await query);
+};
 
 export const publicEvent = async (client: Client, eventSlug: string) =>
   unwrap(

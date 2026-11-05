@@ -11,6 +11,10 @@ own versions in the Library.
   /me), and brings shift and event reminders even with optional email
   off. The public pages are checked against a performance budget on a
   mid-range phone.
+- Every program's page has the same shape: its rhythm, the next session,
+  the month, past sessions with what Qirtas wrote from them (all of them
+  on their own page), then its own: Book Circle's shelf of reviews and
+  Open Pages' prompt cards, written by the host in the Diwan.
 - Readers save Qirtas pieces to read later: on Today and in Membership.
 - The Diwan: events, pieces, productions, partners and campaigns show their
   history: who added or changed them, when, and which fields.

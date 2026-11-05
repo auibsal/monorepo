@@ -5,8 +5,13 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import type { ReactNode } from "react";
 import { ManageLinks } from "@/components/manage-links";
+import {
+  NextSession,
+  PastSessions,
+  ProgramFeature,
+} from "@/components/program-page";
 import { PageHeader } from "@/components/section";
-import { MonthCalendar, MonthSection, nextAfter } from "@/components/whats-on";
+import { MonthCalendar, MonthSection } from "@/components/whats-on";
 import { localizedMetadata } from "@/lib/metadata";
 import { readPublished } from "@/lib/supabase";
 import { monthFrom } from "@/lib/whats-on";
@@ -48,10 +53,11 @@ export const seriesMetadata = (locale: Locale, series: Series): Metadata =>
   });
 
 /**
- * A program as a series in What's on (owner, 2026-10-25): what it is, and
- * its own month of the calendar, with the way to the months either side.
- * `children` adds what the program has besides dates (the Company's
- * productions).
+ * A program as a series in What's on (owner, 2026-10-25), in the one
+ * structure every program shares (the design review C3): what it is and
+ * its rhythm, the next session, its own month of the calendar, the
+ * sessions past, then its own feature (`ProgramFeature`). `children` adds
+ * what a page has besides (the Company's productions).
  */
 export const SeriesView = async ({
   children,
@@ -72,7 +78,6 @@ export const SeriesView = async ({
     []
   );
   const own = rows.filter((row) => row.programme_id === series.id);
-  const next = own.length === 0 ? await nextAfter(month, series.id) : null;
   const pathname = seriesPath(series.slug);
 
   return (
@@ -85,14 +90,17 @@ export const SeriesView = async ({
           <p className="type-body">{localized(series, "rhythm", locale)}</p>
         ) : null}
         <ManageLinks diwan={`/events/${series.slug}`} />
+        <NextSession locale={locale} series={series} />
       </PageHeader>
       <MonthSection
         hrefFor={(m) => `${pathname}/${m}`}
         locale={locale}
         month={month}
       >
-        <MonthCalendar locale={locale} month={month} next={next} rows={own} />
+        <MonthCalendar locale={locale} month={month} rows={own} />
       </MonthSection>
+      <PastSessions locale={locale} series={series} />
+      <ProgramFeature locale={locale} series={series} />
       {children}
       <p className="border-line border-t pt-space-4">
         <Link className="link type-caption" href="/events">

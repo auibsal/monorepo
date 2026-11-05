@@ -1345,7 +1345,8 @@
           "needs": "Needs",
           "shifts": "Shifts",
           "six-words": "Six Words",
-          "collection": "Collection"
+          "collection": "Collection",
+          "prompts": "Prompts"
         },
         "episodes": {
           "new": "New episode",
@@ -1535,7 +1536,19 @@
         },
         "whatsOn": "What's on",
         "backToTab": "{program}: {tab}",
-        "openingsLink": "Openings"
+        "openingsLink": "Openings",
+        "prompts": {
+          "lede": "The evening's writing prompts. Publish the ones the program's page should show as cards.",
+          "empty": "No prompts yet.",
+          "text": "Prompt",
+          "new": "Write a prompt",
+          "published": "On the page",
+          "notPublished": "Not on the page",
+          "publish": "Put on the page",
+          "unpublish": "Take off the page",
+          "remove": "Remove",
+          "removeConfirm": "Remove this prompt?"
+        }
       },
       "governance": {
         "title": "Governance",
@@ -2911,7 +2924,8 @@
           "programmes_six_words": "a Six Words card",
           "membership_activity_records": "an activity record",
           "governance_partner_invitations": "an invitation",
-          "membership_guests": "a guest of the Society"
+          "membership_guests": "a guest of the Society",
+          "programmes_prompts": "a prompt"
         },
         "roleFor": "{role} for {person}"
       },
@@ -5049,6 +5063,21 @@
       "auditions": "Auditions",
       "auditionsLede": "The Company casts each production in open auditions. Members sign up for a time.",
       "auditionsLink": "Sign up for an audition"
+    },
+    "programs": {
+      "page": {
+        "next": "Next:",
+        "nextLine": "{title}, {date} at {time}",
+        "past": "Past sessions",
+        "allPast": "Every past session",
+        "read": "Read",
+        "pastTitle": "{program}: past sessions",
+        "noPast": "No sessions yet.",
+        "shelf": "The shelf",
+        "asList": "The shelf as a list",
+        "noShelf": "No reviews on the shelf yet.",
+        "prompts": "Prompts"
+      }
     }
   }
 }
