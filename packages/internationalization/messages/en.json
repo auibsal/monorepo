@@ -3083,7 +3083,8 @@
           "programmes_prompts": "a prompt",
           "events_session_links": "a session's link",
           "programmes_book_ballots": "a book vote",
-          "programmes_book_choices": "a book on a vote"
+          "programmes_book_choices": "a book on a vote",
+          "events_joint_tasks": "a joint event's checklist item"
         },
         "roleFor": "{role} for {person}"
       },
@@ -4164,12 +4165,13 @@
     },
     "partnerDesk": {
       "none": "You are not on a partner's team.",
-      "lede": "Your organization's dashboard: its profile, the perks it offers, its guests and its team.",
+      "lede": "Your organization's dashboard: its profile, the events it runs with the Society, the perks it offers, its guests and its team.",
       "tabsLabel": "Partner",
       "tabs": {
         "profile": "Profile",
         "perks": "Perks",
-        "people": "People"
+        "people": "People",
+        "events": "Events"
       },
       "open": "Open the dashboard of {name}",
       "profile": {
@@ -4326,6 +4328,25 @@
       },
       "places": "See the open places on Get involved",
       "learn": "How the Apprenticeship works"
+    },
+    "joint": {
+      "title": "Run with a partner",
+      "lede": "The partner this event is run with, from the register, and the checklist both sides keep. The partner's team sees both on its dashboard and ticks its own items.",
+      "partner": "Partner",
+      "noPartner": "None",
+      "sides": {
+        "society": "The Society",
+        "partner": "The partner"
+      },
+      "none": "Nothing yet.",
+      "item": "Item",
+      "whose": "Whose",
+      "due": "By (optional)",
+      "by": "By {date}",
+      "new": "Add an item",
+      "remove": "Remove",
+      "noEvents": "No events with the Society yet. When the Society plans one with you, it shows here with its checklist.",
+      "planned": "Being planned"
     }
   },
   "web": {

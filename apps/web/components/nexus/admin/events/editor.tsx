@@ -30,6 +30,7 @@ import { RecordHistory } from "../record-history";
 import { Attendance } from "./attendance";
 import { useProgrammeOptions } from "./data";
 import { Invitations } from "./invitations";
+import { EventPartner } from "./joint";
 import { EventOccasion } from "./occasion";
 import { SessionLinks } from "./session-links";
 
@@ -580,6 +581,7 @@ export const EventEditor = () => {
             slug={existing.data.slug}
           />
           <EventOccasion event={existing.data} />
+          <EventPartner event={existing.data} />
           <SessionLinks eventId={eventId} />
         </>
       ) : null}

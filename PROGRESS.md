@@ -58,7 +58,17 @@ Branch: `claude/pr6b-topics-translations`.
 - needs-native-review: `nexus.admin.kit.selection.*`,
   `nexus.admin.event.checkInChosen`,
   `nexus.admin.recognition.pending.confirmChosen`.
-- Next: A41, then R4.
+- [x] A41 Joint events: an event may name the partner it is run with
+  (`events.events.partner_id`, picked on the event's page in the Diwan,
+  "Run with a partner"), and both sides keep one checklist
+  (`events.joint_tasks`, `JointChecklist`): the event's managers keep it
+  all, the partner's team adds and ticks its own side's items on the new
+  Events tab of its dashboard (`/partners/dashboard/events`,
+  `events.my_joint_events()`, drafts included). Migration
+  `20261101004900`, `99_joint_events.test.sql`.
+- needs-native-review: `nexus.joint.*`, `nexus.partnerDesk.tabs.events`,
+  `nexus.partnerDesk.lede`, `nexus.admin.activity.things.events_joint_tasks`.
+- Next: R4, the retired code names (D9), last.
 
 ## The design review: PR 6a, About, the 404 page and a member's year (2026-11-05)
 

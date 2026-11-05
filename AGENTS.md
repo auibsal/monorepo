@@ -714,7 +714,10 @@ any schema change. Integration tests run against a local stack with
   their own people (`partner_affiliations`, `governance.partner_guests`);
   nobody asks to be a guest. Guests book places (`events.rsvp`) and see
   perks (`member_offers`, only with the `member_offer` grant) like
-  members. The team are not officers: `RequireStaff` sends a team-only
+  members. An event may be run with a partner (`events.events.partner_id`,
+  design review A41): both sides keep one checklist (`events.joint_tasks`,
+  `JointChecklist`), the team on its dashboard's Events tab
+  (`events.my_joint_events()`). The team are not officers: `RequireStaff` sends a team-only
   account to the dashboard, and the Notion directory leaves them out.
 - **One Membership, of one kind** (owner, Oct 31, 2026; migration
   `20261101000800`). Everyone has `/membership`; there is no `/account`.

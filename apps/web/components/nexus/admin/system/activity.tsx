@@ -33,6 +33,7 @@ const THINGS = {
   "charity.receipts": "events",
   "events.check_ins": "events",
   "events.events": "events",
+  "events.joint_tasks": "events",
   "events.series_rules": "events",
   "events.session_links": "events",
   "governance.candidates": "society",

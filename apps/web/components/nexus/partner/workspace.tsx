@@ -7,7 +7,10 @@ import { Input } from "@repo/brand/components/ui/input";
 import { Label } from "@repo/brand/components/ui/label";
 import { cn } from "@repo/brand/lib/utils";
 import type { Locale } from "@repo/internationalization";
-import { formatLongDate } from "@repo/internationalization/format";
+import {
+  formatDateTime,
+  formatLongDate,
+} from "@repo/internationalization/format";
 import { Link, usePathname } from "@repo/internationalization/navigation";
 import { localized, partners, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -24,6 +27,7 @@ import {
   Field,
   SaveButton,
 } from "../admin/kit";
+import { JointChecklist } from "../joint/checklist";
 import { DiwanPage, DiwanSection, RowList } from "../page";
 import { OnTheSite } from "../site-links";
 import { ErrorState, SectionSpinner } from "../states";
@@ -32,13 +36,15 @@ const KEY = ["partner-desk"] as const;
 
 const TABS = [
   { href: "/partners/dashboard", key: "profile" },
+  { href: "/partners/dashboard/events", key: "events" },
   { href: "/partners/dashboard/perks", key: "perks" },
   { href: "/partners/dashboard/people", key: "people" },
 ] as const;
 
 /**
  * The partner's dashboard (owner, Oct 31, 2026: one fixed address,
- * /partners/dashboard): its title and three tabs, Profile, Perks, People.
+ * /partners/dashboard): its title and its tabs, Profile, Events (A41),
+ * Perks, People.
  * Someone on two partners' teams keeps the first.
  */
 const PartnerFrame = ({
@@ -540,6 +546,55 @@ const NewPerk = ({
       </Button>
       <ErrorLine error={add.error} />
     </form>
+  );
+};
+
+/**
+ * /partners/dashboard/events: the events run with the Society (the design
+ * review A41), soonest first, each with the checklist both sides keep; the
+ * partner adds and ticks its own items.
+ */
+export const PartnerEvents = () => (
+  <PartnerFrame>{() => <JointEvents />}</PartnerFrame>
+);
+
+const JointEvents = () => {
+  const t = useTranslations("nexus.joint");
+  const locale = useLocale() as Locale;
+  const { supabase } = useAuth();
+  const events = useQuery({
+    queryFn: async () =>
+      unwrap(await supabase.schema("events").rpc("my_joint_events")) ?? [],
+    queryKey: [...KEY, "joint-events"],
+  });
+  if (events.isPending) {
+    return <SectionSpinner />;
+  }
+  if (events.isError) {
+    return <ErrorState onRetry={() => events.refetch()} />;
+  }
+  if (events.data.length === 0) {
+    return <p className="type-body text-text-secondary">{t("noEvents")}</p>;
+  }
+  return (
+    <>
+      {events.data.map((event) => (
+        <DiwanSection
+          id={`event-${event.id}`}
+          key={event.id}
+          title={localized(event, "title", locale)}
+        >
+          <p className="type-caption text-text-secondary">
+            {formatDateTime(event.starts_at, locale)}
+            {localized(event, "venue", locale)
+              ? ` · ${localized(event, "venue", locale)}`
+              : ""}
+            {event.status === "draft" ? ` · ${t("planned")}` : ""}
+          </p>
+          <JointChecklist eventId={event.id} society={false} />
+        </DiwanSection>
+      ))}
+    </>
   );
 };
 
