@@ -26,6 +26,7 @@ This is SAL-BRD-01, Brand and Identity, Version 1, ratified by the Society, in s
 - American English everywhere, with no exceptions: program, color, center, traveled, canceled, catalog, organization.
 - Partners with Arabic names are named in their own language first.
 - No emoji, no exclamation marks in headlines. Tag @auibsal on every post, and always give the date.
+- **One language standard** (Guide, Voice, "Language standard", with the glossary). English: sentence case, straight quotes and apostrophes, the ellipsis character, en dashes for ranges, "for example" in place of "e.g.". Arabic: Latin digits, the Iraqi month names, ، ؛ ؟ and «», tanween on the letter before the alif (شكرًا), one word per term (Edition الإصدار, event فعالية, Get involved «شارك معنا»).
 
 ## Color
 
@@ -125,7 +126,8 @@ This is SAL-BRD-01, Brand and Identity, Version 1, ratified by the Society, in s
 - **Instagram bio:** "Qirtas, our paper. The Company, our theater. Six programs at @auibaghdad." Links, in order: auibsal.org, auibsal.org/events, auibsal.org/join.
 - **Highlights:** six, in this order: What's on, Qirtas, Next Stop, Programs, Join, Get involved. Covers are plain crimson with the highlight's icon and its name in white Ubuntu Light; no Bookmark. Each highlight opens with a 1080 × 1920 story banner on white: the wordmark alone at the top (no Bookmark), a Light headline with one italic crimson word, a short line, a list split by thin rules, and the link at the bottom. See `components/Highlights`.
 - Three grounds, by purpose: `crimson` for calls and moments, `white` for events, `ink` for words worth keeping and recruiting.
-- Posters A3/A4 follow the post: lockup, Light headline, a QR code at bottom right. Term Card A6; membership cards 85 × 55 mm; certificates A4 landscape with a single hairline frame and the lockup. Print only when current stock runs out.
+- Posters A3/A4 follow the post: lockup, Light headline, a QR code at bottom right. Certificates are A4 landscape with a single hairline frame and the lockup. Print only when current stock runs out.
+- Print sizes: Charter poster A3; Open Call poster A3 or A4; Term Card A6, four to an A4 sheet; membership card 85 × 55 mm, 300 gsm, ten to an A4 sheet; Certificate of Service and Fellow certificate A4 landscape; name badges 90 × 55 mm; photography notice A4; camera-shy stickers 40 mm round, twenty to an A4 sheet. Every one is drawn in Print.
 
 ## Imagery
 
