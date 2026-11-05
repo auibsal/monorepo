@@ -8,6 +8,20 @@ first session); section numbers (§) refer to it.
 Branch: `claude/qirtas-games-masthead`.
 
 
+## Qirtas: text size and one byline each (2026-11-05)
+
+Branch: `claude/qirtas-reading-fixes`.
+
+- [x] The text size works: `prose` fixed its own size, so the reader's
+  choice never reached the text (16px at every size). Article text now
+  scales in every layout, and Arabic keeps its step up
+  (`packages/brand/styles/globals.css`; `public.spec.ts`).
+- [x] One own-name byline per person, in their current name: the byline
+  sync now fires whenever a shown name changes (a change to the parts
+  never reached it), every account's own-name bylines are merged into one
+  and renamed from the profile; "Mohammed Ali Ehsan" becomes Mohammed's
+  own byline (migration `20261101004300`, `99_one_byline_each.test.sql`).
+
 ## Qirtas: games, nameplate, masthead, Editor-in-Chief (2026-11-05)
 
 Branch: `claude/qirtas-games-masthead`. The 404 on every piece was the
