@@ -3952,6 +3952,7 @@ export type Database = {
           author_approved_at: string | null;
           author_requested_at: string | null;
           category: Database["journal"]["Enums"]["category"];
+          clip_id: string | null;
           contributor_id: string;
           created_at: string;
           credit_ar: string | null;
@@ -3969,6 +3970,7 @@ export type Database = {
           members_only: boolean;
           publish_at: string | null;
           published_at: string | null;
+          reading_path: string | null;
           search: unknown;
           slug: string;
           sort: number;
@@ -3985,6 +3987,7 @@ export type Database = {
           author_approved_at?: string | null;
           author_requested_at?: string | null;
           category: Database["journal"]["Enums"]["category"];
+          clip_id?: string | null;
           contributor_id: string;
           created_at?: string;
           credit_ar?: string | null;
@@ -4002,6 +4005,7 @@ export type Database = {
           members_only?: boolean;
           publish_at?: string | null;
           published_at?: string | null;
+          reading_path?: string | null;
           search?: never;
           slug: string;
           sort?: number;
@@ -4018,6 +4022,7 @@ export type Database = {
           author_approved_at?: string | null;
           author_requested_at?: string | null;
           category?: Database["journal"]["Enums"]["category"];
+          clip_id?: string | null;
           contributor_id?: string;
           created_at?: string;
           credit_ar?: string | null;
@@ -4035,6 +4040,7 @@ export type Database = {
           members_only?: boolean;
           publish_at?: string | null;
           published_at?: string | null;
+          reading_path?: string | null;
           search?: never;
           slug?: string;
           sort?: number;
@@ -4048,6 +4054,13 @@ export type Database = {
           video_url?: string | null;
         };
         Relationships: [
+          {
+            foreignKeyName: "pieces_clip_id_fkey";
+            columns: ["clip_id"];
+            isOneToOne: false;
+            referencedRelation: "pieces";
+            referencedColumns: ["id"];
+          },
           {
             foreignKeyName: "pieces_contributor_id_fkey";
             columns: ["contributor_id"];

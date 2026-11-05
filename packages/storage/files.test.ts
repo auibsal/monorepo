@@ -10,6 +10,8 @@ import {
 
 // Supabase Storage's key rule (storage-api `isValidKey`).
 const VALID_KEY = /^(\w|\/|!|-|\.|\*|'|\(|\)| |&|\$|@|=|;|:|\+|,|\?)*$/;
+const MP3_KEY = /^piece\/[0-9a-f-]{36}\.mp3$/;
+const M4A_KEY = /\.m4a$/;
 
 describe("file names in keys", () => {
   it.each([
@@ -70,5 +72,27 @@ describe("anonymous keys", () => {
   it("carry nothing about the original file name", () => {
     const path = anonymousObjectPath("abc", "application/pdf");
     expect(path).toMatch(RANDOM_PDF_PATH);
+  });
+});
+
+describe("readings (design review A11)", () => {
+  it("take short MP3 and M4A recordings only", () => {
+    expect(checkFile("readings", { size: 4_000_000, type: "audio/mpeg" })).toBe(
+      null
+    );
+    expect(checkFile("readings", { size: 4_000_000, type: "audio/mp4" })).toBe(
+      null
+    );
+    expect(
+      checkFile("readings", { size: 11 * 1024 * 1024, type: "audio/mpeg" })
+    ).toBe("too_large");
+    expect(checkFile("readings", { size: 4_000_000, type: "audio/wav" })).toBe(
+      "type_not_allowed"
+    );
+  });
+
+  it("are kept under a name that says nothing", () => {
+    expect(anonymousObjectPath("piece", "audio/mpeg")).toMatch(MP3_KEY);
+    expect(anonymousObjectPath("piece", "audio/x-m4a")).toMatch(M4A_KEY);
   });
 });

@@ -81,6 +81,9 @@ const EXTENSIONS: Record<string, string> = {
   "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": "xlsx",
   "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
     "docx",
+  "audio/mp4": "m4a",
+  "audio/mpeg": "mp3",
+  "audio/x-m4a": "m4a",
   "image/jpeg": "jpg",
   "image/png": "png",
   "image/svg+xml": "svg",

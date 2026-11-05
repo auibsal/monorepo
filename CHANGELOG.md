@@ -6,6 +6,9 @@ own versions in the Library.
 
 ## Unreleased
 
+- Qirtas pieces may be heard read aloud, and paired with a clip from the
+  Video section; readers share a selection of Gallery pieces by its link,
+  without signing in.
 - More games in Qirtas: quizzes, word ladders, riddles, anagrams and name
   the book, written by the Games editors and played on the site.
 - Book Circle votes on its next book: the host chooses three in the
