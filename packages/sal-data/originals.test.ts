@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { ORIGINAL_LANGUAGES, textDirection } from "./journal";
 
+const CODE = /^[a-z]{2,3}$/;
+
 describe("an original's direction", () => {
   it("is right to left for the Arabic-script and Hebrew languages", () => {
     expect(textDirection("ar")).toBe("rtl");
@@ -13,7 +15,7 @@ describe("an original's direction", () => {
 
   it("offers only codes the database accepts", () => {
     for (const code of ORIGINAL_LANGUAGES) {
-      expect(code).toMatch(/^[a-z]{2,3}$/);
+      expect(code).toMatch(CODE);
     }
   });
 });
