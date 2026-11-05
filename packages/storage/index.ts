@@ -141,6 +141,24 @@ export const uploadAvatar = async (
   return { ...stored, url: getMediaUrl(supabase, stored.path) };
 };
 
+/**
+ * Uploads a reading of a piece (design review A11) to
+ * readings/<piece id>/<random>.<ext>; Qirtas's editors only.
+ */
+export const uploadReading = (
+  supabase: Client,
+  pieceId: string,
+  file: File
+) => {
+  assertAllowed("readings", file);
+  return upload(
+    supabase,
+    buckets.readings.id,
+    anonymousObjectPath(pieceId, file.type),
+    file
+  );
+};
+
 /** Public URL of a media object. */
 export const getMediaUrl = (supabase: Client, path: string) =>
   supabase.storage.from(buckets.media.id).getPublicUrl(path).data.publicUrl;
@@ -151,7 +169,7 @@ export const getMediaUrl = (supabase: Client, path: string) =>
  */
 export const createSignedFileUrl = async (
   admin: Client,
-  bucket: Exclude<BucketId, "media">,
+  bucket: Exclude<BucketId, "media" | "readings">,
   path: string,
   {
     download,

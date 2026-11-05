@@ -514,6 +514,19 @@ any schema change. Integration tests run against a local stack with
   `ladderSchema`); typed answers compare letters only (`sameAnswer`), an
   anagram is scrambled the same way for everyone, and progress stays in
   the reader's browser.
+- **Readings, clips and Gallery selections** (design review PR 5d, A10,
+  A11, A12, decision D10, Nov 5, 2026). A piece may carry one reading of
+  itself (`journal.pieces.reading_path`, the public `readings` bucket,
+  `<piece id>/<random>.mp3|m4a`, 10 MB at most, thirty across Qirtas so the
+  Free plan's 1 GB holds; never on a members-only piece, since the bucket
+  is public) and a clip from the Video section (`clip_id`), both set on
+  the piece's page in the Diwan ("Clip and reading") by its editors
+  (`private.piece_editor`; `private.check_clip_and_reading`). A reader
+  makes a Gallery selection in their browser ("Add to a selection",
+  twelve pieces at most) and shares it at
+  `/qirtas/selection/<slug>/<slug>…`: the address is the selection,
+  nothing is stored and nobody signs in (`journal.gallerySelection`,
+  not indexed).
 - **Qirtas, one door** (owner, Oct 31, 2026). Members send everything,
   every section, from `/qirtas/write` (`/qirtas/write/<type>` is the
   form), and everything they send is read blind. Edition calls (Letters,

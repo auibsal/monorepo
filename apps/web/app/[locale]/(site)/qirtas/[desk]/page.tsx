@@ -6,6 +6,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { PieceCardView } from "@/components/waraq/cards";
+import { SelectionBar } from "@/components/waraq/gallery-selection";
 import { Nameplate } from "@/components/waraq/nameplate";
 import { localizedMetadata } from "@/lib/metadata";
 import { readPublished } from "@/lib/supabase";
@@ -71,6 +72,7 @@ const DeskPage = async ({ params }: DeskProps) => {
             {t("feed")}
           </a>
         </p>
+        {desk === "gallery" ? <SelectionBar /> : null}
       </header>
       {pieces.length === 0 ? (
         <p className="type-body text-text-secondary">{t("noPieces")}</p>

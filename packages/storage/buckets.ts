@@ -27,6 +27,16 @@ export const buckets = {
     ],
     public: true,
   },
+  /**
+   * Public: Qirtas readings, <piece id>/<random>.<ext> (design review A11,
+   * decision D10: a few short readings on the Free plan; thirty at most).
+   */
+  readings: {
+    id: "readings",
+    maxBytes: 10 * 1024 * 1024,
+    mimeTypes: ["audio/mpeg", "audio/mp4", "audio/x-m4a"],
+    public: true,
+  },
   /** Private: charity receipts, <campaign id>/<random>.<ext>. */
   receipts: {
     id: "receipts",

@@ -32,6 +32,7 @@ import {
 import { RecordHistory } from "../record-history";
 import { useIssues } from "./admin";
 import { BylinePicker } from "./byline";
+import { PieceExtras } from "./piece-extras";
 import {
   Corrections,
   type PieceRecord,
@@ -745,6 +746,7 @@ export const WaraqPieceEditor = () => {
       {needs.media || piece.desk === "news" ? (
         <Media record={record.data} />
       ) : null}
+      {piece.desk === "video" ? null : <PieceExtras record={record.data} />}
       <Credits record={record.data} />
       {piece.status === "published" ? (
         <Corrections record={record.data} />

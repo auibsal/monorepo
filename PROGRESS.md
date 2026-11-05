@@ -5,8 +5,26 @@ Every session starts here and continues from the first unticked item. The
 brief is `sal-platform-claude-code-prompt.md` (uploaded at the start of the
 first session); section numbers (§) refer to it.
 
-Branch: `claude/game-players` (PR 5c of the design review).
+Branch: `claude/gallery-audio-clips` (PR 5d of the design review).
 
+
+## The design review: PR 5d, readings, clips and Gallery selections (2026-11-05)
+
+Branch: `claude/gallery-audio-clips`.
+
+- [x] A11 Readings (D10): one short recording per piece in the public
+  `readings` bucket (10 MB a file, thirty in all, inside the Free plan's
+  1 GB; nothing paid for), added on the piece's page in the Diwan and
+  played on the piece (migration `20261101003800`,
+  `99_clips_and_readings.test.sql`, `files.test.ts`).
+- [x] A12 A piece paired with a clip from the Video section, shown after
+  the text while the clip is published and public.
+- [x] A10 Gallery selections: chosen in the reader's browser, shared at
+  `/qirtas/selection/<slug>/…`; nothing stored, no sign-in.
+- needs-native-review: `web.journal.listen`, `clipTitle`, `clipNextStop`,
+  `selection.*`; `nexus.admin.waraq.extras.*`.
+- Next: waiting on the owner for A34 (where the trip's Student Life
+  approval is recorded), A36 (the contest page's text) and PR 6.
 
 ## The design review: PR 5c, more games to play (2026-11-05)
 

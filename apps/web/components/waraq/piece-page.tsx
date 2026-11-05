@@ -13,6 +13,8 @@ import {
   PieceColumn,
   pieceHref,
 } from "@/components/waraq/cards";
+import { PairedClip, Reading } from "@/components/waraq/clip-and-reading";
+import { SelectionToggle } from "@/components/waraq/gallery-selection";
 import { CorrectionNotes, PieceBody, texts } from "@/components/waraq/layouts";
 import { Nameplate } from "@/components/waraq/nameplate";
 import { ReadingProgress, TextSize } from "@/components/waraq/reading-tools";
@@ -138,6 +140,9 @@ export const PieceArticle = async ({
           <ManageLinks diwan={`/qirtas/pieces/${piece.slug}`} />
           <ShareLink title={localized(piece, "title", locale)} />
           <SaveForLater pieceId={piece.id} />
+          {desk === "gallery" && !piece.members_only ? (
+            <SelectionToggle slug={piece.slug} />
+          ) : null}
           <p className="type-caption">
             <Link
               className="text-accent hover:underline"
@@ -189,6 +194,8 @@ export const PieceArticle = async ({
           ) : null}
           {credit ? <p className="type-caption">{credit}</p> : null}
           {lockedText ? null : <TextSize />}
+          {/* Never on a members-only piece: the database refuses it. */}
+          <Reading locale={locale} path={piece.reading_path} />
           {proseTypes.includes(category) && words > 0 ? (
             <p className="type-caption">
               {t("readingTime", {
@@ -217,6 +224,7 @@ export const PieceArticle = async ({
         ) : (
           <PieceBody locale={locale} piece={piece} />
         )}
+        <PairedClip clipId={piece.clip_id} locale={locale} />
         <CorrectionNotes locale={locale} piece={piece} />
         <p className="type-caption mx-auto w-full max-w-3xl px-4">
           {t("firstPublished")}

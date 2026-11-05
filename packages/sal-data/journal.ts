@@ -705,7 +705,7 @@ const cardColumns =
   "id, slug, desk, category, language, title_en, title_ar, deck_en, deck_ar, members_only, published_at, front_rank, video_url, image_path, contributor:contributors!pieces_contributor_id_fkey(slug, name_en, name_ar), media:piece_media(storage_path, alt_en, alt_ar, width, height, sort)";
 
 const fullColumns =
-  "id, slug, desk, category, language, title_en, title_ar, deck_en, deck_ar, members_only, published_at, front_rank, video_url, image_path, credit_en, credit_ar, issue_id, event_id, contributor:contributors!pieces_contributor_id_fkey(slug, name_en, name_ar), media:piece_media(storage_path, alt_en, alt_ar, caption_en, caption_ar, width, height, sort), issue:issues(slug, title_en, title_ar)";
+  "id, slug, desk, category, language, title_en, title_ar, deck_en, deck_ar, members_only, published_at, front_rank, video_url, image_path, credit_en, credit_ar, issue_id, event_id, clip_id, reading_path, contributor:contributors!pieces_contributor_id_fkey(slug, name_en, name_ar), media:piece_media(storage_path, alt_en, alt_ar, caption_en, caption_ar, width, height, sort), issue:issues(slug, title_en, title_ar)";
 
 const publishedPieces = (client: Client) =>
   journal(client)
@@ -878,6 +878,53 @@ export const pieceEvent = async (client: Client, eventId: string | null) =>
           .maybeSingle()
       )
     : null;
+
+/**
+ * The clip paired with a piece (design review A12): a published, public
+ * piece from the Video section, or null.
+ */
+export const pieceClip = async (client: Client, clipId: string | null) =>
+  clipId
+    ? unwrap(
+        await journal(client)
+          .from("pieces")
+          .select(
+            "id, slug, desk, category, language, title_en, title_ar, video_url"
+          )
+          .eq("id", clipId)
+          .eq("desk", "video")
+          .eq("status", "published")
+          .eq("members_only", false)
+          .lte("published_at", new Date().toISOString())
+          .maybeSingle()
+      )
+    : null;
+
+/** Most pieces a Gallery selection holds (design review A10). */
+export const SELECTION_MAX = 12;
+
+/**
+ * A Gallery selection (design review A10): the published Gallery pieces
+ * named in its address, in the order given. Nothing is stored; unknown,
+ * repeated and unpublished names are left out.
+ */
+export const gallerySelection = async (
+  client: Client,
+  slugs: readonly string[]
+) => {
+  const wanted = [...new Set(slugs)].slice(0, SELECTION_MAX);
+  if (wanted.length === 0) {
+    return [];
+  }
+  const rows =
+    unwrap(
+      await publishedPieces(client)
+        .eq("desk", "gallery")
+        .eq("members_only", false)
+        .in("slug", wanted)
+    ) ?? [];
+  return wanted.flatMap((slug) => rows.filter((row) => row.slug === slug));
+};
 
 /**
  * The published pieces written from these events (a session's write-up, a

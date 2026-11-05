@@ -2779,7 +2779,24 @@
         "calls": "Calls",
         "noEditions": "No Editions yet. Start one with New Edition.",
         "event": "Event",
-        "noEvent": "No event"
+        "noEvent": "No event",
+        "extras": {
+          "title": "Clip and reading",
+          "clip": "Clip",
+          "clipHint": "A piece from the Video section, shown after the text while it is published.",
+          "noClip": "No clip",
+          "reading": "The reading",
+          "addReading": "Add a reading",
+          "replaceReading": "Replace the reading",
+          "removeReading": "Remove the reading",
+          "readingHint": "One short recording of the piece read aloud, MP3 or M4A, 10 MB at most. Qirtas keeps thirty readings in all, to stay within the free storage.",
+          "readingMembersOnly": "A members-only piece has no reading: readings can be heard by anyone.",
+          "problems": {
+            "readings_full": "Qirtas already keeps thirty readings. Remove one before adding another.",
+            "too_large": "The file is larger than 10 MB. Shorten it or export it at a lower quality.",
+            "type_not_allowed": "Use an MP3 or M4A file."
+          }
+        }
       },
       "awards": {
         "lede": "The Qirtas Awards: for each round, the judges and the shortlist of each award, and the winners. The public page shows a shortlist from its day and the winners from theirs.",
@@ -4522,7 +4539,21 @@
       },
       "authorEditions": "In the Editions",
       "authorShortlisted": "{title} · shortlisted, {award}",
-      "authorWon": "{title} · winner, {award}"
+      "authorWon": "{title} · winner, {award}",
+      "listen": "Hear it read",
+      "clipTitle": "On video",
+      "clipNextStop": "On Next Stop",
+      "selection": {
+        "title": "A selection from the Gallery",
+        "lede": "Pieces from Qirtas's Gallery, chosen by a reader and shared by this address.",
+        "makeYours": "Make your own selection",
+        "add": "Add to a selection",
+        "remove": "Remove from your selection",
+        "yours": "{count, plural, one {Your selection, {pieces} piece} other {Your selection, {pieces} pieces}}",
+        "full": "A selection holds twelve pieces.",
+        "howTo": "Choose pieces to share as a selection: open one and add it. Your selection stays in this browser until you share its link.",
+        "clear": "Clear your selection"
+      }
     },
     "about": {
       "title": "About the Society",
