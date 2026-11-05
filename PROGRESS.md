@@ -5,8 +5,25 @@ Every session starts here and continues from the first unticked item. The
 brief is `sal-platform-claude-code-prompt.md` (uploaded at the start of the
 first session); section numbers (§) refer to it.
 
-Branch: `claude/join-partners-hudhud` (PR 4f of the design review).
+Branch: `claude/awards-authors-playbills` (PR 5a of the design review).
 
+
+## The design review: PR 5a, Awards by year, author pages, playbills (2026-11-05)
+
+Branch: `claude/awards-authors-playbills`. PR 5 is split: 5a (C19, C18,
+C8), 5b (A29, A30, A33, A34, A36, A37), 5c (A17), 5d (A10, A11, A12).
+
+- [x] C19 Awards by year: `/qirtas/awards/<round>`, the latest round on
+  `/qirtas/awards` with the others listed; `journal.award_results()` keeps
+  its rules (shortlists from their day, winners from theirs).
+- [x] C18 Author pages: the Editions their work appeared in and their
+  shortlists and wins.
+- [x] C8 The Company's productions as a playbill Shelf, the list at
+  `/company/productions`.
+- needs-native-review: `web.awards.byYear`, `web.awards.roundTitle`,
+  `web.journal.authorEditions`, `authorShortlisted`, `authorWon`,
+  `web.productions.asList`.
+- Next: PR 5b.
 
 ## The design review: PR 4f, Join, Partners, Hudhud and the budget (2026-11-05)
 
@@ -32,22 +49,24 @@ Branch: `claude/join-partners-hudhud` (after PR 4e, `claude/program-pages`,
 - Next: PR 5 in parts (A17, C19, C18, C8, A29, A30, A33, A34, A36, A37,
   A10, A11, A12).
 
-## The design review: PR 5a, Awards by year, author pages, playbills (2026-11-05)
+## The design review: PR 4e, program pages (2026-11-05)
 
-Branch: `claude/awards-authors-playbills`. PR 5 is split: 5a (C19, C18,
-C8), 5b (A29, A30, A33, A34, A36, A37), 5c (A17), 5d (A10, A11, A12).
+Branch: `claude/program-pages`.
 
-- [x] C19 Awards by year: `/qirtas/awards/<round>`, the latest round on
-  `/qirtas/awards` with the others listed; `journal.award_results()` keeps
-  its rules (shortlists from their day, winners from theirs).
-- [x] C18 Author pages: the Editions their work appeared in and their
-  shortlists and wins.
-- [x] C8 The Company's productions as a playbill Shelf, the list at
-  `/company/productions`.
-- needs-native-review: `web.awards.byYear`, `web.awards.roundTitle`,
-  `web.journal.authorEditions`, `authorShortlisted`, `authorWon`,
-  `web.productions.asList`.
-- Next: PR 5b.
+- [x] C3 One structure for every program's page: rhythm, the next
+  session, the month, the last six sessions with the Qirtas pieces written
+  from them, then the program's own feature.
+- [x] A31 Every past session at `/events/<program>/past` (the Salon's
+  archive, and the same for each program).
+- [x] A32 Book Circle's shelf: its Voices reviews from its sessions, on a
+  Shelf, with the list at `/events/book-circle/shelf`.
+- [x] A35 Open Pages' prompt cards: `programmes.prompts` (migration
+  `20261101003200`, `99_program_prompts.test.sql`), written and published
+  by the host in the program's Prompts tab; the page shows the published.
+- needs-native-review: `web.programs.page.*`,
+  `nexus.admin.programmes.prompts.*`, `nexus.admin.programmes.tabs.prompts`,
+  `nexus.admin.activity.things.programmes_prompts`.
+- Next: PR 4f (C5, C7, C26, A8).
 
 ## The design review: PR 4d, saved reading and history (2026-11-04)
 

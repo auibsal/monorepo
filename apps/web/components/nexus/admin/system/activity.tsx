@@ -68,6 +68,7 @@ const THINGS = {
   "programmes.production_credits": "company",
   "programmes.production_events": "company",
   "programmes.productions": "company",
+  "programmes.prompts": "events",
   "programmes.reels": "qirtas",
   "programmes.removal_requests": "qirtas",
   "programmes.six_words": "events",
