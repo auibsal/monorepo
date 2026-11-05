@@ -74,7 +74,7 @@ insert into core.semesters (code, name_en, name_ar, starts_on, ends_on) values
 update core.settings set value = '0' where key = 'membership.founding_voters';
 -- </preamble>
 
-select plan(7);
+select plan(8);
 
 select pg_temp.make_user('00000000-0000-0000-0000-0000000e5001', 'host.e5@auib.edu.iq', 'Host');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000e5002', 'member.e5@auib.edu.iq', 'Member');
@@ -131,6 +131,10 @@ delete from events.session_links where label_en = 'The album';
 select pg_temp.login_anon();
 select is((select count(*)::int from events.session_links), 0, 'the host removes a link');
 select pg_temp.logout();
+select ok(
+  (select count(*) > 0 from core.outbox where kind = 'revalidate' and payload->'tags' ? 'events'),
+  'a link refreshes the cached program pages'
+);
 select ok(
   (select count(*) > 0 from core.activity_log where table_schema = 'events' and table_name = 'session_links'),
   'links are written to the activity log'
