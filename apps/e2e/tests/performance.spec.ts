@@ -24,7 +24,7 @@ const BUDGET = {
 const PAGES = [
   "/",
   "/events",
-  "/events",
+  "/events/open-pages-2027-03-30",
   "/qirtas",
   "/join",
   "/partners",
