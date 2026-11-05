@@ -1,3 +1,4 @@
+import { Shelf } from "@repo/brand/components/sal/shelf";
 import type { Locale } from "@repo/internationalization";
 import { formatClock, formatLongDate } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
@@ -30,40 +31,114 @@ const loadAll = async () =>
 
 type Production = Awaited<ReturnType<typeof loadAll>>[number];
 
+/** A playbill on the shelf: the poster, or the title set as type. */
+const Playbill = ({
+  kind,
+  locale,
+  p,
+}: {
+  readonly kind: string;
+  readonly locale: Locale;
+  readonly p: Production;
+}) => {
+  const poster = mediaUrl(p.poster_path);
+  const title = localized(p, "title", locale);
+  return (
+    <Link className="group grid gap-2" href={`/company/${p.slug}`}>
+      {poster ? (
+        // biome-ignore lint/performance/noImgElement: a poster from the media bucket
+        <img
+          alt=""
+          className="aspect-[2/3] w-full object-cover"
+          height={600}
+          src={poster}
+          width={400}
+        />
+      ) : (
+        <span className="grid aspect-[2/3] content-between border-line border-t pt-space-4">
+          <span className="type-subheading text-balance">{title}</span>
+          {p.playwright ? (
+            <span className="type-caption text-text-secondary">
+              {p.playwright}
+            </span>
+          ) : null}
+        </span>
+      )}
+      <span className="type-heading group-hover:underline">{title}</span>
+      <span className="type-caption text-text-secondary">{kind}</span>
+    </Link>
+  );
+};
+
 /**
- * Staged readings and productions, on the Company's page (/company): each
- * a line linking to its own page, /company/<slug>.
+ * Staged readings and productions, on the Company's page (/company), as a
+ * shelf of playbills (the design review C8, Nov 4, 2026), each linking to
+ * its own page, /company/<slug>; the same as a list at
+ * /company/productions.
  */
 export const Productions = async ({ locale }: { locale: Locale }) => {
   const t = await getTranslations({ locale, namespace: "web.productions" });
+  const tj = await getTranslations({ locale, namespace: "web.journal" });
   const list = await loadAll();
   return (
     <Section id="productions" title={t("title")}>
+      {list.length === 0 ? (
+        <p className="type-body">{t("empty")}</p>
+      ) : (
+        <Shelf
+          items={list.map((p) => ({
+            key: p.slug,
+            node: (
+              <Playbill
+                kind={t(`kinds.${p.kind as Kind}`)}
+                locale={locale}
+                p={p}
+              />
+            ),
+          }))}
+          label={t("title")}
+          listLink={
+            <Link className="link" href="/company/productions">
+              {t("asList")}
+            </Link>
+          }
+          nextLabel={tj("shelfNext")}
+          previousLabel={tj("shelfPrevious")}
+        />
+      )}
+    </Section>
+  );
+};
+
+/** /company/productions: the same productions as a plain list. */
+export const ProductionsList = async ({ locale }: { locale: Locale }) => {
+  const t = await getTranslations({ locale, namespace: "web.productions" });
+  const list = await loadAll();
+  return (
+    <div className="mx-auto grid w-full max-w-4xl gap-10 px-4 py-16 sm:py-24">
+      <header className="grid gap-4">
+        <h1 className="type-display text-balance">{t("title")}</h1>
+        <p>
+          <Link className="link" href="/company">
+            {t("allCompany")}
+          </Link>
+        </p>
+      </header>
       {list.length === 0 ? <p className="type-body">{t("empty")}</p> : null}
-      <ul className="grid gap-x-10 md:grid-cols-2">
+      <ul className="grid border-line border-b">
         {list.map((p) => (
-          <li
-            className="grid content-start gap-2 border-line border-t py-space-4"
-            key={p.slug}
-          >
-            <h3 className="type-heading">
-              <Link className="hover:text-accent" href={`/company/${p.slug}`}>
-                {localized(p, "title", locale)}
-              </Link>
-            </h3>
-            <p className="type-label">
+          <li className="grid gap-1 border-line border-t py-3" key={p.slug}>
+            <Link className="link" href={`/company/${p.slug}`}>
+              {localized(p, "title", locale)}
+            </Link>
+            <span className="type-caption text-text-secondary">
               {t(`kinds.${p.kind as Kind}`)}
               {p.playwright ? ` · ${t("by", { name: p.playwright })}` : ""}
-            </p>
-            {localized(p, "summary", locale) ? (
-              <p className="type-body text-text-secondary">
-                {localized(p, "summary", locale)}
-              </p>
-            ) : null}
+            </span>
           </li>
         ))}
       </ul>
-    </Section>
+    </div>
   );
 };
 

@@ -6,6 +6,9 @@ own versions in the Library.
 
 ## Unreleased
 
+- The Qirtas Awards by year, each round on its own page; author pages
+  list the Editions and the Awards their work was shortlisted for or won;
+  the Company's productions on a shelf of playbills.
 - Join says what membership gives you; Partners says what a partner gets
   and gives. Hudhud can send the day's word each morning (turn it on in
   /me), and brings shift and event reminders even with optional email
