@@ -3,10 +3,20 @@ import { type Client, unwrap } from "./client";
 import { guessWords, searchWords } from "./game-words";
 
 // Waraq's games: the daily word guess and word search (made from fixed word
-// lists, the same for every reader on a Baghdad day), and the crosswords and
-// word searches editors write in the Nexus (journal.puzzles).
+// lists, the same for every reader on a Baghdad day), and the puzzles editors
+// write in the Diwan (journal.puzzles): crosswords and word searches, and
+// (design review A17) quizzes, word ladders, riddles, anagrams and name the
+// book.
 
-export const puzzleKinds = ["crossword", "word_search"] as const;
+export const puzzleKinds = [
+  "crossword",
+  "word_search",
+  "quiz",
+  "word_ladder",
+  "riddle",
+  "anagram",
+  "name_the_book",
+] as const;
 export type PuzzleKind = (typeof puzzleKinds)[number];
 export const gameLangs = ["en", "ar"] as const;
 export type GameLang = (typeof gameLangs)[number];
@@ -79,7 +89,7 @@ export const seeded = (seed: string) => {
 
 // biome-ignore-end lint/suspicious/noBitwiseOperators: a 32-bit hash and PRNG
 
-const shuffled = <T>(items: readonly T[], rand: () => number) => {
+export const shuffled = <T>(items: readonly T[], rand: () => number) => {
   const copy = [...items];
   for (let i = copy.length - 1; i > 0; i -= 1) {
     const j = Math.floor(rand() * (i + 1));
@@ -726,6 +736,109 @@ export const wordSearchSchema = z
   })
   .refine(validWordSearch, { message: "conflict" });
 
+// ── Quizzes, ladders, riddles, anagrams, name the book (A17) ──────────────
+
+/** A typed answer's letters, for comparing with the editor's answer. */
+export const sameAnswer = (typed: string, answer: string, lang: GameLang) => {
+  const a = normalizeWord(typed, lang);
+  return a.length > 0 && a === normalizeWord(answer, lang);
+};
+
+const filled = (max: number) => z.string().trim().min(1).max(max);
+
+/**
+ * A quiz, or name the book: each question (or clue: an opening line, a
+ * famous sentence) with its right answer, the wrong ones offered beside it
+ * and, after answering, a note (name the book: the author).
+ */
+export const choicesSchema = z.object({
+  items: z
+    .array(
+      z.object({
+        answer: filled(120),
+        note: z.string().trim().max(200).optional(),
+        prompt: filled(400),
+        wrong: z.array(filled(120)).min(1).max(5),
+      })
+    )
+    .min(1)
+    .max(20),
+});
+export type Choices = z.infer<typeof choicesSchema>;
+
+/** Riddles, each answered by typing; letters are compared, not spelling. */
+export const riddlesSchema = z.object({
+  items: z
+    .array(z.object({ answer: filled(60), prompt: filled(400) }))
+    .min(1)
+    .max(15),
+});
+export type Riddles = z.infer<typeof riddlesSchema>;
+
+/** Anagrams: a word (2 to 15 letters) with an optional clue. */
+export const anagramsSchema = (lang: GameLang) =>
+  z.object({
+    items: z
+      .array(
+        z.object({
+          answer: filled(30).refine((w) => {
+            const n = lettersOf(normalizeWord(w, lang)).length;
+            return n >= 2 && n <= MAX_GRID;
+          }),
+          prompt: z.string().trim().max(200).optional(),
+        })
+      )
+      .min(1)
+      .max(20),
+  });
+export type Anagrams = z.infer<ReturnType<typeof anagramsSchema>>;
+
+/** Whether two words differ in exactly one letter, in the same place. */
+export const oneLetterApart = (a: string, b: string) => {
+  const x = lettersOf(a);
+  const y = lettersOf(b);
+  return (
+    x.length === y.length &&
+    x.filter((letter, i) => letter !== y[i]).length === 1
+  );
+};
+
+/**
+ * A word ladder: from the first word to the last, one letter changed at
+ * each step (3 to 10 words, each 3 to 8 letters).
+ */
+export const ladderSchema = (lang: GameLang) =>
+  z
+    .object({ words: z.array(filled(20)).min(3).max(10) })
+    .refine(({ words }) => {
+      const steps = words.map((w) => normalizeWord(w, lang));
+      const size = lettersOf(steps[0] ?? "").length;
+      return (
+        size >= 3 &&
+        size <= 8 &&
+        steps.every((w, i) => i === 0 || oneLetterApart(steps[i - 1] ?? "", w))
+      );
+    });
+export type Ladder = z.infer<ReturnType<typeof ladderSchema>>;
+
+/** An anagram's letters, scrambled the same way for every reader. */
+export const scramble = (word: string, lang: GameLang, seed: string) => {
+  const letters = lettersOf(normalizeWord(word, lang));
+  for (let attempt = 0; attempt < 8; attempt += 1) {
+    const mixed = shuffled(letters, seeded(`${seed}-${attempt}`));
+    if (mixed.join("") !== letters.join("")) {
+      return mixed;
+    }
+  }
+  return [...letters].reverse();
+};
+
+/** A question's answers in a fixed order for every reader. */
+export const choicesFor = (
+  item: { answer: string; wrong: readonly string[] },
+  seed: string
+) => shuffled([item.answer, ...item.wrong], seeded(seed));
+
 const listColumns =
   "id, slug, kind, language, title_en, title_ar, made_with_ai, published_at";
 
@@ -749,7 +862,11 @@ export const publishedPuzzles = async (client: Client, lang?: GameLang) => {
 
 export type PuzzleData =
   | { data: Crossword; kind: "crossword" }
-  | { data: WordSearch; kind: "word_search" };
+  | { data: WordSearch; kind: "word_search" }
+  | { data: Choices; kind: "quiz" | "name_the_book" }
+  | { data: Riddles; kind: "riddle" }
+  | { data: Anagrams; kind: "anagram" }
+  | { data: Ladder; kind: "word_ladder" };
 
 /** One published puzzle with its grid; null when it is missing or broken. */
 export const puzzleBySlug = async (client: Client, slug: string) => {
@@ -765,21 +882,49 @@ export const puzzleBySlug = async (client: Client, slug: string) => {
   if (!row) {
     return null;
   }
-  const parsed = parsePuzzle(row.kind as PuzzleKind, row.data);
+  const parsed = parsePuzzle(
+    row.kind as PuzzleKind,
+    row.data,
+    row.language as GameLang
+  );
   return parsed
     ? { ...row, ...parsed, language: row.language as GameLang }
     : null;
 };
 
-/** Checks a stored grid against its kind. */
+/** Checks a stored puzzle against its kind (and language, for words). */
 export const parsePuzzle = (
   kind: PuzzleKind,
-  data: unknown
+  data: unknown,
+  lang: GameLang = "en"
 ): PuzzleData | null => {
-  if (kind === "crossword") {
-    const result = crosswordSchema.safeParse(data);
-    return result.success ? { data: result.data, kind } : null;
+  switch (kind) {
+    case "crossword": {
+      const result = crosswordSchema.safeParse(data);
+      return result.success ? { data: result.data, kind } : null;
+    }
+    case "word_search": {
+      const result = wordSearchSchema.safeParse(data);
+      return result.success ? { data: result.data, kind } : null;
+    }
+    case "quiz":
+    case "name_the_book": {
+      const result = choicesSchema.safeParse(data);
+      return result.success ? { data: result.data, kind } : null;
+    }
+    case "riddle": {
+      const result = riddlesSchema.safeParse(data);
+      return result.success ? { data: result.data, kind } : null;
+    }
+    case "anagram": {
+      const result = anagramsSchema(lang).safeParse(data);
+      return result.success ? { data: result.data, kind } : null;
+    }
+    case "word_ladder": {
+      const result = ladderSchema(lang).safeParse(data);
+      return result.success ? { data: result.data, kind } : null;
+    }
+    default:
+      return null;
   }
-  const result = wordSearchSchema.safeParse(data);
-  return result.success ? { data: result.data, kind } : null;
 };

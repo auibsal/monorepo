@@ -3,6 +3,7 @@ import { guessWords, searchWords } from "./game-words";
 import {
   buildWordSearch,
   cellsOf,
+  choicesFor,
   crosswordCells,
   crosswordSchema,
   currentStreak,
@@ -10,12 +11,15 @@ import {
   dailySearch,
   gameDay,
   gameNumber,
+  ladderSchema,
   layoutCrossword,
   lettersOf,
   nextStreak,
   normalizeWord,
   parsePuzzle,
+  sameAnswer,
   scoreGuess,
+  scramble,
   WORD_LENGTH,
   wordBetween,
   wordSearchSchema,
@@ -331,5 +335,54 @@ describe("streaks", () => {
     expect(currentStreak(streak, 201)).toBe(4);
     expect(currentStreak(streak, 202)).toBe(0);
     expect(currentStreak(null, 202)).toBe(0);
+  });
+});
+
+describe("quizzes, ladders, riddles and anagrams (A17)", () => {
+  test("typed answers compare letters, not spelling", () => {
+    expect(sameAnswer("  the moon ", "The Moon", "en")).toBe(true);
+    expect(sameAnswer("أسد", "اسد", "ar")).toBe(true);
+    expect(sameAnswer("", "", "en")).toBe(false);
+    expect(sameAnswer("sun", "moon", "en")).toBe(false);
+  });
+
+  test("a ladder changes one letter at each step", () => {
+    const ok = { words: ["cold", "cord", "card", "ward", "warm"] };
+    expect(ladderSchema("en").safeParse(ok).success).toBe(true);
+    const jump = { words: ["cold", "card", "warm"] };
+    expect(ladderSchema("en").safeParse(jump).success).toBe(false);
+    const short = { words: ["at", "it", "is"] };
+    expect(ladderSchema("en").safeParse(short).success).toBe(false);
+  });
+
+  test("an anagram is scrambled the same way for everyone, never as given", () => {
+    const a = scramble("listen", "en", "x");
+    expect(a).toEqual(scramble("listen", "en", "x"));
+    expect(a.join("")).not.toBe("LISTEN");
+    expect([...a].sort()).toEqual([..."LISTEN"].sort());
+  });
+
+  test("a question's answers keep one order and include the right one", () => {
+    const item = { answer: "Baghdad", wrong: ["Basra", "Mosul"] };
+    const order = choicesFor(item, "q1");
+    expect(order).toEqual(choicesFor(item, "q1"));
+    expect([...order].sort()).toEqual(["Baghdad", "Basra", "Mosul"]);
+  });
+
+  test("each kind's data is checked by its own schema", () => {
+    const quiz = {
+      items: [{ answer: "Tigris", prompt: "Which river?", wrong: ["Nile"] }],
+    };
+    expect(parsePuzzle("quiz", quiz)?.kind).toBe("quiz");
+    expect(parsePuzzle("name_the_book", quiz)?.kind).toBe("name_the_book");
+    expect(parsePuzzle("quiz", { items: [] })).toBeNull();
+    expect(
+      parsePuzzle("riddle", {
+        items: [{ answer: "an echo", prompt: "I speak without a mouth." }],
+      })?.kind
+    ).toBe("riddle");
+    expect(
+      parsePuzzle("anagram", { items: [{ answer: "قلم" }] }, "ar")?.kind
+    ).toBe("anagram");
   });
 });

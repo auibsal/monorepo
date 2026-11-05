@@ -37,6 +37,14 @@ import {
   Field,
   SelectInput,
 } from "../kit";
+import {
+  blankEntry,
+  type Entry,
+  type EntryKind,
+  entriesData,
+  entriesFrom,
+  PuzzleEntries,
+} from "./puzzle-entries";
 
 const key = ["admin", "journal", "puzzles"];
 const buttonLink =
@@ -51,6 +59,8 @@ interface Item {
 // reopens with every answer, even ones the layout left out.
 interface Draft {
   backward: boolean;
+  /** Quiz, name the book, riddles, anagrams (A17). */
+  entries: Entry[];
   id: string | null;
   items: Item[];
   kind: PuzzleKind;
@@ -66,6 +76,7 @@ interface Draft {
 
 const blank: Draft = {
   backward: false,
+  entries: [blankEntry, blankEntry, blankEntry],
   id: null,
   items: [
     { answer: "", clue: "" },
@@ -83,8 +94,29 @@ const blank: Draft = {
   words: "",
 };
 
-/** The grid the current draft makes, and what did not fit. */
-const arrange = (draft: Draft) => {
+const GRIDS: readonly PuzzleKind[] = ["crossword", "word_search"];
+const ENTRY_KINDS: readonly PuzzleKind[] = [
+  "quiz",
+  "name_the_book",
+  "riddle",
+  "anagram",
+];
+const isEntryKind = (kind: PuzzleKind): kind is EntryKind =>
+  ENTRY_KINDS.includes(kind);
+const wordLines = (text: string) =>
+  text
+    .split("\n")
+    .map((w) => w.trim())
+    .filter(Boolean);
+
+/** The data the current draft makes, and what did not fit (grids only). */
+const arrange = (draft: Draft): { data: unknown; left: string[] } => {
+  if (isEntryKind(draft.kind)) {
+    return { data: entriesData(draft.kind, draft.entries), left: [] };
+  }
+  if (draft.kind === "word_ladder") {
+    return { data: { words: wordLines(draft.words) }, left: [] };
+  }
   // The layout changes only when the editor asks for another one.
   const seed = `${draft.kind}-${draft.seed}`;
   if (draft.kind === "crossword") {
@@ -131,6 +163,23 @@ const fromRow = (row: {
     words?: { label: string }[];
   };
   const kind = row.kind as PuzzleKind;
+  if (!GRIDS.includes(kind)) {
+    return {
+      ...blank,
+      entries: entriesFrom(row.data),
+      id: row.id,
+      kind,
+      language: row.language as GameLang,
+      note: { ar: row.note_ar ?? "", en: row.note_en ?? "" },
+      published: row.status === "published",
+      slug: row.slug,
+      title: { ar: row.title_ar, en: row.title_en },
+      words:
+        kind === "word_ladder"
+          ? ((row.data as { words?: string[] } | null)?.words ?? []).join("\n")
+          : "",
+    };
+  }
   return {
     ...blank,
     backward: data.backward ?? false,
@@ -151,6 +200,43 @@ const fromRow = (row: {
       "\n"
     ),
   };
+};
+
+/** The fields of a quiz, name the book, riddles, anagrams or a ladder. */
+const NewKindFields = ({
+  draft,
+  set,
+}: {
+  readonly draft: Draft;
+  readonly set: (patch: Partial<Draft>) => void;
+}) => {
+  const t = useTranslations("nexus.admin.waraq.games");
+  if (isEntryKind(draft.kind)) {
+    return (
+      <PuzzleEntries
+        entries={draft.entries}
+        kind={draft.kind}
+        lang={draft.language}
+        onChange={(entries) => set({ entries })}
+      />
+    );
+  }
+  if (draft.kind !== "word_ladder") {
+    return null;
+  }
+  return (
+    <Field hint={t("ladderHint")} label={t("ladder")}>
+      {(id) => (
+        <Textarea
+          dir={draft.language === "ar" ? "rtl" : "ltr"}
+          id={id}
+          onChange={(e) => set({ words: e.target.value })}
+          rows={8}
+          value={draft.words}
+        />
+      )}
+    </Field>
+  );
 };
 
 // ── The list ────────────────────────────────────────────────────────────────
@@ -277,7 +363,10 @@ const PuzzleForm = ({ initial }: { initial: Draft }) => {
   const [draft, setDraft] = useState(initial);
   const [saved, setSaved] = useState(false);
   const { data, left } = arrange(draft);
-  const valid = data ? parsePuzzle(draft.kind, data) !== null : false;
+  const valid = data
+    ? parsePuzzle(draft.kind, data, draft.language) !== null
+    : false;
+  const grid = GRIDS.includes(draft.kind);
   const titled = Boolean(draft.title.en.trim() || draft.title.ar.trim());
 
   const set = (patch: Partial<Draft>) => {
@@ -292,15 +381,17 @@ const PuzzleForm = ({ initial }: { initial: Draft }) => {
         slugify(draft.title.en) ||
         `puzzle-${Date.now().toString(36)}`;
       const row = {
-        data: {
-          ...(data ?? {}),
-          backward: draft.backward,
-          seed: draft.seed,
-          source:
-            draft.kind === "crossword"
-              ? { items: draft.items }
-              : { words: draft.words.split("\n").filter((w) => w.trim()) },
-        } as unknown as NonNullable<Json>,
+        data: (grid
+          ? {
+              ...(data ?? {}),
+              backward: draft.backward,
+              seed: draft.seed,
+              source:
+                draft.kind === "crossword"
+                  ? { items: draft.items }
+                  : { words: draft.words.split("\n").filter((w) => w.trim()) },
+            }
+          : (data ?? {})) as unknown as NonNullable<Json>,
         kind: draft.kind,
         language: draft.language,
         note_ar: draft.note.ar.trim() || null,
@@ -415,6 +506,7 @@ const PuzzleForm = ({ initial }: { initial: Draft }) => {
         )}
       </Field>
 
+      <NewKindFields draft={draft} set={set} />
       {draft.kind === "crossword" ? (
         <fieldset className="grid gap-3">
           <legend className="mb-2 font-medium text-sm">{t("clues")}</legend>
@@ -479,7 +571,8 @@ const PuzzleForm = ({ initial }: { initial: Draft }) => {
             {t("addClue")}
           </Button>
         </fieldset>
-      ) : (
+      ) : null}
+      {draft.kind === "word_search" ? (
         <div className="grid gap-4">
           <Field hint={t("wordsHint")} label={t("words")}>
             {(id) => (
@@ -520,26 +613,39 @@ const PuzzleForm = ({ initial }: { initial: Draft }) => {
             </label>
           </div>
         </div>
-      )}
+      ) : null}
 
       <section className="grid gap-3">
-        <h2 className="font-medium text-sm">{t("preview")}</h2>
-        <Preview data={data} lang={draft.language} />
+        {grid ? (
+          <>
+            <h2 className="font-medium text-sm">{t("preview")}</h2>
+            <Preview
+              data={data as Crossword | WordSearch | null}
+              lang={draft.language}
+            />
+          </>
+        ) : null}
         {left.length > 0 ? (
           <p className="text-sm text-text" role="alert">
             {t("left", { words: left.join("، ") })}
           </p>
         ) : null}
-        {valid ? null : <p className="type-caption">{t("needsMore")}</p>}
-        <Button
-          className="justify-self-start"
-          onClick={() => set({ seed: draft.seed + 1 })}
-          size="sm"
-          type="button"
-          variant="outline"
-        >
-          {t("shuffle")}
-        </Button>
+        {valid ? null : (
+          <p className="type-caption">
+            {grid ? t("needsMore") : t(`needs.${draft.kind as "quiz"}`)}
+          </p>
+        )}
+        {grid ? (
+          <Button
+            className="justify-self-start"
+            onClick={() => set({ seed: draft.seed + 1 })}
+            size="sm"
+            type="button"
+            variant="outline"
+          >
+            {t("shuffle")}
+          </Button>
+        ) : null}
       </section>
 
       <div className="flex flex-wrap items-center gap-2">

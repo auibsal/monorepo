@@ -5,7 +5,10 @@ import { games, localized } from "@repo/sal-data";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { AnswersGame } from "@/components/games/answers";
+import { ChoicesGame } from "@/components/games/choices";
 import { CrosswordGame } from "@/components/games/crossword";
+import { LadderGame } from "@/components/games/ladder";
 import { WordSearchGame } from "@/components/games/word-search";
 import { Nameplate } from "@/components/waraq/nameplate";
 import { localizedMetadata } from "@/lib/metadata";
@@ -33,7 +36,34 @@ export const generateMetadata = async ({
   });
 };
 
-/** A crossword or word search written by Waraq's editors. */
+type Puzzle = NonNullable<Awaited<ReturnType<typeof read>>>;
+
+/** The player for each kind of puzzle. */
+const PuzzleGame = ({ puzzle }: { readonly puzzle: Puzzle }) => {
+  const common = { lang: puzzle.language, storageKey: puzzle.id };
+  switch (puzzle.kind) {
+    case "crossword":
+      return <CrosswordGame crossword={puzzle.data} {...common} />;
+    case "word_search":
+      return <WordSearchGame search={puzzle.data} {...common} />;
+    case "quiz":
+    case "name_the_book":
+      return <ChoicesGame kind={puzzle.kind} quiz={puzzle.data} {...common} />;
+    case "riddle":
+      return <AnswersGame kind="riddle" puzzle={puzzle.data} {...common} />;
+    case "anagram":
+      return <AnswersGame kind="anagram" puzzle={puzzle.data} {...common} />;
+    case "word_ladder":
+      return <LadderGame ladder={puzzle.data} {...common} />;
+    default:
+      return null;
+  }
+};
+
+/**
+ * A puzzle written by Qirtas's editors: a crossword, a word search, a quiz,
+ * a word ladder, riddles, anagrams or name the book (A17).
+ */
 const PuzzlePage = async ({ params }: PuzzleProps) => {
   const { locale, slug } = await params;
   setRequestLocale(locale);
@@ -64,19 +94,7 @@ const PuzzlePage = async ({ params }: PuzzleProps) => {
           <p className="type-caption">{t("aiMade")}</p>
         ) : null}
       </header>
-      {puzzle.kind === "crossword" ? (
-        <CrosswordGame
-          crossword={puzzle.data}
-          lang={puzzle.language}
-          storageKey={puzzle.id}
-        />
-      ) : (
-        <WordSearchGame
-          lang={puzzle.language}
-          search={puzzle.data}
-          storageKey={puzzle.id}
-        />
-      )}
+      <PuzzleGame puzzle={puzzle} />
     </div>
   );
 };
