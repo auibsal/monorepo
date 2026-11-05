@@ -68,6 +68,8 @@ const en = {
     site: "auibsal.org",
     unlink: "Unlink Telegram",
     word: "Daily word",
+    wordOff: "Daily word here: off",
+    wordOn: "Daily word here: on",
   },
   by: (author: string) => `by ${author}`,
   commands: {
@@ -198,6 +200,8 @@ const en = {
   waraqTitle: "<b>New in Qirtas</b>",
 
   when: (date: string, time: string) => `${date} · ${time}`,
+  wordOff: "No more daily word here.",
+  wordOn: "Each day's word will come here at 9:00 AM.",
   wordOpen: "Today's word opens right here in Telegram.",
 } as const;
 
@@ -252,6 +256,8 @@ const ar: Copy = {
     site: "auibsal.org",
     unlink: "افصل تيليغرام",
     word: "كلمة اليوم",
+    wordOff: "كلمة اليوم هنا: مطفية",
+    wordOn: "كلمة اليوم هنا: شغّالة",
   },
   by: (author: string) => `بقلم ${author}`,
   commands: {
@@ -373,6 +379,8 @@ const ar: Copy = {
   waraqTitle: "<b>الجديد بقرطاس</b>",
 
   when: (date: string, time: string) => `${date} · ${time}`,
+  wordOff: "ما راح توصلك كلمة اليوم هنا بعد.",
+  wordOn: "كل يوم الساعة 9:00 الصبح توصلك كلمة اليوم هنا.",
   wordOpen: "كلمة اليوم تنفتح هنا بتيليغرام.",
 };
 

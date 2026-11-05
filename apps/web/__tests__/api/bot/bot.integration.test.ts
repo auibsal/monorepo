@@ -214,6 +214,24 @@ describe.skipIf(!enabled)("Hudhud", () => {
     expect(lastText()).toContain("expired or was already used");
   });
 
+  test("sends the daily word to a member who turned it on, once", async () => {
+    await bot.handleUpdate(press("word:on"));
+    expect(String(sent("answerCallbackQuery").at(-1)?.payload.text)).toContain(
+      "9:00 AM"
+    );
+    const morning = new Date();
+    morning.setUTCHours(6, 0, 0, 0);
+    const before = sent().length;
+    await runFeeds(bot.api, "sal_test_bot", morning);
+    await runFeeds(bot.api, "sal_test_bot", morning);
+    const words = sent()
+      .slice(before)
+      .filter((call) => call.payload.chat_id === tgUser);
+    expect(words).toHaveLength(1);
+    expect(String(words[0]?.payload.text)).toContain("Word No.");
+    await bot.handleUpdate(press("word:off"));
+  });
+
   test("lists events and RSVPs as the member", async () => {
     await bot.handleUpdate(message("/events"));
     expect(lastText()).toContain(`Telegram Evening ${stamp}`);

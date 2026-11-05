@@ -15,7 +15,8 @@ import { staffPosts } from "./staff";
  * What the bot posts to connected groups, every ten minutes (pg_cron calls
  * /cron/telegram): new public events (to the events topic), a "starting soon"
  * reply to each event's post three hours before, new Qirtas pieces, and the
- * daily word at 9:00 AM Baghdad time. Each post is claimed in
+ * daily word at 9:00 AM Baghdad time, to groups and to members who asked
+ * for it in their chat with Hudhud (/me). Each post is claimed in
  * core.telegram_posts before it is sent, so overlapping runs never post
  * twice; a failed send gives the claim back for the next run.
  */
@@ -26,6 +27,7 @@ const NEW_EVENT_WINDOW = 45 * 24 * HOUR;
 const NEW_PIECE_WINDOW = 72 * HOUR;
 const MAX_PER_RUN = 3;
 const WORD_HOUR = 9;
+const DIRECT_WORDS_PER_RUN = 25;
 
 export type Kind =
   | "event"
@@ -301,14 +303,92 @@ const dailyWord = (run: Run) => {
   );
 };
 
+/**
+ * The daily word in a member's own chat, for those who turned it on and
+ * keep notices here on. Each chat is claimed for the day
+ * (`telegram_accounts.word_sent_on`) before sending, so overlapping runs
+ * never send it twice; a member who blocked the bot has their notices
+ * turned off.
+ */
+const dailyWordDirect = async (api: Api, username: string, now: Date) => {
+  if (baghdadHour(now) < WORD_HOUR) {
+    return 0;
+  }
+  const day = gameDay(now);
+  const today = baghdadDate(now);
+  const accounts = () => db().schema("core").from("telegram_accounts");
+  const { data: due } = await accounts()
+    .select("telegram_id, user_id, word_sent_on")
+    .eq("daily_word", true)
+    .eq("notify", true)
+    .or(`word_sent_on.is.null,word_sent_on.lt.${today}`);
+  if (!due?.length) {
+    return 0;
+  }
+  const { data: profiles } = await db()
+    .schema("core")
+    .from("profiles")
+    .select("id, locale")
+    .in(
+      "id",
+      due.map((a) => a.user_id)
+    );
+  const send = async (account: (typeof due)[number]) => {
+    const chat = account.telegram_id;
+    const { data: claimed } = await accounts()
+      .update({ word_sent_on: today })
+      .eq("telegram_id", chat)
+      .or(`word_sent_on.is.null,word_sent_on.lt.${today}`)
+      .select("telegram_id");
+    if (!claimed?.length) {
+      return false;
+    }
+    const lang: Lang =
+      profiles?.find((p) => p.id === account.user_id)?.locale === "ar"
+        ? "ar"
+        : "en";
+    try {
+      await api.sendMessage(
+        chat,
+        copy[lang].postWord(String(gameNumber(day))),
+        {
+          parse_mode: "HTML",
+          reply_markup: new InlineKeyboard().url(
+            copy[lang].buttons.play,
+            mainApp(username)
+          ),
+        }
+      );
+      return true;
+    } catch (error) {
+      const blocked = error instanceof GrammyError && error.error_code === 403;
+      await accounts()
+        .update(
+          blocked ? { notify: false } : { word_sent_on: account.word_sent_on }
+        )
+        .eq("telegram_id", chat);
+      if (!(error instanceof GrammyError)) {
+        throw error;
+      }
+      return false;
+    }
+  };
+  // A few dozen a run, well within Telegram's limits; the rest next run.
+  return sequence(
+    due.map((account) => () => send(account)),
+    DIRECT_WORDS_PER_RUN
+  );
+};
+
 export const runFeeds = async (
   api: Api,
   username: string,
   now = new Date()
 ): Promise<FeedResult> => {
+  const direct = await dailyWordDirect(api, username, now);
   const connected = await groups();
   if (!connected.length) {
-    return { groups: 0, posted: 0 };
+    return { groups: 0, posted: direct };
   }
   const [upcoming, pieces] = await Promise.all([
     publicEvents(anon(), { from: now, limit: 20 }),
@@ -331,7 +411,7 @@ export const runFeeds = async (
   );
   return {
     groups: connected.length,
-    posted: counts.reduce((sum, n) => sum + n, 0),
+    posted: counts.reduce((sum, n) => sum + n, direct),
   };
 };
 
@@ -342,3 +422,10 @@ const hourFormat = new Intl.DateTimeFormat("en-US", {
 });
 
 export const baghdadHour = (date: Date) => Number(hourFormat.format(date));
+
+const dateFormat = new Intl.DateTimeFormat("en-CA", {
+  timeZone: "Asia/Baghdad",
+});
+
+/** The day in Baghdad, as yyyy-mm-dd. */
+export const baghdadDate = (date: Date) => dateFormat.format(date);
