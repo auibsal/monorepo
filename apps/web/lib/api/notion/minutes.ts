@@ -7,6 +7,7 @@ import {
   linksOf,
   outOfTime,
   problem,
+  recordFor,
   type SyncContext,
   saveLink,
 } from "./context";
@@ -20,6 +21,8 @@ import { bodyOf, editorEmail, NO_EMAIL, stamp } from "./publish";
  * minutes, where the Council adopts them. Once adopted, the official copy
  * is locked (the database refuses any change to adopted minutes), and the
  * Notion page says so. Until then, editing the page updates the draft.
+ * The meeting itself is an event (owner, Nov 5, 2026): Event links its row
+ * in Events, and the minutes point at it in the Diwan.
  */
 
 const IN_THE_DIWAN = "Minutes in the Diwan";
@@ -53,10 +56,29 @@ const refuse = async (
 
 interface Draft {
   body: "council" | "general_assembly";
+  event_id: string | null;
   meeting_on: string;
   text_en: string;
   title_en: string;
 }
+
+/** The meeting event's day in Baghdad (the database sets it again). */
+const eventDay = async (ctx: SyncContext, eventId: string | null) => {
+  if (!eventId) {
+    return null;
+  }
+  const { data } = await ctx.admin
+    .schema("events")
+    .from("events")
+    .select("starts_at")
+    .eq("id", eventId)
+    .maybeSingle();
+  return data
+    ? new Date(data.starts_at).toLocaleDateString("en-CA", {
+        timeZone: "Asia/Baghdad",
+      })
+    : null;
+};
 
 /** What the page holds, or what is missing. */
 const readDraft = async (
@@ -70,9 +92,21 @@ const readDraft = async (
       "Only Council and General Assembly minutes go to the Diwan: set Body."
     );
   }
+  // A meeting is an event (owner, Nov 5, 2026): link its row in Events,
+  // published in the Diwan, and its day sets the meeting's date.
+  const linked = read.relation(page, "Event");
+  if (linked.length > 1) {
+    problems.push("Link one meeting event in Event.");
+  }
+  const eventId = linked[0] ? await recordFor(ctx, "event", linked[0]) : null;
+  if (linked[0] && !eventId) {
+    problems.push(
+      "Publish the meeting's event (Event) first; its day becomes the meeting's date."
+    );
+  }
   const meetingOn = read.date(page, "When")?.start?.slice(0, 10) ?? null;
-  if (!meetingOn) {
-    problems.push("Set When to the day of the meeting.");
+  if (!(meetingOn || eventId)) {
+    problems.push("Link the meeting's event in Event, or set When to its day.");
   }
   const title = read.text(page, "Name");
   if (!title) {
@@ -82,11 +116,18 @@ const readDraft = async (
   if (body && !text) {
     problems.push("Write the minutes in the page.");
   }
-  if (problems.length > 0 || !(body && meetingOn && text)) {
+  const day = meetingOn ?? (await eventDay(ctx, eventId));
+  if (problems.length > 0 || !(body && day && text)) {
     return { problems };
   }
   return {
-    draft: { body, meeting_on: meetingOn, text_en: text, title_en: title },
+    draft: {
+      body,
+      event_id: eventId,
+      meeting_on: day,
+      text_en: text,
+      title_en: title,
+    },
   };
 };
 

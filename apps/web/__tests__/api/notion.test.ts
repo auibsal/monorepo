@@ -112,34 +112,55 @@ describe("Notion values", () => {
 });
 
 describe("publishing rules", () => {
-  const programmes = new Map([["aaaaaaaabbbbccccddddeeeeeeeeeeee", "prog-1"]]);
+  const wayIn = (name: string) => ({ select: { name }, type: "select" });
 
-  test("a complete event passes, with its program mapped to the Diwan", () => {
+  test("a complete event passes", () => {
     const result = checkEvent(
       page({
         Capacity: { number: 40, type: "number" },
-        Program: {
-          relation: [{ id: "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee" }],
-          type: "relation",
-        },
         Summary: text("Bring a poem."),
         Title: title("Open Pages"),
+        "Way in": wayIn("RSVP"),
         When: when(
           "2026-10-20T18:00:00.000+03:00",
           "2026-10-20T20:00:00.000+03:00"
         ),
-      }),
-      programmes
+      })
     );
     expect(result).toMatchObject({
       ok: true,
       values: {
         capacity: 40,
         ends_at: "2026-10-20T17:00:00.000Z",
-        programme_id: "prog-1",
+        entry: "rsvp",
         slug: "open-pages",
         starts_at: "2026-10-20T15:00:00.000Z",
       },
+    });
+  });
+
+  test("an event's way in and off campus come from the row", () => {
+    const base = {
+      Title: title("Council meeting"),
+      When: when("2026-11-10T16:00:00.000+03:00"),
+    };
+    const check = (properties: Props) =>
+      checkEvent(page({ ...base, ...properties }));
+    expect(check({ "Way in": wayIn("Private") })).toMatchObject({
+      values: { entry: "invite", off_campus: false },
+    });
+    expect(check({ "Way in": wayIn("Open") })).toMatchObject({
+      values: { entry: "open" },
+    });
+    expect(
+      check({
+        "Off campus": { checkbox: true, type: "checkbox" },
+        "Way in": wayIn("Open"),
+      })
+    ).toMatchObject({ values: { off_campus: true } });
+    expect(check({})).toMatchObject({
+      ok: false,
+      problems: ["Set Way in: Open, RSVP or Private."],
     });
   });
 
@@ -149,8 +170,7 @@ describe("publishing rules", () => {
         Summary: text("Bring a poem."),
         Title: title("أمسية"),
         When: when("2026-10-20"),
-      }),
-      programmes
+      })
     );
     expect(result.ok).toBe(false);
     const problems = result.ok ? [] : result.problems;

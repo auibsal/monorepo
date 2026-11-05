@@ -13,9 +13,9 @@ import { read, SLUG, slugify, toInstant } from "./props";
 export interface EventValues {
   capacity: number | null;
   ends_at: string | null;
+  entry: "invite" | "open" | "rsvp";
   members_only: boolean;
-  programme_id: string | null;
-  rsvp_enabled: boolean;
+  off_campus: boolean;
   slug: string;
   starts_at: string;
   summary_en: string | null;
@@ -38,24 +38,23 @@ const slugFor = (page: NotionPage, title: string) => {
 };
 
 /** The Company's or the Tour's row a page is linked to, as a Diwan id, if any. */
-const programmeFor = (
-  page: NotionPage,
-  programmes: ReadonlyMap<string, string>,
-  problems: string[]
-) => {
-  const linked = read
-    .relation(page, "Program")
-    .map((pageId) => pageId.replaceAll("-", ""));
-  if (linked.length > 1) {
-    problems.push("Link at most one series.");
+/**
+ * The event's way in (owner, Nov 5, 2026): Open (just come), RSVP (book a
+ * place) or Private (invited only, such as a Council meeting).
+ */
+const WAYS_IN = {
+  Open: "open",
+  Private: "invite",
+  RSVP: "rsvp",
+} as const;
+
+const wayIn = (page: NotionPage, problems: string[]) => {
+  const chosen = read.select(page, "Way in") ?? "";
+  if (chosen in WAYS_IN) {
+    return WAYS_IN[chosen as keyof typeof WAYS_IN];
   }
-  const [first] = linked;
-  if (!first) {
-    return null;
-  }
-  // A link to a former series is ignored (owner, Nov 5, 2026: every event
-  // is a standard event); only the Company's and the Tour's rows count.
-  return programmes.get(first) ?? null;
+  problems.push("Set Way in: Open, RSVP or Private.");
+  return "open";
 };
 
 const slugProblems = (slug: string) =>
@@ -90,10 +89,7 @@ const englishTitle = (page: NotionPage, problems: string[]) => {
   return title;
 };
 
-export const checkEvent = (
-  page: NotionPage,
-  programmes: ReadonlyMap<string, string>
-): Checked<EventValues> => {
+export const checkEvent = (page: NotionPage): Checked<EventValues> => {
   const problems: string[] = [];
   const titleEn = englishTitle(page, problems);
   const when = read.date(page, "When");
@@ -118,7 +114,7 @@ export const checkEvent = (
   }
   const slug = slugFor(page, titleEn);
   problems.push(...slugProblems(slug));
-  const programmeId = programmeFor(page, programmes, problems);
+  const entry = wayIn(page, problems);
 
   if (problems.length > 0 || !startsAt) {
     return { ok: false, problems };
@@ -128,9 +124,9 @@ export const checkEvent = (
     values: {
       capacity,
       ends_at: endsAt,
+      entry,
       members_only: read.checkbox(page, "Members only"),
-      programme_id: programmeId,
-      rsvp_enabled: read.checkbox(page, "RSVPs open"),
+      off_campus: read.checkbox(page, "Off campus"),
       slug,
       starts_at: startsAt,
       summary_en: optional(summaryEn),
