@@ -1,7 +1,7 @@
-import { Service } from "@/components/nexus/service/service";
-import { titleFrom } from "@/lib/nexus/metadata";
+import { Service } from "@/components/diwan/service/service";
+import { titleFrom } from "@/lib/diwan/metadata";
 
-export const generateMetadata = titleFrom((t) => t("nexus.service.title"));
+export const generateMetadata = titleFrom((t) => t("diwan.service.title"));
 
 const ServicePage = () => <Service />;
 

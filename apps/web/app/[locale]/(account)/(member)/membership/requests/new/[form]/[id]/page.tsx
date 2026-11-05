@@ -1,7 +1,7 @@
-import { FillForm } from "@/components/nexus/forms/fill";
-import { titleFrom } from "@/lib/nexus/metadata";
+import { FillForm } from "@/components/diwan/forms/fill";
+import { titleFrom } from "@/lib/diwan/metadata";
 
-export const generateMetadata = titleFrom((t) => t("nexus.forms.fillTitle"));
+export const generateMetadata = titleFrom((t) => t("diwan.forms.fillTitle"));
 
 /** A draft request, carried on: /membership/requests/new/<kind>/<id>. */
 const DraftPage = async ({

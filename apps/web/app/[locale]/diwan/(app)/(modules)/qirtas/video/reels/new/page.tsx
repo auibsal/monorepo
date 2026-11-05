@@ -1,9 +1,9 @@
-import { RequireModule } from "@/components/nexus/admin/admin-shell";
-import { NewReelPage } from "@/components/nexus/admin/programmes/admin";
-import { titleFrom } from "@/lib/nexus/metadata";
+import { RequireModule } from "@/components/diwan/admin/admin-shell";
+import { NewReelPage } from "@/components/diwan/admin/programmes/admin";
+import { titleFrom } from "@/lib/diwan/metadata";
 
 export const generateMetadata = titleFrom((t) =>
-  t("nexus.admin.programmes.reels.new")
+  t("diwan.admin.programmes.reels.new")
 );
 
 /** A new Next Stop reel, on its own page under Video. */

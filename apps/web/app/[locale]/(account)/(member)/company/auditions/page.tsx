@@ -1,7 +1,7 @@
-import { Productions } from "@/components/nexus/productions/productions";
-import { titleFrom } from "@/lib/nexus/metadata";
+import { Productions } from "@/components/diwan/productions/productions";
+import { titleFrom } from "@/lib/diwan/metadata";
 
-export const generateMetadata = titleFrom((t) => t("nexus.productions.title"));
+export const generateMetadata = titleFrom((t) => t("diwan.productions.title"));
 
 const ProductionsPage = () => <Productions />;
 

@@ -1,10 +1,10 @@
 import { Suspense } from "react";
-import { ViewForm } from "@/components/nexus/forms/view";
-import { RouteParamsProvider } from "@/components/nexus/record-ref";
-import { SectionSpinner } from "@/components/nexus/states";
-import { titleFrom } from "@/lib/nexus/metadata";
+import { ViewForm } from "@/components/diwan/forms/view";
+import { RouteParamsProvider } from "@/components/diwan/record-ref";
+import { SectionSpinner } from "@/components/diwan/states";
+import { titleFrom } from "@/lib/diwan/metadata";
 
-export const generateMetadata = titleFrom((t) => t("nexus.forms.viewTitle"));
+export const generateMetadata = titleFrom((t) => t("diwan.forms.viewTitle"));
 
 const Page = async ({
   params,

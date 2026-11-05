@@ -1,11 +1,11 @@
 import { Suspense } from "react";
-import { RequireModule } from "@/components/nexus/admin/admin-shell";
-import { IssueEditor } from "@/components/nexus/admin/journal/editors";
-import { SectionSpinner } from "@/components/nexus/states";
-import { titleFrom } from "@/lib/nexus/metadata";
+import { RequireModule } from "@/components/diwan/admin/admin-shell";
+import { IssueEditor } from "@/components/diwan/admin/journal/editors";
+import { SectionSpinner } from "@/components/diwan/states";
+import { titleFrom } from "@/lib/diwan/metadata";
 
 export const generateMetadata = titleFrom((t) =>
-  t("nexus.admin.journal.tabs.issues")
+  t("diwan.admin.journal.tabs.issues")
 );
 
 const Page = () => (

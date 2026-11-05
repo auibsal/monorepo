@@ -1,5 +1,5 @@
 // Supabase keeps the session in a cookie named sb-<project>-auth-token
-// (split into .0, .1, … when long). The public pages and the Nexus share one
+// (split into .0, .1, … when long). The public pages and the Diwan share one
 // origin, so the site can tell a signed-in visitor without a request. A check
 // for the page, never for access: Row Level Security decides what anyone may
 // read.

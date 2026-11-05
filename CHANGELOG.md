@@ -15,6 +15,8 @@ own versions in the Library.
   confirmed or checked in together.
 - An event run with a partner shares a checklist with the partner's team,
   who see their joint events on their dashboard.
+- The code takes the current names: Diwan and Qirtas in place of Nexus
+  and Waraq (the database keeps its own).
 - About tells how the Society began, a dated line each; the page-not-found
   page carries a line of al-Mutanabbi's; members can keep or print their
   year at the Society from Record.

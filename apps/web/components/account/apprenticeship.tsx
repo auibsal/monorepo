@@ -2,7 +2,7 @@
 
 import { Link } from "@repo/internationalization/navigation";
 import { useTranslations } from "next-intl";
-import { DiwanPage, DiwanSection, RowList } from "@/components/nexus/page";
+import { DiwanPage, DiwanSection, RowList } from "@/components/diwan/page";
 
 const POINTS = ["term", "mentor", "hours", "certificate", "apply"] as const;
 
@@ -15,7 +15,7 @@ const POINTS = ["term", "mentor", "hours", "certificate", "apply"] as const;
  * involved.
  */
 export const Apprenticeship = () => {
-  const t = useTranslations("nexus.apprenticeship");
+  const t = useTranslations("diwan.apprenticeship");
   return (
     <DiwanPage lede={t("lede")} narrow title={t("title")}>
       <DiwanSection id="how" title={t("howTitle")}>

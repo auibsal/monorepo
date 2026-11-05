@@ -3,7 +3,7 @@ import { formatMonth } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { archiveMonths } from "@/components/waraq/archive";
+import { archiveMonths } from "@/components/qirtas/archive";
 import { localizedMetadata } from "@/lib/metadata";
 import { monthFrom } from "@/lib/whats-on";
 

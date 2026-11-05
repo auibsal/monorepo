@@ -1,5 +1,5 @@
-import { SavedReadingPage } from "@/components/nexus/home/saved-reading";
-import { titleFrom } from "@/lib/nexus/metadata";
+import { SavedReadingPage } from "@/components/diwan/home/saved-reading";
+import { titleFrom } from "@/lib/diwan/metadata";
 
 export const generateMetadata = titleFrom((t) => t("web.journal.saved.title"));
 

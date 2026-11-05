@@ -1,8 +1,8 @@
-import { PartnerProfile } from "@/components/nexus/partner/workspace";
-import { titleFrom } from "@/lib/nexus/metadata";
+import { PartnerProfile } from "@/components/diwan/partner/workspace";
+import { titleFrom } from "@/lib/diwan/metadata";
 
 export const generateMetadata = titleFrom((t) =>
-  t("nexus.partnerDesk.tabs.profile")
+  t("diwan.partnerDesk.tabs.profile")
 );
 
 const Page = () => <PartnerProfile />;

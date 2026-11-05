@@ -3,12 +3,12 @@
 import { useAuth } from "@repo/auth/provider";
 import { Link } from "@repo/internationalization/navigation";
 import { useTranslations } from "next-intl";
+import { RequireMember } from "@/components/diwan/gates";
+import { DiwanPage } from "@/components/diwan/page";
+import { PlacesBoard } from "@/components/diwan/programmes/places-board";
+import { PageSpinner } from "@/components/diwan/states";
 import { ManageLinks } from "@/components/manage-links";
-import { RequireMember } from "@/components/nexus/gates";
-import { DiwanPage } from "@/components/nexus/page";
-import { PlacesBoard } from "@/components/nexus/programmes/places-board";
-import { PageSpinner } from "@/components/nexus/states";
-import { useMyMembership } from "@/lib/nexus/queries";
+import { useMyMembership } from "@/lib/diwan/queries";
 import { OpenPlaces } from "./open-places";
 
 /**
@@ -19,8 +19,8 @@ import { OpenPlaces } from "./open-places";
  * and sign up for shifts, with what matches their skills first.
  */
 export const GetInvolved = () => {
-  const t = useTranslations("nexus.getInvolved");
-  const ta = useTranslations("nexus.apprenticeship");
+  const t = useTranslations("diwan.getInvolved");
+  const ta = useTranslations("diwan.apprenticeship");
   const { loading, user } = useAuth();
   const mine = useMyMembership();
 

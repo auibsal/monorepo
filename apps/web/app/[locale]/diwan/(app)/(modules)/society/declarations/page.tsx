@@ -1,9 +1,9 @@
-import { RequireModule } from "@/components/nexus/admin/admin-shell";
-import { SocietyView } from "@/components/nexus/admin/governance/admin";
-import { titleFrom } from "@/lib/nexus/metadata";
+import { RequireModule } from "@/components/diwan/admin/admin-shell";
+import { SocietyView } from "@/components/diwan/admin/governance/admin";
+import { titleFrom } from "@/lib/diwan/metadata";
 
 export const generateMetadata = titleFrom((t) =>
-  t("nexus.admin.society.declarations.title")
+  t("diwan.admin.society.declarations.title")
 );
 
 /** Officers' conflict-of-interest declarations (they were under Partners). */

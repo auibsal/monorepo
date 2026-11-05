@@ -1,7 +1,7 @@
-import { EventOrProgram } from "@/components/nexus/admin/events/event-or-program";
-import { titleFrom } from "@/lib/nexus/metadata";
+import { EventOrProgram } from "@/components/diwan/admin/events/event-or-program";
+import { titleFrom } from "@/lib/diwan/metadata";
 
-export const generateMetadata = titleFrom((t) => t("nexus.admin.events.title"));
+export const generateMetadata = titleFrom((t) => t("diwan.admin.events.title"));
 
 /**
  * One address for an event or a program (owner, Oct 31, 2026: What's on is

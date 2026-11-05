@@ -12,18 +12,18 @@ import {
   PieceCardView,
   PieceColumn,
   pieceHref,
-} from "@/components/waraq/cards";
+} from "@/components/qirtas/cards";
 import { mediaUrl } from "@/lib/media";
 import { localizedMetadata } from "@/lib/metadata";
 import { readPublished } from "@/lib/supabase";
 
-interface WaraqProps {
+interface QirtasProps {
   readonly params: Promise<{ locale: Locale }>;
 }
 
 export const generateMetadata = async ({
   params,
-}: WaraqProps): Promise<Metadata> => {
+}: QirtasProps): Promise<Metadata> => {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "web.journal" });
   return localizedMetadata(locale, "/qirtas", {
@@ -128,7 +128,7 @@ const News = async ({
   );
 };
 
-const WaraqFrontPage = async ({ params }: WaraqProps) => {
+const QirtasFrontPage = async ({ params }: QirtasProps) => {
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "web.journal" });
@@ -194,7 +194,7 @@ const WaraqFrontPage = async ({ params }: WaraqProps) => {
   const sixWordsBody = sixWords[0]
     ? await readPublished(
         ["journal"],
-        (c) => journal.waraqPiece(c, sixWords[0]?.slug ?? ""),
+        (c) => journal.qirtasPiece(c, sixWords[0]?.slug ?? ""),
         null
       )
     : null;
@@ -384,4 +384,4 @@ const WaraqFrontPage = async ({ params }: WaraqProps) => {
   );
 };
 
-export default WaraqFrontPage;
+export default QirtasFrontPage;

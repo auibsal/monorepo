@@ -179,7 +179,7 @@
     "auibEmail": "Your AUIB email",
     "auibEmailHint": "What comes before @auib.edu.iq: usually your ID number, or your name and ID number."
   },
-  "nexus": {
+  "diwan": {
     "nav": {
       "label": "Diwan",
       "home": "Home",
@@ -2586,7 +2586,7 @@
         "document": "This document is written in the team's Notion workspace (Publishing, Documents): its text comes from there.",
         "minutes": "These minutes are written in the team's Notion workspace (Work, Meetings) and come here when their Status is Minutes in the Diwan. Once adopted, this copy is locked."
       },
-      "waraq": {
+      "qirtas": {
         "title": "Qirtas",
         "lede": "The newsroom is where staff write and publish directly, a section at a time. What members send is read blind on the same pages; accepted work then joins its section like any other piece.",
         "tabs": {
@@ -3857,7 +3857,7 @@
         "lede": "In confidence. Your concern goes only to the people who must handle it, never to the person it is about."
       }
     },
-    "waraq": {
+    "qirtas": {
       "pieceTitle": "Your piece",
       "pieceNotFound": "This piece is not yours, or it does not exist.",
       "back": "Back to Qirtas",
@@ -4485,7 +4485,7 @@
       "pdf": "Download the print edition (PDF)",
       "membersOnly": "Members",
       "membersOnlyBody": "This piece is for members of the Society.",
-      "readInNexus": "Read it as a member",
+      "readInDiwan": "Read it as a member",
       "contributor": "Contributor",
       "work": "In Qirtas",
       "categories": {

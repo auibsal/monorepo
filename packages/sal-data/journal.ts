@@ -612,7 +612,7 @@ export const contributorBySlug = async (client: Client, slug: string) => {
   return { ...contributor, pieces };
 };
 
-// ── Waraq: the piece workflow ───────────────────────────────────────────────
+// ── Qirtas: the piece workflow ───────────────────────────────────────────────
 
 /** Editing → Author approved → Approved → Scheduled → Published (or Unpublished). */
 export const pieceStatuses = [
@@ -696,7 +696,7 @@ export const youtubeId = (url: string | null | undefined) => {
 export const deskQueue = async (client: Client) =>
   unwrap(await journal(client).rpc("desk_queue")) ?? [];
 
-// ── Waraq on auibsal.org ────────────────────────────────────────────────────
+// ── Qirtas on auibsal.org ────────────────────────────────────────────────────
 // Published rows only, whoever asks (RLS is still the boundary).
 
 const cardColumns =
@@ -778,7 +778,7 @@ export const editionPieces = async (client: Client, issueId: string) =>
   ) ?? [];
 
 /** A published piece in full: text, images, credits and corrections. */
-export const waraqPiece = async (client: Client, slug: string) => {
+export const qirtasPiece = async (client: Client, slug: string) => {
   const piece = unwrap(
     await journal(client)
       .from("pieces")

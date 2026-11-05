@@ -1,9 +1,9 @@
-import { RequireModule } from "@/components/nexus/admin/admin-shell";
-import { ProductionPage } from "@/components/nexus/admin/productions/admin";
-import { titleFrom } from "@/lib/nexus/metadata";
+import { RequireModule } from "@/components/diwan/admin/admin-shell";
+import { ProductionPage } from "@/components/diwan/admin/productions/admin";
+import { titleFrom } from "@/lib/diwan/metadata";
 
 export const generateMetadata = titleFrom((t) =>
-  t("nexus.admin.productions.title")
+  t("diwan.admin.productions.title")
 );
 
 /** A production on its own page, like its public page; new to propose one. */

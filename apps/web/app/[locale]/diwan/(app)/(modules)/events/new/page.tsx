@@ -1,11 +1,11 @@
 import { Suspense } from "react";
-import { RequireModule } from "@/components/nexus/admin/admin-shell";
-import { EventEditor } from "@/components/nexus/admin/events/editor";
-import { SectionSpinner } from "@/components/nexus/states";
-import { titleFrom } from "@/lib/nexus/metadata";
+import { RequireModule } from "@/components/diwan/admin/admin-shell";
+import { EventEditor } from "@/components/diwan/admin/events/editor";
+import { SectionSpinner } from "@/components/diwan/states";
+import { titleFrom } from "@/lib/diwan/metadata";
 
 export const generateMetadata = titleFrom((t) =>
-  t("nexus.admin.event.editTitle")
+  t("diwan.admin.event.editTitle")
 );
 
 const EventEditPage = () => (

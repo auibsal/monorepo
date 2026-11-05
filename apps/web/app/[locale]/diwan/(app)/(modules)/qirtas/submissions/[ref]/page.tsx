@@ -1,12 +1,12 @@
 import { Suspense } from "react";
-import { RequireModule } from "@/components/nexus/admin/admin-shell";
-import { SubmissionView } from "@/components/nexus/admin/pipeline/intake";
-import { RecordRef } from "@/components/nexus/record-ref";
-import { SectionSpinner } from "@/components/nexus/states";
-import { titleFrom } from "@/lib/nexus/metadata";
+import { RequireModule } from "@/components/diwan/admin/admin-shell";
+import { SubmissionView } from "@/components/diwan/admin/pipeline/intake";
+import { RecordRef } from "@/components/diwan/record-ref";
+import { SectionSpinner } from "@/components/diwan/states";
+import { titleFrom } from "@/lib/diwan/metadata";
 
 export const generateMetadata = titleFrom((t) =>
-  t("nexus.admin.pipeline.submission.title")
+  t("diwan.admin.pipeline.submission.title")
 );
 
 const Page = async ({

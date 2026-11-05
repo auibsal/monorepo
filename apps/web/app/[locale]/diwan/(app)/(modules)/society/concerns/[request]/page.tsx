@@ -1,9 +1,9 @@
-import { RequireModule } from "@/components/nexus/admin/admin-shell";
-import { RequestPage } from "@/components/nexus/admin/forms/admin";
-import { titleFrom } from "@/lib/nexus/metadata";
+import { RequireModule } from "@/components/diwan/admin/admin-shell";
+import { RequestPage } from "@/components/diwan/admin/forms/admin";
+import { titleFrom } from "@/lib/diwan/metadata";
 
 export const generateMetadata = titleFrom((t) =>
-  t("nexus.admin.forms.requestTitle")
+  t("diwan.admin.forms.requestTitle")
 );
 
 /** A concern, on its own page under its queue. */

@@ -1,6 +1,6 @@
 import type { Locale } from "@repo/internationalization";
 import type { ReactNode } from "react";
-import { Nameplate } from "@/components/waraq/nameplate";
+import { Nameplate } from "@/components/qirtas/nameplate";
 
 /**
  * The paper is printed on paper: every page of it on `paper`, under one

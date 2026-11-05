@@ -1,11 +1,11 @@
 import { Suspense } from "react";
-import { RequireModule } from "@/components/nexus/admin/admin-shell";
-import { MemberDetail } from "@/components/nexus/admin/members/member";
-import { RecordRef } from "@/components/nexus/record-ref";
-import { SectionSpinner } from "@/components/nexus/states";
-import { titleFrom } from "@/lib/nexus/metadata";
+import { RequireModule } from "@/components/diwan/admin/admin-shell";
+import { MemberDetail } from "@/components/diwan/admin/members/member";
+import { RecordRef } from "@/components/diwan/record-ref";
+import { SectionSpinner } from "@/components/diwan/states";
+import { titleFrom } from "@/lib/diwan/metadata";
 
-export const generateMetadata = titleFrom((t) => t("nexus.admin.member.title"));
+export const generateMetadata = titleFrom((t) => t("diwan.admin.member.title"));
 
 const MemberPage = async ({
   params,

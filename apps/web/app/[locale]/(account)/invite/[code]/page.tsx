@@ -1,8 +1,8 @@
 import { Invite } from "@/components/account/invite";
-import { titleFrom } from "@/lib/nexus/metadata";
+import { titleFrom } from "@/lib/diwan/metadata";
 
 export const generateMetadata = titleFrom((t) =>
-  t("nexus.partnerInvite.title")
+  t("diwan.partnerInvite.title")
 );
 
 const Page = async ({ params }: { params: Promise<{ code: string }> }) => {

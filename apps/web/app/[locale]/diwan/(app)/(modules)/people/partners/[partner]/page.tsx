@@ -1,9 +1,9 @@
-import { RequireModule } from "@/components/nexus/admin/admin-shell";
-import { PartnerPage } from "@/components/nexus/admin/partners/admin";
-import { titleFrom } from "@/lib/nexus/metadata";
+import { RequireModule } from "@/components/diwan/admin/admin-shell";
+import { PartnerPage } from "@/components/diwan/admin/partners/admin";
+import { titleFrom } from "@/lib/diwan/metadata";
 
 export const generateMetadata = titleFrom((t) =>
-  t("nexus.admin.partners.title")
+  t("diwan.admin.partners.title")
 );
 
 /** One partner in the register, by its slug, or new for a blank one. */

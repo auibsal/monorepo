@@ -4,8 +4,8 @@ import { Link } from "@repo/internationalization/navigation";
 import { journal, localized } from "@repo/sal-data";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { PieceCardView } from "@/components/waraq/cards";
-import { loadEpisodes } from "@/components/waraq/next-stop";
+import { PieceCardView } from "@/components/qirtas/cards";
+import { loadEpisodes } from "@/components/qirtas/next-stop";
 import { localizedMetadata } from "@/lib/metadata";
 import { readPublished } from "@/lib/supabase";
 

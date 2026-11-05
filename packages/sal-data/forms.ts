@@ -1,9 +1,9 @@
 import { type Client, unwrap } from "./client";
 
 /**
- * Forms filled in the Nexus (Templates & Forms, SAL-OPS-02). Each form's
+ * Forms filled in the Diwan (Templates & Forms, SAL-OPS-02). Each form's
  * fields are transcribed from the printed form; labels live in the
- * messages files under `nexus.forms.defs.<key>`. Who may fill a form in
+ * messages files under `diwan.forms.defs.<key>`. Who may fill a form in
  * and who handles it is `governance.form_types` (the database decides).
  */
 
@@ -498,7 +498,7 @@ export const forms: Record<FormKey, FormDefinition> = {
 };
 
 /**
- * Forms that live in their own part of the platform. Paths are Nexus
+ * Forms that live in their own part of the platform. Paths are Diwan
  * routes.
  */
 export const formsElsewhere = [

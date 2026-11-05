@@ -1,12 +1,12 @@
 import { Suspense } from "react";
-import { RequireModule } from "@/components/nexus/admin/admin-shell";
-import { CallPage } from "@/components/nexus/admin/pipeline/calls";
-import { RecordRef } from "@/components/nexus/record-ref";
-import { SectionSpinner } from "@/components/nexus/states";
-import { titleFrom } from "@/lib/nexus/metadata";
+import { RequireModule } from "@/components/diwan/admin/admin-shell";
+import { CallPage } from "@/components/diwan/admin/pipeline/calls";
+import { RecordRef } from "@/components/diwan/record-ref";
+import { SectionSpinner } from "@/components/diwan/states";
+import { titleFrom } from "@/lib/diwan/metadata";
 
 export const generateMetadata = titleFrom((t) =>
-  t("nexus.admin.pipeline.calls.title")
+  t("diwan.admin.pipeline.calls.title")
 );
 
 /** One of an Edition's calls, on its own page (new for a blank one). */

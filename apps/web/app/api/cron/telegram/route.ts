@@ -7,7 +7,7 @@ export const maxDuration = 60;
 
 /**
  * Every ten minutes (pg_cron `sal-telegram-posts`): the bot's posts to the
- * connected Telegram groups (new events, starting soon, Waraq, the daily
+ * connected Telegram groups (new events, starting soon, Qirtas, the daily
  * word). Does nothing without TELEGRAM_BOT_TOKEN.
  */
 const run = async (request: Request) => {

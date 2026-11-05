@@ -20,7 +20,7 @@ export interface PushNotice {
   /** Collapses repeats of the same notice on the device. */
   tag?: string;
   title: string;
-  /** A Nexus URL, opened when the notice is tapped. */
+  /** A Diwan URL, opened when the notice is tapped. */
   url: string;
 }
 

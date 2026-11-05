@@ -3,7 +3,7 @@ import { Link } from "@repo/internationalization/navigation";
 import { localized } from "@repo/sal-data";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { EditionComing, loadEditions } from "@/components/waraq/editions";
+import { EditionComing, loadEditions } from "@/components/qirtas/editions";
 import { localizedMetadata } from "@/lib/metadata";
 
 interface EditionListProps {

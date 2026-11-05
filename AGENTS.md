@@ -33,9 +33,9 @@ and decisions), and continue from the first unticked item.
     piece). Perks are on the card; voting
     eligibility is on Society; the calendar feed is on My calendar. The
     site's header and footer, a Membership row (`components/account`), and
-    the gates in `components/nexus/gates.tsx`. They link with the site's
+    the gates in `components/diwan/gates.tsx`. They link with the site's
     `Link` (`@repo/internationalization/navigation`) and full paths.
-  - `app/[locale]/diwan` — **the Diwan** (code name `nexus`), auibsal.org/diwan:
+  - `app/[locale]/diwan` — **the Diwan**, auibsal.org/diwan:
     the officers' administration only (anyone holding a role,
     `RequireStaff`), in six sections, one row like Membership's
     (`adminSections` in `@repo/rbac`, `DiwanNav` and `SectionTabs` in
@@ -61,14 +61,14 @@ and decisions), and continue from the first unticked item.
     President, the Vice President and the General Secretary, keep the
     documents). Records by name where they have one
     (`/diwan/events/<slug>`, `/diwan/qirtas/pieces/<slug>`; `RecordRef`
-    in `components/nexus/record-ref.tsx`), `new` for a blank one. Members
+    in `components/diwan/record-ref.tsx`), `new` for a blank one. Members
     are sent to `/membership`. Diwan code names
     pages by their own path (`/events`); `Link`, `useRouter`, `usePathname`
-    and `redirect` from `@/lib/nexus/navigation` add the `/diwan` prefix.
-  - Both are client-rendered (`components/nexus`, `lib/nexus`, the code
+    and `redirect` from `@/lib/diwan/navigation` add the `/diwan` prefix.
+  - Both are client-rendered (`components/diwan`, `lib/diwan`, the code
     kept its names); every check in them is UX only. They read and write
     Supabase with the user's token, and call the API routes with it
-    (`callApi` in `lib/nexus/api.ts`). Shared empty states link through
+    (`callApi` in `lib/diwan/api.ts`). Shared empty states link through
     `useAppLink` (`lib/link-context.tsx`): the site's link outside the Diwan,
     the Diwan's inside it.
   - `app/api` and `lib/api` — the API routes, auibsal.org/api: email, cron,
@@ -93,7 +93,7 @@ and decisions), and continue from the first unticked item.
     with many fields or its own life (an event, a piece, a production, a
     partner, a memorandum, a campaign, a document, an election, an
     opening, a call, a meeting and its resolutions) is edited on its own
-    page (`RecordPage`, `NewLink`, `components/nexus/admin/kit.tsx`),
+    page (`RecordPage`, `NewLink`, `components/diwan/admin/kit.tsx`),
     "new" for a blank one. A small row on a list (a need, a rota, a
     shift, a credit, a rehearsal, an audition slot, a ledger line, a
     receipt, an impact figure, an activity, a role, a member's hours, a
@@ -101,7 +101,7 @@ and decisions), and continue from the first unticked item.
     its list with `AddInPlace` (the form opens under the list, never a
     dialog or a `new` page), as most admin tools do. A long list whose
     rows are acted on together uses `SelectableTable`
-    (`components/nexus/admin/selectable-table.tsx`, design review A40):
+    (`components/diwan/admin/selectable-table.tsx`, design review A40):
     hours to confirm, an event's bookings.
   - **One place for each thing.** Nothing is kept or managed in two
     places; when two views show the same records, merge them.
@@ -111,7 +111,7 @@ and decisions), and continue from the first unticked item.
     are added where they help, not required on every page.
 - **Choices on the page** (owner, Oct 31, 2026). Several options are
   chosen on the page, never in a dialog or the browser's pop-up list:
-  `SelectInput` (`ChoiceInput`, `components/nexus/admin/choice-input.tsx`)
+  `SelectInput` (`ChoiceInput`, `components/diwan/admin/choice-input.tsx`)
   takes option children and shows a few short ones as a row, more as a
   list under the field (with a find line from ten). Never write `<select>`.
 - **Signatures** (owner, Oct 31, 2026). Wherever someone signs, the
@@ -129,8 +129,8 @@ and decisions), and continue from the first unticked item.
   `/diwan/events`); other languages do (`/ar/events`, `/ar/diwan/events`)
   (owner, Oct 14, 2026). API routes carry no language (`/api/...`). Build
   links with `Link` from `@repo/internationalization/navigation` (inside the
-  Diwan: from `@/lib/nexus/navigation`), or `localizedPath`, `nexusPath`,
-  `apiPath` and the absolute `siteUrl`, `nexusUrl`, `apiUrl` from
+  Diwan: from `@/lib/diwan/navigation`), or `localizedPath`, `diwanPath`,
+  `apiPath` and the absolute `siteUrl`, `diwanUrl`, `apiUrl` from
   `@repo/internationalization`; never write `/en`.
 - **One frame.** The public pages, the members' pages and the Diwan share
   one header (`components/masthead.tsx` with the site's sections from
@@ -187,7 +187,7 @@ and decisions), and continue from the first unticked item.
   - `@repo/sal-data` — zod schemas and typed queries per domain (membership,
     events, journal, charity, governance, programmes, content).
 - `packages/config/project.json` — names, motto, the site URL and the
-  `/diwan` (key `paths.nexus`) and `/api` paths, locales, region and the
+  `/diwan` (key `paths.diwan`) and `/api` paths, locales, region and the
   default journal name.
   Read it through `@repo/config`.
 - `scripts/` — `check-placeholders.ts`, `check-rtl.ts`, `check-i18n.ts`.
@@ -287,7 +287,7 @@ any schema change. Integration tests run against a local stack with
   Desk's Connected panel. No announcements, site pages or homepage slots:
   each page carries its own text, and notices go out through Hudhud and
   the Sunday Paper. The activity log reads as sentences ("Lina changed
-  the event …"; `components/nexus/admin/system/activity.tsx`), and a new
+  the event …"; `components/diwan/admin/system/activity.tsx`), and a new
   logged table needs its line there.
 - **Paired fields.** Translatable columns come in pairs (`title_en`,
   `title_ar`, …). Store times as `timestamptz` (UTC); display Asia/Baghdad.
@@ -324,7 +324,7 @@ any schema change. Integration tests run against a local stack with
   `signUpWithEmail`), giving its name in four parts in each language;
   `handle_new_user` refuses any other (`private.sign_up_allowed`,
   `auib_address_required`). Alumni stay members for good. `/welcome` then asks one question
-  per screen (`planSetup` in `components/nexus/setup-form.tsx`): each
+  per screen (`planSetup` in `components/diwan/setup-form.tsx`): each
   language's four parts not yet given, each pledge not yet made in its current version, and, the
   first time, photos; then the welcome screen with the card. Language
   follows the sign-up page and email notices start on (both in Settings).
@@ -408,7 +408,7 @@ any schema change. Integration tests run against a local stack with
   work sent to Qirtas carries its reason (`journal.decide`,
   `journal.decide_named` refuse a blank one; the writer reads it in their
   work's history). The Diwan's find-anything line (`FindPanel`,
-  `components/nexus/admin/find-panel.tsx`) sits under the row and opens
+  `components/diwan/admin/find-panel.tsx`) sits under the row and opens
   in place with "/" or Ctrl+K, pushing the page down (never a dialog): the
   views the officer's roles open, then `content.search` results their
   modules include. Articles carry a progress hairline (CSS scroll
@@ -501,7 +501,7 @@ any schema change. Integration tests run against a local stack with
 - **Awards by year, author pages, playbills** (design review PR 5a, Nov
   4, 2026). Each Awards round has its page, `/qirtas/awards/<round>`, and
   `/qirtas/awards` shows the latest with the others "By year"
-  (`components/waraq/awards.tsx`); `journal.award_results()` alone decides
+  (`components/qirtas/awards.tsx`); `journal.award_results()` alone decides
   what shows. An author page lists the Editions their work appeared in
   and the Awards it was shortlisted for or won, from the same results.
   The Company's productions are a Shelf of playbills (the poster, or the
@@ -546,7 +546,7 @@ any schema change. Integration tests run against a local stack with
   stays in the reader's browser (`qirtas-games:` keys).
 - **The Qirtas nameplate and masthead** (owner, Nov 5, 2026). One
   nameplate on every page of the paper, in the Qirtas layout
-  (`components/waraq/nameplate.tsx`; the section marked by `DeskNav` from
+  (`components/qirtas/nameplate.tsx`; the section marked by `DeskNav` from
   the address), so it never changes between pages. The masthead,
   `/qirtas/masthead`, lists the Editor-in-Chief, the Managing Editor,
   guest editors and every role the paper hires (`journal.masthead()`),
@@ -698,7 +698,7 @@ any schema change. Integration tests run against a local stack with
   turns active and whoever applied gets `partner_lead` (`partners.own`
   and `partners.lead`, scoped `partner`). Each partner keeps one
   dashboard at `/partners/dashboard` (Profile and memorandum, Perks,
-  People; `components/nexus/partner/workspace.tsx`, `RequirePartner`, no
+  People; `components/diwan/partner/workspace.tsx`, `RequirePartner`, no
   membership gate), in the header's menu as "Partner dashboard" where
   officers see the Diwan (`useWays`, the `sal_ways` hint cookie). The
   team is up to six, Lead or Team (`partner_rep`): Leads invite, make
@@ -834,7 +834,7 @@ any schema change. Integration tests run against a local stack with
   No standard letters: emails and certificates carry what letters did.
 - **Members' and Diwan pages.** Every members' page and Diwan page is
   `DiwanPage` with `DiwanSection`s and `RowList`s
-  (`components/nexus/page.tsx`): the Light title, one line, section titles
+  (`components/diwan/page.tsx`): the Light title, one line, section titles
   standing alone, hairlines between rows only. Admin pages use
   `AdminHeading`, which matches. Nothing a member does lives in the Diwan.
 - **Names.** The publication is **Qirtas** («قرطاس»; "AUIB's paper of news,
@@ -843,22 +843,26 @@ any schema change. Integration tests run against a local stack with
   names, owner, Oct 24, 2026; six sections, owner, Oct 29, 2026). The name is set (owner, Oct 30, 2026), in `packages/config/project.json`;
   the schema keeps the code names `journal` and `waraq`. The Society has no
   charity partner on record (Natrok Athar was removed on Oct 8, 2026).
-- **Renames (owner, Oct 24, 2026).** What people see changed; the code
-  kept its names. One line each, "now (the code still says …)":
-  - Qirtas, قرطاس, at `/qirtas` (code: `waraq`, `journal`, `components/waraq`).
+- **Renames (owner, Oct 24, 2026).** What people see changed. The code
+  took the new names too in the design review's last pull request (D9,
+  Nov 5, 2026): `components/diwan`, `lib/diwan`, `components/qirtas`,
+  `diwanPath`, `diwanUrl`, `paths.diwan`, messages namespace `diwan`;
+  the database keeps its names (the `journal` schema, the `waraq` program
+  slug, the bot's stored `waraq` topic). One line each, "now (the
+  database still says …)":
+  - Qirtas, قرطاس, at `/qirtas` (database: `journal`, program row `waraq`).
   - The Sunday Paper, «صحيفة الأحد», is monthly, on the first Sunday
     (owner, Oct 29, 2026), to members who receive email and to the public
     list; The Month in Qirtas is merged into it and the name retired
     (code: `content.newsletter_subscribers`, the outbox kind
     `newsletter.monthly`, `private.queue_sunday_paper`). It carries the
     month's pieces, What's on and the open places on Get involved.
-  - The Diwan, الديوان, at `/diwan`, for officers (code: `nexus`,
-    `components/nexus`, `lib/nexus`, `nexusPath`, `paths.nexus`, messages
-    namespace `nexus`, which also holds the members' pages' text).
+  - The Diwan, الديوان, at `/diwan`, for officers (code: `components/diwan`,
+    `lib/diwan`, `diwanPath`, `paths.diwan`, messages namespace `diwan`,
+    which also holds the members' pages' text).
   - Next Stop, المحطة القادمة, Qirtas's video show at `/qirtas/next-stop`,
     with its promise at `/qirtas/next-stop/care` (owner, Oct 29, 2026: no
-    longer a program; code: `side-quest` in component and message names,
-    program row `next-stop`, unpublished).
+    longer a program; program row `next-stop`, unpublished).
   - The Company, الفرقة (code: `productions`, slug `company`; at
     `/company`, its own page beside Qirtas, with the productions).
   - Open Stage is part of the Company and the name is retired (owner,

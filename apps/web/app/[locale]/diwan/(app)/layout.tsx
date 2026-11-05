@@ -1,10 +1,10 @@
 import type { ReactNode } from "react";
-import { AppShell } from "@/components/nexus/app-shell";
+import { AppShell } from "@/components/diwan/app-shell";
 import {
   RequireAuth,
   RequireMember,
   RequireStaff,
-} from "@/components/nexus/gates";
+} from "@/components/diwan/gates";
 
 interface AppLayoutProps {
   readonly children: ReactNode;

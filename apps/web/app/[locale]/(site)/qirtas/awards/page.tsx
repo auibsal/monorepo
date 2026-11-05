@@ -1,13 +1,13 @@
 import type { Locale } from "@repo/internationalization";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { ShareLink } from "@/components/share";
 import {
   AwardsRound,
   OtherYears,
   publishedRounds,
   RoundDates,
-} from "@/components/waraq/awards";
+} from "@/components/qirtas/awards";
+import { ShareLink } from "@/components/share";
 import { localizedMetadata } from "@/lib/metadata";
 
 interface AwardsProps {

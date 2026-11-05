@@ -1,4 +1,4 @@
-import { NotFoundContent } from "@/components/nexus/not-found-content";
+import { NotFoundContent } from "@/components/diwan/not-found-content";
 
 const NotFound = () => <NotFoundContent />;
 

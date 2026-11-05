@@ -11,11 +11,11 @@ import {
 import { useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { type ReactNode, useEffect } from "react";
-import { useVisibleModules } from "@/components/nexus/admin/admin-shell";
-import { useTwoStep } from "@/components/nexus/auth/two-step";
-import { useMyPartners } from "@/lib/nexus/partners";
-import { disablePush } from "@/lib/nexus/push";
-import { useMemberStatus, useMyMembership } from "@/lib/nexus/queries";
+import { useVisibleModules } from "@/components/diwan/admin/admin-shell";
+import { useTwoStep } from "@/components/diwan/auth/two-step";
+import { useMyPartners } from "@/lib/diwan/partners";
+import { disablePush } from "@/lib/diwan/push";
+import { useMemberStatus, useMyMembership } from "@/lib/diwan/queries";
 import { rememberWays, type Ways } from "@/lib/staff";
 
 interface AccountLink {
@@ -111,7 +111,7 @@ const useAccountLinks = (): AccountLink[] => {
 
 /** The account's links and sign-out. */
 const AccountNav = () => {
-  const t = useTranslations("nexus.nav");
+  const t = useTranslations("diwan.nav");
   const ta = useTranslations("auth");
   const pathname = usePathname();
   const router = useRouter();

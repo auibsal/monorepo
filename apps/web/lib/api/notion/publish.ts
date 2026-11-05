@@ -18,10 +18,10 @@ import { prop, read, slugify } from "./props";
 import {
   checkArabicEdition,
   checkEvent,
-  checkWaraq,
+  checkQirtas,
   languageOf,
-  type WaraqDesk,
-  type WaraqValues,
+  type QirtasDesk,
+  type QirtasValues,
 } from "./rules";
 
 /**
@@ -361,7 +361,7 @@ const STARTING_TYPE = {
   news: "report",
   video: "video_report",
   voices: "column",
-} as const satisfies Record<WaraqDesk, string>;
+} as const satisfies Record<QirtasDesk, string>;
 
 /** The publisher's own byline: their contributor record, made if needed. */
 const bylineFor = async (ctx: SyncContext, userId: string) => {
@@ -428,7 +428,7 @@ const pieceSlug = async (ctx: SyncContext, title: string) => {
 const deskPublisher = async (
   ctx: SyncContext,
   email: string,
-  desk: WaraqDesk
+  desk: QirtasDesk
 ) => {
   const rpc = (permission: string) =>
     ctx.admin.schema("access").rpc("notion_publisher", {
@@ -456,11 +456,11 @@ const editingNote = () =>
  * become the Arabic of the English row's piece, which must be imported
  * first and still be in editing.
  */
-const importWaraqEdition = async (
+const importQirtasEdition = async (
   ctx: SyncContext,
   page: NotionPage,
   email: string,
-  v: WaraqValues & { of: string }
+  v: QirtasValues & { of: string }
 ) => {
   const j = ctx.admin.schema("journal");
   const pieceId = await recordFor(ctx, "piece", v.of);
@@ -477,7 +477,7 @@ const importWaraqEdition = async (
     ]);
     return;
   }
-  if (!(await deskPublisher(ctx, email, piece.desk as WaraqDesk))) {
+  if (!(await deskPublisher(ctx, email, piece.desk as QirtasDesk))) {
     await needsChanges(ctx, page, [
       `${email} does not edit the ${piece.desk} desk in the Diwan. Ask its editor or the Editor-in-Chief to set Ready to publish.`,
     ]);
@@ -512,7 +512,7 @@ const importWaraqEdition = async (
     "Platform note": prop.text(editingNote()),
     Status: prop.select("In editing"),
   });
-  count(ctx, "waraq.edition");
+  count(ctx, "qirtas.edition");
 };
 
 /**
@@ -524,23 +524,23 @@ const importWaraqEdition = async (
  * is still in editing. An Arabic edition adds its Arabic to the English
  * row's piece.
  */
-const importWaraq = async (
+const importQirtas = async (
   ctx: SyncContext,
   page: NotionPage,
   email: string,
-  fallbackDesk?: WaraqDesk
+  fallbackDesk?: QirtasDesk
 ) => {
-  const checked = checkWaraq(page, fallbackDesk);
+  const checked = checkQirtas(page, fallbackDesk);
   if (!checked.ok) {
     await needsChanges(ctx, page, checked.problems);
     return;
   }
   const v = checked.values;
   if (v.of) {
-    await importWaraqEdition(ctx, page, email, { ...v, of: v.of });
+    await importQirtasEdition(ctx, page, email, { ...v, of: v.of });
     return;
   }
-  const desk = v.desk as WaraqDesk;
+  const desk = v.desk as QirtasDesk;
   const publisher = await deskPublisher(ctx, email, desk);
   if (!publisher) {
     await needsChanges(ctx, page, [
@@ -607,7 +607,7 @@ const importWaraq = async (
     "Platform note": prop.text(editingNote()),
     Status: prop.select("In editing"),
   });
-  count(ctx, existing ? "waraq.updated" : "waraq.imported");
+  count(ctx, existing ? "qirtas.updated" : "qirtas.imported");
 };
 
 const statusFilter = (statuses: string[]) => ({
@@ -617,7 +617,7 @@ const statusFilter = (statuses: string[]) => ({
 /** Pages waiting for the platform, handled one at a time. */
 export const publishWaiting = async (ctx: SyncContext) => {
   const programmes = await programmeMap(ctx);
-  const [events, news, waraq] = await Promise.all([
+  const [events, news, qirtas] = await Promise.all([
     ctx.notion.query(ctx.sources.events, statusFilter([READY, CANCEL])),
     ctx.notion.query(ctx.sources.news, {
       and: [
@@ -642,7 +642,7 @@ export const publishWaiting = async (ctx: SyncContext) => {
   const queue: [Kind | "news" | "waraq", NotionPage][] = [
     ...byLanguage.map((p): [Kind, NotionPage] => ["event", p]),
     ...news.map((p): ["news", NotionPage] => ["news", p]),
-    ...waraq.map((p): ["waraq", NotionPage] => ["waraq", p]),
+    ...qirtas.map((p): ["waraq", NotionPage] => ["waraq", p]),
   ];
   for (const [kind, page] of queue) {
     if (outOfTime(ctx)) {
@@ -656,10 +656,10 @@ export const publishWaiting = async (ctx: SyncContext) => {
         continue;
       }
       if (kind === "waraq") {
-        await importWaraq(ctx, page, email);
+        await importQirtas(ctx, page, email);
       } else if (kind === "news") {
         // The old news posts are Qirtas's News desk now.
-        await importWaraq(ctx, page, email, "news");
+        await importQirtas(ctx, page, email, "news");
       } else if (languageOf(page) === "ar") {
         await publishArabicEvent(ctx, page, email);
       } else if (read.select(page, "Status") === CANCEL) {

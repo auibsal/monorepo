@@ -42,7 +42,7 @@ export const NewsletterSignup = ({
     }
     let live = true;
     // Only for someone signed in, and loaded then: visitors never fetch it.
-    import("@/lib/nexus/supabase")
+    import("@/lib/diwan/supabase")
       .then(({ getSupabase }) =>
         getSupabase().schema("membership").rpc("my_membership")
       )

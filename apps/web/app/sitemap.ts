@@ -2,8 +2,8 @@ import { project } from "@repo/config";
 import { locales, localizedPath } from "@repo/internationalization";
 import { documents, journal, programmes } from "@repo/sal-data";
 import type { MetadataRoute } from "next";
+import { pieceHref } from "@/components/qirtas/cards";
 import { seriesPath } from "@/components/series";
-import { pieceHref } from "@/components/waraq/cards";
 import { readPublished } from "@/lib/supabase";
 
 /**

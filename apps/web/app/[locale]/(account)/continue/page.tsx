@@ -1,7 +1,7 @@
 import { Suspense } from "react";
-import { ContinueToSite } from "@/components/nexus/auth/continue";
-import { RequireAuth } from "@/components/nexus/gates";
-import { titleFrom } from "@/lib/nexus/metadata";
+import { ContinueToSite } from "@/components/diwan/auth/continue";
+import { RequireAuth } from "@/components/diwan/gates";
+import { titleFrom } from "@/lib/diwan/metadata";
 
 export const generateMetadata = titleFrom((t) => t("auth.continue.title"));
 

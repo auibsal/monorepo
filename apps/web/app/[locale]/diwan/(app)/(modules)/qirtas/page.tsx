@@ -1,9 +1,9 @@
-import { RequireModule } from "@/components/nexus/admin/admin-shell";
-import { QirtasNewsroom } from "@/components/nexus/admin/journal/admin";
-import { titleFrom } from "@/lib/nexus/metadata";
+import { RequireModule } from "@/components/diwan/admin/admin-shell";
+import { QirtasNewsroom } from "@/components/diwan/admin/journal/admin";
+import { titleFrom } from "@/lib/diwan/metadata";
 
 export const generateMetadata = titleFrom((t) =>
-  t("nexus.admin.sections.tabs.newsroom")
+  t("diwan.admin.sections.tabs.newsroom")
 );
 
 const NewsroomPage = () => (

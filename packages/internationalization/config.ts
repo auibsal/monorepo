@@ -50,14 +50,14 @@ export const localizedPath = (locale: string, path = "/") => {
 const withSlash = (path: string) => (path.startsWith("/") ? path : `/${path}`);
 
 /**
- * A Nexus page's path on the one site, before the language is applied:
- * "/events" → "/diwan/events". Use `localizedPath(locale, nexusPath(p))`
- * for a link from the public pages; inside the Nexus, its own navigation
+ * A Diwan page's path on the one site, before the language is applied:
+ * "/events" → "/diwan/events". Use `localizedPath(locale, diwanPath(p))`
+ * for a link from the public pages; inside the Diwan, its own navigation
  * module adds the prefix.
  */
-export const nexusPath = (path = "/") => {
+export const diwanPath = (path = "/") => {
   const page = withSlash(path);
-  return page === "/" ? project.paths.nexus : `${project.paths.nexus}${page}`;
+  return page === "/" ? project.paths.diwan : `${project.paths.diwan}${page}`;
 };
 
 /** An API route's path: "/calendar/sal.ics" → "/api/calendar/sal.ics". */
@@ -68,9 +68,9 @@ export const apiPath = (path: string) =>
 export const siteUrl = (locale: string, path = "/", origin = project.url) =>
   `${origin}${localizedPath(locale, path)}`;
 
-/** The absolute address of a Nexus page in a language. */
-export const nexusUrl = (locale: string, path = "/", origin = project.url) =>
-  siteUrl(locale, nexusPath(path), origin);
+/** The absolute address of a Diwan page in a language. */
+export const diwanUrl = (locale: string, path = "/", origin = project.url) =>
+  siteUrl(locale, diwanPath(path), origin);
 
 /** The absolute address of an API route. */
 export const apiUrl = (path: string, origin = project.url) =>

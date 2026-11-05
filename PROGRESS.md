@@ -68,7 +68,16 @@ Branch: `claude/pr6b-topics-translations`.
   `20261101004900`, `99_joint_events.test.sql`.
 - needs-native-review: `nexus.joint.*`, `nexus.partnerDesk.tabs.events`,
   `nexus.partnerDesk.lede`, `nexus.admin.activity.things.events_joint_tasks`.
-- Next: R4, the retired code names (D9), last.
+- [x] R4 (D9) The retired code names, last: `components/nexus` is
+  `components/diwan`, `lib/nexus` is `lib/diwan`, `components/waraq` is
+  `components/qirtas`, `nexusPath`/`nexusUrl`/`paths.nexus` are
+  `diwanPath`/`diwanUrl`/`paths.diwan`, the messages namespace `nexus` is
+  `diwan` (and `admin.waraq` is `admin.qirtas`), and every identifier
+  that said Nexus or Waraq says Diwan or Qirtas. The database keeps its
+  names (the `journal` schema, the `waraq` program slug, the bot's stored
+  `waraq` topic and old "waraq" button), and so does the web app
+  manifest's `id` ("/nexus"), which installed copies are known by.
+- PR 6 is done but A28, which waits for data.
 
 ## The design review: PR 6a, About, the 404 page and a member's year (2026-11-05)
 
