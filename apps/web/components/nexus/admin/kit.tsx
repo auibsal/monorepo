@@ -182,6 +182,8 @@ export interface Column<T> {
   readonly cell: (row: T) => ReactNode;
   readonly className?: string;
   readonly header: string;
+  /** Shown in the head in place of the header's words (a select-all box). */
+  readonly headerCell?: ReactNode;
   readonly key: string;
 }
 
@@ -231,7 +233,7 @@ export const DataTable = <T,>({
                 key={column.key}
                 scope="col"
               >
-                {column.header}
+                {column.headerCell ?? column.header}
               </th>
             ))}
           </tr>

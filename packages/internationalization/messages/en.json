@@ -870,7 +870,14 @@
           "find": "Type to find",
           "none": "Nothing matches."
         },
-        "tripNeedsApproval": "A trip to al-Mutanabbi Street is published only once the General Secretary records Student Life's written approval, under Occasion."
+        "tripNeedsApproval": "A trip to al-Mutanabbi Street is published only once the General Secretary records Student Life's written approval, under Occasion.",
+        "selection": {
+          "choose": "Choose",
+          "all": "Choose every row",
+          "chosen": "{count, plural, one {{countText} chosen} other {{countText} chosen}}",
+          "clear": "Clear the choice",
+          "row": "Choose {name}"
+        }
       },
       "overview": {
         "title": "Desk",
@@ -1192,7 +1199,8 @@
           "bySecretary": "The General Secretary records the approval.",
           "date": "Approved by Student Life on",
           "dateHint": "The date on Student Life's written approval. Clear it to withdraw the approval of a trip not yet published."
-        }
+        },
+        "checkInChosen": "Check in the chosen ({count})"
       },
       "checkIn": {
         "title": "Check-in",
@@ -2278,7 +2286,8 @@
           "hours": "Hours",
           "confirm": "Confirm",
           "reject": "Not confirmed",
-          "reason": "Why (optional)"
+          "reason": "Why (optional)",
+          "confirmChosen": "Confirm the chosen ({count})"
         },
         "totals": {
           "lede": "Confirmed hours this academic year. {target} hours make a member eligible to be nominated as a Fellow (B4.1); Fellows are confirmed by two-thirds of the Council.",

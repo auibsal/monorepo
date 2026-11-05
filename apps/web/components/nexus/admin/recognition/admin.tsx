@@ -34,6 +34,7 @@ import {
 } from "../kit";
 import { MemberPicker, useMemberNames } from "../member-picker";
 import { memberName } from "../members/directory";
+import { SelectableTable } from "../selectable-table";
 import { type ServiceTab, serviceTabs } from "../tabs";
 
 const key = ["admin", "recognition"];
@@ -53,6 +54,7 @@ interface PendingRow {
 
 const PendingHours = () => {
   const t = useTranslations("nexus.admin.recognition.pending");
+  const tk = useTranslations("nexus.admin.kit.selection");
   const locale = useLocale() as Locale;
   const { supabase, user } = useAuth();
   const queryClient = useQueryClient();
@@ -94,6 +96,15 @@ const PendingHours = () => {
     const row = names.data?.find((n) => n.id === id);
     return row ? memberName(row, locale) : "";
   };
+  // A40: confirm many at once; each is still confirmed by the database.
+  const confirmAll = useMutation({
+    mutationFn: async (ids: readonly string[]) => {
+      await Promise.all(
+        ids.map((id) => recognition.confirmService(supabase, id, true))
+      );
+    },
+    onSettled: () => queryClient.invalidateQueries({ queryKey: key }),
+  });
 
   const actions = (row: PendingRow) => {
     if (rejecting?.id === row.id) {
@@ -177,10 +188,25 @@ const PendingHours = () => {
   return (
     <div className="grid gap-4">
       <p className="type-body">{t("lede")}</p>
-      <ErrorLine error={decide.error} />
-      <DataTable
+      <ErrorLine error={decide.error ?? confirmAll.error} />
+      <SelectableTable
+        actions={(chosen, clear) => (
+          <Button
+            disabled={confirmAll.isPending}
+            onClick={() =>
+              confirmAll.mutate(
+                chosen.map((row) => row.id),
+                { onSuccess: clear }
+              )
+            }
+            size="sm"
+          >
+            {t("confirmChosen", { count: formatNumber(chosen.length) })}
+          </Button>
+        )}
         columns={columns}
         empty={t("empty")}
+        label={(row) => tk("row", { name: nameOf(row.user_id) })}
         rowKey={(row) => row.id}
         rows={rows}
       />

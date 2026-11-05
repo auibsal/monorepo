@@ -49,7 +49,16 @@ Branch: `claude/pr6b-topics-translations`.
   collected books went), which the platform does not keep yet.
 - needs-native-review: `web.give.catalog.*`,
   `nexus.admin.charity.catalog.*`, `nexus.admin.charity.tabs.catalog`.
-- Next: A40, A41, then R4.
+- [x] A40 Rows chosen and acted on together on long Diwan lists
+  (`SelectableTable`, `components/nexus/admin/selectable-table.tsx`: a box
+  on each row and one for all, then a line with the count and the
+  actions): hours to confirm (People → Service, "Confirm the chosen") and
+  an event's bookings ("Check in the chosen", for people at the door
+  without their card). Each row is still decided by the database.
+- needs-native-review: `nexus.admin.kit.selection.*`,
+  `nexus.admin.event.checkInChosen`,
+  `nexus.admin.recognition.pending.confirmChosen`.
+- Next: A41, then R4.
 
 ## The design review: PR 6a, About, the 404 page and a member's year (2026-11-05)
 
