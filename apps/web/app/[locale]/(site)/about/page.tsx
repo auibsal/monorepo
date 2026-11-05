@@ -1,3 +1,4 @@
+import { formatLongDate } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { PageHeader, RuledList, Section } from "@/components/section";
@@ -16,6 +17,21 @@ const HUB = [
   ["press", "/about/press"],
   ["verify", "/verify"],
 ] as const;
+/**
+ * How the Society began, a dated line each (the design review C6), from
+ * what Qirtas reported at the time; each line opens the piece.
+ */
+const BEGAN = [
+  ["handbook", "2026-09-28", "society-publishes-its-member-handbook"],
+  ["documents", "2026-10-09", "society-publishes-its-founding-documents"],
+  [
+    "constitution",
+    "2026-10-13",
+    "society-ratifies-its-constitution-on-charter-day",
+  ],
+  ["qirtas", "2026-10-14", "qirtas-launches-as-one-paper"],
+] as const;
+
 const GLANCE = [
   "open",
   "power",
@@ -56,6 +72,24 @@ const AboutPage = async ({ params }: LocaleParams) => {
             ),
           }))}
         />
+      </Section>
+
+      <Section id="began" title={t("beganTitle")}>
+        <ol className="grid border-line border-b">
+          {BEGAN.map(([key, day, slug]) => (
+            <li
+              className="grid gap-1 border-line border-t py-3 sm:grid-cols-[16rem_1fr] sm:gap-x-6"
+              key={key}
+            >
+              <time className="type-caption text-text-secondary" dateTime={day}>
+                {formatLongDate(`${day}T12:00:00+03:00`, locale, true)}
+              </time>
+              <Link className="link" href={`/qirtas/news/${slug}`}>
+                {t(`began.${key}`)}
+              </Link>
+            </li>
+          ))}
+        </ol>
       </Section>
 
       <Section id="preamble" title={t("preambleTitle")}>

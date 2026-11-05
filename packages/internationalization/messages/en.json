@@ -3180,6 +3180,25 @@
         "partner": "Certificate of Partnership Service",
         "award": "The Qirtas Awards",
         "apprenticeship": "Certificate of Apprenticeship"
+      },
+      "year": {
+        "section": "Your year",
+        "sectionLede": "Your year at the Society on one page, to keep or print: the events you came to, the roles you held, your service, your work and your certificates.",
+        "title": "Your year, {year}",
+        "lede": "From your own records. Only you see this page.",
+        "card": "Card No. {number}",
+        "print": "Print",
+        "events": "Events you came to",
+        "roles": "Roles you held",
+        "service": "Service",
+        "work": "Work sent to Qirtas",
+        "workCount": "{sent} sent, {accepted} accepted.",
+        "accepted": "accepted",
+        "certificates": "Certificates",
+        "none": "Nothing this year.",
+        "since": "From {from}",
+        "between": "{from} to {to}",
+        "private": "The year runs from September to August, as your service hours count it. Only what is on your own record is shown, as it stands today."
       }
     },
     "certificate": {
@@ -4659,6 +4678,13 @@
           "title": "Verify",
           "body": "Check a membership card or a certificate the Society issued."
         }
+      },
+      "beganTitle": "How it began",
+      "began": {
+        "handbook": "The Society sets out what membership means, in its member handbook.",
+        "documents": "Its founding documents and three-year plan go online.",
+        "constitution": "The members ratify the Constitution.",
+        "qirtas": "Qirtas launches: news, letters and art in one paper."
       }
     },
     "join": {
@@ -5028,7 +5054,9 @@
       "title": "A page unwritten",
       "description": "We looked between the lines and in the margins. This page was never written, or it has moved to another chapter.",
       "home": "Back to the first page",
-      "search": "Search the site"
+      "search": "Search the site",
+      "line": "The best companion, in any age, is a book.",
+      "lineBy": "al-Mutanabbi"
     },
     "footerExtra": {
       "copyright": "© {year} AUIB Society of Arts and Letters. All rights reserved.",

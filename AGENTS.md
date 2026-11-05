@@ -503,6 +503,11 @@ any schema change. Integration tests run against a local stack with
   and the Awards it was shortlisted for or won, from the same results.
   The Company's productions are a Shelf of playbills (the poster, or the
   title as type), with the list at `/company/productions`.
+- **About's beginning and a member's year** (design review PR 6a, Nov 5,
+  2026). About's "How it began" is dated lines from Qirtas's reports, each
+  opening its piece. Record links to the member's year,
+  `/membership/record/year/<yyyy>` (the academic year from September 1,
+  `recognition.myYear`): their own records only, private and printable.
 - **Occasions: the trip and the contest** (design review A34, A36, Nov
   5, 2026). An event may be an occasion with its own page under its
   program (`events.events.occasion`, `events.OCCASIONS`): Book Circle's

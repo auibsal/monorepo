@@ -294,3 +294,88 @@ export const verifyCertificate = async (client: Client, code: string) =>
   unwrap(
     await client.schema("membership").rpc("verify_certificate", { code })
   )?.[0] ?? null;
+
+// ── A member's year (the design review C23) ─────────────────────────────────
+
+/**
+ * The academic year Y runs from September 1, Y, to August 31, Y + 1
+ * (`academicYearStart`, as service hours count it); "2026" is 2026–27.
+ */
+export const societyYear = (year: number) => ({
+  from: `${year}-09-01T00:00:00+03:00`,
+  to: `${year + 1}-09-01T00:00:00+03:00`,
+});
+
+/** The academic year a date falls in. */
+export const societyYearOf = (date: Date = new Date()) =>
+  Number(academicYearStart(date).slice(0, 4));
+
+/**
+ * One member's year, from their own records only (each read under Row
+ * Level Security as themselves): the events they came to, the roles they
+ * held, the service confirmed, the work they sent and what was accepted,
+ * and the certificates issued. Private; nobody else reads it.
+ */
+export const myYear = async (client: Client, userId: string, year: number) => {
+  const { from, to } = societyYear(year);
+  const fromDay = from.slice(0, 10);
+  const toDay = to.slice(0, 10);
+  const [checkIns, roles, service, submissions, certificates] =
+    await Promise.all([
+      client
+        .schema("events")
+        .from("check_ins")
+        .select(
+          "id, checked_in_at, event:events(slug, title_en, title_ar, starts_at)"
+        )
+        .eq("user_id", userId)
+        .gte("checked_in_at", from)
+        .lt("checked_in_at", to)
+        .order("checked_in_at"),
+      client
+        .schema("access")
+        .from("role_assignments")
+        .select(
+          "id, role, title_en, title_ar, starts_at, ends_at, roles(name_en, name_ar)"
+        )
+        .eq("user_id", userId)
+        .lt("starts_at", to)
+        .or(`ends_at.is.null,ends_at.gte.${from}`)
+        .order("starts_at"),
+      client
+        .schema("membership")
+        .from("service_records")
+        .select("id, occurred_on, activity, hours")
+        .eq("user_id", userId)
+        .eq("status", "confirmed")
+        .gte("occurred_on", fromDay)
+        .lt("occurred_on", toDay)
+        .order("occurred_on"),
+      client
+        .schema("journal")
+        .from("submissions")
+        .select("id, title, status, created_at")
+        .gte("created_at", from)
+        .lt("created_at", to)
+        .neq("status", "withdrawn")
+        .order("created_at"),
+      client
+        .schema("membership")
+        .from("certificates")
+        .select("id, kind, serial, issued_at")
+        .eq("user_id", userId)
+        .eq("status", "issued")
+        .gte("issued_at", from)
+        .lt("issued_at", to)
+        .order("issued_at"),
+    ]);
+  const service_ = unwrap(service) ?? [];
+  return {
+    certificates: unwrap(certificates) ?? [],
+    events: unwrap(checkIns) ?? [],
+    hours: service_.reduce((sum, r) => sum + Number(r.hours), 0),
+    roles: unwrap(roles) ?? [],
+    service: service_,
+    submissions: unwrap(submissions) ?? [],
+  };
+};
