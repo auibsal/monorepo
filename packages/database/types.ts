@@ -3881,6 +3881,59 @@ export type Database = {
           },
         ];
       };
+      piece_figures: {
+        Row: {
+          created_at: string;
+          id: string;
+          piece_id: string;
+          rows: NonNullable<Json>;
+          sort: number;
+          source_ar: string | null;
+          source_en: string | null;
+          title_ar: string | null;
+          title_en: string | null;
+          unit_ar: string | null;
+          unit_en: string | null;
+          updated_at: string;
+        };
+        Insert: {
+          created_at?: string;
+          id?: string;
+          piece_id: string;
+          rows?: NonNullable<Json>;
+          sort?: number;
+          source_ar?: string | null;
+          source_en?: string | null;
+          title_ar?: string | null;
+          title_en?: string | null;
+          unit_ar?: string | null;
+          unit_en?: string | null;
+          updated_at?: string;
+        };
+        Update: {
+          created_at?: string;
+          id?: string;
+          piece_id?: string;
+          rows?: NonNullable<Json>;
+          sort?: number;
+          source_ar?: string | null;
+          source_en?: string | null;
+          title_ar?: string | null;
+          title_en?: string | null;
+          unit_ar?: string | null;
+          unit_en?: string | null;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "piece_figures_piece_id_fkey";
+            columns: ["piece_id"];
+            isOneToOne: false;
+            referencedRelation: "pieces";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       piece_media: {
         Row: {
           alt_ar: string;

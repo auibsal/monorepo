@@ -25,8 +25,20 @@ Branch: `claude/pr6b-topics-translations`.
 - needs-native-review: `web.journal.topics`, `topicsLede`, `noTopics`,
   `topicLede`, `allTopics`, `web.journal.reading.translation`, `original`;
   `nexus.admin.waraq.original.*`, `nexus.admin.waraq.topics.*`.
-- Next: PR 6c (A15 long reads, A16 explainers with figures), then A27,
-  A28, A40, A41, then R4.
+- [x] A15 Long reads: a prose piece of ten minutes or more in three
+  parts or more (its <h2> headings) gets its contents beside the text,
+  in view as the reader goes (above it on a phone), each part an anchor
+  (`withContents`).
+- [x] A16 Explainers with figures: `journal.piece_figures` (labeled values,
+  up to 24, a unit and a source), added on an explainer's page in the
+  Diwan, placed in the text with a paragraph of its own, "[figure 1]"
+  («[شكل 1]»), or shown after it; drawn as bars in ink, the one under the
+  pointer or focus in crimson with its value, and as a table one press
+  away (migration `20261101004700`, `99_explainer_figures.test.sql`).
+- needs-native-review: `web.journal.reading.contents`,
+  `web.journal.figures.*`, `nexus.admin.waraq.figures.*`.
+- The owner, Nov 5, 2026: "All in one PR": the rest of PR 6 goes in this
+  one pull request (#220). Next: A27, A28, A40, A41, then R4.
 
 ## The design review: PR 6a, About, the 404 page and a member's year (2026-11-05)
 

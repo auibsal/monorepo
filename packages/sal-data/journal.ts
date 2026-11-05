@@ -793,7 +793,7 @@ export const waraqPiece = async (client: Client, slug: string) => {
     return null;
   }
   const j = journal(client);
-  const [body, credits, corrections, topics] = await Promise.all([
+  const [body, credits, corrections, topics, figures] = await Promise.all([
     j
       .from("piece_bodies")
       .select("body_en, body_ar, original, original_lang")
@@ -813,12 +813,23 @@ export const waraqPiece = async (client: Client, slug: string) => {
       .from("piece_topics")
       .select("topic:topics(slug, name_en, name_ar)")
       .eq("piece_id", piece.id),
+    j
+      .from("piece_figures")
+      .select(
+        "id, sort, title_en, title_ar, unit_en, unit_ar, source_en, source_ar, rows"
+      )
+      .eq("piece_id", piece.id)
+      .order("sort"),
   ]);
   return {
     ...piece,
     body: unwrap(body),
     corrections: unwrap(corrections) ?? [],
     credits: unwrap(credits) ?? [],
+    figures: (unwrap(figures) ?? []).map((f) => ({
+      ...f,
+      rows: figureRows(f.rows),
+    })),
     topics: (unwrap(topics) ?? []).flatMap((t) => (t.topic ? [t.topic] : [])),
   };
 };
@@ -859,6 +870,52 @@ const RIGHT_TO_LEFT = new Set([
 /** The direction a language is written in. */
 export const textDirection = (lang: string): "rtl" | "ltr" =>
   RIGHT_TO_LEFT.has(lang) ? "rtl" : "ltr";
+
+// ── Figures in explainers (the design review A16) ──────────────────────────
+
+export const figureRowSchema = z.object({
+  label_ar: z.string().trim().max(80).optional(),
+  label_en: z.string().trim().max(80).optional(),
+  value: z.number().finite(),
+});
+export type FigureRow = z.infer<typeof figureRowSchema>;
+
+/** A figure's rows, as stored (the database checks them on save). */
+export const figureRows = (rows: unknown): FigureRow[] => {
+  const parsed = z.array(figureRowSchema).safeParse(rows);
+  return parsed.success ? parsed.data : [];
+};
+
+const FIGURE_NUMBER = /^-?\d+(?:[.,]\d+)?$/;
+const FIGURE_LINE = /\r?\n/;
+
+/**
+ * A figure's rows as the editor types them, one a line: the English label,
+ * the Arabic label and the value, split by "|" ("Fall | الخريف | 120"), or
+ * one label and the value. Null when a line has no number, or when there
+ * are none or more than 24.
+ */
+export const parseFigureRows = (text: string): FigureRow[] | null => {
+  const rows: FigureRow[] = [];
+  for (const line of text.split(FIGURE_LINE)) {
+    if (!line.trim()) {
+      continue;
+    }
+    const cells = line.split("|").map((c) => c.trim());
+    const raw = cells.at(-1) ?? "";
+    if (cells.length < 2 || !FIGURE_NUMBER.test(raw)) {
+      return null;
+    }
+    const value = Number(raw.replace(",", "."));
+    const [en, ar] = cells;
+    rows.push(
+      cells.length === 2
+        ? { label_en: en || undefined, value }
+        : { label_ar: ar || undefined, label_en: en || undefined, value }
+    );
+  }
+  return rows.length > 0 && rows.length <= 24 ? rows : null;
+};
 
 // ── Topics (the design review A21) ──────────────────────────────────────────
 

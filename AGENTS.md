@@ -524,7 +524,11 @@ any schema change. Integration tests run against a local stack with
   exception to one language per page. Topics (`journal.topics`, added by
   `journal.publish`; `journal.piece_topics`, tagged by the piece's
   editors) each have a page, `/qirtas/topics/<slug>`, with the list at
-  `/qirtas/topics`.
+  `/qirtas/topics`. A long read (ten minutes or more, three `<h2>` parts
+  or more) shows its contents beside the text (`withContents`); an
+  explainer carries figures (`journal.piece_figures`), placed with a
+  paragraph "[figure n]" (`splitAtFigures`) and drawn by `FigureChart`
+  as bars with a table view.
 - **Games, daily and from the editors** (owner, Nov 5, 2026; replaces
   PR 5c's kinds). Members send no games (`private.games_by_editors`
   refuses a Games submission or draft). Four daily games, made in the

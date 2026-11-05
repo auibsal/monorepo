@@ -33,6 +33,7 @@ import { RecordHistory } from "../record-history";
 import { useIssues } from "./admin";
 import { BylinePicker } from "./byline";
 import { PieceExtras } from "./piece-extras";
+import { PieceFigures } from "./piece-figures";
 import { PieceOriginal } from "./piece-original";
 import { PieceTopics } from "./piece-topics";
 import {
@@ -755,6 +756,7 @@ export const WaraqPieceEditor = () => {
         />
       ) : null}
       {piece.desk === "video" ? null : <PieceExtras record={record.data} />}
+      {category === "explainer" ? <PieceFigures pieceId={piece.id} /> : null}
       <PieceTopics pieceId={piece.id} />
       <Credits record={record.data} />
       {piece.status === "published" ? (

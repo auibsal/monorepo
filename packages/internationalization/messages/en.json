@@ -2815,6 +2815,20 @@
           "remove": "Remove",
           "new": "New topic",
           "name": "Topic"
+        },
+        "figures": {
+          "title": "Figures",
+          "lede": "Labeled values the reader sees as bars, or as a table. Place a figure in the text with a paragraph of its own, for example [figure 1]; a figure not placed shows after the text.",
+          "marker": "[figure {n}]",
+          "titleField": "Title",
+          "rows": "Values",
+          "rowsHint": "One a line: the English label, the Arabic label and the number, split by |. For example: Fall | الخريف | 120. Up to 24 lines.",
+          "unit": "Unit (optional)",
+          "source": "Source (optional)",
+          "new": "New figure",
+          "edit": "Edit",
+          "remove": "Remove",
+          "removeConfirm": "Remove this figure? A paragraph naming it in the text will show nothing."
         }
       },
       "awards": {
@@ -4547,7 +4561,8 @@
         "inEdition": "In the Edition",
         "notes": "Notes",
         "translation": "The translation",
-        "original": "The original, in {language}"
+        "original": "The original, in {language}",
+        "contents": "Contents"
       },
       "contents": "Contents",
       "launchPage": "The launch page",
@@ -4610,7 +4625,13 @@
       "topicsLede": "What Qirtas has written about, by topic, chosen by its editors.",
       "noTopics": "No topics yet.",
       "topicLede": "Everything Qirtas has published on {topic}.",
-      "allTopics": "Every topic"
+      "allTopics": "Every topic",
+      "figures": {
+        "asTable": "Show as a table",
+        "asBars": "Show as bars",
+        "value": "Value",
+        "source": "Source: {source}"
+      }
     },
     "about": {
       "title": "About the Society",
