@@ -11,6 +11,9 @@ name: Migrate production database
 #                          project → Settings → Git → Deploy Hooks)
 # `supabase db push` applies only migrations not yet recorded in
 # supabase_migrations.schema_migrations, in order, and stops at the first error.
+# `--include-all` also applies one older than the newest already applied: two
+# pull requests merged out of order (20261101003200 after 20261101003300, Nov
+# 5, 2026) otherwise stop every later push.
 
 on:
   workflow_run:
@@ -63,7 +66,7 @@ jobs:
         run: bunx supabase migration list --password "$SUPABASE_DB_PASSWORD"
       - name: Apply
         working-directory: packages/database
-        run: bunx supabase db push --password "$SUPABASE_DB_PASSWORD"
+        run: bunx supabase db push --include-all --password "$SUPABASE_DB_PASSWORD"
       # Vercel deploys main on its own; a Deploy Hook, when one is set,
       # deploys again now that the database has caught up.
       - name: Deploy the site

@@ -627,13 +627,9 @@ export const publishWaiting = async (ctx: SyncContext) => {
     }),
     ctx.notion.query(ctx.sources.news, {
       and: [
-        {
-          // "Waraq" is the kind's name before Qirtas, kept for older rows.
-          or: [
-            { property: "Kind", select: { equals: "Qirtas" } },
-            { property: "Kind", select: { equals: "Waraq" } },
-          ],
-        },
+        // Notion refuses a filter on an option the property no longer
+        // has, so the old name "Waraq" is not asked for.
+        { property: "Kind", select: { equals: "Qirtas" } },
         statusFilter([READY]),
       ],
     }),
