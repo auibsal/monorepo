@@ -16,7 +16,7 @@ Hudhud (هدهد), the Society's mascot: a hoopoe, native to Iraq, the messenger
 - The folded wing is separated from the body by a 6 px gap in the ground's color. The crest and head are one shape.
 
 **Avatars on Telegram and elsewhere**
-- The Society's own spaces (the main supergroup, channels, Instagram and the website's icon) use `sal-avatar.svg` from Logos: the white symbol on `crimson`.
+- The Society's own spaces use the Bookmark from Logos: `sal-avatar.svg` (white on `crimson`) for Instagram, the members' Telegram group and the website's icon; `sal-avatar-ink.svg` (white on `ink`) for the Diwan group, the officers' working group.
 - The bot, "Hudhud · SAL", uses `hudhud-avatar.png`: white Hudhud on `crimson`. The shared crimson circle marks both as the Society's, and the different shape tells members which one is the bot. It holds up in Telegram's light and dark themes; crimson Hudhud on white disappears in the light theme.
 - Hudhud's avatar is only ever the bot's. Never use it for the Society's accounts, and never put the symbol on the bot.
 
@@ -35,7 +35,7 @@ Hudhud's sticker pack: twelve 512 × 512 PNGs with transparent backgrounds and a
 |---|---|---|
 | `stickers/png/01-hello.png` | Hello, welcome | 👋 |
 | `stickers/png/02-youre-in.png` | You're in, RSVP confirmed | 🎉 |
-| `stickers/png/03-reading.png` | Reading, the journal is out | 📖 |
+| `stickers/png/03-reading.png` | Reading, Qirtas is out | 📖 |
 | `stickers/png/04-thinking.png` | Thinking, let me check | 🤔 |
 | `stickers/png/05-asleep.png` | Nothing new, quiet week | 😴 |
 | `stickers/png/06-sent.png` | Sent, on its way | ✉️ |
