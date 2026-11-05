@@ -6,6 +6,9 @@ own versions in the Library.
 
 ## Unreleased
 
+- The Typewriter Tour's page shows the Six Words wall and a typewriter to
+  try (nothing typed is kept). Past sessions can carry outside links, such
+  as the album the Listening Room played, added on the event in the Diwan.
 - Join says what membership gives you; Partners says what a partner gets
   and gives. Hudhud can send the day's word each morning (turn it on in
   /me), and brings shift and event reminders even with optional email

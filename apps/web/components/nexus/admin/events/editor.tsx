@@ -30,6 +30,7 @@ import { RecordHistory } from "../record-history";
 import { Attendance } from "./attendance";
 import { useProgrammeOptions } from "./data";
 import { Invitations } from "./invitations";
+import { SessionLinks } from "./session-links";
 
 interface Question {
   id: string;
@@ -570,12 +571,15 @@ export const EventEditor = () => {
         <Invitations eventId={eventId} />
       ) : null}
       {eventId && existing.data ? (
-        <Attendance
-          capacity={existing.data.capacity}
-          eventId={eventId}
-          questions={asQuestions(existing.data.questions)}
-          slug={existing.data.slug}
-        />
+        <>
+          <Attendance
+            capacity={existing.data.capacity}
+            eventId={eventId}
+            questions={asQuestions(existing.data.questions)}
+            slug={existing.data.slug}
+          />
+          <SessionLinks eventId={eventId} />
+        </>
       ) : null}
       <RecordHistory id={eventId} table="events.events" />
     </div>

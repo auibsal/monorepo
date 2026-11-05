@@ -1145,7 +1145,17 @@
         "invitationsHint": "Only the people invited (and the officers who run the event) see it.",
         "noInvitations": "Nobody is invited yet.",
         "invite": "Invite a member",
-        "withdraw": "Withdraw"
+        "withdraw": "Withdraw",
+        "links": {
+          "title": "Links",
+          "lede": "Outside links for this session, such as the album played or the reading list. They show with the session among the program's past sessions.",
+          "label": "What it is",
+          "url": "Link",
+          "urlHint": "An https:// address.",
+          "new": "Add a link",
+          "remove": "Remove",
+          "removeConfirm": "Remove this link from the session?"
+        }
       },
       "checkIn": {
         "title": "Check-in",
@@ -2925,7 +2935,8 @@
           "membership_activity_records": "an activity record",
           "governance_partner_invitations": "an invitation",
           "membership_guests": "a guest of the Society",
-          "programmes_prompts": "a prompt"
+          "programmes_prompts": "a prompt",
+          "events_session_links": "a session's link"
         },
         "roleFor": "{role} for {person}"
       },
@@ -5076,7 +5087,18 @@
         "shelf": "The shelf",
         "asList": "The shelf as a list",
         "noShelf": "No reviews on the shelf yet.",
-        "prompts": "Prompts"
+        "prompts": "Prompts",
+        "wall": "The Six Words wall",
+        "try": "Try the typewriter",
+        "toy": {
+          "label": "Six words, on a typewriter",
+          "count": "{count} of {six} words",
+          "six": "Six words.",
+          "soundOff": "Key sound: off",
+          "soundOn": "Key sound: on",
+          "clear": "Start again",
+          "nothingKept": "Nothing you type here is kept. Your six words for the wall are written on the Tour, on a card."
+        }
       }
     }
   }

@@ -478,6 +478,15 @@ any schema change. Integration tests run against a local stack with
   pages keep to a performance budget on a mid-range phone
   (`apps/e2e/tests/performance.spec.ts`, built app only), beside the axe
   checks.
+- **The Tour's wall, the typewriter, session links** (design review PR
+  5b, Nov 4, 2026). The Typewriter Tour's page shows the Six Words wall
+  (`programmes.six_words_wall()`, approved cards in the page's language,
+  in Ubuntu Mono) and a typewriter to try (`TypingToy`), which keeps
+  nothing and is silent until the visitor turns the key sound on. A
+  session's outside links (`events.session_links`: what the Listening
+  Room played, a reading list; https only) are added in place on the
+  event's page in the Diwan by its program's event managers, and show
+  with the session among the program's past sessions.
 - **Qirtas, one door** (owner, Oct 31, 2026). Members send everything,
   every section, from `/qirtas/write` (`/qirtas/write/<type>` is the
   form), and everything they send is read blind. Edition calls (Letters,
