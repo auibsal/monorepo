@@ -8,6 +8,26 @@ first session); section numbers (§) refer to it.
 Branch: `claude/program-pages` (PR 4e of the design review).
 
 
+## The design review: PR 4f, Join, Partners, Hudhud and the budget (2026-11-05)
+
+Branch: `claude/join-partners-hudhud` (after PR 4e, `claude/program-pages`,
+#205).
+
+- [x] C5 Join: what membership gives (the live card, perks, the Record, a
+  vote).
+- [x] C7 Partners: what a partner gets and what it gives, before sign-in.
+- [x] C26 Hudhud: the daily word in a member's own chat, off until they
+  turn it on in /me (migration `20261101003300`, `99_telegram.test.sql`,
+  the bot's integration test); shift and booked-event reminders reach
+  Telegram when optional email is off.
+- [x] A8 Performance budget on a mid-range phone for six public pages,
+  beside the axe checks (LCP, layout shift, JavaScript, total transfer).
+- needs-native-review: `web.join.gives.*`, `web.join.firstMonthTitle`,
+  `web.partners.gets.places`, `web.partners.gives.*`; Hudhud's `wordOn`,
+  `wordOff` and the buttons (Iraqi).
+- Next: PR 5 in parts (A17, C19, C18, C8, A29, A30, A33, A34, A36, A37,
+  A10, A11, A12).
+
 ## The design review: PR 4e, program pages (2026-11-05)
 
 Branch: `claude/program-pages`.

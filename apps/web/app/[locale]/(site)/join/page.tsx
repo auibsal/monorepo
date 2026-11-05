@@ -9,6 +9,8 @@ export const generateMetadata = sectionMetadata("web.join", "/join");
 
 const STEPS = ["register", "commonRoom", "twoThings"] as const;
 const TIERS = ["member", "voting", "fellow", "honorary", "alumni"] as const;
+/** What membership gives (the design review C5, Nov 4, 2026). */
+const GIVES = ["card", "perks", "record", "vote"] as const;
 
 const JoinPage = async ({ params }: LocaleParams) => {
   const { locale } = await params;
@@ -42,6 +44,16 @@ const JoinPage = async ({ params }: LocaleParams) => {
         level="h2"
         numbered
       />
+
+      <Section id="what-you-get" title={t("gives.title")}>
+        <RuledList
+          items={GIVES.map((key) => ({
+            body: t(`gives.${key}.body`),
+            key,
+            title: t(`gives.${key}.title`),
+          }))}
+        />
+      </Section>
 
       <Section id="tiers" title={t("tiersTitle")}>
         <div className="overflow-x-auto">

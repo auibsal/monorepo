@@ -12,8 +12,14 @@ export const generateMetadata = sectionMetadata("web.partners", "/partners");
 
 const REACH = ["auib", "iraq", "international"] as const;
 
-/** What a partnership brings, in three (owner, Oct 31, 2026). */
-const MEANS = ["together", "guests", "perks"] as const;
+/**
+ * What a partner gets and gives, before anyone signs in (the design
+ * review C7, Nov 4, 2026).
+ */
+const SIDES = {
+  gets: ["together", "guests", "places"],
+  gives: ["side", "perks", "team"],
+} as const;
 
 /**
  * The partners' front door (owner, Oct 31, 2026: /partners, in place of
@@ -37,19 +43,29 @@ const PartnersPage = async ({ params }: LocaleParams) => {
       <PageHeader lede={t("lede")} title={t("title")}>
         <ManageLinks diwan="/people/partners" partner />
       </PageHeader>
-      <Section id="what-it-means" title={t("means.title")}>
-        <ul className="grid gap-8 sm:grid-cols-3">
-          {MEANS.map((key) => (
-            <li
-              className="grid content-start gap-2 border-line border-t pt-4"
-              key={key}
-            >
-              <h3 className="type-subheading">{t(`means.${key}.title`)}</h3>
-              <p className="type-body">{t(`means.${key}.body`)}</p>
-            </li>
-          ))}
-        </ul>
-      </Section>
+      {(["gets", "gives"] as const).map((side) => (
+        <Section
+          id={`what-a-partner-${side}`}
+          key={side}
+          title={t(`${side}.title`)}
+        >
+          <ul className="grid gap-8 sm:grid-cols-3">
+            {SIDES[side].map((key) => (
+              <li
+                className="grid content-start gap-2 border-line border-t pt-4"
+                key={key}
+              >
+                <h3 className="type-subheading">
+                  {t(`${side}.${key}.title` as "gets.together.title")}
+                </h3>
+                <p className="type-body">
+                  {t(`${side}.${key}.body` as "gets.together.body")}
+                </p>
+              </li>
+            ))}
+          </ul>
+        </Section>
+      ))}
       <Section id="work-with-us" title={t("workTitle")}>
         <p className="type-body">{t("work")}</p>
         <p className="flex flex-wrap items-center gap-x-6 gap-y-2">

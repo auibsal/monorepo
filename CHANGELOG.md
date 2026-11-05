@@ -6,6 +6,11 @@ own versions in the Library.
 
 ## Unreleased
 
+- Join says what membership gives you; Partners says what a partner gets
+  and gives. Hudhud can send the day's word each morning (turn it on in
+  /me), and brings shift and event reminders even with optional email
+  off. The public pages are checked against a performance budget on a
+  mid-range phone.
 - Every program's page has the same shape: its rhythm, the next session,
   the month, past sessions with what Qirtas wrote from them (all of them
   on their own page), then its own: Book Circle's shelf of reviews and

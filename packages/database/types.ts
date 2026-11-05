@@ -1084,25 +1084,31 @@ export type Database = {
       };
       telegram_accounts: {
         Row: {
+          daily_word: boolean;
           linked_at: string;
           notify: boolean;
           telegram_id: number;
           user_id: string;
           username: string | null;
+          word_sent_on: string | null;
         };
         Insert: {
+          daily_word?: boolean;
           linked_at?: string;
           notify?: boolean;
           telegram_id: number;
           user_id: string;
           username?: string | null;
+          word_sent_on?: string | null;
         };
         Update: {
+          daily_word?: boolean;
           linked_at?: string;
           notify?: boolean;
           telegram_id?: number;
           user_id?: string;
           username?: string | null;
+          word_sent_on?: string | null;
         };
         Relationships: [];
       };

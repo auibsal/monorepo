@@ -115,6 +115,11 @@ const meView = async (ctx: BotContext) => {
       me.notify ? "notify:off" : "notify:on"
     )
     .row()
+    .text(
+      me.daily_word ? ctx.t.buttons.wordOn : ctx.t.buttons.wordOff,
+      me.daily_word ? "word:off" : "word:on"
+    )
+    .row()
     .url(ctx.t.buttons.nexus, accountPage(ctx.lang))
     .text(ctx.t.buttons.unlink, "unlink");
   return { keyboard, text: lines.join("\n") };
@@ -149,6 +154,18 @@ dm.callbackQuery(/^notify:(on|off)$/, async (ctx) => {
     .update({ notify: on })
     .eq("telegram_id", ctx.from.id);
   await ctx.answerCallbackQuery(on ? ctx.t.notifyOn : ctx.t.notifyOff);
+  const view = await meView(ctx);
+  await ctx.editMessageText(view.text, { reply_markup: view.keyboard });
+});
+
+dm.callbackQuery(/^word:(on|off)$/, async (ctx) => {
+  const on = ctx.match[1] === "on";
+  await db()
+    .schema("core")
+    .from("telegram_accounts")
+    .update({ daily_word: on })
+    .eq("telegram_id", ctx.from.id);
+  await ctx.answerCallbackQuery(on ? ctx.t.wordOn : ctx.t.wordOff);
   const view = await meView(ctx);
   await ctx.editMessageText(view.text, { reply_markup: view.keyboard });
 });

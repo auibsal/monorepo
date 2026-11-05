@@ -467,6 +467,17 @@ any schema change. Integration tests run against a local stack with
   the list at `/events/book-circle/shelf`) and Open Pages' prompt cards
   (`programmes.prompts`, written and published by the host in the
   program's Prompts tab in the Diwan).
+- **Join, Partners, Hudhud, the budget** (design review PR 4f, Nov 4,
+  2026). Join says what membership gives (the live card, perks, the
+  Record, a vote); Partners says what a partner gets and gives, before
+  anyone signs in. Hudhud sends the day's word to a member who turns it
+  on in /me (`telegram_accounts.daily_word`, off by default, only while
+  notices there are on), and reminders of shifts and booked events reach
+  Telegram even when optional email is off (`send` in
+  `lib/api/outbox.ts`; the Sunday Paper stays email only). The public
+  pages keep to a performance budget on a mid-range phone
+  (`apps/e2e/tests/performance.spec.ts`, built app only), beside the axe
+  checks.
 - **Qirtas, one door** (owner, Oct 31, 2026). Members send everything,
   every section, from `/qirtas/write` (`/qirtas/write/<type>` is the
   form), and everything they send is read blind. Edition calls (Letters,

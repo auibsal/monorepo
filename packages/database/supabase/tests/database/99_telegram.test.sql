@@ -86,7 +86,7 @@ end;
 $$;
 grant execute on function pg_temp.as_service() to public;
 
-select plan(28);
+select plan(29);
 
 select pg_temp.make_user('00000000-0000-0000-0000-0000000007a1', 'tg1@auib.edu.iq', 'Linked Member');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000007a2', 'tg2@auib.edu.iq', 'Other Member');
@@ -154,6 +154,8 @@ select pg_temp.as_service();
 select is((core.telegram_whoami(4242) ->> 'member')::boolean, true,
   'whoami knows the linked member');
 select is(core.telegram_whoami(9999), null, 'An unknown account is nobody');
+select is((core.telegram_whoami(4242) ->> 'daily_word')::boolean, false,
+  'The daily word is off until the member turns it on');
 select pg_temp.as_service();
 select is(jsonb_array_length(core.telegram_events(9999)), 1,
   'An unlinked account sees only public events');

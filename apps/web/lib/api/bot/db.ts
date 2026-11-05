@@ -49,6 +49,8 @@ export const anon = () => {
 };
 
 export interface Account {
+  /** The day's word sent here each morning (off until they turn it on). */
+  daily_word: boolean;
   locale: "en" | "ar";
   member: boolean;
   name_ar: string | null;

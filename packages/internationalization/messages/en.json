@@ -4549,6 +4549,25 @@
           "body": "Any two Society activities in a semester make you a Voting Member: you can vote in elections and stand for office. For the founding year, the first 100 members vote from the day they join."
         }
       },
+      "gives": {
+        "title": "What membership gives you",
+        "card": {
+          "title": "A live card",
+          "body": "Your membership card on your phone and in Google Wallet. Its code changes every 30 seconds, so it gets you in at the door and can be checked by anyone, but never copied."
+        },
+        "perks": {
+          "title": "Perks",
+          "body": "Offers from the Society's partners, shown with your card."
+        },
+        "record": {
+          "title": "A record",
+          "body": "The events you came to, the hours you gave and your certificates, in one place. Each certificate has its own check."
+        },
+        "vote": {
+          "title": "A vote",
+          "body": "Two activities in a semester make you a Voting Member: you vote in elections and can stand for office."
+        }
+      },
       "tiersTitle": "Kinds of membership",
       "tiersYou": "You are a…",
       "tiersIf": "if you…",
@@ -4752,8 +4771,8 @@
       "work": "Clubs, departments, charities and cultural organizations apply here and sign the memorandum by name; the President signs for the Society. Sponsors are acknowledged and never have editorial influence.",
       "apply": "Apply to partner",
       "teamSignIn": "Partner team sign in",
-      "means": {
-        "title": "What partnering means",
+      "gets": {
+        "title": "What a partner gets",
         "together": {
           "title": "Work together",
           "body": "Events, Qirtas calls and productions made with the Society, as the memorandum sets out."
@@ -4762,9 +4781,24 @@
           "title": "Bring your people",
           "body": "Invite your people as guests: they book places at events and write for calls opened to you."
         },
+        "places": {
+          "title": "Find people",
+          "body": "Places with your organization, posted by the Society on Get involved for its members."
+        }
+      },
+      "gives": {
+        "title": "What a partner gives",
+        "side": {
+          "title": "Your side of the work",
+          "body": "What the memorandum sets out for your side, given in kind. No money changes hands either way."
+        },
         "perks": {
           "title": "Offer perks",
           "body": "Offers for the Society's members and your guests, kept on your own dashboard with your team."
+        },
+        "team": {
+          "title": "A team that answers",
+          "body": "Up to six people, at least one of them a Lead, keep your profile, perks and people on your dashboard."
         }
       }
     },
