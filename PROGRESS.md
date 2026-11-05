@@ -5,7 +5,7 @@ Every session starts here and continues from the first unticked item. The
 brief is `sal-platform-claude-code-prompt.md` (uploaded at the start of the
 first session); section numbers (§) refer to it.
 
-Branch: `claude/program-pages` (PR 4e of the design review).
+Branch: `claude/tour-and-listening` (PR 5b of the design review).
 
 
 ## The design review: PR 5b, the Tour's wall, the typewriter, session links (2026-11-05)
