@@ -13,9 +13,7 @@ const NotFound = () => {
       <h1 className="type-display">{t("title")}</h1>
       <p className="type-lede max-w-xl">{t("description")}</p>
       <figure className="grid gap-1 border-line border-s ps-4">
-        <blockquote className="type-body font-reading">
-          {t("line")}
-        </blockquote>
+        <blockquote className="type-body font-reading">{t("line")}</blockquote>
         <figcaption className="type-caption text-text-secondary">
           {t("lineBy")}
         </figcaption>
