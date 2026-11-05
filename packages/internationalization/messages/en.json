@@ -1187,19 +1187,14 @@
           "removeConfirm": "Remove this link from the event?"
         },
         "occasion": {
-          "title": "Occasion",
-          "lede": "Whether this event is one of the Society's occasions, each with its own page: the Friday on al-Mutanabbi Street or the worst-poem contest.",
-          "label": "Occasion",
-          "none": "None",
-          "kinds": {
-            "book_street_trip": "Book Circle on al-Mutanabbi Street",
-            "worst_poem_contest": "The worst-poem contest"
-          },
-          "approved": "Student Life approved the trip in writing on {date}.",
-          "waiting": "Waiting for Student Life's written approval. The trip is not published, and its page does not show, until it is recorded.",
+          "title": "Off campus",
+          "lede": "An event away from campus is published only once Student Life's written approval is on record.",
+          "label": "This event is off campus",
+          "approved": "Student Life approved this event in writing on {date}.",
+          "waiting": "Waiting for Student Life's written approval. The event is not published until it is recorded.",
           "bySecretary": "The General Secretary records the approval.",
           "date": "Approved by Student Life on",
-          "dateHint": "The date on Student Life's written approval. Clear it to withdraw the approval of a trip not yet published."
+          "dateHint": "The date on Student Life's written approval. Clear it to withdraw the approval of an event not yet published."
         },
         "checkInChosen": "Check in the chosen ({count})",
         "parts": {
@@ -1212,7 +1207,23 @@
           "noCampaigns": "No campaign yet.",
           "campaigns": "Campaigns",
           "link": "Link to this event",
-          "unlink": "Unlink"
+          "unlink": "Unlink",
+          "add": "Add to this event",
+          "addLede": "Every event has the same details. Add what this one needs; its page shows what it has.",
+          "addOns": {
+            "offCampus": "Off campus",
+            "partner": "A partner",
+            "needs": "Needs",
+            "shifts": "Shifts",
+            "links": "Links",
+            "prompts": "Prompts",
+            "vote": "Book vote",
+            "collection": "Second Chapter's collection",
+            "minutes": "Minutes"
+          },
+          "minutes": "Minutes and resolutions",
+          "noMinutes": "No minutes for this meeting yet.",
+          "writeMinutes": "Write the minutes"
         }
       },
       "checkIn": {
@@ -1650,7 +1661,7 @@
           "approved": "Approved"
         },
         "minutes": {
-          "new": "New meeting",
+          "new": "Write minutes",
           "meetingOn": "Meeting date",
           "body": "Body",
           "titleField": "Title",
@@ -1660,7 +1671,10 @@
           "adoptConfirm": "Mark these minutes adopted? Members will see them in the Diwan. Only do this after the vote.",
           "notFound": "No meeting with this link.",
           "draftNote": "Drafts are visible only to minute-takers and governance managers.",
-          "locked": "Adopted: this is the official copy and is locked."
+          "locked": "Adopted: this is the official copy and is locked.",
+          "meeting": "Meeting (an event in What's on)",
+          "noMeeting": "None: give the date",
+          "makeMeeting": "Make a meeting in What's on"
         },
         "resolutions": {
           "new": "New resolution",
@@ -4459,7 +4473,7 @@
       "nextLabel": "Next:",
       "nextOn": ", {date}.",
       "parts": {
-        "approved": "Student Life approved this trip in writing on {date}.",
+        "approved": "Student Life approved this event in writing on {date}.",
         "prompts": "Prompts",
         "links": "From the night",
         "qirtas": "In Qirtas"

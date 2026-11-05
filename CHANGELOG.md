@@ -6,6 +6,13 @@ own versions in the Library.
 
 ## Unreleased
 
+- Every event is one kind: council meetings, the AGM and Launch Night are
+  made in What's on like any other. An event takes the add-ons it needs
+  (off campus with Student Life's approval, a partner, needs, shifts,
+  links, prompts, a book vote, Second Chapter's collection, a meeting's
+  minutes) from one row on its page.
+- Choices across the site and the Diwan are vertical lists; menus and
+  buttons sit in rows.
 - No programs and no series: Qirtas and the Company stay, and everything
   else is an event. Every event has the same page on the site and in the
   Diwan, with its own shifts, needs, prompts, book vote and links; Second

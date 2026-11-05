@@ -78,25 +78,24 @@ select plan(11);
 
 select pg_temp.make_user('00000000-0000-0000-0000-0000000e7001', 'host.e7@auib.edu.iq', 'Host');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000e7002', 'gs.e7@auib.edu.iq', 'Secretary');
-select pg_temp.grant_role('00000000-0000-0000-0000-0000000e7001', 'programme_lead', 'programme',
-  (select id from core.programmes where slug = 'book-circle'));
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000e7002', 'general_secretary');
 
-insert into events.events (id, slug, programme_id, title_en, title_ar, starts_at, status, members_only, entry)
+insert into events.events (id, slug, title_en, title_ar, starts_at, status, members_only, entry)
 values ('00000000-0000-0000-0000-0000000e7101', 'bc-e7-trip',
-  (select id from core.programmes where slug = 'book-circle'),
   'Book Circle on al-Mutanabbi Street', 'حلقة الكتاب في شارع المتنبي',
   now() + interval '30 days', 'draft', false, 'rsvp');
+select pg_temp.grant_role('00000000-0000-0000-0000-0000000e7001', 'programme_lead', 'event',
+  '00000000-0000-0000-0000-0000000e7101');
 
 select is(
   (select count(*)::int from events.events
-   where occasion = 'book_street_trip' and slug like 'book-circle-2027-04-%'),
-  2, 'the two Fridays on record are trips');
+   where off_campus and slug like 'book-circle-2027-04-%'),
+  2, 'the two Fridays on record are off campus (owner, Nov 5, 2026: no occasions)');
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000e7001');
 select lives_ok(
-  $$ update events.events set occasion = 'book_street_trip' where id = '00000000-0000-0000-0000-0000000e7101' $$,
-  'the host marks the event a trip');
+  $$ update events.events set off_campus = true where id = '00000000-0000-0000-0000-0000000e7101' $$,
+  'the event lead marks the event off campus');
 select throws_ok(
   $$ update events.events set status = 'published' where id = '00000000-0000-0000-0000-0000000e7101' $$,
   '23514', 'trip_needs_approval', 'a trip is not published before Student Life approves it');
@@ -107,8 +106,8 @@ select throws_ok(
   $$ select events.record_approval('00000000-0000-0000-0000-0000000e7101', current_date) $$,
   '42501', 'approval_by_general_secretary', 'the host does not record it');
 select throws_ok(
-  $$ update events.events set occasion = null where id = '00000000-0000-0000-0000-0000000e7101' $$,
-  '42501', 'approval_by_general_secretary', 'nor stops it being a trip');
+  $$ update events.events set off_campus = false where id = '00000000-0000-0000-0000-0000000e7101' $$,
+  '42501', 'approval_by_general_secretary', 'nor brings it back on campus');
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000e7002');
 select throws_ok(

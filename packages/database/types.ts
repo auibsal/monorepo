@@ -1576,7 +1576,7 @@ export type Database = {
           id: string;
           image_path: string | null;
           members_only: boolean;
-          occasion: string | null;
+          off_campus: boolean;
           partner_id: string | null;
           programme_id: string | null;
           published_at: string | null;
@@ -1606,7 +1606,7 @@ export type Database = {
           id?: string;
           image_path?: string | null;
           members_only?: boolean;
-          occasion?: string | null;
+          off_campus?: boolean;
           partner_id?: string | null;
           programme_id?: string | null;
           published_at?: string | null;
@@ -1636,7 +1636,7 @@ export type Database = {
           id?: string;
           image_path?: string | null;
           members_only?: boolean;
-          occasion?: string | null;
+          off_campus?: boolean;
           partner_id?: string | null;
           programme_id?: string | null;
           published_at?: string | null;
@@ -2434,6 +2434,7 @@ export type Database = {
           body: string;
           created_at: string;
           created_by: string | null;
+          event_id: string | null;
           id: string;
           meeting_on: string;
           status: string;
@@ -2448,6 +2449,7 @@ export type Database = {
           body?: string;
           created_at?: string;
           created_by?: string | null;
+          event_id?: string | null;
           id?: string;
           meeting_on: string;
           status?: string;
@@ -2462,6 +2464,7 @@ export type Database = {
           body?: string;
           created_at?: string;
           created_by?: string | null;
+          event_id?: string | null;
           id?: string;
           meeting_on?: string;
           status?: string;

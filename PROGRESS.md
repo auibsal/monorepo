@@ -9,6 +9,32 @@ Branch: `claude/events-not-programs`.
 
 
 
+## One kind of event, with add-ons; one layout rule (owner, Nov 5, 2026, evening)
+
+The owner: "Don't keep event-specific things. All events have standard
+pages, we change the details. People either RSVP or it's just an event for
+anyone to come or it's a private event. All events will be made through
+this dashboard, including council meetings/AGM/everything/launch night …
+Also, across the platform standardize menu and button usage."
+
+- [x] Database (migration `20261101005300_event_modules`): occasions go;
+  `events.events.off_campus` takes the trip's place (published only with
+  Student Life's approval, recorded by the General Secretary);
+  `governance.minutes.event_id` ties minutes to their meeting, whose day
+  sets `meeting_on`. pgTAP: `99_event_modules`, `99_trip_and_contest`.
+- [x] Diwan: an event's page shows the add-ons it has and "Add to this
+  event" for the rest (off campus, partner, needs, shifts, links, prompts,
+  book vote, collection, minutes). Minutes pick their meeting from What's
+  on; the meetings list links to making one there.
+- [x] Site: the approval line shows for an off-campus event.
+- [x] Layout: choices are a vertical list (`SelectInput`); buttons in
+  wrapping rows (the welcome's photos step was the one stack).
+- [x] Partners, guests and Launch Night: nothing event-specific left
+  (Launch Night already picks an event).
+- needs-native-review: `diwan.admin.event.parts.*`,
+  `diwan.admin.event.occasion.*`, `diwan.admin.governance.minutes.meeting`,
+  `noMeeting`, `makeMeeting`, `new`; `web.events.parts.approved`.
+
 ## Standard events, no series (owner, Nov 5, 2026, later)
 
 The owner: "Don't make the current programs into series. Make them into

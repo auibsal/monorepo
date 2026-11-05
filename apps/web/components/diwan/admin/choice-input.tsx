@@ -132,9 +132,9 @@ const OptionRow = ({
   </>
 );
 
-/** Up to this many choices sit in one row; more open as a list. */
+/** Up to this many choices are listed open; more open from the field. */
 const ROW = 4;
-/** Choices longer than this many letters open as a list. */
+/** Choices longer than this many letters open from the field. */
 const SHORT = 32;
 /** From this many, the list can be narrowed by typing. */
 const FIND = 10;
@@ -151,10 +151,11 @@ export type ChoiceInputProps = Omit<
 /**
  * Choosing one of several, on the page itself (owner, Oct 31, 2026: never a
  * dialog or the browser's own pop-up list). It takes the same option and
- * optgroup children, `value` and `onChange` as a select. A few short
- * choices stand in one row and the chosen one is underlined; more open as a
- * list under the field, pushing the page down rather than covering it, with
- * a line to type in once there are many. Hairlines, square corners, no
+ * optgroup children, `value` and `onChange` as a select. Choices are always
+ * a vertical list, one per line (owner, Nov 5, 2026: menus and buttons sit
+ * in rows, choices in lists): a few short ones are listed open with the
+ * chosen one marked; more open as a list under the field, pushing the page
+ * down rather than covering it, with a line to type in once there are many. Hairlines, square corners, no
  * shadows, as the brand book asks.
  */
 export const ChoiceInput = ({
@@ -252,24 +253,22 @@ export const ChoiceInput = ({
         aria-describedby={describedBy}
         aria-label={ariaLabel}
         aria-labelledby={ariaLabel ? undefined : `${baseId}-label`}
-        className={cn(
-          "relative flex min-h-12 flex-wrap items-center gap-x-6 gap-y-2 border-line border-b",
-          className
-        )}
+        className={cn("relative grid border-line border-y", className)}
         id={baseId}
         role="radiogroup"
       >
         {shown.map((choice, index) => {
           const on = choice.value === value;
           return (
-            // biome-ignore lint/a11y/useSemanticElements: a row of words, underlined when chosen, reads better than radio circles
+            // biome-ignore lint/a11y/useSemanticElements: a list of words, marked when chosen, reads better than radio circles
             <button
               aria-checked={on}
               className={cn(
-                "-mb-px border-b-2 py-2 text-start text-base transition-colors",
+                "flex min-h-11 items-center border-s-2 px-3 py-2 text-start text-base transition-colors",
+                index > 0 ? "border-line border-t" : "",
                 on
-                  ? "border-accent text-text"
-                  : "border-transparent text-text-secondary hover:text-text",
+                  ? "border-s-accent text-text"
+                  : "border-s-transparent text-text-secondary hover:text-text",
                 "disabled:opacity-50"
               )}
               disabled={disabled || choice.disabled}

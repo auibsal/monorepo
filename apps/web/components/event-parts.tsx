@@ -17,9 +17,9 @@ import { readPublished } from "@/lib/supabase";
  * What an event carries besides its details (owner, Nov 5, 2026: every
  * event is a standard event, none in a series). Each part shows only when
  * the event has it, so every event's page has the one structure: the
- * prompts written for it, the book chosen for it, Student Life's approval
- * of a trip, Second Chapter's collection, the links from the night, and
- * what Qirtas wrote from it.
+ * add-ons the event was given in the Diwan: Student Life's approval of an
+ * event off campus, prompts, a book vote, Second Chapter's collection, the
+ * links from the night, and what Qirtas wrote from it.
  */
 export const EventParts = async ({
   event,
@@ -27,7 +27,7 @@ export const EventParts = async ({
 }: {
   readonly event: {
     id: string;
-    occasion: string | null;
+    off_campus: boolean;
     slug: string;
     student_life_approved_on: string | null;
   };
@@ -62,8 +62,7 @@ export const EventParts = async ({
   const outside = links.filter((l) => localized(l, "label", locale));
   return (
     <>
-      {event.occasion === "book_street_trip" &&
-      event.student_life_approved_on ? (
+      {event.off_campus && event.student_life_approved_on ? (
         <p className="type-caption text-text-secondary">
           {t("approved", {
             date: formatLongDate(event.student_life_approved_on, locale),

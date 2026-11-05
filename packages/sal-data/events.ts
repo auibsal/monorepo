@@ -44,7 +44,7 @@ export type Entry = (typeof ENTRIES)[number];
 const events = (client: Client) => client.schema("events");
 
 export const eventColumns =
-  "id, slug, programme_id, title_en, title_ar, summary_en, summary_ar, venue_en, venue_ar, starts_at, ends_at, members_only, capacity, rsvp_enabled, entry, status, image_path, occasion, student_life_approved_on";
+  "id, slug, programme_id, title_en, title_ar, summary_en, summary_ar, venue_en, venue_ar, starts_at, ends_at, members_only, capacity, rsvp_enabled, entry, status, image_path, off_campus, student_life_approved_on";
 
 /**
  * Public events. Members-only events are filtered here AND by RLS, so they
@@ -94,15 +94,6 @@ export const pastPublicEvents = async (
   }
   return unwrap(await query);
 };
-
-/**
- * The Society's occasions (the design review A34, A36), each an ordinary
- * event (owner, Nov 5, 2026: no series pages): Book Circle's Friday on
- * al-Mutanabbi Street, published only once Student Life's approval is
- * recorded, and Open Pages' worst-poem contest.
- */
-export const OCCASIONS = ["book_street_trip", "worst_poem_contest"] as const;
-export type Occasion = (typeof OCCASIONS)[number];
 
 export const publicEvent = async (client: Client, eventSlug: string) =>
   unwrap(

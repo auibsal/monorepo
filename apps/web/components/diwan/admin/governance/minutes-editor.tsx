@@ -41,10 +41,13 @@ export const MinutesEditor = () => {
   const locale = useLocale() as Locale;
   const router = useRouter();
   const minutesId = useQueryParam("id");
+  // From an event's page in What's on: the meeting the minutes are of.
+  const fromEvent = useQueryParam("event");
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
   const [form, setForm] = useState({
     body: "council" as Body,
+    event_id: fromEvent ?? "",
     meeting_on: new Date().toISOString().slice(0, 10),
     text: { ar: "", en: "" },
     title: { ar: "", en: "" },
@@ -72,6 +75,7 @@ export const MinutesEditor = () => {
     if (m) {
       setForm({
         body: m.body as Body,
+        event_id: m.event_id ?? "",
         meeting_on: m.meeting_on,
         text: { ar: m.text_ar ?? "", en: m.text_en },
         title: { ar: m.title_ar ?? "", en: m.title_en },
@@ -81,11 +85,28 @@ export const MinutesEditor = () => {
 
   const adopted = existing.data?.status === "adopted";
 
+  // Meetings are events made in What's on (owner, Nov 5, 2026): the
+  // minutes name theirs, and take its day.
+  const meetings = useQuery({
+    queryFn: async () =>
+      unwrap(
+        await supabase
+          .schema("events")
+          .from("events")
+          .select("id, title_en, title_ar, starts_at")
+          .gte("starts_at", new Date(Date.now() - 400 * 864e5).toISOString())
+          .order("starts_at", { ascending: false })
+          .limit(200)
+      ) ?? [],
+    queryKey: ["admin", "governance", "meeting-events"],
+  });
+
   const save = useMutation({
     mutationFn: async (adopt: boolean) => {
       const row = {
         adopted_on: adopt ? adoptedOn : (existing.data?.adopted_on ?? null),
         body: form.body,
+        event_id: form.event_id || null,
         meeting_on: form.meeting_on,
         status: adopt || adopted ? "adopted" : "draft",
         text_ar: sanitizeRichText(form.text.ar) || null,
@@ -181,18 +202,38 @@ export const MinutesEditor = () => {
           value={form.title}
         />
         <div className="grid gap-4 sm:grid-cols-2">
-          <Field label={t("minutes.meetingOn")}>
+          <Field label={t("minutes.meeting")}>
             {(id) => (
-              <DateInput
+              <SelectInput
                 id={id}
                 onChange={(e) =>
-                  setForm((f) => ({ ...f, meeting_on: e.target.value }))
+                  setForm((f) => ({ ...f, event_id: e.target.value }))
                 }
-                required
-                value={form.meeting_on}
-              />
+                value={form.event_id}
+              >
+                <option value="">{t("minutes.noMeeting")}</option>
+                {(meetings.data ?? []).map((m) => (
+                  <option key={m.id} value={m.id}>
+                    {`${localized(m, "title", locale)} · ${formatLongDate(m.starts_at, locale, true)}`}
+                  </option>
+                ))}
+              </SelectInput>
             )}
           </Field>
+          {form.event_id ? null : (
+            <Field label={t("minutes.meetingOn")}>
+              {(id) => (
+                <DateInput
+                  id={id}
+                  onChange={(e) =>
+                    setForm((f) => ({ ...f, meeting_on: e.target.value }))
+                  }
+                  required
+                  value={form.meeting_on}
+                />
+              )}
+            </Field>
+          )}
           <Field label={t("minutes.body")}>
             {(id) => (
               <SelectInput

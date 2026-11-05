@@ -408,7 +408,7 @@ const NameStep = ({
         parts={names[language]}
       />
       {failed}
-      <div className="flex items-center gap-6">
+      <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
         <Button disabled={!ready || pending} type="submit">
           {t("continue")}
         </Button>
@@ -494,7 +494,7 @@ const PledgeStep = ({
       </blockquote>
       <p className="type-caption type-code">v{version}</p>
       {failed}
-      <div className="flex items-center gap-6">
+      <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
         <Button disabled={pending} onClick={onAgree} type="button">
           {t(`${key}.accept`)}
         </Button>
@@ -520,7 +520,7 @@ const PhotosStep = ({
         <p className="type-body text-text-secondary">{t("photos.body")}</p>
       </div>
       {failed}
-      <div className="grid justify-items-start gap-3">
+      <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
         <Button
           disabled={pending}
           onClick={() => onAnswer(false)}

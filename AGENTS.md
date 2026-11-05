@@ -525,16 +525,31 @@ any schema change. Integration tests run against a local stack with
   opening its piece. Record links to the member's year,
   `/membership/record/year/<yyyy>` (the academic year from September 1,
   `recognition.myYear`): their own records only, private and printable.
-- **Occasions: the trip and the contest** (design review A34, A36, Nov
-  5, 2026). An event may be an occasion (`events.events.occasion`,
-  `events.OCCASIONS`): Book Circle's Friday on al-Mutanabbi Street
-  (`book_street_trip`) and Open Pages' worst-poem contest
-  (`worst_poem_contest`); each is an ordinary event with the one event
-  page (the occasion pages are retired with the series). A trip is
-  published only once the General Secretary records Student Life's
-  written approval on the event's page in the Diwan
-  (`events.record_approval`, `private.trip_needs_approval`), and its page
-  says so.
+- **One kind of event, with add-ons** (owner, Nov 5, 2026, evening:
+  "Don't keep event-specific things. All events have standard pages, we
+  change the details."; migration `20261101005300_event_modules`). Every
+  event, a Council meeting, the AGM and Launch Night among them, is made
+  in What's on (`/diwan/events/new`) with the same details; its way in is
+  `open`, `rsvp` or `invite` (private). Below the details, the event's page
+  in the Diwan (`EventPartsAdmin`) shows the add-ons it has and one row,
+  "Add to this event", for the rest: off campus, a partner and its
+  checklist, needs, shifts, links, prompts, a book vote, Second Chapter's
+  collection (`charity.manage`) and a meeting's minutes (governance). The
+  public page shows the ones it has (`EventParts`). Off campus
+  (`events.events.off_campus`, replacing the occasions; the trip and the
+  contest are ordinary events): published only once the General Secretary
+  records Student Life's written approval (`events.record_approval`,
+  `private.trip_needs_approval`); only `governance.manage` brings it back
+  on campus. A meeting's minutes and resolutions stay governance records
+  pointing at their event (`governance.minutes.event_id`; its day sets
+  `meeting_on`, `private.minutes_follow_meeting`); minutes from before
+  keep their own date.
+- **One layout rule** (owner, Nov 5, 2026, evening). Menus, tabs and
+  action buttons sit in rows, wrapping on a phone (`flex flex-wrap`);
+  choosing between options is always a vertical list (`SelectInput`
+  shows a few short options as a list with the chosen one marked on its
+  starting edge, more as a list with a find line). Never stack action
+  buttons in a column, never set options side by side.
 - **The owner's decisions of Nov 5, 2026** (`claude/decisions.md`;
   migrations `20261101005000_council_of_six`,
   `20261101005100_events_not_programs`).

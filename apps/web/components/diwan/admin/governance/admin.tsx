@@ -101,9 +101,14 @@ const MeetingsList = () => {
   ];
   return (
     <div className="grid gap-4">
-      <Link className="link justify-self-start" href="/society/meetings/new">
-        {t("minutes.new")}
-      </Link>
+      <div className="flex flex-wrap gap-x-6 gap-y-2">
+        <Link className="link" href="/events/new">
+          {t("minutes.makeMeeting")}
+        </Link>
+        <Link className="link" href="/society/meetings/new">
+          {t("minutes.new")}
+        </Link>
+      </div>
       <p className="type-caption">{t("minutes.draftNote")}</p>
       {minutes.data ? (
         <DataTable columns={columns} rowKey={(m) => m.id} rows={minutes.data} />
