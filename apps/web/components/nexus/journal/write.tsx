@@ -39,57 +39,118 @@ import { PartnerPathway, useSubmitPathway, YourWork } from "./pages";
 
 const LANGUAGES = ["en", "ar", "bilingual"] as const;
 
-/** The types a member may send, in section order. */
+/** The sections that take work from members (Games come from the editors). */
+const sendingDesks = journal.desks.filter(
+  (desk) => journal.sendableCategories(desk).length > 0
+);
+
 /**
- * /qirtas/write (owner, Oct 31, 2026): one door. Every section takes work
- * all year, and everything sent is read blind before an editor takes it
- * up with the author. Letters and Gallery work may also answer an open
- * call for the printed Edition.
+ * The door for visitors: Qirtas takes work from members and guests, so the
+ * way in is to sign in (and back here) or to join. One solid button.
+ */
+const VisitorDoor = () => {
+  const tw = useTranslations("nexus.journal.write");
+  return (
+    <div className="grid gap-3 border-line border-y py-5">
+      <p className="type-body">{tw("door.who")}</p>
+      <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
+        <Link
+          className="inline-flex h-12 items-center bg-accent px-6 font-medium text-[0.9375rem] text-on-accent hover:bg-accent/90"
+          href={{ pathname: "/sign-in", query: { next: "/qirtas/write" } }}
+        >
+          {tw("door.signIn")}
+        </Link>
+        <Link className="link" href="/join">
+          {tw("door.join")}
+        </Link>
+      </div>
+    </div>
+  );
+};
+
+/** How a piece goes from the writer to the paper, in three steps. */
+const HowItWorks = () => {
+  const tw = useTranslations("nexus.journal.write");
+  return (
+    <DiwanSection id="how" title={tw("how.title")}>
+      <ol className="grid gap-4 md:grid-cols-3">
+        {(["choose", "read", "edit"] as const).map((step, i) => (
+          <li className="grid gap-1 border-line border-t pt-3" key={step}>
+            <span className="type-caption">{formatNumber(i + 1)}</span>
+            <span className="type-heading">{tw(`how.${step}.title`)}</span>
+            <span className="type-body text-text-secondary">
+              {tw(`how.${step}.body`)}
+            </span>
+          </li>
+        ))}
+      </ol>
+    </DiwanSection>
+  );
+};
+
+/**
+ * /qirtas/write (owner, Oct 31, 2026; the gateway revised Nov 5, 2026):
+ * one door, readable by anyone. Visitors learn what Qirtas takes and how it
+ * is read, then sign in (and come back here) or join; members and guests
+ * see their work first. Every section but Games takes work all year, read
+ * blind before an editor takes it up with the author; Letters and Gallery
+ * work may also answer an open call for the printed Edition.
  */
 export const WriteHome = () => {
   const tw = useTranslations("nexus.journal.write");
   const tj = useTranslations("nexus.admin.journal");
   const locale = useLocale() as Locale;
+  const { loading, user } = useAuth();
   const calls = useOpenCalls();
   const editionCalls = (calls.data ?? []).filter((c) => c.issue_id);
-
+  let door: ReactNode = null;
+  if (!loading) {
+    door = user ? <YourWork /> : <VisitorDoor />;
+  }
   return (
     <div className="grid gap-8">
       <AdminHeading title={tw("title")}>{tw("lede")}</AdminHeading>
       {/* Private work lives here alone, as drafts (owner, Oct 31, 2026):
           what the member sent and what is edited with them. Their author
           page shows only what is published. */}
-      <YourWork />
+      {door}
       <DiwanSection id="sections" title={tw("sectionsTitle")}>
         <ul className="grid divide-y divide-line border-line border-y">
-          {/* Games come from the editors only (owner, Nov 5, 2026). */}
-          {journal.desks
-            .filter((desk) => journal.sendableCategories(desk).length > 0)
-            .map((desk) => (
-              <li
-                className="grid gap-3 py-5 md:grid-cols-[12rem_1fr]"
-                key={desk}
-              >
-                <h3 className="type-heading">{tj(`desks.${desk}`)}</h3>
-                <div className="grid gap-2">
-                  <p className="type-body">{tw(`sections.${desk}`)}</p>
-                  <ul className="flex flex-wrap gap-x-5 gap-y-2 pt-1">
-                    {journal.sendableCategories(desk).map((category) => (
-                      <li key={category}>
-                        <Link
-                          className="link font-medium text-sm"
-                          href={`/qirtas/write/${category}`}
-                        >
-                          {tj(`categories.${category}`)}
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </li>
-            ))}
+          {sendingDesks.map((desk) => (
+            <li
+              className="grid gap-3 py-5 md:grid-cols-[12rem_1fr]"
+              id={desk}
+              key={desk}
+            >
+              <h3 className="type-heading">{tj(`desks.${desk}`)}</h3>
+              <div className="grid gap-2">
+                <p className="type-body">
+                  {tw(`sections.${desk as Exclude<typeof desk, "games">}`)}
+                </p>
+                <ul className="flex flex-wrap gap-x-5 gap-y-2 pt-1">
+                  {journal.sendableCategories(desk).map((category) => (
+                    <li key={category}>
+                      <Link
+                        className="link font-medium text-sm"
+                        href={`/qirtas/write/${category}`}
+                      >
+                        {tj(`categories.${category}`)}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </li>
+          ))}
         </ul>
+        <p className="type-caption">
+          {tw("gamesNote")}{" "}
+          <Link className="link" href="/qirtas/games">
+            {tw("gamesLink")}
+          </Link>
+        </p>
       </DiwanSection>
+      <HowItWorks />
       <DiwanSection id="edition" title={tw("editionTitle")}>
         <p className="max-w-3xl text-text-secondary">{tw("editionLede")}</p>
         {calls.data ? null : <SectionSpinner />}

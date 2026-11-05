@@ -3,7 +3,7 @@ import { urls } from "../playwright.config";
 import { expectAccessible } from "./helpers";
 
 test.describe("Qirtas games", () => {
-  test("the games page opens on today's word and lists the starter puzzles", async ({
+  test("the games page opens on today's word and lists the other daily games", async ({
     page,
   }) => {
     await page.goto(`${urls.web}/qirtas/games`);
@@ -19,7 +19,12 @@ test.describe("Qirtas games", () => {
       page.getByRole("link", { name: /Find the eight hidden words/ })
     ).toBeVisible();
     await expect(
-      page.getByRole("link", { name: /The first crossword/ })
+      page.getByRole("link", { name: /Fill the grid from the clues/ })
+    ).toBeVisible();
+    await expect(
+      page.getByRole("link", {
+        name: /Five words with their letters scrambled/,
+      })
     ).toBeVisible();
     await expectAccessible(page);
   });
@@ -63,15 +68,23 @@ test.describe("Qirtas games", () => {
     await expectAccessible(page);
   });
 
-  test("a starter crossword takes letters and says it was made with an AI tool", async ({
+  test("the daily crossword takes letters, numbered with today's game", async ({
     page,
   }) => {
-    await page.goto(`${urls.web}/qirtas/games/first-crossword`);
-    await expect(page.getByText(/Made with an AI tool/)).toBeVisible();
+    await page.goto(`${urls.web}/qirtas/games/crossword`);
+    await expect(page.getByText(/No\. \d+/)).toBeVisible();
     const square = page.getByRole("textbox").first();
     await square.click();
     await page.keyboard.type("x");
     await expect(square).toHaveValue("X");
+    await expectAccessible(page);
+  });
+
+  test("the daily anagrams check a typed word", async ({ page }) => {
+    await page.goto(`${urls.web}/qirtas/games/anagram`);
+    await expect(page.getByText("0 of 5 solved so far.")).toBeVisible();
+    await page.getByRole("button", { name: "Show the answer" }).first().click();
+    await expect(page.getByRole("status").first()).toBeVisible();
     await expectAccessible(page);
   });
 });

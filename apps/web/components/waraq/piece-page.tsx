@@ -16,6 +16,7 @@ import {
 import { PairedClip, Reading } from "@/components/waraq/clip-and-reading";
 import { SelectionToggle } from "@/components/waraq/gallery-selection";
 import { CorrectionNotes, PieceBody, texts } from "@/components/waraq/layouts";
+import { PieceEnd } from "@/components/waraq/piece-end";
 import { ReadingProgress, TextSize } from "@/components/waraq/reading-tools";
 import { SaveForLater } from "@/components/waraq/save-for-later";
 import { articleLd, JsonLd } from "@/lib/json-ld";
@@ -238,6 +239,7 @@ export const PieceArticle = async ({
           <PieceColumn locale={locale} pieces={related} />
         </aside>
       ) : null}
+      <PieceEnd desk={desk} locale={locale} />
     </div>
   );
 };
