@@ -5,7 +5,7 @@ Every session starts here and continues from the first unticked item. The
 brief is `sal-platform-claude-code-prompt.md` (uploaded at the start of the
 first session); section numbers (§) refer to it.
 
-Branch: `claude/tour-and-listening` (PR 5b of the design review).
+Branch: `claude/book-circle-vote` (PR 5b, the vote).
 
 
 ## The design review: PR 5b, Book Circle's vote (2026-11-05)
