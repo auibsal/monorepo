@@ -4,6 +4,8 @@ import {
   certificateSchema,
   linkedInUrl,
   serviceEntrySchema,
+  societyYear,
+  societyYearOf,
   verificationUrl,
 } from "./recognition";
 
@@ -77,5 +79,17 @@ describe("recognition", () => {
     expect(linkedIn.searchParams.get("certId")).toBe("SAL-2026-001");
     expect(linkedIn.searchParams.get("certUrl")).toBe(url);
     expect(linkedIn.searchParams.get("issueMonth")).toBe("10");
+  });
+});
+
+describe("the academic year of a member's summary", () => {
+  test("runs from September 1, as service hours count it", () => {
+    expect(societyYearOf(new Date("2026-11-05T12:00:00Z"))).toBe(2026);
+    expect(societyYearOf(new Date("2027-08-31T12:00:00Z"))).toBe(2026);
+    expect(societyYearOf(new Date("2027-09-01T12:00:00Z"))).toBe(2027);
+    expect(societyYear(2026)).toEqual({
+      from: "2026-09-01T00:00:00+03:00",
+      to: "2027-09-01T00:00:00+03:00",
+    });
   });
 });

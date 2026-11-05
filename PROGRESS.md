@@ -8,6 +8,28 @@ first session); section numbers (§) refer to it.
 Branch: `claude/qirtas-games-masthead`.
 
 
+## The design review: PR 6a, About, the 404 page and a member's year (2026-11-05)
+
+Branch: `claude/pr6a-about-record`. PR 6 started on the owner's word (Nov
+5, 2026), in parts: 6a (C6, C10, C23), 6b (A15, A16, A21, A24), 6c (A27,
+A28, A40, A41), 6d (R4, the retired code names, last).
+
+- [x] C6 About: "How it began", a dated line each from what Qirtas
+  reported (the member handbook, Sept 28; the founding documents, Oct 9;
+  the Constitution ratified, Oct 13; Qirtas launched, Oct 14, 2026), each
+  opening its piece. The founding date itself is still not on record (the
+  Constitution's "[month, year]"), so it is not shown.
+- [x] C10 The 404 page carries one line of al-Mutanabbi's: "The best
+  companion, in any age, is a book" («وخيرُ جليسٍ في الزمانِ كتابُ»).
+- [x] C23 A member's year, `/membership/record/year/<yyyy>`, linked from
+  Record: the events they came to, the roles they held, their confirmed
+  service, the work they sent to Qirtas and what was accepted, and their
+  certificates, for the academic year (September to August, as service
+  hours count it), from their own records only, printable on white
+  (`recognition.myYear`).
+- needs-native-review: `web.about.beganTitle`, `web.about.began.*`,
+  `web.notFound.line`, `lineBy`, `nexus.service.year.*`.
+
 ## Public pages refresh again (2026-11-05)
 
 Branch: `claude/unstick-revalidation`.
