@@ -3,7 +3,7 @@
 import { hasSessionCookie } from "@repo/auth/session-cookie";
 import { Icon } from "@repo/brand/components/sal/icon";
 import { cn } from "@repo/brand/lib/utils";
-import { localizedPath, nexusPath } from "@repo/internationalization";
+import { diwanPath, localizedPath } from "@repo/internationalization";
 import { type Locale, locales } from "@repo/internationalization/config";
 import { Link, usePathname } from "@repo/internationalization/navigation";
 import NextLink from "next/link";
@@ -163,7 +163,7 @@ export const SiteHeader = ({
   const extras: Way[] = signedIn
     ? [
         ...(known?.diwan
-          ? [{ href: localizedPath(locale, nexusPath()), label: t("diwan") }]
+          ? [{ href: localizedPath(locale, diwanPath()), label: t("diwan") }]
           : []),
         ...(known?.partner
           ? [

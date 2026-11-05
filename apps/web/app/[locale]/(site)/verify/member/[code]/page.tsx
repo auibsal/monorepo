@@ -44,8 +44,8 @@ const MemberCardPage = async ({ params, searchParams }: CardParams) => {
       : undefined;
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "web.verifyCard" });
-  const tt = await getTranslations({ locale, namespace: "nexus.home.tiers" });
-  const tk = await getTranslations({ locale, namespace: "nexus.home.kinds" });
+  const tt = await getTranslations({ locale, namespace: "diwan.home.tiers" });
+  const tk = await getTranslations({ locale, namespace: "diwan.home.kinds" });
   const valid = membership.CARD_CODE.test(code);
   const [card, record] = valid
     ? await Promise.all([

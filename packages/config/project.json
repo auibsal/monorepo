@@ -14,7 +14,7 @@
   "domain": "auibsal.org",
   "url": "https://auibsal.org",
   "paths": {
-    "nexus": "/diwan",
+    "diwan": "/diwan",
     "api": "/api"
   },
   "supportEmail": "hello@auibsal.org",

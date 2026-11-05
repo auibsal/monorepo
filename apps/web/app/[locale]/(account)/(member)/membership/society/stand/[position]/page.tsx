@@ -1,8 +1,8 @@
-import { StandForOffice } from "@/components/nexus/society/elections";
-import { titleFrom } from "@/lib/nexus/metadata";
+import { StandForOffice } from "@/components/diwan/society/elections";
+import { titleFrom } from "@/lib/diwan/metadata";
 
 export const generateMetadata = titleFrom((t) =>
-  t("nexus.society.elections.stand")
+  t("diwan.society.elections.stand")
 );
 
 /** Standing for one position, on its own page under Society. */

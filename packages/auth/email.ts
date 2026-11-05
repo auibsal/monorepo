@@ -109,7 +109,7 @@ export interface SignUpDetails {
    */
   outside?: { invitation: string } | { partnerApplicant: true };
   password: string;
-  /** Where the confirmation link lands (the Nexus /auth/callback). */
+  /** Where the confirmation link lands (the Diwan /auth/callback). */
   redirectTo: string;
 }
 

@@ -1,0 +1,321 @@
+"use client";
+
+import { useAuth } from "@repo/auth/provider";
+import { SalCard } from "@repo/brand/components/sal/card";
+import { Button } from "@repo/brand/components/ui/button";
+import { Input } from "@repo/brand/components/ui/input";
+import { Label } from "@repo/brand/components/ui/label";
+import { Textarea } from "@repo/brand/components/ui/textarea";
+import {
+  formatLongDate,
+  formatNumber,
+} from "@repo/internationalization/format";
+import { Link } from "@repo/internationalization/navigation";
+import { localized, recognition, unwrap } from "@repo/sal-data";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useLocale, useTranslations } from "next-intl";
+import { type FormEvent, useId, useState } from "react";
+import { SelectInput } from "@/components/diwan/admin/kit";
+import { DateInput } from "@/components/fields/date-input";
+import { AddInPlace, ErrorLine } from "../admin/kit";
+import { DiwanPage, DiwanSection } from "../page";
+import { EmptyLine, SectionSpinner } from "../states";
+import { YearLinks } from "./year";
+
+const KEY = ["service"];
+
+type RecordStatus = "pending" | "confirmed" | "rejected";
+
+const today = () => new Date().toISOString().slice(0, 10);
+
+/**
+ * My service: the Volunteer Hours Log (Form F-16) and certificates. Hours
+ * count once someone else confirms them; forty in an academic year make a
+ * member eligible to be nominated as a Fellow (B4.1).
+ */
+export const Service = () => {
+  const t = useTranslations("diwan.service");
+  const locale = useLocale();
+  const { supabase } = useAuth();
+  const queryClient = useQueryClient();
+  const hours = useQuery({
+    queryFn: () => recognition.serviceHours(supabase),
+    queryKey: [...KEY, "hours"],
+  });
+  const records = useQuery({
+    queryFn: () => recognition.myService(supabase),
+    queryKey: [...KEY, "records"],
+  });
+  const programmes = useQuery({
+    queryFn: async () =>
+      unwrap(
+        await supabase
+          .schema("core")
+          .from("programmes")
+          .select("id, name_en, name_ar")
+          .order("sort")
+      ) ?? [],
+    queryKey: [...KEY, "programmes"],
+  });
+
+  const certificates = useQuery({
+    queryFn: () => recognition.myCertificates(supabase),
+    queryKey: [...KEY, "certificates"],
+  });
+  const withdraw = useMutation({
+    mutationFn: async (recordId: string) =>
+      unwrap(
+        await supabase
+          .schema("membership")
+          .from("service_records")
+          .delete()
+          .eq("id", recordId)
+      ),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: KEY }),
+  });
+
+  const total = hours.data ?? 0;
+  const progress = Math.min(1, total / recognition.FELLOWSHIP_HOURS);
+  const programmeName = (programmeId: string | null) => {
+    const row = programmes.data?.find((p) => p.id === programmeId);
+    return row ? localized(row, "name", locale) : "";
+  };
+
+  return (
+    <DiwanPage lede={t("lede")} narrow title={t("title")}>
+      <SalCard>
+        <div className="grid gap-3">
+          <p className="type-label">{t("thisYear")}</p>
+          <p className="font-light text-3xl tabular-nums">
+            {t("hours", { hours: formatNumber(total) })}
+          </p>
+          <div
+            aria-label={t("progressLabel", {
+              hours: formatNumber(total),
+              target: formatNumber(recognition.FELLOWSHIP_HOURS),
+            })}
+            aria-valuemax={recognition.FELLOWSHIP_HOURS}
+            aria-valuemin={0}
+            aria-valuenow={total}
+            className="h-2 w-full overflow-hidden rounded-full bg-surface"
+            role="progressbar"
+          >
+            <div
+              className="h-full bg-band"
+              style={{ width: `${Math.round(progress * 100)}%` }}
+            />
+          </div>
+          <p className="type-caption">
+            {total >= recognition.FELLOWSHIP_HOURS
+              ? t("eligible")
+              : t("towardsFellowship", {
+                  target: formatNumber(recognition.FELLOWSHIP_HOURS),
+                })}
+          </p>
+        </div>
+      </SalCard>
+
+      <DiwanSection id="recordstitle" title={t("recordsTitle")}>
+        {records.isPending ? <SectionSpinner /> : null}
+        {records.data?.length === 0 ? (
+          <EmptyLine action={{ href: "/get-involved", label: t("findShift") }}>
+            {t("noRecords")}
+          </EmptyLine>
+        ) : null}
+        <ul className="grid gap-2">
+          {(records.data ?? []).map((r) => (
+            <li
+              className="flex flex-wrap items-baseline justify-between gap-2 border-line border-b pb-2"
+              key={r.id}
+            >
+              <span className="grid">
+                <span className="font-medium" dir="auto">
+                  {r.activity}
+                </span>
+                <span className="type-caption">
+                  {formatLongDate(r.occurred_on, locale, true)}
+                  {r.programme_id ? ` · ${programmeName(r.programme_id)}` : ""}
+                  {" · "}
+                  {t(`statuses.${r.status as RecordStatus}`)}
+                  {r.reject_reason ? ` · ${r.reject_reason}` : ""}
+                </span>
+              </span>
+              <span className="flex items-center gap-2">
+                <span className="font-medium">
+                  {t("hours", { hours: formatNumber(Number(r.hours)) })}
+                </span>
+                {r.status === "pending" ? (
+                  <Button
+                    disabled={withdraw.isPending}
+                    onClick={() => withdraw.mutate(r.id)}
+                    size="sm"
+                    variant="ghost"
+                  >
+                    {t("withdraw")}
+                  </Button>
+                ) : null}
+              </span>
+            </li>
+          ))}
+        </ul>
+      </DiwanSection>
+
+      <DiwanSection id="logtitle" title={t("logTitle")}>
+        <p className="type-body">{t("logLede")}</p>
+        <AddInPlace label={t("log")}>
+          {(close) => <LogHours onDone={close} />}
+        </AddInPlace>
+      </DiwanSection>
+
+      <DiwanSection id="certificatestitle" title={t("certificatesTitle")}>
+        {certificates.data?.length === 0 ? (
+          <p className="type-body text-text-secondary">{t("noCertificates")}</p>
+        ) : null}
+        <ul className="grid gap-2">
+          {(certificates.data ?? []).map((c) => (
+            <li key={c.id}>
+              <Link className="link" href={`/membership/record/${c.id}`}>
+                {t(`kinds.${c.kind as recognition.CertificateKind}`)}
+                {c.serial ? ` · ${c.serial}` : ""}
+              </Link>
+              {c.status === "revoked" ? (
+                <span className="type-caption"> · {t("revoked")}</span>
+              ) : null}
+            </li>
+          ))}
+        </ul>
+      </DiwanSection>
+      <YearLinks />
+    </DiwanPage>
+  );
+};
+
+/** Hours given, logged in place on Record (decisions §26). */
+const LogHours = ({ onDone }: { readonly onDone: () => void }) => {
+  const t = useTranslations("diwan.service");
+  const locale = useLocale();
+  const { supabase } = useAuth();
+  const queryClient = useQueryClient();
+  const id = useId();
+  const empty = {
+    activity: "",
+    hours: "",
+    occurred_on: today(),
+    programme_id: "",
+    what: "",
+  };
+  const [form, setForm] = useState(empty);
+
+  const programmes = useQuery({
+    queryFn: async () =>
+      unwrap(
+        await supabase
+          .schema("core")
+          .from("programmes")
+          .select("id, name_en, name_ar")
+          .order("sort")
+      ) ?? [],
+    queryKey: [...KEY, "programmes"],
+  });
+
+  const log = useMutation({
+    mutationFn: () =>
+      recognition.logHours(supabase, {
+        activity: form.activity,
+        hours: Number(form.hours),
+        occurred_on: form.occurred_on,
+        programme_id: form.programme_id || null,
+        what: form.what,
+      }),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: KEY });
+      onDone();
+    },
+  });
+  const onSubmit = (event: FormEvent) => {
+    event.preventDefault();
+    log.mutate();
+  };
+
+  return (
+    <form className="grid gap-4" onSubmit={onSubmit}>
+      <div className="grid gap-4 sm:grid-cols-3">
+        <div className="grid gap-2">
+          <Label htmlFor={`${id}-date`}>{t("date")}</Label>
+          <DateInput
+            id={`${id}-date`}
+            max={today()}
+            onChange={(e) =>
+              setForm((f) => ({ ...f, occurred_on: e.target.value }))
+            }
+            required
+            value={form.occurred_on}
+          />
+        </div>
+        <div className="grid gap-2">
+          <Label htmlFor={`${id}-hours`}>{t("hoursLabel")}</Label>
+          <Input
+            dir="ltr"
+            id={`${id}-hours`}
+            inputMode="decimal"
+            max={24}
+            min={0.25}
+            onChange={(e) => setForm((f) => ({ ...f, hours: e.target.value }))}
+            required
+            step={0.25}
+            type="number"
+            value={form.hours}
+          />
+        </div>
+        <div className="grid gap-2">
+          <Label htmlFor={`${id}-programme`}>{t("programme")}</Label>
+          <SelectInput
+            id={`${id}-programme`}
+            onChange={(e) =>
+              setForm((f) => ({ ...f, programme_id: e.target.value }))
+            }
+            value={form.programme_id}
+          >
+            <option value="">{t("noProgramme")}</option>
+            {(programmes.data ?? []).map((p) => (
+              <option key={p.id} value={p.id}>
+                {localized(p, "name", locale)}
+              </option>
+            ))}
+          </SelectInput>
+        </div>
+      </div>
+      <div className="grid gap-2">
+        <Label htmlFor={`${id}-activity`}>{t("activity")}</Label>
+        <Input
+          dir="auto"
+          id={`${id}-activity`}
+          maxLength={200}
+          onChange={(e) => setForm((f) => ({ ...f, activity: e.target.value }))}
+          required
+          value={form.activity}
+        />
+      </div>
+      <div className="grid gap-2">
+        <Label htmlFor={`${id}-what`}>{t("what")}</Label>
+        <Textarea
+          dir="auto"
+          id={`${id}-what`}
+          maxLength={1000}
+          onChange={(e) => setForm((f) => ({ ...f, what: e.target.value }))}
+          rows={2}
+          value={form.what}
+        />
+      </div>
+      <p className="type-caption">{t("confirmNote")}</p>
+      <Button
+        className="justify-self-start"
+        disabled={log.isPending}
+        type="submit"
+      >
+        {t("log")}
+      </Button>
+      <ErrorLine error={log.error} />
+    </form>
+  );
+};

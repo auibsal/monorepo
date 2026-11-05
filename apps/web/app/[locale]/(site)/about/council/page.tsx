@@ -35,7 +35,7 @@ const byElection = (rows: Results) => {
  * hold, the resolutions it adopted and who members elected. Only what the
  * database makes public is read (the Council, adopted resolutions, each published election's
  * outcome per office); minutes and the counts at each round stay in the
- * Nexus.
+ * Diwan.
  */
 const GovernancePage = async ({ params }: LocaleParams) => {
   const { locale } = await params;

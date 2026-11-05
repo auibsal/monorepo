@@ -7,7 +7,7 @@ import {
   EditionComing,
   EditionShelfItem,
   loadEditions,
-} from "@/components/waraq/editions";
+} from "@/components/qirtas/editions";
 import { localizedMetadata } from "@/lib/metadata";
 
 interface EditionsProps {

@@ -11,12 +11,12 @@ import { Link } from "@repo/internationalization/navigation";
 import { localized, programmes } from "@repo/sal-data";
 import { useQuery } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
-import { RowList } from "@/components/nexus/page";
+import { RowList } from "@/components/diwan/page";
 import {
   EmptyLine,
   ErrorState,
   SectionSpinner,
-} from "@/components/nexus/states";
+} from "@/components/diwan/states";
 
 /**
  * Every open opportunity, for anyone to read, in one list (owner, Oct 31,
@@ -26,7 +26,7 @@ import {
  * with and when it closes. Replying takes membership.
  */
 export const OpenPlaces = () => {
-  const t = useTranslations("nexus.getInvolved");
+  const t = useTranslations("diwan.getInvolved");
   const locale = useLocale() as Locale;
   const { supabase } = useAuth();
   const places = useQuery({
@@ -63,8 +63,8 @@ const KINDS = [
 ] as const;
 
 const PlaceRow = ({ locale, row }: { locale: Locale; row: Place }) => {
-  const t = useTranslations("nexus.getInvolved");
-  const td = useTranslations("nexus.details");
+  const t = useTranslations("diwan.getInvolved");
+  const td = useTranslations("diwan.details");
   // Who it is with: the partner, the program, or the Society.
   const partner = row.partner_name_en
     ? localized(

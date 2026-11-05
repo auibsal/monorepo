@@ -3,7 +3,7 @@
 import { useTranslations } from "next-intl";
 import type { ReactNode } from "react";
 import { useWays } from "@/components/account/member-shell";
-import { LanguageSwitcher } from "@/components/nexus/language-switcher";
+import { LanguageSwitcher } from "@/components/diwan/language-switcher";
 import { SiteHeader } from "@/components/site-header";
 
 /** The site's skip link and header around the members' pages. */

@@ -9,8 +9,8 @@ import { events } from "./features/events";
 import { joins } from "./features/group/joins";
 import { setup } from "./features/group/setup";
 import { inline } from "./features/inline";
+import { qirtas } from "./features/qirtas";
 import { start } from "./features/start";
-import { waraq } from "./features/waraq";
 import { followWithSticker } from "./stickers";
 
 // Methods whose text we write in Telegram HTML, with link previews off
@@ -70,7 +70,7 @@ export const createBot = (
   );
 
   bot.use(flavor);
-  bot.use(start, account, events, waraq, inline);
+  bot.use(start, account, events, qirtas, inline);
   bot.use(setup, joins);
 
   bot.catch(async ({ ctx, error }) => {

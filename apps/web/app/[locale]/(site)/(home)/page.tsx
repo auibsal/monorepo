@@ -10,8 +10,8 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { ReactNode } from "react";
 import { type DatedItem, DatedList, eventItems } from "@/components/event-list";
 import { NewsletterSignup } from "@/components/newsletter/signup";
+import { PieceCardView } from "@/components/qirtas/cards";
 import { seriesPath } from "@/components/series";
-import { PieceCardView } from "@/components/waraq/cards";
 import { localizedMetadata } from "@/lib/metadata";
 import { readPublished } from "@/lib/supabase";
 

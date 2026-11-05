@@ -1,4 +1,4 @@
-import { apiUrl, nexusUrl, siteUrl } from "@repo/internationalization";
+import { apiUrl, diwanUrl, siteUrl } from "@repo/internationalization";
 import { env } from "@/env";
 
 const TRAILING_SLASH = /\/$/;
@@ -10,9 +10,9 @@ export const origin = () =>
 /** A public page on this deployment, in a language. */
 export const site = (lang: string, path = "/") => siteUrl(lang, path, origin());
 
-/** A Nexus page on this deployment, in a language. */
-export const nexus = (lang: string, path = "/") =>
-  nexusUrl(lang, path, origin());
+/** A Diwan page on this deployment, in a language. */
+export const diwan = (lang: string, path = "/") =>
+  diwanUrl(lang, path, origin());
 
 /** An API route on this deployment. */
 export const api = (path: string) => apiUrl(path, origin());

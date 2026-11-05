@@ -2,9 +2,9 @@
 
 import { hasSessionCookie } from "@repo/auth/session-cookie";
 import {
+  diwanPath,
   type Locale,
   localizedPath,
-  nexusPath,
 } from "@repo/internationalization";
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
@@ -46,7 +46,7 @@ export const ManageLinks = ({
   const links: { href: string; key: string; label: string }[] = [];
   if (diwan && ways?.diwan) {
     links.push({
-      href: localizedPath(locale, nexusPath(diwan)),
+      href: localizedPath(locale, diwanPath(diwan)),
       key: "diwan",
       label: t("diwan"),
     });

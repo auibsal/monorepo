@@ -49,13 +49,13 @@ const projectSchema = z
     orgNameAr: z.string().min(1),
     orgSlug: z.string().min(1),
     /**
-     * Where the member portal (the Nexus) and the API live on the one site:
+     * Where the member portal (the Diwan) and the API live on the one site:
      * auibsal.org/diwan and auibsal.org/api. The language prefix comes first
      * (/ar/diwan/events); API paths carry none. The key keeps the code name.
      */
     paths: z.object({
       api: z.string().startsWith("/"),
-      nexus: z.string().startsWith("/"),
+      diwan: z.string().startsWith("/"),
     }),
     region: z.object({
       country: z.string().length(2),

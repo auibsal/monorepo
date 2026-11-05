@@ -58,7 +58,26 @@ Branch: `claude/pr6b-topics-translations`.
 - needs-native-review: `nexus.admin.kit.selection.*`,
   `nexus.admin.event.checkInChosen`,
   `nexus.admin.recognition.pending.confirmChosen`.
-- Next: A41, then R4.
+- [x] A41 Joint events: an event may name the partner it is run with
+  (`events.events.partner_id`, picked on the event's page in the Diwan,
+  "Run with a partner"), and both sides keep one checklist
+  (`events.joint_tasks`, `JointChecklist`): the event's managers keep it
+  all, the partner's team adds and ticks its own side's items on the new
+  Events tab of its dashboard (`/partners/dashboard/events`,
+  `events.my_joint_events()`, drafts included). Migration
+  `20261101004900`, `99_joint_events.test.sql`.
+- needs-native-review: `nexus.joint.*`, `nexus.partnerDesk.tabs.events`,
+  `nexus.partnerDesk.lede`, `nexus.admin.activity.things.events_joint_tasks`.
+- [x] R4 (D9) The retired code names, last: `components/nexus` is
+  `components/diwan`, `lib/nexus` is `lib/diwan`, `components/waraq` is
+  `components/qirtas`, `nexusPath`/`nexusUrl`/`paths.nexus` are
+  `diwanPath`/`diwanUrl`/`paths.diwan`, the messages namespace `nexus` is
+  `diwan` (and `admin.waraq` is `admin.qirtas`), and every identifier
+  that said Nexus or Waraq says Diwan or Qirtas. The database keeps its
+  names (the `journal` schema, the `waraq` program slug, the bot's stored
+  `waraq` topic and old "waraq" button), and so does the web app
+  manifest's `id` ("/nexus"), which installed copies are known by.
+- PR 6 is done but A28, which waits for data.
 
 ## The design review: PR 6a, About, the 404 page and a member's year (2026-11-05)
 

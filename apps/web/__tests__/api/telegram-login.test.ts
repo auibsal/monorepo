@@ -13,7 +13,7 @@ const request = {
   clientSecret: "s".repeat(32),
   code: "the-code",
   codeVerifier: "v".repeat(43),
-  redirectUri: "https://nexus.example/profile",
+  redirectUri: "https://diwan.example/profile",
 };
 
 let privateKey: CryptoKey;

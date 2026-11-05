@@ -1,11 +1,11 @@
 import { Suspense } from "react";
-import { MySubmission } from "@/components/nexus/journal/pages";
-import { RouteParamsProvider } from "@/components/nexus/record-ref";
-import { SectionSpinner } from "@/components/nexus/states";
-import { titleFrom } from "@/lib/nexus/metadata";
+import { MySubmission } from "@/components/diwan/journal/pages";
+import { RouteParamsProvider } from "@/components/diwan/record-ref";
+import { SectionSpinner } from "@/components/diwan/states";
+import { titleFrom } from "@/lib/diwan/metadata";
 
 export const generateMetadata = titleFrom((t) =>
-  t("nexus.journal.submissionTitle")
+  t("diwan.journal.submissionTitle")
 );
 
 const Page = async ({

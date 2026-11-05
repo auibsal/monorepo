@@ -8,7 +8,7 @@ import { membership } from "@repo/sal-data";
 import { useQuery } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { Guilloche, seedFromText } from "@/components/guilloche";
-import { useProfile } from "@/lib/nexus/queries";
+import { useProfile } from "@/lib/diwan/queries";
 
 /** The card number as it is printed on the card. */
 const cardNumber = (value: number) => String(value).padStart(4, "0");

@@ -1,6 +1,6 @@
 import { Suspense } from "react";
-import { SignUpForm } from "@/components/nexus/auth/sign-up-form";
-import { titleFrom } from "@/lib/nexus/metadata";
+import { SignUpForm } from "@/components/diwan/auth/sign-up-form";
+import { titleFrom } from "@/lib/diwan/metadata";
 
 export const generateMetadata = titleFrom((t) => t("auth.signUp.title"));
 

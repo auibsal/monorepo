@@ -1,6 +1,6 @@
 /**
  * Telegram helpers for the API routes: the bot (on grammY, lib/bot) and the
- * copies of the Nexus notices. Messages use Telegram's HTML
+ * copies of the Diwan notices. Messages use Telegram's HTML
  * formatting; everything we did not write goes through `escapeHtml`.
  */
 

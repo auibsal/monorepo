@@ -25,7 +25,7 @@ export const keys = () =>
       // BotFather → Bot Settings → Login Widget (OpenID Connect): the Client
       // Secret. The Client ID is the bot's id, read from the token. Members
       // link Telegram from their profile with it; without it they use the
-      // bot's one-time code. It never signs anyone in to the Nexus.
+      // bot's one-time code. It never signs anyone in to the Diwan.
       TELEGRAM_LOGIN_CLIENT_SECRET: z.string().min(16).optional(),
       // Telegram sends it with every update (X-Telegram-Bot-Api-Secret-Token);
       // updates without it are refused. `openssl rand -hex 32`.

@@ -5,9 +5,9 @@ import { notFound } from "next/navigation";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getMessages, setRequestLocale } from "next-intl/server";
 import type { ReactNode } from "react";
-import { AppProviders } from "@/components/nexus/providers";
+import { AppProviders } from "@/components/diwan/providers";
 
-interface NexusLayoutProperties {
+interface DiwanLayoutProperties {
   readonly children: ReactNode;
   readonly params: Promise<{
     locale: string;
@@ -28,26 +28,26 @@ export const metadata: Metadata = {
 };
 
 /**
- * The Diwan (code name Nexus), the officers' administration at /diwan on
+ * The Diwan, the officers' administration at /diwan on
  * the one site, under the site's own header; a workspace, so no footer
  * (the overhaul, Oct 30, 2026). Members' pages are on
  * the site itself (/membership and the rest; owner, Oct 24, 2026). Client-
  * rendered: every read and write goes to Supabase with the officer's token
  * (Row Level Security decides) or to the API routes under /api with it.
  */
-const NexusLayout = async ({ children, params }: NexusLayoutProperties) => {
+const DiwanLayout = async ({ children, params }: DiwanLayoutProperties) => {
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) {
     notFound();
   }
   setRequestLocale(locale);
-  const { auth, common, nexus, web } = await getMessages();
+  const { auth, common, diwan, web } = await getMessages();
 
   // The site's own header frames the Diwan too, so going between them
   // feels like one place.
   return (
     <NextIntlClientProvider
-      messages={{ auth, common, nexus, web: { nav: web.nav } }}
+      messages={{ auth, common, diwan, web: { nav: web.nav } }}
     >
       <AppProviders>
         <div className="flex min-h-svh flex-col">{children}</div>
@@ -56,4 +56,4 @@ const NexusLayout = async ({ children, params }: NexusLayoutProperties) => {
   );
 };
 
-export default NexusLayout;
+export default DiwanLayout;

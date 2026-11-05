@@ -1,7 +1,7 @@
-import { WriteHome } from "@/components/nexus/journal/write";
-import { titleFrom } from "@/lib/nexus/metadata";
+import { WriteHome } from "@/components/diwan/journal/write";
+import { titleFrom } from "@/lib/diwan/metadata";
 
-const metadataFrom = titleFrom((t) => t("nexus.journal.write.title"));
+const metadataFrom = titleFrom((t) => t("diwan.journal.write.title"));
 
 /**
  * Public, unlike the form pages behind it (owner, Nov 5, 2026): anyone

@@ -3,7 +3,7 @@ import { type Client, unwrap } from "./client";
 
 export type SearchKind = "document" | "event" | "piece";
 
-/** Published-only search across events, Waraq pieces and documents. */
+/** Published-only search across events, Qirtas pieces and documents. */
 export const search = async (client: Client, query: string, limit = 30) =>
   query.trim().length < 2
     ? []

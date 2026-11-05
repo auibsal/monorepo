@@ -4,7 +4,7 @@ import { journal } from "@repo/sal-data";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { ArchiveMonth } from "@/components/waraq/archive";
+import { ArchiveMonth } from "@/components/qirtas/archive";
 import { localizedMetadata } from "@/lib/metadata";
 import { isMonthSegment, monthFrom } from "@/lib/whats-on";
 

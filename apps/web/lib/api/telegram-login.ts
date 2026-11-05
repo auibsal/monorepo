@@ -2,8 +2,8 @@ import { createRemoteJWKSet, type JWTVerifyGetKey, jwtVerify } from "jose";
 
 /**
  * Telegram's login (OpenID Connect, authorization code with PKCE), used
- * only to link a Telegram account to a signed-in Nexus member. Signing in
- * to the Nexus stays email only. https://core.telegram.org/bots/telegram-login
+ * only to link a Telegram account to a signed-in Diwan member. Signing in
+ * to the Diwan stays email only. https://core.telegram.org/bots/telegram-login
  */
 export const TELEGRAM_ISSUER = "https://oauth.telegram.org";
 const AUTHORIZE_URL = `${TELEGRAM_ISSUER}/auth`;

@@ -1,10 +1,10 @@
 import { journal } from "@repo/sal-data";
 import { notFound } from "next/navigation";
-import { WriteType } from "@/components/nexus/journal/write";
-import { titleFrom } from "@/lib/nexus/metadata";
+import { WriteType } from "@/components/diwan/journal/write";
+import { titleFrom } from "@/lib/diwan/metadata";
 
 export const generateMetadata = titleFrom((t) =>
-  t("nexus.journal.write.draftTitle")
+  t("diwan.journal.write.draftTitle")
 );
 
 interface PageProps {

@@ -29,7 +29,7 @@ export const viewport: Viewport = {
 
 /**
  * The one document for the whole site: the public pages ((site)) and the
- * Nexus (nexus) add their messages inside it and share one masthead and
+ * Diwan add their messages inside it and share one masthead and
  * footer. Light or dark mode is set on <html> by the theme script. English
  * has no prefix (/events, /diwan/events); other languages do (/ar/…).
  */

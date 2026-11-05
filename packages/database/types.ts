@@ -1574,6 +1574,7 @@ export type Database = {
           image_path: string | null;
           members_only: boolean;
           occasion: string | null;
+          partner_id: string | null;
           programme_id: string | null;
           published_at: string | null;
           questions: NonNullable<Json>;
@@ -1603,6 +1604,7 @@ export type Database = {
           image_path?: string | null;
           members_only?: boolean;
           occasion?: string | null;
+          partner_id?: string | null;
           programme_id?: string | null;
           published_at?: string | null;
           questions?: NonNullable<Json>;
@@ -1632,6 +1634,7 @@ export type Database = {
           image_path?: string | null;
           members_only?: boolean;
           occasion?: string | null;
+          partner_id?: string | null;
           programme_id?: string | null;
           published_at?: string | null;
           questions?: NonNullable<Json>;
@@ -1673,6 +1676,50 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "invitations_event_id_fkey";
+            columns: ["event_id"];
+            isOneToOne: false;
+            referencedRelation: "events";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      joint_tasks: {
+        Row: {
+          created_at: string;
+          created_by: string | null;
+          done_at: string | null;
+          done_by: string | null;
+          due_on: string | null;
+          event_id: string;
+          id: string;
+          label: string;
+          side: string;
+        };
+        Insert: {
+          created_at?: string;
+          created_by?: string | null;
+          done_at?: string | null;
+          done_by?: string | null;
+          due_on?: string | null;
+          event_id: string;
+          id?: string;
+          label: string;
+          side: string;
+        };
+        Update: {
+          created_at?: string;
+          created_by?: string | null;
+          done_at?: string | null;
+          done_by?: string | null;
+          due_on?: string | null;
+          event_id?: string;
+          id?: string;
+          label?: string;
+          side?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "joint_tasks_event_id_fkey";
             columns: ["event_id"];
             isOneToOne: false;
             referencedRelation: "events";
@@ -1933,6 +1980,21 @@ export type Database = {
           full_name_en: string;
           has_rsvp: boolean;
           user_id: string;
+        }[];
+      };
+      my_joint_events: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          ends_at: string;
+          id: string;
+          partner_id: string;
+          slug: string;
+          starts_at: string;
+          status: string;
+          title_ar: string;
+          title_en: string;
+          venue_ar: string;
+          venue_en: string;
         }[];
       };
       record_approval: {

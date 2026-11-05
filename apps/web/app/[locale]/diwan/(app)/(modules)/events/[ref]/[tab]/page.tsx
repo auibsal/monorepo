@@ -1,11 +1,11 @@
 import { notFound } from "next/navigation";
-import { RequireModule } from "@/components/nexus/admin/admin-shell";
-import { ProgramPage } from "@/components/nexus/admin/programmes/admin";
-import { type ProgramTab, programTabs } from "@/components/nexus/admin/tabs";
-import { titleFrom } from "@/lib/nexus/metadata";
+import { RequireModule } from "@/components/diwan/admin/admin-shell";
+import { ProgramPage } from "@/components/diwan/admin/programmes/admin";
+import { type ProgramTab, programTabs } from "@/components/diwan/admin/tabs";
+import { titleFrom } from "@/lib/diwan/metadata";
 
 export const generateMetadata = titleFrom((t) =>
-  t("nexus.admin.programmes.title")
+  t("diwan.admin.programmes.title")
 );
 
 const isTab = (value: string): value is ProgramTab =>

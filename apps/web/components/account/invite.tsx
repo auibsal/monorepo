@@ -7,9 +7,9 @@ import { Link, useRouter } from "@repo/internationalization/navigation";
 import { unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
-import { SignUpForm } from "@/components/nexus/auth/sign-up-form";
-import { DiwanPage } from "@/components/nexus/page";
-import { ErrorState, PageSpinner } from "@/components/nexus/states";
+import { SignUpForm } from "@/components/diwan/auth/sign-up-form";
+import { DiwanPage } from "@/components/diwan/page";
+import { ErrorState, PageSpinner } from "@/components/diwan/states";
 
 interface Invitation {
   email: string | null;
@@ -39,7 +39,7 @@ const reasonOf = (error: unknown) => {
  * AUIB); signed in, they accept it.
  */
 export const Invite = ({ code }: { code: string }) => {
-  const t = useTranslations("nexus.partnerInvite");
+  const t = useTranslations("diwan.partnerInvite");
   const locale = useLocale() as Locale;
   const { loading, supabase, user } = useAuth();
   const router = useRouter();

@@ -1,5 +1,5 @@
-// The Nexus service worker: shows Web Push notices sent by the API routes and opens
-// the Nexus when one is tapped. It caches nothing; the Nexus stays online-only.
+// The Diwan service worker: shows Web Push notices sent by the API routes and opens
+// the Diwan when one is tapped. It caches nothing; the Diwan stays online-only.
 
 self.addEventListener("push", (event) => {
   let notice = {};
@@ -8,7 +8,7 @@ self.addEventListener("push", (event) => {
   } catch {
     notice = {};
   }
-  const title = typeof notice.title === "string" ? notice.title : "The Nexus";
+  const title = typeof notice.title === "string" ? notice.title : "The Diwan";
   event.waitUntil(
     self.registration.showNotification(title, {
       badge: "/icons/sal-badge-96.png",
@@ -22,8 +22,8 @@ self.addEventListener("push", (event) => {
   );
 });
 
-// Opens only Nexus pages: a notice can never send someone elsewhere.
-const nexusUrl = (raw) => {
+// Opens only Diwan pages: a notice can never send someone elsewhere.
+const diwanUrl = (raw) => {
   try {
     const url = new URL(raw, self.location.origin);
     return url.origin === self.location.origin
@@ -36,7 +36,7 @@ const nexusUrl = (raw) => {
 
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
-  const target = nexusUrl(event.notification.data?.url ?? "/");
+  const target = diwanUrl(event.notification.data?.url ?? "/");
   event.waitUntil(
     self.clients
       .matchAll({ includeUncontrolled: true, type: "window" })

@@ -1,10 +1,10 @@
 import { recognition } from "@repo/sal-data";
 import { notFound } from "next/navigation";
-import { FIRST_YEAR, YearSummary } from "@/components/nexus/service/year";
-import { titleFrom } from "@/lib/nexus/metadata";
+import { FIRST_YEAR, YearSummary } from "@/components/diwan/service/year";
+import { titleFrom } from "@/lib/diwan/metadata";
 
 export const generateMetadata = titleFrom((t) =>
-  t("nexus.service.year.section")
+  t("diwan.service.year.section")
 );
 
 const YEAR = /^\d{4}$/;

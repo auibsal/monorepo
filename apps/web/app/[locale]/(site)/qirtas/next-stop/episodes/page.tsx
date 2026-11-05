@@ -2,8 +2,8 @@ import type { Locale } from "@repo/internationalization";
 import { Link } from "@repo/internationalization/navigation";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { PieceCardView } from "@/components/waraq/cards";
-import { loadEpisodes } from "@/components/waraq/next-stop";
+import { PieceCardView } from "@/components/qirtas/cards";
+import { loadEpisodes } from "@/components/qirtas/next-stop";
 import { localizedMetadata } from "@/lib/metadata";
 
 interface EpisodesProps {

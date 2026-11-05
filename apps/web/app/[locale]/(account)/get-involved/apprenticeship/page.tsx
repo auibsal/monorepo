@@ -1,7 +1,7 @@
 import { Apprenticeship } from "@/components/account/apprenticeship";
-import { titleFrom } from "@/lib/nexus/metadata";
+import { titleFrom } from "@/lib/diwan/metadata";
 
-const metadataFrom = titleFrom((t) => t("nexus.apprenticeship.title"));
+const metadataFrom = titleFrom((t) => t("diwan.apprenticeship.title"));
 
 /** Public, like Get involved: search engines may list it. */
 export const generateMetadata: typeof metadataFrom = async (props) => ({

@@ -4,11 +4,11 @@ import { authCookieOptions } from "./cookies";
 import { keys } from "./keys";
 
 /**
- * Browser client. Sessions live in cookies, so the public pages, the Nexus
+ * Browser client. Sessions live in cookies, so the public pages, the Diwan
  * and the API routes of the one site see the same sign-in.
  * (`createBrowserClient` reuses one instance per page.)
  *
- * `detectSessionInUrl` is off: the Nexus callback page exchanges the code
+ * `detectSessionInUrl` is off: the Diwan callback page exchanges the code
  * itself. With it on, the client spent the one-time code on load and the
  * callback's own exchange then failed ("expired or already used") even
  * though the member was signed in.

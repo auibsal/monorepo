@@ -257,7 +257,7 @@ export const checkDocument = (page: NotionPage): Checked<DocumentValues> => {
   };
 };
 
-export type WaraqDesk =
+export type QirtasDesk =
   | "news"
   | "voices"
   | "letters"
@@ -270,9 +270,9 @@ export type WaraqDesk =
  * own) makes a piece; an Arabic edition (Edition of the English row) adds
  * its Arabic to the English row's piece.
  */
-export interface WaraqValues {
+export interface QirtasValues {
   deck: string | null;
-  desk: WaraqDesk | null;
+  desk: QirtasDesk | null;
   language: "ar" | "en";
   /** The English row an Arabic edition translates (bare page id). */
   of: string | null;
@@ -280,7 +280,7 @@ export interface WaraqValues {
   title: string;
 }
 
-const DESKS: Record<string, WaraqDesk> = {
+const DESKS: Record<string, QirtasDesk> = {
   Gallery: "gallery",
   Games: "games",
   Letters: "letters",
@@ -295,10 +295,10 @@ const DESKS: Record<string, WaraqDesk> = {
  * what a piece starts with. The editing, approvals and publishing happen in
  * the Diwan.
  */
-export const checkWaraq = (
+export const checkQirtas = (
   page: NotionPage,
-  fallbackDesk?: WaraqDesk
-): Checked<WaraqValues> => {
+  fallbackDesk?: QirtasDesk
+): Checked<QirtasValues> => {
   const problems: string[] = [];
   const language = languageOf(page);
   // An Arabic row is an edition when it names its English row; on its own

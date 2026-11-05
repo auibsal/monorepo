@@ -4,7 +4,7 @@ import { createAdminClient } from "@repo/database/admin";
 import { parseError } from "@repo/observability/error";
 import { log } from "@repo/observability/log";
 import { env } from "@/env";
-import { nexus, origin } from "@/lib/api/urls";
+import { diwan, origin } from "@/lib/api/urls";
 import { createNotion, type Notion, type NotionUser } from "./client";
 import type { Admin, Sources, SyncContext } from "./context";
 import { publishDocuments, syncAdoptionRecords } from "./documents";
@@ -91,7 +91,7 @@ export const runNotionSync = async (
   const ctx: SyncContext = {
     admin,
     // English Diwan pages (no language prefix): <origin>/diwan.
-    appUrl: nexus("en"),
+    appUrl: diwan("en"),
     counts: {},
     deadline: started + 45_000,
     notion,

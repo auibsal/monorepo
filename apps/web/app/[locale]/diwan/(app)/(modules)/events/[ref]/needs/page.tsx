@@ -1,9 +1,9 @@
-import { RequireModule } from "@/components/nexus/admin/admin-shell";
-import { ProgramPage } from "@/components/nexus/admin/programmes/admin";
-import { titleFrom } from "@/lib/nexus/metadata";
+import { RequireModule } from "@/components/diwan/admin/admin-shell";
+import { ProgramPage } from "@/components/diwan/admin/programmes/admin";
+import { titleFrom } from "@/lib/diwan/metadata";
 
 export const generateMetadata = titleFrom((t) =>
-  t("nexus.admin.programmes.title")
+  t("diwan.admin.programmes.title")
 );
 
 /** A program's needs, at their own address. */

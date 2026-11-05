@@ -14,13 +14,13 @@ import { localized, partners, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, type ReactNode, Suspense, useState } from "react";
-import { ErrorLine, SelectInput } from "@/components/nexus/admin/kit";
-import { SignInForm } from "@/components/nexus/auth/sign-in-form";
-import { SignUpForm } from "@/components/nexus/auth/sign-up-form";
-import { DiwanPage, DiwanSection } from "@/components/nexus/page";
-import { PageSpinner } from "@/components/nexus/states";
+import { ErrorLine, SelectInput } from "@/components/diwan/admin/kit";
+import { SignInForm } from "@/components/diwan/auth/sign-in-form";
+import { SignUpForm } from "@/components/diwan/auth/sign-up-form";
+import { DiwanPage, DiwanSection } from "@/components/diwan/page";
+import { PageSpinner } from "@/components/diwan/states";
 import { MySignature } from "@/components/signature";
-import { useMyMembership, useProfile } from "@/lib/nexus/queries";
+import { useMyMembership, useProfile } from "@/lib/diwan/queries";
 
 const PATH = "/partners/join";
 
@@ -84,9 +84,9 @@ const Clause = ({
  * for the Society in the Diwan.
  */
 const ApplicationForm = () => {
-  const t = useTranslations("nexus.partnerJoin");
-  const tm = useTranslations("nexus.partnerJoin.memorandum");
-  const tr = useTranslations("nexus.admin.partners.register");
+  const t = useTranslations("diwan.partnerJoin");
+  const tm = useTranslations("diwan.partnerJoin.memorandum");
+  const tr = useTranslations("diwan.admin.partners.register");
   const locale = useLocale() as Locale;
   const { supabase, user } = useAuth();
   const profile = useProfile();
@@ -387,7 +387,7 @@ const ApplicationForm = () => {
  * partner's team, on its dashboard at /partners/dashboard.
  */
 export const PartnerJoin = () => {
-  const t = useTranslations("nexus.partnerJoin");
+  const t = useTranslations("diwan.partnerJoin");
   const locale = useLocale() as Locale;
   const { loading, user } = useAuth();
   const application = useMyApplication();

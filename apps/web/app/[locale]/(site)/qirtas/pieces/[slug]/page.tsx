@@ -6,7 +6,7 @@ import {
   loadPiece,
   PieceArticle,
   pieceMetadata,
-} from "@/components/waraq/piece-page";
+} from "@/components/qirtas/piece-page";
 
 interface PieceProps {
   readonly params: Promise<{ locale: Locale; slug: string }>;

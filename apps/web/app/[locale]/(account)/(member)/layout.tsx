@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { MemberShell } from "@/components/account/member-shell";
-import { RequireAuth, RequireMember } from "@/components/nexus/gates";
+import { RequireAuth, RequireMember } from "@/components/diwan/gates";
 
 interface MemberLayoutProps {
   readonly children: ReactNode;
