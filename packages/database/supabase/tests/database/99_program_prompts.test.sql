@@ -74,7 +74,7 @@ insert into core.semesters (code, name_en, name_ar, starts_on, ends_on) values
 update core.settings set value = '0' where key = 'membership.founding_voters';
 -- </preamble>
 
-select plan(7);
+select plan(8);
 
 select pg_temp.make_user('00000000-0000-0000-0000-0000000e4001', 'host.e4@auib.edu.iq', 'Host');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000e4002', 'member.e4@auib.edu.iq', 'Member');
@@ -109,6 +109,10 @@ update programmes.prompts set is_published = false;
 select pg_temp.login_anon();
 select is((select count(*)::int from programmes.prompts), 1, 'a visitor sees published prompts, and a member cannot hide them');
 select pg_temp.logout();
+select ok(
+  (select count(*) > 0 from core.outbox where kind = 'revalidate' and payload->'tags' ? 'programmes'),
+  'a prompt refreshes the cached program page'
+);
 select ok(
   (select count(*) > 0 from core.activity_log where table_schema = 'programmes' and table_name = 'prompts'),
   'prompts are written to the activity log'
