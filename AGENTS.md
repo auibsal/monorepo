@@ -495,6 +495,14 @@ any schema change. Integration tests run against a local stack with
   (`programmes.book_votes`, read only by the voter). The counts
   (`programmes.ballot_counts()`) show to the host throughout and to
   everyone once the ballot closes, when the page names the circle's book.
+- **Awards by year, author pages, playbills** (design review PR 5a, Nov
+  4, 2026). Each Awards round has its page, `/qirtas/awards/<round>`, and
+  `/qirtas/awards` shows the latest with the others "By year"
+  (`components/waraq/awards.tsx`); `journal.award_results()` alone decides
+  what shows. An author page lists the Editions their work appeared in
+  and the Awards it was shortlisted for or won, from the same results.
+  The Company's productions are a Shelf of playbills (the poster, or the
+  title as type), with the list at `/company/productions`.
 - **Qirtas, one door** (owner, Oct 31, 2026). Members send everything,
   every section, from `/qirtas/write` (`/qirtas/write/<type>` is the
   form), and everything they send is read blind. Edition calls (Letters,

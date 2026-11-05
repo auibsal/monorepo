@@ -4,7 +4,14 @@ import { hasSessionCookie } from "@repo/auth/session-cookie";
 import { type Locale, localizedPath } from "@repo/internationalization";
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
-import { getSupabase } from "@/lib/nexus/supabase";
+
+/**
+ * The Supabase client, loaded only when a signed-in reader needs it: the
+ * program pages are prefetched from every page's footer, and a static
+ * import would send the client to everyone (the performance budget).
+ */
+const supabase = async () =>
+  (await import("@/lib/nexus/supabase")).getSupabase();
 
 interface Book {
   readonly author: string;
@@ -45,12 +52,15 @@ export const BookVote = ({
     }
     setSignedIn(true);
     let live = true;
-    getSupabase()
-      .schema("programmes")
-      .from("book_votes")
-      .select("choice_id")
-      .eq("ballot_id", ballotId)
-      .maybeSingle()
+    supabase()
+      .then((client) =>
+        client
+          .schema("programmes")
+          .from("book_votes")
+          .select("choice_id")
+          .eq("ballot_id", ballotId)
+          .maybeSingle()
+      )
       .then(({ data }) => {
         if (live) {
           setMine(data?.choice_id ?? null);
@@ -64,7 +74,7 @@ export const BookVote = ({
   const vote = async (choiceId: string) => {
     setBusy(true);
     setProblem(null);
-    const table = getSupabase().schema("programmes").from("book_votes");
+    const table = (await supabase()).schema("programmes").from("book_votes");
     const { error } = mine
       ? await table.update({ choice_id: choiceId }).eq("ballot_id", ballotId)
       : await table.insert({ ballot_id: ballotId, choice_id: choiceId });

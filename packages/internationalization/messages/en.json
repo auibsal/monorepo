@@ -4470,7 +4470,10 @@
         "lede": "Pieces from Qirtas you saved to read later. Only you see this list.",
         "empty": "Nothing saved yet. Save a piece from Qirtas to read it later.",
         "browse": "Read Qirtas"
-      }
+      },
+      "authorEditions": "In the Editions",
+      "authorShortlisted": "{title} · shortlisted, {award}",
+      "authorWon": "{title} · winner, {award}"
     },
     "about": {
       "title": "About the Society",
@@ -4908,7 +4911,8 @@
         "creative": "Creative team"
       },
       "posterAlt": "Poster for {title}",
-      "allCompany": "All of the Company"
+      "allCompany": "All of the Company",
+      "asList": "See the productions as a list"
     },
     "institutions": {
       "title": "Home and partners",
@@ -5089,7 +5093,9 @@
       "noRound": "The next round is announced here.",
       "winner": "Winner",
       "judging": "Editors draw up the shortlists, each with Arabic and English work. The main award is judged blind by one outside judge; the others by two editors and a faculty member.",
-      "rewards": "A certificate for every winner, and a chapbook for the main award. No cash awards."
+      "rewards": "A certificate for every winner, and a chapbook for the main award. No cash awards.",
+      "byYear": "By year",
+      "roundTitle": "The Qirtas Awards, {round}"
     },
     "company": {
       "auditions": "Auditions",

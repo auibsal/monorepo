@@ -74,7 +74,7 @@ insert into core.semesters (code, name_en, name_ar, starts_on, ends_on) values
 update core.settings set value = '0' where key = 'membership.founding_voters';
 -- </preamble>
 
-select plan(13);
+select plan(14);
 
 select pg_temp.make_user('00000000-0000-0000-0000-0000000e6001', 'host.e6@auib.edu.iq', 'Host');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000e6002', 'reader.e6@auib.edu.iq', 'Reader');
@@ -161,6 +161,10 @@ select throws_ok(
   'no changing a vote after the ballot closes'
 );
 select pg_temp.logout();
+select ok(
+  (select count(*) > 0 from core.outbox where kind = 'revalidate' and payload->'tags' ? 'programmes'),
+  'a ballot refreshes the cached program page'
+);
 select ok(
   (select count(*) > 0 from core.activity_log where table_schema = 'programmes' and table_name = 'book_ballots'),
   'ballots are written to the activity log'
