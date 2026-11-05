@@ -7,37 +7,15 @@ import {
 } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
 import { charity, localized } from "@repo/sal-data";
-import type { Metadata } from "next";
-import { notFound } from "next/navigation";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 import { PageHeader, Section } from "@/components/section";
-import { localizedMetadata } from "@/lib/metadata";
 import { readPublished } from "@/lib/supabase";
 
-interface ItemProps {
-  readonly params: Promise<{
-    item: string;
-    locale: Locale;
-    part: string;
-    slug: string;
-  }>;
-}
-
-const SLUG = /^[a-z0-9]+(-[a-z0-9]+)*$/;
-
-/** A Second Chapter campaign's impact report, once a figure is published. */
-const loadReport = async (slug: string, part: string, item: string) => {
-  if (slug !== "second-chapter" || part !== "impact" || !SLUG.test(item)) {
-    return null;
-  }
-  const [campaign] = await readPublished(
-    ["charity"],
-    async (c) => {
-      const found = await charity.campaignBySlug(c, item);
-      return found ? [found] : [];
-    },
-    []
-  );
+/** An event's campaign with its report, once a figure is published. */
+export const loadReport = async (eventId: string) => {
+  const campaign = await readPublished<Awaited<
+    ReturnType<typeof charity.campaignForEvent>
+  > | null>(["charity"], (c) => charity.campaignForEvent(c, eventId), null);
   if (!campaign) {
     return null;
   }
@@ -69,35 +47,22 @@ const loadReport = async (slug: string, part: string, item: string) => {
   };
 };
 
-export const generateMetadata = async ({
-  params,
-}: ItemProps): Promise<Metadata> => {
-  const { item, locale, part, slug } = await params;
-  const report = await loadReport(slug, part, item);
-  if (!report) {
-    return {};
-  }
-  const t = await getTranslations({ locale, namespace: "web.give.report" });
-  return localizedMetadata(locale, `/events/${slug}/${part}/${item}`, {
-    description: t("lede"),
-    title: `${t("title")} · ${localized(report.campaign, "title", locale)}`,
-  });
-};
-
 /**
- * Second Chapter's impact report (design review A26),
- * /events/second-chapter/impact/<campaign>: the published figures with
- * their words, the witnessed handover, the signed-off total and the public
- * receipts. Only what the campaign's record holds, signed off; nothing is
- * typed here.
+ * Second Chapter's impact report (design review A26), at its event's
+ * address, /events/<event>/impact (owner, Nov 5, 2026: the campaign
+ * belongs to an ordinary event): the published figures with their words,
+ * the witnessed handover, the signed-off total and the public receipts.
+ * Only what the campaign's record holds, signed off; nothing is typed here.
  */
-const ImpactReportPage = async ({ params }: ItemProps) => {
-  const { item, locale, part, slug } = await params;
-  setRequestLocale(locale);
-  const report = await loadReport(slug, part, item);
-  if (!report) {
-    notFound();
-  }
+export const ImpactReport = async ({
+  eventSlug,
+  locale,
+  report,
+}: {
+  readonly eventSlug: string;
+  readonly locale: Locale;
+  readonly report: NonNullable<Awaited<ReturnType<typeof loadReport>>>;
+}) => {
   const t = await getTranslations({ locale, namespace: "web.give" });
   const { campaign, counted, impact, receipts } = report;
 
@@ -108,7 +73,7 @@ const ImpactReportPage = async ({ params }: ItemProps) => {
         title={localized(campaign, "title", locale)}
       >
         <p className="type-caption">
-          <Link className="link" href="/events/second-chapter">
+          <Link className="link" href={`/events/${eventSlug}`}>
             {t("report.back")}
           </Link>
         </p>
@@ -186,5 +151,3 @@ const ImpactReportPage = async ({ params }: ItemProps) => {
     </div>
   );
 };
-
-export default ImpactReportPage;

@@ -44,13 +44,12 @@ and decisions), and continue from the first unticked item.
     Society and who owns it, `core.handover()`), what happened, the Connected panel
     for Notion, Hudhud and email, and the design system at
     `/diwan/design`), What's on (`/diwan/events`, one page:
-    the events with the series linked above them, then pitches; each
-    series' page is
+    the events, then pitches; each event's page is
     `/diwan/events/<slug>` like its public page, `EventOrProgram`, with
-    its tabs at `/diwan/events/<slug>/<tab>`; each event has its own door,
+    its parts on the page; each event has its own door,
     `/events/<slug>/door`, and the Desk opens the next one (owner, Oct 31,
-    2026: no general door); Second Chapter's collection
-    is a tab of its series), Qirtas (`/diwan/qirtas` and its tabs;
+    2026: no general door); Second Chapter's campaigns at
+    `/diwan/events/campaigns`), Qirtas (`/diwan/qirtas` and its tabs;
     calls are on each Edition's page), The Company (`/diwan/company`), People (`/diwan/people`,
     openings (every opening of every kind, `/diwan/people/openings`),
     service, partners, insights; Partners in one place: applications, the
@@ -356,47 +355,60 @@ any schema change. Integration tests run against a local stack with
   the Wallet API whether the pass is saved rather than waiting for
   Google's callback. Never put an
   account id in a QR.
-- **What's on is one calendar** (owner, Oct 25, 2026; Nov 5, 2026: no
-  programs): events at `/events`, a month at a time, each recurring event
-  a series with its own calendar at `/events/<slug>` (there is no
-  `/programs`, and no redirects: owner). Series and events share the
-  addresses under `/events`; triggers keep a slug to one of them (and off
-  `book`). The term calendar is plain events, added one by one (the
-  repeat rules are gone, owner, Nov 5, 2026). Every event has a way
+- **What's on is one calendar** (owner, Oct 25, 2026; Nov 5, 2026:
+  standard events): events at `/events`, a month at a time
+  (`/events/<yyyy-mm>`), each event at `/events/<slug>` with the one
+  event page (there are no series pages, no `/programs`, and no
+  redirects: owner). The term calendar is plain events, added one by one
+  (the repeat rules are gone). Every event has a way
   in, `events.events.entry`:
   `open` (just come; members may ask "Remind me", `events.reminders`),
   `rsvp` (book a place) or `invite` (only the people in
   `events.invitations` and the event's managers see it; always
   members-only, so every public reader that leaves members-only events out
   leaves it out too). The public calendar (`events.calendar`) shows
-  members-only events as teasers (title, time, series; nothing else).
+  members-only events as teasers (title and time; nothing else).
   `rsvp_enabled` is kept in step with `entry` by a trigger; write `entry`.
   SECURITY DEFINER code checks visibility with `private.can_see_event_id`.
   AUIB's own dates (the hourly sync of the University's public calendar
   into `core.external_events`, `events.universityCalendar`) sit beside the
   Society's on `/events`, quieter, linking to auib.edu.iq; "Hide AUIB
-  dates" (`?auib=off`) and choosing a series leave them out. AUIB publishes
+  dates" (`/events/<yyyy-mm>/society`) leaves them out. AUIB publishes
   them in English only, so their titles keep that language (`lang="en"`)
   on the Arabic pages.
-- **No programs: events** (owner, Nov 5, 2026; replaces "six programs").
-  Qirtas and the Company stay; everything else is an event. Each term the
-  Council sets a calendar of plain events, at least one a month. The
-  recurring ones keep their names as series on What's on, listed flat:
-  Second Chapter, the Salon (`salon`), Book Circle, Open Pages and the
-  Listening Room (`listening-room`); none is a program. Each shows how it
-  usually runs in one plain line (`core.programmes.rhythm_en`/`_ar`:
-  "Tuesdays, as the term calendar sets"; Second Chapter "Every
-  November"). The code keeps its identifiers (the `programmes` schema,
-  `core.programmes`, `programme_id`, `programs.manage`, the `programme`
-  scope); copy, comments and docs say "event", "series" or "event lead".
+- **Standard events** (owner, Nov 5, 2026; replaces "six programs" and,
+  later that day, "series": "Don't make the current programs into
+  series. Make them into normal/standard events. Standardize events all
+  over from the public and diwan sides"; migration
+  `20261101005200_standard_events`). Qirtas and the Company stay;
+  everything else is an event. Each term the Council sets a calendar of
+  plain events, at least one a month. Second Chapter, the Salon, Book
+  Circle, Open Pages and the Listening Room keep their names as event
+  titles; no event belongs to a series (`events.events.programme_id` is
+  null for them, their rows in `core.programmes` are inactive) and there
+  are no series pages, filters or lists. Every event has the one page on
+  the site (`EventView` with `EventParts`, `components/event-parts.tsx`)
+  and in the Diwan (`EventEditor` with `EventPartsAdmin`,
+  `components/diwan/admin/events/parts.tsx`), and carries its own parts:
+  its shifts (`programmes.rotas.event_id`), needs (`programmes.needs.event_id`),
+  prompts (`programmes.prompts.event_id`), book vote
+  (`programmes.book_ballots.event_id`), links from the night, what Qirtas
+  wrote from it, and, for Second Chapter's fair, its campaign
+  (`charity.campaigns.event_id`) with the catalog at
+  `/events/<event>/catalog` and the impact report at
+  `/events/<event>/impact`. `private.runs_part(programme_id, event_id)`
+  lets the President (global `programs.manage`) and the event's own lead
+  (scope `event`) run them. Campaigns are kept at
+  `/diwan/events/campaigns`. The code keeps its identifiers (the
+  `programmes` schema, `core.programmes`, `programme_id`,
+  `programs.manage`, the `programme` scope, now for the Company's and
+  Qirtas's rows); copy, comments and docs say "event" or "event lead".
   The Company (`company`) is the Society's theater company, with its
-  Artistic Director on the Council: its row stays live for its page,
-  calendar and roles, and every list of series leaves it out
-  (`programmes.isListedProgram`, `notPrograms`), as it does the Typewriter
-  Tour, which belongs to membership. The Company has its own page
-  at `/company`, beside Qirtas in the header (owner, Oct 30, 2026): its
-  productions, auditions and dates; `/events/company` is not a page
-  (`loadSeries` takes listed series only; `seriesPath`).
+  Artistic Director on the Council and its own page at `/company`, beside
+  Qirtas in the header (owner, Oct 30, 2026): its productions, auditions
+  and dates. The Typewriter Tour belongs to membership. Notion's Programs
+  database no longer publishes a page, and an event linked to a former
+  series there is published as an event of its own.
   Munazara, Mutanabbi Friday and Bad Poetry Night are folded into the
   Salon, Book Circle and Open Pages (their names retired; their sessions
   are the parent's events with plain titles). Qirtas and Next Stop keep
@@ -421,7 +433,8 @@ any schema change. Integration tests run against a local stack with
   timeline, none with reduced motion), a text size (`TextSize`, this
   browser only) and the next piece and Edition at the end. Second
   Chapter's impact report is `/events/second-chapter/impact/<campaign>`,
-  from published figures only; the Apprenticeship is explained at
+  from published figures only (now `/events/<event>/impact`, Nov 5,
+  2026); the Apprenticeship is explained at
   `/get-involved/apprenticeship`, from facts on record only.
 - **The Edition as a book** (design review PR 4a, Nov 4, 2026). An
   Edition's page is its cover, print line, letter, a contents page by
@@ -466,16 +479,10 @@ any schema change. Integration tests run against a local stack with
   added or changed the record and when, and which fields, never the
   values; officers only, for records they can see
   (`private.history_tables()` lists the tables).
-- **Series pages** (design review PR 4e, Nov 4, 2026). Every
-  series' page (`SeriesView`, `components/program-page.tsx`) has one
-  structure: what it is and its rhythm, the next session, its month, the
-  last sessions with what Qirtas wrote from them (`journal.pieces.event_id`,
-  `journal.piecesFromEvents`; all of them at `/events/<program>/past`),
-  then what is its own (`ProgramFeature`): Second Chapter's collection,
-  Book Circle's shelf (its Voices reviews from its sessions, on a Shelf,
-  the list at `/events/book-circle/shelf`) and Open Pages' prompt cards
-  (`programmes.prompts`, written and published by the host in the
-  series' Prompts tab in the Diwan).
+- **What Qirtas wrote from an event** (`journal.pieces.event_id`,
+  `journal.piecesFromEvents`) shows on the event's page, "In Qirtas"
+  (owner, Nov 5, 2026: the series pages, their past sessions and Book
+  Circle's shelf are retired with the series).
 - **Join, Partners, Hudhud, the budget** (design review PR 4f, Nov 4,
   2026). Join says what membership gives (the live card, perks, the
   Record, a vote); Partners says what a partner gets and gives, before
@@ -493,15 +500,15 @@ any schema change. Integration tests run against a local stack with
   (`programmes.six_words_wall()`, approved cards in the page's language,
   in Ubuntu Mono) and a typewriter to try (`TypingToy`), which keeps
   nothing and is silent until the visitor turns the key sound on. A
-  session's outside links (`events.session_links`: what the Listening
+  event's outside links (`events.session_links`: what the Listening
   Room played, a reading list; https only) are added in place on the
-  event's page in the Diwan by its series' event leads, and show
-  with the event among the series' past events.
+  event's page in the Diwan by its event leads, and show on the event's
+  page, "From the night".
 - **Book Circle's vote** (design review A33, decision D12, Nov 4, 2026).
-  The host opens a ballot in the series' Vote tab in the Diwan with up
-  to three books and a closing time (`programmes.book_ballots`,
+  The host opens a ballot on the event's page in the Diwan with up
+  to three books and a closing time (`programmes.book_ballots.event_id`,
   `book_choices`; the books are fixed once anyone votes); members vote on
-  the series' page, once each and changeable while it is open
+  the event's page, once each and changeable while it is open
   (`programmes.book_votes`, read only by the voter). The counts
   (`programmes.ballot_counts()`) show to the host throughout and to
   everyone once the ballot closes, when the page names the circle's book.
@@ -519,14 +526,15 @@ any schema change. Integration tests run against a local stack with
   `/membership/record/year/<yyyy>` (the academic year from September 1,
   `recognition.myYear`): their own records only, private and printable.
 - **Occasions: the trip and the contest** (design review A34, A36, Nov
-  5, 2026). An event may be an occasion with its own page under its
-  program (`events.events.occasion`, `events.OCCASIONS`): Book Circle's
-  Friday on al-Mutanabbi Street (`book_street_trip`,
-  `/events/book-circle/mutanabbi-street`) and Open Pages' worst-poem
-  contest (`worst_poem_contest`, `/events/open-pages/worst-poem`). A trip
-  is published, and its page shown, only once the General Secretary
-  records Student Life's written approval on the event's page in the
-  Diwan (`events.record_approval`, `private.trip_needs_approval`).
+  5, 2026). An event may be an occasion (`events.events.occasion`,
+  `events.OCCASIONS`): Book Circle's Friday on al-Mutanabbi Street
+  (`book_street_trip`) and Open Pages' worst-poem contest
+  (`worst_poem_contest`); each is an ordinary event with the one event
+  page (the occasion pages are retired with the series). A trip is
+  published only once the General Secretary records Student Life's
+  written approval on the event's page in the Diwan
+  (`events.record_approval`, `private.trip_needs_approval`), and its page
+  says so.
 - **The owner's decisions of Nov 5, 2026** (`claude/decisions.md`;
   migrations `20261101005000_council_of_six`,
   `20261101005100_events_not_programs`).
@@ -548,8 +556,9 @@ any schema change. Integration tests run against a local stack with
     and the Acting President while one is in office; the Notion officer
     mirror offers the six seats only.
   - **Event leads.** `programme_lead` is an event lead, scoped to one
-    series (`programme`) or one event (scope `event`, new): an event-scoped
-    lead edits that event, sees its bookings and runs its door
+    event (scope `event`, new; a series-scoped lead became a lead of each
+    of its events from Nov 5, 2026): an event lead edits that event, keeps
+    its shifts, needs, prompts and vote, sees its bookings and runs its door
     (`private.leads_event`, used by `manages_event`, `can_check_in`,
     `invited` and the events, staff, bookings, waitlist and links
     policies). Assign it on the member's page, "One event". The President
@@ -691,7 +700,7 @@ any schema change. Integration tests run against a local stack with
   show without a name. One entry per member; a new card replaces the old.
 - **Get involved** (`/get-involved`, and `/callboard` goes there; one name
   in every language, title and the code, owner, Oct 31 and Nov 4, 2026:
-  the members' board is `PlacesBoard`, a series' openings `openings`)
+  the members' board is `PlacesBoard`, the openings `openings`)
   is the careers page (owner, Oct 29, 2026), read by
   anyone (Oct 31: `programmes.open_places()`, `OpenPlaces`; replying and
   shifts are for members), as one list without sections (owner, Oct 31,
@@ -813,7 +822,7 @@ any schema change. Integration tests run against a local stack with
   account and no money, and has no Treasurer; Student Life provides. No
   budgets, costs, prices, spending limits, claims or reimbursements
   anywhere. Events, the Typewriter Tour and Qirtas keep needs lists (`programmes.needs`:
-  item, quantity, date needed, purpose; each series' Needs tab and
+  item, quantity, date needed, purpose; each event's page and
   Qirtas → Needs), and the General Secretary sends each request to
   Student Life and logs what was provided (Governance → Requests to
   Student Life). The one exception is Second Chapter's collection: the
@@ -821,12 +830,12 @@ any schema change. Integration tests run against a local stack with
   counters, only signed-off entries count; the General Secretary
   witnesses and signs off), the witnessed handover on the campaign
   (`handed_over_on`, amount, witness, receipt) and the impact report. The
-  series' page follows the campaign through five stages (boxes,
+  fair's event page follows the campaign through five stages (boxes,
   donations, the fair, the handover, the impact report;
   `charity.campaignStages`) from the days kept on the campaign, and lists
   its drop-off points (`drop_off_points`) when entered (owner, Nov 4,
   2026); it shows signed-off figures only. The fair's books are listed to
-  browse, never priced, at `/events/second-chapter/catalog`
+  browse, never priced, at `/events/<event>/catalog`
   (`charity.catalog_books`, the campaign's Catalog tab; design review A27). No online payments of any kind.
 - **The Council page** (owner, Oct 30, 2026; `/about/council`, the members'
   Society page and the Diwan's Governance → Council) comes from the roles
@@ -844,9 +853,8 @@ any schema change. Integration tests run against a local stack with
   Telegram group The Diwan for talk; every piece of information has one
   home and anywhere else it is a read-only view. Written in Notion and
   published by the sync (`lib/api/notion`, `docs/platform/notion.md`):
-  events, the event series (`/events/<series>` is built from their rows;
-  the Notion database keeps its name, Programs, until it is renamed with
-  the sync),
+  events (the Programs database no longer publishes: no series, owner,
+  Nov 5, 2026),
   documents, minutes (Work, Meetings, Status "Minutes in the Diwan"; locked
   once adopted, `private.lock_adopted_minutes`) and the content calendar.
   Kept on the site and copied to Notion read-only: the officers (each seat

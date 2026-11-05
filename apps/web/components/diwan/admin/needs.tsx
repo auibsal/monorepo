@@ -27,8 +27,9 @@ interface Need {
   id: string;
   item: string;
   needed_by: string;
-  programme: { name_ar: string; name_en: string; slug: string } | null;
-  programme_id: string;
+  /** Where the need is from: Qirtas's row, or the event's title. */
+  programme: { name_ar: string; name_en: string } | null;
+  programme_id: string | null;
   provided_note: string | null;
   provided_on: string | null;
   purpose: string;
@@ -179,13 +180,18 @@ const NeedRow = ({
   );
 };
 
+/** Whose list a need is on: an event's (owner, Nov 5, 2026) or Qirtas's row. */
+type NeedOwner =
+  | { readonly column: "event_id"; readonly id: string }
+  | { readonly column: "programme_id"; readonly id: string };
+
 export const NewNeed = ({
   onDone,
-  programmeId,
+  owner,
 }: {
   /** Called once saved: closes the form in place. */
   readonly onDone: () => void;
-  readonly programmeId: string;
+  readonly owner: NeedOwner;
 }) => {
   const t = useTranslations("diwan.admin.needs");
   const { supabase } = useAuth();
@@ -205,7 +211,9 @@ export const NewNeed = ({
           .insert({
             item: form.item.trim(),
             needed_by: form.needed_by,
-            programme_id: programmeId,
+            ...(owner.column === "event_id"
+              ? { event_id: owner.id }
+              : { programme_id: owner.id }),
             purpose: form.purpose.trim(),
             quantity: Number(form.quantity),
           })
@@ -287,12 +295,24 @@ export const NewNeed = ({
 };
 
 /**
- * A needs list (owner, Oct 30, 2026): what a program or Qirtas needs from
+ * A needs list (owner, Oct 30, 2026): what an event or Qirtas needs from
  * Student Life (item, quantity, date needed, purpose), never a cost. With
- * no program, every list: the General Secretary's log of requests to
- * Student Life.
+ * neither, every list: the General Secretary's log of requests to Student
+ * Life.
  */
-export const Needs = ({ programmeId }: { readonly programmeId?: string }) => {
+export const Needs = ({
+  eventId,
+  programmeId,
+}: {
+  readonly eventId?: string;
+  readonly programmeId?: string;
+}) => {
+  let owner: NeedOwner | null = null;
+  if (eventId) {
+    owner = { column: "event_id", id: eventId };
+  } else if (programmeId) {
+    owner = { column: "programme_id", id: programmeId };
+  }
   const t = useTranslations("diwan.admin.needs");
   const { supabase } = useAuth();
   const grants = useGrants();
@@ -302,16 +322,20 @@ export const Needs = ({ programmeId }: { readonly programmeId?: string }) => {
         .schema("programmes")
         .from("needs")
         .select(
-          "id, item, quantity, needed_by, purpose, status, requested_on, provided_on, provided_note, programme_id"
+          "id, item, quantity, needed_by, purpose, status, requested_on, provided_on, provided_note, programme_id, event_id"
         )
         .order("needed_by");
-      if (programmeId) {
-        query = query.eq("programme_id", programmeId);
+      if (owner) {
+        query = query.eq(owner.column, owner.id);
       }
       const rows = unwrap(await query) ?? [];
       // The programs live in another schema (core), which the Data API
       // can't embed across; read their names beside the needs.
-      const ids = [...new Set(rows.map((r) => r.programme_id))];
+      const ids = [
+        ...new Set(
+          rows.flatMap((r) => (r.programme_id ? [r.programme_id] : []))
+        ),
+      ];
       const programmes = ids.length
         ? (unwrap(
             await supabase
@@ -321,19 +345,38 @@ export const Needs = ({ programmeId }: { readonly programmeId?: string }) => {
               .in("id", ids)
           ) ?? [])
         : [];
-      return rows.map((r) => ({
-        ...r,
-        programme: programmes.find((p) => p.id === r.programme_id) ?? null,
-      })) as Need[];
+      const eventIds = [
+        ...new Set(rows.flatMap((r) => (r.event_id ? [r.event_id] : []))),
+      ];
+      const eventRows = eventIds.length
+        ? (unwrap(
+            await supabase
+              .schema("events")
+              .from("events")
+              .select("id, title_en, title_ar")
+              .in("id", eventIds)
+          ) ?? [])
+        : [];
+      return rows.map((r) => {
+        const event = eventRows.find((e) => e.id === r.event_id);
+        return {
+          ...r,
+          programme:
+            programmes.find((p) => p.id === r.programme_id) ??
+            (event
+              ? { name_ar: event.title_ar ?? "", name_en: event.title_en ?? "" }
+              : null),
+        };
+      }) as Need[];
     },
-    queryKey: [...key, programmeId ?? "all"],
+    queryKey: [...key, owner?.id ?? "all"],
   });
   const canRequest = hasPermission(grants.data, "governance.manage");
 
   return (
     <div className="grid gap-6">
       <p className="type-body max-w-[60ch]">
-        {programmeId ? t("lede") : t("logLede")}
+        {owner ? t("lede") : t("logLede")}
       </p>
       {needs.isPending ? <SectionSpinner /> : null}
       {needs.data?.length === 0 ? <EmptyLine>{t("empty")}</EmptyLine> : null}
@@ -343,13 +386,13 @@ export const Needs = ({ programmeId }: { readonly programmeId?: string }) => {
             canRequest={canRequest}
             key={need.id}
             need={need}
-            showProgram={!programmeId}
+            showProgram={!owner}
           />
         ))}
       </ul>
-      {programmeId ? (
+      {owner ? (
         <AddInPlace label={t("new")}>
-          {(close) => <NewNeed onDone={close} programmeId={programmeId} />}
+          {(close) => <NewNeed onDone={close} owner={owner} />}
         </AddInPlace>
       ) : null}
     </div>

@@ -60,7 +60,9 @@ const useRotas = () => {
       return (unwrap(rotas) ?? [])
         .map((rota) => ({
           ...rota,
-          programme: names.get(rota.programme_id) ?? null,
+          programme: rota.programme_id
+            ? (names.get(rota.programme_id) ?? null)
+            : null,
           shifts: rota.shifts.map((shift) => ({
             ...shift,
             taken: taken.get(shift.id) ?? 0,

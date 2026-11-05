@@ -87,7 +87,7 @@ const OccasionForm = ({
               value={choice}
             >
               <option value={NONE}>{t("none")}</option>
-              {(Object.keys(events.OCCASIONS) as events.Occasion[]).map((o) => (
+              {events.OCCASIONS.map((o) => (
                 <option key={o} value={o}>
                   {t(`kinds.${o}`)}
                 </option>

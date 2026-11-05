@@ -96,48 +96,13 @@ export const pastPublicEvents = async (
 };
 
 /**
- * The Society's occasions, each with its own page under its program
- * (the design review A34, A36): Book Circle's Friday on al-Mutanabbi
- * Street, shown only once Student Life's approval is recorded (the
- * database publishes no trip without it), and Open Pages' worst-poem
- * contest.
+ * The Society's occasions (the design review A34, A36), each an ordinary
+ * event (owner, Nov 5, 2026: no series pages): Book Circle's Friday on
+ * al-Mutanabbi Street, published only once Student Life's approval is
+ * recorded, and Open Pages' worst-poem contest.
  */
-export const OCCASIONS = {
-  book_street_trip: { page: "mutanabbi-street", program: "book-circle" },
-  worst_poem_contest: { page: "worst-poem", program: "open-pages" },
-} as const;
-export type Occasion = keyof typeof OCCASIONS;
-
-export const occasionPath = (occasion: Occasion) =>
-  `/events/${OCCASIONS[occasion].program}/${OCCASIONS[occasion].page}`;
-
-/** The occasion a program's page part names, if any. */
-export const occasionOf = (program: string, page: string) =>
-  (Object.keys(OCCASIONS) as Occasion[]).find(
-    (o) => OCCASIONS[o].program === program && OCCASIONS[o].page === page
-  );
-
-/** An occasion's public events: coming, soonest first, then past. */
-export const occasionEvents = async (client: Client, occasion: Occasion) => {
-  const rows =
-    unwrap(
-      await events(client)
-        .from("events")
-        .select(eventColumns)
-        .eq("occasion", occasion)
-        .eq("status", "published")
-        .eq("members_only", false)
-        .order("starts_at", { ascending: false })
-        .limit(40)
-    ) ?? [];
-  const now = Date.now();
-  return {
-    coming: rows
-      .filter((e) => new Date(e.starts_at).getTime() >= now)
-      .reverse(),
-    past: rows.filter((e) => new Date(e.starts_at).getTime() < now),
-  };
-};
+export const OCCASIONS = ["book_street_trip", "worst_poem_contest"] as const;
+export type Occasion = (typeof OCCASIONS)[number];
 
 export const publicEvent = async (client: Client, eventSlug: string) =>
   unwrap(

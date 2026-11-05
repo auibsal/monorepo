@@ -16,8 +16,7 @@ import { useGrants } from "@/lib/diwan/queries";
 import { DiwanSection } from "../../page";
 import { ErrorState, SectionSpinner } from "../../states";
 import { AdminHeading, type Column, DataTable } from "../kit";
-import { ProgramLinks } from "../programmes/admin";
-import { adminEventColumns, useProgrammeOptions } from "./data";
+import { adminEventColumns } from "./data";
 
 type Kind = "upcoming" | "past" | "drafts";
 
@@ -76,7 +75,6 @@ export const EventsList = () => {
   const ts = useTranslations("diwan.admin.kit.statuses");
   const locale = useLocale() as Locale;
   const grants = useGrants();
-  const programmes = useProgrammeOptions();
   const upcoming = useEventRows("upcoming");
   const drafts = useEventRows("drafts");
   const past = useEventRows("past");
@@ -104,11 +102,6 @@ export const EventsList = () => {
       ),
       header: t("columns.when"),
       key: "when",
-    },
-    {
-      cell: (e) => programmes.label(e.programme_id) ?? "—",
-      header: t("columns.programme"),
-      key: "programme",
     },
     {
       cell: (e) => (e.members_only ? t("membersOnly") : t("public")),
@@ -184,7 +177,6 @@ export const EventsList = () => {
       >
         {t("lede")}
       </AdminHeading>
-      <ProgramLinks />
       <div className="grid gap-4">
         {table(upcoming, t("tabs.upcoming"), t("noUpcoming"))}
         <p className="type-caption">{t("campusNote")}</p>

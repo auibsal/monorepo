@@ -32,6 +32,7 @@ import { useProgrammeOptions } from "./data";
 import { Invitations } from "./invitations";
 import { EventPartner } from "./joint";
 import { EventOccasion } from "./occasion";
+import { EventPartsAdmin } from "./parts";
 import { SessionLinks } from "./session-links";
 
 interface Question {
@@ -352,11 +353,15 @@ export const EventEditor = () => {
               ) : (
                 <option value="">{tm("choose")}</option>
               )}
-              {programmes.options.map((p) => (
-                <option key={p.id} value={p.id}>
-                  {p.label}
-                </option>
-              ))}
+              {/* No series (owner, Nov 5, 2026): only the Company's and
+                  the Tour's own rows, for their dates. */}
+              {programmes.options
+                .filter((p) => p.isActive || p.id === form.programme_id)
+                .map((p) => (
+                  <option key={p.id} value={p.id}>
+                    {p.label}
+                  </option>
+                ))}
             </SelectInput>
           )}
         </Field>
@@ -583,6 +588,7 @@ export const EventEditor = () => {
           <EventOccasion event={existing.data} />
           <EventPartner event={existing.data} />
           <SessionLinks eventId={eventId} />
+          <EventPartsAdmin eventId={eventId} />
         </>
       ) : null}
       <RecordHistory id={eventId} table="events.events" />

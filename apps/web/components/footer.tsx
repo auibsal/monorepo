@@ -2,12 +2,10 @@ import { BrandLogo } from "@repo/brand/components/brand-logo";
 import { Icon } from "@repo/brand/components/sal/icon";
 import { localizedPath } from "@repo/internationalization";
 import { Link } from "@repo/internationalization/navigation";
-import { localized, programmes } from "@repo/sal-data";
 import NextLink from "next/link";
 import { getLocale, getTranslations } from "next-intl/server";
 import { CookieSettings } from "@/components/cookie-settings";
 import { askedConsent } from "@/lib/consent";
-import { readPublished } from "@/lib/supabase";
 
 const INSTAGRAM = "https://www.instagram.com/auibsal";
 const INSTAGRAM_HANDLE = "@auibsal";
@@ -36,23 +34,10 @@ export const Footer = async ({ consent = true }: FooterProps = {}) => {
   const locale = await getLocale();
   const email = t("columns.email");
 
-  const programs = await readPublished(
-    ["programmes"],
-    async (c) => (await programmes.programmes(c)) ?? [],
-    []
-  );
-
-  // Three columns: the event series (owner, Nov 5, 2026: no programs), the
-  // Society's pages, and the ways to stay in touch; then the fine print.
+  // The Society's pages and the ways to stay in touch, then the fine
+  // print (owner, Nov 5, 2026: no event series to list; What's on is in
+  // the header).
   const columns = [
-    {
-      heading: t("columns.programs"),
-      links: programs
-        .filter(programmes.isListedProgram)
-        .map(
-          (p) => [`/events/${p.slug}`, localized(p, "name", locale)] as const
-        ),
-    },
     {
       heading: t("columns.society"),
       links: [

@@ -19,15 +19,15 @@ import {
 } from "../kit";
 
 const BOOKS = 3;
-const key = (programmeId: string) => ["admin", "book-ballots", programmeId];
+const key = (eventId: string) => ["admin", "book-ballots", eventId];
 type Ballot = Awaited<ReturnType<typeof programmes.bookBallots>>[number];
 
 const NewBallot = ({
   onDone,
-  programmeId,
+  eventId,
 }: {
   readonly onDone: () => void;
-  readonly programmeId: string;
+  readonly eventId: string;
 }) => {
   const t = useTranslations("diwan.admin.programmes.vote");
   const { supabase } = useAuth();
@@ -42,13 +42,13 @@ const NewBallot = ({
           .from("book_ballots")
           .insert({
             closes_at: new Date(closes ?? "").toISOString(),
-            programme_id: programmeId,
+            event_id: eventId,
             title_ar: title.ar.trim(),
             title_en: title.en.trim(),
           })
       ),
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: key(programmeId) });
+      await queryClient.invalidateQueries({ queryKey: key(eventId) });
       onDone();
     },
   });
@@ -82,11 +82,11 @@ const NewBallot = ({
 const NewBook = ({
   ballotId,
   onDone,
-  programmeId,
+  eventId,
 }: {
   readonly ballotId: string;
   readonly onDone: () => void;
-  readonly programmeId: string;
+  readonly eventId: string;
 }) => {
   const t = useTranslations("diwan.admin.programmes.vote");
   const { supabase } = useAuth();
@@ -105,7 +105,7 @@ const NewBook = ({
         })
       ),
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: key(programmeId) });
+      await queryClient.invalidateQueries({ queryKey: key(eventId) });
       onDone();
     },
   });
@@ -139,10 +139,10 @@ const NewBook = ({
 /** One ballot: its books with their votes so far, and its closing time. */
 const BallotSection = ({
   ballot,
-  programmeId,
+  eventId,
 }: {
   readonly ballot: Ballot;
-  readonly programmeId: string;
+  readonly eventId: string;
 }) => {
   const t = useTranslations("diwan.admin.programmes.vote");
   const locale = useLocale() as Locale;
@@ -153,7 +153,7 @@ const BallotSection = ({
     queryKey: ["admin", "ballot-counts", ballot.id],
   });
   const refresh = () =>
-    queryClient.invalidateQueries({ queryKey: key(programmeId) });
+    queryClient.invalidateQueries({ queryKey: key(eventId) });
   const removeBook = useMutation({
     mutationFn: async (id: string) =>
       unwrap(
@@ -247,11 +247,7 @@ const BallotSection = ({
       {ballot.books.length < BOOKS && total === 0 ? (
         <AddInPlace label={t("addBook")}>
           {(close) => (
-            <NewBook
-              ballotId={ballot.id}
-              onDone={close}
-              programmeId={programmeId}
-            />
+            <NewBook ballotId={ballot.id} eventId={eventId} onDone={close} />
           )}
         </AddInPlace>
       ) : null}
@@ -266,27 +262,23 @@ const BallotSection = ({
  * members vote on the program's page; the host sees the counts as they
  * come, everyone else once it closes.
  */
-export const BookVote = ({ programmeId }: { readonly programmeId: string }) => {
+export const BookVote = ({ eventId }: { readonly eventId: string }) => {
   const t = useTranslations("diwan.admin.programmes.vote");
   const { supabase } = useAuth();
   const ballots = useQuery({
-    queryFn: () => programmes.bookBallots(supabase, programmeId),
-    queryKey: key(programmeId),
+    queryFn: () => programmes.bookBallots(supabase, eventId),
+    queryKey: key(eventId),
   });
   return (
     <div className="grid max-w-3xl gap-10">
       <p className="type-body text-text-secondary">{t("lede")}</p>
       <AddInPlace label={t("newBallot")}>
-        {(close) => <NewBallot onDone={close} programmeId={programmeId} />}
+        {(close) => <NewBallot eventId={eventId} onDone={close} />}
       </AddInPlace>
       {ballots.isPending ? <SectionSpinner /> : null}
       {ballots.data?.length === 0 ? <EmptyLine>{t("empty")}</EmptyLine> : null}
       {ballots.data?.map((ballot) => (
-        <BallotSection
-          ballot={ballot}
-          key={ballot.id}
-          programmeId={programmeId}
-        />
+        <BallotSection ballot={ballot} eventId={eventId} key={ballot.id} />
       ))}
     </div>
   );

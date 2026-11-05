@@ -3,34 +3,45 @@ import { formatNumber } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
 import { charity, localized } from "@repo/sal-data";
 import { getTranslations } from "next-intl/server";
-import type { Series } from "@/components/series";
 import { readPublished } from "@/lib/supabase";
 
-const PATH = "/events/second-chapter/catalog";
+type Campaign = NonNullable<
+  Awaited<ReturnType<typeof charity.campaignForEvent>>
+>;
 
-/** The current campaign and its listed books (A27). */
-const loadCatalog = () =>
+/** An event's campaign catalog: /events/<event>/catalog (owner, Nov 5, 2026). */
+export const catalogPath = (eventSlug: string) =>
+  `/events/${eventSlug}/catalog`;
+
+/** The campaign's listed books (A27). */
+const loadCatalog = (campaign: Campaign) =>
   readPublished(
     ["charity"],
-    async (c) => {
-      const [campaign] = (await charity.activeCampaigns(c)) ?? [];
-      return campaign
-        ? { books: await charity.catalogBooks(c, campaign.id), campaign }
-        : null;
-    },
-    null
+    async (c) => ({
+      books: (await charity.catalogBooks(c, campaign.id)) ?? [],
+      campaign,
+    }),
+    { books: [], campaign }
   );
 
-/** On Second Chapter's page: the way to the catalog, once it has books. */
-export const CatalogLink = async ({ locale }: { readonly locale: Locale }) => {
-  const catalog = await loadCatalog();
-  if (!catalog || catalog.books.length === 0) {
+/** On the event's page: the way to the catalog, once it has books. */
+export const CatalogLink = async ({
+  campaign,
+  eventSlug,
+  locale,
+}: {
+  readonly campaign: Campaign;
+  readonly eventSlug: string;
+  readonly locale: Locale;
+}) => {
+  const catalog = await loadCatalog(campaign);
+  if (catalog.books.length === 0) {
     return null;
   }
   const t = await getTranslations({ locale, namespace: "web.give.catalog" });
   return (
     <p className="type-body">
-      <Link className="link" href={PATH}>
+      <Link className="link" href={catalogPath(eventSlug)}>
         {t("link", { count: formatNumber(catalog.books.length, locale) })}
       </Link>
     </p>
@@ -38,22 +49,30 @@ export const CatalogLink = async ({ locale }: { readonly locale: Locale }) => {
 };
 
 /**
- * /events/second-chapter/catalog (the design review A27): the books given
- * to the current campaign, to see what the fair will hold. Browse only:
- * no prices, no reserving; a language to narrow it to.
+ * /events/<event>/catalog (the design review A27; owner, Nov 5, 2026: an
+ * event's own): the books given to the event's campaign, to see what the
+ * fair will hold. Browse only: no prices, no reserving; a language to
+ * narrow it to.
  */
 export const SecondChapterCatalog = async ({
+  campaign,
+  event,
   language,
   locale,
-  series,
 }: {
+  readonly campaign: Campaign;
+  readonly event: {
+    slug: string;
+    title_ar: string | null;
+    title_en: string | null;
+  };
   readonly language: charity.CatalogLanguage | null;
   readonly locale: Locale;
-  readonly series: Series;
 }) => {
   const t = await getTranslations({ locale, namespace: "web.give.catalog" });
-  const catalog = await loadCatalog();
-  const books = (catalog?.books ?? []).filter(
+  const PATH = catalogPath(event.slug);
+  const catalog = await loadCatalog(campaign);
+  const books = catalog.books.filter(
     (b) => !language || b.language === language
   );
   return (
@@ -61,19 +80,17 @@ export const SecondChapterCatalog = async ({
       <header className="grid gap-4">
         <h1 className="type-display text-balance">{t("title")}</h1>
         <p className="type-lede max-w-prose">
-          {catalog
-            ? t("lede", {
-                campaign: localized(catalog.campaign, "title", locale),
-              })
-            : t("none")}
+          {t("lede", {
+            campaign: localized(catalog.campaign, "title", locale),
+          })}
         </p>
         <p>
-          <Link className="link" href={`/events/${series.slug}`}>
-            {localized(series, "name", locale)}
+          <Link className="link" href={`/events/${event.slug}`}>
+            {localized(event, "title", locale)}
           </Link>
         </p>
       </header>
-      {catalog && catalog.books.length > 0 ? (
+      {catalog.books.length > 0 ? (
         <nav aria-label={t("languages")}>
           <ul className="flex flex-wrap gap-x-6 gap-y-2">
             {[null, ...charity.CATALOG_LANGUAGES].map((l) => (
@@ -90,7 +107,7 @@ export const SecondChapterCatalog = async ({
           </ul>
         </nav>
       ) : null}
-      {catalog && books.length === 0 ? (
+      {books.length === 0 ? (
         <p className="type-body text-text-secondary">{t("empty")}</p>
       ) : null}
       {books.length > 0 ? (

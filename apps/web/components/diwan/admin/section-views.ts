@@ -22,6 +22,7 @@ export interface SectionView {
 export type ViewKey =
   | "desk"
   | "events"
+  | "collection"
   | "company"
   | "newsroom"
   | "editions"
@@ -42,7 +43,11 @@ export type ViewKey =
 export const sectionViews: Record<AdminSection, readonly SectionView[]> = {
   company: [{ href: "/company", key: "company", module: "productions" }],
   desk: [{ href: "/", key: "desk", module: "*" }],
-  events: [{ href: "/events", key: "events", module: "events" }],
+  events: [
+    { href: "/events", key: "events", module: "events" },
+    // Second Chapter's campaigns, each linked to its event (owner, Nov 5, 2026).
+    { href: "/events/campaigns", key: "collection", module: "charity" },
+  ],
   people: [
     { href: "/people", key: "members", module: "members" },
     { href: "/people/openings", key: "openings", module: "hiring" },

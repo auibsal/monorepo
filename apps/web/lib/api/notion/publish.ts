@@ -134,13 +134,27 @@ const copyImage = async (
   return stored.path;
 };
 
-const programmeMap = async (ctx: SyncContext) =>
-  new Map(
-    [...(await linksOf(ctx, "programme")).entries()].map(([key, l]) => [
-      l.notion_page_id,
-      key,
-    ])
+/**
+ * Notion's linked rows the site still knows (owner, Nov 5, 2026: no event
+ * series): only active rows, the Company's and the Tour's, so an event
+ * linked to a former series in Notion is published as an event of its own.
+ */
+const programmeMap = async (ctx: SyncContext) => {
+  const { data, error } = await ctx.admin
+    .schema("core")
+    .from("programmes")
+    .select("id")
+    .eq("is_active", true);
+  if (error) {
+    throw error;
+  }
+  const active = new Set((data ?? []).map((p) => p.id));
+  return new Map(
+    [...(await linksOf(ctx, "programme")).entries()]
+      .filter(([key]) => active.has(key))
+      .map(([key, l]) => [l.notion_page_id, key])
   );
+};
 
 const slugTaken = async (
   ctx: SyncContext,

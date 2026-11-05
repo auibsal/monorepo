@@ -8,6 +8,51 @@ first session); section numbers (§) refer to it.
 Branch: `claude/events-not-programs`.
 
 
+
+## Standard events, no series (owner, Nov 5, 2026, later)
+
+The owner: "Don't make the current programs into series. Make them into
+normal/standard events. Standardize events all over from the public and
+diwan sides."
+
+- [x] Database (migration `20261101005200_standard_events`): the events of
+  Second Chapter, the Salon, Book Circle, Open Pages, the Listening Room
+  and the Typewriter Tour belong to no series (`programme_id` null); the
+  five rows are inactive. An event carries its own parts: `event_id` on
+  prompts, book ballots, rotas and campaigns (needs had it); existing
+  series parts moved to each series' next event; series-scoped role
+  assignments became event-scoped ones for each coming event (no emails
+  sent) and ended. `private.runs_part` and `private.lists_needs(programme,
+  event)` decide who runs a part; the policies, `ballot_counts` and
+  `record_shift_service` ask them. pgTAP: `99_owner_nov5` (three more),
+  and the tests that used the series rows.
+- [x] Site: `/events/<slug>` is an event or a month only. Every event
+  page has the one structure plus its parts (`EventParts`): Student Life's
+  approval of a trip, prompts, the book vote, Second Chapter's
+  collection, the links from the night and what Qirtas wrote from it. The
+  catalog and the impact report are `/events/<event>/catalog` and
+  `/events/<event>/impact`. Gone, with no redirects: the series pages and
+  their months, `/past`, Book Circle's `/shelf`, the occasion pages, the
+  series filter on What's on, the series list on the home page and the
+  footer's series column.
+- [x] Diwan: one event page (`EventEditor` plus `EventPartsAdmin`:
+  shifts, needs, prompts, vote, and linking Second Chapter's campaign);
+  the series pages, their tabs and the events list's series column are
+  gone; campaigns at `/diwan/events/campaigns` (What's on → Second
+  Chapter); places may belong to an event team (no row); the event form
+  offers only the Company's and the Tour's rows.
+- [x] Notion: the Programs database no longer publishes or reactivates a
+  row; an event linked to a former series is published as its own.
+- [ ] Production: link Second Chapter's campaign to its fair's event on
+  the event's page in the Diwan (none is linked by the migration), so the
+  collection, catalog and impact report show there.
+- [ ] The Claude project's copy of `claude/decisions.md`: §1 "One
+  calendar" now says every event is a standard event; change it there too.
+- needs-native-review: `web.events.parts.*`, `diwan.admin.event.parts.*`,
+  `diwan.admin.sections.tabs.collection`, the relabeled `programme`
+  fields (`diwan.admin.kit`, `diwan.service`, `diwan.admin.hiring.program`,
+  `diwan.admin.member.scopes.programme`), `diwan.forms.defs.f29.*`.
+
 ## The owner's decisions of Thursday, Nov 5, 2026: no programs, the Council of six
 
 Branch: `claude/events-not-programs` (also carries A41 joint events and R4,

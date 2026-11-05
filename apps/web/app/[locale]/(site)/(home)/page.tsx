@@ -4,20 +4,15 @@ import type { Locale } from "@repo/internationalization";
 import { localizedPath } from "@repo/internationalization";
 import { formatClock, formatLongDate } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
-import { events, journal, localized, programmes } from "@repo/sal-data";
+import { events, journal, localized } from "@repo/sal-data";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { ReactNode } from "react";
 import { type DatedItem, DatedList, eventItems } from "@/components/event-list";
 import { NewsletterSignup } from "@/components/newsletter/signup";
 import { PieceCardView } from "@/components/qirtas/cards";
-import { seriesPath } from "@/components/series";
 import { localizedMetadata } from "@/lib/metadata";
 import { readPublished } from "@/lib/supabase";
-
-/** Where a program's name leads: its own page (Qirtas: the paper). */
-const programmeHref = (slug: string) =>
-  slug === "waraq" ? "/qirtas" : seriesPath(slug);
 
 interface HomeProps {
   readonly params: Promise<{ locale: Locale }>;
@@ -46,12 +41,11 @@ const Home = async ({ params }: HomeProps) => {
   const tj = await getTranslations({ locale, namespace: "web.journal" });
   const join = localizedPath(locale, "/sign-up");
 
-  const [nextEvents, calls, front, news, allProgrammes] = await Promise.all([
+  const [nextEvents, calls, front, news] = await Promise.all([
     readPublished(["events"], (c) => events.publicEvents(c, { limit: 6 }), []),
     readPublished(["journal"], (c) => journal.editionCalls(c), []),
     readPublished(["journal"], (c) => journal.frontPieces(c), []),
     readPublished(["journal"], (c) => journal.deskPieces(c, "news"), []),
-    readPublished(["programmes"], (c) => programmes.programmes(c), []),
   ]);
 
   // The next three weeks (the overhaul, Oct 30, 2026): open calls (filed
@@ -79,11 +73,6 @@ const Home = async ({ params }: HomeProps) => {
   const [lead, ...rest] = pieces;
   // The next event, from the calendar (design review C1): never typed in.
   const [soonest] = nextEvents ?? [];
-
-  // The event series (owner, Nov 5, 2026: no programs): Qirtas and Next
-  // Stop are unpublished, the Company is the theater company and the
-  // Typewriter Tour belongs to membership.
-  const series = (allProgrammes ?? []).filter(programmes.isListedProgram);
 
   return (
     <>
@@ -160,35 +149,6 @@ const Home = async ({ params }: HomeProps) => {
               ))}
             </div>
           </div>
-        </section>
-      ) : null}
-
-      {series.length > 0 ? (
-        <section
-          aria-labelledby="programs"
-          className="mx-auto grid w-full max-w-6xl gap-space-5 px-4 py-16"
-        >
-          <SectionHead title={t("programs")} titleId="programs" />
-          {/* One large typographic list, the rhythm beside each (C2). */}
-          <ul className="border-line border-b">
-            {series.map((p) => (
-              <li className="border-line border-t" key={p.id}>
-                <Link
-                  className="group grid gap-x-8 gap-y-1 py-space-4 sm:grid-cols-[1fr_auto] sm:items-baseline"
-                  href={programmeHref(p.slug)}
-                >
-                  <span className="type-display group-hover:text-accent">
-                    {localized(p, "name", locale)}
-                  </span>
-                  {localized(p, "rhythm", locale) ? (
-                    <span className="type-body text-text-secondary sm:text-end">
-                      {localized(p, "rhythm", locale)}
-                    </span>
-                  ) : null}
-                </Link>
-              </li>
-            ))}
-          </ul>
         </section>
       ) : null}
 

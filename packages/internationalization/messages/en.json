@@ -853,8 +853,8 @@
         "noImageNote": "Use our own photos, taken with consent. No identifiable children, no stock images.",
         "slug": "Web address (slug)",
         "slugHint": "Lowercase letters, numbers and hyphens, for example the-return.",
-        "programme": "Series",
-        "noProgramme": "Society-wide (no series)",
+        "programme": "Part of",
+        "noProgramme": "An event of its own",
         "status": "Status",
         "statuses": {
           "draft": "Draft",
@@ -863,7 +863,7 @@
           "scheduled": "Scheduled",
           "archived": "Archived"
         },
-        "addressProgram": "That address belongs to an event series; choose another.",
+        "addressProgram": "That address belongs to the Company or Qirtas; choose another.",
         "addressEvent": "That address belongs to an event; choose another.",
         "choices": {
           "choose": "Choose",
@@ -1020,7 +1020,7 @@
         "upcoming": "Starts later",
         "scopes": {
           "global": "Society-wide",
-          "programme": "Series",
+          "programme": "The Company or Qirtas",
           "event": "One event",
           "issue": "Qirtas Edition",
           "campaign": "Campaign",
@@ -1094,7 +1094,7 @@
         "columns": {
           "title": "Event",
           "when": "When",
-          "programme": "Series",
+          "programme": "Part of",
           "access": "Who",
           "rsvps": "Bookings",
           "status": "Status",
@@ -1178,13 +1178,13 @@
         "withdraw": "Withdraw",
         "links": {
           "title": "Links",
-          "lede": "Outside links for this event, such as the album played or the reading list. They show with it among the series' past events.",
+          "lede": "Outside links for this event, such as the album played or the reading list. They show on the event's page.",
           "label": "What it is",
           "url": "Link",
           "urlHint": "An https:// address.",
           "new": "Add a link",
           "remove": "Remove",
-          "removeConfirm": "Remove this link from the session?"
+          "removeConfirm": "Remove this link from the event?"
         },
         "occasion": {
           "title": "Occasion",
@@ -1201,7 +1201,19 @@
           "date": "Approved by Student Life on",
           "dateHint": "The date on Student Life's written approval. Clear it to withdraw the approval of a trip not yet published."
         },
-        "checkInChosen": "Check in the chosen ({count})"
+        "checkInChosen": "Check in the chosen ({count})",
+        "parts": {
+          "shifts": "Shifts",
+          "needs": "Needs",
+          "prompts": "Prompts",
+          "vote": "Book vote",
+          "collection": "Second Chapter's collection",
+          "collectionLede": "Link the campaign to its event, the fair: the event's page then carries the collection, its catalog and its impact report.",
+          "noCampaigns": "No campaign yet.",
+          "campaigns": "Campaigns",
+          "link": "Link to this event",
+          "unlink": "Unlink"
+        }
       },
       "checkIn": {
         "title": "Check-in",
@@ -1409,13 +1421,12 @@
         "choose": "Choose"
       },
       "programmes": {
-        "title": "Series",
-        "lede": "Recurring events keep their names as series: each keeps its events, shifts, places and needs on its own page.",
-        "programme": "Series",
+        "title": "Events",
+        "lede": "Every event is a standard event, with its shifts, needs, prompts and vote on its own page.",
+        "programme": "Part of",
         "tabs": {
           "episodes": "Episodes",
           "reels": "Reels",
-          "sessions": "Events",
           "needs": "Needs",
           "shifts": "Shifts",
           "six-words": "Six Words",
@@ -1524,7 +1535,7 @@
           "recent": "Recently closed"
         },
         "openings": {
-          "lede": "This series' openings on Get involved, the Society's careers page: its event team, one-term Apprenticeships and First Ink mentor places. Members who say they're interested are listed here, and each one is also emailed to the series' event leads. Give the places, then close the opening once it's filled.",
+          "lede": "Openings on Get involved, the Society's careers page: event teams, one-term Apprenticeships and First Ink mentor places. Members who say they're interested are listed here, and each one is also emailed to the event leads. Give the places, then close the opening once it's filled.",
           "title": "Title",
           "body": "What it involves",
           "skills": "Skills it wants",
@@ -1578,17 +1589,11 @@
           "listTitle": "Openings",
           "listLede": "Every opening on Get involved, inside the Society and out: roles, event teams, Apprenticeships, First Ink, volunteer places and places with partners. A role's replies go through hiring: the General Secretary runs it, and the role's owner picks the person. A place's replies are given the place.",
           "allKinds": "Every kind",
-          "allPrograms": "Every series"
-        },
-        "sessions": {
-          "lede": "The series' events on the term calendar. Add one in What's on, then edit or cancel it like any event.",
-          "none": "No events in this series yet.",
-          "add": "New event",
-          "draft": "Draft"
+          "allPrograms": "Everywhere"
         },
         "removalsTitle": "Takedown requests",
-        "none": "No event series is yours to run yet. Roles are assigned on a member's page.",
-        "notYours": "This series isn't one you run.",
+        "none": "No event is yours to run yet. Roles are assigned on a member's page.",
+        "notYours": "This isn't one you run.",
         "all": "All events",
         "pitches": {
           "title": "Pitches",
@@ -1598,7 +1603,7 @@
         "backToTab": "{program}: {tab}",
         "openingsLink": "Openings",
         "prompts": {
-          "lede": "The workshop's writing prompts. Publish the ones the series' page should show as cards.",
+          "lede": "The writing prompts for this event. Publish the ones its page should show as cards.",
           "empty": "No prompts yet.",
           "text": "Prompt",
           "new": "Write a prompt",
@@ -2379,8 +2384,8 @@
           "kind": "Kind",
           "origin": "Script",
           "summary": "Summary",
-          "programme": "Series",
-          "noProgramme": "No series",
+          "programme": "Part of",
+          "noProgramme": "On its own",
           "poster": "Poster",
           "isPublic": "Show on auibsal.org/company",
           "isPublicHint": "Only the title, summary, poster, credits people agreed to, partners and published performances are shown. Rights, auditions and the report never are."
@@ -2568,7 +2573,7 @@
         "news": "This post is written in the team's Notion workspace. Publishing it from Notion again replaces changes made here.",
         "open": "Open in Notion",
         "mirror": "The team's Notion workspace keeps a read-only copy of this, where projects, tasks and meetings link to it.",
-        "programme": "This series is written in the team's Notion workspace (Publishing): its name, summary and rhythm come from there.",
+        "programme": "This row is written in the team's Notion workspace (Publishing): its name, summary and rhythm come from there.",
         "document": "This document is written in the team's Notion workspace (Publishing, Documents): its text comes from there.",
         "minutes": "These minutes are written in the team's Notion workspace (Work, Meetings) and come here when their Status is Minutes in the Diwan. Once adopted, this copy is locked."
       },
@@ -2912,7 +2917,7 @@
         "talkAt": "Conversation",
         "schedule": "Schedule",
         "post": "Post a role",
-        "program": "Series",
+        "program": "Where",
         "roleTitle": "Title on Get involved",
         "roleBody": "What it involves",
         "closes": "Applications close",
@@ -2955,7 +2960,7 @@
         "society": "Society",
         "tabs": {
           "calendar": "Calendar",
-          "programs": "Series",
+          "programs": "Events",
           "events": "What's on",
           "members": "Members",
           "openings": "Openings",
@@ -2974,7 +2979,8 @@
           "awards": "Awards",
           "meetings": "Meetings",
           "declarations": "Declarations",
-          "tour": "Typewriter Tour"
+          "tour": "Typewriter Tour",
+          "collection": "Second Chapter"
         }
       },
       "society": {
@@ -3068,7 +3074,7 @@
           "governance_partner_invitations": "an invitation",
           "membership_guests": "a guest of the Society",
           "programmes_prompts": "a prompt",
-          "events_session_links": "a session's link",
+          "events_session_links": "an event's link",
           "programmes_book_ballots": "a book vote",
           "programmes_book_choices": "a book on a vote",
           "events_joint_tasks": "a joint event's checklist item"
@@ -3199,8 +3205,8 @@
       "logLede": "For work that isn't a shift or an event staff role: preparing a reading, editing, design, setting up.",
       "date": "Date",
       "hoursLabel": "Hours",
-      "programme": "Series",
-      "noProgramme": "No series",
+      "programme": "Where",
+      "noProgramme": "The Society",
       "activity": "Activity",
       "what": "What you did",
       "confirmNote": "An event lead or the General Secretary confirms each entry. Shifts and event staffing are recorded for you.",
@@ -3806,13 +3812,13 @@
           "action": "Close a role at handover"
         },
         "f29": {
-          "title": "Event Series Charter",
+          "title": "Event Charter",
           "purpose": "One page for every recurring event. Reviewed at least once a year.",
           "fields": {
-            "programme": "Series",
+            "programme": "Event",
             "charter_date": "Charter date",
             "review_date": "Review date",
-            "purpose": "Purpose: what this series is for, in two sentences",
+            "purpose": "Purpose: what this event is for, in two sentences",
             "pillars": "Pillars served",
             "lead": "Lead or chair",
             "deputy": "Deputy",
@@ -3834,7 +3840,7 @@
               "community": "Building a community"
             }
           },
-          "action": "Charter a series"
+          "action": "Charter an event"
         }
       },
       "mineAll": "Everything you've sent",
@@ -4429,11 +4435,9 @@
       "rsvp": "Book a place",
       "rsvpHint": "Sign in to book a place: members and the Society's guests book.",
       "addToCalendar": "Add to calendar",
-      "series": "Series",
       "everything": "Everything",
       "previous": "Previous month: {month}",
       "next": "Next month: {month}",
-      "aboutSeries": "About {series}",
       "noneMonth": "Nothing is announced for {month} yet.",
       "auib": "AUIB calendar",
       "allDay": "All day",
@@ -4453,7 +4457,13 @@
       "dates": "Coming dates",
       "noDates": "No dates are announced yet.",
       "nextLabel": "Next:",
-      "nextOn": ", {date}."
+      "nextOn": ", {date}.",
+      "parts": {
+        "approved": "Student Life approved this trip in writing on {date}.",
+        "prompts": "Prompts",
+        "links": "From the night",
+        "qirtas": "In Qirtas"
+      }
     },
     "journal": {
       "title": "Qirtas",
@@ -5357,17 +5367,6 @@
     },
     "programs": {
       "page": {
-        "next": "Next:",
-        "nextLine": "{title}, {date} at {time}",
-        "past": "Past events",
-        "allPast": "Every past session",
-        "read": "Read",
-        "pastTitle": "{program}: past events",
-        "noPast": "No events yet.",
-        "shelf": "The shelf",
-        "asList": "The shelf as a list",
-        "noShelf": "No reviews on the shelf yet.",
-        "prompts": "Prompts",
         "wall": "The Six Words wall",
         "try": "Try the typewriter",
         "toy": {
@@ -5392,34 +5391,6 @@
           "chosen": "The circle chose {titles}.",
           "and": " and ",
           "count": "{count, plural, one {{title}: {votes} vote} other {{title}: {votes} votes}}"
-        }
-      },
-      "occasions": {
-        "next": "Coming up",
-        "how": "How it works",
-        "past": "Before",
-        "approved": "Approved in writing by Student Life on {date}.",
-        "book_street_trip": {
-          "title": "Book Circle on al-Mutanabbi Street",
-          "short": "Once a term, a Friday morning on Baghdad's street of books.",
-          "lede": "Once a term, Book Circle spends a Friday morning on al-Mutanabbi Street, Baghdad's street of booksellers.",
-          "none": "The next trip is announced here once Student Life approves it.",
-          "rules": [
-            "Every trip is approved in writing by AUIB's Office of Student Life before it is announced, and goes with a safety plan.",
-            "Book your place on the trip's page; the time, the meeting point and what to bring are there."
-          ]
-        },
-        "worst_poem_contest": {
-          "title": "The worst-poem contest",
-          "short": "Once a term, the worst poem at AUIB wins.",
-          "lede": "The worst poem at AUIB wins. Really.",
-          "none": "The next contest is announced on What's on.",
-          "rules": [
-            "Once a term, Open Pages gives an evening to bad poetry.",
-            "Bring one poem of your own, written as badly as you can, in Arabic or English, and read it aloud yourself.",
-            "The room chooses the worst, and the winner is named on the night.",
-            "Laugh at the poem, never at a person: nothing cruel, nothing about anyone in the room."
-          ]
         }
       }
     }

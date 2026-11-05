@@ -77,7 +77,7 @@ const blank = {
 };
 
 /** The row an opening is saved as; places only for the two kinds of place. */
-const openingRow = (form: typeof blank, programmeId: string) => {
+const openingRow = (form: typeof blank, programmeId: string | null) => {
   const place = form.kind !== "role";
   return {
     body_ar: form.body.ar || null,
@@ -440,9 +440,10 @@ export const OpeningsAdmin = () => {
 };
 
 /**
- * A program's place (an Apprenticeship, First Ink or a volunteer place):
- * the program it belongs to, its term and places. Its sessions are a rota
- * of its own, made with it, so their hours count as service.
+ * A place (an Apprenticeship, First Ink or a volunteer place): where it is
+ * (a Qirtas section, the Company or an event team; owner, Nov 5, 2026: no
+ * series), its term and places. Its sessions are a rota of its own, made
+ * with it, so their hours count as service.
  */
 const ProgramPlaceForm = ({
   kind,
@@ -459,8 +460,12 @@ const ProgramPlaceForm = ({
   const queryClient = useQueryClient();
   const programs = useProgrammeOptions("programs.manage");
   const [form, setForm] = useState({ ...blank, kind });
+  // Qirtas's and the Company's rows, or none: an event team.
+  const homes = programs.options.filter(
+    (p) => p.slug === "waraq" || p.slug === "company"
+  );
   const [programme, setProgramme] = useState("");
-  const programmeId = programme || programs.options[0]?.id || "";
+  const programmeId = programme;
   const partners = useQuery({
     enabled: namesPartner(kind),
     queryFn: async () =>
@@ -473,7 +478,7 @@ const ProgramPlaceForm = ({
         await supabase
           .schema("programmes")
           .from("openings")
-          .insert(openingRow({ ...form, kind }, programmeId))
+          .insert(openingRow({ ...form, kind }, programmeId || null))
           .select("id")
           .single()
       );
@@ -485,7 +490,7 @@ const ProgramPlaceForm = ({
             .insert({
               ends_on: form.term_to || null,
               opening_id: opening.id,
-              programme_id: programmeId,
+              programme_id: programmeId || null,
               starts_on: form.term_from || null,
               title_ar: form.title.ar,
               title_en: form.title.en,
@@ -510,10 +515,10 @@ const ProgramPlaceForm = ({
           <SelectInput
             id={id}
             onChange={(e) => setProgramme(e.target.value)}
-            required
             value={programmeId}
           >
-            {programs.options.map((p) => (
+            <option value="">{th("owners.program")}</option>
+            {homes.map((p) => (
               <option key={p.id} value={p.id}>
                 {p.label}
               </option>
@@ -630,7 +635,7 @@ const ProgramPlaceForm = ({
         onChange={(closes_at) => setForm((f) => ({ ...f, closes_at }))}
         value={form.closes_at}
       />
-      <SaveButton disabled={!programmeId} pending={add.isPending} />
+      <SaveButton pending={add.isPending} />
       <ErrorLine error={add.error} />
     </form>
   );

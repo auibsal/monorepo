@@ -176,7 +176,7 @@ const CampaignSettings = ({ campaignId }: { campaignId: string | null }) => {
     onSuccess: async (savedId) => {
       await queryClient.invalidateQueries({ queryKey: ["admin"] });
       if (!campaignId) {
-        router.replace(`/events/second-chapter/campaigns/${savedId}`);
+        router.replace(`/events/campaigns/${savedId}`);
       }
     },
   });
@@ -1415,7 +1415,7 @@ export const CampaignAdmin = ({
   const back = (
     <Link
       className="text-sm underline underline-offset-4"
-      href="/events/second-chapter/collection"
+      href="/events/campaigns"
     >
       {tk("back")}
     </Link>
@@ -1449,7 +1449,7 @@ export const CampaignAdmin = ({
   ) => hasPermission(grants.data, permission, "campaign", campaignId);
   const canManage = can("charity.manage");
   const canSign = can("charity.ledger.signoff");
-  const base = `/events/second-chapter/campaigns/${campaign.data.slug}`;
+  const base = `/events/campaigns/${campaign.data.slug}`;
   const pathOf = (key: CampaignTab) =>
     key === "ledger" ? base : `${base}/${key}`;
   const tabs = campaignTabs.filter((key) => {

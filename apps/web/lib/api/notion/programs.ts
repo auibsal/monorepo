@@ -84,8 +84,9 @@ const publishEnglish = async (
     ]);
     return;
   }
+  // No series on the site (owner, Nov 5, 2026): a row keeps its state,
+  // and a new one is not published; the Company's row keeps its page.
   const values = {
-    is_active: true,
     name_en: v.name,
     rhythm_en: v.rhythm,
     summary_en: v.summary,
@@ -109,7 +110,13 @@ const publishEnglish = async (
     const { data, error } = await ctx.admin
       .schema("core")
       .from("programmes")
-      .insert({ ...values, kind: "format", name_ar: v.name, slug: v.slug })
+      .insert({
+        ...values,
+        is_active: false,
+        kind: "format",
+        name_ar: v.name,
+        slug: v.slug,
+      })
       .select("id")
       .single();
     if (error) {

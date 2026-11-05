@@ -279,6 +279,7 @@ export type Database = {
           donations_starts_on: string | null;
           drop_off_points: NonNullable<Json>;
           ends_on: string | null;
+          event_id: string | null;
           fair_ends_on: string | null;
           fair_starts_on: string | null;
           handed_over_iqd: number | null;
@@ -307,6 +308,7 @@ export type Database = {
           donations_starts_on?: string | null;
           drop_off_points?: NonNullable<Json>;
           ends_on?: string | null;
+          event_id?: string | null;
           fair_ends_on?: string | null;
           fair_starts_on?: string | null;
           handed_over_iqd?: number | null;
@@ -335,6 +337,7 @@ export type Database = {
           donations_starts_on?: string | null;
           drop_off_points?: NonNullable<Json>;
           ends_on?: string | null;
+          event_id?: string | null;
           fair_ends_on?: string | null;
           fair_starts_on?: string | null;
           handed_over_iqd?: number | null;
@@ -5612,8 +5615,9 @@ export type Database = {
           closes_at: string;
           created_at: string;
           created_by: string | null;
+          event_id: string | null;
           id: string;
-          programme_id: string;
+          programme_id: string | null;
           title_ar: string;
           title_en: string;
         };
@@ -5621,8 +5625,9 @@ export type Database = {
           closes_at: string;
           created_at?: string;
           created_by?: string | null;
+          event_id?: string | null;
           id?: string;
-          programme_id: string;
+          programme_id?: string | null;
           title_ar?: string;
           title_en?: string;
         };
@@ -5630,8 +5635,9 @@ export type Database = {
           closes_at?: string;
           created_at?: string;
           created_by?: string | null;
+          event_id?: string | null;
           id?: string;
-          programme_id?: string;
+          programme_id?: string | null;
           title_ar?: string;
           title_en?: string;
         };
@@ -5770,7 +5776,7 @@ export type Database = {
           id: string;
           item: string;
           needed_by: string;
-          programme_id: string;
+          programme_id: string | null;
           provided_note: string | null;
           provided_on: string | null;
           purpose: string;
@@ -5786,7 +5792,7 @@ export type Database = {
           id?: string;
           item: string;
           needed_by: string;
-          programme_id: string;
+          programme_id?: string | null;
           provided_note?: string | null;
           provided_on?: string | null;
           purpose: string;
@@ -5802,7 +5808,7 @@ export type Database = {
           id?: string;
           item?: string;
           needed_by?: string;
-          programme_id?: string;
+          programme_id?: string | null;
           provided_note?: string | null;
           provided_on?: string | null;
           purpose?: string;
@@ -6175,27 +6181,30 @@ export type Database = {
         Row: {
           created_at: string;
           created_by: string | null;
+          event_id: string | null;
           id: string;
           is_published: boolean;
-          programme_id: string;
+          programme_id: string | null;
           text_ar: string;
           text_en: string;
         };
         Insert: {
           created_at?: string;
           created_by?: string | null;
+          event_id?: string | null;
           id?: string;
           is_published?: boolean;
-          programme_id: string;
+          programme_id?: string | null;
           text_ar?: string;
           text_en?: string;
         };
         Update: {
           created_at?: string;
           created_by?: string | null;
+          event_id?: string | null;
           id?: string;
           is_published?: boolean;
-          programme_id?: string;
+          programme_id?: string | null;
           text_ar?: string;
           text_en?: string;
         };
@@ -6341,9 +6350,10 @@ export type Database = {
         Row: {
           created_at: string;
           ends_on: string | null;
+          event_id: string | null;
           id: string;
           opening_id: string | null;
-          programme_id: string;
+          programme_id: string | null;
           starts_on: string | null;
           title_ar: string;
           title_en: string;
@@ -6351,9 +6361,10 @@ export type Database = {
         Insert: {
           created_at?: string;
           ends_on?: string | null;
+          event_id?: string | null;
           id?: string;
           opening_id?: string | null;
-          programme_id: string;
+          programme_id?: string | null;
           starts_on?: string | null;
           title_ar: string;
           title_en: string;
@@ -6361,9 +6372,10 @@ export type Database = {
         Update: {
           created_at?: string;
           ends_on?: string | null;
+          event_id?: string | null;
           id?: string;
           opening_id?: string | null;
-          programme_id?: string;
+          programme_id?: string | null;
           starts_on?: string | null;
           title_ar?: string;
           title_en?: string;

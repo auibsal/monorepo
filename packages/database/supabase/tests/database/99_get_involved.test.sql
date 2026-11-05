@@ -104,7 +104,7 @@ select throws_ok(
 );
 select throws_ok(
   $$ insert into programmes.openings (programme_id, role, title_en, title_ar)
-     values ((select id from core.programmes where slug = 'salon'), 'programme_lead', 'Salon Host', 'مضيف الصالون') $$,
+     values ((select id from core.programmes where slug = 'typewriter-tour'), 'programme_lead', 'Salon Host', 'مضيف الصالون') $$,
   '42501', null, 'but only for their own program'
 );
 insert into programmes.openings (id, programme_id, role, title_en, title_ar, is_open)

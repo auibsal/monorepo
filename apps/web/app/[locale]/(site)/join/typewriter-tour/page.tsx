@@ -1,7 +1,7 @@
 import { Link } from "@repo/internationalization/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { TypewriterTourWall } from "@/components/program-page";
 import { PageHeader, Section } from "@/components/section";
+import { TypewriterTourWall } from "@/components/typewriter-tour";
 import { type LocaleParams, sectionMetadata } from "@/lib/page";
 
 export const generateMetadata = sectionMetadata(

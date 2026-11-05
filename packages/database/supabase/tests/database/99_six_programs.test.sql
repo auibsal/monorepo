@@ -77,12 +77,12 @@ select plan(12);
 
 select is(
   (select array_agg(slug order by sort) from core.programmes where is_active),
-  array['second-chapter', 'typewriter-tour', 'salon', 'book-circle', 'open-pages', 'listening-room', 'company'],
-  'The series in order, the Typewriter Tour''s row (membership) and the Company'
+  array['typewriter-tour', 'company'],
+  'No series (owner, Nov 5, 2026): only the Tour''s row (membership) and the Company stay active'
 );
 select ok(
   not exists (select 1 from core.programmes where is_active and (rhythm_en is null or rhythm_ar is null)),
-  'Each series shows its rhythm in one line, in both languages'
+  'Each active row shows its rhythm in one line, in both languages'
 );
 select is(
   (select name_en || ' / ' || name_ar from core.programmes where slug = 'salon'),
@@ -105,12 +105,13 @@ select ok(
 );
 select hasnt_table('events', 'series_rules', 'No repeat rules: the term calendar is plain events (owner, Nov 5, 2026)');
 select is(
-  (select count(*)::integer from events.events e join core.programmes p on p.id = e.programme_id
-    where p.slug in ('salon', 'book-circle', 'open-pages', 'listening-room') and e.status = 'published'
+  (select count(*)::integer from events.events e
+    where e.programme_id is null and e.status = 'published'
+      and e.slug ~ '^(salon|book-circle|open-pages|listening-room)-'
       and (e.starts_at at time zone 'Asia/Baghdad')::time = '16:00'
       and extract(isodow from e.starts_at at time zone 'Asia/Baghdad') = 2),
   12,
-  'The Tuesday series: twelve sessions at 4:00 PM'
+  'The Tuesday events: twelve at 4:00 PM, none in a series'
 );
 select is(
   (select (ends_at at time zone 'Asia/Baghdad')::time from events.events where slug = 'open-pages-2027-03-30'),
@@ -125,7 +126,7 @@ select is(
 
 select is(
   (select array_agg(e.slug order by e.starts_at) from events.events e
-    join core.programmes p on p.id = e.programme_id where p.slug = 'listening-room'),
+    where e.slug like 'listening-room-%'),
   array['listening-room-2027-03-16', 'listening-room-2027-05-11'],
   'The Listening Room takes the Salon''s March 16 and May 11'
 );

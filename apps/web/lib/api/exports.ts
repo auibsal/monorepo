@@ -199,7 +199,7 @@ const needsRows = async (session: ApiSession): Promise<ExportTable> => {
       "provided_note",
     ],
     rows: (unwrap(rows) ?? []).map((r) => [
-      names.get(r.programme_id) ?? "",
+      (r.programme_id ? names.get(r.programme_id) : undefined) ?? "",
       r.item,
       r.quantity,
       r.needed_by,

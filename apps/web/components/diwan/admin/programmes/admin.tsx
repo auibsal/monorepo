@@ -23,8 +23,6 @@ import { useGrants } from "@/lib/diwan/queries";
 import { DiwanSection } from "../../page";
 import { OnTheSite } from "../../site-links";
 import { EmptyLine, SectionSpinner } from "../../states";
-import { SectionTabs } from "../admin-shell";
-import { CharityAdmin } from "../charity/list";
 import { useProgrammeOptions } from "../events/data";
 import { slugify } from "../events/editor";
 import { RequestQueue } from "../forms/admin";
@@ -43,12 +41,6 @@ import {
 } from "../kit";
 import { useMemberNames } from "../member-picker";
 import { memberName } from "../members/directory";
-import { Needs } from "../needs";
-import { NotionManaged } from "../notion-managed";
-import type { ProgramTab } from "../tabs";
-import { BookVote } from "./book-vote";
-import { Prompts } from "./prompts";
-import { Sessions } from "./sessions";
 import { SkillsPicker } from "./skills-picker";
 
 const invalidateKey = ["admin", "programmes-module"];
@@ -815,7 +807,8 @@ const Shifts = ({ rotaId }: { rotaId: string }) => {
   );
 };
 
-const Rotas = ({ programmeId }: { programmeId: string }) => {
+/** An event's rotas and their shifts (owner, Nov 5, 2026: an event's own). */
+export const Rotas = ({ eventId }: { eventId: string }) => {
   const t = useTranslations("diwan.admin.programmes.rotas");
   const locale = useLocale() as Locale;
   const { supabase } = useAuth();
@@ -826,10 +819,10 @@ const Rotas = ({ programmeId }: { programmeId: string }) => {
           .schema("programmes")
           .from("rotas")
           .select("*")
-          .eq("programme_id", programmeId)
+          .eq("event_id", eventId)
           .order("created_at", { ascending: false })
       ) ?? [],
-    queryKey: [...invalidateKey, "rotas", programmeId],
+    queryKey: [...invalidateKey, "rotas", eventId],
   });
   return (
     <div className="grid gap-6">
@@ -850,7 +843,7 @@ const Rotas = ({ programmeId }: { programmeId: string }) => {
         </SalCard>
       ))}
       <AddInPlace label={t("new")}>
-        {(close) => <NewRota onDone={close} programmeId={programmeId} />}
+        {(close) => <NewRota eventId={eventId} onDone={close} />}
       </AddInPlace>
     </div>
   );
@@ -961,14 +954,14 @@ const NewShift = ({
   );
 };
 
-/** A new rota, added in place under the program's shifts. */
+/** A new rota, added in place under the event's shifts. */
 const NewRota = ({
+  eventId,
   onDone,
-  programmeId,
 }: {
   /** Called once saved: closes the form in place. */
   readonly onDone: () => void;
-  readonly programmeId: string;
+  readonly eventId: string;
 }) => {
   const t = useTranslations("diwan.admin.programmes.rotas");
   const { supabase } = useAuth();
@@ -986,7 +979,7 @@ const NewRota = ({
           .from("rotas")
           .insert({
             ends_on: form.ends_on || null,
-            programme_id: programmeId,
+            event_id: eventId,
             starts_on: form.starts_on || null,
             title_ar: form.title.ar,
             title_en: form.title.en,
@@ -1222,37 +1215,6 @@ const Removals = () => {
   );
 };
 
-// ── Page ────────────────────────────────────────────────────────────────────
-
-/**
- * The event series this officer runs (owner, Nov 5, 2026: no programs),
- * each with its page at /diwan/events/<slug>, as one line of links under
- * What's on's title (owner, Oct 31, 2026: no section below the events).
- */
-export const ProgramLinks = () => {
-  const t = useTranslations("diwan.admin.programmes");
-  const options = useProgrammeOptions("programs.manage");
-  const listed = options.options.filter((p) =>
-    programmes.isListedProgram({ is_active: p.isActive, slug: p.slug })
-  );
-  if (listed.length === 0) {
-    return null;
-  }
-  return (
-    <nav aria-label={t("title")} className="flex flex-wrap gap-x-5 gap-y-2">
-      {listed.map((p) => (
-        <Link
-          className="link type-caption"
-          href={`/events/${p.slug}`}
-          key={p.id}
-        >
-          {p.label}
-        </Link>
-      ))}
-    </nav>
-  );
-};
-
 /** Event pitches (F-10) waiting for the President, who owns events. */
 export const ProgramPitches = () => {
   const t = useTranslations("diwan.admin.programmes");
@@ -1269,83 +1231,6 @@ export const ProgramPitches = () => {
     >
       <RequestQueue base="/events/pitches" keys={["f10"]} />
     </DiwanSection>
-  );
-};
-
-/**
- * One event series, its tabs at their own addresses: Events (the
- * series' events on the term calendar), Shifts (the rota), Needs. Open
- * Pages adds Prompts, Book Circle its Vote, Second Chapter its Collection
- * (its campaigns, the ledger, the handover). The Typewriter Tour belongs
- * to membership: its Six Words are under People.
- */
-export const ProgramPage = ({
-  slug,
-  tab: requested = "sessions",
-}: {
-  readonly slug: string;
-  readonly tab?: ProgramTab;
-}) => {
-  const t = useTranslations("diwan.admin.programmes");
-  const options = useProgrammeOptions("programs.manage");
-  const grants = useGrants();
-  if (options.isPending || grants.isPending) {
-    return <SectionSpinner />;
-  }
-  const programme = options.options.find((p) => p.slug === slug);
-  if (!programme) {
-    return (
-      <EmptyLine action={{ href: "/events", label: t("all") }}>
-        {t("notYours")}
-      </EmptyLine>
-    );
-  }
-  const tabs: ProgramTab[] = [
-    "sessions",
-    "shifts",
-    "needs",
-    ...(slug === "open-pages" ? (["prompts"] as const) : []),
-    ...(slug === "book-circle" ? (["vote"] as const) : []),
-    ...(slug === "second-chapter" &&
-    hasPermissionAnywhere(grants.data, "charity.manage")
-      ? (["collection"] as const)
-      : []),
-  ];
-  const tab = tabs.find((x) => x === requested) ?? "sessions";
-  return (
-    <div className="grid gap-6">
-      <AdminHeading
-        actions={
-          <>
-            <Link className="link" href="/events">
-              {t("all")}
-            </Link>
-            <Link className="link" href={`/people/openings?program=${slug}`}>
-              {t("openingsLink")}
-            </Link>
-            <OnTheSite href={`/events/${programme.slug}`} />
-          </>
-        }
-        title={programme.label}
-      />
-      <NotionManaged kind="programme" recordId={programme.id} />
-      <SectionTabs
-        label={programme.label}
-        tabs={tabs.map((key) => ({
-          href:
-            key === "sessions" ? `/events/${slug}` : `/events/${slug}/${key}`,
-          label: t(`tabs.${key}`),
-        }))}
-      />
-      <div className="pt-2">
-        {tab === "sessions" ? <Sessions programmeId={programme.id} /> : null}
-        {tab === "shifts" ? <Rotas programmeId={programme.id} /> : null}
-        {tab === "needs" ? <Needs programmeId={programme.id} /> : null}
-        {tab === "prompts" ? <Prompts programmeId={programme.id} /> : null}
-        {tab === "vote" ? <BookVote programmeId={programme.id} /> : null}
-        {tab === "collection" ? <CharityAdmin /> : null}
-      </div>
-    </div>
   );
 };
 

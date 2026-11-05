@@ -37,7 +37,7 @@ const slugFor = (page: NotionPage, title: string) => {
   return given || slugify(title);
 };
 
-/** The one program a page is linked to, as a Diwan id. */
+/** The Company's or the Tour's row a page is linked to, as a Diwan id, if any. */
 const programmeFor = (
   page: NotionPage,
   programmes: ReadonlyMap<string, string>,
@@ -53,13 +53,9 @@ const programmeFor = (
   if (!first) {
     return null;
   }
-  const id = programmes.get(first);
-  if (!id) {
-    problems.push(
-      "The linked series is not one of the Society's event series."
-    );
-  }
-  return id ?? null;
+  // A link to a former series is ignored (owner, Nov 5, 2026: every event
+  // is a standard event); only the Company's and the Tour's rows count.
+  return programmes.get(first) ?? null;
 };
 
 const slugProblems = (slug: string) =>

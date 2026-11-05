@@ -6,10 +6,11 @@ own versions in the Library.
 
 ## Unreleased
 
-- No programs: Qirtas and the Company stay, and everything else is an
-  event. The recurring events are series on What's on, each term's
-  calendar is plain events, and a Program Lead is now an event lead, for
-  a series or a single event.
+- No programs and no series: Qirtas and the Company stay, and everything
+  else is an event. Every event has the same page on the site and in the
+  Diwan, with its own shifts, needs, prompts, book vote and links; Second
+  Chapter's collection, catalog and impact report sit on its fair's
+  event. A Program Lead is now an event lead, for a single event.
 - The Council has six seats: the President, the Vice President and the
   General Secretary, the Editor-in-Chief, the Artistic Director and the
   Director of Media. The Council page lists them by full title; an Acting

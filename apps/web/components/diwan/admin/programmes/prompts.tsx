@@ -17,15 +17,15 @@ import {
   SaveButton,
 } from "../kit";
 
-const key = (programmeId: string) => ["admin", "prompts", programmeId];
+const key = (eventId: string) => ["admin", "prompts", eventId];
 
 /** A new prompt, written in place under the list. */
 const NewPrompt = ({
   onDone,
-  programmeId,
+  eventId,
 }: {
   readonly onDone: () => void;
-  readonly programmeId: string;
+  readonly eventId: string;
 }) => {
   const t = useTranslations("diwan.admin.programmes.prompts");
   const { supabase } = useAuth();
@@ -35,13 +35,13 @@ const NewPrompt = ({
     mutationFn: async () =>
       unwrap(
         await supabase.schema("programmes").from("prompts").insert({
-          programme_id: programmeId,
+          event_id: eventId,
           text_ar: text.ar.trim(),
           text_en: text.en.trim(),
         })
       ),
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: key(programmeId) });
+      await queryClient.invalidateQueries({ queryKey: key(eventId) });
       onDone();
     },
   });
@@ -70,9 +70,9 @@ const NewPrompt = ({
 
 /**
  * Open Pages' prompt cards (the design review A35, Nov 4, 2026): the host
- * writes them here and publishes the ones the program's page should show.
+ * writes them here and publishes the ones the event's page should show.
  */
-export const Prompts = ({ programmeId }: { readonly programmeId: string }) => {
+export const Prompts = ({ eventId }: { readonly eventId: string }) => {
   const t = useTranslations("diwan.admin.programmes.prompts");
   const locale = useLocale() as Locale;
   const { supabase } = useAuth();
@@ -84,13 +84,13 @@ export const Prompts = ({ programmeId }: { readonly programmeId: string }) => {
           .schema("programmes")
           .from("prompts")
           .select("id, text_en, text_ar, is_published")
-          .eq("programme_id", programmeId)
+          .eq("event_id", eventId)
           .order("created_at", { ascending: false })
       ) ?? [],
-    queryKey: key(programmeId),
+    queryKey: key(eventId),
   });
   const refresh = () =>
-    queryClient.invalidateQueries({ queryKey: key(programmeId) });
+    queryClient.invalidateQueries({ queryKey: key(eventId) });
   const publish = useMutation({
     mutationFn: async ({ id, on }: { id: string; on: boolean }) =>
       unwrap(
@@ -165,7 +165,7 @@ export const Prompts = ({ programmeId }: { readonly programmeId: string }) => {
         </RowList>
       ) : null}
       <AddInPlace label={t("new")}>
-        {(close) => <NewPrompt onDone={close} programmeId={programmeId} />}
+        {(close) => <NewPrompt eventId={eventId} onDone={close} />}
       </AddInPlace>
       <ErrorLine error={publish.error ?? remove.error} />
     </div>

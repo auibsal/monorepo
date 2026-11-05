@@ -77,7 +77,7 @@ update core.settings set value = '0' where key = 'membership.founding_voters';
 -- The owner's decisions of Nov 5, 2026: the Council of six, no programs
 -- (events, with event leads scoped to a series or one event), and the
 -- Typewriter Tour under membership.
-select plan(15);
+select plan(18);
 
 select is(
   (select array_agg(key order by key) from access.roles where is_council),
@@ -159,6 +159,26 @@ select is(
   (select rhythm_en from core.programmes where slug = 'salon'),
   'Tuesdays, as the term calendar sets.',
   'Each series runs as the term calendar sets'
+);
+
+-- Standard events (owner, Nov 5, 2026, later): an event's parts are its own.
+select pg_temp.login_as('00000000-0000-0000-0000-0000000f5001');
+select lives_ok(
+  $$ insert into programmes.needs (event_id, item, quantity, needed_by, purpose)
+     values ('00000000-0000-0000-0000-0000000f5101', 'Chairs', 20, current_date + 5, 'Seating') $$,
+  'An event lead lists their event''s needs'
+);
+select throws_ok(
+  $$ insert into programmes.rotas (event_id, title_en, title_ar)
+     values ('00000000-0000-0000-0000-0000000f5102', 'Door', 'الباب') $$,
+  '42501', null,
+  'but keeps no rota for another event'
+);
+select pg_temp.logout();
+select ok(
+  not exists (select 1 from events.events e join core.programmes p on p.id = e.programme_id
+    where p.slug in ('second-chapter', 'salon', 'book-circle', 'open-pages', 'listening-room', 'typewriter-tour')),
+  'No event belongs to a series'
 );
 
 select pg_temp.login_anon();

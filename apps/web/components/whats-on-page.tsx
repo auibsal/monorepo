@@ -1,7 +1,7 @@
 import { project } from "@repo/config";
 import type { Locale } from "@repo/internationalization";
 import { Link } from "@repo/internationalization/navigation";
-import { events, localized, programmes } from "@repo/sal-data";
+import { events } from "@repo/sal-data";
 import { getTranslations } from "next-intl/server";
 import { ManageLinks } from "@/components/manage-links";
 import { PageHeader } from "@/components/section";
@@ -16,9 +16,9 @@ export const whatsOnPath = (month: Month, withUniversity: boolean) =>
   `/events/${monthParam(month)}${withUniversity ? "" : "/society"}`;
 
 /**
- * What's on: programs and events in one calendar, a month at a time. Each
- * program has its own calendar at /events/<program>, linked above the month
- * (owner, Oct 31, 2026: no list of programs below it). The public see members-only events as teasers; members
+ * What's on: the Society's events in one calendar, a month at a time
+ * (owner, Nov 5, 2026: every event is a standard event, none in a series,
+ * so there is nothing to filter by). The public see members-only events as teasers; members
  * book from the members' events page. AUIB's own dates (the hourly sync of
  * the University's calendar) sit beside the Society's unless the visitor
  * hides them.
@@ -33,20 +33,18 @@ export const WhatsOn = async ({
   withUniversity?: boolean;
 }) => {
   const t = await getTranslations({ locale, namespace: "web.events" });
-  const [rows, all, university] = await Promise.all([
+  const [rows, university] = await Promise.all([
     readPublished(
       ["events"],
       (c) => events.calendar(c, month.from, month.to),
       []
     ),
-    readPublished(["programmes"], (c) => programmes.programmes(c), []),
     readPublished(
       ["events"],
       (c) => events.universityCalendar(c, month.from, month.to),
       []
     ),
   ]);
-  const series = (all ?? []).filter(programmes.isListedProgram);
   const upcoming = rows.length === 0 ? await nextAfter(month) : null;
   const feed = `${project.url.replace(HTTP_SCHEME, "webcal:")}/calendar.ics?lang=${locale}`;
 
@@ -66,30 +64,14 @@ export const WhatsOn = async ({
         />
       </PageHeader>
 
-      <nav aria-label={t("series")} className="flex flex-wrap gap-x-5 gap-y-2">
+      <p className="flex flex-wrap gap-x-5 gap-y-2">
         <Link
-          aria-current="page"
-          className="link type-caption aria-[current=page]:text-accent"
-          href={href({})}
-        >
-          {t("everything")}
-        </Link>
-        {series.map((p) => (
-          <Link
-            className="link type-caption"
-            href={`/events/${p.slug}`}
-            key={p.id}
-          >
-            {localized(p, "name", locale)}
-          </Link>
-        ))}
-        <Link
-          className="link type-caption ms-auto"
+          className="link type-caption"
           href={href({ university: !withUniversity })}
         >
           {withUniversity ? t("hideAuib") : t("showAuib")}
         </Link>
-      </nav>
+      </p>
 
       <MonthSection
         hrefFor={(m) => href({ month: monthFrom(m) })}
