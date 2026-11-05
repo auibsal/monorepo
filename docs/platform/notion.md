@@ -12,7 +12,7 @@ read-only view.
 | Written in Notion (the only home) | Kept on the site (the only home) |
 | --- | --- |
 | Projects, tasks, meetings: agendas, working notes and the minutes' text | Members, verification, roles and the officers |
-| Events (Publishing, Events), published from there | RSVPs, check-in, the waitlist |
+| Events (Publishing, Events), published from there: every event is one kind, Council and General Assembly meetings, the AGM and Launch Night among them | RSVPs, check-in, the waitlist, and each event's add-ons (needs, shifts, links, prompts, a book vote, Second Chapter's collection) |
 | The Programs database: kept for history, no longer published (owner, Nov 5, 2026: standard events) | Elections and ballots |
 | The Society's documents and website policies (Publishing, Documents), published from there | Each document's adoption record: status, version, adopted on, the vote |
 | The content calendar (news posts and Qirtas pieces start there) | Qirtas submissions and blind review |
@@ -22,6 +22,19 @@ read-only view.
 **From the site (read-only)** holds the copies the platform writes for
 planning: **Officers** and **Qirtas pipeline** (counts only; review is
 blind). Edit them on the site; each row links there.
+
+**Events** (owner, Nov 5, 2026, evening). Each English row sets **Way in**
+(Open, RSVP or Private; Private for a Council meeting), **Members only** and,
+for an event away from campus, **Off campus**. An off-campus event is kept
+as a draft in the Diwan until the General Secretary records Student Life's
+written approval on its page there; the row then goes back to Planning with
+a note, and Ready to publish again publishes it. Notion never brings an
+event back on campus. There is no Program link: no event belongs to a
+series. A meeting's row in **Meetings** links its event in **Event**, and
+its minutes point at that event in the Diwan (the event's day is their
+date). **Needs** link the event they are for (For: Event); **Projects** are
+of a Kind (Event, Qirtas edition, Company production, Campaign,
+Partnership, Membership, Internal) and no longer link Programs.
 
 **One language per piece.** In Events and Programs an English row
 publishes the record and an **Arabic edition** is its own row (Language
@@ -95,7 +108,8 @@ the workspace (Notion's API cannot invite people).
 
 - Never rename the properties the sync reads or writes (Title, Status
   and its options, When, Summary, Language, Edition of, Diwan, Diwan ID,
-  Public page, Platform note, Rhythm, Code, Slug, Audience, Adopted on,
+  Public page, Platform note, Way in, Off campus, Members only, Event,
+  Rhythm, Code, Slug, Audience, Adopted on,
   Vote, Body, Minutes (Diwan), …) without changing the sync in the same
   change; add new ones freely.
 - Do not turn on the allowed email domain setting for auib.edu.iq: it would

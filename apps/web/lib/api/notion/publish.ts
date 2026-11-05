@@ -139,22 +139,6 @@ const copyImage = async (
  * series): only active rows, the Company's and the Tour's, so an event
  * linked to a former series in Notion is published as an event of its own.
  */
-const programmeMap = async (ctx: SyncContext) => {
-  const { data, error } = await ctx.admin
-    .schema("core")
-    .from("programmes")
-    .select("id")
-    .eq("is_active", true);
-  if (error) {
-    throw error;
-  }
-  const active = new Set((data ?? []).map((p) => p.id));
-  return new Map(
-    [...(await linksOf(ctx, "programme")).entries()]
-      .filter(([key]) => active.has(key))
-      .map(([key, l]) => [l.notion_page_id, key])
-  );
-};
 
 const slugTaken = async (
   ctx: SyncContext,
@@ -214,22 +198,35 @@ const cancelEvent = async (
   count(ctx, "event.canceled");
 };
 
+/** Whether the event is off campus, and when Student Life approved it. */
+const offCampusOf = async (ctx: SyncContext, id: string) => {
+  const { data, error } = await ctx.admin
+    .schema("events")
+    .from("events")
+    .select("off_campus, student_life_approved_on")
+    .eq("id", id)
+    .maybeSingle();
+  if (error) {
+    throw error;
+  }
+  return data;
+};
+
 const publishEvent = async (
   ctx: SyncContext,
   page: NotionPage,
-  email: string,
-  programmes: ReadonlyMap<string, string>
+  email: string
 ) => {
-  const checked = checkEvent(page, programmes);
+  const checked = checkEvent(page);
   if (!checked.ok) {
     await needsChanges(ctx, page, checked.problems);
     return;
   }
   const v = checked.values;
-  const publisher = await publisherFor(ctx, "event", email, v.programme_id);
+  const publisher = await publisherFor(ctx, "event", email, null);
   if (!publisher) {
     await needsChanges(ctx, page, [
-      `${email} does not hold events.manage in the Diwan${v.programme_id ? " for this program" : ""}. Ask someone who does to set Ready to publish.`,
+      `${email} does not hold events.manage in the Diwan. Ask someone who does to set Ready to publish.`,
     ]);
     return;
   }
@@ -248,11 +245,19 @@ const publishEvent = async (
     return;
   }
   const image = await copyImage(ctx, page, "Image", "events");
+  // Off campus (owner, Nov 5, 2026): published only once the General
+  // Secretary records Student Life's approval on the event's page in the
+  // Diwan; until then it is kept there as a draft. Only the General
+  // Secretary brings an event back on campus, so Notion never unsets it.
+  const before = existing ? await offCampusOf(ctx, existing) : null;
+  const offCampus = v.off_campus || Boolean(before?.off_campus);
+  const waiting = offCampus && !before?.student_life_approved_on;
   const row = {
     ...v,
     body_en: bodyEn,
     ...(image ? { image_path: image } : {}),
-    status: "published",
+    off_campus: offCampus,
+    status: waiting ? "draft" : "published",
   };
   let id = existing;
   if (id) {
@@ -284,9 +289,24 @@ const publishEvent = async (
     ({ id } = data);
   }
   await saveLink(ctx, "event", page.id, id, null);
+  if (waiting) {
+    await ctx.notion.updatePage(page.id, {
+      Diwan: prop.url(`${ctx.appUrl}/events/${v.slug}`),
+      "Diwan ID": prop.text(id),
+      "Off campus": prop.checkbox(true),
+      "Platform note": prop.text(
+        `Saved in the Diwan as a draft (${stamp()}): an event off campus is published once the General Secretary records Student Life's written approval on its page in the Diwan. Then set Ready to publish again.`
+      ),
+      Slug: prop.text(v.slug),
+      Status: prop.select("Planning"),
+    });
+    count(ctx, "event.awaiting_approval");
+    return;
+  }
   await ctx.notion.updatePage(page.id, {
     Diwan: prop.url(`${ctx.appUrl}/events/${v.slug}`),
     "Diwan ID": prop.text(id),
+    "Off campus": prop.checkbox(offCampus),
     "Platform note": prop.text(
       publishedNote(await publisherName(ctx, publisher))
     ),
@@ -630,7 +650,6 @@ const statusFilter = (statuses: string[]) => ({
 
 /** Pages waiting for the platform, handled one at a time. */
 export const publishWaiting = async (ctx: SyncContext) => {
-  const programmes = await programmeMap(ctx);
   const [events, news, qirtas] = await Promise.all([
     ctx.notion.query(ctx.sources.events, statusFilter([READY, CANCEL])),
     ctx.notion.query(ctx.sources.news, {
@@ -679,7 +698,7 @@ export const publishWaiting = async (ctx: SyncContext) => {
       } else if (read.select(page, "Status") === CANCEL) {
         await cancelEvent(ctx, page, email);
       } else {
-        await publishEvent(ctx, page, email, programmes);
+        await publishEvent(ctx, page, email);
       }
     } catch (error) {
       problem(ctx, `${kind} ${bareId(page.id)}: ${(error as Error).message}`);
@@ -693,6 +712,13 @@ const EVENT_STATUS: Record<string, string> = {
   published: "Published",
 };
 
+/** The Way in options in Notion, by the event's entry. */
+const WAY_IN_NAMES: Record<string, string> = {
+  invite: "Private",
+  open: "Open",
+  rsvp: "RSVP",
+};
+
 /** The one-language rule, said where a row has no text yet. */
 const NO_TEXT =
   "Write the event's text in English in this page. An Arabic edition is its own row: Language Arabic, Edition of this row.";
@@ -704,7 +730,9 @@ const adoptEvents = async (ctx: SyncContext) => {
     ctx.admin
       .schema("events")
       .from("events")
-      .select("id, slug, title_en, starts_at, ends_at, status, capacity")
+      .select(
+        "id, slug, title_en, starts_at, ends_at, status, capacity, entry, members_only, off_campus"
+      )
       .gte("starts_at", new Date(Date.now() - 30 * 86_400_000).toISOString()),
     linksOf(ctx, "event"),
   ]);
@@ -719,6 +747,8 @@ const adoptEvents = async (ctx: SyncContext) => {
         Diwan: prop.url(`${ctx.appUrl}/events/${e.slug ?? e.id}`),
         "Diwan ID": prop.text(e.id),
         Language: prop.select("English"),
+        "Members only": prop.checkbox(e.members_only),
+        "Off campus": prop.checkbox(e.off_campus),
         "Platform note": prop.text(ADOPTED_NOTE),
         "Public page": prop.url(
           e.status === "published" ? `${ctx.webUrl}/events/${e.slug}` : null
@@ -726,6 +756,7 @@ const adoptEvents = async (ctx: SyncContext) => {
         Slug: prop.text(e.slug),
         Status: prop.select(EVENT_STATUS[e.status] ?? "Planning"),
         Title: prop.title(e.title_en),
+        "Way in": prop.select(WAY_IN_NAMES[e.entry] ?? "RSVP"),
         When: prop.date(e.starts_at, e.ends_at),
       });
       await saveLink(ctx, "event", page.id, e.id, null);

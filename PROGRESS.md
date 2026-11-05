@@ -31,6 +31,16 @@ Also, across the platform standardize menu and button usage."
   wrapping rows (the welcome's photos step was the one stack).
 - [x] Partners, guests and Launch Night: nothing event-specific left
   (Launch Night already picks an event).
+- [x] Notion (asked the same evening): Events gain Way in (Open, RSVP,
+  Private) and Off campus, set on every English row (the two al-Mutanabbi
+  Street rows off campus); Program and RSVPs open are removed. Meetings
+  link their Event (Body "Event team" replaces "Program team"); Needs link
+  their Event (For: Event); Projects drop Program and "Program edition"
+  (the Tour is Membership, owned by the General Secretary). The Programs
+  database is marked retired. The two review tasks name the President and
+  the event leads. The sync reads Way in and Off campus (an unapproved
+  off-campus event stays a draft in the Diwan) and a meeting's Event.
+  Ratified documents in Notion keep their text.
 - needs-native-review: `diwan.admin.event.parts.*`,
   `diwan.admin.event.occasion.*`, `diwan.admin.governance.minutes.meeting`,
   `noMeeting`, `makeMeeting`, `new`; `web.events.parts.approved`.
