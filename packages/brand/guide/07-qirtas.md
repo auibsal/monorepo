@@ -2,13 +2,15 @@
 
 The Society's paper. Its name, «قرطاس», is the paper of our motto: AUIB's paper of news, letters and art, online all year and printed each Edition.
 
-The front page: the masthead, the dateline between ink rules, the six sections, a lead story and a column of headlines. No empty image boxes: a story without a picture gets a typographic layout.
+The front page: the nameplate, the dateline between ink rules, the six sections, a lead story and a column of headlines. No empty image boxes: a story without a picture gets a typographic layout.
 
-## The masthead
+## The nameplate
+
+One nameplate on every page of the paper, the same on the front page, a section and a piece.
 
 - "Qirtas" in Ubuntu Medium (500), set tight, never Light, never in crimson. On Arabic pages, «قرطاس» in Ubuntu Arabic Bold.
-- Under it, the dateline between two ink rules: the date, the line "AUIB's paper of news, letters and art" and the Edition.
-- Then the six sections as a row of text links, always in this order. No logo inside the masthead: the site header already carries it.
+- Under it, the dateline between two ink rules: the date, the line "AUIB's paper of news, letters and art", and links to the Masthead, the Editions and the Awards.
+- Then the six sections as a row of text links, always in this order. No logo inside the nameplate: the site header already carries it. The masthead is the paper's list of editors, at /qirtas/masthead, from the roles people hold.
 - Qirtas pages sit on paper (`surface-reading`), the one place the page is not white.
 
 ## The six sections
@@ -20,7 +22,7 @@ The front page: the masthead, the dateline between ink rules, the six sections, 
 | Letters | Poetry, fiction, creative nonfiction, drama, translation and Six Words. |
 | Gallery | Art, photography, illustration, comics, calligraphy and photo essays. |
 | Video | Next Stop, Qirtas's video show, filmed on the AUIB bus; reels, short films, video reports, recorded performances and animation. |
-| Games | Crosswords, quizzes, word ladders, riddles, anagrams and Name the book. |
+| Games | The word, the word search, the crossword and the anagrams, made anew every day in English and Arabic, and the editors' own crosswords, word searches and anagrams. Members send no games. |
 
 Also from Qirtas: **the Edition**, one a semester, curated from Letters and Gallery and printed; **the Sunday Paper**, the members' newsletter, monthly, on the first Sunday.
 

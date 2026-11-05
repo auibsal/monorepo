@@ -97,7 +97,7 @@
 .sal-story .sal-post__lede { top: calc(1120 * var(--u)); font-size: calc(44 * var(--u)); }
 .sal-story .sal-post__meta { bottom: calc(340 * var(--u)); font-size: calc(34 * var(--u)); }
 
-/* Arabic: Ubuntu Arabic has no Light and no italic. Display is Regular, the accent word is colour only. */
+/* Arabic: Ubuntu Arabic has no Light and no italic. Display is Regular, the accent word is color only. */
 [dir="rtl"] .sal-post__frame, [dir="rtl"] .sal-story__frame { font-family: var(--font-arabic); }
 [dir="rtl"] .sal-post__headline { font-weight: 400; letter-spacing: 0; line-height: 1.3; font-size: calc(132 * var(--u)); }
 [dir="rtl"].sal-post--photo .sal-post__headline { font-size: calc(92 * var(--u)); }
