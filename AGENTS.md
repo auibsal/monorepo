@@ -508,6 +508,14 @@ any schema change. Integration tests run against a local stack with
   opening its piece. Record links to the member's year,
   `/membership/record/year/<yyyy>` (the academic year from September 1,
   `recognition.myYear`): their own records only, private and printable.
+- **Originals and topics** (design review PR 6b, A24 with decision D11,
+  A21; Nov 5, 2026). A translation may carry its original
+  (`journal.piece_bodies.original`, `original_lang`), shown beside it in
+  its own language and direction (`journal.textDirection`), the one
+  exception to one language per page. Topics (`journal.topics`, added by
+  `journal.publish`; `journal.piece_topics`, tagged by the piece's
+  editors) each have a page, `/qirtas/topics/<slug>`, with the list at
+  `/qirtas/topics`.
 - **Games, daily and from the editors** (owner, Nov 5, 2026; replaces
   PR 5c's kinds). Members send no games (`private.games_by_editors`
   refuses a Games submission or draft). Four daily games, made in the

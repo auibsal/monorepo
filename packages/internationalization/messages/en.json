@@ -2782,6 +2782,23 @@
             "too_large": "The file is larger than 10 MB. Shorten it or export it at a lower quality.",
             "type_not_allowed": "Use an MP3 or M4A file."
           }
+        },
+        "original": {
+          "title": "The original",
+          "lede": "A translation may show its original beside it, in its own language and direction. Readers see it next to the translation.",
+          "language": "Language of the original",
+          "text": "The original",
+          "clear": "Empty the original and save to remove it. A change to the original asks for the approvals again, like the text."
+        },
+        "topics": {
+          "title": "Topics",
+          "lede": "Tag the piece with the topics readers can follow; each topic has its page on the site.",
+          "none": "No topics yet.",
+          "add": "Add a topic",
+          "choose": "Choose a topic",
+          "remove": "Remove",
+          "new": "New topic",
+          "name": "Topic"
         }
       },
       "awards": {
@@ -4512,7 +4529,9 @@
         "after": "Read on",
         "next": "Next",
         "inEdition": "In the Edition",
-        "notes": "Notes"
+        "notes": "Notes",
+        "translation": "The translation",
+        "original": "The original, in {language}"
       },
       "contents": "Contents",
       "launchPage": "The launch page",
@@ -4570,7 +4589,12 @@
         "label": "What next",
         "write": "{desk} takes work all year from members and the Society's guests, read without your name.",
         "writeLink": "Send your work"
-      }
+      },
+      "topics": "Topics",
+      "topicsLede": "What Qirtas has written about, by topic, chosen by its editors.",
+      "noTopics": "No topics yet.",
+      "topicLede": "Everything Qirtas has published on {topic}.",
+      "allTopics": "Every topic"
     },
     "about": {
       "title": "About the Society",

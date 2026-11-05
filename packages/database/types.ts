@@ -3804,18 +3804,24 @@ export type Database = {
         Row: {
           body_ar: string | null;
           body_en: string | null;
+          original: string | null;
+          original_lang: string | null;
           piece_id: string;
           updated_at: string;
         };
         Insert: {
           body_ar?: string | null;
           body_en?: string | null;
+          original?: string | null;
+          original_lang?: string | null;
           piece_id: string;
           updated_at?: string;
         };
         Update: {
           body_ar?: string | null;
           body_en?: string | null;
+          original?: string | null;
+          original_lang?: string | null;
           piece_id?: string;
           updated_at?: string;
         };
@@ -3943,6 +3949,39 @@ export type Database = {
             columns: ["piece_id"];
             isOneToOne: false;
             referencedRelation: "pieces";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      piece_topics: {
+        Row: {
+          created_at: string;
+          piece_id: string;
+          topic_id: string;
+        };
+        Insert: {
+          created_at?: string;
+          piece_id: string;
+          topic_id: string;
+        };
+        Update: {
+          created_at?: string;
+          piece_id?: string;
+          topic_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "piece_topics_piece_id_fkey";
+            columns: ["piece_id"];
+            isOneToOne: false;
+            referencedRelation: "pieces";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "piece_topics_topic_id_fkey";
+            columns: ["topic_id"];
+            isOneToOne: false;
+            referencedRelation: "topics";
             referencedColumns: ["id"];
           },
         ];
@@ -4412,6 +4451,33 @@ export type Database = {
             referencedColumns: ["id"];
           },
         ];
+      };
+      topics: {
+        Row: {
+          created_at: string;
+          created_by: string | null;
+          id: string;
+          name_ar: string;
+          name_en: string;
+          slug: string;
+        };
+        Insert: {
+          created_at?: string;
+          created_by?: string | null;
+          id?: string;
+          name_ar: string;
+          name_en: string;
+          slug: string;
+        };
+        Update: {
+          created_at?: string;
+          created_by?: string | null;
+          id?: string;
+          name_ar?: string;
+          name_en?: string;
+          slug?: string;
+        };
+        Relationships: [];
       };
     };
     Views: {

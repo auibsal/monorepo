@@ -4,6 +4,7 @@ import { Button } from "@repo/brand/components/ui/button";
 import { Input } from "@repo/brand/components/ui/input";
 import { cn } from "@repo/brand/lib/utils";
 import { useRoom } from "@repo/collaboration/room";
+import { journal } from "@repo/sal-data";
 import { Mark, Node } from "@tiptap/core";
 import Collaboration from "@tiptap/extension-collaboration";
 import { TableKit } from "@tiptap/extension-table";
@@ -25,7 +26,8 @@ interface RichTextProps {
   readonly document?: boolean;
   /** Accessible name of the editing area (usually the field label). */
   readonly label: string;
-  readonly lang: "en" | "ar";
+  /** The text's language (en, ar, or an original's: fr, fa…). */
+  readonly lang: string;
   readonly onChange: (html: string) => void;
   /** Initial HTML (sanitized on save, and again when rendered). */
   readonly value: string;
@@ -309,12 +311,12 @@ const Frame = ({
   document?: boolean;
   editor: Editor | null;
   label: string;
-  lang: "en" | "ar";
+  lang: string;
   undo: boolean;
 }) => (
   <div
     className="border border-input bg-surface"
-    dir={lang === "ar" ? "rtl" : "ltr"}
+    dir={journal.textDirection(lang)}
     lang={lang}
   >
     {editor ? (
@@ -336,7 +338,7 @@ const useBaseEditor = (
         "aria-label": label,
         "aria-multiline": "true",
         class: "prose max-w-none min-h-40 px-3 py-2 focus:outline-none",
-        dir: lang === "ar" ? "rtl" : "ltr",
+        dir: journal.textDirection(lang),
         lang,
         role: "textbox",
       },

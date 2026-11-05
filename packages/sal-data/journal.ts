@@ -793,10 +793,10 @@ export const waraqPiece = async (client: Client, slug: string) => {
     return null;
   }
   const j = journal(client);
-  const [body, credits, corrections] = await Promise.all([
+  const [body, credits, corrections, topics] = await Promise.all([
     j
       .from("piece_bodies")
-      .select("body_en, body_ar")
+      .select("body_en, body_ar, original, original_lang")
       .eq("piece_id", piece.id)
       .maybeSingle(),
     j
@@ -809,13 +809,102 @@ export const waraqPiece = async (client: Client, slug: string) => {
       .select("note_en, note_ar, created_at")
       .eq("piece_id", piece.id)
       .order("created_at"),
+    j
+      .from("piece_topics")
+      .select("topic:topics(slug, name_en, name_ar)")
+      .eq("piece_id", piece.id),
   ]);
   return {
     ...piece,
     body: unwrap(body),
     corrections: unwrap(corrections) ?? [],
     credits: unwrap(credits) ?? [],
+    topics: (unwrap(topics) ?? []).flatMap((t) => (t.topic ? [t.topic] : [])),
   };
+};
+
+// ── Originals beside translations (the design review A24) ──────────────────
+
+/** Languages an original may be in, in this order on the editor's list. */
+export const ORIGINAL_LANGUAGES = [
+  "ar",
+  "en",
+  "fa",
+  "ku",
+  "ckb",
+  "tr",
+  "syr",
+  "hy",
+  "fr",
+  "de",
+  "es",
+  "it",
+  "ru",
+  "ur",
+  "he",
+] as const;
+
+const RIGHT_TO_LEFT = new Set([
+  "ar",
+  "fa",
+  "ur",
+  "he",
+  "ckb",
+  "syr",
+  "ps",
+  "yi",
+  "dv",
+]);
+
+/** The direction a language is written in. */
+export const textDirection = (lang: string): "rtl" | "ltr" =>
+  RIGHT_TO_LEFT.has(lang) ? "rtl" : "ltr";
+
+// ── Topics (the design review A21) ──────────────────────────────────────────
+
+/** Topics with published pieces, by name in the page's language. */
+export const publicTopics = async (client: Client) => {
+  const rows =
+    unwrap(
+      await journal(client)
+        .from("topics")
+        .select("id, slug, name_en, name_ar, piece_topics!inner(piece_id)")
+    ) ?? [];
+  return rows.map(({ piece_topics, ...topic }) => ({
+    ...topic,
+    count: piece_topics.length,
+  }));
+};
+
+/** A topic and its published pieces, newest first. */
+export const topicPage = async (client: Client, slug: string) => {
+  const topic = unwrap(
+    await journal(client)
+      .from("topics")
+      .select("id, slug, name_en, name_ar")
+      .eq("slug", slug)
+      .maybeSingle()
+  );
+  if (!topic) {
+    return null;
+  }
+  const ids = (
+    unwrap(
+      await journal(client)
+        .from("piece_topics")
+        .select("piece_id")
+        .eq("topic_id", topic.id)
+    ) ?? []
+  ).map((r) => r.piece_id);
+  const pieces =
+    ids.length === 0
+      ? []
+      : (unwrap(
+          await publishedPieces(client)
+            .in("id", ids)
+            .order("published_at", { ascending: false })
+        ) ?? []);
+  return { pieces, topic };
 };
 
 /** A contributor's page: bio and every published piece. */

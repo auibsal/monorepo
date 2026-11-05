@@ -6,6 +6,8 @@ own versions in the Library.
 
 ## Unreleased
 
+- A translation in Qirtas can show its original beside it; the editors
+  tag pieces with topics, each with its own page.
 - About tells how the Society began, a dated line each; the page-not-found
   page carries a line of al-Mutanabbi's; members can keep or print their
   year at the Society from Record.

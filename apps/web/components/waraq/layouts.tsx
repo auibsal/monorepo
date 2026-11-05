@@ -163,17 +163,18 @@ const PoemBody = ({ piece }: { piece: Full }) => (
   </div>
 );
 
+const PROSE_AR =
+  "prose max-w-none [&_blockquote]:border-0 [&_blockquote]:p-0 [&_blockquote]:font-sans [&_blockquote]:text-3xl [&_blockquote]:not-italic";
+const PROSE_EN =
+  "prose max-w-none [&>p:first-of-type]:first-letter:float-start [&>p:first-of-type]:first-letter:pe-2 [&>p:first-of-type]:first-letter:font-medium [&>p:first-of-type]:first-letter:text-6xl [&>p:first-of-type]:first-letter:text-accent [&>p:first-of-type]:first-letter:leading-none [&_blockquote]:border-0 [&_blockquote]:p-0 [&_blockquote]:font-light [&_blockquote]:font-sans [&_blockquote]:text-3xl [&_blockquote]:not-italic [&_blockquote]:leading-tight [&_blockquote]:tracking-tight";
+
 /** A story, essay, column or translation: a reading column with a drop cap (English only:
  * Arabic letters join, so a raised first letter would break the word). */
 const ProseBody = ({ piece }: { piece: Full }) => (
   <div className="reading mx-auto grid w-full max-w-2xl gap-10 px-4 py-12">
     {texts(piece).map((text) => (
       <Html
-        className={
-          text.lang === "ar"
-            ? "prose max-w-none [&_blockquote]:border-0 [&_blockquote]:p-0 [&_blockquote]:font-sans [&_blockquote]:text-3xl [&_blockquote]:not-italic"
-            : "prose max-w-none [&>p:first-of-type]:first-letter:float-start [&>p:first-of-type]:first-letter:pe-2 [&>p:first-of-type]:first-letter:font-medium [&>p:first-of-type]:first-letter:text-6xl [&>p:first-of-type]:first-letter:text-accent [&>p:first-of-type]:first-letter:leading-none [&_blockquote]:border-0 [&_blockquote]:p-0 [&_blockquote]:font-light [&_blockquote]:font-sans [&_blockquote]:text-3xl [&_blockquote]:not-italic [&_blockquote]:leading-tight [&_blockquote]:tracking-tight"
-        }
+        className={text.lang === "ar" ? PROSE_AR : PROSE_EN}
         html={text.html}
         key={text.lang}
         lang={text.lang}
@@ -181,6 +182,61 @@ const ProseBody = ({ piece }: { piece: Full }) => (
     ))}
   </div>
 );
+
+/**
+ * A translation beside its original (the design review A24, decision D11:
+ * an exception to one language per page). Side by side on a wide screen,
+ * the original after the translation on a narrow one; the original keeps
+ * its own language and direction.
+ */
+const TranslationBody = async ({
+  locale,
+  piece,
+}: {
+  locale: Locale;
+  piece: Full;
+}) => {
+  const original = piece.body?.original;
+  const lang = piece.body?.original_lang;
+  if (!(original && lang)) {
+    return <ProseBody piece={piece} />;
+  }
+  const t = await getTranslations("web.journal.reading");
+  const name =
+    new Intl.DisplayNames([locale], { type: "language" }).of(lang) ?? lang;
+  return (
+    <div className="reading mx-auto grid w-full max-w-6xl gap-12 px-4 py-12 lg:grid-cols-2">
+      <section
+        aria-label={t("translation")}
+        className="grid content-start gap-10"
+      >
+        {texts(piece).map((text) => (
+          <Html
+            className={text.lang === "ar" ? PROSE_AR : PROSE_EN}
+            html={text.html}
+            key={text.lang}
+            lang={text.lang}
+          />
+        ))}
+      </section>
+      <section
+        aria-label={t("original", { language: name })}
+        className="grid content-start gap-4 border-line border-t pt-6 lg:border-s lg:border-t-0 lg:ps-12 lg:pt-0"
+      >
+        <p className="type-caption text-text-secondary">
+          {t("original", { language: name })}
+        </p>
+        <div
+          className="prose max-w-none"
+          // biome-ignore lint/security/noDangerouslySetInnerHtml: sanitized with the one rich-text policy
+          dangerouslySetInnerHTML={{ __html: sanitizeRichText(original) }}
+          dir={journal.textDirection(lang)}
+          lang={lang}
+        />
+      </section>
+    </div>
+  );
+};
 
 /** A script: speakers and directions kept as set, a narrower column. */
 const DramaBody = ({ piece }: { piece: Full }) => (
@@ -380,6 +436,8 @@ export const PieceBody = ({
       return <PoemBody piece={piece} />;
     case "drama":
       return <DramaBody piece={piece} />;
+    case "translation":
+      return <TranslationBody locale={locale} piece={piece} />;
     case "six_words":
       return <SixWordsBody piece={piece} />;
     case "photo_essay":

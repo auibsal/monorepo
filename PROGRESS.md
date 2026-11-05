@@ -8,6 +8,26 @@ first session); section numbers (§) refer to it.
 Branch: `claude/qirtas-games-masthead`.
 
 
+## The design review: PR 6b, translations beside their originals, topics (2026-11-05)
+
+Branch: `claude/pr6b-topics-translations`.
+
+- [x] A24 (D11) A translation shows its original beside it: side by side on
+  a wide screen, after it on a narrow one, in the original's own language
+  and direction (`journal.piece_bodies.original`, `original_lang`; "The
+  original" on the piece's page in the Diwan, for translations; a change
+  asks for the approvals again, like the text).
+- [x] A21 Topics, curated by the editors: whoever publishes Qirtas
+  (`journal.publish`) adds them, a piece's editors tag it on its page in
+  the Diwan; the piece names its topics, and `/qirtas/topics` and
+  `/qirtas/topics/<slug>` list them, linked from the nameplate (migration
+  `20261101004600`, `99_topics_and_originals.test.sql`).
+- needs-native-review: `web.journal.topics`, `topicsLede`, `noTopics`,
+  `topicLede`, `allTopics`, `web.journal.reading.translation`, `original`;
+  `nexus.admin.waraq.original.*`, `nexus.admin.waraq.topics.*`.
+- Next: PR 6c (A15 long reads, A16 explainers with figures), then A27,
+  A28, A40, A41, then R4.
+
 ## The design review: PR 6a, About, the 404 page and a member's year (2026-11-05)
 
 Branch: `claude/pr6a-about-record`. PR 6 started on the owner's word (Nov
