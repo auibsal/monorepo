@@ -20,6 +20,7 @@ import { SelectInput } from "@/components/nexus/admin/kit";
 import { AddInPlace, ErrorLine } from "../admin/kit";
 import { DiwanPage, DiwanSection } from "../page";
 import { EmptyLine, SectionSpinner } from "../states";
+import { YearLinks } from "./year";
 
 const KEY = ["service"];
 
@@ -184,6 +185,7 @@ export const Service = () => {
           ))}
         </ul>
       </DiwanSection>
+      <YearLinks />
     </DiwanPage>
   );
 };
