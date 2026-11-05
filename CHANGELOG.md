@@ -6,6 +6,9 @@ own versions in the Library.
 
 ## Unreleased
 
+- The text size on Qirtas pieces works, in English and Arabic.
+- Each writer has one byline in their current name; an old name no longer
+  lingers on a second author page.
 - Write for Qirtas is open to read before signing in: what each section
   takes and how work is read, then sign in or join. Every article ends
   with a way to write for its section and to get the Sunday Paper.

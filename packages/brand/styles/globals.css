@@ -583,6 +583,20 @@
 :root[data-reading-size="large"] {
   --reading-scale: 1.18;
 }
+/*
+ * It reaches the article's text in every layout (owner, Nov 5, 2026: the
+ * sizes did nothing). `prose` sets its own size, which the reading column's
+ * scaled size never reached: News, Video and Gallery text scales from the
+ * base size, and text in the reading column takes that column's (already
+ * scaled) size. Arabic keeps its step up from `:lang(ar)` on the text
+ * inside. Unlayered, so it wins over the utilities.
+ */
+article .prose {
+  font-size: calc(1rem * var(--reading-scale, 1));
+}
+article .reading .prose {
+  font-size: 1em;
+}
 
 /*
  * The article's progress: a hairline across the top, filled from the start
