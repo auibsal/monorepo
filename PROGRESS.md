@@ -49,6 +49,29 @@ A28, A40, A41), 6d (R4, the retired code names, last).
   (`recognition.myYear`).
 - needs-native-review: `web.about.beganTitle`, `web.about.began.*`,
   `web.notFound.line`, `lineBy`, `nexus.service.year.*`.
+## The design review: PR 5b's last, the trip and the contest (2026-11-05)
+
+Branch: `claude/trip-and-contest`. The owner left both to judgment (Nov 5,
+2026: "as you see fit").
+
+- [x] A34 Book Circle on al-Mutanabbi Street,
+  `/events/book-circle/mutanabbi-street`: shown only once a trip is
+  published, and a trip (`events.events.occasion` `book_street_trip`) is
+  published only after the General Secretary records Student Life's
+  written approval, by its date, on the event's page in the Diwan
+  (Occasion; `events.record_approval`, governance.manage; migration
+  `20261101004500`, `99_trip_and_contest.test.sql`). The two Fridays on
+  record (April 9 and 23) wait as drafts until then.
+- [x] A36 The worst-poem contest, `/events/open-pages/worst-poem`
+  (`worst_poem_contest`, the March 30 Open Pages): the line on record ("The
+  worst poem at AUIB wins. Really."), the next and past contests, and how
+  it works. The rules are written for the page, not on record: one poem
+  of one's own, read aloud, the room chooses, nothing cruel. The owner
+  may change them.
+- Both pages are linked from their program's page.
+- needs-native-review: `web.programs.occasions.*`,
+  `nexus.admin.event.occasion.*`, `nexus.admin.kit.tripNeedsApproval`.
+- Next: PR 6 (the owner, Nov 5, 2026: go ahead).
 
 ## Public pages refresh again (2026-11-05)
 
@@ -146,11 +169,8 @@ Branch: `claude/book-circle-vote`, on `claude/tour-and-listening` (#209).
   Diwan's Vote tab, members' votes on the program's page, counts for the
   host throughout and for everyone once closed (migration
   `20261101003500`, `99_book_votes.test.sql`).
-- [ ] A34 The al-Mutanabbi Street trip page: the platform records no
-  written Student Life approval yet; waiting on the owner for where it is
-  recorded.
-- [ ] A36 The worst-poem contest page: waiting on the owner for what the
-  page holds (its rules are not on record).
+- [x] A34 The al-Mutanabbi Street trip page: done after, on its own branch.
+- [x] A36 The worst-poem contest page: done after, on its own branch.
 - needs-native-review: `web.programs.page.vote.*`,
   `nexus.admin.programmes.vote.*`, `nexus.admin.programmes.tabs.vote`,
   `nexus.admin.activity.things.programmes_book_ballots`,

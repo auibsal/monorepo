@@ -408,18 +408,32 @@ export const SelectInput = ChoiceInput;
 // ── Actions ─────────────────────────────────────────────────────────────────
 
 /** Maps a Postgres or API error to a plain reason for the person. */
+/** Errors with a sentence of their own: shared addresses, a trip waiting. */
+const namedReason = (error: unknown, code: string) => {
+  if (!(error instanceof Error)) {
+    return null;
+  }
+  // Programs and events share the addresses under /events.
+  if (code === "23505" && error.message.includes("belongs to a program")) {
+    return "addressProgram" as const;
+  }
+  if (code === "23505" && error.message.includes("belongs to an event")) {
+    return "addressEvent" as const;
+  }
+  // A trip to al-Mutanabbi Street waits for Student Life (A34).
+  if (error.message.includes("trip_needs_approval")) {
+    return "tripNeedsApproval" as const;
+  }
+  return null;
+};
+
 export const useErrorReason = () => {
   const t = useTranslations("nexus.admin.kit");
   return (error: unknown) => {
     const code = error instanceof DataError ? error.code : "";
-    // Programs and events share the addresses under /events.
-    if (code === "23505" && error instanceof Error) {
-      if (error.message.includes("belongs to a program")) {
-        return t("addressProgram");
-      }
-      if (error.message.includes("belongs to an event")) {
-        return t("addressEvent");
-      }
+    const named = namedReason(error, code);
+    if (named) {
+      return t(named);
     }
     let reason = t("reasons.unknown");
     if (code === "42501") {

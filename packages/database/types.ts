@@ -1526,6 +1526,7 @@ export type Database = {
           id: string;
           image_path: string | null;
           members_only: boolean;
+          occasion: string | null;
           programme_id: string | null;
           published_at: string | null;
           questions: NonNullable<Json>;
@@ -1534,6 +1535,7 @@ export type Database = {
           slug: string;
           starts_at: string;
           status: string;
+          student_life_approved_on: string | null;
           summary_ar: string | null;
           summary_en: string | null;
           title_ar: string;
@@ -1553,6 +1555,7 @@ export type Database = {
           id?: string;
           image_path?: string | null;
           members_only?: boolean;
+          occasion?: string | null;
           programme_id?: string | null;
           published_at?: string | null;
           questions?: NonNullable<Json>;
@@ -1561,6 +1564,7 @@ export type Database = {
           slug: string;
           starts_at: string;
           status?: string;
+          student_life_approved_on?: string | null;
           summary_ar?: string | null;
           summary_en?: string | null;
           title_ar: string;
@@ -1580,6 +1584,7 @@ export type Database = {
           id?: string;
           image_path?: string | null;
           members_only?: boolean;
+          occasion?: string | null;
           programme_id?: string | null;
           published_at?: string | null;
           questions?: NonNullable<Json>;
@@ -1588,6 +1593,7 @@ export type Database = {
           slug?: string;
           starts_at?: string;
           status?: string;
+          student_life_approved_on?: string | null;
           summary_ar?: string | null;
           summary_en?: string | null;
           title_ar?: string;
@@ -1881,6 +1887,10 @@ export type Database = {
           has_rsvp: boolean;
           user_id: string;
         }[];
+      };
+      record_approval: {
+        Args: { approved_on: string; event_id: string };
+        Returns: undefined;
       };
       rsvp: { Args: { answers?: Json; event_id: string }; Returns: string };
       waitlist_position: { Args: { event_id: string }; Returns: number };
