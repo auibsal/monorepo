@@ -1,8 +1,10 @@
 import type { Locale } from "@repo/internationalization";
+import { Link } from "@repo/internationalization/navigation";
 import { journal, localized } from "@repo/sal-data";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { publishedRounds } from "@/components/waraq/awards";
 import { PieceColumn } from "@/components/waraq/cards";
 import { Nameplate } from "@/components/waraq/nameplate";
 import { localizedMetadata } from "@/lib/metadata";
@@ -38,10 +40,38 @@ export const generateMetadata = async ({
 };
 
 /**
+ * The Awards their published work was shortlisted for or won, as
+ * `journal.award_results()` shows each round (from its days only).
+ */
+const recognition = async (slugs: ReadonlySet<string>) => {
+  if (slugs.size === 0) {
+    return [];
+  }
+  const rounds = await publishedRounds();
+  const [awards, ...results] = await Promise.all([
+    readPublished(["journal"], (c) => journal.awards(c), []),
+    ...rounds.map((round) =>
+      readPublished(["journal"], (c) => journal.awardResults(c, round.slug), [])
+    ),
+  ]);
+  return rounds.flatMap((round, index) =>
+    (results[index] ?? [])
+      .filter((entry) => slugs.has(entry.piece_slug))
+      .map((entry) => ({
+        award: awards.find((a) => a.key === entry.award_key) ?? null,
+        entry,
+        round,
+      }))
+  );
+};
+
+/**
  * A person's author page, at their name (owner, Oct 31, 2026): who they are
  * to the Society (Member, Partner or Guest) and the roles they hold, their
- * published work. Work in progress stays private, as drafts on
- * /qirtas/write. A pen name shows its published work only.
+ * published work, the Editions it appeared in and the Awards it was
+ * shortlisted for or won (the design review C18, Nov 4, 2026). Work in
+ * progress stays private, as drafts on /qirtas/write. A pen name shows
+ * its published work only.
  */
 const AuthorPage = async ({ params }: AuthorProps) => {
   const { locale, slug } = await params;
@@ -51,6 +81,11 @@ const AuthorPage = async ({ params }: AuthorProps) => {
     notFound();
   }
   const t = await getTranslations({ locale, namespace: "web.journal" });
+  const ta = await getTranslations({ locale, namespace: "web.awards" });
+  const { editions } = author;
+  const honors = await recognition(
+    new Set(author.pieces.map((piece) => piece.slug))
+  );
   const bio = localized(author, "bio", locale);
   const roles = (locale === "ar" ? author.roles_ar : author.roles_en) ?? [];
   const standing = [
@@ -75,6 +110,50 @@ const AuthorPage = async ({ params }: AuthorProps) => {
           <p className="type-body text-text-secondary">{t("nothingYet")}</p>
         )}
       </section>
+      {editions.length > 0 ? (
+        <section aria-labelledby="editions" className="grid gap-4">
+          <h2 className="type-heading" id="editions">
+            {t("authorEditions")}
+          </h2>
+          <ul className="grid border-line border-b">
+            {editions.map((issue) => (
+              <li className="border-line border-t py-3" key={issue.slug}>
+                <Link className="link" href={`/qirtas/editions/${issue.slug}`}>
+                  {localized(issue, "title", locale)}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
+      {honors.length > 0 ? (
+        <section aria-labelledby="awards" className="grid gap-4">
+          <h2 className="type-heading" id="awards">
+            {ta("title")}
+          </h2>
+          <ul className="grid border-line border-b">
+            {honors.map(({ award, entry, round }) => (
+              <li
+                className="grid gap-0.5 border-line border-t py-3"
+                key={`${round.slug}-${entry.award_key}-${entry.piece_slug}`}
+              >
+                <span className="type-body">
+                  {t(entry.won ? "authorWon" : "authorShortlisted", {
+                    award: award ? localized(award, "name", locale) : "",
+                    title: localized(entry, "title", locale),
+                  })}
+                </span>
+                <Link
+                  className="link type-caption"
+                  href={`/qirtas/awards/${round.slug}`}
+                >
+                  {localized(round, "title", locale)}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
     </div>
   );
 };

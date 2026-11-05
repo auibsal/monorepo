@@ -832,13 +832,27 @@ export const authorPage = async (client: Client, slug: string) => {
   if (!contributor) {
     return null;
   }
-  const pieces =
-    unwrap(
-      await publishedPieces(client)
-        .eq("contributor_id", contributor.id)
-        .order("published_at", { ascending: false })
-    ) ?? [];
-  return { ...contributor, pieces };
+  const [pieces, inEditions] = await Promise.all([
+    publishedPieces(client)
+      .eq("contributor_id", contributor.id)
+      .order("published_at", { ascending: false }),
+    // The Editions their work appeared in (design review C18), newest first.
+    journal(client)
+      .from("pieces")
+      .select("issue:issues(slug, title_en, title_ar, published_at)")
+      .eq("contributor_id", contributor.id)
+      .eq("status", "published")
+      .lte("published_at", new Date().toISOString())
+      .not("issue_id", "is", null),
+  ]);
+  const editions = [
+    ...new Map(
+      (unwrap(inEditions) ?? []).flatMap((row) =>
+        row.issue ? [[row.issue.slug, row.issue] as const] : []
+      )
+    ).values(),
+  ].sort((a, b) => (b.published_at ?? "").localeCompare(a.published_at ?? ""));
+  return { ...contributor, editions, pieces: unwrap(pieces) ?? [] };
 };
 
 /**
