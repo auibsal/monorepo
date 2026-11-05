@@ -36,7 +36,7 @@ every fifteen minutes with the cron secret, runs these steps in order
 (`apps/web/lib/api/notion/run.ts`):
 
 1. **Officers** (`mirrors.ts`): `access.officer_directory()`, each seat by
-   its full title (Editor of Qirtas, Director of Media, …), matched to
+   its full title (Editor-in-Chief, Director of Media, …), matched to
    Notion people by AUIB email. Written only when changed (hash in
    `core.notion_links`); removed when the record is gone.
 2. **Qirtas pipeline** (`mirrors.ts`): counts per stage, never titles or

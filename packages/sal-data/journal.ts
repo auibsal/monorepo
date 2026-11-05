@@ -30,14 +30,8 @@ export const sectionTypes = {
     "calligraphy",
     "photo_essay",
   ],
-  games: [
-    "crossword",
-    "quiz",
-    "word_ladder",
-    "riddle",
-    "anagram",
-    "name_the_book",
-  ],
+  // The daily kinds only (owner, Nov 5, 2026); members send no games.
+  games: ["crossword", "anagram"],
   letters: [
     "poetry",
     "fiction",
@@ -93,9 +87,13 @@ export const deskCategories = (desk: Desk): readonly Category[] =>
 
 /**
  * Types that take no submissions: Six Words come only from the Typewriter
- * Tour. The database refuses them too.
+ * Tour, and games only from the editors (owner, Nov 5, 2026). The database
+ * refuses them too.
  */
-export const closedCategories: readonly Category[] = ["six_words"];
+export const closedCategories: readonly Category[] = [
+  "six_words",
+  ...sectionTypes.games,
+];
 
 /** The types a member sends in each section. */
 export const sendableCategories = (desk: Desk) =>
@@ -863,6 +861,13 @@ export const authorPage = async (client: Client, slug: string) => {
 /** Next Stop's team, from the roles people hold (design review C20). */
 export const nextStopTeam = async (client: Client) =>
   unwrap(await journal(client).rpc("next_stop_team")) ?? [];
+
+/**
+ * Qirtas's masthead (owner, Nov 5, 2026), from the roles people hold: the
+ * Editor-in-Chief first, then the Managing Editor and the paper's roles.
+ */
+export const masthead = async (client: Client) =>
+  unwrap(await journal(client).rpc("masthead")) ?? [];
 
 /** The public event a piece came from (design review C16), or null. */
 export const pieceEvent = async (client: Client, eventId: string | null) =>

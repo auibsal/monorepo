@@ -84,8 +84,8 @@ select is(
   (select array_agg(n order by n) from (
     select count(*)::integer as n from unnest(enum_range(null::journal.category)) c
     where journal.is_current_category(c) group by journal.desk_of(c)) t),
-  array[6, 6, 6, 6, 6, 6],
-  'Six types in each section'
+  array[2, 6, 6, 6, 6, 6],
+  'Six types in each section, and Games its two daily kinds'
 );
 select is(journal.desk_of('review'), 'voices'::journal.desk, 'The review is in Voices now');
 select is(journal.desk_of('event_coverage'), 'news'::journal.desk, 'Event coverage is News');
@@ -107,11 +107,12 @@ select '00000000-0000-0000-0000-0000000065a1', t, '1'
 from unnest(enum_range(null::membership.pledge_type)) t;
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000065a1');
-select lives_ok(
+select throws_ok(
   $$ insert into journal.submissions (category, language, title, body_html,
        human_authorship_confirmed, first_publication_confirmed)
-     values ('riddle', 'en', 'What has pages', '<p>A riddle</p>', true, true) $$,
-  'A member sends a riddle to Games'
+     values ('anagram', 'en', 'Pages', '<p>An anagram</p>', true, true) $$,
+  '22023', 'games_by_editors',
+  'Games come from the editors: a member sends none'
 );
 select throws_ok(
   $$ insert into journal.submissions (category, language, title, body_html,

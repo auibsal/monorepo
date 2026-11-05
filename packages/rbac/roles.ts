@@ -94,8 +94,8 @@ export const roles = {
     permissions: ["events.checkin", "library.read", "library.council"],
   },
   eic: {
-    defaultScope: "issue",
-    isCouncil: false,
+    defaultScope: "global",
+    isCouncil: true,
     nameAr: "رئيس التحرير",
     nameEn: "Editor-in-Chief",
     permissions: [

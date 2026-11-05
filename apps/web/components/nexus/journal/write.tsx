@@ -62,26 +62,32 @@ export const WriteHome = () => {
       <YourWork />
       <DiwanSection id="sections" title={tw("sectionsTitle")}>
         <ul className="grid divide-y divide-line border-line border-y">
-          {journal.desks.map((desk) => (
-            <li className="grid gap-3 py-5 md:grid-cols-[12rem_1fr]" key={desk}>
-              <h3 className="type-heading">{tj(`desks.${desk}`)}</h3>
-              <div className="grid gap-2">
-                <p className="type-body">{tw(`sections.${desk}`)}</p>
-                <ul className="flex flex-wrap gap-x-5 gap-y-2 pt-1">
-                  {journal.sendableCategories(desk).map((category) => (
-                    <li key={category}>
-                      <Link
-                        className="link font-medium text-sm"
-                        href={`/qirtas/write/${category}`}
-                      >
-                        {tj(`categories.${category}`)}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </li>
-          ))}
+          {/* Games come from the editors only (owner, Nov 5, 2026). */}
+          {journal.desks
+            .filter((desk) => journal.sendableCategories(desk).length > 0)
+            .map((desk) => (
+              <li
+                className="grid gap-3 py-5 md:grid-cols-[12rem_1fr]"
+                key={desk}
+              >
+                <h3 className="type-heading">{tj(`desks.${desk}`)}</h3>
+                <div className="grid gap-2">
+                  <p className="type-body">{tw(`sections.${desk}`)}</p>
+                  <ul className="flex flex-wrap gap-x-5 gap-y-2 pt-1">
+                    {journal.sendableCategories(desk).map((category) => (
+                      <li key={category}>
+                        <Link
+                          className="link font-medium text-sm"
+                          href={`/qirtas/write/${category}`}
+                        >
+                          {tj(`categories.${category}`)}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </li>
+            ))}
         </ul>
       </DiwanSection>
       <DiwanSection id="edition" title={tw("editionTitle")}>

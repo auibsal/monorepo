@@ -4561,6 +4561,16 @@ export type Database = {
         Args: { desk: Database["journal"]["Enums"]["desk"] };
         Returns: boolean;
       };
+      masthead: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          full_name_ar: string;
+          full_name_en: string;
+          role: string;
+          title_ar: string;
+          title_en: string;
+        }[];
+      };
       my_call_pathways: {
         Args: Record<PropertyKey, never>;
         Returns: {

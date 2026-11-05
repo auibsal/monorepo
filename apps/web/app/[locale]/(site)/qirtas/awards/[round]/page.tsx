@@ -10,7 +10,6 @@ import {
   publishedRounds,
   RoundDates,
 } from "@/components/waraq/awards";
-import { Nameplate } from "@/components/waraq/nameplate";
 import { localizedMetadata } from "@/lib/metadata";
 
 interface RoundProps {
@@ -52,7 +51,6 @@ const RoundPage = async ({ params }: RoundProps) => {
   const t = await getTranslations({ locale, namespace: "web.awards" });
   return (
     <div className="mx-auto grid w-full max-w-6xl gap-10 px-4 py-10">
-      <Nameplate locale={locale} small />
       <header className="grid gap-2">
         <h1 className="type-display">
           {t("roundTitle", { round: localized(round, "title", locale) })}

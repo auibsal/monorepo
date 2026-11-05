@@ -4,7 +4,6 @@ import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { GameNumber } from "@/components/games/daily";
 import { WordGuess } from "@/components/games/word-guess";
-import { Nameplate } from "@/components/waraq/nameplate";
 import { localizedMetadata } from "@/lib/metadata";
 
 interface WordProps {
@@ -29,7 +28,6 @@ const WordPage = async ({ params }: WordProps) => {
   const t = await getTranslations({ locale, namespace: "web.games" });
   return (
     <div className="mx-auto grid w-full max-w-6xl gap-8 px-4 py-10">
-      <Nameplate current="games" locale={locale} small />
       <header className="grid gap-2 text-center">
         <h1 className="type-display">{t("kinds.word_guess")}</h1>
         <p className="type-caption">

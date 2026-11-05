@@ -3,7 +3,6 @@ import { Link } from "@repo/internationalization/navigation";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { PieceCardView } from "@/components/waraq/cards";
-import { Nameplate } from "@/components/waraq/nameplate";
 import { loadEpisodes } from "@/components/waraq/next-stop";
 import { localizedMetadata } from "@/lib/metadata";
 
@@ -30,7 +29,6 @@ const EpisodesPage = async ({ params }: EpisodesProps) => {
   const episodes = await loadEpisodes(locale);
   return (
     <div className="mx-auto grid w-full max-w-6xl gap-10 px-4 py-10">
-      <Nameplate current="video" locale={locale} small />
       <header className="grid gap-2">
         <h1 className="type-display">{t("nextStop.episodes")}</h1>
         <p className="type-caption">

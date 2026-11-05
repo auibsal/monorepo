@@ -67,6 +67,16 @@ const revokedGrants = new Set(
   ].map((m) => `${m[1]}:${m[2]}`)
 );
 
+// A role moved onto or off the Council later (the Editor-in-Chief, Nov 5,
+// 2026): the last update wins over the insert.
+const councilUpdates = new Map(
+  [
+    ...sql.matchAll(
+      /update access\.roles\s+set is_council = (true|false)[^;]*?where key = '([a-z_]+)'/g
+    ),
+  ].map((m) => [m[2], m[1]])
+);
+
 describe("mirror of the reference data in the migrations", () => {
   test("permission keys match", () => {
     const keys = inserts("access.permissions")
@@ -88,7 +98,9 @@ describe("mirror of the reference data in the migrations", () => {
     expect(live.map((m) => m[1]).sort()).toEqual([...roleKeys].sort());
     for (const [, key, council] of live) {
       const role = roles[key as keyof typeof roles];
-      expect(role.isCouncil, key).toBe(council === "true");
+      expect(role.isCouncil, key).toBe(
+        (councilUpdates.get(key) ?? council) === "true"
+      );
     }
   });
 

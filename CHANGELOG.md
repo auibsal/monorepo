@@ -6,6 +6,13 @@ own versions in the Library.
 
 ## Unreleased
 
+- Qirtas's games are daily: the word, a word search, a crossword and
+  anagrams, new every day in English and Arabic and counted from No. 1
+  again. Games now come from the editors only.
+- One Qirtas nameplate on every page of the paper, and a masthead at
+  /qirtas/masthead.
+- The Editor-in-Chief heads Qirtas and sits on the Council, in place of
+  the Editor of Qirtas.
 - Qirtas pieces may be heard read aloud, and paired with a clip from the
   Video section; readers share a selection of Gallery pieces by its link,
   without signing in.

@@ -13,7 +13,6 @@ import { ManageLinks } from "@/components/manage-links";
 import { ShareLink } from "@/components/share";
 import { pieceHref } from "@/components/waraq/cards";
 import { EditionCover, loadEditions } from "@/components/waraq/editions";
-import { Nameplate } from "@/components/waraq/nameplate";
 import { mediaUrl } from "@/lib/media";
 import { localizedMetadata } from "@/lib/metadata";
 import { readPublished } from "@/lib/supabase";
@@ -91,7 +90,6 @@ const EditionPage = async ({ params }: EditionProps) => {
 
   return (
     <div className="mx-auto grid w-full max-w-6xl gap-12 px-4 py-10">
-      <Nameplate locale={locale} small />
       <header className="grid gap-8 md:grid-cols-[1fr_2fr]">
         <div className="w-full max-w-sm">
           <EditionCover edition={edition} locale={locale} />

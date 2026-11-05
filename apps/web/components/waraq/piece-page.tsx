@@ -16,7 +16,6 @@ import {
 import { PairedClip, Reading } from "@/components/waraq/clip-and-reading";
 import { SelectionToggle } from "@/components/waraq/gallery-selection";
 import { CorrectionNotes, PieceBody, texts } from "@/components/waraq/layouts";
-import { Nameplate } from "@/components/waraq/nameplate";
 import { ReadingProgress, TextSize } from "@/components/waraq/reading-tools";
 import { SaveForLater } from "@/components/waraq/save-for-later";
 import { articleLd, JsonLd } from "@/lib/json-ld";
@@ -112,9 +111,6 @@ export const PieceArticle = async ({
   return (
     <div className="grid w-full gap-10 py-10">
       <ReadingProgress />
-      <div className="mx-auto w-full max-w-6xl px-4 print:hidden">
-        <Nameplate current={desk} locale={locale} small />
-      </div>
       <article className="grid gap-8">
         <JsonLd
           data={articleLd(locale, {

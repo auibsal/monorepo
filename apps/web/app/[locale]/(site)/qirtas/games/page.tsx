@@ -1,13 +1,11 @@
 import type { Locale } from "@repo/internationalization";
 import { formatLongDate } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
-import { games, journal, localized } from "@repo/sal-data";
+import { games, localized } from "@repo/sal-data";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { GameNumber } from "@/components/games/daily";
 import { WordGuess } from "@/components/games/word-guess";
-import { PieceCardView } from "@/components/waraq/cards";
-import { Nameplate } from "@/components/waraq/nameplate";
 import { localizedMetadata } from "@/lib/metadata";
 import { readPublished } from "@/lib/supabase";
 
@@ -27,14 +25,22 @@ export const generateMetadata = async ({
   });
 };
 
+/** The daily games after the word, each on its own page. */
+const DAILY = [
+  { kind: "word_search", lede: "searchLede", path: "search" },
+  { kind: "crossword", lede: "crosswordLede", path: "crossword" },
+  { kind: "anagram", lede: "anagramLede", path: "anagram" },
+] as const;
+
 // Rows under hairlines, not boxed cards (brand book: lists over cards).
 const card =
   "grid content-start gap-2 border-line border-t py-space-4 hover:underline";
 
 /**
- * Qirtas's Games section: two daily games, the editors' puzzles, and the
- * games members send through the newsroom (crosswords, quizzes, word
- * ladders, riddles, anagrams, Name the Book).
+ * Qirtas's Games section (owner, Nov 5, 2026): four daily games, made anew
+ * every day in the page's language (the word first, then the word search,
+ * the crossword and the anagrams), and any puzzle the editors write. Games
+ * come from the editors only; members send none.
  */
 const GamesPage = async ({ params }: GamesProps) => {
   const { locale } = await params;
@@ -46,18 +52,9 @@ const GamesPage = async ({ params }: GamesProps) => {
     (c) => games.publishedPuzzles(c, lang),
     []
   );
-  const sent = journal.inLanguage(
-    await readPublished(
-      ["journal"],
-      (c) => journal.deskPieces(c, "games", { limit: 24 }),
-      []
-    ),
-    locale
-  );
 
   return (
     <div className="mx-auto grid w-full max-w-6xl gap-10 px-4 py-10">
-      <Nameplate current="games" locale={locale} small />
       <header className="grid gap-2">
         <h1 className="type-display">{t("title")}</h1>
         <p className="type-lede max-w-3xl">{t("lede")}</p>
@@ -81,24 +78,24 @@ const GamesPage = async ({ params }: GamesProps) => {
         <h2 className="type-heading" id="daily">
           {t("alsoDaily")}
         </h2>
-        <ul className="grid gap-x-8 sm:grid-cols-2">
-          <li>
-            <Link className={card} href="/qirtas/games/search">
-              <span className="type-heading">{t("kinds.word_search")}</span>
-              <span className="type-body">{t("searchLede")}</span>
-            </Link>
-          </li>
+        <ul className="grid gap-x-8 sm:grid-cols-3">
+          {DAILY.map((game) => (
+            <li key={game.kind}>
+              <Link className={card} href={`/qirtas/games/${game.path}`}>
+                <span className="type-heading">{t(`kinds.${game.kind}`)}</span>
+                <span className="type-body">{t(game.lede)}</span>
+              </Link>
+            </li>
+          ))}
         </ul>
         <p className="type-caption">{t("today")}</p>
       </section>
 
-      <section aria-labelledby="editors" className="grid gap-4">
-        <h2 className="type-heading" id="editors">
-          {t("fromEditors")}
-        </h2>
-        {puzzles.length === 0 ? (
-          <p className="type-body text-text-secondary">{t("none")}</p>
-        ) : (
+      {puzzles.length === 0 ? null : (
+        <section aria-labelledby="editors" className="grid gap-4">
+          <h2 className="type-heading" id="editors">
+            {t("fromEditors")}
+          </h2>
           <ul className="grid gap-x-8 sm:grid-cols-2 lg:grid-cols-3">
             {puzzles.map((p) => (
               <li key={p.id}>
@@ -116,23 +113,8 @@ const GamesPage = async ({ params }: GamesProps) => {
               </li>
             ))}
           </ul>
-        )}
-      </section>
-
-      {sent.length > 0 ? (
-        <section aria-labelledby="sent" className="grid gap-4">
-          <h2 className="type-heading" id="sent">
-            {t("fromMembers")}
-          </h2>
-          <ul className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
-            {sent.map((piece) => (
-              <li key={piece.id}>
-                <PieceCardView locale={locale} piece={piece} />
-              </li>
-            ))}
-          </ul>
         </section>
-      ) : null}
+      )}
     </div>
   );
 };

@@ -6,11 +6,8 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { AnswersGame } from "@/components/games/answers";
-import { ChoicesGame } from "@/components/games/choices";
 import { CrosswordGame } from "@/components/games/crossword";
-import { LadderGame } from "@/components/games/ladder";
 import { WordSearchGame } from "@/components/games/word-search";
-import { Nameplate } from "@/components/waraq/nameplate";
 import { localizedMetadata } from "@/lib/metadata";
 import { readPublished } from "@/lib/supabase";
 
@@ -46,23 +43,16 @@ const PuzzleGame = ({ puzzle }: { readonly puzzle: Puzzle }) => {
       return <CrosswordGame crossword={puzzle.data} {...common} />;
     case "word_search":
       return <WordSearchGame search={puzzle.data} {...common} />;
-    case "quiz":
-    case "name_the_book":
-      return <ChoicesGame kind={puzzle.kind} quiz={puzzle.data} {...common} />;
-    case "riddle":
-      return <AnswersGame kind="riddle" puzzle={puzzle.data} {...common} />;
     case "anagram":
-      return <AnswersGame kind="anagram" puzzle={puzzle.data} {...common} />;
-    case "word_ladder":
-      return <LadderGame ladder={puzzle.data} {...common} />;
+      return <AnswersGame puzzle={puzzle.data} {...common} />;
     default:
       return null;
   }
 };
 
 /**
- * A puzzle written by Qirtas's editors: a crossword, a word search, a quiz,
- * a word ladder, riddles, anagrams or name the book (A17).
+ * A puzzle written by Qirtas's editors: a crossword, a word search or
+ * anagrams, the kinds the site also makes every day (owner, Nov 5, 2026).
  */
 const PuzzlePage = async ({ params }: PuzzleProps) => {
   const { locale, slug } = await params;
@@ -75,7 +65,6 @@ const PuzzlePage = async ({ params }: PuzzleProps) => {
   const note = localized(puzzle, "note", locale);
   return (
     <div className="mx-auto grid w-full max-w-6xl gap-8 px-4 py-10">
-      <Nameplate current="games" locale={locale} small />
       <header className="grid gap-2">
         <h1 className="type-display">{localized(puzzle, "title", locale)}</h1>
         <p className="type-caption">

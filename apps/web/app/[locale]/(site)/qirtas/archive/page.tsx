@@ -4,7 +4,6 @@ import { Link } from "@repo/internationalization/navigation";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { archiveMonths } from "@/components/waraq/archive";
-import { Nameplate } from "@/components/waraq/nameplate";
 import { localizedMetadata } from "@/lib/metadata";
 import { monthFrom } from "@/lib/whats-on";
 
@@ -31,7 +30,6 @@ const ArchivePage = async ({ params }: ArchiveProps) => {
   const months = await archiveMonths(locale);
   return (
     <div className="mx-auto grid w-full max-w-6xl gap-10 px-4 py-10">
-      <Nameplate locale={locale} small />
       <header className="grid gap-2">
         <h1 className="type-display">{t("archive.title")}</h1>
         <p className="type-lede max-w-3xl">{t("archive.lede")}</p>

@@ -6,7 +6,6 @@ import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { publishedRounds } from "@/components/waraq/awards";
 import { PieceColumn } from "@/components/waraq/cards";
-import { Nameplate } from "@/components/waraq/nameplate";
 import { localizedMetadata } from "@/lib/metadata";
 import { readPublished } from "@/lib/supabase";
 
@@ -94,7 +93,6 @@ const AuthorPage = async ({ params }: AuthorProps) => {
   ].join(" · ");
   return (
     <div className="mx-auto grid w-full max-w-4xl gap-10 px-4 py-10">
-      <Nameplate locale={locale} small />
       <header className="grid gap-3">
         <h1 className="type-display">{localized(author, "name", locale)}</h1>
         <p className="type-caption">{standing}</p>

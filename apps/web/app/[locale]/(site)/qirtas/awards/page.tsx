@@ -8,7 +8,6 @@ import {
   publishedRounds,
   RoundDates,
 } from "@/components/waraq/awards";
-import { Nameplate } from "@/components/waraq/nameplate";
 import { localizedMetadata } from "@/lib/metadata";
 
 interface AwardsProps {
@@ -43,7 +42,6 @@ const AwardsPage = async ({ params }: AwardsProps) => {
 
   return (
     <div className="mx-auto grid w-full max-w-6xl gap-10 px-4 py-10">
-      <Nameplate locale={locale} small />
       <header className="grid gap-2">
         <h1 className="type-display">{t("title")}</h1>
         <p className="type-lede max-w-3xl">{t("lede")}</p>

@@ -1,6 +1,8 @@
 "use client";
 
 import {
+  dailyAnagrams,
+  dailyCrossword,
   dailySearch,
   type GameLang,
   gameDay,
@@ -8,6 +10,8 @@ import {
 } from "@repo/sal-data/games";
 import { useTranslations } from "next-intl";
 import { useEffect, useMemo, useState } from "react";
+import { AnswersGame } from "./answers";
+import { CrosswordGame } from "./crossword";
 import { WordSearchGame } from "./word-search";
 
 // The daily games are worked out in the reader's browser from the Baghdad
@@ -39,6 +43,39 @@ export const DailySearch = ({ lang }: { lang: GameLang }) => {
       lang={lang}
       search={search}
       storageKey={`daily-${lang}-${day}`}
+    />
+  ) : null;
+};
+
+/** Today's crossword: clued words laid out in a small grid. */
+export const DailyCrossword = ({ lang }: { lang: GameLang }) => {
+  const day = useGameDay();
+  const crossword = useMemo(
+    () => (day === null ? null : dailyCrossword(lang, day)),
+    [day, lang]
+  );
+  return crossword && crossword.entries.length > 0 ? (
+    <CrosswordGame
+      crossword={crossword}
+      key={day}
+      lang={lang}
+      storageKey={`daily-crossword-${lang}-${day}`}
+    />
+  ) : null;
+};
+
+/** Today's five anagrams, each with its clue. */
+export const DailyAnagrams = ({ lang }: { lang: GameLang }) => {
+  const day = useGameDay();
+  const puzzle = useMemo(
+    () => (day === null ? null : dailyAnagrams(lang, day)),
+    [day, lang]
+  );
+  return puzzle ? (
+    <AnswersGame
+      lang={lang}
+      puzzle={puzzle}
+      storageKey={`daily-anagram-${lang}-${day}`}
     />
   ) : null;
 };

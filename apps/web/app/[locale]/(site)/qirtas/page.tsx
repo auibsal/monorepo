@@ -13,7 +13,6 @@ import {
   PieceColumn,
   pieceHref,
 } from "@/components/waraq/cards";
-import { Nameplate } from "@/components/waraq/nameplate";
 import { mediaUrl } from "@/lib/media";
 import { localizedMetadata } from "@/lib/metadata";
 import { readPublished } from "@/lib/supabase";
@@ -206,7 +205,6 @@ const WaraqFrontPage = async ({ params }: WaraqProps) => {
   return (
     <>
       <div className="mx-auto grid w-full max-w-6xl gap-12 px-4 py-10">
-        <Nameplate locale={locale} />
         <h1 className="sr-only">{t("title")}</h1>
 
         {nothing ? (

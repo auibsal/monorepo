@@ -59,7 +59,7 @@ interface Item {
 // reopens with every answer, even ones the layout left out.
 interface Draft {
   backward: boolean;
-  /** Quiz, name the book, riddles, anagrams (A17). */
+  /** Anagrams, each word with its clue. */
   entries: Entry[];
   id: string | null;
   items: Item[];
@@ -95,27 +95,12 @@ const blank: Draft = {
 };
 
 const GRIDS: readonly PuzzleKind[] = ["crossword", "word_search"];
-const ENTRY_KINDS: readonly PuzzleKind[] = [
-  "quiz",
-  "name_the_book",
-  "riddle",
-  "anagram",
-];
-const isEntryKind = (kind: PuzzleKind): kind is EntryKind =>
-  ENTRY_KINDS.includes(kind);
-const wordLines = (text: string) =>
-  text
-    .split("\n")
-    .map((w) => w.trim())
-    .filter(Boolean);
+const isEntryKind = (kind: PuzzleKind): kind is EntryKind => kind === "anagram";
 
 /** The data the current draft makes, and what did not fit (grids only). */
 const arrange = (draft: Draft): { data: unknown; left: string[] } => {
   if (isEntryKind(draft.kind)) {
     return { data: entriesData(draft.kind, draft.entries), left: [] };
-  }
-  if (draft.kind === "word_ladder") {
-    return { data: { words: wordLines(draft.words) }, left: [] };
   }
   // The layout changes only when the editor asks for another one.
   const seed = `${draft.kind}-${draft.seed}`;
@@ -174,10 +159,6 @@ const fromRow = (row: {
       published: row.status === "published",
       slug: row.slug,
       title: { ar: row.title_ar, en: row.title_en },
-      words:
-        kind === "word_ladder"
-          ? ((row.data as { words?: string[] } | null)?.words ?? []).join("\n")
-          : "",
     };
   }
   return {
@@ -202,42 +183,21 @@ const fromRow = (row: {
   };
 };
 
-/** The fields of a quiz, name the book, riddles, anagrams or a ladder. */
+/** The words of an anagram set, each with its clue. */
 const NewKindFields = ({
   draft,
   set,
 }: {
   readonly draft: Draft;
   readonly set: (patch: Partial<Draft>) => void;
-}) => {
-  const t = useTranslations("nexus.admin.waraq.games");
-  if (isEntryKind(draft.kind)) {
-    return (
-      <PuzzleEntries
-        entries={draft.entries}
-        kind={draft.kind}
-        lang={draft.language}
-        onChange={(entries) => set({ entries })}
-      />
-    );
-  }
-  if (draft.kind !== "word_ladder") {
-    return null;
-  }
-  return (
-    <Field hint={t("ladderHint")} label={t("ladder")}>
-      {(id) => (
-        <Textarea
-          dir={draft.language === "ar" ? "rtl" : "ltr"}
-          id={id}
-          onChange={(e) => set({ words: e.target.value })}
-          rows={8}
-          value={draft.words}
-        />
-      )}
-    </Field>
-  );
-};
+}) =>
+  isEntryKind(draft.kind) ? (
+    <PuzzleEntries
+      entries={draft.entries}
+      lang={draft.language}
+      onChange={(entries) => set({ entries })}
+    />
+  ) : null;
 
 // ── The list ────────────────────────────────────────────────────────────────
 
@@ -632,7 +592,7 @@ const PuzzleForm = ({ initial }: { initial: Draft }) => {
         ) : null}
         {valid ? null : (
           <p className="type-caption">
-            {grid ? t("needsMore") : t(`needs.${draft.kind as "quiz"}`)}
+            {grid ? t("needsMore") : t(`needs.${draft.kind as "anagram"}`)}
           </p>
         )}
         {grid ? (
