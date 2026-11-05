@@ -77,12 +77,39 @@
   --font-weight-bold: 700;
 }
 
+/*
+ * Ubuntu's stand-ins while it loads. next/font's own fallback is
+ * local(Arial), which Android and Linux don't have, so text first set in
+ * their wider system face jumped when Ubuntu arrived (the performance
+ * budget, A8). These match Ubuntu's width on running text, measured
+ * Nov 5, 2026 (Liberation Sans and Roboto are Arial's width).
+ */
+@font-face {
+  font-family: "Ubuntu Fallback Arial";
+  src:
+    local("Liberation Sans"), local("LiberationSans"), local("Roboto"),
+    local("Roboto-Regular");
+  size-adjust: 99.35%;
+  ascent-override: 93.81%;
+  descent-override: 19.02%;
+  line-gap-override: 2.82%;
+}
+
+@font-face {
+  font-family: "Ubuntu Fallback DejaVu";
+  src: local("DejaVu Sans"), local("DejaVuSans");
+  size-adjust: 88.74%;
+  ascent-override: 105.03%;
+  descent-override: 21.3%;
+  line-gap-override: 3.16%;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans:
-    var(--font-ubuntu), var(--font-ubuntu-arabic), ui-sans-serif, system-ui,
-    sans-serif;
+    var(--font-ubuntu), "Ubuntu Fallback Arial", "Ubuntu Fallback DejaVu",
+    var(--font-ubuntu-arabic), ui-sans-serif, system-ui, sans-serif;
   --font-arabic: var(--font-ubuntu-arabic), var(--font-ubuntu), sans-serif;
   --font-mono: var(--font-ubuntu-mono), ui-monospace, monospace;
   /* Qirtas's article text (dek and body) only. */
