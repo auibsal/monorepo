@@ -30,6 +30,7 @@ import { RecordHistory } from "../record-history";
 import { Attendance } from "./attendance";
 import { useProgrammeOptions } from "./data";
 import { Invitations } from "./invitations";
+import { EventOccasion } from "./occasion";
 import { SessionLinks } from "./session-links";
 
 interface Question {
@@ -578,6 +579,7 @@ export const EventEditor = () => {
             questions={asQuestions(existing.data.questions)}
             slug={existing.data.slug}
           />
+          <EventOccasion event={existing.data} />
           <SessionLinks eventId={eventId} />
         </>
       ) : null}

@@ -869,7 +869,8 @@
           "choose": "Choose",
           "find": "Type to find",
           "none": "Nothing matches."
-        }
+        },
+        "tripNeedsApproval": "A trip to al-Mutanabbi Street is published only once the General Secretary records Student Life's written approval, under Occasion."
       },
       "overview": {
         "title": "Desk",
@@ -1176,6 +1177,21 @@
           "new": "Add a link",
           "remove": "Remove",
           "removeConfirm": "Remove this link from the session?"
+        },
+        "occasion": {
+          "title": "Occasion",
+          "lede": "Whether this event is one of the Society's occasions, each with its own page: the Friday on al-Mutanabbi Street or the worst-poem contest.",
+          "label": "Occasion",
+          "none": "None",
+          "kinds": {
+            "book_street_trip": "Book Circle on al-Mutanabbi Street",
+            "worst_poem_contest": "The worst-poem contest"
+          },
+          "approved": "Student Life approved the trip in writing on {date}.",
+          "waiting": "Waiting for Student Life's written approval. The trip is not published, and its page does not show, until it is recorded.",
+          "bySecretary": "The General Secretary records the approval.",
+          "date": "Approved by Student Life on",
+          "dateHint": "The date on Student Life's written approval. Clear it to withdraw the approval of a trip not yet published."
         }
       },
       "checkIn": {
@@ -5259,6 +5275,34 @@
           "chosen": "The circle chose {titles}.",
           "and": " and ",
           "count": "{count, plural, one {{title}: {votes} vote} other {{title}: {votes} votes}}"
+        }
+      },
+      "occasions": {
+        "next": "Coming up",
+        "how": "How it works",
+        "past": "Before",
+        "approved": "Approved in writing by Student Life on {date}.",
+        "book_street_trip": {
+          "title": "Book Circle on al-Mutanabbi Street",
+          "short": "Once a term, a Friday morning on Baghdad's street of books.",
+          "lede": "Once a term, Book Circle spends a Friday morning on al-Mutanabbi Street, Baghdad's street of booksellers.",
+          "none": "The next trip is announced here once Student Life approves it.",
+          "rules": [
+            "Every trip is approved in writing by AUIB's Office of Student Life before it is announced, and goes with a safety plan.",
+            "Book your place on the trip's page; the time, the meeting point and what to bring are there."
+          ]
+        },
+        "worst_poem_contest": {
+          "title": "The worst-poem contest",
+          "short": "Once a term, the worst poem at AUIB wins.",
+          "lede": "The worst poem at AUIB wins. Really.",
+          "none": "The next contest is announced on What's on.",
+          "rules": [
+            "Once a term, Open Pages gives an evening to bad poetry.",
+            "Bring one poem of your own, written as badly as you can, in Arabic or English, and read it aloud yourself.",
+            "The room chooses the worst, and the winner is named on the night.",
+            "Laugh at the poem, never at a person: nothing cruel, nothing about anyone in the room."
+          ]
         }
       }
     }

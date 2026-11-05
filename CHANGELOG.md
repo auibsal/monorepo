@@ -9,6 +9,9 @@ own versions in the Library.
 - About tells how the Society began, a dated line each; the page-not-found
   page carries a line of al-Mutanabbi's; members can keep or print their
   year at the Society from Record.
+- Book Circle's Friday on al-Mutanabbi Street has its page, shown once
+  Student Life's written approval is recorded; Open Pages' worst-poem
+  contest has its page.
 - The text size on Qirtas pieces works, in English and Arabic.
 - Each writer has one byline in their current name; an old name no longer
   lingers on a second author page.

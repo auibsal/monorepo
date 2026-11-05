@@ -508,6 +508,15 @@ any schema change. Integration tests run against a local stack with
   opening its piece. Record links to the member's year,
   `/membership/record/year/<yyyy>` (the academic year from September 1,
   `recognition.myYear`): their own records only, private and printable.
+- **Occasions: the trip and the contest** (design review A34, A36, Nov
+  5, 2026). An event may be an occasion with its own page under its
+  program (`events.events.occasion`, `events.OCCASIONS`): Book Circle's
+  Friday on al-Mutanabbi Street (`book_street_trip`,
+  `/events/book-circle/mutanabbi-street`) and Open Pages' worst-poem
+  contest (`worst_poem_contest`, `/events/open-pages/worst-poem`). A trip
+  is published, and its page shown, only once the General Secretary
+  records Student Life's written approval on the event's page in the
+  Diwan (`events.record_approval`, `private.trip_needs_approval`).
 - **Games, daily and from the editors** (owner, Nov 5, 2026; replaces
   PR 5c's kinds). Members send no games (`private.games_by_editors`
   refuses a Games submission or draft). Four daily games, made in the
