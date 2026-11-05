@@ -457,6 +457,16 @@ any schema change. Integration tests run against a local stack with
   added or changed the record and when, and which fields, never the
   values; officers only, for records they can see
   (`private.history_tables()` lists the tables).
+- **Program pages** (design review PR 4e, Nov 4, 2026). Every
+  program's page (`SeriesView`, `components/program-page.tsx`) has one
+  structure: what it is and its rhythm, the next session, its month, the
+  last sessions with what Qirtas wrote from them (`journal.pieces.event_id`,
+  `journal.piecesFromEvents`; all of them at `/events/<program>/past`),
+  then what is its own (`ProgramFeature`): Second Chapter's collection,
+  Book Circle's shelf (its Voices reviews from its sessions, on a Shelf,
+  the list at `/events/book-circle/shelf`) and Open Pages' prompt cards
+  (`programmes.prompts`, written and published by the host in the
+  program's Prompts tab in the Diwan).
 - **Qirtas, one door** (owner, Oct 31, 2026). Members send everything,
   every section, from `/qirtas/write` (`/qirtas/write/<type>` is the
   form), and everything they send is read blind. Edition calls (Letters,
