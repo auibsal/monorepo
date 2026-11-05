@@ -236,6 +236,19 @@ const send = async (
 ) => {
   const run = current.getStore();
   const row = run?.row;
+  // Optional email turned off: Hudhud still brings the reminder, if they
+  // keep notices on in Telegram (its own setting, /me).
+  if (category === "optional" && to.optional === false) {
+    if (run && to.userId) {
+      await telegramToUser(
+        run.admin,
+        to.userId,
+        pushNotice(built, to.lang, row),
+        sticker
+      );
+    }
+    return;
+  }
   const made = footerFor(to, category);
   const lines = footer ?? made.footer;
   await sendEmail({
@@ -597,8 +610,8 @@ const handlers: Record<string, Handler> = {
     }
   },
   // The day before: to everyone booked, and to everyone who asked "Remind
-  // me". A booked reminder is optional (notify_email); "Remind me" was
-  // asked for, so it always goes.
+  // me". A booked reminder is optional (notify_email; without it, Telegram
+  // only); "Remind me" was asked for, so it always goes.
   "events.reminder": async (admin, payload) => {
     const [to, event, { data: booking }] = await Promise.all([
       recipient(admin, payload.user_id),
@@ -613,7 +626,7 @@ const handlers: Record<string, Handler> = {
         .maybeSingle(),
     ]);
     const booked = Boolean(booking);
-    if (!(to && event) || (booked && to.optional === false)) {
+    if (!(to && event)) {
       return;
     }
     // Reminders of what they booked are optional; "Remind me" was asked for.
@@ -828,7 +841,8 @@ const handlers: Record<string, Handler> = {
   },
   "journal.sunday_paper": async (admin, payload) => {
     const to = await recipient(admin, payload.user_id);
-    if (!to) {
+    // The paper is email only: stopped since it was queued, it stays home.
+    if (!to || to.optional === false) {
       return;
     }
     const paper = await paperContents(admin, to.lang, payload.since);
@@ -1269,7 +1283,8 @@ const handlers: Record<string, Handler> = {
         .eq("id", String(payload.shift_id))
         .maybeSingle(),
     ]);
-    if (to && shift && to.optional !== false) {
+    // Optional: without optional email, Telegram only (`send`).
+    if (to && shift) {
       await send(
         to,
         shiftReminder(

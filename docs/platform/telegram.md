@@ -17,7 +17,7 @@ Diwan account):
 | `/events` | What's coming up. Each event has a card with RSVP or Cancel, Details and Add to calendar. |
 | `/qirtas` | The latest public Qirtas pieces. |
 | `/word` | Opens today's word: auibsal.org/qirtas/games/word itself, as a Mini App inside Telegram. |
-| `/me` | The linked account, its places, Telegram notices on or off, Unlink. |
+| `/me` | The linked account, its places, Telegram notices on or off, the daily word here on or off, Unlink. |
 | `/help` | The list. |
 
 Typing `@<bot> words` in any chat (inline mode) shares a public event or
@@ -27,7 +27,12 @@ piece that matches, or with what's coming up.
 
 Members who link Telegram also get the Diwan notices there (the outbox
 sends them with the email and the push: reminders, RSVPs, waitlist
-places, Qirtas decisions). A member who blocks the bot has them turned off.
+places, Qirtas decisions). Reminders of booked events and shifts are
+optional emails: with optional email off, they still come here while
+notices are on (the Sunday Paper stays email only). A member who turns on
+"Daily word here" in /me gets the day's word in their chat at 9:00 AM
+Baghdad time, while notices are on (off by default). A member who blocks
+the bot has their notices turned off.
 
 **In the Society's group** (a supergroup with topics):
 
@@ -121,7 +126,7 @@ And without commands:
   Connecting a group uses the same kind of code, which only
   `settings.manage` holders can make.
 - What it stores: the link (member, Telegram id, username, notices on or
-  off), for each connected group its settings, and the Telegram ids of
+  off, the daily word on or off and the day it was last sent), for each connected group its settings, and the Telegram ids of
   people whose join request waits for an admin (removed when they're let
   in). Posts are deleted after 90 days, codes when they expire
   (`sal-telegram-tidy`).

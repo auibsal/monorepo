@@ -6,6 +6,11 @@ own versions in the Library.
 
 ## Unreleased
 
+- Join says what membership gives you; Partners says what a partner gets
+  and gives. Hudhud can send the day's word each morning (turn it on in
+  /me), and brings shift and event reminders even with optional email
+  off. The public pages are checked against a performance budget on a
+  mid-range phone.
 - Readers save Qirtas pieces to read later: on Today and in Membership.
 - The Diwan: events, pieces, productions, partners and campaigns show their
   history: who added or changed them, when, and which fields.
