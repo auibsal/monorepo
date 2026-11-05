@@ -8,6 +8,17 @@ first session); section numbers (§) refer to it.
 Branch: `claude/qirtas-games-masthead`.
 
 
+## Public pages refresh again (2026-11-05)
+
+Branch: `claude/unstick-revalidation`.
+
+- [x] The cached public pages had stopped refreshing: a `revalidate` row
+  that failed five times stayed unprocessed and still counted as waiting,
+  so no refresh for its tags was queued again (the renamed byline stayed
+  "Mohammed Ali Ehsan" on the site). Only a row that can still run counts
+  now; stuck rows are closed and every public cache is refreshed once
+  (migration `20261101004400`, `99_unstick_revalidation.test.sql`).
+
 ## Qirtas: text size and one byline each (2026-11-05)
 
 Branch: `claude/qirtas-reading-fixes`.

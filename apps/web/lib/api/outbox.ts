@@ -76,6 +76,7 @@ import { expireWalletPass, walletConfigured } from "./wallet";
  * the same email twice. Members who turned on phone notifications also get
  * the notice on their devices, after the email has gone.
  */
+/** Also in private.queue_revalidation(): a row past it no longer counts as waiting. */
 export const MAX_ATTEMPTS = 5;
 
 type Lang = CopyLang;
