@@ -3,7 +3,6 @@ import { Link } from "@repo/internationalization/navigation";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { DailySearch, GameNumber } from "@/components/games/daily";
-import { Nameplate } from "@/components/waraq/nameplate";
 import { localizedMetadata } from "@/lib/metadata";
 
 interface SearchProps {
@@ -28,7 +27,6 @@ const SearchPage = async ({ params }: SearchProps) => {
   const t = await getTranslations({ locale, namespace: "web.games" });
   return (
     <div className="mx-auto grid w-full max-w-6xl gap-8 px-4 py-10">
-      <Nameplate current="games" locale={locale} small />
       <header className="grid gap-2">
         <h1 className="type-display">{t("kinds.word_search")}</h1>
         <p className="type-caption">

@@ -5,7 +5,6 @@ import { Input } from "@repo/brand/components/ui/input";
 import {
   type Anagrams,
   type GameLang,
-  type Riddles,
   sameAnswer,
   scramble,
 } from "@repo/sal-data/games";
@@ -15,7 +14,7 @@ import { loadProgress, saveProgress } from "./storage";
 
 type State = "open" | "solved" | "shown";
 
-/** One riddle or anagram: type the answer, check it, or see it. */
+/** One anagram: type the word, check it, or see it. */
 const Answer = ({
   answer,
   clue,
@@ -23,7 +22,6 @@ const Answer = ({
   lang,
   letters,
   onChange,
-  prompt,
   state,
 }: {
   readonly answer: string;
@@ -32,7 +30,6 @@ const Answer = ({
   readonly lang: GameLang;
   readonly letters?: string[];
   readonly onChange: (state: State) => void;
-  readonly prompt?: string;
   readonly state: State;
 }) => {
   const t = useTranslations("web.games.answers");
@@ -50,7 +47,6 @@ const Answer = ({
   };
   return (
     <li className="grid gap-3 border-line border-t pt-space-4">
-      {prompt ? <p className="type-heading">{prompt}</p> : null}
       {letters ? (
         <>
           <p className="sr-only">
@@ -114,28 +110,27 @@ const Answer = ({
 };
 
 /**
- * Riddles and anagrams (the design review A17): type each answer; only the
- * letters are compared, so spacing and hamzas don't matter. An anagram's
- * letters are scrambled the same way for every reader. Progress stays in
- * this browser only.
+ * Anagrams (owner, Nov 5, 2026: the daily five, or an editor's set): type
+ * each word; only the letters are compared, so spacing and hamzas don't
+ * matter. The letters are scrambled the same way for every reader.
+ * Progress stays in this browser only.
  */
-export const AnswersGame = (
-  props: {
-    readonly lang: GameLang;
-    readonly storageKey: string;
-  } & (
-    | { readonly kind: "riddle"; readonly puzzle: Riddles }
-    | { readonly kind: "anagram"; readonly puzzle: Anagrams }
-  )
-) => {
+export const AnswersGame = ({
+  lang,
+  puzzle,
+  storageKey,
+}: {
+  readonly lang: GameLang;
+  readonly puzzle: Anagrams;
+  readonly storageKey: string;
+}) => {
   const t = useTranslations("web.games.answers");
-  const { lang, storageKey } = props;
   const progressKey = `answers-${storageKey}`;
   const [states, setStates] = useState<State[]>([]);
   useEffect(() => {
     setStates(loadProgress<State[]>(progressKey) ?? []);
   }, [progressKey]);
-  const { items } = props.puzzle;
+  const { items } = puzzle;
   const update = (index: number, state: State) => {
     const next = items.map((_, i) =>
       i === index ? state : (states[i] ?? "open")
@@ -148,30 +143,18 @@ export const AnswersGame = (
   return (
     <div className="grid max-w-3xl gap-8" dir={lang === "ar" ? "rtl" : "ltr"}>
       <ol className="grid gap-8">
-        {props.kind === "riddle"
-          ? props.puzzle.items.map((item, i) => (
-              <Answer
-                answer={item.answer}
-                index={i}
-                key={item.prompt}
-                lang={lang}
-                onChange={(state) => update(i, state)}
-                prompt={item.prompt}
-                state={states[i] ?? "open"}
-              />
-            ))
-          : props.puzzle.items.map((item, i) => (
-              <Answer
-                answer={item.answer}
-                clue={item.prompt}
-                index={i}
-                key={item.answer}
-                lang={lang}
-                letters={scramble(item.answer, lang, `${storageKey}-${i}`)}
-                onChange={(state) => update(i, state)}
-                state={states[i] ?? "open"}
-              />
-            ))}
+        {items.map((item, i) => (
+          <Answer
+            answer={item.answer}
+            clue={item.prompt}
+            index={i}
+            key={item.answer}
+            lang={lang}
+            letters={scramble(item.answer, lang, `${storageKey}-${i}`)}
+            onChange={(state) => update(i, state)}
+            state={states[i] ?? "open"}
+          />
+        ))}
       </ol>
       <p aria-live="polite" className="type-subheading" role="status">
         {closed === items.length

@@ -52,7 +52,7 @@ const journalSql = readFileSync(
 );
 
 describe("six sections, six types each", () => {
-  test("the forms list the thirty-six types of journal.is_current_category()", () => {
+  test("the forms list the thirty-two types of journal.is_current_category()", () => {
     expect(desks).toEqual([
       "news",
       "voices",
@@ -61,10 +61,11 @@ describe("six sections, six types each", () => {
       "video",
       "games",
     ]);
+    // Six a section; Games keeps its two daily kinds (owner, Nov 5, 2026).
     for (const desk of desks) {
-      expect(deskCategories(desk), desk).toHaveLength(6);
+      expect(deskCategories(desk), desk).toHaveLength(desk === "games" ? 2 : 6);
     }
-    expect(categories).toHaveLength(36);
+    expect(categories).toHaveLength(32);
     for (const category of categories) {
       expect(sectionsSql).toContain(`'${category}'`);
       expect(deskOf(category)).toBe(
@@ -78,7 +79,7 @@ describe("six sections, six types each", () => {
 });
 
 describe("the types members send", () => {
-  test("everything but Six Words; two doors", () => {
+  test("everything but Six Words and games; two doors", () => {
     expect(sendableCategories("letters")).toEqual([
       "poetry",
       "fiction",
@@ -86,8 +87,8 @@ describe("the types members send", () => {
       "drama",
       "translation",
     ]);
-    expect(sendableCategories("games")).toHaveLength(6);
-    expect(closedCategories).toEqual(["six_words"]);
+    expect(sendableCategories("games")).toEqual([]);
+    expect(closedCategories).toEqual(["six_words", "crossword", "anagram"]);
     expect(newsroomDesks).toEqual(["news", "voices", "video", "games"]);
     expect(editionDesks).toEqual(["letters", "gallery"]);
   });

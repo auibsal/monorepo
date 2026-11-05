@@ -1,11 +1,13 @@
 "use client";
 
 // A reader's progress in a game is kept in their own browser only; a
-// private window or blocked storage just starts the game fresh.
+// private window or blocked storage just starts the game fresh. The prefix
+// changed with the daily games (owner, Nov 5, 2026), so every count and
+// streak started again.
 
 export const loadProgress = <T>(key: string): T | null => {
   try {
-    const raw = window.localStorage.getItem(`waraq-games:${key}`);
+    const raw = window.localStorage.getItem(`qirtas-games:${key}`);
     return raw ? (JSON.parse(raw) as T) : null;
   } catch {
     return null;
@@ -14,7 +16,7 @@ export const loadProgress = <T>(key: string): T | null => {
 
 export const saveProgress = (key: string, value: unknown) => {
   try {
-    window.localStorage.setItem(`waraq-games:${key}`, JSON.stringify(value));
+    window.localStorage.setItem(`qirtas-games:${key}`, JSON.stringify(value));
   } catch {
     // Storage is unavailable; the game still works for this visit.
   }

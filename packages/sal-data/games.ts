@@ -1,22 +1,15 @@
 import { z } from "zod";
 import { type Client, unwrap } from "./client";
-import { guessWords, searchWords } from "./game-words";
+import { clueWords, guessWords, searchWords } from "./game-words";
 
-// Waraq's games: the daily word guess and word search (made from fixed word
-// lists, the same for every reader on a Baghdad day), and the puzzles editors
-// write in the Diwan (journal.puzzles): crosswords and word searches, and
-// (design review A17) quizzes, word ladders, riddles, anagrams and name the
-// book.
+// Qirtas's games (owner, Nov 5, 2026): four daily games, made from fixed
+// word lists and the same for every reader on a Baghdad day (the word, the
+// word search, the crossword and the anagrams), and the puzzles the editors
+// write in the Diwan (journal.puzzles) of the same kinds. Members send no
+// games. The quiz, word ladder, riddles and name the book are retired: none
+// can be made anew every day without fresh writing.
 
-export const puzzleKinds = [
-  "crossword",
-  "word_search",
-  "quiz",
-  "word_ladder",
-  "riddle",
-  "anagram",
-  "name_the_book",
-] as const;
+export const puzzleKinds = ["crossword", "word_search", "anagram"] as const;
 export type PuzzleKind = (typeof puzzleKinds)[number];
 export const gameLangs = ["en", "ar"] as const;
 export type GameLang = (typeof gameLangs)[number];
@@ -112,8 +105,11 @@ const baghdadDate = new Intl.DateTimeFormat("en-CA", {
 export const gameDay = (date = new Date()) =>
   Math.floor(Date.parse(`${baghdadDate.format(date)}T00:00:00Z`) / DAY_MS);
 
-/** The first daily game, Wednesday, October 14, 2026, is No. 1. */
-const FIRST_DAY = Date.UTC(2026, 9, 14) / DAY_MS;
+/**
+ * The first daily games, Thursday, November 5, 2026, are No. 1 (owner, Nov
+ * 5, 2026: every count starts again with the four daily games).
+ */
+const FIRST_DAY = Date.UTC(2026, 10, 5) / DAY_MS;
 export const gameNumber = (day: number) => day - FIRST_DAY + 1;
 
 /** Days in a row a daily game was solved, ending on the last solved day. */
@@ -687,6 +683,53 @@ export const layoutCrossword = ({
   };
 };
 
+// ── The daily crossword and anagrams ────────────────────────────────────────
+
+/** The clued words of a day, in an order fixed by the language and day. */
+const cluedFor = (lang: GameLang, seed: string) =>
+  shuffled(
+    clueWords[lang] as readonly { answer: string; clue: string }[],
+    seeded(seed)
+  ).map((w) => ({
+    answer: w.answer,
+    clue: w.clue,
+  }));
+
+/**
+ * Today's crossword: eight clued words laid out in at most nine squares a
+ * side; the words that cross nothing are left out. A day whose words make a
+ * poor grid (fewer than five placed) tries the next draw.
+ */
+export const dailyCrossword = (lang: GameLang, day: number): Crossword => {
+  let fallback: Crossword | null = null;
+  for (let draw = 0; draw < 6; draw += 1) {
+    const seed = `crossword-${lang}-${day}-${draw}`;
+    const { crossword } = layoutCrossword({
+      items: cluedFor(lang, seed).slice(0, 8),
+      lang,
+      maxSize: 9,
+      seed,
+    });
+    if (crossword && crossword.entries.length >= 5) {
+      return crossword;
+    }
+    if (
+      crossword &&
+      crossword.entries.length > (fallback?.entries.length ?? 0)
+    ) {
+      fallback = crossword;
+    }
+  }
+  return fallback ?? { cols: 0, entries: [], rows: 0 };
+};
+
+/** Today's anagrams: five clued words, their letters scrambled. */
+export const dailyAnagrams = (lang: GameLang, day: number): Anagrams => ({
+  items: cluedFor(lang, `anagram-${lang}-${day}`)
+    .slice(0, 5)
+    .map((w) => ({ answer: w.answer, prompt: w.clue })),
+});
+
 // ── Stored puzzles ───────────────────────────────────────────────────────────
 
 const coordinate = z
@@ -736,7 +779,7 @@ export const wordSearchSchema = z
   })
   .refine(validWordSearch, { message: "conflict" });
 
-// ── Quizzes, ladders, riddles, anagrams, name the book (A17) ──────────────
+// ── Typed answers and anagrams ───────────────────────────────────────────────
 
 /** A typed answer's letters, for comparing with the editor's answer. */
 export const sameAnswer = (typed: string, answer: string, lang: GameLang) => {
@@ -745,35 +788,6 @@ export const sameAnswer = (typed: string, answer: string, lang: GameLang) => {
 };
 
 const filled = (max: number) => z.string().trim().min(1).max(max);
-
-/**
- * A quiz, or name the book: each question (or clue: an opening line, a
- * famous sentence) with its right answer, the wrong ones offered beside it
- * and, after answering, a note (name the book: the author).
- */
-export const choicesSchema = z.object({
-  items: z
-    .array(
-      z.object({
-        answer: filled(120),
-        note: z.string().trim().max(200).optional(),
-        prompt: filled(400),
-        wrong: z.array(filled(120)).min(1).max(5),
-      })
-    )
-    .min(1)
-    .max(20),
-});
-export type Choices = z.infer<typeof choicesSchema>;
-
-/** Riddles, each answered by typing; letters are compared, not spelling. */
-export const riddlesSchema = z.object({
-  items: z
-    .array(z.object({ answer: filled(60), prompt: filled(400) }))
-    .min(1)
-    .max(15),
-});
-export type Riddles = z.infer<typeof riddlesSchema>;
 
 /** Anagrams: a word (2 to 15 letters) with an optional clue. */
 export const anagramsSchema = (lang: GameLang) =>
@@ -793,34 +807,6 @@ export const anagramsSchema = (lang: GameLang) =>
   });
 export type Anagrams = z.infer<ReturnType<typeof anagramsSchema>>;
 
-/** Whether two words differ in exactly one letter, in the same place. */
-export const oneLetterApart = (a: string, b: string) => {
-  const x = lettersOf(a);
-  const y = lettersOf(b);
-  return (
-    x.length === y.length &&
-    x.filter((letter, i) => letter !== y[i]).length === 1
-  );
-};
-
-/**
- * A word ladder: from the first word to the last, one letter changed at
- * each step (3 to 10 words, each 3 to 8 letters).
- */
-export const ladderSchema = (lang: GameLang) =>
-  z
-    .object({ words: z.array(filled(20)).min(3).max(10) })
-    .refine(({ words }) => {
-      const steps = words.map((w) => normalizeWord(w, lang));
-      const size = lettersOf(steps[0] ?? "").length;
-      return (
-        size >= 3 &&
-        size <= 8 &&
-        steps.every((w, i) => i === 0 || oneLetterApart(steps[i - 1] ?? "", w))
-      );
-    });
-export type Ladder = z.infer<ReturnType<typeof ladderSchema>>;
-
 /** An anagram's letters, scrambled the same way for every reader. */
 export const scramble = (word: string, lang: GameLang, seed: string) => {
   const letters = lettersOf(normalizeWord(word, lang));
@@ -832,12 +818,6 @@ export const scramble = (word: string, lang: GameLang, seed: string) => {
   }
   return [...letters].reverse();
 };
-
-/** A question's answers in a fixed order for every reader. */
-export const choicesFor = (
-  item: { answer: string; wrong: readonly string[] },
-  seed: string
-) => shuffled([item.answer, ...item.wrong], seeded(seed));
 
 const listColumns =
   "id, slug, kind, language, title_en, title_ar, made_with_ai, published_at";
@@ -863,10 +843,7 @@ export const publishedPuzzles = async (client: Client, lang?: GameLang) => {
 export type PuzzleData =
   | { data: Crossword; kind: "crossword" }
   | { data: WordSearch; kind: "word_search" }
-  | { data: Choices; kind: "quiz" | "name_the_book" }
-  | { data: Riddles; kind: "riddle" }
-  | { data: Anagrams; kind: "anagram" }
-  | { data: Ladder; kind: "word_ladder" };
+  | { data: Anagrams; kind: "anagram" };
 
 /** One published puzzle with its grid; null when it is missing or broken. */
 export const puzzleBySlug = async (client: Client, slug: string) => {
@@ -907,21 +884,8 @@ export const parsePuzzle = (
       const result = wordSearchSchema.safeParse(data);
       return result.success ? { data: result.data, kind } : null;
     }
-    case "quiz":
-    case "name_the_book": {
-      const result = choicesSchema.safeParse(data);
-      return result.success ? { data: result.data, kind } : null;
-    }
-    case "riddle": {
-      const result = riddlesSchema.safeParse(data);
-      return result.success ? { data: result.data, kind } : null;
-    }
     case "anagram": {
       const result = anagramsSchema(lang).safeParse(data);
-      return result.success ? { data: result.data, kind } : null;
-    }
-    case "word_ladder": {
-      const result = ladderSchema(lang).safeParse(data);
       return result.success ? { data: result.data, kind } : null;
     }
     default:

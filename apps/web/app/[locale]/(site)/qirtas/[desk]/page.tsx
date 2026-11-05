@@ -7,7 +7,6 @@ import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { PieceCardView } from "@/components/waraq/cards";
 import { SelectionBar } from "@/components/waraq/gallery-selection";
-import { Nameplate } from "@/components/waraq/nameplate";
 import { localizedMetadata } from "@/lib/metadata";
 import { readPublished } from "@/lib/supabase";
 
@@ -57,7 +56,6 @@ const DeskPage = async ({ params }: DeskProps) => {
 
   return (
     <div className="mx-auto grid w-full max-w-6xl gap-10 px-4 py-10">
-      <Nameplate current={desk} locale={locale} small />
       <header className="grid gap-2">
         <h1 className="type-display">{t(`desks.${desk}`)}</h1>
         <p className="type-lede max-w-3xl">{t(`deskLedes.${desk}`)}</p>

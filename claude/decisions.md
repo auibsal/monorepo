@@ -40,7 +40,7 @@ Every chat in this project should follow this file. Where an older document, pro
 - **Needs, not numbers.** Every program, Qirtas and the Council keep a **needs list**: the item, the quantity, the date it is needed, and what it is for. No document, page or form shows budgets, costs, prices, spending limits, ledgers, expense claims or reimbursements.
 - **Who asks:**
   - the Director of Programs gathers the six programs' needs;
-  - the Editor of Qirtas gathers the paper's needs (printing the Edition, the Awards' certificates and chapbook);
+  - the Editor-in-Chief gathers the paper's needs (printing the Edition, the Awards' certificates and chapbook);
   - the General Secretary sends every request to Student Life and logs what was asked, what was provided and when.
 - **Plan around the answer.** Student Life gives what it can. A program is designed to run with what is provided; anything not provided is dropped or found through a partner (Partnerships, with the Council's approval).
 - **The one exception: Second Chapter's collection.** Money collected at the fair belongs to the charity, never to the Society, and is never used for costs.
@@ -53,14 +53,14 @@ Every chat in this project should follow this file. Where an older document, pro
 ## 3. People and roles
 - **The Council:**
   - Officers: President, Vice President, General Secretary.
-  - Six directors: Editor of Qirtas (also Editor-in-Chief), Artistic Director (the Company), Director of Programs, Director of Media, Director of Partnerships, Director of Membership.
+  - Six directors: Editor-in-Chief (of Qirtas; the title "Editor of Qirtas" is retired, Nov 5, 2026), Artistic Director (the Company), Director of Programs, Director of Media, Director of Partnerships, Director of Membership.
   - There is no Treasurer. The Company's director is titled Artistic Director, never "Director of the Company".
 - **Founding year:** every seat exists; some are held by an officer until filled. The President covers Programs, the Vice President covers Partnerships, and the General Secretary covers Membership. The President keeps Programs for now and decides the handover before leaving on January 24.
 - **Holders on record:**
   - President: Shaheen Farjo.
   - Vice President: Fajer Saif Khalid Ezzet (short form: Fajer Ezzet); also covers Partnerships.
   - General Secretary: Yaqoob Ghassan Al-Azzawi; also covers Membership, and so runs hiring.
-  - Editor of Qirtas: Mohammed-Ali Ehsan Ohmaid (short form: Mohammed-Ali Ohmaid).
+  - Editor-in-Chief: Mohammed-Ali Ohmaid.
   - Director of Media: Ali Hayder.
   - Director of Programs: covered by the President for now.
   - Artistic Director: open; needed by January (the staged reading is Apr 29).
@@ -77,8 +77,8 @@ Every chat in this project should follow this file. Where an older document, pro
   - Partnerships: partners, the partner register.
   - Membership: the Register, the welcome, voting rights from attendance, and the hiring process.
   - General Secretary: records, the books, rooms, and every request to Student Life.
-- **Hiring:** Membership runs the process for every role (the post on Get involved, applications in the Diwan, scheduling, offers, onboarding, hours logged as shifts). The owner of each role picks the person: the Editor of Qirtas picks the masthead, the Director of Programs picks the Program Leads, each director picks their own team. The Council confirms directors; members elect the three officers.
-- **The Editor of Qirtas (Mohammed-Ali Ohmaid) owns the paper,** including Next Stop, and appoints the masthead:
+- **Hiring:** Membership runs the process for every role (the post on Get involved, applications in the Diwan, scheduling, offers, onboarding, hours logged as shifts). The owner of each role picks the person: the Editor-in-Chief picks the masthead, the Director of Programs picks the Program Leads, each director picks their own team. The Council confirms directors; members elect the three officers.
+- **The Editor-in-Chief (Mohammed-Ali Ohmaid) owns the paper,** including Next Stop, and appoints the masthead:
   - the Video section editor (open) runs Next Stop day to day;
   - Hassan Sadiq hosts;
   - the Director of Media (Ali Hayder) helps manage Next Stop as part of his role: filming, editing and channels. He holds no separate Qirtas title;
@@ -352,7 +352,7 @@ Where an earlier line above is marked as replaced, the later section holds. What
 - **Written in Notion, published to the site:** events; the six programs (Publishing, Programs; Qirtas, Next Stop and the Company are not programs); the Society's documents and the website policies (Publishing, Documents; the site keeps only the adoption record: adopted on and the vote); minutes (Work, Meetings; Status "Minutes in the Diwan" sends them; the official copy is locked once adopted).
 - **Kept on the site, copied to Notion read-only:** the officers, each seat by its full title; Qirtas's counts.
 - **One language per piece in Notion:** an Arabic edition is its own row (Language Arabic, Edition of the English row).
-- **The officers on record:** Fajer Ezzet (Vice President); Mohammed-Ali Ohmaid, Editor of Qirtas, on the Council.
+- **The officers on record:** Fajer Ezzet (Vice President); Mohammed-Ali Ohmaid, Editor-in-Chief, on the Council.
 - **SAL-PLT-10 stays retired** with the public API; ten website policies are published.
 
 ## 24. The design system (decided Nov 4, 2026)
@@ -366,7 +366,7 @@ Where an earlier line above is marked as replaced, the later section holds. What
 - **Production runs `main`,** deployed by Vercel directly; no deploy hook is needed. The migrations run after each merge (`migrate.yml`), the hook only if one is set.
 - **One language per page in Notion:** an event's, program's or piece's text is the page body in English; an Arabic edition is its own row (Language Arabic, Edition of). The old "write it under English and العربية" check is gone.
 - **The Listening Room's evenings** are `/events/listening-room-2027-03-16` and `/events/listening-room-2027-05-11`; the old `salon-…` addresses redirect to them.
-- **Officers:** Fajer Ezzet (Vice President); Mohammed-Ali Ohmaid, Editor of Qirtas, on the Council; Ali Hayder, Director of Media. Notion's Roles are the nine seat titles only.
+- **Officers:** Fajer Ezzet (Vice President); Mohammed-Ali Ohmaid, Editor-in-Chief, on the Council; Ali Hayder, Director of Media. Notion's Roles are the nine seat titles only.
 - **The content calendar** has Language and Edition of in place of the Arabic title and excerpt.
 - **Retired names, in the code too:** the Callboard is Get involved (its route stays `/get-involved`); the Qirtas Prizes are the Qirtas Awards, at `/qirtas/awards` (`/awards`, `/prizes` and `/qirtas/prizes` go there).
 - **`programmes.manage` is `programs.manage`.**
@@ -388,4 +388,11 @@ Where an earlier line above is marked as replaced, the later section holds. What
 - **Arabic formats:** Latin digits; the Iraqi month names, as `ar-IQ` writes dates; Arabic punctuation and «» quotes; tanween on the letter before the alif.
 - **English formats:** American spelling, sentence case, straight quotes and apostrophes, the ellipsis character, en dashes for ranges, "for example" in place of "e.g.".
 - **One word per term:** Edition is الإصدار (not العدد), a piece is عمل, an event فعالية, a document's version النسخة, Get involved «شارك معنا».
+
+## 28. Qirtas's games, masthead and Editor-in-Chief (decided Nov 5, 2026)
+- **Games come from the editors only.** Members send no games; what the editors had published was deleted.
+- **The games are daily and automatic:** the word, the word search, the crossword and the anagrams, each made anew every day in English and Arabic, all counted from No. 1 on Thursday, November 5, 2026. The quiz, word ladder, riddles and name the book are retired, since none can be made anew daily without fresh writing. Editors may still publish a crossword, word search or anagrams.
+- **One Qirtas nameplate** on every page of the paper; it does not change between the front page, a section and a piece.
+- **Qirtas has a masthead** (/qirtas/masthead), from the roles people hold.
+- **"Editor of Qirtas" is retired: the Editor-in-Chief** heads the paper and sits on the Council. Mohammed-Ali Ohmaid holds it. His name is restored in the four parts he wrote himself (waiting on the parts).
 

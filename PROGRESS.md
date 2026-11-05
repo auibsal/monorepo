@@ -5,8 +5,31 @@ Every session starts here and continues from the first unticked item. The
 brief is `sal-platform-claude-code-prompt.md` (uploaded at the start of the
 first session); section numbers (§) refer to it.
 
-Branch: `claude/gallery-audio-clips` (PR 5d of the design review).
+Branch: `claude/qirtas-games-masthead`.
 
+
+## Qirtas: games, nameplate, masthead, Editor-in-Chief (2026-11-05)
+
+Branch: `claude/qirtas-games-masthead`. The 404 on every piece was the
+production migrations stopping (see #213, merge first).
+
+- [x] Games from the editors only; the editors' published games deleted;
+  kinds revised (crossword, word search, anagrams stay; quiz, word ladder,
+  riddles, name the book retired); four daily games numbered from No. 1
+  on Nov 5, 2026 (migration `20261101004100`, `99_waraq_games.test.sql`,
+  `games.test.ts`).
+- [x] One nameplate on every Qirtas page (the layout's).
+- [x] The masthead, `/qirtas/masthead` (migration `20261101004000`,
+  `99_qirtas_masthead.test.sql`).
+- [x] Editor-in-Chief on the Council in place of the Editor of Qirtas;
+  Mohammed-Ali Ohmaid holds it (migration `20261101003900`,
+  `99_editor_in_chief.test.sql`); Notion's Officers option renamed.
+- [ ] Mohammed-Ali's name in the four parts he wrote: waiting on the
+  owner for the parts (the earlier migration overwrote them and nothing
+  kept the old values).
+- needs-native-review: `clueWords.ar` (`game-words.ts`),
+  `web.games.lede`, `crosswordLede`, `anagramLede`,
+  `web.journal.masthead.*`, `nexus.admin.waraq.games.lede`, `editorLede`.
 
 ## The design review: PR 5d, readings, clips and Gallery selections (2026-11-05)
 

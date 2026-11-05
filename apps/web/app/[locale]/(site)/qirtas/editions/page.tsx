@@ -8,7 +8,6 @@ import {
   EditionShelfItem,
   loadEditions,
 } from "@/components/waraq/editions";
-import { Nameplate } from "@/components/waraq/nameplate";
 import { localizedMetadata } from "@/lib/metadata";
 
 interface EditionsProps {
@@ -39,7 +38,6 @@ const EditionsPage = async ({ params }: EditionsProps) => {
   const editions = await loadEditions();
   return (
     <div className="mx-auto grid w-full max-w-6xl gap-10 px-4 py-10">
-      <Nameplate locale={locale} small />
       <header className="grid gap-2">
         <h1 className="type-display">{t("editions")}</h1>
         <p className="type-lede max-w-3xl">{t("editionsLede")}</p>

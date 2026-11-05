@@ -1,0 +1,45 @@
+import type { Locale } from "@repo/internationalization";
+import { Link } from "@repo/internationalization/navigation";
+import type { Metadata } from "next";
+import { getTranslations, setRequestLocale } from "next-intl/server";
+import { DailyAnagrams, GameNumber } from "@/components/games/daily";
+import { localizedMetadata } from "@/lib/metadata";
+
+interface DailyProps {
+  readonly params: Promise<{ locale: Locale }>;
+}
+
+export const generateMetadata = async ({
+  params,
+}: DailyProps): Promise<Metadata> => {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "web.games" });
+  return localizedMetadata(locale, "/qirtas/games/anagram", {
+    description: t("anagramLede"),
+    title: `${t("kinds.anagram")} · ${t("title")}`,
+  });
+};
+
+/** The daily anagram (owner, Nov 5, 2026), in the page's language. */
+const DailyPage = async ({ params }: DailyProps) => {
+  const { locale } = await params;
+  setRequestLocale(locale);
+  const t = await getTranslations({ locale, namespace: "web.games" });
+  return (
+    <div className="mx-auto grid w-full max-w-6xl gap-8 px-4 py-10">
+      <header className="grid gap-2">
+        <h1 className="type-display">{t("kinds.anagram")}</h1>
+        <p className="type-caption">
+          <Link className="hover:underline" href="/qirtas/games">
+            {t("title")}
+          </Link>{" "}
+          · <GameNumber />
+        </p>
+        <p className="type-lede">{t("anagramLede")}</p>
+      </header>
+      <DailyAnagrams lang={locale === "ar" ? "ar" : "en"} />
+    </div>
+  );
+};
+
+export default DailyPage;

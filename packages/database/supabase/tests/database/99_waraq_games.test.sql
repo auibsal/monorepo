@@ -73,31 +73,48 @@ insert into core.semesters (code, name_en, name_ar, starts_on, ends_on) values
 update core.settings set value = '0' where key = 'membership.founding_voters';
 -- </preamble>
 
--- Waraq's games: editor-written puzzles and the starter puzzles.
+-- Qirtas's games (owner, Nov 5, 2026): the editors alone write them, the
+-- published ones were removed, and the kinds are those the site can also
+-- make daily: crossword, word search and anagram.
 
-select plan(16);
+select plan(18);
 
 select pg_temp.make_user('00000000-0000-0000-0000-00000000a001', 'puzzler@auib.edu.iq', 'Puzzle Editor');
 select pg_temp.make_user('00000000-0000-0000-0000-00000000a002', 'reader@auib.edu.iq', 'Reader');
 select pg_temp.grant_role('00000000-0000-0000-0000-00000000a001', 'news_editor');
 
--- Readers see the four starter puzzles, marked as made with an AI tool.
+-- What the editors had published is gone, the starter puzzles with it.
+select pg_temp.logout();
+select is((select count(*) from journal.puzzles where status = 'published')::integer, 0,
+  'No published puzzle is left');
+select is((select count(*) from journal.pieces where desk = 'games')::integer, 0,
+  'No Games piece is left');
+select ok(not journal.is_current_category('quiz') and not journal.is_current_category('word_ladder')
+  and not journal.is_current_category('riddle') and not journal.is_current_category('name_the_book'),
+  'The quiz, the word ladder, riddles and name the book are retired');
+select ok(journal.is_current_category('crossword') and journal.is_current_category('anagram'),
+  'The crossword and the anagram stay');
+
 select pg_temp.login_anon();
-select is((select count(*) from journal.puzzles)::integer, 4, 'Anyone reads the published starter puzzles');
-select is((select count(*) from journal.puzzles where made_with_ai)::integer, 4,
-  'The starter puzzles say they were made with an AI tool');
-select is((select count(*) from journal.puzzles where language = 'ar')::integer, 2,
-  'Two of them are in Arabic');
 select throws_ok(
   $$insert into journal.puzzles (slug, kind, language, title_en) values ('anon', 'crossword', 'en', 'x')$$,
   '42501', null, 'Readers cannot add puzzles'
 );
 
--- A member without a Waraq role cannot write.
+-- A member without a Qirtas role cannot write, nor send a game.
 select pg_temp.login_as('00000000-0000-0000-0000-00000000a002');
 select throws_ok(
   $$insert into journal.puzzles (slug, kind, language, title_en) values ('member', 'crossword', 'en', 'x')$$,
-  '42501', null, 'A member without a Waraq role cannot add puzzles'
+  '42501', null, 'A member without a Qirtas role cannot add puzzles'
+);
+select throws_ok(
+  $$insert into journal.submissions (category, title, language, human_authorship_confirmed)
+    values ('crossword', 'My crossword', 'en', true)$$,
+  '22023', 'games_by_editors', 'A member cannot send a game'
+);
+select throws_ok(
+  $$insert into journal.submission_drafts (category) values ('anagram')$$,
+  '22023', 'games_by_editors', 'nor keep a draft of one'
 );
 
 -- A desk editor writes a draft; readers do not see it until it is published.
@@ -105,17 +122,17 @@ select pg_temp.login_as('00000000-0000-0000-0000-00000000a001');
 select lives_ok(
   $$insert into journal.puzzles (slug, kind, language, title_en, data)
     values ('draft-crossword', 'crossword', 'en', 'Draft', '{"rows": 2}')$$,
-  'A desk editor adds a draft puzzle'
+  'A desk editor adds a draft crossword'
 );
 select lives_ok(
   $$insert into journal.puzzles (slug, kind, language, title_ar, data)
-    values ('draft-quiz', 'quiz', 'ar', 'مسابقة', '{"items": []}')$$,
-  'A desk editor adds a quiz, one of the Games section''s other kinds'
+    values ('draft-anagram', 'anagram', 'ar', 'كلمات مبعثرة', '{"items": []}')$$,
+  'and an anagram'
 );
 select throws_ok(
   $$insert into journal.puzzles (slug, kind, language, title_en)
-    values ('draft-bingo', 'bingo', 'en', 'Bingo')$$,
-  '23514', null, 'An unknown kind of puzzle is refused'
+    values ('draft-quiz', 'quiz', 'en', 'Quiz')$$,
+  '23514', null, 'A retired kind is refused'
 );
 select is((select created_by from journal.puzzles where slug = 'draft-crossword'),
   '00000000-0000-0000-0000-00000000a001'::uuid, 'The puzzle records who made it');
@@ -132,12 +149,6 @@ select pg_temp.login_anon();
 select is((select count(*) from journal.puzzles where slug = 'draft-crossword')::integer, 0,
   'Readers do not see drafts');
 
-select pg_temp.login_as('00000000-0000-0000-0000-00000000a002');
-update journal.puzzles set title_en = 'Mine' where slug = 'first-crossword';
-select pg_temp.login_anon();
-select is((select title_en from journal.puzzles where slug = 'first-crossword'), 'The first crossword',
-  'A member cannot change a puzzle');
-
 select pg_temp.login_as('00000000-0000-0000-0000-00000000a001');
 update journal.puzzles set status = 'published', published_at = now() where slug = 'draft-crossword';
 select pg_temp.login_anon();
@@ -150,7 +161,7 @@ select is((select count(*) from journal.puzzles where slug = 'draft-crossword'):
   'A desk editor deletes a puzzle');
 
 -- Third-party apps without the journal area see nothing.
-select pg_temp.login_as('00000000-0000-0000-0000-00000000a002', '{"client_id": "00000000-0000-0000-0000-0000000000c1"}');
+select pg_temp.login_as('00000000-0000-0000-0000-00000000a001', '{"client_id": "00000000-0000-0000-0000-0000000000c1"}');
 select is((select count(*) from journal.puzzles)::integer, 0,
   'An app without the journal area reads no puzzles');
 

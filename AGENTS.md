@@ -503,17 +503,25 @@ any schema change. Integration tests run against a local stack with
   and the Awards it was shortlisted for or won, from the same results.
   The Company's productions are a Shelf of playbills (the poster, or the
   title as type), with the list at `/company/productions`.
-- **More games to play** (design review PR 5c, A17, Nov 4, 2026). Beside
-  crosswords and word searches, the Games editors write quizzes, word
-  ladders, riddles, anagrams and name the book in the Diwan (Qirtas →
-  Games, `journal.puzzles` kinds `quiz`, `word_ladder`, `riddle`,
-  `anagram`, `name_the_book`; one language each), and readers play them at
-  `/qirtas/games/<slug>` (`components/games/choices.tsx`, `answers.tsx`,
-  `ladder.tsx`). Each kind's data has its schema in `@repo/sal-data`
-  (`games.ts`: `choicesSchema`, `riddlesSchema`, `anagramsSchema`,
-  `ladderSchema`); typed answers compare letters only (`sameAnswer`), an
-  anagram is scrambled the same way for everyone, and progress stays in
-  the reader's browser.
+- **Games, daily and from the editors** (owner, Nov 5, 2026; replaces
+  PR 5c's kinds). Members send no games (`private.games_by_editors`
+  refuses a Games submission or draft). Four daily games, made in the
+  reader's browser from word lists and the same for everyone on a Baghdad
+  day (`@repo/sal-data/games`: `dailyAnswer`, `dailySearch`,
+  `dailyCrossword`, `dailyAnagrams`; the clued words in `game-words.ts`),
+  numbered from No. 1 on Nov 5, 2026: the word (`/qirtas/games/word`), the
+  word search (`/search`), the crossword (`/crossword`) and the anagrams
+  (`/anagram`). Editors may also publish a crossword, word search or
+  anagrams (`journal.puzzles`, Qirtas → Games) at `/qirtas/games/<slug>`.
+  The quiz, word ladder, riddles and name the book are retired. Progress
+  stays in the reader's browser (`qirtas-games:` keys).
+- **The Qirtas nameplate and masthead** (owner, Nov 5, 2026). One
+  nameplate on every page of the paper, in the Qirtas layout
+  (`components/waraq/nameplate.tsx`; the section marked by `DeskNav` from
+  the address), so it never changes between pages. The masthead,
+  `/qirtas/masthead`, lists the Editor-in-Chief, the Managing Editor,
+  guest editors and every role the paper hires (`journal.masthead()`),
+  from the roles people hold.
 - **Readings, clips and Gallery selections** (design review PR 5d, A10,
   A11, A12, decision D10, Nov 5, 2026). A piece may carry one reading of
   itself (`journal.pieces.reading_path`, the public `readings` bucket,
@@ -825,7 +833,9 @@ any schema change. Integration tests run against a local stack with
   - The Register and the Roll of Fellows, السجل ولائحة الزملاء (were the Book
     of Members and the Book of Fellows).
   - The Return, ليلة العودة (was Charter Night).
-  - Editor of Qirtas, Director of Programs, and the short Media,
+  - Editor-in-Chief (owner, Nov 5, 2026: "Editor of Qirtas" is retired;
+    role `eic`, on the Council with two-step sign-in), Director of
+    Programs, and the short Media,
     Partnerships and Membership titles (role assignment titles; role keys
     unchanged). Roles (owner, Oct 29, 2026): the "Director of the Company"
     title is removed; the Company's lead is a Program Lead (`programme_lead`)

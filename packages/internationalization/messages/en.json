@@ -2674,8 +2674,8 @@
           "reasonNeeded": "A decision needs its reason."
         },
         "games": {
-          "lede": "Crosswords, word searches, quizzes, word ladders, riddles, anagrams and name the book, on auibsal.org/qirtas/games. The daily word guess and word search make themselves.",
-          "editorLede": "Write the clues and answers, the questions, or the words; a grid is laid out for you. A puzzle is in one language.",
+          "lede": "Crosswords, word searches and anagrams, on auibsal.org/qirtas/games. Games come from the editors only. The site makes a word, a word search, a crossword and anagrams every day by itself.",
+          "editorLede": "Write the clues and answers, or the words; a grid is laid out for you. A puzzle is in one language.",
           "new": "New puzzle",
           "none": "No puzzles yet.",
           "untitled": "Untitled puzzle",
@@ -2686,11 +2686,7 @@
           "kinds": {
             "crossword": "Crossword",
             "word_search": "Word search",
-            "quiz": "Quiz",
-            "word_ladder": "Word ladder",
-            "riddle": "Riddles",
-            "anagram": "Anagrams",
-            "name_the_book": "Name the book"
+            "anagram": "Anagrams"
           },
           "languages": {
             "en": "English",
@@ -2730,39 +2726,10 @@
           "unpublish": "Unpublish",
           "delete": "Delete",
           "deleteConfirm": "Delete this puzzle? Readers' saved progress on it is lost.",
-          "ladder": "The ladder",
-          "ladderHint": "One word per line, from the first to the last, 3 to 10 words of 3 to 8 letters; change one letter at each step. Readers see the first and the last and fill in the rest.",
           "needs": {
-            "quiz": "It needs at least one question with its answer and a wrong answer before it can be published.",
-            "name_the_book": "It needs at least one clue with the book's title and a wrong title before it can be published.",
-            "riddle": "It needs at least one riddle with its answer before it can be published.",
-            "anagram": "It needs at least one word (2 to 15 letters) before it can be published.",
-            "word_ladder": "It needs 3 to 10 words of the same length, each one letter from the last, before it can be published."
+            "anagram": "It needs at least one word (2 to 15 letters) before it can be published."
           },
           "entries": {
-            "quiz": {
-              "title": "Questions",
-              "hint": "Up to 20 questions. Readers choose among the right answer and the wrong ones, in a fixed order.",
-              "prompt": "Question {number}",
-              "answer": "Right answer",
-              "note": "Note after answering (optional)",
-              "add": "Add a question"
-            },
-            "name_the_book": {
-              "title": "Books",
-              "hint": "Up to 20 clues: an opening line, a famous sentence, a character. Readers choose the book among the titles.",
-              "prompt": "Clue {number}",
-              "answer": "The book's title",
-              "note": "Author (shown after answering)",
-              "add": "Add a book"
-            },
-            "riddle": {
-              "title": "Riddles",
-              "hint": "Up to 15 riddles. Readers type the answer; only the letters are compared.",
-              "prompt": "Riddle {number}",
-              "answer": "Answer",
-              "add": "Add a riddle"
-            },
             "anagram": {
               "title": "Words",
               "hint": "Up to 20 words of 2 to 15 letters. Readers see the letters scrambled, with the clue if you give one.",
@@ -2770,8 +2737,6 @@
               "answer": "Word",
               "add": "Add a word"
             },
-            "wrong": "Wrong answers",
-            "wrongHint": "One per line, from one to five.",
             "remove": "Remove row {number}"
           }
         },
@@ -4553,6 +4518,12 @@
         "full": "A selection holds twelve pieces.",
         "howTo": "Choose pieces to share as a selection: open one and add it. Your selection stays in this browser until you share its link.",
         "clear": "Clear your selection"
+      },
+      "masthead": {
+        "link": "Masthead",
+        "title": "Masthead",
+        "lede": "The people who make Qirtas, from the roles they hold at the Society.",
+        "empty": "The masthead is being formed."
       }
     },
     "about": {
@@ -5024,11 +4995,10 @@
     },
     "games": {
       "title": "Games",
-      "lede": "A word guess and a word search every day, and crosswords, quizzes, word ladders, riddles, anagrams and more from Qirtas's editors.",
+      "lede": "Four games every day: the word, a word search, a crossword and anagrams, new at midnight, Baghdad time.",
       "daily": "Every day",
       "today": "The daily games change at midnight, Baghdad time. Your progress stays in this browser.",
       "fromEditors": "From the editors",
-      "none": "No puzzles from the editors yet.",
       "number": "No. {number}",
       "guessLede": "Find the five-letter word in six tries.",
       "searchLede": "Find the eight hidden words.",
@@ -5037,11 +5007,7 @@
         "crossword": "Crossword",
         "word_search": "Word search",
         "word_guess": "Word guess",
-        "quiz": "Quiz",
-        "word_ladder": "Word ladder",
-        "riddle": "Riddles",
-        "anagram": "Anagrams",
-        "name_the_book": "Name the book"
+        "anagram": "Anagrams"
       },
       "guess": {
         "board": "Your guesses",
@@ -5088,18 +5054,9 @@
         "howTo": "Type in the squares. Choose a clue, or the same square twice, to change direction.",
         "print": "Print a blank sheet"
       },
-      "fromMembers": "Sent by members",
       "todaysPuzzle": "Today's word",
       "alsoDaily": "Also every day",
       "ownPage": "Play it on its own page",
-      "choices": {
-        "number": "Question {number} of {total}",
-        "right": "Right.",
-        "wrong": "Not quite: it's {answer}.",
-        "score": "{right} of {total} right.",
-        "progress": "{answered} of {total} answered.",
-        "again": "Start again"
-      },
       "answers": {
         "letters": "Letters: {letters}",
         "answerN": "Answer {number}",
@@ -5112,16 +5069,8 @@
         "progress": "{solved} of {total} solved so far.",
         "again": "Start again"
       },
-      "ladder": {
-        "howTo": "Change one letter at a time to climb from the first word to the last. Every word has {letters} letters; fill in the {steps} steps between.",
-        "stepN": "Step {number}",
-        "notThis": "Not this word. One letter changes at each step.",
-        "solved": "Solved.",
-        "shown": "Here is the ladder.",
-        "check": "Check",
-        "show": "Show the ladder",
-        "again": "Start again"
-      }
+      "crosswordLede": "Fill the grid from the clues.",
+      "anagramLede": "Five words with their letters scrambled; each has a clue."
     },
     "newsletter": {
       "title": "The Sunday Paper",

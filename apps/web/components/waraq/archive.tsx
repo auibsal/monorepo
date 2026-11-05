@@ -4,7 +4,6 @@ import { Link } from "@repo/internationalization/navigation";
 import { journal } from "@repo/sal-data";
 import { getTranslations } from "next-intl/server";
 import { PieceCardView } from "@/components/waraq/cards";
-import { Nameplate } from "@/components/waraq/nameplate";
 import { readPublished } from "@/lib/supabase";
 import { type Month, monthParam } from "@/lib/whats-on";
 
@@ -57,7 +56,6 @@ export const ArchiveMonth = async ({
 
   return (
     <div className="mx-auto grid w-full max-w-6xl gap-10 px-4 py-10">
-      <Nameplate locale={locale} small />
       <header className="grid gap-3">
         <h1 className="type-display">
           {desk === null ? title : `${t(`desks.${desk}`)} · ${title}`}

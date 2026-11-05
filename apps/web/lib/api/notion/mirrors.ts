@@ -125,14 +125,15 @@ const day = (value: string | null) => (value ? value.slice(0, 10) : null);
 /**
  * The Council's nine seats (decisions, section 3), the only options of the
  * Officers database's Roles (owner, Nov 4, 2026). A role that is not a seat
- * (the Editor-in-Chief beside the Editor of Qirtas, a Program Lead) is not
- * listed there.
+ * (a Program Lead, a section editor) is not listed there. The Editor of
+ * Qirtas is retired: the Editor-in-Chief holds the paper's seat (owner,
+ * Nov 5, 2026).
  */
 const SEATS = [
   "President",
   "Vice President",
   "General Secretary",
-  "Editor of Qirtas",
+  "Editor-in-Chief",
   "Artistic Director",
   "Director of Programs",
   "Director of Media",

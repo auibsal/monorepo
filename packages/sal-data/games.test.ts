@@ -1,17 +1,17 @@
 import { describe, expect, test } from "vitest";
-import { guessWords, searchWords } from "./game-words";
+import { clueWords, guessWords, searchWords } from "./game-words";
 import {
   buildWordSearch,
   cellsOf,
-  choicesFor,
   crosswordCells,
   crosswordSchema,
   currentStreak,
+  dailyAnagrams,
   dailyAnswer,
+  dailyCrossword,
   dailySearch,
   gameDay,
   gameNumber,
-  ladderSchema,
   layoutCrossword,
   lettersOf,
   nextStreak,
@@ -59,11 +59,15 @@ describe("letters", () => {
 
 describe("the day", () => {
   test("changes at midnight in Baghdad, not UTC", () => {
-    // 9:30 PM UTC on Oct 14 is 12:30 AM Oct 15 in Baghdad.
-    const late = gameDay(new Date("2026-10-14T21:30:00Z"));
-    const early = gameDay(new Date("2026-10-14T20:30:00Z"));
+    // 9:30 PM UTC on Nov 5 is 12:30 AM Nov 6 in Baghdad.
+    const late = gameDay(new Date("2026-11-05T21:30:00Z"));
+    const early = gameDay(new Date("2026-11-05T20:30:00Z"));
     expect(late - early).toBe(1);
-    expect(gameNumber(early)).toBe(1);
+  });
+
+  test("the count starts again: November 5, 2026 is No. 1", () => {
+    expect(gameNumber(gameDay(new Date("2026-11-05T09:00:00Z")))).toBe(1);
+    expect(gameNumber(gameDay(new Date("2026-11-06T09:00:00Z")))).toBe(2);
   });
 
   test("the same day gives every reader the same games", () => {
@@ -338,21 +342,12 @@ describe("streaks", () => {
   });
 });
 
-describe("quizzes, ladders, riddles and anagrams (A17)", () => {
+describe("typed answers and anagrams", () => {
   test("typed answers compare letters, not spelling", () => {
     expect(sameAnswer("  the moon ", "The Moon", "en")).toBe(true);
     expect(sameAnswer("أسد", "اسد", "ar")).toBe(true);
     expect(sameAnswer("", "", "en")).toBe(false);
     expect(sameAnswer("sun", "moon", "en")).toBe(false);
-  });
-
-  test("a ladder changes one letter at each step", () => {
-    const ok = { words: ["cold", "cord", "card", "ward", "warm"] };
-    expect(ladderSchema("en").safeParse(ok).success).toBe(true);
-    const jump = { words: ["cold", "card", "warm"] };
-    expect(ladderSchema("en").safeParse(jump).success).toBe(false);
-    const short = { words: ["at", "it", "is"] };
-    expect(ladderSchema("en").safeParse(short).success).toBe(false);
   });
 
   test("an anagram is scrambled the same way for everyone, never as given", () => {
@@ -362,27 +357,51 @@ describe("quizzes, ladders, riddles and anagrams (A17)", () => {
     expect([...a].sort()).toEqual([..."LISTEN"].sort());
   });
 
-  test("a question's answers keep one order and include the right one", () => {
-    const item = { answer: "Baghdad", wrong: ["Basra", "Mosul"] };
-    const order = choicesFor(item, "q1");
-    expect(order).toEqual(choicesFor(item, "q1"));
-    expect([...order].sort()).toEqual(["Baghdad", "Basra", "Mosul"]);
-  });
-
-  test("each kind's data is checked by its own schema", () => {
-    const quiz = {
-      items: [{ answer: "Tigris", prompt: "Which river?", wrong: ["Nile"] }],
-    };
-    expect(parsePuzzle("quiz", quiz)?.kind).toBe("quiz");
-    expect(parsePuzzle("name_the_book", quiz)?.kind).toBe("name_the_book");
-    expect(parsePuzzle("quiz", { items: [] })).toBeNull();
-    expect(
-      parsePuzzle("riddle", {
-        items: [{ answer: "an echo", prompt: "I speak without a mouth." }],
-      })?.kind
-    ).toBe("riddle");
+  test("the kinds that stay are checked by their schemas; retired ones are not read", () => {
     expect(
       parsePuzzle("anagram", { items: [{ answer: "قلم" }] }, "ar")?.kind
     ).toBe("anagram");
+    expect(parsePuzzle("anagram", { items: [] })).toBeNull();
+    expect(parsePuzzle("quiz" as "anagram", { items: [] })).toBeNull();
+  });
+});
+
+describe("the daily crossword and anagrams", () => {
+  const days = Array.from({ length: 60 }, (_, i) => 20_397 + i);
+
+  test("every clued word fits the grid and plays as letters", () => {
+    for (const lang of ["en", "ar"] as const) {
+      for (const w of clueWords[lang]) {
+        const n = lettersOf(normalizeWord(w.answer, lang)).length;
+        expect(n).toBeGreaterThanOrEqual(3);
+        expect(n).toBeLessThanOrEqual(9);
+        expect(w.clue.length).toBeGreaterThan(0);
+      }
+    }
+  });
+
+  test("each day's crossword is a good grid, the same for every reader", () => {
+    for (const lang of ["en", "ar"] as const) {
+      for (const day of days) {
+        const crossword = dailyCrossword(lang, day);
+        expect(crossword.entries.length).toBeGreaterThanOrEqual(5);
+        expect(crossword.rows).toBeLessThanOrEqual(9);
+        expect(crossword.cols).toBeLessThanOrEqual(9);
+        expect(crosswordCells(crossword)).not.toBeNull();
+        expect(crosswordSchema.safeParse(crossword).success).toBe(true);
+      }
+      expect(dailyCrossword(lang, 20_400)).toEqual(
+        dailyCrossword(lang, 20_400)
+      );
+    }
+  });
+
+  test("each day has five anagrams, a different set the next day", () => {
+    for (const lang of ["en", "ar"] as const) {
+      const today = dailyAnagrams(lang, 20_400);
+      expect(today.items).toHaveLength(5);
+      expect(parsePuzzle("anagram", today, lang)?.kind).toBe("anagram");
+      expect(dailyAnagrams(lang, 20_401)).not.toEqual(today);
+    }
   });
 });
