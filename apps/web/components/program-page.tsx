@@ -5,6 +5,7 @@ import { Link } from "@repo/internationalization/navigation";
 import { events, journal, localized, programmes } from "@repo/sal-data";
 import { getTranslations } from "next-intl/server";
 import { BookVote } from "@/components/book-vote";
+import { OccasionLine } from "@/components/occasion-page";
 import { SecondChapterGive } from "@/components/second-chapter-give";
 import { Section } from "@/components/section";
 import type { Series } from "@/components/series";
@@ -505,12 +506,18 @@ export const ProgramFeature = ({
     case "book-circle":
       return (
         <>
+          <OccasionLine locale={locale} occasion="book_street_trip" />
           <BookCircleVote locale={locale} series={series} />
           <BookCircleShelf locale={locale} series={series} />
         </>
       );
     case "open-pages":
-      return <OpenPagesPrompts locale={locale} series={series} />;
+      return (
+        <>
+          <OccasionLine locale={locale} occasion="worst_poem_contest" />
+          <OpenPagesPrompts locale={locale} series={series} />
+        </>
+      );
     default:
       return null;
   }

@@ -1,8 +1,9 @@
 import type { Locale } from "@repo/internationalization";
-import { localized } from "@repo/sal-data";
+import { events, localized } from "@repo/sal-data";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { OccasionPage, occasionVisible } from "@/components/occasion-page";
 import { BookCircleShelfList, ProgramPast } from "@/components/program-page";
 import { loadSeries, SeriesView, seriesMetadata } from "@/components/series";
 import { WhatsOn } from "@/components/whats-on-page";
@@ -35,13 +36,25 @@ export const generateMetadata = async ({
           : t("shelf"),
     });
   }
+  const occasion = series ? events.occasionOf(series.slug, part) : undefined;
+  if (occasion) {
+    const t = await getTranslations({
+      locale,
+      namespace: `web.programs.occasions.${occasion}`,
+    });
+    return localizedMetadata(locale, `/events/${slug}/${part}`, {
+      description: t("lede"),
+      title: t("title"),
+    });
+  }
   return series && isMonthSegment(part) ? seriesMetadata(locale, series) : {};
 };
 
 /**
  * A month of What's on with the Society's dates alone
  * (/events/2026-11/society), or a month of one program
- * (/events/salon/2026-11).
+ * (/events/salon/2026-11), or an occasion's page
+ * (/events/book-circle/mutanabbi-street, /events/open-pages/worst-poem).
  */
 const PartPage = async ({ params }: PartProps) => {
   const { locale, part, slug } = await params;
@@ -57,6 +70,14 @@ const PartPage = async ({ params }: PartProps) => {
   }
   if (series?.slug === "book-circle" && part === "shelf") {
     return <BookCircleShelfList locale={locale} series={series} />;
+  }
+  const occasion = series ? events.occasionOf(series.slug, part) : undefined;
+  if (series && occasion) {
+    // The trip's page shows only once Student Life's approval is on record.
+    if (!(await occasionVisible(occasion))) {
+      notFound();
+    }
+    return <OccasionPage locale={locale} occasion={occasion} series={series} />;
   }
   if (!(series && isMonthSegment(part))) {
     notFound();
