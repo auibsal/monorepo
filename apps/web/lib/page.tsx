@@ -13,6 +13,7 @@ type SectionNamespace =
   | "web.contact"
   | "web.governance"
   | "web.join"
+  | "web.join.tour"
   | "web.mediaKit"
   | "web.partners"
   | "web.privacy";

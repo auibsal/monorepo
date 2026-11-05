@@ -53,7 +53,7 @@ const YEAR = 366 * 24 * 60 * 60 * 1000;
 
 /**
  * The first event to come after an empty month (or from today, for a month
- * already past), within a year: one program's, or any. Canceled dates don't
+ * already past), within a year: the Company's, or any. Canceled dates don't
  * count.
  */
 export const nextAfter = async (
@@ -220,7 +220,7 @@ type Href = ComponentProps<typeof Link>["href"];
 
 /**
  * A month of What's on with the way to the months either side: the whole
- * calendar at /events, one program's at /events/<program>.
+ * calendar at /events, and the Company's at /company.
  */
 export const MonthSection = async ({
   children,

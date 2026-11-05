@@ -1,9 +1,9 @@
-import { RequireModule } from "@/components/nexus/admin/admin-shell";
-import { EventsList } from "@/components/nexus/admin/events/list";
-import { ProgramPitches } from "@/components/nexus/admin/programmes/admin";
-import { titleFrom } from "@/lib/nexus/metadata";
+import { RequireModule } from "@/components/diwan/admin/admin-shell";
+import { EventsList } from "@/components/diwan/admin/events/list";
+import { ProgramPitches } from "@/components/diwan/admin/programmes/admin";
+import { titleFrom } from "@/lib/diwan/metadata";
 
-export const generateMetadata = titleFrom((t) => t("nexus.admin.events.title"));
+export const generateMetadata = titleFrom((t) => t("diwan.admin.events.title"));
 
 /**
  * What's on, one page (owner, Oct 31, 2026): the events, with the programs

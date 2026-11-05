@@ -6,6 +6,25 @@ own versions in the Library.
 
 ## Unreleased
 
+- Every event is one kind: council meetings, the AGM and Launch Night are
+  made in What's on like any other. An event takes the add-ons it needs
+  (off campus with Student Life's approval, a partner, needs, shifts,
+  links, prompts, a book vote, Second Chapter's collection, a meeting's
+  minutes) from one row on its page.
+- Choices across the site and the Diwan are vertical lists; menus and
+  buttons sit in rows.
+- No programs and no series: Qirtas and the Company stay, and everything
+  else is an event. Every event has the same page on the site and in the
+  Diwan, with its own shifts, needs, prompts, book vote and links; Second
+  Chapter's collection, catalog and impact report sit on its fair's
+  event. A Program Lead is now an event lead, for a single event.
+- The Council has six seats: the President, the Vice President and the
+  General Secretary, the Editor-in-Chief, the Artistic Director and the
+  Director of Media. The Council page lists them by full title; an Acting
+  President can hold the events while the President is abroad.
+- The Typewriter Tour belongs to membership, at /join/typewriter-tour,
+  run by the General Secretary and the Tour Lead.
+- The Instagram bio and highlights follow: The Company replaces Programs.
 - A translation in Qirtas can show its original beside it; the editors
   tag pieces with topics, each with its own page.
 - Long reads in Qirtas show their contents beside the text; explainers
@@ -13,6 +32,10 @@ own versions in the Library.
 - Second Chapter lists the books given for its fair, to browse before it.
 - In the Diwan, hours to confirm and an event's bookings can be chosen and
   confirmed or checked in together.
+- An event run with a partner shares a checklist with the partner's team,
+  who see their joint events on their dashboard.
+- The code takes the current names: Diwan and Qirtas in place of Nexus
+  and Waraq (the database keeps its own).
 - About tells how the Society began, a dated line each; the page-not-found
   page carries a line of al-Mutanabbi's; members can keep or print their
   year at the Society from Record.

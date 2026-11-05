@@ -1,7 +1,7 @@
-import { NoticesScreen } from "@/components/nexus/profile/settings-screen";
-import { titleFrom } from "@/lib/nexus/metadata";
+import { NoticesScreen } from "@/components/diwan/profile/settings-screen";
+import { titleFrom } from "@/lib/diwan/metadata";
 
-export const generateMetadata = titleFrom((t) => t("nexus.settings.notices"));
+export const generateMetadata = titleFrom((t) => t("diwan.settings.notices"));
 
 const NoticesPage = () => <NoticesScreen />;
 

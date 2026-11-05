@@ -1,10 +1,10 @@
 import { Suspense } from "react";
-import { Certificate } from "@/components/nexus/certificates/certificate";
-import { RouteParamsProvider } from "@/components/nexus/record-ref";
-import { SectionSpinner } from "@/components/nexus/states";
-import { titleFrom } from "@/lib/nexus/metadata";
+import { Certificate } from "@/components/diwan/certificates/certificate";
+import { RouteParamsProvider } from "@/components/diwan/record-ref";
+import { SectionSpinner } from "@/components/diwan/states";
+import { titleFrom } from "@/lib/diwan/metadata";
 
-export const generateMetadata = titleFrom((t) => t("nexus.certificate.title"));
+export const generateMetadata = titleFrom((t) => t("diwan.certificate.title"));
 
 const Page = async ({
   params,

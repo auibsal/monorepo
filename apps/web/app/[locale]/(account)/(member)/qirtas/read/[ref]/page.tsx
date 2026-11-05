@@ -1,10 +1,10 @@
 import { Suspense } from "react";
-import { PieceReader } from "@/components/nexus/journal/piece";
-import { RouteParamsProvider } from "@/components/nexus/record-ref";
-import { SectionSpinner } from "@/components/nexus/states";
-import { titleFrom } from "@/lib/nexus/metadata";
+import { PieceReader } from "@/components/diwan/journal/piece";
+import { RouteParamsProvider } from "@/components/diwan/record-ref";
+import { SectionSpinner } from "@/components/diwan/states";
+import { titleFrom } from "@/lib/diwan/metadata";
 
-export const generateMetadata = titleFrom((t) => t("nexus.journal.title"));
+export const generateMetadata = titleFrom((t) => t("diwan.journal.title"));
 
 const Page = async ({
   params,

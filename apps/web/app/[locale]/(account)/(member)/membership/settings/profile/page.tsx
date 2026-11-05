@@ -1,7 +1,7 @@
-import { ProfileScreen } from "@/components/nexus/profile/profile-screen";
-import { titleFrom } from "@/lib/nexus/metadata";
+import { ProfileScreen } from "@/components/diwan/profile/profile-screen";
+import { titleFrom } from "@/lib/diwan/metadata";
 
-export const generateMetadata = titleFrom((t) => t("nexus.profile.title"));
+export const generateMetadata = titleFrom((t) => t("diwan.profile.title"));
 
 const ProfilePage = () => <ProfileScreen />;
 

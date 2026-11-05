@@ -67,6 +67,12 @@ const ENGLISH: Rule[] = [
       /\b(Waraq|Nexus|Prizes?|Majlis|Book of Members|Book of Fellows|Charter Night|Callboard|Gallery Wall|Open Stage|Month in Qirtas|Green Room)\b/,
     why: "a retired name",
   },
+  // Owner, Nov 5, 2026: no programs, and the Council of six.
+  {
+    pattern:
+      /\b(Director of (Programs|Events|Partnerships|Membership)|Program Leads?|[Ss]ix programs|Standing Programs?|[Ff]lagships?|the Evenings|the Specials|[Ww]eekly evenings?|[Ff]our-week cycle|[Ee]very fourth week)\b/,
+    why: "a retired name",
+  },
 ];
 
 type Entry = [key: string, value: string];

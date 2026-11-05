@@ -256,7 +256,7 @@ describe("the board", () => {
   });
 });
 
-describe("Waraq helpers", () => {
+describe("Qirtas helpers", () => {
   test("six words, punctuation aside", () => {
     expect(isSixWords("For sale: baby shoes, never worn.")).toBe(true);
     expect(isSixWords("Too few words here.")).toBe(false);

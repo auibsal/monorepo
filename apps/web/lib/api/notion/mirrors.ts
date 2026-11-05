@@ -123,11 +123,11 @@ export const peopleByEmail = (users: NotionUser[]) =>
 const day = (value: string | null) => (value ? value.slice(0, 10) : null);
 
 /**
- * The Council's nine seats (decisions, section 3), the only options of the
- * Officers database's Roles (owner, Nov 4, 2026). A role that is not a seat
- * (a Program Lead, a section editor) is not listed there. The Editor of
- * Qirtas is retired: the Editor-in-Chief holds the paper's seat (owner,
- * Nov 5, 2026).
+ * The Council's six seats (decisions, section 3; owner, Nov 5, 2026), the
+ * options of the Officers database's Roles: three officers and three
+ * directors. A role that is not a seat (an event lead, a section editor)
+ * is not listed there. There is no Director of Programs, Events,
+ * Partnerships or Membership: the officers hold those jobs.
  */
 const SEATS = [
   "President",
@@ -135,10 +135,7 @@ const SEATS = [
   "General Secretary",
   "Editor-in-Chief",
   "Artistic Director",
-  "Director of Programs",
   "Director of Media",
-  "Director of Partnerships",
-  "Director of Membership",
 ] as const;
 
 const seatsOf = (roles: readonly string[] | null) =>

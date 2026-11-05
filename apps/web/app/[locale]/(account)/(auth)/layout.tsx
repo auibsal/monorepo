@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
-import { AuthFrame } from "@/components/nexus/auth/auth-frame";
-import { GuestOnly } from "@/components/nexus/gates";
+import { AuthFrame } from "@/components/diwan/auth/auth-frame";
+import { GuestOnly } from "@/components/diwan/gates";
 
 interface AuthLayoutProps {
   readonly children: ReactNode;

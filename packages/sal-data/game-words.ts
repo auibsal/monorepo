@@ -1,4 +1,4 @@
-// Word lists for Waraq's daily games. Plain dictionary words about reading,
+// Word lists for Qirtas's daily games. Plain dictionary words about reading,
 // writing, art and the stage; the Arabic lists are needs-native-review.
 
 /** Five-letter answers for the daily word guess. */

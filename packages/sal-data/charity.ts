@@ -57,6 +57,23 @@ export const publicReceipts = async (client: Client, campaignId: string) =>
       .order("created_at", { ascending: false })
   ) ?? [];
 
+/**
+ * The campaign an event carries (Second Chapter's fair; owner, Nov 5,
+ * 2026: standard events), unless it is a draft.
+ */
+export const campaignForEvent = async (client: Client, eventId: string) =>
+  unwrap(
+    await client
+      .schema("charity")
+      .from("campaigns")
+      .select("*")
+      .eq("event_id", eventId)
+      .neq("status", "draft")
+      .order("starts_on", { ascending: false })
+      .limit(1)
+      .maybeSingle()
+  );
+
 /** A campaign by its address, unless it is a draft (Row Level Security). */
 export const campaignBySlug = async (client: Client, slug: string) =>
   unwrap(

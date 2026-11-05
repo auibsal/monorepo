@@ -6,8 +6,8 @@ import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getMessages, setRequestLocale } from "next-intl/server";
 import type { ReactNode } from "react";
 import { AccountFrame } from "@/components/account/frame";
+import { AppProviders } from "@/components/diwan/providers";
 import { Footer } from "@/components/footer";
-import { AppProviders } from "@/components/nexus/providers";
 
 interface AccountLayoutProperties {
   readonly children: ReactNode;
@@ -43,10 +43,10 @@ const AccountLayout = async ({ children, params }: AccountLayoutProperties) => {
     notFound();
   }
   setRequestLocale(locale);
-  const { auth, common, nexus, web } = await getMessages();
+  const { auth, common, diwan, web } = await getMessages();
 
   return (
-    <NextIntlClientProvider messages={{ auth, common, nexus, web }}>
+    <NextIntlClientProvider messages={{ auth, common, diwan, web }}>
       <AppProviders>
         <div className="flex min-h-svh flex-col">
           <AccountFrame>{children}</AccountFrame>

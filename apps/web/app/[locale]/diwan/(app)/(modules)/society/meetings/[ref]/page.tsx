@@ -1,12 +1,12 @@
 import { Suspense } from "react";
-import { RequireModule } from "@/components/nexus/admin/admin-shell";
-import { MinutesEditor } from "@/components/nexus/admin/governance/minutes-editor";
-import { RecordRef } from "@/components/nexus/record-ref";
-import { SectionSpinner } from "@/components/nexus/states";
-import { titleFrom } from "@/lib/nexus/metadata";
+import { RequireModule } from "@/components/diwan/admin/admin-shell";
+import { MinutesEditor } from "@/components/diwan/admin/governance/minutes-editor";
+import { RecordRef } from "@/components/diwan/record-ref";
+import { SectionSpinner } from "@/components/diwan/states";
+import { titleFrom } from "@/lib/diwan/metadata";
 
 export const generateMetadata = titleFrom((t) =>
-  t("nexus.admin.society.meetings.title")
+  t("diwan.admin.society.meetings.title")
 );
 
 const MinutesPage = async ({

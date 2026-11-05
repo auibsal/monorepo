@@ -24,7 +24,7 @@ About 70 white · 18 ink · 7 crimson · 5 paper and stone.
 | Mist | `#C3CACB` | Secondary text in dark mode. |
 | Slate | `#3D494D` | Rules in dark mode. |
 
-Never add a color, and no program may add one. Never use crimson as a pale tint or a large block of headline. Never set crimson text or the crimson symbol on ink (1.7:1): on ink, the accent is rose.
+Never add a color, and no event may add one. Never use crimson as a pale tint or a large block of headline. Never set crimson text or the crimson symbol on ink (1.7:1): on ink, the accent is rose.
 
 ## Color roles
 

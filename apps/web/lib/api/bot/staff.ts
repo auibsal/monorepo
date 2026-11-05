@@ -1,4 +1,4 @@
-import { nexusUrl } from "@repo/internationalization";
+import { diwanUrl } from "@repo/internationalization";
 import { formatClock, formatLongDate } from "@repo/internationalization/format";
 import { escapeHtml } from "@repo/telegram";
 import { InlineKeyboard } from "grammy";
@@ -167,7 +167,7 @@ const morningBrief = async (run: Run) => {
   const sent = await once(run.group, "brief", dayKey(run.now), () =>
     send(run, briefText(run.group, brief, run.now), {
       text: label(run.group.lang, (t) => t.buttons.diwan),
-      url: nexusUrl(lang, "/"),
+      url: diwanUrl(lang, "/"),
     })
   );
   return sent ? 1 : 0;
@@ -192,7 +192,7 @@ const eventSummaries = async (run: Run) => {
     const posted = await once(run.group, "event_summary", event.id, () =>
       send(run, summaryText(run.group, event), {
         text: label(run.group.lang, (t) => t.buttons.diwan),
-        url: nexusUrl(lang, `/events/${event.slug}`),
+        url: diwanUrl(lang, `/events/${event.slug}`),
       })
     );
     sent += posted ? 1 : 0;

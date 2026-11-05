@@ -1,9 +1,9 @@
-import { RequireModule } from "@/components/nexus/admin/admin-shell";
-import { NewElection } from "@/components/nexus/admin/governance/elections";
-import { titleFrom } from "@/lib/nexus/metadata";
+import { RequireModule } from "@/components/diwan/admin/admin-shell";
+import { NewElection } from "@/components/diwan/admin/governance/elections";
+import { titleFrom } from "@/lib/diwan/metadata";
 
 export const generateMetadata = titleFrom((t) =>
-  t("nexus.admin.governance.elections.new")
+  t("diwan.admin.governance.elections.new")
 );
 
 /** A new election, on its own page under Elections. */

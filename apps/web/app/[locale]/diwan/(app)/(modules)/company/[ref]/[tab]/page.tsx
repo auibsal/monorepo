@@ -1,14 +1,14 @@
 import { notFound } from "next/navigation";
-import { RequireModule } from "@/components/nexus/admin/admin-shell";
-import { ProductionPage } from "@/components/nexus/admin/productions/admin";
+import { RequireModule } from "@/components/diwan/admin/admin-shell";
+import { ProductionPage } from "@/components/diwan/admin/productions/admin";
 import {
   type ProductionTab,
   productionTabs,
-} from "@/components/nexus/admin/tabs";
-import { titleFrom } from "@/lib/nexus/metadata";
+} from "@/components/diwan/admin/tabs";
+import { titleFrom } from "@/lib/diwan/metadata";
 
 export const generateMetadata = titleFrom((t) =>
-  t("nexus.admin.productions.title")
+  t("diwan.admin.productions.title")
 );
 
 const isTab = (value: string): value is ProductionTab =>

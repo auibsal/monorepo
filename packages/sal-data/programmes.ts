@@ -34,17 +34,6 @@ export const sixWordsWall = async (client: Client, limit = 200) =>
       .rpc("six_words_wall", { max_results: limit })
   ) ?? [];
 
-/**
- * Rows in core.programmes that are not programs (owner, Oct 30, 2026): the
- * Company is the Society's theater company. Its row stays live for its own
- * page, calendar and roles; lists of programs leave it out.
- */
-export const notPrograms: readonly string[] = ["company"];
-
-/** One of the six programs, as the site lists them. */
-export const isListedProgram = (row: { is_active: boolean; slug: string }) =>
-  row.is_active && !notPrograms.includes(row.slug);
-
 export const programmes = async (client: Client) =>
   unwrap(
     await client.schema("core").from("programmes").select("*").order("sort")
@@ -195,23 +184,24 @@ export const matchedFirst = <T extends { skills: readonly string[] }>(
       Number(matchingSkills(a.skills, mine).length > 0)
   );
 
-/** A program's published prompt cards (Open Pages; design review A35). */
-export const publishedPrompts = async (client: Client, programmeId: string) =>
+/** An event's published prompt cards (design review A35; owner, Nov 5, 2026: an event's own). */
+export const publishedPrompts = async (client: Client, eventId: string) =>
   unwrap(
     await client
       .schema("programmes")
       .from("prompts")
       .select("id, text_en, text_ar")
-      .eq("programme_id", programmeId)
+      .eq("event_id", eventId)
       .eq("is_published", true)
       .order("created_at", { ascending: false })
   ) ?? [];
 
 /**
- * A program's book ballots (design review A33, D12), the latest first,
- * each with its books; counts come from `ballotCounts`.
+ * An event's book ballots (design review A33, D12; owner, Nov 5, 2026: an
+ * event's own), the latest first, each with its books; counts come from
+ * `ballotCounts`.
  */
-export const bookBallots = async (client: Client, programmeId: string) =>
+export const bookBallots = async (client: Client, eventId: string) =>
   unwrap(
     await client
       .schema("programmes")
@@ -219,7 +209,7 @@ export const bookBallots = async (client: Client, programmeId: string) =>
       .select(
         "id, title_en, title_ar, closes_at, created_at, books:book_choices(id, title_en, title_ar, author_en, author_ar, created_at)"
       )
-      .eq("programme_id", programmeId)
+      .eq("event_id", eventId)
       .order("closes_at", { ascending: false })
       .order("created_at", {
         ascending: true,
@@ -227,7 +217,7 @@ export const bookBallots = async (client: Client, programmeId: string) =>
       })
   ) ?? [];
 
-/** Each book's votes: once the ballot closes, or for its program's managers. */
+/** Each book's votes: once the ballot closes, or for the event's leads. */
 export const ballotCounts = async (client: Client, ballotId: string) =>
   unwrap(
     await client.schema("programmes").rpc("ballot_counts", { ballot: ballotId })

@@ -81,7 +81,7 @@ select pg_temp.make_user('00000000-0000-0000-0000-0000000000f1', 'founder@auib.e
 select access.bootstrap_founder('founder@auib.edu.iq');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000d1', 'director@auib.edu.iq', 'Director');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000e1', 'committee@auib.edu.iq', 'Committee');
-select pg_temp.grant_role('00000000-0000-0000-0000-0000000000d1', 'director');
+select pg_temp.grant_role('00000000-0000-0000-0000-0000000000d1', 'media_director');
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000000e1', 'elections_committee');
 
 -- ── Elections ───────────────────────────────────────────────────────────────

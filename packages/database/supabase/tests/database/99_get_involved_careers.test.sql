@@ -86,7 +86,7 @@ select pg_temp.make_user('00000000-0000-0000-0000-0000000067a3', 'second@auib.ed
 select pg_temp.make_user('00000000-0000-0000-0000-0000000067a4', 'programs@auib.edu.iq', 'Programs Director');
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000067a1', 'programme_lead', 'programme',
   (select id from qirtas));
-select pg_temp.grant_role('00000000-0000-0000-0000-0000000067a4', 'programs_director');
+select pg_temp.grant_role('00000000-0000-0000-0000-0000000067a4', 'president');
 
 insert into governance.partners (id, slug, name_en, kind, status)
 values ('00000000-0000-0000-0000-0000000067f1', 'a-high-school', 'A High School', 'other', 'active');
@@ -168,17 +168,18 @@ select lives_ok(
   $$ insert into programmes.openings (kind, programme_id, partner_id, title_en, title_ar)
      values ('first_ink', (select id from core.programmes where slug = 'open-pages'),
        '00000000-0000-0000-0000-0000000067f1', 'First Ink mentor', 'مرشد «الحبر الأول»') $$,
-  'The Director of Programs posts a First Ink place for any program'
+  'The President posts a First Ink place for any program'
 );
 select ok(
   access.has_permission('programs.manage', 'programme', (select id from core.programmes where slug = 'salon'))
   and access.has_permission('events.manage', 'programme', (select id from core.programmes where slug = 'company')),
-  'and holds the program permissions for every program'
+  'and holds the events permissions for every series'
 );
 select ok(
   not exists (select 1 from access.role_permissions
-    where role = 'director' and permission in ('programs.manage', 'events.manage')),
-  'Other directors do not manage programs'
+    where role in ('eic', 'artistic_director', 'media_director', 'vice_president', 'general_secretary')
+      and permission in ('programs.manage', 'events.manage')),
+  'No other Council seat manages events (owner, Nov 5, 2026)'
 );
 
 select * from finish();

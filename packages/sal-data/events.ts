@@ -44,7 +44,7 @@ export type Entry = (typeof ENTRIES)[number];
 const events = (client: Client) => client.schema("events");
 
 export const eventColumns =
-  "id, slug, programme_id, title_en, title_ar, summary_en, summary_ar, venue_en, venue_ar, starts_at, ends_at, members_only, capacity, rsvp_enabled, entry, status, image_path, occasion, student_life_approved_on";
+  "id, slug, programme_id, title_en, title_ar, summary_en, summary_ar, venue_en, venue_ar, starts_at, ends_at, members_only, capacity, rsvp_enabled, entry, status, image_path, off_campus, student_life_approved_on";
 
 /**
  * Public events. Members-only events are filtered here AND by RLS, so they
@@ -93,50 +93,6 @@ export const pastPublicEvents = async (
     query = query.eq("programme_id", programmeId);
   }
   return unwrap(await query);
-};
-
-/**
- * The Society's occasions, each with its own page under its program
- * (the design review A34, A36): Book Circle's Friday on al-Mutanabbi
- * Street, shown only once Student Life's approval is recorded (the
- * database publishes no trip without it), and Open Pages' worst-poem
- * contest.
- */
-export const OCCASIONS = {
-  book_street_trip: { page: "mutanabbi-street", program: "book-circle" },
-  worst_poem_contest: { page: "worst-poem", program: "open-pages" },
-} as const;
-export type Occasion = keyof typeof OCCASIONS;
-
-export const occasionPath = (occasion: Occasion) =>
-  `/events/${OCCASIONS[occasion].program}/${OCCASIONS[occasion].page}`;
-
-/** The occasion a program's page part names, if any. */
-export const occasionOf = (program: string, page: string) =>
-  (Object.keys(OCCASIONS) as Occasion[]).find(
-    (o) => OCCASIONS[o].program === program && OCCASIONS[o].page === page
-  );
-
-/** An occasion's public events: coming, soonest first, then past. */
-export const occasionEvents = async (client: Client, occasion: Occasion) => {
-  const rows =
-    unwrap(
-      await events(client)
-        .from("events")
-        .select(eventColumns)
-        .eq("occasion", occasion)
-        .eq("status", "published")
-        .eq("members_only", false)
-        .order("starts_at", { ascending: false })
-        .limit(40)
-    ) ?? [];
-  const now = Date.now();
-  return {
-    coming: rows
-      .filter((e) => new Date(e.starts_at).getTime() >= now)
-      .reverse(),
-    past: rows.filter((e) => new Date(e.starts_at).getTime() < now),
-  };
 };
 
 export const publicEvent = async (client: Client, eventSlug: string) =>

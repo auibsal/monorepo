@@ -71,24 +71,14 @@ test.describe("public site", () => {
     await expect(next.getByRole("link")).toHaveAttribute("href", /\/events\//);
   });
 
-  test("each program is a series in What's on, at /events/<program>", async ({
-    page,
-  }) => {
-    await page.goto(`${urls.web}/events`);
-    // The programs are the row above the month; no list of them below it.
-    const salon = page
-      .getByRole("main")
-      .getByRole("navigation")
-      .getByRole("link", { exact: true, name: "The Salon" });
-    await expect(page.locator("#series")).toHaveCount(0);
-    await expect(salon).toHaveAttribute("href", /\/events\/salon$/);
-    await salon.click();
+  test("every event is a standard event: no series pages", async ({ page }) => {
+    // Owner, Nov 5, 2026: the recurring events are events, not series.
+    const gone = await page.goto(`${urls.web}/events/salon`);
+    expect(gone?.status()).toBe(404);
+    await page.goto(`${urls.web}/events/salon-2027-02-16`);
     await expect(page.getByRole("heading", { level: 1 })).toHaveText(
       "The Salon"
     );
-    await expect(page.locator("#month")).toBeVisible();
-    // After a client-side navigation the title follows the page (streamed
-    // metadata): wait for it, or axe can run before it lands.
     await expect(page).toHaveTitle(/The Salon/);
     await expectAccessible(page);
     // Next Stop is Qirtas's video show, with its promise beside it.

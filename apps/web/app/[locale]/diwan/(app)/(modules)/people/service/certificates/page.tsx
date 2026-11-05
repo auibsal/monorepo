@@ -1,9 +1,9 @@
-import { RequireModule } from "@/components/nexus/admin/admin-shell";
-import { RecognitionAdmin } from "@/components/nexus/admin/recognition/admin";
-import { titleFrom } from "@/lib/nexus/metadata";
+import { RequireModule } from "@/components/diwan/admin/admin-shell";
+import { RecognitionAdmin } from "@/components/diwan/admin/recognition/admin";
+import { titleFrom } from "@/lib/diwan/metadata";
 
 export const generateMetadata = titleFrom((t) =>
-  t("nexus.admin.recognition.tabs.certificates")
+  t("diwan.admin.recognition.tabs.certificates")
 );
 
 /** Service: its certificates, at their own address. */

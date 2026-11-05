@@ -79,7 +79,7 @@ select plan(4);
 select pg_temp.make_user('00000000-0000-0000-0000-0000000c2001', 'c2001@auib.edu.iq', 'Video Person');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000c2002', 'c2002@auib.edu.iq', 'Other Person');
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000c2001', 'video_editor');
-select pg_temp.grant_role('00000000-0000-0000-0000-0000000c2002', 'membership_director');
+select pg_temp.grant_role('00000000-0000-0000-0000-0000000c2002', 'general_secretary');
 
 select pg_temp.login_anon();
 select ok(
@@ -95,7 +95,7 @@ select ok(
 );
 select is(
   (select count(*)::int from journal.next_stop_team() t
-    where t.title_en = (select name_en from access.roles where key = 'membership_director')),
+    where t.title_en = (select name_en from access.roles where key = 'general_secretary')),
   0,
   'other roles are not'
 );

@@ -11,7 +11,7 @@ import { useEffect, useState } from "react";
  * import would send the client to everyone (the performance budget).
  */
 const supabase = async () =>
-  (await import("@/lib/nexus/supabase")).getSupabase();
+  (await import("@/lib/diwan/supabase")).getSupabase();
 
 interface Book {
   readonly author: string;

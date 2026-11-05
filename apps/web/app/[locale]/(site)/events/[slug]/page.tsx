@@ -4,23 +4,13 @@ import type { Locale } from "@repo/internationalization";
 import { apiPath, localizedPath } from "@repo/internationalization";
 import { formatClock, formatLongDate } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
-import {
-  events,
-  localized,
-  programmes,
-  sanitizeRichText,
-} from "@repo/sal-data";
+import { events, localized, sanitizeRichText } from "@repo/sal-data";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { EventParts } from "@/components/event-parts";
 import { ActionBar } from "@/components/frame/action-bar";
 import { ManageLinks } from "@/components/manage-links";
-import {
-  loadSeries,
-  SeriesView,
-  seriesMetadata,
-  seriesPath,
-} from "@/components/series";
 import { WhatsOn } from "@/components/whats-on-page";
 import { eventLd, JsonLd } from "@/lib/json-ld";
 import { mediaUrl } from "@/lib/media";
@@ -34,9 +24,9 @@ interface EventProps {
 
 const SLUG = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 
-// /events/<slug> is an event, a program (its own calendar), or a month of
-// What's on (/events/2026-11). The Supabase reads stay cached by tag until
-// an event or program is published.
+// /events/<slug> is an event or a month of What's on (/events/2026-11);
+// there are no series (owner, Nov 5, 2026: every event is a standard
+// event). The Supabase reads stay cached by tag until an event is published.
 
 type PublicEvent = Awaited<ReturnType<typeof events.publicEvent>>;
 
@@ -56,10 +46,6 @@ export const generateMetadata = async ({
       title: t("title"),
     });
   }
-  const series = await loadSeries(slug);
-  if (series) {
-    return seriesMetadata(locale, series);
-  }
   const event = await load(slug);
   if (!event) {
     return {};
@@ -71,33 +57,12 @@ export const generateMetadata = async ({
   });
 };
 
-/** The program a session belongs to, named in its facts and linked. */
-const programOf = async (programmeId: string | null) => {
-  if (!programmeId) {
-    return;
-  }
-  const all = await readPublished(
-    ["programmes"],
-    async (c) => (await programmes.programmes(c)) ?? [],
-    []
-  );
-  return all.find((p) => p.id === programmeId && programmes.isListedProgram(p));
-};
-
-/**
- * An event, or a program: programs and events share the addresses under
- * /events (the database keeps them apart), so /events/salon is the Salon
- * as a series and /events/salon-2026-12-01 one of its sessions.
- */
+/** An event, or a month of What's on. */
 const EventPage = async ({ params }: EventProps) => {
   const { locale, slug } = await params;
   setRequestLocale(locale);
   if (isMonthSegment(slug)) {
     return <WhatsOn locale={locale} month={monthFrom(slug)} />;
-  }
-  const series = await loadSeries(slug);
-  if (series) {
-    return <SeriesView locale={locale} series={series} />;
   }
   return <EventView locale={locale} slug={slug} />;
 };
@@ -119,7 +84,6 @@ const EventView = async ({
   const image = mediaUrl(event.image_path);
   const cancelled = event.status === "cancelled";
   const upcoming = new Date(event.starts_at).getTime() > Date.now();
-  const program = await programOf(event.programme_id);
 
   return (
     <article className="mx-auto grid w-full max-w-3xl gap-8 px-4 py-16">
@@ -154,16 +118,6 @@ const EventView = async ({
             {event.ends_at ? ` – ${formatClock(event.ends_at, locale)}` : ""}
           </span>
         </p>
-        {program ? (
-          <p className="type-body">
-            <Link
-              className="underline underline-offset-4 hover:text-accent"
-              href={seriesPath(program.slug)}
-            >
-              {localized(program, "name", locale)}
-            </Link>
-          </p>
-        ) : null}
         <p className="type-body">
           {t(`ways.${event.entry === "open" ? "open" : "rsvp"}`)}
         </p>
@@ -226,6 +180,7 @@ const EventView = async ({
           dangerouslySetInnerHTML={{ __html: sanitizeRichText(body) }}
         />
       ) : null}
+      <EventParts event={event} locale={locale} />
     </article>
   );
 };

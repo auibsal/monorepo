@@ -6,7 +6,7 @@ import { type Api, GrammyError, InlineKeyboard } from "grammy";
 import { copy, type Lang } from "./copy";
 import { anon, db, type Group, groups } from "./db";
 import { groupText, postTo } from "./features/group/common";
-import { pieceAuthor, publicPieces } from "./features/waraq";
+import { pieceAuthor, publicPieces } from "./features/qirtas";
 import { label, pick, when } from "./format";
 import { botLink, eventPage, mainApp, piecePage } from "./links";
 import { staffPosts } from "./staff";

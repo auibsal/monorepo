@@ -48,6 +48,7 @@ export const permissions = [
   "concerns.handle",
   "concerns.about_vp",
   "concerns.about_president",
+  "tour.run",
 ] as const;
 
 export type Permission = (typeof permissions)[number];
@@ -55,6 +56,7 @@ export type Permission = (typeof permissions)[number];
 export const scopeTypes = [
   "global",
   "programme",
+  "event",
   "issue",
   "campaign",
   "production",

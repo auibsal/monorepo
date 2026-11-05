@@ -1,20 +1,8 @@
 import type { Locale } from "@repo/internationalization";
-import { Link } from "@repo/internationalization/navigation";
-import { events, localized, programmes } from "@repo/sal-data";
+import { localized, programmes } from "@repo/sal-data";
 import type { Metadata } from "next";
-import { getTranslations } from "next-intl/server";
-import type { ReactNode } from "react";
-import { ManageLinks } from "@/components/manage-links";
-import {
-  NextSession,
-  PastSessions,
-  ProgramFeature,
-} from "@/components/program-page";
-import { PageHeader } from "@/components/section";
-import { MonthCalendar, MonthSection } from "@/components/whats-on";
 import { localizedMetadata } from "@/lib/metadata";
 import { readPublished } from "@/lib/supabase";
-import { monthFrom } from "@/lib/whats-on";
 
 const SLUG = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 
@@ -23,14 +11,10 @@ export type Series = NonNullable<
 >[number];
 
 /**
- * Where a program's page is: /events/<slug>, and the Company's own page at
- * /company (owner, Oct 30, 2026: the Company is not a program and stands
- * beside Qirtas).
+ * The Society's own rows in core.programmes (owner, Nov 5, 2026: no event
+ * series): the Company's, read for its page at /company. Events belong to
+ * none of them.
  */
-export const seriesPath = (slug: string) =>
-  slug === "company" ? "/company" : `/events/${slug}`;
-
-/** The active program row with this slug, listed or not, or null. */
 export const loadProgramme = async (slug: string): Promise<Series | null> => {
   if (!SLUG.test(slug)) {
     return null;
@@ -40,73 +24,8 @@ export const loadProgramme = async (slug: string): Promise<Series | null> => {
   return (all ?? []).find((p) => p.slug === slug && p.is_active) ?? null;
 };
 
-/** The program at /events/<slug>, or null (the Company is at /company). */
-export const loadSeries = async (slug: string): Promise<Series | null> => {
-  const series = await loadProgramme(slug);
-  return series && programmes.isListedProgram(series) ? series : null;
-};
-
 export const seriesMetadata = (locale: Locale, series: Series): Metadata =>
-  localizedMetadata(locale, seriesPath(series.slug), {
+  localizedMetadata(locale, series.slug === "company" ? "/company" : "/", {
     description: localized(series, "summary", locale),
     title: localized(series, "name", locale),
   });
-
-/**
- * A program as a series in What's on (owner, 2026-10-25), in the one
- * structure every program shares (the design review C3): what it is and
- * its rhythm, the next session, its own month of the calendar, the
- * sessions past, then its own feature (`ProgramFeature`). `children` adds
- * what a page has besides (the Company's productions).
- */
-export const SeriesView = async ({
-  children,
-  locale,
-  month: monthValue,
-  series,
-}: {
-  children?: ReactNode;
-  locale: Locale;
-  month?: string;
-  series: Series;
-}) => {
-  const t = await getTranslations({ locale, namespace: "web.events" });
-  const month = monthFrom(monthValue);
-  const rows = await readPublished(
-    ["events"],
-    (c) => events.calendar(c, month.from, month.to),
-    []
-  );
-  const own = rows.filter((row) => row.programme_id === series.id);
-  const pathname = seriesPath(series.slug);
-
-  return (
-    <div className="mx-auto grid w-full max-w-6xl gap-12 px-4 py-16 sm:py-24">
-      <PageHeader
-        lede={localized(series, "summary", locale)}
-        title={localized(series, "name", locale)}
-      >
-        {localized(series, "rhythm", locale) ? (
-          <p className="type-body">{localized(series, "rhythm", locale)}</p>
-        ) : null}
-        <ManageLinks diwan={`/events/${series.slug}`} />
-        <NextSession locale={locale} series={series} />
-      </PageHeader>
-      <MonthSection
-        hrefFor={(m) => `${pathname}/${m}`}
-        locale={locale}
-        month={month}
-      >
-        <MonthCalendar locale={locale} month={month} rows={own} />
-      </MonthSection>
-      <PastSessions locale={locale} series={series} />
-      <ProgramFeature locale={locale} series={series} />
-      {children}
-      <p className="border-line border-t pt-space-4">
-        <Link className="link type-caption" href="/events">
-          {t("all")}
-        </Link>
-      </p>
-    </div>
-  );
-};

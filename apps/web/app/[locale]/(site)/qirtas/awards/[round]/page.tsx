@@ -9,7 +9,7 @@ import {
   OtherYears,
   publishedRounds,
   RoundDates,
-} from "@/components/waraq/awards";
+} from "@/components/qirtas/awards";
 import { localizedMetadata } from "@/lib/metadata";
 
 interface RoundProps {

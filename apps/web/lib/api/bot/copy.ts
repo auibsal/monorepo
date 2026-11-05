@@ -58,7 +58,7 @@ const en = {
     events: "Events",
     link: "Link my account",
     me: "My membership",
-    nexus: "Open Membership",
+    membership: "Open Membership",
     notifyOff: "Notices here: off",
     notifyOn: "Notices here: on",
     play: "Play",
@@ -164,6 +164,11 @@ const en = {
     qirtas: "Qirtas",
     word: "the daily word",
   } satisfies Record<Purpose, string>,
+  qirtasNone:
+    "Qirtas has nothing new just now. The next pieces are on their way.",
+
+  // Qirtas
+  qirtasTitle: "<b>New in Qirtas</b>",
   rsvpAlready: "You already have a place.",
   rsvpCancelled: "Done. Your place is free for someone else.",
   rsvpClosed: "This event doesn't take RSVPs.",
@@ -193,11 +198,6 @@ const en = {
   unlinked:
     "Unlinked. Your SAL account no longer gets notices here. You can link it again from your profile.",
   waitlisted: "You're on the waitlist.",
-  waraqNone:
-    "Qirtas has nothing new just now. The next pieces are on their way.",
-
-  // Qirtas
-  waraqTitle: "<b>New in Qirtas</b>",
 
   when: (date: string, time: string) => `${date} · ${time}`,
   wordOff: "No more daily word here.",
@@ -246,7 +246,7 @@ const ar: Copy = {
     events: "الفعاليات",
     link: "اربط حسابي",
     me: "عضويتي",
-    nexus: "افتح «العضوية»",
+    membership: "افتح «العضوية»",
     notifyOff: "الإشعارات هنا: مطفية",
     notifyOn: "الإشعارات هنا: شغّالة",
     play: "إلعب",
@@ -348,6 +348,9 @@ const ar: Copy = {
     qirtas: "قرطاس",
     word: "كلمة اليوم",
   },
+  qirtasNone: "ماكو شي جديد بقرطاس هسه. النصوص الجاية بالطريق.",
+
+  qirtasTitle: "<b>الجديد بقرطاس</b>",
   rsvpAlready: "عندك مقعد من قبل.",
   rsvpCancelled: "تم. مقعدك صار فارغ لغيرك.",
   rsvpClosed: "هالفعالية ما بيها حجز.",
@@ -374,9 +377,6 @@ const ar: Copy = {
   unlinked:
     "انفصل. حسابك بالجمعية ما راح توصله إشعارات هنا بعد. تگدر تربطه مرة لخ من ملفك الشخصي.",
   waitlisted: "انت بقائمة الانتظار.",
-  waraqNone: "ماكو شي جديد بقرطاس هسه. النصوص الجاية بالطريق.",
-
-  waraqTitle: "<b>الجديد بقرطاس</b>",
 
   when: (date: string, time: string) => `${date} · ${time}`,
   wordOff: "ما راح توصلك كلمة اليوم هنا بعد.",

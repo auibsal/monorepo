@@ -78,30 +78,33 @@ select plan(8);
 
 select pg_temp.make_user('00000000-0000-0000-0000-0000000e4001', 'host.e4@auib.edu.iq', 'Host');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000e4002', 'member.e4@auib.edu.iq', 'Member');
-select pg_temp.grant_role('00000000-0000-0000-0000-0000000e4001', 'programme_lead', 'programme',
-  (select id from core.programmes where slug = 'open-pages'));
+insert into events.events (id, slug, title_en, title_ar, starts_at, status, members_only, entry) values
+  ('00000000-0000-0000-0000-0000000e4101', 'open-pages-e4', 'Open Pages', 'صفحات مفتوحة', now() + interval '14 days', 'published', false, 'open'),
+  ('00000000-0000-0000-0000-0000000e4102', 'salon-e4', 'The Salon', 'الصالون', now() + interval '21 days', 'published', false, 'open');
+select pg_temp.grant_role('00000000-0000-0000-0000-0000000e4001', 'programme_lead', 'event',
+  '00000000-0000-0000-0000-0000000e4101');
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000e4001');
 select lives_ok(
-  $$ insert into programmes.prompts (programme_id, text_en, text_ar)
-     values ((select id from core.programmes where slug = 'open-pages'), 'A door you never opened', 'باب لم تفتحه') $$,
-  'the host writes a prompt for their program'
+  $$ insert into programmes.prompts (event_id, text_en, text_ar)
+     values ('00000000-0000-0000-0000-0000000e4101', 'A door you never opened', 'باب لم تفتحه') $$,
+  'the event lead writes a prompt for their event'
 );
 select throws_ok(
-  $$ insert into programmes.prompts (programme_id, text_en)
-     values ((select id from core.programmes where slug = 'salon'), 'Not mine') $$,
+  $$ insert into programmes.prompts (event_id, text_en)
+     values ('00000000-0000-0000-0000-0000000e4102', 'Not mine') $$,
   '42501', null,
-  'but not for another program'
+  'but not for another event'
 );
-insert into programmes.prompts (programme_id, text_en, is_published)
-  values ((select id from core.programmes where slug = 'open-pages'), 'A letter to a city', true);
+insert into programmes.prompts (event_id, text_en, is_published)
+  values ('00000000-0000-0000-0000-0000000e4101', 'A letter to a city', true);
 select is((select count(*)::int from programmes.prompts), 2, 'the host sees drafts and published prompts');
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000e4002');
 select is((select count(*)::int from programmes.prompts), 1, 'a member sees published prompts only');
 select throws_ok(
-  $$ insert into programmes.prompts (programme_id, text_en)
-     values ((select id from core.programmes where slug = 'open-pages'), 'Me too') $$,
+  $$ insert into programmes.prompts (event_id, text_en)
+     values ('00000000-0000-0000-0000-0000000e4101', 'Me too') $$,
   '42501', null,
   'a member does not write prompts'
 );
@@ -111,7 +114,7 @@ select is((select count(*)::int from programmes.prompts), 1, 'a visitor sees pub
 select pg_temp.logout();
 select ok(
   (select count(*) > 0 from core.outbox where kind = 'revalidate' and payload->'tags' ? 'programmes'),
-  'a prompt refreshes the cached program page'
+  'a prompt refreshes the cached event page'
 );
 select ok(
   (select count(*) > 0 from core.activity_log where table_schema = 'programmes' and table_name = 'prompts'),

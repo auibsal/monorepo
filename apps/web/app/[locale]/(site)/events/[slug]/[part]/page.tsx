@@ -3,18 +3,43 @@ import { charity, events, localized } from "@repo/sal-data";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { OccasionPage, occasionVisible } from "@/components/occasion-page";
-import { BookCircleShelfList, ProgramPast } from "@/components/program-page";
+import { ImpactReport, loadReport } from "@/components/impact-report";
 import { SecondChapterCatalog } from "@/components/second-chapter-catalog";
-import { loadSeries, SeriesView, seriesMetadata } from "@/components/series";
 import { WhatsOn } from "@/components/whats-on-page";
 import { localizedMetadata } from "@/lib/metadata";
+import { readPublished } from "@/lib/supabase";
 import { isMonthSegment, monthFrom } from "@/lib/whats-on";
 
 interface PartProps {
   readonly params: Promise<{ locale: Locale; part: string; slug: string }>;
   readonly searchParams: Promise<{ language?: string }>;
 }
+
+const SLUG = /^[a-z0-9]+(-[a-z0-9]+)*$/;
+
+type PublicEvent = Awaited<ReturnType<typeof events.publicEvent>>;
+type Campaign = Awaited<ReturnType<typeof charity.campaignForEvent>>;
+
+/** The public event at this address, with its campaign, if it has one. */
+const loadEventCampaign = async (slug: string) => {
+  if (!SLUG.test(slug)) {
+    return null;
+  }
+  const event = await readPublished<PublicEvent | null>(
+    ["events"],
+    (c) => events.publicEvent(c, slug),
+    null
+  );
+  if (!event) {
+    return null;
+  }
+  const campaign = await readPublished<Campaign | null>(
+    ["charity"],
+    (c) => charity.campaignForEvent(c, event.id),
+    null
+  );
+  return campaign ? { campaign, event } : null;
+};
 
 export const generateMetadata = async ({
   params,
@@ -27,43 +52,27 @@ export const generateMetadata = async ({
       title: t("title"),
     });
   }
-  const series = await loadSeries(slug);
-  if (series?.slug === "second-chapter" && part === "catalog") {
-    const t = await getTranslations({ locale, namespace: "web.give.catalog" });
-    return localizedMetadata(locale, `/events/${slug}/${part}`, {
-      description: t("title"),
-      title: t("title"),
-    });
+  if (part !== "catalog" && part !== "impact") {
+    return {};
   }
-  if (series && (part === "past" || part === "shelf")) {
-    const t = await getTranslations({ locale, namespace: "web.programs.page" });
-    return localizedMetadata(locale, `/events/${slug}/${part}`, {
-      description: localized(series, "summary", locale),
-      title:
-        part === "past"
-          ? t("pastTitle", { program: localized(series, "name", locale) })
-          : t("shelf"),
-    });
+  const found = await loadEventCampaign(slug);
+  if (!found) {
+    return {};
   }
-  const occasion = series ? events.occasionOf(series.slug, part) : undefined;
-  if (occasion) {
-    const t = await getTranslations({
-      locale,
-      namespace: `web.programs.occasions.${occasion}`,
-    });
-    return localizedMetadata(locale, `/events/${slug}/${part}`, {
-      description: t("lede"),
-      title: t("title"),
-    });
-  }
-  return series && isMonthSegment(part) ? seriesMetadata(locale, series) : {};
+  const t = await getTranslations({ locale, namespace: "web.give" });
+  const title = part === "catalog" ? t("catalog.title") : t("report.title");
+  return localizedMetadata(locale, `/events/${slug}/${part}`, {
+    description: localized(found.campaign, "title", locale),
+    title: `${title} · ${localized(found.event, "title", locale)}`,
+  });
 };
 
 /**
- * A month of What's on with the Society's dates alone
- * (/events/2026-11/society), or a month of one program
- * (/events/salon/2026-11), or an occasion's page
- * (/events/book-circle/mutanabbi-street, /events/open-pages/worst-poem).
+ * Under an event's address (owner, Nov 5, 2026: every event is a standard
+ * event, none in a series): a month of What's on with the Society's dates
+ * alone (/events/2026-11/society), and, for an event that carries Second
+ * Chapter's campaign, its catalog (/events/<event>/catalog) and its
+ * impact report (/events/<event>/impact).
  */
 const PartPage = async ({ params, searchParams }: PartProps) => {
   const { locale, part, slug } = await params;
@@ -73,32 +82,30 @@ const PartPage = async ({ params, searchParams }: PartProps) => {
       <WhatsOn locale={locale} month={monthFrom(slug)} withUniversity={false} />
     );
   }
-  const series = await loadSeries(slug);
-  if (series && part === "past") {
-    return <ProgramPast locale={locale} series={series} />;
+  if (part !== "catalog" && part !== "impact") {
+    notFound();
   }
-  if (series?.slug === "book-circle" && part === "shelf") {
-    return <BookCircleShelfList locale={locale} series={series} />;
+  const found = await loadEventCampaign(slug);
+  if (!found) {
+    notFound();
   }
-  if (series?.slug === "second-chapter" && part === "catalog") {
+  if (part === "catalog") {
     const { language } = await searchParams;
     const only = charity.CATALOG_LANGUAGES.find((l) => l === language) ?? null;
     return (
-      <SecondChapterCatalog language={only} locale={locale} series={series} />
+      <SecondChapterCatalog
+        campaign={found.campaign}
+        event={found.event}
+        language={only}
+        locale={locale}
+      />
     );
   }
-  const occasion = series ? events.occasionOf(series.slug, part) : undefined;
-  if (series && occasion) {
-    // The trip's page shows only once Student Life's approval is on record.
-    if (!(await occasionVisible(occasion))) {
-      notFound();
-    }
-    return <OccasionPage locale={locale} occasion={occasion} series={series} />;
-  }
-  if (!(series && isMonthSegment(part))) {
+  const report = await loadReport(found.event.id);
+  if (!report) {
     notFound();
   }
-  return <SeriesView locale={locale} month={part} series={series} />;
+  return <ImpactReport eventSlug={slug} locale={locale} report={report} />;
 };
 
 export default PartPage;

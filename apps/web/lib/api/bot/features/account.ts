@@ -62,7 +62,7 @@ const menuFor = (t: Copy, lang: Lang) =>
     .webApp(t.buttons.word, wordPage(lang))
     .text(t.buttons.me, "me")
     .row()
-    .url(t.buttons.nexus, accountPage(lang));
+    .url(t.buttons.membership, accountPage(lang));
 
 export const menu = (ctx: BotContext) => menuFor(ctx.t, ctx.lang);
 
@@ -120,7 +120,7 @@ const meView = async (ctx: BotContext) => {
       me.daily_word ? "word:off" : "word:on"
     )
     .row()
-    .url(ctx.t.buttons.nexus, accountPage(ctx.lang))
+    .url(ctx.t.buttons.membership, accountPage(ctx.lang))
     .text(ctx.t.buttons.unlink, "unlink");
   return { keyboard, text: lines.join("\n") };
 };

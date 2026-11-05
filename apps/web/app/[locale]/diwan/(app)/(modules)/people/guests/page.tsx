@@ -1,9 +1,9 @@
-import { RequireModule } from "@/components/nexus/admin/admin-shell";
-import { SocietyGuests } from "@/components/nexus/admin/members/guests";
-import { titleFrom } from "@/lib/nexus/metadata";
+import { RequireModule } from "@/components/diwan/admin/admin-shell";
+import { SocietyGuests } from "@/components/diwan/admin/members/guests";
+import { titleFrom } from "@/lib/diwan/metadata";
 
 export const generateMetadata = titleFrom((t) =>
-  t("nexus.admin.members.guests.title")
+  t("diwan.admin.members.guests.title")
 );
 
 const GuestsPage = () => (

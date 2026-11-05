@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { RequireAuth, RequirePartner } from "@/components/nexus/gates";
+import { RequireAuth, RequirePartner } from "@/components/diwan/gates";
 
 /**
  * A partner's dashboard (owner, Oct 31, 2026: /partners/dashboard, in the

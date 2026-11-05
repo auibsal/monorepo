@@ -6,7 +6,7 @@ import { z } from "zod";
 import type { ApiSession } from "./permissions";
 
 /**
- * CSV exports for the Nexus admin. Each one runs as the caller (their JWT),
+ * CSV exports for the Diwan admin. Each one runs as the caller (their JWT),
  * so Row Level Security and the SQL functions decide the rows; the
  * permission here is re-checked first, in any scope.
  */
@@ -199,7 +199,7 @@ const needsRows = async (session: ApiSession): Promise<ExportTable> => {
       "provided_note",
     ],
     rows: (unwrap(rows) ?? []).map((r) => [
-      names.get(r.programme_id) ?? "",
+      (r.programme_id ? names.get(r.programme_id) : undefined) ?? "",
       r.item,
       r.quantity,
       r.needed_by,

@@ -7,6 +7,8 @@ export {
   apiUrl,
   type Direction,
   defaultLocale,
+  diwanPath,
+  diwanUrl,
   getDirection,
   getLocaleLabel,
   isLocale,
@@ -14,8 +16,6 @@ export {
   localeDefinitions,
   locales,
   localizedPath,
-  nexusPath,
-  nexusUrl,
   siteUrl,
 } from "./config";
 

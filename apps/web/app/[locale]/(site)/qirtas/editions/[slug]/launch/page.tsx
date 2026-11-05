@@ -5,7 +5,7 @@ import { journal, localized } from "@repo/sal-data";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { pieceHref } from "@/components/waraq/cards";
+import { pieceHref } from "@/components/qirtas/cards";
 import { localizedMetadata } from "@/lib/metadata";
 import { readPublished } from "@/lib/supabase";
 

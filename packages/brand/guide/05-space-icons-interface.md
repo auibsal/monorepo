@@ -44,7 +44,7 @@ One set across the board: the site, posts, stories, highlights, documents and pr
 | Interface | Menu, close, search, go/next, opens another site, more, language, light mode, dark mode, account, sign in, done/confirmed, error, note, download, link, share, send, email, document, reminder |
 | Events | Date and What's on, time, place, RSVP, members and attendance |
 | Qirtas | Qirtas and News, Voices, Letters, Gallery, Video, Games, Next Stop, an episode |
-| The Society | Second Chapter, Typewriter Tour, the Salon, Book Circle, Open Pages, the Listening Room, the Company, programs, Join, Get involved |
+| The Society | Second Chapter, the Salon, Book Circle, Open Pages, the Listening Room, the Company, events, the Typewriter Tour, Join, Get involved |
 
 - **Alone when it says enough:** a calendar before a date, a pin before a place, close, menu, search, share, a link arrow. Add a word only when the icon could be misread. On screens, a standalone icon has a label for screen readers.
 - **The text's size and color:** 1.15 em, in `text` or `text-secondary`; white on crimson and ink. Never crimson alone, never filled.

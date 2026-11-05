@@ -37,7 +37,7 @@ const body = z.union([
   }),
 ]);
 
-/** Telegram returns the member to their Nexus profile, in either language. */
+/** Telegram returns the member to their Diwan profile, in either language. */
 const isProfilePage = (redirectUri: string) => {
   const url = new URL(redirectUri);
   return (
@@ -50,9 +50,9 @@ const isProfilePage = (redirectUri: string) => {
 
 /**
  * POST /telegram/link: a signed-in member links Telegram with Telegram's
- * login (it never signs anyone in to the Nexus). With `{ codeChallenge,
+ * login (it never signs anyone in to the Diwan). With `{ codeChallenge,
  * state, redirectUri }` it answers the address to send them to, or
- * `{ url: null }` when the login isn't set up (the Nexus then uses the
+ * `{ url: null }` when the login isn't set up (the Diwan then uses the
  * bot's one-time code). With `{ code, codeVerifier, redirectUri }` on their
  * way back, it verifies Telegram's id_token and links that account.
  */

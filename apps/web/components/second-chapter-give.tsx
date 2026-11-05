@@ -16,23 +16,29 @@ import { readPublished } from "@/lib/supabase";
 const WAYS = ["books", "volunteer", "warm"] as const;
 
 /**
- * Second Chapter's collection, on the program's own page (the overhaul,
- * Oct 30, 2026: the Give page folded into it, since the collection is the
- * only giving the Society does): the ways to give, the dates, what was
- * counted and handed over, and the receipts. Since Nov 4, 2026 the dates
- * are the campaign's stages, read from its record, and only signed-off
- * figures show.
+ * Second Chapter's collection, on its event's page (the overhaul, Oct 30,
+ * 2026: the Give page folded into it, since the collection is the only
+ * giving the Society does; owner, Nov 5, 2026: the campaign belongs to an
+ * ordinary event): the ways to give, the dates, what was counted and
+ * handed over, and the receipts. The dates are the campaign's stages,
+ * read from its record, and only signed-off figures show.
  */
-export const SecondChapterGive = async ({ locale }: { locale: Locale }) => {
+export const SecondChapterGive = async ({
+  campaign,
+  eventSlug,
+  locale,
+}: {
+  campaign: Campaign;
+  eventSlug: string;
+  locale: Locale;
+}) => {
   const t = await getTranslations({ locale, namespace: "web.give" });
-  const [campaigns, progress] = await Promise.all([
-    readPublished(["charity"], (c) => charity.activeCampaigns(c), []),
-    readPublished(["charity"], (c) => charity.campaignProgress(c), []),
-  ]);
-  const campaign = campaigns?.[0];
-  const collected = campaign
-    ? progress.find((p) => p.campaign_id === campaign.id)
-    : undefined;
+  const progress = await readPublished(
+    ["charity"],
+    (c) => charity.campaignProgress(c, campaign.id),
+    []
+  );
+  const collected = progress.find((p) => p.campaign_id === campaign.id);
   const [receipts, impact] = campaign
     ? await Promise.all([
         readPublished(
@@ -60,7 +66,11 @@ export const SecondChapterGive = async ({ locale }: { locale: Locale }) => {
           ))}
         </ul>
         <p className="type-body">{t("waysNote")}</p>
-        <CatalogLink locale={locale} />
+        <CatalogLink
+          campaign={campaign}
+          eventSlug={eventSlug}
+          locale={locale}
+        />
       </Section>
 
       {points.length > 0 ? (
@@ -135,10 +145,7 @@ export const SecondChapterGive = async ({ locale }: { locale: Locale }) => {
               ))}
             </dl>
             <p className="type-body">
-              <Link
-                className="link"
-                href={`/events/second-chapter/impact/${campaign?.slug ?? ""}`}
-              >
+              <Link className="link" href={`/events/${eventSlug}/impact`}>
                 {t("report.open")}
               </Link>
             </p>
@@ -182,8 +189,8 @@ export const SecondChapterGive = async ({ locale }: { locale: Locale }) => {
 };
 
 type Campaign = NonNullable<
-  Awaited<ReturnType<typeof charity.activeCampaigns>>
->[number];
+  Awaited<ReturnType<typeof charity.campaignForEvent>>
+>;
 
 /**
  * The collection's five stages as a plain list, the current one marked by

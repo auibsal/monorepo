@@ -79,14 +79,17 @@ select plan(14);
 select pg_temp.make_user('00000000-0000-0000-0000-0000000e6001', 'host.e6@auib.edu.iq', 'Host');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000e6002', 'reader.e6@auib.edu.iq', 'Reader');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000e6003', 'other.e6@auib.edu.iq', 'Other');
-select pg_temp.grant_role('00000000-0000-0000-0000-0000000e6001', 'programme_lead', 'programme',
-  (select id from core.programmes where slug = 'book-circle'));
+insert into events.events (id, slug, title_en, title_ar, starts_at, status, members_only, entry) values
+  ('00000000-0000-0000-0000-0000000e6101', 'book-circle-e6', 'Book Circle', 'حلقة الكتاب', now() + interval '14 days', 'published', false, 'open'),
+  ('00000000-0000-0000-0000-0000000e6102', 'salon-e6', 'The Salon', 'الصالون', now() + interval '21 days', 'published', false, 'open');
+select pg_temp.grant_role('00000000-0000-0000-0000-0000000e6001', 'programme_lead', 'event',
+  '00000000-0000-0000-0000-0000000e6101');
 
 -- The host opens a ballot with three books.
 select pg_temp.login_as('00000000-0000-0000-0000-0000000e6001');
 select lives_ok(
-  $$ insert into programmes.book_ballots (programme_id, title_en, closes_at)
-     values ((select id from core.programmes where slug = 'book-circle'), 'December''s book', now() + interval '7 days');
+  $$ insert into programmes.book_ballots (event_id, title_en, closes_at)
+     values ('00000000-0000-0000-0000-0000000e6101', 'December''s book', now() + interval '7 days');
      insert into programmes.book_choices (ballot_id, title_en, author_en)
      select b.id, x.t, x.a from programmes.book_ballots b,
        (values ('One', 'A'), ('Two', 'B'), ('Three', 'C')) as x(t, a)
@@ -100,10 +103,10 @@ select throws_ok(
   'three books at most'
 );
 select throws_ok(
-  $$ insert into programmes.book_ballots (programme_id, title_en, closes_at)
-     values ((select id from core.programmes where slug = 'salon'), 'Not mine', now() + interval '1 day') $$,
+  $$ insert into programmes.book_ballots (event_id, title_en, closes_at)
+     values ('00000000-0000-0000-0000-0000000e6102', 'Not mine', now() + interval '1 day') $$,
   '42501', null,
-  'not for another program'
+  'not for another event'
 );
 
 -- Members vote once and may change their vote.

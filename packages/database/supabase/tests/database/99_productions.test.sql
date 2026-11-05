@@ -85,7 +85,7 @@ select pg_temp.make_user('00000000-0000-0000-0000-0000000000a4', 'lead-pr@auib.e
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a5', 'actor-pr@auib.edu.iq', 'Hopeful Actor');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a6', 'vp-pr@auib.edu.iq', 'Vice President');
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000000a2', 'president');
-select pg_temp.grant_role('00000000-0000-0000-0000-0000000000a6', 'vice_president');
+select pg_temp.grant_role('00000000-0000-0000-0000-0000000000a6', 'artistic_director');
 
 insert into membership.memberships (user_id)
 select u from unnest(array['00000000-0000-0000-0000-0000000000a1',

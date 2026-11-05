@@ -1,7 +1,7 @@
-import { Society } from "@/components/nexus/society/society";
-import { titleFrom } from "@/lib/nexus/metadata";
+import { Society } from "@/components/diwan/society/society";
+import { titleFrom } from "@/lib/diwan/metadata";
 
-export const generateMetadata = titleFrom((t) => t("nexus.society.title"));
+export const generateMetadata = titleFrom((t) => t("diwan.society.title"));
 
 const SocietyPage = () => <Society />;
 

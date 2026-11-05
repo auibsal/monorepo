@@ -79,11 +79,11 @@ select plan(7);
 
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000e1', 'editor@auib.edu.iq', 'Editor');
 insert into access.role_assignments (user_id, role, title_en, title_ar)
-values ('00000000-0000-0000-0000-0000000000e1', 'director', 'Editor of Qirtas', 'رئيس تحرير قرطاس');
+values ('00000000-0000-0000-0000-0000000000e1', 'eic', null, null);
 
 select is(
   (select roles from access.officer_directory() where user_id = '00000000-0000-0000-0000-0000000000e1'),
-  array['Editor of Qirtas'],
+  array['Editor-in-Chief'],
   'A director is listed by the seat''s full title'
 );
 select is(

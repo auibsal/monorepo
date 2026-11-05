@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { QirtasTabs } from "@/components/nexus/admin/section-tabs";
+import { QirtasTabs } from "@/components/diwan/admin/section-tabs";
 
 const QirtasLayout = ({ children }: { readonly children: ReactNode }) => (
   <div className="grid gap-8">

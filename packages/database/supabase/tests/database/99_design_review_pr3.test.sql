@@ -102,7 +102,7 @@ select throws_ok(
 -- ── A39: the handover ──────────────────────────────────────────────────────
 select pg_temp.make_user('00000000-0000-0000-0000-00000000a391', 'a391@auib.edu.iq', 'Handover Member');
 select pg_temp.make_user('00000000-0000-0000-0000-00000000a392', 'a392@auib.edu.iq', 'Handover Officer');
-select pg_temp.grant_role('00000000-0000-0000-0000-00000000a392', 'membership_director');
+select pg_temp.grant_role('00000000-0000-0000-0000-00000000a392', 'general_secretary');
 
 select pg_temp.login_as('00000000-0000-0000-0000-00000000a391');
 select throws_ok(

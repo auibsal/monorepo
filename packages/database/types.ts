@@ -279,6 +279,7 @@ export type Database = {
           donations_starts_on: string | null;
           drop_off_points: NonNullable<Json>;
           ends_on: string | null;
+          event_id: string | null;
           fair_ends_on: string | null;
           fair_starts_on: string | null;
           handed_over_iqd: number | null;
@@ -307,6 +308,7 @@ export type Database = {
           donations_starts_on?: string | null;
           drop_off_points?: NonNullable<Json>;
           ends_on?: string | null;
+          event_id?: string | null;
           fair_ends_on?: string | null;
           fair_starts_on?: string | null;
           handed_over_iqd?: number | null;
@@ -335,6 +337,7 @@ export type Database = {
           donations_starts_on?: string | null;
           drop_off_points?: NonNullable<Json>;
           ends_on?: string | null;
+          event_id?: string | null;
           fair_ends_on?: string | null;
           fair_starts_on?: string | null;
           handed_over_iqd?: number | null;
@@ -1573,7 +1576,8 @@ export type Database = {
           id: string;
           image_path: string | null;
           members_only: boolean;
-          occasion: string | null;
+          off_campus: boolean;
+          partner_id: string | null;
           programme_id: string | null;
           published_at: string | null;
           questions: NonNullable<Json>;
@@ -1602,7 +1606,8 @@ export type Database = {
           id?: string;
           image_path?: string | null;
           members_only?: boolean;
-          occasion?: string | null;
+          off_campus?: boolean;
+          partner_id?: string | null;
           programme_id?: string | null;
           published_at?: string | null;
           questions?: NonNullable<Json>;
@@ -1631,7 +1636,8 @@ export type Database = {
           id?: string;
           image_path?: string | null;
           members_only?: boolean;
-          occasion?: string | null;
+          off_campus?: boolean;
+          partner_id?: string | null;
           programme_id?: string | null;
           published_at?: string | null;
           questions?: NonNullable<Json>;
@@ -1673,6 +1679,50 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "invitations_event_id_fkey";
+            columns: ["event_id"];
+            isOneToOne: false;
+            referencedRelation: "events";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      joint_tasks: {
+        Row: {
+          created_at: string;
+          created_by: string | null;
+          done_at: string | null;
+          done_by: string | null;
+          due_on: string | null;
+          event_id: string;
+          id: string;
+          label: string;
+          side: string;
+        };
+        Insert: {
+          created_at?: string;
+          created_by?: string | null;
+          done_at?: string | null;
+          done_by?: string | null;
+          due_on?: string | null;
+          event_id: string;
+          id?: string;
+          label: string;
+          side: string;
+        };
+        Update: {
+          created_at?: string;
+          created_by?: string | null;
+          done_at?: string | null;
+          done_by?: string | null;
+          due_on?: string | null;
+          event_id?: string;
+          id?: string;
+          label?: string;
+          side?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "joint_tasks_event_id_fkey";
             columns: ["event_id"];
             isOneToOne: false;
             referencedRelation: "events";
@@ -1749,54 +1799,6 @@ export type Database = {
             referencedColumns: ["id"];
           },
         ];
-      };
-      series_rules: {
-        Row: {
-          capacity: number | null;
-          created_at: string;
-          entry: string;
-          every_weeks: number;
-          first_on: string;
-          members_only: boolean;
-          minutes: number;
-          programme_id: string;
-          start_time: string;
-          updated_at: string;
-          updated_by: string | null;
-          venue_ar: string | null;
-          venue_en: string | null;
-        };
-        Insert: {
-          capacity?: number | null;
-          created_at?: string;
-          entry?: string;
-          every_weeks?: number;
-          first_on: string;
-          members_only?: boolean;
-          minutes?: number;
-          programme_id: string;
-          start_time: string;
-          updated_at?: string;
-          updated_by?: string | null;
-          venue_ar?: string | null;
-          venue_en?: string | null;
-        };
-        Update: {
-          capacity?: number | null;
-          created_at?: string;
-          entry?: string;
-          every_weeks?: number;
-          first_on?: string;
-          members_only?: boolean;
-          minutes?: number;
-          programme_id?: string;
-          start_time?: string;
-          updated_at?: string;
-          updated_by?: string | null;
-          venue_ar?: string | null;
-          venue_en?: string | null;
-        };
-        Relationships: [];
       };
       session_links: {
         Row: {
@@ -1879,10 +1881,6 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
-      add_series_sessions: {
-        Args: { programme: string; until: string };
-        Returns: number;
-      };
       calendar: {
         Args: { from_at: string; to_at: string };
         Returns: {
@@ -1933,6 +1931,21 @@ export type Database = {
           full_name_en: string;
           has_rsvp: boolean;
           user_id: string;
+        }[];
+      };
+      my_joint_events: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          ends_at: string;
+          id: string;
+          partner_id: string;
+          slug: string;
+          starts_at: string;
+          status: string;
+          title_ar: string;
+          title_en: string;
+          venue_ar: string;
+          venue_en: string;
         }[];
       };
       record_approval: {
@@ -2421,6 +2434,7 @@ export type Database = {
           body: string;
           created_at: string;
           created_by: string | null;
+          event_id: string | null;
           id: string;
           meeting_on: string;
           status: string;
@@ -2435,6 +2449,7 @@ export type Database = {
           body?: string;
           created_at?: string;
           created_by?: string | null;
+          event_id?: string | null;
           id?: string;
           meeting_on: string;
           status?: string;
@@ -2449,6 +2464,7 @@ export type Database = {
           body?: string;
           created_at?: string;
           created_by?: string | null;
+          event_id?: string | null;
           id?: string;
           meeting_on?: string;
           status?: string;
@@ -2966,6 +2982,15 @@ export type Database = {
           full_name_en: string;
           titles_ar: string[];
           titles_en: string[];
+        }[];
+      };
+      council_seats: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          holders_ar: string[];
+          holders_en: string[];
+          seat: string;
+          sort: number;
         }[];
       };
       count_election: { Args: { election_id: string }; Returns: undefined };
@@ -5593,8 +5618,9 @@ export type Database = {
           closes_at: string;
           created_at: string;
           created_by: string | null;
+          event_id: string | null;
           id: string;
-          programme_id: string;
+          programme_id: string | null;
           title_ar: string;
           title_en: string;
         };
@@ -5602,8 +5628,9 @@ export type Database = {
           closes_at: string;
           created_at?: string;
           created_by?: string | null;
+          event_id?: string | null;
           id?: string;
-          programme_id: string;
+          programme_id?: string | null;
           title_ar?: string;
           title_en?: string;
         };
@@ -5611,8 +5638,9 @@ export type Database = {
           closes_at?: string;
           created_at?: string;
           created_by?: string | null;
+          event_id?: string | null;
           id?: string;
-          programme_id?: string;
+          programme_id?: string | null;
           title_ar?: string;
           title_en?: string;
         };
@@ -5751,7 +5779,7 @@ export type Database = {
           id: string;
           item: string;
           needed_by: string;
-          programme_id: string;
+          programme_id: string | null;
           provided_note: string | null;
           provided_on: string | null;
           purpose: string;
@@ -5767,7 +5795,7 @@ export type Database = {
           id?: string;
           item: string;
           needed_by: string;
-          programme_id: string;
+          programme_id?: string | null;
           provided_note?: string | null;
           provided_on?: string | null;
           purpose: string;
@@ -5783,7 +5811,7 @@ export type Database = {
           id?: string;
           item?: string;
           needed_by?: string;
-          programme_id?: string;
+          programme_id?: string | null;
           provided_note?: string | null;
           provided_on?: string | null;
           purpose?: string;
@@ -6156,27 +6184,30 @@ export type Database = {
         Row: {
           created_at: string;
           created_by: string | null;
+          event_id: string | null;
           id: string;
           is_published: boolean;
-          programme_id: string;
+          programme_id: string | null;
           text_ar: string;
           text_en: string;
         };
         Insert: {
           created_at?: string;
           created_by?: string | null;
+          event_id?: string | null;
           id?: string;
           is_published?: boolean;
-          programme_id: string;
+          programme_id?: string | null;
           text_ar?: string;
           text_en?: string;
         };
         Update: {
           created_at?: string;
           created_by?: string | null;
+          event_id?: string | null;
           id?: string;
           is_published?: boolean;
-          programme_id?: string;
+          programme_id?: string | null;
           text_ar?: string;
           text_en?: string;
         };
@@ -6322,9 +6353,10 @@ export type Database = {
         Row: {
           created_at: string;
           ends_on: string | null;
+          event_id: string | null;
           id: string;
           opening_id: string | null;
-          programme_id: string;
+          programme_id: string | null;
           starts_on: string | null;
           title_ar: string;
           title_en: string;
@@ -6332,9 +6364,10 @@ export type Database = {
         Insert: {
           created_at?: string;
           ends_on?: string | null;
+          event_id?: string | null;
           id?: string;
           opening_id?: string | null;
-          programme_id: string;
+          programme_id?: string | null;
           starts_on?: string | null;
           title_ar: string;
           title_en: string;
@@ -6342,9 +6375,10 @@ export type Database = {
         Update: {
           created_at?: string;
           ends_on?: string | null;
+          event_id?: string | null;
           id?: string;
           opening_id?: string | null;
-          programme_id?: string;
+          programme_id?: string | null;
           starts_on?: string | null;
           title_ar?: string;
           title_en?: string;

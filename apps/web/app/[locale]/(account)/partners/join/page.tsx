@@ -1,7 +1,7 @@
 import { PartnerJoin } from "@/components/account/partner-join";
-import { titleFrom } from "@/lib/nexus/metadata";
+import { titleFrom } from "@/lib/diwan/metadata";
 
-const metadataFrom = titleFrom((t) => t("nexus.partnerJoin.title"));
+const metadataFrom = titleFrom((t) => t("diwan.partnerJoin.title"));
 
 /** Public, unlike the members' pages: search engines may list it. */
 export const generateMetadata: typeof metadataFrom = async (props) => ({

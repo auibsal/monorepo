@@ -82,7 +82,7 @@ export const publicEvent = async (
  * A member's private feed: their RSVPs, all public SAL events, members-only
  * events (members only), invitation-only events they are invited to, and
  * the AUIB campus calendar. Found by the secret token in the URL; reset by
- * the member from the Nexus.
+ * the member from the Diwan.
  */
 export const memberFeed = async (admin: AdminClient, token: string) => {
   const { data: owner } = await admin

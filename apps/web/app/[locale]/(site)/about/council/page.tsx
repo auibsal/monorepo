@@ -5,7 +5,7 @@ import {
 import { Link } from "@repo/internationalization/navigation";
 import { governance, localized } from "@repo/sal-data";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { Council } from "@/components/council";
+import { CouncilSeats } from "@/components/council";
 import { ManageLinks } from "@/components/manage-links";
 import { PageHeader, Section } from "@/components/section";
 import { type LocaleParams, sectionMetadata } from "@/lib/page";
@@ -15,6 +15,17 @@ export const generateMetadata = sectionMetadata(
   "web.governance",
   "/about/council"
 );
+
+/** The Council's seats, and the Acting President while one is in office. */
+const SEATS = [
+  "president",
+  "vice_president",
+  "general_secretary",
+  "eic",
+  "artistic_director",
+  "media_director",
+  "acting_president",
+] as const;
 
 type Results = Awaited<ReturnType<typeof governance.publicElectionResults>>;
 
@@ -31,18 +42,18 @@ const byElection = (rows: Results) => {
 };
 
 /**
- * How the Society is run, in public: the Council, from the roles people
- * hold, the resolutions it adopted and who members elected. Only what the
+ * How the Society is run, in public: the Council's six seats (owner, Nov
+ * 5, 2026), from the roles people hold, the resolutions it adopted and who members elected. Only what the
  * database makes public is read (the Council, adopted resolutions, each published election's
  * outcome per office); minutes and the counts at each round stay in the
- * Nexus.
+ * Diwan.
  */
 const GovernancePage = async ({ params }: LocaleParams) => {
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "web.governance" });
   const [council, resolutions, results] = await Promise.all([
-    readPublished(["governance"], (c) => governance.councilMembers(c), []),
+    readPublished(["governance"], (c) => governance.councilSeats(c), []),
     readPublished(["governance"], (c) => governance.adoptedResolutions(c), []),
     readPublished(
       ["governance"],
@@ -62,7 +73,14 @@ const GovernancePage = async ({ params }: LocaleParams) => {
         {council.length === 0 ? (
           <p className="type-body">{t("councilEmpty")}</p>
         ) : (
-          <Council locale={locale} members={council} />
+          <CouncilSeats
+            locale={locale}
+            open={t("seatOpen")}
+            seats={council}
+            titles={Object.fromEntries(
+              SEATS.map((key) => [key, t(`seats.${key}`)])
+            )}
+          />
         )}
       </Section>
 

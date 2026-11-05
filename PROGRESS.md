@@ -5,8 +5,138 @@ Every session starts here and continues from the first unticked item. The
 brief is `sal-platform-claude-code-prompt.md` (uploaded at the start of the
 first session); section numbers (§) refer to it.
 
-Branch: `claude/qirtas-games-masthead`.
+Branch: `claude/events-not-programs`.
 
+
+
+## One kind of event, with add-ons; one layout rule (owner, Nov 5, 2026, evening)
+
+The owner: "Don't keep event-specific things. All events have standard
+pages, we change the details. People either RSVP or it's just an event for
+anyone to come or it's a private event. All events will be made through
+this dashboard, including council meetings/AGM/everything/launch night …
+Also, across the platform standardize menu and button usage."
+
+- [x] Database (migration `20261101005300_event_modules`): occasions go;
+  `events.events.off_campus` takes the trip's place (published only with
+  Student Life's approval, recorded by the General Secretary);
+  `governance.minutes.event_id` ties minutes to their meeting, whose day
+  sets `meeting_on`. pgTAP: `99_event_modules`, `99_trip_and_contest`.
+- [x] Diwan: an event's page shows the add-ons it has and "Add to this
+  event" for the rest (off campus, partner, needs, shifts, links, prompts,
+  book vote, collection, minutes). Minutes pick their meeting from What's
+  on; the meetings list links to making one there.
+- [x] Site: the approval line shows for an off-campus event.
+- [x] Layout: choices are a vertical list (`SelectInput`); buttons in
+  wrapping rows (the welcome's photos step was the one stack).
+- [x] Partners, guests and Launch Night: nothing event-specific left
+  (Launch Night already picks an event).
+- needs-native-review: `diwan.admin.event.parts.*`,
+  `diwan.admin.event.occasion.*`, `diwan.admin.governance.minutes.meeting`,
+  `noMeeting`, `makeMeeting`, `new`; `web.events.parts.approved`.
+
+## Standard events, no series (owner, Nov 5, 2026, later)
+
+The owner: "Don't make the current programs into series. Make them into
+normal/standard events. Standardize events all over from the public and
+diwan sides."
+
+- [x] Database (migration `20261101005200_standard_events`): the events of
+  Second Chapter, the Salon, Book Circle, Open Pages, the Listening Room
+  and the Typewriter Tour belong to no series (`programme_id` null); the
+  five rows are inactive. An event carries its own parts: `event_id` on
+  prompts, book ballots, rotas and campaigns (needs had it); existing
+  series parts moved to each series' next event; series-scoped role
+  assignments became event-scoped ones for each coming event (no emails
+  sent) and ended. `private.runs_part` and `private.lists_needs(programme,
+  event)` decide who runs a part; the policies, `ballot_counts` and
+  `record_shift_service` ask them. pgTAP: `99_owner_nov5` (three more),
+  and the tests that used the series rows.
+- [x] Site: `/events/<slug>` is an event or a month only. Every event
+  page has the one structure plus its parts (`EventParts`): Student Life's
+  approval of a trip, prompts, the book vote, Second Chapter's
+  collection, the links from the night and what Qirtas wrote from it. The
+  catalog and the impact report are `/events/<event>/catalog` and
+  `/events/<event>/impact`. Gone, with no redirects: the series pages and
+  their months, `/past`, Book Circle's `/shelf`, the occasion pages, the
+  series filter on What's on, the series list on the home page and the
+  footer's series column.
+- [x] Diwan: one event page (`EventEditor` plus `EventPartsAdmin`:
+  shifts, needs, prompts, vote, and linking Second Chapter's campaign);
+  the series pages, their tabs and the events list's series column are
+  gone; campaigns at `/diwan/events/campaigns` (What's on → Second
+  Chapter); places may belong to an event team (no row); the event form
+  offers only the Company's and the Tour's rows.
+- [x] Notion: the Programs database no longer publishes or reactivates a
+  row; an event linked to a former series is published as its own.
+- [ ] Production: link Second Chapter's campaign to its fair's event on
+  the event's page in the Diwan (none is linked by the migration), so the
+  collection, catalog and impact report show there.
+- [ ] The Claude project's copy of `claude/decisions.md`: §1 "One
+  calendar" now says every event is a standard event; change it there too.
+- needs-native-review: `web.events.parts.*`, `diwan.admin.event.parts.*`,
+  `diwan.admin.sections.tabs.collection`, the relabeled `programme`
+  fields (`diwan.admin.kit`, `diwan.service`, `diwan.admin.hiring.program`,
+  `diwan.admin.member.scopes.programme`), `diwan.forms.defs.f29.*`.
+
+## The owner's decisions of Thursday, Nov 5, 2026: no programs, the Council of six
+
+Branch: `claude/events-not-programs` (also carries A41 joint events and R4,
+the rename to Diwan and Qirtas, which #220's squash left out).
+
+- [x] §0 `claude/decisions.md` replaced with the owner's text of Nov 5,
+  2026, exactly (owner, Nov 5, 2026).
+- [x] §3 The Council of six (owner, Nov 5, 2026): officers the President
+  (events), the Vice President (partnerships, charities among them) and
+  the General Secretary (membership, records, Student Life); directors the
+  Editor-in-Chief, the Artistic Director and the Director of Media. The
+  roles Director (generic), Director of Programs, Partnerships and
+  Membership are retired with their assignments, positions and open
+  openings (a generic Director titled for Media, the paper or the Company
+  moves to that seat's role); the Vice President loses events, programs,
+  membership, certificates and the Company. The Acting President role
+  (two-step sign-in) holds the events permissions for Jan 24 – May 15,
+  2027, assigned by the Council. The Council page lists the six seats by
+  full title, held or Open (`governance.council_seats()`), in the
+  Council's order; the Notion officer mirror offers the six seats only.
+  Migration `20261101005000_council_of_six`; `99_owner_nov5.test.sql`.
+- [x] §1 No programs, events (owner, Nov 5, 2026): the five recurring
+  events are series on What's on (`/events/<slug>`), none a program; the
+  repeat rules are gone (`events.series_rules`, `add_series_sessions`;
+  the series' Diwan page lists its events instead); the series run
+  "Tuesdays, as the term calendar sets" and Second Chapter "Every
+  November". The Program Lead is an event lead, scoped to a series or to
+  one event (new scope `event`, `private.leads_event`). Copy across the
+  site, the Diwan, forms, the brand kit and docs says event, series or
+  event lead; hiring names the General Secretary, the President picks
+  event leads; Get involved lists event teams; Apprenticeship places are
+  "a Qirtas section, the Company or an event team". Code identifiers
+  (`programmes`, `programme_id`, `programs.manage`) stay. Migration
+  `20261101005100_events_not_programs`.
+- [x] §2 The Typewriter Tour belongs to membership (owner, Nov 5, 2026):
+  `/join/typewriter-tour` (from Join; no longer a series), Mar 14–25, 2027
+  and the fall club fair; `tour.run` for the General Secretary and the
+  Tour Lead (`tour_lead`, picked by the General Secretary), who keep Six
+  Words in the Diwan's People → Typewriter Tour. Six Words still go to
+  Qirtas Letters.
+- [x] §4 Copy and channels (owner, Nov 5, 2026): the Instagram bio and the
+  six highlights (The Company replaces Programs: new cover and story
+  banner, PNGs rendered), the What's on and Get involved stories, the
+  printables; the retired names are refused by `check-language.ts`.
+- [ ] §5 The Tour's spring 2026 import and invitation email: not done,
+  `diwan_six_words_import.csv` and `invitation_list.csv` were not attached.
+- [ ] Notion: the Publishing database is still named Programs (the sync
+  reads it by name; rename it with the sync in one change), and the
+  Officers database's Roles options still list the retired seats (the
+  sync writes the six seats only).
+- needs-native-review: `diwan.admin.programmes.*` (series copy),
+  `diwan.admin.hiring.*`, `diwan.places.*`, `diwan.forms.defs.f10`,
+  `f29`, `f25a`, `f17`, `diwan.admin.member.scopes.event`,
+  `diwan.admin.sections.tabs.tour`, `web.join.tour.*`, `web.join.tourLine`,
+  `web.governance.seats.*`, `seatOpen`, `web.events.lede`,
+  `web.about.glance.*`, `web.nav.programs`, `web.footer.columns.programs`,
+  `web.home.programs`, the series' rhythms in `core.programmes`, the
+  roles' Arabic names (قائد الفعالية، الرئيس بالإنابة، مسؤول جولة الآلة الكاتبة).
 
 ## The design review: PR 6b, translations beside their originals, topics (2026-11-05)
 
@@ -58,7 +188,26 @@ Branch: `claude/pr6b-topics-translations`.
 - needs-native-review: `nexus.admin.kit.selection.*`,
   `nexus.admin.event.checkInChosen`,
   `nexus.admin.recognition.pending.confirmChosen`.
-- Next: A41, then R4.
+- [x] A41 Joint events: an event may name the partner it is run with
+  (`events.events.partner_id`, picked on the event's page in the Diwan,
+  "Run with a partner"), and both sides keep one checklist
+  (`events.joint_tasks`, `JointChecklist`): the event's managers keep it
+  all, the partner's team adds and ticks its own side's items on the new
+  Events tab of its dashboard (`/partners/dashboard/events`,
+  `events.my_joint_events()`, drafts included). Migration
+  `20261101004900`, `99_joint_events.test.sql`.
+- needs-native-review: `nexus.joint.*`, `nexus.partnerDesk.tabs.events`,
+  `nexus.partnerDesk.lede`, `nexus.admin.activity.things.events_joint_tasks`.
+- [x] R4 (D9) The retired code names, last: `components/nexus` is
+  `components/diwan`, `lib/nexus` is `lib/diwan`, `components/waraq` is
+  `components/qirtas`, `nexusPath`/`nexusUrl`/`paths.nexus` are
+  `diwanPath`/`diwanUrl`/`paths.diwan`, the messages namespace `nexus` is
+  `diwan` (and `admin.waraq` is `admin.qirtas`), and every identifier
+  that said Nexus or Waraq says Diwan or Qirtas. The database keeps its
+  names (the `journal` schema, the `waraq` program slug, the bot's stored
+  `waraq` topic and old "waraq" button), and so does the web app
+  manifest's `id` ("/nexus"), which installed copies are known by.
+- PR 6 is done but A28, which waits for data.
 
 ## The design review: PR 6a, About, the 404 page and a member's year (2026-11-05)
 

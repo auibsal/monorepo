@@ -7,7 +7,7 @@ import { copy, type Lang } from "../copy";
 import { anon } from "../db";
 import { pick, when } from "../format";
 import { botLink, eventPage, piecePage, web } from "../links";
-import { pieceAuthor, publicPieces } from "./waraq";
+import { pieceAuthor, publicPieces } from "./qirtas";
 
 /**
  * Inline mode: in any chat, "@<bot> poetry" offers the public events and

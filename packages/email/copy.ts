@@ -1,4 +1,4 @@
-import { localizedPath, nexusPath } from "@repo/internationalization";
+import { diwanPath, localizedPath } from "@repo/internationalization";
 import { formatClock, formatLongDate } from "@repo/internationalization/format";
 import type { NoticeBlock, NoticeList, NoticeProps } from "./templates/notice";
 
@@ -49,8 +49,8 @@ const account = (base: string, l: Lang, path = "/membership") => ({
 });
 
 /** A page in the Diwan, for officers. */
-const nexus = (base: string, l: Lang, path = "") => ({
-  href: `${base}${localizedPath(l, nexusPath(path || "/"))}`,
+const diwan = (base: string, l: Lang, path = "") => ({
+  href: `${base}${localizedPath(l, diwanPath(path || "/"))}`,
   label: l === "ar" ? "افتح الديوان" : "Open the Diwan",
 });
 
@@ -400,7 +400,7 @@ export const twoStepReset = (
   app: string
 ) =>
   build(lang, (l) => ({
-    action: nexus(app, l),
+    action: diwan(app, l),
     heading:
       l === "ar"
         ? "أُعيد ضبط الخطوة الثانية لتسجيل دخولك"
@@ -661,7 +661,7 @@ export const removalRequested = (
   overdue = false
 ) =>
   build(lang, (l) => ({
-    action: nexus(app, l, "/programs"),
+    action: diwan(app, l, "/programs"),
     heading: removalHeading[overdue ? "overdue" : "new"][l],
     paragraphs: [
       l === "ar"
@@ -781,7 +781,7 @@ export const applicationReceived = (lang: Lang, partner: string, app: string) =>
 /** Partnerships and the President: an application waits. */
 export const applicationWaiting = (lang: Lang, partner: string, app: string) =>
   build(lang, (l) => ({
-    action: nexus(app, l, "/people/partners/applications"),
+    action: diwan(app, l, "/people/partners/applications"),
     heading:
       l === "ar"
         ? `طلب شراكة: ${partner}`
@@ -1268,7 +1268,7 @@ export const roleAssigned = (
   build(lang, (l) => {
     const lines = ROLE_LINES[l];
     return {
-      action: nexus(app, l),
+      action: diwan(app, l),
       heading: `${lines.heading}: ${pick(l, role.name_ar, role.name_en)}`,
       paragraphs: [
         role.ends_at
@@ -1430,7 +1430,7 @@ export interface ReplyLine {
 /** Membership: the day's replies on Get involved, in one email. */
 export const repliesDigest = (lang: Lang, replies: ReplyLine[], app: string) =>
   build(lang, (l) => ({
-    action: nexus(app, l, "/people/openings"),
+    action: diwan(app, l, "/people/openings"),
     heading:
       l === "ar"
         ? `ردود جديدة في «شارك» (${replies.length})`

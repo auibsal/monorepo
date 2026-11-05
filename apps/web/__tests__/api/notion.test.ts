@@ -11,7 +11,7 @@ const {
   checkDocument,
   checkEvent,
   checkProgram,
-  checkWaraq,
+  checkQirtas,
   languageOf,
 } = await import("@/lib/api/notion/rules");
 
@@ -195,13 +195,16 @@ describe("publishing rules", () => {
       checkProgram(
         page({
           Name: title("Listening Room"),
-          Rhythm: text("Tuesdays, every fourth week"),
+          Rhythm: text("Tuesdays, as the term calendar sets"),
           Summary: text("An album played in full, then talked about."),
         })
       )
     ).toMatchObject({
       ok: true,
-      values: { rhythm: "Tuesdays, every fourth week", slug: "listening-room" },
+      values: {
+        rhythm: "Tuesdays, as the term calendar sets",
+        slug: "listening-room",
+      },
     });
   });
 
@@ -231,10 +234,10 @@ describe("publishing rules", () => {
   test("a Qirtas row is one language and needs its desk", () => {
     const select = (name: string) => ({ select: { name }, type: "select" });
     expect(
-      checkWaraq(page({ Title: title("Book drive results") }))
+      checkQirtas(page({ Title: title("Book drive results") }))
     ).toMatchObject({ ok: false });
     expect(
-      checkWaraq(
+      checkQirtas(
         page({
           Desk: select("News"),
           Excerpt: text("Second Chapter collected books."),
@@ -252,7 +255,7 @@ describe("publishing rules", () => {
     });
     // An Arabic row on its own is an Arabic piece, with its own desk.
     expect(
-      checkWaraq(
+      checkQirtas(
         page({
           Desk: select("Letters"),
           Language: select("Arabic"),
@@ -263,7 +266,7 @@ describe("publishing rules", () => {
   });
 
   test("a Qirtas Arabic edition names its English row and takes its desk", () => {
-    const result = checkWaraq(
+    const result = checkQirtas(
       page({
         "Edition of": {
           relation: [{ id: "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee" }],
@@ -284,7 +287,7 @@ describe("publishing rules", () => {
   });
 
   test("a News post page goes to the News desk, dated for 9:00 AM Baghdad time", () => {
-    const result = checkWaraq(
+    const result = checkQirtas(
       page({
         "Publish on": {
           date: { end: null, start: "2030-01-05" },
