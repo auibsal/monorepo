@@ -206,3 +206,29 @@ export const publishedPrompts = async (client: Client, programmeId: string) =>
       .eq("is_published", true)
       .order("created_at", { ascending: false })
   ) ?? [];
+
+/**
+ * A program's book ballots (design review A33, D12), the latest first,
+ * each with its books; counts come from `ballotCounts`.
+ */
+export const bookBallots = async (client: Client, programmeId: string) =>
+  unwrap(
+    await client
+      .schema("programmes")
+      .from("book_ballots")
+      .select(
+        "id, title_en, title_ar, closes_at, created_at, books:book_choices(id, title_en, title_ar, author_en, author_ar, created_at)"
+      )
+      .eq("programme_id", programmeId)
+      .order("closes_at", { ascending: false })
+      .order("created_at", {
+        ascending: true,
+        referencedTable: "book_choices",
+      })
+  ) ?? [];
+
+/** Each book's votes: once the ballot closes, or for its program's managers. */
+export const ballotCounts = async (client: Client, ballotId: string) =>
+  unwrap(
+    await client.schema("programmes").rpc("ballot_counts", { ballot: ballotId })
+  ) ?? [];

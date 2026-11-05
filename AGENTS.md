@@ -487,6 +487,14 @@ any schema change. Integration tests run against a local stack with
   Room played, a reading list; https only) are added in place on the
   event's page in the Diwan by its program's event managers, and show
   with the session among the program's past sessions.
+- **Book Circle's vote** (design review A33, decision D12, Nov 4, 2026).
+  The host opens a ballot in the program's Vote tab in the Diwan with up
+  to three books and a closing time (`programmes.book_ballots`,
+  `book_choices`; the books are fixed once anyone votes); members vote on
+  the program's page, once each and changeable while it is open
+  (`programmes.book_votes`, read only by the voter). The counts
+  (`programmes.ballot_counts()`) show to the host throughout and to
+  everyone once the ballot closes, when the page names the circle's book.
 - **Qirtas, one door** (owner, Oct 31, 2026). Members send everything,
   every section, from `/qirtas/write` (`/qirtas/write/<type>` is the
   form), and everything they send is read blind. Edition calls (Letters,

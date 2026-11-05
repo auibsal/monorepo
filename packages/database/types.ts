@@ -5389,6 +5389,110 @@ export type Database = {
           },
         ];
       };
+      book_ballots: {
+        Row: {
+          closes_at: string;
+          created_at: string;
+          created_by: string | null;
+          id: string;
+          programme_id: string;
+          title_ar: string;
+          title_en: string;
+        };
+        Insert: {
+          closes_at: string;
+          created_at?: string;
+          created_by?: string | null;
+          id?: string;
+          programme_id: string;
+          title_ar?: string;
+          title_en?: string;
+        };
+        Update: {
+          closes_at?: string;
+          created_at?: string;
+          created_by?: string | null;
+          id?: string;
+          programme_id?: string;
+          title_ar?: string;
+          title_en?: string;
+        };
+        Relationships: [];
+      };
+      book_choices: {
+        Row: {
+          author_ar: string;
+          author_en: string;
+          ballot_id: string;
+          created_at: string;
+          id: string;
+          title_ar: string;
+          title_en: string;
+        };
+        Insert: {
+          author_ar?: string;
+          author_en?: string;
+          ballot_id: string;
+          created_at?: string;
+          id?: string;
+          title_ar?: string;
+          title_en?: string;
+        };
+        Update: {
+          author_ar?: string;
+          author_en?: string;
+          ballot_id?: string;
+          created_at?: string;
+          id?: string;
+          title_ar?: string;
+          title_en?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "book_choices_ballot_id_fkey";
+            columns: ["ballot_id"];
+            isOneToOne: false;
+            referencedRelation: "book_ballots";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      book_votes: {
+        Row: {
+          ballot_id: string;
+          choice_id: string;
+          user_id: string;
+          voted_at: string;
+        };
+        Insert: {
+          ballot_id: string;
+          choice_id: string;
+          user_id?: string;
+          voted_at?: string;
+        };
+        Update: {
+          ballot_id?: string;
+          choice_id?: string;
+          user_id?: string;
+          voted_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "book_votes_ballot_id_fkey";
+            columns: ["ballot_id"];
+            isOneToOne: false;
+            referencedRelation: "book_ballots";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "book_votes_choice_id_fkey";
+            columns: ["choice_id"];
+            isOneToOne: false;
+            referencedRelation: "book_choices";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       episodes: {
         Row: {
           created_at: string;
@@ -6191,6 +6295,13 @@ export type Database = {
       attach_six_words: {
         Args: { card_code: string; digits: string; entry_id: string };
         Returns: undefined;
+      };
+      ballot_counts: {
+        Args: { ballot: string };
+        Returns: {
+          choice_id: string;
+          votes: number;
+        }[];
       };
       cancel_audition: { Args: { audition_id: string }; Returns: undefined };
       clear_production_rights: {

@@ -8,6 +8,24 @@ first session); section numbers (§) refer to it.
 Branch: `claude/program-pages` (PR 4e of the design review).
 
 
+## The design review: PR 5b, Book Circle's vote (2026-11-05)
+
+Branch: `claude/book-circle-vote`, on `claude/tour-and-listening` (#209).
+
+- [x] A33 Book Circle's vote (D12): ballots of up to three books in the
+  Diwan's Vote tab, members' votes on the program's page, counts for the
+  host throughout and for everyone once closed (migration
+  `20261101003500`, `99_book_votes.test.sql`).
+- [ ] A34 The al-Mutanabbi Street trip page: the platform records no
+  written Student Life approval yet; waiting on the owner for where it is
+  recorded.
+- [ ] A36 The worst-poem contest page: waiting on the owner for what the
+  page holds (its rules are not on record).
+- needs-native-review: `web.programs.page.vote.*`,
+  `nexus.admin.programmes.vote.*`, `nexus.admin.programmes.tabs.vote`,
+  `nexus.admin.activity.things.programmes_book_ballots`,
+  `programmes_book_choices`.
+
 ## The design review: PR 5b, the Tour's wall, the typewriter, session links (2026-11-05)
 
 Branch: `claude/tour-and-listening`, on PR 4e (`claude/program-pages`).
