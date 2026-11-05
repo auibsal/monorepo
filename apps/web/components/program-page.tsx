@@ -4,6 +4,7 @@ import { formatClock, formatLongDate } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
 import { events, journal, localized, programmes } from "@repo/sal-data";
 import { getTranslations } from "next-intl/server";
+import { BookVote } from "@/components/book-vote";
 import { SecondChapterGive } from "@/components/second-chapter-give";
 import { Section } from "@/components/section";
 import type { Series } from "@/components/series";
@@ -281,6 +282,99 @@ const BookCircleShelf = async ({
   );
 };
 
+/**
+ * Book Circle's vote (the design review A33, decision D12): the open
+ * ballot's three books, where members vote; with none open, the last
+ * ballot's result once it has closed (`programmes.ballot_counts()` shows
+ * counts only then).
+ */
+const BookCircleVote = async ({
+  locale,
+  series,
+}: {
+  readonly locale: Locale;
+  readonly series: Series;
+}) => {
+  const t = await getTranslations({ locale, namespace: "web.programs.page" });
+  const ballots = await readPublished(
+    ["programmes"],
+    (c) => programmes.bookBallots(c, series.id),
+    []
+  );
+  const now = Date.now();
+  const ballot =
+    ballots.find((b) => Date.parse(b.closes_at) > now && b.books.length > 0) ??
+    ballots.find((b) => b.books.length > 0) ??
+    null;
+  if (!ballot) {
+    return null;
+  }
+  const books = ballot.books.flatMap((book) =>
+    localized(book, "title", locale)
+      ? [
+          {
+            author: localized(book, "author", locale),
+            id: book.id,
+            title: localized(book, "title", locale),
+          },
+        ]
+      : []
+  );
+  const title = localized(ballot, "title", locale) || t("vote.title");
+  if (Date.parse(ballot.closes_at) > now) {
+    return (
+      <Section id="vote" title={title}>
+        <p className="type-body max-w-prose">
+          {t("vote.lede", {
+            closes: formatLongDate(ballot.closes_at, locale),
+          })}
+        </p>
+        <BookVote
+          ballotId={ballot.id}
+          books={books}
+          closesAt={ballot.closes_at}
+          path={programPath(series)}
+        />
+      </Section>
+    );
+  }
+  const counts = await readPublished(
+    ["programmes"],
+    (c) => programmes.ballotCounts(c, ballot.id),
+    []
+  );
+  const votesFor = (id: string) =>
+    counts.find((c) => c.choice_id === id)?.votes ?? 0;
+  const top = Math.max(0, ...counts.map((c) => c.votes));
+  const chosen = books.filter(
+    (book) =>
+      top > 0 && counts.find((c) => c.choice_id === book.id)?.votes === top
+  );
+  if (chosen.length === 0) {
+    return null;
+  }
+  return (
+    <Section id="vote" title={title}>
+      <p className="type-lede">
+        {t("vote.chosen", {
+          titles: chosen.map((b) => b.title).join(t("vote.and")),
+        })}
+      </p>
+      <ul className="grid gap-1">
+        {books.map((book) => (
+          <li className="type-caption text-text-secondary" key={book.id}>
+            {t("vote.count", {
+              count: votesFor(book.id),
+              title: book.title,
+              votes: String(votesFor(book.id)),
+            })}
+          </li>
+        ))}
+      </ul>
+    </Section>
+  );
+};
+
 /** /events/book-circle/shelf: the same reviews as a plain list. */
 export const BookCircleShelfList = async ({
   locale,
@@ -409,7 +503,12 @@ export const ProgramFeature = ({
     case "typewriter-tour":
       return <TypewriterTourWall locale={locale} />;
     case "book-circle":
-      return <BookCircleShelf locale={locale} series={series} />;
+      return (
+        <>
+          <BookCircleVote locale={locale} series={series} />
+          <BookCircleShelf locale={locale} series={series} />
+        </>
+      );
     case "open-pages":
       return <OpenPagesPrompts locale={locale} series={series} />;
     default:

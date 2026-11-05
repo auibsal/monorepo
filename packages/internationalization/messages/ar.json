@@ -1356,7 +1356,8 @@
           "shifts": "المناوبات",
           "six-words": "ست كلمات",
           "collection": "الجمع",
-          "prompts": "بطاقات الكتابة"
+          "prompts": "بطاقات الكتابة",
+          "vote": "التصويت"
         },
         "episodes": {
           "new": "حلقة جديدة",
@@ -1558,6 +1559,24 @@
           "unpublish": "أزلها من الصفحة",
           "remove": "احذف",
           "removeConfirm": "حذف هذه البطاقة؟"
+        },
+        "vote": {
+          "lede": "اختر ما يصل إلى ثلاثة كتب وموعدًا لإغلاق التصويت، ويصوّت الأعضاء في صفحة حلقة الكتاب. ترى الأصوات حين تصل، ويراها الآخرون بعد إغلاق التصويت.",
+          "newBallot": "افتح تصويتًا",
+          "ballotTitle": "موضوع التصويت",
+          "closes": "موعد إغلاق التصويت",
+          "empty": "لا تصويت بعد.",
+          "noBooks": "لا كتب في هذا التصويت بعد.",
+          "bookTitle": "الكتاب",
+          "author": "المؤلف",
+          "addBook": "أضف كتابًا",
+          "votes": "{count, plural, =0 {لا أصوات} one {صوت واحد} two {صوتان} few {{votes} أصوات} many {{votes} صوتًا} other {{votes} صوت}}",
+          "closesOn": "{count, plural, =0 {يُغلق في {date} · لا أصوات حتى الآن} one {يُغلق في {date} · صوت واحد حتى الآن} two {يُغلق في {date} · صوتان حتى الآن} few {يُغلق في {date} · {votes} أصوات حتى الآن} many {يُغلق في {date} · {votes} صوتًا حتى الآن} other {يُغلق في {date} · {votes} صوت حتى الآن}}",
+          "closedOn": "{count, plural, =0 {أُغلق في {date} · لا أصوات} one {أُغلق في {date} · صوت واحد} two {أُغلق في {date} · صوتان} few {أُغلق في {date} · {votes} أصوات} many {أُغلق في {date} · {votes} صوتًا} other {أُغلق في {date} · {votes} صوت}}",
+          "removeBook": "احذف",
+          "removeBookConfirm": "أتحذف هذا الكتاب من التصويت؟",
+          "removeBallot": "احذف التصويت",
+          "removeBallotConfirm": "أتحذف هذا التصويت وكتبه وكل الأصوات؟"
         }
       },
       "governance": {
@@ -2936,7 +2955,9 @@
           "governance_partner_invitations": "دعوة",
           "membership_guests": "ضيفًا للجمعية",
           "programmes_prompts": "بطاقة كتابة",
-          "events_session_links": "رابط جلسة"
+          "events_session_links": "رابط جلسة",
+          "programmes_book_ballots": "تصويت على كتاب",
+          "programmes_book_choices": "كتاب في تصويت"
         },
         "roleFor": "{role} لـ{person}"
       },
@@ -5104,6 +5125,20 @@
           "soundOn": "صوت المفاتيح: مشغّل",
           "clear": "ابدأ من جديد",
           "nothingKept": "لا يُحفظ شيء مما تكتبه هنا. كلماتك الست للجدار تُكتب في الجولة، على بطاقة."
+        },
+        "vote": {
+          "title": "كتاب الشهر القادم",
+          "lede": "اختار المضيف ثلاثة كتب، ويختار الأعضاء واحدًا منها. يُغلق التصويت في {closes}.",
+          "cast": "صوّت لهذا الكتاب",
+          "change": "صوّت لهذا بدلًا منه",
+          "yours": "صوتك",
+          "closed": "أُغلق التصويت. تظهر النتيجة هنا قريبًا.",
+          "signIn": "سجّل الدخول لتصوّت",
+          "membersOnly": "التصويت للأعضاء فقط. انضم إلى الجمعية ليكون لك رأي.",
+          "failed": "لم يُسجَّل صوتك. حاول مرة أخرى.",
+          "chosen": "اختارت الحلقة {titles}.",
+          "and": " و",
+          "count": "{count, plural, =0 {{title}: لا أصوات} one {{title}: صوت واحد} two {{title}: صوتان} few {{title}: {votes} أصوات} many {{title}: {votes} صوتًا} other {{title}: {votes} صوت}}"
         }
       }
     }

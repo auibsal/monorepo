@@ -46,6 +46,7 @@ import { memberName } from "../members/directory";
 import { Needs } from "../needs";
 import { NotionManaged } from "../notion-managed";
 import type { ProgramTab } from "../tabs";
+import { BookVote } from "./book-vote";
 import { Prompts } from "./prompts";
 import { Sessions } from "./sessions";
 import { TourCards } from "./six-words";
@@ -1310,6 +1311,7 @@ export const ProgramPage = ({
     "needs",
     ...(slug === "typewriter-tour" ? (["six-words"] as const) : []),
     ...(slug === "open-pages" ? (["prompts"] as const) : []),
+    ...(slug === "book-circle" ? (["vote"] as const) : []),
     ...(slug === "second-chapter" &&
     hasPermissionAnywhere(grants.data, "charity.manage")
       ? (["collection"] as const)
@@ -1347,6 +1349,7 @@ export const ProgramPage = ({
         {tab === "needs" ? <Needs programmeId={programme.id} /> : null}
         {tab === "six-words" ? <TourCards /> : null}
         {tab === "prompts" ? <Prompts programmeId={programme.id} /> : null}
+        {tab === "vote" ? <BookVote programmeId={programme.id} /> : null}
         {tab === "collection" ? <CharityAdmin /> : null}
       </div>
     </div>

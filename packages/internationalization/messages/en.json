@@ -1356,7 +1356,8 @@
           "shifts": "Shifts",
           "six-words": "Six Words",
           "collection": "Collection",
-          "prompts": "Prompts"
+          "prompts": "Prompts",
+          "vote": "Vote"
         },
         "episodes": {
           "new": "New episode",
@@ -1558,6 +1559,24 @@
           "unpublish": "Take off the page",
           "remove": "Remove",
           "removeConfirm": "Remove this prompt?"
+        },
+        "vote": {
+          "lede": "Choose up to three books and a closing time; members vote on Book Circle's page. You see the votes as they come; everyone else sees them once voting closes.",
+          "newBallot": "Open a vote",
+          "ballotTitle": "What the vote is for",
+          "closes": "Voting closes",
+          "empty": "No votes yet.",
+          "noBooks": "No books on this vote yet.",
+          "bookTitle": "Book",
+          "author": "Author",
+          "addBook": "Add a book",
+          "votes": "{count, plural, one {{votes} vote} other {{votes} votes}}",
+          "closesOn": "{count, plural, one {Closes {date} · {votes} vote so far} other {Closes {date} · {votes} votes so far}}",
+          "closedOn": "{count, plural, one {Closed {date} · {votes} vote} other {Closed {date} · {votes} votes}}",
+          "removeBook": "Remove",
+          "removeBookConfirm": "Remove this book from the vote?",
+          "removeBallot": "Remove the vote",
+          "removeBallotConfirm": "Remove this vote, its books and every vote cast?"
         }
       },
       "governance": {
@@ -2936,7 +2955,9 @@
           "governance_partner_invitations": "an invitation",
           "membership_guests": "a guest of the Society",
           "programmes_prompts": "a prompt",
-          "events_session_links": "a session's link"
+          "events_session_links": "a session's link",
+          "programmes_book_ballots": "a book vote",
+          "programmes_book_choices": "a book on a vote"
         },
         "roleFor": "{role} for {person}"
       },
@@ -5104,6 +5125,20 @@
           "soundOn": "Key sound: on",
           "clear": "Start again",
           "nothingKept": "Nothing you type here is kept. Your six words for the wall are written on the Tour, on a card."
+        },
+        "vote": {
+          "title": "Next month's book",
+          "lede": "The host chose three books; members choose one. Voting closes on {closes}.",
+          "cast": "Vote for this book",
+          "change": "Vote for this one instead",
+          "yours": "Your vote",
+          "closed": "Voting has closed. The result shows here soon.",
+          "signIn": "Sign in to vote",
+          "membersOnly": "Only members vote. Join the Society to have a say.",
+          "failed": "Your vote didn't go through. Try again.",
+          "chosen": "The circle chose {titles}.",
+          "and": " and ",
+          "count": "{count, plural, one {{title}: {votes} vote} other {{title}: {votes} votes}}"
         }
       }
     }

@@ -6,6 +6,9 @@ own versions in the Library.
 
 ## Unreleased
 
+- Book Circle votes on its next book: the host chooses three in the
+  Diwan, members vote on the program's page, and the page names the
+  circle's choice once voting closes.
 - The Typewriter Tour's page shows the Six Words wall and a typewriter to
   try (nothing typed is kept). Past sessions can carry outside links, such
   as the album the Listening Room played, added on the event in the Diwan.

@@ -9,6 +9,7 @@ export const programTabs = [
   "needs",
   "six-words",
   "prompts",
+  "vote",
   "collection",
 ] as const;
 export type ProgramTab = (typeof programTabs)[number];

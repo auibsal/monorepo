@@ -62,6 +62,8 @@ const THINGS = {
   "membership.memberships": "people",
   "membership.service_records": "people",
   "membership.verification_requests": "people",
+  "programmes.book_ballots": "events",
+  "programmes.book_choices": "events",
   "programmes.episodes": "qirtas",
   "programmes.needs": "events",
   "programmes.opening_replies": "people",
