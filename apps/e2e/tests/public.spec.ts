@@ -71,9 +71,7 @@ test.describe("public site", () => {
     await expect(next.getByRole("link")).toHaveAttribute("href", /\/events\//);
   });
 
-  test("every event is a standard event: no series pages", async ({
-    page,
-  }) => {
+  test("every event is a standard event: no series pages", async ({ page }) => {
     // Owner, Nov 5, 2026: the recurring events are events, not series.
     const gone = await page.goto(`${urls.web}/events/salon`);
     expect(gone?.status()).toBe(404);
