@@ -6,6 +6,9 @@ own versions in the Library.
 
 ## Unreleased
 
+- The Typewriter Tour's page shows the Six Words wall and a typewriter to
+  try (nothing typed is kept). Past sessions can carry outside links, such
+  as the album the Listening Room played, added on the event in the Diwan.
 - The Qirtas Awards by year, each round on its own page; author pages
   list the Editions and the Awards their work was shortlisted for or won;
   the Company's productions on a shelf of playbills.

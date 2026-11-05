@@ -237,3 +237,33 @@ export const withdrawInvitation = async (
       .eq("event_id", eventId)
       .eq("user_id", userId)
   );
+
+/**
+ * A session's outside links (design review A37): what was played or read,
+ * shown with it among the program's past sessions. RLS shows the links of
+ * the sessions the reader may see.
+ */
+export const sessionLinks = async (
+  client: Client,
+  eventIds: readonly string[]
+) =>
+  eventIds.length === 0
+    ? []
+    : (unwrap(
+        await events(client)
+          .from("session_links")
+          .select("id, event_id, label_en, label_ar, url")
+          .in("event_id", [...eventIds])
+          .order("created_at")
+      ) ?? []);
+
+export const sessionLinkSchema = z.object({
+  label_ar: z.string().trim().max(200),
+  label_en: z.string().trim().max(200),
+  url: z
+    .string()
+    .trim()
+    .max(500)
+    .refine((v) => v.startsWith("https://"), { message: "https_only" })
+    .refine((v) => URL.canParse(v), { message: "invalid_url" }),
+});

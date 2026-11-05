@@ -1745,6 +1745,44 @@ export type Database = {
         };
         Relationships: [];
       };
+      session_links: {
+        Row: {
+          created_at: string;
+          created_by: string | null;
+          event_id: string;
+          id: string;
+          label_ar: string;
+          label_en: string;
+          url: string;
+        };
+        Insert: {
+          created_at?: string;
+          created_by?: string | null;
+          event_id: string;
+          id?: string;
+          label_ar?: string;
+          label_en?: string;
+          url: string;
+        };
+        Update: {
+          created_at?: string;
+          created_by?: string | null;
+          event_id?: string;
+          id?: string;
+          label_ar?: string;
+          label_en?: string;
+          url?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "session_links_event_id_fkey";
+            columns: ["event_id"];
+            isOneToOne: false;
+            referencedRelation: "events";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       waitlist: {
         Row: {
           answers: NonNullable<Json>;

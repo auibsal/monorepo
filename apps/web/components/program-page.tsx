@@ -7,6 +7,7 @@ import { getTranslations } from "next-intl/server";
 import { SecondChapterGive } from "@/components/second-chapter-give";
 import { Section } from "@/components/section";
 import type { Series } from "@/components/series";
+import { TypingToy } from "@/components/typing-toy";
 import { readPublished } from "@/lib/supabase";
 
 /**
@@ -63,21 +64,26 @@ const loadPast = async (series: Series, limit: number) =>
       const sessions =
         (await events.pastPublicEvents(c, { limit, programmeId: series.id })) ??
         [];
-      const pieces = await journal.piecesFromEvents(
-        c,
-        sessions.map((s) => s.id)
-      );
-      return { pieces, sessions };
+      const ids = sessions.map((s) => s.id);
+      const [pieces, links] = await Promise.all([
+        journal.piecesFromEvents(c, ids),
+        events.sessionLinks(c, ids),
+      ]);
+      return { links, pieces, sessions };
     },
-    { pieces: [], sessions: [] }
+    { links: [], pieces: [], sessions: [] }
   );
 
+type SessionLink = Awaited<ReturnType<typeof events.sessionLinks>>[number];
+
 const SessionRows = ({
+  links,
   locale,
   pieces,
   readLabel,
   sessions,
 }: {
+  readonly links: readonly SessionLink[];
   readonly locale: Locale;
   readonly pieces: Awaited<ReturnType<typeof journal.piecesFromEvents>>;
   readonly readLabel: string;
@@ -86,6 +92,10 @@ const SessionRows = ({
   <ul className="grid border-line border-b">
     {sessions.map((session) => {
       const written = pieces.filter((p) => p.event_id === session.id);
+      // Outside links in the page's language only (one language per page).
+      const outside = links.filter(
+        (l) => l.event_id === session.id && localized(l, "label", locale)
+      );
       return (
         <li
           className="grid gap-1 border-line border-t py-3 sm:grid-cols-[12rem_1fr] sm:gap-x-6"
@@ -105,6 +115,17 @@ const SessionRows = ({
                 key={piece.id}
               >
                 {readLabel}: {localized(piece, "title", locale)}
+              </a>
+            ))}
+            {outside.map((link) => (
+              <a
+                className="type-caption link"
+                href={link.url}
+                key={link.id}
+                rel="noopener"
+                target="_blank"
+              >
+                {localized(link, "label", locale)}
               </a>
             ))}
           </span>
@@ -142,6 +163,7 @@ export const PastSessions = async ({
       title={t("past")}
     >
       <SessionRows
+        links={past.links}
         locale={locale}
         pieces={past.pieces}
         readLabel={t("read")}
@@ -179,6 +201,7 @@ export const ProgramPast = async ({
       </header>
       {past.sessions.length > 0 ? (
         <SessionRows
+          links={past.links}
           locale={locale}
           pieces={past.pieces}
           readLabel={t("read")}
@@ -329,6 +352,49 @@ const OpenPagesPrompts = async ({
   );
 };
 
+/**
+ * The Typewriter Tour's Six Words wall (the design review A29, Nov 4,
+ * 2026): the cards transcribed from the Tour (`programmes.six_words_wall`,
+ * approved only), in the page's language, set in Ubuntu Mono like the
+ * typewriter; and a typewriter to try, which keeps nothing (A30).
+ */
+const TypewriterTourWall = async ({ locale }: { readonly locale: Locale }) => {
+  const t = await getTranslations({ locale, namespace: "web.programs.page" });
+  const wall = (
+    await readPublished(
+      ["programmes"],
+      (c) => programmes.sixWordsWall(c, 120),
+      []
+    )
+  ).filter((entry) => entry.language === locale);
+  return (
+    <>
+      {wall.length > 0 ? (
+        <Section id="six-words" title={t("wall")}>
+          <ul className="grid gap-x-10 sm:grid-cols-2 lg:grid-cols-3">
+            {wall.map((entry) => (
+              <li
+                className="grid content-start gap-1 border-line border-t py-space-4"
+                key={entry.id}
+              >
+                <p className="font-mono text-lg">{entry.text}</p>
+                {localized(entry, "author", locale) ? (
+                  <p className="type-caption text-text-secondary">
+                    {localized(entry, "author", locale)}
+                  </p>
+                ) : null}
+              </li>
+            ))}
+          </ul>
+        </Section>
+      ) : null}
+      <Section id="try" title={t("try")}>
+        <TypingToy />
+      </Section>
+    </>
+  );
+};
+
 /** What a program has that is its own, after its sessions. */
 export const ProgramFeature = ({
   locale,
@@ -340,6 +406,8 @@ export const ProgramFeature = ({
   switch (series.slug) {
     case "second-chapter":
       return <SecondChapterGive locale={locale} />;
+    case "typewriter-tour":
+      return <TypewriterTourWall locale={locale} />;
     case "book-circle":
       return <BookCircleShelf locale={locale} series={series} />;
     case "open-pages":

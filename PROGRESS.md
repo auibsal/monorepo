@@ -5,6 +5,26 @@ Every session starts here and continues from the first unticked item. The
 brief is `sal-platform-claude-code-prompt.md` (uploaded at the start of the
 first session); section numbers (§) refer to it.
 
+Branch: `claude/tour-and-listening` (PR 5b of the design review).
+
+
+## The design review: PR 5b, the Tour's wall, the typewriter, session links (2026-11-05)
+
+Branch: `claude/tour-and-listening`.
+
+- [x] A29 The Six Words wall on the Typewriter Tour's page, from the
+  approved cards, in Ubuntu Mono, one language per page.
+- [x] A30 A typewriter to try: six words, kept nowhere, key sound off by
+  default.
+- [x] A37 The Listening Room's archive with outside links:
+  `events.session_links` (migration `20261101003400`,
+  `99_session_links.test.sql`), added on the event's page in the Diwan,
+  shown with each past session on every program's page.
+- needs-native-review: `web.programs.page.wall`, `try`, `toy.*`;
+  `nexus.admin.event.links.*`; `nexus.admin.activity.things.events_session_links`.
+- Next: PR 5b continued (A33 Book Circle vote, A34 the Mutanabbi Street
+  trip, A36 the worst-poem contest), then 5c (A17) and 5d (A10, A11, A12).
+
 Branch: `claude/awards-authors-playbills` (PR 5a of the design review).
 
 
