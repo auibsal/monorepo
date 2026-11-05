@@ -6,6 +6,9 @@ own versions in the Library.
 
 ## Unreleased
 
+- Write for Qirtas is open to read before signing in: what each section
+  takes and how work is read, then sign in or join. Every article ends
+  with a way to write for its section and to get the Sunday Paper.
 - Qirtas's games are daily: the word, a word search, a crossword and
   anagrams, new every day in English and Arabic and counted from No. 1
   again. Games now come from the editors only.

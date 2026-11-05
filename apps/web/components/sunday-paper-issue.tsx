@@ -3,6 +3,7 @@ import { formatClock, formatLongDate } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
 import { events, journal, localized } from "@repo/sal-data";
 import { getTranslations } from "next-intl/server";
+import { NewsletterSignup } from "@/components/newsletter/signup";
 import { type Issue, issuesSince } from "@/lib/sunday-paper";
 import { readPublished } from "@/lib/supabase";
 
@@ -170,11 +171,17 @@ export const SundayPaperIssue = async ({
         </section>
       </div>
 
-      <p className="type-caption print:hidden">
-        <Link className="link" href="/sunday-paper">
+      {/* The sign-up itself, not a link to it (owner, Nov 5, 2026): one
+          step fewer for a reader who has just read an issue. */}
+      <section
+        aria-labelledby="next-issue"
+        className="grid gap-3 border-line border-t pt-6 print:hidden"
+      >
+        <h2 className="type-heading" id="next-issue">
           {t("archive.subscribe")}
-        </Link>
-      </p>
+        </h2>
+        <NewsletterSignup compact />
+      </section>
     </article>
   );
 };

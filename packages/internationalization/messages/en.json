@@ -652,7 +652,7 @@
       "throughPartnerOptional": "Optional: if this work comes through one of the Society's partners. It is never shown to readers.",
       "asMember": "As a member of the Society",
       "write": {
-        "lede": "Send your work to Qirtas, the Society's paper of news, letters and art. Every section takes work all year. Readers see your work without your name; once an editor takes it up, they edit it with you.",
+        "lede": "Send your work to Qirtas, the Society's paper of news, letters and art. Every section but Games takes work all year, from members and the Society's guests.",
         "callCloses": "{call} closes {date}. Up to {max} pieces per person.",
         "noCall": "No call for the printed Edition is open now. Letters and Gallery work is still welcome and is published online.",
         "yourWork": "Your drafts",
@@ -683,7 +683,6 @@
           "news": "Reports, features, interviews, profiles, event coverage and explainers. Pitch a story or send it.",
           "video": "Next Stop episodes, reels, short films, video reports, recorded performances and animation. Send a link.",
           "voices": "Reviews, columns, opinion essays, letters to the editor, debates and recommendations. No party politics, religion, sect or ethnicity.",
-          "games": "Crosswords, quizzes, word ladders, riddles, anagrams and Name the Book. Send the puzzle and its answers.",
           "letters": "Poetry, fiction, creative nonfiction, drama and translation.",
           "gallery": "Art, photography, illustration, comics, calligraphy and photo essays."
         },
@@ -716,7 +715,29 @@
         "draftMissing": "This draft isn't here. It may have been sent or deleted.",
         "draftStatus": "Draft, not sent",
         "untitledDraft": "Untitled draft",
-        "draftTitle": "Your draft"
+        "draftTitle": "Your draft",
+        "door": {
+          "who": "Members and the Society's guests send work after signing in. Pick a type below and you come back to it once you are in.",
+          "signIn": "Sign in to send",
+          "join": "Not a member yet? Join the Society"
+        },
+        "how": {
+          "title": "How it works",
+          "choose": {
+            "title": "Choose a type and write",
+            "body": "Write in the form, or upload a Word or PDF file and its text fills the form. Save a draft and come back to it. You may publish under a pen name."
+          },
+          "read": {
+            "title": "Read without your name",
+            "body": "The section's readers see your work without your name, so it is judged on the page alone."
+          },
+          "edit": {
+            "title": "Edited with you",
+            "body": "If an editor takes it up, they work on it with you before it is published. Every decision comes with its reason, in your work's history."
+          }
+        },
+        "gamesNote": "Games come from Qirtas's editors.",
+        "gamesLink": "Play today's games"
       }
     },
     "profile": {
@@ -4524,6 +4545,12 @@
         "title": "Masthead",
         "lede": "The people who make Qirtas, from the roles they hold at the Society.",
         "empty": "The masthead is being formed."
+      },
+      "sendTo": "Send your work to {desk}",
+      "end": {
+        "label": "What next",
+        "write": "{desk} takes work all year from members and the Society's guests, read without your name.",
+        "writeLink": "Send your work"
       }
     },
     "about": {
@@ -5110,7 +5137,8 @@
         "noPieces": "Qirtas published nothing new that month.",
         "noEvents": "Nothing was on the calendar.",
         "subscribe": "Get the next one by email"
-      }
+      },
+      "notices": "Email notices are in Settings."
     },
     "governance": {
       "title": "The Council",
