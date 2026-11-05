@@ -1,5 +1,10 @@
 import { expect, test } from "vitest";
-import { sanitizeRichText, toPlainText, withNotes } from "./sanitize";
+import {
+  sanitizeRichText,
+  toPlainText,
+  withContents,
+  withNotes,
+} from "./sanitize";
 
 const UNSAFE = /script|onclick|javascript|iframe/;
 
@@ -45,4 +50,18 @@ test("numbers notes and lists them after the text", () => {
     { html: "First.", id: "en-note-1", ref: "en-ref-1" },
     { html: "Second <em>note</em>.", id: "en-note-2", ref: "en-ref-2" },
   ]);
+});
+
+test("a long read's contents anchor each part's heading", () => {
+  const { body, contents } = withContents(
+    '<h2>One</h2><p>a</p><h2 dir="rtl">Two <em>parts</em></h2><h2></h2>',
+    "en"
+  );
+  expect(contents).toEqual([
+    { id: "en-part-1", text: "One" },
+    { id: "en-part-2", text: "Two parts" },
+  ]);
+  expect(body).toContain('<h2 id="en-part-1">One</h2>');
+  expect(body).toContain('<h2 id="en-part-2" dir="rtl">');
+  expect(body).toContain("<h2></h2>");
 });

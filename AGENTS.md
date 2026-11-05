@@ -99,7 +99,10 @@ and decisions), and continue from the first unticked item.
     receipt, an impact figure, an activity, a role, a member's hours, a
     partner's perk) is added in place on
     its list with `AddInPlace` (the form opens under the list, never a
-    dialog or a `new` page), as most admin tools do.
+    dialog or a `new` page), as most admin tools do. A long list whose
+    rows are acted on together uses `SelectableTable`
+    (`components/nexus/admin/selectable-table.tsx`, design review A40):
+    hours to confirm, an event's bookings.
   - **One place for each thing.** Nothing is kept or managed in two
     places; when two views show the same records, merge them.
   - **Counts are not rules.** Sections, types, programs and tabs are as
@@ -517,6 +520,18 @@ any schema change. Integration tests run against a local stack with
   is published, and its page shown, only once the General Secretary
   records Student Life's written approval on the event's page in the
   Diwan (`events.record_approval`, `private.trip_needs_approval`).
+- **Originals and topics** (design review PR 6b, A24 with decision D11,
+  A21; Nov 5, 2026). A translation may carry its original
+  (`journal.piece_bodies.original`, `original_lang`), shown beside it in
+  its own language and direction (`journal.textDirection`), the one
+  exception to one language per page. Topics (`journal.topics`, added by
+  `journal.publish`; `journal.piece_topics`, tagged by the piece's
+  editors) each have a page, `/qirtas/topics/<slug>`, with the list at
+  `/qirtas/topics`. A long read (ten minutes or more, three `<h2>` parts
+  or more) shows its contents beside the text (`withContents`); an
+  explainer carries figures (`journal.piece_figures`), placed with a
+  paragraph "[figure n]" (`splitAtFigures`) and drawn by `FigureChart`
+  as bars with a table view.
 - **Games, daily and from the editors** (owner, Nov 5, 2026; replaces
   PR 5c's kinds). Members send no games (`private.games_by_editors`
   refuses a Games submission or draft). Four daily games, made in the
@@ -751,7 +766,9 @@ any schema change. Integration tests run against a local stack with
   donations, the fair, the handover, the impact report;
   `charity.campaignStages`) from the days kept on the campaign, and lists
   its drop-off points (`drop_off_points`) when entered (owner, Nov 4,
-  2026); it shows signed-off figures only. No online payments of any kind.
+  2026); it shows signed-off figures only. The fair's books are listed to
+  browse, never priced, at `/events/second-chapter/catalog`
+  (`charity.catalog_books`, the campaign's Catalog tab; design review A27). No online payments of any kind.
 - **The Council page** (owner, Oct 30, 2026; `/about/council`, the members'
   Society page and the Diwan's Governance → Council) comes from the roles
   people hold (`governance.council_members()`): everyone holding a Council

@@ -30,6 +30,7 @@ export const campaignTabs = [
   "ledger",
   "signoff",
   "settings",
+  "catalog",
   "receipts",
   "handover",
   "impact",

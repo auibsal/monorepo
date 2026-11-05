@@ -8,6 +8,58 @@ first session); section numbers (§) refer to it.
 Branch: `claude/qirtas-games-masthead`.
 
 
+## The design review: PR 6b, translations beside their originals, topics (2026-11-05)
+
+Branch: `claude/pr6b-topics-translations`.
+
+- [x] A24 (D11) A translation shows its original beside it: side by side on
+  a wide screen, after it on a narrow one, in the original's own language
+  and direction (`journal.piece_bodies.original`, `original_lang`; "The
+  original" on the piece's page in the Diwan, for translations; a change
+  asks for the approvals again, like the text).
+- [x] A21 Topics, curated by the editors: whoever publishes Qirtas
+  (`journal.publish`) adds them, a piece's editors tag it on its page in
+  the Diwan; the piece names its topics, and `/qirtas/topics` and
+  `/qirtas/topics/<slug>` list them, linked from the nameplate (migration
+  `20261101004600`, `99_topics_and_originals.test.sql`).
+- needs-native-review: `web.journal.topics`, `topicsLede`, `noTopics`,
+  `topicLede`, `allTopics`, `web.journal.reading.translation`, `original`;
+  `nexus.admin.waraq.original.*`, `nexus.admin.waraq.topics.*`.
+- [x] A15 Long reads: a prose piece of ten minutes or more in three
+  parts or more (its <h2> headings) gets its contents beside the text,
+  in view as the reader goes (above it on a phone), each part an anchor
+  (`withContents`).
+- [x] A16 Explainers with figures: `journal.piece_figures` (labeled values,
+  up to 24, a unit and a source), added on an explainer's page in the
+  Diwan, placed in the text with a paragraph of its own, "[figure 1]"
+  («[شكل 1]»), or shown after it; drawn as bars in ink, the one under the
+  pointer or focus in crimson with its value, and as a table one press
+  away (migration `20261101004700`, `99_explainer_figures.test.sql`).
+- needs-native-review: `web.journal.reading.contents`,
+  `web.journal.figures.*`, `nexus.admin.waraq.figures.*`.
+- The owner, Nov 5, 2026: "All in one PR": the rest of PR 6 goes in this
+  one pull request (#220).
+- [x] A27 Second Chapter's catalog, `/events/second-chapter/catalog`: the
+  books given to the current campaign (title, author, language, copies, a
+  note), by language, browse only, never a price (`charity.catalog_books`,
+  kept on the campaign's Catalog tab in the Diwan by its managers;
+  migration `20261101004800`, `99_second_chapter_catalog.test.sql`).
+  Second Chapter's page links to it once it has books.
+- [ ] A28 The book-travel scroll piece: waits for data (where the
+  collected books went), which the platform does not keep yet.
+- needs-native-review: `web.give.catalog.*`,
+  `nexus.admin.charity.catalog.*`, `nexus.admin.charity.tabs.catalog`.
+- [x] A40 Rows chosen and acted on together on long Diwan lists
+  (`SelectableTable`, `components/nexus/admin/selectable-table.tsx`: a box
+  on each row and one for all, then a line with the count and the
+  actions): hours to confirm (People → Service, "Confirm the chosen") and
+  an event's bookings ("Check in the chosen", for people at the door
+  without their card). Each row is still decided by the database.
+- needs-native-review: `nexus.admin.kit.selection.*`,
+  `nexus.admin.event.checkInChosen`,
+  `nexus.admin.recognition.pending.confirmChosen`.
+- Next: A41, then R4.
+
 ## The design review: PR 6a, About, the 404 page and a member's year (2026-11-05)
 
 Branch: `claude/pr6a-about-record`. PR 6 started on the owner's word (Nov

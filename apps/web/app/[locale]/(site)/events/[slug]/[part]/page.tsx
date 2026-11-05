@@ -1,10 +1,11 @@
 import type { Locale } from "@repo/internationalization";
-import { events, localized } from "@repo/sal-data";
+import { charity, events, localized } from "@repo/sal-data";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { OccasionPage, occasionVisible } from "@/components/occasion-page";
 import { BookCircleShelfList, ProgramPast } from "@/components/program-page";
+import { SecondChapterCatalog } from "@/components/second-chapter-catalog";
 import { loadSeries, SeriesView, seriesMetadata } from "@/components/series";
 import { WhatsOn } from "@/components/whats-on-page";
 import { localizedMetadata } from "@/lib/metadata";
@@ -12,6 +13,7 @@ import { isMonthSegment, monthFrom } from "@/lib/whats-on";
 
 interface PartProps {
   readonly params: Promise<{ locale: Locale; part: string; slug: string }>;
+  readonly searchParams: Promise<{ language?: string }>;
 }
 
 export const generateMetadata = async ({
@@ -26,6 +28,13 @@ export const generateMetadata = async ({
     });
   }
   const series = await loadSeries(slug);
+  if (series?.slug === "second-chapter" && part === "catalog") {
+    const t = await getTranslations({ locale, namespace: "web.give.catalog" });
+    return localizedMetadata(locale, `/events/${slug}/${part}`, {
+      description: t("title"),
+      title: t("title"),
+    });
+  }
   if (series && (part === "past" || part === "shelf")) {
     const t = await getTranslations({ locale, namespace: "web.programs.page" });
     return localizedMetadata(locale, `/events/${slug}/${part}`, {
@@ -56,7 +65,7 @@ export const generateMetadata = async ({
  * (/events/salon/2026-11), or an occasion's page
  * (/events/book-circle/mutanabbi-street, /events/open-pages/worst-poem).
  */
-const PartPage = async ({ params }: PartProps) => {
+const PartPage = async ({ params, searchParams }: PartProps) => {
   const { locale, part, slug } = await params;
   setRequestLocale(locale);
   if (isMonthSegment(slug) && part === "society") {
@@ -70,6 +79,13 @@ const PartPage = async ({ params }: PartProps) => {
   }
   if (series?.slug === "book-circle" && part === "shelf") {
     return <BookCircleShelfList locale={locale} series={series} />;
+  }
+  if (series?.slug === "second-chapter" && part === "catalog") {
+    const { language } = await searchParams;
+    const only = charity.CATALOG_LANGUAGES.find((l) => l === language) ?? null;
+    return (
+      <SecondChapterCatalog language={only} locale={locale} series={series} />
+    );
   }
   const occasion = series ? events.occasionOf(series.slug, part) : undefined;
   if (series && occasion) {

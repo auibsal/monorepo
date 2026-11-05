@@ -870,7 +870,14 @@
           "find": "Type to find",
           "none": "Nothing matches."
         },
-        "tripNeedsApproval": "A trip to al-Mutanabbi Street is published only once the General Secretary records Student Life's written approval, under Occasion."
+        "tripNeedsApproval": "A trip to al-Mutanabbi Street is published only once the General Secretary records Student Life's written approval, under Occasion.",
+        "selection": {
+          "choose": "Choose",
+          "all": "Choose every row",
+          "chosen": "{count, plural, one {{countText} chosen} other {{countText} chosen}}",
+          "clear": "Clear the choice",
+          "row": "Choose {name}"
+        }
       },
       "overview": {
         "title": "Desk",
@@ -1192,7 +1199,8 @@
           "bySecretary": "The General Secretary records the approval.",
           "date": "Approved by Student Life on",
           "dateHint": "The date on Student Life's written approval. Clear it to withdraw the approval of a trip not yet published."
-        }
+        },
+        "checkInChosen": "Check in the chosen ({count})"
       },
       "checkIn": {
         "title": "Check-in",
@@ -1278,7 +1286,8 @@
           "signoff": "Sign-off queue ({count})",
           "receipts": "Receipts",
           "impact": "Impact reports",
-          "handover": "Handover"
+          "handover": "Handover",
+          "catalog": "Catalog"
         },
         "campaign": {
           "titleField": "Title",
@@ -1372,6 +1381,23 @@
           "receipt": "Receipt",
           "noReceipt": "No receipt yet",
           "note": "Note (optional)"
+        },
+        "catalog": {
+          "title": "Catalog",
+          "lede": "The books given for the fair, for readers to browse on Second Chapter's page. Never a price; a book shows while it is listed.",
+          "new": "Add a book",
+          "bookTitle": "Title",
+          "author": "Author (optional)",
+          "language": "Language",
+          "copies": "Copies",
+          "note": "Note (optional)",
+          "noteHint": "A line about the edition or condition, for example \"First edition, 1985\".",
+          "copiesCount": "{count} copies",
+          "unlisted": "Not listed",
+          "list": "List",
+          "unlist": "Unlist",
+          "remove": "Remove",
+          "removeConfirm": "Remove this book from the catalog?"
         }
       },
       "picker": {
@@ -2260,7 +2286,8 @@
           "hours": "Hours",
           "confirm": "Confirm",
           "reject": "Not confirmed",
-          "reason": "Why (optional)"
+          "reason": "Why (optional)",
+          "confirmChosen": "Confirm the chosen ({count})"
         },
         "totals": {
           "lede": "Confirmed hours this academic year. {target} hours make a member eligible to be nominated as a Fellow (B4.1); Fellows are confirmed by two-thirds of the Council.",
@@ -2798,6 +2825,37 @@
             "too_large": "The file is larger than 10 MB. Shorten it or export it at a lower quality.",
             "type_not_allowed": "Use an MP3 or M4A file."
           }
+        },
+        "original": {
+          "title": "The original",
+          "lede": "A translation may show its original beside it, in its own language and direction. Readers see it next to the translation.",
+          "language": "Language of the original",
+          "text": "The original",
+          "clear": "Empty the original and save to remove it. A change to the original asks for the approvals again, like the text."
+        },
+        "topics": {
+          "title": "Topics",
+          "lede": "Tag the piece with the topics readers can follow; each topic has its page on the site.",
+          "none": "No topics yet.",
+          "add": "Add a topic",
+          "choose": "Choose a topic",
+          "remove": "Remove",
+          "new": "New topic",
+          "name": "Topic"
+        },
+        "figures": {
+          "title": "Figures",
+          "lede": "Labeled values the reader sees as bars, or as a table. Place a figure in the text with a paragraph of its own, for example [figure 1]; a figure not placed shows after the text.",
+          "marker": "[figure {n}]",
+          "titleField": "Title",
+          "rows": "Values",
+          "rowsHint": "One a line: the English label, the Arabic label and the number, split by |. For example: Fall | الخريف | 120. Up to 24 lines.",
+          "unit": "Unit (optional)",
+          "source": "Source (optional)",
+          "new": "New figure",
+          "edit": "Edit",
+          "remove": "Remove",
+          "removeConfirm": "Remove this figure? A paragraph naming it in the text will show nothing."
         }
       },
       "awards": {
@@ -4528,7 +4586,10 @@
         "after": "Read on",
         "next": "Next",
         "inEdition": "In the Edition",
-        "notes": "Notes"
+        "notes": "Notes",
+        "translation": "The translation",
+        "original": "The original, in {language}",
+        "contents": "Contents"
       },
       "contents": "Contents",
       "launchPage": "The launch page",
@@ -4586,6 +4647,17 @@
         "label": "What next",
         "write": "{desk} takes work all year from members and the Society's guests, read without your name.",
         "writeLink": "Send your work"
+      },
+      "topics": "Topics",
+      "topicsLede": "What Qirtas has written about, by topic, chosen by its editors.",
+      "noTopics": "No topics yet.",
+      "topicLede": "Everything Qirtas has published on {topic}.",
+      "allTopics": "Every topic",
+      "figures": {
+        "asTable": "Show as a table",
+        "asBars": "Show as bars",
+        "value": "Value",
+        "source": "Source: {source}"
       }
     },
     "about": {
@@ -4803,6 +4875,22 @@
         "lede": "What the collection did, in the figures the campaign published, with the witnessed handover and the receipts.",
         "back": "Second Chapter",
         "open": "Read the impact report"
+      },
+      "catalog": {
+        "title": "The fair's books",
+        "link": "Browse the books given so far ({count})",
+        "lede": "The books given to {campaign}, to see what the fair will hold. Listed as they arrive; come to the fair for them.",
+        "none": "The books will be listed here once the next collection begins.",
+        "empty": "No books in this language yet.",
+        "languages": "Languages",
+        "all": "Every language",
+        "language": {
+          "ar": "Arabic",
+          "en": "English",
+          "other": "Another language"
+        },
+        "copies": "{count} copies",
+        "noPrices": "To browse only: books are not reserved or priced here."
       }
     },
     "contact": {

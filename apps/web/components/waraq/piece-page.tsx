@@ -190,6 +190,11 @@ export const PieceArticle = async ({
             </p>
           ) : null}
           {credit ? <p className="type-caption">{credit}</p> : null}
+          <TopicsLine
+            label={t("topics")}
+            locale={locale}
+            topics={piece.topics}
+          />
           {lockedText ? null : <TextSize />}
           {/* Never on a members-only piece: the database refuses it. */}
           <Reading locale={locale} path={piece.reading_path} />
@@ -285,3 +290,30 @@ const ReadOn = async ({
     </nav>
   );
 };
+
+/** The piece's topics, each opening its page (the design review A21). */
+const TopicsLine = ({
+  label,
+  locale,
+  topics,
+}: {
+  label: string;
+  locale: Locale;
+  topics: readonly { name_ar: string; name_en: string; slug: string }[];
+}) =>
+  topics.length > 0 ? (
+    <p className="type-caption">
+      {`${label}: `}
+      {topics.map((topic, i) => (
+        <span key={topic.slug}>
+          {i > 0 ? " · " : ""}
+          <Link
+            className="hover:underline"
+            href={`/qirtas/topics/${topic.slug}`}
+          >
+            {localized(topic, "name", locale)}
+          </Link>
+        </span>
+      ))}
+    </p>
+  ) : null;

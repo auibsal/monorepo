@@ -793,10 +793,10 @@ export const waraqPiece = async (client: Client, slug: string) => {
     return null;
   }
   const j = journal(client);
-  const [body, credits, corrections] = await Promise.all([
+  const [body, credits, corrections, topics, figures] = await Promise.all([
     j
       .from("piece_bodies")
-      .select("body_en, body_ar")
+      .select("body_en, body_ar, original, original_lang")
       .eq("piece_id", piece.id)
       .maybeSingle(),
     j
@@ -809,13 +809,159 @@ export const waraqPiece = async (client: Client, slug: string) => {
       .select("note_en, note_ar, created_at")
       .eq("piece_id", piece.id)
       .order("created_at"),
+    j
+      .from("piece_topics")
+      .select("topic:topics(slug, name_en, name_ar)")
+      .eq("piece_id", piece.id),
+    j
+      .from("piece_figures")
+      .select(
+        "id, sort, title_en, title_ar, unit_en, unit_ar, source_en, source_ar, rows"
+      )
+      .eq("piece_id", piece.id)
+      .order("sort"),
   ]);
   return {
     ...piece,
     body: unwrap(body),
     corrections: unwrap(corrections) ?? [],
     credits: unwrap(credits) ?? [],
+    figures: (unwrap(figures) ?? []).map((f) => ({
+      ...f,
+      rows: figureRows(f.rows),
+    })),
+    topics: (unwrap(topics) ?? []).flatMap((t) => (t.topic ? [t.topic] : [])),
   };
+};
+
+// ── Originals beside translations (the design review A24) ──────────────────
+
+/** Languages an original may be in, in this order on the editor's list. */
+export const ORIGINAL_LANGUAGES = [
+  "ar",
+  "en",
+  "fa",
+  "ku",
+  "ckb",
+  "tr",
+  "syr",
+  "hy",
+  "fr",
+  "de",
+  "es",
+  "it",
+  "ru",
+  "ur",
+  "he",
+] as const;
+
+const RIGHT_TO_LEFT = new Set([
+  "ar",
+  "fa",
+  "ur",
+  "he",
+  "ckb",
+  "syr",
+  "ps",
+  "yi",
+  "dv",
+]);
+
+/** The direction a language is written in. */
+export const textDirection = (lang: string): "rtl" | "ltr" =>
+  RIGHT_TO_LEFT.has(lang) ? "rtl" : "ltr";
+
+// ── Figures in explainers (the design review A16) ──────────────────────────
+
+export const figureRowSchema = z.object({
+  label_ar: z.string().trim().max(80).optional(),
+  label_en: z.string().trim().max(80).optional(),
+  value: z.number().finite(),
+});
+export type FigureRow = z.infer<typeof figureRowSchema>;
+
+/** A figure's rows, as stored (the database checks them on save). */
+export const figureRows = (rows: unknown): FigureRow[] => {
+  const parsed = z.array(figureRowSchema).safeParse(rows);
+  return parsed.success ? parsed.data : [];
+};
+
+const FIGURE_NUMBER = /^-?\d+(?:[.,]\d+)?$/;
+const FIGURE_LINE = /\r?\n/;
+
+/**
+ * A figure's rows as the editor types them, one a line: the English label,
+ * the Arabic label and the value, split by "|" ("Fall | الخريف | 120"), or
+ * one label and the value. Null when a line has no number, or when there
+ * are none or more than 24.
+ */
+export const parseFigureRows = (text: string): FigureRow[] | null => {
+  const rows: FigureRow[] = [];
+  for (const line of text.split(FIGURE_LINE)) {
+    if (!line.trim()) {
+      continue;
+    }
+    const cells = line.split("|").map((c) => c.trim());
+    const raw = cells.at(-1) ?? "";
+    if (cells.length < 2 || !FIGURE_NUMBER.test(raw)) {
+      return null;
+    }
+    const value = Number(raw.replace(",", "."));
+    const [en, ar] = cells;
+    rows.push(
+      cells.length === 2
+        ? { label_en: en || undefined, value }
+        : { label_ar: ar || undefined, label_en: en || undefined, value }
+    );
+  }
+  return rows.length > 0 && rows.length <= 24 ? rows : null;
+};
+
+// ── Topics (the design review A21) ──────────────────────────────────────────
+
+/** Topics with published pieces, by name in the page's language. */
+export const publicTopics = async (client: Client) => {
+  const rows =
+    unwrap(
+      await journal(client)
+        .from("topics")
+        .select("id, slug, name_en, name_ar, piece_topics!inner(piece_id)")
+    ) ?? [];
+  return rows.map(({ piece_topics, ...topic }) => ({
+    ...topic,
+    count: piece_topics.length,
+  }));
+};
+
+/** A topic and its published pieces, newest first. */
+export const topicPage = async (client: Client, slug: string) => {
+  const topic = unwrap(
+    await journal(client)
+      .from("topics")
+      .select("id, slug, name_en, name_ar")
+      .eq("slug", slug)
+      .maybeSingle()
+  );
+  if (!topic) {
+    return null;
+  }
+  const ids = (
+    unwrap(
+      await journal(client)
+        .from("piece_topics")
+        .select("piece_id")
+        .eq("topic_id", topic.id)
+    ) ?? []
+  ).map((r) => r.piece_id);
+  const pieces =
+    ids.length === 0
+      ? []
+      : (unwrap(
+          await publishedPieces(client)
+            .in("id", ids)
+            .order("published_at", { ascending: false })
+        ) ?? []);
+  return { pieces, topic };
 };
 
 /** A contributor's page: bio and every published piece. */

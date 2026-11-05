@@ -366,6 +366,53 @@ export type Database = {
           },
         ];
       };
+      catalog_books: {
+        Row: {
+          author: string | null;
+          campaign_id: string;
+          copies: number;
+          created_at: string;
+          created_by: string | null;
+          id: string;
+          is_listed: boolean;
+          language: string;
+          note: string | null;
+          title: string;
+        };
+        Insert: {
+          author?: string | null;
+          campaign_id: string;
+          copies?: number;
+          created_at?: string;
+          created_by?: string | null;
+          id?: string;
+          is_listed?: boolean;
+          language?: string;
+          note?: string | null;
+          title: string;
+        };
+        Update: {
+          author?: string | null;
+          campaign_id?: string;
+          copies?: number;
+          created_at?: string;
+          created_by?: string | null;
+          id?: string;
+          is_listed?: boolean;
+          language?: string;
+          note?: string | null;
+          title?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "catalog_books_campaign_id_fkey";
+            columns: ["campaign_id"];
+            isOneToOne: false;
+            referencedRelation: "campaigns";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       impact_metrics: {
         Row: {
           campaign_id: string;
@@ -3814,18 +3861,24 @@ export type Database = {
         Row: {
           body_ar: string | null;
           body_en: string | null;
+          original: string | null;
+          original_lang: string | null;
           piece_id: string;
           updated_at: string;
         };
         Insert: {
           body_ar?: string | null;
           body_en?: string | null;
+          original?: string | null;
+          original_lang?: string | null;
           piece_id: string;
           updated_at?: string;
         };
         Update: {
           body_ar?: string | null;
           body_en?: string | null;
+          original?: string | null;
+          original_lang?: string | null;
           piece_id?: string;
           updated_at?: string;
         };
@@ -3868,6 +3921,59 @@ export type Database = {
           },
           {
             foreignKeyName: "piece_credits_piece_id_fkey";
+            columns: ["piece_id"];
+            isOneToOne: false;
+            referencedRelation: "pieces";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      piece_figures: {
+        Row: {
+          created_at: string;
+          id: string;
+          piece_id: string;
+          rows: NonNullable<Json>;
+          sort: number;
+          source_ar: string | null;
+          source_en: string | null;
+          title_ar: string | null;
+          title_en: string | null;
+          unit_ar: string | null;
+          unit_en: string | null;
+          updated_at: string;
+        };
+        Insert: {
+          created_at?: string;
+          id?: string;
+          piece_id: string;
+          rows?: NonNullable<Json>;
+          sort?: number;
+          source_ar?: string | null;
+          source_en?: string | null;
+          title_ar?: string | null;
+          title_en?: string | null;
+          unit_ar?: string | null;
+          unit_en?: string | null;
+          updated_at?: string;
+        };
+        Update: {
+          created_at?: string;
+          id?: string;
+          piece_id?: string;
+          rows?: NonNullable<Json>;
+          sort?: number;
+          source_ar?: string | null;
+          source_en?: string | null;
+          title_ar?: string | null;
+          title_en?: string | null;
+          unit_ar?: string | null;
+          unit_en?: string | null;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "piece_figures_piece_id_fkey";
             columns: ["piece_id"];
             isOneToOne: false;
             referencedRelation: "pieces";
@@ -3953,6 +4059,39 @@ export type Database = {
             columns: ["piece_id"];
             isOneToOne: false;
             referencedRelation: "pieces";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      piece_topics: {
+        Row: {
+          created_at: string;
+          piece_id: string;
+          topic_id: string;
+        };
+        Insert: {
+          created_at?: string;
+          piece_id: string;
+          topic_id: string;
+        };
+        Update: {
+          created_at?: string;
+          piece_id?: string;
+          topic_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "piece_topics_piece_id_fkey";
+            columns: ["piece_id"];
+            isOneToOne: false;
+            referencedRelation: "pieces";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "piece_topics_topic_id_fkey";
+            columns: ["topic_id"];
+            isOneToOne: false;
+            referencedRelation: "topics";
             referencedColumns: ["id"];
           },
         ];
@@ -4422,6 +4561,33 @@ export type Database = {
             referencedColumns: ["id"];
           },
         ];
+      };
+      topics: {
+        Row: {
+          created_at: string;
+          created_by: string | null;
+          id: string;
+          name_ar: string;
+          name_en: string;
+          slug: string;
+        };
+        Insert: {
+          created_at?: string;
+          created_by?: string | null;
+          id?: string;
+          name_ar: string;
+          name_en: string;
+          slug: string;
+        };
+        Update: {
+          created_at?: string;
+          created_by?: string | null;
+          id?: string;
+          name_ar?: string;
+          name_en?: string;
+          slug?: string;
+        };
+        Relationships: [];
       };
     };
     Views: {

@@ -13,8 +13,9 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useDeferredValue, useState } from "react";
 import { SectionSpinner } from "../../states";
-import { type Column, DataTable, ErrorLine, ExportButton, Field } from "../kit";
+import { type Column, ErrorLine, ExportButton, Field } from "../kit";
 import { memberName } from "../members/directory";
+import { SelectableTable } from "../selectable-table";
 
 interface Question {
   id: string;
@@ -258,8 +259,10 @@ export const Attendance = ({
   slug,
 }: AttendanceProps) => {
   const t = useTranslations("nexus.admin.event");
+  const tk = useTranslations("nexus.admin.kit.selection");
   const locale = useLocale() as Locale;
   const { supabase } = useAuth();
+  const queryClient = useQueryClient();
   const data = useQuery({
     queryFn: async () => {
       const [rsvps, waitlist, checkIns] = await Promise.all([
@@ -295,6 +298,26 @@ export const Attendance = ({
     ...(data.data?.rsvps.map((r) => r.user_id) ?? []),
     ...(data.data?.waitlist.map((w) => w.user_id) ?? []),
   ]);
+  // A40: check in the chosen bookings at once (people at the door without
+  // their card); each is still checked by the database.
+  const checkInAll = useMutation({
+    mutationFn: async (userIds: readonly string[]) => {
+      const results = await Promise.all(
+        userIds.map((target_user) =>
+          supabase
+            .schema("events")
+            .rpc("check_in", { event_id: eventId, target_user })
+        )
+      );
+      for (const result of results) {
+        unwrap(result);
+      }
+    },
+    onSettled: () =>
+      queryClient.invalidateQueries({
+        queryKey: ["admin", "attendance", eventId],
+      }),
+  });
 
   if (data.isPending) {
     return <SectionSpinner />;
@@ -372,11 +395,29 @@ export const Attendance = ({
             : formatNumber(data.data.rsvps.length),
         })}
       </h3>
-      <DataTable
+      <SelectableTable
+        actions={(chosen, clear) => (
+          <Button
+            disabled={checkInAll.isPending}
+            onClick={() =>
+              checkInAll.mutate(
+                chosen
+                  .filter((r) => !data.data?.checkIns.has(r.user_id))
+                  .map((r) => r.user_id),
+                { onSuccess: clear }
+              )
+            }
+            size="sm"
+          >
+            {t("checkInChosen", { count: formatNumber(chosen.length) })}
+          </Button>
+        )}
         columns={rsvpColumns}
+        label={(r) => tk("row", { name: nameOf(r.user_id) })}
         rowKey={(r) => r.id}
         rows={data.data.rsvps}
       />
+      <ErrorLine error={checkInAll.error} />
       <h3 className="type-subheading">
         {t("waitlist", { count: formatNumber(data.data.waitlist.length) })}
       </h3>

@@ -34,6 +34,9 @@ export const Nameplate = async ({ locale }: { locale: Locale }) => {
           <Link className="hover:text-accent" href="/qirtas/editions">
             {t("editions")}
           </Link>
+          <Link className="hover:text-accent" href="/qirtas/topics">
+            {t("topics")}
+          </Link>
           <Link className="hover:text-accent" href="/qirtas/awards">
             {t("awards")}
           </Link>

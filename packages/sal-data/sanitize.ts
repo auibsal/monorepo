@@ -87,3 +87,51 @@ export const withNotes = (html: string, prefix: string) => {
   });
   return { body, notes };
 };
+
+const HEADING = /<h2(?:\s[^>]*)?>([\s\S]*?)<\/h2>/g;
+
+/**
+ * A long read's contents (design review A15): each <h2> of the sanitized
+ * text gets an anchor, and its words a line in the contents. `prefix`
+ * keeps the anchors apart when a page shows more than one text.
+ */
+export const withContents = (html: string, prefix: string) => {
+  const contents: { id: string; text: string }[] = [];
+  const body = html.replace(HEADING, (match, inner: string) => {
+    const text = toPlainText(inner);
+    if (!text) {
+      return match;
+    }
+    const id = `${prefix}-part-${contents.length + 1}`;
+    contents.push({ id, text });
+    return match.replace("<h2", `<h2 id="${id}"`);
+  });
+  return { body, contents };
+};
+
+const FIGURE_MARK =
+  /<p(?:\s[^>]*)?>\s*\[(?:figure|شكل)\s*(\d{1,2})\]\s*<\/p>/gi;
+
+export type TextPart = { html: string } | { figure: number };
+
+/**
+ * An explainer's figures in place (design review A16): a paragraph of its
+ * own reading "[figure 2]" («[شكل 2]») becomes figure 2; the text around
+ * it stays as it was. Runs on sanitized HTML.
+ */
+export const splitAtFigures = (html: string): TextPart[] => {
+  const parts: TextPart[] = [];
+  let last = 0;
+  for (const match of html.matchAll(FIGURE_MARK)) {
+    const at = match.index ?? 0;
+    if (at > last) {
+      parts.push({ html: html.slice(last, at) });
+    }
+    parts.push({ figure: Number(match[1]) });
+    last = at + match[0].length;
+  }
+  if (last < html.length) {
+    parts.push({ html: html.slice(last) });
+  }
+  return parts;
+};

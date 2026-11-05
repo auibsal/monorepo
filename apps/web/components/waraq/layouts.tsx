@@ -1,13 +1,20 @@
 import type { Locale } from "@repo/internationalization";
-import { formatLongDate } from "@repo/internationalization/format";
+import {
+  formatLongDate,
+  formatNumber,
+} from "@repo/internationalization/format";
 import {
   journal,
   localized,
   sanitizeRichText,
+  splitAtFigures,
+  type TextPart,
+  withContents,
   withNotes,
 } from "@repo/sal-data";
 import { getTranslations } from "next-intl/server";
 import { mediaUrl } from "@/lib/media";
+import { FigureChart } from "./figure-chart";
 
 type Full = NonNullable<Awaited<ReturnType<typeof journal.waraqPiece>>>;
 
@@ -20,6 +27,116 @@ export const texts = (piece: Full) =>
     Boolean(text.html)
   );
 
+type PieceFigureData = Full["figures"][number];
+
+/**
+ * One figure (the design review A16): its title, the bars or the table, and
+ * its source; the values written in the page's language.
+ */
+const PieceFigure = async ({
+  figure,
+  lang,
+}: {
+  figure: PieceFigureData;
+  lang: "en" | "ar";
+}) => {
+  const t = await getTranslations("web.journal.figures");
+  const title = localized(figure, "title", lang) || figure.title_en || "";
+  const source = localized(figure, "source", lang);
+  return (
+    <figure className="not-prose my-10 grid gap-4 border-line border-y py-6">
+      <figcaption className="type-label">{title}</figcaption>
+      <FigureChart
+        asBars={t("asBars")}
+        asTable={t("asTable")}
+        rows={figure.rows.map((row) => ({
+          label:
+            localized(row, "label", lang) || row.label_en || row.label_ar || "",
+          shown: formatNumber(row.value, lang),
+          value: row.value,
+        }))}
+        title={title}
+        unit={localized(figure, "unit", lang)}
+        valueHeader={t("value")}
+      />
+      {source ? (
+        <p className="type-caption text-text-secondary">
+          {t("source", { source })}
+        </p>
+      ) : null}
+    </figure>
+  );
+};
+
+/** Figures the text does not place, for after it. */
+export const unplacedFigures = (piece: Full) => {
+  const placed = new Set(
+    texts(piece).flatMap((text) =>
+      splitAtFigures(sanitizeRichText(text.html)).flatMap((part) =>
+        "figure" in part ? [part.figure] : []
+      )
+    )
+  );
+  return piece.figures.filter((f) => !placed.has(f.sort));
+};
+
+/** A text with its figures drawn where it names them. */
+const TextBody = ({
+  className,
+  figures,
+  html,
+  lang,
+}: {
+  className: string;
+  figures: readonly PieceFigureData[];
+  html: string;
+  lang: "en" | "ar";
+}) => {
+  const parts =
+    figures.length > 0 ? splitAtFigures(html) : [{ html } as TextPart];
+  // Each part is keyed by where it starts in the text.
+  let at = 0;
+  const keyed = parts.map((part) => {
+    const key = "figure" in part ? `f${part.figure}-${at}` : `t${at}`;
+    at += "figure" in part ? 1 : part.html.length;
+    return { key, part };
+  });
+  return (
+    <>
+      {keyed.map(({ key, part }) => {
+        if ("figure" in part) {
+          const figure = figures.find((f) => f.sort === part.figure);
+          return figure ? (
+            <PieceFigure figure={figure} key={key} lang={lang} />
+          ) : null;
+        }
+        return (
+          <div
+            className={className}
+            // biome-ignore lint/security/noDangerouslySetInnerHtml: sanitized with the one rich-text policy
+            dangerouslySetInnerHTML={{ __html: part.html }}
+            key={key}
+          />
+        );
+      })}
+    </>
+  );
+};
+
+/** The figures the text left unplaced, after it. */
+const FiguresAfter = ({ piece }: { piece: Full }) => {
+  const rest = unplacedFigures(piece);
+  const [first] = texts(piece);
+  const lang = first?.lang ?? "en";
+  return rest.length > 0 ? (
+    <div dir={lang === "ar" ? "rtl" : "ltr"} lang={lang}>
+      {rest.map((figure) => (
+        <PieceFigure figure={figure} key={figure.id} lang={lang} />
+      ))}
+    </div>
+  ) : null;
+};
+
 /**
  * A text, sanitized, with its notes numbered and listed after it (design
  * review A13: a note is written in place, in <small>; a pull quote is an
@@ -27,33 +144,42 @@ export const texts = (piece: Full) =>
  */
 const Html = async ({
   className,
+  contents = false,
+  figures = [],
   html,
   lang,
 }: {
   className: string;
+  /** A long read: anchors on its headings, for the contents (A15). */
+  contents?: boolean;
+  /** An explainer's figures, drawn where the text names them (A16). */
+  figures?: readonly PieceFigureData[];
   html: string;
   lang: "en" | "ar";
 }) => {
-  const { body, notes } = withNotes(sanitizeRichText(html), lang);
+  const { body: noted, notes } = withNotes(sanitizeRichText(html), lang);
+  const body = contents ? withContents(noted, lang).body : noted;
   const dir = lang === "ar" ? "rtl" : "ltr";
   if (notes.length === 0) {
     return (
-      <div
-        className={className}
-        // biome-ignore lint/security/noDangerouslySetInnerHtml: sanitized with the one rich-text policy
-        dangerouslySetInnerHTML={{ __html: body }}
-        dir={dir}
-        lang={lang}
-      />
+      <div dir={dir} lang={lang}>
+        <TextBody
+          className={className}
+          figures={figures}
+          html={body}
+          lang={lang}
+        />
+      </div>
     );
   }
   const t = await getTranslations("web.journal.reading");
   return (
     <div className="grid gap-8" dir={dir} lang={lang}>
-      <div
+      <TextBody
         className={className}
-        // biome-ignore lint/security/noDangerouslySetInnerHtml: sanitized with the one rich-text policy
-        dangerouslySetInnerHTML={{ __html: body }}
+        figures={figures}
+        html={body}
+        lang={lang}
       />
       <ol
         aria-label={t("notes")}
@@ -140,11 +266,13 @@ const NewsBody = ({ locale, piece }: { locale: Locale; piece: Full }) => {
       {texts(piece).map((text) => (
         <Html
           className="prose max-w-none"
+          figures={piece.figures}
           html={text.html}
           key={text.lang}
           lang={text.lang}
         />
       ))}
+      <FiguresAfter piece={piece} />
     </div>
   );
 };
@@ -163,24 +291,147 @@ const PoemBody = ({ piece }: { piece: Full }) => (
   </div>
 );
 
+const PROSE_AR =
+  "prose max-w-none [&_blockquote]:border-0 [&_blockquote]:p-0 [&_blockquote]:font-sans [&_blockquote]:text-3xl [&_blockquote]:not-italic";
+const PROSE_EN =
+  "prose max-w-none [&>p:first-of-type]:first-letter:float-start [&>p:first-of-type]:first-letter:pe-2 [&>p:first-of-type]:first-letter:font-medium [&>p:first-of-type]:first-letter:text-6xl [&>p:first-of-type]:first-letter:text-accent [&>p:first-of-type]:first-letter:leading-none [&_blockquote]:border-0 [&_blockquote]:p-0 [&_blockquote]:font-light [&_blockquote]:font-sans [&_blockquote]:text-3xl [&_blockquote]:not-italic [&_blockquote]:leading-tight [&_blockquote]:tracking-tight";
+
+/** A long read: ten minutes or more, in three parts or more (A15). */
+const LONG_READ_MINUTES = 10;
+const LONG_READ_PARTS = 3;
+
+const contentsOf = (piece: Full) =>
+  texts(piece).map((text) => ({
+    contents: withContents(sanitizeRichText(text.html), text.lang).contents,
+    lang: text.lang,
+  }));
+
+const isLongRead = (piece: Full) =>
+  journal.readingMinutes(
+    texts(piece)
+      .map((x) => x.html)
+      .join(" ")
+  ) >= LONG_READ_MINUTES &&
+  contentsOf(piece).some((x) => x.contents.length >= LONG_READ_PARTS);
+
+/**
+ * A long read (the design review A15): the text in its reading column and,
+ * beside it on a wide screen, its parts, kept in view as the reader goes;
+ * above it on a narrow one. Each part's heading is an anchor.
+ */
+const LongReadBody = async ({ piece }: { piece: Full }) => {
+  const t = await getTranslations("web.journal.reading");
+  const parts = contentsOf(piece).filter(
+    (x) => x.contents.length >= LONG_READ_PARTS
+  );
+  return (
+    <div className="reading mx-auto grid w-full max-w-5xl gap-10 px-4 py-12 lg:grid-cols-[14rem_minmax(0,42rem)] lg:gap-16">
+      <nav
+        aria-label={t("contents")}
+        className="font-sans lg:sticky lg:top-24 lg:self-start print:hidden"
+      >
+        {parts.map((part) => (
+          <div className="grid gap-3" key={part.lang} lang={part.lang}>
+            <p className="type-label">{t("contents")}</p>
+            <ol className="grid gap-2 border-line border-s ps-4">
+              {part.contents.map((item) => (
+                <li className="type-caption" key={item.id}>
+                  <a className="hover:text-accent" href={`#${item.id}`}>
+                    {item.text}
+                  </a>
+                </li>
+              ))}
+            </ol>
+          </div>
+        ))}
+      </nav>
+      <div className="grid gap-10 [&_h2]:scroll-mt-24">
+        {texts(piece).map((text) => (
+          <Html
+            className={text.lang === "ar" ? PROSE_AR : PROSE_EN}
+            contents
+            html={text.html}
+            key={text.lang}
+            lang={text.lang}
+          />
+        ))}
+      </div>
+    </div>
+  );
+};
+
 /** A story, essay, column or translation: a reading column with a drop cap (English only:
  * Arabic letters join, so a raised first letter would break the word). */
-const ProseBody = ({ piece }: { piece: Full }) => (
-  <div className="reading mx-auto grid w-full max-w-2xl gap-10 px-4 py-12">
-    {texts(piece).map((text) => (
-      <Html
-        className={
-          text.lang === "ar"
-            ? "prose max-w-none [&_blockquote]:border-0 [&_blockquote]:p-0 [&_blockquote]:font-sans [&_blockquote]:text-3xl [&_blockquote]:not-italic"
-            : "prose max-w-none [&>p:first-of-type]:first-letter:float-start [&>p:first-of-type]:first-letter:pe-2 [&>p:first-of-type]:first-letter:font-medium [&>p:first-of-type]:first-letter:text-6xl [&>p:first-of-type]:first-letter:text-accent [&>p:first-of-type]:first-letter:leading-none [&_blockquote]:border-0 [&_blockquote]:p-0 [&_blockquote]:font-light [&_blockquote]:font-sans [&_blockquote]:text-3xl [&_blockquote]:not-italic [&_blockquote]:leading-tight [&_blockquote]:tracking-tight"
-        }
-        html={text.html}
-        key={text.lang}
-        lang={text.lang}
-      />
-    ))}
-  </div>
-);
+const ProseBody = ({ piece }: { piece: Full }) =>
+  isLongRead(piece) ? (
+    <LongReadBody piece={piece} />
+  ) : (
+    <div className="reading mx-auto grid w-full max-w-2xl gap-10 px-4 py-12">
+      {texts(piece).map((text) => (
+        <Html
+          className={text.lang === "ar" ? PROSE_AR : PROSE_EN}
+          html={text.html}
+          key={text.lang}
+          lang={text.lang}
+        />
+      ))}
+    </div>
+  );
+
+/**
+ * A translation beside its original (the design review A24, decision D11:
+ * an exception to one language per page). Side by side on a wide screen,
+ * the original after the translation on a narrow one; the original keeps
+ * its own language and direction.
+ */
+const TranslationBody = async ({
+  locale,
+  piece,
+}: {
+  locale: Locale;
+  piece: Full;
+}) => {
+  const original = piece.body?.original;
+  const lang = piece.body?.original_lang;
+  if (!(original && lang)) {
+    return <ProseBody piece={piece} />;
+  }
+  const t = await getTranslations("web.journal.reading");
+  const name =
+    new Intl.DisplayNames([locale], { type: "language" }).of(lang) ?? lang;
+  return (
+    <div className="reading mx-auto grid w-full max-w-6xl gap-12 px-4 py-12 lg:grid-cols-2">
+      <section
+        aria-label={t("translation")}
+        className="grid content-start gap-10"
+      >
+        {texts(piece).map((text) => (
+          <Html
+            className={text.lang === "ar" ? PROSE_AR : PROSE_EN}
+            html={text.html}
+            key={text.lang}
+            lang={text.lang}
+          />
+        ))}
+      </section>
+      <section
+        aria-label={t("original", { language: name })}
+        className="grid content-start gap-4 border-line border-t pt-6 lg:border-s lg:border-t-0 lg:ps-12 lg:pt-0"
+      >
+        <p className="type-caption text-text-secondary">
+          {t("original", { language: name })}
+        </p>
+        <div
+          className="prose max-w-none"
+          // biome-ignore lint/security/noDangerouslySetInnerHtml: sanitized with the one rich-text policy
+          dangerouslySetInnerHTML={{ __html: sanitizeRichText(original) }}
+          dir={journal.textDirection(lang)}
+          lang={lang}
+        />
+      </section>
+    </div>
+  );
+};
 
 /** A script: speakers and directions kept as set, a narrower column. */
 const DramaBody = ({ piece }: { piece: Full }) => (
@@ -380,6 +631,8 @@ export const PieceBody = ({
       return <PoemBody piece={piece} />;
     case "drama":
       return <DramaBody piece={piece} />;
+    case "translation":
+      return <TranslationBody locale={locale} piece={piece} />;
     case "six_words":
       return <SixWordsBody piece={piece} />;
     case "photo_essay":

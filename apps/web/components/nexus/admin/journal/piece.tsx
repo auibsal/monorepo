@@ -33,6 +33,9 @@ import { RecordHistory } from "../record-history";
 import { useIssues } from "./admin";
 import { BylinePicker } from "./byline";
 import { PieceExtras } from "./piece-extras";
+import { PieceFigures } from "./piece-figures";
+import { PieceOriginal } from "./piece-original";
+import { PieceTopics } from "./piece-topics";
 import {
   Corrections,
   type PieceRecord,
@@ -746,7 +749,15 @@ export const WaraqPieceEditor = () => {
       {needs.media || piece.desk === "news" ? (
         <Media record={record.data} />
       ) : null}
+      {category === "translation" ? (
+        <PieceOriginal
+          key={record.data.body?.original_lang ?? ""}
+          record={record.data}
+        />
+      ) : null}
       {piece.desk === "video" ? null : <PieceExtras record={record.data} />}
+      {category === "explainer" ? <PieceFigures pieceId={piece.id} /> : null}
+      <PieceTopics pieceId={piece.id} />
       <Credits record={record.data} />
       {piece.status === "published" ? (
         <Corrections record={record.data} />
