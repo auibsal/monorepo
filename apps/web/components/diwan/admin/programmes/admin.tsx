@@ -49,7 +49,6 @@ import type { ProgramTab } from "../tabs";
 import { BookVote } from "./book-vote";
 import { Prompts } from "./prompts";
 import { Sessions } from "./sessions";
-import { TourCards } from "./six-words";
 import { SkillsPicker } from "./skills-picker";
 
 const invalidateKey = ["admin", "programmes-module"];
@@ -1226,14 +1225,9 @@ const Removals = () => {
 // ── Page ────────────────────────────────────────────────────────────────────
 
 /**
- * What's on → Programs (the overhaul, Oct 30, 2026): the six programs this
- * officer runs, each opening its own page, and the pitches members send for
- * new ones.
- */
-/**
- * The programs, each an event series with its page at /diwan/events/<slug>,
- * as one line of links under What's on's title (owner, Oct 31, 2026: no
- * programs section below the events).
+ * The event series this officer runs (owner, Nov 5, 2026: no programs),
+ * each with its page at /diwan/events/<slug>, as one line of links under
+ * What's on's title (owner, Oct 31, 2026: no section below the events).
  */
 export const ProgramLinks = () => {
   const t = useTranslations("diwan.admin.programmes");
@@ -1259,11 +1253,11 @@ export const ProgramLinks = () => {
   );
 };
 
-/** Program pitches (F-10) waiting for the Director of Programs. */
+/** Event pitches (F-10) waiting for the President, who owns events. */
 export const ProgramPitches = () => {
   const t = useTranslations("diwan.admin.programmes");
   const grants = useGrants();
-  // Only those who answer pitches see them (the Director of Programs).
+  // Only those who answer pitches see them (the President, owner, Nov 5, 2026).
   if (!hasPermissionAnywhere(grants.data, "programs.manage")) {
     return null;
   }
@@ -1279,10 +1273,11 @@ export const ProgramPitches = () => {
 };
 
 /**
- * One program, its tabs at their own addresses: Sessions (the repeat
- * rule), Shifts (the rota), Places (Apprenticeships and First Ink), Needs.
- * The Typewriter Tour adds Six Words; Second Chapter adds Collection (its
- * campaigns, the ledger, the handover).
+ * One event series, its tabs at their own addresses: Events (the
+ * series' events on the term calendar), Shifts (the rota), Needs. Open
+ * Pages adds Prompts, Book Circle its Vote, Second Chapter its Collection
+ * (its campaigns, the ledger, the handover). The Typewriter Tour belongs
+ * to membership: its Six Words are under People.
  */
 export const ProgramPage = ({
   slug,
@@ -1309,7 +1304,6 @@ export const ProgramPage = ({
     "sessions",
     "shifts",
     "needs",
-    ...(slug === "typewriter-tour" ? (["six-words"] as const) : []),
     ...(slug === "open-pages" ? (["prompts"] as const) : []),
     ...(slug === "book-circle" ? (["vote"] as const) : []),
     ...(slug === "second-chapter" &&
@@ -1347,7 +1341,6 @@ export const ProgramPage = ({
         {tab === "sessions" ? <Sessions programmeId={programme.id} /> : null}
         {tab === "shifts" ? <Rotas programmeId={programme.id} /> : null}
         {tab === "needs" ? <Needs programmeId={programme.id} /> : null}
-        {tab === "six-words" ? <TourCards /> : null}
         {tab === "prompts" ? <Prompts programmeId={programme.id} /> : null}
         {tab === "vote" ? <BookVote programmeId={programme.id} /> : null}
         {tab === "collection" ? <CharityAdmin /> : null}

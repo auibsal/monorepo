@@ -83,16 +83,16 @@ select pg_temp.make_user('00000000-0000-0000-0000-0000000000a2', 'president-pt@a
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a3', 'vp-pt@auib.edu.iq');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a4', 'member-pt@auib.edu.iq');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000b1', 'poet-pt@gmail.com');
-select pg_temp.grant_role('00000000-0000-0000-0000-0000000000a1', 'partnerships_director');
+select pg_temp.grant_role('00000000-0000-0000-0000-0000000000a1', 'vice_president');
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000000a2', 'president');
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000000a3', 'vice_president');
 
--- The Director keeps the register and drafts a memorandum.
+-- The Vice President keeps the register and drafts a memorandum (owner, Nov 5, 2026).
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a1');
 select lives_ok(
   $$ insert into governance.partners (id, slug, name_en, kind, is_listed, description_en)
      values ('00000000-0000-0000-0000-00000000d001', 'poetry-hub', 'Poetry Hub', 'cultural', true, 'Poetry in Baghdad.') $$,
-  'The Director of Partnerships adds a partner'
+  'The Vice President adds a partner'
 );
 select lives_ok(
   $$ insert into governance.partner_agreements (id, partner_id, purpose_en, starts_on, grants)
@@ -115,11 +115,13 @@ select throws_ok(
   '42501', 'sign_through_rpc',
   'or signed by a direct update'
 );
+select pg_temp.login_as('00000000-0000-0000-0000-0000000000a4');
 select throws_ok(
   $$ select governance.sign_partner_agreement('00000000-0000-0000-0000-00000000d101', 'Partner Head', 'partners/mou.pdf') $$,
   '42501', 'not_allowed',
-  'The Director cannot sign: the President signs (F-26)'
+  'Nobody without partners.sign signs (F-26)'
 );
+select pg_temp.login_as('00000000-0000-0000-0000-0000000000a1');
 
 -- Before signing, nothing is public.
 select pg_temp.login_anon();

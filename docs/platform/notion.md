@@ -13,7 +13,7 @@ read-only view.
 | --- | --- |
 | Projects, tasks, meetings: agendas, working notes and the minutes' text | Members, verification, roles and the officers |
 | Events (Publishing, Events), published from there | RSVPs, check-in, the waitlist |
-| The six programs (Publishing, Programs), published from there | Elections and ballots |
+| The event series (Publishing, Programs; the database keeps its name), published from there | Elections and ballots |
 | The Society's documents and website policies (Publishing, Documents), published from there | Each document's adoption record: status, version, adopted on, the vote |
 | The content calendar (news posts and Qirtas pieces start there) | Qirtas submissions and blind review |
 | The handbook and the internal documents | The charity ledger, certificates, service hours |
@@ -41,13 +41,14 @@ every fifteen minutes with the cron secret, runs these steps in order
    `core.notion_links`); removed when the record is gone.
 2. **Qirtas pipeline** (`mirrors.ts`): counts per stage, never titles or
    names.
-3. **Programs** (`programs.ts`): rows with Status **Ready to publish**
-   give their program's name, summary and rhythm to `core.programmes`; the
-   site builds `/events/<program>` from them. A program keeps its address.
-   Needs `programs.manage` (the Director of Programs, or the program's
-   Lead for their own).
+3. **Event series** (`programs.ts`, the Programs database; owner, Nov 5,
+   2026: no programs): rows with Status **Ready to publish** give their
+   series' name, summary and rhythm to `core.programmes`; the site builds
+   `/events/<series>` from them. A series keeps its address. Needs
+   `programs.manage` (the President, or the series' event lead for their
+   own).
 4. **Events** (`publish.ts`): **Ready to publish** checks the row
-   (`rules.ts`: title, start time, lengths, slug, program) and publishes
+   (`rules.ts`: title, start time, lengths, slug, series) and publishes
    the event; the Arabic edition then fills its Arabic. **Cancel on the
    site** cancels it. Needs `events.manage`. Content calendar rows of kind
    **News post** or **Qirtas** are imported into the Qirtas newsroom, in

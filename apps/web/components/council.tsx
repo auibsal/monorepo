@@ -16,6 +16,55 @@ interface CouncilProps {
  * A name without its Arabic spelling yet keeps the English one, marked as
  * English.
  */
+export interface CouncilSeat {
+  holders_ar: string[] | null;
+  holders_en: string[] | null;
+  seat: string;
+}
+
+/**
+ * The Council's six seats (owner, Nov 5, 2026): three officers and three
+ * directors, each by its full title (`titles`, from the messages), with
+ * whoever holds it or "Open".
+ */
+export const CouncilSeats = ({
+  locale,
+  open,
+  seats,
+  titles,
+}: {
+  readonly locale: string;
+  readonly open: string;
+  readonly seats: readonly CouncilSeat[];
+  readonly titles: Readonly<Record<string, string>>;
+}) => (
+  <ul className="grid gap-x-10 sm:grid-cols-2 lg:grid-cols-3">
+    {seats.map((seat) => {
+      const holders =
+        (locale === "ar" ? seat.holders_ar : seat.holders_en) ?? [];
+      const named =
+        holders.length > 0 ? holders.join(locale === "ar" ? "، " : ", ") : open;
+      return (
+        <li
+          className="grid content-start gap-1 border-line border-t py-space-4"
+          key={seat.seat}
+        >
+          <p className="type-label">{titles[seat.seat] ?? seat.seat}</p>
+          <p
+            className={
+              holders.length > 0
+                ? "type-subheading"
+                : "type-subheading text-text-secondary"
+            }
+          >
+            {named}
+          </p>
+        </li>
+      );
+    })}
+  </ul>
+);
+
 export const Council = ({ locale, members }: CouncilProps) => (
   <ul className="grid gap-x-10 sm:grid-cols-2 lg:grid-cols-3">
     {members.map((member) => {

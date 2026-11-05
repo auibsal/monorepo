@@ -84,7 +84,7 @@ select pg_temp.make_user('00000000-0000-0000-0000-0000000000c1', 'head@poetryclu
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000c2', 'deputy@poetryclub.org', 'Club Deputy');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000c3', 'head@otherclub.org', 'Other Head');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000b1', 'poet@poetryclub.org', 'Club Poet');
-select pg_temp.grant_role('00000000-0000-0000-0000-0000000000a1', 'partnerships_director');
+select pg_temp.grant_role('00000000-0000-0000-0000-0000000000a1', 'vice_president');
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000000a2', 'president');
 
 -- ── Applying ────────────────────────────────────────────────────────────────

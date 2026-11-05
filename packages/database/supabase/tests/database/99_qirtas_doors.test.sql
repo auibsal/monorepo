@@ -78,8 +78,7 @@ select plan(14);
 
 select pg_temp.make_user('00000000-0000-0000-0000-0000000060a1', 'writer.one@auib.edu.iq', 'Writer One');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000060a2', 'tour.lead@auib.edu.iq', 'Tour Lead');
-select pg_temp.grant_role('00000000-0000-0000-0000-0000000060a2', 'programme_lead', 'programme',
-  (select id from core.programmes where slug = 'typewriter-tour'));
+select pg_temp.grant_role('00000000-0000-0000-0000-0000000060a2', 'tour_lead');
 
 -- Tell me when
 select pg_temp.login_as('00000000-0000-0000-0000-0000000060a1');

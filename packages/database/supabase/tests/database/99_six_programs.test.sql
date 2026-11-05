@@ -78,11 +78,11 @@ select plan(12);
 select is(
   (select array_agg(slug order by sort) from core.programmes where is_active),
   array['second-chapter', 'typewriter-tour', 'salon', 'book-circle', 'open-pages', 'listening-room', 'company'],
-  'Six programs in order, then the Company (live, not listed as a program)'
+  'The series in order, the Typewriter Tour''s row (membership) and the Company'
 );
 select ok(
   not exists (select 1 from core.programmes where is_active and (rhythm_en is null or rhythm_ar is null)),
-  'Each program shows its rhythm in one line, in both languages'
+  'Each series shows its rhythm in one line, in both languages'
 );
 select is(
   (select name_en || ' / ' || name_ar from core.programmes where slug = 'salon'),
@@ -103,11 +103,7 @@ select ok(
   exists (select 1 from core.programmes where slug = 'next-stop' and not is_active),
   'Next Stop is Qirtas''s video show: its program row is unpublished, not deleted'
 );
-select ok(
-  not exists (select 1 from events.series_rules r join core.programmes p on p.id = r.programme_id
-    where not p.is_active),
-  'No repeat rule is left on a program that is not published'
-);
+select hasnt_table('events', 'series_rules', 'No repeat rules: the term calendar is plain events (owner, Nov 5, 2026)');
 select is(
   (select count(*)::integer from events.events e join core.programmes p on p.id = e.programme_id
     where p.slug in ('salon', 'book-circle', 'open-pages', 'listening-room') and e.status = 'published'

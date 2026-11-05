@@ -80,11 +80,11 @@ select pg_temp.make_user('00000000-0000-0000-0000-00000000c001', 'c1@auib.edu.iq
 select pg_temp.make_user('00000000-0000-0000-0000-00000000c002', 'c2@auib.edu.iq', 'Council Two');
 select pg_temp.make_user('00000000-0000-0000-0000-00000000c003', 'c3@auib.edu.iq', 'Not Council');
 
--- The President also covers Programs: two Council roles, one person.
+-- The President also covers Media: two Council roles, one person.
 select pg_temp.grant_role('00000000-0000-0000-0000-00000000c001', 'president');
-select pg_temp.grant_role('00000000-0000-0000-0000-00000000c001', 'programs_director');
+select pg_temp.grant_role('00000000-0000-0000-0000-00000000c001', 'media_director');
 insert into access.role_assignments (user_id, role, scope_type, title_en, title_ar)
-values ('00000000-0000-0000-0000-00000000c002', 'director', 'global', 'Director of Media', 'مدير الإعلام');
+values ('00000000-0000-0000-0000-00000000c002', 'artistic_director', 'global', 'Artistic Director of the Company', 'المدير الفني للفرقة');
 select pg_temp.grant_role('00000000-0000-0000-0000-00000000c003', 'reader');
 
 select pg_temp.login_anon();
@@ -95,12 +95,12 @@ select is(
 );
 select is(
   (select titles_en from governance.council_members() where full_name_en = 'Council One'),
-  array['President', 'Director of Programs'],
+  array['President', 'Director of Media'],
   'with both titles, in the Council''s order'
 );
 select is(
   (select titles_ar from governance.council_members() where full_name_en = 'Council Two'),
-  array['مدير الإعلام'],
+  array['المدير الفني للفرقة'],
   'An assignment''s display title is used over the role''s name'
 );
 select is(

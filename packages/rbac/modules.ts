@@ -2,7 +2,7 @@ import type { Permission } from "./permissions";
 
 /**
  * The Diwan's modules and the permission (held in any scope) that shows
- * each one. Pages still scope their rows by program, issue or campaign.
+ * each one. Pages still scope their rows by series, event, Edition or campaign.
  */
 export const adminModules = [
   {
@@ -42,8 +42,12 @@ export const adminModules = [
     ],
   },
   { key: "programs", permissions: ["programs.manage"] },
-  // Hiring (owner, Oct 30, 2026): Membership runs every role's applications;
-  // each owner (a program, the Editor, a director) picks for their own.
+  // The Typewriter Tour belongs to membership (owner, Nov 5, 2026): the
+  // General Secretary and the Tour Lead.
+  { key: "tour", permissions: ["tour.run"] },
+  // Hiring (owner, Oct 30, 2026): the General Secretary runs every role's
+  // applications; each owner (the President for event leads, the
+  // Editor-in-Chief, a director) picks for their own.
   {
     key: "hiring",
     permissions: [
@@ -111,7 +115,7 @@ export const adminSections = [
   { key: "company", modules: ["productions"], path: "/company" },
   {
     key: "people",
-    modules: ["members", "hiring", "recognition", "partners"],
+    modules: ["members", "hiring", "recognition", "partners", "tour"],
     path: "/people",
   },
   {

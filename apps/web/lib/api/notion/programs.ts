@@ -20,10 +20,11 @@ import {
 import { checkProgram, editionOf, languageOf } from "./rules";
 
 /**
- * The six programs are written in Notion (Publishing, Programs; owner,
- * Nov 4, 2026). A row set to Ready to publish gives its program's name,
- * summary and rhythm to the site, which builds /events/<program> from
- * them; an Arabic edition row gives their Arabic. Rows keep the page ids
+ * The event series are written in Notion (Publishing, Programs; owner,
+ * Nov 4, 2026; Nov 5: no programs, the database keeps its name until it is
+ * renamed with this sync). A row set to Ready to publish gives its
+ * series' name, summary and rhythm to the site, which builds
+ * /events/<series> from them; an Arabic edition row gives their Arabic. Rows keep the page ids
  * the Events and Projects databases link to, matched to core.programmes
  * through core.notion_links. The person who set the status needs
  * programs.manage in the Diwan.
@@ -79,7 +80,7 @@ const publishEnglish = async (
   const publisher = await publisherFor(ctx, email, existing);
   if (!publisher) {
     await needsChanges(ctx, page, [
-      `${email} does not hold programs.manage in the Diwan${existing ? " for this program" : ""}. Ask the Director of Programs to set Ready to publish.`,
+      `${email} does not hold programs.manage in the Diwan${existing ? " for this series" : ""}. Ask the President to set Ready to publish.`,
     ]);
     return;
   }

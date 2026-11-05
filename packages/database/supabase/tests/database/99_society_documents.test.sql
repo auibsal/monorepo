@@ -80,7 +80,7 @@ select plan(10);
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a1', 'member-sd@auib.edu.iq', 'A Member');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a2', 'director-sd@auib.edu.iq', 'A Director');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a3', 'gs-sd@auib.edu.iq', 'The GS');
-select pg_temp.grant_role('00000000-0000-0000-0000-0000000000a2', 'director');
+select pg_temp.grant_role('00000000-0000-0000-0000-0000000000a2', 'media_director');
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000000a3', 'general_secretary');
 
 select pg_temp.login_anon();

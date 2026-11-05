@@ -80,8 +80,9 @@ const Home = async ({ params }: HomeProps) => {
   // The next event, from the calendar (design review C1): never typed in.
   const [soonest] = nextEvents ?? [];
 
-  // The six programs: Qirtas and Next Stop are unpublished, and the Company
-  // is the theater company, not a program.
+  // The event series (owner, Nov 5, 2026: no programs): Qirtas and Next
+  // Stop are unpublished, the Company is the theater company and the
+  // Typewriter Tour belongs to membership.
   const series = (allProgrammes ?? []).filter(programmes.isListedProgram);
 
   return (

@@ -72,7 +72,7 @@ const preview: Preview = {
             "Space, motion, icons and parts",
             "Screens",
             "Qirtas",
-            "The family of programs",
+            "The family of events",
             "Documents and forms",
             "Social and print",
             "Hudhud",

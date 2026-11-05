@@ -73,7 +73,7 @@ route sends it. Every email (audited end to end on 2026-11-04):
 | `events.changed` | A published event canceled, or its day, time or place changed | Everyone booked, waiting or asking to be reminded; edits within ten minutes make one email | Service |
 | `programmes.shift_reminder` | The day before a shift | Whoever is on it | Optional |
 | `programmes.audition_update` | An audition time booked; called back, cast or not cast | The member | Service |
-| `programmes.reply_update` | Membership sets a time to talk, makes an offer, or picks someone else | The member who said "I'm interested" | Service |
+| `programmes.reply_update` | The General Secretary's team sets a time to talk, makes an offer, or picks someone else | The member who said "I'm interested" | Service |
 | `programmes.placement_given` | An Apprenticeship, First Ink or volunteer place given | The member | Service |
 | `access.role_assigned` | A Society role assigned (not a partner's team role) | The holder: what it opens; two-step sign-in first when it needs it | Officer |
 | `access.role_ending` | Seven days before a role ends | The holder | Officer |
@@ -91,9 +91,9 @@ route sends it. Every email (audited end to end on 2026-11-04):
 | `journal.sunday_paper`, `newsletter.monthly` | The first Sunday of the month | Members who take optional emails; the public list | Optional (stop link and one-click) |
 | `newsletter.confirm` | A public sign-up | The address (double opt-in) | Direct |
 | `personal_email.confirm` | A personal email added | The new address only | Direct |
-| `programmes.removal_requested`, `programmes.removal_overdue` | A Next Stop removal request; past its 24 hours | The program's managers; the requester gets a receipt in the language they asked in | Officer; direct |
+| `programmes.removal_requested`, `programmes.removal_overdue` | A Next Stop removal request; past its 24 hours | Next Stop's managers; the requester gets a receipt in the language they asked in | Officer; direct |
 | `programmes.removal_done` | The request removed, declined or closed | The requester, in their language (the receipt promises it) | Direct |
-| `programmes.replies_digest` | Daily, when there were replies on Get involved | Membership (`members.manage`) | Officer |
+| `programmes.replies_digest` | Daily, when there were replies on Get involved | The General Secretary's team (`members.manage`) | Officer |
 | `membership.verification_decided` | An account from outside AUIB decided (requests from before partners verified their own) | The account | Service |
 | `platform.cron_failed` | A database job failed in the last day | Administrators | Officer |
 | `account.deleted` | An account deleted | The address it had (the last email) | Direct |

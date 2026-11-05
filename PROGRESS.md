@@ -5,8 +5,67 @@ Every session starts here and continues from the first unticked item. The
 brief is `sal-platform-claude-code-prompt.md` (uploaded at the start of the
 first session); section numbers (§) refer to it.
 
-Branch: `claude/qirtas-games-masthead`.
+Branch: `claude/events-not-programs`.
 
+
+## The owner's decisions of Thursday, Nov 5, 2026: no programs, the Council of six
+
+Branch: `claude/events-not-programs` (also carries A41 joint events and R4,
+the rename to Diwan and Qirtas, which #220's squash left out).
+
+- [x] §0 `claude/decisions.md` replaced with the owner's text of Nov 5,
+  2026, exactly (owner, Nov 5, 2026).
+- [x] §3 The Council of six (owner, Nov 5, 2026): officers the President
+  (events), the Vice President (partnerships, charities among them) and
+  the General Secretary (membership, records, Student Life); directors the
+  Editor-in-Chief, the Artistic Director and the Director of Media. The
+  roles Director (generic), Director of Programs, Partnerships and
+  Membership are retired with their assignments, positions and open
+  openings (a generic Director titled for Media, the paper or the Company
+  moves to that seat's role); the Vice President loses events, programs,
+  membership, certificates and the Company. The Acting President role
+  (two-step sign-in) holds the events permissions for Jan 24 – May 15,
+  2027, assigned by the Council. The Council page lists the six seats by
+  full title, held or Open (`governance.council_seats()`), in the
+  Council's order; the Notion officer mirror offers the six seats only.
+  Migration `20261101005000_council_of_six`; `99_owner_nov5.test.sql`.
+- [x] §1 No programs, events (owner, Nov 5, 2026): the five recurring
+  events are series on What's on (`/events/<slug>`), none a program; the
+  repeat rules are gone (`events.series_rules`, `add_series_sessions`;
+  the series' Diwan page lists its events instead); the series run
+  "Tuesdays, as the term calendar sets" and Second Chapter "Every
+  November". The Program Lead is an event lead, scoped to a series or to
+  one event (new scope `event`, `private.leads_event`). Copy across the
+  site, the Diwan, forms, the brand kit and docs says event, series or
+  event lead; hiring names the General Secretary, the President picks
+  event leads; Get involved lists event teams; Apprenticeship places are
+  "a Qirtas section, the Company or an event team". Code identifiers
+  (`programmes`, `programme_id`, `programs.manage`) stay. Migration
+  `20261101005100_events_not_programs`.
+- [x] §2 The Typewriter Tour belongs to membership (owner, Nov 5, 2026):
+  `/join/typewriter-tour` (from Join; no longer a series), Mar 14–25, 2027
+  and the fall club fair; `tour.run` for the General Secretary and the
+  Tour Lead (`tour_lead`, picked by the General Secretary), who keep Six
+  Words in the Diwan's People → Typewriter Tour. Six Words still go to
+  Qirtas Letters.
+- [x] §4 Copy and channels (owner, Nov 5, 2026): the Instagram bio and the
+  six highlights (The Company replaces Programs: new cover and story
+  banner, PNGs rendered), the What's on and Get involved stories, the
+  printables; the retired names are refused by `check-language.ts`.
+- [ ] §5 The Tour's spring 2026 import and invitation email: not done,
+  `diwan_six_words_import.csv` and `invitation_list.csv` were not attached.
+- [ ] Notion: the Publishing database is still named Programs (the sync
+  reads it by name; rename it with the sync in one change), and the
+  Officers database's Roles options still list the retired seats (the
+  sync writes the six seats only).
+- needs-native-review: `diwan.admin.programmes.*` (series copy),
+  `diwan.admin.hiring.*`, `diwan.places.*`, `diwan.forms.defs.f10`,
+  `f29`, `f25a`, `f17`, `diwan.admin.member.scopes.event`,
+  `diwan.admin.sections.tabs.tour`, `web.join.tour.*`, `web.join.tourLine`,
+  `web.governance.seats.*`, `seatOpen`, `web.events.lede`,
+  `web.about.glance.*`, `web.nav.programs`, `web.footer.columns.programs`,
+  `web.home.programs`, the series' rhythms in `core.programmes`, the
+  roles' Arabic names (قائد الفعالية، الرئيس بالإنابة، مسؤول جولة الآلة الكاتبة).
 
 ## The design review: PR 6b, translations beside their originals, topics (2026-11-05)
 

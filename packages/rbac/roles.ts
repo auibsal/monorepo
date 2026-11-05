@@ -11,6 +11,20 @@ export interface RoleDefinition {
 
 /** Role bundles, mirrored from the reference-data migration. */
 export const roles = {
+  // While the President is abroad (owner, Nov 5, 2026), events.
+  acting_president: {
+    defaultScope: "global",
+    isCouncil: false,
+    nameAr: "الرئيس بالإنابة",
+    nameEn: "Acting President",
+    permissions: [
+      "events.manage",
+      "events.checkin",
+      "programs.manage",
+      "library.read",
+      "library.council",
+    ],
+  },
   advisory_board: {
     defaultScope: "issue",
     isCouncil: false,
@@ -85,13 +99,6 @@ export const roles = {
     nameAr: "مسؤول التصميم",
     nameEn: "Design Lead",
     permissions: ["content.manage", "library.read"],
-  },
-  director: {
-    defaultScope: "global",
-    isCouncil: true,
-    nameAr: "مدير",
-    nameEn: "Director",
-    permissions: ["events.checkin", "library.read", "library.council"],
   },
   eic: {
     defaultScope: "global",
@@ -181,6 +188,9 @@ export const roles = {
       "certificates.prepare",
       "charity.manage",
       "charity.ledger.signoff",
+      // Membership, the Typewriter Tour (owner, Nov 5, 2026).
+      "tour.run",
+      "events.checkin",
     ],
   },
   guest_editor: {
@@ -236,20 +246,6 @@ export const roles = {
       "library.council",
     ],
   },
-  membership_director: {
-    defaultScope: "global",
-    isCouncil: true,
-    nameAr: "مدير العضوية",
-    nameEn: "Director of Membership",
-    permissions: [
-      "members.manage",
-      "members.verify",
-      "certificates.prepare",
-      "events.checkin",
-      "library.read",
-      "library.council",
-    ],
-  },
   news_editor: {
     defaultScope: "global",
     isCouncil: false,
@@ -279,18 +275,6 @@ export const roles = {
     nameAr: "ممثل الشريك",
     nameEn: "Partner Representative",
     permissions: ["partners.own"],
-  },
-  partnerships_director: {
-    defaultScope: "global",
-    isCouncil: true,
-    nameAr: "مدير الشراكات والتواصل",
-    nameEn: "Director of Partnerships & Outreach",
-    permissions: [
-      "partners.manage",
-      "events.checkin",
-      "library.read",
-      "library.council",
-    ],
   },
   photo_video_lead: {
     defaultScope: "global",
@@ -350,6 +334,7 @@ export const roles = {
       "journal.awards",
       "charity.ledger.write",
       "governance.minutes.write",
+      "tour.run",
     ],
   },
   production_lead: {
@@ -362,28 +347,14 @@ export const roles = {
   programme_lead: {
     defaultScope: "programme",
     isCouncil: false,
-    nameAr: "قائد البرنامج",
-    nameEn: "Program Lead",
+    nameAr: "قائد الفعالية",
+    nameEn: "Event Lead",
     permissions: [
       "events.manage",
       "events.checkin",
       "programs.manage",
       "content.manage",
       "library.read",
-    ],
-  },
-  programs_director: {
-    defaultScope: "global",
-    isCouncil: true,
-    nameAr: "مدير البرامج",
-    nameEn: "Director of Programs",
-    permissions: [
-      "events.manage",
-      "events.checkin",
-      "programs.manage",
-      "content.manage",
-      "library.read",
-      "library.council",
     ],
   },
   reader: {
@@ -440,6 +411,14 @@ export const roles = {
       "content.manage",
     ],
   },
+  // The General Secretary's team (owner, Nov 5, 2026).
+  tour_lead: {
+    defaultScope: "global",
+    isCouncil: false,
+    nameAr: "مسؤول جولة الآلة الكاتبة",
+    nameEn: "Tour Lead",
+    permissions: ["tour.run", "events.checkin", "library.read"],
+  },
   venues_lead: {
     defaultScope: "global",
     isCouncil: false,
@@ -452,20 +431,15 @@ export const roles = {
     isCouncil: true,
     nameAr: "نائب الرئيس",
     nameEn: "Vice President",
+    // Partnerships, charities among them (owner, Nov 5, 2026).
     permissions: [
-      "members.verify",
-      "members.manage",
-      "events.manage",
       "events.checkin",
       "content.manage",
-      "programs.manage",
       "governance.manage",
       "library.read",
       "library.council",
       "partners.manage",
       "partners.sign",
-      "certificates.prepare",
-      "productions.manage",
       "concerns.handle",
       "concerns.about_president",
     ],

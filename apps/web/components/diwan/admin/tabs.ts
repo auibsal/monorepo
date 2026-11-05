@@ -7,7 +7,6 @@ export const programTabs = [
   "sessions",
   "shifts",
   "needs",
-  "six-words",
   "prompts",
   "vote",
   "collection",

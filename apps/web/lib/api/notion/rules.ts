@@ -47,7 +47,7 @@ const programmeFor = (
     .relation(page, "Program")
     .map((pageId) => pageId.replaceAll("-", ""));
   if (linked.length > 1) {
-    problems.push("Link at most one program.");
+    problems.push("Link at most one series.");
   }
   const [first] = linked;
   if (!first) {
@@ -55,7 +55,9 @@ const programmeFor = (
   }
   const id = programmes.get(first);
   if (!id) {
-    problems.push("The linked program is not one of the six programs.");
+    problems.push(
+      "The linked series is not one of the Society's event series."
+    );
   }
   return id ?? null;
 };

@@ -35,14 +35,14 @@ import {
 import { NotionManaged } from "../notion-managed";
 import { memberName, useDirectory } from "./directory";
 
-// ── Scope options (programs, Journal issues, campaigns, productions) ────────
+// ── Scope options (series, events, Editions, campaigns, productions) ────────
 
 const useScopeOptions = () => {
   const { supabase } = useAuth();
   const locale = useLocale();
   return useQuery({
     queryFn: async () => {
-      const [programmes, issues, campaigns, shows, partnerRows] =
+      const [programmes, issues, campaigns, shows, partnerRows, eventRows] =
         await Promise.all([
           supabase
             .schema("core")
@@ -71,6 +71,15 @@ const useScopeOptions = () => {
             .from("partners")
             .select("id, name_en, name_ar")
             .order("name_en"),
+          // An event lead may hold the role for one event (owner, Nov 5,
+          // 2026): the events from a month ago on.
+          supabase
+            .schema("events")
+            .from("events")
+            .select("id, title_en, title_ar, starts_at")
+            .gte("starts_at", new Date(Date.now() - 30 * 864e5).toISOString())
+            .order("starts_at")
+            .limit(200),
         ]);
       const options: Record<
         Exclude<ScopeType, "global">,
@@ -79,6 +88,10 @@ const useScopeOptions = () => {
         campaign: (unwrap(campaigns) ?? []).map((c) => ({
           id: c.id,
           label: localized(c, "title", locale),
+        })),
+        event: (unwrap(eventRows) ?? []).map((e) => ({
+          id: e.id,
+          label: `${localized(e, "title", locale)} · ${formatLongDate(e.starts_at, locale as Locale)}`,
         })),
         issue: (unwrap(issues) ?? []).map((i) => ({
           id: i.id,

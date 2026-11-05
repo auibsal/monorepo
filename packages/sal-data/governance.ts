@@ -34,6 +34,14 @@ export const castBallot = async (
 export const councilMembers = async (client: Client) =>
   unwrap(await client.schema("governance").rpc("council_members")) ?? [];
 
+/**
+ * The Council's six seats (owner, Nov 5, 2026), in order, each with whoever
+ * holds it (none while open), and the Acting President while one is in
+ * office.
+ */
+export const councilSeats = async (client: Client) =>
+  unwrap(await client.schema("governance").rpc("council_seats")) ?? [];
+
 /** Resolutions the Council or the General Assembly adopted, newest first. */
 export const adoptedResolutions = async (client: Client) =>
   unwrap(

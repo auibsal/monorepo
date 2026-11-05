@@ -196,7 +196,7 @@ const useHiredRoles = () => {
  * Society's roles, never typed; it decides who picks the person, and
  * whoever is onboarded holds it. Membership posts any role; owners post
  * their own. A program role names its program and may carry its own title
- * ("Salon Host" for a Program Lead).
+ * ("Salon Host" for an event lead).
  */
 export const NewRole = ({ onDone }: { readonly onDone: () => void }) => {
   const t = useTranslations("diwan.admin.hiring");

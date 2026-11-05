@@ -453,7 +453,11 @@ const OpenPagesPrompts = async ({
  * approved only), in the page's language, set in Ubuntu Mono like the
  * typewriter; and a typewriter to try, which keeps nothing (A30).
  */
-const TypewriterTourWall = async ({ locale }: { readonly locale: Locale }) => {
+export const TypewriterTourWall = async ({
+  locale,
+}: {
+  readonly locale: Locale;
+}) => {
   const t = await getTranslations({ locale, namespace: "web.programs.page" });
   const wall = (
     await readPublished(
@@ -501,8 +505,6 @@ export const ProgramFeature = ({
   switch (series.slug) {
     case "second-chapter":
       return <SecondChapterGive locale={locale} />;
-    case "typewriter-tour":
-      return <TypewriterTourWall locale={locale} />;
     case "book-circle":
       return (
         <>

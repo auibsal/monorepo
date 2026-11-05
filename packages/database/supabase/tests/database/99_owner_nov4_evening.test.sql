@@ -103,9 +103,9 @@ select ok(
 select ok(
   exists (
     select 1 from access.role_permissions
-    where role = 'programs_director' and permission = 'programs.manage'
+    where role = 'president' and permission = 'programs.manage'
   ),
-  'the Director of Programs holds programs.manage'
+  'the President holds programs.manage (owner, Nov 5, 2026)'
 );
 
 select lives_ok(

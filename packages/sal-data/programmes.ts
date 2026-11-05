@@ -35,13 +35,15 @@ export const sixWordsWall = async (client: Client, limit = 200) =>
   ) ?? [];
 
 /**
- * Rows in core.programmes that are not programs (owner, Oct 30, 2026): the
- * Company is the Society's theater company. Its row stays live for its own
- * page, calendar and roles; lists of programs leave it out.
+ * Rows in core.programmes that are not event series (owner, Oct 30 and Nov
+ * 5, 2026): the Company is the Society's theater company, and the
+ * Typewriter Tour belongs to membership (/join/typewriter-tour). Their rows
+ * stay live for their own pages, events and roles; lists of series leave
+ * them out.
  */
-export const notPrograms: readonly string[] = ["company"];
+export const notPrograms: readonly string[] = ["company", "typewriter-tour"];
 
-/** One of the six programs, as the site lists them. */
+/** One of the event series (owner, Nov 5, 2026: no programs), as the site lists them. */
 export const isListedProgram = (row: { is_active: boolean; slug: string }) =>
   row.is_active && !notPrograms.includes(row.slug);
 

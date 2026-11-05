@@ -195,13 +195,16 @@ describe("publishing rules", () => {
       checkProgram(
         page({
           Name: title("Listening Room"),
-          Rhythm: text("Tuesdays, every fourth week"),
+          Rhythm: text("Tuesdays, as the term calendar sets"),
           Summary: text("An album played in full, then talked about."),
         })
       )
     ).toMatchObject({
       ok: true,
-      values: { rhythm: "Tuesdays, every fourth week", slug: "listening-room" },
+      values: {
+        rhythm: "Tuesdays, as the term calendar sets",
+        slug: "listening-room",
+      },
     });
   });
 

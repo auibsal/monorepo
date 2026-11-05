@@ -27,6 +27,7 @@ const staticPaths = [
   "/qirtas/games/search",
   "/sunday-paper",
   "/join",
+  "/join/typewriter-tour",
   "/about/contact",
   "/about/press",
   "/library/privacy",

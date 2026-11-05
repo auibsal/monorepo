@@ -247,7 +247,7 @@ const highlights: [string, IconName][] = [
   ["What's on", "calendar"],
   ["Qirtas", "newspaper"],
   ["Next Stop", "bus"],
-  ["Programs", "layout-grid"],
+  ["The Company", "drama"],
   ["Join", "user-plus"],
   ["Get involved", "hand-helping"],
 ];

@@ -42,8 +42,8 @@ export const Footer = async ({ consent = true }: FooterProps = {}) => {
     []
   );
 
-  // Threes (owner, Oct 30, 2026): three columns, six programs, six of the
-  // Society's pages, three ways to stay in touch, three lines of fine print.
+  // Three columns: the event series (owner, Nov 5, 2026: no programs), the
+  // Society's pages, and the ways to stay in touch; then the fine print.
   const columns = [
     {
       heading: t("columns.programs"),

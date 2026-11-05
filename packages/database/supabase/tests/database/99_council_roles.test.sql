@@ -84,28 +84,28 @@ select pg_temp.grant_role('00000000-0000-0000-0000-0000000000f1', 'president');
 insert into governance.minutes (id, body, meeting_on, title_en, text_en, status)
 values ('00000000-0000-0000-0000-00000000e1ff', 'council', current_date, 'Council meeting', 'Minutes.', 'draft');
 insert into governance.resolutions (id, code, title_en, text_en, status, adopted_on, minutes_id) values
-  ('00000000-0000-0000-0000-00000000e101', 'R-2026-95', 'The President covers Programs', 'Agreed.', 'adopted', current_date, '00000000-0000-0000-0000-00000000e1ff'),
+  ('00000000-0000-0000-0000-00000000e101', 'R-2026-95', 'The President covers Media', 'Agreed.', 'adopted', current_date, '00000000-0000-0000-0000-00000000e1ff'),
   ('00000000-0000-0000-0000-00000000e102', 'R-2026-96', 'A draft', 'Not yet.', 'draft', null, '00000000-0000-0000-0000-00000000e1ff');
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000f1');
 
 select throws_ok(
-  $$ select access.assign_role('00000000-0000-0000-0000-0000000000f1', 'programs_director') $$,
+  $$ select access.assign_role('00000000-0000-0000-0000-0000000000f1', 'media_director') $$,
   '23P01', 'one_council_seat', 'A second Council role is refused without a resolution'
 );
 select throws_ok(
-  $$ select access.assign_role('00000000-0000-0000-0000-0000000000f1', 'programs_director',
+  $$ select access.assign_role('00000000-0000-0000-0000-0000000000f1', 'media_director',
        exception_resolution => '00000000-0000-0000-0000-00000000e102') $$,
   '23P01', 'exception_needs_adopted_resolution', 'or with one not yet adopted'
 );
 select lives_ok(
-  $$ select access.assign_role('00000000-0000-0000-0000-0000000000f1', 'programs_director',
+  $$ select access.assign_role('00000000-0000-0000-0000-0000000000f1', 'media_director',
        exception_resolution => '00000000-0000-0000-0000-00000000e101') $$,
   'and allowed by an adopted Council resolution (Constitution 6.6)'
 );
 select is(
   (select titles_en from governance.council_members() where full_name_en = 'The President'),
-  array['President', 'Director of Programs'],
+  array['President', 'Director of Media'],
   'The Council page names the President once, with both titles'
 );
 

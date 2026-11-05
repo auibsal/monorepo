@@ -41,7 +41,7 @@ The platform is one repository, [auibsal/mono](https://github.com/auibsal/mono),
 | sal-ballot-retention | 5:15 UTC | Deletes ballots and voter lists one year after an election closes (B6.11) |
 | sal-outbox-prune | 5:30 UTC | Deletes sent outbox rows older than 30 days |
 | sal-sunday-paper | Sundays, 6:00 UTC (sends on the first Sunday of the month) | The Sunday Paper to members and the public list |
-| sal-notion-sync | Every 15 minutes | Mirrors officers, programs and the registry into Notion |
+| sal-notion-sync | Every 15 minutes | Mirrors officers, event series and the registry into Notion |
 | sal-telegram-posts | Every 10 minutes | Hudhud's posts to the Society's group |
 | sal-telegram-tidy | 3:25 UTC | Expired Telegram codes and old posts |
 | sal-cron-health | 5:35 UTC | Emails the administrators the jobs that failed in the last day; prunes run records older than 30 days |

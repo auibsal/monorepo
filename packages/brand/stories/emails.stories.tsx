@@ -70,8 +70,8 @@ const event: EventInfo = {
 };
 const role: RoleInfo = {
   ends_at: "2027-05-13T20:59:59Z",
-  name_ar: "مدير الفعاليات",
-  name_en: "Director of Programs",
+  name_ar: "قائد الفعالية",
+  name_en: "Event Lead",
 };
 const removal: RemovalInfo = {
   content_url: "https://auibsal.org/qirtas/pieces/example",

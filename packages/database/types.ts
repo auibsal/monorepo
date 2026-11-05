@@ -1797,54 +1797,6 @@ export type Database = {
           },
         ];
       };
-      series_rules: {
-        Row: {
-          capacity: number | null;
-          created_at: string;
-          entry: string;
-          every_weeks: number;
-          first_on: string;
-          members_only: boolean;
-          minutes: number;
-          programme_id: string;
-          start_time: string;
-          updated_at: string;
-          updated_by: string | null;
-          venue_ar: string | null;
-          venue_en: string | null;
-        };
-        Insert: {
-          capacity?: number | null;
-          created_at?: string;
-          entry?: string;
-          every_weeks?: number;
-          first_on: string;
-          members_only?: boolean;
-          minutes?: number;
-          programme_id: string;
-          start_time: string;
-          updated_at?: string;
-          updated_by?: string | null;
-          venue_ar?: string | null;
-          venue_en?: string | null;
-        };
-        Update: {
-          capacity?: number | null;
-          created_at?: string;
-          entry?: string;
-          every_weeks?: number;
-          first_on?: string;
-          members_only?: boolean;
-          minutes?: number;
-          programme_id?: string;
-          start_time?: string;
-          updated_at?: string;
-          updated_by?: string | null;
-          venue_ar?: string | null;
-          venue_en?: string | null;
-        };
-        Relationships: [];
-      };
       session_links: {
         Row: {
           created_at: string;
@@ -1926,10 +1878,6 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
-      add_series_sessions: {
-        Args: { programme: string; until: string };
-        Returns: number;
-      };
       calendar: {
         Args: { from_at: string; to_at: string };
         Returns: {
@@ -3028,6 +2976,15 @@ export type Database = {
           full_name_en: string;
           titles_ar: string[];
           titles_en: string[];
+        }[];
+      };
+      council_seats: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          holders_ar: string[];
+          holders_en: string[];
+          seat: string;
+          sort: number;
         }[];
       };
       count_election: { Args: { election_id: string }; Returns: undefined };

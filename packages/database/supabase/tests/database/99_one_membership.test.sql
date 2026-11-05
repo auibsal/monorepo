@@ -83,7 +83,7 @@ select pg_temp.make_user('00000000-0000-0000-0000-0000000000a2', 'member-om@auib
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000b1', 'friend@example.org', 'Society Friend');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000c1', 'lead@club.org', 'Club Lead');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000b2', 'linked@example.org', 'Link Guest');
-select pg_temp.grant_role('00000000-0000-0000-0000-0000000000a1', 'membership_director');
+select pg_temp.grant_role('00000000-0000-0000-0000-0000000000a1', 'general_secretary');
 
 insert into governance.partners (id, slug, name_en, kind, is_listed, status)
 values ('00000000-0000-0000-0000-00000000d001', 'club-om', 'The Club', 'club', true, 'active');

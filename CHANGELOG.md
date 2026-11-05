@@ -6,6 +6,17 @@ own versions in the Library.
 
 ## Unreleased
 
+- No programs: Qirtas and the Company stay, and everything else is an
+  event. The recurring events are series on What's on, each term's
+  calendar is plain events, and a Program Lead is now an event lead, for
+  a series or a single event.
+- The Council has six seats: the President, the Vice President and the
+  General Secretary, the Editor-in-Chief, the Artistic Director and the
+  Director of Media. The Council page lists them by full title; an Acting
+  President can hold the events while the President is abroad.
+- The Typewriter Tour belongs to membership, at /join/typewriter-tour,
+  run by the General Secretary and the Tour Lead.
+- The Instagram bio and highlights follow: The Company replaces Programs.
 - A translation in Qirtas can show its original beside it; the editors
   tag pieces with topics, each with its own page.
 - Long reads in Qirtas show their contents beside the text; explainers

@@ -29,10 +29,10 @@ We speak two kinds of Arabic, as our members do (owner, Nov 4, 2026).
 ## Names and pictures
 
 - "AUIB Society of Arts and Letters" in full on first use; then "the Society" or "SAL". Never "the club", never "Art and Letter".
-- Call Qirtas "the Society's paper". Programs are named as the Programs page lists them.
+- Call Qirtas "the Society's paper". Events are named as What's on lists them; none is a program.
 - Partners with Arabic names are named in their own language first.
 - Icons come only from the Society's set; they stand alone when they say enough (see Icons). No emoji. Mark wrong examples with a plain "×".
-- Name the Society's three parts in this order: Qirtas, our paper; the Company, our theater; and the six programs.
+- Name the Society's three parts in this order: Qirtas, our paper; the Company, our theater; and events all year.
 
 ## Language standard
 

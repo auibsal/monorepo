@@ -99,7 +99,7 @@ select pg_temp.grant_role('00000000-0000-0000-0000-0000000000a2', 'eic', 'issue'
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000000a3', 'reader', 'issue', '1a000000-0000-0000-0000-000000000001');
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000000a4', 'reader', 'issue', '1a000000-0000-0000-0000-000000000001');
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000000a6', 'vice_president');
-select pg_temp.grant_role('00000000-0000-0000-0000-0000000000a7', 'partnerships_director');
+select pg_temp.grant_role('00000000-0000-0000-0000-0000000000a7', 'vice_president');
 
 insert into membership.pledges (user_id, pledge_type, version)
 select u, t, '1'

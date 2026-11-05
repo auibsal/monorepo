@@ -30,6 +30,7 @@ export type ViewKey =
   | "openings"
   | "service"
   | "partners"
+  | "tour"
   | "insights"
   | "meetings"
   | "requests"
@@ -47,6 +48,7 @@ export const sectionViews: Record<AdminSection, readonly SectionView[]> = {
     { href: "/people/openings", key: "openings", module: "hiring" },
     { href: "/people/service", key: "service", module: "recognition" },
     { href: "/people/partners", key: "partners", module: "partners" },
+    { href: "/people/typewriter-tour", key: "tour", module: "tour" },
     {
       href: "/people/insights",
       key: "insights",

@@ -286,7 +286,9 @@ describe.skipIf(!enabled)("Notion sync", () => {
         Name: { title: [{ text: { content: "The Salon" } }] },
         Rhythm: {
           rich_text: [
-            { text: { content: `Tuesdays, every fourth week ${stamp}` } },
+            {
+              text: { content: `Tuesdays, as the term calendar sets ${stamp}` },
+            },
           ],
         },
         Status: { select: { name: "Ready to publish" } },
@@ -302,7 +304,7 @@ describe.skipIf(!enabled)("Notion sync", () => {
       .eq("id", salonId)
       .single();
     expect(data).toEqual({
-      rhythm_en: `Tuesdays, every fourth week ${stamp}`,
+      rhythm_en: `Tuesdays, as the term calendar sets ${stamp}`,
       slug: "salon",
     });
   });
