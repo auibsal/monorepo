@@ -22,6 +22,10 @@ Branch: `claude/join-partners-hudhud` (after PR 4e, `claude/program-pages`,
   Telegram when optional email is off.
 - [x] A8 Performance budget on a mid-range phone for six public pages,
   beside the axe checks (LCP, layout shift, JavaScript, total transfer).
+  Its first CI run caught a real shift: next/font's fallback for Ubuntu
+  is local(Arial), which Android and Linux lack, so text first set in a
+  wider face jumped when Ubuntu loaded. `globals.css` adds fallbacks
+  (Liberation Sans or Roboto, and DejaVu Sans) matched to Ubuntu's width.
 - needs-native-review: `web.join.gives.*`, `web.join.firstMonthTitle`,
   `web.partners.gets.places`, `web.partners.gives.*`; Hudhud's `wordOn`,
   `wordOff` and the buttons (Iraqi).
