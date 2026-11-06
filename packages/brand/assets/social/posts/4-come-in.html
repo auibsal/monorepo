@@ -21,8 +21,8 @@
 
 
 
-:root{
-  --crimson:#9C213E; --crimson-700:#7E1A32; --crimson-100:#FFFFFF; --crimson-50:#F7ECEF;
+:root{--mist:#C3CACB;
+  --crimson:#9C213E; --crimson-700:#7E1A32; --crimson-100:#C3CACB; --crimson-50:#F7ECEF;
   --ink:#273236; --ink-70:#4A5559; --ink-50:#6E777A; --ink-10:#E7EAEB; --line:#E3DEDF; --paper:#FAF7F5; --white:#fff;
   --sans:Ubuntu, "Ubuntu Arabic", sans-serif; --ar:"Ubuntu Arabic", Ubuntu, sans-serif; --mono:'Ubuntu Mono', Ubuntu, monospace;
 }
@@ -281,8 +281,8 @@ table.grid-f td.lab{background:var(--crimson-50);font-weight:700;width:34mm}
 @font-face{font-family:"Ubuntu Arabic";font-weight:400;src:url(../../fonts/UbuntuArabic-Regular.woff2)}
 @font-face{font-family:"Ubuntu Arabic";font-weight:500;src:url(../../fonts/UbuntuArabic-Regular.woff2)}
 @font-face{font-family:"Ubuntu Arabic";font-weight:700;src:url(../../fonts/UbuntuArabic-Bold.woff2)}
-:root{--crimson:#9C213E;--ink:#273236;--paper:#F5F2EE;--stone:#E2DDD6;--ash:#5C6568;--rose:#FFFFFF;
-  --crimson-50:transparent;--crimson-100:#FFFFFF;--ink-70:#5C6568;--ink-50:#5C6568;--ink-10:#F5F2EE;--line:#E2DDD6}
+:root{--crimson:#9C213E;--ink:#273236;--paper:#F5F2EE;--stone:#E2DDD6;--ash:#5C6568;--rose:#C3CACB;
+  --crimson-50:transparent;--crimson-100:#C3CACB;--ink-70:#5C6568;--ink-50:#5C6568;--ink-10:#F5F2EE;--line:#E2DDD6}
 body{font-size:10.3pt;line-height:1.55}
 .page{padding-top:24mm}
 .page.dark,.page.crimson{background:#fff;color:var(--ink)}
@@ -478,17 +478,18 @@ table.grid-f td.lab{background:var(--paper)}
 
 /* Grounds: crimson for calls and moments, white for events, ink for words worth keeping and recruiting. */
 .sal-post--crimson .sal-post__frame, .sal-story--crimson .sal-story__frame { background: var(--crimson); color: var(--white); }
-.sal-post--crimson .sal-post__meta, .sal-story--crimson .sal-post__meta, .sal-post--crimson .sal-post__num { color: var(--white); }
+.sal-post--crimson .sal-post__headline i, .sal-post--crimson .sal-post__title i, .sal-story--crimson .sal-post__headline i,
+.sal-post--crimson .sal-post__meta, .sal-story--crimson .sal-post__meta, .sal-post--crimson .sal-post__num { color: var(--mist); }
 .sal-post--white .sal-post__frame, .sal-story--white .sal-story__frame { background: var(--white); color: var(--ink); }
 .sal-post--white .sal-post__headline i, .sal-post--white .sal-post__title i, .sal-post--white .sal-post__num,
 .sal-story--white .sal-post__headline i { color: var(--crimson); }
 .sal-post--white .sal-post__meta, .sal-story--white .sal-post__meta { color: var(--ash); }
 .sal-post--ink .sal-post__frame, .sal-story--ink .sal-story__frame { background: var(--ink); color: var(--white); }
 .sal-post--ink .sal-post__headline i, .sal-post--ink .sal-post__title i, .sal-post--ink .sal-post__meta, .sal-post--ink .sal-post__num,
-.sal-story--ink .sal-post__headline i, .sal-story--ink .sal-post__meta { color: var(--white); }
+.sal-story--ink .sal-post__headline i, .sal-story--ink .sal-post__meta { color: var(--mist); }
 
 @font-face{font-family:"Ubuntu Arabic";font-weight:400;src:url(../../fonts/UbuntuArabic-Regular.woff2)}
-:root{--white:#FFFFFF;--ink:#273236;--crimson:#9C213E;--paper:#F5F2EE;--stone:#E2DDD6;--ash:#5C6568;--crimson-100:#FFFFFF;
+:root{--white:#FFFFFF;--ink:#273236;--crimson:#9C213E;--paper:#F5F2EE;--stone:#E2DDD6;--ash:#5C6568;--crimson-100:#C3CACB;
  --font-sans:Ubuntu,sans-serif;--font-arabic:"Ubuntu Arabic",sans-serif;--font-mono:'Ubuntu Mono',monospace;--hairline:1px;--page-margin:79px;
  --accent:#9C213E;--on-accent:#fff;--text:#273236}
 body{margin:0;width:1080px}

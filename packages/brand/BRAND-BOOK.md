@@ -36,7 +36,7 @@ This is SAL-BRD-01, Brand and Identity, Version 1, ratified by the Society, in s
 - `stone` is for hairline rules only, never text. `ash` is secondary text and captions (6.0:1 on white, 5.3:1 on paper).
 - One color is reserved: `crimson-700` lives only inside the logo files. There is no pink (decided Nov 6): rose is retired, as an accent and in Hudhud.
 - Build with the role tokens: `surface`, `surface-reading`, `text`, `text-secondary`, `accent`, `line`, `band` and `on-band`. They switch between light and dark.
-- Dark mode is `ink` with white text and `mist` for secondary text. On `ink` and `crimson` the accent is the italic itself, in white, and the one button is white with ink text. Never crimson text or the crimson symbol on `ink` (1.7:1).
+- Dark mode is `ink` with white text and `mist` for secondary text. The accent word always differs in color from the text around it: `crimson` on white and paper, `mist` on `ink` and `crimson` (decided Nov 6). In dark mode the one button is mist with ink text. Never crimson text or the crimson symbol on `ink` (1.7:1).
 
 ## Type
 
@@ -128,7 +128,7 @@ This is SAL-BRD-01, Brand and Identity, Version 1, ratified by the Society, in s
 - Three grounds, by purpose: `crimson` for calls and moments, `white` for events, `ink` for words worth keeping and recruiting.
 - Posters A3/A4 follow the post: lockup, Light headline, a QR code at bottom right. Certificates are A4 landscape with a single hairline frame and the lockup. Print only when current stock runs out.
 - Print sizes: Charter poster A3; Open Call poster A3 or A4; Term Card A6, four to an A4 sheet; membership card 85 × 55 mm, 300 gsm, ten to an A4 sheet; Certificate of Service and Fellow certificate A4 landscape; name badges 90 × 55 mm; photography notice A4; camera-shy stickers 40 mm round, twenty to an A4 sheet, the crossed-out camera alone in white on ink. Every one is drawn in Print.
-- **The sticker pack** (`assets/print/stickers`, decided Nov 6): 50 stickers, from the Bookmark and the motto to Qirtas in typewriter keys, a ticket, a record, Next Stop's bus, the Company's stage and Hudhud, printed by Student Life. No white borders: each is cut on a full ground or on its own clean edge, and a Clear vinyl group (the motto, قرطاس, the wordmarks, Hudhud) prints on clear vinyl with no shape at all. Only the brand's colors; the variety is in shape, type and structure. Each file is one sticker at 100% with its cut line in magenta.
+- **The sticker pack** (`assets/print/stickers`, decided Nov 6): 44 stickers, from the Bookmark and the motto to Qirtas in typewriter keys, a ticket, a record, Next Stop's bus, the Company's stage and Hudhud, printed by Student Life. No white borders: each is cut on a full ground or on its own clean edge. Only the brand's colors; the variety is in shape, type and structure. Each file is one sticker at 100% with its cut line in magenta.
 
 ## Imagery
 

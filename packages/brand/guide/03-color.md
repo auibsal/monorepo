@@ -20,10 +20,10 @@ About 70 white · 18 ink · 7 crimson · 5 paper and stone.
 | Color | Value | Use |
 | --- | --- | --- |
 | Crimson-700 | `#7E1A32` | Inside the logo files only. |
-| Mist | `#C3CACB` | Secondary text in dark mode. |
+| Mist | `#C3CACB` | Secondary text and the accent word on ink and crimson. |
 | Slate | `#3D494D` | Rules in dark mode. |
 
-Never add a color, and no event may add one. Never use crimson as a pale tint or a large block of headline. Never set crimson text or the crimson symbol on ink (1.7:1): on ink and on crimson, the accent is the italic itself, in white (decided Nov 6: rose is not an accent).
+Never add a color, and no event may add one. Never use crimson as a pale tint or a large block of headline. Never set crimson text or the crimson symbol on ink (1.7:1): on ink and on crimson the accent word is mist (7.9:1 on ink, 4.7:1 on crimson), so the accent is always a different color from the text around it (decided Nov 6; rose is not an accent).
 
 ## Color roles
 
@@ -35,7 +35,7 @@ Build with roles, not raw colors. Each role has a value for light mode and for d
 | `surface-reading` | paper | ink | Qirtas pages, long reading |
 | `text` | ink | white | Headlines and body |
 | `text-secondary` | ash | mist | Captions, meta, labels |
-| `accent` | crimson | white | The one loud thing: italic word, button |
+| `accent` | crimson | mist | The one loud thing: italic word, button |
 | `on-accent` | white | ink | Text on the accent button |
 | `line` | stone | slate | Hairline rules |
 | `band` | crimson | crimson | One full-bleed band per page at most |
@@ -60,4 +60,5 @@ Every text pair reaches 4.5:1 in both modes. Rules and fills that carry no words
 | Ash on paper | 5.3:1 |
 | White on crimson | 7.8:1 |
 | Mist on ink | 7.9:1 |
+| Mist on crimson | 4.7:1 |
 | Crimson on ink | 1.7:1 · never |

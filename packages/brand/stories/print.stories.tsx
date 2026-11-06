@@ -241,18 +241,6 @@ const STICKER_PACK: [string, string, string, number, number][] = [
   ["join-qr", "Join", "Ways in", 55.92, 67.92],
   ["get-involved", "Get involved", "Ways in", 111.92, 35.92],
   ["camera-shy", "Camera-shy", "Ways in", 45.92, 45.92],
-  [
-    "clear-motto",
-    "The paper and the pen., clear",
-    "Clear vinyl",
-    143.41,
-    61.83,
-  ],
-  ["clear-qirtas-ar", "Qirtas in Arabic, clear", "Clear vinyl", 149.66, 54.08],
-  ["clear-lockup", "Stacked lockup, clear", "Clear vinyl", 49.58, 85.75],
-  ["clear-wordmark-ar", "Arabic wordmark, clear", "Clear vinyl", 69.25, 69.75],
-  ["clear-hudhud", "Hudhud, clear", "Clear vinyl", 62.83, 56.75],
-  ["clear-hudhud-flying", "Hudhud flying, clear", "Clear vinyl", 69.58, 56.0],
 ];
 
 export const StickerPack: Story = {

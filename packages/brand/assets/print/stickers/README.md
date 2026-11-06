@@ -1,12 +1,12 @@
 # Sticker pack
 
-The Society's printed stickers: 50 stickers for laptops, bottles, notebooks and doors, printed by Student Life. Each file here is one sticker at 100%, its type outlined, with the cut line in magenta (`#ec008c`, 0.25 mm), which is cut and never printed.
+The Society's printed stickers: 44 stickers for laptops, bottles, notebooks and doors, printed by Student Life. Each file here is one sticker at 100%, its type outlined, with the cut line in magenta (`#ec008c`, 0.25 mm), which is cut and never printed.
 
-- **Colors:** the six, and no pink: on ink and crimson the accent is the italic itself, in white. Never another color; the variety is in shape, type and structure.
-- **Cuts:** no white borders. Each white-vinyl sticker is cut either on a full ground (a square, a circle) or exactly on its own clean edge (the Bookmark, the pen, the page, the ticket, the books, the typewriter), with 1.5 mm bleed past every cut. The Clear vinyl group is cut 1.5 mm around the art, which the clear vinyl hides.
+- **Colors:** the six, and no pink. The accent word always differs from the text around it: crimson on white and paper, mist on ink and crimson. Never another color; the variety is in shape, type and structure.
+- **Cuts:** no white borders. Each white-vinyl sticker is cut either on a full ground (a square, a circle) or exactly on its own clean edge (the Bookmark, the pen, the page, the ticket, the books, the typewriter), with 1.5 mm bleed past every cut.
 - **Hudhud** is used from the mascot files as supplied, never redrawn, and never touches the logo. The camera-shy sticker is the crossed-out camera alone.
 - **Arabic** stickers (the motto, قرطاس, ق) need a native speaker's check before printing (needs-native-review).
-- **Material:** white matte vinyl; "Six words, to fill in" on a writable matte stock; the Clear vinyl group on clear vinyl with white ink printed under the art (a printer that prints white ink).
+- **Material:** white matte vinyl; "Six words, to fill in" on a writable matte stock.
 - **Type:** Ubuntu for words and labels (labels in Medium, tracked capitals), Ubuntu Arabic for Arabic, Ubuntu Mono only for typewriter lines (the keys, the typewriter's sheet, Six words). Icons at sticker size end their lines flat, so no corner pokes past a frame.
 - The printer gets a PDF made from these files (a cover with the specs, the overview, and one page per sticker at 100%); it is sent, never kept in the repository. The Print story "Sticker pack" shows them all.
 
@@ -27,7 +27,7 @@ The Society's printed stickers: 50 stickers for laptops, bottles, notebooks and 
 
 | File | Sticker | Cut size | Notes |
 |---|---|---|---|
-| `motto-en.svg` | The paper and the pen. | 150 × 72 mm | White on a crimson ground, cut square; the italic is the accent. |
+| `motto-en.svg` | The paper and the pen. | 150 × 72 mm | White on a crimson ground, cut square; the accent word in mist. |
 | `motto-ar.svg` | Arabic motto | 120 × 44 mm | needs-native-review for the vowel mark. |
 | `motto-strip.svg` | Motto strip | 200 × 30 mm | Long strip for laptops and notebooks. |
 | `the-pen.svg` | The pen | 28 × 78 mm | A fountain-pen nib, cut on its own edge; pairs with The paper. |
@@ -93,14 +93,3 @@ The Society's printed stickers: 50 stickers for laptops, bottles, notebooks and 
 | `join-qr.svg` | Join | 50 × 62 mm | Scans to auibsal.org/join. |
 | `get-involved.svg` | Get involved | 106 × 30 mm | A signpost, cut on its own edge. |
 | `camera-shy.svg` | Camera-shy | 40 × 40 mm | The photography sticker: 40 mm, the crossed-out camera alone. |
-
-## Clear vinyl
-
-| File | Sticker | Cut size | Notes |
-|---|---|---|---|
-| `clear-motto.svg` | The paper and the pen., clear | 137 × 56 mm | For light laptops and bottles. Clear vinyl, white ink under the art. |
-| `clear-qirtas-ar.svg` | Qirtas in Arabic, clear | 144 × 48 mm | needs-native-review. Clear vinyl, white ink under the art. |
-| `clear-lockup.svg` | Stacked lockup, clear | 44 × 80 mm | The lockup as supplied. Clear vinyl, white ink under the art. |
-| `clear-wordmark-ar.svg` | Arabic wordmark, clear | 63 × 64 mm | The wordmark as supplied. Clear vinyl, white ink under the art. |
-| `clear-hudhud.svg` | Hudhud, clear | 57 × 51 mm | The file as supplied. Clear vinyl, white ink under the art. |
-| `clear-hudhud-flying.svg` | Hudhud flying, clear | 64 × 50 mm | The file as supplied. Clear vinyl, white ink under the art. |

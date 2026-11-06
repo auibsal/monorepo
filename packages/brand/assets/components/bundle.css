@@ -109,14 +109,15 @@
 
 /* Grounds: crimson for calls and moments, white for events, ink for words worth keeping and recruiting. */
 .sal-post--crimson .sal-post__frame, .sal-story--crimson .sal-story__frame { background: var(--crimson); color: var(--white); }
-.sal-post--crimson .sal-post__meta, .sal-story--crimson .sal-post__meta, .sal-post--crimson .sal-post__num { color: var(--white); }
+.sal-post--crimson .sal-post__headline i, .sal-post--crimson .sal-post__title i, .sal-story--crimson .sal-post__headline i,
+.sal-post--crimson .sal-post__meta, .sal-story--crimson .sal-post__meta, .sal-post--crimson .sal-post__num { color: var(--mist); }
 .sal-post--white .sal-post__frame, .sal-story--white .sal-story__frame { background: var(--white); color: var(--ink); }
 .sal-post--white .sal-post__headline i, .sal-post--white .sal-post__title i, .sal-post--white .sal-post__num,
 .sal-story--white .sal-post__headline i { color: var(--crimson); }
 .sal-post--white .sal-post__meta, .sal-story--white .sal-post__meta { color: var(--ash); }
 .sal-post--ink .sal-post__frame, .sal-story--ink .sal-story__frame { background: var(--ink); color: var(--white); }
 .sal-post--ink .sal-post__headline i, .sal-post--ink .sal-post__title i, .sal-post--ink .sal-post__meta, .sal-post--ink .sal-post__num,
-.sal-story--ink .sal-post__headline i, .sal-story--ink .sal-post__meta { color: var(--white); }
+.sal-story--ink .sal-post__headline i, .sal-story--ink .sal-post__meta { color: var(--mist); }
 
 /* ---------- Instagram highlights ----------
    Covers: plain crimson with the highlight's icon alone, in white, centered; no name and no Bookmark (Instagram writes the name under the circle).
