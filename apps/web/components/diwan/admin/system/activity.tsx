@@ -167,7 +167,7 @@ const useActivity = (area: "" | Area, limit = PAGE) => {
 
 /**
  * What happened, in sentences: who did what to which record, newest first
- * ("Lina changed the event “Open Pages”"). The Desk shows the latest few;
+ * ("Lina changed the event “Writing workshop”"). The Desk shows the latest few;
  * the full page filters by section.
  */
 const Feed = ({ entries }: { readonly entries: readonly Entry[] }) => {

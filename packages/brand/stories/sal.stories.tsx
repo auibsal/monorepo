@@ -74,7 +74,7 @@ export const Section: Story = {
         title="This term"
       />
       <ul className="grid border-line border-b">
-        {["Open Pages", "The Salon"].map((title, i) => (
+        {["Writing workshop", "Readings and conversation"].map((title, i) => (
           <li
             className="grid grid-cols-[6rem_1fr] gap-x-4 border-line border-t py-space-4"
             key={title}

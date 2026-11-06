@@ -45,7 +45,7 @@ export const sectionViews: Record<AdminSection, readonly SectionView[]> = {
   desk: [{ href: "/", key: "desk", module: "*" }],
   events: [
     { href: "/events", key: "events", module: "events" },
-    // Second Chapter's campaigns, each linked to its event (owner, Nov 5, 2026).
+    // The book fair's campaigns, each linked to its event (owner, Nov 5, 2026).
     { href: "/events/campaigns", key: "collection", module: "charity" },
   ],
   people: [

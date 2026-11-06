@@ -79,7 +79,6 @@ One standard for every word the platform writes (owner, Nov 4, 2026). `bun run c
 | Get involved | «شارك معنا» | |
 | the Company | الفرقة | |
 | production | عرض | |
-| the Salon | الصالون | |
 | the Qirtas Awards | جوائز قرطاس | |
 | the Apprenticeship | التدريب المهني | |
 | version (of a document) | النسخة | |

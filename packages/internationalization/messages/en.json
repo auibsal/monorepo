@@ -1202,7 +1202,7 @@
           "needs": "Needs",
           "prompts": "Prompts",
           "vote": "Book vote",
-          "collection": "Second Chapter's collection",
+          "collection": "The book fair's collection",
           "collectionLede": "Link the campaign to its event, the fair: the event's page then carries the collection, its catalog and its impact report.",
           "noCampaigns": "No campaign yet.",
           "campaigns": "Campaigns",
@@ -1218,7 +1218,7 @@
             "links": "Links",
             "prompts": "Prompts",
             "vote": "Book vote",
-            "collection": "Second Chapter's collection",
+            "collection": "The book fair's collection",
             "minutes": "Minutes"
           },
           "minutes": "Minutes and resolutions",
@@ -1272,7 +1272,7 @@
       },
       "charity": {
         "title": "Charity",
-        "lede": "Second Chapter campaigns. Money is recorded, never collected online: cash is counted by two people, and an entry counts only after a different person signs it off.",
+        "lede": "Book fair campaigns. Money is recorded, never collected online: cash is counted by two people, and an entry counts only after a different person signs it off.",
         "campaigns": "Campaigns",
         "newCampaign": "New campaign",
         "columns": {
@@ -1408,7 +1408,7 @@
         },
         "catalog": {
           "title": "Catalog",
-          "lede": "The books given for the fair, for readers to browse on Second Chapter's page. Never a price; a book shows while it is listed.",
+          "lede": "The books given for the fair, for readers to browse on the fair's event page. Never a price; a book shows while it is listed.",
           "new": "Add a book",
           "bookTitle": "Title",
           "author": "Author (optional)",
@@ -1626,7 +1626,7 @@
           "removeConfirm": "Remove this prompt?"
         },
         "vote": {
-          "lede": "Choose up to three books and a closing time; members vote on Book Circle's page. You see the votes as they come; everyone else sees them once voting closes.",
+          "lede": "Choose up to three books and a closing time; members vote on the event's page. You see the votes as they come; everyone else sees them once voting closes.",
           "newBallot": "Open a vote",
           "ballotTitle": "What the vote is for",
           "closes": "Voting closes",
@@ -2994,7 +2994,7 @@
           "meetings": "Meetings",
           "declarations": "Declarations",
           "tour": "Typewriter Tour",
-          "collection": "Second Chapter"
+          "collection": "Book fair"
         }
       },
       "society": {
@@ -3041,7 +3041,7 @@
         "things": {
           "access_role_assignments": "a role",
           "access_two_step_resets": "a two-step reset",
-          "charity_campaigns": "a Second Chapter campaign",
+          "charity_campaigns": "a book fair campaign",
           "charity_impact_metrics": "an impact figure",
           "charity_ledger_entries": "a ledger entry",
           "charity_ledger_signoffs": "a ledger sign-off",
@@ -4744,7 +4744,7 @@
         },
         "money": {
           "title": "No money of its own",
-          "body": "The Society holds no budget and no money: Student Life provides what its events need. Second Chapter's collection is counted by two people, handed over with a witness and a receipt, and goes to the charity in full."
+          "body": "The Society holds no budget and no money: Student Life provides what its events need. The book fair's collection is counted by two people, handed over with a witness and a receipt, and goes to the charity in full."
         },
         "process": {
           "title": "Fair process",
@@ -4916,7 +4916,7 @@
       "report": {
         "title": "The impact report",
         "lede": "What the collection did, in the figures the campaign published, with the witnessed handover and the receipts.",
-        "back": "Second Chapter",
+        "back": "The book fair",
         "open": "Read the impact report"
       },
       "catalog": {
