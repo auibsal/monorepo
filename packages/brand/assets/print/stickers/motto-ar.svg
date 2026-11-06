@@ -41,54 +41,56 @@
 </defs>
 <path fill-rule="nonzero" fill="rgb(61.178589%, 12.939453%, 24.308777%)" fill-opacity="1" stroke-width="3" stroke-linecap="butt" stroke-linejoin="miter" stroke="rgb(61.178589%, 12.939453%, 24.308777%)" stroke-opacity="1" stroke-miterlimit="4" d="M -0.000165364 -0.000267476 L 119.999939 -0.000267476 L 119.999939 43.999401 L -0.000165364 43.999401 Z M -0.000165364 -0.000267476 " transform="matrix(2.816339, 0, 0, 2.816339, 9.160622, 8.449972)"/>
 <path fill-rule="nonzero" fill="rgb(61.178589%, 12.939453%, 24.308777%)" fill-opacity="1" d="M 9.160156 8.449219 L 347.121094 8.449219 L 347.121094 132.367188 L 9.160156 132.367188 Z M 9.160156 8.449219 "/>
-<g fill="rgb(100%, 100%, 100%)" fill-opacity="1">
+<g fill="rgb(76.469421%, 79.219055%, 79.60968%)" fill-opacity="1">
 <use xlink:href="#glyph-0-0" x="34.717698" y="104.862738"/>
 </g>
-<g fill="rgb(100%, 100%, 100%)" fill-opacity="1">
+<g fill="rgb(76.469421%, 79.219055%, 79.60968%)" fill-opacity="1">
 <use xlink:href="#glyph-0-1" x="17.194538" y="90.116473"/>
 </g>
-<g fill="rgb(100%, 100%, 100%)" fill-opacity="1">
+<g fill="rgb(76.469421%, 79.219055%, 79.60968%)" fill-opacity="1">
 <use xlink:href="#glyph-0-2" x="48.027636" y="90.116473"/>
 </g>
-<g fill="rgb(100%, 100%, 100%)" fill-opacity="1">
+<g fill="rgb(76.469421%, 79.219055%, 79.60968%)" fill-opacity="1">
 <use xlink:href="#glyph-0-3" x="61.481203" y="90.116473"/>
 </g>
-<g fill="rgb(100%, 100%, 100%)" fill-opacity="1">
+<g fill="rgb(76.469421%, 79.219055%, 79.60968%)" fill-opacity="1">
 <use xlink:href="#glyph-0-4" x="88.962878" y="90.116473"/>
 </g>
-<g fill="rgb(100%, 100%, 100%)" fill-opacity="1">
+<g fill="rgb(76.469421%, 79.219055%, 79.60968%)" fill-opacity="1">
 <use xlink:href="#glyph-0-5" x="101.123762" y="90.116473"/>
 </g>
-<g fill="rgb(100%, 100%, 100%)" fill-opacity="1">
+<g fill="rgb(76.469421%, 79.219055%, 79.60968%)" fill-opacity="1">
 <use xlink:href="#glyph-0-6" x="112.9495" y="90.116473"/>
-<use xlink:href="#glyph-0-7" x="138.133055" y="90.116473"/>
 </g>
 <g fill="rgb(100%, 100%, 100%)" fill-opacity="1">
-<use xlink:href="#glyph-0-0" x="184.047564" y="104.527594"/>
+<use xlink:href="#glyph-0-7" x="138.134084" y="90.116473"/>
 </g>
 <g fill="rgb(100%, 100%, 100%)" fill-opacity="1">
-<use xlink:href="#glyph-0-8" x="149.192756" y="90.116473"/>
+<use xlink:href="#glyph-0-0" x="184.04859" y="104.527594"/>
 </g>
 <g fill="rgb(100%, 100%, 100%)" fill-opacity="1">
-<use xlink:href="#glyph-0-9" x="200.565293" y="90.116473"/>
+<use xlink:href="#glyph-0-8" x="149.193783" y="90.116473"/>
 </g>
 <g fill="rgb(100%, 100%, 100%)" fill-opacity="1">
-<use xlink:href="#glyph-0-10" x="212.726173" y="90.116473"/>
+<use xlink:href="#glyph-0-9" x="200.56632" y="90.116473"/>
 </g>
 <g fill="rgb(100%, 100%, 100%)" fill-opacity="1">
-<use xlink:href="#glyph-0-11" x="244.181678" y="90.116473"/>
+<use xlink:href="#glyph-0-10" x="212.7272" y="90.116473"/>
 </g>
 <g fill="rgb(100%, 100%, 100%)" fill-opacity="1">
-<use xlink:href="#glyph-0-3" x="262.422997" y="90.116473"/>
+<use xlink:href="#glyph-0-11" x="244.182705" y="90.116473"/>
 </g>
 <g fill="rgb(100%, 100%, 100%)" fill-opacity="1">
-<use xlink:href="#glyph-0-4" x="289.904684" y="90.116473"/>
+<use xlink:href="#glyph-0-3" x="262.424024" y="90.116473"/>
 </g>
 <g fill="rgb(100%, 100%, 100%)" fill-opacity="1">
-<use xlink:href="#glyph-0-5" x="302.065556" y="90.116473"/>
+<use xlink:href="#glyph-0-4" x="289.905698" y="90.116473"/>
 </g>
 <g fill="rgb(100%, 100%, 100%)" fill-opacity="1">
-<use xlink:href="#glyph-0-6" x="313.891294" y="90.116473"/>
+<use xlink:href="#glyph-0-5" x="302.066582" y="90.116473"/>
+</g>
+<g fill="rgb(100%, 100%, 100%)" fill-opacity="1">
+<use xlink:href="#glyph-0-6" x="313.892321" y="90.116473"/>
 </g>
 <path fill="none" stroke-width="0.25" stroke-linecap="butt" stroke-linejoin="miter" stroke="rgb(92.549133%, 0%, 54.899597%)" stroke-opacity="1" stroke-miterlimit="4" d="M 7.999834 7.999732 L 7.999834 51.920342 L 127.919493 51.920342 L 127.919493 7.999732 Z M 7.999834 7.999732 " transform="matrix(2.816339, 0, 0, 2.816339, -13.370087, -14.080737)"/>
 </svg>
