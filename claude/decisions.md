@@ -1,4 +1,4 @@
-# SAL: current decisions (source of truth, Thursday, November 5, 2026)
+# SAL: current decisions (source of truth, Friday, November 6, 2026)
 
 Every chat in this project should follow this file. Where an older document, project doc or chat disagrees, this file wins. All Society documents are **Version 1**: there are no earlier versions, no change histories and no old names. The same text is kept in the Claude project (`claude/decisions.md`) and in the monorepo (`claude/decisions.md`); change both together.
 
@@ -7,20 +7,20 @@ Every chat in this project should follow this file. Where an older document, pro
 ## 1. The Society's structure
 - **Qirtas** is the Society's paper. It has its own masthead and editorial independence, and the President, as Publisher, never selects work.
 - **The Company** is the Society's theater company. It has its own director on the Council, the Artistic Director, and its own documents (SAL-CMP-01, the Company book). It keeps its open nights, auditions and productions. Company documents mention events and Qirtas only in one-line links, and the reverse.
-- **Everything else is an event (decided Nov 5).** The Society holds no standing programs. Each term the Council sets a calendar of events, at least one a month, and any event can be added, changed, moved or dropped without rewriting a document. Recurring events keep their names; none is a program.
+- **Everything else is an event (decided Nov 5).** The Society holds no standing programs. Each term the Council sets a calendar of events, at least one a month, and any event can be added, changed, moved or dropped without rewriting a document. **Events carry no standing names (decided Nov 6):** each event is titled for what happens that day. The formats below are kinds of event, not names, and none is a program.
 
-| Event | Usual format | When it usually runs |
+| Kind of event | Usual format | When it usually runs |
 |---|---|---|
-| Second Chapter | book drive, then a book fair, for a charity | every November |
-| The Salon | a guest, three readings, tea, conversation; sometimes a debate | Tuesdays, as the term calendar sets |
-| Book Circle | one book, read and discussed; sometimes a Friday morning on al-Mutanabbi Street, with written Student Life approval | Tuesdays, as the term calendar sets |
-| Open Pages | a writing workshop; sometimes a worst-poem contest | Tuesdays, as the term calendar sets |
-| Listening Room | an album or recording played in full, then talked about; sometimes a live set by student musicians | Tuesdays, as the term calendar sets |
+| Book drive and fair | book drive, then a book fair, for a charity | every November |
+| Readings and conversation | a guest, three readings, tea, conversation; sometimes a debate | Tuesdays, as the term calendar sets |
+| Book discussion | one book, read and discussed; sometimes a Friday morning on al-Mutanabbi Street, with written Student Life approval | Tuesdays, as the term calendar sets |
+| Writing workshop | a writing workshop; sometimes a worst-poem contest | Tuesdays, as the term calendar sets |
+| Listening session | an album or recording played in full, then talked about; sometimes a live set by student musicians | Tuesdays, as the term calendar sets |
 
 - **The Typewriter Tour belongs to membership, under the General Secretary (decided Nov 5).** It is the Society's welcome to new students, not an event series: the full Tour runs once a year, in spring, after Eid, when the new intake arrives; in fall the typewriter goes to the club fair as the membership table (one station, the same consent slips). The Tour Lead is on the General Secretary's team.
-- **Retired names.** Never use these in any document: the Majlis (now the Salon), Munazara, Mutanabbi Friday, Bad Poetry Night, Open Stage (now the Company's open nights), Scratch Night, Motion Night, Mutanabbi Walk, Productions, Gallery Wall, Reviews (as a section name), The Month in Qirtas, Side Quest, BusTalks, Waraq, the Nexus, Book of Members, Charter Night, Director of the Company, Director of Letters, Director of Stage and Arts, Editor of Qirtas (now the Editor-in-Chief), Treasurer, Deputy Treasurer, The Green Room, The Archive (as a group name), AUIB SAL HQ, the Callboard (now Get involved), the Qirtas Prizes and the Mutanabbi, Tabari, Jahiz, Nazik, Wasiti and Ibn al-Haytham Prizes (now the Qirtas Awards and the … Awards), Director of Programs, Director of Events, Director of Partnerships, Director of Membership (the President, the Vice President and the General Secretary hold these jobs as part of their offices), Program Lead (now an event lead), "the six programs", Standing Programs, flagships, the Evenings, the Specials, weekly evenings, four-week cycle.
+- **Retired names.** Never use these in any document: the Majlis, the Salon, Book Circle, Open Pages, the Listening Room, Second Chapter (decided Nov 6: events carry no standing names), Munazara, Mutanabbi Friday, Bad Poetry Night, Open Stage (now the Company's open nights), Scratch Night, Motion Night, Mutanabbi Walk, Productions, Gallery Wall, Reviews (as a section name), The Month in Qirtas, Side Quest, BusTalks, Waraq, the Nexus, Book of Members, Charter Night, Director of the Company, Director of Letters, Director of Stage and Arts, Editor of Qirtas (now the Editor-in-Chief), Treasurer, Deputy Treasurer, The Green Room, The Archive (as a group name), AUIB SAL HQ, the Callboard (now Get involved), the Qirtas Prizes and the Mutanabbi, Tabari, Jahiz, Nazik, Wasiti and Ibn al-Haytham Prizes (now the Qirtas Awards and the … Awards), Director of Programs, Director of Events, Director of Partnerships, Director of Membership (the President, the Vice President and the General Secretary hold these jobs as part of their offices), Program Lead (now an event lead), "the six programs", Standing Programs, flagships, the Evenings, the Specials, weekly evenings, four-week cycle.
 - **Next Stop is Qirtas's video show,** in its Video section.
-- **One calendar.** Events, the Company's nights and the Tour are all on What's on (auibsal.org/events). Every event is a standard event with its own page at /events/<slug>; recurring events keep their names but are not series (decided Nov 5).
+- **One calendar.** Events, the Company's nights and the Tour are all on What's on (auibsal.org/events). Every event is a standard event with its own page at /events/<slug>; events carry no standing names and are not series (decided Nov 5 and Nov 6).
 - **Site addresses:** auibsal.org/join is the landing page for new members (use it in public copy); auibsal.org/membership is the sign-up and account page (/sign-up also works).
 - **Get involved** is the Society's careers page. It lists roles, shifts, auditions, Apprenticeship places, event teams and volunteer places.
 - **Telegram.** Two groups and a bot, all in the AUIB Clubs community:
@@ -31,10 +31,10 @@ Every chat in this project should follow this file. Where an older document, pro
   - Instagram (@auibsal) and the members' group use the Bookmark in white on crimson; the Diwan's Telegram group uses the Bookmark in white on ink; Hudhud keeps the hoopoe.
   - Instagram bio: "Qirtas, our paper. The Company, our theater. Events all year at @auibaghdad." Links: auibsal.org, auibsal.org/events, auibsal.org/join.
   - Six highlights, in order: What's on, Qirtas, Next Stop, The Company, Join, Get involved. Covers are plain crimson with the highlight's icon alone, in white: no name and no Bookmark (decided Nov 6).
-  - Stickers (decided Nov 6): camera-shy stickers are 40 mm, the crossed-out camera alone in white on ink. The sticker pack, 44 die-cut stickers in the brand's colors for Student Life to print, is in the brand kit (`assets/print/stickers`). Each opens with a story banner on white with the wordmark alone (no Bookmark).
+  - Stickers (decided Nov 6): camera-shy stickers are 40 mm, the crossed-out camera alone in white on ink. The sticker pack, 37 stickers in the brand's colors for Student Life to print, is in the brand kit (`assets/print/stickers`). Each opens with a story banner on white with the wordmark alone (no Bookmark).
 - **Icons (decided Oct 30).** The Society uses one icon set across the board: the site and the Diwan, posts, stories, highlights, documents and printables. It is Lucide (ISC license), drawn with a 1.5 px line and square ends, kept in the brand kit (see section 7). An icon may stand alone wherever it says enough by itself (a calendar beside a date, a map pin beside a place, close, menu, search, share, a link arrow); add a word only when the icon alone could be misread. A standalone icon on a screen always carries a label for screen readers. Icons take the color of the text around them. Never in a headline, never as decoration, never the Bookmark as an icon, and still no emoji.
 - **The Typewriter Tour's six words** are published in Qirtas, as Six Words pages in Letters. There is no separate anthology.
-- **Partners and charities.** The Vice President vets every partner, including any charity the Society works with or raises for; the Council approves it, and it is kept in the Diwan's partner register. No charity is on record yet, so Second Chapter's charity is still to be chosen.
+- **Partners and charities.** The Vice President vets every partner, including any charity the Society works with or raises for; the Council approves it, and it is kept in the Diwan's partner register. No charity is on record yet, so the book fair's charity is still to be chosen.
 
 ## 2. Money: the Society has none (decided Oct 29)
 - **The Society holds no budget, no account and no money, and has no Treasurer.** The Office of Student Life provides what the Society needs, through Ali Najm, Campus Recreation Officer, to the best of its ability.
@@ -46,11 +46,11 @@ Every chat in this project should follow this file. Where an older document, pro
   - the General Secretary sends every request to Student Life and logs what was asked, what was provided and when.
 - **Plan around the answer.** Student Life gives what it can. An event is designed to run with what is provided; anything not provided is dropped or found through a partner (the Vice President, with the Council's approval).
 - **No advertising and no paid sponsorship (decided Nov 4).** The site carries only the Society's own notices: no ad networks, no paid ads. Sponsors give in kind (books, printing, a venue, refreshments), never money; each gift is a row in Needs and the sponsor is thanked by name. Offers of money are declined or referred to Student Life (SAL-PLT-06).
-- **The one exception: Second Chapter's collection.** Money collected at the fair belongs to the charity, never to the Society, and is never used for costs. Its procedure is written once, in the Operations Playbook, and holds whenever Second Chapter runs.
+- **The one exception: the book fair's collection.** Money collected at the fair belongs to the charity, never to the Society, and is never used for costs. Its procedure is written once, in the Operations Playbook, and holds whenever the book fair runs.
   - It is counted by two people at the close of each day, recorded, and kept sealed.
   - It is handed over, witnessed, to the charity partner (Nov 15), with a receipt, and reported in the impact report (Dec 20).
-  - The Second Chapter lead owns it; the General Secretary witnesses the counts and keeps the record. Fair-day cashiers are Second Chapter volunteers.
-  - "Every dinar goes to the charity" stays as Second Chapter's promise. Its collection policies stay; everything about Society expenses goes.
+  - The book fair's lead owns it; the General Secretary witnesses the counts and keeps the record. Fair-day cashiers are book fair volunteers.
+  - "Every dinar goes to the charity" stays as the book fair's promise. Its collection policies stay; everything about Society expenses goes.
   - Confirm with Student Life how fair cash is held overnight and handed over.
 
 ## 3. People and roles
@@ -72,7 +72,7 @@ Every chat in this project should follow this file. Where an older document, pro
   - Faculty Advisor: none yet; to be invited through Student Life.
   - Student Life: Ali Najm, Campus Recreation Officer; Jelena Zivkovic, Director of Student Life (staff, not Society roles). Both are Telegram admins with no permissions, titled "Student Life"; Jelena is exempt from Hudhud's removals.
 - **The web team** (auibsal.org, the Diwan, Hudhud) is part of the Director of Media's team.
-- **The President owns the events:** each term's calendar (set with the Council at the start of the term), the library of formats, standards, needs lists and debriefs. They pick a lead for each event, posted on Get involved; Second Chapter has its own lead each November (Shaheen Farjo for Edition 1).
+- **The President owns the events:** each term's calendar (set with the Council at the start of the term), the library of formats, standards, needs lists and debriefs. They pick a lead for each event, posted on Get involved; the book fair has its own lead each November (Shaheen Farjo for Edition 1).
 - **The General Secretary owns the Typewriter Tour** and picks the Tour Lead. The 2027 Tour Lead is in place before January 24.
 - **The Artistic Director owns the Company:** its season, casting through auditions, productions, standards and needs list. The Company's team (a Stage Manager, a Producer, crews) is picked by the Artistic Director; the General Secretary runs the process; Media promotes and photographs it.
 - **Central functions stay central.** Anything the Society does centrally is done by its owner, never by an event's or Qirtas's own team:
@@ -99,7 +99,7 @@ Every chat in this project should follow this file. Where an older document, pro
 | Video | Next Stop episode · Reel · Short film · Video report · Recorded performance · Animation |
 | Games | The word · Word search · Crossword · Anagrams (decided Nov 5) |
 
-- **Voices** holds reviews of books, films, plays and exhibitions, columns and letters to the editor. Opinion keeps the rule: no party politics, religion, sect or ethnicity. Book Circle and the Company send their reviews here.
+- **Voices** holds reviews of books, films, plays and exhibitions, columns and letters to the editor. Opinion keeps the rule: no party politics, religion, sect or ethnicity. Book discussions and the Company send their reviews here.
 - **Video** carries Next Stop.
 - **Games are daily and from the editors only (decided Nov 5).** The four games are made anew every day in English and Arabic, numbered from No. 1 on Thursday, November 5, 2026. Editors may also publish a crossword, word search or anagrams. Members send no games. The quiz, word ladder, riddles and name the book are retired.
 - **Six Words** pages come only from the Typewriter Tour.
@@ -151,23 +151,23 @@ Qirtas may have several documents:
 - Members may send work at any time ("Qirtas, all year", every section except Games, never closes). Only the printed Edition takes work at set times: its calls, Letters and Gallery, two a year.
 
 ## 5. Documents and the site
-- **Events:** one Events book, SAL-EVT-01: the term calendar and how it is set, the library of formats (Second Chapter, the Salon, Book Circle, Open Pages, the Listening Room, and any format added later), event leads, needs lists and debriefs. The six program books (SAL-PRG-01 to 06) are retired; what is worth keeping from them moves into the Events book or the Operations Playbook.
+- **Events:** one Events book, SAL-EVT-01: the term calendar and how it is set, the library of formats (the book drive and fair, readings and conversation, the book discussion, the writing workshop, the listening session, and any format added later), event leads, needs lists and debriefs. The six program books (SAL-PRG-01 to 06) are retired; what is worth keeping from them moves into the Events book or the Operations Playbook.
 - **The Typewriter Tour:** SAL-MEM-01, the Tour book, owned by the General Secretary.
 - **The Company:** SAL-CMP-01, the Company book.
 - Each book has a **needs list** in place of a budget.
-- **Shared procedures live once,** in the Operations Playbook (SAL-OPS-01). Its money procedure becomes "Requests to Student Life" plus Second Chapter's collection, counting and handover.
+- **Shared procedures live once,** in the Operations Playbook (SAL-OPS-01). Its money procedure becomes "Requests to Student Life" plus the book fair's collection, counting and handover.
 - **Rules for every document:**
   - American English. English only; Arabic editions are separate documents, checked by a native speaker.
   - The brand is SAL-BRD-01, Version 1. The Bookmark is only ever the logo. Headings stand alone. The closing page says "Thank you." and nothing else.
   - Icons come only from the Society's icon set in the brand kit; an icon stands alone when it says enough, with a word only when needed (see Icons above).
   - Event, Tour and Company documents mention Qirtas only in one-line links, and Qirtas documents mention them only in one-line links.
-  - No budgets, costs, prices, spending limits, ledgers, claims or reimbursements, except Second Chapter's collection.
-- **The site (auibsal.org and the Diwan):** no Treasurer on the Council page; no budget, ledger, claims, spending or advertising features. No "Programs" section: recurring events are series on What's on, and the Typewriter Tour sits under Join. Events show needs, not costs. Keep Second Chapter's collection record (counts, the witnessed handover, the impact report). The Council page lists the officers and directors with full titles.
+  - No budgets, costs, prices, spending limits, ledgers, claims or reimbursements, except the book fair's collection.
+- **The site (auibsal.org and the Diwan):** no Treasurer on the Council page; no budget, ledger, claims, spending or advertising features. No "Programs" section: every event is a standard event on What's on, and the Typewriter Tour sits under Join. Events show needs, not costs. Keep the book fair's collection record (counts, the witnessed handover, the impact report). The Council page lists the officers and directors with full titles.
 - **Documents are pages, not files.** Every Society document is written and kept as a Notion page (see section 7). PDFs are exported only when a printed or emailed copy is needed, and are never stored, in Notion or on GitHub; the monorepo holds code and brand assets, never document PDFs (the brand guide is the Storybook, with no PDF).
 - **Claude artifacts (decided Nov 6).** One is kept, and no other SAL artifact: the Design System **"AUIB Society of Arts and Letters"**, a copy of the brand kit in `packages/brand` so Claude can design with the brand. It is refreshed from the monorepo whenever the brand kit changes and is never edited on its own; where it and the monorepo differ, the monorepo wins.
 
 ## 6. Dates (2026–27)
-- **Second Chapter:**
+- **The book fair:**
   - boxes go out Oct 29;
   - donations Nov 1–5;
   - fair Nov 8–11;
@@ -181,11 +181,11 @@ Qirtas may have several documents:
 - **The Sunday Paper:** first Sundays of the month (Nov 1, Dec 6, …).
 - **The Qirtas Awards:** shortlists by Apr 4, 2027; given at the AGM, Apr 20, 2027.
 - **Events on Tuesdays, 4:00–5:30 PM, one room (room TBC).** These are the dates on the calendar now; the Council confirms or changes each term's calendar at the start of the term:
-  - Open Pages: pilot Nov 17; Mar 2; Mar 30 (the worst-poem contest, 4:00–6:00 PM); May 4.
-  - The Salon: pilot Dec 1; Feb 16; Apr 6.
-  - Book Circle: Feb 23; Mar 23; Apr 27.
-  - Listening Room: Mar 16; May 11.
-  - Book Circle's book-street Friday: Apr 9, second date Apr 23.
+  - Writing workshops: pilot Nov 17; Mar 2; Mar 30 (the worst-poem contest, 4:00–6:00 PM); May 4.
+  - Readings and conversation: pilot Dec 1; Feb 16; Apr 6.
+  - Book discussions: Feb 23; Mar 23; Apr 27.
+  - Listening sessions: Mar 16; May 11.
+  - The book-street Friday: Apr 9, second date Apr 23.
   - No event Feb 9, Mar 9, Apr 13 or Apr 20.
   - These dates assume classes start Sun Feb 7, 2027.
 - **Typewriter Tour (the General Secretary):** Mar 14–25, 2027; the typewriter at the fall club fair each year (Oct 5 in 2026).
@@ -201,7 +201,7 @@ Qirtas may have several documents:
 ## 7. Where things live (decided Nov 4)
 **The Diwan is the Society's administration**: everyone who runs it and every place they work. It has three rooms, each with one job, and every piece of information has one home; anywhere else it appears is a read-only view. When it matters which room, say so: "the Diwan in Notion", "the Diwan on the site", "the Diwan group on Telegram".
 - **Notion** (workspace "AUIB Society of Arts and Letters", teamspace "The Diwan") is where the work is done: projects, tasks, meetings, Needs, the Handbook and every Society document as a page. It is also where public content is written: events, news, Qirtas pages, event series pages and the founding documents are published to auibsal.org when set to Ready to publish.
-- **The site** (auibsal.org/diwan) holds people and private records: members, accounts, roles and permissions, RSVPs and check-in, elections and ballots, Qirtas submissions (blind review), Second Chapter's collection record, certificates, service hours, confidential forms, the partner register, and the adoption record of each document. Notion shows these only as read-only summaries (officers, RSVP counts, pipeline counts, collection totals).
+- **The site** (auibsal.org/diwan) holds people and private records: members, accounts, roles and permissions, RSVPs and check-in, elections and ballots, Qirtas submissions (blind review), the book fair's collection record, certificates, service hours, confidential forms, the partner register, and the adoption record of each document. Notion shows these only as read-only summaries (officers, RSVP counts, pipeline counts, collection totals).
 - **Telegram** ("The Diwan" group) is for talking; nothing is recorded there. Instagram is for publishing.
 - **The monorepo** (github.com/auibsal/monorepo) holds the code and the brand kit (packages/brand), built as a Storybook: the single source for SAL-BRD-01, with the written guide, tokens, type, logos, icons, Hudhud, site components, the email templates the site sends, and the social and print templates. The full design system is in the Diwan at **auibsal.org/diwan/design** (officers only). The public sees the brand only on the Press page (auibsal.org/about/press): logos, lockups and press material. There is no separate public brand page. The site imports its components and emails from the same package, so what is shown is what ships.
 - **Copies of the brand, each read-only:** Notion's Brand essentials page is the officer summary and links to the design system; Claude's Design System artifact is the copy Claude designs from (section 5). Neither is edited on its own: change `packages/brand`, then refresh them.
