@@ -38,12 +38,12 @@ The Society's icon set: Lucide (ISC license, lucide.dev), redrawn for the brand 
 | `icon-puzzle.svg` | Games | Qirtas |
 | `icon-bus.svg` | Next Stop | Qirtas |
 | `icon-play.svg` | An episode | Qirtas |
-| `icon-book-open.svg` | Second Chapter | The Society |
+| `icon-book-open.svg` | Books, the book fair | The Society |
 | `icon-keyboard.svg` | Typewriter Tour | The Society |
-| `icon-coffee.svg` | The Salon | The Society |
-| `icon-library.svg` | Book Circle | The Society |
-| `icon-pen-line.svg` | Open Pages | The Society |
-| `icon-headphones.svg` | Listening Room | The Society |
+| `icon-coffee.svg` | Tea and conversation | The Society |
+| `icon-library.svg` | Book discussion | The Society |
+| `icon-pen-line.svg` | Writing workshop | The Society |
+| `icon-headphones.svg` | Listening session | The Society |
 | `icon-drama.svg` | The Company | The Society |
 | `icon-layout-grid.svg` | Programs | The Society |
 | `icon-user-plus.svg` | Join | The Society |
