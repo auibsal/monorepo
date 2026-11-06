@@ -1,12 +1,10 @@
 import { BrandLogo } from "@repo/brand/components/brand-logo";
 import { SalCard } from "@repo/brand/components/sal/card";
-import { Certificate } from "@repo/brand/components/sal/certificate";
 import { DocumentFooter } from "@repo/brand/components/sal/document-footer";
 import { DocumentHeader } from "@repo/brand/components/sal/document-header";
 import { FormHeader } from "@repo/brand/components/sal/form-header";
 import { FormField, FormPage } from "@repo/brand/components/sal/form-page";
 import { Letter } from "@repo/brand/components/sal/letter";
-import { MembershipCard } from "@repo/brand/components/sal/membership-card";
 import { SectionHead } from "@repo/brand/components/sal/section-head";
 import { Shelf } from "@repo/brand/components/sal/shelf";
 import type { Meta, StoryObj } from "@storybook/react";
@@ -289,91 +287,65 @@ export const ShelfArabic: Story = {
 };
 
 /**
- * The membership card (decided Nov 7): the account page, Google Wallet's
- * fields and a printed card on request are this one component.
+ * The letter: one template for every letter. A service letter (F-05), a
+ * business letter: the greeting takes a colon, the foot its verification
+ * code.
  */
-export const MembershipCardStory: Story = {
-  name: "Membership card",
-  render: () => (
-    <MembershipCard
-      labels={{
-        class: "Class",
-        number: "No.",
-        since: "Member since",
-        title: "Membership card",
-      }}
-      memberClass="Member"
-      memberSince="Fall 2026"
-      name="Lina Hassan"
-      number="SAL 000214"
-      qr="https://auibsal.org/verify/member/7KQ2M?t=40518273"
-      qrLabel="Check this card"
-    />
-  ),
-};
-
-/** The certificate: Qalam completion. A4 landscape, printed from the browser. */
-export const CertificateQalam: Story = {
-  render: () => (
-    <Certificate
-      body="of Baghdad College completed Qalam, Qirtas’s summer program for high school students, in the summer of 2028, with its workshops, mentoring and assignments."
-      code="QLM-2028-7F3K"
-      lead="This is to record that"
-      qrLabel="Check this certificate"
-      recipient="Sara Ahmed"
-      signatures={[
-        { role: "Qalam lead" },
-        { role: "Editor-in-Chief" },
-        { role: "Date" },
-      ]}
-      title="Qalam"
-      verifyUrl="https://auibsal.org/verify/QLM-2028-7F3K"
-    />
-  ),
-};
-
-/** The certificate: the Mutanabbi Prize, Qirtas category. */
-export const CertificatePrize: Story = {
-  render: () => (
-    <Certificate
-      body="is awarded the Mutanabbi Prize, in the Qirtas category, for the year’s best work published in Qirtas, at the Annual Meeting on Tuesday, April 18, 2028."
-      code="MTP-2028-Q-2C9D"
-      lead="This is to record that"
-      qrLabel="Check this certificate"
-      recipient="Lina Hassan"
-      signatures={[
-        { role: "Editor-in-Chief" },
-        { role: "President" },
-        { role: "Date" },
-      ]}
-      title="The Mutanabbi Prize"
-      verifyUrl="https://auibsal.org/verify/MTP-2028-Q-2C9D"
-    />
-  ),
-};
-
-/** The letter: one template for every letter (here, a service letter, F-05). */
 export const LetterStory: Story = {
   name: "Letter",
   render: () => (
     <Letter
       code="SAL-EXB-01 · F-05"
-      date="Saturday, November 7, 2026"
+      date="November 7, 2026"
       foot="hello@auibsal.org · auibsal.org"
-      greeting="Dear Lina,"
+      greeting="Dear Ms. Hassan:"
       recipient={["Lina Hassan", "American University of Iraq – Baghdad"]}
       signer={{ name: "Yaqoob Ghassan Al-Azzawi", role: "General Secretary" }}
-      signOff="Sincerely,"
       subject="Service letter"
+      verify={{
+        code: "SVC-2027-4K8P",
+        qrLabel: "Check this letter",
+        url: "https://auibsal.org/verify/SVC-2027-4K8P",
+      }}
     >
       <p>
         This letter records that you served the AUIB Society of Arts and Letters
         as a section editor of Qirtas from September 2026 to May 2027.
       </p>
       <p>
-        Thank you for your time and care. The Society’s records of your service
-        are kept on auibsal.org.
+        The Society’s record of your service can be checked at the address
+        below.
       </p>
     </Letter>
+  ),
+};
+
+/** The same service letter in Arabic: its own edition, mirrored. */
+export const LetterArabic: Story = {
+  name: "Letter, Arabic",
+  render: () => (
+    <div dir="rtl" lang="ar">
+      <Letter
+        code="SAL-EXB-01 · F-05"
+        date="7 تشرين الثاني 2026"
+        foot="hello@auibsal.org · auibsal.org"
+        greeting="السيدة لينا حسن المحترمة،"
+        locale="ar"
+        recipient={["لينا حسن", "الجامعة الأمريكية في العراق – بغداد"]}
+        signer={{ name: "يعقوب غسان العزاوي", role: "الأمين العام" }}
+        subject="رسالة خدمة"
+        verify={{
+          code: "SVC-2027-4K8P",
+          qrLabel: "تحقّق من هذه الرسالة",
+          url: "https://auibsal.org/verify/SVC-2027-4K8P",
+        }}
+      >
+        <p>
+          تشهد هذه الرسالة بأنكِ خدمتِ في جمعية الفنون والآداب محررةً لأحد أقسام
+          قرطاس من أيلول 2026 إلى أيار 2027.
+        </p>
+        <p>يمكن التحقق من سجل خدمتكِ في الجمعية على العنوان أدناه.</p>
+      </Letter>
+    </div>
   ),
 };

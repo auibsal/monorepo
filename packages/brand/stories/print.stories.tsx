@@ -169,10 +169,10 @@ export const StickerPack: Story = {
 };
 
 const SIZES: [string, string][] = [
-  ["Membership card (on request)", "85.6 × 54 mm, from the component"],
+  ["Membership card (on request)", "85.6 × 54 mm, printed from the site"],
   [
     "Certificates: Qalam, the Mutanabbi Prize",
-    "A4 landscape, from the component",
+    "A4 landscape, printed from the site",
   ],
   ["Letters", "A4, from the component"],
   ["Name badges", "90 × 55 mm"],

@@ -47,13 +47,13 @@ Forms are digital by default. Every form is in the Leadership Handbook's registe
 
 ## One source for forms, letters, cards and certificates
 
-Each is designed once, as a component in the brand kit (decided Nov 7: one template, many outputs). Its words live in the forms register in Notion; the site renders the component; a printed or PDF copy is the same page printed from the browser. Nothing is drawn separately, and the printables keep only what exists only on paper (name badges, the photography notice, the sticker pack).
+Each is designed once (decided Nov 7: one template, many outputs). Its words live in the forms register in Notion; the site renders the design; a printed or PDF copy is the same page printed from the browser. Nothing is drawn separately, and the printables keep only what exists only on paper (name badges, the photography notice, the sticker pack). The form and the letter are components in the brand kit. The membership card and the certificate are the live site's designs, which are the source: they move into the brand kit unchanged in look.
 
 | Component | Where it appears | What it holds |
 | --- | --- | --- |
 | Form (`FormPage`, `FormHeader`) | auibsal.org/forms/F-xx; printed as a backup | Code SAL-EXB-01 · F-xx, a title in sentence case, one sentence on what it is for, the fields, a typed-name signature and the date |
-| Letter (`Letter`) | Every letter: F-03, F-05, F-30, F-32, F-33, F-34, F-42 | The lockup, the date, the recipient, a subject line, the body, the closing and the signer; the code and the Society's addresses at the foot. A4 portrait |
-| Membership card (`MembershipCard`) | The member's account and Google Wallet; printed only on request | Name, member number, class (Member, Associate Member, Honorary Member), member since and the live QR. Never an "ID card": the AUIB ID is the university's |
-| Certificate (`Certificate`) | Finishing Qalam; the Mutanabbi Prize (each category) | A4 landscape, one hairline frame, the lockup, a Light title, the name on a rule, the signature lines, and the verification code with a QR to its check page |
+| Letter (`Letter`) | Every letter: F-03, F-05, F-30, F-32, F-33, F-34, F-42 | An American business letter, A4 portrait: the lockup; the date with no weekday ("November 7, 2026", «7 تشرين الثاني 2026»); the recipient; a subject line; the greeting with a colon ("Dear Mr. Najm:"), or a comma only in a personal letter to a member ("Dear Lina,"), in Arabic «السيد علي نجم المحترم،» or «عزيزتي لينا،»; the body; "Sincerely," («مع خالص التحية،»), then the signer's name and seat. At the foot the form code and the Society's addresses, and room for a verification code and QR (auibsal.org/verify/<code>), which service letters (F-05) use |
+| Membership card | The member's account and Google Wallet; printed only on request | The live site's card: the guilloche drawn from the card number, the tilt and sheen, the live QR panel with its 30-second countdown, and the Google Wallet link. Name, member number, class (Member, Associate Member, Honorary Member) and member since. Never an "ID card": the AUIB ID is the university's |
+| Certificate | Finishing Qalam; the Mutanabbi Prize (each category) | The live site's certificate: the rosette seal drawn from the serial and the QR to its check page, auibsal.org/verify/<code> |
 
 No other certificates: service is a letter (F-05) and honorary membership an invitation (F-34).
