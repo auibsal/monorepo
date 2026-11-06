@@ -195,6 +195,85 @@ export const CameraShyStickers: Story = {
   ),
 };
 
+/** The sticker pack: every sticker at 100%, with its cut line in magenta. */
+const STICKER_PACK: [string, string, string, number, number][] = [
+  ["bookmark", "The Bookmark", "The Society", 60.0, 70.17],
+  ["bookmark-tile", "Bookmark tile", "The Society", 55.92, 55.92],
+  ["bookmark-tile-ink", "Bookmark tile, ink", "The Society", 55.92, 55.92],
+  ["lockup-stacked", "Stacked lockup", "The Society", 52.58, 88.75],
+  ["wordmark-ar", "Arabic wordmark", "The Society", 72.25, 72.75],
+  ["bumper-bilingual", "Bilingual bumper", "The Society", 195.92, 82.75],
+  ["postage-stamp", "Postage stamp", "The Society", 51.92, 61.92],
+  ["postmark", "Postmark", "The Society", 62.42, 62.42],
+  ["motto-en", "The paper and the pen.", "The motto", 153.91, 65.83],
+  ["motto-ar", "Arabic motto", "The motto", 125.92, 49.92],
+  ["motto-strip", "Motto strip", "The motto", 205.92, 35.92],
+  ["the-pen", "The pen", "The motto", 39.92, 89.84],
+  ["the-paper", "The paper", "The motto", 61.92, 77.92],
+  ["qirtas-keys", "QIRTAS in keys", "Qirtas", 160.92, 35.92],
+  ["key-qaf", "Qaf key", "Qirtas", 59.92, 59.92],
+  ["qirtas-nameplate", "Qirtas nameplate", "Qirtas", 125.92, 57.92],
+  ["qirtas-ar", "قرطاس", "Qirtas", 153.66, 58.08],
+  ["section-news", "News", "Qirtas", 53.42, 53.42],
+  ["section-voices", "Voices", "Qirtas", 50.08, 52.25],
+  ["section-letters", "Letters", "Qirtas", 54.09, 54.0],
+  ["section-gallery", "Gallery", "Qirtas", 50.75, 50.66],
+  ["section-video", "Video", "Qirtas", 51.75, 51.75],
+  ["section-games", "Games", "Qirtas", 53.42, 53.42],
+  ["read-blind", "Read blind", "Qirtas", 99.75, 50.92],
+  ["ticket", "Admit one", "Events", 101.92, 47.92],
+  ["next-stop", "Next Stop", "Events", 55.92, 105.92],
+  ["listening-room", "Listening Room", "Events", 70.92, 70.92],
+  ["book-circle", "Book Circle", "Events", 66.92, 66.92],
+  ["the-salon", "The Salon", "Events", 75.92, 72.42],
+  ["open-pages", "Open Pages", "Events", 103.92, 69.83],
+  ["second-chapter", "Second Chapter", "Events", 81.92, 53.92],
+  ["the-company", "The Company", "Events", 95.92, 69.92],
+  ["typewriter", "The typewriter", "Typewriter Tour", 92.92, 67.92],
+  ["six-words", "Six words, to fill in", "Typewriter Tour", 95.92, 61.92],
+  ["hudhud", "Hudhud", "Hudhud", 65.91, 59.75],
+  ["hudhud-flying", "Hudhud flying", "Hudhud", 72.66, 59.0],
+  ["hudhud-reversed", "Hudhud on crimson", "Hudhud", 67.92, 62.92],
+  ["join-qr", "Join", "Ways in", 55.92, 67.92],
+  ["get-involved", "Get involved", "Ways in", 111.92, 35.92],
+  ["camera-shy", "Camera-shy", "Ways in", 45.92, 45.92],
+  ["icon-keyboard", "Keyboard", "Symbols", 48.92, 42.92],
+  ["icon-book-open", "Book open", "Symbols", 48.92, 45.92],
+  ["icon-drama", "Drama", "Symbols", 49.0, 48.92],
+  ["icon-headphones", "Headphones", "Symbols", 45.92, 45.92],
+];
+
+export const StickerPack: Story = {
+  render: () => (
+    <div className="grid gap-10 bg-[#d9d9d9] p-10">
+      {[...new Set(STICKER_PACK.map(([, , family]) => family))].map(
+        (family) => (
+          <section className="grid gap-4" key={family}>
+            <h2 className="font-light text-2xl">{family}</h2>
+            <div className="flex flex-wrap items-end gap-8">
+              {STICKER_PACK.filter(([, , f]) => f === family).map(
+                ([id, name, , w, h]) => (
+                  <figure className="m-0 grid gap-2" key={id}>
+                    {/* biome-ignore lint/performance/noImgElement: the print file as supplied */}
+                    <img
+                      alt={name}
+                      height={h * 4}
+                      src={`brand-kit/print/stickers/${id}.svg`}
+                      style={{ height: `${h}mm`, width: `${w}mm` }}
+                      width={w * 4}
+                    />
+                    <figcaption className="text-xs">{name}</figcaption>
+                  </figure>
+                )
+              )}
+            </div>
+          </section>
+        )
+      )}
+    </div>
+  ),
+};
+
 const SIZES: [string, string][] = [
   ["Charter poster", "A3"],
   ["Open Call poster", "A3 or A4"],
@@ -205,6 +284,7 @@ const SIZES: [string, string][] = [
   ["Name badges", "90 × 55 mm"],
   ["Photography notice", "A4"],
   ["Camera-shy stickers", "40 mm round, twenty to an A4 sheet"],
+  ["Sticker pack", "Die-cut, each at its own size (assets/print/stickers)"],
 ];
 
 export const Sizes: Story = {
