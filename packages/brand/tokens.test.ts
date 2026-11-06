@@ -51,9 +51,7 @@ const textPairs: [string, string][] = [
 /** Fixed pairs outside the roles: the footer is ink, with white text, in both modes. */
 const fixedPairs: [string, string][] = [
   ["white", "ink"],
-  ["crimson-100", "ink"],
   ["mist", "ink"],
-  ["crimson-100", "crimson"],
   ["ash", "paper"],
 ];
 

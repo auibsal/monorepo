@@ -54,7 +54,7 @@
   --surface-reading: var(--ink);
   --text: var(--white);
   --text-secondary: var(--mist);
-  --accent: var(--crimson-100);
+  --accent: var(--white);
   --on-accent: var(--ink);
   --line: var(--slate);
   --band: var(--crimson);

@@ -49,13 +49,13 @@
   --footer: var(--sal-ink);
 }
 
-/* Dark mode: ink for the whole page, rose in place of crimson. */
+/* Dark mode: ink for the whole page, white in place of crimson. */
 [data-theme="dark"] {
   --surface: var(--sal-ink);
   --surface-reading: var(--sal-ink);
   --text: var(--sal-white);
   --text-secondary: var(--sal-mist);
-  --accent: var(--sal-crimson-100);
+  --accent: var(--sal-white);
   --on-accent: var(--sal-ink);
   --line: var(--sal-slate);
   --band: var(--sal-crimson);

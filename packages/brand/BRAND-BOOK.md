@@ -34,9 +34,9 @@ This is SAL-BRD-01, Brand and Identity, Version 1, ratified by the Society, in s
 - `crimson` appears once or twice a page at full strength: the logo, one italic word, one button, one band. Never as a pale tint, never as large blocks of headline.
 - `paper` is Qirtas's page and long reading only. Elsewhere the page is `white`.
 - `stone` is for hairline rules only, never text. `ash` is secondary text and captions (6.0:1 on white, 5.3:1 on paper).
-- Two colors are reserved: `crimson-700` lives only inside the logo files; `crimson-100` (rose) is the accent on `ink`, where crimson fails contrast, and the reversed wordmark color.
+- Two colors are reserved: `crimson-700` lives only inside the logo files; `crimson-100` (rose) lives only inside the Hudhud files, as his breast. Rose is never an accent, text or a wordmark (decided Nov 6).
 - Build with the role tokens: `surface`, `surface-reading`, `text`, `text-secondary`, `accent`, `line`, `band` and `on-band`. They switch between light and dark.
-- Dark mode is `ink` with white text, `mist` for secondary text and rose in place of crimson. Never crimson text or the crimson symbol on `ink` (1.7:1).
+- Dark mode is `ink` with white text and `mist` for secondary text. On `ink` and `crimson` the accent is the italic itself, in white, and the one button is white with ink text. Never crimson text or the crimson symbol on `ink` (1.7:1).
 
 ## Type
 
@@ -68,7 +68,7 @@ This is SAL-BRD-01, Brand and Identity, Version 1, ratified by the Society, in s
 
 - The **symbol** is a crimson panel with a V-notch cut into its top; turned over, it is the tail of a ribbon bookmark, and its name is **the Bookmark** (Arabic «العلامة»). The **English wordmark** is "AUIB / Society of / Arts and / Letters" in Ubuntu Bold, on four lines. The **Arabic wordmark** is «جمعيةُ الفنونِ / والآدابِ في / الجامعةِ / الأمريكيةِ» in Ubuntu Arabic Bold, on four lines.
 - Use the files in Logos (`assets/Logos/README.md`); never retype or redraw them. Their line breaks, spacing and proportions are fixed.
-- Color is one hue. On light grounds the symbol is `crimson` and the wordmarks `crimson-700`. On `crimson` or `ink`, use the reversed files: white symbol, `crimson-100` wordmarks.
+- Color is one hue. On light grounds the symbol is `crimson` and the wordmarks `crimson-700`. On `crimson` or `ink`, use the reversed files: white symbol, white wordmarks.
 - Use the lockup in the content's language: the English horizontal lockup for English, the Arabic horizontal lockup (`sal-lockup-horizontal-ar`, symbol on the right) for Arabic. Stacked for square spaces and merchandise; the symbol alone for avatars, favicons and stamps. The bilingual lockup is only for permanent signage, banners and merchandise that must speak to both at once.
 - The logo appears **once** per page or post, in the header or a corner, with clear space of one notch depth on every side. Never repeat it in a hero beneath the header.
 - The Bookmark is only ever the logo. Never use it as a bullet, a section marker, a ribbon or a decoration.

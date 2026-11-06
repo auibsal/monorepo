@@ -37,13 +37,13 @@ const grounds: Record<
     dark: true,
     frame: "bg-[var(--sal-crimson)] text-[var(--sal-white)]",
     italic: "",
-    meta: "text-[var(--sal-crimson-100)]",
+    meta: "text-white",
   },
   ink: {
     dark: true,
     frame: "bg-[var(--sal-ink)] text-[var(--sal-white)]",
-    italic: "[&_i]:text-[var(--sal-crimson-100)]",
-    meta: "text-[var(--sal-crimson-100)]",
+    italic: "[&_i]:text-white",
+    meta: "text-white",
   },
   white: {
     dark: false,
