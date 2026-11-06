@@ -28,7 +28,7 @@ The Society's printed stickers: 44 stickers for laptops, bottles, notebooks and 
 | File | Sticker | Cut size | Notes |
 |---|---|---|---|
 | `motto-en.svg` | The paper and the pen. | 150 × 72 mm | White on a crimson ground, cut square; the accent word in mist. |
-| `motto-ar.svg` | Arabic motto | 120 × 44 mm | needs-native-review for the vowel mark. |
+| `motto-ar.svg` | Arabic motto | 120 × 44 mm | The accent word in mist, by color only: Arabic has no italic. needs-native-review. |
 | `motto-strip.svg` | Motto strip | 200 × 30 mm | Long strip for laptops and notebooks. |
 | `the-pen.svg` | The pen | 28 × 78 mm | A fountain-pen nib, cut on its own edge; pairs with The paper. |
 | `the-paper.svg` | The paper | 50 × 66 mm | A page with a folded corner, cut on its own edge; pairs with The pen. |
