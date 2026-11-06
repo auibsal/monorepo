@@ -7,7 +7,7 @@ One idea per post, in one language. The headline does the work; nothing sits abo
 **Posts (1080 × 1350)**
 
 - English posts carry the English lockup; Arabic posts the Arabic lockup, mirrored. Post them separately.
-- The lockup at the top start; two to five words with a full stop in Light, one italic word at most; one sentence; the date or link and @auibsal at the bottom start.
+- The lockup at the top start; two to five words with a full stop in Light, in one color; one sentence; the date or link and @auibsal at the bottom start.
 - Grounds by purpose: crimson for calls and moments, white for events, ink for words worth keeping and recruiting.
 - Photo posts: the picture above (1080 × 820), the words on a solid ink or white panel, the lockup at the bottom end. Never type over a photograph.
 - Instagram crops the grid to 3:4: keep words 80 px from the side edges.
@@ -55,6 +55,6 @@ One picture per place, so members always know where they are. The Bookmark for t
 Six highlights, each opened by a banner that says what is inside. Covers carry an icon alone; the banners do the explaining.
 
 - **Covers:** plain crimson with the highlight's icon alone, in white, centered inside the middle 760 px of a 1080 × 1080 square. No name (Instagram writes it under the circle), no Bookmark, no other text.
-- **Banners:** the first story in each highlight, 1080 × 1920 on white. The wordmark alone at the top (no Bookmark), a Light headline with one italic crimson word, one short line, a list split by thin rules, and the link at the bottom.
+- **Banners:** the first story in each highlight, 1080 × 1920 on white. The wordmark alone at the top (no Bookmark), a Light headline in ink, one short line, a list split by thin rules, and the link at the bottom.
 - Keep every word 250 px from the top and 340 px from the bottom. Put Instagram's link sticker over the written link.
 - Refresh What's on each term and Qirtas each Edition.

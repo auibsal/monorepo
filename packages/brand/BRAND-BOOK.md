@@ -31,19 +31,19 @@ This is SAL-BRD-01, Brand and Identity, Version 1, ratified by the Society, in s
 ## Color
 
 - Six colors do all the work: `white`, `ink`, `crimson`, `paper`, `stone` and `ash`. Aim for about 70% white, 18% ink, 7% crimson and 5% paper and stone.
-- `crimson` appears once or twice a page at full strength: the logo, one italic word, one button, one band. Never as a pale tint, never as large blocks of headline.
+- `crimson` appears once or twice a page at full strength: the logo, one button, links, one band. Never as a pale tint, never as large blocks of headline.
 - `paper` is Qirtas's page and long reading only. Elsewhere the page is `white`.
 - `stone` is for hairline rules only, never text. `ash` is secondary text and captions (6.0:1 on white, 5.3:1 on paper).
 - One color is reserved: `crimson-700` lives only inside the logo files. There is no pink (decided Nov 6): rose is retired, as an accent and in Hudhud.
 - Build with the role tokens: `surface`, `surface-reading`, `text`, `text-secondary`, `accent`, `line`, `band` and `on-band`. They switch between light and dark.
-- Dark mode is `ink` with white text and `mist` for secondary text. The accent word always differs in color from the text around it: `crimson` on white and paper, `mist` on `ink` and `crimson` (decided Nov 6). In dark mode the one button is mist with ink text. Never crimson text or the crimson symbol on `ink` (1.7:1).
+- Dark mode is `ink` with white text and `mist` for secondary text. On `ink` and `crimson` everything is white; mist is never on crimson. In dark mode the one button is white with ink text. Never crimson text or the crimson symbol on `ink` (1.7:1).
 
 ## Type
 
 - Ubuntu is the Society's voice in English and Ubuntu Arabic in Arabic: one family for both languages, as AUIB uses it. Ubuntu and Ubuntu Mono come from Google Fonts; Ubuntu Arabic ships in `fonts/`.
-- **Display is Light.** Headlines, the motto and large dates are Ubuntu Light (300), large, tightly spaced, in `text`. One word in Light Italic and `accent` per headline at most: "The paper and the *pen.*"
+- **Display is Light.** Headlines, the motto and large dates are Ubuntu Light (300), large, tightly spaced, in `text`, in one color: no accent word, no italic word, in any language or on any ground (decided Nov 6). "The paper and the pen."
 - **Text is Regular**, 1.6 leading, 60–70 characters a line. **Labels are Medium**, small, tracked capitals, and only name fields, columns and metadata: never a line above a headline. **Bold** is for the logo and for emphasis inside a sentence, never for headlines.
-- Arabic is set in Ubuntu Arabic Regular, with 1.3 leading for display and 1.6–2.0 for text. It has no Light and no italic: Arabic display is Regular, and the accent word changes color only. Never tracked. Set `dir="rtl"` and `lang="ar"` on the page or post, and mirror the layout. Use Western digits in both languages.
+- Arabic is set in Ubuntu Arabic Regular, with 1.3 leading for display and 1.6–2.0 for text. It has no Light and no italic: Arabic display is Regular. Never tracked. Set `dir="rtl"` and `lang="ar"` on the page or post, and mirror the layout. Use Western digits in both languages.
 - Qirtas's long articles are set in Literata (Google Fonts) for reading; its masthead, headlines and interface stay Ubuntu.
 - Codes, form numbers and six-word typewriter lines are Ubuntu Mono: `SAL-GOV-01`, `F-14`.
 - Use the styles in tokens: `display-xl`, `display`, `title`, `heading`, `lede`, `body`, `label`, `caption` on screens; `print-*` for A4; `post-*` for 1080 × 1350 posts; `ar-*` for Arabic; `read-*` for Qirtas.
@@ -118,13 +118,13 @@ This is SAL-BRD-01, Brand and Identity, Version 1, ratified by the Society, in s
 ## Social and print
 
 - **One language per post.** English posts carry the English lockup and English only; Arabic posts the Arabic lockup and Arabic only, mirrored. Post them separately.
-- **Posts (1080 × 1350):** the lockup at the top start; a headline of two to five words with a full stop in `post-display` Light, one italic word at most; one sentence; the date, link and @auibsal at the bottom start. No label above the headline.
+- **Posts (1080 × 1350):** the lockup at the top start; a headline of two to five words with a full stop in `post-display` Light, in one color; one sentence; the date, link and @auibsal at the bottom start. No label above the headline.
 - **Photo posts:** the photo above (1080 × 820), the headline and meta on a solid ink or white panel below, the lockup at the bottom end. Never type over a photograph.
 - **Carousels:** a cover post, numbered inside slides ("01", a short title, a few lines), and an end slide with the wordmark alone in the carousel's language: no symbol, no text. One ground and one language throughout. No slide counters or "swipe" prompts.
 - **Stories (1080 × 1920):** the post's parts, with every word 250 px clear of the top and 340 px clear of the bottom.
 - **Profile pictures:** Instagram (@auibsal) and the members' Telegram group use the Bookmark in white on crimson (`sal-avatar.svg`). The Diwan group, the officers' working group, uses the Bookmark in white on ink (`sal-avatar-ink.svg`), so the two groups are never confused. Hudhud, the bot, keeps the hoopoe (`hudhud-avatar.png`).
 - **Instagram bio:** "Qirtas, our paper. The Company, our theater. Events all year at @auibaghdad." Links, in order: auibsal.org, auibsal.org/events, auibsal.org/join.
-- **Highlights:** six, in this order: What's on, Qirtas, Next Stop, The Company, Join, Get involved. Covers are plain crimson with the highlight's icon alone, in white: no name (Instagram writes it under the circle) and no Bookmark. Each highlight opens with a 1080 × 1920 story banner on white: the wordmark alone at the top (no Bookmark), a Light headline with one italic crimson word, a short line, a list split by thin rules, and the link at the bottom. See `components/Highlights`.
+- **Highlights:** six, in this order: What's on, Qirtas, Next Stop, The Company, Join, Get involved. Covers are plain crimson with the highlight's icon alone, in white: no name (Instagram writes it under the circle) and no Bookmark. Each highlight opens with a 1080 × 1920 story banner on white: the wordmark alone at the top (no Bookmark), a Light headline in ink, a short line, a list split by thin rules, and the link at the bottom. See `components/Highlights`.
 - Three grounds, by purpose: `crimson` for calls and moments, `white` for events, `ink` for words worth keeping and recruiting.
 - Posters A3/A4 follow the post: lockup, Light headline, a QR code at bottom right. Certificates are A4 landscape with a single hairline frame and the lockup. Print only when current stock runs out.
 - Print sizes: Charter poster A3; Open Call poster A3 or A4; Term Card A6, four to an A4 sheet; membership card 85 × 55 mm, 300 gsm, ten to an A4 sheet; Certificate of Service and Fellow certificate A4 landscape; name badges 90 × 55 mm; photography notice A4; camera-shy stickers 40 mm round, twenty to an A4 sheet, the crossed-out camera alone in white on ink. Every one is drawn in Print.

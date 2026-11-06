@@ -82,7 +82,7 @@ export const CharterPoster: Story = {
       <p className="absolute inset-x-[30mm] top-[120mm] font-light text-[76pt] leading-none tracking-[-0.03em]">
         The paper and
         <br />
-        the <i className="text-[#9c213e]">pen.</i>
+        the pen.
       </p>
       <div className="absolute inset-x-[30mm] top-[200mm] grid grid-cols-2 gap-[17mm] border-[#273236] border-t-[0.6pt] pt-[11mm]">
         <div>
@@ -147,7 +147,7 @@ export const OpenCallPoster: Story = {
       <p className="absolute inset-x-[30mm] top-[120mm] font-light text-[96pt] leading-none tracking-[-0.03em]">
         Write for
         <br />
-        <i className="text-[#9c213e]">Qirtas.</i>
+        Qirtas.
       </p>
       <div className="absolute inset-x-[30mm] top-[245mm] border-[#273236] border-t-[0.6pt] pt-[11mm]">
         <p className="max-w-[180mm] font-light text-[24pt] leading-[1.4]">

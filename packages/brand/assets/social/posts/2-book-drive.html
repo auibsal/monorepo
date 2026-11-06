@@ -273,7 +273,7 @@ table.grid-f td.lab{background:var(--crimson-50);font-weight:700;width:34mm}
 
 /* ==================================================================
    SAL-BRD-01 Brand and Identity, Version 1 — document layer.
-   Quiet by default: Light headlines in ink, one italic crimson word,
+   Quiet by default: Light headlines in ink, one color per headline,
    hairlines and space, square corners, no tints, no icons.
    The Bookmark is only ever the logo. Headings stand alone.
    ================================================================== */
@@ -292,7 +292,6 @@ body{font-size:10.3pt;line-height:1.55}
 .folio .code{font-size:7.6pt}
 h1.display,.dark h1.display,.crimson h1.display{font-weight:300;color:var(--ink);font-size:40pt;line-height:1.02;letter-spacing:-.025em;margin-bottom:4mm}
 h1.display.md{font-size:34pt} h1.display.sm{font-size:28pt} h1.display.xs{font-size:22pt}
-h1.display i,.t6 i{font-style:italic;color:var(--crimson);font-weight:300}
 .lede,.dark .lede{font-weight:300;color:var(--ink)}
 h2,h2.c,.dark h2{font-weight:400;color:var(--ink);letter-spacing:-.01em}
 h3,h3.c,.dark h3,.card h3{font-weight:500;color:var(--ink)}
@@ -438,7 +437,6 @@ table.grid-f td.lab{background:var(--paper)}
 .sal-post__lockup { position: absolute; top: calc(72 * var(--u)); inset-inline-start: calc(80 * var(--u)); height: calc(132 * var(--u)); width: auto; }
 .sal-post__headline { position: absolute; inset-inline: calc(80 * var(--u)); top: calc(330 * var(--u)); margin: 0;
   font-size: calc(160 * var(--u)); line-height: 1; font-weight: 300; letter-spacing: -0.03em; }
-.sal-post__headline i { font-weight: 300; }
 .sal-post__lede { position: absolute; inset-inline-start: calc(80 * var(--u)); top: calc(760 * var(--u)); max-width: 24ch; margin: 0;
   font-size: calc(38 * var(--u)); line-height: 1.4; }
 .sal-post__meta { position: absolute; inset-inline-start: calc(80 * var(--u)); bottom: calc(72 * var(--u)); margin: 0;
@@ -466,27 +464,21 @@ table.grid-f td.lab{background:var(--paper)}
 .sal-story .sal-post__lede { top: calc(1120 * var(--u)); font-size: calc(44 * var(--u)); }
 .sal-story .sal-post__meta { bottom: calc(340 * var(--u)); font-size: calc(34 * var(--u)); }
 
-/* Arabic: Ubuntu Arabic has no Light and no italic. Display is Regular, the accent word is color only. */
+/* Arabic: Ubuntu Arabic has no Light and no italic. Display is Regular. */
 [dir="rtl"] .sal-post__frame, [dir="rtl"] .sal-story__frame { font-family: var(--font-arabic); }
 [dir="rtl"] .sal-post__headline { font-weight: 400; letter-spacing: 0; line-height: 1.3; font-size: calc(132 * var(--u)); }
 [dir="rtl"].sal-post--photo .sal-post__headline { font-size: calc(92 * var(--u)); }
 [dir="rtl"].sal-story .sal-post__headline { font-size: calc(150 * var(--u)); }
-[dir="rtl"] .sal-post__headline i, [dir="rtl"] .sal-post__title i { font-style: normal; font-weight: 400; }
 [dir="rtl"] .sal-post__title { font-weight: 400; letter-spacing: 0; line-height: 1.4; font-size: calc(76 * var(--u)); }
 [dir="rtl"] .sal-post__lede, [dir="rtl"] .sal-post__body { font-size: calc(42 * var(--u)); line-height: 1.7; }
 [dir="rtl"] .sal-post__meta { font-weight: 400; font-size: calc(30 * var(--u)); line-height: 1.7; }
 
-/* Grounds: crimson for calls and moments, white for events, ink for words worth keeping and recruiting. */
+/* Grounds: crimson for calls and moments, white for events, ink for words worth keeping and recruiting. Headlines are one color: on crimson and ink everything is white. */
 .sal-post--crimson .sal-post__frame, .sal-story--crimson .sal-story__frame { background: var(--crimson); color: var(--white); }
-.sal-post--crimson .sal-post__headline i, .sal-post--crimson .sal-post__title i, .sal-story--crimson .sal-post__headline i,
-.sal-post--crimson .sal-post__meta, .sal-story--crimson .sal-post__meta, .sal-post--crimson .sal-post__num { color: var(--mist); }
 .sal-post--white .sal-post__frame, .sal-story--white .sal-story__frame { background: var(--white); color: var(--ink); }
-.sal-post--white .sal-post__headline i, .sal-post--white .sal-post__title i, .sal-post--white .sal-post__num,
-.sal-story--white .sal-post__headline i { color: var(--crimson); }
+.sal-post--white .sal-post__num { color: var(--crimson); }
 .sal-post--white .sal-post__meta, .sal-story--white .sal-post__meta { color: var(--ash); }
 .sal-post--ink .sal-post__frame, .sal-story--ink .sal-story__frame { background: var(--ink); color: var(--white); }
-.sal-post--ink .sal-post__headline i, .sal-post--ink .sal-post__title i, .sal-post--ink .sal-post__meta, .sal-post--ink .sal-post__num,
-.sal-story--ink .sal-post__headline i, .sal-story--ink .sal-post__meta { color: var(--mist); }
 
 @font-face{font-family:"Ubuntu Arabic";font-weight:400;src:url(../../fonts/UbuntuArabic-Regular.woff2)}
 :root{--white:#FFFFFF;--ink:#273236;--crimson:#9C213E;--paper:#F5F2EE;--stone:#E2DDD6;--ash:#5C6568;--crimson-100:#C3CACB;
@@ -503,4 +495,4 @@ body{margin:0;width:1080px}
 [dir="rtl"] .rows b{letter-spacing:0;text-transform:none;font-size:calc(30 * var(--u))}
 </style></head><body><div class="sal-post sal-post--white" lang="en"><div class="sal-post__frame">
 <img class="sal-post__lockup" src="../../logos/sal-lockup-horizontal.svg" alt="">
-<h2 class="sal-post__headline">Book<br><i>drive.</i></h2><p class="sal-post__lede">Donate a book you have finished; buy one back at the fair. Every dinar goes to the charity partner.</p><p class="sal-post__meta"><span>Donations from Sunday, Nov 1 · fair Nov 8–11</span><span>auibsal.org/events · @auibsal</span></p></div></div></body></html>
+<h2 class="sal-post__headline">Book<br>drive.</h2><p class="sal-post__lede">Donate a book you have finished; buy one back at the fair. Every dinar goes to the charity partner.</p><p class="sal-post__meta"><span>Donations from Sunday, Nov 1 · fair Nov 8–11</span><span>auibsal.org/events · @auibsal</span></p></div></div></body></html>

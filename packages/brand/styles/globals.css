@@ -495,17 +495,6 @@
     letter-spacing: 0;
   }
 }
-/* One word per headline at most: Light italic in `accent`. Arabic has no
-   italic, so there the word changes color only. */
-@utility type-accent {
-  font-style: italic;
-  font-weight: inherit;
-  color: var(--accent);
-  &:lang(ar),
-  :lang(ar) & {
-    font-style: normal;
-  }
-}
 /* Document codes and clause numbers. */
 @utility type-code {
   font-family: var(--font-mono);

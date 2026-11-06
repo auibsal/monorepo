@@ -8,7 +8,7 @@ The AUIB three lead: crimson, ink and white. White does most of the work, ink ca
 | --- | --- | --- |
 | White | `#FFFFFF` | The page for everything. |
 | Ink | `#273236` | Text, footers, dark mode. 13.2:1 on white. |
-| Crimson | `#9C213E` | The logo, one word, one button, one band. 7.8:1. |
+| Crimson | `#9C213E` | The logo, one button, links, one band. 7.8:1. |
 | Paper | `#F5F2EE` | Qirtas and long reading only. |
 | Stone | `#E2DDD6` | Hairline rules. Never text. |
 | Ash | `#5C6568` | Secondary text and captions. 6.0:1. |
@@ -20,10 +20,10 @@ About 70 white · 18 ink · 7 crimson · 5 paper and stone.
 | Color | Value | Use |
 | --- | --- | --- |
 | Crimson-700 | `#7E1A32` | Inside the logo files only. |
-| Mist | `#C3CACB` | Secondary text and the accent word on ink and crimson. |
+| Mist | `#C3CACB` | Secondary text on ink in dark mode. Never on crimson. |
 | Slate | `#3D494D` | Rules in dark mode. |
 
-Never add a color, and no event may add one. Never use crimson as a pale tint or a large block of headline. Never set crimson text or the crimson symbol on ink (1.7:1): on ink and on crimson the accent word is mist (7.9:1 on ink, 4.7:1 on crimson), so the accent is always a different color from the text around it (decided Nov 6; rose is not an accent).
+Never add a color, and no event may add one. Never use crimson as a pale tint or a large block of headline. Never set crimson text or the crimson symbol on ink (1.7:1). Headlines are one color on every ground, with no accent word: on ink and crimson everything is white (decided Nov 6; no rose, and no mist on crimson).
 
 ## Color roles
 
@@ -35,7 +35,7 @@ Build with roles, not raw colors. Each role has a value for light mode and for d
 | `surface-reading` | paper | ink | Qirtas pages, long reading |
 | `text` | ink | white | Headlines and body |
 | `text-secondary` | ash | mist | Captions, meta, labels |
-| `accent` | crimson | mist | The one loud thing: italic word, button |
+| `accent` | crimson | white | The one loud thing: the button, links in hover |
 | `on-accent` | white | ink | Text on the accent button |
 | `line` | stone | slate | Hairline rules |
 | `band` | crimson | crimson | One full-bleed band per page at most |
@@ -60,5 +60,4 @@ Every text pair reaches 4.5:1 in both modes. Rules and fills that carry no words
 | Ash on paper | 5.3:1 |
 | White on crimson | 7.8:1 |
 | Mist on ink | 7.9:1 |
-| Mist on crimson | 4.7:1 |
 | Crimson on ink | 1.7:1 · never |

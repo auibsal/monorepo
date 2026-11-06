@@ -15,7 +15,7 @@ auibsal.org and the Diwan share one frame. Few boxes, big words, a lot of air. T
 The Arabic site is its own edition: the same layout mirrored, the Arabic lockup, Ubuntu Arabic Regular. Phones get the same page in one column.
 
 - **Mirrored:** `dir="rtl"` on the page; the lockup at the top right; links and dates on the start side.
-- Display in Ubuntu Arabic Regular at 1.3 leading; the accent word changes color only.
+- Display in Ubuntu Arabic Regular at 1.3 leading.
 - Latin strings (@auibsal, links, emails) are wrapped in `<bdi dir="ltr">` so they read the right way.
 - **Phones:** the lockup at 40 px, a Menu link in place of the sections, the motto at 56–64 px.
 - Lists keep their dates; the time and place move under the title.

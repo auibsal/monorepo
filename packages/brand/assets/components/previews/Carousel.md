@@ -4,7 +4,7 @@ An Instagram carousel: up to ten 1080 × 1350 slides that read as one piece. Use
 
 **Slides**
 1. **Cover:** a `SocialPost` (lockup, headline, one sentence, date or link, @auibsal). It is the only slide with the logo.
-2. **Inside slides:** `<div class="sal-post sal-post--{ground}">` with `.sal-post__frame` containing `p.sal-post__num` ("01", "02"…, Light, in the accent), `h3.sal-post__title` (a short title with a full stop, one `<i>` word at most) and `p.sal-post__body` (one to three lines). A slide may be a photo instead.
+2. **Inside slides:** `<div class="sal-post sal-post--{ground}">` with `.sal-post__frame` containing `p.sal-post__num` ("01", "02"…, Light, in the accent), `h3.sal-post__title` (a short title with a full stop, in one color) and `p.sal-post__body` (one to three lines). A slide may be a photo instead.
 3. **End slide:** `<div class="sal-post sal-post--{ground} sal-post--end">` with only `img.sal-post__wordmark`: the English wordmark for an English carousel, the Arabic wordmark for an Arabic one. No symbol, no text, no handle.
 
 **Rules**

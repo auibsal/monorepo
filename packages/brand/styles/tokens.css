@@ -54,7 +54,7 @@
   --surface-reading: var(--sal-ink);
   --text: var(--sal-white);
   --text-secondary: var(--sal-mist);
-  --accent: var(--sal-mist);
+  --accent: var(--sal-white);
   --on-accent: var(--sal-ink);
   --line: var(--sal-slate);
   --band: var(--sal-crimson);

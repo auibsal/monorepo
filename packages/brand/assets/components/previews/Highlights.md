@@ -8,7 +8,7 @@ The six Instagram highlights on @auibsal, always in this order: What's on, Qirta
 
 **Banners.** Every highlight opens with a 1080 × 1920 story banner on white:
 - `img.sal-banner__wordmark`: the English wordmark alone at the top (`sal-wordmark-en.svg`). No Bookmark.
-- `h2.sal-banner__headline`: a Light headline with one italic crimson word ("Come *in.*").
+- `h2.sal-banner__headline`: a Light headline in ink ("Come in.").
 - `p.sal-banner__line`: one short line under it.
 - `ul.sal-banner__list`: three to six items split by thin rules; an optional `<span>` holds a date or a short note at the end of the line.
 - `p.sal-banner__link`: the link at the bottom, as words, after the `arrow-up-right` icon (auibsal.org/join). Add Instagram's link sticker over it when posting.
