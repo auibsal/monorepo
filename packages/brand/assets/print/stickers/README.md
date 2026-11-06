@@ -1,13 +1,13 @@
 # Sticker pack
 
-The Society's printed stickers: 51 stickers for laptops, bottles, notebooks and doors, printed by Student Life. Each file here is one sticker at 100%, its type outlined, with the cut line in magenta (`#ec008c`, 0.25 mm), which is cut and never printed.
+The Society's printed stickers: 50 stickers for laptops, bottles, notebooks and doors, printed by Student Life. Each file here is one sticker at 100%, its type outlined, with the cut line in magenta (`#ec008c`, 0.25 mm), which is cut and never printed.
 
 - **Colors:** the six, and no pink: on ink and crimson the accent is the italic itself, in white. Never another color; the variety is in shape, type and structure.
 - **Cuts:** no white borders. Each white-vinyl sticker is cut either on a full ground (a square, a circle) or exactly on its own clean edge (the Bookmark, the pen, the page, the ticket, the books, the typewriter), with 1.5 mm bleed past every cut. The Clear vinyl group is cut 1.5 mm around the art, which the clear vinyl hides.
 - **Hudhud** is used from the mascot files as supplied, never redrawn, and never touches the logo. The camera-shy sticker is the crossed-out camera alone.
 - **Arabic** stickers (the motto, قرطاس, ق) need a native speaker's check before printing (needs-native-review).
 - **Material:** white matte vinyl; "Six words, to fill in" on a writable matte stock; the Clear vinyl group on clear vinyl with white ink printed under the art (a printer that prints white ink).
-- **Type:** Ubuntu for words and labels (labels in Medium, tracked capitals), Ubuntu Arabic for Arabic, Ubuntu Mono only for typewriter lines (the keys, the typewriter's sheet, Six words).
+- **Type:** Ubuntu for words and labels (labels in Medium, tracked capitals), Ubuntu Arabic for Arabic, Ubuntu Mono only for typewriter lines (the keys, the typewriter's sheet, Six words). Icons at sticker size end their lines flat, so no corner pokes past a frame.
 - The printer gets a PDF made from these files (a cover with the specs, the overview, and one page per sticker at 100%); it is sent, never kept in the repository. The Print story "Sticker pack" shows them all.
 
 ## The Society
@@ -37,9 +37,9 @@ The Society's printed stickers: 51 stickers for laptops, bottles, notebooks and 
 
 | File | Sticker | Cut size | Notes |
 |---|---|---|---|
-| `qirtas-keys.svg` | QIRTAS in keys | 162 × 36 mm | Six typewriter keys spelling the paper's name, on crimson. |
-| `key-qaf.svg` | Qaf key | 50 × 50 mm | One key, ق for قرطاس, cut round. |
-| `qirtas-nameplate.svg` | Qirtas nameplate | 120 × 52 mm | The nameplate on paper, cut square. |
+| `qirtas-keys.svg` | QIRTAS in keys | 172 × 46 mm | Six typewriter keys spelling the paper's name, on crimson. |
+| `key-qaf.svg` | Qaf key | 56 × 56 mm | One key, ق for قرطاس, cut round. |
+| `qirtas-nameplate.svg` | Qirtas nameplate | 132 × 66 mm | The nameplate on paper, cut square. |
 | `qirtas-ar.svg` | قرطاس | 150 × 58 mm | The name in Arabic, white on crimson. needs-native-review. |
 | `section-news.svg` | News | 44 × 44 mm | The News section's icon, cut square. |
 | `section-voices.svg` | Voices | 44 × 44 mm | The Voices section's icon, cut square. |
@@ -47,7 +47,7 @@ The Society's printed stickers: 51 stickers for laptops, bottles, notebooks and 
 | `section-gallery.svg` | Gallery | 44 × 44 mm | The Gallery section's icon, cut square. |
 | `section-video.svg` | Video | 44 × 44 mm | The Video section's icon, cut square. |
 | `section-games.svg` | Games | 44 × 44 mm | The Games section's icon, cut square. |
-| `read-blind.svg` | Read blind | 86 × 36 mm | A rubber stamp, tilted, cut on its edge. |
+| `read-blind.svg` | Read blind | 96 × 42 mm | A rubber stamp, cut square. |
 | `next-stop.svg` | Next Stop | 56 × 100 mm | Qirtas's video show, a bus-stop sign on paper, cut square. |
 
 ## Events
@@ -56,10 +56,10 @@ The Society's printed stickers: 51 stickers for laptops, bottles, notebooks and 
 |---|---|---|---|
 | `ticket.svg` | Admit one | 96 × 42 mm | A ticket with notched ends and a perforation. |
 | `record.svg` | The record | 60 × 60 mm | A record for listening sessions, cut round. |
-| `read-it.svg` | Read it, talk about it | 56 × 56 mm | Ring lettering for book discussions, cut round. |
+| `read-it.svg` | Read it, talk about it | 64 × 64 mm | Ring lettering for book discussions, cut round. |
 | `cup.svg` | A cup of tea | 64 × 64 mm | Tea and conversation, cut round. |
 | `open-book.svg` | An open book | 92 × 58 mm | For writing workshops and readings, cut on the cover's edge. |
-| `book-stack.svg` | A stack of books | 70 × 42 mm | For the book drive and fair, cut on the books' edge. |
+| `book-stack.svg` | A stack of books | 74 × 42 mm | For the book drive and fair, cut on the books' edge. |
 | `icon-book-open.svg` | Book open | 44 × 44 mm | An icon from the set, white, cut square. |
 | `icon-headphones.svg` | Headphones | 44 × 44 mm | An icon from the set, white, cut square. |
 
@@ -99,7 +99,6 @@ The Society's printed stickers: 51 stickers for laptops, bottles, notebooks and 
 | File | Sticker | Cut size | Notes |
 |---|---|---|---|
 | `clear-motto.svg` | The paper and the pen., clear | 137 × 56 mm | For light laptops and bottles. Clear vinyl, white ink under the art. |
-| `clear-motto-white.svg` | The paper and the pen., clear, white | 137 × 56 mm | White only, for dark laptops. Clear vinyl, white ink under the art. |
 | `clear-qirtas-ar.svg` | قرطاس, clear | 144 × 48 mm | needs-native-review. Clear vinyl, white ink under the art. |
 | `clear-lockup.svg` | Stacked lockup, clear | 44 × 80 mm | The lockup as supplied. Clear vinyl, white ink under the art. |
 | `clear-wordmark-ar.svg` | Arabic wordmark, clear | 63 × 64 mm | The wordmark as supplied. Clear vinyl, white ink under the art. |
