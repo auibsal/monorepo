@@ -52,9 +52,9 @@ One picture per place, so members always know where they are. The Bookmark for t
 
 ## Highlights
 
-Six highlights, each opened by a banner that says what is inside. Covers carry an icon and a name; the banners do the explaining.
+Six highlights, each opened by a banner that says what is inside. Covers carry an icon alone; the banners do the explaining.
 
-- **Covers:** plain crimson with the highlight's icon above its name, both in white (the name in Ubuntu Light), inside the middle 760 px of a 1080 × 1080 square. No Bookmark, no other text.
+- **Covers:** plain crimson with the highlight's icon alone, in white, centered inside the middle 760 px of a 1080 × 1080 square. No name (Instagram writes it under the circle), no Bookmark, no other text.
 - **Banners:** the first story in each highlight, 1080 × 1920 on white. The wordmark alone at the top (no Bookmark), a Light headline with one italic crimson word, one short line, a list split by thin rules, and the link at the bottom.
 - Keep every word 250 px from the top and 340 px from the bottom. Put Instagram's link sticker over the written link.
 - Refresh What's on each term and Qirtas each Edition.

@@ -30,7 +30,7 @@ Every chat in this project should follow this file. Where an older document, pro
 - **Pictures and Instagram:**
   - Instagram (@auibsal) and the members' group use the Bookmark in white on crimson; the Diwan's Telegram group uses the Bookmark in white on ink; Hudhud keeps the hoopoe.
   - Instagram bio: "Qirtas, our paper. The Company, our theater. Events all year at @auibaghdad." Links: auibsal.org, auibsal.org/events, auibsal.org/join.
-  - Six highlights, in order: What's on, Qirtas, Next Stop, The Company, Join, Get involved. Covers are plain crimson with the highlight's icon and its name in white Ubuntu Light (no Bookmark). Each opens with a story banner on white with the wordmark alone (no Bookmark).
+  - Six highlights, in order: What's on, Qirtas, Next Stop, The Company, Join, Get involved. Covers are plain crimson with the highlight's icon alone, in white: no name and no Bookmark (decided Nov 6). Each opens with a story banner on white with the wordmark alone (no Bookmark).
 - **Icons (decided Oct 30).** The Society uses one icon set across the board: the site and the Diwan, posts, stories, highlights, documents and printables. It is Lucide (ISC license), drawn with a 1.5 px line and square ends, kept in the brand kit (see section 7). An icon may stand alone wherever it says enough by itself (a calendar beside a date, a map pin beside a place, close, menu, search, share, a link arrow); add a word only when the icon alone could be misread. A standalone icon on a screen always carries a label for screen readers. Icons take the color of the text around them. Never in a headline, never as decoration, never the Bookmark as an icon, and still no emoji.
 - **The Typewriter Tour's six words** are published in Qirtas, as Six Words pages in Letters. There is no separate anthology.
 - **Partners and charities.** The Vice President vets every partner, including any charity the Society works with or raises for; the Council approves it, and it is kept in the Diwan's partner register. No charity is on record yet, so Second Chapter's charity is still to be chosen.
@@ -163,9 +163,7 @@ Qirtas may have several documents:
   - No budgets, costs, prices, spending limits, ledgers, claims or reimbursements, except Second Chapter's collection.
 - **The site (auibsal.org and the Diwan):** no Treasurer on the Council page; no budget, ledger, claims, spending or advertising features. No "Programs" section: recurring events are series on What's on, and the Typewriter Tour sits under Join. Events show needs, not costs. Keep Second Chapter's collection record (counts, the witnessed handover, the impact report). The Council page lists the officers and directors with full titles.
 - **Documents are pages, not files.** Every Society document is written and kept as a Notion page (see section 7). PDFs are exported only when a printed or emailed copy is needed, and are never stored, in Notion or on GitHub; the monorepo holds code and brand assets, never document PDFs (the brand guide is the Storybook, with no PDF).
-- **Claude artifacts (decided Nov 5).** Two are kept, and no other SAL artifact:
-  - the Design System **"AUIB Society of Arts and Letters"**, a copy of the brand kit in `packages/brand` so Claude can design with the brand. It is refreshed from the monorepo whenever the brand kit changes and is never edited on its own; where it and the monorepo differ, the monorepo wins;
-  - the deck **"Using the Diwan"**, the team's guide to the Diwan on the site.
+- **Claude artifacts (decided Nov 6).** One is kept, and no other SAL artifact: the Design System **"AUIB Society of Arts and Letters"**, a copy of the brand kit in `packages/brand` so Claude can design with the brand. It is refreshed from the monorepo whenever the brand kit changes and is never edited on its own; where it and the monorepo differ, the monorepo wins.
 
 ## 6. Dates (2026–27)
 - **Second Chapter:**

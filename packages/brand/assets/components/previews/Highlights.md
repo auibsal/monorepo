@@ -2,9 +2,9 @@
 
 The six Instagram highlights on @auibsal, always in this order: What's on, Qirtas, Next Stop, The Company, Join, Get involved.
 
-**Covers.** Plain crimson with the highlight's icon above its name, both in white (the name in Ubuntu Light), centered. No Bookmark, no other text. Icons: What's on `calendar`, Qirtas `newspaper`, Next Stop `bus`, The Company `drama`, Join `user-plus`, Get involved `hand-helping`. Export each at 1080 × 1080 and keep the name inside the middle 760 px, so the circle crop never touches it. Instagram shows the name again under the circle; the two always match.
+**Covers.** Plain crimson with the highlight's icon alone, in white, centered. No name (Instagram writes it under the circle, and the two never disagree), no Bookmark, no other text. Icons: What's on `calendar`, Qirtas `newspaper`, Next Stop `bus`, The Company `drama`, Join `user-plus`, Get involved `hand-helping`. Export each at 1080 × 1080 and keep the icon inside the middle 760 px, so the circle crop never touches it.
 
-**Markup:** `<div class="sal-highlight">` wrapping `.sal-highlight__frame`, an inline `svg.sal-highlight__icon` and `p.sal-highlight__name`. Add `sal-highlight--round` to preview the circle crop.
+**Markup:** `<div class="sal-highlight">` wrapping `.sal-highlight__frame` and an inline `svg.sal-highlight__icon` with an `aria-label` naming the highlight. Add `sal-highlight--round` to preview the circle crop.
 
 **Banners.** Every highlight opens with a 1080 × 1920 story banner on white:
 - `img.sal-banner__wordmark`: the English wordmark alone at the top (`sal-wordmark-en.svg`). No Bookmark.

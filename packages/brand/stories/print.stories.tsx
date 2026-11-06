@@ -1,3 +1,4 @@
+import { Icon } from "@repo/brand/components/sal/icon";
 import type { Meta, StoryObj } from "@storybook/react";
 import type { ReactNode } from "react";
 import QRCode from "react-qr-code";
@@ -179,22 +180,14 @@ export const CameraShyStickers: Story = {
       <div className="absolute start-[15mm] top-[30mm] grid grid-cols-[repeat(4,40mm)] gap-[6mm]">
         {Array.from({ length: 20 }, (_, i) => i).map((i) => (
           <div
-            className="flex size-[40mm] flex-col items-center justify-center gap-[2mm] rounded-full bg-[#273236] text-center text-white"
+            className="flex size-[40mm] items-center justify-center rounded-full bg-[#273236] text-center text-white"
             key={i}
           >
-            {/* biome-ignore lint/performance/noImgElement: the logo file as supplied */}
-            <img
-              alt=""
-              className="block h-[9mm] w-auto"
-              height={34}
-              src="brand/sal-symbol-white.svg"
-              width={20}
+            <Icon
+              className="size-[22mm]"
+              label="Camera-shy"
+              name="camera-off"
             />
-            <span className="font-light text-[11pt] leading-[1.1]">
-              Camera
-              <br />
-              shy
-            </span>
           </div>
         ))}
       </div>

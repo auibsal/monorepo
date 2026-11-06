@@ -58,6 +58,7 @@ The Society's icon set: Lucide (ISC license, lucide.dev), redrawn for the brand 
 | `icon-scan-line.svg` | The Door, scan a card | The Society |
 | `icon-id-card.svg` | Membership card | The Society |
 | `icon-award.svg` | The Qirtas Awards, certificates | The Society |
+| `icon-camera-off.svg` | Camera-shy: no photos of me | The Society |
 
 **Added Oct 30, 2026** (the platform overhaul, approved by the owner; for the Director of Media to confirm): plus, pencil, trash-2, ellipsis, sliders-horizontal, settings, lock, scan-line, id-card, award.
 

@@ -119,11 +119,10 @@
 .sal-story--ink .sal-post__headline i, .sal-story--ink .sal-post__meta { color: var(--crimson-100); }
 
 /* ---------- Instagram highlights ----------
-   Covers: plain crimson, the highlight's name in white Ubuntu Light, nothing else (no icons, no Bookmark).
+   Covers: plain crimson with the highlight's icon alone, in white, centered; no name and no Bookmark (Instagram writes the name under the circle).
    Banners: the first story in each highlight, 1080 × 1920 on white, with the wordmark alone at the top. */
 .sal-highlight { --u: calc(100cqw / 1080); container-type: inline-size; }
 .sal-highlight__frame { width: 100%; aspect-ratio: 1; background: var(--crimson); color: var(--white); display: flex; align-items: center; justify-content: center; overflow: hidden; }
-.sal-highlight__name { margin: 0; max-width: calc(760 * var(--u)); text-align: center; font-family: var(--font-sans); font-weight: 300; font-size: calc(170 * var(--u)); line-height: 1.02; letter-spacing: -0.03em; }
 .sal-highlight--round .sal-highlight__frame { border-radius: 50%; }
 
 .sal-banner { --u: calc(100cqw / 1080); container-type: inline-size; }
@@ -144,6 +143,4 @@
 .sal-icon-label { display: inline-flex; align-items: center; gap: 0.45em; }
 .sal-icon-label .sal-icon { vertical-align: 0; }
 .sal-post__meta .sal-icon, .sal-banner__link .sal-icon { margin-inline-end: 0.4em; }
-.sal-highlight__frame { flex-direction: column; gap: calc(36 * var(--u)); }
-.sal-highlight__icon { width: calc(250 * var(--u)); height: calc(250 * var(--u)); stroke: var(--white); }
-.sal-highlight__icon + .sal-highlight__name { font-size: calc(140 * var(--u)); }
+.sal-highlight__icon { width: calc(400 * var(--u)); height: calc(400 * var(--u)); stroke: var(--white); }

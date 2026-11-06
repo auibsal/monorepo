@@ -258,8 +258,7 @@ export const Highlights: Story = {
       {highlights.map(([name, icon]) => (
         <div className="sal-highlight sal-highlight--round" key={name}>
           <div className="sal-highlight__frame">
-            <Icon className="sal-highlight__icon" name={icon} />
-            <p className="sal-highlight__name">{name}</p>
+            <Icon className="sal-highlight__icon" label={name} name={icon} />
           </div>
         </div>
       ))}
