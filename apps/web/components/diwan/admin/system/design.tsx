@@ -3,7 +3,7 @@ import { useTranslations } from "next-intl";
 import { DiwanPage } from "@/components/diwan/page";
 
 /**
- * The design system (SAL-BRD-01) in the Diwan (owner, Nov 4, 2026): the
+ * The design system (SAL-MED-02) in the Diwan (owner, Nov 4, 2026): the
  * Storybook built from packages/brand into public/_design, framed here.
  * It is read-only; its files have their downloads inside it.
  */

@@ -1000,7 +1000,7 @@ export const authorPage = async (client: Client, slug: string) => {
 };
 
 /**
- * One language per page (SAL-BRD-01): a list on the English site shows the
+ * One language per page (SAL-MED-02): a list on the English site shows the
  * pieces written in English (or in both), the Arabic site those in Arabic.
  * Rows without a language (calls, editions) pass through.
  */

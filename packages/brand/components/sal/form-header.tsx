@@ -5,7 +5,7 @@ import { cn } from "../../lib/utils";
 interface FormHeaderProps {
   readonly children?: ReactNode;
   readonly className?: string;
-  /** The form's code in Ubuntu Mono, e.g. "SAL-OPS-02 · F-14". */
+  /** The form's code in Ubuntu Mono, "SAL-EXB-01 · F-15". */
   readonly code?: string;
   readonly title: string;
 }

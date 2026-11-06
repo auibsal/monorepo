@@ -81,8 +81,8 @@ const NAME = {
 };
 
 const FOOTER = {
-  ar: "أُرسلت من موقع جمعية الفنون والآداب في الجامعة الأمريكية في العراق – بغداد، auibsal.org.",
-  en: "Sent by the website of the AUIB Society of Arts and Letters, auibsal.org.",
+  ar: "أُرسلت من موقع جمعية الفنون والآداب في الجامعة الأمريكية في العراق – بغداد، auibsal.org. الأصل عندنا: بلا ورق. والكتب يُعاد استخدامها عبر «الفصل الثاني».",
+  en: "Sent by the website of the AUIB Society of Arts and Letters, auibsal.org. Paperless by default. Books reused through Second Chapter.",
 };
 
 /**

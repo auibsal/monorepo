@@ -9,9 +9,10 @@
  * Arabic: tanween on the letter before the alif (ـًا, not ـاً), Latin
  * digits, the Iraqi month names the ar-IQ formatter uses, Arabic
  * punctuation (، ؛ ؟) and «» quotes, and Iraqi Arabic only in Hudhud.
- * English: American spelling, straight quotes and apostrophes, "for
- * example" over "e.g.", the ellipsis character, no exclamation marks and
- * no retired names.
+ * English: American spelling (Chicago, with Merriam-Webster; owner, Nov
+ * 6, 2026, so curly quotes are welcome in prose), "for example" over
+ * "e.g.", the ellipsis character, no exclamation marks and no retired
+ * names.
  */
 import { readFile } from "node:fs/promises";
 
@@ -48,12 +49,11 @@ const ARABIC: Rule[] = [
   { pattern: /[ء-ي][^\n]*[“”]|[“”][^\n]*[ء-ي]/, why: "«» quotes in Arabic" },
 ];
 
-// Iraqi spellings and words (گ, چ and common colloquial words).
+// Iraqi spellings and words (گ, چ, پ and common colloquial words).
 const IRAQI =
-  /[گچ]|(^|[\s،.])(شلون|هسه|هسّه|ماكو|اكو|شكو|هواية|راح يـ|دا يـ|ليش|شنو)(?=$|[\s،.؟])/;
+  /[گچپ]|(^|[\s،.])(شلون|هسه|هسّه|ماكو|اكو|شكو|هواية|راح يـ|دا يـ|ليش|شنو)(?=$|[\s،.؟])/;
 
 const ENGLISH: Rule[] = [
-  { pattern: /[’‘“”]/, why: "straight quotes and apostrophes" },
   { pattern: /\.\.\./, why: "the ellipsis character (…)" },
   { pattern: /\b(e\.g\.|i\.e\.)/, why: '"for example" or "that is"' },
   { pattern: /!/, why: "no exclamation marks" },
@@ -64,7 +64,7 @@ const ENGLISH: Rule[] = [
   },
   {
     pattern:
-      /\b(Waraq|Nexus|Prizes?|Majlis|Book of Members|Book of Fellows|Charter Night|Callboard|Gallery Wall|Open Stage|Month in Qirtas|Green Room)\b/,
+      /\b(Waraq|Nexus|Qirtas Prizes?|Majlis|Book of Members|Book of Fellows|Charter Night|Callboard|Gallery Wall|Open Stage|Month in Qirtas|Green Room)\b/,
     why: "a retired name",
   },
   // Owner, Nov 5, 2026: no programs, and the Council of six.

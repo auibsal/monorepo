@@ -9,7 +9,7 @@ The first page of every Society document: the lockup and code at the top, a larg
 - `h1.sal-cover__title`: one or two words a line, at most two lines. Light, in ink (Ubuntu Arabic Regular in Arabic).
 - `p.sal-cover__subtitle`: one sentence.
 - `p.sal-cover__prepared` with `span.sal-cover__prepared-name`: "Prepared by", the name, the role.
-- `footer.sal-cover__foot`: the date at the start, the status at the end ("Draft 2 · for ratification", "Ratified").
+- `footer.sal-cover__foot`: the date at the start, the status at the end ("Version 1, proposed" until the Founding Meeting; then "Version 1").
 
 **What you provide:** the language, the code, the title, the sentence, the author's name and role, the date and the status.
 

@@ -11,7 +11,6 @@ S['05-asleep']=dict(b=dict(eye_kind='sleep',crest_kind='folded'),lean=8,front=la
 S['06-sent']=dict(b=dict(eye_kind='open',crest_kind='swept',wings='flying',legs_on=False),carry=lambda: envelope(250,-50,20),front=lambda: motion(-220,30,1),fly=True)
 S['07-sorry']=dict(b=dict(eye_kind='worry',crest_kind='droop'),lean=6,front=lambda: sweat(40,-200))
 S['08-thank-you']=dict(b=dict(eye_kind='happy',crest_kind='folded'),lean=16,front=lambda: sparks(210,-170,0.8,C100))
-S['09-writing']=dict(b=dict(eye_kind='down',crest_kind='up'),lean=12,carry=lambda: pencil(240,-22,-22),front=lambda: page(212,100,4))
 S['10-wow']=dict(b=dict(eye_kind='wide',crest_kind='fanned',beak_open=18),lean=-8,front=lambda: sparks(150,-256,1.0))
 S['11-see-you']=dict(b=dict(eye_kind='open',crest_kind='up',wings='wave'),lean=-4,carry=lambda: ticket(236,-30,-24))
 S['12-oops']=dict(b=dict(eye_kind='wide',crest_kind='fanned'),lean=4,front=lambda: bang(220,-226,1.0))

@@ -96,7 +96,6 @@ const STICKERS = [
   ["06-sent", "Sent, on its way"],
   ["07-sorry", "Sorry, something went wrong"],
   ["08-thank-you", "Thank you"],
-  ["09-writing", "Writing, submissions open"],
   ["10-wow", "Wow, big news"],
   ["11-see-you", "See you there"],
   ["12-oops", "Oops, a reminder or deadline"],
@@ -119,7 +118,7 @@ const StickerGrid = () => (
   </ul>
 );
 
-/** All twelve stickers on a light and a dark ground: chat only. */
+/** All eleven stickers on a light and a dark ground: chat only. */
 export const Stickers: Story = {
   render: () => (
     <div className="grid gap-6">

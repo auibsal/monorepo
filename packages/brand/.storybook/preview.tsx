@@ -5,7 +5,7 @@ import type { Preview } from "@storybook/react";
 import "@repo/brand/styles/globals.css";
 
 /**
- * The design system (SAL-BRD-01). Light and dark mode (ink, data-theme="dark")
+ * The design system (SAL-MED-02). Light and dark mode (ink, data-theme="dark")
  * across the site and the Diwan: every story can be checked in both modes
  * (Theme) and in both directions (Direction).
  */

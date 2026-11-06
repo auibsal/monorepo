@@ -3099,7 +3099,7 @@
       "noAccessGo": "Go to what you can open here",
       "design": {
         "title": "Design system",
-        "lede": "SAL-BRD-01, Brand and Identity, in full: the guide, colors, type, logos, components and every email, and the social and print files to download.",
+        "lede": "SAL-MED-02, Brand and Identity, in full: the guide, colors, type, logos, components and every email, and the social and print files to download.",
         "open": "Open in a new tab"
       },
       "find": {
@@ -5193,6 +5193,7 @@
       "copyright": "© {year} AUIB Society of Arts and Letters. All rights reserved.",
       "recognition": "A registered student organization of AUIB, recognized by the Office of Student Life.",
       "colophon": "Set in Ubuntu and Ubuntu Arabic. Written in Baghdad.",
+      "paperless": "Paperless by default. Books reused through Second Chapter.",
       "instagram": "Instagram"
     },
     "games": {

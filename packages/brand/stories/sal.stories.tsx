@@ -3,6 +3,8 @@ import { SalCard } from "@repo/brand/components/sal/card";
 import { DocumentFooter } from "@repo/brand/components/sal/document-footer";
 import { DocumentHeader } from "@repo/brand/components/sal/document-header";
 import { FormHeader } from "@repo/brand/components/sal/form-header";
+import { FormField, FormPage } from "@repo/brand/components/sal/form-page";
+import { Letter } from "@repo/brand/components/sal/letter";
 import { SectionHead } from "@repo/brand/components/sal/section-head";
 import { Shelf } from "@repo/brand/components/sal/shelf";
 import type { Meta, StoryObj } from "@storybook/react";
@@ -86,11 +88,96 @@ export const Section: Story = {
   ),
 };
 
+/** The top of a form, on the site and on the printed backup alike. */
 export const Form: Story = {
   render: () => (
-    <FormHeader code="SAL-OPS-02 · F-14" title="Event Proposal">
-      Labels are nouns; money fields give their unit.
+    <FormHeader code="SAL-EXB-01 · F-15" title="Photo release">
+      Labels are nouns, in sentence case; a field that counts says what it
+      counts.
     </FormHeader>
+  ),
+};
+
+const RELEASE_USES = [
+  "Qirtas and the Society's website",
+  "The Society's Instagram and YouTube",
+  "Posters and printed programs",
+];
+
+/**
+ * The standard form page, auibsal.org/forms/<number> (decided Nov 7):
+ * every form people outside the staff fill, signed by typing a name. The
+ * site keeps the signed copy; paper is only a backup.
+ */
+export const FormPageStory: Story = {
+  name: "Form page",
+  render: () => (
+    <FormPage
+      code="SAL-EXB-01 · F-15"
+      date="Saturday, November 7"
+      dateLabel="Date"
+      kept="The Director of Media's team reads it. The signed copy is kept in your account, under Forms."
+      purpose="Lets the Society use photos and recordings of you from its events. You can withdraw it at any time in your account."
+      signature={{
+        hint: "Your typed name is your signature on this form.",
+        label: "Type your full name to sign",
+      }}
+      submit="Sign and send"
+      title="Photo release"
+    >
+      <FormField id="release-name" label="Full name">
+        <input
+          className="h-11 w-full border-text border-b bg-transparent text-text outline-none focus-visible:border-accent"
+          defaultValue="Lina Hassan"
+          id="release-name"
+          type="text"
+        />
+      </FormField>
+      <FormField id="release-event" label="Event">
+        <input
+          className="h-11 w-full border-text border-b bg-transparent text-text outline-none focus-visible:border-accent"
+          defaultValue="Writing workshop, Tuesday, November 17"
+          id="release-event"
+          type="text"
+        />
+      </FormField>
+      <fieldset className="grid gap-2">
+        <legend className="mb-2 font-medium text-sm text-text">
+          Where the photos may appear
+        </legend>
+        {RELEASE_USES.map((use) => (
+          <label
+            className="flex items-center gap-3 border-line border-b py-2 text-text"
+            key={use}
+          >
+            <input className="size-4 accent-[var(--accent)]" type="checkbox" />
+            {use}
+          </label>
+        ))}
+      </fieldset>
+    </FormPage>
+  ),
+};
+
+/** The printed backup: the same form, photographed into the record the same day. */
+export const PrintedForm: Story = {
+  render: () => (
+    <section
+      className="grid max-w-2xl gap-6 bg-white p-8 text-text"
+      data-theme="light"
+    >
+      <FormHeader code="SAL-EXB-01 · F-15" title="Photo release" />
+      <div className="grid grid-cols-2 gap-6">
+        {["Full name", "Event", "Signature", "Date"].map((field) => (
+          <div className="grid gap-2" key={field}>
+            <span className="font-medium text-[10.4px] text-text-secondary uppercase tracking-[0.1em]">
+              {field}
+            </span>
+            <span className="block h-7 border-text border-b" />
+          </div>
+        ))}
+      </div>
+    </section>
   ),
 };
 
@@ -98,12 +185,12 @@ export const Document: Story = {
   render: () => (
     <article className="grid max-w-3xl gap-6">
       <DocumentHeader
-        code="SAL-BRD-01"
+        code="SAL-MED-02"
         subtitle="The logo, colors, type and voice of the Society, quiet by default, one loud thing per page"
         title="Brand and Identity"
       />
       <DocumentFooter
-        code="SAL-BRD-01"
+        code="SAL-MED-02"
         end="Version 1"
         title="Brand and Identity"
       />
@@ -195,6 +282,70 @@ export const ShelfArabic: Story = {
         nextLabel="التالي"
         previousLabel="السابق"
       />
+    </div>
+  ),
+};
+
+/**
+ * The letter: one template for every letter. A service letter (F-05), a
+ * business letter: the greeting takes a colon, the foot its verification
+ * code.
+ */
+export const LetterStory: Story = {
+  name: "Letter",
+  render: () => (
+    <Letter
+      code="SAL-EXB-01 · F-05"
+      date="November 7, 2026"
+      foot="hello@auibsal.org · auibsal.org"
+      greeting="Dear Ms. Hassan:"
+      recipient={["Lina Hassan", "American University of Iraq – Baghdad"]}
+      signer={{ name: "Yaqoob Ghassan Al-Azzawi", role: "General Secretary" }}
+      subject="Service letter"
+      verify={{
+        code: "SVC-2027-4K8P",
+        qrLabel: "Check this letter",
+        url: "https://auibsal.org/verify/SVC-2027-4K8P",
+      }}
+    >
+      <p>
+        This letter records that you served the AUIB Society of Arts and Letters
+        as a section editor of Qirtas from September 2026 to May 2027.
+      </p>
+      <p>
+        The Society’s record of your service can be checked at the address
+        below.
+      </p>
+    </Letter>
+  ),
+};
+
+/** The same service letter in Arabic: its own edition, mirrored. */
+export const LetterArabic: Story = {
+  name: "Letter, Arabic",
+  render: () => (
+    <div dir="rtl" lang="ar">
+      <Letter
+        code="SAL-EXB-01 · F-05"
+        date="7 تشرين الثاني 2026"
+        foot="hello@auibsal.org · auibsal.org"
+        greeting="السيدة لينا حسن المحترمة،"
+        locale="ar"
+        recipient={["لينا حسن", "الجامعة الأمريكية في العراق – بغداد"]}
+        signer={{ name: "يعقوب غسان العزاوي", role: "الأمين العام" }}
+        subject="رسالة خدمة"
+        verify={{
+          code: "SVC-2027-4K8P",
+          qrLabel: "تحقّق من هذه الرسالة",
+          url: "https://auibsal.org/verify/SVC-2027-4K8P",
+        }}
+      >
+        <p>
+          تشهد هذه الرسالة بأنكِ خدمتِ في جمعية الفنون والآداب محررةً لأحد أقسام
+          قرطاس من أيلول 2026 إلى أيار 2027.
+        </p>
+        <p>يمكن التحقق من سجل خدمتكِ في الجمعية على العنوان أدناه.</p>
+      </Letter>
     </div>
   ),
 };

@@ -37,7 +37,7 @@ The Society's icon set: Lucide (ISC license, lucide.dev), redrawn for the brand 
 | `icon-clapperboard.svg` | Video | Qirtas |
 | `icon-puzzle.svg` | Games | Qirtas |
 | `icon-bus.svg` | Next Stop | Qirtas |
-| `icon-play.svg` | An episode | Qirtas |
+| `icon-play.svg` | An episode, a video | Next Stop, Qirtas |
 | `icon-book-open.svg` | Books, the book fair | The Society |
 | `icon-keyboard.svg` | Typewriter Tour | The Society |
 | `icon-coffee.svg` | Tea and conversation | The Society |
@@ -45,9 +45,10 @@ The Society's icon set: Lucide (ISC license, lucide.dev), redrawn for the brand 
 | `icon-pen-line.svg` | Writing workshop | The Society |
 | `icon-headphones.svg` | Listening session | The Society |
 | `icon-drama.svg` | The Company | The Society |
-| `icon-layout-grid.svg` | Programs | The Society |
+| `icon-layout-grid.svg` | All sections | The Society |
 | `icon-user-plus.svg` | Join | The Society |
 | `icon-hand-helping.svg` | Get involved | The Society |
+| `icon-handshake.svg` | Partners, Second Chapter | The Society |
 | `icon-plus.svg` | Add, new | Interface |
 | `icon-pencil.svg` | Edit | Interface |
 | `icon-trash-2.svg` | Remove (always with the word) | Interface |
@@ -57,7 +58,7 @@ The Society's icon set: Lucide (ISC license, lucide.dev), redrawn for the brand 
 | `icon-lock.svg` | Members only | Interface |
 | `icon-scan-line.svg` | The Door, scan a card | The Society |
 | `icon-id-card.svg` | Membership card | The Society |
-| `icon-award.svg` | The Qirtas Awards, certificates | The Society |
+| `icon-award.svg` | The Mutanabbi Prize, certificates | The Society |
 | `icon-camera-off.svg` | Camera-shy: no photos of me | The Society |
 
 **Added Oct 30, 2026** (the platform overhaul, approved by the owner; for the Director of Media to confirm): plus, pencil, trash-2, ellipsis, sliders-horizontal, settings, lock, scan-line, id-card, award.

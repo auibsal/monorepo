@@ -1,8 +1,8 @@
 # Highlights
 
-The six Instagram highlights on @auibsal, always in this order: What's on, Qirtas, Next Stop, The Company, Join, Get involved.
+The six Instagram highlights on @auibsal, always in this order: What's on, Qirtas, The Company, Next Stop, Join (with the Typewriter Tour), Partners (with Second Chapter).
 
-**Covers.** Plain crimson with the highlight's icon alone, in white, centered. No name (Instagram writes it under the circle, and the two never disagree), no Bookmark, no other text. Icons: What's on `calendar`, Qirtas `newspaper`, Next Stop `bus`, The Company `drama`, Join `user-plus`, Get involved `hand-helping`. Export each at 1080 × 1080 and keep the icon inside the middle 760 px, so the circle crop never touches it.
+**Covers.** Plain crimson with the highlight's icon alone, in white, centered. No name (Instagram writes it under the circle, and the two never disagree), no Bookmark, no other text. Icons: What's on `calendar`, Qirtas `newspaper`, The Company `drama`, Next Stop `bus`, Join `user-plus`, Partners `handshake`. Export each at 1080 × 1080 and keep the icon inside the middle 760 px, so the circle crop never touches it.
 
 **Markup:** `<div class="sal-highlight">` wrapping `.sal-highlight__frame` and an inline `svg.sal-highlight__icon` with an `aria-label` naming the highlight. Add `sal-highlight--round` to preview the circle crop.
 
