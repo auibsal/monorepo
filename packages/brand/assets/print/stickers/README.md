@@ -40,7 +40,7 @@ The Society's printed stickers: 50 stickers for laptops, bottles, notebooks and 
 | `qirtas-keys.svg` | QIRTAS in keys | 172 × 46 mm | Six typewriter keys spelling the paper's name, on crimson. |
 | `key-qaf.svg` | Qaf key | 56 × 56 mm | One key, ق for قرطاس, cut round. |
 | `qirtas-nameplate.svg` | Qirtas nameplate | 132 × 66 mm | The nameplate on paper, cut square. |
-| `qirtas-ar.svg` | قرطاس | 150 × 58 mm | The name in Arabic, white on crimson. needs-native-review. |
+| `qirtas-ar.svg` | Qirtas in Arabic | 150 × 58 mm | The name in Arabic, white on crimson. needs-native-review. |
 | `section-news.svg` | News | 44 × 44 mm | The News section's icon, cut square. |
 | `section-voices.svg` | Voices | 44 × 44 mm | The Voices section's icon, cut square. |
 | `section-letters.svg` | Letters | 44 × 44 mm | The Letters section's icon, cut square. |
@@ -48,13 +48,13 @@ The Society's printed stickers: 50 stickers for laptops, bottles, notebooks and 
 | `section-video.svg` | Video | 44 × 44 mm | The Video section's icon, cut square. |
 | `section-games.svg` | Games | 44 × 44 mm | The Games section's icon, cut square. |
 | `read-blind.svg` | Read blind | 96 × 42 mm | A rubber stamp, cut square. |
-| `next-stop.svg` | Next Stop | 56 × 100 mm | Qirtas's video show, a bus-stop sign on paper, cut square. |
+| `next-stop.svg` | Next Stop | 64 × 72 mm | Qirtas's video show, filmed on the AUIB bus: the bus head on, its sign reading Next Stop, cut on its own edge. |
 
 ## Events
 
 | File | Sticker | Cut size | Notes |
 |---|---|---|---|
-| `ticket.svg` | Admit one | 96 × 42 mm | A ticket with notched ends and a perforation. |
+| `ticket.svg` | What’s on ticket | 96 × 42 mm | A ticket with notched ends and a perforation. |
 | `record.svg` | The record | 60 × 60 mm | A record for listening sessions, cut round. |
 | `read-it.svg` | Read it, talk about it | 64 × 64 mm | Ring lettering for book discussions, cut round. |
 | `cup.svg` | A cup of tea | 64 × 64 mm | Tea and conversation, cut round. |
@@ -99,7 +99,7 @@ The Society's printed stickers: 50 stickers for laptops, bottles, notebooks and 
 | File | Sticker | Cut size | Notes |
 |---|---|---|---|
 | `clear-motto.svg` | The paper and the pen., clear | 137 × 56 mm | For light laptops and bottles. Clear vinyl, white ink under the art. |
-| `clear-qirtas-ar.svg` | قرطاس, clear | 144 × 48 mm | needs-native-review. Clear vinyl, white ink under the art. |
+| `clear-qirtas-ar.svg` | Qirtas in Arabic, clear | 144 × 48 mm | needs-native-review. Clear vinyl, white ink under the art. |
 | `clear-lockup.svg` | Stacked lockup, clear | 44 × 80 mm | The lockup as supplied. Clear vinyl, white ink under the art. |
 | `clear-wordmark-ar.svg` | Arabic wordmark, clear | 63 × 64 mm | The wordmark as supplied. Clear vinyl, white ink under the art. |
 | `clear-hudhud.svg` | Hudhud, clear | 57 × 51 mm | The file as supplied. Clear vinyl, white ink under the art. |

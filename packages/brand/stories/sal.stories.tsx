@@ -53,7 +53,7 @@ export const TypeStylesArabic: Story = {
   render: () => (
     <div className="grid max-w-4xl gap-5" dir="rtl" lang="ar">
       <h1 className="type-display-xl">
-        والقرطاسُ <span className="type-accent">والقلم.</span>
+        والقرطاسُ <span className="type-accent">والقلمُ.</span>
       </h1>
       <h3 className="type-title">هذا الفصل</h3>
       <p className="type-lede">جمعية للأدب والمسرح والفنون.</p>
