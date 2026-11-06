@@ -7,7 +7,7 @@ export const generateMetadata = titleFrom((t) =>
 );
 
 /**
- * Second Chapter's campaigns (owner, Nov 5, 2026: no series pages): each
+ * The book fair's campaigns (owner, Nov 5, 2026: no series pages): each
  * campaign is linked to its event, the fair, on the event's page.
  */
 const CampaignsPage = () => (

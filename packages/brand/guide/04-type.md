@@ -6,7 +6,7 @@ Ubuntu speaks for the Society in English and Ubuntu Arabic in Arabic: one family
 
 | Style | Screen | Print (A4) | Post (1080) | Weight | Use |
 | --- | --- | --- | --- | --- | --- |
-| Display | 124 · 72 px | 58 pt | 160 px | Light | Titles, the motto, large dates; one italic accent word |
+| Display | 124 · 72 px | 58 pt | 160 px | Light | Titles, the motto, large dates; one color |
 | Title | 44 px | — | — | Light | Section titles, standing alone |
 | Heading | 28 px | 18 pt | — | Regular | List items, card titles |
 | Lede | 21 px | 17 pt | 38 px | Regular | One sentence under a title |
@@ -14,7 +14,7 @@ Ubuntu speaks for the Society in English and Ubuntu Arabic in Arabic: one family
 | Label | 12 px | 7.8 pt | 28 px | Medium | Field names, columns, metadata. Never above a headline |
 | Code | 12 px | 9 pt | — | Mono | SAL-GOV-01 · F-14; six-word typewriter lines |
 
-- **Arabic.** Ubuntu Arabic Regular: it has no Light and no italic, so display is Regular and the accent word is color only. 1.3 leading for display, 1.6–2.0 for text. Never tracked. `dir="rtl"`, `lang="ar"`, Western digits.
+- **Arabic.** Ubuntu Arabic Regular: it has no Light and no italic, so display is Regular. 1.3 leading for display, 1.6–2.0 for text. Never tracked. `dir="rtl"`, `lang="ar"`, Western digits.
 - **Inside Qirtas.** Long articles in Qirtas are set in Literata for reading. Its masthead, headlines and interface stay Ubuntu.
 - **Bold.** For the logo and for emphasis inside a sentence. Never for headlines.
 
@@ -27,7 +27,7 @@ Every size has a name. Use the names in code and templates, never a size picked 
 | Style | Size / leading | Weight | Use |
 | --- | --- | --- | --- |
 | **Screens · Ubuntu** | | | |
-| `display-xl` | 124 px / 0.98 | 300 | The home page's motto and one-word bands ("Come in."). Scales down to 56 px on phones. One italic accent word at most. |
+| `display-xl` | 124 px / 0.98 | 300 | The home page's motto and one-word bands ("Come in."). Scales down to 56 px on phones. One color. |
 | `display` | 72 px / 1.0 | 300 | Page titles: About, Join, an article headline. |
 | `title` | 44 px / 1.1 | 300 | Section titles, standing alone; at most a text link at the end of the line. |
 | `heading` | 28 px / 1.25 | 400 | List items and card titles: an event, a story. |
@@ -43,11 +43,11 @@ Every size has a name. Use the names in code and templates, never a size picked 
 | `print-caption` | 11.33 px / 1.4 | 400 | 8.5 pt. Captions and notes in text-secondary. |
 | `print-label` | 10.4 px / 1.3 | 500 | Small tracked labels on forms and covers. |
 | **Social (1080 px posts) · Ubuntu** | | | |
-| `post-display` | 160 px / 1.0 | 300 | Two to five words with a full stop. One italic word at most. |
+| `post-display` | 160 px / 1.0 | 300 | Two to five words with a full stop, in one color. |
 | `post-lede` | 38 px / 1.4 | 400 | One sentence under the headline. |
 | `post-meta` | 28 px / 1.4 | 500 | The date or link and @auibsal at the bottom start. |
 | **Arabic · Ubuntu Arabic** | | | |
-| `ar-display` | 64 px / 1.3 | 400 | Arabic headlines and the motto on Arabic pages. Regular, never tracked; the accent word changes color only. |
+| `ar-display` | 64 px / 1.3 | 400 | Arabic headlines and the motto on Arabic pages. Regular, never tracked. |
 | `ar-heading` | 30 px / 1.6 | 400 | Arabic section titles and list headings. |
 | `ar-body` | 18.5 px / 1.9 | 400 | Arabic body text, one step larger than body. |
 | `ar-post` | 132 px / 1.3 | 400 | Arabic post headlines on 1080 px posts. The sentence is 42 px and the meta 30 px. |

@@ -16,7 +16,7 @@ import { readPublished } from "@/lib/supabase";
 const WAYS = ["books", "volunteer", "warm"] as const;
 
 /**
- * Second Chapter's collection, on its event's page (the overhaul, Oct 30,
+ * The book fair's collection, on its event's page (the overhaul, Oct 30,
  * 2026: the Give page folded into it, since the collection is the only
  * giving the Society does; owner, Nov 5, 2026: the campaign belongs to an
  * ordinary event): the ways to give, the dates, what was counted and

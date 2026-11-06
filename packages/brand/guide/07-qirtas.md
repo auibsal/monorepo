@@ -37,7 +37,7 @@ Headlines in Ubuntu, reading in Literata. Every article page is built the same w
 | Byline | The section in accent, then the author and date: "Letters · By … · Tuesday, November 17". Never above the headline. |
 | Body | Literata 17.5 / 1.68 (`read-body`), 60–70 characters a line |
 | Drop cap | Literata Medium in accent, first paragraph only |
-| Pull quote | Ubuntu Light 34 px, one italic accent word |
+| Pull quote | Ubuntu Light 34 px, one color |
 | Six Words | Ubuntu Mono, between hairlines |
 
 ## Editions

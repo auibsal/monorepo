@@ -24,9 +24,7 @@ type Story = StoryObj<typeof meta>;
 export const TypeStyles: Story = {
   render: () => (
     <div className="grid max-w-4xl gap-5">
-      <h1 className="type-display-xl">
-        The paper and the <span className="type-accent">pen.</span>
-      </h1>
+      <h1 className="type-display-xl">The paper and the pen.</h1>
       <h2 className="type-display">Display: Light, in ink</h2>
       <h3 className="type-title">Title: 44 px Light, standing alone</h3>
       <h4 className="type-heading">Heading</h4>
@@ -48,13 +46,11 @@ export const TypeStyles: Story = {
   ),
 };
 
-/** Arabic: Ubuntu Arabic Regular; the accent word changes color only. */
+/** Arabic: Ubuntu Arabic Regular, in one color. */
 export const TypeStylesArabic: Story = {
   render: () => (
     <div className="grid max-w-4xl gap-5" dir="rtl" lang="ar">
-      <h1 className="type-display-xl">
-        والقرطاسُ <span className="type-accent">والقلمُ.</span>
-      </h1>
+      <h1 className="type-display-xl">والقرطاسُ والقلمُ.</h1>
       <h3 className="type-title">هذا الفصل</h3>
       <p className="type-lede">جمعية للأدب والمسرح والفنون.</p>
       <p className="type-body">النص بخط Ubuntu Arabic العادي.</p>
@@ -74,7 +70,7 @@ export const Section: Story = {
         title="This term"
       />
       <ul className="grid border-line border-b">
-        {["Open Pages", "The Salon"].map((title, i) => (
+        {["Writing workshop", "Readings and conversation"].map((title, i) => (
           <li
             className="grid grid-cols-[6rem_1fr] gap-x-4 border-line border-t py-space-4"
             key={title}

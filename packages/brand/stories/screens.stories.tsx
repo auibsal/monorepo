@@ -62,7 +62,7 @@ const copy = {
     pledge: "I make the Member Pledge",
     send: "Send the link",
     thisTerm: "This term",
-    title: "Open Pages",
+    title: "Writing workshop",
   },
 } as const;
 

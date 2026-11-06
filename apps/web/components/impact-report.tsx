@@ -48,7 +48,7 @@ export const loadReport = async (eventId: string) => {
 };
 
 /**
- * Second Chapter's impact report (design review A26), at its event's
+ * The book fair's impact report (design review A26), at its event's
  * address, /events/<event>/impact (owner, Nov 5, 2026: the campaign
  * belongs to an ordinary event): the published figures with their words,
  * the witnessed handover, the signed-off total and the public receipts.

@@ -36,31 +36,19 @@ export const PostsEnglish: Story = {
       <SocialPost
         date="Until December 3 · auibsal.org/qirtas"
         ground="crimson"
-        headline={
-          <>
-            Edition 1 is <i>open.</i>
-          </>
-        }
+        headline={<>Edition 1 is open.</>}
         lede="Poems, stories, essays, photographs and drawings."
       />
       <SocialPost
         date="Thursday, November 19 · 6:00 PM"
         ground="white"
-        headline={
-          <>
-            Next Stop, the <i>premiere.</i>
-          </>
-        }
+        headline={<>Next Stop, the premiere.</>}
         lede="Episode one of the campus series, filmed on the AUIB bus."
       />
       <SocialPost
         date="auibsal.org/join"
         ground="ink"
-        headline={
-          <>
-            Come <i>in.</i>
-          </>
-        }
+        headline={<>Come in.</>}
         lede="Membership is free and open to every AUIB student."
       />
     </div>
@@ -73,22 +61,14 @@ export const PostsArabic: Story = {
       <SocialPost
         date="حتى 3 كانون الأول · auibsal.org/ar/qirtas"
         ground="crimson"
-        headline={
-          <>
-            الإصدار الأول <i>مفتوح.</i>
-          </>
-        }
+        headline={<>الإصدار الأول مفتوح.</>}
         lang="ar"
         lede="قصائد وقصص ومقالات وصور ورسوم."
       />
       <SocialPost
         date="الخميس 19 تشرين الثاني · 6:00 مساءً"
         ground="white"
-        headline={
-          <>
-            المحطة القادمة، <i>العرض الأول.</i>
-          </>
-        }
+        headline={<>المحطة القادمة، العرض الأول.</>}
         lang="ar"
         lede="الحلقة الأولى من السلسلة الجامعية، مصوّرة في حافلة الجامعة."
       />
@@ -134,17 +114,7 @@ const Carousel = ({ lang }: { lang: "ar" | "en" }) => {
       <SocialPost
         date={ar ? "حتى 3 كانون الأول" : "Until December 3"}
         ground="white"
-        headline={
-          ar ? (
-            <>
-              كيف <i>تشارك.</i>
-            </>
-          ) : (
-            <>
-              How to <i>submit.</i>
-            </>
-          )
-        }
+        headline={ar ? <>كيف تشارك.</> : <>How to submit.</>}
         lang={lang}
         lede={ar ? "قرطاس، الإصدار الأول." : "Qirtas, Edition 1."}
       />
@@ -213,15 +183,7 @@ const StoryFrame = ({ lang }: { lang: "ar" | "en" }) => {
             width={ar ? 253 : 264}
           />
           <h2 className="sal-post__headline">
-            {ar ? (
-              <>
-                الإصدار الأول <i>مفتوح.</i>
-              </>
-            ) : (
-              <>
-                Edition 1 is <i>open.</i>
-              </>
-            )}
+            {ar ? <>الإصدار الأول مفتوح.</> : <>Edition 1 is open.</>}
           </h2>
           <p className="sal-post__lede">
             {ar

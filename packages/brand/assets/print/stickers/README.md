@@ -2,7 +2,7 @@
 
 The Society's printed stickers: 44 stickers for laptops, bottles, notebooks and doors, printed by Student Life. Each file here is one sticker at 100%, its type outlined, with the cut line in magenta (`#ec008c`, 0.25 mm), which is cut and never printed.
 
-- **Colors:** the six, and no pink. The accent word always differs from the text around it: crimson on white and paper, mist on ink and crimson. Never another color; the variety is in shape, type and structure.
+- **Colors:** the six, and no pink. Text is one color: no accent word. Never another color; the variety is in shape, type and structure.
 - **Cuts:** no white borders. Each white-vinyl sticker is cut either on a full ground (a square, a circle) or exactly on its own clean edge (the Bookmark, the pen, the page, the ticket, the books, the typewriter), with 1.5 mm bleed past every cut.
 - **Hudhud** is used from the mascot files as supplied, never redrawn, and never touches the logo. The camera-shy sticker is the crossed-out camera alone.
 - **Arabic** stickers (the motto, قرطاس, ق) need a native speaker's check before printing (needs-native-review).
@@ -27,8 +27,8 @@ The Society's printed stickers: 44 stickers for laptops, bottles, notebooks and 
 
 | File | Sticker | Cut size | Notes |
 |---|---|---|---|
-| `motto-en.svg` | The paper and the pen. | 150 × 72 mm | White on a crimson ground, cut square; the accent word in mist. |
-| `motto-ar.svg` | Arabic motto | 120 × 44 mm | The accent word in mist, by color only: Arabic has no italic. needs-native-review. |
+| `motto-en.svg` | The paper and the pen. | 162 × 72 mm | White on a crimson ground, cut square. |
+| `motto-ar.svg` | Arabic motto | 136 × 44 mm | White on crimson. needs-native-review. |
 | `motto-strip.svg` | Motto strip | 200 × 30 mm | Long strip for laptops and notebooks. |
 | `the-pen.svg` | The pen | 28 × 78 mm | A fountain-pen nib, cut on its own edge; pairs with The paper. |
 | `the-paper.svg` | The paper | 50 × 66 mm | A page with a folded corner, cut on its own edge; pairs with The pen. |

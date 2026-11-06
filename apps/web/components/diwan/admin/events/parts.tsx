@@ -77,7 +77,7 @@ const useHas = (eventId: string) => {
  * the details."). Every event has the same details above; below them,
  * the add-ons it has, and one row to add any other: off campus (Student
  * Life's approval), a partner and its checklist, needs, shifts, links,
- * prompts, a book vote, Second Chapter's collection and a meeting's
+ * prompts, a book vote, the book fair's collection and a meeting's
  * minutes. The public page shows the ones it has.
  */
 export const EventPartsAdmin = ({ event }: { readonly event: PartsEvent }) => {
@@ -205,7 +205,7 @@ const EventMinutes = ({ eventId }: { readonly eventId: string }) => {
 };
 
 /**
- * Second Chapter's campaign on its event (the fair): the event's page on
+ * the book fair's campaign on its event (the fair): the event's page on
  * the site then carries the collection, its catalog and its impact report.
  */
 const EventCampaign = ({ eventId }: { readonly eventId: string }) => {

@@ -1079,7 +1079,7 @@ export const gallerySelection = async (
 
 /**
  * The published pieces written from these events (a session's write-up, a
- * Book Circle review), newest first (design review C3, A31, A32).
+ * book discussion review), newest first (design review C3, A31, A32).
  */
 export const piecesFromEvents = async (
   client: Client,

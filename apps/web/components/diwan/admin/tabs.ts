@@ -14,7 +14,7 @@ export const productionTabs = [
 ] as const;
 export type ProductionTab = (typeof productionTabs)[number];
 
-/** A Second Chapter campaign's tabs, each at its own address. */
+/** A book fair campaign's tabs, each at its own address. */
 export const campaignTabs = [
   "ledger",
   "signoff",

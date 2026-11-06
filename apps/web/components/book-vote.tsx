@@ -20,7 +20,7 @@ interface Book {
 }
 
 /**
- * Voting on Book Circle's ballot (the design review A33, decision D12):
+ * Voting on a book discussion's ballot (the design review A33, decision D12):
  * the page is the same for everyone and cached; after the first render a
  * signed-in reader sees their vote and may give or change it while the
  * ballot is open. The database decides who votes (members only) and

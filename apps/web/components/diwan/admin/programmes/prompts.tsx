@@ -69,7 +69,7 @@ const NewPrompt = ({
 };
 
 /**
- * Open Pages' prompt cards (the design review A35, Nov 4, 2026): the host
+ * A writing workshop's prompt cards (the design review A35, Nov 4, 2026): the host
  * writes them here and publishes the ones the event's page should show.
  */
 export const Prompts = ({ eventId }: { readonly eventId: string }) => {

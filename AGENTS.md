@@ -48,7 +48,7 @@ and decisions), and continue from the first unticked item.
     `/diwan/events/<slug>` like its public page, `EventOrProgram`, with
     its parts on the page; each event has its own door,
     `/events/<slug>/door`, and the Desk opens the next one (owner, Oct 31,
-    2026: no general door); Second Chapter's campaigns at
+    2026: no general door); the book fair's campaigns at
     `/diwan/events/campaigns`), Qirtas (`/diwan/qirtas` and its tabs;
     calls are on each Edition's page), The Company (`/diwan/company`), People (`/diwan/people`,
     openings (every opening of every kind, `/diwan/people/openings`),
@@ -382,9 +382,11 @@ any schema change. Integration tests run against a local stack with
   over from the public and diwan sides"; migration
   `20261101005200_standard_events`). Qirtas and the Company stay;
   everything else is an event. Each term the Council sets a calendar of
-  plain events, at least one a month. Second Chapter, the Salon, Book
-  Circle, Open Pages and the Listening Room keep their names as event
-  titles; no event belongs to a series (`events.events.programme_id` is
+  plain events, at least one a month. Events carry no standing names
+  (owner, Nov 6, 2026): Second Chapter, the Salon, Book Circle, Open
+  Pages and the Listening Room are retired names, and each event is
+  titled plainly for what happens that day (the code keeps its slugs and
+  identifiers, such as `second-chapter`); no event belongs to a series (`events.events.programme_id` is
   null for them, their rows in `core.programmes` are inactive) and there
   are no series pages, filters or lists. Every event has the one page on
   the site (`EventView` with `EventParts`, `components/event-parts.tsx`)
@@ -393,7 +395,7 @@ any schema change. Integration tests run against a local stack with
   its shifts (`programmes.rotas.event_id`), needs (`programmes.needs.event_id`),
   prompts (`programmes.prompts.event_id`), book vote
   (`programmes.book_ballots.event_id`), links from the night, what Qirtas
-  wrote from it, and, for Second Chapter's fair, its campaign
+  wrote from it, and, for the book fair, its campaign
   (`charity.campaigns.event_id`) with the catalog at
   `/events/<event>/catalog` and the impact report at
   `/events/<event>/impact`. `private.runs_part(programme_id, event_id)`
@@ -409,9 +411,8 @@ any schema change. Integration tests run against a local stack with
   and dates. The Typewriter Tour belongs to membership. Notion's Programs
   database no longer publishes a page, and an event linked to a former
   series there is published as an event of its own.
-  Munazara, Mutanabbi Friday and Bad Poetry Night are folded into the
-  Salon, Book Circle and Open Pages (their names retired; their sessions
-  are the parent's events with plain titles). Qirtas and Next Stop keep
+  Munazara, Mutanabbi Friday and Bad Poetry Night are retired too; their
+  sessions are events with plain titles. Qirtas and Next Stop keep
   unpublished program rows (Next Stop is Qirtas's video show). Second
   Chapter says "our charity partner" until the Council approves one; the
   charity partner stays unset.
@@ -504,7 +505,7 @@ any schema change. Integration tests run against a local stack with
   Room played, a reading list; https only) are added in place on the
   event's page in the Diwan by its event leads, and show on the event's
   page, "From the night".
-- **Book Circle's vote** (design review A33, decision D12, Nov 4, 2026).
+- **The book vote** (design review A33, decision D12, Nov 4, 2026).
   The host opens a ballot on the event's page in the Diwan with up
   to three books and a closing time (`programmes.book_ballots.event_id`,
   `book_choices`; the books are fixed once anyone votes); members vote on
@@ -533,7 +534,7 @@ any schema change. Integration tests run against a local stack with
   `open`, `rsvp` or `invite` (private). Below the details, the event's page
   in the Diwan (`EventPartsAdmin`) shows the add-ons it has and one row,
   "Add to this event", for the rest: off campus, a partner and its
-  checklist, needs, shifts, links, prompts, a book vote, Second Chapter's
+  checklist, needs, shifts, links, prompts, a book vote, the book fair's
   collection (`charity.manage`) and a meeting's minutes (governance). The
   public page shows the ones it has (`EventParts`). Off campus
   (`events.events.off_campus`, replacing the occasions; the trip and the
@@ -840,7 +841,7 @@ any schema change. Integration tests run against a local stack with
   item, quantity, date needed, purpose; each event's page and
   Qirtas → Needs), and the General Secretary sends each request to
   Student Life and logs what was provided (Governance → Requests to
-  Student Life). The one exception is Second Chapter's collection: the
+  Student Life). The one exception is the book fair's collection: the
   charity ledger (append-only, corrections are reversing entries, two
   counters, only signed-off entries count; the General Secretary
   witnesses and signs off), the witnessed handover on the campaign
@@ -949,16 +950,15 @@ any schema change. Integration tests run against a local stack with
   - Open Stage is part of the Company and the name is retired (owner,
     Oct 27, 2026; the program is removed, its history moved to the
     Company).
-  - The Salon, «الصالون» (was the Majlis; owner, Oct 29, 2026; slug
-    `salon`, was `majlis`).
   - Voices, «آراء» in Arabic (was «أصوات»; owner, Oct 30, 2026; desk
     `voices`). The Sunday Paper is «جريدة الأحد» (was «صحيفة الأحد»).
   - The Artistic Director, «المدير الفني», a Council seat
     (`governance.council_seats` key `artistic_director`; the Company's lead
     is still a `programme_lead` for the Company).
-  - Munazara (into the Salon), Mutanabbi Friday (into Book Circle) and Bad
-    Poetry Night (into Open Pages): folded and the names retired (owner,
-    Oct 29, 2026; the programs are removed, their history moved).
+  - Munazara, Mutanabbi Friday, Bad Poetry Night, the Salon, Book
+    Circle, Open Pages, the Listening Room and Second Chapter: retired
+    names (owner, Oct 29 and Nov 6, 2026; events carry no standing names;
+    the slugs `salon`, `second-chapter` and the rest stay in the code).
   - Gallery Wall merged into Qirtas's Gallery desk, «معرض قرطاس» (code: slug
     `gallery-wall`, kept and unpublished).
   - The Qirtas Awards, جوائز قرطاس (the code says `award` too, Nov 4, 2026).

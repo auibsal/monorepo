@@ -257,7 +257,7 @@ const BallotSection = ({
 };
 
 /**
- * Book Circle's vote (the design review A33, decision D12, Nov 4, 2026):
+ * A book discussion's vote (the design review A33, decision D12, Nov 4, 2026):
  * the host opens a ballot with up to three books and a closing time;
  * members vote on the program's page; the host sees the counts as they
  * come, everyone else once it closes.

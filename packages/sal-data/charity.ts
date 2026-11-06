@@ -58,7 +58,7 @@ export const publicReceipts = async (client: Client, campaignId: string) =>
   ) ?? [];
 
 /**
- * The campaign an event carries (Second Chapter's fair; owner, Nov 5,
+ * The campaign an event carries (the book fair; owner, Nov 5,
  * 2026: standard events), unless it is a draft.
  */
 export const campaignForEvent = async (client: Client, eventId: string) =>

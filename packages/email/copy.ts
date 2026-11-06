@@ -1297,8 +1297,8 @@ export const welcome = (lang: Lang, app: string) =>
               href: link("/events"),
               title:
                 l === "ar"
-                  ? "ما يجري: الصالون، ودائرة الكتاب، والصفحات المفتوحة، وغيرها"
-                  : "What's on: the Salon, Book Circle, Open Pages and more",
+                  ? "ما يجري: أمسيات القراءة، ونقاشات الكتب، وورش الكتابة، وغيرها"
+                  : "What's on: readings, book discussions, writing workshops and more",
             },
             {
               href: link("/qirtas/write"),

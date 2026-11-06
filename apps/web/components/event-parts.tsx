@@ -18,7 +18,7 @@ import { readPublished } from "@/lib/supabase";
  * event is a standard event, none in a series). Each part shows only when
  * the event has it, so every event's page has the one structure: the
  * add-ons the event was given in the Diwan: Student Life's approval of an
- * event off campus, prompts, a book vote, Second Chapter's collection, the
+ * event off campus, prompts, a book vote, the book fair's collection, the
  * links from the night, and what Qirtas wrote from it.
  */
 export const EventParts = async ({

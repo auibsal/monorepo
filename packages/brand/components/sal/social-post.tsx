@@ -16,13 +16,13 @@ interface SocialPostProps {
   /** The account handle; the brand puts @auibsal on every post. */
   readonly handle?: string;
   /**
-   * Two or three words with a full stop, in Light. Wrap one word at most in
-   * <i> for the italic: "Edition 1 is <i>open.</i>" No exclamation marks.
+   * Two or three words with a full stop, in one color: Light in English,
+   * Regular in Arabic. No accent word and no exclamation marks.
    */
   readonly headline: ReactNode;
   /**
    * One language per post: "ar" mirrors the post and uses the Arabic lockup
-   * and Ubuntu Arabic (Regular; the <i> word changes color only).
+   * and Ubuntu Arabic (Regular).
    */
   readonly lang?: "ar" | "en";
   /** One sentence under the headline. */
@@ -31,24 +31,21 @@ interface SocialPostProps {
 
 const grounds: Record<
   SocialPostGround,
-  { dark: boolean; frame: string; italic: string; meta: string }
+  { dark: boolean; frame: string; meta: string }
 > = {
   crimson: {
     dark: true,
     frame: "bg-[var(--sal-crimson)] text-[var(--sal-white)]",
-    italic: "[&_i]:text-[var(--sal-mist)]",
     meta: "text-[var(--sal-mist)]",
   },
   ink: {
     dark: true,
     frame: "bg-[var(--sal-ink)] text-[var(--sal-white)]",
-    italic: "[&_i]:text-[var(--sal-mist)]",
     meta: "text-[var(--sal-mist)]",
   },
   white: {
     dark: false,
     frame: "bg-[var(--sal-white)] text-[var(--sal-ink)]",
-    italic: "[&_i]:text-[var(--sal-crimson)]",
     meta: "",
   },
 };
@@ -59,8 +56,8 @@ const u = (n: number) => `calc(${n} * 100cqw / 1080)`;
 /**
  * The brand's Social Post (packages/brand/assets/components/previews/SocialPost.md): 1080 ×
  * 1350 at any width, in one language. The lockup in the post's language at
- * the top start; a headline (Light in English, Regular in Arabic) with one
- * accent word at most and nothing above it; one sentence; the date and
+ * the top start; a headline in one color (Light in English, Regular in
+ * Arabic) with nothing above it; one sentence; the date and
  * @auibsal at the bottom start.
  */
 export const SocialPost = ({
@@ -100,9 +97,8 @@ export const SocialPost = ({
           className={cn(
             "absolute m-0",
             arabic
-              ? "font-normal leading-[1.3] [&_i]:not-italic"
-              : "font-light leading-none tracking-[-0.03em] [&_i]:font-light",
-            style.italic
+              ? "font-normal leading-[1.3]"
+              : "font-light leading-none tracking-[-0.03em]"
           )}
           style={{
             fontSize: u(arabic ? 132 : 160),

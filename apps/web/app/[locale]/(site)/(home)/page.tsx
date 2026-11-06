@@ -7,7 +7,6 @@ import { Link } from "@repo/internationalization/navigation";
 import { events, journal, localized } from "@repo/sal-data";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import type { ReactNode } from "react";
 import { type DatedItem, DatedList, eventItems } from "@/components/event-list";
 import { NewsletterSignup } from "@/components/newsletter/signup";
 import { PieceCardView } from "@/components/qirtas/cards";
@@ -28,11 +27,6 @@ export const generateMetadata = async ({
     title: t("metaTitle"),
   });
 };
-
-/** The italic word of a headline, in the accent. */
-const accent = (chunks: ReactNode) => (
-  <span className="type-accent">{chunks}</span>
-);
 
 const Home = async ({ params }: HomeProps) => {
   const { locale } = await params;
@@ -79,9 +73,7 @@ const Home = async ({ params }: HomeProps) => {
       <section>
         <div className="mx-auto grid w-full max-w-6xl gap-8 px-4 py-16 sm:py-24">
           <div className="grid gap-6">
-            <h1 className="type-display-xl max-w-4xl">
-              {t.rich("title", { accent })}
-            </h1>
+            <h1 className="type-display-xl max-w-4xl">{t("title")}</h1>
             <p className="type-lede max-w-[34ch]">{t("lede")}</p>
             {soonest ? (
               <p className="type-body">

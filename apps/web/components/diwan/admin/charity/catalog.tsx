@@ -140,7 +140,7 @@ const NewBook = ({
 
 /**
  * The campaign's catalog (the design review A27): the books given for its
- * fair, listed for readers to browse on Second Chapter's page. No prices.
+ * fair, listed for readers to browse on the fair's event page. No prices.
  */
 export const CampaignCatalog = ({
   campaignId,

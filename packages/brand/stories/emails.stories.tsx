@@ -64,7 +64,7 @@ const PIECE = "00000000-0000-4000-8000-000000000001";
 const event: EventInfo = {
   starts_at: "2026-10-13T15:00:00Z",
   title_ar: "صفحات مفتوحة",
-  title_en: "Open Pages",
+  title_en: "Writing workshop",
   venue_ar: "مكتبة الجامعة",
   venue_en: "University Library",
 };
