@@ -52,7 +52,8 @@ interface FormPageProps {
  * auibsal.org/forms/<number>. The code and a Light title, one sentence on
  * what it is for, the fields in one column, a signature by typed name with
  * the date, and one solid button. The site keeps the signed copy. The
- * printed form is only a backup of the same page.
+ * printed backup is this same page printed from the browser (the button
+ * drops out).
  */
 export const FormPage = ({
   children,
@@ -68,7 +69,7 @@ export const FormPage = ({
   title,
 }: FormPageProps) => (
   <form
-    className={cn("grid max-w-2xl gap-space-6", className)}
+    className={cn("grid max-w-2xl gap-space-6 print:max-w-none", className)}
     onSubmit={onSubmit}
   >
     <FormHeader code={code} title={title}>
@@ -96,7 +97,7 @@ export const FormPage = ({
       </p>
     </fieldset>
     <div className="grid gap-space-3">
-      <div className="flex flex-wrap items-center gap-space-4">
+      <div className="flex flex-wrap items-center gap-space-4 print:hidden">
         <Button type="submit">{submit}</Button>
       </div>
       <p className="text-sm text-text-secondary">{kept}</p>

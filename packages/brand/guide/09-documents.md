@@ -43,4 +43,17 @@ Forms are digital by default. Every form is in the Leadership Handbook's registe
 - One solid button, "Sign and send"; after sending, the page says what happens next and where the signed copy is kept.
 - In the form's language: Arabic forms mirror the layout.
 
-**The printed backup** keeps the same plain layout: the code and Light title above an ink hairline, the symbol at the top end, labels above ink write-on lines, and the footer on every page. No office-use strip.
+**The printed backup** is the same page printed from the browser: the code and Light title above an ink hairline, the symbol at the top end, the fields, and the footer. The button drops out; there is no office-use strip. Titles are in sentence case ("Photo release", not "Photo Release").
+
+## One source for forms, letters, cards and certificates
+
+Each is designed once, as a component in the brand kit (decided Nov 7: one template, many outputs). Its words live in the forms register in Notion; the site renders the component; a printed or PDF copy is the same page printed from the browser. Nothing is drawn separately, and the printables keep only what exists only on paper (name badges, the photography notice, the sticker pack).
+
+| Component | Where it appears | What it holds |
+| --- | --- | --- |
+| Form (`FormPage`, `FormHeader`) | auibsal.org/forms/F-xx; printed as a backup | Code SAL-EXB-01 · F-xx, a title in sentence case, one sentence on what it is for, the fields, a typed-name signature and the date |
+| Letter (`Letter`) | Every letter: F-03, F-05, F-30, F-32, F-33, F-34, F-42 | The lockup, the date, the recipient, a subject line, the body, the closing and the signer; the code and the Society's addresses at the foot. A4 portrait |
+| Membership card (`MembershipCard`) | The member's account and Google Wallet; printed only on request | Name, member number, class (Member, Associate Member, Honorary Member), member since and the live QR. Never an "ID card": the AUIB ID is the university's |
+| Certificate (`Certificate`) | Finishing Qalam; the Mutanabbi Prize (each category) | A4 landscape, one hairline frame, the lockup, a Light title, the name on a rule, the signature lines, and the verification code with a QR to its check page |
+
+No other certificates: service is a letter (F-05) and honorary membership an invitation (F-34).

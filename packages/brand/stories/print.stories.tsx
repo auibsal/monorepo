@@ -24,8 +24,10 @@ export const Printables: Story = {
   render: () => (
     <div className="grid max-w-5xl gap-4">
       <p className="text-sm">
-        Membership cards, the Mutanabbi Prize and Qalam certificates, name
-        badges and the photography notice with the camera-shy stickers.{" "}
+        What exists only on paper: name badges and the photography notice with
+        the camera-shy stickers; the sticker pack is below. Forms, letters,
+        membership cards and certificates are components (see Components →
+        Brand), printed from their own pages.{" "}
         <a className="underline" href={HTML}>
           Open the HTML
         </a>
@@ -167,9 +169,12 @@ export const StickerPack: Story = {
 };
 
 const SIZES: [string, string][] = [
-  ["Membership card", "85 × 55 mm, 300 gsm, ten to an A4 sheet"],
-  ["Mutanabbi Prize certificate", "A4 landscape"],
-  ["Qalam certificate", "A4 landscape"],
+  ["Membership card (on request)", "85.6 × 54 mm, from the component"],
+  [
+    "Certificates: Qalam, the Mutanabbi Prize",
+    "A4 landscape, from the component",
+  ],
+  ["Letters", "A4, from the component"],
   ["Name badges", "90 × 55 mm"],
   ["Photography notice", "A4"],
   ["Camera-shy stickers", "40 mm round, twenty to an A4 sheet"],

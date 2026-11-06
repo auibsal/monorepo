@@ -17,7 +17,7 @@ One idea per post, in one language. The headline does the work; nothing sits abo
 Paperless by default: print only to the confirmed need (the RSVP count plus 10%, or the number actually asked for), and booklets in page counts of multiples of 4. Every printed piece is requested from Student Life through the General Secretary's needs list.
 
 - Posters A3/A4: lockup, Light headline, a QR code at the bottom end.
-- Certificates: A4 landscape, one hairline frame and the lockup; only for finishing Qalam and for the Mutanabbi Prize.
+- Forms, letters, membership cards and certificates are components, printed from their own pages (see Documents and forms). The printables keep only what exists only on paper: name badges, the photography notice and the sticker pack.
 - Signage and banners may use the bilingual lockup.
 
 ## Carousels and stories

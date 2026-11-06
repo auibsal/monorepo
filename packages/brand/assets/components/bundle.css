@@ -149,3 +149,41 @@
 .sal-icon-label .sal-icon { vertical-align: 0; }
 .sal-post__meta .sal-icon, .sal-banner__link .sal-icon { margin-inline-end: 0.4em; }
 .sal-highlight__icon { width: calc(400 * var(--u)); height: calc(400 * var(--u)); stroke: var(--white); }
+
+/* ---------- Membership card: account, Google Wallet, print on request (MembershipCard) ---------- */
+.sal-card { position: relative; display: grid; grid-template-columns: 1fr auto; gap: 0 20px; aspect-ratio: 85.6 / 54; width: 100%; max-width: 480px;
+  box-sizing: border-box; padding: 6%; overflow: hidden; background: var(--white); color: var(--ink); border: var(--hairline) solid var(--stone); font-family: var(--font-sans); }
+.sal-card__main { display: grid; align-content: space-between; gap: 8px; }
+.sal-card__lockup { height: 30px; width: auto; display: block; }
+.sal-card__name { margin: 0; font-size: 26px; font-weight: 300; line-height: 1.05; letter-spacing: -0.02em; }
+.sal-card__fields { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0 12px; margin: 0; padding-top: 8px; border-top: var(--hairline) solid var(--stone); font-size: 13px; }
+.sal-card__fields dt { font-size: 10px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ash); }
+.sal-card__fields dd { margin: 2px 0 0; }
+.sal-card__no { font-family: var(--font-mono); }
+.sal-card__qr { align-self: end; width: 104px; height: 104px; }
+
+/* ---------- Certificate: Qalam and the Mutanabbi Prize, A4 landscape (Certificate) ---------- */
+.sal-cert { aspect-ratio: 297 / 210; width: 100%; box-sizing: border-box; padding: 4%; background: var(--white); color: var(--ink); font-family: var(--font-sans); text-align: center; }
+.sal-cert__frame { display: grid; grid-template-rows: auto 1fr auto; height: 100%; box-sizing: border-box; padding: 5%; border: var(--hairline) solid var(--ink); }
+.sal-cert__lockup { height: 48px; width: auto; margin: 0 auto; display: block; }
+.sal-cert__title { margin: 18px 0 0; font-size: 40px; font-weight: 300; line-height: 1; letter-spacing: -0.02em; }
+.sal-cert__body { display: grid; align-content: center; justify-items: center; gap: 12px; font-size: 16px; font-weight: 300; line-height: 1.55; }
+.sal-cert__name { width: 70%; padding-bottom: 6px; border-bottom: var(--hairline) solid var(--ink); font-size: 30px; }
+.sal-cert__sigs { display: flex; justify-content: center; gap: 40px; }
+.sal-cert__sig { width: 150px; padding-top: 6px; border-top: var(--hairline) solid var(--ink); font-size: 12px; color: var(--ash); }
+.sal-cert__foot { display: flex; justify-content: space-between; align-items: end; margin-top: 16px; }
+.sal-cert__code { font-family: var(--font-mono); font-size: 11px; color: var(--ash); align-self: center; }
+.sal-cert__qr { width: 56px; height: 56px; }
+
+/* ---------- Letter: one template for every letter, A4 portrait (Letter) ---------- */
+.sal-letter { display: grid; grid-template-rows: auto 1fr auto; gap: 40px; aspect-ratio: 210 / 297; width: 100%; box-sizing: border-box; padding: 9%;
+  background: var(--white); color: var(--ink); font-family: var(--font-sans); font-size: 14px; line-height: 1.6; }
+.sal-letter__head { display: flex; justify-content: space-between; align-items: flex-start; }
+.sal-letter__lockup { height: 44px; width: auto; display: block; }
+.sal-letter__date { margin: 6px 0 0; color: var(--ash); font-size: 13px; }
+.sal-letter__text { display: grid; align-content: start; gap: 14px; }
+.sal-letter__text p, .sal-letter__text address { margin: 0; font-style: normal; }
+.sal-letter__subject { font-weight: 500; }
+.sal-letter__signer { padding-top: 36px; }
+.sal-letter__foot { display: flex; justify-content: space-between; padding-top: 10px; border-top: var(--hairline) solid var(--stone); font-size: 11px; color: var(--ash); }
+.sal-letter__foot .code { font-family: var(--font-mono); }
