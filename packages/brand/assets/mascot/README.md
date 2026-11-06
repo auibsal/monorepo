@@ -28,7 +28,7 @@ Hudhud (هدهد), the Society's mascot: a hoopoe, native to Iraq, the messenger
 
 ## Stickers
 
-Hudhud's sticker pack: twelve 512 × 512 PNGs with transparent backgrounds and a white die-cut edge, so each one sits on any chat background, light or dark. They are made for a Telegram sticker set (static stickers: 512 px, PNG or WebP) and for replies from the bot.
+Hudhud's sticker pack: eleven 512 × 512 PNGs with transparent backgrounds and a white die-cut edge, so each one sits on any chat background, light or dark. They are made for a Telegram sticker set (static stickers: 512 px, PNG or WebP) and for replies from the bot.
 
 **Stickers**
 | File | Meaning | Emoji to pair in Telegram |
@@ -41,14 +41,13 @@ Hudhud's sticker pack: twelve 512 × 512 PNGs with transparent backgrounds and a
 | `stickers/png/06-sent.png` | Sent, on its way | ✉️ |
 | `stickers/png/07-sorry.png` | Sorry, something went wrong | 😓 |
 | `stickers/png/08-thank-you.png` | Thank you | 🙏 |
-| `stickers/png/09-writing.png` | Writing, submissions open | ✍️ |
 | `stickers/png/10-wow.png` | Wow, big news | 😮 |
 | `stickers/png/11-see-you.png` | See you there, with a ticket | 🎟️ |
 | `stickers/png/12-oops.png` | Oops, a reminder or deadline | ❗ |
 
 **Making the Telegram set** (in @Stickers)
 - `/newpack`, then name it "Hudhud · SAL".
-- Send each PNG as a file, in order 01–12, and after each one the emoji from the table.
+- Send each PNG as a file, in order (01–08, 10–12; 09 is retired and never reused), and after each one the emoji from the table.
 - `/publish`. When asked for an icon, send `stickers/pack-icon.png` (100 × 100).
 - Give it the short name `hudhud_sal`, so the link is t.me/addstickers/hudhud_sal (if that name is taken, use `auibsal_hudhud`).
 - Later changes: `/addsticker` for new ones, `/editsticker` to change an emoji, `/replacesticker` to swap in a redrawn file, `/ordersticker` and `/delsticker`.

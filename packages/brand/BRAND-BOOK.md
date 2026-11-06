@@ -1,10 +1,10 @@
 Use this system for anything carrying the Society's name: screens, posts, documents and print. The Society sounds like a well-read friend: warm, precise and never grand. It looks like the best-made page on campus: wide margins, light type, one crimson mark. Modern in its restraint, literary in its words, and plainly part of AUIB.
 
-This is SAL-BRD-01, Brand and Identity, Version 1, ratified by the Society, in short. The full guide is the design system's Guide, in the Diwan at /diwan/design (`packages/brand/guide`).
+This is SAL-MED-02, Brand and Identity, Version 1, proposed for adoption at the Founding Meeting (March 30, 2027), in short. The full guide is the design system's Guide, in the Diwan at /diwan/design (`packages/brand/guide`).
 
 ## Three principles
 
-- **Quiet by default.** White space, hairline rules and sentence case carry the page. Each page gets one loud thing: a headline, one crimson word or one band of color.
+- **Quiet by default.** White space, hairline rules and sentence case carry the page. Each page gets one loud thing: a headline, one button or one band of color.
 - **One language per piece.** Every page, post and document is in English or in Arabic, with the logo in that language. The two editions are equals: same family, same care, each written for its own readers. Never both on one piece, never a translation tucked underneath.
 - **The page is the brand.** The symbol is a bookmark and appears only as the logo. Everything else is built from what a book is made of: pages, margins, rules and type. Headings stand alone: no markers, no ribbons, no labels above them. Icons carry meaning; they never decorate.
 
@@ -13,20 +13,21 @@ This is SAL-BRD-01, Brand and Identity, Version 1, ratified by the Society, in s
 - Write warm, not gushing: "We would love you to join us." Never "An AMAZING opportunity!!!"
 - Be concrete: "Tuesday, October 13, 4 PM, Room [x]." Never "soon, somewhere on campus."
 - Be confident, not grand: "A paper read blind and printed with care." Never "Iraq's premier literary institution."
-- Be playful about ideas, never people: "The worst poem at AUIB wins."
-- Write Arabic for Arabic readers, then have a native speaker check it. Never ship a translation as an afterthought.
+- Be playful about ideas, never people: “Bring a book you love and someone who hasn’t read it.”
+- Every piece exists in both languages. Write the Arabic for Arabic readers, never as a translation done as an afterthought.
 - Iraqi Arabic where the Society chats with members (Hudhud, social captions and stories, the members' group, signs at the door), spelled as Iraqis write it (گ); standard Arabic for the site, the Diwan, emails, documents, certificates and Qirtas. Never both in one message.
 - Names: "AUIB Society of Arts and Letters" in full on first use in formal documents; then "the Society" or "SAL". Never "the club", never "Art and Letter".
-- The Society's paper is **Qirtas** («قرطاس», paper, from the motto «والقرطاسُ والقلمُ»), "AUIB's paper of news, letters and art." Qirtas is the Society's paper, with its own masthead. It has six sections: News, Voices, Letters, Gallery, Video and Games. Next Stop is its video show, in Video. Each semester's Edition is printed and launched at Launch Night; the Sunday Paper is its monthly newsletter, on the first Sunday of the month.
+- The Society's paper is **Qirtas** («قرطاس», paper, from the motto «والقرطاسُ والقلمُ»), "AUIB's paper of news, letters and art." Qirtas is the Society's paper, with its own masthead. It has six sections: News, Voices, Letters, Gallery, Video and Games, and runs Qalam, its summer program for high school students. Write for Qirtas is always open. One printed Edition a year, a year in review, is launched at an event; the Sunday Paper is its monthly newsletter, on the first Sunday of the month. The Mutanabbi Prize is its one prize. Six Words and Next Stop are not part of Qirtas.
 - **The Company** is the Society's theater company, with its own Artistic Director on the Council.
-- Everything else is an event (owner, Nov 5, 2026): the Society holds no standing programs. Events carry no standing names (owner, Nov 6, 2026): each is titled plainly for what happens that day, among them the book drive and fair, readings and conversation, book discussions, writing workshops and listening sessions. The **Typewriter Tour** is the welcome to new students and belongs to membership. Never say "program" for any of them, and never group them into tiers.
+- **Next Stop** is the Society's video show, made by the Director of Media's team.
+- Everything else is an event (owner, Nov 5, 2026): the Society holds no standing programs. Each is titled plainly for what happens that day, on one standard event page with three kinds of access (open, RSVP, private). Only the two traditions have names: the **Typewriter Tour** (membership, the spring club fair week) and **Second Chapter** (partnerships, a book drive and sale at the fall club fair). Never say "program" for any of them, and never group them into kinds.
 - Endorsed work carries the line "a Society of Arts and Letters program" (Arabic: «من برامج جمعية الفنون والآداب»).
-- Short titles: "Charter Day", "Launch Night", "The Ribbon".
+- Short, plain titles: “Writing workshop”, “A reading with a guest”.
 - Dates as "Tuesday, October 13"; times as "6:00 PM". Numerals in tables; words in prose for numbers under ten.
 - American English everywhere, with no exceptions: program, color, center, traveled, canceled, catalog, organization.
 - Partners with Arabic names are named in their own language first.
 - No emoji, no exclamation marks in headlines. Tag @auibsal on every post, and always give the date.
-- **One language standard** (Guide, Voice, "Language standard", with the glossary). English: sentence case, straight quotes and apostrophes, the ellipsis character, en dashes for ranges, "for example" in place of "e.g.". Arabic: Latin digits, the Iraqi month names, ، ؛ ؟ and «», tanween on the letter before the alif (شكرًا), one word per term (Edition الإصدار, event فعالية, Get involved «شارك معنا»).
+- **One language standard** (Guide, Voice, "Language standard", with the glossary). English: the Chicago Manual of Style with Merriam-Webster: curly quotes in prose, the serial comma, en dashes for ranges, the ellipsis character; sentence case for interface labels. Arabic: Latin digits, the Iraqi month names, ، ؛ ؟ and «», tanween on the letter before the alif (شكرًا), one word per term from the one glossary (`claude/glossary_ar.md`: the Council المجلس, the Executive Board الهيئة التنفيذية, What's on «ما يجري», piece عمل). Iraqi Arabic, with گ، چ، پ, only where the Society chats.
 
 ## Color
 
@@ -90,7 +91,7 @@ This is SAL-BRD-01, Brand and Identity, Version 1, ratified by the Society, in s
 
 ## Hudhud, the mascot
 
-- Hudhud (هدهد) is a hoopoe: native to Iraq, the messenger of the old stories, and the guide in Attar's *The Conference of the Birds*. It is the face of the Telegram bot and appears only where the Society talks to members one to one: the bot, notices, stickers, and empty states that point somewhere.
+- Hudhud (هدهد) is a hoopoe: native to Iraq, the messenger of the old stories, and the guide in Attar's *The Conference of the Birds*. It is the face of the Telegram bot, which posts notices to Announcements, sends a daily word and warns members a week before removal; it appears only where the Society talks to members: the bot, notices, stickers, and empty states that point somewhere.
 - Hudhud and the logo never touch. The symbol and wordmarks are never put in Hudhud's beak, crest, feet or anywhere on it, and Hudhud never stands in for a logo or sits inside a lockup. Where both appear, as on a bot welcome card, keep them apart with at least the logo's clear space.
 - Hudhud is drawn flat, in the brand's colors and with no outlines: a `crimson` body, `stone` breast, `ink` wings, tail and beak with `white` bars. On `crimson` grounds, use the reversed files, where the body turns `white`.
 - Use the files in Mascot (`assets/Mascot/README.md`): standing, standing reversed, flying, and the round avatar. Never redraw, recolor, stretch or mirror them. Props, expressions and the symbols for sleep, questions and surprise belong to the stickers in Stickers (`assets/Stickers/README.md`) only.
@@ -99,15 +100,15 @@ This is SAL-BRD-01, Brand and Identity, Version 1, ratified by the Society, in s
 
 ## Documents
 
-- **One language per document.** The Arabic edition is its own document, mirrored, with the Arabic lockup. Codes stay in Latin letters.
+- **Two editions, one language each.** Every document is a Notion page in English and in Arabic; the Arabic edition is its own document, mirrored, with the Arabic lockup. Codes stay in Latin letters. Status: "Version 1, proposed" until the Founding Meeting.
 - **Cover:** the lockup at the top start; the document code in Ubuntu Mono at the top end. Title in `print-display` (Light, `ink`), one sentence in `print-lede`, "Prepared by", and a hairline footer with the date and status. No ribbon, no band.
 - **Section pages:** a one- or two-word title in `print-display` Light, a one-sentence lede, then content. No label above the title.
 - **Contents:** numbered rows with hairlines; no band.
 - **Legal text:** two columns, articles numbered in Ubuntu Mono, clause numbers in the margin.
-- **Forms:** code and title above a hairline, the symbol at top right, small tracked labels, ink write-on lines, and an office-use strip on `paper`.
+- **Forms:** digital by default, on one standard page at auibsal.org/forms/F-xx (code SAL-EXB-01 · F-xx), signed by typing a name; staff forms are Notion templates. The printed form is only a backup, in the same plain layout: code and title above a hairline, the symbol at top right, labels and ink write-on lines, no office-use strip.
 - **Footers** (every page but the cover): code and title at left, "n / total" at right, in `text-secondary`.
-- **Closing page:** "Thank you." in `print-display` Light, and nothing else.
-- Code series: SAL-GOV, SAL-POL, SAL-OPS, SAL-STR, MEM, BRD, PRT, PRP.
+- **The end:** documents end with their last section. "Thank you." in `print-display` Light closes only printed pieces (decks, printed programs, the Edition).
+- Code families, one per Council seat: SAL-GOV (the members'), EXB, EVT, MEM, PTN, MED, ART, EDT; 01 is each family's general manual.
 
 ## Components
 
@@ -123,12 +124,13 @@ This is SAL-BRD-01, Brand and Identity, Version 1, ratified by the Society, in s
 - **Carousels:** a cover post, numbered inside slides ("01", a short title, a few lines), and an end slide with the wordmark alone in the carousel's language: no symbol, no text. One ground and one language throughout. No slide counters or "swipe" prompts.
 - **Stories (1080 × 1920):** the post's parts, with every word 250 px clear of the top and 340 px clear of the bottom.
 - **Profile pictures:** Instagram (@auibsal) and the members' Telegram group use the Bookmark in white on crimson (`sal-avatar.svg`). The Diwan group, the officers' working group, uses the Bookmark in white on ink (`sal-avatar-ink.svg`), so the two groups are never confused. Hudhud, the bot, keeps the hoopoe (`hudhud-avatar.png`).
-- **Instagram bio:** "Qirtas, our paper. The Company, our theater. Events all year at @auibaghdad." Links, in order: auibsal.org, auibsal.org/events, auibsal.org/join.
-- **Highlights:** six, in this order: What's on, Qirtas, Next Stop, The Company, Join, Get involved. Covers are plain crimson with the highlight's icon alone, in white: no name (Instagram writes it under the circle) and no Bookmark. Each highlight opens with a 1080 × 1920 story banner on white: the wordmark alone at the top (no Bookmark), a Light headline in ink, a short line, a list split by thin rules, and the link at the bottom. See `components/Highlights`.
+- **Instagram bio:** "The paper and the pen at @auibaghdad." Links, in order: auibsal.org, auibsal.org/events, auibsal.org/join.
+- **Highlights:** six, in this order: What's on, Qirtas, The Company, Next Stop, Join (with the Typewriter Tour), Partners (with Second Chapter). Covers are plain crimson with the highlight's icon alone, in white: no name (Instagram writes it under the circle) and no Bookmark. Each highlight opens with a 1080 × 1920 story banner on white: the wordmark alone at the top (no Bookmark), a Light headline in ink, a short line, a list split by thin rules, and the link at the bottom. See `components/Highlights`.
 - Three grounds, by purpose: `crimson` for calls and moments, `white` for events, `ink` for words worth keeping and recruiting.
-- Posters A3/A4 follow the post: lockup, Light headline, a QR code at bottom right. Certificates are A4 landscape with a single hairline frame and the lockup. Print only when current stock runs out.
-- Print sizes: Charter poster A3; Open Call poster A3 or A4; Term Card A6, four to an A4 sheet; membership card 85 × 55 mm, 300 gsm, ten to an A4 sheet; Certificate of Service and Fellow certificate A4 landscape; name badges 90 × 55 mm; photography notice A4; camera-shy stickers 40 mm round, twenty to an A4 sheet, the crossed-out camera alone in white on ink. Every one is drawn in Print.
-- **The sticker pack** (`assets/print/stickers`, decided Nov 6): 44 stickers, from the Bookmark and the motto to Qirtas in typewriter keys, a ticket, a record, Next Stop's bus, the Company's stage and Hudhud, printed by Student Life. No white borders: each is cut on a full ground or on its own clean edge. Only the brand's colors; the variety is in shape, type and structure. Each file is one sticker at 100% with its cut line in magenta.
+- Posters A3/A4 follow the post: lockup, Light headline, a QR code at bottom right. Certificates are A4 landscape with a single hairline frame and the lockup, only for finishing Qalam and for the Mutanabbi Prize. Print only to the confirmed need (the RSVP count plus 10%, or the number asked for); booklets in page counts of multiples of 4.
+- **Paperless by default.** The site footer and every email carry “Paperless by default. Books reused through Second Chapter.” («الأصل عندنا: بلا ورق. والكتب يُعاد استخدامها عبر «الفصل الثاني».»). Say only what the Society does: no green badges.
+- Print sizes: membership card 85 × 55 mm, 300 gsm, ten to an A4 sheet; Qalam and Mutanabbi Prize certificates A4 landscape; name badges 90 × 55 mm; photography notice A4; camera-shy stickers 40 mm round, twenty to an A4 sheet, the crossed-out camera alone in white on ink. Every one is drawn in Print.
+- **The sticker pack** (`assets/print/stickers`, decided Nov 6): 43 stickers, from the Bookmark and the motto to Qirtas in typewriter keys, a ticket, a record, Next Stop's bus, the Company's stage, Second Chapter's book and Hudhud, printed by Student Life to the confirmed need. No white borders: each is cut on a full ground or on its own clean edge. Only the brand's colors; the variety is in shape, type and structure. Each file is one sticker at 100% with its cut line in magenta.
 
 ## Imagery
 

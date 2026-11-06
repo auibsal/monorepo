@@ -14,9 +14,10 @@ One idea per post, in one language. The headline does the work; nothing sits abo
 
 **Print**
 
+Paperless by default: print only to the confirmed need (the RSVP count plus 10%, or the number actually asked for), and booklets in page counts of multiples of 4. Every printed piece is requested from Student Life through the General Secretary's needs list.
+
 - Posters A3/A4: lockup, Light headline, a QR code at the bottom end.
-- Term Card: A6, four to an A4 sheet. Membership cards: 85 × 55 mm.
-- Certificates: A4 landscape, one hairline frame and the lockup.
+- Certificates: A4 landscape, one hairline frame and the lockup; only for finishing Qalam and for the Mutanabbi Prize.
 - Signage and banners may use the bilingual lockup.
 
 ## Carousels and stories
@@ -46,9 +47,10 @@ One picture per place, so members always know where they are. The Bookmark for t
 ## Instagram, @auibsal
 
 - **Name:** AUIB Society of Arts and Letters.
-- **Bio:** "Qirtas, our paper. The Company, our theater. Events all year at @auibaghdad." (owner, Nov 5, 2026)
+- **Bio:** "The paper and the pen at @auibaghdad."
 - **Links, in this order:** auibsal.org, auibsal.org/events, auibsal.org/join.
-- **Highlights, in this order:** What's on, Qirtas, Next Stop, The Company, Join, Get involved.
+- **Highlights, in this order:** What's on, Qirtas, The Company, Next Stop, Join (with the Typewriter Tour), Partners (with Second Chapter).
+- Instagram is for publicity only: sign-ups, RSVPs and questions go to the site, Help Desk or hello@auibsal.org.
 
 ## Highlights
 
@@ -58,3 +60,12 @@ Six highlights, each opened by a banner that says what is inside. Covers carry a
 - **Banners:** the first story in each highlight, 1080 × 1920 on white. The wordmark alone at the top (no Bookmark), a Light headline in ink, one short line, a list split by thin rules, and the link at the bottom.
 - Keep every word 250 px from the top and 340 px from the bottom. Put Instagram's link sticker over the written link.
 - Refresh What's on each term and Qirtas each Edition.
+
+| Highlight | Icon |
+| --- | --- |
+| What's on | `calendar` |
+| Qirtas | `newspaper` |
+| The Company | `drama` |
+| Next Stop | `bus` |
+| Join | `user-plus` |
+| Partners | `handshake` |

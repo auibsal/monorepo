@@ -1,6 +1,6 @@
 # Hudhud
 
-A hoopoe: native to Iraq, the messenger of the old stories, and the guide in Attar's *The Conference of the Birds*. He is the face of the Telegram bot and appears only where the Society talks to members one to one. The files are in Components → Hudhud.
+A hoopoe: native to Iraq, the messenger of the old stories, and the guide in Attar's *The Conference of the Birds*. He is the face of the Telegram bot: he posts the Society's notices to Announcements in the members' group, sends a daily word to members who ask for it, handles RSVPs and reminders, and warns members a week before removing anyone who hasn't joined on auibsal.org. He appears only where the Society talks to members. The files are in Components → Hudhud.
 
 - Drawn flat in the brand's colors with no outlines: crimson body, stone breast, ink wings, tail and beak with white bars. One fan of six crest feathers runs straight into the head.
 - Hudhud and the logo never touch: no symbol or letter anywhere on him, and he never stands in for the logo.
@@ -8,12 +8,12 @@ A hoopoe: native to Iraq, the messenger of the old stories, and the guide in Att
 - Files: standing and reversed for welcomes and notices; flying for "sent" and empty states that point somewhere.
 - Avatars: the hoopoe is the bot's alone. The Society's accounts use the Bookmark (see Social and print).
 - He speaks in the first person, warm and brief: "You're in. I'll remind you before it starts." No exclamation marks, no emoji.
-- In Arabic he speaks Iraqi: «انحجزلك مقعد. أذكّرك قبل ما تبدي.» Only his Telegram profile is in standard Arabic.
+- In Arabic he speaks Iraqi, spelled as Iraqis write it (گ، چ، پ): «انحجزلك مقعد. أذكّرك قبل ما تبدي.» Only his Telegram profile is in standard Arabic.
 - 48 px and up; his avatar works down to 28 px (shown at 96, 48 and 28 px).
 
 ## Hudhud's stickers
 
-Twelve Telegram stickers, 512 × 512, each with a white die-cut edge so it sits on light and dark chats alike.
+Eleven Telegram stickers, 512 × 512, each with a white die-cut edge so it sits on light and dark chats alike.
 
 | No. | Sticker | For |
 | --- | --- | --- |
@@ -25,7 +25,6 @@ Twelve Telegram stickers, 512 × 512, each with a white die-cut edge so it sits 
 | 06 | Sent | A submission received |
 | 07 | Sorry | Something went wrong |
 | 08 | Thank you | Thanks |
-| 09 | Writing | Submissions open |
 | 10 | Wow | Big news |
 | 11 | See you there | With a ticket |
 | 12 | Oops | A deadline reminder |
@@ -42,4 +41,4 @@ Twelve Telegram stickers, 512 × 512, each with a white die-cut edge so it sits 
 - Hudhud has no hands: props sit in the beak or on the ground.
 - The head is never turned; the whole bird leans.
 - Stickers are for chat only, never posters, posts or documents.
-- The set is "Hudhud · SAL", short name `hudhud_sal`, each filed under one emoji.
+- The set is "Hudhud · SAL", short name `hudhud_sal`, each filed under one emoji. No. 09 ("Submissions open") is retired, since Write for Qirtas is always open; its number is not reused.

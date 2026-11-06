@@ -3,7 +3,7 @@ import { titleFrom } from "@/lib/diwan/metadata";
 
 export const generateMetadata = titleFrom((t) => t("diwan.admin.design.title"));
 
-/** The design system, SAL-BRD-01: every officer may open it. */
+/** The design system, SAL-MED-02: every officer may open it. */
 const DesignPage = () => <DesignSystem />;
 
 export default DesignPage;

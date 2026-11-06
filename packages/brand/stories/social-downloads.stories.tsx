@@ -67,10 +67,10 @@ const Downloads = ({
 const HIGHLIGHTS: Item[] = [
   { file: "1-whats-on", name: "What's on" },
   { file: "2-qirtas", name: "Qirtas" },
-  { file: "3-next-stop", name: "Next Stop" },
-  { file: "4-the-company", name: "The Company" },
+  { file: "3-the-company", name: "The Company" },
+  { file: "4-next-stop", name: "Next Stop" },
   { file: "5-join", name: "Join" },
-  { file: "6-get-involved", name: "Get involved" },
+  { file: "6-partners", name: "Partners" },
 ];
 
 export const Posts: Story = {
@@ -79,7 +79,7 @@ export const Posts: Story = {
       dir="posts"
       items={[
         { file: "1-qirtas-edition-call", name: "Qirtas: the Edition's call" },
-        { file: "2-book-drive", name: "Book drive" },
+        { file: "2-second-chapter", name: "Second Chapter" },
         { file: "3-tuesdays", name: "Tuesdays" },
         { file: "4-come-in", name: "Come in" },
         { file: "5-get-involved", name: "Get involved" },
