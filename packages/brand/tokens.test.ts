@@ -56,12 +56,11 @@ const fixedPairs: [string, string][] = [
 ];
 
 describe("SAL tokens (packages/brand/assets/tokens.json)", () => {
-  test("the palette is the brand's six colors and four reserved tones", () => {
+  test("the palette is the brand's six colors and three reserved tones", () => {
     expect(Object.keys(palette).sort()).toEqual(
       [
         "ash",
         "crimson",
-        "crimson-100",
         "crimson-700",
         "ink",
         "mist",

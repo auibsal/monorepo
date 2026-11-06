@@ -1,6 +1,6 @@
 """Hudhud, flat edition: a parametric rig. Bird faces right; local origin at the body's centre."""
 import math
-CR='#9c213e'; C700='#7e1a32'; C100='#ebcbd3'; C50='#f7ecef'; INK='#273236'; INK70='#4a5559'; W='#ffffff'
+CR='#9c213e'; C700='#7e1a32'; C100='#e2ddd6'; C50='#f7ecef'; INK='#273236'; INK70='#4a5559'; W='#ffffff'
 SCHEMES={
  # light grounds (white, paper, crimson-50)
  'light':dict(body=CR, belly=C100, crest=CR, band=W, tip=INK, wing=INK, bar=W, beak=INK, leg=INK, eye=W, pupil=INK, gap=W),

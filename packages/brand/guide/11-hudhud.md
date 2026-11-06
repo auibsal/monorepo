@@ -2,7 +2,7 @@
 
 A hoopoe: native to Iraq, the messenger of the old stories, and the guide in Attar's *The Conference of the Birds*. He is the face of the Telegram bot and appears only where the Society talks to members one to one. The files are in Components → Hudhud.
 
-- Drawn flat in the brand's colors with no outlines: crimson body, rose breast, ink wings, tail and beak with white bars. One fan of six crest feathers runs straight into the head.
+- Drawn flat in the brand's colors with no outlines: crimson body, stone breast, ink wings, tail and beak with white bars. One fan of six crest feathers runs straight into the head.
 - Hudhud and the logo never touch: no symbol or letter anywhere on him, and he never stands in for the logo.
 - Props and expressions belong to the stickers only.
 - Files: standing and reversed for welcomes and notices; flying for "sent" and empty states that point somewhere.

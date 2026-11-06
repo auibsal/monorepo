@@ -20,7 +20,6 @@ About 70 white · 18 ink · 7 crimson · 5 paper and stone.
 | Color | Value | Use |
 | --- | --- | --- |
 | Crimson-700 | `#7E1A32` | Inside the logo files only. |
-| Crimson-100 (rose) | `#EBCBD3` | Hudhud's breast only, inside the mascot files. Never an accent. |
 | Mist | `#C3CACB` | Secondary text in dark mode. |
 | Slate | `#3D494D` | Rules in dark mode. |
 

@@ -34,7 +34,7 @@ This is SAL-BRD-01, Brand and Identity, Version 1, ratified by the Society, in s
 - `crimson` appears once or twice a page at full strength: the logo, one italic word, one button, one band. Never as a pale tint, never as large blocks of headline.
 - `paper` is Qirtas's page and long reading only. Elsewhere the page is `white`.
 - `stone` is for hairline rules only, never text. `ash` is secondary text and captions (6.0:1 on white, 5.3:1 on paper).
-- Two colors are reserved: `crimson-700` lives only inside the logo files; `crimson-100` (rose) lives only inside the Hudhud files, as his breast. Rose is never an accent, text or a wordmark (decided Nov 6).
+- One color is reserved: `crimson-700` lives only inside the logo files. There is no pink (decided Nov 6): rose is retired, as an accent and in Hudhud.
 - Build with the role tokens: `surface`, `surface-reading`, `text`, `text-secondary`, `accent`, `line`, `band` and `on-band`. They switch between light and dark.
 - Dark mode is `ink` with white text and `mist` for secondary text. On `ink` and `crimson` the accent is the italic itself, in white, and the one button is white with ink text. Never crimson text or the crimson symbol on `ink` (1.7:1).
 
@@ -92,7 +92,7 @@ This is SAL-BRD-01, Brand and Identity, Version 1, ratified by the Society, in s
 
 - Hudhud (هدهد) is a hoopoe: native to Iraq, the messenger of the old stories, and the guide in Attar's *The Conference of the Birds*. It is the face of the Telegram bot and appears only where the Society talks to members one to one: the bot, notices, stickers, and empty states that point somewhere.
 - Hudhud and the logo never touch. The symbol and wordmarks are never put in Hudhud's beak, crest, feet or anywhere on it, and Hudhud never stands in for a logo or sits inside a lockup. Where both appear, as on a bot welcome card, keep them apart with at least the logo's clear space.
-- Hudhud is drawn flat, in the brand's colors and with no outlines: a `crimson` body, `crimson-100` breast, `ink` wings, tail and beak with `white` bars. On `crimson` grounds, use the reversed files, where the body turns `white`.
+- Hudhud is drawn flat, in the brand's colors and with no outlines: a `crimson` body, `stone` breast, `ink` wings, tail and beak with `white` bars. On `crimson` grounds, use the reversed files, where the body turns `white`.
 - Use the files in Mascot (`assets/Mascot/README.md`): standing, standing reversed, flying, and the round avatar. Never redraw, recolor, stretch or mirror them. Props, expressions and the symbols for sleep, questions and surprise belong to the stickers in Stickers (`assets/Stickers/README.md`) only.
 - Keep Hudhud at 48 px or larger; the avatar works down to 28 px.
 - Hudhud speaks in the first person, warm and brief: "You're in. I'll remind you before it starts." No exclamation marks and no emoji. See `components/Hudhud/README.md`.
@@ -128,7 +128,7 @@ This is SAL-BRD-01, Brand and Identity, Version 1, ratified by the Society, in s
 - Three grounds, by purpose: `crimson` for calls and moments, `white` for events, `ink` for words worth keeping and recruiting.
 - Posters A3/A4 follow the post: lockup, Light headline, a QR code at bottom right. Certificates are A4 landscape with a single hairline frame and the lockup. Print only when current stock runs out.
 - Print sizes: Charter poster A3; Open Call poster A3 or A4; Term Card A6, four to an A4 sheet; membership card 85 × 55 mm, 300 gsm, ten to an A4 sheet; Certificate of Service and Fellow certificate A4 landscape; name badges 90 × 55 mm; photography notice A4; camera-shy stickers 40 mm round, twenty to an A4 sheet, the crossed-out camera alone in white on ink. Every one is drawn in Print.
-- **The sticker pack** (`assets/print/stickers`, decided Nov 6): 44 stickers, from the Bookmark and the motto to Qirtas in typewriter keys, a ticket, a record, Next Stop's bus-stop sign, the Company's stage and Hudhud, printed by Student Life. No white borders: each is cut on a full ground or on its own clean edge. Only the brand's colors; the variety is in shape, type and structure. Each file is one sticker at 100% with its cut line in magenta.
+- **The sticker pack** (`assets/print/stickers`, decided Nov 6): 51 stickers, from the Bookmark and the motto to Qirtas in typewriter keys, a ticket, a record, Next Stop's bus-stop sign, the Company's stage and Hudhud, printed by Student Life. No white borders: each is cut on a full ground or on its own clean edge, and a Clear vinyl group (the motto, قرطاس, the wordmarks, Hudhud) prints on clear vinyl with no shape at all. Only the brand's colors; the variety is in shape, type and structure. Each file is one sticker at 100% with its cut line in magenta.
 
 ## Imagery
 
