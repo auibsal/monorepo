@@ -36,14 +36,14 @@ const grounds: Record<
   crimson: {
     dark: true,
     frame: "bg-[var(--sal-crimson)] text-[var(--sal-white)]",
-    italic: "",
-    meta: "text-[var(--sal-crimson-100)]",
+    italic: "[&_i]:text-[var(--sal-mist)]",
+    meta: "text-[var(--sal-mist)]",
   },
   ink: {
     dark: true,
     frame: "bg-[var(--sal-ink)] text-[var(--sal-white)]",
-    italic: "[&_i]:text-[var(--sal-crimson-100)]",
-    meta: "text-[var(--sal-crimson-100)]",
+    italic: "[&_i]:text-[var(--sal-mist)]",
+    meta: "text-[var(--sal-mist)]",
   },
   white: {
     dark: false,

@@ -1,6 +1,6 @@
 # Icons
 
-The Society's icon set: 54 Lucide icons redrawn at a 1.5 px line with square ends, one per meaning. The files are in `assets/Icons`; the table there lists what each one means.
+The Society's icon set: 55 Lucide icons redrawn at a 1.5 px line with square ends, one per meaning. The files are in `assets/Icons`; the table there lists what each one means.
 
 **Markup:** paste the SVG inline with `class="sal-icon"`; it sizes itself to 1.15 em and takes the text color. Put it before the text it goes with, or inside `.sal-icon-label` to space a pair. A standalone icon on a screen gets `aria-label` (and `role="img"`); one beside a word keeps `aria-hidden="true"`.
 

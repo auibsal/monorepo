@@ -63,5 +63,5 @@ The pieces every screen is built from, in the platform's components (Components)
 - **Section title.** The title alone, a link at the end of the line at most.
 - **Lists.** Rows between hairlines, not cards. Dates large and Light.
 - **Status.** Outlined text, never a filled pill: Approved, Draft, Overdue.
-- **Dark mode.** The same parts on ink, with rose for the accent.
+- **Dark mode.** The same parts on ink, with mist for the accent: the italic word and the button are mist, so the accent always stands apart from the white text.
 - **The cookie notice.** A slim bar along the bottom edge that never covers content.

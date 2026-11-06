@@ -8,8 +8,8 @@ Hudhud (هدهد), the Society's mascot: a hoopoe, native to Iraq, the messenger
 
 **Drawing**
 - Flat shapes in brand colors only. No outlines, gradients or shadows.
-- Body, neck and head: one upright silhouette in `crimson` (`white` when reversed). Breast: `crimson-100`.
-- Crest: one fan of six feathers that runs straight into the back of the head, with nothing between them. Each feather has a `white` band (`crimson-100` when reversed) and an `ink` tip at the same depth, and thin lines in the ground's color separate the feathers all the way to the head. It stands up by default; it folds back in flight and droops when Hudhud is tired or sorry.
+- Body, neck and head: one upright silhouette in `crimson` (`white` when reversed). Breast: `stone` (no pink, decided Nov 6).
+- Crest: one fan of six feathers that runs straight into the back of the head, with nothing between them. Each feather has a `white` band (`stone` when reversed) and an `ink` tip at the same depth, and thin lines in the ground's color separate the feathers all the way to the head. It stands up by default; it folds back in flight and droops when Hudhud is tired or sorry.
 - Wings: `ink` with `white` bars. Tail: `ink` with one `white` bar.
 - Beak: `ink`, broad at the base and tapering to a rounded, down-curved tip. It holds nothing, except the envelope in the "sent" sticker.
 - Eye: a solid `ink` dot with a small `white` highlight.
@@ -57,7 +57,7 @@ Hudhud's sticker pack: twelve 512 × 512 PNGs with transparent backgrounds and a
 - Stickers are for chat only: the bot, the members' group and DMs. Don't put them on posters, posts, documents or certificates; use the Mascot files there.
 - Telegram asks for one emoji per sticker so people can find it. Pair each with the emoji in the table. That's the only place emoji meet the brand; captions and bot copy stay emoji-free.
 - Stickers carry no words, so they work for English and Arabic readers alike. Don't add text to them.
-- Hudhud has no hands. Props are held in the beak (pencil, ticket, envelope) or lie on the ground (book, page), drawn in the same flat colors. Raised wings are the folded wing swung up from the shoulder, never a new shape. Hudhud's head is never turned or reshaped: to bow or look down, the whole bird leans. Marks such as Z's, "?", "!" and short sparks are `ink`, `crimson` or `crimson-100` only.
+- Hudhud has no hands. Props are held in the beak (pencil, ticket, envelope) or lie on the ground (book, page), drawn in the same flat colors. Raised wings are the folded wing swung up from the shoulder, never a new shape. Hudhud's head is never turned or reshaped: to bow or look down, the whole bird leans. Marks such as Z's, "?", "!" and short sparks are `ink`, `crimson` or `stone` only.
 - Never add the Society's symbol or wordmarks to a sticker, and don't make new stickers by redrawing Hudhud. New poses come from the same drawing as the rest.
 
 ## Source

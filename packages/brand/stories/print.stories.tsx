@@ -1,3 +1,4 @@
+import { Icon } from "@repo/brand/components/sal/icon";
 import type { Meta, StoryObj } from "@storybook/react";
 import type { ReactNode } from "react";
 import QRCode from "react-qr-code";
@@ -179,26 +180,97 @@ export const CameraShyStickers: Story = {
       <div className="absolute start-[15mm] top-[30mm] grid grid-cols-[repeat(4,40mm)] gap-[6mm]">
         {Array.from({ length: 20 }, (_, i) => i).map((i) => (
           <div
-            className="flex size-[40mm] flex-col items-center justify-center gap-[2mm] rounded-full bg-[#273236] text-center text-white"
+            className="flex size-[40mm] items-center justify-center rounded-full bg-[#273236] text-center text-white"
             key={i}
           >
-            {/* biome-ignore lint/performance/noImgElement: the logo file as supplied */}
-            <img
-              alt=""
-              className="block h-[9mm] w-auto"
-              height={34}
-              src="brand/sal-symbol-white.svg"
-              width={20}
+            <Icon
+              className="size-[22mm]"
+              label="Camera-shy"
+              name="camera-off"
             />
-            <span className="font-light text-[11pt] leading-[1.1]">
-              Camera
-              <br />
-              shy
-            </span>
           </div>
         ))}
       </div>
     </Sheet>
+  ),
+};
+
+/** The sticker pack: every sticker at 100%, with its cut line in magenta. */
+const STICKER_PACK: [string, string, string, number, number][] = [
+  ["bookmark", "The Bookmark", "The Society", 56.08, 66.67],
+  ["bookmark-tile", "Bookmark tile", "The Society", 55.92, 55.92],
+  ["bookmark-tile-ink", "Bookmark tile, ink", "The Society", 55.92, 55.92],
+  ["lockup-stacked", "Stacked lockup", "The Society", 57.92, 88.92],
+  ["wordmark-ar", "Arabic wordmark", "The Society", 77.92, 78.5],
+  ["bumper-bilingual", "Bilingual bumper", "The Society", 195.92, 82.75],
+  ["postage-stamp", "Postage stamp", "The Society", 51.92, 61.92],
+  ["postmark", "Postmark", "The Society", 59.92, 59.92],
+  ["motto-en", "The paper and the pen.", "The motto", 155.92, 77.92],
+  ["motto-ar", "Arabic motto", "The motto", 125.92, 49.92],
+  ["motto-strip", "Motto strip", "The motto", 205.92, 35.92],
+  ["the-pen", "The pen", "The motto", 33.92, 83.92],
+  ["the-paper", "The paper", "The motto", 55.92, 71.92],
+  ["qirtas-keys", "QIRTAS in keys", "Qirtas", 177.92, 51.92],
+  ["key-qaf", "Qaf key", "Qirtas", 61.92, 61.92],
+  ["qirtas-nameplate", "Qirtas nameplate", "Qirtas", 137.92, 71.92],
+  ["qirtas-ar", "Qirtas in Arabic", "Qirtas", 155.92, 63.92],
+  ["section-news", "News", "Qirtas", 49.92, 49.92],
+  ["section-voices", "Voices", "Qirtas", 49.92, 49.92],
+  ["section-letters", "Letters", "Qirtas", 49.92, 49.92],
+  ["section-gallery", "Gallery", "Qirtas", 49.92, 49.92],
+  ["section-video", "Video", "Qirtas", 49.92, 49.92],
+  ["section-games", "Games", "Qirtas", 49.92, 49.92],
+  ["read-blind", "Read blind", "Qirtas", 101.92, 47.92],
+  ["next-stop", "Next Stop", "Qirtas", 69.92, 77.92],
+  ["ticket", "What’s on ticket", "Events", 101.92, 47.92],
+  ["record", "The record", "Events", 65.92, 65.92],
+  ["read-it", "Read it, talk about it", "Events", 69.92, 69.92],
+  ["cup", "A cup of tea", "Events", 69.92, 69.92],
+  ["open-book", "An open book", "Events", 97.92, 63.92],
+  ["book-stack", "A stack of books", "Events", 79.92, 47.92],
+  ["icon-book-open", "Book open", "Events", 49.92, 49.92],
+  ["icon-headphones", "Headphones", "Events", 49.92, 49.92],
+  ["the-company", "The Company", "The Company", 95.92, 69.92],
+  ["icon-drama", "Drama", "The Company", 49.92, 49.92],
+  ["typewriter", "The typewriter", "Typewriter Tour", 86.92, 61.92],
+  ["six-words", "Six words, to fill in", "Typewriter Tour", 95.92, 61.92],
+  ["icon-keyboard", "Keyboard", "Typewriter Tour", 49.92, 49.92],
+  ["hudhud", "Hudhud", "Hudhud", 69.92, 69.92],
+  ["hudhud-flying", "Hudhud flying", "Hudhud", 87.92, 67.92],
+  ["hudhud-reversed", "Hudhud on crimson", "Hudhud", 67.92, 62.92],
+  ["join-qr", "Join", "Ways in", 55.92, 67.92],
+  ["get-involved", "Get involved", "Ways in", 111.92, 35.92],
+  ["camera-shy", "Camera-shy", "Ways in", 45.92, 45.92],
+];
+
+export const StickerPack: Story = {
+  render: () => (
+    <div className="grid gap-10 bg-[#d9d9d9] p-10">
+      {[...new Set(STICKER_PACK.map(([, , family]) => family))].map(
+        (family) => (
+          <section className="grid gap-4" key={family}>
+            <h2 className="font-light text-2xl">{family}</h2>
+            <div className="flex flex-wrap items-end gap-8">
+              {STICKER_PACK.filter(([, , f]) => f === family).map(
+                ([id, name, , w, h]) => (
+                  <figure className="m-0 grid gap-2" key={id}>
+                    {/* biome-ignore lint/performance/noImgElement: the print file as supplied */}
+                    <img
+                      alt={name}
+                      height={h * 4}
+                      src={`brand-kit/print/stickers/${id}.svg`}
+                      style={{ height: `${h}mm`, width: `${w}mm` }}
+                      width={w * 4}
+                    />
+                    <figcaption className="text-xs">{name}</figcaption>
+                  </figure>
+                )
+              )}
+            </div>
+          </section>
+        )
+      )}
+    </div>
   ),
 };
 
@@ -212,6 +284,7 @@ const SIZES: [string, string][] = [
   ["Name badges", "90 × 55 mm"],
   ["Photography notice", "A4"],
   ["Camera-shy stickers", "40 mm round, twenty to an A4 sheet"],
+  ["Sticker pack", "Die-cut, each at its own size (assets/print/stickers)"],
 ];
 
 export const Sizes: Story = {

@@ -2,7 +2,7 @@ The Society's identity: the symbol, the two wordmarks and the lockups built from
 
 **One language per piece.** Use the logo in the language of the content: the English lockup on English pages, posts and documents; the Arabic lockup on Arabic ones. Never both on one piece.
 
-**Color (one hue).** Files without a suffix are for light grounds (`white`, `paper`): crimson `#9c213e` symbol, Crimson 700 `#7e1a32` wordmarks. `-reversed` files are for `crimson` and `ink` grounds: white symbol, Crimson 100 `#ebcbd3` wordmarks. They are invisible on white.
+**Color (one hue).** Files without a suffix are for light grounds (`white`, `paper`): crimson `#9c213e` symbol, Crimson 700 `#7e1a32` wordmarks. `-reversed` files are for `crimson` and `ink` grounds: white symbol and white wordmarks. They are invisible on white.
 
 **Lockups**
 - `sal-lockup-horizontal(-reversed).svg`: symbol + English wordmark. For everything in English.

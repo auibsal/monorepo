@@ -16,4 +16,4 @@ A society about writing should look like the best-made page on campus: wide marg
 
 ## The motto
 
-**The paper and the pen.** A line of al-Mutanabbi. On Arabic pieces it appears in his words: «والقرطاسُ والقلم».
+**The paper and the pen.** A line of al-Mutanabbi. On Arabic pieces it appears in his words: «والقرطاسُ والقلمُ».

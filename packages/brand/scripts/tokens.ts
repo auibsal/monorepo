@@ -113,7 +113,7 @@ export const renderTokens = (tokens: BrandTokens) => {
     ...roleLines(roles, "light", "sal-"),
     "}",
     "",
-    "/* Dark mode: ink for the whole page, rose in place of crimson. */",
+    "/* Dark mode: ink for the whole page, white in place of crimson. */",
     '[data-theme="dark"] {',
     ...roleLines(roles, "dark", "sal-"),
     "}",

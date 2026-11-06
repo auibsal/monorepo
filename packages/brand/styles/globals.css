@@ -62,7 +62,7 @@
   --chart-1: var(--sal-crimson);
   --chart-2: var(--sal-ink);
   --chart-3: var(--sal-ash);
-  --chart-4: var(--sal-crimson-100);
+  --chart-4: var(--sal-mist);
   --chart-5: var(--sal-stone);
   --radius: var(--sal-radius-none);
   --sidebar: var(--surface);
@@ -131,7 +131,6 @@
   /* Palette, for the few places that are always one color (the footer, posts). */
   --color-ink: var(--sal-ink);
   --color-paper: var(--sal-paper);
-  --color-rose: var(--sal-crimson-100);
   --color-mist: var(--sal-mist);
 
   /* No shadows anywhere. */

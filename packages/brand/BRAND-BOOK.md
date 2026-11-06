@@ -17,7 +17,7 @@ This is SAL-BRD-01, Brand and Identity, Version 1, ratified by the Society, in s
 - Write Arabic for Arabic readers, then have a native speaker check it. Never ship a translation as an afterthought.
 - Iraqi Arabic where the Society chats with members (Hudhud, social captions and stories, the members' group, signs at the door), spelled as Iraqis write it (گ); standard Arabic for the site, the Diwan, emails, documents, certificates and Qirtas. Never both in one message.
 - Names: "AUIB Society of Arts and Letters" in full on first use in formal documents; then "the Society" or "SAL". Never "the club", never "Art and Letter".
-- The Society's paper is **Qirtas** («قرطاس», paper, from the motto «والقرطاسُ والقلم»), "AUIB's paper of news, letters and art." Qirtas is the Society's paper, with its own masthead. It has six sections: News, Voices, Letters, Gallery, Video and Games. Next Stop is its video show, in Video. Each semester's Edition is printed and launched at Launch Night; the Sunday Paper is its monthly newsletter, on the first Sunday of the month.
+- The Society's paper is **Qirtas** («قرطاس», paper, from the motto «والقرطاسُ والقلمُ»), "AUIB's paper of news, letters and art." Qirtas is the Society's paper, with its own masthead. It has six sections: News, Voices, Letters, Gallery, Video and Games. Next Stop is its video show, in Video. Each semester's Edition is printed and launched at Launch Night; the Sunday Paper is its monthly newsletter, on the first Sunday of the month.
 - **The Company** is the Society's theater company, with its own Artistic Director on the Council.
 - Everything else is an event (owner, Nov 5, 2026): the Society holds no standing programs. The recurring events keep their names, listed flat: **Second Chapter**, **the Salon**, **Book Circle**, **Open Pages** and **the Listening Room**. The **Typewriter Tour** is the welcome to new students and belongs to membership. Never say "program" for any of them, and never group them into tiers.
 - Endorsed work carries the line "a Society of Arts and Letters program" (Arabic: «من برامج جمعية الفنون والآداب»).
@@ -34,9 +34,9 @@ This is SAL-BRD-01, Brand and Identity, Version 1, ratified by the Society, in s
 - `crimson` appears once or twice a page at full strength: the logo, one italic word, one button, one band. Never as a pale tint, never as large blocks of headline.
 - `paper` is Qirtas's page and long reading only. Elsewhere the page is `white`.
 - `stone` is for hairline rules only, never text. `ash` is secondary text and captions (6.0:1 on white, 5.3:1 on paper).
-- Two colors are reserved: `crimson-700` lives only inside the logo files; `crimson-100` (rose) is the accent on `ink`, where crimson fails contrast, and the reversed wordmark color.
+- One color is reserved: `crimson-700` lives only inside the logo files. There is no pink (decided Nov 6): rose is retired, as an accent and in Hudhud.
 - Build with the role tokens: `surface`, `surface-reading`, `text`, `text-secondary`, `accent`, `line`, `band` and `on-band`. They switch between light and dark.
-- Dark mode is `ink` with white text, `mist` for secondary text and rose in place of crimson. Never crimson text or the crimson symbol on `ink` (1.7:1).
+- Dark mode is `ink` with white text and `mist` for secondary text. The accent word always differs in color from the text around it: `crimson` on white and paper, `mist` on `ink` and `crimson` (decided Nov 6). In dark mode the one button is mist with ink text. Never crimson text or the crimson symbol on `ink` (1.7:1).
 
 ## Type
 
@@ -68,7 +68,7 @@ This is SAL-BRD-01, Brand and Identity, Version 1, ratified by the Society, in s
 
 - The **symbol** is a crimson panel with a V-notch cut into its top; turned over, it is the tail of a ribbon bookmark, and its name is **the Bookmark** (Arabic «العلامة»). The **English wordmark** is "AUIB / Society of / Arts and / Letters" in Ubuntu Bold, on four lines. The **Arabic wordmark** is «جمعيةُ الفنونِ / والآدابِ في / الجامعةِ / الأمريكيةِ» in Ubuntu Arabic Bold, on four lines.
 - Use the files in Logos (`assets/Logos/README.md`); never retype or redraw them. Their line breaks, spacing and proportions are fixed.
-- Color is one hue. On light grounds the symbol is `crimson` and the wordmarks `crimson-700`. On `crimson` or `ink`, use the reversed files: white symbol, `crimson-100` wordmarks.
+- Color is one hue. On light grounds the symbol is `crimson` and the wordmarks `crimson-700`. On `crimson` or `ink`, use the reversed files: white symbol, white wordmarks.
 - Use the lockup in the content's language: the English horizontal lockup for English, the Arabic horizontal lockup (`sal-lockup-horizontal-ar`, symbol on the right) for Arabic. Stacked for square spaces and merchandise; the symbol alone for avatars, favicons and stamps. The bilingual lockup is only for permanent signage, banners and merchandise that must speak to both at once.
 - The logo appears **once** per page or post, in the header or a corner, with clear space of one notch depth on every side. Never repeat it in a hero beneath the header.
 - The Bookmark is only ever the logo. Never use it as a bullet, a section marker, a ribbon or a decoration.
@@ -79,7 +79,7 @@ This is SAL-BRD-01, Brand and Identity, Version 1, ratified by the Society, in s
 - **Grounds.** One ground for the whole platform, public site, the members' pages and the Diwan alike, in two modes: light is white; dark is ink. The visitor's system setting picks the mode until they choose. The footer is ink in both. Qirtas pages sit on `paper`. Certificates and printouts stay white sheets in dark mode.
 - **Header.** One line: the lockup in the page's language (English lockup on `/`, Arabic lockup on `/ar`), at most five sections, the other language as a text link (العربية or English) and Sign in. A hairline below it. Nothing boxed.
 - **Section titles** stand alone: the title, and at most a text link at the end of its line. No marker, no label or kicker above it.
-- **One language per page.** The English site is English only and the Arabic site Arabic only, mirrored. The motto appears as "The paper and the pen." on English pages and «والقرطاسُ والقلم» on Arabic pages.
+- **One language per page.** The English site is English only and the Arabic site Arabic only, mirrored. The motto appears as "The paper and the pen." on English pages and «والقرطاسُ والقلمُ» on Arabic pages.
 - **Buttons.** One solid `accent` button per view for the main action, 48–50 px tall, square, sentence case. Everything else is a text link with an underline. No frames, no offset blocks.
 - **Lists over cards.** Events, stories, programs and partners are lists separated by hairlines. Use a card only when the thing is a separate object, like a ticket.
 - **Dates.** Event lists carry large Light dates down the margin, like an almanac.
@@ -92,7 +92,7 @@ This is SAL-BRD-01, Brand and Identity, Version 1, ratified by the Society, in s
 
 - Hudhud (هدهد) is a hoopoe: native to Iraq, the messenger of the old stories, and the guide in Attar's *The Conference of the Birds*. It is the face of the Telegram bot and appears only where the Society talks to members one to one: the bot, notices, stickers, and empty states that point somewhere.
 - Hudhud and the logo never touch. The symbol and wordmarks are never put in Hudhud's beak, crest, feet or anywhere on it, and Hudhud never stands in for a logo or sits inside a lockup. Where both appear, as on a bot welcome card, keep them apart with at least the logo's clear space.
-- Hudhud is drawn flat, in the brand's colors and with no outlines: a `crimson` body, `crimson-100` breast, `ink` wings, tail and beak with `white` bars. On `crimson` grounds, use the reversed files, where the body turns `white`.
+- Hudhud is drawn flat, in the brand's colors and with no outlines: a `crimson` body, `stone` breast, `ink` wings, tail and beak with `white` bars. On `crimson` grounds, use the reversed files, where the body turns `white`.
 - Use the files in Mascot (`assets/Mascot/README.md`): standing, standing reversed, flying, and the round avatar. Never redraw, recolor, stretch or mirror them. Props, expressions and the symbols for sleep, questions and surprise belong to the stickers in Stickers (`assets/Stickers/README.md`) only.
 - Keep Hudhud at 48 px or larger; the avatar works down to 28 px.
 - Hudhud speaks in the first person, warm and brief: "You're in. I'll remind you before it starts." No exclamation marks and no emoji. See `components/Hudhud/README.md`.
@@ -124,10 +124,11 @@ This is SAL-BRD-01, Brand and Identity, Version 1, ratified by the Society, in s
 - **Stories (1080 × 1920):** the post's parts, with every word 250 px clear of the top and 340 px clear of the bottom.
 - **Profile pictures:** Instagram (@auibsal) and the members' Telegram group use the Bookmark in white on crimson (`sal-avatar.svg`). The Diwan group, the officers' working group, uses the Bookmark in white on ink (`sal-avatar-ink.svg`), so the two groups are never confused. Hudhud, the bot, keeps the hoopoe (`hudhud-avatar.png`).
 - **Instagram bio:** "Qirtas, our paper. The Company, our theater. Events all year at @auibaghdad." Links, in order: auibsal.org, auibsal.org/events, auibsal.org/join.
-- **Highlights:** six, in this order: What's on, Qirtas, Next Stop, The Company, Join, Get involved. Covers are plain crimson with the highlight's icon and its name in white Ubuntu Light; no Bookmark. Each highlight opens with a 1080 × 1920 story banner on white: the wordmark alone at the top (no Bookmark), a Light headline with one italic crimson word, a short line, a list split by thin rules, and the link at the bottom. See `components/Highlights`.
+- **Highlights:** six, in this order: What's on, Qirtas, Next Stop, The Company, Join, Get involved. Covers are plain crimson with the highlight's icon alone, in white: no name (Instagram writes it under the circle) and no Bookmark. Each highlight opens with a 1080 × 1920 story banner on white: the wordmark alone at the top (no Bookmark), a Light headline with one italic crimson word, a short line, a list split by thin rules, and the link at the bottom. See `components/Highlights`.
 - Three grounds, by purpose: `crimson` for calls and moments, `white` for events, `ink` for words worth keeping and recruiting.
 - Posters A3/A4 follow the post: lockup, Light headline, a QR code at bottom right. Certificates are A4 landscape with a single hairline frame and the lockup. Print only when current stock runs out.
-- Print sizes: Charter poster A3; Open Call poster A3 or A4; Term Card A6, four to an A4 sheet; membership card 85 × 55 mm, 300 gsm, ten to an A4 sheet; Certificate of Service and Fellow certificate A4 landscape; name badges 90 × 55 mm; photography notice A4; camera-shy stickers 40 mm round, twenty to an A4 sheet. Every one is drawn in Print.
+- Print sizes: Charter poster A3; Open Call poster A3 or A4; Term Card A6, four to an A4 sheet; membership card 85 × 55 mm, 300 gsm, ten to an A4 sheet; Certificate of Service and Fellow certificate A4 landscape; name badges 90 × 55 mm; photography notice A4; camera-shy stickers 40 mm round, twenty to an A4 sheet, the crossed-out camera alone in white on ink. Every one is drawn in Print.
+- **The sticker pack** (`assets/print/stickers`, decided Nov 6): 44 stickers, from the Bookmark and the motto to Qirtas in typewriter keys, a ticket, a record, Next Stop's bus, the Company's stage and Hudhud, printed by Student Life. No white borders: each is cut on a full ground or on its own clean edge. Only the brand's colors; the variety is in shape, type and structure. Each file is one sticker at 100% with its cut line in magenta.
 
 ## Imagery
 

@@ -51,19 +51,16 @@ const textPairs: [string, string][] = [
 /** Fixed pairs outside the roles: the footer is ink, with white text, in both modes. */
 const fixedPairs: [string, string][] = [
   ["white", "ink"],
-  ["crimson-100", "ink"],
   ["mist", "ink"],
-  ["crimson-100", "crimson"],
   ["ash", "paper"],
 ];
 
 describe("SAL tokens (packages/brand/assets/tokens.json)", () => {
-  test("the palette is the brand's six colors and four reserved tones", () => {
+  test("the palette is the brand's six colors and three reserved tones", () => {
     expect(Object.keys(palette).sort()).toEqual(
       [
         "ash",
         "crimson",
-        "crimson-100",
         "crimson-700",
         "ink",
         "mist",

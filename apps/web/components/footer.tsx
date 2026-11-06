@@ -20,7 +20,7 @@ const linkClass = "hover:text-accent hover:underline hover:underline-offset-4";
 /**
  * The one footer for the whole site, the members' pages and the Diwan
  * alike: ink in both modes. The reversed lockup in the page's language and
- * one sentence, three short columns under rose labels (Programs, Society,
+ * one sentence, three short columns under white labels (Programs, Society,
  * Stay in touch; two side by side on phones), then a hairline and the fine
  * print, which keeps the policies and cookie settings within reach. Nothing here repeats the
  * header (owner, Oct 30, 2026): its sections, Search, Sign in and

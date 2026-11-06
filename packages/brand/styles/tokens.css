@@ -7,7 +7,6 @@
   --sal-stone: #e2ddd6;
   --sal-ash: #5c6568;
   --sal-crimson-700: #7e1a32;
-  --sal-crimson-100: #ebcbd3;
   --sal-mist: #c3cacb;
   --sal-slate: #3d494d;
   --sal-space-1: 4px;
@@ -49,13 +48,13 @@
   --footer: var(--sal-ink);
 }
 
-/* Dark mode: ink for the whole page, rose in place of crimson. */
+/* Dark mode: ink for the whole page, white in place of crimson. */
 [data-theme="dark"] {
   --surface: var(--sal-ink);
   --surface-reading: var(--sal-ink);
   --text: var(--sal-white);
   --text-secondary: var(--sal-mist);
-  --accent: var(--sal-crimson-100);
+  --accent: var(--sal-mist);
   --on-accent: var(--sal-ink);
   --line: var(--sal-slate);
   --band: var(--sal-crimson);
