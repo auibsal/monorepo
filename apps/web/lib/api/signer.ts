@@ -4,6 +4,8 @@ import type { AdminClient } from "@repo/database/admin";
 
 /** Who signs the Society's letters by email: today's President. */
 export interface Signer {
+  /** Chose the feminine Arabic form of the title (decisions §13). */
+  readonly feminine: boolean;
   readonly name: string;
   readonly number: number | null;
 }
@@ -42,7 +44,7 @@ export const presidentSigner = async (
     admin
       .schema("core")
       .from("profiles")
-      .select("full_name_en")
+      .select("full_name_en, title_form")
       .eq("id", userId)
       .maybeSingle(),
     admin
@@ -53,5 +55,11 @@ export const presidentSigner = async (
       .maybeSingle(),
   ]);
   const name = profile?.full_name_en?.trim();
-  return name ? { name, number: card?.number ?? null } : null;
+  return name
+    ? {
+        feminine: profile?.title_form === "feminine",
+        name,
+        number: card?.number ?? null,
+      }
+    : null;
 };

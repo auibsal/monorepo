@@ -1486,6 +1486,8 @@ const typedLine = (l: Lang, station: string, words: string | undefined) => {
 
 /** Who signs the invitation: the President, with their signature. */
 export interface InvitationSigner {
+  /** The holder chose the feminine Arabic form of the title (§13). */
+  feminine?: boolean;
   /** The signature as an image (`/api/email/signature`), when there is one. */
   image?: string;
   name: string;
@@ -1502,7 +1504,7 @@ const presidentSignoff = (
         name: signer.name,
         title:
           l === "ar"
-            ? "رئيس جمعية الفنون والآداب"
+            ? `${signer.feminine ? "رئيسة" : "رئيس"} جمعية الفنون والآداب`
             : "President, AUIB Society of Arts and Letters",
       }
     : undefined;

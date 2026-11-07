@@ -239,8 +239,20 @@ any schema change. Integration tests run against a local stack with
   (guests); no shareable links and no invitation ever grants a role.
   Sign-up takes an AUIB address only, unless the account comes from an
   invitation, applies to partner or signs up as a guest
-  (`private.sign_up_allowed`). `/welcome` asks one question per screen
+  (`private.sign_up_allowed`). A student who leaves AUIB is recorded by
+  Membership on their Diwan page (`membership.record_departure`): a
+  graduate becomes an Associate Member; someone who left without
+  graduating becomes a guest, same number and a Guest card, with no vote
+  or role, and Hudhud's week in the members' group starts. Partners'
+  people and advisors from partner organizations hold guest accounts;
+  faculty and alumni advisors are Associate Members invited by the
+  Director of Membership. `/welcome` asks one question per screen
   (`planSetup` in `components/diwan/setup-form.tsx`).
+- **Arabic titles agree with the holder** (decisions §13). An optional
+  setting (`core.profiles.title_form`, read only by its owner through
+  `core.my_private_profile`) gives the feminine form
+  (`access.roles.name_ar_feminine`) on the Council page, the masthead,
+  the card's role line and letters; documents keep the glossary's form.
 - **Names.** A name in four parts in each language, as on the person's
   papers (`first_name_en` … `last_name_ar`), all eight required
   (`NamePartsFields`, `hasAllNames`). Wherever a name shows, it is the

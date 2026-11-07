@@ -841,7 +841,14 @@
       "lede": "Your details, how the Society reaches you, and what you have shared.",
       "aboutYou": "About you",
       "photos": "Photos of me at the Society’s events may be shared",
-      "photosHint": "On the Society’s website, its channels and in Qirtas. Change your mind at any time; photos already shared stay up unless you ask us to take them down."
+      "photosHint": "On the Society’s website, its channels and in Qirtas. Change your mind at any time; photos already shared stay up unless you ask us to take them down.",
+      "titleForm": "The Arabic form of your title",
+      "titleFormHint": "Optional. Where an Arabic title names you (the Council page, Qirtas’s masthead, your card, letters), it takes this form, as in «نائبة الرئيس».",
+      "titleForms": {
+        "unset": "Not given",
+        "masculine": "Masculine",
+        "feminine": "Feminine"
+      }
     },
     "admin": {
       "title": "Administration",
@@ -1101,7 +1108,19 @@
         "probation": "First term (on probation)",
         "confirmRole": "Confirm after the first term",
         "studentLifeEligible": "Student Life says eligible",
-        "studentLifeNotEligible": "Student Life says not eligible"
+        "studentLifeNotEligible": "Student Life says not eligible",
+        "departure": {
+          "title": "Left AUIB",
+          "body": "For a student Member who has left AUIB. A graduate becomes an Associate Member: same account and number, no vote and no office. Someone who left without graduating becomes a guest: same number and a Guest card, no vote, no role, and Hudhud takes them out of the members’ group after a week.",
+          "graduated": "Graduated",
+          "graduatedConfirm": "Make them an Associate Member",
+          "graduatedDescription": "{name} graduated: their class becomes Associate Member and any role they hold ends.",
+          "left": "Left without graduating",
+          "leftConfirm": "Make them a guest",
+          "leftDescription": "{name} left AUIB without graduating: their account becomes a guest account with the same number, and any role they hold ends.",
+          "nowGuest": "{name} is now a guest.",
+          "nowAssociate": "{name} is now an Associate Member."
+        }
       },
       "verification": {
         "title": "Partner applications",
@@ -5037,6 +5056,17 @@
       "rules": "How the Council works and how elections run is set out in the Constitution and the Bylaws.",
       "documents": "Read the documents",
       "seats": {
+        "president": "President",
+        "vice_president": "Vice President",
+        "general_secretary": "General Secretary",
+        "eic": "Editor-in-Chief",
+        "media_director": "Director of Media",
+        "artistic_director": "Artistic Director",
+        "events_director": "Director of Events",
+        "partnerships_director": "Director of Partnerships",
+        "membership_director": "Director of Membership"
+      },
+      "seatsFeminine": {
         "president": "President",
         "vice_president": "Vice President",
         "general_secretary": "General Secretary",

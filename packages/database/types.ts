@@ -153,6 +153,7 @@ export type Database = {
           is_council: boolean;
           key: string;
           name_ar: string;
+          name_ar_feminine: string | null;
           name_en: string;
           requires_mfa: boolean;
           sort: number;
@@ -163,6 +164,7 @@ export type Database = {
           is_council?: boolean;
           key: string;
           name_ar: string;
+          name_ar_feminine?: string | null;
           name_en: string;
           requires_mfa?: boolean;
           sort?: number;
@@ -173,6 +175,7 @@ export type Database = {
           is_council?: boolean;
           key?: string;
           name_ar?: string;
+          name_ar_feminine?: string | null;
           name_en?: string;
           requires_mfa?: boolean;
           sort?: number;
@@ -669,6 +672,7 @@ export type Database = {
           personal_email: string | null;
           personal_email_verified_at: string | null;
           setup_completed_at: string | null;
+          title_form: string | null;
           updated_at: string;
           verified_at: string | null;
         };
@@ -694,6 +698,7 @@ export type Database = {
           personal_email?: string | null;
           personal_email_verified_at?: string | null;
           setup_completed_at?: string | null;
+          title_form?: string | null;
           updated_at?: string;
           verified_at?: string | null;
         };
@@ -719,6 +724,7 @@ export type Database = {
           personal_email?: string | null;
           personal_email_verified_at?: string | null;
           setup_completed_at?: string | null;
+          title_form?: string | null;
           updated_at?: string;
           verified_at?: string | null;
         };
@@ -1114,6 +1120,7 @@ export type Database = {
         Returns: {
           notify_email: boolean;
           personal_email: string;
+          title_form: string;
         }[];
       };
       outbox_health: {
@@ -2845,6 +2852,7 @@ export type Database = {
       council_seats: {
         Args: Record<PropertyKey, never>;
         Returns: {
+          feminine: boolean;
           holders_ar: string[];
           holders_en: string[];
           seat: string;
@@ -5218,6 +5226,7 @@ export type Database = {
           role_en: string;
           signer_ar: string | null;
           signer_en: string | null;
+          signer_feminine: boolean;
           user_id: string;
           verification_code: string;
         };
@@ -5237,6 +5246,7 @@ export type Database = {
           role_en: string;
           signer_ar?: string | null;
           signer_en?: string | null;
+          signer_feminine?: boolean;
           user_id: string;
           verification_code?: string;
         };
@@ -5256,6 +5266,7 @@ export type Database = {
           role_en?: string;
           signer_ar?: string | null;
           signer_en?: string | null;
+          signer_feminine?: boolean;
           user_id?: string;
           verification_code?: string;
         };
@@ -5482,6 +5493,10 @@ export type Database = {
           verified: boolean;
           voting_member: boolean;
         }[];
+      };
+      record_departure: {
+        Args: { graduated: boolean; member: string };
+        Returns: string;
       };
       register: {
         Args: Record<PropertyKey, never>;

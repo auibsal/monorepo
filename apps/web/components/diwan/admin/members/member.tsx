@@ -642,6 +642,59 @@ const TwoStepReset = ({ name, userId }: { name: string; userId: string }) => {
   );
 };
 
+/**
+ * A student Member who left AUIB (decisions §12): graduated, an Associate
+ * Member (no vote, no office); left without graduating, a guest account
+ * with the same number and a Guest card, no vote, no role, and Hudhud's
+ * week in the members' group (`membership.record_departure`).
+ */
+const Departure = ({ name, userId }: { name: string; userId: string }) => {
+  const t = useTranslations("diwan.admin.member.departure");
+  const { supabase } = useAuth();
+  const queryClient = useQueryClient();
+  const record = useMutation({
+    mutationFn: async (graduated: boolean) =>
+      unwrap(
+        await supabase
+          .schema("membership")
+          .rpc("record_departure", { graduated, member: userId })
+      ),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["admin"] }),
+  });
+  return (
+    <section className="grid gap-3">
+      <h2 className="type-heading">{t("title")}</h2>
+      <p className="type-body max-w-2xl text-text-secondary">{t("body")}</p>
+      <div className="flex flex-wrap gap-3">
+        <ConfirmAction
+          confirmLabel={t("graduatedConfirm")}
+          description={t("graduatedDescription", { name })}
+          disabled={record.isPending}
+          onConfirm={() => record.mutate(true)}
+          variant="outline"
+        >
+          {t("graduated")}
+        </ConfirmAction>
+        <ConfirmAction
+          confirmLabel={t("leftConfirm")}
+          description={t("leftDescription", { name })}
+          disabled={record.isPending}
+          onConfirm={() => record.mutate(false)}
+          variant="ghost"
+        >
+          {t("left")}
+        </ConfirmAction>
+      </div>
+      {record.data ? (
+        <p className="type-body" role="status">
+          {t(record.data === "guest" ? "nowGuest" : "nowAssociate", { name })}
+        </p>
+      ) : null}
+      <ErrorLine error={record.error} />
+    </section>
+  );
+};
+
 // ── Page ────────────────────────────────────────────────────────────────────
 
 export const MemberDetail = () => {
@@ -716,6 +769,9 @@ export const MemberDetail = () => {
         <TierForm tier={row.tier} userId={userId} />
       ) : null}
       {canManage ? <ActivitySection userId={userId} /> : null}
+      {canManage && row.tier === "member" ? (
+        <Departure name={name} userId={userId} />
+      ) : null}
       <RolesSection name={name} userId={userId} />
       {canAssign && userId !== user?.id ? (
         <TwoStepReset name={name} userId={userId} />
