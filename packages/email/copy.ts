@@ -927,7 +927,7 @@ export const electionStage = (
     const name = pick(l, e.title_ar, e.title_en);
     const lines = ELECTION_LINES[stage](l, e);
     return {
-      action: account(app, l, "/account/society"),
+      action: account(app, l, "/account/elections"),
       heading: `${lines.heading}: ${name}`,
       paragraphs: lines.paragraphs,
     };
@@ -969,7 +969,7 @@ export const candidacyDecided = (
   build(lang, (l) => {
     const lines = CANDIDACY[approved ? "approved" : "declined"][l];
     return {
-      action: account(app, l, "/account/society"),
+      action: account(app, l, "/account/elections"),
       heading: `${lines[0]}: ${pick(l, seat.title_ar, seat.title_en)}`,
       paragraphs: [lines[1]],
     };
@@ -987,7 +987,7 @@ export const certificateIssued = (
 ) =>
   build(lang, (l) => ({
     action: {
-      href: `${app}${localizedPath(l, `/account/record/${certificateId}`)}`,
+      href: `${app}${localizedPath(l, `/account/record/certificates/${certificateId}`)}`,
       label: l === "ar" ? "افتح الشهادة" : "Open the certificate",
     },
     heading: l === "ar" ? "شهادتك جاهزة" : "Your certificate is ready",

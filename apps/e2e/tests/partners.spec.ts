@@ -222,11 +222,11 @@ test("a member who leads their club's partnership stays a member", async ({
     // Still a member: the whole row, the Member card, and the dashboard.
     await page.goto(`${urls.web}/account`);
     const row = page.getByRole("navigation", { name: "Your account" });
-    for (const name of ["My calendar", "Society", "Record"]) {
+    for (const name of ["Calendar", "Record", "Work", "Elections"]) {
       await expect(row.getByRole("link", { name })).toBeVisible();
     }
-    await page.goto(`${urls.web}/account/society`);
-    await expect(page).toHaveURL(/\/account\/society$/);
+    await page.goto(`${urls.web}/account/elections`);
+    await expect(page).toHaveURL(/\/account\/elections$/);
     // Leading a partner is not an officer's role: no Diwan.
     await page.goto(`${urls.app}`);
     await expect(page).toHaveURL(/\/partners\/dashboard$/);

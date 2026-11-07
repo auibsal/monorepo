@@ -62,7 +62,10 @@ export const SettingsScreen = () => {
             </li>
           ) : null}
           <li className="grid gap-1">
-            <Link className="link font-medium" href="/account/settings/notices">
+            <Link
+              className="link font-medium"
+              href="/account/settings/notifications"
+            >
               {t("notices")}
             </Link>
             <p className="type-caption">{t("noticesLine")}</p>
@@ -71,7 +74,7 @@ export const SettingsScreen = () => {
             <li className="grid gap-1">
               <Link
                 className="link font-medium"
-                href="/account/settings/declarations"
+                href="/account/settings/disclosures"
               >
                 {t("declarations")}
               </Link>

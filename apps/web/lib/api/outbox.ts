@@ -230,7 +230,7 @@ const footerFor = (
   return {
     footer: [
       {
-        href: site(to.lang, "/account/settings/notices"),
+        href: site(to.lang, "/account/settings/notifications"),
         link: line.link,
         text: line.text,
       },

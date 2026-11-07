@@ -22,7 +22,13 @@ interface AccountLink {
   /** Pages that count as this link's own (Settings holds Profile and Requests). */
   readonly also?: readonly string[];
   readonly href: string;
-  readonly key: "today" | "calendar" | "society" | "record" | "settings";
+  readonly key:
+    | "today"
+    | "calendar"
+    | "record"
+    | "work"
+    | "elections"
+    | "settings";
 }
 
 /** Whether a link is the current page: Today only on itself. */
@@ -71,11 +77,10 @@ export const useWays = (): Ways => {
 export const useIsStaff = () => useWays().diwan;
 
 /**
- * The account's own pages, in one row under the site's header (owner,
- * 2026-10-25): Today · My calendar · Society · Record · Settings. The
- * Get involved is the header's "Get involved" and the Diwan sits under the
- * header's Membership, so neither is repeated here. Profile and Requests
- * sit under Settings; perks are on the card.
+ * The account's own pages, in one row under the site's header (decisions
+ * §6): Today · Calendar · Record · Work · Elections · Settings. Get
+ * involved is the header's, and the Diwan sits under the header's menu, so
+ * neither is repeated here. Profile and what you sent sit under Settings.
  */
 const useAccountLinks = (): AccountLink[] => {
   const kind = useMyMembership().data?.kind ?? null;
@@ -94,15 +99,16 @@ const useAccountLinks = (): AccountLink[] => {
     href: "/account/calendar",
     key: "calendar",
   };
-  // One Membership, its row by kind (owner, Oct 31, 2026): members have
-  // all five; guests book, so keep their calendar; a partner's people and
-  // anyone with no membership yet have Today and Settings.
+  // The row by kind: members have all six; guests book, so keep their
+  // calendar; a partner's people and anyone with no membership yet have
+  // Today and Settings.
   if (kind === "member") {
     return [
       today,
       calendar,
-      { href: "/account/society", key: "society" },
       { href: "/account/record", key: "record" },
+      { href: "/account/work", key: "work" },
+      { href: "/account/elections", key: "elections" },
       settings,
     ];
   }
@@ -209,7 +215,7 @@ const AccountNav = () => {
 };
 
 /** Pages that show the account's row of links. */
-const ACCOUNT_PAGES = /^\/(account|society)(\/|$)/;
+const ACCOUNT_PAGES = /^\/account(\/|$)/;
 
 /** The members' pages: the account row where it belongs, then the page. */
 export const MemberShell = ({ children }: { children: ReactNode }) => {
