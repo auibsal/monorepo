@@ -13,6 +13,7 @@ const {
   checkProgram,
   checkQirtas,
   languageOf,
+  RETIRED_DOCUMENT_FAMILY,
 } = await import("@/lib/api/notion/rules");
 
 const rt = (content: string, extra: object = {}) => ({
@@ -233,19 +234,32 @@ describe("publishing rules", () => {
       checkDocument(
         page({
           Audience: { select: { name: "public" }, type: "select" },
-          Code: text("SAL-PLT-03"),
-          Slug: text("cookies"),
-          Title: title("Cookie and Consent Policy"),
+          Code: text("SAL-GOV-04"),
+          Slug: text("privacy"),
+          Title: title("Privacy Notice"),
         })
       )
     ).toMatchObject({
       ok: true,
-      values: { audience: "public", code: "SAL-PLT-03", slug: "cookies" },
+      values: { audience: "public", code: "SAL-GOV-04", slug: "privacy" },
     });
+    // The retired families (owner, Nov 7, 2026) are refused.
+    expect(
+      checkDocument(
+        page({
+          Audience: { select: { name: "public" }, type: "select" },
+          Code: text("SAL-PLT-03"),
+          Slug: text("cookies"),
+          Title: title("Cookie and Consent Policy"),
+        })
+      ).ok
+    ).toBe(false);
+    expect(RETIRED_DOCUMENT_FAMILY.test("SAL-BRD-01")).toBe(true);
+    expect(RETIRED_DOCUMENT_FAMILY.test("SAL-MED-02")).toBe(false);
     const bad = checkDocument(page({ Code: text("PLT3"), Title: title("X") }));
     expect(bad.ok ? [] : bad.problems).toEqual(
       expect.arrayContaining([
-        "Set the Code, for example SAL-GOV-01.",
+        "Set the Code, for example SAL-GOV-01 (families GOV, EXB, EVT, MEM, PTN, MED, ART, EDT).",
         "Set Audience to public or internal.",
       ])
     );

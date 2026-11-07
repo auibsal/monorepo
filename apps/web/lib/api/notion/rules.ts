@@ -208,7 +208,11 @@ export const checkProgram = (page: NotionPage): Checked<ProgramValues> => {
   };
 };
 
-const CODE = /^SAL-[A-Z]{3}-\d{2}$/;
+const CODE = /^SAL-(GOV|EXB|EVT|MEM|PTN|MED|ART|EDT)-\d{2}$/;
+
+/** The code families retired on Nov 7, 2026. */
+export const RETIRED_DOCUMENT_FAMILY =
+  /^SAL-(POL|HBK|STR|PRP|BRD|PLT|QRT|CMP|OPS)-/;
 
 export interface DocumentValues {
   audience: "internal" | "public";
@@ -225,7 +229,9 @@ export const checkDocument = (page: NotionPage): Checked<DocumentValues> => {
   const title = englishTitle(page, problems);
   const code = read.text(page, "Code").toUpperCase();
   if (!CODE.test(code)) {
-    problems.push("Set the Code, for example SAL-GOV-01.");
+    problems.push(
+      "Set the Code, for example SAL-GOV-01 (families GOV, EXB, EVT, MEM, PTN, MED, ART, EDT)."
+    );
   }
   const slug = read.text(page, "Slug").toLowerCase() || slugify(title);
   problems.push(...slugProblems(slug));

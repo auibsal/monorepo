@@ -39,6 +39,8 @@ export interface SyncContext {
   deadline: number;
   notion: Notion;
   problems: string[];
+  /** The Library re-sync: republish every document row (owner, Nov 7, 2026). */
+  resyncDocuments?: boolean;
   sources: Sources;
   webUrl: string;
 }

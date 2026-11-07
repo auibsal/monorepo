@@ -20,7 +20,7 @@ import {
   publishedNote,
   publisherName,
 } from "./publish";
-import { checkDocument } from "./rules";
+import { checkDocument, languageOf, RETIRED_DOCUMENT_FAMILY } from "./rules";
 
 /**
  * The Society's documents are written in Notion (Publishing, Documents;
@@ -32,6 +32,12 @@ import { checkDocument } from "./rules";
  * site is a rendering of the page and is never edited there. The person
  * who set the status needs governance.manage (the President, the Vice
  * President and the General Secretary).
+ *
+ * Each document has an English and an Arabic edition, separate rows with the
+ * same Code (owner, Nov 7, 2026): the English row makes the Library's
+ * record; the Arabic row adds its title, summary and text to it. A row in a
+ * retired code family (SAL-PLT, POL, BRD …) is marked Retired. Every
+ * document is proposed, Version 1, until the Founding Meeting adopts it.
  */
 
 const READY = "Ready to publish";
@@ -76,6 +82,10 @@ const publishDocument = async (
   page: NotionPage,
   email: string
 ) => {
+  if (RETIRED_DOCUMENT_FAMILY.test(read.text(page, "Code").toUpperCase())) {
+    await retireRow(ctx, page);
+    return;
+  }
   const checked = checkDocument(page);
   if (!checked.ok) {
     await needsChanges(ctx, page, checked.problems);
@@ -109,6 +119,16 @@ const publishDocument = async (
     return;
   }
   const docs = ctx.admin.schema("governance").from("society_documents");
+  if (languageOf(page) === "ar") {
+    await publishArabicEdition(ctx, page, {
+      body,
+      code: v.code,
+      summary: v.summary,
+      title: v.title,
+      who,
+    });
+    return;
+  }
   const existing = await recordOf(ctx, page, v.code);
   const values = {
     audience: "public",
@@ -143,16 +163,95 @@ const publishDocument = async (
   count(ctx, existing ? "document.republished" : "document.published");
 };
 
+/**
+ * An Arabic edition: its English row (the same Code) must be published
+ * first; the edition adds the Arabic title, summary and text to that record
+ * and links to the Arabic Library page.
+ */
+const publishArabicEdition = async (
+  ctx: SyncContext,
+  page: NotionPage,
+  edition: {
+    body: string;
+    code: string;
+    summary: string | null;
+    title: string;
+    who: string;
+  }
+) => {
+  const docs = ctx.admin.schema("governance").from("society_documents");
+  const { data: english } = await docs
+    .select("id, slug")
+    .eq("code", edition.code)
+    .maybeSingle();
+  if (!english) {
+    await needsChanges(ctx, page, [
+      `Publish the English row of ${edition.code} first; this edition then adds its Arabic.`,
+    ]);
+    return;
+  }
+  const { error } = await docs
+    .update({
+      body_ar: edition.body,
+      title_ar: edition.title,
+      ...(edition.summary ? { summary_ar: edition.summary } : {}),
+    })
+    .eq("id", english.id);
+  if (error) {
+    throw error;
+  }
+  await ctx.notion.updatePage(page.id, {
+    Diwan: prop.url(`${ctx.appUrl}/society/library/${english.slug}`),
+    "Diwan ID": prop.text(english.id),
+    "Platform note": prop.text(publishedNote(edition.who)),
+    "Public page": prop.url(`${ctx.webUrl}/ar/library/${english.slug}`),
+    Slug: prop.text(english.slug),
+    Status: prop.select("Published"),
+  });
+  count(ctx, "document.arabic");
+};
+
+/** A row in a retired code family: kept in Notion, off the Library. */
+const retireRow = async (ctx: SyncContext, page: NotionPage) => {
+  await ctx.notion.updatePage(page.id, {
+    Diwan: prop.url(null),
+    "Diwan ID": prop.text(null),
+    "Platform note": prop.text(
+      "Retired: this code family is retired (owner, Nov 7, 2026). Give the document its new code (SAL-GOV, EXB, EVT, MEM, PTN, MED, ART or EDT) to publish it."
+    ),
+    "Public page": prop.url(null),
+    Status: prop.select("Retired"),
+  });
+  count(ctx, "document.retired");
+};
+
 const adoptionOf = (record: {
   adopted_on: string | null;
   vote: string | null;
 }) => ({ adopted_on: record.adopted_on, vote: record.vote });
 
-export const publishDocuments = async (ctx: SyncContext) => {
-  const pages = await ctx.notion.query(ctx.sources.documents, {
-    property: "Status",
-    select: { equals: READY },
-  });
+/**
+ * Publishes the rows set to Ready to publish. The Library re-sync (owner,
+ * Nov 7, 2026: run once right after production is unpaused, with
+ * `?documents=all` on the sync route) takes every row already Published as
+ * well, English rows first so each Arabic edition finds its record.
+ */
+export const publishDocuments = async (
+  ctx: SyncContext,
+  { all = false }: { all?: boolean } = {}
+) => {
+  const ready = { property: "Status", select: { equals: READY } };
+  const found = await ctx.notion.query(
+    ctx.sources.documents,
+    all
+      ? {
+          or: [ready, { property: "Status", select: { equals: "Published" } }],
+        }
+      : ready
+  );
+  const pages = [...found].sort(
+    (a, b) => Number(languageOf(a) === "ar") - Number(languageOf(b) === "ar")
+  );
   for (const page of pages) {
     if (outOfTime(ctx)) {
       return;
