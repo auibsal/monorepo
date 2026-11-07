@@ -5,9 +5,9 @@
 -- old addresses are simply gone: no redirects.
 --
 -- In production the Notion sync has already given each event its Slug, its
--- title and its text (written in Notion in both languages), so nothing here
--- matches there. This keeps every other database (local, CI, staging) the
--- same as production.
+-- title and its text (written in Notion in both languages), so the renames
+-- match nothing there; they keep every other database (local, CI, staging)
+-- the same as production. The two fall pilots go back to draft everywhere.
 
 create temporary table event_addresses (
   old_slug text primary key,
@@ -86,6 +86,12 @@ set slug = a.new_slug,
   body_ar = a.body_ar
 from event_addresses a
 where e.slug = a.old_slug;
+
+-- The fall pilots wait, as drafts, until Student Life confirms the room
+-- (owner, Nov 7, 2026); in Notion they are back to Planning.
+update events.events
+set status = 'draft'
+where slug in ('writing-workshop-2026-11-17', 'reading-with-a-guest-2026-12-01');
 
 -- The Founding Meeting is for members and takes RSVPs; the trip is off
 -- campus, with its venue.
