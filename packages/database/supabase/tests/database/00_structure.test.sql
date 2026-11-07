@@ -56,13 +56,8 @@ select ok(
 select hasnt_column('governance', 'ballots', 'user_id', 'Ballots carry no voter');
 select hasnt_column('governance', 'ballot_receipts', 'cast_at', 'Receipts carry no timestamp');
 
-select ok(
-  not has_table_privilege('authenticated', 'charity.ledger_entries', 'update')
-    and not has_table_privilege('authenticated', 'charity.ledger_entries', 'delete')
-    and not has_table_privilege('service_role', 'charity.ledger_entries', 'update')
-    and not has_table_privilege('service_role', 'charity.ledger_entries', 'delete'),
-  'Nobody is granted update or delete on the ledger'
-);
+-- Owner, Nov 7, 2026: charity collections are not a site feature.
+select hasnt_schema('charity', 'The charity schema and its ledger are gone');
 
 select * from finish();
 rollback;

@@ -1,4 +1,4 @@
--- Recognition (B4): service records confirmed by someone else, shifts
+-- Recognition: staff service records confirmed by someone else, shifts
 -- marked as worked, certificates issued only with both signatures, and
 -- public verification by code.
 begin;
@@ -76,7 +76,7 @@ insert into core.semesters (code, name_en, name_ar, starts_on, ends_on) values
 update core.settings set value = '0' where key = 'membership.founding_voters';
 -- </preamble>
 
-select plan(24);
+select plan(20);
 
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a1', 'member-rc@auib.edu.iq', 'Layla Member');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a2', 'president-rc@auib.edu.iq', 'The President');
@@ -88,18 +88,6 @@ select pg_temp.grant_role('00000000-0000-0000-0000-0000000000a3', 'faculty_advis
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000000a4', 'programme_lead', 'programme',
   (select id from core.programmes where slug = 'company'));
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000000a5', 'general_secretary');
-
-insert into programmes.rotas (id, programme_id, title_en, title_ar)
-select '00000000-0000-0000-0000-00000000c001', id, 'Door team', 'فريق الباب'
-from core.programmes where slug = 'company';
-insert into programmes.shifts (id, rota_id, role_en, role_ar, starts_at, ends_at, capacity) values
-  ('00000000-0000-0000-0000-00000000c101', '00000000-0000-0000-0000-00000000c001', 'Door', 'الباب',
-   now() - interval '2 days', now() - interval '2 days' + interval '2 hours 30 minutes', 2),
-  ('00000000-0000-0000-0000-00000000c102', '00000000-0000-0000-0000-00000000c001', 'Later', 'لاحقًا',
-   now() + interval '2 days', now() + interval '2 days 2 hours', 2);
-insert into programmes.shift_signups (shift_id, user_id) values
-  ('00000000-0000-0000-0000-00000000c101', '00000000-0000-0000-0000-0000000000a1'),
-  ('00000000-0000-0000-0000-00000000c102', '00000000-0000-0000-0000-0000000000a1');
 
 -- Members log hours (F-16) as pending, and cannot confirm them.
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a1');
@@ -127,54 +115,38 @@ select lives_ok(
   $$ select membership.confirm_service('00000000-0000-0000-0000-00000000e001', true) $$,
   'The program lead confirms hours logged for their program'
 );
-select throws_ok(
-  $$ select membership.record_shift_service('00000000-0000-0000-0000-00000000c102', '00000000-0000-0000-0000-0000000000a1') $$,
-  '22023', 'shift_not_over',
-  'A shift that has not ended cannot be recorded'
+select ok(
+  not exists (select 1 from pg_proc where proname = 'record_shift_service'),
+  'Shifts log no hours (owner, Nov 7, 2026): staff hours are logged by hand'
 );
-select lives_ok(
-  $$ select membership.record_shift_service('00000000-0000-0000-0000-00000000c101', '00000000-0000-0000-0000-0000000000a1') $$,
-  'A finished shift is recorded as worked'
-);
-select lives_ok(
-  $$ select membership.record_shift_service('00000000-0000-0000-0000-00000000c101', '00000000-0000-0000-0000-0000000000a1') $$,
-  'and recording it twice changes nothing'
-);
-select pg_temp.logout();
-select is(
-  (select hours from membership.service_records where source = 'shift'
-     and user_id = '00000000-0000-0000-0000-0000000000a1'),
-  2.50::numeric(5,2), 'The shift''s length becomes the hours (to the quarter hour)'
-);
-select is((select count(*)::int from membership.service_records where source = 'shift'), 1,
-  'One record per shift and person');
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a1');
-select is(membership.service_hours(), 5.50::numeric, 'The member sees 5.5 confirmed hours this year');
+select is(membership.service_hours(), 3.00::numeric, 'The member sees 3 confirmed hours this year');
 select is(membership.service_hours('00000000-0000-0000-0000-0000000000a2'), null::numeric,
   'but not someone else''s');
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a5');
 select is((select hours from membership.service_totals() where user_id = '00000000-0000-0000-0000-0000000000a1'),
-  5.50::numeric, 'The General Secretary sees everyone''s totals');
+  3.00::numeric, 'The General Secretary sees everyone''s totals');
 
--- Certificates of Service (F-28).
+-- Certificates only for finishing Qalam and for the Mutanabbi Prize (owner,
+-- Nov 7, 2026).
 select lives_ok(
-  $$ insert into membership.certificates (id, user_id, kind, role_en, period_from, period_to)
-     values ('00000000-0000-0000-0000-00000000f001', '00000000-0000-0000-0000-0000000000a1', 'service',
-       'Door Coordinator', current_date - 200, current_date - 10) $$,
-  'The General Secretary prepares a certificate of service'
+  $$ insert into membership.certificates (id, user_id, kind, citation_en)
+     values ('00000000-0000-0000-0000-00000000f001', '00000000-0000-0000-0000-0000000000a1', 'prize',
+       'For the best work in Qirtas') $$,
+  'The General Secretary prepares a Prize certificate'
 );
 select throws_ok(
-  $$ insert into membership.certificates (user_id, kind, citation_en)
-     values ('00000000-0000-0000-0000-0000000000a1', 'fellowship', 'Forty hours of care') $$,
+  $$ insert into membership.certificates (user_id, kind, role_en, period_from)
+     values ('00000000-0000-0000-0000-0000000000a1', 'service', 'Door Coordinator', current_date) $$,
   '23514', null,
-  'A Fellowship certificate needs the Council''s resolution'
+  'No certificates of service, Fellowship or volunteering'
 );
 select lives_ok(
-  $$ insert into membership.certificates (user_id, kind, hours)
-     values ('00000000-0000-0000-0000-0000000000a1', 'volunteer', 12) $$,
-  'Volunteer certificates are on (no switch to keep)'
+  $$ insert into membership.certificates (kind, recipient_name)
+     values ('qalam', 'Sara A.') $$,
+  'A Qalam certificate names a student, who has no account'
 );
 select throws_ok(
   $$ select membership.sign_certificate('00000000-0000-0000-0000-00000000f001') $$,
@@ -208,9 +180,9 @@ select matches((select serial from membership.certificates where id = '00000000-
   '^SAL-\d{4}-001$', 'with the year''s first serial');
 
 select pg_temp.login_anon();
-select is((select holder_en || ' · ' || role_en || ' · ' || status from membership.verify_certificate(
+select is((select holder_en || ' · ' || status from membership.verify_certificate(
   (select code from cert_code))),
-  'Layla Member · Door Coordinator · issued', 'Anyone with the code can verify it');
+  'Layla Member · issued', 'Anyone with the code can verify it');
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a2');
 select lives_ok(

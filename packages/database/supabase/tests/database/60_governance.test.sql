@@ -75,7 +75,7 @@ insert into core.semesters (code, name_en, name_ar, starts_on, ends_on) values
 update core.settings set value = '0' where key = 'membership.founding_voters';
 -- </preamble>
 
-select plan(30);
+select plan(32);
 
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000f1', 'founder@auib.edu.iq', 'Founder');
 select access.bootstrap_founder('founder@auib.edu.iq');
@@ -94,6 +94,9 @@ grant execute on function pg_temp.voter(integer) to public;
 
 select pg_temp.logout();
 select pg_temp.make_user(pg_temp.voter(n), 'v' || n || '@auib.edu.iq', 'Voter ' || n) from generate_series(1, 5) n;
+-- Candidates are Members of at least one term (owner, Nov 7, 2026).
+update membership.memberships set member_since = current_date - 400
+where user_id in (select pg_temp.voter(n) from generate_series(1, 5) n);
 insert into membership.activity_records (user_id, kind, occurred_at, note)
 select pg_temp.voter(n), 'manual', now() - (k || ' days')::interval, 'Activity'
 from generate_series(1, 4) n, generate_series(1, 2) k;
@@ -162,25 +165,33 @@ select lives_ok(
 
 -- Nominations.
 select pg_temp.login_as(pg_temp.voter(1));
-select lives_ok($$ select governance.nominate('b1000000-0000-0000-0000-000000000001', 'Statement') $$,
+select throws_ok($$ select governance.nominate('b1000000-0000-0000-0000-000000000001', 'Statement', false) $$,
+  '23514', 'gpa_consent_required', 'A nomination needs consent to the GPA check');
+select lives_ok($$ select governance.nominate('b1000000-0000-0000-0000-000000000001', 'Statement', true) $$,
   'A Voting Member nominates themselves');
 select pg_temp.login_as(pg_temp.voter(2));
-select governance.nominate('b1000000-0000-0000-0000-000000000001', 'Statement');
+select governance.nominate('b1000000-0000-0000-0000-000000000001', 'Statement', true);
 select pg_temp.login_as(pg_temp.voter(4));
-select governance.nominate('b1000000-0000-0000-0000-000000000001', 'Statement');
+select governance.nominate('b1000000-0000-0000-0000-000000000001', 'Statement', true);
 select pg_temp.login_as(pg_temp.voter(3));
-select governance.nominate('b1000000-0000-0000-0000-000000000002', 'Statement');
+select governance.nominate('b1000000-0000-0000-0000-000000000002', 'Statement', true);
 
 select pg_temp.login_as(pg_temp.voter(5));
-select throws_ok($$ select governance.nominate('b1000000-0000-0000-0000-000000000002', 'Statement') $$,
+select throws_ok($$ select governance.nominate('b1000000-0000-0000-0000-000000000002', 'Statement', true) $$,
   '42501', null, 'Members not on the voter list cannot stand');
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000e1');
-select throws_ok($$ select governance.nominate('b1000000-0000-0000-0000-000000000002', 'Statement') $$,
+select throws_ok($$ select governance.nominate('b1000000-0000-0000-0000-000000000002', 'Statement', true) $$,
   '42501', null, 'Elections Committee members cannot stand');
 
+select throws_ok(
+  $$ select governance.decide_candidate(id, true) from governance.candidates limit 1 $$,
+  '23514', 'student_life_check_required',
+  'No candidate is approved before Student Life answers'
+);
+select governance.record_gpa_check(id, true) from governance.candidates;
 select lives_ok(
   $$ select governance.decide_candidate(id, true) from governance.candidates $$,
-  'The Committee approves the candidates'
+  'The Committee approves the candidates Student Life found eligible'
 );
 
 -- Voting opens on the list frozen at notice.

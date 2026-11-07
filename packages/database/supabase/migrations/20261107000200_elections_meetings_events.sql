@@ -150,6 +150,13 @@ begin
   ) or not private.is_member(auth.uid()) then
     raise exception 'Candidates are Members of at least one term' using errcode = '42501';
   end if;
+  -- Only someone on the voter list, frozen when notice was given, stands.
+  if not exists (
+    select 1 from governance.voters v
+    where v.election_id = e.id and v.user_id = auth.uid()
+  ) then
+    raise exception 'Only voting members on the voter list can stand' using errcode = '42501';
+  end if;
   if e.electorate = 'qirtas_staff' and not private.is_qirtas_staff_voter(auth.uid()) then
     raise exception 'Only Qirtas staff of at least one term can stand' using errcode = '42501';
   end if;

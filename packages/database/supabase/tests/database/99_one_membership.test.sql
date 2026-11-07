@@ -196,13 +196,13 @@ select results_eq(
 
 -- ── The GetInvolved, read by anyone ───────────────────────────────────────────
 select pg_temp.logout();
-insert into programmes.openings (kind, owner, title_en, title_ar)
-values ('volunteer', 'membership', 'Fair volunteers', 'متطوعو المعرض');
+insert into programmes.openings (kind, role, owner, title_en, title_ar)
+values ('role', 'onboarding_lead', 'membership', 'Fair volunteers', 'متطوعو المعرض');
 select pg_temp.login_anon();
 select results_eq(
   $$ select kind, title_en from programmes.open_places() where title_en = 'Fair volunteers' $$,
-  $$ values ('volunteer'::text, 'Fair volunteers'::text) $$,
-  'A visitor reads the open places, volunteering among them'
+  $$ values ('role'::text, 'Fair volunteers'::text) $$,
+  'A visitor reads the open roles'
 );
 
 -- Get involved is one list (owner, Oct 31, 2026): the Company's coming

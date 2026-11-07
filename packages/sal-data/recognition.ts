@@ -202,20 +202,6 @@ export const confirmService = async (
     })
   );
 
-export const recordEventService = async (
-  client: Client,
-  eventId: string,
-  memberId: string,
-  hours: number
-) =>
-  unwrap(
-    await client.schema("membership").rpc("record_event_service", {
-      event_id: eventId,
-      hours,
-      member_id: memberId,
-    })
-  );
-
 export const serviceTotals = async (client: Client) =>
   unwrap(await client.schema("membership").rpc("service_totals")) ?? [];
 

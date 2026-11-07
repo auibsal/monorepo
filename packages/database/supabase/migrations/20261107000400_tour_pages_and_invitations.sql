@@ -91,14 +91,16 @@ security definer
 set search_path = ''
 as $$
 begin
+  -- A page kept off the site goes back to private, whoever keeps it off.
+  if not new.publishable then
+    new.visibility := 'private';
+    return new;
+  end if;
   if new.visibility is distinct from old.visibility
     and auth.uid() is not null
     and new.user_id is distinct from auth.uid()
   then
     raise exception 'only_the_writer_chooses' using errcode = '42501';
-  end if;
-  if not new.publishable then
-    new.visibility := 'private';
   end if;
   return new;
 end;
@@ -276,7 +278,7 @@ as $$
   select w.id, w.text, w.language, w.tour, w.created_at
   from programmes.six_words w
   join journal.contributors c
-    on c.user_id = w.user_id and not c.is_pen_name and not c.is_anonymous
+    on c.user_id = w.user_id and not c.is_pen_name
   where c.slug = profile_six_words.author_slug
     and w.visibility in ('profile', 'tour') and w.publishable
   order by w.created_at;

@@ -465,3 +465,13 @@ begin
   return queued;
 end;
 $function$;
+
+-- Hours only for staff, logged by hand; certificates only for Qalam and the
+-- Prize (owner, Nov 7, 2026): no hours from an event's staff list or a
+-- production's credits, and no production certificates.
+drop function if exists membership.record_event_service(uuid, uuid, numeric);
+drop function if exists private.record_event_service(uuid, uuid, numeric);
+drop function if exists programmes.record_production_service(uuid, uuid, numeric);
+drop function if exists private.record_production_service(uuid, uuid, numeric);
+drop function if exists programmes.draft_production_certificates(uuid);
+drop function if exists private.draft_production_certificates(uuid);

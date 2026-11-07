@@ -74,112 +74,75 @@ insert into core.semesters (code, name_en, name_ar, starts_on, ends_on) values
 -- first-100 rule back on themselves.
 update core.settings set value = '0' where key = 'membership.founding_voters';
 -- </preamble>
-select plan(13);
+select plan(9);
 
--- Qirtas's own program row is unpublished, so its id is read here.
-create temp table qirtas on commit drop as select id from core.programmes where slug = 'waraq';
-grant select on qirtas to public;
-
-select pg_temp.make_user('00000000-0000-0000-0000-0000000067a1', 'qirtas.lead@auib.edu.iq', 'Qirtas Lead');
-select pg_temp.make_user('00000000-0000-0000-0000-0000000067a2', 'apprentice@auib.edu.iq', 'Apprentice');
-select pg_temp.make_user('00000000-0000-0000-0000-0000000067a3', 'second@auib.edu.iq', 'Second');
-select pg_temp.make_user('00000000-0000-0000-0000-0000000067a4', 'programs@auib.edu.iq', 'Programs Director');
-select pg_temp.grant_role('00000000-0000-0000-0000-0000000067a1', 'programme_lead', 'programme',
-  (select id from qirtas));
+-- Get involved lists open roles only (owner, Nov 7, 2026): team roles,
+-- event teams and Qalam mentors, with the Company's auditions beside them.
+select pg_temp.make_user('00000000-0000-0000-0000-0000000067a4', 'president-gi@auib.edu.iq', 'The President');
+select pg_temp.make_user('00000000-0000-0000-0000-0000000067a5', 'eic-gi@auib.edu.iq', 'The Editor');
+select pg_temp.make_user('00000000-0000-0000-0000-0000000067a6', 'member-gi@auib.edu.iq', 'A Member');
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000067a4', 'president');
+select pg_temp.grant_role('00000000-0000-0000-0000-0000000067a5', 'eic');
 
-insert into governance.partners (id, slug, name_en, kind, status)
-values ('00000000-0000-0000-0000-0000000067f1', 'a-high-school', 'A High School', 'other', 'active');
+insert into events.events (id, slug, title_en, title_ar, starts_at, status, members_only, entry)
+values ('00000000-0000-0000-0000-0000000067e1', 'a-reading-gi', 'A reading', 'قراءة',
+  now() + interval '10 days', 'published', false, 'open');
 
-select pg_temp.login_as('00000000-0000-0000-0000-0000000067a1');
-select lives_ok(
-  $$ insert into programmes.openings (id, kind, programme_id, desk, title_en, title_ar, places, term_from, term_to)
-     values ('00000000-0000-0000-0000-0000000067b1', 'apprenticeship',
-       (select id from qirtas), 'news',
-       'News apprentice', 'متدرّب في الأخبار', 1, current_date - 100, current_date + 20) $$,
-  'A Qirtas section posts a one-term apprenticeship'
-);
-select throws_ok(
-  $$ insert into programmes.openings (kind, programme_id, title_en, title_ar, term_from, term_to)
-     values ('apprenticeship', (select id from qirtas),
-       'Too long', 'طويل', current_date, current_date + 365) $$,
-  '23514', null, 'An apprenticeship lasts one term'
-);
-select throws_ok(
-  $$ insert into programmes.openings (kind, programme_id, title_en, title_ar)
-     values ('first_ink', (select id from qirtas), 'Mentor', 'مرشد') $$,
-  '23514', null, 'First Ink runs through a partner school'
-);
-select lives_ok(
-  $$ insert into programmes.placements (id, opening_id, user_id, started_on)
-     values ('00000000-0000-0000-0000-0000000067c1', '00000000-0000-0000-0000-0000000067b1',
-       '00000000-0000-0000-0000-0000000067a2', current_date - 100) $$,
-  'The section''s lead gives the place'
-);
-select throws_ok(
-  $$ insert into programmes.placements (opening_id, user_id)
-     values ('00000000-0000-0000-0000-0000000067b1', '00000000-0000-0000-0000-0000000067a3') $$,
-  '23514', 'placements_full', 'No more places than offered'
+select ok(
+  not exists (select 1 from pg_class where relname in ('placements', 'rotas') and relnamespace = 'programmes'::regnamespace),
+  'No placements and no rotas: the Apprenticeship and First Ink are retired'
 );
 
--- A session, logged as a shift on the apprenticeship's rota.
-insert into programmes.rotas (id, programme_id, opening_id, title_en, title_ar)
-values ('00000000-0000-0000-0000-0000000067d1', (select id from qirtas),
-  '00000000-0000-0000-0000-0000000067b1', 'Newsroom sessions', 'جلسات غرفة الأخبار');
-select pg_temp.logout();
-insert into programmes.shifts (id, rota_id, role_en, role_ar, starts_at, ends_at, capacity)
-values ('00000000-0000-0000-0000-0000000067e1', '00000000-0000-0000-0000-0000000067d1', 'Session', 'جلسة',
-  now() - interval '3 days', now() - interval '3 days' + interval '2 hours', 1);
-insert into programmes.shift_signups (shift_id, user_id)
-values ('00000000-0000-0000-0000-0000000067e1', '00000000-0000-0000-0000-0000000067a2');
-
-select pg_temp.login_as('00000000-0000-0000-0000-0000000067a1');
-select lives_ok(
-  $$ select membership.record_shift_service('00000000-0000-0000-0000-0000000067e1',
-       '00000000-0000-0000-0000-0000000067a2') $$,
-  'The session counts as service'
-);
-
-select pg_temp.login_as('00000000-0000-0000-0000-0000000067a2');
-select is((select status from programmes.placements where id = '00000000-0000-0000-0000-0000000067c1'),
-  'active', 'The apprentice sees their place');
-select throws_ok(
-  $$ select programmes.complete_apprenticeship('00000000-0000-0000-0000-0000000067c1') $$,
-  '42501', null, 'but does not complete it'
-);
-
-select pg_temp.login_as('00000000-0000-0000-0000-0000000067a1');
-create temp table done on commit drop as
-  select programmes.complete_apprenticeship('00000000-0000-0000-0000-0000000067c1') as certificate;
-grant select on done to public;
-select pg_temp.logout();
-select is(
-  (select kind || ' ' || role_en || ' ' || hours::text from membership.certificates
-   where id = (select certificate from done)),
-  'apprenticeship News apprentice 2.00',
-  'At the end a certificate is drafted, with the hours given'
-);
-select is((select status from membership.certificates where id = (select certificate from done)),
-  'draft', 'to be signed as every certificate');
-
--- First Ink
 select pg_temp.login_as('00000000-0000-0000-0000-0000000067a4');
 select lives_ok(
-  $$ insert into programmes.openings (kind, programme_id, partner_id, title_en, title_ar)
-     values ('first_ink', (select id from core.programmes where slug = 'open-pages'),
-       '00000000-0000-0000-0000-0000000067f1', 'First Ink mentor', 'مرشد «الحبر الأول»') $$,
-  'The President posts a First Ink place for any program'
+  $$ insert into programmes.openings (id, kind, owner, event_id, title_en, title_ar, places)
+     values ('00000000-0000-0000-0000-0000000067b1', 'event_team', 'program',
+       '00000000-0000-0000-0000-0000000067e1', 'Door team', 'فريق الباب', 3) $$,
+  'The President posts a place on an event''s team'
 );
-select ok(
-  access.has_permission('programs.manage', 'programme', (select id from core.programmes where slug = 'salon'))
-  and access.has_permission('events.manage', 'programme', (select id from core.programmes where slug = 'company')),
-  'and holds the events permissions for every series'
+select throws_ok(
+  $$ insert into programmes.openings (kind, owner, title_en, title_ar)
+     values ('event_team', 'program', 'No event', 'بلا فعالية') $$,
+  '23514', null, 'An event team names its event'
+);
+select throws_ok(
+  $$ insert into programmes.openings (kind, owner, title_en, title_ar)
+     values ('apprenticeship', 'program', 'Old kind', 'نوع قديم') $$,
+  '23514', null, 'The retired kinds are refused'
+);
+
+select pg_temp.login_as('00000000-0000-0000-0000-0000000067a5');
+select lives_ok(
+  $$ insert into programmes.openings (id, kind, owner, title_en, title_ar, places)
+     values ('00000000-0000-0000-0000-0000000067b2', 'qalam_mentor', 'qirtas',
+       'Qalam mentor', 'مرشد «قلم»', 4) $$,
+  'The Editor-in-Chief posts Qalam mentor places'
+);
+
+select pg_temp.login_anon();
+select is(
+  (select array_agg(kind order by kind) from programmes.open_places()
+   where id in ('00000000-0000-0000-0000-0000000067b1', '00000000-0000-0000-0000-0000000067b2')),
+  array['event_team', 'qalam_mentor'],
+  'Visitors read the open places on Get involved'
+);
+select is(
+  (select event_slug from programmes.open_places() where id = '00000000-0000-0000-0000-0000000067b1'),
+  'a-reading-gi',
+  'An event team links to its event'
+);
+
+select pg_temp.login_as('00000000-0000-0000-0000-0000000067a6');
+select lives_ok(
+  $$ insert into programmes.opening_replies (opening_id, user_id)
+     values ('00000000-0000-0000-0000-0000000067b1', auth.uid()) $$,
+  'A member says they''re interested'
 );
 select ok(
   not exists (select 1 from access.role_permissions
     where role in ('eic', 'artistic_director', 'media_director', 'vice_president', 'general_secretary')
       and permission in ('programs.manage', 'events.manage')),
-  'No other Council seat manages events (owner, Nov 5, 2026)'
+  'No other Council seat manages events'
 );
 
 select * from finish();

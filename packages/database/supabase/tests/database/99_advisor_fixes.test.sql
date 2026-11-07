@@ -106,22 +106,21 @@ select is(
      and policyname = 'Update by authenticated') = 'true',
   false, 'The manager update policy on sign-ups checks the new row');
 
-insert into programmes.rotas (id, programme_id, title_en, title_ar)
-select '00000000-0000-0000-0000-00000000c001', id, 'Door team', 'فريق الباب'
-from core.programmes where slug = 'next-stop';
-insert into programmes.shifts (id, rota_id, role_en, role_ar, starts_at, ends_at, capacity) values
+insert into events.events (id, slug, title_en, title_ar, starts_at, status, members_only, entry)
+values ('00000000-0000-0000-0000-00000000c001', 'door-night-af', 'Door night', 'ليلة الباب', now() + interval '3 days', 'published', false, 'open');
+insert into programmes.shifts (id, event_id, role_en, role_ar, starts_at, ends_at, capacity) values
   ('00000000-0000-0000-0000-00000000c101', '00000000-0000-0000-0000-00000000c001', 'Door', 'الباب',
    now() + interval '1 day', now() + interval '1 day 2 hours', 2);
 insert into programmes.shift_signups (shift_id, user_id) values
   ('00000000-0000-0000-0000-00000000c101', '00000000-0000-0000-0000-0000000000a1');
 
-select pg_temp.grant_role('00000000-0000-0000-0000-0000000000a2', 'programme_lead', 'programme',
-  (select id from core.programmes where slug = 'next-stop'));
+select pg_temp.grant_role('00000000-0000-0000-0000-0000000000a2', 'programme_lead', 'event',
+  '00000000-0000-0000-0000-00000000c001');
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a2');
 select lives_ok(
   $$ update programmes.shift_signups set status = 'confirmed'
      where user_id = '00000000-0000-0000-0000-0000000000a1' $$,
-  'A programme manager still updates a sign-up');
+  'An event lead still updates a sign-up');
 select pg_temp.logout();
 select is(
   (select status from programmes.shift_signups where user_id = '00000000-0000-0000-0000-0000000000a1'),

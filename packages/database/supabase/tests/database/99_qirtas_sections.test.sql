@@ -84,13 +84,13 @@ select is(
   (select array_agg(n order by n) from (
     select count(*)::integer as n from unnest(enum_range(null::journal.category)) c
     where journal.is_current_category(c) group by journal.desk_of(c)) t),
-  array[2, 6, 6, 6, 6, 6],
-  'Six types in each section, and Games its two daily kinds'
+  array[4, 5, 6, 7, 7, 7],
+  'Each section''s types with its "other", and Games its four daily kinds (owner, Nov 7, 2026)'
 );
 select is(journal.desk_of('review'), 'voices'::journal.desk, 'The review is in Voices now');
 select is(journal.desk_of('event_coverage'), 'news'::journal.desk, 'Event coverage is News');
 select is(journal.desk_of('calligraphy'), 'gallery'::journal.desk, 'Calligraphy is Gallery');
-select is(journal.desk_of('next_stop_episode'), 'video'::journal.desk, 'A Next Stop episode is Video');
+select ok(not journal.is_current_category('next_stop_episode'), 'Next Stop''s episodes are Media''s, not Qirtas''s');
 select is(journal.desk_of('name_the_book'), 'games'::journal.desk, 'Name the Book is a game');
 select ok(not journal.is_current_category('prose'), 'Prose is retired');
 select ok(

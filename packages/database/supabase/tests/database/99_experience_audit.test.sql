@@ -1,5 +1,4 @@
--- The experience audit (migration 20261101001600): the Awards Coordinator
--- role, and the Society's signature kept by name on a memorandum.
+-- The experience audit (migration 20261101001600): the Prize's owner, and the Society's signature kept by name on a memorandum.
 begin;
 -- <preamble>
 -- Shared pgTAP preamble. Each test file includes a copy (pg_prove runs files
@@ -77,15 +76,16 @@ update core.settings set value = '0' where key = 'membership.founding_voters';
 
 select plan(5);
 
-select results_eq(
-  $$ select permission from access.role_permissions where role = 'awards_coordinator' order by 1 $$,
-  $$ values ('journal.awards'), ('library.read') $$,
-  'The Awards Coordinator runs the Awards'
+-- Owner, Nov 7, 2026: the Awards Coordinator went with the Awards; the
+-- Editor-in-Chief runs the Mutanabbi Prize.
+select ok(
+  not exists (select 1 from access.roles where key = 'awards_coordinator'),
+  'No Awards Coordinator'
 );
-select is(
-  (select role from programmes.openings where title_en = 'Awards Coordinator'),
-  'awards_coordinator',
-  'The masthead seat names its role'
+select ok(
+  exists (select 1 from access.role_permissions where role = 'eic' and permission = 'journal.prize')
+  and not exists (select 1 from programmes.openings where title_en = 'Awards Coordinator'),
+  'The Editor-in-Chief runs the Prize, and no opening names the old seat'
 );
 
 select pg_temp.make_user('00000000-0000-0000-0000-00000000e5a1', 'sig-pres@auib.edu.iq', 'Signing President');

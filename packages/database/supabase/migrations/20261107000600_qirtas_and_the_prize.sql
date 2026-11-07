@@ -22,8 +22,8 @@ as $$
   end::journal.desk;
 $$;
 
--- Every type is current except the retired ones (Six Words, Next Stop's
--- episodes and reels, and the retired games).
+-- Every type is current except the retired ones (prose, Six Words, Next
+-- Stop's episodes and reels, and the retired games).
 create or replace function journal.is_current_category(category journal.category)
 returns boolean
 language sql
@@ -31,7 +31,7 @@ immutable
 set search_path = ''
 as $$
   select category not in (
-    'six_words', 'next_stop_episode', 'reel', 'quiz', 'word_ladder', 'riddle', 'name_the_book'
+    'prose', 'six_words', 'next_stop_episode', 'reel', 'quiz', 'word_ladder', 'riddle', 'name_the_book'
   );
 $$;
 
@@ -685,4 +685,21 @@ as $$
     'governance.elections',
     'governance.society_documents'
   ]
+$$;
+
+-- An Anonymous byline never shows its writer's Tour pages either.
+create or replace function private.profile_six_words(author_slug text)
+returns table (id uuid, text text, language text, tour text, created_at timestamptz)
+language sql
+stable
+security definer
+set search_path = ''
+as $$
+  select w.id, w.text, w.language, w.tour, w.created_at
+  from programmes.six_words w
+  join journal.contributors c
+    on c.user_id = w.user_id and not c.is_pen_name and not c.is_anonymous
+  where c.slug = profile_six_words.author_slug
+    and w.visibility in ('profile', 'tour') and w.publishable
+  order by w.created_at;
 $$;

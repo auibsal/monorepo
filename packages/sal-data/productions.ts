@@ -167,30 +167,6 @@ export const addCredit = async (
   );
 };
 
-export const recordService = async (
-  client: Client,
-  productionId: string,
-  memberId: string,
-  hours: number
-) =>
-  unwrap(
-    await client.schema("programmes").rpc("record_production_service", {
-      hours,
-      member_id: memberId,
-      production_id: productionId,
-    })
-  );
-
-/** Drafts certificates for a closed production; returns how many. */
-export const draftCertificates = async (client: Client, productionId: string) =>
-  Number(
-    unwrap(
-      await client
-        .schema("programmes")
-        .rpc("draft_production_certificates", { production_id: productionId })
-    ) ?? 0
-  );
-
 export const partnerChoices = async (client: Client) =>
   unwrap(await client.schema("programmes").rpc("production_partner_choices")) ??
   [];

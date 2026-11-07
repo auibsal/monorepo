@@ -4,12 +4,7 @@ import { useAuth } from "@repo/auth/provider";
 import { Button } from "@repo/brand/components/ui/button";
 import { Input } from "@repo/brand/components/ui/input";
 import { Textarea } from "@repo/brand/components/ui/textarea";
-import {
-  formatClock,
-  formatLongDate,
-  formatNumber,
-} from "@repo/internationalization/format";
-import { hasPermission } from "@repo/rbac";
+import { formatClock, formatLongDate } from "@repo/internationalization/format";
 import { localized, productions, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
@@ -279,7 +274,6 @@ export const ReportTab = ({ production }: { production: ProductionRow }) => {
     repeat: production.report_repeat ?? "",
     what: production.report_what_happened ?? "",
   });
-  const [drafted, setDrafted] = useState<number | null>(null);
   const refresh = () =>
     queryClient.invalidateQueries({ queryKey: productionsKey });
 
@@ -297,14 +291,9 @@ export const ReportTab = ({ production }: { production: ProductionRow }) => {
     mutationFn: () => productions.signReport(supabase, production.id),
     onSuccess: refresh,
   });
-  const draft = useMutation({
-    mutationFn: () => productions.draftCertificates(supabase, production.id),
-    onSuccess: (count) => setDrafted(count),
-  });
 
   const closed = production.stage === "closed";
   const signed = Boolean(production.report_signed_at);
-  const canPrepare = hasPermission(grants.data, "certificates.prepare");
   const signerRow = signer.data?.[0];
 
   return (
@@ -413,30 +402,6 @@ export const ReportTab = ({ production }: { production: ProductionRow }) => {
           </>
         )}
       </section>
-
-      {canPrepare ? (
-        <section className="grid gap-2">
-          <h3 className="type-subheading">{t("certificatesTitle")}</h3>
-          <p className="type-caption">{t("certificatesHint")}</p>
-          <Button
-            className="justify-self-start"
-            disabled={!closed || draft.isPending}
-            onClick={() => draft.mutate()}
-            variant="outline"
-          >
-            {t("draftCertificates")}
-          </Button>
-          {drafted === null ? null : (
-            <p className="type-body" role="status">
-              {t("drafted", {
-                count: drafted,
-                countText: formatNumber(drafted),
-              })}
-            </p>
-          )}
-          <ErrorLine error={draft.error} />
-        </section>
-      ) : null}
     </div>
   );
 };

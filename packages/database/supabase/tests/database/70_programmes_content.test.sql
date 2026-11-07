@@ -97,8 +97,8 @@ select throws_ok(
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000f1');
 select throws_ok(
-  $$ select programmes.record_six_words('Only five words are here', 'en') $$,
-  '23514', null, 'A Six Words piece has exactly six words'
+  $$ select programmes.record_six_words(repeat('x', 401), 'en') $$,
+  '23514', null, 'A Tour page is at most 400 characters'
 );
 select lives_ok(
   $$ select programmes.record_six_words('The paper waited for the pen', 'en') $$,
@@ -112,7 +112,11 @@ select throws_ok(
 );
 
 select pg_temp.login_anon();
-select is((select count(*) from programmes.six_words_wall())::integer, 1, 'A transcribed card is on the wall');
+select is((select count(*) from programmes.six_words_wall())::integer, 0,
+  'A transcribed page is private until its writer chooses (owner, Nov 7, 2026)');
+select pg_temp.logout();
+update programmes.six_words set visibility = 'tour';
+select pg_temp.login_anon();
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a1');
 select throws_ok(
@@ -123,7 +127,7 @@ select throws_ok(
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000f1');
 select lives_ok(
   $$ select programmes.moderate_six_words(id, false) from programmes.six_words $$,
-  'A programs.manage holder can take a card down'
+  'Whoever runs the Tour can mark a page not publishable'
 );
 
 select pg_temp.login_anon();

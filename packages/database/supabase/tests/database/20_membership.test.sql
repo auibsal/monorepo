@@ -1,5 +1,6 @@
 -- Membership: sign-up verification, pledges, profile visibility and the
--- Voting Member rule (2 activities in the current or previous semester).
+-- voting member rule (owner, Nov 7, 2026: two events or general meetings in
+-- the academic year, from September 1).
 begin;
 -- <preamble>
 -- Shared pgTAP preamble. Each test file includes a copy (pg_prove runs files
@@ -175,19 +176,19 @@ select ok(not membership.has_current_pledges(), 'A new pledge version must be re
 
 select pg_temp.logout();
 insert into membership.activity_records (user_id, kind, occurred_at, note) values
-  -- Student: one this semester, one last semester → voting member.
-  ('00000000-0000-0000-0000-0000000000a1', 'manual', now() - interval '5 days', 'Open Pages'),
-  ('00000000-0000-0000-0000-0000000000a1', 'manual', now() - interval '100 days', 'Majlis'),
-  -- Second: one this semester and one two semesters ago → not.
-  ('00000000-0000-0000-0000-0000000000a2', 'manual', now() - interval '5 days', 'Open Pages'),
-  ('00000000-0000-0000-0000-0000000000a2', 'manual', now() - interval '350 days', 'Majlis');
+  -- Student: two this academic year → voting member.
+  ('00000000-0000-0000-0000-0000000000a1', 'manual', now() - interval '1 day', 'A reading'),
+  ('00000000-0000-0000-0000-0000000000a1', 'manual', greatest(private.academic_year_start()::timestamptz + interval '1 day', now() - interval '2 days'), 'A general meeting'),
+  -- Second: one this year and one in the year before → not.
+  ('00000000-0000-0000-0000-0000000000a2', 'manual', now() - interval '1 day', 'A reading'),
+  ('00000000-0000-0000-0000-0000000000a2', 'manual', private.academic_year_start()::timestamptz - interval '10 days', 'A general meeting');
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a1');
-select ok(membership.is_voting_member(), 'Two activities in the current and previous semester make a Voting Member');
-select is(membership.activity_count(), 2, 'The activity count covers both semesters');
+select ok(membership.is_voting_member(), 'Two events or meetings this academic year make a voting member');
+select is(membership.activity_count(), 2, 'The count covers the academic year');
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a2');
-select ok(not membership.is_voting_member(), 'An activity from an older semester does not count');
+select ok(not membership.is_voting_member(), 'An event from the year before does not count');
 select is(
   membership.is_voting_member('00000000-0000-0000-0000-0000000000a1'),
   null,

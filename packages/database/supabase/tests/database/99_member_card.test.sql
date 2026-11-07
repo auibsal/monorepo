@@ -193,9 +193,9 @@ select is(((core.member_insights()) ->> 'counted')::integer, 1,
 
 -- The card's record: hidden unless the member turns it on.
 select pg_temp.logout();
-insert into membership.certificates (id, user_id, kind, role_en, period_from, period_to)
+insert into membership.certificates (id, user_id, kind, citation_en)
 values ('00000000-0000-0000-0000-00000000cafe', '00000000-0000-0000-0000-00000000ca02',
-  'service', 'Door Coordinator', current_date - 200, current_date - 10);
+  'prize', 'For the best work in Qirtas');
 alter table membership.certificates disable trigger user;
 update membership.certificates set status = 'issued', issued_at = now(),
   serial = 'SAL-2026-901', verification_code = 'cardrecord1',

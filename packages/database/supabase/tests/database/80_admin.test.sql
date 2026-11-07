@@ -73,7 +73,7 @@ insert into core.semesters (code, name_en, name_ar, starts_on, ends_on) values
 update core.settings set value = '0' where key = 'membership.founding_voters';
 -- </preamble>
 
-select plan(9);
+select plan(10);
 
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000f1', 'founder@auib.edu.iq', 'Founder');
 select access.bootstrap_founder('founder@auib.edu.iq');
@@ -81,30 +81,30 @@ select pg_temp.make_user('00000000-0000-0000-0000-0000000000a1', 'member@auib.ed
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a2', 'other@auib.edu.iq', 'Other');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000b1', 'guest@gmail.com', 'Guest');
 
--- ── Directory ───────────────────────────────────────────────────────────────
+-- ── The Register (private) and the members directory (opt-in) ───────────────────────────────────────────────────────────────
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a1');
 select throws_ok(
-  $$ select * from membership.directory() $$,
-  '42501', null, 'A plain member cannot read the directory'
+  $$ select * from membership.register() $$,
+  '42501', null, 'A plain member cannot read the Register'
 );
 
 select pg_temp.login_anon();
 select throws_ok(
-  $$ select * from membership.directory() $$,
-  '42501', null, 'Visitors cannot call the directory'
+  $$ select * from membership.register() $$,
+  '42501', null, 'Visitors cannot read the Register'
 );
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000f1');
-select is((select count(*) from membership.directory())::integer, 4,
-  'A member manager sees every account, verified or not');
+select is((select count(*) from membership.register())::integer, 4,
+  'The Executive Board sees every account in the Register, verified or not');
 select is(
-  (select email from membership.directory() where user_id = '00000000-0000-0000-0000-0000000000b1'),
+  (select email from membership.register() where user_id = '00000000-0000-0000-0000-0000000000b1'),
   'guest@gmail.com',
-  'The directory carries sign-in emails (for contacting applicants)'
+  'The Register carries sign-in emails (for contacting applicants)'
 );
 select is(
-  (select verified_at is null from membership.directory() where user_id = '00000000-0000-0000-0000-0000000000b1'),
+  (select verified_at is null from membership.register() where user_id = '00000000-0000-0000-0000-0000000000b1'),
   true,
   'An unverified applicant shows as unverified'
 );
@@ -118,7 +118,18 @@ select pg_temp.login_as('00000000-0000-0000-0000-0000000000f1');
 select ok(core.admin_overview() ? 'members', 'A member manager sees member counts');
 select is((core.admin_overview() ->> 'verification_pending')::integer, 0,
   'The overview counts partner applications, not individual requests');
-select ok(core.admin_overview() ? 'campaigns', 'A charity manager sees campaign totals');
+select ok(not (core.admin_overview() ? 'campaigns'), 'No charity totals (owner, Nov 7, 2026)');
+
+-- The members directory lists only members who chose to be listed.
+select pg_temp.logout();
+update membership.memberships set in_directory = true
+where user_id = '00000000-0000-0000-0000-0000000000a2';
+select pg_temp.login_as('00000000-0000-0000-0000-0000000000a1');
+select results_eq(
+  $$ select user_id from membership.members_directory() $$,
+  $$ values ('00000000-0000-0000-0000-0000000000a2'::uuid) $$,
+  'A member sees only the members who opted in, with no emails'
+);
 
 select * from finish();
 rollback;

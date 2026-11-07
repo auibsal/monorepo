@@ -94,7 +94,12 @@ alter table governance.form_submissions
   add column subject_id uuid,
   add column second_signer_name text check (char_length(second_signer_name) <= 200),
   add column second_signer_id uuid references auth.users (id) on delete set null,
-  add column second_signed_at timestamptz,
+  add column second_signed_at timestamptz;
+-- Anything sent before typed signatures counts as signed when it was sent.
+update governance.form_submissions
+set signed_at = coalesce(submitted_at, created_at)
+where status <> 'draft';
+alter table governance.form_submissions
   add constraint form_submissions_signed check (status = 'draft' or signed_at is not null),
   add constraint form_submissions_signer check (signed_at is null or char_length(btrim(signer_name)) >= 2);
 create index form_submissions_second_signer_id_idx on governance.form_submissions (second_signer_id);
