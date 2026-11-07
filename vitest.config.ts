@@ -9,7 +9,6 @@ export default defineConfig({
     },
     projects: [
       "apps/web",
-      "packages/analytics",
       "packages/storage",
       "packages/auth",
       "packages/config",
