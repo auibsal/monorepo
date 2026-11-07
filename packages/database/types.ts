@@ -869,22 +869,28 @@ export type Database = {
         Row: {
           chat_id: number;
           joined_at: string;
+          removed_at: string | null;
           telegram_id: number;
           verified_at: string | null;
+          warned_at: string | null;
           warnings: number;
         };
         Insert: {
           chat_id: number;
           joined_at?: string;
+          removed_at?: string | null;
           telegram_id: number;
           verified_at?: string | null;
+          warned_at?: string | null;
           warnings?: number;
         };
         Update: {
           chat_id?: number;
           joined_at?: string;
+          removed_at?: string | null;
           telegram_id?: number;
           verified_at?: string | null;
+          warned_at?: string | null;
           warnings?: number;
         };
         Relationships: [

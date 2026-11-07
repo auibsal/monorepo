@@ -338,6 +338,43 @@ describe.skipIf(!enabled)("Hudhud", () => {
     expect(sent("approveChatJoinRequest").at(-1)?.payload.user_id).toBe(tgUser);
   });
 
+  test("warns an unlinked person in the members' group, then removes them a week on", async () => {
+    const { runRemovals } = await import(
+      "@/lib/api/bot/features/group/removals"
+    );
+    const before = sent().length;
+    // A linked member talks freely.
+    await bot.handleUpdate(
+      message("Hello all", { chat: chatId, user: tgUser })
+    );
+    expect(sent().slice(before)).toHaveLength(0);
+
+    await bot.handleUpdate(
+      message("Hello all", { chat: chatId, thread: 5, user: stranger })
+    );
+    const warning = sent().at(-1);
+    expect(String(warning?.payload.text)).toContain("within a week");
+    expect(warning?.payload.message_thread_id).toBe(5);
+    // Once only.
+    const once = sent().length;
+    await bot.handleUpdate(message("Again", { chat: chatId, user: stranger }));
+    expect(sent().length).toBe(once);
+
+    // Not yet a week: nobody is removed.
+    expect(await runRemovals(bot.api as never)).toBe(0);
+    await admin
+      .schema("core")
+      .from("telegram_members")
+      .update({
+        warned_at: new Date(Date.now() - 8 * 86_400_000).toISOString(),
+      })
+      .eq("chat_id", chatId)
+      .eq("telegram_id", stranger);
+    expect(await runRemovals(bot.api as never)).toBe(1);
+    expect(sent("banChatMember").at(-1)?.payload.user_id).toBe(stranger);
+    expect(sent("unbanChatMember").at(-1)?.payload.user_id).toBe(stranger);
+  });
+
   test("in the Diwan group, lets in only officers and posts the brief", async () => {
     await bot.handleUpdate(message("/audience staff", { chat: chatId }));
     expect(lastText()).toContain("for the Society's officers now");

@@ -13,8 +13,15 @@
 --   Prompts and the book vote go; shifts belong to their event, with no
 --   rota between them, and log no hours.
 
--- 1. Charity collections.
+-- 1. Charity collections. Everything in the schema goes, but the empty
+-- schema stays: the hosted Data API may still list it among its exposed
+-- schemas, and the API can't load its schema cache when one is missing.
+-- Remove it there, then a later migration drops it.
 drop schema charity cascade;
+create schema charity;
+revoke all on schema charity from public, anon, authenticated;
+comment on schema charity is
+  'Empty since Nov 7, 2026 (charity collections are a Notion record now). Kept only until it is removed from the Data API''s exposed schemas.';
 drop function if exists private.campaign_is_public(uuid);
 drop function if exists private.campaign_progress(uuid);
 drop function if exists private.before_ledger_entry();

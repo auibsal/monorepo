@@ -7,6 +7,7 @@ import { type BotContext, flavor } from "./context";
 import { account } from "./features/account";
 import { events } from "./features/events";
 import { joins } from "./features/group/joins";
+import { removals } from "./features/group/removals";
 import { setup } from "./features/group/setup";
 import { inline } from "./features/inline";
 import { qirtas } from "./features/qirtas";
@@ -71,7 +72,7 @@ export const createBot = (
 
   bot.use(flavor);
   bot.use(start, account, events, qirtas, inline);
-  bot.use(setup, joins);
+  bot.use(setup, joins, removals);
 
   bot.catch(async ({ ctx, error }) => {
     if (error instanceof GrammyError) {

@@ -169,6 +169,8 @@ const en = {
 
   // Qirtas
   qirtasTitle: "<b>New in Qirtas</b>",
+  removalWarning: (name: string) =>
+    `${name}, this group is for the Society's members, and I can't find your SAL account. Join on auibsal.org and link it here within a week, or I'll have to remove you from the group. Student Life's staff and the Faculty Advisor aren't affected.`,
   rsvpAlready: "You already have a place.",
   rsvpCancelled: "Done. Your place is free for someone else.",
   rsvpClosed: "This event doesn't take RSVPs.",
@@ -351,6 +353,8 @@ const ar: Copy = {
   qirtasNone: "ماكو شي جديد بقرطاس هسه. النصوص الجاية بالطريق.",
 
   qirtasTitle: "<b>الجديد بقرطاس</b>",
+  removalWarning: (name: string) =>
+    `${name}، هالمجموعة لأعضاء الجمعية، وما لگيت حسابك بالجمعية. سجّل على auibsal.org واربط حسابك هنا خلال أسبوع، وإلا راح أضطر أطلّعك من المجموعة. موظفي الحياة الطلابية والمشرف من الهيئة التدريسية ما يشملهم هذا.`,
   rsvpAlready: "عندك مقعد من قبل.",
   rsvpCancelled: "تم. مقعدك صار فارغ لغيرك.",
   rsvpClosed: "هالفعالية ما بيها حجز.",

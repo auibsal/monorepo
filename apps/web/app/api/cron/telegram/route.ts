@@ -1,6 +1,7 @@
 import { env } from "@/env";
 import { hasBearer } from "@/lib/api/bearer";
 import { sharedBot } from "@/lib/api/bot/bot";
+import { runRemovals } from "@/lib/api/bot/features/group/removals";
 import { runFeeds } from "@/lib/api/bot/feeds";
 
 export const maxDuration = 60;
@@ -8,7 +9,8 @@ export const maxDuration = 60;
 /**
  * Every ten minutes (pg_cron `sal-telegram-posts`): the bot's posts to the
  * connected Telegram groups (new events, starting soon, Qirtas, the daily
- * word). Does nothing without TELEGRAM_BOT_TOKEN.
+ * word), and the removals a week after Hudhud's warning (owner, Nov 7,
+ * 2026). Does nothing without TELEGRAM_BOT_TOKEN.
  */
 const run = async (request: Request) => {
   if (!hasBearer(request, env.CRON_SECRET)) {
@@ -19,7 +21,9 @@ const run = async (request: Request) => {
   }
   const bot = sharedBot();
   await bot.init();
-  return Response.json(await runFeeds(bot.api, bot.botInfo.username));
+  const feeds = await runFeeds(bot.api, bot.botInfo.username);
+  const removed = await runRemovals(bot.api);
+  return Response.json({ ...feeds, removed });
 };
 
 export const GET = run;
