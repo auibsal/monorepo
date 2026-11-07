@@ -1,4 +1,5 @@
 import { devices, expect, type Page, test } from "@playwright/test";
+import { event as fixture } from "../fixtures";
 import { urls } from "../playwright.config";
 
 /**
@@ -24,7 +25,7 @@ const BUDGET = {
 const PAGES = [
   "/",
   "/events",
-  "/events/reading-with-a-guest-2027-02-16",
+  `/events/${fixture.slug}`,
   "/qirtas",
   "/join",
   "/partners",

@@ -2,7 +2,7 @@
 
 import { Button } from "@repo/brand/components/ui/button";
 import { fonts } from "@repo/brand/lib/fonts";
-import { getDirection, isLocale } from "@repo/internationalization/config";
+import { getDirection } from "@repo/internationalization/config";
 import ar from "@repo/internationalization/messages/ar.json";
 import en from "@repo/internationalization/messages/en.json";
 import type NextError from "next/error";
@@ -15,12 +15,16 @@ interface GlobalErrorProperties {
   readonly reset: () => void;
 }
 
-const texts = { ar: ar.common, ckb: ar.common, en: en.common };
+const texts = { ar: ar.common, en: en.common };
 
-/** Replaces the root layout, so it reads the language from the URL itself. */
+/**
+ * Replaces the root layout, so it reads the language from the URL itself:
+ * Arabic pages start with /ar; every other address is English, the
+ * default (English has no prefix).
+ */
 const GlobalError = ({ error, reset }: GlobalErrorProperties) => {
   const [, segment] = usePathname().split("/");
-  const locale = isLocale(segment) ? segment : "ar";
+  const locale: "ar" | "en" = segment === "ar" ? "ar" : "en";
   const t = texts[locale];
 
   useEffect(() => {

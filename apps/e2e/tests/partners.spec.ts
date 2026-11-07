@@ -7,8 +7,7 @@ import { latestMail, setUpTwoStep, signInWithPassword } from "./helpers";
  * Partners on the platform (owner, Oct 31, 2026): an organization applies
  * and signs the memorandum by name, the President signs for the Society in
  * the Diwan's queue, and whoever applied leads the partner's team on its
- * dashboard; it invites a guest, who signs up from the invitation and sees
- * the partner's perks on their account.
+ * dashboard; it invites a guest, who signs up from the invitation.
  */
 test("an organization applies, the President signs, and its dashboard opens", async ({
   browser,
@@ -89,52 +88,17 @@ test("an organization applies, the President signs, and its dashboard opens", as
   await expect(
     applicant.getByRole("heading", { level: 1, name: organization })
   ).toBeVisible();
-  // A partner turns perks on by asking; the Society approves below.
+  // A partner turns on what it runs with the Society by asking; the
+  // Society approves.
   await applicant
-    .getByRole("checkbox", { name: "Perks for members and guests" })
+    .getByRole("checkbox", { name: "Their members may volunteer at events" })
     .click();
   await applicant.getByRole("button", { name: "Ask the Society" }).click();
   await expect(
     applicant.getByText("Asked for, and waiting for the Society.")
   ).toBeVisible();
-  await applicant.getByRole("link", { name: "Perks" }).click();
-  // A new perk is added in place, under the list of perks.
-  await applicant.getByRole("button", { name: "Add a perk" }).click();
-  const perk = applicant.getByRole("region", { name: "Add a perk" });
-  await perk
-    .getByRole("group", { name: "Offer" })
-    .getByLabel("English")
-    .fill(`Free entry to readings ${stamp}`);
-  await perk
-    .getByRole("group", { name: "How to redeem it" })
-    .getByLabel("English")
-    .fill("Show your membership card at the door.");
-  await perk.getByRole("button", { name: "Add perk" }).click();
-  await expect(perk).toBeHidden();
-  await expect(
-    applicant.getByText(`Free entry to readings ${stamp}`)
-  ).toBeVisible();
-  // What a partner publishes waits for the Society: Partnerships turns on
-  // perks for the partner and publishes this one.
-  await expect(applicant.getByText("Waiting for the Society")).toBeVisible();
-  const { data: applied } = await db
-    .schema("governance")
-    .from("partners")
-    .select("id")
-    .eq("name_en", organization)
-    .single();
-  const given = await db
-    .schema("governance")
-    .from("partner_agreements")
-    .update({ asked_grants: null, grants: ["member_offer"] })
-    .eq("partner_id", applied?.id ?? "");
-  expect(given.error).toBeNull();
-  const published = await db
-    .schema("governance")
-    .from("member_offers")
-    .update({ is_published: true })
-    .eq("title_en", `Free entry to readings ${stamp}`);
-  expect(published.error).toBeNull();
+  // There are no perks or offers (decisions §2).
+  await expect(applicant.getByRole("link", { name: "Perks" })).toHaveCount(0);
 
   // The lead invites a guest by email; the invitation's link signs them up.
   await applicant.getByRole("link", { name: "People" }).click();
@@ -191,9 +155,6 @@ test("an organization applies, the President signs, and its dashboard opens", as
   await guest.goto(`${urls.web}/membership`);
   await expect(guest.getByText("Guest", { exact: true }).first()).toBeVisible();
   await expect(guest.getByText(`Guest of ${organization}`)).toBeVisible();
-  await expect(
-    guest.getByText(`Free entry to readings ${stamp}`)
-  ).toBeVisible();
 });
 
 /**

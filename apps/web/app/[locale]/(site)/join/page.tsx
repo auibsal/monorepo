@@ -10,7 +10,7 @@ export const generateMetadata = sectionMetadata("web.join", "/join");
 const STEPS = ["register", "commonRoom", "twoThings"] as const;
 const TIERS = ["member", "voting", "associate", "honorary"] as const;
 /** What membership gives (the design review C5, Nov 4, 2026). */
-const GIVES = ["card", "perks", "record", "vote"] as const;
+const GIVES = ["card", "record", "vote"] as const;
 
 const JoinPage = async ({ params }: LocaleParams) => {
   const { locale } = await params;

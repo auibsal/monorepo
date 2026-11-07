@@ -110,8 +110,8 @@ select is(
       and e.slug ~ '^(writing-workshop|reading-with-a-guest|book-discussion|listening-session|founding-meeting)-'
       and (e.starts_at at time zone 'Asia/Baghdad')::time = '16:00'
       and extract(isodow from e.starts_at at time zone 'Asia/Baghdad') = 2),
-  10,
-  'The Tuesday events: ten published at 4:00 PM, none in a series; the two fall pilots wait for the room (owner, Nov 7, 2026)'
+  0,
+  'No Tuesday event is published until its room is confirmed (decisions §7, §10)'
 );
 select is(
   (select (ends_at at time zone 'Asia/Baghdad')::time from events.events where slug = 'founding-meeting-2027-03-30'),

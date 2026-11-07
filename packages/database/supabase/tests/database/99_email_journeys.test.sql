@@ -192,7 +192,7 @@ select ok(
   'A new role is announced to its holder'
 );
 
--- 9. The first member pledge welcomes; a later one doesn't.
+-- 9. No separate welcome: it is part of the confirmation email (audit A1).
 delete from membership.pledges where user_id = '00000000-0000-0000-0000-0000000e0a02';
 delete from core.outbox where kind = 'membership.welcome';
 insert into membership.pledges (user_id, pledge_type, version)
@@ -202,8 +202,8 @@ values ('00000000-0000-0000-0000-0000000e0a02', 'member', '2');
 select is(
   (select count(*)::int from core.outbox where kind = 'membership.welcome'
      and payload ->> 'user_id' = '00000000-0000-0000-0000-0000000e0a02'),
-  1,
-  'The first member pledge sends one welcome'
+  0,
+  'A pledge queues no welcome email (one email per sign-up)'
 );
 
 -- 10. Shifts tomorrow are reminded.

@@ -38,7 +38,6 @@ const THINGS = {
   "governance.candidates": "society",
   "governance.election_results": "society",
   "governance.elections": "society",
-  "governance.member_offers": "people",
   "governance.minutes": "society",
   "governance.partner_affiliations": "people",
   "governance.partner_agreements": "people",

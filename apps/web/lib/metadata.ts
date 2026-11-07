@@ -9,6 +9,8 @@ interface PageMetadata {
   feed?: string;
   /** A share image; otherwise one is drawn from the title (`/[locale]/og`). */
   image?: string;
+  /** The languages the page exists in, when not every one (a piece). */
+  languages?: readonly Locale[];
   title: string;
 }
 
@@ -30,13 +32,13 @@ export const localizedMetadata = (
   path: string,
   page: PageMetadata
 ): Metadata => {
-  const { feed, ...rest } = page;
+  const { feed, languages = locales, ...rest } = page;
   return createMetadata({
     ...rest,
     alternates: {
       canonical: localizedPath(locale, path),
       languages: Object.fromEntries(
-        locales.map((language) => [language, localizedPath(language, path)])
+        languages.map((language) => [language, localizedPath(language, path)])
       ),
       ...(feed
         ? {

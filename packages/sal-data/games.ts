@@ -106,10 +106,10 @@ export const gameDay = (date = new Date()) =>
   Math.floor(Date.parse(`${baghdadDate.format(date)}T00:00:00Z`) / DAY_MS);
 
 /**
- * The first daily games, Thursday, November 5, 2026, are No. 1 (owner, Nov
- * 5, 2026: every count starts again with the four daily games).
+ * The first daily games, Sunday, November 8, 2026, launch day, are No. 1
+ * (owner, Nov 7, 2026).
  */
-const FIRST_DAY = Date.UTC(2026, 10, 5) / DAY_MS;
+const FIRST_DAY = Date.UTC(2026, 10, 8) / DAY_MS;
 export const gameNumber = (day: number) => day - FIRST_DAY + 1;
 
 /** Days in a row a daily game was solved, ending on the last solved day. */

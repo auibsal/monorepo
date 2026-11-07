@@ -418,6 +418,24 @@ export const twoStepReset = (
     ],
   }));
 
+/** Too many wrong recovery codes on the account within an hour. */
+export const recoveryAttempts = (lang: Lang, app: string) =>
+  build(lang, (l) => ({
+    action: diwan(app, l),
+    heading:
+      l === "ar"
+        ? "محاولات متكررة برموز الاسترداد"
+        : "Several recovery codes were tried on your account",
+    paragraphs: [
+      l === "ar"
+        ? "أُدخلت رموز استرداد خاطئة عدة مرات في حسابك خلال الساعة الماضية، فأوقفنا المحاولات لمدة ساعة."
+        : "Wrong recovery codes were entered on your account several times in the last hour, so we have paused further tries for an hour.",
+      l === "ar"
+        ? "إن لم تكن أنت، فغيّر كلمة المرور الآن وردّ على هذه الرسالة."
+        : "If this wasn’t you, change your password now and reply to this email.",
+    ],
+  }));
+
 /**
  * The Council's answer to an account from outside AUIB: verified (the
  * member finishes setting up and is in), or not.
@@ -486,32 +504,32 @@ const invitationLines = (
   if (kind === "society") {
     return l === "ar"
       ? {
-          body: `تدعوك ${SOCIETY_AR} لتكون ضيفها: تحجز مقاعد في الفعاليات، وتستفيد من امتيازات الشركاء، وتحمل بطاقة الضيف الحيّة.`,
+          body: `تدعوك ${SOCIETY_AR} لتكون ضيفها: تحجز مقاعد في الفعاليات وتحمل بطاقة الضيف الحيّة.`,
           heading: "أنت مدعو ضيفًا للجمعية",
         }
       : {
-          body: "The AUIB Society of Arts and Letters invites you as its guest: you book places at events, use our partners' perks, and carry a guest's live card.",
+          body: "The AUIB Society of Arts and Letters invites you as its guest: you book places at events and carry a guest's live card.",
           heading: "You are invited as the Society's guest",
         };
   }
   if (kind === "team") {
     return l === "ar"
       ? {
-          body: `${partner} شريك لـ${SOCIETY_AR}، ويدعوك إلى فريقه على منصة الجمعية: ملف الشريك وامتيازاته وضيوفه.`,
+          body: `${partner} شريك لـ${SOCIETY_AR}، ويدعوك إلى فريقه على منصة الجمعية: ملف الشريك وضيوفه.`,
           heading: `انضم إلى فريق ${partner}`,
         }
       : {
-          body: `${partner} is a partner of the AUIB Society of Arts and Letters and invites you to its team on the Society's platform: the partner's profile, its perks and its guests.`,
+          body: `${partner} is a partner of the AUIB Society of Arts and Letters and invites you to its team on the Society's platform: the partner's profile and its guests.`,
           heading: `Join ${partner}'s team`,
         };
   }
   return l === "ar"
     ? {
-        body: `${partner} شريك لـ${SOCIETY_AR}. بصفتك ضيفه تحجز مقاعد في الفعاليات، وترى امتيازاته، وتكتب لقرطاس حين تُفتح دعوة لـ${partner}.`,
+        body: `${partner} شريك لـ${SOCIETY_AR}. بصفتك ضيفه تحجز مقاعد في الفعاليات وتكتب لقرطاس حين تُفتح دعوة لـ${partner}.`,
         heading: `يدعوك ${partner} ضيفًا`,
       }
     : {
-        body: `${partner} is a partner of the AUIB Society of Arts and Letters. As its guest you book places at events, use its perks, and write for Qirtas when a call is open to ${partner}.`,
+        body: `${partner} is a partner of the AUIB Society of Arts and Letters. As its guest you book places at events and write for Qirtas when a call is open to ${partner}.`,
         heading: `${partner} invites you as its guest`,
       };
 };
@@ -819,8 +837,8 @@ export const applicationDecided = (
               : `${partner} is a partner of the Society`,
           paragraphs: [
             l === "ar"
-              ? "وقّع رئيس الجمعية مذكرة التفاهم. لوحة الشريك مفتوحة لك الآن: الملف والمذكرة، والامتيازات، والفريق والضيوف."
-              : "The President has signed the memorandum. Your partner dashboard is open: the profile and memorandum, perks, and your team and guests.",
+              ? "وقّع رئيس الجمعية مذكرة التفاهم. لوحة الشريك مفتوحة لك الآن: الملف والمذكرة، والفريق والضيوف."
+              : "The President has signed the memorandum. Your partner dashboard is open: the profile and memorandum, and your team and guests.",
           ],
         }
       : {
@@ -1326,8 +1344,8 @@ export const welcome = (lang: Lang, app: string) =>
       ],
       paragraphs: [
         l === "ar"
-          ? "أنت عضو الآن. بطاقتك الحيّة في «حسابك»: تُظهرها عند الباب، وتحمل امتيازات الشركاء."
-          : "You're a member now. Your live card is in your account: show it at the door, and it carries our partners' perks.",
+          ? "أنت عضو الآن. بطاقتك الحيّة في «حسابك»: تُظهرها عند الباب ليتحقق من عضويتك."
+          : "You're a member now. Your live card is in your account: show it at the door, where it checks your membership.",
       ],
     };
   });

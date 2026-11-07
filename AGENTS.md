@@ -308,10 +308,11 @@ any schema change. Integration tests run against a local stack with
 - **Partners.** One register, `governance.partners`. `/partners` is the
   front door; an organization applies at `/partners/join`, its signatory
   signing by name. Each partner has one dashboard, `/partners/dashboard`
-  (profile and memorandum, events, perks, people), for its team of up to
+  (profile and memorandum, events, people), for its team of up to
   six (Lead or Team), who join only by invitation and verify their own
   guests. Partners never use Notion and see only their own events and
-  checklist.
+  checklist. No perks or offers anywhere: sponsors in kind are thanked
+  with a "Supported by" line, and the card is for the door only.
 - **Guests** sign up at `/sign-up/guest` to book open events, or are
   invited from People → Guests; never members.
 - **Money: none.** No budgets, costs, prices, spending limits, ledgers,
@@ -450,7 +451,7 @@ any schema change. Integration tests run against a local stack with
   memorandum, a document, an election, an opening, a meeting) has its own
   page (`RecordPage`, `NewLink`), "new" for a blank one, ending with its
   History (`RecordHistory`, `core.record_history()`). A small row (a need,
-  a shift, a credit, a rehearsal, a role, a perk) is added in place with
+  a shift, a credit, a rehearsal, a role) is added in place with
   `AddInPlace`, never a dialog. A long list acted on together uses
   `SelectableTable`.
 - **One layout rule.** Menus, tabs and action buttons sit in rows,

@@ -65,9 +65,9 @@ describe("the day", () => {
     expect(late - early).toBe(1);
   });
 
-  test("the count starts again: November 5, 2026 is No. 1", () => {
-    expect(gameNumber(gameDay(new Date("2026-11-05T09:00:00Z")))).toBe(1);
-    expect(gameNumber(gameDay(new Date("2026-11-06T09:00:00Z")))).toBe(2);
+  test("launch day, November 8, 2026, is No. 1", () => {
+    expect(gameNumber(gameDay(new Date("2026-11-08T09:00:00Z")))).toBe(1);
+    expect(gameNumber(gameDay(new Date("2026-11-09T09:00:00Z")))).toBe(2);
   });
 
   test("the same day gives every reader the same games", () => {

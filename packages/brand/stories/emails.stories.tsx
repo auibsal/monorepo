@@ -24,6 +24,7 @@ import {
   piecePublished,
   type RemovalInfo,
   type RoleInfo,
+  recoveryAttempts,
   removalDone,
   removalReceived,
   removalRequested,
@@ -140,6 +141,7 @@ export const TwoStepResetByOfficer = email((l) =>
 export const TwoStepResetWithCode = email((l) =>
   twoStepReset(l, "recovery_code", APP)
 );
+export const RecoveryAttempts = email((l) => recoveryAttempts(l, APP));
 export const RemovalOverdue = email((l) =>
   removalRequested(l, removal, APP, true)
 );

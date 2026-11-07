@@ -61,7 +61,7 @@ const text = (value: string, locale: string) => ({
 const passFor = (card: WalletCard) => {
   const base = origin();
   const ar = card.locale === "ar";
-  const number = String(card.number).padStart(4, "0");
+  const number = String(card.number).padStart(5, "0");
   return {
     cardTitle: text(
       ar ? "جمعية الفنون والآداب" : "AUIB Society of Arts and Letters",
@@ -220,6 +220,37 @@ const writePass = async (
  */
 export const refreshWalletPass = (card: WalletCard) =>
   writePass("PUT", walletObjectId(card.code), passFor(card));
+
+/**
+ * Gives a saved pass a new number (the renumbering of Nov 8, 2026,
+ * decisions §10), changing only the fields that show it. False when the
+ * pass isn't in Google Wallet.
+ */
+export const renumberWalletPass = async (code: string, value: number) => {
+  const objectId = walletObjectId(code);
+  const response = await fetch(
+    `${WALLET_API}/genericObject/${encodeURIComponent(objectId)}`,
+    { headers: { authorization: `Bearer ${await accessToken()}` } }
+  );
+  if (response.status === 404) {
+    return false;
+  }
+  if (!response.ok) {
+    throw new Error(`Google Wallet GET failed (${response.status})`);
+  }
+  const pass = (await response.json()) as {
+    rotatingBarcode?: Record<string, unknown>;
+    textModulesData?: { body: string; header: string; id: string }[];
+  };
+  const number = String(value).padStart(5, "0");
+  return writePass("PATCH", objectId, {
+    heroImage: { sourceUri: { uri: api(`/wallet/rosette/${value}`) } },
+    rotatingBarcode: { ...pass.rotatingBarcode, alternateText: number },
+    textModulesData: (pass.textModulesData ?? []).map((m) =>
+      m.id === "number" ? { ...m, body: number } : m
+    ),
+  });
+};
 
 /** Marks a pass expired: Wallet shows it as no longer valid. */
 export const expireWalletPass = (code: string) =>

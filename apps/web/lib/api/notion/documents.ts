@@ -202,6 +202,7 @@ const publishDocument = async (
     body_en: body,
     code: v.code,
     notion_url: pageUrl(page.id),
+    on_site: true,
     slug: v.slug,
     title_en: v.title,
     ...(v.summary ? { summary_en: v.summary } : {}),

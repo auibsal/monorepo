@@ -19,7 +19,7 @@ export const localeDefinitions: Record<SupportedLocale, LocaleDefinition> = {
   ar: { dir: "rtl", intl: "ar-IQ", label: "العربية" },
   ckb: { dir: "rtl", intl: "ckb-IQ", label: "کوردی" },
   // British English: day-month-year dates, as used in Iraq.
-  en: { dir: "ltr", intl: "en-GB", label: "English" },
+  en: { dir: "ltr", intl: "en-US", label: "English" },
 };
 
 export const locales = project.locale.enabled;

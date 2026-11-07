@@ -49,9 +49,8 @@ export const councilMembers = async (client: Client) =>
   unwrap(await client.schema("governance").rpc("council_members")) ?? [];
 
 /**
- * The Council's six seats (owner, Nov 5, 2026), in order, each with whoever
- * holds it (none while open), and the Acting President while one is in
- * office.
+ * The Council's nine seats (decisions §4), in order, each with whoever
+ * holds it (none while open).
  */
 export const councilSeats = async (client: Client) =>
   unwrap(await client.schema("governance").rpc("council_seats")) ?? [];

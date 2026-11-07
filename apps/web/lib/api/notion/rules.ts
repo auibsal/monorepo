@@ -115,6 +115,18 @@ export const checkEvent = (page: NotionPage): Checked<EventValues> => {
   const slug = slugFor(page, titleEn);
   problems.push(...slugProblems(slug));
   const entry = wayIn(page, problems);
+  // Decisions §10: an event is published only with a lead and a confirmed
+  // place.
+  if (read.text(page, "Venue").trim() === "") {
+    problems.push(
+      "Set Venue to the confirmed room or place. An event is published only once its place is confirmed."
+    );
+  }
+  if (read.people(page, "Owner").length === 0) {
+    problems.push(
+      "Set Owner to the event's lead. An event is published only with a lead."
+    );
+  }
 
   if (problems.length > 0 || !startsAt) {
     return { ok: false, problems };

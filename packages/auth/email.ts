@@ -277,6 +277,22 @@ export const verifyEmailCode = async (
     : { ok: true, value: undefined };
 };
 
+/** Sends the sign-up confirmation email again (the inbox screen's button). */
+export const resendConfirmation = async (
+  supabase: Client,
+  email: string,
+  redirectTo?: string
+): Promise<AuthResult> => {
+  const { error } = await supabase.auth.resend({
+    email: normalizeEmail(email),
+    options: redirectTo ? { emailRedirectTo: redirectTo } : undefined,
+    type: "signup",
+  });
+  return error
+    ? { code: toEmailAuthError(error), ok: false }
+    : { ok: true, value: undefined };
+};
+
 export const sendPasswordReset = async (
   supabase: Client,
   email: string,

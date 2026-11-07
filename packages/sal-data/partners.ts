@@ -3,7 +3,7 @@ import { type Client, DataError, unwrap } from "./client";
 
 /**
  * Partnerships (Policy Manual P11, P8). The register, memoranda (Form F-26),
- * conflict declarations (Form F-18), affiliations and member offers. Row
+ * conflict declarations (Form F-18) and affiliations. Row
  * Level Security and the signing RPC decide who may do what.
  */
 
@@ -35,7 +35,6 @@ export const agreementGrants = [
   "journal_submissions",
   "guest_editing",
   "event_cohosting",
-  "member_offer",
   "shared_branding",
   "productions",
   "volunteering",
@@ -129,29 +128,6 @@ export const agreementSchema = z
 
 export type AgreementInput = z.input<typeof agreementSchema>;
 
-export const offerSchema = z
-  .object({
-    code: optionalText(60),
-    details_ar: optionalText(2000),
-    details_en: z.string().trim().min(1).max(2000),
-    ends_on: z
-      .union([z.iso.date(), z.literal("")])
-      .transform((value) => value || null)
-      .nullable()
-      .optional(),
-    is_published: z.boolean(),
-    partner_id: z.uuid(),
-    starts_on: z.iso.date(),
-    title_ar: optionalText(200),
-    title_en: z.string().trim().min(1).max(200),
-  })
-  .refine((o) => !o.ends_on || o.ends_on >= o.starts_on, {
-    message: "ends_before_start",
-    path: ["ends_on"],
-  });
-
-export type OfferInput = z.input<typeof offerSchema>;
-
 export const conflictItemSchema = z.object({
   affects: optionalText(1000),
   handling: optionalText(1000),
@@ -206,18 +182,6 @@ export const renewalsDue = <
   );
 
 // ── Members ─────────────────────────────────────────────────────────────────
-
-/** Current offers for verified members (RLS returns none otherwise). */
-export const memberOffers = async (client: Client) =>
-  unwrap(
-    await client
-      .schema("governance")
-      .from("member_offers")
-      .select(
-        "id, title_en, title_ar, details_en, details_ar, code, ends_on, partner_id"
-      )
-      .order("starts_on", { ascending: false })
-  ) ?? [];
 
 /** Partner names for a role holder's declaration (F-18). */
 export const declarablePartners = async (client: Client) =>

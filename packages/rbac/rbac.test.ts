@@ -169,6 +169,22 @@ describe("mirror of the reference data in the migrations", () => {
       "journal.identity.view",
       "elections.manage",
       "certificates.countersign",
+      // Qirtas's independence (decisions §1, audit Part A).
+      "journal.manage",
+      "journal.advise",
+      "journal.decide",
+      "journal.publish",
+      "journal.edit.news",
+      "journal.edit.letters",
+      "journal.edit.gallery",
+      "journal.edit.video",
+      "journal.edit.voices",
+      "journal.edit.games",
+      "journal.approve",
+      "journal.copy",
+      "journal.frontpage",
+      "journal.prize",
+      "qalam.manage",
     ]);
     expect([...roles.president.permissions].sort()).toEqual(
       permissions.filter((p) => !withheld.has(p)).sort()

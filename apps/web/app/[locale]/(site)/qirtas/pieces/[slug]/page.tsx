@@ -27,7 +27,7 @@ export const generateMetadata = async ({
 const GamesPiece = async ({ params }: PieceProps) => {
   const { locale, slug } = await params;
   setRequestLocale(locale);
-  const piece = await loadPiece(slug);
+  const piece = await loadPiece(slug, locale);
   if (piece?.desk !== "games") {
     notFound();
   }

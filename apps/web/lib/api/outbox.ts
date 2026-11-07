@@ -33,6 +33,7 @@ import {
   personalEmailConfirm,
   pieceNote,
   piecePublished,
+  recoveryAttempts,
   removalDone,
   removalReceived,
   removalRequested,
@@ -75,7 +76,11 @@ import { type CacheTag, cacheTags } from "@/lib/supabase";
 import type { Sticker } from "./bot/stickers";
 import { pushToUser } from "./push";
 import { telegramToUser } from "./telegram";
-import { expireWalletPass, walletConfigured } from "./wallet";
+import {
+  expireWalletPass,
+  renumberWalletPass,
+  walletConfigured,
+} from "./wallet";
 
 /**
  * Processes core.outbox rows: the emails and site revalidation queued by
@@ -529,6 +534,13 @@ const eventNotice =
   };
 
 const handlers: Record<string, Handler> = {
+  // From /api/two-step/recover: the hour's tries ran out.
+  "access.recovery_attempts": async (admin, payload) => {
+    const to = await recipient(admin, payload.user_id);
+    if (to) {
+      await send(to, recoveryAttempts(to.lang, appUrl()));
+    }
+  },
   // ── Journeys added in the email audit (owner, Nov 4, 2026) ──────────
   "access.role_assigned": async (admin, payload) => {
     const [to, { data }] = await Promise.all([
@@ -1374,6 +1386,16 @@ const handlers: Record<string, Handler> = {
       throw new BroadcastPending(waiting.join(" "));
     }
   },
+  // The renumbering (decisions §10): a saved pass shows the new number.
+  "wallet.renumber": async (_admin, payload) => {
+    if (
+      walletConfigured() &&
+      typeof payload.code === "string" &&
+      typeof payload.number === "number"
+    ) {
+      await renumberWalletPass(payload.code, payload.number);
+    }
+  },
 };
 
 /**
@@ -1386,6 +1408,31 @@ export const isDeferred = (payload: unknown, now = Date.now()) => {
       ? (payload as Record<string, unknown>).send_after
       : null;
   return typeof after === "string" && Date.parse(after) > now;
+};
+
+/**
+ * Mail that can wait while the Society is on Resend's free plan (audit A1):
+ * the welcome is part of the confirmation email now, and reminders and
+ * digests have Hudhud or the account's own pages.
+ */
+export const NON_ESSENTIAL = new Set([
+  "membership.welcome",
+  "journal.call_opened",
+  "journal.piece_note",
+  "events.reminder",
+  "programmes.shift_reminder",
+  "programmes.replies_digest",
+]);
+
+const essentialOnly = async (admin: AdminClient) => {
+  const { data } = await admin
+    .schema("core")
+    .from("settings")
+    .select("value")
+    .eq("key", "email.essential_only")
+    .maybeSingle();
+  // On unless the setting says otherwise.
+  return data?.value !== false;
 };
 
 /** Claims and processes one row; true when it is done (or not ours to do). */
@@ -1418,9 +1465,17 @@ export const processRow = async (admin: AdminClient, id: number) => {
     // Someone else took it.
     return true;
   }
-  const handler = Object.hasOwn(handlers, row.kind)
-    ? handlers[row.kind]
-    : undefined;
+  // On Resend's free plan (100 emails a day) only the essential mail goes
+  // (audit A1); the rest is set aside, marked so, until the plan is raised
+  // and core.settings `email.essential_only` is turned off.
+  const skipped =
+    NON_ESSENTIAL.has(row.kind) && (await essentialOnly(admin))
+      ? "skipped: essential mail only (Resend free plan)"
+      : null;
+  const handler =
+    !skipped && Object.hasOwn(handlers, row.kind)
+      ? handlers[row.kind]
+      : undefined;
   try {
     if (handler) {
       await current.run({ admin, kind: row.kind, row: id }, () =>
@@ -1431,7 +1486,7 @@ export const processRow = async (admin: AdminClient, id: number) => {
       .schema("core")
       .from("outbox")
       .update({
-        last_error: handler ? null : "no handler",
+        last_error: skipped ?? (handler ? null : "no handler"),
         processed_at: new Date().toISOString(),
       })
       .eq("id", id);

@@ -14,22 +14,30 @@ and 7, with every older item checked against the code and production:
   Sign in with SAL, the native-review lists).
 - **Superseded:** an item a later decision replaced was closed.
 
-Branch: `claude/new-session-qosn60` (PR #233).
+Branch: `claude/new-session-qosn60` (PR #238: both audits of Nov 7,
+Part A first).
 
 ## Launch day (Sunday, November 8)
 
-- [ ] **Unpause production** when the owner says so.
+- [x] **Production is on** (unpaused Nov 7).
+- [x] **The spring 2026 Tour invitation** went out on November 7 as one
+  Resend Broadcast per kind. The invitation list is deleted on
+  **December 7**.
+- [ ] **Merge PR #238 before joining opens.** Its migrations, applied by
+  CI, change production data once:
+  - every published event without a place goes back to draft, and the
+    Nov 17 writing workshop is canceled;
+  - the 22 News pieces backdated to Oct 14 are unpublished;
+  - member and guest numbers are reassigned (the seats first, then by
+    join date), then locked; saved Google Wallet passes are patched;
+  - perks and offers are dropped;
+  - the President's Qirtas and Prize permissions and the Acting
+    President role go; the Vice President acts while the President is
+    recorded absent.
 - [ ] **The Library re-sync**, then a check:
   - run `/api/cron/notion-sync?documents=all` until it reports done;
   - check every public page for retired names and codes;
   - rename any Notion event that still carries a retired name.
-- [ ] **The spring 2026 Tour.** In the Diwan, People → Typewriter Tour:
-  - whoever runs the Tour loads `diwan_six_words_import.csv` and
-    `invitation_list.csv` (173 invitations, 15 of them plain; 62 pages
-    without an email stay private);
-  - the President presses "Send" only when the owner says go.
-  - The invitation goes out as one Resend Broadcast per kind.
-  - The list is deleted on December 7.
 
 ## For the owner: dashboards and secrets
 

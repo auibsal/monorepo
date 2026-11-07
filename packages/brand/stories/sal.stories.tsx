@@ -410,7 +410,7 @@ export const CertificateStory: Story = {
       dated="Given on April 27, 2028"
       lead="This certifies that"
       locale="en"
-      motto="The paper and the pen"
+      motto="The paper and the pen."
       name="Lina Hassan"
       seal={{
         code: "SAL-EDT · Mutanabbi Prize",
@@ -437,7 +437,7 @@ export const CertificateArabic: Story = {
       dated="مُنحت في 27 نيسان 2028"
       lead="تشهد الجمعية بأن"
       locale="ar"
-      motto="والقرطاسُ والقلمُ"
+      motto="والقرطاسُ والقلمُ."
       name="سارة أحمد"
       seal={{
         code: "SAL-EDT · قلم",

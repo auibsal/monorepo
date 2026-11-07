@@ -39,7 +39,6 @@ const en = {
     grantsAsked: "Partners asking to turn something on",
     hiringNew: "New replies to openings",
     partnerApplications: "Partner applications",
-    perksWaiting: "Perks waiting to be published",
     requestsOpen: "Requests open",
     submissionsNew: "New submissions to Qirtas",
   },
@@ -127,11 +126,11 @@ const en = {
   linked: (name: string) =>
     `Linked. Good to meet you properly, ${name}. Your notices will come here too; /me turns them off.`,
   linkFailed:
-    "That link has expired or was already used. Make a new one on auibsal.org, in your profile.",
+    "That link has expired or was already used. Make a new one on auibsal.org: Your account, then Settings.",
 
   // Linking
   linkHow:
-    "To link your account, open Membership on auibsal.org, go to your profile and choose <b>Connect Telegram</b>. It takes one tap.",
+    "To link your account, open Your account on auibsal.org, then Settings, and choose <b>Connect Telegram</b>. It takes one tap.",
   memberNo: "Not verified yet: finish joining on auibsal.org to RSVP.",
   membersOnly: "Members only",
   memberYes: "Verified member",
@@ -198,7 +197,7 @@ const en = {
   topicUsage:
     "Send it inside a topic: /topic announcements, events, qirtas, word or brief. /topic none clears it.",
   unlinked:
-    "Unlinked. Your SAL account no longer gets notices here. You can link it again from your profile.",
+    "Unlinked. Your SAL account no longer gets notices here. You can link it again from Settings in Your account.",
   waitlisted: "You're on the waitlist.",
 
   when: (date: string, time: string) => `${date} · ${time}`,
@@ -229,7 +228,6 @@ const ar: Copy = {
     grantsAsked: "شركاء يريدون يفعّلون شي",
     hiringNew: "ردود جديدة عالفرص",
     partnerApplications: "طلبات شراكة",
-    perksWaiting: "مزايا تنتظر النشر",
     requestsOpen: "طلبات مفتوحة",
     submissionsNew: "مشاركات جديدة لقرطاس",
   },
@@ -316,10 +314,10 @@ const ar: Copy = {
   linked: (name: string) =>
     `انربط. تشرفنا صدگ يا ${name}. إشعاراتك هم راح توصلك هنا، وتگدر تطفيها من /me.`,
   linkFailed:
-    "هالرابط خلص وقته أو انستخدم قبل. سوّي رابط جديد من ملفك على auibsal.org.",
+    "هالرابط خلص وقته أو انستخدم قبل. سوّي رابط جديد من «حسابك» على auibsal.org، وبعدين الإعدادات.",
 
   linkHow:
-    "حتى تربط حسابك، افتح «العضوية» على auibsal.org، روح لملفك الشخصي واختار <b>اربط تيليغرام</b>. بس كبسة وحدة.",
+    "حتى تربط حسابك، افتح «حسابك» على auibsal.org، وبعدين الإعدادات، واختار <b>اربط تيليغرام</b>. بس كبسة وحدة.",
   memberNo: "حسابك بعده ما توثّق: كمّل انضمامك على auibsal.org حتى تحجز.",
   membersOnly: "للأعضاء بس",
   memberYes: "عضو موثّق",
@@ -379,7 +377,7 @@ const ar: Copy = {
   topicUsage:
     "دزها داخل موضوع: /topic announcements أو events أو qirtas أو word أو brief. و/topic none يشيل التخصيص.",
   unlinked:
-    "انفصل. حسابك بالجمعية ما راح توصله إشعارات هنا بعد. تگدر تربطه مرة لخ من ملفك الشخصي.",
+    "انفصل. حسابك بالجمعية ما راح توصله إشعارات هنا بعد. تگدر تربطه مرة لخ من الإعدادات بـ«حسابك».",
   waitlisted: "انت بقائمة الانتظار.",
 
   when: (date: string, time: string) => `${date} · ${time}`,

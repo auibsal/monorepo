@@ -17,7 +17,7 @@ const { POST } = await import("@/app/api/telegram/link/route");
 
 const start = {
   codeChallenge: "c".repeat(43),
-  redirectUri: "https://site.example/ar/membership/profile",
+  redirectUri: "https://site.example/ar/membership/settings/notices",
   state: "s".repeat(20),
 };
 
@@ -38,18 +38,28 @@ describe("POST /telegram/link", () => {
     expect((await call(start, false)).status).toBe(401);
   });
 
-  it.each([
-    "https://evil.example/profile",
-    "https://site.example/diwan/events",
-    "https://site.example/membership/profile?next=x",
-    "https://site.example/ar/profile",
-  ])("sends Telegram back only to the profile, not %s", async (redirectUri) => {
-    expect((await call({ ...start, redirectUri })).status).toBe(400);
+  it("answers no address until the login is set up, from any page (HUD-1)", async () => {
+    expect(await (await call(start)).json()).toEqual({ url: null });
+    expect(
+      await (
+        await call({ ...start, redirectUri: "https://site.example/elsewhere" })
+      ).json()
+    ).toEqual({ url: null });
   });
 
-  it("answers no address until the login is set up", async () => {
-    expect(await (await call(start)).json()).toEqual({ url: null });
-  });
+  it.each([
+    "https://evil.example/membership/settings/notices",
+    "https://site.example/diwan/events",
+    "https://site.example/membership/settings/notices?next=x",
+    "https://site.example/membership/profile",
+  ])(
+    "sends Telegram back only to the settings page, not %s",
+    async (redirectUri) => {
+      env.TELEGRAM_BOT_TOKEN = `8506082400:${"a".repeat(35)}`;
+      env.TELEGRAM_LOGIN_CLIENT_SECRET = "s".repeat(32);
+      expect((await call({ ...start, redirectUri })).status).toBe(400);
+    }
+  );
 
   it("answers Telegram's address with the bot as the client", async () => {
     env.TELEGRAM_BOT_TOKEN = `8506082400:${"a".repeat(35)}`;

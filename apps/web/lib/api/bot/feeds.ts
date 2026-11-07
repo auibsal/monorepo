@@ -380,12 +380,50 @@ const dailyWordDirect = async (api: Api, username: string, now: Date) => {
   );
 };
 
+/**
+ * Posts for events that are no longer on the site (canceled, unpublished
+ * or deleted) are deleted from the group (decisions §6: posts are edited or
+ * deleted when an event changes, is canceled or comes off the site).
+ */
+export const withdrawGone = async (api: Api) => {
+  const { data: rows } = await posts()
+    .select("chat_id, kind, ref, message_id")
+    .in("kind", ["event", "event_soon"]);
+  if (!rows?.length) {
+    return 0;
+  }
+  const ids = [...new Set(rows.map((r) => r.ref))];
+  const { data: live } = await db()
+    .schema("events")
+    .from("events")
+    .select("id")
+    .in("id", ids)
+    .eq("status", "published");
+  const still = new Set((live ?? []).map((e) => e.id));
+  let withdrawn = 0;
+  for (const row of rows) {
+    if (still.has(row.ref)) {
+      continue;
+    }
+    if (row.message_id) {
+      // biome-ignore lint/performance/noAwaitInLoops: Telegram's rate limit
+      await api
+        .deleteMessage(row.chat_id, row.message_id)
+        .catch(() => undefined);
+    }
+    await release(row.chat_id, row.kind as Kind, row.ref);
+    withdrawn += 1;
+  }
+  return withdrawn;
+};
+
 export const runFeeds = async (
   api: Api,
   username: string,
   now = new Date()
 ): Promise<FeedResult> => {
-  const direct = await dailyWordDirect(api, username, now);
+  const withdrawn = await withdrawGone(api);
+  const direct = (await dailyWordDirect(api, username, now)) + withdrawn;
   const connected = await groups();
   if (!connected.length) {
     return { groups: 0, posted: direct };

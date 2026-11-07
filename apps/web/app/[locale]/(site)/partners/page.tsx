@@ -18,7 +18,7 @@ const REACH = ["auib", "iraq", "international"] as const;
  */
 const SIDES = {
   gets: ["together", "guests", "places"],
-  gives: ["side", "perks", "team"],
+  gives: ["side", "team"],
 } as const;
 
 /**

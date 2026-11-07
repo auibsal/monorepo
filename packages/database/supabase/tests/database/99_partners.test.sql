@@ -76,7 +76,7 @@ insert into core.semesters (code, name_en, name_ar, starts_on, ends_on) values
 update core.settings set value = '0' where key = 'membership.founding_voters';
 -- </preamble>
 
-select plan(22);
+select plan(21);
 
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a1', 'director-pt@auib.edu.iq');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a2', 'president-pt@auib.edu.iq');
@@ -98,7 +98,7 @@ select lives_ok(
   $$ insert into governance.partner_agreements (id, partner_id, purpose_en, starts_on, grants)
      values ('00000000-0000-0000-0000-00000000d101', '00000000-0000-0000-0000-00000000d001',
        'Poetry Hub members submit to the Journal; joint readings.', current_date - 1,
-       '{journal_submissions,member_offer}') $$,
+       '{journal_submissions}') $$,
   'and drafts a memorandum'
 );
 select throws_ok(
@@ -169,8 +169,8 @@ select lives_ok(
      where id = '00000000-0000-0000-0000-00000000d101' $$,
   'but its renewal date and Student Life notice can'
 );
-insert into governance.member_offers (partner_id, title_en, details_en, is_published)
-values ('00000000-0000-0000-0000-00000000d001', '10% off chapbooks', 'Show your Nexus membership card.', true);
+select hasnt_table('governance', 'member_offers',
+  'Partners list no perks or offers for members (decisions §2)');
 
 select pg_temp.login_anon();
 select is((select array_agg(slug) from governance.public_partners()), array['poetry-hub'],
@@ -182,14 +182,10 @@ select throws_ok(
 );
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a4');
-select is((select count(*)::int from governance.member_offers), 1,
-  'A verified member sees the partner''s offer');
 select is((select count(*)::int from governance.partners), 0,
-  'but not the register');
+  'A verified member does not read the register');
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000b1');
-select is((select count(*)::int from governance.member_offers), 0,
-  'An account that is not a member does not see offers');
 select throws_ok(
   $$ insert into governance.partner_affiliations (partner_id, status)
      values ('00000000-0000-0000-0000-00000000d001', 'verified') $$,

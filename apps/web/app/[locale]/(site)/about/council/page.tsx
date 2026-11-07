@@ -16,15 +16,17 @@ export const generateMetadata = sectionMetadata(
   "/about/council"
 );
 
-/** The Council's seats, and the Acting President while one is in office. */
+/** The Council's nine seats, in order (decisions §4), by full title. */
 const SEATS = [
   "president",
   "vice_president",
   "general_secretary",
   "eic",
-  "artistic_director",
   "media_director",
-  "acting_president",
+  "artistic_director",
+  "events_director",
+  "partnerships_director",
+  "membership_director",
 ] as const;
 
 type Results = Awaited<ReturnType<typeof governance.publicElectionResults>>;
@@ -42,8 +44,8 @@ const byElection = (rows: Results) => {
 };
 
 /**
- * How the Society is run, in public: the Council's six seats (owner, Nov
- * 5, 2026), from the roles people hold, the resolutions it adopted and who members elected. Only what the
+ * How the Society is run, in public: the Council's nine seats (decisions
+ * §4), from the roles people hold, the resolutions it adopted and who members elected. Only what the
  * database makes public is read (the Council, adopted resolutions, each published election's
  * outcome per office); minutes and the counts at each round stay in the
  * Diwan.

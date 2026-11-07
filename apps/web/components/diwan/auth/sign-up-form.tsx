@@ -17,6 +17,7 @@ import { useScreenTop } from "@/lib/diwan/use-screen-top";
 import { NamePartsFields } from "../setup-form";
 import { EmailCode } from "./email-code";
 import { useHumanCheck } from "./human-check";
+import { ResendConfirmation } from "./resend-confirmation";
 
 /**
  * Why someone without an AUIB address may sign up (owner, Oct 31, 2026):
@@ -103,6 +104,10 @@ export const SignUpForm = ({ next: given, outside }: SignUpFormProps) => {
         <FormHeader title={t("signUp.checkInbox")} />
         <p role="status">{t("signUp.checkInboxBody", { email: sentTo })}</p>
         <EmailCode email={sentTo} />
+        <ResendConfirmation
+          email={sentTo}
+          redirectTo={callbackUrl(locale, next)}
+        />
       </>
     );
   }

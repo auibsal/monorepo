@@ -119,14 +119,36 @@ test("sign-up takes only AUIB addresses", async ({ page }) => {
   await expect(page.getByLabel("Family name")).toHaveCount(0);
 });
 
-test("signing in with an address that has no account says so", async ({
+test("a whole address pasted and submitted at once signs up the right address", async ({
+  page,
+}) => {
+  await page.goto(`${urls.web}/sign-up`);
+  // Pasted, then submitted with Enter: the field is never left (no blur).
+  await page
+    .getByLabel("Your AUIB email")
+    .fill(`paste.${Date.now()}@auib.edu.iq`);
+  await page.getByLabel("Password", { exact: true }).fill(PASSWORD);
+  await page.getByLabel("Password", { exact: true }).press("Enter");
+  const status = page.getByRole("status").first();
+  await expect(status).toContainText("@auib.edu.iq");
+  await expect(status).not.toContainText("auib.edu.iq@auib.edu.iq");
+  await expect(
+    page.getByRole("button", { name: /Send the email again in \d+ s/ })
+  ).toBeDisabled();
+});
+
+// A6: the site never says whether an address has an account.
+test("signing in with an address that has no account says only that it doesn't match", async ({
   page,
 }) => {
   await page.goto(`${urls.web}/sign-in`);
   await page.getByLabel("Email").fill(`nobody-${Date.now()}@auib.edu.iq`);
   await page.getByLabel("Password").fill(PASSWORD);
   await page.getByRole("button", { exact: true, name: "Sign in" }).click();
-  await expect(page.getByText("No account uses this address.")).toBeVisible();
+  await expect(
+    page.getByText("That email and password don’t match.")
+  ).toBeVisible();
+  await expect(page.getByText("No account uses this address.")).toHaveCount(0);
 });
 
 test("an AUIB address signs in by password, with a link one click away", async ({

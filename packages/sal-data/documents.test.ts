@@ -1,5 +1,10 @@
 import { describe, expect, test } from "vitest";
-import { documentBody, documentSections, documentTitle } from "./documents";
+import {
+  documentBody,
+  documentSections,
+  documentTitle,
+  notionPageId,
+} from "./documents";
 
 describe("documents", () => {
   test("titles and text fall back to English", () => {
@@ -76,5 +81,22 @@ describe("documents", () => {
     expect(html).toContain(
       '<li><a href="/library/policy-manual">SAL-GOV-03 Policy Manual</a></li><li>SAL-EXB-01 Leadership Handbook</li>'
     );
+  });
+
+  test("a link to another document's Notion page links to it in the Library", () => {
+    const ref = { href: "/library/bylaws", title: "Bylaws" };
+    const { html } = documentSections(
+      '<p>As the <a href="https://app.notion.com/p/Bylaws-40e88240688681159e46d9df9c0f09b9?pvs=4">Bylaws</a> set out.</p>',
+      new Map(),
+      new Map([["40e88240688681159e46d9df9c0f09b9", ref]])
+    );
+    expect(html).toBe(
+      '<p>As the <a href="/library/bylaws">Bylaws</a> set out.</p>'
+    );
+    expect(
+      notionPageId(
+        "https://app.notion.com/p/40e88240-6886-8115-9e46-d9df9c0f09b9"
+      )
+    ).toBe("40e88240688681159e46d9df9c0f09b9");
   });
 });

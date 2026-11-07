@@ -3,6 +3,7 @@ import "server-only";
 import { createAdminClient } from "@repo/database/admin";
 import { parseError } from "@repo/observability/error";
 import { log } from "@repo/observability/log";
+import { revalidateTag } from "next/cache";
 import { env } from "@/env";
 import { diwan, origin } from "@/lib/api/urls";
 import { createNotion, type Notion, type NotionUser } from "./client";
@@ -12,6 +13,7 @@ import { sendMinutesToDiwan } from "./minutes";
 import { mirrorJournal, mirrorOfficers, peopleByEmail } from "./mirrors";
 import { publishPrograms } from "./programs";
 import { adoptDiwanItems, publishWaiting, syncRsvpCounts } from "./publish";
+import { unpublishFromNotion } from "./unpublish";
 
 const SOURCE_KEYS = [
   "documents",
@@ -72,6 +74,7 @@ const steps: [
     (ctx) => publishDocuments(ctx, { all: ctx.resyncDocuments === true }),
   ],
   ["adoption", (ctx) => syncAdoptionRecords(ctx)],
+  ["off the site", (ctx) => unpublishFromNotion(ctx)],
   ["minutes", (ctx) => sendMinutesToDiwan(ctx)],
   ["diwan items", (ctx) => adoptDiwanItems(ctx)],
   ["rsvps", (ctx) => syncRsvpCounts(ctx)],
@@ -119,6 +122,16 @@ export const runNotionSync = async (
       await step(ctx, users);
     } catch (error) {
       ctx.problems.push(`${name}: ${parseError(error)}`);
+    }
+  }
+
+  // What the sync changed shows at once, not only after the outbox runs.
+  // Outside a request (a script or a test) there is no cache to refresh.
+  for (const tag of ["events", "documents", "about"] as const) {
+    try {
+      revalidateTag(tag, "max");
+    } catch {
+      break;
     }
   }
 

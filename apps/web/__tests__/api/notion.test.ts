@@ -119,8 +119,10 @@ describe("publishing rules", () => {
     const result = checkEvent(
       page({
         Capacity: { number: 40, type: "number" },
+        Owner: { people: [{ id: "lead-1" }], type: "people" },
         Summary: text("Bring a poem."),
         Title: title("Writing workshop"),
+        Venue: text("Library 47, room 2"),
         "Way in": wayIn("RSVP"),
         When: when(
           "2026-10-20T18:00:00.000+03:00",
@@ -142,7 +144,9 @@ describe("publishing rules", () => {
 
   test("an event's way in and off campus come from the row", () => {
     const base = {
+      Owner: { people: [{ id: "lead-1" }], type: "people" },
       Title: title("Council meeting"),
+      Venue: text("Library 47"),
       When: when("2026-11-10T16:00:00.000+03:00"),
     };
     const check = (properties: Props) =>
@@ -163,6 +167,18 @@ describe("publishing rules", () => {
       ok: false,
       problems: ["Set Way in: Open, RSVP or Private."],
     });
+    // Decisions §10: no lead or no confirmed place, no publishing.
+    const unplaced = checkEvent(
+      page({
+        Title: title("Writing workshop"),
+        "Way in": wayIn("Open"),
+        When: when("2026-11-10T16:00:00.000+03:00"),
+      })
+    );
+    expect(unplaced.ok ? [] : unplaced.problems).toEqual([
+      "Set Venue to the confirmed room or place. An event is published only once its place is confirmed.",
+      "Set Owner to the event's lead. An event is published only with a lead.",
+    ]);
   });
 
   test("an event without a start time or a Latin slug says what to fix", () => {

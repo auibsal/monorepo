@@ -77,6 +77,7 @@ route sends it. Every email (audited end to end on 2026-11-04):
 | `access.role_assigned` | A Society role assigned (not a partner's team role) | The holder: what it opens; two-step sign-in first when it needs it | Officer |
 | `access.role_ending` | Seven days before a role ends | The holder | Officer |
 | `access.two_step_reset` | An authenticator removed (by an officer or a recovery code) | The person | Service |
+| `access.recovery_attempts` | Five wrong recovery codes within an hour (`/api/two-step/recover`; once an hour) | The person | Service |
 | `journal.submission_received`, `journal.returned_for_formatting`, `journal.decision`, `journal.agreement_reminder` (weekly, four weeks at most), `journal.final_check`, `journal.piece_note`, `journal.piece_published` | Work sent to Qirtas, through to publication | The author | Service |
 | `journal.call_opened` | A Qirtas call opens | Whoever asked "Tell me when" | Service (they stop it on the page) |
 | `membership.certificate_issued` | A certificate signed by both and issued | The holder | Service |

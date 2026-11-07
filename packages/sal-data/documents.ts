@@ -21,6 +21,7 @@ export interface SalDocument {
   code: string;
   dated: string | null;
   id: string;
+  notion_url?: string | null;
   ratification: string | null;
   slug: string;
   sort: number;
@@ -35,7 +36,7 @@ export interface SalDocument {
 }
 
 const LISTING =
-  "id, slug, code, title_en, title_ar, summary_en, summary_ar, audience, status, version, dated, ratification, adopted_on, vote, sort, updated_at";
+  "id, slug, code, title_en, title_ar, summary_en, summary_ar, audience, status, version, dated, ratification, adopted_on, vote, sort, updated_at, notion_url";
 
 /** The public documents, without their text (for listings and the sitemap). */
 export const publicDocuments = async (client: Client) =>
@@ -163,16 +164,34 @@ const dropEditorsLines = (html: string) => {
  * open: a link that repeats the words before it ("SAL-GOV-03 Policy Manual
  * <a>Policy Manual</a>") goes, any other keeps its words without the link.
  */
-const dropNotionLinks = (html: string) =>
+const dropNotionLinks = (
+  html: string,
+  pages: ReadonlyMap<string, DocumentRef> = new Map()
+) =>
   html.replace(
     NOTION_LINK,
-    (_match, space: string, inner: string, offset: number) => {
+    (match, space: string, inner: string, offset: number) => {
+      // A link to another document's Notion page becomes a link to that
+      // document in the Library (the links #234 had dropped).
+      const target = pages.get(notionPageId(match) ?? "");
+      if (target) {
+        return `${space}<a href="${target.href}">${inner}</a>`;
+      }
       const words = plain(inner);
       const before = plain(html.slice(Math.max(0, offset - 200), offset));
       // The link's own (already sanitized) contents stay; only the <a> goes.
       return words && before.endsWith(words) ? "" : `${space}${inner}`;
     }
   );
+
+const NOTION_ID = /([0-9a-f]{32})(?:[?#"]|$)/;
+const DASHES = /-/g;
+
+/** A Notion page's id (32 hex digits) from a link or page address. */
+export const notionPageId = (link: string | null | undefined) => {
+  const match = NOTION_ID.exec((link ?? "").replace(DASHES, ""));
+  return match?.[1] ?? null;
+};
 
 /**
  * A code that names a public document links to it in the Library, with the
@@ -226,10 +245,12 @@ const linkCodes = (html: string, refs: ReadonlyMap<string, DocumentRef>) => {
  */
 export const documentSections = (
   html: string,
-  refs: ReadonlyMap<string, DocumentRef> = new Map()
+  refs: ReadonlyMap<string, DocumentRef> = new Map(),
+  /** Other documents by their Notion page id (`notionPageId`). */
+  pages: ReadonlyMap<string, DocumentRef> = new Map()
 ) => {
   const safe = linkCodes(
-    dropNotionLinks(dropEditorsLines(sanitizeRichText(html))),
+    dropNotionLinks(dropEditorsLines(sanitizeRichText(html)), pages),
     refs
   );
   const contents: { id: string; title: string }[] = [];

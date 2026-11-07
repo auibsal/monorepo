@@ -1,6 +1,6 @@
 -- Partners on the platform: they apply with the memorandum signed by name,
 -- the Society signs without an uploaded copy, and each partner keeps its own
--- page (profile, perks, team, guests) under Row Level Security.
+-- page (profile, team, guests) under Row Level Security.
 begin;
 -- <preamble>
 -- Shared pgTAP preamble. Each test file includes a copy (pg_prove runs files
@@ -75,7 +75,7 @@ insert into core.semesters (code, name_en, name_ar, starts_on, ends_on) values
 -- first-100 rule back on themselves.
 update core.settings set value = '0' where key = 'membership.founding_voters';
 
-select plan(48);
+select plan(42);
 
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a1', 'director-pa@auib.edu.iq');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a2', 'president-pa@auib.edu.iq');
@@ -164,7 +164,7 @@ select is((select count(*)::int from governance.partner_applications()), 0,
 -- ── The partner keeps its own ───────────────────────────────────────────────
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000c1');
 -- What a partner turns on, it asks for; Partnerships gives it.
-update governance.partner_agreements set grants = array['member_offer']
+update governance.partner_agreements set grants = array['volunteering']
 where id = current_setting('test.agreement')::uuid;
 select is(
   (select cardinality(grants) from governance.partner_agreements where id = current_setting('test.agreement')::uuid),
@@ -172,17 +172,17 @@ select is(
   'A partner cannot turn on grants itself'
 );
 select lives_ok(
-  $$ select governance.ask_for_grants(current_setting('test.agreement')::uuid, array['member_offer', 'volunteering']) $$,
+  $$ select governance.ask_for_grants(current_setting('test.agreement')::uuid, array['volunteering', 'productions']) $$,
   'but asks for them'
 );
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a1');
 select lives_ok(
-  $$ select governance.give_grants(current_setting('test.agreement')::uuid, array['member_offer']) $$,
+  $$ select governance.give_grants(current_setting('test.agreement')::uuid, array['volunteering']) $$,
   'and Partnerships gives what it approves'
 );
 select is(
   (select grants from governance.partner_agreements where id = current_setting('test.agreement')::uuid),
-  array['member_offer'],
+  array['volunteering'],
   'so the memorandum carries it'
 );
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000c1');
@@ -199,35 +199,6 @@ select throws_ok(
   '42501', 'kept_by_the_society',
   'but not its listing'
 );
-select lives_ok(
-  $$ insert into governance.member_offers (partner_id, title_en, details_en, is_published)
-     values ((select id from governance.partners where slug = 'poetry-club'), 'Free readings', 'Show your card.', true) $$,
-  'adds a member perk'
-);
-select throws_ok(
-  $$ insert into governance.member_offers (partner_id, title_en, details_en)
-     values (current_setting('test.other_club')::uuid, 'x', 'y') $$,
-  '42501', null,
-  'but never to another partner'
-);
-select ok(
-  (select not is_published and submitted_at is not null from governance.member_offers where title_en = 'Free readings'),
-  'and the perk waits for the Society'
-);
-select pg_temp.login_as('00000000-0000-0000-0000-0000000000a1');
-select lives_ok(
-  $$ update governance.member_offers set is_published = true where title_en = 'Free readings' $$,
-  'Partnerships publishes it'
-);
-select pg_temp.login_as('00000000-0000-0000-0000-0000000000c1');
-update governance.member_offers set details_en = 'Show your card at the door.' where title_en = 'Free readings';
-select ok(
-  (select not is_published and submitted_at is not null from governance.member_offers where title_en = 'Free readings'),
-  'A change by the partner takes it down until it is published again'
-);
-select pg_temp.login_as('00000000-0000-0000-0000-0000000000a1');
-update governance.member_offers set is_published = true where title_en = 'Free readings';
-select pg_temp.login_as('00000000-0000-0000-0000-0000000000c1');
 
 -- Guests come through the partner's invitations: a shareable link leaves
 -- them waiting for the partner to verify them.
@@ -260,11 +231,9 @@ select throws_ok(
   'but cannot rewrite what the person said'
 );
 
--- A verified guest sees perks and books places, like a member.
+-- A verified guest books places, like a member.
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000b1');
 select ok(core.is_partner_guest(), 'A verified guest is a partner''s guest');
-select is((select count(*)::int from governance.member_offers), 1,
-  'and sees partners'' perks');
 select pg_temp.logout();
 insert into events.events (id, slug, title_en, title_ar, starts_at, members_only, capacity, status, entry)
 values ('e0000000-0000-0000-0000-0000000000f1', 'guest-reading', 'Reading', 'قراءة',

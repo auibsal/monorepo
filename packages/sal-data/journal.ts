@@ -749,7 +749,7 @@ export const publishedPieceSlugs = async (client: Client) =>
   unwrap(
     await journal(client)
       .from("pieces")
-      .select("slug, desk, published_at")
+      .select("slug, desk, language, published_at")
       .eq("status", "published")
       .lte("published_at", new Date().toISOString())
       .order("published_at", { ascending: false })
