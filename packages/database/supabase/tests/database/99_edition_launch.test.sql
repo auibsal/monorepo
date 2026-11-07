@@ -77,9 +77,9 @@ update core.settings set value = '0' where key = 'membership.founding_voters';
 
 select plan(6);
 
-insert into events.events (id, slug, programme_id, title_en, title_ar, starts_at, members_only, status) values
+insert into events.events (id, slug, programme_id, title_en, title_ar, starts_at, status, entry) values
   ('e0000000-0000-0000-0000-0000000000a1', 'launch-night-test', (select id from core.programmes where slug = 'open-pages'),
-    'Launch Night', 'ليلة الإطلاق', now() + interval '30 days', false, 'published');
+    'Launch Night', 'ليلة الإطلاق', now() + interval '30 days', 'published', 'rsvp');
 insert into journal.issues (id, volume, number, slug, title_en, title_ar, launch_event_id) values
   ('1a000000-0000-0000-0000-0000000000a1', 9, 1, 'edition-test-1', 'Secret', 'سري', 'e0000000-0000-0000-0000-0000000000a1'),
   ('1a000000-0000-0000-0000-0000000000a2', 9, 2, 'edition-test-2', 'Quiet', 'هادئ', 'e0000000-0000-0000-0000-0000000000a1');

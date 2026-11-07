@@ -83,14 +83,7 @@ const EventMinutes = ({ eventId }: { readonly eventId: string }) => {
           ))}
         </RowList>
       ) : (
-        <EmptyLine
-          action={{
-            href: `/council/meetings/new?event=${eventId}`,
-            label: t("writeMinutes"),
-          }}
-        >
-          {t("noMinutes")}
-        </EmptyLine>
+        <EmptyLine>{t("noMinutes")}</EmptyLine>
       )}
     </DiwanSection>
   );

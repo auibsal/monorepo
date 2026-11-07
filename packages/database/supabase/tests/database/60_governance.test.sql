@@ -98,10 +98,10 @@ select pg_temp.make_user(pg_temp.voter(n), 'v' || n || '@auib.edu.iq', 'Voter ' 
 update membership.memberships set member_since = current_date - 400
 where user_id in (select pg_temp.voter(n) from generate_series(1, 5) n);
 insert into membership.activity_records (user_id, kind, occurred_at, note)
-select pg_temp.voter(n), 'manual', now() - (k || ' days')::interval, 'Activity'
+select pg_temp.voter(n), 'check_in', now() - (k || ' days')::interval, 'Activity'
 from generate_series(1, 4) n, generate_series(1, 2) k;
 insert into membership.activity_records (user_id, kind, occurred_at, note)
-select '00000000-0000-0000-0000-0000000000e1', 'manual', now() - (k || ' days')::interval, 'Activity'
+select '00000000-0000-0000-0000-0000000000e1', 'check_in', now() - (k || ' days')::interval, 'Activity'
 from generate_series(1, 2) k;
 
 
@@ -151,7 +151,7 @@ select throws_ok($$ select governance.give_notice('e1000000-0000-0000-0000-00000
 -- A member who qualifies after notice is not on this election's list.
 select pg_temp.logout();
 insert into membership.activity_records (user_id, kind, occurred_at, note)
-select pg_temp.voter(5), 'manual', now() - (k || ' days')::interval, 'Activity'
+select pg_temp.voter(5), 'check_in', now() - (k || ' days')::interval, 'Activity'
 from generate_series(1, 2) k;
 update governance.elections
 set nominations_open_at = now() - interval '2 days', nominations_close_at = now() + interval '1 hour',

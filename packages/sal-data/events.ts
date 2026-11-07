@@ -1,8 +1,6 @@
 import { z } from "zod";
 import { type Client, unwrap } from "./client";
 
-const slug = z.string().regex(/^[a-z0-9]+(-[a-z0-9]+)*$/);
-
 export const eventQuestionSchema = z.object({
   id: z.string().min(1).max(40),
   label_ar: z.string().min(1).max(200),
@@ -10,35 +8,15 @@ export const eventQuestionSchema = z.object({
   required: z.boolean().default(false),
 });
 
-export const eventSchema = z
-  .object({
-    body_ar: z.string().optional(),
-    body_en: z.string().optional(),
-    capacity: z.number().int().positive().nullable(),
-    ends_at: z.iso.datetime({ offset: true }).nullable(),
-    entry: z.enum(["open", "rsvp", "invite"]).default("rsvp"),
-    members_only: z.boolean(),
-    programme_id: z.uuid().nullable(),
-    questions: z.array(eventQuestionSchema).max(10).default([]),
-    slug,
-    starts_at: z.iso.datetime({ offset: true }),
-    status: z.enum(["draft", "published", "cancelled"]),
-    summary_ar: z.string().max(500).optional(),
-    summary_en: z.string().max(500).optional(),
-    title_ar: z.string().trim().min(1).max(200),
-    title_en: z.string().trim().min(1).max(200),
-    venue_ar: z.string().optional(),
-    venue_en: z.string().optional(),
-  })
-  .refine((e) => !e.ends_at || new Date(e.ends_at) > new Date(e.starts_at), {
-    message: "ends_before_start",
-    path: ["ends_at"],
-  });
+/** An event's registration questions, the site's own part of booking. */
+export const eventQuestionsSchema = z.array(eventQuestionSchema).max(10);
 
-export type EventInput = z.infer<typeof eventSchema>;
-
-/** The ways in: just come, book a place, or by invitation. */
-export const ENTRIES = ["open", "rsvp", "invite"] as const;
+/**
+ * Access (decisions §10): Open (just come), RSVP (book a place), Members
+ * (members book a place) or Private (invited people only). Set in Notion's
+ * Way in; members-only is derived from it.
+ */
+export const ENTRIES = ["open", "rsvp", "members", "invite"] as const;
 export type Entry = (typeof ENTRIES)[number];
 
 const events = (client: Client) => client.schema("events");

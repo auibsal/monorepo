@@ -118,12 +118,12 @@ select pg_temp.make_user('00000000-0000-0000-0000-0000000f5001', 'lead.f5@auib.e
 select pg_temp.make_user('00000000-0000-0000-0000-0000000f5002', 'tour.f5@auib.edu.iq', 'Tour Lead');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000f5003', 'salon.f5@auib.edu.iq', 'Salon Lead');
 
-insert into events.events (id, slug, programme_id, title_en, title_ar, starts_at, status, members_only, entry)
+insert into events.events (id, slug, programme_id, title_en, title_ar, starts_at, status, entry)
 values
   ('00000000-0000-0000-0000-0000000f5101', 'one-off-f5', null,
-   'A one-off', 'فعالية', now() + interval '7 days', 'draft', false, 'open'),
+   'A one-off', 'فعالية', now() + interval '7 days', 'draft', 'open'),
   ('00000000-0000-0000-0000-0000000f5102', 'another-f5', null,
-   'Another', 'أخرى', now() + interval '14 days', 'draft', false, 'open');
+   'Another', 'أخرى', now() + interval '14 days', 'draft', 'open');
 
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000f5001', 'programme_lead', 'event',
   '00000000-0000-0000-0000-0000000f5101');

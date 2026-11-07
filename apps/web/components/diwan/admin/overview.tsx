@@ -204,7 +204,7 @@ const newsroomPermissions: readonly Permission[] = [
 const QUICK: readonly {
   readonly href: string;
   readonly icon: IconName;
-  readonly key: "door" | "event" | "piece" | "verify" | "minutes";
+  readonly key: "door" | "piece" | "verify";
   readonly permission: Permission | readonly Permission[];
 }[] = [
   {
@@ -212,12 +212,6 @@ const QUICK: readonly {
     icon: "scan-line",
     key: "door",
     permission: "events.checkin",
-  },
-  {
-    href: "/events/new",
-    icon: "plus",
-    key: "event",
-    permission: "events.manage",
   },
   {
     href: "/qirtas/pieces/new",
@@ -230,12 +224,6 @@ const QUICK: readonly {
     icon: "id-card",
     key: "verify",
     permission: "members.verify",
-  },
-  {
-    href: "/council/meetings/new",
-    icon: "file-text",
-    key: "minutes",
-    permission: "governance.minutes.write",
   },
 ];
 

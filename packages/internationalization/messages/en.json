@@ -921,10 +921,8 @@
         "openPipeline": "Open the blind review",
         "quick": {
           "door": "Open check-in",
-          "event": "New event",
           "piece": "New piece",
-          "verify": "Verify members",
-          "minutes": "New minutes"
+          "verify": "Verify members"
         },
         "activity": "What happened",
         "allActivity": "Everything that happened",
@@ -1017,14 +1015,11 @@
         "details": "Details",
         "tier": "Tier",
         "tierSaved": "Tier saved.",
-        "activity": "Activity records",
-        "activityLede": "Check-ins add records on their own. Add a manual record, with a note, for anything else that counts (it is logged).",
+        "activity": "Check-ins",
+        "activityLede": "Check-ins at events, recorded at the door. Two in an academic year make a Member a voting member.",
         "kinds": {
-          "check_in": "Check-in",
-          "shift": "Shift",
-          "manual": "Manual"
+          "check_in": "Check-in"
         },
-        "addActivity": "Add a manual record",
         "note": "Note",
         "when": "When",
         "add": "Add record",
@@ -1104,8 +1099,7 @@
       },
       "events": {
         "title": "Events",
-        "lede": "Every event on the term calendar: what’s coming, drafts and what’s past. Open one to edit it, see who booked and run its door.",
-        "new": "New event",
+        "lede": "Every event on the term calendar: what’s coming, drafts and what’s past. Events are made in Notion’s Events database; open one here to see who booked, run its check-in and keep its parts.",
         "tabs": {
           "upcoming": "Upcoming",
           "past": "Past",
@@ -1120,8 +1114,6 @@
           "status": "Status",
           "door": "Check-in"
         },
-        "membersOnly": "Members only",
-        "public": "Public",
         "rsvpCount": "{confirmed} of {capacity}",
         "checkIn": "Check-in",
         "campusNote": "AUIB’s own dates come in every hour from the University’s public calendar.",
@@ -1129,18 +1121,11 @@
         "noPast": "No past events yet."
       },
       "event": {
-        "newTitle": "New event",
-        "editTitle": "Edit event",
         "notFound": "No event with this link, or your roles don’t cover it.",
-        "eventTitle": "Title",
-        "summary": "Summary (one or two sentences)",
-        "body": "Description",
         "venue": "Venue",
         "starts": "Starts",
         "ends": "Ends (optional)",
-        "membersOnly": "Members only (hidden from the public site, search, sitemap and public feeds)",
         "capacity": "Capacity (empty for no limit)",
-        "capacityHint": "Raising the capacity promotes people from the waitlist at once, and they are emailed.",
         "questions": "Registration questions",
         "questionsHint": "Up to ten. Asked when someone books. A booking already carries their name on the platform, so there is no need to ask for it.",
         "question": "Question {number}",
@@ -1148,17 +1133,7 @@
         "addQuestion": "Add a question",
         "removeQuestion": "Remove question {number}",
         "save": "Save event",
-        "publish": "Publish",
-        "publishConfirm": "Publish this event? It appears at once on the site (or to members, if members only) and in calendar feeds.",
-        "cancelEvent": "Cancel event",
-        "cancelConfirm": "Cancel this event? It stays listed as canceled; tell people who booked.",
-        "deleteDraft": "Delete draft",
-        "deleteConfirm": "Delete this draft for good?",
         "errors": {
-          "title": "Give the title in both languages.",
-          "slug": "The web address needs lowercase letters, numbers and hyphens.",
-          "starts": "Give a start time.",
-          "ends_before_start": "The end must come after the start.",
           "questions": "Each question needs its English and Arabic wording."
         },
         "attendance": "Attendance",
@@ -1180,16 +1155,18 @@
         "serviceHours": "Hours {name} gave",
         "recordHours": "Record hours",
         "hoursRecorded": "Hours recorded",
-        "entry": "Way in",
+        "entry": "Access",
         "entries": {
-          "open": "Just come (no booking)",
-          "rsvp": "Book a place",
-          "invite": "By invitation"
+          "open": "Open",
+          "rsvp": "RSVP",
+          "members": "Members",
+          "invite": "Private"
         },
         "entryHint": {
           "open": "Anyone who can see it just comes. Members can ask for a reminder the day before.",
-          "rsvp": "Members book a place; the capacity and the waitlist apply.",
-          "invite": "Only the people you invite see it, and they book a place. It never appears publicly."
+          "rsvp": "People book a place; the capacity and the waitlist apply.",
+          "members": "Members book a place; the capacity and the waitlist apply. It never appears publicly.",
+          "invite": "Only the people invited see it, and they book a place. It never appears publicly."
         },
         "invitations": "Invitations",
         "invitationsHint": "Only the people invited (and the officers who run the event) see it.",
@@ -1244,9 +1221,12 @@
             "minutes": "Minutes"
           },
           "minutes": "Minutes and resolutions",
-          "noMinutes": "No minutes for this meeting yet.",
-          "writeMinutes": "Write the minutes"
-        }
+          "noMinutes": "No minutes for this meeting yet. They are written in Notion (Work, Meetings) and come here when their Status is Minutes in the Diwan."
+        },
+        "when": "When",
+        "seats": "Capacity",
+        "noLimit": "No limit",
+        "noVenue": "Not set"
       },
       "checkIn": {
         "title": "Check-in",
@@ -1702,10 +1682,7 @@
           "approved": "Approved"
         },
         "minutes": {
-          "new": "Write minutes",
-          "meetingOn": "Meeting date",
           "body": "Body",
-          "titleField": "Title",
           "text": "Minutes",
           "adopt": "Mark adopted",
           "adoptedOn": "Adopted on",
@@ -1713,9 +1690,9 @@
           "notFound": "No meeting with this link.",
           "draftNote": "Drafts are visible only to minute-takers and governance managers.",
           "locked": "Adopted: this is the official copy and is locked.",
-          "meeting": "Meeting (an event in What’s on)",
-          "noMeeting": "None: give the date",
-          "makeMeeting": "Make a meeting in What’s on"
+          "fromNotion": "Minutes are written in Notion (Work, Meetings) and come here when their Status is Minutes in the Diwan; the Council adopts them here. Meetings are events in Notion’s Events database.",
+          "titleField": "Title",
+          "meetingOn": "Meeting date"
         },
         "resolutions": {
           "new": "New resolution",
@@ -2664,13 +2641,13 @@
         "textFromNotion": "Written in Notion and shown here as published. To change it, edit the page in Notion and set Ready to publish."
       },
       "notion": {
-        "event": "This event is written in the team’s Notion workspace. Publishing it from Notion again replaces changes made here.",
+        "event": "This event is written in the team’s Notion workspace: its date, place, access and text come from there. The site’s own parts are below.",
         "news": "This post is written in the team’s Notion workspace. Publishing it from Notion again replaces changes made here.",
         "open": "Open in Notion",
         "mirror": "The team’s Notion workspace keeps a read-only copy of this, where projects, tasks and meetings link to it.",
         "programme": "This row is written in the team’s Notion workspace (Publishing): its name, summary and rhythm come from there.",
         "document": "This document is written in the team’s Notion workspace (Publishing, Documents): its text comes from there.",
-        "minutes": "These minutes are written in the team’s Notion workspace (Work, Meetings) and come here when their Status is Minutes in the Diwan. Once adopted, this copy is locked."
+        "minutes": "These minutes are written in the team’s Notion workspace (Work, Meetings) and come here when their Status is Minutes in the Diwan. The Council adopts them here; once adopted, this copy is locked."
       },
       "qirtas": {
         "title": "Qirtas",
@@ -3293,9 +3270,6 @@
       "linkPrompt": "Link address (https://…)",
       "undo": "Undo",
       "redo": "Redo",
-      "connecting": "Connecting to the shared draft…",
-      "alsoEditing": "Also here: {names}",
-      "liveNote": "Changes appear for everyone editing; Save writes them to the record.",
       "minorHeading": "Minor heading",
       "table": "Table",
       "addRow": "Add row",

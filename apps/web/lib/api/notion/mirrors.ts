@@ -123,19 +123,20 @@ export const peopleByEmail = (users: NotionUser[]) =>
 const day = (value: string | null) => (value ? value.slice(0, 10) : null);
 
 /**
- * The Council's six seats (decisions, section 3; owner, Nov 5, 2026), the
- * options of the Officers database's Roles: three officers and three
- * directors. A role that is not a seat (an event lead, a section editor)
- * is not listed there. There is no Director of Programs, Events,
- * Partnerships or Membership: the officers hold those jobs.
+ * The Council's nine seats (decisions §4), the options of the Officers
+ * database's Roles: the Executive Board and the six directors. A role that
+ * is not a seat (an event lead, a section editor) is not listed there.
  */
 const SEATS = [
   "President",
   "Vice President",
   "General Secretary",
   "Editor-in-Chief",
-  "Artistic Director",
   "Director of Media",
+  "Artistic Director",
+  "Director of Events",
+  "Director of Partnerships",
+  "Director of Membership",
 ] as const;
 
 const seatsOf = (roles: readonly string[] | null) =>
@@ -156,15 +157,16 @@ export const mirrorOfficers = async (
     "officer",
     ctx.sources.officers,
     (data ?? []).map((o) => {
+      // The address only finds the officer's Notion account; Notion is never
+      // given it (decisions §8: no personal data in Notion).
       const person = people.get((o.email ?? "").toLowerCase());
       return {
         key: o.user_id,
         props: {
-          "AUIB email": prop.email(o.email),
           Council: prop.checkbox(o.council === true),
           Diwan: prop.url(app(ctx, `/membership/${o.user_id}`)),
           "Diwan ID": prop.text(o.user_id),
-          Name: prop.title(o.full_name_en?.trim() || o.email || ""),
+          Name: prop.title(o.full_name_en?.trim() ?? ""),
           "Name (Arabic)": prop.text(o.full_name_ar),
           "Notion person": prop.people(person ? [person] : []),
           Roles: prop.multi(seatsOf(o.roles)),

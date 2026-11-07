@@ -193,9 +193,13 @@ describe.skipIf(!enabled)("Notion sync", () => {
   let run: typeof import("@/lib/api/notion/run").runNotionSync;
   let sources: Record<string, string>;
   let leadId = "";
+  let memberId = "";
   let salonId = "";
 
   const getProp = (page: FakePage, name: string) => page.properties[name] ?? {};
+  const diwanId = (page: FakePage) =>
+    (getProp(page, "Diwan ID").rich_text as { plain_text: string }[])[0]
+      ?.plain_text;
   const statusOf = (page: FakePage) =>
     (getProp(page, "Status").select as { name: string } | null)?.name;
 
@@ -225,6 +229,8 @@ describe.skipIf(!enabled)("Notion sync", () => {
       expect(error).toBeNull();
       if (email === lead) {
         leadId = created.user?.id ?? "";
+      } else {
+        memberId = created.user?.id ?? "";
       }
     }
     const { data: salon } = await admin
@@ -250,25 +256,20 @@ describe.skipIf(!enabled)("Notion sync", () => {
 
   const sync = () => run(fake.client as never);
 
-  test("copies the officers, matching Notion people by email", async () => {
+  test("copies the officers, matching Notion people by email without writing it", async () => {
     const state = await sync();
     expect(state).not.toHaveProperty("skipped");
     const officers = [...fake.pages.values()].filter(
       (p) => p.dataSource === sources.officers
     );
-    const ours = officers.find(
-      (p) => (getProp(p, "AUIB email").email as string) === lead
-    );
+    const ours = officers.find((p) => diwanId(p) === leadId);
     expect(ours).toBeDefined();
     expect(getProp(ours as FakePage, "Notion person").people).toEqual([
       { id: `n-lead-${stamp}`, object: "user" },
     ]);
-    expect(getProp(ours as FakePage, "Diwan ID").rich_text).toBeDefined();
-    expect(
-      officers.some(
-        (p) => (getProp(p, "AUIB email").email as string) === member
-      )
-    ).toBe(false);
+    // No personal data in Notion: the address is never written.
+    expect((ours as FakePage).properties["AUIB email"]).toBeUndefined();
+    expect(officers.some((p) => diwanId(p) === memberId)).toBe(false);
     // Programs are written in Notion now: none are copied there.
     expect(
       [...fake.pages.values()].filter(
@@ -344,10 +345,6 @@ describe.skipIf(!enabled)("Notion sync", () => {
     Summary: { rich_text: [{ text: { content: "أمسية شعر." } }] },
     Title: { title: [{ text: { content: title } }] },
   });
-  const diwanId = (page: FakePage) =>
-    (getProp(page, "Diwan ID").rich_text as { plain_text: string }[])[0]
-      ?.plain_text;
-
   test("publishes an event's English row, then its Arabic edition", async () => {
     const page = fake.make(
       sources.events,
@@ -420,8 +417,6 @@ describe.skipIf(!enabled)("Notion sync", () => {
           ?.plain_text === `Writing workshop ${stamp}`
     ) as FakePage;
     const eventId = diwanId(page) as string;
-    const { data: users } = await admin.auth.admin.listUsers({ perPage: 200 });
-    const memberId = users.users.find((u) => u.email === member)?.id as string;
     await admin
       .schema("events")
       .from("rsvps")

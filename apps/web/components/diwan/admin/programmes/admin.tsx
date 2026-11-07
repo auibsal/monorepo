@@ -23,7 +23,6 @@ import { DiwanSection } from "../../page";
 import { OnTheSite } from "../../site-links";
 import { EmptyLine, SectionSpinner } from "../../states";
 import { useProgrammeOptions } from "../events/data";
-import { slugify } from "../events/editor";
 import { RequestQueue } from "../forms/admin";
 import {
   AddInPlace,
@@ -40,6 +39,7 @@ import {
 } from "../kit";
 import { useMemberNames } from "../member-picker";
 import { memberName } from "../members/directory";
+import { slugify } from "../slug";
 import { SkillsPicker } from "./skills-picker";
 
 const invalidateKey = ["admin", "programmes-module"];

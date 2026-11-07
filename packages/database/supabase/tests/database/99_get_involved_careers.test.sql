@@ -84,9 +84,9 @@ select pg_temp.make_user('00000000-0000-0000-0000-0000000067a6', 'member-gi@auib
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000067a4', 'president');
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000067a5', 'eic');
 
-insert into events.events (id, slug, title_en, title_ar, starts_at, status, members_only, entry)
+insert into events.events (id, slug, title_en, title_ar, starts_at, status, entry)
 values ('00000000-0000-0000-0000-0000000067e1', 'a-reading-gi', 'A reading', 'قراءة',
-  now() + interval '10 days', 'published', false, 'open');
+  now() + interval '10 days', 'published', 'open');
 
 select ok(
   not exists (select 1 from pg_class where relname in ('placements', 'rotas') and relnamespace = 'programmes'::regnamespace),

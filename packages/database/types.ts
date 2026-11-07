@@ -1331,7 +1331,7 @@ export type Database = {
           entry?: string;
           id?: string;
           image_path?: string | null;
-          members_only?: boolean;
+          members_only?: never;
           off_campus?: boolean;
           partner_id?: string | null;
           programme_id?: string | null;
@@ -1362,7 +1362,7 @@ export type Database = {
           entry?: string;
           id?: string;
           image_path?: string | null;
-          members_only?: boolean;
+          members_only?: never;
           off_campus?: boolean;
           partner_id?: string | null;
           programme_id?: string | null;
@@ -5228,10 +5228,6 @@ export type Database = {
         Returns: undefined;
       };
       activity_count: { Args: { uid?: string }; Returns: number };
-      add_manual_activity: {
-        Args: { note: string; occurred_at?: string; target_user: string };
-        Returns: string;
-      };
       calendar_token: { Args: Record<PropertyKey, never>; Returns: string };
       certificate_signers: {
         Args: { certificate_id: string };

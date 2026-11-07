@@ -98,9 +98,9 @@ insert into core.telegram_accounts (user_id, telegram_id) values
   ('00000000-0000-0000-0000-0000000008a1', 801), ('00000000-0000-0000-0000-0000000008a2', 802);
 
 delete from events.events;
-insert into events.events (id, slug, title_en, title_ar, starts_at, ends_at, members_only, capacity, status) values
-  ('e0000000-0000-0000-0000-0000000008e1', 'st-today', 'Today', 'اليوم', now() + interval '1 minute', now() + interval '2 minutes', true, 10, 'published'),
-  ('e0000000-0000-0000-0000-0000000008e2', 'st-past', 'Past', 'مضى', now() - interval '3 hours', now() - interval '30 minutes', false, 10, 'published');
+insert into events.events (id, slug, title_en, title_ar, starts_at, ends_at, capacity, status, entry) values
+  ('e0000000-0000-0000-0000-0000000008e1', 'st-today', 'Today', 'اليوم', now() + interval '1 minute', now() + interval '2 minutes', 10, 'published', 'members'),
+  ('e0000000-0000-0000-0000-0000000008e2', 'st-past', 'Past', 'مضى', now() - interval '3 hours', now() - interval '30 minutes', 10, 'published', 'rsvp');
 insert into events.rsvps (event_id, user_id, status) values
   ('e0000000-0000-0000-0000-0000000008e2', '00000000-0000-0000-0000-0000000008a1', 'confirmed'),
   ('e0000000-0000-0000-0000-0000000008e2', '00000000-0000-0000-0000-0000000008a2', 'confirmed');

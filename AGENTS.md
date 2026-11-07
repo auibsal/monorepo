@@ -213,7 +213,8 @@ any schema change. Integration tests run against a local stack with
   Society's or a partner's) or `partner` (a partner's Lead or Team);
   triggers named `one_membership` refuse a second kind. Members have a
   class (`membership.tier`): Member, Associate Member or Honorary Member;
-  only Members vote (two events or general meetings that academic year)
+  only Members vote (checked in at two events or general meetings that
+  academic year: check-ins are the only record, `membership.activity_records`)
   and hold office. Staff is a member holding a role (`private.is_staff`).
   Sign-up takes an AUIB address only, unless the account comes from an
   invitation, applies to partner or signs up as a guest
@@ -265,11 +266,13 @@ any schema change. Integration tests run against a local stack with
   number, the date and a guilloche. Never typed.
 - **Events.** One events manager, one standard event. Every event,
   meetings among them, is made in Notion's Events database and copied to
-  the site by the sync; the Diwan edits the same record. Every event has
+  the site by the sync; the Diwan shows it read-only and keeps only the
+  site's own parts (nothing is made in the Diwan). Every event has
   the one page on the site (`EventView` with `EventParts`) and in the
   Diwan (`EventEditor` with `EventPartsAdmin`), with only the standard
-  parts: its way in (`events.events.entry`: `open`, `rsvp`, or `invite`,
-  which is private and members-only), RSVP and check-in, a needs list,
+  parts: its access (`events.events.entry`: `open`, `rsvp`, `members` or
+  `invite` (Private); `members_only` is derived from it), RSVP and
+  check-in, registration questions, a needs list,
   volunteer shifts (on the event only, logging no hours), a partner
   checklist (`events.joint_tasks`) and links from the night
   (`events.session_links`, https only). Off campus is a standard field:

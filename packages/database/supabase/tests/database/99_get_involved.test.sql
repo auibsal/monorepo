@@ -144,8 +144,8 @@ select lives_ok(
 
 -- Skills on shifts
 select pg_temp.logout();
-insert into events.events (id, slug, title_en, title_ar, starts_at, status, members_only, entry)
-values ('0be00000-0000-0000-0000-0000000070c1', 'door-night-gi', 'Door night', 'ليلة الباب', now() + interval '3 days', 'published', false, 'open');
+insert into events.events (id, slug, title_en, title_ar, starts_at, status, entry)
+values ('0be00000-0000-0000-0000-0000000070c1', 'door-night-gi', 'Door night', 'ليلة الباب', now() + interval '3 days', 'published', 'open');
 select throws_ok(
   $$ insert into programmes.shifts (event_id, role_en, role_ar, starts_at, ends_at, skills)
      values ('0be00000-0000-0000-0000-0000000070c1', 'Door', 'الباب', now() + interval '1 day',

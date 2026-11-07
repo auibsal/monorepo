@@ -207,9 +207,9 @@ select is(
 );
 
 -- 10. Shifts tomorrow are reminded.
-insert into events.events (id, slug, title_en, title_ar, starts_at, status, members_only, entry)
+insert into events.events (id, slug, title_en, title_ar, starts_at, status, entry)
 values ('0e000000-0000-0000-0000-0000000e1201', 'the-fair-ej', 'The book fair', 'معرض الكتب',
-  now() + interval '1 day', 'published', false, 'open');
+  now() + interval '1 day', 'published', 'open');
 insert into programmes.shifts (id, event_id, role_en, role_ar, starts_at, ends_at)
 values ('0e000000-0000-0000-0000-0000000e1301', '0e000000-0000-0000-0000-0000000e1201',
   'Welcome desk', 'الاستقبال',

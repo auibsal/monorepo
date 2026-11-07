@@ -328,6 +328,7 @@ const publishEvent = async (
 /** The Way in options in Notion, by the event's entry. */
 const WAY_IN_NAMES: Record<string, string> = {
   invite: "Private",
+  members: "Members",
   open: "Open",
   rsvp: "RSVP",
 };
@@ -343,6 +344,10 @@ const arabicRowOf = async (ctx: SyncContext, eventId: string) => {
     .maybeSingle();
   return data?.notion_page_id ?? null;
 };
+
+/** The one-language rule, said where a row has no text yet. */
+const NO_TEXT =
+  "Write the event's text in English in this page. An Arabic edition is its own row: Language Arabic, Edition of this row.";
 
 const EVENT_STATUS: Record<string, string> = {
   cancelled: "Canceled",
@@ -758,63 +763,6 @@ export const publishWaiting = async (ctx: SyncContext) => {
       problem(ctx, `${kind} ${bareId(page.id)}: ${(error as Error).message}`);
     }
   }
-};
-
-/** The one-language rule, said where a row has no text yet. */
-const NO_TEXT =
-  "Write the event's text in English in this page. An Arabic edition is its own row: Language Arabic, Edition of this row.";
-
-const ADOPTED_NOTE = `Made in the Diwan. ${NO_TEXT}`;
-
-const adoptEvents = async (ctx: SyncContext) => {
-  const [events, links] = await Promise.all([
-    ctx.admin
-      .schema("events")
-      .from("events")
-      .select(
-        "id, slug, title_en, starts_at, ends_at, status, capacity, entry, members_only, off_campus"
-      )
-      .gte("starts_at", new Date(Date.now() - 30 * 86_400_000).toISOString()),
-    linksOf(ctx, "event"),
-  ]);
-  for (const e of events.data ?? []) {
-    if (links.has(e.id) || outOfTime(ctx)) {
-      continue;
-    }
-    try {
-      // biome-ignore lint/performance/noAwaitInLoops: rate-limited, sequential
-      const page = await ctx.notion.createPage(ctx.sources.events, {
-        Capacity: prop.number(e.capacity),
-        Diwan: prop.url(`${ctx.appUrl}/events/${e.slug ?? e.id}`),
-        "Diwan ID": prop.text(e.id),
-        Language: prop.select("English"),
-        "Members only": prop.checkbox(e.members_only),
-        "Off campus": prop.checkbox(e.off_campus),
-        "Platform note": prop.text(ADOPTED_NOTE),
-        "Public page": prop.url(
-          e.status === "published" ? `${ctx.webUrl}/events/${e.slug}` : null
-        ),
-        Slug: prop.text(e.slug),
-        Status: prop.select(EVENT_STATUS[e.status] ?? "Planning"),
-        Title: prop.title(e.title_en),
-        "Way in": prop.select(WAY_IN_NAMES[e.entry] ?? "RSVP"),
-        When: prop.date(e.starts_at, e.ends_at),
-      });
-      await saveLink(ctx, "event", page.id, e.id, null);
-      count(ctx, "event.adopted");
-    } catch (error) {
-      problem(ctx, `event ${e.id}: ${(error as Error).message}`);
-    }
-  }
-};
-
-/**
- * Events made in the Diwan get a page in Notion too, so the calendar is
- * complete and the team can take them over there. Their text stays in the
- * Diwan until someone writes it in the page.
- */
-export const adoptDiwanItems = async (ctx: SyncContext) => {
-  await adoptEvents(ctx);
 };
 
 /** Confirmed RSVPs per event, written back when the number changed. */

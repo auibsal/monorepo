@@ -90,8 +90,8 @@ select pg_temp.grant_role('00000000-0000-0000-0000-0000000f0a03', 'eic');
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000f0a04', 'general_secretary');
 -- The voter has taken part twice this year; the newcomer hasn't.
 insert into membership.activity_records (user_id, kind, occurred_at, note) values
-  ('00000000-0000-0000-0000-0000000f0a02', 'manual', now() - interval '1 day', 'A reading'),
-  ('00000000-0000-0000-0000-0000000f0a02', 'manual',
+  ('00000000-0000-0000-0000-0000000f0a02', 'check_in', now() - interval '1 day', 'A reading'),
+  ('00000000-0000-0000-0000-0000000f0a02', 'check_in',
    greatest(private.academic_year_start()::timestamptz + interval '1 day', now() - interval '2 days'), 'A general meeting');
 
 insert into journal.contributors (id, slug, name_en, name_ar, user_id) values

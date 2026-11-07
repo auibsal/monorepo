@@ -106,8 +106,8 @@ select is(
      and policyname = 'Update by authenticated') = 'true',
   false, 'The manager update policy on sign-ups checks the new row');
 
-insert into events.events (id, slug, title_en, title_ar, starts_at, status, members_only, entry)
-values ('00000000-0000-0000-0000-00000000c001', 'door-night-af', 'Door night', 'ليلة الباب', now() + interval '3 days', 'published', false, 'open');
+insert into events.events (id, slug, title_en, title_ar, starts_at, status, entry)
+values ('00000000-0000-0000-0000-00000000c001', 'door-night-af', 'Door night', 'ليلة الباب', now() + interval '3 days', 'published', 'open');
 insert into programmes.shifts (id, event_id, role_en, role_ar, starts_at, ends_at, capacity) values
   ('00000000-0000-0000-0000-00000000c101', '00000000-0000-0000-0000-00000000c001', 'Door', 'الباب',
    now() + interval '1 day', now() + interval '1 day 2 hours', 2);

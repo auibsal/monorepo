@@ -23,9 +23,13 @@ read-only view.
 planning: **Officers** and **Qirtas pipeline** (counts only; review is
 blind). Edit them on the site; each row links there.
 
-**Events** (owner, Nov 5, 2026, evening). Each English row sets **Way in**
-(Open, RSVP or Private; Private for a Council meeting), **Members only** and,
-for an event away from campus, **Off campus**. An off-campus event is kept
+**Events** (decisions §10). Each English row sets **Way in** (Open, RSVP,
+Members or Private; Private for a Council meeting), which alone decides who
+sees and books it, and, for an event away from campus, **Off campus**.
+Events are made here only: the Diwan shows them and keeps the site's own
+parts (bookings, check-in, registration questions, shifts, the partner
+checklist, approvals). Until the **Members only** checkbox is removed from
+the database, a ticked row with Way in Open or RSVP counts as Members. An off-campus event is kept
 as a draft in the Diwan until the General Secretary records Student Life's
 written approval on its page there; the row then goes back to Planning with
 a note, and Ready to publish again publishes it. Notion never brings an
@@ -48,9 +52,9 @@ The route `/api/cron/notion-sync`, called by pg_cron (`sal-notion-sync`)
 every fifteen minutes with the cron secret, runs these steps in order
 (`apps/web/lib/api/notion/run.ts`):
 
-1. **Officers** (`mirrors.ts`): `access.officer_directory()`, each seat by
-   its full title (Editor-in-Chief, Director of Media, …), matched to
-   Notion people by AUIB email. Written only when changed (hash in
+1. **Officers** (`mirrors.ts`): `access.officer_directory()`, the nine
+   seats by full title (Editor-in-Chief, Director of Media, …), matched to
+   Notion people by AUIB email, which is never written to Notion. Written only when changed (hash in
    `core.notion_links`); removed when the record is gone.
 2. **Qirtas pipeline** (`mirrors.ts`): counts per stage, never titles or
    names.
@@ -71,13 +75,13 @@ every fifteen minutes with the cron secret, runs these steps in order
    Secretary). The site keeps only the adoption record, kept in the Diwan's
    Library, and writes **Adopted on** and **Vote** back to the row whenever
    they change there.
-6. **Minutes** (`minutes.ts`): a Council or General Assembly meeting in
+6. **Minutes** (`minutes.ts`): a meeting (Council, general, Annual, special or Founding) in
    Work, Meetings with Status **Minutes in the Diwan** goes to the Diwan as
    that meeting's draft minutes (and is updated while it changes). Once the
    Council adopts them there, the official copy is locked (the database
    refuses any change) and the page says so. Needs `governance.manage`.
-7. **Diwan items**: events made on the site get a row in Events too.
-8. **RSVP counts** go back to each event's row.
+7. **RSVP counts** go back to each event's row. Nothing goes the other way:
+   no event or minutes are made in the Diwan.
 
 Every published row gets back **Status**, **Public page**, **Diwan**,
 **Diwan ID** and a **Platform note**; a refusal sets **Needs changes**, a
@@ -108,7 +112,7 @@ the workspace (Notion's API cannot invite people).
 
 - Never rename the properties the sync reads or writes (Title, Status
   and its options, When, Summary, Language, Edition of, Diwan, Diwan ID,
-  Public page, Platform note, Way in, Off campus, Members only, Event,
+  Public page, Platform note, Way in, Off campus, Event,
   Rhythm, Code, Slug, Audience, Adopted on,
   Vote, Body, Minutes (Diwan), …) without changing the sync in the same
   change; add new ones freely.

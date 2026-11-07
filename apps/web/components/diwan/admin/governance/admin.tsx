@@ -101,15 +101,9 @@ const MeetingsList = () => {
   ];
   return (
     <div className="grid gap-4">
-      <div className="flex flex-wrap gap-x-6 gap-y-2">
-        <Link className="link" href="/events/new">
-          {t("minutes.makeMeeting")}
-        </Link>
-        <Link className="link" href="/council/meetings/new">
-          {t("minutes.new")}
-        </Link>
-      </div>
-      <p className="type-caption">{t("minutes.draftNote")}</p>
+      <p className="type-caption">
+        {t("minutes.fromNotion")} {t("minutes.draftNote")}
+      </p>
       {minutes.data ? (
         <DataTable columns={columns} rowKey={(m) => m.id} rows={minutes.data} />
       ) : (
