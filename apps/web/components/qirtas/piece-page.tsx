@@ -26,17 +26,31 @@ import { readPublished } from "@/lib/supabase";
 const SLUG = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 type Piece = Awaited<ReturnType<typeof journal.qirtasPiece>>;
 
-/** A published piece by its slug, or null. */
-export const loadPiece = (slug: string): Promise<Piece> =>
-  SLUG.test(slug)
-    ? readPublished(["journal"], (c) => journal.qirtasPiece(c, slug), null)
-    : Promise.resolve(null);
+/**
+ * A published piece by its slug, or null. One language per page: a piece
+ * shows only on the site in its own language (an English piece is never
+ * served under /ar, nor an Arabic one without it); bilingual pieces on both.
+ */
+export const loadPiece = async (
+  slug: string,
+  locale: Locale
+): Promise<Piece> => {
+  if (!SLUG.test(slug)) {
+    return null;
+  }
+  const piece = await readPublished(
+    ["journal"],
+    (c) => journal.qirtasPiece(c, slug),
+    null
+  );
+  return piece && journal.inLanguage([piece], locale).length > 0 ? piece : null;
+};
 
 export const pieceMetadata = async (
   locale: Locale,
   slug: string
 ): Promise<Metadata> => {
-  const piece = await loadPiece(slug);
+  const piece = await loadPiece(slug, locale);
   if (!piece) {
     return {};
   }
@@ -45,6 +59,7 @@ export const pieceMetadata = async (
       localized(piece, "deck", locale) ||
       (piece.contributor ? localized(piece.contributor, "name", locale) : ""),
     image: leadImage(piece)?.url ?? undefined,
+    languages: piece.language === "bilingual" ? undefined : [locale],
     title: localized(piece, "title", locale),
   });
 };
