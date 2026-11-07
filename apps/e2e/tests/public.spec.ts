@@ -75,11 +75,14 @@ test.describe("public site", () => {
     // Owner, Nov 5, 2026: the recurring events are events, not series.
     const gone = await page.goto(`${urls.web}/events/salon`);
     expect(gone?.status()).toBe(404);
-    await page.goto(`${urls.web}/events/salon-2027-02-16`);
+    // Its address is the Notion Slug; the retired names are gone (Nov 7).
+    const retired = await page.goto(`${urls.web}/events/salon-2027-02-16`);
+    expect(retired?.status()).toBe(404);
+    await page.goto(`${urls.web}/events/reading-with-a-guest-2027-02-16`);
     await expect(page.getByRole("heading", { level: 1 })).toHaveText(
-      "The Salon"
+      "Reading with a guest"
     );
-    await expect(page).toHaveTitle(/The Salon/);
+    await expect(page).toHaveTitle(/Reading with a guest/);
     await expectAccessible(page);
     // Next Stop is the Director of Media’s (owner, Nov 7, 2026), with its promise beside it.
     await page.goto(`${urls.web}/next-stop`);

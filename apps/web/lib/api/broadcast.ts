@@ -48,8 +48,6 @@ export interface BroadcastJob {
    */
   readonly draft?: boolean;
   readonly footer: NoticeFooterLine[];
-  /** Another sender at the domain (the President's letter); else RESEND_FROM. */
-  readonly from?: string;
   /** One row in core.broadcasts, for example "sunday-paper:2026-12:en". */
   readonly key: string;
   readonly kind: "invitation" | "sunday_paper";
@@ -312,7 +310,7 @@ export const runBroadcast = async (admin: AdminClient, job: BroadcastJob) => {
     }
     const sent = ok(
       await client().broadcasts.create({
-        from: job.from ?? RESEND_FROM,
+        from: RESEND_FROM,
         name: job.key,
         react: Notice({
           blocks: job.built.blocks,

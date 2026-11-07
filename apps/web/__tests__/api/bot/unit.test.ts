@@ -153,7 +153,7 @@ describe("the Diwan group", () => {
             slug: "salon",
             starts_at: "2026-11-01T15:00:00Z",
             title_ar: "الصالون",
-            title_en: "The Salon <live>",
+            title_en: "Reading with a guest <live>",
             venue_ar: null,
             venue_en: "Hall B",
             waitlisted: 3,
@@ -163,7 +163,7 @@ describe("the Diwan group", () => {
       },
       new Date("2026-11-01T06:00:00Z")
     );
-    expect(text).toContain("The Salon &lt;live&gt;");
+    expect(text).toContain("Reading with a guest &lt;live&gt;");
     expect(text).toContain("6:00 PM");
     expect(text).toContain("12 booked of 30");
     expect(text).toContain("3 on the waitlist");
@@ -195,7 +195,7 @@ describe("the Diwan group", () => {
         id: "x",
         slug: "salon",
         title_ar: "الصالون",
-        title_en: "The Salon",
+        title_en: "Reading with a guest",
         waitlisted: 0,
       }
     );

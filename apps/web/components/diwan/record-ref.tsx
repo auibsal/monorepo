@@ -30,7 +30,7 @@ export const RouteParamsProvider = ({
 }) => <RouteParams.Provider value={value}>{children}</RouteParams.Provider>;
 
 /**
- * A page addressed by a readable name (/diwan/events/salon-2026-12-01):
+ * A page addressed by a readable name (/diwan/events/reading-with-a-guest-2026-12-01):
  * finds the record's id under the reader's own permissions (RLS decides)
  * and hands it to the page as `id`. An id in the address works as well, so
  * links made before a record had its name still open.

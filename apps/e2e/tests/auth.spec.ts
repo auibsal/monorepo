@@ -107,9 +107,14 @@ test("sign up with an AUIB address, confirm by email, finish setup", async ({
 test("sign-up takes only AUIB addresses", async ({ page }) => {
   await page.goto(`${urls.web}/sign-up`);
   const field = page.getByLabel("Your AUIB email");
-  // Whatever is typed stays before @auib.edu.iq.
+  // Only what comes before "@" stays (Nov 7, 2026: whole addresses typed
+  // into the field made accounts like name.123auib.edu.iq@auib.edu.iq).
   await field.fill("someone@example.com");
-  await expect(field).toHaveValue("someoneexample.com");
+  await field.blur();
+  await expect(field).toHaveValue("someone");
+  await field.fill("maryam.1241295auib.edu.iq");
+  await field.blur();
+  await expect(field).toHaveValue("maryam.1241295");
   await expect(page.getByText("@auib.edu.iq", { exact: true })).toBeVisible();
   await expect(page.getByLabel("Family name")).toHaveCount(0);
 });

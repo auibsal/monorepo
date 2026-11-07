@@ -1679,7 +1679,7 @@
             "loaded": "Loaded {pages} pages and {invitations} invitations; {attached} pages went straight to writers who already have an account.",
             "status": "Invitations: {waiting} waiting, {sent} sent, {joined} joined. Pages not yet claimed: {unclaimed}.",
             "send": "Prepare {count} invitations",
-            "confirm": "Prepare {count} invitations as your letter from president@auibsal.org? The site makes them a draft in Resend; nothing goes out until you send it there.",
+            "confirm": "Prepare {count} invitations as your letter, from hello@auibsal.org? The site makes them a draft in Resend; nothing goes out until you send it there.",
             "sendNow": "Prepare the draft",
             "notYet": "Not yet",
             "president": "The President prepares the invitations. Anyone running the Tour can send themselves a test.",

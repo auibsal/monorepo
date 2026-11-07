@@ -29,11 +29,7 @@ Branch: `claude/new-session-qosn60` (PR #233).
     without an email stay private);
   - the President presses "Send" only when the owner says go.
   - The invitation goes out as one Resend Broadcast per kind.
-  - The list is deleted thirty days later.
-- [ ] **`RESEND_TOKEN` must be a full-access key** (Vercel, auibsal,
-  Production). The key set on Oct 24 is sending-only. Broadcasts need
-  segments, contacts and contact imports, so the Sunday Paper and the
-  invitation fail with "restricted" until the key is replaced.
+  - The list is deleted on December 7.
 
 ## For the owner: dashboards and secrets
 

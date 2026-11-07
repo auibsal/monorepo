@@ -1,6 +1,6 @@
 "use client";
 
-import { AUIB_DOMAIN, signUpWithEmail } from "@repo/auth/email";
+import { AUIB_DOMAIN, auibLocalPart, signUpWithEmail } from "@repo/auth/email";
 import { useAuth } from "@repo/auth/provider";
 import { FormHeader } from "@repo/brand/components/sal/form-header";
 import { Button } from "@repo/brand/components/ui/button";
@@ -37,9 +37,6 @@ interface SignUpFormProps {
   readonly outside?: OutsideSignUp;
 }
 
-/** Only what goes before @auib.edu.iq: an ID number or name.idnumber. */
-const localPart = (value: string) => value.replace(/[@\s]/g, "");
-
 export const SignUpForm = ({ next: given, outside }: SignUpFormProps) => {
   const t = useTranslations("auth");
   const errorText = useAuthError();
@@ -70,7 +67,7 @@ export const SignUpForm = ({ next: given, outside }: SignUpFormProps) => {
   const external = Boolean(outside);
   const email = external
     ? values.email.trim()
-    : `${localPart(values.email)}@${AUIB_DOMAIN}`;
+    : `${auibLocalPart(values.email)}@${AUIB_DOMAIN}`;
   const human = useHumanCheck("sign-up");
 
   const set =
@@ -144,10 +141,16 @@ export const SignUpForm = ({ next: given, outside }: SignUpFormProps) => {
                 autoComplete="username"
                 className="min-w-0 flex-1"
                 id={`${id}-email`}
+                onBlur={(event) =>
+                  setValues((current) => ({
+                    ...current,
+                    email: auibLocalPart(event.target.value),
+                  }))
+                }
                 onChange={(event) =>
                   setValues((current) => ({
                     ...current,
-                    email: localPart(event.target.value),
+                    email: event.target.value.replace(/\s/g, ""),
                   }))
                 }
                 required
@@ -212,7 +215,7 @@ export const SignUpForm = ({ next: given, outside }: SignUpFormProps) => {
           disabled={
             pending ||
             !human.ready ||
-            (external ? !named : localPart(values.email) === "")
+            (external ? !named : auibLocalPart(values.email) === "")
           }
           type="submit"
         >

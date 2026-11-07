@@ -1,19 +1,16 @@
 import "server-only";
 
-import { project } from "@repo/config";
 import type { AdminClient } from "@repo/database/admin";
 import type { InvitationSigner } from "@repo/email/copy";
 import { presidentSigner } from "@/lib/api/signer";
 import { api } from "@/lib/api/urls";
 
 /**
- * The invitation is the President's letter (owner, Nov 7, 2026): it comes
- * from their address and closes with their signature on the platform. The
- * draft Broadcast and the test a sender mails themselves share these.
+ * The invitation is the President's letter (owner, Nov 7, 2026): it closes
+ * with their signature on the platform and, like every email the site
+ * sends, comes from hello@auibsal.org (decisions §6). The draft Broadcast
+ * and the test a sender mails themselves share these.
  */
-export const invitationFrom = () =>
-  `${project.name} <${project.presidentEmail}>`;
-
 export const INVITATION_FOOTER =
   "You get this once, because you wrote at the Society’s typewriter or signed up at its table.";
 

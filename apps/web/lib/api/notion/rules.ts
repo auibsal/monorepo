@@ -61,7 +61,7 @@ const slugProblems = (slug: string) =>
   SLUG.test(slug)
     ? []
     : [
-        "Set a Slug in Latin letters, digits and hyphens (for example open-pages-october); the title gives none.",
+        "Set a Slug in Latin letters, digits and hyphens (for example writing-workshop-2027-04-13); the title gives none.",
       ];
 
 /** The row's language: English unless it says Arabic. */

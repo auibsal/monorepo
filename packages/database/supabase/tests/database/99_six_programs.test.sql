@@ -107,16 +107,16 @@ select hasnt_table('events', 'series_rules', 'No repeat rules: the term calendar
 select is(
   (select count(*)::integer from events.events e
     where e.programme_id is null and e.status = 'published'
-      and e.slug ~ '^(salon|book-circle|open-pages|listening-room)-'
+      and e.slug ~ '^(writing-workshop|reading-with-a-guest|book-discussion|listening-session|founding-meeting)-'
       and (e.starts_at at time zone 'Asia/Baghdad')::time = '16:00'
       and extract(isodow from e.starts_at at time zone 'Asia/Baghdad') = 2),
-  12,
-  'The Tuesday events: twelve at 4:00 PM, none in a series'
+  10,
+  'The Tuesday events: ten published at 4:00 PM, none in a series; the two fall pilots wait for the room (owner, Nov 7, 2026)'
 );
 select is(
-  (select (ends_at at time zone 'Asia/Baghdad')::time from events.events where slug = 'open-pages-2027-03-30'),
+  (select (ends_at at time zone 'Asia/Baghdad')::time from events.events where slug = 'founding-meeting-2027-03-30'),
   '18:00'::time,
-  'Open Pages on March 30 runs to 6:00 PM'
+  'The Founding Meeting on March 30 runs to 6:00 PM'
 );
 select is(
   (select count(*)::int from events.events where slug = 'book-circle-2027-04-09'),
@@ -126,9 +126,9 @@ select is(
 
 select is(
   (select array_agg(e.slug order by e.starts_at) from events.events e
-    where e.slug like 'listening-room-%'),
-  array['listening-room-2027-03-16', 'listening-room-2027-05-11'],
-  'The Listening Room takes the Salon''s March 16 and May 11'
+    where e.slug like 'listening-session-%'),
+  array['listening-session-2027-03-16', 'listening-session-2027-05-11'],
+  'The listening sessions are March 16 and May 11, at their Notion Slugs'
 );
 select is(
   (select count(*) from core.settings where key = 'journal.award_names_public')::integer,

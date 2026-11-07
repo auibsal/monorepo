@@ -6,6 +6,12 @@ own versions in the Library.
 
 ## Unreleased
 
+- Every event's address is its Notion Slug, with its text written in
+  Notion in both languages: the writing workshops, the readings with a
+  guest, the book discussions, the listening sessions, the Founding
+  Meeting and the trip to al-Mutanabbi Street. The old addresses are gone.
+- Sign-up takes an AUIB address typed whole ("name.123@auib.edu.iq" or
+  "name.123auib.edu.iq") and keeps only what goes before the domain.
 - The Sunday Paper's archive lists only the issues actually sent (recorded
   when each goes out); until the first, on December 6, it says so.
 - The owner's decisions of Nov 7, 2026: the Council of nine; Member,

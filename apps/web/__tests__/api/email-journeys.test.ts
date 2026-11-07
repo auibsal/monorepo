@@ -26,7 +26,7 @@ const APP = "https://auibsal.org";
 const event = {
   starts_at: "2026-11-17T13:00:00.000Z",
   title_ar: "الصفحات المفتوحة",
-  title_en: "Open Pages",
+  title_en: "Writing workshop",
   venue_ar: "المكتبة",
   venue_en: "The library",
 };
@@ -91,7 +91,7 @@ describe("the email journeys", () => {
 
   test("an event canceled says the booking is canceled; one moved gives the new time", () => {
     const canceled = eventChanged("en", event, "cancelled", APP);
-    expect(canceled.subject).toBe("Canceled: Open Pages");
+    expect(canceled.subject).toBe("Canceled: Writing workshop");
     const moved = eventChanged("en", event, "moved", APP);
     expect(moved.blocks[0]?.paragraphs).toContain("The library");
     expect(

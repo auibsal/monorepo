@@ -9,7 +9,7 @@ test("renders a valid calendar with CRLF and UTC times", () => {
         location: "Library, Room 2",
         start: "2026-10-13T15:00:00Z",
         tag: "[RSVP]",
-        title: "Open Pages; poems, prose",
+        title: "Writing workshop; poems, prose",
         uid: "e1@auibsal.org",
       },
     ],
@@ -20,7 +20,7 @@ test("renders a valid calendar with CRLF and UTC times", () => {
   expect(ics).toContain("DTEND:20261013T170000Z\r\n");
   // RFC 5545 escapes: "\;" and "\," (raw strings keep the backslashes).
   expect(ics).toContain(
-    `${String.raw`SUMMARY:[RSVP] Open Pages\; poems\, prose`}\r\n`
+    `${String.raw`SUMMARY:[RSVP] Writing workshop\; poems\, prose`}\r\n`
   );
   expect(ics).toContain(`${String.raw`LOCATION:Library\, Room 2`}\r\n`);
   expect(ics.endsWith("END:VCALENDAR\r\n")).toBe(true);
