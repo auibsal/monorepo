@@ -32,9 +32,9 @@ describe("regional formatting", () => {
 
   test("formats dates in Baghdad time with Iraqi month names", () => {
     expect(formatDate(lateEvening, "ar", "long")).toBe("4 تشرين الأول 2026");
-    expect(formatDate(lateEvening, "en", "long")).toBe("4 October 2026");
+    expect(formatDate(lateEvening, "en", "long")).toBe("October 4, 2026");
     expect(formatDateTime(lateEvening, "en")).toBe(
-      "Sunday, October 4, 2026, 12:30 AM"
+      "Sunday, October 4, 2026, 12:30 a.m."
     );
   });
 
@@ -99,8 +99,8 @@ describe("SAL copy rules", () => {
     expect(formatLongDate(evening, "en")).toBe("Tuesday, October 13");
   });
 
-  test("times read '6:00 PM'", () => {
-    expect(formatClock(evening, "en")).toBe("6:00 PM");
+  test("times read '6:00 p.m.' (Chicago 10.41)", () => {
+    expect(formatClock(evening, "en")).toBe("6:00 p.m.");
   });
 
   test("Arabic keeps Latin digits", () => {

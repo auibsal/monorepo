@@ -88,7 +88,7 @@ describe("formatting", () => {
   it("writes an event card in Baghdad time, escaped", () => {
     const text = eventText("en", event);
     expect(text).toContain("<b>Open Mic &amp; Friends</b>");
-    expect(text).toContain("Tuesday, October 27 · 6:00 PM");
+    expect(text).toContain("Tuesday, October 27 · 6:00 p.m.");
     expect(text).toContain("Poems &lt;and&gt; songs");
     expect(text).toContain("1 place left");
   });
@@ -164,7 +164,7 @@ describe("the Diwan group", () => {
       new Date("2026-11-01T06:00:00Z")
     );
     expect(text).toContain("Reading with a guest &lt;live&gt;");
-    expect(text).toContain("6:00 PM");
+    expect(text).toContain("6:00 p.m.");
     expect(text).toContain("12 booked of 30");
     expect(text).toContain("3 on the waitlist");
     expect(text).toContain("Partner applications: 1");

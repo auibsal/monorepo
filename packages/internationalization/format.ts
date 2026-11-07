@@ -140,7 +140,7 @@ export const inProjectTimeZone = (value: DateInput) =>
   new TZDate(toDate(value), TIME_ZONE);
 
 // ── SAL copy rules (brand book) ─────────────────────────────────────────────
-// Dates as "Tuesday, October 13", times as "6:00 PM", money as "50,000 IQD".
+// Dates as "Tuesday, October 13", times as "6:00 p.m.", money as "50,000 IQD".
 // Latin digits and Baghdad time in both languages.
 
 const brandIntl = (locale: Locale) =>
@@ -220,13 +220,18 @@ export const formatFieldValue = (
 };
 
 /** "6:00 PM" (12-hour clock in both languages). */
-export const formatClock = (value: DateInput, locale: Locale = defaultLocale) =>
-  new Intl.DateTimeFormat(brandIntl(locale), {
+/** "6:00 p.m." (Chicago 10.41, decisions §10) / «6:00 م». */
+export const formatClock = (value: DateInput, locale: Locale = defaultLocale) => {
+  const time = new Intl.DateTimeFormat(brandIntl(locale), {
     hour: "numeric",
     hour12: true,
     minute: "2-digit",
     timeZone: TIME_ZONE,
   }).format(toDate(value));
+  return locale === "ar"
+    ? time
+    : time.replace(/\s?AM$/, " a.m.").replace(/\s?PM$/, " p.m.");
+};
 
 /**
  * A date for the dated lists: the day ("25") and a short weekday and
