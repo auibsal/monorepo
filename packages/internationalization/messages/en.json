@@ -2646,9 +2646,9 @@
           "updated": "Updated"
         },
         "statuses": {
-          "draft": "Draft",
           "adopted": "Adopted",
-          "superseded": "Superseded"
+          "superseded": "Superseded",
+          "proposed": "Proposed"
         },
         "fields": {
           "status": "Status",
@@ -4271,7 +4271,6 @@
       "lede": "The Constitution and the rules, plans and handbooks that follow from it, and the policies of this website.",
       "englishOnly": "The documents are in English; the Arabic versions are being prepared.",
       "all": "All documents",
-      "statusLabel": "Status of this document",
       "dated": "Dated {date}",
       "contents": "Contents",
       "empty": "The documents will appear here.",
@@ -4279,7 +4278,9 @@
       "shelves": {
         "society": "Society documents",
         "policies": "Website policies"
-      }
+      },
+      "proposed": "Proposed: Version 1, until the Founding Meeting adopts it.",
+      "proposedShort": "Proposed"
     },
     "events": {
       "title": "What’s on",

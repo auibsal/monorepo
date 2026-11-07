@@ -71,6 +71,9 @@ const DocumentPage = async ({ params }: DocumentProps) => {
             {documents.documentSummary(doc, locale)}
           </p>
         ) : null}
+        {doc.status === "proposed" ? (
+          <p className="type-caption">{t("proposed")}</p>
+        ) : null}
         {doc.dated ? (
           <p className="type-caption">
             {t("dated", { date: formatLongDate(doc.dated, locale) })}

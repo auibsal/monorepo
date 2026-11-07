@@ -254,6 +254,18 @@ describe("publishing rules", () => {
         })
       ).ok
     ).toBe(false);
+    // An Arabic edition leaves Audience and Slug blank: the English row's
+    // Audience is given to it (owner, Nov 7, 2026).
+    const arabic = page({
+      Code: text("SAL-GOV-04"),
+      Language: { select: { name: "Arabic" }, type: "select" },
+      Title: title("إشعار الخصوصية"),
+    });
+    expect(checkDocument(arabic, "internal")).toMatchObject({
+      ok: true,
+      values: { audience: "internal", code: "SAL-GOV-04" },
+    });
+    expect(checkDocument(arabic).ok).toBe(false);
     expect(RETIRED_DOCUMENT_FAMILY.test("SAL-BRD-01")).toBe(true);
     expect(RETIRED_DOCUMENT_FAMILY.test("SAL-MED-02")).toBe(false);
     const bad = checkDocument(page({ Code: text("PLT3"), Title: title("X") }));

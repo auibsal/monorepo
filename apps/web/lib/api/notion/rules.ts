@@ -223,8 +223,14 @@ export interface DocumentValues {
   title: string;
 }
 
-/** A document row (Publishing, Documents). The page itself is the text. */
-export const checkDocument = (page: NotionPage): Checked<DocumentValues> => {
+/**
+ * A document row (Publishing, Documents). The page itself is the text. An
+ * Arabic row leaves Audience blank: it is given, from its English row.
+ */
+export const checkDocument = (
+  page: NotionPage,
+  audienceGiven?: string | null
+): Checked<DocumentValues> => {
   const problems: string[] = [];
   const title = englishTitle(page, problems);
   const code = read.text(page, "Code").toUpperCase();
@@ -233,11 +239,18 @@ export const checkDocument = (page: NotionPage): Checked<DocumentValues> => {
       "Set the Code, for example SAL-GOV-01 (families GOV, EXB, EVT, MEM, PTN, MED, ART, EDT)."
     );
   }
+  // The Arabic edition takes the English row's address.
   const slug = read.text(page, "Slug").toLowerCase() || slugify(title);
-  problems.push(...slugProblems(slug));
+  if (languageOf(page) === "en") {
+    problems.push(...slugProblems(slug));
+  }
   const summary = read.text(page, "Summary");
   problems.push(...lengthProblem("The summary", summary, 600));
-  const audience = (read.select(page, "Audience") ?? "").toLowerCase();
+  const audience = (
+    audienceGiven ??
+    read.select(page, "Audience") ??
+    ""
+  ).toLowerCase();
   if (audience !== "public" && audience !== "internal") {
     problems.push("Set Audience to public or internal.");
   }

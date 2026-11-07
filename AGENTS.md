@@ -281,8 +281,13 @@ any schema change. Integration tests run against a local stack with
     carry the sustainability line. Document codes GOV, EXB, EVT, MEM, PTN,
     MED, ART, EDT; SAL-MED-02 is the brand.
   - **The Library re-sync** (`/api/cron/notion-sync?documents=all`)
-    republishes every document row, Arabic editions by code, and retires
-    rows of retired families.
+    republishes every document row and retires rows of retired families.
+    Both editions publish together: the English row publishes its Arabic
+    row (same Code) in the same pass, and the Arabic row takes Audience
+    from the English one. Internal documents (SAL-EXB-02, the Annual Plan,
+    among them) never reach the Library, and one set to internal comes
+    off it. Every document shows "Proposed" until adopted. An event's
+    Arabic row takes Way in and Off campus from its English row.
   - **One design per thing** (decisions §6): `FormPage`, `Letter`,
     `MembershipCard` and `Certificate` in `@repo/brand/components/sal`
     (the guilloche too). The site renders them; print and PDF are the

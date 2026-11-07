@@ -5,12 +5,12 @@ import { sanitizeRichText, toPlainText } from "./sanitize";
  * The Library (governance.society_documents): the Society's documents, all
  * public, at auibsal.org/library. Internal documents are kept in the team's
  * Notion workspace, never here (owner, Oct 30, 2026). Each page shows the
- * status recorded here and nothing else, so a draft is never presented as
+ * status recorded here and nothing else, so a proposed document is never presented as
  * adopted. The text is written in Notion and rendered here by the sync
  * (Nov 4, 2026); governance managers keep the adoption record (status,
  * version, the date and the vote) in the Diwan's Library.
  */
-export const documentStatuses = ["draft", "adopted", "superseded"] as const;
+export const documentStatuses = ["proposed", "adopted", "superseded"] as const;
 export type DocumentStatus = (typeof documentStatuses)[number];
 
 export interface SalDocument {

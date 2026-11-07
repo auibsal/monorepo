@@ -23,7 +23,11 @@ Branch: `claude/new-session-qosn60` (PR #229).
 - [x] Guest sign-up; Tour page; Second Chapter on Partners; Next Stop at
       /next-stop; "your account"; sustainability line.
 - [x] Hudhud: announcements; removal warnings a week ahead.
-- [x] Library re-sync code (`?documents=all`).
+- [x] Library re-sync code (`?documents=all`); both editions together,
+  "Proposed" on the Library, internal documents off it (SAL-EXB-02's
+  stale link cleared in Notion; EDT-01, 02, 04 and MEM-02 set Ready to
+  publish).
+- [x] Arabic event rows take Way in and Off campus from the English row.
 - [x] Notion: Meetings Body options (General meeting, Annual Meeting,
       Special meeting, Founding Meeting) added; F-45 in the Leadership
       Handbook, both languages.

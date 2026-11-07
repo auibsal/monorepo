@@ -21,7 +21,13 @@ own versions in the Library.
 - Next Stop moves to /next-stop; the members' pages are "your account".
 - Hudhud warns and then removes people in the members' group who haven't
   joined.
-- The Library re-syncs every document from Notion under the new codes.
+- The Library re-syncs every document from Notion under the new codes;
+  both editions publish together, marked "Proposed" until adopted, and
+  internal documents (the Annual Plan, SAL-EXB-02) stay off it.
+- An event's Arabic row in Notion takes Way in and Off campus from its
+  English row.
+- The Diwan's Library offers Proposed, Adopted and Superseded (the
+  database refused Draft).
 - One design for each form, letter, membership card and certificate, from
   the brand kit; certificates only for finishing Qalam and the Mutanabbi
   Prize, in one language each; service letters with a code anyone can
