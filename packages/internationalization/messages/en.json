@@ -2,7 +2,7 @@
   "common": {
     "society": "AUIB Society of Arts and Letters",
     "societyShort": "SAL",
-    "motto": "The paper and the pen",
+    "motto": "The paper and the pen.",
     "programmeLine": "a Society of Arts and Letters program",
     "language": "Language",
     "switchLanguage": "Switch language",
@@ -73,7 +73,8 @@
       "share": "Share",
       "copied": "Link copied.",
       "failed": "The link could not be copied. Copy it from the address bar."
-    }
+    },
+    "home": "Go to the home page"
   },
   "auth": {
     "signOut": "Sign out",
