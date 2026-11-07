@@ -18,6 +18,7 @@ import {
   DataTable,
   ErrorLine,
   Field,
+  NewLink,
   SaveButton,
   SelectInput,
 } from "../kit";
@@ -54,9 +55,12 @@ export const ServiceLetters = () => {
   return (
     <div className="grid gap-6">
       <p className="type-body">{t("lede")}</p>
-      <AddInPlace label={t("write")}>
-        {(close) => <WriteLetter onDone={close} />}
-      </AddInPlace>
+      <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
+        <AddInPlace label={t("write")}>
+          {(close) => <WriteLetter onDone={close} />}
+        </AddInPlace>
+        <NewLink href="/people/service/letters/write">{t("other")}</NewLink>
+      </div>
       <DataTable
         columns={[
           { cell: (r) => nameOf(r.user_id), header: t("holder"), key: "who" },

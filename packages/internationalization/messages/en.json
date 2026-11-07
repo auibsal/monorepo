@@ -2406,7 +2406,35 @@
             "ar": "Arabic"
           },
           "body": "More to say (optional)",
-          "bodyHint": "A line or two on their work, in the letter’s language."
+          "bodyHint": "A line or two on their work, in the letter’s language.",
+          "other": "Write another letter"
+        },
+        "letterWriter": {
+          "title": "A letter",
+          "lede": "Every Society letter is sent on one template. Write it from the register’s template in the Leadership Handbook, in the recipient’s language, then print it or save it as PDF. Nothing is kept here: the record stays in Notion.",
+          "form": "Letter",
+          "forms": {
+            "f03": "F-03 Appointment letter",
+            "f30": "F-30 Thank-you to a partner or sponsor",
+            "f32": "F-32 Application outcome",
+            "f33": "F-33 Welcome to new members",
+            "f34": "F-34 Honorary Membership invitation",
+            "f42": "F-42 Author letter"
+          },
+          "language": "Language",
+          "languages": {
+            "en": "English",
+            "ar": "Arabic"
+          },
+          "recipient": "To",
+          "recipientHint": "The name, then the address, one line each.",
+          "subject": "Subject",
+          "greeting": "Greeting",
+          "greetingHint": "A colon in business letters (“Dear Mr. Najm:”), a comma only in personal letters to members (“Dear Lina,”).",
+          "body": "Letter",
+          "bodyHint": "A blank line between paragraphs.",
+          "seat": "Your seat",
+          "print": "Print or save as PDF"
         }
       },
       "productions": {
