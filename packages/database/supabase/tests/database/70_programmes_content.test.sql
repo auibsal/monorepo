@@ -75,7 +75,7 @@ insert into core.semesters (code, name_en, name_ar, starts_on, ends_on) values
 update core.settings set value = '0' where key = 'membership.founding_voters';
 -- </preamble>
 
-select plan(18);
+select plan(19);
 
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000f1', 'founder@auib.edu.iq', 'Founder');
 select access.bootstrap_founder('founder@auib.edu.iq');
@@ -132,6 +132,10 @@ select lives_ok(
 
 select pg_temp.login_anon();
 select is((select count(*) from programmes.six_words_wall())::integer, 0, 'and it leaves the wall');
+select lives_ok(
+  $$ select * from programmes.profile_six_words('nobody') $$,
+  'Visitors can read the Tour pages a writer shows on their author page'
+);
 
 -- ── Removal requests ────────────────────────────────────────────────────────
 

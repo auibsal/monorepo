@@ -296,6 +296,7 @@ set search_path = ''
 as $$ select * from private.profile_six_words(author_slug) $$;
 
 revoke all on function programmes.profile_six_words(text) from public;
+grant execute on function programmes.profile_six_words(text) to anon, authenticated;
 
 -- 2. The one-time invitation to join (decisions §2): the spring 2026 Tour
 -- writers and the fall 2026 club fair sign-ups, sent once on launch day

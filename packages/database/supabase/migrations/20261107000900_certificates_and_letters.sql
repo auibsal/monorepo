@@ -249,7 +249,7 @@ grant execute on function membership.verify_certificate(text) to anon, authentic
 -- Signing and preparing follow the signers: the Qalam lead, the
 -- Editor-in-Chief and the President (or the Acting President). The Faculty
 -- Advisor no longer countersigns.
-delete from access.role_permissions where permission = 'certificates.countersign';
+delete from access.role_permissions where role = 'faculty_advisor' and permission = 'certificates.countersign';
 insert into access.role_permissions (role, permission) values
   ('qalam_lead', 'certificates.sign'),
   ('eic', 'certificates.sign'),

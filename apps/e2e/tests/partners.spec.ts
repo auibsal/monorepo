@@ -163,8 +163,8 @@ test("an organization applies, the President signs, and its dashboard opens", as
   ] as const) {
     const group = guest.getByRole("group", { name });
     await group.getByLabel("Name", { exact: true }).fill(parts[0]);
-    await group.getByLabel("Father's name", { exact: true }).fill(parts[1]);
-    await group.getByLabel("Grandfather's name").fill(parts[2]);
+    await group.getByLabel("Father’s name", { exact: true }).fill(parts[1]);
+    await group.getByLabel("Grandfather’s name").fill(parts[2]);
     await group.getByLabel("Family name").fill(parts[3]);
   }
   const sentAt = Date.now();
@@ -183,7 +183,7 @@ test("an organization applies, the President signs, and its dashboard opens", as
     .getByRole("button", { name: "I make the Human Authorship pledge" })
     .click();
   await guest.getByRole("button", { name: "I make the Member Pledge" }).click();
-  await guest.getByRole("button", { name: "Yes, that's fine" }).click();
+  await guest.getByRole("button", { name: "Yes, that’s fine" }).click();
   await expect(guest.getByRole("heading", { level: 1 })).toContainText(
     "Welcome"
   );
@@ -260,7 +260,7 @@ test("a member who leads their club's partnership stays a member", async ({
 
     // Still a member: the whole row, the Member card, and the dashboard.
     await page.goto(`${urls.web}/membership`);
-    const row = page.getByRole("navigation", { name: "Membership" });
+    const row = page.getByRole("navigation", { name: "Your account" });
     for (const name of ["My calendar", "Society", "Record"]) {
       await expect(row.getByRole("link", { name })).toBeVisible();
     }

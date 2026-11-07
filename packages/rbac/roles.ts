@@ -23,6 +23,8 @@ export const roles = {
       "programs.manage",
       "library.read",
       "library.council",
+      // Signs the Prize's certificates in the President's place.
+      "certificates.sign",
     ],
   },
   advisory_board_member: {
@@ -101,6 +103,8 @@ export const roles = {
       "library.read",
       "qalam.manage",
       "journal.prize",
+      "certificates.prepare",
+      "certificates.sign",
     ],
   },
   elections_committee: {
@@ -146,7 +150,6 @@ export const roles = {
       "library.read",
       "library.council",
       "audit.read",
-      "certificates.countersign",
       "concerns.handle",
       "concerns.about_vp",
       "concerns.about_president",
@@ -403,7 +406,12 @@ export const roles = {
     isCouncil: false,
     nameAr: "مسؤول «قلم»",
     nameEn: "Qalam Lead",
-    permissions: ["qalam.manage", "library.read"],
+    permissions: [
+      "qalam.manage",
+      "library.read",
+      "certificates.prepare",
+      "certificates.sign",
+    ],
   },
   reader: {
     defaultScope: "issue",
