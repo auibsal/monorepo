@@ -1,7 +1,9 @@
 import "server-only";
 
 import type { Database } from "@repo/database";
+import { createServerClient, parseCookieHeader } from "@supabase/ssr";
 import { createClient } from "@supabase/supabase-js";
+import { authCookieOptions } from "./cookies";
 import { keys } from "./keys";
 
 const BEARER = /^Bearer\s+(.+)$/i;
@@ -47,5 +49,40 @@ export const authenticateRequest = async (request: Request) => {
     return null;
   }
 
+  return { claims: data.claims, supabase, userId: data.claims.sub };
+};
+
+/**
+ * Authenticates a request by its session cookies, for what the browser loads
+ * itself (a framed page and its files) and so can't send a bearer token.
+ * Read only: the session is refreshed by the pages, never here.
+ */
+export const authenticateCookies = async (request: Request) => {
+  const { NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY } =
+    keys();
+  if (!(NEXT_PUBLIC_SUPABASE_URL && NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY)) {
+    return null;
+  }
+  const cookies = parseCookieHeader(request.headers.get("cookie") ?? "").map(
+    ({ name, value }) => ({ name, value: value ?? "" })
+  );
+  const supabase = createServerClient<Database>(
+    NEXT_PUBLIC_SUPABASE_URL,
+    NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
+    {
+      cookieOptions: authCookieOptions(),
+      cookies: {
+        getAll: () => cookies,
+        setAll: () => undefined,
+      },
+    }
+  );
+  const { data, error } = await supabase.auth.getClaims();
+  if (error || !data) {
+    return null;
+  }
+  if (typeof data.claims.client_id === "string" && data.claims.client_id) {
+    return null;
+  }
   return { claims: data.claims, supabase, userId: data.claims.sub };
 };

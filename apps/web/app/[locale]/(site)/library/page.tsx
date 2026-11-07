@@ -27,7 +27,6 @@ const DocumentsPage = async ({ params }: DocumentsProps) => {
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "web.documents" });
-  const tp = await getTranslations({ locale, namespace: "web.privacy" });
   const list = await readPublished(
     ["documents"],
     (c) => documents.publicDocuments(c),
@@ -38,12 +37,10 @@ const DocumentsPage = async ({ params }: DocumentsProps) => {
     {
       docs: list.filter((doc) => !documents.isWebsitePolicy(doc)),
       key: "society",
-      privacy: false,
     },
     {
       docs: list.filter(documents.isWebsitePolicy),
       key: "policies",
-      privacy: true,
     },
   ] as const;
 
@@ -62,13 +59,6 @@ const DocumentsPage = async ({ params }: DocumentsProps) => {
           title={t(`shelves.${shelf.key}`)}
         >
           <ul className="grid gap-x-10 md:grid-cols-2">
-            {shelf.privacy ? (
-              <Entry
-                href="/library/privacy"
-                summary={tp("lede")}
-                title={tp("title")}
-              />
-            ) : null}
             {shelf.docs.map((doc) => (
               <Entry
                 href={`/library/${doc.slug}`}
@@ -79,7 +69,7 @@ const DocumentsPage = async ({ params }: DocumentsProps) => {
               />
             ))}
           </ul>
-          {shelf.docs.length === 0 && !shelf.privacy ? (
+          {shelf.docs.length === 0 ? (
             <p className="type-body">{t("empty")}</p>
           ) : null}
         </Section>

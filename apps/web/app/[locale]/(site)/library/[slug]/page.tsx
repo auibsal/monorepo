@@ -1,5 +1,5 @@
 import { DocumentHeader } from "@repo/brand/components/sal/document-header";
-import type { Locale } from "@repo/internationalization";
+import { type Locale, localizedPath } from "@repo/internationalization";
 import { formatLongDate } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
 import { documents } from "@repo/sal-data";
@@ -55,7 +55,21 @@ const DocumentPage = async ({ params }: DocumentProps) => {
   }
   const t = await getTranslations({ locale, namespace: "web.documents" });
   const body = documents.documentBody(doc, locale);
-  const { contents, html } = documents.documentSections(body.html);
+  const others = await readPublished(
+    ["documents"],
+    (c) => documents.publicDocuments(c),
+    []
+  );
+  const refs = new Map(
+    others.map((other) => [
+      other.code,
+      {
+        href: localizedPath(locale, `/library/${other.slug}`),
+        title: documents.documentTitle(other, body.english ? "en" : locale),
+      },
+    ])
+  );
+  const { contents, html } = documents.documentSections(body.html, refs);
 
   return (
     <article className="mx-auto grid w-full max-w-4xl gap-10 px-4 py-16">

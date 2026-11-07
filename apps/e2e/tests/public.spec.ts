@@ -155,7 +155,6 @@ test("every page in the sitemap is found, in both languages", async ({
   for (const loc of locs) {
     const { pathname } = new URL(loc ?? "");
     // One after another: the local build serves them on demand.
-    // biome-ignore lint/performance/noAwaitInLoops: sequential on purpose
     const response = await request.get(`${urls.web}${pathname}`);
     if (response.status() !== 200) {
       missing.push(`${response.status()} ${pathname}`);

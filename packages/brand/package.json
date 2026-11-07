@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "build:site": "storybook build --quiet -o ../../apps/web/public/_design",
+    "build:site": "storybook build --quiet -o ../../apps/web/design",
     "build:static": "storybook build",
     "clean": "git clean -xdf .cache .turbo dist node_modules storybook-static",
     "dev": "storybook dev -p 6006",

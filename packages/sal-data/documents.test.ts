@@ -42,4 +42,39 @@ describe("documents", () => {
     expect(html).not.toContain("script");
     expect(html).not.toContain("onclick");
   });
+
+  test("the editors' opening lines and links into Notion are left out", () => {
+    const refs = new Map([
+      [
+        "SAL-GOV-03",
+        { href: "/library/policy-manual", title: "Policy Manual" },
+      ],
+      ["SAL-GOV-01", { href: "/library/constitution", title: "Constitution" }],
+    ]);
+    const { html } = documentSections(
+      '<p>النسخة العربية: <a href="https://app.notion.com/p/4108">النظام الداخلي</a></p>' +
+        "<p>SAL-GOV-02 · Bylaws · Version 1, proposed · Owner: General Secretary</p>" +
+        "<p>Proposed until the Founding Meeting.</p>" +
+        '<p>Full text: SAL-GOV-03 Policy Manual <a href="https://app.notion.com/p/40e8">Policy Manual</a>.</p>' +
+        "<p>As SAL-GOV-01 says, and SAL-EXB-01 · F-43.</p>" +
+        '<p>See <a href="https://www.notion.so/abc">the handbook</a>.</p>' +
+        "<h2>Related documents</h2><ul><li>SAL-GOV-03 Policy Manual</li><li>SAL-EXB-01 Leadership Handbook</li></ul>",
+      refs
+    );
+    expect(html).not.toContain("notion");
+    expect(html).not.toContain("SAL-GOV-02");
+    expect(html.startsWith("<p>Proposed until the Founding Meeting.</p>")).toBe(
+      true
+    );
+    expect(html).toContain(
+      'Full text: <a href="/library/policy-manual">SAL-GOV-03 Policy Manual</a>.</p>'
+    );
+    expect(html).toContain(
+      'As <a href="/library/constitution">SAL-GOV-01</a> says, and SAL-EXB-01 · F-43.'
+    );
+    expect(html).toContain("<p>See the handbook.</p>");
+    expect(html).toContain(
+      '<li><a href="/library/policy-manual">SAL-GOV-03 Policy Manual</a></li><li>SAL-EXB-01 Leadership Handbook</li>'
+    );
+  });
 });

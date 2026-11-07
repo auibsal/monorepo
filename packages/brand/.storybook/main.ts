@@ -13,7 +13,7 @@ const getAbsolutePath = (value: string) =>
 
 /**
  * The design system, SAL-MED-02, in the Diwan at /diwan/design (owner, Nov
- * 4, 2026). `bun run build:site` builds it into apps/web/public/_design,
+ * 4, 2026). `bun run build:site` builds it into apps/web/design (served to staff at /_design),
  * which the Diwan's page frames. Every path in the stories is relative
  * ("brand-kit/…", "brand/…"), so the same stories work in `bun run dev`.
  */

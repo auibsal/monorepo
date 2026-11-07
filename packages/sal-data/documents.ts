@@ -125,12 +125,113 @@ const anchor = (text: string, index: number) =>
     .replace(/^-|-$/g, "")
     .slice(0, 60)}`;
 
+/** Another public document a document's text may point to. */
+export interface DocumentRef {
+  href: string;
+  title: string;
+}
+
+const CODE = /SAL-[A-Z]{3}-\d{2}/;
+const CODES = /SAL-[A-Z]{3}-\d{2}/g;
+const OPENING_PARAGRAPH = /^\s*<p>([\s\S]*?)<\/p>/;
+// The lines a Notion page opens with for its editors: the other edition's
+// page, and the code, version and owner (the Library shows its own).
+const EDITORS_LINE =
+  /^(?:English edition|Arabic edition|النسخة العربية|النسخة الإنجليزية)\s*:|^SAL-[A-Z]{3}-\d{2}\s*·/;
+const NOTION_LINK =
+  /(\s*)<a\b[^>]*href="https:\/\/(?:app\.|www\.)?notion\.(?:so|com|site)[^"]*"[^>]*>([\s\S]*?)<\/a>/g;
+const TAG = /(<[^>]+>)/;
+const OPEN_LINK = /^<a\b/i;
+const CLOSE_LINK = /^<\/a>/i;
+
+const escapeHtml = (text: string) =>
+  text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+const dropEditorsLines = (html: string) => {
+  let rest = html;
+  for (;;) {
+    const first = OPENING_PARAGRAPH.exec(rest);
+    if (!(first && EDITORS_LINE.test(plain(first[1] ?? "")))) {
+      return rest;
+    }
+    rest = rest.slice(first[0].length);
+  }
+};
+
+/**
+ * Links into Notion lead staff to the working copy, which readers can't
+ * open: a link that repeats the words before it ("SAL-GOV-03 Policy Manual
+ * <a>Policy Manual</a>") goes, any other keeps its words without the link.
+ */
+const dropNotionLinks = (html: string) =>
+  html.replace(
+    NOTION_LINK,
+    (_match, space: string, inner: string, offset: number) => {
+      const words = plain(inner);
+      const before = plain(html.slice(Math.max(0, offset - 200), offset));
+      // The link's own (already sanitized) contents stay; only the <a> goes.
+      return words && before.endsWith(words) ? "" : `${space}${inner}`;
+    }
+  );
+
+/**
+ * A code that names a public document links to it in the Library, with the
+ * title after it when the text gives one ("SAL-GOV-03 Policy Manual").
+ */
+const linkCodesIn = (text: string, refs: ReadonlyMap<string, DocumentRef>) => {
+  let out = "";
+  let at = 0;
+  for (const match of text.matchAll(CODES)) {
+    const [code] = match;
+    const start = match.index ?? 0;
+    const ref = refs.get(code);
+    if (!ref) {
+      continue;
+    }
+    const title = ` ${escapeHtml(ref.title)}`;
+    const titled = text.startsWith(title, start + code.length);
+    const end = start + code.length + (titled ? title.length : 0);
+    out += `${text.slice(at, start)}<a href="${ref.href}">${text.slice(start, end)}</a>`;
+    at = end;
+  }
+  return out + text.slice(at);
+};
+
+const linkCodes = (html: string, refs: ReadonlyMap<string, DocumentRef>) => {
+  if (refs.size === 0) {
+    return html;
+  }
+  let inLink = 0;
+  return html
+    .split(TAG)
+    .map((part) => {
+      if (part.startsWith("<")) {
+        if (OPEN_LINK.test(part)) {
+          inLink += 1;
+        } else if (CLOSE_LINK.test(part)) {
+          inLink = Math.max(0, inLink - 1);
+        }
+        return part;
+      }
+      return inLink > 0 || !CODE.test(part) ? part : linkCodesIn(part, refs);
+    })
+    .join("");
+};
+
 /**
  * Sanitized document HTML with an id on every section heading, and the
- * table of contents built from those headings.
+ * table of contents built from those headings. The editors' opening lines
+ * and links into Notion are left out; codes of public documents link to
+ * them (`refs`, by code).
  */
-export const documentSections = (html: string) => {
-  const safe = sanitizeRichText(html);
+export const documentSections = (
+  html: string,
+  refs: ReadonlyMap<string, DocumentRef> = new Map()
+) => {
+  const safe = linkCodes(
+    dropNotionLinks(dropEditorsLines(sanitizeRichText(html))),
+    refs
+  );
   const contents: { id: string; title: string }[] = [];
   let index = 0;
   const withIds = safe.replace(HEADING, (_match, inner: string) => {

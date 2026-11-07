@@ -15,8 +15,7 @@ type SectionNamespace =
   | "web.join"
   | "web.join.tour"
   | "web.mediaKit"
-  | "web.partners"
-  | "web.privacy";
+  | "web.partners";
 
 /** Metadata for a simple section page: its `title` and `lede` messages. */
 export const sectionMetadata =
