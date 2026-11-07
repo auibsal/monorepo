@@ -1410,6 +1410,31 @@ export const isDeferred = (payload: unknown, now = Date.now()) => {
   return typeof after === "string" && Date.parse(after) > now;
 };
 
+/**
+ * Mail that can wait while the Society is on Resend's free plan (audit A1):
+ * the welcome is part of the confirmation email now, and reminders and
+ * digests have Hudhud or the account's own pages.
+ */
+export const NON_ESSENTIAL = new Set([
+  "membership.welcome",
+  "journal.call_opened",
+  "journal.piece_note",
+  "events.reminder",
+  "programmes.shift_reminder",
+  "programmes.replies_digest",
+]);
+
+const essentialOnly = async (admin: AdminClient) => {
+  const { data } = await admin
+    .schema("core")
+    .from("settings")
+    .select("value")
+    .eq("key", "email.essential_only")
+    .maybeSingle();
+  // On unless the setting says otherwise.
+  return data?.value !== false;
+};
+
 /** Claims and processes one row; true when it is done (or not ours to do). */
 export const processRow = async (admin: AdminClient, id: number) => {
   const { data: row } = await admin
@@ -1440,9 +1465,17 @@ export const processRow = async (admin: AdminClient, id: number) => {
     // Someone else took it.
     return true;
   }
-  const handler = Object.hasOwn(handlers, row.kind)
-    ? handlers[row.kind]
-    : undefined;
+  // On Resend's free plan (100 emails a day) only the essential mail goes
+  // (audit A1); the rest is set aside, marked so, until the plan is raised
+  // and core.settings `email.essential_only` is turned off.
+  const skipped =
+    NON_ESSENTIAL.has(row.kind) && (await essentialOnly(admin))
+      ? "skipped: essential mail only (Resend free plan)"
+      : null;
+  const handler =
+    !skipped && Object.hasOwn(handlers, row.kind)
+      ? handlers[row.kind]
+      : undefined;
   try {
     if (handler) {
       await current.run({ admin, kind: row.kind, row: id }, () =>
@@ -1453,7 +1486,7 @@ export const processRow = async (admin: AdminClient, id: number) => {
       .schema("core")
       .from("outbox")
       .update({
-        last_error: handler ? null : "no handler",
+        last_error: skipped ?? (handler ? null : "no handler"),
         processed_at: new Date().toISOString(),
       })
       .eq("id", id);
