@@ -5190,10 +5190,12 @@
         "president": "President",
         "vice_president": "Vice President",
         "general_secretary": "General Secretary",
-        "eic": "Editor-in-Chief of Qirtas",
-        "artistic_director": "Artistic Director",
+        "eic": "Editor-in-Chief",
         "media_director": "Director of Media",
-        "acting_president": "Acting President"
+        "artistic_director": "Artistic Director",
+        "events_director": "Director of Events",
+        "partnerships_director": "Director of Partnerships",
+        "membership_director": "Director of Membership"
       },
       "seatOpen": "Open",
       "body": {

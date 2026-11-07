@@ -5190,10 +5190,12 @@
         "president": "الرئيس",
         "vice_president": "نائب الرئيس",
         "general_secretary": "الأمين العام",
-        "eic": "رئيس تحرير قرطاس",
-        "artistic_director": "المدير الفني",
+        "eic": "رئيس التحرير",
         "media_director": "مدير الإعلام",
-        "acting_president": "الرئيس بالإنابة"
+        "artistic_director": "المدير الفني",
+        "events_director": "مدير الفعاليات",
+        "partnerships_director": "مدير الشراكات",
+        "membership_director": "مدير العضوية"
       },
       "seatOpen": "شاغر",
       "body": {

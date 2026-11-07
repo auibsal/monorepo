@@ -97,9 +97,9 @@ select ok(
   'The Vice President owns partnerships, not events or membership'
 );
 select ok(
-  exists (select 1 from access.role_permissions where role = 'acting_president' and permission = 'events.manage')
-  and exists (select 1 from access.roles where key = 'acting_president' and requires_mfa and not is_council),
-  'The Acting President holds the events permissions'
+  not exists (select 1 from access.roles where key = 'acting_president')
+  and exists (select 1 from pg_proc where proname = 'president_absent'),
+  'No Acting President role: the Vice President acts while the President is recorded absent'
 );
 select ok(
   exists (select 1 from access.role_permissions where role = 'general_secretary' and permission = 'tour.run')

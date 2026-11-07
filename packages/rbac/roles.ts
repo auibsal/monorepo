@@ -12,21 +12,6 @@ export interface RoleDefinition {
 /** Role bundles, mirrored from the reference-data migration. */
 export const roles = {
   // While the President is abroad (owner, Nov 5, 2026), events.
-  acting_president: {
-    defaultScope: "global",
-    isCouncil: false,
-    nameAr: "الرئيس بالإنابة",
-    nameEn: "Acting President",
-    permissions: [
-      "events.manage",
-      "events.checkin",
-      "programs.manage",
-      "library.read",
-      "library.council",
-      // Signs the Prize's certificates in the President's place.
-      "certificates.sign",
-    ],
-  },
   advisory_board_member: {
     defaultScope: "global",
     isCouncil: false,
@@ -345,7 +330,6 @@ export const roles = {
       "events.manage",
       "events.checkin",
       "content.manage",
-      "journal.manage",
       "programs.manage",
       "governance.manage",
       "library.read",
@@ -360,24 +344,13 @@ export const roles = {
       "concerns.handle",
       "concerns.about_vp",
       // Everything else too (owner, Oct 15, 2026), except the checks on the
-      // President that stay with other officers (rbac.test.ts lists them).
-      "journal.advise",
-      "journal.decide",
-      "journal.publish",
-      "journal.edit.news",
-      "journal.edit.letters",
-      "journal.edit.gallery",
-      "journal.edit.video",
-      "journal.edit.voices",
-      "journal.edit.games",
-      "journal.approve",
-      "journal.copy",
-      "journal.frontpage",
+      // President that stay with other officers and Qirtas (decisions §1:
+      // the President never selects work; rbac.test.ts lists them). While
+      // the President is recorded absent, the Vice President holds these
+      // (governance.president_absences).
       "governance.minutes.write",
       "tour.run",
       "members.register",
-      "qalam.manage",
-      "journal.prize",
       "forms.handle",
     ],
   },
