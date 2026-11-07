@@ -2,6 +2,7 @@
   "name": "web",
   "version": "1.0.0",
   "private": true,
+  "license": "UNLICENSED",
   "scripts": {
     "analyze": "ANALYZE=true npm run build",
     "build": "bun run --cwd ../../packages/brand build:site && next build",

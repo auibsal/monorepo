@@ -12,6 +12,8 @@ under Account); the Society's documents are on
 - [Backups and restore](backups.md)
 - [Retention](retention.md)
 - [Vendors](vendors.md)
+- [Secrets by environment](secrets.md)
+- [API routes](api.md)
 - [When something breaks](incidents.md)
 - [Notifications](notifications.md)
 - [Email: every email, its sender and its settings](email.md)

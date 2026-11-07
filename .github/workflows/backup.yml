@@ -41,8 +41,8 @@ jobs:
       AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
     steps:
-      - uses: actions/checkout@v7
-      - uses: oven-sh/setup-bun@v2
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
           bun-version-file: package.json
       - run: bun install --frozen-lockfile
@@ -85,7 +85,7 @@ jobs:
           printf '%s' "$BACKUP_PASSPHRASE" | gpg --batch --yes --pinentry-mode loopback --passphrase-fd 0 \
             --symmetric --cipher-algo AES256 -o "$RUNNER_TEMP/sal-$STAMP.tar.gz.gpg" "$RUNNER_TEMP/sal-$STAMP.tar.gz"
           rm -rf "$RUNNER_TEMP/backup" "$RUNNER_TEMP/sal-$STAMP.tar.gz"
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
           name: sal-backup-${{ env.STAMP }}
           path: ${{ runner.temp }}/sal-${{ env.STAMP }}.tar.gz.gpg

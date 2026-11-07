@@ -1,6 +1,7 @@
 {
   "name": "e2e",
   "private": true,
+  "license": "UNLICENSED",
   "type": "module",
   "scripts": {
     "e2e": "playwright test",

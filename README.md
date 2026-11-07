@@ -1,66 +1,100 @@
-# AUIB Society of Arts and Letters — platform
+# auibsal.org
 
-The web platform of the AUIB Society of Arts and Letters (SAL, «جمعية الفنون
-والآداب»), the bilingual student society for literature, theater and the arts
-at the American University of Iraq – Baghdad. *The paper and the pen.*
+The platform of the AUIB Society of Arts and Letters (SAL, «جمعية الفنون
+والآداب»), the bilingual student society for literature, theater and the
+arts at the American University of Iraq – Baghdad. *The paper and the pen.*
 
-**Version 1** (October 24, 2026): one light ground for the site and the
-Diwan, the database at zero Supabase advisor findings with a test that
-keeps it there, a publish rule with the fewest gates that still protect
-the work, and the rails (protected `main`, audited dependencies, journeys
-against built apps) that let the Society run it without a developer on
-call. What remains is content and the owner's settings, listed in
-`PROGRESS.md`.
+## What it is
 
-**One app** (October 24, 2026): the public site, the Diwan and the API are
-one Next.js app, `apps/web`, deployed once to auibsal.org.
+One Next.js app, `apps/web`, deployed once to auibsal.org:
 
-| Where | What it is |
+| Where | What |
 | --- | --- |
-| `auibsal.org` (`app/[locale]/(site)`) | The public site, English at `/` and Arabic at `/ar` |
-| `auibsal.org/account`, `/sign-in`, `/events/book`, … (`app/[locale]/(account)`) | **Members' pages** on the site: sign-in and sign-up, Membership, booking, shifts, writing for Qirtas, the Society; client-rendered with the member's own token |
-| `auibsal.org/diwan` (`app/[locale]/diwan`) | **The Diwan**: the officers' administration (anyone holding a role), client-rendered with the officer's own token |
-| `auibsal.org/api` (`app/api`, `lib/api`) | Email, cron (and a daily watch on the cron jobs), calendar feeds, exports, file links, deletion, Hudhud the Telegram bot, the Notion sync |
-| `packages/brand` | The design system (SAL-MED-02): the guide, tokens, logos, icons, social and print files, and its Storybook (components, screens and every email), in the Diwan at auibsal.org/diwan/design |
-| `apps/e2e` | Playwright + axe journeys, in CI |
+| `auibsal.org` (`app/[locale]/(site)`) | The public site: English at `/`, Arabic at `/ar` |
+| `/account`, `/sign-in`, `/join`, … (`app/[locale]/(account)`) | Your account: the members’ pages |
+| `/diwan` (`app/[locale]/diwan`) | The Diwan: the officers’ administration |
+| `/api` (`app/api`, `lib/api`) | Email and the outbox, cron, feeds, exports, file links, Google Wallet, the Notion sync and Hudhud, the Telegram bot |
 
-Data lives in Supabase (Postgres with Row Level Security on every table,
-Auth, Storage). Hosting is Vercel.
+`packages/brand` is the design system (SAL-MED-02) and its Storybook;
+`packages/*` hold the shared code (`@repo/<name>`); `apps/e2e` holds the
+Playwright and axe journeys.
 
-## Getting started
+## Stack
 
-Prerequisites: Node.js 24 (`.nvmrc`), [Bun](https://bun.sh), Docker (for the local
-Supabase stack).
+Next.js 16 and React on Node.js 24, Bun workspaces with Turborepo,
+TypeScript, Tailwind CSS and shadcn/ui, next-intl. Supabase (Postgres with
+Row Level Security on every table, Auth, Storage, pg_cron), Vercel
+(hosting, cookieless Web Analytics), Resend (email), Notion (the officers’
+workspace), Telegram (grammY) and Google Wallet. Tests: Vitest, pgTAP and
+Playwright with axe. Lint and format: Biome (Ultracite).
+
+## Setup
+
+Prerequisites: Node.js 24 (`.nvmrc`), [Bun](https://bun.sh) and Docker
+(for the local Supabase stack).
 
 ```sh
 bun install
-bun run db:start      # local Supabase: migrations (the browser journeys seed their own data)
-bun run dev           # the app at http://localhost:3000 (the Diwan at /diwan)
+bun run db:start      # local Supabase with every migration
+cp apps/web/.env.example apps/web/.env.local
+bun run dev           # http://localhost:3000 (the Diwan at /diwan)
 ```
 
-Copy `apps/web/.env.example` to `apps/web/.env.local` and fill in the local
-keys from `bunx supabase status` (run in `packages/database`).
+## Environment
 
-## Checks
+Every variable is described in `apps/web/.env.example`; where each value
+lives in production, preview and development is in
+`docs/platform/secrets.md`. Fill the Supabase keys from `bunx supabase
+status` (in `packages/database`). Leave the integrations empty locally:
+email is logged, and Turnstile, Notion, Telegram and Wallet stay off.
+
+## Scripts
 
 ```sh
-bun run check         # Biome
+bun run dev | build
+bun run check | fix          # Biome
 bun run typecheck
-bun run test
-bun run db:test       # pgTAP: RLS, RPC behavior, and the advisor invariants
+bun run test                 # Vitest in every workspace
+bun run db:start | db:reset | db:test | db:types
 bun run check:placeholders && bun run check:rtl && bun run check:i18n
-bun run check:unused  # Knip
-bun audit --audit-level=high
+bun run check:unused         # Knip
 ```
 
-## Further reading
+## Testing
 
-- `PROGRESS.md` — the build checklist, decisions, blocked items, content still
-  needed and Arabic awaiting native review
-- `AGENTS.md` — rules for humans and AI agents
-- `ARCHITECTURE_AND_INTEGRATIONS.md` — how the pieces fit together and how to
-  set up Supabase, Vercel, Resend and the domains
-- `docs/platform/` — the runbooks: releases, backups, incidents, accounts
-- `.github/CONTRIBUTING.md` — workflow and local checks
+`bun run test` runs the unit tests, `bun run db:test` the pgTAP tests
+(RLS, every RPC and the Supabase advisor invariants), and `bun run --cwd
+apps/e2e e2e` the browser journeys against a local stack. Integration
+tests run with `SUPABASE_INTEGRATION=1`, as in `.github/workflows/ci.yml`.
 
-Repository: https://github.com/auibsal/mono · Contact: hello@auibsal.org
+## Deploy
+
+A pull request runs CI. When it merges to `main`, CI runs again, then
+`migrate.yml` applies the new migrations to production (`supabase db
+push`), and Vercel deploys `main`. Nothing is applied to production by
+hand. The nightly backup and how to restore it: `docs/platform/backups.md`.
+
+## Docs
+
+- `claude/decisions.md`: the owner’s decisions, the source of truth
+- `AGENTS.md`: the code conventions for people and AI agents
+- `packages/brand/BRAND-BOOK.md`: the brand rules
+- `ARCHITECTURE_AND_INTEGRATIONS.md`: how the pieces fit together
+- `docs/platform/`: the runbooks (email, backups, retention, secrets, vendors, releases, incidents)
+- `PROGRESS.md`: what is done and what is open
+
+## Contributing
+
+Read `AGENTS.md` and `.github/CONTRIBUTING.md`. Work on a branch, open a
+pull request with the template, and run `check`, `typecheck` and `test`
+(and `db:test` for a schema change) before pushing.
+
+## Security
+
+Report a vulnerability privately to hello@auibsal.org (see
+`.github/SECURITY.md` and `/.well-known/security.txt`), never in an issue.
+
+## License
+
+Unlicensed: all rights reserved by the AUIB Society of Arts and Letters.
+The code is public to read; it is not licensed for reuse.
