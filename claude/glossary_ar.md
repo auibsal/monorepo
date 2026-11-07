@@ -29,6 +29,18 @@ Arabic rules: Modern Standard Arabic; Latin digits (0–9); «» for quotations 
 | Faculty Advisor | المستشار من أعضاء هيئة التدريس |
 | Advisory Board | المجلس الاستشاري |
 | member / Associate Member / Honorary Member | عضو / عضو منتسب / عضو فخري |
+| partner / Partner Lead / the partner's team / partner dashboard | شريك / مسؤول الشريك / فريق الشريك / لوحة الشريك |
+| partner register / guest / guest account | سجل الشركاء / ضيف / حساب ضيف |
+| legal name / preferred name | الاسم القانوني / الاسم المفضّل |
+| Guest card / membership card / number | بطاقة الضيف / بطاقة العضوية / الرقم |
+| electronic signature / verify | التوقيع الإلكتروني / التحقق |
+| Copy Chief / Managing Editor | رئيس التدقيق / مدير التحرير |
+| Anonymous (byline) / corrections log / editor's note | مجهول الاسم / سجل التصحيحات / ملاحظة المحرر |
+| From the Society (Qirtas front-page stream) | من الجمعية |
+| Supported by (sponsors in kind) / With the support of (AUIB offices) | بدعم من / بمساندة |
+| event access: Open / RSVP / Members / Private | مفتوحة / بحجز مسبق / للأعضاء / خاصة |
+| Request Associate membership | طلب العضوية المنتسبة |
+| invitation (single-use, by email) / shareable link | دعوة (لمرة واحدة، بالبريد الإلكتروني) / رابط قابل للمشاركة |
 | member in good standing / voting member | عضو في وضع جيد / عضو له حق التصويت |
 | the Register | سجل الأعضاء |
 | general meeting | الاجتماع العام |
@@ -56,7 +68,7 @@ Arabic rules: Modern Standard Arabic; Latin digits (0–9); «» for quotations 
 | safeguarding | الحماية |
 | Privacy Notice / Terms of Use / Accessibility Statement | إشعار الخصوصية / شروط الاستخدام / بيان إمكانية الوصول |
 | Constitution / Bylaws / Policy Manual | الدستور / النظام الداخلي / دليل السياسات |
-| Society Handbook / Qirtas House Book | دليل الجمعية / دليل قرطاس |
+| Leadership Handbook / Qirtas Staff Manual / Editorial Standards and Stylebook | دليل القيادة / دليل فريق قرطاس / معايير التحرير ودليل الأسلوب |
 | Founding Proposal | مقترح التأسيس |
 | Version 1, proposed | النسخة 1، مقترحة |
 | camera-shy sticker | ملصق «بلا تصوير» |
