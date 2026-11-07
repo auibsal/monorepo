@@ -95,7 +95,7 @@ as $$
 $$;
 -- </preamble>
 
-select plan(12);
+select plan(13);
 
 select pg_temp.make_user('00000000-0000-0000-0000-0000000c0de1', 'numbers@auib.edu.iq', 'Numbers Person');
 insert into governance.minutes (id, title_en, text_en, meeting_on, body, status, adopted_on)
@@ -135,6 +135,9 @@ select matches((select reference from membership.service_letters where user_id =
 select isnt((select verification_code from membership.service_letters where user_id = '00000000-0000-0000-0000-0000000c0de1'),
   (select reference from membership.service_letters where user_id = '00000000-0000-0000-0000-0000000c0de1'),
   'and its verification code is separate');
+select ok(exists (select 1 from core.outbox
+  where kind = 'membership.service_letter' and payload->>'user_id' = '00000000-0000-0000-0000-0000000c0de1'),
+  'and its holder is told by email');
 
 -- ── Memoranda ────────────────────────────────────────────────────────────────
 insert into governance.partners (id, slug, name_en, kind, is_listed, description_en, status)

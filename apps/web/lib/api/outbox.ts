@@ -45,6 +45,7 @@ import {
   roleAssigned,
   roleEnding,
   rsvpConfirmed,
+  serviceLetterWritten,
   shiftReminder,
   submissionReceived,
   sundayPaper,
@@ -959,6 +960,22 @@ const handlers: Record<string, Handler> = {
     }
     if (waiting.length > 0) {
       throw new BroadcastPending(waiting.join(" "));
+    }
+  },
+  "membership.service_letter": async (admin, payload) => {
+    const [to, { data: letter }] = await Promise.all([
+      recipient(admin, payload.user_id),
+      admin
+        .schema("membership")
+        .from("service_letters")
+        .select("id, role_en, role_ar, revoked_at")
+        .eq("id", String(payload.letter_id))
+        .maybeSingle(),
+    ]);
+    if (to && letter && !letter.revoked_at) {
+      const role =
+        (to.lang === "ar" ? letter.role_ar : letter.role_en) ?? letter.role_en;
+      await send(to, serviceLetterWritten(to.lang, role, letter.id, appUrl()));
     }
   },
   // The Council decided an account from outside AUIB
