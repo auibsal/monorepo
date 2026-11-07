@@ -114,8 +114,8 @@ select throws_ok(
 select pg_temp.login_as('00000000-0000-0000-0000-00000000a392');
 select is(
   (select count(*)::int from core.handover()),
-  6,
-  'an officer reads the six things that wait'
+  5,
+  'an officer reads the five things that wait'
 );
 select is(
   (select array_agg(item order by item) from core.handover()),

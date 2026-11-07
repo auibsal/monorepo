@@ -1021,7 +1021,6 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
-      account_exists: { Args: { email: string }; Returns: boolean };
       admin_overview: { Args: Record<PropertyKey, never>; Returns: Json };
       apply_broadcast_unsubscribes: {
         Args: { emails: string[] };
@@ -2531,6 +2530,33 @@ export type Database = {
             referencedColumns: ["id"];
           },
         ];
+      };
+      president_absences: {
+        Row: {
+          created_at: string;
+          ends_on: string;
+          id: string;
+          note: string | null;
+          recorded_by: string | null;
+          starts_on: string;
+        };
+        Insert: {
+          created_at?: string;
+          ends_on: string;
+          id?: string;
+          note?: string | null;
+          recorded_by?: string | null;
+          starts_on: string;
+        };
+        Update: {
+          created_at?: string;
+          ends_on?: string;
+          id?: string;
+          note?: string | null;
+          recorded_by?: string | null;
+          starts_on?: string;
+        };
+        Relationships: [];
       };
       resolutions: {
         Row: {

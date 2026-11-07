@@ -126,8 +126,13 @@ export const runNotionSync = async (
   }
 
   // What the sync changed shows at once, not only after the outbox runs.
+  // Outside a request (a script or a test) there is no cache to refresh.
   for (const tag of ["events", "documents", "about"] as const) {
-    revalidateTag(tag, "max");
+    try {
+      revalidateTag(tag, "max");
+    } catch {
+      break;
+    }
   }
 
   const state: SyncState = {

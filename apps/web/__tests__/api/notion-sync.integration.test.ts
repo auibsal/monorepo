@@ -326,11 +326,14 @@ describe.skipIf(!enabled)("Notion sync", () => {
     expect(page.comments[0]).toContain("does not hold governance.manage");
   });
 
+  // Decisions §10: an event is published only with a lead and a place.
   const eventProps = (title: string) => ({
     Language: { select: { name: "English" } },
+    Owner: { people: [{ id: `n-lead-${stamp}`, object: "user" }] },
     Status: { select: { name: "Ready to publish" } },
     Summary: { rich_text: [{ text: { content: "An evening of poems." } }] },
     Title: { title: [{ text: { content: title } }] },
+    Venue: { rich_text: [{ text: { content: "Room 101" } }] },
     "Way in": { select: { name: "RSVP" } },
     When: { date: { end: null, start: "2031-03-04T18:00:00.000+03:00" } },
   });
