@@ -5,9 +5,38 @@ Every session starts here and continues from the first unticked item. The
 brief is `sal-platform-claude-code-prompt.md` (uploaded at the start of the
 first session); section numbers (§) refer to it.
 
-Branch: `claude/events-not-programs`.
+Branch: `claude/new-session-qosn60` (PR #229).
 
 
+## The owner's decisions of Nov 7, 2026 (one PR, #229)
+
+- [x] Retire charity, awards, placements, rotas, prompts, book votes,
+      event and cast hours, production certificates (migration 000000).
+- [x] Council of nine, classes, the Register and directory, first term
+      (000100); elections and meetings (000200); forms and guests (000300);
+      Tour pages and invitations (000400); events and off campus (000500);
+      Qirtas and the Prize (000600); documents and Qalam (000700); Hudhud's
+      removals (000800). pgTAP for each.
+- [x] Forms at /forms/<number>, F-45 added (its preamble is Claude's
+      wording, for the owner to review).
+- [x] Mutanabbi Prize page, Diwan admin and members' vote; Qalam roster.
+- [x] Guest sign-up; Tour page; Second Chapter on Partners; Next Stop at
+      /next-stop; "your account"; sustainability line.
+- [x] Hudhud: announcements; removal warnings a week ahead.
+- [x] Library re-sync code (`?documents=all`).
+- [x] Notion: Meetings Body options (General meeting, Annual Meeting,
+      Special meeting, Founding Meeting) added; F-45 in the Leadership
+      Handbook, both languages.
+- [ ] Notion: move any Meetings rows with Body "General Assembly" to
+      "General meeting", then remove that option (the sync reports them).
+- [ ] After merge and the owner's unpause: run the Library re-sync until
+      done; check every public page for retired names and codes; rename
+      events with retired names in Notion.
+- [ ] Import the spring 2026 Tour and load the invitations (173 rows; 15
+      plain; 4 greeted "Hello,"; 62 import rows without email stay
+      private). Send only when the owner says go.
+- [ ] Remove `charity` from the Data API's exposed schemas, then drop the
+      empty schema in a later migration.
 
 ## One kind of event, with add-ons; one layout rule (owner, Nov 5, 2026, evening)
 

@@ -12,11 +12,11 @@ read-only view.
 | Written in Notion (the only home) | Kept on the site (the only home) |
 | --- | --- |
 | Projects, tasks, meetings: agendas, working notes and the minutes' text | Members, verification, roles and the officers |
-| Events (Publishing, Events), published from there: every event is one kind, Council and General Assembly meetings, the AGM and Launch Night among them | RSVPs, check-in, the waitlist, and each event's add-ons (needs, shifts, links, prompts, a book vote, Second Chapter's collection) |
+| Events (Publishing, Events), published from there: every event is one kind, Council, general and Annual Meetings among them | RSVPs, check-in, the waitlist, and each event's standard parts (needs, shifts on the event, the partner checklist, links) |
 | The Programs database: kept for history, no longer published (owner, Nov 5, 2026: standard events) | Elections and ballots |
 | The Society's documents and website policies (Publishing, Documents), published from there | Each document's adoption record: status, version, adopted on, the vote |
 | The content calendar (news posts and Qirtas pieces start there) | Qirtas submissions and blind review |
-| The handbook and the internal documents | The charity ledger, certificates, service hours |
+| The handbook and the internal documents | Certificates, staff hours, Qalam's roster, the Prize's shortlists and votes |
 | | Adopted minutes (the official copy, locked) |
 
 **From the site (read-only)** holds the copies the platform writes for

@@ -218,6 +218,72 @@ any schema change. Integration tests run against a local stack with
 
 ## SAL rules
 
+- **The owner's decisions of Nov 7, 2026** (`claude/decisions.md`, which
+  wins over every older bullet below where they disagree; migrations
+  `20261107000000`–`20261107000800`).
+  - **Retired, with their tables, routes and pages:** charity
+    collections and the ledger (a Notion record now; the `charity` schema
+    is kept empty until it leaves the Data API's exposed schemas), the
+    Qirtas Awards (names and round), the Apprenticeship and First Ink
+    placements, rotas, prompts, book votes, event add-ons for one kind of
+    event, Launch Night, playbills, service hours from events and casts,
+    and production certificates. Retired names and the codes SAL-POL,
+    HBK, STR, PRP, BRD, PLT, QRT, CMP and OPS are refused by
+    `scripts/check-language.ts`.
+  - **Events.** Every event is made in Notion's Events database and
+    copied to the site, with the standard parts only: RSVP and check-in,
+    needs, volunteer shifts (on the event, no rota, no hours), the partner
+    checklist and links. Off campus is a standard field: an off-campus
+    event publishes only once the General Secretary records Student
+    Life's written approval, the date and who gave it
+    (`events.record_approval`); participants sign the trip consent, F-45,
+    at `/forms/F-45?event=<slug>`.
+  - **The Council of nine** (three officers, six directors), the classes
+    Member, Associate Member and Honorary Member, a first term on
+    probation then confirmed (`confirmAssignment`), Student Life's GPA
+    check for candidates and appointees (`record_gpa_check`), meetings by
+    body (Council, general, Annual, special, Founding; `meetingBodies`),
+    the members' directory (opt in, `in_directory`).
+  - **Forms** are at `/forms/<number>` (`apps/web/app/[locale]/(account)/forms/[number]`),
+    the site's twelve in `@repo/sal-data/forms`, each signed by typing a
+    name and kept as the signed copy; staff forms are Notion templates.
+  - **Guests** sign up at `/sign-up/guest` (`outside: { guest: true }`,
+    `private.sign_up_allowed`) to book open events; never members.
+  - **Qirtas.** Types are the editors' (`type_label`), six sections;
+    bylines are a Register name, a pen name or "Anonymous"; unpublished
+    submissions are deleted twelve months after the decision (the
+    keep-alive cron). Six Words are not part of Qirtas: they are Tour
+    pages, private by default, which the writer shows on their profile or
+    the Tour's page (`programmes.six_words.visibility`,
+    `profile_six_words`). Next Stop is the Director of Media's, at
+    `/next-stop`.
+  - **The Mutanabbi Prize** (`/qirtas/prize`; the Diwan's
+    `/diwan/qirtas/prize`): Qirtas and Qalam categories, the outside
+    judge's score 70% and the members' vote 30%
+    (`journal.prize_results`), voting on Society while a round is open
+    (`journal.open_prize_round`), the count checked by the
+    Editor-in-Chief and the General Secretary before publishing.
+  - **Qalam**'s roster is staff only (`/diwan/qirtas/qalam`,
+    `qalam.manage`), never in Notion, deleted three years on.
+  - **The Tour** (Director of Membership): no paper; writers join by QR
+    code and their photographed page is attached to their account. The
+    spring 2026 import and the one-time invitations
+    (`membership.invitations`, sent only when the President says go,
+    deleted thirty days later); rows with no email stay private and
+    editors-only until a writer claims them through Help Desk.
+  - **Hudhud** posts events and news to the Announcements topic and warns
+    anyone in the members' group without a linked member's account,
+    removing them a week later (`features/group/removals.ts`; admins and
+    role holders exempt).
+  - **Copy.** Chicago style; Modern Standard Arabic written by Claude
+    with no native-review gate; curly quotes and apostrophes; "your
+    account" («حسابك») for the members' pages; the footer and every email
+    carry the sustainability line. Document codes GOV, EXB, EVT, MEM, PTN,
+    MED, ART, EDT; SAL-MED-02 is the brand.
+  - **The Library re-sync** (`/api/cron/notion-sync?documents=all`)
+    republishes every document row, Arabic editions by code, and retires
+    rows of retired families.
+
 - **RLS first.** Postgres Row Level Security is the security boundary for
   every read and write. Every table has RLS enabled in the migration that
   creates it, and every policy has a pgTAP test. CI fails when a table lacks

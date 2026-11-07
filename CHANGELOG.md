@@ -6,6 +6,23 @@ own versions in the Library.
 
 ## Unreleased
 
+- The owner's decisions of Nov 7, 2026: the Council of nine; Member,
+  Associate Member and Honorary Member; a first term on probation; GPA
+  checks through Student Life; meetings by body; a members' directory.
+- Retired: charity collections, the Qirtas Awards, the Apprenticeship and
+  First Ink, rotas, prompts, book votes, Launch Night and playbills.
+- Forms are filled and signed on one page each, `/forms/<number>`; the
+  trip consent is F-45.
+- The Mutanabbi Prize, with its members' vote, and Qalam's roster in the
+  Diwan.
+- Guest accounts to book open events.
+- Six Words are Tour pages each writer shows or keeps private; the spring
+  2026 Tour's pages and the one-time invitations.
+- Next Stop moves to /next-stop; the members' pages are "your account".
+- Hudhud warns and then removes people in the members' group who haven't
+  joined.
+- The Library re-syncs every document from Notion under the new codes.
+
 - Every event is one kind: council meetings, the AGM and Launch Night are
   made in What's on like any other. An event takes the add-ons it needs
   (off campus with Student Life's approval, a partner, needs, shifts,
