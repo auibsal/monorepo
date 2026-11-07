@@ -1560,8 +1560,7 @@
         },
         "resolutions": {
           "new": "New resolution",
-          "code": "Code (R-2026-01)",
-          "codeError": "Use the form R-YYYY-NN, for example R-2026-01.",
+          "code": "Number",
           "titleField": "Title",
           "text": "Text",
           "votes": "Votes",
@@ -1572,7 +1571,9 @@
           "back": "The meeting",
           "missing": "This resolution or its meeting is not here",
           "title": "Resolutions of this meeting",
-          "none": "No resolutions recorded for this meeting."
+          "none": "No resolutions recorded for this meeting.",
+          "numbered": "Resolution {code}.",
+          "numberOnAdoption": "The site numbers the resolution (RES-year-number) once it is adopted; failed motions are recorded only in the minutes."
         },
         "elections": {
           "flagOff": "Online elections are off (Settings → Feature flags).",
@@ -2883,7 +2884,11 @@
           "design": "Design system",
           "applications": "Applications",
           "agreements": "Memoranda",
-          "disclosures": "Disclosures"
+          "disclosures": "Disclosures",
+          "membership": "Membership",
+          "partnerships": "Partnerships",
+          "media": "Media",
+          "council": "The Council"
         },
         "council": "The Council",
         "media": "Media",

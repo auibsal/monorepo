@@ -454,6 +454,24 @@ export type Database = {
         };
         Relationships: [];
       };
+      code_counters: {
+        Row: {
+          last: number;
+          prefix: string;
+          year: number;
+        };
+        Insert: {
+          last?: number;
+          prefix: string;
+          year: number;
+        };
+        Update: {
+          last?: number;
+          prefix?: string;
+          year?: number;
+        };
+        Relationships: [];
+      };
       external_events: {
         Row: {
           all_day: boolean;
@@ -2585,7 +2603,7 @@ export type Database = {
         Row: {
           adopted_on: string | null;
           body: string;
-          code: string;
+          code: string | null;
           created_at: string;
           created_by: string | null;
           id: string;
@@ -2603,7 +2621,7 @@ export type Database = {
         Insert: {
           adopted_on?: string | null;
           body?: string;
-          code: string;
+          code?: string | null;
           created_at?: string;
           created_by?: string | null;
           id?: string;
@@ -2621,7 +2639,7 @@ export type Database = {
         Update: {
           adopted_on?: string | null;
           body?: string;
-          code?: string;
+          code?: string | null;
           created_at?: string;
           created_by?: string | null;
           id?: string;
@@ -5070,6 +5088,7 @@ export type Database = {
           lang: string;
           period_from: string;
           period_to: string | null;
+          reference: string | null;
           revoke_reason: string | null;
           revoked_at: string | null;
           role_ar: string | null;
@@ -5088,6 +5107,7 @@ export type Database = {
           lang?: string;
           period_from: string;
           period_to?: string | null;
+          reference?: string | null;
           revoke_reason?: string | null;
           revoked_at?: string | null;
           role_ar?: string | null;
@@ -5106,6 +5126,7 @@ export type Database = {
           lang?: string;
           period_from?: string;
           period_to?: string | null;
+          reference?: string | null;
           revoke_reason?: string | null;
           revoked_at?: string | null;
           role_ar?: string | null;
@@ -6247,6 +6268,7 @@ export type Database = {
           page_ref: string | null;
           publishable: boolean;
           recorded_by: string | null;
+          reference: string | null;
           show_name: boolean;
           station: string | null;
           text: string;
@@ -6270,6 +6292,7 @@ export type Database = {
           page_ref?: string | null;
           publishable?: boolean;
           recorded_by?: string | null;
+          reference?: string | null;
           show_name?: boolean;
           station?: string | null;
           text: string;
@@ -6293,6 +6316,7 @@ export type Database = {
           page_ref?: string | null;
           publishable?: boolean;
           recorded_by?: string | null;
+          reference?: string | null;
           show_name?: boolean;
           station?: string | null;
           text?: string;

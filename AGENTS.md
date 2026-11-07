@@ -263,6 +263,13 @@ any schema change. Integration tests run against a local stack with
   (`membership.service_letters`, F-05) with a verification code. Every
   letter (F-03, F-05, F-30, F-32, F-33, F-34, F-42) is one American
   business letter template.
+- **Numbers and codes** (decisions §6): one five-digit series for members
+  and guests (the card); CERT-, LTR-, RES-, MOU- and
+  TOUR-<year>-<three digits>, each given by the site from
+  `private.next_code` (gapless, `core.code_counters`) when the record is
+  issued: a certificate when both sign, a letter when written, a
+  resolution when adopted, a memorandum when the President countersigns.
+  Verification codes are random and separate. Nobody types a number.
 - **Forms** are at `/forms/<number>` on one standard page, signed in the
   signer's platform name and kept as the signed copy; staff forms are
   Notion templates. The forms register in SAL-EXB-01 is the one source of

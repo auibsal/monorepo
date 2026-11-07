@@ -302,6 +302,7 @@ export const LetterStory: Story = {
       foot="hello@auibsal.org · auibsal.org"
       greeting="Dear Ms. Hassan:"
       recipient={["Lina Hassan", "American University of Iraq – Baghdad"]}
+      reference="LTR-2026-001"
       signer={{ name: "Yaqoob Ghassan Al-Azzawi", role: "General Secretary" }}
       subject="Service letter"
       verify={{
@@ -334,6 +335,7 @@ export const LetterArabic: Story = {
         greeting="السيدة لينا حسن المحترمة،"
         locale="ar"
         recipient={["لينا حسن", "الجامعة الأمريكية في العراق – بغداد"]}
+        reference="LTR-2026-001"
         signer={{ name: "يعقوب غسان العزاوي", role: "الأمين العام" }}
         subject="رسالة خدمة"
         verify={{
@@ -417,7 +419,7 @@ export const CertificateStory: Story = {
       seal={{
         code: "SAL-EDT · Mutanabbi Prize",
         qrLabel: "Scan to check this certificate",
-        serial: "SAL-2028-001",
+        serial: "CERT-2028-001",
         verifyUrl: "https://auibsal.org/verify/a1b2c3d4e5f6",
       }}
       signers={[
@@ -444,7 +446,7 @@ export const CertificateArabic: Story = {
       seal={{
         code: "SAL-EDT · قلم",
         qrLabel: "امسح الرمز للتحقق من هذه الشهادة",
-        serial: "SAL-2028-002",
+        serial: "CERT-2028-002",
         verifyUrl: "https://auibsal.org/ar/verify/b2c3d4e5f6a1",
       }}
       signers={[

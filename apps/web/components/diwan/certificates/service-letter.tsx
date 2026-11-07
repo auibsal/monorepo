@@ -81,6 +81,7 @@ export const ServiceLetter = () => {
           greeting={copy.greeting}
           locale={lang}
           recipient={[]}
+          reference={row.reference ?? undefined}
           signer={{
             name: (ar ? row.signer_ar : null) ?? row.signer_en ?? "",
             role: copy.signerRole,

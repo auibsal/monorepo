@@ -100,11 +100,11 @@ describe("recognition", () => {
       linkedInUrl({
         issuedAt: "2026-10-09T10:00:00Z",
         name: "The Mutanabbi Prize",
-        serial: "SAL-2026-001",
+        serial: "CERT-2026-001",
         url,
       })
     );
-    expect(linkedIn.searchParams.get("certId")).toBe("SAL-2026-001");
+    expect(linkedIn.searchParams.get("certId")).toBe("CERT-2026-001");
     expect(linkedIn.searchParams.get("certUrl")).toBe(url);
     expect(linkedIn.searchParams.get("issueMonth")).toBe("10");
   });
