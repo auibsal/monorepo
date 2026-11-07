@@ -127,9 +127,7 @@ test("a whole address pasted and submitted at once signs up the right address", 
   await page
     .getByLabel("Your AUIB email")
     .fill(`paste.${Date.now()}@auib.edu.iq`);
-  await page
-    .getByLabel("Password", { exact: true })
-    .fill("a long enough passphrase");
+  await page.getByLabel("Password", { exact: true }).fill(PASSWORD);
   await page.getByLabel("Password", { exact: true }).press("Enter");
   const status = page.getByRole("status").first();
   await expect(status).toContainText("@auib.edu.iq");
@@ -139,14 +137,18 @@ test("a whole address pasted and submitted at once signs up the right address", 
   ).toBeDisabled();
 });
 
-test("signing in with an address that has no account says so", async ({
+// A6: the site never says whether an address has an account.
+test("signing in with an address that has no account says only that it doesn't match", async ({
   page,
 }) => {
   await page.goto(`${urls.web}/sign-in`);
   await page.getByLabel("Email").fill(`nobody-${Date.now()}@auib.edu.iq`);
   await page.getByLabel("Password").fill(PASSWORD);
   await page.getByRole("button", { exact: true, name: "Sign in" }).click();
-  await expect(page.getByText("No account uses this address.")).toBeVisible();
+  await expect(
+    page.getByText("That email and password don’t match.")
+  ).toBeVisible();
+  await expect(page.getByText("No account uses this address.")).toHaveCount(0);
 });
 
 test("an AUIB address signs in by password, with a link one click away", async ({
