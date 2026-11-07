@@ -153,7 +153,7 @@ export const IssueEditor = () => {
     }
   }, [existing.data]);
   const status = (existing.data?.status ?? "draft") as Status;
-  // Launch Night (Nov 4, 2026): picked from the events still to come, and
+  // The Edition's launch event (Nov 4, 2026): picked from the events still to come, and
   // the one already chosen.
   const launchEvents = useQuery({
     queryFn: async () =>

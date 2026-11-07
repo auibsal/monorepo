@@ -75,68 +75,86 @@ insert into core.semesters (code, name_en, name_ar, starts_on, ends_on) values
 -- first-100 rule back on themselves.
 update core.settings set value = '0' where key = 'membership.founding_voters';
 -- </preamble>
-select plan(21);
+select plan(20);
 
--- a1 a member, a2 the President, a3 the Vice President, a4 the Faculty
--- Advisor, a5 a program lead (events.manage for one program), a6 the
--- General Secretary.
+-- Forms signed on the site (owner, Nov 7, 2026): /forms/<number>, a typed
+-- name for a signature, the signed copy keeping the signer, the time and the
+-- form's version. a1 a member, a2 the President, a3 the Vice President, a4
+-- the Faculty Advisor, a6 the General Secretary.
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a1', 'member-fm@auib.edu.iq', 'A Member');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a2', 'president-fm@auib.edu.iq', 'The President');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a3', 'vp-fm@auib.edu.iq', 'The VP');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a4', 'advisor-fm@auib.edu.iq', 'The Advisor');
-select pg_temp.make_user('00000000-0000-0000-0000-0000000000a5', 'lead-fm@auib.edu.iq', 'Program Lead');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a6', 'gs-fm@auib.edu.iq', 'The GS');
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000000a2', 'president');
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000000a3', 'vice_president');
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000000a4', 'faculty_advisor');
-select pg_temp.grant_role('00000000-0000-0000-0000-0000000000a5', 'programme_lead', 'programme',
-  (select id from core.programmes order by sort limit 1));
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000000a6', 'general_secretary');
 insert into membership.memberships (user_id) values ('00000000-0000-0000-0000-0000000000a1') on conflict do nothing;
 
 create temp table ids (name text primary key, id uuid);
 grant all on ids to public;
 
--- ── Who may fill in what ──
+select is(
+  (select array_agg(code order by sort) from governance.form_types where filled = 'site'),
+  array['F-06', 'F-10', 'F-11', 'F-15', 'F-17', 'F-21', 'F-26', 'F-37', 'F-38', 'F-39', 'F-44', 'F-45'],
+  'The forms signed on the site'
+);
+select is(
+  (select filled from governance.form_types where key = 'f22'),
+  'removed',
+  'F-22 is removed and never reused'
+);
+
+-- ── Who may sign what ──
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a1');
 select lives_ok(
-  $$ insert into ids select 'f09', governance.save_form('f09', '{"motion":"Hold the AGM in the library"}') $$,
-  'A member proposes a General Assembly motion (F-09)'
+  $$ insert into ids select 'f10', governance.sign_form('f10', '{"title":"Hold the Annual Meeting in the library"}', 'A Member') $$,
+  'A member proposes a motion for a members’ meeting (F-10)'
 );
-select is((select count(*)::int from governance.form_submissions), 1, 'and reads their own motion');
-select throws_ok(
-  $$ select governance.save_form('f03', '{"first_choice":"Events Coordinator"}') $$,
-  '42501', 'not_allowed',
-  'Retired forms take no new submissions (F-03 is the GetInvolved now)'
+select ok(
+  (select signer_name = 'A Member' and signed_at is not null and form_version is not null
+   from governance.form_submissions where id = (select id from ids where name = 'f10')),
+  'The signed copy keeps the signer, the time and the form’s version'
 );
 select throws_ok(
-  $$ select governance.save_form('f09', '{}', null, true, true) $$,
+  $$ select governance.sign_form('f11', '{"title":"A walk"}', ' ') $$,
+  '23514', 'signature_required',
+  'A form is signed by typing a name'
+);
+select throws_ok(
+  $$ select governance.sign_form('f04', '{}', 'A Member') $$,
+  'P0002', 'unknown_form',
+  'A form kept elsewhere is not signed here'
+);
+select throws_ok(
+  $$ select governance.sign_form('f10', '{}', 'A Member', null, null, true) $$,
   '22023', 'anonymous_not_allowed',
   'Only concerns may be anonymous'
 );
 select throws_ok(
-  $$ select governance.save_form('f10', '{}', null, true, false, null, 'president') $$,
+  $$ select governance.sign_form('f11', '{}', 'A Member', null, null, false, 'president') $$,
   '22023', 'routing_only_for_concerns',
   'Routing is only for concerns'
 );
 select throws_ok(
   $$ insert into governance.form_submissions (form_key, submitted_by, data)
-     values ('f09', auth.uid(), '{}') $$,
+     values ('f10', auth.uid(), '{}') $$,
   '42501', null,
   'Nobody writes submissions directly'
 );
 
--- ── Concerns (F-20): anonymity and routing ──
-insert into ids select 'anon', governance.save_form('f20', '{"what":"Something at an event"}', null, true, true);
-insert into ids select 'about_vp', governance.save_form('f20', '{"what":"About the VP"}', null, true, false, null, 'vice_president');
-select is((select count(*)::int from governance.form_submissions where form_key = 'f20'), 1,
+-- ── Concerns (F-21): anonymity and routing ──
+insert into ids select 'anon', governance.sign_form('f21', '{"what":"Something at an event"}', '', null, null, true);
+insert into ids select 'about_vp', governance.sign_form('f21', '{"what":"About the VP"}', 'A Member', null, null, false, 'vice_president');
+select is((select count(*)::int from governance.form_submissions where form_key = 'f21'), 1,
   'An anonymous concern cannot be read back even by whoever sent it');
 select pg_temp.logout();
-select is((select submitted_by from governance.form_submissions where id = (select id from ids where name = 'anon')),
-  null, 'and no account is stored with it');
+select is((select array[submitted_by::text, signer_name] from governance.form_submissions where id = (select id from ids where name = 'anon')),
+  array[null, null]::text[], 'and no account or signature is stored with it');
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a3');
-select is((select count(*)::int from governance.form_submissions where form_key = 'f20'), 1,
+select is((select count(*)::int from governance.form_submissions where form_key = 'f21'), 1,
   'The Vice President receives concerns, but never one about the Vice President');
 select throws_ok(
   format($$ select governance.handle_form(%L, 'acknowledged') $$, (select id from ids where name = 'about_vp')),
@@ -144,57 +162,40 @@ select throws_ok(
   'nor handles it'
 );
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a2');
-select is((select count(*)::int from governance.form_submissions where form_key = 'f20'), 2,
+select is((select count(*)::int from governance.form_submissions where form_key = 'f21'), 2,
   'The President receives both');
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a4');
-select is((select count(*)::int from governance.form_submissions where form_key = 'f20'), 2,
+select is((select count(*)::int from governance.form_submissions where form_key = 'f21'), 2,
   'and so does the Faculty Advisor');
 
--- ── Incident reports (F-19) are retired: the officer on duty writes them up
--- in Notion's template, and past ones stay readable. ──
-select pg_temp.login_as('00000000-0000-0000-0000-0000000000a1');
-select throws_ok(
-  $$ select governance.save_form('f19', '{"what":"A fall on the stairs"}') $$,
-  '42501', 'not_allowed',
-  'No new incident reports are sent here'
-);
-
--- ── Drafts and handling ──
-select pg_temp.login_as('00000000-0000-0000-0000-0000000000a1');
-insert into ids select 'pitch', governance.save_form('f10', '{"name":"Poetry walk"}', null, false);
-select pg_temp.login_as('00000000-0000-0000-0000-0000000000a2');
-select is((select count(*)::int from governance.form_submissions where form_key = 'f10'), 0,
-  'Handlers never see drafts');
-select pg_temp.login_as('00000000-0000-0000-0000-0000000000a1');
-select lives_ok(
-  format($$ select governance.save_form('f10', '{"name":"Poetry walk","idea":"Read on the lawn."}', %L, true) $$,
-    (select id from ids where name = 'pitch')),
-  'A member submits their draft pitch (F-10)'
-);
-select throws_ok(
-  format($$ select governance.save_form('f10', '{"name":"Changed"}', %L, true) $$, (select id from ids where name = 'pitch')),
-  '42501', 'not_allowed',
-  'and cannot change it once submitted'
-);
-select pg_temp.login_as('00000000-0000-0000-0000-0000000000a2');
-select lives_ok(
-  format($$ select governance.handle_form(%L, 'acknowledged', '{"received":"2026-10-09"}') $$, (select id from ids where name = 'pitch')),
-  'The handler acknowledges it'
-);
-select ok((select acknowledged_at is not null and office ->> 'received' = '2026-10-09'
-  from governance.form_submissions where id = (select id from ids where name = 'pitch')),
-  'with the time and the office-use boxes');
-select governance.handle_form((select id from ids where name = 'pitch'), 'closed');
-select ok((select closed_at is not null from governance.form_submissions where id = (select id from ids where name = 'pitch')),
-  'and closes it');
-select ok((select waiting >= 1 from governance.form_queue() where form_key = 'f20'),
-  'The queue counts what is waiting');
-
+-- ── Anyone, signed in or not, may sign a form that needs no account ──
 select pg_temp.login_anon();
+select lives_ok(
+  $$ select governance.sign_form('f11', '{"title":"A walk on the river","idea":"Read on the bank."}', 'A Visitor', null, 'visitor@example.com') $$,
+  'A visitor pitches an event (F-11) and signs it'
+);
 select throws_ok(
-  $$ select governance.save_form('f20', '{}', null, true, true) $$,
-  '42501', null,
-  'Visitors who are not signed in cannot send forms'
+  $$ select governance.sign_form('f10', '{"title":"x"}', 'A Visitor') $$,
+  '42501', 'sign_in_required',
+  'but a motion needs an account'
+);
+
+-- ── Handling ──
+select pg_temp.login_as('00000000-0000-0000-0000-0000000000a2');
+select lives_ok(
+  format($$ select governance.handle_form(id, 'acknowledged', '{"received":"2026-11-09"}') from governance.form_submissions where form_key = 'f11' $$),
+  'The President acknowledges the pitch'
+);
+select ok((select acknowledged_at is not null and office ->> 'received' = '2026-11-09'
+  from governance.form_submissions where form_key = 'f11'),
+  'with the time and the office-use boxes');
+
+-- A trip consent (F-45) names a published trip.
+select pg_temp.login_as('00000000-0000-0000-0000-0000000000a1');
+select throws_ok(
+  $$ select governance.sign_form('f45', '{"agree":true}', 'A Member') $$,
+  '22023', 'not_a_trip',
+  'A trip consent names a published trip off campus'
 );
 
 select * from finish();

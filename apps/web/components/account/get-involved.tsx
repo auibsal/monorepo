@@ -12,15 +12,12 @@ import { useMyMembership } from "@/lib/diwan/queries";
 import { OpenPlaces } from "./open-places";
 
 /**
- * Get involved, the careers page (owner, Oct 31, 2026): every open place,
- * inside the Society and with its partners, for anyone to read: roles, the
- * Apprenticeship, First Ink, volunteering, places with partners and the
- * Company's auditions. Members get the board itself, where they reply
+ * Get involved (owner, Nov 7, 2026: open roles only), for anyone to read:
+ * team roles, event teams, Qalam mentors and the Company's auditions. Members get the board itself, where they reply
  * and sign up for shifts, with what matches their skills first.
  */
 export const GetInvolved = () => {
   const t = useTranslations("diwan.getInvolved");
-  const ta = useTranslations("diwan.apprenticeship");
   const { loading, user } = useAuth();
   const mine = useMyMembership();
 
@@ -51,11 +48,6 @@ export const GetInvolved = () => {
         </p>
       )}
       <ManageLinks diwan="/people/openings" />
-      <p className="type-body">
-        <Link className="link" href="/get-involved/apprenticeship">
-          {ta("learn")}
-        </Link>
-      </p>
       <OpenPlaces />
     </DiwanPage>
   );

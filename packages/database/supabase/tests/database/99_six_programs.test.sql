@@ -119,9 +119,9 @@ select is(
   'Open Pages on March 30 runs to 6:00 PM'
 );
 select is(
-  (select status from events.events where slug = 'book-circle-2027-04-09'),
-  'draft',
-  'Book Circle''s Friday on al-Mutanabbi Street waits for its time'
+  (select count(*)::int from events.events where slug = 'book-circle-2027-04-09'),
+  0,
+  'The April 9 trip, canceled in Notion, is gone (owner, Nov 7, 2026)'
 );
 
 select is(

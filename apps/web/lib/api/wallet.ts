@@ -53,7 +53,11 @@ const text = (value: string, locale: string) => ({
   defaultValue: { language: locale === "ar" ? "ar" : "en-US", value },
 });
 
-/** The member's pass: what the card's face shows, in their language. */
+/**
+ * The member's pass: the membership card's fields (owner, Nov 7, 2026: one
+ * design, the same fields everywhere): the name, the class, the member
+ * number, member since and the live QR, in the member's language.
+ */
 const passFor = (card: WalletCard) => {
   const base = origin();
   const ar = card.locale === "ar";
@@ -73,7 +77,7 @@ const passFor = (card: WalletCard) => {
     linksModuleData: {
       uris: [
         {
-          description: ar ? "العضوية" : "Membership",
+          description: ar ? "حسابك" : "Your account",
           id: "membership",
           uri: site(card.locale, "/membership"),
         },
@@ -98,7 +102,11 @@ const passFor = (card: WalletCard) => {
     state: "ACTIVE",
     subheader: text(card.tier, card.locale),
     textModulesData: [
-      { body: number, header: ar ? "الرقم" : "Number", id: "number" },
+      {
+        body: number,
+        header: ar ? "رقم العضوية" : "Member no.",
+        id: "number",
+      },
       ...(card.memberSince
         ? [
             {

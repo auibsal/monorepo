@@ -75,10 +75,10 @@ insert into core.semesters (code, name_en, name_ar, starts_on, ends_on) values
 update core.settings set value = '0' where key = 'membership.founding_voters';
 -- </preamble>
 
-select plan(4);
+select plan(5);
 
 insert into governance.minutes (id, body, meeting_on, title_en, text_en, status)
-values ('00000000-0000-0000-0000-0000000ee001', 'general_assembly', current_date, 'General Assembly', 'Minutes.', 'draft');
+values ('00000000-0000-0000-0000-0000000ee001', 'general', current_date, 'A general meeting', 'Minutes.', 'draft');
 
 select throws_ok(
   $$ insert into governance.resolutions (code, title_en, text_en, status, body)
@@ -89,11 +89,11 @@ select throws_ok(
 );
 
 insert into governance.resolutions (code, title_en, text_en, status, body, minutes_id)
-values ('R-2026-81', 'Of the assembly', 'Text.', 'draft', 'council', '00000000-0000-0000-0000-0000000ee001');
+values ('R-2026-81', 'Of the meeting', 'Text.', 'draft', 'council', '00000000-0000-0000-0000-0000000ee001');
 select is(
   (select body from governance.resolutions where code = 'R-2026-81'),
-  'general_assembly',
-  'A resolution takes the body of its meeting'
+  'general',
+  'A resolution takes the body of its meeting (a general meeting, owner, Nov 7, 2026)'
 );
 
 select throws_ok(
@@ -109,6 +109,13 @@ select ok(
     where lower(btrim(title_en)) = 'hey' and published_at is null
   ),
   'The test piece is gone'
+);
+
+select throws_ok(
+  $$ insert into governance.minutes (body, meeting_on, title_en, text_en, status)
+     values ('general_assembly', current_date, 'Old name', 'Minutes.', 'draft') $$,
+  '23514', null,
+  'The General Assembly is retired: meetings are council, general, annual, special or founding'
 );
 
 select * from finish();

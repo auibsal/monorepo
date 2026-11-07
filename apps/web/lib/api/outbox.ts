@@ -11,7 +11,6 @@ import {
   applicationReceived,
   applicationWaiting,
   auditionUpdate,
-  award,
   type Built,
   type Lang as CopyLang,
   callOpened,
@@ -26,12 +25,12 @@ import {
   eventReminder,
   type FailedJob,
   finalCheck,
+  invitation as joinInvitation,
   newsletterConfirm,
   partnerInvitation,
   personalEmailConfirm,
   pieceNote,
   piecePublished,
-  placementGiven,
   removalDone,
   removalReceived,
   removalRequested,
@@ -57,7 +56,7 @@ import {
 } from "@repo/email/templates/notice";
 import { journal } from "@repo/sal-data";
 import { revalidateTag } from "next/cache";
-import { stopToken } from "@/lib/api/email-stop";
+import { inviteStopToken, stopToken } from "@/lib/api/email-stop";
 import { api, origin, site } from "@/lib/api/urls";
 import { type CacheTag, cacheTags } from "@/lib/supabase";
 import type { Sticker } from "./bot/stickers";
@@ -718,32 +717,6 @@ const handlers: Record<string, Handler> = {
       await send(to, agreementReminder(to.lang, work, appUrl()));
     }
   },
-  "journal.award": async (admin, payload) => {
-    const { data: entry } = await admin
-      .schema("journal")
-      .from("award_entries")
-      .select(
-        "piece_id, award:awards(name_en, name_ar), piece:pieces(title_en, title_ar)"
-      )
-      .eq("id", String(payload.entry_id))
-      .maybeSingle();
-    const to = await recipient(admin, payload.user_id);
-    if (to && entry?.award && entry.piece) {
-      await send(
-        to,
-        award(
-          to.lang,
-          pieceTitle(entry.piece, to.lang),
-          {
-            name_ar: entry.award.name_ar ?? "",
-            name_en: entry.award.name_en,
-          },
-          payload.stage === "won" ? "won" : "shortlisted",
-          appUrl()
-        )
-      );
-    }
-  },
   "journal.call_opened": async (admin, payload) => {
     const [to, { data: call }] = await Promise.all([
       recipient(admin, payload.user_id),
@@ -858,20 +831,71 @@ const handlers: Record<string, Handler> = {
       admin
         .schema("membership")
         .from("certificates")
-        .select("id, role_en, role_ar, status")
+        .select("id, kind, prize_category, citation_en, citation_ar, status")
         .eq("id", String(payload.certificate_id))
         .maybeSingle(),
     ]);
-    if (to && certificate?.status === "issued") {
-      const role =
-        (to.lang === "ar" ? certificate.role_ar : certificate.role_en) ??
-        certificate.role_en ??
+    if (
+      to &&
+      certificate?.status === "issued" &&
+      certificate.kind === "prize"
+    ) {
+      const what =
+        (to.lang === "ar"
+          ? certificate.citation_ar
+          : certificate.citation_en) ??
+        certificate.citation_en ??
         "";
       await send(
         to,
-        certificateIssued(to.lang, role, certificate.id, appUrl())
+        certificateIssued(to.lang, what, certificate.id, appUrl())
       );
     }
+  },
+  // The one-time invitation to join (owner, Nov 7, 2026): to an address on
+  // the list, not yet an account. Its stop link takes the address off the
+  // list for good.
+  "membership.invitation": async (admin, payload) => {
+    const { data: row } = await admin
+      .schema("membership")
+      .from("invitations")
+      .select(
+        "email, first_name, kind, station, words, quote_words, pages, joined_at"
+      )
+      .eq("email", String(payload.email))
+      .maybeSingle();
+    if (!row || row.joined_at) {
+      return;
+    }
+    const lang: Lang = "en";
+    const token = inviteStopToken(row.email);
+    await send(
+      { email: row.email, lang },
+      joinInvitation(
+        lang,
+        {
+          first_name: row.first_name,
+          kind: row.kind === "tour" ? "tour" : "plain",
+          pages: row.pages,
+          station: row.station,
+          words: row.quote_words ? row.words : null,
+        },
+        `${webUrl()}${prefix(lang)}/join`
+      ),
+      {
+        footer: [
+          {
+            href: `${webUrl()}${prefix(lang)}/emails/stop?invite=${token}`,
+            link: "Stop",
+            text: "You get this once, because you signed up at the Society's table.",
+          },
+        ],
+        headers: {
+          "List-Unsubscribe": `<${api(`/email/stop?invite=${token}`)}>`,
+          "List-Unsubscribe-Post": "List-Unsubscribe=One-Click",
+        },
+      }
+    );
   },
   // The Council decided an account from outside AUIB
   // (membership.decide_verification).
@@ -1130,24 +1154,6 @@ const handlers: Record<string, Handler> = {
           appUrl()
         )
       );
-    }
-  },
-  "programmes.placement_given": async (admin, payload) => {
-    const [to, { data }] = await Promise.all([
-      recipient(admin, payload.user_id),
-      admin
-        .schema("programmes")
-        .from("placements")
-        .select("opening:openings(title_en, title_ar)")
-        .eq("id", String(payload.placement_id))
-        .maybeSingle(),
-    ]);
-    if (to && data?.opening) {
-      const place =
-        (to.lang === "ar" ? data.opening.title_ar : data.opening.title_en) ??
-        data.opening.title_en ??
-        "";
-      await send(to, placementGiven(to.lang, place, appUrl()));
     }
   },
   "programmes.removal_done": async (admin, payload) => {

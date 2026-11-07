@@ -1,0 +1,24 @@
+import { forms } from "@repo/sal-data";
+import { notFound } from "next/navigation";
+import { FillForm } from "@/components/diwan/forms/fill";
+
+interface PageProps {
+  readonly params: Promise<{ number: string }>;
+  readonly searchParams: Promise<{ event?: string }>;
+}
+
+/**
+ * A form, signed on the site: /forms/F-45 (owner, Nov 7, 2026). One page
+ * for every form signed here, for members, guests, parents and partners.
+ */
+const Page = async ({ params, searchParams }: PageProps) => {
+  const { number } = await params;
+  const { event } = await searchParams;
+  const key = forms.keyFromNumber(decodeURIComponent(number));
+  if (!forms.isFormKey(key)) {
+    notFound();
+  }
+  return <FillForm eventSlug={event ?? null} formKey={key} />;
+};
+
+export default Page;

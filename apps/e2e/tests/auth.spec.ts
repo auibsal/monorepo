@@ -41,24 +41,24 @@ test("sign up with an AUIB address, confirm by email, finish setup", async ({
   await expectAccessible(page);
   // The name in four parts, in English, then in Arabic.
   await page.getByLabel("Name", { exact: true }).fill("New");
-  await page.getByLabel("Father's name", { exact: true }).fill("Kareem");
-  await page.getByLabel("Grandfather's name").fill(grandfather);
+  await page.getByLabel("Father’s name", { exact: true }).fill("Kareem");
+  await page.getByLabel("Grandfather’s name").fill(grandfather);
   await page.getByLabel("Family name").fill("Member");
   await page.getByLabel("Family name").press("Enter");
 
   await expect(page.getByText("Step 2 of 5")).toBeVisible();
   await expect(page).toHaveURL(/\/welcome\/2(\?|$)/);
   await page.getByLabel("Name", { exact: true }).fill("عضو");
-  await page.getByLabel("Father's name", { exact: true }).fill("كريم");
+  await page.getByLabel("Father’s name", { exact: true }).fill("كريم");
   await page
-    .getByLabel("Grandfather's name")
+    .getByLabel("Grandfather’s name")
     .fill(
       `حسن${grandfather.slice(5).replace(/[a-j]/g, (c) => "ابتثجحخدذر"[c.charCodeAt(0) - 97])}`
     );
   await page.getByLabel("Family name").fill("جديد");
   // The browser's Back goes to the last screen, answers kept.
   await page.goBack();
-  await expect(page.getByLabel("Father's name", { exact: true })).toHaveValue(
+  await expect(page.getByLabel("Father’s name", { exact: true })).toHaveValue(
     "Kareem"
   );
   await page.getByRole("button", { name: "Continue" }).click();
@@ -73,7 +73,7 @@ test("sign up with an AUIB address, confirm by email, finish setup", async ({
   await expect(
     page.getByRole("heading", { name: "Happy to appear in event photos?" })
   ).toBeVisible();
-  await page.getByRole("button", { name: "Yes, that's fine" }).click();
+  await page.getByRole("button", { name: "Yes, that’s fine" }).click();
 
   await expect(
     page.getByRole("heading", { level: 1, name: "Welcome, New" })
@@ -188,12 +188,12 @@ test("a member with a name from before the four parts is asked for them at sign-
   // The first and last words are offered as the first and fourth parts.
   await expect(page.getByLabel("Name", { exact: true })).toHaveValue("E2E");
   await expect(page.getByLabel("Family name")).toHaveValue("Tester");
-  await page.getByLabel("Father's name", { exact: true }).fill("Test");
-  await page.getByLabel("Grandfather's name").fill("Auto");
+  await page.getByLabel("Father’s name", { exact: true }).fill("Test");
+  await page.getByLabel("Grandfather’s name").fill("Auto");
   await page.getByRole("button", { name: "Continue" }).click();
   await expect(page.getByLabel("Family name")).toHaveValue("تجريبي");
-  await page.getByLabel("Father's name", { exact: true }).fill("تجريبي");
-  await page.getByLabel("Grandfather's name").fill("آلي");
+  await page.getByLabel("Father’s name", { exact: true }).fill("تجريبي");
+  await page.getByLabel("Grandfather’s name").fill("آلي");
   await page.getByRole("button", { name: "Continue" }).click();
   await expect(page).toHaveURL(new RegExp(`${urls.web}/membership/?$`));
   await expect(page.getByText("E2E Tester").first()).toBeVisible();

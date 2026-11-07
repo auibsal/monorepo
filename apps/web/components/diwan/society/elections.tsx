@@ -126,9 +126,18 @@ const Nominate = ({ position }: { readonly position: Position }) => {
   const router = useRouter();
   const [notice, setNotice] = useState<string | null>(null);
   const nominate = useMutation({
-    mutationFn: async ({ ar, en }: { ar: string; en: string }) =>
+    mutationFn: async ({
+      ar,
+      consent,
+      en,
+    }: {
+      ar: string;
+      consent: boolean;
+      en: string;
+    }) =>
       unwrap(
         await supabase.schema("governance").rpc("nominate", {
+          gpa_consent: consent,
           position_id: position.id,
           statement_ar: ar || undefined,
           statement_en: en,
@@ -146,6 +155,7 @@ const Nominate = ({ position }: { readonly position: Position }) => {
     const data = new FormData(event.currentTarget);
     nominate.mutate({
       ar: String(data.get("ar") ?? "").trim(),
+      consent: data.get("gpa_consent") === "on",
       en: String(data.get("en") ?? "").trim(),
     });
   };
@@ -172,6 +182,21 @@ const Nominate = ({ position }: { readonly position: Position }) => {
           name="ar"
           rows={6}
         />
+      </div>
+      {/* Owner, Nov 7, 2026: Student Life confirms a GPA of 2.0 or more,
+          answering only "eligible" or "not eligible"; grades are never
+          stored. */}
+      <div className="flex items-start gap-2">
+        <input
+          className="mt-1 size-4 accent-accent"
+          id={`gpa-${position.id}`}
+          name="gpa_consent"
+          required
+          type="checkbox"
+        />
+        <Label className="font-normal" htmlFor={`gpa-${position.id}`}>
+          {t("gpaConsent")}
+        </Label>
       </div>
       <Button
         className="justify-self-start"

@@ -9,10 +9,10 @@
  * Arabic: tanween on the letter before the alif (ـًا, not ـاً), Latin
  * digits, the Iraqi month names the ar-IQ formatter uses, Arabic
  * punctuation (، ؛ ؟) and «» quotes, and Iraqi Arabic only in Hudhud.
- * English: American spelling (Chicago, with Merriam-Webster; owner, Nov
- * 6, 2026, so curly quotes are welcome in prose), "for example" over
- * "e.g.", the ellipsis character, no exclamation marks and no retired
- * names.
+ * English (owner, Nov 7, 2026: the Chicago Manual of Style for prose,
+ * sentence case for interface labels): American spelling, curly quotes and
+ * apostrophes, "for example" over "e.g.", the ellipsis character, no
+ * exclamation marks, no retired names and no retired document codes.
  */
 import { readFile } from "node:fs/promises";
 
@@ -54,6 +54,11 @@ const IRAQI =
   /[گچپ]|(^|[\s،.])(شلون|هسه|هسّه|ماكو|اكو|شكو|هواية|راح يـ|دا يـ|ليش|شنو)(?=$|[\s،.؟])/;
 
 const ENGLISH: Rule[] = [
+  // Chicago: curly quotes and apostrophes ("it’s", “a quote”).
+  {
+    pattern: /[A-Za-z]'[A-Za-z]|"/,
+    why: "curly quotes and apostrophes (’ “ ”)",
+  },
   { pattern: /\.\.\./, why: "the ellipsis character (…)" },
   { pattern: /\b(e\.g\.|i\.e\.)/, why: '"for example" or "that is"' },
   { pattern: /!/, why: "no exclamation marks" },
@@ -62,16 +67,17 @@ const ENGLISH: Rule[] = [
       /\b(colour|centre|programmes?\b|cancelled|cancelling|organis|behaviour|catalogue|travelled|judgement|favourite|honour|theatre|licence|recognis|apologis|labelled|modelling|enrolment|analyse)/i,
     why: "American spelling",
   },
+  // Owner, Nov 7, 2026 (decisions.md, "Retired names"): never use these.
   {
     pattern:
-      /\b(Waraq|Nexus|Qirtas Prizes?|Majlis|Book of Members|Book of Fellows|Charter Night|Callboard|Gallery Wall|Open Stage|Month in Qirtas|Green Room)\b/,
+      /\b(the Salon|Book Circle|Open Pages|Listening Room|Launch Night|[Oo]pen nights?|[Ss]tation days?|Candidates’ Reading|the Ribbon|[Ww]orst-poem contest|Apprenticeships?|First Ink|[Tt]rial term|General Assembly|AGM|Qirtas Awards?|(Tabari|Jahiz|Nazik|Wasiti|Ibn al-Haytham) Award|Qirtas Prizes|[Cc]hapbook|Fellows?|Fellowship|Life Members?|Majlis|Munazara|Mutanabbi Friday|Bad Poetry Night|Open Stage|Scratch Night|Motion Night|Mutanabbi Walk|Productions|Gallery Wall|Month in Qirtas|Side Quest|BusTalks|Waraq|Nexus|Book of (Members|Fellows)|Charter (Night|Day)|Director of (the Company|Letters|Stage and Arts|Programs)|Editor of Qirtas|(Deputy )?Treasurer|Green Room|AUIB SAL HQ|Callboard|Program Leads?|[Ss]ix programs|Standing Programs?|[Ff]lagships?|the Evenings|the Specials|[Ww]eekly evenings?|[Ff]our-week cycle|[Ee]very fourth week)\b/,
     why: "a retired name",
   },
-  // Owner, Nov 5, 2026: no programs, and the Council of six.
+  // Document codes (owner, Nov 7, 2026): GOV, EXB, EVT, MEM, PTN, MED, ART
+  // and EDT; the old families are retired everywhere.
   {
-    pattern:
-      /\b(Director of (Programs|Events|Partnerships|Membership)|Program Leads?|[Ss]ix programs|Standing Programs?|[Ff]lagships?|the Evenings|the Specials|[Ww]eekly evenings?|[Ff]our-week cycle|[Ee]very fourth week)\b/,
-    why: "a retired name",
+    pattern: /\bSAL-(POL|HBK|STR|PRP|BRD|PLT|QRT|CMP|OPS)-/,
+    why: "a retired document code",
   },
 ];
 

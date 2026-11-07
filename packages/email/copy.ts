@@ -5,8 +5,7 @@ import type { NoticeBlock, NoticeList, NoticeProps } from "./templates/notice";
 /**
  * The words of every platform email, in both languages. Each email goes
  * out in the member's language only (SAL-MED-02: one language per piece).
- * Arabic here was written for the platform (needs-native-review in
- * PROGRESS.md).
+ * Arabic here is Modern Standard Arabic, written for the platform.
  */
 export type Lang = "en" | "ar";
 
@@ -45,7 +44,7 @@ const when = (iso: string, l: Lang) =>
 /** A member's own page on the site (Membership, Qirtas, …). */
 const account = (base: string, l: Lang, path = "/membership") => ({
   href: `${base}${localizedPath(l, path)}`,
-  label: l === "ar" ? "افتح «العضوية»" : "Open Membership",
+  label: l === "ar" ? "افتح حسابك" : "Open your account",
 });
 
 /** A page in the Diwan, for officers. */
@@ -430,8 +429,8 @@ export const verificationDecided = (
             l === "ar" ? "تم التحقق من حسابك" : "Your account is verified",
           paragraphs: [
             l === "ar"
-              ? "راجعت الهيئة الإدارية لجمعية الفنون والآداب حسابك ووافقت عليه. أكمل إعداد حسابك، وستجد بطاقتك والفعاليات وكل ما في الجمعية في صفحة العضوية."
-              : "The Council of the AUIB Society of Arts and Letters has checked and approved your account. Finish setting up, and your card, the events and everything else are on your Membership page.",
+              ? "راجعت الهيئة الإدارية لجمعية الفنون والآداب حسابك ووافقت عليه. أكمل إعداد حسابك، وستجد بطاقتك والفعاليات وكل ما في الجمعية في «حسابك»."
+              : "The Council of the AUIB Society of Arts and Letters has checked and approved your account. Finish setting up, and your card, the events and everything else are in your account.",
           ],
         }
       : {
@@ -952,7 +951,10 @@ export const candidacyDecided = (
     };
   });
 
-/** A certificate, signed by both and issued. */
+/**
+ * A Mutanabbi Prize certificate, signed by both and issued (a Qalam
+ * student has no account: the Qalam lead hands theirs over).
+ */
 export const certificateIssued = (
   lang: Lang,
   what: string,
@@ -968,16 +970,19 @@ export const certificateIssued = (
     paragraphs: [
       ...(what ? [what] : []),
       l === "ar"
-        ? "وقّعها رئيس الجمعية والمستشار الأكاديمي. تجدها في «السجل»، ويمكن لأي أحد التحقق منها برمزها."
-        : "The President and the Faculty Advisor have signed it. It's on your Record, and anyone can check it with its code.",
+        ? "وقّعها رئيس التحرير ورئيس الجمعية. تجدها في «السجل»، ويمكن لأي أحد التحقق منها برمزها."
+        : "The Editor-in-Chief and the President have signed it. It’s on your Record, and anyone can check it with its code.",
     ],
   }));
 
+/** The register's numbers (SAL-EXB-01; owner, Nov 7, 2026). */
 const REQUEST_NAMES: Record<string, Record<Lang, string>> = {
-  f09: { ar: "مقترحك للجمعية العمومية", en: "your General Assembly motion" },
-  f10: { ar: "مقترح البرنامج", en: "your program pitch" },
-  f19: { ar: "ما رفعته من قلق", en: "your concern" },
-  f20: { ar: "ما رفعته من قلق", en: "your concern" },
+  f10: {
+    ar: "مقترحك لاجتماع الأعضاء",
+    en: "your motion for a members’ meeting",
+  },
+  f11: { ar: "مقترح الفعالية", en: "your event pitch" },
+  f21: { ar: "ما رفعته من قلق", en: "your concern" },
 };
 
 /** A concern, a motion or a pitch: taken up, then closed. */
@@ -1089,30 +1094,30 @@ const REPLY_LINES: Record<
   offered: {
     ar: {
       at: () => "",
-      body: "الدور لك إن أردته. ستتواصل معك «العضوية» لتبدأ.",
+      body: "الدور لك إن أردته. سيتواصل معك فريق العضوية لتبدأ.",
       heading: "عرض",
       soon: "",
     },
     en: {
       at: () => "",
-      body: "The role is yours if you'd like it. Membership will be in touch to get you started.",
+      body: "The role is yours if you'd like it. The Director of Membership will be in touch to get you started.",
       heading: "An offer",
       soon: "",
     },
   },
   talking: {
     ar: {
-      at: (time) => `تودّ «العضوية» الحديث معك عن هذا الدور في ${time}.`,
+      at: (time) => `يودّ فريق العضوية الحديث معك عن هذا الدور في ${time}.`,
       body: "إن لم يناسبك الموعد، فردّ على هذه الرسالة.",
       heading: "لنتحدث",
-      soon: "تودّ «العضوية» الحديث معك عن هذا الدور، وستتواصل معك لتحديد موعد.",
+      soon: "يودّ فريق العضوية الحديث معك عن هذا الدور، وسيتواصل معك لتحديد موعد.",
     },
     en: {
       at: (time) =>
-        `Membership would like to talk with you about this role on ${time}.`,
+        `The Director of Membership would like to talk with you about this role on ${time}.`,
       body: "If the time doesn't suit you, reply to this email.",
       heading: "Let's talk",
-      soon: "Membership would like to talk with you about this role and will be in touch to set a time.",
+      soon: "The Director of Membership would like to talk with you about this role and will be in touch to set a time.",
     },
   },
 };
@@ -1137,18 +1142,6 @@ export const replyUpdate = (
       ],
     };
   });
-
-/** A place given: an Apprenticeship, a First Ink place, a volunteer place. */
-export const placementGiven = (lang: Lang, place: string, app: string) =>
-  build(lang, (l) => ({
-    action: account(app, l, MY_CALENDAR),
-    heading: l === "ar" ? `لك مكان: ${place}` : `You have a place: ${place}`,
-    paragraphs: [
-      l === "ar"
-        ? "أُعطيت هذا المكان. مناوباته في «تقويمي»، وتُحسب ساعاته خدمةً في «السجل»."
-        : "You've been given this place. Its shifts are on My calendar, and its hours count as service on your Record.",
-    ],
-  }));
 
 export interface AuditionInfo {
   ends_at: string;
@@ -1327,8 +1320,8 @@ export const welcome = (lang: Lang, app: string) =>
       ],
       paragraphs: [
         l === "ar"
-          ? "أنت عضو الآن. بطاقتك الحيّة في صفحة «العضوية»: تُظهرها عند الباب، وتحمل امتيازات الشركاء."
-          : "You're a member now. Your live card is on Membership: show it at the door, and it carries our partners' perks.",
+          ? "أنت عضو الآن. بطاقتك الحيّة في «حسابك»: تُظهرها عند الباب، وتحمل امتيازات الشركاء."
+          : "You're a member now. Your live card is in your account: show it at the door, and it carries our partners' perks.",
       ],
     };
   });
@@ -1359,53 +1352,6 @@ export const shiftReminder = (lang: Lang, s: ShiftInfo, app: string) =>
         : "If you can no longer make it, ask for a swap on My calendar so someone can cover it.",
     ],
   }));
-
-const AWARD_LINES: Record<
-  "shortlisted" | "won",
-  (l: Lang, work: string, name: string) => [string, string]
-> = {
-  shortlisted: (l, work, name) =>
-    l === "ar"
-      ? [
-          `${work} في القائمة القصيرة لـ${name}`,
-          "مبارك. تُعلن الجوائز في الجمعية العمومية السنوية.",
-        ]
-      : [
-          `${work} is shortlisted for the ${name}`,
-          "Congratulations. The Awards are given at the Annual General Meeting.",
-        ],
-  won: (l, work, name) =>
-    l === "ar"
-      ? [
-          `فاز ${work} بـ${name}`,
-          "مبارك. تُعدّ الجمعية شهادتك، وتصلك رسالة حين تُوقَّع.",
-        ]
-      : [
-          `${work} wins the ${name}`,
-          "Congratulations. The Society is preparing your certificate, and you'll hear when it's signed.",
-        ],
-};
-
-/** The Qirtas Awards: shortlisted on the shortlist day, winning on the day. */
-export const award = (
-  lang: Lang,
-  work: string,
-  which: { name_ar: string; name_en: string },
-  stage: "shortlisted" | "won",
-  app: string
-) =>
-  build(lang, (l) => {
-    const name = pick(l, which.name_ar, which.name_en);
-    const [heading, body] = AWARD_LINES[stage](l, work, name);
-    return {
-      action: {
-        href: `${app}${localizedPath(l, "/qirtas/awards")}`,
-        label: l === "ar" ? "جوائز قرطاس" : "The Qirtas Awards",
-      },
-      heading,
-      paragraphs: [body],
-    };
-  });
 
 /** After an account is deleted: to the address it had. */
 export const accountDeleted = (lang: Lang) =>
@@ -1450,3 +1396,116 @@ export const repliesDigest = (lang: Lang, replies: ReplyLine[], app: string) =>
         : "Members who said they're interested. Set times to talk in Openings.",
     ],
   }));
+
+const END_PUNCTUATION = /[.!?…]$/;
+
+/** "Hello Lina," or, with no first name on the list, "Hello," alone. */
+const greeting = (l: Lang, firstName: string | null) => {
+  const name = firstName?.trim();
+  if (l === "ar") {
+    return name ? `مرحبًا ${name}،` : "مرحبًا،";
+  }
+  return name ? `Hello ${name},` : "Hello,";
+};
+
+/** What the writer typed, quoted, or only where they sat. */
+const typedLine = (l: Lang, station: string, words: string | undefined) => {
+  // Chicago: the period goes inside the quotation marks, once.
+  const quoted = words && END_PUNCTUATION.test(words) ? words : `${words}.`;
+  if (l === "ar") {
+    return words
+      ? `في شباط الماضي جلستَ إلى آلة الجمعية الكاتبة في ${station} وكتبت: «${words}». احتفظنا بصفحتك.`
+      : `في شباط الماضي جلستَ إلى آلة الجمعية الكاتبة في ${station}. احتفظنا بصفحتك.`;
+  }
+  return words
+    ? `Last February you sat down at the Society’s typewriter at the ${station} and typed: “${quoted}” We kept your page.`
+    : `Last February you sat down at the Society’s typewriter at the ${station}. We kept your page.`;
+};
+
+/** The plain invitation: no page, no six words, the same signature. */
+const plainInvitation = (
+  l: Lang,
+  hello: string,
+  signature: string,
+  join: string
+): Copy => ({
+  action: {
+    fallback: true,
+    href: join,
+    label: l === "ar" ? "انضم إلى الجمعية" : "Join the Society",
+  },
+  heading:
+    l === "ar"
+      ? "انضم إلى جمعية الفنون والآداب"
+      : "Join the AUIB Society of Arts and Letters",
+  paragraphs: [
+    hello,
+    l === "ar"
+      ? "ندعوك إلى الانضمام إلى جمعية الفنون والآداب في الجامعة الأمريكية في العراق – بغداد. انضم عبر auibsal.org/join بهذا البريد. إن لم ترغب في ذلك فتجاهل هذه الرسالة؛ لن نكتب إليك مرة أخرى."
+      : "We’d like to invite you to join the AUIB Society of Arts and Letters. Join at auibsal.org/join with this email. If you’d rather not, just ignore this email; we won’t write again.",
+    signature,
+  ],
+});
+
+export interface Invitation {
+  /** Empty when the list has no first name: then "Hello," alone. */
+  first_name: string | null;
+  kind: "tour" | "plain";
+  /** Two pages, one writer ("You typed two"). */
+  pages: number;
+  station: string | null;
+  /** Quoted only when the writer's words may be quoted ("a / b" for two). */
+  words: string | null;
+}
+
+/**
+ * The one-time invitation to join (owner, Nov 7, 2026): sent once, on the
+ * President's go, from hello@auibsal.org, with a stop link. A Typewriter
+ * Tour writer hears about their page (quoting their words only when they
+ * may be quoted); everyone else, the fall fair's sign-ups and the writers
+ * with no page on record, gets a plain invitation, without "We kept your
+ * page" or any six words.
+ */
+export const invitation = (lang: Lang, invite: Invitation, join: string) =>
+  build(lang, (l) => {
+    const hello = greeting(l, invite.first_name);
+    const signature =
+      l === "ar" ? "جمعية الفنون والآداب" : "AUIB Society of Arts and Letters";
+    if (invite.kind === "plain") {
+      return plainInvitation(l, hello, signature, join);
+    }
+    const station =
+      invite.station?.trim() || (l === "ar" ? "الجامعة" : "campus");
+    const typed = typedLine(l, station, invite.words?.trim());
+    const two =
+      invite.pages > 1
+        ? [
+            l === "ar"
+              ? "كتبتَ صفحتين، وكلتاهما تذهب إلى ملفك."
+              : "You typed two; both go on your profile.",
+          ]
+        : [];
+    return {
+      action: {
+        fallback: true,
+        href: join,
+        label: l === "ar" ? "انضم إلى الجمعية" : "Join the Society",
+      },
+      heading:
+        l === "ar"
+          ? "كلماتك الست من جولة الآلة الكاتبة"
+          : "Your six words from the Typewriter Tour",
+      paragraphs: [
+        hello,
+        typed,
+        ...two,
+        l === "ar"
+          ? "إنها لك. انضم إلى الجمعية عبر auibsal.org/join بهذا البريد، فتُضاف صفحتك إلى حسابك. تبقى خاصة حتى تختار في حسابك هل تظهر أيضًا في ملفك أو في صفحة الجولة. إن لم ترغب في ذلك فتجاهل هذه الرسالة؛ لن نعرض صفحتك في أي مكان ولن نكتب إليك مرة أخرى."
+          : "It’s yours to claim. Join the Society at auibsal.org/join with this email, and your page is added to your account. It stays private until you choose, in your account, whether it also appears on your profile or on the Tour’s page. If you’d rather not, just ignore this email; we won’t show your page anywhere or write again.",
+        l === "ar"
+          ? "هل تريد الورقة الأصلية؟ استلمها من طاولة العضوية في الجمعية هذا الفصل؛ الصفحات التي لا تُستلم تُتلف في نهاية الفصل."
+          : "Would you like the original sheet? Pick it up at the Society’s membership table this term; pages not collected are shredded at the end of the term.",
+        signature,
+      ],
+    };
+  });

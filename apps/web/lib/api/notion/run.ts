@@ -67,7 +67,10 @@ const steps: [
   ["journal", (ctx) => mirrorJournal(ctx)],
   ["programs", (ctx) => publishPrograms(ctx)],
   ["publishing", (ctx) => publishWaiting(ctx)],
-  ["documents", (ctx) => publishDocuments(ctx)],
+  [
+    "documents",
+    (ctx) => publishDocuments(ctx, { all: ctx.resyncDocuments === true }),
+  ],
   ["adoption", (ctx) => syncAdoptionRecords(ctx)],
   ["minutes", (ctx) => sendMinutesToDiwan(ctx)],
   ["diwan items", (ctx) => adoptDiwanItems(ctx)],
@@ -77,7 +80,8 @@ const steps: [
 export const runNotionSync = async (
   notion: Notion | null = env.NOTION_TOKEN
     ? createNotion(env.NOTION_TOKEN)
-    : null
+    : null,
+  { resyncDocuments = false }: { resyncDocuments?: boolean } = {}
 ): Promise<SyncState | { skipped: string }> => {
   if (!notion) {
     return { skipped: "NOTION_TOKEN is not set" };
@@ -96,6 +100,7 @@ export const runNotionSync = async (
     deadline: started + 45_000,
     notion,
     problems: [],
+    resyncDocuments,
     sources,
     webUrl: origin(),
   };

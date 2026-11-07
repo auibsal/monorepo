@@ -22,55 +22,52 @@ import { EmptyLine, ErrorState, SectionSpinner } from "../states";
 type NoticeKey = "signedUp" | "gaveBack" | "full" | "notVerified" | "failed";
 
 /**
- * Get involved (owner, 2026-10-25; "Get involved"): roles a program needs
- * filled, shifts on the rotas and auditions, on one board, with what
- * matches the member's skills first. The hours given count toward the
- * service record and certificates.
+ * Get involved (owner, Nov 7, 2026: open roles only): team roles, event
+ * teams, Qalam mentors and auditions, then the volunteer shifts on coming
+ * events, with what matches the member's skills first. Shifts live only on
+ * an event and log no hours.
  *
- * Rotas with their upcoming shifts. Members sign up through
- * programmes.sign_up_for_shift (it locks the shift, so it can't overfill)
- * and give a shift back by canceling their own sign-up (RLS).
+ * Members sign up through programmes.sign_up_for_shift (it locks the shift,
+ * so it can't overfill) and give a shift back by canceling their own
+ * sign-up (RLS).
  */
-const useRotas = () => {
+const useShifts = () => {
   const { supabase } = useAuth();
   return useQuery({
     queryFn: async () => {
       const now = new Date().toISOString();
-      const [rotas, programmeNames, places] = await Promise.all([
+      const [shifts, places] = await Promise.all([
         supabase
           .schema("programmes")
-          .from("rotas")
+          .from("shifts")
           .select(
-            "id, programme_id, title_en, title_ar, shifts(id, role_en, role_ar, location_en, location_ar, starts_at, ends_at, capacity, skills)"
+            "id, event_id, role_en, role_ar, location_en, location_ar, starts_at, ends_at, capacity, skills"
           )
-          .gte("shifts.ends_at", now)
-          .order("starts_at", { ascending: true, referencedTable: "shifts" }),
-        supabase
-          .schema("core")
-          .from("programmes")
-          .select("id, name_en, name_ar"),
+          .gte("ends_at", now)
+          .order("starts_at"),
         supabase.schema("programmes").rpc("shift_places"),
       ]);
+      const rows = unwrap(shifts) ?? [];
+      const events = rows.length
+        ? (unwrap(
+            await supabase
+              .schema("events")
+              .from("events")
+              .select("id, slug, title_en, title_ar")
+              .in("id", [...new Set(rows.map((r) => r.event_id))])
+          ) ?? [])
+        : [];
       const taken = new Map(
         (unwrap(places) ?? []).map((row) => [row.shift_id, row.taken])
       );
-      const names = new Map(
-        (unwrap(programmeNames) ?? []).map((row) => [row.id, row])
-      );
-      return (unwrap(rotas) ?? [])
-        .map((rota) => ({
-          ...rota,
-          programme: rota.programme_id
-            ? (names.get(rota.programme_id) ?? null)
-            : null,
-          shifts: rota.shifts.map((shift) => ({
-            ...shift,
-            taken: taken.get(shift.id) ?? 0,
-          })),
-        }))
-        .filter((rota) => rota.shifts.length > 0);
+      const byId = new Map(events.map((e) => [e.id, e]));
+      return rows.map((shift) => ({
+        ...shift,
+        event: byId.get(shift.event_id) ?? null,
+        taken: taken.get(shift.id) ?? 0,
+      }));
     },
-    queryKey: ["rotas"],
+    queryKey: ["shifts"],
   });
 };
 
@@ -91,7 +88,7 @@ export const PlacesBoard = () => {
   const locale = useLocale() as "en" | "ar";
   const { supabase, user } = useAuth();
   const queryClient = useQueryClient();
-  const rotas = useRotas();
+  const rotas = useShifts();
   const mySkills = useMySkills();
   const mine = useMyShifts();
   const openings = useOpenings();
@@ -102,7 +99,7 @@ export const PlacesBoard = () => {
 
   const refresh = () =>
     Promise.all([
-      queryClient.invalidateQueries({ queryKey: ["rotas"] }),
+      queryClient.invalidateQueries({ queryKey: ["shifts"] }),
       queryClient.invalidateQueries({
         queryKey: queryKeys.shifts(user?.id ?? ""),
       }),
@@ -150,12 +147,7 @@ export const PlacesBoard = () => {
   }
 
   const skills = mySkills.data ?? [];
-  const shifts = programmes.matchedFirst(
-    rotas.data.flatMap((rota) =>
-      rota.shifts.map((shift) => ({ ...shift, rota }))
-    ),
-    skills
-  );
+  const shifts = programmes.matchedFirst([...rotas.data], skills);
 
   const nothing =
     openings.isSuccess &&
@@ -198,10 +190,7 @@ export const PlacesBoard = () => {
               onSignUp={() => signUp.mutate(shift.id)}
               rota={[
                 tc("kinds.shift"),
-                localized(shift.rota, "title", locale),
-                shift.rota.programme
-                  ? localized(shift.rota.programme, "name", locale)
-                  : null,
+                shift.event ? localized(shift.event, "title", locale) : null,
               ]
                 .filter(Boolean)
                 .join(" · ")}
@@ -212,21 +201,15 @@ export const PlacesBoard = () => {
         </RowList>
       )}
 
-      <p className="type-caption border-line border-t pt-space-4">
-        {tc("hoursLede")}{" "}
-        <Link className="link" href="/membership/record">
-          {tc("hoursLink")}
-        </Link>
-      </p>
       <div className="grid gap-2">
         <p className="type-caption">{t("ideas.lede")}</p>
-        <StartLinks keys={["f10"]} />
+        <StartLinks keys={["f11"]} />
       </div>
     </DiwanPage>
   );
 };
 
-type Rota = NonNullable<ReturnType<typeof useRotas>["data"]>[number];
+type Shift = NonNullable<ReturnType<typeof useShifts>["data"]>[number];
 
 interface ShiftRowProps {
   readonly busy: boolean;
@@ -236,7 +219,7 @@ interface ShiftRowProps {
   readonly onGiveBack: () => void;
   readonly onSignUp: () => void;
   readonly rota: string;
-  readonly shift: Rota["shifts"][number];
+  readonly shift: Shift;
 }
 
 const ShiftRow = ({
@@ -334,26 +317,11 @@ const Matches = ({ skills }: { skills: readonly string[] }) => {
   );
 };
 
-/** The open roles and places, with their program's name. */
+/** The open roles, team places and mentor places. */
 const useOpenings = () => {
   const { supabase } = useAuth();
   return useQuery({
-    queryFn: async () => {
-      const [rows, names] = await Promise.all([
-        programmes.openings(supabase),
-        supabase
-          .schema("core")
-          .from("programmes")
-          .select("id, name_en, name_ar"),
-      ]);
-      const byId = new Map((unwrap(names) ?? []).map((p) => [p.id, p]));
-      return rows.map((row) => ({
-        ...row,
-        programme: row.programme_id
-          ? (byId.get(row.programme_id) ?? null)
-          : null,
-      }));
-    },
+    queryFn: () => programmes.openings(supabase),
     queryKey: ["openings"],
   });
 };
@@ -378,12 +346,6 @@ const OpeningRows = ({
     queryFn: () => programmes.myOpeningReplies(supabase, user?.id ?? ""),
     queryKey: ["opening-replies", user?.id],
   });
-  const placements = useQuery({
-    enabled: Boolean(user),
-    queryFn: () => programmes.myPlacements(supabase, user?.id ?? ""),
-    queryKey: ["placements", user?.id],
-  });
-  const tj = useTranslations("diwan.admin.journal");
   const refresh = () =>
     queryClient.invalidateQueries({ queryKey: ["opening-replies"] });
   const reply = useMutation({
@@ -400,38 +362,20 @@ const OpeningRows = ({
   );
   const rows = programmes.matchedFirst([...list], skills);
   type Row = (typeof rows)[number];
-  // What it offers, where, and for which term, on one line.
-  const where = (row: Row) => {
-    let place: string | null = null;
-    if (row.desk) {
-      place = `${tc("qirtas")} · ${tj(`desks.${row.desk}`)}`;
-    } else if (row.owner !== "program") {
-      place = tc(`owners.${row.owner as "qirtas"}`);
-    } else if (row.programme) {
-      place = localized(row.programme, "name", locale);
-    }
-    return [
-      tc(`kinds.${row.kind as "apprenticeship"}`),
-      place,
-      row.term_from && row.term_to
-        ? tc("term", {
-            from: formatLongDate(row.term_from, locale),
-            to: formatLongDate(row.term_to, locale),
-          })
-        : null,
+  // What it offers and whose it is, on one line.
+  const where = (row: Row) =>
+    [
+      tc(`kinds.${row.kind as "role"}`),
+      row.kind === "role" ? tc(`owners.${row.owner as "qirtas"}`) : null,
     ]
       .filter(Boolean)
       .join(" · ");
-  };
 
   return (
     <>
       {rows.map((row) => {
         const interested = mine.has(row.id);
         const body = localized(row, "body", locale);
-        const placed = placements.data?.find(
-          (pl) => pl.opening_id === row.id && pl.status !== "withdrawn"
-        );
         return (
           <li
             className="grid gap-3 sm:grid-cols-[1fr_auto] sm:items-center"
@@ -444,7 +388,7 @@ const OpeningRows = ({
               <p className="type-caption">{where(row)}</p>
               {row.kind === "role" ? null : (
                 <p className="type-caption">
-                  {tc(`kindLines.${row.kind as "apprenticeship"}`)}
+                  {tc(`kindLines.${row.kind as "event_team"}`)}
                 </p>
               )}
               {body ? <p className="type-body">{body}</p> : null}
@@ -465,12 +409,7 @@ const OpeningRows = ({
                   })}
                 </p>
               ) : null}
-              {placed ? (
-                <p className="type-body font-medium" role="status">
-                  {tc(`placed.${placed.status as "active"}`)}
-                </p>
-              ) : null}
-              {interested && !placed ? (
+              {interested ? (
                 <p className="type-body font-medium" role="status">
                   {tc(`application.${mine.get(row.id) as "new"}`)}
                 </p>

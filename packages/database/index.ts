@@ -19,7 +19,6 @@ export const schemas = [
   "membership",
   "events",
   "journal",
-  "charity",
   "programmes",
   "governance",
   "content",

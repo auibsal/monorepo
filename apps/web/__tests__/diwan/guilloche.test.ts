@@ -1,5 +1,5 @@
+import { guillochePaths } from "@repo/brand/components/sal/guilloche";
 import { describe, expect, test } from "vitest";
-import { guillochePaths } from "@/components/guilloche";
 
 describe("the card's line pattern", () => {
   test("is the same every time for a card", () => {

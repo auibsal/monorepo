@@ -73,6 +73,7 @@ const DocumentsPage = async ({ params }: DocumentsProps) => {
               <Entry
                 href={`/library/${doc.slug}`}
                 key={doc.code}
+                proposed={doc.status === "proposed" ? t("proposedShort") : null}
                 summary={documents.documentSummary(doc, locale)}
                 title={documents.documentTitle(doc, locale)}
               />
@@ -89,10 +90,12 @@ const DocumentsPage = async ({ params }: DocumentsProps) => {
 
 const Entry = ({
   href,
+  proposed = null,
   summary,
   title,
 }: {
   readonly href: string;
+  readonly proposed?: string | null;
   readonly summary: string | null;
   readonly title: string;
 }) => (
@@ -104,6 +107,9 @@ const Entry = ({
     </h3>
     {summary ? (
       <p className="type-body text-text-secondary">{summary}</p>
+    ) : null}
+    {proposed ? (
+      <p className="type-label text-text-secondary">{proposed}</p>
     ) : null}
   </li>
 );

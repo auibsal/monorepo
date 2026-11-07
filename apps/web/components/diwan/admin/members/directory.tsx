@@ -28,10 +28,12 @@ import {
 
 type Row = membership.DirectoryRow;
 
+/** The Register (owner, Nov 7, 2026: private, for the Executive Board and
+ * the Director of Membership). */
 export const useDirectory = () => {
   const { supabase } = useAuth();
   return useQuery({
-    queryFn: () => membership.directory(supabase),
+    queryFn: () => membership.register(supabase),
     queryKey: ["admin", "directory"],
   });
 };

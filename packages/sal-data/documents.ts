@@ -5,12 +5,12 @@ import { sanitizeRichText, toPlainText } from "./sanitize";
  * The Library (governance.society_documents): the Society's documents, all
  * public, at auibsal.org/library. Internal documents are kept in the team's
  * Notion workspace, never here (owner, Oct 30, 2026). Each page shows the
- * status recorded here and nothing else, so a draft is never presented as
+ * status recorded here and nothing else, so a proposed document is never presented as
  * adopted. The text is written in Notion and rendered here by the sync
  * (Nov 4, 2026); governance managers keep the adoption record (status,
  * version, the date and the vote) in the Diwan's Library.
  */
-export const documentStatuses = ["draft", "adopted", "superseded"] as const;
+export const documentStatuses = ["proposed", "adopted", "superseded"] as const;
 export type DocumentStatus = (typeof documentStatuses)[number];
 
 export interface SalDocument {
@@ -69,13 +69,16 @@ export const allDocuments = async (client: Client) =>
       .order("sort")
   ) ?? []) as SalDocument[];
 
+/** The website's policies (owner, Nov 7, 2026): the Privacy Notice, the
+ * Terms of Use and the Accessibility Statement. */
+const WEBSITE_POLICIES = new Set(["SAL-GOV-04", "SAL-GOV-05", "SAL-GOV-06"]);
+
 /**
  * The Library keeps two shelves (owner, Oct 30, 2026): the Society's own
- * documents, and the website's policies (terms, accessibility, and the
- * privacy page beside them), which carry the platform codes.
+ * documents, and the website's policies (SAL-GOV-04 to 06).
  */
 export const isWebsitePolicy = (doc: Pick<SalDocument, "code">) =>
-  doc.code.startsWith("SAL-PLT-");
+  WEBSITE_POLICIES.has(doc.code);
 
 /** The title in the page's language (English when there is no Arabic). */
 export const documentTitle = (

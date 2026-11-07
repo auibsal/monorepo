@@ -1,13 +1,13 @@
 "use client";
 
 import { useAuth } from "@repo/auth/provider";
+import { Guilloche, seedFromText } from "@repo/brand/components/sal/guilloche";
 import { cn } from "@repo/brand/lib/utils";
 import type { Locale } from "@repo/internationalization";
 import { formatLongDate } from "@repo/internationalization/format";
 import { membership } from "@repo/sal-data";
 import { useQuery } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
-import { Guilloche, seedFromText } from "@/components/guilloche";
 import { useProfile } from "@/lib/diwan/queries";
 
 /** The card number as it is printed on the card. */

@@ -51,6 +51,8 @@ export type Database = {
       role_assignments: {
         Row: {
           assigned_by: string | null;
+          confirmed_at: string | null;
+          confirmed_by: string | null;
           created_at: string;
           ends_at: string | null;
           exception_resolution_id: string | null;
@@ -60,12 +62,16 @@ export type Database = {
           scope_id: string | null;
           scope_type: string;
           starts_at: string;
+          student_life_answer: string | null;
+          student_life_answered_at: string | null;
           title_ar: string | null;
           title_en: string | null;
           user_id: string;
         };
         Insert: {
           assigned_by?: string | null;
+          confirmed_at?: string | null;
+          confirmed_by?: string | null;
           created_at?: string;
           ends_at?: string | null;
           exception_resolution_id?: string | null;
@@ -75,12 +81,16 @@ export type Database = {
           scope_id?: string | null;
           scope_type?: string;
           starts_at?: string;
+          student_life_answer?: string | null;
+          student_life_answered_at?: string | null;
           title_ar?: string | null;
           title_en?: string | null;
           user_id: string;
         };
         Update: {
           assigned_by?: string | null;
+          confirmed_at?: string | null;
+          confirmed_by?: string | null;
           created_at?: string;
           ends_at?: string | null;
           exception_resolution_id?: string | null;
@@ -90,6 +100,8 @@ export type Database = {
           scope_id?: string | null;
           scope_type?: string;
           starts_at?: string;
+          student_life_answer?: string | null;
+          student_life_answered_at?: string | null;
           title_ar?: string | null;
           title_en?: string | null;
           user_id?: string;
@@ -212,6 +224,10 @@ export type Database = {
         Returns: string;
       };
       bootstrap_founder: { Args: { email: string }; Returns: string };
+      confirm_assignment: {
+        Args: { assignment_id: string };
+        Returns: undefined;
+      };
       end_role_assignment: {
         Args: { assignment_id: string; ends_at?: string };
         Returns: undefined;
@@ -261,377 +277,13 @@ export type Database = {
           user_id: string;
         }[];
       };
-    };
-    Enums: {
-      [_ in never]: never;
-    };
-    CompositeTypes: {
-      [_ in never]: never;
-    };
-  };
-  charity: {
-    Tables: {
-      campaigns: {
-        Row: {
-          boxes_on: string | null;
-          created_at: string;
-          donations_ends_on: string | null;
-          donations_starts_on: string | null;
-          drop_off_points: NonNullable<Json>;
-          ends_on: string | null;
-          event_id: string | null;
-          fair_ends_on: string | null;
-          fair_starts_on: string | null;
-          handed_over_iqd: number | null;
-          handed_over_on: string | null;
-          handover_due_on: string | null;
-          handover_note: string | null;
-          handover_receipt_id: string | null;
-          handover_witness: string | null;
-          id: string;
-          impact_due_on: string | null;
-          partner_id: string | null;
-          programme_id: string | null;
-          slug: string;
-          starts_on: string | null;
-          status: string;
-          summary_ar: string | null;
-          summary_en: string | null;
-          title_ar: string;
-          title_en: string;
-          updated_at: string;
-        };
-        Insert: {
-          boxes_on?: string | null;
-          created_at?: string;
-          donations_ends_on?: string | null;
-          donations_starts_on?: string | null;
-          drop_off_points?: NonNullable<Json>;
-          ends_on?: string | null;
-          event_id?: string | null;
-          fair_ends_on?: string | null;
-          fair_starts_on?: string | null;
-          handed_over_iqd?: number | null;
-          handed_over_on?: string | null;
-          handover_due_on?: string | null;
-          handover_note?: string | null;
-          handover_receipt_id?: string | null;
-          handover_witness?: string | null;
-          id?: string;
-          impact_due_on?: string | null;
-          partner_id?: string | null;
-          programme_id?: string | null;
-          slug: string;
-          starts_on?: string | null;
-          status?: string;
-          summary_ar?: string | null;
-          summary_en?: string | null;
-          title_ar: string;
-          title_en: string;
-          updated_at?: string;
-        };
-        Update: {
-          boxes_on?: string | null;
-          created_at?: string;
-          donations_ends_on?: string | null;
-          donations_starts_on?: string | null;
-          drop_off_points?: NonNullable<Json>;
-          ends_on?: string | null;
-          event_id?: string | null;
-          fair_ends_on?: string | null;
-          fair_starts_on?: string | null;
-          handed_over_iqd?: number | null;
-          handed_over_on?: string | null;
-          handover_due_on?: string | null;
-          handover_note?: string | null;
-          handover_receipt_id?: string | null;
-          handover_witness?: string | null;
-          id?: string;
-          impact_due_on?: string | null;
-          partner_id?: string | null;
-          programme_id?: string | null;
-          slug?: string;
-          starts_on?: string | null;
-          status?: string;
-          summary_ar?: string | null;
-          summary_en?: string | null;
-          title_ar?: string;
-          title_en?: string;
-          updated_at?: string;
-        };
-        Relationships: [
-          {
-            foreignKeyName: "campaigns_handover_receipt_id_fkey";
-            columns: ["handover_receipt_id"];
-            isOneToOne: false;
-            referencedRelation: "receipts";
-            referencedColumns: ["id"];
-          },
-        ];
-      };
-      catalog_books: {
-        Row: {
-          author: string | null;
-          campaign_id: string;
-          copies: number;
-          created_at: string;
-          created_by: string | null;
-          id: string;
-          is_listed: boolean;
-          language: string;
-          note: string | null;
-          title: string;
-        };
-        Insert: {
-          author?: string | null;
-          campaign_id: string;
-          copies?: number;
-          created_at?: string;
-          created_by?: string | null;
-          id?: string;
-          is_listed?: boolean;
-          language?: string;
-          note?: string | null;
-          title: string;
-        };
-        Update: {
-          author?: string | null;
-          campaign_id?: string;
-          copies?: number;
-          created_at?: string;
-          created_by?: string | null;
-          id?: string;
-          is_listed?: boolean;
-          language?: string;
-          note?: string | null;
-          title?: string;
-        };
-        Relationships: [
-          {
-            foreignKeyName: "catalog_books_campaign_id_fkey";
-            columns: ["campaign_id"];
-            isOneToOne: false;
-            referencedRelation: "campaigns";
-            referencedColumns: ["id"];
-          },
-        ];
-      };
-      impact_metrics: {
-        Row: {
-          campaign_id: string;
-          created_at: string;
-          id: string;
-          label_ar: string;
-          label_en: string;
-          published_at: string | null;
-          report_ar: string | null;
-          report_en: string | null;
-          sort: number;
-          unit_ar: string | null;
-          unit_en: string | null;
-          updated_at: string;
-          value: number;
-        };
-        Insert: {
-          campaign_id: string;
-          created_at?: string;
-          id?: string;
-          label_ar: string;
-          label_en: string;
-          published_at?: string | null;
-          report_ar?: string | null;
-          report_en?: string | null;
-          sort?: number;
-          unit_ar?: string | null;
-          unit_en?: string | null;
-          updated_at?: string;
-          value: number;
-        };
-        Update: {
-          campaign_id?: string;
-          created_at?: string;
-          id?: string;
-          label_ar?: string;
-          label_en?: string;
-          published_at?: string | null;
-          report_ar?: string | null;
-          report_en?: string | null;
-          sort?: number;
-          unit_ar?: string | null;
-          unit_en?: string | null;
-          updated_at?: string;
-          value?: number;
-        };
-        Relationships: [
-          {
-            foreignKeyName: "impact_metrics_campaign_id_fkey";
-            columns: ["campaign_id"];
-            isOneToOne: false;
-            referencedRelation: "campaigns";
-            referencedColumns: ["id"];
-          },
-        ];
-      };
-      ledger_entries: {
-        Row: {
-          amount_iqd: number;
-          campaign_id: string;
-          counted_by: string;
-          counted_with: string;
-          created_at: string;
-          created_by: string;
-          id: string;
-          note: string | null;
-          occurred_on: string;
-          reverses_entry_id: string | null;
-          source: Database["charity"]["Enums"]["source"];
-        };
-        Insert: {
-          amount_iqd: number;
-          campaign_id: string;
-          counted_by: string;
-          counted_with: string;
-          created_at?: string;
-          created_by?: string;
-          id?: string;
-          note?: string | null;
-          occurred_on?: string;
-          reverses_entry_id?: string | null;
-          source: Database["charity"]["Enums"]["source"];
-        };
-        Update: {
-          amount_iqd?: number;
-          campaign_id?: string;
-          counted_by?: string;
-          counted_with?: string;
-          created_at?: string;
-          created_by?: string;
-          id?: string;
-          note?: string | null;
-          occurred_on?: string;
-          reverses_entry_id?: string | null;
-          source?: Database["charity"]["Enums"]["source"];
-        };
-        Relationships: [
-          {
-            foreignKeyName: "ledger_entries_campaign_id_fkey";
-            columns: ["campaign_id"];
-            isOneToOne: false;
-            referencedRelation: "campaigns";
-            referencedColumns: ["id"];
-          },
-          {
-            foreignKeyName: "ledger_entries_reverses_entry_id_fkey";
-            columns: ["reverses_entry_id"];
-            isOneToOne: true;
-            referencedRelation: "ledger_entries";
-            referencedColumns: ["id"];
-          },
-        ];
-      };
-      ledger_signoffs: {
-        Row: {
-          entry_id: string;
-          signed_at: string;
-          signed_by: string;
-        };
-        Insert: {
-          entry_id: string;
-          signed_at?: string;
-          signed_by?: string;
-        };
-        Update: {
-          entry_id?: string;
-          signed_at?: string;
-          signed_by?: string;
-        };
-        Relationships: [
-          {
-            foreignKeyName: "ledger_signoffs_entry_id_fkey";
-            columns: ["entry_id"];
-            isOneToOne: true;
-            referencedRelation: "ledger_entries";
-            referencedColumns: ["id"];
-          },
-        ];
-      };
-      receipts: {
-        Row: {
-          amount_iqd: number | null;
-          campaign_id: string;
-          created_at: string;
-          description_ar: string | null;
-          description_en: string;
-          id: string;
-          is_public: boolean;
-          ledger_entry_id: string | null;
-          storage_path: string;
-          uploaded_by: string | null;
-        };
-        Insert: {
-          amount_iqd?: number | null;
-          campaign_id: string;
-          created_at?: string;
-          description_ar?: string | null;
-          description_en: string;
-          id?: string;
-          is_public?: boolean;
-          ledger_entry_id?: string | null;
-          storage_path: string;
-          uploaded_by?: string | null;
-        };
-        Update: {
-          amount_iqd?: number | null;
-          campaign_id?: string;
-          created_at?: string;
-          description_ar?: string | null;
-          description_en?: string;
-          id?: string;
-          is_public?: boolean;
-          ledger_entry_id?: string | null;
-          storage_path?: string;
-          uploaded_by?: string | null;
-        };
-        Relationships: [
-          {
-            foreignKeyName: "receipts_campaign_id_fkey";
-            columns: ["campaign_id"];
-            isOneToOne: false;
-            referencedRelation: "campaigns";
-            referencedColumns: ["id"];
-          },
-          {
-            foreignKeyName: "receipts_ledger_entry_id_fkey";
-            columns: ["ledger_entry_id"];
-            isOneToOne: false;
-            referencedRelation: "ledger_entries";
-            referencedColumns: ["id"];
-          },
-        ];
-      };
-    };
-    Views: {
-      [_ in never]: never;
-    };
-    Functions: {
-      campaign_progress: {
-        Args: { campaign_id?: string };
-        Returns: {
-          campaign_id: string;
-          counted_iqd: number;
-          pending_iqd: number;
-        }[];
+      record_seat_check: {
+        Args: { assignment_id: string; eligible: boolean };
+        Returns: undefined;
       };
     };
     Enums: {
-      source:
-        | "table_cash"
-        | "stickers"
-        | "blind_date"
-        | "fill_a_bag"
-        | "book_sales"
-        | "donation"
-        | "other";
+      [_ in never]: never;
     };
     CompositeTypes: {
       [_ in never]: never;
@@ -796,7 +448,6 @@ export type Database = {
           major: string | null;
           research_consent: boolean;
           skills: string[];
-          student_id: string | null;
           study_level: string | null;
           updated_at: string;
           user_id: string;
@@ -816,7 +467,6 @@ export type Database = {
           major?: string | null;
           research_consent?: boolean;
           skills?: string[];
-          student_id?: string | null;
           study_level?: string | null;
           updated_at?: string;
           user_id?: string;
@@ -836,7 +486,6 @@ export type Database = {
           major?: string | null;
           research_consent?: boolean;
           skills?: string[];
-          student_id?: string | null;
           study_level?: string | null;
           updated_at?: string;
           user_id?: string;
@@ -941,7 +590,6 @@ export type Database = {
           personal_email: string | null;
           personal_email_verified_at: string | null;
           setup_completed_at: string | null;
-          show_certificates_on_card: boolean;
           updated_at: string;
           verified_at: string | null;
         };
@@ -966,7 +614,6 @@ export type Database = {
           personal_email?: string | null;
           personal_email_verified_at?: string | null;
           setup_completed_at?: string | null;
-          show_certificates_on_card?: boolean;
           updated_at?: string;
           verified_at?: string | null;
         };
@@ -991,7 +638,6 @@ export type Database = {
           personal_email?: string | null;
           personal_email_verified_at?: string | null;
           setup_completed_at?: string | null;
-          show_certificates_on_card?: boolean;
           updated_at?: string;
           verified_at?: string | null;
         };
@@ -1220,22 +866,28 @@ export type Database = {
         Row: {
           chat_id: number;
           joined_at: string;
+          removed_at: string | null;
           telegram_id: number;
           verified_at: string | null;
+          warned_at: string | null;
           warnings: number;
         };
         Insert: {
           chat_id: number;
           joined_at?: string;
+          removed_at?: string | null;
           telegram_id: number;
           verified_at?: string | null;
+          warned_at?: string | null;
           warnings?: number;
         };
         Update: {
           chat_id?: number;
           joined_at?: string;
+          removed_at?: string | null;
           telegram_id?: number;
           verified_at?: string | null;
+          warned_at?: string | null;
           warnings?: number;
         };
         Relationships: [
@@ -1586,6 +1238,7 @@ export type Database = {
           slug: string;
           starts_at: string;
           status: string;
+          student_life_approved_by: string | null;
           student_life_approved_on: string | null;
           summary_ar: string | null;
           summary_en: string | null;
@@ -1616,6 +1269,7 @@ export type Database = {
           slug: string;
           starts_at: string;
           status?: string;
+          student_life_approved_by?: string | null;
           student_life_approved_on?: string | null;
           summary_ar?: string | null;
           summary_en?: string | null;
@@ -1646,6 +1300,7 @@ export type Database = {
           slug?: string;
           starts_at?: string;
           status?: string;
+          student_life_approved_by?: string | null;
           student_life_approved_on?: string | null;
           summary_ar?: string | null;
           summary_en?: string | null;
@@ -1949,7 +1604,7 @@ export type Database = {
         }[];
       };
       record_approval: {
-        Args: { approved_on: string; event_id: string };
+        Args: { approved_by: string; approved_on: string; event_id: string };
         Returns: undefined;
       };
       rsvp: { Args: { answers?: Json; event_id: string }; Returns: string };
@@ -2018,33 +1673,42 @@ export type Database = {
           created_at: string;
           decided_at: string | null;
           decided_by: string | null;
+          gpa_consent: boolean;
           id: string;
           position_id: string;
           statement_ar: string | null;
           statement_en: string | null;
           status: string;
+          student_life_answer: string | null;
+          student_life_answered_at: string | null;
           user_id: string;
         };
         Insert: {
           created_at?: string;
           decided_at?: string | null;
           decided_by?: string | null;
+          gpa_consent?: boolean;
           id?: string;
           position_id: string;
           statement_ar?: string | null;
           statement_en?: string | null;
           status?: string;
+          student_life_answer?: string | null;
+          student_life_answered_at?: string | null;
           user_id?: string;
         };
         Update: {
           created_at?: string;
           decided_at?: string | null;
           decided_by?: string | null;
+          gpa_consent?: boolean;
           id?: string;
           position_id?: string;
           statement_ar?: string | null;
           statement_en?: string | null;
           status?: string;
+          student_life_answer?: string | null;
+          student_life_answered_at?: string | null;
           user_id?: string;
         };
         Relationships: [
@@ -2230,47 +1894,68 @@ export type Database = {
         Row: {
           created_at: string;
           created_by: string | null;
+          electorate: string;
           eligible_count: number | null;
           id: string;
+          kind: string;
           nominations_close_at: string;
           nominations_open_at: string;
           notice_given_at: string | null;
+          question_ar: string | null;
+          question_en: string | null;
           status: string;
           title_ar: string;
           title_en: string;
           updated_at: string;
           voting_closes_at: string;
           voting_opens_at: string;
+          voting_point_ar: string | null;
+          voting_point_at: string | null;
+          voting_point_en: string | null;
         };
         Insert: {
           created_at?: string;
           created_by?: string | null;
+          electorate?: string;
           eligible_count?: number | null;
           id?: string;
+          kind?: string;
           nominations_close_at: string;
           nominations_open_at: string;
           notice_given_at?: string | null;
+          question_ar?: string | null;
+          question_en?: string | null;
           status?: string;
           title_ar: string;
           title_en: string;
           updated_at?: string;
           voting_closes_at: string;
           voting_opens_at: string;
+          voting_point_ar?: string | null;
+          voting_point_at?: string | null;
+          voting_point_en?: string | null;
         };
         Update: {
           created_at?: string;
           created_by?: string | null;
+          electorate?: string;
           eligible_count?: number | null;
           id?: string;
+          kind?: string;
           nominations_close_at?: string;
           nominations_open_at?: string;
           notice_given_at?: string | null;
+          question_ar?: string | null;
+          question_en?: string | null;
           status?: string;
           title_ar?: string;
           title_en?: string;
           updated_at?: string;
           voting_closes_at?: string;
           voting_opens_at?: string;
+          voting_point_ar?: string | null;
+          voting_point_at?: string | null;
+          voting_point_en?: string | null;
         };
         Relationships: [];
       };
@@ -2281,11 +1966,19 @@ export type Database = {
           created_at: string;
           data: NonNullable<Json>;
           form_key: string;
+          form_version: number;
           handled_by: string | null;
           id: string;
           office: NonNullable<Json>;
           routing: string;
+          second_signed_at: string | null;
+          second_signer_id: string | null;
+          second_signer_name: string | null;
+          signed_at: string | null;
+          signer_contact: string | null;
+          signer_name: string | null;
           status: string;
+          subject_id: string | null;
           subject_user_id: string | null;
           submitted_at: string | null;
           submitted_by: string | null;
@@ -2297,11 +1990,19 @@ export type Database = {
           created_at?: string;
           data?: NonNullable<Json>;
           form_key: string;
+          form_version?: number;
           handled_by?: string | null;
           id?: string;
           office?: NonNullable<Json>;
           routing?: string;
+          second_signed_at?: string | null;
+          second_signer_id?: string | null;
+          second_signer_name?: string | null;
+          signed_at?: string | null;
+          signer_contact?: string | null;
+          signer_name?: string | null;
           status?: string;
+          subject_id?: string | null;
           subject_user_id?: string | null;
           submitted_at?: string | null;
           submitted_by?: string | null;
@@ -2313,11 +2014,19 @@ export type Database = {
           created_at?: string;
           data?: NonNullable<Json>;
           form_key?: string;
+          form_version?: number;
           handled_by?: string | null;
           id?: string;
           office?: NonNullable<Json>;
           routing?: string;
+          second_signed_at?: string | null;
+          second_signer_id?: string | null;
+          second_signer_name?: string | null;
+          signed_at?: string | null;
+          signer_contact?: string | null;
+          signer_name?: string | null;
           status?: string;
+          subject_id?: string | null;
           subject_user_id?: string | null;
           submitted_at?: string | null;
           submitted_by?: string | null;
@@ -2339,36 +2048,57 @@ export type Database = {
           anonymous_ok: boolean;
           answer_days: number | null;
           code: string;
+          filled: string;
           handle_permission: string;
           key: string;
+          needs_account: boolean;
           ongoing: boolean;
+          second_signer: string | null;
           sort: number;
+          subject_kind: string | null;
           subject_reads: boolean;
           submit_rule: string;
+          title_ar: string;
+          title_en: string;
+          version: number;
         };
         Insert: {
           acknowledge_days?: number | null;
           anonymous_ok?: boolean;
           answer_days?: number | null;
           code: string;
+          filled?: string;
           handle_permission: string;
           key: string;
+          needs_account?: boolean;
           ongoing?: boolean;
+          second_signer?: string | null;
           sort?: number;
+          subject_kind?: string | null;
           subject_reads?: boolean;
           submit_rule: string;
+          title_ar?: string;
+          title_en?: string;
+          version?: number;
         };
         Update: {
           acknowledge_days?: number | null;
           anonymous_ok?: boolean;
           answer_days?: number | null;
           code?: string;
+          filled?: string;
           handle_permission?: string;
           key?: string;
+          needs_account?: boolean;
           ongoing?: boolean;
+          second_signer?: string | null;
           sort?: number;
+          subject_kind?: string | null;
           subject_reads?: boolean;
           submit_rule?: string;
+          title_ar?: string;
+          title_en?: string;
+          version?: number;
         };
         Relationships: [];
       };
@@ -2860,6 +2590,7 @@ export type Database = {
           dated: string | null;
           id: string;
           notion_url: string | null;
+          owner: string | null;
           ratification: string | null;
           slug: string;
           sort: number;
@@ -2883,6 +2614,7 @@ export type Database = {
           dated?: string | null;
           id?: string;
           notion_url?: string | null;
+          owner?: string | null;
           ratification?: string | null;
           slug: string;
           sort?: number;
@@ -2906,6 +2638,7 @@ export type Database = {
           dated?: string | null;
           id?: string;
           notion_url?: string | null;
+          owner?: string | null;
           ratification?: string | null;
           slug?: string;
           sort?: number;
@@ -3010,10 +2743,6 @@ export type Database = {
         Args: { partner: string; reason?: string };
         Returns: undefined;
       };
-      discard_form_draft: {
-        Args: { submission_id: string };
-        Returns: undefined;
-      };
       form_queue: {
         Args: Record<PropertyKey, never>;
         Returns: {
@@ -3055,6 +2784,7 @@ export type Database = {
       };
       nominate: {
         Args: {
+          gpa_consent: boolean;
           position_id: string;
           statement_ar?: string;
           statement_en: string;
@@ -3152,25 +2882,33 @@ export type Database = {
           url: string;
         }[];
       };
+      record_gpa_check: {
+        Args: { candidate_id: string; eligible: boolean };
+        Returns: undefined;
+      };
       remove_partner_teammate: {
         Args: { member: string; partner: string };
         Returns: undefined;
       };
-      save_form: {
+      second_sign_form: {
+        Args: { signer_name: string; submission_id: string };
+        Returns: undefined;
+      };
+      set_partner_lead: {
+        Args: { lead: boolean; member: string; partner: string };
+        Returns: undefined;
+      };
+      sign_form: {
         Args: {
           anonymous?: boolean;
           data: Json;
           form_key: string;
           routing?: string;
+          signer_contact?: string;
+          signer_name: string;
           subject_id?: string;
-          submission_id?: string;
-          submit?: boolean;
         };
         Returns: string;
-      };
-      set_partner_lead: {
-        Args: { lead: boolean; member: string; partner: string };
-        Returns: undefined;
       };
       sign_partner_agreement: {
         Args: {
@@ -3185,6 +2923,13 @@ export type Database = {
         Returns: {
           eligible: number;
           voted: number;
+        }[];
+      };
+      vote_tally: {
+        Args: { election_id: string };
+        Returns: {
+          answer: string;
+          votes: number;
         }[];
       };
     };
@@ -3295,181 +3040,6 @@ export type Database = {
             referencedColumns: ["id"];
           },
         ];
-      };
-      award_entries: {
-        Row: {
-          award_key: string;
-          certificate_id: string | null;
-          created_at: string;
-          created_by: string | null;
-          id: string;
-          piece_id: string;
-          round_id: string;
-          updated_at: string;
-          won: boolean;
-        };
-        Insert: {
-          award_key: string;
-          certificate_id?: string | null;
-          created_at?: string;
-          created_by?: string | null;
-          id?: string;
-          piece_id: string;
-          round_id: string;
-          updated_at?: string;
-          won?: boolean;
-        };
-        Update: {
-          award_key?: string;
-          certificate_id?: string | null;
-          created_at?: string;
-          created_by?: string | null;
-          id?: string;
-          piece_id?: string;
-          round_id?: string;
-          updated_at?: string;
-          won?: boolean;
-        };
-        Relationships: [
-          {
-            foreignKeyName: "award_entries_award_key_fkey";
-            columns: ["award_key"];
-            isOneToOne: false;
-            referencedRelation: "awards";
-            referencedColumns: ["key"];
-          },
-          {
-            foreignKeyName: "award_entries_piece_id_fkey";
-            columns: ["piece_id"];
-            isOneToOne: false;
-            referencedRelation: "pieces";
-            referencedColumns: ["id"];
-          },
-          {
-            foreignKeyName: "award_entries_round_id_fkey";
-            columns: ["round_id"];
-            isOneToOne: false;
-            referencedRelation: "award_rounds";
-            referencedColumns: ["id"];
-          },
-        ];
-      };
-      award_judges: {
-        Row: {
-          award_key: string;
-          created_at: string;
-          id: string;
-          name_ar: string;
-          name_en: string;
-          round_id: string;
-          user_id: string | null;
-        };
-        Insert: {
-          award_key: string;
-          created_at?: string;
-          id?: string;
-          name_ar: string;
-          name_en: string;
-          round_id: string;
-          user_id?: string | null;
-        };
-        Update: {
-          award_key?: string;
-          created_at?: string;
-          id?: string;
-          name_ar?: string;
-          name_en?: string;
-          round_id?: string;
-          user_id?: string | null;
-        };
-        Relationships: [
-          {
-            foreignKeyName: "award_judges_award_key_fkey";
-            columns: ["award_key"];
-            isOneToOne: false;
-            referencedRelation: "awards";
-            referencedColumns: ["key"];
-          },
-          {
-            foreignKeyName: "award_judges_round_id_fkey";
-            columns: ["round_id"];
-            isOneToOne: false;
-            referencedRelation: "award_rounds";
-            referencedColumns: ["id"];
-          },
-        ];
-      };
-      award_rounds: {
-        Row: {
-          awarded_on: string;
-          created_at: string;
-          id: string;
-          is_published: boolean;
-          shortlist_on: string;
-          slug: string;
-          title_ar: string;
-          title_en: string;
-          updated_at: string;
-        };
-        Insert: {
-          awarded_on: string;
-          created_at?: string;
-          id?: string;
-          is_published?: boolean;
-          shortlist_on: string;
-          slug: string;
-          title_ar: string;
-          title_en: string;
-          updated_at?: string;
-        };
-        Update: {
-          awarded_on?: string;
-          created_at?: string;
-          id?: string;
-          is_published?: boolean;
-          shortlist_on?: string;
-          slug?: string;
-          title_ar?: string;
-          title_en?: string;
-          updated_at?: string;
-        };
-        Relationships: [];
-      };
-      awards: {
-        Row: {
-          desk: Database["journal"]["Enums"]["desk"] | null;
-          for_ar: string | null;
-          for_en: string | null;
-          key: string;
-          name_ar: string;
-          name_en: string;
-          named_for_ar: string | null;
-          named_for_en: string | null;
-          sort: number;
-        };
-        Insert: {
-          desk?: Database["journal"]["Enums"]["desk"] | null;
-          for_ar?: string | null;
-          for_en?: string | null;
-          key: string;
-          name_ar: string;
-          name_en: string;
-          named_for_ar?: string | null;
-          named_for_en?: string | null;
-          sort?: number;
-        };
-        Update: {
-          desk?: Database["journal"]["Enums"]["desk"] | null;
-          for_ar?: string | null;
-          for_en?: string | null;
-          key?: string;
-          name_ar?: string;
-          name_en?: string;
-          named_for_ar?: string | null;
-          named_for_en?: string | null;
-          sort?: number;
-        };
-        Relationships: [];
       };
       blind_entries: {
         Row: {
@@ -3688,6 +3258,7 @@ export type Database = {
           bio_en: string | null;
           created_at: string;
           id: string;
+          is_anonymous: boolean;
           is_pen_name: boolean;
           name_ar: string | null;
           name_en: string;
@@ -3700,6 +3271,7 @@ export type Database = {
           bio_en?: string | null;
           created_at?: string;
           id?: string;
+          is_anonymous?: boolean;
           is_pen_name?: boolean;
           name_ar?: string | null;
           name_en: string;
@@ -3712,6 +3284,7 @@ export type Database = {
           bio_en?: string | null;
           created_at?: string;
           id?: string;
+          is_anonymous?: boolean;
           is_pen_name?: boolean;
           name_ar?: string | null;
           name_en?: string;
@@ -4152,6 +3725,8 @@ export type Database = {
           submission_id: string | null;
           title_ar: string | null;
           title_en: string | null;
+          type_ar: string | null;
+          type_en: string | null;
           unpublish_note: string | null;
           unpublished_at: string | null;
           updated_at: string;
@@ -4187,6 +3762,8 @@ export type Database = {
           submission_id?: string | null;
           title_ar?: string | null;
           title_en?: string | null;
+          type_ar?: string | null;
+          type_en?: string | null;
           unpublish_note?: string | null;
           unpublished_at?: string | null;
           updated_at?: string;
@@ -4222,6 +3799,8 @@ export type Database = {
           submission_id?: string | null;
           title_ar?: string | null;
           title_en?: string | null;
+          type_ar?: string | null;
+          type_en?: string | null;
           unpublish_note?: string | null;
           unpublished_at?: string | null;
           updated_at?: string;
@@ -4254,6 +3833,157 @@ export type Database = {
             columns: ["submission_id"];
             isOneToOne: false;
             referencedRelation: "submissions";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      prize_entries: {
+        Row: {
+          category: string;
+          created_at: string;
+          created_by: string | null;
+          id: string;
+          judge_score: number | null;
+          piece_id: string | null;
+          qalam_byline: string | null;
+          qalam_title: string | null;
+          round_id: string;
+        };
+        Insert: {
+          category: string;
+          created_at?: string;
+          created_by?: string | null;
+          id?: string;
+          judge_score?: number | null;
+          piece_id?: string | null;
+          qalam_byline?: string | null;
+          qalam_title?: string | null;
+          round_id: string;
+        };
+        Update: {
+          category?: string;
+          created_at?: string;
+          created_by?: string | null;
+          id?: string;
+          judge_score?: number | null;
+          piece_id?: string | null;
+          qalam_byline?: string | null;
+          qalam_title?: string | null;
+          round_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "prize_entries_piece_id_fkey";
+            columns: ["piece_id"];
+            isOneToOne: false;
+            referencedRelation: "pieces";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "prize_entries_round_id_fkey";
+            columns: ["round_id"];
+            isOneToOne: false;
+            referencedRelation: "prize_rounds";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      prize_rounds: {
+        Row: {
+          awarded_on: string | null;
+          count_checked_by_eic: string | null;
+          count_checked_by_gs: string | null;
+          created_at: string;
+          created_by: string | null;
+          id: string;
+          period_from: string;
+          period_to: string;
+          results_published: boolean;
+          updated_at: string;
+          vote_closes_at: string | null;
+          vote_opens_at: string | null;
+          year: number;
+        };
+        Insert: {
+          awarded_on?: string | null;
+          count_checked_by_eic?: string | null;
+          count_checked_by_gs?: string | null;
+          created_at?: string;
+          created_by?: string | null;
+          id?: string;
+          period_from: string;
+          period_to: string;
+          results_published?: boolean;
+          updated_at?: string;
+          vote_closes_at?: string | null;
+          vote_opens_at?: string | null;
+          year: number;
+        };
+        Update: {
+          awarded_on?: string | null;
+          count_checked_by_eic?: string | null;
+          count_checked_by_gs?: string | null;
+          created_at?: string;
+          created_by?: string | null;
+          id?: string;
+          period_from?: string;
+          period_to?: string;
+          results_published?: boolean;
+          updated_at?: string;
+          vote_closes_at?: string | null;
+          vote_opens_at?: string | null;
+          year?: number;
+        };
+        Relationships: [];
+      };
+      prize_vote_receipts: {
+        Row: {
+          category: string;
+          round_id: string;
+          user_id: string;
+          voted_at: string;
+        };
+        Insert: {
+          category: string;
+          round_id: string;
+          user_id: string;
+          voted_at?: string;
+        };
+        Update: {
+          category?: string;
+          round_id?: string;
+          user_id?: string;
+          voted_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "prize_vote_receipts_round_id_fkey";
+            columns: ["round_id"];
+            isOneToOne: false;
+            referencedRelation: "prize_rounds";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      prize_votes: {
+        Row: {
+          entry_id: string;
+          id: string;
+        };
+        Insert: {
+          entry_id: string;
+          id?: string;
+        };
+        Update: {
+          entry_id?: string;
+          id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "prize_votes_entry_id_fkey";
+            columns: ["entry_id"];
+            isOneToOne: false;
+            referencedRelation: "prize_entries";
             referencedColumns: ["id"];
           },
         ];
@@ -4500,6 +4230,7 @@ export type Database = {
       };
       submissions: {
         Row: {
+          anonymous: boolean;
           author_id: string;
           body_html: string | null;
           call_id: string | null;
@@ -4522,10 +4253,12 @@ export type Database = {
           source_text: string | null;
           status: Database["journal"]["Enums"]["submission_status"];
           title: string;
+          type_label: string | null;
           updated_at: string;
           video_url: string | null;
         };
         Insert: {
+          anonymous?: boolean;
           author_id?: string;
           body_html?: string | null;
           call_id?: string | null;
@@ -4548,10 +4281,12 @@ export type Database = {
           source_text?: string | null;
           status?: Database["journal"]["Enums"]["submission_status"];
           title: string;
+          type_label?: string | null;
           updated_at?: string;
           video_url?: string | null;
         };
         Update: {
+          anonymous?: boolean;
           author_id?: string;
           body_html?: string | null;
           call_id?: string | null;
@@ -4574,6 +4309,7 @@ export type Database = {
           source_text?: string | null;
           status?: Database["journal"]["Enums"]["submission_status"];
           title?: string;
+          type_label?: string | null;
           updated_at?: string;
           video_url?: string | null;
         };
@@ -4661,18 +4397,6 @@ export type Database = {
           slug: string;
         }[];
       };
-      award_results: {
-        Args: { round_slug: string };
-        Returns: {
-          author_ar: string;
-          author_en: string;
-          award_key: string;
-          piece_slug: string;
-          title_ar: string;
-          title_en: string;
-          won: boolean;
-        }[];
-      };
       byline_for: {
         Args: { pen_name?: string; person: string };
         Returns: string;
@@ -4684,6 +4408,8 @@ export type Database = {
           name_en: string;
         }[];
       };
+      cast_prize_vote: { Args: { entry_id: string }; Returns: undefined };
+      check_prize_count: { Args: { round_id: string }; Returns: undefined };
       create_staff_piece: {
         Args: {
           category: Database["journal"]["Enums"]["category"];
@@ -4703,6 +4429,7 @@ export type Database = {
         Args: { decision: string; notes?: string; submission_id: string };
         Returns: string;
       };
+      delete_submissions: { Args: { ids: string[] }; Returns: number };
       desk_of: {
         Args: { category: Database["journal"]["Enums"]["category"] };
         Returns: Database["journal"]["Enums"]["desk"];
@@ -4734,6 +4461,13 @@ export type Database = {
         Returns: {
           author_name_ar: string;
           author_name_en: string;
+        }[];
+      };
+      expired_submissions: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          paths: string[];
+          submission_id: string;
         }[];
       };
       intake_queue: {
@@ -4802,6 +4536,7 @@ export type Database = {
           title_en: string;
         }[];
       };
+      open_prize_round: { Args: Record<PropertyKey, never>; Returns: string };
       piece_from_entry: { Args: { blind_entry_id: string }; Returns: string };
       piece_thread: {
         Args: { piece_id: string };
@@ -4831,7 +4566,38 @@ export type Database = {
           volume: number;
         }[];
       };
-      prepare_award_certificates: { Args: { round: string }; Returns: number };
+      prize_ballot: {
+        Args: { round_id: string };
+        Returns: {
+          byline_ar: string;
+          byline_en: string;
+          category: string;
+          desk: Database["journal"]["Enums"]["desk"];
+          entry_id: string;
+          piece_slug: string;
+          title_ar: string;
+          title_en: string;
+          voted: boolean;
+        }[];
+      };
+      prize_results: {
+        Args: { round_id: string };
+        Returns: {
+          byline_ar: string;
+          byline_en: string;
+          category: string;
+          desk: Database["journal"]["Enums"]["desk"];
+          entry_id: string;
+          final_score: number;
+          judge_score: number;
+          member_score: number;
+          piece_slug: string;
+          rank: number;
+          title_ar: string;
+          title_en: string;
+          votes: number;
+        }[];
+      };
       publish_readiness: { Args: { piece_id: string }; Returns: string };
       reopen_piece: { Args: { piece_id: string }; Returns: undefined };
       request_author_approval: {
@@ -4935,7 +4701,14 @@ export type Database = {
         | "word_ladder"
         | "riddle"
         | "anagram"
-        | "name_the_book";
+        | "name_the_book"
+        | "news_other"
+        | "voices_other"
+        | "letters_other"
+        | "gallery_other"
+        | "video_other"
+        | "word"
+        | "word_search";
       desk: "news" | "letters" | "gallery" | "video" | "voices" | "games";
       language: "en" | "ar" | "bilingual";
       submission_status:
@@ -5031,87 +4804,78 @@ export type Database = {
       };
       certificates: {
         Row: {
-          advisor_signed_at: string | null;
-          advisor_signed_by: string | null;
           citation_ar: string | null;
           citation_en: string | null;
           created_at: string;
-          hours: number | null;
+          first_signed_at: string | null;
+          first_signed_by: string | null;
           id: string;
           issued_at: string | null;
           kind: string;
-          partner_id: string | null;
+          lang: string;
           period_from: string | null;
           period_to: string | null;
           prepared_by: string | null;
-          president_signed_at: string | null;
-          president_signed_by: string | null;
-          production_id: string | null;
-          resolution_id: string | null;
+          prize_category: string | null;
+          qalam_student_id: string | null;
           revoke_reason: string | null;
           revoked_at: string | null;
-          role_ar: string | null;
-          role_en: string | null;
+          second_signed_at: string | null;
+          second_signed_by: string | null;
           serial: string | null;
           status: string;
           updated_at: string;
-          user_id: string;
+          user_id: string | null;
           verification_code: string;
         };
         Insert: {
-          advisor_signed_at?: string | null;
-          advisor_signed_by?: string | null;
           citation_ar?: string | null;
           citation_en?: string | null;
           created_at?: string;
-          hours?: number | null;
+          first_signed_at?: string | null;
+          first_signed_by?: string | null;
           id?: string;
           issued_at?: string | null;
           kind: string;
-          partner_id?: string | null;
+          lang?: string;
           period_from?: string | null;
           period_to?: string | null;
           prepared_by?: string | null;
-          president_signed_at?: string | null;
-          president_signed_by?: string | null;
-          production_id?: string | null;
-          resolution_id?: string | null;
+          prize_category?: string | null;
+          qalam_student_id?: string | null;
           revoke_reason?: string | null;
           revoked_at?: string | null;
-          role_ar?: string | null;
-          role_en?: string | null;
+          second_signed_at?: string | null;
+          second_signed_by?: string | null;
           serial?: string | null;
           status?: string;
           updated_at?: string;
-          user_id: string;
+          user_id?: string | null;
           verification_code?: string;
         };
         Update: {
-          advisor_signed_at?: string | null;
-          advisor_signed_by?: string | null;
           citation_ar?: string | null;
           citation_en?: string | null;
           created_at?: string;
-          hours?: number | null;
+          first_signed_at?: string | null;
+          first_signed_by?: string | null;
           id?: string;
           issued_at?: string | null;
           kind?: string;
-          partner_id?: string | null;
+          lang?: string;
           period_from?: string | null;
           period_to?: string | null;
           prepared_by?: string | null;
-          president_signed_at?: string | null;
-          president_signed_by?: string | null;
-          production_id?: string | null;
-          resolution_id?: string | null;
+          prize_category?: string | null;
+          qalam_student_id?: string | null;
           revoke_reason?: string | null;
           revoked_at?: string | null;
-          role_ar?: string | null;
-          role_en?: string | null;
+          second_signed_at?: string | null;
+          second_signed_by?: string | null;
           serial?: string | null;
           status?: string;
           updated_at?: string;
-          user_id?: string;
+          user_id?: string | null;
           verification_code?: string;
         };
         Relationships: [];
@@ -5137,9 +4901,52 @@ export type Database = {
         };
         Relationships: [];
       };
+      invitations: {
+        Row: {
+          created_at: string;
+          email: string;
+          first_name: string | null;
+          joined_at: string | null;
+          kind: string;
+          pages: number;
+          quote_words: boolean;
+          sent_at: string | null;
+          source: string;
+          station: string | null;
+          words: string | null;
+        };
+        Insert: {
+          created_at?: string;
+          email: string;
+          first_name?: string | null;
+          joined_at?: string | null;
+          kind: string;
+          pages?: number;
+          quote_words?: boolean;
+          sent_at?: string | null;
+          source?: string;
+          station?: string | null;
+          words?: string | null;
+        };
+        Update: {
+          created_at?: string;
+          email?: string;
+          first_name?: string | null;
+          joined_at?: string | null;
+          kind?: string;
+          pages?: number;
+          quote_words?: boolean;
+          sent_at?: string | null;
+          source?: string;
+          station?: string | null;
+          words?: string | null;
+        };
+        Relationships: [];
+      };
       memberships: {
         Row: {
           created_at: string;
+          in_directory: boolean;
           member_since: string;
           tier: Database["membership"]["Enums"]["tier"];
           updated_at: string;
@@ -5147,6 +4954,7 @@ export type Database = {
         };
         Insert: {
           created_at?: string;
+          in_directory?: boolean;
           member_since?: string;
           tier?: Database["membership"]["Enums"]["tier"];
           updated_at?: string;
@@ -5154,6 +4962,7 @@ export type Database = {
         };
         Update: {
           created_at?: string;
+          in_directory?: boolean;
           member_since?: string;
           tier?: Database["membership"]["Enums"]["tier"];
           updated_at?: string;
@@ -5182,6 +4991,63 @@ export type Database = {
           pledge_type?: Database["membership"]["Enums"]["pledge_type"];
           user_id?: string;
           version?: string;
+        };
+        Relationships: [];
+      };
+      service_letters: {
+        Row: {
+          body: string | null;
+          hours: number | null;
+          id: string;
+          issued_at: string;
+          issued_by: string | null;
+          lang: string;
+          period_from: string;
+          period_to: string | null;
+          revoke_reason: string | null;
+          revoked_at: string | null;
+          role_ar: string | null;
+          role_en: string;
+          signer_ar: string | null;
+          signer_en: string | null;
+          user_id: string;
+          verification_code: string;
+        };
+        Insert: {
+          body?: string | null;
+          hours?: number | null;
+          id?: string;
+          issued_at?: string;
+          issued_by?: string | null;
+          lang?: string;
+          period_from: string;
+          period_to?: string | null;
+          revoke_reason?: string | null;
+          revoked_at?: string | null;
+          role_ar?: string | null;
+          role_en: string;
+          signer_ar?: string | null;
+          signer_en?: string | null;
+          user_id: string;
+          verification_code?: string;
+        };
+        Update: {
+          body?: string | null;
+          hours?: number | null;
+          id?: string;
+          issued_at?: string;
+          issued_by?: string | null;
+          lang?: string;
+          period_from?: string;
+          period_to?: string | null;
+          revoke_reason?: string | null;
+          revoked_at?: string | null;
+          role_ar?: string | null;
+          role_en?: string;
+          signer_ar?: string | null;
+          signer_en?: string | null;
+          user_id?: string;
+          verification_code?: string;
         };
         Relationships: [];
       };
@@ -5320,26 +5186,13 @@ export type Database = {
         Returns: string;
       };
       calendar_token: { Args: Record<PropertyKey, never>; Returns: string };
-      card_record: {
-        Args: { code: string };
-        Returns: {
-          issued_at: string;
-          kind: string;
-          revoked_at: string;
-          role_ar: string;
-          role_en: string;
-          serial: string;
-          status: string;
-          verification_code: string;
-        }[];
-      };
       certificate_signers: {
         Args: { certificate_id: string };
         Returns: {
-          advisor_ar: string;
-          advisor_en: string;
-          president_ar: string;
-          president_en: string;
+          first_ar: string;
+          first_en: string;
+          second_ar: string;
+          second_en: string;
         }[];
       };
       confirm_service: {
@@ -5354,24 +5207,20 @@ export type Database = {
         Args: { approve: boolean; note?: string; request_id: string };
         Returns: undefined;
       };
-      directory: {
+      has_current_pledges: { Args: { uid?: string }; Returns: boolean };
+      is_member: { Args: { uid?: string }; Returns: boolean };
+      is_voting_member: { Args: { uid?: string }; Returns: boolean };
+      members_directory: {
         Args: Record<PropertyKey, never>;
         Returns: {
-          activities: number;
-          created_at: string;
-          email: string;
+          byline_slug: string;
           full_name_ar: string;
           full_name_en: string;
           member_since: string;
           tier: Database["membership"]["Enums"]["tier"];
           user_id: string;
-          verified_at: string;
-          voting_member: boolean;
         }[];
       };
-      has_current_pledges: { Args: { uid?: string }; Returns: boolean };
-      is_member: { Args: { uid?: string }; Returns: boolean };
-      is_voting_member: { Args: { uid?: string }; Returns: boolean };
       my_card: {
         Args: Record<PropertyKey, never>;
         Returns: {
@@ -5392,8 +5241,7 @@ export type Database = {
         Args: Record<PropertyKey, never>;
         Returns: {
           activities: number;
-          founding_until: string;
-          founding_voter: boolean;
+          in_directory: boolean;
           is_member: boolean;
           member_since: string;
           pending_pledges: Database["membership"]["Enums"]["pledge_type"][];
@@ -5402,13 +5250,20 @@ export type Database = {
           voting_member: boolean;
         }[];
       };
-      record_event_service: {
-        Args: { event_id: string; hours: number; member_id: string };
-        Returns: string;
-      };
-      record_shift_service: {
-        Args: { member_id: string; shift_id: string };
-        Returns: string;
+      register: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          activities: number;
+          created_at: string;
+          email: string;
+          full_name_ar: string;
+          full_name_en: string;
+          member_since: string;
+          tier: Database["membership"]["Enums"]["tier"];
+          user_id: string;
+          verified_at: string;
+          voting_member: boolean;
+        }[];
       };
       reissue_card: {
         Args: Record<PropertyKey, never>;
@@ -5427,6 +5282,7 @@ export type Database = {
         Args: { certificate_id: string; reason: string };
         Returns: undefined;
       };
+      send_invitations: { Args: Record<PropertyKey, never>; Returns: number };
       service_hours: {
         Args: { on_date?: string; uid?: string };
         Returns: number;
@@ -5471,24 +5327,33 @@ export type Database = {
           citation_en: string;
           holder_ar: string;
           holder_en: string;
-          hours: number;
           issued_at: string;
           kind: string;
-          partner_ar: string;
-          partner_en: string;
+          prize_category: string;
+          revoked_at: string;
+          school: string;
+          serial: string;
+          status: string;
+          year: number;
+        }[];
+      };
+      verify_service_letter: {
+        Args: { code: string };
+        Returns: {
+          holder_ar: string;
+          holder_en: string;
+          issued_at: string;
           period_from: string;
           period_to: string;
           revoked_at: string;
           role_ar: string;
           role_en: string;
-          serial: string;
-          status: string;
         }[];
       };
     };
     Enums: {
       pledge_type: "human_authorship" | "member";
-      tier: "member" | "fellow" | "honorary" | "alumni";
+      tier: "member" | "associate" | "honorary";
     };
     CompositeTypes: {
       [_ in never]: never;
@@ -5609,113 +5474,6 @@ export type Database = {
             columns: ["production_id"];
             isOneToOne: false;
             referencedRelation: "productions";
-            referencedColumns: ["id"];
-          },
-        ];
-      };
-      book_ballots: {
-        Row: {
-          closes_at: string;
-          created_at: string;
-          created_by: string | null;
-          event_id: string | null;
-          id: string;
-          programme_id: string | null;
-          title_ar: string;
-          title_en: string;
-        };
-        Insert: {
-          closes_at: string;
-          created_at?: string;
-          created_by?: string | null;
-          event_id?: string | null;
-          id?: string;
-          programme_id?: string | null;
-          title_ar?: string;
-          title_en?: string;
-        };
-        Update: {
-          closes_at?: string;
-          created_at?: string;
-          created_by?: string | null;
-          event_id?: string | null;
-          id?: string;
-          programme_id?: string | null;
-          title_ar?: string;
-          title_en?: string;
-        };
-        Relationships: [];
-      };
-      book_choices: {
-        Row: {
-          author_ar: string;
-          author_en: string;
-          ballot_id: string;
-          created_at: string;
-          id: string;
-          title_ar: string;
-          title_en: string;
-        };
-        Insert: {
-          author_ar?: string;
-          author_en?: string;
-          ballot_id: string;
-          created_at?: string;
-          id?: string;
-          title_ar?: string;
-          title_en?: string;
-        };
-        Update: {
-          author_ar?: string;
-          author_en?: string;
-          ballot_id?: string;
-          created_at?: string;
-          id?: string;
-          title_ar?: string;
-          title_en?: string;
-        };
-        Relationships: [
-          {
-            foreignKeyName: "book_choices_ballot_id_fkey";
-            columns: ["ballot_id"];
-            isOneToOne: false;
-            referencedRelation: "book_ballots";
-            referencedColumns: ["id"];
-          },
-        ];
-      };
-      book_votes: {
-        Row: {
-          ballot_id: string;
-          choice_id: string;
-          user_id: string;
-          voted_at: string;
-        };
-        Insert: {
-          ballot_id: string;
-          choice_id: string;
-          user_id?: string;
-          voted_at?: string;
-        };
-        Update: {
-          ballot_id?: string;
-          choice_id?: string;
-          user_id?: string;
-          voted_at?: string;
-        };
-        Relationships: [
-          {
-            foreignKeyName: "book_votes_ballot_id_fkey";
-            columns: ["ballot_id"];
-            isOneToOne: false;
-            referencedRelation: "book_ballots";
-            referencedColumns: ["id"];
-          },
-          {
-            foreignKeyName: "book_votes_choice_id_fkey";
-            columns: ["choice_id"];
-            isOneToOne: false;
-            referencedRelation: "book_choices";
             referencedColumns: ["id"];
           },
         ];
@@ -5873,18 +5631,15 @@ export type Database = {
           closes_at: string | null;
           created_at: string;
           created_by: string | null;
-          desk: Database["journal"]["Enums"]["desk"] | null;
+          event_id: string | null;
           id: string;
           is_open: boolean;
           kind: string;
           owner: string;
-          partner_id: string | null;
           places: number | null;
           programme_id: string | null;
           role: string | null;
           skills: string[];
-          term_from: string | null;
-          term_to: string | null;
           title_ar: string;
           title_en: string;
           updated_at: string;
@@ -5895,18 +5650,15 @@ export type Database = {
           closes_at?: string | null;
           created_at?: string;
           created_by?: string | null;
-          desk?: Database["journal"]["Enums"]["desk"] | null;
+          event_id?: string | null;
           id?: string;
           is_open?: boolean;
           kind?: string;
           owner?: string;
-          partner_id?: string | null;
           places?: number | null;
           programme_id?: string | null;
           role?: string | null;
           skills?: string[];
-          term_from?: string | null;
-          term_to?: string | null;
           title_ar: string;
           title_en: string;
           updated_at?: string;
@@ -5917,70 +5669,20 @@ export type Database = {
           closes_at?: string | null;
           created_at?: string;
           created_by?: string | null;
-          desk?: Database["journal"]["Enums"]["desk"] | null;
+          event_id?: string | null;
           id?: string;
           is_open?: boolean;
           kind?: string;
           owner?: string;
-          partner_id?: string | null;
           places?: number | null;
           programme_id?: string | null;
           role?: string | null;
           skills?: string[];
-          term_from?: string | null;
-          term_to?: string | null;
           title_ar?: string;
           title_en?: string;
           updated_at?: string;
         };
         Relationships: [];
-      };
-      placements: {
-        Row: {
-          certificate_id: string | null;
-          completed_on: string | null;
-          created_at: string;
-          created_by: string | null;
-          id: string;
-          opening_id: string;
-          started_on: string;
-          status: string;
-          updated_at: string;
-          user_id: string;
-        };
-        Insert: {
-          certificate_id?: string | null;
-          completed_on?: string | null;
-          created_at?: string;
-          created_by?: string | null;
-          id?: string;
-          opening_id: string;
-          started_on?: string;
-          status?: string;
-          updated_at?: string;
-          user_id: string;
-        };
-        Update: {
-          certificate_id?: string | null;
-          completed_on?: string | null;
-          created_at?: string;
-          created_by?: string | null;
-          id?: string;
-          opening_id?: string;
-          started_on?: string;
-          status?: string;
-          updated_at?: string;
-          user_id?: string;
-        };
-        Relationships: [
-          {
-            foreignKeyName: "placements_opening_id_fkey";
-            columns: ["opening_id"];
-            isOneToOne: false;
-            referencedRelation: "openings";
-            referencedColumns: ["id"];
-          },
-        ];
       };
       production_credits: {
         Row: {
@@ -6180,36 +5882,57 @@ export type Database = {
         };
         Relationships: [];
       };
-      prompts: {
+      qalam_students: {
         Row: {
+          consent_form_id: string | null;
           created_at: string;
           created_by: string | null;
-          event_id: string | null;
+          first_name: string;
+          grade: string | null;
           id: string;
-          is_published: boolean;
-          programme_id: string | null;
-          text_ar: string;
-          text_en: string;
+          last_name: string;
+          note: string | null;
+          photos_allowed: boolean;
+          publishing_allowed: boolean;
+          school: string;
+          sessions_attended: number;
+          status: string;
+          updated_at: string;
+          year: number;
         };
         Insert: {
+          consent_form_id?: string | null;
           created_at?: string;
           created_by?: string | null;
-          event_id?: string | null;
+          first_name: string;
+          grade?: string | null;
           id?: string;
-          is_published?: boolean;
-          programme_id?: string | null;
-          text_ar?: string;
-          text_en?: string;
+          last_name: string;
+          note?: string | null;
+          photos_allowed?: boolean;
+          publishing_allowed?: boolean;
+          school: string;
+          sessions_attended?: number;
+          status?: string;
+          updated_at?: string;
+          year: number;
         };
         Update: {
+          consent_form_id?: string | null;
           created_at?: string;
           created_by?: string | null;
-          event_id?: string | null;
+          first_name?: string;
+          grade?: string | null;
           id?: string;
-          is_published?: boolean;
-          programme_id?: string | null;
-          text_ar?: string;
-          text_en?: string;
+          last_name?: string;
+          note?: string | null;
+          photos_allowed?: boolean;
+          publishing_allowed?: boolean;
+          school?: string;
+          sessions_attended?: number;
+          status?: string;
+          updated_at?: string;
+          year?: number;
         };
         Relationships: [];
       };
@@ -6349,50 +6072,6 @@ export type Database = {
         };
         Relationships: [];
       };
-      rotas: {
-        Row: {
-          created_at: string;
-          ends_on: string | null;
-          event_id: string | null;
-          id: string;
-          opening_id: string | null;
-          programme_id: string | null;
-          starts_on: string | null;
-          title_ar: string;
-          title_en: string;
-        };
-        Insert: {
-          created_at?: string;
-          ends_on?: string | null;
-          event_id?: string | null;
-          id?: string;
-          opening_id?: string | null;
-          programme_id?: string | null;
-          starts_on?: string | null;
-          title_ar: string;
-          title_en: string;
-        };
-        Update: {
-          created_at?: string;
-          ends_on?: string | null;
-          event_id?: string | null;
-          id?: string;
-          opening_id?: string | null;
-          programme_id?: string | null;
-          starts_on?: string | null;
-          title_ar?: string;
-          title_en?: string;
-        };
-        Relationships: [
-          {
-            foreignKeyName: "rotas_opening_id_fkey";
-            columns: ["opening_id"];
-            isOneToOne: false;
-            referencedRelation: "openings";
-            referencedColumns: ["id"];
-          },
-        ];
-      };
       shift_signups: {
         Row: {
           created_at: string;
@@ -6430,13 +6109,12 @@ export type Database = {
           capacity: number;
           created_at: string;
           ends_at: string;
-          event_id: string | null;
+          event_id: string;
           id: string;
           location_ar: string | null;
           location_en: string | null;
           role_ar: string;
           role_en: string;
-          rota_id: string;
           skills: string[];
           starts_at: string;
         };
@@ -6444,13 +6122,12 @@ export type Database = {
           capacity?: number;
           created_at?: string;
           ends_at: string;
-          event_id?: string | null;
+          event_id: string;
           id?: string;
           location_ar?: string | null;
           location_en?: string | null;
           role_ar: string;
           role_en: string;
-          rota_id: string;
           skills?: string[];
           starts_at: string;
         };
@@ -6458,65 +6135,86 @@ export type Database = {
           capacity?: number;
           created_at?: string;
           ends_at?: string;
-          event_id?: string | null;
+          event_id?: string;
           id?: string;
           location_ar?: string | null;
           location_en?: string | null;
           role_ar?: string;
           role_en?: string;
-          rota_id?: string;
           skills?: string[];
           starts_at?: string;
         };
-        Relationships: [
-          {
-            foreignKeyName: "shifts_rota_id_fkey";
-            columns: ["rota_id"];
-            isOneToOne: false;
-            referencedRelation: "rotas";
-            referencedColumns: ["id"];
-          },
-        ];
+        Relationships: [];
       };
       six_words: {
         Row: {
+          claimed_at: string | null;
           created_at: string;
+          editor_status: string | null;
+          editor_tier: string | null;
+          email: string | null;
           id: string;
           language: string;
           moderated_at: string | null;
           moderated_by: string | null;
+          page_ref: string | null;
+          publishable: boolean;
           recorded_by: string | null;
           show_name: boolean;
-          status: string;
+          station: string | null;
           text: string;
+          tour: string | null;
+          typed_on: string | null;
           updated_at: string;
           user_id: string | null;
+          visibility: string;
+          writer_name: string | null;
         };
         Insert: {
+          claimed_at?: string | null;
           created_at?: string;
+          editor_status?: string | null;
+          editor_tier?: string | null;
+          email?: string | null;
           id?: string;
           language: string;
           moderated_at?: string | null;
           moderated_by?: string | null;
+          page_ref?: string | null;
+          publishable?: boolean;
           recorded_by?: string | null;
           show_name?: boolean;
-          status?: string;
+          station?: string | null;
           text: string;
+          tour?: string | null;
+          typed_on?: string | null;
           updated_at?: string;
           user_id?: string | null;
+          visibility?: string;
+          writer_name?: string | null;
         };
         Update: {
+          claimed_at?: string | null;
           created_at?: string;
+          editor_status?: string | null;
+          editor_tier?: string | null;
+          email?: string | null;
           id?: string;
           language?: string;
           moderated_at?: string | null;
           moderated_by?: string | null;
+          page_ref?: string | null;
+          publishable?: boolean;
           recorded_by?: string | null;
           show_name?: boolean;
-          status?: string;
+          station?: string | null;
           text?: string;
+          tour?: string | null;
+          typed_on?: string | null;
           updated_at?: string;
           user_id?: string | null;
+          visibility?: string;
+          writer_name?: string | null;
         };
         Relationships: [];
       };
@@ -6525,26 +6223,18 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      attach_page_to_member: {
+        Args: { entry_id: string; member_id: string };
+        Returns: undefined;
+      };
       attach_six_words: {
         Args: { card_code: string; digits: string; entry_id: string };
         Returns: undefined;
-      };
-      ballot_counts: {
-        Args: { ballot: string };
-        Returns: {
-          choice_id: string;
-          votes: number;
-        }[];
       };
       cancel_audition: { Args: { audition_id: string }; Returns: undefined };
       clear_production_rights: {
         Args: { production_id: string };
         Returns: undefined;
-      };
-      complete_apprenticeship: { Args: { placement: string }; Returns: string };
-      draft_production_certificates: {
-        Args: { production_id: string };
-        Returns: number;
       };
       member_productions: {
         Args: Record<PropertyKey, never>;
@@ -6572,19 +6262,12 @@ export type Database = {
           body_en: string;
           closes_at: string;
           created_at: string;
-          desk: Database["journal"]["Enums"]["desk"];
+          event_slug: string;
           id: string;
           kind: string;
           owner: string;
-          partner_name_ar: string;
-          partner_name_en: string;
           places: number;
-          programme_name_ar: string;
-          programme_name_en: string;
-          programme_slug: string;
           skills: string[];
-          term_from: string;
-          term_to: string;
           title_ar: string;
           title_en: string;
         }[];
@@ -6595,6 +6278,16 @@ export type Database = {
           id: string;
           name_ar: string;
           name_en: string;
+        }[];
+      };
+      profile_six_words: {
+        Args: { author_slug: string };
+        Returns: {
+          created_at: string;
+          id: string;
+          language: string;
+          text: string;
+          tour: string;
         }[];
       };
       public_production_credits: {
@@ -6642,10 +6335,6 @@ export type Database = {
           title_ar: string;
           title_en: string;
         }[];
-      };
-      record_production_service: {
-        Args: { hours: number; member_id: string; production_id: string };
-        Returns: string;
       };
       record_six_words: {
         Args: {
@@ -6838,19 +6527,6 @@ export const Constants = {
   access: {
     Enums: {},
   },
-  charity: {
-    Enums: {
-      source: [
-        "table_cash",
-        "stickers",
-        "blind_date",
-        "fill_a_bag",
-        "book_sales",
-        "donation",
-        "other",
-      ],
-    },
-  },
   content: {
     Enums: {},
   },
@@ -6903,6 +6579,13 @@ export const Constants = {
         "riddle",
         "anagram",
         "name_the_book",
+        "news_other",
+        "voices_other",
+        "letters_other",
+        "gallery_other",
+        "video_other",
+        "word",
+        "word_search",
       ],
       desk: ["news", "letters", "gallery", "video", "voices", "games"],
       language: ["en", "ar", "bilingual"],
@@ -6921,7 +6604,7 @@ export const Constants = {
   membership: {
     Enums: {
       pledge_type: ["human_authorship", "member"],
-      tier: ["member", "fellow", "honorary", "alumni"],
+      tier: ["member", "associate", "honorary"],
     },
   },
   programmes: {

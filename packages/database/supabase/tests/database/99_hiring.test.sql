@@ -89,9 +89,8 @@ select pg_temp.grant_role('00000000-0000-0000-0000-00000000d1a4', 'programme_lea
 select pg_temp.logout();
 select set_eq(
   $$ select title_en from programmes.openings where owner = 'qirtas' $$,
-  $$ values ('News Editor'), ('Voices Editor'), ('Video Editor'), ('Games Editor'),
-     ('Producer, Next Stop'), ('Awards Coordinator') $$,
-  'The open masthead seats are on the GetInvolved'
+  $$ values ('News Editor'), ('Voices Editor'), ('Video Editor'), ('Games Editor') $$,
+  'The open masthead seats are on Get involved (Next Stop is Media''s; no Awards Coordinator)'
 );
 create function pg_temp.seat(t text) returns uuid language sql as $$
   select id from programmes.openings where title_en = t;

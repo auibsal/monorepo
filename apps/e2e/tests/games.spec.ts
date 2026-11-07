@@ -9,7 +9,7 @@ test.describe("Qirtas games", () => {
     await page.goto(`${urls.web}/qirtas/games`);
     await expect(page.getByRole("heading", { level: 1 })).toHaveText("Games");
     await expect(
-      page.getByRole("heading", { level: 2, name: /Today's word/ })
+      page.getByRole("heading", { level: 2, name: /Today’s word/ })
     ).toBeVisible();
     await expect(page.getByRole("button", { name: "Enter" })).toBeVisible();
     await expect(

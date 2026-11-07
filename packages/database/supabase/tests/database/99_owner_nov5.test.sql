@@ -81,13 +81,14 @@ select plan(18);
 
 select is(
   (select array_agg(key order by key) from access.roles where is_council),
-  array['artistic_director', 'eic', 'general_secretary', 'media_director', 'president', 'vice_president'],
-  'The Council has six seats: three officers and three directors'
+  array['artistic_director', 'eic', 'events_director', 'general_secretary', 'media_director',
+    'membership_director', 'partnerships_director', 'president', 'vice_president'],
+  'The Council has nine seats: three officers and six directors (owner, Nov 7, 2026)'
 );
 select ok(
   not exists (select 1 from access.roles
-    where key in ('director', 'programs_director', 'partnerships_director', 'membership_director')),
-  'No Director of Programs, Events, Partnerships or Membership'
+    where key in ('director', 'programs_director')),
+  'No Director of Programs (the Directors of Events, Partnerships and Membership are back, Nov 7)'
 );
 select ok(
   not exists (select 1 from access.role_permissions where role = 'vice_president'
@@ -169,10 +170,11 @@ select lives_ok(
   'An event lead lists their event''s needs'
 );
 select throws_ok(
-  $$ insert into programmes.rotas (event_id, title_en, title_ar)
-     values ('00000000-0000-0000-0000-0000000f5102', 'Door', 'الباب') $$,
+  $$ insert into programmes.shifts (event_id, role_en, role_ar, starts_at, ends_at)
+     values ('00000000-0000-0000-0000-0000000f5102', 'Door', 'الباب', now() + interval '8 days',
+       now() + interval '8 days 2 hours') $$,
   '42501', null,
-  'but keeps no rota for another event'
+  'but keeps no shifts for another event'
 );
 select pg_temp.logout();
 select ok(
@@ -184,8 +186,9 @@ select ok(
 select pg_temp.login_anon();
 select is(
   (select array_agg(seat order by sort) from governance.council_seats()),
-  array['president', 'vice_president', 'general_secretary', 'eic', 'artistic_director', 'media_director'],
-  'The Council page lists the six seats in order, held or open'
+  array['president', 'vice_president', 'general_secretary', 'eic', 'media_director',
+    'artistic_director', 'events_director', 'partnerships_director', 'membership_director'],
+  'The Council page lists the nine seats in order, held or open'
 );
 
 select * from finish();

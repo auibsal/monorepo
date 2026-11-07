@@ -314,7 +314,7 @@ describe.skipIf(!enabled)("Notion sync", () => {
       sources.documents,
       {
         Audience: { select: { name: "public" } },
-        Code: { rich_text: [{ text: { content: "SAL-PLT-07" } }] },
+        Code: { rich_text: [{ text: { content: "SAL-GOV-06" } }] },
         Slug: { rich_text: [{ text: { content: "accessibility" } }] },
         Status: { select: { name: "Ready to publish" } },
         Title: { title: [{ text: { content: "Accessibility Statement" } }] },

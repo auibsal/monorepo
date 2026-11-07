@@ -144,9 +144,9 @@ select ok(
 );
 
 -- 5. A request taken up tells its sender; "in progress" doesn't.
-insert into governance.form_submissions (id, form_key, submitted_by, status, submitted_at)
-values ('0e000000-0000-0000-0000-0000000e0d01', 'f20', '00000000-0000-0000-0000-0000000e0a01',
-  'submitted', now());
+insert into governance.form_submissions (id, form_key, submitted_by, status, submitted_at, signer_name, signed_at)
+values ('0e000000-0000-0000-0000-0000000e0d01', 'f21', '00000000-0000-0000-0000-0000000e0a01',
+  'submitted', now(), 'A Member', now());
 update governance.form_submissions set status = 'in_progress'
 where id = '0e000000-0000-0000-0000-0000000e0d01';
 select ok(
@@ -207,10 +207,10 @@ select is(
 );
 
 -- 10. Shifts tomorrow are reminded.
-insert into programmes.rotas (id, programme_id, title_en, title_ar)
-select '0e000000-0000-0000-0000-0000000e1201', id, 'Fair', 'المعرض'
-from core.programmes where slug = 'second-chapter';
-insert into programmes.shifts (id, rota_id, role_en, role_ar, starts_at, ends_at)
+insert into events.events (id, slug, title_en, title_ar, starts_at, status, members_only, entry)
+values ('0e000000-0000-0000-0000-0000000e1201', 'the-fair-ej', 'The book fair', 'معرض الكتب',
+  now() + interval '1 day', 'published', false, 'open');
+insert into programmes.shifts (id, event_id, role_en, role_ar, starts_at, ends_at)
 values ('0e000000-0000-0000-0000-0000000e1301', '0e000000-0000-0000-0000-0000000e1201',
   'Welcome desk', 'الاستقبال',
   ((now() at time zone 'Asia/Baghdad')::date + 1 + time '10:00') at time zone 'Asia/Baghdad',

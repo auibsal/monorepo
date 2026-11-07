@@ -314,13 +314,41 @@ const publishEvent = async (
     Slug: prop.text(v.slug),
     Status: prop.select("Published"),
   });
+  // Its Arabic edition shows the same way in and off campus.
+  const arabic = await arabicRowOf(ctx, id);
+  if (arabic) {
+    await ctx.notion.updatePage(arabic, {
+      "Off campus": prop.checkbox(offCampus),
+      "Way in": prop.select(WAY_IN_NAMES[v.entry] ?? "RSVP"),
+    });
+  }
   count(ctx, existing ? "event.republished" : "event.published");
+};
+
+/** The Way in options in Notion, by the event's entry. */
+const WAY_IN_NAMES: Record<string, string> = {
+  invite: "Private",
+  open: "Open",
+  rsvp: "RSVP",
+};
+
+/** The Arabic edition's row, if one is linked to the event. */
+const arabicRowOf = async (ctx: SyncContext, eventId: string) => {
+  const { data } = await ctx.admin
+    .schema("core")
+    .from("notion_links")
+    .select("notion_page_id")
+    .eq("kind", "event_ar")
+    .eq("record_key", eventId)
+    .maybeSingle();
+  return data?.notion_page_id ?? null;
 };
 
 /**
  * An event's Arabic edition: its own row, linked to the English row in
  * Edition of. It fills the event's Arabic title, summary, venue and text;
- * the English row must be published first.
+ * the English row must be published first. Its Way in and Off campus are
+ * left blank and taken from the English row, never read from the edition.
  */
 const publishArabicEvent = async (
   ctx: SyncContext,
@@ -343,7 +371,7 @@ const publishArabicEvent = async (
   const { data: event } = await ctx.admin
     .schema("events")
     .from("events")
-    .select("slug, programme_id")
+    .select("slug, programme_id, entry, off_campus")
     .eq("id", eventId)
     .maybeSingle();
   const publisher = await publisherFor(
@@ -374,6 +402,14 @@ const publishArabicEvent = async (
   }
   await saveLink(ctx, "event_ar", page.id, eventId, null);
   await ctx.notion.updatePage(page.id, {
+    // The way in and off campus are the event's, set on the English row
+    // (owner, Nov 7, 2026): the edition shows them as they are there.
+    ...(event
+      ? {
+          "Off campus": prop.checkbox(event.off_campus),
+          "Way in": prop.select(WAY_IN_NAMES[event.entry] ?? "RSVP"),
+        }
+      : {}),
     Diwan: prop.url(`${ctx.appUrl}/events/${event?.slug ?? eventId}`),
     "Diwan ID": prop.text(eventId),
     "Platform note": prop.text(
@@ -710,13 +746,6 @@ const EVENT_STATUS: Record<string, string> = {
   cancelled: "Canceled",
   draft: "Planning",
   published: "Published",
-};
-
-/** The Way in options in Notion, by the event's entry. */
-const WAY_IN_NAMES: Record<string, string> = {
-  invite: "Private",
-  open: "Open",
-  rsvp: "RSVP",
 };
 
 /** The one-language rule, said where a row has no text yet. */

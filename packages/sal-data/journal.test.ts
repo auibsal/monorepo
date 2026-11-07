@@ -39,7 +39,12 @@ const migrations = join(
   "supabase",
   "migrations"
 );
+// Flexible types (owner, Nov 7, 2026), and the publish rule from before.
 const sectionsSql = readFileSync(
+  join(migrations, "20261107000600_qirtas_and_the_prize.sql"),
+  "utf8"
+);
+const publishSql = readFileSync(
   join(migrations, "20261029000300_qirtas_six_sections.sql"),
   "utf8"
 );
@@ -51,8 +56,8 @@ const journalSql = readFileSync(
   "utf8"
 );
 
-describe("six sections, six types each", () => {
-  test("the forms list the thirty-two types of journal.is_current_category()", () => {
+describe("six sections, flexible types", () => {
+  test("the forms list the current types of journal.is_current_category()", () => {
     expect(desks).toEqual([
       "news",
       "voices",
@@ -61,13 +66,25 @@ describe("six sections, six types each", () => {
       "video",
       "games",
     ]);
-    // Six a section; Games keeps its two daily kinds (owner, Nov 5, 2026).
+    // Each section ends with its "other" type; Games has its four daily
+    // kinds (owner, Nov 7, 2026).
     for (const desk of desks) {
-      expect(deskCategories(desk), desk).toHaveLength(desk === "games" ? 2 : 6);
+      const types = deskCategories(desk);
+      expect(types.at(-1), desk).toBe(
+        desk === "games" ? "anagram" : `${desk}_other`
+      );
     }
-    expect(categories).toHaveLength(32);
+    expect(deskCategories("games")).toEqual([
+      "word",
+      "word_search",
+      "crossword",
+      "anagram",
+    ]);
     for (const category of categories) {
-      expect(sectionsSql).toContain(`'${category}'`);
+      // Letters is desk_of()'s default; every other type is named.
+      if (deskOf(category) !== "letters") {
+        expect(sectionsSql).toContain(`'${category}'`);
+      }
       expect(deskOf(category)).toBe(
         desks.find((d) =>
           (sectionTypes[d] as readonly string[]).includes(category)
@@ -79,16 +96,22 @@ describe("six sections, six types each", () => {
 });
 
 describe("the types members send", () => {
-  test("everything but Six Words and games; two doors", () => {
+  test("every section but Games; two doors", () => {
     expect(sendableCategories("letters")).toEqual([
       "poetry",
       "fiction",
       "creative_nonfiction",
       "drama",
       "translation",
+      "letters_other",
     ]);
     expect(sendableCategories("games")).toEqual([]);
-    expect(closedCategories).toEqual(["six_words", "crossword", "anagram"]);
+    expect(closedCategories).toEqual([
+      "word",
+      "word_search",
+      "crossword",
+      "anagram",
+    ]);
     expect(newsroomDesks).toEqual(["news", "voices", "video", "games"]);
     expect(editionDesks).toEqual(["letters", "gallery"]);
   });
@@ -174,12 +197,12 @@ describe("submission form", () => {
     ).toBe(true);
     const { call_id: _call, ...noCall } = base;
     expect(
-      submissionSchema.safeParse({ ...noCall, category: "reel" }).success
+      submissionSchema.safeParse({ ...noCall, category: "short_film" }).success
     ).toBe(false);
     expect(
       submissionSchema.safeParse({
         ...noCall,
-        category: "reel",
+        category: "short_film",
         video_url: "https://youtu.be/x",
       }).success
     ).toBe(true);
@@ -188,7 +211,9 @@ describe("submission form", () => {
   test("the desk mapping matches journal.desk_of()", () => {
     const fn = sectionsSql.slice(
       sectionsSql.indexOf("create or replace function journal.desk_of"),
-      sectionsSql.indexOf("create function journal.is_current_category")
+      sectionsSql.indexOf(
+        "create or replace function journal.is_current_category"
+      )
     );
     for (const category of categories) {
       const desk = deskOf(category);
@@ -271,8 +296,8 @@ describe("Qirtas helpers", () => {
       video: false,
     });
     expect(typeNeeds("comic").media).toBe(true);
-    expect(typeNeeds("reel")).toMatchObject({ text: false, video: true });
-    expect(sectionsSql).toContain(
+    expect(typeNeeds("short_film")).toMatchObject({ text: false, video: true });
+    expect(publishSql).toContain(
       "p.category in ('report', 'feature', 'interview')"
     );
   });

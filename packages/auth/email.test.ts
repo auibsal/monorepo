@@ -170,4 +170,19 @@ describe("signing up", () => {
       last_name_en: "Tamimi",
     });
   });
+
+  test("a guest account is marked for the database", async () => {
+    const { signUp, supabase } = client();
+    const result = await signUpWithEmail(supabase, {
+      ...base,
+      email: "visitor@gmail.com",
+      names,
+      outside: { guest: true },
+    });
+    expect(result.ok).toBe(true);
+    const sent = (signUp.mock.calls[0] as unknown[])[0] as {
+      options: { data: Record<string, unknown> };
+    };
+    expect(sent.options.data).toMatchObject({ guest: "true" });
+  });
 });

@@ -90,7 +90,7 @@ select pg_temp.grant_role('00000000-0000-0000-0000-0000000e7001', 'programme_lea
 select is(
   (select count(*)::int from events.events
    where off_campus and slug like 'book-circle-2027-04-%'),
-  2, 'the two Fridays on record are off campus (owner, Nov 5, 2026: no occasions)');
+  1, 'the Earth Day trip (April 23) is off campus; the April 9 trip was canceled (owner, Nov 7, 2026)');
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000e7001');
 select lives_ok(
@@ -103,7 +103,7 @@ select throws_ok(
   $$ update events.events set student_life_approved_on = current_date where id = '00000000-0000-0000-0000-0000000e7101' $$,
   '42501', null, 'nobody writes the approval directly');
 select throws_ok(
-  $$ select events.record_approval('00000000-0000-0000-0000-0000000e7101', current_date) $$,
+  $$ select events.record_approval('00000000-0000-0000-0000-0000000e7101', current_date, 'Student Life') $$,
   '42501', 'approval_by_general_secretary', 'the host does not record it');
 select throws_ok(
   $$ update events.events set off_campus = false where id = '00000000-0000-0000-0000-0000000e7101' $$,
@@ -111,10 +111,10 @@ select throws_ok(
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000e7002');
 select throws_ok(
-  $$ select events.record_approval('00000000-0000-0000-0000-0000000e7101', current_date + 3) $$,
+  $$ select events.record_approval('00000000-0000-0000-0000-0000000e7101', current_date + 3, 'Student Life') $$,
   '22023', 'approval_in_future', 'an approval is not dated ahead');
 select lives_ok(
-  $$ select events.record_approval('00000000-0000-0000-0000-0000000e7101', current_date) $$,
+  $$ select events.record_approval('00000000-0000-0000-0000-0000000e7101', current_date, 'Student Life') $$,
   'the General Secretary records it');
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000e7001');
@@ -124,7 +124,7 @@ select lives_ok(
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000e7002');
 select throws_ok(
-  $$ select events.record_approval('00000000-0000-0000-0000-0000000e7101', null) $$,
+  $$ select events.record_approval('00000000-0000-0000-0000-0000000e7101', null, null) $$,
   '22023', 'unpublish_first', 'a published trip keeps its approval');
 
 select pg_temp.login_anon();

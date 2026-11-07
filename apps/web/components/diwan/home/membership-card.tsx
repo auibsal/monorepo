@@ -1,9 +1,11 @@
 "use client";
 
 import { useAuth } from "@repo/auth/provider";
-import { BrandLogo } from "@repo/brand/components/brand-logo";
+import {
+  MembershipCard as CardFace,
+  cardNumber,
+} from "@repo/brand/components/sal/membership-card";
 import { Button } from "@repo/brand/components/ui/button";
-import { Checkbox } from "@repo/brand/components/ui/checkbox";
 import {
   Dialog,
   DialogContent,
@@ -13,15 +15,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@repo/brand/components/ui/dialog";
-import { Label } from "@repo/brand/components/ui/label";
 import { siteUrl } from "@repo/internationalization";
 import { formatLongDate } from "@repo/internationalization/format";
 import { localized, membership, partners, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
-import { type PointerEvent, useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import QRCode from "react-qr-code";
-import { Guilloche } from "@/components/guilloche";
 import { callApi } from "@/lib/diwan/api";
 import { useMyPartners } from "@/lib/diwan/partners";
 import {
@@ -38,9 +38,6 @@ import {
 
 const cardKey = ["membership", "card"] as const;
 
-/** The card number as printed: four digits at least (No. 0042). */
-const cardNumber = (value: number) => String(value).padStart(4, "0");
-
 /** The month and year a member joined, for the card's face. */
 const sinceMonth = (date: string, locale: string) =>
   new Intl.DateTimeFormat(locale === "ar" ? "ar-IQ-u-nu-latn" : "en-US", {
@@ -48,13 +45,6 @@ const sinceMonth = (date: string, locale: string) =>
     timeZone: "Asia/Baghdad",
     year: "numeric",
   }).format(new Date(date));
-
-const Field = ({ label, value }: { label: string; value: string }) => (
-  <div className="grid content-start gap-1">
-    <dt className="type-label text-text-secondary">{label}</dt>
-    <dd className="font-medium text-text tabular-nums">{value}</dd>
-  </div>
-);
 
 /**
  * The live code: new digits every 30 seconds from the card's secret, and
@@ -85,93 +75,6 @@ const useLiveCode = (secret: string | undefined) => {
   }, [secret, step]);
   return { digits, now, secondsLeft: totpSecondsLeft(now) };
 };
-
-/** How far the card leans, at most, in degrees. */
-const MAX_TILT = 8;
-
-interface MotionPermission {
-  requestPermission?: () => Promise<string>;
-}
-
-/**
- * The card in the hand: it leans toward a finger or the pointer, and with
- * the phone where the browser reports its tilt (iPhones ask once, on the
- * first touch of the card), and the light moves across it as it does.
- * Still for anyone who asks for less motion. Writes --rx, --ry and
- * --sheen on the card; the card's transform and the sheen read them.
- */
-const useCardMotion = () => {
-  const ref = useRef<HTMLDivElement>(null);
-  const target = useRef({ x: 0, y: 0 });
-
-  useEffect(() => {
-    const card = ref.current;
-    if (
-      !card ||
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches
-    ) {
-      return;
-    }
-    const tilt = { x: 0, y: 0 };
-    let frame = 0;
-    const onTilt = (event: DeviceOrientationEvent) => {
-      if (event.gamma === null || event.beta === null) {
-        return;
-      }
-      // Held at about 45 degrees is the rest position.
-      target.current = {
-        x: Math.max(-1, Math.min(1, (event.beta - 45) / 30)),
-        y: Math.max(-1, Math.min(1, event.gamma / 30)),
-      };
-    };
-    const draw = (time: number) => {
-      tilt.x += (target.current.x - tilt.x) * 0.08;
-      tilt.y += (target.current.y - tilt.y) * 0.08;
-      const drift = 18 * Math.sin(time / 2600);
-      card.style.setProperty("--rx", `${(-tilt.x * MAX_TILT).toFixed(2)}deg`);
-      card.style.setProperty("--ry", `${(tilt.y * MAX_TILT).toFixed(2)}deg`);
-      card.style.setProperty(
-        "--sheen",
-        `${(50 + tilt.y * 40 + drift).toFixed(1)}%`
-      );
-      frame = window.requestAnimationFrame(draw);
-    };
-    window.addEventListener("deviceorientation", onTilt);
-    frame = window.requestAnimationFrame(draw);
-    return () => {
-      window.removeEventListener("deviceorientation", onTilt);
-      window.cancelAnimationFrame(frame);
-    };
-  }, []);
-
-  const onPointerMove = (event: PointerEvent<HTMLDivElement>) => {
-    const box = event.currentTarget.getBoundingClientRect();
-    target.current = {
-      x: ((event.clientY - box.top) / box.height) * 2 - 1,
-      y: ((event.clientX - box.left) / box.width) * 2 - 1,
-    };
-  };
-  const onPointerLeave = () => {
-    target.current = { x: 0, y: 0 };
-  };
-  const onPointerDown = () => {
-    // iPhones report the tilt only after asking, from a touch; they ask
-    // the member once and remember the answer.
-    const motion = window.DeviceOrientationEvent as unknown as
-      | MotionPermission
-      | undefined;
-    motion?.requestPermission?.().catch(() => undefined);
-  };
-  return { onPointerDown, onPointerLeave, onPointerMove, ref };
-};
-
-/** The light across the card, where the card's motion puts it. */
-const Sheen = () => (
-  <span
-    aria-hidden="true"
-    className="pointer-events-none absolute inset-0 bg-[linear-gradient(105deg,transparent_calc(var(--sheen,50%)-16%),color-mix(in_oklab,var(--surface)_85%,transparent)_var(--sheen,50%),transparent_calc(var(--sheen,50%)+16%))] opacity-70 mix-blend-overlay"
-  />
-);
 
 /**
  * Add to Google Wallet: the pass carries the same live code. Once Google
@@ -251,59 +154,6 @@ const WalletLink = ({ code }: { code: string }) => {
         </p>
       ) : null}
     </>
-  );
-};
-
-/**
- * Whether the card's check page lists the member's certificates. Off by
- * default: anyone holding the card's link would see the record.
- */
-const RecordSetting = () => {
-  const t = useTranslations("diwan.home.card");
-  const { supabase, user } = useAuth();
-  const queryClient = useQueryClient();
-  const key = ["card-record-setting", user?.id];
-  const setting = useQuery({
-    enabled: Boolean(user),
-    queryFn: async () =>
-      Boolean(
-        unwrap(
-          await supabase
-            .schema("core")
-            .from("profiles")
-            .select("show_certificates_on_card")
-            .eq("id", user?.id ?? "")
-            .single()
-        )?.show_certificates_on_card
-      ),
-    queryKey: key,
-  });
-  const save = useMutation({
-    mutationFn: async (show: boolean) =>
-      unwrap(
-        await supabase
-          .schema("core")
-          .from("profiles")
-          .update({ show_certificates_on_card: show })
-          .eq("id", user?.id ?? "")
-      ),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: key }),
-  });
-  return (
-    <div className="flex items-start gap-3">
-      <Checkbox
-        checked={setting.data ?? false}
-        disabled={setting.isPending || save.isPending}
-        id="card-record"
-        onCheckedChange={(value) => save.mutate(value === true)}
-      />
-      <div className="grid gap-1">
-        <Label className="leading-normal" htmlFor="card-record">
-          {t("showRecord")}
-        </Label>
-        <p className="type-caption">{t("showRecordHint")}</p>
-      </div>
-    </div>
   );
 };
 
@@ -388,7 +238,6 @@ export const MembershipCard = () => {
       queryClient.setQueryData([...cardKey, user?.id], fresh),
   });
   const live = useLiveCode(card.data?.secret);
-  const motion = useCardMotion();
 
   if (!(kind && status.data && profile.data && card.data)) {
     return null;
@@ -406,7 +255,6 @@ export const MembershipCard = () => {
   } else if (status.data.tier) {
     tier = t(`tiers.${status.data.tier}`);
   }
-  const left = (live.secondsLeft / TOTP_PERIOD_SECONDS) * 100;
 
   const code = (size: number) =>
     link ? (
@@ -425,78 +273,26 @@ export const MembershipCard = () => {
       <h2 className="sr-only" id="membership-card">
         {t("card.title")}
       </h2>
-      <div
-        className="relative grid max-w-3xl gap-8 overflow-hidden border border-line bg-surface-reading p-6 text-text [transform:perspective(1100px)_rotateX(var(--rx,0deg))_rotateY(var(--ry,0deg))] sm:grid-cols-[1fr_auto] sm:p-8"
-        data-theme="light"
-        onPointerDown={motion.onPointerDown}
-        onPointerLeave={motion.onPointerLeave}
-        onPointerMove={motion.onPointerMove}
-        ref={motion.ref}
-      >
-        <div className="pointer-events-none absolute start-1/4 top-1/2 size-[26rem] -translate-x-1/2 -translate-y-1/2 rtl:translate-x-1/2">
-          <Guilloche
-            className="size-full opacity-40 motion-safe:animate-[spin_180s_linear_infinite]"
-            number={card.data.number}
-          />
-        </div>
-        <Sheen />
-        <div className="relative grid content-between gap-8">
-          <div className="flex items-start justify-between gap-4">
-            <BrandLogo ground="light" height={44} locale={locale} />
-            <p className="type-label grid gap-1 pt-1 text-end text-text-secondary">
-              <span>{t("card.title")}</span>
-              {/* Staff: a member holding a Society role. */}
-              {mine.data?.staff ? (
-                <span className="text-accent">{t("card.staff")}</span>
-              ) : null}
-            </p>
-          </div>
-          <p className="type-display text-balance" dir="auto">
-            {name}
-          </p>
-          <dl className="grid grid-cols-2 gap-x-8 gap-y-4 border-line border-t pt-4 sm:grid-cols-4">
-            <Field
-              label={t("card.numberLabel")}
-              value={cardNumber(card.data.number)}
-            />
-            {tier ? <Field label={t("card.tier")} value={tier} /> : null}
-            {kind === "member" ? (
-              <Field
-                label={t("card.vote")}
-                value={
-                  status.data.voting_member ? t("card.votes") : t("card.noVote")
-                }
-              />
-            ) : null}
-          </dl>
-        </div>
-        <figure className="relative grid content-start justify-items-center gap-2 sm:border-line sm:border-s sm:ps-8">
-          <div className="grid w-40 gap-2 bg-surface p-3">
-            {code(148)}
-            {/* Time left on this code: a hairline that empties. */}
-            <span aria-hidden="true" className="h-px w-full bg-line">
-              <span
-                className="block h-px bg-text transition-[width] duration-1000 ease-linear"
-                style={{ width: `${left}%` }}
-              />
-            </span>
-          </div>
-          {/* Member since, under the code (owner, Oct 31, 2026: no "Live"
-              and clock on the card). */}
-          {kind === "member" && status.data.member_since ? (
-            <figcaption className="type-label text-center text-text-secondary">
-              {t("card.since", {
+      <CardFace
+        classLabel={tier}
+        labels={{
+          class: t("card.tier"),
+          number: t("card.numberLabel"),
+          qr: t("card.checkLink"),
+        }}
+        locale={locale}
+        name={name}
+        number={card.data.number}
+        qr={{ left: live.secondsLeft / TOTP_PERIOD_SECONDS, value: link }}
+        since={
+          kind === "member" && status.data.member_since
+            ? t("card.since", {
                 date: sinceMonth(status.data.member_since, locale),
-              })}
-            </figcaption>
-          ) : null}
-        </figure>
-        {/* The one accent on the card: a crimson rule along its foot. */}
-        <span
-          aria-hidden="true"
-          className="absolute inset-x-0 bottom-0 h-1.5 bg-accent"
-        />
-      </div>
+              })
+            : undefined
+        }
+        title={t("card.title")}
+      />
       {/* How it is used, under the card rather than on it. */}
       <p className="type-caption max-w-3xl">{t("card.qr")}</p>
       <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
@@ -559,7 +355,6 @@ export const MembershipCard = () => {
               {t("card.reissued")}
             </p>
           ) : null}
-          <RecordSetting />
           {card.data.issued_at ? (
             <p className="type-caption">
               {t("card.issued", {

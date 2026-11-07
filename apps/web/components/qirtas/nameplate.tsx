@@ -7,7 +7,7 @@ import { DeskNav } from "./desk-nav";
 
 /**
  * The paper's nameplate: the name in Medium, a dateline between two ink
- * rules ending in the Masthead, the Editions and the Awards (owner, Oct 31,
+ * rules ending in the Masthead, the Editions, Topics and the Prize (owner, Oct 31,
  * 2026), and the sections. One nameplate on every page of the paper
  * (owner, Nov 5, 2026): it belongs to the Qirtas layout, so it never
  * changes or reloads between the front page, a section and a piece.
@@ -37,8 +37,8 @@ export const Nameplate = async ({ locale }: { locale: Locale }) => {
           <Link className="hover:text-accent" href="/qirtas/topics">
             {t("topics")}
           </Link>
-          <Link className="hover:text-accent" href="/qirtas/awards">
-            {t("awards")}
+          <Link className="hover:text-accent" href="/qirtas/prize">
+            {t("prize")}
           </Link>
         </span>
       </p>

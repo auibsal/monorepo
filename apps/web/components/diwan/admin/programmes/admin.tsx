@@ -13,11 +13,10 @@ import {
   formatNumber,
 } from "@repo/internationalization/format";
 import { hasPermissionAnywhere } from "@repo/rbac";
-import { localized, programmes, recognition, unwrap } from "@repo/sal-data";
+import { localized, programmes, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useEffect, useState } from "react";
-import { DateInput } from "@/components/fields/date-input";
 import { Link, useRouter } from "@/lib/diwan/navigation";
 import { useGrants } from "@/lib/diwan/queries";
 import { DiwanSection } from "../../page";
@@ -210,7 +209,7 @@ export const EpisodePage = ({ slug }: { readonly slug: string }) => {
             <Link className="link" href={back}>
               {t("back")}
             </Link>
-            {e?.published_at ? <OnTheSite href="/qirtas/next-stop" /> : null}
+            {e?.published_at ? <OnTheSite href="/next-stop" /> : null}
           </>
         }
         title={e ? localized(e, "title", locale) : t("new")}
@@ -600,14 +599,18 @@ export const NewReelPage = () => {
   );
 };
 
-// ── Rotas and shifts ────────────────────────────────────────────────────────
+// ── Shifts ────────────────────────────────────────────────────────
 
 type SignupStatus = "signed_up" | "confirmed" | "swap_requested" | "cancelled";
 
-const Shifts = ({ rotaId }: { rotaId: string }) => {
+/**
+ * An event's volunteer shifts (owner, Nov 7, 2026: shifts live only on an
+ * event and log no hours; there are no rotas).
+ */
+export const Shifts = ({ eventId }: { eventId: string }) => {
   const t = useTranslations("diwan.admin.programmes.rotas");
   const locale = useLocale() as Locale;
-  const { supabase, user } = useAuth();
+  const { supabase } = useAuth();
   const queryClient = useQueryClient();
   const data = useQuery({
     queryFn: async () => {
@@ -617,7 +620,7 @@ const Shifts = ({ rotaId }: { rotaId: string }) => {
             .schema("programmes")
             .from("shifts")
             .select("*")
-            .eq("rota_id", rotaId)
+            .eq("event_id", eventId)
             .order("starts_at")
         ) ?? [];
       const signups = shifts.length
@@ -632,23 +635,9 @@ const Shifts = ({ rotaId }: { rotaId: string }) => {
               )
           ) ?? [])
         : [];
-      // Shifts already recorded as worked (recorded service, F-16).
-      const worked = shifts.length
-        ? (unwrap(
-            await supabase
-              .schema("membership")
-              .from("service_records")
-              .select("source_id, user_id")
-              .eq("source", "shift")
-              .in(
-                "source_id",
-                shifts.map((s) => s.id)
-              )
-          ) ?? [])
-        : [];
-      return { shifts, signups, worked };
+      return { shifts, signups };
     },
-    queryKey: [...invalidateKey, "shifts", rotaId],
+    queryKey: [...invalidateKey, "shifts", eventId],
   });
   const names = useMemberNames(data.data?.signups.map((s) => s.user_id) ?? []);
   const invalidate = () =>
@@ -670,11 +659,6 @@ const Shifts = ({ rotaId }: { rotaId: string }) => {
       ),
     onSuccess: invalidate,
   });
-  const markWorked = useMutation({
-    mutationFn: (input: { shift_id: string; user_id: string }) =>
-      recognition.recordShiftService(supabase, input.shift_id, input.user_id),
-    onSuccess: invalidate,
-  });
   const remove = useMutation({
     mutationFn: async (shiftId: string) =>
       unwrap(
@@ -686,35 +670,6 @@ const Shifts = ({ rotaId }: { rotaId: string }) => {
       ),
     onSuccess: invalidate,
   });
-
-  // After a shift ends, its manager records who worked it: the hours count
-  // as confirmed service (Bylaws B4.1).
-  const workedState = (
-    shift: { ends_at: string; id: string },
-    userId: string
-  ) => {
-    if (Date.parse(shift.ends_at) > Date.now() || userId === user?.id) {
-      return null;
-    }
-    const done = data.data?.worked.some(
-      (w) => w.source_id === shift.id && w.user_id === userId
-    );
-    if (done) {
-      return <span className="type-caption">{t("worked")}</span>;
-    }
-    return (
-      <Button
-        disabled={markWorked.isPending}
-        onClick={() =>
-          markWorked.mutate({ shift_id: shift.id, user_id: userId })
-        }
-        size="sm"
-        variant="ghost"
-      >
-        {t("markWorked")}
-      </Button>
-    );
-  };
 
   return (
     <div className="grid gap-4">
@@ -779,7 +734,6 @@ const Shifts = ({ rotaId }: { rotaId: string }) => {
                       >
                         {t("release")}
                       </Button>
-                      {workedState(shift, s.user_id)}
                     </li>
                   );
                 })}
@@ -800,63 +754,21 @@ const Shifts = ({ rotaId }: { rotaId: string }) => {
         })}
       </ul>
       <AddInPlace label={t("addShift")}>
-        {(close) => <NewShift onDone={close} rotaId={rotaId} />}
+        {(close) => <NewShift eventId={eventId} onDone={close} />}
       </AddInPlace>
       <ErrorLine error={setStatus.error ?? remove.error} />
     </div>
   );
 };
 
-/** An event's rotas and their shifts (owner, Nov 5, 2026: an event's own). */
-export const Rotas = ({ eventId }: { eventId: string }) => {
-  const t = useTranslations("diwan.admin.programmes.rotas");
-  const locale = useLocale() as Locale;
-  const { supabase } = useAuth();
-  const rotas = useQuery({
-    queryFn: async () =>
-      unwrap(
-        await supabase
-          .schema("programmes")
-          .from("rotas")
-          .select("*")
-          .eq("event_id", eventId)
-          .order("created_at", { ascending: false })
-      ) ?? [],
-    queryKey: [...invalidateKey, "rotas", eventId],
-  });
-  return (
-    <div className="grid gap-6">
-      {rotas.data?.map((rota) => (
-        <SalCard key={rota.id}>
-          <h3 className="type-subheading">
-            {localized(rota, "title", locale)}
-          </h3>
-          {rota.starts_on ? (
-            <p className="type-caption">
-              {formatLongDate(rota.starts_on, locale, true)}
-              {rota.ends_on
-                ? ` – ${formatLongDate(rota.ends_on, locale, true)}`
-                : ""}
-            </p>
-          ) : null}
-          <Shifts rotaId={rota.id} />
-        </SalCard>
-      ))}
-      <AddInPlace label={t("new")}>
-        {(close) => <NewRota eventId={eventId} onDone={close} />}
-      </AddInPlace>
-    </div>
-  );
-};
-
-/** A new shift on a rota, added in place under its shifts. */
+/** A new shift on the event, added in place under its shifts. */
 const NewShift = ({
+  eventId,
   onDone,
-  rotaId,
 }: {
+  readonly eventId: string;
   /** Called once saved: closes the form in place. */
   readonly onDone: () => void;
-  readonly rotaId: string;
 }) => {
   const t = useTranslations("diwan.admin.programmes.rotas");
   const { supabase } = useAuth();
@@ -878,11 +790,11 @@ const NewShift = ({
           .insert({
             capacity: Number(form.capacity) || 1,
             ends_at: form.ends_at ?? "",
+            event_id: eventId,
             location_ar: form.location.ar || null,
             location_en: form.location.en || null,
             role_ar: form.role.ar,
             role_en: form.role.en,
-            rota_id: rotaId,
             skills: form.skills,
             starts_at: form.starts_at ?? "",
           })
@@ -949,88 +861,6 @@ const NewShift = ({
         disabled={!(form.starts_at && form.ends_at)}
         pending={add.isPending}
       />
-      <ErrorLine error={add.error} />
-    </form>
-  );
-};
-
-/** A new rota, added in place under the event's shifts. */
-const NewRota = ({
-  eventId,
-  onDone,
-}: {
-  /** Called once saved: closes the form in place. */
-  readonly onDone: () => void;
-  readonly eventId: string;
-}) => {
-  const t = useTranslations("diwan.admin.programmes.rotas");
-  const { supabase } = useAuth();
-  const queryClient = useQueryClient();
-  const [form, setForm] = useState({
-    ends_on: "",
-    starts_on: "",
-    title: { ar: "", en: "" },
-  });
-  const add = useMutation({
-    mutationFn: async () =>
-      unwrap(
-        await supabase
-          .schema("programmes")
-          .from("rotas")
-          .insert({
-            ends_on: form.ends_on || null,
-            event_id: eventId,
-            starts_on: form.starts_on || null,
-            title_ar: form.title.ar,
-            title_en: form.title.en,
-          })
-      ),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: invalidateKey });
-      onDone();
-    },
-  });
-
-  return (
-    <form
-      className="grid max-w-3xl gap-4"
-      onSubmit={(event) => {
-        event.preventDefault();
-        add.mutate();
-      }}
-    >
-      <BilingualField
-        label={t("titleField")}
-        maxLength={200}
-        onChange={(title) => setForm((f) => ({ ...f, title }))}
-        required
-        value={form.title}
-      />
-      <div className="grid gap-4 sm:grid-cols-2">
-        <Field label={t("startsOn")}>
-          {(id) => (
-            <DateInput
-              id={id}
-              onChange={(e) =>
-                setForm((f) => ({ ...f, starts_on: e.target.value }))
-              }
-              value={form.starts_on}
-            />
-          )}
-        </Field>
-        <Field label={t("endsOn")}>
-          {(id) => (
-            <DateInput
-              id={id}
-              onChange={(e) =>
-                setForm((f) => ({ ...f, ends_on: e.target.value }))
-              }
-              value={form.ends_on}
-            />
-          )}
-        </Field>
-      </div>
-      <SaveButton pending={add.isPending} />
       <ErrorLine error={add.error} />
     </form>
   );
@@ -1229,7 +1059,7 @@ export const ProgramPitches = () => {
       id="pitches"
       title={t("pitches.title")}
     >
-      <RequestQueue base="/events/pitches" keys={["f10"]} />
+      <RequestQueue base="/events/pitches" keys={["f11"]} />
     </DiwanSection>
   );
 };

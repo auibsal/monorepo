@@ -56,12 +56,15 @@ select ok(
 select hasnt_column('governance', 'ballots', 'user_id', 'Ballots carry no voter');
 select hasnt_column('governance', 'ballot_receipts', 'cast_at', 'Receipts carry no timestamp');
 
-select ok(
-  not has_table_privilege('authenticated', 'charity.ledger_entries', 'update')
-    and not has_table_privilege('authenticated', 'charity.ledger_entries', 'delete')
-    and not has_table_privilege('service_role', 'charity.ledger_entries', 'update')
-    and not has_table_privilege('service_role', 'charity.ledger_entries', 'delete'),
-  'Nobody is granted update or delete on the ledger'
+-- Owner, Nov 7, 2026: charity collections are not a site feature.
+-- The empty schema stays until it leaves the Data API's exposed schemas.
+select is(
+  (select count(*)::int from pg_class c join pg_namespace n on n.oid = c.relnamespace
+   where n.nspname = 'charity')
+  + (select count(*)::int from pg_proc p join pg_namespace n on n.oid = p.pronamespace
+   where n.nspname = 'charity'),
+  0,
+  'The charity schema and its ledger are gone'
 );
 
 select * from finish();

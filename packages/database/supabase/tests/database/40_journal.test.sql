@@ -138,8 +138,8 @@ grant execute on function pg_temp.submit(integer, journal.category, uuid) to pub
 select is(
   (select count(*)::integer from unnest(enum_range(null::journal.category)) c
    where journal.is_current_category(c)),
-  32,
-  'Thirty-two types: six in each section, two in Games (owner, Nov 5, 2026)'
+  36,
+  'Thirty-six types: each section''s, with its other, and four daily games (owner, Nov 7, 2026)'
 );
 
 select lives_ok($$ select pg_temp.submit(1, 'poetry') $$, 'Poetry is accepted');

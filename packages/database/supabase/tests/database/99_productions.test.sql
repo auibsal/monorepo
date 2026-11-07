@@ -75,7 +75,7 @@ insert into core.semesters (code, name_en, name_ar, starts_on, ends_on) values
 -- first-100 rule back on themselves.
 update core.settings set value = '0' where key = 'membership.founding_voters';
 -- </preamble>
-select plan(33);
+select plan(30);
 
 -- a1 is credited, a5 auditions, a4 leads one production, a6 is the Vice
 -- President (who clears rights), a2 the President.
@@ -258,7 +258,7 @@ select throws_ok(
   'and never reads the register itself (rights, report)'
 );
 
--- ── Partners, performances, hours, certificates and the report ──
+-- ── Partners, performances and the report ──
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a4');
 select throws_ok(
   $$ insert into programmes.production_partners (production_id, partner_id)
@@ -271,16 +271,9 @@ values ('00000000-0000-0000-0000-00000000f001', '00000000-0000-0000-0000-0000000
 update programmes.productions set stage = 'performances' where id = '00000000-0000-0000-0000-00000000f001';
 insert into programmes.production_events values
   ('00000000-0000-0000-0000-00000000f001', '00000000-0000-0000-0000-00000000e001');
-select lives_ok(
-  $$ select programmes.record_production_service('00000000-0000-0000-0000-00000000f001',
-       '00000000-0000-0000-0000-0000000000a1', 12.5) $$,
-  'The lead records a credited member''s hours'
-);
-select throws_ok(
-  $$ select programmes.record_production_service('00000000-0000-0000-0000-00000000f001',
-       '00000000-0000-0000-0000-0000000000a5', 2) $$,
-  '22023', 'not_credited',
-  'only for people credited'
+select ok(
+  not exists (select 1 from pg_proc where proname in ('record_production_service', 'draft_production_certificates')),
+  'No hours from credits and no production certificates (owner, Nov 7, 2026)'
 );
 select pg_temp.login_anon();
 select is((select count(*)::int from programmes.public_production_events('00000000-0000-0000-0000-00000000f001')), 1,
@@ -298,11 +291,6 @@ update programmes.productions set report_people_reached = 80, report_what_happen
 where id = '00000000-0000-0000-0000-00000000f001';
 select programmes.sign_production_report('00000000-0000-0000-0000-00000000f001');
 
-select pg_temp.login_as('00000000-0000-0000-0000-0000000000a2');
-select is(programmes.draft_production_certificates('00000000-0000-0000-0000-00000000f001'), 1,
-  'A closed production drafts a certificate for each credited member');
-select is(programmes.draft_production_certificates('00000000-0000-0000-0000-00000000f001'), 0,
-  'and only once');
 
 select * from finish();
 rollback;

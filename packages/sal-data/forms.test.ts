@@ -1,13 +1,11 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, test } from "vitest";
 import {
-  cashTotals,
   type FormDefinition,
   formKeys,
   formProblems,
   forms,
-  interviewTotal,
-  interviewVeto,
+  keyFromNumber,
 } from "./forms";
 
 const read = (name: string) =>
@@ -15,31 +13,33 @@ const read = (name: string) =>
     new URL(`../database/supabase/migrations/${name}`, import.meta.url),
     "utf8"
   );
-const migration = read("20261009000500_forms.sql");
-// The Expense Claim went with the Society's money (Oct 30, 2026).
-const retired = [
-  ...read("20261030000100_no_money.sql").matchAll(
-    /delete from governance\.form_types where key = '(f\d{2}[a-z]?)'/g
-  ),
-].map((m) => m[1]);
-
+// The forms register of Nov 7, 2026: the forms signed on the site.
+const migration = read("20261107000300_forms_and_guests.sql");
 describe("forms", () => {
   test("every form here is in the database registry, and only those", () => {
-    const registered = [...migration.matchAll(/\('(f\d{2}[a-z]?)', 'F-/g)]
-      .map((m) => m[1])
-      .filter((key) => !retired.includes(key));
+    const registered = [
+      ...migration.matchAll(
+        /\('(f\d{2})', 'F-\d{2}', '[^']+', '[^']+', 'site'/g
+      ),
+    ].map((m) => m[1]);
     expect(registered.sort()).toEqual([...formKeys].sort());
   });
 
-  test("anonymous and routed forms match the registry (F-20 only)", () => {
+  test("anonymous and routed forms match the registry (F-21 only)", () => {
     const anonymous = formKeys.filter((key) => forms[key].anonymous);
-    expect(anonymous).toEqual(["f20"]);
-    expect(formKeys.filter((key) => forms[key].routing)).toEqual(["f20"]);
+    expect(anonymous).toEqual(["f21"]);
+    expect(formKeys.filter((key) => forms[key].routing)).toEqual(["f21"]);
+  });
+
+  test("a form's address is its number", () => {
+    expect(keyFromNumber("F-45")).toBe("f45");
+    expect(keyFromNumber("f06")).toBe("f06");
+    expect(keyFromNumber("6")).toBe("f06");
   });
 
   test("required fields, lengths, ranges and choices are checked", () => {
-    const { f09 } = forms;
-    expect(formProblems(f09, {})).toContain("title");
+    const { f10 } = forms;
+    expect(formProblems(f10, {})).toContain("title");
     const ok = {
       believes: "b",
       motion_type: "ordinary",
@@ -48,21 +48,14 @@ describe("forms", () => {
       seconder: "s",
       title: "t",
     };
-    expect(formProblems(f09, ok)).toEqual([]);
-    expect(formProblems(f09, { ...ok, motion_type: "other" })).toEqual([
+    expect(formProblems(f10, ok)).toEqual([]);
+    expect(formProblems(f10, { ...ok, motion_type: "other" })).toEqual([
       "motion_type",
     ]);
-    expect(formProblems(f09, { ...ok, title: "x".repeat(201) })).toEqual([
+    expect(formProblems(f10, { ...ok, title: "x".repeat(201) })).toEqual([
       "title",
     ]);
-    expect(
-      formProblems(forms.f04, { score_commitment: 6 }).includes(
-        "score_commitment"
-      )
-    ).toBe(true);
-    expect(
-      formProblems(forms.f03, { work_link: "javascript:alert(1)" })
-    ).toContain("work_link");
+    expect(formProblems(forms.f45, {})).toContain("agree");
   });
 
   test("table rows need their required columns", () => {
@@ -87,27 +80,5 @@ describe("forms", () => {
       formProblems(def, { items: [{ date: "2026-10-01", item: "Tea" }] })
     ).toEqual([]);
     expect(formProblems(def, { items: [{ item: "Tea" }] })).toEqual(["items"]);
-  });
-
-  test("F-04 weighted total and the Commitment/Teamwork rule", () => {
-    const all5 = {
-      score_commitment: 5,
-      score_ideas: 5,
-      score_skills: 5,
-      score_teamwork: 5,
-      score_values: 5,
-    };
-    expect(interviewTotal(all5)).toBe(100);
-    expect(interviewTotal({ ...all5, score_skills: 3 })).toBe(90);
-    expect(interviewVeto(all5)).toBe(false);
-    expect(interviewVeto({ ...all5, score_teamwork: 1 })).toBe(true);
-  });
-
-  test("F-14 totals", () => {
-    expect(
-      cashTotals({
-        notes: { "250": { count1: 4 }, "50000": { count1: 2, count2: 2 } },
-      })
-    ).toEqual({ count1: 101_000, count2: 100_000 });
   });
 });

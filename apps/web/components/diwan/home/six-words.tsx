@@ -1,35 +1,81 @@
 "use client";
 
+import { useAuth } from "@repo/auth/provider";
+import { programmes } from "@repo/sal-data";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
-import { useMySixWords } from "@/lib/diwan/queries";
+import { ErrorLine, SelectInput } from "../admin/kit";
 import { Section } from "./section";
 
 /**
- * The member's six words in the Register. They are written only on the
- * Typewriter Tour (owner, 2026-10-25): officers transcribe the card and a
- * scan of the member's card attaches it here. A new card replaces the
- * old one. Shown only once there is one (the overhaul, Oct 30, 2026); the
- * Tour's own page says how to write one.
+ * The member's pages from the Typewriter Tour (owner, Nov 7, 2026): typed on
+ * the Tour, never on the site, and added to their account when they join
+ * with the email they gave. Each stays private until they choose whether it
+ * also appears on their profile or on the Tour's page: that choice is the
+ * consent record. Shown only once there is one.
  */
 export const SixWords = () => {
   const t = useTranslations("diwan.home.sixWords");
-  const entry = useMySixWords();
-  if (!entry.data) {
+  const { supabase, user } = useAuth();
+  const queryClient = useQueryClient();
+  const key = ["my-tour-pages", user?.id];
+  const pages = useQuery({
+    enabled: Boolean(user),
+    queryFn: () => programmes.myPages(supabase, user?.id ?? ""),
+    queryKey: key,
+  });
+  const choose = useMutation({
+    mutationFn: ({
+      id,
+      visibility,
+    }: {
+      id: string;
+      visibility: programmes.PageVisibility;
+    }) => programmes.setPageVisibility(supabase, id, visibility),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: key }),
+  });
+  if (!pages.data?.length) {
     return null;
   }
 
   return (
     <Section description={t("description")} id="six-words" title={t("title")}>
-      <blockquote
-        className="type-heading font-light"
-        dir="auto"
-        lang={entry.data.language}
-      >
-        {entry.data.text}
-      </blockquote>
-      {entry.data?.status === "rejected" ? (
-        <p className="type-caption">{t("takenDown")}</p>
-      ) : null}
+      <ul className="grid gap-6">
+        {pages.data.map((page) => (
+          <li className="grid gap-3" key={page.id}>
+            <blockquote
+              className="type-heading whitespace-pre-line font-light"
+              dir="auto"
+              lang={page.language === "other" ? undefined : page.language}
+            >
+              {page.text}
+            </blockquote>
+            <div className="max-w-sm">
+              <SelectInput
+                aria-label={t("who")}
+                disabled={choose.isPending}
+                onChange={(e) =>
+                  choose.mutate({
+                    id: page.id,
+                    visibility: e.target.value as programmes.PageVisibility,
+                  })
+                }
+                value={page.visibility}
+              >
+                {programmes.PAGE_VISIBILITY.map((v) => (
+                  <option key={v} value={v}>
+                    {t(`visibility.${v}`)}
+                  </option>
+                ))}
+              </SelectInput>
+            </div>
+            {page.publishable ? null : (
+              <p className="type-caption">{t("takenDown")}</p>
+            )}
+          </li>
+        ))}
+      </ul>
+      <ErrorLine error={choose.error} />
     </Section>
   );
 };

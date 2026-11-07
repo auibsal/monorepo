@@ -6,7 +6,6 @@ import {
   applicationReceived,
   applicationWaiting,
   auditionUpdate,
-  award,
   type Built,
   callOpened,
   candidacyDecided,
@@ -18,11 +17,11 @@ import {
   eventChanged,
   eventReminder,
   finalCheck,
+  invitation,
   type Lang,
   newsletterConfirm,
   pieceNote,
   piecePublished,
-  placementGiven,
   type RemovalInfo,
   type RoleInfo,
   removalDone,
@@ -268,13 +267,6 @@ export const ReplyTalking = email((l) =>
 export const ReplyOffered = email((l) =>
   replyUpdate(l, l === "ar" ? "مصوّر" : "Photographer", "offered", null, APP)
 );
-export const PlacementGiven = email((l) =>
-  placementGiven(
-    l,
-    l === "ar" ? "تلمذة في قسم الأخبار" : "Apprenticeship in News",
-    APP
-  )
-);
 export const AuditionBooked = email((l) =>
   auditionUpdate(l, audition, "signed_up", APP)
 );
@@ -296,13 +288,25 @@ export const ShiftReminder = email((l) =>
     APP
   )
 );
-export const AwardShortlisted = email((l) =>
-  award(
+export const TourInvitation = email((l) =>
+  invitation(
     l,
-    WORK,
-    { name_ar: "جائزة المتنبي", name_en: "Mutanabbi Award" },
-    "shortlisted",
-    APP
+    {
+      first_name: l === "ar" ? "الاسم" : "Name",
+      kind: "tour",
+      pages: 1,
+      station: l === "ar" ? "المكتبة" : "Library",
+      words:
+        l === "ar" ? "ست كلمات كتبها الكاتب" : "Six words the writer typed",
+    },
+    `${APP}/join`
+  )
+);
+export const PlainInvitation = email((l) =>
+  invitation(
+    l,
+    { first_name: null, kind: "plain", pages: 0, station: null, words: null },
+    `${APP}/join`
   )
 );
 export const AccountDeleted = email((l) => accountDeleted(l));

@@ -1,10 +1,11 @@
 "use client";
 
 import { useAuth } from "@repo/auth/provider";
+import { Button } from "@repo/brand/components/ui/button";
 import { localizedPath } from "@repo/internationalization";
 import { formatLongDate } from "@repo/internationalization/format";
-import { governance, localized, unwrap } from "@repo/sal-data";
-import { useQuery } from "@tanstack/react-query";
+import { governance, localized, membership, unwrap } from "@repo/sal-data";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { Council as CouncilList } from "@/components/council";
 import { StartLinks } from "../forms/forms";
@@ -12,6 +13,7 @@ import { VotingEligibility } from "../home/voting";
 import { DiwanPage, DiwanSection, RowList } from "../page";
 import { EmptyLine, ErrorState, SectionSpinner } from "../states";
 import { Elections } from "./elections";
+import { PrizeVote } from "./prize-vote";
 import { SocietySection } from "./section";
 
 type Lang = "en" | "ar";
@@ -48,6 +50,7 @@ const Council = () => {
 
 const Minutes = () => {
   const t = useTranslations("diwan.society.minutes");
+  const tb = useTranslations("diwan.admin.governance.bodies");
   const ta = useTranslations("diwan.next");
   const locale = useLocale() as Lang;
   const { supabase } = useAuth();
@@ -92,7 +95,7 @@ const Minutes = () => {
                   {localized(entry, "title", locale)}
                 </span>{" "}
                 <span className="type-caption">
-                  {t(entry.body === "council" ? "council" : "assembly")} ·{" "}
+                  {tb(entry.body as governance.MeetingBody)} ·{" "}
                   {formatLongDate(entry.meeting_on, locale)}
                 </span>
               </summary>
@@ -114,38 +117,26 @@ const Minutes = () => {
   );
 };
 
-const BookOfMembers = () => {
+/**
+ * The members directory (owner, Nov 7, 2026): members only, and only those
+ * who chose to be listed; the Register itself is private. A member joins or
+ * leaves it here.
+ */
+const MembersDirectory = () => {
   const t = useTranslations("diwan.society.book");
   const locale = useLocale() as Lang;
-  const { supabase } = useAuth();
+  const { supabase, user } = useAuth();
+  const queryClient = useQueryClient();
   const book = useQuery({
-    queryFn: async () => {
-      // Verified members read each other's names (RLS); six-word entries
-      // show only once a moderator has approved them.
-      const [people, words] = await Promise.all([
-        supabase
-          .schema("core")
-          .from("profiles")
-          .select("id, full_name_en, full_name_ar, verified_at")
-          .not("verified_at", "is", null)
-          .order("full_name_en"),
-        supabase
-          .schema("programmes")
-          .from("six_words")
-          .select("user_id, text, language, show_name")
-          .eq("status", "approved"),
-      ]);
-      const entries = new Map(
-        (unwrap(words) ?? [])
-          .filter((entry) => entry.show_name)
-          .map((entry) => [entry.user_id, entry])
-      );
-      return (unwrap(people) ?? []).map((person) => ({
-        ...person,
-        six: entries.get(person.id) ?? null,
-      }));
-    },
-    queryKey: ["book-of-members"],
+    queryFn: () => membership.membersDirectory(supabase),
+    queryKey: ["members-directory"],
+  });
+  const listed = book.data?.some((p) => p.user_id === user?.id) ?? false;
+  const toggle = useMutation({
+    mutationFn: () =>
+      membership.setInDirectory(supabase, user?.id ?? "", !listed),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ["members-directory"] }),
   });
 
   return (
@@ -160,20 +151,26 @@ const BookOfMembers = () => {
     >
       {book.isPending ? <SectionSpinner /> : null}
       {book.isError ? <ErrorState onRetry={() => book.refetch()} /> : null}
+      <div className="flex flex-wrap items-baseline gap-x-4 gap-y-2">
+        <p className="type-body text-text-secondary">
+          {listed ? t("listed") : t("notListed")}
+        </p>
+        <Button
+          disabled={toggle.isPending || book.isPending}
+          onClick={() => toggle.mutate()}
+          size="sm"
+          type="button"
+          variant="ghost"
+        >
+          {listed ? t("leave") : t("join")}
+        </Button>
+      </div>
       <ul className="grid gap-x-8 sm:grid-cols-2">
         {book.data?.map((person) => (
-          <li className="border-line border-t py-3" key={person.id}>
+          <li className="border-line border-t py-3" key={person.user_id}>
             <p className="type-subheading">
-              {localized(person, "full_name", locale)}
+              {(locale === "ar" && person.full_name_ar) || person.full_name_en}
             </p>
-            {person.six ? (
-              <p
-                className="type-body text-text-secondary italic"
-                lang={person.six.language}
-              >
-                {person.six.text}
-              </p>
-            ) : null}
           </li>
         ))}
       </ul>
@@ -189,15 +186,16 @@ export const Society = () => {
       <VotingEligibility />
       <Council />
       <Elections />
+      <PrizeVote />
       <DiwanSection
         description={t("takePart.lede")}
         id="take-part"
         title={t("takePart.title")}
       >
-        <StartLinks keys={["f20", "f09"]} />
+        <StartLinks keys={["f21", "f10"]} />
       </DiwanSection>
       <Minutes />
-      <BookOfMembers />
+      <MembersDirectory />
     </DiwanPage>
   );
 };

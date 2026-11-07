@@ -29,7 +29,7 @@ export const generateMetadata = async ({
  * The Editions on a shelf (owner, Nov 4, 2026; design review C11): each
  * printed Edition's cover, newest first, with the same Editions as a plain
  * list at /qirtas/editions/list. Before the first is published: its call
- * and Launch Night.
+ * and its launch event.
  */
 const EditionsPage = async ({ params }: EditionsProps) => {
   const { locale } = await params;

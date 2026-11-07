@@ -2,7 +2,7 @@ import type { Locale } from "@repo/internationalization";
 import { localizedPath } from "@repo/internationalization";
 import { formatLongDate } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
-import { journal, localized, sanitizeRichText } from "@repo/sal-data";
+import { journal, localized } from "@repo/sal-data";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { NewsletterSignup } from "@/components/newsletter/signup";
@@ -140,43 +140,26 @@ const QirtasFrontPage = async ({ params }: QirtasProps) => {
       (rows) =>
         (Array.isArray(rows) ? journal.inLanguage(rows, locale) : rows) as T
     );
-  const [
-    front,
-    news,
-    letters,
-    gallery,
-    sixWords,
-    video,
-    voices,
-    edition,
-    games,
-  ] = await Promise.all([
-    read((c) => journal.frontPieces(c), []),
-    read((c) => journal.deskPieces(c, "news", { limit: 6 }), []),
-    read(
-      (c) =>
-        journal.deskPieces(c, "letters", {
-          categories: journal
-            .deskCategories("letters")
-            .filter((x) => x !== "six_words"),
-          limit: 4,
-        }),
-      []
-    ),
-    read((c) => journal.deskPieces(c, "gallery", { limit: 6 }), []),
-    read(
-      (c) =>
-        journal.deskPieces(c, "letters", {
-          categories: ["six_words"],
-          limit: 1,
-        }),
-      []
-    ),
-    read((c) => journal.deskPieces(c, "video", { limit: 2 }), []),
-    read((c) => journal.deskPieces(c, "voices", { limit: 3 }), []),
-    read((c) => journal.currentEdition(c), null),
-    read((c) => journal.deskPieces(c, "games", { limit: 2 }), []),
-  ]);
+  const [front, news, letters, gallery, video, voices, edition, games] =
+    await Promise.all([
+      read((c) => journal.frontPieces(c), []),
+      read((c) => journal.deskPieces(c, "news", { limit: 6 }), []),
+      read(
+        (c) =>
+          journal.deskPieces(c, "letters", {
+            categories: journal
+              .deskCategories("letters")
+              .filter((x) => x !== "six_words"),
+            limit: 4,
+          }),
+        []
+      ),
+      read((c) => journal.deskPieces(c, "gallery", { limit: 6 }), []),
+      read((c) => journal.deskPieces(c, "video", { limit: 2 }), []),
+      read((c) => journal.deskPieces(c, "voices", { limit: 3 }), []),
+      read((c) => journal.currentEdition(c), null),
+      read((c) => journal.deskPieces(c, "games", { limit: 2 }), []),
+    ]);
   // The Editor's front_rank decides the top. With nothing set as front,
   // the newest work from all six sections leads (design review C13), so
   // the page has a top rather than a gap.
@@ -191,13 +174,6 @@ const QirtasFrontPage = async ({ params }: QirtasProps) => {
   const [lead, ...ranked] = top;
   const onFront = new Set(top.slice(0, 5).map((p) => p.id));
   const latestNews = news.filter((p) => !onFront.has(p.id));
-  const sixWordsBody = sixWords[0]
-    ? await readPublished(
-        ["journal"],
-        (c) => journal.qirtasPiece(c, sixWords[0]?.slug ?? ""),
-        null
-      )
-    : null;
   const nothing =
     front.length + news.length + letters.length + gallery.length === 0;
   const cover = mediaUrl(edition?.cover_path);
@@ -284,29 +260,6 @@ const QirtasFrontPage = async ({ params }: QirtasProps) => {
         ) : null}
 
         <div className="grid gap-12 md:grid-cols-3">
-          {sixWordsBody?.body ? (
-            <section aria-labelledby="six" className="grid content-start gap-4">
-              <h2 className={heading} id="six">
-                {t("sixWordsOfTheWeek")}
-              </h2>
-              <Link
-                className="grid min-h-40 place-items-center border-line border-y p-6 text-center hover:text-accent"
-                href={pieceHref(sixWordsBody)}
-              >
-                <span
-                  className="type-subheading font-mono"
-                  // biome-ignore lint/security/noDangerouslySetInnerHtml: sanitized with the one rich-text policy
-                  dangerouslySetInnerHTML={{
-                    __html: sanitizeRichText(
-                      sixWordsBody.body.body_en ??
-                        sixWordsBody.body.body_ar ??
-                        ""
-                    ),
-                  }}
-                />
-              </Link>
-            </section>
-          ) : null}
           {voices.length > 0 ? (
             <section
               aria-labelledby="voices"

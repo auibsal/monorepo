@@ -259,3 +259,9 @@ Codes follow the owner: each family is a Council seat (GOV is the members' own).
 - **Lasting addresses.** Pages people share or return to keep their own address; filters and passing state may use a query string.
 - **Rows, not pages, for small records.** Small items on a list (needs, shifts, credits, hours, roles) are edited in place; big records keep their own pages.
 - **Retired names.** Never use these: the Salon, Book Circle, Open Pages, the Listening Room, Launch Night, open nights, station days, the Candidates' Reading, the Ribbon, the worst-poem contest, the Apprenticeship, First Ink, the trial term, the General Assembly and the AGM (now general meetings and the Annual Meeting), the Qirtas Awards and the Tabari, Jahiz, Nazik, Wasiti and Ibn al-Haytham Awards, the Qirtas Prizes, the chapbook, Fellows, Honorary Fellows, Life Members, the Majlis, Munazara, Mutanabbi Friday, Bad Poetry Night, Open Stage, Scratch Night, Motion Night, Mutanabbi Walk, Productions, Gallery Wall, Reviews (as a section name), The Month in Qirtas, Side Quest, BusTalks, Waraq, the Nexus, Book of Members, Charter Night, Charter Day, Director of the Company, Director of Letters, Director of Stage and Arts, Director of Programs, Editor of Qirtas (now the Editor-in-Chief), Treasurer, Deputy Treasurer, The Green Room, The Archive (as a group name), AUIB SAL HQ, the Callboard (now Get involved), Program Lead (now an event lead), "the six programs", Standing Programs, flagships, the Evenings, the Specials, weekly evenings, four-week cycle.
+
+## 10. The owner's answers (Nov 7, 2026), beyond the above
+
+- **Invitees with no page** (15) get a plain one-time invitation (no "We kept your page", no six words), with the same signature line; the 4 rows with no first name are greeted "Hello,".
+- **Get involved** lists open roles only.
+- **The Editor-in-Chief's second assignment** on record is ended history, not a duplicate in force.

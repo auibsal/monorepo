@@ -8,7 +8,7 @@ import { type LocaleParams, sectionMetadata } from "@/lib/page";
 export const generateMetadata = sectionMetadata("web.join", "/join");
 
 const STEPS = ["register", "commonRoom", "twoThings"] as const;
-const TIERS = ["member", "voting", "fellow", "honorary", "alumni"] as const;
+const TIERS = ["member", "voting", "associate", "honorary"] as const;
 /** What membership gives (the design review C5, Nov 4, 2026). */
 const GIVES = ["card", "perks", "record", "vote"] as const;
 

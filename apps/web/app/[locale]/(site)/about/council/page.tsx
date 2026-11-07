@@ -93,11 +93,7 @@ const GovernancePage = async ({ params }: LocaleParams) => {
               <li className="grid gap-1 border-line border-b pb-4" key={r.id}>
                 <p className="type-caption text-text-secondary">
                   <span dir="ltr">{r.code}</span> ·{" "}
-                  {t(
-                    r.body === "general_assembly"
-                      ? "body.general_assembly"
-                      : "body.council"
-                  )}
+                  {t(`body.${r.body as governance.MeetingBody}`)}
                   {r.adopted_on
                     ? ` · ${formatLongDate(r.adopted_on, locale)}`
                     : null}

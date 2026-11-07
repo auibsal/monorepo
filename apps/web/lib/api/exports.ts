@@ -103,76 +103,6 @@ const attendanceRows = async (
   };
 };
 
-/** One campaign's ledger, entries and sign-offs (RLS: ledger keepers). */
-const ledgerRows = async (
-  session: ApiSession,
-  params: Record<string, string>
-): Promise<ExportTable> => {
-  const campaignId = uuid.parse(params.campaign_id);
-  const db = session.supabase.schema("charity");
-  const [entries, signoffs] = await Promise.all([
-    db
-      .from("ledger_entries")
-      .select(
-        "id, occurred_on, amount_iqd, source, counted_by, counted_with, created_by, note, reverses_entry_id, created_at"
-      )
-      .eq("campaign_id", campaignId)
-      .order("created_at"),
-    db.from("ledger_signoffs").select("entry_id, signed_by, signed_at"),
-  ]);
-  const entryRows = unwrap(entries) ?? [];
-  const signoffRows = unwrap(signoffs) ?? [];
-  const ids = [
-    ...new Set(
-      entryRows.flatMap((e) => [e.counted_by, e.counted_with, e.created_by])
-    ),
-    ...signoffRows.map((s) => s.signed_by),
-  ];
-  const profiles = ids.length
-    ? (unwrap(
-        await session.supabase
-          .schema("core")
-          .from("profiles")
-          .select("id, full_name_en")
-          .in("id", ids)
-      ) ?? [])
-    : [];
-  const name = (id: string | null | undefined) =>
-    profiles.find((p) => p.id === id)?.full_name_en ?? "";
-
-  return {
-    header: [
-      "entry_id",
-      "occurred_on",
-      "amount_iqd",
-      "source",
-      "counted_by",
-      "counted_with",
-      "recorded_by",
-      "note",
-      "reverses_entry_id",
-      "signed_off_by",
-      "signed_off_at",
-    ],
-    rows: entryRows.map((e) => {
-      const signoff = signoffRows.find((s) => s.entry_id === e.id);
-      return [
-        e.id,
-        e.occurred_on,
-        e.amount_iqd,
-        e.source,
-        name(e.counted_by),
-        name(e.counted_with),
-        name(e.created_by),
-        e.note,
-        e.reverses_entry_id,
-        signoff ? name(signoff.signed_by) : "",
-        signoff?.signed_at ?? "",
-      ];
-    }),
-  };
-};
-
 /** The requests to Student Life: every needs list (RLS: governance). */
 const needsRows = async (session: ApiSession): Promise<ExportTable> => {
   const [rows, programs] = await Promise.all([
@@ -215,7 +145,6 @@ const needsRows = async (session: ApiSession): Promise<ExportTable> => {
 /** core.member_details, in the order the members export lists them. */
 const detailColumns = [
   "affiliation",
-  "student_id",
   "college",
   "major",
   "study_level",
@@ -236,16 +165,8 @@ export const exportsByName: Record<string, ExportDefinition> = {
     permissions: ["events.manage", "events.checkin"],
     run: attendanceRows,
   },
-  ledger: {
-    permissions: [
-      "charity.manage",
-      "charity.ledger.write",
-      "charity.ledger.signoff",
-    ],
-    run: ledgerRows,
-  },
   members: {
-    permissions: ["members.manage", "members.verify", "roles.assign"],
+    permissions: ["members.register"],
     run: async (session) => {
       // What members told us about themselves: RLS returns these rows to
       // members.manage only; for anyone else the columns stay empty.
@@ -273,7 +194,7 @@ export const exportsByName: Record<string, ExportDefinition> = {
           "voting_member",
           ...detailColumns,
         ],
-        rows: (await membership.directory(session.supabase)).map((m) => {
+        rows: (await membership.register(session.supabase)).map((m) => {
           const own = details.get(m.user_id);
           return [
             m.full_name_en,

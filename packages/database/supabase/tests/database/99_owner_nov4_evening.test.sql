@@ -1,7 +1,7 @@
 -- The owner's Notion follow-up (Nov 4, 2026, evening): the program
 -- permission is programs.manage everywhere; Qirtas Arabic editions link;
 -- there are no ads and memoranda grant no advertising; the retired names
--- (the Prizes, the Callboard) are gone from the database's own names.
+-- (the Qirtas Prizes and Awards, the Callboard) are gone from the database's own names.
 begin;
 -- <preamble>
 -- Shared pgTAP preamble. Each test file includes a copy (pg_prove runs files
@@ -129,30 +129,30 @@ select ok(
   'a memorandum cannot grant or ask for advertising'
 );
 
+-- Owner, Nov 7, 2026: the Mutanabbi Prize replaces the Qirtas Awards.
 select ok(
-  to_regclass('journal.awards') is not null
-  and to_regclass('journal.award_rounds') is not null
-  and to_regclass('journal.award_entries') is not null
-  and to_regclass('journal.award_judges') is not null
-  and to_regclass('journal.prizes') is null,
-  'the Awards'' tables have their names'
+  to_regclass('journal.awards') is null
+  and to_regclass('journal.award_rounds') is null
+  and to_regclass('journal.prize_rounds') is not null
+  and to_regclass('journal.prize_entries') is not null,
+  'the Awards'' tables are gone; the Prize has its own'
 );
 
 select ok(
-  exists (select 1 from access.permissions where key = 'journal.awards')
-  and not exists (select 1 from access.permissions where key = 'journal.prizes'),
-  'journal.awards is the permission'
+  exists (select 1 from access.permissions where key = 'journal.prize')
+  and not exists (select 1 from access.permissions where key in ('journal.awards', 'journal.prizes')),
+  'journal.prize is the permission'
 );
 
 select ok(
   not exists (
     select 1 from pg_proc p join pg_namespace n on n.oid = p.pronamespace
     where n.nspname in ('private', 'journal', 'core', 'access', 'programmes', 'membership')
-      and (p.proname ~ 'prize|callboard' or p.prosrc ~ 'prize|callboard')
+      and (p.proname ~ 'prizes|callboard|award' or p.prosrc ~ 'prizes|callboard|award_')
   )
   and not exists (
     select 1 from pg_policies
-    where (policyname || coalesce(qual, '') || coalesce(with_check, '')) ~* 'prize|callboard'
+    where (policyname || coalesce(qual, '') || coalesce(with_check, '')) ~* 'prizes|callboard|award'
   ),
   'no function or policy keeps a retired name'
 );

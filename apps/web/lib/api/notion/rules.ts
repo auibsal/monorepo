@@ -208,7 +208,11 @@ export const checkProgram = (page: NotionPage): Checked<ProgramValues> => {
   };
 };
 
-const CODE = /^SAL-[A-Z]{3}-\d{2}$/;
+const CODE = /^SAL-(GOV|EXB|EVT|MEM|PTN|MED|ART|EDT)-\d{2}$/;
+
+/** The code families retired on Nov 7, 2026. */
+export const RETIRED_DOCUMENT_FAMILY =
+  /^SAL-(POL|HBK|STR|PRP|BRD|PLT|QRT|CMP|OPS)-/;
 
 export interface DocumentValues {
   audience: "internal" | "public";
@@ -219,19 +223,34 @@ export interface DocumentValues {
   title: string;
 }
 
-/** A document row (Publishing, Documents). The page itself is the text. */
-export const checkDocument = (page: NotionPage): Checked<DocumentValues> => {
+/**
+ * A document row (Publishing, Documents). The page itself is the text. An
+ * Arabic row leaves Audience blank: it is given, from its English row.
+ */
+export const checkDocument = (
+  page: NotionPage,
+  audienceGiven?: string | null
+): Checked<DocumentValues> => {
   const problems: string[] = [];
   const title = englishTitle(page, problems);
   const code = read.text(page, "Code").toUpperCase();
   if (!CODE.test(code)) {
-    problems.push("Set the Code, for example SAL-GOV-01.");
+    problems.push(
+      "Set the Code, for example SAL-GOV-01 (families GOV, EXB, EVT, MEM, PTN, MED, ART, EDT)."
+    );
   }
+  // The Arabic edition takes the English row's address.
   const slug = read.text(page, "Slug").toLowerCase() || slugify(title);
-  problems.push(...slugProblems(slug));
+  if (languageOf(page) === "en") {
+    problems.push(...slugProblems(slug));
+  }
   const summary = read.text(page, "Summary");
   problems.push(...lengthProblem("The summary", summary, 600));
-  const audience = (read.select(page, "Audience") ?? "").toLowerCase();
+  const audience = (
+    audienceGiven ??
+    read.select(page, "Audience") ??
+    ""
+  ).toLowerCase();
   if (audience !== "public" && audience !== "internal") {
     problems.push("Set Audience to public or internal.");
   }

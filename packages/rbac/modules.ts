@@ -2,7 +2,7 @@ import type { Permission } from "./permissions";
 
 /**
  * The Diwan's modules and the permission (held in any scope) that shows
- * each one. Pages still scope their rows by series, event, Edition or campaign.
+ * each one. Pages still scope their rows by event, Edition or production.
  */
 export const adminModules = [
   {
@@ -30,21 +30,17 @@ export const adminModules = [
       "journal.edit.video",
       "journal.edit.voices",
       "journal.edit.games",
-      "journal.awards",
+      "journal.prize",
     ],
   },
-  {
-    key: "charity",
-    permissions: [
-      "charity.manage",
-      "charity.ledger.write",
-      "charity.ledger.signoff",
-    ],
-  },
+
   { key: "programs", permissions: ["programs.manage"] },
   // The Typewriter Tour belongs to membership (owner, Nov 5, 2026): the
   // General Secretary and the Tour Lead.
   { key: "tour", permissions: ["tour.run"] },
+  // Qalam, Qirtas's summer program (owner, Nov 7, 2026): its roster lives
+  // in the staff area, never in Notion.
+  { key: "qalam", permissions: ["qalam.manage"] },
   // Hiring (owner, Oct 30, 2026): the General Secretary runs every role's
   // applications; each owner (the President for event leads, the
   // Editor-in-Chief, a director) picks for their own.
@@ -89,6 +85,11 @@ export const adminModules = [
       "content.manage",
       "governance.manage",
       "concerns.handle",
+      "forms.handle",
+      "qalam.manage",
+      "partners.manage",
+      "productions.manage",
+      "journal.manage",
     ],
   },
   { key: "activity", permissions: ["audit.read"] },
@@ -108,10 +109,10 @@ export const adminSections = [
   { key: "desk", modules: ["activity"], path: "/" },
   {
     key: "events",
-    modules: ["events", "programs", "charity"],
+    modules: ["events", "programs"],
     path: "/events",
   },
-  { key: "qirtas", modules: ["journal"], path: "/qirtas" },
+  { key: "qirtas", modules: ["journal", "qalam"], path: "/qirtas" },
   { key: "company", modules: ["productions"], path: "/company" },
   {
     key: "people",

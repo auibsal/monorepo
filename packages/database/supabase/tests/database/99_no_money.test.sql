@@ -76,17 +76,25 @@ insert into core.semesters (code, name_en, name_ar, starts_on, ends_on) values
 update core.settings set value = '0' where key = 'membership.founding_voters';
 -- </preamble>
 
-select plan(17);
+select plan(15);
 
 select is((select count(*)::integer from access.roles where key = 'treasurer'), 0, 'There is no Treasurer');
 select is((select count(*)::integer from access.permissions where key like 'spending.%'), 0, 'There are no spending permissions');
 select hasnt_table('governance', 'spending_approvals', 'The spending log is gone');
 select hasnt_column('access', 'roles', 'spending_limit_iqd', 'Roles carry no spending limit');
-select hasnt_column('charity', 'campaigns', 'cost_per_unit_iqd', 'Campaigns carry no cost');
-select is((select count(*)::integer from governance.form_types where key = 'f13'), 0, 'The Expense Claim is gone');
+-- The empty schema stays until it leaves the Data API's exposed schemas.
+select is(
+  (select count(*)::int from pg_class c join pg_namespace n on n.oid = c.relnamespace
+   where n.nspname = 'charity')
+  + (select count(*)::int from pg_proc p join pg_namespace n on n.oid = p.pronamespace
+   where n.nspname = 'charity'),
+  0,
+  'No charity campaigns, costs or handovers on the site'
+);
+select is((select count(*)::integer from governance.form_types where title_en ilike '%expense%'), 0, 'The Expense Claim is gone');
 select ok(
-  exists (select 1 from access.role_permissions where role = 'general_secretary' and permission = 'charity.ledger.signoff'),
-  'The General Secretary signs off the collection''s counts'
+  not exists (select 1 from access.permissions where key like 'charity.%'),
+  'No charity collections or ledger on the site (owner, Nov 7, 2026)'
 );
 
 select pg_temp.make_user('00000000-0000-0000-0000-00000000b0a1', 'salon.lead@auib.edu.iq', 'Salon Lead');
@@ -139,22 +147,6 @@ select lives_ok(
   $$ update programmes.needs set status = 'provided', provided_on = current_date, provided_note = 'From Student Life'
      where id = '0ee00000-0000-0000-0000-0000000000a1' $$,
   'and what was provided, and when'
-);
-
--- ── The handover ────────────────────────────────────────────────────────────
-
-select pg_temp.logout();
-insert into charity.campaigns (id, slug, title_en, title_ar, status)
-values ('ca000000-0000-0000-0000-0000000000f1', 'second-chapter-test', 'Second Chapter', 'الفصل الثاني', 'active');
-select throws_ok(
-  $$ update charity.campaigns set handed_over_on = '2026-11-15' where id = 'ca000000-0000-0000-0000-0000000000f1' $$,
-  '23514', null, 'A handover records the amount with the day'
-);
-select lives_ok(
-  $$ update charity.campaigns set handed_over_on = '2026-11-15', handed_over_iqd = 100000,
-       handover_witness = '00000000-0000-0000-0000-00000000b0a2'
-     where id = '0ee00000-0000-0000-0000-0000000000a1'::uuid or id = 'ca000000-0000-0000-0000-0000000000f1' $$,
-  'The witnessed handover is kept on the campaign'
 );
 
 select * from finish();

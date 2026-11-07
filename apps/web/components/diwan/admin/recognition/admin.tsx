@@ -10,11 +10,10 @@ import {
 } from "@repo/internationalization/format";
 import { Link as SiteLink } from "@repo/internationalization/navigation";
 import { hasPermissionAnywhere } from "@repo/rbac";
-import { localized, recognition, unwrap } from "@repo/sal-data";
+import { recognition, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
-import { DateInput } from "@/components/fields/date-input";
 import { useRouter } from "@/lib/diwan/navigation";
 import { useGrants } from "@/lib/diwan/queries";
 import { SectionSpinner } from "../../states";
@@ -36,6 +35,7 @@ import { MemberPicker, useMemberNames } from "../member-picker";
 import { memberName } from "../members/directory";
 import { SelectableTable } from "../selectable-table";
 import { type ServiceTab, serviceTabs } from "../tabs";
+import { ServiceLetters } from "./letters";
 
 const key = ["admin", "recognition"];
 
@@ -236,21 +236,13 @@ const Totals = () => {
       header: t("hours"),
       key: "hours",
     },
-    {
-      cell: (row) => (row.fellowship_eligible ? t("eligible") : ""),
-      header: t("fellowship"),
-      key: "fellowship",
-    },
   ];
   if (totals.isPending) {
     return <SectionSpinner />;
   }
   return (
     <div className="grid gap-4">
-      <p className="type-body">
-        {t("lede", { target: formatNumber(recognition.FELLOWSHIP_HOURS) })}
-      </p>
-      <p className="type-caption">{t("cap")}</p>
+      <p className="type-body">{t("lede")}</p>
       <DataTable
         columns={columns}
         empty={t("empty")}
@@ -264,33 +256,61 @@ const Totals = () => {
 // ── Certificates ────────────────────────────────────────────────────────────
 
 interface CertificateRow {
-  advisor_signed_by: string | null;
+  first_signed_by: string | null;
   id: string;
   issued_at: string | null;
   kind: string;
-  president_signed_by: string | null;
-  role_ar: string | null;
-  role_en: string | null;
+  lang: string;
+  prize_category: string | null;
+  qalam_student_id: string | null;
+  second_signed_by: string | null;
   serial: string | null;
   status: string;
-  user_id: string;
+  user_id: string | null;
 }
 
+type PrizeCategory = (typeof recognition.prizeCategories)[number];
+type CertificateLang = (typeof recognition.certificateLanguages)[number];
+
 const emptyForm = {
+  category: "qirtas" as PrizeCategory,
   citation: { ar: "", en: "" },
-  hours: "",
-  kind: "service" as recognition.CertificateKind,
-  partner_id: "",
-  period_from: "",
-  period_to: "",
-  resolution_id: "",
-  role: { ar: "", en: "" },
+  kind: "prize" as recognition.CertificateKind,
+  lang: "en" as CertificateLang,
+  student: "",
 };
 
+/** Qalam's students who finished, newest summer first (staff only). */
+const useFinishedStudents = (enabled: boolean) => {
+  const { supabase } = useAuth();
+  return useQuery({
+    enabled,
+    queryFn: async () =>
+      unwrap(
+        await supabase
+          .schema("programmes")
+          .from("qalam_students")
+          .select("id, first_name, last_name, school, year")
+          .in("status", ["accepted", "finished"])
+          .order("year", { ascending: false })
+          .order("last_name")
+      ) ?? [],
+    queryKey: [...key, "qalam-students"],
+  });
+};
+
+/**
+ * Drafting a certificate (owner, Nov 7, 2026: only for finishing Qalam and
+ * for the Mutanabbi Prize, each category): the Prize's names a member, its
+ * category and its citation; Qalam's names a student from the roster
+ * (students have no accounts). Each is in one language, the one its
+ * recipient chose. Signers: Qalam, the Qalam lead and the Editor-in-Chief;
+ * the Prize, the Editor-in-Chief and the President.
+ */
 const PrepareForm = ({ onDone }: { onDone: () => void }) => {
   const t = useTranslations("diwan.admin.recognition.certificates");
-  const tKinds = useTranslations("diwan.certificate.titles");
-  const locale = useLocale();
+  const tc = useTranslations("diwan.admin.recognition.certificates.kinds");
+  const locale = useLocale() as Locale;
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
   const [person, setPerson] = useState<{
@@ -299,44 +319,17 @@ const PrepareForm = ({ onDone }: { onDone: () => void }) => {
     id: string;
   } | null>(null);
   const [form, setForm] = useState(emptyForm);
-  const resolutions = useQuery({
-    queryFn: async () =>
-      unwrap(
-        await supabase
-          .schema("governance")
-          .from("resolutions")
-          .select("id, code, title_en, title_ar")
-          .eq("status", "adopted")
-          .order("code", { ascending: false })
-      ) ?? [],
-    queryKey: [...key, "resolutions"],
-  });
-  const partnerOptions = useQuery({
-    queryFn: async () =>
-      unwrap(
-        await supabase
-          .schema("governance")
-          .from("partners")
-          .select("id, name_en, name_ar")
-          .order("name_en")
-      ) ?? [],
-    queryKey: [...key, "partners"],
-  });
-  const kinds = recognition.certificateKinds;
+  const students = useFinishedStudents(form.kind === "qalam");
   const save = useMutation({
     mutationFn: async () => {
       const row = recognition.certificateSchema.parse({
-        citation_ar: form.citation.ar,
-        citation_en: form.citation.en,
-        hours: form.hours ? Number(form.hours) : null,
+        citation_ar: form.kind === "prize" ? form.citation.ar : null,
+        citation_en: form.kind === "prize" ? form.citation.en : null,
         kind: form.kind,
-        partner_id: form.partner_id || null,
-        period_from: form.period_from,
-        period_to: form.period_to,
-        resolution_id: form.resolution_id || null,
-        role_ar: form.role.ar,
-        role_en: form.role.en,
-        user_id: person?.id ?? "",
+        lang: form.lang,
+        prize_category: form.kind === "prize" ? form.category : null,
+        qalam_student_id: form.kind === "qalam" ? form.student : null,
+        user_id: form.kind === "prize" ? (person?.id ?? null) : null,
       });
       unwrap(
         await supabase.schema("membership").from("certificates").insert(row)
@@ -347,6 +340,7 @@ const PrepareForm = ({ onDone }: { onDone: () => void }) => {
       onDone();
     },
   });
+  const copy = recognition.certificateCopy[locale === "ar" ? "ar" : "en"];
 
   return (
     <form
@@ -356,7 +350,6 @@ const PrepareForm = ({ onDone }: { onDone: () => void }) => {
         save.mutate();
       }}
     >
-      <MemberPicker label={t("holder")} onChange={setPerson} value={person} />
       <Field label={t("kind")}>
         {(id) => (
           <SelectInput
@@ -369,122 +362,100 @@ const PrepareForm = ({ onDone }: { onDone: () => void }) => {
             }
             value={form.kind}
           >
-            {kinds.map((kind) => (
+            {recognition.certificateKinds.map((kind) => (
               <option key={kind} value={kind}>
-                {tKinds(kind)}
+                {tc(kind)}
               </option>
             ))}
           </SelectInput>
         )}
       </Field>
       <p className="type-caption">{t(`hints.${form.kind}`)}</p>
-      {recognition.recordsRole(form.kind) ? (
-        <BilingualField
-          label={t("role")}
-          maxLength={200}
-          onChange={(role) => setForm((f) => ({ ...f, role }))}
-          required
-          value={form.role}
-        />
-      ) : null}
-      {form.kind === "award" ? (
-        <BilingualField
-          label={t("citation")}
-          maxLength={500}
-          onChange={(citation) => setForm((f) => ({ ...f, citation }))}
-          required
-          value={form.citation}
-        />
-      ) : null}
-      {form.kind === "fellowship" || form.kind === "honorary" ? (
+      {form.kind === "prize" ? (
         <>
-          <BilingualField
-            label={t("citation")}
-            maxLength={500}
-            onChange={(citation) => setForm((f) => ({ ...f, citation }))}
-            required
-            value={form.citation}
+          <MemberPicker
+            label={t("holder")}
+            onChange={setPerson}
+            value={person}
           />
-          <Field hint={t("resolutionHint")} label={t("resolution")}>
+          <Field label={t("category")}>
             {(id) => (
               <SelectInput
                 id={id}
                 onChange={(e) =>
-                  setForm((f) => ({ ...f, resolution_id: e.target.value }))
+                  setForm((f) => ({
+                    ...f,
+                    category: e.target.value as PrizeCategory,
+                  }))
                 }
-                required
-                value={form.resolution_id}
+                value={form.category}
               >
-                <option value="">{t("chooseResolution")}</option>
-                {(resolutions.data ?? []).map((r) => (
-                  <option key={r.id} value={r.id}>
-                    {r.code} · {localized(r, "title", locale)}
+                {recognition.prizeCategories.map((category) => (
+                  <option key={category} value={category}>
+                    {copy.categories[category]}
                   </option>
                 ))}
               </SelectInput>
             )}
           </Field>
+          <BilingualField
+            label={t("citation")}
+            maxLength={500}
+            onChange={(citation) => setForm((f) => ({ ...f, citation }))}
+            value={form.citation}
+          />
         </>
-      ) : null}
-      {form.kind === "partner" ? (
-        <Field label={t("partner")}>
+      ) : (
+        <Field label={t("student")}>
           {(id) => (
             <SelectInput
               id={id}
               onChange={(e) =>
-                setForm((f) => ({ ...f, partner_id: e.target.value }))
+                setForm((f) => ({ ...f, student: e.target.value }))
               }
-              required
-              value={form.partner_id}
+              value={form.student}
             >
-              <option value="">{t("choosePartner")}</option>
-              {(partnerOptions.data ?? []).map((p) => (
-                <option key={p.id} value={p.id}>
-                  {localized(p, "name", locale)}
+              {(students.data ?? []).map((s) => (
+                <option key={s.id} value={s.id}>
+                  {`${s.first_name} ${s.last_name} · ${s.school} · ${s.year}`}
                 </option>
               ))}
             </SelectInput>
           )}
         </Field>
-      ) : null}
-      {form.kind === "volunteer" ? (
-        <Field label={t("hours")}>
-          {(id) => (
-            <Input
-              dir="ltr"
-              id={id}
-              min={1}
-              onChange={(e) =>
-                setForm((f) => ({ ...f, hours: e.target.value }))
-              }
-              required
-              step={0.25}
-              type="number"
-              value={form.hours}
-            />
-          )}
-        </Field>
-      ) : null}
-      <div className="grid gap-4 sm:grid-cols-2">
-        {(["period_from", "period_to"] as const).map((field) => (
-          <Field key={field} label={t(field)}>
-            {(id) => (
-              <DateInput
-                id={id}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, [field]: e.target.value }))
-                }
-                required={
-                  field === "period_from" && recognition.recordsRole(form.kind)
-                }
-                value={form[field]}
-              />
-            )}
-          </Field>
-        ))}
-      </div>
+      )}
+      <Field hint={t("languageHint")} label={t("language")}>
+        {(id) => (
+          <SelectInput
+            id={id}
+            onChange={(e) =>
+              setForm((f) => ({
+                ...f,
+                lang: e.target.value as CertificateLang,
+              }))
+            }
+            value={form.lang}
+          >
+            {recognition.certificateLanguages.map((lang) => (
+              <option key={lang} value={lang}>
+                {t(`languages.${lang}`)}
+              </option>
+            ))}
+          </SelectInput>
+        )}
+      </Field>
       <div className="flex flex-wrap gap-2">
-        <SaveButton disabled={!person} pending={save.isPending} />
+        <SaveButton
+          disabled={
+            form.kind === "prize"
+              ? !(
+                  person &&
+                  (form.citation.en.trim() || form.citation.ar.trim())
+                )
+              : !form.student
+          }
+          pending={save.isPending}
+        />
         <Button onClick={onDone} type="button" variant="ghost">
           {t("cancel")}
         </Button>
@@ -496,17 +467,13 @@ const PrepareForm = ({ onDone }: { onDone: () => void }) => {
 
 const Certificates = () => {
   const t = useTranslations("diwan.admin.recognition.certificates");
-  const tKinds = useTranslations("diwan.certificate.titles");
+  const tc = useTranslations("diwan.admin.recognition.certificates.kinds");
   const locale = useLocale() as Locale;
   const { supabase, user } = useAuth();
   const queryClient = useQueryClient();
   const grants = useGrants();
   const canPrepare = hasPermissionAnywhere(grants.data, "certificates.prepare");
   const canSign = hasPermissionAnywhere(grants.data, "certificates.sign");
-  const canCountersign = hasPermissionAnywhere(
-    grants.data,
-    "certificates.countersign"
-  );
   const [revoking, setRevoking] = useState<{
     id: string;
     reason: string;
@@ -518,14 +485,19 @@ const Certificates = () => {
           .schema("membership")
           .from("certificates")
           .select(
-            "id, user_id, kind, role_en, role_ar, status, serial, issued_at, president_signed_by, advisor_signed_by"
+            "id, user_id, qalam_student_id, kind, lang, prize_category, status, serial, issued_at, first_signed_by, second_signed_by"
           )
           .order("created_at", { ascending: false })
       ) ?? []) as CertificateRow[],
     queryKey: [...key, "certificates"],
   });
   const rows = certificates.data ?? [];
-  const names = useMemberNames(rows.map((r) => r.user_id));
+  const names = useMemberNames(
+    rows.map((r) => r.user_id).filter((id): id is string => Boolean(id))
+  );
+  const students = useFinishedStudents(
+    rows.some((r) => r.qalam_student_id !== null)
+  );
   const invalidate = () => queryClient.invalidateQueries({ queryKey: key });
   const sign = useMutation({
     mutationFn: (id: string) => recognition.signCertificate(supabase, id),
@@ -550,23 +522,34 @@ const Certificates = () => {
       ),
     onSuccess: invalidate,
   });
-  const nameOf = (id: string) => {
-    const row = names.data?.find((n) => n.id === id);
-    return row ? memberName(row, locale) : "";
+  const copy = recognition.certificateCopy[locale === "ar" ? "ar" : "en"];
+  const nameOf = (row: CertificateRow) => {
+    if (row.qalam_student_id) {
+      const s = students.data?.find((x) => x.id === row.qalam_student_id);
+      return s ? `${s.first_name} ${s.last_name}` : "";
+    }
+    const member = names.data?.find((n) => n.id === row.user_id);
+    return member ? memberName(member, locale) : "";
   };
+  const roles = (row: CertificateRow) =>
+    recognition.certificateSigners[row.kind as recognition.CertificateKind];
+  // The database decides who may sign which slot; the button shows to any
+  // signer while a slot is open and it isn't their own certificate.
   const mySignatureDue = (row: CertificateRow) =>
+    canSign &&
     row.status === "draft" &&
     row.user_id !== user?.id &&
-    ((canSign && !row.president_signed_by) ||
-      (canCountersign && !row.advisor_signed_by));
+    !(row.first_signed_by && row.second_signed_by) &&
+    row.first_signed_by !== user?.id;
 
   const signatures = (row: CertificateRow) => {
     if (row.status !== "draft") {
       return row.issued_at ? formatLongDate(row.issued_at, locale, true) : "";
     }
+    const [first, second] = roles(row);
     const done = [
-      row.president_signed_by ? t("presidentSigned") : null,
-      row.advisor_signed_by ? t("advisorSigned") : null,
+      row.first_signed_by ? t("signedBy", { role: copy.roles[first] }) : null,
+      row.second_signed_by ? t("signedBy", { role: copy.roles[second] }) : null,
     ].filter(Boolean);
     return done.length > 0 ? done.join(" · ") : t("unsigned");
   };
@@ -609,7 +592,7 @@ const Certificates = () => {
             onClick={() => sign.mutate(row.id)}
             size="sm"
           >
-            {canSign && !row.president_signed_by ? t("sign") : t("countersign")}
+            {t("sign")}
           </Button>
         ) : null}
         {row.status === "issued" && canSign ? (
@@ -636,18 +619,14 @@ const Certificates = () => {
   };
 
   const columns: Column<CertificateRow>[] = [
-    { cell: (row) => nameOf(row.user_id), header: t("holder"), key: "holder" },
+    { cell: nameOf, header: t("holder"), key: "holder" },
     {
       cell: (row) => (
         <div className="grid">
-          <span>{tKinds(row.kind as recognition.CertificateKind)}</span>
-          {row.role_en || row.role_ar ? (
+          <span>{tc(row.kind as recognition.CertificateKind)}</span>
+          {row.prize_category ? (
             <span className="type-caption">
-              {localized(
-                { role_ar: row.role_ar, role_en: row.role_en },
-                "role",
-                locale
-              )}
+              {copy.categories[row.prize_category as PrizeCategory]}
             </span>
           ) : null}
         </div>
@@ -711,6 +690,7 @@ export const NewCertificate = () => {
 
 const servicePaths: Record<ServiceTab, string> = {
   certificates: "/people/service/certificates",
+  letters: "/people/service/letters",
   pending: "/people/service",
   totals: "/people/service/totals",
 };
@@ -728,12 +708,11 @@ export const RecognitionAdmin = ({
   const canTotals = hasPermissionAnywhere(grants.data, "members.manage");
   const canCertificates =
     hasPermissionAnywhere(grants.data, "certificates.prepare") ||
-    hasPermissionAnywhere(grants.data, "certificates.sign") ||
-    hasPermissionAnywhere(grants.data, "certificates.countersign");
+    hasPermissionAnywhere(grants.data, "certificates.sign");
   const allowed = serviceTabs.filter(
     (view) =>
       (view === "pending" && canConfirm) ||
-      (view === "totals" && canTotals) ||
+      ((view === "totals" || view === "letters") && canTotals) ||
       (view === "certificates" && canCertificates)
   );
   const shown = allowed.find((view) => view === tab) ?? allowed[0];
@@ -752,6 +731,7 @@ export const RecognitionAdmin = ({
         {shown === "pending" ? <PendingHours /> : null}
         {shown === "totals" ? <Totals /> : null}
         {shown === "certificates" ? <Certificates /> : null}
+        {shown === "letters" ? <ServiceLetters /> : null}
       </div>
     </div>
   );

@@ -12,6 +12,7 @@
     "boundaries": "turbo boundaries",
     "build": "turbo build",
     "check": "ultracite check",
+    "check:forms": "bun scripts/check-forms-register.ts",
     "check:i18n": "bun scripts/check-i18n.ts && bun scripts/check-language.ts",
     "check:placeholders": "bun scripts/check-placeholders.ts",
     "check:rtl": "bun scripts/check-rtl.ts",

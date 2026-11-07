@@ -86,7 +86,7 @@ insert into journal.contributors (id, slug, name_en, name_ar, user_id) values
 insert into journal.pieces (id, slug, category, language, title_en, title_ar, status, published_at, contributor_id) values
   ('d0000000-0000-0000-0000-0000000e6d01', 'e6-poem', 'poetry', 'en', 'A Poem', 'قصيدة', 'published',
    now() - interval '1 day', 'c0000000-0000-0000-0000-0000000e6c01'),
-  ('d0000000-0000-0000-0000-0000000e6d02', 'e6-reel', 'reel', 'en', 'A Reel', 'مقطع', 'published',
+  ('d0000000-0000-0000-0000-0000000e6d02', 'e6-reel', 'short_film', 'en', 'A Reel', 'مقطع', 'published',
    now() - interval '1 day', 'c0000000-0000-0000-0000-0000000e6c01'),
   ('d0000000-0000-0000-0000-0000000e6d03', 'e6-essay', 'column', 'en', 'A Column', 'عمود', 'published',
    now() - interval '1 day', 'c0000000-0000-0000-0000-0000000e6c01');

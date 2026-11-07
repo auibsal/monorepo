@@ -6,6 +6,35 @@ own versions in the Library.
 
 ## Unreleased
 
+- The owner's decisions of Nov 7, 2026: the Council of nine; Member,
+  Associate Member and Honorary Member; a first term on probation; GPA
+  checks through Student Life; meetings by body; a members' directory.
+- Retired: charity collections, the Qirtas Awards, the Apprenticeship and
+  First Ink, rotas, prompts, book votes, Launch Night and playbills.
+- Forms are filled and signed on one page each, `/forms/<number>`; the
+  trip consent is F-45.
+- The Mutanabbi Prize, with its members' vote, and Qalam's roster in the
+  Diwan.
+- Guest accounts to book open events.
+- Six Words are Tour pages each writer shows or keeps private; the spring
+  2026 Tour's pages and the one-time invitations.
+- Next Stop moves to /next-stop; the members' pages are "your account".
+- Hudhud warns and then removes people in the members' group who haven't
+  joined.
+- The Library re-syncs every document from Notion under the new codes;
+  both editions publish together, marked "Proposed" until adopted, and
+  internal documents (the Annual Plan, SAL-EXB-02) stay off it.
+- An event's Arabic row in Notion takes Way in and Off campus from its
+  English row.
+- The Diwan's Library offers Proposed, Adopted and Superseded (the
+  database refused Draft).
+- One design for each form, letter, membership card and certificate, from
+  the brand kit; certificates only for finishing Qalam and the Mutanabbi
+  Prize, in one language each; service letters with a code anyone can
+  check; the card's check shows name, class, status and member since.
+- The site's forms follow the register in the Leadership Handbook, checked
+  in CI.
+
 - Every event is one kind: council meetings, the AGM and Launch Night are
   made in What's on like any other. An event takes the add-ons it needs
   (off campus with Student Life's approval, a partner, needs, shifts,

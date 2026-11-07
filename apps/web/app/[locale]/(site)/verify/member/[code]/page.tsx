@@ -1,10 +1,10 @@
+import { Guilloche } from "@repo/brand/components/sal/guilloche";
 import type { Locale } from "@repo/internationalization";
-import { formatLongDate } from "@repo/internationalization/format";
+import { formatPlainDate } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
 import { localized, membership } from "@repo/sal-data";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { Guilloche } from "@/components/guilloche";
 import { PageHeader } from "@/components/section";
 import { localizedMetadata } from "@/lib/metadata";
 import { readLive } from "@/lib/supabase";
@@ -33,7 +33,8 @@ export const generateMetadata = async ({
  * membership stands today, and whether this is the live card (the code in
  * the link changes every 30 seconds; a screenshot carries a stale one).
  * Read live, never cached, so a reset code or an ended membership shows at
- * once. Partners check perks here too.
+ * once. Partners check perks here too. It shows the name, class, status
+ * and member since only (owner, Nov 7, 2026).
  */
 const MemberCardPage = async ({ params, searchParams }: CardParams) => {
   const { code, locale } = await params;
@@ -47,13 +48,9 @@ const MemberCardPage = async ({ params, searchParams }: CardParams) => {
   const tt = await getTranslations({ locale, namespace: "diwan.home.tiers" });
   const tk = await getTranslations({ locale, namespace: "diwan.home.kinds" });
   const valid = membership.CARD_CODE.test(code);
-  const [card, record] = valid
-    ? await Promise.all([
-        readLive((c) => membership.verifyCard(c, code, live), null),
-        readLive((c) => membership.cardRecord(c, code), []),
-      ])
-    : [null, []];
-  const tc = await getTranslations({ locale, namespace: "web.verify" });
+  const card = valid
+    ? await readLive((c) => membership.verifyCard(c, code, live), null)
+    : null;
 
   if (!card) {
     return (
@@ -66,32 +63,28 @@ const MemberCardPage = async ({ params, searchParams }: CardParams) => {
     );
   }
 
-  // The name may be in either script; everything else is in the page's.
+  // Name, class, status and member since only (owner, Nov 7, 2026): no
+  // email, no number, no record. The name may be in either script.
   const rows: [string, string, "auto" | undefined][] = [
     [t("holder"), localized(card, "full_name", locale), "auto"],
-    [t("number"), String(card.number).padStart(4, "0"), undefined],
   ];
-  // One membership of one kind (owner, Oct 31, 2026): a member's tier, or
-  // that the card is a guest's or a partner's; Staff for a member holding a
-  // Society role.
   const member = card.kind === "member";
   if (member && card.tier) {
     rows.push([t("tier"), tt(card.tier), undefined]);
   } else if (card.kind === "guest" || card.kind === "partner") {
     rows.push([t("tier"), tk(card.kind), undefined]);
   }
-  if (card.staff) {
-    rows.push([t("staff"), t("staffYes"), undefined]);
-  }
+  rows.push([
+    t("status"),
+    card.active ? t("statusActive") : t("statusInactive"),
+    undefined,
+  ]);
   if (member && card.member_since) {
     rows.push([
       t("since"),
-      formatLongDate(card.member_since, locale, true),
+      formatPlainDate(card.member_since, locale),
       undefined,
     ]);
-  }
-  if (card.active && member) {
-    rows.push([t("vote"), card.voting ? t("votes") : t("noVote"), undefined]);
   }
 
   return (
@@ -124,36 +117,6 @@ const MemberCardPage = async ({ params, searchParams }: CardParams) => {
         />
         <figcaption className="type-caption">{t("pattern")}</figcaption>
       </figure>
-      {record.length > 0 ? (
-        <section aria-labelledby="record" className="grid gap-3">
-          <h2 className="type-heading" id="record">
-            {t("record")}
-          </h2>
-          <ul className="grid divide-y divide-line border-line border-y">
-            {record.map((item) => (
-              <li className="grid gap-1 py-3" key={item.verification_code}>
-                <Link
-                  className="link font-medium"
-                  href={`/verify/${item.verification_code}`}
-                >
-                  {tc(`kinds.${item.kind as "service"}`)}
-                </Link>
-                <p className="type-caption">
-                  {[
-                    localized(item, "role", locale),
-                    item.issued_at
-                      ? formatLongDate(item.issued_at, locale, true)
-                      : "",
-                    item.status === "revoked" ? tc("revokedShort") : "",
-                  ]
-                    .filter(Boolean)
-                    .join(" · ")}
-                </p>
-              </li>
-            ))}
-          </ul>
-        </section>
-      ) : null}
       <p className="type-caption">{t("note")}</p>
     </div>
   );

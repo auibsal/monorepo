@@ -83,32 +83,43 @@ select pg_temp.make_user('00000000-0000-0000-0000-0000000000a3', 'gs-sd@auib.edu
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000000a2', 'media_director');
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000000a3', 'general_secretary');
 
+-- The Library is rebuilt from Notion after the Nov 7 decisions; two samples
+-- stand in for the re-sync.
+insert into governance.society_documents (code, slug, title_en, body_en, audience)
+values
+  ('SAL-GOV-01', 'constitution', 'The Constitution', '<p><strong>6.6</strong> Text.</p>', 'public'),
+  ('SAL-GOV-02', 'bylaws', 'The Bylaws', '<p>Text.</p>', 'public');
+
 select pg_temp.login_anon();
-select is((select count(*)::int from governance.society_documents where audience = 'public'), 16,
-  'Visitors read the six public documents and the ten platform policies (the API terms retired)');
+select is((select count(*)::int from governance.society_documents), 2,
+  'Visitors read the public documents');
 select is((select count(*)::int from governance.society_documents
-  where status = 'adopted' and version = 'Version 1' and adopted_on is not null), 16,
-  'Every public document is adopted, Version 1 (owner, Oct 24, 2026)');
+  where status = 'proposed' and adopted_on is null), 2,
+  'Every document is proposed until the Founding Meeting adopts it (owner, Nov 7, 2026)');
 select is((select count(*)::int from governance.society_documents where audience = 'internal'), 0,
-  'but never the internal ones');
-select ok((select body_en like '%<strong>6.6</strong> While the Society is small%' from governance.society_documents where slug = 'constitution'),
+  'No internal documents are kept here: they stay in Notion');
+select ok((select body_en like '%<strong>6.6</strong>%' from governance.society_documents where slug = 'constitution'),
   'The Constitution is there as text');
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a1');
-select is((select count(*)::int from governance.society_documents where audience = 'internal'), 0,
-  'A member does not read the internal documents');
 update governance.society_documents set title_en = 'Changed' where slug = 'constitution';
 select is((select title_en from governance.society_documents where slug = 'constitution'), 'The Constitution',
-  'nor edits any document');
+  'A member edits no document');
 
-select pg_temp.login_as('00000000-0000-0000-0000-0000000000a2');
-select is((select count(*)::int from governance.society_documents where audience = 'internal'), 0,
-  'No internal documents are kept here, even for officers');
+select pg_temp.logout();
+select throws_ok(
+  $$ insert into governance.society_documents (code, slug, title_en) values ('SAL-PLT-01', 'old-policy', 'Old') $$,
+  '23514', null, 'The retired code families are refused (PLT, POL, BRD …)'
+);
+select throws_ok(
+  $$ update governance.society_documents set status = 'adopted' where slug = 'bylaws' $$,
+  '23514', null, 'An adopted document carries its adoption date'
+);
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a3');
 select lives_ok(
   $$ update governance.society_documents set body_en = body_en || '<p>Amended.</p>' where slug = 'bylaws' $$,
-  'The General Secretary edits a document in the Nexus'
+  'The General Secretary edits a document in the Diwan'
 );
 select is((select updated_by from governance.society_documents where slug = 'bylaws'),
   '00000000-0000-0000-0000-0000000000a3'::uuid, 'and is recorded as its last editor');

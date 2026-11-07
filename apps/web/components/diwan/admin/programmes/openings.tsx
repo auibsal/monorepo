@@ -6,16 +6,13 @@ import { Input } from "@repo/brand/components/ui/input";
 import type { Locale } from "@repo/internationalization";
 import { formatLongDate } from "@repo/internationalization/format";
 import { hasPermission, hasPermissionAnywhere } from "@repo/rbac";
-import { journal, localized, type membership, unwrap } from "@repo/sal-data";
+import { localized, type membership, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useState } from "react";
-import { DateInput } from "@/components/fields/date-input";
 import { Link, useRouter } from "@/lib/diwan/navigation";
 import { useGrants } from "@/lib/diwan/queries";
-import { useQueryParam } from "@/lib/diwan/use-query-param";
 import { SectionSpinner } from "../../states";
-import { useProgrammeOptions } from "../events/data";
 import {
   AdminHeading,
   BilingualField,
@@ -38,69 +35,28 @@ import {
   picks,
   type Reply,
 } from "../members/hiring";
-import { PartnerPlaceForm } from "../partners/places";
 import { SkillsPicker } from "./skills-picker";
 
 /**
- * What an opening offers (owner, Oct 31, 2026: every open place, inside the
- * Society and out): a role, an Apprenticeship, a First Ink place, a
- * volunteer place, or a place with one of the Society's partners.
+ * What an opening offers (owner, Nov 7, 2026: open roles only): a team role
+ * (hiring), a place on one event's team, or a Qalam mentor's place.
+ * Auditions come from the Company's productions; volunteer shifts are on
+ * each event.
  */
-export const openingKinds = [
-  "role",
-  "apprenticeship",
-  "first_ink",
-  "volunteer",
-  "partner",
-] as const;
+export const openingKinds = ["role", "event_team", "qalam_mentor"] as const;
 type OpeningKind = (typeof openingKinds)[number];
-
-/** Places held by people over a term, with a rota whose hours count. */
-const withRota = (kind: OpeningKind) =>
-  kind === "apprenticeship" || kind === "first_ink" || kind === "volunteer";
-
-/** Places that name a partner: the school for First Ink, or the partner. */
-const namesPartner = (kind: OpeningKind) =>
-  kind === "first_ink" || kind === "partner";
+type PlaceKind = Exclude<OpeningKind, "role">;
 
 const blank = {
   body: { ar: "", en: "" },
   closes_at: null as string | null,
-  desk: "" as journal.Desk | "",
-  kind: "role" as OpeningKind,
-  partner_id: "",
+  event_id: "",
   places: "",
   skills: [] as (typeof membership.skills)[number][],
-  term_from: "",
-  term_to: "",
   title: { ar: "", en: "" },
 };
 
-/** The row an opening is saved as; places only for the two kinds of place. */
-const openingRow = (form: typeof blank, programmeId: string | null) => {
-  const place = form.kind !== "role";
-  return {
-    body_ar: form.body.ar || null,
-    body_en: form.body.en || null,
-    closes_at: form.closes_at,
-    desk: form.kind === "apprenticeship" && form.desk ? form.desk : null,
-    kind: form.kind,
-    partner_id: namesPartner(form.kind) ? form.partner_id : null,
-    places: place && form.places ? Number(form.places) : null,
-    programme_id: programmeId,
-    skills: form.skills,
-    term_from: place && form.term_from ? form.term_from : null,
-    term_to: place && form.term_to ? form.term_to : null,
-    title_ar: form.title.ar,
-    title_en: form.title.en,
-  };
-};
-
-/** The places a program posts: held over a term, with sessions. */
-const placeKinds = ["apprenticeship", "first_ink", "volunteer"] as const;
-type PlaceKind = (typeof placeKinds)[number];
-
-/** Every opening the officer can see, with its replies and places. */
+/** Every opening the officer can see, with its replies. */
 const useOpenings = () => {
   const { supabase } = useAuth();
   return useQuery({
@@ -110,11 +66,28 @@ const useOpenings = () => {
           .schema("programmes")
           .from("openings")
           .select(
-            "id, kind, owner, programme_id, partner_id, title_en, title_ar, closes_at, is_open, opening_replies(opening_id, user_id, note, status, talk_at, created_at), placements(id, user_id, status)"
+            "id, kind, owner, programme_id, event_id, title_en, title_ar, closes_at, is_open, opening_replies(opening_id, user_id, note, status, talk_at, created_at)"
           )
           .order("created_at", { ascending: false })
       ) ?? [],
     queryKey: hiringKey,
+  });
+};
+
+/** Events coming up, to post an event team for. */
+const useComingEvents = () => {
+  const { supabase } = useAuth();
+  return useQuery({
+    queryFn: async () =>
+      unwrap(
+        await supabase
+          .schema("events")
+          .from("events")
+          .select("id, slug, title_en, title_ar, starts_at")
+          .gte("starts_at", new Date().toISOString())
+          .order("starts_at")
+      ) ?? [],
+    queryKey: ["admin", "coming-events"],
   });
 };
 
@@ -123,7 +96,7 @@ type OpeningListRow = NonNullable<
 >[number];
 type MemberNames = NonNullable<ReturnType<typeof useMemberNames>["data"]>;
 
-/** A place's replies: give the place, complete or withdraw it. */
+/** A place's replies: who said they're interested, with their note. */
 const PlaceReplies = ({
   names,
   opening: o,
@@ -131,98 +104,19 @@ const PlaceReplies = ({
   readonly names: MemberNames;
   readonly opening: OpeningListRow;
 }) => {
-  const t = useTranslations("diwan.admin.programmes.openings");
   const locale = useLocale() as Locale;
-  const { supabase } = useAuth();
-  const queryClient = useQueryClient();
-  const refresh = () => queryClient.invalidateQueries({ queryKey: hiringKey });
-  const give = useMutation({
-    mutationFn: async (userId: string) =>
-      unwrap(
-        await supabase
-          .schema("programmes")
-          .from("placements")
-          .insert({ opening_id: o.id, user_id: userId })
-      ),
-    onSuccess: refresh,
-  });
-  const withdraw = useMutation({
-    mutationFn: async (id: string) =>
-      unwrap(
-        await supabase
-          .schema("programmes")
-          .from("placements")
-          .update({ status: "withdrawn" })
-          .eq("id", id)
-      ),
-    onSuccess: refresh,
-  });
-  const complete = useMutation({
-    mutationFn: async (id: string) =>
-      unwrap(
-        await supabase
-          .schema("programmes")
-          .rpc("complete_apprenticeship", { placement: id })
-      ),
-    onSuccess: refresh,
-  });
   return (
-    <>
-      <ul className="grid gap-1">
-        {o.opening_replies.map((r) => {
-          const person = names.find((n) => n.id === r.user_id);
-          const placed = o.placements.find(
-            (pl) => pl.user_id === r.user_id && pl.status !== "withdrawn"
-          );
-          return (
-            <li
-              className="flex flex-wrap items-center gap-x-4 gap-y-1"
-              key={r.user_id}
-            >
-              <span className="type-body">
-                {person ? memberName(person, locale) : "—"}
-                {r.note ? ` · ${r.note}` : ""}
-                {placed
-                  ? ` · ${t(`placement.${placed.status as "active"}`)}`
-                  : ""}
-              </span>
-              {placed ? null : (
-                <Button
-                  disabled={give.isPending}
-                  onClick={() => give.mutate(r.user_id)}
-                  size="sm"
-                  variant="ghost"
-                >
-                  {t("give")}
-                </Button>
-              )}
-              {placed?.status === "active" && o.kind === "apprenticeship" ? (
-                <ConfirmAction
-                  confirmLabel={t("complete")}
-                  description={t("completeConfirm")}
-                  disabled={complete.isPending}
-                  onConfirm={() => complete.mutate(placed.id)}
-                  variant="ghost"
-                >
-                  {t("complete")}
-                </ConfirmAction>
-              ) : null}
-              {placed?.status === "active" ? (
-                <Button
-                  disabled={withdraw.isPending}
-                  onClick={() => withdraw.mutate(placed.id)}
-                  size="sm"
-                  variant="ghost"
-                >
-                  {t("withdraw")}
-                </Button>
-              ) : null}
-            </li>
-          );
-        })}
-      </ul>
-      <ErrorLine error={give.error ?? withdraw.error ?? complete.error} />
-    </>
+    <ul className="grid gap-1">
+      {o.opening_replies.map((r) => {
+        const person = names.find((n) => n.id === r.user_id);
+        return (
+          <li className="type-body" key={r.user_id}>
+            {person ? memberName(person, locale) : "—"}
+            {r.note ? ` · ${r.note}` : ""}
+          </li>
+        );
+      })}
+    </ul>
   );
 };
 
@@ -326,55 +220,31 @@ const OpeningItem = ({
 };
 
 /**
- * Every opening on Get involved in one list (owner, Nov 4, 2026, evening:
- * one place for each thing; was a program's Places, People → Hiring and
- * Partners → Places): roles, Apprenticeships, First Ink, volunteer places
- * and places with partners. Filter by what it offers and by program (a
- * program's page links here with `?program=<slug>`). A role's replies run
- * through hiring (Membership runs it, the role's owner picks); a place's
- * replies are given the place. Each opening is edited at its own address.
+ * Every opening on Get involved in one list (owner, Nov 7, 2026: open roles
+ * only): team roles, event teams and Qalam mentors, filtered by kind. A
+ * role's replies run through hiring (Membership runs it, the role's owner
+ * picks); an event team's or a mentor's replies are read here. Each opening
+ * is edited at its own address.
  */
 export const OpeningsAdmin = () => {
   const t = useTranslations("diwan.admin.programmes.openings");
   const th = useTranslations("diwan.admin.hiring");
   const locale = useLocale() as Locale;
-  const { supabase } = useAuth();
   const grants = useGrants();
-  const programs = useProgrammeOptions(null);
-  const programSlug = useQueryParam("program");
   const [kind, setKind] = useState<OpeningKind | "">("");
-  const [program, setProgram] = useState<string | null>(null);
-  const programId =
-    program ?? programs.options.find((p) => p.slug === programSlug)?.id ?? "";
   const list = useOpenings();
-  const partnerNames = useQuery({
-    queryFn: async () =>
-      unwrap(await supabase.schema("governance").rpc("partner_names")) ?? [],
-    queryKey: ["admin", "partner-names"],
-  });
+  const events = useComingEvents();
   const names = useMemberNames(
     (list.data ?? []).flatMap((o) => o.opening_replies.map((r) => r.user_id))
   );
   const runs = hasPermission(grants.data, "members.manage");
-
-  const shown = (list.data ?? []).filter(
-    (o) =>
-      (kind === "" || o.kind === kind) &&
-      (programId === "" || o.programme_id === programId)
-  );
+  const shown = (list.data ?? []).filter((o) => kind === "" || o.kind === kind);
   const whose = (o: OpeningListRow) => {
-    const partner = (partnerNames.data ?? []).find(
-      (p) => p.id === o.partner_id
-    );
-    const at = partner ? localized(partner, "name", locale) : "";
-    if (o.kind === "partner") {
-      return at;
+    if (o.kind === "event_team") {
+      const event = (events.data ?? []).find((e) => e.id === o.event_id);
+      return event ? localized(event, "title", locale) : "";
     }
-    const owner =
-      o.owner === "program"
-        ? programs.label(o.programme_id)
-        : th(`owners.${o.owner as Owner}`);
-    return [owner, at].filter(Boolean).join(", ");
+    return o.kind === "role" ? th(`owners.${o.owner as Owner}`) : "";
   };
 
   return (
@@ -385,7 +255,7 @@ export const OpeningsAdmin = () => {
       >
         {t("listLede")}
       </AdminHeading>
-      <div className="grid max-w-3xl gap-4 sm:grid-cols-2">
+      <div className="max-w-md">
         <Field label={t("kind")}>
           {(id) => (
             <SelectInput
@@ -397,22 +267,6 @@ export const OpeningsAdmin = () => {
               {openingKinds.map((k) => (
                 <option key={k} value={k}>
                   {t(`kinds.${k}`)}
-                </option>
-              ))}
-            </SelectInput>
-          )}
-        </Field>
-        <Field label={th("program")}>
-          {(id) => (
-            <SelectInput
-              id={id}
-              onChange={(e) => setProgram(e.target.value)}
-              value={programId}
-            >
-              <option value="">{t("allPrograms")}</option>
-              {programs.options.map((p) => (
-                <option key={p.id} value={p.id}>
-                  {p.label}
                 </option>
               ))}
             </SelectInput>
@@ -440,12 +294,10 @@ export const OpeningsAdmin = () => {
 };
 
 /**
- * A place (an Apprenticeship, First Ink or a volunteer place): where it is
- * (a Qirtas section, the Company or an event team; owner, Nov 5, 2026: no
- * series), its term and places. Its sessions are a rota of its own, made
- * with it, so their hours count as service.
+ * A place: on one event's team (the President or the event's lead posts it)
+ * or as a Qalam mentor (the Editor-in-Chief's team), with its places.
  */
-const ProgramPlaceForm = ({
+const PlaceForm = ({
   kind,
   onDone,
 }: {
@@ -453,51 +305,30 @@ const ProgramPlaceForm = ({
   readonly onDone: () => void;
 }) => {
   const t = useTranslations("diwan.admin.programmes.openings");
-  const th = useTranslations("diwan.admin.hiring");
-  const tj = useTranslations("diwan.admin.journal");
   const locale = useLocale() as Locale;
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
-  const programs = useProgrammeOptions("programs.manage");
-  const [form, setForm] = useState({ ...blank, kind });
-  // Qirtas's and the Company's rows, or none: an event team.
-  const homes = programs.options.filter(
-    (p) => p.slug === "waraq" || p.slug === "company"
-  );
-  const [programme, setProgramme] = useState("");
-  const programmeId = programme;
-  const partners = useQuery({
-    enabled: namesPartner(kind),
-    queryFn: async () =>
-      unwrap(await supabase.schema("governance").rpc("partner_names")) ?? [],
-    queryKey: ["admin", "partner-names"],
-  });
+  const events = useComingEvents();
+  const [form, setForm] = useState(blank);
   const add = useMutation({
-    mutationFn: async () => {
-      const opening = unwrap(
+    mutationFn: async () =>
+      unwrap(
         await supabase
           .schema("programmes")
           .from("openings")
-          .insert(openingRow({ ...form, kind }, programmeId || null))
-          .select("id")
-          .single()
-      );
-      if (opening && withRota(kind)) {
-        unwrap(
-          await supabase
-            .schema("programmes")
-            .from("rotas")
-            .insert({
-              ends_on: form.term_to || null,
-              opening_id: opening.id,
-              programme_id: programmeId || null,
-              starts_on: form.term_from || null,
-              title_ar: form.title.ar,
-              title_en: form.title.en,
-            })
-        );
-      }
-    },
+          .insert({
+            body_ar: form.body.ar || null,
+            body_en: form.body.en || null,
+            closes_at: form.closes_at,
+            event_id: kind === "event_team" ? form.event_id : null,
+            kind,
+            owner: kind === "event_team" ? "program" : "qirtas",
+            places: form.places ? Number(form.places) : null,
+            skills: form.skills,
+            title_ar: form.title.ar,
+            title_en: form.title.en,
+          })
+      ),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: hiringKey });
       onDone();
@@ -510,22 +341,27 @@ const ProgramPlaceForm = ({
 
   return (
     <form className="grid max-w-3xl gap-4" onSubmit={submit}>
-      <Field label={th("program")}>
-        {(id) => (
-          <SelectInput
-            id={id}
-            onChange={(e) => setProgramme(e.target.value)}
-            value={programmeId}
-          >
-            <option value="">{th("owners.program")}</option>
-            {homes.map((p) => (
-              <option key={p.id} value={p.id}>
-                {p.label}
-              </option>
-            ))}
-          </SelectInput>
-        )}
-      </Field>
+      {kind === "event_team" ? (
+        <Field label={t("event")}>
+          {(id) => (
+            <SelectInput
+              id={id}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, event_id: e.target.value }))
+              }
+              required
+              value={form.event_id}
+            >
+              <option value="">{t("chooseEvent")}</option>
+              {(events.data ?? []).map((e) => (
+                <option key={e.id} value={e.id}>
+                  {`${localized(e, "title", locale)} · ${formatLongDate(e.starts_at, locale)}`}
+                </option>
+              ))}
+            </SelectInput>
+          )}
+        </Field>
+      ) : null}
       <BilingualField
         label={t("title")}
         maxLength={200}
@@ -545,107 +381,37 @@ const ProgramPlaceForm = ({
         onChange={(skills) => setForm((f) => ({ ...f, skills }))}
         value={form.skills}
       />
-      {kind === "apprenticeship" ? (
-        <Field hint={t("deskHint")} label={t("desk")}>
-          {(id) => (
-            <SelectInput
-              id={id}
-              onChange={(e) =>
-                setForm((f) => ({
-                  ...f,
-                  desk: e.target.value as journal.Desk | "",
-                }))
-              }
-              value={form.desk}
-            >
-              <option value="">{t("noDesk")}</option>
-              {journal.desks.map((d) => (
-                <option key={d} value={d}>
-                  {tj(`desks.${d}`)}
-                </option>
-              ))}
-            </SelectInput>
-          )}
-        </Field>
-      ) : null}
-      {namesPartner(kind) ? (
-        <Field hint={t("partnerHint")} label={t("partner")}>
-          {(id) => (
-            <SelectInput
-              id={id}
-              onChange={(e) =>
-                setForm((f) => ({ ...f, partner_id: e.target.value }))
-              }
-              required
-              value={form.partner_id}
-            >
-              <option value="">{t("choosePartner")}</option>
-              {(partners.data ?? []).map((p) => (
-                <option key={p.id} value={p.id}>
-                  {localized(p, "name", locale)}
-                </option>
-              ))}
-            </SelectInput>
-          )}
-        </Field>
-      ) : null}
-      <div className="grid gap-4 sm:grid-cols-3">
-        <Field label={t("places")}>
-          {(id) => (
-            <Input
-              dir="ltr"
-              id={id}
-              max={100}
-              min={1}
-              onChange={(e) =>
-                setForm((f) => ({ ...f, places: e.target.value }))
-              }
-              type="number"
-              value={form.places}
-            />
-          )}
-        </Field>
-        <Field label={t("termFrom")}>
-          {(id) => (
-            <DateInput
-              id={id}
-              onChange={(e) =>
-                setForm((f) => ({ ...f, term_from: e.target.value }))
-              }
-              required={kind === "apprenticeship"}
-              value={form.term_from}
-            />
-          )}
-        </Field>
-        <Field label={t("termTo")}>
-          {(id) => (
-            <DateInput
-              id={id}
-              onChange={(e) =>
-                setForm((f) => ({ ...f, term_to: e.target.value }))
-              }
-              required={kind === "apprenticeship"}
-              value={form.term_to}
-            />
-          )}
-        </Field>
-      </div>
+      <Field label={t("places")}>
+        {(id) => (
+          <Input
+            className="max-w-xs"
+            dir="ltr"
+            id={id}
+            max={100}
+            min={1}
+            onChange={(e) => setForm((f) => ({ ...f, places: e.target.value }))}
+            type="number"
+            value={form.places}
+          />
+        )}
+      </Field>
       <DateTimeField
         label={t("closes")}
         onChange={(closes_at) => setForm((f) => ({ ...f, closes_at }))}
         value={form.closes_at}
       />
-      <SaveButton pending={add.isPending} />
+      <SaveButton
+        disabled={kind === "event_team" && !form.event_id}
+        pending={add.isPending}
+      />
       <ErrorLine error={add.error} />
     </form>
   );
 };
 
 /**
- * Posting an opening (owner, Nov 4, 2026, evening: one place for every
- * opening): first what it offers, among the kinds this officer posts, then
- * its form. A role is chosen from the Society's roles (hiring); a program's
- * place names its program; a place with a partner is Partnerships'.
+ * Posting an opening: first what it offers, among the kinds this officer
+ * posts, then its form. A role is chosen from the Society's roles (hiring).
  */
 export const NewOpeningPage = () => {
   const t = useTranslations("diwan.admin.programmes.openings");
@@ -653,13 +419,13 @@ export const NewOpeningPage = () => {
   const router = useRouter();
   const done = () => router.push("/people/openings");
   const posts = openingKinds.filter((k) => {
-    if (k === "partner") {
-      return hasPermissionAnywhere(grants.data, "partners.manage");
+    if (k === "event_team") {
+      return hasPermissionAnywhere(grants.data, "programs.manage");
     }
-    if (k === "role") {
-      return true;
+    if (k === "qalam_mentor") {
+      return hasPermissionAnywhere(grants.data, "qalam.manage");
     }
-    return hasPermissionAnywhere(grants.data, "programs.manage");
+    return true;
   });
   const [chosen, setChosen] = useState<OpeningKind | "">("");
   const kind = chosen || posts[0];
@@ -681,9 +447,8 @@ export const NewOpeningPage = () => {
         )}
       </Field>
       {kind === "role" ? <NewRole onDone={done} /> : null}
-      {kind === "partner" ? <PartnerPlaceForm onDone={done} /> : null}
-      {kind && kind !== "role" && kind !== "partner" ? (
-        <ProgramPlaceForm key={kind} kind={kind} onDone={done} />
+      {kind && kind !== "role" ? (
+        <PlaceForm key={kind} kind={kind} onDone={done} />
       ) : null}
     </RecordPage>
   );

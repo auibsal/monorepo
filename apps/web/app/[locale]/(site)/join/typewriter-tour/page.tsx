@@ -10,12 +10,12 @@ export const generateMetadata = sectionMetadata(
 );
 
 /**
- * The Typewriter Tour (owner, Nov 5, 2026): the Society's welcome to new
- * students, under Join. It belongs to membership, not to What's on's
- * series: the General Secretary owns it and picks the Tour Lead. The full
- * Tour runs once a year in spring, after Eid; in fall the typewriter is
- * the membership table at the club fair. Its Six Words wall and the
- * typewriter to try moved here from /events/typewriter-tour (no redirect).
+ * The Typewriter Tour (owner, Nov 5 and Nov 7, 2026): the Society's
+ * welcome to new students, under Join, run by the Director of Membership
+ * and the Tour Lead, once a year in the spring club fair week. No paper
+ * is kept: writers join by QR code, their typed page is photographed into
+ * their account, and they choose who sees it (private by default). The
+ * wall shows the pages their writers put on this page.
  */
 const TypewriterTourPage = async ({ params }: LocaleParams) => {
   const { locale } = await params;
@@ -32,6 +32,9 @@ const TypewriterTourPage = async ({ params }: LocaleParams) => {
       </PageHeader>
       <Section id="when" title={t("whenTitle")}>
         <p className="type-body max-w-[60ch]">{t("when")}</p>
+      </Section>
+      <Section id="how" title={t("howTitle")}>
+        <p className="type-body max-w-[60ch]">{t("how")}</p>
       </Section>
       <Section id="six-words-go" title={t("wordsTitle")}>
         <p className="type-body max-w-[60ch]">{t("words")}</p>

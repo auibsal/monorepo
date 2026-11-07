@@ -4,7 +4,7 @@ import { useAuth } from "@repo/auth/provider";
 import { Input } from "@repo/brand/components/ui/input";
 import type { Locale } from "@repo/internationalization";
 import { formatLongDate } from "@repo/internationalization/format";
-import { localized, unwrap } from "@repo/sal-data";
+import { type governance, localized, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useState } from "react";
@@ -44,7 +44,7 @@ type Status =
 // ── Meetings ────────────────────────────────────────────────────────────────
 
 /**
- * Meetings of the Council and the General Assembly (owner, Oct 31, 2026:
+ * Meetings of the Council and of the members (owner, Oct 31, 2026:
  * minutes and resolutions are one thing): each meeting is its minutes, and
  * its resolutions are on its page.
  */
@@ -86,7 +86,7 @@ const MeetingsList = () => {
       key: "date",
     },
     {
-      cell: (m) => t(`bodies.${m.body as "council" | "general_assembly"}`),
+      cell: (m) => t(`bodies.${m.body as governance.MeetingBody}`),
       header: t("minutes.body"),
       key: "body",
     },
@@ -294,7 +294,7 @@ export const ResolutionPage = ({
         }
         title={row ? localized(row, "title", locale) : t("resolutions.new")}
       >
-        {`${t(`bodies.${meeting.body as "council" | "general_assembly"}`)} · ${formatLongDate(meeting.meeting_on, locale, true)}`}
+        {`${t(`bodies.${meeting.body as governance.MeetingBody}`)} · ${formatLongDate(meeting.meeting_on, locale, true)}`}
       </AdminHeading>
       <ResolutionEditor
         back={back}
@@ -497,7 +497,7 @@ export const SocietyView = ({ view }: { readonly view: SocietyViewKey }) => {
       {view === "meetings" ? (
         <>
           <MeetingsList />
-          <RequestQueue base="/society/motions" keys={["f09"]} />
+          <RequestQueue base="/society/motions" keys={["f10"]} />
         </>
       ) : null}
       {view === "requests" ? (
@@ -508,7 +508,7 @@ export const SocietyView = ({ view }: { readonly view: SocietyViewKey }) => {
       ) : null}
       {view === "elections" ? <Elections /> : null}
       {view === "concerns" ? (
-        <RequestQueue base="/society/concerns" keys={["f19", "f20"]} />
+        <RequestQueue base="/society/concerns" keys={["f21"]} />
       ) : null}
       {view === "declarations" ? <Declarations /> : null}
       {view === "library" ? <LibraryAdmin /> : null}

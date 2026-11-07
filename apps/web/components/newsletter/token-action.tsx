@@ -31,14 +31,19 @@ const paths: Record<Action, string> = {
  */
 export const TokenAction = ({ action }: { action: Action }) => {
   const t = useTranslations(namespaces[action]);
-  const token = useSearchParams().get("token") ?? "";
-  const [state, setState] = useState<State>(token ? "idle" : "invalid");
+  const params = useSearchParams();
+  const token = params.get("token") ?? "";
+  // The one-time invitation's stop link carries `invite` instead.
+  const invite = action === "stopEmails" ? (params.get("invite") ?? "") : "";
+  const [state, setState] = useState<State>(
+    token || invite ? "idle" : "invalid"
+  );
 
   const run = async () => {
     setState("sending");
     try {
       const response = await fetch(apiPath(paths[action]), {
-        body: JSON.stringify({ token }),
+        body: JSON.stringify(invite ? { invite } : { token }),
         headers: { "content-type": "application/json" },
         method: "POST",
       });

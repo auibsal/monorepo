@@ -179,9 +179,9 @@ select is(
 
 select pg_temp.logout();
 insert into access.role_assignments (user_id, role, starts_at, ends_at) values
-  ('00000000-0000-0000-0000-0000000000a2', 'campaign_lead', now() - interval '2 days', now() - interval '1 second');
+  ('00000000-0000-0000-0000-0000000000a2', 'tour_lead', now() - interval '2 days', now() - interval '1 second');
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a2');
-select ok(not access.has_permission('charity.manage'), 'An assignment stops granting access at ends_at');
+select ok(not access.has_permission('tour.run'), 'An assignment stops granting access at ends_at');
 
 select pg_temp.logout();
 insert into access.role_assignments (user_id, role, starts_at) values

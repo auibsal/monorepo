@@ -2,6 +2,7 @@
 
 import { useAuth } from "@repo/auth/provider";
 import { Checkbox } from "@repo/brand/components/ui/checkbox";
+import { Input } from "@repo/brand/components/ui/input";
 import { Label } from "@repo/brand/components/ui/label";
 import type { Locale } from "@repo/internationalization";
 import { formatLongDate } from "@repo/internationalization/format";
@@ -19,14 +20,16 @@ interface OffCampusEvent {
   readonly id: string;
   readonly off_campus: boolean;
   readonly status: string;
+  readonly student_life_approved_by: string | null;
   readonly student_life_approved_on: string | null;
 }
 
 /**
- * Off campus, an add-on any event may take (owner, Nov 5, 2026: no
- * occasions): an event away from campus is published only once Student
- * Life's written approval is on record, which the General Secretary
- * records (governance.manage).
+ * Off campus, a standard field of every event (owner, Nov 7, 2026): an event
+ * away from campus is published only once Student Life's written approval,
+ * its date and who approved, is on record, which the General Secretary
+ * records (governance.manage); participants sign the trip consent form
+ * (F-45) on the site before they book.
  */
 export const EventOffCampus = ({
   event,
@@ -40,6 +43,7 @@ export const EventOffCampus = ({
   const grants = useGrants();
   const secretary = hasPermission(grants.data, "governance.manage");
   const [date, setDate] = useState(event.student_life_approved_on ?? "");
+  const [by, setBy] = useState(event.student_life_approved_by ?? "");
   const refresh = () =>
     queryClient.invalidateQueries({ queryKey: ["admin", "event", event.id] });
   const toggle = useMutation({
@@ -57,6 +61,7 @@ export const EventOffCampus = ({
     mutationFn: async (value: string | null) =>
       unwrap(
         await supabase.schema("events").rpc("record_approval", {
+          approved_by: value ? by.trim() : (null as unknown as string),
           approved_on: value as string,
           event_id: event.id,
         })
@@ -87,7 +92,10 @@ export const EventOffCampus = ({
         <div className="grid gap-4 border-line border-t pt-4">
           <p className="type-body">
             {approvedOn
-              ? t("approved", { date: formatLongDate(approvedOn, locale) })
+              ? t("approvedBy", {
+                  by: event.student_life_approved_by ?? "",
+                  date: formatLongDate(approvedOn, locale),
+                })
               : t("waiting")}
           </p>
           {secretary ? (
@@ -102,9 +110,22 @@ export const EventOffCampus = ({
                   />
                 )}
               </Field>
+              <Field label={t("by")}>
+                {(id) => (
+                  <Input
+                    className="max-w-md"
+                    id={id}
+                    maxLength={200}
+                    onChange={(e) => setBy(e.target.value)}
+                    value={by}
+                  />
+                )}
+              </Field>
               <SaveButton
                 disabled={
-                  date === (approvedOn ?? "") ||
+                  (date === (approvedOn ?? "") &&
+                    by === (event.student_life_approved_by ?? "")) ||
+                  (Boolean(date) && !by.trim()) ||
                   (!date && event.status === "published")
                 }
                 pending={record.isPending}

@@ -289,11 +289,9 @@ export const CreditsTab = ({ production }: { production: ProductionRow }) => {
   const t = useTranslations("diwan.admin.productions.creditsTab");
   const tp = useTranslations("diwan.productions");
   const locale = useLocale() as Locale;
-  const { supabase, user } = useAuth();
+  const { supabase } = useAuth();
   const queryClient = useQueryClient();
   const key = [...productionKey(production.id), "credits"];
-  const [hours, setHours] = useState<Record<string, string>>({});
-  const [recorded, setRecorded] = useState<string | null>(null);
 
   const credits = useQuery({
     queryFn: async () =>
@@ -333,20 +331,6 @@ export const CreditsTab = ({ production }: { production: ProductionRow }) => {
       ),
     onSuccess: refresh,
   });
-  const record = useMutation({
-    mutationFn: (userId: string) =>
-      productions.recordService(
-        supabase,
-        production.id,
-        userId,
-        Number(hours[userId])
-      ),
-    onSuccess: (_r, userId) => setRecorded(userId),
-  });
-
-  const started = !["proposal", "approved", "cancelled"].includes(
-    production.stage
-  );
 
   return (
     <div className="grid max-w-3xl gap-8 pt-4">
@@ -398,57 +382,10 @@ export const CreditsTab = ({ production }: { production: ProductionRow }) => {
                 <Label htmlFor={`outside-${c.id}`}>{t("showOutside")}</Label>
               </div>
             )}
-            {c.user_id && started && c.user_id !== user?.id ? (
-              <form
-                className="flex flex-wrap items-end gap-2"
-                onSubmit={(event) => {
-                  event.preventDefault();
-                  if (c.user_id) {
-                    record.mutate(c.user_id);
-                  }
-                }}
-              >
-                <Field label={t("hours")}>
-                  {(id) => (
-                    <Input
-                      className="w-28"
-                      dir="ltr"
-                      id={id}
-                      inputMode="decimal"
-                      max={24}
-                      min={0.25}
-                      onChange={(e) =>
-                        setHours((h) => ({
-                          ...h,
-                          [c.user_id ?? ""]: e.target.value,
-                        }))
-                      }
-                      required
-                      step={0.25}
-                      type="number"
-                      value={hours[c.user_id ?? ""] ?? ""}
-                    />
-                  )}
-                </Field>
-                <Button
-                  disabled={record.isPending}
-                  size="sm"
-                  type="submit"
-                  variant="outline"
-                >
-                  {t("recordHours")}
-                </Button>
-                {recorded === c.user_id ? (
-                  <span className="type-caption" role="status">
-                    {t("recorded")}
-                  </span>
-                ) : null}
-              </form>
-            ) : null}
           </li>
         ))}
       </ul>
-      <ErrorLine error={record.error ?? remove.error} />
+      <ErrorLine error={remove.error} />
     </div>
   );
 };

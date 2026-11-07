@@ -6,7 +6,7 @@ export const generateMetadata = titleFrom((t) =>
   t("diwan.admin.forms.requestTitle")
 );
 
-/** A motion for the General Assembly, on its own page under its queue. */
+/** A motion for a members’ meeting (F-10), on its own page under its queue. */
 const Page = async ({
   params,
 }: {

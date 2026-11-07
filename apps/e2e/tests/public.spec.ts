@@ -50,7 +50,7 @@ test.describe("public site", () => {
     // A month has its own address.
     await page.goto(`${urls.web}/events/${month}`);
     await expect(page.getByRole("heading", { level: 1 })).toHaveText(
-      "What's on"
+      "What’s on"
     );
     await expect(
       page.getByRole("link", { name: event.title }).first()
@@ -81,13 +81,13 @@ test.describe("public site", () => {
     );
     await expect(page).toHaveTitle(/The Salon/);
     await expectAccessible(page);
-    // Next Stop is Qirtas's video show, with its promise beside it.
-    await page.goto(`${urls.web}/qirtas/next-stop`);
+    // Next Stop is the Director of Media’s (owner, Nov 7, 2026), with its promise beside it.
+    await page.goto(`${urls.web}/next-stop`);
     await page
       .getByRole("main")
-      .getByRole("link", { name: "Next Stop's promise" })
+      .getByRole("link", { name: "Next Stop’s promise" })
       .click();
-    await expect(page).toHaveURL(/\/qirtas\/next-stop\/care$/);
+    await expect(page).toHaveURL(/\/next-stop\/care$/);
   });
 
   test("Get involved is one list of every open opportunity", async ({

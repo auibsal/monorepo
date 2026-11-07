@@ -2,6 +2,7 @@
 
 import { useAuth } from "@repo/auth/provider";
 import { SalCard } from "@repo/brand/components/sal/card";
+import { Button } from "@repo/brand/components/ui/button";
 import { Input } from "@repo/brand/components/ui/input";
 import type { Locale } from "@repo/internationalization";
 import {
@@ -35,14 +36,14 @@ import {
 import { NotionManaged } from "../notion-managed";
 import { memberName, useDirectory } from "./directory";
 
-// ── Scope options (series, events, Editions, campaigns, productions) ────────
+// ── Scope options (series, events, Editions, productions) ────────
 
 const useScopeOptions = () => {
   const { supabase } = useAuth();
   const locale = useLocale();
   return useQuery({
     queryFn: async () => {
-      const [programmes, issues, campaigns, shows, partnerRows, eventRows] =
+      const [programmes, issues, shows, partnerRows, eventRows] =
         await Promise.all([
           supabase
             .schema("core")
@@ -55,11 +56,6 @@ const useScopeOptions = () => {
             .select("id, volume, number, title_en, title_ar")
             .order("volume", { ascending: false })
             .order("number", { ascending: false }),
-          supabase
-            .schema("charity")
-            .from("campaigns")
-            .select("id, title_en, title_ar")
-            .order("created_at", { ascending: false }),
           supabase
             .schema("programmes")
             .from("productions")
@@ -85,10 +81,6 @@ const useScopeOptions = () => {
         Exclude<ScopeType, "global">,
         { id: string; label: string }[]
       > = {
-        campaign: (unwrap(campaigns) ?? []).map((c) => ({
-          id: c.id,
-          label: localized(c, "title", locale),
-        })),
         event: (unwrap(eventRows) ?? []).map((e) => ({
           id: e.id,
           label: `${localized(e, "title", locale)} · ${formatLongDate(e.starts_at, locale as Locale)}`,
@@ -303,6 +295,19 @@ const RolesSection = ({ name, userId }: { name: string; userId: string }) => {
     onSuccess: invalidate,
   });
 
+  const confirm = useMutation({
+    mutationFn: (assignmentId: string) =>
+      access.confirmAssignment(supabase, assignmentId),
+    onSuccess: invalidate,
+  });
+  const seatCheck = useMutation({
+    mutationFn: ({ eligible, id }: { eligible: boolean; id: string }) =>
+      access.recordSeatCheck(supabase, id, eligible),
+    onSuccess: invalidate,
+  });
+  const isCouncil = (key: string) =>
+    roles.data?.find((r) => r.key === key)?.is_council ?? false;
+
   const roleName = (key: string) => {
     const role = roles.data?.find((r) => r.key === key);
     return role ? localized(role, "name", locale) : key;
@@ -321,7 +326,9 @@ const RolesSection = ({ name, userId }: { name: string; userId: string }) => {
   const now = new Date();
   const state = (a: Assignment) => {
     if (access.isActiveAssignment(a, now)) {
-      return t("active");
+      // New team members and appointees serve their first term on
+      // probation, then are confirmed (owner, Nov 7, 2026).
+      return a.confirmed_at ? t("active") : t("probation");
     }
     return new Date(a.starts_at) > now ? t("upcoming") : t("ended");
   };
@@ -360,6 +367,46 @@ const RolesSection = ({ name, userId }: { name: string; userId: string }) => {
     { cell: state, header: "", key: "state" },
     {
       cell: (a) =>
+        canAssign && access.isActiveAssignment(a, now) && !a.confirmed_at ? (
+          <span className="flex flex-wrap gap-2">
+            {isCouncil(a.role) && !a.student_life_answer ? (
+              <>
+                <Button
+                  disabled={seatCheck.isPending}
+                  onClick={() => seatCheck.mutate({ eligible: true, id: a.id })}
+                  size="sm"
+                  variant="ghost"
+                >
+                  {t("studentLifeEligible")}
+                </Button>
+                <Button
+                  disabled={seatCheck.isPending}
+                  onClick={() =>
+                    seatCheck.mutate({ eligible: false, id: a.id })
+                  }
+                  size="sm"
+                  variant="ghost"
+                >
+                  {t("studentLifeNotEligible")}
+                </Button>
+              </>
+            ) : (
+              <Button
+                disabled={confirm.isPending}
+                onClick={() => confirm.mutate(a.id)}
+                size="sm"
+                variant="ghost"
+              >
+                {t("confirmRole")}
+              </Button>
+            )}
+          </span>
+        ) : null,
+      header: "",
+      key: "confirm",
+    },
+    {
+      cell: (a) =>
         canAssign && access.isActiveAssignment(a, now) ? (
           <ConfirmAction
             confirmLabel={t("endRole")}
@@ -393,7 +440,7 @@ const RolesSection = ({ name, userId }: { name: string; userId: string }) => {
           {(close) => <AssignRole name={name} onDone={close} userId={userId} />}
         </AddInPlace>
       ) : null}
-      <ErrorLine error={end.error} />
+      <ErrorLine error={end.error ?? confirm.error ?? seatCheck.error} />
     </section>
   );
 };

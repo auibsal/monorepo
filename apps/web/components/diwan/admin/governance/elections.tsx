@@ -179,6 +179,17 @@ const ElectionCard = ({
       ),
     onSuccess: invalidate,
   });
+  // Student Life confirms a GPA of 2.0 or more (owner, Nov 7, 2026): it
+  // answers only "eligible" or "not eligible", recorded here; no grades.
+  const check = useMutation({
+    mutationFn: async ({ eligible, id }: { eligible: boolean; id: string }) =>
+      unwrap(
+        await supabase
+          .schema("governance")
+          .rpc("record_gpa_check", { candidate_id: id, eligible })
+      ),
+    onSuccess: invalidate,
+  });
   const addPositions = useMutation({
     mutationFn: async () =>
       unwrap(
@@ -243,6 +254,7 @@ const ElectionCard = ({
       ) : null}
 
       {data.isPending ? <SectionSpinner /> : null}
+      <ErrorLine error={check.error ?? decide.error} />
       <section className="grid gap-3">
         <h4 className="font-medium text-sm">{t("positions")}</h4>
         {data.data && data.data.positions.length === 0 && status === "draft" ? (
@@ -283,7 +295,40 @@ const ElectionCard = ({
                       <span className="type-caption">
                         {t(`candidateStatuses.${c.status as CandidateStatus}`)}
                       </span>
-                      {status === "nominations" || status === "review" ? (
+                      <span className="type-caption">
+                        {c.student_life_answer
+                          ? t(
+                              `studentLife.${c.student_life_answer as "eligible"}`
+                            )
+                          : t("studentLife.waiting")}
+                      </span>
+                      {(status === "nominations" || status === "review") &&
+                      !c.student_life_answer ? (
+                        <>
+                          <Button
+                            disabled={check.isPending}
+                            onClick={() =>
+                              check.mutate({ eligible: true, id: c.id })
+                            }
+                            size="sm"
+                            variant="ghost"
+                          >
+                            {t("studentLife.markEligible")}
+                          </Button>
+                          <Button
+                            disabled={check.isPending}
+                            onClick={() =>
+                              check.mutate({ eligible: false, id: c.id })
+                            }
+                            size="sm"
+                            variant="ghost"
+                          >
+                            {t("studentLife.markNotEligible")}
+                          </Button>
+                        </>
+                      ) : null}
+                      {(status === "nominations" || status === "review") &&
+                      c.student_life_answer === "eligible" ? (
                         <>
                           <Button
                             disabled={decide.isPending}

@@ -74,7 +74,7 @@ insert into core.semesters (code, name_en, name_ar, starts_on, ends_on) values
 update core.settings set value = '0' where key = 'membership.founding_voters';
 -- </preamble>
 
-select plan(14);
+select plan(15);
 
 select pg_temp.make_user('00000000-0000-0000-0000-0000000060a1', 'writer.one@auib.edu.iq', 'Writer One');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000060a2', 'tour.lead@auib.edu.iq', 'Tour Lead');
@@ -136,13 +136,13 @@ create temp table unsigned on commit drop as
   select programmes.record_six_words('ink on paper under the stars', 'en') as id;
 grant select on unsigned to public;
 select is(
-  (select status from programmes.six_words where id = (select id from unsigned)), 'approved',
-  'A transcribed card is on the wall at once'
+  (select visibility from programmes.six_words where id = (select id from unsigned)), 'private',
+  'A recorded page is private until its writer chooses (owner, Nov 7, 2026)'
 );
 select pg_temp.login_anon();
 select ok(
-  (select author_en is null from programmes.six_words_wall() where id = (select id from unsigned)),
-  'unsigned until its writer is found'
+  not exists (select 1 from programmes.six_words_wall() where id = (select id from unsigned)),
+  'and stays off the Tour''s page'
 );
 
 select pg_temp.logout();
@@ -161,12 +161,17 @@ select throws_ok(
 select lives_ok(
   $$ select programmes.attach_six_words((select id from unsigned),
        (select code from writer_card), (select live from writer_card)) $$,
-  'Scanning the live card attaches the words to their writer'
+  'Scanning the live card attaches the page to its writer'
+);
+select pg_temp.login_as('00000000-0000-0000-0000-0000000060a1');
+select lives_ok(
+  $$ update programmes.six_words set visibility = 'tour' where id = (select id from unsigned) $$,
+  'The writer chooses the Tour''s page'
 );
 select pg_temp.login_anon();
 select is(
   (select author_en from programmes.six_words_wall() where id = (select id from unsigned)),
-  'Writer One', 'who is then named on the wall'
+  'Writer One', 'and is named on it'
 );
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000060a2');
@@ -174,7 +179,7 @@ select programmes.record_six_words('a second card from the tour', 'en',
   (select code from writer_card), (select live from writer_card));
 select is(
   (select count(*)::integer from programmes.six_words where user_id = '00000000-0000-0000-0000-0000000060a1'),
-  1, 'A new card replaces the member''s earlier words'
+  2, 'A writer may have more than one page'
 );
 
 select * from finish();

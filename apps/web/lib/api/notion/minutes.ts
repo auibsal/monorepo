@@ -1,5 +1,7 @@
 import "server-only";
 
+import type { governance } from "@repo/sal-data";
+
 import { bareId, type NotionPage } from "./client";
 import {
   count,
@@ -16,7 +18,7 @@ import { bodyOf, editorEmail, NO_EMAIL, stamp } from "./publish";
 
 /**
  * Minutes are written in Notion, in Work, Meetings (owner, Nov 4, 2026).
- * When a Council or General Assembly meeting's Status is "Minutes in the
+ * When a meeting's Status is "Minutes in the
  * Diwan", the platform copies the page into the Diwan as that meeting's
  * minutes, where the Council adopts them. Once adopted, the official copy
  * is locked (the database refuses any change to adopted minutes), and the
@@ -28,9 +30,13 @@ import { bodyOf, editorEmail, NO_EMAIL, stamp } from "./publish";
 const IN_THE_DIWAN = "Minutes in the Diwan";
 const UUID = /^[0-9a-f-]{36}$/i;
 
-const BODIES: Record<string, "council" | "general_assembly"> = {
+/** Notion's meeting kinds (owner, Nov 7, 2026). */
+const BODIES: Record<string, governance.MeetingBody> = {
+  "Annual Meeting": "annual",
   Council: "council",
-  "General Assembly": "general_assembly",
+  "Founding Meeting": "founding",
+  "General meeting": "general",
+  "Special meeting": "special",
 };
 
 const publisherFor = async (ctx: SyncContext, email: string) => {
@@ -55,7 +61,7 @@ const refuse = async (
 };
 
 interface Draft {
-  body: "council" | "general_assembly";
+  body: governance.MeetingBody;
   event_id: string | null;
   meeting_on: string;
   text_en: string;
@@ -89,7 +95,7 @@ const readDraft = async (
   const body = BODIES[read.select(page, "Body") ?? ""];
   if (!body) {
     problems.push(
-      "Only Council and General Assembly minutes go to the Diwan: set Body."
+      "Set Body (Council, General meeting, Annual Meeting, Special meeting or Founding Meeting) to send minutes to the Diwan."
     );
   }
   // A meeting is an event (owner, Nov 5, 2026): link its row in Events,

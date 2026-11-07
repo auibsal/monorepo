@@ -32,3 +32,30 @@ export const stopTokenUser = (token: string) => {
     ? userId
     : null;
 };
+
+const signInvite = (email: string) =>
+  createHmac("sha256", `sal-invite-stop:${keys().SUPABASE_SECRET_KEY ?? ""}`)
+    .update(email)
+    .digest("base64url");
+
+/**
+ * The stop link of the one-time invitation (owner, Nov 7, 2026): the address
+ * (base64url) and its signature. Stopping takes the address off the
+ * invitation list, so nothing more is sent to it.
+ */
+export const inviteStopToken = (email: string) =>
+  `${Buffer.from(email).toString("base64url")}.${signInvite(email)}`;
+
+/** The address an invitation stop token names, or null. */
+export const inviteStopEmail = (token: string) => {
+  const [encoded = "", signature = ""] = token.split(".");
+  const email = Buffer.from(encoded, "base64url").toString("utf8");
+  if (!(email.includes("@") && keys().SUPABASE_SECRET_KEY)) {
+    return null;
+  }
+  const expected = Buffer.from(signInvite(email));
+  const given = Buffer.from(signature);
+  return expected.length === given.length && timingSafeEqual(expected, given)
+    ? email
+    : null;
+};

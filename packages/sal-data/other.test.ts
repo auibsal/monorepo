@@ -1,5 +1,4 @@
 import { describe, expect, test } from "vitest";
-import { ledgerEntrySchema } from "./charity";
 import { announcementSchema, pageSchema } from "./content";
 import { ballotSchema } from "./governance";
 import { profileSchema, wordCount } from "./membership";
@@ -8,21 +7,6 @@ import { isReelUrl, sixWordsSchema, timeLeft, youtubeId } from "./programmes";
 const id = (n: number) => `00000000-0000-4000-8000-00000000000${n}`;
 
 describe("schemas", () => {
-  test("cash is counted by two different people", () => {
-    const entry = {
-      amount_iqd: 50_000,
-      campaign_id: id(1),
-      counted_by: id(2),
-      counted_with: id(2),
-      occurred_on: "2026-10-13",
-      source: "table_cash",
-    };
-    expect(ledgerEntrySchema.safeParse(entry).success).toBe(false);
-    expect(
-      ledgerEntrySchema.safeParse({ ...entry, counted_with: id(3) }).success
-    ).toBe(true);
-  });
-
   test("bios are at most 50 words", () => {
     const base = {
       camera_shy: false,
@@ -38,13 +22,20 @@ describe("schemas", () => {
     ).toBe(false);
   });
 
-  test("six words are six words", () => {
+  test("a Tour page is a page, not six words", () => {
     expect(wordCount("  The paper waited for the pen ")).toBe(6);
     expect(
       sixWordsSchema.safeParse({
         language: "en",
-        text: "Only five words are here",
+        text: "Five words are here now",
       }).success
+    ).toBe(true);
+    expect(sixWordsSchema.safeParse({ language: "en", text: "" }).success).toBe(
+      false
+    );
+    expect(
+      sixWordsSchema.safeParse({ language: "en", text: "x".repeat(401) })
+        .success
     ).toBe(false);
   });
 
