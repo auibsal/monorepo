@@ -25,7 +25,10 @@ export const editor2 = {
   email: "e2e-editor-2@auib.edu.iq",
   name: "E2E Second Editor",
 };
-export const event = { slug: "e2e-open-pages", title: "Open Pages (e2e)" };
+export const event = {
+  slug: "e2e-writing-workshop",
+  title: "Writing workshop (e2e)",
+};
 /** A date from AUIB's calendar, as the hourly sync stores it. */
 export const universityDate = {
   title: "Last day to withdraw (e2e)",

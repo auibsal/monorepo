@@ -283,7 +283,7 @@ describe.skipIf(!enabled)("Notion sync", () => {
       {
         "Diwan ID": { rich_text: [{ text: { content: salonId } }] },
         Language: { select: { name: "English" } },
-        Name: { title: [{ text: { content: "The Salon" } }] },
+        Name: { title: [{ text: { content: "Reading with a guest" } }] },
         Rhythm: {
           rich_text: [
             {
@@ -348,7 +348,7 @@ describe.skipIf(!enabled)("Notion sync", () => {
   test("publishes an event's English row, then its Arabic edition", async () => {
     const page = fake.make(
       sources.events,
-      eventProps(`Open Pages ${stamp}`),
+      eventProps(`Writing workshop ${stamp}`),
       `n-lead-${stamp}`
     );
     const edition = fake.make(
@@ -414,7 +414,7 @@ describe.skipIf(!enabled)("Notion sync", () => {
         p.dataSource === sources.events &&
         statusOf(p) === "Published" &&
         (getProp(p, "Title").title as { plain_text: string }[])[0]
-          ?.plain_text === `Open Pages ${stamp}`
+          ?.plain_text === `Writing workshop ${stamp}`
     ) as FakePage;
     const eventId = diwanId(page) as string;
     const { data: users } = await admin.auth.admin.listUsers({ perPage: 200 });

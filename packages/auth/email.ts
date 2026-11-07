@@ -5,6 +5,8 @@ import type { AuthError, SupabaseClient } from "@supabase/supabase-js";
 export const AUIB_DOMAIN = "auib.edu.iq";
 
 const EMAIL = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+const SPACES = /\s/g;
+const DOMAIN_TAIL = /\.?auib\.edu\.iq$/;
 
 export const normalizeEmail = (email: string) => email.trim().toLowerCase();
 
@@ -13,6 +15,18 @@ export const isValidEmail = (email: string) =>
 
 export const isAuibEmail = (email: string) =>
   normalizeEmail(email).split("@")[1] === AUIB_DOMAIN;
+
+/**
+ * What goes before @auib.edu.iq, from whatever was typed in a field that
+ * adds the domain itself: people often type the whole address, with or
+ * without the "@" (Nov 7, 2026: seven accounts were made as
+ * "name.123auib.edu.iq@auib.edu.iq").
+ */
+export const auibLocalPart = (typed: string) =>
+  normalizeEmail(typed)
+    .replace(SPACES, "")
+    .split("@")[0]
+    ?.replace(DOMAIN_TAIL, "") ?? "";
 
 export const MIN_PASSWORD_LENGTH = 10;
 

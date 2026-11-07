@@ -102,8 +102,8 @@ describe("Notion values", () => {
   });
 
   test("slugs are Latin letters, digits and hyphens", () => {
-    expect(slugify("Bad Poetry Night: Fall 2026!")).toBe(
-      "bad-poetry-night-fall-2026"
+    expect(slugify("Writing workshop: Fall 2026!")).toBe(
+      "writing-workshop-fall-2026"
     );
     expect(slugify("أمسية الشعر")).toBe("");
     expect(bareId("11111111-2222-3333-4444-555555555555")).toBe(
@@ -120,7 +120,7 @@ describe("publishing rules", () => {
       page({
         Capacity: { number: 40, type: "number" },
         Summary: text("Bring a poem."),
-        Title: title("Open Pages"),
+        Title: title("Writing workshop"),
         "Way in": wayIn("RSVP"),
         When: when(
           "2026-10-20T18:00:00.000+03:00",
@@ -134,7 +134,7 @@ describe("publishing rules", () => {
         capacity: 40,
         ends_at: "2026-10-20T17:00:00.000Z",
         entry: "rsvp",
-        slug: "open-pages",
+        slug: "writing-workshop",
         starts_at: "2026-10-20T15:00:00.000Z",
       },
     });
@@ -192,7 +192,7 @@ describe("publishing rules", () => {
         type: "relation",
       },
       Language: { select: { name: "Arabic" }, type: "select" },
-      Title: title("صفحات مفتوحة"),
+      Title: title("ورشة كتابة"),
       Venue: text("المكتبة"),
     });
     expect(languageOf(edition)).toBe("ar");
@@ -201,11 +201,11 @@ describe("publishing rules", () => {
       values: {
         of: "aaaaaaaabbbbccccddddeeeeeeeeeeee",
         summary: null,
-        title: "صفحات مفتوحة",
+        title: "ورشة كتابة",
         venue: "المكتبة",
       },
     });
-    const loose = checkArabicEdition(page({ Title: title("صفحات") }));
+    const loose = checkArabicEdition(page({ Title: title("ورشة") }));
     expect(loose.ok ? [] : loose.problems).toContain(
       "An Arabic edition links exactly one English row in Edition of."
     );
@@ -215,7 +215,7 @@ describe("publishing rules", () => {
     expect(
       checkProgram(
         page({
-          Name: title("Listening Room"),
+          Name: title("Listening session"),
           Rhythm: text("Tuesdays, as the term calendar sets"),
           Summary: text("An album played in full, then talked about."),
         })
@@ -224,7 +224,7 @@ describe("publishing rules", () => {
       ok: true,
       values: {
         rhythm: "Tuesdays, as the term calendar sets",
-        slug: "listening-room",
+        slug: "listening-session",
       },
     });
   });

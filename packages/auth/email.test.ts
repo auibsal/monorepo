@@ -1,5 +1,6 @@
 import { describe, expect, test, vi } from "vitest";
 import {
+  auibLocalPart,
   isAuibEmail,
   isValidEmail,
   normalizeEmail,
@@ -13,6 +14,17 @@ describe("email helpers", () => {
     expect(isAuibEmail("Student@AUIB.edu.iq ")).toBe(true);
     expect(isAuibEmail("someone@auib.edu.iq.evil.com")).toBe(false);
     expect(isAuibEmail("someone@gmail.com")).toBe(false);
+  });
+
+  test("keeps only what goes before @auib.edu.iq", () => {
+    expect(auibLocalPart("maryam.1241295")).toBe("maryam.1241295");
+    expect(auibLocalPart(" Maryam.1241295@AUIB.edu.iq ")).toBe(
+      "maryam.1241295"
+    );
+    expect(auibLocalPart("maryam.1241295auib.edu.iq")).toBe("maryam.1241295");
+    expect(auibLocalPart("2520027.auib.edu.iq")).toBe("2520027");
+    expect(auibLocalPart("2520027 @auib.edu.iq")).toBe("2520027");
+    expect(auibLocalPart("@auib.edu.iq")).toBe("");
   });
 
   test("validates and normalizes addresses", () => {
