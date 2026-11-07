@@ -16,6 +16,16 @@ const MOVED: readonly [from: string, to: string][] = [
   ["/library/terms-of-use", "/terms"],
   ["/library/accessibility", "/accessibility"],
   ["/partners/join", "/partners/apply"],
+  // Your account's tabs match their pages (decisions §6).
+  ["/account/society", "/account/elections"],
+  ["/account/society/stand/:position", "/account/elections/:position"],
+  ["/account/saved", "/account/work"],
+  ["/account/settings/notices", "/account/settings/notifications"],
+  ["/account/settings/declarations", "/account/settings/disclosures"],
+  [
+    "/account/record/:ref([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})",
+    "/account/record/certificates/:ref",
+  ],
   // Filters are query strings (decisions §6).
   ["/events/:month(\\d{4}-\\d{2})", "/events?month=:month"],
   ["/events/:month(\\d{4}-\\d{2})/society", "/events?month=:month"],

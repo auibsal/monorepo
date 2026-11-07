@@ -17,7 +17,7 @@ const { POST } = await import("@/app/api/telegram/link/route");
 
 const start = {
   codeChallenge: "c".repeat(43),
-  redirectUri: "https://site.example/ar/account/settings/notices",
+  redirectUri: "https://site.example/ar/account/settings/notifications",
   state: "s".repeat(20),
 };
 
@@ -48,9 +48,9 @@ describe("POST /telegram/link", () => {
   });
 
   it.each([
-    "https://evil.example/account/settings/notices",
+    "https://evil.example/account/settings/notifications",
     "https://site.example/diwan/events",
-    "https://site.example/account/settings/notices?next=x",
+    "https://site.example/account/settings/notifications?next=x",
     "https://site.example/account/profile",
   ])(
     "sends Telegram back only to the settings page, not %s",

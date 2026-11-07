@@ -194,7 +194,6 @@
       "events": "Events",
       "journal": "Qirtas",
       "programs": "Events",
-      "society": "Society",
       "account": "Your account",
       "profile": "Profile and privacy",
       "admin": "Administration",
@@ -207,12 +206,14 @@
       "overview": "Overview",
       "diwan": "The Diwan",
       "today": "Today",
-      "calendar": "My calendar",
+      "calendar": "Calendar",
       "getInvolved": "Get involved",
       "record": "Record",
       "settings": "Settings",
       "templates": "Templates and papers",
-      "designSystem": "Design system"
+      "designSystem": "Design system",
+      "work": "Work",
+      "elections": "Elections"
     },
     "errors": {
       "loadFailed": "We couldn’t load this. Check your connection and try again.",
@@ -449,8 +450,8 @@
       }
     },
     "society": {
-      "title": "Society",
-      "lede": "Who serves on the Council, what it has decided, and everyone who belongs.",
+      "title": "Elections",
+      "lede": "Your vote, the elections open now and how to run, the Prize vote, the Council’s minutes and the members’ directory.",
       "council": {
         "title": "The Council",
         "lede": "The elected officers and the directors, from the roles they hold.",

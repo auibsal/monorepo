@@ -20,13 +20,15 @@ media do.
     site: `/sign-in`, `/sign-up` (and `/sign-up/guest`), `/auth/*`,
     `/welcome`, `/get-involved` (public), `/forms/<number>`,
     `/invite/<code>`, `/partners/apply` and `/partners/dashboard`, and, for
-    members, everything under `/account`: Today, My calendar
-    (`/calendar`), Society (`/society`, standing for office at
-    `/society/stand`), Record (`/record`, letters at `/record/letters`, a
-    year at `/record/year/<yyyy>`), Saved (`/saved`), Settings
-    (`/settings`, `/settings/profile`, `/settings/notices`, officers'
-    `/settings/declarations`), Requests (`/requests/<id>`) and their work
-    (`/work/<id>`, `/work/submissions/<id>`). Also `/company/auditions`,
+    members, everything under `/account`, in six tabs (decisions §6):
+    Today, Calendar (`/calendar`), Record (`/record`, certificates at
+    `/record/certificates/<ref>`, letters at `/record/letters/<ref>`, a year
+    at `/record/year/<yyyy>`), Work (`/work`: drafts, submissions at
+    `/work/submissions/<id>`, pieces at `/work/<id>`, and what was saved),
+    Elections (`/elections`, standing for a position at
+    `/elections/<position>`) and Settings (`/settings`, `/settings/profile`,
+    `/settings/notifications`, officers' `/settings/disclosures`), with
+    what you sent at `/requests` and `/requests/<id>`. Also `/company/auditions`,
     `/qirtas/write` (public; the forms at `/qirtas/write/<type>`, a draft at
     `/qirtas/write/<type>/<draft>`) and `/qirtas/read/<slug>` (a
     members-only piece). The gates are in `components/diwan/gates.tsx`.
@@ -353,7 +355,7 @@ any schema change. Integration tests run against a local stack with
   (`withContents`), figures (`journal.piece_figures`), an original beside
   a translation (`journal.piece_bodies.original`), topics
   (`/qirtas/topics`), a reading and a clip (`reading_path`, `clip_id`),
-  Save for later (`journal.saved_pieces`, `/account/saved`), Gallery
+  Save for later (`journal.saved_pieces`, `/account/work`), Gallery
   selections shared by address (`/qirtas/selection/...`, nothing stored).
   RSS at `/qirtas/feed.xml` and per section; the archive at
   `/qirtas/archive`. Pieces print on white without the site's frame.

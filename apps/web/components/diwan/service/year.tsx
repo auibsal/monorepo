@@ -198,7 +198,10 @@ export const YearSummary = ({ year }: { readonly year: number }) => {
             <RowList>
               {s.certificates.map((c) => (
                 <Row date={c.issued_at ? day(c.issued_at) : ""} key={c.id}>
-                  <Link className="link" href={`/account/record/${c.id}`}>
+                  <Link
+                    className="link"
+                    href={`/account/record/certificates/${c.id}`}
+                  >
                     {tk(`kinds.${c.kind as recognition.CertificateKind}`)}
                   </Link>
                   {c.serial ? ` · ${c.serial}` : ""}
