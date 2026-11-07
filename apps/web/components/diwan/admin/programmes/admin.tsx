@@ -70,7 +70,7 @@ const blankEpisode: EpisodeForm = {
 
 /**
  * Next Stop's episodes, each edited on its own page
- * (/qirtas/video/episodes/<slug>, or /new), published from the list.
+ * (/media/episodes/<slug>, or /new), published from the list.
  */
 const Episodes = ({ programmeId }: { programmeId: string }) => {
   const t = useTranslations("diwan.admin.programmes.episodes");
@@ -120,7 +120,7 @@ const Episodes = ({ programmeId }: { programmeId: string }) => {
             <div>
               <Link
                 className="font-medium hover:underline"
-                href={`/qirtas/video/episodes/${e.slug}`}
+                href={`/media/episodes/${e.slug}`}
               >
                 {e.season && e.number ? `${e.season}.${e.number} · ` : ""}
                 {localized(e, "title", locale)}
@@ -146,10 +146,7 @@ const Episodes = ({ programmeId }: { programmeId: string }) => {
           </li>
         ))}
       </ul>
-      <Link
-        className="link justify-self-start"
-        href="/qirtas/video/episodes/new"
-      >
+      <Link className="link justify-self-start" href="/media/episodes/new">
         {t("new")}
       </Link>
       <ErrorLine error={publish.error} />
@@ -164,7 +161,7 @@ export const EpisodePage = ({ slug }: { readonly slug: string }) => {
   const { supabase } = useAuth();
   const options = useProgrammeOptions(null);
   const programmeId = options.options.find((p) => p.slug === "next-stop")?.id;
-  const back = "/qirtas/video";
+  const back = "/media";
   const episode = useQuery({
     enabled: slug !== "new",
     queryFn: async () =>
@@ -264,7 +261,7 @@ const EpisodeEditor = ({
     },
     onSuccess: async () => {
       await invalidate();
-      router.push("/qirtas/video");
+      router.push("/media");
     },
   });
   const submit = (event: FormEvent) => {
@@ -449,13 +446,13 @@ const Reels = ({ programmeId }: { programmeId: string }) => {
           </li>
         ))}
       </ul>
-      <NewLink href="/qirtas/video/reels/new">{t("new")}</NewLink>
+      <NewLink href="/media/reels/new">{t("new")}</NewLink>
       <ErrorLine error={publish.error} />
     </div>
   );
 };
 
-/** A new reel for Next Stop, at /qirtas/video/reels/new. */
+/** A new reel for Next Stop, at /media/reels/new. */
 const NewReel = ({ programmeId }: { readonly programmeId: string }) => {
   const t = useTranslations("diwan.admin.programmes.reels");
   const locale = useLocale() as Locale;
@@ -503,7 +500,7 @@ const NewReel = ({ programmeId }: { readonly programmeId: string }) => {
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: invalidateKey });
-      router.push("/qirtas/video");
+      router.push("/media");
     },
   });
   return (
@@ -593,7 +590,7 @@ export const NewReelPage = () => {
   }
   const nextStop = options.options.find((p) => p.slug === "next-stop");
   return (
-    <RecordPage back="/qirtas/video" backLabel={t("back")} title={t("new")}>
+    <RecordPage back="/media" backLabel={t("back")} title={t("new")}>
       {nextStop ? <NewReel programmeId={nextStop.id} /> : null}
     </RecordPage>
   );
@@ -1059,17 +1056,18 @@ export const ProgramPitches = () => {
       id="pitches"
       title={t("pitches.title")}
     >
-      <RequestQueue base="/events/pitches" keys={["f11"]} />
+      <RequestQueue base="/events/proposals" keys={["f11"]} />
     </DiwanSection>
   );
 };
 
 /**
- * Next Stop, Qirtas's video show (Qirtas → Next Stop): its episodes, its
- * reels and the takedown requests its promise allows.
+ * Media (decisions §6): Next Stop, the Director of Media's video show, with
+ * its episodes, its reels and the takedown requests its promise allows.
  */
-export const NextStopAdmin = () => {
+export const MediaAdmin = () => {
   const t = useTranslations("diwan.admin.programmes");
+  const ts = useTranslations("diwan.admin.sections");
   const options = useProgrammeOptions(null);
   if (options.isPending) {
     return <SectionSpinner />;
@@ -1077,6 +1075,7 @@ export const NextStopAdmin = () => {
   const nextStop = options.options.find((p) => p.slug === "next-stop");
   return (
     <div className="grid gap-10">
+      <AdminHeading title={ts("media")} />
       {nextStop ? (
         <>
           <DiwanSection id="episodes" title={t("tabs.episodes")}>

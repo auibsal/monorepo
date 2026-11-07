@@ -15,7 +15,7 @@ const Page = async ({
   const { request } = await params;
   return (
     <RequireModule module="forms">
-      <RequestPage back="/society/meetings" id={request} />
+      <RequestPage back="/council/meetings" id={request} />
     </RequireModule>
   );
 };

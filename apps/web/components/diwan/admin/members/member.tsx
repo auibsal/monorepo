@@ -736,7 +736,10 @@ export const MemberDetail = () => {
     <div className="grid gap-10">
       <AdminHeading
         actions={
-          <Link className="text-sm underline underline-offset-4" href="/people">
+          <Link
+            className="text-sm underline underline-offset-4"
+            href="/membership"
+          >
             {tk("back")}
           </Link>
         }

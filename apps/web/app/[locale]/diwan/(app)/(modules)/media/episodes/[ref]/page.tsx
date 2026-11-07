@@ -14,7 +14,7 @@ const Page = async ({
 }) => {
   const { ref } = await params;
   return (
-    <RequireModule module="journal">
+    <RequireModule module="media">
       <EpisodePage slug={decodeURIComponent(ref)} />
     </RequireModule>
   );

@@ -92,6 +92,9 @@ export const adminModules = [
       "journal.manage",
     ],
   },
+  // Media (the Director of Media): Next Stop, the channels and the design
+  // system (decisions §6).
+  { key: "media", permissions: ["content.manage"] },
   { key: "activity", permissions: ["audit.read"] },
 ] as const satisfies readonly {
   key: string;
@@ -101,28 +104,30 @@ export const adminModules = [
 export type AdminModule = (typeof adminModules)[number]["key"];
 
 /**
- * The Diwan's six sections (the overhaul, Oct 30, 2026), in one row like
- * the members' pages. A section shows when any of its modules does; the
- * Desk shows for every officer.
+ * The Diwan's sections, one per Council seat (decisions §6), in one row
+ * like the members' pages. A section shows when any of its modules does;
+ * the Desk shows for every officer.
  */
 export const adminSections = [
   { key: "desk", modules: ["activity"], path: "/" },
   {
-    key: "events",
-    modules: ["events", "programs"],
-    path: "/events",
-  },
-  { key: "qirtas", modules: ["journal", "qalam"], path: "/qirtas" },
-  { key: "company", modules: ["productions"], path: "/company" },
-  {
-    key: "people",
-    modules: ["members", "hiring", "recognition", "partners", "tour"],
-    path: "/people",
-  },
-  {
-    key: "society",
+    key: "council",
     modules: ["governance", "library", "forms"],
-    path: "/society",
+    path: "/council",
+  },
+  {
+    key: "qirtas",
+    modules: ["journal", "qalam", "recognition"],
+    path: "/qirtas",
+  },
+  { key: "media", modules: ["media"], path: "/media" },
+  { key: "company", modules: ["productions"], path: "/company" },
+  { key: "events", modules: ["events", "programs"], path: "/events" },
+  { key: "partnerships", modules: ["partners"], path: "/partnerships" },
+  {
+    key: "membership",
+    modules: ["members", "hiring", "recognition", "tour"],
+    path: "/membership",
   },
 ] as const satisfies readonly {
   key: string;
@@ -132,7 +137,7 @@ export const adminSections = [
 
 export type AdminSection = (typeof adminSections)[number]["key"];
 
-/** The section a Diwan path belongs to: /people/openings → people. */
+/** The section a Diwan path belongs to: /membership/openings → membership. */
 export const sectionOfPath = (pathname: string): AdminSection => {
   const path = pathname.split("?")[0] ?? pathname;
   const found = adminSections.find(

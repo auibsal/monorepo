@@ -47,7 +47,7 @@ export const GetInvolved = () => {
           </Link>
         </p>
       )}
-      <ManageLinks diwan="/people/openings" />
+      <ManageLinks diwan="/membership/openings" />
       <OpenPlaces />
     </DiwanPage>
   );

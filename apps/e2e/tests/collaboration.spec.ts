@@ -19,7 +19,7 @@ test("two officers see each other and each other's typing", async ({
   await signInWithPassword(first, president.email);
   await signInWithPassword(second, editor2.email);
 
-  await first.goto(`${urls.app}/society/meetings/new`);
+  await first.goto(`${urls.app}/council/meetings/new`);
   await setUpTwoStep(first);
   const title = `Shared minutes ${Date.now()}`;
   await first.getByRole("textbox", { name: "English" }).first().fill(title);

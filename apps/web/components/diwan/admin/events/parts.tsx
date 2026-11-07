@@ -76,7 +76,7 @@ const EventMinutes = ({ eventId }: { readonly eventId: string }) => {
         <RowList>
           {(minutes.data ?? []).map((m) => (
             <li key={m.id}>
-              <Link className="link" href={`/society/meetings/${m.id}`}>
+              <Link className="link" href={`/council/meetings/${m.id}`}>
                 {localized(m, "title", locale) || m.title_en}
               </Link>
             </li>
@@ -85,7 +85,7 @@ const EventMinutes = ({ eventId }: { readonly eventId: string }) => {
       ) : (
         <EmptyLine
           action={{
-            href: `/society/meetings/new?event=${eventId}`,
+            href: `/council/meetings/new?event=${eventId}`,
             label: t("writeMinutes"),
           }}
         >

@@ -71,7 +71,7 @@ const MeetingsList = () => {
       cell: (m) => (
         <Link
           className="font-medium underline underline-offset-4"
-          href={`/society/meetings/${m.id}`}
+          href={`/council/meetings/${m.id}`}
         >
           {localized(m, "title", locale)}
         </Link>
@@ -105,7 +105,7 @@ const MeetingsList = () => {
         <Link className="link" href="/events/new">
           {t("minutes.makeMeeting")}
         </Link>
-        <Link className="link" href="/society/meetings/new">
+        <Link className="link" href="/council/meetings/new">
           {t("minutes.new")}
         </Link>
       </div>
@@ -202,7 +202,7 @@ export const MeetingResolutions = ({
   const tk = useTranslations("diwan.admin.kit");
   const locale = useLocale() as Locale;
   const data = useMeeting(meetingId);
-  const base = `/society/meetings/${meetingId}/resolutions`;
+  const base = `/council/meetings/${meetingId}/resolutions`;
   const columns: Column<ResolutionRow>[] = [
     {
       cell: (r) => <span className="type-code">{r.code}</span>,
@@ -263,7 +263,7 @@ export const ResolutionPage = ({
   const t = useTranslations("diwan.admin.governance");
   const locale = useLocale() as Locale;
   const data = useMeeting(meetingId);
-  const back = `/society/meetings/${meetingId}`;
+  const back = `/council/meetings/${meetingId}`;
   if (data.isPending) {
     return <SectionSpinner />;
   }
@@ -497,7 +497,7 @@ export const SocietyView = ({ view }: { readonly view: SocietyViewKey }) => {
       {view === "meetings" ? (
         <>
           <MeetingsList />
-          <RequestQueue base="/society/motions" keys={["f10"]} />
+          <RequestQueue base="/council/motions" keys={["f10"]} />
         </>
       ) : null}
       {view === "requests" ? (
@@ -508,7 +508,7 @@ export const SocietyView = ({ view }: { readonly view: SocietyViewKey }) => {
       ) : null}
       {view === "elections" ? <Elections /> : null}
       {view === "concerns" ? (
-        <RequestQueue base="/society/concerns" keys={["f21"]} />
+        <RequestQueue base="/council/concerns" keys={["f21"]} />
       ) : null}
       {view === "declarations" ? <Declarations /> : null}
       {view === "library" ? <LibraryAdmin /> : null}

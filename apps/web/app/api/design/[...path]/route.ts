@@ -5,7 +5,7 @@ import { authenticateCookies } from "@repo/auth/verify";
 /**
  * The design system (packages/brand's Storybook, built into apps/web/design
  * by `bun run build:site`), served at /_design (a rewrite) to staff only:
- * the same sign-in as the Diwan, which frames it at /diwan/design (owner,
+ * the same sign-in as the Diwan, which frames it at /diwan/media/design (owner,
  * Nov 7, 2026). The browser loads these files itself, so the session comes
  * from its cookies; anyone else is told the file isn't there.
  */

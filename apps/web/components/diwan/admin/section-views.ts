@@ -27,38 +27,72 @@ export type ViewKey =
   | "editions"
   | "prize"
   | "qalam"
+  | "certificates"
+  | "nextStop"
+  | "design"
   | "members"
   | "openings"
   | "service"
   | "partners"
+  | "applications"
+  | "agreements"
   | "tour"
-  | "insights"
   | "meetings"
   | "requests"
   | "elections"
   | "concerns"
-  | "declarations"
+  | "disclosures"
   | "library";
 
 export const sectionViews: Record<AdminSection, readonly SectionView[]> = {
   company: [{ href: "/company", key: "company", module: "productions" }],
-  desk: [{ href: "/", key: "desk", module: "*" }],
-  events: [
-    { href: "/events", key: "events", module: "events" },
-    // The book fair's campaigns, each linked to its event (owner, Nov 5, 2026).
-  ],
-  people: [
-    { href: "/people", key: "members", module: "members" },
-    { href: "/people/openings", key: "openings", module: "hiring" },
-    { href: "/people/service", key: "service", module: "recognition" },
-    { href: "/people/partners", key: "partners", module: "partners" },
-    { href: "/people/typewriter-tour", key: "tour", module: "tour" },
+  council: [
     {
-      href: "/people/insights",
-      key: "insights",
-      module: "members",
-      permission: "members.manage",
+      href: "/council",
+      key: "meetings",
+      module: "governance",
+      permission: ["governance.manage", "governance.minutes.write"],
     },
+    {
+      href: "/council/requests",
+      key: "requests",
+      module: "governance",
+      permission: "governance.manage",
+    },
+    {
+      href: "/council/elections",
+      key: "elections",
+      module: "governance",
+      permission: "elections.manage",
+    },
+    {
+      href: "/council/concerns",
+      key: "concerns",
+      module: "forms",
+      permission: "concerns.handle",
+    },
+    {
+      href: "/council/disclosures",
+      key: "disclosures",
+      module: "governance",
+      permission: ["governance.manage", "partners.sign"],
+    },
+    { href: "/council/library", key: "library", module: "library" },
+  ],
+  desk: [{ href: "/", key: "desk", module: "*" }],
+  events: [{ href: "/events", key: "events", module: "events" }],
+  media: [
+    { href: "/media", key: "nextStop", module: "media" },
+    { href: "/media/design", key: "design", module: "*" },
+  ],
+  membership: [
+    { href: "/membership", key: "members", module: "members" },
+    { href: "/membership/openings", key: "openings", module: "hiring" },
+    { href: "/membership/service", key: "service", module: "recognition" },
+    { href: "/membership/typewriter-tour", key: "tour", module: "tour" },
+  ],
+  partnerships: [
+    { href: "/partnerships", key: "partners", module: "partners" },
   ],
   qirtas: [
     { href: "/qirtas", key: "newsroom", module: "journal" },
@@ -80,39 +114,16 @@ export const sectionViews: Record<AdminSection, readonly SectionView[]> = {
       module: "qalam",
       permission: "qalam.manage",
     },
-  ],
-  society: [
     {
-      href: "/society",
-      key: "meetings",
-      module: "governance",
-      permission: ["governance.manage", "governance.minutes.write"],
+      href: "/qirtas/certificates",
+      key: "certificates",
+      module: "recognition",
+      permission: [
+        "certificates.prepare",
+        "certificates.sign",
+        "certificates.countersign",
+      ],
     },
-    {
-      href: "/society/requests",
-      key: "requests",
-      module: "governance",
-      permission: "governance.manage",
-    },
-    {
-      href: "/society/elections",
-      key: "elections",
-      module: "governance",
-      permission: "elections.manage",
-    },
-    {
-      href: "/society/concerns",
-      key: "concerns",
-      module: "forms",
-      permission: "concerns.handle",
-    },
-    {
-      href: "/society/declarations",
-      key: "declarations",
-      module: "governance",
-      permission: ["governance.manage", "partners.sign"],
-    },
-    { href: "/society/library", key: "library", module: "library" },
   ],
 };
 

@@ -33,19 +33,22 @@ media do.
     `/qirtas/write/<type>/<draft>`) and `/qirtas/read/<slug>` (a
     members-only piece). The gates are in `components/diwan/gates.tsx`.
   - `app/[locale]/diwan`: **the Diwan**, auibsal.org/diwan, the staff's
-    administration only (anyone holding a role, `RequireStaff`), in six
-    sections (`adminSections` in `@repo/rbac`; `DiwanNav` and
-    `SectionTabs` in `admin-shell.tsx`): the Desk (`/diwan`: what needs
-    you, quick actions, the handover, what happened, the Connected panel
-    for Notion, Hudhud and email, and the design system at
-    `/diwan/design`), What's on (`/diwan/events`, each event at
-    `/diwan/events/<slug>` with its door at `.../door`, pitches), Qirtas
+    administration only (anyone holding a role, `RequireStaff`), one
+    section per Council seat (decisions §6; `adminSections` in
+    `@repo/rbac`; `DiwanNav` and `SectionTabs` in `admin-shell.tsx`): the
+    Desk (`/diwan`: what needs you, quick actions, Waiting, what happened,
+    the Connected panel for Notion, Hudhud and email); the Council
+    (`/diwan/council`: meetings and their resolutions, requests to Student
+    Life, elections, concerns, motions, disclosures, the Library); Qirtas
     (the Newsroom, one page per section, with submissions, Editions,
-    contributors, the Prize and Qalam), the Company (`/diwan/company`),
-    People (members, guests, openings, service, partners, the Typewriter
-    Tour, insights) and Society (meetings and their resolutions, elections,
-    concerns, motions, declarations, requests to Student Life, the
-    Library). Diwan code names pages by their own path (`/events`); `Link`,
+    contributors, the Prize, Qalam and certificates); Media
+    (`/diwan/media`: Next Stop's episodes and reels, the design system at
+    `/diwan/media/design`); the Company (`/diwan/company`); Events
+    (`/diwan/events`, each event at `/diwan/events/<slug>` with its
+    check-in at `.../check-in`, event proposals); Partnerships
+    (`/diwan/partnerships`: applications, the register, memoranda); and
+    Membership (`/diwan/membership`: the Register, guests, openings,
+    service, the Typewriter Tour). Diwan code names pages by their own path (`/events`); `Link`,
     `useRouter`, `usePathname` and `redirect` from `@/lib/diwan/navigation`
     add the `/diwan` prefix.
   - Your account and the Diwan are client-rendered (`components/diwan`,
@@ -67,7 +70,7 @@ media do.
   (`BRAND-BOOK.md`), the assets (tokens, fonts, icons, logos, Hudhud, the
   social templates, the printables), and the code the app imports as
   `@repo/brand` (`styles/globals.css`, `components/ui` (shadcn),
-  `components/sal`, `lib`). Its Storybook is the Diwan's `/diwan/design`
+  `components/sal`, `lib`). Its Storybook is the Diwan's `/diwan/media/design`
   (Guide, Foundations, Logos, Components, Emails, Social, Print), built
   into `apps/web/design` by the web build and served at `/_design` to staff
   only (`app/api/design`; ignored by git, never
@@ -292,7 +295,7 @@ any schema change. Integration tests run against a local stack with
   with the Six Words wall (`programmes.six_words_wall()`) and a typewriter
   to try (`TypingToy`, silent until the key sound is turned on). Whoever
   runs the Tour (`tour.run`: the Director of Membership, the General
-  Secretary and the Tour Lead) records pages in the Diwan (People →
+  Secretary and the Tour Lead) records pages in the Diwan (Membership →
   Typewriter Tour) and attaches each to its writer's account. Six Words
   are not part of Qirtas: they are Tour pages, private by default, shown
   on the writer's profile or the Tour's page only by their choice
@@ -316,13 +319,13 @@ any schema change. Integration tests run against a local stack with
   checklist. No perks or offers anywhere: sponsors in kind are thanked
   with a "Supported by" line, and the card is for the door only.
 - **Guests** sign up at `/sign-up/guest` to book open events, or are
-  invited from People → Guests; never members.
+  invited from Membership → Guests; never members.
 - **Money: none.** No budgets, costs, prices, spending limits, ledgers,
   claims, reimbursements, payments or ads anywhere; sponsors give in kind
   only. Every event, Qirtas and the Tour keep a needs list
   (`programmes.needs`: item, quantity, date needed, purpose), and the
   General Secretary sends each request to Student Life and logs what was
-  provided (Society → Requests). Charity collections are a Notion record,
+  provided (Council → Requests). Charity collections are a Notion record,
   not a site feature.
 - **Governance.** Meetings by body (Council, general, Annual, special,
   Founding; `meetingBodies`); elections by secret ballot online over a set

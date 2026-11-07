@@ -14,10 +14,10 @@ import { DiwanSection, RowList } from "../page";
 
 /** Where each waiting thing is handled in the Diwan. */
 const WHERE: Record<string, string> = {
-  grants_asked: "/people/partners",
-  hiring_new: "/people/openings",
-  partner_applications: "/people/partners/applications",
-  requests_open: "/society/requests",
+  grants_asked: "/partnerships",
+  hiring_new: "/membership/openings",
+  partner_applications: "/partnerships/applications",
+  requests_open: "/council/requests",
   submissions_new: "/qirtas",
 };
 

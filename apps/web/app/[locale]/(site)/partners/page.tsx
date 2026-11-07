@@ -41,7 +41,7 @@ const PartnersPage = async ({ params }: LocaleParams) => {
   return (
     <div className="mx-auto grid w-full max-w-6xl gap-20 px-4 py-16 sm:py-24">
       <PageHeader lede={t("lede")} title={t("title")}>
-        <ManageLinks diwan="/people/partners" partner />
+        <ManageLinks diwan="/partnerships" partner />
       </PageHeader>
       {(["gets", "gives"] as const).map((side) => (
         <Section

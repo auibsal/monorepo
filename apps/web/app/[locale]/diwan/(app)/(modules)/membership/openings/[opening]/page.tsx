@@ -15,7 +15,7 @@ const Page = async ({
   const { opening } = await params;
   return (
     <RequireModule module="hiring">
-      <OpeningEditor back="/people/openings" id={opening} />
+      <OpeningEditor back="/membership/openings" id={opening} />
     </RequireModule>
   );
 };

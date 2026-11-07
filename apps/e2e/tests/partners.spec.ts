@@ -74,7 +74,7 @@ test("an organization applies, the President signs, and its dashboard opens", as
   }
   const signer = await (await browser.newContext()).newPage();
   await signInWithPassword(signer, president.email);
-  await signer.goto(`${urls.app}/people/partners/applications`);
+  await signer.goto(`${urls.app}/partnerships/applications`);
   await setUpTwoStep(signer);
   await expect(signer.getByText(organization)).toBeVisible();
   await signer.getByRole("button", { name: "Sign for the Society" }).click();

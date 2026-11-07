@@ -495,7 +495,7 @@ export const Elections = () => {
       {elections.data?.map((election) => (
         <ElectionCard election={election} key={election.id} />
       ))}
-      <NewLink href="/society/elections/new">{t("new")}</NewLink>
+      <NewLink href="/council/elections/new">{t("new")}</NewLink>
     </div>
   );
 };
@@ -546,12 +546,12 @@ export const NewElection = () => {
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: key });
-      router.push("/society/elections");
+      router.push("/council/elections");
     },
   });
   return (
     <RecordPage
-      back="/society/elections"
+      back="/council/elections"
       backLabel={t("back")}
       title={t("new")}
     >

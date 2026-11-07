@@ -920,7 +920,7 @@
         "submissionsNone": "No submission is waiting.",
         "openPipeline": "Open the blind review",
         "quick": {
-          "door": "Open the door",
+          "door": "Open check-in",
           "event": "New event",
           "piece": "New piece",
           "verify": "Verify members",
@@ -935,7 +935,7 @@
         "editingNone": "Nothing is waiting in your sections.",
         "openNewsroom": "Open the newsroom",
         "handover": {
-          "title": "Handover",
+          "title": "Waiting",
           "lede": "What waits across the Society, and who owns it.",
           "nothing": "Nothing waits.",
           "oldest": "Waiting since {date}",
@@ -1118,7 +1118,7 @@
           "access": "Who",
           "rsvps": "Bookings",
           "status": "Status",
-          "door": "Door"
+          "door": "Check-in"
         },
         "membersOnly": "Members only",
         "public": "Public",
@@ -1266,7 +1266,7 @@
         "count": "{count} checked in",
         "noResults": "No member found.",
         "cardNotLive": "This card’s code isn’t live (a screenshot?). Ask to see the card on the member’s own phone.",
-        "otherDoors": "Other doors"
+        "otherDoors": "Other events’ check-in"
       },
       "content": {
         "title": "Content",
@@ -1604,7 +1604,7 @@
         "notYours": "This isn’t one you run.",
         "all": "All events",
         "pitches": {
-          "title": "Pitches",
+          "title": "Event proposals",
           "lede": "Ideas for new events that members sent. The President answers each one."
         },
         "whatsOn": "What’s on",
@@ -3021,35 +3021,39 @@
       "sections": {
         "label": "The Diwan’s sections",
         "desk": "Desk",
-        "events": "What’s on",
+        "events": "Events",
         "qirtas": "Qirtas",
         "company": "The Company",
-        "people": "People",
-        "society": "Society",
         "tabs": {
           "calendar": "Calendar",
           "programs": "Events",
-          "events": "What’s on",
+          "events": "Events",
           "members": "Members",
           "openings": "Openings",
           "service": "Service",
           "partners": "Partners",
-          "insights": "Insights",
-          "people": "People",
           "requests": "Requests",
           "elections": "Elections",
           "concerns": "Concerns",
           "library": "Library",
-          "society": "Society",
           "qirtas": "Qirtas",
           "newsroom": "Newsroom",
           "editions": "Editions",
           "meetings": "Meetings",
-          "declarations": "Declarations",
           "tour": "Typewriter Tour",
           "prize": "Mutanabbi Prize",
-          "qalam": "Qalam"
-        }
+          "qalam": "Qalam",
+          "certificates": "Certificates",
+          "nextStop": "Next Stop",
+          "design": "Design system",
+          "applications": "Applications",
+          "agreements": "Memoranda",
+          "disclosures": "Disclosures"
+        },
+        "council": "The Council",
+        "media": "Media",
+        "partnerships": "Partnerships",
+        "membership": "Membership"
       },
       "society": {
         "requests": {
@@ -3540,8 +3544,8 @@
           }
         },
         "f11": {
-          "title": "Event pitch",
-          "action": "Pitch an event",
+          "title": "Event proposal",
+          "action": "Propose an event",
           "purpose": "Anyone, within or outside the Society, may pitch; one page is enough. If the Council agrees, it goes on the term calendar and the Director of Events picks a lead.",
           "fields": {
             "title": "What the event is, titled plainly",

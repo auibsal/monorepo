@@ -136,7 +136,7 @@ export const MinutesEditor = () => {
         queryKey: ["admin", "governance"],
       });
       if (!minutesId) {
-        router.replace(`/society/meetings/${savedId}`);
+        router.replace(`/council/meetings/${savedId}`);
       }
     },
   });
@@ -183,7 +183,7 @@ export const MinutesEditor = () => {
         actions={
           <Link
             className="text-sm underline underline-offset-4"
-            href="/society"
+            href="/council"
           >
             {tk("back")}
           </Link>

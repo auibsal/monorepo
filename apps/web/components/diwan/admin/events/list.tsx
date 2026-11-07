@@ -130,7 +130,7 @@ export const EventsList = () => {
         e.status === "published" ? (
           <Link
             className="text-sm underline underline-offset-4"
-            href={`/events/${e.slug ?? e.id}/door`}
+            href={`/events/${e.slug ?? e.id}/check-in`}
           >
             {t("checkIn")}
           </Link>

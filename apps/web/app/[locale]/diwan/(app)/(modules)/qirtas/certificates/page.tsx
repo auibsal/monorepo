@@ -1,15 +1,15 @@
 import { RequireModule } from "@/components/diwan/admin/admin-shell";
-import { RecognitionAdmin } from "@/components/diwan/admin/recognition/admin";
+import { CertificatesAdmin } from "@/components/diwan/admin/recognition/admin";
 import { titleFrom } from "@/lib/diwan/metadata";
 
 export const generateMetadata = titleFrom((t) =>
   t("diwan.admin.recognition.tabs.certificates")
 );
 
-/** Service: its certificates, at their own address. */
+/** Qirtas → Certificates: Qalam and the Mutanabbi Prize. */
 const Page = () => (
   <RequireModule module="recognition">
-    <RecognitionAdmin tab="certificates" />
+    <CertificatesAdmin />
   </RequireModule>
 );
 

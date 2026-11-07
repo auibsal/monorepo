@@ -171,7 +171,7 @@ export const LetterWriterPage = () => {
   const t = useTranslations("diwan.admin.recognition");
   return (
     <RecordPage
-      back="/people/service/letters"
+      back="/membership/service/letters"
       backLabel={t("tabs.letters")}
       title={t("letterWriter.title")}
     >

@@ -162,7 +162,7 @@ export const mirrorOfficers = async (
         props: {
           "AUIB email": prop.email(o.email),
           Council: prop.checkbox(o.council === true),
-          Diwan: prop.url(app(ctx, `/people/${o.user_id}`)),
+          Diwan: prop.url(app(ctx, `/membership/${o.user_id}`)),
           "Diwan ID": prop.text(o.user_id),
           Name: prop.title(o.full_name_en?.trim() || o.email || ""),
           "Name (Arabic)": prop.text(o.full_name_ar),

@@ -31,7 +31,6 @@ import { MemberPicker } from "../member-picker";
 import { Needs } from "../needs";
 import { openSubmissionFile } from "../pipeline/data";
 import { PipelineAdmin } from "../pipeline/pipeline";
-import { NextStopAdmin } from "../programmes/admin";
 import { useBylineFor } from "./byline";
 import { Puzzles } from "./puzzles";
 import { FrontRank } from "./workflow";
@@ -848,10 +847,6 @@ export const QirtasNewsroom = ({ desk }: { readonly desk?: journal.Desk }) => {
       {reads ? <Desks desk={desk} /> : null}
       {writes ? <Newsroom desk={desk} /> : null}
       {desk === undefined && reads ? <PipelineAdmin embedded /> : null}
-      {desk === "video" &&
-      (has("programs.manage") || has("journal.edit.video")) ? (
-        <NextStopAdmin />
-      ) : null}
       {desk === "games" && puzzles ? <Puzzles /> : null}
       {desk === undefined && has("journal.frontpage") ? <FrontPage /> : null}
       {desk === undefined && writes ? <Contributors /> : null}

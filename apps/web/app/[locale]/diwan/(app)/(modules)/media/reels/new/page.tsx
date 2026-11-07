@@ -8,7 +8,7 @@ export const generateMetadata = titleFrom((t) =>
 
 /** A new Next Stop reel, on its own page under Video. */
 const Page = () => (
-  <RequireModule module="journal">
+  <RequireModule module="media">
     <NewReelPage />
   </RequireModule>
 );

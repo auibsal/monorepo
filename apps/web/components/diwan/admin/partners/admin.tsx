@@ -362,7 +362,7 @@ const Register = () => {
       cell: (row) => (
         <Link
           className="font-medium hover:underline"
-          href={`/people/partners/${partnerRef(row)}`}
+          href={`/partnerships/${partnerRef(row)}`}
         >
           {localized(row, "name", locale)}
         </Link>
@@ -399,7 +399,7 @@ const Register = () => {
   return (
     <div className="grid gap-6">
       <p className="type-body">{t("lede")}</p>
-      <Link className="link justify-self-start" href="/people/partners/new">
+      <Link className="link justify-self-start" href="/partnerships/new">
         {t("add")}
       </Link>
       <DataTable
@@ -417,7 +417,7 @@ const partnerRef = (row: PartnerRow) => String(row.slug || row.id);
 
 /**
  * One partner in the register, edited on its own page (owner, Oct 31,
- * 2026): /diwan/people/partners/<slug>, or /new for a blank one. Saving
+ * 2026): /diwan/partnerships/<slug>, or /new for a blank one. Saving
  * returns to the register; a listed partner links to the public Partners
  * page.
  */
@@ -437,7 +437,7 @@ export const PartnerPage = ({ partnerRef: ref }: { partnerRef: string }) => {
     return (
       <div className="grid gap-4">
         <AdminHeading title={t("missing")} />
-        <Link className="link justify-self-start" href="/people/partners">
+        <Link className="link justify-self-start" href="/partnerships">
           {t("back")}
         </Link>
       </div>
@@ -448,7 +448,7 @@ export const PartnerPage = ({ partnerRef: ref }: { partnerRef: string }) => {
       <AdminHeading
         actions={
           <>
-            <Link className="link" href="/people/partners">
+            <Link className="link" href="/partnerships">
               {t("back")}
             </Link>
             {row?.is_listed ? <OnTheSite href="/partners" /> : null}
@@ -456,10 +456,7 @@ export const PartnerPage = ({ partnerRef: ref }: { partnerRef: string }) => {
         }
         title={row ? localized(row, "name", locale) : t("add")}
       />
-      <PartnerForm
-        initial={row}
-        onDone={() => router.push("/people/partners")}
-      />
+      <PartnerForm initial={row} onDone={() => router.push("/partnerships")} />
       {row ? (
         <DiwanSection id="guests" title={t("guests")}>
           <Affiliations partnerId={row.id} />
@@ -874,10 +871,7 @@ const Agreements = () => {
       cell: (row) => (
         <div className="flex flex-wrap gap-2">
           {row.status === "draft" && canSign ? (
-            <Link
-              className="link"
-              href={`/people/partners/agreements/${row.id}`}
-            >
+            <Link className="link" href={`/partnerships/agreements/${row.id}`}>
               {t("sign")}
             </Link>
           ) : null}
@@ -959,7 +953,7 @@ const Agreements = () => {
       {canManage ? (
         <Link
           className="link justify-self-start"
-          href="/people/partners/agreements/new"
+          href="/partnerships/agreements/new"
         >
           {t("draft")}
         </Link>
@@ -985,7 +979,7 @@ export const AgreementPage = ({ id }: { id: string }) => {
   const { supabase } = useAuth();
   const router = useRouter();
   const partnerName = usePartnerNames();
-  const back = "/people/partners/agreements";
+  const back = "/partnerships/agreements";
   const done = () => router.push(back);
   const agreement = useQuery({
     enabled: id !== "new",
@@ -1167,7 +1161,7 @@ interface DeclarationRow {
   user_id: string;
 }
 
-/** Officers' conflict-of-interest declarations: Society → Declarations. */
+/** Officers' conflict-of-interest declarations: Council → Disclosures. */
 export const Declarations = () => {
   const t = useTranslations("diwan.admin.partners.declarations");
   const tKinds = useTranslations("diwan.declarations.kinds");
@@ -1291,13 +1285,13 @@ export const partnerViews = ["applications", "register", "agreements"] as const;
 export type PartnerView = (typeof partnerViews)[number];
 
 const viewPath = (view: PartnerView) =>
-  view === "register" ? "/people/partners" : `/people/partners/${view}`;
+  view === "register" ? "/partnerships" : `/partnerships/${view}`;
 
 /**
  * Partners in one place (Nov 4, 2026): applications waiting for the
  * President, the register (each partner's page holds its guests),
  * and memoranda, each view at its own address; places with partners
- * are among every opening at People → Openings.
+ * are among every opening at Membership → Openings.
  */
 export const PartnersAdmin = ({ view }: { view?: PartnerView }) => {
   const t = useTranslations("diwan.admin.partners");

@@ -1,29 +1,27 @@
 import { Suspense } from "react";
 import { RequireModule } from "@/components/diwan/admin/admin-shell";
-import { MinutesEditor } from "@/components/diwan/admin/governance/minutes-editor";
+import { MemberDetail } from "@/components/diwan/admin/members/member";
 import { RecordRef } from "@/components/diwan/record-ref";
 import { SectionSpinner } from "@/components/diwan/states";
 import { titleFrom } from "@/lib/diwan/metadata";
 
-export const generateMetadata = titleFrom((t) =>
-  t("diwan.admin.society.meetings.title")
-);
+export const generateMetadata = titleFrom((t) => t("diwan.admin.member.title"));
 
-const MinutesPage = async ({
+const MemberPage = async ({
   params,
 }: {
   readonly params: Promise<{ ref: string }>;
 }) => {
   const { ref } = await params;
   return (
-    <RequireModule module="governance">
+    <RequireModule module="members">
       <Suspense fallback={<SectionSpinner />}>
-        <RecordRef back="/society" value={decodeURIComponent(ref)}>
-          <MinutesEditor />
+        <RecordRef back="/membership" value={decodeURIComponent(ref)}>
+          <MemberDetail />
         </RecordRef>
       </Suspense>
     </RequireModule>
   );
 };
 
-export default MinutesPage;
+export default MemberPage;
