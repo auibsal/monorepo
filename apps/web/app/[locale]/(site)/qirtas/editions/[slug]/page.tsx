@@ -49,8 +49,7 @@ export const generateMetadata = async ({
 /**
  * An Edition as a book (design review C12): the cover (the scan, or the
  * typographic cover), its print line, the editor's letter, a contents page
- * by section, and the Editions before and after it. Its launch page is
- * /qirtas/editions/<slug>/launch.
+ * by section, and the Editions before and after it.
  */
 const EditionPage = async ({ params }: EditionProps) => {
   const { locale, slug } = await params;
@@ -162,14 +161,6 @@ const EditionPage = async ({ params }: EditionProps) => {
             </ol>
           </div>
         ))}
-        <p className="type-body">
-          <Link
-            className="link"
-            href={`/qirtas/editions/${edition.slug}/launch`}
-          >
-            {t("launchPage")}
-          </Link>
-        </p>
       </section>
       {older || newer ? (
         <nav

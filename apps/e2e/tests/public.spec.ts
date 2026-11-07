@@ -47,25 +47,26 @@ test.describe("public site", () => {
     const month = new Date(Date.now() + 5 * 86_400_000 + 3 * 3_600_000)
       .toISOString()
       .slice(0, 7);
-    // A month has its own address.
-    await page.goto(`${urls.web}/events/${month}`);
+    // A month is a query string (decisions §6); the old address redirects.
+    await page.goto(`${urls.web}/events?month=${month}`);
     await expect(page.getByRole("heading", { level: 1 })).toHaveText(
       "What’s on"
     );
     await expect(
       page.getByRole("link", { name: event.title }).first()
     ).toBeAttached();
-    // AUIB's own dates sit beside the Society's, linking to the University.
-    const auib = page.getByRole("link", { name: universityDate.title }).first();
-    await expect(auib).toHaveAttribute("href", universityDate.url);
-    await expectAccessible(page);
-    await page.getByRole("link", { name: "Hide AUIB dates" }).click();
-    await expect(page).toHaveURL(new RegExp(`/events/${month}/society$`));
+    // AUIB's calendar is one link, not dates beside the Society's (§10).
     await expect(
       page.getByRole("link", { name: universityDate.title })
     ).toHaveCount(0);
+    await expect(
+      page.getByRole("link", { name: /AUIB’s calendar/ })
+    ).toHaveAttribute("href", /auib\.edu\.iq/);
+    await expectAccessible(page);
+    await page.goto(`${urls.web}/events/${month}`);
+    await expect(page).toHaveURL(new RegExp(`/events\\?month=${month}$`));
     // A month with nothing in it points to what comes next.
-    await page.goto(`${urls.web}/events/2026-01/society`);
+    await page.goto(`${urls.web}/events?month=2026-01`);
     const next = page.getByText("Next:");
     await expect(next).toBeVisible();
     await expect(next.getByRole("link")).toHaveAttribute("href", /\/events\//);
@@ -144,7 +145,7 @@ test.describe("public site", () => {
       page.getByRole("heading", { level: 2, name: "Open calls" })
     ).toBeVisible();
     await expectAccessible(page);
-    await page.goto(`${urls.web}/qirtas/editions/list`);
+    await page.goto(`${urls.web}/qirtas/editions?view=list`);
     await expect(page.getByRole("heading", { level: 1 })).toHaveText(
       "Editions"
     );
@@ -180,6 +181,13 @@ test("moved addresses redirect permanently, in both languages", async ({
     ["/library/terms-of-use", "/terms"],
     ["/library/accessibility", "/accessibility"],
     ["/partners/join", "/partners/apply"],
+    ["/search/poems", "/search?q=poems"],
+    ["/qirtas/editions/list", "/qirtas/editions?view=list"],
+    [
+      "/qirtas/archive/2026-11/news",
+      "/qirtas/archive?month=2026-11&section=news",
+    ],
+    ["/company/2026-11", "/events?host=company&month=2026-11"],
   ];
   for (const prefix of ["", "/ar"]) {
     for (const [from, to] of moved) {

@@ -16,6 +16,17 @@ const MOVED: readonly [from: string, to: string][] = [
   ["/library/terms-of-use", "/terms"],
   ["/library/accessibility", "/accessibility"],
   ["/partners/join", "/partners/apply"],
+  // Filters are query strings (decisions §6).
+  ["/events/:month(\\d{4}-\\d{2})", "/events?month=:month"],
+  ["/events/:month(\\d{4}-\\d{2})/society", "/events?month=:month"],
+  ["/company/:month(\\d{4}-\\d{2})", "/events?host=company&month=:month"],
+  ["/qirtas/archive/:month(\\d{4}-\\d{2})", "/qirtas/archive?month=:month"],
+  [
+    "/qirtas/archive/:month(\\d{4}-\\d{2})/:section",
+    "/qirtas/archive?month=:month&section=:section",
+  ],
+  ["/search/:q", "/search?q=:q"],
+  ["/qirtas/editions/list", "/qirtas/editions?view=list"],
 ];
 // English has no prefix; Arabic is under /ar.
 const LANGUAGE_PREFIXES = ["", "/ar"] as const;

@@ -5,54 +5,59 @@ import { events } from "@repo/sal-data";
 import { getTranslations } from "next-intl/server";
 import { ManageLinks } from "@/components/manage-links";
 import { PageHeader } from "@/components/section";
+import { loadProgramme } from "@/components/series";
 import { MonthCalendar, MonthSection, nextAfter } from "@/components/whats-on";
 import { readPublished } from "@/lib/supabase";
 import { type Month, monthFrom, monthParam } from "@/lib/whats-on";
 
 const HTTP_SCHEME = /^https?:/;
+/** AUIB's own events calendar. */
+const AUIB_EVENTS = "https://auib.edu.iq/events/";
 
-/** Where a month of What's on is, with or without AUIB's dates. */
-export const whatsOnPath = (month: Month, withUniversity: boolean) =>
-  `/events/${monthParam(month)}${withUniversity ? "" : "/society"}`;
+/** Who hosts the events a list can be narrowed to (`/events?host=company`). */
+export const HOSTS = ["company"] as const;
+export type Host = (typeof HOSTS)[number];
+export const isHost = (value: unknown): value is Host =>
+  (HOSTS as readonly unknown[]).includes(value);
 
 /**
- * What's on: the Society's events in one calendar, a month at a time
- * (owner, Nov 5, 2026: every event is a standard event, none in a series,
- * so there is nothing to filter by). The public see members-only events as teasers; members
- * book from the members' events page. AUIB's own dates (the hourly sync of
- * the University's calendar) sit beside the Society's unless the visitor
- * hides them.
+ * Where a month of What's on is: filters are query strings (decisions §6),
+ * /events?month=2026-11 and /events?month=2026-11&host=company.
+ */
+export const whatsOnPath = (month: Month, host?: Host) => {
+  const query = new URLSearchParams({ month: monthParam(month) });
+  if (host) {
+    query.set("host", host);
+  }
+  return `/events?${query.toString()}`;
+};
+
+/**
+ * What's on: the Society's events in one calendar, a month at a time. The
+ * public see members-only events as teasers; members book from the
+ * members' events page. AUIB's own calendar is one link, not dates beside
+ * the Society's (decisions §10).
  */
 export const WhatsOn = async ({
+  host,
   locale,
   month,
-  withUniversity = true,
 }: {
+  host?: Host;
   locale: Locale;
   month: Month;
-  withUniversity?: boolean;
 }) => {
   const t = await getTranslations({ locale, namespace: "web.events" });
-  const [rows, university] = await Promise.all([
-    readPublished(
-      ["events"],
-      (c) => events.calendar(c, month.from, month.to),
-      []
-    ),
-    readPublished(
-      ["events"],
-      (c) => events.universityCalendar(c, month.from, month.to),
-      []
-    ),
-  ]);
-  const upcoming = rows.length === 0 ? await nextAfter(month) : null;
+  const hostId = host ? (await loadProgramme(host))?.id : undefined;
+  const all = await readPublished(
+    ["events"],
+    (c) => events.calendar(c, month.from, month.to),
+    []
+  );
+  const rows = hostId ? all.filter((row) => row.programme_id === hostId) : all;
+  const upcoming = rows.length === 0 ? await nextAfter(month, hostId) : null;
   const feed = `${project.url.replace(HTTP_SCHEME, "webcal:")}/calendar.ics?lang=${locale}`;
-
-  // Links keep the month and the AUIB choice unless they change one: the
-  // month is in the address (/events/2026-11), and Society dates alone
-  // add /society.
-  const href = (next: { month?: Month; university?: boolean }) =>
-    whatsOnPath(next.month ?? month, next.university ?? withUniversity);
+  const href = (next: Month) => whatsOnPath(next, host);
 
   return (
     <div className="mx-auto grid w-full max-w-6xl gap-12 px-4 py-16 sm:py-24">
@@ -65,16 +70,18 @@ export const WhatsOn = async ({
       </PageHeader>
 
       <p className="flex flex-wrap gap-x-5 gap-y-2">
-        <Link
-          className="link type-caption"
-          href={href({ university: !withUniversity })}
-        >
-          {withUniversity ? t("hideAuib") : t("showAuib")}
-        </Link>
+        {host ? (
+          <Link className="link type-caption" href={whatsOnPath(month)}>
+            {t("allEvents")}
+          </Link>
+        ) : null}
+        <a className="link type-caption" href={AUIB_EVENTS}>
+          {t("auibCalendar")}
+        </a>
       </p>
 
       <MonthSection
-        hrefFor={(m) => href({ month: monthFrom(m) })}
+        hrefFor={(m) => href(monthFrom(m))}
         locale={locale}
         month={month}
       >
@@ -83,7 +90,6 @@ export const WhatsOn = async ({
           month={month}
           next={upcoming}
           rows={rows}
-          university={withUniversity ? university : []}
         />
       </MonthSection>
 

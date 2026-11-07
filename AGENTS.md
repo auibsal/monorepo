@@ -276,12 +276,12 @@ any schema change. Integration tests run against a local stack with
   `programmes` schema, `programme_id`, `programs.manage`; copy says
   "event" or "event lead"). Minutes and resolutions are governance records
   pointing at their meeting's event (`governance.minutes.event_id`).
-- **What's on is one calendar**: `/events`, a month at `/events/<yyyy-mm>`,
+- **What's on is one calendar**: `/events`, a month at
+  `/events?month=<yyyy-mm>`, the Company's dates at `/events?host=company`,
   each event at `/events/<slug>`. The public calendar shows members-only
   events as teasers; SECURITY DEFINER code checks visibility with
-  `private.can_see_event_id`. AUIB's own dates (`core.external_events`,
-  English only, `lang="en"`) sit beside the Society's, quieter; "Hide
-  AUIB dates" is `/events/<yyyy-mm>/society`.
+  `private.can_see_event_id`. AUIB's own calendar is one link, not dates
+  beside the Society's.
 - **Event leads.** `programme_lead` (Event Lead) is scoped to one event
   (scope `event`): they edit it, keep its shifts and needs, see its
   bookings and run its door (`private.leads_event`). The Director of
@@ -358,8 +358,8 @@ any schema change. Integration tests run against a local stack with
   RSS at `/qirtas/feed.xml` and per section; the archive at
   `/qirtas/archive`. Pieces print on white without the site's frame.
 - **The Edition** is printed once a year, a year in review
-  (`/qirtas/editions`, a Shelf with the plain list at
-  `/qirtas/editions/list`); its record keeps the print run, printer and
+  (`/qirtas/editions`, a Shelf, with the plain list as a view,
+  `?view=list`); its record keeps the print run, printer and
   date.
 - **Games**, daily, made in the reader's browser and the same for everyone
   on a Baghdad day (`@repo/sal-data/games`): the word, the word search,
@@ -442,8 +442,9 @@ any schema change. Integration tests run against a local stack with
   when two views show the same records, merge them. Nothing is kept by
   hand that is known elsewhere (terms, officers, the Council).
 - **Lasting addresses.** Pages people share or return to have their own
-  path (a month, an issue, a search at `/search/<words>`); filters and
-  passing state may use a query string. An address that was shared and
+  path (an event, a piece, an issue); lists are filtered with query
+  strings (`/events?month=`, `/qirtas/archive?month=&section=`,
+  `/search?q=`). An address that was shared and
   then moved gets a permanent redirect (308, `MOVED` in
   `apps/web/next.config.ts`, in both languages): `/membership` →
   `/account`, `/library/privacy|terms-of-use|accessibility` → `/privacy`,

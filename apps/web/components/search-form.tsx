@@ -26,7 +26,7 @@ export const SearchForm = ({
     const words = value.trim();
     if (words.length >= 2) {
       event.preventDefault();
-      router.push(`/search/${encodeURIComponent(words)}`);
+      router.push(`/search?${new URLSearchParams({ q: words }).toString()}`);
     }
   };
   return (

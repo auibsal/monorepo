@@ -33,7 +33,6 @@ const staticPaths = [
   "/qirtas/masthead",
   "/qirtas/topics",
   "/qirtas/archive",
-  "/qirtas/editions/list",
   "/qirtas/write",
   "/next-stop/episodes",
   "/company",
