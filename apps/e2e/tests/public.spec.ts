@@ -78,11 +78,15 @@ test.describe("public site", () => {
     // Its address is the Notion Slug; the retired names are gone (Nov 7).
     const retired = await page.goto(`${urls.web}/events/salon-2027-02-16`);
     expect(retired?.status()).toBe(404);
-    await page.goto(`${urls.web}/events/reading-with-a-guest-2027-02-16`);
-    await expect(page.getByRole("heading", { level: 1 })).toHaveText(
-      "Reading with a guest"
+    // No date is published before its room is confirmed (decisions §7).
+    const unplaced = await page.goto(
+      `${urls.web}/events/reading-with-a-guest-2027-02-16`
     );
-    await expect(page).toHaveTitle(/Reading with a guest/);
+    expect(unplaced?.status()).toBe(404);
+    await page.goto(`${urls.web}/events/${event.slug}`);
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText(
+      event.title
+    );
     await expectAccessible(page);
     // Next Stop is the Director of Media’s (owner, Nov 7, 2026), with its promise beside it.
     await page.goto(`${urls.web}/next-stop`);

@@ -62,6 +62,12 @@ export const read = {
     const value = get(page, name)?.number;
     return typeof value === "number" ? value : null;
   },
+  /** The people in a person property (their Notion user ids). */
+  people: (page: NotionPage, name: string) =>
+    (
+      (get(page, name) as { people?: { id: string }[] } | undefined)?.people ??
+      []
+    ).map((p) => p.id),
   relation: (page: NotionPage, name: string) =>
     (get(page, name)?.relation ?? []).map((r) => r.id),
   select: (page: NotionPage, name: string) =>

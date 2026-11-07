@@ -2664,6 +2664,7 @@ export type Database = {
           dated: string | null;
           id: string;
           notion_url: string | null;
+          on_site: boolean;
           owner: string | null;
           ratification: string | null;
           slug: string;
@@ -2688,6 +2689,7 @@ export type Database = {
           dated?: string | null;
           id?: string;
           notion_url?: string | null;
+          on_site?: boolean;
           owner?: string | null;
           ratification?: string | null;
           slug: string;
@@ -2712,6 +2714,7 @@ export type Database = {
           dated?: string | null;
           id?: string;
           notion_url?: string | null;
+          on_site?: boolean;
           owner?: string | null;
           ratification?: string | null;
           slug?: string;
