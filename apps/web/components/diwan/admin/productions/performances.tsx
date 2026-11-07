@@ -15,7 +15,7 @@ import { useMemberNames } from "../member-picker";
 import { memberName } from "../members/directory";
 import { type ProductionRow, productionKey, productionsKey } from "./shared";
 
-// ── Performances and partners ───────────────────────────────────────────────
+// ── Performances ───────────────────────────────────────────────
 
 export const PerformancesTab = ({
   production,
@@ -28,12 +28,11 @@ export const PerformancesTab = ({
   const queryClient = useQueryClient();
   const key = [...productionKey(production.id), "performances"];
   const [eventId, setEventId] = useState("");
-  const [partnerId, setPartnerId] = useState("");
   const cleared = production.rights_status === "cleared";
 
   const data = useQuery({
     queryFn: async () => {
-      const [links, events, partners, choices] = await Promise.all([
+      const [links, events] = await Promise.all([
         supabase
           .schema("programmes")
           .from("production_events")
@@ -45,18 +44,10 @@ export const PerformancesTab = ({
           .select("id, title_en, title_ar, starts_at, status")
           .gte("starts_at", new Date(Date.now() - 864e5 * 60).toISOString())
           .order("starts_at"),
-        supabase
-          .schema("programmes")
-          .from("production_partners")
-          .select("partner_id")
-          .eq("production_id", production.id),
-        productions.partnerChoices(supabase),
       ]);
       return {
-        choices,
         events: unwrap(events) ?? [],
         linked: new Set((unwrap(links) ?? []).map((l) => l.event_id)),
-        partners: new Set((unwrap(partners) ?? []).map((p) => p.partner_id)),
       };
     },
     queryKey: key,
@@ -88,38 +79,11 @@ export const PerformancesTab = ({
       ),
     onSuccess: refresh,
   });
-  const addPartner = useMutation({
-    mutationFn: async (id: string) =>
-      unwrap(
-        await supabase
-          .schema("programmes")
-          .from("production_partners")
-          .insert({ partner_id: id, production_id: production.id })
-      ),
-    onSuccess: async () => {
-      setPartnerId("");
-      await refresh();
-    },
-  });
-  const removePartner = useMutation({
-    mutationFn: async (id: string) =>
-      unwrap(
-        await supabase
-          .schema("programmes")
-          .from("production_partners")
-          .delete()
-          .eq("production_id", production.id)
-          .eq("partner_id", id)
-      ),
-    onSuccess: refresh,
-  });
-
   if (data.isPending) {
     return <SectionSpinner />;
   }
   const events = data.data?.events ?? [];
   const linked = events.filter((e) => data.data?.linked.has(e.id));
-  const choices = data.data?.choices ?? [];
 
   return (
     <div className="grid max-w-3xl gap-8 pt-4">
@@ -193,67 +157,7 @@ export const PerformancesTab = ({
         <ErrorLine error={link.error} />
       </section>
 
-      <section className="grid gap-3">
-        <h3 className="type-subheading">{t("partnersTitle")}</h3>
-        <p className="type-body">{t("partnersLede")}</p>
-        <ul className="grid gap-2">
-          {choices
-            .filter((p) => data.data?.partners.has(p.id))
-            .map((p) => (
-              <li
-                className="flex flex-wrap items-center justify-between gap-2 border-line border-b pb-2"
-                key={p.id}
-              >
-                <span className="font-medium">
-                  {localized(p, "name", locale)}
-                </span>
-                <Button
-                  disabled={removePartner.isPending}
-                  onClick={() => removePartner.mutate(p.id)}
-                  size="sm"
-                  variant="ghost"
-                >
-                  {t("removePartner")}
-                </Button>
-              </li>
-            ))}
-        </ul>
-        {choices.length === 0 ? (
-          <p className="type-caption">{t("noPartners")}</p>
-        ) : (
-          <form
-            className="flex flex-wrap items-end gap-2"
-            onSubmit={(event) => {
-              event.preventDefault();
-              addPartner.mutate(partnerId);
-            }}
-          >
-            <Field className="min-w-64" label={t("partner")}>
-              {(id) => (
-                <SelectInput
-                  id={id}
-                  onChange={(e) => setPartnerId(e.target.value)}
-                  required
-                  value={partnerId}
-                >
-                  <option value="">{t("choose")}</option>
-                  {choices
-                    .filter((p) => !data.data?.partners.has(p.id))
-                    .map((p) => (
-                      <option key={p.id} value={p.id}>
-                        {localized(p, "name", locale)}
-                      </option>
-                    ))}
-                </SelectInput>
-              )}
-            </Field>
-            <Button disabled={addPartner.isPending} type="submit">
-              {t("addPartner")}
-            </Button>
-          </form>
-        )}
-        <ErrorLine error={addPartner.error} />
-      </section>
+      <p className="type-caption text-text-secondary">{t("partnersNote")}</p>
     </div>
   );
 };

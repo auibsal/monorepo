@@ -102,3 +102,20 @@ test("a manuscript's text fills the editor, and the file goes with the work", as
     page.getByText("Manuscript (PDF or Word): manuscript.pdf")
   ).toBeVisible();
 });
+
+test("a member books on the event's own page", async ({ page }) => {
+  await signInWithPassword(page, member.email);
+  await page.goto(`${urls.web}/events/${event.slug}`);
+  const book = page.getByRole("button", { name: "Book a place" });
+  const giveBack = page.getByRole("button", { name: "Give my place back" });
+  await expect(book.or(giveBack)).toBeVisible();
+  if (await giveBack.isVisible()) {
+    await giveBack.click();
+    await expect(book).toBeVisible();
+  }
+  await book.click();
+  await expect(page.getByText("You have a place.")).toBeVisible();
+  await giveBack.click();
+  await expect(book).toBeVisible();
+  await expectAccessible(page);
+});
