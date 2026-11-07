@@ -885,15 +885,22 @@ const handlers: Record<string, Handler> = {
   // for each kind of invitation: each address's greeting, Tour line and
   // stop link are its contact properties. The President's go marked the
   // addresses sent (membership.send_invitations).
+  // Each list is its own job (membership.invitation_lists): only the list
+  // the President sent goes, never one sent before.
   "membership.invitations": async (admin, payload) => {
     await cleanUpSegments(admin);
     await pullUnsubscribes(admin);
-    const { data: rows, error } = await admin
+    const list = typeof payload.source === "string" ? payload.source : null;
+    let query = admin
       .schema("membership")
       .from("invitations")
       .select("email, first_name, kind, station, words, quote_words, pages")
       .not("sent_at", "is", null)
       .is("joined_at", null);
+    if (list) {
+      query = query.eq("source", list);
+    }
+    const { data: rows, error } = await query;
     if (error) {
       throw error;
     }
@@ -938,7 +945,7 @@ const handlers: Record<string, Handler> = {
               text: INVITATION_FOOTER,
             },
           ],
-          key: `invitation:${sentAt.slice(0, 19)}:${kind}`,
+          key: `invitation:${list ?? "all"}:${sentAt.slice(0, 19)}:${kind}`,
           kind: "invitation",
           lang,
         });

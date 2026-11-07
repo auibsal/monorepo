@@ -1538,15 +1538,7 @@
             "load": "Load",
             "loaded": "Loaded {pages} pages and {invitations} invitations; {attached} pages went straight to writers who already have an account.",
             "status": "Invitations: {waiting} waiting, {sent} sent, {joined} joined. Pages not yet claimed: {unclaimed}.",
-            "send": "Prepare {count} invitations",
-            "confirm": "Prepare {count} invitations as your letter, from hello@auibsal.org? The site makes them a draft in Resend; nothing goes out until you send it there.",
-            "sendNow": "Prepare the draft",
-            "notYet": "Not yet",
-            "president": "The President prepares the invitations. Anyone running the Tour can send themselves a test.",
-            "sending": "{count} invitations are being prepared. The draft appears in Resend → Broadcasts within a few minutes; send it from there.",
-            "test": "Send me a test",
-            "testSent": "A test went to {email}, as a writer would get it.",
-            "draftNote": "The invitation is your letter, signed with your signature on the site. Send yourself a test first."
+            "invitations": "The invitations go list by list from Membership → Invitations."
           }
         }
       },
@@ -2905,7 +2897,8 @@
           "membership": "Membership",
           "partnerships": "Partnerships",
           "media": "Media",
-          "council": "The Council"
+          "council": "The Council",
+          "invitations": "Invitations"
         },
         "council": "The Council",
         "media": "Media",
@@ -3147,6 +3140,28 @@
         "markChecked": "Checked",
         "note": "What needs fixing",
         "flag": "Flag"
+      },
+      "invitations": {
+        "title": "Invitations",
+        "lede": "The one-time invitation to join, list by list. Type in a list’s paper sign-ups, send its test to the President, and the President sends it. Each list goes once and is deleted thirty days after it is sent.",
+        "status": "{waiting} waiting, {sent} sent, {joined} joined.",
+        "sentOn": "Sent on {date}. The list is deleted on {deleted}.",
+        "enter": "Paper sign-ups",
+        "enterHint": "One person a line: their AUIB email, then their first name if they wrote it.",
+        "add": "Add to the list",
+        "added": "Added {added} of {typed}. The rest aren’t AUIB addresses or are on a list already.",
+        "hasAccount": "Has an account; not invited",
+        "remove": "Remove",
+        "test": "Send the test to the President",
+        "testSent": "The test went to {email}.",
+        "tested": "Tested on {date}.",
+        "send": "Prepare {count} invitations",
+        "confirm": "Prepare {count} invitations as your letter, from hello@auibsal.org? The site makes them a draft in Resend; nothing goes out until you send it there.",
+        "sendNow": "Prepare the draft",
+        "notYet": "Not yet",
+        "president": "Only the President sends a list, after its test has reached them.",
+        "presidentNote": "The invitation is your letter, signed with your signature on the site. Read the test before you send.",
+        "sending": "{count} invitations are being prepared. The draft appears in Resend → Broadcasts within a few minutes; send it from there."
       }
     },
     "editor": {

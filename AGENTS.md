@@ -336,9 +336,12 @@ any schema change. Integration tests run against a local stack with
   (`programmes.six_words.visibility`). Spring 2026 pages arrive by the
   one import (`programmes.import_tour`); pages with no email stay private
   and editors-only until a writer claims one through Help Desk. The
-  one-time invitations (`membership.invitations`) go only when the
-  President says go (`membership.send_invitations`), as one Broadcast,
-  and are deleted thirty days later.
+  one-time invitations (`membership.invitations`) come in lists
+  (`membership.invitation_lists`: the Tour's import, the club fair's
+  paper sign-ups typed in at Membership → Invitations); each list is
+  tested on the President first and goes only when the President says
+  go (`membership.send_invitations(list)`), as one Broadcast, and is
+  deleted thirty days after its own send.
 - **Get involved** (`/get-involved`, `programmes.open_places()`) lists open
   roles only, soonest first: Council and team roles, event teams, Qalam
   mentors, auditions. Members reply "I'm interested" in one step;

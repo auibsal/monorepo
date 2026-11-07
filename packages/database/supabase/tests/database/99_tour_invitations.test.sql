@@ -95,7 +95,7 @@ $$;
 
 -- The spring 2026 Tour's import and the invitation Broadcast (owner, Nov 7, 2026).
 
-select plan(12);
+select plan(24);
 
 select pg_temp.make_user('00000000-0000-0000-0000-0000000071a1', 'lead@auib.edu.iq', 'Tour Lead');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000071a2', 'member@auib.edu.iq', 'Plain Member');
@@ -135,18 +135,66 @@ select is((select quote_words::text || pages from membership.invitations where e
 select pg_temp.login_as('00000000-0000-0000-0000-0000000071a1');
 select is((programmes.import_tour('[{"page_ref":"TT26-T-001","text":"Kept, corrected","language":"en","email":"writer.1234@auib.edu.iq"}]'::jsonb, '[]'::jsonb) ->> 'pages'), '1',
   'Loading again updates what was loaded');
-select is((membership.invitations_waiting() ->> 'waiting'), '1',
+-- A fresh list for the test: the migration's Tour list was sent already.
+select pg_temp.logout();
+insert into membership.invitation_lists (source, title_en, title_ar) values ('test_list', 'Test', 'تجربة');
+update membership.invitations set source = 'test_list';
+select pg_temp.login_as('00000000-0000-0000-0000-0000000071a1');
+select is((membership.invitations_waiting('test_list') ->> 'waiting'), '1',
   'One invitation waits: the writer with an account is not invited');
-select throws_ok($$ select membership.send_invitations() $$, '42501', null,
+select throws_ok($$ select membership.send_invitations('test_list') $$, '42501', null,
   'Only the President sends the invitations');
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000071a4');
-select is(membership.send_invitations(), 1, 'The President sends the one waiting');
+select throws_ok($$ select membership.send_invitations('test_list') $$, 'P0001', 'invitation_untested',
+  'Not before the test has reached the President');
+select pg_temp.logout();
+update membership.invitation_lists set tested_at = now() where source = 'test_list';
+select pg_temp.login_as('00000000-0000-0000-0000-0000000071a4');
+select is(membership.send_invitations('test_list'), 1, 'The President sends the one waiting');
 select pg_temp.logout();
 select is((select count(*)::integer from core.outbox where kind = 'membership.invitations'), 1,
   'as one Broadcast job, not an email an address');
 select pg_temp.login_as('00000000-0000-0000-0000-0000000071a4');
-select is(membership.send_invitations(), 0, 'Nothing is sent twice');
+select is(membership.send_invitations('test_list'), 0, 'Nothing is sent twice');
+
+-- The fall club fair: staff type in the paper sign-ups as their own list.
+select pg_temp.login_as('00000000-0000-0000-0000-0000000071a2');
+select throws_ok(
+  $$ select membership.add_invitations('club_fair_2026', '[{"email":"fair.1@auib.edu.iq"}]'::jsonb) $$,
+  '42501', null, 'A member does not keep the lists'
+);
+select pg_temp.login_as('00000000-0000-0000-0000-0000000071a1');
+select is(
+  membership.add_invitations('club_fair_2026',
+    '[{"email":" Fair.1@AUIB.edu.iq ","first_name":"Fair"},{"email":"someone@gmail.com"},{"email":"new.9999@auib.edu.iq"},{"email":"fair.2@auib.edu.iq"}]'::jsonb),
+  2, 'AUIB addresses go in once; others and those on another list are skipped'
+);
+select is((select first_name from membership.invitation_list('club_fair_2026') where email = 'fair.1@auib.edu.iq'), 'Fair',
+  'A sign-up keeps the name it was typed with');
+select is(membership.remove_invitation('fair.2@auib.edu.iq'), true, 'A mistyped address comes off before sending');
+select is((select count(*)::integer from membership.invitation_list('club_fair_2026')), 1, 'The list shows what is on it');
+select throws_ok(
+  $$ select membership.add_invitations('test_list', '[{"email":"late@auib.edu.iq"}]'::jsonb) $$,
+  'P0001', 'invitation_list_closed', 'A sent list takes no more names'
+);
+select is(membership.remove_invitation('new.9999@auib.edu.iq'), false, 'and keeps what was sent');
+
+select pg_temp.logout();
+update membership.invitation_lists set tested_at = now() where source = 'club_fair_2026';
+select pg_temp.login_as('00000000-0000-0000-0000-0000000071a4');
+select is(membership.send_invitations('club_fair_2026'), 1, 'The President sends the fair list on its own');
+select pg_temp.logout();
+select is((select count(*)::integer from core.outbox where kind = 'membership.invitations' and payload ->> 'source' = 'club_fair_2026'),
+  1, 'Its Broadcast job names its list');
+
+-- Each list deletes itself thirty days after its own send.
+update membership.invitation_lists set sent_at = now() - interval '31 days' where source = 'test_list';
+select private.purge_tour_lists();
+select is((select count(*)::integer from membership.invitations where source = 'test_list'), 0,
+  'A list sent 31 days ago is gone, the addresses skipped with it');
+select is((select count(*)::integer from membership.invitations where source = 'club_fair_2026'), 1,
+  'A list sent today stays');
 
 select * from finish();
 rollback;

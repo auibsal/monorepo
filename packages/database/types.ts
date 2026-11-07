@@ -5031,6 +5031,33 @@ export type Database = {
         };
         Relationships: [];
       };
+      invitation_lists: {
+        Row: {
+          created_at: string;
+          sent_at: string | null;
+          source: string;
+          tested_at: string | null;
+          title_ar: string;
+          title_en: string;
+        };
+        Insert: {
+          created_at?: string;
+          sent_at?: string | null;
+          source: string;
+          tested_at?: string | null;
+          title_ar: string;
+          title_en: string;
+        };
+        Update: {
+          created_at?: string;
+          sent_at?: string | null;
+          source?: string;
+          tested_at?: string | null;
+          title_ar?: string;
+          title_en?: string;
+        };
+        Relationships: [];
+      };
       invitations: {
         Row: {
           created_at: string;
@@ -5071,7 +5098,15 @@ export type Database = {
           station?: string | null;
           words?: string | null;
         };
-        Relationships: [];
+        Relationships: [
+          {
+            foreignKeyName: "invitations_source_fkey";
+            columns: ["source"];
+            isOneToOne: false;
+            referencedRelation: "invitation_lists";
+            referencedColumns: ["source"];
+          },
+        ];
       };
       memberships: {
         Row: {
@@ -5314,6 +5349,10 @@ export type Database = {
         Returns: undefined;
       };
       activity_count: { Args: { uid?: string }; Returns: number };
+      add_invitations: {
+        Args: { list: string; people: Json };
+        Returns: number;
+      };
       calendar_token: { Args: Record<PropertyKey, never>; Returns: string };
       certificate_signers: {
         Args: { certificate_id: string };
@@ -5337,7 +5376,17 @@ export type Database = {
         Returns: undefined;
       };
       has_current_pledges: { Args: { uid?: string }; Returns: boolean };
-      invitations_waiting: { Args: Record<PropertyKey, never>; Returns: Json };
+      invitation_list: {
+        Args: { list: string };
+        Returns: {
+          email: string;
+          first_name: string;
+          has_account: boolean;
+          joined_at: string;
+          sent_at: string;
+        }[];
+      };
+      invitations_waiting: { Args: { list: string }; Returns: Json };
       is_member: { Args: { uid?: string }; Returns: boolean };
       is_voting_member: { Args: { uid?: string }; Returns: boolean };
       members_directory: {
@@ -5412,6 +5461,7 @@ export type Database = {
           secret: string;
         }[];
       };
+      remove_invitation: { Args: { address: string }; Returns: boolean };
       reset_calendar_token: {
         Args: Record<PropertyKey, never>;
         Returns: string;
@@ -5420,7 +5470,7 @@ export type Database = {
         Args: { certificate_id: string; reason: string };
         Returns: undefined;
       };
-      send_invitations: { Args: Record<PropertyKey, never>; Returns: number };
+      send_invitations: { Args: { list: string }; Returns: number };
       service_hours: {
         Args: { on_date?: string; uid?: string };
         Returns: number;

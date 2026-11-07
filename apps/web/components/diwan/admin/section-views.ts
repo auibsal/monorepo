@@ -31,6 +31,7 @@ export type ViewKey =
   | "nextStop"
   | "design"
   | "members"
+  | "invitations"
   | "openings"
   | "service"
   | "partners"
@@ -88,6 +89,11 @@ export const sectionViews: Record<AdminSection, readonly SectionView[]> = {
   membership: [
     { href: "/membership", key: "members", module: "members" },
     { href: "/membership/openings", key: "openings", module: "hiring" },
+    {
+      href: "/membership/invitations",
+      key: "invitations",
+      module: "members",
+    },
     { href: "/membership/service", key: "service", module: "recognition" },
     { href: "/membership/typewriter-tour", key: "tour", module: "tour" },
   ],
