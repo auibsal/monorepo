@@ -1066,7 +1066,11 @@
           "confirm": "Reset",
           "description": "Remove {name}'s authenticator app and recovery codes? Do this only when they asked, after checking it’s really them.",
           "done": "Reset. {name} sets up a new authenticator at their next sign-in."
-        }
+        },
+        "probation": "First term (on probation)",
+        "confirmRole": "Confirm after the first term",
+        "studentLifeEligible": "Student Life says eligible",
+        "studentLifeNotEligible": "Student Life says not eligible"
       },
       "verification": {
         "title": "Partner applications",
@@ -1755,7 +1759,14 @@
           "giveNotice": "Give notice",
           "giveNoticeConfirm": "Give notice now? Nominations must open at least a week from today. The voter list is frozen today: everyone on the register of Voting Members right now (Bylaws B6.2).",
           "noticeGiven": "{count, plural, =0 {Notice given {date}. No one is on the voter list.} one {Notice given {date}. {n} person is on the voter list.} other {Notice given {date}. {n} people are on the voter list.}}",
-          "back": "All elections"
+          "back": "All elections",
+          "studentLife": {
+            "waiting": "Waiting for Student Life",
+            "eligible": "Student Life: eligible",
+            "not_eligible": "Student Life: not eligible",
+            "markEligible": "Student Life says eligible",
+            "markNotEligible": "Student Life says not eligible"
+          }
         },
         "bodies": {
           "council": "The Council",
@@ -4892,7 +4903,8 @@
       "copyright": "© {year} AUIB Society of Arts and Letters. All rights reserved.",
       "recognition": "A registered student organization of AUIB, recognized by the Office of Student Life.",
       "colophon": "Set in Ubuntu and Ubuntu Arabic. Written in Baghdad.",
-      "instagram": "Instagram"
+      "instagram": "Instagram",
+      "sustainability": "Paperless by default. Books reused through Second Chapter."
     },
     "games": {
       "title": "Games",

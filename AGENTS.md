@@ -135,10 +135,10 @@ and decisions), and continue from the first unticked item.
   one header (`components/masthead.tsx` with the site's sections from
   `site-header.tsx`) and one footer (`components/footer.tsx`), so moving
   between them never feels like another app.
-- `packages/brand` — **the design system**, SAL-BRD-01 (owner, Nov 4,
+- `packages/brand` — **the design system**, SAL-MED-02 (owner, Nov 4,
   2026): the single source of the brand, and the only brand package
   (owner, Nov 4, 2026, evening: `@repo/design-system` is merged into it).
-  The guide (`guide/`, SAL-BRD-01 in full, one Markdown page per part;
+  The guide (`guide/`, SAL-MED-02 in full, one Markdown page per part;
   there is no PDF), the rules in short (`BRAND-BOOK.md`), in `assets` the
   tokens (`tokens.json`, from which `styles/tokens.css` is generated),
   fonts, icons, logos, Hudhud, the social templates with their PNGs and
@@ -1101,7 +1101,7 @@ any schema change. Integration tests run against a local stack with
   2026). Record events with
   `track()` from `@repo/analytics/client`. Runbook:
   `docs/platform/analytics.md`.
-- **No ads, no money in advertising** (owner, Nov 4, 2026; SAL-PLT-06 as
+- **No ads, no money in advertising** (owner, Nov 4, 2026; SAL-GOV-05 as
   amended): no ads anywhere (no AdSense, no Society or sponsor ad slots),
   and sponsors give in kind only, never money. A memorandum grants no
   advertising. The consent card asks about analytics only; Google's ad

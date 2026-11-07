@@ -4,9 +4,8 @@ import type { NoticeBlock, NoticeList, NoticeProps } from "./templates/notice";
 
 /**
  * The words of every platform email, in both languages. Each email goes
- * out in the member's language only (SAL-BRD-01: one language per piece).
- * Arabic here was written for the platform (needs-native-review in
- * PROGRESS.md).
+ * out in the member's language only (SAL-MED-02: one language per piece).
+ * Arabic here is Modern Standard Arabic, written for the platform.
  */
 export type Lang = "en" | "ar";
 

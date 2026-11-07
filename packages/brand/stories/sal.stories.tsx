@@ -88,7 +88,7 @@ export const Section: Story = {
 
 export const Form: Story = {
   render: () => (
-    <FormHeader code="SAL-OPS-02 · F-14" title="Event Proposal">
+    <FormHeader code="SAL-EXB-01 · F-11" title="Event pitch">
       Labels are nouns; money fields give their unit.
     </FormHeader>
   ),
@@ -98,12 +98,12 @@ export const Document: Story = {
   render: () => (
     <article className="grid max-w-3xl gap-6">
       <DocumentHeader
-        code="SAL-BRD-01"
+        code="SAL-MED-02"
         subtitle="The logo, colors, type and voice of the Society, quiet by default, one loud thing per page"
         title="Brand and Identity"
       />
       <DocumentFooter
-        code="SAL-BRD-01"
+        code="SAL-MED-02"
         end="Version 1"
         title="Brand and Identity"
       />

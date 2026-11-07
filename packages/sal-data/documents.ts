@@ -69,13 +69,16 @@ export const allDocuments = async (client: Client) =>
       .order("sort")
   ) ?? []) as SalDocument[];
 
+/** The website's policies (owner, Nov 7, 2026): the Privacy Notice, the
+ * Terms of Use and the Accessibility Statement. */
+const WEBSITE_POLICIES = new Set(["SAL-GOV-04", "SAL-GOV-05", "SAL-GOV-06"]);
+
 /**
  * The Library keeps two shelves (owner, Oct 30, 2026): the Society's own
- * documents, and the website's policies (terms, accessibility, and the
- * privacy page beside them), which carry the platform codes.
+ * documents, and the website's policies (SAL-GOV-04 to 06).
  */
 export const isWebsitePolicy = (doc: Pick<SalDocument, "code">) =>
-  doc.code.startsWith("SAL-PLT-");
+  WEBSITE_POLICIES.has(doc.code);
 
 /** The title in the page's language (English when there is no Arabic). */
 export const documentTitle = (

@@ -46,9 +46,9 @@ One picture per place, so members always know where they are. The Bookmark for t
 ## Instagram, @auibsal
 
 - **Name:** AUIB Society of Arts and Letters.
-- **Bio:** "Qirtas, our paper. The Company, our theater. Events all year at @auibaghdad." (owner, Nov 5, 2026)
+- **Bio:** "The paper and the pen at @auibaghdad." (owner, Nov 7, 2026)
 - **Links, in this order:** auibsal.org, auibsal.org/events, auibsal.org/join.
-- **Highlights, in this order:** What's on, Qirtas, Next Stop, The Company, Join, Get involved.
+- **Highlights, in this order:** What's on, Qirtas, The Company, Next Stop, Join, Partners.
 
 ## Highlights
 

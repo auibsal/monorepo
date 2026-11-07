@@ -238,11 +238,10 @@ const FormEditor = ({
   };
 
   return (
-    <DiwanPage
-      lede={labels.purpose()}
-      narrow
-      title={`${labels.title()} · ${definition.code}`}
-    >
+    <DiwanPage lede={labels.purpose()} narrow title={labels.title()}>
+      <p className="type-caption font-mono" dir="ltr">
+        {`SAL-EXB-01 · ${definition.code}`}
+      </p>
       {event.data ? (
         <p className="type-body">
           {t("forEvent", {

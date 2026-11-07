@@ -8,7 +8,7 @@
  * voice in the chat, so his Arabic is the Arabic members speak to each
  * other, with the Iraqi spelling (گ for the g sound). Only the bot's
  * Telegram profile (description, shortDescription) stays in standard
- * Arabic. Written for the platform: needs-native-review.
+ * Arabic.
  */
 
 export type Lang = "en" | "ar";

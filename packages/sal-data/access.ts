@@ -77,6 +77,29 @@ export const endRoleAssignment = async (client: Client, assignmentId: string) =>
       .rpc("end_role_assignment", { assignment_id: assignmentId })
   );
 
+/**
+ * Confirms someone after their first term on probation (owner, Nov 7,
+ * 2026); a Council seat needs Student Life's "eligible" first.
+ */
+export const confirmAssignment = async (client: Client, assignmentId: string) =>
+  unwrap(
+    await client
+      .schema("access")
+      .rpc("confirm_assignment", { assignment_id: assignmentId })
+  );
+
+/** Records Student Life's answer for an appointee (eligible or not). */
+export const recordSeatCheck = async (
+  client: Client,
+  assignmentId: string,
+  eligible: boolean
+) =>
+  unwrap(
+    await client
+      .schema("access")
+      .rpc("record_seat_check", { assignment_id: assignmentId, eligible })
+  );
+
 export const roles = async (client: Client) =>
   unwrap(
     await client
@@ -93,7 +116,7 @@ export const assignmentsFor = async (client: Client, userId: string) =>
       .schema("access")
       .from("role_assignments")
       .select(
-        "id, role, scope_type, scope_id, title_en, title_ar, starts_at, ends_at, note, created_at"
+        "id, role, scope_type, scope_id, title_en, title_ar, starts_at, ends_at, note, created_at, confirmed_at, student_life_answer"
       )
       .eq("user_id", userId)
       .order("starts_at", { ascending: false })

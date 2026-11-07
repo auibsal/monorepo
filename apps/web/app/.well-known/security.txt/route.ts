@@ -1,6 +1,6 @@
 import { project } from "@repo/config";
 
-// RFC 9116: where to report a security problem (SAL-PLT-08). Expires a year
+// RFC 9116: where to report a security problem (SAL-GOV-05). Expires a year
 // from each build, so a stale file never outlives the policy.
 export const dynamic = "force-static";
 

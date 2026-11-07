@@ -24,7 +24,7 @@ We speak two kinds of Arabic, as our members do (owner, Nov 4, 2026).
 
 - **Iraqi Arabic** where the Society talks with members as a friend would: Hudhud in Telegram, captions and stories on social media, the members' group, a sign at the door. Spell it as Iraqis write it, with گ for the g sound ("أگدر", "صدگ"), and keep it warm and brief.
 - **Standard Arabic** for everything meant to last or to be read beyond the chat: the website and the Diwan, emails, the Society's documents and policies, certificates, Qirtas's pages and articles (a writer's own piece keeps the Arabic they wrote it in), the press kit, and the bot's Telegram profile.
-- Never mix the two in one message. Every Iraqi line is checked by a native speaker before it ships, like any Arabic written for the platform.
+- Never mix the two in one message.
 
 ## Names and pictures
 
@@ -36,15 +36,15 @@ We speak two kinds of Arabic, as our members do (owner, Nov 4, 2026).
 
 ## Language standard
 
-One standard for every word the platform writes (owner, Nov 4, 2026). `bun run check:i18n` checks the messages, the email copy and Hudhud's copy against it (`scripts/check-language.ts`).
+One standard for every word the platform writes (owner, Nov 4, 2026; the Chicago Manual of Style for prose, Nov 7, 2026). `bun run check:i18n` checks the messages, the email copy and Hudhud's copy against it (`scripts/check-language.ts`).
 
 ### English
 
 - American spelling and usage (Merriam-Webster; Chicago for style): program, color, theater, canceled, judgment.
 - Sentence case for titles, buttons and labels: "Book a place", not "Book A Place". Names keep their capitals: Qirtas, the Diwan, the Company, Get involved.
-- Straight quotes and apostrophes (`"`, `'`); the ellipsis character (…); an en dash for ranges (6:00–8:00 PM, October 13–20); commas, colons or parentheses in place of the em dash.
+- The Chicago Manual of Style for prose: curly quotes and apostrophes (“ ” ‘ ’), the period and comma inside the closing quotation mark, the serial comma; the ellipsis character (…); an en dash for ranges (6:00–8:00 PM, October 13–20); commas, colons or parentheses in place of the em dash.
 - "For example" and "that is", not "e.g." and "i.e."; no exclamation marks; no "click here".
-- The serial comma only where a list would be misread without it.
+- Sentence case for interface labels; the prose around them follows Chicago.
 - Dates, times and amounts only through `formatLongDate`, `formatClock` and `formatIqd`: "Tuesday, October 13", "6:00 PM", "50,000 IQD".
 
 ### Arabic
@@ -55,7 +55,7 @@ One standard for every word the platform writes (owner, Nov 4, 2026). `bun run c
 - **Punctuation:** the Arabic comma, semicolon and question mark (، ؛ ؟); «» for quotations and for the names of pages and buttons («شارك معنا»), never "" or “”; a full stop and the ellipsis as in English.
 - **Spelling:** tanween on the letter before the alif (شكرًا، دائمًا), not on the alif (شكراً); hamzas written in full (إلى، أن، مسؤول); the tatweel only to join a prefix to Latin text or a number (لـSAL، بـ50).
 - **Voice:** address the reader as «أنت» in the masculine generic, as standard Arabic does, unless the text knows the reader; imperatives for buttons («احجز مكانًا»، «أرسل»), verbal nouns for headings and labels («الحجز»، «الإرسال»).
-- **Translation:** write the Arabic for Arabic readers, not word for word; a new Arabic line is needs-native-review until a native speaker has read it.
+- **Translation:** write the Arabic for Arabic readers, in Modern Standard Arabic, not word for word.
 
 ### Glossary
 

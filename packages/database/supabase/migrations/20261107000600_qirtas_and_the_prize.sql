@@ -261,6 +261,29 @@ $$;
 revoke all on function private.delete_submissions(uuid[]) from public, anon, authenticated;
 grant execute on function private.delete_submissions(uuid[]) to service_role;
 
+-- The daily job (the server, with the secret key) lists what is due, removes
+-- the files from storage, then the rows.
+create function journal.expired_submissions()
+returns table (submission_id uuid, paths text[])
+language sql
+stable
+security invoker
+set search_path = ''
+as $$ select * from private.expired_submissions() $$;
+
+revoke all on function journal.expired_submissions() from public, anon, authenticated;
+grant execute on function journal.expired_submissions() to service_role;
+
+create function journal.delete_submissions(ids uuid[])
+returns integer
+language sql
+security invoker
+set search_path = ''
+as $$ select private.delete_submissions(ids) $$;
+
+revoke all on function journal.delete_submissions(uuid[]) from public, anon, authenticated;
+grant execute on function journal.delete_submissions(uuid[]) to service_role;
+
 -- 5. The Mutanabbi Prize (decisions §5): one prize, two categories, Qirtas
 -- (the year's best work published in Qirtas by a student Member) and Qalam
 -- (the year's best work by a Qalam student). Given at the Annual Meeting

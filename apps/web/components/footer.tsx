@@ -138,6 +138,7 @@ export const Footer = async ({ consent = true }: FooterProps = {}) => {
             ) : null}
           </ul>
           <p>{tx("colophon")}</p>
+          <p>{tx("sustainability")}</p>
         </div>
       </div>
     </footer>

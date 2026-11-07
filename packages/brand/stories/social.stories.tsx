@@ -208,10 +208,10 @@ export const StoryArabic: Story = { render: () => <StoryFrame lang="ar" /> };
 const highlights: [string, IconName][] = [
   ["What's on", "calendar"],
   ["Qirtas", "newspaper"],
-  ["Next Stop", "bus"],
   ["The Company", "drama"],
+  ["Next Stop", "bus"],
   ["Join", "user-plus"],
-  ["Get involved", "hand-helping"],
+  ["Partners", "hand-helping"],
 ];
 
 export const Highlights: Story = {

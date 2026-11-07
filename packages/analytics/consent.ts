@@ -7,7 +7,7 @@
 
 /**
  * What the site asks about: analytics only. The site carries no ads and
- * asks about no advertising cookies (owner, Nov 4, 2026; SAL-PLT-06).
+ * asks about no advertising cookies (owner, Nov 4, 2026; SAL-GOV-05).
  */
 export const consentPurposes = ["analytics"] as const;
 export type ConsentPurpose = (typeof consentPurposes)[number];

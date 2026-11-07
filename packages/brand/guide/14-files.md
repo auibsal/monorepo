@@ -20,7 +20,7 @@ Everything lives here, in the Society's design system in the Diwan, built from `
 
 | Document | Version | Owner | Status |
 | --- | --- | --- | --- |
-| SAL-BRD-01 | 1 | Director of Media | Ratified |
+| SAL-MED-02 | 1 | Director of Media | Ratified |
 
 **Copies.** Two read-only copies follow this design system, and neither is edited on its own: Notion's Brand essentials page, the officers' summary, and the Design System "AUIB Society of Arts and Letters" in the Society's Claude project, which Claude designs from. Change `packages/brand` first, then refresh both.
 

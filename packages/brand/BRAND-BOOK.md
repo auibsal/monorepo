@@ -1,6 +1,6 @@
 Use this system for anything carrying the Society's name: screens, posts, documents and print. The Society sounds like a well-read friend: warm, precise and never grand. It looks like the best-made page on campus: wide margins, light type, one crimson mark. Modern in its restraint, literary in its words, and plainly part of AUIB.
 
-This is SAL-BRD-01, Brand and Identity, Version 1, ratified by the Society, in short. The full guide is the design system's Guide, in the Diwan at /diwan/design (`packages/brand/guide`).
+This is SAL-MED-02, Brand and Identity, Version 1, ratified by the Society, in short. The full guide is the design system's Guide, in the Diwan at /diwan/design (`packages/brand/guide`).
 
 ## Three principles
 
@@ -107,7 +107,7 @@ This is SAL-BRD-01, Brand and Identity, Version 1, ratified by the Society, in s
 - **Forms:** code and title above a hairline, the symbol at top right, small tracked labels, ink write-on lines, and an office-use strip on `paper`.
 - **Footers** (every page but the cover): code and title at left, "n / total" at right, in `text-secondary`.
 - **Closing page:** "Thank you." in `print-display` Light, and nothing else.
-- Code series: SAL-GOV, SAL-POL, SAL-OPS, SAL-STR, MEM, BRD, PRT, PRP.
+- Code families (owner, Nov 7, 2026): SAL-GOV, EXB, EVT, MEM, PTN, MED, ART, EDT; forms are SAL-EXB-01 · F-xx. POL, HBK, STR, PRP, BRD, PLT, QRT, CMP and OPS are retired.
 
 ## Components
 
@@ -123,8 +123,8 @@ This is SAL-BRD-01, Brand and Identity, Version 1, ratified by the Society, in s
 - **Carousels:** a cover post, numbered inside slides ("01", a short title, a few lines), and an end slide with the wordmark alone in the carousel's language: no symbol, no text. One ground and one language throughout. No slide counters or "swipe" prompts.
 - **Stories (1080 × 1920):** the post's parts, with every word 250 px clear of the top and 340 px clear of the bottom.
 - **Profile pictures:** Instagram (@auibsal) and the members' Telegram group use the Bookmark in white on crimson (`sal-avatar.svg`). The Diwan group, the officers' working group, uses the Bookmark in white on ink (`sal-avatar-ink.svg`), so the two groups are never confused. Hudhud, the bot, keeps the hoopoe (`hudhud-avatar.png`).
-- **Instagram bio:** "Qirtas, our paper. The Company, our theater. Events all year at @auibaghdad." Links, in order: auibsal.org, auibsal.org/events, auibsal.org/join.
-- **Highlights:** six, in this order: What's on, Qirtas, Next Stop, The Company, Join, Get involved. Covers are plain crimson with the highlight's icon alone, in white: no name (Instagram writes it under the circle) and no Bookmark. Each highlight opens with a 1080 × 1920 story banner on white: the wordmark alone at the top (no Bookmark), a Light headline in ink, a short line, a list split by thin rules, and the link at the bottom. See `components/Highlights`.
+- **Instagram bio:** "The paper and the pen at @auibaghdad." (owner, Nov 7, 2026) Links, in order: auibsal.org, auibsal.org/events, auibsal.org/join.
+- **Highlights:** six, in this order: What's on, Qirtas, The Company, Next Stop, Join, Partners. Covers are plain crimson with the highlight's icon alone, in white: no name (Instagram writes it under the circle) and no Bookmark. Each highlight opens with a 1080 × 1920 story banner on white: the wordmark alone at the top (no Bookmark), a Light headline in ink, a short line, a list split by thin rules, and the link at the bottom. See `components/Highlights`.
 - Three grounds, by purpose: `crimson` for calls and moments, `white` for events, `ink` for words worth keeping and recruiting.
 - Posters A3/A4 follow the post: lockup, Light headline, a QR code at bottom right. Certificates are A4 landscape with a single hairline frame and the lockup. Print only when current stock runs out.
 - Print sizes: Charter poster A3; Open Call poster A3 or A4; Term Card A6, four to an A4 sheet; membership card 85 × 55 mm, 300 gsm, ten to an A4 sheet; Certificate of Service and Fellow certificate A4 landscape; name badges 90 × 55 mm; photography notice A4; camera-shy stickers 40 mm round, twenty to an A4 sheet, the crossed-out camera alone in white on ink. Every one is drawn in Print.

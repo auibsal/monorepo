@@ -448,7 +448,6 @@ export type Database = {
           major: string | null;
           research_consent: boolean;
           skills: string[];
-          student_id: string | null;
           study_level: string | null;
           updated_at: string;
           user_id: string;
@@ -468,7 +467,6 @@ export type Database = {
           major?: string | null;
           research_consent?: boolean;
           skills?: string[];
-          student_id?: string | null;
           study_level?: string | null;
           updated_at?: string;
           user_id?: string;
@@ -488,7 +486,6 @@ export type Database = {
           major?: string | null;
           research_consent?: boolean;
           skills?: string[];
-          student_id?: string | null;
           study_level?: string | null;
           updated_at?: string;
           user_id?: string;
@@ -4429,6 +4426,7 @@ export type Database = {
         Args: { decision: string; notes?: string; submission_id: string };
         Returns: string;
       };
+      delete_submissions: { Args: { ids: string[] }; Returns: number };
       desk_of: {
         Args: { category: Database["journal"]["Enums"]["category"] };
         Returns: Database["journal"]["Enums"]["desk"];
@@ -4460,6 +4458,13 @@ export type Database = {
         Returns: {
           author_name_ar: string;
           author_name_en: string;
+        }[];
+      };
+      expired_submissions: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          paths: string[];
+          submission_id: string;
         }[];
       };
       intake_queue: {
@@ -5211,10 +5216,6 @@ export type Database = {
           verified: boolean;
           voting_member: boolean;
         }[];
-      };
-      record_event_service: {
-        Args: { event_id: string; hours: number; member_id: string };
-        Returns: string;
       };
       register: {
         Args: Record<PropertyKey, never>;
@@ -6193,10 +6194,6 @@ export type Database = {
         Args: { production_id: string };
         Returns: undefined;
       };
-      draft_production_certificates: {
-        Args: { production_id: string };
-        Returns: number;
-      };
       member_productions: {
         Args: Record<PropertyKey, never>;
         Returns: {
@@ -6296,10 +6293,6 @@ export type Database = {
           title_ar: string;
           title_en: string;
         }[];
-      };
-      record_production_service: {
-        Args: { hours: number; member_id: string; production_id: string };
-        Returns: string;
       };
       record_six_words: {
         Args: {
