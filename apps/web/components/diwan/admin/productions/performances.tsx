@@ -9,7 +9,6 @@ import { localized, productions, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
-import { useGrants } from "@/lib/diwan/queries";
 import { SectionSpinner } from "../../states";
 import { ErrorLine, Field, SaveButton, SelectInput } from "../kit";
 import { useMemberNames } from "../member-picker";
@@ -265,7 +264,6 @@ export const ReportTab = ({ production }: { production: ProductionRow }) => {
   const t = useTranslations("diwan.admin.productions.reportTab");
   const locale = useLocale();
   const { supabase } = useAuth();
-  const grants = useGrants();
   const queryClient = useQueryClient();
   const signer = useMemberNames([production.report_signed_by]);
   const [form, setForm] = useState({

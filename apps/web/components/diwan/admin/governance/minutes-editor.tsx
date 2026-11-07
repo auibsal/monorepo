@@ -3,7 +3,12 @@
 import { useAuth } from "@repo/auth/provider";
 import type { Locale } from "@repo/internationalization";
 import { formatLongDate } from "@repo/internationalization/format";
-import { localized, sanitizeRichText, unwrap } from "@repo/sal-data";
+import {
+  governance,
+  localized,
+  sanitizeRichText,
+  unwrap,
+} from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useEffect, useState } from "react";
@@ -28,10 +33,11 @@ import {
 import { NotionManaged } from "../notion-managed";
 import { MeetingResolutions } from "./admin";
 
-type Body = "council" | "general_assembly";
+type Body = governance.MeetingBody;
 
 /**
- * A meeting of the Council or the General Assembly: its minutes, co-edited
+ * A meeting (the Council, a general meeting, the Annual Meeting, a special
+ * meeting or the Founding Meeting): its minutes, co-edited
  * by the General Secretary and the Council and draft until adopted, and
  * under them the resolutions it adopted.
  */
@@ -243,10 +249,11 @@ export const MinutesEditor = () => {
                 }
                 value={form.body}
               >
-                <option value="council">{t("bodies.council")}</option>
-                <option value="general_assembly">
-                  {t("bodies.general_assembly")}
-                </option>
+                {governance.meetingBodies.map((b) => (
+                  <option key={b} value={b}>
+                    {t(`bodies.${b}`)}
+                  </option>
+                ))}
               </SelectInput>
             )}
           </Field>

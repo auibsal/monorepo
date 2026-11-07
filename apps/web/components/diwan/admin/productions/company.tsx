@@ -289,7 +289,7 @@ export const CreditsTab = ({ production }: { production: ProductionRow }) => {
   const t = useTranslations("diwan.admin.productions.creditsTab");
   const tp = useTranslations("diwan.productions");
   const locale = useLocale() as Locale;
-  const { supabase, user } = useAuth();
+  const { supabase } = useAuth();
   const queryClient = useQueryClient();
   const key = [...productionKey(production.id), "credits"];
 

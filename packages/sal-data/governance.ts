@@ -3,6 +3,20 @@ import { type Client, unwrap } from "./client";
 
 export const RON = "RON" as const;
 
+/**
+ * The Society's meetings (owner, Nov 7, 2026): the Council, general meetings
+ * every two weeks, the Annual Meeting, special meetings and the Founding
+ * Meeting (March 30, 2027). The General Assembly and the AGM are retired.
+ */
+export const meetingBodies = [
+  "council",
+  "general",
+  "annual",
+  "special",
+  "founding",
+] as const;
+export type MeetingBody = (typeof meetingBodies)[number];
+
 /** A ranked ballot: position id → candidate ids (or RON) in order. */
 export const ballotSchema = z.record(
   z.uuid(),

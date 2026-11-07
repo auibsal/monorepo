@@ -243,7 +243,6 @@ const Totals = () => {
   return (
     <div className="grid gap-4">
       <p className="type-body">{t("lede")}</p>
-      <p className="type-caption">{t("cap")}</p>
       <DataTable
         columns={columns}
         empty={t("empty")}

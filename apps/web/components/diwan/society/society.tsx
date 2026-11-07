@@ -49,6 +49,7 @@ const Council = () => {
 
 const Minutes = () => {
   const t = useTranslations("diwan.society.minutes");
+  const tb = useTranslations("diwan.admin.governance.bodies");
   const ta = useTranslations("diwan.next");
   const locale = useLocale() as Lang;
   const { supabase } = useAuth();
@@ -93,7 +94,7 @@ const Minutes = () => {
                   {localized(entry, "title", locale)}
                 </span>{" "}
                 <span className="type-caption">
-                  {t(entry.body === "council" ? "council" : "assembly")} ·{" "}
+                  {tb(entry.body as governance.MeetingBody)} ·{" "}
                   {formatLongDate(entry.meeting_on, locale)}
                 </span>
               </summary>
