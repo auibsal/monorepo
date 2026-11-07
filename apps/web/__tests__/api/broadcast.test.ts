@@ -38,8 +38,9 @@ describe("the invitation as one Broadcast", () => {
     const contact = invitationContact("en", invite);
     const [block] = invitation("en", invite, JOIN).blocks;
     expect(contact.greeting).toBe(block?.paragraphs[0]);
-    expect(contact.tour_line).toBe(
-      `${block?.paragraphs[1]} ${block?.paragraphs[2]}`
+    expect(contact.tour_line).toBe(block?.paragraphs[1]);
+    expect(contact.tour_line).toContain(
+      "at the English Language Academy and the College of Law"
     );
   });
 
@@ -55,8 +56,40 @@ describe("the invitation as one Broadcast", () => {
     ).toEqual({
       greeting: "Hello,",
       tour_line:
-        "Last February you sat down at the Society’s typewriter at the Food Court or the club fair. We kept your page.",
+        "Last February you sat down at our typewriter at the Food Court or the club fair. We kept your page.",
     });
+  });
+});
+
+describe("the President's letter", () => {
+  test("quotes end once, inner quotes turn single, and it is signed", async () => {
+    const quoted = (words: string) =>
+      invitationContact("en", {
+        first_name: "Teeba",
+        kind: "tour",
+        pages: 1,
+        station: "Food Court",
+        words,
+      }).tour_line;
+    expect(quoted("Meow. (Said by Audi.)")).toContain(
+      "“Meow. (Said by Audi.)” We kept"
+    );
+    expect(quoted("“The past is never dead.” —William Faulkner")).toContain(
+      "“‘The past is never dead.’ —William Faulkner.” We kept"
+    );
+    const built = invitationBroadcast("en", "tour", JOIN, {
+      image:
+        "https://auibsal.org/api/email/signature?seat=president&date=2026-11-08",
+      name: "Shaheen Farjo",
+    });
+    expect(built.preview).not.toBe("Hello,");
+    const html = await render(
+      Notice({ blocks: built.blocks, preview: built.preview })
+    );
+    expect(html).toContain("Shaheen Farjo");
+    expect(html).toContain("President, AUIB Society of Arts and Letters");
+    expect(html).toContain("/api/email/signature?seat=president");
+    expect(html).not.toContain("original sheet");
   });
 });
 

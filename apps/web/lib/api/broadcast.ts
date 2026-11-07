@@ -42,7 +42,14 @@ export interface BroadcastContact {
 export interface BroadcastJob {
   readonly built: Built;
   readonly contacts: readonly BroadcastContact[];
+  /**
+   * Leave the Broadcast as a draft in Resend for a person to send (the
+   * invitation, owner, Nov 7, 2026); otherwise it goes at once.
+   */
+  readonly draft?: boolean;
   readonly footer: NoticeFooterLine[];
+  /** Another sender at the domain (the President's letter); else RESEND_FROM. */
+  readonly from?: string;
   /** One row in core.broadcasts, for example "sunday-paper:2026-12:en". */
   readonly key: string;
   readonly kind: "invitation" | "sunday_paper";
@@ -305,7 +312,7 @@ export const runBroadcast = async (admin: AdminClient, job: BroadcastJob) => {
     }
     const sent = ok(
       await client().broadcasts.create({
-        from: RESEND_FROM,
+        from: job.from ?? RESEND_FROM,
         name: job.key,
         react: Notice({
           blocks: job.built.blocks,
@@ -315,7 +322,7 @@ export const runBroadcast = async (admin: AdminClient, job: BroadcastJob) => {
         // Replies reach a person, never a no-reply box.
         replyTo: project.supportEmail,
         segmentId: row.segment_id,
-        send: true,
+        ...(job.draft ? { send: false as const } : { send: true as const }),
         subject: job.built.subject,
         text: noticeText({ blocks: job.built.blocks, footer: job.footer }),
       }),
