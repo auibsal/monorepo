@@ -3,12 +3,8 @@ import { formatLongDate } from "@repo/internationalization/format";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import {
-  issueContents,
-  SundayPaperIssue,
-} from "@/components/sunday-paper-issue";
+import { pastIssues, SundayPaperIssue } from "@/components/sunday-paper-issue";
 import { localizedMetadata } from "@/lib/metadata";
-import { issueOf } from "@/lib/sunday-paper";
 
 interface IssueProps {
   readonly params: Promise<{ locale: Locale; month: string }>;
@@ -17,22 +13,19 @@ interface IssueProps {
 const MONTH = /^(\d{4})-(\d{2})$/;
 
 /** The issue a `yyyy-mm` segment names, when it has been sent. */
-const issueFrom = (segment: string) => {
-  const match = MONTH.exec(segment);
-  const year = Number(match?.[1]);
-  const month = Number(match?.[2]);
-  if (!match || Math.min(Math.max(month, 1), 12) !== month || year < 2026) {
+const issueFrom = async (segment: string) => {
+  if (!MONTH.test(segment)) {
     return null;
   }
-  const issue = issueOf(year, month - 1);
-  return issue.sunday <= new Date() ? issue : null;
+  const sent = await pastIssues();
+  return sent.find((issue) => issue.key === segment) ?? null;
 };
 
 export const generateMetadata = async ({
   params,
 }: IssueProps): Promise<Metadata> => {
   const { locale, month } = await params;
-  const issue = issueFrom(month);
+  const issue = await issueFrom(month);
   if (!issue) {
     return {};
   }
@@ -47,13 +40,8 @@ export const generateMetadata = async ({
 const IssuePage = async ({ params }: IssueProps) => {
   const { locale, month } = await params;
   setRequestLocale(locale);
-  const issue = issueFrom(month);
+  const issue = await issueFrom(month);
   if (!issue) {
-    notFound();
-  }
-  // An issue that carried nothing was never sent.
-  const { events, pieces } = await issueContents(issue, locale);
-  if (events.length + pieces.length === 0) {
     notFound();
   }
   return <SundayPaperIssue issue={issue} locale={locale} />;

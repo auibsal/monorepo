@@ -6,6 +6,8 @@ own versions in the Library.
 
 ## Unreleased
 
+- The Sunday Paper's archive lists only the issues actually sent (recorded
+  when each goes out); until the first, on December 6, it says so.
 - The owner's decisions of Nov 7, 2026: the Council of nine; Member,
   Associate Member and Honorary Member; a first term on probation; GPA
   checks through Student Life; meetings by body; a members' directory.

@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { issueOf, issuesSince } from "./sunday-paper";
+import { issueOf, nextIssue } from "./sunday-paper";
 
 describe("the Sunday Paper's issues", () => {
   test("November 2026's is Sunday, November 1, Baghdad midnight", () => {
@@ -16,11 +16,9 @@ describe("the Sunday Paper's issues", () => {
     );
   });
 
-  test("only issues already sent, newest first", () => {
-    const keys = issuesSince(
-      new Date("2026-10-09T00:00:00Z"),
-      new Date("2026-12-10T00:00:00Z")
-    ).map((i) => i.key);
-    expect(keys).toEqual(["2026-12", "2026-11", "2026-10"]);
+  test("the next issue after November 1, 2026 is December 6", () => {
+    expect(nextIssue(new Date("2026-11-07T12:00:00Z")).key).toBe("2026-12");
+    expect(nextIssue(new Date("2026-11-30T12:00:00Z")).key).toBe("2026-12");
+    expect(nextIssue(new Date("2026-12-20T12:00:00Z")).key).toBe("2027-01");
   });
 });
