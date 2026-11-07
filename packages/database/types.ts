@@ -1281,6 +1281,32 @@ export type Database = {
           },
         ];
       };
+      debriefs: {
+        Row: {
+          event_id: string;
+          updated_at: string;
+          url: string;
+        };
+        Insert: {
+          event_id: string;
+          updated_at?: string;
+          url: string;
+        };
+        Update: {
+          event_id?: string;
+          updated_at?: string;
+          url?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "debriefs_event_id_fkey";
+            columns: ["event_id"];
+            isOneToOne: true;
+            referencedRelation: "events";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       event_staff: {
         Row: {
           added_by: string | null;
@@ -1672,6 +1698,14 @@ export type Database = {
         }[];
       };
       confirmed_count: { Args: { event_id: string }; Returns: number };
+      event_host: {
+        Args: { event_slug: string };
+        Returns: {
+          name_ar: string;
+          name_en: string;
+          slug: string;
+        }[];
+      };
       find_attendee: {
         Args: { event_id: string; query: string };
         Returns: {

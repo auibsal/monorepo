@@ -10,6 +10,7 @@ const {
   checkArabicEdition,
   checkDocument,
   checkEvent,
+  eventExtras,
   checkProgram,
   checkQirtas,
   languageOf,
@@ -168,7 +169,7 @@ describe("publishing rules", () => {
     ).toMatchObject({ values: { off_campus: true } });
     expect(check({})).toMatchObject({
       ok: false,
-      problems: ["Set Way in: Open, RSVP, Members or Private."],
+      problems: ["Set Access: Open, RSVP, Members or Private."],
     });
     // Decisions §10: no lead or no confirmed place, no publishing.
     const unplaced = checkEvent(
@@ -180,8 +181,36 @@ describe("publishing rules", () => {
     );
     expect(unplaced.ok ? [] : unplaced.problems).toEqual([
       "Set Venue to the confirmed room or place. An event is published only once its place is confirmed.",
-      "Set Owner to the event's lead. An event is published only with a lead.",
+      "Set Lead to the event's lead. An event is published only with a lead.",
     ]);
+    // Decisions §13: Way in becomes Access and Owner becomes Lead; either
+    // name is read, so Notion can be renamed after the code is deployed.
+    expect(
+      checkEvent(
+        page({
+          Access: wayIn("Members"),
+          Lead: { people: [{ id: "lead-1" }], type: "people" },
+          Title: title("General meeting"),
+          Venue: text("Library 47"),
+          When: when("2026-11-10T16:00:00.000+03:00"),
+        })
+      )
+    ).toMatchObject({ ok: true, values: { entry: "members" } });
+  });
+
+  test("an event's host and debrief (decisions §13)", () => {
+    expect(
+      eventExtras(
+        page({
+          Debrief: { type: "url", url: "https://www.notion.so/debrief" },
+          Host: wayIn("Poetry Hub"),
+        })
+      )
+    ).toEqual({ debrief: "https://www.notion.so/debrief", host: "Poetry Hub" });
+    expect(eventExtras(page({ Host: wayIn("The Society") }))).toEqual({
+      debrief: null,
+      host: null,
+    });
   });
 
   test("an event without a start time or a Latin slug says what to fix", () => {

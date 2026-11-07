@@ -1,7 +1,7 @@
 import "server-only";
 
-import type { governance } from "@repo/sal-data";
-
+import { type governance, sanitizeRichText } from "@repo/sal-data";
+import { pageHtml } from "./blocks";
 import { bareId, type NotionPage } from "./client";
 import {
   count,
@@ -64,7 +64,9 @@ interface Draft {
   body: governance.MeetingBody;
   event_id: string | null;
   meeting_on: string;
+  text_ar?: string;
   text_en: string;
+  title_ar?: string;
   title_en: string;
 }
 
@@ -126,6 +128,7 @@ const readDraft = async (
   if (problems.length > 0 || !(body && day && text)) {
     return { problems };
   }
+  const arabic = await arabicMinutes(ctx, page);
   return {
     draft: {
       body,
@@ -133,8 +136,31 @@ const readDraft = async (
       meeting_on: day,
       text_en: text,
       title_en: title,
+      ...(arabic ? { text_ar: arabic.text, title_ar: arabic.title } : {}),
     },
   };
+};
+
+const ARABIC = /[\u0600-\u06FF]/;
+
+/**
+ * The Arabic minutes (decisions §13): kept as a sub-page of the English
+ * minutes' page in Meetings, sent with them as their Arabic edition. The
+ * sub-page whose title is in Arabic is the one.
+ */
+const arabicMinutes = async (ctx: SyncContext, page: NotionPage) => {
+  const blocks = await ctx.notion.blocksWithTables(page.id);
+  const child = blocks.find((block) => {
+    const title = (block.child_page as { title?: string } | undefined)?.title;
+    return block.type === "child_page" && Boolean(title && ARABIC.test(title));
+  });
+  if (!child) {
+    return null;
+  }
+  const html = pageHtml(await ctx.notion.blocksWithTables(child.id));
+  const text = html ? sanitizeRichText(html) : null;
+  const title = (child.child_page as { title?: string }).title ?? "";
+  return text ? { text, title } : null;
 };
 
 const sendMinutes = async (

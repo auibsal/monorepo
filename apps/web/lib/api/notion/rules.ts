@@ -1,5 +1,5 @@
 import type { NotionPage } from "./client";
-import { read, SLUG, slugify, toInstant } from "./props";
+import { named, read, SLUG, slugify, toInstant } from "./props";
 
 /**
  * What a Notion page must hold before the platform publishes it, checked
@@ -49,11 +49,11 @@ const WAYS_IN = {
 } as const;
 
 const wayIn = (page: NotionPage, problems: string[]) => {
-  const chosen = read.select(page, "Way in") ?? "";
+  const chosen = read.select(page, named(page, "Access", "Way in")) ?? "";
   if (chosen in WAYS_IN) {
     return WAYS_IN[chosen as keyof typeof WAYS_IN];
   }
-  problems.push("Set Way in: Open, RSVP, Members or Private.");
+  problems.push("Set Access: Open, RSVP, Members or Private.");
   return "open";
 };
 
@@ -122,9 +122,9 @@ export const checkEvent = (page: NotionPage): Checked<EventValues> => {
       "Set Venue to the confirmed room or place. An event is published only once its place is confirmed."
     );
   }
-  if (read.people(page, "Owner").length === 0) {
+  if (read.people(page, named(page, "Lead", "Owner")).length === 0) {
     problems.push(
-      "Set Owner to the event's lead. An event is published only with a lead."
+      "Set Lead to the event's lead. An event is published only with a lead."
     );
   }
 
@@ -144,6 +144,22 @@ export const checkEvent = (page: NotionPage): Checked<EventValues> => {
       title_en: titleEn,
       venue_en: optional(read.text(page, "Venue")),
     },
+  };
+};
+
+const THE_SOCIETY = /^the society$/i;
+
+/**
+ * What an event row says beyond the event itself (decisions §13): its
+ * host (the Society, or the partner the event is held for, by name) and
+ * the link to its debrief (F-13).
+ */
+export const eventExtras = (page: NotionPage) => {
+  const host = read.select(page, "Host") ?? read.text(page, "Host");
+  const debrief = read.url(page, "Debrief");
+  return {
+    debrief: debrief?.startsWith("https://") ? debrief : null,
+    host: host && !THE_SOCIETY.test(host.trim()) ? host.trim() : null,
   };
 };
 

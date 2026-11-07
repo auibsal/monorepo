@@ -14,11 +14,12 @@ import {
   type SyncContext,
   saveLink,
 } from "./context";
-import { prop, read, slugify } from "./props";
+import { named, prop, read, slugify } from "./props";
 import {
   checkArabicEdition,
   checkEvent,
   checkQirtas,
+  eventExtras,
   languageOf,
   type QirtasDesk,
   type QirtasValues,
@@ -289,6 +290,7 @@ const publishEvent = async (
     ({ id } = data);
   }
   await saveLink(ctx, "event", page.id, id, null);
+  await saveHostAndDebrief(ctx, page, id);
   if (waiting) {
     await ctx.notion.updatePage(page.id, {
       Diwan: prop.url(`${ctx.appUrl}/events/${v.slug}`),
@@ -319,10 +321,54 @@ const publishEvent = async (
   if (arabic) {
     await ctx.notion.updatePage(arabic, {
       "Off campus": prop.checkbox(offCampus),
-      "Way in": prop.select(WAY_IN_NAMES[v.entry] ?? "RSVP"),
+      [named(page, "Access", "Way in")]: prop.select(
+        WAY_IN_NAMES[v.entry] ?? "RSVP"
+      ),
     });
   }
   count(ctx, existing ? "event.republished" : "event.published");
+};
+
+/**
+ * The event's host and debrief (decisions §13): Host names the partner the
+ * event is held for (matched to the register by its English or Arabic
+ * name; the Society otherwise), and Debrief links its F-13 page, kept for
+ * the event's staff only.
+ */
+const saveHostAndDebrief = async (
+  ctx: SyncContext,
+  page: NotionPage,
+  eventId: string
+) => {
+  const { debrief, host } = eventExtras(page);
+  let partnerId: string | null = null;
+  if (host) {
+    const { data } = await ctx.admin
+      .schema("governance")
+      .from("partners")
+      .select("id, name_en, name_ar")
+      .eq("status", "active");
+    const wanted = host.toLowerCase();
+    partnerId =
+      (data ?? []).find(
+        (p) => p.name_en.toLowerCase() === wanted || p.name_ar === host
+      )?.id ?? null;
+  }
+  await ctx.admin
+    .schema("events")
+    .from("events")
+    .update({ partner_id: partnerId })
+    .eq("id", eventId);
+  const debriefs = ctx.admin.schema("events").from("debriefs");
+  if (debrief) {
+    await debriefs.upsert({
+      event_id: eventId,
+      updated_at: new Date().toISOString(),
+      url: debrief,
+    });
+  } else {
+    await debriefs.delete().eq("event_id", eventId);
+  }
 };
 
 /** The Way in options in Notion, by the event's entry. */
@@ -418,7 +464,9 @@ const publishArabicEvent = async (
     ...(event
       ? {
           "Off campus": prop.checkbox(event.off_campus),
-          "Way in": prop.select(WAY_IN_NAMES[event.entry] ?? "RSVP"),
+          [named(page, "Access", "Way in")]: prop.select(
+            WAY_IN_NAMES[event.entry] ?? "RSVP"
+          ),
         }
       : {}),
     Diwan: prop.url(`${ctx.appUrl}/events/${event?.slug ?? eventId}`),

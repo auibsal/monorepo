@@ -1260,7 +1260,8 @@
           "invite": "Invite a guest",
           "withdraw": "Withdraw",
           "sent": "Invitation sent."
-        }
+        },
+        "debrief": "The debrief (F-13) in Notion"
       },
       "checkIn": {
         "title": "Check-in",
@@ -4178,7 +4179,8 @@
         "consent": "Sign the trip consent form before you book."
       },
       "allEvents": "All events",
-      "auibCalendar": "AUIB’s calendar (opens auib.edu.iq)"
+      "auibCalendar": "AUIB’s calendar (opens auib.edu.iq)",
+      "heldWith": "Held with {partner}"
     },
     "journal": {
       "title": "Qirtas",

@@ -57,6 +57,34 @@ const PublicPage = ({
  * parts are kept here: registration questions, invitations, bookings and
  * check-in, and the standard parts.
  */
+/** The event's debrief (F-13) in Notion, for its staff (decisions §13). */
+const DebriefLink = ({ eventId }: { eventId: string }) => {
+  const t = useTranslations("diwan.admin.event");
+  const { supabase } = useAuth();
+  const debrief = useQuery({
+    queryFn: async () =>
+      unwrap(
+        await supabase
+          .schema("events")
+          .from("debriefs")
+          .select("url")
+          .eq("event_id", eventId)
+          .maybeSingle()
+      ),
+    queryKey: ["admin", "event-debrief", eventId],
+  });
+  return debrief.data?.url ? (
+    <a
+      className="link justify-self-start"
+      href={debrief.data.url}
+      rel="noopener noreferrer"
+      target="_blank"
+    >
+      {t("debrief")}
+    </a>
+  ) : null;
+};
+
 export const EventEditor = () => {
   const t = useTranslations("diwan.admin.event");
   const tk = useTranslations("diwan.admin.kit");
@@ -159,6 +187,7 @@ export const EventEditor = () => {
         {`${tk("status")}: ${tk(`statuses.${event.status as "draft"}`)}`}
       </AdminHeading>
       <NotionManaged kind="event" recordId={eventId} />
+      <DebriefLink eventId={eventId} />
       <dl className="grid max-w-4xl gap-x-6 gap-y-3 sm:grid-cols-[10rem_1fr]">
         {facts.map(([term, value]) => (
           <div className="contents" key={term}>

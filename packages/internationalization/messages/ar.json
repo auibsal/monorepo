@@ -1260,7 +1260,8 @@
           "invite": "دعوة ضيف",
           "withdraw": "سحب الدعوة",
           "sent": "أُرسلت الدعوة."
-        }
+        },
+        "debrief": "مراجعة الفعالية (F-13) في Notion"
       },
       "checkIn": {
         "title": "تسجيل الحضور",
@@ -4178,7 +4179,8 @@
         "consent": "وقّع استمارة الموافقة على الرحلة قبل الحجز."
       },
       "allEvents": "كل الفعاليات",
-      "auibCalendar": "تقويم الجامعة (يفتح auib.edu.iq)"
+      "auibCalendar": "تقويم الجامعة (يفتح auib.edu.iq)",
+      "heldWith": "بالتعاون مع {partner}"
     },
     "journal": {
       "title": "قرطاس",
