@@ -11,8 +11,8 @@ export interface AccountDeletion {
 
 /**
  * Every stored file that is the person's own (decisions §11): the avatar
- * folder, and the files of their Qirtas submissions with their blind
- * copies. Files have no foreign key to users, so they go first, by path.
+ * folder, the files of their Qirtas submissions with their blind copies
+ * and the photographs of their Tour pages. Files have no foreign key to users, so they go first, by path.
  * What the Society published stays (a piece's own media), as the piece
  * does.
  */
@@ -62,7 +62,25 @@ export const deleteAccount = async (
       throw removeError;
     }
   }
-  const removedFiles = avatars + submitted.length;
+  // The Tour pages the station photographed for them (decisions §12).
+  const { data: pages } = await admin
+    .schema("programmes")
+    .from("six_words")
+    .select("photo_path")
+    .eq("user_id", userId)
+    .not("photo_path", "is", null);
+  const photos = (pages ?? []).flatMap((page) =>
+    page.photo_path ? [page.photo_path] : []
+  );
+  if (photos.length > 0) {
+    const { error: photoError } = await admin.storage
+      .from(buckets.tourPages.id)
+      .remove(photos);
+    if (photoError) {
+      throw photoError;
+    }
+  }
+  const removedFiles = avatars + submitted.length + photos.length;
 
   // The last email goes to the address the account had, once it is gone
   // (the outbox holds the address, not the account).

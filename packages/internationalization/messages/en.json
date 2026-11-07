@@ -387,7 +387,8 @@
           "profile": "Your profile",
           "tour": "Your profile and the Tour’s page"
         },
-        "takenDown": "The editors have kept this page off the site."
+        "takenDown": "The editors have kept this page off the site.",
+        "notTranscribed": "Photographed at the Tour; the Tour lead types its words in soon."
       },
       "tiers": {
         "member": "Member",
@@ -1386,7 +1387,9 @@
           "deleteShift": "Delete shift",
           "deleteShiftConfirm": "Delete this shift and its sign-ups?",
           "worked": "Worked",
-          "markWorked": "Worked the shift"
+          "markWorked": "Worked the shift",
+          "station": "Tour station",
+          "stationHint": "Volunteers you confirm on it, once trained, may attach photographed pages to live cards while it runs, and only then."
         },
         "removals": {
           "lede": "Requests to remove a photo or video (MEM-02): what the request points to on the site is hidden as it arrives; decide within two business days, take it down from the Society’s channels or decline with a reason.",
@@ -1539,7 +1542,10 @@
             "loaded": "Loaded {pages} pages and {invitations} invitations; {attached} pages went straight to writers who already have an account.",
             "status": "Invitations: {waiting} waiting, {sent} sent, {joined} joined. Pages not yet claimed: {unclaimed}.",
             "invitations": "The invitations go list by list from Membership → Invitations."
-          }
+          },
+          "toTranscribe": "Photographed at the station; its words not yet typed in.",
+          "transcribeHint": "Type the words exactly as on the page.",
+          "saveWords": "Save the words"
         }
       },
       "governance": {
@@ -3162,6 +3168,19 @@
         "president": "Only the President sends a list, after its test has reached them.",
         "presidentNote": "The invitation is your letter, signed with your signature on the site. Read the test before you send.",
         "sending": "{count} invitations are being prepared. The draft appears in Resend → Broadcasts within a few minutes; send it from there."
+      },
+      "associateRequests": {
+        "title": "Requests for Associate membership",
+        "lede": "Approving sends a named invitation, valid fourteen days; a Tour page taken against the request follows the account that accepts it. Declining needs a reason, and deletes any such page.",
+        "empty": "No requests waiting.",
+        "relations": {
+          "faculty": "Faculty",
+          "staff": "Staff",
+          "alumni": "Alumni"
+        },
+        "approve": "Approve and invite",
+        "reason": "Reason for declining",
+        "decline": "Decline"
       }
     },
     "editor": {
@@ -4059,6 +4078,34 @@
       "printNote": "Choose Download to save a PDF (A4).",
       "download": "Download PDF",
       "revoked": "This letter was withdrawn."
+    },
+    "station": {
+      "title": "The Tour’s station",
+      "lede": "For the volunteer on a station shift. Photograph the typed page, then scan the writer’s live card, or find the Associate request they just sent. The page is theirs and stays private until they choose otherwise.",
+      "closed": "The station is closed.",
+      "closedHint": "It opens only for a volunteer confirmed on a station shift, while the shift runs. Ask the event lead if you think you should be on one.",
+      "step1": "1. Photograph the page",
+      "photo": "The typed page",
+      "step2": "2. Whose page it is",
+      "byCard": "Scan a card",
+      "byRequest": "Associate request",
+      "cardHint": "A Member’s card or a Guest card, shown live on the writer’s phone. A visitor 18 or older who isn’t an AUIB student makes a guest account first:",
+      "guestLink": "Make a guest account",
+      "requestHint": "Faculty, staff and alumni send a request for Associate membership first; the page waits on it, private.",
+      "requestLink": "Request Associate membership",
+      "requestEmail": "The email they gave in their request",
+      "keep": "Keep the page",
+      "kept": "Kept, private, as {reference}. Ready for the next page.",
+      "notCard": "That code isn’t a membership card. Ask the writer to open their card.",
+      "refusals": {
+        "card_not_live": "That card isn’t live. Ask the writer to open their card again and scan once more.",
+        "no_pending_request": "No waiting request for that email. Check it, or ask them to send the request first.",
+        "station_closed": "The station closed with your shift. The page wasn’t kept.",
+        "too_large": "The photo is too large. Take it again.",
+        "type_not_allowed": "Take the photo as a JPEG, PNG or WebP image."
+      },
+      "photoAlt": "The typed page, as the station photographed it",
+      "seePage": "See the page"
     }
   },
   "web": {
@@ -4592,6 +4639,23 @@
           "if": "are voted by the Council for outstanding contribution",
           "can": "join us as an honored friend (no vote)"
         }
+      },
+      "associateRequest": {
+        "title": "Faculty, staff and alumni",
+        "lede": "Associate membership is for AUIB faculty, staff and alumni. Ask here; the Director of Membership answers by email with a named invitation.",
+        "name": "Your full name",
+        "email": "Your email",
+        "relation": "You are",
+        "relations": {
+          "faculty": "AUIB faculty",
+          "staff": "AUIB staff",
+          "alumni": "An AUIB graduate"
+        },
+        "note": "Anything we should know (optional)",
+        "send": "Request Associate membership",
+        "sent": "Thank you. The Director of Membership will answer by email.",
+        "failed": "That didn’t go through. Try again in a moment.",
+        "rateLimited": "Too many requests from here. Try again later."
       }
     },
     "contact": {

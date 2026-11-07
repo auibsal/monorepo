@@ -25,9 +25,20 @@ const fakeAdmin = (deleteError: Error | null = null) => {
         data: [{ blind_path: "blind/s1/x.pdf", storage_path: "s1/x.pdf" }],
       }),
   };
+  const pages = {
+    eq: () => ({
+      not: () =>
+        Promise.resolve({
+          data: [
+            { photo_path: "station/00000000-0000-0000-0000-000000000001.jpg" },
+          ],
+        }),
+    }),
+  };
   const tables: Record<string, unknown> = {
     outbox: { insert },
     profiles: { select: () => profile },
+    six_words: { select: () => pages },
     submission_files: { select: () => files },
     submissions: { select: () => submissions },
   };
@@ -49,7 +60,7 @@ const fakeAdmin = (deleteError: Error | null = null) => {
 test("removes the person's own files, then the user", async () => {
   const { admin, bucket, deleteUser } = fakeAdmin();
   await expect(deleteAccount(admin, USER_ID)).resolves.toEqual({
-    removedFiles: 3,
+    removedFiles: 4,
     status: "deleted",
   });
   expect(admin.storage.from).toHaveBeenCalledWith("media");
@@ -61,6 +72,11 @@ test("removes the person's own files, then the user", async () => {
   // Their Qirtas submissions' files and blind copies (decisions §11).
   expect(admin.storage.from).toHaveBeenCalledWith("submissions");
   expect(bucket.remove).toHaveBeenCalledWith(["s1/x.pdf", "blind/s1/x.pdf"]);
+  // The photographs of their Tour pages (decisions §12).
+  expect(admin.storage.from).toHaveBeenCalledWith("tour-pages");
+  expect(bucket.remove).toHaveBeenCalledWith([
+    "station/00000000-0000-0000-0000-000000000001.jpg",
+  ]);
   expect(deleteUser).toHaveBeenCalledWith(USER_ID);
 });
 

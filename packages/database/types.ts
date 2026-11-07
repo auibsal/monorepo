@@ -4890,6 +4890,48 @@ export type Database = {
         };
         Relationships: [];
       };
+      associate_requests: {
+        Row: {
+          created_at: string;
+          decided_at: string | null;
+          decided_by: string | null;
+          email: string;
+          full_name: string;
+          id: string;
+          invitation_id: string | null;
+          note: string | null;
+          reason: string | null;
+          relation: string;
+          status: string;
+        };
+        Insert: {
+          created_at?: string;
+          decided_at?: string | null;
+          decided_by?: string | null;
+          email: string;
+          full_name: string;
+          id?: string;
+          invitation_id?: string | null;
+          note?: string | null;
+          reason?: string | null;
+          relation: string;
+          status?: string;
+        };
+        Update: {
+          created_at?: string;
+          decided_at?: string | null;
+          decided_by?: string | null;
+          email?: string;
+          full_name?: string;
+          id?: string;
+          invitation_id?: string | null;
+          note?: string | null;
+          reason?: string | null;
+          relation?: string;
+          status?: string;
+        };
+        Relationships: [];
+      };
       calendar_tokens: {
         Row: {
           created_at: string;
@@ -5370,6 +5412,10 @@ export type Database = {
       current_pledge_version: {
         Args: { kind: Database["membership"]["Enums"]["pledge_type"] };
         Returns: string;
+      };
+      decide_associate_request: {
+        Args: { approve: boolean; request_id: string; why?: string };
+        Returns: undefined;
       };
       decide_verification: {
         Args: { approve: boolean; note?: string; request_id: string };
@@ -6330,6 +6376,7 @@ export type Database = {
           role_en: string;
           skills: string[];
           starts_at: string;
+          station: boolean;
         };
         Insert: {
           capacity?: number;
@@ -6343,6 +6390,7 @@ export type Database = {
           role_en: string;
           skills?: string[];
           starts_at: string;
+          station?: boolean;
         };
         Update: {
           capacity?: number;
@@ -6356,11 +6404,13 @@ export type Database = {
           role_en?: string;
           skills?: string[];
           starts_at?: string;
+          station?: boolean;
         };
         Relationships: [];
       };
       six_words: {
         Row: {
+          associate_request_id: string | null;
           claimed_at: string | null;
           created_at: string;
           editor_status: string | null;
@@ -6371,12 +6421,14 @@ export type Database = {
           moderated_at: string | null;
           moderated_by: string | null;
           page_ref: string | null;
+          photo_path: string | null;
           publishable: boolean;
           recorded_by: string | null;
           reference: string | null;
           show_name: boolean;
           station: string | null;
-          text: string;
+          station_shift_id: string | null;
+          text: string | null;
           tour: string | null;
           typed_on: string | null;
           updated_at: string;
@@ -6385,6 +6437,7 @@ export type Database = {
           writer_name: string | null;
         };
         Insert: {
+          associate_request_id?: string | null;
           claimed_at?: string | null;
           created_at?: string;
           editor_status?: string | null;
@@ -6395,12 +6448,14 @@ export type Database = {
           moderated_at?: string | null;
           moderated_by?: string | null;
           page_ref?: string | null;
+          photo_path?: string | null;
           publishable?: boolean;
           recorded_by?: string | null;
           reference?: string | null;
           show_name?: boolean;
           station?: string | null;
-          text: string;
+          station_shift_id?: string | null;
+          text?: string | null;
           tour?: string | null;
           typed_on?: string | null;
           updated_at?: string;
@@ -6409,6 +6464,7 @@ export type Database = {
           writer_name?: string | null;
         };
         Update: {
+          associate_request_id?: string | null;
           claimed_at?: string | null;
           created_at?: string;
           editor_status?: string | null;
@@ -6419,12 +6475,14 @@ export type Database = {
           moderated_at?: string | null;
           moderated_by?: string | null;
           page_ref?: string | null;
+          photo_path?: string | null;
           publishable?: boolean;
           recorded_by?: string | null;
           reference?: string | null;
           show_name?: boolean;
           station?: string | null;
-          text?: string;
+          station_shift_id?: string | null;
+          text?: string | null;
           tour?: string | null;
           typed_on?: string | null;
           updated_at?: string;
@@ -6432,7 +6490,15 @@ export type Database = {
           visibility?: string;
           writer_name?: string | null;
         };
-        Relationships: [];
+        Relationships: [
+          {
+            foreignKeyName: "six_words_station_shift_id_fkey";
+            columns: ["station_shift_id"];
+            isOneToOne: false;
+            referencedRelation: "shifts";
+            referencedColumns: ["id"];
+          },
+        ];
       };
     };
     Views: {
@@ -6472,6 +6538,7 @@ export type Database = {
         Args: { approve: boolean; entry_id: string };
         Returns: undefined;
       };
+      my_station_shift: { Args: Record<PropertyKey, never>; Returns: string };
       open_places: {
         Args: Record<PropertyKey, never>;
         Returns: {
@@ -6592,6 +6659,19 @@ export type Database = {
           language: string;
           text: string;
         }[];
+      };
+      station_attach: {
+        Args: {
+          card_code: string;
+          digits: string;
+          photo: string;
+          request_email: string;
+        };
+        Returns: string;
+      };
+      transcribe_page: {
+        Args: { lang: string; page_id: string; words: string };
+        Returns: undefined;
       };
     };
     Enums: {

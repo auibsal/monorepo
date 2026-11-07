@@ -330,7 +330,19 @@ any schema change. Integration tests run against a local stack with
   to try (`TypingToy`, silent until the key sound is turned on). Whoever
   runs the Tour (`tour.run`: the Director of Membership, the General
   Secretary and the Tour Lead) records pages in the Diwan (Membership →
-  Typewriter Tour) and attaches each to its writer's account. Six Words
+  Typewriter Tour) and attaches each to its writer's account. At the
+  Tour's station (decisions §12; `/account/station`), a volunteer the
+  event lead confirmed on a station shift (`programmes.shifts.station`)
+  may, while the shift runs and only then (`private.my_station_shift`),
+  photograph a typed page and attach it to a live card, a Member's or a
+  Guest's (`/api/tour/station`, `programmes.station_attach`; the photo in
+  the private `tour-pages` bucket, read through `/api/tour/photo`), or
+  keep it against a pending "Request Associate membership"
+  (`membership.associate_requests`, from `/join#associate`): attached
+  when the Director of Membership approves (a named invitation) and the
+  account accepts, deleted if declined. Every station page is logged;
+  photographed pages show nowhere until whoever runs the Tour types their
+  words (`programmes.transcribe_page`). Six Words
   are not part of Qirtas: they are Tour pages, private by default, shown
   on the writer's profile or the Tour's page only by their choice
   (`programmes.six_words.visibility`). Spring 2026 pages arrive by the

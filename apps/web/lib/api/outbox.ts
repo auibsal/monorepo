@@ -1,3 +1,4 @@
+import { buckets } from "@repo/storage";
 import "server-only";
 
 import { AsyncLocalStorage } from "node:async_hooks";
@@ -1351,6 +1352,22 @@ const handlers: Record<string, Handler> = {
   // The Sunday Paper (owner, Nov 7, 2026): one Broadcast in each language to
   // members who take optional email and the public list, with each
   // person's own stop link as a contact property.
+  // Files the database let go of (a declined Associate request's Tour
+  // pages, decisions §12): removed from their private bucket.
+  "storage.remove": async (admin, payload) => {
+    const paths = Array.isArray(payload.paths)
+      ? payload.paths.filter((p): p is string => typeof p === "string")
+      : [];
+    if (payload.bucket !== buckets.tourPages.id || paths.length === 0) {
+      return;
+    }
+    const { error } = await admin.storage
+      .from(buckets.tourPages.id)
+      .remove(paths);
+    if (error) {
+      throw error;
+    }
+  },
   "sunday_paper.broadcast": async (admin, payload) => {
     await cleanUpSegments(admin);
     await pullUnsubscribes(admin);

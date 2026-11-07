@@ -53,7 +53,7 @@ export const myPages = async (client: Client, userId: string) =>
       .schema("programmes")
       .from("six_words")
       .select(
-        "id, text, language, tour, station, visibility, publishable, created_at"
+        "id, text, language, tour, station, visibility, publishable, photo_path, created_at"
       )
       .eq("user_id", userId)
       .order("created_at")
