@@ -2,7 +2,7 @@
 
 The one app, the database, and the rules that keep members' data safe.
 
-The platform is one repository, [auibsal/mono](https://github.com/auibsal/mono), deployed to Vercel and backed by one Supabase project. Members never need to know any of this; the technical administrator and their successor do.
+The platform is one repository, [auibsal/monorepo](https://github.com/auibsal/monorepo), deployed to Vercel and backed by one Supabase project. Members never need to know any of this; the technical administrator and their successor do.
 
 | App | Address | What it does |
 | --- | --- | --- |
@@ -53,4 +53,4 @@ performance advisors are kept at zero findings, and
 `00_advisors.test.sql` fails CI when one would come back: every RPC entry
 point in an exposed schema is a SECURITY INVOKER wrapper around its body in
 the `private` schema, no table has two permissive policies for the same
-role and action, and every foreign key is indexed. The full design, data model and setup steps are in [ARCHITECTURE_AND_INTEGRATIONS.md](https://github.com/auibsal/mono/blob/main/ARCHITECTURE_AND_INTEGRATIONS.md); the rules for changing code are in [AGENTS.md](https://github.com/auibsal/mono/blob/main/AGENTS.md).
+role and action, and every foreign key is indexed. The full design, data model and setup steps are in [ARCHITECTURE_AND_INTEGRATIONS.md](https://github.com/auibsal/monorepo/blob/main/ARCHITECTURE_AND_INTEGRATIONS.md); the rules for changing code are in [AGENTS.md](https://github.com/auibsal/monorepo/blob/main/AGENTS.md).
