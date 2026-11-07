@@ -1,18 +1,18 @@
 "use client";
 
 import { useAuth } from "@repo/auth/provider";
-import { Button } from "@repo/brand/components/ui/button";
+import { FormPage } from "@repo/brand/components/sal/form-page";
 import { Checkbox } from "@repo/brand/components/ui/checkbox";
 import { Input } from "@repo/brand/components/ui/input";
 import { Label } from "@repo/brand/components/ui/label";
 import type { Locale } from "@repo/internationalization";
+import { formatLongDate } from "@repo/internationalization/format";
 import { useRouter } from "@repo/internationalization/navigation";
 import { forms, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useState } from "react";
 import { ErrorLine, Field, SelectInput } from "../admin/kit";
-import { DiwanPage } from "../page";
 import { EmptyLine } from "../states";
 import { FormFieldInput, type FormLabels, useFormLabels } from "./field";
 
@@ -238,23 +238,39 @@ const FormEditor = ({
   };
 
   return (
-    <DiwanPage lede={labels.purpose()} narrow title={labels.title()}>
-      <p className="type-caption font-mono" dir="ltr">
-        {`SAL-EXB-01 · ${definition.code}`}
-      </p>
-      {event.data ? (
-        <p className="type-body">
-          {t("forEvent", {
-            title:
-              (locale === "ar" && event.data.title_ar) || event.data.title_en,
-          })}
-        </p>
-      ) : null}
-      {definition.preamble ? (
-        <p className="type-body bg-surface-reading p-5">{labels.preamble()}</p>
-      ) : null}
-
-      <form className="grid gap-5" noValidate onSubmit={onSubmit}>
+    <div className="mx-auto grid w-full max-w-2xl gap-6 px-4 py-10">
+      <FormPage
+        code={`SAL-EXB-01 · ${definition.code}`}
+        date={formatLongDate(new Date(), locale, true)}
+        dateLabel={t("date")}
+        kept={t("kept")}
+        notice={
+          definition.preamble ? (
+            <p className="type-body">{labels.preamble()}</p>
+          ) : undefined
+        }
+        onSubmit={onSubmit}
+        pending={sign.isPending}
+        purpose={labels.purpose()}
+        signature={{
+          hint: t("signatureHint"),
+          invalid: problems.includes("signature"),
+          label: t("signature"),
+          omit: anonymous,
+          onChange: setSigner,
+          value: signature,
+        }}
+        submit={anonymous ? t("send") : t("signAndSend")}
+        title={labels.title()}
+      >
+        {event.data ? (
+          <p className="type-body">
+            {t("forEvent", {
+              title:
+                (locale === "ar" && event.data.title_ar) || event.data.title_en,
+            })}
+          </p>
+        ) : null}
         {definition.routing ? (
           <Field hint={t("routingHint")} label={t("routing")}>
             {(fieldId) => (
@@ -285,33 +301,17 @@ const FormEditor = ({
         {definition.anonymous ? (
           <AnonymousOption onChange={setAnonymous} value={anonymous} />
         ) : null}
-        {anonymous ? null : (
-          <>
-            <Field hint={t("signatureHint")} label={t("signature")}>
-              {(fieldId) => (
-                <Input
-                  aria-invalid={problems.includes("signature")}
-                  className="font-signature text-2xl"
-                  id={fieldId}
-                  maxLength={200}
-                  onChange={(e) => setSigner(e.target.value)}
-                  value={signature}
-                />
-              )}
-            </Field>
-            {user ? null : (
-              <Field label={t("contact")}>
-                {(fieldId) => (
-                  <Input
-                    id={fieldId}
-                    maxLength={200}
-                    onChange={(e) => setContact(e.target.value)}
-                    value={contact}
-                  />
-                )}
-              </Field>
+        {anonymous || user ? null : (
+          <Field label={t("contact")}>
+            {(fieldId) => (
+              <Input
+                id={fieldId}
+                maxLength={200}
+                onChange={(e) => setContact(e.target.value)}
+                value={contact}
+              />
             )}
-          </>
+          </Field>
         )}
         <ProblemsLine
           labels={{
@@ -321,13 +321,8 @@ const FormEditor = ({
           }}
           problems={problems}
         />
-        <div className="flex flex-wrap gap-3">
-          <Button disabled={sign.isPending} type="submit">
-            {anonymous ? t("send") : t("signAndSend")}
-          </Button>
-        </div>
         <ErrorLine error={sign.error} />
-      </form>
-    </DiwanPage>
+      </FormPage>
+    </div>
   );
 };

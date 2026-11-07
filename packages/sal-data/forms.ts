@@ -282,6 +282,88 @@ export const forms: Record<FormKey, FormDefinition> = {
   },
 };
 
+/**
+ * What the register (SAL-EXB-01 in the Leadership Handbook, Notion) says
+ * each site form asks for, in its own words: the CI check
+ * (`scripts/check-forms-register.ts`) finds every phrase in the form's
+ * entry, so a field changed in the register shows here before it ships.
+ * Change a form's fields and these phrases together.
+ */
+export const registerFields: Record<FormKey, readonly string[]> = {
+  f06: [
+    "what it is",
+    "which decisions it could affect",
+    "how it will be handled",
+    "nothing to declare",
+  ],
+  f10: [
+    "proposer and seconder",
+    "title",
+    "this meeting notes",
+    "believes",
+    "resolves",
+    "type: ordinary, or an amendment",
+  ],
+  f11: [
+    "what the event is, titled plainly",
+    "the idea in three sentences",
+    "who it is for, and how many",
+    "who will help",
+    "when · where · access",
+    "needs: items, quantities and dates",
+    "what could go wrong, and what you would do",
+  ],
+  f15: [
+    "event or shoot",
+    "credit me by name",
+    "contact",
+    "under 18: a parent or guardian signs",
+  ],
+  f17: [
+    "purpose · dates",
+    "the society will · the partner will",
+    "branding",
+    "people and safety: the lead on the day, safeguarding, photo consent",
+    "contacts",
+  ],
+  f21: [
+    "name (optional, but without it we cannot reply) · contact",
+    "about: a person, an event, a charity collection, content, a decision, other",
+    "what happened, and when · what you would like to happen",
+  ],
+  f26: [
+    "i do not want to appear in photographs or video",
+    "i am under 18; my parent's or guardian's consent is attached",
+  ],
+  f37: ["role (qalam lead, deputy or mentor)", "date of training"],
+  f38: [
+    "name · grade · school",
+    "relationship to the student",
+    "how to reach you",
+    "a second emergency contact",
+    "how my child arrives and leaves",
+    "who may collect my child",
+    "health (optional; kept confidential)",
+    "photos",
+    "publishing",
+    "i want to take part",
+  ],
+  f39: [
+    "title · section of qirtas · language · the student's name · school",
+    "i agree",
+  ],
+  f44: [
+    "the piece",
+    "what the consent covers",
+    "under 18: a parent or guardian signs",
+  ],
+  f45: [
+    "the trip",
+    "an emergency contact (name and how to reach them)",
+    "health, optional and confidential",
+  ],
+};
+
 const FORM_PREFIX = /^f-?/i;
 
 /** "F-06" → "f06": the address of a form is its number. */

@@ -154,10 +154,20 @@ jobs:
         run: bunx supabase test db
       - name: Generated types are up to date
         run: |
-          (cd packages/database && bunx supabase gen types typescript --local --schema public,core,access,membership,events,journal,charity,programmes,governance,content) \
+          (cd packages/database && bunx supabase gen types typescript --local --schema public,core,access,membership,events,journal,programmes,governance,content) \
             | bunx biome format --stdin-file-path=packages/database/types.ts > "$RUNNER_TEMP/types.ts"
           diff -u packages/database/types.ts "$RUNNER_TEMP/types.ts" \
             || (echo "Run 'bun run db:types' and commit the result." && exit 1)
+      # The site's forms against the register in SAL-EXB-01 (owner, Nov 7,
+      # 2026): codes, titles, where each is filled and its fields. Reads
+      # Notion with the NOTION_TOKEN repository secret.
+      - name: Forms match the register in Notion
+        env:
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+        run: |
+          eval "$(cd packages/database && bunx supabase status -o env | grep -E '^(API_URL|SECRET_KEY)=' | sed 's/^/export /')"
+          export SUPABASE_URL="$API_URL" SUPABASE_SECRET_KEY="$SECRET_KEY"
+          bun scripts/check-forms-register.ts
       - name: Integration tests (auth, storage, data, Notion sync)
         run: |
           eval "$(cd packages/database && bunx supabase status -o env | grep -E '^(API_URL|PUBLISHABLE_KEY|SECRET_KEY)=' | sed 's/^/export /')"

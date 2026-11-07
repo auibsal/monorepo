@@ -3737,7 +3737,9 @@
       "signature": "Signature: type your full name",
       "signatureHint": "Typing your name signs the form. The signed copy keeps your name, the time and the form’s version.",
       "contact": "How to reach you (email or phone)",
-      "signAndSend": "Sign and send"
+      "signAndSend": "Sign and send",
+      "date": "Date",
+      "kept": "The site keeps the signed copy. A printed copy is this page printed from the browser."
     },
     "qirtas": {
       "pieceTitle": "Your piece",

@@ -36,11 +36,27 @@ interface FormPageProps {
   readonly dateLabel: string;
   /** What happens after sending and where the signed copy is kept. */
   readonly kept: string;
+  /** Text to read before the fields (the form's own wording). */
+  readonly notice?: ReactNode;
   readonly onSubmit?: FormEventHandler<HTMLFormElement>;
+  /** Sending: the button waits. */
+  readonly pending?: boolean;
   /** One sentence: what the form is for and who reads it. */
   readonly purpose: string;
-  /** The signature field: "Type your full name to sign", and its note. */
-  readonly signature: { readonly hint: string; readonly label: string };
+  /**
+   * The signature field: "Type your full name to sign", and its note. A
+   * site may fill it (the name on the account) and follow it with
+   * `value` and `onChange`, or leave it out (`omit`) where a form may be
+   * sent without a name, such as an anonymous concern.
+   */
+  readonly signature: {
+    readonly hint: string;
+    readonly invalid?: boolean;
+    readonly label: string;
+    readonly omit?: boolean;
+    readonly onChange?: (value: string) => void;
+    readonly value?: string;
+  };
   /** The button: "Sign and send". */
   readonly submit: string;
   readonly title: string;
@@ -62,7 +78,9 @@ export const FormPage = ({
   date,
   dateLabel,
   kept,
+  notice,
   onSubmit,
+  pending = false,
   purpose,
   signature,
   submit,
@@ -70,35 +88,51 @@ export const FormPage = ({
 }: FormPageProps) => (
   <form
     className={cn("grid max-w-2xl gap-space-6 print:max-w-none", className)}
+    noValidate
     onSubmit={onSubmit}
   >
     <FormHeader code={code} title={title}>
       {purpose}
     </FormHeader>
+    {notice ? (
+      <div className="bg-surface-reading p-space-5 text-text">{notice}</div>
+    ) : null}
     <div className="grid gap-space-5">{children}</div>
-    <fieldset className="grid gap-space-3 border-line border-t pt-space-5">
-      <legend className="sr-only">{signature.label}</legend>
-      <FormField
-        hint={signature.hint}
-        id="form-signature"
-        label={signature.label}
-      >
-        <input
-          autoComplete="name"
-          className="h-11 w-full border-text border-b bg-transparent font-light text-2xl text-text outline-none focus-visible:border-accent"
+    {signature.omit ? null : (
+      <fieldset className="grid gap-space-3 border-line border-t pt-space-5">
+        <legend className="sr-only">{signature.label}</legend>
+        <FormField
+          hint={signature.hint}
           id="form-signature"
-          name="signature"
-          required
-          type="text"
-        />
-      </FormField>
-      <p className="text-sm text-text-secondary">
-        {dateLabel} <span className="text-text">{date}</span>
-      </p>
-    </fieldset>
+          label={signature.label}
+        >
+          <input
+            aria-invalid={signature.invalid}
+            autoComplete="name"
+            className="h-11 w-full border-text border-b bg-transparent font-signature text-2xl text-text outline-none focus-visible:border-accent"
+            id="form-signature"
+            maxLength={200}
+            name="signature"
+            onChange={
+              signature.onChange
+                ? (event) => signature.onChange?.(event.target.value)
+                : undefined
+            }
+            required
+            type="text"
+            value={signature.value}
+          />
+        </FormField>
+        <p className="text-sm text-text-secondary">
+          {dateLabel} <span className="text-text">{date}</span>
+        </p>
+      </fieldset>
+    )}
     <div className="grid gap-space-3">
       <div className="flex flex-wrap items-center gap-space-4 print:hidden">
-        <Button type="submit">{submit}</Button>
+        <Button disabled={pending} type="submit">
+          {submit}
+        </Button>
       </div>
       <p className="text-sm text-text-secondary">{kept}</p>
     </div>
