@@ -202,7 +202,7 @@ const en = {
 
   when: (date: string, time: string) => `${date} · ${time}`,
   wordOff: "No more daily word here.",
-  wordOn: "Each day's word will come here at 9:00 a.m..",
+  wordOn: "Each day's word will come here at 9:00 a.m.",
   wordOpen: "Today's word opens right here in Telegram.",
 } as const;
 
