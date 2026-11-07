@@ -32,7 +32,7 @@ We speak two kinds of Arabic, as our members do (owner, Nov 4, 2026).
 - Call Qirtas “the Society’s paper”. Events are named as What’s on lists them; none is a program.
 - Partners with Arabic names are named in their own language first.
 - Icons come only from the Society's set; they stand alone when they say enough (see Icons). No emoji. Mark wrong examples with a plain “×”.
-- Name the Society's parts in this order: Qirtas, our paper; the Company, our theater; Next Stop, our show; and events all year.
+- Describe the Society with the motto, "The paper and the pen." («والقرطاسُ والقلمُ»), on posters, bios, stickers and anywhere short: no list of its parts. Where a full sentence is needed (the About page, the press kit, LinkedIn's About, letters to partners), use only this one: "The AUIB Society of Arts and Letters publishes Qirtas, AUIB's paper of news, letters and art; runs the Company, its theater; makes Next Stop, its show; and holds events all year."
 
 ## Language standard
 
