@@ -3,6 +3,7 @@ import {
   formatLongDate,
   formatNumber,
 } from "@repo/internationalization/format";
+import { Link } from "@repo/internationalization/navigation";
 import {
   journal,
   localized,
@@ -684,6 +685,10 @@ export const CorrectionNotes = async ({
           </li>
         ))}
       </ul>
+      {/* How Qirtas corrects its errors: the Editorial Standards (SAL-EDT-01). */}
+      <Link className="link type-caption" href="/library/editorial-standards">
+        {t("correctionsPolicy")}
+      </Link>
     </aside>
   );
 };

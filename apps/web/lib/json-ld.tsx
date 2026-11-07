@@ -76,20 +76,30 @@ export const eventLd = (
   url: pageUrl(locale, `/events/${e.slug}`),
 });
 
+/**
+ * A Qirtas piece: a NewsArticle in News, an Article elsewhere, with when
+ * it was published and last changed. A byline that is "Anonymous" (or
+ * none) names the Society as author, never a person.
+ */
 export const articleLd = (
   locale: string,
   a: {
+    anonymous?: boolean;
     author?: string | null;
     image?: string | null;
+    modifiedAt?: string | null;
+    news?: boolean;
     path: string;
     publishedAt?: string | null;
     title: string;
   }
 ): Thing => ({
-  "@type": "Article",
-  author: a.author
-    ? { "@type": "Person", name: a.author }
-    : { "@id": `${project.url}/#organization` },
+  "@type": a.news ? "NewsArticle" : "Article",
+  author:
+    a.author && !a.anonymous
+      ? { "@type": "Person", name: a.author }
+      : { "@id": `${project.url}/#organization` },
+  dateModified: a.modifiedAt ?? a.publishedAt ?? undefined,
   datePublished: a.publishedAt ?? undefined,
   headline: a.title,
   image: a.image ?? undefined,

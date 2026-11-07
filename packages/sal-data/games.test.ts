@@ -1,6 +1,7 @@
 import { describe, expect, test } from "vitest";
 import { clueWords, guessWords, searchWords } from "./game-words";
 import {
+  anagramsSchema,
   buildWordSearch,
   cellsOf,
   crosswordCells,
@@ -16,7 +17,6 @@ import {
   lettersOf,
   nextStreak,
   normalizeWord,
-  parsePuzzle,
   sameAnswer,
   scoreGuess,
   scramble,
@@ -315,12 +315,6 @@ describe("crossword layout", () => {
     expect(unplaced).toEqual([]);
     expect(crossword && crosswordCells(crossword)).not.toBeNull();
   });
-
-  test("parsePuzzle refuses a grid of the wrong kind", () => {
-    const { crossword } = layoutCrossword({ items, lang: "en" });
-    expect(parsePuzzle("crossword", crossword)?.kind).toBe("crossword");
-    expect(parsePuzzle("word_search", crossword)).toBeNull();
-  });
 });
 
 describe("streaks", () => {
@@ -355,14 +349,6 @@ describe("typed answers and anagrams", () => {
     expect(a).toEqual(scramble("listen", "en", "x"));
     expect(a.join("")).not.toBe("LISTEN");
     expect([...a].sort()).toEqual([..."LISTEN"].sort());
-  });
-
-  test("the kinds that stay are checked by their schemas; retired ones are not read", () => {
-    expect(
-      parsePuzzle("anagram", { items: [{ answer: "قلم" }] }, "ar")?.kind
-    ).toBe("anagram");
-    expect(parsePuzzle("anagram", { items: [] })).toBeNull();
-    expect(parsePuzzle("quiz" as "anagram", { items: [] })).toBeNull();
   });
 });
 
@@ -400,7 +386,7 @@ describe("the daily crossword and anagrams", () => {
     for (const lang of ["en", "ar"] as const) {
       const today = dailyAnagrams(lang, 20_400);
       expect(today.items).toHaveLength(5);
-      expect(parsePuzzle("anagram", today, lang)?.kind).toBe("anagram");
+      expect(anagramsSchema(lang).safeParse(today).success).toBe(true);
       expect(dailyAnagrams(lang, 20_401)).not.toEqual(today);
     }
   });

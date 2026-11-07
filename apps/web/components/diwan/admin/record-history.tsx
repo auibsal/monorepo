@@ -17,7 +17,6 @@ export type HistoryTable =
   | "journal.issues"
   | "journal.calls"
   | "journal.award_rounds"
-  | "journal.puzzles"
   | "programmes.productions"
   | "programmes.episodes"
   | "governance.partners"

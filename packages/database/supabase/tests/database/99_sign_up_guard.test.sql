@@ -108,6 +108,8 @@ select throws_ok(
 select lives_ok(
   $$ select pg_temp.make_user('00000000-0000-0000-0000-00000000d103', 'maryam.1241295@auib.edu.iq') $$,
   'A well-formed AUIB address signs up');
+-- (The owner's deliberate change, past the lock on AUIB addresses.)
+set local sal.allow_email_change = 'on';
 select throws_ok(
   $$ update auth.users set email = 'x.1auib.edu.iq@auib.edu.iq'
      where id = '00000000-0000-0000-0000-00000000d103' $$,

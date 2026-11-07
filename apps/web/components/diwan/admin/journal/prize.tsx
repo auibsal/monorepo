@@ -2,7 +2,9 @@
 
 import { useAuth } from "@repo/auth/provider";
 import { Button } from "@repo/brand/components/ui/button";
+import { Checkbox } from "@repo/brand/components/ui/checkbox";
 import { Input } from "@repo/brand/components/ui/input";
+import { Label } from "@repo/brand/components/ui/label";
 import type { Locale } from "@repo/internationalization";
 import {
   formatLongDate,
@@ -230,7 +232,7 @@ const Shortlist = ({
 }) => {
   const t = useTranslations("diwan.admin.prize");
   const locale = useLocale() as Locale;
-  const { supabase } = useAuth();
+  const { supabase, user } = useAuth();
   const queryClient = useQueryClient();
   const entries = useQuery({
     queryFn: () => journal.prizeEntries(supabase, round.id),
@@ -245,6 +247,29 @@ const Shortlist = ({
           .from("prize_entries")
           .delete()
           .eq("id", id)
+      ),
+    onSuccess: refresh,
+  });
+  // A winner chooses whether to be named (decisions §5).
+  const setNamed = useMutation({
+    mutationFn: async ({ id, named }: { id: string; named: boolean }) =>
+      unwrap(
+        await supabase
+          .schema("journal")
+          .from("prize_entries")
+          .update({ winner_named: named })
+          .eq("id", id)
+      ),
+    onSuccess: refresh,
+  });
+  // Anyone connected to a work steps aside from it: no score, no vote.
+  const recuse = useMutation({
+    mutationFn: async (id: string) =>
+      unwrap(
+        await supabase
+          .schema("journal")
+          .from("prize_recusals")
+          .insert({ entry_id: id })
       ),
     onSuccess: refresh,
   });
@@ -278,6 +303,42 @@ const Shortlist = ({
           },
           {
             cell: (entry) =>
+              entry.category === "qirtas" ? (
+                <span className="flex items-center gap-2 text-sm">
+                  <Checkbox
+                    checked={entry.winner_named}
+                    id={`named-${entry.id}`}
+                    onCheckedChange={(v) =>
+                      setNamed.mutate({ id: entry.id, named: v === true })
+                    }
+                  />
+                  <Label htmlFor={`named-${entry.id}`}>
+                    {t("winnerNamed")}
+                  </Label>
+                </span>
+              ) : null,
+            header: t("naming"),
+            key: "named",
+          },
+          {
+            cell: (entry) =>
+              entry.recusals.some((r) => r.user_id === user?.id) ? (
+                <span className="type-caption">{t("recused")}</span>
+              ) : (
+                <ConfirmAction
+                  confirmLabel={t("recuse")}
+                  description={t("recuseHint")}
+                  onConfirm={() => recuse.mutate(entry.id)}
+                  variant="ghost"
+                >
+                  {t("recuse")}
+                </ConfirmAction>
+              ),
+            header: t("recusals"),
+            key: "recuse",
+          },
+          {
+            cell: (entry) =>
               locked ? null : (
                 <ConfirmAction
                   confirmLabel={t("remove")}
@@ -296,7 +357,7 @@ const Shortlist = ({
         rowKey={(entry) => entry.id}
         rows={mine}
       />
-      <ErrorLine error={drop.error} />
+      <ErrorLine error={drop.error ?? setNamed.error ?? recuse.error} />
       {locked ? (
         <p className="type-caption">{t("shortlistClosed")}</p>
       ) : (

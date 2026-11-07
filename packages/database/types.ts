@@ -648,6 +648,7 @@ export type Database = {
       };
       profiles: {
         Row: {
+          agreed_at: string | null;
           avatar_path: string | null;
           bio: string | null;
           camera_shy: boolean;
@@ -672,6 +673,7 @@ export type Database = {
           verified_at: string | null;
         };
         Insert: {
+          agreed_at?: string | null;
           avatar_path?: string | null;
           bio?: string | null;
           camera_shy?: boolean;
@@ -696,6 +698,7 @@ export type Database = {
           verified_at?: string | null;
         };
         Update: {
+          agreed_at?: string | null;
           avatar_path?: string | null;
           bio?: string | null;
           camera_shy?: boolean;
@@ -3458,6 +3461,33 @@ export type Database = {
           },
         ];
       };
+      game_checks: {
+        Row: {
+          checked_at: string;
+          checked_by: string | null;
+          flagged: boolean;
+          game_day: number;
+          lang: string;
+          note: string | null;
+        };
+        Insert: {
+          checked_at?: string;
+          checked_by?: string | null;
+          flagged?: boolean;
+          game_day: number;
+          lang: string;
+          note?: string | null;
+        };
+        Update: {
+          checked_at?: string;
+          checked_by?: string | null;
+          flagged?: boolean;
+          game_day?: number;
+          lang?: string;
+          note?: string | null;
+        };
+        Relationships: [];
+      };
       issues: {
         Row: {
           cover_path: string | null;
@@ -3932,6 +3962,7 @@ export type Database = {
           qalam_byline: string | null;
           qalam_title: string | null;
           round_id: string;
+          winner_named: boolean;
         };
         Insert: {
           category: string;
@@ -3943,6 +3974,7 @@ export type Database = {
           qalam_byline?: string | null;
           qalam_title?: string | null;
           round_id: string;
+          winner_named?: boolean;
         };
         Update: {
           category?: string;
@@ -3954,6 +3986,7 @@ export type Database = {
           qalam_byline?: string | null;
           qalam_title?: string | null;
           round_id?: string;
+          winner_named?: boolean;
         };
         Relationships: [
           {
@@ -3968,6 +4001,38 @@ export type Database = {
             columns: ["round_id"];
             isOneToOne: false;
             referencedRelation: "prize_rounds";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      prize_recusals: {
+        Row: {
+          created_at: string;
+          entry_id: string;
+          id: string;
+          reason: string | null;
+          user_id: string;
+        };
+        Insert: {
+          created_at?: string;
+          entry_id: string;
+          id?: string;
+          reason?: string | null;
+          user_id?: string;
+        };
+        Update: {
+          created_at?: string;
+          entry_id?: string;
+          id?: string;
+          reason?: string | null;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "prize_recusals_entry_id_fkey";
+            columns: ["entry_id"];
+            isOneToOne: false;
+            referencedRelation: "prize_entries";
             referencedColumns: ["id"];
           },
         ];
@@ -4071,60 +4136,6 @@ export type Database = {
             referencedColumns: ["id"];
           },
         ];
-      };
-      puzzles: {
-        Row: {
-          created_at: string;
-          created_by: string | null;
-          data: NonNullable<Json>;
-          id: string;
-          kind: string;
-          language: string;
-          made_with_ai: boolean;
-          note_ar: string | null;
-          note_en: string | null;
-          published_at: string | null;
-          slug: string;
-          status: string;
-          title_ar: string;
-          title_en: string;
-          updated_at: string;
-        };
-        Insert: {
-          created_at?: string;
-          created_by?: string | null;
-          data?: NonNullable<Json>;
-          id?: string;
-          kind: string;
-          language: string;
-          made_with_ai?: boolean;
-          note_ar?: string | null;
-          note_en?: string | null;
-          published_at?: string | null;
-          slug: string;
-          status?: string;
-          title_ar?: string;
-          title_en?: string;
-          updated_at?: string;
-        };
-        Update: {
-          created_at?: string;
-          created_by?: string | null;
-          data?: NonNullable<Json>;
-          id?: string;
-          kind?: string;
-          language?: string;
-          made_with_ai?: boolean;
-          note_ar?: string | null;
-          note_en?: string | null;
-          published_at?: string | null;
-          slug?: string;
-          status?: string;
-          title_ar?: string;
-          title_en?: string;
-          updated_at?: string;
-        };
-        Relationships: [];
       };
       saved_pieces: {
         Row: {
@@ -4494,6 +4505,7 @@ export type Database = {
       };
       cast_prize_vote: { Args: { entry_id: string }; Returns: undefined };
       check_prize_count: { Args: { round_id: string }; Returns: undefined };
+      coming_editions: { Args: Record<PropertyKey, never>; Returns: string[] };
       create_staff_piece: {
         Args: {
           category: Database["journal"]["Enums"]["category"];

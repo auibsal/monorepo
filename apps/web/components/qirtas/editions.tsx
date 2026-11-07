@@ -99,22 +99,18 @@ export const EditionShelfItem = async ({
 );
 
 /**
- * Before the first Edition is published (design review C11): the Edition's
- * open or coming calls and its launch event, from their records alone.
+ * Before the first Edition is published (design review C11): its launch
+ * event, once it is on the calendar. There are no calls (decisions §5).
  */
 export const EditionComing = async ({ locale }: { locale: Locale }) => {
   const t = await getTranslations({ locale, namespace: "web.journal" });
-  const [open, upcoming] = await Promise.all([
-    readPublished(["journal"], (c) => journal.editionCalls(c), []),
-    readPublished(["journal"], (c) => journal.upcomingCalls(c), []),
-  ]);
-  const calls = [
-    ...(open ?? []),
-    ...(upcoming ?? []).filter((call) => call.issue_id),
-  ];
-  const issueIds = [
-    ...new Set(calls.map((call) => call.issue_id).filter(Boolean)),
-  ] as string[];
+  // The Edition draws from published work (decisions §5): no calls; the
+  // coming Edition's launch shows here once it is on the calendar.
+  const issueIds = await readPublished(
+    ["journal"],
+    (c) => journal.comingEditionIds(c),
+    []
+  );
   const launches = (
     await Promise.all(
       issueIds.map((id) =>
@@ -126,47 +122,11 @@ export const EditionComing = async ({ locale }: { locale: Locale }) => {
       )
     )
   ).filter((event) => event !== null);
-  if (calls.length === 0 && launches.length === 0) {
+  if (launches.length === 0) {
     return <p className="type-body text-text-secondary">{t("noEditions")}</p>;
   }
-  const now = Date.now();
   return (
     <div className="grid gap-12">
-      {calls.length > 0 ? (
-        <section aria-labelledby="edition-calls" className="grid gap-4">
-          <SectionHead
-            size="heading"
-            title={t("calls")}
-            titleId="edition-calls"
-          />
-          <p className="type-body max-w-[60ch]">{t("comingLede")}</p>
-          <ul className="grid">
-            {calls.map((call) => (
-              <li
-                className="grid gap-1 border-line border-t py-space-4"
-                key={call.id}
-              >
-                <span className="type-subheading">
-                  {localized(call, "title", locale)}
-                </span>
-                <span className="type-caption text-text-secondary">
-                  {new Date(call.opens_at).getTime() <= now
-                    ? t("closes", {
-                        date: formatLongDate(call.closes_at, locale),
-                      })
-                    : t("opensCloses", {
-                        closes: formatLongDate(call.closes_at, locale),
-                        opens: formatLongDate(call.opens_at, locale),
-                      })}
-                </span>
-              </li>
-            ))}
-          </ul>
-          <Link className="link justify-self-start" href="/qirtas/write">
-            {t("writeForEdition")}
-          </Link>
-        </section>
-      ) : null}
       {launches.length > 0 ? (
         <section aria-labelledby="launch-night" className="grid gap-4">
           <SectionHead

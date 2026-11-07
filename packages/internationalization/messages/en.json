@@ -3095,7 +3095,13 @@
         "checkCount": "I’ve checked the count",
         "publish": "Publish the results",
         "publishHint": "The results show on the Prize’s page from the award day. This can’t be undone.",
-        "published": "The results are published. They show from the award day."
+        "published": "The results are published. They show from the award day.",
+        "naming": "Byline",
+        "winnerNamed": "Named, if it wins",
+        "recusals": "Recusal",
+        "recuse": "Step aside",
+        "recused": "You stepped aside",
+        "recuseHint": "If you are connected to this work, step aside: you won’t score it or vote for it, and the record shows it."
       },
       "qalam": {
         "title": "Qalam",
@@ -3122,6 +3128,24 @@
         "add": "Add a student",
         "firstName": "First name",
         "lastName": "Last name"
+      },
+      "games": {
+        "title": "Check the coming games",
+        "hint": "The daily games for the next two weeks, as every reader will get them. Read each day through and mark it checked, or flag it with a note so the word lists are fixed before the day comes.",
+        "day": "No. {number}, {date}, {language}",
+        "languages": {
+          "en": "English",
+          "ar": "Arabic"
+        },
+        "word": "The word",
+        "search": "Word search",
+        "crossword": "Crossword",
+        "anagrams": "Anagrams",
+        "checked": "checked",
+        "flagged": "flagged",
+        "markChecked": "Checked",
+        "note": "What needs fixing",
+        "flag": "Flag"
       }
     },
     "editor": {
@@ -4364,7 +4388,8 @@
         "source": "Source: {source}"
       },
       "tourPages": "Typewriter Tour pages",
-      "prize": "Prize"
+      "prize": "Prize",
+      "correctionsPolicy": "How Qirtas corrects its errors"
     },
     "about": {
       "title": "About the Society",

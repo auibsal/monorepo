@@ -1,6 +1,4 @@
 import type { Locale } from "@repo/internationalization";
-import { localizedPath } from "@repo/internationalization";
-import { formatLongDate } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
 import { journal, localized } from "@repo/sal-data";
 import type { Metadata } from "next";
@@ -34,60 +32,6 @@ export const generateMetadata = async ({
 };
 
 const heading = "type-label text-text! border-text border-b pb-2";
-
-/** Open and announced calls for the Edition: the page's one crimson band. */
-const Calls = async ({ locale }: { locale: Locale }) => {
-  const t = await getTranslations({ locale, namespace: "web.journal" });
-  const [open, upcoming] = await Promise.all([
-    readPublished(["journal"], (c) => journal.editionCalls(c), []),
-    readPublished(["journal"], (c) => journal.upcomingCalls(c), []),
-  ]);
-  const calls = [...(open ?? []), ...(upcoming ?? [])];
-  if (calls.length === 0) {
-    return null;
-  }
-  return (
-    <section aria-labelledby="calls" className="band" data-theme="light">
-      <h2 className="sr-only" id="calls">
-        {t("calls")}
-      </h2>
-      <div className="mx-auto grid w-full max-w-6xl gap-8 px-4 py-12">
-        {calls.map((call) => (
-          <div className="grid gap-2" key={call.id}>
-            <h3 className="type-title text-on-band">
-              {localized(call, "title", locale)}
-            </h3>
-            <p className="text-on-band/85">
-              {opened(call)
-                ? t("closes", {
-                    date: formatLongDate(call.closes_at, locale),
-                  })
-                : t("opensCloses", {
-                    closes: formatLongDate(call.closes_at, locale),
-                    opens: formatLongDate(call.opens_at, locale),
-                  })}
-            </p>
-          </div>
-        ))}
-        {/* One way in for every call (Nov 4, 2026): the band's one solid
-            button while a call is open, a text link otherwise. */}
-        <a
-          className={
-            calls.some(opened)
-              ? "inline-flex h-12 items-center justify-self-start bg-on-band px-6 font-medium text-[0.9375rem] text-band hover:bg-on-band/90"
-              : "justify-self-start text-on-band underline decoration-1 underline-offset-4"
-          }
-          href={localizedPath(locale, "/qirtas/write")}
-        >
-          {t("sendNews")}
-        </a>
-      </div>
-    </section>
-  );
-};
-
-const opened = (call: { opens_at: string }) =>
-  new Date(call.opens_at).getTime() <= Date.now();
 
 /** Latest news: a column beside Letters, or a full row of cards alone. */
 const News = async ({
@@ -318,7 +262,6 @@ const QirtasFrontPage = async ({ params }: QirtasProps) => {
           </section>
         ) : null}
       </div>
-      <Calls locale={locale} />
       <div className="mx-auto w-full max-w-6xl px-4 py-12">
         <section
           aria-labelledby="newsletter"

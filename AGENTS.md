@@ -407,14 +407,18 @@ any schema change. Integration tests run against a local stack with
   date.
 - **Games**, daily, made in the reader's browser and the same for everyone
   on a Baghdad day (`@repo/sal-data/games`): the word, the word search,
-  the crossword and the anagrams at `/qirtas/games/...`. Editors may also
-  publish puzzles (`journal.puzzles`). Members send no games
-  (`private.games_by_editors`). Progress stays in the browser.
+  the crossword and the anagrams at `/qirtas/games/...`, checked ahead by
+  the Games editors in the Newsroom's queue (`journal.game_checks`). No
+  hand-made puzzles and no Edition calls (decisions §5): the standing call
+  is the one door. Members send no games (`private.games_by_editors`).
+  Progress stays in the browser.
 - **The Mutanabbi Prize** (`/qirtas/prize`; the Diwan's
   `/diwan/qirtas/prize`): Qirtas and Qalam categories, the outside judge's
   score 70% and the members' vote 30% (`journal.prize_results`), voting on
   Society while a round is open (`journal.open_prize_round`), the count
-  checked by the Editor-in-Chief and the General Secretary.
+  checked by the Editor-in-Chief and the General Secretary; a winner
+  chooses whether to be named (`prize_entries.winner_named`), and anyone
+  connected to a work steps aside from it (`journal.prize_recusals`).
 - **Qalam**, Qirtas's summer program for high school students. Its roster
   is staff only (`/diwan/qirtas/qalam`, `qalam.manage`), never in Notion,
   deleted three years on. High school students never get accounts.

@@ -141,9 +141,6 @@ test.describe("public site", () => {
     await expect(page.getByRole("heading", { level: 1 })).toHaveText(
       "Editions"
     );
-    await expect(
-      page.getByRole("heading", { level: 2, name: "Open calls" })
-    ).toBeVisible();
     await expectAccessible(page);
     await page.goto(`${urls.web}/qirtas/editions?view=list`);
     await expect(page.getByRole("heading", { level: 1 })).toHaveText(

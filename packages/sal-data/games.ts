@@ -1,12 +1,11 @@
 import { z } from "zod";
-import { type Client, unwrap } from "./client";
 import { clueWords, guessWords, searchWords } from "./game-words";
 
 // Qirtas's games (owner, Nov 5, 2026): four daily games, made from fixed
 // word lists and the same for every reader on a Baghdad day (the word, the
-// word search, the crossword and the anagrams), and the puzzles the editors
-// write in the Diwan (journal.puzzles) of the same kinds. Members send no
-// games. The quiz, word ladder, riddles and name the book are retired: none
+// word search, the crossword and the anagrams), checked ahead by the
+// editors in the Diwan's queue (journal.game_checks; decisions §5: no
+// hand-made puzzles). Members send no games. The quiz, word ladder, riddles and name the book are retired: none
 // can be made anew every day without fresh writing.
 
 export const puzzleKinds = ["crossword", "word_search", "anagram"] as const;
@@ -730,7 +729,7 @@ export const dailyAnagrams = (lang: GameLang, day: number): Anagrams => ({
     .map((w) => ({ answer: w.answer, prompt: w.clue })),
 });
 
-// ── Stored puzzles ───────────────────────────────────────────────────────────
+// ── Shapes of a game ─────────────────────────────────────────────────────────
 
 const coordinate = z
   .number()
@@ -817,78 +816,4 @@ export const scramble = (word: string, lang: GameLang, seed: string) => {
     }
   }
   return [...letters].reverse();
-};
-
-const listColumns =
-  "id, slug, kind, language, title_en, title_ar, made_with_ai, published_at";
-
-/** Published puzzles, newest first; RLS hides drafts from readers. */
-export const publishedPuzzles = async (client: Client, lang?: GameLang) => {
-  let query = client
-    .schema("journal")
-    .from("puzzles")
-    .select(listColumns)
-    .eq("status", "published")
-    .order("published_at", { ascending: false });
-  if (lang) {
-    query = query.eq("language", lang);
-  }
-  return (unwrap(await query) ?? []).map((row) => ({
-    ...row,
-    kind: row.kind as PuzzleKind,
-    language: row.language as GameLang,
-  }));
-};
-
-export type PuzzleData =
-  | { data: Crossword; kind: "crossword" }
-  | { data: WordSearch; kind: "word_search" }
-  | { data: Anagrams; kind: "anagram" };
-
-/** One published puzzle with its grid; null when it is missing or broken. */
-export const puzzleBySlug = async (client: Client, slug: string) => {
-  const row = unwrap(
-    await client
-      .schema("journal")
-      .from("puzzles")
-      .select(`${listColumns}, note_en, note_ar, data`)
-      .eq("slug", slug)
-      .eq("status", "published")
-      .maybeSingle()
-  );
-  if (!row) {
-    return null;
-  }
-  const parsed = parsePuzzle(
-    row.kind as PuzzleKind,
-    row.data,
-    row.language as GameLang
-  );
-  return parsed
-    ? { ...row, ...parsed, language: row.language as GameLang }
-    : null;
-};
-
-/** Checks a stored puzzle against its kind (and language, for words). */
-export const parsePuzzle = (
-  kind: PuzzleKind,
-  data: unknown,
-  lang: GameLang = "en"
-): PuzzleData | null => {
-  switch (kind) {
-    case "crossword": {
-      const result = crosswordSchema.safeParse(data);
-      return result.success ? { data: result.data, kind } : null;
-    }
-    case "word_search": {
-      const result = wordSearchSchema.safeParse(data);
-      return result.success ? { data: result.data, kind } : null;
-    }
-    case "anagram": {
-      const result = anagramsSchema(lang).safeParse(data);
-      return result.success ? { data: result.data, kind } : null;
-    }
-    default:
-      return null;
-  }
 };

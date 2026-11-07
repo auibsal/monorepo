@@ -32,7 +32,7 @@ import { Needs } from "../needs";
 import { openSubmissionFile } from "../pipeline/data";
 import { PipelineAdmin } from "../pipeline/pipeline";
 import { useBylineFor } from "./byline";
-import { Puzzles } from "./puzzles";
+import { GameChecks } from "./game-checks";
 import { FrontRank } from "./workflow";
 
 const key = ["admin", "journal"];
@@ -847,7 +847,7 @@ export const QirtasNewsroom = ({ desk }: { readonly desk?: journal.Desk }) => {
       {reads ? <Desks desk={desk} /> : null}
       {writes ? <Newsroom desk={desk} /> : null}
       {desk === undefined && reads ? <PipelineAdmin embedded /> : null}
-      {desk === "games" && puzzles ? <Puzzles /> : null}
+      {desk === "games" && puzzles ? <GameChecks /> : null}
       {desk === undefined && has("journal.frontpage") ? <FrontPage /> : null}
       {desk === undefined && writes ? <Contributors /> : null}
       {desk === undefined && has("journal.manage") ? <QirtasNeeds /> : null}

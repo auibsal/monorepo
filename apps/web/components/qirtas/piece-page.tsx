@@ -130,10 +130,13 @@ export const PieceArticle = async ({
       <article className="grid gap-8">
         <JsonLd
           data={articleLd(locale, {
+            anonymous: piece.contributor?.is_anonymous,
             author: piece.contributor
               ? localized(piece.contributor, "name", locale)
               : null,
             image: leadImage(piece)?.url,
+            modifiedAt: piece.updated_at,
+            news: piece.desk === "news",
             path: pieceHref(piece),
             publishedAt: piece.published_at,
             title: localized(piece, "title", locale),
