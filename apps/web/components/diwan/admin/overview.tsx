@@ -110,7 +110,7 @@ const verificationFigure = (
           date: formatLongDate(o.verification_oldest_at ?? "", locale),
         })
       : t("verificationNone"),
-    href: "/people/partners/applications",
+    href: "/partnerships/applications",
     label: t("verificationPending"),
     value: o.verification_pending,
   };
@@ -204,7 +204,7 @@ const newsroomPermissions: readonly Permission[] = [
 const QUICK: readonly {
   readonly href: string;
   readonly icon: IconName;
-  readonly key: "door" | "event" | "piece" | "verify" | "minutes";
+  readonly key: "door" | "piece" | "verify";
   readonly permission: Permission | readonly Permission[];
 }[] = [
   {
@@ -214,28 +214,16 @@ const QUICK: readonly {
     permission: "events.checkin",
   },
   {
-    href: "/events/new",
-    icon: "plus",
-    key: "event",
-    permission: "events.manage",
-  },
-  {
     href: "/qirtas/pieces/new",
     icon: "pencil",
     key: "piece",
     permission: newsroomPermissions,
   },
   {
-    href: "/people/partners/applications",
+    href: "/partnerships/applications",
     icon: "id-card",
     key: "verify",
     permission: "members.verify",
-  },
-  {
-    href: "/society/meetings/new",
-    icon: "file-text",
-    key: "minutes",
-    permission: "governance.minutes.write",
   },
 ];
 
@@ -286,7 +274,7 @@ const PaperLinks = () => {
     <p className="flex flex-wrap gap-x-6 gap-y-2">
       <Link
         className="text-sm underline-offset-4 hover:underline"
-        href="/design"
+        href="/media/design"
       >
         {tn("designSystem")}
       </Link>

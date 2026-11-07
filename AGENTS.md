@@ -20,30 +20,35 @@ media do.
     site: `/sign-in`, `/sign-up` (and `/sign-up/guest`), `/auth/*`,
     `/welcome`, `/get-involved` (public), `/forms/<number>`,
     `/invite/<code>`, `/partners/apply` and `/partners/dashboard`, and, for
-    members, everything under `/account`: Today, My calendar
-    (`/calendar`), Society (`/society`, standing for office at
-    `/society/stand`), Record (`/record`, letters at `/record/letters`, a
-    year at `/record/year/<yyyy>`), Saved (`/saved`), Settings
-    (`/settings`, `/settings/profile`, `/settings/notices`, officers'
-    `/settings/declarations`), Requests (`/requests/<id>`) and their work
-    (`/work/<id>`, `/work/submissions/<id>`). Also `/company/auditions`,
+    members, everything under `/account`, in six tabs (decisions §6):
+    Today, Calendar (`/calendar`), Record (`/record`, certificates at
+    `/record/certificates/<ref>`, letters at `/record/letters/<ref>`, a year
+    at `/record/year/<yyyy>`), Work (`/work`: drafts, submissions at
+    `/work/submissions/<id>`, pieces at `/work/<id>`, and what was saved),
+    Elections (`/elections`, standing for a position at
+    `/elections/<position>`) and Settings (`/settings`, `/settings/profile`,
+    `/settings/notifications`, officers' `/settings/disclosures`), with
+    what you sent at `/requests` and `/requests/<id>`. Also `/company/auditions`,
     `/qirtas/write` (public; the forms at `/qirtas/write/<type>`, a draft at
     `/qirtas/write/<type>/<draft>`) and `/qirtas/read/<slug>` (a
     members-only piece). The gates are in `components/diwan/gates.tsx`.
   - `app/[locale]/diwan`: **the Diwan**, auibsal.org/diwan, the staff's
-    administration only (anyone holding a role, `RequireStaff`), in six
-    sections (`adminSections` in `@repo/rbac`; `DiwanNav` and
-    `SectionTabs` in `admin-shell.tsx`): the Desk (`/diwan`: what needs
-    you, quick actions, the handover, what happened, the Connected panel
-    for Notion, Hudhud and email, and the design system at
-    `/diwan/design`), What's on (`/diwan/events`, each event at
-    `/diwan/events/<slug>` with its door at `.../door`, pitches), Qirtas
+    administration only (anyone holding a role, `RequireStaff`), one
+    section per Council seat (decisions §6; `adminSections` in
+    `@repo/rbac`; `DiwanNav` and `SectionTabs` in `admin-shell.tsx`): the
+    Desk (`/diwan`: what needs you, quick actions, Waiting, what happened,
+    the Connected panel for Notion, Hudhud and email); the Council
+    (`/diwan/council`: meetings and their resolutions, requests to Student
+    Life, elections, concerns, motions, disclosures, the Library); Qirtas
     (the Newsroom, one page per section, with submissions, Editions,
-    contributors, the Prize and Qalam), the Company (`/diwan/company`),
-    People (members, guests, openings, service, partners, the Typewriter
-    Tour, insights) and Society (meetings and their resolutions, elections,
-    concerns, motions, declarations, requests to Student Life, the
-    Library). Diwan code names pages by their own path (`/events`); `Link`,
+    contributors, the Prize, Qalam and certificates); Media
+    (`/diwan/media`: Next Stop's episodes and reels, the design system at
+    `/diwan/media/design`); the Company (`/diwan/company`); Events
+    (`/diwan/events`, each event at `/diwan/events/<slug>` with its
+    check-in at `.../check-in`, event proposals); Partnerships
+    (`/diwan/partnerships`: applications, the register, memoranda); and
+    Membership (`/diwan/membership`: the Register, guests, openings,
+    service, the Typewriter Tour). Diwan code names pages by their own path (`/events`); `Link`,
     `useRouter`, `usePathname` and `redirect` from `@/lib/diwan/navigation`
     add the `/diwan` prefix.
   - Your account and the Diwan are client-rendered (`components/diwan`,
@@ -65,7 +70,7 @@ media do.
   (`BRAND-BOOK.md`), the assets (tokens, fonts, icons, logos, Hudhud, the
   social templates, the printables), and the code the app imports as
   `@repo/brand` (`styles/globals.css`, `components/ui` (shadcn),
-  `components/sal`, `lib`). Its Storybook is the Diwan's `/diwan/design`
+  `components/sal`, `lib`). Its Storybook is the Diwan's `/diwan/media/design`
   (Guide, Foundations, Logos, Components, Emails, Social, Print), built
   into `apps/web/design` by the web build and served at `/_design` to staff
   only (`app/api/design`; ignored by git, never
@@ -208,7 +213,8 @@ any schema change. Integration tests run against a local stack with
   Society's or a partner's) or `partner` (a partner's Lead or Team);
   triggers named `one_membership` refuse a second kind. Members have a
   class (`membership.tier`): Member, Associate Member or Honorary Member;
-  only Members vote (two events or general meetings that academic year)
+  only Members vote (checked in at two events or general meetings that
+  academic year: check-ins are the only record, `membership.activity_records`)
   and hold office. Staff is a member holding a role (`private.is_staff`).
   Sign-up takes an AUIB address only, unless the account comes from an
   invitation, applies to partner or signs up as a guest
@@ -260,11 +266,13 @@ any schema change. Integration tests run against a local stack with
   number, the date and a guilloche. Never typed.
 - **Events.** One events manager, one standard event. Every event,
   meetings among them, is made in Notion's Events database and copied to
-  the site by the sync; the Diwan edits the same record. Every event has
+  the site by the sync; the Diwan shows it read-only and keeps only the
+  site's own parts (nothing is made in the Diwan). Every event has
   the one page on the site (`EventView` with `EventParts`) and in the
   Diwan (`EventEditor` with `EventPartsAdmin`), with only the standard
-  parts: its way in (`events.events.entry`: `open`, `rsvp`, or `invite`,
-  which is private and members-only), RSVP and check-in, a needs list,
+  parts: its access (`events.events.entry`: `open`, `rsvp`, `members` or
+  `invite` (Private); `members_only` is derived from it), RSVP and
+  check-in, registration questions, a needs list,
   volunteer shifts (on the event only, logging no hours), a partner
   checklist (`events.joint_tasks`) and links from the night
   (`events.session_links`, https only). Off campus is a standard field:
@@ -290,7 +298,7 @@ any schema change. Integration tests run against a local stack with
   with the Six Words wall (`programmes.six_words_wall()`) and a typewriter
   to try (`TypingToy`, silent until the key sound is turned on). Whoever
   runs the Tour (`tour.run`: the Director of Membership, the General
-  Secretary and the Tour Lead) records pages in the Diwan (People →
+  Secretary and the Tour Lead) records pages in the Diwan (Membership →
   Typewriter Tour) and attaches each to its writer's account. Six Words
   are not part of Qirtas: they are Tour pages, private by default, shown
   on the writer's profile or the Tour's page only by their choice
@@ -307,20 +315,23 @@ any schema change. Integration tests run against a local stack with
   person (`private.picks_opening`); whoever is onboarded holds the role.
 - **Partners.** One register, `governance.partners`. `/partners` is the
   front door; an organization applies at `/partners/apply`, its signatory
-  signing by name. Each partner has one dashboard, `/partners/dashboard`
-  (profile and memorandum, events, people), for its team of up to
-  six (Lead or Team), who join only by invitation and verify their own
-  guests. Partners never use Notion and see only their own events and
+  signing by name, and becomes a partner only when the Council's adopted
+  resolution is recorded (`governance.record_partner_vote`); nobody adds a
+  partner or drafts a memorandum in the Diwan. Each partner has one
+  dashboard, `/partners/dashboard` (profile and memorandum, events,
+  people), for its Lead and up to two more, who join only by named email
+  invitation and verify their own guests, invited by named email too (no
+  shareable links). Partners never use Notion and see only their own events and
   checklist. No perks or offers anywhere: sponsors in kind are thanked
   with a "Supported by" line, and the card is for the door only.
 - **Guests** sign up at `/sign-up/guest` to book open events, or are
-  invited from People → Guests; never members.
+  invited from Membership → Guests; never members.
 - **Money: none.** No budgets, costs, prices, spending limits, ledgers,
   claims, reimbursements, payments or ads anywhere; sponsors give in kind
   only. Every event, Qirtas and the Tour keep a needs list
   (`programmes.needs`: item, quantity, date needed, purpose), and the
   General Secretary sends each request to Student Life and logs what was
-  provided (Society → Requests). Charity collections are a Notion record,
+  provided (Council → Requests). Charity collections are a Notion record,
   not a site feature.
 - **Governance.** Meetings by body (Council, general, Annual, special,
   Founding; `meetingBodies`); elections by secret ballot online over a set
@@ -353,7 +364,7 @@ any schema change. Integration tests run against a local stack with
   (`withContents`), figures (`journal.piece_figures`), an original beside
   a translation (`journal.piece_bodies.original`), topics
   (`/qirtas/topics`), a reading and a clip (`reading_path`, `clip_id`),
-  Save for later (`journal.saved_pieces`, `/account/saved`), Gallery
+  Save for later (`journal.saved_pieces`, `/account/work`), Gallery
   selections shared by address (`/qirtas/selection/...`, nothing stored).
   RSS at `/qirtas/feed.xml` and per section; the archive at
   `/qirtas/archive`. Pieces print on white without the site's frame.

@@ -17,7 +17,7 @@ import {
 
 export const TIME_ZONE = project.region.timeZone;
 export const CURRENCY = project.region.currency;
-/** 6 = Saturday, the first day of the week in Iraq. */
+/** 0 = Sunday: AUIB's week runs Sunday to Thursday, and calendars start on Sunday (decisions §11). */
 export const WEEK_STARTS_ON = project.region.weekStartsOn as
   | 0
   | 1

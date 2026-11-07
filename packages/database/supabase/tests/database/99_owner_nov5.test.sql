@@ -72,6 +72,26 @@ insert into core.semesters (code, name_en, name_ar, starts_on, ends_on) values
 -- Tests check the two-activity rule; the founding-voter tests turn the
 -- first-100 rule back on themselves.
 update core.settings set value = '0' where key = 'membership.founding_voters';
+
+-- An adopted Council resolution, with its minutes: the Council's vote that
+-- approves a partnership (decisions §10).
+create function pg_temp.council_resolution(
+  id uuid default '00000000-0000-0000-0000-0000000c0001',
+  code text default 'R-2026-99'
+)
+returns uuid
+language sql
+as $$
+  with m as (
+    insert into governance.minutes (title_en, text_en, meeting_on, body, status, adopted_on)
+    values ('Council meeting', '<p>Minutes.</p>', current_date - 1, 'council', 'adopted', current_date)
+    returning id
+  )
+  insert into governance.resolutions (id, code, title_en, text_en, body, status, adopted_on, minutes_id)
+  select council_resolution.id, council_resolution.code, 'Approves the partnership', '<p>Resolved.</p>', 'council', 'adopted', current_date, m.id
+  from m
+  returning id;
+$$;
 -- </preamble>
 
 -- The owner's decisions of Nov 5, 2026: the Council of six, no programs
@@ -118,12 +138,12 @@ select pg_temp.make_user('00000000-0000-0000-0000-0000000f5001', 'lead.f5@auib.e
 select pg_temp.make_user('00000000-0000-0000-0000-0000000f5002', 'tour.f5@auib.edu.iq', 'Tour Lead');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000f5003', 'salon.f5@auib.edu.iq', 'Salon Lead');
 
-insert into events.events (id, slug, programme_id, title_en, title_ar, starts_at, status, members_only, entry)
+insert into events.events (id, slug, programme_id, title_en, title_ar, starts_at, status, entry)
 values
   ('00000000-0000-0000-0000-0000000f5101', 'one-off-f5', null,
-   'A one-off', 'فعالية', now() + interval '7 days', 'draft', false, 'open'),
+   'A one-off', 'فعالية', now() + interval '7 days', 'draft', 'open'),
   ('00000000-0000-0000-0000-0000000f5102', 'another-f5', null,
-   'Another', 'أخرى', now() + interval '14 days', 'draft', false, 'open');
+   'Another', 'أخرى', now() + interval '14 days', 'draft', 'open');
 
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000f5001', 'programme_lead', 'event',
   '00000000-0000-0000-0000-0000000f5101');

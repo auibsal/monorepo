@@ -793,18 +793,18 @@ export const applicationReceived = (lang: Lang, partner: string, app: string) =>
       l === "ar" ? `وصلنا طلب ${partner}` : `We have ${partner}'s application`,
     paragraphs: [
       l === "ar"
-        ? "شكرًا لطلبك الشراكة مع جمعية الفنون والآداب. تقرأ «الشراكات» الطلب، وإن مضى يوقّع رئيس الجمعية مذكرة التفاهم."
-        : "Thank you for applying to partner with the AUIB Society of Arts and Letters. Partnerships reads the application, and if it goes ahead, the President signs the memorandum.",
+        ? "شكرًا لطلبك الشراكة مع جمعية الفنون والآداب. تقرأ «الشراكات» الطلب، ثم يصوّت عليه مجلس الجمعية في اجتماعه."
+        : "Thank you for applying to partner with the AUIB Society of Arts and Letters. Partnerships reads the application, and the Society’s Council votes on it at its meeting.",
       l === "ar"
         ? "سنكتب إليك حين يُتّخذ القرار. ويمكنك رؤية الطلب في أي وقت من الرابط أدناه."
         : "We'll write to you when it's decided. You can see the application at any time from the link below.",
     ],
   }));
 
-/** Partnerships and the President: an application waits. */
+/** Partnerships and the Council: an application waits for the vote. */
 export const applicationWaiting = (lang: Lang, partner: string, app: string) =>
   build(lang, (l) => ({
-    action: diwan(app, l, "/people/partners/applications"),
+    action: diwan(app, l, "/partnerships/applications"),
     heading:
       l === "ar"
         ? `طلب شراكة: ${partner}`
@@ -816,7 +816,7 @@ export const applicationWaiting = (lang: Lang, partner: string, app: string) =>
     ],
   }));
 
-/** The applicant: the partnership is signed, or not taken forward. */
+/** The applicant: the Council approved the partnership, or it is not taken forward. */
 export const applicationDecided = (
   lang: Lang,
   partner: string,
@@ -837,8 +837,8 @@ export const applicationDecided = (
               : `${partner} is a partner of the Society`,
           paragraphs: [
             l === "ar"
-              ? "وقّع رئيس الجمعية مذكرة التفاهم. لوحة الشريك مفتوحة لك الآن: الملف والمذكرة، والفريق والضيوف."
-              : "The President has signed the memorandum. Your partner dashboard is open: the profile and memorandum, and your team and guests.",
+              ? "وافق مجلس الجمعية على الشراكة. لوحة الشريك مفتوحة لك الآن: الملف والمذكرة، والفريق والضيوف."
+              : "The Society’s Council has approved the partnership. Your partner dashboard is open: the profile and memorandum, and your team and guests.",
           ],
         }
       : {
@@ -927,7 +927,7 @@ export const electionStage = (
     const name = pick(l, e.title_ar, e.title_en);
     const lines = ELECTION_LINES[stage](l, e);
     return {
-      action: account(app, l, "/account/society"),
+      action: account(app, l, "/account/elections"),
       heading: `${lines.heading}: ${name}`,
       paragraphs: lines.paragraphs,
     };
@@ -969,7 +969,7 @@ export const candidacyDecided = (
   build(lang, (l) => {
     const lines = CANDIDACY[approved ? "approved" : "declined"][l];
     return {
-      action: account(app, l, "/account/society"),
+      action: account(app, l, "/account/elections"),
       heading: `${lines[0]}: ${pick(l, seat.title_ar, seat.title_en)}`,
       paragraphs: [lines[1]],
     };
@@ -987,7 +987,7 @@ export const certificateIssued = (
 ) =>
   build(lang, (l) => ({
     action: {
-      href: `${app}${localizedPath(l, `/account/record/${certificateId}`)}`,
+      href: `${app}${localizedPath(l, `/account/record/certificates/${certificateId}`)}`,
       label: l === "ar" ? "افتح الشهادة" : "Open the certificate",
     },
     heading: l === "ar" ? "شهادتك جاهزة" : "Your certificate is ready",
@@ -1328,15 +1328,15 @@ export const welcome = (lang: Lang, app: string) =>
               href: link("/get-involved"),
               title:
                 l === "ar"
-                  ? "شارك: الأدوار والمناوبات وتجارب الأداء"
-                  : "Get involved: roles, shifts and auditions",
+                  ? "شارك معنا: الأدوار وفرق الفعاليات وتجارب الأداء"
+                  : "Get involved: roles, event teams and auditions",
             },
             {
               href: "https://t.me/auibsal_bot",
               title:
                 l === "ar"
                   ? "هدهد على Telegram: يدخلك مجموعة الأعضاء"
-                  : "Hudhud on Telegram: lets you into the members' group",
+                  : "Hudhud on Telegram: lets you into the members’ group",
             },
           ],
           title: l === "ar" ? "من أين تبدأ" : "Where to start",
@@ -1400,7 +1400,7 @@ export interface ReplyLine {
 /** Membership: the day's replies on Get involved, in one email. */
 export const repliesDigest = (lang: Lang, replies: ReplyLine[], app: string) =>
   build(lang, (l) => ({
-    action: diwan(app, l, "/people/openings"),
+    action: diwan(app, l, "/membership/openings"),
     heading:
       l === "ar"
         ? `ردود جديدة في «شارك» (${replies.length})`

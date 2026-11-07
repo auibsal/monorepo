@@ -4,10 +4,9 @@ import { useAuth } from "@repo/auth/provider";
 import { Button } from "@repo/brand/components/ui/button";
 import { localizedPath } from "@repo/internationalization";
 import { formatLongDate } from "@repo/internationalization/format";
-import { governance, localized, membership, unwrap } from "@repo/sal-data";
+import { type governance, localized, membership, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
-import { Council as CouncilList } from "@/components/council";
 import { StartLinks } from "../forms/forms";
 import { VotingEligibility } from "../home/voting";
 import { DiwanPage, DiwanSection, RowList } from "../page";
@@ -17,36 +16,6 @@ import { PrizeVote } from "./prize-vote";
 import { SocietySection } from "./section";
 
 type Lang = "en" | "ar";
-
-const Council = () => {
-  const t = useTranslations("diwan.society.council");
-  const ta = useTranslations("diwan.next");
-  const locale = useLocale() as Lang;
-  const { supabase } = useAuth();
-  const roster = useQuery({
-    queryFn: () => governance.councilMembers(supabase),
-    queryKey: ["council-members"],
-  });
-  return (
-    <SocietySection id="council" lede={t("lede")} title={t("title")}>
-      {roster.isPending ? <SectionSpinner /> : null}
-      {roster.isError ? <ErrorState onRetry={() => roster.refetch()} /> : null}
-      {roster.data?.length === 0 ? (
-        <EmptyLine
-          action={{
-            href: `${localizedPath(locale, "/library/roles-and-staffing")}`,
-            label: ta("readRoles"),
-          }}
-        >
-          {t("empty")}
-        </EmptyLine>
-      ) : null}
-      {roster.data?.length ? (
-        <CouncilList locale={locale} members={roster.data} />
-      ) : null}
-    </SocietySection>
-  );
-};
 
 const Minutes = () => {
   const t = useTranslations("diwan.society.minutes");
@@ -178,13 +147,17 @@ const MembersDirectory = () => {
   );
 };
 
-/** The Society page: who serves, what was decided, and who belongs. */
+/**
+ * The Elections tab (/account/elections, decisions §6): your vote, the
+ * elections open now and standing for office, the Prize vote, ways to
+ * take part, the minutes and the members' directory. The Council itself
+ * is the public /about/council.
+ */
 export const Society = () => {
   const t = useTranslations("diwan.society");
   return (
     <DiwanPage lede={t("lede")} title={t("title")}>
       <VotingEligibility />
-      <Council />
       <Elections />
       <PrizeVote />
       <DiwanSection

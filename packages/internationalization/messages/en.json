@@ -194,7 +194,6 @@
       "events": "Events",
       "journal": "Qirtas",
       "programs": "Events",
-      "society": "Society",
       "account": "Your account",
       "profile": "Profile and privacy",
       "admin": "Administration",
@@ -207,12 +206,14 @@
       "overview": "Overview",
       "diwan": "The Diwan",
       "today": "Today",
-      "calendar": "My calendar",
+      "calendar": "Calendar",
       "getInvolved": "Get involved",
       "record": "Record",
       "settings": "Settings",
       "templates": "Templates and papers",
-      "designSystem": "Design system"
+      "designSystem": "Design system",
+      "work": "Work",
+      "elections": "Elections"
     },
     "errors": {
       "loadFailed": "We couldn’t load this. Check your connection and try again.",
@@ -431,7 +432,7 @@
     },
     "programs": {
       "title": "Shifts",
-      "lede": "Shifts on the Society’s rotas, posted by event leads. Sign up for one, and give it back if your plans change.",
+      "lede": "Shifts at events, posted by their leads. Sign up for one, and give it back if your plans change.",
       "signUp": "Sign up",
       "giveBack": "Give it back",
       "full": "Full",
@@ -449,8 +450,8 @@
       }
     },
     "society": {
-      "title": "Society",
-      "lede": "Who serves on the Council, what it has decided, and everyone who belongs.",
+      "title": "Elections",
+      "lede": "Your vote, the elections open now and how to run, the Prize vote, the Council’s minutes and the members’ directory.",
       "council": {
         "title": "The Council",
         "lede": "The elected officers and the directors, from the roles they hold.",
@@ -919,11 +920,9 @@
         "submissionsNone": "No submission is waiting.",
         "openPipeline": "Open the blind review",
         "quick": {
-          "door": "Open the door",
-          "event": "New event",
+          "door": "Open check-in",
           "piece": "New piece",
-          "verify": "Verify members",
-          "minutes": "New minutes"
+          "verify": "Verify members"
         },
         "activity": "What happened",
         "allActivity": "Everything that happened",
@@ -934,7 +933,7 @@
         "editingNone": "Nothing is waiting in your sections.",
         "openNewsroom": "Open the newsroom",
         "handover": {
-          "title": "Handover",
+          "title": "Waiting",
           "lede": "What waits across the Society, and who owns it.",
           "nothing": "Nothing waits.",
           "oldest": "Waiting since {date}",
@@ -1016,14 +1015,11 @@
         "details": "Details",
         "tier": "Tier",
         "tierSaved": "Tier saved.",
-        "activity": "Activity records",
-        "activityLede": "Check-ins add records on their own. Add a manual record, with a note, for anything else that counts (it is logged).",
+        "activity": "Check-ins",
+        "activityLede": "Check-ins at events, recorded at the door. Two in an academic year make a Member a voting member.",
         "kinds": {
-          "check_in": "Check-in",
-          "shift": "Shift",
-          "manual": "Manual"
+          "check_in": "Check-in"
         },
-        "addActivity": "Add a manual record",
         "note": "Note",
         "when": "When",
         "add": "Add record",
@@ -1080,7 +1076,7 @@
       },
       "verification": {
         "title": "Partner applications",
-        "lede": "Organizations that applied to partner with the Society, each with its memorandum signed by name. The President signs for the Society; each partner then verifies its own people.",
+        "lede": "Organizations that applied to partner with the Society, each with its memorandum signed by name. The Council votes on each at its meeting; record its adopted resolution here and the organization becomes a partner. Each partner then verifies its own people.",
         "empty": "No applications are waiting.",
         "statement": "Their note",
         "noStatement": "No note.",
@@ -1094,17 +1090,17 @@
         "purpose": "Purpose",
         "partnerWill": "What they will do",
         "asks": "They ask for",
-        "sign": "Sign for the Society",
-        "signConfirm": "Sign the memorandum with {name} for the Society? It becomes an active partner, and whoever applied keeps its page in the Diwan.",
+        "sign": "Record the Council’s vote",
+        "signConfirm": "Record the Council’s resolution approving {name}? It becomes an active partner, and whoever applied leads its dashboard.",
         "declineConfirm": "Decline {name}'s application? It stays on record.",
         "earlier": "Earlier requests",
         "earlierLede": "People who asked before partners verified their own. Approve only people you can place.",
-        "signingAs": "You sign for the Society as"
+        "resolution": "The Council’s resolution",
+        "noResolution": "No adopted Council resolution to choose yet. The Council adopts it at its meeting, under that meeting’s minutes."
       },
       "events": {
         "title": "Events",
-        "lede": "Every event on the term calendar: what’s coming, drafts and what’s past. Open one to edit it, see who booked and run its door.",
-        "new": "New event",
+        "lede": "Every event on the term calendar: what’s coming, drafts and what’s past. Events are made in Notion’s Events database; open one here to see who booked, run its check-in and keep its parts.",
         "tabs": {
           "upcoming": "Upcoming",
           "past": "Past",
@@ -1117,10 +1113,8 @@
           "access": "Who",
           "rsvps": "Bookings",
           "status": "Status",
-          "door": "Door"
+          "door": "Check-in"
         },
-        "membersOnly": "Members only",
-        "public": "Public",
         "rsvpCount": "{confirmed} of {capacity}",
         "checkIn": "Check-in",
         "campusNote": "AUIB’s own dates come in every hour from the University’s public calendar.",
@@ -1128,18 +1122,11 @@
         "noPast": "No past events yet."
       },
       "event": {
-        "newTitle": "New event",
-        "editTitle": "Edit event",
         "notFound": "No event with this link, or your roles don’t cover it.",
-        "eventTitle": "Title",
-        "summary": "Summary (one or two sentences)",
-        "body": "Description",
         "venue": "Venue",
         "starts": "Starts",
         "ends": "Ends (optional)",
-        "membersOnly": "Members only (hidden from the public site, search, sitemap and public feeds)",
         "capacity": "Capacity (empty for no limit)",
-        "capacityHint": "Raising the capacity promotes people from the waitlist at once, and they are emailed.",
         "questions": "Registration questions",
         "questionsHint": "Up to ten. Asked when someone books. A booking already carries their name on the platform, so there is no need to ask for it.",
         "question": "Question {number}",
@@ -1147,17 +1134,7 @@
         "addQuestion": "Add a question",
         "removeQuestion": "Remove question {number}",
         "save": "Save event",
-        "publish": "Publish",
-        "publishConfirm": "Publish this event? It appears at once on the site (or to members, if members only) and in calendar feeds.",
-        "cancelEvent": "Cancel event",
-        "cancelConfirm": "Cancel this event? It stays listed as canceled; tell people who booked.",
-        "deleteDraft": "Delete draft",
-        "deleteConfirm": "Delete this draft for good?",
         "errors": {
-          "title": "Give the title in both languages.",
-          "slug": "The web address needs lowercase letters, numbers and hyphens.",
-          "starts": "Give a start time.",
-          "ends_before_start": "The end must come after the start.",
           "questions": "Each question needs its English and Arabic wording."
         },
         "attendance": "Attendance",
@@ -1179,16 +1156,18 @@
         "serviceHours": "Hours {name} gave",
         "recordHours": "Record hours",
         "hoursRecorded": "Hours recorded",
-        "entry": "Way in",
+        "entry": "Access",
         "entries": {
-          "open": "Just come (no booking)",
-          "rsvp": "Book a place",
-          "invite": "By invitation"
+          "open": "Open",
+          "rsvp": "RSVP",
+          "members": "Members",
+          "invite": "Private"
         },
         "entryHint": {
           "open": "Anyone who can see it just comes. Members can ask for a reminder the day before.",
-          "rsvp": "Members book a place; the capacity and the waitlist apply.",
-          "invite": "Only the people you invite see it, and they book a place. It never appears publicly."
+          "rsvp": "People book a place; the capacity and the waitlist apply.",
+          "members": "Members book a place; the capacity and the waitlist apply. It never appears publicly.",
+          "invite": "Only the people invited see it, and they book a place. It never appears publicly."
         },
         "invitations": "Invitations",
         "invitationsHint": "Only the people invited (and the officers who run the event) see it.",
@@ -1222,7 +1201,6 @@
           "shifts": "Shifts",
           "needs": "Needs",
           "prompts": "Prompts",
-          "vote": "Book vote",
           "collection": "The book fair’s collection",
           "collectionLede": "Link the campaign to its event, the fair: the event’s page then carries the collection, its catalog and its impact report.",
           "noCampaigns": "No campaign yet.",
@@ -1237,15 +1215,15 @@
             "needs": "Needs",
             "shifts": "Shifts",
             "links": "Links",
-            "prompts": "Prompts",
-            "vote": "Book vote",
-            "collection": "The book fair’s collection",
             "minutes": "Minutes"
           },
           "minutes": "Minutes and resolutions",
-          "noMinutes": "No minutes for this meeting yet.",
-          "writeMinutes": "Write the minutes"
-        }
+          "noMinutes": "No minutes for this meeting yet. They are written in Notion (Work, Meetings) and come here when their Status is Minutes in the Diwan."
+        },
+        "when": "When",
+        "seats": "Capacity",
+        "noLimit": "No limit",
+        "noVenue": "Not set"
       },
       "checkIn": {
         "title": "Check-in",
@@ -1265,7 +1243,7 @@
         "count": "{count} checked in",
         "noResults": "No member found.",
         "cardNotLive": "This card’s code isn’t live (a screenshot?). Ask to see the card on the member’s own phone.",
-        "otherDoors": "Other doors"
+        "otherDoors": "Other events’ check-in"
       },
       "content": {
         "title": "Content",
@@ -1290,160 +1268,6 @@
         "deleteConfirm": "Delete this for good?",
         "scheduleConfirm": "Schedule this post? It is published on its own at the publish time.",
         "newsletter": "The Sunday Paper’s public list has {count} confirmed subscribers. They sign up at auibsal.org/sunday-paper; members who receive email get it too."
-      },
-      "charity": {
-        "title": "Charity",
-        "lede": "Book fair campaigns. Money is recorded, never collected online: cash is counted by two people, and an entry counts only after a different person signs it off.",
-        "campaigns": "Campaigns",
-        "newCampaign": "New campaign",
-        "columns": {
-          "campaign": "Campaign",
-          "status": "Status",
-          "counted": "Counted",
-          "pending": "Waiting for sign-off",
-          "date": "Date",
-          "amount": "Amount",
-          "source": "Source",
-          "countedBy": "Counted by",
-          "signedOff": "Signed off",
-          "note": "Note",
-          "description": "Description",
-          "public": "On the transparency page",
-          "handover": "Handed over"
-        },
-        "statuses": {
-          "draft": "Draft",
-          "active": "Active",
-          "closed": "Closed"
-        },
-        "sources": {
-          "table_cash": "Table cash",
-          "stickers": "Stickers",
-          "blind_date": "Blind date with a book",
-          "fill_a_bag": "Fill a Bag",
-          "book_sales": "Book sales",
-          "donation": "Donation (in person)",
-          "other": "Other"
-        },
-        "tabs": {
-          "settings": "Campaign",
-          "ledger": "Collection record",
-          "signoff": "Sign-off queue ({count})",
-          "receipts": "Receipts",
-          "impact": "Impact reports",
-          "handover": "Handover",
-          "catalog": "Catalog"
-        },
-        "campaign": {
-          "titleField": "Title",
-          "summary": "Summary",
-          "partner": "Partner",
-          "noPartner": "No partner",
-          "startsOn": "Starts on",
-          "endsOn": "Ends on",
-          "status": "Status",
-          "notFound": "No campaign with this link, or your roles don’t cover it.",
-          "stagesTitle": "Stages",
-          "stageDates": {
-            "boxes_on": "Boxes go out",
-            "donations_starts_on": "Donations start",
-            "donations_ends_on": "Donations end",
-            "fair_starts_on": "The fair starts",
-            "fair_ends_on": "The fair ends",
-            "handover_due_on": "Handover planned",
-            "impact_due_on": "Impact report due"
-          },
-          "dropOffTitle": "Drop-off points",
-          "dropOffPlace": "Place {n}",
-          "dropOffHours": "When it is open",
-          "dropOffAdd": "Add a drop-off point",
-          "dropOffRemove": "Remove this point"
-        },
-        "ledger": {
-          "lede": "Entries can’t be edited or deleted. To correct one, record a reversing entry, then the right amount.",
-          "record": "Record money counted",
-          "amount": "Amount (IQD)",
-          "source": "Source",
-          "occurredOn": "Counted on",
-          "countedBy": "Counted by",
-          "countedWith": "Counted with",
-          "countedHint": "You must be one of the two people who counted.",
-          "note": "Note (optional)",
-          "recordButton": "Record entry",
-          "recordConfirm": "Record {amount} counted by {a} and {b}? Entries can’t be changed afterwards.",
-          "waiting": "Waiting",
-          "reverse": "Reverse",
-          "reverseConfirm": "Record a reversing entry of {amount}? It cancels this entry; record the right amount separately.",
-          "reversal": "Reversal of an earlier entry",
-          "reversed": "Reversed",
-          "me": "me",
-          "twoCounters": "Two different people must count.",
-          "amountError": "Give a whole amount in IQD, above zero.",
-          "export": "Export ledger",
-          "totals": "{counted} counted · {pending} waiting for sign-off"
-        },
-        "signoff": {
-          "lede": "Check each entry against the cash or the count sheet, then sign it off. You can’t sign off an entry you recorded.",
-          "empty": "Nothing waiting for you.",
-          "sign": "Sign off",
-          "signConfirm": "Sign off {amount}? It will count in the totals.",
-          "recordedBy": "Recorded by {name}"
-        },
-        "receipts": {
-          "lede": "Receipts are private files. The transparency page shows only those marked public, through short-lived links.",
-          "upload": "Upload a receipt",
-          "file": "File (PDF, JPEG or PNG)",
-          "description": "What it is",
-          "amount": "Amount (IQD, optional)",
-          "entry": "Ledger entry (optional)",
-          "public": "Show on the transparency page",
-          "view": "View",
-          "makePublic": "Make public",
-          "makePrivate": "Make private",
-          "remove": "Delete",
-          "removeConfirm": "Delete this receipt? The file is removed too.",
-          "noPhotos": "Never upload photos of identifiable children."
-        },
-        "impact": {
-          "lede": "Figures for the transparency page, published when you choose.",
-          "label": "What was measured",
-          "value": "Figure",
-          "unit": "Unit (optional)",
-          "report": "Report (optional)",
-          "publish": "Publish",
-          "unpublish": "Unpublish",
-          "published": "Published",
-          "add": "Add a figure"
-        },
-        "partnersMoved": "Campaigns name their partner from the Society’s one register of partners.",
-        "partnersLink": "Open Partners",
-        "notHandedOver": "Not yet",
-        "handover": {
-          "lede": "The sealed collection goes to the charity partner in full, with a witness and a receipt. Record it here on the day.",
-          "on": "Handed over on",
-          "amount": "Amount handed over (IQD)",
-          "witness": "Witness",
-          "receipt": "Receipt",
-          "noReceipt": "No receipt yet",
-          "note": "Note (optional)"
-        },
-        "catalog": {
-          "title": "Catalog",
-          "lede": "The books given for the fair, for readers to browse on the fair’s event page. Never a price; a book shows while it is listed.",
-          "new": "Add a book",
-          "bookTitle": "Title",
-          "author": "Author (optional)",
-          "language": "Language",
-          "copies": "Copies",
-          "note": "Note (optional)",
-          "noteHint": "A line about the edition or condition, for example “First edition, 1985”.",
-          "copiesCount": "{count} copies",
-          "unlisted": "Not listed",
-          "list": "List",
-          "unlist": "Unlist",
-          "remove": "Remove",
-          "removeConfirm": "Remove this book from the catalog?"
-        }
       },
       "picker": {
         "search": "Type a name",
@@ -1500,8 +1324,8 @@
           "back": "Video"
         },
         "rotas": {
-          "new": "New rota",
-          "titleField": "Rota",
+          "new": "New shift",
+          "titleField": "Shift",
           "startsOn": "From",
           "endsOn": "To",
           "shifts": "Shifts",
@@ -1603,7 +1427,7 @@
         "notYours": "This isn’t one you run.",
         "all": "All events",
         "pitches": {
-          "title": "Pitches",
+          "title": "Event proposals",
           "lede": "Ideas for new events that members sent. The President answers each one."
         },
         "whatsOn": "What’s on",
@@ -1701,10 +1525,7 @@
           "approved": "Approved"
         },
         "minutes": {
-          "new": "Write minutes",
-          "meetingOn": "Meeting date",
           "body": "Body",
-          "titleField": "Title",
           "text": "Minutes",
           "adopt": "Mark adopted",
           "adoptedOn": "Adopted on",
@@ -1712,9 +1533,9 @@
           "notFound": "No meeting with this link.",
           "draftNote": "Drafts are visible only to minute-takers and governance managers.",
           "locked": "Adopted: this is the official copy and is locked.",
-          "meeting": "Meeting (an event in What’s on)",
-          "noMeeting": "None: give the date",
-          "makeMeeting": "Make a meeting in What’s on"
+          "fromNotion": "Minutes are written in Notion (Work, Meetings) and come here when their Status is Minutes in the Diwan; the Council adopts them here. Meetings are events in Notion’s Events database.",
+          "titleField": "Title",
+          "meetingOn": "Meeting date"
         },
         "resolutions": {
           "new": "New resolution",
@@ -2155,7 +1976,6 @@
         },
         "register": {
           "lede": "Clubs, departments and organizations the Society works with or is talking to. Contacts and notes stay internal.",
-          "add": "Add a partner",
           "edit": "Edit",
           "cancel": "Cancel",
           "empty": "No partners in the register yet.",
@@ -2209,9 +2029,7 @@
           "guests": "Guests"
         },
         "agreements": {
-          "lede": "Partnership memoranda (Form F-26). Drafts are written here; the President and the partner’s signatory each sign by name, and nothing is uploaded. Someone who has declared a conflict with the partner cannot sign (P8.3).",
-          "draft": "Draft a memorandum",
-          "cancel": "Cancel",
+          "lede": "Partnership memoranda. Each comes from an application signed by the partner’s signatory and takes effect once the Council’s adopted resolution is recorded. Nothing is uploaded. Someone who has declared a conflict with the partner cannot record the vote (P8.3).",
           "empty": "No memoranda yet.",
           "formIntro": "This memorandum records what each side has agreed. It is made in good faith and is not a legal contract. Either side may end it with 14 days’ written notice.",
           "choosePartner": "Choose a partner",
@@ -2223,9 +2041,6 @@
           "dates": "Dates",
           "status": "Status",
           "noGrants": "Nothing on the platform",
-          "sign": "Sign",
-          "signIntro": "Sign for the Society (P11.2: the President signs). The partner’s signatory signs by name; nothing is uploaded.",
-          "partnerSignatory": "Signed for the partner by (name, role)",
           "openSigned": "Open signed copy",
           "informedStudentLife": "Student Life told",
           "end": "End",
@@ -2265,7 +2080,7 @@
           "missing": "This memorandum is not here",
           "asked": "Asked for: {grants}",
           "give": "Approve what they asked for",
-          "signingAs": "You sign for the Society as"
+          "recordVote": "Record the Council’s vote"
         },
         "affiliations": {
           "lede": "People who say they belong to a partner. Check with the partner’s contact before verifying. Lists are never shared with partners.",
@@ -2663,13 +2478,13 @@
         "textFromNotion": "Written in Notion and shown here as published. To change it, edit the page in Notion and set Ready to publish."
       },
       "notion": {
-        "event": "This event is written in the team’s Notion workspace. Publishing it from Notion again replaces changes made here.",
+        "event": "This event is written in the team’s Notion workspace: its date, place, access and text come from there. The site’s own parts are below.",
         "news": "This post is written in the team’s Notion workspace. Publishing it from Notion again replaces changes made here.",
         "open": "Open in Notion",
         "mirror": "The team’s Notion workspace keeps a read-only copy of this, where projects, tasks and meetings link to it.",
         "programme": "This row is written in the team’s Notion workspace (Publishing): its name, summary and rhythm come from there.",
         "document": "This document is written in the team’s Notion workspace (Publishing, Documents): its text comes from there.",
-        "minutes": "These minutes are written in the team’s Notion workspace (Work, Meetings) and come here when their Status is Minutes in the Diwan. Once adopted, this copy is locked."
+        "minutes": "These minutes are written in the team’s Notion workspace (Work, Meetings) and come here when their Status is Minutes in the Diwan. The Council adopts them here; once adopted, this copy is locked."
       },
       "qirtas": {
         "title": "Qirtas",
@@ -3014,41 +2829,45 @@
         },
         "role": "Role",
         "roleHint": "Every role the Society has, by who picks the person. Whoever is onboarded holds it.",
-        "roleTitleHint": "Leave empty to use the role’s name, or give its own title (“Salon Host”).",
+        "roleTitleHint": "Leave empty to use the role’s name, or give its own title (“Tour Lead”).",
         "back": "All roles"
       },
       "sections": {
         "label": "The Diwan’s sections",
         "desk": "Desk",
-        "events": "What’s on",
+        "events": "Events",
         "qirtas": "Qirtas",
         "company": "The Company",
-        "people": "People",
-        "society": "Society",
         "tabs": {
           "calendar": "Calendar",
           "programs": "Events",
-          "events": "What’s on",
+          "events": "Events",
           "members": "Members",
           "openings": "Openings",
           "service": "Service",
           "partners": "Partners",
-          "insights": "Insights",
-          "people": "People",
           "requests": "Requests",
           "elections": "Elections",
           "concerns": "Concerns",
           "library": "Library",
-          "society": "Society",
           "qirtas": "Qirtas",
           "newsroom": "Newsroom",
           "editions": "Editions",
           "meetings": "Meetings",
-          "declarations": "Declarations",
           "tour": "Typewriter Tour",
           "prize": "Mutanabbi Prize",
-          "qalam": "Qalam"
-        }
+          "qalam": "Qalam",
+          "certificates": "Certificates",
+          "nextStop": "Next Stop",
+          "design": "Design system",
+          "applications": "Applications",
+          "agreements": "Memoranda",
+          "disclosures": "Disclosures"
+        },
+        "council": "The Council",
+        "media": "Media",
+        "partnerships": "Partnerships",
+        "membership": "Membership"
       },
       "society": {
         "requests": {
@@ -3094,11 +2913,6 @@
         "things": {
           "access_role_assignments": "a role",
           "access_two_step_resets": "a two-step reset",
-          "charity_campaigns": "a book fair campaign",
-          "charity_impact_metrics": "an impact figure",
-          "charity_ledger_entries": "a ledger entry",
-          "charity_ledger_signoffs": "a ledger sign-off",
-          "charity_receipts": "a receipt",
           "events_check_ins": "a check-in at the door",
           "events_events": "the event",
           "events_series_rules": "a series’ repeat rule (retired)",
@@ -3119,8 +2933,6 @@
           "journal_decisions": "a decision",
           "journal_issues": "the Edition",
           "journal_pieces": "the piece",
-          "journal_award_entries": "an award entry",
-          "journal_award_rounds": "the award round",
           "journal_puzzles": "the game",
           "membership_certificates": "a certificate",
           "membership_memberships": "a membership",
@@ -3129,7 +2941,6 @@
           "programmes_episodes": "the episode",
           "programmes_needs": "a need",
           "programmes_opening_replies": "an application",
-          "programmes_placements": "a place",
           "programmes_production_credits": "a credit",
           "programmes_production_events": "a performance date",
           "programmes_productions": "the production",
@@ -3139,10 +2950,7 @@
           "membership_activity_records": "an activity record",
           "governance_partner_invitations": "an invitation",
           "membership_guests": "a guest of the Society",
-          "programmes_prompts": "a prompt",
           "events_session_links": "an event’s link",
-          "programmes_book_ballots": "a book vote",
-          "programmes_book_choices": "a book on a vote",
           "events_joint_tasks": "a joint event’s checklist item"
         },
         "roleFor": "{role} for {person}"
@@ -3288,9 +3096,6 @@
       "linkPrompt": "Link address (https://…)",
       "undo": "Undo",
       "redo": "Redo",
-      "connecting": "Connecting to the shared draft…",
-      "alsoEditing": "Also here: {names}",
-      "liveNote": "Changes appear for everyone editing; Save writes them to the record.",
       "minorHeading": "Minor heading",
       "table": "Table",
       "addRow": "Add row",
@@ -3539,8 +3344,8 @@
           }
         },
         "f11": {
-          "title": "Event pitch",
-          "action": "Pitch an event",
+          "title": "Event proposal",
+          "action": "Propose an event",
           "purpose": "Anyone, within or outside the Society, may pitch; one page is enough. If the Council agrees, it goes on the term calendar and the Director of Events picks a lead.",
           "fields": {
             "title": "What the event is, titled plainly",
@@ -3973,7 +3778,7 @@
     },
     "partnerJoin": {
       "title": "Partner with the Society",
-      "lede": "For clubs, departments and organizations whose aims fit the Society’s and who treat people fairly. Apply here and sign the memorandum by name; the President signs for the Society.",
+      "lede": "For clubs, departments and organizations whose aims fit the Society’s and who treat people fairly. Apply here and sign the memorandum by name; the Society’s Council votes on it.",
       "account": "Not a member? Applying takes an account, for the person who signs for the organization. Any email address will do.",
       "nameEn": "Name in English",
       "nameAr": "Name in Arabic",
@@ -3986,7 +3791,7 @@
       "accept": "I sign this memorandum for {name}, and I may sign for it.",
       "submit": "Apply and sign",
       "receivedTitle": "Application received",
-      "waiting": "{name}'s application, signed on {date}, is with the Society. Once the President signs, {name}'s dashboard opens for you.",
+      "waiting": "{name}’s application, signed on {date}, is with the Society. Once the Council approves it, {name}’s dashboard opens for you.",
       "partneredTitle": "You are a partner",
       "partnered": "{name} is a partner of the Society. Its dashboard keeps its profile, guests and team.",
       "openDesk": "Open the dashboard",
@@ -3995,7 +3800,7 @@
         "title": "Memorandum of Partnership",
         "yourOrganization": "your organization",
         "one": "{name} and the AUIB Society of Arts and Letters agree to the partnership described above.",
-        "two": "Every partnership that involves money, shared branding or shared responsibility has a written memorandum, signed by the President. This is that memorandum, once the President signs.",
+        "two": "Every partnership has a written memorandum, approved by the Council’s vote. This is that memorandum, once the Council approves it.",
         "three": "The Society does not accept sponsorship from political parties, religious or sectarian bodies, tobacco, alcohol or gambling businesses, or any sponsor that would compromise its independence.",
         "four": "Sponsors get acknowledgement, never editorial influence.",
         "five": "{name} verifies its own people on the platform, and only people who belong to it. What it turns on for itself and its guests, and what it publishes, waits for the Society’s approval.",
@@ -4015,7 +3820,7 @@
         "forPartner": "For {name}",
         "role": "Signing as <blank></blank> of the organization.",
         "forSociety": "For the Society",
-        "presidentSigns": "The President signs here once the Society approves.",
+        "presidentSigns": "The Council’s approval is recorded here once it votes.",
         "urlBlank": "https://"
       },
       "oneMembership": "You are the Society’s guest, and a guest is never on a partner’s team. Apply with your organization’s own address: sign out, then come back here.",
@@ -4072,12 +3877,12 @@
       },
       "team": {
         "title": "Team",
-        "lede": "Up to six people keep this dashboard. Leads invite and remove; everyone keeps the profile and guests.",
+        "lede": "The Lead and up to two more keep this dashboard. The Lead invites and removes; everyone keeps the profile and guests.",
         "remove": "Remove",
         "removeConfirm": "Remove {name} from the team?",
         "leave": "Leave",
         "leaveConfirm": "Leave the team? You will no longer keep this page.",
-        "full": "The team is full (six people).",
+        "full": "The team is full: the Lead and two more.",
         "lead": "Lead",
         "member": "Team",
         "makeLead": "Make lead",
@@ -4111,7 +3916,7 @@
       "pending": "Waiting for {name}",
       "pendingLine": "Your partner confirms that you belong to it; then you are its guest.",
       "applied": "{name} has applied to partner",
-      "appliedLine": "The application is with the Society until the President signs.",
+      "appliedLine": "The application is with the Society until the Council votes on it.",
       "nothing": "No membership yet. Membership is for AUIB students; others join as a guest, by invitation from the Society or one of its partners.",
       "aboutPartners": "About our partners",
       "do": "What you can do",
@@ -4140,7 +3945,7 @@
       "errors": {
         "invitation_for_another_address": "This invitation is for another address.",
         "invitation_unusable": "This invitation can no longer be used.",
-        "team_full": "The team is full (six people).",
+        "team_full": "The team is full: the Lead and two more.",
         "unknown": "Something went wrong. Try again.",
         "one_membership": "This account already holds a membership of another kind. An account is one kind only: a member, a guest or a partner’s."
       },
@@ -4696,66 +4501,6 @@
         }
       }
     },
-    "give": {
-      "title": "Give",
-      "waysTitle": "How to give",
-      "ways": {
-        "books": "Donate books",
-        "volunteer": "Volunteer at the fair",
-        "warm": "Keep a child warm"
-      },
-      "waysNote": "We take no payments online. Give in person at the drive and the fair, where every amount is counted and recorded.",
-      "counted": "{amount} counted and signed off",
-      "noCampaign": "No campaign is running at the moment.",
-      "transparencyTitle": "Every dinar",
-      "transparencyLede": "Every dinar is counted twice and reported.",
-      "policy": "Charity money is held separately, never used for costs, and handed over in full to our charity partner at a witnessed handover with a receipt.",
-      "policySource": "Policy Manual",
-      "countedNote": "These totals show only money that two people counted at the close of the day and a second officer signed off.",
-      "receiptsTitle": "Receipts",
-      "noReceipts": "No receipts published yet.",
-      "openReceipt": "View receipt",
-      "impactTitle": "Impact",
-      "collectionTitle": "The collection",
-      "handedOver": "Handed over on {date}: {amount}, witnessed, with a receipt.",
-      "handoverAhead": "Handed over in full to our charity partner, witnessed, with a receipt.",
-      "dropOffTitle": "Where to leave books",
-      "range": "{from} to {to}",
-      "stages": {
-        "boxes": "Boxes go out",
-        "donations": "Donations",
-        "fair": "The fair",
-        "handover": "The witnessed handover",
-        "impact": "The impact report"
-      },
-      "states": {
-        "ahead": "Ahead",
-        "now": "Now",
-        "done": "Done"
-      },
-      "report": {
-        "title": "The impact report",
-        "lede": "What the collection did, in the figures the campaign published, with the witnessed handover and the receipts.",
-        "back": "The book fair",
-        "open": "Read the impact report"
-      },
-      "catalog": {
-        "title": "The fair’s books",
-        "link": "Browse the books given so far ({count})",
-        "lede": "The books given to {campaign}, to see what the fair will hold. Listed as they arrive; come to the fair for them.",
-        "none": "The books will be listed here once the next collection begins.",
-        "empty": "No books in this language yet.",
-        "languages": "Languages",
-        "all": "Every language",
-        "language": {
-          "ar": "Arabic",
-          "en": "English",
-          "other": "Another language"
-        },
-        "copies": "{count} copies",
-        "noPrices": "To browse only: books are not reserved or priced here."
-      }
-    },
     "contact": {
       "title": "Contact",
       "lede": "Find us on Instagram and in the members’ group on Telegram, or talk to us at any event.",
@@ -4853,7 +4598,7 @@
       },
       "visit": "Visit {name}",
       "workTitle": "Work with us",
-      "work": "Clubs, departments, charities and cultural organizations apply here and sign the memorandum by name; the President signs for the Society. Sponsors are acknowledged and never have editorial influence.",
+      "work": "Clubs, departments, charities and cultural organizations apply here and sign the memorandum by name; the Society’s Council votes on each. Sponsors are acknowledged and never have editorial influence.",
       "apply": "Apply to partner",
       "teamSignIn": "Partner team sign in",
       "gets": {
@@ -4879,7 +4624,7 @@
         },
         "team": {
           "title": "A team that answers",
-          "body": "Up to six people, at least one of them a Lead, keep your profile and people on your dashboard."
+          "body": "Your Lead and up to two more keep your profile and people on your dashboard."
         }
       },
       "secondChapter": {
@@ -5174,33 +4919,17 @@
       "auditionsLink": "Sign up for an audition",
       "dates": "The Company’s dates on What’s on"
     },
-    "programs": {
-      "page": {
-        "wall": "The Six Words wall",
-        "try": "Try the typewriter",
-        "toy": {
-          "label": "Six words, on a typewriter",
-          "count": "{count} of {six} words",
-          "six": "Six words.",
-          "soundOff": "Key sound: off",
-          "soundOn": "Key sound: on",
-          "clear": "Start again",
-          "nothingKept": "Nothing you type here is kept. Your six words for the wall are written on the Tour, on a card."
-        },
-        "vote": {
-          "title": "Next month’s book",
-          "lede": "The host chose three books; members choose one. Voting closes on {closes}.",
-          "cast": "Vote for this book",
-          "change": "Vote for this one instead",
-          "yours": "Your vote",
-          "closed": "Voting has closed. The result shows here soon.",
-          "signIn": "Sign in to vote",
-          "membersOnly": "Only members vote. Join the Society to have a say.",
-          "failed": "Your vote didn’t go through. Try again.",
-          "chosen": "The circle chose {titles}.",
-          "and": " and ",
-          "count": "{count, plural, one {{title}: {votes} vote} other {{title}: {votes} votes}}"
-        }
+    "tour": {
+      "wall": "The Six Words wall",
+      "try": "Try the typewriter",
+      "toy": {
+        "label": "Six words, on a typewriter",
+        "count": "{count} of {six} words",
+        "six": "Six words.",
+        "soundOff": "Key sound: off",
+        "soundOn": "Key sound: on",
+        "clear": "Start again",
+        "nothingKept": "Nothing you type here is kept. Your six words for the wall are written on the Tour, on a card."
       }
     },
     "prize": {

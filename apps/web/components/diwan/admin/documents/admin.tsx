@@ -24,7 +24,7 @@ import {
 import { NotionManaged } from "../notion-managed";
 
 const key = ["admin", "society-documents"];
-const LIBRARY = "/society/library";
+const LIBRARY = "/council/library";
 
 type Status = documents.DocumentStatus;
 type Doc = documents.SalDocument;
@@ -101,7 +101,7 @@ const optionalDate = (value: string) => value || null;
 type FullDoc = Doc & { body_ar: string | null; body_en: string };
 
 /**
- * One document on its own page, `/society/library/<slug>`: its adoption
+ * One document on its own page, `/council/library/<slug>`: its adoption
  * record, and its text as Notion has it. New documents are written in
  * Notion (Publishing, Documents) since Nov 4, 2026. Saving returns to the
  * Library.

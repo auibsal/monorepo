@@ -85,7 +85,7 @@ export const MembersDirectory = () => {
       cell: (row) => (
         <Link
           className="font-medium underline underline-offset-4"
-          href={`/people/${row.user_id}`}
+          href={`/membership/${row.user_id}`}
         >
           {memberName(row, locale) || t("unnamed")}
         </Link>
@@ -134,7 +134,7 @@ export const MembersDirectory = () => {
         actions={
           <>
             {hasPermission(grants.data, "members.manage") ? (
-              <Link className="link" href="/people/guests">
+              <Link className="link" href="/membership/guests">
                 {t("guests.link")}
               </Link>
             ) : null}

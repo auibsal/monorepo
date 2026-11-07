@@ -167,7 +167,6 @@ describe.skipIf(!enabled)("Hudhud", () => {
       .from("events")
       .insert({
         capacity: 5,
-        members_only: false,
         slug: `tg-${stamp}`,
         starts_at: new Date(Date.now() + 2 * 86_400_000).toISOString(),
         status: "published",

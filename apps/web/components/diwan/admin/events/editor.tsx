@@ -3,32 +3,25 @@
 import { useAuth } from "@repo/auth/provider";
 import { Button } from "@repo/brand/components/ui/button";
 import { Checkbox } from "@repo/brand/components/ui/checkbox";
-import { Input } from "@repo/brand/components/ui/input";
 import { Label } from "@repo/brand/components/ui/label";
-import { formatNumber } from "@repo/internationalization/format";
+import type { Locale } from "@repo/internationalization";
+import {
+  formatClock,
+  formatLongDate,
+  formatNumber,
+} from "@repo/internationalization/format";
 import { events, localized, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useEffect, useId, useState } from "react";
-import { Link, useRouter } from "@/lib/diwan/navigation";
+import { Link } from "@/lib/diwan/navigation";
 import { useQueryParam } from "@/lib/diwan/use-query-param";
 import { OnTheSite } from "../../site-links";
 import { ErrorState, SectionSpinner } from "../../states";
-import { ImageField } from "../image-field";
-import {
-  AdminHeading,
-  BilingualField,
-  ConfirmAction,
-  DateTimeField,
-  ErrorLine,
-  Field,
-  SaveButton,
-  SelectInput,
-} from "../kit";
+import { AdminHeading, BilingualField, ErrorLine, SaveButton } from "../kit";
 import { NotionManaged } from "../notion-managed";
 import { RecordHistory } from "../record-history";
 import { Attendance } from "./attendance";
-import { useProgrammeOptions } from "./data";
 import { Invitations } from "./invitations";
 import { EventPartsAdmin } from "./parts";
 
@@ -39,83 +32,13 @@ interface Question {
   required: boolean;
 }
 
-interface FormState {
-  body: { ar: string; en: string };
-  capacity: string;
-  ends_at: string | null;
-  entry: events.Entry;
-  image_path: string | null;
-  members_only: boolean;
-  programme_id: string;
-  questions: Question[];
-  slug: string;
-  starts_at: string | null;
-  summary: { ar: string; en: string };
-  title: { ar: string; en: string };
-  venue: { ar: string; en: string };
-}
-
-const blank: FormState = {
-  body: { ar: "", en: "" },
-  capacity: "",
-  ends_at: null,
-  entry: "rsvp",
-  image_path: null,
-  members_only: false,
-  programme_id: "",
-  questions: [],
-  slug: "",
-  starts_at: null,
-  summary: { ar: "", en: "" },
-  title: { ar: "", en: "" },
-  venue: { ar: "", en: "" },
-};
-
-const SLUG_TRIM = /^-+|-+$/g;
-const NOT_SLUG = /[^a-z0-9]+/g;
-
-/** "The Return 2026" → "the-return-2026". */
-export const slugify = (value: string) =>
-  value
-    .toLowerCase()
-    .replace(NOT_SLUG, "-")
-    .replace(SLUG_TRIM, "")
-    .slice(0, 80);
-
 /** Registration questions from the jsonb column (always an array there). */
 const asQuestions = (value: unknown): Question[] =>
   Array.isArray(value) ? (value as Question[]) : [];
 
-type ProblemKey =
-  | "errors.title"
-  | "errors.ends_before_start"
-  | "errors.slug"
-  | "errors.starts"
-  | "errors.questions";
-
-/** The message for the first problem zod found in the event form. */
-const problemKey = (
-  issue: { message: string; path: PropertyKey[] } | undefined
-): ProblemKey => {
-  const field = String(issue?.path[0] ?? "");
-  if (issue?.message === "ends_before_start") {
-    return "errors.ends_before_start";
-  }
-  if (field === "slug") {
-    return "errors.slug";
-  }
-  if (field === "starts_at") {
-    return "errors.starts";
-  }
-  if (field === "questions") {
-    return "errors.questions";
-  }
-  return "errors.title";
-};
-
 const newQuestionId = () => `q${Math.random().toString(36).slice(2, 8)}`;
 
-/** A published event's public page, from its editor. */
+/** A published event's public page, from its page in the Diwan. */
 const PublicPage = ({
   slug,
   status,
@@ -127,20 +50,22 @@ const PublicPage = ({
     <OnTheSite href={`/events/${slug}`} />
   ) : null;
 
+/**
+ * An event in the Diwan (decisions §8): what Notion holds (the date, the
+ * place, the access and the text) is shown, not edited; the site's own
+ * parts are kept here: registration questions, invitations, bookings and
+ * check-in, and the standard parts.
+ */
 export const EventEditor = () => {
   const t = useTranslations("diwan.admin.event");
   const tk = useTranslations("diwan.admin.kit");
-  const tm = useTranslations("diwan.admin.member");
-  const locale = useLocale();
+  const locale = useLocale() as Locale;
   const id = useId();
-  const router = useRouter();
   const eventId = useQueryParam("id");
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
-  const programmes = useProgrammeOptions();
-  const [form, setForm] = useState<FormState>(blank);
+  const [questions, setQuestions] = useState<Question[]>([]);
   const [problem, setProblem] = useState<string | null>(null);
-  const [slugTouched, setSlugTouched] = useState(false);
 
   const existing = useQuery({
     enabled: Boolean(eventId),
@@ -157,128 +82,62 @@ export const EventEditor = () => {
   });
 
   useEffect(() => {
-    const e = existing.data;
-    if (e) {
-      setSlugTouched(true);
-      setForm({
-        body: { ar: e.body_ar ?? "", en: e.body_en ?? "" },
-        capacity: e.capacity ? String(e.capacity) : "",
-        ends_at: e.ends_at,
-        entry: e.entry as events.Entry,
-        image_path: e.image_path,
-        members_only: e.members_only,
-        programme_id: e.programme_id ?? "",
-        questions: asQuestions(e.questions),
-        slug: e.slug,
-        starts_at: e.starts_at,
-        summary: { ar: e.summary_ar ?? "", en: e.summary_en ?? "" },
-        title: { ar: e.title_ar, en: e.title_en },
-        venue: { ar: e.venue_ar ?? "", en: e.venue_en ?? "" },
-      });
+    if (existing.data) {
+      setQuestions(asQuestions(existing.data.questions));
     }
   }, [existing.data]);
 
-  const status = existing.data?.status ?? "draft";
-
-  const toInput = (nextStatus: string) => ({
-    body_ar: form.body.ar || undefined,
-    body_en: form.body.en || undefined,
-    capacity: form.capacity ? Number(form.capacity) : null,
-    ends_at: form.ends_at,
-    entry: form.entry,
-    members_only: form.members_only,
-    programme_id: form.programme_id || null,
-    questions: form.questions,
-    slug: form.slug,
-    starts_at: form.starts_at ?? "",
-    status: nextStatus as "draft" | "published" | "cancelled",
-    summary_ar: form.summary.ar || undefined,
-    summary_en: form.summary.en || undefined,
-    title_ar: form.title.ar,
-    title_en: form.title.en,
-    venue_ar: form.venue.ar || undefined,
-    venue_en: form.venue.en || undefined,
-  });
-
   const save = useMutation({
-    mutationFn: async (nextStatus: string) => {
-      const parsed = events.eventSchema.safeParse(toInput(nextStatus));
+    mutationFn: async () => {
+      const parsed = events.eventQuestionsSchema.safeParse(questions);
       if (!parsed.success) {
-        const [issue] = parsed.error.issues;
-        setProblem(t(problemKey(issue)));
+        setProblem(t("errors.questions"));
         throw new Error("invalid");
       }
       setProblem(null);
-      const row = {
-        ...parsed.data,
-        body_ar: parsed.data.body_ar ?? null,
-        body_en: parsed.data.body_en ?? null,
-        image_path: form.image_path,
-        published_at:
-          nextStatus === "published"
-            ? (existing.data?.published_at ?? new Date().toISOString())
-            : (existing.data?.published_at ?? null),
-        summary_ar: parsed.data.summary_ar ?? null,
-        summary_en: parsed.data.summary_en ?? null,
-        venue_ar: parsed.data.venue_ar ?? null,
-        venue_en: parsed.data.venue_en ?? null,
-      };
-      const table = supabase.schema("events").from("events");
-      if (eventId) {
-        unwrap(await table.update(row).eq("id", eventId));
-        return eventId;
-      }
-      const created = unwrap(await table.insert(row).select("id").single());
-      if (!created) {
-        throw new Error("not_created");
-      }
-      return created.id;
-    },
-    onSuccess: async (savedId) => {
-      await queryClient.invalidateQueries({ queryKey: ["admin"] });
-      if (!eventId) {
-        router.replace(`/events/${savedId}`);
-      }
-    },
-  });
-
-  const remove = useMutation({
-    mutationFn: async () =>
       unwrap(
         await supabase
           .schema("events")
           .from("events")
-          .delete()
+          .update({ questions: parsed.data })
           .eq("id", eventId ?? "")
-      ),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ["admin"] });
-      router.replace("/events");
+      );
     },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["admin"] }),
   });
 
-  if (eventId && existing.isPending) {
+  if (existing.isPending) {
     return <SectionSpinner />;
   }
   if (existing.isError) {
     return <ErrorState onRetry={() => existing.refetch()} />;
   }
-  if (eventId && !existing.data) {
+  const event = existing.data;
+  if (!(eventId && event)) {
     return <p className="type-body text-text-secondary">{t("notFound")}</p>;
   }
 
   const setQuestion = (index: number, patch: Partial<Question>) =>
-    setForm((f) => ({
-      ...f,
-      questions: f.questions.map((q, i) =>
-        i === index ? { ...q, ...patch } : q
-      ),
-    }));
-
-  const submit = (event: FormEvent) => {
-    event.preventDefault();
-    save.mutate(status);
+    setQuestions((qs) =>
+      qs.map((q, i) => (i === index ? { ...q, ...patch } : q))
+    );
+  const submit = (e: FormEvent) => {
+    e.preventDefault();
+    save.mutate();
   };
+  const entry = event.entry as events.Entry;
+  const when = [
+    `${formatLongDate(event.starts_at, locale, true)}, ${formatClock(event.starts_at, locale)}`,
+    event.ends_at ? formatClock(event.ends_at, locale) : null,
+  ]
+    .filter(Boolean)
+    .join("–");
+  const facts: [string, string][] = [
+    [t("when"), when],
+    [t("venue"), localized(event, "venue", locale) || t("noVenue")],
+    [t("entry"), `${t(`entries.${entry}`)}. ${t(`entryHint.${entry}`)}`],
+    [t("seats"), event.capacity ? formatNumber(event.capacity) : t("noLimit")],
+  ];
 
   return (
     <div className="grid gap-10">
@@ -291,171 +150,30 @@ export const EventEditor = () => {
             >
               {tk("back")}
             </Link>
-            <PublicPage slug={existing.data?.slug} status={status} />
+            <PublicPage slug={event.slug} status={event.status} />
           </>
         }
-        title={
-          existing.data
-            ? localized(existing.data, "title", locale)
-            : t("newTitle")
-        }
+        title={localized(event, "title", locale)}
       >
-        {existing.data
-          ? `${tk("status")}: ${tk(`statuses.${status as "draft"}`)}`
-          : null}
+        {`${tk("status")}: ${tk(`statuses.${event.status as "draft"}`)}`}
       </AdminHeading>
       <NotionManaged kind="event" recordId={eventId} />
+      <dl className="grid max-w-4xl gap-x-6 gap-y-3 sm:grid-cols-[10rem_1fr]">
+        {facts.map(([term, value]) => (
+          <div className="contents" key={term}>
+            <dt className="type-label">{term}</dt>
+            <dd className="type-body">{value}</dd>
+          </div>
+        ))}
+      </dl>
 
-      <form className="grid max-w-4xl gap-6" onSubmit={submit}>
-        <BilingualField
-          label={t("eventTitle")}
-          maxLength={200}
-          onChange={(title) =>
-            setForm((f) => ({
-              ...f,
-              slug: slugTouched ? f.slug : slugify(title.en),
-              title,
-            }))
-          }
-          required
-          value={form.title}
-        />
-        <Field hint={tk("slugHint")} label={tk("slug")}>
-          {(fieldId) => (
-            <Input
-              dir="ltr"
-              id={fieldId}
-              maxLength={80}
-              onChange={(e) => {
-                setSlugTouched(true);
-                setForm((f) => ({ ...f, slug: e.target.value }));
-              }}
-              required
-              value={form.slug}
-            />
-          )}
-        </Field>
-        <Field label={tk("programme")}>
-          {(fieldId) => (
-            <SelectInput
-              id={fieldId}
-              onChange={(e) =>
-                setForm((f) => ({ ...f, programme_id: e.target.value }))
-              }
-              required={!programmes.canChooseNone}
-              value={form.programme_id}
-            >
-              {programmes.canChooseNone ? (
-                <option value="">{tk("noProgramme")}</option>
-              ) : (
-                <option value="">{tm("choose")}</option>
-              )}
-              {/* No series (owner, Nov 5, 2026): only the Company's and
-                  the Tour's own rows, for their dates. */}
-              {programmes.options
-                .filter((p) => p.isActive || p.id === form.programme_id)
-                .map((p) => (
-                  <option key={p.id} value={p.id}>
-                    {p.label}
-                  </option>
-                ))}
-            </SelectInput>
-          )}
-        </Field>
-        <div className="grid gap-4 sm:grid-cols-2">
-          <DateTimeField
-            label={t("starts")}
-            onChange={(starts_at) => setForm((f) => ({ ...f, starts_at }))}
-            required
-            value={form.starts_at}
-          />
-          <DateTimeField
-            label={t("ends")}
-            onChange={(ends_at) => setForm((f) => ({ ...f, ends_at }))}
-            value={form.ends_at}
-          />
-        </div>
-        <BilingualField
-          label={t("venue")}
-          maxLength={200}
-          onChange={(venue) => setForm((f) => ({ ...f, venue }))}
-          value={form.venue}
-        />
-        <BilingualField
-          label={t("summary")}
-          maxLength={500}
-          multiline
-          onChange={(summary) => setForm((f) => ({ ...f, summary }))}
-          rows={2}
-          value={form.summary}
-        />
-        <BilingualField
-          label={t("body")}
-          multiline
-          onChange={(body) => setForm((f) => ({ ...f, body }))}
-          rows={8}
-          value={form.body}
-        />
-        <ImageField
-          area="events"
-          onChange={(image_path) => setForm((f) => ({ ...f, image_path }))}
-          value={form.image_path}
-        />
-        <div className="flex items-start gap-3">
-          <Checkbox
-            checked={form.members_only}
-            id={`${id}-members`}
-            onCheckedChange={(v) =>
-              setForm((f) => ({ ...f, members_only: v === true }))
-            }
-          />
-          <Label className="leading-normal" htmlFor={`${id}-members`}>
-            {t("membersOnly")}
-          </Label>
-        </div>
-        <Field hint={t(`entryHint.${form.entry}`)} label={t("entry")}>
-          {(fieldId) => (
-            <SelectInput
-              id={fieldId}
-              onChange={(e) =>
-                setForm((f) => ({
-                  ...f,
-                  entry: e.target.value as events.Entry,
-                }))
-              }
-              value={form.entry}
-            >
-              {events.ENTRIES.map((entry) => (
-                <option key={entry} value={entry}>
-                  {t(`entries.${entry}`)}
-                </option>
-              ))}
-            </SelectInput>
-          )}
-        </Field>
-        <Field hint={t("capacityHint")} label={t("capacity")}>
-          {(fieldId) => (
-            <Input
-              className="w-40"
-              dir="ltr"
-              id={fieldId}
-              inputMode="numeric"
-              min={1}
-              onChange={(e) =>
-                setForm((f) => ({ ...f, capacity: e.target.value }))
-              }
-              type="number"
-              value={form.capacity}
-            />
-          )}
-        </Field>
-
-        <fieldset className="grid gap-4">
-          <legend className="type-subheading">{t("questions")}</legend>
+      {entry === "open" ? null : (
+        <form className="grid max-w-4xl gap-4" onSubmit={submit}>
+          <h2 className="type-subheading">{t("questions")}</h2>
           <p className="type-caption">{t("questionsHint")}</p>
-          {form.questions.map((question, index) => (
+          {questions.map((question, index) => (
             <div
-              className="grid gap-3 border-line border-t p-space-4"
+              className="grid gap-3 border-line border-t pt-space-4"
               key={question.id}
             >
               <BilingualField
@@ -481,10 +199,7 @@ export const EventEditor = () => {
                 </div>
                 <Button
                   onClick={() =>
-                    setForm((f) => ({
-                      ...f,
-                      questions: f.questions.filter((_, i) => i !== index),
-                    }))
+                    setQuestions((qs) => qs.filter((_, i) => i !== index))
                   }
                   size="sm"
                   type="button"
@@ -495,96 +210,48 @@ export const EventEditor = () => {
               </div>
             </div>
           ))}
-          {form.questions.length < 10 ? (
-            <Button
-              className="justify-self-start"
-              onClick={() =>
-                setForm((f) => ({
-                  ...f,
-                  questions: [
-                    ...f.questions,
+          <div className="flex flex-wrap items-center gap-3">
+            {questions.length < 10 ? (
+              <Button
+                onClick={() =>
+                  setQuestions((qs) => [
+                    ...qs,
                     {
                       id: newQuestionId(),
                       label_ar: "",
                       label_en: "",
                       required: false,
                     },
-                  ],
-                }))
-              }
-              size="sm"
-              type="button"
-              variant="outline"
-            >
-              {t("addQuestion")}
-            </Button>
+                  ])
+                }
+                size="sm"
+                type="button"
+                variant="outline"
+              >
+                {t("addQuestion")}
+              </Button>
+            ) : null}
+            <SaveButton pending={save.isPending} success={save.isSuccess} />
+          </div>
+          {problem ? (
+            <p className="text-sm text-text" role="alert">
+              {problem}
+            </p>
           ) : null}
-        </fieldset>
+          {save.error && save.error.message !== "invalid" ? (
+            <ErrorLine error={save.error} />
+          ) : null}
+        </form>
+      )}
 
-        {problem ? (
-          <p className="text-sm text-text" role="alert">
-            {problem}
-          </p>
-        ) : null}
-        {save.error && save.error.message !== "invalid" ? (
-          <ErrorLine error={save.error} />
-        ) : null}
-        <div className="flex flex-wrap items-center gap-3">
-          <SaveButton
-            pending={save.isPending}
-            quiet={status === "draft"}
-            success={save.isSuccess}
-          />
-          {status === "draft" ? (
-            <ConfirmAction
-              confirmLabel={t("publish")}
-              description={t("publishConfirm")}
-              disabled={save.isPending}
-              onConfirm={() => save.mutate("published")}
-              variant="default"
-            >
-              {t("publish")}
-            </ConfirmAction>
-          ) : null}
-          {status === "published" ? (
-            <ConfirmAction
-              confirmLabel={t("cancelEvent")}
-              description={t("cancelConfirm")}
-              disabled={save.isPending}
-              onConfirm={() => save.mutate("cancelled")}
-            >
-              {t("cancelEvent")}
-            </ConfirmAction>
-          ) : null}
-          {eventId && status === "draft" ? (
-            <ConfirmAction
-              confirmLabel={t("deleteDraft")}
-              description={t("deleteConfirm")}
-              disabled={remove.isPending}
-              onConfirm={() => remove.mutate()}
-              variant="ghost"
-            >
-              {t("deleteDraft")}
-            </ConfirmAction>
-          ) : null}
-        </div>
-        <ErrorLine error={remove.error} />
-      </form>
-
-      {eventId && existing.data?.entry === "invite" ? (
-        <Invitations eventId={eventId} />
-      ) : null}
-      {eventId && existing.data ? (
-        <>
-          <Attendance
-            capacity={existing.data.capacity}
-            eventId={eventId}
-            questions={asQuestions(existing.data.questions)}
-            slug={existing.data.slug}
-          />
-          <EventPartsAdmin event={existing.data} />
-        </>
-      ) : null}
+      {entry === "invite" ? <Invitations eventId={eventId} /> : null}
+      <Attendance
+        capacity={event.capacity}
+        eventId={eventId}
+        questions={asQuestions(event.questions)}
+        slug={event.slug}
+      />
+      <EventPartsAdmin event={event} />
       <RecordHistory id={eventId} table="events.events" />
     </div>
   );

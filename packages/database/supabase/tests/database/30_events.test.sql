@@ -73,6 +73,26 @@ insert into core.semesters (code, name_en, name_ar, starts_on, ends_on) values
 -- Tests check the two-activity rule; the founding-voter tests turn the
 -- first-100 rule back on themselves.
 update core.settings set value = '0' where key = 'membership.founding_voters';
+
+-- An adopted Council resolution, with its minutes: the Council's vote that
+-- approves a partnership (decisions §10).
+create function pg_temp.council_resolution(
+  id uuid default '00000000-0000-0000-0000-0000000c0001',
+  code text default 'R-2026-99'
+)
+returns uuid
+language sql
+as $$
+  with m as (
+    insert into governance.minutes (title_en, text_en, meeting_on, body, status, adopted_on)
+    values ('Council meeting', '<p>Minutes.</p>', current_date - 1, 'council', 'adopted', current_date)
+    returning id
+  )
+  insert into governance.resolutions (id, code, title_en, text_en, body, status, adopted_on, minutes_id)
+  select council_resolution.id, council_resolution.code, 'Approves the partnership', '<p>Resolved.</p>', 'council', 'adopted', current_date, m.id
+  from m
+  returning id;
+$$;
 -- </preamble>
 
 select plan(20);
@@ -85,13 +105,13 @@ select pg_temp.make_user('00000000-0000-0000-0000-0000000000a3', 'three@auib.edu
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000b1', 'guest@gmail.com', 'Guest');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000c1', 'staff@auib.edu.iq', 'Staff');
 
-insert into events.events (id, slug, programme_id, title_en, title_ar, starts_at, members_only, capacity, status) values
+insert into events.events (id, slug, programme_id, title_en, title_ar, starts_at, capacity, status, entry) values
   ('e0000000-0000-0000-0000-000000000001', 'open-pages-night', (select id from core.programmes where slug = 'open-pages'),
-    'Open Pages', 'صفحات مفتوحة', now() + interval '3 days', false, 2, 'published'),
+    'Open Pages', 'صفحات مفتوحة', now() + interval '3 days', 2, 'published', 'rsvp'),
   ('e0000000-0000-0000-0000-000000000002', 'members-majlis', (select id from core.programmes where slug = 'salon'),
-    'Members Majlis', 'مجلس الأعضاء', now() + interval '4 days', true, null, 'published'),
+    'Members Majlis', 'مجلس الأعضاء', now() + interval '4 days', null, 'published', 'members'),
   ('e0000000-0000-0000-0000-000000000003', 'draft-night', (select id from core.programmes where slug = 'salon'),
-    'Draft', 'مسودة', now() + interval '5 days', false, null, 'draft');
+    'Draft', 'مسودة', now() + interval '5 days', null, 'draft', 'rsvp');
 
 -- ── Visibility ──────────────────────────────────────────────────────────────
 

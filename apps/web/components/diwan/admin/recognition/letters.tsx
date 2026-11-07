@@ -59,7 +59,7 @@ export const ServiceLetters = () => {
         <AddInPlace label={t("write")}>
           {(close) => <WriteLetter onDone={close} />}
         </AddInPlace>
-        <NewLink href="/people/service/letters/write">{t("other")}</NewLink>
+        <NewLink href="/membership/service/letters/write">{t("other")}</NewLink>
       </div>
       <DataTable
         columns={[

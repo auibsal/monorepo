@@ -50,7 +50,7 @@ const DocumentsPage = async ({ params }: DocumentsProps) => {
         {locale === "ar" ? (
           <p className="type-body text-text-secondary">{t("englishOnly")}</p>
         ) : null}
-        <ManageLinks diwan="/society/library" />
+        <ManageLinks diwan="/council/library" />
       </PageHeader>
       {shelves.map((shelf) => (
         <Section

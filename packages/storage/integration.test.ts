@@ -13,7 +13,6 @@ import {
   buckets,
   createSignedFileUrl,
   StorageError,
-  uploadReceipt,
   uploadSubmissionFile,
 } from "./index";
 
@@ -154,14 +153,5 @@ describe.skipIf(
     await expect(
       uploadSubmissionFile(other, submissionId, pdf())
     ).rejects.toBeInstanceOf(StorageError);
-  });
-
-  test("receipts are closed to members and visitors", async () => {
-    const other = await signIn(`other${stamp}@auib.edu.iq`);
-    await expect(
-      uploadReceipt(other, "00000000-0000-4000-8000-000000000000", pdf())
-    ).rejects.toBeInstanceOf(StorageError);
-    const { data } = await anon.storage.from(buckets.receipts.id).list("");
-    expect(data ?? []).toEqual([]);
   });
 });

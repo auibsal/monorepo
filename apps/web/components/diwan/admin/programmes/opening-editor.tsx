@@ -30,7 +30,7 @@ const COLUMNS =
 
 /** Where an opening lives in the Diwan: its list, which the page returns to. */
 export interface OpeningEditorProps {
-  /** The list's own path ("/people/openings"). */
+  /** The list's own path ("/membership/openings"). */
   readonly back: string;
   readonly id: string;
 }

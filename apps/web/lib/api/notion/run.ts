@@ -12,7 +12,7 @@ import { publishDocuments, syncAdoptionRecords } from "./documents";
 import { sendMinutesToDiwan } from "./minutes";
 import { mirrorJournal, mirrorOfficers, peopleByEmail } from "./mirrors";
 import { publishPrograms } from "./programs";
-import { adoptDiwanItems, publishWaiting, syncRsvpCounts } from "./publish";
+import { publishWaiting, syncRsvpCounts } from "./publish";
 import { unpublishFromNotion } from "./unpublish";
 
 const SOURCE_KEYS = [
@@ -59,7 +59,8 @@ export interface SyncState {
  * Everything one sync does, in order (Nov 4, 2026): the read-only copies
  * (officers, Qirtas's counts), then what Notion authors (programs before
  * the events that link them, documents and their adoption record,
- * minutes), then the Diwan's own events and the RSVP counts.
+ * minutes), then the RSVP counts. Nothing is made in the Diwan and copied
+ * back: events and minutes are written in Notion only (decisions §8).
  */
 const steps: [
   string,
@@ -76,7 +77,6 @@ const steps: [
   ["adoption", (ctx) => syncAdoptionRecords(ctx)],
   ["off the site", (ctx) => unpublishFromNotion(ctx)],
   ["minutes", (ctx) => sendMinutesToDiwan(ctx)],
-  ["diwan items", (ctx) => adoptDiwanItems(ctx)],
   ["rsvps", (ctx) => syncRsvpCounts(ctx)],
 ];
 

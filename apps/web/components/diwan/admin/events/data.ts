@@ -55,4 +55,4 @@ export const useProgrammeOptions = (
 };
 
 export const adminEventColumns =
-  "id, slug, programme_id, title_en, title_ar, starts_at, ends_at, members_only, capacity, rsvp_enabled, status";
+  "id, slug, programme_id, title_en, title_ar, starts_at, ends_at, members_only, entry, capacity, rsvp_enabled, status";

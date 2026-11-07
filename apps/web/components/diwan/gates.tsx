@@ -60,7 +60,7 @@ const KIND_PATHS: Record<
   guest: [
     "/account/calendar",
     "/account/record",
-    "/account/saved",
+    "/account/work",
     "/account/settings",
     "/account/work",
     "/qirtas",

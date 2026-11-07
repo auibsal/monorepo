@@ -73,13 +73,33 @@ insert into core.semesters (code, name_en, name_ar, starts_on, ends_on) values
 -- Tests check the two-activity rule; the founding-voter tests turn the
 -- first-100 rule back on themselves.
 update core.settings set value = '0' where key = 'membership.founding_voters';
+
+-- An adopted Council resolution, with its minutes: the Council's vote that
+-- approves a partnership (decisions §10).
+create function pg_temp.council_resolution(
+  id uuid default '00000000-0000-0000-0000-0000000c0001',
+  code text default 'R-2026-99'
+)
+returns uuid
+language sql
+as $$
+  with m as (
+    insert into governance.minutes (title_en, text_en, meeting_on, body, status, adopted_on)
+    values ('Council meeting', '<p>Minutes.</p>', current_date - 1, 'council', 'adopted', current_date)
+    returning id
+  )
+  insert into governance.resolutions (id, code, title_en, text_en, body, status, adopted_on, minutes_id)
+  select council_resolution.id, council_resolution.code, 'Approves the partnership', '<p>Resolved.</p>', 'council', 'adopted', current_date, m.id
+  from m
+  returning id;
+$$;
 -- </preamble>
 
 select plan(6);
 
-insert into events.events (id, slug, programme_id, title_en, title_ar, starts_at, members_only, status) values
+insert into events.events (id, slug, programme_id, title_en, title_ar, starts_at, status, entry) values
   ('e0000000-0000-0000-0000-0000000000a1', 'launch-night-test', (select id from core.programmes where slug = 'open-pages'),
-    'Launch Night', 'ليلة الإطلاق', now() + interval '30 days', false, 'published');
+    'Launch Night', 'ليلة الإطلاق', now() + interval '30 days', 'published', 'rsvp');
 insert into journal.issues (id, volume, number, slug, title_en, title_ar, launch_event_id) values
   ('1a000000-0000-0000-0000-0000000000a1', 9, 1, 'edition-test-1', 'Secret', 'سري', 'e0000000-0000-0000-0000-0000000000a1'),
   ('1a000000-0000-0000-0000-0000000000a2', 9, 2, 'edition-test-2', 'Quiet', 'هادئ', 'e0000000-0000-0000-0000-0000000000a1');

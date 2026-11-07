@@ -177,6 +177,9 @@ test("moved addresses redirect permanently, in both languages", async ({
   const moved: [string, string][] = [
     ["/membership", "/account"],
     ["/membership/settings/notices", "/account/settings/notices"],
+    ["/account/settings/notices", "/account/settings/notifications"],
+    ["/account/society", "/account/elections"],
+    ["/account/saved", "/account/work"],
     ["/library/privacy", "/privacy"],
     ["/library/terms-of-use", "/terms"],
     ["/library/accessibility", "/accessibility"],

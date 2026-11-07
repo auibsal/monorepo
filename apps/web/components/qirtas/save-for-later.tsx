@@ -13,7 +13,7 @@ type State = "hidden" | "saved" | "unsaved";
  * only to someone signed in, after the first render, so the page stays
  * the same for everyone and is cached; the database decides who may save
  * (a published piece they can read, into their own list). The list is on
- * Today and at /account/saved.
+ * Today and at /account/work.
  */
 export const SaveForLater = ({ pieceId }: { readonly pieceId: string }) => {
   const t = useTranslations("web.journal.saved");
@@ -76,7 +76,7 @@ export const SaveForLater = ({ pieceId }: { readonly pieceId: string }) => {
         {state === "saved" ? t("unsave") : t("save")}
       </button>
       {state === "saved" ? (
-        <a className="link" href={localizedPath(locale, "/account/saved")}>
+        <a className="link" href={localizedPath(locale, "/account/work")}>
           {t("list")}
         </a>
       ) : null}

@@ -20,7 +20,6 @@ import { useQueryParam } from "@/lib/diwan/use-query-param";
 import { RichTextEditor } from "../../editor/rich-text";
 import { OnTheSite } from "../../site-links";
 import { ErrorState, SectionSpinner } from "../../states";
-import { slugify } from "../events/editor";
 import {
   AdminHeading,
   BilingualField,
@@ -30,6 +29,7 @@ import {
   SelectInput,
 } from "../kit";
 import { RecordHistory } from "../record-history";
+import { slugify } from "../slug";
 import { useIssues } from "./admin";
 import { BylinePicker } from "./byline";
 import { PieceExtras } from "./piece-extras";

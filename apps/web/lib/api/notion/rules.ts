@@ -13,8 +13,7 @@ import { read, SLUG, slugify, toInstant } from "./props";
 export interface EventValues {
   capacity: number | null;
   ends_at: string | null;
-  entry: "invite" | "open" | "rsvp";
-  members_only: boolean;
+  entry: "invite" | "members" | "open" | "rsvp";
   off_campus: boolean;
   slug: string;
   starts_at: string;
@@ -37,12 +36,13 @@ const slugFor = (page: NotionPage, title: string) => {
   return given || slugify(title);
 };
 
-/** The Company's or the Tour's row a page is linked to, as a Diwan id, if any. */
 /**
- * The event's way in (owner, Nov 5, 2026): Open (just come), RSVP (book a
- * place) or Private (invited only, such as a Council meeting).
+ * The event's access (decisions §10): Open (just come), RSVP (book a
+ * place), Members (members book a place) or Private (invited only, such as
+ * a Council meeting). It alone decides who sees the event.
  */
 const WAYS_IN = {
+  Members: "members",
   Open: "open",
   Private: "invite",
   RSVP: "rsvp",
@@ -51,9 +51,15 @@ const WAYS_IN = {
 const wayIn = (page: NotionPage, problems: string[]) => {
   const chosen = read.select(page, "Way in") ?? "";
   if (chosen in WAYS_IN) {
-    return WAYS_IN[chosen as keyof typeof WAYS_IN];
+    const entry = WAYS_IN[chosen as keyof typeof WAYS_IN];
+    // Rows from before the Members option kept a separate checkbox; until
+    // it is gone from Notion, it still means Members.
+    return (entry === "open" || entry === "rsvp") &&
+      read.checkbox(page, "Members only")
+      ? "members"
+      : entry;
   }
-  problems.push("Set Way in: Open, RSVP or Private.");
+  problems.push("Set Way in: Open, RSVP, Members or Private.");
   return "open";
 };
 
@@ -137,7 +143,6 @@ export const checkEvent = (page: NotionPage): Checked<EventValues> => {
       capacity,
       ends_at: endsAt,
       entry,
-      members_only: read.checkbox(page, "Members only"),
       off_campus: read.checkbox(page, "Off campus"),
       slug,
       starts_at: startsAt,

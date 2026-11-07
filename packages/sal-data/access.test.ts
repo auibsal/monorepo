@@ -1,6 +1,5 @@
 import { describe, expect, test } from "vitest";
 import { isActiveAssignment, roleAssignmentSchema } from "./access";
-import { manualActivitySchema } from "./membership";
 
 const user = "0b6f6d5e-1f2a-4c3b-9d8e-7f6a5b4c3d2e";
 const base = {
@@ -41,20 +40,6 @@ describe("role assignments", () => {
     ).toBe(false);
     expect(
       isActiveAssignment({ ...base, starts_at: "2026-10-06T00:00:00Z" }, now)
-    ).toBe(false);
-  });
-});
-
-describe("manual activity records", () => {
-  test("need a note, as the database requires", () => {
-    const record = {
-      note: "Helped at the book fair",
-      occurred_at: "2026-10-05T09:00:00.000Z",
-      target_user: user,
-    };
-    expect(manualActivitySchema.safeParse(record).success).toBe(true);
-    expect(
-      manualActivitySchema.safeParse({ ...record, note: "  " }).success
     ).toBe(false);
   });
 });

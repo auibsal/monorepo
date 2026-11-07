@@ -9,7 +9,6 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useState } from "react";
 import { useGrants } from "@/lib/diwan/queries";
-import { slugify } from "../events/editor";
 import {
   AddInPlace,
   BilingualField,
@@ -18,6 +17,7 @@ import {
   SaveButton,
   SelectInput,
 } from "../kit";
+import { slugify } from "../slug";
 
 const keys = {
   all: ["admin", "journal", "topics"],

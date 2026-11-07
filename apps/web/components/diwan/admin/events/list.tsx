@@ -7,12 +7,10 @@ import {
   formatLongDate,
   formatNumber,
 } from "@repo/internationalization/format";
-import { hasPermissionAnywhere } from "@repo/rbac";
-import { localized, unwrap } from "@repo/sal-data";
+import { type events, localized, unwrap } from "@repo/sal-data";
 import { useQuery } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/lib/diwan/navigation";
-import { useGrants } from "@/lib/diwan/queries";
 import { DiwanSection } from "../../page";
 import { ErrorState, SectionSpinner } from "../../states";
 import { AdminHeading, type Column, DataTable } from "../kit";
@@ -73,12 +71,11 @@ type Row = NonNullable<ReturnType<typeof useEventRows>["data"]>[number];
 export const EventsList = () => {
   const t = useTranslations("diwan.admin.events");
   const ts = useTranslations("diwan.admin.kit.statuses");
+  const te = useTranslations("diwan.admin.event");
   const locale = useLocale() as Locale;
-  const grants = useGrants();
   const upcoming = useEventRows("upcoming");
   const drafts = useEventRows("drafts");
   const past = useEventRows("past");
-  const manages = hasPermissionAnywhere(grants.data, "events.manage");
 
   const columns: Column<Row>[] = [
     {
@@ -104,7 +101,7 @@ export const EventsList = () => {
       key: "when",
     },
     {
-      cell: (e) => (e.members_only ? t("membersOnly") : t("public")),
+      cell: (e) => te(`entries.${e.entry as events.Entry}`),
       header: t("columns.access"),
       key: "access",
     },
@@ -130,7 +127,7 @@ export const EventsList = () => {
         e.status === "published" ? (
           <Link
             className="text-sm underline underline-offset-4"
-            href={`/events/${e.slug ?? e.id}/door`}
+            href={`/events/${e.slug ?? e.id}/check-in`}
           >
             {t("checkIn")}
           </Link>
@@ -162,21 +159,7 @@ export const EventsList = () => {
 
   return (
     <div className="grid gap-10">
-      <AdminHeading
-        actions={
-          manages ? (
-            <Link
-              className="inline-flex h-8 items-center bg-accent px-3 font-medium text-on-accent text-sm hover:bg-accent/90"
-              href="/events/new"
-            >
-              {t("new")}
-            </Link>
-          ) : null
-        }
-        title={t("title")}
-      >
-        {t("lede")}
-      </AdminHeading>
+      <AdminHeading title={t("title")}>{t("lede")}</AdminHeading>
       <div className="grid gap-4">
         {table(upcoming, t("tabs.upcoming"), t("noUpcoming"))}
         <p className="type-caption">{t("campusNote")}</p>

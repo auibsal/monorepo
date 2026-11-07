@@ -212,7 +212,7 @@ jobs:
           export SUPABASE_URL="$API_URL" SUPABASE_SECRET_KEY="$SECRET_KEY"
           export MAILPIT_URL="${MAILPIT_URL:-$INBUCKET_URL}"
           export NEXT_PUBLIC_SUPABASE_URL="$API_URL" NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY="$PUBLISHABLE_KEY"
-          E2E_START=start E2E_COLLAB=1 bun run --cwd apps/e2e e2e
+          E2E_START=start bun run --cwd apps/e2e e2e
       - uses: actions/upload-artifact@v6
         if: failure()
         with:

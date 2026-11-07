@@ -153,7 +153,10 @@ const OpeningItem = ({
     <li className="grid gap-2 py-4">
       <div className="flex flex-wrap items-baseline justify-between gap-3">
         <p className="type-subheading">
-          <Link className="hover:underline" href={`/people/openings/${o.id}`}>
+          <Link
+            className="hover:underline"
+            href={`/membership/openings/${o.id}`}
+          >
             {localized(o, "title", locale)}
           </Link>
         </p>
@@ -250,7 +253,7 @@ export const OpeningsAdmin = () => {
   return (
     <div className="grid gap-8">
       <AdminHeading
-        actions={<NewLink href="/people/openings/new">{t("new")}</NewLink>}
+        actions={<NewLink href="/membership/openings/new">{t("new")}</NewLink>}
         title={t("listTitle")}
       >
         {t("listLede")}
@@ -417,7 +420,7 @@ export const NewOpeningPage = () => {
   const t = useTranslations("diwan.admin.programmes.openings");
   const grants = useGrants();
   const router = useRouter();
-  const done = () => router.push("/people/openings");
+  const done = () => router.push("/membership/openings");
   const posts = openingKinds.filter((k) => {
     if (k === "event_team") {
       return hasPermissionAnywhere(grants.data, "programs.manage");
@@ -430,7 +433,11 @@ export const NewOpeningPage = () => {
   const [chosen, setChosen] = useState<OpeningKind | "">("");
   const kind = chosen || posts[0];
   return (
-    <RecordPage back="/people/openings" backLabel={t("back")} title={t("new")}>
+    <RecordPage
+      back="/membership/openings"
+      backLabel={t("back")}
+      title={t("new")}
+    >
       <Field hint={kind ? t(`kindHints.${kind}`) : undefined} label={t("kind")}>
         {(id) => (
           <SelectInput

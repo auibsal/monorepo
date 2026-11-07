@@ -221,7 +221,7 @@ const publishDocument = async (
   await saveLink(ctx, "document", page.id, data.id, hashOf(adoptionOf(data)));
   await ctx.notion.updatePage(page.id, {
     ...adoptionProps(data),
-    Diwan: prop.url(`${ctx.appUrl}/society/library/${v.slug}`),
+    Diwan: prop.url(`${ctx.appUrl}/council/library/${v.slug}`),
     "Diwan ID": prop.text(data.id),
     "Platform note": prop.text(publishedNote(who)),
     "Public page": prop.url(`${ctx.webUrl}/library/${v.slug}`),
@@ -279,7 +279,7 @@ const publishArabicEdition = async (
     throw error;
   }
   await ctx.notion.updatePage(page.id, {
-    Diwan: prop.url(`${ctx.appUrl}/society/library/${english.slug}`),
+    Diwan: prop.url(`${ctx.appUrl}/council/library/${english.slug}`),
     "Diwan ID": prop.text(english.id),
     "Platform note": prop.text(publishedNote(who)),
     "Public page": prop.url(`${ctx.webUrl}/ar/library/${english.slug}`),

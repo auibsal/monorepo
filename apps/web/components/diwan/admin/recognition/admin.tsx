@@ -584,7 +584,9 @@ const Certificates = () => {
     return (
       <div className="flex flex-wrap gap-2">
         <Button asChild size="sm" variant="outline">
-          <SiteLink href={`/account/record/${row.id}`}>{t("open")}</SiteLink>
+          <SiteLink href={`/account/record/certificates/${row.id}`}>
+            {t("open")}
+          </SiteLink>
         </Button>
         {mySignatureDue(row) ? (
           <Button
@@ -655,9 +657,7 @@ const Certificates = () => {
     <div className="grid gap-6">
       <p className="type-body">{t("lede")}</p>
       {canPrepare ? (
-        <NewLink href="/people/service/certificates/new">
-          {t("prepare")}
-        </NewLink>
+        <NewLink href="/qirtas/certificates/new">{t("prepare")}</NewLink>
       ) : null}
       <ErrorLine error={sign.error ?? revoke.error ?? remove.error} />
       <DataTable
@@ -676,7 +676,7 @@ const Certificates = () => {
 export const NewCertificate = () => {
   const t = useTranslations("diwan.admin.recognition");
   const router = useRouter();
-  const back = "/people/service/certificates";
+  const back = "/qirtas/certificates";
   return (
     <RecordPage
       back={back}
@@ -688,11 +688,24 @@ export const NewCertificate = () => {
   );
 };
 
+/**
+ * Qirtas → Certificates (decisions §6): the two certificates, finishing
+ * Qalam and the Mutanabbi Prize, prepared, signed and countersigned.
+ */
+export const CertificatesAdmin = () => {
+  const t = useTranslations("diwan.admin.recognition");
+  return (
+    <div className="grid gap-6">
+      <AdminHeading title={t("tabs.certificates")} />
+      <Certificates />
+    </div>
+  );
+};
+
 const servicePaths: Record<ServiceTab, string> = {
-  certificates: "/people/service/certificates",
-  letters: "/people/service/letters",
-  pending: "/people/service",
-  totals: "/people/service/totals",
+  letters: "/membership/service/letters",
+  pending: "/membership/service",
+  totals: "/membership/service/totals",
 };
 
 export const RecognitionAdmin = ({
@@ -706,14 +719,10 @@ export const RecognitionAdmin = ({
     hasPermissionAnywhere(grants.data, "members.manage") ||
     hasPermissionAnywhere(grants.data, "programs.manage");
   const canTotals = hasPermissionAnywhere(grants.data, "members.manage");
-  const canCertificates =
-    hasPermissionAnywhere(grants.data, "certificates.prepare") ||
-    hasPermissionAnywhere(grants.data, "certificates.sign");
   const allowed = serviceTabs.filter(
     (view) =>
       (view === "pending" && canConfirm) ||
-      ((view === "totals" || view === "letters") && canTotals) ||
-      (view === "certificates" && canCertificates)
+      ((view === "totals" || view === "letters") && canTotals)
   );
   const shown = allowed.find((view) => view === tab) ?? allowed[0];
 
@@ -730,7 +739,6 @@ export const RecognitionAdmin = ({
       <div className="pt-2">
         {shown === "pending" ? <PendingHours /> : null}
         {shown === "totals" ? <Totals /> : null}
-        {shown === "certificates" ? <Certificates /> : null}
         {shown === "letters" ? <ServiceLetters /> : null}
       </div>
     </div>

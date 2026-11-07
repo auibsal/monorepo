@@ -76,21 +76,14 @@ const EventMinutes = ({ eventId }: { readonly eventId: string }) => {
         <RowList>
           {(minutes.data ?? []).map((m) => (
             <li key={m.id}>
-              <Link className="link" href={`/society/meetings/${m.id}`}>
+              <Link className="link" href={`/council/meetings/${m.id}`}>
                 {localized(m, "title", locale) || m.title_en}
               </Link>
             </li>
           ))}
         </RowList>
       ) : (
-        <EmptyLine
-          action={{
-            href: `/society/meetings/new?event=${eventId}`,
-            label: t("writeMinutes"),
-          }}
-        >
-          {t("noMinutes")}
-        </EmptyLine>
+        <EmptyLine>{t("noMinutes")}</EmptyLine>
       )}
     </DiwanSection>
   );

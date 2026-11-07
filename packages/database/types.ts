@@ -1331,7 +1331,7 @@ export type Database = {
           entry?: string;
           id?: string;
           image_path?: string | null;
-          members_only?: boolean;
+          members_only?: never;
           off_campus?: boolean;
           partner_id?: string | null;
           programme_id?: string | null;
@@ -1362,7 +1362,7 @@ export type Database = {
           entry?: string;
           id?: string;
           image_path?: string | null;
-          members_only?: boolean;
+          members_only?: never;
           off_campus?: boolean;
           partner_id?: string | null;
           programme_id?: string | null;
@@ -2290,6 +2290,7 @@ export type Database = {
           purpose_ar: string | null;
           purpose_en: string;
           renew_by: string | null;
+          resolution_id: string | null;
           sal_contact: string | null;
           sal_will: string | null;
           signed_at: string | null;
@@ -2323,6 +2324,7 @@ export type Database = {
           purpose_ar?: string | null;
           purpose_en: string;
           renew_by?: string | null;
+          resolution_id?: string | null;
           sal_contact?: string | null;
           sal_will?: string | null;
           signed_at?: string | null;
@@ -2356,6 +2358,7 @@ export type Database = {
           purpose_ar?: string | null;
           purpose_en?: string;
           renew_by?: string | null;
+          resolution_id?: string | null;
           sal_contact?: string | null;
           sal_will?: string | null;
           signed_at?: string | null;
@@ -2373,6 +2376,13 @@ export type Database = {
             columns: ["partner_id"];
             isOneToOne: false;
             referencedRelation: "partners";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "partner_agreements_resolution_id_fkey";
+            columns: ["resolution_id"];
+            isOneToOne: false;
+            referencedRelation: "resolutions";
             referencedColumns: ["id"];
           },
         ];
@@ -2933,6 +2943,10 @@ export type Database = {
         Args: { candidate_id: string; eligible: boolean };
         Returns: undefined;
       };
+      record_partner_vote: {
+        Args: { agreement_id: string; resolution: string };
+        Returns: undefined;
+      };
       remove_partner_teammate: {
         Args: { member: string; partner: string };
         Returns: undefined;
@@ -2956,14 +2970,6 @@ export type Database = {
           subject_id?: string;
         };
         Returns: string;
-      };
-      sign_partner_agreement: {
-        Args: {
-          agreement_id: string;
-          partner_signatory: string;
-          signed_document_path: string;
-        };
-        Returns: undefined;
       };
       turnout: {
         Args: { election_id: string };
@@ -5228,10 +5234,6 @@ export type Database = {
         Returns: undefined;
       };
       activity_count: { Args: { uid?: string }; Returns: number };
-      add_manual_activity: {
-        Args: { note: string; occurred_at?: string; target_user: string };
-        Returns: string;
-      };
       calendar_token: { Args: Record<PropertyKey, never>; Returns: string };
       certificate_signers: {
         Args: { certificate_id: string };

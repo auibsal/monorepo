@@ -32,14 +32,21 @@ describe("What's on months", () => {
     expect(monthParam(shiftMonth(monthFrom("2026-01"), -1))).toBe("2025-12");
   });
 
-  test("weeks start on Saturday and pad the month", () => {
-    // November 1, 2026 is a Sunday: one empty Saturday before it.
+  test("weeks start on Sunday and pad the month", () => {
+    // November 1, 2026 is a Sunday: the month starts the first row; October
+    // 1, 2026 is a Thursday, after four empty days.
     const weeks = monthWeeks(monthFrom("2026-11"));
-    expect(weeks[0]?.[0]).toBeNull();
-    expect(weeks[0]?.[1]).toBe("2026-11-01");
+    expect(weeks[0]?.[0]).toBe("2026-11-01");
     expect(weeks.every((week) => week.length === 7)).toBe(true);
     expect(weeks.flat().filter(Boolean)).toHaveLength(30);
-    expect(weekdayColumns()[0]?.getUTCDay()).toBe(6);
+    expect(monthWeeks(monthFrom("2026-10"))[0]?.slice(0, 5)).toEqual([
+      null,
+      null,
+      null,
+      null,
+      "2026-10-01",
+    ]);
+    expect(weekdayColumns()[0]?.getUTCDay()).toBe(0);
   });
 
   test("events fall on their Baghdad day", () => {

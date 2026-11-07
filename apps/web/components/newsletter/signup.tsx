@@ -95,7 +95,7 @@ export const NewsletterSignup = ({
     return (
       <p className="type-body">
         {t("members")}{" "}
-        <Link className="link" href="/account/settings/notices">
+        <Link className="link" href="/account/settings/notifications">
           {t("notices")}
         </Link>
       </p>

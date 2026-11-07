@@ -3,10 +3,8 @@
 import { Button } from "@repo/brand/components/ui/button";
 import { Input } from "@repo/brand/components/ui/input";
 import { cn } from "@repo/brand/lib/utils";
-import { useRoom } from "@repo/collaboration/room";
 import { journal } from "@repo/sal-data";
 import { Mark, Node } from "@tiptap/core";
-import Collaboration from "@tiptap/extension-collaboration";
 import { TableKit } from "@tiptap/extension-table";
 import {
   type Editor,
@@ -16,7 +14,7 @@ import {
 } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { useTranslations } from "next-intl";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 interface RichTextProps {
   /**
@@ -36,7 +34,7 @@ interface RichTextProps {
 /** A URL scheme, the same in both languages. */
 const URL_PLACEHOLDER = "https://";
 
-const starterKit = (collaborative: boolean, document = false) =>
+const starterKit = (document = false) =>
   StarterKit.configure({
     heading: { levels: document ? [2, 3, 4] : [2, 3] },
     link: {
@@ -45,8 +43,6 @@ const starterKit = (collaborative: boolean, document = false) =>
       openOnClick: false,
       protocols: ["https", "mailto"],
     },
-    // The shared Yjs draft keeps the history when co-editing.
-    ...(collaborative ? { undoRedo: false } : {}),
   });
 
 /**
@@ -353,7 +349,7 @@ export const RichTextEditor = (props: RichTextProps) => {
   const document = Boolean(props.document);
   const editor = useBaseEditor(
     props,
-    [starterKit(false, document), ...documentExtensions(document)],
+    [starterKit(document), ...documentExtensions(document)],
     true
   );
   // Text set from outside (a manuscript read into the editor) replaces
@@ -370,46 +366,6 @@ export const RichTextEditor = (props: RichTextProps) => {
       label={props.label}
       lang={props.lang}
       undo
-    />
-  );
-};
-
-/**
- * The same field co-edited live (inside a collaboration Room). The first
- * person in the room starts the draft from the saved HTML; later arrivals
- * receive the draft from the others. Save still writes to Postgres.
- */
-export const CollaborativeRichTextEditor = (
-  props: RichTextProps & { field: string }
-) => {
-  const room = useRoom();
-  const editor = useBaseEditor(
-    props,
-    [
-      Collaboration.configure({ document: room.doc, field: props.field }),
-      starterKit(true, Boolean(props.document)),
-      ...documentExtensions(Boolean(props.document)),
-    ],
-    false
-  );
-  const seeded = useRef(false);
-  useEffect(() => {
-    if (!editor || seeded.current) {
-      return;
-    }
-    seeded.current = true;
-    const fragment = room.doc.getXmlFragment(props.field);
-    if (room.alone && fragment.length === 0 && props.value) {
-      editor.commands.setContent(props.value);
-    }
-  }, [editor, props.field, props.value, room]);
-  return (
-    <Frame
-      document={Boolean(props.document)}
-      editor={editor}
-      label={props.label}
-      lang={props.lang}
-      undo={false}
     />
   );
 };

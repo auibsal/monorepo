@@ -157,6 +157,16 @@ describe("publishing rules", () => {
     expect(check({ "Way in": wayIn("Open") })).toMatchObject({
       values: { entry: "open" },
     });
+    expect(check({ "Way in": wayIn("Members") })).toMatchObject({
+      values: { entry: "members" },
+    });
+    // The old checkbox still means Members until it leaves Notion.
+    expect(
+      check({
+        "Members only": { checkbox: true, type: "checkbox" },
+        "Way in": wayIn("RSVP"),
+      })
+    ).toMatchObject({ values: { entry: "members" } });
     expect(
       check({
         "Off campus": { checkbox: true, type: "checkbox" },
@@ -165,7 +175,7 @@ describe("publishing rules", () => {
     ).toMatchObject({ values: { off_campus: true } });
     expect(check({})).toMatchObject({
       ok: false,
-      problems: ["Set Way in: Open, RSVP or Private."],
+      problems: ["Set Way in: Open, RSVP, Members or Private."],
     });
     // Decisions §10: no lead or no confirmed place, no publishing.
     const unplaced = checkEvent(

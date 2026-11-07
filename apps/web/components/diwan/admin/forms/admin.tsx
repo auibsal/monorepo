@@ -40,8 +40,8 @@ const FormName = ({ formKey }: { formKey: string }) => {
 
 /**
  * Requests sent to the officer who handles them (the overhaul, Oct 30,
- * 2026): concerns in Society → Concerns, program pitches in What's on →
- * Programs, motions in Society → Resolutions. The queue shows only the
+ * 2026): concerns in Council → Concerns, event proposals in Events,
+ * motions in Council → Resolutions. The queue shows only the
  * kinds given, and only those this officer handles.
  */
 export const RequestQueue = ({

@@ -16,7 +16,7 @@ export const TypewriterTourWall = async ({
 }: {
   readonly locale: Locale;
 }) => {
-  const t = await getTranslations({ locale, namespace: "web.programs.page" });
+  const t = await getTranslations({ locale, namespace: "web.tour" });
   const wall = (
     await readPublished(
       ["programmes"],

@@ -4,12 +4,13 @@ import { urls } from "../playwright.config";
 import { latestMail, setUpTwoStep, signInWithPassword } from "./helpers";
 
 /**
- * Partners on the platform (owner, Oct 31, 2026): an organization applies
- * and signs the memorandum by name, the President signs for the Society in
- * the Diwan's queue, and whoever applied leads the partner's team on its
- * dashboard; it invites a guest, who signs up from the invitation.
+ * Partners on the platform (decisions §2, §10): an organization applies
+ * and signs the memorandum by name, the Council votes and its adopted
+ * resolution is recorded in the Diwan's queue, and whoever applied leads
+ * the partner's team on its dashboard; it invites a guest by email, who
+ * signs up from the invitation.
  */
-test("an organization applies, the President signs, and its dashboard opens", async ({
+test("an organization applies, the Council votes, and its dashboard opens", async ({
   browser,
 }) => {
   const db = admin();
@@ -58,6 +59,36 @@ test("an organization applies, the President signs, and its dashboard opens", as
     applicant.getByRole("heading", { name: "Application received" })
   ).toBeVisible();
 
+  // The Council adopts its resolution at a meeting (its minutes and
+  // resolution, as the Diwan keeps them).
+  const code = `R-2026-${String(stamp % 1000).padStart(3, "0")}`;
+  const { data: minutes } = await db
+    .schema("governance")
+    .from("minutes")
+    .insert({
+      adopted_on: new Date().toISOString().slice(0, 10),
+      body: "council",
+      meeting_on: new Date().toISOString().slice(0, 10),
+      status: "adopted",
+      text_en: "<p>Minutes.</p>",
+      title_en: "Council meeting",
+    })
+    .select("id")
+    .single();
+  const resolved = await db
+    .schema("governance")
+    .from("resolutions")
+    .insert({
+      adopted_on: new Date().toISOString().slice(0, 10),
+      body: "council",
+      code,
+      minutes_id: minutes?.id ?? "",
+      status: "adopted",
+      text_en: "<p>Resolved.</p>",
+      title_en: `Approves ${organization}`,
+    });
+  expect(resolved.error).toBeNull();
+
   // The President's two-step sign-in is set up afresh.
   const { data: users } = await db.auth.admin.listUsers({ perPage: 1000 });
   const presidentId = users.users.find((u) => u.email === president.email)?.id;
@@ -74,13 +105,19 @@ test("an organization applies, the President signs, and its dashboard opens", as
   }
   const signer = await (await browser.newContext()).newPage();
   await signInWithPassword(signer, president.email);
-  await signer.goto(`${urls.app}/people/partners/applications`);
+  await signer.goto(`${urls.app}/partnerships/applications`);
   await setUpTwoStep(signer);
   await expect(signer.getByText(organization)).toBeVisible();
-  await signer.getByRole("button", { name: "Sign for the Society" }).click();
+  await signer
+    .getByRole("button", { name: "The Council’s resolution" })
+    .click();
+  await signer.getByRole("option", { name: new RegExp(code) }).click();
+  await signer
+    .getByRole("button", { name: "Record the Council’s vote" })
+    .click();
   await signer
     .getByRole("alertdialog")
-    .getByRole("button", { name: "Sign for the Society" })
+    .getByRole("button", { name: "Record the Council’s vote" })
     .click();
   await expect(signer.getByText("No applications are waiting.")).toBeVisible();
 
@@ -188,7 +225,7 @@ test("a member who leads their club's partnership stays a member", async ({
     .single();
   const partnerId = partner?.id ?? "";
   try {
-    // The President's signature, as in the queue: the partner turns active
+    // The Council's vote, as the queue records it: the partner turns active
     // and whoever applied leads it.
     const { data: agreement } = await db
       .schema("governance")
@@ -222,11 +259,11 @@ test("a member who leads their club's partnership stays a member", async ({
     // Still a member: the whole row, the Member card, and the dashboard.
     await page.goto(`${urls.web}/account`);
     const row = page.getByRole("navigation", { name: "Your account" });
-    for (const name of ["My calendar", "Society", "Record"]) {
+    for (const name of ["Calendar", "Record", "Work", "Elections"]) {
       await expect(row.getByRole("link", { name })).toBeVisible();
     }
-    await page.goto(`${urls.web}/account/society`);
-    await expect(page).toHaveURL(/\/account\/society$/);
+    await page.goto(`${urls.web}/account/elections`);
+    await expect(page).toHaveURL(/\/account\/elections$/);
     // Leading a partner is not an officer's role: no Diwan.
     await page.goto(`${urls.app}`);
     await expect(page).toHaveURL(/\/partners\/dashboard$/);

@@ -6,7 +6,7 @@ import { Link } from "@repo/internationalization/navigation";
 import { journal, localized, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
-import { DiwanPage, RowList } from "../page";
+import { RowList } from "../page";
 import { EmptyLine, SectionSpinner } from "../states";
 import { Section } from "./section";
 
@@ -107,7 +107,7 @@ export const SavedReadingSection = () => {
   return (
     <Section
       action={
-        <Link className="link" href="/account/saved">
+        <Link className="link" href="/account/work#saved">
           {t("all")}
         </Link>
       }
@@ -119,12 +119,13 @@ export const SavedReadingSection = () => {
   );
 };
 
-/** /account/saved: everything saved, each with a way to let it go. */
-export const SavedReadingPage = () => {
+/** On Your work: everything saved, each with a way to let it go. */
+export const SavedReadingAll = () => {
   const t = useTranslations("web.journal.saved");
   const saved = useSaved();
   return (
-    <DiwanPage lede={t("lede")} narrow title={t("title")}>
+    <Section id="saved" title={t("title")}>
+      <p className="type-body text-text-secondary">{t("lede")}</p>
       {saved.isPending ? <SectionSpinner /> : null}
       {saved.data?.length === 0 ? (
         <EmptyLine action={{ href: "/qirtas", label: t("browse") }}>
@@ -132,6 +133,6 @@ export const SavedReadingPage = () => {
         </EmptyLine>
       ) : null}
       {saved.data?.length ? <SavedRows removable rows={saved.data} /> : null}
-    </DiwanPage>
+    </Section>
   );
 };

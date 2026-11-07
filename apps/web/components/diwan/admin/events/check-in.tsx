@@ -43,7 +43,7 @@ type Outcome =
 
 /**
  * The door (owner, Oct 31, 2026: one door per event, at
- * /events/<slug>/door). The Desk's quick action opens today's or the next
+ * /events/<slug>/check-in). The Desk's quick action opens today's or the next
  * event's door; each door lists the events after it, to switch.
  */
 export const CheckInScreen = () => {
@@ -80,7 +80,7 @@ export const useDoorEvents = () => {
 
 /** The address of a door: the event's own, by its name. */
 export const doorPath = (e: { id: string; slug: string | null }) =>
-  `/events/${e.slug ?? e.id}/door`;
+  `/events/${e.slug ?? e.id}/check-in`;
 
 /** The other doors, to switch without leaving the door. */
 const OtherDoors = ({ eventId }: { readonly eventId: string }) => {

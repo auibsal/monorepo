@@ -356,23 +356,6 @@ export const setInDirectory = async (
       .eq("user_id", userId)
   );
 
-export const manualActivitySchema = z.object({
-  note: z.string().trim().min(1).max(500),
-  occurred_at: z.iso.datetime({ offset: true }),
-  target_user: z.uuid(),
-});
-
-export const addManualActivity = async (
-  client: Client,
-  input: z.infer<typeof manualActivitySchema>
-) =>
-  unwrap(
-    await membership(client).rpc(
-      "add_manual_activity",
-      manualActivitySchema.parse(input)
-    )
-  );
-
 export const setTier = async (client: Client, userId: string, tier: Tier) =>
   unwrap(
     await membership(client).rpc("set_tier", {

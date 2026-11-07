@@ -172,7 +172,7 @@ const ActivitySection = ({ userId }: { userId: string }) => {
         await supabase
           .schema("membership")
           .from("activity_records")
-          .select("id, kind, occurred_at, note")
+          .select("id, occurred_at")
           .eq("user_id", userId)
           .order("occurred_at", { ascending: false })
       ) ?? [],
@@ -188,11 +188,10 @@ const ActivitySection = ({ userId }: { userId: string }) => {
       key: "when",
     },
     {
-      cell: (r) => t(`kinds.${r.kind as "check_in" | "shift" | "manual"}`),
+      cell: () => t("kinds.check_in"),
       header: t("activity"),
       key: "kind",
     },
-    { cell: (r) => r.note ?? "", header: t("note"), key: "note" },
   ];
 
   return (
@@ -203,68 +202,7 @@ const ActivitySection = ({ userId }: { userId: string }) => {
       {records.data ? (
         <DataTable columns={columns} rowKey={(r) => r.id} rows={records.data} />
       ) : null}
-      <AddInPlace label={t("addActivity")}>
-        {(close) => <NewActivity onDone={close} userId={userId} />}
-      </AddInPlace>
     </section>
-  );
-};
-
-/** Activity recorded by hand, added in place on the member's page. */
-const NewActivity = ({
-  onDone,
-  userId,
-}: {
-  readonly onDone: () => void;
-  readonly userId: string;
-}) => {
-  const t = useTranslations("diwan.admin.member");
-  const { supabase } = useAuth();
-  const queryClient = useQueryClient();
-  const [note, setNote] = useState("");
-  const [when, setWhen] = useState<string | null>(new Date().toISOString());
-
-  const add = useMutation({
-    mutationFn: () =>
-      membership.addManualActivity(supabase, {
-        note,
-        occurred_at: when ?? new Date().toISOString(),
-        target_user: userId,
-      }),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ["admin"] });
-      onDone();
-    },
-  });
-  const submit = (event: FormEvent) => {
-    event.preventDefault();
-    if (note.trim()) {
-      add.mutate();
-    }
-  };
-
-  return (
-    <form className="grid gap-4" onSubmit={submit}>
-      <Field label={t("note")}>
-        {(id) => (
-          <Input
-            id={id}
-            maxLength={500}
-            onChange={(e) => setNote(e.target.value)}
-            required
-            value={note}
-          />
-        )}
-      </Field>
-      <DateTimeField
-        label={t("when")}
-        onChange={setWhen}
-        required
-        value={when}
-      />
-      <SaveButton pending={add.isPending} />
-      <ErrorLine error={add.error} />
-    </form>
   );
 };
 
@@ -736,7 +674,10 @@ export const MemberDetail = () => {
     <div className="grid gap-10">
       <AdminHeading
         actions={
-          <Link className="text-sm underline underline-offset-4" href="/people">
+          <Link
+            className="text-sm underline underline-offset-4"
+            href="/membership"
+          >
             {tk("back")}
           </Link>
         }

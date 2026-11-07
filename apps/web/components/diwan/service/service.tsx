@@ -156,7 +156,10 @@ export const Service = () => {
         <ul className="grid gap-2">
           {(certificates.data ?? []).map((c) => (
             <li key={c.id}>
-              <Link className="link" href={`/account/record/${c.id}`}>
+              <Link
+                className="link"
+                href={`/account/record/certificates/${c.id}`}
+              >
                 {t(`kinds.${c.kind as recognition.CertificateKind}`)}
                 {c.serial ? ` · ${c.serial}` : ""}
               </Link>

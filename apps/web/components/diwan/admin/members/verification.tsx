@@ -6,15 +6,16 @@ import { Input } from "@repo/brand/components/ui/input";
 import type { Locale } from "@repo/internationalization";
 import { formatLongDate } from "@repo/internationalization/format";
 import { hasPermissionAnywhere } from "@repo/rbac";
-import { localized, membership, partners, unwrap } from "@repo/sal-data";
+import { localized, membership, type partners, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
-import { MySignature, Signature } from "@/components/signature";
+import { Signature } from "@/components/signature";
 import { useGrants } from "@/lib/diwan/queries";
 import { DiwanSection } from "../../page";
 import { ErrorState, SectionSpinner } from "../../states";
 import { ConfirmAction, ErrorLine, Field } from "../kit";
+import { CouncilVote } from "../partners/council-vote";
 import { memberName } from "./directory";
 
 interface Request {
@@ -108,8 +109,8 @@ interface Proposal {
 
 /**
  * One partner application: the organization, what it proposes, who signed
- * for it; the President signs for the Society (partners.sign), and
- * partnership managers may decline.
+ * for it; the Council's adopted resolution is recorded (partners.sign,
+ * decisions §10), and partnership managers may decline.
  */
 const ApplicationCard = ({
   application,
@@ -127,15 +128,6 @@ const ApplicationCard = ({
   const [reason, setReason] = useState("");
   const name = localized(application, "name", locale);
   const done = () => queryClient.invalidateQueries({ queryKey: ["admin"] });
-  const sign = useMutation({
-    mutationFn: () =>
-      partners.signAgreement(
-        supabase,
-        application.agreement_id,
-        application.partner_signatory ?? ""
-      ),
-    onSuccess: done,
-  });
   const decline = useMutation({
     mutationFn: async () =>
       unwrap(
@@ -202,23 +194,9 @@ const ApplicationCard = ({
         />
       ) : null}
       {hasPermissionAnywhere(grants.data, "partners.sign") ? (
-        <div className="grid gap-1">
-          <p className="type-label">{t("signingAs")}</p>
-          <MySignature />
-        </div>
+        <CouncilVote agreementId={application.agreement_id} name={name} />
       ) : null}
       <div className="flex flex-wrap gap-2">
-        {hasPermissionAnywhere(grants.data, "partners.sign") ? (
-          <ConfirmAction
-            confirmLabel={t("sign")}
-            description={t("signConfirm", { name })}
-            disabled={sign.isPending}
-            onConfirm={() => sign.mutate()}
-            variant="default"
-          >
-            {t("sign")}
-          </ConfirmAction>
-        ) : null}
         {hasPermissionAnywhere(grants.data, "partners.manage") ? (
           <ConfirmAction
             confirmLabel={t("reject")}
@@ -230,7 +208,7 @@ const ApplicationCard = ({
           </ConfirmAction>
         ) : null}
       </div>
-      <ErrorLine error={sign.error ?? decline.error} />
+      <ErrorLine error={decline.error} />
     </SalCard>
   );
 };
@@ -290,7 +268,7 @@ const EarlierRequests = () => {
 /**
  * The Society verifies partners; partners verify their own people (owner,
  * Oct 31, 2026). What waits here is partner applications: the first view
- * of Partners (/people/partners/applications; Nov 4, 2026, one place for
+ * of Partners (/partnerships/applications; Nov 4, 2026, one place for
  * partners).
  */
 export const VerificationQueue = () => {

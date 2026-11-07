@@ -72,8 +72,8 @@ describe("regional formatting", () => {
     );
   });
 
-  test("weeks start on Saturday", () => {
-    expect(WEEK_STARTS_ON).toBe(6);
+  test("weeks start on Sunday", () => {
+    expect(WEEK_STARTS_ON).toBe(0);
   });
 
   test("knows text direction per locale", () => {

@@ -119,4 +119,4 @@ export const noticeMessage = ({ body, button, title }: Notice) => ({
  * accepts only this address, and Hudhud's "Link my account" opens it.
  * BotFather's redirect list must carry it in both languages.
  */
-export const TELEGRAM_LINK_PAGE = "/account/settings/notices";
+export const TELEGRAM_LINK_PAGE = "/account/settings/notifications";

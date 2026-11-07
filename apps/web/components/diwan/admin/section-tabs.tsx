@@ -16,15 +16,17 @@ const Tabs = ({ section }: { readonly section: AdminSection }) => {
   return <SectionTabs label={t(section as never)} tabs={tabs} />;
 };
 
-/**
- * Qirtas (owner, Oct 31, 2026): the newsroom, one page per section, where
- * staff write and publish and what members send is read blind; and
- * Editions, Awards and ads, each its own page.
- */
+/** Qirtas: the newsroom, Editions, the Prize, Qalam and certificates. */
 export const QirtasTabs = () => <Tabs section="qirtas" />;
 
-/** People: members, verification, hiring, service, partners, insights. */
-export const PeopleTabs = () => <Tabs section="people" />;
+/** Membership: the Register, openings, service and the Typewriter Tour. */
+export const MembershipTabs = () => <Tabs section="membership" />;
 
-/** Society: meetings, requests, elections, concerns, the Library. */
-export const SocietyTabs = () => <Tabs section="society" />;
+/** Partnerships: partners, their applications and memoranda. */
+export const PartnershipsTabs = () => <Tabs section="partnerships" />;
+
+/** Media: Next Stop, the channels and the design system. */
+export const MediaTabs = () => <Tabs section="media" />;
+
+/** The Council: meetings, requests, elections, concerns, the Library. */
+export const CouncilTabs = () => <Tabs section="council" />;

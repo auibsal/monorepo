@@ -73,6 +73,26 @@ insert into core.semesters (code, name_en, name_ar, starts_on, ends_on) values
 -- Tests check the two-activity rule; the founding-voter tests turn the
 -- first-100 rule back on themselves.
 update core.settings set value = '0' where key = 'membership.founding_voters';
+
+-- An adopted Council resolution, with its minutes: the Council's vote that
+-- approves a partnership (decisions §10).
+create function pg_temp.council_resolution(
+  id uuid default '00000000-0000-0000-0000-0000000c0001',
+  code text default 'R-2026-99'
+)
+returns uuid
+language sql
+as $$
+  with m as (
+    insert into governance.minutes (title_en, text_en, meeting_on, body, status, adopted_on)
+    values ('Council meeting', '<p>Minutes.</p>', current_date - 1, 'council', 'adopted', current_date)
+    returning id
+  )
+  insert into governance.resolutions (id, code, title_en, text_en, body, status, adopted_on, minutes_id)
+  select council_resolution.id, council_resolution.code, 'Approves the partnership', '<p>Resolved.</p>', 'council', 'adopted', current_date, m.id
+  from m
+  returning id;
+$$;
 -- </preamble>
 
 select plan(14);
@@ -90,8 +110,8 @@ select pg_temp.grant_role('00000000-0000-0000-0000-0000000f0a03', 'eic');
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000f0a04', 'general_secretary');
 -- The voter has taken part twice this year; the newcomer hasn't.
 insert into membership.activity_records (user_id, kind, occurred_at, note) values
-  ('00000000-0000-0000-0000-0000000f0a02', 'manual', now() - interval '1 day', 'A reading'),
-  ('00000000-0000-0000-0000-0000000f0a02', 'manual',
+  ('00000000-0000-0000-0000-0000000f0a02', 'check_in', now() - interval '1 day', 'A reading'),
+  ('00000000-0000-0000-0000-0000000f0a02', 'check_in',
    greatest(private.academic_year_start()::timestamptz + interval '1 day', now() - interval '2 days'), 'A general meeting');
 
 insert into journal.contributors (id, slug, name_en, name_ar, user_id) values

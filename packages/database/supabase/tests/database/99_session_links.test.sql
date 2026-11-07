@@ -72,6 +72,26 @@ insert into core.semesters (code, name_en, name_ar, starts_on, ends_on) values
 -- Tests check the two-activity rule; the founding-voter tests turn the
 -- first-100 rule back on themselves.
 update core.settings set value = '0' where key = 'membership.founding_voters';
+
+-- An adopted Council resolution, with its minutes: the Council's vote that
+-- approves a partnership (decisions §10).
+create function pg_temp.council_resolution(
+  id uuid default '00000000-0000-0000-0000-0000000c0001',
+  code text default 'R-2026-99'
+)
+returns uuid
+language sql
+as $$
+  with m as (
+    insert into governance.minutes (title_en, text_en, meeting_on, body, status, adopted_on)
+    values ('Council meeting', '<p>Minutes.</p>', current_date - 1, 'council', 'adopted', current_date)
+    returning id
+  )
+  insert into governance.resolutions (id, code, title_en, text_en, body, status, adopted_on, minutes_id)
+  select council_resolution.id, council_resolution.code, 'Approves the partnership', '<p>Resolved.</p>', 'council', 'adopted', current_date, m.id
+  from m
+  returning id;
+$$;
 -- </preamble>
 
 select plan(8);
@@ -81,17 +101,17 @@ select pg_temp.make_user('00000000-0000-0000-0000-0000000e5002', 'member.e5@auib
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000e5001', 'programme_lead', 'programme',
   (select id from core.programmes where slug = 'listening-room'));
 
-insert into events.events (id, slug, programme_id, title_en, title_ar, starts_at, status, members_only, entry)
+insert into events.events (id, slug, programme_id, title_en, title_ar, starts_at, status, entry)
 values
   ('00000000-0000-0000-0000-0000000e5101', 'lr-e5-public',
    (select id from core.programmes where slug = 'listening-room'),
-   'An album, played', 'ألبوم', now() - interval '7 days', 'published', false, 'open'),
+   'An album, played', 'ألبوم', now() - interval '7 days', 'published', 'open'),
   ('00000000-0000-0000-0000-0000000e5102', 'lr-e5-members',
    (select id from core.programmes where slug = 'listening-room'),
-   'For members', 'للأعضاء', now() - interval '14 days', 'published', true, 'open'),
+   'For members', 'للأعضاء', now() - interval '14 days', 'published', 'members'),
   ('00000000-0000-0000-0000-0000000e5103', 'salon-e5',
    (select id from core.programmes where slug = 'salon'),
-   'A salon', 'صالون', now() - interval '7 days', 'published', false, 'open');
+   'A salon', 'صالون', now() - interval '7 days', 'published', 'open');
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000e5001');
 select lives_ok(

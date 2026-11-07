@@ -26,7 +26,6 @@ import { useEffect, useState } from "react";
 import { Link, useRouter } from "@/lib/diwan/navigation";
 import { useQueryParam } from "@/lib/diwan/use-query-param";
 import { ErrorState, SectionSpinner } from "../../states";
-import { slugify } from "../events/editor";
 import {
   AdminHeading,
   BilingualField,
@@ -37,6 +36,7 @@ import {
   Field,
   SelectInput,
 } from "../kit";
+import { slugify } from "../slug";
 import {
   blankEntry,
   type Entry,
