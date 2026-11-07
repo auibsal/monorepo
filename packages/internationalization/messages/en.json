@@ -1088,7 +1088,7 @@
       },
       "verification": {
         "title": "Partner applications",
-        "lede": "Organizations that applied to partner with the Society, each with its memorandum signed by name. The Council votes on each at its meeting; record its adopted resolution here and the organization becomes a partner. Each partner then verifies its own people.",
+        "lede": "Organizations that applied to partner with the Society, each with its memorandum signed by name. The Council votes on each at its meeting; the President then countersigns here under its adopted resolution, and the organization becomes a partner. Each partner then verifies its own people.",
         "empty": "No applications are waiting.",
         "statement": "Their note",
         "noStatement": "No note.",
@@ -1102,13 +1102,14 @@
         "purpose": "Purpose",
         "partnerWill": "What they will do",
         "asks": "They ask for",
-        "sign": "Record the Council’s vote",
-        "signConfirm": "Record the Council’s resolution approving {name}? It becomes an active partner, and whoever applied leads its dashboard.",
+        "sign": "Countersign for the Society",
+        "signConfirm": "Countersign the memorandum with {name} under the Council’s resolution? It becomes an active partner, and whoever applied leads its dashboard.",
         "declineConfirm": "Decline {name}'s application? It stays on record.",
         "earlier": "Earlier requests",
         "earlierLede": "People who asked before partners verified their own. Approve only people you can place.",
         "resolution": "The Council’s resolution",
-        "noResolution": "No adopted Council resolution to choose yet. The Council adopts it at its meeting, under that meeting’s minutes."
+        "noResolution": "No adopted Council resolution to choose yet. The Council adopts it at its meeting, under that meeting’s minutes.",
+        "signingAs": "You countersign for the Society as"
       },
       "events": {
         "title": "Events",
@@ -2100,7 +2101,7 @@
           "missing": "This memorandum is not here",
           "asked": "Asked for: {grants}",
           "give": "Approve what they asked for",
-          "recordVote": "Record the Council’s vote"
+          "recordVote": "Countersign"
         },
         "affiliations": {
           "lede": "People who say they belong to a partner. Check with the partner’s contact before verifying. Lists are never shared with partners.",

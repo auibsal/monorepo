@@ -113,11 +113,11 @@ test("an organization applies, the Council votes, and its dashboard opens", asyn
     .click();
   await signer.getByRole("option", { name: new RegExp(code) }).click();
   await signer
-    .getByRole("button", { name: "Record the Council’s vote" })
+    .getByRole("button", { name: "Countersign for the Society" })
     .click();
   await signer
     .getByRole("alertdialog")
-    .getByRole("button", { name: "Record the Council’s vote" })
+    .getByRole("button", { name: "Countersign for the Society" })
     .click();
   await expect(signer.getByText("No applications are waiting.")).toBeVisible();
 

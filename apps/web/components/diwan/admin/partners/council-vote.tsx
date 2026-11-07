@@ -6,13 +6,15 @@ import { localized, partners } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
+import { MySignature } from "@/components/signature";
 import { EmptyLine } from "../../states";
 import { ConfirmAction, ErrorLine, Field, SelectInput } from "../kit";
 
 /**
  * The Council's vote on an application (decisions §10): its adopted
- * resolution, chosen from the Council's, is recorded on the memorandum and
- * the organization becomes a partner. Nobody signs for the Society alone.
+ * resolution, chosen from the Council's, is recorded on the memorandum,
+ * the President countersigns as the authorized signatory, and the
+ * organization becomes a partner. Nobody signs without the Council's vote.
  */
 export const CouncilVote = ({
   agreementId,
@@ -60,6 +62,10 @@ export const CouncilVote = ({
           </SelectInput>
         )}
       </Field>
+      <div className="grid gap-1">
+        <p className="type-label">{t("signingAs")}</p>
+        <MySignature />
+      </div>
       <div className="flex flex-wrap gap-2">
         <ConfirmAction
           confirmLabel={t("sign")}
