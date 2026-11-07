@@ -16,8 +16,9 @@ One idea per post, in one language. The headline does the work; nothing sits abo
 
 Paperless by default: print only to the confirmed need (the RSVP count plus 10%, or the number actually asked for), and booklets in page counts of multiples of 4. Every printed piece is requested from Student Life through the General Secretary's needs list.
 
-- Posters A3/A4: lockup, Light headline, a QR code at the bottom end.
-- Forms, letters, membership cards and certificates are components, printed from their own pages (see Documents and forms). The printables keep only what exists only on paper: name badges, the photography notice and the sticker pack.
+- Posters: lockup, Light headline, a QR code at the bottom end. Two are kept, A2, each in an English and an Arabic edition (`assets/print/posters`): the Typewriter Tour, two sides (the front a six-word story with the Hemingway photograph; the back the paperless Tour's rules, the typewriter tips and the QR to auibsal.org/join), and the Society, for club fairs and notice boards (the motto, Qirtas, the Company, events all year, and the QR to join).
+- Every print file's cover reads "SAL-MED-02 · <name>" in Ubuntu Mono at the top end ("SAL-MED-02 · Sticker pack"). `bun run --cwd packages/brand print` makes every PDF (the posters, the sticker pack and the printables) into `dist/print`; PDFs are sent, never kept in the repository.
+- Forms and letters are components (`FormPage`, `Letter`), printed from their own pages (see Documents and forms); the membership card and certificates are the live site's designs. The printables keep only what exists only on paper: name badges, the photography notice and the sticker pack.
 - Signage and banners may use the bilingual lockup.
 
 ## Carousels and stories

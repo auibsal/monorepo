@@ -1,6 +1,7 @@
 import { Icon } from "@repo/brand/components/sal/icon";
 import type { Meta, StoryObj } from "@storybook/react";
 import type { ReactNode } from "react";
+import stickers from "../assets/print/stickers/stickers.json";
 
 /**
  * Print (SAL-MED-02, packages/brand/assets/print): the camera-shy stickers
@@ -25,9 +26,10 @@ export const Printables: Story = {
     <div className="grid max-w-5xl gap-4">
       <p className="text-sm">
         What exists only on paper: name badges and the photography notice with
-        the camera-shy stickers; the sticker pack is below. Forms, letters,
-        membership cards and certificates are components (see Components →
-        Brand), printed from their own pages.{" "}
+        the camera-shy stickers; the posters and the sticker pack are below.
+        Forms and letters are components (see Components → Brand); the
+        membership card and certificates are the site’s own designs. All are
+        printed from their own pages; <code>bun run print</code> makes the PDFs.{" "}
         <a className="underline" href={HTML}>
           Open the HTML
         </a>
@@ -91,79 +93,38 @@ export const CameraShyStickers: Story = {
 };
 
 /** The sticker pack: every sticker at 100%, with its cut line in magenta. */
-const STICKER_PACK: [string, string, string, number, number][] = [
-  ["bookmark", "The Bookmark", "The Society", 56.08, 66.67],
-  ["bookmark-tile", "Bookmark tile", "The Society", 55.92, 55.92],
-  ["bookmark-tile-ink", "Bookmark tile, ink", "The Society", 55.92, 55.92],
-  ["lockup-stacked", "Stacked lockup", "The Society", 57.92, 88.92],
-  ["wordmark-ar", "Arabic wordmark", "The Society", 77.92, 78.5],
-  ["bumper-bilingual", "Bilingual bumper", "The Society", 195.92, 82.75],
-  ["postage-stamp", "Postage stamp", "The Society", 51.92, 61.92],
-  ["postmark", "Postmark", "The Society", 59.92, 59.92],
-  ["motto-en", "The paper and the pen.", "The motto", 167.92, 77.92],
-  ["motto-ar", "Arabic motto", "The motto", 141.92, 49.92],
-  ["motto-strip", "Motto strip", "The motto", 205.92, 35.92],
-  ["the-pen", "The pen", "The motto", 33.92, 83.92],
-  ["the-paper", "The paper", "The motto", 55.92, 71.92],
-  ["qirtas-keys", "QIRTAS in keys", "Qirtas", 177.92, 51.92],
-  ["key-qaf", "Qaf key", "Qirtas", 61.92, 61.92],
-  ["qirtas-nameplate", "Qirtas nameplate", "Qirtas", 137.92, 71.92],
-  ["qirtas-ar", "Qirtas in Arabic", "Qirtas", 155.92, 63.92],
-  ["section-news", "News", "Qirtas", 49.92, 49.92],
-  ["section-voices", "Voices", "Qirtas", 49.92, 49.92],
-  ["section-letters", "Letters", "Qirtas", 49.92, 49.92],
-  ["section-gallery", "Gallery", "Qirtas", 49.92, 49.92],
-  ["section-video", "Video", "Qirtas", 49.92, 49.92],
-  ["section-games", "Games", "Qirtas", 49.92, 49.92],
-  ["read-blind", "Read blind", "Qirtas", 101.92, 47.92],
-  ["the-company", "The Company", "The Company", 95.92, 69.92],
-  ["icon-drama", "Drama", "The Company", 49.92, 49.92],
-  ["next-stop", "Next Stop", "Next Stop", 69.92, 77.92],
-  ["ticket", "What’s on ticket", "Events", 101.92, 47.92],
-  ["record", "The record", "Events", 65.92, 65.92],
-  ["cup", "A cup of tea", "Events", 69.92, 69.92],
-  ["open-book", "An open book", "Events", 97.92, 63.92],
-  ["book-stack", "A stack of books", "Events", 79.92, 47.92],
-  ["icon-book-open", "Book open", "Events", 49.92, 49.92],
-  ["icon-headphones", "Headphones", "Events", 49.92, 49.92],
-  ["typewriter", "The typewriter", "Typewriter Tour", 86.92, 61.92],
-  ["icon-keyboard", "Keyboard", "Typewriter Tour", 49.92, 49.92],
-  ["second-chapter", "Second Chapter", "Second Chapter", 69.92, 69.92],
-  ["hudhud", "Hudhud", "Hudhud", 69.92, 69.92],
-  ["hudhud-flying", "Hudhud flying", "Hudhud", 87.92, 67.92],
-  ["hudhud-reversed", "Hudhud on crimson", "Hudhud", 67.92, 62.92],
-  ["join-qr", "Join", "Ways in", 55.92, 67.92],
-  ["get-involved", "Get involved", "Ways in", 111.92, 35.92],
-  ["camera-shy", "Camera-shy", "Ways in", 45.92, 45.92],
-];
+const STICKER_PACK = stickers.map(({ family, id, name, size }) => ({
+  family,
+  id,
+  name,
+  size: [size[0] ?? 0, size[1] ?? 0] as const,
+}));
 
 export const StickerPack: Story = {
   render: () => (
     <div className="grid gap-10 bg-[#d9d9d9] p-10">
-      {[...new Set(STICKER_PACK.map(([, , family]) => family))].map(
-        (family) => (
-          <section className="grid gap-4" key={family}>
-            <h2 className="font-light text-2xl">{family}</h2>
-            <div className="flex flex-wrap items-end gap-8">
-              {STICKER_PACK.filter(([, , f]) => f === family).map(
-                ([id, name, , w, h]) => (
-                  <figure className="m-0 grid gap-2" key={id}>
-                    {/* biome-ignore lint/performance/noImgElement: the print file as supplied */}
-                    <img
-                      alt={name}
-                      height={h * 4}
-                      src={`brand-kit/print/stickers/${id}.svg`}
-                      style={{ height: `${h}mm`, width: `${w}mm` }}
-                      width={w * 4}
-                    />
-                    <figcaption className="text-xs">{name}</figcaption>
-                  </figure>
-                )
-              )}
-            </div>
-          </section>
-        )
-      )}
+      {[...new Set(STICKER_PACK.map(({ family }) => family))].map((family) => (
+        <section className="grid gap-4" key={family}>
+          <h2 className="font-light text-2xl">{family}</h2>
+          <div className="flex flex-wrap items-end gap-8">
+            {STICKER_PACK.filter((s) => s.family === family).map(
+              ({ id, name, size: [w, h] }) => (
+                <figure className="m-0 grid gap-2" key={id}>
+                  {/* biome-ignore lint/performance/noImgElement: the print file as supplied */}
+                  <img
+                    alt={name}
+                    height={h * 4}
+                    src={`brand-kit/print/stickers/${id}.svg`}
+                    style={{ height: `${h}mm`, width: `${w}mm` }}
+                    width={w * 4}
+                  />
+                  <figcaption className="text-xs">{name}</figcaption>
+                </figure>
+              )
+            )}
+          </div>
+        </section>
+      ))}
     </div>
   ),
 };
@@ -179,7 +140,53 @@ const SIZES: [string, string][] = [
   ["Photography notice", "A4"],
   ["Camera-shy stickers", "40 mm round, twenty to an A4 sheet"],
   ["Sticker pack", "Die-cut, each at its own size (assets/print/stickers)"],
+  ["Posters: the Typewriter Tour (two sides), the Society", "A2"],
 ];
+
+const POSTERS: [string, string, number][] = [
+  ["typewriter-tour", "The Typewriter Tour", 2],
+  ["typewriter-tour-ar", "The Typewriter Tour, Arabic", 2],
+  ["society", "The Society", 1],
+  ["society-ar", "The Society, Arabic", 1],
+];
+
+/**
+ * The posters, A2, each in its English and Arabic edition: the Typewriter
+ * Tour (two sides, the rules of the paperless Tour) and the Society (for club
+ * fairs and notice boards). Shown at 25%; `bun run print` makes the PDFs.
+ */
+export const Posters: Story = {
+  render: () => (
+    <div className="flex flex-wrap items-start gap-8">
+      {POSTERS.map(([file, name, sides]) => (
+        <figure className="m-0 grid gap-2" key={file}>
+          <div className="h-[149mm] w-[105mm] overflow-hidden">
+            <iframe
+              className="origin-top-left border-0"
+              src={`brand-kit/print/posters/${file}.html`}
+              style={{
+                height: `${594 * sides}mm`,
+                transform: "scale(0.25)",
+                width: "420mm",
+              }}
+              title={name}
+            />
+          </div>
+          <figcaption className="text-xs">
+            {name}
+            {sides > 1 ? " (the front; the back follows)" : ""}{" "}
+            <a
+              className="underline"
+              href={`brand-kit/print/posters/${file}.html`}
+            >
+              Open
+            </a>
+          </figcaption>
+        </figure>
+      ))}
+    </div>
+  ),
+};
 
 export const Sizes: Story = {
   render: () => (

@@ -1,0 +1,561 @@
+[
+  {
+    "id": "bookmark",
+    "name": "The Bookmark",
+    "family": "The Society",
+    "cut": [
+      50.1,
+      60.7
+    ],
+    "size": [
+      56.08,
+      66.67
+    ]
+  },
+  {
+    "id": "bookmark-tile",
+    "name": "Bookmark tile",
+    "family": "The Society",
+    "cut": [
+      49.9,
+      49.9
+    ],
+    "size": [
+      55.92,
+      55.92
+    ]
+  },
+  {
+    "id": "bookmark-tile-ink",
+    "name": "Bookmark tile, ink",
+    "family": "The Society",
+    "cut": [
+      49.9,
+      49.9
+    ],
+    "size": [
+      55.92,
+      55.92
+    ]
+  },
+  {
+    "id": "lockup-stacked",
+    "name": "Stacked lockup",
+    "family": "The Society",
+    "cut": [
+      51.9,
+      82.9
+    ],
+    "size": [
+      57.92,
+      88.92
+    ]
+  },
+  {
+    "id": "wordmark-ar",
+    "name": "Arabic wordmark",
+    "family": "The Society",
+    "cut": [
+      71.9,
+      72.5
+    ],
+    "size": [
+      77.92,
+      78.5
+    ]
+  },
+  {
+    "id": "bumper-bilingual",
+    "name": "Bilingual bumper",
+    "family": "The Society",
+    "cut": [
+      189.9,
+      76.8
+    ],
+    "size": [
+      195.92,
+      82.75
+    ]
+  },
+  {
+    "id": "postage-stamp",
+    "name": "Postage stamp",
+    "family": "The Society",
+    "cut": [
+      45.9,
+      55.9
+    ],
+    "size": [
+      51.92,
+      61.92
+    ]
+  },
+  {
+    "id": "postmark",
+    "name": "Postmark",
+    "family": "The Society",
+    "cut": [
+      53.9,
+      53.9
+    ],
+    "size": [
+      59.92,
+      59.92
+    ]
+  },
+  {
+    "id": "motto-en",
+    "name": "The paper and the pen.",
+    "family": "The motto",
+    "cut": [
+      161.9,
+      71.9
+    ],
+    "size": [
+      167.92,
+      77.92
+    ]
+  },
+  {
+    "id": "motto-ar",
+    "name": "Arabic motto",
+    "family": "The motto",
+    "cut": [
+      135.9,
+      43.9
+    ],
+    "size": [
+      141.92,
+      49.92
+    ]
+  },
+  {
+    "id": "motto-strip",
+    "name": "Motto strip",
+    "family": "The motto",
+    "cut": [
+      199.9,
+      29.9
+    ],
+    "size": [
+      205.92,
+      35.92
+    ]
+  },
+  {
+    "id": "the-pen",
+    "name": "The pen",
+    "family": "The motto",
+    "cut": [
+      27.9,
+      77.9
+    ],
+    "size": [
+      33.92,
+      83.92
+    ]
+  },
+  {
+    "id": "the-paper",
+    "name": "The paper",
+    "family": "The motto",
+    "cut": [
+      49.9,
+      65.9
+    ],
+    "size": [
+      55.92,
+      71.92
+    ]
+  },
+  {
+    "id": "qirtas-keys",
+    "name": "QIRTAS in keys",
+    "family": "Qirtas",
+    "cut": [
+      171.9,
+      45.9
+    ],
+    "size": [
+      177.92,
+      51.92
+    ]
+  },
+  {
+    "id": "key-qaf",
+    "name": "Qaf key",
+    "family": "Qirtas",
+    "cut": [
+      55.9,
+      55.9
+    ],
+    "size": [
+      61.92,
+      61.92
+    ]
+  },
+  {
+    "id": "qirtas-nameplate",
+    "name": "Qirtas nameplate",
+    "family": "Qirtas",
+    "cut": [
+      131.9,
+      65.9
+    ],
+    "size": [
+      137.92,
+      71.92
+    ]
+  },
+  {
+    "id": "qirtas-ar",
+    "name": "Qirtas in Arabic",
+    "family": "Qirtas",
+    "cut": [
+      149.9,
+      57.9
+    ],
+    "size": [
+      155.92,
+      63.92
+    ]
+  },
+  {
+    "id": "section-news",
+    "name": "News",
+    "family": "Qirtas",
+    "cut": [
+      43.9,
+      43.9
+    ],
+    "size": [
+      49.92,
+      49.92
+    ]
+  },
+  {
+    "id": "section-voices",
+    "name": "Voices",
+    "family": "Qirtas",
+    "cut": [
+      43.9,
+      43.9
+    ],
+    "size": [
+      49.92,
+      49.92
+    ]
+  },
+  {
+    "id": "section-letters",
+    "name": "Letters",
+    "family": "Qirtas",
+    "cut": [
+      43.9,
+      43.9
+    ],
+    "size": [
+      49.92,
+      49.92
+    ]
+  },
+  {
+    "id": "section-gallery",
+    "name": "Gallery",
+    "family": "Qirtas",
+    "cut": [
+      43.9,
+      43.9
+    ],
+    "size": [
+      49.92,
+      49.92
+    ]
+  },
+  {
+    "id": "section-video",
+    "name": "Video",
+    "family": "Qirtas",
+    "cut": [
+      43.9,
+      43.9
+    ],
+    "size": [
+      49.92,
+      49.92
+    ]
+  },
+  {
+    "id": "section-games",
+    "name": "Games",
+    "family": "Qirtas",
+    "cut": [
+      43.9,
+      43.9
+    ],
+    "size": [
+      49.92,
+      49.92
+    ]
+  },
+  {
+    "id": "read-blind",
+    "name": "Read blind",
+    "family": "Qirtas",
+    "cut": [
+      95.9,
+      41.9
+    ],
+    "size": [
+      101.92,
+      47.92
+    ]
+  },
+  {
+    "id": "the-company",
+    "name": "The Company",
+    "family": "The Company",
+    "cut": [
+      89.9,
+      63.9
+    ],
+    "size": [
+      95.92,
+      69.92
+    ]
+  },
+  {
+    "id": "icon-drama",
+    "name": "Drama",
+    "family": "The Company",
+    "cut": [
+      43.9,
+      43.9
+    ],
+    "size": [
+      49.92,
+      49.92
+    ]
+  },
+  {
+    "id": "next-stop",
+    "name": "Next Stop",
+    "family": "Next Stop",
+    "cut": [
+      63.9,
+      71.9
+    ],
+    "size": [
+      69.92,
+      77.92
+    ]
+  },
+  {
+    "id": "ticket",
+    "name": "What’s on ticket",
+    "family": "Events",
+    "cut": [
+      95.9,
+      41.9
+    ],
+    "size": [
+      101.92,
+      47.92
+    ]
+  },
+  {
+    "id": "record",
+    "name": "The record",
+    "family": "Events",
+    "cut": [
+      59.9,
+      59.9
+    ],
+    "size": [
+      65.92,
+      65.92
+    ]
+  },
+  {
+    "id": "cup",
+    "name": "A cup of tea",
+    "family": "Events",
+    "cut": [
+      63.9,
+      63.9
+    ],
+    "size": [
+      69.92,
+      69.92
+    ]
+  },
+  {
+    "id": "open-book",
+    "name": "An open book",
+    "family": "Events",
+    "cut": [
+      91.9,
+      57.9
+    ],
+    "size": [
+      97.92,
+      63.92
+    ]
+  },
+  {
+    "id": "book-stack",
+    "name": "A stack of books",
+    "family": "Events",
+    "cut": [
+      73.9,
+      41.9
+    ],
+    "size": [
+      79.92,
+      47.92
+    ]
+  },
+  {
+    "id": "icon-book-open",
+    "name": "Book open",
+    "family": "Events",
+    "cut": [
+      43.9,
+      43.9
+    ],
+    "size": [
+      49.92,
+      49.92
+    ]
+  },
+  {
+    "id": "icon-headphones",
+    "name": "Headphones",
+    "family": "Events",
+    "cut": [
+      43.9,
+      43.9
+    ],
+    "size": [
+      49.92,
+      49.92
+    ]
+  },
+  {
+    "id": "typewriter",
+    "name": "The typewriter",
+    "family": "Typewriter Tour",
+    "cut": [
+      80.9,
+      55.9
+    ],
+    "size": [
+      86.92,
+      61.92
+    ]
+  },
+  {
+    "id": "icon-keyboard",
+    "name": "Keyboard",
+    "family": "Typewriter Tour",
+    "cut": [
+      43.9,
+      43.9
+    ],
+    "size": [
+      49.92,
+      49.92
+    ]
+  },
+  {
+    "id": "second-chapter",
+    "name": "Second Chapter",
+    "family": "Second Chapter",
+    "cut": [
+      63.9,
+      63.9
+    ],
+    "size": [
+      69.92,
+      69.92
+    ]
+  },
+  {
+    "id": "hudhud",
+    "name": "Hudhud",
+    "family": "Hudhud",
+    "cut": [
+      63.9,
+      63.9
+    ],
+    "size": [
+      69.92,
+      69.92
+    ]
+  },
+  {
+    "id": "hudhud-flying",
+    "name": "Hudhud flying",
+    "family": "Hudhud",
+    "cut": [
+      81.9,
+      61.9
+    ],
+    "size": [
+      87.92,
+      67.92
+    ]
+  },
+  {
+    "id": "hudhud-reversed",
+    "name": "Hudhud on crimson",
+    "family": "Hudhud",
+    "cut": [
+      61.9,
+      56.9
+    ],
+    "size": [
+      67.92,
+      62.92
+    ]
+  },
+  {
+    "id": "join-qr",
+    "name": "Join",
+    "family": "Ways in",
+    "cut": [
+      49.9,
+      61.9
+    ],
+    "size": [
+      55.92,
+      67.92
+    ]
+  },
+  {
+    "id": "get-involved",
+    "name": "Get involved",
+    "family": "Ways in",
+    "cut": [
+      105.9,
+      29.9
+    ],
+    "size": [
+      111.92,
+      35.92
+    ]
+  },
+  {
+    "id": "camera-shy",
+    "name": "Camera-shy",
+    "family": "Ways in",
+    "cut": [
+      39.9,
+      39.9
+    ],
+    "size": [
+      45.92,
+      45.92
+    ]
+  }
+]

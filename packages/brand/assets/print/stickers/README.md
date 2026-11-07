@@ -10,7 +10,7 @@ The Society's printed stickers: 43 stickers for laptops, bottles, notebooks and 
 - **Material:** white matte vinyl.
 - **Type:** Ubuntu for words and labels (labels in Medium, tracked capitals), Ubuntu Arabic for Arabic, Ubuntu Mono only for typewriter lines (the keys and the typewriter's sheet). Icons at sticker size end their lines flat, so no corner pokes past a frame.
 - **Quantity:** Student Life prints to the confirmed need, the expected joiners at the club fair or the Typewriter Tour plus 10%, requested through the General Secretary's needs list.
-- The printer gets a PDF made from these files (a cover with the specs, the overview, and one page per sticker at 100%); it is sent, never kept in the repository. The Print story "Sticker pack" shows them all.
+- The printer gets a PDF made from these files by `bun run --cwd packages/brand print`: a cover ("SAL-MED-02 · Sticker pack") with the specs, the overview by group, and one page per sticker at 100%. It is sent, never kept in the repository. `stickers.json` lists every sticker (name, group, cut size and page size) in order; add a sticker there and here. The Print story "Sticker pack" shows them all.
 
 ## The Society
 
