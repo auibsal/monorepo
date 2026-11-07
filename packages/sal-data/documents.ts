@@ -139,9 +139,8 @@ const OPENING_PARAGRAPH = /^\s*<p>([\s\S]*?)<\/p>/;
 const EDITORS_LINE =
   /^(?:English edition|Arabic edition|النسخة العربية|النسخة الإنجليزية)\s*:|^SAL-[A-Z]{3}-\d{2}\s*·/;
 const NOTION_LINK =
-  /\s*<a\b[^>]*href="https:\/\/(?:app\.|www\.)?notion\.(?:so|com|site)[^"]*"[^>]*>([\s\S]*?)<\/a>/g;
+  /(\s*)<a\b[^>]*href="https:\/\/(?:app\.|www\.)?notion\.(?:so|com|site)[^"]*"[^>]*>([\s\S]*?)<\/a>/g;
 const TAG = /(<[^>]+>)/;
-const ANY_TAG = /<[^>]+>/g;
 const OPEN_LINK = /^<a\b/i;
 const CLOSE_LINK = /^<\/a>/i;
 
@@ -165,11 +164,15 @@ const dropEditorsLines = (html: string) => {
  * <a>Policy Manual</a>") goes, any other keeps its words without the link.
  */
 const dropNotionLinks = (html: string) =>
-  html.replace(NOTION_LINK, (match, inner: string, offset: number) => {
-    const words = plain(inner);
-    const before = plain(html.slice(Math.max(0, offset - 200), offset));
-    return words && before.endsWith(words) ? "" : match.replace(ANY_TAG, "");
-  });
+  html.replace(
+    NOTION_LINK,
+    (_match, space: string, inner: string, offset: number) => {
+      const words = plain(inner);
+      const before = plain(html.slice(Math.max(0, offset - 200), offset));
+      // The link's own (already sanitized) contents stay; only the <a> goes.
+      return words && before.endsWith(words) ? "" : `${space}${inner}`;
+    }
+  );
 
 /**
  * A code that names a public document links to it in the Library, with the

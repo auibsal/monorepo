@@ -9,7 +9,8 @@ import { authenticateCookies } from "@repo/auth/verify";
  * Nov 7, 2026). The browser loads these files itself, so the session comes
  * from its cookies; anyone else is told the file isn't there.
  */
-const ROOT = path.join(process.cwd(), "design");
+const ROOT = path.resolve(process.cwd(), "design");
+const SEGMENT = /^[\w-][\w.-]*$/;
 
 const TYPES: Record<string, string> = {
   ".css": "text/css; charset=utf-8",
@@ -55,7 +56,11 @@ export const GET = async (
   { params }: { params: Promise<{ path: string[] }> }
 ) => {
   const parts = (await params).path;
-  const file = path.normalize(path.join(ROOT, ...parts));
+  // Only plain file and folder names: no "..", no hidden files, no slashes.
+  if (parts.length === 0 || !parts.every((part) => SEGMENT.test(part))) {
+    return notFound();
+  }
+  const file = path.resolve(ROOT, ...parts);
   if (!file.startsWith(`${ROOT}${path.sep}`)) {
     return notFound();
   }
