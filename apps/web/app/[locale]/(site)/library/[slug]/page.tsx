@@ -69,7 +69,14 @@ const DocumentPage = async ({ params }: DocumentProps) => {
       },
     ])
   );
-  const { contents, html } = documents.documentSections(body.html, refs);
+  const pages = new Map(
+    others.flatMap((other) => {
+      const id = documents.notionPageId(other.notion_url);
+      const ref = refs.get(other.code);
+      return id && ref ? [[id, ref] as const] : [];
+    })
+  );
+  const { contents, html } = documents.documentSections(body.html, refs, pages);
 
   return (
     <article className="mx-auto grid w-full max-w-4xl gap-10 px-4 py-16">
