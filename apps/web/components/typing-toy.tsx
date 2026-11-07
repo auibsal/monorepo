@@ -13,7 +13,7 @@ const SIX = 6;
  * turns the sound on; it starts off.
  */
 export const TypingToy = () => {
-  const t = useTranslations("web.programs.page.toy");
+  const t = useTranslations("web.tour.toy");
   const id = useId();
   const [text, setText] = useState("");
   const [sound, setSound] = useState(false);

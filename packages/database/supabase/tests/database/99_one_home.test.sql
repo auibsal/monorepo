@@ -76,7 +76,7 @@ insert into core.semesters (code, name_en, name_ar, starts_on, ends_on) values
 update core.settings set value = '0' where key = 'membership.founding_voters';
 -- </preamble>
 
-select plan(9);
+select plan(10);
 
 select pg_temp.make_user('00000000-0000-0000-0000-00000001a001', 'director.oh@auib.edu.iq', 'Director');
 select pg_temp.make_user('00000000-0000-0000-0000-00000001a002', 'secretary.oh@auib.edu.iq', 'Secretary');
@@ -127,6 +127,7 @@ select throws_ok(
 );
 select hasnt_function('membership', 'add_manual_activity', 'Nobody records activity by hand');
 select has_column('events', 'events', 'entry', 'The access type is the one source');
+select is_empty($$ select id from storage.buckets where id = 'receipts' $$, 'No receipts bucket: charity collections are a Notion record');
 
 select * from finish();
 rollback;

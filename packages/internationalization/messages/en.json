@@ -432,7 +432,7 @@
     },
     "programs": {
       "title": "Shifts",
-      "lede": "Shifts on the Society’s rotas, posted by event leads. Sign up for one, and give it back if your plans change.",
+      "lede": "Shifts at events, posted by their leads. Sign up for one, and give it back if your plans change.",
       "signUp": "Sign up",
       "giveBack": "Give it back",
       "full": "Full",
@@ -1200,7 +1200,6 @@
           "shifts": "Shifts",
           "needs": "Needs",
           "prompts": "Prompts",
-          "vote": "Book vote",
           "collection": "The book fair’s collection",
           "collectionLede": "Link the campaign to its event, the fair: the event’s page then carries the collection, its catalog and its impact report.",
           "noCampaigns": "No campaign yet.",
@@ -1215,9 +1214,6 @@
             "needs": "Needs",
             "shifts": "Shifts",
             "links": "Links",
-            "prompts": "Prompts",
-            "vote": "Book vote",
-            "collection": "The book fair’s collection",
             "minutes": "Minutes"
           },
           "minutes": "Minutes and resolutions",
@@ -1271,160 +1267,6 @@
         "deleteConfirm": "Delete this for good?",
         "scheduleConfirm": "Schedule this post? It is published on its own at the publish time.",
         "newsletter": "The Sunday Paper’s public list has {count} confirmed subscribers. They sign up at auibsal.org/sunday-paper; members who receive email get it too."
-      },
-      "charity": {
-        "title": "Charity",
-        "lede": "Book fair campaigns. Money is recorded, never collected online: cash is counted by two people, and an entry counts only after a different person signs it off.",
-        "campaigns": "Campaigns",
-        "newCampaign": "New campaign",
-        "columns": {
-          "campaign": "Campaign",
-          "status": "Status",
-          "counted": "Counted",
-          "pending": "Waiting for sign-off",
-          "date": "Date",
-          "amount": "Amount",
-          "source": "Source",
-          "countedBy": "Counted by",
-          "signedOff": "Signed off",
-          "note": "Note",
-          "description": "Description",
-          "public": "On the transparency page",
-          "handover": "Handed over"
-        },
-        "statuses": {
-          "draft": "Draft",
-          "active": "Active",
-          "closed": "Closed"
-        },
-        "sources": {
-          "table_cash": "Table cash",
-          "stickers": "Stickers",
-          "blind_date": "Blind date with a book",
-          "fill_a_bag": "Fill a Bag",
-          "book_sales": "Book sales",
-          "donation": "Donation (in person)",
-          "other": "Other"
-        },
-        "tabs": {
-          "settings": "Campaign",
-          "ledger": "Collection record",
-          "signoff": "Sign-off queue ({count})",
-          "receipts": "Receipts",
-          "impact": "Impact reports",
-          "handover": "Handover",
-          "catalog": "Catalog"
-        },
-        "campaign": {
-          "titleField": "Title",
-          "summary": "Summary",
-          "partner": "Partner",
-          "noPartner": "No partner",
-          "startsOn": "Starts on",
-          "endsOn": "Ends on",
-          "status": "Status",
-          "notFound": "No campaign with this link, or your roles don’t cover it.",
-          "stagesTitle": "Stages",
-          "stageDates": {
-            "boxes_on": "Boxes go out",
-            "donations_starts_on": "Donations start",
-            "donations_ends_on": "Donations end",
-            "fair_starts_on": "The fair starts",
-            "fair_ends_on": "The fair ends",
-            "handover_due_on": "Handover planned",
-            "impact_due_on": "Impact report due"
-          },
-          "dropOffTitle": "Drop-off points",
-          "dropOffPlace": "Place {n}",
-          "dropOffHours": "When it is open",
-          "dropOffAdd": "Add a drop-off point",
-          "dropOffRemove": "Remove this point"
-        },
-        "ledger": {
-          "lede": "Entries can’t be edited or deleted. To correct one, record a reversing entry, then the right amount.",
-          "record": "Record money counted",
-          "amount": "Amount (IQD)",
-          "source": "Source",
-          "occurredOn": "Counted on",
-          "countedBy": "Counted by",
-          "countedWith": "Counted with",
-          "countedHint": "You must be one of the two people who counted.",
-          "note": "Note (optional)",
-          "recordButton": "Record entry",
-          "recordConfirm": "Record {amount} counted by {a} and {b}? Entries can’t be changed afterwards.",
-          "waiting": "Waiting",
-          "reverse": "Reverse",
-          "reverseConfirm": "Record a reversing entry of {amount}? It cancels this entry; record the right amount separately.",
-          "reversal": "Reversal of an earlier entry",
-          "reversed": "Reversed",
-          "me": "me",
-          "twoCounters": "Two different people must count.",
-          "amountError": "Give a whole amount in IQD, above zero.",
-          "export": "Export ledger",
-          "totals": "{counted} counted · {pending} waiting for sign-off"
-        },
-        "signoff": {
-          "lede": "Check each entry against the cash or the count sheet, then sign it off. You can’t sign off an entry you recorded.",
-          "empty": "Nothing waiting for you.",
-          "sign": "Sign off",
-          "signConfirm": "Sign off {amount}? It will count in the totals.",
-          "recordedBy": "Recorded by {name}"
-        },
-        "receipts": {
-          "lede": "Receipts are private files. The transparency page shows only those marked public, through short-lived links.",
-          "upload": "Upload a receipt",
-          "file": "File (PDF, JPEG or PNG)",
-          "description": "What it is",
-          "amount": "Amount (IQD, optional)",
-          "entry": "Ledger entry (optional)",
-          "public": "Show on the transparency page",
-          "view": "View",
-          "makePublic": "Make public",
-          "makePrivate": "Make private",
-          "remove": "Delete",
-          "removeConfirm": "Delete this receipt? The file is removed too.",
-          "noPhotos": "Never upload photos of identifiable children."
-        },
-        "impact": {
-          "lede": "Figures for the transparency page, published when you choose.",
-          "label": "What was measured",
-          "value": "Figure",
-          "unit": "Unit (optional)",
-          "report": "Report (optional)",
-          "publish": "Publish",
-          "unpublish": "Unpublish",
-          "published": "Published",
-          "add": "Add a figure"
-        },
-        "partnersMoved": "Campaigns name their partner from the Society’s one register of partners.",
-        "partnersLink": "Open Partners",
-        "notHandedOver": "Not yet",
-        "handover": {
-          "lede": "The sealed collection goes to the charity partner in full, with a witness and a receipt. Record it here on the day.",
-          "on": "Handed over on",
-          "amount": "Amount handed over (IQD)",
-          "witness": "Witness",
-          "receipt": "Receipt",
-          "noReceipt": "No receipt yet",
-          "note": "Note (optional)"
-        },
-        "catalog": {
-          "title": "Catalog",
-          "lede": "The books given for the fair, for readers to browse on the fair’s event page. Never a price; a book shows while it is listed.",
-          "new": "Add a book",
-          "bookTitle": "Title",
-          "author": "Author (optional)",
-          "language": "Language",
-          "copies": "Copies",
-          "note": "Note (optional)",
-          "noteHint": "A line about the edition or condition, for example “First edition, 1985”.",
-          "copiesCount": "{count} copies",
-          "unlisted": "Not listed",
-          "list": "List",
-          "unlist": "Unlist",
-          "remove": "Remove",
-          "removeConfirm": "Remove this book from the catalog?"
-        }
       },
       "picker": {
         "search": "Type a name",
@@ -1481,8 +1323,8 @@
           "back": "Video"
         },
         "rotas": {
-          "new": "New rota",
-          "titleField": "Rota",
+          "new": "New shift",
+          "titleField": "Shift",
           "startsOn": "From",
           "endsOn": "To",
           "shifts": "Shifts",
@@ -2992,7 +2834,7 @@
         },
         "role": "Role",
         "roleHint": "Every role the Society has, by who picks the person. Whoever is onboarded holds it.",
-        "roleTitleHint": "Leave empty to use the role’s name, or give its own title (“Salon Host”).",
+        "roleTitleHint": "Leave empty to use the role’s name, or give its own title (“Tour Lead”).",
         "back": "All roles"
       },
       "sections": {
@@ -3076,11 +2918,6 @@
         "things": {
           "access_role_assignments": "a role",
           "access_two_step_resets": "a two-step reset",
-          "charity_campaigns": "a book fair campaign",
-          "charity_impact_metrics": "an impact figure",
-          "charity_ledger_entries": "a ledger entry",
-          "charity_ledger_signoffs": "a ledger sign-off",
-          "charity_receipts": "a receipt",
           "events_check_ins": "a check-in at the door",
           "events_events": "the event",
           "events_series_rules": "a series’ repeat rule (retired)",
@@ -3101,8 +2938,6 @@
           "journal_decisions": "a decision",
           "journal_issues": "the Edition",
           "journal_pieces": "the piece",
-          "journal_award_entries": "an award entry",
-          "journal_award_rounds": "the award round",
           "journal_puzzles": "the game",
           "membership_certificates": "a certificate",
           "membership_memberships": "a membership",
@@ -3111,7 +2946,6 @@
           "programmes_episodes": "the episode",
           "programmes_needs": "a need",
           "programmes_opening_replies": "an application",
-          "programmes_placements": "a place",
           "programmes_production_credits": "a credit",
           "programmes_production_events": "a performance date",
           "programmes_productions": "the production",
@@ -3121,10 +2955,7 @@
           "membership_activity_records": "an activity record",
           "governance_partner_invitations": "an invitation",
           "membership_guests": "a guest of the Society",
-          "programmes_prompts": "a prompt",
           "events_session_links": "an event’s link",
-          "programmes_book_ballots": "a book vote",
-          "programmes_book_choices": "a book on a vote",
           "events_joint_tasks": "a joint event’s checklist item"
         },
         "roleFor": "{role} for {person}"
@@ -4675,66 +4506,6 @@
         }
       }
     },
-    "give": {
-      "title": "Give",
-      "waysTitle": "How to give",
-      "ways": {
-        "books": "Donate books",
-        "volunteer": "Volunteer at the fair",
-        "warm": "Keep a child warm"
-      },
-      "waysNote": "We take no payments online. Give in person at the drive and the fair, where every amount is counted and recorded.",
-      "counted": "{amount} counted and signed off",
-      "noCampaign": "No campaign is running at the moment.",
-      "transparencyTitle": "Every dinar",
-      "transparencyLede": "Every dinar is counted twice and reported.",
-      "policy": "Charity money is held separately, never used for costs, and handed over in full to our charity partner at a witnessed handover with a receipt.",
-      "policySource": "Policy Manual",
-      "countedNote": "These totals show only money that two people counted at the close of the day and a second officer signed off.",
-      "receiptsTitle": "Receipts",
-      "noReceipts": "No receipts published yet.",
-      "openReceipt": "View receipt",
-      "impactTitle": "Impact",
-      "collectionTitle": "The collection",
-      "handedOver": "Handed over on {date}: {amount}, witnessed, with a receipt.",
-      "handoverAhead": "Handed over in full to our charity partner, witnessed, with a receipt.",
-      "dropOffTitle": "Where to leave books",
-      "range": "{from} to {to}",
-      "stages": {
-        "boxes": "Boxes go out",
-        "donations": "Donations",
-        "fair": "The fair",
-        "handover": "The witnessed handover",
-        "impact": "The impact report"
-      },
-      "states": {
-        "ahead": "Ahead",
-        "now": "Now",
-        "done": "Done"
-      },
-      "report": {
-        "title": "The impact report",
-        "lede": "What the collection did, in the figures the campaign published, with the witnessed handover and the receipts.",
-        "back": "The book fair",
-        "open": "Read the impact report"
-      },
-      "catalog": {
-        "title": "The fair’s books",
-        "link": "Browse the books given so far ({count})",
-        "lede": "The books given to {campaign}, to see what the fair will hold. Listed as they arrive; come to the fair for them.",
-        "none": "The books will be listed here once the next collection begins.",
-        "empty": "No books in this language yet.",
-        "languages": "Languages",
-        "all": "Every language",
-        "language": {
-          "ar": "Arabic",
-          "en": "English",
-          "other": "Another language"
-        },
-        "copies": "{count} copies",
-        "noPrices": "To browse only: books are not reserved or priced here."
-      }
-    },
     "contact": {
       "title": "Contact",
       "lede": "Find us on Instagram and in the members’ group on Telegram, or talk to us at any event.",
@@ -5153,33 +4924,17 @@
       "auditionsLink": "Sign up for an audition",
       "dates": "The Company’s dates on What’s on"
     },
-    "programs": {
-      "page": {
-        "wall": "The Six Words wall",
-        "try": "Try the typewriter",
-        "toy": {
-          "label": "Six words, on a typewriter",
-          "count": "{count} of {six} words",
-          "six": "Six words.",
-          "soundOff": "Key sound: off",
-          "soundOn": "Key sound: on",
-          "clear": "Start again",
-          "nothingKept": "Nothing you type here is kept. Your six words for the wall are written on the Tour, on a card."
-        },
-        "vote": {
-          "title": "Next month’s book",
-          "lede": "The host chose three books; members choose one. Voting closes on {closes}.",
-          "cast": "Vote for this book",
-          "change": "Vote for this one instead",
-          "yours": "Your vote",
-          "closed": "Voting has closed. The result shows here soon.",
-          "signIn": "Sign in to vote",
-          "membersOnly": "Only members vote. Join the Society to have a say.",
-          "failed": "Your vote didn’t go through. Try again.",
-          "chosen": "The circle chose {titles}.",
-          "and": " and ",
-          "count": "{count, plural, one {{title}: {votes} vote} other {{title}: {votes} votes}}"
-        }
+    "tour": {
+      "wall": "The Six Words wall",
+      "try": "Try the typewriter",
+      "toy": {
+        "label": "Six words, on a typewriter",
+        "count": "{count} of {six} words",
+        "six": "Six words.",
+        "soundOff": "Key sound: off",
+        "soundOn": "Key sound: on",
+        "clear": "Start again",
+        "nothingKept": "Nothing you type here is kept. Your six words for the wall are written on the Tour, on a card."
       }
     },
     "prize": {

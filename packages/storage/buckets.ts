@@ -37,13 +37,6 @@ export const buckets = {
     mimeTypes: ["audio/mpeg", "audio/mp4", "audio/x-m4a"],
     public: true,
   },
-  /** Private: charity receipts, <campaign id>/<random>.<ext>. */
-  receipts: {
-    id: "receipts",
-    maxBytes: 10 * 1024 * 1024,
-    mimeTypes: ["application/pdf", "image/jpeg", "image/png"],
-    public: false,
-  },
   /** Private: Journal submissions, <submission id>/<random>.<ext>; blind copies under blind/. */
   submissions: {
     id: "submissions",

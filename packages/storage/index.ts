@@ -71,21 +71,6 @@ export const uploadSubmissionFile = (
   );
 };
 
-/** Uploads a receipt for a campaign (charity.manage holders). */
-export const uploadReceipt = (
-  supabase: Client,
-  campaignId: string,
-  file: File
-) => {
-  assertAllowed("receipts", file);
-  return upload(
-    supabase,
-    buckets.receipts.id,
-    anonymousObjectPath(campaignId, file.type),
-    file
-  );
-};
-
 /**
  * Uploads an internal document to the private library bucket under a
  * random name, library/<audience>/<random>.<ext> (governance.manage

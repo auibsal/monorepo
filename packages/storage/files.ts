@@ -92,7 +92,7 @@ const EXTENSIONS: Record<string, string> = {
 
 /**
  * A key that carries nothing about the original file: `<prefix>/<random>.<ext>`.
- * Used for submissions and receipts, where a file name could identify a person.
+ * Used for submissions, where a file name could identify a person.
  */
 export const anonymousObjectPath = (prefix: string, mimeType: string) =>
   `${prefix}/${crypto.randomUUID()}.${EXTENSIONS[mimeType] ?? "bin"}`;

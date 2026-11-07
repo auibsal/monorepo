@@ -57,7 +57,7 @@ describe("checkFile", () => {
       "type_not_allowed"
     );
     expect(
-      checkFile("receipts", { size: 11 * 1024 * 1024, type: "image/png" })
+      checkFile("readings", { size: 11 * 1024 * 1024, type: "audio/mpeg" })
     ).toBe("too_large");
     expect(checkFile("library", { size: 0, type: "text/plain" })).toBe("empty");
     expect(
