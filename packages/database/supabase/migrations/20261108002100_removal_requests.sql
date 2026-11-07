@@ -10,7 +10,7 @@
 create function private.add_business_days(start timestamptz, days integer)
 returns timestamptz
 language plpgsql
-immutable
+stable
 set search_path = ''
 as $$
 declare
