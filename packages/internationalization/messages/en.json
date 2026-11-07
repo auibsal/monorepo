@@ -200,7 +200,6 @@
       "admin": "Administration",
       "publicSite": "auibsal.org",
       "handbook": "Officer handbook",
-      "offers": "Member offers",
       "declarations": "Declarations",
       "service": "My service",
       "forms": "Requests and reports",
@@ -318,10 +317,6 @@
         "wallet": "Add to Google Wallet",
         "inWallet": "In your Google Wallet",
         "walletUnavailable": "The Google Wallet pass isn’t available yet.",
-        "perks": "Perks",
-        "perksHow": "Show this card at the partner. Their staff can scan it to see that you’re a member.",
-        "perkCode": "Code:",
-        "perkUntil": "Until {date}",
         "security": "Card security",
         "securityBody": "Your card’s code changes every 30 seconds, so a screenshot stops working within a minute. If someone else may have used your account on their phone, reset the code: every earlier code, link and Wallet pass stops working, and your number stays the same."
       },
@@ -950,7 +945,6 @@
           "items": {
             "partner_applications": "Partner applications: {n}",
             "grants_asked": "Partners asking to turn something on: {n}",
-            "perks_waiting": "Perks waiting to be published: {n}",
             "submissions_new": "New submissions to Qirtas: {n}",
             "hiring_new": "New replies to openings: {n}",
             "requests_open": "Requests open: {n}"
@@ -1006,7 +1000,7 @@
         "guests": {
           "link": "Guests",
           "title": "The Society’s guests",
-          "lede": "People outside AUIB whom Membership invites, with no partner. They hold a guest’s membership and card: they book places, use perks and write for calls open to them. A partner’s guests are on its dashboard.",
+          "lede": "People outside AUIB whom Membership invites, with no partner. They hold a guest’s membership and card: they book places and write for calls open to them. A partner’s guests are on its dashboard.",
           "current": "Guests now",
           "empty": "No guests yet.",
           "since": "Since {date}",
@@ -2157,7 +2151,6 @@
         "tabs": {
           "register": "Register",
           "agreements": "Memoranda",
-          "offers": "Member offers",
           "applications": "Applications"
         },
         "register": {
@@ -2259,10 +2252,9 @@
             "journal_submissions": "Their members may send work to Qirtas",
             "guest_editing": "A guest editor for an issue",
             "event_cohosting": "Co-hosted events",
-            "member_offer": "Perks for members and guests",
             "shared_branding": "Shared branding",
             "productions": "Plays together",
-            "volunteering": "Their members may volunteer on rotas"
+            "volunteering": "Their members may volunteer at events"
           },
           "statuses": {
             "draft": "Draft",
@@ -2292,27 +2284,6 @@
             "declined": "Declined",
             "ended": "Ended"
           }
-        },
-        "offers": {
-          "lede": "Offers from partners for verified members. Nothing is paid through the platform. An offer shows only while the partner’s memorandum grants a member offer.",
-          "new": "New offer",
-          "partner": "Partner",
-          "choosePartner": "Choose a partner",
-          "title": "Offer",
-          "details": "How to redeem it",
-          "code": "Code (optional)",
-          "codeHint": "A code to give at the counter or type online, if the perk has one.",
-          "starts_on": "From",
-          "ends_on": "Until",
-          "publishNow": "Publish now",
-          "grantHint": "Members see it only while the memorandum is in force and grants a member offer.",
-          "offer": "Offer",
-          "dates": "Dates",
-          "published": "Published",
-          "publish": "Publish",
-          "unpublish": "Unpublish",
-          "empty": "No offers yet.",
-          "back": "All perks"
         },
         "declarations": {
           "lede": "Conflict of Interest Declarations (Form F-18) from role holders. The General Secretary records receipt.",
@@ -3134,7 +3105,6 @@
           "governance_candidates": "a candidate",
           "governance_election_results": "election results",
           "governance_elections": "the election",
-          "governance_member_offers": "a member offer",
           "governance_minutes": "the minutes",
           "governance_partner_affiliations": "a partner affiliation",
           "governance_partner_agreements": "a partner agreement",
@@ -4018,7 +3988,7 @@
       "receivedTitle": "Application received",
       "waiting": "{name}'s application, signed on {date}, is with the Society. Once the President signs, {name}'s dashboard opens for you.",
       "partneredTitle": "You are a partner",
-      "partnered": "{name} is a partner of the Society. Its dashboard keeps its profile, perks, guests and team.",
+      "partnered": "{name} is a partner of the Society. Its dashboard keeps its profile, guests and team.",
       "openDesk": "Open the dashboard",
       "declined": "Your earlier application was not taken forward. You may apply again.",
       "memorandum": {
@@ -4057,11 +4027,10 @@
     },
     "partnerDesk": {
       "none": "You are not on a partner’s team.",
-      "lede": "Your organization’s dashboard: its profile, the events it runs with the Society, the perks it offers, its guests and its team.",
+      "lede": "Your organization’s dashboard: its profile, the events it runs with the Society, its guests and its team.",
       "tabsLabel": "Partner",
       "tabs": {
         "profile": "Profile",
-        "perks": "Perks",
         "people": "People",
         "events": "Events"
       },
@@ -4086,24 +4055,9 @@
         "forPartner": "For your organization",
         "forSociety": "For the Society"
       },
-      "perks": {
-        "title": "Perks",
-        "lede": "Members and your guests see published perks.",
-        "notGranted": "Members and guests see perks once your memorandum includes them. Ask the Society to add them.",
-        "empty": "No perks yet.",
-        "hidden": "Not published",
-        "until": "until {date}",
-        "remove": "Remove",
-        "removeConfirm": "Remove this perk? Members no longer see it.",
-        "new": "Add a perk",
-        "add": "Add perk",
-        "askNow": "Ask the Society to publish it",
-        "ask": "Ask to publish",
-        "waiting": "Waiting for the Society"
-      },
       "guests": {
         "title": "Guests",
-        "lede": "Your guests may book places at events, write for Qirtas calls opened to you and use your perks. Invite them by email or with a link; verify only people who belong to your organization.",
+        "lede": "Your guests may book places at events and write for Qirtas calls opened to you. Invite them by email or with a link; verify only people who belong to your organization.",
         "empty": "No guests yet.",
         "verify": "Verify",
         "decline": "Decline",
@@ -4118,7 +4072,7 @@
       },
       "team": {
         "title": "Team",
-        "lede": "Up to six people keep this dashboard. Leads invite and remove; everyone keeps the profile, perks and guests.",
+        "lede": "Up to six people keep this dashboard. Leads invite and remove; everyone keeps the profile and guests.",
         "remove": "Remove",
         "removeConfirm": "Remove {name} from the team?",
         "leave": "Leave",
@@ -4151,7 +4105,7 @@
     "accountHome": {
       "partners": "Your membership",
       "team": "On the team of {name}",
-      "teamLine": "Open its dashboard: its profile, perks, guests and team.",
+      "teamLine": "Open its dashboard: its profile, guests and team.",
       "guest": "Guest of {name}",
       "guestLine": "{name} confirmed you. You may book places at events and write for Qirtas.",
       "pending": "Waiting for {name}",
@@ -4167,7 +4121,7 @@
       "writeLine": "Calls opened to your partner.",
       "record": "Your record",
       "societyGuest": "Guest of the Society",
-      "societyGuestLine": "You may book places at events, use our partners’ perks and write for calls open to you.",
+      "societyGuestLine": "You may book places at events and write for calls open to you.",
       "recordLine": "Service and certificates.",
       "involved": "Get involved",
       "involvedLine": "Every open place, with the Society and its partners."
@@ -4177,7 +4131,7 @@
       "unusable": "This invitation has been used, withdrawn or has expired. Ask whoever sent it for a new one.",
       "partners": "About our partners",
       "team": "{partner} invites you to its team, to keep its dashboard with the Society.",
-      "guest": "{partner} invites you to be its guest of the Society: book places at events, write for Qirtas and use its perks.",
+      "guest": "{partner} invites you to be its guest of the Society: book places at events and write for Qirtas.",
       "signUp": "Create your account to accept. Already have one? Sign in below.",
       "otherAddress": "This invitation is for {email}. Sign in with that address to accept it.",
       "acceptTeam": "Accept to join the team.",
@@ -4190,7 +4144,7 @@
         "unknown": "Something went wrong. Try again.",
         "one_membership": "This account already holds a membership of another kind. An account is one kind only: a member, a guest or a partner’s."
       },
-      "society": "The AUIB Society of Arts and Letters invites you as its guest: book places at events, use our partners’ perks and carry a guest’s card."
+      "society": "The AUIB Society of Arts and Letters invites you as its guest: book places at events and carry a guest’s card."
     },
     "joint": {
       "title": "Run with a partner",
@@ -4688,10 +4642,6 @@
           "title": "A live card",
           "body": "Your membership card on your phone and in Google Wallet. Its code changes every 30 seconds, so it gets you in at the door and can be checked by anyone, but never copied."
         },
-        "perks": {
-          "title": "Perks",
-          "body": "Offers from the Society’s partners, shown with your card."
-        },
         "record": {
           "title": "A record",
           "body": "The events you came to, the hours you gave and your certificates, in one place. Each certificate has its own check."
@@ -4928,13 +4878,9 @@
           "title": "Your side of the work",
           "body": "What the memorandum sets out for your side, given in kind. No money changes hands either way."
         },
-        "perks": {
-          "title": "Offer perks",
-          "body": "Offers for the Society’s members and your guests, kept on your own dashboard with your team."
-        },
         "team": {
           "title": "A team that answers",
-          "body": "Up to six people, at least one of them a Lead, keep your profile, perks and people on your dashboard."
+          "body": "Up to six people, at least one of them a Lead, keep your profile and people on your dashboard."
         }
       },
       "secondChapter": {
@@ -4995,7 +4941,6 @@
       "note": "Members can replace their card’s code at any time; an old code then stops working.",
       "live": "This is the live card: its code is from the last minute.",
       "notLive": "This code isn’t live (it may be a screenshot). Ask to see the card on the member’s own phone.",
-      "perks": "Partners: this card’s holder may use the Society’s perks.",
       "pattern": "This card’s pattern. It should match the one on the member’s card.",
       "status": "Status",
       "statusActive": "Active",

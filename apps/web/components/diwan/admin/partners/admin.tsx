@@ -32,8 +32,6 @@ import {
   DataTable,
   ErrorLine,
   Field,
-  NewLink,
-  RecordPage,
   SaveButton,
   SelectInput,
 } from "../kit";
@@ -1151,238 +1149,6 @@ const Affiliations = ({ partnerId }: { partnerId: string }) => {
   );
 };
 
-// ── Member offers ───────────────────────────────────────────────────────────
-
-interface OfferRow {
-  code: string | null;
-  ends_on: string | null;
-  id: string;
-  is_published: boolean;
-  partner_id: string;
-  starts_on: string;
-  title_ar: string | null;
-  title_en: string;
-}
-
-const Offers = () => {
-  const t = useTranslations("diwan.admin.partners.offers");
-  const locale = useLocale() as Locale;
-  const { supabase } = useAuth();
-  const queryClient = useQueryClient();
-  const partnerName = usePartnerNames();
-  const offers = useQuery({
-    queryFn: async () =>
-      (unwrap(
-        await supabase
-          .schema("governance")
-          .from("member_offers")
-          .select("*")
-          .order("starts_on", { ascending: false })
-      ) ?? []) as OfferRow[],
-    queryKey: [...key, "offers"],
-  });
-  const toggle = useMutation({
-    mutationFn: async (row: OfferRow) =>
-      unwrap(
-        await supabase
-          .schema("governance")
-          .from("member_offers")
-          .update({ is_published: !row.is_published })
-          .eq("id", row.id)
-      ),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: key }),
-  });
-
-  const columns: Column<OfferRow>[] = [
-    {
-      cell: (row) =>
-        localized(
-          { title_ar: row.title_ar, title_en: row.title_en },
-          "title",
-          locale
-        ),
-      header: t("offer"),
-      key: "title",
-    },
-    {
-      cell: (row) => partnerName(row.partner_id),
-      header: t("partner"),
-      key: "partner",
-    },
-    {
-      cell: (row) =>
-        `${formatLongDate(row.starts_on, locale, true)}${
-          row.ends_on ? ` – ${formatLongDate(row.ends_on, locale, true)}` : ""
-        }`,
-      header: t("dates"),
-      key: "dates",
-    },
-    {
-      cell: (row) => (
-        <Button onClick={() => toggle.mutate(row)} size="sm" variant="outline">
-          {row.is_published ? t("unpublish") : t("publish")}
-        </Button>
-      ),
-      header: t("published"),
-      key: "published",
-    },
-  ];
-
-  if (offers.isPending) {
-    return <SectionSpinner />;
-  }
-  return (
-    <div className="grid gap-6">
-      <p className="type-body">{t("lede")}</p>
-      <NewLink href="/people/partners/offers/new">{t("new")}</NewLink>
-      <ErrorLine error={toggle.error} />
-      <DataTable
-        columns={columns}
-        empty={t("empty")}
-        rowKey={(row) => row.id}
-        rows={offers.data ?? []}
-      />
-    </div>
-  );
-};
-
-/** A new perk, on its own page under Perks (owner, Nov 4, 2026). */
-export const NewOffer = () => {
-  const t = useTranslations("diwan.admin.partners.offers");
-  const locale = useLocale() as Locale;
-  const { supabase } = useAuth();
-  const queryClient = useQueryClient();
-  const router = useRouter();
-  const register = usePartners();
-  const empty = {
-    code: "",
-    details: { ar: "", en: "" },
-    ends_on: "",
-    is_published: false,
-    partner_id: "",
-    starts_on: today(),
-    title: { ar: "", en: "" },
-  };
-  const [form, setForm] = useState(empty);
-  const add = useMutation({
-    mutationFn: async () =>
-      unwrap(
-        await supabase
-          .schema("governance")
-          .from("member_offers")
-          .insert(
-            partners.offerSchema.parse({
-              code: form.code,
-              details_ar: form.details.ar,
-              details_en: form.details.en,
-              ends_on: form.ends_on,
-              is_published: form.is_published,
-              partner_id: form.partner_id,
-              starts_on: form.starts_on,
-              title_ar: form.title.ar,
-              title_en: form.title.en,
-            })
-          )
-      ),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: key });
-      router.push("/people/partners/offers");
-    },
-  });
-  return (
-    <RecordPage
-      back="/people/partners/offers"
-      backLabel={t("back")}
-      title={t("new")}
-    >
-      <form
-        className="grid max-w-3xl gap-4"
-        onSubmit={(event) => {
-          event.preventDefault();
-          add.mutate();
-        }}
-      >
-        <Field label={t("partner")}>
-          {(id) => (
-            <SelectInput
-              id={id}
-              onChange={(e) =>
-                setForm((f) => ({ ...f, partner_id: e.target.value }))
-              }
-              required
-              value={form.partner_id}
-            >
-              <option value="">{t("choosePartner")}</option>
-              {(register.data ?? []).map((p) => (
-                <option key={p.id} value={p.id}>
-                  {localized(p, "name", locale)}
-                </option>
-              ))}
-            </SelectInput>
-          )}
-        </Field>
-        <BilingualField
-          label={t("title")}
-          maxLength={200}
-          onChange={(title) => setForm((f) => ({ ...f, title }))}
-          required
-          value={form.title}
-        />
-        <BilingualField
-          label={t("details")}
-          maxLength={2000}
-          multiline
-          onChange={(details) => setForm((f) => ({ ...f, details }))}
-          required
-          value={form.details}
-        />
-        <div className="grid gap-4 sm:grid-cols-3">
-          <Field hint={t("codeHint")} label={t("code")}>
-            {(id) => (
-              <Input
-                dir="ltr"
-                id={id}
-                maxLength={60}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, code: e.target.value }))
-                }
-                value={form.code}
-              />
-            )}
-          </Field>
-          {(["starts_on", "ends_on"] as const).map((field) => (
-            <Field key={field} label={t(field)}>
-              {(id) => (
-                <DateInput
-                  id={id}
-                  onChange={(e) =>
-                    setForm((f) => ({ ...f, [field]: e.target.value }))
-                  }
-                  required={field === "starts_on"}
-                  value={form[field]}
-                />
-              )}
-            </Field>
-          ))}
-        </div>
-        <div className="flex items-center gap-2">
-          <Checkbox
-            checked={form.is_published}
-            id="offer-published"
-            onCheckedChange={(checked) =>
-              setForm((f) => ({ ...f, is_published: checked === true }))
-            }
-          />
-          <Label htmlFor="offer-published">{t("publishNow")}</Label>
-        </div>
-        <p className="type-caption">{t("grantHint")}</p>
-        <SaveButton pending={add.isPending} />
-        <ErrorLine error={add.error} />
-      </form>
-    </RecordPage>
-  );
-};
-
 // ── Declarations received (Form F-18) ───────────────────────────────────────
 
 interface DeclarationRow {
@@ -1521,12 +1287,7 @@ export const Declarations = () => {
 
 // ── Page ────────────────────────────────────────────────────────────────────
 
-export const partnerViews = [
-  "applications",
-  "register",
-  "agreements",
-  "offers",
-] as const;
+export const partnerViews = ["applications", "register", "agreements"] as const;
 export type PartnerView = (typeof partnerViews)[number];
 
 const viewPath = (view: PartnerView) =>
@@ -1535,7 +1296,7 @@ const viewPath = (view: PartnerView) =>
 /**
  * Partners in one place (Nov 4, 2026): applications waiting for the
  * President, the register (each partner's page holds its guests),
- * memoranda and perks, each view at its own address; places with partners
+ * and memoranda, each view at its own address; places with partners
  * are among every opening at People → Openings.
  */
 export const PartnersAdmin = ({ view }: { view?: PartnerView }) => {
@@ -1566,7 +1327,6 @@ export const PartnersAdmin = ({ view }: { view?: PartnerView }) => {
       ) : null}
       {here === "register" && canManage ? <Register /> : null}
       {here === "agreements" ? <Agreements /> : null}
-      {here === "offers" && canManage ? <Offers /> : null}
     </div>
   );
 };

@@ -119,7 +119,7 @@ select is(
 );
 select is(
   (select array_agg(item order by item) from core.handover()),
-  array['grants_asked', 'hiring_new', 'partner_applications', 'perks_waiting', 'requests_open', 'submissions_new'],
+  array['grants_asked', 'hiring_new', 'partner_applications', 'requests_open', 'submissions_new'],
   'each by its key'
 );
 select ok(

@@ -2176,62 +2176,6 @@ export type Database = {
         };
         Relationships: [];
       };
-      member_offers: {
-        Row: {
-          code: string | null;
-          created_at: string;
-          details_ar: string | null;
-          details_en: string;
-          ends_on: string | null;
-          id: string;
-          is_published: boolean;
-          partner_id: string;
-          starts_on: string;
-          submitted_at: string | null;
-          title_ar: string | null;
-          title_en: string;
-          updated_at: string;
-        };
-        Insert: {
-          code?: string | null;
-          created_at?: string;
-          details_ar?: string | null;
-          details_en: string;
-          ends_on?: string | null;
-          id?: string;
-          is_published?: boolean;
-          partner_id: string;
-          starts_on?: string;
-          submitted_at?: string | null;
-          title_ar?: string | null;
-          title_en: string;
-          updated_at?: string;
-        };
-        Update: {
-          code?: string | null;
-          created_at?: string;
-          details_ar?: string | null;
-          details_en?: string;
-          ends_on?: string | null;
-          id?: string;
-          is_published?: boolean;
-          partner_id?: string;
-          starts_on?: string;
-          submitted_at?: string | null;
-          title_ar?: string | null;
-          title_en?: string;
-          updated_at?: string;
-        };
-        Relationships: [
-          {
-            foreignKeyName: "member_offers_partner_id_fkey";
-            columns: ["partner_id"];
-            isOneToOne: false;
-            referencedRelation: "partners";
-            referencedColumns: ["id"];
-          },
-        ];
-      };
       minutes: {
         Row: {
           adopted_on: string | null;

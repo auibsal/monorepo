@@ -137,7 +137,6 @@ describe("the Diwan group", () => {
     grants_asked: 0,
     hiring_new: 2,
     partner_applications: 1,
-    perks_waiting: 0,
     requests_open: 0,
     submissions_new: 0,
   };

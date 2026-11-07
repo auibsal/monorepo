@@ -45,7 +45,6 @@ interface Brief {
     | "grants_asked"
     | "hiring_new"
     | "partner_applications"
-    | "perks_waiting"
     | "requests_open"
     | "submissions_new",
     number
@@ -66,7 +65,6 @@ interface Summary {
 const WAITING: [keyof Brief["waiting"], WaitingKey][] = [
   ["partner_applications", "partnerApplications"],
   ["grants_asked", "grantsAsked"],
-  ["perks_waiting", "perksWaiting"],
   ["submissions_new", "submissionsNew"],
   ["hiring_new", "hiringNew"],
   ["requests_open", "requestsOpen"],

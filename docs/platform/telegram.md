@@ -82,7 +82,7 @@ And without commands:
 - **The morning brief,** once a day from 8:00 AM Baghdad time: today's
   events (members-only and invitation events too) with their bookings and
   waitlists, and what waits in the Diwan as counts (partner applications,
-  partners asking to turn something on, perks to publish, new Qirtas
+  partners asking to turn something on, new Qirtas
   submissions, new replies to openings, open requests), with *Open the
   Diwan* (`core.telegram_staff_brief`).
 - **After each event,** half an hour after it ends (three hours after it

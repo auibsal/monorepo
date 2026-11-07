@@ -16,11 +16,9 @@ import { localized, partners, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, type ReactNode, useState } from "react";
-import { DateInput } from "@/components/fields/date-input";
 import { Signature } from "@/components/signature";
 import { type MyPartner, useMyPartners } from "@/lib/diwan/partners";
 import {
-  AddInPlace,
   BilingualField,
   ConfirmAction,
   ErrorLine,
@@ -37,14 +35,13 @@ const KEY = ["partner-desk"] as const;
 const TABS = [
   { href: "/partners/dashboard", key: "profile" },
   { href: "/partners/dashboard/events", key: "events" },
-  { href: "/partners/dashboard/perks", key: "perks" },
   { href: "/partners/dashboard/people", key: "people" },
 ] as const;
 
 /**
  * The partner's dashboard (owner, Oct 31, 2026: one fixed address,
- * /partners/dashboard): its title and its tabs, Profile, Events (A41),
- * Perks, People.
+ * /partners/dashboard): its title and its tabs, Profile, Events (A41)
+ * and People.
  * Someone on two partners' teams keeps the first.
  */
 const PartnerFrame = ({
@@ -428,127 +425,6 @@ const ProfileLoader = ({ id }: { id: string }) => {
   return <ProfileForm row={row.data} />;
 };
 
-// ── Perks ───────────────────────────────────────────────────────────────────
-
-interface Offer extends Record<string, unknown> {
-  code: string | null;
-  details_en: string;
-  ends_on: string | null;
-  id: string;
-  is_published: boolean;
-  submitted_at: string | null;
-  title_ar: string | null;
-  title_en: string;
-}
-
-const NewPerk = ({
-  onDone,
-  partnerId,
-}: {
-  onDone: () => void;
-  partnerId: string;
-}) => {
-  const t = useTranslations("diwan.partnerDesk.perks");
-  const to = useTranslations("diwan.admin.partners.offers");
-  const { supabase } = useAuth();
-  const queryClient = useQueryClient();
-  const empty = {
-    code: "",
-    details: { ar: "", en: "" },
-    ends_on: "",
-    publish: true,
-    title: { ar: "", en: "" },
-  };
-  const [form, setForm] = useState(empty);
-  const add = useMutation({
-    mutationFn: async () =>
-      unwrap(
-        await supabase
-          .schema("governance")
-          .from("member_offers")
-          .insert({
-            code: form.code.trim() || null,
-            details_ar: form.details.ar.trim() || null,
-            details_en: form.details.en.trim(),
-            ends_on: form.ends_on || null,
-            is_published: form.publish,
-            partner_id: partnerId,
-            title_ar: form.title.ar.trim() || null,
-            title_en: form.title.en.trim(),
-          })
-      ),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: KEY });
-      onDone();
-    },
-  });
-  return (
-    <form
-      className="grid gap-6"
-      onSubmit={(event: FormEvent) => {
-        event.preventDefault();
-        add.mutate();
-      }}
-    >
-      <BilingualField
-        label={to("title")}
-        maxLength={200}
-        onChange={(title) => setForm((f) => ({ ...f, title }))}
-        value={form.title}
-      />
-      <BilingualField
-        label={to("details")}
-        maxLength={2000}
-        multiline
-        onChange={(details) => setForm((f) => ({ ...f, details }))}
-        value={form.details}
-      />
-      <div className="grid gap-4 sm:grid-cols-2">
-        <Field hint={to("codeHint")} label={to("code")}>
-          {(id) => (
-            <Input
-              dir="ltr"
-              id={id}
-              maxLength={60}
-              onChange={(e) => setForm((f) => ({ ...f, code: e.target.value }))}
-              value={form.code}
-            />
-          )}
-        </Field>
-        <Field label={to("ends_on")}>
-          {(id) => (
-            <DateInput
-              id={id}
-              onChange={(e) =>
-                setForm((f) => ({ ...f, ends_on: e.target.value }))
-              }
-              value={form.ends_on}
-            />
-          )}
-        </Field>
-      </div>
-      <div className="flex items-center gap-2">
-        <Checkbox
-          checked={form.publish}
-          id="perk-publish"
-          onCheckedChange={(checked) =>
-            setForm((f) => ({ ...f, publish: checked === true }))
-          }
-        />
-        <Label htmlFor="perk-publish">{t("askNow")}</Label>
-      </div>
-      <Button
-        className="justify-self-start"
-        disabled={add.isPending}
-        type="submit"
-      >
-        {t("add")}
-      </Button>
-      <ErrorLine error={add.error} />
-    </form>
-  );
-};
-
 /**
  * /partners/dashboard/events: the events run with the Society (the design
  * review A41), soonest first, each with the checklist both sides keep; the
@@ -594,135 +470,6 @@ const JointEvents = () => {
           <JointChecklist eventId={event.id} society={false} />
         </DiwanSection>
       ))}
-    </>
-  );
-};
-
-/** /partners/dashboard/perks: what the partner offers members and guests. */
-export const PartnerPerks = () => (
-  <PartnerFrame>
-    {(partner) => <PerksList partnerId={partner.id} />}
-  </PartnerFrame>
-);
-
-const PerksList = ({ partnerId }: { partnerId: string }) => {
-  const t = useTranslations("diwan.partnerDesk.perks");
-  const to = useTranslations("diwan.admin.partners.offers");
-  const locale = useLocale() as Locale;
-  const queryClient = useQueryClient();
-  const { supabase } = useAuth();
-  const change = useMutation({
-    mutationFn: async (input: {
-      id: string;
-      publish?: boolean;
-      remove?: boolean;
-    }) => {
-      const table = supabase.schema("governance").from("member_offers");
-      const result = input.remove
-        ? await table.delete().eq("id", input.id)
-        : await table
-            .update({ is_published: input.publish ?? false })
-            .eq("id", input.id);
-      return unwrap(result);
-    },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: KEY }),
-  });
-  const offers = useQuery({
-    queryFn: async () =>
-      (unwrap(
-        await supabase
-          .schema("governance")
-          .from("member_offers")
-          .select(
-            "id, title_en, title_ar, details_en, code, ends_on, is_published, submitted_at"
-          )
-          .eq("partner_id", partnerId)
-          .order("created_at", { ascending: false })
-      ) ?? []) as Offer[],
-    queryKey: [...KEY, "perks", partnerId],
-  });
-  // Published by the Society, waiting for it, or kept to the partner.
-  const perkState = (offer: {
-    is_published: boolean;
-    submitted_at: string | null;
-  }) => {
-    if (offer.is_published) {
-      return to("published");
-    }
-    return offer.submitted_at ? t("waiting") : t("hidden");
-  };
-  const granted = useQuery({
-    queryFn: async () =>
-      (
-        (unwrap(
-          await supabase
-            .schema("governance")
-            .from("partner_agreements")
-            .select("grants")
-            .eq("partner_id", partnerId)
-            .eq("status", "signed")
-        ) ?? []) as { grants: string[] }[]
-      ).some((a) => a.grants.includes("member_offer")),
-    queryKey: [...KEY, "perk-grant", partnerId],
-  });
-  return (
-    <>
-      <DiwanSection id="perks" title={t("title")}>
-        <p className="type-body">
-          {granted.data === false ? t("notGranted") : t("lede")}
-        </p>
-        {offers.isPending ? <SectionSpinner /> : null}
-        {offers.data?.length === 0 ? (
-          <p className="type-body text-text-secondary">{t("empty")}</p>
-        ) : null}
-        <RowList>
-          {(offers.data ?? []).map((offer) => (
-            <li className="grid gap-2 py-5" key={offer.id}>
-              <p className="font-medium">{localized(offer, "title", locale)}</p>
-              <p className="type-body whitespace-pre-line" dir="auto">
-                {offer.details_en}
-              </p>
-              <p className="type-caption">
-                {perkState(offer)}
-                {offer.ends_on
-                  ? ` · ${t("until", { date: formatLongDate(offer.ends_on, locale) })}`
-                  : ""}
-              </p>
-              <div className="flex flex-wrap gap-2">
-                {offer.submitted_at && !offer.is_published ? null : (
-                  <Button
-                    disabled={change.isPending}
-                    onClick={() =>
-                      change.mutate({
-                        id: offer.id,
-                        publish: !offer.is_published,
-                      })
-                    }
-                    size="sm"
-                    variant="outline"
-                  >
-                    {offer.is_published ? to("unpublish") : t("ask")}
-                  </Button>
-                )}
-                <ConfirmAction
-                  confirmLabel={t("remove")}
-                  description={t("removeConfirm")}
-                  disabled={change.isPending}
-                  onConfirm={() =>
-                    change.mutate({ id: offer.id, remove: true })
-                  }
-                >
-                  {t("remove")}
-                </ConfirmAction>
-              </div>
-            </li>
-          ))}
-        </RowList>
-        <ErrorLine error={change.error} />
-      </DiwanSection>
-      <AddInPlace label={t("new")}>
-        {(close) => <NewPerk onDone={close} partnerId={partnerId} />}
-      </AddInPlace>
     </>
   );
 };

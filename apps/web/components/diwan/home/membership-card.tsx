@@ -17,13 +17,12 @@ import {
 } from "@repo/brand/components/ui/dialog";
 import { siteUrl } from "@repo/internationalization";
 import { formatLongDate } from "@repo/internationalization/format";
-import { localized, membership, partners, unwrap } from "@repo/sal-data";
+import { membership, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import QRCode from "react-qr-code";
 import { callApi } from "@/lib/diwan/api";
-import { useMyPartners } from "@/lib/diwan/partners";
 import {
   useMemberStatus,
   useMyMembership,
@@ -158,59 +157,6 @@ const WalletLink = ({ code }: { code: string }) => {
 };
 
 /**
- * Perks: what partners offer members who show this card, and their own
- * guests (owner, Oct 31, 2026), who say how they show theirs (`how`).
- */
-export const Perks = ({ how }: { how?: string }) => {
-  const t = useTranslations("diwan.home.card");
-  const locale = useLocale();
-  const { supabase } = useAuth();
-  const offers = useQuery({
-    queryFn: () => partners.memberOffers(supabase),
-    queryKey: ["offers"],
-  });
-  // A partner's own people aren't offered their own perks.
-  const own = new Set((useMyPartners().data ?? []).map((p) => p.id));
-  const shown = (offers.data ?? []).filter(
-    (offer) => !(offer.partner_id && own.has(offer.partner_id))
-  );
-  if (shown.length === 0) {
-    return null;
-  }
-  return (
-    <div className="grid max-w-3xl gap-3">
-      <h3 className="type-heading">{t("perks")}</h3>
-      <p className="type-caption">{how ?? t("perksHow")}</p>
-      <ul className="grid divide-y divide-line border-line border-y">
-        {shown.map((offer) => (
-          <li className="grid gap-1 py-3" key={offer.id}>
-            <p className="font-medium">{localized(offer, "title", locale)}</p>
-            <p className="type-body whitespace-pre-line" dir="auto">
-              {localized(offer, "details", locale)}
-            </p>
-            {offer.code ? (
-              <p className="type-caption">
-                {t("perkCode")}{" "}
-                <code className="type-code" dir="ltr">
-                  {offer.code}
-                </code>
-              </p>
-            ) : null}
-            {offer.ends_on ? (
-              <p className="type-caption">
-                {t("perkUntil", {
-                  date: formatLongDate(offer.ends_on, locale),
-                })}
-              </p>
-            ) : null}
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-};
-
-/**
  * The membership card: paper, the lockup, the member's name, a line pattern
  * drawn from the card number, and a QR that changes every 30 seconds. The
  * QR links to auibsal.org/verify/member/<code>?t=<digits>: any phone camera
@@ -322,7 +268,6 @@ export const MembershipCard = () => {
           </a>
         ) : null}
       </div>
-      <Perks />
       <details className="max-w-3xl">
         <summary className="type-caption cursor-pointer">
           {t("card.security")}

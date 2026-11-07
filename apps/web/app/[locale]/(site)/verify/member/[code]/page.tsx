@@ -33,8 +33,7 @@ export const generateMetadata = async ({
  * membership stands today, and whether this is the live card (the code in
  * the link changes every 30 seconds; a screenshot carries a stale one).
  * Read live, never cached, so a reset code or an ended membership shows at
- * once. Partners check perks here too. It shows the name, class, status
- * and member since only (owner, Nov 7, 2026).
+ * once. It shows the name, class, status and member since only (owner, Nov 7, 2026).
  */
 const MemberCardPage = async ({ params, searchParams }: CardParams) => {
   const { code, locale } = await params;
@@ -95,9 +94,6 @@ const MemberCardPage = async ({ params, searchParams }: CardParams) => {
             reassuring line. */}
         <p className="type-heading">{card.live ? t("live") : t("notLive")}</p>
         <p className="type-body">{card.active ? t("valid") : t("lapsed")}</p>
-        {card.active && card.live ? (
-          <p className="type-body text-text-secondary">{t("perks")}</p>
-        ) : null}
       </div>
       <dl className="grid gap-3 border-line border-t pt-5">
         {rows.map(([label, value, dir]) => (
