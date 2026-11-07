@@ -1668,6 +1668,22 @@
             "notLive": "That card’s code has expired. Ask them to open their card again and scan the live code.",
             "unknownCard": "That card isn’t on record.",
             "notCard": "That isn’t a membership card."
+          },
+          "import": {
+            "title": "The spring 2026 Tour",
+            "lede": "Load the Tour’s scanned pages and the invitation list once. The files go from this browser to the site’s database and nowhere else. Loading them again updates what was loaded; nothing is sent until the President sends the invitations.",
+            "pages": "The pages (diwan_six_words_import.csv)",
+            "list": "The invitation list (invitation_list.csv)",
+            "rows": "{count} rows",
+            "load": "Load",
+            "loaded": "Loaded {pages} pages and {invitations} invitations; {attached} pages went straight to writers who already have an account.",
+            "status": "Invitations: {waiting} waiting, {sent} sent, {joined} joined. Pages not yet claimed: {unclaimed}.",
+            "send": "Send {count} invitations",
+            "confirm": "Send {count} invitations now, from hello@auibsal.org? Each goes once and can’t be called back.",
+            "sendNow": "Send now",
+            "notYet": "Not yet",
+            "president": "The President sends the invitations.",
+            "sending": "{count} invitations are on their way."
           }
         }
       },

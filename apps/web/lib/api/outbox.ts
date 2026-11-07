@@ -16,6 +16,7 @@ import {
   callOpened,
   candidacyDecided,
   certificateIssued,
+  contactField,
   cronFailed,
   type Decision,
   decision,
@@ -25,7 +26,8 @@ import {
   eventReminder,
   type FailedJob,
   finalCheck,
-  invitation as joinInvitation,
+  invitationBroadcast,
+  invitationContact,
   newsletterConfirm,
   partnerInvitation,
   personalEmailConfirm,
@@ -56,6 +58,13 @@ import {
 } from "@repo/email/templates/notice";
 import { journal } from "@repo/sal-data";
 import { revalidateTag } from "next/cache";
+import {
+  type BroadcastContact,
+  BroadcastPending,
+  cleanUpSegments,
+  pullUnsubscribes,
+  runBroadcast,
+} from "@/lib/api/broadcast";
 import { inviteStopToken, stopToken } from "@/lib/api/email-stop";
 import { api, origin, site } from "@/lib/api/urls";
 import { type CacheTag, cacheTags } from "@/lib/supabase";
@@ -813,18 +822,6 @@ const handlers: Record<string, Handler> = {
       });
     }
   },
-  "journal.sunday_paper": async (admin, payload) => {
-    const to = await recipient(admin, payload.user_id);
-    // The paper is email only: stopped since it was queued, it stays home.
-    if (!to || to.optional === false) {
-      return;
-    }
-    const paper = await paperContents(admin, to.lang, payload.since);
-    if (!paper) {
-      return;
-    }
-    await send(to, sundayPaper(to.lang, paper), { category: "optional" });
-  },
   "membership.certificate_issued": async (admin, payload) => {
     const [to, { data: certificate }] = await Promise.all([
       recipient(admin, payload.user_id),
@@ -852,50 +849,72 @@ const handlers: Record<string, Handler> = {
       );
     }
   },
-  // The one-time invitation to join (owner, Nov 7, 2026): to an address on
-  // the list, not yet an account. Its stop link takes the address off the
-  // list for good.
-  "membership.invitation": async (admin, payload) => {
-    const { data: row } = await admin
+  // The one-time invitation to join (owner, Nov 7, 2026), as one Broadcast
+  // for each kind of invitation: each address's greeting, Tour line and
+  // stop link are its contact properties. The President's go marked the
+  // addresses sent (membership.send_invitations).
+  "membership.invitations": async (admin, payload) => {
+    await cleanUpSegments(admin);
+    await pullUnsubscribes(admin);
+    const { data: rows, error } = await admin
       .schema("membership")
       .from("invitations")
-      .select(
-        "email, first_name, kind, station, words, quote_words, pages, joined_at"
-      )
-      .eq("email", String(payload.email))
-      .maybeSingle();
-    if (!row || row.joined_at) {
-      return;
+      .select("email, first_name, kind, station, words, quote_words, pages")
+      .not("sent_at", "is", null)
+      .is("joined_at", null);
+    if (error) {
+      throw error;
     }
     const lang: Lang = "en";
-    const token = inviteStopToken(row.email);
-    await send(
-      { email: row.email, lang },
-      joinInvitation(
-        lang,
-        {
-          first_name: row.first_name,
-          kind: row.kind === "tour" ? "tour" : "plain",
-          pages: row.pages,
-          station: row.station,
-          words: row.quote_words ? row.words : null,
-        },
-        `${webUrl()}${prefix(lang)}/join`
-      ),
-      {
-        footer: [
-          {
-            href: `${webUrl()}${prefix(lang)}/emails/stop?invite=${token}`,
-            link: "Stop",
-            text: "You get this once, because you signed up at the Society's table.",
-          },
-        ],
-        headers: {
-          "List-Unsubscribe": `<${api(`/email/stop?invite=${token}`)}>`,
-          "List-Unsubscribe-Post": "List-Unsubscribe=One-Click",
-        },
+    const join = `${webUrl()}${prefix(lang)}/join`;
+    const sentAt = String(payload.sent_at ?? "");
+    const waiting: string[] = [];
+    for (const kind of ["tour", "plain"] as const) {
+      const contacts: BroadcastContact[] = (rows ?? [])
+        .filter((row) => (row.kind === "plain" ? "plain" : "tour") === kind)
+        .map((row) => {
+          const token = inviteStopToken(row.email);
+          return {
+            email: row.email,
+            firstName: row.first_name,
+            properties: {
+              ...invitationContact(lang, {
+                first_name: row.first_name,
+                kind,
+                pages: row.pages,
+                station: row.station,
+                words: row.quote_words ? row.words : null,
+              }),
+              stop_url: `${webUrl()}${prefix(lang)}/emails/stop?invite=${token}`,
+            },
+          };
+        });
+      try {
+        // biome-ignore lint/performance/noAwaitInLoops: one at a time
+        await runBroadcast(admin, {
+          built: invitationBroadcast(lang, kind, join),
+          contacts,
+          footer: [
+            {
+              href: contactField("stop_url"),
+              link: "Stop",
+              text: "You get this once, because you wrote at the Society’s typewriter or signed up at its table.",
+            },
+          ],
+          key: `invitation:${sentAt.slice(0, 19)}:${kind}`,
+          kind: "invitation",
+          lang,
+        });
+      } catch (failure) {
+        if (!(failure instanceof BroadcastPending)) {
+          throw failure;
+        }
+        waiting.push(failure.message);
       }
-    );
+    }
+    if (waiting.length > 0) {
+      throw new BroadcastPending(waiting.join(" "));
+    }
   },
   // The Council decided an account from outside AUIB
   // (membership.decide_verification).
@@ -944,24 +963,6 @@ const handlers: Record<string, Handler> = {
         `${webUrl()}${prefix(lang)}/sunday-paper/confirm?token=${row.confirm_token}`
       )
     );
-  },
-  // The Sunday Paper for the public list (subscribers without an account).
-  "newsletter.monthly": async (admin, payload) => {
-    const row = await subscriber(admin, payload.subscriber_id);
-    if (row?.status !== "subscribed") {
-      return;
-    }
-    const lang: Lang = row.lang === "ar" ? "ar" : "en";
-    const paper = await paperContents(admin, lang, payload.since);
-    if (!paper) {
-      return;
-    }
-    const links = unsubscribeLinks(lang, row.unsubscribe_token);
-    const line = FOOTER_LINES.optional[lang];
-    await send({ email: row.email, lang }, sundayPaper(lang, paper), {
-      footer: [{ href: links.page, link: line.link, text: line.text }],
-      headers: links.headers,
-    });
   },
   "partners.application_decided": async (admin, payload) => {
     const [to, { data: partner }] = await Promise.all([
@@ -1306,6 +1307,64 @@ const handlers: Record<string, Handler> = {
   revalidate: async (_admin, payload) => {
     await revalidate(payload.tags);
   },
+  // The Sunday Paper (owner, Nov 7, 2026): one Broadcast in each language to
+  // members who take optional email and the public list, with each
+  // person's own stop link as a contact property.
+  "sunday_paper.broadcast": async (admin, payload) => {
+    await cleanUpSegments(admin);
+    await pullUnsubscribes(admin);
+    const { data: everyone, error } = await admin
+      .schema("core")
+      .rpc("sunday_paper_recipients");
+    if (error) {
+      throw error;
+    }
+    const month = String(payload.month ?? "");
+    const waiting: string[] = [];
+    for (const lang of ["en", "ar"] as const) {
+      // biome-ignore lint/performance/noAwaitInLoops: one language at a time
+      const paper = await paperContents(admin, lang, payload.since);
+      if (!paper) {
+        // Nothing to carry in this language this month.
+        continue;
+      }
+      const contacts: BroadcastContact[] = (everyone ?? [])
+        .filter((person) => person.lang === lang)
+        .map((person) => ({
+          email: person.email,
+          properties: {
+            stop_url: person.user_id
+              ? stopLinks(lang, person.user_id).page
+              : unsubscribeLinks(lang, person.token ?? "").page,
+          },
+        }));
+      const line = FOOTER_LINES.optional[lang];
+      try {
+        await runBroadcast(admin, {
+          built: sundayPaper(lang, paper),
+          contacts,
+          footer: [
+            {
+              href: contactField("stop_url"),
+              link: line.link,
+              text: line.text,
+            },
+          ],
+          key: `sunday-paper:${month}:${lang}`,
+          kind: "sunday_paper",
+          lang,
+        });
+      } catch (failure) {
+        if (!(failure instanceof BroadcastPending)) {
+          throw failure;
+        }
+        waiting.push(failure.message);
+      }
+    }
+    if (waiting.length > 0) {
+      throw new BroadcastPending(waiting.join(" "));
+    }
+  },
 };
 
 /**
@@ -1370,12 +1429,15 @@ export const processRow = async (admin: AdminClient, id: number) => {
     return true;
   } catch (error) {
     const quota = error instanceof EmailQuotaError;
+    // A Broadcast whose contact import is still running carries on at the
+    // next drain, without spending a try.
+    const pending = error instanceof BroadcastPending;
     await admin
       .schema("core")
       .from("outbox")
       .update({
         // A spent sending limit is not the row's fault: give the try back.
-        ...(quota ? { attempts: previousAttempts } : {}),
+        ...(quota || pending ? { attempts: previousAttempts } : {}),
         last_error: String(
           error instanceof Error ? error.message : error
         ).slice(0, 1000),

@@ -1458,6 +1458,53 @@ export interface Invitation {
   words: string | null;
 }
 
+/** The greeting and the Tour line of one invitation, as Resend contact properties. */
+export const invitationContact = (lang: Lang, invite: Invitation) => {
+  const station =
+    invite.station?.trim() || (lang === "ar" ? "الجامعة" : "campus");
+  const typed = typedLine(lang, station, invite.words?.trim());
+  const twoLine =
+    lang === "ar"
+      ? " كتبتَ صفحتين، وكلتاهما تذهب إلى ملفك."
+      : " You typed two; both go on your profile.";
+  const two = invite.pages > 1 ? twoLine : "";
+  return {
+    greeting: greeting(lang, invite.first_name),
+    tour_line: typed + two,
+  };
+};
+
+/** Resend's placeholder for a contact property, filled for each recipient. */
+export const contactField = (key: string) => `{{{contact.${key}}}}`;
+
+/**
+ * The invitation as one Broadcast for everyone of a kind: the greeting and
+ * the Tour line are each recipient's contact properties
+ * (`invitationContact`), the rest is the same for all.
+ */
+export const invitationBroadcast = (
+  lang: Lang,
+  kind: Invitation["kind"],
+  join: string
+) => {
+  const built = invitation(
+    lang,
+    { first_name: null, kind, pages: 1, station: null, words: null },
+    join
+  );
+  const fields = ["greeting", kind === "tour" ? "tour_line" : null];
+  return {
+    ...built,
+    blocks: built.blocks.map((block) => ({
+      ...block,
+      paragraphs: block.paragraphs.map((paragraph, at) => {
+        const field = fields[at];
+        return field ? contactField(field) : paragraph;
+      }),
+    })),
+  };
+};
+
 /**
  * The one-time invitation to join (owner, Nov 7, 2026): sent once, on the
  * President's go, from hello@auibsal.org, with a stop link. A Typewriter

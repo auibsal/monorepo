@@ -86,7 +86,8 @@ route sends it. Every email (audited end to end on 2026-11-04):
 | `partners.application_received` | An application to partner | The applicant; Partnerships and the President (that it waits) | Direct; officer |
 | `partners.application_decided` | Signed (active) or not taken forward | The applicant | Direct |
 | `partners.invitation` | A partner's or the Society's email invitation | The invited address | Direct |
-| `journal.sunday_paper`, `newsletter.monthly` | The first Sunday of the month | Members who take optional emails; the public list | Optional (stop link and one-click) |
+| `sunday_paper.broadcast` (a Resend Broadcast) | The first Sunday of the month | Members who take optional emails; the public list, one Broadcast per language | Optional (each person's own stop link) |
+| `membership.invitations` (a Resend Broadcast) | The President's go, once (People → Typewriter Tour) | The spring 2026 Tour writers and the club fair sign-ups with no account | Direct (its stop link takes the address off the list) |
 | `newsletter.confirm` | A public sign-up | The address (double opt-in) | Direct |
 | `personal_email.confirm` | A personal email added | The new address only | Direct |
 | `programmes.removal_requested`, `programmes.removal_overdue` | A Next Stop removal request; past its 24 hours | Next Stop's managers; the requester gets a receipt in the language they asked in | Officer; direct |
@@ -156,12 +157,26 @@ are in: the next outbox row or scheduled run calls the route again.
 
 **Resend**
 
-- The free plan sends 100 emails a day across the whole account, and this
-  account also sends for another project. A busy day (the Sunday Paper to
-  every member) can leave sign-in emails without quota: Supabase then fails
-  to send and the member waits for an email that never comes. Give the
-  Society its own Resend account, or move to a paid plan, before the member
-  list passes about 60.
+- The free plan sends 100 emails a day across the whole account, counting
+  sign-in emails (Supabase sends through Resend). The two emails that go to
+  many people at once, the Sunday Paper and the one-time invitation, are
+  Resend Broadcasts instead (`lib/api/broadcast.ts`): Broadcasts don't count
+  against the 100 a day (the free plan sends them to up to 1,000 contacts a
+  month).
+- How a Broadcast goes: the job (an outbox row) reads Resend's unsubscribes
+  back into the site's list, makes a fresh segment, imports the people it
+  goes to as contacts (with their stop link, and for the invitation their
+  greeting and Tour line, as contact properties), sends one Broadcast per
+  language, and deletes the segment once it has gone (the free plan keeps
+  three segments). Its progress is a row in `core.broadcasts`; a job whose
+  import is still running carries on at the next drain.
+- `RESEND_TOKEN` must be a full-access key: a key made for sending only
+  can't make contacts, segments or Broadcasts (the job says so in the
+  outbox's `last_error`).
+- Unsubscribes made through Resend come back to the site before each send:
+  a member stops optional email, a subscriber leaves the public list, an
+  invited address leaves the invitation list; the contact is then deleted
+  from Resend.
 
 ## When someone says "I never got the email"
 

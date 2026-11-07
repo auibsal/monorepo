@@ -415,6 +415,45 @@ export type Database = {
         };
         Relationships: [];
       };
+      broadcasts: {
+        Row: {
+          broadcast_id: string | null;
+          created_at: string;
+          import_id: string | null;
+          key: string;
+          kind: string;
+          lang: string;
+          recipients: number;
+          segment_id: string | null;
+          stage: string;
+          updated_at: string;
+        };
+        Insert: {
+          broadcast_id?: string | null;
+          created_at?: string;
+          import_id?: string | null;
+          key: string;
+          kind: string;
+          lang: string;
+          recipients?: number;
+          segment_id?: string | null;
+          stage?: string;
+          updated_at?: string;
+        };
+        Update: {
+          broadcast_id?: string | null;
+          created_at?: string;
+          import_id?: string | null;
+          key?: string;
+          kind?: string;
+          lang?: string;
+          recipients?: number;
+          segment_id?: string | null;
+          stage?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
       external_events: {
         Row: {
           all_day: boolean;
@@ -984,6 +1023,10 @@ export type Database = {
     Functions: {
       account_exists: { Args: { email: string }; Returns: boolean };
       admin_overview: { Args: Record<PropertyKey, never>; Returns: Json };
+      apply_broadcast_unsubscribes: {
+        Args: { emails: string[] };
+        Returns: number;
+      };
       confirm_personal_email: { Args: { token: string }; Returns: string };
       current_semester: {
         Args: Record<PropertyKey, never>;
@@ -1112,6 +1155,16 @@ export type Database = {
           p256dh: string;
         };
         Returns: string;
+      };
+      sunday_paper_recipients: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          email: string;
+          lang: string;
+          subscriber_id: string;
+          token: string;
+          user_id: string;
+        }[];
       };
       take_rate: {
         Args: { bucket: string; max_hits: number; window_seconds: number };
@@ -5229,6 +5282,7 @@ export type Database = {
         Returns: undefined;
       };
       has_current_pledges: { Args: { uid?: string }; Returns: boolean };
+      invitations_waiting: { Args: Record<PropertyKey, never>; Returns: Json };
       is_member: { Args: { uid?: string }; Returns: boolean };
       is_voting_member: { Args: { uid?: string }; Returns: boolean };
       members_directory: {
@@ -6257,6 +6311,7 @@ export type Database = {
         Args: { production_id: string };
         Returns: undefined;
       };
+      import_tour: { Args: { invitations: Json; pages: Json }; Returns: Json };
       member_productions: {
         Args: Record<PropertyKey, never>;
         Returns: {
