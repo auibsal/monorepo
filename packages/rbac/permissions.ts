@@ -22,13 +22,9 @@ export const permissions = [
   "journal.edit.video",
   "journal.edit.voices",
   "journal.edit.games",
-  "journal.awards",
   "journal.approve",
   "journal.copy",
   "journal.frontpage",
-  "charity.manage",
-  "charity.ledger.write",
-  "charity.ledger.signoff",
   "programs.manage",
   "governance.manage",
   "governance.minutes.write",
@@ -49,6 +45,10 @@ export const permissions = [
   "concerns.about_vp",
   "concerns.about_president",
   "tour.run",
+  "members.register",
+  "qalam.manage",
+  "journal.prize",
+  "forms.handle",
 ] as const;
 
 export type Permission = (typeof permissions)[number];
@@ -58,7 +58,6 @@ export const scopeTypes = [
   "programme",
   "event",
   "issue",
-  "campaign",
   "production",
   "partner",
 ] as const;

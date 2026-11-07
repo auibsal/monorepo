@@ -11,12 +11,11 @@ import { useLocale, useTranslations } from "next-intl";
 import { useId, useState } from "react";
 import { CardScanner, parseCard } from "../card-scanner";
 import { ErrorLine } from "../kit";
-import { useMemberNames } from "../member-picker";
+import { MemberPicker, type Person, useMemberNames } from "../member-picker";
 import { memberName } from "../members/directory";
 
 const ARABIC = /[؀-ۿ]/;
-const SPACE = /\s+/;
-const words = (text: string) => text.trim().split(SPACE).filter(Boolean);
+const MAX = 400;
 const queryKey = ["admin", "programmes", "six-words"];
 
 /** The message for a card the database refused. */
@@ -31,11 +30,12 @@ const cardProblem = (error: unknown) => {
 };
 
 /**
- * Six Words from the Typewriter Tour (owner, 2026-10-25): never written on
- * the site. Whoever runs the Tour types each card as written, then either
- * scans the writer's membership card, which saves it as theirs, or saves
- * it unsigned and attaches a card later. A transcribed card is on the wall
- * at once; take one down if it shouldn't be.
+ * Pages from the Typewriter Tour (owner, Nov 7, 2026: not part of Qirtas).
+ * Whoever runs the Tour types each page as written, then either scans the
+ * writer's membership card, which makes it theirs, or saves it unsigned
+ * and attaches it later: by card, or (a claim through Help Desk) to the
+ * member by name. Every page is private until its writer chooses their
+ * profile or the Tour's page; an editor may mark one not publishable.
  */
 export const TourCards = () => {
   const t = useTranslations("diwan.admin.programmes.sixWords");
@@ -48,7 +48,7 @@ export const TourCards = () => {
   const [problem, setProblem] = useState<
     "notLive" | "unknownCard" | "notCard" | null
   >(null);
-  const count = words(text).length;
+  const count = text.trim().length;
 
   const recent = useQuery({
     queryFn: async () =>
@@ -56,9 +56,11 @@ export const TourCards = () => {
         await supabase
           .schema("programmes")
           .from("six_words")
-          .select("id, user_id, text, language, status, created_at")
+          .select(
+            "id, user_id, text, language, visibility, publishable, writer_name, station, tour, created_at"
+          )
           .order("created_at", { ascending: false })
-          .limit(40)
+          .limit(100)
       ) ?? [],
     queryKey,
   });
@@ -70,7 +72,7 @@ export const TourCards = () => {
       unwrap(
         await supabase.schema("programmes").rpc("record_six_words", {
           language: ARABIC.test(text) ? "ar" : "en",
-          words: words(text).join(" "),
+          words: text.trim(),
           ...(card ?? {}),
         })
       ),
@@ -102,14 +104,29 @@ export const TourCards = () => {
       await refresh();
     },
   });
-  const takeDown = useMutation({
-    mutationFn: async (id: string) =>
+  const publishable = useMutation({
+    mutationFn: async ({ id, value }: { id: string; value: boolean }) =>
       unwrap(
         await supabase
           .schema("programmes")
-          .rpc("moderate_six_words", { approve: false, entry_id: id })
+          .rpc("moderate_six_words", { approve: value, entry_id: id })
       ),
     onSuccess: refresh,
+  });
+  const [claiming, setClaiming] = useState<string | null>(null);
+  const [claimant, setClaimant] = useState<Person | null>(null);
+  const claim = useMutation({
+    mutationFn: async ({ id, member }: { id: string; member: string }) =>
+      unwrap(
+        await supabase
+          .schema("programmes")
+          .rpc("attach_page_to_member", { entry_id: id, member_id: member })
+      ),
+    onSuccess: async () => {
+      setClaiming(null);
+      setClaimant(null);
+      await refresh();
+    },
   });
 
   const onScan = (value: string) => {
@@ -125,9 +142,12 @@ export const TourCards = () => {
     }
   };
 
-  const nameOf = (userId: string | null) => {
+  const nameOf = (userId: string | null, writer: string | null) => {
     const person = names.data?.find((n) => n.id === userId);
-    return person ? memberName(person, locale) : t("unsigned");
+    if (person) {
+      return memberName(person, locale);
+    }
+    return writer ? t("unclaimed", { name: writer }) : t("unsigned");
   };
 
   return (
@@ -142,14 +162,15 @@ export const TourCards = () => {
         <Textarea
           dir="auto"
           id={fieldId}
+          maxLength={MAX}
           onChange={(event) => setText(event.target.value)}
-          rows={2}
+          rows={3}
           value={text}
         />
         <p aria-live="polite" className="type-caption">
           {t("count", { count: formatNumber(count) })}
         </p>
-        {count === 6 ? (
+        {count > 0 ? (
           <div className="flex flex-wrap gap-3">
             <Button
               disabled={record.isPending}
@@ -193,37 +214,72 @@ export const TourCards = () => {
                   {w.text}
                 </p>
                 <p className="type-caption">
-                  {nameOf(w.user_id)}
-                  {w.status === "rejected" ? ` · ${t("takenDown")}` : ""}
+                  {[
+                    nameOf(w.user_id, w.writer_name),
+                    w.station,
+                    t(`visibility.${w.visibility as "private"}`),
+                    w.publishable ? null : t("notPublishable"),
+                  ]
+                    .filter(Boolean)
+                    .join(" · ")}
                 </p>
               </div>
               <div className="flex flex-wrap gap-3">
                 {w.user_id ? null : (
-                  <Button
-                    onClick={() => setScanning(w.id)}
-                    size="sm"
-                    variant="outline"
-                  >
-                    {t("attach")}
-                  </Button>
+                  <>
+                    <Button
+                      onClick={() => setScanning(w.id)}
+                      size="sm"
+                      variant="outline"
+                    >
+                      {t("attach")}
+                    </Button>
+                    <Button
+                      onClick={() => setClaiming(w.id)}
+                      size="sm"
+                      variant="ghost"
+                    >
+                      {t("attachByName")}
+                    </Button>
+                  </>
                 )}
-                {w.status === "rejected" ? null : (
-                  <Button
-                    disabled={takeDown.isPending}
-                    onClick={() => takeDown.mutate(w.id)}
-                    size="sm"
-                    variant="ghost"
-                  >
-                    {t("takeDown")}
-                  </Button>
-                )}
+                <Button
+                  disabled={publishable.isPending}
+                  onClick={() =>
+                    publishable.mutate({ id: w.id, value: !w.publishable })
+                  }
+                  size="sm"
+                  variant="ghost"
+                >
+                  {w.publishable ? t("takeDown") : t("putBack")}
+                </Button>
               </div>
               {scanning === w.id ? <CardScanner onCode={onScan} /> : null}
+              {claiming === w.id ? (
+                <div className="grid max-w-md gap-3">
+                  <MemberPicker
+                    label={t("claimant")}
+                    onChange={setClaimant}
+                    value={claimant}
+                  />
+                  <Button
+                    className="justify-self-start"
+                    disabled={!claimant || claim.isPending}
+                    onClick={() =>
+                      claimant &&
+                      claim.mutate({ id: w.id, member: claimant.id })
+                    }
+                    size="sm"
+                  >
+                    {t("attachConfirm")}
+                  </Button>
+                </div>
+              ) : null}
             </li>
           ))}
         </ul>
         <ErrorLine error={cardProblem(attach.error) ? null : attach.error} />
-        <ErrorLine error={takeDown.error} />
+        <ErrorLine error={publishable.error ?? claim.error} />
       </section>
     </div>
   );

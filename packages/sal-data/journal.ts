@@ -17,9 +17,12 @@ export const desks = [
 export type Desk = Enums<{ schema: "journal" }, "desk">;
 
 /**
- * Six types a section (owner, Oct 29, 2026), in the order the forms list
- * them: the same mapping as journal.desk_of(). The enum keeps retired
- * labels (prose); journal.is_current_category() refuses them.
+ * Each section's types (owner, Nov 7, 2026: types are flexible, each
+ * section takes what fits it): the usual kinds, in the order the forms list
+ * them, ending with "other" for anything else, which the writer names. The
+ * same mapping as journal.desk_of(); journal.is_current_category() refuses
+ * the retired labels (Six Words, Next Stop's episodes and reels, the
+ * retired games).
  */
 export const sectionTypes = {
   gallery: [
@@ -29,16 +32,18 @@ export const sectionTypes = {
     "comic",
     "calligraphy",
     "photo_essay",
+    "gallery_other",
   ],
-  // The daily kinds only (owner, Nov 5, 2026); members send no games.
-  games: ["crossword", "anagram"],
+  // The word, word search, crossword and anagrams: generated daily by the
+  // site and checked by the editors; members send no games.
+  games: ["word", "word_search", "crossword", "anagram"],
   letters: [
     "poetry",
     "fiction",
     "creative_nonfiction",
     "drama",
     "translation",
-    "six_words",
+    "letters_other",
   ],
   news: [
     "report",
@@ -47,14 +52,16 @@ export const sectionTypes = {
     "profile",
     "event_coverage",
     "explainer",
+    "news_other",
   ],
+  // Members' films and video stories (a paper's multimedia desk); the
+  // Company may send recordings of its performances.
   video: [
-    "next_stop_episode",
-    "reel",
     "short_film",
     "video_report",
     "recorded_performance",
     "animation",
+    "video_other",
   ],
   voices: [
     "review",
@@ -63,8 +70,12 @@ export const sectionTypes = {
     "letter_to_editor",
     "debate",
     "recommendations",
+    "voices_other",
   ],
 } as const satisfies Record<Desk, readonly Category[]>;
+
+/** The "other" type of each section, whose writer names it. */
+export const isOtherType = (category: Category) => category.endsWith("_other");
 
 /** Every current type of piece, section by section. */
 export const categories: readonly Category[] = desks.flatMap(
@@ -86,14 +97,10 @@ export const deskCategories = (desk: Desk): readonly Category[] =>
   sectionTypes[desk];
 
 /**
- * Types that take no submissions: Six Words come only from the Typewriter
- * Tour, and games only from the editors (owner, Nov 5, 2026). The database
- * refuses them too.
+ * Types that take no submissions: games come only from the site and the
+ * editors (owner, Nov 7, 2026). The database refuses them too.
  */
-export const closedCategories: readonly Category[] = [
-  "six_words",
-  ...sectionTypes.games,
-];
+export const closedCategories: readonly Category[] = [...sectionTypes.games];
 
 /** The types a member sends in each section. */
 export const sendableCategories = (desk: Desk) =>
@@ -1134,50 +1141,54 @@ export const inLanguage = <T>(list: readonly T[], locale: string): T[] =>
     return !language || language === "bilingual" || language === locale;
   });
 
-// ── The Qirtas Awards ───────────────────────────────────────────────────────
+// ── The Mutanabbi Prize ─────────────────────────────────────────────────────
 
-/** The six awards, in order (journal.awards). */
-export const awards = async (client: Client) =>
-  unwrap(await journal(client).from("awards").select("*").order("sort")) ?? [];
+/** The Prize's categories (owner, Nov 7, 2026). */
+export const PRIZE_CATEGORIES = ["qirtas", "qalam"] as const;
+export type PrizeCategory = (typeof PRIZE_CATEGORIES)[number];
 
-/** Published rounds, the latest first (managers also see drafts). */
-export const awardRounds = async (client: Client) =>
+/** Rounds, the latest first: the Prize's officers see every round. */
+export const prizeRounds = async (client: Client) =>
   unwrap(
     await journal(client)
-      .from("award_rounds")
+      .from("prize_rounds")
       .select("*")
-      .order("awarded_on", { ascending: false })
+      .order("year", { ascending: false })
   ) ?? [];
 
-/**
- * A round's shortlists from their day and its winners from theirs; before
- * the award a winner shows only as shortlisted (journal.award_results).
- */
-export const awardResults = async (client: Client, roundSlug: string) =>
-  unwrap(
-    await journal(client).rpc("award_results", { round_slug: roundSlug })
-  ) ?? [];
-
-/** The Diwan's view of a round: every entry, with its piece. */
-export const awardEntries = async (client: Client, roundId: string) =>
+/** A round's shortlist (the Prize's officers). */
+export const prizeEntries = async (client: Client, roundId: string) =>
   unwrap(
     await journal(client)
-      .from("award_entries")
+      .from("prize_entries")
       .select(
-        "id, award_key, won, certificate_id, piece:pieces!award_entries_piece_id_fkey(id, slug, title_en, title_ar, desk)"
+        "id, category, judge_score, qalam_title, qalam_byline, piece:pieces!prize_entries_piece_id_fkey(id, slug, title_en, title_ar, desk)"
       )
       .eq("round_id", roundId)
       .order("created_at")
   ) ?? [];
 
-export const awardJudges = async (client: Client, roundId: string) =>
-  unwrap(
-    await journal(client)
-      .from("award_judges")
-      .select("id, award_key, name_en, name_ar")
-      .eq("round_id", roundId)
-      .order("created_at")
-  ) ?? [];
+/** The members' ballot, Qalam students' names hidden. */
+export const prizeBallot = async (client: Client, roundId: string) =>
+  unwrap(await journal(client).rpc("prize_ballot", { round_id: roundId })) ??
+  [];
+
+export const castPrizeVote = async (client: Client, entryId: string) =>
+  unwrap(await journal(client).rpc("cast_prize_vote", { entry_id: entryId }));
+
+/**
+ * The count: judge 70%, members 30% (each work's vote share scaled so the
+ * most-voted work scores 100); a tie goes to the judge's score.
+ */
+export const prizeResults = async (client: Client, roundId: string) =>
+  unwrap(await journal(client).rpc("prize_results", { round_id: roundId })) ??
+  [];
+
+/** The final score, as the database counts it; for tests and previews. */
+export const prizeScore = (judge: number, votes: number, topVotes: number) => {
+  const members = topVotes > 0 ? (votes * 100) / topVotes : 0;
+  return Math.round((0.7 * judge + 0.3 * members) * 100) / 100;
+};
 
 /**
  * An Edition's Launch Night (Nov 4, 2026): the event the masthead named,

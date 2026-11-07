@@ -9,9 +9,9 @@ import {
   candidacyDecided,
   certificateIssued,
   eventChanged,
+  invitation,
   type Lang,
   newsletterConfirm,
-  placementGiven,
   removalDone,
   repliesDigest,
   replyUpdate,
@@ -46,7 +46,22 @@ const every = (l: Lang): Built[] => [
   removalDone(l, "removed", null),
   replyUpdate(l, "Photographer", "talking", "2026-11-10T13:00:00Z", APP),
   replyUpdate(l, "Photographer", "not_picked", null, APP),
-  placementGiven(l, "Apprenticeship", APP),
+  invitation(
+    l,
+    {
+      first_name: "Lina",
+      kind: "tour",
+      pages: 2,
+      station: "Library",
+      words: "a / b",
+    },
+    APP
+  ),
+  invitation(
+    l,
+    { first_name: null, kind: "plain", pages: 0, station: null, words: null },
+    APP
+  ),
   roleAssigned(
     l,
     { ends_at: null, name_ar: "محرر", name_en: "Editor" },

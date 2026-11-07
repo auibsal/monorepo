@@ -1138,18 +1138,6 @@ export const replyUpdate = (
     };
   });
 
-/** A place given: an Apprenticeship, a First Ink place, a volunteer place. */
-export const placementGiven = (lang: Lang, place: string, app: string) =>
-  build(lang, (l) => ({
-    action: account(app, l, MY_CALENDAR),
-    heading: l === "ar" ? `لك مكان: ${place}` : `You have a place: ${place}`,
-    paragraphs: [
-      l === "ar"
-        ? "أُعطيت هذا المكان. مناوباته في «تقويمي»، وتُحسب ساعاته خدمةً في «السجل»."
-        : "You've been given this place. Its shifts are on My calendar, and its hours count as service on your Record.",
-    ],
-  }));
-
 export interface AuditionInfo {
   ends_at: string;
   location_ar: string | null;
@@ -1360,53 +1348,6 @@ export const shiftReminder = (lang: Lang, s: ShiftInfo, app: string) =>
     ],
   }));
 
-const AWARD_LINES: Record<
-  "shortlisted" | "won",
-  (l: Lang, work: string, name: string) => [string, string]
-> = {
-  shortlisted: (l, work, name) =>
-    l === "ar"
-      ? [
-          `${work} في القائمة القصيرة لـ${name}`,
-          "مبارك. تُعلن الجوائز في الجمعية العمومية السنوية.",
-        ]
-      : [
-          `${work} is shortlisted for the ${name}`,
-          "Congratulations. The Awards are given at the Annual General Meeting.",
-        ],
-  won: (l, work, name) =>
-    l === "ar"
-      ? [
-          `فاز ${work} بـ${name}`,
-          "مبارك. تُعدّ الجمعية شهادتك، وتصلك رسالة حين تُوقَّع.",
-        ]
-      : [
-          `${work} wins the ${name}`,
-          "Congratulations. The Society is preparing your certificate, and you'll hear when it's signed.",
-        ],
-};
-
-/** The Qirtas Awards: shortlisted on the shortlist day, winning on the day. */
-export const award = (
-  lang: Lang,
-  work: string,
-  which: { name_ar: string; name_en: string },
-  stage: "shortlisted" | "won",
-  app: string
-) =>
-  build(lang, (l) => {
-    const name = pick(l, which.name_ar, which.name_en);
-    const [heading, body] = AWARD_LINES[stage](l, work, name);
-    return {
-      action: {
-        href: `${app}${localizedPath(l, "/qirtas/awards")}`,
-        label: l === "ar" ? "جوائز قرطاس" : "The Qirtas Awards",
-      },
-      heading,
-      paragraphs: [body],
-    };
-  });
-
 /** After an account is deleted: to the address it had. */
 export const accountDeleted = (lang: Lang) =>
   build(lang, (l) => ({
@@ -1450,3 +1391,116 @@ export const repliesDigest = (lang: Lang, replies: ReplyLine[], app: string) =>
         : "Members who said they're interested. Set times to talk in Openings.",
     ],
   }));
+
+const END_PUNCTUATION = /[.!?…]$/;
+
+/** "Hello Lina," or, with no first name on the list, "Hello," alone. */
+const greeting = (l: Lang, firstName: string | null) => {
+  const name = firstName?.trim();
+  if (l === "ar") {
+    return name ? `مرحبًا ${name}،` : "مرحبًا،";
+  }
+  return name ? `Hello ${name},` : "Hello,";
+};
+
+/** What the writer typed, quoted, or only where they sat. */
+const typedLine = (l: Lang, station: string, words: string | undefined) => {
+  // Chicago: the period goes inside the quotation marks, once.
+  const quoted = words && END_PUNCTUATION.test(words) ? words : `${words}.`;
+  if (l === "ar") {
+    return words
+      ? `في شباط الماضي جلستَ إلى آلة الجمعية الكاتبة في ${station} وكتبت: «${words}». احتفظنا بصفحتك.`
+      : `في شباط الماضي جلستَ إلى آلة الجمعية الكاتبة في ${station}. احتفظنا بصفحتك.`;
+  }
+  return words
+    ? `Last February you sat down at the Society’s typewriter at the ${station} and typed: “${quoted}” We kept your page.`
+    : `Last February you sat down at the Society’s typewriter at the ${station}. We kept your page.`;
+};
+
+/** The plain invitation: no page, no six words, the same signature. */
+const plainInvitation = (
+  l: Lang,
+  hello: string,
+  signature: string,
+  join: string
+): Copy => ({
+  action: {
+    fallback: true,
+    href: join,
+    label: l === "ar" ? "انضم إلى الجمعية" : "Join the Society",
+  },
+  heading:
+    l === "ar"
+      ? "انضم إلى جمعية الفنون والآداب"
+      : "Join the AUIB Society of Arts and Letters",
+  paragraphs: [
+    hello,
+    l === "ar"
+      ? "ندعوك إلى الانضمام إلى جمعية الفنون والآداب في الجامعة الأمريكية في العراق – بغداد. انضم عبر auibsal.org/join بهذا البريد. إن لم ترغب في ذلك فتجاهل هذه الرسالة؛ لن نكتب إليك مرة أخرى."
+      : "We’d like to invite you to join the AUIB Society of Arts and Letters. Join at auibsal.org/join with this email. If you’d rather not, just ignore this email; we won’t write again.",
+    signature,
+  ],
+});
+
+export interface Invitation {
+  /** Empty when the list has no first name: then "Hello," alone. */
+  first_name: string | null;
+  kind: "tour" | "plain";
+  /** Two pages, one writer ("You typed two"). */
+  pages: number;
+  station: string | null;
+  /** Quoted only when the writer's words may be quoted ("a / b" for two). */
+  words: string | null;
+}
+
+/**
+ * The one-time invitation to join (owner, Nov 7, 2026): sent once, on the
+ * President's go, from hello@auibsal.org, with a stop link. A Typewriter
+ * Tour writer hears about their page (quoting their words only when they
+ * may be quoted); everyone else, the fall fair's sign-ups and the writers
+ * with no page on record, gets a plain invitation, without "We kept your
+ * page" or any six words.
+ */
+export const invitation = (lang: Lang, invite: Invitation, join: string) =>
+  build(lang, (l) => {
+    const hello = greeting(l, invite.first_name);
+    const signature =
+      l === "ar" ? "جمعية الفنون والآداب" : "AUIB Society of Arts and Letters";
+    if (invite.kind === "plain") {
+      return plainInvitation(l, hello, signature, join);
+    }
+    const station =
+      invite.station?.trim() || (l === "ar" ? "الجامعة" : "campus");
+    const typed = typedLine(l, station, invite.words?.trim());
+    const two =
+      invite.pages > 1
+        ? [
+            l === "ar"
+              ? "كتبتَ صفحتين، وكلتاهما تذهب إلى ملفك."
+              : "You typed two; both go on your profile.",
+          ]
+        : [];
+    return {
+      action: {
+        fallback: true,
+        href: join,
+        label: l === "ar" ? "انضم إلى الجمعية" : "Join the Society",
+      },
+      heading:
+        l === "ar"
+          ? "كلماتك الست من جولة الآلة الكاتبة"
+          : "Your six words from the Typewriter Tour",
+      paragraphs: [
+        hello,
+        typed,
+        ...two,
+        l === "ar"
+          ? "إنها لك. انضم إلى الجمعية عبر auibsal.org/join بهذا البريد، فتُضاف صفحتك إلى حسابك. تبقى خاصة حتى تختار في حسابك هل تظهر أيضًا في ملفك أو في صفحة الجولة. إن لم ترغب في ذلك فتجاهل هذه الرسالة؛ لن نعرض صفحتك في أي مكان ولن نكتب إليك مرة أخرى."
+          : "It’s yours to claim. Join the Society at auibsal.org/join with this email, and your page is added to your account. It stays private until you choose, in your account, whether it also appears on your profile or on the Tour’s page. If you’d rather not, just ignore this email; we won’t show your page anywhere or write again.",
+        l === "ar"
+          ? "هل تريد الورقة الأصلية؟ استلمها من طاولة العضوية في الجمعية هذا الفصل؛ الصفحات التي لا تُستلم تُتلف في نهاية الفصل."
+          : "Would you like the original sheet? Pick it up at the Society’s membership table this term; pages not collected are shredded at the end of the term.",
+        signature,
+      ],
+    };
+  });

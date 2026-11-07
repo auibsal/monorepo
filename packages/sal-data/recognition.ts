@@ -2,37 +2,15 @@ import { z } from "zod";
 import { type Client, unwrap } from "./client";
 
 /**
- * Recognition (Bylaws B4): recorded service (Form F-16) and certificates
- * (Form F-28; Fellowship and Honorary Membership). Row Level Security and
- * the RPCs decide who may confirm, sign and revoke.
+ * Recognition: staff service (hours for service letters, staff only) and
+ * certificates, only for finishing Qalam and for the Mutanabbi Prize
+ * (owner, Nov 7, 2026). Row Level Security and the RPCs decide who may
+ * confirm, sign and revoke.
  */
 
-/** B4.1: hours of recorded service in an academic year for a nomination. */
-export const FELLOWSHIP_HOURS = 40;
-
-export const certificateKinds = [
-  "service",
-  "fellowship",
-  "honorary",
-  "volunteer",
-  "production",
-  "partner",
-  "award",
-  "apprenticeship",
-] as const;
+export const certificateKinds = ["qalam", "prize"] as const;
 
 export type CertificateKind = (typeof certificateKinds)[number];
-
-/** Kinds that need an adopted Council resolution (B4.2, B4.4). */
-export const needsResolution = (kind: CertificateKind) =>
-  kind === "fellowship" || kind === "honorary";
-
-/** Kinds that record a role held over a period. */
-export const recordsRole = (kind: CertificateKind) =>
-  kind === "service" ||
-  kind === "production" ||
-  kind === "partner" ||
-  kind === "apprenticeship";
 
 /** The academic year runs from September 1. */
 export const academicYearStart = (on: Date = new Date()) => {
@@ -71,50 +49,34 @@ export const serviceEntrySchema = z.object({
 
 export type ServiceEntryInput = z.input<typeof serviceEntrySchema>;
 
+/**
+ * A certificate: the Mutanabbi Prize's names a member and carries its
+ * citation; Qalam's names a student (no account), from the roster.
+ */
 export const certificateSchema = z
   .object({
     citation_ar: optionalText(500),
     citation_en: optionalText(500),
-    hours: z.number().positive().nullable().optional(),
     kind: z.enum(certificateKinds),
-    partner_id: z.uuid().nullable().optional(),
     period_from: optionalDate,
     period_to: optionalDate,
-    resolution_id: z.uuid().nullable().optional(),
-    role_ar: optionalText(200),
-    role_en: optionalText(200),
-    user_id: z.uuid(),
+    qalam_student_id: z.uuid().nullable().optional(),
+    recipient_name: optionalText(200),
+    user_id: z.uuid().nullable().optional(),
   })
   .superRefine((c, ctx) => {
-    if (recordsRole(c.kind) && !(c.role_en && c.period_from)) {
+    if (c.kind === "prize" && !(c.user_id && c.citation_en)) {
       ctx.addIssue({
         code: "custom",
-        message: "role_and_period",
-        path: ["role_en"],
-      });
-    }
-    if (needsResolution(c.kind) && !(c.citation_en && c.resolution_id)) {
-      ctx.addIssue({
-        code: "custom",
-        message: "citation_and_resolution",
-        path: ["resolution_id"],
-      });
-    }
-    if (c.kind === "award" && !c.citation_en) {
-      ctx.addIssue({
-        code: "custom",
-        message: "citation",
+        message: "member_and_citation",
         path: ["citation_en"],
       });
     }
-    if (c.kind === "volunteer" && !c.hours) {
-      ctx.addIssue({ code: "custom", message: "hours", path: ["hours"] });
-    }
-    if (c.kind === "partner" && !c.partner_id) {
+    if (c.kind === "qalam" && !(c.qalam_student_id || c.recipient_name)) {
       ctx.addIssue({
         code: "custom",
-        message: "partner",
-        path: ["partner_id"],
+        message: "student",
+        path: ["recipient_name"],
       });
     }
     if (c.period_from && c.period_to && c.period_to < c.period_from) {
@@ -238,17 +200,6 @@ export const confirmService = async (
       reason: reason ?? undefined,
       record_id: recordId,
     })
-  );
-
-export const recordShiftService = async (
-  client: Client,
-  shiftId: string,
-  memberId: string
-) =>
-  unwrap(
-    await client
-      .schema("membership")
-      .rpc("record_shift_service", { member_id: memberId, shift_id: shiftId })
   );
 
 export const recordEventService = async (

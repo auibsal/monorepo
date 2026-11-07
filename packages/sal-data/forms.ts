@@ -1,10 +1,14 @@
 import { type Client, unwrap } from "./client";
 
 /**
- * Forms filled in the Diwan (Templates & Forms, SAL-OPS-02). Each form's
- * fields are transcribed from the printed form; labels live in the
- * messages files under `diwan.forms.defs.<key>`. Who may fill a form in
- * and who handles it is `governance.form_types` (the database decides).
+ * The forms signed on the site (owner, Nov 7, 2026): one standard page,
+ * `/forms/<number>` (F-06, F-10 …), with a typed-name signature; the signed
+ * copy keeps the signer, the time and the form's version. The fields follow
+ * the Leadership Handbook (SAL-EXB-01); labels live in the messages files
+ * under `diwan.forms.defs.<key>`. Who may sign a form and who handles it is
+ * `governance.form_types` (the database decides). Forms that are part of a
+ * page (a role application, an audition, the Publication Agreement) stay
+ * there.
  */
 
 export type FieldType =
@@ -14,7 +18,6 @@ export type FieldType =
   | "date"
   | "datetime"
   | "number"
-  | "iqd"
   | "choice"
   | "multi"
   | "check"
@@ -51,37 +54,7 @@ export interface FormDefinition {
   readonly subject?: boolean;
 }
 
-export const formKeys = [
-  "f03",
-  "f04",
-  "f06",
-  "f09",
-  "f10",
-  "f11",
-  "f14",
-  "f17",
-  "f19",
-  "f20",
-  "f24",
-  "f25a",
-  "f27",
-  "f29",
-] as const;
-
-export type FormKey = (typeof formKeys)[number];
-
-/**
- * What can still be started (the overhaul, Oct 30, 2026): a General
- * Assembly motion, a program pitch and a concern. The rest are done
- * elsewhere on the platform or are officers' papers in Notion; their past
- * submissions stay readable (the database marks them `retired`).
- */
-export const startableKeys = [
-  "f09",
-  "f10",
-  "f20",
-] as const satisfies readonly FormKey[];
-
+/** The forms started from a page of their own, by number. */
 export const formStatuses = [
   "draft",
   "submitted",
@@ -95,428 +68,225 @@ export type FormStatus = (typeof formStatuses)[number];
 export const routings = ["none", "vice_president", "president"] as const;
 export type Routing = (typeof routings)[number];
 
-const text = (key: string, required = false, max = 200): FormField => ({
-  key,
-  max,
-  required,
-  type: "text",
-});
-const long = (key: string, required = false, max = 2000): FormField => ({
-  key,
-  max,
-  required,
-  type: "textarea",
-});
-const check = (key: string, required = false): FormField => ({
-  key,
-  required,
-  type: "check",
-});
-const date = (key: string, required = false): FormField => ({
-  key,
-  required,
-  type: "date",
-});
-const count = (key: string, required = false, max = 100_000): FormField => ({
-  key,
-  max,
-  min: 0,
-  required,
-  type: "number",
-});
-const iqd = (key: string, required = false): FormField => ({
-  key,
-  min: 0,
-  required,
-  type: "iqd",
-});
-const choice = (
-  key: string,
-  options: readonly string[],
-  required = false
-): FormField => ({ key, options, required, type: "choice" });
-const multi = (
-  key: string,
-  options: readonly string[],
-  required = false
-): FormField => ({ key, options, required, type: "multi" });
-const score = (key: string): FormField => ({
-  key,
-  max: 5,
-  min: 1,
-  required: true,
-  type: "number",
-});
-
-const PILLARS = ["connecting", "creativity", "culture", "community"] as const;
-
-/** F-04: criterion weights (percent). */
-export const interviewWeights = {
-  score_commitment: 20,
-  score_ideas: 20,
-  score_skills: 25,
-  score_teamwork: 20,
-  score_values: 15,
-} as const;
-
-/** F-14: banknotes counted, in IQD. */
-export const banknotes = [
-  "50000",
-  "25000",
-  "10000",
-  "5000",
-  "1000",
-  "500",
-  "250",
+export const formKeys = [
+  "f06",
+  "f10",
+  "f11",
+  "f15",
+  "f17",
+  "f21",
+  "f26",
+  "f37",
+  "f38",
+  "f39",
+  "f44",
+  "f45",
 ] as const;
 
+export type FormKey = (typeof formKeys)[number];
+
 export const forms: Record<FormKey, FormDefinition> = {
-  f03: {
-    code: "F-03",
-    fields: [
-      text("first_choice", true),
-      text("second_choice"),
-      text("college_year", true),
-      count("hours", true, 60),
-      long("commitments", false, 1000),
-      long("why", true, 1500),
-      long("experience", true, 1500),
-      { key: "work_link", max: 500, type: "url" },
-      multi("interview_days", ["tue", "wed", "thu", "any"]),
-      check("decl_true", true),
-      check("decl_read", true),
-      check("decl_apprenticeship", true),
-    ],
-    key: "f03",
-  },
-  f04: {
-    code: "F-04",
-    fields: [
-      text("candidate", true),
-      text("role", true),
-      score("score_commitment"),
-      score("score_skills"),
-      score("score_ideas"),
-      score("score_teamwork"),
-      score("score_values"),
-      long("notes"),
-      choice(
-        "recommendation",
-        ["appoint", "other_role", "not_this_time"],
-        true
-      ),
-      text("other_role"),
-      choice("conflict", ["none", "declared"], true),
-      text("conflict_what"),
-    ],
-    key: "f04",
-  },
   f06: {
     code: "F-06",
     fields: [
-      text("role", true),
-      date("start_date", true),
-      multi("first_week", [
-        "accepted",
-        "pledge_coi",
-        "coffee",
-        "role_card",
-        "playbook",
-        "groups",
-        "drive",
-        "dossier_walkthrough",
-        "roster",
-        "first_task",
-      ]),
-      multi("first_month", [
-        "two_meetings",
-        "shadowed",
-        "work_plan",
-        "dossier_started",
-        "media_consent",
-        "announced",
-      ]),
-      check("signed_holder"),
-      check("signed_director"),
+      { key: "nothing", type: "check" },
+      {
+        columns: [
+          { key: "what", max: 300, required: true, type: "text" },
+          { key: "decisions", max: 300, required: true, type: "text" },
+          { key: "handling", max: 300, required: true, type: "text" },
+        ],
+        key: "declarations",
+        type: "table",
+      },
     ],
     key: "f06",
-    subject: true,
-  },
-  f09: {
-    code: "F-09",
-    fields: [
-      text("seconder", true),
-      text("title", true),
-      long("notes", true),
-      long("believes", true),
-      long("resolves", true),
-      choice(
-        "motion_type",
-        ["ordinary", "amendment", "overturn", "removal"],
-        true
-      ),
-    ],
-    key: "f09",
+    preamble: true,
   },
   f10: {
     code: "F-10",
     fields: [
-      text("director"),
-      text("name", true),
-      long("idea", true, 800),
-      multi("pillars", PILLARS),
-      long("helpers", false, 800),
-      long("audience", false, 800),
-      text("when"),
-      text("where"),
-      long("needs", false, 800),
-      long("risks"),
-      long("success"),
+      { key: "seconder", max: 200, required: true, type: "text" },
+      { key: "title", max: 200, required: true, type: "text" },
+      { key: "notes", max: 2000, required: true, type: "textarea" },
+      { key: "believes", max: 2000, required: true, type: "textarea" },
+      { key: "resolves", max: 2000, required: true, type: "textarea" },
+      {
+        key: "motion_type",
+        options: ["ordinary", "amendment"],
+        required: true,
+        type: "choice",
+      },
     ],
     key: "f10",
-    office: [
-      date("received"),
-      date("at_council"),
-      choice("outcome", ["greenlit", "not_yet"]),
-      check("reasons_sent"),
-      check("charter"),
-    ],
   },
   f11: {
     code: "F-11",
     fields: [
-      text("event", true),
-      text("lead", true),
-      { key: "starts_at", required: true, type: "datetime" },
-      text("location", true),
-      count("attendance"),
-      text("student_life_ref"),
+      { key: "title", max: 200, required: true, type: "text" },
+      { key: "idea", max: 1000, required: true, type: "textarea" },
+      { key: "audience", max: 300, required: true, type: "text" },
+      { key: "helpers", max: 300, type: "text" },
+      { key: "when", max: 200, required: true, type: "text" },
+      { key: "where", max: 200, required: true, type: "text" },
       {
-        columns: [
-          check("na"),
-          text("what", false, 300),
-          choice("level", ["low", "medium", "high"]),
-          text("plan", false, 300),
-        ],
-        key: "risks",
-        rows: [
-          "crowding",
-          "cash",
-          "equipment",
-          "food",
-          "guests",
-          "photography",
-          "sensitive",
-          "vulnerable",
-          "travel",
-          "weather",
-        ],
-        type: "grid",
+        key: "access",
+        options: ["open", "rsvp", "private"],
+        required: true,
+        type: "choice",
       },
-      multi("t7", [
-        "approvals",
-        "room",
-        "kit",
-        "volunteers",
-        "cash_plan",
-        "stickers",
-        "exits",
-        "contacts",
-      ]),
-      text("student_life_contact"),
-      text("security_contact"),
-      text("first_aid"),
+      { key: "needs", max: 2000, type: "textarea" },
+      { key: "risks", max: 2000, type: "textarea" },
     ],
     key: "f11",
-    office: [check("approved")],
   },
-  f14: {
-    code: "F-14",
+  f15: {
+    code: "F-15",
     fields: [
-      text("event", true),
-      date("date", true),
-      choice("count_type", ["float", "close", "day"], true),
+      { key: "occasion", max: 300, required: true, type: "text" },
+      { key: "on_date", required: true, type: "date" },
       {
-        columns: [count("count1"), count("count2")],
-        key: "notes",
-        rows: banknotes,
-        type: "grid",
+        key: "credit",
+        options: ["name", "no_name", "photos_only"],
+        required: true,
+        type: "choice",
       },
-      iqd("opening_float"),
-      iqd("sales_recorded"),
-      iqd("expected_total"),
-      text("difference_reason", false, 500),
-      text("seal_no"),
-      text("handed_to"),
-      text("handed_at", false, 40),
-      text("counter2", true),
-      text("received_by"),
+      { key: "contact", max: 200, required: true, type: "text" },
+      { key: "under_18", type: "check" },
     ],
-    key: "f14",
+    key: "f15",
+    preamble: true,
   },
   f17: {
     code: "F-17",
     fields: [
-      text("event", true),
-      date("date", true),
-      choice("credit", ["name", "no_name"], true),
-      check("photos_only"),
-      text("contact"),
-      check("under_18"),
-      text("guardian"),
-      check("agree", true),
+      { key: "partner", max: 200, required: true, type: "text" },
+      { key: "purpose", max: 1000, required: true, type: "textarea" },
+      { key: "dates", max: 200, required: true, type: "text" },
+      { key: "society_will", max: 2000, required: true, type: "textarea" },
+      { key: "partner_will", max: 2000, required: true, type: "textarea" },
+      { key: "branding", max: 1000, type: "textarea" },
+      { key: "people_safety", max: 1000, required: true, type: "textarea" },
+      { key: "contacts", max: 1000, required: true, type: "textarea" },
     ],
     key: "f17",
     preamble: true,
   },
-  f19: {
-    code: "F-19",
-    fields: [
-      text("event", true),
-      { key: "occurred_at", required: true, type: "datetime" },
-      text("location", true),
-      text("role"),
-      text("phone", false, 40),
-      multi(
-        "types",
-        ["injury", "damage", "safety", "behaviour", "money", "media", "other"],
-        true
-      ),
-      long("what", true, 4000),
-      long("done", true),
-      long("told"),
-      long("witnesses"),
-      long("follow_up"),
-    ],
-    key: "f19",
-    office: [check("student_life"), check("advisor_told")],
-    preamble: true,
-  },
-  f20: {
+  f21: {
     anonymous: true,
-    code: "F-20",
+    code: "F-21",
     fields: [
-      text("contact"),
-      choice(
-        "about",
-        ["person", "event", "money", "content", "decision", "other"],
-        true
-      ),
-      long("what", true, 4000),
-      long("wanted", true),
-      choice("would_like", ["informal", "formal", "just_know"]),
+      { key: "contact", max: 200, type: "text" },
+      {
+        key: "about",
+        options: [
+          "person",
+          "event",
+          "collection",
+          "content",
+          "decision",
+          "other",
+        ],
+        required: true,
+        type: "choice",
+      },
+      { key: "what", max: 4000, required: true, type: "textarea" },
+      { key: "when", max: 200, type: "text" },
+      { key: "wish", max: 2000, type: "textarea" },
     ],
-    key: "f20",
-    office: [choice("route", ["informal", "conduct_panel", "student_life"])],
-    preamble: true,
+    key: "f21",
     routing: true,
   },
-  f24: {
-    code: "F-24",
+  f26: {
+    code: "F-26",
     fields: [
-      text("role", true),
-      long("role_paragraph", false, 3000),
-      long("contacts", false, 3000),
-      long("accounts", false, 3000),
-      long("open_items", false, 3000),
-      long("needs", false, 3000),
-      long("files", false, 3000),
-      long("lessons", false, 3000),
+      { key: "production", max: 200, required: true, type: "text" },
+      { key: "role", max: 200, required: true, type: "text" },
+      { key: "no_photos", type: "check" },
+      { key: "under_18", type: "check" },
     ],
-    key: "f24",
-    subject: true,
+    key: "f26",
+    preamble: true,
   },
-  f25a: {
-    code: "F-25 A",
+  f37: {
+    code: "F-37",
     fields: [
-      text("semester", true),
-      count("members_registered"),
-      count("members_voting"),
-      count("members_new"),
-      count("members_retained"),
-      count("events"),
-      count("attendance"),
-      count("volunteer_hours"),
-      iqd("charity_handed"),
-      count("seats_filled"),
-      count("seats_total"),
-      count("vacancies"),
-      long("highlights", false, 3000),
-      long("risks", false, 3000),
+      { key: "year", max: 20, required: true, type: "text" },
+      {
+        key: "role",
+        options: ["lead", "deputy", "mentor"],
+        required: true,
+        type: "choice",
+      },
+      { key: "trained_on", required: true, type: "date" },
     ],
-    key: "f25a",
+    key: "f37",
+    preamble: true,
   },
-  f27: {
-    code: "F-27",
+  f38: {
+    code: "F-38",
     fields: [
-      text("role", true),
-      date("last_day", true),
-      multi("items", [
-        "dossier",
-        "files",
-        "data_deleted",
-        "groups",
-        "drive",
-        "admin_rights",
-        "passwords",
-        "returned",
-        "exit_conversation",
-        "hours",
-        "thanks",
-        "roster",
-        "invited",
-      ]),
-      long("exit", false, 3000),
-      check("signed_leaving"),
-      check("signed_gs"),
+      { key: "student_name", max: 200, required: true, type: "text" },
+      { key: "grade", max: 40, required: true, type: "text" },
+      { key: "school", max: 200, required: true, type: "text" },
+      { key: "relationship", max: 80, required: true, type: "text" },
+      { key: "contact", max: 200, required: true, type: "text" },
+      { key: "emergency_contact", max: 200, required: true, type: "text" },
+      { key: "arrival", max: 1000, required: true, type: "textarea" },
+      { key: "collect", max: 300, required: true, type: "text" },
+      { key: "health", max: 1000, type: "textarea" },
+      {
+        key: "photos",
+        options: ["photos", "no_photos"],
+        required: true,
+        type: "choice",
+      },
+      { key: "publishing", options: ["qirtas", "prize"], type: "multi" },
+      { key: "student_agrees", required: true, type: "check" },
     ],
-    key: "f27",
-    subject: true,
+    key: "f38",
+    preamble: true,
   },
-  f29: {
-    code: "F-29",
+  f39: {
+    code: "F-39",
     fields: [
-      text("programme", true),
-      date("charter_date"),
-      date("review_date"),
-      long("purpose", true, 800),
-      multi("pillars", PILLARS),
-      text("lead"),
-      text("deputy"),
-      text("reports_to"),
-      long("team"),
-      long("needs"),
-      text("frequency"),
-      check("standing"),
-      long("key_dates"),
-      long("success"),
-      long("independence"),
-      long("documents"),
+      { key: "piece_title", max: 200, required: true, type: "text" },
+      { key: "section", max: 80, required: true, type: "text" },
+      { key: "language", max: 40, required: true, type: "text" },
+      { key: "student_name", max: 200, required: true, type: "text" },
+      { key: "school", max: 200, required: true, type: "text" },
+      { key: "student_agrees", required: true, type: "check" },
     ],
-    key: "f29",
+    key: "f39",
+    preamble: true,
+  },
+  f44: {
+    code: "F-44",
+    fields: [
+      { key: "piece", max: 300, required: true, type: "text" },
+      { key: "covers", max: 1000, required: true, type: "textarea" },
+      { key: "under_18", type: "check" },
+    ],
+    key: "f44",
+    preamble: true,
+  },
+  f45: {
+    code: "F-45",
+    fields: [
+      { key: "emergency_contact", max: 200, required: true, type: "text" },
+      { key: "health", max: 1000, type: "textarea" },
+      { key: "agree", required: true, type: "check" },
+    ],
+    key: "f45",
+    preamble: true,
   },
 };
 
-/**
- * Forms that live in their own part of the platform. Paths are Diwan
- * routes.
- */
-export const formsElsewhere = [
-  { code: "F-01", key: "f01", path: "/profile" },
-  { code: "F-02", key: "f02", path: "/profile" },
-  { code: "F-07", key: "f07", path: "/admin/governance" },
-  { code: "F-08", key: "f08", path: "/admin/governance" },
-  { code: "F-12", key: "f12", path: "/admin/governance" },
-  { code: "F-15", key: "f15", path: "/admin/events" },
-  { code: "F-16", key: "f16", path: "/service" },
-  { code: "F-18", key: "f18", path: "/declarations" },
-  { code: "F-21", key: "f21", path: "/membership/society" },
-  { code: "F-22", key: "f22", path: "/membership/society" },
-  { code: "F-23", key: "f23", path: "/membership/society" },
-  { code: "F-25 B", key: "f25b", path: "/admin/productions" },
-  { code: "F-26", key: "f26", path: "/admin/partners" },
-  { code: "F-28", key: "f28", path: "/service" },
-] as const;
+const FORM_PREFIX = /^f-?/i;
+
+/** "F-06" → "f06": the address of a form is its number. */
+export const keyFromNumber = (number: string) =>
+  `f${number.replace(FORM_PREFIX, "").padStart(2, "0")}`.toLowerCase();
 
 export const isFormKey = (value: string | null): value is FormKey =>
   (formKeys as readonly string[]).includes(value ?? "");
@@ -541,7 +311,7 @@ const tooLong = (field: FormField, value: unknown) =>
   value.length > field.max;
 
 const outOfRange = (field: FormField, value: unknown) => {
-  if (!(field.type === "number" || field.type === "iqd")) {
+  if (!(field.type === "number")) {
     return false;
   }
   if (isBlank(value)) {
@@ -611,60 +381,46 @@ export const formProblems = (
     })
     .map((field) => field.key);
 
-const num = (value: unknown) => {
-  const n = Number(value);
-  return Number.isFinite(n) ? n : 0;
-};
-
-/** F-04: Σ (score × weight) ÷ 5, out of 100. */
-export const interviewTotal = (data: FormData) =>
-  Math.round(
-    Object.entries(interviewWeights).reduce(
-      (sum, [key, weight]) => sum + num(data[key]) * weight,
-      0
-    ) / 5
-  );
-
-/** F-04: a 1 on Commitment or Teamwork means no, whatever the total. */
-export const interviewVeto = (data: FormData) =>
-  num(data.score_commitment) === 1 || num(data.score_teamwork) === 1;
-
-/** F-14: each count's total value. */
-export const cashTotals = (data: FormData) => {
-  const grid = (data.notes ?? {}) as Record<string, FormData>;
-  return banknotes.reduce(
-    (totals, note) => ({
-      count1: totals.count1 + num(grid[note]?.count1) * Number(note),
-      count2: totals.count2 + num(grid[note]?.count2) * Number(note),
-    }),
-    { count1: 0, count2: 0 }
-  );
-};
-
 // ── Reads and writes ────────────────────────────────────────────────────────
 
-export interface SaveInput {
+export interface SignInput {
   anonymous?: boolean;
   data: FormData;
   form: FormKey;
-  id?: string | null;
   routing?: Routing;
+  /** The signer's contact, for a signer without an account (a parent, a guest). */
+  signerContact?: string | null;
+  /** The typed name: the e-signature. */
+  signerName: string;
   subjectId?: string | null;
-  submit: boolean;
 }
 
-export const saveForm = async (client: Client, input: SaveInput) =>
+/** Signs and sends a form; the signed copy keeps the signer, the time and the
+ * form's version. Anyone may sign a form that needs no account. */
+export const signForm = async (client: Client, input: SignInput) =>
   unwrap(
-    await client.schema("governance").rpc("save_form", {
+    await client.schema("governance").rpc("sign_form", {
       anonymous: input.anonymous ?? false,
       data: input.data as never,
       form_key: input.form,
       routing: input.routing ?? "none",
+      signer_contact: input.signerContact ?? undefined,
+      signer_name: input.signerName,
       subject_id: input.subjectId ?? undefined,
-      submission_id: input.id ?? undefined,
-      submit: input.submit,
     })
   ) as string;
+
+/** The second signature a form asks for (a countersignature). */
+export const secondSignForm = async (
+  client: Client,
+  id: string,
+  signerName: string
+) =>
+  unwrap(
+    await client
+      .schema("governance")
+      .rpc("second_sign_form", { signer_name: signerName, submission_id: id })
+  );
 
 export const handleForm = async (
   client: Client,
@@ -678,13 +434,6 @@ export const handleForm = async (
       status,
       submission_id: id,
     })
-  );
-
-export const discardDraft = async (client: Client, id: string) =>
-  unwrap(
-    await client
-      .schema("governance")
-      .rpc("discard_form_draft", { submission_id: id })
   );
 
 export const formTypes = async (client: Client) =>

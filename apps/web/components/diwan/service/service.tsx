@@ -29,9 +29,9 @@ type RecordStatus = "pending" | "confirmed" | "rejected";
 const today = () => new Date().toISOString().slice(0, 10);
 
 /**
- * My service: the Volunteer Hours Log (Form F-16) and certificates. Hours
- * count once someone else confirms them; forty in an academic year make a
- * member eligible to be nominated as a Fellow (B4.1).
+ * My service, for staff (owner, Nov 7, 2026: staff hours and service
+ * letters only for staff): the hours log and certificates. Hours count once
+ * someone else confirms them.
  */
 export const Service = () => {
   const t = useTranslations("diwan.service");
@@ -75,7 +75,6 @@ export const Service = () => {
   });
 
   const total = hours.data ?? 0;
-  const progress = Math.min(1, total / recognition.FELLOWSHIP_HOURS);
   const programmeName = (programmeId: string | null) => {
     const row = programmes.data?.find((p) => p.id === programmeId);
     return row ? localized(row, "name", locale) : "";
@@ -88,29 +87,6 @@ export const Service = () => {
           <p className="type-label">{t("thisYear")}</p>
           <p className="font-light text-3xl tabular-nums">
             {t("hours", { hours: formatNumber(total) })}
-          </p>
-          <div
-            aria-label={t("progressLabel", {
-              hours: formatNumber(total),
-              target: formatNumber(recognition.FELLOWSHIP_HOURS),
-            })}
-            aria-valuemax={recognition.FELLOWSHIP_HOURS}
-            aria-valuemin={0}
-            aria-valuenow={total}
-            className="h-2 w-full overflow-hidden rounded-full bg-surface"
-            role="progressbar"
-          >
-            <div
-              className="h-full bg-band"
-              style={{ width: `${Math.round(progress * 100)}%` }}
-            />
-          </div>
-          <p className="type-caption">
-            {total >= recognition.FELLOWSHIP_HOURS
-              ? t("eligible")
-              : t("towardsFellowship", {
-                  target: formatNumber(recognition.FELLOWSHIP_HOURS),
-                })}
           </p>
         </div>
       </SalCard>

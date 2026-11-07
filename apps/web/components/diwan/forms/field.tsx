@@ -7,7 +7,6 @@ import { Label } from "@repo/brand/components/ui/label";
 import { Textarea } from "@repo/brand/components/ui/textarea";
 import {
   formatClock,
-  formatIqd,
   formatLongDate,
   formatNumber,
 } from "@repo/internationalization/format";
@@ -92,7 +91,6 @@ const Control = ({
         />
       );
     case "number":
-    case "iqd":
       return (
         <Input
           aria-invalid={invalid}
@@ -195,11 +193,9 @@ const GridInput = ({
   onChange: (value: Data) => void;
   value: unknown;
 }) => {
-  const locale = useLocale();
   const id = useId();
   const grid = (value ?? {}) as Record<string, Data>;
-  const rowLabel = (row: string) =>
-    labels.row(field.key, row) || formatIqd(Number(row), locale);
+  const rowLabel = (row: string) => labels.row(field.key, row) || row;
   return (
     <div className="w-full overflow-x-auto">
       <table className="w-full border-collapse text-sm">
@@ -487,8 +483,6 @@ const ValueText = ({
           {formatClock(String(value), locale)}
         </>
       );
-    case "iqd":
-      return <>{formatIqd(Number(value), locale)}</>;
     case "number":
       return <>{formatNumber(Number(value))}</>;
     default:
@@ -509,11 +503,10 @@ const TableView = ({
   labels: FormLabels;
   value: unknown;
 }) => {
-  const locale = useLocale();
   const grid = field.type === "grid";
   const rows: [string, Data][] = grid
     ? (field.rows ?? []).map((row) => [
-        labels.row(field.key, row) || formatIqd(Number(row), locale),
+        labels.row(field.key, row) || row,
         ((value ?? {}) as Record<string, Data>)[row] ?? {},
       ])
     : (Array.isArray(value) ? (value as Data[]) : []).map((row, i) => [

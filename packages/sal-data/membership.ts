@@ -35,7 +35,7 @@ export interface MemberStatus {
   is_member: boolean;
   member_since: string | null;
   pending_pledges: ("human_authorship" | "member")[];
-  tier: "member" | "fellow" | "honorary" | "alumni" | null;
+  tier: "member" | "associate" | "honorary" | null;
   verified: boolean;
   voting_member: boolean;
 }
@@ -237,7 +237,6 @@ export const detailsSchema = z.object({
   major: z.string().trim().max(120).nullable(),
   research_consent: z.boolean(),
   skills: z.array(z.enum(skills)),
-  student_id: z.string().trim().max(20).nullable(),
   study_level: z.enum(studyLevels).nullable(),
   volunteer: z.boolean(),
 });
@@ -257,13 +256,12 @@ export const emptyDetails: MemberDetails = {
   major: null,
   research_consent: false,
   skills: [],
-  student_id: null,
   study_level: null,
   volunteer: false,
 };
 
 const detailColumns =
-  "affiliation, birth_year, city, college, gender, graduation_year, heard_from, interests, languages, major, research_consent, skills, student_id, study_level, volunteer";
+  "affiliation, birth_year, city, college, gender, graduation_year, heard_from, interests, languages, major, research_consent, skills, study_level, volunteer";
 
 /** The member's own answers (RLS: only theirs, or members.manage). */
 export const myDetails = async (
@@ -315,7 +313,8 @@ export const memberInsights = async (client: Client) =>
 
 // ── Admin (members.manage / members.verify / roles.assign) ──────────────────
 
-export const tiers = ["member", "fellow", "honorary", "alumni"] as const;
+/** Member, Associate Member, Honorary Member (owner, Nov 7, 2026). */
+export const tiers = ["member", "associate", "honorary"] as const;
 export type Tier = (typeof tiers)[number];
 
 export interface DirectoryRow {
@@ -331,9 +330,35 @@ export interface DirectoryRow {
   voting_member: boolean;
 }
 
-/** Every account with its sign-in email. Raises 42501 without the permission. */
-export const directory = async (client: Client) =>
-  (unwrap(await membership(client).rpc("directory")) ?? []) as DirectoryRow[];
+/** The Register: private, for the Executive Board and the Director of
+ * Membership (`members.register`). Raises 42501 without the permission. */
+export const register = async (client: Client) =>
+  (unwrap(await membership(client).rpc("register")) ?? []) as DirectoryRow[];
+
+export interface DirectoryEntry {
+  full_name_ar: string | null;
+  full_name_en: string;
+  member_since: string | null;
+  user_id: string;
+}
+
+/** The members-only directory: members who chose to be listed. */
+export const membersDirectory = async (client: Client) =>
+  (unwrap(await membership(client).rpc("members_directory")) ??
+    []) as DirectoryEntry[];
+
+/** Opt in to (or out of) the members-only directory. */
+export const setInDirectory = async (
+  client: Client,
+  userId: string,
+  inDirectory: boolean
+) =>
+  unwrap(
+    await membership(client)
+      .from("memberships")
+      .update({ in_directory: inDirectory })
+      .eq("user_id", userId)
+  );
 
 export const manualActivitySchema = z.object({
   note: z.string().trim().min(1).max(500),

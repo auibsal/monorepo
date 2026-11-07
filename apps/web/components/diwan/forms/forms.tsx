@@ -58,7 +58,10 @@ export const StartLinks = ({ keys }: { readonly keys?: readonly string[] }) => {
   const types = useFormTypes();
   const mayStart = useMayStart();
   const available = (types.data ?? []).filter(
-    (type) => (!keys || keys.includes(type.key)) && mayStart(type)
+    (type) =>
+      type.filled === "site" &&
+      (!keys || keys.includes(type.key)) &&
+      mayStart(type)
   );
   if (keys) {
     available.sort((a, b) => keys.indexOf(a.key) - keys.indexOf(b.key));
@@ -70,10 +73,7 @@ export const StartLinks = ({ keys }: { readonly keys?: readonly string[] }) => {
     <RowList>
       {available.map((type) => (
         <li key={type.key}>
-          <Link
-            className="group grid gap-1"
-            href={`/membership/requests/new/${type.key}`}
-          >
+          <Link className="group grid gap-1" href={`/forms/${type.code}`}>
             <span className="font-medium underline-offset-4 group-hover:text-accent group-hover:underline group-focus-visible:text-accent">
               {td(`${type.key}.action` as Parameters<typeof td>[0])}
             </span>
@@ -137,14 +137,7 @@ export const SentList = ({ limit }: { readonly limit?: number }) => {
           className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1"
           key={s.id}
         >
-          <Link
-            className="link"
-            href={
-              s.status === "draft"
-                ? `/membership/requests/new/${s.form_key}/${s.id}`
-                : `/membership/requests/${s.id}`
-            }
-          >
+          <Link className="link" href={`/membership/requests/${s.id}`}>
             <FormTitle formKey={s.form_key} />
           </Link>
           <span className="type-caption">
@@ -178,7 +171,7 @@ export const Forms = () => {
         id="concern"
         title={t("concern.title")}
       >
-        <StartLinks keys={["f20"]} />
+        <StartLinks keys={["f21"]} />
       </DiwanSection>
       <DiwanSection id="sent" title={t("mine")}>
         <SentList />

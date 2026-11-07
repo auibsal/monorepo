@@ -105,20 +105,6 @@ export const DetailsFields = ({ onChange, value }: DetailsFieldsProps) => {
           )}
         </Field>
         {atAuib ? (
-          <Field hint={t("studentIdHint")} label={t("studentId")}>
-            {(fieldId) => (
-              <Input
-                dir="ltr"
-                id={fieldId}
-                inputMode="numeric"
-                maxLength={20}
-                onChange={(e) => set("student_id", toText(e.target.value))}
-                value={value.student_id ?? ""}
-              />
-            )}
-          </Field>
-        ) : null}
-        {atAuib ? (
           <Field label={t("college")}>
             {(fieldId) => (
               <Input

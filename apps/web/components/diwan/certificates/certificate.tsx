@@ -83,13 +83,16 @@ export const Certificate = () => {
       if (!row) {
         return null;
       }
+      // A Qalam student has no account: the name is on the certificate.
       const [holder, signers] = await Promise.all([
-        supabase
-          .schema("core")
-          .from("profiles")
-          .select("full_name_en, full_name_ar")
-          .eq("id", row.user_id)
-          .maybeSingle(),
+        row.user_id
+          ? supabase
+              .schema("core")
+              .from("profiles")
+              .select("full_name_en, full_name_ar")
+              .eq("id", row.user_id)
+              .maybeSingle()
+          : Promise.resolve({ data: null }),
         recognition.certificateSigners(supabase, row.id),
       ]);
       // The partner's name: from verification once issued, from the
@@ -141,7 +144,9 @@ export const Certificate = () => {
 
   const { holder, row, signers } = certificate.data;
   const kind = row.kind as recognition.CertificateKind;
-  const name = holder ? localized(holder, "full_name", locale) : "";
+  const name = holder
+    ? localized(holder, "full_name", locale)
+    : (row.recipient_name ?? "");
   const date = (value: string | null) =>
     value ? formatLongDate(value, locale, true) : "";
   const verifyUrl = recognition.verificationUrl(

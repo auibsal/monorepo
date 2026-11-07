@@ -236,20 +236,13 @@ const Totals = () => {
       header: t("hours"),
       key: "hours",
     },
-    {
-      cell: (row) => (row.fellowship_eligible ? t("eligible") : ""),
-      header: t("fellowship"),
-      key: "fellowship",
-    },
   ];
   if (totals.isPending) {
     return <SectionSpinner />;
   }
   return (
     <div className="grid gap-4">
-      <p className="type-body">
-        {t("lede", { target: formatNumber(recognition.FELLOWSHIP_HOURS) })}
-      </p>
+      <p className="type-body">{t("lede")}</p>
       <p className="type-caption">{t("cap")}</p>
       <DataTable
         columns={columns}
@@ -278,19 +271,21 @@ interface CertificateRow {
 
 const emptyForm = {
   citation: { ar: "", en: "" },
-  hours: "",
-  kind: "service" as recognition.CertificateKind,
-  partner_id: "",
+  kind: "prize" as recognition.CertificateKind,
   period_from: "",
   period_to: "",
-  resolution_id: "",
-  role: { ar: "", en: "" },
+  recipient: "",
 };
 
+/**
+ * Drafting a certificate (owner, Nov 7, 2026: only for finishing Qalam and
+ * for the Mutanabbi Prize): the Prize's names a member and carries its
+ * citation; Qalam's names the student as on the roster (students have no
+ * accounts). The President signs and the Faculty Advisor countersigns.
+ */
 const PrepareForm = ({ onDone }: { onDone: () => void }) => {
   const t = useTranslations("diwan.admin.recognition.certificates");
   const tKinds = useTranslations("diwan.certificate.titles");
-  const locale = useLocale();
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
   const [person, setPerson] = useState<{
@@ -299,44 +294,16 @@ const PrepareForm = ({ onDone }: { onDone: () => void }) => {
     id: string;
   } | null>(null);
   const [form, setForm] = useState(emptyForm);
-  const resolutions = useQuery({
-    queryFn: async () =>
-      unwrap(
-        await supabase
-          .schema("governance")
-          .from("resolutions")
-          .select("id, code, title_en, title_ar")
-          .eq("status", "adopted")
-          .order("code", { ascending: false })
-      ) ?? [],
-    queryKey: [...key, "resolutions"],
-  });
-  const partnerOptions = useQuery({
-    queryFn: async () =>
-      unwrap(
-        await supabase
-          .schema("governance")
-          .from("partners")
-          .select("id, name_en, name_ar")
-          .order("name_en")
-      ) ?? [],
-    queryKey: [...key, "partners"],
-  });
-  const kinds = recognition.certificateKinds;
   const save = useMutation({
     mutationFn: async () => {
       const row = recognition.certificateSchema.parse({
         citation_ar: form.citation.ar,
         citation_en: form.citation.en,
-        hours: form.hours ? Number(form.hours) : null,
         kind: form.kind,
-        partner_id: form.partner_id || null,
         period_from: form.period_from,
         period_to: form.period_to,
-        resolution_id: form.resolution_id || null,
-        role_ar: form.role.ar,
-        role_en: form.role.en,
-        user_id: person?.id ?? "",
+        recipient_name: form.kind === "qalam" ? form.recipient : null,
+        user_id: form.kind === "prize" ? (person?.id ?? null) : null,
       });
       unwrap(
         await supabase.schema("membership").from("certificates").insert(row)
@@ -356,7 +323,6 @@ const PrepareForm = ({ onDone }: { onDone: () => void }) => {
         save.mutate();
       }}
     >
-      <MemberPicker label={t("holder")} onChange={setPerson} value={person} />
       <Field label={t("kind")}>
         {(id) => (
           <SelectInput
@@ -369,7 +335,7 @@ const PrepareForm = ({ onDone }: { onDone: () => void }) => {
             }
             value={form.kind}
           >
-            {kinds.map((kind) => (
+            {recognition.certificateKinds.map((kind) => (
               <option key={kind} value={kind}>
                 {tKinds(kind)}
               </option>
@@ -378,26 +344,13 @@ const PrepareForm = ({ onDone }: { onDone: () => void }) => {
         )}
       </Field>
       <p className="type-caption">{t(`hints.${form.kind}`)}</p>
-      {recognition.recordsRole(form.kind) ? (
-        <BilingualField
-          label={t("role")}
-          maxLength={200}
-          onChange={(role) => setForm((f) => ({ ...f, role }))}
-          required
-          value={form.role}
-        />
-      ) : null}
-      {form.kind === "award" ? (
-        <BilingualField
-          label={t("citation")}
-          maxLength={500}
-          onChange={(citation) => setForm((f) => ({ ...f, citation }))}
-          required
-          value={form.citation}
-        />
-      ) : null}
-      {form.kind === "fellowship" || form.kind === "honorary" ? (
+      {form.kind === "prize" ? (
         <>
+          <MemberPicker
+            label={t("holder")}
+            onChange={setPerson}
+            value={person}
+          />
           <BilingualField
             label={t("citation")}
             maxLength={500}
@@ -405,66 +358,22 @@ const PrepareForm = ({ onDone }: { onDone: () => void }) => {
             required
             value={form.citation}
           />
-          <Field hint={t("resolutionHint")} label={t("resolution")}>
-            {(id) => (
-              <SelectInput
-                id={id}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, resolution_id: e.target.value }))
-                }
-                required
-                value={form.resolution_id}
-              >
-                <option value="">{t("chooseResolution")}</option>
-                {(resolutions.data ?? []).map((r) => (
-                  <option key={r.id} value={r.id}>
-                    {r.code} · {localized(r, "title", locale)}
-                  </option>
-                ))}
-              </SelectInput>
-            )}
-          </Field>
         </>
-      ) : null}
-      {form.kind === "partner" ? (
-        <Field label={t("partner")}>
-          {(id) => (
-            <SelectInput
-              id={id}
-              onChange={(e) =>
-                setForm((f) => ({ ...f, partner_id: e.target.value }))
-              }
-              required
-              value={form.partner_id}
-            >
-              <option value="">{t("choosePartner")}</option>
-              {(partnerOptions.data ?? []).map((p) => (
-                <option key={p.id} value={p.id}>
-                  {localized(p, "name", locale)}
-                </option>
-              ))}
-            </SelectInput>
-          )}
-        </Field>
-      ) : null}
-      {form.kind === "volunteer" ? (
-        <Field label={t("hours")}>
+      ) : (
+        <Field label={t("student")}>
           {(id) => (
             <Input
-              dir="ltr"
               id={id}
-              min={1}
+              maxLength={200}
               onChange={(e) =>
-                setForm((f) => ({ ...f, hours: e.target.value }))
+                setForm((f) => ({ ...f, recipient: e.target.value }))
               }
               required
-              step={0.25}
-              type="number"
-              value={form.hours}
+              value={form.recipient}
             />
           )}
         </Field>
-      ) : null}
+      )}
       <div className="grid gap-4 sm:grid-cols-2">
         {(["period_from", "period_to"] as const).map((field) => (
           <Field key={field} label={t(field)}>
@@ -474,9 +383,6 @@ const PrepareForm = ({ onDone }: { onDone: () => void }) => {
                 onChange={(e) =>
                   setForm((f) => ({ ...f, [field]: e.target.value }))
                 }
-                required={
-                  field === "period_from" && recognition.recordsRole(form.kind)
-                }
                 value={form[field]}
               />
             )}
@@ -484,7 +390,10 @@ const PrepareForm = ({ onDone }: { onDone: () => void }) => {
         ))}
       </div>
       <div className="flex flex-wrap gap-2">
-        <SaveButton disabled={!person} pending={save.isPending} />
+        <SaveButton
+          disabled={form.kind === "prize" ? !person : !form.recipient.trim()}
+          pending={save.isPending}
+        />
         <Button onClick={onDone} type="button" variant="ghost">
           {t("cancel")}
         </Button>

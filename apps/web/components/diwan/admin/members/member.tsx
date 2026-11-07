@@ -35,14 +35,14 @@ import {
 import { NotionManaged } from "../notion-managed";
 import { memberName, useDirectory } from "./directory";
 
-// ── Scope options (series, events, Editions, campaigns, productions) ────────
+// ── Scope options (series, events, Editions, productions) ────────
 
 const useScopeOptions = () => {
   const { supabase } = useAuth();
   const locale = useLocale();
   return useQuery({
     queryFn: async () => {
-      const [programmes, issues, campaigns, shows, partnerRows, eventRows] =
+      const [programmes, issues, shows, partnerRows, eventRows] =
         await Promise.all([
           supabase
             .schema("core")
@@ -55,11 +55,6 @@ const useScopeOptions = () => {
             .select("id, volume, number, title_en, title_ar")
             .order("volume", { ascending: false })
             .order("number", { ascending: false }),
-          supabase
-            .schema("charity")
-            .from("campaigns")
-            .select("id, title_en, title_ar")
-            .order("created_at", { ascending: false }),
           supabase
             .schema("programmes")
             .from("productions")
@@ -85,10 +80,6 @@ const useScopeOptions = () => {
         Exclude<ScopeType, "global">,
         { id: string; label: string }[]
       > = {
-        campaign: (unwrap(campaigns) ?? []).map((c) => ({
-          id: c.id,
-          label: localized(c, "title", locale),
-        })),
         event: (unwrap(eventRows) ?? []).map((e) => ({
           id: e.id,
           label: `${localized(e, "title", locale)} · ${formatLongDate(e.starts_at, locale as Locale)}`,

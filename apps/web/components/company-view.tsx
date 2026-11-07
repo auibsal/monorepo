@@ -4,7 +4,6 @@ import { events, localized } from "@repo/sal-data";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { ManageLinks } from "@/components/manage-links";
-import { Productions } from "@/components/productions";
 import { PageHeader, Section } from "@/components/section";
 import { loadProgramme } from "@/components/series";
 import { MonthCalendar, MonthSection, nextAfter } from "@/components/whats-on";
@@ -14,7 +13,8 @@ import { monthFrom } from "@/lib/whats-on";
 /**
  * The Company, the Society's theater company, on its own page beside
  * Qirtas (owner, Oct 30, 2026; not a program, not under What's on): what
- * it is, its productions, auditions, then its month of dates.
+ * it is, auditions, then its month of dates. Performances are ordinary
+ * events (owner, Nov 7, 2026).
  */
 export const CompanyView = async ({
   locale,
@@ -48,7 +48,6 @@ export const CompanyView = async ({
         ) : null}
         <ManageLinks diwan="/company" />
       </PageHeader>
-      <Productions locale={locale} />
       <Section id="auditions" title={t("auditions")}>
         <p className="type-body max-w-prose">{t("auditionsLede")}</p>
         <p>

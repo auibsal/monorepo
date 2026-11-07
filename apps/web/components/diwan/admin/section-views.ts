@@ -22,11 +22,11 @@ export interface SectionView {
 export type ViewKey =
   | "desk"
   | "events"
-  | "collection"
   | "company"
   | "newsroom"
   | "editions"
-  | "awards"
+  | "prize"
+  | "qalam"
   | "members"
   | "openings"
   | "service"
@@ -46,7 +46,6 @@ export const sectionViews: Record<AdminSection, readonly SectionView[]> = {
   events: [
     { href: "/events", key: "events", module: "events" },
     // The book fair's campaigns, each linked to its event (owner, Nov 5, 2026).
-    { href: "/events/campaigns", key: "collection", module: "charity" },
   ],
   people: [
     { href: "/people", key: "members", module: "members" },
@@ -70,10 +69,16 @@ export const sectionViews: Record<AdminSection, readonly SectionView[]> = {
       permission: ["journal.manage", "journal.publish"],
     },
     {
-      href: "/qirtas/awards",
-      key: "awards",
+      href: "/qirtas/prize",
+      key: "prize",
       module: "journal",
-      permission: "journal.awards",
+      permission: "journal.prize",
+    },
+    {
+      href: "/qirtas/qalam",
+      key: "qalam",
+      module: "qalam",
+      permission: "qalam.manage",
     },
   ],
   society: [

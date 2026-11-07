@@ -124,7 +124,6 @@ export const ViewForm = () => {
   const t = useTranslations("diwan.forms");
   const { supabase } = useAuth();
   const id = useQueryParam("id") ?? "";
-  const types = useFormTypes();
   const submission = useQuery({
     enabled: Boolean(id),
     queryFn: async () =>
@@ -150,7 +149,6 @@ export const ViewForm = () => {
     );
   }
   const row = submission.data;
-  const ongoing = types.data?.find((ty) => ty.key === row.form_key)?.ongoing;
 
   return (
     <div className="grid max-w-3xl gap-4">
@@ -161,14 +159,6 @@ export const ViewForm = () => {
         <Button onClick={() => window.print()} size="sm" variant="outline">
           {t("print")}
         </Button>
-        {ongoing && row.status !== "closed" ? (
-          <Link
-            className="type-body underline"
-            href={`/membership/requests/new/${row.form_key}/${row.id}`}
-          >
-            {t("update")}
-          </Link>
-        ) : null}
       </div>
       <SubmissionSheet submission={row} />
     </div>

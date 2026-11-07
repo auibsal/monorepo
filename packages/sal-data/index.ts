@@ -1,5 +1,4 @@
 export * as access from "./access";
-export * as charity from "./charity";
 export * from "./client";
 export * as content from "./content";
 export * as documents from "./documents";

@@ -9,7 +9,7 @@ export interface Persona {
   email: string;
   id: string;
   name: string;
-  roles: { role: Role; scope?: "issue" | "programme" | "campaign" }[];
+  roles: { role: Role; scope?: "issue" | "programme" }[];
 }
 
 export const personas = {
@@ -64,7 +64,7 @@ const quote = (value: string) => `'${value.replaceAll("'", "''")}'`;
  * transaction). Scoped roles use the given scope id.
  */
 export const personasSql = (
-  scopeIds: Partial<Record<"issue" | "programme" | "campaign", string>> = {}
+  scopeIds: Partial<Record<"issue" | "programme", string>> = {}
 ) =>
   Object.values(personas)
     .flatMap((persona: Persona) => [

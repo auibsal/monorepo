@@ -3,31 +3,23 @@
 import { useAuth } from "@repo/auth/provider";
 import { Button } from "@repo/brand/components/ui/button";
 import { Checkbox } from "@repo/brand/components/ui/checkbox";
+import { Input } from "@repo/brand/components/ui/input";
 import { Label } from "@repo/brand/components/ui/label";
 import type { Locale } from "@repo/internationalization";
-import { formatIqd, formatNumber } from "@repo/internationalization/format";
-import { Link, useRouter } from "@repo/internationalization/navigation";
+import { useRouter } from "@repo/internationalization/navigation";
 import { forms, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
-import { type FormEvent, useEffect, useState } from "react";
+import { type FormEvent, useState } from "react";
 import { ErrorLine, Field, SelectInput } from "../admin/kit";
-import { MemberPicker, useMemberNames } from "../admin/member-picker";
 import { DiwanPage } from "../page";
-import { EmptyLine, SectionSpinner } from "../states";
+import { EmptyLine } from "../states";
 import { FormFieldInput, type FormLabels, useFormLabels } from "./field";
 
 type Data = forms.FormData;
 type FormField = forms.FormField;
 
-interface Person {
-  full_name_ar: string | null;
-  full_name_en: string;
-  id: string;
-}
-
-const numeric = (field: FormField) =>
-  field.type === "number" || field.type === "iqd";
+const numeric = (field: FormField) => field.type === "number";
 
 const toNumber = (value: unknown) =>
   value === "" || value === undefined || value === null ? null : Number(value);
@@ -65,33 +57,6 @@ const normalize = (fields: readonly FormField[], data: Data): Data => {
     }
   }
   return out;
-};
-
-const Totals = ({ data, formKey }: { data: Data; formKey: string }) => {
-  const t = useTranslations("diwan.forms");
-  const locale = useLocale() as Locale;
-  if (formKey === "f04") {
-    return (
-      <p className="type-body font-medium" role="status">
-        {t("interviewTotal", {
-          total: formatNumber(forms.interviewTotal(data)),
-        })}
-        {forms.interviewVeto(data) ? ` · ${t("interviewVeto")}` : ""}
-      </p>
-    );
-  }
-  if (formKey === "f14") {
-    const totals = forms.cashTotals(data);
-    return (
-      <p className="type-body font-medium" role="status">
-        {t("cashTotals", {
-          one: formatIqd(totals.count1, locale),
-          two: formatIqd(totals.count2, locale),
-        })}
-      </p>
-    );
-  }
-  return null;
 };
 
 const AnonymousOption = ({
@@ -136,147 +101,162 @@ const ProblemsLine = ({
   ) : null;
 };
 
-/** Fill in a form, save a draft, or send it. */
+/**
+ * A form on its own page, `/forms/<number>` (owner, Nov 7, 2026): filled in
+ * and signed by typing a name, for members, guests, parents and partners
+ * alike. The signed copy keeps the signer, the time and the form's version.
+ * A form about an event (a trip's consent, a media release) names it with
+ * `?event=<slug>`.
+ */
 export const FillForm = ({
+  eventSlug = null,
   formKey,
-  id = null,
 }: {
+  readonly eventSlug?: string | null;
   readonly formKey: string;
-  readonly id?: string | null;
 }) => {
   const t = useTranslations("diwan.forms");
   if (!forms.isFormKey(formKey)) {
     return (
-      <EmptyLine action={{ href: "/membership/requests", label: t("back") }}>
+      <EmptyLine action={{ href: "/", label: t("home") }}>
         {t("notFound")}
       </EmptyLine>
     );
   }
-  return <FormEditor formKey={formKey} id={id} key={`${formKey}-${id}`} />;
+  return <FormEditor eventSlug={eventSlug} formKey={formKey} key={formKey} />;
 };
 
-const FormEditor = ({
-  formKey,
-  id,
-}: {
-  formKey: forms.FormKey;
-  id: string | null;
-}) => {
-  const t = useTranslations("diwan.forms");
-  const definition = forms.forms[formKey];
-  const labels = useFormLabels(formKey);
+/** The event a form names, by its address (RLS decides who sees it). */
+const useNamedEvent = (slug: string | null) => {
   const { supabase } = useAuth();
-  const router = useRouter();
-  const queryClient = useQueryClient();
-  const [data, setData] = useState<Data>({});
-  const [subject, setSubject] = useState<Person | null>(null);
-  const [routing, setRouting] = useState<forms.Routing>("none");
-  const [anonymous, setAnonymous] = useState(false);
-  const [problems, setProblems] = useState<string[]>([]);
-  const [sentAnonymously, setSentAnonymously] = useState(false);
-
-  const existing = useQuery({
-    enabled: Boolean(id),
+  return useQuery({
+    enabled: Boolean(slug),
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("governance")
-          .from("form_submissions")
-          .select("*")
-          .eq("id", id ?? "")
+          .schema("events")
+          .from("events")
+          .select("id, slug, title_en, title_ar")
+          .eq("slug", slug ?? "")
           .maybeSingle()
       ),
-    queryKey: ["forms", "submission", id],
+    queryKey: ["forms", "event", slug],
   });
-  const subjectName = useMemberNames([existing.data?.subject_user_id]);
+};
 
-  useEffect(() => {
-    if (existing.data) {
-      setData((existing.data.data ?? {}) as Data);
-      setRouting(existing.data.routing as forms.Routing);
-    }
-  }, [existing.data]);
-  useEffect(() => {
-    const row = subjectName.data?.[0];
-    if (row) {
-      setSubject(row);
-    }
-  }, [subjectName.data]);
+const FormEditor = ({
+  eventSlug,
+  formKey,
+}: {
+  eventSlug: string | null;
+  formKey: forms.FormKey;
+}) => {
+  const t = useTranslations("diwan.forms");
+  const locale = useLocale() as Locale;
+  const definition = forms.forms[formKey];
+  const labels = useFormLabels(formKey);
+  const { supabase, user } = useAuth();
+  const router = useRouter();
+  const queryClient = useQueryClient();
+  const event = useNamedEvent(eventSlug);
+  const me = useQuery({
+    enabled: Boolean(user),
+    queryFn: async () =>
+      unwrap(
+        await supabase
+          .schema("core")
+          .from("profiles")
+          .select("full_name_en, full_name_ar")
+          .eq("id", user?.id ?? "")
+          .maybeSingle()
+      ),
+    queryKey: ["forms", "me", user?.id],
+  });
+  const [data, setData] = useState<Data>({});
+  const [routing, setRouting] = useState<forms.Routing>("none");
+  const [anonymous, setAnonymous] = useState(false);
+  const [problems, setProblems] = useState<string[]>([]);
+  const [signer, setSigner] = useState<string | null>(null);
+  const [contact, setContact] = useState("");
+  const [sent, setSent] = useState(false);
+  // A member signs in the name on their account, unless they change it.
+  const myName = me.data
+    ? (locale === "ar" && me.data.full_name_ar) || me.data.full_name_en
+    : "";
+  const signature = signer ?? myName;
 
-  const save = useMutation({
-    mutationFn: (submit: boolean) =>
-      forms.saveForm(supabase, {
+  const sign = useMutation({
+    mutationFn: () =>
+      forms.signForm(supabase, {
         anonymous,
         data: normalize(definition.fields, data),
         form: formKey,
-        id,
         routing,
-        subjectId: subject?.id ?? null,
-        submit,
+        signerContact: user ? null : contact,
+        signerName: anonymous ? "" : signature,
+        subjectId: event.data?.id ?? null,
       }),
-    onSuccess: async (savedId, submit) => {
+    onSuccess: async (savedId) => {
       await queryClient.invalidateQueries({ queryKey: ["forms"] });
-      if (anonymous) {
-        setSentAnonymously(true);
+      if (eventSlug && event.data) {
+        router.push(`/events/${eventSlug}`);
         return;
       }
-      router.push(
-        submit
-          ? `/membership/requests/${savedId}`
-          : `/membership/requests/new/${formKey}/${savedId}`
-      );
+      if (user && !anonymous) {
+        router.push(`/membership/requests/${savedId}`);
+        return;
+      }
+      setSent(true);
     },
   });
 
-  if (id && existing.isPending) {
-    return <SectionSpinner />;
-  }
-  if (id && !existing.data) {
+  if (sent) {
     return (
-      <EmptyLine action={{ href: "/membership/requests", label: t("back") }}>
-        {t("notFound")}
+      <EmptyLine action={{ href: "/", label: t("home") }}>
+        {anonymous ? t("sentAnonymously") : t("signed")}
       </EmptyLine>
     );
   }
-  if (sentAnonymously) {
+  if (eventSlug && event.isSuccess && !event.data) {
     return (
-      <EmptyLine action={{ href: "/membership/requests", label: t("back") }}>
-        {t("sentAnonymously")}
+      <EmptyLine action={{ href: "/events", label: t("whatsOn") }}>
+        {t("noEvent")}
       </EmptyLine>
     );
   }
 
-  const isDraft = !existing.data || existing.data.status === "draft";
-  const lockedSubject = Boolean(existing.data?.subject_user_id) && !isDraft;
-  const onSubmit = (event: FormEvent) => {
-    event.preventDefault();
+  const onSubmit = (e: FormEvent) => {
+    e.preventDefault();
     const found = forms.formProblems(definition, data);
+    if (!(anonymous || signature.trim().length >= 2)) {
+      found.push("signature");
+    }
     setProblems(found);
     if (found.length === 0) {
-      save.mutate(true);
+      sign.mutate();
     }
   };
 
   return (
-    <DiwanPage lede={labels.purpose()} narrow title={labels.action()}>
+    <DiwanPage
+      lede={labels.purpose()}
+      narrow
+      title={`${labels.title()} · ${definition.code}`}
+    >
+      {event.data ? (
+        <p className="type-body">
+          {t("forEvent", {
+            title:
+              (locale === "ar" && event.data.title_ar) || event.data.title_en,
+          })}
+        </p>
+      ) : null}
       {definition.preamble ? (
         <p className="type-body bg-surface-reading p-5">{labels.preamble()}</p>
       ) : null}
 
       <form className="grid gap-5" noValidate onSubmit={onSubmit}>
-        {definition.subject && lockedSubject ? (
-          <p className="type-body">
-            {t("about", { name: subject?.full_name_en ?? "" })}
-          </p>
-        ) : null}
-        {definition.subject && !lockedSubject ? (
-          <MemberPicker
-            label={t("subject")}
-            onChange={setSubject}
-            value={subject}
-          />
-        ) : null}
-        {definition.routing && isDraft ? (
+        {definition.routing ? (
           <Field hint={t("routingHint")} label={t("routing")}>
             {(fieldId) => (
               <SelectInput
@@ -303,43 +283,51 @@ const FormEditor = ({
             value={data[field.key]}
           />
         ))}
-        <Totals data={data} formKey={formKey} />
-        {definition.anonymous && !id ? (
+        {definition.anonymous ? (
           <AnonymousOption onChange={setAnonymous} value={anonymous} />
         ) : null}
-        <ProblemsLine labels={labels} problems={problems} />
+        {anonymous ? null : (
+          <>
+            <Field hint={t("signatureHint")} label={t("signature")}>
+              {(fieldId) => (
+                <Input
+                  aria-invalid={problems.includes("signature")}
+                  className="font-signature text-2xl"
+                  id={fieldId}
+                  maxLength={200}
+                  onChange={(e) => setSigner(e.target.value)}
+                  value={signature}
+                />
+              )}
+            </Field>
+            {user ? null : (
+              <Field label={t("contact")}>
+                {(fieldId) => (
+                  <Input
+                    id={fieldId}
+                    maxLength={200}
+                    onChange={(e) => setContact(e.target.value)}
+                    value={contact}
+                  />
+                )}
+              </Field>
+            )}
+          </>
+        )}
+        <ProblemsLine
+          labels={{
+            ...labels,
+            field: (key: string) =>
+              key === "signature" ? t("signature") : labels.field(key),
+          }}
+          problems={problems}
+        />
         <div className="flex flex-wrap gap-3">
-          {isDraft ? (
-            <Button disabled={save.isPending} type="submit">
-              {t("send")}
-            </Button>
-          ) : (
-            <Button
-              disabled={save.isPending}
-              onClick={() => save.mutate(false)}
-              type="button"
-            >
-              {t("saveChanges")}
-            </Button>
-          )}
-          {isDraft && !anonymous ? (
-            <Button
-              disabled={save.isPending}
-              onClick={() => save.mutate(false)}
-              type="button"
-              variant="outline"
-            >
-              {t("saveDraft")}
-            </Button>
-          ) : null}
-          <Link
-            className="link type-caption self-center"
-            href="/membership/requests"
-          >
-            {t("back")}
-          </Link>
+          <Button disabled={sign.isPending} type="submit">
+            {anonymous ? t("send") : t("signAndSend")}
+          </Button>
         </div>
-        <ErrorLine error={save.error} />
+        <ErrorLine error={sign.error} />
       </form>
     </DiwanPage>
   );

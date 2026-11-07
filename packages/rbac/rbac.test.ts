@@ -26,8 +26,8 @@ const sql = readdirSync(migrations)
   .map((f) => readFileSync(join(migrations, f), "utf8"))
   .join("\n");
 
-/** The bodies of every `insert into <table> (...) values ...;` statement. */
-const inserts = (table: string) =>
+/** Every `insert into <table> (...) values ...;` statement: body and place. */
+const insertsAt = (table: string) =>
   [
     ...sql.matchAll(
       new RegExp(
@@ -35,13 +35,24 @@ const inserts = (table: string) =>
         "g"
       )
     ),
-  ].map((m) => m[1]);
+  ].map((m) => ({ at: m.index ?? 0, body: m[1] }));
+/** The bodies of every `insert into <table> (...) values ...;` statement. */
+const inserts = (table: string) => insertsAt(table).map((i) => i.body);
+/** A role row or grant written before the role was last retired is gone. */
+const retiredAfter = (role: string, at: number) =>
+  (roleRetiredAt.get(role) ?? -1) > at;
 
-const retiredRoles = new Set(
-  [
-    ...sql.matchAll(/delete from access\.roles where key in \(([^)]*)\)/g),
-  ].flatMap((m) => [...m[1].matchAll(/'([a-z_]+)'/g)].map((k) => k[1]))
-);
+/** Where each role was last retired: a role brought back later (the
+ * Directors of Partnerships and Membership, Nov 7, 2026) counts again, with
+ * only the grants made after its return. */
+const roleRetiredAt = new Map<string, number>();
+for (const m of sql.matchAll(
+  /delete from access\.roles where key in \(([^)]*)\)/g
+)) {
+  for (const k of m[1].matchAll(/'([a-z_]+)'/g)) {
+    roleRetiredAt.set(k[1], m.index ?? 0);
+  }
+}
 const retiredPermissions = new Set(
   [
     ...sql.matchAll(
@@ -89,12 +100,16 @@ describe("mirror of the reference data in the migrations", () => {
 
   test("roles match", () => {
     // Older inserts carry the spending limit, dropped on Oct 30, 2026.
-    const rows = inserts("access.roles").flatMap((body) => [
-      ...body.matchAll(
-        /\('([a-z_]+)', '[^']+', '[^']+', (true|false),(?: (?:null|\d+),)? \d+\)/g
-      ),
-    ]);
-    const live = rows.filter((m) => !retiredRoles.has(m[1]));
+    const rows = insertsAt("access.roles").flatMap(({ at, body }) =>
+      [
+        ...body.matchAll(
+          /\('([a-z_]+)', '[^']+', '[^']+', (true|false),(?: (?:null|\d+),)? \d+\)/g
+        ),
+      ].map((m) => ({ at, m }))
+    );
+    const live = rows
+      .filter(({ at, m }) => !retiredAfter(m[1], at))
+      .map(({ m }) => m);
     expect(live.map((m) => m[1]).sort()).toEqual([...roleKeys].sort());
     for (const [, key, council] of live) {
       const role = roles[key as keyof typeof roles];
@@ -106,31 +121,32 @@ describe("mirror of the reference data in the migrations", () => {
 
   test("role bundles match", () => {
     const fromSql = new Map<string, Set<string>>();
-    const grant = (role: string, given: string) => {
+    const grant = (role: string, given: string, at: number) => {
       const permission = current(given);
       if (
         !(
           revokedGrants.has(`${role}:${permission}`) ||
-          retiredPermissions.has(permission)
+          retiredPermissions.has(permission) ||
+          retiredAfter(role, at)
         )
       ) {
         fromSql.set(role, (fromSql.get(role) ?? new Set()).add(permission));
       }
     };
-    for (const body of inserts("access.role_permissions")) {
+    for (const { at, body } of insertsAt("access.role_permissions")) {
       // Bundles: ('role', array['a', 'b']).
       for (const [, role, list] of body.matchAll(
         /\('([a-z_]+)', array\[([^\]]+)\]\)/g
       )) {
         for (const [, permission] of list.matchAll(/'([a-z_.]+)'/g)) {
-          grant(role, permission);
+          grant(role, permission, at);
         }
       }
       // Single grants: ('role', 'permission').
       for (const [, role, permission] of body.matchAll(
         /\('([a-z_]+)', '([a-z_.]+)'\)/g
       )) {
-        grant(role, permission);
+        grant(role, permission, at);
       }
     }
     for (const key of roleKeys) {
@@ -142,9 +158,8 @@ describe("mirror of the reference data in the migrations", () => {
 
   test("the President has every permission but the checks on the President", () => {
     // Owner, Oct 15, 2026: concerns about the President go elsewhere
-    // (F-20); Qirtas reads blind; the Elections Committee runs elections;
-    // the General Secretary signs off the collection's ledger and the
-    // Faculty Advisor countersigns certificates; a partner's own page is
+    // (F-21); Qirtas reads blind; the Elections Committee runs elections;
+    // the Faculty Advisor countersigns certificates; a partner's own page is
     // its representatives' (they hold partners.manage anyway).
     const withheld = new Set([
       "partners.own",
@@ -153,7 +168,6 @@ describe("mirror of the reference data in the migrations", () => {
       "journal.review",
       "journal.identity.view",
       "elections.manage",
-      "charity.ledger.signoff",
       "certificates.countersign",
     ]);
     expect([...roles.president.permissions].sort()).toEqual(

@@ -85,6 +85,12 @@ const FOOTER = {
   en: "Sent by the website of the AUIB Society of Arts and Letters, auibsal.org.",
 };
 
+/** Under every email and in the site's footer (owner, Nov 7, 2026). */
+export const SUSTAINABILITY = {
+  ar: "الأصل عندنا: بلا ورق. والكتب يُعاد استخدامها عبر «الفصل الثاني».",
+  en: "Paperless by default. Books reused through Second Chapter.",
+};
+
 /**
  * The same notice as plain text, sent beside the HTML: some mail apps and
  * every screen reader in plain-text mode read this one, and spam filters
@@ -114,7 +120,10 @@ export const noticeText = ({
     ...footer.map((line) =>
       line.href ? `${line.text} ${line.link ?? ""}: ${line.href}` : line.text
     ),
-    ...blocks.map((block) => FOOTER[block.lang]),
+    ...blocks.flatMap((block) => [
+      FOOTER[block.lang],
+      SUSTAINABILITY[block.lang],
+    ]),
   ].join("\n");
 
 const Block = ({ block }: { block: NoticeBlock }) => {
@@ -295,7 +304,7 @@ export const Notice = ({ blocks, footer = [], preview }: NoticeProps) => {
                 textAlign: block.lang === "ar" ? "right" : "left",
               }}
             >
-              {FOOTER[block.lang]}
+              {FOOTER[block.lang]} {SUSTAINABILITY[block.lang]}
             </Text>
           ))}
         </Container>

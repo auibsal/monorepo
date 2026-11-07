@@ -136,7 +136,7 @@ const MemberCardPage = async ({ params, searchParams }: CardParams) => {
                   className="link font-medium"
                   href={`/verify/${item.verification_code}`}
                 >
-                  {tc(`kinds.${item.kind as "service"}`)}
+                  {tc(`kinds.${item.kind as "prize"}`)}
                 </Link>
                 <p className="type-caption">
                   {[

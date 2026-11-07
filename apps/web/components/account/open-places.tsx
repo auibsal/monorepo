@@ -19,11 +19,10 @@ import {
 } from "@/components/diwan/states";
 
 /**
- * Every open opportunity, for anyone to read, in one list (owner, Oct 31,
- * 2026: Get involved has no sections): roles, the Apprenticeship (the
- * internship), First Ink, volunteering, places with partners and the
- * Company's auditions, soonest first. Each says what it is, who it is
- * with and when it closes. Replying takes membership.
+ * Every open role, for anyone to read, in one list (owner, Nov 7, 2026:
+ * open roles only): team roles, event teams, Qalam mentors and the
+ * Company's auditions, soonest first. Each says what it is, where and when
+ * it closes. Replying takes membership.
  */
 export const OpenPlaces = () => {
   const t = useTranslations("diwan.getInvolved");
@@ -53,35 +52,12 @@ export const OpenPlaces = () => {
 
 type Place = Awaited<ReturnType<typeof programmes.openPlaces>>[number];
 
-const KINDS = [
-  "role",
-  "apprenticeship",
-  "first_ink",
-  "volunteer",
-  "partner",
-  "audition",
-] as const;
+const KINDS = ["role", "event_team", "qalam_mentor", "audition"] as const;
 
 const PlaceRow = ({ locale, row }: { locale: Locale; row: Place }) => {
   const t = useTranslations("diwan.getInvolved");
   const td = useTranslations("diwan.details");
-  // Who it is with: the partner, the program, or the Society.
-  const partner = row.partner_name_en
-    ? localized(
-        { name_ar: row.partner_name_ar, name_en: row.partner_name_en },
-        "name",
-        locale
-      )
-    : null;
-  const program = row.programme_name_en
-    ? localized(
-        { name_ar: row.programme_name_ar, name_en: row.programme_name_en },
-        "name",
-        locale
-      )
-    : null;
   const kind = KINDS.find((k) => k === row.kind) ?? "role";
-  const where = (kind === "partner" ? partner : program) ?? t("society");
   let when: string | null = null;
   if (kind === "audition" && row.closes_at) {
     when = t("on", {
@@ -98,29 +74,29 @@ const PlaceRow = ({ locale, row }: { locale: Locale; row: Place }) => {
           <Link className="hover:underline" href="/company/auditions">
             {t("audition", { title: localized(row, "title", locale) })}
           </Link>
-        ) : (
-          localized(row, "title", locale)
-        )}
+        ) : null}
+        {kind === "event_team" && row.event_slug ? (
+          <Link className="hover:underline" href={`/events/${row.event_slug}`}>
+            {localized(row, "title", locale)}
+          </Link>
+        ) : null}
+        {kind === "audition" || (kind === "event_team" && row.event_slug)
+          ? null
+          : localized(row, "title", locale)}
       </p>
       <p className="type-caption">
-        {[t(`kinds.${kind}`), where, when].filter(Boolean).join(" · ")}
+        {[t(`kinds.${kind}`), when].filter(Boolean).join(" · ")}
       </p>
       {localized(row, "body", locale) ? (
         <p className="type-body whitespace-pre-line" dir="auto">
           {localized(row, "body", locale)}
         </p>
       ) : null}
-      {/* What a reader weighs before replying: the term, how many places
-          and the skills it wants. */}
-      {row.term_from || row.places > 1 || row.skills.length > 0 ? (
+      {/* What a reader weighs before replying: how many places and the
+          skills it wants. */}
+      {row.places > 1 || row.skills.length > 0 ? (
         <p className="type-caption text-text-secondary">
           {[
-            row.term_from && row.term_to
-              ? t("term", {
-                  from: formatLongDate(row.term_from, locale),
-                  to: formatLongDate(row.term_to, locale),
-                })
-              : null,
             row.places > 1
               ? t("places", {
                   count: row.places,

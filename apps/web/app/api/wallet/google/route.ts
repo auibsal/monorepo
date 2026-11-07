@@ -16,15 +16,13 @@ export const OPTIONS = preflight;
 
 const tiers = {
   ar: {
-    alumni: "عضو مدى الحياة",
-    fellow: "زميل",
-    honorary: "زميل فخري",
+    associate: "عضو منتسب",
+    honorary: "عضو فخري",
     member: "عضو",
   },
   en: {
-    alumni: "Life Member",
-    fellow: "Fellow",
-    honorary: "Honorary Fellow",
+    associate: "Associate Member",
+    honorary: "Honorary Member",
     member: "Member",
   },
 } as const;

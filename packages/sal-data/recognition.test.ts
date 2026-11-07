@@ -37,28 +37,24 @@ describe("recognition", () => {
     );
   });
 
-  test("each kind of certificate needs what the Bylaws need", () => {
+  test("certificates: Qalam and the Mutanabbi Prize only", () => {
     expect(
       certificateSchema.safeParse({
-        kind: "service",
-        period_from: "2026-01-01",
-        role_en: "Door Coordinator",
+        citation_en: "For the best work in Qirtas",
+        kind: "prize",
         user_id: member,
       }).success
     ).toBe(true);
     expect(
-      certificateSchema.safeParse({ kind: "service", user_id: member }).success
+      certificateSchema.safeParse({ kind: "prize", user_id: member }).success
     ).toBe(false);
     expect(
-      certificateSchema.safeParse({
-        citation_en: "Forty hours of care",
-        kind: "fellowship",
-        user_id: member,
-      }).success
-    ).toBe(false);
-    expect(
-      certificateSchema.safeParse({ kind: "volunteer", user_id: member })
+      certificateSchema.safeParse({ kind: "qalam", recipient_name: "Sara A." })
         .success
+    ).toBe(true);
+    expect(certificateSchema.safeParse({ kind: "qalam" }).success).toBe(false);
+    expect(
+      certificateSchema.safeParse({ kind: "service", user_id: member }).success
     ).toBe(false);
   });
 

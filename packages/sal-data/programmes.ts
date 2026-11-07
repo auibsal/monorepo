@@ -1,16 +1,20 @@
 import { z } from "zod";
 import { type Client, unwrap } from "./client";
-import { wordCount } from "./membership";
 
+/**
+ * A page typed at the Typewriter Tour (owner, Nov 7, 2026): kept as the
+ * writer typed it. Six words is the invitation, not a rule the record
+ * enforces; pages from spring 2026 hold what was typed.
+ */
 export const sixWordsSchema = z.object({
-  language: z.enum(["en", "ar"]),
+  language: z.enum(["en", "ar", "other"]),
   show_name: z.boolean().default(true),
-  text: z
-    .string()
-    .trim()
-    .max(200)
-    .refine((v) => wordCount(v) === 6, { message: "six_words" }),
+  text: z.string().trim().min(1).max(400),
 });
+
+/** Who sees a page: the writer chooses; private by default. */
+export const PAGE_VISIBILITY = ["private", "profile", "tour"] as const;
+export type PageVisibility = (typeof PAGE_VISIBILITY)[number];
 
 export const removalRequestSchema = z.object({
   content_url: z.url().max(2048).optional().or(z.literal("")),
@@ -33,6 +37,41 @@ export const sixWordsWall = async (client: Client, limit = 200) =>
       .schema("programmes")
       .rpc("six_words_wall", { max_results: limit })
   ) ?? [];
+
+/** A member's pages they chose to show, for their profile. */
+export const profileSixWords = async (client: Client, authorSlug: string) =>
+  unwrap(
+    await client
+      .schema("programmes")
+      .rpc("profile_six_words", { author_slug: authorSlug })
+  ) ?? [];
+
+/** The signed-in member's own pages, with who sees each. */
+export const myPages = async (client: Client, userId: string) =>
+  unwrap(
+    await client
+      .schema("programmes")
+      .from("six_words")
+      .select(
+        "id, text, language, tour, station, visibility, publishable, created_at"
+      )
+      .eq("user_id", userId)
+      .order("created_at")
+  ) ?? [];
+
+/** The writer chooses who sees a page: the consent record. */
+export const setPageVisibility = async (
+  client: Client,
+  pageId: string,
+  visibility: PageVisibility
+) =>
+  unwrap(
+    await client
+      .schema("programmes")
+      .from("six_words")
+      .update({ visibility })
+      .eq("id", pageId)
+  );
 
 export const programmes = async (client: Client) =>
   unwrap(
@@ -108,28 +147,18 @@ export const openings = async (client: Client) =>
       .schema("programmes")
       .from("openings")
       .select(
-        "id, kind, owner, programme_id, desk, places, term_from, term_to, title_en, title_ar, body_en, body_ar, skills, closes_at, is_open, created_at"
+        "id, kind, owner, programme_id, event_id, places, title_en, title_ar, body_en, body_ar, skills, closes_at, is_open, created_at"
       )
       .order("created_at", { ascending: false })
   ) ?? [];
 
 /**
- * Every open place, for anyone (owner, Oct 31, 2026: Get involved is the
- * careers page): roles, Apprenticeships, First Ink, volunteering and places
- * with partners, with the program's and the partner's names.
+ * Every open role, for anyone (owner, Nov 7, 2026: Get involved lists open
+ * roles only): Council and team roles, event teams, Qalam mentors and the
+ * Company's auditions.
  */
 export const openPlaces = async (client: Client) =>
   unwrap(await client.schema("programmes").rpc("open_places")) ?? [];
-
-/** The Apprenticeship and First Ink places the member holds. */
-export const myPlacements = async (client: Client, userId: string) =>
-  unwrap(
-    await client
-      .schema("programmes")
-      .from("placements")
-      .select("opening_id, status")
-      .eq("user_id", userId)
-  ) ?? [];
 
 /** The openings the signed-in member said they are interested in. */
 export const myOpeningReplies = async (client: Client, userId: string) =>
@@ -183,42 +212,3 @@ export const matchedFirst = <T extends { skills: readonly string[] }>(
       Number(matchingSkills(b.skills, mine).length > 0) -
       Number(matchingSkills(a.skills, mine).length > 0)
   );
-
-/** An event's published prompt cards (design review A35; owner, Nov 5, 2026: an event's own). */
-export const publishedPrompts = async (client: Client, eventId: string) =>
-  unwrap(
-    await client
-      .schema("programmes")
-      .from("prompts")
-      .select("id, text_en, text_ar")
-      .eq("event_id", eventId)
-      .eq("is_published", true)
-      .order("created_at", { ascending: false })
-  ) ?? [];
-
-/**
- * An event's book ballots (design review A33, D12; owner, Nov 5, 2026: an
- * event's own), the latest first, each with its books; counts come from
- * `ballotCounts`.
- */
-export const bookBallots = async (client: Client, eventId: string) =>
-  unwrap(
-    await client
-      .schema("programmes")
-      .from("book_ballots")
-      .select(
-        "id, title_en, title_ar, closes_at, created_at, books:book_choices(id, title_en, title_ar, author_en, author_ar, created_at)"
-      )
-      .eq("event_id", eventId)
-      .order("closes_at", { ascending: false })
-      .order("created_at", {
-        ascending: true,
-        referencedTable: "book_choices",
-      })
-  ) ?? [];
-
-/** Each book's votes: once the ballot closes, or for the event's leads. */
-export const ballotCounts = async (client: Client, ballotId: string) =>
-  unwrap(
-    await client.schema("programmes").rpc("ballot_counts", { ballot: ballotId })
-  ) ?? [];
