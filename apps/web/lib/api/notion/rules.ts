@@ -51,13 +51,7 @@ const WAYS_IN = {
 const wayIn = (page: NotionPage, problems: string[]) => {
   const chosen = read.select(page, "Way in") ?? "";
   if (chosen in WAYS_IN) {
-    const entry = WAYS_IN[chosen as keyof typeof WAYS_IN];
-    // Rows from before the Members option kept a separate checkbox; until
-    // it is gone from Notion, it still means Members.
-    return (entry === "open" || entry === "rsvp") &&
-      read.checkbox(page, "Members only")
-      ? "members"
-      : entry;
+    return WAYS_IN[chosen as keyof typeof WAYS_IN];
   }
   problems.push("Set Way in: Open, RSVP, Members or Private.");
   return "open";

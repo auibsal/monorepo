@@ -160,13 +160,6 @@ describe("publishing rules", () => {
     expect(check({ "Way in": wayIn("Members") })).toMatchObject({
       values: { entry: "members" },
     });
-    // The old checkbox still means Members until it leaves Notion.
-    expect(
-      check({
-        "Members only": { checkbox: true, type: "checkbox" },
-        "Way in": wayIn("RSVP"),
-      })
-    ).toMatchObject({ values: { entry: "members" } });
     expect(
       check({
         "Off campus": { checkbox: true, type: "checkbox" },
