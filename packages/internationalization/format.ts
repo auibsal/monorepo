@@ -220,8 +220,14 @@ export const formatFieldValue = (
 };
 
 /** "6:00 PM" (12-hour clock in both languages). */
+const MORNING = /\s?AM$/;
+const EVENING = /\s?PM$/;
+
 /** "6:00 p.m." (Chicago 10.41, decisions §10) / «6:00 م». */
-export const formatClock = (value: DateInput, locale: Locale = defaultLocale) => {
+export const formatClock = (
+  value: DateInput,
+  locale: Locale = defaultLocale
+) => {
   const time = new Intl.DateTimeFormat(brandIntl(locale), {
     hour: "numeric",
     hour12: true,
@@ -230,7 +236,7 @@ export const formatClock = (value: DateInput, locale: Locale = defaultLocale) =>
   }).format(toDate(value));
   return locale === "ar"
     ? time
-    : time.replace(/\s?AM$/, " a.m.").replace(/\s?PM$/, " p.m.");
+    : time.replace(MORNING, " a.m.").replace(EVENING, " p.m.");
 };
 
 /**
