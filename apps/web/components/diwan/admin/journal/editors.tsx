@@ -24,7 +24,6 @@ import {
   SaveButton,
   SelectInput,
 } from "../kit";
-import { Calls } from "../pipeline/calls";
 
 type Status = "draft" | "scheduled" | "published";
 
@@ -414,14 +413,6 @@ export const IssueEditor = () => {
         />
         <ErrorLine error={save.error} />
       </form>
-      {issueId ? (
-        <section aria-labelledby="edition-calls" className="grid gap-4">
-          <h2 className="type-heading" id="edition-calls">
-            {tw("calls")}
-          </h2>
-          <Calls issueId={issueId} />
-        </section>
-      ) : null}
     </div>
   );
 };

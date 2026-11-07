@@ -19,7 +19,7 @@ The name in two languages, each on four lines, drawn once and never retyped.
 - Color is one hue: `crimson-700` wordmarks on light grounds; white on crimson and ink (the reversed files: white symbol and white wordmark).
 - Text is outlined in the files, so no fonts are needed. Line breaks, spacing and proportions are fixed.
 - Below about 9 px cap height the four lines stop being legible: use the Bookmark alone.
-- The wordmark alone, in the carousel's language, closes every carousel.
+- The wordmark alone closes every carousel, English then Arabic.
 - Never set the wordmark in ink, retype it, re-break its lines or set it on one line.
 
 ## Lockups

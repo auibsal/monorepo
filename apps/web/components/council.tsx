@@ -17,22 +17,27 @@ interface CouncilProps {
  * English.
  */
 export interface CouncilSeat {
+  /** Every holder chose the feminine Arabic form (decisions §13). */
+  feminine?: boolean | null;
   holders_ar: string[] | null;
   holders_en: string[] | null;
   seat: string;
 }
 
 /**
- * The Council's six seats (owner, Nov 5, 2026): three officers and three
- * directors, each by its full title (`titles`, from the messages), with
- * whoever holds it or "Open".
+ * The Council's seats, each by its full title (`titles`, from the
+ * messages; in Arabic, the feminine form where its holder chose it,
+ * decisions §13), with whoever holds it or "Open".
  */
 export const CouncilSeats = ({
+  feminineTitles = {},
   locale,
   open,
   seats,
   titles,
 }: {
+  /** The seats' titles for a woman holding them, used where she chose it. */
+  readonly feminineTitles?: Readonly<Record<string, string>>;
   readonly locale: string;
   readonly open: string;
   readonly seats: readonly CouncilSeat[];
@@ -49,7 +54,11 @@ export const CouncilSeats = ({
           className="grid content-start gap-1 border-line border-t py-space-4"
           key={seat.seat}
         >
-          <p className="type-label">{titles[seat.seat] ?? seat.seat}</p>
+          <p className="type-label">
+            {(seat.feminine ? feminineTitles[seat.seat] : null) ??
+              titles[seat.seat] ??
+              seat.seat}
+          </p>
           <p
             className={
               holders.length > 0

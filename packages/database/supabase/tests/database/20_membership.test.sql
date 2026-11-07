@@ -199,16 +199,17 @@ insert into membership.activity_records (user_id, kind, occurred_at, note) value
   -- Student: two this academic year → voting member.
   ('00000000-0000-0000-0000-0000000000a1', 'check_in', now() - interval '1 day', 'A reading'),
   ('00000000-0000-0000-0000-0000000000a1', 'check_in', greatest(private.academic_year_start()::timestamptz + interval '1 day', now() - interval '2 days'), 'A general meeting'),
-  -- Second: one this year and one in the year before → not.
+  -- Second: one this month and one 13 months ago → not (decisions §2:
+  -- two in the 12 months before the record date).
   ('00000000-0000-0000-0000-0000000000a2', 'check_in', now() - interval '1 day', 'A reading'),
-  ('00000000-0000-0000-0000-0000000000a2', 'check_in', private.academic_year_start()::timestamptz - interval '10 days', 'A general meeting');
+  ('00000000-0000-0000-0000-0000000000a2', 'check_in', now() - interval '13 months', 'A general meeting');
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a1');
-select ok(membership.is_voting_member(), 'Two events or meetings this academic year make a voting member');
-select is(membership.activity_count(), 2, 'The count covers the academic year');
+select ok(membership.is_voting_member(), 'Two events or meetings in the last 12 months make a voting member');
+select is(membership.activity_count(), 2, 'The count covers the 12 months before the record date');
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a2');
-select ok(not membership.is_voting_member(), 'An event from the year before does not count');
+select ok(not membership.is_voting_member(), 'An event more than 12 months ago does not count');
 select is(
   membership.is_voting_member('00000000-0000-0000-0000-0000000000a1'),
   null,

@@ -76,6 +76,9 @@ const GovernancePage = async ({ params }: LocaleParams) => {
           <p className="type-body">{t("councilEmpty")}</p>
         ) : (
           <CouncilSeats
+            feminineTitles={Object.fromEntries(
+              SEATS.map((key) => [key, t(`seatsFeminine.${key}`)])
+            )}
             locale={locale}
             open={t("seatOpen")}
             seats={council}

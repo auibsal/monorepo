@@ -40,7 +40,7 @@ export const PostsEnglish: Story = {
         lede="Poems, stories, essays, photographs and drawings."
       />
       <SocialPost
-        date="Thursday, November 19 · 6:00 PM"
+        date="Thursday, November 19 · 6:00 p.m."
         ground="white"
         headline={<>Next Stop, the premiere.</>}
         lede="Episode one of the campus series, filmed on the AUIB bus."
@@ -83,80 +83,134 @@ export const PostsArabic: Story = {
   ),
 };
 
-const slides = {
-  ar: [
-    [
+/**
+ * "What's on this spring" (decisions §6, §7): the term calendar, posted
+ * once as a carousel. One carousel, each English slide followed by the
+ * same slide in Arabic; there is no standing weekly post, and each event
+ * gets its own post once its room is confirmed.
+ */
+const springSlides = [
+  {
+    ar: [
       "01",
-      "اختر قسمًا.",
-      "الأدب أو المعرض: قصيدة أو قصة أو مقالة أو صورة أو رسم.",
+      "الاجتماعات العامة.",
+      "أيام الأربعاء، 2:15–3:00 م: 17 شباط، 3 و17 و31 آذار، 14 و28 نيسان، 12 أيار.",
     ],
-    ["02", "أرسل عملك.", "من حسابك على auibsal.org، قبل 3 كانون الأول."],
-  ],
-  en: [
-    [
+    en: [
       "01",
-      "Choose a desk.",
-      "Letters or Gallery: a poem, a story, an essay, a photograph, a drawing.",
+      "General meetings.",
+      "Wednesdays, 2:15–3:00 p.m.: February 17; March 3, 17 and 31; April 14 and 28; May 12.",
     ],
-    [
+  },
+  {
+    ar: [
       "02",
-      "Send your work.",
-      "From your account on auibsal.org, by December 3.",
+      "الاجتماع التأسيسي.",
+      "الثلاثاء 30 آذار، 2:30–4:00 م. يصوّت فيه الأعضاء على الدستور.",
     ],
-  ],
-} as const;
+    en: [
+      "02",
+      "The Founding Meeting.",
+      "Tuesday, March 30, 2:30–4:00 p.m. Members vote on the Constitution.",
+    ],
+  },
+  {
+    ar: ["03", "جولة الآلة الكاتبة.", "في أسبوع معرض الأندية في الربيع."],
+    en: ["03", "The Typewriter Tour.", "In the spring club fair week."],
+  },
+] as const;
 
-const Carousel = ({ lang }: { lang: "ar" | "en" }) => {
-  const ar = lang === "ar";
-  const dir = ar ? "rtl" : "ltr";
-  return (
+const Slide = ({
+  body,
+  lang,
+  num,
+  title,
+}: {
+  body: string;
+  lang: "ar" | "en";
+  num: string;
+  title: string;
+}) => (
+  <div
+    className="sal-post sal-post--white"
+    dir={lang === "ar" ? "rtl" : "ltr"}
+    lang={lang}
+  >
+    <div className="sal-post__frame">
+      <p className="sal-post__num">{num}</p>
+      <h3 className="sal-post__title">{title}</h3>
+      <p className="sal-post__body">{body}</p>
+    </div>
+  </div>
+);
+
+const Wordmark = ({ lang }: { lang: "ar" | "en" }) => (
+  <div
+    className="sal-post sal-post--white sal-post--end"
+    dir={lang === "ar" ? "rtl" : "ltr"}
+    lang={lang}
+  >
+    <div className="sal-post__frame">
+      {/* biome-ignore lint/performance/noImgElement: the wordmark as supplied */}
+      <img
+        alt={
+          lang === "ar"
+            ? "جمعية الفنون والآداب"
+            : "AUIB Society of Arts and Letters"
+        }
+        className="sal-post__wordmark"
+        height={520}
+        src={
+          lang === "ar"
+            ? "brand/sal-wordmark-ar.svg"
+            : "brand/sal-wordmark-en.svg"
+        }
+        width={lang === "ar" ? 515 : 514}
+      />
+    </div>
+  </div>
+);
+
+/** The cover, the numbered slides and the wordmark: English, then Arabic. */
+export const WhatsOnThisSpring: Story = {
+  name: "Carousel: What's on this spring",
+  render: () => (
     <div className={grid}>
       <SocialPost
-        date={ar ? "حتى 3 كانون الأول" : "Until December 3"}
+        date="Spring 2027"
         ground="white"
-        headline={ar ? <>كيف تشارك.</> : <>How to submit.</>}
-        lang={lang}
-        lede={ar ? "قرطاس، الإصدار الأول." : "Qirtas, Edition 1."}
+        headline={<>What’s on this spring.</>}
+        lang="en"
+        lede="Rooms and each event’s own post follow on auibsal.org/events."
       />
-      {slides[lang].map(([num, title, body]) => (
-        <div
-          className="sal-post sal-post--white"
-          dir={dir}
-          key={num}
-          lang={lang}
-        >
-          <div className="sal-post__frame">
-            <p className="sal-post__num">{num}</p>
-            <h3 className="sal-post__title">{title}</h3>
-            <p className="sal-post__body">{body}</p>
-          </div>
-        </div>
-      ))}
-      <div
-        className="sal-post sal-post--white sal-post--end"
-        dir={dir}
-        lang={lang}
-      >
-        <div className="sal-post__frame">
-          {/* biome-ignore lint/performance/noImgElement: the wordmark as supplied */}
-          <img
-            alt={
-              ar ? "جمعية الفنون والآداب" : "AUIB Society of Arts and Letters"
-            }
-            className="sal-post__wordmark"
-            height={520}
-            src={ar ? "brand/sal-wordmark-ar.svg" : "brand/sal-wordmark-en.svg"}
-            width={ar ? 515 : 514}
-          />
-        </div>
-      </div>
+      <SocialPost
+        date="ربيع 2027"
+        ground="white"
+        headline={<>ما يجري هذا الربيع.</>}
+        lang="ar"
+        lede="القاعات ومنشور كل فعالية تتبع على auibsal.org/events."
+      />
+      {springSlides.flatMap((slide) => [
+        <Slide
+          body={slide.en[2]}
+          key={`${slide.en[0]}-en`}
+          lang="en"
+          num={slide.en[0]}
+          title={slide.en[1]}
+        />,
+        <Slide
+          body={slide.ar[2]}
+          key={`${slide.ar[0]}-ar`}
+          lang="ar"
+          num={slide.ar[0]}
+          title={slide.ar[1]}
+        />,
+      ])}
+      <Wordmark lang="en" />
+      <Wordmark lang="ar" />
     </div>
-  );
+  ),
 };
-
-/** A cover post, numbered inside slides and the wordmark alone at the end. */
-export const CarouselEnglish: Story = { render: () => <Carousel lang="en" /> };
-export const CarouselArabic: Story = { render: () => <Carousel lang="ar" /> };
 
 const StoryFrame = ({ lang }: { lang: "ar" | "en" }) => {
   const ar = lang === "ar";

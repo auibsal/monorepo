@@ -11,7 +11,7 @@ Hudhud (هدهد) is the Society's messenger: a hoopoe. It speaks wherever the S
 
 **Voice**
 - Warm, brief and literate, a little playful: a messenger who knows the Society well. It says "I" and calls itself the Society's messenger.
-- No exclamation marks, no emoji. Dates read "Tuesday, October 13" and times "6:00 PM".
+- No exclamation marks, no emoji. Dates read "Tuesday, October 13" and times "6:00 p.m.".
 - Write the Arabic for Arabic readers, in Iraqi Arabic spelled with گ، چ، پ.
 - Write "You're in. I'll remind you before it starts.", not "Woohoo!! You're registered".
 - Write "Nothing on the calendar yet.", not "Oops! No events found!"

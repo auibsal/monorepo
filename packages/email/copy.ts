@@ -495,12 +495,37 @@ export const personalEmailConfirm = (lang: Lang, confirm: string) =>
 const SOCIETY_AR = "جمعية الفنون والآداب في الجامعة الأمريكية في بغداد";
 
 /** A partner invitation's heading and first lines, by kind and language. */
+type InvitationKind = "team" | "guest" | "society" | "associate" | "honorary";
+
 const invitationLines = (
   l: Lang,
-  kind: "team" | "guest" | "society",
+  kind: InvitationKind,
   partner: string
 ): { body: string; heading: string } => {
-  // The Society's own guest, invited by Membership (owner, Oct 31, 2026).
+  // Joining by class (decisions §2): from the Director of Membership.
+  if (kind === "associate") {
+    return l === "ar"
+      ? {
+          body: `تدعوك ${SOCIETY_AR} لتكون عضوًا منتسبًا: تحضر الفعاليات وتكتب لقرطاس وتحمل بطاقة العضوية الحيّة. لا يصوّت العضو المنتسب ولا يشغل منصبًا.`,
+          heading: "أنت مدعو عضوًا منتسبًا",
+        }
+      : {
+          body: "The AUIB Society of Arts and Letters invites you to join as an Associate Member: you come to events, write for Qirtas and carry the live membership card. Associate Members don’t vote or hold office.",
+          heading: "You are invited to join as an Associate Member",
+        };
+  }
+  if (kind === "honorary") {
+    return l === "ar"
+      ? {
+          body: `صوّت مجلس ${SOCIETY_AR} على دعوتك عضوًا فخريًا. تحضر الفعاليات وتكتب لقرطاس وتحمل بطاقة العضوية الحيّة.`,
+          heading: "أنت مدعو عضوًا فخريًا",
+        }
+      : {
+          body: "The Council of the AUIB Society of Arts and Letters has voted to invite you to join as an Honorary Member. You come to events, write for Qirtas and carry the live membership card.",
+          heading: "You are invited to join as an Honorary Member",
+        };
+  }
+  // The Society's own guest, invited by an event's lead.
   if (kind === "society") {
     return l === "ar"
       ? {
@@ -541,7 +566,7 @@ const invitationLines = (
 export const partnerInvitation = (
   lang: Lang,
   partner: string,
-  kind: "team" | "guest" | "society",
+  kind: InvitationKind,
   link: string
 ) =>
   build(lang, (l) => ({
@@ -684,12 +709,12 @@ export const removalRequested = (
   overdue = false
 ) =>
   build(lang, (l) => ({
-    action: diwan(app, l, "/programs"),
+    action: diwan(app, l, "/media"),
     heading: removalHeading[overdue ? "overdue" : "new"][l],
     paragraphs: [
       l === "ar"
-        ? `يجب الحذف قبل ${when(r.due_at, l)} (السياسة 5.3: خلال 24 ساعة، دون الحاجة إلى أسباب).`
-        : `Take it down by ${when(r.due_at, l)} (Policy 5.3: within 24 hours, no reasons needed).`,
+        ? `ما يشير إليه الطلب على الموقع مخفيّ الآن. قرّر قبل ${when(r.due_at, l)} (خلال يومَي عمل، MEM-02): احذفه من قنوات الجمعية أو ارفض الطلب مع ذكر السبب.`
+        : `What the request points to on the site is hidden now. Decide by ${when(r.due_at, l)} (two business days, MEM-02): take it down from the Society’s channels or decline with a reason.`,
       `${r.requester_name} <${r.requester_email}>`,
       ...(r.content_url ? [r.content_url] : []),
       r.details,
@@ -701,8 +726,8 @@ export const removalReceived = (lang: Lang, dueAt: string) =>
     heading: l === "ar" ? "وصلنا طلب الحذف" : "We have your removal request",
     paragraphs: [
       l === "ar"
-        ? `سيُحذف المحتوى خلال 24 ساعة، قبل ${when(dueAt, l)}، وسنكتب إليك عند الانتهاء.`
-        : `It comes down within 24 hours, by ${when(dueAt, l)}, and we'll write to you when it's done.`,
+        ? `أُخفي ما أشرت إليه على الموقع. وبحلول ${when(dueAt, l)} نحذفه من قنوات الجمعية أو نكتب إليك بالسبب.`
+        : `What you pointed to on the site is hidden now. By ${when(dueAt, l)} we take it down from the Society’s channels or write to you with a reason.`,
     ],
   }));
 
@@ -1461,6 +1486,8 @@ const typedLine = (l: Lang, station: string, words: string | undefined) => {
 
 /** Who signs the invitation: the President, with their signature. */
 export interface InvitationSigner {
+  /** The holder chose the feminine Arabic form of the title (§13). */
+  feminine?: boolean;
   /** The signature as an image (`/api/email/signature`), when there is one. */
   image?: string;
   name: string;
@@ -1477,7 +1504,7 @@ const presidentSignoff = (
         name: signer.name,
         title:
           l === "ar"
-            ? "رئيس جمعية الفنون والآداب"
+            ? `${signer.feminine ? "رئيسة" : "رئيس"} جمعية الفنون والآداب`
             : "President, AUIB Society of Arts and Letters",
       }
     : undefined;

@@ -105,6 +105,8 @@ export const serviceLetterCopy: Record<
     greeting: string;
     qr: string;
     signerRole: string;
+    /** The seat for a signer who chose the feminine form (decisions §13). */
+    signerRoleFeminine: string;
     subject: string;
   }
 > = {
@@ -116,6 +118,7 @@ export const serviceLetterCopy: Record<
     greeting: "إلى من يهمه الأمر،",
     qr: "امسح الرمز للتحقق من هذه الرسالة",
     signerRole: "مدير العضوية",
+    signerRoleFeminine: "مديرة العضوية",
     subject: "رسالة خدمة",
   },
   en: {
@@ -126,6 +129,7 @@ export const serviceLetterCopy: Record<
     greeting: "To whom it may concern:",
     qr: "Scan to check this letter",
     signerRole: "Director of Membership",
+    signerRoleFeminine: "Director of Membership",
     subject: "Service letter",
   },
 };

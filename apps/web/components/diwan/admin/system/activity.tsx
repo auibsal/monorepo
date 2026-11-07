@@ -47,7 +47,6 @@ const THINGS = {
   "journal.decisions": "qirtas",
   "journal.issues": "qirtas",
   "journal.pieces": "qirtas",
-  "journal.puzzles": "qirtas",
   "membership.activity_records": "membership",
   "membership.certificates": "qirtas",
   "membership.guests": "membership",

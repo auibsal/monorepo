@@ -95,7 +95,7 @@ as $$
 $$;
 -- </preamble>
 
-select plan(14);
+select plan(18);
 
 select pg_temp.make_user('00000000-0000-0000-0000-0000000f0a01', 'prize-writer@auib.edu.iq', 'Prize Writer');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000f0a02', 'prize-voter@auib.edu.iq', 'Prize Voter');
@@ -114,8 +114,8 @@ insert into membership.activity_records (user_id, kind, occurred_at, note) value
   ('00000000-0000-0000-0000-0000000f0a02', 'check_in',
    greatest(private.academic_year_start()::timestamptz + interval '1 day', now() - interval '2 days'), 'A general meeting');
 
-insert into journal.contributors (id, slug, name_en, name_ar, user_id) values
-  ('c0000000-0000-0000-0000-0000000f0c01', 'prize-writer', 'Prize Writer', 'كاتب', '00000000-0000-0000-0000-0000000f0a01');
+insert into journal.contributors (id, slug, name_en, name_ar, user_id, is_pen_name) values
+  ('c0000000-0000-0000-0000-0000000f0c01', 'prize-writer', 'Night Owl', 'بومة الليل', '00000000-0000-0000-0000-0000000f0a01', true);
 insert into journal.pieces (id, slug, category, language, title_en, title_ar, status, published_at, contributor_id) values
   ('d0000000-0000-0000-0000-0000000f0d01', 'prize-poem', 'poetry', 'en', 'A Poem', 'قصيدة', 'published',
    now() - interval '3 days', 'c0000000-0000-0000-0000-0000000f0c01'),
@@ -143,6 +143,19 @@ values ('f0000000-0000-0000-0000-0000000f0f02', 'e0000000-0000-0000-0000-0000000
   'Summer Rain', 'Sara A., Baghdad High');
 update journal.prize_entries set judge_score = 80 where id = 'f0000000-0000-0000-0000-0000000f0f01';
 update journal.prize_entries set judge_score = 90 where id = 'f0000000-0000-0000-0000-0000000f0f02';
+
+-- Recusal (decisions §5): whoever is connected to a work steps aside.
+insert into journal.prize_recusals (entry_id, reason)
+values ('f0000000-0000-0000-0000-0000000f0f02', 'Taught the student');
+select throws_ok(
+  $$ update journal.prize_entries set judge_score = 95 where id = 'f0000000-0000-0000-0000-0000000f0f02' $$,
+  '42501', 'recused', 'A recused officer doesn''t score the work'
+);
+select throws_ok(
+  $$ insert into journal.prize_recusals (entry_id, user_id)
+     values ('f0000000-0000-0000-0000-0000000f0f01', '00000000-0000-0000-0000-0000000f0a02') $$,
+  '42501', null, 'and nobody recuses someone else'
+);
 
 -- Members don't read rounds or shortlists before the results.
 select pg_temp.login_as('00000000-0000-0000-0000-0000000f0a02');
@@ -215,6 +228,17 @@ select is(
   (select byline_en from journal.prize_results('e0000000-0000-0000-0000-0000000f0e01') where category = 'qalam'),
   'Sara A., Baghdad High',
   'with the Qalam student named'
+);
+select is(
+  (select byline_en from journal.prize_results('e0000000-0000-0000-0000-0000000f0e01') where category = 'qirtas'),
+  'Night Owl', 'A pen-name winner shows the pen name'
+);
+select pg_temp.logout();
+update journal.prize_entries set winner_named = true where id = 'f0000000-0000-0000-0000-0000000f0f01';
+select pg_temp.login_anon();
+select is(
+  (select byline_en from journal.prize_results('e0000000-0000-0000-0000-0000000f0e01') where category = 'qirtas'),
+  'Prize Writer', 'unless the winner chose to be named'
 );
 
 select * from finish();

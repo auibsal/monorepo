@@ -22,6 +22,7 @@ export const invitationSigner = async (
   const president = await presidentSigner(admin);
   return president
     ? {
+        feminine: president.feminine,
         image: `${api("/email/signature")}?seat=president&date=${day}`,
         name: president.name,
       }

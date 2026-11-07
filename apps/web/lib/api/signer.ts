@@ -4,6 +4,8 @@ import type { AdminClient } from "@repo/database/admin";
 
 /** Who signs the Society's letters by email: today's President. */
 export interface Signer {
+  /** Chose the feminine Arabic form of the title (decisions §13). */
+  readonly feminine: boolean;
   readonly name: string;
   readonly number: number | null;
 }
@@ -12,9 +14,10 @@ export interface Signer {
  * The person holding the President's seat today (global role, in force)
  * and their card number: the name and number their signature shows.
  */
-export const presidentSigner = async (
+/** Who holds the President's seat today (global role, in force). */
+export const presidentId = async (
   admin: AdminClient
-): Promise<Signer | null> => {
+): Promise<string | null> => {
   const now = new Date().toISOString();
   const { data: seat } = await admin
     .schema("access")
@@ -27,23 +30,36 @@ export const presidentSigner = async (
     .order("starts_at", { ascending: false })
     .limit(1)
     .maybeSingle();
-  if (!seat) {
+  return seat?.user_id ?? null;
+};
+
+export const presidentSigner = async (
+  admin: AdminClient
+): Promise<Signer | null> => {
+  const userId = await presidentId(admin);
+  if (!userId) {
     return null;
   }
   const [{ data: profile }, { data: card }] = await Promise.all([
     admin
       .schema("core")
       .from("profiles")
-      .select("full_name_en")
-      .eq("id", seat.user_id)
+      .select("full_name_en, title_form")
+      .eq("id", userId)
       .maybeSingle(),
     admin
       .schema("membership")
       .from("cards")
       .select("number")
-      .eq("user_id", seat.user_id)
+      .eq("user_id", userId)
       .maybeSingle(),
   ]);
   const name = profile?.full_name_en?.trim();
-  return name ? { name, number: card?.number ?? null } : null;
+  return name
+    ? {
+        feminine: profile?.title_form === "feminine",
+        name,
+        number: card?.number ?? null,
+      }
+    : null;
 };

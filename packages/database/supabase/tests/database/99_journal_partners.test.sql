@@ -191,11 +191,10 @@ select lives_ok(
        '00000000-0000-0000-0000-00000000d001', 'poetry', 'en', 'Through the hub', '<p>Text</p>', true, true) $$,
   'and submits through the partner'
 );
-select throws_ok(
+select lives_ok(
   $$ insert into journal.submissions (call_id, category, language, title, body_html, human_authorship_confirmed, first_publication_confirmed)
-     values ('ca000000-0000-0000-0000-000000000001', 'fiction', 'en', 'No pathway', '<p>Text</p>', true, true) $$,
-  '42501', null,
-  'but not without naming the partner'
+     values ('ca000000-0000-0000-0000-000000000001', 'fiction', 'en', 'As a guest', '<p>Text</p>', true, true) $$,
+  'and, as a guest, also writes for Qirtas directly (decisions §2)'
 );
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a5');

@@ -302,6 +302,7 @@ export const LetterStory: Story = {
       foot="hello@auibsal.org · auibsal.org"
       greeting="Dear Ms. Hassan:"
       recipient={["Lina Hassan", "American University of Iraq – Baghdad"]}
+      reference="LTR-2026-001"
       signer={{ name: "Yaqoob Ghassan Al-Azzawi", role: "General Secretary" }}
       subject="Service letter"
       verify={{
@@ -334,6 +335,7 @@ export const LetterArabic: Story = {
         greeting="السيدة لينا حسن المحترمة،"
         locale="ar"
         recipient={["لينا حسن", "الجامعة الأمريكية في العراق – بغداد"]}
+        reference="LTR-2026-001"
         signer={{ name: "يعقوب غسان العزاوي", role: "الأمين العام" }}
         subject="رسالة خدمة"
         verify={{
@@ -361,15 +363,16 @@ export const MembershipCardStory: Story = {
   render: () => (
     <MembershipCard
       classLabel="Member"
-      labels={{ class: "Class", number: "Member no.", qr: "Check this card" }}
+      labels={{ class: "Class", number: "No.", qr: "Check this card" }}
       locale="en"
       name="Lina Hassan"
       number={42}
+      office="Editor-in-Chief"
       qr={{
         left: 0.6,
         value: "https://auibsal.org/verify/member/k3m9q2?t=12345678",
       }}
-      since="Member since November 2026"
+      since="Since 2026"
       title="Membership card"
     />
   ),
@@ -384,17 +387,18 @@ export const MembershipCardArabic: Story = {
         classLabel="عضو"
         labels={{
           class: "الفئة",
-          number: "رقم العضوية",
+          number: "الرقم",
           qr: "تحقّق من البطاقة",
         }}
         locale="ar"
         name="لينا حسن"
         number={42}
+        office="رئيس التحرير"
         qr={{
           left: 0.6,
           value: "https://auibsal.org/ar/verify/member/k3m9q2?t=12345678",
         }}
-        since="عضو منذ تشرين الثاني 2026"
+        since="منذ 2026"
         title="بطاقة العضوية"
       />
     </div>
@@ -415,7 +419,7 @@ export const CertificateStory: Story = {
       seal={{
         code: "SAL-EDT · Mutanabbi Prize",
         qrLabel: "Scan to check this certificate",
-        serial: "SAL-2028-001",
+        serial: "CERT-2028-001",
         verifyUrl: "https://auibsal.org/verify/a1b2c3d4e5f6",
       }}
       signers={[
@@ -442,7 +446,7 @@ export const CertificateArabic: Story = {
       seal={{
         code: "SAL-EDT · قلم",
         qrLabel: "امسح الرمز للتحقق من هذه الشهادة",
-        serial: "SAL-2028-002",
+        serial: "CERT-2028-002",
         verifyUrl: "https://auibsal.org/ar/verify/b2c3d4e5f6a1",
       }}
       signers={[

@@ -153,6 +153,7 @@ export type Database = {
           is_council: boolean;
           key: string;
           name_ar: string;
+          name_ar_feminine: string | null;
           name_en: string;
           requires_mfa: boolean;
           sort: number;
@@ -163,6 +164,7 @@ export type Database = {
           is_council?: boolean;
           key: string;
           name_ar: string;
+          name_ar_feminine?: string | null;
           name_en: string;
           requires_mfa?: boolean;
           sort?: number;
@@ -173,6 +175,7 @@ export type Database = {
           is_council?: boolean;
           key?: string;
           name_ar?: string;
+          name_ar_feminine?: string | null;
           name_en?: string;
           requires_mfa?: boolean;
           sort?: number;
@@ -454,6 +457,24 @@ export type Database = {
         };
         Relationships: [];
       };
+      code_counters: {
+        Row: {
+          last: number;
+          prefix: string;
+          year: number;
+        };
+        Insert: {
+          last?: number;
+          prefix: string;
+          year: number;
+        };
+        Update: {
+          last?: number;
+          prefix?: string;
+          year?: number;
+        };
+        Relationships: [];
+      };
       external_events: {
         Row: {
           all_day: boolean;
@@ -630,6 +651,7 @@ export type Database = {
       };
       profiles: {
         Row: {
+          agreed_at: string | null;
           avatar_path: string | null;
           bio: string | null;
           camera_shy: boolean;
@@ -650,10 +672,12 @@ export type Database = {
           personal_email: string | null;
           personal_email_verified_at: string | null;
           setup_completed_at: string | null;
+          title_form: string | null;
           updated_at: string;
           verified_at: string | null;
         };
         Insert: {
+          agreed_at?: string | null;
           avatar_path?: string | null;
           bio?: string | null;
           camera_shy?: boolean;
@@ -674,10 +698,12 @@ export type Database = {
           personal_email?: string | null;
           personal_email_verified_at?: string | null;
           setup_completed_at?: string | null;
+          title_form?: string | null;
           updated_at?: string;
           verified_at?: string | null;
         };
         Update: {
+          agreed_at?: string | null;
           avatar_path?: string | null;
           bio?: string | null;
           camera_shy?: boolean;
@@ -698,6 +724,7 @@ export type Database = {
           personal_email?: string | null;
           personal_email_verified_at?: string | null;
           setup_completed_at?: string | null;
+          title_form?: string | null;
           updated_at?: string;
           verified_at?: string | null;
         };
@@ -1093,6 +1120,7 @@ export type Database = {
         Returns: {
           notify_email: boolean;
           personal_email: string;
+          title_form: string;
         }[];
       };
       outbox_health: {
@@ -1256,6 +1284,32 @@ export type Database = {
             columns: ["rsvp_id"];
             isOneToOne: false;
             referencedRelation: "rsvps";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      debriefs: {
+        Row: {
+          event_id: string;
+          updated_at: string;
+          url: string;
+        };
+        Insert: {
+          event_id: string;
+          updated_at?: string;
+          url: string;
+        };
+        Update: {
+          event_id?: string;
+          updated_at?: string;
+          url?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "debriefs_event_id_fkey";
+            columns: ["event_id"];
+            isOneToOne: true;
+            referencedRelation: "events";
             referencedColumns: ["id"];
           },
         ];
@@ -1651,6 +1705,14 @@ export type Database = {
         }[];
       };
       confirmed_count: { Args: { event_id: string }; Returns: number };
+      event_host: {
+        Args: { event_slug: string };
+        Returns: {
+          name_ar: string;
+          name_en: string;
+          slug: string;
+        }[];
+      };
       find_attendee: {
         Args: { event_id: string; query: string };
         Returns: {
@@ -2395,10 +2457,12 @@ export type Database = {
           created_at: string;
           created_by: string | null;
           email: string | null;
+          event_id: string | null;
           expires_at: string;
           id: string;
           kind: string;
           partner_id: string | null;
+          resolution_id: string | null;
           revoked_at: string | null;
         };
         Insert: {
@@ -2408,10 +2472,12 @@ export type Database = {
           created_at?: string;
           created_by?: string | null;
           email?: string | null;
+          event_id?: string | null;
           expires_at?: string;
           id?: string;
           kind: string;
           partner_id?: string | null;
+          resolution_id?: string | null;
           revoked_at?: string | null;
         };
         Update: {
@@ -2421,10 +2487,12 @@ export type Database = {
           created_at?: string;
           created_by?: string | null;
           email?: string | null;
+          event_id?: string | null;
           expires_at?: string;
           id?: string;
           kind?: string;
           partner_id?: string | null;
+          resolution_id?: string | null;
           revoked_at?: string | null;
         };
         Relationships: [
@@ -2433,6 +2501,13 @@ export type Database = {
             columns: ["partner_id"];
             isOneToOne: false;
             referencedRelation: "partners";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "partner_invitations_resolution_id_fkey";
+            columns: ["resolution_id"];
+            isOneToOne: false;
+            referencedRelation: "resolutions";
             referencedColumns: ["id"];
           },
         ];
@@ -2572,7 +2647,7 @@ export type Database = {
         Row: {
           adopted_on: string | null;
           body: string;
-          code: string;
+          code: string | null;
           created_at: string;
           created_by: string | null;
           id: string;
@@ -2590,7 +2665,7 @@ export type Database = {
         Insert: {
           adopted_on?: string | null;
           body?: string;
-          code: string;
+          code?: string | null;
           created_at?: string;
           created_by?: string | null;
           id?: string;
@@ -2608,7 +2683,7 @@ export type Database = {
         Update: {
           adopted_on?: string | null;
           body?: string;
-          code?: string;
+          code?: string | null;
           created_at?: string;
           created_by?: string | null;
           id?: string;
@@ -2777,6 +2852,7 @@ export type Database = {
       council_seats: {
         Args: Record<PropertyKey, never>;
         Returns: {
+          feminine: boolean;
           holders_ar: string[];
           holders_en: string[];
           seat: string;
@@ -3427,6 +3503,33 @@ export type Database = {
           },
         ];
       };
+      game_checks: {
+        Row: {
+          checked_at: string;
+          checked_by: string | null;
+          flagged: boolean;
+          game_day: number;
+          lang: string;
+          note: string | null;
+        };
+        Insert: {
+          checked_at?: string;
+          checked_by?: string | null;
+          flagged?: boolean;
+          game_day: number;
+          lang: string;
+          note?: string | null;
+        };
+        Update: {
+          checked_at?: string;
+          checked_by?: string | null;
+          flagged?: boolean;
+          game_day?: number;
+          lang?: string;
+          note?: string | null;
+        };
+        Relationships: [];
+      };
       issues: {
         Row: {
           cover_path: string | null;
@@ -3901,6 +4004,7 @@ export type Database = {
           qalam_byline: string | null;
           qalam_title: string | null;
           round_id: string;
+          winner_named: boolean;
         };
         Insert: {
           category: string;
@@ -3912,6 +4016,7 @@ export type Database = {
           qalam_byline?: string | null;
           qalam_title?: string | null;
           round_id: string;
+          winner_named?: boolean;
         };
         Update: {
           category?: string;
@@ -3923,6 +4028,7 @@ export type Database = {
           qalam_byline?: string | null;
           qalam_title?: string | null;
           round_id?: string;
+          winner_named?: boolean;
         };
         Relationships: [
           {
@@ -3937,6 +4043,38 @@ export type Database = {
             columns: ["round_id"];
             isOneToOne: false;
             referencedRelation: "prize_rounds";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      prize_recusals: {
+        Row: {
+          created_at: string;
+          entry_id: string;
+          id: string;
+          reason: string | null;
+          user_id: string;
+        };
+        Insert: {
+          created_at?: string;
+          entry_id: string;
+          id?: string;
+          reason?: string | null;
+          user_id?: string;
+        };
+        Update: {
+          created_at?: string;
+          entry_id?: string;
+          id?: string;
+          reason?: string | null;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "prize_recusals_entry_id_fkey";
+            columns: ["entry_id"];
+            isOneToOne: false;
+            referencedRelation: "prize_entries";
             referencedColumns: ["id"];
           },
         ];
@@ -4040,60 +4178,6 @@ export type Database = {
             referencedColumns: ["id"];
           },
         ];
-      };
-      puzzles: {
-        Row: {
-          created_at: string;
-          created_by: string | null;
-          data: NonNullable<Json>;
-          id: string;
-          kind: string;
-          language: string;
-          made_with_ai: boolean;
-          note_ar: string | null;
-          note_en: string | null;
-          published_at: string | null;
-          slug: string;
-          status: string;
-          title_ar: string;
-          title_en: string;
-          updated_at: string;
-        };
-        Insert: {
-          created_at?: string;
-          created_by?: string | null;
-          data?: NonNullable<Json>;
-          id?: string;
-          kind: string;
-          language: string;
-          made_with_ai?: boolean;
-          note_ar?: string | null;
-          note_en?: string | null;
-          published_at?: string | null;
-          slug: string;
-          status?: string;
-          title_ar?: string;
-          title_en?: string;
-          updated_at?: string;
-        };
-        Update: {
-          created_at?: string;
-          created_by?: string | null;
-          data?: NonNullable<Json>;
-          id?: string;
-          kind?: string;
-          language?: string;
-          made_with_ai?: boolean;
-          note_ar?: string | null;
-          note_en?: string | null;
-          published_at?: string | null;
-          slug?: string;
-          status?: string;
-          title_ar?: string;
-          title_en?: string;
-          updated_at?: string;
-        };
-        Relationships: [];
       };
       saved_pieces: {
         Row: {
@@ -4463,6 +4547,7 @@ export type Database = {
       };
       cast_prize_vote: { Args: { entry_id: string }; Returns: undefined };
       check_prize_count: { Args: { round_id: string }; Returns: undefined };
+      coming_editions: { Args: Record<PropertyKey, never>; Returns: string[] };
       create_staff_piece: {
         Args: {
           category: Database["journal"]["Enums"]["category"];
@@ -4813,6 +4898,48 @@ export type Database = {
         };
         Relationships: [];
       };
+      associate_requests: {
+        Row: {
+          created_at: string;
+          decided_at: string | null;
+          decided_by: string | null;
+          email: string;
+          full_name: string;
+          id: string;
+          invitation_id: string | null;
+          note: string | null;
+          reason: string | null;
+          relation: string;
+          status: string;
+        };
+        Insert: {
+          created_at?: string;
+          decided_at?: string | null;
+          decided_by?: string | null;
+          email: string;
+          full_name: string;
+          id?: string;
+          invitation_id?: string | null;
+          note?: string | null;
+          reason?: string | null;
+          relation: string;
+          status?: string;
+        };
+        Update: {
+          created_at?: string;
+          decided_at?: string | null;
+          decided_by?: string | null;
+          email?: string;
+          full_name?: string;
+          id?: string;
+          invitation_id?: string | null;
+          note?: string | null;
+          reason?: string | null;
+          relation?: string;
+          status?: string;
+        };
+        Relationships: [];
+      };
       calendar_tokens: {
         Row: {
           created_at: string;
@@ -4954,6 +5081,33 @@ export type Database = {
         };
         Relationships: [];
       };
+      invitation_lists: {
+        Row: {
+          created_at: string;
+          sent_at: string | null;
+          source: string;
+          tested_at: string | null;
+          title_ar: string;
+          title_en: string;
+        };
+        Insert: {
+          created_at?: string;
+          sent_at?: string | null;
+          source: string;
+          tested_at?: string | null;
+          title_ar: string;
+          title_en: string;
+        };
+        Update: {
+          created_at?: string;
+          sent_at?: string | null;
+          source?: string;
+          tested_at?: string | null;
+          title_ar?: string;
+          title_en?: string;
+        };
+        Relationships: [];
+      };
       invitations: {
         Row: {
           created_at: string;
@@ -4994,7 +5148,15 @@ export type Database = {
           station?: string | null;
           words?: string | null;
         };
-        Relationships: [];
+        Relationships: [
+          {
+            foreignKeyName: "invitations_source_fkey";
+            columns: ["source"];
+            isOneToOne: false;
+            referencedRelation: "invitation_lists";
+            referencedColumns: ["source"];
+          },
+        ];
       };
       memberships: {
         Row: {
@@ -5057,12 +5219,14 @@ export type Database = {
           lang: string;
           period_from: string;
           period_to: string | null;
+          reference: string | null;
           revoke_reason: string | null;
           revoked_at: string | null;
           role_ar: string | null;
           role_en: string;
           signer_ar: string | null;
           signer_en: string | null;
+          signer_feminine: boolean;
           user_id: string;
           verification_code: string;
         };
@@ -5075,12 +5239,14 @@ export type Database = {
           lang?: string;
           period_from: string;
           period_to?: string | null;
+          reference?: string | null;
           revoke_reason?: string | null;
           revoked_at?: string | null;
           role_ar?: string | null;
           role_en: string;
           signer_ar?: string | null;
           signer_en?: string | null;
+          signer_feminine?: boolean;
           user_id: string;
           verification_code?: string;
         };
@@ -5093,12 +5259,14 @@ export type Database = {
           lang?: string;
           period_from?: string;
           period_to?: string | null;
+          reference?: string | null;
           revoke_reason?: string | null;
           revoked_at?: string | null;
           role_ar?: string | null;
           role_en?: string;
           signer_ar?: string | null;
           signer_en?: string | null;
+          signer_feminine?: boolean;
           user_id?: string;
           verification_code?: string;
         };
@@ -5234,6 +5402,10 @@ export type Database = {
         Returns: undefined;
       };
       activity_count: { Args: { uid?: string }; Returns: number };
+      add_invitations: {
+        Args: { list: string; people: Json };
+        Returns: number;
+      };
       calendar_token: { Args: Record<PropertyKey, never>; Returns: string };
       certificate_signers: {
         Args: { certificate_id: string };
@@ -5252,12 +5424,26 @@ export type Database = {
         Args: { kind: Database["membership"]["Enums"]["pledge_type"] };
         Returns: string;
       };
+      decide_associate_request: {
+        Args: { approve: boolean; request_id: string; why?: string };
+        Returns: undefined;
+      };
       decide_verification: {
         Args: { approve: boolean; note?: string; request_id: string };
         Returns: undefined;
       };
       has_current_pledges: { Args: { uid?: string }; Returns: boolean };
-      invitations_waiting: { Args: Record<PropertyKey, never>; Returns: Json };
+      invitation_list: {
+        Args: { list: string };
+        Returns: {
+          email: string;
+          first_name: string;
+          has_account: boolean;
+          joined_at: string;
+          sent_at: string;
+        }[];
+      };
+      invitations_waiting: { Args: { list: string }; Returns: Json };
       is_member: { Args: { uid?: string }; Returns: boolean };
       is_voting_member: { Args: { uid?: string }; Returns: boolean };
       members_directory: {
@@ -5280,6 +5466,14 @@ export type Database = {
           secret: string;
         }[];
       };
+      my_card_face: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          role_ar: string;
+          role_en: string;
+          since: number;
+        }[];
+      };
       my_membership: {
         Args: Record<PropertyKey, never>;
         Returns: {
@@ -5299,6 +5493,10 @@ export type Database = {
           verified: boolean;
           voting_member: boolean;
         }[];
+      };
+      record_departure: {
+        Args: { graduated: boolean; member: string };
+        Returns: string;
       };
       register: {
         Args: Record<PropertyKey, never>;
@@ -5324,6 +5522,7 @@ export type Database = {
           secret: string;
         }[];
       };
+      remove_invitation: { Args: { address: string }; Returns: boolean };
       reset_calendar_token: {
         Args: Record<PropertyKey, never>;
         Returns: string;
@@ -5332,7 +5531,7 @@ export type Database = {
         Args: { certificate_id: string; reason: string };
         Returns: undefined;
       };
-      send_invitations: { Args: Record<PropertyKey, never>; Returns: number };
+      send_invitations: { Args: { list: string }; Returns: number };
       service_hours: {
         Args: { on_date?: string; uid?: string };
         Returns: number;
@@ -5363,11 +5562,11 @@ export type Database = {
           full_name_en: string;
           kind: string;
           live: boolean;
-          member_since: string;
           number: number;
-          staff: boolean;
+          role_ar: string;
+          role_en: string;
+          since: number;
           tier: Database["membership"]["Enums"]["tier"];
-          voting: boolean;
         }[];
       };
       verify_certificate: {
@@ -5398,6 +5597,22 @@ export type Database = {
           revoked_at: string;
           role_ar: string;
           role_en: string;
+        }[];
+      };
+      wallet_card: {
+        Args: { uid: string };
+        Returns: {
+          code: string;
+          full_name_ar: string;
+          full_name_en: string;
+          kind: string;
+          locale: string;
+          number: number;
+          role_ar: string;
+          role_en: string;
+          secret: string;
+          since: number;
+          tier: Database["membership"]["Enums"]["tier"];
         }[];
       };
     };
@@ -6083,6 +6298,9 @@ export type Database = {
           details: string;
           due_at: string;
           handled_by: string | null;
+          hidden_id: string | null;
+          hidden_kind: string | null;
+          hidden_was: string | null;
           id: string;
           programme_id: string | null;
           requester_email: string;
@@ -6098,6 +6316,9 @@ export type Database = {
           details: string;
           due_at?: string;
           handled_by?: string | null;
+          hidden_id?: string | null;
+          hidden_kind?: string | null;
+          hidden_was?: string | null;
           id?: string;
           programme_id?: string | null;
           requester_email: string;
@@ -6113,6 +6334,9 @@ export type Database = {
           details?: string;
           due_at?: string;
           handled_by?: string | null;
+          hidden_id?: string | null;
+          hidden_kind?: string | null;
+          hidden_was?: string | null;
           id?: string;
           programme_id?: string | null;
           requester_email?: string;
@@ -6167,6 +6391,7 @@ export type Database = {
           role_en: string;
           skills: string[];
           starts_at: string;
+          station: boolean;
         };
         Insert: {
           capacity?: number;
@@ -6180,6 +6405,7 @@ export type Database = {
           role_en: string;
           skills?: string[];
           starts_at: string;
+          station?: boolean;
         };
         Update: {
           capacity?: number;
@@ -6193,11 +6419,13 @@ export type Database = {
           role_en?: string;
           skills?: string[];
           starts_at?: string;
+          station?: boolean;
         };
         Relationships: [];
       };
       six_words: {
         Row: {
+          associate_request_id: string | null;
           claimed_at: string | null;
           created_at: string;
           editor_status: string | null;
@@ -6208,11 +6436,14 @@ export type Database = {
           moderated_at: string | null;
           moderated_by: string | null;
           page_ref: string | null;
+          photo_path: string | null;
           publishable: boolean;
           recorded_by: string | null;
+          reference: string | null;
           show_name: boolean;
           station: string | null;
-          text: string;
+          station_shift_id: string | null;
+          text: string | null;
           tour: string | null;
           typed_on: string | null;
           updated_at: string;
@@ -6221,6 +6452,7 @@ export type Database = {
           writer_name: string | null;
         };
         Insert: {
+          associate_request_id?: string | null;
           claimed_at?: string | null;
           created_at?: string;
           editor_status?: string | null;
@@ -6231,11 +6463,14 @@ export type Database = {
           moderated_at?: string | null;
           moderated_by?: string | null;
           page_ref?: string | null;
+          photo_path?: string | null;
           publishable?: boolean;
           recorded_by?: string | null;
+          reference?: string | null;
           show_name?: boolean;
           station?: string | null;
-          text: string;
+          station_shift_id?: string | null;
+          text?: string | null;
           tour?: string | null;
           typed_on?: string | null;
           updated_at?: string;
@@ -6244,6 +6479,7 @@ export type Database = {
           writer_name?: string | null;
         };
         Update: {
+          associate_request_id?: string | null;
           claimed_at?: string | null;
           created_at?: string;
           editor_status?: string | null;
@@ -6254,11 +6490,14 @@ export type Database = {
           moderated_at?: string | null;
           moderated_by?: string | null;
           page_ref?: string | null;
+          photo_path?: string | null;
           publishable?: boolean;
           recorded_by?: string | null;
+          reference?: string | null;
           show_name?: boolean;
           station?: string | null;
-          text?: string;
+          station_shift_id?: string | null;
+          text?: string | null;
           tour?: string | null;
           typed_on?: string | null;
           updated_at?: string;
@@ -6266,7 +6505,15 @@ export type Database = {
           visibility?: string;
           writer_name?: string | null;
         };
-        Relationships: [];
+        Relationships: [
+          {
+            foreignKeyName: "six_words_station_shift_id_fkey";
+            columns: ["station_shift_id"];
+            isOneToOne: false;
+            referencedRelation: "shifts";
+            referencedColumns: ["id"];
+          },
+        ];
       };
     };
     Views: {
@@ -6306,6 +6553,7 @@ export type Database = {
         Args: { approve: boolean; entry_id: string };
         Returns: undefined;
       };
+      my_station_shift: { Args: Record<PropertyKey, never>; Returns: string };
       open_places: {
         Args: Record<PropertyKey, never>;
         Returns: {
@@ -6426,6 +6674,19 @@ export type Database = {
           language: string;
           text: string;
         }[];
+      };
+      station_attach: {
+        Args: {
+          card_code: string;
+          digits: string;
+          photo: string;
+          request_email: string;
+        };
+        Returns: string;
+      };
+      transcribe_page: {
+        Args: { lang: string; page_id: string; words: string };
+        Returns: undefined;
       };
     };
     Enums: {

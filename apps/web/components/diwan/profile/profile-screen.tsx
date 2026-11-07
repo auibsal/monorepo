@@ -29,6 +29,7 @@ export const ProfileScreen = () => {
     bio: "",
     camera_shy: false,
     names: { ar: names.emptyParts(), en: names.emptyParts() },
+    title_form: "" as "" | "masculine" | "feminine",
   });
 
   useEffect(() => {
@@ -40,6 +41,11 @@ export const ProfileScreen = () => {
           ar: names.partsFrom(profile.data, "ar"),
           en: names.partsFrom(profile.data, "en"),
         },
+        title_form:
+          profile.data.title_form === "feminine" ||
+          profile.data.title_form === "masculine"
+            ? profile.data.title_form
+            : "",
       });
     }
   }, [profile.data]);
@@ -56,6 +62,7 @@ export const ProfileScreen = () => {
           ...names.partsUpdate(form.names.ar, "ar"),
           bio: form.bio.trim() || null,
           camera_shy: form.camera_shy,
+          title_form: form.title_form || null,
         })
         .eq("id", user?.id ?? "");
       if (error) {
@@ -161,6 +168,29 @@ export const ProfileScreen = () => {
               </p>
             </div>
           </div>
+          {/* Optional (decisions §13): the Arabic form of a title that
+              names you, on the Council page, the masthead, your card and
+              letters. */}
+          <fieldset className="grid gap-2">
+            <legend className="mb-2 font-medium text-sm">
+              {t("profile.titleForm")}
+            </legend>
+            <p className="type-caption">{t("profile.titleFormHint")}</p>
+            {(["", "masculine", "feminine"] as const).map((value) => (
+              <label className="flex items-center gap-2" key={value || "unset"}>
+                <input
+                  checked={form.title_form === value}
+                  name={`${id}-title-form`}
+                  onChange={() => setForm((f) => ({ ...f, title_form: value }))}
+                  type="radio"
+                  value={value}
+                />
+                <span className="type-body">
+                  {t(`profile.titleForms.${value || "unset"}`)}
+                </span>
+              </label>
+            ))}
+          </fieldset>
           {save.isError ? (
             <p className="text-text" role="alert">
               {isNameTaken(save.error)

@@ -80,7 +80,6 @@ export const Posts: Story = {
       items={[
         { file: "1-qirtas-edition-call", name: "Qirtas: the Edition's call" },
         { file: "2-second-chapter", name: "Second Chapter" },
-        { file: "3-tuesdays", name: "Tuesdays" },
         { file: "4-come-in", name: "Come in" },
         { file: "5-get-involved", name: "Get involved" },
       ]}

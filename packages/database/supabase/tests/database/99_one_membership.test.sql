@@ -96,7 +96,7 @@ as $$
 $$;
 -- </preamble>
 
-select plan(29);
+select plan(32);
 
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a1', 'membership-om@auib.edu.iq', 'Membership');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a2', 'member-om@auib.edu.iq', 'Plain Member');
@@ -127,15 +127,19 @@ select results_eq(
   'A member without a role is not staff'
 );
 
--- ── The Society's own guests ────────────────────────────────────────────────
+-- ── One invitation system (decisions §10) ───────────────────────────────────
 select throws_ok(
-  $$ insert into governance.partner_invitations (kind, email) values ('guest', 'someone@example.org') $$,
-  '42501', null, 'A member without members.manage cannot invite the Society''s guests'
+  $$ insert into governance.partner_invitations (kind, email) values ('associate', 'someone@example.org') $$,
+  '42501', null, 'A member without members.manage cannot invite an Associate Member'
 );
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a1');
-select lives_ok(
+select throws_ok(
   $$ insert into governance.partner_invitations (kind, email) values ('guest', 'friend@example.org') $$,
-  'Membership invites a guest of the Society, with no partner'
+  null, null, 'There are no Society-wide guest invitations'
+);
+select lives_ok(
+  $$ insert into governance.partner_invitations (kind, email) values ('associate', 'linked@example.org') $$,
+  'Membership invites an Associate Member by name'
 );
 select throws_ok(
   $$ insert into governance.partner_invitations (kind, email) values ('guest', 'student@auib.edu.iq') $$,
@@ -143,19 +147,24 @@ select throws_ok(
 );
 select throws_ok(
   $$ insert into governance.partner_invitations (kind, email) values ('team', 'x@example.org') $$,
-  '23514', null, 'Only a partner has a team'
+  null, null, 'Only a partner has a team'
 );
-select lives_ok(
-  $$ insert into governance.partner_invitations (kind) values ('guest') $$,
-  'Membership makes a shareable link for guests'
+select throws_ok(
+  $$ insert into governance.partner_invitations (kind) values ('associate') $$,
+  null, null, 'There are no shareable links'
 );
 select pg_temp.logout();
+-- A guest an event's lead invited by name.
+insert into events.events (id, slug, title_en, title_ar, starts_at, status, entry)
+values ('00000000-0000-0000-0000-00000000e001', 'om-reading', 'Reading', 'قراءة', now() + interval '4 days', 'published', 'rsvp');
+insert into governance.partner_invitations (kind, email, event_id)
+values ('guest', 'friend@example.org', '00000000-0000-0000-0000-00000000e001');
 select set_config('test.friend', (select code from governance.partner_invitations where email = 'friend@example.org'), true);
-select set_config('test.link', (select code from governance.partner_invitations where partner_id is null and email is null), true);
+select set_config('test.assoc', (select code from governance.partner_invitations where email = 'linked@example.org'), true);
 
 select ok(
   private.sign_up_allowed('friend@example.org', jsonb_build_object('invitation', current_setting('test.friend'))),
-  'The Society''s invitation lets its address sign up'
+  'The invitation lets its address sign up'
 );
 select ok(
   not private.sign_up_allowed('other@example.org', jsonb_build_object('invitation', current_setting('test.friend'))),
@@ -166,7 +175,7 @@ select pg_temp.login_anon();
 select results_eq(
   $$ select partner_name_en, kind, usable from governance.partner_invitation(current_setting('test.friend')) $$,
   $$ values (null::text, 'guest'::text, true) $$,
-  'An invitation from the Society names no partner'
+  'An event''s guest invitation names no partner'
 );
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000b1');
@@ -174,12 +183,16 @@ select is(governance.accept_partner_invitation(current_setting('test.friend')), 
 select pg_temp.logout();
 select is(private.membership_kind('00000000-0000-0000-0000-0000000000b1'), 'guest', 'and is the Society''s guest at once');
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000b2');
-select is(governance.accept_partner_invitation(current_setting('test.link')), 'guest', 'A link from the Society welcomes its guest too');
+select is(governance.accept_partner_invitation(current_setting('test.assoc')), 'associate', 'An Associate Member accepts');
+select pg_temp.logout();
+select is(private.membership_kind('00000000-0000-0000-0000-0000000000b2'), 'member', 'and is a member');
+select is((select tier::text from membership.memberships where user_id = '00000000-0000-0000-0000-0000000000b2'), 'associate',
+  'of the Associate class');
 
 -- ── One kind only ───────────────────────────────────────────────────────────
-select pg_temp.login_as('00000000-0000-0000-0000-0000000000a2');
+select pg_temp.logout();
 select throws_ok(
-  $$ select governance.accept_partner_invitation(current_setting('test.link')) $$,
+  $$ insert into membership.guests (user_id) values ('00000000-0000-0000-0000-0000000000a2') $$,
   '42501', 'one_membership', 'A member cannot also be a guest'
 );
 select pg_temp.logout();
@@ -207,10 +220,11 @@ select pg_temp.login_as('00000000-0000-0000-0000-0000000000b1');
 select isnt((select number from membership.my_card()), null, 'A guest has the card');
 select pg_temp.logout();
 select set_config('test.card', (select code from membership.cards where user_id = '00000000-0000-0000-0000-0000000000b1'), true);
+select set_config('test.digits', (select private.totp(secret, floor(extract(epoch from now()) / 30)::bigint) from membership.cards where user_id = '00000000-0000-0000-0000-0000000000b1'), true);
 select pg_temp.login_anon();
 select results_eq(
-  $$ select kind, staff, active from membership.verify_card(current_setting('test.card')) $$,
-  $$ values ('guest'::text, false, true) $$,
+  $$ select kind, tier, active from membership.verify_card(current_setting('test.card'), current_setting('test.digits')) $$,
+  $$ values ('guest'::text, null::membership.tier, true) $$,
   'The check says the card is a guest''s'
 );
 

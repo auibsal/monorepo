@@ -60,8 +60,7 @@ test("an organization applies, the Council votes, and its dashboard opens", asyn
   ).toBeVisible();
 
   // The Council adopts its resolution at a meeting (its minutes and
-  // resolution, as the Diwan keeps them).
-  const code = `R-2026-${String(stamp % 1000).padStart(3, "0")}`;
+  // resolution, as the Diwan keeps them); the site numbers it on adoption.
   const { data: minutes } = await db
     .schema("governance")
     .from("minutes")
@@ -81,13 +80,16 @@ test("an organization applies, the Council votes, and its dashboard opens", asyn
     .insert({
       adopted_on: new Date().toISOString().slice(0, 10),
       body: "council",
-      code,
       minutes_id: minutes?.id ?? "",
       status: "adopted",
       text_en: "<p>Resolved.</p>",
       title_en: `Approves ${organization}`,
-    });
+    })
+    .select("code")
+    .single();
   expect(resolved.error).toBeNull();
+  const code = resolved.data?.code ?? "";
+  expect(code).toMatch(/^RES-\d{4}-\d{3}$/);
 
   // The President's two-step sign-in is set up afresh.
   const { data: users } = await db.auth.admin.listUsers({ perPage: 1000 });
@@ -113,11 +115,11 @@ test("an organization applies, the Council votes, and its dashboard opens", asyn
     .click();
   await signer.getByRole("option", { name: new RegExp(code) }).click();
   await signer
-    .getByRole("button", { name: "Record the Council’s vote" })
+    .getByRole("button", { name: "Countersign for the Society" })
     .click();
   await signer
     .getByRole("alertdialog")
-    .getByRole("button", { name: "Record the Council’s vote" })
+    .getByRole("button", { name: "Countersign for the Society" })
     .click();
   await expect(signer.getByText("No applications are waiting.")).toBeVisible();
 
@@ -168,6 +170,7 @@ test("an organization applies, the Council votes, and its dashboard opens", asyn
     await group.getByLabel("Grandfather’s name").fill(parts[2]);
     await group.getByLabel("Family name").fill(parts[3]);
   }
+  await guest.getByRole("checkbox", { name: /18 or older/ }).check();
   const sentAt = Date.now();
   await guest.getByRole("button", { name: "Create account" }).click();
   await expect(guest.getByText("Check your inbox")).toBeVisible();

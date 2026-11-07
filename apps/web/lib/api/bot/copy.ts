@@ -30,7 +30,7 @@ const en = {
   audienceMembers:
     "This group is for the Society's members now: I let in anyone with a linked SAL account.",
   audienceStaff:
-    "This group is for the Society's officers now: I let in only linked accounts that hold a Society role, post the morning brief at 8:00 AM and a short summary after each event. /topic brief chooses where they go.",
+    "This group is for the Society's officers now: I let in only linked accounts that hold a Society role, post the morning brief at 8:00 a.m. and a short summary after each event. /topic brief chooses where they go.",
   audienceUsage: "Use /audience staff or /audience members.",
   briefBooked: (booked: string, capacity: string) =>
     `${booked} booked of ${capacity}`,
@@ -202,7 +202,7 @@ const en = {
 
   when: (date: string, time: string) => `${date} · ${time}`,
   wordOff: "No more daily word here.",
-  wordOn: "Each day's word will come here at 9:00 AM.",
+  wordOn: "Each day's word will come here at 9:00 a.m.",
   wordOpen: "Today's word opens right here in Telegram.",
 } as const;
 

@@ -170,8 +170,8 @@ insert into programmes.removal_requests (requester_name, requester_email, detail
 values ('A', 'a@example.com', 'Please remove the clip at 2:10',
   (select id from core.programmes where slug = 'next-stop'));
 select ok(
-  (select due_at = created_at + interval '24 hours' from programmes.removal_requests),
-  'A removal request starts a 24-hour clock'
+  (select due_at = private.add_business_days(created_at, 2) from programmes.removal_requests),
+  'A removal request is due in two business days (MEM-02)'
 );
 select ok(exists (select 1 from core.outbox where kind = 'programmes.removal_requested'),
   'A removal request emails the programme leads');

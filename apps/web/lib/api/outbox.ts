@@ -1,3 +1,4 @@
+import { buckets } from "@repo/storage";
 import "server-only";
 
 import { AsyncLocalStorage } from "node:async_hooks";
@@ -78,7 +79,9 @@ import { pushToUser } from "./push";
 import { telegramToUser } from "./telegram";
 import {
   expireWalletPass,
+  refreshWalletPass,
   renumberWalletPass,
+  walletCardFrom,
   walletConfigured,
 } from "./wallet";
 
@@ -105,6 +108,20 @@ interface OutboxRow {
 }
 
 // English pages have no language prefix; other languages do ("/ar").
+/** The kind of invitation email: a class, a partner's team or guest, or the Society's guest. */
+const invitationKind = (
+  kind: string,
+  hasPartner: boolean
+): "team" | "guest" | "society" | "associate" | "honorary" => {
+  if (kind === "associate" || kind === "honorary") {
+    return kind;
+  }
+  if (!hasPartner) {
+    return "society";
+  }
+  return kind === "team" ? "team" : "guest";
+};
+
 const prefix = (lang: string) =>
   lang === project.locale.default ? "" : `/${lang}`;
 
@@ -869,15 +886,22 @@ const handlers: Record<string, Handler> = {
   // for each kind of invitation: each address's greeting, Tour line and
   // stop link are its contact properties. The President's go marked the
   // addresses sent (membership.send_invitations).
+  // Each list is its own job (membership.invitation_lists): only the list
+  // the President sent goes, never one sent before.
   "membership.invitations": async (admin, payload) => {
     await cleanUpSegments(admin);
     await pullUnsubscribes(admin);
-    const { data: rows, error } = await admin
+    const list = typeof payload.source === "string" ? payload.source : null;
+    let query = admin
       .schema("membership")
       .from("invitations")
       .select("email, first_name, kind, station, words, quote_words, pages")
       .not("sent_at", "is", null)
       .is("joined_at", null);
+    if (list) {
+      query = query.eq("source", list);
+    }
+    const { data: rows, error } = await query;
     if (error) {
       throw error;
     }
@@ -922,7 +946,7 @@ const handlers: Record<string, Handler> = {
               text: INVITATION_FOOTER,
             },
           ],
-          key: `invitation:${sentAt.slice(0, 19)}:${kind}`,
+          key: `invitation:${list ?? "all"}:${sentAt.slice(0, 19)}:${kind}`,
           kind: "invitation",
           lang,
         });
@@ -1079,10 +1103,7 @@ const handlers: Record<string, Handler> = {
       name =
         lang === "ar" ? (partner.name_ar ?? partner.name_en) : partner.name_en;
     }
-    let kind: "team" | "guest" | "society" = "society";
-    if (name) {
-      kind = invitation.kind === "team" ? "team" : "guest";
-    }
+    const kind = invitationKind(invitation.kind, Boolean(name));
     await send(
       { email: invitation.email, lang },
       partnerInvitation(
@@ -1331,6 +1352,22 @@ const handlers: Record<string, Handler> = {
   // The Sunday Paper (owner, Nov 7, 2026): one Broadcast in each language to
   // members who take optional email and the public list, with each
   // person's own stop link as a contact property.
+  // Files the database let go of (a declined Associate request's Tour
+  // pages, decisions §12): removed from their private bucket.
+  "storage.remove": async (admin, payload) => {
+    const paths = Array.isArray(payload.paths)
+      ? payload.paths.filter((p): p is string => typeof p === "string")
+      : [];
+    if (payload.bucket !== buckets.tourPages.id || paths.length === 0) {
+      return;
+    }
+    const { error } = await admin.storage
+      .from(buckets.tourPages.id)
+      .remove(paths);
+    if (error) {
+      throw error;
+    }
+  },
   "sunday_paper.broadcast": async (admin, payload) => {
     await cleanUpSegments(admin);
     await pullUnsubscribes(admin);
@@ -1384,6 +1421,19 @@ const handlers: Record<string, Handler> = {
     }
     if (waiting.length > 0) {
       throw new BroadcastPending(waiting.join(" "));
+    }
+  },
+  // A role or class changed (decisions §11): a saved pass shows it.
+  "wallet.refresh": async (admin, payload) => {
+    if (!walletConfigured() || typeof payload.user_id !== "string") {
+      return;
+    }
+    const { data: row } = await admin
+      .schema("membership")
+      .rpc("wallet_card", { uid: payload.user_id })
+      .maybeSingle();
+    if (row) {
+      await refreshWalletPass(walletCardFrom(row));
     }
   },
   // The renumbering (decisions §10): a saved pass shows the new number.

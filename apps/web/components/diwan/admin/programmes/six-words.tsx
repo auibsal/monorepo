@@ -9,6 +9,7 @@ import { DataError, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useId, useState } from "react";
+import { PagePhoto } from "../../tour-station";
 import { CardScanner, parseCard } from "../card-scanner";
 import { ErrorLine } from "../kit";
 import { MemberPicker, type Person, useMemberNames } from "../member-picker";
@@ -57,7 +58,7 @@ export const TourCards = () => {
           .schema("programmes")
           .from("six_words")
           .select(
-            "id, user_id, text, language, visibility, publishable, writer_name, station, tour, created_at"
+            "id, user_id, text, language, visibility, publishable, writer_name, station, tour, photo_path, created_at"
           )
           .order("created_at", { ascending: false })
           .limit(100)
@@ -206,13 +207,19 @@ export const TourCards = () => {
           {recent.data?.map((w) => (
             <li className="grid gap-2 py-3" key={w.id}>
               <div className="flex flex-wrap items-baseline justify-between gap-3">
-                <p
-                  className="type-heading font-light"
-                  dir="auto"
-                  lang={w.language}
-                >
-                  {w.text}
-                </p>
+                {w.text ? (
+                  <p
+                    className="type-heading font-light"
+                    dir="auto"
+                    lang={w.language}
+                  >
+                    {w.text}
+                  </p>
+                ) : (
+                  <p className="type-body text-text-secondary">
+                    {t("toTranscribe")}
+                  </p>
+                )}
                 <p className="type-caption">
                   {[
                     nameOf(w.user_id, w.writer_name),
@@ -254,6 +261,10 @@ export const TourCards = () => {
                   {w.publishable ? t("takeDown") : t("putBack")}
                 </Button>
               </div>
+              {w.photo_path ? <PagePhoto id={w.id} /> : null}
+              {w.photo_path && !w.text ? (
+                <Transcribe id={w.id} onDone={refresh} />
+              ) : null}
               {scanning === w.id ? <CardScanner onCode={onScan} /> : null}
               {claiming === w.id ? (
                 <div className="grid max-w-md gap-3">
@@ -281,6 +292,54 @@ export const TourCards = () => {
         <ErrorLine error={cardProblem(attach.error) ? null : attach.error} />
         <ErrorLine error={publishable.error ?? claim.error} />
       </section>
+    </div>
+  );
+};
+
+/**
+ * A page the station photographed, typed from its photograph by whoever
+ * runs the Tour (`programmes.transcribe_page`): only then can it show on
+ * the writer's profile or the Tour's page, as the writer chooses.
+ */
+const Transcribe = ({ id, onDone }: { id: string; onDone: () => void }) => {
+  const t = useTranslations("diwan.admin.programmes.sixWords");
+  const { supabase } = useAuth();
+  const fieldId = useId();
+  const [words, setWords] = useState("");
+  const save = useMutation({
+    mutationFn: async () =>
+      unwrap(
+        await supabase.schema("programmes").rpc("transcribe_page", {
+          lang: ARABIC.test(words) ? "ar" : "en",
+          page_id: id,
+          words: words.trim(),
+        })
+      ),
+    onSuccess: onDone,
+  });
+  return (
+    <div className="grid max-w-2xl gap-2">
+      <label className="type-caption" htmlFor={fieldId}>
+        {t("transcribeHint")}
+      </label>
+      <Textarea
+        dir="auto"
+        id={fieldId}
+        maxLength={MAX}
+        onChange={(event) => setWords(event.target.value)}
+        rows={2}
+        value={words}
+      />
+      <Button
+        className="justify-self-start"
+        disabled={!words.trim() || save.isPending}
+        onClick={() => save.mutate()}
+        size="sm"
+        variant="outline"
+      >
+        {t("saveWords")}
+      </Button>
+      <ErrorLine error={save.error} />
     </div>
   );
 };

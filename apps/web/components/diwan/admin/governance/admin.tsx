@@ -30,7 +30,6 @@ import { Declarations } from "../partners/admin";
 import { Elections } from "./elections";
 
 const key = ["admin", "governance"];
-const RESOLUTION_CODE = /^R-\d{4}-\d{2,3}$/;
 
 type Status =
   | "draft"
@@ -117,7 +116,8 @@ const MeetingsList = () => {
 
 interface ResolutionForm {
   adopted_on: string;
-  code: string;
+  /** RES-<year>-<n>, given by the site on adoption (decisions §6). */
+  code: string | null;
   id: string | null;
   status: "draft" | "adopted" | "rejected" | "withdrawn";
   text: { ar: string; en: string };
@@ -127,7 +127,7 @@ interface ResolutionForm {
 
 const blankResolution = (): ResolutionForm => ({
   adopted_on: "",
-  code: `R-${new Date().getFullYear()}-`,
+  code: null,
   id: null,
   status: "draft",
   text: { ar: "", en: "" },
@@ -154,7 +154,8 @@ const useMeeting = (meetingId: string) => {
           .from("resolutions")
           .select("*")
           .eq("minutes_id", meetingId)
-          .order("code", { ascending: true }),
+          .order("code", { ascending: true, nullsFirst: false })
+          .order("created_at", { ascending: true }),
       ]);
       return {
         meeting: unwrap(meeting),
@@ -184,8 +185,10 @@ const formOf = (r: ResolutionRow): ResolutionForm => ({
 
 /**
  * A meeting's resolutions, on the meeting's page: each opens on its own
- * page by its code (/society/meetings/<meeting>/resolutions/R-2026-01), or
- * /new for a blank one. A resolution always belongs to a meeting.
+ * page by its number once adopted
+ * (/council/meetings/<meeting>/resolutions/RES-2026-001) or by its id
+ * before, or /new for a blank one. A resolution always belongs to a
+ * meeting.
  */
 export const MeetingResolutions = ({
   meetingId,
@@ -199,7 +202,7 @@ export const MeetingResolutions = ({
   const base = `/council/meetings/${meetingId}/resolutions`;
   const columns: Column<ResolutionRow>[] = [
     {
-      cell: (r) => <span className="type-code">{r.code}</span>,
+      cell: (r) => <span className="type-code">{r.code ?? "—"}</span>,
       header: t("resolutions.code"),
       key: "code",
     },
@@ -207,7 +210,7 @@ export const MeetingResolutions = ({
       cell: (r) => (
         <Link
           className="font-medium hover:underline"
-          href={`${base}/${r.code}`}
+          href={`${base}/${r.code ?? r.id}`}
         >
           {localized(r, "title", locale)}
         </Link>
@@ -246,7 +249,7 @@ export const MeetingResolutions = ({
   );
 };
 
-/** One resolution on its own page, by its code; new for a blank one. */
+/** One resolution on its own page, by its number or id; new for a blank one. */
 export const ResolutionPage = ({
   code,
   meetingId,
@@ -317,10 +320,6 @@ const ResolutionEditor = ({
   const [problem, setProblem] = useState<string | null>(null);
   const save = useMutation({
     mutationFn: async () => {
-      if (!RESOLUTION_CODE.test(form.code)) {
-        setProblem(t("resolutions.codeError"));
-        throw new Error("invalid");
-      }
       if ((form.status === "adopted") !== Boolean(form.adopted_on)) {
         setProblem(t("resolutions.adoptedOnError"));
         throw new Error("invalid");
@@ -329,7 +328,6 @@ const ResolutionEditor = ({
       const row = {
         adopted_on: form.adopted_on || null,
         body: meeting.body,
-        code: form.code,
         minutes_id: meeting.id,
         status: form.status,
         text_ar: form.text.ar || null,
@@ -361,20 +359,11 @@ const ResolutionEditor = ({
         save.mutate();
       }}
     >
-      <div className="grid gap-4 sm:grid-cols-2">
-        <Field label={t("resolutions.code")}>
-          {(id) => (
-            <Input
-              className="type-code"
-              dir="ltr"
-              id={id}
-              onChange={(e) => setForm((f) => ({ ...f, code: e.target.value }))}
-              required
-              value={form.code}
-            />
-          )}
-        </Field>
-      </div>
+      <p className="type-caption">
+        {form.code
+          ? t("resolutions.numbered", { code: form.code })
+          : t("resolutions.numberOnAdoption")}
+      </p>
       <BilingualField
         label={t("resolutions.titleField")}
         maxLength={300}

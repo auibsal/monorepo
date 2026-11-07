@@ -7,6 +7,7 @@ import { useMyMembership } from "@/lib/diwan/queries";
 import { RecoveryCodes } from "../auth/recovery-codes";
 import { DiwanPage, DiwanSection, RowList } from "../page";
 import { DeleteAccount } from "./delete-account";
+import { DownloadData } from "./download-data";
 import { EmailNotices } from "./email-notices";
 import { Passkeys } from "./passkeys";
 import { ChangePassword } from "./password";
@@ -87,6 +88,7 @@ export const SettingsScreen = () => {
       <ChangePassword />
       <Passkeys />
       <RecoveryCodes />
+      <DownloadData />
       <DeleteAccount />
     </DiwanPage>
   );

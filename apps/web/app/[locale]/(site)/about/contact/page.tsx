@@ -1,7 +1,7 @@
 import { project } from "@repo/config";
-import { Link } from "@repo/internationalization/navigation";
 import { content } from "@repo/sal-data";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { RemovalForm } from "@/components/removal-form";
 import { PageHeader, Section } from "@/components/section";
 import { type LocaleParams, sectionMetadata } from "@/lib/page";
 import { readPublished } from "@/lib/supabase";
@@ -85,12 +85,8 @@ const ContactPage = async ({ params }: LocaleParams) => {
       </Section>
       <Section id="photo" title={t("photoTitle")}>
         <p className="type-body">{t("photo")}</p>
-        <Link
-          className="link justify-self-start"
-          href="/next-stop/care#request"
-        >
-          {t("photoLink")}
-        </Link>
+        {/* The one removal form (MEM-02, decisions §13): on Contact. */}
+        <RemovalForm />
       </Section>
     </div>
   );

@@ -209,7 +209,7 @@ select is(membership.sign_certificate('00000000-0000-0000-0000-00000000f001'), '
   'The Editor-in-Chief''s signature issues it');
 select pg_temp.logout();
 select matches((select serial from membership.certificates where id = '00000000-0000-0000-0000-00000000f001'),
-  '^SAL-\d{4}-001$', 'with the year''s first serial');
+  '^CERT-\d{4}-001$', 'with the year''s first serial (decisions §6)');
 
 select pg_temp.login_anon();
 select is((select holder_en || ' · ' || status || ' · ' || prize_category from membership.verify_certificate(

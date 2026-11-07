@@ -1,13 +1,11 @@
 import type { Locale } from "@repo/internationalization";
-import { formatLongDate } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
-import { games, localized } from "@repo/sal-data";
+import type { games } from "@repo/sal-data";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { GameNumber } from "@/components/games/daily";
 import { WordGuess } from "@/components/games/word-guess";
 import { localizedMetadata } from "@/lib/metadata";
-import { readPublished } from "@/lib/supabase";
 
 interface GamesProps {
   readonly params: Promise<{ locale: Locale }>;
@@ -39,19 +37,14 @@ const card =
 /**
  * Qirtas's Games section (owner, Nov 5, 2026): four daily games, made anew
  * every day in the page's language (the word first, then the word search,
- * the crossword and the anagrams), and any puzzle the editors write. Games
- * come from the editors only; members send none.
+ * the crossword and the anagrams), checked ahead by the editors. Members
+ * send none, and there are no hand-made puzzles (decisions §5).
  */
 const GamesPage = async ({ params }: GamesProps) => {
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "web.games" });
   const lang: games.GameLang = locale === "ar" ? "ar" : "en";
-  const puzzles = await readPublished(
-    ["journal"],
-    (c) => games.publishedPuzzles(c, lang),
-    []
-  );
 
   return (
     <div className="mx-auto grid w-full max-w-6xl gap-10 px-4 py-10">
@@ -90,31 +83,6 @@ const GamesPage = async ({ params }: GamesProps) => {
         </ul>
         <p className="type-caption">{t("today")}</p>
       </section>
-
-      {puzzles.length === 0 ? null : (
-        <section aria-labelledby="editors" className="grid gap-4">
-          <h2 className="type-heading" id="editors">
-            {t("fromEditors")}
-          </h2>
-          <ul className="grid gap-x-8 sm:grid-cols-2 lg:grid-cols-3">
-            {puzzles.map((p) => (
-              <li key={p.id}>
-                <Link className={card} href={`/qirtas/games/${p.slug}`}>
-                  <span className="type-caption">{t(`kinds.${p.kind}`)}</span>
-                  <span className="type-heading">
-                    {localized(p, "title", locale)}
-                  </span>
-                  {p.published_at ? (
-                    <span className="type-caption">
-                      {formatLongDate(p.published_at, locale)}
-                    </span>
-                  ) : null}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
     </div>
   );
 };

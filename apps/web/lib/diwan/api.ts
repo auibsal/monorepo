@@ -82,3 +82,30 @@ export const callApiText = async (
 
   return response.text();
 };
+
+/** Like callApi, for endpoints that take files (multipart form data). */
+export const callApiForm = async <T>(
+  supabase: SupabaseClient<Database>,
+  path: string,
+  body: FormData,
+  fetchImpl: typeof fetch = fetch
+): Promise<T> => {
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+  if (!session) {
+    throw new ApiError(401, "unauthorized");
+  }
+  const response = await fetchImpl(apiPath(path), {
+    body,
+    headers: { Authorization: `Bearer ${session.access_token}` },
+    method: "POST",
+  });
+  const json = (await response.json().catch(() => ({}))) as {
+    error?: string;
+  };
+  if (!response.ok) {
+    throw new ApiError(response.status, json.error ?? "request_failed");
+  }
+  return json as T;
+};

@@ -710,7 +710,7 @@ const cardColumns =
   "id, slug, desk, category, language, title_en, title_ar, deck_en, deck_ar, members_only, published_at, front_rank, video_url, image_path, contributor:contributors!pieces_contributor_id_fkey(slug, name_en, name_ar), media:piece_media(storage_path, alt_en, alt_ar, width, height, sort)";
 
 const fullColumns =
-  "id, slug, desk, category, language, title_en, title_ar, deck_en, deck_ar, members_only, published_at, front_rank, video_url, image_path, credit_en, credit_ar, issue_id, event_id, clip_id, reading_path, contributor:contributors!pieces_contributor_id_fkey(slug, name_en, name_ar), media:piece_media(storage_path, alt_en, alt_ar, caption_en, caption_ar, width, height, sort), issue:issues(slug, title_en, title_ar)";
+  "id, slug, desk, category, language, title_en, title_ar, deck_en, deck_ar, members_only, published_at, updated_at, front_rank, video_url, image_path, credit_en, credit_ar, issue_id, event_id, clip_id, reading_path, contributor:contributors!pieces_contributor_id_fkey(slug, name_en, name_ar, is_anonymous), media:piece_media(storage_path, alt_en, alt_ar, caption_en, caption_ar, width, height, sort), issue:issues(slug, title_en, title_ar)";
 
 const publishedPieces = (client: Client) =>
   journal(client)
@@ -1162,7 +1162,7 @@ export const prizeEntries = async (client: Client, roundId: string) =>
     await journal(client)
       .from("prize_entries")
       .select(
-        "id, category, judge_score, qalam_title, qalam_byline, piece:pieces!prize_entries_piece_id_fkey(id, slug, title_en, title_ar, desk)"
+        "id, category, judge_score, qalam_title, qalam_byline, winner_named, piece:pieces!prize_entries_piece_id_fkey(id, slug, title_en, title_ar, desk), recusals:prize_recusals(user_id)"
       )
       .eq("round_id", roundId)
       .order("created_at")
@@ -1200,6 +1200,10 @@ export const prizeScore = (judge: number, votes: number, topVotes: number) => {
  * read only for a published Edition or one with a published call, and then
  * read as any public event is.
  */
+/** Editions not yet out that have a launch on the calendar (their ids). */
+export const comingEditionIds = async (client: Client) =>
+  (unwrap(await journal(client).rpc("coming_editions")) ?? []) as string[];
+
 export const editionLaunch = async (client: Client, issueId: string) => {
   const id = unwrap(
     await journal(client).rpc("edition_launch", { issue_id: issueId })

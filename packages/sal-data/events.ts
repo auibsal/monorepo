@@ -84,6 +84,12 @@ export const publicEvent = async (client: Client, eventSlug: string) =>
       .maybeSingle()
   );
 
+/** The partner a public event is held with (decisions §13), or null. */
+export const eventHost = async (client: Client, eventSlug: string) =>
+  unwrap(
+    await events(client).rpc("event_host", { event_slug: eventSlug })
+  )?.[0] ?? null;
+
 const NAME_EN = /\bname\b/i;
 const NAME_AR = /اسم/;
 

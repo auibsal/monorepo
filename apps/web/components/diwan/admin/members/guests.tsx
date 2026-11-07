@@ -8,16 +8,12 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { DiwanSection, RowList } from "@/components/diwan/page";
 import {
-  InviteByEmail,
-  OpenInvitations,
-  ShareableLink,
-} from "@/components/diwan/partner/workspace";
-import {
   EmptyLine,
   ErrorState,
   SectionSpinner,
 } from "@/components/diwan/states";
 import { AdminHeading, ConfirmAction, ErrorLine } from "../kit";
+import { ClassInvitations } from "./class-invitations";
 
 interface SocietyGuest {
   created_at: string;
@@ -28,10 +24,11 @@ interface SocietyGuest {
 const KEY = ["society-guests"] as const;
 
 /**
- * The Society's own guests (owner, Oct 31, 2026): people outside AUIB whom
- * Membership invites, by email or with a link, with no partner. They hold a
- * guest's membership and card: they book places, use perks and write for
- * calls open to them. A partner's guests are on the partner's dashboard.
+ * The Society's own guests (decisions §2, §10): people outside AUIB who
+ * signed up themselves or whom an event's lead invited by name. They hold
+ * a guest's card: they book places and write for Qirtas. A partner's guests
+ * are on the partner's dashboard. Here too, Membership invites Associate
+ * and Honorary Members by name.
  */
 export const SocietyGuests = () => {
   const t = useTranslations("diwan.admin.members.guests");
@@ -128,9 +125,7 @@ export const SocietyGuests = () => {
         <ErrorLine error={end.error} />
       </DiwanSection>
       <DiwanSection id="invite" title={t("invite")}>
-        <InviteByEmail kind="guest" partnerId={null} />
-        <ShareableLink partnerId={null} />
-        <OpenInvitations kind="guest" partnerId={null} />
+        <ClassInvitations />
       </DiwanSection>
     </div>
   );

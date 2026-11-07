@@ -7,7 +7,7 @@ export const generateMetadata = titleFrom((t) =>
 );
 
 /**
- * One resolution of a meeting, by its code (R-2026-01), or new for a blank
+ * One resolution of a meeting, by its code (RES-2026-001), or new for a blank
  * one: a resolution always belongs to a meeting of the Council or the
  * members’ meeting.
  */

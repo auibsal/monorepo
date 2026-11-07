@@ -1,9 +1,15 @@
 "use client";
 
-import { AUIB_DOMAIN, auibLocalPart, signUpWithEmail } from "@repo/auth/email";
+import {
+  AUIB_DOMAIN,
+  auibLocalPart,
+  MIN_PASSWORD_LENGTH,
+  signUpWithEmail,
+} from "@repo/auth/email";
 import { useAuth } from "@repo/auth/provider";
 import { FormHeader } from "@repo/brand/components/sal/form-header";
 import { Button } from "@repo/brand/components/ui/button";
+import { Checkbox } from "@repo/brand/components/ui/checkbox";
 import { Input } from "@repo/brand/components/ui/input";
 import { Label } from "@repo/brand/components/ui/label";
 import { Link } from "@repo/internationalization/navigation";
@@ -11,9 +17,11 @@ import { names as nameParts } from "@repo/sal-data";
 import { useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useId, useState } from "react";
+import { PasswordInput } from "@/components/fields/password-input";
 import { useAuthError } from "@/lib/diwan/auth-messages";
 import { callbackUrl, safeNextPath } from "@/lib/diwan/navigation";
 import { useScreenTop } from "@/lib/diwan/use-screen-top";
+import { isBreachedPassword } from "@/lib/password";
 import { NamePartsFields } from "../setup-form";
 import { EmailCode } from "./email-code";
 import { useHumanCheck } from "./human-check";
@@ -61,6 +69,11 @@ export const SignUpForm = ({ next: given, outside }: SignUpFormProps) => {
   const named =
     nameParts.partsComplete(fullNames.en) &&
     nameParts.partsComplete(fullNames.ar);
+  // Students join themselves and say so (decisions §2); faculty and staff
+  // ask for Associate membership on /join instead.
+  const [student, setStudent] = useState(false);
+  // 18 or older, and the Terms of Use and the Privacy Notice (decisions §11).
+  const [agreed, setAgreed] = useState(false);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string>();
   const [sentTo, setSentTo] = useState<string>();
@@ -79,7 +92,13 @@ export const SignUpForm = ({ next: given, outside }: SignUpFormProps) => {
     event.preventDefault();
     setPending(true);
     setError(undefined);
+    if (await isBreachedPassword(values.password)) {
+      setPending(false);
+      setError(errorText("breached_password"));
+      return;
+    }
     const result = await signUpWithEmail(supabase, {
+      agreed,
       captchaToken: human.token,
       email,
       locale: locale === "ar" ? "ar" : "en",
@@ -173,15 +192,13 @@ export const SignUpForm = ({ next: given, outside }: SignUpFormProps) => {
         )}
         <div className="grid gap-2">
           <Label htmlFor={`${id}-password`}>{t("password")}</Label>
-          <Input
+          <PasswordInput
             aria-describedby={`${id}-password-hint`}
             autoComplete="new-password"
-            dir="ltr"
             id={`${id}-password`}
-            minLength={10}
+            minLength={MIN_PASSWORD_LENGTH}
             onChange={set("password")}
             required
-            type="password"
             value={values.password}
           />
           <p className="type-caption" id={`${id}-password-hint`}>
@@ -209,7 +226,39 @@ export const SignUpForm = ({ next: given, outside }: SignUpFormProps) => {
               </fieldset>
             ))}
           </div>
-        ) : null}
+        ) : (
+          <div className="flex items-start gap-3">
+            <Checkbox
+              checked={student}
+              id={`${id}-student`}
+              onCheckedChange={(v) => setStudent(v === true)}
+            />
+            <Label className="leading-normal" htmlFor={`${id}-student`}>
+              {t("signUp.student")}
+            </Label>
+          </div>
+        )}
+        <div className="flex items-start gap-3">
+          <Checkbox
+            checked={agreed}
+            id={`${id}-agree`}
+            onCheckedChange={(v) => setAgreed(v === true)}
+          />
+          <Label className="leading-normal" htmlFor={`${id}-agree`}>
+            {t.rich("signUp.agree", {
+              privacy: (chunks) => (
+                <Link className="link" href="/privacy" target="_blank">
+                  {chunks}
+                </Link>
+              ),
+              terms: (chunks) => (
+                <Link className="link" href="/terms" target="_blank">
+                  {chunks}
+                </Link>
+              ),
+            })}
+          </Label>
+        </div>
         {human.element}
         {error ? (
           <p className="text-text" role="alert">
@@ -220,7 +269,8 @@ export const SignUpForm = ({ next: given, outside }: SignUpFormProps) => {
           disabled={
             pending ||
             !human.ready ||
-            (external ? !named : auibLocalPart(values.email) === "")
+            !agreed ||
+            (external ? !named : auibLocalPart(values.email) === "" || !student)
           }
           type="submit"
         >

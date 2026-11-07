@@ -71,6 +71,12 @@ const EventView = async ({
   const body = localized(event, "body", locale);
   const image = mediaUrl(event.image_path);
   const cancelled = event.status === "cancelled";
+  // Held for a partner (Notion's Host, decisions §13).
+  const host = await readPublished(
+    ["events", "partners"],
+    (c) => events.eventHost(c, event.slug),
+    null
+  );
   const upcoming = new Date(event.starts_at).getTime() > Date.now();
 
   return (
@@ -114,6 +120,11 @@ const EventView = async ({
           membership="/account/calendar"
           membershipLabel="booking"
         />
+        {host ? (
+          <p className="type-body">
+            {t("heldWith", { partner: localized(host, "name", locale) })}
+          </p>
+        ) : null}
         {localized(event, "venue", locale) ? (
           <p className="type-body inline-flex items-center gap-1.5">
             <Icon name="map-pin" />

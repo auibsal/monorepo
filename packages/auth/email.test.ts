@@ -102,6 +102,7 @@ describe("signing up", () => {
     return { signUp, supabase: { auth: { signUp } } as never };
   };
   const base = {
+    agreed: true,
     locale: "en" as const,
     password: "a-long-password",
     redirectTo: "https://x/cb",
@@ -115,6 +116,18 @@ describe("signing up", () => {
       last: "Tamimi",
     },
   };
+
+  test("no account without agreeing to the Terms and Privacy Notice, 18 or older", async () => {
+    const { signUp, supabase } = client();
+    expect(
+      await signUpWithEmail(supabase, {
+        ...base,
+        agreed: false,
+        email: "s@auib.edu.iq",
+      })
+    ).toEqual({ code: "terms_required", ok: false });
+    expect(signUp).not.toHaveBeenCalled();
+  });
 
   test("an address that already has an account is refused, not sent a new email", async () => {
     // Supabase answers a second sign-up with a user that has no identities.
@@ -140,7 +153,10 @@ describe("signing up", () => {
     const sent = (signUp.mock.calls[0] as unknown[])[0] as {
       options: { data: Record<string, unknown> };
     };
-    expect(sent.options.data).toEqual({ locale: "en" });
+    expect(sent.options.data).toEqual({
+      agreed_at: expect.any(String),
+      locale: "en",
+    });
   });
 
   test("membership is for AUIB addresses: an outside one needs a reason", async () => {

@@ -23,11 +23,12 @@ Paperless by default: print only to the confirmed need (the RSVP count plus 10%,
 
 ## Carousels and stories
 
-A carousel reads as one piece, in one language and on one ground. A story is a post set for a tall screen.
+A carousel reads as one piece, on one ground, in both languages: each English slide is followed by the same slide in Arabic (decisions §13). A story is a post set for a tall screen.
 
-- **Cover:** a post, and the only slide with the logo.
+- **Cover:** a post, and the only slide with the logo (the English cover, then the Arabic).
 - **Inside slides:** a large Light number ("01") in accent, a short title with a full stop, one to three lines.
-- **The last slide:** the wordmark alone, in the carousel's language. No symbol, no text, no handle.
+- **The last slides:** the wordmark alone, English then Arabic. No symbol, no text, no handle.
+- The term calendar goes out once, as the "What's on this spring" carousel; there is no standing weekly post, and each event gets its own post once its room is confirmed.
 - No slide counters and no "swipe" prompts: Instagram shows the dots. Six slides or fewer; ten at most.
 - **Stories, 1080 × 1920:** every word at least 250 px from the top and 340 px from the bottom, clear of the app's own bars; the space under the sentence is left for a link sticker.
 

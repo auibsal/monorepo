@@ -216,7 +216,7 @@ describe.skipIf(!enabled)("Hudhud", () => {
   test("sends the daily word to a member who turned it on, once", async () => {
     await bot.handleUpdate(press("word:on"));
     expect(String(sent("answerCallbackQuery").at(-1)?.payload.text)).toContain(
-      "9:00 AM"
+      "9:00 a.m."
     );
     const morning = new Date();
     morning.setUTCHours(6, 0, 0, 0);

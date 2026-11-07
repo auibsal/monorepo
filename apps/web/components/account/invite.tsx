@@ -32,6 +32,25 @@ const reasonOf = (error: unknown) => {
   return REASONS.find((reason) => message.includes(reason)) ?? "unknown";
 };
 
+type InviteT = ReturnType<typeof useTranslations<"diwan.partnerInvite">>;
+
+/** What the page says for each kind of invitation (decisions §10). */
+const invitationCopy = (
+  t: InviteT,
+  kind: string,
+  partner: string | null | undefined
+) => {
+  if (kind === "associate" || kind === "honorary") {
+    return { accept: t("acceptClass"), lede: t(kind) };
+  }
+  if (!partner) {
+    return { accept: t("acceptGuest"), lede: t("society") };
+  }
+  return kind === "team"
+    ? { accept: t("acceptTeam"), lede: t("team", { partner }) }
+    : { accept: t("acceptGuest"), lede: t("guest", { partner }) };
+};
+
 /**
  * /invite/<code> (owner, Oct 31, 2026): an invitation to a partner's team,
  * or to be a guest of a partner or of the Society itself (Membership). Signed out, the visitor creates an account
@@ -82,11 +101,7 @@ export const Invite = ({ code }: { code: string }) => {
   }
   const partner =
     (locale === "ar" && found.partner_name_ar) || found.partner_name_en;
-  const team = found.kind === "team";
-  let lede = t("society");
-  if (partner) {
-    lede = team ? t("team", { partner }) : t("guest", { partner });
-  }
+  const { accept: acceptLine, lede } = invitationCopy(t, found.kind, partner);
   const path = `/invite/${code}`;
 
   if (!user) {
@@ -109,9 +124,7 @@ export const Invite = ({ code }: { code: string }) => {
         <p className="type-body">{t("otherAddress", { email: found.email })}</p>
       ) : (
         <div className="grid gap-4">
-          <p className="type-body">
-            {team ? t("acceptTeam") : t("acceptGuest")}
-          </p>
+          <p className="type-body">{acceptLine}</p>
           <Button
             className="justify-self-start"
             disabled={accept.isPending}

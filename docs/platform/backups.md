@@ -6,7 +6,7 @@ The Supabase project is on the Free plan, which keeps no downloadable backups. T
 
 | What | When | Kept | Where |
 | --- | --- | --- | --- |
-| Roles, schema and data of the production database | Nightly at 23:20 UTC (2:20 AM Baghdad) | 30 days | GitHub → Actions → **Back up production database** → the run's artifact |
+| Roles, schema and data of the production database | Nightly at 23:20 UTC (2:20 a.m. Baghdad) | 30 days | GitHub → Actions → **Back up production database** → the run's artifact |
 
 Each backup is encrypted (GPG, AES-256) with `BACKUP_PASSPHRASE` before it leaves the runner, because the repository is public. Without the passphrase the file is useless, so keep it in the password manager as well as in GitHub.
 

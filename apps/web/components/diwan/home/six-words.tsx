@@ -5,6 +5,7 @@ import { programmes } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { ErrorLine, SelectInput } from "../admin/kit";
+import { PagePhoto } from "../tour-station";
 import { Section } from "./section";
 
 /**
@@ -43,13 +44,20 @@ export const SixWords = () => {
       <ul className="grid gap-6">
         {pages.data.map((page) => (
           <li className="grid gap-3" key={page.id}>
-            <blockquote
-              className="type-heading whitespace-pre-line font-light"
-              dir="auto"
-              lang={page.language === "other" ? undefined : page.language}
-            >
-              {page.text}
-            </blockquote>
+            {page.text ? (
+              <blockquote
+                className="type-heading whitespace-pre-line font-light"
+                dir="auto"
+                lang={page.language === "other" ? undefined : page.language}
+              >
+                {page.text}
+              </blockquote>
+            ) : (
+              <p className="type-caption text-text-secondary">
+                {t("notTranscribed")}
+              </p>
+            )}
+            {page.photo_path ? <PagePhoto id={page.id} /> : null}
             <div className="max-w-sm">
               <SelectInput
                 aria-label={t("who")}

@@ -7,13 +7,18 @@ import { Input } from "@repo/brand/components/ui/input";
 import { Label } from "@repo/brand/components/ui/label";
 import { useTranslations } from "next-intl";
 import { type FormEvent, useId, useState } from "react";
+import { PasswordInput } from "@/components/fields/password-input";
 import { useAuthError } from "@/lib/diwan/auth-messages";
+import { isBreachedPassword } from "@/lib/password";
 import { DiwanSection } from "../page";
 
 /**
  * Change the password from Settings, signed in: no recovery email needed.
  * The sign-in address itself is the AUIB address (or the partner's), and
  * stays; the personal email is what follows a member after graduation.
+ * Supabase asks for a fresh confirmation when the sign-in is old (secure
+ * password change, decisions §11): a code goes to the sign-in address and
+ * the change goes through with it.
  */
 export const ChangePassword = () => {
   const t = useTranslations("diwan.settings.password");
@@ -22,8 +27,29 @@ export const ChangePassword = () => {
   const { supabase } = useAuth();
   const id = useId();
   const [password, setPassword] = useState("");
+  const [nonce, setNonce] = useState<string | null>(null);
   const [state, setState] = useState<"idle" | "busy" | "done">("idle");
   const [error, setError] = useState<string>();
+
+  const change = async () => {
+    const { error: updateError } = await supabase.auth.updateUser(
+      nonce ? { nonce: nonce.trim(), password } : { password }
+    );
+    if (!updateError) {
+      setPassword("");
+      setNonce(null);
+      setState("done");
+      return;
+    }
+    const code = toEmailAuthError(updateError);
+    if (code === "reauthentication_needed" && nonce === null) {
+      // A code to the sign-in address; the form asks for it.
+      await supabase.auth.reauthenticate();
+      setNonce("");
+    }
+    setState("idle");
+    setError(errorText(code));
+  };
 
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -33,14 +59,12 @@ export const ChangePassword = () => {
       return;
     }
     setState("busy");
-    const { error: updateError } = await supabase.auth.updateUser({ password });
-    if (updateError) {
+    if (await isBreachedPassword(password)) {
       setState("idle");
-      setError(errorText(toEmailAuthError(updateError)));
-    } else {
-      setPassword("");
-      setState("done");
+      setError(errorText("breached_password"));
+      return;
     }
+    await change();
   };
 
   return (
@@ -48,22 +72,33 @@ export const ChangePassword = () => {
       <form className="grid max-w-sm gap-4" onSubmit={submit}>
         <div className="grid gap-2">
           <Label htmlFor={`${id}-password`}>{t("new")}</Label>
-          <Input
+          <PasswordInput
             aria-describedby={`${id}-hint`}
             autoComplete="new-password"
-            dir="ltr"
             id={`${id}-password`}
             onChange={(event) => {
               setPassword(event.target.value);
               setState("idle");
             }}
-            type="password"
             value={password}
           />
           <p className="type-caption" id={`${id}-hint`}>
             {ta("passwordHint")}
           </p>
         </div>
+        {nonce === null ? null : (
+          <div className="grid gap-2">
+            <Label htmlFor={`${id}-nonce`}>{t("code")}</Label>
+            <Input
+              autoComplete="one-time-code"
+              dir="ltr"
+              id={`${id}-nonce`}
+              inputMode="numeric"
+              onChange={(event) => setNonce(event.target.value)}
+              value={nonce}
+            />
+          </div>
+        )}
         {error ? (
           <p className="text-text" role="alert">
             {error}
@@ -72,7 +107,7 @@ export const ChangePassword = () => {
         {state === "done" ? <p role="status">{t("done")}</p> : null}
         <Button
           className="justify-self-start"
-          disabled={state === "busy" || password.length === 0}
+          disabled={state === "busy" || password.length === 0 || nonce === ""}
           size="sm"
           type="submit"
           variant="outline"

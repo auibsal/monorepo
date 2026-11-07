@@ -27,6 +27,8 @@ interface LetterProps {
   readonly locale?: string;
   /** The recipient's name and address, one line each. */
   readonly recipient: readonly string[];
+  /** The letter's number, "LTR-2026-001" (decisions §6), under the date. */
+  readonly reference?: string;
   /** Who signs: their name and seat. */
   readonly signer: { readonly name: string; readonly role: string };
   /** The closing: "Sincerely," / «مع خالص التحية،». */
@@ -70,6 +72,7 @@ export const Letter = ({
   greeting,
   locale = "en",
   recipient,
+  reference,
   signOff,
   signer,
   subject,
@@ -84,7 +87,14 @@ export const Letter = ({
   >
     <header className="flex items-start justify-between gap-space-4">
       <BrandLogo ground="light" height={52} locale={locale} />
-      <p className="pt-2 text-sm text-text-secondary">{date}</p>
+      <p className="grid justify-items-end gap-1 pt-2 text-sm text-text-secondary">
+        <span>{date}</span>
+        {reference ? (
+          <span className="type-code" dir="ltr">
+            {reference}
+          </span>
+        ) : null}
+      </p>
     </header>
     <div className="grid content-start gap-space-4 text-[0.9375rem] leading-relaxed">
       <address className="grid not-italic">

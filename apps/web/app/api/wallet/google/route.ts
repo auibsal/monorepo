@@ -7,33 +7,13 @@ import {
   ensureWalletCallback,
   googleWalletLink,
   refreshWalletPass,
-  type WalletCard,
+  walletCardFrom,
   walletConfigured,
   walletPassHeld,
 } from "@/lib/api/wallet";
 
 export const OPTIONS = preflight;
 
-const tiers = {
-  ar: {
-    associate: "عضو منتسب",
-    honorary: "عضو فخري",
-    member: "عضو",
-  },
-  en: {
-    associate: "Associate Member",
-    honorary: "Honorary Member",
-    member: "Member",
-  },
-} as const;
-
-/**
- * The member's "Add to Google Wallet" link. The card and its secret are
- * read as the member (membership.my_card under their token), never with
- * the secret key. The pass is recorded (membership.wallet_passes, so it can
- * be retired when the card stops being good), and a pass the member
- * already holds is brought up to date and made active again.
- */
 /**
  * "Is it in my Wallet?": asks Google whether the pass is held and records
  * the answer, for when the save callback never came. Unknown (Google not
@@ -72,6 +52,14 @@ const syncHeld = async (userId: string, code: string) => {
   return held;
 };
 
+/**
+ * The "Add to Google Wallet" link. The card must be the caller's own
+ * (membership.my_card under their token); its fields come from
+ * membership.wallet_card. The pass is recorded (membership.wallet_passes,
+ * so it can be refreshed when the role or class changes and retired when
+ * the card stops being good), and a pass already held is brought up to
+ * date and made active again.
+ */
 export const POST = async (request: Request) => {
   const headers = corsHeaders(request);
   const json = (data: object, status = 200) =>
@@ -89,17 +77,10 @@ export const POST = async (request: Request) => {
   if (!session) {
     return json({ error: "unauthorized" }, 401);
   }
-  const [card, standing, profile] = await Promise.all([
-    membership.myCard(session.supabase).catch(() => null),
-    membership.myStatus(session.supabase).catch(() => null),
-    session.supabase
-      .schema("core")
-      .from("profiles")
-      .select("full_name_en, full_name_ar, locale")
-      .eq("id", session.userId)
-      .maybeSingle(),
-  ]);
-  if (!(card && standing?.is_member && profile.data)) {
+  // The card is read as its holder first: no card, no pass. Every kind
+  // has one, guests' too (decisions §11).
+  const card = await membership.myCard(session.supabase).catch(() => null);
+  if (!card) {
     return json({ error: "not_a_member" }, 403);
   }
   if (body.check === true) {
@@ -108,26 +89,16 @@ export const POST = async (request: Request) => {
       saved: await syncHeld(session.userId, card.code),
     });
   }
-  const locale = profile.data.locale === "ar" ? "ar" : "en";
-  const pass: WalletCard = {
-    code: card.code,
-    fullName:
-      (locale === "ar" && profile.data.full_name_ar) ||
-      profile.data.full_name_en,
-    locale,
-    memberSince: standing.member_since
-      ? new Intl.DateTimeFormat(locale === "ar" ? "ar-IQ-u-nu-latn" : "en-US", {
-          month: "long",
-          timeZone: "Asia/Baghdad",
-          year: "numeric",
-        }).format(new Date(standing.member_since))
-      : null,
-    number: card.number,
-    secret: card.secret,
-    tier: tiers[locale][standing.tier ?? "member"],
-  };
-
   const admin = createAdminClient();
+  const { data: row } = await admin
+    .schema("membership")
+    .rpc("wallet_card", { uid: session.userId })
+    .maybeSingle();
+  if (!row) {
+    return json({ error: "not_a_member" }, 403);
+  }
+  const pass = walletCardFrom(row);
+
   const { data: recorded } = await admin
     .schema("membership")
     .from("wallet_passes")

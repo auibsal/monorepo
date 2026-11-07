@@ -150,6 +150,17 @@ any schema change. Integration tests run against a local stack with
   after merge, `.github/workflows/migrate.yml` runs `supabase db push`
   against production once CI passes, and Vercel deploys `main` itself.
   Never paste SQL into the production database.
+- **Accounts (decisions §11, NIST SP 800-63B).** Passwords are 12
+  characters or more with no composition rules, checked against known
+  breaches by k-anonymity (`lib/password.ts`, `/api/password-check`), with
+  a Show button (`PasswordInput`). Sign-up records the 18+ and Terms and
+  Privacy Notice agreement (`core.profiles.agreed_at`). A password change
+  on an old sign-in asks for an emailed code (secure password change);
+  deleting the account needs a sign-in from the last 15 minutes
+  (`signedInWithin`) and removes the person's own files. "Download your
+  data" is JSON from `/api/account/export`. The Diwan signs a device out
+  after 30 minutes unused (`IdleSignOut`). An AUIB sign-in address is not
+  changed from the account (`private.keep_auib_address`).
 - **Two-step sign-in for sensitive roles.** Roles with `requires_mfa` (the
   Council, the Acting President, the Elections Committee) count only on
   an `aal2` session; `access.has_permission` enforces it. Don't add
@@ -198,8 +209,9 @@ any schema change. Integration tests run against a local stack with
   or open, from the roles people hold: nothing is typed by hand. A second
   Council role needs an adopted Council resolution
   (`private.role_conflict`).
-- **The first term.** Anyone newly appointed or joining a team serves a
-  first term on probation; whoever appointed them confirms them
+- **The first term.** Anyone newly joining a team serves a first term on
+  probation; whoever appointed them confirms them; Council seats (elected
+  or appointed directors) serve none
   (`confirmAssignment`). Elected seats have none. Candidates and
   appointees are checked by Student Life for a 2.0 GPA
   (`record_gpa_check`): the Society stores only "eligible" or "not
@@ -213,13 +225,34 @@ any schema change. Integration tests run against a local stack with
   Society's or a partner's) or `partner` (a partner's Lead or Team);
   triggers named `one_membership` refuse a second kind. Members have a
   class (`membership.tier`): Member, Associate Member or Honorary Member;
-  only Members vote (checked in at two events or general meetings that
-  academic year: check-ins are the only record, `membership.activity_records`)
+  only Members vote (checked in at two events or general meetings in the
+  12 months before the voter list's record date: check-ins are the only
+  record, `membership.activity_records`)
   and hold office. Staff is a member holding a role (`private.is_staff`).
+  Students join themselves with an AUIB address and confirm they are
+  students; Associate and Honorary Members (Honorary only after the
+  Council's resolution, F-34) join by the Director of Membership's
+  invitation. One invitation system (`governance.partner_invitations`,
+  decisions §10): every invitation is single-use, to a named address,
+  valid 14 days and revocable, sent by the Director of Membership
+  (classes), a Partner Lead (the team, its guests) or an event's lead
+  (guests); no shareable links and no invitation ever grants a role.
   Sign-up takes an AUIB address only, unless the account comes from an
   invitation, applies to partner or signs up as a guest
-  (`private.sign_up_allowed`). `/welcome` asks one question per screen
+  (`private.sign_up_allowed`). A student who leaves AUIB is recorded by
+  Membership on their Diwan page (`membership.record_departure`): a
+  graduate becomes an Associate Member; someone who left without
+  graduating becomes a guest, same number and a Guest card, with no vote
+  or role, and Hudhud's week in the members' group starts. Partners'
+  people and advisors from partner organizations hold guest accounts;
+  faculty and alumni advisors are Associate Members invited by the
+  Director of Membership. `/welcome` asks one question per screen
   (`planSetup` in `components/diwan/setup-form.tsx`).
+- **Arabic titles agree with the holder** (decisions §13). An optional
+  setting (`core.profiles.title_form`, read only by its owner through
+  `core.my_private_profile`) gives the feminine form
+  (`access.roles.name_ar_feminine`) on the Council page, the masthead,
+  the card's role line and letters; documents keep the glossary's form.
 - **Names.** A name in four parts in each language, as on the person's
   papers (`first_name_en` … `last_name_ar`), all eight required
   (`NamePartsFields`, `hasAllNames`). Wherever a name shows, it is the
@@ -238,9 +271,12 @@ any schema change. Integration tests run against a local stack with
   6238, SHA-1, 30 s, 8 digits; `lib/totp.ts` and `private.totp` must
   agree, as Google Wallet does). The secret reaches only its owner
   (`membership.my_card`); the door (`events.check_in_card`) refuses a code
-  that isn't live. The check page shows name, class, status and member
-  since only. No member photos; never put an account id in a QR. Google
-  Wallet only (`docs/platform/wallet.md`).
+  that isn't live. The card shows the number, name, class or Guest, the
+  role held on a second line (`private.card_role`), the year since and
+  the QR; the check page shows the same fields for a live code only, and
+  an old code only that it is not current. No member photos; never put an
+  account id in a QR. Google Wallet only (`docs/platform/wallet.md`),
+  refreshed when a role or class changes (`wallet.refresh`).
 - **One design per thing** in `@repo/brand/components/sal`: `FormPage`,
   `Letter`, `MembershipCard`, `Certificate` and the guilloche. The site
   renders them; print and PDF are the same page printed from the browser.
@@ -252,6 +288,13 @@ any schema change. Integration tests run against a local stack with
   (`membership.service_letters`, F-05) with a verification code. Every
   letter (F-03, F-05, F-30, F-32, F-33, F-34, F-42) is one American
   business letter template.
+- **Numbers and codes** (decisions §6): one five-digit series for members
+  and guests (the card); CERT-, LTR-, RES-, MOU- and
+  TOUR-<year>-<three digits>, each given by the site from
+  `private.next_code` (gapless, `core.code_counters`) when the record is
+  issued: a certificate when both sign, a letter when written, a
+  resolution when adopted, a memorandum when the President countersigns.
+  Verification codes are random and separate. Nobody types a number.
 - **Forms** are at `/forms/<number>` on one standard page, signed in the
   signer's platform name and kept as the signed copy; staff forms are
   Notion templates. The forms register in SAL-EXB-01 is the one source of
@@ -299,15 +342,30 @@ any schema change. Integration tests run against a local stack with
   to try (`TypingToy`, silent until the key sound is turned on). Whoever
   runs the Tour (`tour.run`: the Director of Membership, the General
   Secretary and the Tour Lead) records pages in the Diwan (Membership →
-  Typewriter Tour) and attaches each to its writer's account. Six Words
+  Typewriter Tour) and attaches each to its writer's account. At the
+  Tour's station (decisions §12; `/account/station`), a volunteer the
+  event lead confirmed on a station shift (`programmes.shifts.station`)
+  may, while the shift runs and only then (`private.my_station_shift`),
+  photograph a typed page and attach it to a live card, a Member's or a
+  Guest's (`/api/tour/station`, `programmes.station_attach`; the photo in
+  the private `tour-pages` bucket, read through `/api/tour/photo`), or
+  keep it against a pending "Request Associate membership"
+  (`membership.associate_requests`, from `/join#associate`): attached
+  when the Director of Membership approves (a named invitation) and the
+  account accepts, deleted if declined. Every station page is logged;
+  photographed pages show nowhere until whoever runs the Tour types their
+  words (`programmes.transcribe_page`). Six Words
   are not part of Qirtas: they are Tour pages, private by default, shown
   on the writer's profile or the Tour's page only by their choice
   (`programmes.six_words.visibility`). Spring 2026 pages arrive by the
   one import (`programmes.import_tour`); pages with no email stay private
   and editors-only until a writer claims one through Help Desk. The
-  one-time invitations (`membership.invitations`) go only when the
-  President says go (`membership.send_invitations`), as one Broadcast,
-  and are deleted thirty days later.
+  one-time invitations (`membership.invitations`) come in lists
+  (`membership.invitation_lists`: the Tour's import, the club fair's
+  paper sign-ups typed in at Membership → Invitations); each list is
+  tested on the President first and goes only when the President says
+  go (`membership.send_invitations(list)`), as one Broadcast, and is
+  deleted thirty days after its own send.
 - **Get involved** (`/get-involved`, `programmes.open_places()`) lists open
   roles only, soonest first: Council and team roles, event teams, Qalam
   mentors, auditions. Members reply "I'm interested" in one step;
@@ -315,8 +373,9 @@ any schema change. Integration tests run against a local stack with
   person (`private.picks_opening`); whoever is onboarded holds the role.
 - **Partners.** One register, `governance.partners`. `/partners` is the
   front door; an organization applies at `/partners/apply`, its signatory
-  signing by name, and becomes a partner only when the Council's adopted
-  resolution is recorded (`governance.record_partner_vote`); nobody adds a
+  signing by name, and becomes a partner only when the President
+  countersigns under the Council's adopted resolution
+  (`governance.record_partner_vote`); nobody adds a
   partner or drafts a memorandum in the Diwan. Each partner has one
   dashboard, `/partners/dashboard` (profile and memorandum, events,
   people), for its Lead and up to two more, who join only by named email
@@ -324,8 +383,11 @@ any schema change. Integration tests run against a local stack with
   shareable links). Partners never use Notion and see only their own events and
   checklist. No perks or offers anywhere: sponsors in kind are thanked
   with a "Supported by" line, and the card is for the door only.
-- **Guests** sign up at `/sign-up/guest` to book open events, or are
-  invited from Membership → Guests; never members.
+- **Guests** sign up at `/sign-up/guest`, or are invited by named email
+  by a partner or by an event's lead on the event's Diwan page (`partner_invitations.event_id`); never members. Each
+  has a number from the one series and a Guest card from the start, books
+  RSVP events, and writes for Qirtas (bylined as a guest, never eligible
+  for the Prize).
 - **Money: none.** No budgets, costs, prices, spending limits, ledgers,
   claims, reimbursements, payments or ads anywhere; sponsors give in kind
   only. Every event, Qirtas and the Tour keep a needs list
@@ -374,14 +436,18 @@ any schema change. Integration tests run against a local stack with
   date.
 - **Games**, daily, made in the reader's browser and the same for everyone
   on a Baghdad day (`@repo/sal-data/games`): the word, the word search,
-  the crossword and the anagrams at `/qirtas/games/...`. Editors may also
-  publish puzzles (`journal.puzzles`). Members send no games
-  (`private.games_by_editors`). Progress stays in the browser.
+  the crossword and the anagrams at `/qirtas/games/...`, checked ahead by
+  the Games editors in the Newsroom's queue (`journal.game_checks`). No
+  hand-made puzzles and no Edition calls (decisions §5): the standing call
+  is the one door. Members send no games (`private.games_by_editors`).
+  Progress stays in the browser.
 - **The Mutanabbi Prize** (`/qirtas/prize`; the Diwan's
   `/diwan/qirtas/prize`): Qirtas and Qalam categories, the outside judge's
   score 70% and the members' vote 30% (`journal.prize_results`), voting on
   Society while a round is open (`journal.open_prize_round`), the count
-  checked by the Editor-in-Chief and the General Secretary.
+  checked by the Editor-in-Chief and the General Secretary; a winner
+  chooses whether to be named (`prize_entries.winner_named`), and anyone
+  connected to a work steps aside from it (`journal.prize_recusals`).
 - **Qalam**, Qirtas's summer program for high school students. Its roster
   is staff only (`/diwan/qirtas/qalam`, `qalam.manage`), never in Notion,
   deleted three years on. High school students never get accounts.
@@ -414,7 +480,10 @@ any schema change. Integration tests run against a local stack with
   to the Library (`/library`); the Diwan's Library keeps only each
   document's adoption record. Every document is Version 1 and shows
   "Proposed" until adopted at the Founding Meeting; both editions publish
-  together; internal documents never reach the Library. Codes follow
+  together; internal documents never reach the Library. Under each
+  document's title one line (decisions §13): code · kept by <seat>
+  (Notion's Owner) · status · the other edition; no "Dated" line. Both
+  editions share one Code and one slug (no "-ar" slugs). Codes follow
   decisions.md §6 (GOV, EXB, EVT, MEM, PTN, MED, ART, EDT); visitors and
   members never see codes, statuses or versions. Never edit the text of
   an adopted document. The re-sync is
@@ -525,7 +594,7 @@ any schema change. Integration tests run against a local stack with
   carry "Paperless by default. Books reused through Second Chapter."
 - **Content.** Don't invent names, dates, figures or quotes. Missing text
   is a `TODO(content): …` placeholder listed in `PROGRESS.md`.
-- **Formats.** Dates as "Tuesday, October 13", times as "6:00 PM": use
+- **Formats.** Dates as "Tuesday, October 13", times as "6:00 p.m.": use
   `formatLongDate` and `formatClock` from
   `@repo/internationalization/format` (Latin digits, Baghdad time). Store
   times as `timestamptz` (UTC). Translatable columns come in pairs

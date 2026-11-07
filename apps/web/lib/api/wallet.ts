@@ -18,11 +18,68 @@ export interface WalletCard {
   code: string;
   fullName: string;
   locale: "ar" | "en";
-  memberSince: string | null;
   number: number;
+  /** The role held now, in the pass's language; none without one. */
+  role: string | null;
   secret: string;
+  /** The year since. */
+  since: number | null;
+  /** The class in words, or Guest. */
   tier: string;
 }
+
+const CLASSES = {
+  ar: {
+    associate: "عضو منتسب",
+    guest: "ضيف",
+    honorary: "عضو فخري",
+    member: "عضو",
+    partner: "فريق الشريك",
+  },
+  en: {
+    associate: "Associate Member",
+    guest: "Guest",
+    honorary: "Honorary Member",
+    member: "Member",
+    partner: "Partner team",
+  },
+} as const;
+
+/** What membership.wallet_card returns for a person. */
+export interface WalletCardRow {
+  code: string;
+  full_name_ar: string | null;
+  full_name_en: string | null;
+  kind: string | null;
+  locale: string | null;
+  number: number;
+  role_ar: string | null;
+  role_en: string | null;
+  secret: string;
+  since: number | null;
+  tier: string | null;
+}
+
+/** The pass's fields from the person's card, in their language. */
+export const walletCardFrom = (row: WalletCardRow): WalletCard => {
+  const locale = row.locale === "ar" ? "ar" : "en";
+  const classes: Record<string, string> = CLASSES[locale];
+  const kind = row.kind ?? "member";
+  const tier =
+    (kind === "member" ? classes[row.tier ?? "member"] : classes[kind]) ??
+    classes.member ??
+    "";
+  return {
+    code: row.code,
+    fullName: (locale === "ar" && row.full_name_ar) || (row.full_name_en ?? ""),
+    locale,
+    number: row.number,
+    role: (locale === "ar" ? row.role_ar : row.role_en) ?? null,
+    secret: row.secret,
+    since: row.since,
+    tier,
+  };
+};
 
 export const walletConfigured = () =>
   Boolean(
@@ -54,9 +111,9 @@ const text = (value: string, locale: string) => ({
 });
 
 /**
- * The member's pass: the membership card's fields (owner, Nov 7, 2026: one
- * design, the same fields everywhere): the name, the class, the member
- * number, member since and the live QR, in the member's language.
+ * The pass: the card's fields (decisions §6, §11: one design, the same
+ * fields everywhere): the name, the class or Guest, the number, the role
+ * held, the year since and the live QR, in the holder's language.
  */
 const passFor = (card: WalletCard) => {
   const base = origin();
@@ -104,14 +161,17 @@ const passFor = (card: WalletCard) => {
     textModulesData: [
       {
         body: number,
-        header: ar ? "رقم العضوية" : "Member no.",
+        header: ar ? "الرقم" : "No.",
         id: "number",
       },
-      ...(card.memberSince
+      ...(card.role
+        ? [{ body: card.role, header: ar ? "المنصب" : "Role", id: "role" }]
+        : []),
+      ...(card.since
         ? [
             {
-              body: card.memberSince,
-              header: ar ? "عضو منذ" : "Member since",
+              body: String(card.since),
+              header: ar ? "منذ" : "Since",
               id: "since",
             },
           ]

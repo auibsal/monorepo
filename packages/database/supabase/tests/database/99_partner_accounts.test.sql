@@ -217,7 +217,7 @@ select throws_ok(
 select throws_ok(
   $$ insert into governance.partner_invitations (partner_id, kind)
      values ((select id from governance.my_partners() limit 1), 'guest') $$,
-  '23514', null,
+  '22023', 'invitation_needs_email',
   'A partner makes no shareable guest link'
 );
 select lives_ok(

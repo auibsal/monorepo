@@ -23,6 +23,15 @@ Part A first).
 - [x] **The spring 2026 Tour invitation** went out on November 7 as one
   Resend Broadcast per kind. The invitation list is deleted on
   **December 7**.
+- [ ] **Test the Tour's station at the Dec 1 event** (decisions §12): the
+  event lead adds a "Tour station" shift and confirms the trained
+  volunteers; they open `/account/station` during it, attach a page to a
+  Member's card, a Guest card and a pending Associate request; the
+  Director of Membership approves or declines the request.
+- [ ] **The fall 2026 club fair invitation** (Membership → Invitations):
+  staff type in the paper sign-ups, send the test to the President, and
+  the President says go. That list is deleted thirty days after its own
+  send.
 - [ ] **Merge PR #238 before joining opens.** Its migrations, applied by
   CI, change production data once:
   - every published event without a place goes back to draft, and the

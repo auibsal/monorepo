@@ -81,9 +81,12 @@ export const ServiceLetter = () => {
           greeting={copy.greeting}
           locale={lang}
           recipient={[]}
+          reference={row.reference ?? undefined}
           signer={{
             name: (ar ? row.signer_ar : null) ?? row.signer_en ?? "",
-            role: copy.signerRole,
+            role: row.signer_feminine
+              ? copy.signerRoleFeminine
+              : copy.signerRole,
           }}
           subject={copy.subject}
           verify={{ code: row.verification_code, qrLabel: copy.qr, url }}

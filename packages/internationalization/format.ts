@@ -48,7 +48,7 @@ export const formatDate = (
     timeZone: TIME_ZONE,
   }).format(toDate(value));
 
-/** "Sunday, November 1, 2026, 6:00 PM": the house date with its time. */
+/** "Sunday, November 1, 2026, 6:00 p.m.": the house date with its time. */
 export const formatDateTime = (
   value: DateInput,
   locale: Locale = defaultLocale
@@ -177,9 +177,17 @@ export const formatPlainDate = (
 
 const FIELD_VALUE = /^(\d{4})-(\d{2})-(\d{2})(?:T(\d{2}):(\d{2}))?/;
 
+/** "6:00 PM" → "6:00 p.m." (Chicago 10.41, decisions §13); Arabic as is. */
+const MORNING = /\s?AM$/;
+const EVENING = /\s?PM$/;
+const chicagoTime = (time: string, locale: Locale) =>
+  locale === "ar"
+    ? time
+    : time.replace(MORNING, " a.m.").replace(EVENING, " p.m.");
+
 /**
  * What a date field holds ("2026-11-06" or "2026-11-06T18:00", Baghdad's
- * wall clock), in the house format: "Friday, November 6, 2026, 6:00 PM".
+ * wall clock), in the house format: "Friday, November 6, 2026, 6:00 p.m.".
  * Read as written, with no time zone shift.
  */
 export const formatFieldValue = (
@@ -216,12 +224,8 @@ export const formatFieldValue = (
     minute: "2-digit",
     timeZone: "UTC",
   }).format(at);
-  return `${date}${locale === "ar" ? "، " : ", "}${time}`;
+  return `${date}${locale === "ar" ? "، " : ", "}${chicagoTime(time, locale)}`;
 };
-
-/** "6:00 PM" (12-hour clock in both languages). */
-const MORNING = /\s?AM$/;
-const EVENING = /\s?PM$/;
 
 /** "6:00 p.m." (Chicago 10.41, decisions §10) / «6:00 م». */
 export const formatClock = (
@@ -234,9 +238,7 @@ export const formatClock = (
     minute: "2-digit",
     timeZone: TIME_ZONE,
   }).format(toDate(value));
-  return locale === "ar"
-    ? time
-    : time.replace(MORNING, " a.m.").replace(EVENING, " p.m.");
+  return chicagoTime(time, locale);
 };
 
 /**

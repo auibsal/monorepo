@@ -47,6 +47,14 @@ const joined = (parts: RichText[] | undefined) =>
 const get = (page: NotionPage, name: string): NotionProperty | undefined =>
   page.properties[name];
 
+/**
+ * The first of these property names the page has: a property renamed in
+ * Notion (decisions §13: "Way in" became "Access", "Owner" became "Lead")
+ * is read by its new name and, until the rename, by its old one.
+ */
+export const named = (page: NotionPage, ...names: string[]) =>
+  names.find((name) => name in page.properties) ?? names[0] ?? "";
+
 export const read = {
   checkbox: (page: NotionPage, name: string) =>
     get(page, name)?.checkbox === true,

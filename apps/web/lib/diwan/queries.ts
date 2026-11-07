@@ -79,6 +79,7 @@ export const useProfile = () => {
       ...(unwrap(parts)?.[0] ?? {}),
       notify_email: own?.notify_email ?? true,
       personal_email: own?.personal_email ?? null,
+      title_form: own?.title_form ?? null,
     };
   });
 };

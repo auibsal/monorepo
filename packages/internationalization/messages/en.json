@@ -81,7 +81,7 @@
     "email": "Email",
     "emailHint": "Use your AUIB address (@auib.edu.iq) if you have one.",
     "password": "Password",
-    "passwordHint": "At least 10 characters, with letters and numbers.",
+    "passwordHint": "At least 12 characters. A few words in a row make a good one.",
     "errors": {
       "email_not_confirmed": "Confirm your email address first: check your inbox.",
       "invalid_credentials": "That email and password don’t match.",
@@ -90,13 +90,16 @@
       "signups_disabled": "New sign-ups are currently closed.",
       "unknown": "Something went wrong. Please try again.",
       "user_exists": "An account already uses this address. Sign in instead.",
-      "weak_password": "Use at least 10 characters, with letters and numbers.",
+      "weak_password": "Use at least 12 characters.",
       "captcha_failed": "We couldn’t confirm you’re a person. Reload the page and try again.",
       "names_required": "Enter your first and last name in English and in Arabic.",
       "email_reserved": "This address is already a member’s personal email, so it can’t start a new account. Sign in with your own address, or use another one.",
       "invalid_code": "That code doesn’t match or has expired. Check the newest email, or ask for a new one.",
       "auib_only": "Membership is for AUIB addresses. Use your @auib.edu.iq email.",
-      "no_account": "No account uses this address. Check it, or create your account if you study at AUIB."
+      "no_account": "No account uses this address. Check it, or create your account if you study at AUIB.",
+      "breached_password": "This password has appeared in a data breach elsewhere, so it isn’t safe. Choose another.",
+      "reauthentication_needed": "For your security, confirm it’s you first: enter the code we just emailed you.",
+      "terms_required": "To join, confirm that you are 18 or older and agree to the Terms of Use and the Privacy Notice."
     },
     "signIn": {
       "title": "Sign in",
@@ -111,7 +114,8 @@
       "noAccount": "New to the Society?",
       "createAccount": "Create an account",
       "deleted": "Your account has been deleted.",
-      "passkey": "Sign in with a passkey"
+      "passkey": "Sign in with a passkey",
+      "idle": "You were signed out of the Diwan after thirty minutes without use. Sign in to pick up where you left off."
     },
     "signUp": {
       "title": "Join the Society",
@@ -132,7 +136,9 @@
       "guestLede": "Anyone may make a guest account to book a place at the Society’s open events. Guests aren’t members: membership is for AUIB students, with an AUIB email.",
       "resend": "Send the email again",
       "resendIn": "Send the email again in {seconds} s",
-      "resent": "Sent. Check your inbox and spam folder."
+      "resent": "Sent. Check your inbox and spam folder.",
+      "student": "I’m an enrolled AUIB student. (Faculty and staff: ask for Associate membership on Join.)",
+      "agree": "I am 18 or older, and I agree to the <terms>Terms of Use</terms> and the <privacy>Privacy Notice</privacy>."
     },
     "forgot": {
       "title": "Reset your password",
@@ -185,7 +191,9 @@
       "submitting": "Checking…"
     },
     "auibEmail": "Your AUIB email",
-    "auibEmailHint": "What comes before @auib.edu.iq: usually your ID number, or your name and ID number."
+    "auibEmailHint": "What comes before @auib.edu.iq: usually your ID number, or your name and ID number.",
+    "showPassword": "Show",
+    "hidePassword": "Hide"
   },
   "diwan": {
     "nav": {
@@ -303,8 +311,8 @@
         "notVoting": "Not yet a Voting Member",
         "qr": "Show it at the door to check in; any phone camera can check it.",
         "number": "No. {number}",
-        "numberLabel": "Member no.",
-        "since": "Member since {date}",
+        "numberLabel": "No.",
+        "since": "Since {year}",
         "checkLink": "Check this card on auibsal.org",
         "show": "Show the code full screen",
         "showHint": "Hold your phone up to the scanner at the door.",
@@ -379,7 +387,8 @@
           "profile": "Your profile",
           "tour": "Your profile and the Tour’s page"
         },
-        "takenDown": "The editors have kept this page off the site."
+        "takenDown": "The editors have kept this page off the site.",
+        "notTranscribed": "Photographed at the Tour; the Tour lead types its words in soon."
       },
       "tiers": {
         "member": "Member",
@@ -761,6 +770,13 @@
       "title": "Profile",
       "bio": "Bio",
       "bioCount": "{count} of 50 words",
+      "download": {
+        "title": "Download your data",
+        "description": "Everything the site keeps about you, as one file (JSON): your profile, membership, card number, bookings, check-ins, roles, letters, certificates, Qirtas submissions and drafts, and your settings.",
+        "submit": "Download my data",
+        "preparing": "Preparing your file…",
+        "failed": "We couldn’t prepare your file. Please try again."
+      },
       "delete": {
         "title": "Delete account",
         "description": "Deletes your account, your bookings and your profile. Published Qirtas pieces stay under the agreement you signed.",
@@ -768,7 +784,9 @@
         "prompt": "Type “{phrase}” to confirm.",
         "submit": "Delete my account",
         "deleting": "Deleting…",
-        "failed": "We couldn’t delete your account. Please try again."
+        "failed": "We couldn’t delete your account. Please try again.",
+        "reauthenticate": "To delete your account, sign in again first; it keeps someone else at your screen from doing it.",
+        "signInAgain": "Sign in again"
       },
       "push": {
         "title": "Phone notifications",
@@ -823,7 +841,14 @@
       "lede": "Your details, how the Society reaches you, and what you have shared.",
       "aboutYou": "About you",
       "photos": "Photos of me at the Society’s events may be shared",
-      "photosHint": "On the Society’s website, its channels and in Qirtas. Change your mind at any time; photos already shared stay up unless you ask us to take them down."
+      "photosHint": "On the Society’s website, its channels and in Qirtas. Change your mind at any time; photos already shared stay up unless you ask us to take them down.",
+      "titleForm": "The Arabic form of your title",
+      "titleFormHint": "Optional. Where an Arabic title names you (the Council page, Qirtas’s masthead, your card, letters), it takes this form, as in «نائبة الرئيس».",
+      "titleForms": {
+        "unset": "Not given",
+        "masculine": "Masculine",
+        "feminine": "Feminine"
+      }
     },
     "admin": {
       "title": "Administration",
@@ -999,15 +1024,26 @@
         "guests": {
           "link": "Guests",
           "title": "The Society’s guests",
-          "lede": "People outside AUIB whom Membership invites, with no partner. They hold a guest’s membership and card: they book places and write for calls open to them. A partner’s guests are on its dashboard.",
+          "lede": "People outside AUIB who signed up as guests or whom an event’s lead invited by name. They hold a guest’s card: they book places and write for Qirtas. A partner’s guests are on its dashboard.",
           "current": "Guests now",
           "empty": "No guests yet.",
           "since": "Since {date}",
           "end": "End",
           "endConfirm": "End {name}'s guest membership? Their card stops.",
-          "invite": "Invite"
+          "invite": "Invite to a class"
         },
-        "notAMember": "Guest or partner"
+        "notAMember": "Guest or partner",
+        "classes": {
+          "hint": "Associate Members (faculty, staff and friends of the Society) and Honorary Members join by invitation, one named person at a time. The link works for that address only, for fourteen days. An invitation never gives a role or a seat.",
+          "class": "Class",
+          "associate": "Associate Member",
+          "honorary": "Honorary Member",
+          "resolution": "The Council’s resolution",
+          "resolutionHint": "An Honorary Member is invited only after the Council adopts its resolution (F-34).",
+          "email": "Their email",
+          "invite": "Send the invitation",
+          "sent": "Invitation sent."
+        }
       },
       "member": {
         "title": "Member",
@@ -1016,7 +1052,7 @@
         "tier": "Tier",
         "tierSaved": "Tier saved.",
         "activity": "Check-ins",
-        "activityLede": "Check-ins at events, recorded at the door. Two in an academic year make a Member a voting member.",
+        "activityLede": "Check-ins at events, recorded at the door. Two in the 12 months before an election’s record date make a Member a voting member.",
         "kinds": {
           "check_in": "Check-in"
         },
@@ -1072,11 +1108,23 @@
         "probation": "First term (on probation)",
         "confirmRole": "Confirm after the first term",
         "studentLifeEligible": "Student Life says eligible",
-        "studentLifeNotEligible": "Student Life says not eligible"
+        "studentLifeNotEligible": "Student Life says not eligible",
+        "departure": {
+          "title": "Left AUIB",
+          "body": "For a student Member who has left AUIB. A graduate becomes an Associate Member: same account and number, no vote and no office. Someone who left without graduating becomes a guest: same number and a Guest card, no vote, no role, and Hudhud takes them out of the members’ group after a week.",
+          "graduated": "Graduated",
+          "graduatedConfirm": "Make them an Associate Member",
+          "graduatedDescription": "{name} graduated: their class becomes Associate Member and any role they hold ends.",
+          "left": "Left without graduating",
+          "leftConfirm": "Make them a guest",
+          "leftDescription": "{name} left AUIB without graduating: their account becomes a guest account with the same number, and any role they hold ends.",
+          "nowGuest": "{name} is now a guest.",
+          "nowAssociate": "{name} is now an Associate Member."
+        }
       },
       "verification": {
         "title": "Partner applications",
-        "lede": "Organizations that applied to partner with the Society, each with its memorandum signed by name. The Council votes on each at its meeting; record its adopted resolution here and the organization becomes a partner. Each partner then verifies its own people.",
+        "lede": "Organizations that applied to partner with the Society, each with its memorandum signed by name. The Council votes on each at its meeting; the President then countersigns here under its adopted resolution, and the organization becomes a partner. Each partner then verifies its own people.",
         "empty": "No applications are waiting.",
         "statement": "Their note",
         "noStatement": "No note.",
@@ -1090,13 +1138,14 @@
         "purpose": "Purpose",
         "partnerWill": "What they will do",
         "asks": "They ask for",
-        "sign": "Record the Council’s vote",
-        "signConfirm": "Record the Council’s resolution approving {name}? It becomes an active partner, and whoever applied leads its dashboard.",
+        "sign": "Countersign for the Society",
+        "signConfirm": "Countersign the memorandum with {name} under the Council’s resolution? It becomes an active partner, and whoever applied leads its dashboard.",
         "declineConfirm": "Decline {name}'s application? It stays on record.",
         "earlier": "Earlier requests",
         "earlierLede": "People who asked before partners verified their own. Approve only people you can place.",
         "resolution": "The Council’s resolution",
-        "noResolution": "No adopted Council resolution to choose yet. The Council adopts it at its meeting, under that meeting’s minutes."
+        "noResolution": "No adopted Council resolution to choose yet. The Council adopts it at its meeting, under that meeting’s minutes.",
+        "signingAs": "You countersign for the Society as"
       },
       "events": {
         "title": "Events",
@@ -1223,7 +1272,16 @@
         "when": "When",
         "seats": "Capacity",
         "noLimit": "No limit",
-        "noVenue": "Not set"
+        "noVenue": "Not set",
+        "guests": {
+          "title": "Guests",
+          "hint": "Invite someone from outside AUIB by email. The link works for that address only, for fourteen days; they join as the Society’s guest, with a Guest card for the door.",
+          "email": "Their email",
+          "invite": "Invite a guest",
+          "withdraw": "Withdraw",
+          "sent": "Invitation sent."
+        },
+        "debrief": "The debrief (F-13) in Notion"
       },
       "checkIn": {
         "title": "Check-in",
@@ -1348,10 +1406,12 @@
           "deleteShift": "Delete shift",
           "deleteShiftConfirm": "Delete this shift and its sign-ups?",
           "worked": "Worked",
-          "markWorked": "Worked the shift"
+          "markWorked": "Worked the shift",
+          "station": "Tour station",
+          "stationHint": "Volunteers you confirm on it, once trained, may attach photographed pages to live cards while it runs, and only then."
         },
         "removals": {
-          "lede": "The Next Stop care promise: every request is handled within 24 hours.",
+          "lede": "Requests to remove a photo or video (MEM-02): what the request points to on the site is hidden as it arrives; decide within two business days, take it down from the Society’s channels or decline with a reason.",
           "empty": "No open requests.",
           "from": "From {name}",
           "content": "Content",
@@ -1500,16 +1560,11 @@
             "load": "Load",
             "loaded": "Loaded {pages} pages and {invitations} invitations; {attached} pages went straight to writers who already have an account.",
             "status": "Invitations: {waiting} waiting, {sent} sent, {joined} joined. Pages not yet claimed: {unclaimed}.",
-            "send": "Prepare {count} invitations",
-            "confirm": "Prepare {count} invitations as your letter, from hello@auibsal.org? The site makes them a draft in Resend; nothing goes out until you send it there.",
-            "sendNow": "Prepare the draft",
-            "notYet": "Not yet",
-            "president": "The President prepares the invitations. Anyone running the Tour can send themselves a test.",
-            "sending": "{count} invitations are being prepared. The draft appears in Resend → Broadcasts within a few minutes; send it from there.",
-            "test": "Send me a test",
-            "testSent": "A test went to {email}, as a writer would get it.",
-            "draftNote": "The invitation is your letter, signed with your signature on the site. Send yourself a test first."
-          }
+            "invitations": "The invitations go list by list from Membership → Invitations."
+          },
+          "toTranscribe": "Photographed at the station; its words not yet typed in.",
+          "transcribeHint": "Type the words exactly as on the page.",
+          "saveWords": "Save the words"
         }
       },
       "governance": {
@@ -1539,8 +1594,7 @@
         },
         "resolutions": {
           "new": "New resolution",
-          "code": "Code (R-2026-01)",
-          "codeError": "Use the form R-YYYY-NN, for example R-2026-01.",
+          "code": "Number",
           "titleField": "Title",
           "text": "Text",
           "votes": "Votes",
@@ -1551,7 +1605,9 @@
           "back": "The meeting",
           "missing": "This resolution or its meeting is not here",
           "title": "Resolutions of this meeting",
-          "none": "No resolutions recorded for this meeting."
+          "none": "No resolutions recorded for this meeting.",
+          "numbered": "Resolution {code}.",
+          "numberOnAdoption": "The site numbers the resolution (RES-year-number) once it is adopted; failed motions are recorded only in the minutes."
         },
         "elections": {
           "flagOff": "Online elections are off (Settings → Feature flags).",
@@ -2080,7 +2136,7 @@
           "missing": "This memorandum is not here",
           "asked": "Asked for: {grants}",
           "give": "Approve what they asked for",
-          "recordVote": "Record the Council’s vote"
+          "recordVote": "Countersign"
         },
         "affiliations": {
           "lede": "People who say they belong to a partner. Check with the partner’s contact before verifying. Lists are never shared with partners.",
@@ -2862,7 +2918,12 @@
           "design": "Design system",
           "applications": "Applications",
           "agreements": "Memoranda",
-          "disclosures": "Disclosures"
+          "disclosures": "Disclosures",
+          "membership": "Membership",
+          "partnerships": "Partnerships",
+          "media": "Media",
+          "council": "The Council",
+          "invitations": "Invitations"
         },
         "council": "The Council",
         "media": "Media",
@@ -3053,7 +3114,13 @@
         "checkCount": "I’ve checked the count",
         "publish": "Publish the results",
         "publishHint": "The results show on the Prize’s page from the award day. This can’t be undone.",
-        "published": "The results are published. They show from the award day."
+        "published": "The results are published. They show from the award day.",
+        "naming": "Byline",
+        "winnerNamed": "Named, if it wins",
+        "recusals": "Recusal",
+        "recuse": "Step aside",
+        "recused": "You stepped aside",
+        "recuseHint": "If you are connected to this work, step aside: you won’t score it or vote for it, and the record shows it."
       },
       "qalam": {
         "title": "Qalam",
@@ -3080,6 +3147,59 @@
         "add": "Add a student",
         "firstName": "First name",
         "lastName": "Last name"
+      },
+      "games": {
+        "title": "Check the coming games",
+        "hint": "The daily games for the next two weeks, as every reader will get them. Read each day through and mark it checked, or flag it with a note so the word lists are fixed before the day comes.",
+        "day": "No. {number}, {date}, {language}",
+        "languages": {
+          "en": "English",
+          "ar": "Arabic"
+        },
+        "word": "The word",
+        "search": "Word search",
+        "crossword": "Crossword",
+        "anagrams": "Anagrams",
+        "checked": "checked",
+        "flagged": "flagged",
+        "markChecked": "Checked",
+        "note": "What needs fixing",
+        "flag": "Flag"
+      },
+      "invitations": {
+        "title": "Invitations",
+        "lede": "The one-time invitation to join, list by list. Type in a list’s paper sign-ups, send its test to the President, and the President sends it. Each list goes once and is deleted thirty days after it is sent.",
+        "status": "{waiting} waiting, {sent} sent, {joined} joined.",
+        "sentOn": "Sent on {date}. The list is deleted on {deleted}.",
+        "enter": "Paper sign-ups",
+        "enterHint": "One person a line: their AUIB email, then their first name if they wrote it.",
+        "add": "Add to the list",
+        "added": "Added {added} of {typed}. The rest aren’t AUIB addresses or are on a list already.",
+        "hasAccount": "Has an account; not invited",
+        "remove": "Remove",
+        "test": "Send the test to the President",
+        "testSent": "The test went to {email}.",
+        "tested": "Tested on {date}.",
+        "send": "Prepare {count} invitations",
+        "confirm": "Prepare {count} invitations as your letter, from hello@auibsal.org? The site makes them a draft in Resend; nothing goes out until you send it there.",
+        "sendNow": "Prepare the draft",
+        "notYet": "Not yet",
+        "president": "Only the President sends a list, after its test has reached them.",
+        "presidentNote": "The invitation is your letter, signed with your signature on the site. Read the test before you send.",
+        "sending": "{count} invitations are being prepared. The draft appears in Resend → Broadcasts within a few minutes; send it from there."
+      },
+      "associateRequests": {
+        "title": "Requests for Associate membership",
+        "lede": "Approving sends a named invitation, valid fourteen days; a Tour page taken against the request follows the account that accepts it. Declining needs a reason, and deletes any such page.",
+        "empty": "No requests waiting.",
+        "relations": {
+          "faculty": "Faculty",
+          "staff": "Staff",
+          "alumni": "Alumni"
+        },
+        "approve": "Approve and invite",
+        "reason": "Reason for declining",
+        "decline": "Decline"
       }
     },
     "editor": {
@@ -3370,7 +3490,7 @@
           "title": "Media release",
           "action": "Sign a media release",
           "purpose": "For anyone clearly featured in Society photos, video or interviews. Under 18: a parent or guardian signs.",
-          "preamble": "I agree that the AUIB Society of Arts and Letters may photograph, film and record me at the event or shoot below, and publish the result on its channels and in its archive. I understand that I can ask for anything showing me to be removed at any time, and that it will be taken down within 24 hours. I am not paid for this. I will be credited by name unless I choose otherwise.",
+          "preamble": "I agree that the AUIB Society of Arts and Letters may photograph, film and record me at the event or shoot below, and publish the result on its channels and in its archive. I understand that I can ask for anything showing me to be removed at any time, and that what is on the site will be hidden at once and taken down from the Society’s channels within two business days unless the request is declined with a reason. I am not paid for this. I will be credited by name unless I choose otherwise.",
           "fields": {
             "occasion": "The event or shoot",
             "on_date": "Date",
@@ -3732,7 +3852,8 @@
         "title": "Password",
         "new": "New password",
         "submit": "Change the password",
-        "done": "Your password is changed. Use it next time you sign in."
+        "done": "Your password is changed. Use it next time you sign in.",
+        "code": "The code from the email"
       }
     },
     "recoveryCodes": {
@@ -3896,15 +4017,11 @@
         "inviteGuest": "Invite a guest",
         "sent": "Invitation sent.",
         "open": "Open invitations",
-        "link": "Shareable link",
         "until": "Until {date}",
         "copy": "Copy link",
         "copied": "Copied",
         "withdraw": "Withdraw",
-        "withdrawConfirm": "Withdraw this invitation? Its link stops working.",
-        "linkHint": "Or make a link to share with your people. Whoever signs up with it waits here until you verify them.",
-        "makeLink": "Make a link",
-        "societyLinkHint": "Or make a link to share. Whoever signs up with it is the Society’s guest at once."
+        "withdrawConfirm": "Withdraw this invitation? Its link stops working."
       }
     },
     "accountHome": {
@@ -3949,7 +4066,10 @@
         "unknown": "Something went wrong. Try again.",
         "one_membership": "This account already holds a membership of another kind. An account is one kind only: a member, a guest or a partner’s."
       },
-      "society": "The AUIB Society of Arts and Letters invites you as its guest: book places at events and carry a guest’s card."
+      "society": "The AUIB Society of Arts and Letters invites you as its guest: book places at events, write for Qirtas and carry a guest’s card.",
+      "associate": "The AUIB Society of Arts and Letters invites you to join as an Associate Member: come to events, write for Qirtas and carry the live membership card.",
+      "honorary": "The Council of the AUIB Society of Arts and Letters has voted to invite you to join as an Honorary Member.",
+      "acceptClass": "Accept to join the Society."
     },
     "joint": {
       "title": "Run with a partner",
@@ -3977,6 +4097,34 @@
       "printNote": "Choose Download to save a PDF (A4).",
       "download": "Download PDF",
       "revoked": "This letter was withdrawn."
+    },
+    "station": {
+      "title": "The Tour’s station",
+      "lede": "For the volunteer on a station shift. Photograph the typed page, then scan the writer’s live card, or find the Associate request they just sent. The page is theirs and stays private until they choose otherwise.",
+      "closed": "The station is closed.",
+      "closedHint": "It opens only for a volunteer confirmed on a station shift, while the shift runs. Ask the event lead if you think you should be on one.",
+      "step1": "1. Photograph the page",
+      "photo": "The typed page",
+      "step2": "2. Whose page it is",
+      "byCard": "Scan a card",
+      "byRequest": "Associate request",
+      "cardHint": "A Member’s card or a Guest card, shown live on the writer’s phone. A visitor 18 or older who isn’t an AUIB student makes a guest account first:",
+      "guestLink": "Make a guest account",
+      "requestHint": "Faculty, staff and alumni send a request for Associate membership first; the page waits on it, private.",
+      "requestLink": "Request Associate membership",
+      "requestEmail": "The email they gave in their request",
+      "keep": "Keep the page",
+      "kept": "Kept, private, as {reference}. Ready for the next page.",
+      "notCard": "That code isn’t a membership card. Ask the writer to open their card.",
+      "refusals": {
+        "card_not_live": "That card isn’t live. Ask the writer to open their card again and scan once more.",
+        "no_pending_request": "No waiting request for that email. Check it, or ask them to send the request first.",
+        "station_closed": "The station closed with your shift. The page wasn’t kept.",
+        "too_large": "The photo is too large. Take it again.",
+        "type_not_allowed": "Take the photo as a JPEG, PNG or WebP image."
+      },
+      "photoAlt": "The typed page, as the station photographed it",
+      "seePage": "See the page"
     }
   },
   "web": {
@@ -4053,7 +4201,6 @@
       "lede": "The Constitution and the rules, plans and handbooks that follow from it, and the policies of this website.",
       "englishOnly": "The documents are in English; the Arabic versions are being prepared.",
       "all": "All documents",
-      "dated": "Dated {date}",
       "contents": "Contents",
       "empty": "The documents will appear here.",
       "noText": "The text of this document has not been entered yet.",
@@ -4061,8 +4208,18 @@
         "society": "Society documents",
         "policies": "Website policies"
       },
-      "proposed": "Proposed: Version 1, until the Founding Meeting adopts it.",
-      "proposedShort": "Proposed"
+      "proposedShort": "Proposed",
+      "header": {
+        "keptBy": "Kept by the {seat}",
+        "adopted": "Version {version} · Effective {date}",
+        "effective": "Effective {date} · Version {version}, proposed",
+        "proposedFounding": "Version {version}, proposed until the Founding Meeting adopts it",
+        "proposedCouncil": "Version {version}, proposed until the Council adopts it",
+        "other": {
+          "ar": "العربية",
+          "en": "English"
+        }
+      }
     },
     "events": {
       "title": "What’s on",
@@ -4103,7 +4260,8 @@
         "consent": "Sign the trip consent form before you book."
       },
       "allEvents": "All events",
-      "auibCalendar": "AUIB’s calendar (opens auib.edu.iq)"
+      "auibCalendar": "AUIB’s calendar (opens auib.edu.iq)",
+      "heldWith": "Held with {partner}"
     },
     "journal": {
       "title": "Qirtas",
@@ -4322,7 +4480,8 @@
         "source": "Source: {source}"
       },
       "tourPages": "Typewriter Tour pages",
-      "prize": "Prize"
+      "prize": "Prize",
+      "correctionsPolicy": "How Qirtas corrects its errors"
     },
     "about": {
       "title": "About the Society",
@@ -4499,6 +4658,23 @@
           "if": "are voted by the Council for outstanding contribution",
           "can": "join us as an honored friend (no vote)"
         }
+      },
+      "associateRequest": {
+        "title": "Faculty, staff and alumni",
+        "lede": "Associate membership is for AUIB faculty, staff and alumni. Ask here; the Director of Membership answers by email with a named invitation.",
+        "name": "Your full name",
+        "email": "Your email",
+        "relation": "You are",
+        "relations": {
+          "faculty": "AUIB faculty",
+          "staff": "AUIB staff",
+          "alumni": "An AUIB graduate"
+        },
+        "note": "Anything we should know (optional)",
+        "send": "Request Associate membership",
+        "sent": "Thank you. The Director of Membership will answer by email.",
+        "failed": "That didn’t go through. Try again in a moment.",
+        "rateLimited": "Too many requests from here. Try again later."
       }
     },
     "contact": {
@@ -4512,8 +4688,7 @@
       "concern": "If something is wrong, tell any officer, our Faculty Advisor or the Office of Student Life, in person, or raise a concern in your account, under Society. Harassment, safety and anything involving a child go straight to Student Life.",
       "concernSource": "Member Handbook",
       "photoTitle": "A photo or video of you",
-      "photo": "Ask and it comes down within 24 hours.",
-      "photoLink": "Ask for a removal"
+      "photo": "Ask here: whatever on the site you point to is hidden at once, and within two business days we take it down from the Society’s channels or tell you why not."
     },
     "mediaKit": {
       "title": "Press kit",
@@ -4544,7 +4719,7 @@
       "p": {
         "5_1": "Anyone clearly featured in Society video or photography, or in an interview, signs a release before publication. Guests see their episode or feature before it is released.",
         "5_2": "At every event, a notice says that photography is taking place. Anyone may wear a camera-shy sticker or ask not to be photographed; photographers respect this without question.",
-        "5_3": "Anyone may ask for a photo or video of themselves to be removed. The Society takes it down within 24 hours, no reasons needed.",
+        "5_3": "Anyone may ask for a photo or video of themselves to be removed, through Contact. What the request points to on the site is hidden at once, and within two business days the Society takes it down from its channels or declines with a reason.",
         "5_4": "Crowd photographs are fine; close-ups of individuals who have not agreed are not published.",
         "5_5": "Photographs of people praying, in distress or in private moments are not taken."
       }
@@ -4555,7 +4730,7 @@
       "promiseTitle": "Our promise",
       "source": "Policy Manual",
       "formTitle": "Ask for a removal",
-      "formLede": "Tell us what to take down. No reasons needed, and no sign-in.",
+      "formLede": "Tell us what to take down, through the form on Contact. No reasons needed, and no sign-in.",
       "name": "Your name",
       "email": "Your email",
       "emailHint": "We write back here when it is done.",
@@ -4564,10 +4739,11 @@
       "detailsHint": "For example: the episode, and roughly when you appear.",
       "send": "Send the request",
       "sending": "Sending…",
-      "sent": "Received. It comes down within 24 hours, by {date}, and we’ll write to you.",
+      "sent": "Received. What you pointed to on the site is hidden now; by {date} we take it down from the Society’s channels or write to you with a reason.",
       "failed": "That didn’t send. Try again, or tell any officer.",
       "invalidEmail": "That email address can’t receive mail. Check it, or use another.",
-      "rateLimited": "You’ve sent several requests in the last hour. Try again later, or tell any officer."
+      "rateLimited": "You’ve sent several requests in the last hour. Try again later, or tell any officer.",
+      "formLink": "Ask for a removal on Contact"
     },
     "search": {
       "title": "Search",
@@ -4674,21 +4850,24 @@
     },
     "verifyCard": {
       "title": "Membership card",
-      "lede": "The membership cards of the AUIB Society of Arts and Letters carry a code that leads here. This page says whose card it is and whether the membership stands today.",
+      "lede": "The cards of the AUIB Society of Arts and Letters carry a code that changes every 30 seconds and leads here. For a live code, this page shows whose card it is and whether it stands today.",
       "notFound": "No card has this code. It may have been replaced by a newer one.",
       "join": "Join the Society",
       "valid": "This membership stands today.",
       "lapsed": "This card belongs to the Society’s records, but the membership does not stand today.",
       "holder": "Card holder",
       "tier": "Class",
-      "since": "Member since",
-      "note": "Members can replace their card’s code at any time; an old code then stops working.",
+      "since": "Since",
+      "note": "Card holders can replace their card’s code at any time; an old code then stops working.",
       "live": "This is the live card: its code is from the last minute.",
-      "notLive": "This code isn’t live (it may be a screenshot). Ask to see the card on the member’s own phone.",
+      "notLive": "This code is not current.",
       "pattern": "This card’s pattern. It should match the one on the member’s card.",
       "status": "Status",
       "statusActive": "Active",
-      "statusInactive": "Not active"
+      "statusInactive": "Not active",
+      "notLiveHint": "It may be a screenshot or an old link. Ask to see the card on the holder’s own phone.",
+      "number": "No.",
+      "role": "Role"
     },
     "productions": {
       "title": "Plays",
@@ -4877,6 +5056,17 @@
       "rules": "How the Council works and how elections run is set out in the Constitution and the Bylaws.",
       "documents": "Read the documents",
       "seats": {
+        "president": "President",
+        "vice_president": "Vice President",
+        "general_secretary": "General Secretary",
+        "eic": "Editor-in-Chief",
+        "media_director": "Director of Media",
+        "artistic_director": "Artistic Director",
+        "events_director": "Director of Events",
+        "partnerships_director": "Director of Partnerships",
+        "membership_director": "Director of Membership"
+      },
+      "seatsFeminine": {
         "president": "President",
         "vice_president": "Vice President",
         "general_secretary": "General Secretary",

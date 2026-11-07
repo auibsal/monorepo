@@ -49,6 +49,16 @@ export const buckets = {
     ],
     public: false,
   },
+  /**
+   * Private: Tour pages as the station photographed them,
+   * station/<uuid>.<ext> (decisions §12); read through /api/tour/photo.
+   */
+  tourPages: {
+    id: "tour-pages",
+    maxBytes: 10 * 1024 * 1024,
+    mimeTypes: ["image/jpeg", "image/png", "image/webp"],
+    public: false,
+  },
 } as const;
 
 export type BucketKey = keyof typeof buckets;

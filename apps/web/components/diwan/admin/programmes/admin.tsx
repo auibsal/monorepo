@@ -3,7 +3,9 @@
 import { useAuth } from "@repo/auth/provider";
 import { SalCard } from "@repo/brand/components/sal/card";
 import { Button } from "@repo/brand/components/ui/button";
+import { Checkbox } from "@repo/brand/components/ui/checkbox";
 import { Input } from "@repo/brand/components/ui/input";
+import { Label } from "@repo/brand/components/ui/label";
 import { Textarea } from "@repo/brand/components/ui/textarea";
 import type { Locale } from "@repo/internationalization";
 import {
@@ -16,7 +18,7 @@ import { hasPermissionAnywhere } from "@repo/rbac";
 import { localized, programmes, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
-import { type FormEvent, useEffect, useState } from "react";
+import { type FormEvent, useEffect, useId, useState } from "react";
 import { Link, useRouter } from "@/lib/diwan/navigation";
 import { useGrants } from "@/lib/diwan/queries";
 import { DiwanSection } from "../../page";
@@ -683,6 +685,7 @@ export const Shifts = ({ eventId }: { eventId: string }) => {
               <div className="flex flex-wrap items-baseline justify-between gap-2">
                 <p className="font-medium">
                   {localized(shift, "role", locale)}
+                  {shift.station ? ` · ${t("station")}` : ""}
                   {shift.location_en || shift.location_ar
                     ? ` · ${localized(shift, "location", locale)}`
                     : ""}
@@ -770,6 +773,7 @@ const NewShift = ({
   const t = useTranslations("diwan.admin.programmes.rotas");
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
+  const stationId = useId();
   const [form, setForm] = useState({
     capacity: "1",
     ends_at: null as string | null,
@@ -777,6 +781,7 @@ const NewShift = ({
     role: { ar: "", en: "" },
     skills: [] as string[],
     starts_at: null as string | null,
+    station: false,
   });
   const add = useMutation({
     mutationFn: async () =>
@@ -794,6 +799,7 @@ const NewShift = ({
             role_en: form.role.en,
             skills: form.skills,
             starts_at: form.starts_at ?? "",
+            station: form.station,
           })
       ),
     onSuccess: async () => {
@@ -854,6 +860,23 @@ const NewShift = ({
         onChange={(skills) => setForm((f) => ({ ...f, skills }))}
         value={form.skills}
       />
+      {/* A Tour station (decisions §12): its confirmed volunteers attach
+          photographed pages to live cards while it runs. */}
+      <div className="flex items-start gap-2">
+        <Checkbox
+          checked={form.station}
+          id={`${stationId}-station`}
+          onCheckedChange={(checked) =>
+            setForm((f) => ({ ...f, station: checked === true }))
+          }
+        />
+        <Label className="grid gap-1" htmlFor={`${stationId}-station`}>
+          <span>{t("station")}</span>
+          <span className="type-caption text-text-secondary">
+            {t("stationHint")}
+          </span>
+        </Label>
+      </div>
       <SaveButton
         disabled={!(form.starts_at && form.ends_at)}
         pending={add.isPending}

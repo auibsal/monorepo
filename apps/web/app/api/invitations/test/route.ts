@@ -14,6 +14,7 @@ import {
   invitationSigner,
 } from "@/lib/api/invitation-letter";
 import { hasPermission } from "@/lib/api/permissions";
+import { presidentId } from "@/lib/api/signer";
 import { origin } from "@/lib/api/urls";
 
 export const OPTIONS = preflight;
@@ -25,11 +26,12 @@ const SAMPLE = {
 };
 
 /**
- * The invitation as one writer would get it, mailed to the person asking
- * (owner, Nov 7, 2026): the President's letter, signed and from their
- * address, greeting them by name and quoting their own Tour page (or a
- * sample). For whoever sends the invitations (roles.assign with
- * governance.manage) or runs the Tour.
+ * A list's test (decisions §2): the invitation as one person on the list
+ * would get it, mailed to the President before they say go (their letter,
+ * signed and from their address; a Tour list quotes their own Tour page or
+ * a sample). Recorded on the list (`tested_at`): the list can't be sent
+ * before it. For the President, the Director of Membership (members.manage)
+ * and whoever runs the Tour.
  */
 export const POST = async (request: Request) => {
   const headers = corsHeaders(request);
@@ -43,29 +45,53 @@ export const POST = async (request: Request) => {
   const president =
     (await hasPermission(session, "roles.assign")) &&
     (await hasPermission(session, "governance.manage"));
-  if (!(president || (await hasPermission(session, "tour.run")))) {
+  if (
+    !(
+      president ||
+      (await hasPermission(session, "members.manage")) ||
+      (await hasPermission(session, "tour.run"))
+    )
+  ) {
     return json({ error: "forbidden" }, 403);
   }
-  const email =
-    typeof session.claims.email === "string" ? session.claims.email : "";
-  if (!email) {
-    return json({ error: "no_email" }, 400);
-  }
+  const body = (await request.json().catch(() => ({}))) as { list?: unknown };
+  const list = typeof body.list === "string" ? body.list : "";
 
   try {
     const admin = createAdminClient();
+    const { data: found } = await admin
+      .schema("membership")
+      .from("invitation_lists")
+      .select("source, sent_at")
+      .eq("source", list)
+      .maybeSingle();
+    if (!found) {
+      return json({ error: "not_found" }, 404);
+    }
+    if (found.sent_at) {
+      return json({ error: "invitation_list_closed" }, 409);
+    }
+    const presidentUser = await presidentId(admin);
+    const { data: user } = presidentUser
+      ? await admin.auth.admin.getUserById(presidentUser)
+      : { data: null };
+    const email = user?.user?.email ?? "";
+    if (!(presidentUser && email)) {
+      return json({ error: "no_president" }, 409);
+    }
+    const tour = list.startsWith("tour");
     const [{ data: profile }, { data: page }] = await Promise.all([
       admin
         .schema("core")
         .from("profiles")
         .select("first_name_en")
-        .eq("id", session.userId)
+        .eq("id", presidentUser)
         .maybeSingle(),
       admin
         .schema("programmes")
         .from("six_words")
         .select("text, station")
-        .or(`user_id.eq.${session.userId},email.eq.${email.toLowerCase()}`)
+        .eq("user_id", presidentUser)
         .limit(1)
         .maybeSingle(),
     ]);
@@ -74,7 +100,7 @@ export const POST = async (request: Request) => {
       "en",
       {
         first_name: profile?.first_name_en ?? null,
-        kind: "tour",
+        kind: tour ? "tour" : "plain",
         pages: 1,
         station: page?.station ?? SAMPLE.station,
         words: page?.text ?? SAMPLE.words,
@@ -97,6 +123,11 @@ export const POST = async (request: Request) => {
       text: noticeText({ blocks: built.blocks, footer }),
       to: email,
     });
+    await admin
+      .schema("membership")
+      .from("invitation_lists")
+      .update({ tested_at: new Date().toISOString() })
+      .eq("source", list);
     return json({ sent: email });
   } catch (error) {
     log.error("Invitation test failed", { error: parseError(error) });
