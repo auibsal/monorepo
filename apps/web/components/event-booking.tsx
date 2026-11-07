@@ -3,12 +3,17 @@
 import { hasSessionCookie } from "@repo/auth/session-cookie";
 import { Button } from "@repo/brand/components/ui/button";
 import { type Locale, localizedPath } from "@repo/internationalization";
-import { events } from "@repo/sal-data";
 import { useLocale, useTranslations } from "next-intl";
 import { useCallback, useEffect, useState } from "react";
-import { getSupabase } from "@/lib/diwan/supabase";
 
 type Status = "booked" | "waiting" | "reminded" | "none";
+
+// The Supabase client and the booking calls load only for someone signed
+// in, so the page stays within its budget for everyone else (it is cached
+// and the same for all; apps/e2e/tests/performance.spec.ts).
+const loadClient = async () =>
+  (await import("@/lib/diwan/supabase")).getSupabase();
+const loadEvents = async () => await import("@repo/sal-data/events");
 type Notice = "booked" | "waitlisted" | "cancelled" | "reminded" | "failed";
 
 /**
@@ -39,7 +44,7 @@ export const EventBooking = ({
   const [notice, setNotice] = useState<Notice | null>(null);
 
   const load = useCallback(async () => {
-    const supabase = getSupabase().schema("events");
+    const supabase = (await loadClient()).schema("events");
     const [rsvp, waiting, reminder, event] = await Promise.all([
       supabase
         .from("rsvps")
@@ -98,23 +103,25 @@ export const EventBooking = ({
     }
   };
 
-  const client = () => getSupabase();
   const book = () =>
-    run(async () =>
-      (await events.rsvp(client(), eventId)) === "waitlisted"
+    run(async () => {
+      const [client, events] = await Promise.all([loadClient(), loadEvents()]);
+      return (await events.rsvp(client, eventId)) === "waitlisted"
         ? "waitlisted"
-        : "booked"
-    );
+        : "booked";
+    });
   const cancel = () =>
     run(async () => {
-      await events.cancelRsvp(client(), eventId);
+      const [client, events] = await Promise.all([loadClient(), loadEvents()]);
+      await events.cancelRsvp(client, eventId);
       return "cancelled";
     });
   const remind = (on: boolean) =>
     run(async () => {
+      const [client, events] = await Promise.all([loadClient(), loadEvents()]);
       await (on
-        ? events.remindMe(client(), eventId)
-        : events.forgetReminder(client(), eventId));
+        ? events.remindMe(client, eventId)
+        : events.forgetReminder(client, eventId));
       return on ? "reminded" : "cancelled";
     });
 
