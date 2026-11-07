@@ -1,5 +1,5 @@
+import { Link } from "@repo/internationalization/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { RemovalForm } from "@/components/removal-form";
 import { PageHeader, Section } from "@/components/section";
 import { type LocaleParams, sectionMetadata } from "@/lib/page";
 
@@ -41,7 +41,10 @@ const CarePage = async ({ params }: LocaleParams) => {
           {t("formTitle")}
         </h2>
         <p className="type-body">{t("formLede")}</p>
-        <RemovalForm />
+        {/* The one removal form is on Contact (MEM-02, decisions §13). */}
+        <Link className="link justify-self-start" href="/about/contact#photo">
+          {t("formLink")}
+        </Link>
       </section>
     </div>
   );

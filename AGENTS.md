@@ -451,7 +451,10 @@ any schema change. Integration tests run against a local stack with
   to the Library (`/library`); the Diwan's Library keeps only each
   document's adoption record. Every document is Version 1 and shows
   "Proposed" until adopted at the Founding Meeting; both editions publish
-  together; internal documents never reach the Library. Codes follow
+  together; internal documents never reach the Library. Under each
+  document's title one line (decisions §13): code · kept by <seat>
+  (Notion's Owner) · status · the other edition; no "Dated" line. Both
+  editions share one Code and one slug (no "-ar" slugs). Codes follow
   decisions.md §6 (GOV, EXB, EVT, MEM, PTN, MED, ART, EDT); visitors and
   members never see codes, statuses or versions. Never edit the text of
   an adopted document. The re-sync is

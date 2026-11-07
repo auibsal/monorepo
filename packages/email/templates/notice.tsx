@@ -91,9 +91,14 @@ const NAME = {
   en: "AUIB Society of Arts and Letters",
 };
 
+/**
+ * The foot of every email: who sent it, the sustainability line and the
+ * Society's postal address (decisions §6, Email: bulk mail carries it, as
+ * CAN-SPAM asks; every email carries the same foot).
+ */
 const FOOTER = {
-  ar: "أُرسلت من موقع جمعية الفنون والآداب في الجامعة الأمريكية في العراق – بغداد، auibsal.org. الأصل عندنا: بلا ورق. والكتب يُعاد استخدامها عبر «الفصل الثاني».",
-  en: "Sent by the website of the AUIB Society of Arts and Letters, auibsal.org. Paperless by default. Books reused through Second Chapter.",
+  ar: "أُرسلت من موقع جمعية الفنون والآداب في الجامعة الأمريكية في العراق – بغداد، auibsal.org. الأصل عندنا: بلا ورق. والكتب يُعاد استخدامها عبر «الفصل الثاني». جمعية الفنون والآداب في الجامعة الأمريكية في العراق – بغداد، بعناية مكتب شؤون الطلبة، الجامعة الأمريكية في العراق – بغداد، طريق المطار، بغداد، العراق.",
+  en: "Sent by the website of the AUIB Society of Arts and Letters, auibsal.org. Paperless by default. Books reused through Second Chapter. AUIB Society of Arts and Letters, c/o Office of Student Life, American University of Iraq – Baghdad, Airport Road, Baghdad, Iraq.",
 };
 
 /**

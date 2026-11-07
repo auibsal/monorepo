@@ -40,6 +40,79 @@ export const documentMetadata = async (
   });
 };
 
+/** The seats that keep documents, in Arabic (the glossary's forms). */
+const SEATS_AR: Record<string, string> = {
+  "Artistic Director": "المدير الفني",
+  "Director of Events": "مدير الفعاليات",
+  "Director of Media": "مدير الإعلام",
+  "Director of Membership": "مدير العضوية",
+  "Director of Partnerships": "مدير الشراكات",
+  "Editor-in-Chief": "رئيس التحرير",
+  "General Secretary": "الأمين العام",
+  President: "الرئيس",
+  "Vice President": "نائب الرئيس",
+};
+
+/** GOV-04 to GOV-06 took effect with the site (decisions §13). */
+const SITE_POLICIES = new Set(["SAL-GOV-04", "SAL-GOV-05", "SAL-GOV-06"]);
+const FOUNDING = new Set(["SAL-GOV-01", "SAL-GOV-02"]);
+const SITE_LAUNCH = "2026-11-08";
+
+type Doc = NonNullable<Awaited<ReturnType<typeof load>>>;
+
+/**
+ * The one line under a document's title (decisions §13, as university
+ * policy libraries do): the code, the seat that keeps it, its status and
+ * the link to the other edition. No "Dated" line.
+ */
+const DocumentLine = async ({ doc, locale }: { doc: Doc; locale: Locale }) => {
+  const t = await getTranslations({
+    locale,
+    namespace: "web.documents.header",
+  });
+  const version = String(doc.version ?? 1);
+  let status: string;
+  if (doc.status === "adopted" && doc.adopted_on) {
+    status = t("adopted", {
+      date: formatLongDate(doc.adopted_on, locale),
+      version,
+    });
+  } else if (SITE_POLICIES.has(doc.code)) {
+    status = t("effective", {
+      date: formatLongDate(SITE_LAUNCH, locale),
+      version,
+    });
+  } else if (FOUNDING.has(doc.code)) {
+    status = t("proposedFounding", { version });
+  } else {
+    status = t("proposedCouncil", { version });
+  }
+  const other = locale === "ar" ? "en" : "ar";
+  const hasOther = other === "ar" ? Boolean(doc.body_ar) : Boolean(doc.body_en);
+  const keeper = doc.owner
+    ? t("keptBy", {
+        seat: locale === "ar" ? (SEATS_AR[doc.owner] ?? doc.owner) : doc.owner,
+      })
+    : null;
+  return (
+    <p className="type-caption">
+      {[doc.code, keeper, status].filter(Boolean).join(" · ")}
+      {hasOther ? (
+        <>
+          {" · "}
+          <a
+            className="link"
+            href={localizedPath(other, documents.documentPath(doc.slug))}
+            lang={other}
+          >
+            {t(`other.${other}`)}
+          </a>
+        </>
+      ) : null}
+    </p>
+  );
+};
+
 /**
  * A public document (/library/<slug>, or GOV-04 to GOV-06 at /privacy,
  * /terms and /accessibility): its text from Notion, with its contents and
@@ -95,14 +168,7 @@ export const DocumentArticle = async ({
             {documents.documentSummary(doc, locale)}
           </p>
         ) : null}
-        {doc.status === "proposed" ? (
-          <p className="type-caption">{t("proposed")}</p>
-        ) : null}
-        {doc.dated ? (
-          <p className="type-caption">
-            {t("dated", { date: formatLongDate(doc.dated, locale) })}
-          </p>
-        ) : null}
+        <DocumentLine doc={doc} locale={locale} />
       </DocumentHeader>
 
       {contents.length > 0 ? (

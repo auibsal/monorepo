@@ -6153,6 +6153,9 @@ export type Database = {
           details: string;
           due_at: string;
           handled_by: string | null;
+          hidden_id: string | null;
+          hidden_kind: string | null;
+          hidden_was: string | null;
           id: string;
           programme_id: string | null;
           requester_email: string;
@@ -6168,6 +6171,9 @@ export type Database = {
           details: string;
           due_at?: string;
           handled_by?: string | null;
+          hidden_id?: string | null;
+          hidden_kind?: string | null;
+          hidden_was?: string | null;
           id?: string;
           programme_id?: string | null;
           requester_email: string;
@@ -6183,6 +6189,9 @@ export type Database = {
           details?: string;
           due_at?: string;
           handled_by?: string | null;
+          hidden_id?: string | null;
+          hidden_kind?: string | null;
+          hidden_was?: string | null;
           id?: string;
           programme_id?: string | null;
           requester_email?: string;

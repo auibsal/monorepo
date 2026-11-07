@@ -22,6 +22,8 @@ export interface SalDocument {
   dated: string | null;
   id: string;
   notion_url?: string | null;
+  /** The seat that keeps it (Notion's Owner), for its header. */
+  owner?: string | null;
   ratification: string | null;
   slug: string;
   sort: number;

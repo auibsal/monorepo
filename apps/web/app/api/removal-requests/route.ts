@@ -20,8 +20,10 @@ const requestSchema = programmes.removalRequestSchema.extend({
 const PER_HOUR = 3;
 
 /**
- * Next Stop care (Policy Manual 5.3): anyone may ask for a photo or video of
- * themselves to be removed, and it comes down within 24 hours. No sign-in is
+ * Removal requests (MEM-02, decisions §13), from Contact: anyone may ask
+ * for a photo or video of themselves to be removed. What the request points
+ * to on the site is hidden at once (private.hide_for_removal), and staff
+ * decide within two business days. No sign-in is
  * needed, so the request is written with the admin client after validation;
  * the database trigger queues the notice to the program's managers.
  */

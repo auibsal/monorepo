@@ -709,12 +709,12 @@ export const removalRequested = (
   overdue = false
 ) =>
   build(lang, (l) => ({
-    action: diwan(app, l, "/programs"),
+    action: diwan(app, l, "/media"),
     heading: removalHeading[overdue ? "overdue" : "new"][l],
     paragraphs: [
       l === "ar"
-        ? `يجب الحذف قبل ${when(r.due_at, l)} (السياسة 5.3: خلال 24 ساعة، دون الحاجة إلى أسباب).`
-        : `Take it down by ${when(r.due_at, l)} (Policy 5.3: within 24 hours, no reasons needed).`,
+        ? `ما يشير إليه الطلب على الموقع مخفيّ الآن. قرّر قبل ${when(r.due_at, l)} (خلال يومَي عمل، MEM-02): احذفه من قنوات الجمعية أو ارفض الطلب مع ذكر السبب.`
+        : `What the request points to on the site is hidden now. Decide by ${when(r.due_at, l)} (two business days, MEM-02): take it down from the Society’s channels or decline with a reason.`,
       `${r.requester_name} <${r.requester_email}>`,
       ...(r.content_url ? [r.content_url] : []),
       r.details,
@@ -726,8 +726,8 @@ export const removalReceived = (lang: Lang, dueAt: string) =>
     heading: l === "ar" ? "وصلنا طلب الحذف" : "We have your removal request",
     paragraphs: [
       l === "ar"
-        ? `سيُحذف المحتوى خلال 24 ساعة، قبل ${when(dueAt, l)}، وسنكتب إليك عند الانتهاء.`
-        : `It comes down within 24 hours, by ${when(dueAt, l)}, and we'll write to you when it's done.`,
+        ? `أُخفي ما أشرت إليه على الموقع. وبحلول ${when(dueAt, l)} نحذفه من قنوات الجمعية أو نكتب إليك بالسبب.`
+        : `What you pointed to on the site is hidden now. By ${when(dueAt, l)} we take it down from the Society’s channels or write to you with a reason.`,
     ],
   }));
 

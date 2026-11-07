@@ -1388,7 +1388,7 @@
           "markWorked": "Worked the shift"
         },
         "removals": {
-          "lede": "The Next Stop care promise: every request is handled within 24 hours.",
+          "lede": "Requests to remove a photo or video (MEM-02): what the request points to on the site is hidden as it arrives; decide within two business days, take it down from the Society’s channels or decline with a reason.",
           "empty": "No open requests.",
           "from": "From {name}",
           "content": "Content",
@@ -3436,7 +3436,7 @@
           "title": "Media release",
           "action": "Sign a media release",
           "purpose": "For anyone clearly featured in Society photos, video or interviews. Under 18: a parent or guardian signs.",
-          "preamble": "I agree that the AUIB Society of Arts and Letters may photograph, film and record me at the event or shoot below, and publish the result on its channels and in its archive. I understand that I can ask for anything showing me to be removed at any time, and that it will be taken down within 24 hours. I am not paid for this. I will be credited by name unless I choose otherwise.",
+          "preamble": "I agree that the AUIB Society of Arts and Letters may photograph, film and record me at the event or shoot below, and publish the result on its channels and in its archive. I understand that I can ask for anything showing me to be removed at any time, and that what is on the site will be hidden at once and taken down from the Society’s channels within two business days unless the request is declined with a reason. I am not paid for this. I will be credited by name unless I choose otherwise.",
           "fields": {
             "occasion": "The event or shoot",
             "on_date": "Date",
@@ -4119,7 +4119,6 @@
       "lede": "The Constitution and the rules, plans and handbooks that follow from it, and the policies of this website.",
       "englishOnly": "The documents are in English; the Arabic versions are being prepared.",
       "all": "All documents",
-      "dated": "Dated {date}",
       "contents": "Contents",
       "empty": "The documents will appear here.",
       "noText": "The text of this document has not been entered yet.",
@@ -4127,8 +4126,18 @@
         "society": "Society documents",
         "policies": "Website policies"
       },
-      "proposed": "Proposed: Version 1, until the Founding Meeting adopts it.",
-      "proposedShort": "Proposed"
+      "proposedShort": "Proposed",
+      "header": {
+        "keptBy": "Kept by the {seat}",
+        "adopted": "Version {version} · Effective {date}",
+        "effective": "Effective {date} · Version {version}, proposed",
+        "proposedFounding": "Version {version}, proposed until the Founding Meeting adopts it",
+        "proposedCouncil": "Version {version}, proposed until the Council adopts it",
+        "other": {
+          "ar": "العربية",
+          "en": "English"
+        }
+      }
     },
     "events": {
       "title": "What’s on",
@@ -4579,8 +4588,7 @@
       "concern": "If something is wrong, tell any officer, our Faculty Advisor or the Office of Student Life, in person, or raise a concern in your account, under Society. Harassment, safety and anything involving a child go straight to Student Life.",
       "concernSource": "Member Handbook",
       "photoTitle": "A photo or video of you",
-      "photo": "Ask and it comes down within 24 hours.",
-      "photoLink": "Ask for a removal"
+      "photo": "Ask here: whatever on the site you point to is hidden at once, and within two business days we take it down from the Society’s channels or tell you why not."
     },
     "mediaKit": {
       "title": "Press kit",
@@ -4611,7 +4619,7 @@
       "p": {
         "5_1": "Anyone clearly featured in Society video or photography, or in an interview, signs a release before publication. Guests see their episode or feature before it is released.",
         "5_2": "At every event, a notice says that photography is taking place. Anyone may wear a camera-shy sticker or ask not to be photographed; photographers respect this without question.",
-        "5_3": "Anyone may ask for a photo or video of themselves to be removed. The Society takes it down within 24 hours, no reasons needed.",
+        "5_3": "Anyone may ask for a photo or video of themselves to be removed, through Contact. What the request points to on the site is hidden at once, and within two business days the Society takes it down from its channels or declines with a reason.",
         "5_4": "Crowd photographs are fine; close-ups of individuals who have not agreed are not published.",
         "5_5": "Photographs of people praying, in distress or in private moments are not taken."
       }
@@ -4622,7 +4630,7 @@
       "promiseTitle": "Our promise",
       "source": "Policy Manual",
       "formTitle": "Ask for a removal",
-      "formLede": "Tell us what to take down. No reasons needed, and no sign-in.",
+      "formLede": "Tell us what to take down, through the form on Contact. No reasons needed, and no sign-in.",
       "name": "Your name",
       "email": "Your email",
       "emailHint": "We write back here when it is done.",
@@ -4631,10 +4639,11 @@
       "detailsHint": "For example: the episode, and roughly when you appear.",
       "send": "Send the request",
       "sending": "Sending…",
-      "sent": "Received. It comes down within 24 hours, by {date}, and we’ll write to you.",
+      "sent": "Received. What you pointed to on the site is hidden now; by {date} we take it down from the Society’s channels or write to you with a reason.",
       "failed": "That didn’t send. Try again, or tell any officer.",
       "invalidEmail": "That email address can’t receive mail. Check it, or use another.",
-      "rateLimited": "You’ve sent several requests in the last hour. Try again later, or tell any officer."
+      "rateLimited": "You’ve sent several requests in the last hour. Try again later, or tell any officer.",
+      "formLink": "Ask for a removal on Contact"
     },
     "search": {
       "title": "Search",
