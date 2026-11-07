@@ -87,9 +87,10 @@ set slug = a.new_slug,
 from event_addresses a
 where e.slug = a.old_slug;
 
--- The Founding Meeting takes RSVPs; the trip is off campus, with its venue.
+-- The Founding Meeting is for members and takes RSVPs; the trip is off
+-- campus, with its venue.
 update events.events
-set entry = 'rsvp', rsvp_enabled = true
+set entry = 'rsvp', rsvp_enabled = true, members_only = true
 where slug = 'founding-meeting-2027-03-30';
 
 update events.events

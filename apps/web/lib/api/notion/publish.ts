@@ -344,6 +344,12 @@ const arabicRowOf = async (ctx: SyncContext, eventId: string) => {
   return data?.notion_page_id ?? null;
 };
 
+const EVENT_STATUS: Record<string, string> = {
+  cancelled: "Canceled",
+  draft: "Planning",
+  published: "Published",
+};
+
 /**
  * An event's Arabic edition: its own row, linked to the English row in
  * Edition of. It fills the event's Arabic title, summary, venue and text;
@@ -371,7 +377,7 @@ const publishArabicEvent = async (
   const { data: event } = await ctx.admin
     .schema("events")
     .from("events")
-    .select("slug, programme_id, entry, off_campus")
+    .select("slug, programme_id, entry, off_campus, status")
     .eq("id", eventId)
     .maybeSingle();
   const publisher = await publisherFor(
@@ -412,13 +418,25 @@ const publishArabicEvent = async (
       : {}),
     Diwan: prop.url(`${ctx.appUrl}/events/${event?.slug ?? eventId}`),
     "Diwan ID": prop.text(eventId),
-    "Platform note": prop.text(
-      publishedNote(await publisherName(ctx, publisher))
-    ),
-    "Public page": prop.url(
-      event?.slug ? `${ctx.webUrl}/ar/events/${event.slug}` : null
-    ),
-    Status: prop.select("Published"),
+    // The edition shows its event's state: an event still a draft (off
+    // campus, waiting for Student Life) has no public page yet.
+    ...(event?.status === "published"
+      ? {
+          "Platform note": prop.text(
+            publishedNote(await publisherName(ctx, publisher))
+          ),
+          "Public page": prop.url(`${ctx.webUrl}/ar/events/${event.slug}`),
+          Status: prop.select("Published"),
+        }
+      : {
+          "Platform note": prop.text(
+            `Saved with its event (${stamp()}), which is not published yet; the Arabic shows once the English row is published.`
+          ),
+          "Public page": prop.url(null),
+          Status: prop.select(
+            EVENT_STATUS[event?.status ?? "draft"] ?? "Planning"
+          ),
+        }),
   });
   count(ctx, "event_ar.published");
 };
@@ -740,12 +758,6 @@ export const publishWaiting = async (ctx: SyncContext) => {
       problem(ctx, `${kind} ${bareId(page.id)}: ${(error as Error).message}`);
     }
   }
-};
-
-const EVENT_STATUS: Record<string, string> = {
-  cancelled: "Canceled",
-  draft: "Planning",
-  published: "Published",
 };
 
 /** The one-language rule, said where a row has no text yet. */
