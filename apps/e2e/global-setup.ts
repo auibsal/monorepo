@@ -169,6 +169,15 @@ export default async function globalSetup() {
       { onConflict: "source,uid" }
     );
 
+  // A piece to read (the text-size journey). Qirtas starts empty in
+  // production (decisions §10); here one of the old News pieces is put
+  // back as a fixture, dated after it was made.
+  await db
+    .schema("journal")
+    .from("pieces")
+    .update({ published_at: new Date().toISOString(), status: "published" })
+    .eq("slug", "qirtas-launches-as-one-paper");
+
   const issue = await db
     .schema("journal")
     .from("issues")
