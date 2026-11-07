@@ -1223,7 +1223,15 @@
         "when": "When",
         "seats": "Capacity",
         "noLimit": "No limit",
-        "noVenue": "Not set"
+        "noVenue": "Not set",
+        "guests": {
+          "title": "Guests",
+          "hint": "Invite someone from outside AUIB by email. The link works for that address only, for fourteen days; they join as the Society’s guest, with a Guest card for the door.",
+          "email": "Their email",
+          "invite": "Invite a guest",
+          "withdraw": "Withdraw",
+          "sent": "Invitation sent."
+        }
       },
       "checkIn": {
         "title": "Check-in",

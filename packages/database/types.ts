@@ -2395,6 +2395,7 @@ export type Database = {
           created_at: string;
           created_by: string | null;
           email: string | null;
+          event_id: string | null;
           expires_at: string;
           id: string;
           kind: string;
@@ -2408,6 +2409,7 @@ export type Database = {
           created_at?: string;
           created_by?: string | null;
           email?: string | null;
+          event_id?: string | null;
           expires_at?: string;
           id?: string;
           kind: string;
@@ -2421,6 +2423,7 @@ export type Database = {
           created_at?: string;
           created_by?: string | null;
           email?: string | null;
+          event_id?: string | null;
           expires_at?: string;
           id?: string;
           kind?: string;

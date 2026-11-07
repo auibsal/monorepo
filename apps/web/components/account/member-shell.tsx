@@ -99,9 +99,9 @@ const useAccountLinks = (): AccountLink[] => {
     href: "/account/calendar",
     key: "calendar",
   };
-  // The row by kind: members have all six; guests book, so keep their
-  // calendar; a partner's people and anyone with no membership yet have
-  // Today and Settings.
+  // The row by kind: members have all six; guests book and write for
+  // Qirtas (decisions §2), so keep their calendar and work; a partner's
+  // people and anyone with no membership yet have Today and Settings.
   if (kind === "member") {
     return [
       today,
@@ -112,7 +112,9 @@ const useAccountLinks = (): AccountLink[] => {
       settings,
     ];
   }
-  return kind === "guest" ? [today, calendar, settings] : [today, settings];
+  return kind === "guest"
+    ? [today, calendar, { href: "/account/work", key: "work" }, settings]
+    : [today, settings];
 };
 
 /** The account's links and sign-out. */

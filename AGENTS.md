@@ -324,8 +324,12 @@ any schema change. Integration tests run against a local stack with
   shareable links). Partners never use Notion and see only their own events and
   checklist. No perks or offers anywhere: sponsors in kind are thanked
   with a "Supported by" line, and the card is for the door only.
-- **Guests** sign up at `/sign-up/guest` to book open events, or are
-  invited from Membership → Guests; never members.
+- **Guests** sign up at `/sign-up/guest`, or are invited by named email
+  from Membership → Guests, by a partner, or by an event's lead on the
+  event's Diwan page (`partner_invitations.event_id`); never members. Each
+  has a number from the one series and a Guest card from the start, books
+  RSVP events, and writes for Qirtas (bylined as a guest, never eligible
+  for the Prize).
 - **Money: none.** No budgets, costs, prices, spending limits, ledgers,
   claims, reimbursements, payments or ads anywhere; sponsors give in kind
   only. Every event, Qirtas and the Tour keep a needs list

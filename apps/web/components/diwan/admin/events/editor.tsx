@@ -22,6 +22,7 @@ import { AdminHeading, BilingualField, ErrorLine, SaveButton } from "../kit";
 import { NotionManaged } from "../notion-managed";
 import { RecordHistory } from "../record-history";
 import { Attendance } from "./attendance";
+import { GuestInvitations } from "./guest-invitations";
 import { Invitations } from "./invitations";
 import { EventPartsAdmin } from "./parts";
 
@@ -245,6 +246,7 @@ export const EventEditor = () => {
       )}
 
       {entry === "invite" ? <Invitations eventId={eventId} /> : null}
+      {entry === "rsvp" ? <GuestInvitations eventId={eventId} /> : null}
       <Attendance
         capacity={event.capacity}
         eventId={eventId}
