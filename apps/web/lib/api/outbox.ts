@@ -78,7 +78,9 @@ import { pushToUser } from "./push";
 import { telegramToUser } from "./telegram";
 import {
   expireWalletPass,
+  refreshWalletPass,
   renumberWalletPass,
+  walletCardFrom,
   walletConfigured,
 } from "./wallet";
 
@@ -1395,6 +1397,19 @@ const handlers: Record<string, Handler> = {
     }
     if (waiting.length > 0) {
       throw new BroadcastPending(waiting.join(" "));
+    }
+  },
+  // A role or class changed (decisions §11): a saved pass shows it.
+  "wallet.refresh": async (admin, payload) => {
+    if (!walletConfigured() || typeof payload.user_id !== "string") {
+      return;
+    }
+    const { data: row } = await admin
+      .schema("membership")
+      .rpc("wallet_card", { uid: payload.user_id })
+      .maybeSingle();
+    if (row) {
+      await refreshWalletPass(walletCardFrom(row));
     }
   },
   // The renumbering (decisions §10): a saved pass shows the new number.

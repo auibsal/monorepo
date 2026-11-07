@@ -96,6 +96,13 @@ export const myMembership = async (client: Client) => {
   };
 };
 
+/**
+ * What the card shows beside its number (decisions §11): the role held now,
+ * in each language, and the year since.
+ */
+export const myCardFace = async (client: Client) =>
+  unwrap(await membership(client).rpc("my_card_face"))?.[0] ?? null;
+
 /** A new code for a lost or shared card; the old link stops working. */
 export const reissueCard = async (client: Client) =>
   unwrap(await membership(client).rpc("reissue_card"))?.[0] ?? null;

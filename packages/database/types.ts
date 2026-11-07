@@ -5293,6 +5293,14 @@ export type Database = {
           secret: string;
         }[];
       };
+      my_card_face: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          role_ar: string;
+          role_en: string;
+          since: number;
+        }[];
+      };
       my_membership: {
         Args: Record<PropertyKey, never>;
         Returns: {
@@ -5376,11 +5384,11 @@ export type Database = {
           full_name_en: string;
           kind: string;
           live: boolean;
-          member_since: string;
           number: number;
-          staff: boolean;
+          role_ar: string;
+          role_en: string;
+          since: number;
           tier: Database["membership"]["Enums"]["tier"];
-          voting: boolean;
         }[];
       };
       verify_certificate: {
@@ -5411,6 +5419,22 @@ export type Database = {
           revoked_at: string;
           role_ar: string;
           role_en: string;
+        }[];
+      };
+      wallet_card: {
+        Args: { uid: string };
+        Returns: {
+          code: string;
+          full_name_ar: string;
+          full_name_en: string;
+          kind: string;
+          locale: string;
+          number: number;
+          role_ar: string;
+          role_en: string;
+          secret: string;
+          since: number;
+          tier: Database["membership"]["Enums"]["tier"];
         }[];
       };
     };

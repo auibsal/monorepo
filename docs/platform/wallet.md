@@ -35,6 +35,13 @@ page accept either.
   true}`), which reads the pass object from the Wallet API
   (`walletPassHeld`: `hasUsers`, not expired) and records it as saved
   (owner, Oct 31, 2026: "I've already added the card, still shows Add").
+- Keeping passes current (decisions §11): the pass carries the card's
+  fields (`membership.wallet_card`: number, name, class or Guest, the role
+  held, the year since). A new, changed or ended role
+  (`access.role_assignments`) or class (`membership.memberships.tier`)
+  queues `wallet.refresh` for anyone holding a pass, and the daily
+  `sal-wallet-terms` job does the same for roles that began or ran out on
+  their date; the outbox rewrites the pass.
 - Retiring passes: resetting the card code (Card security on `/account`),
   the end of a membership (or of the account's verification) and deleting
   the account queue `membership.wallet_expire`; the outbox marks each pass

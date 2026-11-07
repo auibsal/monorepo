@@ -220,10 +220,11 @@ select pg_temp.login_as('00000000-0000-0000-0000-0000000000b1');
 select isnt((select number from membership.my_card()), null, 'A guest has the card');
 select pg_temp.logout();
 select set_config('test.card', (select code from membership.cards where user_id = '00000000-0000-0000-0000-0000000000b1'), true);
+select set_config('test.digits', (select private.totp(secret, floor(extract(epoch from now()) / 30)::bigint) from membership.cards where user_id = '00000000-0000-0000-0000-0000000000b1'), true);
 select pg_temp.login_anon();
 select results_eq(
-  $$ select kind, staff, active from membership.verify_card(current_setting('test.card')) $$,
-  $$ values ('guest'::text, false, true) $$,
+  $$ select kind, tier, active from membership.verify_card(current_setting('test.card'), current_setting('test.digits')) $$,
+  $$ values ('guest'::text, null::membership.tier, true) $$,
   'The check says the card is a guest''s'
 );
 

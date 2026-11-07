@@ -1,6 +1,5 @@
 import { Guilloche } from "@repo/brand/components/sal/guilloche";
 import type { Locale } from "@repo/internationalization";
-import { formatPlainDate } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
 import { localized, membership } from "@repo/sal-data";
 import type { Metadata } from "next";
@@ -29,11 +28,12 @@ export const generateMetadata = async ({
 };
 
 /**
- * Where a membership card's QR leads: whose card it is, whether the
- * membership stands today, and whether this is the live card (the code in
- * the link changes every 30 seconds; a screenshot carries a stale one).
- * Read live, never cached, so a reset code or an ended membership shows at
- * once. It shows the name, class, status and member since only (owner, Nov 7, 2026).
+ * Where a card's QR leads (decisions §11): for a live code (the code in the
+ * link changes every 30 seconds), the card's fields: number, name, class or
+ * Guest, the role held, the year since, and whether it stands today. An
+ * old code (a screenshot, a printed link) shows only that it is not
+ * current. Read live, never cached, so a reset code or an ended membership
+ * shows at once.
  */
 const MemberCardPage = async ({ params, searchParams }: CardParams) => {
   const { code, locale } = await params;
@@ -62,37 +62,46 @@ const MemberCardPage = async ({ params, searchParams }: CardParams) => {
     );
   }
 
-  // Name, class, status and member since only (owner, Nov 7, 2026): no
-  // email, no number, no record. The name may be in either script.
-  const rows: [string, string, "auto" | undefined][] = [
+  if (!(card.live && card.number !== null)) {
+    return (
+      <div className="mx-auto grid w-full max-w-xl gap-6 px-4 py-16">
+        <PageHeader lede={t("lede")} title={t("title")} />
+        <div className="grid gap-2" role="status">
+          <p className="type-heading">{t("notLive")}</p>
+          <p className="type-body">{t("notLiveHint")}</p>
+        </div>
+      </div>
+    );
+  }
+
+  // The card's fields only (decisions §11): no email, no record.
+  const rows: [string, string, "auto" | "ltr" | undefined][] = [
+    [t("number"), String(card.number).padStart(5, "0"), "ltr"],
     [t("holder"), localized(card, "full_name", locale), "auto"],
   ];
-  const member = card.kind === "member";
-  if (member && card.tier) {
+  if (card.kind === "member" && card.tier) {
     rows.push([t("tier"), tt(card.tier), undefined]);
   } else if (card.kind === "guest" || card.kind === "partner") {
     rows.push([t("tier"), tk(card.kind), undefined]);
+  }
+  const role = locale === "ar" ? card.role_ar : card.role_en;
+  if (role) {
+    rows.push([t("role"), role, "auto"]);
+  }
+  if (card.since) {
+    rows.push([t("since"), String(card.since), "ltr"]);
   }
   rows.push([
     t("status"),
     card.active ? t("statusActive") : t("statusInactive"),
     undefined,
   ]);
-  if (member && card.member_since) {
-    rows.push([
-      t("since"),
-      formatPlainDate(card.member_since, locale),
-      undefined,
-    ]);
-  }
 
   return (
     <div className="mx-auto grid w-full max-w-xl gap-8 px-4 py-16">
       <PageHeader lede={t("lede")} title={t("title")} />
       <div className="grid gap-2" role="status">
-        {/* The code's state first: a stale code never opens on a
-            reassuring line. */}
-        <p className="type-heading">{card.live ? t("live") : t("notLive")}</p>
+        <p className="type-heading">{t("live")}</p>
         <p className="type-body">{card.active ? t("valid") : t("lapsed")}</p>
       </div>
       <dl className="grid gap-3 border-line border-t pt-5">

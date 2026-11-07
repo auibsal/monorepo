@@ -246,9 +246,12 @@ any schema change. Integration tests run against a local stack with
   6238, SHA-1, 30 s, 8 digits; `lib/totp.ts` and `private.totp` must
   agree, as Google Wallet does). The secret reaches only its owner
   (`membership.my_card`); the door (`events.check_in_card`) refuses a code
-  that isn't live. The check page shows name, class, status and member
-  since only. No member photos; never put an account id in a QR. Google
-  Wallet only (`docs/platform/wallet.md`).
+  that isn't live. The card shows the number, name, class or Guest, the
+  role held on a second line (`private.card_role`), the year since and
+  the QR; the check page shows the same fields for a live code only, and
+  an old code only that it is not current. No member photos; never put an
+  account id in a QR. Google Wallet only (`docs/platform/wallet.md`),
+  refreshed when a role or class changes (`wallet.refresh`).
 - **One design per thing** in `@repo/brand/components/sal`: `FormPage`,
   `Letter`, `MembershipCard`, `Certificate` and the guilloche. The site
   renders them; print and PDF are the same page printed from the browser.

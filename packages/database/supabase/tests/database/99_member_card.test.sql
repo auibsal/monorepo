@@ -95,7 +95,7 @@ as $$
 $$;
 -- </preamble>
 
-select plan(24);
+select plan(31);
 
 select pg_temp.make_user('00000000-0000-0000-0000-00000000ca01', 'card.one@auib.edu.iq', 'Card One');
 select pg_temp.make_user('00000000-0000-0000-0000-00000000ca02', 'card.two@auib.edu.iq', 'Card Two');
@@ -118,13 +118,23 @@ select throws_ok($$ select * from membership.cards $$, '42501', null,
 create temp table first_code on commit drop as select code from membership.my_card();
 grant select on first_code to public;
 
+select pg_temp.logout();
+create temp table first_live on commit drop as
+  select private.totp(c.secret, floor(extract(epoch from now()) / 30)::bigint) as digits
+  from membership.cards c where c.code = (select code from first_code);
+grant select on first_live to public;
 select pg_temp.login_anon();
 select is(
-  (select full_name_en from membership.verify_card((select code from first_code))),
-  'Card One', 'Anyone with the link sees whose card it is'
+  (select full_name_en from membership.verify_card((select code from first_code), (select digits from first_live))),
+  'Card One', 'Anyone with the live link sees whose card it is'
 );
-select ok((select active from membership.verify_card((select code from first_code))),
+select ok((select active from membership.verify_card((select code from first_code), (select digits from first_live))),
   'and that the membership stands');
+select results_eq(
+  $$ select live, number, full_name_en, kind, active from membership.verify_card((select code from first_code)) $$,
+  $$ values (false, null::integer, null::text, null::text, null::boolean) $$,
+  'An old code shows only that it is not current (decisions §11)'
+);
 select is((select count(*)::integer from membership.verify_card('not-a-code')), 0,
   'An unknown code finds nothing');
 
@@ -218,6 +228,44 @@ select hasnt_function('membership', 'card_record', array['text'],
   'A card''s check page lists no certificates');
 select hasnt_column('core', 'profiles', 'show_certificates_on_card',
   'and there is no setting to list them');
+
+-- The second line and the year (decisions §11)
+select pg_temp.login_as('00000000-0000-0000-0000-00000000ca04');
+select results_eq(
+  $$ select role_en, role_ar, since from membership.my_card_face() $$,
+  $$ values ('General Secretary'::text, 'الأمين العام'::text,
+    extract(year from now() at time zone 'Asia/Baghdad')::integer) $$,
+  'The card shows the role held on its second line and the year since'
+);
+select pg_temp.login_as('00000000-0000-0000-0000-00000000ca01');
+select is((select role_en from membership.my_card_face()), null,
+  'and no second line without a role');
+select pg_temp.logout();
+select set_config('test.gs_code', (select code from membership.cards where user_id = '00000000-0000-0000-0000-00000000ca04'), true);
+select set_config('test.gs_digits', (select private.totp(secret, floor(extract(epoch from now()) / 30)::bigint) from membership.cards where user_id = '00000000-0000-0000-0000-00000000ca04'), true);
+select pg_temp.login_anon();
+select is(
+  (select role_en from membership.verify_card(current_setting('test.gs_code'), current_setting('test.gs_digits'))),
+  'General Secretary', 'The check page shows the same second line for a live code'
+);
+select throws_ok($$ select * from membership.wallet_card('00000000-0000-0000-0000-00000000ca04') $$,
+  '42501', null, 'Only the platform reads what a Wallet pass carries');
+
+-- Google Wallet keeps up
+select pg_temp.logout();
+insert into membership.wallet_passes (code, user_id)
+select code, user_id from membership.cards where user_id = '00000000-0000-0000-0000-00000000ca01';
+select pg_temp.grant_role('00000000-0000-0000-0000-00000000ca01', 'reporter');
+select is(
+  (select count(*)::integer from core.outbox
+    where kind = 'wallet.refresh' and payload ->> 'user_id' = '00000000-0000-0000-0000-00000000ca01'),
+  1, 'A new role refreshes the saved Wallet pass'
+);
+select is(
+  (select count(*)::integer from core.outbox
+    where kind = 'wallet.refresh' and payload ->> 'user_id' = '00000000-0000-0000-0000-00000000ca02'),
+  0, 'and nobody else''s'
+);
 
 select * from finish();
 rollback;

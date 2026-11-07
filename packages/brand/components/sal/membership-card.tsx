@@ -1,12 +1,12 @@
 "use client";
 
-import { type PointerEvent, useEffect, useRef } from "react";
+import { type PointerEvent, useEffect, useRef, useState } from "react";
 import QRCode from "react-qr-code";
 import { cn } from "../../lib/utils";
 import { BrandLogo } from "../brand-logo";
 import { Guilloche } from "./guilloche";
 
-/** The card number as printed: four digits at least (No. 0042). */
+/** The card number as printed: five digits (No. 00042). */
 export const cardNumber = (value: number) => String(value).padStart(5, "0");
 
 /** How far the card leans, at most, in degrees. */
@@ -16,25 +16,60 @@ interface MotionPermission {
   requestPermission?: () => Promise<string>;
 }
 
+/** Whether the reader asks for less motion, following the setting live. */
+const useReducedMotion = () => {
+  const [reduced, setReduced] = useState(true);
+  useEffect(() => {
+    const query = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const update = () => setReduced(query.matches);
+    update();
+    query.addEventListener("change", update);
+    return () => query.removeEventListener("change", update);
+  }, []);
+  return reduced;
+};
+
+/** Whether the element is on screen; off screen, nothing on it moves. */
+const useOnScreen = (ref: { readonly current: Element | null }) => {
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    const element = ref.current;
+    if (!element || typeof IntersectionObserver === "undefined") {
+      return;
+    }
+    const observer = new IntersectionObserver(([entry]) =>
+      setVisible(Boolean(entry?.isIntersecting))
+    );
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, [ref]);
+  return visible;
+};
+
 /**
  * The card in the hand: it leans toward a finger or the pointer, and with
  * the phone where the browser reports its tilt (iPhones ask once, on the
  * first touch of the card), and the light moves across it as it does.
- * Still for anyone who asks for less motion (the one exception to the
- * brand's "no 3D", decided Nov 7). Writes --rx, --ry and --sheen on the
- * card; the card's transform and the sheen read them.
+ * Still for anyone who asks for less motion, from the moment they change
+ * the setting (the one exception to the brand's "no 3D", decisions §6),
+ * and paused while the card is off screen. Writes --rx, --ry and --sheen
+ * on the card; the card's transform and the sheen read them.
  */
 const useCardMotion = (still: boolean) => {
   const ref = useRef<HTMLDivElement>(null);
   const target = useRef({ x: 0, y: 0 });
+  const reduced = useReducedMotion();
+  const visible = useOnScreen(ref);
+  const moving = !(still || reduced) && visible;
 
   useEffect(() => {
     const card = ref.current;
-    if (
-      still ||
-      !card ||
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches
-    ) {
+    if (!(moving && card)) {
+      if (card) {
+        card.style.removeProperty("--rx");
+        card.style.removeProperty("--ry");
+        card.style.removeProperty("--sheen");
+      }
       return;
     }
     const tilt = { x: 0, y: 0 };
@@ -67,7 +102,7 @@ const useCardMotion = (still: boolean) => {
       window.removeEventListener("deviceorientation", onTilt);
       window.cancelAnimationFrame(frame);
     };
-  }, [still]);
+  }, [moving]);
 
   const onPointerMove = (event: PointerEvent<HTMLDivElement>) => {
     const box = event.currentTarget.getBoundingClientRect();
@@ -87,7 +122,7 @@ const useCardMotion = (still: boolean) => {
       | undefined;
     motion?.requestPermission?.().catch(() => undefined);
   };
-  return { onPointerDown, onPointerLeave, onPointerMove, ref };
+  return { moving, onPointerDown, onPointerLeave, onPointerMove, ref };
 };
 
 /** The light across the card, where the card's motion puts it. */
@@ -112,7 +147,7 @@ export interface MembershipCardProps {
   readonly labels: {
     /** "Class". */
     readonly class: string;
-    /** "Member no." */
+    /** "No." */
     readonly number: string;
     /** What the QR opens, for screen readers. */
     readonly qr: string;
@@ -120,15 +155,20 @@ export interface MembershipCardProps {
   readonly locale: "en" | "ar";
   /** The member's name in the card's language. */
   readonly name: string;
-  /** The member number; printed with four digits at least. */
+  /** The number from the one series; printed with five digits. */
   readonly number: number;
+  /**
+   * The role held now, in the card's language, on the line under the name
+   * ("Editor-in-Chief", "Event Lead, Writing workshop"); none without one.
+   */
+  readonly office?: string | null;
   /**
    * The live QR: its link (null while the first code is made) and the share
    * of its 30 seconds still to run, 0 to 1. A printed card passes no
    * `left`: the code has no countdown on paper.
    */
   readonly qr: { readonly left?: number; readonly value: string | null };
-  /** "Member since November 2026", already formatted. */
+  /** "Since 2026", already formatted. */
   readonly since?: string;
   /** A printed card holds still. */
   readonly still?: boolean;
@@ -137,13 +177,14 @@ export interface MembershipCardProps {
 }
 
 /**
- * The membership card (SAL-MED-02; decided Nov 7: "membership card", never
- * "ID card"): paper, the lockup, the member's name, the member number and
- * class, a rosette drawn from the number, member since and the live QR,
- * which links to auibsal.org/verify/member/<code>?t=<digits> and changes
- * every 30 seconds. One design: the member's account, Google Wallet (the
- * same fields) and a card printed on request all show this one. The card is
- * an object, like a certificate: it keeps the light theme.
+ * The membership card (SAL-MED-02; decisions §6, §11: "membership card",
+ * never "ID card"): paper, the lockup, the name, the current role on the
+ * line under it while it is held, the number and the class (or Guest), a
+ * rosette drawn from the number, the year since and the live QR, which
+ * links to auibsal.org/verify/member/<code>?t=<digits> and changes every 30
+ * seconds. One design: the account, Google Wallet (the same fields) and a
+ * card printed on request all show this one. The card is an object, like a
+ * certificate: it keeps the light theme.
  */
 export const MembershipCard = ({
   classLabel,
@@ -152,6 +193,7 @@ export const MembershipCard = ({
   locale,
   name,
   number,
+  office,
   qr,
   since,
   still = false,
@@ -173,7 +215,10 @@ export const MembershipCard = ({
     >
       <div className="pointer-events-none absolute start-1/4 top-1/2 size-[26rem] -translate-x-1/2 -translate-y-1/2 rtl:translate-x-1/2">
         <Guilloche
-          className="size-full opacity-40 motion-safe:animate-[spin_180s_linear_infinite]"
+          className={cn(
+            "size-full opacity-40",
+            motion.moving && "animate-[spin_180s_linear_infinite]"
+          )}
           number={number}
         />
       </div>
@@ -185,9 +230,16 @@ export const MembershipCard = ({
             {title}
           </p>
         </div>
-        <p className="type-display text-balance" dir="auto">
-          {name}
-        </p>
+        <div className="grid gap-2">
+          <p className="type-display text-balance" dir="auto">
+            {name}
+          </p>
+          {office ? (
+            <p className="type-heading text-text-secondary" dir="auto">
+              {office}
+            </p>
+          ) : null}
+        </div>
         <dl className="grid grid-cols-2 gap-x-8 gap-y-4 border-line border-t pt-4 sm:grid-cols-4">
           <Field label={labels.number} value={cardNumber(number)} />
           {classLabel ? (

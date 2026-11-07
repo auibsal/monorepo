@@ -361,15 +361,16 @@ export const MembershipCardStory: Story = {
   render: () => (
     <MembershipCard
       classLabel="Member"
-      labels={{ class: "Class", number: "Member no.", qr: "Check this card" }}
+      labels={{ class: "Class", number: "No.", qr: "Check this card" }}
       locale="en"
       name="Lina Hassan"
       number={42}
+      office="Editor-in-Chief"
       qr={{
         left: 0.6,
         value: "https://auibsal.org/verify/member/k3m9q2?t=12345678",
       }}
-      since="Member since November 2026"
+      since="Since 2026"
       title="Membership card"
     />
   ),
@@ -384,17 +385,18 @@ export const MembershipCardArabic: Story = {
         classLabel="عضو"
         labels={{
           class: "الفئة",
-          number: "رقم العضوية",
+          number: "الرقم",
           qr: "تحقّق من البطاقة",
         }}
         locale="ar"
         name="لينا حسن"
         number={42}
+        office="رئيس التحرير"
         qr={{
           left: 0.6,
           value: "https://auibsal.org/ar/verify/member/k3m9q2?t=12345678",
         }}
-        since="عضو منذ تشرين الثاني 2026"
+        since="منذ 2026"
         title="بطاقة العضوية"
       />
     </div>

@@ -37,14 +37,6 @@ import {
 
 const cardKey = ["membership", "card"] as const;
 
-/** The month and year a member joined, for the card's face. */
-const sinceMonth = (date: string, locale: string) =>
-  new Intl.DateTimeFormat(locale === "ar" ? "ar-IQ-u-nu-latn" : "en-US", {
-    month: "long",
-    timeZone: "Asia/Baghdad",
-    year: "numeric",
-  }).format(new Date(date));
-
 /**
  * The live code: new digits every 30 seconds from the card's secret, and
  * the time, ticking. A screenshot freezes both, so it shows at a glance and
@@ -173,10 +165,16 @@ export const MembershipCard = () => {
   const kind = mine.data?.kind ?? null;
   const profile = useProfile();
   const card = useQuery({
-    // Every membership carries the card (owner, Oct 31, 2026).
+    // Every membership carries the card, guests' too (decisions §11).
     enabled: Boolean(user && kind),
     queryFn: () => membership.myCard(supabase),
     queryKey: [...cardKey, user?.id],
+  });
+  // The role on the second line and the year since.
+  const face = useQuery({
+    enabled: Boolean(user && kind),
+    queryFn: () => membership.myCardFace(supabase),
+    queryKey: [...cardKey, "face", user?.id],
   });
   const reissue = useMutation({
     mutationFn: () => membership.reissueCard(supabase),
@@ -229,12 +227,11 @@ export const MembershipCard = () => {
         locale={locale}
         name={name}
         number={card.data.number}
+        office={locale === "ar" ? face.data?.role_ar : face.data?.role_en}
         qr={{ left: live.secondsLeft / TOTP_PERIOD_SECONDS, value: link }}
         since={
-          kind === "member" && status.data.member_since
-            ? t("card.since", {
-                date: sinceMonth(status.data.member_since, locale),
-              })
+          face.data?.since
+            ? t("card.since", { year: String(face.data.since) })
             : undefined
         }
         title={t("card.title")}
