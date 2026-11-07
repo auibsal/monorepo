@@ -528,6 +528,16 @@
         "notListed": "You’re not listed. The Register itself stays private.",
         "join": "List me",
         "leave": "Take me off"
+      },
+      "prize": {
+        "title": "The Mutanabbi Prize",
+        "lede": "Vote for one work in each category. Your vote counts once and can’t be changed. Members’ votes make up 30% of the final score and the outside judge’s score 70%.",
+        "categories": {
+          "qirtas": "Qirtas",
+          "qalam": "Qalam"
+        },
+        "vote": "Vote for this",
+        "voted": "You’ve voted in this category."
       }
     },
     "twoStep": {
@@ -3146,6 +3156,83 @@
           "image": "image",
           "other": "other details"
         }
+      },
+      "prize": {
+        "title": "The Mutanabbi Prize",
+        "lede": "Each year’s round: editors shortlist works in each category, the outside judge scores each out of 100, voting members vote for one work in each category, and the Editor-in-Chief and the General Secretary check the count. Final score: 70% judge, 30% members.",
+        "round": "Round",
+        "noRounds": "No rounds yet. The first Prize is given in April 2028.",
+        "addRound": "Add a round",
+        "year": "Year",
+        "yearHint": "The year of the Annual Meeting. The round covers April 1 of the year before to March 31.",
+        "period": "Works published from {from} to {to}.",
+        "dates": "Dates",
+        "voteOpens": "Members’ vote opens",
+        "voteCloses": "Members’ vote closes",
+        "awardedOn": "Award day",
+        "awardedHint": "The Annual Meeting. Published results show from this day.",
+        "categories": {
+          "qirtas": "Qirtas",
+          "qalam": "Qalam"
+        },
+        "categoryHint": {
+          "qirtas": "The year’s best work published in Qirtas by a student Member.",
+          "qalam": "The year’s best work by a Qalam student. Students’ names are hidden in the members’ vote."
+        },
+        "work": "Work",
+        "judgeScore": "Judge’s score",
+        "saveScore": "Save score",
+        "scoreSaved": "Saved",
+        "remove": "Take off the shortlist",
+        "removeHint": "The work leaves this year’s shortlist.",
+        "emptyShortlist": "Nothing shortlisted yet.",
+        "shortlistClosed": "The vote has opened, so the shortlist is fixed.",
+        "shortlistAdd": "Add to the shortlist",
+        "piece": "Piece",
+        "pieceHint": "Published in the round’s year. Only a student Member’s work can be shortlisted.",
+        "qalamTitle": "Title",
+        "qalamByline": "Student",
+        "qalamBylineHint": "First name, last initial and school, as on the roster. Never shown in the vote.",
+        "count": "The count",
+        "countWaits": "The count shows here once the members’ vote closes.",
+        "category": "Category",
+        "rank": "Rank",
+        "votes": "Votes",
+        "finalScore": "Final score",
+        "checkedEic": "The Editor-in-Chief has checked the count.",
+        "uncheckedEic": "The Editor-in-Chief has not checked the count yet.",
+        "checkedGs": "The General Secretary has checked the count.",
+        "uncheckedGs": "The General Secretary has not checked the count yet.",
+        "checkCount": "I’ve checked the count",
+        "publish": "Publish the results",
+        "publishHint": "The results show on the Prize’s page from the award day. This can’t be undone.",
+        "published": "The results are published. They show from the award day."
+      },
+      "qalam": {
+        "title": "Qalam",
+        "lede": "Qirtas’s summer program for high school students. Applications and the roster are kept here only. Students never get accounts, and their families consent on the forms page. Records are deleted three years after the program.",
+        "year": "Summer",
+        "name": "Student",
+        "school": "School",
+        "grade": "Grade",
+        "status": "Status",
+        "statuses": {
+          "applied": "Applied",
+          "accepted": "Accepted",
+          "declined": "Declined",
+          "withdrawn": "Withdrawn",
+          "finished": "Finished"
+        },
+        "sessions": "Sessions",
+        "attended": "Attended today",
+        "consent": "Family consent",
+        "photos": "Photos",
+        "publishing": "Publishing",
+        "noConsent": "None yet",
+        "empty": "No students for this summer yet.",
+        "add": "Add a student",
+        "firstName": "First name",
+        "lastName": "Last name"
       }
     },
     "editor": {

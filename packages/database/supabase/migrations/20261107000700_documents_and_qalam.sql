@@ -119,3 +119,13 @@ $$;
 revoke all on function private.purge_qalam_records() from public, anon, authenticated;
 
 select cron.schedule('sal-qalam-retention', '40 5 * * *', $$ select private.purge_qalam_records() $$);
+
+-- Table privileges for Qalam's roster (RLS: qalam.manage only).
+revoke all on programmes.qalam_students from anon, authenticated;
+grant select, delete on programmes.qalam_students to authenticated;
+grant insert (id, year, first_name, last_name, school, grade, status, consent_form_id,
+    photos_allowed, publishing_allowed, sessions_attended, note),
+  update (first_name, last_name, school, grade, status, consent_form_id,
+    photos_allowed, publishing_allowed, sessions_attended, note)
+  on programmes.qalam_students to authenticated;
+grant all on programmes.qalam_students to service_role;

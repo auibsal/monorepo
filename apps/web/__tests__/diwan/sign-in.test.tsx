@@ -29,7 +29,7 @@ test("shows a translated error for wrong credentials", async () => {
 
   await waitFor(() =>
     expect(screen.getByRole("alert").textContent).toBe(
-      "That email and password don't match."
+      "That email and password don’t match."
     )
   );
   expect(signInWithPassword).toHaveBeenCalledWith({

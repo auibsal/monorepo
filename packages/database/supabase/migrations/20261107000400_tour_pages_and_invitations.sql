@@ -408,3 +408,9 @@ $$;
 revoke all on function private.purge_tour_lists() from public, anon, authenticated;
 
 select cron.schedule('sal-tour-lists', '20 5 * * *', $$ select private.purge_tour_lists() $$);
+
+-- Who may touch the invitation list: the Director of Membership reads it
+-- (RLS above); the API routes send, stop and mark it with the secret key.
+revoke all on membership.invitations from anon, authenticated;
+grant select on membership.invitations to authenticated;
+grant all on membership.invitations to service_role;

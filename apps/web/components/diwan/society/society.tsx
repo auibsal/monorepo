@@ -13,6 +13,7 @@ import { VotingEligibility } from "../home/voting";
 import { DiwanPage, DiwanSection, RowList } from "../page";
 import { EmptyLine, ErrorState, SectionSpinner } from "../states";
 import { Elections } from "./elections";
+import { PrizeVote } from "./prize-vote";
 import { SocietySection } from "./section";
 
 type Lang = "en" | "ar";
@@ -185,6 +186,7 @@ export const Society = () => {
       <VotingEligibility />
       <Council />
       <Elections />
+      <PrizeVote />
       <DiwanSection
         description={t("takePart.lede")}
         id="take-part"

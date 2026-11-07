@@ -4533,6 +4533,7 @@ export type Database = {
           title_en: string;
         }[];
       };
+      open_prize_round: { Args: Record<PropertyKey, never>; Returns: string };
       piece_from_entry: { Args: { blind_entry_id: string }; Returns: string };
       piece_thread: {
         Args: { piece_id: string };

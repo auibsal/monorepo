@@ -457,6 +457,34 @@ create trigger prize_entry_valid
   before insert or update of piece_id, category, round_id on journal.prize_entries
   for each row execute function private.prize_entry_valid();
 
+-- The round whose members' vote is open now, if any: voting members find
+-- their ballot with it (rounds are read only by the Prize's officers until
+-- the results are published).
+create function private.open_prize_round()
+returns uuid
+language sql
+stable
+security definer
+set search_path = ''
+as $$
+  select r.id from journal.prize_rounds r
+  where r.vote_opens_at <= now() and now() < r.vote_closes_at
+  order by r.year desc
+  limit 1;
+$$;
+revoke all on function private.open_prize_round() from public, anon;
+grant execute on function private.open_prize_round() to authenticated;
+
+create function journal.open_prize_round()
+returns uuid
+language sql
+stable
+security invoker
+set search_path = ''
+as $$ select private.open_prize_round() $$;
+revoke all on function journal.open_prize_round() from public, anon;
+grant execute on function journal.open_prize_round() to authenticated;
+
 -- The members' ballot: the shortlist in each category, Qalam students'
 -- names hidden.
 create function private.prize_ballot(round_id uuid)
@@ -726,3 +754,20 @@ as $$
     and w.visibility in ('profile', 'tour') and w.publishable
   order by w.created_at;
 $$;
+
+-- Table privileges for the Prize (RLS decides the rows): rounds and the
+-- shortlist are kept by the Prize's officers; the count checks are set only
+-- by check_prize_count(); votes and receipts are written only by
+-- cast_prize_vote().
+revoke all on journal.prize_rounds, journal.prize_entries, journal.prize_vote_receipts, journal.prize_votes
+  from anon, authenticated;
+grant select on journal.prize_rounds to anon, authenticated;
+grant insert (id, year, period_from, period_to, vote_opens_at, vote_closes_at, awarded_on),
+  update (period_from, period_to, vote_opens_at, vote_closes_at, awarded_on, results_published),
+  delete on journal.prize_rounds to authenticated;
+grant select, delete on journal.prize_entries to authenticated;
+grant insert (id, round_id, category, piece_id, qalam_title, qalam_byline, judge_score),
+  update (judge_score, qalam_title, qalam_byline) on journal.prize_entries to authenticated;
+grant select on journal.prize_vote_receipts to authenticated;
+grant all on journal.prize_rounds, journal.prize_entries, journal.prize_vote_receipts, journal.prize_votes
+  to service_role;

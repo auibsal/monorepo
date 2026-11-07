@@ -1168,6 +1168,11 @@ export const prizeEntries = async (client: Client, roundId: string) =>
       .order("created_at")
   ) ?? [];
 
+/** The round whose members' vote is open now, or null. */
+export const openPrizeRound = async (client: Client) =>
+  (unwrap(await journal(client).rpc("open_prize_round")) as string | null) ??
+  null;
+
 /** The members' ballot, Qalam students' names hidden. */
 export const prizeBallot = async (client: Client, roundId: string) =>
   unwrap(await journal(client).rpc("prize_ballot", { round_id: roundId })) ??
