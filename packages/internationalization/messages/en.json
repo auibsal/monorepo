@@ -923,6 +923,12 @@
           "chosen": "{count, plural, one {{countText} chosen} other {{countText} chosen}}",
           "clear": "Clear the choice",
           "row": "Choose {name}"
+        },
+        "inviteeLanguage": {
+          "label": "Their language",
+          "hint": "The invitation is written in this language only.",
+          "en": "English",
+          "ar": "Arabic"
         }
       },
       "overview": {

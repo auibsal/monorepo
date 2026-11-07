@@ -62,6 +62,7 @@ import {
   noticeText,
 } from "@repo/email/templates/notice";
 import { localizedPath } from "@repo/internationalization";
+import { log } from "@repo/observability/log";
 import { journal } from "@repo/sal-data";
 import { revalidateTag } from "next/cache";
 import {
@@ -291,6 +292,19 @@ const send = async (
       );
     }
     return;
+  }
+  // An address that bounced or complained is never written to again.
+  if (run) {
+    const { data: suppressed } = await run.admin
+      .schema("core")
+      .from("email_suppressions")
+      .select("email")
+      .eq("email", to.email.toLowerCase())
+      .maybeSingle();
+    if (suppressed) {
+      log.info(`Not sent (${run.kind}): the address is suppressed.`);
+      return;
+    }
   }
   const made = footerFor(to, category);
   const lines = footer ?? made.footer;
@@ -1197,7 +1211,7 @@ const handlers: Record<string, Handler> = {
       .schema("governance")
       .from("partner_invitations")
       .select(
-        "email, code, kind, created_by, accepted_at, revoked_at, partner_id"
+        "email, code, kind, created_by, accepted_at, revoked_at, partner_id, lang"
       )
       .eq("id", String(payload.invitation_id))
       .maybeSingle();
@@ -1223,7 +1237,9 @@ const handlers: Record<string, Handler> = {
     if (invitation.partner_id && !partner) {
       return;
     }
-    const lang: Lang = inviter?.locale === "ar" ? "ar" : "en";
+    // The invitee's language, as the inviter chose it; else the inviter's.
+    const chosen = invitation.lang ?? inviter?.locale;
+    const lang: Lang = chosen === "ar" ? "ar" : "en";
     let name: string | null = null;
     if (partner) {
       name =

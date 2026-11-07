@@ -299,8 +299,10 @@ export type Database = {
     Tables: {
       newsletter_subscribers: {
         Row: {
+          confirm_sends: number;
           confirm_sent_at: string | null;
           confirm_token: string | null;
+          confirm_window_at: string | null;
           confirmed_at: string | null;
           created_at: string;
           email: string;
@@ -311,8 +313,10 @@ export type Database = {
           unsubscribed_at: string | null;
         };
         Insert: {
+          confirm_sends?: number;
           confirm_sent_at?: string | null;
           confirm_token?: string | null;
+          confirm_window_at?: string | null;
           confirmed_at?: string | null;
           created_at?: string;
           email: string;
@@ -323,8 +327,10 @@ export type Database = {
           unsubscribed_at?: string | null;
         };
         Update: {
+          confirm_sends?: number;
           confirm_sent_at?: string | null;
           confirm_token?: string | null;
+          confirm_window_at?: string | null;
           confirmed_at?: string | null;
           created_at?: string;
           email?: string;
@@ -475,6 +481,27 @@ export type Database = {
           last?: number;
           prefix?: string;
           year?: number;
+        };
+        Relationships: [];
+      };
+      email_suppressions: {
+        Row: {
+          created_at: string;
+          email: string;
+          event_id: string | null;
+          reason: string;
+        };
+        Insert: {
+          created_at?: string;
+          email: string;
+          event_id?: string | null;
+          reason: string;
+        };
+        Update: {
+          created_at?: string;
+          email?: string;
+          event_id?: string | null;
+          reason?: string;
         };
         Relationships: [];
       };
@@ -2550,6 +2577,7 @@ export type Database = {
           expires_at: string;
           id: string;
           kind: string;
+          lang: string | null;
           partner_id: string | null;
           resolution_id: string | null;
           revoked_at: string | null;
@@ -2565,6 +2593,7 @@ export type Database = {
           expires_at?: string;
           id?: string;
           kind: string;
+          lang?: string | null;
           partner_id?: string | null;
           resolution_id?: string | null;
           revoked_at?: string | null;
@@ -2580,6 +2609,7 @@ export type Database = {
           expires_at?: string;
           id?: string;
           kind?: string;
+          lang?: string | null;
           partner_id?: string | null;
           resolution_id?: string | null;
           revoked_at?: string | null;

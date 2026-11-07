@@ -47,53 +47,6 @@ export interface InlineButton {
   url: string;
 }
 
-export class TelegramError extends Error {
-  readonly code: number;
-  /** Seconds to wait before retrying (flood control). */
-  readonly retryAfter?: number;
-
-  constructor(code: number, description: string, retryAfter?: number) {
-    super(`Telegram ${code}: ${description}`);
-    this.code = code;
-    this.retryAfter = retryAfter;
-  }
-}
-
-interface ApiResponse<T> {
-  description?: string;
-  error_code?: number;
-  ok: boolean;
-  parameters?: { retry_after?: number };
-  result?: T;
-}
-
-/** One Bot API call without a client library (the outbox notices). */
-export const callTelegram = async <T = unknown>(
-  token: string,
-  method: string,
-  params: Record<string, unknown>,
-  fetcher: typeof fetch = fetch
-): Promise<T> => {
-  const response = await fetcher(
-    `https://api.telegram.org/bot${token}/${method}`,
-    {
-      body: JSON.stringify(params),
-      headers: { "content-type": "application/json" },
-      method: "POST",
-      signal: AbortSignal.timeout(10_000),
-    }
-  );
-  const data = (await response.json()) as ApiResponse<T>;
-  if (!data.ok) {
-    throw new TelegramError(
-      data.error_code ?? response.status,
-      data.description ?? "Request failed",
-      data.parameters?.retry_after
-    );
-  }
-  return data.result as T;
-};
-
 export interface Notice {
   body: string;
   /** The notice's link, shown as a button. */
@@ -104,7 +57,7 @@ export interface Notice {
 /** A notice as one Telegram message: the title in bold, then the text. */
 export const noticeMessage = ({ body, button, title }: Notice) => ({
   link_preview_options: { is_disabled: true },
-  parse_mode: "HTML",
+  parse_mode: "HTML" as const,
   reply_markup: button
     ? { inline_keyboard: [[{ text: button.text, url: button.url }]] }
     : undefined,

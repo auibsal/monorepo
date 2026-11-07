@@ -1,12 +1,10 @@
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 import {
   botIdFromToken,
-  callTelegram,
   escapeHtml,
   link,
   noticeMessage,
   startLink,
-  TelegramError,
 } from "./index";
 
 describe("Telegram helpers", () => {
@@ -45,21 +43,5 @@ describe("Telegram helpers", () => {
     expect(message.reply_markup?.inline_keyboard[0]?.[0]?.url).toBe(
       "https://auibsal.org/diwan"
     );
-  });
-
-  it("raises Telegram errors with the flood wait", async () => {
-    const fetcher = vi.fn(async () =>
-      Response.json({
-        description: "Too Many Requests",
-        error_code: 429,
-        ok: false,
-        parameters: { retry_after: 3 },
-      })
-    );
-    const error = await callTelegram("1:x", "sendMessage", {}, fetcher).catch(
-      (e: unknown) => e
-    );
-    expect(error).toBeInstanceOf(TelegramError);
-    expect((error as TelegramError).retryAfter).toBe(3);
   });
 });

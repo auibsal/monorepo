@@ -22,6 +22,18 @@ const COPY_FILES = [
   "packages/email/copy.ts",
   "apps/web/lib/api/outbox.ts",
   "apps/web/lib/api/bot/copy.ts",
+  // Supabase's auth emails (audit D4).
+  ...[
+    "confirmation",
+    "email_change",
+    "email_changed_notification",
+    "magic_link",
+    "mfa_factor_enrolled_notification",
+    "mfa_factor_unenrolled_notification",
+    "password_changed_notification",
+    "recovery",
+  ].map((name) => `packages/database/supabase/templates/${name}.html`),
+  "packages/database/supabase/templates/subjects.txt",
 ];
 // The one place Iraqi Arabic is written (decisions, Nov 4, 2026).
 const IRAQI_HOME = "apps/web/lib/api/bot/copy.ts";

@@ -10,7 +10,7 @@ sign-in by emailed code).
 | Sender | What | From | Templates |
 | --- | --- | --- | --- |
 | **Supabase Auth** (custom SMTP through Resend) | Sign-in links and codes, sign-up confirmation, password reset, email change, security notices | `hello@auibsal.org` | `packages/database/supabase/templates` (pasted into the hosted project) |
-| **The site's outbox** (`lib/api/outbox.ts`, Resend API) | Everything else, below | `RESEND_FROM`, AUIB Society of Arts and Letters <hello@auibsal.org> (decisions §6) | `packages/email` (`copy.ts`, `templates/notice.tsx`) |
+| **The site's outbox** (`lib/api/outbox.ts`, Resend API) | Everything else, below | `SENDER` in `packages/email`: AUIB Society of Arts and Letters <hello@auibsal.org> (decisions §6), set in code | `packages/email` (`copy.ts`, `templates/notice.tsx`) |
 
 The domain `auibsal.org` is verified in Resend (DKIM `resend._domainkey`,
 return path `send.auibsal.org`). DMARC is `p=reject` with strict alignment:
@@ -181,6 +181,20 @@ are in: the next outbox row or scheduled run calls the route again.
   a member stops optional email, a subscriber leaves the public list, an
   invited address leaves the invitation list; the contact is then deleted
   from Resend.
+
+## Bounces, complaints and confirmations
+
+- Resend's webhook goes to `https://auibsal.org/api/hooks/resend`, with
+  the events `email.bounced` and `email.complained`, signed with
+  `RESEND_WEBHOOK_SECRET` (Resend → Webhooks; the secret starts
+  `whsec_`). A hard bounce or a complaint puts the address on
+  `core.email_suppressions`; the outbox and every Broadcast skip it from
+  then on. Resend keeps its own suppression list as well.
+- The Sunday Paper's confirmation goes to one address at most three
+  times in thirty days, and a sign-up never confirmed is deleted after
+  thirty days (`sal-newsletter-unconfirmed`, daily).
+- One sender, set in code (`SENDER` in `packages/email`); there is no
+  `RESEND_FROM` to set.
 
 ## When someone says "I never got the email"
 

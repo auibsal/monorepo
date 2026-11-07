@@ -42,6 +42,7 @@ export const env = withPresets(
         process.env.GOOGLE_WALLET_SERVICE_ACCOUNT_EMAIL,
       NEXT_PUBLIC_VAPID_PUBLIC_KEY: process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
       NOTION_TOKEN: process.env.NOTION_TOKEN,
+      RESEND_WEBHOOK_SECRET: process.env.RESEND_WEBHOOK_SECRET,
       REVALIDATE_SECRET: process.env.REVALIDATE_SECRET,
       TURNSTILE_SECRET_KEY: process.env.TURNSTILE_SECRET_KEY,
       VAPID_PRIVATE_KEY: process.env.VAPID_PRIVATE_KEY,
@@ -67,6 +68,9 @@ export const env = withPresets(
       NOTION_TOKEN: z.string().min(20).optional(),
       // Bearer token for POST /api/revalidate (the outbox handler calls it
       // in-process; the secret stays for calls from elsewhere).
+      // Resend's webhook signing secret (whsec_…), for bounces and
+      // complaints at /api/hooks/resend.
+      RESEND_WEBHOOK_SECRET: z.string().startsWith("whsec_").optional(),
       REVALIDATE_SECRET: z.string().min(32).optional(),
       // Cloudflare Turnstile's secret half, for the human check on public
       // forms the API routes take (forms, removal requests, the Sunday

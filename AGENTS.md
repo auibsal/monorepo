@@ -508,7 +508,10 @@ any schema change. Integration tests run against a local stack with
   Mail to many people at once (the Sunday Paper, the invitation) goes as
   a Resend Broadcast to a fresh segment, deleted once sent, so it doesn't
   count against the free plan's 100 a day; unsubscribes made in Resend are
-  read back first. Each email has Reply-To hello@auibsal.org, a preview
+  read back first. Every email comes from one sender, set in code
+  (`SENDER`); bounces and complaints arrive by Resend's webhook
+  (`/api/hooks/resend`) and are never written to again
+  (`core.email_suppressions`). Each email has Reply-To hello@auibsal.org, a preview
   line that isn't the subject, a tag with its kind and a footer saying
   why it came (service, optional with a stop link, officer, direct) and
   the sustainability line. A new journey adds its row to

@@ -84,7 +84,12 @@ export const createBot = (
     } else if (error instanceof HttpError) {
       console.error("Could not reach Telegram", error.message);
     } else {
-      console.error("Update failed", ctx.update.update_id, error);
+      // The update's id and the kind of error only: never what anyone wrote.
+      console.error(
+        "Update failed",
+        ctx.update.update_id,
+        error instanceof Error ? error.name : "unknown"
+      );
     }
     // Let the person know, where there is a person waiting.
     try {
@@ -109,6 +114,7 @@ export const allowedUpdates = [
   "inline_query",
   "guest_message",
   "chat_join_request",
+  "chat_member",
   "my_chat_member",
 ] as const;
 

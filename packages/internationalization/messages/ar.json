@@ -923,6 +923,12 @@
           "chosen": "{count, plural, one {تم اختيار {countText}} other {تم اختيار {countText}}}",
           "clear": "ألغِ الاختيار",
           "row": "اختر {name}"
+        },
+        "inviteeLanguage": {
+          "label": "لغة المدعو",
+          "hint": "تُكتب الدعوة بهذه اللغة وحدها.",
+          "en": "الإنجليزية",
+          "ar": "العربية"
         }
       },
       "overview": {

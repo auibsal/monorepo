@@ -19,6 +19,10 @@ import { type FormEvent, type ReactNode, useState } from "react";
 import { Signature } from "@/components/signature";
 import { type MyPartner, useMyPartners } from "@/lib/diwan/partners";
 import {
+  type InviteeLanguage,
+  InviteeLanguageField,
+} from "../admin/invitee-language";
+import {
   BilingualField,
   ConfirmAction,
   ErrorLine,
@@ -641,13 +645,16 @@ export const InviteByEmail = ({
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
   const [email, setEmail] = useState("");
+  const [lang, setLang] = useState<InviteeLanguage>(
+    useLocale() === "ar" ? "ar" : "en"
+  );
   const invite = useMutation({
     mutationFn: async () =>
       unwrap(
         await supabase
           .schema("governance")
           .from("partner_invitations")
-          .insert({ email: email.trim(), kind, partner_id: partnerId })
+          .insert({ email: email.trim(), kind, lang, partner_id: partnerId })
       ),
     onSuccess: async () => {
       setEmail("");
@@ -677,6 +684,7 @@ export const InviteByEmail = ({
           />
         )}
       </Field>
+      <InviteeLanguageField onChange={setLang} value={lang} />
       <Button
         className="justify-self-start"
         disabled={invite.isPending}
