@@ -1,6 +1,11 @@
 import { diwanPath, localizedPath } from "@repo/internationalization";
 import { formatClock, formatLongDate } from "@repo/internationalization/format";
-import type { NoticeBlock, NoticeList, NoticeProps } from "./templates/notice";
+import type {
+  NoticeBlock,
+  NoticeList,
+  NoticeProps,
+  NoticeSignoff,
+} from "./templates/notice";
 
 /**
  * The words of every platform email, in both languages. Each email goes
@@ -14,6 +19,7 @@ interface Copy {
   heading: string;
   lists?: NoticeList[];
   paragraphs: string[];
+  signoff?: NoticeSignoff;
 }
 
 export interface Built extends NoticeProps {
@@ -1397,43 +1403,77 @@ export const repliesDigest = (lang: Lang, replies: ReplyLine[], app: string) =>
     ],
   }));
 
-const END_PUNCTUATION = /[.!?…]$/;
+// A sentence ends in its mark, perhaps closed by a parenthesis or a quote.
+const END_PUNCTUATION = /[.!?…][)’”]?$/;
 
-/** "Hello Lina," or, with no first name on the list, "Hello," alone. */
+/** "Dear Lina," or, with no first name on the list, "Hello," alone. */
 const greeting = (l: Lang, firstName: string | null) => {
   const name = firstName?.trim();
   if (l === "ar") {
     return name ? `مرحبًا ${name}،` : "مرحبًا،";
   }
-  return name ? `Hello ${name},` : "Hello,";
+  return name ? `Dear ${name},` : "Hello,";
 };
+
+/** Two stations ("English Language Academy, College of Law") read as one. */
+const stations = (l: Lang, station: string) =>
+  station
+    .split(", ")
+    .map((part) => part.trim())
+    .filter(Boolean)
+    .join(l === "ar" ? " و" : " and the ");
 
 /** What the writer typed, quoted, or only where they sat. */
 const typedLine = (l: Lang, station: string, words: string | undefined) => {
-  // Chicago: the period goes inside the quotation marks, once.
-  const quoted = words && END_PUNCTUATION.test(words) ? words : `${words}.`;
+  const where = stations(l, station);
   if (l === "ar") {
     return words
-      ? `في شباط الماضي جلستَ إلى آلة الجمعية الكاتبة في ${station} وكتبت: «${words}». احتفظنا بصفحتك.`
-      : `في شباط الماضي جلستَ إلى آلة الجمعية الكاتبة في ${station}. احتفظنا بصفحتك.`;
+      ? `في شباط الماضي جلستَ إلى آلتنا الكاتبة في ${where} وكتبت: «${words}». احتفظنا بصفحتك.`
+      : `في شباط الماضي جلستَ إلى آلتنا الكاتبة في ${where}. احتفظنا بصفحتك.`;
   }
-  return words
-    ? `Last February you sat down at the Society’s typewriter at the ${station} and typed: “${quoted}” We kept your page.`
-    : `Last February you sat down at the Society’s typewriter at the ${station}. We kept your page.`;
+  if (!words) {
+    return `Last February you sat down at our typewriter at the ${where}. We kept your page.`;
+  }
+  // Chicago: quotes inside the quotation are single; the period goes
+  // inside the closing mark, once.
+  const inner = words.replaceAll("“", "‘").replaceAll("”", "’");
+  const quoted = END_PUNCTUATION.test(inner) ? inner : `${inner}.`;
+  return `Last February you sat down at our typewriter at the ${where} and typed: “${quoted}” We kept your page.`;
 };
+
+/** Who signs the invitation: the President, with their signature. */
+export interface InvitationSigner {
+  /** The signature as an image (`/api/email/signature`), when there is one. */
+  image?: string;
+  name: string;
+}
+
+const presidentSignoff = (
+  l: Lang,
+  signer: InvitationSigner | undefined
+): NoticeSignoff | undefined =>
+  signer
+    ? {
+        closing: l === "ar" ? "مع خالص التحية،" : "Warmly,",
+        image: signer.image,
+        name: signer.name,
+        title:
+          l === "ar"
+            ? "رئيس جمعية الفنون والآداب"
+            : "President, AUIB Society of Arts and Letters",
+      }
+    : undefined;
+
+const JOIN_LABEL = { ar: "انضم إلى الجمعية", en: "Join the Society" };
 
 /** The plain invitation: no page, no six words, the same signature. */
 const plainInvitation = (
   l: Lang,
   hello: string,
-  signature: string,
-  join: string
+  join: string,
+  signer: InvitationSigner | undefined
 ): Copy => ({
-  action: {
-    fallback: true,
-    href: join,
-    label: l === "ar" ? "انضم إلى الجمعية" : "Join the Society",
-  },
+  action: { fallback: true, href: join, label: JOIN_LABEL[l] },
   heading:
     l === "ar"
       ? "انضم إلى جمعية الفنون والآداب"
@@ -1441,10 +1481,13 @@ const plainInvitation = (
   paragraphs: [
     hello,
     l === "ar"
-      ? "ندعوك إلى الانضمام إلى جمعية الفنون والآداب في الجامعة الأمريكية في العراق – بغداد. انضم عبر auibsal.org/join بهذا البريد. إن لم ترغب في ذلك فتجاهل هذه الرسالة؛ لن نكتب إليك مرة أخرى."
-      : "We’d like to invite you to join the AUIB Society of Arts and Letters. Join at auibsal.org/join with this email. If you’d rather not, just ignore this email; we won’t write again.",
-    signature,
+      ? "أودّ أن أدعوك إلى الانضمام إلى جمعية الفنون والآداب في الجامعة الأمريكية في العراق – بغداد. نُصدر «قرطاس»، جريدة الجامعة للأخبار والأدب والفن، ونُدير «الفرقة»، مسرحنا، ونصنع «المحطة القادمة»، برنامجنا المصوّر، ونقيم الفعاليات طوال العام."
+      : "I’d like to invite you to join the AUIB Society of Arts and Letters. We publish Qirtas, AUIB’s paper of news, letters and art; run the Company, our theater; make Next Stop, our show; and hold events all year.",
+    l === "ar"
+      ? "انضم عبر auibsal.org/join بهذا البريد. إن لم ترغب في ذلك فتجاهل هذه الرسالة؛ لن نكتب إليك مرة أخرى."
+      : "Join at auibsal.org/join with this email. If you’d rather not, simply ignore this email; we won’t write to you again.",
   ],
+  signoff: presidentSignoff(l, signer),
 });
 
 export interface Invitation {
@@ -1458,24 +1501,35 @@ export interface Invitation {
   words: string | null;
 }
 
+const TWO = {
+  ar: " كتبتَ صفحتين، وكلتاهما بانتظارك.",
+  en: " You typed two, and both are waiting for you.",
+};
+
 /** The greeting and the Tour line of one invitation, as Resend contact properties. */
 export const invitationContact = (lang: Lang, invite: Invitation) => {
   const station =
     invite.station?.trim() || (lang === "ar" ? "الجامعة" : "campus");
   const typed = typedLine(lang, station, invite.words?.trim());
-  const twoLine =
-    lang === "ar"
-      ? " كتبتَ صفحتين، وكلتاهما تذهب إلى ملفك."
-      : " You typed two; both go on your profile.";
-  const two = invite.pages > 1 ? twoLine : "";
   return {
     greeting: greeting(lang, invite.first_name),
-    tour_line: typed + two,
+    tour_line: typed + (invite.pages > 1 ? TWO[lang] : ""),
   };
 };
 
 /** Resend's placeholder for a contact property, filled for each recipient. */
 export const contactField = (key: string) => `{{{contact.${key}}}}`;
+
+const PREVIEW = {
+  plain: {
+    ar: "دعوة شخصية للانضمام إلى جمعية الفنون والآداب.",
+    en: "A personal invitation to join the AUIB Society of Arts and Letters.",
+  },
+  tour: {
+    ar: "في شباط الماضي كتبتَ ست كلمات على آلتنا الكاتبة. احتفظنا بصفحتك.",
+    en: "Last February you typed six words at our typewriter. We kept your page.",
+  },
+};
 
 /**
  * The invitation as one Broadcast for everyone of a kind: the greeting and
@@ -1485,12 +1539,14 @@ export const contactField = (key: string) => `{{{contact.${key}}}}`;
 export const invitationBroadcast = (
   lang: Lang,
   kind: Invitation["kind"],
-  join: string
+  join: string,
+  signer?: InvitationSigner
 ) => {
   const built = invitation(
     lang,
     { first_name: null, kind, pages: 1, station: null, words: null },
-    join
+    join,
+    signer
   );
   const fields = ["greeting", kind === "tour" ? "tour_line" : null];
   return {
@@ -1502,42 +1558,34 @@ export const invitationBroadcast = (
         return field ? contactField(field) : paragraph;
       }),
     })),
+    preview: PREVIEW[kind][lang],
   };
 };
 
 /**
- * The one-time invitation to join (owner, Nov 7, 2026): sent once, on the
- * President's go, from hello@auibsal.org, with a stop link. A Typewriter
+ * The one-time invitation to join (owner, Nov 7, 2026): a letter from the
+ * President, signed with their signature on the platform, made as a draft
+ * Broadcast on their go and sent from Resend, from hello@auibsal.org, with
+ * a stop link. A Typewriter
  * Tour writer hears about their page (quoting their words only when they
  * may be quoted); everyone else, the fall fair's sign-ups and the writers
  * with no page on record, gets a plain invitation, without "We kept your
  * page" or any six words.
  */
-export const invitation = (lang: Lang, invite: Invitation, join: string) =>
+export const invitation = (
+  lang: Lang,
+  invite: Invitation,
+  join: string,
+  signer?: InvitationSigner
+) =>
   build(lang, (l) => {
     const hello = greeting(l, invite.first_name);
-    const signature =
-      l === "ar" ? "جمعية الفنون والآداب" : "AUIB Society of Arts and Letters";
     if (invite.kind === "plain") {
-      return plainInvitation(l, hello, signature, join);
+      return plainInvitation(l, hello, join, signer);
     }
-    const station =
-      invite.station?.trim() || (l === "ar" ? "الجامعة" : "campus");
-    const typed = typedLine(l, station, invite.words?.trim());
-    const two =
-      invite.pages > 1
-        ? [
-            l === "ar"
-              ? "كتبتَ صفحتين، وكلتاهما تذهب إلى ملفك."
-              : "You typed two; both go on your profile.",
-          ]
-        : [];
+    const { tour_line: typed } = invitationContact(l, invite);
     return {
-      action: {
-        fallback: true,
-        href: join,
-        label: l === "ar" ? "انضم إلى الجمعية" : "Join the Society",
-      },
+      action: { fallback: true, href: join, label: JOIN_LABEL[l] },
       heading:
         l === "ar"
           ? "كلماتك الست من جولة الآلة الكاتبة"
@@ -1545,14 +1593,13 @@ export const invitation = (lang: Lang, invite: Invitation, join: string) =>
       paragraphs: [
         hello,
         typed,
-        ...two,
         l === "ar"
-          ? "إنها لك. انضم إلى الجمعية عبر auibsal.org/join بهذا البريد، فتُضاف صفحتك إلى حسابك. تبقى خاصة حتى تختار في حسابك هل تظهر أيضًا في ملفك أو في صفحة الجولة. إن لم ترغب في ذلك فتجاهل هذه الرسالة؛ لن نعرض صفحتك في أي مكان ولن نكتب إليك مرة أخرى."
-          : "It’s yours to claim. Join the Society at auibsal.org/join with this email, and your page is added to your account. It stays private until you choose, in your account, whether it also appears on your profile or on the Tour’s page. If you’d rather not, just ignore this email; we won’t show your page anywhere or write again.",
+          ? "افتتحنا auibsal.org، البيت الجديد للجمعية، ويسعدني أن تكون من أوائل أعضائه. انضم عبر auibsal.org/join بهذا البريد، فتجد صفحتك بانتظارك في حسابك. تبقى خاصة حتى تقرر هل تظهر في ملفك أو في صفحة الجولة."
+          : "We’ve just opened auibsal.org, the Society’s new home, and I’d love for you to be one of its first members. Join at auibsal.org/join with this email, and your page will be waiting in your account. It stays private until you decide whether to show it on your profile or on the Tour’s page.",
         l === "ar"
-          ? "هل تريد الورقة الأصلية؟ استلمها من طاولة العضوية في الجمعية هذا الفصل؛ الصفحات التي لا تُستلم تُتلف في نهاية الفصل."
-          : "Would you like the original sheet? Pick it up at the Society’s membership table this term; pages not collected are shredded at the end of the term.",
-        signature,
+          ? "إن لم ترغب في ذلك فتجاهل هذه الرسالة؛ لن نعرض صفحتك في أي مكان ولن نكتب إليك مرة أخرى."
+          : "If you’d rather not, simply ignore this email; we won’t show your page anywhere or write to you again.",
       ],
+      signoff: presidentSignoff(l, signer),
     };
   });

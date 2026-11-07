@@ -9,18 +9,7 @@ import { membership } from "@repo/sal-data";
 import { useQuery } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useProfile } from "@/lib/diwan/queries";
-
-/** The card number as it is printed on the card. */
-const cardNumber = (value: number) => String(value).padStart(4, "0");
-
-/** A short mark of who signed and when, as on a digital seal. */
-const sealOf = (name: string, number: number | null, date: string) => {
-  const hex = seedFromText(`${name}|${number ?? ""}|${date.slice(0, 10)}`)
-    .toString(16)
-    .toUpperCase()
-    .padStart(8, "0");
-  return `${hex.slice(0, 4)}-${hex.slice(4)}`;
-};
+import { cardNumber, sealOf } from "@/lib/signature-seal";
 
 export interface SignatureProps {
   readonly className?: string;

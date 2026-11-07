@@ -1678,12 +1678,15 @@
             "load": "Load",
             "loaded": "Loaded {pages} pages and {invitations} invitations; {attached} pages went straight to writers who already have an account.",
             "status": "Invitations: {waiting} waiting, {sent} sent, {joined} joined. Pages not yet claimed: {unclaimed}.",
-            "send": "Send {count} invitations",
-            "confirm": "Send {count} invitations now, from hello@auibsal.org? Each goes once and can’t be called back.",
-            "sendNow": "Send now",
+            "send": "Prepare {count} invitations",
+            "confirm": "Prepare {count} invitations as your letter from president@auibsal.org? The site makes them a draft in Resend; nothing goes out until you send it there.",
+            "sendNow": "Prepare the draft",
             "notYet": "Not yet",
-            "president": "The President sends the invitations.",
-            "sending": "{count} invitations are on their way."
+            "president": "The President prepares the invitations. Anyone running the Tour can send themselves a test.",
+            "sending": "{count} invitations are being prepared. The draft appears in Resend → Broadcasts within a few minutes; send it from there.",
+            "test": "Send me a test",
+            "testSent": "A test went to {email}, as a writer would get it.",
+            "draftNote": "The invitation is your letter, signed with your signature on the site. Send yourself a test first."
           }
         }
       },

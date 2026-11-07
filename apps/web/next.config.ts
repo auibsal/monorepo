@@ -27,6 +27,7 @@ let nextConfig: NextConfig = {
   ],
   outputFileTracingIncludes: {
     "/api/design/[...path]": ["./design/**/*"],
+    "/api/email/signature": ["../../packages/brand/assets/fonts/*.ttf"],
   },
   rewrites: async () => [
     { destination: "/api/design/:path*", source: "/_design/:path*" },

@@ -9,6 +9,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { useId, useState } from "react";
 import { parseCsv } from "@/lib/csv";
+import { callApi } from "@/lib/diwan/api";
 import { useGrants } from "@/lib/diwan/queries";
 import { ErrorLine } from "../kit";
 
@@ -93,6 +94,11 @@ export const TourImport = () => {
       setConfirming(false);
       await queryClient.invalidateQueries({ queryKey: waitingKey });
     },
+  });
+
+  const test = useMutation({
+    mutationFn: () =>
+      callApi<{ sent: string }>(supabase, "/invitations/test", {}),
   });
 
   const canSend =
@@ -193,7 +199,24 @@ export const TourImport = () => {
               </div>
             </div>
           ) : null}
-          {canSend ? null : (
+          <div className="flex flex-wrap items-center gap-3">
+            <Button
+              disabled={test.isPending}
+              onClick={() => test.mutate()}
+              variant="outline"
+            >
+              {t("test")}
+            </Button>
+            {test.data ? (
+              <p className="type-caption" role="status">
+                {t("testSent", { email: test.data.sent })}
+              </p>
+            ) : null}
+          </div>
+          <ErrorLine error={test.error} />
+          {canSend ? (
+            <p className="type-caption text-text-secondary">{t("draftNote")}</p>
+          ) : (
             <p className="type-caption text-text-secondary">{t("president")}</p>
           )}
           {send.data === undefined ? null : (

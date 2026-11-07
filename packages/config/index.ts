@@ -57,6 +57,8 @@ const projectSchema = z
       api: z.string().startsWith("/"),
       diwan: z.string().startsWith("/"),
     }),
+    /** The President's address: the invitation is their letter (owner, Nov 7, 2026). */
+    presidentEmail: filled(z.email()),
     region: z.object({
       country: z.string().length(2),
       currency: z.string().length(3),

@@ -54,6 +54,17 @@ export interface NoticeBlock {
   readonly lang: "en" | "ar";
   readonly lists?: readonly NoticeList[];
   readonly paragraphs: readonly string[];
+  /** A letter's close: "Warmly," then the signer's signature, name and seat. */
+  readonly signoff?: NoticeSignoff;
+}
+
+/** Who signs a letter sent by email, and their signature as an image. */
+export interface NoticeSignoff {
+  readonly closing: string;
+  /** The signature (`/api/email/signature`), 480 × 100 as shown. */
+  readonly image?: string;
+  readonly name: string;
+  readonly title: string;
 }
 
 /** A line above the sign-off: why this came, and how to change it. */
@@ -108,6 +119,15 @@ export const noticeText = ({
       ]),
       ...(block.action
         ? [`${block.action.label}: ${block.action.href}`, ""]
+        : []),
+      ...(block.signoff
+        ? [
+            block.signoff.closing,
+            "",
+            block.signoff.name,
+            block.signoff.title,
+            "",
+          ]
         : []),
     ]),
     "--",
@@ -215,6 +235,26 @@ const Block = ({ block }: { block: NoticeBlock }) => {
           ) : null}
         </Section>
       ) : null}
+      {block.signoff ? (
+        <Section style={{ margin: "32px 0 0" }}>
+          <Text style={{ ...text, margin: "0 0 12px" }}>
+            {block.signoff.closing}
+          </Text>
+          {block.signoff.image ? (
+            <Img
+              alt={block.signoff.name}
+              height="100"
+              src={block.signoff.image}
+              style={{ display: "block", margin: "0 0 12px" }}
+              width="480"
+            />
+          ) : null}
+          <Text style={{ ...text, margin: 0 }}>{block.signoff.name}</Text>
+          <Text style={{ ...text, color: ASH, margin: 0 }}>
+            {block.signoff.title}
+          </Text>
+        </Section>
+      ) : null}
     </Section>
   );
 };
@@ -222,7 +262,8 @@ const Block = ({ block }: { block: NoticeBlock }) => {
 /**
  * Every notice the platform sends: white, the lockup in the email's
  * language, a Light headline, the message in the recipient's language only,
- * one crimson button and a hairline footer. No other images, no tracking,
+ * one crimson button and a hairline footer. No other images (but a
+ * letter's signature), no tracking,
  * no exclamation marks.
  */
 export const Notice = ({ blocks, footer = [], preview }: NoticeProps) => {

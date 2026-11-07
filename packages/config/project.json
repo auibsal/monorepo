@@ -36,5 +36,6 @@
     "currency": "IQD",
     "numberingSystem": "latn",
     "weekStartsOn": 6
-  }
+  },
+  "presidentEmail": "president@auibsal.org"
 }

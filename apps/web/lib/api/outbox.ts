@@ -66,6 +66,11 @@ import {
   runBroadcast,
 } from "@/lib/api/broadcast";
 import { inviteStopToken, stopToken } from "@/lib/api/email-stop";
+import {
+  INVITATION_FOOTER,
+  invitationFrom,
+  invitationSigner,
+} from "@/lib/api/invitation-letter";
 import { api, origin, site } from "@/lib/api/urls";
 import { type CacheTag, cacheTags } from "@/lib/supabase";
 import type { Sticker } from "./bot/stickers";
@@ -868,6 +873,9 @@ const handlers: Record<string, Handler> = {
     const lang: Lang = "en";
     const join = `${webUrl()}${prefix(lang)}/join`;
     const sentAt = String(payload.sent_at ?? "");
+    // The President's letter, signed (an image: mail apps can't load the
+    // signature face), from their address.
+    const signer = await invitationSigner(admin, sentAt.slice(0, 10));
     const waiting: string[] = [];
     for (const kind of ["tour", "plain"] as const) {
       const contacts: BroadcastContact[] = (rows ?? [])
@@ -892,15 +900,18 @@ const handlers: Record<string, Handler> = {
       try {
         // biome-ignore lint/performance/noAwaitInLoops: one at a time
         await runBroadcast(admin, {
-          built: invitationBroadcast(lang, kind, join),
+          built: invitationBroadcast(lang, kind, join, signer),
           contacts,
+          // Made as a draft: whoever sends it opens it in Resend and sends.
+          draft: true,
           footer: [
             {
               href: contactField("stop_url"),
               link: "Stop",
-              text: "You get this once, because you wrote at the Society’s typewriter or signed up at its table.",
+              text: INVITATION_FOOTER,
             },
           ],
+          from: invitationFrom(),
           key: `invitation:${sentAt.slice(0, 19)}:${kind}`,
           kind: "invitation",
           lang,
