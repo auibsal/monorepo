@@ -2662,7 +2662,7 @@
         "choose": "Choose…",
         "noEdition": "No Edition",
         "create": "Create the piece",
-        "frontLede": "Rank 1 is the lead story. The front page also shows the latest news, a Letters spread, a Gallery strip, Six Words of the week and the current Edition.",
+        "frontLede": "Rank 1 is the lead story. The front page also shows the latest news, a Letters spread, a Gallery strip and the current Edition.",
         "noPublished": "Nothing is published yet.",
         "penName": "Pen name",
         "text": "The piece",
@@ -4364,13 +4364,12 @@
       "editions": "Editions",
       "firstEdition": "The first pieces arrive with the News desk on November 15.",
       "lead": "Lead story",
-      "sixWordsOfTheWeek": "Six Words of the week",
       "currentEdition": "The current Edition",
       "sendNews": "Write for Qirtas",
       "deskLedes": {
         "news": "Campus and Society news: reports, features, interviews, profiles, event coverage and explainers, by named reporters.",
         "voices": "Reviews, columns, opinion essays, letters to the editor, debates and recommendations.",
-        "letters": "Poetry, fiction, creative nonfiction, drama, translation and Six Words.",
+        "letters": "Poetry, fiction, creative nonfiction, drama and translation.",
         "gallery": "Art, photography, illustration, comics, calligraphy and photo essays.",
         "video": "Next Stop, our show about campus, with reels, short films, video reports, recorded performances and animation.",
         "games": "Crosswords, quizzes, word ladders, riddles, anagrams and Name the Book."
@@ -4653,12 +4652,14 @@
       "tour": {
         "title": "The Typewriter Tour",
         "short": "Our welcome to new students, at a typewriter.",
-        "lede": "The Typewriter Tour is the Society’s welcome to new students: sit at the typewriter, write six words, and join. It belongs to membership, run by the General Secretary and the Tour Lead.",
+        "lede": "The Typewriter Tour is the Society’s welcome to new students: sit at the typewriter, write six words, and join. It belongs to membership, run by the Director of Membership and the Tour Lead.",
         "whenTitle": "When",
-        "when": "The full Tour runs once a year, in spring, after Eid, when the new intake arrives: March 14–25, 2027. In fall, the typewriter goes to the club fair as the membership table.",
-        "wordsTitle": "Where the six words go",
-        "words": "Six Words are written only on the Tour, on paper, never on the site. They are published in Qirtas, as Six Words pages in Letters.",
-        "back": "Join the Society"
+        "when": "Once a year, in the spring club fair week, with the fair as one of its days. The 2027 dates follow Student Life’s fair and are posted on What’s on.",
+        "wordsTitle": "Who sees your page",
+        "words": "Six Words are written only on the typewriter, never on the site. Your page is private until you choose otherwise in your account: only you, your profile, or this page too. That choice is your consent, and you can change it any time.",
+        "back": "Join the Society",
+        "howTitle": "How it works",
+        "how": "No paper is kept. At the station you join on auibsal.org from the QR code, a volunteer photographs your typed page and attaches it to your new account, and you take the original home. Writers under 18 don’t join: they keep their page and nothing is photographed."
       },
       "tourLine": "Met us at the typewriter? Read about the Typewriter Tour.",
       "tiers": {
@@ -4894,6 +4895,10 @@
           "title": "A team that answers",
           "body": "Up to six people, at least one of them a Lead, keep your profile, perks and people on your dashboard."
         }
+      },
+      "secondChapter": {
+        "title": "Second Chapter",
+        "body": "Second Chapter is our book drive and sale for a charity, at the fall club fair, from October 2027. Books find new readers, and what the sale raises goes to the charity, never to the Society. The Director of Partnerships chooses the charity and runs it with them."
       }
     },
     "verify": {

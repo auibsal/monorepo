@@ -86,6 +86,11 @@ const PartnersPage = async ({ params }: LocaleParams) => {
           </Link>
         </p>
       </Section>
+      {/* Second Chapter (owner, Nov 7, 2026): kept by the Director of
+          Partnerships; its collection's record is a Notion page. */}
+      <Section id="second-chapter" title={t("secondChapter.title")}>
+        <p className="type-body max-w-[60ch]">{t("secondChapter.body")}</p>
+      </Section>
       <Institutions />
       {list.length === 0 ? <p className="type-body">{t("empty")}</p> : null}
       {REACH.map((reach) => {
