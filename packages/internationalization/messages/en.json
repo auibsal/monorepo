@@ -187,7 +187,7 @@
       "journal": "Qirtas",
       "programs": "Events",
       "society": "Society",
-      "account": "Membership",
+      "account": "Your account",
       "profile": "Profile and privacy",
       "admin": "Administration",
       "publicSite": "auibsal.org",
@@ -276,7 +276,7 @@
       "welcome": {
         "title": "Welcome, {name}",
         "body": "You’re a member of the AUIB Society of Arts and Letters. This is your membership card: show it at the door.",
-        "open": "Open Membership",
+        "open": "Open your account",
         "more": "Tell us more about yourself (two minutes, optional)"
       }
     },
@@ -410,7 +410,7 @@
         "left": "{count, plural, one {{places} place left} other {{places} places left}}"
       },
       "notice": {
-        "booked": "Booked. Your ticket is under Membership, and a confirmation email is on its way.",
+        "booked": "Booked. Your ticket is in your account, and a confirmation email is on its way.",
         "waitlisted": "The event is full, so you’re on the waitlist. We’ll email you if a place opens.",
         "cancelled": "Done. Your place has gone to the next person waiting, if there is one.",
         "leftWaitlist": "Done. You’re off the waitlist.",
@@ -438,7 +438,7 @@
       "signUp": "Sign up",
       "giveBack": "Give it back",
       "full": "Full",
-      "yours": "You’re on this shift. It’s also under Membership.",
+      "yours": "You’re on this shift. It’s also in your account.",
       "left": "{count, plural, =0 {No places left} one {{places} place left} other {{places} places left}}",
       "notice": {
         "signedUp": "You’re signed up. Confirm the shift on My calendar closer to the day.",
@@ -4079,7 +4079,7 @@
       "news": "News",
       "documents": "Library",
       "signIn": "Sign in",
-      "account": "Membership",
+      "account": "Your account",
       "involved": "Get involved",
       "search": "Search",
       "diwan": "The Diwan",
@@ -4103,7 +4103,8 @@
         "email": "hello@auibsal.org",
         "programs": "Events"
       },
-      "verify": "Verify a card or certificate"
+      "verify": "Verify a card or certificate",
+      "nextStop": "Next Stop"
     },
     "consent": {
       "title": "Cookies",
@@ -4303,7 +4304,7 @@
       "newsletterLede": "One email a month: what Qirtas published and the Society’s coming public events.",
       "nextStop": {
         "title": "Next Stop",
-        "lede": "Qirtas’s video show about campus: the people, the places and what happens there. Be a guest, or join the crew.",
+        "lede": "The Society’s video show about campus, from the Director of Media’s team: the people, the places and what happens there. Be a guest, or join the crew.",
         "care": "Next Stop’s promise",
         "episodes": "Episodes",
         "asList": "Every episode, as a list",
@@ -4660,7 +4661,7 @@
       "telegramName": "The Common Room",
       "email": "Email",
       "concernTitle": "Raising a concern",
-      "concern": "If something is wrong, tell any officer, our Faculty Advisor or the Office of Student Life, in person, or raise a concern under Membership, Society. Harassment, safety and anything involving a child go straight to Student Life.",
+      "concern": "If something is wrong, tell any officer, our Faculty Advisor or the Office of Student Life, in person, or raise a concern in your account, under Society. Harassment, safety and anything involving a child go straight to Student Life.",
       "concernSource": "Member Handbook",
       "photoTitle": "A photo or video of you",
       "photo": "Ask and it comes down within 24 hours.",
@@ -4716,14 +4717,14 @@
         "email": "Email from the platform is sent by Resend from the European Union (Ireland). Links in it are not tracked.",
         "hosting": "The website is hosted on Vercel.",
         "analytics": "This website uses no analytics or advertising cookies.",
-        "delete": "You can delete your account under Membership, Settings.",
+        "delete": "You can delete your account under Settings, in your account.",
         "analyticsOn": "This website counts visits with Google Analytics 4, through Google Tag Manager served from auibsal.org. Analytics cookies are set only if you allow them (Cookie settings, at the foot of every page).",
         "newsletter": "The Sunday Paper’s public list keeps only your email address, your language and when you subscribed. Unsubscribing stops it at once."
       }
     },
     "care": {
       "title": "Next Stop’s promise",
-      "lede": "Next Stop is Qirtas’s video show about campus. Here is how we look after the people in it.",
+      "lede": "Next Stop is the Society’s video show about campus. Here is how we look after the people in it.",
       "promiseTitle": "Our promise",
       "source": "Policy Manual",
       "formTitle": "Ask for a removal",

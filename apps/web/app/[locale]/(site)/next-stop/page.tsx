@@ -4,8 +4,8 @@ import { Link } from "@repo/internationalization/navigation";
 import { journal, localized } from "@repo/sal-data";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { loadEpisodes } from "@/components/next-stop";
 import { PieceCardView } from "@/components/qirtas/cards";
-import { loadEpisodes } from "@/components/qirtas/next-stop";
 import { localizedMetadata } from "@/lib/metadata";
 import { readPublished } from "@/lib/supabase";
 
@@ -18,16 +18,17 @@ export const generateMetadata = async ({
 }: NextStopProps): Promise<Metadata> => {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "web.journal" });
-  return localizedMetadata(locale, "/qirtas/next-stop", {
+  return localizedMetadata(locale, "/next-stop", {
     description: t("nextStop.lede"),
-    title: `${t("nextStop.title")} · ${t("title")}`,
+    title: t("nextStop.title"),
   });
 };
 
 /**
- * Next Stop, Qirtas's video show (owner, Oct 29, 2026; design review C20):
+ * Next Stop, the Society's video show, under the Director of Media (owner,
+ * Nov 7, 2026: out of Qirtas, at /next-stop; episodes on YouTube):
  * its episodes on a shelf (the same as a plain list at
- * /qirtas/next-stop/episodes), the team from the roles people hold, how to
+ * /next-stop/episodes), the team from the roles people hold, how to
  * send a reel, and its promise to the people it films.
  */
 const NextStopPage = async ({ params }: NextStopProps) => {
@@ -60,7 +61,7 @@ const NextStopPage = async ({ params }: NextStopProps) => {
             }))}
             label={t("nextStop.episodes")}
             listLink={
-              <Link className="link" href="/qirtas/next-stop/episodes">
+              <Link className="link" href="/next-stop/episodes">
                 {t("nextStop.asList")}
               </Link>
             }
@@ -116,7 +117,7 @@ const NextStopPage = async ({ params }: NextStopProps) => {
           <Link className="link" href="/qirtas/write/reel">
             {t("nextStop.sendReel")}
           </Link>
-          <Link className="link" href="/qirtas/next-stop/care">
+          <Link className="link" href="/next-stop/care">
             {t("nextStop.care")}
           </Link>
         </p>

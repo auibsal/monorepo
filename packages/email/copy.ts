@@ -44,7 +44,7 @@ const when = (iso: string, l: Lang) =>
 /** A member's own page on the site (Membership, Qirtas, …). */
 const account = (base: string, l: Lang, path = "/membership") => ({
   href: `${base}${localizedPath(l, path)}`,
-  label: l === "ar" ? "افتح «العضوية»" : "Open Membership",
+  label: l === "ar" ? "افتح حسابك" : "Open your account",
 });
 
 /** A page in the Diwan, for officers. */
@@ -429,8 +429,8 @@ export const verificationDecided = (
             l === "ar" ? "تم التحقق من حسابك" : "Your account is verified",
           paragraphs: [
             l === "ar"
-              ? "راجعت الهيئة الإدارية لجمعية الفنون والآداب حسابك ووافقت عليه. أكمل إعداد حسابك، وستجد بطاقتك والفعاليات وكل ما في الجمعية في صفحة العضوية."
-              : "The Council of the AUIB Society of Arts and Letters has checked and approved your account. Finish setting up, and your card, the events and everything else are on your Membership page.",
+              ? "راجعت الهيئة الإدارية لجمعية الفنون والآداب حسابك ووافقت عليه. أكمل إعداد حسابك، وستجد بطاقتك والفعاليات وكل ما في الجمعية في «حسابك»."
+              : "The Council of the AUIB Society of Arts and Letters has checked and approved your account. Finish setting up, and your card, the events and everything else are in your account.",
           ],
         }
       : {
@@ -1088,30 +1088,30 @@ const REPLY_LINES: Record<
   offered: {
     ar: {
       at: () => "",
-      body: "الدور لك إن أردته. ستتواصل معك «العضوية» لتبدأ.",
+      body: "الدور لك إن أردته. سيتواصل معك فريق العضوية لتبدأ.",
       heading: "عرض",
       soon: "",
     },
     en: {
       at: () => "",
-      body: "The role is yours if you'd like it. Membership will be in touch to get you started.",
+      body: "The role is yours if you'd like it. The Director of Membership will be in touch to get you started.",
       heading: "An offer",
       soon: "",
     },
   },
   talking: {
     ar: {
-      at: (time) => `تودّ «العضوية» الحديث معك عن هذا الدور في ${time}.`,
+      at: (time) => `يودّ فريق العضوية الحديث معك عن هذا الدور في ${time}.`,
       body: "إن لم يناسبك الموعد، فردّ على هذه الرسالة.",
       heading: "لنتحدث",
-      soon: "تودّ «العضوية» الحديث معك عن هذا الدور، وستتواصل معك لتحديد موعد.",
+      soon: "يودّ فريق العضوية الحديث معك عن هذا الدور، وسيتواصل معك لتحديد موعد.",
     },
     en: {
       at: (time) =>
-        `Membership would like to talk with you about this role on ${time}.`,
+        `The Director of Membership would like to talk with you about this role on ${time}.`,
       body: "If the time doesn't suit you, reply to this email.",
       heading: "Let's talk",
-      soon: "Membership would like to talk with you about this role and will be in touch to set a time.",
+      soon: "The Director of Membership would like to talk with you about this role and will be in touch to set a time.",
     },
   },
 };
@@ -1314,8 +1314,8 @@ export const welcome = (lang: Lang, app: string) =>
       ],
       paragraphs: [
         l === "ar"
-          ? "أنت عضو الآن. بطاقتك الحيّة في صفحة «العضوية»: تُظهرها عند الباب، وتحمل امتيازات الشركاء."
-          : "You're a member now. Your live card is on Membership: show it at the door, and it carries our partners' perks.",
+          ? "أنت عضو الآن. بطاقتك الحيّة في «حسابك»: تُظهرها عند الباب، وتحمل امتيازات الشركاء."
+          : "You're a member now. Your live card is in your account: show it at the door, and it carries our partners' perks.",
       ],
     };
   });

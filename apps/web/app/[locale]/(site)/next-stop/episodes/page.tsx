@@ -2,8 +2,8 @@ import type { Locale } from "@repo/internationalization";
 import { Link } from "@repo/internationalization/navigation";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { loadEpisodes } from "@/components/next-stop";
 import { PieceCardView } from "@/components/qirtas/cards";
-import { loadEpisodes } from "@/components/qirtas/next-stop";
 import { localizedMetadata } from "@/lib/metadata";
 
 interface EpisodesProps {
@@ -15,7 +15,7 @@ export const generateMetadata = async ({
 }: EpisodesProps): Promise<Metadata> => {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "web.journal" });
-  return localizedMetadata(locale, "/qirtas/next-stop/episodes", {
+  return localizedMetadata(locale, "/next-stop/episodes", {
     description: t("nextStop.lede"),
     title: `${t("nextStop.episodes")} · ${t("nextStop.title")}`,
   });
@@ -32,7 +32,7 @@ const EpisodesPage = async ({ params }: EpisodesProps) => {
       <header className="grid gap-2">
         <h1 className="type-display">{t("nextStop.episodes")}</h1>
         <p className="type-caption">
-          <Link className="link" href="/qirtas/next-stop">
+          <Link className="link" href="/next-stop">
             {t("nextStop.title")}
           </Link>
         </p>

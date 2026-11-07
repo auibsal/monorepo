@@ -209,7 +209,7 @@ export const EpisodePage = ({ slug }: { readonly slug: string }) => {
             <Link className="link" href={back}>
               {t("back")}
             </Link>
-            {e?.published_at ? <OnTheSite href="/qirtas/next-stop" /> : null}
+            {e?.published_at ? <OnTheSite href="/next-stop" /> : null}
           </>
         }
         title={e ? localized(e, "title", locale) : t("new")}

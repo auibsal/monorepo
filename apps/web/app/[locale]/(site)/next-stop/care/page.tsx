@@ -3,10 +3,7 @@ import { RemovalForm } from "@/components/removal-form";
 import { PageHeader, Section } from "@/components/section";
 import { type LocaleParams, sectionMetadata } from "@/lib/page";
 
-export const generateMetadata = sectionMetadata(
-  "web.care",
-  "/qirtas/next-stop/care"
-);
+export const generateMetadata = sectionMetadata("web.care", "/next-stop/care");
 
 const PROMISE = ["5_1", "5_2", "5_3", "5_4", "5_5"] as const;
 

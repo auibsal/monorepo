@@ -5,14 +5,11 @@ import { Link, usePathname } from "@repo/internationalization/navigation";
 const DESK_LINK =
   "whitespace-nowrap border-transparent border-b-[1.5px] py-1 font-medium text-[0.90625rem] hover:text-accent aria-[current=page]:border-accent";
 
-/** Where a Qirtas address belongs among the sections (Next Stop is Video). */
+/** Where a Qirtas address belongs among the sections. */
 const sectionOf = (path: string, desks: readonly string[]) => {
   const [, first, second] = path.split("/");
   if (first !== "qirtas" || !second) {
     return null;
-  }
-  if (second === "next-stop") {
-    return "video";
   }
   return desks.includes(second) ? second : null;
 };
