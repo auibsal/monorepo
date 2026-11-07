@@ -38,8 +38,8 @@ describe("forms", () => {
   });
 
   test("required fields, lengths, ranges and choices are checked", () => {
-    const { f10: f09 } = forms;
-    expect(formProblems(f09, {})).toContain("title");
+    const { f10 } = forms;
+    expect(formProblems(f10, {})).toContain("title");
     const ok = {
       believes: "b",
       motion_type: "ordinary",
@@ -48,11 +48,11 @@ describe("forms", () => {
       seconder: "s",
       title: "t",
     };
-    expect(formProblems(f09, ok)).toEqual([]);
-    expect(formProblems(f09, { ...ok, motion_type: "other" })).toEqual([
+    expect(formProblems(f10, ok)).toEqual([]);
+    expect(formProblems(f10, { ...ok, motion_type: "other" })).toEqual([
       "motion_type",
     ]);
-    expect(formProblems(f09, { ...ok, title: "x".repeat(201) })).toEqual([
+    expect(formProblems(f10, { ...ok, title: "x".repeat(201) })).toEqual([
       "title",
     ]);
     expect(formProblems(forms.f45, {})).toContain("agree");

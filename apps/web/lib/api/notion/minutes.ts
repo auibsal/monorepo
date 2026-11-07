@@ -30,7 +30,7 @@ import { bodyOf, editorEmail, NO_EMAIL, stamp } from "./publish";
 const IN_THE_DIWAN = "Minutes in the Diwan";
 const UUID = /^[0-9a-f-]{36}$/i;
 
-/** Notion's meeting kinds (owner, Nov 7, 2026: no General Assembly). */
+/** Notion's meeting kinds (owner, Nov 7, 2026). */
 const BODIES: Record<string, governance.MeetingBody> = {
   "Annual Meeting": "annual",
   Council: "council",

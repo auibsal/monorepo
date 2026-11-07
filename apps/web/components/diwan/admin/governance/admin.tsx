@@ -44,7 +44,7 @@ type Status =
 // ── Meetings ────────────────────────────────────────────────────────────────
 
 /**
- * Meetings of the Council and the General Assembly (owner, Oct 31, 2026:
+ * Meetings of the Council and of the members (owner, Oct 31, 2026:
  * minutes and resolutions are one thing): each meeting is its minutes, and
  * its resolutions are on its page.
  */

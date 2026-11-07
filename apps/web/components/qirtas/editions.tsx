@@ -100,7 +100,7 @@ export const EditionShelfItem = async ({
 
 /**
  * Before the first Edition is published (design review C11): the Edition's
- * open or coming calls and its Launch Night, from their records alone.
+ * open or coming calls and its launch event, from their records alone.
  */
 export const EditionComing = async ({ locale }: { locale: Locale }) => {
   const t = await getTranslations({ locale, namespace: "web.journal" });

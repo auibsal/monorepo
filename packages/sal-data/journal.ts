@@ -1196,7 +1196,7 @@ export const prizeScore = (judge: number, votes: number, topVotes: number) => {
 };
 
 /**
- * An Edition's Launch Night (Nov 4, 2026): the event the masthead named,
+ * An Edition's launch event (Nov 4, 2026): the event the masthead named,
  * read only for a published Edition or one with a published call, and then
  * read as any public event is.
  */

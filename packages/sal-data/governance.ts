@@ -6,7 +6,7 @@ export const RON = "RON" as const;
 /**
  * The Society's meetings (owner, Nov 7, 2026): the Council, general meetings
  * every two weeks, the Annual Meeting, special meetings and the Founding
- * Meeting (March 30, 2027). The General Assembly and the AGM are retired.
+ * Meeting (March 30, 2027). There are no other kinds.
  */
 export const meetingBodies = [
   "council",
@@ -56,7 +56,7 @@ export const councilMembers = async (client: Client) =>
 export const councilSeats = async (client: Client) =>
   unwrap(await client.schema("governance").rpc("council_seats")) ?? [];
 
-/** Resolutions the Council or the General Assembly adopted, newest first. */
+/** Resolutions the Council or a members’ meeting adopted, newest first. */
 export const adoptedResolutions = async (client: Client) =>
   unwrap(
     await client
