@@ -12,7 +12,7 @@ import { api } from "@/lib/api/urls";
  * draft Broadcast and the test a sender mails themselves share these.
  */
 export const invitationFrom = () =>
-  `President • ${project.name} <${project.presidentEmail}>`;
+  `${project.name} <${project.presidentEmail}>`;
 
 export const INVITATION_FOOTER =
   "You get this once, because you wrote at the Society’s typewriter or signed up at its table.";
