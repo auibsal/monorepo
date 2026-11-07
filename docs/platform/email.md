@@ -192,7 +192,7 @@ are in: the next outbox row or scheduled run calls the route again.
   then on. Resend keeps its own suppression list as well.
 - The Sunday Paper's confirmation goes to one address at most three
   times in thirty days, and a sign-up never confirmed is deleted after
-  thirty days (`sal-newsletter-unconfirmed`, daily).
+  thirty days (the retention job, `sal-retention`, daily).
 - One sender, set in code (`SENDER` in `packages/email`); there is no
   `RESEND_FROM` to set.
 

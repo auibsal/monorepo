@@ -1207,6 +1207,22 @@ export type Database = {
         Returns: undefined;
       };
       request_personal_email: { Args: { email: string }; Returns: undefined };
+      retention_due: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          kind: string;
+          ref: string;
+        }[];
+      };
+      retention_schedule: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          keeps: string;
+          rule: string;
+          runs: string;
+        }[];
+      };
+      run_retention: { Args: Record<PropertyKey, never>; Returns: Json };
       save_push_subscription: {
         Args: {
           auth: string;

@@ -421,7 +421,7 @@ any schema change. Integration tests run against a local stack with
   writer's alone. Every decision carries its reason (`journal.decide`).
   Bylines are a Register name, a pen name or "Anonymous" (the
   Editor-in-Chief knows the writer). Unpublished submissions are deleted
-  twelve months after the decision (the keep-alive cron).
+  twelve months after the decision (the retention job, `docs/platform/retention.md`).
 - **The Newsroom** is the Diwan's Qirtas section: staff write and publish
   directly, and read what members send on the same pages
   (`/diwan/qirtas/submissions/<id>`).

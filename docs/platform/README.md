@@ -10,6 +10,8 @@ under Account); the Society's documents are on
 - [Accounts and access](accounts.md)
 - [Releases and migrations](releases.md)
 - [Backups and restore](backups.md)
+- [Retention](retention.md)
+- [Vendors](vendors.md)
 - [When something breaks](incidents.md)
 - [Notifications](notifications.md)
 - [Email: every email, its sender and its settings](email.md)

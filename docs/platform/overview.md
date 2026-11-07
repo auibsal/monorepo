@@ -38,17 +38,17 @@ The platform is one repository, [auibsal/mono](https://github.com/auibsal/mono),
 | sal-publish | Every 10 minutes | Publishes scheduled news, issues and pieces |
 | sal-calendar-sync | Hourly at :07 | Refreshes the AUIB campus calendar |
 | sal-daily | 4:45 UTC (7:45 a.m. Baghdad) | Event reminders, agreement reminders, role-ending notices and overdue removal requests |
-| sal-ballot-retention | 5:15 UTC | Deletes ballots and voter lists one year after an election closes (B6.11) |
-| sal-outbox-prune | 5:30 UTC | Deletes sent outbox rows older than 30 days |
+| sal-retention | 5:15 UTC | Runs every rule of the retention schedule (`docs/platform/retention.md`); a failed rule emails the administrators |
 | sal-sunday-paper | Sundays, 6:00 UTC (sends on the first Sunday of the month) | The Sunday Paper to members and the public list |
 | sal-notion-sync | Every 15 minutes | Mirrors officers and the registry into Notion |
 | sal-telegram-posts | Every 10 minutes | Hudhud's posts to the Society's group |
 | sal-telegram-tidy | 3:25 UTC | Expired Telegram codes and old posts |
+| sal-wallet-terms | 3:20 UTC | Refreshes Google Wallet passes when a term or role ends |
 | sal-cron-health | 5:35 UTC | Emails the administrators the jobs that failed in the last day; prunes run records older than 30 days |
-| keep-alive (Vercel Cron) | 1:00 UTC | Touches the database daily so the free Supabase project is never paused |
-| Nightly backup (GitHub Actions) | 23:20 UTC | Encrypted dump of the production database, kept 30 days |
+| retention (Vercel Cron, `/api/cron/retention`) | 1:00 UTC | Runs the retention schedule (`docs/platform/retention.md`); its daily read also keeps the free Supabase project from pausing |
+| Nightly backup (GitHub Actions) | 23:20 UTC | Encrypted dump of the production database (and Storage on the 1st), kept 30 days, emailed on failure (`docs/platform/backups.md`) |
 
-The first twelve run inside Postgres (pg_cron). The Supabase security and
+The first eleven run inside Postgres (pg_cron). The Supabase security and
 performance advisors are kept at zero findings, and
 `00_advisors.test.sql` fails CI when one would come back: every RPC entry
 point in an exposed schema is a SECURITY INVOKER wrapper around its body in
