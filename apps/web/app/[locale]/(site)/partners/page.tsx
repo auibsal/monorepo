@@ -24,7 +24,7 @@ const SIDES = {
 /**
  * The partners' front door (owner, Oct 31, 2026: /partners, in place of
  * /about/partners): what partnering with the Society means, the way to
- * apply (/partners/join) and in for a partner's team, then the partners
+ * apply (/partners/apply) and in for a partner's team, then the partners
  * (Policy Manual P11). Only partners that are active and have a signed
  * memorandum in force appear; the register itself is internal.
  */
@@ -71,7 +71,7 @@ const PartnersPage = async ({ params }: LocaleParams) => {
         <p className="flex flex-wrap items-center gap-x-6 gap-y-2">
           <Link
             className="font-medium text-accent hover:underline"
-            href="/partners/join"
+            href="/partners/apply"
           >
             {t("apply")}
           </Link>

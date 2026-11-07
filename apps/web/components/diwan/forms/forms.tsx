@@ -137,7 +137,7 @@ export const SentList = ({ limit }: { readonly limit?: number }) => {
           className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1"
           key={s.id}
         >
-          <Link className="link" href={`/membership/requests/${s.id}`}>
+          <Link className="link" href={`/account/requests/${s.id}`}>
             <FormTitle formKey={s.form_key} />
           </Link>
           <span className="type-caption">
@@ -179,7 +179,7 @@ export const Forms = () => {
       <DiwanSection id="start" title={t("available")}>
         {types.isPending ? <SectionSpinner /> : null}
         {none ? (
-          <EmptyLine action={{ href: "/membership", label: t("toProfile") }}>
+          <EmptyLine action={{ href: "/account", label: t("toProfile") }}>
             {t("noneAvailable")}
           </EmptyLine>
         ) : null}

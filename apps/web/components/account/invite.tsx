@@ -60,7 +60,7 @@ export const Invite = ({ code }: { code: string }) => {
       ),
     onSuccess: async (kind) => {
       await queryClient.invalidateQueries();
-      router.replace(kind === "team" ? "/partners/dashboard" : "/membership");
+      router.replace(kind === "team" ? "/partners/dashboard" : "/account");
     },
   });
 

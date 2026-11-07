@@ -11,12 +11,10 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { EventParts } from "@/components/event-parts";
 import { ActionBar } from "@/components/frame/action-bar";
 import { ManageLinks } from "@/components/manage-links";
-import { WhatsOn } from "@/components/whats-on-page";
 import { eventLd, JsonLd } from "@/lib/json-ld";
 import { mediaUrl } from "@/lib/media";
 import { localizedMetadata } from "@/lib/metadata";
 import { readPublished } from "@/lib/supabase";
-import { isMonthSegment, monthFrom } from "@/lib/whats-on";
 
 interface EventProps {
   readonly params: Promise<{ locale: Locale; slug: string }>;
@@ -24,9 +22,9 @@ interface EventProps {
 
 const SLUG = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 
-// /events/<slug> is an event or a month of What's on (/events/2026-11);
-// there are no series (owner, Nov 5, 2026: every event is a standard
-// event). The Supabase reads stay cached by tag until an event is published.
+// /events/<slug> is an event (a month of What's on is /events?month=;
+// old month addresses redirect, next.config.ts). The Supabase reads stay
+// cached by tag until an event is published.
 
 type PublicEvent = Awaited<ReturnType<typeof events.publicEvent>>;
 
@@ -39,13 +37,6 @@ export const generateMetadata = async ({
   params,
 }: EventProps): Promise<Metadata> => {
   const { locale, slug } = await params;
-  if (isMonthSegment(slug)) {
-    const t = await getTranslations({ locale, namespace: "web.events" });
-    return localizedMetadata(locale, `/events/${slug}`, {
-      description: t("lede"),
-      title: t("title"),
-    });
-  }
   const event = await load(slug);
   if (!event) {
     return {};
@@ -57,13 +48,10 @@ export const generateMetadata = async ({
   });
 };
 
-/** An event, or a month of What's on. */
+/** An event's page. */
 const EventPage = async ({ params }: EventProps) => {
   const { locale, slug } = await params;
   setRequestLocale(locale);
-  if (isMonthSegment(slug)) {
-    return <WhatsOn locale={locale} month={monthFrom(slug)} />;
-  }
   return <EventView locale={locale} slug={slug} />;
 };
 
@@ -123,7 +111,7 @@ const EventView = async ({
         </p>
         <ManageLinks
           diwan={`/events/${event.slug}`}
-          membership="/membership/calendar"
+          membership="/account/calendar"
           membershipLabel="booking"
         />
         {localized(event, "venue", locale) ? (
@@ -137,7 +125,7 @@ const EventView = async ({
         <ActionBar>
           <Button asChild>
             <a
-              href={`${localizedPath(locale, "/membership/calendar")}#${event.slug}`}
+              href={`${localizedPath(locale, "/account/calendar")}#${event.slug}`}
             >
               {event.entry === "open" ? t("remind") : t("rsvp")}
             </a>

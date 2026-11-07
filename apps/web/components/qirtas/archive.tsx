@@ -25,9 +25,18 @@ export const archiveMonths = async (locale: Locale) => {
   return [...months.entries()].map(([key, count]) => ({ count, key }));
 };
 
+/** A month of the archive, and a section within it, as query strings. */
+export const archivePath = (month: string, section?: string) => {
+  const query = new URLSearchParams({ month });
+  if (section) {
+    query.set("section", section);
+  }
+  return `/qirtas/archive?${query.toString()}`;
+};
+
 /**
- * A month of Qirtas (design review A20): /qirtas/archive/<yyyy-mm>, every
- * section, or /qirtas/archive/<yyyy-mm>/<section>, one. Each section's
+ * A month of Qirtas: /qirtas/archive?month=<yyyy-mm>, every section, or
+ * with &section=<section>, one. Each section's
  * pieces under its name, newest first, with the other sections that month
  * as links.
  */
@@ -73,7 +82,7 @@ export const ArchiveMonth = async ({
               <Link
                 aria-current={desk ? undefined : "page"}
                 className="link aria-[current=page]:font-medium aria-[current=page]:no-underline"
-                href={`/qirtas/archive/${key}`}
+                href={archivePath(key)}
               >
                 {t("archive.everySection")}
               </Link>
@@ -83,7 +92,7 @@ export const ArchiveMonth = async ({
                 <Link
                   aria-current={desk === d ? "page" : undefined}
                   className="link aria-[current=page]:font-medium aria-[current=page]:no-underline"
-                  href={`/qirtas/archive/${key}/${d}`}
+                  href={archivePath(key, d)}
                 >
                   {t(`desks.${d}`)}
                 </Link>

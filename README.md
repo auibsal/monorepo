@@ -18,7 +18,7 @@ one Next.js app, `apps/web`, deployed once to auibsal.org.
 | Where | What it is |
 | --- | --- |
 | `auibsal.org` (`app/[locale]/(site)`) | The public site, English at `/` and Arabic at `/ar` |
-| `auibsal.org/membership`, `/sign-in`, `/events/book`, … (`app/[locale]/(account)`) | **Members' pages** on the site: sign-in and sign-up, Membership, booking, shifts, writing for Qirtas, the Society; client-rendered with the member's own token |
+| `auibsal.org/account`, `/sign-in`, `/events/book`, … (`app/[locale]/(account)`) | **Members' pages** on the site: sign-in and sign-up, Membership, booking, shifts, writing for Qirtas, the Society; client-rendered with the member's own token |
 | `auibsal.org/diwan` (`app/[locale]/diwan`) | **The Diwan**: the officers' administration (anyone holding a role), client-rendered with the officer's own token |
 | `auibsal.org/api` (`app/api`, `lib/api`) | Email, cron (and a daily watch on the cron jobs), calendar feeds, exports, file links, deletion, Hudhud the Telegram bot, the Notion sync |
 | `packages/brand` | The design system (SAL-MED-02): the guide, tokens, logos, icons, social and print files, and its Storybook (components, screens and every email), in the Diwan at auibsal.org/diwan/design |

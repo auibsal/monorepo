@@ -134,7 +134,7 @@ export const Certificate = () => {
 
   if (!id) {
     return (
-      <EmptyLine action={{ href: "/membership/record", label: t("back") }}>
+      <EmptyLine action={{ href: "/account/record", label: t("back") }}>
         {t("missing")}
       </EmptyLine>
     );
@@ -147,7 +147,7 @@ export const Certificate = () => {
   }
   if (!certificate.data) {
     return (
-      <EmptyLine action={{ href: "/membership/record", label: t("back") }}>
+      <EmptyLine action={{ href: "/account/record", label: t("back") }}>
         {t("missing")}
       </EmptyLine>
     );

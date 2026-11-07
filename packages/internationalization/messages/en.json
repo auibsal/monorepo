@@ -4275,8 +4275,6 @@
       "noneMonth": "Nothing is announced for {month} yet.",
       "auib": "AUIB calendar",
       "allDay": "All day",
-      "hideAuib": "Hide AUIB dates",
-      "showAuib": "Show AUIB dates",
       "auibLink": "{title}, on the AUIB calendar (opens auib.edu.iq)",
       "ways": {
         "open": "Just come",
@@ -4298,7 +4296,9 @@
         "links": "From the night",
         "qirtas": "In Qirtas",
         "consent": "Sign the trip consent form before you book."
-      }
+      },
+      "allEvents": "All events",
+      "auibCalendar": "AUIB’s calendar (opens auib.edu.iq)"
     },
     "journal": {
       "title": "Qirtas",
@@ -4450,7 +4450,6 @@
         "contents": "Contents"
       },
       "contents": "Contents",
-      "launchPage": "The launch page",
       "otherEditions": "Other Editions",
       "previousEdition": "The Edition before",
       "nextEdition": "The Edition after",
@@ -5172,7 +5171,8 @@
     "company": {
       "auditions": "Auditions",
       "auditionsLede": "The Company casts each production in open auditions. Members sign up for a time.",
-      "auditionsLink": "Sign up for an audition"
+      "auditionsLink": "Sign up for an audition",
+      "dates": "The Company’s dates on What’s on"
     },
     "programs": {
       "page": {

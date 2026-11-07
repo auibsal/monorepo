@@ -82,7 +82,7 @@ test("sign up with an AUIB address, confirm by email, finish setup", async ({
 
   // The optional details are part of Profile (Nov 4, 2026).
   await page.getByRole("link", { name: /Tell us more about yourself/ }).click();
-  await expect(page).toHaveURL(/\/membership\/settings\/profile/);
+  await expect(page).toHaveURL(/\/account\/settings\/profile/);
   const details = page.getByRole("region", { name: "More about you" });
   // Five answers: chosen from a list under the field, not a row.
   await details.getByRole("button", { name: /You are/ }).click();
@@ -180,7 +180,7 @@ test("a sign-in email's code works where its link can't be opened", async ({
   expect(code).toBeTruthy();
   await page.getByLabel("Code from the email").fill(code ?? "");
   await page.getByRole("button", { name: "Continue" }).click();
-  await expect(page).toHaveURL(new RegExp(`${urls.web}/membership/?$`));
+  await expect(page).toHaveURL(new RegExp(`${urls.web}/account/?$`));
 });
 
 test("a member with a name from before the four parts is asked for them at sign-in", async ({
@@ -222,6 +222,6 @@ test("a member with a name from before the four parts is asked for them at sign-
   await page.getByLabel("Father’s name", { exact: true }).fill("تجريبي");
   await page.getByLabel("Grandfather’s name").fill("آلي");
   await page.getByRole("button", { name: "Continue" }).click();
-  await expect(page).toHaveURL(new RegExp(`${urls.web}/membership/?$`));
+  await expect(page).toHaveURL(new RegExp(`${urls.web}/account/?$`));
   await expect(page.getByText("E2E Tester").first()).toBeVisible();
 });

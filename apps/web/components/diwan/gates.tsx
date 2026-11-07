@@ -58,16 +58,16 @@ const KIND_PATHS: Record<
   readonly string[]
 > = {
   guest: [
-    "/membership/calendar",
-    "/membership/record",
-    "/membership/saved",
-    "/membership/settings",
-    "/membership/work",
+    "/account/calendar",
+    "/account/record",
+    "/account/saved",
+    "/account/settings",
+    "/account/work",
     "/qirtas",
   ],
   member: [],
-  none: ["/membership/settings"],
-  partner: ["/membership/record", "/membership/settings"],
+  none: ["/account/settings"],
+  partner: ["/account/record", "/account/settings"],
 };
 
 /** Whether a kind of membership opens a members' page. */
@@ -76,7 +76,7 @@ export const kindOpens = (
   pathname: string
 ) =>
   kind === "member" ||
-  pathname === "/membership" ||
+  pathname === "/account" ||
   KIND_PATHS[kind ?? "none"].some(
     (path) => pathname === path || pathname.startsWith(`${path}/`)
   );
@@ -107,7 +107,7 @@ export const RequireMember = ({ children }: GateProps) => {
 
   useEffect(() => {
     if (elsewhere) {
-      router.replace("/membership");
+      router.replace("/account");
     } else if (needsSetup && profile.data) {
       router.replace({
         pathname: "/welcome",
@@ -157,7 +157,7 @@ export const RequirePartner = ({ children }: GateProps) => {
   const unnamed = profile.isSuccess && !hasAllNames(profile.data);
   useEffect(() => {
     if (grants.isSuccess && !grants.isFetching && !holds) {
-      router.replace("/membership");
+      router.replace("/account");
     } else if (holds && unnamed) {
       router.replace({ pathname: "/welcome", query: { next: pathname } });
     }
@@ -184,7 +184,7 @@ export const GuestOnly = ({ children }: GateProps) => {
   useEffect(() => {
     if (!loading && user) {
       const next = new URLSearchParams(window.location.search).get("next");
-      router.replace(safeNextPath(next) ?? "/membership");
+      router.replace(safeNextPath(next) ?? "/account");
     }
   }, [loading, router, user]);
 
@@ -224,7 +224,7 @@ export const RequireStaff = ({ children }: GateProps) => {
 
   useEffect(() => {
     if (settled && !staff) {
-      router.replace(partnerOnly ? "/partners/dashboard" : "/membership");
+      router.replace(partnerOnly ? "/partners/dashboard" : "/account");
     }
   }, [partnerOnly, router, settled, staff]);
 

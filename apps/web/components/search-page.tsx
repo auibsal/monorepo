@@ -17,7 +17,7 @@ import { localizedMetadata } from "@/lib/metadata";
 import { readPublished } from "@/lib/supabase";
 
 export interface SearchProps {
-  readonly params: Promise<{ locale: Locale; query?: string }>;
+  readonly params: Promise<{ locale: Locale }>;
   readonly searchParams: Promise<{ q?: string }>;
 }
 
@@ -86,7 +86,7 @@ const searchDocuments = async (query: string) => {
       id: doc.code,
       kind: "document" as const,
       occurred_at: null,
-      slug: `/library/${doc.slug}`,
+      slug: documents.documentPath(doc.slug),
       snippet: doc.summary_en ?? "",
       title_ar: doc.title_ar ?? doc.title_en,
       title_en: doc.title_en,
@@ -94,18 +94,14 @@ const searchDocuments = async (query: string) => {
 };
 
 /**
- * Search, grouped by kind. A search has its own address, /search/<words>
- * (the form goes there); without JavaScript the form's ?q= is read too.
+ * Search, grouped by kind, at /search?q=<words> (decisions §6: filters
+ * are query strings; old /search/<words> addresses redirect).
  */
 export const SearchPage = async ({ params, searchParams }: SearchProps) => {
-  const { locale, query: fromPath } = await params;
+  const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "web.search" });
-  const query = (
-    fromPath ? decodeURIComponent(fromPath) : ((await searchParams).q ?? "")
-  )
-    .trim()
-    .slice(0, 200);
+  const query = ((await searchParams).q ?? "").trim().slice(0, 200);
   const long = query.length >= 2;
   const found = long
     ? await readPublished(

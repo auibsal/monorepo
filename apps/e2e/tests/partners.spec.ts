@@ -38,7 +38,7 @@ test("an organization applies, the President signs, and its dashboard opens", as
 
   const applicant = await (await browser.newContext()).newPage();
   await signInWithPassword(applicant, email);
-  await applicant.goto(`${urls.web}/partners/join`);
+  await applicant.goto(`${urls.web}/partners/apply`);
   await applicant.getByLabel("Name in English").fill(organization);
   await applicant
     .getByLabel(/What the partnership is for/)
@@ -152,7 +152,7 @@ test("an organization applies, the President signs, and its dashboard opens", as
     "Welcome"
   );
   // One Membership for everyone: the guest's Today, with a guest's card.
-  await guest.goto(`${urls.web}/membership`);
+  await guest.goto(`${urls.web}/account`);
   await expect(guest.getByText("Guest", { exact: true }).first()).toBeVisible();
   await expect(guest.getByText(`Guest of ${organization}`)).toBeVisible();
 });
@@ -169,7 +169,7 @@ test("a member who leads their club's partnership stays a member", async ({
   const organization = `E2E Member Club ${Date.now()}`;
   const page = await (await browser.newContext()).newPage();
   await signInWithPassword(page, member.email);
-  await page.goto(`${urls.web}/partners/join`);
+  await page.goto(`${urls.web}/partners/apply`);
   await page.getByLabel("Name in English").fill(organization);
   await page
     .getByLabel(/What the partnership is for/)
@@ -220,13 +220,13 @@ test("a member who leads their club's partnership stays a member", async ({
     expect(assigned.error).toBeNull();
 
     // Still a member: the whole row, the Member card, and the dashboard.
-    await page.goto(`${urls.web}/membership`);
+    await page.goto(`${urls.web}/account`);
     const row = page.getByRole("navigation", { name: "Your account" });
     for (const name of ["My calendar", "Society", "Record"]) {
       await expect(row.getByRole("link", { name })).toBeVisible();
     }
-    await page.goto(`${urls.web}/membership/society`);
-    await expect(page).toHaveURL(/\/membership\/society$/);
+    await page.goto(`${urls.web}/account/society`);
+    await expect(page).toHaveURL(/\/account\/society$/);
     // Leading a partner is not an officer's role: no Diwan.
     await page.goto(`${urls.app}`);
     await expect(page).toHaveURL(/\/partners\/dashboard$/);

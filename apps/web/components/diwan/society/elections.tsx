@@ -146,7 +146,7 @@ const Nominate = ({ position }: { readonly position: Position }) => {
     onError: (error) => setNotice(errorKey(error)),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["elections"] });
-      router.push("/membership/society");
+      router.push("/account/society");
     },
   });
 
@@ -214,7 +214,7 @@ const Nominate = ({ position }: { readonly position: Position }) => {
   );
 };
 
-/** /membership/society/stand/<position>: standing for one position. */
+/** /account/society/stand/<position>: standing for one position. */
 export const StandForOffice = ({
   positionId,
 }: {
@@ -238,7 +238,7 @@ export const StandForOffice = ({
     election &&
     between(election.nominations_open_at, election.nominations_close_at);
   const back = (
-    <Link className="link" href="/membership/society">
+    <Link className="link" href="/account/society">
       {t("backToSociety")}
     </Link>
   );
@@ -463,7 +463,7 @@ const ElectionCard = ({
                 {nominating && !mine ? (
                   <Link
                     className="link justify-self-start font-medium"
-                    href={`/membership/society/stand/${position.id}`}
+                    href={`/account/society/stand/${position.id}`}
                   >
                     {t("stand")}
                   </Link>

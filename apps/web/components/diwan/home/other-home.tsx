@@ -122,7 +122,7 @@ export const OtherHome = () => {
           ))}
           {application.data ? (
             <li className="grid gap-1">
-              <Link className="link font-medium" href="/partners/join">
+              <Link className="link font-medium" href="/partners/apply">
                 {t("applied", {
                   name: localized(application.data, "name", locale),
                 })}
@@ -145,7 +145,7 @@ export const OtherHome = () => {
           {kind === "guest" ? (
             <>
               <li className="grid gap-1">
-                <Link className="link font-medium" href="/membership/calendar">
+                <Link className="link font-medium" href="/account/calendar">
                   {t("book")}
                 </Link>
                 <p className="type-caption">{t("bookLine")}</p>
@@ -160,7 +160,7 @@ export const OtherHome = () => {
           ) : null}
           {kind ? (
             <li className="grid gap-1">
-              <Link className="link font-medium" href="/membership/record">
+              <Link className="link font-medium" href="/account/record">
                 {t("record")}
               </Link>
               <p className="type-caption">{t("recordLine")}</p>

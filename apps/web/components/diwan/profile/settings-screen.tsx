@@ -48,27 +48,21 @@ export const SettingsScreen = () => {
       <DiwanSection id="yours" title={t("yours")}>
         <RowList>
           <li className="grid gap-1">
-            <Link
-              className="link font-medium"
-              href="/membership/settings/profile"
-            >
+            <Link className="link font-medium" href="/account/settings/profile">
               {t("profile")}
             </Link>
             <p className="type-caption">{t("profileLine")}</p>
           </li>
           {member ? (
             <li className="grid gap-1">
-              <Link className="link font-medium" href="/membership/requests">
+              <Link className="link font-medium" href="/account/requests">
                 {t("requests")}
               </Link>
               <p className="type-caption">{t("requestsLine")}</p>
             </li>
           ) : null}
           <li className="grid gap-1">
-            <Link
-              className="link font-medium"
-              href="/membership/settings/notices"
-            >
+            <Link className="link font-medium" href="/account/settings/notices">
               {t("notices")}
             </Link>
             <p className="type-caption">{t("noticesLine")}</p>
@@ -77,7 +71,7 @@ export const SettingsScreen = () => {
             <li className="grid gap-1">
               <Link
                 className="link font-medium"
-                href="/membership/settings/declarations"
+                href="/account/settings/declarations"
               >
                 {t("declarations")}
               </Link>

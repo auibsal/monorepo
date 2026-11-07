@@ -1,5 +1,5 @@
 import { apiUrl, siteUrl } from "@repo/internationalization";
-import { journal } from "@repo/sal-data";
+import { documents, journal } from "@repo/sal-data";
 import { startLink, TELEGRAM_LINK_PAGE } from "@repo/telegram";
 import type { Lang } from "./copy";
 
@@ -24,7 +24,7 @@ export const eventCalendar = (lang: Lang, slug: string) =>
 export const wordPage = (lang: Lang) => web(lang, "/qirtas/games/word");
 
 export const documentPage = (lang: Lang, slug: string) =>
-  web(lang, `/library/${slug}`);
+  web(lang, documents.documentPath(slug));
 
 /** Where a member connects Telegram: Settings in their account (HUD-2). */
 export const connectPage = (lang: Lang) =>

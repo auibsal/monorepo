@@ -584,7 +584,7 @@ const Certificates = () => {
     return (
       <div className="flex flex-wrap gap-2">
         <Button asChild size="sm" variant="outline">
-          <SiteLink href={`/membership/record/${row.id}`}>{t("open")}</SiteLink>
+          <SiteLink href={`/account/record/${row.id}`}>{t("open")}</SiteLink>
         </Button>
         {mySignatureDue(row) ? (
           <Button

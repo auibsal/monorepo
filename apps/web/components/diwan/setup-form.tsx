@@ -183,7 +183,7 @@ export const SetupForm = () => {
 
   // Everyone goes on to Membership (owner, Oct 31, 2026).
   const leave = () =>
-    router.replace(next ? stripLocale(next) : "/membership", {
+    router.replace(next ? stripLocale(next) : "/account", {
       locale: profile.data?.locale === "ar" ? "ar" : "en",
     });
 
@@ -261,7 +261,7 @@ export const SetupForm = () => {
           <Button onClick={leave} type="button">
             {t("welcome.open")}
           </Button>
-          <Link className="link" href="/membership/settings/profile#details">
+          <Link className="link" href="/account/settings/profile#details">
             {t("welcome.more")}
           </Link>
         </div>

@@ -111,7 +111,7 @@ Part A first).
   in production. Dropping them deletes their data, so it waits for the
   owner's go-ahead.
 - [ ] **The partner memorandum.** The memorandum a partner signs at
-  `/partners/join` is its own words and the Policy Manual's lines. If the
+  `/partners/apply` is its own words and the Policy Manual's lines. If the
   Society adopts a standard text, it replaces them.
 - [ ] **The founding documents in Notion:** amend any text that still
   names retired things before the Founding Meeting (Tue Mar 30, 2027).

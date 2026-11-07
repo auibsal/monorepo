@@ -1,15 +1,24 @@
 import type { Locale } from "@repo/internationalization";
 import { formatMonth } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
+import { journal } from "@repo/sal-data";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { archiveMonths } from "@/components/qirtas/archive";
+import {
+  ArchiveMonth,
+  archiveMonths,
+  archivePath,
+} from "@/components/qirtas/archive";
 import { localizedMetadata } from "@/lib/metadata";
-import { monthFrom } from "@/lib/whats-on";
+import { isMonthSegment, monthFrom } from "@/lib/whats-on";
 
 interface ArchiveProps {
   readonly params: Promise<{ locale: Locale }>;
+  readonly searchParams: Promise<{ month?: string; section?: string }>;
 }
+
+const isDesk = (value: unknown): value is journal.Desk =>
+  (journal.desks as readonly unknown[]).includes(value);
 
 export const generateMetadata = async ({
   params,
@@ -22,10 +31,24 @@ export const generateMetadata = async ({
   });
 };
 
-/** Qirtas's archive (design review A20): every month with published pieces. */
-const ArchivePage = async ({ params }: ArchiveProps) => {
+/**
+ * Qirtas's archive: every month with published pieces; a month, and a
+ * section within it, are query strings (/qirtas/archive?month=2026-11&
+ * section=news, decisions §6).
+ */
+const ArchivePage = async ({ params, searchParams }: ArchiveProps) => {
   const { locale } = await params;
+  const { month, section } = await searchParams;
   setRequestLocale(locale);
+  if (month && isMonthSegment(month)) {
+    return (
+      <ArchiveMonth
+        desk={isDesk(section) ? section : null}
+        locale={locale}
+        month={monthFrom(month)}
+      />
+    );
+  }
   const t = await getTranslations({ locale, namespace: "web.journal" });
   const months = await archiveMonths(locale);
   return (
@@ -42,7 +65,7 @@ const ArchivePage = async ({ params }: ArchiveProps) => {
             <li className="border-line border-t" key={m.key}>
               <Link
                 className="group flex items-baseline justify-between gap-6 py-4"
-                href={`/qirtas/archive/${m.key}`}
+                href={archivePath(m.key)}
               >
                 <span className="type-title group-hover:text-accent">
                   {formatMonth(monthFrom(m.key).from, locale)}

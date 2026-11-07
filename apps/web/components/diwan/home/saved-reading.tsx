@@ -107,7 +107,7 @@ export const SavedReadingSection = () => {
   return (
     <Section
       action={
-        <Link className="link" href="/membership/saved">
+        <Link className="link" href="/account/saved">
           {t("all")}
         </Link>
       }
@@ -119,7 +119,7 @@ export const SavedReadingSection = () => {
   );
 };
 
-/** /membership/saved: everything saved, each with a way to let it go. */
+/** /account/saved: everything saved, each with a way to let it go. */
 export const SavedReadingPage = () => {
   const t = useTranslations("web.journal.saved");
   const saved = useSaved();

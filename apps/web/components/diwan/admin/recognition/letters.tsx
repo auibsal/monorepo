@@ -79,7 +79,7 @@ export const ServiceLetters = () => {
             cell: (r) => (
               <SiteLink
                 className="link"
-                href={`/membership/record/letters/${r.id}`}
+                href={`/account/record/letters/${r.id}`}
               >
                 {t("open")}
               </SiteLink>

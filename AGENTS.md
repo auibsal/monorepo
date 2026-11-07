@@ -19,8 +19,8 @@ media do.
   - `app/[locale]/(account)`: **your account**, the members' pages on the
     site: `/sign-in`, `/sign-up` (and `/sign-up/guest`), `/auth/*`,
     `/welcome`, `/get-involved` (public), `/forms/<number>`,
-    `/invite/<code>`, `/partners/join` and `/partners/dashboard`, and, for
-    members, everything under `/membership`: Today, My calendar
+    `/invite/<code>`, `/partners/apply` and `/partners/dashboard`, and, for
+    members, everything under `/account`: Today, My calendar
     (`/calendar`), Society (`/society`, standing for office at
     `/society/stand`), Record (`/record`, letters at `/record/letters`, a
     year at `/record/year/<yyyy>`), Saved (`/saved`), Settings
@@ -276,12 +276,12 @@ any schema change. Integration tests run against a local stack with
   `programmes` schema, `programme_id`, `programs.manage`; copy says
   "event" or "event lead"). Minutes and resolutions are governance records
   pointing at their meeting's event (`governance.minutes.event_id`).
-- **What's on is one calendar**: `/events`, a month at `/events/<yyyy-mm>`,
+- **What's on is one calendar**: `/events`, a month at
+  `/events?month=<yyyy-mm>`, the Company's dates at `/events?host=company`,
   each event at `/events/<slug>`. The public calendar shows members-only
   events as teasers; SECURITY DEFINER code checks visibility with
-  `private.can_see_event_id`. AUIB's own dates (`core.external_events`,
-  English only, `lang="en"`) sit beside the Society's, quieter; "Hide
-  AUIB dates" is `/events/<yyyy-mm>/society`.
+  `private.can_see_event_id`. AUIB's own calendar is one link, not dates
+  beside the Society's.
 - **Event leads.** `programme_lead` (Event Lead) is scoped to one event
   (scope `event`): they edit it, keep its shifts and needs, see its
   bookings and run its door (`private.leads_event`). The Director of
@@ -306,7 +306,7 @@ any schema change. Integration tests run against a local stack with
   Membership runs every application, and the role's owner picks the
   person (`private.picks_opening`); whoever is onboarded holds the role.
 - **Partners.** One register, `governance.partners`. `/partners` is the
-  front door; an organization applies at `/partners/join`, its signatory
+  front door; an organization applies at `/partners/apply`, its signatory
   signing by name. Each partner has one dashboard, `/partners/dashboard`
   (profile and memorandum, events, people), for its team of up to
   six (Lead or Team), who join only by invitation and verify their own
@@ -353,13 +353,13 @@ any schema change. Integration tests run against a local stack with
   (`withContents`), figures (`journal.piece_figures`), an original beside
   a translation (`journal.piece_bodies.original`), topics
   (`/qirtas/topics`), a reading and a clip (`reading_path`, `clip_id`),
-  Save for later (`journal.saved_pieces`, `/membership/saved`), Gallery
+  Save for later (`journal.saved_pieces`, `/account/saved`), Gallery
   selections shared by address (`/qirtas/selection/...`, nothing stored).
   RSS at `/qirtas/feed.xml` and per section; the archive at
   `/qirtas/archive`. Pieces print on white without the site's frame.
 - **The Edition** is printed once a year, a year in review
-  (`/qirtas/editions`, a Shelf with the plain list at
-  `/qirtas/editions/list`); its record keeps the print run, printer and
+  (`/qirtas/editions`, a Shelf, with the plain list as a view,
+  `?view=list`); its record keeps the print run, printer and
   date.
 - **Games**, daily, made in the reader's browser and the same for everyone
   on a Baghdad day (`@repo/sal-data/games`): the word, the word search,
@@ -442,9 +442,14 @@ any schema change. Integration tests run against a local stack with
   when two views show the same records, merge them. Nothing is kept by
   hand that is known elsewhere (terms, officers, the Council).
 - **Lasting addresses.** Pages people share or return to have their own
-  path (a month, an issue, a search at `/search/<words>`); filters and
-  passing state may use a query string. The apps configure no redirects:
-  an old address is simply not found. The address alone decides the
+  path (an event, a piece, an issue); lists are filtered with query
+  strings (`/events?month=`, `/qirtas/archive?month=&section=`,
+  `/search?q=`). An address that was shared and
+  then moved gets a permanent redirect (308, `MOVED` in
+  `apps/web/next.config.ts`, in both languages): `/membership` →
+  `/account`, `/library/privacy|terms-of-use|accessibility` → `/privacy`,
+  `/terms`, `/accessibility`, `/partners/join` → `/partners/apply`. Any
+  other old address is simply not found. The address alone decides the
   language (`localeDetection: false`).
 - **Big records get pages; small rows are edited in place.** A record
   with its own life (an event, a piece, a production, a partner, a

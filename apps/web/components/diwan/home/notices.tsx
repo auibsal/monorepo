@@ -59,7 +59,7 @@ export const Notices = () => {
     ...(submissions.data ?? [])
       .filter((s) => s.status === "intake_check" && s.intake_returned_at)
       .map((s) => ({
-        href: `/membership/work/submissions/${s.id}`,
+        href: `/account/work/submissions/${s.id}`,
         key: `returned-${s.id}`,
         line: t("returned", { title: s.title }),
       })),
@@ -69,7 +69,7 @@ export const Notices = () => {
           s.status === "accepted" && signed.data && !signed.data.includes(s.id)
       )
       .map((s) => ({
-        href: `/membership/work/submissions/${s.id}`,
+        href: `/account/work/submissions/${s.id}`,
         key: `agreement-${s.id}`,
         line: t("agreement", { title: s.title }),
       })),

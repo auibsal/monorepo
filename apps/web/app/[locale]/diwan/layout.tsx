@@ -31,7 +31,7 @@ export const metadata: Metadata = {
  * The Diwan, the officers' administration at /diwan on
  * the one site, under the site's own header; a workspace, so no footer
  * (the overhaul, Oct 30, 2026). Members' pages are on
- * the site itself (/membership and the rest; owner, Oct 24, 2026). Client-
+ * the site itself (/account and the rest; owner, Oct 24, 2026). Client-
  * rendered: every read and write goes to Supabase with the officer's token
  * (Row Level Security decides) or to the API routes under /api with it.
  */

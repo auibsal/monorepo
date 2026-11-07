@@ -30,7 +30,7 @@ type UniversityRow = events.UniversityEvent;
  */
 export const rowHref = (row: Row) =>
   row.teaser || row.members_only
-    ? `/membership/calendar#${row.slug}`
+    ? `/account/calendar#${row.slug}`
     : `/events/${row.slug}`;
 
 type WayKey = "cancelled" | "members" | "open" | "rsvp" | "invite";

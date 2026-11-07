@@ -34,7 +34,7 @@ export const POST = async (request: Request) => {
     ...pushTest(lang),
     lang,
     tag: "test",
-    url: site(lang, "/membership/settings/profile"),
+    url: site(lang, "/account/settings/profile"),
   });
   return json({ sent });
 };

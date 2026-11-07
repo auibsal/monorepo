@@ -156,7 +156,7 @@ export const Service = () => {
         <ul className="grid gap-2">
           {(certificates.data ?? []).map((c) => (
             <li key={c.id}>
-              <Link className="link" href={`/membership/record/${c.id}`}>
+              <Link className="link" href={`/account/record/${c.id}`}>
                 {t(`kinds.${c.kind as recognition.CertificateKind}`)}
                 {c.serial ? ` · ${c.serial}` : ""}
               </Link>
@@ -172,10 +172,7 @@ export const Service = () => {
           <ul className="grid gap-2">
             {(letters.data ?? []).map((l) => (
               <li key={l.id}>
-                <Link
-                  className="link"
-                  href={`/membership/record/letters/${l.id}`}
-                >
+                <Link className="link" href={`/account/record/letters/${l.id}`}>
                   {t("letter", {
                     date: formatPlainDate(l.issued_at, locale),
                   })}

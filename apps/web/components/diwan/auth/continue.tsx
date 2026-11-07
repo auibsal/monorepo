@@ -15,7 +15,7 @@ export const ContinueToSite = () => {
   const to = safeSocietyUrl(useSearchParams().get("to"));
 
   useEffect(() => {
-    window.location.replace(to ?? "/membership");
+    window.location.replace(to ?? "/account");
   }, [to]);
 
   return (
