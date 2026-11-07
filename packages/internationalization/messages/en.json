@@ -124,7 +124,11 @@
       "nameEn": "Your name in English",
       "nameAr": "Your name in Arabic",
       "namesHint": "In both languages and in four parts, as on your ID. Your card and certificates show your first and last.",
-      "haveAnAccount": "Already have an account?"
+      "haveAnAccount": "Already have an account?",
+      "notAuib": "Not at AUIB?",
+      "guestLink": "Make a guest account to book events",
+      "guestTitle": "A guest account",
+      "guestLede": "Anyone may make a guest account to book a place at the Society’s open events. Guests aren’t members: membership is for AUIB students, with an AUIB email."
     },
     "forgot": {
       "title": "Reset your password",

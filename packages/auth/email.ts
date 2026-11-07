@@ -105,9 +105,13 @@ export interface SignUpDetails {
   /**
    * Why an outside address may sign up (owner, Oct 31, 2026: membership is
    * for AUIB addresses): a partner's invitation code, or an application to
-   * partner. The database refuses an outside address with neither.
+   * partner, or a guest account to book events (owner, Nov 7, 2026). The
+   * database refuses an outside address with none of these.
    */
-  outside?: { invitation: string } | { partnerApplicant: true };
+  outside?:
+    | { invitation: string }
+    | { partnerApplicant: true }
+    | { guest: true };
   password: string;
   /** Where the confirmation link lands (the Diwan /auth/callback). */
   redirectTo: string;
@@ -164,6 +168,9 @@ export const signUpWithEmail = async (
           : {}),
         ...(details.outside && "partnerApplicant" in details.outside
           ? { partner_applicant: "true" }
+          : {}),
+        ...(details.outside && "guest" in details.outside
+          ? { guest: "true" }
           : {}),
         locale: details.locale,
       },

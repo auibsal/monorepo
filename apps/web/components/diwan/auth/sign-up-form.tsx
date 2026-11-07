@@ -25,7 +25,10 @@ import { useHumanCheck } from "./human-check";
  */
 export interface OutsideSignUp {
   readonly email?: string | null;
-  readonly reason: { invitation: string } | { partnerApplicant: true };
+  readonly reason:
+    | { invitation: string }
+    | { partnerApplicant: true }
+    | { guest: true };
 }
 
 interface SignUpFormProps {
@@ -225,6 +228,17 @@ export const SignUpForm = ({ next: given, outside }: SignUpFormProps) => {
           {t("signUp.signIn")}
         </Link>
       </p>
+      {external ? null : (
+        <p className="type-body">
+          {t("signUp.notAuib")}{" "}
+          <Link
+            className="link"
+            href={{ pathname: "/sign-up/guest", query: next ? { next } : {} }}
+          >
+            {t("signUp.guestLink")}
+          </Link>
+        </p>
+      )}
     </>
   );
 };
