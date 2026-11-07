@@ -1,195 +1,94 @@
 # Agent and contributor guide
 
-Conventions for anyone — human or AI agent — changing this repository: the
-platform of the AUIB Society of Arts and Letters (SAL), live at auibsal.org.
+Conventions for anyone, human or AI agent, changing this repository: the
+platform of the AUIB Society of Arts and Letters (SAL), live at
+auibsal.org.
 
 Start every session by reading `claude/decisions.md` (the owner's current
-decisions, the source of truth: where an older document or this file
-disagrees, it wins) and `PROGRESS.md` (the working checklist, blocked items
-and decisions), and continue from the first unticked item.
+decisions and the source of truth: where this file or any older document
+disagrees, it wins) and `PROGRESS.md` (the working checklist, with what is
+blocked), and continue from the first unticked item. Where decisions.md is
+silent, do what American university student organizations and student
+media do.
 
 ## Repository map
 
-- `apps/web` — **the one app**, auibsal.org (owner, Oct 24, 2026: one
-  Next.js app in place of web, Nexus, api and the design site). Three parts,
-  one deployment:
-  - `app/[locale]/(site)` — the public site, `/` and `/ar`. Published reads
-    only, with the publishable key; cached by tag and revalidated on publish.
-  - `app/[locale]/(account)` — **the members' pages, on the site** (owner,
-    Oct 24, 2026): `/sign-in`, `/sign-up`, `/auth/*`, `/welcome` (was
-    `/setup`), Get involved (`/get-involved`, public: the
-    three ways in for visitors, the open places for members), and, for
-    members, everything under `/membership` (the overhaul, Oct 30, 2026):
-    Today (`/membership`), My calendar (`/membership/calendar`), Society
-    (`/membership/society`), Record (`/membership/record`, a certificate at
-    `/membership/record/<id>`), Settings (`/membership/settings`, with
-    `/settings/profile` (with the optional details, once "Tell us more")
-    and `/settings/notices`; officers also `/settings/declarations`, and
-    their recovery codes on Settings), Requests (`/membership/requests/<id>`) and
-    their work (`/membership/work/<id>`, `/work/submissions/<id>`; the list
-    is their drafts on `/qirtas/write`, private work lives nowhere else);
-    also `/company/auditions`, `/qirtas/write` (every section, and the form
-    at `/qirtas/write/<type>`) and `/qirtas/read/<slug>` (a members-only
-    piece). Perks are on the card; voting
-    eligibility is on Society; the calendar feed is on My calendar. The
-    site's header and footer, a Membership row (`components/account`), and
-    the gates in `components/diwan/gates.tsx`. They link with the site's
-    `Link` (`@repo/internationalization/navigation`) and full paths.
-  - `app/[locale]/diwan` — **the Diwan**, auibsal.org/diwan:
-    the officers' administration only (anyone holding a role,
-    `RequireStaff`), in six sections, one row like Membership's
-    (`adminSections` in `@repo/rbac`, `DiwanNav` and `SectionTabs` in
-    `admin-shell.tsx`; owner, Oct 30, 2026): the Desk (`/diwan`: what
-    needs you, three quick actions, the handover (what waits across the
-    Society and who owns it, `core.handover()`), what happened, the Connected panel
+- `apps/web`: **the one app**, auibsal.org. Three parts, one deployment:
+  - `app/[locale]/(site)`: the public site. Published reads only, with the
+    publishable key; cached by tag and revalidated on publish.
+  - `app/[locale]/(account)`: **your account**, the members' pages on the
+    site: `/sign-in`, `/sign-up` (and `/sign-up/guest`), `/auth/*`,
+    `/welcome`, `/get-involved` (public), `/forms/<number>`,
+    `/invite/<code>`, `/partners/join` and `/partners/dashboard`, and, for
+    members, everything under `/membership`: Today, My calendar
+    (`/calendar`), Society (`/society`, standing for office at
+    `/society/stand`), Record (`/record`, letters at `/record/letters`, a
+    year at `/record/year/<yyyy>`), Saved (`/saved`), Settings
+    (`/settings`, `/settings/profile`, `/settings/notices`, officers'
+    `/settings/declarations`), Requests (`/requests/<id>`) and their work
+    (`/work/<id>`, `/work/submissions/<id>`). Also `/company/auditions`,
+    `/qirtas/write` (public; the forms at `/qirtas/write/<type>`, a draft at
+    `/qirtas/write/<type>/<draft>`) and `/qirtas/read/<slug>` (a
+    members-only piece). The gates are in `components/diwan/gates.tsx`.
+  - `app/[locale]/diwan`: **the Diwan**, auibsal.org/diwan, the staff's
+    administration only (anyone holding a role, `RequireStaff`), in six
+    sections (`adminSections` in `@repo/rbac`; `DiwanNav` and
+    `SectionTabs` in `admin-shell.tsx`): the Desk (`/diwan`: what needs
+    you, quick actions, the handover, what happened, the Connected panel
     for Notion, Hudhud and email, and the design system at
-    `/diwan/design`), What's on (`/diwan/events`, one page:
-    the events, then pitches; each event's page is
-    `/diwan/events/<slug>` like its public page, `EventOrProgram`, with
-    its parts on the page; each event has its own door,
-    `/events/<slug>/door`, and the Desk opens the next one (owner, Oct 31,
-    2026: no general door); the book fair's campaigns at
-    `/diwan/events/campaigns`), Qirtas (`/diwan/qirtas` and its tabs;
-    calls are on each Edition's page), The Company (`/diwan/company`), People (`/diwan/people`,
-    openings (every opening of every kind, `/diwan/people/openings`),
-    service, partners, insights; Partners in one place: applications, the
-    register (each partner's page holds its guests), memoranda and perks)
-    and Society
-    (`/diwan/society`: meetings with their resolutions, requests to Student Life,
-    elections, concerns, officers' conflict-of-interest declarations, the Library, where only `governance.manage`, the
-    President, the Vice President and the General Secretary, keep the
-    documents). Records by name where they have one
-    (`/diwan/events/<slug>`, `/diwan/qirtas/pieces/<slug>`; `RecordRef`
-    in `components/diwan/record-ref.tsx`), `new` for a blank one. Members
-    are sent to `/membership`. Diwan code names
-    pages by their own path (`/events`); `Link`, `useRouter`, `usePathname`
-    and `redirect` from `@/lib/diwan/navigation` add the `/diwan` prefix.
-  - Both are client-rendered (`components/diwan`, `lib/diwan`, the code
-    kept its names); every check in them is UX only. They read and write
-    Supabase with the user's token, and call the API routes with it
+    `/diwan/design`), What's on (`/diwan/events`, each event at
+    `/diwan/events/<slug>` with its door at `.../door`, pitches), Qirtas
+    (the Newsroom, one page per section, with submissions, Editions,
+    contributors, the Prize and Qalam), the Company (`/diwan/company`),
+    People (members, guests, openings, service, partners, the Typewriter
+    Tour, insights) and Society (meetings and their resolutions, elections,
+    concerns, motions, declarations, requests to Student Life, the
+    Library). Diwan code names pages by their own path (`/events`); `Link`,
+    `useRouter`, `usePathname` and `redirect` from `@/lib/diwan/navigation`
+    add the `/diwan` prefix.
+  - Your account and the Diwan are client-rendered (`components/diwan`,
+    `lib/diwan`); every check in them is UX only. They read and write
+    Supabase with the user's token and call the API routes with it
     (`callApi` in `lib/diwan/api.ts`). Shared empty states link through
-    `useAppLink` (`lib/link-context.tsx`): the site's link outside the Diwan,
-    the Diwan's inside it.
-  - `app/api` and `lib/api` — the API routes, auibsal.org/api: email, cron,
-    calendar feeds, exports, signed URLs, account deletion, and Hudhud, the Society's Telegram bot (`lib/api/bot`,
-    grammY; webhook `/api/telegram`; `docs/platform/telegram.md`). The only
-    code that reads the secret key. The bot acts for a member only through
-    the `core.telegram_*` functions, which run the Diwan functions under the
-    member's claims (aal1) so RLS still decides. Bot copy in
-    `lib/api/bot/copy.ts`; the mascot in `packages/brand/assets/mascot`. A group is for
-    members or, with `/audience staff`, the Diwan group: officers only
-    (`core.telegram_is_staff`), a morning brief and event summaries
-    (`lib/api/bot/staff.ts`).
-- **Standard practice over house rules** (owner, Nov 4, 2026, evening;
-  decisions §26). These are guidelines, not laws: keep what helps, change
-  what doesn't, merge what repeats.
-  - **Addresses.** Pages people share, bookmark or come back to have
-    their own path (tabs, a month at `/events/2026-11`, a production, a
-    search at `/search/<words>`, an issue, an archive month). Filters,
-    toggles and other passing state may use a query string or stay in
-    the page.
-  - **Big records get pages; small rows are edited in place.** A record
-    with many fields or its own life (an event, a piece, a production, a
-    partner, a memorandum, a campaign, a document, an election, an
-    opening, a call, a meeting and its resolutions) is edited on its own
-    page (`RecordPage`, `NewLink`, `components/diwan/admin/kit.tsx`),
-    "new" for a blank one. A small row on a list (a need, a rota, a
-    shift, a credit, a rehearsal, an audition slot, a ledger line, a
-    receipt, an impact figure, an activity, a role, a member's hours, a
-    partner's perk) is added in place on
-    its list with `AddInPlace` (the form opens under the list, never a
-    dialog or a `new` page), as most admin tools do. A long list whose
-    rows are acted on together uses `SelectableTable`
-    (`components/diwan/admin/selectable-table.tsx`, design review A40):
-    hours to confirm, an event's bookings.
-  - **One place for each thing.** Nothing is kept or managed in two
-    places; when two views show the same records, merge them.
-  - **Counts are not rules.** Sections, types, events and tabs are as
-    many as the work needs; add, merge or retire them freely.
-  - **Links between the site and the Diwan** (`OnTheSite`, `ManageLinks`)
-    are added where they help, not required on every page.
-- **Choices on the page** (owner, Oct 31, 2026). Several options are
-  chosen on the page, never in a dialog or the browser's pop-up list:
-  `SelectInput` (`ChoiceInput`, `components/diwan/admin/choice-input.tsx`)
-  takes option children and shows a few short ones as a row, more as a
-  list under the field (with a find line from ten). Never write `<select>`.
-- **Signatures** (owner, Oct 31, 2026). Wherever someone signs, the
-  signature is `Signature`/`MySignature` (`components/signature.tsx`):
-  their name on the platform in the signature face (`font-signature`, Mrs
-  Saint Delafield, for signatures only), their card number, the date, a
-  guilloche drawn from the number and a short seal. Never typed.
-- **Author pages are people's pages** (owner, Oct 31, 2026). A person's own
-  byline lives at `/qirtas/authors/<first-last>` (the slug follows the
-  English name, `private.own_byline_slug`); it shows Member, Partner or
-  Guest and the roles they hold (`journal.author_card`) and published work
-  only: private work is drafts on `/qirtas/write` (owner, Oct 31, 2026).
-  Pen names show published work only, never a kind or a role.
-- **URLs.** English, the default language, has no prefix (`/events`,
-  `/diwan/events`); other languages do (`/ar/events`, `/ar/diwan/events`)
-  (owner, Oct 14, 2026). API routes carry no language (`/api/...`). Build
-  links with `Link` from `@repo/internationalization/navigation` (inside the
-  Diwan: from `@/lib/diwan/navigation`), or `localizedPath`, `diwanPath`,
-  `apiPath` and the absolute `siteUrl`, `diwanUrl`, `apiUrl` from
-  `@repo/internationalization`; never write `/en`.
-- **One frame.** The public pages, the members' pages and the Diwan share
-  one header (`components/masthead.tsx` with the site's sections from
-  `site-header.tsx`) and one footer (`components/footer.tsx`), so moving
-  between them never feels like another app.
-- `packages/brand` — **the design system**, SAL-MED-02 (owner, Nov 4,
-  2026): the single source of the brand, and the only brand package
-  (owner, Nov 4, 2026, evening: `@repo/design-system` is merged into it).
-  The guide (`guide/`, SAL-MED-02 in full, one Markdown page per part;
-  there is no PDF), the rules in short (`BRAND-BOOK.md`), in `assets` the
-  tokens (`tokens.json`, from which `styles/tokens.css` is generated),
-  fonts, icons, logos, Hudhud, the social templates with their PNGs and
-  the printables' HTML, and the code the app imports as `@repo/brand`:
-  `styles/globals.css`, `components/ui` (shadcn), `components/sal`, `lib`
-  (fonts, logos, utils) and `DesignSystemProvider`. The Charter poster,
-  the Open Call poster and the camera-shy stickers are stories in Print,
-  printed from the browser. No PDFs or document files in the repository. Its Storybook is part of the Diwan, at `/diwan/design`
-  (linked from the Desk; there is no /brand or /design): Guide,
-  Foundations, Logos, Components, Emails, Social, Print. The web build
-  runs `bun run --cwd packages/brand build:site`, which builds it into
-  `apps/web/public/_design` (ignored by git, never indexed, framed only
-  by the site); the Diwan's page frames it. The components and emails it
-  shows are its own and `@repo/email`'s, as the app imports them. The
-  public sees the brand only on the press page (`/about/press`).
-- The Society's documents are the Library, auibsal.org/library (`apps/web`;
-  two shelves, owner, Oct 30, 2026: Society documents, and Website
-  policies, the `SAL-PLT-` documents with the privacy page;
-  owner, Oct 30, 2026: every document public). Since Nov 4, 2026 every
-  document's text is written in Notion (Publishing, Documents) and
-  rendered to the Library by the sync; the Diwan's Library keeps only each
-  document's adoption record (status, version, adopted on, `vote`), written
-  back to Notion. The officer handbook and every internal document live in
-  the team's Notion workspace only (the Desk links there: settings
-  `notion.home_url`, `notion.handbook`; `docs/platform/notion.md`). What
-  the platform retired (forms, letters, officers' papers) lives on as
-  Notion templates (the Desk's "Templates and papers",
-  `notion.handbook.pages.templates`), and Diwan pages with a Notion
-  counterpart (events, programs, documents, minutes, officers) say so
-  with `NotionManaged`. The About page (`/about`) is the hub for the
-  Society's pages. The platform runbooks in `docs/platform`
-  (Markdown). There is no separate docs site. The apps configure no
-  redirects (owner, Oct 14, 2026; again Oct 30, 2026: none for the
-  overhaul's moved addresses either, and no forwarding pages); an old
-  address is simply not found. www.auibsal.org → auibsal.org is a Vercel
-  domain setting. The address alone decides the language
-  (`localeDetection: false`). A piece's address comes from
-  `journal.piecePath` (its section; Games pieces at `/qirtas/pieces/`).
-- `packages/*` — shared code, imported as `@repo/<name>`. `@repo` is a fixed
-  internal scope; never rename it.
-  - `@repo/database` — SQL migrations (`supabase/migrations`), pgTAP tests
+    `useAppLink` (`lib/link-context.tsx`).
+  - `app/api` and `lib/api`: the API routes, auibsal.org/api: email and
+    the outbox, Resend Broadcasts (`lib/api/broadcast.ts`), cron, calendar
+    feeds, exports, signed URLs, account deletion, Google Wallet, the
+    Notion sync (`lib/api/notion`) and Hudhud, the Society's Telegram bot
+    (`lib/api/bot`, grammY; webhook `/api/telegram`;
+    `docs/platform/telegram.md`). The only code that reads the secret key.
+    The bot acts for a member only through the `core.telegram_*`
+    functions, which run the Diwan functions under the member's claims so
+    RLS still decides. Bot copy is in `lib/api/bot/copy.ts`.
+- `packages/brand`: **the design system**, SAL-MED-02, the single source of
+  the brand: the guide (`guide/`, Markdown), the rules in short
+  (`BRAND-BOOK.md`), the assets (tokens, fonts, icons, logos, Hudhud, the
+  social templates, the printables), and the code the app imports as
+  `@repo/brand` (`styles/globals.css`, `components/ui` (shadcn),
+  `components/sal`, `lib`). Its Storybook is the Diwan's `/diwan/design`
+  (Guide, Foundations, Logos, Components, Emails, Social, Print), built
+  into `apps/web/public/_design` by the web build (ignored by git, never
+  indexed). The public sees the brand only on the press page
+  (`/about/press`). No PDFs or document files in the repository: print
+  is the page printed from the browser.
+- `packages/*`: shared code, imported as `@repo/<name>` (a fixed internal
+  scope; never rename it).
+  - `@repo/database`: SQL migrations (`supabase/migrations`), pgTAP tests
     (`supabase/tests/database`), generated types.
-  - `@repo/rbac` — permission keys, role bundles, the client mirror of
-    `access.has_permission()`, test personas.
-  - `@repo/sal-data` — zod schemas and typed queries per domain (membership,
-    events, journal, charity, governance, programmes, content).
-- `packages/config/project.json` — names, motto, the site URL and the
-  `/diwan` (key `paths.diwan`) and `/api` paths, locales, region and the
-  default journal name.
-  Read it through `@repo/config`.
-- `scripts/` — `check-placeholders.ts`, `check-rtl.ts`, `check-i18n.ts`.
+  - `@repo/rbac`: permission keys, role bundles, modules and sections, the
+    client mirror of `access.has_permission()`, test personas.
+  - `@repo/sal-data`: zod schemas and typed queries per domain, the forms
+    registry (`forms.ts`) and the daily games.
+  - `@repo/email`: the email template and every email's copy
+    (`copy.ts`).
+  - `@repo/internationalization`: messages, navigation, formatting.
+- `packages/config/project.json`: names, motto, the site URL, the `/diwan`
+  (`paths.diwan`) and `/api` paths, locales, region, hello@auibsal.org and
+  the AUIB calendar. Read it through `@repo/config`.
+- `docs/platform`: the platform runbooks (Markdown). There is no separate
+  docs site.
+- `scripts/`: `check-placeholders.ts`, `check-rtl.ts`, `check-i18n.ts`,
+  `check-language.ts`, `check-forms-register.ts`.
 
 ## Commands
 
@@ -202,13 +101,14 @@ bun run test                # Vitest in every workspace
 bun run check:placeholders
 bun run check:rtl           # physical Tailwind utilities (--fix rewrites them)
 bun run check:i18n          # UI text not in the messages files; the language standard
+bun run check:forms         # the forms registry against SAL-EXB-01 (needs NOTION_TOKEN)
 bun run check:unused        # unused files and dependencies (Knip)
 bun run db:start | db:reset | db:test | db:types
 bun run --cwd apps/e2e e2e   # Playwright journeys + axe (local stack running)
-bun run --cwd packages/brand dev       # the design system, locally (the Diwan's /design)
+bun run --cwd packages/brand dev       # the design system, locally
 bun run --cwd packages/database db:test:sync     # copy the pgTAP preamble
 bun run --cwd packages/brand tokens      # regenerate tokens.css
-bun run --cwd packages/brand icons       # regenerate the icon data from packages/brand/assets/icons
+bun run --cwd packages/brand icons       # regenerate the icon data
 bun run gen:package         # scaffold packages/<name>
 ```
 
@@ -216,1004 +116,461 @@ Run `check`, `typecheck` and `test` before every commit, and `db:test` for
 any schema change. Integration tests run against a local stack with
 `SUPABASE_INTEGRATION=1` (see `.github/workflows/ci.yml`).
 
-## SAL rules
-
-- **The owner's decisions of Nov 7, 2026** (`claude/decisions.md`, which
-  wins over every older bullet below where they disagree; migrations
-  `20261107000000`–`20261107000800`).
-  - **Retired, with their tables, routes and pages:** charity
-    collections and the ledger (a Notion record now; the `charity` schema
-    is kept empty until it leaves the Data API's exposed schemas), the
-    Qirtas Awards (names and round), the Apprenticeship and First Ink
-    placements, rotas, prompts, book votes, event add-ons for one kind of
-    event, Launch Night, playbills, service hours from events and casts,
-    and production certificates. Retired names and the codes SAL-POL,
-    HBK, STR, PRP, BRD, PLT, QRT, CMP and OPS are refused by
-    `scripts/check-language.ts`.
-  - **Events.** Every event is made in Notion's Events database and
-    copied to the site, with the standard parts only: RSVP and check-in,
-    needs, volunteer shifts (on the event, no rota, no hours), the partner
-    checklist and links. Off campus is a standard field: an off-campus
-    event publishes only once the General Secretary records Student
-    Life's written approval, the date and who gave it
-    (`events.record_approval`); participants sign the trip consent, F-45,
-    at `/forms/F-45?event=<slug>`.
-  - **The Council of nine** (three officers, six directors), the classes
-    Member, Associate Member and Honorary Member, a first term on
-    probation then confirmed (`confirmAssignment`), Student Life's GPA
-    check for candidates and appointees (`record_gpa_check`), meetings by
-    body (Council, general, Annual, special, Founding; `meetingBodies`),
-    the members' directory (opt in, `in_directory`).
-  - **Forms** are at `/forms/<number>` (`apps/web/app/[locale]/(account)/forms/[number]`),
-    the site's twelve in `@repo/sal-data/forms`, each signed by typing a
-    name and kept as the signed copy; staff forms are Notion templates.
-  - **Guests** sign up at `/sign-up/guest` (`outside: { guest: true }`,
-    `private.sign_up_allowed`) to book open events; never members.
-  - **Qirtas.** Types are the editors' (`type_label`), six sections;
-    bylines are a Register name, a pen name or "Anonymous"; unpublished
-    submissions are deleted twelve months after the decision (the
-    keep-alive cron). Six Words are not part of Qirtas: they are Tour
-    pages, private by default, which the writer shows on their profile or
-    the Tour's page (`programmes.six_words.visibility`,
-    `profile_six_words`). Next Stop is the Director of Media's, at
-    `/next-stop`.
-  - **The Mutanabbi Prize** (`/qirtas/prize`; the Diwan's
-    `/diwan/qirtas/prize`): Qirtas and Qalam categories, the outside
-    judge's score 70% and the members' vote 30%
-    (`journal.prize_results`), voting on Society while a round is open
-    (`journal.open_prize_round`), the count checked by the
-    Editor-in-Chief and the General Secretary before publishing.
-  - **Qalam**'s roster is staff only (`/diwan/qirtas/qalam`,
-    `qalam.manage`), never in Notion, deleted three years on.
-  - **The Tour** (Director of Membership): no paper; writers join by QR
-    code and their photographed page is attached to their account. The
-    spring 2026 import and the one-time invitations
-    (`membership.invitations`, sent only when the President says go,
-    deleted thirty days later); rows with no email stay private and
-    editors-only until a writer claims them through Help Desk.
-  - **Hudhud** posts events and news to the Announcements topic and warns
-    anyone in the members' group without a linked member's account,
-    removing them a week later (`features/group/removals.ts`; admins and
-    role holders exempt).
-  - **Copy.** Chicago style; Modern Standard Arabic written by Claude
-    with no native-review gate; curly quotes and apostrophes; "your
-    account" («حسابك») for the members' pages; the footer and every email
-    carry the sustainability line. Document codes GOV, EXB, EVT, MEM, PTN,
-    MED, ART, EDT; SAL-MED-02 is the brand.
-  - **The Library re-sync** (`/api/cron/notion-sync?documents=all`)
-    republishes every document row and retires rows of retired families.
-    Both editions publish together: the English row publishes its Arabic
-    row (same Code) in the same pass, and the Arabic row takes Audience
-    from the English one. Internal documents (SAL-EXB-02, the Annual Plan,
-    among them) never reach the Library, and one set to internal comes
-    off it. Every document shows "Proposed" until adopted. An event's
-    Arabic row takes Way in and Off campus from its English row.
-  - **One design per thing** (decisions §6): `FormPage`, `Letter`,
-    `MembershipCard` and `Certificate` in `@repo/brand/components/sal`
-    (the guilloche too). The site renders them; print and PDF are the
-    same page printed from the browser; Google Wallet carries the card's
-    fields (name, member number, class, member since, live QR). The card
-    is "membership card", never "ID card"; its check
-    (`/verify/member/<code>`) shows name, class, status and member since
-    only, and lists no certificates. Certificates are finishing Qalam and
-    the Mutanabbi Prize only, one language each (`lang`), signed by the
-    Qalam lead and the Editor-in-Chief, or the Editor-in-Chief and the
-    President (`recognition.certificateSigners`, `sign_certificate`); a
-    Qalam student is named from the roster, and the check shows first
-    name, last initial, school and year. Service is a letter
-    (`membership.service_letters`, F-05) with a verification code checked
-    on `/verify/<code>`; the Diwan's letter page writes F-03, F-30, F-32,
-    F-33, F-34 and F-42 on the same template.
-  - **The forms register** in SAL-EXB-01 is the one source of every
-    form's number, title and fields: `bun run check:forms`
-    (`scripts/check-forms-register.ts`, in CI with the `NOTION_TOKEN`
-    secret) compares `governance.form_types` and `registerFields` with it.
+## Security and data
 
 - **RLS first.** Postgres Row Level Security is the security boundary for
   every read and write. Every table has RLS enabled in the migration that
-  creates it, and every policy has a pgTAP test. CI fails when a table lacks
-  RLS (`00_structure.test.sql`).
+  creates it, and every policy has a pgTAP test; `00_structure.test.sql`
+  fails a table without RLS.
+- **No third-party apps.** Every table keeps the restrictive policy "No
+  third-party apps" (`private.client_allows`;
+  `99_no_third_party_apps.test.sql` fails without it, so every new table
+  needs it). A token issued to an app reaches nothing, and
+  `authenticateRequest` returns no one. The connected platforms are Notion
+  and Telegram, reached from the API routes.
 - **Permissions, never role names.** Policies and code ask
-  `access.has_permission(permission, scope_type, scope_id)` ("can this user
-  `events.manage` for program X?"). Roles live only in
-  `access.role_assignments`, written only through `access.assign_role()`.
-  Never read roles from `user_metadata` or `app_metadata`.
+  `access.has_permission(permission, scope_type, scope_id)`. Roles live
+  only in `access.role_assignments`, written only through
+  `access.assign_role()`. Never read roles from `user_metadata` or
+  `app_metadata`.
+- **Atomic multi-step operations are Postgres functions** called by RPC.
+  The body is a SECURITY DEFINER function in `private` that checks
+  permissions itself; the name the apps call, in an exposed schema, is a
+  SECURITY INVOKER wrapper with the same signature. The Supabase advisors
+  stay at zero findings (`00_advisors.test.sql`: one permissive policy per
+  role and action, every foreign key indexed, no exposed SECURITY DEFINER
+  function).
 - **Migrations ship through CI.** Add a file to `supabase/migrations`;
   after merge, `.github/workflows/migrate.yml` runs `supabase db push`
-  against production once CI passes. Vercel deploys `main` itself (owner,
-  Nov 4, 2026: no deploy hook is needed; a Deploy Hook, if set, is called
-  after the migrations). Never paste SQL into the production database.
-- **No third-party apps** (owner, Oct 30, 2026: no Sign in with SAL, no
-  `/api/v1`). A token issued to an app carries a `client_id` and reaches
-  nothing: every table keeps the restrictive policy "No third-party apps"
-  (`private.client_allows`, migration `20261031000000`;
-  `99_no_third_party_apps.test.sql` fails without it, so every new table
-  needs it), the pre-request gate refuses the Data API, and
-  `authenticateRequest` returns no one. The Society's connected platforms
-  are Notion and Telegram (Hudhud), reached from the API routes.
-- **Two-step sign-in for sensitive roles.** Roles with `requires_mfa`
-  (Council officers, directors, Elections Committee) count only on an `aal2`
-  session; `access.has_permission` enforces it. Don't add bypasses. A
-  passkey is a first step only (owner, Oct 25, 2026). A lost authenticator
-  is recovered with one of ten recovery codes (`access.recovery_codes`,
-  keyed hashes; made on Membership → Settings, used at the code prompt through
-  `/api/two-step/recover`) or reset by whoever holds `roles.assign` (the
-  member's page in the Diwan, `/api/two-step/reset`); either removes the
-  authenticator so a new one is set up, is recorded in
-  `access.two_step_resets` and emails the person.
-- **Atomic multi-step operations are Postgres functions** called by RPC
-  (ledger sign-off, ballots, blind ids, waitlist promotion, transitions).
-  The body is a SECURITY DEFINER function in the `private` schema that
-  checks permissions itself; the name the apps call, in the exposed schema,
-  is a SECURITY INVOKER wrapper with the same signature (migration
-  `20261024000000`). The Supabase advisors stay at zero findings:
-  `00_advisors.test.sql` fails otherwise (one permissive policy per role and
-  action, every foreign key indexed, no exposed SECURITY DEFINER function).
-- **No third-party monitoring or protection** (owner, Oct 31, 2026): no
-  Sentry, Arcjet or Better Stack. Errors and logs go to the Vercel runtime
-  log (`@repo/observability` prints only); the security headers are the
-  app's own (`@repo/security`); the public forms are rate limited in the
-  database (`withinRateLimit`, `core.take_rate`).
-- **Secrets are server-only.** The secret key, Resend, the cron and webhook
-  secrets and the Telegram token are read only in route handlers and
-  `lib/api`, never in a page or client component; CI greps the client bundle
-  for their names. New env vars go in the package's `keys.ts` and in
-  `apps/web/.env.example`.
-- **Terms come from the AUIB calendar** (owner, Oct 30, 2026). The hourly
-  sync (`/api/cron/calendar-sync`, `campusCalendar` in the project file)
-  writes each semester the feed opens and closes into `core.semesters`
-  (`lib/api/terms.ts`); nobody types terms in. Everything runs for a term
-  unless it is an event or given its own dates: a role assigned without an
-  end runs to the end of the Society's year, the end of the Spring
-  semester (`private.year_end()`, trigger `runs_for_the_year`), unless
-  ended sooner; the Faculty Advisor (a role, named with the Council)
-  serves until ended. `core.current_term()` names today's term.
-- **Nothing kept by hand that is known elsewhere** (owner, Oct 30, 2026).
-  There is no Settings page: the paper's name, hello@auibsal.org and the
-  AUIB calendar are in `packages/config/project.json`; Hudhud invites
-  members to the Telegram group; the Faculty Advisor is a role; pledge and
-  agreement versions are internal (`core.pledge_versions()`, members
-  only); no feature switches. Notion and Hudhud are checked from the
-  Desk's Connected panel. No announcements, site pages or homepage slots:
-  each page carries its own text, and notices go out through Hudhud and
-  the Sunday Paper. The activity log reads as sentences ("Lina changed
-  the event …"; `components/diwan/admin/system/activity.tsx`), and a new
-  logged table needs its line there.
-- **Paired fields.** Translatable columns come in pairs (`title_en`,
-  `title_ar`, …). Store times as `timestamptz` (UTC); display Asia/Baghdad.
-- **Blind review.** Readers never receive author identity before a decision;
-  verify against network responses, not the UI.
-- **Member data.** A name in four parts in each language, as on the
-  person's papers (owner, Oct 31, 2026, the second decision that day):
-  name, father's, grandfather's and last (`first_name_en`,
-  `father_name_en`, `grandfather_name_en`, `last_name_en` and the `_ar`
-  four), all eight required, for members, partners' representatives and
-  their guests alike (`names` in `@repo/sal-data`, `NamePartsFields`).
-  Wherever a name shows (the card, the Register, bylines, certificates)
-  it is the first and the fourth: `full_name_en` and `full_name_ar` are
-  kept from the parts by `private.tidy_names`, and members write only the
-  parts. The parts are the owner's alone (`core.my_name_parts()`); no one
-  else reads a father's or grandfather's name. Anyone without all eight
-  is sent to `/welcome` at their next sign-in (`hasAllNames`,
-  `RequireMember`, `RequirePartner`), with the first and last words of
-  their old name offered. One person, one name (owner, Oct 31, 2026): a
-  full four-part name, in English or in Arabic, belongs to one account
-  (`private.one_person_one_name`, error `name_taken`). Wherever a person is named (judges, bylines, hosts,
-  roles), pick them from the register (`MemberPicker`) and never type
-  their names: a trigger copies the profile's names and keeps them in
-  step (`private.profile_names_to_bylines`). Everything in
-  `core.member_details` is optional and read only by the member and
-  `members.manage`; reports count only members with `research_consent`
-  and never show a group smaller than five (`core.member_insights()`).
-  Public pages never show it. No phone numbers until they can be verified
-  (owner, Oct 25, 2026).
-- **Sign-up asks little** (owner, Oct 25, 2026). Membership is for AUIB
-  addresses only (owner, Oct 31, 2026): the sign-up field takes what goes
-  before @auib.edu.iq, and a password. An outside address signs up only
-  from a partner's invitation or to apply to partner (`outside` in
-  `signUpWithEmail`), giving its name in four parts in each language;
-  `handle_new_user` refuses any other (`private.sign_up_allowed`,
-  `auib_address_required`). Alumni stay members for good. `/welcome` then asks one question
-  per screen (`planSetup` in `components/diwan/setup-form.tsx`): each
-  language's four parts not yet given, each pledge not yet made in its current version, and, the
-  first time, photos; then the welcome screen with the card. Language
-  follows the sign-up page and email notices start on (both in Settings).
-  The optional details are on Profile (`/membership/settings/profile`,
-  Details), offered on Today while they are thin (Nov 4, 2026: the
-  separate "Tell us more" pages were merged into Profile).
-  Each screen starts at the top with its heading focused, never scrolled.
-- **One address, one person.** The personal email (optional, for after
-  graduation) is set only through `core.request_personal_email` and counts
-  only once confirmed from the link sent to it
-  (`core.confirm_personal_email`, `/personal-email/confirm`). It can't be
-  an AUIB address, anyone's sign-in address or another member's personal
-  email, and no sign-in address can be a member's verified personal email
-  (triggers on `core.profiles` and `auth.users`, a unique index).
-- **The membership card is live.** Its QR is
-  `/verify/member/<code>?t=<digits>`: the digits are a TOTP of the card's
-  secret (RFC 6238, SHA-1, 30 s, 8 digits; `lib/totp.ts` and
-  `private.totp` must agree, and Google Wallet computes the same). The check
-  page (`membership.verify_card`, read live) says whether the code is live;
-  the door (`events.check_in_card`) refuses one that isn't. The secret
-  reaches only its owner (`membership.my_card`). No member photos (owner,
-  Oct 25, 2026). The rosette (`components/guilloche.tsx`) is drawn from
-  the card number, and from the serial on certificates; the check pages and
-  the Wallet banner draw the same one, so a card or certificate can be
-  compared with its check. One check for both: `/verify/<code>` takes a
-  certificate or a card code. Google Wallet only (`docs/platform/wallet.md`); the card asks
-  the Wallet API whether the pass is saved rather than waiting for
-  Google's callback. Never put an
-  account id in a QR.
-- **What's on is one calendar** (owner, Oct 25, 2026; Nov 5, 2026:
-  standard events): events at `/events`, a month at a time
-  (`/events/<yyyy-mm>`), each event at `/events/<slug>` with the one
-  event page (there are no series pages, no `/programs`, and no
-  redirects: owner). The term calendar is plain events, added one by one
-  (the repeat rules are gone). Every event has a way
-  in, `events.events.entry`:
-  `open` (just come; members may ask "Remind me", `events.reminders`),
-  `rsvp` (book a place) or `invite` (only the people in
-  `events.invitations` and the event's managers see it; always
-  members-only, so every public reader that leaves members-only events out
-  leaves it out too). The public calendar (`events.calendar`) shows
-  members-only events as teasers (title and time; nothing else).
-  `rsvp_enabled` is kept in step with `entry` by a trigger; write `entry`.
-  SECURITY DEFINER code checks visibility with `private.can_see_event_id`.
-  AUIB's own dates (the hourly sync of the University's public calendar
-  into `core.external_events`, `events.universityCalendar`) sit beside the
-  Society's on `/events`, quieter, linking to auib.edu.iq; "Hide AUIB
-  dates" (`/events/<yyyy-mm>/society`) leaves them out. AUIB publishes
-  them in English only, so their titles keep that language (`lang="en"`)
-  on the Arabic pages.
-- **Standard events** (owner, Nov 5, 2026; replaces "six programs" and,
-  later that day, "series": "Don't make the current programs into
-  series. Make them into normal/standard events. Standardize events all
-  over from the public and diwan sides"; migration
-  `20261101005200_standard_events`). Qirtas and the Company stay;
-  everything else is an event. Each term the Council sets a calendar of
-  plain events, at least one a month. Events carry no standing names
-  (owner, Nov 6, 2026): Second Chapter, the Salon, Book Circle, Open
-  Pages and the Listening Room are retired names, and each event is
-  titled plainly for what happens that day (the code keeps its slugs and
-  identifiers, such as `second-chapter`); no event belongs to a series (`events.events.programme_id` is
-  null for them, their rows in `core.programmes` are inactive) and there
-  are no series pages, filters or lists. Every event has the one page on
-  the site (`EventView` with `EventParts`, `components/event-parts.tsx`)
-  and in the Diwan (`EventEditor` with `EventPartsAdmin`,
-  `components/diwan/admin/events/parts.tsx`), and carries its own parts:
-  its shifts (`programmes.rotas.event_id`), needs (`programmes.needs.event_id`),
-  prompts (`programmes.prompts.event_id`), book vote
-  (`programmes.book_ballots.event_id`), links from the night, what Qirtas
-  wrote from it, and, for the book fair, its campaign
-  (`charity.campaigns.event_id`) with the catalog at
-  `/events/<event>/catalog` and the impact report at
-  `/events/<event>/impact`. `private.runs_part(programme_id, event_id)`
-  lets the President (global `programs.manage`) and the event's own lead
-  (scope `event`) run them. Campaigns are kept at
-  `/diwan/events/campaigns`. The code keeps its identifiers (the
-  `programmes` schema, `core.programmes`, `programme_id`,
-  `programs.manage`, the `programme` scope, now for the Company's and
-  Qirtas's rows); copy, comments and docs say "event" or "event lead".
-  The Company (`company`) is the Society's theater company, with its
-  Artistic Director on the Council and its own page at `/company`, beside
-  Qirtas in the header (owner, Oct 30, 2026): its productions, auditions
-  and dates. The Typewriter Tour belongs to membership. Notion's Programs
-  database no longer publishes a page, and an event linked to a former
-  series there is published as an event of its own.
-  Munazara, Mutanabbi Friday and Bad Poetry Night are retired too; their
-  sessions are events with plain titles. Qirtas and Next Stop keep
-  unpublished program rows (Next Stop is Qirtas's video show). Second
-  Chapter says "our charity partner" until the Council approves one; the
-  charity partner stays unset.
-- **Drafts in Write for Qirtas** (owner, Nov 4, 2026). A member saves
-  work before sending it ("Save draft" beside Send): `journal.submission_drafts`,
-  read and written by its writer alone (RLS; fifty at most), holds the
-  form as they left it (files are attached when they send). The first
-  save gives it its address, `/qirtas/write/<type>/<draft>`; their drafts
-  head Your work on `/qirtas/write` ("Draft, not sent"); sending makes it
-  a submission and drops the draft. Nobody reads a draft, blind or not.
-- **The design review, PR 3** (owner, Nov 4, 2026). Every decision on
-  work sent to Qirtas carries its reason (`journal.decide`,
-  `journal.decide_named` refuse a blank one; the writer reads it in their
-  work's history). The Diwan's find-anything line (`FindPanel`,
-  `components/diwan/admin/find-panel.tsx`) sits under the row and opens
-  in place with "/" or Ctrl+K, pushing the page down (never a dialog): the
-  views the officer's roles open, then `content.search` results their
-  modules include. Articles carry a progress hairline (CSS scroll
-  timeline, none with reduced motion), a text size (`TextSize`, this
-  browser only) and the next piece and Edition at the end. Second
-  Chapter's impact report is `/events/second-chapter/impact/<campaign>`,
-  from published figures only (now `/events/<event>/impact`, Nov 5,
-  2026); the Apprenticeship is explained at
-  `/get-involved/apprenticeship`, from facts on record only.
-- **The Edition as a book** (design review PR 4a, Nov 4, 2026). An
-  Edition's page is its cover, print line, letter, a contents page by
-  section and the Editions before and after; its launch page is
-  `/qirtas/editions/<slug>/launch` (large type, contents, Launch Night).
-  The cover moves from the shelf to the page with React's
-  `ViewTransition` (`share="morph"`), nothing without support or with
-  reduced motion. The Qirtas front page follows the Editor's `front_rank`;
-  with none set, the newest from all six sections lead.
-- **Reading Qirtas** (design review PR 4b, Nov 4, 2026). A pull quote is
-  an `<aside>` and a note is written in place in `<small>` (the editor's
-  "Pull quote" and "Note"; the one rich-text policy keeps both); the
-  reader numbers the notes and lists them after the text (`withNotes` in
-  `@repo/sal-data`). A photo essay is its words, then each photograph full
-  width with its caption and place in the sequence. A piece may name its
-  event (`journal.pieces.event_id`, picked on the piece's page in the
-  Diwan), shown beside its section and Edition when the event is public.
-  Pieces, Sunday Paper issues and crosswords print on white in ink without
-  the site's frame (`print:hidden`; a crossword prints a blank sheet).
-  RSS: `/qirtas/feed.xml` and `/qirtas/<section>/feed.xml`, titles, decks
-  and bylines only. The archive is `/qirtas/archive`, a month at
-  `/qirtas/archive/<yyyy-mm>` and a section's month at
-  `/qirtas/archive/<yyyy-mm>/<section>`.
-- **The Sunday Paper's archive, Next Stop, search** (design review PR 4c,
-  Nov 4, 2026). Past issues are listed on `/sunday-paper` and each is
-  `/sunday-paper/<yyyy-mm>`, in a newspaper's layout: only the issues
-  actually sent (`content.sunday_paper_issues`, one row a month, written by
-  `private.queue_sunday_paper`; owner, Nov 7, 2026), the first on Sunday,
-  December 6, 2026. Their contents are not stored: a page is rebuilt from
-  the records the way the email is made
-  (the pieces of the month before its first Sunday, the public events of
-  the month after; `lib/sunday-paper.ts`), and the open places of the time
-  are not kept, so they are not shown. Next Stop's page has its episodes
-  on a Shelf (the list at `/qirtas/next-stop/episodes`), its team from the
-  roles people hold (`journal.next_stop_team()`: the Video Editor and the
-  Photo and Video Lead) and how to send a reel. `/search` opens on the
-  newest from Qirtas and what is coming up.
-- **Saved reading and a record's history** (design review PR 4d, Nov 4,
-  2026). A reader saves a published piece to read later ("Save for
-  later" on the piece, `SaveForLater`; `journal.saved_pieces`, their own
-  rows only, and only pieces they can read); Today shows the latest three
-  and `/membership/saved` holds them all, never their own work. Record
-  pages in the Diwan (events, pieces, productions, partners, campaigns)
-  end with their History (`RecordHistory`, `core.record_history()`): who
-  added or changed the record and when, and which fields, never the
-  values; officers only, for records they can see
-  (`private.history_tables()` lists the tables).
-- **What Qirtas wrote from an event** (`journal.pieces.event_id`,
-  `journal.piecesFromEvents`) shows on the event's page, "In Qirtas"
-  (owner, Nov 5, 2026: the series pages, their past sessions and Book
-  Circle's shelf are retired with the series).
-- **Join, Partners, Hudhud, the budget** (design review PR 4f, Nov 4,
-  2026). Join says what membership gives (the live card, perks, the
-  Record, a vote); Partners says what a partner gets and gives, before
-  anyone signs in. Hudhud sends the day's word to a member who turns it
-  on in /me (`telegram_accounts.daily_word`, off by default, only while
-  notices there are on), and reminders of shifts and booked events reach
-  Telegram even when optional email is off (`send` in
-  `lib/api/outbox.ts`; the Sunday Paper stays email only). The public
-  pages keep to a performance budget on a mid-range phone
-  (`apps/e2e/tests/performance.spec.ts`, built app only), beside the axe
-  checks.
-- **The Tour's wall, the typewriter, session links** (design review PR
-  5b, Nov 4, 2026). The Typewriter Tour's page (`/join/typewriter-tour`
-  since Nov 5, 2026) shows the Six Words wall
-  (`programmes.six_words_wall()`, approved cards in the page's language,
-  in Ubuntu Mono) and a typewriter to try (`TypingToy`), which keeps
-  nothing and is silent until the visitor turns the key sound on. A
-  event's outside links (`events.session_links`: what the Listening
-  Room played, a reading list; https only) are added in place on the
-  event's page in the Diwan by its event leads, and show on the event's
-  page, "From the night".
-- **The book vote** (design review A33, decision D12, Nov 4, 2026).
-  The host opens a ballot on the event's page in the Diwan with up
-  to three books and a closing time (`programmes.book_ballots.event_id`,
-  `book_choices`; the books are fixed once anyone votes); members vote on
-  the event's page, once each and changeable while it is open
-  (`programmes.book_votes`, read only by the voter). The counts
-  (`programmes.ballot_counts()`) show to the host throughout and to
-  everyone once the ballot closes, when the page names the circle's book.
-- **Awards by year, author pages, playbills** (design review PR 5a, Nov
-  4, 2026). Each Awards round has its page, `/qirtas/awards/<round>`, and
-  `/qirtas/awards` shows the latest with the others "By year"
-  (`components/qirtas/awards.tsx`); `journal.award_results()` alone decides
-  what shows. An author page lists the Editions their work appeared in
-  and the Awards it was shortlisted for or won, from the same results.
-  The Company's productions are a Shelf of playbills (the poster, or the
-  title as type), with the list at `/company/productions`.
-- **About's beginning and a member's year** (design review PR 6a, Nov 5,
-  2026). About's "How it began" is dated lines from Qirtas's reports, each
-  opening its piece. Record links to the member's year,
-  `/membership/record/year/<yyyy>` (the academic year from September 1,
-  `recognition.myYear`): their own records only, private and printable.
-- **One kind of event, with add-ons** (owner, Nov 5, 2026, evening:
-  "Don't keep event-specific things. All events have standard pages, we
-  change the details."; migration `20261101005300_event_modules`). Every
-  event, a Council meeting, the AGM and Launch Night among them, is made
-  in What's on (`/diwan/events/new`) with the same details; its way in is
-  `open`, `rsvp` or `invite` (private). Below the details, the event's page
-  in the Diwan (`EventPartsAdmin`) shows the add-ons it has and one row,
-  "Add to this event", for the rest: off campus, a partner and its
-  checklist, needs, shifts, links, prompts, a book vote, the book fair's
-  collection (`charity.manage`) and a meeting's minutes (governance). The
-  public page shows the ones it has (`EventParts`). Off campus
-  (`events.events.off_campus`, replacing the occasions; the trip and the
-  contest are ordinary events): published only once the General Secretary
-  records Student Life's written approval (`events.record_approval`,
-  `private.trip_needs_approval`); only `governance.manage` brings it back
-  on campus. A meeting's minutes and resolutions stay governance records
-  pointing at their event (`governance.minutes.event_id`; its day sets
-  `meeting_on`, `private.minutes_follow_meeting`); minutes from before
-  keep their own date.
-- **One layout rule** (owner, Nov 5, 2026, evening). Menus, tabs and
-  action buttons sit in rows, wrapping on a phone (`flex flex-wrap`);
-  choosing between options is always a vertical list (`SelectInput`
-  shows a few short options as a list with the chosen one marked on its
-  starting edge, more as a list with a find line). Never stack action
-  buttons in a column, never set options side by side.
-- **The owner's decisions of Nov 5, 2026** (`claude/decisions.md`;
-  migrations `20261101005000_council_of_six`,
-  `20261101005100_events_not_programs`).
-  - **The Council of six.** Officers: the President (owns events: the
-    term calendar, formats, event leads, needs lists), the Vice President
-    (owns partnerships, charities among them, vetting and the partner
-    register) and the General Secretary (owns membership: the Register,
-    the welcome, hiring, voting rights, the Typewriter Tour; records,
-    rooms and every request to Student Life). Directors: the
-    Editor-in-Chief, the Artistic Director and the Director of Media. The
-    roles `director`, `programs_director`, `partnerships_director` and
-    `membership_director` are gone, their assignments with them; the
-    Vice President keeps no events, membership or Company permissions.
-    The Acting President (`acting_president`, two-step sign-in, not a
-    Council seat) holds the events permissions while the President is
-    abroad (Jan 24 – May 15, 2027): the Council assigns it for those
-    dates. The Council page (`/about/council`) lists the six seats by full
-    title, held or "Open" (`governance.council_seats()`, `CouncilSeats`),
-    and the Acting President while one is in office; the Notion officer
-    mirror offers the six seats only.
-  - **Event leads.** `programme_lead` is an event lead, scoped to one
-    event (scope `event`, new; a series-scoped lead became a lead of each
-    of its events from Nov 5, 2026): an event lead edits that event, keeps
-    its shifts, needs, prompts and vote, sees its bookings and runs its door
-    (`private.leads_event`, used by `manages_event`, `can_check_in`,
-    `invited` and the events, staff, bookings, waitlist and links
-    policies). Assign it on the member's page, "One event". The President
-    picks event leads; Get involved lists event teams, and Apprenticeship
-    places are "a Qirtas section, the Company or an event team".
-  - **The Typewriter Tour belongs to membership.** Its page is
-    `/join/typewriter-tour` (linked from Join; `/events/typewriter-tour` is
-    no longer a page, no redirect): the full Tour once a year in spring,
-    after Eid (Mar 14–25, 2027), the typewriter at the fall club fair, the
-    Six Words wall and the typewriter to try. Six Words still come only
-    from the Tour and go to Qirtas Letters; `programmes.record_six_words`,
-    `attach_six_words` and `moderate_six_words` ask `tour.run`
-    (`private.runs_the_tour`), held by the General Secretary and the Tour
-    Lead (`tour_lead`, picked by the General Secretary), kept in the Diwan
-    under People → Typewriter Tour (`/diwan/people/typewriter-tour`, module
-    `tour`).
-  - **Copy and channels.** The Instagram bio is "The paper and the pen
-    at @auibaghdad." (owner, Nov 7, 2026); the highlights, in order:
-    What's on, Qirtas, The Company, Next Stop, Join, Partners
-    (`packages/brand/assets/social`). Retired names, never in
-    copy (`scripts/check-language.ts` refuses them): Director of Programs,
-    Events, Partnerships or Membership, Program Lead, "the six programs",
-    Standing Programs, flagships, the Evenings, the Specials, weekly
-    evenings, four-week cycle. The endorsement line "a Society of Arts and
-    Letters program" stays (decisions.md).
-- **Originals and topics** (design review PR 6b, A24 with decision D11,
-  A21; Nov 5, 2026). A translation may carry its original
-  (`journal.piece_bodies.original`, `original_lang`), shown beside it in
-  its own language and direction (`journal.textDirection`), the one
-  exception to one language per page. Topics (`journal.topics`, added by
-  `journal.publish`; `journal.piece_topics`, tagged by the piece's
-  editors) each have a page, `/qirtas/topics/<slug>`, with the list at
-  `/qirtas/topics`. A long read (ten minutes or more, three `<h2>` parts
-  or more) shows its contents beside the text (`withContents`); an
-  explainer carries figures (`journal.piece_figures`), placed with a
-  paragraph "[figure n]" (`splitAtFigures`) and drawn by `FigureChart`
-  as bars with a table view.
-- **Games, daily and from the editors** (owner, Nov 5, 2026; replaces
-  PR 5c's kinds). Members send no games (`private.games_by_editors`
-  refuses a Games submission or draft). Four daily games, made in the
-  reader's browser from word lists and the same for everyone on a Baghdad
-  day (`@repo/sal-data/games`: `dailyAnswer`, `dailySearch`,
-  `dailyCrossword`, `dailyAnagrams`; the clued words in `game-words.ts`),
-  numbered from No. 1 on Nov 5, 2026: the word (`/qirtas/games/word`), the
-  word search (`/search`), the crossword (`/crossword`) and the anagrams
-  (`/anagram`). Editors may also publish a crossword, word search or
-  anagrams (`journal.puzzles`, Qirtas → Games) at `/qirtas/games/<slug>`.
-  The quiz, word ladder, riddles and name the book are retired. Progress
-  stays in the reader's browser (`qirtas-games:` keys).
-- **The Qirtas nameplate and masthead** (owner, Nov 5, 2026). One
-  nameplate on every page of the paper, in the Qirtas layout
-  (`components/qirtas/nameplate.tsx`; the section marked by `DeskNav` from
-  the address), so it never changes between pages. The masthead,
-  `/qirtas/masthead`, lists the Editor-in-Chief, the Managing Editor,
-  guest editors and every role the paper hires (`journal.masthead()`),
-  from the roles people hold.
-- **Readings, clips and Gallery selections** (design review PR 5d, A10,
-  A11, A12, decision D10, Nov 5, 2026). A piece may carry one reading of
-  itself (`journal.pieces.reading_path`, the public `readings` bucket,
-  `<piece id>/<random>.mp3|m4a`, 10 MB at most, thirty across Qirtas so the
-  Free plan's 1 GB holds; never on a members-only piece, since the bucket
-  is public) and a clip from the Video section (`clip_id`), both set on
-  the piece's page in the Diwan ("Clip and reading") by its editors
-  (`private.piece_editor`; `private.check_clip_and_reading`). A reader
-  makes a Gallery selection in their browser ("Add to a selection",
-  twelve pieces at most) and shares it at
-  `/qirtas/selection/<slug>/<slug>…`: the address is the selection,
-  nothing is stored and nobody signs in (`journal.gallerySelection`,
-  not indexed).
-- **Calls to action: writing and the Sunday Paper** (owner, Nov 5, 2026).
-  `/qirtas/write` is public (`(account)/qirtas/write`, the members' frame
-  without the gates, indexed): visitors read what each section takes, how
-  work is read and edited, and the Edition's calls, with one button, "Sign
-  in to send" (back to the page), and Join; signed in, their work comes
-  first. The forms behind it (`/qirtas/write/<type>`) stay gated and return
-  the reader to the type they chose. Each section page links to its part of
-  the gateway (`/qirtas/write#<section>`), and every piece ends with
-  `PieceEnd`: write for that section, beside the Sunday Paper. The Sunday
-  Paper sign-up (`NewsletterSignup`) is on the home page, the Qirtas front
-  page, the end of every piece and every past issue (the form itself, not a
-  link); a signed-in member is never asked to subscribe (they get it with
-  email notices on) and is pointed to Settings → Notices instead.
-- **Qirtas, one door** (owner, Oct 31, 2026). Members send everything,
-  every section, from `/qirtas/write` (`/qirtas/write/<type>` is the
-  form), and everything they send is read blind. Edition calls (Letters,
-  Gallery, two a year) stay; beside them the standing call "Qirtas, all
-  year" (`journal.calls` with no `issue_id`, `calls_one_standing`) takes
-  every section, never closes and counts `max_per_person` per term; a
-  submission that names no call goes to it. The global masthead reads
-  and decides it. An author may publish under a pen name, never Anonymous
-  (owner, Oct 31, 2026; `submissions.pen_name`, made a pen-name byline by
-  `make_piece`). A manuscript sent as Word or PDF fills the editor with
-  its text in the browser (`lib/manuscript.ts`, mammoth and pdf.js), and
-  the file still goes with the work. The newsroom is where staff write
-  and publish directly: the Diwan's Qirtas section is the Newsroom
-  (`/diwan/qirtas`, one page per section, `/diwan/qirtas/news` …
-  `/games`; Next Stop is in Video, puzzles in Games; what members send is
-  read blind on the same pages, submissions at `/qirtas/submissions/<id>`
-  and the Edition's entries at `/qirtas/entries/<id>`: Newsroom and Review
-  are one, owner, Oct 31, 2026), Editions,
-  and Awards, each its own page. Bylines are people: a member under
-  their own name or a pen name, picked with `BylinePicker` and made by
-  `journal.byline_for()`, never typed. Clients never read
-  `contributors.user_id`, so a pen name can't be traced to its author.
-  Six sections, six types each (owner, Oct 29, 2026; `journal.sectionTypes`,
-  `journal.desk_of()`, `journal.is_current_category()` refuses any other):
-  News (report, feature, interview, profile, event coverage, explainer),
-  Voices (review, column, opinion essay, letter to the editor, debate,
-  recommendations), Letters (poetry, fiction, creative nonfiction, drama,
-  translation, Six Words), Gallery (art, photography, illustration,
-  comics, calligraphy, photo essay), Video (Next Stop episode, reel, short
-  film, video report, recorded performance, animation), Games (crossword,
-  quiz, word ladder, riddle, anagram, name the book). Members may send
-  to Qirtas at any time; only the printed Edition takes work at set times
-  (its calls, Letters and Gallery, two a year, with "Tell me when",
-  `journal.call_alerts`). Six Words take no
-  submissions (the database refuses them). The Edition is printed: its
-  record keeps the print run, printer and date (`journal.issues.print_run`,
-  `printer_en`/`_ar`, `printed_on`), shown on the Edition page as a line.
-- **The Qirtas Awards** (owner, Oct 29, 2026; "Awards", never "Prizes",
-  owner, Oct 31, 2026, and in the code too since Nov 4, 2026; at
-  `/qirtas/awards`, and `/prizes`, `/awards` and `/qirtas/prizes` go
-  there): six awards (`journal.awards`): the Mutanabbi Award (the whole paper), the
-  Tabari (News), Jahiz (Voices), Nazik (Letters), Wasiti (Gallery) and Ibn
-  al-Haytham (Video) Awards. Each year a round (`journal.award_rounds`)
-  with its shortlist and award days; the first: shortlists April 4,
-  awarded April 20, 2027. The names are confirmed (owner, Oct 31,
-  2026). The Diwan (Qirtas → Awards, `journal.awards`
-  permission) records shortlists, judges (members, picked from the
-  register) and winners
-  (`journal.award_entries`, `journal.award_judges`, never public) and
-  drafts the certificates (`journal.prepare_award_certificates`, kind
-  `award`). The public reads only `journal.award_results()`, which shows a
-  shortlist from its day and never a winner before the award.
-- **Six Words come only from the Typewriter Tour.** Never written on the
-  site: whoever runs the Tour transcribes the card in the Diwan
-  (`programmes.record_six_words`) and scans the writer's live membership
-  card to make it theirs (`programmes.attach_six_words`); unsigned cards
-  show without a name. One entry per member; a new card replaces the old.
-- **Get involved** (`/get-involved`, and `/callboard` goes there; one name
-  in every language, title and the code, owner, Oct 31 and Nov 4, 2026:
-  the members' board is `PlacesBoard`, the openings `openings`)
-  is the careers page (owner, Oct 29, 2026), read by
-  anyone (Oct 31: `programmes.open_places()`, `OpenPlaces`; replying and
-  shifts are for members), as one list without sections (owner, Oct 31,
-  2026; migration `20261101001000`), soonest first: roles, the
-  Apprenticeship, First Ink, volunteer places (`kind` `volunteer`, with a
-  rota), places with partners (`kind` `partner`, posted by Partnerships
-  in the Diwan's People → Openings) and the Company's coming auditions
-  (`kind` `audition`, for a public production in auditions); members get
-  the same one list with their actions. Before that:
-  every role the Society is filling (`programmes.openings`, `kind`
-  `role`, with its `owner`: a program, Qirtas, Media, Partnerships,
-  Membership or the Council), shifts and auditions on one board. A role
-  opening names its role (`programmes.openings.role`; owner, Oct 31,
-  2026: every role in Roles and Staffing is on the platform, each with
-  `access.roles.hiring_owner`), which sets its owner, and whoever is
-  onboarded holds the role (`private.onboarded_takes_role`). Hiring
-  (owner, Oct 30, 2026; the Diwan's People → Openings, every opening
-  of every kind in one list since Nov 4, 2026): members reply "I'm
-  interested" (`programmes.opening_replies`, emailed to the General
-  Secretary's team); the General Secretary (`members.manage`) runs every
-  application (conversation, offer, onboarding with F-06), and the role's
-  owner picks the person (`private.picks_opening`: the Editor-in-Chief the
-  masthead, the President the event leads, the General Secretary the Tour
-  Lead, each director their team; owner, Nov 5, 2026); a trigger keeps
-  the two apart.
-  Roles and shifts carry the skills they want, from the same list as
-  Profile (`core.member_details.skills`), and what matches the member
-  comes first. Hours given are recorded as service as before. Two kinds of
-  place (`programmes.placements`, given by the event leads): the
-  Apprenticeship (`apprenticeship`: one term in a Qirtas section, on
-  Qirtas's own program row with `desk`, or in a program; its sessions are
-  the shifts of its own rota, so the hours count as service;
-  `programmes.complete_apprenticeship` drafts a certificate, kind
-  `apprenticeship`) and First Ink (`first_ink`: mentor places for AUIB
-  members volunteering with high school students, through the partner
-  school, `partner_id`). High school students never get accounts and
-  nothing about them is stored.
-- **One partner register** (owner, Oct 25, 2026): `governance.partners`,
-  kept in the Diwan's Partners section, is the only list of partners;
-  charity campaigns, Qirtas calls and productions all name partners from
-  it (the charity's own list is gone). Whoever names a partner on their own
-  work reads names through `governance.partner_names()` (members: active
-  and prospective partners; a partner's guest: their own). Accounts
-  verified with a partner but not members are that partner's guests
-  (`private.is_partner_guest()`; `GUEST_PATHS` in `gates.tsx`).
-- **Partners on the platform** (owner, Oct 31, 2026). `/partners` is
-  the partners' front door: what partnering means, the partners, Apply
-  and the team's sign-in; there are no pages for single partners. An
-  organization applies at `/partners/join` (`governance.apply_as_partner`;
-  signed out, the page signs the applicant up with any address): its
-  profile, the partnership's purpose and its side, the grants it asks for,
-  and its signatory signs the memorandum by name. No PDFs: memoranda are
-  signed by name on both sides (`sign_partner_agreement` takes no file).
-  An application asks for no grants: a partner asks from its dashboard
-  (`governance.ask_for_grants`) and Partnerships gives them
-  (`give_grants`); a partner's perk shows only once Partnerships publishes
-  it (`private.perks_wait_for_the_society`, `submitted_at`).
-  Partners → Applications (`/diwan/people/partners/applications`) holds these applications
-  (`governance.partner_applications()`); the President signs, the partner
-  turns active and whoever applied gets `partner_lead` (`partners.own`
-  and `partners.lead`, scoped `partner`). Each partner keeps one
-  dashboard at `/partners/dashboard` (Profile and memorandum, Perks,
-  People; `components/diwan/partner/workspace.tsx`, `RequirePartner`, no
-  membership gate), in the header's menu as "Partner dashboard" where
-  officers see the Diwan (`useWays`, the `sal_ways` hint cookie). The
-  team is up to six, Lead or Team (`partner_rep`): Leads invite, make
-  Leads (`set_partner_lead`) and remove; anyone leaves, never the last
-  Lead. People join only by invitation (`governance.partner_invitations`,
-  fourteen days, codes made by the database; emailed by the outbox kind
-  `partners.invitation`): team by email, guests by email (verified on
-  accepting with that address) or by a shareable link (pending until the
-  partner verifies). Invitations open at `/invite/<code>`
-  (`governance.partner_invitation`, `accept_partner_invitation`). Row Level
-  Security keeps the team to its own partner; its listing, status and
-  address stay the Society's (`guard_partner_self_edit`). Partners verify
-  their own people (`partner_affiliations`, `governance.partner_guests`);
-  nobody asks to be a guest. Guests book places (`events.rsvp`) and see
-  perks (`member_offers`, only with the `member_offer` grant) like
-  members. An event may be run with a partner (`events.events.partner_id`,
-  design review A41): both sides keep one checklist (`events.joint_tasks`,
-  `JointChecklist`), the team on its dashboard's Events tab
-  (`events.my_joint_events()`). The team are not officers: `RequireStaff` sends a team-only
-  account to the dashboard, and the Notion directory leaves them out.
-- **One Membership, of one kind** (owner, Oct 31, 2026; migration
-  `20261101000800`). Everyone has `/membership`; there is no `/account`.
-  An account is one kind (`private.membership_kind`,
-  `membership.my_membership()`, `useMyMembership`): `member` (an AUIB
-  address; tiers Member, Fellow, Honorary Fellow, Life Member; Voting
-  Member is earned), `guest` (the Society's, `membership.guests`, or a
-  partner's verified affiliation; `private.is_guest`) or `partner` (a
-  partner's Lead or Team). Triggers named `one_membership` refuse a
-  second kind (`private.may_become`); a guest may still be one Edition's
-  guest editor. A member may also lead their club's partnership (owner,
-  Oct 31, 2026, migration `20261101000900`): they stay a `member`, with
-  the partner's dashboard beside Membership; a guest is never on a
-  partner's team. Staff is a member holding a Society role
-  (`private.is_staff`): the card's Staff tag and the Diwan. Every kind
-  has the live card (`my_card`; `verify_card` returns `kind` and
-  `staff`). The members' pages open by kind (`kindOpens` in
-  `gates.tsx`): members everything; guests Today, My calendar, Record,
-  Settings, their work and Qirtas; a partner's people Today, Record and
-  Settings; no kind yet, Today and Settings. Today for a guest or a
-  partner's person is `OtherHome`. The Society's guests are invited from
-  the Diwan (People → Guests, `/diwan/people/guests`, `members.manage`)
-  with the same invitations as partners (`partner_id` null); every
-  invitation opens at `/invite/<code>`. Signing up refuses an address
-  that has an account (no identities in the answer); signing in asks
-  `/api/sign-in/known` (`core.account_exists`, the secret key) after a
-  failure, to say "no account with this address".
-- **Signatures are names on the platform** (owner, Oct 31, 2026). Nobody
-  types their own name to sign or book: the partner application
-  (`private.sign_as_applicant`) and a Qirtas agreement
-  (`private.sign_in_own_name`) are signed in the profile's names, dated
-  when signed, and a booking question asking for a name
-  (`events.asksForName`) is answered with it. One photo setting:
-  "Photos of me at the Society's events may be shared" on Profile is
-  `camera_shy` read the other way round (`photo_consent` is gone).
-- **No money** (owner, Oct 30, 2026). The Society holds no budget, no
-  account and no money, and has no Treasurer; Student Life provides. No
-  budgets, costs, prices, spending limits, claims or reimbursements
-  anywhere. Events, the Typewriter Tour and Qirtas keep needs lists (`programmes.needs`:
-  item, quantity, date needed, purpose; each event's page and
-  Qirtas → Needs), and the General Secretary sends each request to
-  Student Life and logs what was provided (Governance → Requests to
-  Student Life). The one exception is the book fair's collection: the
-  charity ledger (append-only, corrections are reversing entries, two
-  counters, only signed-off entries count; the General Secretary
-  witnesses and signs off), the witnessed handover on the campaign
-  (`handed_over_on`, amount, witness, receipt) and the impact report. The
-  fair's event page follows the campaign through five stages (boxes,
-  donations, the fair, the handover, the impact report;
-  `charity.campaignStages`) from the days kept on the campaign, and lists
-  its drop-off points (`drop_off_points`) when entered (owner, Nov 4,
-  2026); it shows signed-off figures only. The fair's books are listed to
-  browse, never priced, at `/events/<event>/catalog`
-  (`charity.catalog_books`, the campaign's Catalog tab; design review A27). No online payments of any kind.
-- **The Council page** (owner, Oct 30, 2026; `/about/council`, the members'
-  Society page and the Diwan's Governance → Council) comes from the roles
-  people hold (`governance.council_members()`): everyone holding a Council
-  role (`access.roles.is_council`, global, in force), under the role's
-  name or the assignment's display title. Someone holding two roles is
-  named once, with both titles: a second Council role (covering a seat)
-  needs an adopted Council resolution (`exception_resolution`,
-  Constitution 6.6; `private.role_conflict`). Nothing is kept by hand:
-  assign roles on the member's page. Three officers and the directors,
-  among them the Artistic Director (`artistic_director`: every production,
-  the door, the Company's openings; nothing else); no Treasurer.
-- **The Diwan in three rooms** (owner, Nov 4, 2026). Notion for the work
-  (teamspace The Diwan), the site for people and private records, the
-  Telegram group The Diwan for talk; every piece of information has one
-  home and anywhere else it is a read-only view. Written in Notion and
-  published by the sync (`lib/api/notion`, `docs/platform/notion.md`):
-  events (the Programs database no longer publishes: no series, owner,
-  Nov 5, 2026),
-  documents, minutes (Work, Meetings, Status "Minutes in the Diwan"; locked
-  once adopted, `private.lock_adopted_minutes`) and the content calendar.
-  Kept on the site and copied to Notion read-only: the officers (each seat
-  by its full title) and Qirtas's counts. One language per piece: an
-  Arabic edition is its own row (Language Arabic, Edition of the English
-  row). The sync reads and writes Diwan and Diwan ID (never Nexus); rename
-  a property only with the sync in the same change.
-- **Documents.** Every document is adopted, Version 1 (owner, Oct 24, 2026).
-  Visitors and members see the title, summary and text only; codes
-  (`SAL-…`, `F-…`), statuses, versions and ratification lines are internal
-  and appear only in the admin. A later draft stays in the admin until it
-  is adopted.
-- **Iraqi Arabic where we chat** (owner, Nov 4, 2026). Hudhud
-  (`lib/api/bot/copy.ts`), social captions and stories, the members' group
-  and signs at the door speak Iraqi Arabic, spelled as Iraqis write it (گ);
-  the site, the Diwan, emails, documents, certificates, Qirtas and the
-  bot's Telegram profile stay in standard Arabic. Never both in one
-  message (Guide → Voice, "Which Arabic"), spelled with گ، چ، پ.
-- **One language standard** (owner, Nov 4, 2026; Guide → Voice,
-  "Language standard", with the glossary). English: American, following
-  the Chicago Manual of Style (owner, Nov 6, 2026: curly quotes in prose,
-  the serial comma), sentence case for interface labels, the ellipsis
-  character, en dashes for ranges, "for example" over "e.g.". Arabic: Latin digits, the Iraqi month names
-  (`ar-IQ`), ، ؛ ؟ and «», tanween before the alif (شكرًا), one word per
-  term (Edition الإصدار, piece عمل, event فعالية, version النسخة, Get
-  involved «شارك معنا»). `bun run check:i18n` runs
-  `scripts/check-language.ts`, which also keeps Iraqi spellings in
-  Hudhud's copy only.
+  against production once CI passes, and Vercel deploys `main` itself.
+  Never paste SQL into the production database.
+- **Two-step sign-in for sensitive roles.** Roles with `requires_mfa` (the
+  Council, the Acting President, the Elections Committee) count only on
+  an `aal2` session; `access.has_permission` enforces it. Don't add
+  bypasses. A passkey is a first step only. A lost authenticator is
+  recovered with one of ten recovery codes (`access.recovery_codes`,
+  `/api/two-step/recover`) or reset by whoever holds `roles.assign`
+  (`/api/two-step/reset`); either is recorded in `access.two_step_resets`
+  and emails the person.
+- **Secrets are server-only.** The secret key, Resend, the cron and
+  webhook secrets and the Telegram token are read only in route handlers
+  and `lib/api`; CI greps the client bundle for their names. New env vars
+  go in the package's `keys.ts` and in `apps/web/.env.example`.
+- **Personal data lives only on the site.** Never in Notion, in git or in
+  a migration: imports of personal data (such as the spring 2026 Tour,
+  `programmes.import_tour`) go from the officer's browser straight to the
+  database. The Register is private (the Executive Board and the
+  Director of Membership); members may opt into a members-only directory
+  (`in_directory`). Everything in `core.member_details` is optional and
+  read only by the member and `members.manage`; reports count only
+  members with `research_consent` and never show a group smaller than
+  five. No phone numbers until they can be verified. Never ask for a
+  student ID number: the AUIB address is the identifier, never shown
+  publicly.
+- **Blind review.** Readers never receive an author's identity before a
+  decision; verify against network responses, not the UI. Clients never
+  read `contributors.user_id`, so a pen name can't be traced.
+- **No third-party monitoring or protection.** Errors and logs go to the
+  Vercel runtime log (`@repo/observability` prints only); the security
+  headers are the app's own (`@repo/security`); public forms are rate
+  limited in the database (`withinRateLimit`, `core.take_rate`).
+- **Files:** use `@repo/storage`. Private buckets are reached only through
+  signed URLs issued by the API routes.
+
+## The Society in the code
+
+- **The Council of nine.** The Executive Board (President, Vice President,
+  General Secretary) and six directors (Editor-in-Chief, Director of
+  Media, Artistic Director, Director of Events, Director of Partnerships,
+  Director of Membership); `isCouncil` in `@repo/rbac/roles.ts`, mirrored
+  from the database. Until a seat is filled, the President covers Events
+  and the Artistic Director, the Vice President Partnerships, the General
+  Secretary Membership; the role bundles give them those permissions. The
+  Acting President (`acting_president`) is assigned for the President's
+  time abroad. The Council page (`/about/council`,
+  `governance.council_seats()`) lists the nine seats by full title, held
+  or open, from the roles people hold: nothing is typed by hand. A second
+  Council role needs an adopted Council resolution
+  (`private.role_conflict`).
+- **The first term.** Anyone newly appointed or joining a team serves a
+  first term on probation; whoever appointed them confirms them
+  (`confirmAssignment`). Elected seats have none. Candidates and
+  appointees are checked by Student Life for a 2.0 GPA
+  (`record_gpa_check`): the Society stores only "eligible" or "not
+  eligible", never grades.
+- **Terms come from the AUIB calendar.** The hourly sync
+  (`/api/cron/calendar-sync`, `lib/api/terms.ts`) writes each semester
+  into `core.semesters`; nobody types terms in. A role assigned without an
+  end runs to the end of the Society's year (`private.year_end()`).
+- **Members.** One account is one kind (`private.membership_kind`,
+  `membership.my_membership()`): `member` (an AUIB address), `guest` (the
+  Society's or a partner's) or `partner` (a partner's Lead or Team);
+  triggers named `one_membership` refuse a second kind. Members have a
+  class (`membership.tier`): Member, Associate Member or Honorary Member;
+  only Members vote (two events or general meetings that academic year)
+  and hold office. Staff is a member holding a role (`private.is_staff`).
+  Sign-up takes an AUIB address only, unless the account comes from an
+  invitation, applies to partner or signs up as a guest
+  (`private.sign_up_allowed`). `/welcome` asks one question per screen
+  (`planSetup` in `components/diwan/setup-form.tsx`).
+- **Names.** A name in four parts in each language, as on the person's
+  papers (`first_name_en` … `last_name_ar`), all eight required
+  (`NamePartsFields`, `hasAllNames`). Wherever a name shows, it is the
+  first and the fourth (`full_name_en`/`_ar`, kept by
+  `private.tidy_names`). The parts are the owner's alone
+  (`core.my_name_parts()`). One full name belongs to one account
+  (`private.one_person_one_name`). Wherever a person is named (bylines,
+  hosts, judges, roles), pick them from the register (`MemberPicker`,
+  `BylinePicker`); never type a name.
+- **One address, one person.** The optional personal email is set only
+  through `core.request_personal_email` and counts once confirmed
+  (`/personal-email/confirm`); it can't be an AUIB address or anyone
+  else's address.
+- **The membership card is live** (never "ID card"). Its QR is
+  `/verify/member/<code>?t=<digits>`, a TOTP of the card's secret (RFC
+  6238, SHA-1, 30 s, 8 digits; `lib/totp.ts` and `private.totp` must
+  agree, as Google Wallet does). The secret reaches only its owner
+  (`membership.my_card`); the door (`events.check_in_card`) refuses a code
+  that isn't live. The check page shows name, class, status and member
+  since only. No member photos; never put an account id in a QR. Google
+  Wallet only (`docs/platform/wallet.md`).
+- **One design per thing** in `@repo/brand/components/sal`: `FormPage`,
+  `Letter`, `MembershipCard`, `Certificate` and the guilloche. The site
+  renders them; print and PDF are the same page printed from the browser.
+  The card and certificate keep the live site's look (the card's tilt and
+  sheen are the one exception to "no 3D", off with reduced motion).
+- **Certificates** are two: finishing Qalam and the Mutanabbi Prize, one
+  language each, with a verification code (`/verify/<code>` takes a
+  certificate or a card code). Service is a letter
+  (`membership.service_letters`, F-05) with a verification code. Every
+  letter (F-03, F-05, F-30, F-32, F-33, F-34, F-42) is one American
+  business letter template.
+- **Forms** are at `/forms/<number>` on one standard page, signed in the
+  signer's platform name and kept as the signed copy; staff forms are
+  Notion templates. The forms register in SAL-EXB-01 is the one source of
+  every form's number, title and fields; `bun run check:forms` compares
+  `governance.form_types` and the registry with it. Where the site already
+  does the job (joining, RSVPs, Write for Qirtas, Get involved,
+  elections), the form is that page. Members never see the word "form" or
+  a form code; the requests they can start are plain actions where they
+  belong (`StartLinks`).
+- **Signatures** are `Signature`/`MySignature` (`components/signature.tsx`):
+  the signer's name on the platform in the signature face, the card
+  number, the date and a guilloche. Never typed.
+- **Events.** One events manager, one standard event. Every event,
+  meetings among them, is made in Notion's Events database and copied to
+  the site by the sync; the Diwan edits the same record. Every event has
+  the one page on the site (`EventView` with `EventParts`) and in the
+  Diwan (`EventEditor` with `EventPartsAdmin`), with only the standard
+  parts: its way in (`events.events.entry`: `open`, `rsvp`, or `invite`,
+  which is private and members-only), RSVP and check-in, a needs list,
+  volunteer shifts (on the event only, logging no hours), a partner
+  checklist (`events.joint_tasks`) and links from the night
+  (`events.session_links`, https only). Off campus is a standard field:
+  such an event publishes only once the General Secretary records Student
+  Life's written approval (`events.record_approval`), and participants
+  sign the trip consent, F-45. Nothing is built for one event or one kind
+  of event. An event that recurs is made again for each date; there are
+  no series and no programs (the code keeps its identifiers: the
+  `programmes` schema, `programme_id`, `programs.manage`; copy says
+  "event" or "event lead"). Minutes and resolutions are governance records
+  pointing at their meeting's event (`governance.minutes.event_id`).
+- **What's on is one calendar**: `/events`, a month at `/events/<yyyy-mm>`,
+  each event at `/events/<slug>`. The public calendar shows members-only
+  events as teasers; SECURITY DEFINER code checks visibility with
+  `private.can_see_event_id`. AUIB's own dates (`core.external_events`,
+  English only, `lang="en"`) sit beside the Society's, quieter; "Hide
+  AUIB dates" is `/events/<yyyy-mm>/society`.
+- **Event leads.** `programme_lead` (Event Lead) is scoped to one event
+  (scope `event`): they edit it, keep its shifts and needs, see its
+  bookings and run its door (`private.leads_event`). The Director of
+  Events (or the President, covering) picks them.
+- **The Typewriter Tour** belongs to membership: `/join/typewriter-tour`,
+  with the Six Words wall (`programmes.six_words_wall()`) and a typewriter
+  to try (`TypingToy`, silent until the key sound is turned on). Whoever
+  runs the Tour (`tour.run`: the Director of Membership, the General
+  Secretary and the Tour Lead) records pages in the Diwan (People →
+  Typewriter Tour) and attaches each to its writer's account. Six Words
+  are not part of Qirtas: they are Tour pages, private by default, shown
+  on the writer's profile or the Tour's page only by their choice
+  (`programmes.six_words.visibility`). Spring 2026 pages arrive by the
+  one import (`programmes.import_tour`); pages with no email stay private
+  and editors-only until a writer claims one through Help Desk. The
+  one-time invitations (`membership.invitations`) go only when the
+  President says go (`membership.send_invitations`), as one Broadcast,
+  and are deleted thirty days later.
+- **Get involved** (`/get-involved`, `programmes.open_places()`) lists open
+  roles only, soonest first: Council and team roles, event teams, Qalam
+  mentors, auditions. Members reply "I'm interested" in one step;
+  Membership runs every application, and the role's owner picks the
+  person (`private.picks_opening`); whoever is onboarded holds the role.
+- **Partners.** One register, `governance.partners`. `/partners` is the
+  front door; an organization applies at `/partners/join`, its signatory
+  signing by name. Each partner has one dashboard, `/partners/dashboard`
+  (profile and memorandum, events, perks, people), for its team of up to
+  six (Lead or Team), who join only by invitation and verify their own
+  guests. Partners never use Notion and see only their own events and
+  checklist.
+- **Guests** sign up at `/sign-up/guest` to book open events, or are
+  invited from People → Guests; never members.
+- **Money: none.** No budgets, costs, prices, spending limits, ledgers,
+  claims, reimbursements, payments or ads anywhere; sponsors give in kind
+  only. Every event, Qirtas and the Tour keep a needs list
+  (`programmes.needs`: item, quantity, date needed, purpose), and the
+  General Secretary sends each request to Student Life and logs what was
+  provided (Society → Requests). Charity collections are a Notion record,
+  not a site feature.
+- **Governance.** Meetings by body (Council, general, Annual, special,
+  Founding; `meetingBodies`); elections by secret ballot online over a set
+  window; Robert's Rules where the documents are silent.
+
+## Qirtas
+
+- **Qirtas** («قرطاس», "AUIB's paper of news, letters and art") at
+  `/qirtas`, with its own masthead and editorial independence (the
+  database keeps the code name `journal`). Six sections
+  (`journal.sectionTypes`, `journal.desk_of()`): News, Voices, Letters,
+  Gallery, Video, Games. Types are the editors' (`type_label`). Voices
+  keeps the opinion rule (no party politics, religion, sect or
+  ethnicity).
+- **Write for Qirtas** (`/qirtas/write`) is the one door: public to read,
+  members send work in every section except Games, at any time, and
+  everything is read blind. Drafts (`journal.submission_drafts`) are their
+  writer's alone. Every decision carries its reason (`journal.decide`).
+  Bylines are a Register name, a pen name or "Anonymous" (the
+  Editor-in-Chief knows the writer). Unpublished submissions are deleted
+  twelve months after the decision (the keep-alive cron).
+- **The Newsroom** is the Diwan's Qirtas section: staff write and publish
+  directly, and read what members send on the same pages
+  (`/diwan/qirtas/submissions/<id>`).
+- **Reading.** One nameplate on every page of the paper
+  (`components/qirtas/nameplate.tsx`); the masthead at `/qirtas/masthead`
+  (`journal.masthead()`). A piece's address comes from `journal.piecePath`.
+  Articles carry a progress hairline, a text size and the next piece.
+  Notes and pull quotes (`withNotes`), contents for long reads
+  (`withContents`), figures (`journal.piece_figures`), an original beside
+  a translation (`journal.piece_bodies.original`), topics
+  (`/qirtas/topics`), a reading and a clip (`reading_path`, `clip_id`),
+  Save for later (`journal.saved_pieces`, `/membership/saved`), Gallery
+  selections shared by address (`/qirtas/selection/...`, nothing stored).
+  RSS at `/qirtas/feed.xml` and per section; the archive at
+  `/qirtas/archive`. Pieces print on white without the site's frame.
+- **The Edition** is printed once a year, a year in review
+  (`/qirtas/editions`, a Shelf with the plain list at
+  `/qirtas/editions/list`); its record keeps the print run, printer and
+  date.
+- **Games**, daily, made in the reader's browser and the same for everyone
+  on a Baghdad day (`@repo/sal-data/games`): the word, the word search,
+  the crossword and the anagrams at `/qirtas/games/...`. Editors may also
+  publish puzzles (`journal.puzzles`). Members send no games
+  (`private.games_by_editors`). Progress stays in the browser.
+- **The Mutanabbi Prize** (`/qirtas/prize`; the Diwan's
+  `/diwan/qirtas/prize`): Qirtas and Qalam categories, the outside judge's
+  score 70% and the members' vote 30% (`journal.prize_results`), voting on
+  Society while a round is open (`journal.open_prize_round`), the count
+  checked by the Editor-in-Chief and the General Secretary.
+- **Qalam**, Qirtas's summer program for high school students. Its roster
+  is staff only (`/diwan/qirtas/qalam`, `qalam.manage`), never in Notion,
+  deleted three years on. High school students never get accounts.
+- **Next Stop** is the Director of Media's video show at `/next-stop`
+  (episodes, its promise at `/next-stop/care`), not part of Qirtas.
+- **The Sunday Paper** («جريدة الأحد»), monthly on the first Sunday, to
+  members who take optional email and to the public list
+  (`content.newsletter_subscribers`), sent as one Resend Broadcast per
+  language (`private.queue_sunday_paper`, outbox kind
+  `sunday_paper.broadcast`). Past issues are at `/sunday-paper/<yyyy-mm>`,
+  only those sent (`content.sunday_paper_issues`), rebuilt from the
+  records (`lib/sunday-paper.ts`). The sign-up (`NewsletterSignup`) never
+  asks a signed-in member to subscribe.
+
+## Notion, documents and channels
+
+- **Three rooms.** Notion for the work (teamspace The Diwan), the site for
+  people and private records, Telegram for talk. Every piece of
+  information has one home; anywhere else it is a read-only view.
+  Written in Notion and published by the sync (`lib/api/notion`,
+  `docs/platform/notion.md`): events, news, documents, minutes and the
+  content calendar. Kept on the site and copied to Notion read-only: the
+  officers and Qirtas's counts. One language per row: an Arabic edition is
+  its own row (Language Arabic, Edition of the English row), and an
+  Arabic event row takes Way in and Off campus from its English row. The
+  sync reads and writes Diwan and Diwan ID; rename a property only with
+  the sync in the same change. Diwan pages with a Notion counterpart say
+  so with `NotionManaged`.
+- **Documents.** Every document's text is written in Notion and rendered
+  to the Library (`/library`); the Diwan's Library keeps only each
+  document's adoption record. Every document is Version 1 and shows
+  "Proposed" until adopted at the Founding Meeting; both editions publish
+  together; internal documents never reach the Library. Codes follow
+  decisions.md §6 (GOV, EXB, EVT, MEM, PTN, MED, ART, EDT); visitors and
+  members never see codes, statuses or versions. Never edit the text of
+  an adopted document. The re-sync is
+  `/api/cron/notion-sync?documents=all`.
+- **Hudhud** (@auibsal_bot) posts events and news to Announcements, sends
+  RSVPs, reminders and the day's word, and warns anyone in the members'
+  group without a linked member's account, removing them a week later
+  (`features/group/removals.ts`; admins and Student Life exempt). A group
+  set with `/audience staff` is the Diwan group: officers only, a morning
+  brief and event summaries (`lib/api/bot/staff.ts`).
+- **Email.** Supabase sends the auth emails (templates in
+  `packages/database/supabase/templates`); the outbox (`core.outbox`,
+  `lib/api/outbox.ts`) sends the rest through Resend, each kind written
+  in `@repo/email/copy` in both languages (sent in the recipient's only).
+  Mail to many people at once (the Sunday Paper, the invitation) goes as
+  a Resend Broadcast to a fresh segment, deleted once sent, so it doesn't
+  count against the free plan's 100 a day; unsubscribes made in Resend are
+  read back first. Each email has Reply-To hello@auibsal.org, a preview
+  line that isn't the subject, a tag with its kind and a footer saying
+  why it came (service, optional with a stop link, officer, direct) and
+  the sustainability line. A new journey adds its row to
+  `docs/platform/email.md` and its story in
+  `packages/brand/stories/emails.stories.tsx`.
+- **Analytics** on `apps/web` only: Google Tag Manager with GA4, consent
+  from the site's own card (cookie `sal_consent`) through consent mode,
+  analytics only (the ad signals stay denied). Record events with
+  `track()` from `@repo/analytics/client`
+  (`docs/platform/analytics.md`).
+
+## The site's practice
+
+- **Standard practice over house rules.** Use the common way when it
+  works; keep what helps, change what doesn't, merge what repeats. Counts
+  are not rules: sections, tabs and menus hold what is needed.
+- **One place for each thing.** Nothing is kept or managed in two places;
+  when two views show the same records, merge them. Nothing is kept by
+  hand that is known elsewhere (terms, officers, the Council).
+- **Lasting addresses.** Pages people share or return to have their own
+  path (a month, an issue, a search at `/search/<words>`); filters and
+  passing state may use a query string. The apps configure no redirects:
+  an old address is simply not found. The address alone decides the
+  language (`localeDetection: false`).
+- **Big records get pages; small rows are edited in place.** A record
+  with its own life (an event, a piece, a production, a partner, a
+  memorandum, a document, an election, an opening, a meeting) has its own
+  page (`RecordPage`, `NewLink`), "new" for a blank one, ending with its
+  History (`RecordHistory`, `core.record_history()`). A small row (a need,
+  a shift, a credit, a rehearsal, a role, a perk) is added in place with
+  `AddInPlace`, never a dialog. A long list acted on together uses
+  `SelectableTable`.
+- **One layout rule.** Menus, tabs and action buttons sit in rows,
+  wrapping on a phone (`flex flex-wrap`); choosing between options is
+  always a vertical list (`SelectInput`/`ChoiceInput`, with a find line
+  from ten). Never write `<select>`, never stack action buttons in a
+  column.
+- **One frame.** The public pages, your account and the Diwan share one
+  header (`components/masthead.tsx` with `site-header.tsx`) and one
+  footer (`components/footer.tsx`, not in the Diwan). One main menu:
+  About, What's on, Qirtas, The Company, Get involved and Join (signed in,
+  the end of the line opens Membership; the Diwan under it for staff, the
+  Partner dashboard for a partner's team, `useWays`). No link appears
+  twice among the header, a menu row and the footer.
+- **Your account and Diwan pages** are `DiwanPage` with `DiwanSection`s
+  and `RowList`s (`components/diwan/page.tsx`); admin pages use
+  `AdminHeading`. Every empty state offers one next action. Nothing a
+  member does lives in the Diwan. The Diwan's find line (`FindPanel`)
+  opens in place with "/" or Ctrl+K.
+- **Shelves and motion.** A row of things to browse is `Shelf`, always
+  with the same items as a plain list at its own path. Movement follows
+  the brand book's Motion section (native CSS, the duration and easing
+  tokens), nothing with reduced motion.
+- **Performance and accessibility.** The public pages keep to a
+  performance budget on a mid-range phone
+  (`apps/e2e/tests/performance.spec.ts`) beside the axe checks.
+
+## Language and copy
+
+- **English:** American, following the Chicago Manual of Style (with
+  Merriam-Webster), no exceptions, in UI copy, emails, comments, commits,
+  docs and the database's text: curly quotes and apostrophes, the serial
+  comma, en dashes for ranges, the ellipsis character, sentence case for
+  interface labels. Code identifiers may stay (`programmes`,
+  `cancelled`).
+- **Arabic:** Modern Standard Arabic for the site, your account, the
+  Diwan, emails, documents, certificates and Qirtas, written by Claude
+  with no native-review gate; Iraqi Arabic (with گ، چ، پ) only where the
+  Society chats: Hudhud's copy, social captions and stories, signs at the
+  door. Never both in one message. Latin digits, the Iraqi month names
+  (`ar-IQ`), ، ؛ ؟ and «», tanween on the letter before the alif
+  (شكرًا), one word per term (`claude/glossary_ar.md`).
+  `scripts/check-language.ts` enforces it.
 - **One language per page.** The English pages carry no Arabic and the
-  Arabic pages no English (owner, Oct 24, 2026); the only exceptions are
-  the language switcher, fields meant for the other language, and a
-  document that exists in one language only.
-- **No forms, as such** (owner, Oct 30, 2026). Members never see the word
-  "form" or a form code. Three requests stay, each a plain action where it
-  belongs (`startableKeys` in `@repo/sal-data/forms`, `StartLinks`):
-  raise a concern (F-20; Society → Concerns), pitch an event (F-10;
-  What's on, answered by the President) and propose a General Assembly motion (F-09;
-  Society → Resolutions). Every other kind is `retired` (no new
-  submissions; past ones stay readable under Requests and reports): it is
-  done elsewhere on the platform (roles on Get involved, service hours,
-  certificates, the conflict-of-interest declaration in Settings, photo
-  consent in Profile) or is an officers' paper kept as a Notion template.
-  No standard letters: emails and certificates carry what letters did.
-- **Members' and Diwan pages.** Every members' page and Diwan page is
-  `DiwanPage` with `DiwanSection`s and `RowList`s
-  (`components/diwan/page.tsx`): the Light title, one line, section titles
-  standing alone, hairlines between rows only. Admin pages use
-  `AdminHeading`, which matches. Nothing a member does lives in the Diwan.
-- **Names.** The publication is **Qirtas** («قرطاس»; "AUIB's paper of news,
-  letters and art"): news, voices, letters, the gallery, video (with Next
-  Stop) and games in one paper with six sections (Waraq until the new
-  names, owner, Oct 24, 2026; six sections, owner, Oct 29, 2026). The name is set (owner, Oct 30, 2026), in `packages/config/project.json`;
-  the schema keeps the code names `journal` and `waraq`. The Society has no
-  charity partner on record (Natrok Athar was removed on Oct 8, 2026).
-- **Renames (owner, Oct 24, 2026).** What people see changed. The code
-  took the new names too in the design review's last pull request (D9,
-  Nov 5, 2026): `components/diwan`, `lib/diwan`, `components/qirtas`,
-  `diwanPath`, `diwanUrl`, `paths.diwan`, messages namespace `diwan`;
-  the database keeps its names (the `journal` schema, the `waraq` program
-  slug, the bot's stored `waraq` topic). One line each, "now (the
-  database still says …)":
-  - Qirtas, قرطاس, at `/qirtas` (database: `journal`, program row `waraq`).
-  - The Sunday Paper, «صحيفة الأحد», is monthly, on the first Sunday
-    (owner, Oct 29, 2026), to members who receive email and to the public
-    list; The Month in Qirtas is merged into it and the name retired
-    (code: `content.newsletter_subscribers`, the outbox kind
-    `newsletter.monthly`, `private.queue_sunday_paper`). It carries the
-    month's pieces, What's on and the open places on Get involved.
-  - The Diwan, الديوان, at `/diwan`, for officers (code: `components/diwan`,
-    `lib/diwan`, `diwanPath`, `paths.diwan`, messages namespace `diwan`,
-    which also holds the members' pages' text).
-  - Next Stop, المحطة القادمة, Qirtas's video show at `/qirtas/next-stop`,
-    with its promise at `/qirtas/next-stop/care` (owner, Oct 29, 2026: no
-    longer a program; program row `next-stop`, unpublished).
-  - The Company, الفرقة (code: `productions`, slug `company`; at
-    `/company`, its own page beside Qirtas, with the productions).
-  - Open Stage is part of the Company and the name is retired (owner,
-    Oct 27, 2026; the program is removed, its history moved to the
-    Company).
-  - Voices, «آراء» in Arabic (was «أصوات»; owner, Oct 30, 2026; desk
-    `voices`). The Sunday Paper is «جريدة الأحد» (was «صحيفة الأحد»).
-  - The Artistic Director, «المدير الفني», a Council seat
-    (`governance.council_seats` key `artistic_director`; the Company's lead
-    is still a `programme_lead` for the Company).
-  - Munazara, Mutanabbi Friday, Bad Poetry Night, the Salon, Book
-    Circle, Open Pages, the Listening Room and Second Chapter: retired
-    names (owner, Oct 29 and Nov 6, 2026; events carry no standing names;
-    the slugs `salon`, `second-chapter` and the rest stay in the code).
-  - Gallery Wall merged into Qirtas's Gallery desk, «معرض قرطاس» (code: slug
-    `gallery-wall`, kept and unpublished).
-  - The Qirtas Awards, جوائز قرطاس (the code says `award` too, Nov 4, 2026).
-  - The Register and the Roll of Fellows, السجل ولائحة الزملاء (were the Book
-    of Members and the Book of Fellows).
-  - The Return, ليلة العودة (was Charter Night).
-  - Editor-in-Chief (owner, Nov 5, 2026: "Editor of Qirtas" is retired;
-    role `eic`, on the Council with two-step sign-in). The "Director of
-    the Company" title is removed (Oct 29, 2026). The Director of
-    Programs, Events, Partnerships and Membership are retired (owner, Nov
-    5, 2026): the President, the Vice President and the General Secretary
-    hold those jobs. The Program Lead is now an event lead (role key
-    `programme_lead`, "Event Lead", «قائد الفعالية»). The masthead adds a
-    Voices Editor (`voices_editor`) and a Games Editor (`games_editor`,
-    `journal.edit.games`).
-  - The Council in Arabic is «المجلس التنفيذي».
-  - Honorary Fellow, زميل فخري, and Life Member, عضو مدى الحياة (code: tiers
-    `honorary` and `alumni`).
-  - Membership, العضوية, at `/membership` (owner, Oct 25, 2026; was "Your
-    account" at `/account`; code: route group `(account)`,
-    `components/account`, message keys `nav.account`). "Account" still
-    names the sign-in account (create, link, delete).
-  The governance documents keep the old titles until the owner amends them;
-  never edit the text of ratified documents (their spelling follows the
-  American English rule).
-- **Navigation** (owner, Oct 30, 2026). One main menu everywhere: the
-  site's header (`site-header.tsx`) on the public pages, the members'
-  pages and the Diwan alike: About, What's on, Qirtas, The Company, Get
-  involved and
-  Join (for visitors; signed in, the end of the line opens Membership),
-  with Search, the language and the theme. The Diwan sits under
-  Membership, for officers only, and the Partner dashboard for a partner's
-  team (`useWays` in `member-shell.tsx`, remembered for the public pages
-  in the `sal_ways` hint cookie; UX only). Non-members' end of the line
-  opens Membership, for every kind. Below the desktop width
-  the bar keeps the logo and the menu button, and everything else opens
-  in the panel. Inside the Diwan, its own row of six sections follows the
-  header (`DiwanNav`), and each section's tabs follow that.
-  Members' pages add their row (Today, My calendar, Society, Record,
-  Settings, Sign out). The footer
-  (`footer.tsx`, not in the Diwan) holds what the header doesn't: the
-  programs, the Society's pages (the Council, the Library, Partners,
-  Contact, the press kit, Verify) and the ways to stay in touch, then
-  the fine print. The Diwan's row has its sections, each linked to the
-  first view the officer's roles include (`section-views.ts`); the Desk
-  its quick actions. No link appears twice
-  among the header, a menu row and the footer. Every Diwan empty state
-  offers one next action (`EmptyLine action`).
-- **What is needed, no more** (owner, Oct 31, 2026, replacing the rule
-  of threes). Menus, columns, groups, rows of cards and quick actions
-  hold what is needed: what isn't is merged or removed, and nothing is
-  padded or cut to reach a count.
-- **Content.** Don't invent names, dates, figures or quotes. Missing text is a
-  `TODO(content): …` placeholder listed in `PROGRESS.md`. Arabic written for
-  this platform (not taken from a source) is listed as `needs-native-review`.
-- **Brand book (binding, `packages/brand/BRAND-BOOK.md`).** Six colors do the
-  work (white, ink, crimson, paper, stone, ash); components use only the
-  role tokens (`surface`, `surface-reading`, `text`, `text-secondary`,
-  `accent`, `on-accent`, `line`, `band`, `on-band`, `footer`). Never add a
-  color. Headlines are Light, text Regular, labels Medium tracked capitals;
-  never bold headlines. Hairlines in place of boxes and cards; square
-  corners; no shadows. One solid accent button per view, everything else a
-  text link. Titles stand alone (`SectionHead`): no marker, no kicker, eyebrow
-  or label above any headline or section title; small tracked labels only
-  name fields, columns and metadata. The Bookmark is only ever the logo. The
-  paper's articles are set in Literata (`reading`). At most one crimson
-  band per page; crimson never on ink. Light and dark mode across
-  the site and the Diwan (owner, Oct 24, 2026): dark mode is the brand's ink
-  theme, `data-theme="dark"` on `<html>` from the system setting or the
-  header toggle (cookie `sal_theme`, `apps/web/lib/theme.ts`). Never test
-  the mode in code: the role tokens switch, `on-ink:` styles what sits on
-  ink, and paper (certificates, letters, printouts) keeps
+  Arabic pages no English, except the language switcher, fields meant for
+  the other language, an original beside its translation, and AUIB's
+  English-only dates.
+- **Retired names** (decisions.md §9) never appear in copy;
+  `scripts/check-language.ts` refuses them. "Your account" («حسابك») names
+  the members' pages; "the Diwan" names staff spaces only.
+- **How the Society names itself:** "AUIB Society of Arts and Letters" on
+  first formal use, then "the Society" or "SAL", never "the club". The
+  motto "The paper and the pen." is the short line; the endorsement line
+  is "a Society of Arts and Letters program". Every email and the footer
+  carry "Paperless by default. Books reused through Second Chapter."
+- **Content.** Don't invent names, dates, figures or quotes. Missing text
+  is a `TODO(content): …` placeholder listed in `PROGRESS.md`.
+- **Formats.** Dates as "Tuesday, October 13", times as "6:00 PM": use
+  `formatLongDate` and `formatClock` from
+  `@repo/internationalization/format` (Latin digits, Baghdad time). Store
+  times as `timestamptz` (UTC). Translatable columns come in pairs
+  (`title_en`, `title_ar`).
+
+## The brand (binding, `packages/brand/BRAND-BOOK.md`)
+
+- Six colors do the work (white, ink, crimson, paper, stone, ash);
+  components use only the role tokens (`surface`, `surface-reading`,
+  `text`, `text-secondary`, `accent`, `on-accent`, `line`, `band`,
+  `on-band`, `footer`). Never add a color.
+- Headlines are Light and one color, text Regular, labels Medium tracked
+  capitals; never bold headlines. Titles stand alone (`SectionHead`): no
+  kicker, eyebrow or label above a headline. No exclamation marks in
+  headings. Qirtas's articles are set in Literata (`reading`).
+- Hairlines in place of boxes and cards; square corners; no shadows. One
+  solid accent button per view, everything else a text link. At most one
+  crimson band per page; crimson never on ink.
+- Light and dark mode: dark is the brand's ink theme, `data-theme="dark"`
+  from the system setting or the header toggle (cookie `sal_theme`).
+  Never test the mode in code: the role tokens switch, `on-ink:` styles
+  what sits on ink, and paper (certificates, letters, printouts) keeps
   `data-theme="light"`.
-  Logos are used exactly as supplied in `packages/brand/assets/logos`, never redrawn.
-  Icons (owner, Oct 30, 2026): only the Society's set, `packages/brand/assets/icons`
-  (Lucide redrawn at 1.5 px with square ends, one meaning each), through
-  `Icon` (`@repo/brand/components/sal/icon`, data generated by
-  `bun run --cwd packages/brand icons`); never `lucide-react`. An
-  icon stands alone when its meaning is plain (with a `label`), beside a
-  word when it could be misread; never in a headline, as a bullet or as
-  decoration; no emoji.
-  No exclamation marks in headings; "AUIB Society of Arts and Letters" on
-  first formal use, then "the Society" or "SAL", never "the club".
-- **American English across the board, no exceptions** (owner's decision,
-  Oct 8 2026; no exceptions, owner, Oct 29, 2026) in UI copy, emails,
-  comments, commits, docs and the database's text: program, color, center,
-  canceled, judgment. The endorsement line is "a Society of Arts and
-  Letters program". Code identifiers may stay (the `programmes` schema,
-  `programme_id`, `cancelled` status values).
-- **Motion and shelves** (owner, Nov 4, 2026). Movement follows the brand
-  book's Motion section: native CSS, `duration-quick`, `duration-base`,
-  `duration-slow` and `ease-standard`, nothing when reduced motion is on.
-  A row of things to browse (Editions, and later playbills and episodes)
-  is `Shelf` (`@repo/brand/components/sal/shelf`), always with the
-  same items as a plain list at its own path (`/qirtas/editions/list`).
-  Edition covers are scans or a typographic cover, never drawn 3D. Share
-  is `ShareLink` (`components/share.tsx`).
-- **Copy formats.** Dates as "Tuesday, October 13", times as "6:00 PM", money
-  as "50,000 IQD": use `formatLongDate`, `formatClock` and `formatIqd` from
-  `@repo/internationalization/format` (Latin digits, Baghdad time).
+- Logos exactly as supplied in `packages/brand/assets/logos`; the Bookmark
+  is only ever the logo. Icons only from the Society's set through `Icon`
+  (`@repo/brand/components/sal/icon`), never `lucide-react`: alone with a
+  `label` when the meaning is plain, beside a word when it could be
+  misread; never in a headline, as a bullet or as decoration; no emoji.
 
 ## General rules
 
-- **Package manager:** Bun with the hoisted linker (`bunfig.toml`). Declare every
-  dependency a package imports; keep versions aligned across workspaces. Bun
-  installs and runs scripts; Next.js runs on Node (`next build`).
+- **Package manager:** Bun with the hoisted linker (`bunfig.toml`).
+  Declare every dependency a package imports; keep versions aligned. Bun
+  installs and runs scripts; Next.js runs on Node.
 - **Auth:** email sign-in (AUIB address first; magic link or password). In
-  the members' pages and the Diwan, query with `useAuth().supabase` so RLS
-  applies. In the API
-  routes, identify callers with `authenticateRequest` and re-check
-  permissions with `hasPermission` (`lib/api/permissions.ts`). The admin
-  client (`@repo/database/admin`) bypasses RLS: webhooks, cron and trusted
-  server code only.
-- **Email:** Supabase sends the auth emails (templates in
-  `packages/database/supabase/templates`, pasted into the hosted project);
-  the outbox sends the rest through Resend (`packages/email`), each with a
-  plain-text part. Every journey is a kind in `core.outbox`, queued by a
-  trigger or the daily notices and written in `@repo/email/copy` (both
-  languages; the email goes in the recipient's only); the catalog of every
-  email is in `docs/platform/email.md`, and a new journey adds its row there
-  and its story in `packages/brand/stories/emails.stories.tsx`. Each
-  email has Reply-To hello@auibsal.org, a preview line that isn't the
-  subject, a Resend tag with its kind and a footer saying why it came:
-  service (Notices), optional (a stop link and one-click unsubscribe),
-  officer or direct. Optional emails (the Sunday Paper, reminders of
-  booked events and shifts) follow `notify_email`; sign-in and
-  confirmation emails carry a code beside the link, and confirmations and
-  invitations write the address under the button. Notices many people
-  would get one by one go as a daily digest (replies on Get involved).
-  Runbook: `docs/platform/email.md`.
-- **Files:** use `@repo/storage`. Private buckets (`submissions`, `receipts`,
-  `library`) are reached only through signed URLs issued by the API routes.
-- **Analytics:** on `apps/web` only (owner, Oct 15, 2026): Google Tag Manager
-  with GA4 inside it, served from auibsal.org by the Google tag gateway
-  (Cloudflare), consent from the site's own card (cookie `sal_consent`)
-  through Google consent mode (everything denied until the visitor allows
-  analytics; the ad signals only with the separate Advertising choice).
-  Nothing loads until `NEXT_PUBLIC_GTM_ID` (or `NEXT_PUBLIC_GA_ID`) is set.
-  No third-party consent tool: Cloudflare Zaraz stays off (owner, Oct 16,
-  2026). Record events with
-  `track()` from `@repo/analytics/client`. Runbook:
-  `docs/platform/analytics.md`.
-- **No ads, no money in advertising** (owner, Nov 4, 2026; SAL-GOV-05 as
-  amended): no ads anywhere (no AdSense, no Society or sponsor ad slots),
-  and sponsors give in kind only, never money. A memorandum grants no
-  advertising. The consent card asks about analytics only; Google's ad
-  signals stay denied.
+  your account and the Diwan, query with `useAuth().supabase` so RLS
+  applies. In the API routes, identify callers with
+  `authenticateRequest` and re-check permissions with `hasPermission`
+  (`lib/api/permissions.ts`). The admin client (`@repo/database/admin`)
+  bypasses RLS: webhooks, cron and trusted server code only.
+- **URLs.** English has no prefix (`/events`, `/diwan/events`); Arabic
+  does (`/ar/events`). API routes carry no language. Build links with
+  `Link` from `@repo/internationalization/navigation` (inside the Diwan,
+  from `@/lib/diwan/navigation`), or `localizedPath`, `diwanPath`,
+  `apiPath`, `siteUrl`, `diwanUrl`, `apiUrl`; never write `/en`.
 - **Translations:** every UI string comes from
   `packages/internationalization/messages/{ar,en}.json`, checked by
   `bun run check:i18n`. Pass numbers and dates into messages already
-  formatted; ICU `#` would use Arabic-Indic digits. Link with `Link`/`useRouter`
-  from `@repo/internationalization/navigation`.
-- **Localization:** UI must work in Arabic (RTL) and English (LTR). Use logical
-  Tailwind utilities (`ms-*`, `pe-*`, `start-*`, `text-start`), never physical
-  ones; `bun run check:rtl` enforces this. Icons that point along the reading
-  direction get `rtl:rotate-180`. Arabic text sits one step larger with
-  1.8–2.0 leading (handled by `:lang(ar)` in the design system).
+  formatted (ICU `#` would use Arabic-Indic digits).
+- **Localization:** UI works in Arabic (RTL) and English (LTR). Use
+  logical Tailwind utilities (`ms-*`, `pe-*`, `start-*`, `text-start`);
+  `bun run check:rtl` enforces it. Icons that point along the reading
+  direction get `rtl:rotate-180`.
 - **Optional modules:** code belonging to an optional module is wrapped in
-  `// <module:id>` … `// </module:id>` markers. Keep markers balanced;
-  `bun run check:placeholders` verifies them.
+  `// <module:id>` … `// </module:id>` markers; `bun run
+  check:placeholders` keeps them balanced.
 - **shadcn/ui:** files in `packages/brand/components/ui` are generated;
-  update them with the shadcn CLI rather than hand-editing where possible.
-  SAL components live in `packages/brand/components/sal`.
+  update them with the shadcn CLI where possible. SAL components live in
+  `packages/brand/components/sal`.
+- **Activity log.** It reads as sentences
+  (`components/diwan/admin/system/activity.tsx`); a new logged table needs
+  its line there, and a new record table with history its entry in
+  `private.history_tables()`.
 
 # This is NOT the Turborepo you know
 

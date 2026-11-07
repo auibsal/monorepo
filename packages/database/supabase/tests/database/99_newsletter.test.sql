@@ -75,7 +75,7 @@ update core.settings set value = '0' where key = 'membership.founding_voters';
 
 -- The public newsletter: double opt-in rows only apps/api writes.
 
-select plan(19);
+select plan(26);
 
 select pg_temp.make_user('00000000-0000-0000-0000-00000000b001', 'editor@auib.edu.iq', 'Content Editor');
 select pg_temp.make_user('00000000-0000-0000-0000-00000000b002', 'reader@auib.edu.iq', 'Reader');
@@ -137,13 +137,35 @@ select is(private.queue_sunday_paper(date '2026-11-08'), 0,
 select is(private.queue_sunday_paper(date '2026-11-02'), 0,
   'nor on a Monday');
 select is(
-  (select count(*)::integer from core.outbox where kind = 'newsletter.monthly'), 0,
+  (select count(*)::integer from core.outbox where kind = 'sunday_paper.broadcast'), 0,
   'so nothing is queued');
 select cmp_ok(private.queue_sunday_paper(date '2026-11-01'), '>=', 1,
   'On the first Sunday the paper goes out');
 select is(
-  (select count(*)::integer from core.outbox where kind = 'newsletter.monthly'), 1,
-  'to the one confirmed subscriber, not the pending one');
+  (select count(*)::integer from core.outbox where kind = 'sunday_paper.broadcast'), 1,
+  'as one Broadcast job, not an email a person');
+select is(
+  (select count(*)::integer from private.sunday_paper_recipients() r where r.email = 'friend@example.com'), 1,
+  'to the confirmed subscriber');
+select is(
+  (select count(*)::integer from private.sunday_paper_recipients() r where r.email = 'pending@example.com'), 0,
+  'not the pending one');
+
+-- The archive lists the issues sent, and only those (owner, Nov 7, 2026).
+select is(
+  (select count(*)::integer from content.sunday_paper_issues where month = '2026-11'), 1,
+  'The issue is recorded as sent');
+select is(
+  (select count(*)::integer from content.sunday_paper_issues where month <> '2026-11'), 0,
+  'and no month that was not sent');
+select is(private.queue_sunday_paper(date '2026-11-01'), 0,
+  'An issue goes out once a month');
+select pg_temp.login_anon();
+select is((select count(*)::integer from content.sunday_paper_issues), 1,
+  'Visitors read the issues sent');
+select throws_ok($$select recipients from content.sunday_paper_issues$$, '42501', null,
+  'but not how many it went to');
+select pg_temp.logout();
 
 -- The archive lists the issues sent, and only those (owner, Nov 7, 2026).
 select is(

@@ -144,3 +144,22 @@ test.describe("public site", () => {
     await expectAccessible(page);
   });
 });
+
+test("every page in the sitemap is found, in both languages", async ({
+  request,
+}) => {
+  const xml = await (await request.get(`${urls.web}/sitemap.xml`)).text();
+  const locs = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
+  expect(locs.length).toBeGreaterThan(0);
+  const missing: string[] = [];
+  for (const loc of locs) {
+    const { pathname } = new URL(loc ?? "");
+    // One after another: the local build serves them on demand.
+    // biome-ignore lint/performance/noAwaitInLoops: sequential on purpose
+    const response = await request.get(`${urls.web}${pathname}`);
+    if (response.status() !== 200) {
+      missing.push(`${response.status()} ${pathname}`);
+    }
+  }
+  expect(missing).toEqual([]);
+});
