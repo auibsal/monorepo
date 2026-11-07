@@ -81,7 +81,7 @@
     "email": "Email",
     "emailHint": "Use your AUIB address (@auib.edu.iq) if you have one.",
     "password": "Password",
-    "passwordHint": "At least 10 characters, with letters and numbers.",
+    "passwordHint": "At least 12 characters. A few words in a row make a good one.",
     "errors": {
       "email_not_confirmed": "Confirm your email address first: check your inbox.",
       "invalid_credentials": "That email and password don’t match.",
@@ -90,13 +90,16 @@
       "signups_disabled": "New sign-ups are currently closed.",
       "unknown": "Something went wrong. Please try again.",
       "user_exists": "An account already uses this address. Sign in instead.",
-      "weak_password": "Use at least 10 characters, with letters and numbers.",
+      "weak_password": "Use at least 12 characters.",
       "captcha_failed": "We couldn’t confirm you’re a person. Reload the page and try again.",
       "names_required": "Enter your first and last name in English and in Arabic.",
       "email_reserved": "This address is already a member’s personal email, so it can’t start a new account. Sign in with your own address, or use another one.",
       "invalid_code": "That code doesn’t match or has expired. Check the newest email, or ask for a new one.",
       "auib_only": "Membership is for AUIB addresses. Use your @auib.edu.iq email.",
-      "no_account": "No account uses this address. Check it, or create your account if you study at AUIB."
+      "no_account": "No account uses this address. Check it, or create your account if you study at AUIB.",
+      "breached_password": "This password has appeared in a data breach elsewhere, so it isn’t safe. Choose another.",
+      "reauthentication_needed": "For your security, confirm it’s you first: enter the code we just emailed you.",
+      "terms_required": "To join, confirm that you are 18 or older and agree to the Terms of Use and the Privacy Notice."
     },
     "signIn": {
       "title": "Sign in",
@@ -111,7 +114,8 @@
       "noAccount": "New to the Society?",
       "createAccount": "Create an account",
       "deleted": "Your account has been deleted.",
-      "passkey": "Sign in with a passkey"
+      "passkey": "Sign in with a passkey",
+      "idle": "You were signed out of the Diwan after thirty minutes without use. Sign in to pick up where you left off."
     },
     "signUp": {
       "title": "Join the Society",
@@ -133,7 +137,8 @@
       "resend": "Send the email again",
       "resendIn": "Send the email again in {seconds} s",
       "resent": "Sent. Check your inbox and spam folder.",
-      "student": "I’m an enrolled AUIB student. (Faculty and staff: ask for Associate membership on Join.)"
+      "student": "I’m an enrolled AUIB student. (Faculty and staff: ask for Associate membership on Join.)",
+      "agree": "I am 18 or older, and I agree to the <terms>Terms of Use</terms> and the <privacy>Privacy Notice</privacy>."
     },
     "forgot": {
       "title": "Reset your password",
@@ -186,7 +191,9 @@
       "submitting": "Checking…"
     },
     "auibEmail": "Your AUIB email",
-    "auibEmailHint": "What comes before @auib.edu.iq: usually your ID number, or your name and ID number."
+    "auibEmailHint": "What comes before @auib.edu.iq: usually your ID number, or your name and ID number.",
+    "showPassword": "Show",
+    "hidePassword": "Hide"
   },
   "diwan": {
     "nav": {
@@ -762,6 +769,13 @@
       "title": "Profile",
       "bio": "Bio",
       "bioCount": "{count} of 50 words",
+      "download": {
+        "title": "Download your data",
+        "description": "Everything the site keeps about you, as one file (JSON): your profile, membership, card number, bookings, check-ins, roles, letters, certificates, Qirtas submissions and drafts, and your settings.",
+        "submit": "Download my data",
+        "preparing": "Preparing your file…",
+        "failed": "We couldn’t prepare your file. Please try again."
+      },
       "delete": {
         "title": "Delete account",
         "description": "Deletes your account, your bookings and your profile. Published Qirtas pieces stay under the agreement you signed.",
@@ -769,7 +783,9 @@
         "prompt": "Type “{phrase}” to confirm.",
         "submit": "Delete my account",
         "deleting": "Deleting…",
-        "failed": "We couldn’t delete your account. Please try again."
+        "failed": "We couldn’t delete your account. Please try again.",
+        "reauthenticate": "To delete your account, sign in again first; it keeps someone else at your screen from doing it.",
+        "signInAgain": "Sign in again"
       },
       "push": {
         "title": "Phone notifications",
@@ -3758,7 +3774,8 @@
         "title": "Password",
         "new": "New password",
         "submit": "Change the password",
-        "done": "Your password is changed. Use it next time you sign in."
+        "done": "Your password is changed. Use it next time you sign in.",
+        "code": "The code from the email"
       }
     },
     "recoveryCodes": {

@@ -1,4 +1,4 @@
-import { authenticateRequest } from "@repo/auth/verify";
+import { authenticateRequest, signedInWithin } from "@repo/auth/verify";
 import { createAdminClient } from "@repo/database/admin";
 import { parseError } from "@repo/observability/error";
 import { log } from "@repo/observability/log";
@@ -8,7 +8,14 @@ import { deleteAccount } from "@/lib/api/deletion";
 
 export const OPTIONS = preflight;
 
-/** Permanently deletes the caller's account (Profile and privacy). */
+/** How recent the sign-in must be to delete the account (decisions §11). */
+const REAUTH_MINUTES = 15;
+
+/**
+ * Permanently deletes the caller's account (Settings). Only on a fresh
+ * sign-in: a session older than fifteen minutes is asked to sign in again
+ * first ("reauthenticate").
+ */
 export const POST = async (request: Request) => {
   const headers = corsHeaders(request);
   const json = (data: object, status = 200) =>
@@ -17,6 +24,9 @@ export const POST = async (request: Request) => {
   const session = await authenticateRequest(request);
   if (!session) {
     return json({ error: "unauthorized" }, 401);
+  }
+  if (!signedInWithin(session.claims, REAUTH_MINUTES)) {
+    return json({ error: "reauthenticate" }, 403);
   }
 
   try {

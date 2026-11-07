@@ -28,7 +28,7 @@ export const auibLocalPart = (typed: string) =>
     .split("@")[0]
     ?.replace(DOMAIN_TAIL, "") ?? "";
 
-export const MIN_PASSWORD_LENGTH = 10;
+export const MIN_PASSWORD_LENGTH = 12;
 
 export type EmailAuthErrorCode =
   | "captcha_failed"
@@ -44,7 +44,10 @@ export type EmailAuthErrorCode =
   | "no_account"
   | "email_reserved"
   | "invalid_code"
-  | "weak_password";
+  | "weak_password"
+  | "breached_password"
+  | "reauthentication_needed"
+  | "terms_required";
 
 export type AuthResult<T = undefined> =
   | { ok: true; value: T }
@@ -72,6 +75,9 @@ export const toEmailAuthError = (
       return "email_not_confirmed";
     case "weak_password":
       return "weak_password";
+    case "reauthentication_needed":
+    case "reauthentication_not_valid":
+      return "reauthentication_needed";
     case "user_already_exists":
     case "email_exists":
       return "user_exists";
@@ -104,6 +110,11 @@ const captcha = (captchaToken?: string) =>
 const SHOWN: EmailAuthErrorCode[] = ["captcha_failed", "rate_limited"];
 
 export interface SignUpDetails {
+  /**
+   * That the person is 18 or older and agrees to the Terms of Use and the
+   * Privacy Notice (decisions §11); recorded with the account.
+   */
+  agreed: boolean;
   /** From the Turnstile widget, when the human check is on. */
   captchaToken?: string;
   email: string;
@@ -152,6 +163,9 @@ export const signUpWithEmail = async (
   if (details.password.length < MIN_PASSWORD_LENGTH) {
     return { code: "weak_password", ok: false };
   }
+  if (!details.agreed) {
+    return { code: "terms_required", ok: false };
+  }
   const auib = isAuibEmail(email);
   // Membership is for AUIB addresses (owner, Oct 31, 2026); an outside one
   // comes only with a partner's invitation or an application to partner.
@@ -186,6 +200,7 @@ export const signUpWithEmail = async (
         ...(details.outside && "guest" in details.outside
           ? { guest: "true" }
           : {}),
+        agreed_at: new Date().toISOString(),
         locale: details.locale,
       },
       emailRedirectTo: details.redirectTo,

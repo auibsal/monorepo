@@ -16,10 +16,22 @@ const fakeAdmin = (deleteError: Error | null = null) => {
       maybeSingle: () => Promise.resolve({ data: { locale: "ar" } }),
     }),
   };
-  const schema = vi.fn(() => ({
-    from: (table: string) =>
-      table === "outbox" ? { insert } : { select: () => profile },
-  }));
+  const submissions = {
+    eq: () => Promise.resolve({ data: [{ id: "s1" }] }),
+  };
+  const files = {
+    in: () =>
+      Promise.resolve({
+        data: [{ blind_path: "blind/s1/x.pdf", storage_path: "s1/x.pdf" }],
+      }),
+  };
+  const tables: Record<string, unknown> = {
+    outbox: { insert },
+    profiles: { select: () => profile },
+    submission_files: { select: () => files },
+    submissions: { select: () => submissions },
+  };
+  const schema = vi.fn(() => ({ from: (table: string) => tables[table] }));
   const bucket = {
     list: vi.fn(() =>
       Promise.resolve({ data: [{ id: "1", name: "me.png" }], error: null })
@@ -34,10 +46,10 @@ const fakeAdmin = (deleteError: Error | null = null) => {
   return { admin, bucket, deleteUser, insert };
 };
 
-test("removes the avatar folder, then the user", async () => {
+test("removes the person's own files, then the user", async () => {
   const { admin, bucket, deleteUser } = fakeAdmin();
   await expect(deleteAccount(admin, USER_ID)).resolves.toEqual({
-    removedFiles: 1,
+    removedFiles: 3,
     status: "deleted",
   });
   expect(admin.storage.from).toHaveBeenCalledWith("media");
@@ -46,6 +58,9 @@ test("removes the avatar folder, then the user", async () => {
     expect.anything()
   );
   expect(bucket.remove).toHaveBeenCalledWith([`avatars/${USER_ID}/me.png`]);
+  // Their Qirtas submissions' files and blind copies (decisions §11).
+  expect(admin.storage.from).toHaveBeenCalledWith("submissions");
+  expect(bucket.remove).toHaveBeenCalledWith(["s1/x.pdf", "blind/s1/x.pdf"]);
   expect(deleteUser).toHaveBeenCalledWith(USER_ID);
 });
 

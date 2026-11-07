@@ -23,6 +23,7 @@ test("sign up with an AUIB address, confirm by email, finish setup", async ({
   await expect(page.getByLabel("Family name")).toHaveCount(0);
   // Students say they are (decisions §2).
   await page.getByRole("checkbox", { name: /enrolled AUIB student/ }).check();
+  await page.getByRole("checkbox", { name: /18 or older/ }).check();
   // Scrolled down to the button, as on a phone.
   await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
   await page.getByRole("button", { name: "Create account" }).click();
@@ -131,6 +132,7 @@ test("a whole address pasted and submitted at once signs up the right address", 
     .fill(`paste.${Date.now()}@auib.edu.iq`);
   await page.getByLabel("Password", { exact: true }).fill(PASSWORD);
   await page.getByRole("checkbox", { name: /enrolled AUIB student/ }).check();
+  await page.getByRole("checkbox", { name: /18 or older/ }).check();
   await page.getByLabel("Password", { exact: true }).press("Enter");
   const status = page.getByRole("status").first();
   await expect(status).toContainText("@auib.edu.iq");

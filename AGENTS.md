@@ -150,6 +150,17 @@ any schema change. Integration tests run against a local stack with
   after merge, `.github/workflows/migrate.yml` runs `supabase db push`
   against production once CI passes, and Vercel deploys `main` itself.
   Never paste SQL into the production database.
+- **Accounts (decisions §11, NIST SP 800-63B).** Passwords are 12
+  characters or more with no composition rules, checked against known
+  breaches by k-anonymity (`lib/password.ts`, `/api/password-check`), with
+  a Show button (`PasswordInput`). Sign-up records the 18+ and Terms and
+  Privacy Notice agreement (`core.profiles.agreed_at`). A password change
+  on an old sign-in asks for an emailed code (secure password change);
+  deleting the account needs a sign-in from the last 15 minutes
+  (`signedInWithin`) and removes the person's own files. "Download your
+  data" is JSON from `/api/account/export`. The Diwan signs a device out
+  after 30 minutes unused (`IdleSignOut`). An AUIB sign-in address is not
+  changed from the account (`private.keep_auib_address`).
 - **Two-step sign-in for sensitive roles.** Roles with `requires_mfa` (the
   Council, the Acting President, the Elections Committee) count only on
   an `aal2` session; `access.has_permission` enforces it. Don't add

@@ -16,7 +16,7 @@ import { useRouter } from "@repo/internationalization/navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { useId, useState } from "react";
-import { callApi } from "@/lib/diwan/api";
+import { ApiError, callApi } from "@/lib/diwan/api";
 import { DiwanSection } from "../page";
 
 const normalize = (value: string) =>
@@ -45,6 +45,9 @@ export const DeleteAccount = () => {
     },
   });
 
+  const stale =
+    remove.error instanceof ApiError && remove.error.code === "reauthenticate";
+
   return (
     <DiwanSection
       description={t("description")}
@@ -71,7 +74,28 @@ export const DeleteAccount = () => {
           />
           {remove.isError ? (
             <p className="text-text" role="alert">
-              {t("failed")}
+              {stale ? (
+                <>
+                  {t("reauthenticate")}{" "}
+                  <button
+                    className="link"
+                    onClick={async () => {
+                      // A fresh sign-in, then back here (decisions §11).
+                      await supabase.auth.signOut({ scope: "local" });
+                      queryClient.clear();
+                      router.replace({
+                        pathname: "/sign-in",
+                        query: { next: "/account/settings" },
+                      });
+                    }}
+                    type="button"
+                  >
+                    {t("signInAgain")}
+                  </button>
+                </>
+              ) : (
+                t("failed")
+              )}
             </p>
           ) : null}
           <Button

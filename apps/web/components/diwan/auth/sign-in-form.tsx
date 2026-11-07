@@ -11,6 +11,7 @@ import { Link } from "@repo/internationalization/navigation";
 import { useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useEffect, useId, useRef, useState } from "react";
+import { PasswordInput } from "@/components/fields/password-input";
 import { useAuthError, usePasskeyError } from "@/lib/diwan/auth-messages";
 import { callbackUrl, safeNextPath } from "@/lib/diwan/navigation";
 import { useScreenTop } from "@/lib/diwan/use-screen-top";
@@ -116,6 +117,7 @@ export const SignInForm = ({
           {t("signIn.description")}
         </FormHeader>
       )}
+      {params.get("idle") ? <p role="status">{t("signIn.idle")}</p> : null}
       {params.get("deleted") ? (
         <p role="status">{t("signIn.deleted")}</p>
       ) : null}
@@ -146,13 +148,11 @@ export const SignInForm = ({
           {mode === "password" ? (
             <div className="grid gap-2">
               <Label htmlFor={`${id}-password`}>{t("password")}</Label>
-              <Input
+              <PasswordInput
                 autoComplete="current-password"
-                dir="ltr"
                 id={`${id}-password`}
                 onChange={(event) => setPassword(event.target.value)}
                 required
-                type="password"
                 value={password}
               />
             </div>

@@ -4,13 +4,14 @@ import { MIN_PASSWORD_LENGTH, toEmailAuthError } from "@repo/auth/email";
 import { useAuth } from "@repo/auth/provider";
 import { FormHeader } from "@repo/brand/components/sal/form-header";
 import { Button } from "@repo/brand/components/ui/button";
-import { Input } from "@repo/brand/components/ui/input";
 import { Label } from "@repo/brand/components/ui/label";
 import { Link } from "@repo/internationalization/navigation";
 import { useTranslations } from "next-intl";
 import { type FormEvent, useId, useState } from "react";
+import { PasswordInput } from "@/components/fields/password-input";
 import { useAuthError } from "@/lib/diwan/auth-messages";
 import { useScreenTop } from "@/lib/diwan/use-screen-top";
+import { isBreachedPassword } from "@/lib/password";
 import { RequireAuth } from "../gates";
 
 /** New password after a recovery link (the callback signed the member in). */
@@ -28,6 +29,10 @@ export const ResetForm = () => {
     event.preventDefault();
     if (password.length < MIN_PASSWORD_LENGTH) {
       setError(errorText("weak_password"));
+      return;
+    }
+    if (await isBreachedPassword(password)) {
+      setError(errorText("breached_password"));
       return;
     }
     const { error: updateError } = await supabase.auth.updateUser({ password });
@@ -52,13 +57,11 @@ export const ResetForm = () => {
         <form className="grid gap-4" onSubmit={submit}>
           <div className="grid gap-2">
             <Label htmlFor={`${id}-password`}>{t("password")}</Label>
-            <Input
+            <PasswordInput
               aria-describedby={`${id}-hint`}
               autoComplete="new-password"
-              dir="ltr"
               id={`${id}-password`}
               onChange={(event) => setPassword(event.target.value)}
-              type="password"
               value={password}
             />
             <p className="type-caption" id={`${id}-hint`}>

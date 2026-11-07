@@ -86,3 +86,26 @@ export const authenticateCookies = async (request: Request) => {
   }
   return { claims: data.claims, supabase, userId: data.claims.sub };
 };
+
+/**
+ * Whether the session's last sign-in step (any method: password, link,
+ * code, passkey, two-step) was within the last `minutes`, from the token's
+ * `amr` claim. Reauthentication before a destructive step (decisions §11:
+ * deleting the account) asks for this.
+ */
+export const signedInWithin = (
+  claims: { amr?: unknown },
+  minutes: number,
+  now = Date.now()
+) => {
+  const steps = Array.isArray(claims.amr) ? claims.amr : [];
+  const latest = Math.max(
+    0,
+    ...steps.map((step) =>
+      step && typeof step === "object" && "timestamp" in step
+        ? Number((step as { timestamp: unknown }).timestamp) || 0
+        : 0
+    )
+  );
+  return latest * 1000 >= now - minutes * 60_000;
+};
