@@ -6,6 +6,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { NewsletterSignup } from "@/components/newsletter/signup";
 import { pastIssues } from "@/components/sunday-paper-issue";
 import { localizedMetadata } from "@/lib/metadata";
+import { nextIssue } from "@/lib/sunday-paper";
 
 interface NewsletterProps {
   readonly params: Promise<{ locale: Locale }>;
@@ -30,7 +31,7 @@ const NewsletterPage = async ({ params }: NewsletterProps) => {
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "web.newsletter" });
-  const issues = await pastIssues(locale);
+  const issues = await pastIssues();
   return (
     <div className="mx-auto grid w-full max-w-3xl gap-8 px-4 py-16">
       <header className="grid gap-3">
@@ -59,7 +60,13 @@ const NewsletterPage = async ({ params }: NewsletterProps) => {
             ))}
           </ul>
         </section>
-      ) : null}
+      ) : (
+        <p className="type-body">
+          {t("archive.first", {
+            date: formatLongDate(nextIssue().sunday, locale),
+          })}
+        </p>
+      )}
     </div>
   );
 };

@@ -5166,7 +5166,8 @@
         "whatsOn": "What’s on",
         "noPieces": "Qirtas published nothing new that month.",
         "noEvents": "Nothing was on the calendar.",
-        "subscribe": "Get the next one by email"
+        "subscribe": "Get the next one by email",
+        "first": "The first issue comes out on {date}."
       },
       "notices": "Email notices are in Settings."
     },

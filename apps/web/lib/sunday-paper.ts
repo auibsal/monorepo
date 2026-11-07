@@ -43,16 +43,13 @@ export const issueOf = (year: number, monthIndex: number): Issue => {
   };
 };
 
-/** Every issue from the month of `from` to today's, newest first, sent already. */
-export const issuesSince = (from: Date, now = new Date()) => {
-  const issues: Issue[] = [];
-  const start = from.getUTCFullYear() * 12 + from.getUTCMonth();
-  const end = now.getUTCFullYear() * 12 + now.getUTCMonth();
-  for (let at = start; at <= end; at += 1) {
-    const issue = issueOf(Math.floor(at / 12), at % 12);
-    if (issue.sunday <= now) {
-      issues.push(issue);
-    }
+/** The next issue to go out: this month's, or next month's once it has gone. */
+export const nextIssue = (now = new Date()) => {
+  const year = now.getUTCFullYear();
+  const month = now.getUTCMonth();
+  const current = issueOf(year, month);
+  if (current.sunday > now) {
+    return current;
   }
-  return issues.reverse();
+  return month === 11 ? issueOf(year + 1, 0) : issueOf(year, month + 1);
 };

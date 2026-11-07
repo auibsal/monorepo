@@ -1,10 +1,10 @@
 import type { Locale } from "@repo/internationalization";
 import { formatClock, formatLongDate } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
-import { events, journal, localized } from "@repo/sal-data";
+import { content, events, journal, localized } from "@repo/sal-data";
 import { getTranslations } from "next-intl/server";
 import { NewsletterSignup } from "@/components/newsletter/signup";
-import { type Issue, issuesSince } from "@/lib/sunday-paper";
+import { type Issue, issueOf } from "@/lib/sunday-paper";
 import { readPublished } from "@/lib/supabase";
 
 /** Whether a moment comes before the end of a window. */
@@ -31,33 +31,17 @@ export const issueContents = async (issue: Issue, locale: Locale) => {
   };
 };
 
-/** The issues already sent that carried something, newest first. */
-export const pastIssues = async (locale: Locale) => {
-  const dates = journal.inLanguage(
-    await readPublished(["journal"], (c) => journal.publishedDates(c), []),
-    locale
-  );
-  const first = dates.at(-1)?.published_at;
-  if (!first) {
-    return [];
-  }
-  const issues = issuesSince(new Date(first));
-  const earliest = issues.at(-1)?.sunday ?? new Date();
-  const upcoming = await readPublished(
-    ["events"],
-    async (c) =>
-      (await events.publicEvents(c, { from: earliest, limit: 500 })) ?? [],
+/** The issues already sent, newest first: only the months recorded as sent. */
+export const pastIssues = async () => {
+  const sent = await readPublished(
+    ["news"],
+    (c) => content.sundayPaperIssues(c),
     []
   );
-  const inWindow = (at: string | null, from: Date, to: Date) =>
-    Boolean(at) && new Date(at ?? 0) >= from && new Date(at ?? 0) < to;
-  return issues.filter(
-    (issue) =>
-      dates.some((d) =>
-        inWindow(d.published_at, issue.piecesFrom, issue.sunday)
-      ) ||
-      upcoming.some((e) => inWindow(e.starts_at, issue.sunday, issue.until))
-  );
+  return sent.map(({ month }) => {
+    const [year, number] = month.split("-").map(Number);
+    return issueOf(year ?? 0, (number ?? 1) - 1);
+  });
 };
 
 /**

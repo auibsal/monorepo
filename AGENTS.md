@@ -550,8 +550,11 @@ any schema change. Integration tests run against a local stack with
   `/qirtas/archive/<yyyy-mm>/<section>`.
 - **The Sunday Paper's archive, Next Stop, search** (design review PR 4c,
   Nov 4, 2026). Past issues are listed on `/sunday-paper` and each is
-  `/sunday-paper/<yyyy-mm>`, in a newspaper's layout. Issues are not
-  stored: a page is rebuilt from the records the way the email is made
+  `/sunday-paper/<yyyy-mm>`, in a newspaper's layout: only the issues
+  actually sent (`content.sunday_paper_issues`, one row a month, written by
+  `private.queue_sunday_paper`; owner, Nov 7, 2026), the first on Sunday,
+  December 6, 2026. Their contents are not stored: a page is rebuilt from
+  the records the way the email is made
   (the pieces of the month before its first Sunday, the public events of
   the month after; `lib/sunday-paper.ts`), and the open places of the time
   are not kept, so they are not shown. Next Stop's page has its episodes

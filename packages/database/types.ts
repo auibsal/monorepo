@@ -330,6 +330,27 @@ export type Database = {
         };
         Relationships: [];
       };
+      sunday_paper_issues: {
+        Row: {
+          created_at: string;
+          month: string;
+          recipients: number;
+          sent_on: string;
+        };
+        Insert: {
+          created_at?: string;
+          month: string;
+          recipients: number;
+          sent_on: string;
+        };
+        Update: {
+          created_at?: string;
+          month?: string;
+          recipients?: number;
+          sent_on?: string;
+        };
+        Relationships: [];
+      };
     };
     Views: {
       [_ in never]: never;
