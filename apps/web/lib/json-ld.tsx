@@ -34,6 +34,7 @@ export const organization = (): Thing => ({
     "@type": "CollegeOrUniversity",
     name: "American University of Iraq – Baghdad",
   },
+  sameAs: project.channels.map((channel) => channel.url),
   url: project.url,
 });
 

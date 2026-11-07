@@ -1,12 +1,10 @@
 import { BrandLogo } from "@repo/brand/components/brand-logo";
 import { Icon } from "@repo/brand/components/sal/icon";
+import { project } from "@repo/config";
 import { localizedPath } from "@repo/internationalization";
 import { Link } from "@repo/internationalization/navigation";
 import NextLink from "next/link";
 import { getLocale, getTranslations } from "next-intl/server";
-
-const INSTAGRAM = "https://www.instagram.com/auibsal";
-const INSTAGRAM_HANDLE = "@auibsal";
 
 const linkClass = "hover:text-accent hover:underline hover:underline-offset-4";
 
@@ -100,21 +98,23 @@ export const Footer = async () => {
                 <bdi dir="ltr">{email}</bdi>
               </a>
             </li>
-            <li>
-              <a
-                className={linkClass}
-                href={INSTAGRAM}
-                rel="noopener"
-                target="_blank"
-              >
-                {tx("instagram")} <bdi dir="ltr">{INSTAGRAM_HANDLE}</bdi>
-                <Icon
-                  className="ms-1.5 align-[-0.15em]"
-                  label={tc("externalLink")}
-                  name="arrow-up-right"
-                />
-              </a>
-            </li>
+            {project.channels.map((channel) => (
+              <li key={channel.kind}>
+                <a
+                  className={linkClass}
+                  href={channel.url}
+                  rel="noopener"
+                  target="_blank"
+                >
+                  {tx(channel.kind)} <bdi dir="ltr">{channel.handle}</bdi>
+                  <Icon
+                    className="ms-1.5 align-[-0.15em]"
+                    label={tc("externalLink")}
+                    name="arrow-up-right"
+                  />
+                </a>
+              </li>
+            ))}
           </ul>
         </div>
         <div className="col-span-2 flex flex-col gap-3 border-line border-t pt-5 text-[0.8125rem] text-text-secondary lg:col-span-4 lg:flex-row lg:flex-wrap lg:items-baseline lg:justify-between">

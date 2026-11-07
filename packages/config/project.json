@@ -21,7 +21,7 @@
   "telegram": {
     "stickerSet": "auibsal"
   },
-  "repoUrl": "https://github.com/auibsal/mono",
+  "repoUrl": "https://github.com/auibsal/monorepo",
   "journal": {
     "name_en": "Qirtas",
     "name_ar": "قرطاس"
@@ -36,5 +36,17 @@
     "currency": "IQD",
     "numberingSystem": "latn",
     "weekStartsOn": 0
-  }
+  },
+  "channels": [
+    {
+      "kind": "instagram",
+      "url": "https://www.instagram.com/auibsal",
+      "handle": "@auibsal"
+    },
+    {
+      "kind": "telegram",
+      "url": "https://t.me/auibsal_bot",
+      "handle": "@auibsal_bot"
+    }
+  ]
 }
