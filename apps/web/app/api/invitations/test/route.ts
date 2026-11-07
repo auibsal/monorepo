@@ -11,7 +11,6 @@ import { corsHeaders, preflight } from "@/lib/api/cors";
 import { inviteStopToken } from "@/lib/api/email-stop";
 import {
   INVITATION_FOOTER,
-  invitationFrom,
   invitationSigner,
 } from "@/lib/api/invitation-letter";
 import { hasPermission } from "@/lib/api/permissions";
@@ -91,7 +90,6 @@ export const POST = async (request: Request) => {
       },
     ];
     await sendEmail({
-      from: invitationFrom(),
       react: Notice({ blocks: built.blocks, footer, preview: built.preview }),
       replyTo: project.supportEmail,
       subject: `Test: ${built.subject}`,

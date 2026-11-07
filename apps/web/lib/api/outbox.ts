@@ -68,7 +68,6 @@ import {
 import { inviteStopToken, stopToken } from "@/lib/api/email-stop";
 import {
   INVITATION_FOOTER,
-  invitationFrom,
   invitationSigner,
 } from "@/lib/api/invitation-letter";
 import { api, origin, site } from "@/lib/api/urls";
@@ -911,7 +910,6 @@ const handlers: Record<string, Handler> = {
               text: INVITATION_FOOTER,
             },
           ],
-          from: invitationFrom(),
           key: `invitation:${sentAt.slice(0, 19)}:${kind}`,
           kind: "invitation",
           lang,
