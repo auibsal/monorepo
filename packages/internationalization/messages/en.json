@@ -294,16 +294,13 @@
       },
       "card": {
         "title": "Membership card",
-        "tier": "Tier",
+        "tier": "Class",
         "voting": "Voting Member",
         "notVoting": "Not yet a Voting Member",
         "qr": "Show it at the door to check in; any phone camera can check it.",
         "number": "No. {number}",
-        "numberLabel": "Number",
+        "numberLabel": "Member no.",
         "since": "Member since {date}",
-        "vote": "Vote",
-        "votes": "Voting Member",
-        "noVote": "Not yet",
         "checkLink": "Check this card on auibsal.org",
         "show": "Show the code full screen",
         "showHint": "Hold your phone up to the scanner at the door.",
@@ -322,10 +319,7 @@
         "perkCode": "Code:",
         "perkUntil": "Until {date}",
         "security": "Card security",
-        "securityBody": "Your card’s code changes every 30 seconds, so a screenshot stops working within a minute. If someone else may have used your account on their phone, reset the code: every earlier code, link and Wallet pass stops working, and your number stays the same.",
-        "showRecord": "Show my certificates when my card is checked",
-        "showRecordHint": "Off unless you turn it on. Anyone holding your card’s link would see them; each certificate can always be checked by its own code.",
-        "staff": "Staff"
+        "securityBody": "Your card’s code changes every 30 seconds, so a screenshot stops working within a minute. If someone else may have used your account on their phone, reset the code: every earlier code, link and Wallet pass stops working, and your number stays the same."
       },
       "events": {
         "title": "My next events",
@@ -1571,7 +1565,6 @@
           "reopen": "Reopen",
           "kind": "What it offers",
           "desk": "Qirtas section (optional)",
-          "deskHint": "For an apprenticeship in one of Qirtas’s sections.",
           "noDesk": "None: the event team itself",
           "partner": "Partner school",
           "choosePartner": "Choose the school",
@@ -1580,8 +1573,6 @@
           "termTo": "Term ends",
           "give": "Give the place",
           "withdraw": "Withdraw",
-          "complete": "Complete the apprenticeship",
-          "completeConfirm": "Complete this apprenticeship? A certificate is drafted with the hours of its sessions, for the President and the Faculty Advisor to sign.",
           "placement": {
             "active": "has the place",
             "completed": "completed",
@@ -2329,11 +2320,12 @@
       },
       "recognition": {
         "title": "Service",
-        "lede": "Staff hours and certificates (owner, Nov 7, 2026): confirm staff hours for service letters, and prepare certificates for finishing Qalam and for the Mutanabbi Prize, for the President and the Faculty Advisor to sign.",
+        "lede": "Staff hours, service letters and certificates (owner, Nov 7, 2026): confirm staff hours, write service letters (F-05), and prepare certificates for finishing Qalam and for the Mutanabbi Prize. Qalam’s are signed by the Qalam lead and the Editor-in-Chief, the Prize’s by the Editor-in-Chief and the President.",
         "tabs": {
           "pending": "Hours to confirm",
           "totals": "Service this year",
-          "certificates": "Certificates"
+          "certificates": "Certificates",
+          "letters": "Service letters"
         },
         "pending": {
           "lede": "Hours members logged (Form F-16). You see entries for the events you run. Nobody confirms their own.",
@@ -2354,30 +2346,19 @@
           "hours": "Hours"
         },
         "certificates": {
-          "lede": "Certificates of service (F-28) go to every officer, director, event lead and coordinator who completes a term (B4.5). Each is issued once the President signs and the Faculty Advisor countersigns, and gets a serial and a public check.",
+          "lede": "The Society gives two certificates: for finishing Qalam and for the Mutanabbi Prize (each category). Qalam’s is signed by the Qalam lead and the Editor-in-Chief, the Prize’s by the Editor-in-Chief and the President; each then gets a serial and a public check. Service is a letter, not a certificate.",
           "prepare": "Prepare a certificate",
           "cancel": "Cancel",
           "empty": "No certificates yet.",
           "holder": "Holder",
           "kind": "Certificate",
-          "role": "Served as",
-          "citation": "For / in recognition of",
-          "resolution": "Council resolution",
-          "chooseResolution": "Choose an adopted resolution",
-          "partner": "Partner",
-          "choosePartner": "Choose a partner",
-          "hours": "Hours",
-          "period_from": "From",
-          "period_to": "To",
+          "citation": "Citation (the work and what it is recognized for)",
           "serial": "Serial",
           "status": "Status",
           "signatures": "Signatures",
-          "presidentSigned": "President signed",
-          "advisorSigned": "Faculty Advisor signed",
           "unsigned": "Not yet signed",
           "open": "Open",
           "sign": "Sign",
-          "countersign": "Countersign",
           "revoke": "Revoke",
           "revokeReason": "Reason",
           "delete": "Delete draft",
@@ -2388,10 +2369,44 @@
             "revoked": "Revoked"
           },
           "hints": {
-            "qalam": "For a student who finished Qalam, named as on the roster. Students have no accounts.",
-            "prize": "For a Mutanabbi Prize winner: the citation names the category and the work."
+            "qalam": "For a student who finished Qalam, chosen from the roster. Students have no accounts; their full name appears only on the certificate.",
+            "prize": "For a Mutanabbi Prize winner: the member, the category and the citation."
           },
-          "student": "The student’s name"
+          "student": "The student, from Qalam’s roster",
+          "kinds": {
+            "qalam": "Finishing Qalam",
+            "prize": "The Mutanabbi Prize"
+          },
+          "category": "Category",
+          "language": "Language",
+          "languageHint": "One language per certificate, the one its recipient chose.",
+          "languages": {
+            "en": "English",
+            "ar": "Arabic"
+          },
+          "signedBy": "{role} signed"
+        },
+        "letters": {
+          "lede": "Service is a letter (F-05), written on request by the Director of Membership in the language the member asks for. Each carries a code anyone can check on the site.",
+          "write": "Write a service letter",
+          "holder": "Member",
+          "role": "Served as",
+          "issued": "Written",
+          "open": "Open",
+          "empty": "No service letters yet.",
+          "from": "From",
+          "to": "To",
+          "toHint": "Leave empty if they still serve.",
+          "hours": "Confirmed hours",
+          "hoursHint": "Optional: from Service this year.",
+          "language": "Language",
+          "languageHint": "The language the member asked for.",
+          "languages": {
+            "en": "English",
+            "ar": "Arabic"
+          },
+          "body": "More to say (optional)",
+          "bodyHint": "A line or two on their work, in the letter’s language."
         }
       },
       "productions": {
@@ -2556,7 +2571,6 @@
           "closeFirst": "The report is signed after the production closes.",
           "sign": "Sign the report",
           "certificatesTitle": "Certificates",
-          "certificatesHint": "Drafts a certificate (F-28) for each credited member. The President and the Faculty Advisor then sign them under People, Service.",
           "draftCertificates": "Draft certificates",
           "drafted": "{count, plural, =0 {No new certificates: everyone credited has one.} one {{countText} certificate drafted.} other {{countText} certificates drafted.}}"
         },
@@ -3348,37 +3362,23 @@
         "private": "The year runs from September to August, as your service hours count it. Only what is on your own record is shown, as it stands today."
       },
       "kinds": {
-        "qalam": "Certificate of Completion, Qalam",
+        "qalam": "Certificate of completion, Qalam",
         "prize": "The Mutanabbi Prize"
-      }
+      },
+      "lettersTitle": "Service letters",
+      "letter": "Service letter, {date}"
     },
     "certificate": {
       "title": "Certificate",
-      "back": "Back to my service",
+      "back": "Back to my record",
       "missing": "This certificate isn’t available.",
-      "draftNote": "A draft: it is issued once the President and the Faculty Advisor have both signed.",
       "printNote": "Choose Download to save a PDF (A4, landscape).",
       "download": "Download PDF",
       "linkedIn": "Add to LinkedIn",
-      "society": "SOCIETY OF ARTS AND LETTERS",
-      "recordThat": "This is to record that",
-      "present": "the present",
-      "president": "President",
-      "advisor": "Faculty Advisor",
-      "date": "Date",
-      "revoked": "This certificate has been revoked.",
       "qr": "Scan to check this certificate",
-      "titles": {
-        "qalam": "Certificate of Completion, Qalam",
-        "prize": "The Mutanabbi Prize"
-      },
-      "codes": {
-        "qalam": "Qalam",
-        "prize": "The Mutanabbi Prize"
-      },
-      "bodies": {
-        "qalam": "completed Qalam, the summer program of Qirtas, the paper of the Society of Arts and Letters.",
-        "prize": "{citation}, in the Mutanabbi Prize of the Society of Arts and Letters."
+      "draftNote": {
+        "qalam": "A draft: it is issued once the Qalam lead and the Editor-in-Chief have both signed.",
+        "prize": "A draft: it is issued once the Editor-in-Chief and the President have both signed."
       }
     },
     "productions": {
@@ -4157,6 +4157,14 @@
       "remove": "Remove",
       "noEvents": "No events with the Society yet. When the Society plans one with you, it shows here with its checklist.",
       "planned": "Being planned"
+    },
+    "serviceLetter": {
+      "title": "Service letter",
+      "back": "Back to my record",
+      "missing": "This letter isn’t available.",
+      "printNote": "Choose Download to save a PDF (A4).",
+      "download": "Download PDF",
+      "revoked": "This letter was withdrawn."
     }
   },
   "web": {
@@ -4902,31 +4910,43 @@
       }
     },
     "verify": {
-      "title": "Check a certificate or a card",
-      "lede": "Certificates from the AUIB Society of Arts and Letters carry a code and a QR at the foot; membership cards carry a QR that changes every 30 seconds. Scan one, or type a code, to see whether it stands.",
-      "code": "Certificate or card code",
+      "title": "Check a certificate, letter or card",
+      "lede": "Certificates and service letters from the AUIB Society of Arts and Letters carry a code and a QR at the foot; membership cards carry a QR that changes every 30 seconds. Scan one, or type a code, to see whether it stands.",
+      "code": "Certificate, letter or card code",
       "check": "Check",
-      "invalid": "That doesn’t look like a certificate or card code.",
-      "notFound": "No certificate has this code. Check it and try again.",
+      "invalid": "That doesn’t look like a certificate, letter or card code.",
+      "notFound": "Nothing has this code. Check it and try again.",
       "again": "Check another code",
       "valid": "This certificate was issued by the Society and stands.",
       "revoked": "This certificate was revoked on {date}.",
       "holder": "Awarded to",
       "kind": "Certificate",
       "role": "Served as",
-      "partner": "With",
       "citation": "For",
-      "hours": "Hours",
       "period": "Period",
       "present": "the present",
       "issued": "Issued",
       "serial": "Serial",
-      "signedBy": "Signed on this website by the President and the Faculty Advisor.",
       "pattern": "This certificate’s pattern. It should match the one printed on the certificate.",
       "revokedShort": "Revoked",
       "kinds": {
-        "qalam": "Certificate of Completion, Qalam",
+        "qalam": "Certificate of completion, Qalam",
         "prize": "The Mutanabbi Prize"
+      },
+      "school": "School",
+      "year": "Year",
+      "category": "Category",
+      "categories": {
+        "qirtas": "Qirtas",
+        "qalam": "Qalam"
+      },
+      "letter": "Service letter",
+      "letterValid": "This service letter was issued by the Society and stands.",
+      "letterRevoked": "This service letter was withdrawn on {date}.",
+      "letterSignedBy": "Written on this website by the Director of Membership.",
+      "signedBy": {
+        "qalam": "Signed on this website by the Qalam lead and the Editor-in-Chief.",
+        "prize": "Signed on this website by the Editor-in-Chief and the President."
       }
     },
     "verifyCard": {
@@ -4937,20 +4957,16 @@
       "valid": "This membership stands today.",
       "lapsed": "This card belongs to the Society’s records, but the membership does not stand today.",
       "holder": "Card holder",
-      "number": "Card number",
-      "tier": "Membership",
+      "tier": "Class",
       "since": "Member since",
-      "vote": "Vote",
-      "votes": "Voting Member",
-      "noVote": "Not yet a Voting Member",
       "note": "Members can replace their card’s code at any time; an old code then stops working.",
       "live": "This is the live card: its code is from the last minute.",
       "notLive": "This code isn’t live (it may be a screenshot). Ask to see the card on the member’s own phone.",
       "perks": "Partners: this card’s holder may use the Society’s perks.",
       "pattern": "This card’s pattern. It should match the one on the member’s card.",
-      "record": "Certificates",
-      "staff": "Staff",
-      "staffYes": "Holds a role in the Society"
+      "status": "Status",
+      "statusActive": "Active",
+      "statusInactive": "Not active"
     },
     "productions": {
       "title": "Plays",

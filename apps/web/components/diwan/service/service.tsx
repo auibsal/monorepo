@@ -9,6 +9,7 @@ import { Textarea } from "@repo/brand/components/ui/textarea";
 import {
   formatLongDate,
   formatNumber,
+  formatPlainDate,
 } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
 import { localized, recognition, unwrap } from "@repo/sal-data";
@@ -36,7 +37,7 @@ const today = () => new Date().toISOString().slice(0, 10);
 export const Service = () => {
   const t = useTranslations("diwan.service");
   const locale = useLocale();
-  const { supabase } = useAuth();
+  const { supabase, user } = useAuth();
   const queryClient = useQueryClient();
   const hours = useQuery({
     queryFn: () => recognition.serviceHours(supabase),
@@ -61,6 +62,11 @@ export const Service = () => {
   const certificates = useQuery({
     queryFn: () => recognition.myCertificates(supabase),
     queryKey: [...KEY, "certificates"],
+  });
+  const letters = useQuery({
+    enabled: Boolean(user),
+    queryFn: () => recognition.serviceLetters(supabase, user?.id),
+    queryKey: [...KEY, "letters", user?.id],
   });
   const withdraw = useMutation({
     mutationFn: async (recordId: string) =>
@@ -161,6 +167,27 @@ export const Service = () => {
           ))}
         </ul>
       </DiwanSection>
+      {(letters.data ?? []).length > 0 ? (
+        <DiwanSection id="letters" title={t("lettersTitle")}>
+          <ul className="grid gap-2">
+            {(letters.data ?? []).map((l) => (
+              <li key={l.id}>
+                <Link
+                  className="link"
+                  href={`/membership/record/letters/${l.id}`}
+                >
+                  {t("letter", {
+                    date: formatPlainDate(l.issued_at, locale),
+                  })}
+                </Link>
+                {l.revoked_at ? (
+                  <span className="type-caption"> · {t("revoked")}</span>
+                ) : null}
+              </li>
+            ))}
+          </ul>
+        </DiwanSection>
+      ) : null}
       <YearLinks />
     </DiwanPage>
   );

@@ -15,5 +15,10 @@ export const productionTabs = [
 export type ProductionTab = (typeof productionTabs)[number];
 
 /** People → Service's tabs: hours to confirm, totals, certificates. */
-export const serviceTabs = ["pending", "totals", "certificates"] as const;
+export const serviceTabs = [
+  "pending",
+  "totals",
+  "letters",
+  "certificates",
+] as const;
 export type ServiceTab = (typeof serviceTabs)[number];

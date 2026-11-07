@@ -831,18 +831,24 @@ const handlers: Record<string, Handler> = {
       admin
         .schema("membership")
         .from("certificates")
-        .select("id, role_en, role_ar, status")
+        .select("id, kind, prize_category, citation_en, citation_ar, status")
         .eq("id", String(payload.certificate_id))
         .maybeSingle(),
     ]);
-    if (to && certificate?.status === "issued") {
-      const role =
-        (to.lang === "ar" ? certificate.role_ar : certificate.role_en) ??
-        certificate.role_en ??
+    if (
+      to &&
+      certificate?.status === "issued" &&
+      certificate.kind === "prize"
+    ) {
+      const what =
+        (to.lang === "ar"
+          ? certificate.citation_ar
+          : certificate.citation_en) ??
+        certificate.citation_en ??
         "";
       await send(
         to,
-        certificateIssued(to.lang, role, certificate.id, appUrl())
+        certificateIssued(to.lang, what, certificate.id, appUrl())
       );
     }
   },

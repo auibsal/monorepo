@@ -1,10 +1,12 @@
 import { BrandLogo } from "@repo/brand/components/brand-logo";
 import { SalCard } from "@repo/brand/components/sal/card";
+import { Certificate } from "@repo/brand/components/sal/certificate";
 import { DocumentFooter } from "@repo/brand/components/sal/document-footer";
 import { DocumentHeader } from "@repo/brand/components/sal/document-header";
 import { FormHeader } from "@repo/brand/components/sal/form-header";
 import { FormField, FormPage } from "@repo/brand/components/sal/form-page";
 import { Letter } from "@repo/brand/components/sal/letter";
+import { MembershipCard } from "@repo/brand/components/sal/membership-card";
 import { SectionHead } from "@repo/brand/components/sal/section-head";
 import { Shelf } from "@repo/brand/components/sal/shelf";
 import type { Meta, StoryObj } from "@storybook/react";
@@ -347,5 +349,108 @@ export const LetterArabic: Story = {
         <p>يمكن التحقق من سجل خدمتكِ في الجمعية على العنوان أدناه.</p>
       </Letter>
     </div>
+  ),
+};
+
+/**
+ * The membership card, as the member's account shows it (the same fields
+ * go to Google Wallet; a printed card on request is this one, still).
+ */
+export const MembershipCardStory: Story = {
+  name: "Membership card",
+  render: () => (
+    <MembershipCard
+      classLabel="Member"
+      labels={{ class: "Class", number: "Member no.", qr: "Check this card" }}
+      locale="en"
+      name="Lina Hassan"
+      number={42}
+      qr={{
+        left: 0.6,
+        value: "https://auibsal.org/verify/member/k3m9q2?t=12345678",
+      }}
+      since="Member since November 2026"
+      title="Membership card"
+    />
+  ),
+};
+
+/** The card in Arabic. */
+export const MembershipCardArabic: Story = {
+  name: "Membership card, Arabic",
+  render: () => (
+    <div dir="rtl" lang="ar">
+      <MembershipCard
+        classLabel="عضو"
+        labels={{
+          class: "الفئة",
+          number: "رقم العضوية",
+          qr: "تحقّق من البطاقة",
+        }}
+        locale="ar"
+        name="لينا حسن"
+        number={42}
+        qr={{
+          left: 0.6,
+          value: "https://auibsal.org/ar/verify/member/k3m9q2?t=12345678",
+        }}
+        since="عضو منذ تشرين الثاني 2026"
+        title="بطاقة العضوية"
+      />
+    </div>
+  ),
+};
+
+/** A Mutanabbi Prize certificate, in English. */
+export const CertificateStory: Story = {
+  name: "Certificate",
+  render: () => (
+    <Certificate
+      body="For “Small Hours,” a short story, in the Qirtas category of the Mutanabbi Prize of the AUIB Society of Arts and Letters."
+      dated="Given on April 27, 2028"
+      lead="This certifies that"
+      locale="en"
+      motto="The paper and the pen"
+      name="Lina Hassan"
+      seal={{
+        code: "SAL-EDT · Mutanabbi Prize",
+        qrLabel: "Scan to check this certificate",
+        serial: "SAL-2028-001",
+        verifyUrl: "https://auibsal.org/verify/a1b2c3d4e5f6",
+      }}
+      signers={[
+        { name: "", role: "Editor-in-Chief" },
+        { name: "", role: "President" },
+      ]}
+      society="SOCIETY OF ARTS AND LETTERS"
+      title="The Mutanabbi Prize"
+    />
+  ),
+};
+
+/** A Qalam certificate in Arabic: mirrored, with the Arabic lockup. */
+export const CertificateArabic: Story = {
+  name: "Certificate, Arabic",
+  render: () => (
+    <Certificate
+      body="أتمّ «قلم»، البرنامج الصيفي لقرطاس، صحيفة جمعية الفنون والآداب في الجامعة الأمريكية في العراق – بغداد."
+      dated="مُنحت في 27 نيسان 2028"
+      lead="تشهد الجمعية بأن"
+      locale="ar"
+      motto="والقرطاسُ والقلمُ"
+      name="سارة أحمد"
+      seal={{
+        code: "SAL-EDT · قلم",
+        qrLabel: "امسح الرمز للتحقق من هذه الشهادة",
+        serial: "SAL-2028-002",
+        verifyUrl: "https://auibsal.org/ar/verify/b2c3d4e5f6a1",
+      }}
+      signers={[
+        { name: "", role: "مسؤول «قلم»" },
+        { name: "", role: "رئيس التحرير" },
+      ]}
+      society="جمعية الفنون والآداب"
+      title="شهادة إتمام «قلم»"
+    />
   ),
 };

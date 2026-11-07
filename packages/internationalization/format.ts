@@ -160,6 +160,21 @@ export const formatLongDate = (
     ...(withYear ? { year: "numeric" } : {}),
   }).format(toDate(value));
 
+/**
+ * "November 7, 2026" / «7 تشرين الثاني 2026»: the date with no weekday, for
+ * letters and certificates (owner, Nov 7, 2026).
+ */
+export const formatPlainDate = (
+  value: DateInput,
+  locale: Locale = defaultLocale
+) =>
+  new Intl.DateTimeFormat(brandIntl(locale), {
+    day: "numeric",
+    month: "long",
+    timeZone: TIME_ZONE,
+    year: "numeric",
+  }).format(toDate(value));
+
 const FIELD_VALUE = /^(\d{4})-(\d{2})-(\d{2})(?:T(\d{2}):(\d{2}))?/;
 
 /**

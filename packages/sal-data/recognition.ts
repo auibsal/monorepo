@@ -12,6 +12,124 @@ export const certificateKinds = ["qalam", "prize"] as const;
 
 export type CertificateKind = (typeof certificateKinds)[number];
 
+/** The Prize's two categories (owner, Nov 7, 2026). */
+export const prizeCategories = ["qirtas", "qalam"] as const;
+
+/** A certificate's one language, the one its recipient chose. */
+export const certificateLanguages = ["en", "ar"] as const;
+
+type Lang = (typeof certificateLanguages)[number];
+
+/**
+ * A certificate's words, in its own language (owner, Nov 7, 2026: one
+ * language per certificate, the one its recipient chose, whatever the
+ * page's). The lead line is "This certifies that" («تشهد الجمعية بأن»), the
+ * date line "Given on April 27, 2028" («مُنحت في 27 نيسان 2028»).
+ */
+export const certificateCopy: Record<
+  Lang,
+  {
+    body: (input: {
+      category: string;
+      citation: string;
+      kind: CertificateKind;
+    }) => string;
+    categories: Record<(typeof prizeCategories)[number], string>;
+    codes: Record<CertificateKind, string>;
+    given: (date: string) => string;
+    lead: string;
+    revoked: string;
+    roles: Record<"eic" | "president" | "qalam_lead", string>;
+    society: string;
+    titles: Record<CertificateKind, string>;
+  }
+> = {
+  ar: {
+    body: ({ category, citation, kind }) =>
+      kind === "qalam"
+        ? "أتمّ «قلم»، البرنامج الصيفي لقرطاس، صحيفة جمعية الفنون والآداب في الجامعة الأمريكية في العراق – بغداد."
+        : `${citation}، في فئة «${category}» من جائزة المتنبي التي تمنحها جمعية الفنون والآداب في الجامعة الأمريكية في العراق – بغداد.`,
+    categories: { qalam: "قلم", qirtas: "قرطاس" },
+    codes: { prize: "SAL-EDT · جائزة المتنبي", qalam: "SAL-EDT · قلم" },
+    given: (date) => `مُنحت في ${date}`,
+    lead: "تشهد الجمعية بأن",
+    revoked: "أُلغيت هذه الشهادة.",
+    roles: {
+      eic: "رئيس التحرير",
+      president: "الرئيس",
+      qalam_lead: "مسؤول «قلم»",
+    },
+    society: "جمعية الفنون والآداب",
+    titles: { prize: "جائزة المتنبي", qalam: "شهادة إتمام «قلم»" },
+  },
+  en: {
+    body: ({ category, citation, kind }) =>
+      kind === "qalam"
+        ? "completed Qalam, the summer program of Qirtas, the paper of the AUIB Society of Arts and Letters."
+        : `${citation}, in the ${category} category of the Mutanabbi Prize of the AUIB Society of Arts and Letters.`,
+    categories: { qalam: "Qalam", qirtas: "Qirtas" },
+    codes: { prize: "SAL-EDT · Mutanabbi Prize", qalam: "SAL-EDT · Qalam" },
+    given: (date) => `Given on ${date}`,
+    lead: "This certifies that",
+    revoked: "This certificate has been revoked.",
+    roles: {
+      eic: "Editor-in-Chief",
+      president: "President",
+      qalam_lead: "Qalam lead",
+    },
+    society: "SOCIETY OF ARTS AND LETTERS",
+    titles: {
+      prize: "The Mutanabbi Prize",
+      qalam: "Certificate of completion, Qalam",
+    },
+  },
+};
+
+/**
+ * A service letter's words (SAL-EXB-01 · F-05; owner, Nov 7, 2026), in the
+ * letter's own language: an American business letter, "To whom it may
+ * concern:", signed by the Director of Membership.
+ */
+export const serviceLetterCopy: Record<
+  Lang,
+  {
+    body: (input: {
+      from: string;
+      hours: string | null;
+      name: string;
+      role: string;
+      to: string | null;
+    }) => string;
+    code: string;
+    foot: string;
+    greeting: string;
+    qr: string;
+    signerRole: string;
+    subject: string;
+  }
+> = {
+  ar: {
+    body: ({ from, hours, name, role, to }) =>
+      `خدم ${name} جمعية الفنون والآداب في الجامعة الأمريكية في العراق – بغداد بصفة ${role}، ${to ? `من ${from} إلى ${to}` : `منذ ${from}`}${hours ? `، وقدّم ${hours} ساعة من الخدمة المؤكدة` : ""}.`,
+    code: "SAL-EXB-01 · F-05",
+    foot: "hello@auibsal.org · auibsal.org",
+    greeting: "إلى من يهمه الأمر،",
+    qr: "امسح الرمز للتحقق من هذه الرسالة",
+    signerRole: "مدير العضوية",
+    subject: "رسالة خدمة",
+  },
+  en: {
+    body: ({ from, hours, name, role, to }) =>
+      `${name} served the AUIB Society of Arts and Letters as ${role}, ${to ? `from ${from} to ${to}` : `since ${from}`}${hours ? `, giving ${hours} confirmed hours of service` : ""}.`,
+    code: "SAL-EXB-01 · F-05",
+    foot: "hello@auibsal.org · auibsal.org",
+    greeting: "To whom it may concern:",
+    qr: "Scan to check this letter",
+    signerRole: "Director of Membership",
+    subject: "Service letter",
+  },
+};
+
 /** The academic year runs from September 1. */
 export const academicYearStart = (on: Date = new Date()) => {
   const year =
@@ -50,43 +168,49 @@ export const serviceEntrySchema = z.object({
 export type ServiceEntryInput = z.input<typeof serviceEntrySchema>;
 
 /**
- * A certificate: the Mutanabbi Prize's names a member and carries its
- * citation; Qalam's names a student (no account), from the roster.
+ * A certificate: the Mutanabbi Prize's names a member and a category and
+ * carries its citation; Qalam's names a student on the roster (no account),
+ * whose full name appears only on the certificate.
  */
 export const certificateSchema = z
   .object({
     citation_ar: optionalText(500),
     citation_en: optionalText(500),
     kind: z.enum(certificateKinds),
-    period_from: optionalDate,
-    period_to: optionalDate,
+    lang: z.enum(certificateLanguages),
+    prize_category: z.enum(prizeCategories).nullable().optional(),
     qalam_student_id: z.uuid().nullable().optional(),
-    recipient_name: optionalText(200),
     user_id: z.uuid().nullable().optional(),
   })
   .superRefine((c, ctx) => {
-    if (c.kind === "prize" && !(c.user_id && c.citation_en)) {
+    if (
+      c.kind === "prize" &&
+      !(c.user_id && c.prize_category && (c.citation_en || c.citation_ar))
+    ) {
       ctx.addIssue({
         code: "custom",
-        message: "member_and_citation",
+        message: "member_category_and_citation",
         path: ["citation_en"],
       });
     }
-    if (c.kind === "qalam" && !(c.qalam_student_id || c.recipient_name)) {
+    if (c.kind === "qalam" && !c.qalam_student_id) {
       ctx.addIssue({
         code: "custom",
         message: "student",
-        path: ["recipient_name"],
-      });
-    }
-    if (c.period_from && c.period_to && c.period_to < c.period_from) {
-      ctx.addIssue({
-        code: "custom",
-        message: "ends_before_start",
-        path: ["period_to"],
+        path: ["qalam_student_id"],
       });
     }
   });
+
+/**
+ * Who signs each certificate, in order (owner, Nov 7, 2026): Qalam, the
+ * Qalam lead and the Editor-in-Chief; the Prize, the Editor-in-Chief and
+ * the President. The database checks the same (`sign_certificate`).
+ */
+export const certificateSigners = {
+  prize: ["eic", "president"],
+  qalam: ["qalam_lead", "eic"],
+} as const satisfies Record<CertificateKind, readonly [string, string]>;
 
 export type CertificateInput = z.input<typeof certificateSchema>;
 
@@ -176,7 +300,7 @@ export const myCertificates = async (client: Client) =>
       .order("issued_at", { ascending: false })
   ) ?? [];
 
-export const certificateSigners = async (
+export const certificateSignerNames = async (
   client: Client,
   certificateId: string
 ) =>
@@ -231,6 +355,75 @@ export const verifyCertificate = async (client: Client, code: string) =>
   unwrap(
     await client.schema("membership").rpc("verify_certificate", { code })
   )?.[0] ?? null;
+
+/** A service letter's check (F-05): who, for what, when, and whether it stands. */
+export const verifyServiceLetter = async (client: Client, code: string) =>
+  unwrap(
+    await client.schema("membership").rpc("verify_service_letter", { code })
+  )?.[0] ?? null;
+
+// ── Service letters (F-05) ──────────────────────────────────────────────────
+
+/** A service letter, written by the Director of Membership on request. */
+export const serviceLetterSchema = z.object({
+  body: optionalText(3000),
+  hours: z.number().min(0).max(9999).nullable().optional(),
+  lang: z.enum(certificateLanguages),
+  period_from: z.iso.date(),
+  period_to: optionalDate,
+  role_ar: optionalText(200),
+  role_en: z.string().trim().min(1).max(200),
+  user_id: z.uuid(),
+});
+
+export type ServiceLetterInput = z.input<typeof serviceLetterSchema>;
+
+export const issueServiceLetter = async (
+  client: Client,
+  input: ServiceLetterInput
+) => {
+  const letter = serviceLetterSchema.parse(input);
+  return unwrap(
+    await client
+      .schema("membership")
+      .from("service_letters")
+      .insert({
+        body: letter.body ?? null,
+        hours: letter.hours ?? null,
+        lang: letter.lang,
+        period_from: letter.period_from,
+        period_to: letter.period_to ?? null,
+        role_ar: letter.role_ar ?? null,
+        role_en: letter.role_en,
+        user_id: letter.user_id,
+      })
+      .select("id")
+      .single()
+  );
+};
+
+/** The letters the reader may see: their own, or all for the Director. */
+export const serviceLetters = async (client: Client, userId?: string) => {
+  let query = client
+    .schema("membership")
+    .from("service_letters")
+    .select("*")
+    .order("issued_at", { ascending: false });
+  if (userId) {
+    query = query.eq("user_id", userId);
+  }
+  return unwrap(await query) ?? [];
+};
+
+export const serviceLetter = async (client: Client, id: string) =>
+  unwrap(
+    await client
+      .schema("membership")
+      .from("service_letters")
+      .select("*")
+      .eq("id", id)
+      .maybeSingle()
+  );
 
 // ── A member's year (the design review C23) ─────────────────────────────────
 

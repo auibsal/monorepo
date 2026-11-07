@@ -1,7 +1,9 @@
 import { describe, expect, test } from "vitest";
 import {
   academicYearStart,
+  certificateCopy,
   certificateSchema,
+  certificateSigners,
   linkedInUrl,
   serviceEntrySchema,
   societyYear,
@@ -38,24 +40,54 @@ describe("recognition", () => {
   });
 
   test("certificates: Qalam and the Mutanabbi Prize only", () => {
+    const student = "00000000-0000-4000-8000-00000000c001";
     expect(
       certificateSchema.safeParse({
         citation_en: "For the best work in Qirtas",
         kind: "prize",
+        lang: "en",
+        prize_category: "qirtas",
         user_id: member,
       }).success
     ).toBe(true);
+    // The Prize needs its category and a citation.
     expect(
-      certificateSchema.safeParse({ kind: "prize", user_id: member }).success
+      certificateSchema.safeParse({
+        kind: "prize",
+        lang: "en",
+        user_id: member,
+      }).success
     ).toBe(false);
     expect(
-      certificateSchema.safeParse({ kind: "qalam", recipient_name: "Sara A." })
-        .success
+      certificateSchema.safeParse({
+        kind: "qalam",
+        lang: "ar",
+        qalam_student_id: student,
+      }).success
     ).toBe(true);
-    expect(certificateSchema.safeParse({ kind: "qalam" }).success).toBe(false);
     expect(
-      certificateSchema.safeParse({ kind: "service", user_id: member }).success
+      certificateSchema.safeParse({ kind: "qalam", lang: "en" }).success
     ).toBe(false);
+    expect(
+      certificateSchema.safeParse({
+        kind: "service",
+        lang: "en",
+        user_id: member,
+      }).success
+    ).toBe(false);
+  });
+
+  test("certificate words: one language each, the lead and date lines", () => {
+    expect(certificateCopy.en.lead).toBe("This certifies that");
+    expect(certificateCopy.ar.lead).toBe("تشهد الجمعية بأن");
+    expect(certificateCopy.en.given("April 27, 2028")).toBe(
+      "Given on April 27, 2028"
+    );
+    expect(certificateCopy.ar.given("27 نيسان 2028")).toBe(
+      "مُنحت في 27 نيسان 2028"
+    );
+    expect(certificateSigners.qalam).toEqual(["qalam_lead", "eic"]);
+    expect(certificateSigners.prize).toEqual(["eic", "president"]);
   });
 
   test("verification and LinkedIn links carry the serial and the code", () => {
@@ -67,7 +99,7 @@ describe("recognition", () => {
     const linkedIn = new URL(
       linkedInUrl({
         issuedAt: "2026-10-09T10:00:00Z",
-        name: "Certificate of Service",
+        name: "The Mutanabbi Prize",
         serial: "SAL-2026-001",
         url,
       })

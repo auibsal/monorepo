@@ -1,5 +1,5 @@
+import { guillochePaths } from "@repo/brand/components/sal/guilloche";
 import { ImageResponse } from "next/og";
-import { guillochePaths } from "@/components/guilloche";
 
 const NUMBER = /^[0-9]{1,7}$/;
 const PAPER = "#f5f2ee";

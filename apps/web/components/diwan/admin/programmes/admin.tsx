@@ -1059,7 +1059,7 @@ export const ProgramPitches = () => {
       id="pitches"
       title={t("pitches.title")}
     >
-      <RequestQueue base="/events/pitches" keys={["f10"]} />
+      <RequestQueue base="/events/pitches" keys={["f11"]} />
     </DiwanSection>
   );
 };

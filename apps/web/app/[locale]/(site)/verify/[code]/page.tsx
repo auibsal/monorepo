@@ -1,15 +1,12 @@
+import { Guilloche, seedFromText } from "@repo/brand/components/sal/guilloche";
 import type { Locale } from "@repo/internationalization";
 import { localizedPath } from "@repo/internationalization";
-import {
-  formatLongDate,
-  formatNumber,
-} from "@repo/internationalization/format";
+import { formatPlainDate } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
 import { localized, membership, recognition } from "@repo/sal-data";
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { Guilloche, seedFromText } from "@/components/guilloche";
 import { PageHeader } from "@/components/section";
 import { localizedMetadata } from "@/lib/metadata";
 import { readPublished } from "@/lib/supabase";
@@ -35,25 +32,76 @@ export const generateMetadata = async ({
 };
 
 /**
- * One check for codes: a certificate (issued or revoked) by its code, who
- * holds it, for what, and whether it still stands; a membership card's code
- * goes on to the card's own check.
+ * One check for codes (owner, Nov 7, 2026): a certificate (issued or
+ * revoked), what was awarded and when; a service letter (F-05), who it is
+ * for, for what and when; a membership card's code goes on to the card's
+ * own check.
  */
+const Rows = ({ rows }: { rows: [string, string][] }) => (
+  <dl className="grid gap-3 border-line border-t p-5">
+    {rows.map(([label, value]) => (
+      <div className="grid gap-1 sm:grid-cols-[10rem_1fr]" key={label}>
+        <dt className="type-label">{label}</dt>
+        <dd className="type-body" dir="auto">
+          {value}
+        </dd>
+      </div>
+    ))}
+  </dl>
+);
+
 const CertificatePage = async ({ params }: CertificateParams) => {
   const { code, locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "web.verify" });
-  const certificate = CODE.test(code)
-    ? await readPublished(
-        ["certificates"],
-        (c) => recognition.verifyCertificate(c, code),
-        null
-      )
-    : null;
+  const valid = CODE.test(code);
+  const [certificate, letter] = valid
+    ? await Promise.all([
+        readPublished(
+          ["certificates"],
+          (c) => recognition.verifyCertificate(c, code),
+          null
+        ),
+        readPublished(
+          ["certificates"],
+          (c) => recognition.verifyServiceLetter(c, code),
+          null
+        ),
+      ])
+    : [null, null];
 
-  if (!certificate && membership.CARD_CODE.test(code)) {
+  if (!(certificate || letter) && membership.CARD_CODE.test(code)) {
     redirect(localizedPath(locale, membership.cardPath(code)));
   }
+  const date = (value: string | null) =>
+    value ? formatPlainDate(value, locale) : "";
+
+  // A service letter (F-05): who, for what, when, and whether it stands.
+  if (letter && !certificate) {
+    const rows: [string, string][] = [
+      [t("holder"), localized(letter, "holder", locale)],
+      [t("kind"), t("letter")],
+      [t("role"), localized(letter, "role", locale)],
+      [
+        t("period"),
+        `${date(letter.period_from)} – ${date(letter.period_to) || t("present")}`,
+      ],
+      [t("issued"), date(letter.issued_at)],
+    ];
+    return (
+      <div className="mx-auto grid w-full max-w-xl gap-8 px-4 py-16">
+        <PageHeader lede={t("lede")} title={t("title")} />
+        <p className="font-bold text-text" role="status">
+          {letter.revoked_at
+            ? t("letterRevoked", { date: date(letter.revoked_at) })
+            : t("letterValid")}
+        </p>
+        <Rows rows={rows} />
+        <p className="type-caption">{t("letterSignedBy")}</p>
+      </div>
+    );
+  }
+
   if (!certificate) {
     return (
       <div className="mx-auto grid w-full max-w-xl gap-6 px-4 py-16">
@@ -65,30 +113,25 @@ const CertificatePage = async ({ params }: CertificateParams) => {
     );
   }
 
+  // A certificate: what was awarded and when. A Qalam student shows only
+  // as their first name, last initial, school and year.
   const kind = certificate.kind as recognition.CertificateKind;
-  const date = (value: string | null) =>
-    value ? formatLongDate(value, locale, true) : "";
   const rows: [string, string][] = [
     [t("holder"), localized(certificate, "holder", locale)],
-    [t("kind"), t(`kinds.${kind}`)],
   ];
-  if (certificate.role_en || certificate.role_ar) {
-    rows.push([t("role"), localized(certificate, "role", locale)]);
+  if (kind === "qalam") {
+    rows.push([t("school"), certificate.school ?? ""]);
+    rows.push([t("year"), String(certificate.year ?? "")]);
   }
-  if (certificate.partner_en || certificate.partner_ar) {
-    rows.push([t("partner"), localized(certificate, "partner", locale)]);
+  rows.push([t("kind"), t(`kinds.${kind}`)]);
+  if (kind === "prize" && certificate.prize_category) {
+    rows.push([
+      t("category"),
+      t(`categories.${certificate.prize_category as "qirtas" | "qalam"}`),
+    ]);
   }
   if (certificate.citation_en || certificate.citation_ar) {
     rows.push([t("citation"), localized(certificate, "citation", locale)]);
-  }
-  if (certificate.hours) {
-    rows.push([t("hours"), formatNumber(Number(certificate.hours))]);
-  }
-  if (certificate.period_from) {
-    rows.push([
-      t("period"),
-      `${date(certificate.period_from)} – ${date(certificate.period_to) || t("present")}`,
-    ]);
   }
   rows.push([t("issued"), date(certificate.issued_at)]);
   rows.push([t("serial"), certificate.serial ?? ""]);
@@ -96,28 +139,12 @@ const CertificatePage = async ({ params }: CertificateParams) => {
   return (
     <div className="mx-auto grid w-full max-w-xl gap-8 px-4 py-16">
       <PageHeader lede={t("lede")} title={t("title")} />
-      <p
-        className={
-          certificate.status === "revoked"
-            ? "font-bold text-text"
-            : "font-bold text-text"
-        }
-        role="status"
-      >
+      <p className="font-bold text-text" role="status">
         {certificate.status === "revoked"
           ? t("revoked", { date: date(certificate.revoked_at) })
           : t("valid")}
       </p>
-      <dl className="grid gap-3 border-line border-t p-5">
-        {rows.map(([label, value]) => (
-          <div className="grid gap-1 sm:grid-cols-[10rem_1fr]" key={label}>
-            <dt className="type-label">{label}</dt>
-            <dd className="type-body" dir="auto">
-              {value}
-            </dd>
-          </div>
-        ))}
-      </dl>
+      <Rows rows={rows} />
       {certificate.serial ? (
         <figure className="grid justify-items-start gap-2">
           <Guilloche
@@ -128,7 +155,7 @@ const CertificatePage = async ({ params }: CertificateParams) => {
           <figcaption className="type-caption">{t("pattern")}</figcaption>
         </figure>
       ) : null}
-      <p className="type-caption">{t("signedBy")}</p>
+      <p className="type-caption">{t(`signedBy.${kind}`)}</p>
     </div>
   );
 };

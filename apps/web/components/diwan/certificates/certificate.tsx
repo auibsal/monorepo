@@ -1,75 +1,24 @@
 "use client";
 
 import { useAuth } from "@repo/auth/provider";
-import { BrandLogo } from "@repo/brand/components/brand-logo";
+import {
+  type CertificateProps,
+  Certificate as CertificateSheet,
+} from "@repo/brand/components/sal/certificate";
 import { Button } from "@repo/brand/components/ui/button";
 import { project } from "@repo/config";
 import { localizedPath } from "@repo/internationalization";
-import {
-  formatLongDate,
-  formatNumber,
-} from "@repo/internationalization/format";
-import { localized, recognition, unwrap } from "@repo/sal-data";
+import { formatPlainDate } from "@repo/internationalization/format";
+import { recognition, unwrap } from "@repo/sal-data";
 import { useQuery } from "@tanstack/react-query";
-import { useLocale, useTranslations } from "next-intl";
-import QRCode from "react-qr-code";
-import { Guilloche, seedFromText } from "@/components/guilloche";
+import { useTranslations } from "next-intl";
 import { useQueryParam } from "@/lib/diwan/use-query-param";
 import { EmptyLine, ErrorState, SectionSpinner } from "../states";
 
-/**
- * A certificate, laid out for A4 landscape after Form F-28 (Printables).
- * "Download PDF" is the browser's own print-to-PDF, so Arabic is shaped
- * correctly. The verification code at the foot lets anyone check it.
- */
-/**
- * The certificate's foot: its rosette (drawn from the serial, the same one
- * its check page shows), the serial and address, and a QR to its check.
- */
-const CertificateSeal = ({
-  code,
-  qrLabel,
-  serial,
-  verifyUrl,
-}: {
-  code: string;
-  qrLabel: string;
-  serial: string | null;
-  verifyUrl: string | null;
-}) => (
-  <div className="flex items-end justify-between gap-6">
-    {serial ? (
-      <Guilloche
-        className="size-20 shrink-0"
-        number={seedFromText(serial)}
-        stroke="stroke-text"
-      />
-    ) : (
-      <span />
-    )}
-    <p className="type-caption self-center" dir="ltr">
-      {[serial, code, verifyUrl].filter(Boolean).join(" · ")}
-    </p>
-    {verifyUrl ? (
-      <QRCode
-        aria-label={qrLabel}
-        className="size-20 shrink-0"
-        size={80}
-        value={verifyUrl}
-      />
-    ) : (
-      <span />
-    )}
-  </div>
-);
-
-export const Certificate = () => {
-  const t = useTranslations("diwan.certificate");
-  const locale = useLocale();
+/** Reads one certificate with its recipient's name and its signers'. */
+const useCertificate = (id: string) => {
   const { supabase } = useAuth();
-  const id = useQueryParam("id") ?? "";
-
-  const certificate = useQuery({
+  return useQuery({
     enabled: Boolean(id),
     queryFn: async () => {
       const row = unwrap(
@@ -83,8 +32,9 @@ export const Certificate = () => {
       if (!row) {
         return null;
       }
-      // A Qalam student has no account: the name is on the certificate.
-      const [holder, signers] = await Promise.all([
+      // A Qalam student has no account: the full name comes from the
+      // roster (staff only), the one place it appears.
+      const [member, student, signers] = await Promise.all([
         row.user_id
           ? supabase
               .schema("core")
@@ -93,33 +43,94 @@ export const Certificate = () => {
               .eq("id", row.user_id)
               .maybeSingle()
           : Promise.resolve({ data: null }),
-        recognition.certificateSigners(supabase, row.id),
+        row.qalam_student_id
+          ? supabase
+              .schema("programmes")
+              .from("qalam_students")
+              .select("first_name, last_name")
+              .eq("id", row.qalam_student_id)
+              .maybeSingle()
+          : Promise.resolve({ data: null }),
+        recognition.certificateSignerNames(supabase, row.id),
       ]);
-      // The partner's name: from verification once issued, from the
-      // register (when the reader may see it) while a draft.
-      let partner: { name_ar: string | null; name_en: string | null } | null =
-        null;
-      if (row.partner_id && row.status !== "draft") {
-        const verified = await recognition.verifyCertificate(
-          supabase,
-          row.verification_code
-        );
-        partner = verified
-          ? { name_ar: verified.partner_ar, name_en: verified.partner_en }
-          : null;
-      } else if (row.partner_id) {
-        const { data } = await supabase
-          .schema("governance")
-          .from("partners")
-          .select("name_en, name_ar")
-          .eq("id", row.partner_id)
-          .maybeSingle();
-        partner = data;
-      }
-      return { holder: holder.data, partner, row, signers };
+      return { member: member.data, row, signers, student: student.data };
     },
     queryKey: ["certificate", id],
   });
+};
+
+type Loaded = NonNullable<ReturnType<typeof useCertificate>["data"]>;
+
+/** The certificate's words and seal, in its own language. */
+const sheetProps = (
+  { member, row, signers, student }: Loaded,
+  qrLabel: string
+) => {
+  const kind = row.kind as recognition.CertificateKind;
+  const lang = row.lang === "ar" ? "ar" : "en";
+  const ar = lang === "ar";
+  const copy = recognition.certificateCopy[lang];
+  const name = student
+    ? `${student.first_name} ${student.last_name}`
+    : ((ar ? member?.full_name_ar : null) ?? member?.full_name_en ?? "");
+  const verifyUrl = recognition.verificationUrl(
+    project.url,
+    localizedPath(lang, "/verify"),
+    row.verification_code
+  );
+  const issued = row.status !== "draft" && row.issued_at;
+  const [firstRole, secondRole] = recognition.certificateSigners[kind];
+  const signerName = (en?: string | null, arName?: string | null) =>
+    (ar ? arName : null) ?? en ?? "";
+  const category = row.prize_category as
+    | (typeof recognition.prizeCategories)[number]
+    | null;
+  const sheet: CertificateProps = {
+    body: copy.body({
+      category: category ? copy.categories[category] : "",
+      citation: (ar ? row.citation_ar : row.citation_en) ?? "",
+      kind,
+    }),
+    dated: row.issued_at
+      ? copy.given(formatPlainDate(row.issued_at, lang))
+      : "",
+    lead: copy.lead,
+    locale: lang,
+    motto: project.motto[lang],
+    name,
+    notice: row.status === "revoked" ? copy.revoked : undefined,
+    seal: {
+      code: copy.codes[kind],
+      qrLabel,
+      serial: row.serial,
+      verifyUrl: issued ? verifyUrl : null,
+    },
+    signers: [
+      {
+        name: signerName(signers?.first_en, signers?.first_ar),
+        role: copy.roles[firstRole],
+      },
+      {
+        name: signerName(signers?.second_en, signers?.second_ar),
+        role: copy.roles[secondRole],
+      },
+    ],
+    society: copy.society,
+    title: copy.titles[kind],
+  };
+  return { row, sheet, verifyUrl };
+};
+
+/**
+ * A certificate's page: the one certificate component (`@repo/brand`), in
+ * the certificate's own language, with Download (the browser's
+ * print-to-PDF, A4 landscape, so Arabic is shaped correctly) and, once
+ * issued, Add to LinkedIn.
+ */
+export const Certificate = () => {
+  const t = useTranslations("diwan.certificate");
+  const id = useQueryParam("id") ?? "";
+  const certificate = useCertificate(id);
 
   if (!id) {
     return (
@@ -142,36 +153,15 @@ export const Certificate = () => {
     );
   }
 
-  const { holder, row, signers } = certificate.data;
+  const { row, sheet, verifyUrl } = sheetProps(certificate.data, t("qr"));
   const kind = row.kind as recognition.CertificateKind;
-  const name = holder
-    ? localized(holder, "full_name", locale)
-    : (row.recipient_name ?? "");
-  const date = (value: string | null) =>
-    value ? formatLongDate(value, locale, true) : "";
-  const verifyUrl = recognition.verificationUrl(
-    project.url,
-    localizedPath(locale, "/verify"),
-    row.verification_code
-  );
-  const values = {
-    citation: localized(row, "citation", locale),
-    from: date(row.period_from),
-    hours: formatNumber(Number(row.hours ?? 0)),
-    name,
-    partner: certificate.data.partner
-      ? localized(certificate.data.partner, "name", locale)
-      : "",
-    role: localized(row, "role", locale),
-    to: date(row.period_to) || t("present"),
-  };
   const issued = row.status !== "draft" && row.issued_at;
 
   return (
     <div className="mx-auto grid w-full max-w-5xl gap-6">
       <div className="flex flex-wrap items-center justify-between gap-3 print:hidden">
         <p className="type-body">
-          {row.status === "draft" ? t("draftNote") : t("printNote")}
+          {row.status === "draft" ? t(`draftNote.${kind}`) : t("printNote")}
         </p>
         <div className="flex flex-wrap gap-2">
           <Button onClick={() => window.print()}>{t("download")}</Button>
@@ -180,7 +170,7 @@ export const Certificate = () => {
               <a
                 href={recognition.linkedInUrl({
                   issuedAt: row.issued_at ?? "",
-                  name: t(`titles.${kind}`),
+                  name: sheet.title,
                   serial: row.serial,
                   url: verifyUrl,
                 })}
@@ -193,65 +183,7 @@ export const Certificate = () => {
           ) : null}
         </div>
       </div>
-
-      <article
-        className="grid aspect-[297/210] w-full content-between gap-6 border-2 border-line bg-surface p-10 text-center text-text print:rounded-none print:border-0"
-        // A certificate is paper: always the light ground, also on the
-        // Diwan's ink pages.
-        data-theme="light"
-        lang={locale}
-      >
-        <header className="grid justify-items-center gap-2">
-          <BrandLogo height={56} locale={locale} />
-          <p className="type-label tracking-widest">{t("society")}</p>
-        </header>
-
-        <div className="grid justify-items-center gap-4">
-          <h1 className="font-light text-4xl text-text">
-            {t(`titles.${kind}`)}
-          </h1>
-          <p className="type-body">{t("recordThat")}</p>
-          <p className="border-line border-b px-8 pb-1 font-light text-3xl">
-            {name}
-          </p>
-          <p className="type-body max-w-2xl text-lg">
-            {t(`bodies.${kind}`, values)}
-          </p>
-          {row.status === "revoked" ? (
-            <p className="font-bold text-text">{t("revoked")}</p>
-          ) : null}
-        </div>
-
-        <footer className="grid gap-6">
-          <p className="type-caption">
-            {locale === "ar" ? project.motto.ar : project.motto.en}
-          </p>
-          <div className="grid grid-cols-3 items-end gap-6 text-sm">
-            <div className="grid gap-1 border-line border-t pt-2">
-              <span className="font-medium">
-                {signers ? localized(signers, "president", locale) : ""}
-              </span>
-              <span className="type-caption">{t("president")}</span>
-            </div>
-            <div className="grid gap-1 border-line border-t pt-2">
-              <span className="font-medium">
-                {signers ? localized(signers, "advisor", locale) : ""}
-              </span>
-              <span className="type-caption">{t("advisor")}</span>
-            </div>
-            <div className="grid gap-1 border-line border-t pt-2">
-              <span className="font-medium">{date(row.issued_at)}</span>
-              <span className="type-caption">{t("date")}</span>
-            </div>
-          </div>
-          <CertificateSeal
-            code={t(`codes.${kind}`)}
-            qrLabel={t("qr")}
-            serial={row.serial}
-            verifyUrl={issued ? verifyUrl : null}
-          />
-        </footer>
-      </article>
+      <CertificateSheet {...sheet} />
     </div>
   );
 };

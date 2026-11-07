@@ -951,7 +951,10 @@ export const candidacyDecided = (
     };
   });
 
-/** A certificate, signed by both and issued. */
+/**
+ * A Mutanabbi Prize certificate, signed by both and issued (a Qalam
+ * student has no account: the Qalam lead hands theirs over).
+ */
 export const certificateIssued = (
   lang: Lang,
   what: string,
@@ -967,16 +970,19 @@ export const certificateIssued = (
     paragraphs: [
       ...(what ? [what] : []),
       l === "ar"
-        ? "وقّعها رئيس الجمعية والمستشار الأكاديمي. تجدها في «السجل»، ويمكن لأي أحد التحقق منها برمزها."
-        : "The President and the Faculty Advisor have signed it. It's on your Record, and anyone can check it with its code.",
+        ? "وقّعها رئيس التحرير ورئيس الجمعية. تجدها في «السجل»، ويمكن لأي أحد التحقق منها برمزها."
+        : "The Editor-in-Chief and the President have signed it. It’s on your Record, and anyone can check it with its code.",
     ],
   }));
 
+/** The register's numbers (SAL-EXB-01; owner, Nov 7, 2026). */
 const REQUEST_NAMES: Record<string, Record<Lang, string>> = {
-  f09: { ar: "مقترحك للجمعية العمومية", en: "your General Assembly motion" },
-  f10: { ar: "مقترح البرنامج", en: "your program pitch" },
-  f19: { ar: "ما رفعته من قلق", en: "your concern" },
-  f20: { ar: "ما رفعته من قلق", en: "your concern" },
+  f10: {
+    ar: "مقترحك لاجتماع الأعضاء",
+    en: "your motion for a members’ meeting",
+  },
+  f11: { ar: "مقترح الفعالية", en: "your event pitch" },
+  f21: { ar: "ما رفعته من قلق", en: "your concern" },
 };
 
 /** A concern, a motion or a pitch: taken up, then closed. */

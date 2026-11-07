@@ -41,8 +41,8 @@ const every = (l: Lang): Built[] => [
   applicationDecided(l, "The Book Club", false, APP),
   candidacyDecided(l, { title_ar: "الرئيس", title_en: "President" }, true, APP),
   certificateIssued(l, "Director of Media", "abc", APP),
-  requestUpdated(l, "f20", "acknowledged", "abc", APP),
-  requestUpdated(l, "f09", "closed", "abc", APP),
+  requestUpdated(l, "f21", "acknowledged", "abc", APP),
+  requestUpdated(l, "f10", "closed", "abc", APP),
   removalDone(l, "removed", null),
   replyUpdate(l, "Photographer", "talking", "2026-11-10T13:00:00Z", APP),
   replyUpdate(l, "Photographer", "not_picked", null, APP),
@@ -102,7 +102,7 @@ describe("the email journeys", () => {
   });
 
   test("a request closed links to its own page", () => {
-    const built = requestUpdated("en", "f20", "closed", "abc", APP);
+    const built = requestUpdated("en", "f21", "closed", "abc", APP);
     expect(built.subject).toBe("We've closed your concern");
     expect(built.blocks[0]?.action?.href).toBe(
       "https://auibsal.org/membership/requests/abc"

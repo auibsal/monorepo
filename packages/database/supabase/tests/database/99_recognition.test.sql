@@ -76,15 +76,19 @@ insert into core.semesters (code, name_en, name_ar, starts_on, ends_on) values
 update core.settings set value = '0' where key = 'membership.founding_voters';
 -- </preamble>
 
-select plan(20);
+select plan(27);
 
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a1', 'member-rc@auib.edu.iq', 'Layla Member');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a2', 'president-rc@auib.edu.iq', 'The President');
-select pg_temp.make_user('00000000-0000-0000-0000-0000000000a3', 'advisor-rc@auib.edu.iq', 'The Advisor');
+select pg_temp.make_user('00000000-0000-0000-0000-0000000000a3', 'eic-rc@auib.edu.iq', 'The Editor');
+select pg_temp.make_user('00000000-0000-0000-0000-0000000000a6', 'qalam-rc@auib.edu.iq', 'The Qalam Lead');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a4', 'lead-rc@auib.edu.iq', 'Programme Lead');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a5', 'gs-rc@auib.edu.iq', 'General Secretary');
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000000a2', 'president');
-select pg_temp.grant_role('00000000-0000-0000-0000-0000000000a3', 'faculty_advisor');
+select pg_temp.grant_role('00000000-0000-0000-0000-0000000000a3', 'eic');
+select pg_temp.grant_role('00000000-0000-0000-0000-0000000000a6', 'qalam_lead');
+insert into programmes.qalam_students (id, year, first_name, last_name, school)
+values ('00000000-0000-0000-0000-00000000c001', 2028, 'Sara', 'Ahmed', 'Baghdad High');
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000000a4', 'programme_lead', 'programme',
   (select id from core.programmes where slug = 'company'));
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000000a5', 'general_secretary');
@@ -130,23 +134,23 @@ select is((select hours from membership.service_totals() where user_id = '000000
   3.00::numeric, 'The General Secretary sees everyone''s totals');
 
 -- Certificates only for finishing Qalam and for the Mutanabbi Prize (owner,
--- Nov 7, 2026).
+-- Nov 7, 2026), one language each; signers by kind.
 select lives_ok(
-  $$ insert into membership.certificates (id, user_id, kind, citation_en)
+  $$ insert into membership.certificates (id, user_id, kind, prize_category, citation_en, lang)
      values ('00000000-0000-0000-0000-00000000f001', '00000000-0000-0000-0000-0000000000a1', 'prize',
-       'For the best work in Qirtas') $$,
+       'qirtas', 'For "Small Hours," a short story', 'en') $$,
   'The General Secretary prepares a Prize certificate'
 );
 select throws_ok(
-  $$ insert into membership.certificates (user_id, kind, role_en, period_from)
-     values ('00000000-0000-0000-0000-0000000000a1', 'service', 'Door Coordinator', current_date) $$,
+  $$ insert into membership.certificates (user_id, kind, period_from)
+     values ('00000000-0000-0000-0000-0000000000a1', 'service', current_date) $$,
   '23514', null,
   'No certificates of service, Fellowship or volunteering'
 );
 select lives_ok(
-  $$ insert into membership.certificates (kind, recipient_name)
-     values ('qalam', 'Sara A.') $$,
-  'A Qalam certificate names a student, who has no account'
+  $$ insert into membership.certificates (id, kind, qalam_student_id, lang)
+     values ('00000000-0000-0000-0000-00000000f002', 'qalam', '00000000-0000-0000-0000-00000000c001', 'ar') $$,
+  'A Qalam certificate names a student on the roster, who has no account'
 );
 select throws_ok(
   $$ select membership.sign_certificate('00000000-0000-0000-0000-00000000f001') $$,
@@ -156,33 +160,54 @@ select throws_ok(
 
 select pg_temp.logout();
 create temp table cert_code as
-  select verification_code as code from membership.certificates where id = '00000000-0000-0000-0000-00000000f001';
+  select id, verification_code as code from membership.certificates
+  where id in ('00000000-0000-0000-0000-00000000f001', '00000000-0000-0000-0000-00000000f002');
 grant select on cert_code to anon, authenticated;
 
 select pg_temp.login_anon();
 select is((select count(*)::int from membership.verify_certificate(
-  (select code from cert_code))),
+  (select code from cert_code where id = '00000000-0000-0000-0000-00000000f001'))),
   0, 'A draft certificate does not verify');
 
+-- The Prize: the Editor-in-Chief and the President, in either order.
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a2');
 select is(membership.sign_certificate('00000000-0000-0000-0000-00000000f001'), 'signed',
   'The President signs');
 select throws_ok(
   $$ select membership.sign_certificate('00000000-0000-0000-0000-00000000f001') $$,
   '42501', 'not_allowed',
-  'and cannot sign twice in place of the Faculty Advisor'
+  'and cannot sign in the Editor-in-Chief''s place'
+);
+select pg_temp.login_as('00000000-0000-0000-0000-0000000000a6');
+select throws_ok(
+  $$ select membership.sign_certificate('00000000-0000-0000-0000-00000000f001') $$,
+  '42501', 'not_allowed',
+  'The Qalam lead does not sign the Prize'
 );
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a3');
 select is(membership.sign_certificate('00000000-0000-0000-0000-00000000f001'), 'issued',
-  'The Faculty Advisor''s countersignature issues it');
+  'The Editor-in-Chief''s signature issues it');
 select pg_temp.logout();
 select matches((select serial from membership.certificates where id = '00000000-0000-0000-0000-00000000f001'),
   '^SAL-\d{4}-001$', 'with the year''s first serial');
 
 select pg_temp.login_anon();
-select is((select holder_en || ' · ' || status from membership.verify_certificate(
-  (select code from cert_code))),
-  'Layla Member · issued', 'Anyone with the code can verify it');
+select is((select holder_en || ' · ' || status || ' · ' || prize_category from membership.verify_certificate(
+  (select code from cert_code where id = '00000000-0000-0000-0000-00000000f001'))),
+  'Layla Member · issued · qirtas', 'Anyone with the code sees what was awarded');
+
+-- Qalam: the Qalam lead, then the Editor-in-Chief.
+select pg_temp.login_as('00000000-0000-0000-0000-0000000000a6');
+select is(membership.sign_certificate('00000000-0000-0000-0000-00000000f002'), 'signed',
+  'The Qalam lead signs a Qalam certificate first');
+select pg_temp.login_as('00000000-0000-0000-0000-0000000000a3');
+select is(membership.sign_certificate('00000000-0000-0000-0000-00000000f002'), 'issued',
+  'and the Editor-in-Chief issues it');
+select pg_temp.login_anon();
+select is((select holder_en || ' · ' || school || ' · ' || year from membership.verify_certificate(
+  (select code from cert_code where id = '00000000-0000-0000-0000-00000000f002'))),
+  'Sara A. · Baghdad High · 2028',
+  'A Qalam student''s check shows the first name, last initial, school and year only');
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a2');
 select lives_ok(
@@ -191,8 +216,33 @@ select lives_ok(
 );
 select pg_temp.login_anon();
 select is((select status from membership.verify_certificate(
-  (select code from cert_code))),
+  (select code from cert_code where id = '00000000-0000-0000-0000-00000000f001'))),
   'revoked', 'and verification then says so');
+
+-- Service letters (F-05): written by the Director of Membership's team,
+-- each checked by its code.
+select pg_temp.login_as('00000000-0000-0000-0000-0000000000a5');
+select lives_ok(
+  $$ insert into membership.service_letters (id, user_id, role_en, period_from, period_to)
+     values ('00000000-0000-0000-0000-00000000d001', '00000000-0000-0000-0000-0000000000a1',
+       'Section editor, Qirtas', '2026-09-01', '2027-05-31') $$,
+  'The General Secretary writes a service letter'
+);
+select pg_temp.logout();
+create temp table letter_code as
+  select verification_code as code from membership.service_letters where id = '00000000-0000-0000-0000-00000000d001';
+grant select on letter_code to anon, authenticated;
+select pg_temp.login_anon();
+select is((select holder_en || ' · ' || role_en from membership.verify_service_letter(
+  (select code from letter_code))),
+  'Layla Member · Section editor, Qirtas', 'Anyone with its code can check the letter');
+select pg_temp.login_as('00000000-0000-0000-0000-0000000000a1');
+select throws_ok(
+  $$ insert into membership.service_letters (user_id, role_en, period_from)
+     values ('00000000-0000-0000-0000-0000000000a1', 'Everything', current_date) $$,
+  '42501', null,
+  'A member cannot write their own letter'
+);
 
 select * from finish();
 rollback;
