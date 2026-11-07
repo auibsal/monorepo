@@ -27,6 +27,8 @@ import {
   eventReminder,
   type FailedJob,
   finalCheck,
+  formLink,
+  formSignedCopy,
   invitationBroadcast,
   invitationContact,
   newsletterConfirm,
@@ -59,6 +61,7 @@ import {
   type NoticeFooterLine,
   noticeText,
 } from "@repo/email/templates/notice";
+import { localizedPath } from "@repo/internationalization";
 import { journal } from "@repo/sal-data";
 import { revalidateTag } from "next/cache";
 import {
@@ -76,6 +79,7 @@ import {
 import { api, origin, site } from "@/lib/api/urls";
 import { type CacheTag, cacheTags } from "@/lib/supabase";
 import type { Sticker } from "./bot/stickers";
+import { formAnswers } from "./form-answers";
 import { pushToUser } from "./push";
 import { telegramToUser } from "./telegram";
 import {
@@ -168,6 +172,9 @@ const recipient = async (
     userId,
   };
 };
+
+/** A signer without an account gave an address to reach them. */
+const AN_EMAIL = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
 
 /** The outbox row being processed: for idempotency keys and push. */
 const current = new AsyncLocalStorage<{
@@ -679,6 +686,84 @@ const handlers: Record<string, Handler> = {
   },
   "events.rsvp_confirmed": eventNotice(rsvpConfirmed),
   "events.waitlist_promoted": eventNotice(waitlistPromoted),
+  // A parent's single-use link, to the teacher who passes it on.
+  "forms.link": async (admin, payload) => {
+    const [{ data: link }, { data: type }] = await Promise.all([
+      admin
+        .schema("governance")
+        .from("form_links")
+        .select("sent_to, used_at, expires_at")
+        .eq("id", String(payload.link_id))
+        .maybeSingle(),
+      admin
+        .schema("governance")
+        .from("form_types")
+        .select("code, title_en")
+        .eq("key", String(payload.form_key))
+        .maybeSingle(),
+    ]);
+    if (!(link && type) || link.used_at || typeof payload.token !== "string") {
+      return;
+    }
+    const url = `${appUrl()}/forms/${type.code}?link=${encodeURIComponent(payload.token)}`;
+    await send(
+      { email: link.sent_to, lang: "en" },
+      formLink("en", { code: type.code, title: type.title_en, url })
+    );
+    // The token is kept only as a hash: drop it from the outbox row.
+    const row = current.getStore()?.row;
+    if (row) {
+      await admin
+        .schema("core")
+        .from("outbox")
+        .update({
+          payload: {
+            form_key: String(payload.form_key),
+            link_id: String(payload.link_id),
+          },
+        })
+        .eq("id", row);
+    }
+  },
+  // The signer's copy (decisions §11): to the account that signed, or to
+  // the address a signer without an account gave.
+  "forms.signed_copy": async (admin, payload) => {
+    const { data: row } = await admin
+      .schema("governance")
+      .from("form_submissions")
+      .select(
+        "id, form_key, data, signer_name, signed_at, signer_contact, submitted_by, document_sha256, form_types(code, title_en, title_ar)"
+      )
+      .eq("id", String(payload.submission_id))
+      .maybeSingle();
+    if (!(row?.signer_name && row.signed_at && row.document_sha256)) {
+      return;
+    }
+    const member = await recipient(admin, row.submitted_by);
+    const contact = row.signer_contact?.trim() ?? "";
+    let to: Recipient | null = member;
+    if (!to && AN_EMAIL.test(contact)) {
+      to = { email: contact, lang: "en" };
+    }
+    if (!to) {
+      return;
+    }
+    const type = row.form_types;
+    await send(
+      to,
+      formSignedCopy(to.lang, {
+        answers: formAnswers(to.lang, row.form_key, row.data),
+        code: type?.code ?? "",
+        fingerprint: row.document_sha256,
+        signedAt: row.signed_at,
+        signer: row.signer_name,
+        title: (to.lang === "ar" ? type?.title_ar : type?.title_en) ?? "",
+        url: member
+          ? `${appUrl()}${localizedPath(to.lang, `/account/requests/${row.id}`)}`
+          : null,
+      })
+    );
+  },
   "forms.updated": async (admin, payload) => {
     const [to, { data: request }] = await Promise.all([
       recipient(admin, payload.user_id),

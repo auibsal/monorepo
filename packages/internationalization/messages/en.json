@@ -3158,7 +3158,25 @@
         "empty": "No students for this summer yet.",
         "add": "Add a student",
         "firstName": "First name",
-        "lastName": "Last name"
+        "lastName": "Last name",
+        "links": {
+          "title": "Parents’ links",
+          "lede": "A parent signs the consent (F-38) or the publishing release (F-39) through a single-use link, valid for 14 days. The link goes to the teacher, who passes it on: the Society reaches parents only through the teacher.",
+          "form": "Form",
+          "f38": "F-38, parent’s consent",
+          "f39": "F-39, publishing release",
+          "teacher": "The teacher’s email",
+          "teacherHint": "The link is sent here, to pass on to the parent.",
+          "note": "For",
+          "noteHint": "The student’s first name and last initial, to tell the links apart.",
+          "sentTo": "Sent to",
+          "state": "Status",
+          "signed": "Signed",
+          "expired": "Expired",
+          "waiting": "Waiting",
+          "empty": "No links sent yet.",
+          "send": "Send a link"
+        }
       },
       "games": {
         "title": "Check the coming games",
@@ -3669,7 +3687,17 @@
       "contact": "How to reach you (email or phone)",
       "signAndSend": "Sign and send",
       "date": "Date",
-      "kept": "The site keeps the signed copy. A printed copy is this page printed from the browser."
+      "kept": "The site keeps the signed copy. A printed copy is this page printed from the browser.",
+      "esignAgree": "I agree to sign electronically. My typed name is my signature, and I’ll get a copy by email.",
+      "esignField": "Agreement to sign electronically",
+      "needsLink": "This form is signed through the link sent to you. Ask the person who sent it for a new one.",
+      "refusals": {
+        "esign_agreement_required": "Tick the agreement to sign electronically.",
+        "human_check_failed": "The check that you’re a person didn’t pass. Try again.",
+        "link_not_valid": "This link has been used or has expired. Ask for a new one.",
+        "rate_limited": "Too many tries from here. Wait a few minutes and try again.",
+        "sign_in_required": "Sign in to send this form."
+      }
     },
     "qirtas": {
       "pieceTitle": "Your piece",

@@ -2117,12 +2117,68 @@ export type Database = {
           },
         ];
       };
+      form_links: {
+        Row: {
+          created_at: string;
+          created_by: string | null;
+          expires_at: string;
+          form_key: string;
+          id: string;
+          note: string | null;
+          sent_to: string;
+          submission_id: string | null;
+          token_hash: string;
+          used_at: string | null;
+        };
+        Insert: {
+          created_at?: string;
+          created_by?: string | null;
+          expires_at?: string;
+          form_key: string;
+          id?: string;
+          note?: string | null;
+          sent_to: string;
+          submission_id?: string | null;
+          token_hash: string;
+          used_at?: string | null;
+        };
+        Update: {
+          created_at?: string;
+          created_by?: string | null;
+          expires_at?: string;
+          form_key?: string;
+          id?: string;
+          note?: string | null;
+          sent_to?: string;
+          submission_id?: string | null;
+          token_hash?: string;
+          used_at?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "form_links_form_key_fkey";
+            columns: ["form_key"];
+            isOneToOne: false;
+            referencedRelation: "form_types";
+            referencedColumns: ["key"];
+          },
+          {
+            foreignKeyName: "form_links_submission_id_fkey";
+            columns: ["submission_id"];
+            isOneToOne: false;
+            referencedRelation: "form_submissions";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       form_submissions: {
         Row: {
           acknowledged_at: string | null;
           closed_at: string | null;
           created_at: string;
           data: NonNullable<Json>;
+          document_sha256: string | null;
+          esign_agreed: boolean;
           form_key: string;
           form_version: number;
           handled_by: string | null;
@@ -2134,6 +2190,7 @@ export type Database = {
           second_signer_name: string | null;
           signed_at: string | null;
           signer_contact: string | null;
+          signer_ip: string | null;
           signer_name: string | null;
           status: string;
           subject_id: string | null;
@@ -2147,6 +2204,8 @@ export type Database = {
           closed_at?: string | null;
           created_at?: string;
           data?: NonNullable<Json>;
+          document_sha256?: string | null;
+          esign_agreed?: boolean;
           form_key: string;
           form_version?: number;
           handled_by?: string | null;
@@ -2158,6 +2217,7 @@ export type Database = {
           second_signer_name?: string | null;
           signed_at?: string | null;
           signer_contact?: string | null;
+          signer_ip?: string | null;
           signer_name?: string | null;
           status?: string;
           subject_id?: string | null;
@@ -2171,6 +2231,8 @@ export type Database = {
           closed_at?: string | null;
           created_at?: string;
           data?: NonNullable<Json>;
+          document_sha256?: string | null;
+          esign_agreed?: boolean;
           form_key?: string;
           form_version?: number;
           handled_by?: string | null;
@@ -2182,6 +2244,7 @@ export type Database = {
           second_signer_name?: string | null;
           signed_at?: string | null;
           signer_contact?: string | null;
+          signer_ip?: string | null;
           signer_name?: string | null;
           status?: string;
           subject_id?: string | null;
@@ -2205,6 +2268,7 @@ export type Database = {
           acknowledge_days: number | null;
           anonymous_ok: boolean;
           answer_days: number | null;
+          by_link: boolean;
           code: string;
           filled: string;
           handle_permission: string;
@@ -2224,6 +2288,7 @@ export type Database = {
           acknowledge_days?: number | null;
           anonymous_ok?: boolean;
           answer_days?: number | null;
+          by_link?: boolean;
           code: string;
           filled?: string;
           handle_permission: string;
@@ -2243,6 +2308,7 @@ export type Database = {
           acknowledge_days?: number | null;
           anonymous_ok?: boolean;
           answer_days?: number | null;
+          by_link?: boolean;
           code?: string;
           filled?: string;
           handle_permission?: string;
@@ -2899,6 +2965,10 @@ export type Database = {
         Args: { partner: string; reason?: string };
         Returns: undefined;
       };
+      form_link_open: {
+        Args: { form_key: string; token: string };
+        Returns: boolean;
+      };
       form_queue: {
         Args: Record<PropertyKey, never>;
         Returns: {
@@ -2915,6 +2985,10 @@ export type Database = {
       handle_form: {
         Args: { office?: Json; status: string; submission_id: string };
         Returns: undefined;
+      };
+      issue_form_link: {
+        Args: { form_key: string; note?: string; sent_to: string };
+        Returns: string;
       };
       my_partner_application: {
         Args: Record<PropertyKey, never>;
@@ -3070,9 +3144,12 @@ export type Database = {
         Args: {
           anonymous?: boolean;
           data: Json;
+          esign_agreed?: boolean;
           form_key: string;
+          link_token?: string;
           routing?: string;
           signer_contact?: string;
+          signer_ip?: string;
           signer_name: string;
           subject_id?: string;
         };

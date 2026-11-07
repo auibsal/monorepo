@@ -6,6 +6,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { corsHeaders, preflight } from "@/lib/api/cors";
 import { withinRateLimit } from "@/lib/api/rate-limit";
+import { isHuman } from "@/lib/api/turnstile";
 
 export const OPTIONS = preflight;
 
@@ -13,6 +14,8 @@ const requestSchema = programmes.removalRequestSchema.extend({
   programme: z.enum(["next-stop"]).optional(),
   requester_lang: z.enum(["en", "ar"]).optional(),
   /** Left empty by people; filled by bots (the form hides it). */
+  /** Cloudflare Turnstile's token (none locally). */
+  token: z.string().max(4096).nullish(),
   website: z.string().max(500).optional(),
 });
 
@@ -38,7 +41,7 @@ export const POST = async (request: Request) => {
   if (!parsed.success) {
     return json({ error: "invalid_request" }, 400);
   }
-  const { programme, requester_lang, website, ...fields } = parsed.data;
+  const { programme, requester_lang, token, website, ...fields } = parsed.data;
   if (website) {
     // Pretend success so the bot learns nothing.
     return json({ ok: true });
@@ -46,6 +49,9 @@ export const POST = async (request: Request) => {
 
   if (!(await withinRateLimit(request, "removal-request", { max: 10 }))) {
     return json({ error: "rate_limited" }, 429);
+  }
+  if (!(await isHuman(request, token))) {
+    return json({ error: "human_check_failed" }, 403);
   }
 
   const admin = createAdminClient();

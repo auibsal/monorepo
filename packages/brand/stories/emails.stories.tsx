@@ -17,6 +17,8 @@ import {
   eventChanged,
   eventReminder,
   finalCheck,
+  formLink,
+  formSignedCopy,
   invitation,
   type Lang,
   newsletterConfirm,
@@ -258,6 +260,30 @@ export const ServiceLetterWritten = email((l) =>
     PIECE,
     APP
   )
+);
+export const FormSignedCopy = email((l) =>
+  formSignedCopy(l, {
+    answers: [
+      {
+        label: l === "ar" ? "عنوان الفعالية" : "Event title",
+        value: l === "ar" ? "قراءة على ضفة النهر" : "A reading on the river",
+      },
+    ],
+    code: "F-11",
+    fingerprint:
+      "9f2c4e0b7a1d3c5e8f6a2b4d6c8e0f1a3b5c7d9e1f2a4b6c8d0e2f4a6b8c0d2e",
+    signedAt: "2026-11-09T15:00:00Z",
+    signer: l === "ar" ? "سارة أحمد" : "Sara Ahmed",
+    title: l === "ar" ? "مقترح فعالية" : "Event pitch",
+    url: `${APP}/account/requests/${PIECE}`,
+  })
+);
+export const FormLink = email((l) =>
+  formLink(l, {
+    code: "F-38",
+    title: l === "ar" ? "موافقة ولي الأمر" : "Parent’s consent",
+    url: `${APP}/forms/F-38?link=example`,
+  })
 );
 export const RequestAcknowledged = email((l) =>
   requestUpdated(l, "f20", "acknowledged", PIECE, APP)

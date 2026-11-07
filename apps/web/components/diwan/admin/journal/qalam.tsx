@@ -133,7 +133,139 @@ export const QalamRoster = () => {
       <AddInPlace label={t("add")}>
         {(close) => <AddStudent onDone={close} year={year} />}
       </AddInPlace>
+      <ParentLinks />
     </div>
+  );
+};
+
+/**
+ * A parent's consent (F-38) or a publishing release (F-39), signed by
+ * single-use link (decisions §11). The link goes to the teacher, who
+ * passes it on: the Society reaches parents only through the teacher.
+ */
+const ParentLinks = () => {
+  const t = useTranslations("diwan.admin.qalam.links");
+  const { supabase } = useAuth();
+  const queryClient = useQueryClient();
+  const links = useQuery({
+    queryFn: async () =>
+      unwrap(
+        await supabase
+          .schema("governance")
+          .from("form_links")
+          .select(
+            "id, form_key, sent_to, note, created_at, expires_at, used_at"
+          )
+          .in("form_key", ["f38", "f39"])
+          .order("created_at", { ascending: false })
+          .limit(50)
+      ) ?? [],
+    queryKey: [...key, "links"],
+  });
+  const now = Date.now();
+  const state = (l: { expires_at: string; used_at: string | null }) => {
+    if (l.used_at) {
+      return t("signed");
+    }
+    return Date.parse(l.expires_at) < now ? t("expired") : t("waiting");
+  };
+  return (
+    <section className="grid gap-4">
+      <h2 className="type-subheading">{t("title")}</h2>
+      <p className="type-caption">{t("lede")}</p>
+      {links.data ? (
+        <DataTable
+          columns={[
+            {
+              cell: (l) => (l.form_key === "f38" ? "F-38" : "F-39"),
+              header: t("form"),
+              key: "form",
+            },
+            { cell: (l) => l.note ?? "", header: t("note"), key: "note" },
+            { cell: (l) => l.sent_to, header: t("sentTo"), key: "sent" },
+            { cell: state, header: t("state"), key: "state" },
+          ]}
+          empty={t("empty")}
+          rowKey={(l) => l.id}
+          rows={links.data}
+        />
+      ) : (
+        <SectionSpinner />
+      )}
+      <AddInPlace label={t("send")}>
+        {(close) => (
+          <SendLink
+            onDone={() => {
+              close();
+              queryClient.invalidateQueries({ queryKey: [...key, "links"] });
+            }}
+          />
+        )}
+      </AddInPlace>
+    </section>
+  );
+};
+
+const SendLink = ({ onDone }: { onDone: () => void }) => {
+  const t = useTranslations("diwan.admin.qalam.links");
+  const { supabase } = useAuth();
+  const [form, setForm] = useState<"f38" | "f39">("f38");
+  const [teacher, setTeacher] = useState("");
+  const [note, setNote] = useState("");
+  const send = useMutation({
+    mutationFn: async () =>
+      unwrap(
+        await supabase.schema("governance").rpc("issue_form_link", {
+          form_key: form,
+          note,
+          sent_to: teacher.trim(),
+        })
+      ),
+    onSuccess: onDone,
+  });
+  const submit = (event: FormEvent) => {
+    event.preventDefault();
+    send.mutate();
+  };
+  return (
+    <form className="grid max-w-xl gap-3" onSubmit={submit}>
+      <Field label={t("form")}>
+        {(id) => (
+          <SelectInput
+            id={id}
+            onChange={(e) => setForm(e.target.value as "f38" | "f39")}
+            value={form}
+          >
+            <option value="f38">{t("f38")}</option>
+            <option value="f39">{t("f39")}</option>
+          </SelectInput>
+        )}
+      </Field>
+      <Field hint={t("teacherHint")} label={t("teacher")}>
+        {(id) => (
+          <Input
+            dir="ltr"
+            id={id}
+            onChange={(e) => setTeacher(e.target.value)}
+            required
+            type="email"
+            value={teacher}
+          />
+        )}
+      </Field>
+      <Field hint={t("noteHint")} label={t("note")}>
+        {(id) => (
+          <Input
+            id={id}
+            maxLength={300}
+            onChange={(e) => setNote(e.target.value)}
+            value={note}
+          />
+        )}
+      </Field>
+      <SaveButton pending={send.isPending} />
+      <ErrorLine error={send.error} />
+    </form>
   );
 };
 

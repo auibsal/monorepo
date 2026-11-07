@@ -297,7 +297,14 @@ any schema change. Integration tests run against a local stack with
   Verification codes are random and separate. Nobody types a number.
 - **Forms** are at `/forms/<number>` on one standard page, signed in the
   signer's platform name and kept as the signed copy; staff forms are
-  Notion templates. The forms register in SAL-EXB-01 is the one source of
+  Notion templates. The signer agrees to sign electronically; the copy
+  keeps the time, IP address, version and SHA-256 fingerprint, and the
+  signer is emailed theirs (`forms.signed_copy`). Signing without an
+  account, and anonymous concerns, go through `/api/forms/sign`
+  (Turnstile, `TURNSTILE_SECRET_KEY`, and a limit per address); parents
+  sign Qalam's F-38 and F-39 by a single-use link the Qalam lead sends
+  to the teacher (`governance.form_links`). Every public form that sends
+  email checks Turnstile (`lib/api/turnstile.ts`). The forms register in SAL-EXB-01 is the one source of
   every form's number, title and fields; `bun run check:forms` compares
   `governance.form_types` and the registry with it. Where the site already
   does the job (joining, RSVPs, Write for Qirtas, Get involved,

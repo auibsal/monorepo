@@ -7,6 +7,7 @@ import { Textarea } from "@repo/brand/components/ui/textarea";
 import { apiPath } from "@repo/internationalization";
 import { useTranslations } from "next-intl";
 import { type FormEvent, useId, useState } from "react";
+import { useHumanCheck } from "@/components/diwan/auth/human-check";
 
 type State = "idle" | "sending" | "sent" | "failed" | "rate_limited";
 
@@ -22,6 +23,7 @@ export const AssociateRequestForm = () => {
   const t = useTranslations("web.join.associateRequest");
   const id = useId();
   const [state, setState] = useState<State>("idle");
+  const human = useHumanCheck("associate-request");
   const [relation, setRelation] =
     useState<(typeof RELATIONS)[number]>("faculty");
 
@@ -36,6 +38,7 @@ export const AssociateRequestForm = () => {
           full_name: data.get("full_name"),
           note: data.get("note") || undefined,
           relation,
+          token: human.token,
           website: data.get("website") || undefined,
         }),
         headers: { "content-type": "application/json" },
@@ -48,6 +51,8 @@ export const AssociateRequestForm = () => {
       }
     } catch {
       setState("failed");
+    } finally {
+      human.reset();
     }
   };
 
@@ -110,9 +115,10 @@ export const AssociateRequestForm = () => {
         name="website"
         tabIndex={-1}
       />
+      {human.element}
       <Button
         className="justify-self-start"
-        disabled={state === "sending"}
+        disabled={state === "sending" || !human.ready}
         type="submit"
       >
         {t("send")}

@@ -4,7 +4,7 @@ import { FillForm } from "@/components/diwan/forms/fill";
 
 interface PageProps {
   readonly params: Promise<{ number: string }>;
-  readonly searchParams: Promise<{ event?: string }>;
+  readonly searchParams: Promise<{ event?: string; link?: string }>;
 }
 
 /**
@@ -13,12 +13,14 @@ interface PageProps {
  */
 const Page = async ({ params, searchParams }: PageProps) => {
   const { number } = await params;
-  const { event } = await searchParams;
+  const { event, link } = await searchParams;
   const key = forms.keyFromNumber(decodeURIComponent(number));
   if (!forms.isFormKey(key)) {
     notFound();
   }
-  return <FillForm eventSlug={event ?? null} formKey={key} />;
+  return (
+    <FillForm eventSlug={event ?? null} formKey={key} link={link ?? null} />
+  );
 };
 
 export default Page;

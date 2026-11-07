@@ -82,6 +82,8 @@ route sends it. Every email (audited end to end on 2026-11-04):
 | `journal.call_opened` | A Qirtas call opens | Whoever asked "Tell me when" | Service (they stop it on the page) |
 | `membership.certificate_issued` | A certificate signed by both and issued | The holder | Service |
 | `membership.service_letter` | A service letter (F-05) written | The holder | Service |
+| `forms.signed_copy` | A form signed on the site (not an anonymous concern) | The signer: their account, or the address a signer without one gave | Service |
+| `forms.link` | A Qalam lead sends a parent's single-use link (F-38, F-39) | The teacher, who passes it on | Direct |
 | `forms.updated` | A concern, motion or pitch taken up, then closed | Its sender | Service |
 | `governance.election` | The notice; voting open; the results | Every member; then everyone on the register | Service |
 | `governance.candidacy_decided` | The Elections Committee's answer | The nominee | Service |

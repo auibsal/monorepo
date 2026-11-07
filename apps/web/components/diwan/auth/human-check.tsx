@@ -217,3 +217,24 @@ export const useHumanCheck = (action: string) => {
     token,
   };
 };
+
+/**
+ * The check as a component, for a public form that starts it only once the
+ * visitor begins (the Sunday Paper sign-up, shown on many pages, so the
+ * script never loads for someone just reading). It reports the token, or
+ * null; remount it (a new `key`) for a fresh one after each request.
+ */
+export const HumanCheck = ({
+  action,
+  onToken,
+}: {
+  readonly action: string;
+  readonly onToken: (token: string | null) => void;
+}) => {
+  const human = useHumanCheck(action);
+  useEffect(() => {
+    const token = typeof human.token === "string" ? human.token : "";
+    onToken(human.ready ? token : null);
+  }, [human.ready, human.token, onToken]);
+  return human.element;
+};

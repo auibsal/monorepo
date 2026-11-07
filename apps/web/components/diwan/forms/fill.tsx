@@ -6,13 +6,16 @@ import { Checkbox } from "@repo/brand/components/ui/checkbox";
 import { Input } from "@repo/brand/components/ui/input";
 import { Label } from "@repo/brand/components/ui/label";
 import type { Locale } from "@repo/internationalization";
+import { apiPath } from "@repo/internationalization";
 import { formatLongDate } from "@repo/internationalization/format";
 import { useRouter } from "@repo/internationalization/navigation";
 import { forms, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
-import { type FormEvent, useState } from "react";
+import { type FormEvent, type ReactNode, useState } from "react";
+import { ApiError } from "@/lib/diwan/api";
 import { ErrorLine, Field, SelectInput } from "../admin/kit";
+import { useHumanCheck } from "../auth/human-check";
 import { EmptyLine } from "../states";
 import { FormFieldInput, type FormLabels, useFormLabels } from "./field";
 
@@ -84,6 +87,196 @@ const AnonymousOption = ({
   );
 };
 
+/** The refusals the form page can explain (governance.sign_form). */
+const REFUSALS = new Set([
+  "esign_agreement_required",
+  "human_check_failed",
+  "link_not_valid",
+  "rate_limited",
+  "sign_in_required",
+]);
+
+/** Signing without an account, or anonymously: through the API route. */
+const signThroughApi = async (body: object) => {
+  const response = await fetch(apiPath("/forms/sign"), {
+    body: JSON.stringify(body),
+    headers: { "Content-Type": "application/json" },
+    method: "POST",
+  });
+  const json = (await response.json().catch(() => ({}))) as {
+    error?: string;
+    id?: string;
+  };
+  if (!response.ok) {
+    throw new ApiError(response.status, json.error ?? "request_failed");
+  }
+  return json.id ?? "";
+};
+
+const EsignAgreement = ({
+  onChange,
+  value,
+}: {
+  onChange: (value: boolean) => void;
+  value: boolean;
+}) => {
+  const t = useTranslations("diwan.forms");
+  return (
+    <div className="flex items-start gap-2">
+      <Checkbox
+        checked={value}
+        id="esign"
+        onCheckedChange={(checked) => onChange(checked === true)}
+      />
+      <Label className="font-normal" htmlFor="esign">
+        {t("esignAgree")}
+      </Label>
+    </div>
+  );
+};
+
+/** Signs in the member's name, or through the API route when signed out
+ * or anonymous (Turnstile; governance.sign_form either way). */
+const sendForm = (
+  supabase: ReturnType<typeof useAuth>["supabase"],
+  input: {
+    agreed: boolean;
+    anonymous: boolean;
+    contact: string | null;
+    data: Data;
+    formKey: forms.FormKey;
+    link: string | null;
+    routing: forms.Routing;
+    signature: string;
+    subjectId: string | null;
+    throughApi: boolean;
+    token: string | undefined;
+  }
+) => {
+  if (!input.throughApi) {
+    return forms.signForm(supabase, {
+      data: input.data,
+      esignAgreed: input.agreed,
+      form: input.formKey,
+      routing: input.routing,
+      signerName: input.signature,
+      subjectId: input.subjectId,
+    });
+  }
+  return signThroughApi({
+    anonymous: input.anonymous,
+    data: input.data,
+    esign_agreed: !input.anonymous && input.agreed,
+    form: input.formKey,
+    link: input.link,
+    routing: input.routing,
+    signer_contact: input.contact,
+    signer_name: input.anonymous ? "" : input.signature,
+    subject_id: input.subjectId,
+    token: input.token,
+  });
+};
+
+/** Who signs and how: anonymous, a contact, "I agree", the human check. */
+const SignerFields = ({
+  agreed,
+  allowAnonymous,
+  anonymous,
+  contact,
+  human,
+  onAgreed,
+  onAnonymous,
+  onContact,
+  signedIn,
+}: {
+  agreed: boolean;
+  allowAnonymous: boolean;
+  anonymous: boolean;
+  contact: string;
+  human: ReactNode;
+  onAgreed: (value: boolean) => void;
+  onAnonymous: (value: boolean) => void;
+  onContact: (value: string) => void;
+  signedIn: boolean;
+}) => {
+  const t = useTranslations("diwan.forms");
+  return (
+    <>
+      {allowAnonymous ? (
+        <AnonymousOption onChange={onAnonymous} value={anonymous} />
+      ) : null}
+      {anonymous || signedIn ? null : (
+        <Field label={t("contact")}>
+          {(fieldId) => (
+            <Input
+              id={fieldId}
+              maxLength={200}
+              onChange={(e) => onContact(e.target.value)}
+              value={contact}
+            />
+          )}
+        </Field>
+      )}
+      {anonymous ? null : <EsignAgreement onChange={onAgreed} value={agreed} />}
+      {human}
+    </>
+  );
+};
+
+/** What still needs doing before a form can be signed. */
+const signingProblems = (
+  definition: forms.FormDefinition,
+  data: Data,
+  sign: { agreed: boolean; anonymous: boolean; signature: string }
+) => {
+  const found = forms.formProblems(definition, data);
+  if (!(sign.anonymous || sign.signature.trim().length >= 2)) {
+    found.push("signature");
+  }
+  if (!(sign.anonymous || sign.agreed)) {
+    found.push("esign");
+  }
+  return found;
+};
+
+/** The problems line, then a refusal the page can explain, or the error. */
+const SignProblems = ({
+  error,
+  labels,
+  problems,
+}: {
+  error: Error | null;
+  labels: FormLabels;
+  problems: string[];
+}) => {
+  const t = useTranslations("diwan.forms");
+  const refusal =
+    error instanceof ApiError && REFUSALS.has(error.code) ? error.code : null;
+  return (
+    <>
+      <ProblemsLine
+        labels={{
+          ...labels,
+          field: (key: string) => {
+            if (key === "signature") {
+              return t("signature");
+            }
+            return key === "esign" ? t("esignField") : labels.field(key);
+          },
+        }}
+        problems={problems}
+      />
+      {refusal ? (
+        <p className="type-body font-medium" role="alert">
+          {t(`refusals.${refusal}` as never)}
+        </p>
+      ) : (
+        <ErrorLine error={error} />
+      )}
+    </>
+  );
+};
+
 const ProblemsLine = ({
   labels,
   problems,
@@ -111,9 +304,12 @@ const ProblemsLine = ({
 export const FillForm = ({
   eventSlug = null,
   formKey,
+  link = null,
 }: {
   readonly eventSlug?: string | null;
   readonly formKey: string;
+  /** A parent's single-use link (?link=), for a form signed only by link. */
+  readonly link?: string | null;
 }) => {
   const t = useTranslations("diwan.forms");
   if (!forms.isFormKey(formKey)) {
@@ -123,7 +319,21 @@ export const FillForm = ({
       </EmptyLine>
     );
   }
-  return <FormEditor eventSlug={eventSlug} formKey={formKey} key={formKey} />;
+  if (forms.forms[formKey].byLink && !link) {
+    return (
+      <EmptyLine action={{ href: "/", label: t("home") }}>
+        {t("needsLink")}
+      </EmptyLine>
+    );
+  }
+  return (
+    <FormEditor
+      eventSlug={eventSlug}
+      formKey={formKey}
+      key={formKey}
+      link={link}
+    />
+  );
 };
 
 /** The event a form names, by its address (RLS decides who sees it). */
@@ -147,9 +357,11 @@ const useNamedEvent = (slug: string | null) => {
 const FormEditor = ({
   eventSlug,
   formKey,
+  link,
 }: {
   eventSlug: string | null;
   formKey: forms.FormKey;
+  link: string | null;
 }) => {
   const t = useTranslations("diwan.forms");
   const locale = useLocale() as Locale;
@@ -178,7 +390,11 @@ const FormEditor = ({
   const [problems, setProblems] = useState<string[]>([]);
   const [signer, setSigner] = useState<string | null>(null);
   const [contact, setContact] = useState("");
+  const [agreed, setAgreed] = useState(false);
   const [sent, setSent] = useState(false);
+  // Signed out or anonymous: Turnstile, checked by /api/forms/sign.
+  const human = useHumanCheck("form");
+  const throughApi = !user || anonymous;
   // A member signs in the name on their account, unless they change it.
   const myName = me.data
     ? (locale === "ar" && me.data.full_name_ar) || me.data.full_name_en
@@ -187,15 +403,20 @@ const FormEditor = ({
 
   const sign = useMutation({
     mutationFn: () =>
-      forms.signForm(supabase, {
+      sendForm(supabase, {
+        agreed,
         anonymous,
+        contact: user ? null : contact,
         data: normalize(definition.fields, data),
-        form: formKey,
+        formKey,
+        link,
         routing,
-        signerContact: user ? null : contact,
-        signerName: anonymous ? "" : signature,
+        signature,
         subjectId: event.data?.id ?? null,
+        throughApi,
+        token: human.token,
       }),
+    onError: () => human.reset(),
     onSuccess: async (savedId) => {
       await queryClient.invalidateQueries({ queryKey: ["forms"] });
       if (eventSlug && event.data) {
@@ -227,10 +448,11 @@ const FormEditor = ({
 
   const onSubmit = (e: FormEvent) => {
     e.preventDefault();
-    const found = forms.formProblems(definition, data);
-    if (!(anonymous || signature.trim().length >= 2)) {
-      found.push("signature");
-    }
+    const found = signingProblems(definition, data, {
+      agreed,
+      anonymous,
+      signature,
+    });
     setProblems(found);
     if (found.length === 0) {
       sign.mutate();
@@ -250,7 +472,7 @@ const FormEditor = ({
           ) : undefined
         }
         onSubmit={onSubmit}
-        pending={sign.isPending}
+        pending={sign.isPending || (throughApi && !human.ready)}
         purpose={labels.purpose()}
         signature={{
           hint: t("signatureHint"),
@@ -298,30 +520,18 @@ const FormEditor = ({
             value={data[field.key]}
           />
         ))}
-        {definition.anonymous ? (
-          <AnonymousOption onChange={setAnonymous} value={anonymous} />
-        ) : null}
-        {anonymous || user ? null : (
-          <Field label={t("contact")}>
-            {(fieldId) => (
-              <Input
-                id={fieldId}
-                maxLength={200}
-                onChange={(e) => setContact(e.target.value)}
-                value={contact}
-              />
-            )}
-          </Field>
-        )}
-        <ProblemsLine
-          labels={{
-            ...labels,
-            field: (key: string) =>
-              key === "signature" ? t("signature") : labels.field(key),
-          }}
-          problems={problems}
+        <SignerFields
+          agreed={agreed}
+          allowAnonymous={Boolean(definition.anonymous)}
+          anonymous={anonymous}
+          contact={contact}
+          human={throughApi ? human.element : null}
+          onAgreed={setAgreed}
+          onAnonymous={setAnonymous}
+          onContact={setContact}
+          signedIn={Boolean(user)}
         />
-        <ErrorLine error={sign.error} />
+        <SignProblems error={sign.error} labels={labels} problems={problems} />
       </FormPage>
     </div>
   );

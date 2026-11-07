@@ -1045,6 +1045,78 @@ export const serviceLetterWritten = (
     ],
   }));
 
+/**
+ * The signer's copy of a form signed on the site (decisions §11, E-SIGN and
+ * UETA): what was signed, by whom, when, and its fingerprint.
+ */
+export const formSignedCopy = (
+  lang: Lang,
+  form: {
+    answers: { label: string; value: string }[];
+    code: string;
+    fingerprint: string;
+    signedAt: string;
+    signer: string;
+    title: string;
+    url: string | null;
+  }
+) =>
+  build(lang, (l) => ({
+    ...(form.url
+      ? {
+          action: {
+            href: form.url,
+            label: l === "ar" ? "افتح النسخة الموقّعة" : "Open the signed copy",
+          },
+        }
+      : {}),
+    heading:
+      l === "ar"
+        ? `نسختك الموقّعة: ${form.title}`
+        : `Your signed copy: ${form.title}`,
+    lists: form.answers.length
+      ? [
+          {
+            items: form.answers.map((a) => ({ meta: a.value, title: a.label })),
+            title: l === "ar" ? "ما وقّعته" : "What you signed",
+          },
+        ]
+      : [],
+    paragraphs: [
+      l === "ar"
+        ? `وقّعتَ ${form.title} (${form.code}) باسم ${form.signer} في ${when(form.signedAt, l)}. يحتفظ الموقع بالنسخة الموقّعة، وهذه نسختك.`
+        : `You signed ${form.title} (${form.code}) as ${form.signer} on ${when(form.signedAt, l)}. The site keeps the signed copy; this one is yours.`,
+      l === "ar"
+        ? `البصمة (SHA-256): ${form.fingerprint}`
+        : `Fingerprint (SHA-256): ${form.fingerprint}`,
+    ],
+  }));
+
+/**
+ * A single-use link to sign a form without an account (a parent's consent
+ * for Qalam), sent to the teacher, who passes it on: the Society reaches
+ * parents only through the teacher.
+ */
+export const formLink = (
+  lang: Lang,
+  link: { code: string; title: string; url: string }
+) =>
+  build(lang, (l) => ({
+    action: {
+      href: link.url,
+      label: l === "ar" ? "افتح النموذج" : "Open the form",
+    },
+    heading:
+      l === "ar"
+        ? `رابط للتوقيع: ${link.title}`
+        : `A link to sign: ${link.title}`,
+    paragraphs: [
+      l === "ar"
+        ? `أرسِل هذا الرابط إلى ولي الأمر ليوقّع ${link.title} (${link.code}). يعمل الرابط مرة واحدة خلال 14 يومًا، ولا يحتاج إلى حساب.`
+        : `Please pass this link to the parent or guardian to sign ${link.title} (${link.code}). It works once, within 14 days, and needs no account.`,
+    ],
+  }));
+
 /** The register's numbers (SAL-EXB-01; owner, Nov 7, 2026). */
 const REQUEST_NAMES: Record<string, Record<Lang, string>> = {
   f10: {

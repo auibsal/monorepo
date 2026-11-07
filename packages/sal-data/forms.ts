@@ -41,6 +41,8 @@ export interface FormField {
 export interface FormDefinition {
   /** May be sent without a name (F-20). */
   readonly anonymous?: boolean;
+  /** Signed only through a single-use link (a parent's consent). */
+  readonly byLink?: boolean;
   readonly code: string;
   readonly fields: readonly FormField[];
   readonly key: FormKey;
@@ -224,6 +226,7 @@ export const forms: Record<FormKey, FormDefinition> = {
     preamble: true,
   },
   f38: {
+    byLink: true,
     code: "F-38",
     fields: [
       { key: "student_name", max: 200, required: true, type: "text" },
@@ -248,6 +251,7 @@ export const forms: Record<FormKey, FormDefinition> = {
     preamble: true,
   },
   f39: {
+    byLink: true,
     code: "F-39",
     fields: [
       { key: "piece_title", max: 200, required: true, type: "text" },
@@ -468,6 +472,8 @@ export const formProblems = (
 export interface SignInput {
   anonymous?: boolean;
   data: FormData;
+  /** "I agree" to sign electronically (E-SIGN, UETA). */
+  esignAgreed: boolean;
   form: FormKey;
   routing?: Routing;
   /** The signer's contact, for a signer without an account (a parent, a guest). */
@@ -477,13 +483,15 @@ export interface SignInput {
   subjectId?: string | null;
 }
 
-/** Signs and sends a form; the signed copy keeps the signer, the time and the
- * form's version. Anyone may sign a form that needs no account. */
+/** Signs and sends a form in the signed-in member's name; the signed copy
+ * keeps the signer, the time, the version and the fingerprint. Signing
+ * without an account, or anonymously, goes through /api/forms/sign. */
 export const signForm = async (client: Client, input: SignInput) =>
   unwrap(
     await client.schema("governance").rpc("sign_form", {
       anonymous: input.anonymous ?? false,
       data: input.data as never,
+      esign_agreed: input.esignAgreed,
       form_key: input.form,
       routing: input.routing ?? "none",
       signer_contact: input.signerContact ?? undefined,

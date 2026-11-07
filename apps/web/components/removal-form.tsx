@@ -9,6 +9,7 @@ import { apiPath } from "@repo/internationalization";
 import { formatClock, formatLongDate } from "@repo/internationalization/format";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useId, useState } from "react";
+import { useHumanCheck } from "@/components/diwan/auth/human-check";
 
 type State =
   | { kind: "idle" | "sending" | "failed" | "rate_limited" | "invalid_email" }
@@ -20,6 +21,7 @@ export const RemovalForm = () => {
   const locale = useLocale() as Locale;
   const id = useId();
   const [state, setState] = useState<State>({ kind: "idle" });
+  const human = useHumanCheck("removal-request");
 
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -35,6 +37,7 @@ export const RemovalForm = () => {
           // The receipt and the done notice come in this language.
           requester_lang: locale,
           requester_name: data.get("requester_name"),
+          token: human.token,
           website: data.get("website") || undefined,
         }),
         headers: { "content-type": "application/json" },
@@ -59,6 +62,8 @@ export const RemovalForm = () => {
       }
     } catch {
       setState({ kind: "failed" });
+    } finally {
+      human.reset();
     }
   };
 
@@ -125,9 +130,10 @@ export const RemovalForm = () => {
         name="website"
         tabIndex={-1}
       />
+      {human.element}
       <Button
         className="justify-self-start"
-        disabled={state.kind === "sending"}
+        disabled={state.kind === "sending" || !human.ready}
         type="submit"
       >
         {state.kind === "sending" ? t("sending") : t("send")}
