@@ -288,8 +288,8 @@ export const roles = {
   partner_rep: {
     defaultScope: "partner",
     isCouncil: false,
-    nameAr: "ممثل الشريك",
-    nameEn: "Partner Representative",
+    nameAr: "عضو فريق الشريك",
+    nameEn: "Team member",
     permissions: ["partners.own"],
   },
   partnerships_director: {
@@ -487,13 +487,6 @@ export const roles = {
     nameAr: "محرّر آراء",
     nameEn: "Voices Editor",
     permissions: ["journal.edit.voices", "library.read"],
-  },
-  volunteer_coordinator: {
-    defaultScope: "global",
-    isCouncil: false,
-    nameAr: "منسق المتطوعين",
-    nameEn: "Volunteer Coordinator",
-    permissions: ["events.checkin", "library.read"],
   },
 } as const satisfies Record<string, RoleDefinition>;
 

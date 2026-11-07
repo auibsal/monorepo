@@ -912,7 +912,7 @@
           "find": "Type to find",
           "none": "Nothing matches."
         },
-        "tripNeedsApproval": "A trip to al-Mutanabbi Street is published only once the General Secretary records Student Life’s written approval, under Occasion.",
+        "tripNeedsApproval": "An event off campus is published only once the General Secretary records Student Life’s written approval, under Occasion.",
         "selection": {
           "choose": "Choose",
           "all": "Choose every row",
@@ -2444,12 +2444,7 @@
           "choose": "Choose",
           "link": "Link",
           "eventHint": "Create the event first in Events.",
-          "partnersTitle": "Partners",
-          "partnersLede": "Partners whose memorandum in force grants productions (Partners module).",
-          "removePartner": "Remove",
-          "noPartners": "No partner’s memorandum grants productions yet.",
-          "partner": "Partner",
-          "addPartner": "Add partner"
+          "partnersNote": "A production’s partners are the partners its performances are held with: set Host on the event in Notion, and use the event’s partner checklist."
         },
         "reportTab": {
           "lede": "The production report (Form F-25, section B), filed once the production closes.",
@@ -4261,7 +4256,19 @@
       },
       "allEvents": "All events",
       "auibCalendar": "AUIB’s calendar (opens auib.edu.iq)",
-      "heldWith": "Held with {partner}"
+      "heldWith": "Held with {partner}",
+      "forget": "Don’t remind me",
+      "cancelBooking": "Give my place back",
+      "leaveWaitlist": "Leave the waitlist",
+      "youreBooked": "You have a place.",
+      "youreWaiting": "You’re on the waitlist; you’ll hear if a place opens.",
+      "notices": {
+        "booked": "Booked. A confirmation is on its way.",
+        "waitlisted": "It’s full, so you’re on the waitlist; you’ll hear if a place opens.",
+        "cancelled": "Done.",
+        "reminded": "We’ll remind you the day before.",
+        "failed": "That didn’t go through. Try again, or book from your calendar."
+      }
     },
     "journal": {
       "title": "Qirtas",

@@ -1,13 +1,13 @@
 import { Icon } from "@repo/brand/components/sal/icon";
-import { Button } from "@repo/brand/components/ui/button";
 import type { Locale } from "@repo/internationalization";
-import { apiPath, localizedPath } from "@repo/internationalization";
+import { apiPath } from "@repo/internationalization";
 import { formatClock, formatLongDate } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
 import { events, localized, sanitizeRichText } from "@repo/sal-data";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { EventBooking } from "@/components/event-booking";
 import { EventParts } from "@/components/event-parts";
 import { ActionBar } from "@/components/frame/action-bar";
 import { ManageLinks } from "@/components/manage-links";
@@ -134,22 +134,17 @@ const EventView = async ({
       </header>
       {cancelled || !upcoming ? null : (
         <ActionBar>
-          <Button asChild>
-            <a
-              href={`${localizedPath(locale, "/account/calendar")}#${event.slug}`}
-            >
-              {event.entry === "open" ? t("remind") : t("rsvp")}
-            </a>
-          </Button>
-          <Button asChild variant="outline">
-            <a
-              href={apiPath(
-                `/calendar/events/${event.slug}.ics?lang=${locale}`
-              )}
-            >
-              {t("addToCalendar")}
-            </a>
-          </Button>
+          <EventBooking
+            eventId={event.id}
+            open={event.entry === "open"}
+            slug={event.slug}
+          />
+          <a
+            className="link type-body"
+            href={apiPath(`/calendar/events/${event.slug}.ics?lang=${locale}`)}
+          >
+            {t("addToCalendar")}
+          </a>
         </ActionBar>
       )}
       {upcoming && !cancelled ? (

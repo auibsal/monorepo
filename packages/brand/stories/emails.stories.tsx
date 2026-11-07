@@ -35,6 +35,7 @@ import {
   roleAssigned,
   roleEnding,
   rsvpConfirmed,
+  serviceLetterWritten,
   shiftReminder,
   submissionReceived,
   sundayPaper,
@@ -246,6 +247,14 @@ export const CertificateIssued = email((l) =>
   certificateIssued(
     l,
     l === "ar" ? "مدير الإعلام" : "Director of Media",
+    PIECE,
+    APP
+  )
+);
+export const ServiceLetterWritten = email((l) =>
+  serviceLetterWritten(
+    l,
+    l === "ar" ? "محرر الأخبار" : "News Editor",
     PIECE,
     APP
   )

@@ -167,10 +167,6 @@ export const addCredit = async (
   );
 };
 
-export const partnerChoices = async (client: Client) =>
-  unwrap(await client.schema("programmes").rpc("production_partner_choices")) ??
-  [];
-
 // ── Members ─────────────────────────────────────────────────────────────────
 
 export const memberProductions = async (client: Client) =>

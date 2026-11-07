@@ -281,14 +281,10 @@ select throws_ok(
 
 -- ── Partners, performances and the report ──
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a4');
-select throws_ok(
-  $$ insert into programmes.production_partners (production_id, partner_id)
-     values ('00000000-0000-0000-0000-00000000f001', '00000000-0000-0000-0000-00000000d002') $$,
-  '22023', 'partner_not_granted',
-  'A partner co-produces only under a memorandum granting productions'
-);
-insert into programmes.production_partners (production_id, partner_id)
-values ('00000000-0000-0000-0000-00000000f001', '00000000-0000-0000-0000-00000000d001');
+select is(to_regclass('programmes.production_partners'), null,
+  'A production''s partners are its performances'' hosts: no separate list (audit C8)');
+update events.events set partner_id = '00000000-0000-0000-0000-00000000d001'
+where id = '00000000-0000-0000-0000-00000000e001';
 update programmes.productions set stage = 'performances' where id = '00000000-0000-0000-0000-00000000f001';
 insert into programmes.production_events values
   ('00000000-0000-0000-0000-00000000f001', '00000000-0000-0000-0000-00000000e001');

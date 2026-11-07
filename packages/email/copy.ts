@@ -1024,6 +1024,27 @@ export const certificateIssued = (
     ],
   }));
 
+/** A service letter (F-05), written and signed for its holder. */
+export const serviceLetterWritten = (
+  lang: Lang,
+  role: string,
+  letterId: string,
+  app: string
+) =>
+  build(lang, (l) => ({
+    action: {
+      href: `${app}${localizedPath(l, `/account/record/letters/${letterId}`)}`,
+      label: l === "ar" ? "افتح الرسالة" : "Open the letter",
+    },
+    heading: l === "ar" ? "رسالة خدمتك جاهزة" : "Your service letter is ready",
+    paragraphs: [
+      role,
+      l === "ar"
+        ? "تجدها في «السجل»، ويمكن لأي أحد التحقق منها برمزها. اطبعها من المتصفح متى احتجت إليها."
+        : "It’s on your Record, and anyone can check it with its code. Print it from your browser whenever you need it.",
+    ],
+  }));
+
 /** The register's numbers (SAL-EXB-01; owner, Nov 7, 2026). */
 const REQUEST_NAMES: Record<string, Record<Lang, string>> = {
   f10: {

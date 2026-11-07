@@ -6022,32 +6022,6 @@ export type Database = {
           },
         ];
       };
-      production_partners: {
-        Row: {
-          created_at: string;
-          partner_id: string;
-          production_id: string;
-        };
-        Insert: {
-          created_at?: string;
-          partner_id: string;
-          production_id: string;
-        };
-        Update: {
-          created_at?: string;
-          partner_id?: string;
-          production_id?: string;
-        };
-        Relationships: [
-          {
-            foreignKeyName: "production_partners_production_id_fkey";
-            columns: ["production_id"];
-            isOneToOne: false;
-            referencedRelation: "productions";
-            referencedColumns: ["id"];
-          },
-        ];
-      };
       productions: {
         Row: {
           created_at: string;
@@ -6569,14 +6543,6 @@ export type Database = {
           skills: string[];
           title_ar: string;
           title_en: string;
-        }[];
-      };
-      production_partner_choices: {
-        Args: Record<PropertyKey, never>;
-        Returns: {
-          id: string;
-          name_ar: string;
-          name_en: string;
         }[];
       };
       profile_six_words: {
