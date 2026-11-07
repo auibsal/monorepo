@@ -30,7 +30,7 @@ sends them with the email and the push: reminders, RSVPs, waitlist
 places, Qirtas decisions). Reminders of booked events and shifts are
 optional emails: with optional email off, they still come here while
 notices are on (the Sunday Paper stays email only). A member who turns on
-"Daily word here" in /me gets the day's word in their chat at 9:00 AM
+"Daily word here" in /me gets the day's word in their chat at 9:00 a.m.
 Baghdad time, while notices are on (off by default). A member who blocks
 the bot has their notices turned off.
 
@@ -56,7 +56,7 @@ And without commands:
 - **Posts, every ten minutes** (pg_cron → `/cron/telegram`): new public events
   in the next 45 days (to `events`, else `announcements`), a "starting
   soon" reply three hours before, new Qirtas pieces of the last three days
-  (`qirtas`, else `announcements`), and the daily word at 9:00 AM Baghdad
+  (`qirtas`, else `announcements`), and the daily word at 9:00 a.m. Baghdad
   time (`word`, else `qirtas`; its Play button opens the Main App). A
   purpose without a topic gets no posts. Each post goes out once
   (`core.telegram_posts`).
@@ -79,7 +79,7 @@ And without commands:
   list for the group's admins, with a note saying the group is for
   officers. Linking later lets in only those who hold a role. Someone
   whose role ends is not removed automatically: the admins remove them.
-- **The morning brief,** once a day from 8:00 AM Baghdad time: today's
+- **The morning brief,** once a day from 8:00 a.m. Baghdad time: today's
   events (members-only and invitation events too) with their bookings and
   waitlists, and what waits in the Diwan as counts (partner applications,
   partners asking to turn something on, new Qirtas

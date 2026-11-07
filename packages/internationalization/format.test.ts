@@ -43,7 +43,7 @@ describe("regional formatting", () => {
       "Friday, November 6, 2026"
     );
     expect(formatFieldValue("2026-11-06T18:00", "en")).toBe(
-      "Friday, November 6, 2026, 6:00 PM"
+      "Friday, November 6, 2026, 6:00 p.m."
     );
     expect(formatFieldValue("", "en")).toBe("");
   });
@@ -93,7 +93,7 @@ describe("regional formatting", () => {
 });
 
 describe("SAL copy rules", () => {
-  const evening = "2026-10-13T15:00:00Z"; // 6:00 PM in Baghdad
+  const evening = "2026-10-13T15:00:00Z"; // 6:00 p.m. in Baghdad
 
   test("dates read 'Tuesday, October 13'", () => {
     expect(formatLongDate(evening, "en")).toBe("Tuesday, October 13");
@@ -109,7 +109,7 @@ describe("SAL copy rules", () => {
   });
 
   test("dated lists read '03', 'Tue', 'Nov' in Baghdad", () => {
-    // 22:30 UTC on November 2 is 1:30 AM on November 3 in Baghdad.
+    // 22:30 UTC on November 2 is 1:30 a.m. on November 3 in Baghdad.
     expect(formatDayParts("2026-11-02T22:30:00Z", "en")).toEqual({
       day: "03",
       month: "Nov",

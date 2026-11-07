@@ -37,7 +37,7 @@ The platform is one repository, [auibsal/mono](https://github.com/auibsal/mono),
 | sal-outbox-drain | Every 10 minutes | Retries any outbox row the webhook missed |
 | sal-publish | Every 10 minutes | Publishes scheduled news, issues and pieces |
 | sal-calendar-sync | Hourly at :07 | Refreshes the AUIB campus calendar |
-| sal-daily | 4:45 UTC (7:45 AM Baghdad) | Event reminders, agreement reminders, role-ending notices and overdue removal requests |
+| sal-daily | 4:45 UTC (7:45 a.m. Baghdad) | Event reminders, agreement reminders, role-ending notices and overdue removal requests |
 | sal-ballot-retention | 5:15 UTC | Deletes ballots and voter lists one year after an election closes (B6.11) |
 | sal-outbox-prune | 5:30 UTC | Deletes sent outbox rows older than 30 days |
 | sal-sunday-paper | Sundays, 6:00 UTC (sends on the first Sunday of the month) | The Sunday Paper to members and the public list |

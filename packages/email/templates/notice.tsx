@@ -354,7 +354,7 @@ Notice.PreviewProps = {
       },
       heading: "You're booked for the reading",
       lang: "en",
-      paragraphs: ["Tuesday, October 13 · 6:00 PM", "Library, second floor"],
+      paragraphs: ["Tuesday, October 13 · 6:00 p.m.", "Library, second floor"],
     },
   ],
   preview: "You're booked for the reading",

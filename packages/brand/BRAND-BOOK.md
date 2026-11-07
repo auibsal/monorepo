@@ -11,7 +11,7 @@ This is SAL-MED-02, Brand and Identity, Version 1, proposed for adoption at the 
 ## Content fundamentals
 
 - Write warm, not gushing: "We would love you to join us." Never "An AMAZING opportunity!!!"
-- Be concrete: "Tuesday, October 13, 4 PM, Room [x]." Never "soon, somewhere on campus."
+- Be concrete: "Tuesday, October 13, 4 p.m., Room [x]." Never "soon, somewhere on campus."
 - Be confident, not grand: "A paper read blind and printed with care." Never "Iraq's premier literary institution."
 - Be playful about ideas, never people: “Bring a book you love and someone who hasn’t read it.”
 - Every piece exists in both languages. Write the Arabic for Arabic readers, never as a translation done as an afterthought.
@@ -23,7 +23,7 @@ This is SAL-MED-02, Brand and Identity, Version 1, proposed for adoption at the 
 - Everything else is an event (owner, Nov 5, 2026): the Society holds no standing programs. Each is titled plainly for what happens that day, on one standard event page with three kinds of access (open, RSVP, private). Only the two traditions have names: the **Typewriter Tour** (membership, the spring club fair week) and **Second Chapter** (partnerships, a book drive and sale at the fall club fair). Never say "program" for any of them, and never group them into kinds.
 - Endorsed work carries the line "a Society of Arts and Letters program" (Arabic: «من برامج جمعية الفنون والآداب»).
 - Short, plain titles: “Writing workshop”, “A reading with a guest”.
-- Dates as "Tuesday, October 13"; times as "6:00 PM". Numerals in tables; words in prose for numbers under ten.
+- Dates as "Tuesday, October 13"; times as "6:00 p.m.". Numerals in tables; words in prose for numbers under ten.
 - American English everywhere, with no exceptions: program, color, center, traveled, canceled, catalog, organization.
 - Partners with Arabic names are named in their own language first.
 - No emoji, no exclamation marks in headlines. Tag @auibsal on every post, and always give the date.

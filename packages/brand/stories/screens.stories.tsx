@@ -51,7 +51,7 @@ const copy = {
     book: "Book a place",
     calendar: "Add to calendar",
     constitution: "Read the Constitution",
-    date: "Tuesday, October 13 · 6:00 PM",
+    date: "Tuesday, October 13 · 6:00 p.m.",
     email: "Email",
     emailHint: "Use your AUIB address (@auib.edu.iq) if you have one.",
     events: "All events",

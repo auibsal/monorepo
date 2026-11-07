@@ -10,7 +10,7 @@ import { label, pick } from "./format";
 
 /**
  * Hudhud in the Diwan group (/audience staff; owner, Oct 31, 2026): a
- * morning brief from 8:00 AM Baghdad time (today's events with their
+ * morning brief from 8:00 a.m. Baghdad time (today's events with their
  * bookings, and what waits in the Diwan, as counts) and a short summary
  * half an hour after each event ends (booked, came, walk-ins, no-shows,
  * waitlist). Officers only see these: the group lets in no one else. They

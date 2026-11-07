@@ -15,7 +15,7 @@ import { staffPosts } from "./staff";
  * What the bot posts to connected groups, every ten minutes (pg_cron calls
  * /cron/telegram): new public events (to the events topic), a "starting soon"
  * reply to each event's post three hours before, new Qirtas pieces, and the
- * daily word at 9:00 AM Baghdad time, to groups and to members who asked
+ * daily word at 9:00 a.m. Baghdad time, to groups and to members who asked
  * for it in their chat with Hudhud (/me). Each post is claimed in
  * core.telegram_posts before it is sent, so overlapping runs never post
  * twice; a failed send gives the claim back for the next run.
@@ -273,7 +273,7 @@ const newPieces = (run: Run, pieces: PublicPiece[]) =>
     MAX_PER_RUN
   );
 
-/** The daily word, from 9:00 AM in Baghdad. */
+/** The daily word, from 9:00 a.m. in Baghdad. */
 const dailyWord = (run: Run) => {
   if (baghdadHour(run.now) < WORD_HOUR) {
     return Promise.resolve(0);

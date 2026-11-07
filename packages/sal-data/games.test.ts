@@ -59,7 +59,7 @@ describe("letters", () => {
 
 describe("the day", () => {
   test("changes at midnight in Baghdad, not UTC", () => {
-    // 9:30 PM UTC on Nov 5 is 12:30 AM Nov 6 in Baghdad.
+    // 9:30 p.m. UTC on Nov 5 is 12:30 a.m. Nov 6 in Baghdad.
     const late = gameDay(new Date("2026-11-05T21:30:00Z"));
     const early = gameDay(new Date("2026-11-05T20:30:00Z"));
     expect(late - early).toBe(1);

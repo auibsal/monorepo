@@ -5,7 +5,7 @@ We sound like a well-read friend: warm, precise and never grand.
 | We are | We are not | So we write |
 | --- | --- | --- |
 | Warm | Gushing | “We would love you to join us.” Not “An AMAZING opportunity!!!” |
-| Concrete | Vague | “Tuesday, November 17, 4:00 PM, Room \[x\].” Not “soon, somewhere on campus.” |
+| Concrete | Vague | “Tuesday, November 17, 4:00 p.m., Room \[x\].” Not “soon, somewhere on campus.” |
 | Confident | Grand | “A paper read blind and printed with care.” Not “Iraq’s premier literary institution.” |
 | Bilingual | Translated as an afterthought | Every piece in both languages, the Arabic written for Arabic readers. |
 | Playful | Mocking | “Bring a book you love and someone who hasn’t read it.” Jokes about ideas, never people. |
@@ -13,7 +13,7 @@ We sound like a well-read friend: warm, precise and never grand.
 ## House style
 
 - Events are titled plainly for what they are: “Writing workshop”, “A reading with a guest”. Only the two traditions have names: the Typewriter Tour and Second Chapter.
-- Dates as “Tuesday, November 17”; times as “6:00 PM”.
+- Dates as “Tuesday, November 17”; times as “6:00 p.m.”.
 - Numerals in tables; words in prose under ten (Chicago, 9.2).
 - American English everywhere, with no exceptions: program, color, center, traveled, canceled, catalog, organization.
 - No emoji; no exclamation marks in headlines.
@@ -41,11 +41,11 @@ One standard for every word the platform writes (owner, Nov 4, 2026). `bun run c
 ### English
 
 - **The Chicago Manual of Style** for everything the Society writes, with Merriam-Webster for spelling: program, color, theater, canceled, judgment. Where this page is silent, Chicago decides.
-- Curly quotes and apostrophes in prose (“ ” ‘ ’); the ellipsis character (…); an en dash for ranges (6:00–8:00 PM, November 17–20); the em dash as Chicago uses it, sparingly.
+- Curly quotes and apostrophes in prose (“ ” ‘ ’); the ellipsis character (…); an en dash for ranges (6:00–8:00 p.m., November 17–20); the em dash as Chicago uses it, sparingly.
 - The serial comma: “Qirtas, the Company, and Next Stop.”
 - Sentence case for interface labels, buttons and titles: “Book a place”, not “Book A Place”. Names keep their capitals: Qirtas, the Diwan, the Company, Get involved.
 - “For example” and “that is” in running text; no exclamation marks; no “click here”.
-- Dates, times and amounts only through `formatLongDate`, `formatClock` and `formatIqd`: "Tuesday, October 13", "6:00 PM", "50,000 IQD".
+- Dates, times and amounts only through `formatLongDate`, `formatClock` and `formatIqd`: "Tuesday, October 13", "6:00 p.m.", "50,000 IQD".
 
 ### Arabic
 

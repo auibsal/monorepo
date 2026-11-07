@@ -562,7 +562,7 @@ any schema change. Integration tests run against a local stack with
   carry "Paperless by default. Books reused through Second Chapter."
 - **Content.** Don't invent names, dates, figures or quotes. Missing text
   is a `TODO(content): …` placeholder listed in `PROGRESS.md`.
-- **Formats.** Dates as "Tuesday, October 13", times as "6:00 PM": use
+- **Formats.** Dates as "Tuesday, October 13", times as "6:00 p.m.": use
   `formatLongDate` and `formatClock` from
   `@repo/internationalization/format` (Latin digits, Baghdad time). Store
   times as `timestamptz` (UTC). Translatable columns come in pairs

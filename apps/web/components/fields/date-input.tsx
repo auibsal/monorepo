@@ -9,7 +9,7 @@ import type { ComponentProps } from "react";
 /**
  * A date (or date and time) field: the device's own picker, which works
  * well on phones and with screen readers, with the chosen date written
- * under it in the house format ("Friday, November 6, 2026, 6:00 PM"), so
+ * under it in the house format ("Friday, November 6, 2026, 6:00 p.m."), so
  * the browser's numeric order (mm/dd) never decides what a reader sees.
  */
 export const DateInput = ({
