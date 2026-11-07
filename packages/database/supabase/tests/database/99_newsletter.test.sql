@@ -171,7 +171,7 @@ select is(
   (select count(*)::integer from private.sunday_paper_recipients() r where r.email = 'pending@example.com'), 0,
   'not the pending one');
 
--- The archive lists the issues sent, and only those (owner, Nov 7, 2026).
+-- The archive lists the issues sent, and only those (decisions.md).
 select is(
   (select count(*)::integer from content.sunday_paper_issues where month = '2026-11'), 1,
   'The issue is recorded as sent');
@@ -187,7 +187,7 @@ select throws_ok($$select recipients from content.sunday_paper_issues$$, '42501'
   'but not how many it went to');
 select pg_temp.logout();
 
--- The archive lists the issues sent, and only those (owner, Nov 7, 2026).
+-- The archive lists the issues sent, and only those (decisions.md).
 select is(
   (select count(*)::integer from content.sunday_paper_issues where month = '2026-11'), 1,
   'The issue is recorded as sent');

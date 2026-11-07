@@ -151,7 +151,7 @@ export const EventsBrowser = () => {
   const ta = useTranslations("diwan.next");
   const locale = useLocale() as "en" | "ar";
   // A booking is in the member's name on the platform; a question asking for
-  // a name is answered with it (owner, Oct 31, 2026).
+  // a name is answered with it (decisions.md).
   const profile = useProfile();
   const myName = profile.data
     ? localized(profile.data, "full_name", locale)

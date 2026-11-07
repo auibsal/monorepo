@@ -605,7 +605,7 @@ const FrontPage = () => {
 // ── Contributors ────────────────────────────────────────────────────────────
 
 /**
- * Bylines (owner, Oct 31, 2026): a contributor is a member, chosen from the
+ * Bylines (decisions.md): a contributor is a member, chosen from the
  * register, under their own name (which follows their profile) or a pen
  * name. Only the bio is written here.
  */
@@ -820,7 +820,7 @@ const useAnyOf = (keys: readonly Permission[]) => {
 };
 
 /**
- * The newsroom (owner, Oct 31, 2026): where staff write and publish
+ * The newsroom (decisions.md): where staff write and publish
  * directly, a section at a time at its own address (/qirtas/news …
  * /qirtas/games). The front page, the contributors and the needs list are
  * on the first page; Next Stop is part of Video, and the puzzles of Games.
@@ -837,7 +837,7 @@ export const QirtasNewsroom = ({ desk }: { readonly desk?: journal.Desk }) => {
   if (grants.isPending) {
     return <SectionSpinner />;
   }
-  // Newsroom and Review are one (owner, Oct 31, 2026): each section's page
+  // Newsroom and Review are one (decisions.md): each section's page
   // has what members sent to it, read blind, above what staff write; the
   // Edition's reading (its calls) is on the all-sections page.
   return (

@@ -38,7 +38,7 @@ import {
 import { SkillsPicker } from "./skills-picker";
 
 /**
- * What an opening offers (owner, Nov 7, 2026: open roles only): a team role
+ * What an opening offers (decisions.md: open roles only): a team role
  * (hiring), a place on one event's team, or a Qalam mentor's place.
  * Auditions come from the Company's productions; volunteer shifts are on
  * each event.
@@ -223,7 +223,7 @@ const OpeningItem = ({
 };
 
 /**
- * Every opening on Get involved in one list (owner, Nov 7, 2026: open roles
+ * Every opening on Get involved in one list (decisions.md: open roles
  * only): team roles, event teams and Qalam mentors, filtered by kind. A
  * role's replies run through hiring (Membership runs it, the role's owner
  * picks); an event team's or a mentor's replies are read here. Each opening

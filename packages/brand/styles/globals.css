@@ -377,7 +377,7 @@
 }
 
 /*
- * Motion (brand book, Motion; owner, Nov 4, 2026): three durations and one
+ * Motion (brand book, Motion; decisions.md): three durations and one
  * easing, native CSS only. Reduced motion turns them off above.
  */
 @utility duration-quick {
@@ -572,7 +572,7 @@
   --reading-scale: 1.18;
 }
 /*
- * It reaches the article's text in every layout (owner, Nov 5, 2026: the
+ * It reaches the article's text in every layout (decisions.md: the
  * sizes did nothing). `prose` sets its own size, which the reading column's
  * scaled size never reached: News, Video and Gallery text scales from the
  * base size, and text in the reading column takes that column's (already

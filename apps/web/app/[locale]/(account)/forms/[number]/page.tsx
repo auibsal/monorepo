@@ -8,7 +8,7 @@ interface PageProps {
 }
 
 /**
- * A form, signed on the site: /forms/F-45 (owner, Nov 7, 2026). One page
+ * A form, signed on the site: /forms/F-45 (decisions.md). One page
  * for every form signed here, for members, guests, parents and partners.
  */
 const Page = async ({ params, searchParams }: PageProps) => {

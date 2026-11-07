@@ -1,4 +1,4 @@
--- Guest accounts (owner, Nov 7, 2026; migration 20261107000300): anyone may
+-- Guest accounts (decisions.md; migration 20261107000300): anyone may
 -- make one to book open events; a guest is never a member.
 begin;
 -- <preamble>

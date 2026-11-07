@@ -22,7 +22,7 @@ import { EmptyLine, ErrorState, SectionSpinner } from "../states";
 type NoticeKey = "signedUp" | "gaveBack" | "full" | "notVerified" | "failed";
 
 /**
- * Get involved (owner, Nov 7, 2026: open roles only): team roles, event
+ * Get involved (decisions.md: open roles only): team roles, event
  * teams, Qalam mentors and auditions, then the volunteer shifts on coming
  * events, with what matches the member's skills first. Shifts live only on
  * an event and log no hours.
@@ -169,7 +169,7 @@ export const PlacesBoard = () => {
         </Link>
       </p>
 
-      {/* One list of everything open (owner, Oct 31, 2026: no sections):
+      {/* One list of everything open (decisions.md: no sections):
           roles and places, shifts and auditions, each saying what it is. */}
       {openings.isPending || auditions.isPending ? <SectionSpinner /> : null}
       {nothing ? (

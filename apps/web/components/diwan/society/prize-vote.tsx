@@ -12,7 +12,7 @@ import { DiwanSection, RowList } from "../page";
 type Lang = "en" | "ar";
 
 /**
- * The members' vote for the Mutanabbi Prize (owner, Nov 7, 2026): while a
+ * The members' vote for the Mutanabbi Prize (decisions.md): while a
  * round's vote is open, each voting member picks one work in each
  * category, once. Qalam students' names are hidden. The vote is 30% of
  * the final score; the outside judge's is 70%.

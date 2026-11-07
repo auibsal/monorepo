@@ -7,7 +7,7 @@ import { useState } from "react";
 type State = "idle" | "copied" | "failed";
 
 /**
- * Share this page (owner, Nov 4, 2026; design review A4): the device's own
+ * Share this page (decisions.md; design review A4): the device's own
  * share sheet where there is one, otherwise the link is copied. A text
  * link with the share icon; the outcome is said aloud for screen readers.
  * Nothing is sent anywhere by the Society.

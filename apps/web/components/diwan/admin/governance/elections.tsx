@@ -211,7 +211,7 @@ const ElectionCard = ({
       ),
     onSuccess: invalidate,
   });
-  // Student Life confirms a GPA of 2.0 or more (owner, Nov 7, 2026): it
+  // Student Life confirms a GPA of 2.0 or more (decisions.md): it
   // answers only "eligible" or "not eligible", recorded here; no grades.
   const check = useMutation({
     mutationFn: async ({ eligible, id }: { eligible: boolean; id: string }) =>
@@ -684,7 +684,7 @@ export const Elections = () => {
   );
 };
 
-/** A new election, on its own page under Elections (owner, Nov 4, 2026). */
+/** A new election, on its own page under Elections (decisions.md). */
 export const NewElection = () => {
   const t = useTranslations("diwan.admin.governance.elections");
   const { supabase } = useAuth();

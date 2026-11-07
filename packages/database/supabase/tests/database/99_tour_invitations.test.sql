@@ -93,7 +93,7 @@ as $$
 $$;
 -- </preamble>
 
--- The spring 2026 Tour's import and the invitation Broadcast (owner, Nov 7, 2026).
+-- The spring 2026 Tour's import and the invitation Broadcast (decisions.md).
 
 select plan(24);
 

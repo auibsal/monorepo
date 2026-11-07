@@ -1,4 +1,4 @@
--- The Mutanabbi Prize (owner, Nov 7, 2026; migration 20261107000600):
+-- The Mutanabbi Prize (decisions.md; migration 20261107000600):
 -- shortlists, the members' vote, the count and its checks.
 begin;
 -- <preamble>

@@ -402,7 +402,7 @@ export const DateTimeField = ({
 
 /** A native select, styled like the inputs (works with keyboards and RTL). */
 /**
- * One of several choices, on the page (owner, Oct 31, 2026: never the
+ * One of several choices, on the page (decisions.md: never the
  * browser's pop-up list or a dialog). See `ChoiceInput`.
  */
 export const SelectInput = ChoiceInput;

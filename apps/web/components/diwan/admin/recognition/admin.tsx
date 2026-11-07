@@ -300,7 +300,7 @@ const useFinishedStudents = (enabled: boolean) => {
 };
 
 /**
- * Drafting a certificate (owner, Nov 7, 2026: only for finishing Qalam and
+ * Drafting a certificate (decisions.md: only for finishing Qalam and
  * for the Mutanabbi Prize, each category): the Prize's names a member, its
  * category and its citation; Qalam's names a student from the roster
  * (students have no accounts). Each is in one language, the one its

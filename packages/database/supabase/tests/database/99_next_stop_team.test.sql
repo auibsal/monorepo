@@ -111,7 +111,7 @@ select ok(
     select 1 from journal.next_stop_team() t
     where t.title_en = (select name_en from access.roles where key = 'next_stop_producer')
   ),
-  'whoever holds the Next Stop producer role is on it, under its title (Media, owner, Nov 7, 2026)'
+  'whoever holds the Next Stop producer role is on it, under its title (Media, decisions.md)'
 );
 select is(
   (select count(*)::int from journal.next_stop_team() t

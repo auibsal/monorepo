@@ -1,4 +1,4 @@
--- Qalam's roster (owner, Nov 7, 2026; migration 20261107000700): staff
+-- Qalam's roster (decisions.md; migration 20261107000700): staff
 -- only, never members; the retention job deletes it after three years.
 begin;
 -- <preamble>

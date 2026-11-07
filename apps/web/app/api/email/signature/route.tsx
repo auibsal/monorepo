@@ -19,7 +19,7 @@ const FONTS = path.join(process.cwd(), "../../packages/brand/assets/fonts");
 
 /**
  * The President's signature as an image, for letters sent by email
- * (owner, Nov 7, 2026): the same signature the site draws (`Signature`),
+ * (decisions.md): the same signature the site draws (`Signature`),
  * the name in the signature face beside the rosette, with the card number,
  * the date and the seal, since mail apps can't load the face themselves.
  * Only the President's seat, read from the roles: nobody else's name can

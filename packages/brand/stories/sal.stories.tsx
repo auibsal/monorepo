@@ -247,7 +247,7 @@ const shelfItems = (titles: readonly string[]) =>
   }));
 
 /**
- * The shelf (owner, Nov 4, 2026): one row that scrolls sideways and snaps,
+ * The shelf (decisions.md): one row that scrolls sideways and snaps,
  * moved by swiping or the arrow keys; the item at the start carries the ink
  * hairline. The plain list is always one link away.
  */

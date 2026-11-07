@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { clueWords, guessWords, searchWords } from "./game-words";
 
-// Qirtas's games (owner, Nov 5, 2026): four daily games, made from fixed
+// Qirtas's games (decisions.md): four daily games, made from fixed
 // word lists and the same for every reader on a Baghdad day (the word, the
 // word search, the crossword and the anagrams), checked ahead by the
 // editors in the Diwan's queue (journal.game_checks; decisions §5: no
@@ -106,7 +106,7 @@ export const gameDay = (date = new Date()) =>
 
 /**
  * The first daily games, Sunday, November 8, 2026, launch day, are No. 1
- * (owner, Nov 7, 2026).
+ * (decisions.md).
  */
 const FIRST_DAY = Date.UTC(2026, 10, 8) / DAY_MS;
 export const gameNumber = (day: number) => day - FIRST_DAY + 1;

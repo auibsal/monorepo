@@ -29,7 +29,7 @@ const projectSchema = z
      */
     campusCalendar: z.url(),
     domain: z.string().min(1),
-    /** Qirtas, the Society's paper (owner, Oct 30, 2026: set, not a setting). */
+    /** Qirtas, the Society's paper (decisions.md: set, not a setting). */
     journal: z.object({
       name_ar: z.string().min(1),
       name_en: z.string().min(1),

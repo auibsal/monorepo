@@ -5,7 +5,7 @@ import { getTranslations } from "next-intl/server";
 import { NewsletterSignup } from "@/components/newsletter/signup";
 
 /**
- * After a piece (owner, Nov 5, 2026): the two things a reader who finished
+ * After a piece (decisions.md): the two things a reader who finished
  * it may want next, side by side and quiet (text links, no solid button):
  * to write for the section they just read, and the Sunday Paper. Games take
  * no work from readers, so its pieces end with the Sunday Paper alone.

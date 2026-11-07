@@ -94,7 +94,7 @@ as $$
 $$;
 -- </preamble>
 
--- One kind of event, with add-ons (owner, Nov 5, 2026, evening).
+-- One kind of event, with add-ons (decisions.md, evening).
 select plan(4);
 
 select hasnt_column('events', 'events', 'occasion', 'No occasions: every event is a standard event');

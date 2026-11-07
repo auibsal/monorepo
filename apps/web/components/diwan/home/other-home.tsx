@@ -52,7 +52,7 @@ const useSocietyGuest = () => {
 };
 
 /**
- * Today, for a guest or a partner's person (owner, Oct 31, 2026: one
+ * Today, for a guest or a partner's person (decisions.md: one
  * Membership for everyone): whose they are, and what they can do. Members
  * have the full Today instead.
  */

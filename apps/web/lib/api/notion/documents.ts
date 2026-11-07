@@ -30,7 +30,7 @@ import {
 
 /**
  * The Society's documents are written in Notion (Publishing, Documents;
- * owner, Nov 4, 2026). A row set to Ready to publish is rendered to
+ * decisions.md). A row set to Ready to publish is rendered to
  * auibsal.org/library/<slug> when its Audience is public; internal
  * documents stay in Notion. The site keeps only each document's adoption
  * record (adopted on and the vote, `adopted_on` and `vote`), kept
@@ -40,13 +40,13 @@ import {
  * President and the General Secretary).
  *
  * Each document has an English and an Arabic edition, separate rows with the
- * same Code (owner, Nov 7, 2026): the English row makes the Library's
+ * same Code (decisions.md): the English row makes the Library's
  * record; the Arabic row adds its title, summary and text to it. A row in a
  * retired code family (SAL-PLT, POL, BRD …) is marked Retired. Every
  * document is proposed, Version 1, until the Founding Meeting adopts it,
  * and the Library says so.
  *
- * Both editions publish together (owner, Nov 7, 2026): publishing the
+ * Both editions publish together (decisions.md): publishing the
  * English row publishes its Arabic row in the same pass. The Arabic row
  * takes its Audience from the English row, so an internal document never
  * reaches the Library in either language, and a document set to internal
@@ -296,7 +296,7 @@ const retireRow = async (ctx: SyncContext, page: NotionPage) => {
     Diwan: prop.url(null),
     "Diwan ID": prop.text(null),
     "Platform note": prop.text(
-      "Retired: this code family is retired (owner, Nov 7, 2026). Give the document its new code (SAL-GOV, EXB, EVT, MEM, PTN, MED, ART or EDT) to publish it."
+      "Retired: this code family is retired (decisions.md). Give the document its new code (SAL-GOV, EXB, EVT, MEM, PTN, MED, ART or EDT) to publish it."
     ),
     "Public page": prop.url(null),
     Status: prop.select("Retired"),

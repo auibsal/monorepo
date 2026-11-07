@@ -39,7 +39,7 @@ const signInvite = (email: string) =>
     .digest("base64url");
 
 /**
- * The stop link of the one-time invitation (owner, Nov 7, 2026): the address
+ * The stop link of the one-time invitation (decisions.md): the address
  * (base64url) and its signature. Stopping takes the address off the
  * invitation list, so nothing more is sent to it.
  */

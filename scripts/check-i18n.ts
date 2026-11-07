@@ -15,7 +15,7 @@ import { extname, join, relative } from "node:path";
 
 const ROOTS = ["apps/web/app", "apps/web/components"];
 // The developer documentation (auibsal.org/developers) is written in English
-// only, like the API it describes and the runbooks (owner, Oct 24, 2026).
+// only, like the API it describes and the runbooks (decisions.md).
 const IGNORED_DIRECTORIES = new Set([".next", "node_modules", "developers"]);
 // Latin or Arabic-script letters.
 const LETTERS = /[A-Za-z؀-ۿ]{2,}/;

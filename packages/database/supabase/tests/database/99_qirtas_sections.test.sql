@@ -105,7 +105,7 @@ select is(
     select count(*)::integer as n from unnest(enum_range(null::journal.category)) c
     where journal.is_current_category(c) group by journal.desk_of(c)) t),
   array[4, 5, 6, 7, 7, 7],
-  'Each section''s types with its "other", and Games its four daily kinds (owner, Nov 7, 2026)'
+  'Each section''s types with its "other", and Games its four daily kinds (decisions.md)'
 );
 select is(journal.desk_of('review'), 'voices'::journal.desk, 'The review is in Voices now');
 select is(journal.desk_of('event_coverage'), 'news'::journal.desk, 'Event coverage is News');

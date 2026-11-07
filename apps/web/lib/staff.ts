@@ -1,6 +1,6 @@
 // Which ways the signed-in person has beyond the public site, remembered in
 // a cookie so the public pages (which have no session client) can show
-// them in the header: Membership for everyone (owner, Oct 31, 2026), the
+// them in the header: Membership for everyone (decisions.md), the
 // Diwan for staff, and the dashboard for a partner's people. A hint for the header, never for access: each area's own
 // gate and Row Level Security decide.
 

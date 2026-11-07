@@ -35,7 +35,7 @@ const card =
   "grid content-start gap-2 border-line border-t py-space-4 hover:underline";
 
 /**
- * Qirtas's Games section (owner, Nov 5, 2026): four daily games, made anew
+ * Qirtas's Games section (decisions.md): four daily games, made anew
  * every day in the page's language (the word first, then the word search,
  * the crossword and the anagrams), checked ahead by the editors. Members
  * send none, and there are no hand-made puzzles (decisions §5).

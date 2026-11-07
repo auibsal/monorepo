@@ -51,7 +51,7 @@ const roster = (supabase: ReturnType<typeof useAuth>["supabase"]) => ({
 type Student = Awaited<ReturnType<ReturnType<typeof roster>["list"]>>[number];
 
 /**
- * Qalam's applications and roster (owner, Nov 7, 2026): Qirtas's summer
+ * Qalam's applications and roster (decisions.md): Qirtas's summer
  * program for high school students. Staff only (`qalam.manage`), never in
  * Notion; students never get accounts, and their families consent on the
  * forms page (F-38, F-39). Kept three years after the program, then

@@ -11,7 +11,7 @@ interface CouncilProps {
 }
 
 /**
- * The Council (owner, Oct 30, 2026): each person who holds a Council role,
+ * The Council (decisions.md): each person who holds a Council role,
  * from their own role assignments, named once with every title they hold.
  * A name without its Arabic spelling yet keeps the English one, marked as
  * English.

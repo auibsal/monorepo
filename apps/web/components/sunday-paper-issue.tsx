@@ -155,7 +155,7 @@ export const SundayPaperIssue = async ({
         </section>
       </div>
 
-      {/* The sign-up itself, not a link to it (owner, Nov 5, 2026): one
+      {/* The sign-up itself, not a link to it (decisions.md): one
           step fewer for a reader who has just read an issue. */}
       <section
         aria-labelledby="next-issue"

@@ -114,7 +114,7 @@ grant execute on function pg_temp.voter(integer) to public;
 
 select pg_temp.logout();
 select pg_temp.make_user(pg_temp.voter(n), 'v' || n || '@auib.edu.iq', 'Voter ' || n) from generate_series(1, 5) n;
--- Candidates are Members of at least one term (owner, Nov 7, 2026).
+-- Candidates are Members of at least one term (decisions.md).
 update membership.memberships set member_since = current_date - 400
 where user_id in (select pg_temp.voter(n) from generate_series(1, 5) n);
 insert into membership.activity_records (user_id, kind, occurred_at, note)

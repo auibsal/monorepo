@@ -115,7 +115,7 @@ select is((select count(*)::int from governance.society_documents), 2,
   'Visitors read the public documents');
 select is((select count(*)::int from governance.society_documents
   where status = 'proposed' and adopted_on is null), 2,
-  'Every document is proposed until the Founding Meeting adopts it (owner, Nov 7, 2026)');
+  'Every document is proposed until the Founding Meeting adopts it (decisions.md)');
 select is((select count(*)::int from governance.society_documents where audience = 'internal'), 0,
   'No internal documents are kept here: they stay in Notion');
 select ok((select body_en like '%<strong>6.6</strong>%' from governance.society_documents where slug = 'constitution'),

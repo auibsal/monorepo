@@ -63,6 +63,16 @@ jobs:
             echo "A commit message in this pull request contains a workflow skip marker. Reword it (git rebase) before merging."
             exit 1
           fi
+      # Code cites the decision it follows as decisions.md, never "(owner,
+      # <date>)": the dates go stale when decisions.md is replaced. Applied
+      # migrations are history and keep theirs.
+      - name: Comments cite decisions.md, not the owner's dates
+        run: |
+          if grep -rnE "owner,? [A-Z][a-z]{2} [0-9]{1,2}" --include='*.ts' --include='*.tsx' --include='*.js' --include='*.mjs' --include='*.sql' --include='*.css' --include='*.yml' \
+            --exclude-dir=node_modules --exclude-dir=.next --exclude-dir=.git --exclude-dir=migrations .; then
+            echo "Cite decisions.md (and its section) instead of the owner's date."
+            exit 1
+          fi
       # Production applies migrations in order (no --include-all), so a new
       # migration must be newer than every migration already on main.
       - name: New migrations come after main's
@@ -178,8 +188,8 @@ jobs:
             | bunx biome format --stdin-file-path=packages/database/types.ts > "$RUNNER_TEMP/types.ts"
           diff -u packages/database/types.ts "$RUNNER_TEMP/types.ts" \
             || (echo "Run 'bun run db:types' and commit the result." && exit 1)
-      # The site's forms against the register in SAL-EXB-01 (owner, Nov 7,
-      # 2026): codes, titles, where each is filled and its fields. Reads
+      # The site's forms against the register in SAL-EXB-01 (decisions.md):
+      # codes, titles, where each is filled and its fields. Reads
       # Notion with the NOTION_TOKEN repository secret.
       - name: Forms match the register in Notion
         env:

@@ -30,7 +30,7 @@ type RecordStatus = "pending" | "confirmed" | "rejected";
 const today = () => new Date().toISOString().slice(0, 10);
 
 /**
- * My service, for staff (owner, Nov 7, 2026: staff hours and service
+ * My service, for staff (decisions.md: staff hours and service
  * letters only for staff): the hours log and certificates. Hours count once
  * someone else confirms them.
  */

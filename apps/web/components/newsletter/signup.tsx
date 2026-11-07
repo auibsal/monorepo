@@ -37,7 +37,7 @@ type State =
  * Signs up for the Sunday Paper; the API routes send the confirmation
  * email. Compact, where the page already has its one solid button, the
  * submit is a text link. A signed-in member already gets it while email
- * notices are on (owner, Nov 5, 2026: never ask them to subscribe again),
+ * notices are on (decisions.md: never ask them to subscribe again),
  * so they see where to turn it on or off instead. Read after the first
  * render, so the cached page is the same for everyone.
  */

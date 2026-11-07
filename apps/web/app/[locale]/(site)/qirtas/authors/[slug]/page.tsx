@@ -38,11 +38,11 @@ export const generateMetadata = async ({
 };
 
 /**
- * A person's author page, at their name (owner, Oct 31, 2026): who they are
+ * A person's author page, at their name (decisions.md): who they are
  * to the Society (Member, Partner or Guest) and the roles they hold, their
  * published work, the Editions it appeared in (the design review C18, Nov
  * 4, 2026) and the Typewriter Tour pages they chose to show on their
- * profile (owner, Nov 7, 2026). Work in
+ * profile (decisions.md). Work in
  * progress stays private, as drafts on /qirtas/write. A pen name shows
  * its published work only.
  */

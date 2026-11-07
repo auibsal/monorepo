@@ -121,16 +121,15 @@ export interface SignUpDetails {
   locale: "ar" | "en";
   /**
    * The name in English and in Arabic, each in four parts as on the
-   * person's papers: name, father's, grandfather's and last (owner, Oct 31,
-   * 2026). Required for addresses outside AUIB, which a partner verifies by
+   * person's papers: name, father's, grandfather's and last (decisions.md). Required for addresses outside AUIB, which a partner verifies by
    * them; AUIB addresses give their names in setup, after confirming the
    * email.
    */
   names?: Record<"ar" | "en", NameParts>;
   /**
-   * Why an outside address may sign up (owner, Oct 31, 2026: membership is
+   * Why an outside address may sign up (decisions.md: membership is
    * for AUIB addresses): a partner's invitation code, or an application to
-   * partner, or a guest account to book events (owner, Nov 7, 2026). The
+   * partner, or a guest account to book events (decisions.md). The
    * database refuses an outside address with none of these.
    */
   outside?:
@@ -167,7 +166,7 @@ export const signUpWithEmail = async (
     return { code: "terms_required", ok: false };
   }
   const auib = isAuibEmail(email);
-  // Membership is for AUIB addresses (owner, Oct 31, 2026); an outside one
+  // Membership is for AUIB addresses (decisions.md); an outside one
   // comes only with a partner's invitation or an application to partner.
   if (!(auib || details.outside)) {
     return { code: "auib_only", ok: false };

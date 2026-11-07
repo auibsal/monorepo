@@ -21,7 +21,7 @@ export const generateMetadata = async ({
 };
 
 /**
- * Qirtas's masthead (owner, Nov 5, 2026): who makes the paper, from the
+ * Qirtas's masthead (decisions.md): who makes the paper, from the
  * roles they hold (`journal.masthead()`), never typed. One row per seat,
  * the Editor-in-Chief first; a person in two seats is on two rows.
  */

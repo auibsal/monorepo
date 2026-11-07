@@ -4,7 +4,7 @@
  * exclamation marks, no emoji). Dynamic values arrive already escaped for
  * Telegram HTML and already formatted (Latin digits, Baghdad time).
  *
- * Hudhud speaks Iraqi Arabic (owner, Nov 4, 2026): he is the Society's
+ * Hudhud speaks Iraqi Arabic (decisions.md): he is the Society's
  * voice in the chat, so his Arabic is the Arabic members speak to each
  * other, with the Iraqi spelling (گ for the g sound). Only the bot's
  * Telegram profile (description, shortDescription) stays in standard

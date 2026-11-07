@@ -198,7 +198,7 @@ test("an organization applies, the Council votes, and its dashboard opens", asyn
 });
 
 /**
- * A member may lead their club's partnership (owner, Oct 31, 2026): they
+ * A member may lead their club's partnership (decisions.md): they
  * apply signed in as themselves, the President signs, and they keep every
  * member's page and a Member card, with the dashboard beside Membership.
  */

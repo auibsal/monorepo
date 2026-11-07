@@ -295,7 +295,7 @@ const ProblemsLine = ({
 };
 
 /**
- * A form on its own page, `/forms/<number>` (owner, Nov 7, 2026): filled in
+ * A form on its own page, `/forms/<number>` (decisions.md): filled in
  * and signed by typing a name, for members, guests, parents and partners
  * alike. The signed copy keeps the signer, the time and the form's version.
  * A form about an event (a trip's consent, a media release) names it with

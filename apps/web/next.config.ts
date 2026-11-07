@@ -62,7 +62,7 @@ const LANGUAGE_PREFIXES = ["", "/ar"] as const;
 // The design system (packages/brand, `bun run build:site`) is built into
 // apps/web/design and shown inside the Diwan at /diwan/design, which frames
 // it. /_design is a rewrite (not a redirect) to the API route that serves
-// those files to staff only (owner, Nov 7, 2026); only the site may frame
+// those files to staff only (decisions.md); only the site may frame
 // it, and search engines never index it.
 let nextConfig: NextConfig = {
   ...config,

@@ -89,7 +89,7 @@ test.describe("public site", () => {
       event.title
     );
     await expectAccessible(page);
-    // Next Stop is the Director of Media’s (owner, Nov 7, 2026), with its promise beside it.
+    // Next Stop is the Director of Media’s (decisions.md), with its promise beside it.
     await page.goto(`${urls.web}/next-stop`);
     await page
       .getByRole("main")

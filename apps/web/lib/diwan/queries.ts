@@ -85,7 +85,7 @@ export const useProfile = () => {
 };
 
 /**
- * Both names in all four parts (owner, Oct 31, 2026): anyone without them
+ * Both names in all four parts (decisions.md): anyone without them
  * is asked at /welcome the next time they come in.
  */
 export const hasAllNames = names.hasFourPartNames;

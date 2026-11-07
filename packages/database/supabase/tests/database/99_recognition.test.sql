@@ -141,7 +141,7 @@ select lives_ok(
 );
 select ok(
   not exists (select 1 from pg_proc where proname = 'record_shift_service'),
-  'Shifts log no hours (owner, Nov 7, 2026): staff hours are logged by hand'
+  'Shifts log no hours (decisions.md): staff hours are logged by hand'
 );
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a1');

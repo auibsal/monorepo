@@ -157,7 +157,7 @@ create temp table unsigned on commit drop as
 grant select on unsigned to public;
 select is(
   (select visibility from programmes.six_words where id = (select id from unsigned)), 'private',
-  'A recorded page is private until its writer chooses (owner, Nov 7, 2026)'
+  'A recorded page is private until its writer chooses (decisions.md)'
 );
 select pg_temp.login_anon();
 select ok(

@@ -388,8 +388,7 @@ const Register = () => {
 const partnerRef = (row: PartnerRow) => String(row.slug || row.id);
 
 /**
- * One partner in the register, edited on its own page (owner, Oct 31,
- * 2026): /diwan/partnerships/<slug>. Partners come only from applications
+ * One partner in the register, edited on its own page (decisions.md): /diwan/partnerships/<slug>. Partners come only from applications
  * (decisions §10), so there is no blank one. Saving
  * returns to the register; a listed partner links to the public Partners
  * page.

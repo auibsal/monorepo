@@ -114,7 +114,7 @@ select is(
 select is((select count(*)::integer from governance.form_types where title_en ilike '%expense%'), 0, 'The Expense Claim is gone');
 select ok(
   not exists (select 1 from access.permissions where key like 'charity.%'),
-  'No charity collections or ledger on the site (owner, Nov 7, 2026)'
+  'No charity collections or ledger on the site (decisions.md)'
 );
 
 select pg_temp.make_user('00000000-0000-0000-0000-00000000b0a1', 'salon.lead@auib.edu.iq', 'Salon Lead');

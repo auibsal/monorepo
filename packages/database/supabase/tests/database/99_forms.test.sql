@@ -109,7 +109,7 @@ grant execute on function pg_temp.as_api() to public;
 
 select plan(27);
 
--- Forms signed on the site (owner, Nov 7, 2026): /forms/<number>, a typed
+-- Forms signed on the site (decisions.md): /forms/<number>, a typed
 -- name for a signature, the signed copy keeping the signer, the time and the
 -- form's version. a1 a member, a2 the President, a3 the Vice President, a4
 -- the Faculty Advisor, a6 the General Secretary.

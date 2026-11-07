@@ -16,7 +16,7 @@ const linkClass = "hover:text-accent hover:underline hover:underline-offset-4";
  * one sentence, three short columns under white labels (Programs, Society,
  * Stay in touch; two side by side on phones), then a hairline and the fine
  * print, which keeps the policies within reach. Nothing here repeats the
- * header (owner, Oct 30, 2026): its sections, Search, Sign in and
+ * header (decisions.md): its sections, Search, Sign in and
  * Membership live only there.
  */
 export const Footer = async () => {
@@ -28,7 +28,7 @@ export const Footer = async () => {
   const email = t("columns.email");
 
   // The Society's pages and the ways to stay in touch, then the fine
-  // print (owner, Nov 5, 2026: no event series to list; What's on is in
+  // print (decisions.md: no event series to list; What's on is in
   // the header).
   const columns = [
     {

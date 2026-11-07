@@ -239,7 +239,7 @@ select results_eq(
   'A visitor reads the open roles'
 );
 
--- Get involved is one list (owner, Oct 31, 2026): the Company's coming
+-- Get involved is one list (decisions.md): the Company's coming
 -- auditions are in it, for a public production that is auditioning only.
 select pg_temp.logout();
 insert into programmes.productions (slug, programme_id, title_en, title_ar, stage, is_public, rights_status)

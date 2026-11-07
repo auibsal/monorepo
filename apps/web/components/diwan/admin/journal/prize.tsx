@@ -35,7 +35,7 @@ type Entry = Awaited<ReturnType<typeof journal.prizeEntries>>[number];
 type Category = journal.PrizeCategory;
 
 /**
- * The Mutanabbi Prize in the Diwan (owner, Nov 7, 2026): each year's
+ * The Mutanabbi Prize in the Diwan (decisions.md): each year's
  * round, its two shortlists (Qirtas and Qalam), the outside judge's score
  * for each work, the members' vote dates, the count (70% judge, 30%
  * members), checked by the Editor-in-Chief and the General Secretary, and

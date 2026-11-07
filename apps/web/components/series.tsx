@@ -11,7 +11,7 @@ export type Series = NonNullable<
 >[number];
 
 /**
- * The Society's own rows in core.programmes (owner, Nov 5, 2026: no event
+ * The Society's own rows in core.programmes (decisions.md: no event
  * series): the Company's, read for its page at /company. Events belong to
  * none of them.
  */

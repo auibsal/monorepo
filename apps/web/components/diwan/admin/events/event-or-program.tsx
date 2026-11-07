@@ -7,7 +7,7 @@ import { RequireModule } from "../admin-shell";
 import { EventEditor } from "./editor";
 
 /**
- * An event under /diwan/events, by its slug (owner, Nov 5, 2026: every
+ * An event under /diwan/events, by its slug (decisions.md: every
  * event is a standard event with the one page; there are no series pages).
  */
 export const EventOrProgram = ({ value }: { readonly value: string }) => (

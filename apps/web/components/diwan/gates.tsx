@@ -44,7 +44,7 @@ export const RequireAuth = ({ children }: GateProps) => {
 };
 
 /**
- * The pages each kind of membership opens (owner, Oct 31, 2026: one
+ * The pages each kind of membership opens (decisions.md: one
  * Membership for everyone, of one kind). Members open everything; guests
  * their Today, calendar, record, settings and Qirtas (their work and the
  * calls open to them); a partner's people their Today, record and
@@ -82,7 +82,7 @@ export const kindOpens = (
   );
 
 /**
- * Membership, for every kind (owner, Oct 31, 2026): a page the kind doesn't
+ * Membership, for every kind (decisions.md): a page the kind doesn't
  * open goes to Today. Members and guests with a pledge to (re-)accept or
  * setup to finish, and anyone whose name is not in four parts, go to
  * /welcome first.
@@ -140,7 +140,7 @@ export const RequireMember = ({ children }: GateProps) => {
 };
 
 /**
- * A partner's dashboard (/partners/dashboard; owner, Oct 31, 2026): for its
+ * A partner's dashboard (/partners/dashboard; decisions.md): for its
  * team (partners.own on the partner), who hold a partner's membership. A convenience: Row
  * Level Security keeps each to its own partner.
  */
@@ -152,8 +152,7 @@ export const RequirePartner = ({ children }: GateProps) => {
   const holds = (grants.data ?? []).some(
     (g) => g.permission === "partners.own"
   );
-  // A partner's people give their names in four parts too (owner, Oct 31,
-  // 2026), at /welcome, before their partner's page.
+  // A partner's people give their names in four parts too (decisions.md), at /welcome, before their partner's page.
   const unnamed = profile.isSuccess && !hasAllNames(profile.data);
   useEffect(() => {
     if (grants.isSuccess && !grants.isFetching && !holds) {
@@ -192,7 +191,7 @@ export const GuestOnly = ({ children }: GateProps) => {
 };
 
 /**
- * The Diwan is for officers (owner, Oct 24, 2026): anyone holding a role.
+ * The Diwan is for officers (decisions.md): anyone holding a role.
  * Everyone else goes to their account on the site. A convenience: Row
  * Level Security still decides every row.
  */

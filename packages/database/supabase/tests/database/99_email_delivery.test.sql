@@ -1,4 +1,4 @@
--- Site emails (owner, Oct 31, 2026): the API address is set, and the
+-- Site emails (decisions.md): the API address is set, and the
 -- Desk reads how email is flowing without seeing any secret.
 begin;
 -- <preamble>

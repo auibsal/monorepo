@@ -133,7 +133,7 @@ select throws_ok(
 
 select pg_temp.login_anon();
 select is((select count(*) from programmes.six_words_wall())::integer, 0,
-  'A transcribed page is private until its writer chooses (owner, Nov 7, 2026)');
+  'A transcribed page is private until its writer chooses (decisions.md)');
 select pg_temp.logout();
 update programmes.six_words set visibility = 'tour';
 select pg_temp.login_anon();

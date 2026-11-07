@@ -245,8 +245,7 @@ export const ProductionsAdmin = () => {
 
 /**
  * One production on its own page, like its public page: /company/<slug>
- * for its details, /company/<slug>/<tab> for the rest (owner, Oct 31,
- * 2026: editing in the Diwan opens its own address); /company/new
+ * for its details, /company/<slug>/<tab> for the rest (decisions.md: editing in the Diwan opens its own address); /company/new
  * proposes one.
  */
 export const ProductionPage = ({

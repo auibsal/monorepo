@@ -6,7 +6,7 @@ import { db, isStaffAccount, group as loadGroup, whoami } from "../../db";
 import { connectPage } from "../../links";
 import { groupLang, isStaff, replyHere } from "./common";
 
-/** A week between the warning and the removal (owner, Nov 7, 2026). */
+/** A week between the warning and the removal (decisions.md). */
 const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
 
 const members = () => db().schema("core").from("telegram_members");
@@ -32,7 +32,7 @@ const exempt = async (api: Api, chatId: number, telegramId: number) => {
 };
 
 /**
- * Hudhud's removals (owner, Nov 7, 2026). Telegram doesn't let a bot list a
+ * Hudhud's removals (decisions.md). Telegram doesn't let a bot list a
  * group's members, so the first time someone without a linked member's
  * account posts in the members' group, Hudhud warns them, in the same
  * topic, that they'll be removed in a week unless they join on auibsal.org

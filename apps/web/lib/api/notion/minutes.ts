@@ -17,20 +17,20 @@ import { prop, read } from "./props";
 import { bodyOf, editorEmail, NO_EMAIL, stamp } from "./publish";
 
 /**
- * Minutes are written in Notion, in Work, Meetings (owner, Nov 4, 2026).
+ * Minutes are written in Notion, in Work, Meetings (decisions.md).
  * When a meeting's Status is "Minutes in the
  * Diwan", the platform copies the page into the Diwan as that meeting's
  * minutes, where the Council adopts them. Once adopted, the official copy
  * is locked (the database refuses any change to adopted minutes), and the
  * Notion page says so. Until then, editing the page updates the draft.
- * The meeting itself is an event (owner, Nov 5, 2026): Event links its row
+ * The meeting itself is an event (decisions.md): Event links its row
  * in Events, and the minutes point at it in the Diwan.
  */
 
 const IN_THE_DIWAN = "Minutes in the Diwan";
 const UUID = /^[0-9a-f-]{36}$/i;
 
-/** Notion's meeting kinds (owner, Nov 7, 2026). */
+/** Notion's meeting kinds (decisions.md). */
 const BODIES: Record<string, governance.MeetingBody> = {
   "Annual Meeting": "annual",
   Council: "council",
@@ -100,7 +100,7 @@ const readDraft = async (
       "Set Body (Council, General meeting, Annual Meeting, Special meeting or Founding Meeting) to send minutes to the Diwan."
     );
   }
-  // A meeting is an event (owner, Nov 5, 2026): link its row in Events,
+  // A meeting is an event (decisions.md): link its row in Events,
   // published in the Diwan, and its day sets the meeting's date.
   const linked = read.relation(page, "Event");
   if (linked.length > 1) {

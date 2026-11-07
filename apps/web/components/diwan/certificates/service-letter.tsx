@@ -13,7 +13,7 @@ import { useQueryParam } from "@/lib/diwan/use-query-param";
 import { EmptyLine, ErrorState, SectionSpinner } from "../states";
 
 /**
- * A service letter (SAL-EXB-01 · F-05; owner, Nov 7, 2026): the one letter
+ * A service letter (SAL-EXB-01 · F-05; decisions.md): the one letter
  * template (`Letter`, `@repo/brand`), in the letter's own language, with
  * its verification code and QR at the foot. Download is the browser's own
  * print-to-PDF. Its holder and the Director of Membership read it.

@@ -138,7 +138,7 @@ select pg_temp.login_as('00000000-0000-0000-0000-0000000000f1');
 select ok(core.admin_overview() ? 'members', 'A member manager sees member counts');
 select is((core.admin_overview() ->> 'verification_pending')::integer, 0,
   'The overview counts partner applications, not individual requests');
-select ok(not (core.admin_overview() ? 'campaigns'), 'No charity totals (owner, Nov 7, 2026)');
+select ok(not (core.admin_overview() ? 'campaigns'), 'No charity totals (decisions.md)');
 
 -- The members directory lists only members who chose to be listed.
 select pg_temp.logout();

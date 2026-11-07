@@ -43,7 +43,7 @@ const TABS = [
 ] as const;
 
 /**
- * The partner's dashboard (owner, Oct 31, 2026: one fixed address,
+ * The partner's dashboard (decisions.md: one fixed address,
  * /partners/dashboard): its title and its tabs, Profile, Events (A41)
  * and People.
  * Someone on two partners' teams keeps the first.
@@ -307,7 +307,7 @@ const ASKABLE = partners.agreementGrants.filter((g) => g !== "guest_editing");
 
 /**
  * A partner turns things on for itself and its guests by asking; the
- * Society approves (owner, Oct 31, 2026). Leads ask; the database refuses
+ * Society approves (decisions.md). Leads ask; the database refuses
  * anyone else.
  */
 const AskForGrants = ({

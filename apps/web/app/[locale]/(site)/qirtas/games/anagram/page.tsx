@@ -20,7 +20,7 @@ export const generateMetadata = async ({
   });
 };
 
-/** The daily anagram (owner, Nov 5, 2026), in the page's language. */
+/** The daily anagram (decisions.md), in the page's language. */
 const DailyPage = async ({ params }: DailyProps) => {
   const { locale } = await params;
   setRequestLocale(locale);

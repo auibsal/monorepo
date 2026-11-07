@@ -4,7 +4,7 @@ import { type Client, unwrap } from "./client";
 export const RON = "RON" as const;
 
 /**
- * The Society's meetings (owner, Nov 7, 2026): the Council, general meetings
+ * The Society's meetings (decisions.md): the Council, general meetings
  * every two weeks, the Annual Meeting, special meetings and the Founding
  * Meeting (March 30, 2027). There are no other kinds.
  */

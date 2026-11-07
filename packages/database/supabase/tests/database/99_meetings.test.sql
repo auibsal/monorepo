@@ -113,7 +113,7 @@ values ('R-2026-81', 'Of the meeting', 'Text.', 'draft', 'council', '00000000-00
 select is(
   (select body from governance.resolutions where title_en = 'Of the meeting'),
   'general',
-  'A resolution takes the body of its meeting (a general meeting, owner, Nov 7, 2026)'
+  'A resolution takes the body of its meeting (a general meeting, decisions.md)'
 );
 
 select throws_ok(

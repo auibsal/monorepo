@@ -17,7 +17,7 @@ export const desks = [
 export type Desk = Enums<{ schema: "journal" }, "desk">;
 
 /**
- * Each section's types (owner, Nov 7, 2026: types are flexible, each
+ * Each section's types (decisions.md: types are flexible, each
  * section takes what fits it): the usual kinds, in the order the forms list
  * them, ending with "other" for anything else, which the writer names. The
  * same mapping as journal.desk_of(); journal.is_current_category() refuses
@@ -98,7 +98,7 @@ export const deskCategories = (desk: Desk): readonly Category[] =>
 
 /**
  * Types that take no submissions: games come only from the site and the
- * editors (owner, Nov 7, 2026). The database refuses them too.
+ * editors (decisions.md). The database refuses them too.
  */
 export const closedCategories: readonly Category[] = [...sectionTypes.games];
 
@@ -244,7 +244,7 @@ export const submissionSchema = z
     body_html: z.string().max(200_000).optional(),
     /**
      * An Edition call (Letters, Gallery); without one the work goes to the
-     * standing call. Either way it is read blind (owner, Oct 31, 2026).
+     * standing call. Either way it is read blind (decisions.md).
      */
     call_id: z.uuid().optional(),
     category: z.enum(categories as [Category, ...Category[]]),
@@ -1016,7 +1016,7 @@ export const nextStopTeam = async (client: Client) =>
   unwrap(await journal(client).rpc("next_stop_team")) ?? [];
 
 /**
- * Qirtas's masthead (owner, Nov 5, 2026), from the roles people hold: the
+ * Qirtas's masthead (decisions.md), from the roles people hold: the
  * Editor-in-Chief first, then the Managing Editor and the paper's roles.
  */
 export const masthead = async (client: Client) =>
@@ -1143,7 +1143,7 @@ export const inLanguage = <T>(list: readonly T[], locale: string): T[] =>
 
 // ── The Mutanabbi Prize ─────────────────────────────────────────────────────
 
-/** The Prize's categories (owner, Nov 7, 2026). */
+/** The Prize's categories (decisions.md). */
 export const PRIZE_CATEGORIES = ["qirtas", "qalam"] as const;
 export type PrizeCategory = (typeof PRIZE_CATEGORIES)[number];
 

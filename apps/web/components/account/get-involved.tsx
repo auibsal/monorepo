@@ -12,7 +12,7 @@ import { useMyMembership } from "@/lib/diwan/queries";
 import { OpenPlaces } from "./open-places";
 
 /**
- * Get involved (owner, Nov 7, 2026: open roles only), for anyone to read:
+ * Get involved (decisions.md: open roles only), for anyone to read:
  * team roles, event teams, Qalam mentors and the Company's auditions. Members get the board itself, where they reply
  * and sign up for shifts, with what matches their skills first.
  */

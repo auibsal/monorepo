@@ -7,7 +7,7 @@ import { Section } from "@/components/section";
 import { readPublished } from "@/lib/supabase";
 
 /**
- * The standard parts of an event's page (owner, Nov 7, 2026: one standard
+ * The standard parts of an event's page (decisions.md: one standard
  * page, standard parts only; the add-ons are gone). Each shows only when the
  * event has it: Student Life's approval and the trip consent form for an
  * event off campus, the links from the night, and what Qirtas wrote from it.

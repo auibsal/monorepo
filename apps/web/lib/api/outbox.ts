@@ -478,7 +478,7 @@ const stopLinks = (lang: Lang, userId: string) => {
 };
 
 /**
- * What the Sunday Paper carries (owner, Oct 29, 2026): the month's pieces,
+ * What the Sunday Paper carries (decisions.md): the month's pieces,
  * What's on for the month ahead, and Get involved's open places. Null
  * when there is nothing to send.
  */
@@ -580,7 +580,7 @@ const handlers: Record<string, Handler> = {
       await send(to, recoveryAttempts(to.lang, appUrl()));
     }
   },
-  // ── Journeys added in the email audit (owner, Nov 4, 2026) ──────────
+  // ── Journeys added in the email audit (decisions.md) ──────────
   "access.role_assigned": async (admin, payload) => {
     const [to, { data }] = await Promise.all([
       recipient(admin, payload.user_id),
@@ -1006,7 +1006,7 @@ const handlers: Record<string, Handler> = {
       );
     }
   },
-  // The one-time invitation to join (owner, Nov 7, 2026), as one Broadcast
+  // The one-time invitation to join (decisions.md), as one Broadcast
   // for each kind of invitation: each address's greeting, Tour line and
   // stop link are its contact properties. The President's go marked the
   // addresses sent (membership.send_invitations).
@@ -1467,7 +1467,7 @@ const handlers: Record<string, Handler> = {
   revalidate: async (_admin, payload) => {
     await revalidate(payload.tags);
   },
-  // The Sunday Paper (owner, Nov 7, 2026): one Broadcast in each language to
+  // The Sunday Paper (decisions.md): one Broadcast in each language to
   // members who take optional email and the public list, with each
   // person's own stop link as a contact property.
   // Files the database let go of (a declined Associate request's Tour

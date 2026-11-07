@@ -19,7 +19,7 @@ import {
 } from "@/components/diwan/states";
 
 /**
- * Every open role, for anyone to read, in one list (owner, Nov 7, 2026:
+ * Every open role, for anyone to read, in one list (decisions.md:
  * open roles only): team roles, event teams, Qalam mentors and the
  * Company's auditions, soonest first. Each says what it is, where and when
  * it closes. Replying takes membership.

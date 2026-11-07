@@ -76,7 +76,7 @@ const Clause = ({
 );
 
 /**
- * The application is the memorandum itself (owner, Oct 31, 2026): a live
+ * The application is the memorandum itself (decisions.md): a live
  * contract on paper, with the organization's details as blanks filled in
  * where they stand, the Society's terms as numbered clauses, and the
  * applicant's signature (their name on the platform, in the signature
@@ -381,7 +381,7 @@ const ApplicationForm = () => {
 };
 
 /**
- * Partner with the Society (owner, Oct 31, 2026): an organization signs up,
+ * Partner with the Society (decisions.md): an organization signs up,
  * proposes the partnership and signs the memorandum by name; the President
  * signs for the Society in the Diwan. Whoever applied then leads the
  * partner's team, on its dashboard at /partners/dashboard.
@@ -397,7 +397,7 @@ export const PartnerJoin = () => {
     return <PageSpinner />;
   }
   if (!user) {
-    // First, who signs (owner, Oct 31, 2026): sign in, or make an account
+    // First, who signs (decisions.md): sign in, or make an account
     // for whoever signs for the organization (any address will do). A
     // member signs in as themselves and stays a member.
     return (
@@ -420,7 +420,7 @@ export const PartnerJoin = () => {
       </DiwanPage>
     );
   }
-  // A member may lead their club's partnership (owner, Oct 31, 2026); a
+  // A member may lead their club's partnership (decisions.md); a
   // guest may not, and applies with the organization's own address.
   if (mine.data?.kind === "guest") {
     return (

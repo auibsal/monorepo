@@ -1,4 +1,4 @@
--- No third-party apps (owner, Oct 30, 2026): a token issued to an app (it
+-- No third-party apps (decisions.md): a token issued to an app (it
 -- carries a client_id) reaches nothing; the Society's own tokens are unaffected.
 -- until the founding year ends; Honorary and Alumni Members never do.
 begin;

@@ -40,8 +40,7 @@ const isCurrent = (pathname: string, link: AccountLink) =>
   );
 
 /**
- * Where the signed-in person goes beyond the public site (owner, Oct 31,
- * 2026): Membership for members, Account for everyone else, the Diwan for
+ * Where the signed-in person goes beyond the public site (decisions.md): Membership for members, Account for everyone else, the Diwan for
  * officers (a role, or one waiting on two-step sign-in) and Partner for a
  * partner's team. Remembered in a cookie so the public pages can show the
  * same; UX only.

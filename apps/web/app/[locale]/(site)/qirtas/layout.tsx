@@ -4,7 +4,7 @@ import { Nameplate } from "@/components/qirtas/nameplate";
 
 /**
  * The paper is printed on paper: every page of it on `paper`, under one
- * nameplate that stays the same from page to page (owner, Nov 5, 2026).
+ * nameplate that stays the same from page to page (decisions.md).
  */
 const PaperLayout = async ({
   children,

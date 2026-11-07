@@ -159,7 +159,7 @@ select is(
   (select count(*)::integer from unnest(enum_range(null::journal.category)) c
    where journal.is_current_category(c)),
   36,
-  'Thirty-six types: each section''s, with its other, and four daily games (owner, Nov 7, 2026)'
+  'Thirty-six types: each section''s, with its other, and four daily games (decisions.md)'
 );
 
 select lives_ok($$ select pg_temp.submit(1, 'poetry') $$, 'Poetry is accepted');

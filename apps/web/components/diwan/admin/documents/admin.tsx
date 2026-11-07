@@ -38,7 +38,7 @@ const useDocumentList = () => {
 };
 
 /**
- * The Library (owner, Oct 30, 2026): the Society's documents on two
+ * The Library (decisions.md): the Society's documents on two
  * shelves, the Society's documents and the website's policies. Since Nov 4,
  * 2026 their text is written in Notion and published from there; the
  * Diwan keeps each one's adoption record, kept by whoever holds
@@ -145,7 +145,7 @@ export const LibraryDocument = ({ slug }: { slug: string }) => {
 };
 
 /**
- * A document's adoption record (owner, Nov 4, 2026): the text is written in
+ * A document's adoption record (decisions.md): the text is written in
  * Notion (Publishing, Documents) and rendered here and on the Library by the
  * sync, read-only; the Diwan keeps when and how it was adopted (status,
  * version, the date and the vote), which goes back to the row in Notion.

@@ -10,7 +10,7 @@ import { queryKeys, useProfile } from "@/lib/diwan/queries";
 import { ErrorLine } from "../admin/kit";
 
 /**
- * "Email me about events, calls and Society notices" (owner, Oct 31, 2026:
+ * "Email me about events, calls and Society notices" (decisions.md:
  * kept on Notices only): the optional emails, the Sunday Paper and booked
  * event reminders. Saved as soon as it is ticked.
  */

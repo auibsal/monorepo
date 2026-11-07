@@ -52,7 +52,7 @@ const invitationCopy = (
 };
 
 /**
- * /invite/<code> (owner, Oct 31, 2026): an invitation to a partner's team,
+ * /invite/<code> (decisions.md): an invitation to a partner's team,
  * or to be a guest of a partner or of the Society itself (Membership). Signed out, the visitor creates an account
  * here, whatever their address (the invitation is why it may be outside
  * AUIB); signed in, they accept it.

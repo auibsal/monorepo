@@ -29,7 +29,7 @@ export const generateMetadata = async ({
 };
 
 /**
- * The Editions on a shelf (owner, Nov 4, 2026; design review C11): each
+ * The Editions on a shelf (decisions.md; design review C11): each
  * printed Edition's cover, newest first, with the same Editions as a plain
  * list (a view, ?view=list, decisions §6). Before the first is published:
  * its call and its launch event.

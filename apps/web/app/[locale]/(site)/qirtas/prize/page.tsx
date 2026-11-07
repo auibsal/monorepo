@@ -26,7 +26,7 @@ export const generateMetadata = async ({
 };
 
 /**
- * The Mutanabbi Prize (owner, Nov 7, 2026):
+ * The Mutanabbi Prize (decisions.md):
  * two categories, Qirtas and Qalam. Editors shortlist; an outside judge
  * scores each work out of 100, blind; voting members vote online for one
  * work in each category. Final score: 70% judge, 30% members (each work's

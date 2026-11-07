@@ -162,7 +162,7 @@ export const formatLongDate = (
 
 /**
  * "November 7, 2026" / «7 تشرين الثاني 2026»: the date with no weekday, for
- * letters and certificates (owner, Nov 7, 2026).
+ * letters and certificates (decisions.md).
  */
 export const formatPlainDate = (
   value: DateInput,

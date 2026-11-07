@@ -40,7 +40,7 @@ export default async function globalSetup() {
   const editor2Id = await ensureUser(editor2.email, editor2.name);
   const presidentId = await ensureUser(president.email, president.name);
 
-  // One person, one name (owner, Oct 31, 2026): each account's grandfather's
+  // One person, one name (decisions.md): each account's grandfather's
   // name differs, so no two share all four parts. The name shown (the first
   // and the fourth) stays "E2E Tester".
   const grandfathers: Record<string, [string, string]> = {

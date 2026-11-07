@@ -12,7 +12,7 @@ import {
 
 /**
  * Resend Broadcasts for the emails that go to many people at once: the
- * Sunday Paper and the one-time invitation (owner, Nov 7, 2026). One email
+ * Sunday Paper and the one-time invitation (decisions.md). One email
  * per person counts against the free plan's 100 a day, which sign-in emails
  * share; a Broadcast doesn't.
  *
@@ -43,7 +43,7 @@ export interface BroadcastJob {
   readonly contacts: readonly BroadcastContact[];
   /**
    * Leave the Broadcast as a draft in Resend for a person to send (the
-   * invitation, owner, Nov 7, 2026); otherwise it goes at once.
+   * invitation, decisions.md); otherwise it goes at once.
    */
   readonly draft?: boolean;
   readonly footer: NoticeFooterLine[];

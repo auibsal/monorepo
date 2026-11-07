@@ -1,5 +1,5 @@
 -- Membership: sign-up verification, pledges, profile visibility and the
--- voting member rule (owner, Nov 7, 2026: two events or general meetings in
+-- voting member rule (decisions.md: two events or general meetings in
 -- the academic year, from September 1).
 begin;
 -- <preamble>

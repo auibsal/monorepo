@@ -80,7 +80,7 @@ const docxHtml = async (file: File) => {
 };
 
 /**
- * A manuscript's text for the editor (owner, Oct 31, 2026): a Word file or
+ * A manuscript's text for the editor (decisions.md): a Word file or
  * a PDF read in the browser, cleaned to what the editor keeps. The file
  * itself is still sent with the work, so the editors have the original.
  * Null when nothing could be read (a scanned PDF has no text).

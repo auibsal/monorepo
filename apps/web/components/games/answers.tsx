@@ -110,7 +110,7 @@ const Answer = ({
 };
 
 /**
- * Anagrams (owner, Nov 5, 2026: the daily five, or an editor's set): type
+ * Anagrams (decisions.md: the daily five, or an editor's set): type
  * each word; only the letters are compared, so spacing and hamzas don't
  * matter. The letters are scrambled the same way for every reader.
  * Progress stays in this browser only.

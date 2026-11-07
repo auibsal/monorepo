@@ -9,8 +9,7 @@ export const maxDuration = 60;
  * workspace. Mirrors officers, programs, the document and minutes registry
  * and Journal counts into Notion, publishes events and news set to Ready to
  * publish there, and writes RSVP counts back. Does nothing without
- * NOTION_TOKEN. `?documents=all` is the Library re-sync (owner, Nov 7,
- * 2026): every document row, Published ones included, is rendered again.
+ * NOTION_TOKEN. `?documents=all` is the Library re-sync (decisions.md): every document row, Published ones included, is rendered again.
  * Run it until the counts show nothing left (each run has 45 seconds).
  */
 const sync = async (request: Request) => {

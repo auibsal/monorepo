@@ -78,8 +78,7 @@ export const endRoleAssignment = async (client: Client, assignmentId: string) =>
   );
 
 /**
- * Confirms someone after their first term on probation (owner, Nov 7,
- * 2026); a Council seat needs Student Life's "eligible" first.
+ * Confirms someone after their first term on probation (decisions.md); a Council seat needs Student Life's "eligible" first.
  */
 export const confirmAssignment = async (client: Client, assignmentId: string) =>
   unwrap(

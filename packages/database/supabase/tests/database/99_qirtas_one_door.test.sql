@@ -1,4 +1,4 @@
--- Qirtas, one door, and one name per language (owner, Oct 31, 2026):
+-- Qirtas, one door, and one name per language (decisions.md):
 -- everything members send is read blind through a call (the standing call
 -- when none is named), bylines and judges are people from the register
 -- (under their name or a pen name), and a member's name is one name in

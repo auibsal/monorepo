@@ -87,7 +87,7 @@ const Minutes = () => {
 };
 
 /**
- * The members directory (owner, Nov 7, 2026): members only, and only those
+ * The members directory (decisions.md): members only, and only those
  * who chose to be listed; the Register itself is private. A member joins or
  * leaves it here.
  */

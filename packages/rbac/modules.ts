@@ -35,13 +35,13 @@ export const adminModules = [
   },
 
   { key: "programs", permissions: ["programs.manage"] },
-  // The Typewriter Tour belongs to membership (owner, Nov 5, 2026): the
+  // The Typewriter Tour belongs to membership (decisions.md): the
   // General Secretary and the Tour Lead.
   { key: "tour", permissions: ["tour.run"] },
-  // Qalam, Qirtas's summer program (owner, Nov 7, 2026): its roster lives
+  // Qalam, Qirtas's summer program (decisions.md): its roster lives
   // in the staff area, never in Notion.
   { key: "qalam", permissions: ["qalam.manage"] },
-  // Hiring (owner, Oct 30, 2026): the General Secretary runs every role's
+  // Hiring (decisions.md): the General Secretary runs every role's
   // applications; each owner (the President for event leads, the
   // Editor-in-Chief, a director) picks for their own.
   {

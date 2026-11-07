@@ -1,7 +1,7 @@
 import { type Client, unwrap } from "./client";
 
 /**
- * The forms signed on the site (owner, Nov 7, 2026): one standard page,
+ * The forms signed on the site (decisions.md): one standard page,
  * `/forms/<number>` (F-06, F-10 …), with a typed-name signature; the signed
  * copy keeps the signer, the time and the form's version. The fields follow
  * the Leadership Handbook (SAL-EXB-01); labels live in the messages files

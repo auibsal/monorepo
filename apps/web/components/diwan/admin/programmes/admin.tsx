@@ -603,7 +603,7 @@ export const NewReelPage = () => {
 type SignupStatus = "signed_up" | "confirmed" | "swap_requested" | "canceled";
 
 /**
- * An event's volunteer shifts (owner, Nov 7, 2026: shifts live only on an
+ * An event's volunteer shifts (decisions.md: shifts live only on an
  * event and log no hours; there are no rotas).
  */
 export const Shifts = ({ eventId }: { eventId: string }) => {
@@ -1069,7 +1069,7 @@ const Removals = () => {
 export const ProgramPitches = () => {
   const t = useTranslations("diwan.admin.programmes");
   const grants = useGrants();
-  // Only those who answer pitches see them (the President, owner, Nov 5, 2026).
+  // Only those who answer pitches see them (the President, decisions.md).
   if (!hasPermissionAnywhere(grants.data, "programs.manage")) {
     return null;
   }

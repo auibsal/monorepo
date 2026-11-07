@@ -1,4 +1,4 @@
--- The Diwan, rebuilt (owner, Oct 30, 2026): terms come from the AUIB
+-- The Diwan, rebuilt (decisions.md): terms come from the AUIB
 -- calendar, a role runs for the Society's year unless ended, feature
 -- switches and the Site section are gone, pledge versions are private.
 begin;

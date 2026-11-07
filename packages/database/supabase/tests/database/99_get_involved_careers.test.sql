@@ -96,7 +96,7 @@ $$;
 -- </preamble>
 select plan(9);
 
--- Get involved lists open roles only (owner, Nov 7, 2026): team roles,
+-- Get involved lists open roles only (decisions.md): team roles,
 -- event teams and Qalam mentors, with the Company's auditions beside them.
 select pg_temp.make_user('00000000-0000-0000-0000-0000000067a4', 'president-gi@auib.edu.iq', 'The President');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000067a5', 'eic-gi@auib.edu.iq', 'The Editor');

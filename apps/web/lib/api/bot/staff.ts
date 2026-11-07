@@ -9,7 +9,7 @@ import { baghdadHour, copyFor, linkLang, once, type Run } from "./feeds";
 import { label, pick } from "./format";
 
 /**
- * Hudhud in the Diwan group (/audience staff; owner, Oct 31, 2026): a
+ * Hudhud in the Diwan group (/audience staff; decisions.md): a
  * morning brief from 8:00 a.m. Baghdad time (today's events with their
  * bookings, and what waits in the Diwan, as counts) and a short summary
  * half an hour after each event ends (booked, came, walk-ins, no-shows,

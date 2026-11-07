@@ -73,7 +73,7 @@ const EditionPage = async ({ params }: EditionProps) => {
   const newer = at > 0 ? shelf[at - 1] : undefined;
   const pdf = mediaUrl(edition.pdf_path);
   const letter = localized(edition, "editors_note", locale);
-  // The printed edition (owner, Oct 29, 2026), once its record is complete.
+  // The printed edition (decisions.md), once its record is complete.
   const printer = localized(edition, "printer", locale);
   const printed =
     printer && edition.printed_on && edition.print_run

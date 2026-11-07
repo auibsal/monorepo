@@ -124,7 +124,7 @@ const errorKey = (error: unknown) => {
 };
 
 /**
- * Standing for a position, on its own page (owner, Nov 4, 2026: every new
+ * Standing for a position, on its own page (decisions.md: every new
  * record opens its own page): the statement in each language, then back
  * to Society, where the nomination shows as the member's own.
  */

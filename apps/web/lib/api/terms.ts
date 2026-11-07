@@ -1,7 +1,7 @@
 import type { FeedEvent } from "./ical";
 
 /**
- * The Society's terms come from the AUIB calendar (owner, Oct 30, 2026):
+ * The Society's terms come from the AUIB calendar (decisions.md):
  * "First day of Fall Semester - UGRD" opens one and "Fall Semester Ends -
  * last day on campus" closes it. Nobody types them in.
  */

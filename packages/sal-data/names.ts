@@ -1,6 +1,6 @@
 /**
  * A person's name in four parts, in English and in Arabic, as on their
- * papers (owner, Oct 31, 2026): their name, their father's, their
+ * papers (decisions.md): their name, their father's, their
  * grandfather's, and the fourth (family or last) name. All eight are
  * required. Wherever a name shows (the register, the card, bylines), it
  * is the first and the fourth: the database keeps `full_name_en` and

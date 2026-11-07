@@ -5,7 +5,7 @@ import { useLocale, useTranslations } from "next-intl";
 
 /**
  * The public page of what this Diwan, partner or Membership page keeps
- * (owner, Oct 31, 2026: wherever something is tied to a public page, link
+ * (decisions.md: wherever something is tied to a public page, link
  * to it). A site address, in the page's language, outside the Diwan.
  */
 export const OnTheSite = ({
