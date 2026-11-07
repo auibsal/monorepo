@@ -17,14 +17,13 @@ export const meetingBodies = [
 ] as const;
 export type MeetingBody = (typeof meetingBodies)[number];
 
-/** A ranked ballot: position id → candidate ids (or RON) in order. */
+/**
+ * A ballot: one choice per seat, a candidate (or RON on an uncontested
+ * race), or none to abstain (plurality with a majority, decisions §4).
+ */
 export const ballotSchema = z.record(
   z.uuid(),
-  z
-    .array(z.union([z.uuid(), z.literal(RON)]))
-    .refine((ranks) => new Set(ranks).size === ranks.length, {
-      message: "duplicate_rank",
-    })
+  z.array(z.union([z.uuid(), z.literal(RON)])).max(1)
 );
 
 export type Ballot = z.infer<typeof ballotSchema>;

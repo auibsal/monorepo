@@ -58,6 +58,7 @@ export type Database = {
           exception_resolution_id: string | null;
           id: string;
           note: string | null;
+          recovery_by: string | null;
           role: string;
           scope_id: string | null;
           scope_type: string;
@@ -77,6 +78,7 @@ export type Database = {
           exception_resolution_id?: string | null;
           id?: string;
           note?: string | null;
+          recovery_by?: string | null;
           role: string;
           scope_id?: string | null;
           scope_type?: string;
@@ -96,6 +98,7 @@ export type Database = {
           exception_resolution_id?: string | null;
           id?: string;
           note?: string | null;
+          recovery_by?: string | null;
           role?: string;
           scope_id?: string | null;
           scope_type?: string;
@@ -1975,30 +1978,39 @@ export type Database = {
       };
       election_results: {
         Row: {
+          abstained: number;
           ballots_counted: number;
           computed_at: string;
+          decided_by_lot: boolean;
           election_id: string;
           position_id: string;
           ron_won: boolean;
           rounds: NonNullable<Json>;
+          runoff_candidate_ids: string[] | null;
           winner_candidate_id: string | null;
         };
         Insert: {
+          abstained?: number;
           ballots_counted: number;
           computed_at?: string;
+          decided_by_lot?: boolean;
           election_id: string;
           position_id: string;
           ron_won?: boolean;
           rounds: NonNullable<Json>;
+          runoff_candidate_ids?: string[] | null;
           winner_candidate_id?: string | null;
         };
         Update: {
+          abstained?: number;
           ballots_counted?: number;
           computed_at?: string;
+          decided_by_lot?: boolean;
           election_id?: string;
           position_id?: string;
           ron_won?: boolean;
           rounds?: NonNullable<Json>;
+          runoff_candidate_ids?: string[] | null;
           winner_candidate_id?: string | null;
         };
         Relationships: [
@@ -2038,6 +2050,7 @@ export type Database = {
           notice_given_at: string | null;
           question_ar: string | null;
           question_en: string | null;
+          runoff_of: string | null;
           status: string;
           title_ar: string;
           title_en: string;
@@ -2060,6 +2073,7 @@ export type Database = {
           notice_given_at?: string | null;
           question_ar?: string | null;
           question_en?: string | null;
+          runoff_of?: string | null;
           status?: string;
           title_ar: string;
           title_en: string;
@@ -2082,6 +2096,7 @@ export type Database = {
           notice_given_at?: string | null;
           question_ar?: string | null;
           question_en?: string | null;
+          runoff_of?: string | null;
           status?: string;
           title_ar?: string;
           title_en?: string;
@@ -2092,7 +2107,15 @@ export type Database = {
           voting_point_at?: string | null;
           voting_point_en?: string | null;
         };
-        Relationships: [];
+        Relationships: [
+          {
+            foreignKeyName: "elections_runoff_of_fkey";
+            columns: ["runoff_of"];
+            isOneToOne: false;
+            referencedRelation: "elections";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       form_submissions: {
         Row: {
@@ -3019,6 +3042,14 @@ export type Database = {
         Args: { candidate_id: string; eligible: boolean };
         Returns: undefined;
       };
+      record_lot: {
+        Args: {
+          candidate_id: string;
+          election_id: string;
+          position_id: string;
+        };
+        Returns: undefined;
+      };
       record_partner_vote: {
         Args: { agreement_id: string; resolution: string };
         Returns: undefined;
@@ -3046,6 +3077,25 @@ export type Database = {
           subject_id?: string;
         };
         Returns: string;
+      };
+      start_runoff: {
+        Args: {
+          closes_at: string;
+          election_id: string;
+          opens_at: string;
+          position_id: string;
+        };
+        Returns: string;
+      };
+      student_life_list: {
+        Args: { election_id?: string };
+        Returns: {
+          email: string;
+          full_name_ar: string;
+          full_name_en: string;
+          seat_ar: string;
+          seat_en: string;
+        }[];
       };
       turnout: {
         Args: { election_id: string };

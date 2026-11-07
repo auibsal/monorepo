@@ -94,7 +94,7 @@ as $$
   returning id;
 $$;
 -- </preamble>
-select plan(7);
+select plan(9);
 
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000f1', 'pres-cr@auib.edu.iq', 'The President');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a1', 'ad-cr@auib.edu.iq', 'The Artistic Director');
@@ -142,6 +142,23 @@ select pg_temp.login_as('00000000-0000-0000-0000-0000000000a1');
 select ok(
   access.has_permission('productions.manage') and not access.has_permission_anywhere('events.manage'),
   'They run every production, and no other program''s calendar'
+);
+
+-- Not eligible: one term to recover, dated; eligible again clears it.
+select pg_temp.login_as('00000000-0000-0000-0000-0000000000f1');
+select access.record_seat_check(a.id, false) from access.role_assignments a
+where a.user_id = '00000000-0000-0000-0000-0000000000a1' and a.role = 'artistic_director';
+select ok(
+  (select recovery_by > current_date from access.role_assignments
+   where user_id = '00000000-0000-0000-0000-0000000000a1' and role = 'artistic_director'),
+  'A seat found not eligible has a recovery date'
+);
+select access.record_seat_check(a.id, true) from access.role_assignments a
+where a.user_id = '00000000-0000-0000-0000-0000000000a1' and a.role = 'artistic_director';
+select is(
+  (select recovery_by from access.role_assignments
+   where user_id = '00000000-0000-0000-0000-0000000000a1' and role = 'artistic_director'),
+  null, 'and an eligible answer clears it'
 );
 
 select * from finish();

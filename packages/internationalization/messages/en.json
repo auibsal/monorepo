@@ -475,7 +475,7 @@
       },
       "elections": {
         "title": "Elections",
-        "lede": "Stand for a seat, rank the candidates, and read the results. Ballots are secret: who voted is kept apart from how.",
+        "lede": "Stand for a seat, vote, and read the results. Ballots are secret: who voted is kept apart from how.",
         "empty": "No election has been announced.",
         "status": {
           "notice": "Notice given",
@@ -497,32 +497,36 @@
           "rejected": "Your nomination was not approved.",
           "withdrawn": "You withdrew your nomination."
         },
-        "ballotHelp": "Rank as many candidates as you like: your first choice first. Leave a rank empty to stop there.",
-        "rank": "Choice {rank}",
-        "noChoice": "No choice",
-        "ron": "Re-open nominations",
+        "ballotHelp": "Choose one candidate for each seat, or abstain. A candidate needs a majority of the votes cast; otherwise the top two go to a runoff within a week.",
+        "ron": "Reopen nominations",
         "cast": "Cast my ballot",
         "youVoted": "You have voted in this election. Thank you.",
         "notEligible": "Only members on this election’s voter list can vote.",
         "pending": "Not yet counted",
-        "ronWon": "Re-open nominations",
+        "ronWon": "Nominations reopen",
         "notice": {
           "nominated": "Nomination received. The Elections Committee reviews every one.",
           "voted": "Ballot cast. It’s recorded without your name.",
           "already": "You have already voted in this election.",
           "notEligible": "You’re not on this election’s voter list.",
           "closed": "That window has closed.",
-          "duplicate": "Each candidate can be ranked only once.",
-          "failed": "That didn’t work. Try again in a moment."
+          "failed": "That didn’t work. Try again in a moment.",
+          "gpaConsent": "Tick the GPA consent to stand."
         },
         "onList": "You’re on the voter list for this election.",
         "notOnList": "You’re not on this election’s voter list. It is the register of Voting Members on the day notice was given.",
-        "auibOnly": "Online voting needs your AUIB account (@auib.edu.iq). Sign in with it, or ask the Elections Committee whether there will be a paper ballot box.",
+        "auibOnly": "Online voting needs your AUIB account (@auib.edu.iq). Sign in with it, or vote at the voting point at the meeting.",
         "backToSociety": "Society",
         "standFor": "Stand for {position}",
         "alreadyStanding": "You’re already standing for this seat.",
         "notOpen": "Nominations for this seat aren’t open.",
-        "gpaConsent": "I consent to Student Life checking that my cumulative GPA is at least 2.0. Student Life answers only “eligible” or “not eligible”; the Society never sees my grades."
+        "gpaConsent": "I consent to Student Life checking that my cumulative GPA is at least 2.0. Student Life answers only “eligible” or “not eligible”; the Society never sees my grades.",
+        "abstain": "Abstain",
+        "runoff": "No majority: a runoff follows",
+        "tied": "Tied: decided by lot at a public meeting",
+        "byLot": "{name} (decided by lot)",
+        "votingPoint": "In person: {place}.",
+        "votingPointAt": "In person: {place}, {when}."
       },
       "takePart": {
         "title": "Take part",
@@ -1120,7 +1124,10 @@
           "leftDescription": "{name} left AUIB without graduating: their account becomes a guest account with the same number, and any role they hold ends.",
           "nowGuest": "{name} is now a guest.",
           "nowAssociate": "{name} is now an Associate Member."
-        }
+        },
+        "studentLife": "Student Life",
+        "studentLifeIsEligible": "Eligible",
+        "recoveryBy": "Not eligible; must recover by {date}"
       },
       "verification": {
         "title": "Partner applications",
@@ -1627,7 +1634,7 @@
             "published": "Results published"
           },
           "positions": "Positions",
-          "addPositions": "Add the four Executive Board positions",
+          "addPositions": "Add the three Executive Board positions",
           "candidates": "Candidates",
           "noCandidates": "No nominations yet.",
           "approveCandidate": "Approve",
@@ -1643,16 +1650,14 @@
           "openVoting": "Open voting",
           "openVotingConfirm": "Open voting now? Everyone on the voter list can vote online with their AUIB account until voting closes.",
           "count": "Count the ballots",
-          "countConfirm": "Count now? Polls must have closed. The round-by-round results are stored.",
+          "countConfirm": "Count now? Polls must have closed. Each seat needs a majority of the votes cast.",
           "publish": "Publish results",
           "publishConfirm": "Publish the results to members?",
           "turnout": "Turnout: {voted} of {eligible}",
           "results": "Results",
-          "round": "Round {number}",
           "winner": "Elected: {name}",
-          "ronWon": "Re-open nominations won: the post is filled by new nominations.",
-          "ron": "Re-open nominations",
-          "exhausted": "{count} exhausted",
+          "ronWon": "Reopen nominations won: the seat is filled by new nominations.",
+          "ron": "Reopen nominations",
           "notFound": "No election with this link.",
           "dateError": "Check the dates: nominations close after they open, voting opens after nominations close, and closes after it opens.",
           "giveNotice": "Give notice",
@@ -1665,7 +1670,19 @@
             "not_eligible": "Student Life: not eligible",
             "markEligible": "Student Life says eligible",
             "markNotEligible": "Student Life says not eligible"
-          }
+          },
+          "tally": "{tallies} · {abstained} abstained",
+          "runoffDue": "No majority. Runoff: {names}.",
+          "startRunoff": "Open the runoff",
+          "startRunoffConfirm": "Open the runoff now? It has the same voter list and these candidates, and closes in two days (within a week of this election).",
+          "tiedDraw": "Tied: draw lots at a public meeting, then record the result.",
+          "recordLot": "Drawn by lot: {name}",
+          "recordLotConfirm": "Record that {name} won the draw at a public meeting?",
+          "byLot": "Elected by lot: {name}",
+          "studentLifeList": "Candidates for Student Life (CSV)",
+          "councilList": "The Council for Student Life (CSV)",
+          "votingPoint": "The voting point in person",
+          "votingPointAt": "When the voting point is open"
         },
         "bodies": {
           "council": "The Council",

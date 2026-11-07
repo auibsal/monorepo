@@ -304,6 +304,22 @@ const RolesSection = ({ name, userId }: { name: string; userId: string }) => {
     },
     { cell: state, header: "", key: "state" },
     {
+      // Student Life's GPA answer for a Council seat; not eligible gives
+      // one term to recover (Bylaws 4.6).
+      cell: (a) => {
+        if (a.student_life_answer === "not_eligible" && a.recovery_by) {
+          return t("recoveryBy", {
+            date: formatLongDate(a.recovery_by, locale, true),
+          });
+        }
+        return a.student_life_answer === "eligible"
+          ? t("studentLifeIsEligible")
+          : "";
+      },
+      header: t("studentLife"),
+      key: "student_life",
+    },
+    {
       cell: (a) =>
         canAssign && access.isActiveAssignment(a, now) && !a.confirmed_at ? (
           <span className="flex flex-wrap gap-2">

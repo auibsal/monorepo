@@ -95,7 +95,7 @@ as $$
 $$;
 -- </preamble>
 
-select plan(32);
+select plan(43);
 
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000f1', 'founder@auib.edu.iq', 'Founder');
 select access.bootstrap_founder('founder@auib.edu.iq');
@@ -236,14 +236,18 @@ select throws_ok(
   '22023', null, 'A candidate from another race is refused'
 );
 
--- President: v1, v2, v4 stand (3 rounds max). General Secretary: v3 alone, with RON.
+-- One choice per seat (plurality). President: v1, v2, v4 stand.
+-- General Secretary: v3 alone, so the choice is elect or reopen nominations.
+select throws_ok(
+  $$ select pg_temp.vote(pg_temp.voter(1), jsonb_build_array(pg_temp.candidate(1), pg_temp.candidate(2)), '[]') $$,
+  '22023', 'One choice per seat', 'A ballot has one choice per seat, not a ranking'
+);
 select lives_ok($$ select pg_temp.vote(pg_temp.voter(1), jsonb_build_array(pg_temp.candidate(1)),
-  jsonb_build_array(pg_temp.candidate(3))) $$, 'A Voting Member casts a ranked ballot');
-select pg_temp.vote(pg_temp.voter(2), jsonb_build_array(pg_temp.candidate(2), pg_temp.candidate(1)), '["RON"]');
-select pg_temp.vote(pg_temp.voter(3), jsonb_build_array(pg_temp.candidate(4), pg_temp.candidate(2)),
-  jsonb_build_array(pg_temp.candidate(3)));
-select pg_temp.vote(pg_temp.voter(4), jsonb_build_array(pg_temp.candidate(4), pg_temp.candidate(1)), '["RON"]');
-select pg_temp.vote('00000000-0000-0000-0000-0000000000e1', jsonb_build_array(pg_temp.candidate(1)), '["RON"]');
+  jsonb_build_array(pg_temp.candidate(3))) $$, 'A Voting Member casts a ballot');
+select pg_temp.vote(pg_temp.voter(2), jsonb_build_array(pg_temp.candidate(2)), '["RON"]');
+select pg_temp.vote(pg_temp.voter(3), jsonb_build_array(pg_temp.candidate(4)), jsonb_build_array(pg_temp.candidate(3)));
+select pg_temp.vote(pg_temp.voter(4), jsonb_build_array(pg_temp.candidate(4)), '["RON"]');
+select pg_temp.vote('00000000-0000-0000-0000-0000000000e1', jsonb_build_array(pg_temp.candidate(1)), '[]');
 
 select throws_ok(
   $$ select pg_temp.vote(pg_temp.voter(1), jsonb_build_array(pg_temp.candidate(2)), '[]') $$,
@@ -283,21 +287,102 @@ select lives_ok($$ select governance.count_election('e1000000-0000-0000-0000-000
   'The Committee counts after close');
 
 select is(
-  (select winner_candidate_id::text from governance.election_results
+  (select winner_candidate_id from governance.election_results
    where position_id = 'b1000000-0000-0000-0000-000000000001'),
-  pg_temp.candidate(1),
-  'Ranked choice elects the candidate with a majority after transfers'
+  null,
+  'Two votes of five is no majority: nobody is elected'
 );
 select is(
-  (select jsonb_array_length(rounds) from governance.election_results
+  (select runoff_candidate_ids from governance.election_results
    where position_id = 'b1000000-0000-0000-0000-000000000001'),
-  2,
-  'Results store each round'
+  (select array_agg(c.id order by c.id) from governance.candidates c
+   where c.user_id in (pg_temp.voter(1), pg_temp.voter(4))),
+  'The top two go to a runoff'
+);
+select is(
+  (select ballots_counted from governance.election_results where position_id = 'b1000000-0000-0000-0000-000000000002'),
+  4,
+  'An abstention is not a vote cast'
 );
 select ok(
-  (select ron_won from governance.election_results where position_id = 'b1000000-0000-0000-0000-000000000002'),
-  'RON can win an uncontested race'
+  (select not ron_won and winner_candidate_id is null from governance.election_results
+   where position_id = 'b1000000-0000-0000-0000-000000000002'),
+  'Two of four to reopen nominations is no majority either way'
 );
+
+-- The runoff: within a week, the same voters, the two candidates.
+select throws_ok(
+  $$ select governance.start_runoff('e1000000-0000-0000-0000-000000000001', 'b1000000-0000-0000-0000-000000000001',
+       now(), now() + interval '9 days') $$,
+  '22023', 'runoff_within_a_week', 'A runoff closes within a week of the election'
+);
+select lives_ok(
+  $$ select governance.start_runoff('e1000000-0000-0000-0000-000000000001', 'b1000000-0000-0000-0000-000000000001',
+       now(), now() + interval '2 days') $$,
+  'The Committee opens the runoff'
+);
+select is(
+  (select count(*)::integer from governance.candidates c
+   join governance.positions p on p.id = c.position_id
+   join governance.elections e on e.id = p.election_id
+   where e.runoff_of = 'e1000000-0000-0000-0000-000000000001' and c.status = 'approved'),
+  2, 'The runoff has the top two candidates'
+);
+select pg_temp.logout();
+select is(
+  (select count(*)::integer from governance.voters v
+   join governance.elections e on e.id = v.election_id
+   where e.runoff_of = 'e1000000-0000-0000-0000-000000000001'),
+  6, 'and the same voter list'
+);
+select pg_temp.login_as('00000000-0000-0000-0000-0000000000e1');
+
+-- A tie in the runoff is drawn by lot, and the draw is recorded.
+create function pg_temp.runoff() returns uuid language sql as $$
+  select id from governance.elections where runoff_of = 'e1000000-0000-0000-0000-000000000001';
+$$;
+grant execute on function pg_temp.runoff() to public;
+create function pg_temp.runoff_vote(uid uuid, n integer) returns void language plpgsql as $$
+begin
+  perform pg_temp.login_as(uid);
+  perform governance.cast_ballot(pg_temp.runoff(), jsonb_build_object(
+    (select p.id::text from governance.positions p where p.election_id = pg_temp.runoff()),
+    jsonb_build_array((select c.id from governance.candidates c join governance.positions p on p.id = c.position_id
+      where p.election_id = pg_temp.runoff() and c.user_id = pg_temp.voter(n)))));
+end $$;
+grant execute on function pg_temp.runoff_vote(uuid, integer) to public;
+select pg_temp.runoff_vote(pg_temp.voter(1), 1);
+select pg_temp.runoff_vote(pg_temp.voter(2), 4);
+select pg_temp.logout();
+update governance.elections set nominations_open_at = now() - interval '4 seconds', nominations_close_at = now() - interval '3 seconds',
+  voting_opens_at = now() - interval '2 seconds', voting_closes_at = now() - interval '1 second' where id = pg_temp.runoff();
+select pg_temp.login_as('00000000-0000-0000-0000-0000000000e1');
+select governance.count_election(pg_temp.runoff());
+select is(
+  (select cardinality(runoff_candidate_ids) from governance.election_results where election_id = pg_temp.runoff()),
+  2, 'A tied runoff names the tied candidates for the draw'
+);
+select lives_ok(
+  $$ select governance.record_lot(pg_temp.runoff(),
+       (select p.id from governance.positions p where p.election_id = pg_temp.runoff()),
+       (select c.id from governance.candidates c join governance.positions p on p.id = c.position_id
+        where p.election_id = pg_temp.runoff() and c.user_id = pg_temp.voter(4))) $$,
+  'The Committee records the draw'
+);
+select ok(
+  (select decided_by_lot and winner_candidate_id is not null from governance.election_results
+   where election_id = pg_temp.runoff()),
+  'and the seat shows as decided by lot'
+);
+
+-- Student Life's lists: the candidates, and the Council each term.
+select is(
+  (select count(*)::integer from governance.student_life_list('e1000000-0000-0000-0000-000000000001')),
+  4, 'The Committee exports the candidate list for Student Life'
+);
+select pg_temp.login_as(pg_temp.voter(1));
+select throws_ok($$ select * from governance.student_life_list(null) $$, '42501', null,
+  'A member cannot export the Council list');
 
 -- B6.11: ballot data is kept for one year, then deleted; results stay.
 select pg_temp.logout();

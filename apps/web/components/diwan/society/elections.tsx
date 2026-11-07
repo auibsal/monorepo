@@ -12,7 +12,7 @@ import { governance, localized, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useState } from "react";
-import { SelectInput } from "@/components/diwan/admin/kit";
+import { ChoiceInput } from "@/components/diwan/admin/choice-input";
 import { DiwanPage } from "../page";
 import { EmptyLine, ErrorState, SectionSpinner } from "../states";
 import { SocietySection } from "./section";
@@ -20,9 +20,10 @@ import { SocietySection } from "./section";
 type Lang = "en" | "ar";
 
 /**
- * Elections: stand during
- * nominations, rank candidates while voting is open, read the results once
- * published. RLS shows only announced elections, approved candidates (and
+ * Elections: stand during nominations, choose one candidate per seat (or
+ * abstain) while voting is open, read the results once published. A seat
+ * needs a majority of the votes cast; otherwise a runoff between the top
+ * two follows within a week (decisions §4). RLS shows only announced elections, approved candidates (and
  * the member's own nomination); cast_ballot enforces eligibility and the
  * one-ballot rule, and keeps the ballot apart from the voter.
  */
@@ -37,7 +38,7 @@ const useElections = () => {
             .schema("governance")
             .from("elections")
             .select(
-              "id, title_en, title_ar, status, nominations_open_at, nominations_close_at, voting_opens_at, voting_closes_at, positions!positions_election_id_fkey(id, title_en, title_ar, sort, candidates(id, user_id, status, statement_en, statement_ar))"
+              "id, title_en, title_ar, status, nominations_open_at, nominations_close_at, voting_opens_at, voting_closes_at, voting_point_en, voting_point_ar, voting_point_at, runoff_of, positions!positions_election_id_fkey(id, title_en, title_ar, sort, candidates(id, user_id, status, statement_en, statement_ar))"
             )
             .neq("status", "draft")
             .order("voting_opens_at", { ascending: false })
@@ -65,7 +66,9 @@ const useElections = () => {
         supabase
           .schema("governance")
           .from("election_results")
-          .select("election_id, position_id, winner_candidate_id, ron_won")
+          .select(
+            "election_id, position_id, winner_candidate_id, ron_won, runoff_candidate_ids, decided_by_lot"
+          )
           .in("election_id", ids),
         userIds.length
           ? supabase
@@ -101,7 +104,13 @@ const between = (from: string, to: string) => {
 };
 
 const errorKey = (error: unknown) => {
-  const code = (error as { code?: string } | null)?.code;
+  const { code, message } = (error ?? {}) as {
+    code?: string;
+    message?: string;
+  };
+  if (code === "23514" && message?.includes("gpa_consent_required")) {
+    return "gpaConsent";
+  }
   if (code === "23505") {
     return "already";
   }
@@ -288,15 +297,8 @@ const Ballot = ({
     const form = new FormData(event.currentTarget);
     const ballot: governance.Ballot = {};
     for (const position of election.positions) {
-      const ranks = form
-        .getAll(position.id)
-        .map(String)
-        .filter((value) => value !== "");
-      if (new Set(ranks).size !== ranks.length) {
-        setNotice("duplicate");
-        return;
-      }
-      ballot[position.id] = ranks;
+      const choice = String(form.get(position.id) ?? "");
+      ballot[position.id] = choice ? [choice] : [];
     }
     cast.mutate(ballot);
   };
@@ -313,40 +315,30 @@ const Ballot = ({
         const candidates = position.candidates.filter(
           (c) => c.status === "approved"
         );
-        const options = [
-          ...candidates.map((c) => ({ id: c.id, label: name(c.user_id) })),
-          ...(candidates.length <= 1
-            ? [{ id: governance.RON, label: t("ron") }]
-            : []),
-        ];
         return (
-          <fieldset
+          <div
             className="grid gap-3 border-line border-t pt-space-4"
             key={position.id}
           >
-            <legend className="type-subheading px-1">
+            <Label htmlFor={`${election.id}-${position.id}`}>
               {localized(position, "title", locale)}
-            </legend>
-            {options.map((slot, rank) => (
-              <div className="grid gap-1" key={`${position.id}-${slot.id}`}>
-                <Label htmlFor={`${position.id}-${rank}`}>
-                  {t("rank", { rank: String(rank + 1) })}
-                </Label>
-                <SelectInput
-                  defaultValue=""
-                  id={`${position.id}-${rank}`}
-                  name={position.id}
-                >
-                  <option value="">{t("noChoice")}</option>
-                  {options.map((option) => (
-                    <option key={option.id} value={option.id}>
-                      {option.label}
-                    </option>
-                  ))}
-                </SelectInput>
-              </div>
-            ))}
-          </fieldset>
+            </Label>
+            <ChoiceInput
+              defaultValue=""
+              id={`${election.id}-${position.id}`}
+              name={position.id}
+            >
+              {candidates.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {name(c.user_id)}
+                </option>
+              ))}
+              {candidates.length <= 1 && !election.runoff_of ? (
+                <option value={governance.RON}>{t("ron")}</option>
+              ) : null}
+              <option value="">{t("abstain")}</option>
+            </ChoiceInput>
+          </div>
         );
       })}
       <Button
@@ -366,6 +358,45 @@ const Ballot = ({
       ) : null}
     </form>
   );
+};
+
+type Translate = ReturnType<typeof useTranslations<"diwan.society.elections">>;
+
+/** Where members vote in person, if the Committee has said. */
+const votingPointLine = (
+  election: Election,
+  locale: string,
+  t: Translate,
+  when: (iso: string) => string
+) => {
+  const place = localized(election, "voting_point", locale);
+  if (!place) {
+    return null;
+  }
+  return election.voting_point_at
+    ? t("votingPointAt", { place, when: when(election.voting_point_at) })
+    : t("votingPoint", { place });
+};
+
+/** A seat's published outcome: elected, reopened, a runoff, or the draw. */
+const outcomeLine = (
+  result: Data["results"][number] | undefined,
+  winnerName: string | null,
+  isRunoff: boolean,
+  t: Translate
+) => {
+  if (result?.ron_won) {
+    return t("ronWon");
+  }
+  if (winnerName) {
+    return result?.decided_by_lot
+      ? t("byLot", { name: winnerName })
+      : winnerName;
+  }
+  if (result?.runoff_candidate_ids?.length) {
+    return isRunoff ? t("tied") : t("runoff");
+  }
+  return t("pending");
 };
 
 const ElectionCard = ({
@@ -394,6 +425,7 @@ const ElectionCard = ({
     voting && !data.voted.has(election.id) && data.voter.has(election.id);
   const when = (iso: string) =>
     `${formatLongDate(iso, locale)} · ${formatClock(iso, locale)}`;
+  const votingPoint = votingPointLine(election, locale, t, when);
 
   return (
     <article className="grid gap-4 border-line border-t pt-space-4">
@@ -408,6 +440,7 @@ const ElectionCard = ({
             voting: when(election.voting_closes_at),
           })}
         </p>
+        {votingPoint ? <p className="type-caption">{votingPoint}</p> : null}
       </header>
 
       {voting && data.voted.has(election.id) ? (
@@ -482,12 +515,12 @@ const ElectionCard = ({
             const winner = position.candidates.find(
               (c) => c.id === result?.winner_candidate_id
             );
-            let outcome = t("pending");
-            if (result?.ron_won) {
-              outcome = t("ronWon");
-            } else if (winner) {
-              outcome = name(winner.user_id);
-            }
+            const outcome = outcomeLine(
+              result,
+              winner ? name(winner.user_id) : null,
+              Boolean(election.runoff_of),
+              t
+            );
             return (
               <li className="border-line border-b py-2" key={position.id}>
                 <span className="type-caption">

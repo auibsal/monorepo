@@ -160,6 +160,25 @@ const detailColumns = [
   "research_consent",
 ] as const;
 
+const studentLifeTable = (
+  rows: {
+    email: string;
+    full_name_ar: string | null;
+    full_name_en: string;
+    seat_ar: string | null;
+    seat_en: string;
+  }[]
+): ExportTable => ({
+  header: ["name_en", "name_ar", "auib_email", "seat_en", "seat_ar"],
+  rows: rows.map((r) => [
+    r.full_name_en,
+    r.full_name_ar,
+    r.email,
+    r.seat_en,
+    r.seat_ar,
+  ]),
+});
+
 export const exportsByName: Record<string, ExportDefinition> = {
   attendance: {
     permissions: ["events.manage", "events.checkin"],
@@ -214,5 +233,27 @@ export const exportsByName: Record<string, ExportDefinition> = {
   needs: {
     permissions: ["governance.manage"],
     run: needsRows,
+  },
+  // For Student Life's GPA check (decisions §4): an election's candidates,
+  // and every Council seat each term. Name, AUIB address and seat only.
+  "student-life-candidates": {
+    permissions: ["elections.manage"],
+    run: async (session, params) =>
+      studentLifeTable(
+        unwrap(
+          await session.supabase.schema("governance").rpc("student_life_list", {
+            election_id: uuid.parse(params.election_id),
+          })
+        ) ?? []
+      ),
+  },
+  "student-life-council": {
+    permissions: ["governance.manage"],
+    run: async (session) =>
+      studentLifeTable(
+        unwrap(
+          await session.supabase.schema("governance").rpc("student_life_list")
+        ) ?? []
+      ),
   },
 };

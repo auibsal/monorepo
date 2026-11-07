@@ -19,6 +19,7 @@ import {
   ConfirmAction,
   DateTimeField,
   ErrorLine,
+  ExportButton,
   NewLink,
   RecordPage,
   SaveButton,
@@ -43,11 +44,10 @@ type ElectionStatus =
   | "published";
 type CandidateStatus = "nominated" | "approved" | "rejected" | "withdrawn";
 
-interface Round {
-  eliminated?: string | null;
-  exhausted?: number;
-  round: number;
+interface Count {
+  abstained: number;
   tallies: Record<string, number>;
+  votes_cast: number;
 }
 
 const useElection = (electionId: string) => {
@@ -104,6 +104,10 @@ const ElectionCard = ({
     title_en: string;
     eligible_count: number | null;
     notice_given_at: string | null;
+    runoff_of: string | null;
+    voting_point_ar: string | null;
+    voting_point_at: string | null;
+    voting_point_en: string | null;
     voting_closes_at: string;
     voting_opens_at: string;
     nominations_open_at: string;
@@ -167,6 +171,34 @@ const ElectionCard = ({
         await supabase
           .schema("governance")
           .rpc("count_election", { election_id: election.id })
+      ),
+    onSuccess: invalidate,
+  });
+  // No majority: the runoff opens now and closes in two days, within the
+  // week after this election closed (decisions §4; private.start_runoff).
+  const startRunoff = useMutation({
+    mutationFn: async (positionId: string) => {
+      const week = Date.parse(election.voting_closes_at) + 7 * 86_400_000;
+      const closes = Math.min(Date.now() + 2 * 86_400_000, week - 60_000);
+      return unwrap(
+        await supabase.schema("governance").rpc("start_runoff", {
+          closes_at: new Date(closes).toISOString(),
+          election_id: election.id,
+          opens_at: new Date().toISOString(),
+          position_id: positionId,
+        })
+      );
+    },
+    onSuccess: invalidate,
+  });
+  const recordLot = useMutation({
+    mutationFn: async (vars: { candidateId: string; positionId: string }) =>
+      unwrap(
+        await supabase.schema("governance").rpc("record_lot", {
+          candidate_id: vars.candidateId,
+          election_id: election.id,
+          position_id: vars.positionId,
+        })
       ),
     onSuccess: invalidate,
   });
@@ -275,7 +307,6 @@ const ElectionCard = ({
           const result = data.data.results.find(
             (r) => r.position_id === position.id
           );
-          const rounds = (result?.rounds ?? []) as unknown as Round[];
           return (
             <div
               className="grid gap-2 border-line border-b pb-3"
@@ -362,40 +393,35 @@ const ElectionCard = ({
                 ))}
               </ul>
               {result ? (
-                <div className="grid gap-2">
-                  <p className="font-medium text-text">
-                    {result.ron_won
-                      ? t("ronWon")
-                      : t("winner", {
-                          name: result.winner_candidate_id
-                            ? candidateName(result.winner_candidate_id)
-                            : "—",
-                        })}
-                  </p>
-                  <ol className="grid gap-1">
-                    {rounds.map((round) => (
-                      <li className="type-caption" key={round.round}>
-                        {t("round", { number: formatNumber(round.round) })}:{" "}
-                        {Object.entries(round.tallies)
-                          .map(
-                            ([id, votes]) =>
-                              `${candidateName(id)} ${formatNumber(votes)}`
-                          )
-                          .join(" · ")}
-                        {round.exhausted
-                          ? ` · ${t("exhausted", { count: formatNumber(round.exhausted) })}`
-                          : ""}
-                      </li>
-                    ))}
-                  </ol>
-                </div>
+                <ElectionResult
+                  candidateName={candidateName}
+                  isRunoff={Boolean(election.runoff_of)}
+                  onRecordLot={(candidateId) =>
+                    recordLot.mutate({ candidateId, positionId: position.id })
+                  }
+                  onStartRunoff={() => startRunoff.mutate(position.id)}
+                  pending={startRunoff.isPending || recordLot.isPending}
+                  result={result}
+                />
               ) : null}
             </div>
           );
         })}
       </section>
 
+      {status === "closed" || status === "published" ? null : (
+        <VotingPoint election={election} onSaved={invalidate} />
+      )}
+
       <div className="flex flex-wrap gap-3">
+        {status === "draft" ? null : (
+          <ExportButton
+            fileName={`sal-candidates-${election.id.slice(0, 8)}.csv`}
+            label={t("studentLifeList")}
+            name="student-life-candidates"
+            params={{ election_id: election.id }}
+          />
+        )}
         {status === "draft" ? (
           <ConfirmAction
             confirmLabel={t("giveNotice")}
@@ -467,10 +493,161 @@ const ElectionCard = ({
           openVoting.error ??
           count.error ??
           decide.error ??
+          startRunoff.error ??
+          recordLot.error ??
           addPositions.error
         }
       />
     </SalCard>
+  );
+};
+
+/** Where and when members vote in person, on the same ballot. */
+const VotingPoint = ({
+  election,
+  onSaved,
+}: {
+  readonly election: {
+    id: string;
+    voting_point_ar: string | null;
+    voting_point_at: string | null;
+    voting_point_en: string | null;
+  };
+  readonly onSaved: () => void;
+}) => {
+  const t = useTranslations("diwan.admin.governance.elections");
+  const { supabase } = useAuth();
+  const [point, setPoint] = useState({
+    at: election.voting_point_at,
+    place: {
+      ar: election.voting_point_ar ?? "",
+      en: election.voting_point_en ?? "",
+    },
+  });
+  const save = useMutation({
+    mutationFn: async () =>
+      unwrap(
+        await supabase
+          .schema("governance")
+          .from("elections")
+          .update({
+            voting_point_ar: point.place.ar || null,
+            voting_point_at: point.at,
+            voting_point_en: point.place.en || null,
+          })
+          .eq("id", election.id)
+      ),
+    onSuccess: onSaved,
+  });
+  return (
+    <form
+      className="grid gap-3 border-line border-t pt-3"
+      onSubmit={(event) => {
+        event.preventDefault();
+        save.mutate();
+      }}
+    >
+      <BilingualField
+        label={t("votingPoint")}
+        maxLength={300}
+        onChange={(place) => setPoint((p) => ({ ...p, place }))}
+        value={point.place}
+      />
+      <DateTimeField
+        label={t("votingPointAt")}
+        onChange={(at) => setPoint((p) => ({ ...p, at }))}
+        value={point.at}
+      />
+      <SaveButton pending={save.isPending} success={save.isSuccess} />
+      <ErrorLine error={save.error} />
+    </form>
+  );
+};
+
+interface ResultRow {
+  decided_by_lot: boolean;
+  ron_won: boolean;
+  rounds: unknown;
+  runoff_candidate_ids: string[] | null;
+  winner_candidate_id: string | null;
+}
+
+/** One seat's count: the tallies, then who won, a runoff, or the draw. */
+const ElectionResult = ({
+  candidateName,
+  isRunoff,
+  onRecordLot,
+  onStartRunoff,
+  pending,
+  result,
+}: {
+  readonly candidateName: (id: string) => string;
+  readonly isRunoff: boolean;
+  readonly onRecordLot: (candidateId: string) => void;
+  readonly onStartRunoff: () => void;
+  readonly pending: boolean;
+  readonly result: ResultRow;
+}) => {
+  const t = useTranslations("diwan.admin.governance.elections");
+  const counts = (Array.isArray(result.rounds) ? result.rounds : []) as Count[];
+  const tied = result.runoff_candidate_ids ?? [];
+  let outcome: string;
+  if (result.ron_won) {
+    outcome = t("ronWon");
+  } else if (result.winner_candidate_id) {
+    outcome = result.decided_by_lot
+      ? t("byLot", { name: candidateName(result.winner_candidate_id) })
+      : t("winner", { name: candidateName(result.winner_candidate_id) });
+  } else if (tied.length > 0 && isRunoff) {
+    outcome = t("tiedDraw");
+  } else if (tied.length > 0) {
+    outcome = t("runoffDue", { names: tied.map(candidateName).join(", ") });
+  } else {
+    outcome = t("winner", { name: "—" });
+  }
+  return (
+    <div className="grid gap-2">
+      <p className="font-medium text-text">{outcome}</p>
+      {counts.map((count) => (
+        <p className="type-caption" key="count">
+          {t("tally", {
+            abstained: formatNumber(count.abstained),
+            tallies: Object.entries(count.tallies)
+              .map(
+                ([id, votes]) => `${candidateName(id)} ${formatNumber(votes)}`
+              )
+              .join(" · "),
+          })}
+        </p>
+      ))}
+      {!(result.winner_candidate_id || result.ron_won) && tied.length > 0 ? (
+        <div className="flex flex-wrap gap-3">
+          {isRunoff ? (
+            tied.map((id) => (
+              <ConfirmAction
+                confirmLabel={t("recordLot", { name: candidateName(id) })}
+                description={t("recordLotConfirm", { name: candidateName(id) })}
+                disabled={pending}
+                key={id}
+                onConfirm={() => onRecordLot(id)}
+              >
+                {t("recordLot", { name: candidateName(id) })}
+              </ConfirmAction>
+            ))
+          ) : (
+            <ConfirmAction
+              confirmLabel={t("startRunoff")}
+              description={t("startRunoffConfirm")}
+              disabled={pending}
+              onConfirm={onStartRunoff}
+              variant="default"
+            >
+              {t("startRunoff")}
+            </ConfirmAction>
+          )}
+        </div>
+      ) : null}
+    </div>
   );
 };
 
@@ -495,7 +672,14 @@ export const Elections = () => {
       {elections.data?.map((election) => (
         <ElectionCard election={election} key={election.id} />
       ))}
-      <NewLink href="/council/elections/new">{t("new")}</NewLink>
+      <div className="flex flex-wrap gap-3">
+        <NewLink href="/council/elections/new">{t("new")}</NewLink>
+        <ExportButton
+          fileName="sal-council-student-life.csv"
+          label={t("councilList")}
+          name="student-life-council"
+        />
+      </div>
     </div>
   );
 };

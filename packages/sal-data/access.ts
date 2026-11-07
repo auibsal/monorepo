@@ -116,7 +116,7 @@ export const assignmentsFor = async (client: Client, userId: string) =>
       .schema("access")
       .from("role_assignments")
       .select(
-        "id, role, scope_type, scope_id, title_en, title_ar, starts_at, ends_at, note, created_at, confirmed_at, student_life_answer"
+        "id, role, scope_type, scope_id, title_en, title_ar, starts_at, ends_at, note, created_at, confirmed_at, student_life_answer, recovery_by"
       )
       .eq("user_id", userId)
       .order("starts_at", { ascending: false })
