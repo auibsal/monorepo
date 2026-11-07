@@ -209,8 +209,9 @@ any schema change. Integration tests run against a local stack with
   or open, from the roles people hold: nothing is typed by hand. A second
   Council role needs an adopted Council resolution
   (`private.role_conflict`).
-- **The first term.** Anyone newly appointed or joining a team serves a
-  first term on probation; whoever appointed them confirms them
+- **The first term.** Anyone newly joining a team serves a first term on
+  probation; whoever appointed them confirms them; Council seats (elected
+  or appointed directors) serve none
   (`confirmAssignment`). Elected seats have none. Candidates and
   appointees are checked by Student Life for a 2.0 GPA
   (`record_gpa_check`): the Society stores only "eligible" or "not
@@ -224,8 +225,9 @@ any schema change. Integration tests run against a local stack with
   Society's or a partner's) or `partner` (a partner's Lead or Team);
   triggers named `one_membership` refuse a second kind. Members have a
   class (`membership.tier`): Member, Associate Member or Honorary Member;
-  only Members vote (checked in at two events or general meetings that
-  academic year: check-ins are the only record, `membership.activity_records`)
+  only Members vote (checked in at two events or general meetings in the
+  12 months before the voter list's record date: check-ins are the only
+  record, `membership.activity_records`)
   and hold office. Staff is a member holding a role (`private.is_staff`).
   Students join themselves with an AUIB address and confirm they are
   students; Associate and Honorary Members (Honorary only after the

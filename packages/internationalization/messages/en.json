@@ -1044,7 +1044,7 @@
         "tier": "Tier",
         "tierSaved": "Tier saved.",
         "activity": "Check-ins",
-        "activityLede": "Check-ins at events, recorded at the door. Two in an academic year make a Member a voting member.",
+        "activityLede": "Check-ins at events, recorded at the door. Two in the 12 months before an election’s record date make a Member a voting member.",
         "kinds": {
           "check_in": "Check-in"
         },
