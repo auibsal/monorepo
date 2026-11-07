@@ -32,7 +32,7 @@ export const TellUsMoreLine = () => {
     <p className="type-body border-line border-y py-space-3">
       <Link
         className="link font-medium"
-        href="/membership/settings/profile#details"
+        href="/account/settings/profile#details"
       >
         {t("today.link")}
       </Link>{" "}

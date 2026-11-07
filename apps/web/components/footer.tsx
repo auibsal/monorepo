@@ -53,9 +53,9 @@ export const Footer = async ({ consent = true }: FooterProps = {}) => {
   ];
 
   const fine = [
-    ["/library/privacy", t("privacy")],
-    ["/library/terms-of-use", t("terms")],
-    ["/library/accessibility", t("accessibility")],
+    ["/privacy", t("privacy")],
+    ["/terms", t("terms")],
+    ["/accessibility", t("accessibility")],
   ] as const;
 
   return (

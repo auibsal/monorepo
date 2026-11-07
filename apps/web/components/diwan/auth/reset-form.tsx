@@ -44,7 +44,7 @@ export const ResetForm = () => {
       {done ? (
         <p role="status">
           {t("reset.done")}{" "}
-          <Link className="link" href="/membership">
+          <Link className="link" href="/account">
             {t("signIn.submit")}
           </Link>
         </p>

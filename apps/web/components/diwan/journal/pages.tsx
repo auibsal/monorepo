@@ -103,7 +103,7 @@ interface Sent {
 }
 
 /**
- * Your work (/membership/work): everything a member has sent to Qirtas,
+ * Your work (/account/work): everything a member has sent to Qirtas,
  * Edition submissions and newsroom pieces alike, newest first, each with
  * where it stands and its own page.
  */
@@ -150,7 +150,7 @@ export const YourWork = () => {
     ...(submissions.data ?? []).map(
       (s): Sent => ({
         date: s.created_at,
-        href: `/membership/work/submissions/${s.id}`,
+        href: `/account/work/submissions/${s.id}`,
         id: `s-${s.id}`,
         status:
           s.status === "intake_check" && s.intake_returned_at
@@ -163,7 +163,7 @@ export const YourWork = () => {
     ...(pieces.data ?? []).map(
       (p): Sent => ({
         date: p.updated_at,
-        href: `/membership/work/${p.id}`,
+        href: `/account/work/${p.id}`,
         id: `p-${p.id}`,
         status: tp(`statuses.${p.status as journal.PieceStatus}`),
         title: localized(p, "title", locale) || tn("pieceTitle"),
@@ -316,7 +316,7 @@ const PieceLink = ({ submissionId }: { submissionId: string }) => {
     return null;
   }
   return (
-    <Link className={buttonLink} href={`/membership/work/${piece.data.id}`}>
+    <Link className={buttonLink} href={`/account/work/${piece.data.id}`}>
       {t("openYourPiece")}
     </Link>
   );

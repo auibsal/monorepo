@@ -86,7 +86,7 @@ const searchDocuments = async (query: string) => {
       id: doc.code,
       kind: "document" as const,
       occurred_at: null,
-      slug: `/library/${doc.slug}`,
+      slug: documents.documentPath(doc.slug),
       snippet: doc.summary_en ?? "",
       title_ar: doc.title_ar ?? doc.title_en,
       title_en: doc.title_en,

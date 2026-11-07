@@ -22,7 +22,7 @@ import { PageSpinner } from "@/components/diwan/states";
 import { MySignature } from "@/components/signature";
 import { useMyMembership, useProfile } from "@/lib/diwan/queries";
 
-const PATH = "/partners/join";
+const PATH = "/partners/apply";
 
 /**
  * Where an organization outside AUIB works; an AUIB club or department is

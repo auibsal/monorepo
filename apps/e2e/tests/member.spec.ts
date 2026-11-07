@@ -6,7 +6,7 @@ import { expectAccessible, signInWithPassword } from "./helpers";
 
 test("a member books a place and gives it back", async ({ page }) => {
   await signInWithPassword(page, member.email);
-  await page.goto(`${urls.web}/membership/calendar`);
+  await page.goto(`${urls.web}/account/calendar`);
   const card = page.locator(`li#${event.slug}`);
   await expect(card).toBeVisible();
   await expectAccessible(page);
@@ -40,7 +40,7 @@ test("a member sends work to Qirtas and sees the reading timeline", async ({
   await page.getByLabel(/has not appeared in another journal/i).check();
   await page.getByRole("checkbox", { name: /human authorship/i }).check();
   await page.getByRole("button", { name: "Send to Qirtas" }).click();
-  await expect(page).toHaveURL(/\/membership\/work\/submissions\//);
+  await expect(page).toHaveURL(/\/account\/work\/submissions\//);
   await expect(page.getByRole("heading", { name: "Progress" })).toBeVisible();
   await expect(page.locator('[aria-current="step"]')).toContainText("Received");
   await expectAccessible(page);
@@ -73,7 +73,7 @@ test("a member saves a draft, comes back to it and sends it", async ({
   await page.getByLabel(/has not appeared in another journal/i).check();
   await page.getByRole("checkbox", { name: /human authorship/i }).check();
   await page.getByRole("button", { name: "Send to Qirtas" }).click();
-  await expect(page).toHaveURL(/\/membership\/work\/submissions\//);
+  await expect(page).toHaveURL(/\/account\/work\/submissions\//);
   // Sent, it is a submission; the draft is gone.
   await page.goto(`${urls.web}/qirtas/write`);
   await expect(

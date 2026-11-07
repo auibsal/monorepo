@@ -1,6 +1,6 @@
 # Google Wallet: the membership card as a pass
 
-Members add their card to Google Wallet from the card on `/membership`
+Members add their card to Google Wallet from the card on `/account`
 ("Add to Google Wallet"). The pass shows the card's name, number and
 member-since date, and the same live QR as the website card: Google
 computes the 8-digit code from the card's secret every 30 seconds (RFC
@@ -14,7 +14,7 @@ page accept either.
   returns a "Save to Google Wallet" link: a JWT signed with the service
   account key that carries the pass class (`<issuer>.sal-membership`) and
   the member's object (`<issuer>.card-<code>`). `lib/api/wallet.ts` builds it.
-- The pass also carries two links: "Membership" (`/membership`) and
+- The pass also carries two links: "Membership" (`/account`) and
   "What's on" (`/events`), in the member's language.
 - The route records the pass in `membership.wallet_passes` (by card code).
   If the member already holds it, the route brings it up to date through
@@ -35,7 +35,7 @@ page accept either.
   true}`), which reads the pass object from the Wallet API
   (`walletPassHeld`: `hasUsers`, not expired) and records it as saved
   (owner, Oct 31, 2026: "I've already added the card, still shows Add").
-- Retiring passes: resetting the card code (Card security on `/membership`),
+- Retiring passes: resetting the card code (Card security on `/account`),
   the end of a membership (or of the account's verification) and deleting
   the account queue `membership.wallet_expire`; the outbox marks each pass
   expired in Google Wallet. The member adds the new card again.

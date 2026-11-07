@@ -284,7 +284,7 @@ export const EventsBrowser = () => {
       {upcoming.data.length === 0 ? (
         <EmptyLine
           action={{
-            href: "/membership/calendar",
+            href: "/account/calendar",
             label: ta("subscribeCalendar"),
           }}
         >
@@ -489,7 +489,7 @@ const EventCard = ({
           ) : null}
           {state === "booked" && !guest ? (
             <Button asChild variant="outline">
-              <Link href="/membership#next-events">{t("ticket")}</Link>
+              <Link href="/account#next-events">{t("ticket")}</Link>
             </Button>
           ) : null}
           {state === "noBooking" ? (

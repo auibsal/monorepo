@@ -18,7 +18,7 @@ const SAMPLE: Record<string, string> = {
   Email: "lina.ahmed@auib.edu.iq",
   FactorType: "totp",
   OldEmail: "lina.a@auib.edu.iq",
-  RedirectTo: "https://auibsal.org/membership",
+  RedirectTo: "https://auibsal.org/account",
   // The email images come from the site's own public/brand.
   SiteURL: globalThis.location?.origin ?? "https://auibsal.org",
   Token: "48213907",

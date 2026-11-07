@@ -27,7 +27,7 @@ export const ManageLinks = ({
 }: {
   /** A Diwan path, without /diwan ("/events/salon"). */
   readonly diwan?: string;
-  /** A Membership path ("/membership/calendar"). */
+  /** A Membership path ("/account/calendar"). */
   readonly membership?: string;
   /** What the Membership link names: the page, bookings or one's work. */
   readonly membershipLabel?: "membership" | "booking" | "work";

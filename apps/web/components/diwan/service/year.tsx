@@ -21,7 +21,7 @@ export const FIRST_YEAR = 2026;
 export const yearLabel = (year: number) =>
   `${year}–${String(year + 1).slice(2)}`;
 
-const yearPath = (year: number) => `/membership/record/year/${year}`;
+const yearPath = (year: number) => `/account/record/year/${year}`;
 
 const Row = ({
   children,
@@ -106,7 +106,7 @@ export const YearSummary = ({ year }: { readonly year: number }) => {
               {yearLabel(year + 1)}
             </Link>
           ) : null}
-          <Link className="link" href="/membership/record">
+          <Link className="link" href="/account/record">
             {tk("title")}
           </Link>
         </p>
@@ -198,7 +198,7 @@ export const YearSummary = ({ year }: { readonly year: number }) => {
             <RowList>
               {s.certificates.map((c) => (
                 <Row date={c.issued_at ? day(c.issued_at) : ""} key={c.id}>
-                  <Link className="link" href={`/membership/record/${c.id}`}>
+                  <Link className="link" href={`/account/record/${c.id}`}>
                     {tk(`kinds.${c.kind as recognition.CertificateKind}`)}
                   </Link>
                   {c.serial ? ` · ${c.serial}` : ""}

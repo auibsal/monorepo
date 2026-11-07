@@ -14,7 +14,7 @@ import { LanguageSwitcher } from "./language-switcher";
  * The Diwan frame (officers only): skip link, the site's own header (owner,
  * Oct 30, 2026: the same main menu everywhere), the Diwan's row of six
  * sections, the find-anything line (it opens in place, pushing the page
- * down), main. Members' own pages are on the site (/membership).
+ * down), main. Members' own pages are on the site (/account).
  */
 export const AppShell = ({ children }: { children: ReactNode }) => {
   const t = useTranslations("common");

@@ -327,7 +327,7 @@ const WriteForm = ({
         queryKey: queryKeys.submissions(user?.id ?? ""),
       });
       if (id) {
-        router.push(`/membership/work/submissions/${id}`);
+        router.push(`/account/work/submissions/${id}`);
       }
     },
   });
@@ -783,7 +783,7 @@ const PartialSend = ({ id }: { readonly id: string | null }) => {
   return (
     <p className="text-sm text-text" role="alert">
       {t("filesFailed")}{" "}
-      <Link className="link" href={`/membership/work/submissions/${id}`}>
+      <Link className="link" href={`/account/work/submissions/${id}`}>
         {t("openSubmission")}
       </Link>
     </p>

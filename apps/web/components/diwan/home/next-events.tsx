@@ -63,7 +63,7 @@ export const NextEvents = () => {
     <Section
       action={
         upcoming.length > 0 ? (
-          <Link className="link type-caption" href="/membership/calendar">
+          <Link className="link type-caption" href="/account/calendar">
             {t("browse")}
           </Link>
         ) : undefined
@@ -77,7 +77,7 @@ export const NextEvents = () => {
       upcoming.length === 0 &&
       (waitlist.data ?? []).length === 0 ? (
         <EmptyLine
-          action={{ href: "/membership/calendar", label: ta("browseEvents") }}
+          action={{ href: "/account/calendar", label: ta("browseEvents") }}
         >
           {t("empty")}
         </EmptyLine>

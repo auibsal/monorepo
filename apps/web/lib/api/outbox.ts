@@ -166,7 +166,7 @@ const pushNotice = (built: Built, lang: Lang, row: number | undefined) => {
     lang,
     tag: row === undefined ? undefined : `outbox-${row}`,
     title: block?.heading ?? built.subject,
-    url: block?.action?.href ?? site(lang, "/membership"),
+    url: block?.action?.href ?? site(lang, "/account"),
   };
 };
 
@@ -230,7 +230,7 @@ const footerFor = (
   return {
     footer: [
       {
-        href: site(to.lang, "/membership/settings/notices"),
+        href: site(to.lang, "/account/settings/notices"),
         link: line.link,
         text: line.text,
       },

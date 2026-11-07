@@ -24,7 +24,7 @@ export const signInWithPassword = async (page: Page, email: string) => {
   await page.getByLabel("Email").fill(email);
   await page.getByLabel("Password").fill(PASSWORD);
   await page.getByRole("button", { exact: true, name: "Sign in" }).click();
-  await expect(page).toHaveURL(new RegExp(`${urls.web}/membership/?$`));
+  await expect(page).toHaveURL(new RegExp(`${urls.web}/account/?$`));
 };
 
 /** The newest email to an address, from the local stack's Mailpit. */

@@ -201,7 +201,7 @@ const EditorForm = ({
             <Link className="link" href={LIBRARY}>
               {t("back")}
             </Link>
-            <OnTheSite href={`/library/${doc.slug}`} />
+            <OnTheSite href={documents.documentPath(doc.slug)} />
           </>
         }
         title={doc.title_en}

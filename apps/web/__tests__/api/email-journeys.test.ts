@@ -105,7 +105,7 @@ describe("the email journeys", () => {
     const built = requestUpdated("en", "f21", "closed", "abc", APP);
     expect(built.subject).toBe("We've closed your concern");
     expect(built.blocks[0]?.action?.href).toBe(
-      "https://auibsal.org/membership/requests/abc"
+      "https://auibsal.org/account/requests/abc"
     );
   });
 
@@ -127,16 +127,16 @@ describe("the email journeys", () => {
   test("a footer line says why the email came, with its link", async () => {
     const footer = [
       {
-        href: "https://auibsal.org/membership/settings/notices",
+        href: "https://auibsal.org/account/settings/notices",
         link: "Notices",
         text: "You get this because you have an account with the Society. Choose your emails on",
       },
     ];
     const built = welcome("en", APP);
     const html = await render(Notice({ ...built, footer }));
-    expect(html).toContain("membership/settings/notices");
+    expect(html).toContain("account/settings/notices");
     expect(noticeText({ blocks: built.blocks, footer })).toContain(
-      "Choose your emails on Notices: https://auibsal.org/membership/settings/notices"
+      "Choose your emails on Notices: https://auibsal.org/account/settings/notices"
     );
   });
 

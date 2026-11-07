@@ -9,6 +9,6 @@ const PageError = ({
 }: {
   error: Error & { digest?: string };
   reset: () => void;
-}) => <ErrorState error={error} home="/membership" reset={reset} />;
+}) => <ErrorState error={error} home="/account" reset={reset} />;
 
 export default PageError;

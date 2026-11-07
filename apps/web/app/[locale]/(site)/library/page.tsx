@@ -61,7 +61,7 @@ const DocumentsPage = async ({ params }: DocumentsProps) => {
           <ul className="grid gap-x-10 md:grid-cols-2">
             {shelf.docs.map((doc) => (
               <Entry
-                href={`/library/${doc.slug}`}
+                href={documents.documentPath(doc.slug)}
                 key={doc.code}
                 proposed={doc.status === "proposed" ? t("proposedShort") : null}
                 summary={documents.documentSummary(doc, locale)}

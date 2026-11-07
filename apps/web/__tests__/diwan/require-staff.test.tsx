@@ -142,7 +142,7 @@ describe("the Diwan's staff gate", () => {
         supabase: officer({ grants: [], level: "aal1", needs: false }),
       }
     );
-    await waitFor(() => expect(replace).toHaveBeenCalledWith("/membership"));
+    await waitFor(() => expect(replace).toHaveBeenCalledWith("/account"));
     expect(screen.queryByText("The Diwan")).toBeNull();
   });
 });

@@ -156,7 +156,7 @@ export const SiteHeader = ({
   const known = ways ?? waysHint;
   // One Membership for everyone (owner, Oct 31, 2026).
   const way: Way = signedIn
-    ? { href: localizedPath(locale, "/membership"), label: t("account") }
+    ? { href: localizedPath(locale, "/account"), label: t("account") }
     : { href: localizedPath(locale, "/sign-in"), label: t("signIn") };
   // The Diwan sits under Membership, for staff only (owner, Oct 30,
   // 2026); a partner's people have their dashboard there instead (Oct 31).

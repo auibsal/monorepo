@@ -203,7 +203,7 @@ const FormEditor = ({
         return;
       }
       if (user && !anonymous) {
-        router.push(`/membership/requests/${savedId}`);
+        router.push(`/account/requests/${savedId}`);
         return;
       }
       setSent(true);

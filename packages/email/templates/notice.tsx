@@ -349,7 +349,7 @@ Notice.PreviewProps = {
   blocks: [
     {
       action: {
-        href: "https://auibsal.org/membership",
+        href: "https://auibsal.org/account",
         label: "Open Membership",
       },
       heading: "You're booked for the reading",

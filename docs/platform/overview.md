@@ -7,7 +7,7 @@ The platform is one repository, [auibsal/mono](https://github.com/auibsal/mono),
 | App | Address | What it does |
 | --- | --- | --- |
 | Public site | [auibsal.org](https://auibsal.org) (`apps/web`, `app/[locale]/(site)`) | Events, news, the Journal, documents, the Warmth Meter; English and Arabic |
-| The Diwan | [auibsal.org/diwan](https://auibsal.org/diwan) (`app/[locale]/diwan`) | The officers' administration, in six sections (the members' pages are at /membership); rendered in the browser, with the member's own token |
+| The Diwan | [auibsal.org/diwan](https://auibsal.org/diwan) (`app/[locale]/diwan`) | The officers' administration, in six sections (the members' pages are at /account); rendered in the browser, with the member's own token |
 | API | auibsal.org/api (`app/api`, `lib/api`) | Email, scheduled jobs, calendar feeds, file links, exports, account deletion, Hudhud and the Notion sync; the only code holding the secret key |
 | The design system | [auibsal.org/diwan/design](https://auibsal.org/diwan/design) (`packages/brand`, built into the site) | SAL-MED-02 in full: the guide, foundations, logos, every component, screen and email in both languages, social and print files; in the Diwan, read-only, not indexed |
 | Officer handbook | The team's Notion workspace (linked from the Desk) | How to run the Society; officers only |

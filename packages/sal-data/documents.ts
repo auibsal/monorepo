@@ -264,3 +264,18 @@ export const documentSections = (
   });
   return { contents, html: withIds };
 };
+
+/**
+ * The Privacy Notice, Terms of Use and Accessibility Statement (GOV-04 to
+ * GOV-06) have their own addresses (decisions §6); every other document is
+ * at /library/<slug>.
+ */
+export const OWN_ADDRESSES: Readonly<Record<string, string>> = {
+  accessibility: "/accessibility",
+  privacy: "/privacy",
+  "terms-of-use": "/terms",
+};
+
+/** A public document's address on the site. */
+export const documentPath = (slug: string) =>
+  OWN_ADDRESSES[slug] ?? `/library/${slug}`;

@@ -48,7 +48,7 @@ const when = (iso: string, l: Lang) =>
   `${formatLongDate(iso, l)} · ${formatClock(iso, l)}`;
 
 /** A member's own page on the site (Membership, Qirtas, …). */
-const account = (base: string, l: Lang, path = "/membership") => ({
+const account = (base: string, l: Lang, path = "/account") => ({
   href: `${base}${localizedPath(l, path)}`,
   label: l === "ar" ? "افتح حسابك" : "Open your account",
 });
@@ -76,7 +76,7 @@ const eventLines = (e: EventInfo, l: Lang) =>
   [when(e.starts_at, l), venue(e, l)].filter((x): x is string => Boolean(x));
 
 /** Tickets and bookings live on My calendar. */
-const MY_CALENDAR = "/membership/calendar";
+const MY_CALENDAR = "/account/calendar";
 
 export const rsvpConfirmed = (lang: Lang, e: EventInfo, app: string) =>
   build(lang, (l) => ({
@@ -285,7 +285,7 @@ export const callOpened = (lang: Lang, call: CallInfo, app: string) =>
     ],
   }));
 
-const piecePath = (pieceId: string) => `/membership/work/${pieceId}`;
+const piecePath = (pieceId: string) => `/account/work/${pieceId}`;
 
 /** Final check (72 hours): errors only, not new revisions. */
 export const finalCheck = (
@@ -448,7 +448,7 @@ export const verificationDecided = (
   build(lang, (l) =>
     approved
       ? {
-          action: account(app, l, "/membership"),
+          action: account(app, l, "/account"),
           heading:
             l === "ar" ? "تم التحقق من حسابك" : "Your account is verified",
           paragraphs: [
@@ -788,7 +788,7 @@ export const eventChanged = (
 /** The applicant: the application to partner has arrived. */
 export const applicationReceived = (lang: Lang, partner: string, app: string) =>
   build(lang, (l) => ({
-    action: account(app, l, "/partners/join"),
+    action: account(app, l, "/partners/apply"),
     heading:
       l === "ar" ? `وصلنا طلب ${partner}` : `We have ${partner}'s application`,
     paragraphs: [
@@ -927,7 +927,7 @@ export const electionStage = (
     const name = pick(l, e.title_ar, e.title_en);
     const lines = ELECTION_LINES[stage](l, e);
     return {
-      action: account(app, l, "/membership/society"),
+      action: account(app, l, "/account/society"),
       heading: `${lines.heading}: ${name}`,
       paragraphs: lines.paragraphs,
     };
@@ -969,7 +969,7 @@ export const candidacyDecided = (
   build(lang, (l) => {
     const lines = CANDIDACY[approved ? "approved" : "declined"][l];
     return {
-      action: account(app, l, "/membership/society"),
+      action: account(app, l, "/account/society"),
       heading: `${lines[0]}: ${pick(l, seat.title_ar, seat.title_en)}`,
       paragraphs: [lines[1]],
     };
@@ -987,7 +987,7 @@ export const certificateIssued = (
 ) =>
   build(lang, (l) => ({
     action: {
-      href: `${app}${localizedPath(l, `/membership/record/${certificateId}`)}`,
+      href: `${app}${localizedPath(l, `/account/record/${certificateId}`)}`,
       label: l === "ar" ? "افتح الشهادة" : "Open the certificate",
     },
     heading: l === "ar" ? "شهادتك جاهزة" : "Your certificate is ready",
@@ -1022,7 +1022,7 @@ export const requestUpdated = (
       ar: "طلبك",
       en: "your request",
     })[l];
-    const action = account(app, l, `/membership/requests/${requestId}`);
+    const action = account(app, l, `/account/requests/${requestId}`);
     if (status === "closed") {
       return {
         action,

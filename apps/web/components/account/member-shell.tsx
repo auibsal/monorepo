@@ -28,7 +28,7 @@ interface AccountLink {
 /** Whether a link is the current page: Today only on itself. */
 const isCurrent = (pathname: string, link: AccountLink) =>
   [link.href, ...(link.also ?? [])].some((href) =>
-    href === "/membership"
+    href === "/account"
       ? pathname === href
       : pathname === href || pathname.startsWith(`${href}/`)
   );
@@ -81,17 +81,17 @@ const useAccountLinks = (): AccountLink[] => {
   const kind = useMyMembership().data?.kind ?? null;
   const today: AccountLink = {
     // A guest's or a partner's record opens from Today.
-    also: kind === "member" ? [] : ["/membership/record"],
-    href: "/membership",
+    also: kind === "member" ? [] : ["/account/record"],
+    href: "/account",
     key: "today",
   };
   const settings: AccountLink = {
-    also: ["/membership/requests"],
-    href: "/membership/settings",
+    also: ["/account/requests"],
+    href: "/account/settings",
     key: "settings",
   };
   const calendar: AccountLink = {
-    href: "/membership/calendar",
+    href: "/account/calendar",
     key: "calendar",
   };
   // One Membership, its row by kind (owner, Oct 31, 2026): members have
@@ -101,8 +101,8 @@ const useAccountLinks = (): AccountLink[] => {
     return [
       today,
       calendar,
-      { href: "/membership/society", key: "society" },
-      { href: "/membership/record", key: "record" },
+      { href: "/account/society", key: "society" },
+      { href: "/account/record", key: "record" },
       settings,
     ];
   }
@@ -209,7 +209,7 @@ const AccountNav = () => {
 };
 
 /** Pages that show the account's row of links. */
-const ACCOUNT_PAGES = /^\/(membership|society)(\/|$)/;
+const ACCOUNT_PAGES = /^\/(account|society)(\/|$)/;
 
 /** The members' pages: the account row where it belongs, then the page. */
 export const MemberShell = ({ children }: { children: ReactNode }) => {

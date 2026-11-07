@@ -123,7 +123,7 @@ const EventView = async ({
         </p>
         <ManageLinks
           diwan={`/events/${event.slug}`}
-          membership="/membership/calendar"
+          membership="/account/calendar"
           membershipLabel="booking"
         />
         {localized(event, "venue", locale) ? (
@@ -137,7 +137,7 @@ const EventView = async ({
         <ActionBar>
           <Button asChild>
             <a
-              href={`${localizedPath(locale, "/membership/calendar")}#${event.slug}`}
+              href={`${localizedPath(locale, "/account/calendar")}#${event.slug}`}
             >
               {event.entry === "open" ? t("remind") : t("rsvp")}
             </a>

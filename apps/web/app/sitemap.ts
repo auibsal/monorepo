@@ -78,7 +78,10 @@ const sitemap = async (): Promise<MetadataRoute.Sitemap> => {
     readPublished(["documents"], (c) => documents.publicDocuments(c), []),
     readPublished(["journal"], (c) => journal.publishedPieceSlugs(c), []),
   ]);
-  return [...staticPaths, ...docs.map((doc) => `/library/${doc.slug}`)]
+  return [
+    ...staticPaths,
+    ...docs.map((doc) => documents.documentPath(doc.slug)),
+  ]
     .flatMap((path) => localized(path))
     .concat(
       // Qirtas: every published piece, dated when it came out, in the

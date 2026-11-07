@@ -59,7 +59,7 @@ export const WhatsOn = async ({
       <PageHeader lede={t("lede")} title={t("title")}>
         <ManageLinks
           diwan="/events"
-          membership="/membership/calendar"
+          membership="/account/calendar"
           membershipLabel="booking"
         />
       </PageHeader>

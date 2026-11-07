@@ -31,7 +31,7 @@ test.describe("public site", () => {
     const book = page.getByRole("link", { name: /rsvp|book/i }).first();
     await expect(book).toHaveAttribute(
       "href",
-      new RegExp(`/membership/calendar#${event.slug}$`)
+      new RegExp(`/account/calendar#${event.slug}$`)
     );
     const ld = await page
       .locator('script[type="application/ld+json"]')
@@ -168,4 +168,26 @@ test("every page in the sitemap is found, in both languages", async ({
     }
   }
   expect(missing).toEqual([]);
+});
+
+test("moved addresses redirect permanently, in both languages", async ({
+  request,
+}) => {
+  const moved: [string, string][] = [
+    ["/membership", "/account"],
+    ["/membership/settings/notices", "/account/settings/notices"],
+    ["/library/privacy", "/privacy"],
+    ["/library/terms-of-use", "/terms"],
+    ["/library/accessibility", "/accessibility"],
+    ["/partners/join", "/partners/apply"],
+  ];
+  for (const prefix of ["", "/ar"]) {
+    for (const [from, to] of moved) {
+      const response = await request.get(`${urls.web}${prefix}${from}`, {
+        maxRedirects: 0,
+      });
+      expect(response.status(), `${prefix}${from}`).toBe(308);
+      expect(response.headers().location).toBe(`${prefix}${to}`);
+    }
+  }
 });
