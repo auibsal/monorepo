@@ -436,6 +436,6 @@ describe.skipIf(!enabled)("Notion sync", () => {
       .select("status")
       .eq("id", eventId)
       .single();
-    expect(event?.status).toBe("cancelled");
+    expect(event?.status).toBe("canceled");
   });
 });

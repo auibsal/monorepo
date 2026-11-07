@@ -68,7 +68,7 @@ test("an organization applies, the Council votes, and its dashboard opens", asyn
       adopted_on: new Date().toISOString().slice(0, 10),
       body: "council",
       meeting_on: new Date().toISOString().slice(0, 10),
-      status: "adopted",
+      status: "approved",
       text_en: "<p>Minutes.</p>",
       title_en: "Council meeting",
     })

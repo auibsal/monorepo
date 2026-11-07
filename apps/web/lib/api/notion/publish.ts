@@ -185,7 +185,7 @@ const cancelEvent = async (
   const { error } = await ctx.admin
     .schema("events")
     .from("events")
-    .update({ status: "cancelled" })
+    .update({ status: "canceled" })
     .eq("id", id);
   if (error) {
     throw error;

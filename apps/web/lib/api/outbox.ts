@@ -642,6 +642,42 @@ const handlers: Record<string, Handler> = {
       await send({ email: payload.email, lang }, accountDeleted(lang));
     }
   },
+  "company.audition_update": async (admin, payload) => {
+    const [to, { data: audition }] = await Promise.all([
+      recipient(admin, payload.user_id),
+      admin
+        .schema("programmes")
+        .from("auditions")
+        .select(
+          "starts_at, ends_at, location_en, location_ar, prepare_en, prepare_ar, production:productions(title_en, title_ar)"
+        )
+        .eq("id", String(payload.audition_id))
+        .maybeSingle(),
+    ]);
+    const { status } = payload;
+    if (
+      to &&
+      audition?.production &&
+      (status === "signed_up" ||
+        status === "called_back" ||
+        status === "cast" ||
+        status === "not_cast")
+    ) {
+      await send(
+        to,
+        auditionUpdate(
+          to.lang,
+          {
+            ...audition,
+            production_ar: audition.production.title_ar ?? "",
+            production_en: audition.production.title_en,
+          },
+          status,
+          appUrl()
+        )
+      );
+    }
+  },
   "events.changed": async (admin, payload) => {
     const [to, event] = await Promise.all([
       recipient(admin, payload.user_id),
@@ -653,7 +689,7 @@ const handlers: Record<string, Handler> = {
         eventChanged(
           to.lang,
           event,
-          payload.change === "cancelled" ? "cancelled" : "moved",
+          payload.change === "canceled" ? "canceled" : "moved",
           appUrl()
         )
       );
@@ -685,6 +721,29 @@ const handlers: Record<string, Handler> = {
     });
   },
   "events.rsvp_confirmed": eventNotice(rsvpConfirmed),
+  "events.shift_reminder": async (admin, payload) => {
+    const [to, { data: shift }] = await Promise.all([
+      recipient(admin, payload.user_id),
+      admin
+        .schema("programmes")
+        .from("shifts")
+        .select("role_en, role_ar, location_en, location_ar, starts_at")
+        .eq("id", String(payload.shift_id))
+        .maybeSingle(),
+    ]);
+    // Optional: without optional email, Telegram only (`send`).
+    if (to && shift) {
+      await send(
+        to,
+        shiftReminder(
+          to.lang,
+          { ...shift, role_ar: shift.role_ar ?? "", role_en: shift.role_en },
+          appUrl()
+        ),
+        { category: "optional" }
+      );
+    }
+  },
   "events.waitlist_promoted": eventNotice(waitlistPromoted),
   // A parent's single-use link, to the teacher who passes it on.
   "forms.link": async (admin, payload) => {
@@ -782,6 +841,76 @@ const handlers: Record<string, Handler> = {
       );
     }
   },
+  // One email a day to Membership, which runs every role's applications.
+  "get_involved.replies_digest": async (admin) => {
+    const since = new Date(Date.now() - 86_400_000).toISOString();
+    const { data: replies } = await admin
+      .schema("programmes")
+      .from("opening_replies")
+      .select("user_id, note, opening:openings(title_en, title_ar)")
+      .gt("created_at", since)
+      .order("created_at");
+    if (!replies?.length) {
+      return;
+    }
+    const { data: people } = await admin
+      .schema("core")
+      .from("profiles")
+      .select("id, full_name_en, full_name_ar")
+      .in(
+        "id",
+        replies.map((r) => r.user_id)
+      );
+    const managers = await holders(admin, "members.manage");
+    await Promise.all(
+      managers.map((m) => {
+        const lines = replies.map((r) => {
+          const person = people?.find((p) => p.id === r.user_id);
+          return {
+            member:
+              (m.lang === "ar" ? person?.full_name_ar : person?.full_name_en) ??
+              person?.full_name_en ??
+              "",
+            note: r.note,
+            role:
+              (m.lang === "ar" ? r.opening?.title_ar : r.opening?.title_en) ??
+              r.opening?.title_en ??
+              "",
+          };
+        });
+        return send(m, repliesDigest(m.lang, lines, appUrl()), {
+          category: "officer",
+        });
+      })
+    );
+  },
+  "get_involved.reply_update": async (admin, payload) => {
+    const [to, { data: reply }] = await Promise.all([
+      recipient(admin, payload.user_id),
+      admin
+        .schema("programmes")
+        .from("opening_replies")
+        .select("status, talk_at, opening:openings(title_en, title_ar)")
+        .eq("opening_id", String(payload.opening_id))
+        .eq("user_id", String(payload.user_id))
+        .maybeSingle(),
+    ]);
+    const status = reply?.status;
+    if (
+      to &&
+      reply?.opening &&
+      (status === "talking" || status === "offered" || status === "not_picked")
+    ) {
+      const role =
+        (to.lang === "ar" ? reply.opening.title_ar : reply.opening.title_en) ??
+        reply.opening.title_en ??
+        "";
+      await send(
+        to,
+        replyUpdate(to.lang, role, status, reply.talk_at, appUrl())
+      );
+    }
+  },
   "governance.candidacy_decided": async (admin, payload) => {
     const [to, { data }] = await Promise.all([
       recipient(admin, payload.user_id),
@@ -834,111 +963,6 @@ const handlers: Record<string, Handler> = {
           appUrl()
         )
       );
-    }
-  },
-  "journal.agreement_reminder": async (admin, payload) => {
-    const [to, work] = await Promise.all([
-      recipient(admin, payload.user_id),
-      submissionTitle(admin, payload.submission_id),
-    ]);
-    if (to && work) {
-      await send(to, agreementReminder(to.lang, work, appUrl()));
-    }
-  },
-  "journal.call_opened": async (admin, payload) => {
-    const [to, { data: call }] = await Promise.all([
-      recipient(admin, payload.user_id),
-      admin
-        .schema("journal")
-        .from("calls")
-        .select("title_en, title_ar, closes_at")
-        .eq("id", String(payload.call_id))
-        .maybeSingle(),
-    ]);
-    if (to && call) {
-      await send(to, callOpened(to.lang, call, appUrl()));
-    }
-  },
-  "journal.decision": async (admin, payload) => {
-    const [to, work] = await Promise.all([
-      recipient(admin, payload.user_id),
-      submissionTitle(admin, payload.submission_id),
-    ]);
-    const outcome = payload.decision as Decision;
-    if (
-      to &&
-      work &&
-      ["accept", "accept_with_edits", "decline"].includes(outcome)
-    ) {
-      await send(to, decision(to.lang, work, outcome, appUrl()));
-    }
-  },
-  "journal.final_check": async (admin, payload) => {
-    const [to, piece] = await Promise.all([
-      recipient(admin, payload.user_id),
-      pieceInfo(admin, payload.piece_id),
-    ]);
-    if (to && piece) {
-      await send(
-        to,
-        finalCheck(to.lang, pieceTitle(piece, to.lang), piece.id, appUrl())
-      );
-    }
-  },
-  "journal.piece_note": async (admin, payload) => {
-    const [to, piece] = await Promise.all([
-      recipient(admin, payload.user_id),
-      pieceInfo(admin, payload.piece_id),
-    ]);
-    if (to && piece) {
-      await send(
-        to,
-        pieceNote(to.lang, pieceTitle(piece, to.lang), piece.id, appUrl())
-      );
-    }
-  },
-  "journal.piece_published": async (admin, payload) => {
-    const piece = await pieceInfo(admin, payload.piece_id);
-    // Staff pieces have no account behind the byline to thank.
-    const to = await recipient(admin, piece?.contributor?.user_id);
-    if (to && piece) {
-      await send(
-        to,
-        piecePublished(
-          to.lang,
-          pieceTitle(piece, to.lang),
-          `${webUrl()}${prefix(to.lang)}${journal.piecePath(piece)}`
-        )
-      );
-    }
-  },
-  "journal.returned_for_formatting": async (admin, payload) => {
-    const [to, work] = await Promise.all([
-      recipient(admin, payload.user_id),
-      submissionTitle(admin, payload.submission_id),
-    ]);
-    if (to && work) {
-      await send(
-        to,
-        returnedForFormatting(
-          to.lang,
-          work,
-          typeof payload.note === "string" ? payload.note : "",
-          appUrl()
-        )
-      );
-    }
-  },
-  "journal.submission_received": async (admin, payload) => {
-    const [to, work, desk] = await Promise.all([
-      recipient(admin, payload.user_id),
-      submissionTitle(admin, payload.submission_id),
-      submissionDesk(admin, payload.submission_id),
-    ]);
-    if (to && work) {
-      await send(to, submissionReceived(to.lang, work, appUrl(), desk), {
-        sticker: "sent",
-      });
     }
   },
   "membership.certificate_issued": async (admin, payload) => {
@@ -1265,43 +1289,112 @@ const handlers: Record<string, Handler> = {
       )
     );
   },
-  "programmes.audition_update": async (admin, payload) => {
-    const [to, { data: audition }] = await Promise.all([
+  "qirtas.agreement_reminder": async (admin, payload) => {
+    const [to, work] = await Promise.all([
+      recipient(admin, payload.user_id),
+      submissionTitle(admin, payload.submission_id),
+    ]);
+    if (to && work) {
+      await send(to, agreementReminder(to.lang, work, appUrl()));
+    }
+  },
+  "qirtas.call_opened": async (admin, payload) => {
+    const [to, { data: call }] = await Promise.all([
       recipient(admin, payload.user_id),
       admin
-        .schema("programmes")
-        .from("auditions")
-        .select(
-          "starts_at, ends_at, location_en, location_ar, prepare_en, prepare_ar, production:productions(title_en, title_ar)"
-        )
-        .eq("id", String(payload.audition_id))
+        .schema("journal")
+        .from("calls")
+        .select("title_en, title_ar, closes_at")
+        .eq("id", String(payload.call_id))
         .maybeSingle(),
     ]);
-    const { status } = payload;
+    if (to && call) {
+      await send(to, callOpened(to.lang, call, appUrl()));
+    }
+  },
+  "qirtas.decision": async (admin, payload) => {
+    const [to, work] = await Promise.all([
+      recipient(admin, payload.user_id),
+      submissionTitle(admin, payload.submission_id),
+    ]);
+    const outcome = payload.decision as Decision;
     if (
       to &&
-      audition?.production &&
-      (status === "signed_up" ||
-        status === "called_back" ||
-        status === "cast" ||
-        status === "not_cast")
+      work &&
+      ["accept", "accept_with_edits", "decline"].includes(outcome)
     ) {
+      await send(to, decision(to.lang, work, outcome, appUrl()));
+    }
+  },
+  "qirtas.final_check": async (admin, payload) => {
+    const [to, piece] = await Promise.all([
+      recipient(admin, payload.user_id),
+      pieceInfo(admin, payload.piece_id),
+    ]);
+    if (to && piece) {
       await send(
         to,
-        auditionUpdate(
+        finalCheck(to.lang, pieceTitle(piece, to.lang), piece.id, appUrl())
+      );
+    }
+  },
+  "qirtas.piece_note": async (admin, payload) => {
+    const [to, piece] = await Promise.all([
+      recipient(admin, payload.user_id),
+      pieceInfo(admin, payload.piece_id),
+    ]);
+    if (to && piece) {
+      await send(
+        to,
+        pieceNote(to.lang, pieceTitle(piece, to.lang), piece.id, appUrl())
+      );
+    }
+  },
+  "qirtas.piece_published": async (admin, payload) => {
+    const piece = await pieceInfo(admin, payload.piece_id);
+    // Staff pieces have no account behind the byline to thank.
+    const to = await recipient(admin, piece?.contributor?.user_id);
+    if (to && piece) {
+      await send(
+        to,
+        piecePublished(
           to.lang,
-          {
-            ...audition,
-            production_ar: audition.production.title_ar ?? "",
-            production_en: audition.production.title_en,
-          },
-          status,
+          pieceTitle(piece, to.lang),
+          `${webUrl()}${prefix(to.lang)}${journal.piecePath(piece)}`
+        )
+      );
+    }
+  },
+  "qirtas.returned_for_formatting": async (admin, payload) => {
+    const [to, work] = await Promise.all([
+      recipient(admin, payload.user_id),
+      submissionTitle(admin, payload.submission_id),
+    ]);
+    if (to && work) {
+      await send(
+        to,
+        returnedForFormatting(
+          to.lang,
+          work,
+          typeof payload.note === "string" ? payload.note : "",
           appUrl()
         )
       );
     }
   },
-  "programmes.removal_done": async (admin, payload) => {
+  "qirtas.submission_received": async (admin, payload) => {
+    const [to, work, desk] = await Promise.all([
+      recipient(admin, payload.user_id),
+      submissionTitle(admin, payload.submission_id),
+      submissionDesk(admin, payload.submission_id),
+    ]);
+    if (to && work) {
+      await send(to, submissionReceived(to.lang, work, appUrl(), desk), {
+        sticker: "sent",
+      });
+    }
+  },
+  "removal.done": async (admin, payload) => {
     const request = await removalInfo(admin, payload.request_id);
     if (
       request &&
@@ -1316,7 +1409,7 @@ const handlers: Record<string, Handler> = {
       );
     }
   },
-  "programmes.removal_overdue": async (admin, payload) => {
+  "removal.overdue": async (admin, payload) => {
     const [request, managers] = await Promise.all([
       removalInfo(admin, payload.request_id),
       programmeManagers(admin, payload.programme_id),
@@ -1331,7 +1424,7 @@ const handlers: Record<string, Handler> = {
       );
     }
   },
-  "programmes.removal_requested": async (admin, payload) => {
+  "removal.requested": async (admin, payload) => {
     const [request, managers] = await Promise.all([
       removalInfo(admin, payload.request_id),
       programmeManagers(admin, payload.programme_id),
@@ -1354,99 +1447,6 @@ const handlers: Record<string, Handler> = {
         removalReceived(langOf(request.requester_lang), request.due_at)
       ),
     ]);
-  },
-  // One email a day to Membership, which runs every role's applications.
-  "programmes.replies_digest": async (admin) => {
-    const since = new Date(Date.now() - 86_400_000).toISOString();
-    const { data: replies } = await admin
-      .schema("programmes")
-      .from("opening_replies")
-      .select("user_id, note, opening:openings(title_en, title_ar)")
-      .gt("created_at", since)
-      .order("created_at");
-    if (!replies?.length) {
-      return;
-    }
-    const { data: people } = await admin
-      .schema("core")
-      .from("profiles")
-      .select("id, full_name_en, full_name_ar")
-      .in(
-        "id",
-        replies.map((r) => r.user_id)
-      );
-    const managers = await holders(admin, "members.manage");
-    await Promise.all(
-      managers.map((m) => {
-        const lines = replies.map((r) => {
-          const person = people?.find((p) => p.id === r.user_id);
-          return {
-            member:
-              (m.lang === "ar" ? person?.full_name_ar : person?.full_name_en) ??
-              person?.full_name_en ??
-              "",
-            note: r.note,
-            role:
-              (m.lang === "ar" ? r.opening?.title_ar : r.opening?.title_en) ??
-              r.opening?.title_en ??
-              "",
-          };
-        });
-        return send(m, repliesDigest(m.lang, lines, appUrl()), {
-          category: "officer",
-        });
-      })
-    );
-  },
-  "programmes.reply_update": async (admin, payload) => {
-    const [to, { data: reply }] = await Promise.all([
-      recipient(admin, payload.user_id),
-      admin
-        .schema("programmes")
-        .from("opening_replies")
-        .select("status, talk_at, opening:openings(title_en, title_ar)")
-        .eq("opening_id", String(payload.opening_id))
-        .eq("user_id", String(payload.user_id))
-        .maybeSingle(),
-    ]);
-    const status = reply?.status;
-    if (
-      to &&
-      reply?.opening &&
-      (status === "talking" || status === "offered" || status === "not_picked")
-    ) {
-      const role =
-        (to.lang === "ar" ? reply.opening.title_ar : reply.opening.title_en) ??
-        reply.opening.title_en ??
-        "";
-      await send(
-        to,
-        replyUpdate(to.lang, role, status, reply.talk_at, appUrl())
-      );
-    }
-  },
-  "programmes.shift_reminder": async (admin, payload) => {
-    const [to, { data: shift }] = await Promise.all([
-      recipient(admin, payload.user_id),
-      admin
-        .schema("programmes")
-        .from("shifts")
-        .select("role_en, role_ar, location_en, location_ar, starts_at")
-        .eq("id", String(payload.shift_id))
-        .maybeSingle(),
-    ]);
-    // Optional: without optional email, Telegram only (`send`).
-    if (to && shift) {
-      await send(
-        to,
-        shiftReminder(
-          to.lang,
-          { ...shift, role_ar: shift.role_ar ?? "", role_en: shift.role_en },
-          appUrl()
-        ),
-        { category: "optional" }
-      );
-    }
   },
   revalidate: async (_admin, payload) => {
     await revalidate(payload.tags);
@@ -1569,11 +1569,11 @@ export const isDeferred = (payload: unknown, now = Date.now()) => {
  */
 export const NON_ESSENTIAL = new Set([
   "membership.welcome",
-  "journal.call_opened",
-  "journal.piece_note",
+  "qirtas.call_opened",
+  "qirtas.piece_note",
   "events.reminder",
-  "programmes.shift_reminder",
-  "programmes.replies_digest",
+  "events.shift_reminder",
+  "get_involved.replies_digest",
 ]);
 
 const essentialOnly = async (admin: AdminClient) => {

@@ -71,15 +71,15 @@ route sends it. Every email (audited end to end on 2026-11-04):
 | `events.rsvp_confirmed`, `events.waitlist_promoted` | A place booked, or freed from the waiting list | The member | Service |
 | `events.reminder` | The day before | Booked: the member; "Remind me": whoever asked | Optional when booked; service for "Remind me" |
 | `events.changed` | A published event canceled, or its day, time or place changed | Everyone booked, waiting or asking to be reminded; edits within ten minutes make one email | Service |
-| `programmes.shift_reminder` | The day before a shift | Whoever is on it | Optional |
-| `programmes.audition_update` | An audition time booked; called back, cast or not cast | The member | Service |
-| `programmes.reply_update` | The General Secretary's team sets a time to talk, makes an offer, or picks someone else | The member who said "I'm interested" | Service |
+| `events.shift_reminder` | The day before a shift | Whoever is on it | Optional |
+| `company.audition_update` | An audition time booked; called back, cast or not cast | The member | Service |
+| `get_involved.reply_update` | The General Secretary's team sets a time to talk, makes an offer, or picks someone else | The member who said "I'm interested" | Service |
 | `access.role_assigned` | A Society role assigned (not a partner's team role) | The holder: what it opens; two-step sign-in first when it needs it | Officer |
 | `access.role_ending` | Seven days before a role ends | The holder | Officer |
 | `access.two_step_reset` | An authenticator removed (by an officer or a recovery code) | The person | Service |
 | `access.recovery_attempts` | Five wrong recovery codes within an hour (`/api/two-step/recover`; once an hour) | The person | Service |
-| `journal.submission_received`, `journal.returned_for_formatting`, `journal.decision`, `journal.agreement_reminder` (weekly, four weeks at most), `journal.final_check`, `journal.piece_note`, `journal.piece_published` | Work sent to Qirtas, through to publication | The author | Service |
-| `journal.call_opened` | A Qirtas call opens | Whoever asked "Tell me when" | Service (they stop it on the page) |
+| `qirtas.submission_received`, `qirtas.returned_for_formatting`, `qirtas.decision`, `qirtas.agreement_reminder` (weekly, four weeks at most), `qirtas.final_check`, `qirtas.piece_note`, `qirtas.piece_published` | Work sent to Qirtas, through to publication | The author | Service |
+| `qirtas.call_opened` | A Qirtas call opens | Whoever asked "Tell me when" | Service (they stop it on the page) |
 | `membership.certificate_issued` | A certificate signed by both and issued | The holder | Service |
 | `membership.service_letter` | A service letter (F-05) written | The holder | Service |
 | `forms.signed_copy` | A form signed on the site (not an anonymous concern) | The signer: their account, or the address a signer without one gave | Service |
@@ -94,9 +94,9 @@ route sends it. Every email (audited end to end on 2026-11-04):
 | `membership.invitations` (a draft Resend Broadcast) | The President's go, once per list (Membership → Invitations; `membership.send_invitations(list)`), only after the list's test has reached the President ("Send the test to the President", `/api/invitations/test`, recorded as `invitation_lists.tested_at`): the site makes the draft, the President sends it from Resend. The President's letter, from hello@auibsal.org like every site email, signed with their signature (`/api/email/signature`). Each list's addresses are deleted thirty days after its own send | One list: the spring 2026 Tour writers (sent Nov 7), or the fall 2026 club fair's paper sign-ups typed in by staff; addresses with an account are skipped | Direct (its stop link takes the address off the list) |
 | `newsletter.confirm` | A public sign-up | The address (double opt-in) | Direct |
 | `personal_email.confirm` | A personal email added | The new address only | Direct |
-| `programmes.removal_requested`, `programmes.removal_overdue` | A Next Stop removal request; past its 24 hours | Next Stop's managers; the requester gets a receipt in the language they asked in | Officer; direct |
-| `programmes.removal_done` | The request removed, declined or closed | The requester, in their language (the receipt promises it) | Direct |
-| `programmes.replies_digest` | Daily, when there were replies on Get involved | The General Secretary's team (`members.manage`) | Officer |
+| `removal.requested`, `removal.overdue` | A Next Stop removal request; past its 24 hours | Next Stop's managers; the requester gets a receipt in the language they asked in | Officer; direct |
+| `removal.done` | The request removed, declined or closed | The requester, in their language (the receipt promises it) | Direct |
+| `get_involved.replies_digest` | Daily, when there were replies on Get involved | The General Secretary's team (`members.manage`) | Officer |
 | `membership.verification_decided` | An account from outside AUIB decided (requests from before partners verified their own) | The account | Service |
 | `platform.cron_failed` | A database job failed in the last day | Administrators | Officer |
 | `account.deleted` | An account deleted | The address it had (the last email) | Direct |

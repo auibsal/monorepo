@@ -84,7 +84,7 @@ language sql
 as $$
   with m as (
     insert into governance.minutes (title_en, text_en, meeting_on, body, status, adopted_on)
-    values ('Council meeting', '<p>Minutes.</p>', current_date - 1, 'council', 'adopted', current_date)
+    values ('Council meeting', '<p>Minutes.</p>', current_date - 1, 'council', 'approved', current_date)
     returning id
   )
   insert into governance.resolutions (id, code, title_en, text_en, body, status, adopted_on, minutes_id)
@@ -152,7 +152,7 @@ select is((select note from programmes.opening_replies), 'I have a camera', 'The
 select pg_temp.logout();
 select ok(private.daily_notices() >= 1, 'The daily notices run');
 select ok(
-  exists (select 1 from core.outbox o where o.kind = 'programmes.replies_digest'),
+  exists (select 1 from core.outbox o where o.kind = 'get_involved.replies_digest'),
   'and tell them of the replies in one digest a day'
 );
 

@@ -408,13 +408,13 @@
       "leaveWaitlist": "غادر قائمة الانتظار",
       "questions": "يطرح المنظمون بعض الأسئلة قبل الحجز.",
       "state": {
-        "cancelled": "أُلغيت هذه الفعالية.",
         "booked": "لديك مكان.",
         "waiting": "أنت على قائمة الانتظار. سنراسلك إن توفر مكان.",
         "noBooking": "لا حاجة إلى الحجز: تعال فحسب.",
         "open": "توجد أماكن متاحة.",
         "full": "اكتمل العدد. انضم إلى قائمة الانتظار وسنراسلك إن توفر مكان.",
-        "left": "{count, plural, one {بقي مكان واحد} two {بقي مكانان} few {بقيت {places} أماكن} many {بقي {places} مكانًا} other {بقي {places} مكان}}"
+        "left": "{count, plural, one {بقي مكان واحد} two {بقي مكانان} few {بقيت {places} أماكن} many {بقي {places} مكانًا} other {بقي {places} مكان}}",
+        "canceled": "أُلغيت هذه الفعالية."
       },
       "notice": {
         "booked": "تم الحجز. تذكرتك في «حسابك»، وستصلك رسالة تأكيد.",
@@ -905,9 +905,9 @@
         "statuses": {
           "draft": "مسودة",
           "published": "منشور",
-          "cancelled": "ملغى",
           "scheduled": "مجدول",
-          "archived": "مؤرشف"
+          "archived": "مؤرشف",
+          "canceled": "ملغى"
         },
         "addressProgram": "هذا العنوان للفرقة أو لقرطاس، فاختر عنوانًا آخر.",
         "addressEvent": "هذا العنوان لفعالية، فاختر عنوانًا آخر.",
@@ -1406,7 +1406,7 @@
             "signed_up": "مسجّل",
             "confirmed": "مؤكَّد",
             "swap_requested": "طلب التبديل",
-            "cancelled": "ملغى"
+            "canceled": "ملغى"
           },
           "confirm": "تأكيد",
           "release": "إعفاء",
@@ -1580,11 +1580,11 @@
         "statuses": {
           "draft": "مسودة — لم تُعتمد بعد",
           "adopted": "معتمد",
-          "rejected": "مرفوض",
           "withdrawn": "مسحوب",
-          "superseded": "حلّت محلّه نسخة أحدث",
           "pending": "قيد الانتظار",
-          "approved": "موافق عليه"
+          "approved": "موافق عليه",
+          "failed": "لم يُقرّ",
+          "rescinded": "أُلغي"
         },
         "minutes": {
           "body": "الجهة",
@@ -2348,7 +2348,7 @@
           "tech": "الأسبوع التقني",
           "performances": "العروض",
           "closed": "مغلق",
-          "cancelled": "ملغى"
+          "canceled": "ملغى"
         },
         "rights": {
           "pending": "غير مستوفاة",
@@ -2524,8 +2524,8 @@
         },
         "statuses": {
           "adopted": "معتمدة",
-          "superseded": "مُستبدلة",
-          "proposed": "مقترحة"
+          "proposed": "مقترحة",
+          "rescinded": "أُلغيت"
         },
         "fields": {
           "status": "الحالة",
@@ -3374,7 +3374,7 @@
         "tech": "الأسبوع التقني",
         "performances": "العروض",
         "closed": "مغلق",
-        "cancelled": "ملغى"
+        "canceled": "ملغى"
       },
       "kinds": {
         "staged_reading": "قراءة مسرحية",
@@ -3382,10 +3382,10 @@
       },
       "statuses": {
         "signed_up": "مسجّل",
-        "cancelled": "ملغى",
         "called_back": "مدعو لتجربة ثانية",
         "cast": "ضمن فريق التمثيل",
-        "not_cast": "لم يُختر هذه المرة"
+        "not_cast": "لم يُختر هذه المرة",
+        "canceled": "ملغى"
       },
       "showName": "أظهر اسمي في الصفحة العامة",
       "rehearsalsTitle": "البروفات القادمة",
@@ -4283,7 +4283,7 @@
         "rsvp": "احجز مكانًا",
         "members": "للأعضاء",
         "invite": "بدعوة",
-        "cancelled": "أُلغيت"
+        "canceled": "أُلغيت"
       },
       "remind": "ذكّرني",
       "remindHint": "لا حاجة إلى الحجز. يستطيع الأعضاء طلب تذكير قبل يوم.",

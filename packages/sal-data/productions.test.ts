@@ -12,7 +12,7 @@ describe("productions", () => {
     expect(nextStage("proposal")).toBe("approved");
     expect(nextStage("tech")).toBe("performances");
     expect(nextStage("closed")).toBeNull();
-    expect(nextStage("cancelled")).toBeNull();
+    expect(nextStage("canceled")).toBeNull();
   });
 
   test("performances need the rights cleared", () => {

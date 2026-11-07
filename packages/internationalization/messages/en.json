@@ -408,13 +408,13 @@
       "leaveWaitlist": "Leave the waitlist",
       "questions": "The organizers ask a few questions before booking.",
       "state": {
-        "cancelled": "This event was canceled.",
         "booked": "You have a place.",
         "waiting": "You’re on the waitlist. We’ll email you if a place opens.",
         "noBooking": "No booking needed: just come.",
         "open": "Places available.",
         "full": "Full. Join the waitlist and we’ll email you if a place opens.",
-        "left": "{count, plural, one {{places} place left} other {{places} places left}}"
+        "left": "{count, plural, one {{places} place left} other {{places} places left}}",
+        "canceled": "This event was canceled."
       },
       "notice": {
         "booked": "Booked. Your ticket is in your account, and a confirmation email is on its way.",
@@ -905,9 +905,9 @@
         "statuses": {
           "draft": "Draft",
           "published": "Published",
-          "cancelled": "Canceled",
           "scheduled": "Scheduled",
-          "archived": "Archived"
+          "archived": "Archived",
+          "canceled": "Canceled"
         },
         "addressProgram": "That address belongs to the Company or Qirtas; choose another.",
         "addressEvent": "That address belongs to an event; choose another.",
@@ -1406,7 +1406,7 @@
             "signed_up": "Signed up",
             "confirmed": "Confirmed",
             "swap_requested": "Asked to swap",
-            "cancelled": "Canceled"
+            "canceled": "Canceled"
           },
           "confirm": "Confirm",
           "release": "Release",
@@ -1580,11 +1580,11 @@
         "statuses": {
           "draft": "Draft, not yet adopted",
           "adopted": "Adopted",
-          "rejected": "Rejected",
           "withdrawn": "Withdrawn",
-          "superseded": "Superseded",
           "pending": "Pending",
-          "approved": "Approved"
+          "approved": "Approved",
+          "failed": "Failed",
+          "rescinded": "Rescinded"
         },
         "minutes": {
           "body": "Body",
@@ -2348,7 +2348,7 @@
           "tech": "Technical week",
           "performances": "Performances",
           "closed": "Closed",
-          "cancelled": "Canceled"
+          "canceled": "Canceled"
         },
         "rights": {
           "pending": "Not cleared",
@@ -2524,8 +2524,8 @@
         },
         "statuses": {
           "adopted": "Adopted",
-          "superseded": "Superseded",
-          "proposed": "Proposed"
+          "proposed": "Proposed",
+          "rescinded": "Rescinded"
         },
         "fields": {
           "status": "Status",
@@ -3374,7 +3374,7 @@
         "tech": "Technical week",
         "performances": "Performances",
         "closed": "Closed",
-        "cancelled": "Canceled"
+        "canceled": "Canceled"
       },
       "kinds": {
         "staged_reading": "Staged reading",
@@ -3382,10 +3382,10 @@
       },
       "statuses": {
         "signed_up": "Signed up",
-        "cancelled": "Canceled",
         "called_back": "Called back",
         "cast": "Cast",
-        "not_cast": "Not cast this time"
+        "not_cast": "Not cast this time",
+        "canceled": "Canceled"
       },
       "showName": "Show my name on the public page",
       "rehearsalsTitle": "Upcoming rehearsals",
@@ -4283,7 +4283,7 @@
         "rsvp": "Book a place",
         "members": "For members",
         "invite": "By invitation",
-        "cancelled": "Canceled"
+        "canceled": "Canceled"
       },
       "remind": "Remind me",
       "remindHint": "No booking needed. Members can ask for a reminder the day before.",

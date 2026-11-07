@@ -32,7 +32,7 @@ const Minutes = () => {
           .select(
             "id, body, meeting_on, adopted_on, title_en, title_ar, text_en, text_ar"
           )
-          .eq("status", "adopted")
+          .eq("status", "approved")
           .order("meeting_on", { ascending: false })
           .limit(30)
       ) ?? [],

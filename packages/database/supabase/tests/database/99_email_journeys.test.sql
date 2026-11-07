@@ -85,7 +85,7 @@ language sql
 as $$
   with m as (
     insert into governance.minutes (title_en, text_en, meeting_on, body, status, adopted_on)
-    values ('Council meeting', '<p>Minutes.</p>', current_date - 1, 'council', 'adopted', current_date)
+    values ('Council meeting', '<p>Minutes.</p>', current_date - 1, 'council', 'approved', current_date)
     returning id
   )
   insert into governance.resolutions (id, code, title_en, text_en, body, status, adopted_on, minutes_id)
@@ -186,7 +186,7 @@ values ('0e000000-0000-0000-0000-0000000e0f01', 'Someone', 'someone@example.com'
 update programmes.removal_requests set status = 'removed', action_taken = 'Taken down'
 where id = '0e000000-0000-0000-0000-0000000e0f01';
 select ok(
-  exists (select 1 from core.outbox where kind = 'programmes.removal_done'
+  exists (select 1 from core.outbox where kind = 'removal.done'
     and payload ->> 'request_id' = '0e000000-0000-0000-0000-0000000e0f01'),
   'A removal request done tells its requester'
 );
@@ -200,7 +200,7 @@ values ('0e000000-0000-0000-0000-0000000e1101', '0e000000-0000-0000-0000-0000000
 insert into programmes.audition_signups (audition_id, user_id, status)
 values ('0e000000-0000-0000-0000-0000000e1101', '00000000-0000-0000-0000-0000000e0a01', 'signed_up');
 select ok(
-  pg_temp.queued('programmes.audition_update', '00000000-0000-0000-0000-0000000e0a01'),
+  pg_temp.queued('company.audition_update', '00000000-0000-0000-0000-0000000e0a01'),
   'An audition time booked confirms'
 );
 
@@ -239,7 +239,7 @@ insert into programmes.shift_signups (shift_id, user_id, status)
 values ('0e000000-0000-0000-0000-0000000e1301', '00000000-0000-0000-0000-0000000e0a01', 'signed_up');
 select ok(private.daily_notices() >= 1, 'The daily notices run');
 select ok(
-  pg_temp.queued('programmes.shift_reminder', '00000000-0000-0000-0000-0000000e0a01'),
+  pg_temp.queued('events.shift_reminder', '00000000-0000-0000-0000-0000000e0a01'),
   'and remind tomorrow''s shifts'
 );
 

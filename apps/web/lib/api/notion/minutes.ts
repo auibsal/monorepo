@@ -237,7 +237,7 @@ const handleMeeting = async (
           .eq("id", link.key)
           .maybeSingle()
       : { data: null };
-  if (existing?.status === "adopted") {
+  if (existing?.status === "approved") {
     await lockedNote(ctx, page, existing.id, existing.adopted_on);
     return;
   }

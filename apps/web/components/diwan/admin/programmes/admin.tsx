@@ -600,7 +600,7 @@ export const NewReelPage = () => {
 
 // ── Shifts ────────────────────────────────────────────────────────
 
-type SignupStatus = "signed_up" | "confirmed" | "swap_requested" | "cancelled";
+type SignupStatus = "signed_up" | "confirmed" | "swap_requested" | "canceled";
 
 /**
  * An event's volunteer shifts (owner, Nov 7, 2026: shifts live only on an
@@ -678,7 +678,7 @@ export const Shifts = ({ eventId }: { eventId: string }) => {
       <ul className="grid gap-3">
         {data.data?.shifts.map((shift) => {
           const signups = (data.data?.signups ?? []).filter(
-            (s) => s.shift_id === shift.id && s.status !== "cancelled"
+            (s) => s.shift_id === shift.id && s.status !== "canceled"
           );
           return (
             <li className="grid gap-2 border-line border-b pb-3" key={shift.id}>
@@ -727,7 +727,7 @@ export const Shifts = ({ eventId }: { eventId: string }) => {
                       <Button
                         disabled={setStatus.isPending}
                         onClick={() =>
-                          setStatus.mutate({ ...s, status: "cancelled" })
+                          setStatus.mutate({ ...s, status: "canceled" })
                         }
                         size="sm"
                         variant="ghost"

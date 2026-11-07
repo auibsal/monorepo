@@ -774,11 +774,11 @@ export const pushTest = (lang: Lang) =>
 export const eventChanged = (
   lang: Lang,
   e: EventInfo,
-  change: "cancelled" | "moved",
+  change: "canceled" | "moved",
   app: string
 ) =>
   build(lang, (l) =>
-    change === "cancelled"
+    change === "canceled"
       ? {
           action: account(app, l, MY_CALENDAR),
           heading:

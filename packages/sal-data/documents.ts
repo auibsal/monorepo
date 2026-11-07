@@ -10,7 +10,7 @@ import { sanitizeRichText, toPlainText } from "./sanitize";
  * (Nov 4, 2026); governance managers keep the adoption record (status,
  * version, the date and the vote) in the Diwan's Library.
  */
-export const documentStatuses = ["proposed", "adopted", "superseded"] as const;
+export const documentStatuses = ["proposed", "adopted", "rescinded"] as const;
 export type DocumentStatus = (typeof documentStatuses)[number];
 
 export interface SalDocument {

@@ -83,7 +83,7 @@ language sql
 as $$
   with m as (
     insert into governance.minutes (title_en, text_en, meeting_on, body, status, adopted_on)
-    values ('Council meeting', '<p>Minutes.</p>', current_date - 1, 'council', 'adopted', current_date)
+    values ('Council meeting', '<p>Minutes.</p>', current_date - 1, 'council', 'approved', current_date)
     returning id
   )
   insert into governance.resolutions (id, code, title_en, text_en, body, status, adopted_on, minutes_id)
@@ -249,7 +249,7 @@ select throws_ok(
 update journal.pieces set title_ar = 'نتائج حملة الكتب' where id = pg_temp.news();
 select journal.request_author_approval(pg_temp.news());
 select pg_temp.logout();
-select is((select count(*) from core.outbox where kind = 'journal.final_check')::integer, 1,
+select is((select count(*) from core.outbox where kind = 'qirtas.final_check')::integer, 1,
   'The author is asked for the final check');
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a1');
@@ -285,7 +285,7 @@ select is((select count(*) from journal.pieces)::integer, 1, 'Visitors read the 
 select throws_ok($$ select user_id from journal.contributors $$, '42501', null,
   'Nobody can read which account a contributor is');
 select pg_temp.logout();
-select is((select count(*) from core.outbox where kind = 'journal.piece_published')::integer, 1,
+select is((select count(*) from core.outbox where kind = 'qirtas.piece_published')::integer, 1,
   'Publishing is announced to the outbox');
 
 select pg_temp.login_as('00000000-0000-0000-0000-00000000ae11');
@@ -305,7 +305,7 @@ select pg_temp.login_as('00000000-0000-0000-0000-0000000000a1');
 select is((select count(*) from journal.piece_thread(pg_temp.news()) where not from_author and writer_name_en = 'News Editor')::integer, 1,
   'The author reads the editor''s note, signed');
 select pg_temp.logout();
-select is((select count(*) from core.outbox where kind = 'journal.piece_note')::integer, 1,
+select is((select count(*) from core.outbox where kind = 'qirtas.piece_note')::integer, 1,
   'and is emailed about it');
 
 select pg_temp.login_as('00000000-0000-0000-0000-00000000ae11');

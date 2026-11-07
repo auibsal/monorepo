@@ -70,7 +70,7 @@ const EventView = async ({
   const t = await getTranslations({ locale, namespace: "web.events" });
   const body = localized(event, "body", locale);
   const image = mediaUrl(event.image_path);
-  const cancelled = event.status === "cancelled";
+  const cancelled = event.status === "canceled";
   // Held for a partner (Notion's Host, decisions §13).
   const host = await readPublished(
     ["events", "partners"],

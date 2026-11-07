@@ -34,9 +34,9 @@ const key = ["admin", "governance"];
 type Status =
   | "draft"
   | "adopted"
-  | "rejected"
+  | "failed"
   | "withdrawn"
-  | "superseded"
+  | "rescinded"
   | "pending"
   | "approved";
 
@@ -91,8 +91,8 @@ const MeetingsList = () => {
     },
     {
       cell: (m) =>
-        m.status === "adopted" && m.adopted_on
-          ? `${t("statuses.adopted")}, ${formatLongDate(m.adopted_on, locale, true)}`
+        m.status === "approved" && m.adopted_on
+          ? `${t("statuses.approved")}, ${formatLongDate(m.adopted_on, locale, true)}`
           : t("statuses.draft"),
       header: "",
       key: "status",
@@ -119,7 +119,7 @@ interface ResolutionForm {
   /** RES-<year>-<n>, given by the site on adoption (decisions §6). */
   code: string | null;
   id: string | null;
-  status: "draft" | "adopted" | "rejected" | "withdrawn";
+  status: "draft" | "adopted" | "failed" | "withdrawn";
   text: { ar: string; en: string };
   title: { ar: string; en: string };
   votes: { abstain: string; against: string; for: string };
@@ -414,7 +414,7 @@ const ResolutionEditor = ({
               }
               value={form.status}
             >
-              {(["draft", "adopted", "rejected", "withdrawn"] as const).map(
+              {(["draft", "adopted", "failed", "withdrawn"] as const).map(
                 (s) => (
                   <option key={s} value={s}>
                     {t(`statuses.${s}`)}

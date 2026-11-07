@@ -115,7 +115,7 @@ const profileQuery = () => {
 const submissionRow = (id: number): Row => ({
   attempts: 0,
   id,
-  kind: "journal.submission_received",
+  kind: "qirtas.submission_received",
   payload: { submission_id: "s1", user_id: "u1" },
 });
 

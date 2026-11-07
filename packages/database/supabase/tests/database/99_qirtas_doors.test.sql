@@ -84,7 +84,7 @@ language sql
 as $$
   with m as (
     insert into governance.minutes (title_en, text_en, meeting_on, body, status, adopted_on)
-    values ('Council meeting', '<p>Minutes.</p>', current_date - 1, 'council', 'adopted', current_date)
+    values ('Council meeting', '<p>Minutes.</p>', current_date - 1, 'council', 'approved', current_date)
     returning id
   )
   insert into governance.resolutions (id, code, title_en, text_en, body, status, adopted_on, minutes_id)
@@ -114,7 +114,7 @@ insert into journal.calls (id, issue_id, title_en, title_ar, opens_at, closes_at
     'Door call', 'نداء الباب', now() - interval '2 hours', now() + interval '30 days', true);
 select private.daily_notices();
 select ok(
-  exists (select 1 from core.outbox o where o.kind = 'journal.call_opened'
+  exists (select 1 from core.outbox o where o.kind = 'qirtas.call_opened'
     and o.payload->>'user_id' = '00000000-0000-0000-0000-0000000060a1'
     and o.payload->>'call_id' = 'ca000000-0000-0000-0000-0000000060c1'),
   'and is emailed when a call opens'

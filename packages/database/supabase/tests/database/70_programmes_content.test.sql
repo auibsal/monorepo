@@ -85,7 +85,7 @@ language sql
 as $$
   with m as (
     insert into governance.minutes (title_en, text_en, meeting_on, body, status, adopted_on)
-    values ('Council meeting', '<p>Minutes.</p>', current_date - 1, 'council', 'adopted', current_date)
+    values ('Council meeting', '<p>Minutes.</p>', current_date - 1, 'council', 'approved', current_date)
     returning id
   )
   insert into governance.resolutions (id, code, title_en, text_en, body, status, adopted_on, minutes_id)
@@ -173,7 +173,7 @@ select ok(
   (select due_at = private.add_business_days(created_at, 2) from programmes.removal_requests),
   'A removal request is due in two business days (MEM-02)'
 );
-select ok(exists (select 1 from core.outbox where kind = 'programmes.removal_requested'),
+select ok(exists (select 1 from core.outbox where kind = 'removal.requested'),
   'A removal request emails the programme leads');
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a1');

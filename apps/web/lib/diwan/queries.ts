@@ -192,7 +192,7 @@ export const useMyShifts = () => {
         .select(
           "shift_id, status, shift:shifts(id, role_en, role_ar, starts_at, ends_at, location_en, location_ar)"
         )
-        .neq("status", "cancelled")
+        .neq("status", "canceled")
     )
   );
 };

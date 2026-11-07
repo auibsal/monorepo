@@ -125,7 +125,7 @@ export const PlacesBoard = () => {
         await supabase
           .schema("programmes")
           .from("shift_signups")
-          .update({ status: "cancelled" })
+          .update({ status: "canceled" })
           .eq("shift_id", shiftId)
           .eq("user_id", user?.id ?? "")
       ),

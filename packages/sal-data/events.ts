@@ -80,7 +80,7 @@ export const publicEvent = async (client: Client, eventSlug: string) =>
       .select(`${eventColumns}, body_en, body_ar, questions`)
       .eq("slug", eventSlug)
       .eq("members_only", false)
-      .in("status", ["published", "cancelled"])
+      .in("status", ["published", "canceled"])
       .maybeSingle()
   );
 

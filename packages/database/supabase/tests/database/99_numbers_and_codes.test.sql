@@ -85,7 +85,7 @@ language sql
 as $$
   with m as (
     insert into governance.minutes (title_en, text_en, meeting_on, body, status, adopted_on)
-    values ('Council meeting', '<p>Minutes.</p>', current_date - 1, 'council', 'adopted', current_date)
+    values ('Council meeting', '<p>Minutes.</p>', current_date - 1, 'council', 'approved', current_date)
     returning id
   )
   insert into governance.resolutions (id, code, title_en, text_en, body, status, adopted_on, minutes_id)
@@ -99,7 +99,7 @@ select plan(13);
 
 select pg_temp.make_user('00000000-0000-0000-0000-0000000c0de1', 'numbers@auib.edu.iq', 'Numbers Person');
 insert into governance.minutes (id, title_en, text_en, meeting_on, body, status, adopted_on)
-values ('00000000-0000-0000-0000-0000000c0de2', 'Council meeting', '<p>Minutes.</p>', current_date - 1, 'council', 'adopted', current_date);
+values ('00000000-0000-0000-0000-0000000c0de2', 'Council meeting', '<p>Minutes.</p>', current_date - 1, 'council', 'approved', current_date);
 
 -- ── Council resolutions ──────────────────────────────────────────────────────
 insert into governance.resolutions (id, code, title_en, text_en, body, status, minutes_id)
@@ -113,7 +113,7 @@ select is((select code from governance.resolutions where id = '00000000-0000-000
   'Adoption gives the year''s next number');
 
 insert into governance.resolutions (id, title_en, text_en, body, status, minutes_id)
-values ('00000000-0000-0000-0000-0000000c0d02', 'Failed', 'Text.', 'council', 'rejected', '00000000-0000-0000-0000-0000000c0de2');
+values ('00000000-0000-0000-0000-0000000c0d02', 'Failed', 'Text.', 'council', 'failed', '00000000-0000-0000-0000-0000000c0de2');
 insert into governance.resolutions (id, title_en, text_en, body, status, adopted_on, minutes_id)
 values ('00000000-0000-0000-0000-0000000c0d03', 'Second', 'Text.', 'council', 'adopted', '2026-11-12', '00000000-0000-0000-0000-0000000c0de2');
 select is((select code from governance.resolutions where id = '00000000-0000-0000-0000-0000000c0d03'), 'RES-2026-002',

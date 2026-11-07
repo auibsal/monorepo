@@ -218,7 +218,7 @@ const audition = {
 };
 
 export const EventCanceled = email((l) =>
-  eventChanged(l, event, "cancelled", APP)
+  eventChanged(l, event, "canceled", APP)
 );
 export const EventMoved = email((l) => eventChanged(l, event, "moved", APP));
 export const ApplicationReceived = email((l) =>
