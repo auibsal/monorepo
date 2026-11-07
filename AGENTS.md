@@ -315,10 +315,13 @@ any schema change. Integration tests run against a local stack with
   person (`private.picks_opening`); whoever is onboarded holds the role.
 - **Partners.** One register, `governance.partners`. `/partners` is the
   front door; an organization applies at `/partners/apply`, its signatory
-  signing by name. Each partner has one dashboard, `/partners/dashboard`
-  (profile and memorandum, events, people), for its team of up to
-  six (Lead or Team), who join only by invitation and verify their own
-  guests. Partners never use Notion and see only their own events and
+  signing by name, and becomes a partner only when the Council's adopted
+  resolution is recorded (`governance.record_partner_vote`); nobody adds a
+  partner or drafts a memorandum in the Diwan. Each partner has one
+  dashboard, `/partners/dashboard` (profile and memorandum, events,
+  people), for its Lead and up to two more, who join only by named email
+  invitation and verify their own guests, invited by named email too (no
+  shareable links). Partners never use Notion and see only their own events and
   checklist. No perks or offers anywhere: sponsors in kind are thanked
   with a "Supported by" line, and the card is for the door only.
 - **Guests** sign up at `/sign-up/guest` to book open events, or are

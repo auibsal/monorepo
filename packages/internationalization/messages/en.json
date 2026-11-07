@@ -1076,7 +1076,7 @@
       },
       "verification": {
         "title": "Partner applications",
-        "lede": "Organizations that applied to partner with the Society, each with its memorandum signed by name. The President signs for the Society; each partner then verifies its own people.",
+        "lede": "Organizations that applied to partner with the Society, each with its memorandum signed by name. The Council votes on each at its meeting; record its adopted resolution here and the organization becomes a partner. Each partner then verifies its own people.",
         "empty": "No applications are waiting.",
         "statement": "Their note",
         "noStatement": "No note.",
@@ -1090,12 +1090,13 @@
         "purpose": "Purpose",
         "partnerWill": "What they will do",
         "asks": "They ask for",
-        "sign": "Sign for the Society",
-        "signConfirm": "Sign the memorandum with {name} for the Society? It becomes an active partner, and whoever applied keeps its page in the Diwan.",
+        "sign": "Record the Council’s vote",
+        "signConfirm": "Record the Council’s resolution approving {name}? It becomes an active partner, and whoever applied leads its dashboard.",
         "declineConfirm": "Decline {name}'s application? It stays on record.",
         "earlier": "Earlier requests",
         "earlierLede": "People who asked before partners verified their own. Approve only people you can place.",
-        "signingAs": "You sign for the Society as"
+        "resolution": "The Council’s resolution",
+        "noResolution": "No adopted Council resolution to choose yet. The Council adopts it at its meeting, under that meeting’s minutes."
       },
       "events": {
         "title": "Events",
@@ -1975,7 +1976,6 @@
         },
         "register": {
           "lede": "Clubs, departments and organizations the Society works with or is talking to. Contacts and notes stay internal.",
-          "add": "Add a partner",
           "edit": "Edit",
           "cancel": "Cancel",
           "empty": "No partners in the register yet.",
@@ -2029,9 +2029,7 @@
           "guests": "Guests"
         },
         "agreements": {
-          "lede": "Partnership memoranda (Form F-26). Drafts are written here; the President and the partner’s signatory each sign by name, and nothing is uploaded. Someone who has declared a conflict with the partner cannot sign (P8.3).",
-          "draft": "Draft a memorandum",
-          "cancel": "Cancel",
+          "lede": "Partnership memoranda. Each comes from an application signed by the partner’s signatory and takes effect once the Council’s adopted resolution is recorded. Nothing is uploaded. Someone who has declared a conflict with the partner cannot record the vote (P8.3).",
           "empty": "No memoranda yet.",
           "formIntro": "This memorandum records what each side has agreed. It is made in good faith and is not a legal contract. Either side may end it with 14 days’ written notice.",
           "choosePartner": "Choose a partner",
@@ -2043,9 +2041,6 @@
           "dates": "Dates",
           "status": "Status",
           "noGrants": "Nothing on the platform",
-          "sign": "Sign",
-          "signIntro": "Sign for the Society (P11.2: the President signs). The partner’s signatory signs by name; nothing is uploaded.",
-          "partnerSignatory": "Signed for the partner by (name, role)",
           "openSigned": "Open signed copy",
           "informedStudentLife": "Student Life told",
           "end": "End",
@@ -2085,7 +2080,7 @@
           "missing": "This memorandum is not here",
           "asked": "Asked for: {grants}",
           "give": "Approve what they asked for",
-          "signingAs": "You sign for the Society as"
+          "recordVote": "Record the Council’s vote"
         },
         "affiliations": {
           "lede": "People who say they belong to a partner. Check with the partner’s contact before verifying. Lists are never shared with partners.",
@@ -3783,7 +3778,7 @@
     },
     "partnerJoin": {
       "title": "Partner with the Society",
-      "lede": "For clubs, departments and organizations whose aims fit the Society’s and who treat people fairly. Apply here and sign the memorandum by name; the President signs for the Society.",
+      "lede": "For clubs, departments and organizations whose aims fit the Society’s and who treat people fairly. Apply here and sign the memorandum by name; the Society’s Council votes on it.",
       "account": "Not a member? Applying takes an account, for the person who signs for the organization. Any email address will do.",
       "nameEn": "Name in English",
       "nameAr": "Name in Arabic",
@@ -3796,7 +3791,7 @@
       "accept": "I sign this memorandum for {name}, and I may sign for it.",
       "submit": "Apply and sign",
       "receivedTitle": "Application received",
-      "waiting": "{name}'s application, signed on {date}, is with the Society. Once the President signs, {name}'s dashboard opens for you.",
+      "waiting": "{name}’s application, signed on {date}, is with the Society. Once the Council approves it, {name}’s dashboard opens for you.",
       "partneredTitle": "You are a partner",
       "partnered": "{name} is a partner of the Society. Its dashboard keeps its profile, guests and team.",
       "openDesk": "Open the dashboard",
@@ -3805,7 +3800,7 @@
         "title": "Memorandum of Partnership",
         "yourOrganization": "your organization",
         "one": "{name} and the AUIB Society of Arts and Letters agree to the partnership described above.",
-        "two": "Every partnership that involves money, shared branding or shared responsibility has a written memorandum, signed by the President. This is that memorandum, once the President signs.",
+        "two": "Every partnership has a written memorandum, approved by the Council’s vote. This is that memorandum, once the Council approves it.",
         "three": "The Society does not accept sponsorship from political parties, religious or sectarian bodies, tobacco, alcohol or gambling businesses, or any sponsor that would compromise its independence.",
         "four": "Sponsors get acknowledgement, never editorial influence.",
         "five": "{name} verifies its own people on the platform, and only people who belong to it. What it turns on for itself and its guests, and what it publishes, waits for the Society’s approval.",
@@ -3825,7 +3820,7 @@
         "forPartner": "For {name}",
         "role": "Signing as <blank></blank> of the organization.",
         "forSociety": "For the Society",
-        "presidentSigns": "The President signs here once the Society approves.",
+        "presidentSigns": "The Council’s approval is recorded here once it votes.",
         "urlBlank": "https://"
       },
       "oneMembership": "You are the Society’s guest, and a guest is never on a partner’s team. Apply with your organization’s own address: sign out, then come back here.",
@@ -3882,12 +3877,12 @@
       },
       "team": {
         "title": "Team",
-        "lede": "Up to six people keep this dashboard. Leads invite and remove; everyone keeps the profile and guests.",
+        "lede": "The Lead and up to two more keep this dashboard. The Lead invites and removes; everyone keeps the profile and guests.",
         "remove": "Remove",
         "removeConfirm": "Remove {name} from the team?",
         "leave": "Leave",
         "leaveConfirm": "Leave the team? You will no longer keep this page.",
-        "full": "The team is full (six people).",
+        "full": "The team is full: the Lead and two more.",
         "lead": "Lead",
         "member": "Team",
         "makeLead": "Make lead",
@@ -3921,7 +3916,7 @@
       "pending": "Waiting for {name}",
       "pendingLine": "Your partner confirms that you belong to it; then you are its guest.",
       "applied": "{name} has applied to partner",
-      "appliedLine": "The application is with the Society until the President signs.",
+      "appliedLine": "The application is with the Society until the Council votes on it.",
       "nothing": "No membership yet. Membership is for AUIB students; others join as a guest, by invitation from the Society or one of its partners.",
       "aboutPartners": "About our partners",
       "do": "What you can do",
@@ -3950,7 +3945,7 @@
       "errors": {
         "invitation_for_another_address": "This invitation is for another address.",
         "invitation_unusable": "This invitation can no longer be used.",
-        "team_full": "The team is full (six people).",
+        "team_full": "The team is full: the Lead and two more.",
         "unknown": "Something went wrong. Try again.",
         "one_membership": "This account already holds a membership of another kind. An account is one kind only: a member, a guest or a partner’s."
       },
@@ -4603,7 +4598,7 @@
       },
       "visit": "Visit {name}",
       "workTitle": "Work with us",
-      "work": "Clubs, departments, charities and cultural organizations apply here and sign the memorandum by name; the President signs for the Society. Sponsors are acknowledged and never have editorial influence.",
+      "work": "Clubs, departments, charities and cultural organizations apply here and sign the memorandum by name; the Society’s Council votes on each. Sponsors are acknowledged and never have editorial influence.",
       "apply": "Apply to partner",
       "teamSignIn": "Partner team sign in",
       "gets": {
@@ -4629,7 +4624,7 @@
         },
         "team": {
           "title": "A team that answers",
-          "body": "Up to six people, at least one of them a Lead, keep your profile and people on your dashboard."
+          "body": "Your Lead and up to two more keep your profile and people on your dashboard."
         }
       },
       "secondChapter": {

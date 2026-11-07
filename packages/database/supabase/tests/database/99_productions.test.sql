@@ -74,6 +74,26 @@ insert into core.semesters (code, name_en, name_ar, starts_on, ends_on) values
 -- Tests check the two-activity rule; the founding-voter tests turn the
 -- first-100 rule back on themselves.
 update core.settings set value = '0' where key = 'membership.founding_voters';
+
+-- An adopted Council resolution, with its minutes: the Council's vote that
+-- approves a partnership (decisions §10).
+create function pg_temp.council_resolution(
+  id uuid default '00000000-0000-0000-0000-0000000c0001',
+  code text default 'R-2026-99'
+)
+returns uuid
+language sql
+as $$
+  with m as (
+    insert into governance.minutes (title_en, text_en, meeting_on, body, status, adopted_on)
+    values ('Council meeting', '<p>Minutes.</p>', current_date - 1, 'council', 'adopted', current_date)
+    returning id
+  )
+  insert into governance.resolutions (id, code, title_en, text_en, body, status, adopted_on, minutes_id)
+  select council_resolution.id, council_resolution.code, 'Approves the partnership', '<p>Resolved.</p>', 'council', 'adopted', current_date, m.id
+  from m
+  returning id;
+$$;
 -- </preamble>
 select plan(30);
 
@@ -96,14 +116,15 @@ on conflict do nothing;
 insert into governance.partners (id, slug, name_en, kind, status, is_listed) values
   ('00000000-0000-0000-0000-00000000d001', 'stage-reads', 'Stage Reads', 'cultural', 'active', true),
   ('00000000-0000-0000-0000-00000000d002', 'zine-only', 'Zine Only', 'media', 'active', true);
-insert into governance.partner_agreements (id, partner_id, purpose_en, starts_on, grants) values
+insert into governance.partner_agreements (id, partner_id, purpose_en, starts_on, grants, partner_signatory) values
   ('00000000-0000-0000-0000-00000000d101', '00000000-0000-0000-0000-00000000d001',
-   'Productions together.', current_date - 1, '{productions}'),
+   'Productions together.', current_date - 1, '{productions}', 'Partner Head'),
   ('00000000-0000-0000-0000-00000000d102', '00000000-0000-0000-0000-00000000d002',
-   'Shared branding.', current_date - 1, '{shared_branding}');
+   'Shared branding.', current_date - 1, '{shared_branding}', 'Partner Head');
+select pg_temp.council_resolution();
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a2');
-select governance.sign_partner_agreement('00000000-0000-0000-0000-00000000d101', 'Partner Head', 'partners/a.pdf');
-select governance.sign_partner_agreement('00000000-0000-0000-0000-00000000d102', 'Partner Head', 'partners/b.pdf');
+select governance.record_partner_vote('00000000-0000-0000-0000-00000000d101', '00000000-0000-0000-0000-0000000c0001');
+select governance.record_partner_vote('00000000-0000-0000-0000-00000000d102', '00000000-0000-0000-0000-0000000c0001');
 select pg_temp.logout();
 
 insert into events.events (id, slug, title_en, title_ar, starts_at, status, published_at) values

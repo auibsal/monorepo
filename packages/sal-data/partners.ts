@@ -259,17 +259,31 @@ export const declareConflicts = async (
 
 // ── Officers ────────────────────────────────────────────────────────────────
 
-export const signAgreement = async (
+/**
+ * Records the Council's adopted resolution approving an application
+ * (decisions §10): the partner becomes active, and whoever applied leads it.
+ */
+export const recordCouncilVote = async (
   client: Client,
   agreementId: string,
-  partnerSignatory: string
+  resolutionId: string
 ) =>
   unwrap(
-    await client.schema("governance").rpc("sign_partner_agreement", {
+    await client.schema("governance").rpc("record_partner_vote", {
       agreement_id: agreementId,
-      partner_signatory: partnerSignatory,
-      // No uploaded copy (owner, Oct 31, 2026): the signatures are the
-      // record. The argument stays for memoranda signed before.
-      signed_document_path: null as unknown as string,
+      resolution: resolutionId,
     })
   );
+
+/** The Council's adopted resolutions, newest first, to record a vote by. */
+export const councilResolutions = async (client: Client) =>
+  unwrap(
+    await client
+      .schema("governance")
+      .from("resolutions")
+      .select("id, code, title_en, title_ar, adopted_on")
+      .eq("status", "adopted")
+      .eq("body", "council")
+      .order("adopted_on", { ascending: false })
+      .limit(50)
+  ) ?? [];

@@ -13,9 +13,7 @@ import { hasPermissionAnywhere } from "@repo/rbac";
 import { localized, partners, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
-import { type FormEvent, useState } from "react";
-import { DateInput } from "@/components/fields/date-input";
-import { MySignature } from "@/components/signature";
+import { useState } from "react";
 import { callApi } from "@/lib/diwan/api";
 import { Link, useRouter } from "@/lib/diwan/navigation";
 import { useGrants } from "@/lib/diwan/queries";
@@ -39,6 +37,7 @@ import { useMemberNames } from "../member-picker";
 import { memberName } from "../members/directory";
 import { VerificationQueue } from "../members/verification";
 import { RecordHistory } from "../record-history";
+import { CouncilVote } from "./council-vote";
 
 const key = ["admin", "partners"];
 
@@ -85,54 +84,34 @@ const usePartnerNames = () => {
 
 // ── Register ────────────────────────────────────────────────────────────────
 
-const emptyPartner = {
-  contact_email: "",
-  contact_name: "",
-  contact_role: "",
-  description: { ar: "", en: "" },
-  is_listed: false,
-  kind: "cultural" as (typeof partners.partnerKinds)[number],
-  logo_path: null as string | null,
-  name: { ar: "", en: "" },
-  notes: "",
-  reach: "iraq" as (typeof partners.partnerReach)[number],
-  slug: "",
-  status: "prospect" as (typeof partners.partnerStatuses)[number],
-  url: "",
-};
-
 const PartnerForm = ({
   initial,
   onDone,
 }: {
-  initial?: PartnerRow;
+  initial: PartnerRow;
   onDone: () => void;
 }) => {
   const t = useTranslations("diwan.admin.partners.register");
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
-  const [form, setForm] = useState(() =>
-    initial
-      ? {
-          contact_email: String(initial.contact_email ?? ""),
-          contact_name: String(initial.contact_name ?? ""),
-          contact_role: String(initial.contact_role ?? ""),
-          description: {
-            ar: String(initial.description_ar ?? ""),
-            en: String(initial.description_en ?? ""),
-          },
-          is_listed: Boolean(initial.is_listed),
-          kind: initial.kind as (typeof partners.partnerKinds)[number],
-          logo_path: (initial.logo_path as string | null) ?? null,
-          name: { ar: initial.name_ar ?? "", en: initial.name_en },
-          notes: String(initial.notes ?? ""),
-          reach: initial.reach as (typeof partners.partnerReach)[number],
-          slug: String(initial.slug ?? ""),
-          status: initial.status as (typeof partners.partnerStatuses)[number],
-          url: String(initial.url ?? ""),
-        }
-      : emptyPartner
-  );
+  const [form, setForm] = useState(() => ({
+    contact_email: String(initial.contact_email ?? ""),
+    contact_name: String(initial.contact_name ?? ""),
+    contact_role: String(initial.contact_role ?? ""),
+    description: {
+      ar: String(initial.description_ar ?? ""),
+      en: String(initial.description_en ?? ""),
+    },
+    is_listed: Boolean(initial.is_listed),
+    kind: initial.kind as (typeof partners.partnerKinds)[number],
+    logo_path: (initial.logo_path as string | null) ?? null,
+    name: { ar: initial.name_ar ?? "", en: initial.name_en },
+    notes: String(initial.notes ?? ""),
+    reach: initial.reach as (typeof partners.partnerReach)[number],
+    slug: String(initial.slug ?? ""),
+    status: initial.status as (typeof partners.partnerStatuses)[number],
+    url: String(initial.url ?? ""),
+  }));
   const save = useMutation({
     mutationFn: async () => {
       const row = partners.partnerSchema.parse({
@@ -153,11 +132,7 @@ const PartnerForm = ({
         url: form.url,
       });
       const table = supabase.schema("governance").from("partners");
-      unwrap(
-        initial
-          ? await table.update(row).eq("id", initial.id)
-          : await table.insert(row)
-      );
+      unwrap(await table.update(row).eq("id", initial.id));
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: key });
@@ -399,9 +374,6 @@ const Register = () => {
   return (
     <div className="grid gap-6">
       <p className="type-body">{t("lede")}</p>
-      <Link className="link justify-self-start" href="/partnerships/new">
-        {t("add")}
-      </Link>
       <DataTable
         columns={columns}
         empty={t("empty")}
@@ -417,7 +389,8 @@ const partnerRef = (row: PartnerRow) => String(row.slug || row.id);
 
 /**
  * One partner in the register, edited on its own page (owner, Oct 31,
- * 2026): /diwan/partnerships/<slug>, or /new for a blank one. Saving
+ * 2026): /diwan/partnerships/<slug>. Partners come only from applications
+ * (decisions §10), so there is no blank one. Saving
  * returns to the register; a listed partner links to the public Partners
  * page.
  */
@@ -429,11 +402,8 @@ export const PartnerPage = ({ partnerRef: ref }: { partnerRef: string }) => {
   if (register.isPending) {
     return <SectionSpinner />;
   }
-  const isNew = ref === "new";
-  const row = isNew
-    ? undefined
-    : (register.data ?? []).find((p) => partnerRef(p) === ref);
-  if (!(isNew || row)) {
+  const row = (register.data ?? []).find((p) => partnerRef(p) === ref);
+  if (!row) {
     return (
       <div className="grid gap-4">
         <AdminHeading title={t("missing")} />
@@ -454,7 +424,7 @@ export const PartnerPage = ({ partnerRef: ref }: { partnerRef: string }) => {
             {row?.is_listed ? <OnTheSite href="/partners" /> : null}
           </>
         }
-        title={row ? localized(row, "name", locale) : t("add")}
+        title={localized(row, "name", locale)}
       />
       <PartnerForm initial={row} onDone={() => router.push("/partnerships")} />
       {row ? (
@@ -483,258 +453,6 @@ type AgreementRow = {
   status: string;
   student_life_informed_on: string | null;
 } & Record<string, unknown>;
-
-const emptyAgreement = {
-  branding: "",
-  code: "",
-  ends_on: "",
-  grants: [] as (typeof partners.agreementGrants)[number][],
-  partner_contact: "",
-  partner_id: "",
-  partner_will: "",
-  people_safety: "",
-  purpose: { ar: "", en: "" },
-  renew_by: "",
-  sal_contact: "",
-  sal_will: "",
-  starts_on: today(),
-};
-
-const AgreementForm = ({ onDone }: { onDone: () => void }) => {
-  const t = useTranslations("diwan.admin.partners.agreements");
-  const locale = useLocale();
-  const { supabase } = useAuth();
-  const queryClient = useQueryClient();
-  const register = usePartners();
-  const [form, setForm] = useState(emptyAgreement);
-  const save = useMutation({
-    mutationFn: async () => {
-      const row = partners.agreementSchema.parse({
-        branding: form.branding,
-        code: form.code,
-        ends_on: form.ends_on,
-        grants: form.grants,
-        partner_contact: form.partner_contact,
-        partner_id: form.partner_id,
-        partner_will: form.partner_will,
-        people_safety: form.people_safety,
-        purpose_ar: form.purpose.ar,
-        purpose_en: form.purpose.en,
-        renew_by: form.renew_by,
-        sal_contact: form.sal_contact,
-        sal_will: form.sal_will,
-        starts_on: form.starts_on,
-      });
-      unwrap(
-        await supabase
-          .schema("governance")
-          .from("partner_agreements")
-          .insert(row)
-      );
-    },
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: key });
-      onDone();
-    },
-  });
-
-  const text = (
-    field: "sal_will" | "partner_will" | "branding" | "people_safety",
-    hint?: string
-  ) => (
-    <Field hint={hint} label={t(`fields.${field}`)}>
-      {(id) => (
-        <Textarea
-          dir="auto"
-          id={id}
-          maxLength={4000}
-          onChange={(e) => setForm((f) => ({ ...f, [field]: e.target.value }))}
-          rows={3}
-          value={form[field]}
-        />
-      )}
-    </Field>
-  );
-
-  return (
-    <form
-      className="grid max-w-3xl gap-4"
-      onSubmit={(event) => {
-        event.preventDefault();
-        save.mutate();
-      }}
-    >
-      <p className="type-caption">{t("formIntro")}</p>
-      <div className="grid gap-4 sm:grid-cols-2">
-        <Field label={t("fields.partner")}>
-          {(id) => (
-            <SelectInput
-              id={id}
-              onChange={(e) =>
-                setForm((f) => ({ ...f, partner_id: e.target.value }))
-              }
-              required
-              value={form.partner_id}
-            >
-              <option value="">{t("choosePartner")}</option>
-              {(register.data ?? []).map((p) => (
-                <option key={p.id} value={p.id}>
-                  {localized(p, "name", locale)}
-                </option>
-              ))}
-            </SelectInput>
-          )}
-        </Field>
-        <Field hint={t("codeHint")} label={t("fields.code")}>
-          {(id) => (
-            <Input
-              dir="ltr"
-              id={id}
-              onChange={(e) => setForm((f) => ({ ...f, code: e.target.value }))}
-              pattern="MOU-\d{4}-\d{2,3}"
-              value={form.code}
-            />
-          )}
-        </Field>
-      </div>
-      <BilingualField
-        label={t("fields.purpose")}
-        maxLength={2000}
-        multiline
-        onChange={(purpose) => setForm((f) => ({ ...f, purpose }))}
-        required
-        value={form.purpose}
-      />
-      <div className="grid gap-4 sm:grid-cols-3">
-        {(["starts_on", "ends_on", "renew_by"] as const).map((field) => (
-          <Field key={field} label={t(`fields.${field}`)}>
-            {(id) => (
-              <DateInput
-                id={id}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, [field]: e.target.value }))
-                }
-                required={field === "starts_on"}
-                value={form[field]}
-              />
-            )}
-          </Field>
-        ))}
-      </div>
-      {text("sal_will")}
-      {text("partner_will")}
-      {text("branding", t("brandingHint"))}
-      {text("people_safety", t("safetyHint"))}
-      <div className="grid gap-4 sm:grid-cols-2">
-        {(["sal_contact", "partner_contact"] as const).map((field) => (
-          <Field key={field} label={t(`fields.${field}`)}>
-            {(id) => (
-              <Input
-                dir="auto"
-                id={id}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, [field]: e.target.value }))
-                }
-                value={form[field]}
-              />
-            )}
-          </Field>
-        ))}
-      </div>
-      <fieldset className="grid gap-2">
-        <legend className="type-label mb-1">{t("fields.grants")}</legend>
-        <p className="type-caption">{t("grantsHint")}</p>
-        {partners.agreementGrants.map((grant) => (
-          <div className="flex items-center gap-2" key={grant}>
-            <Checkbox
-              checked={form.grants.includes(grant)}
-              id={`grant-${grant}`}
-              onCheckedChange={(checked) =>
-                setForm((f) => ({
-                  ...f,
-                  grants:
-                    checked === true
-                      ? [...f.grants, grant]
-                      : f.grants.filter((g) => g !== grant),
-                }))
-              }
-            />
-            <Label htmlFor={`grant-${grant}`}>{t(`grants.${grant}`)}</Label>
-          </div>
-        ))}
-      </fieldset>
-      <div className="flex flex-wrap gap-2">
-        <SaveButton pending={save.isPending} />
-        <Button onClick={onDone} type="button" variant="ghost">
-          {t("cancel")}
-        </Button>
-      </div>
-      <ErrorLine error={save.error} />
-    </form>
-  );
-};
-
-const SignForm = ({
-  agreement,
-  onDone,
-}: {
-  agreement: AgreementRow;
-  onDone: () => void;
-}) => {
-  const t = useTranslations("diwan.admin.partners.agreements");
-  const { supabase } = useAuth();
-  const queryClient = useQueryClient();
-  // An application arrives signed by the partner's signatory; a memorandum
-  // the Society drafted takes the name here. No uploaded copy.
-  const [signatory, setSignatory] = useState(
-    typeof agreement.partner_signatory === "string"
-      ? agreement.partner_signatory
-      : ""
-  );
-  const sign = useMutation({
-    mutationFn: () =>
-      partners.signAgreement(supabase, agreement.id, signatory.trim()),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: key });
-      onDone();
-    },
-  });
-  return (
-    <form
-      className="grid max-w-xl gap-3"
-      onSubmit={(event: FormEvent) => {
-        event.preventDefault();
-        sign.mutate();
-      }}
-    >
-      <p className="type-caption">{t("signIntro")}</p>
-      <Field label={t("partnerSignatory")}>
-        {(id) => (
-          <Input
-            dir="auto"
-            id={id}
-            onChange={(e) => setSignatory(e.target.value)}
-            required
-            value={signatory}
-          />
-        )}
-      </Field>
-      <div className="grid gap-1">
-        <p className="type-label">{t("signingAs")}</p>
-        <MySignature />
-      </div>
-      <div className="flex flex-wrap gap-2">
-        <Button disabled={sign.isPending} type="submit">
-          {t("sign")}
-        </Button>
-        <Button onClick={onDone} type="button" variant="ghost">
-          {t("cancel")}
-        </Button>
-      </div>
-      <ErrorLine error={sign.error} />
-    </form>
-  );
-};
 
 const Agreements = () => {
   const t = useTranslations("diwan.admin.partners.agreements");
@@ -872,7 +590,7 @@ const Agreements = () => {
         <div className="flex flex-wrap gap-2">
           {row.status === "draft" && canSign ? (
             <Link className="link" href={`/partnerships/agreements/${row.id}`}>
-              {t("sign")}
+              {t("recordVote")}
             </Link>
           ) : null}
           {row.status !== "draft" && row.signed_document_path ? (
@@ -950,14 +668,6 @@ const Agreements = () => {
           </ul>
         </SalCard>
       ) : null}
-      {canManage ? (
-        <Link
-          className="link justify-self-start"
-          href="/partnerships/agreements/new"
-        >
-          {t("draft")}
-        </Link>
-      ) : null}
       <ErrorLine error={update.error ?? give.error} />
       <DataTable
         columns={columns}
@@ -970,9 +680,9 @@ const Agreements = () => {
 };
 
 /**
- * A memorandum on its own page: /people/partners/agreements/new drafts
- * one; /people/partners/agreements/<id> is where the President signs a
- * draft. Both return to the memoranda.
+ * A memorandum on its own page, /partnerships/agreements/<id>. One that is
+ * still a draft (an application) takes the Council's vote here (decisions
+ * §10); memoranda come only from applications, so there is no blank one.
  */
 export const AgreementPage = ({ id }: { id: string }) => {
   const t = useTranslations("diwan.admin.partners.agreements");
@@ -982,7 +692,6 @@ export const AgreementPage = ({ id }: { id: string }) => {
   const back = "/partnerships/agreements";
   const done = () => router.push(back);
   const agreement = useQuery({
-    enabled: id !== "new",
     queryFn: async () =>
       (unwrap(
         await supabase
@@ -994,15 +703,12 @@ export const AgreementPage = ({ id }: { id: string }) => {
       ) ?? null) as AgreementRow | null,
     queryKey: [...key, "agreement", id],
   });
-  if (id !== "new" && agreement.isPending) {
+  if (agreement.isPending) {
     return <SectionSpinner />;
   }
-  let title = t("draft");
-  if (agreement.data) {
-    title = partnerName(agreement.data.partner_id);
-  } else if (id !== "new") {
-    title = t("missing");
-  }
+  const title = agreement.data
+    ? partnerName(agreement.data.partner_id)
+    : t("missing");
   return (
     <div className="grid max-w-3xl gap-8">
       <AdminHeading
@@ -1013,9 +719,12 @@ export const AgreementPage = ({ id }: { id: string }) => {
         }
         title={title}
       />
-      {id === "new" ? <AgreementForm onDone={done} /> : null}
       {agreement.data?.status === "draft" ? (
-        <SignForm agreement={agreement.data} onDone={done} />
+        <CouncilVote
+          agreementId={agreement.data.id}
+          name={title}
+          onDone={done}
+        />
       ) : null}
     </div>
   );

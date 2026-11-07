@@ -75,7 +75,7 @@ insert into core.semesters (code, name_en, name_ar, starts_on, ends_on) values
 -- first-100 rule back on themselves.
 update core.settings set value = '0' where key = 'membership.founding_voters';
 
-select plan(42);
+select plan(43);
 
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a1', 'director-pa@auib.edu.iq');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a2', 'president-pa@auib.edu.iq');
@@ -152,11 +152,23 @@ select lives_ok(
 select set_config('test.other_club', (select id::text from governance.partners where slug = 'other-club'), false);
 select set_config('test.agreement', (select agreement_id::text from governance.partner_applications() where slug = 'poetry-club'), false);
 
+select pg_temp.logout();
+-- The Council's vote: an adopted resolution, with its minutes.
+with m as (
+  insert into governance.minutes (title_en, text_en, meeting_on, body, status, adopted_on)
+  values ('Council meeting', '<p>Minutes.</p>', current_date - 1, 'council', 'adopted', current_date)
+  returning id
+)
+insert into governance.resolutions (id, code, title_en, text_en, body, status, adopted_on, minutes_id)
+select '00000000-0000-0000-0000-0000000c0001', 'R-2026-99', 'Approves the partnership',
+  '<p>Resolved.</p>', 'council', 'adopted', current_date, m.id
+from m;
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a2');
 select lives_ok(
-  $$ select governance.sign_partner_agreement(
-       (select agreement_id from governance.partner_applications() where slug = 'poetry-club'), null, null) $$,
-  'The President signs, with no uploaded copy'
+  $$ select governance.record_partner_vote(
+       (select agreement_id from governance.partner_applications() where slug = 'poetry-club'),
+       '00000000-0000-0000-0000-0000000c0001') $$,
+  'The Council''s adopted resolution is recorded'
 );
 select is((select count(*)::int from governance.partner_applications()), 0,
   'and the queue is empty');
@@ -200,18 +212,24 @@ select throws_ok(
   'but not its listing'
 );
 
--- Guests come through the partner's invitations: a shareable link leaves
--- them waiting for the partner to verify them.
-select lives_ok(
+-- Guests come through the partner's named invitations (no shareable links,
+-- decisions §2), and wait for the partner to verify them.
+select throws_ok(
   $$ insert into governance.partner_invitations (partner_id, kind)
      values ((select id from governance.my_partners() limit 1), 'guest') $$,
-  'The Lead makes a shareable guest link'
+  '23514', null,
+  'A partner makes no shareable guest link'
+);
+select lives_ok(
+  $$ insert into governance.partner_invitations (partner_id, kind, email)
+     values ((select id from governance.my_partners() limit 1), 'guest', 'poet@poetryclub.org') $$,
+  'The Lead invites a guest by address'
 );
 select set_config('test.link', (select code from governance.partner_invitations where kind = 'guest'), false);
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000b1');
 select is(governance.accept_partner_invitation(current_setting('test.link')), 'guest',
   'Someone follows the link');
-select ok(not core.is_partner_guest(), 'and waits for the partner');
+select ok(core.is_partner_guest(), 'A named invitation is the partner''s own word: no wait');
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000c1');
 select is(
@@ -295,8 +313,11 @@ select lives_ok(
 select pg_temp.logout();
 select ok(not private.sign_up_allowed('someone@gmail.com', '{}'),
   'An outside address cannot sign up on its own');
+insert into governance.partner_invitations (partner_id, kind, email)
+values ((select id from governance.partners where slug = 'poetry-club'), 'guest', 'friend@gmail.com');
 select ok(private.sign_up_allowed('friend@gmail.com',
-  jsonb_build_object('invitation', current_setting('test.link'))),
+  jsonb_build_object('invitation',
+    (select code from governance.partner_invitations where email = 'friend@gmail.com'))),
   'but can with a partner''s invitation');
 select ok(private.sign_up_allowed('club@example.org', '{"partner_applicant":"true"}'),
   'or to apply as a partner');

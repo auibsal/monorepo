@@ -165,7 +165,7 @@ const sendMinutes = async (
   await saveLink(ctx, "minutes", page.id, data.id, marker);
   await ctx.notion.updatePage(page.id, {
     "Diwan ID": prop.text(data.id),
-    "Minutes (Diwan)": prop.url(`${ctx.appUrl}/society/meetings/${data.id}`),
+    "Minutes (Diwan)": prop.url(`${ctx.appUrl}/council/meetings/${data.id}`),
     "Platform note": prop.text(
       `In the Diwan since ${stamp()}, waiting for the Council to adopt them. Changes here update the draft until then.`
     ),

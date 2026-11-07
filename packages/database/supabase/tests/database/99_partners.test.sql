@@ -74,6 +74,26 @@ insert into core.semesters (code, name_en, name_ar, starts_on, ends_on) values
 -- Tests check the two-activity rule; the founding-voter tests turn the
 -- first-100 rule back on themselves.
 update core.settings set value = '0' where key = 'membership.founding_voters';
+
+-- An adopted Council resolution, with its minutes: the Council's vote that
+-- approves a partnership (decisions §10).
+create function pg_temp.council_resolution(
+  id uuid default '00000000-0000-0000-0000-0000000c0001',
+  code text default 'R-2026-99'
+)
+returns uuid
+language sql
+as $$
+  with m as (
+    insert into governance.minutes (title_en, text_en, meeting_on, body, status, adopted_on)
+    values ('Council meeting', '<p>Minutes.</p>', current_date - 1, 'council', 'adopted', current_date)
+    returning id
+  )
+  insert into governance.resolutions (id, code, title_en, text_en, body, status, adopted_on, minutes_id)
+  select council_resolution.id, council_resolution.code, 'Approves the partnership', '<p>Resolved.</p>', 'council', 'adopted', current_date, m.id
+  from m
+  returning id;
+$$;
 -- </preamble>
 
 select plan(21);
@@ -87,20 +107,29 @@ select pg_temp.grant_role('00000000-0000-0000-0000-0000000000a1', 'vice_presiden
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000000a2', 'president');
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000000a3', 'vice_president');
 
--- The Vice President keeps the register and drafts a memorandum (owner, Nov 5, 2026).
+-- Partners come only from applications (decisions §10): nobody adds one or
+-- drafts a memorandum in the Diwan.
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a1');
-select lives_ok(
+select throws_ok(
   $$ insert into governance.partners (id, slug, name_en, kind, is_listed, description_en)
-     values ('00000000-0000-0000-0000-00000000d001', 'poetry-hub', 'Poetry Hub', 'cultural', true, 'Poetry in Baghdad.') $$,
-  'The Vice President adds a partner'
+     values ('00000000-0000-0000-0000-00000000d009', 'made-here', 'Made Here', 'cultural', true, 'No.') $$,
+  '42501', null,
+  'Nobody adds a partner in the Diwan'
 );
-select lives_ok(
-  $$ insert into governance.partner_agreements (id, partner_id, purpose_en, starts_on, grants)
-     values ('00000000-0000-0000-0000-00000000d101', '00000000-0000-0000-0000-00000000d001',
-       'Poetry Hub members submit to the Journal; joint readings.', current_date - 1,
-       '{journal_submissions}') $$,
-  'and drafts a memorandum'
+select throws_ok(
+  $$ insert into governance.partner_agreements (partner_id, purpose_en, starts_on)
+     values ('00000000-0000-0000-0000-00000000d009', 'Drafted here', current_date) $$,
+  '42501', null,
+  'or drafts a memorandum'
 );
+-- An application as the apply page leaves it, signed by the partner.
+select pg_temp.logout();
+insert into governance.partners (id, slug, name_en, kind, is_listed, description_en)
+values ('00000000-0000-0000-0000-00000000d001', 'poetry-hub', 'Poetry Hub', 'cultural', true, 'Poetry in Baghdad.');
+insert into governance.partner_agreements (id, partner_id, purpose_en, starts_on, grants, partner_signatory)
+values ('00000000-0000-0000-0000-00000000d101', '00000000-0000-0000-0000-00000000d001',
+  'Poetry Hub members submit to the Journal; joint readings.', current_date - 1,
+  '{journal_submissions}', 'Partner Head');
 select throws_ok(
   $$ insert into governance.partner_agreements (partner_id, purpose_en, starts_on, status, signed_by, signed_at)
      values ('00000000-0000-0000-0000-00000000d001', 'Pre-signed', current_date, 'signed',
@@ -108,6 +137,8 @@ select throws_ok(
   '22023', 'agreement_starts_draft',
   'A memorandum cannot be written as already signed'
 );
+select pg_temp.council_resolution();
+select pg_temp.login_as('00000000-0000-0000-0000-0000000000a1');
 select throws_ok(
   $$ update governance.partner_agreements set status = 'signed',
        signed_by = '00000000-0000-0000-0000-0000000000a1', signed_at = now()
@@ -117,9 +148,9 @@ select throws_ok(
 );
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a4');
 select throws_ok(
-  $$ select governance.sign_partner_agreement('00000000-0000-0000-0000-00000000d101', 'Partner Head', 'partners/mou.pdf') $$,
+  $$ select governance.record_partner_vote('00000000-0000-0000-0000-00000000d101', '00000000-0000-0000-0000-0000000c0001') $$,
   '42501', 'not_allowed',
-  'Nobody without partners.sign signs (F-26)'
+  'Nobody without partners.sign records the vote'
 );
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a1');
 
@@ -136,24 +167,24 @@ insert into governance.conflict_items (declaration_id, kind, partner_id, what)
 values ('00000000-0000-0000-0000-00000000d201', 'partner_role', '00000000-0000-0000-0000-00000000d001',
   'I sit on the partner''s board.');
 select throws_ok(
-  $$ select governance.sign_partner_agreement('00000000-0000-0000-0000-00000000d101', 'Partner Head', 'partners/mou.pdf') $$,
+  $$ select governance.record_partner_vote('00000000-0000-0000-0000-00000000d101', '00000000-0000-0000-0000-0000000c0001') $$,
   '42501', 'conflict_declared',
-  'Someone with a declared conflict cannot sign the partner''s memorandum'
+  'Someone with a declared conflict cannot record the partner''s vote'
 );
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a3');
 select throws_ok(
-  $$ select governance.sign_partner_agreement('00000000-0000-0000-0000-00000000d101', 'Partner Head', 'elsewhere/mou.pdf') $$,
-  '22023', 'invalid_document',
-  'The signed copy must be in the partners folder'
+  $$ select governance.record_partner_vote('00000000-0000-0000-0000-00000000d101', gen_random_uuid()) $$,
+  '22023', 'needs_council_resolution',
+  'Only an adopted Council resolution approves a partnership'
 );
 select lives_ok(
-  $$ select governance.sign_partner_agreement('00000000-0000-0000-0000-00000000d101', 'Partner Head', 'partners/mou.pdf') $$,
-  'The Vice President signs instead'
+  $$ select governance.record_partner_vote('00000000-0000-0000-0000-00000000d101', '00000000-0000-0000-0000-0000000c0001') $$,
+  'The Vice President records it instead'
 );
 select pg_temp.logout();
 select is((select status from governance.partners where id = '00000000-0000-0000-0000-00000000d001'), 'active',
-  'Signing makes a prospect an active partner');
+  'The Council''s vote makes an applicant an active partner');
 select is((select signed_by from governance.partner_agreements where id = '00000000-0000-0000-0000-00000000d101'),
   '00000000-0000-0000-0000-0000000000a3'::uuid, 'and records who signed');
 

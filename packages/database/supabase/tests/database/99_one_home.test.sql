@@ -74,9 +74,29 @@ insert into core.semesters (code, name_en, name_ar, starts_on, ends_on) values
 -- Tests check the two-activity rule; the founding-voter tests turn the
 -- first-100 rule back on themselves.
 update core.settings set value = '0' where key = 'membership.founding_voters';
+
+-- An adopted Council resolution, with its minutes: the Council's vote that
+-- approves a partnership (decisions §10).
+create function pg_temp.council_resolution(
+  id uuid default '00000000-0000-0000-0000-0000000c0001',
+  code text default 'R-2026-99'
+)
+returns uuid
+language sql
+as $$
+  with m as (
+    insert into governance.minutes (title_en, text_en, meeting_on, body, status, adopted_on)
+    values ('Council meeting', '<p>Minutes.</p>', current_date - 1, 'council', 'adopted', current_date)
+    returning id
+  )
+  insert into governance.resolutions (id, code, title_en, text_en, body, status, adopted_on, minutes_id)
+  select council_resolution.id, council_resolution.code, 'Approves the partnership', '<p>Resolved.</p>', 'council', 'adopted', current_date, m.id
+  from m
+  returning id;
+$$;
 -- </preamble>
 
-select plan(10);
+select plan(11);
 
 select pg_temp.make_user('00000000-0000-0000-0000-00000001a001', 'director.oh@auib.edu.iq', 'Director');
 select pg_temp.make_user('00000000-0000-0000-0000-00000001a002', 'secretary.oh@auib.edu.iq', 'Secretary');
@@ -128,6 +148,26 @@ select throws_ok(
 select hasnt_function('membership', 'add_manual_activity', 'Nobody records activity by hand');
 select has_column('events', 'events', 'entry', 'The access type is the one source');
 select is_empty($$ select id from storage.buckets where id = 'receipts' $$, 'No receipts bucket: charity collections are a Notion record');
+
+-- A partner's team is its Lead and up to two more (decisions §2).
+select pg_temp.make_user('00000000-0000-0000-0000-00000001a201', 'lead.oh@club.org', 'Lead');
+select pg_temp.make_user('00000000-0000-0000-0000-00000001a202', 'two.oh@club.org', 'Two');
+select pg_temp.make_user('00000000-0000-0000-0000-00000001a203', 'three.oh@club.org', 'Three');
+select pg_temp.make_user('00000000-0000-0000-0000-00000001a204', 'four.oh@club.org', 'Four');
+insert into governance.partners (id, slug, name_en, kind, status)
+values ('00000000-0000-0000-0000-00000001a301', 'oh-club', 'OH Club', 'club', 'active');
+insert into access.role_assignments (user_id, role, scope_type, scope_id) values
+  ('00000000-0000-0000-0000-00000001a201', 'partner_lead', 'partner', '00000000-0000-0000-0000-00000001a301'),
+  ('00000000-0000-0000-0000-00000001a202', 'partner_rep', 'partner', '00000000-0000-0000-0000-00000001a301'),
+  ('00000000-0000-0000-0000-00000001a203', 'partner_rep', 'partner', '00000000-0000-0000-0000-00000001a301');
+insert into governance.partner_invitations (partner_id, kind, email, code)
+values ('00000000-0000-0000-0000-00000001a301', 'team', 'four.oh@club.org', 'oh-team-four');
+select pg_temp.login_as('00000000-0000-0000-0000-00000001a204');
+select throws_ok(
+  $$ select governance.accept_partner_invitation('oh-team-four') $$,
+  '22023', 'team_full',
+  'A fourth person does not join a partner''s team'
+);
 
 select * from finish();
 rollback;
