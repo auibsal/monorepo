@@ -4,6 +4,7 @@ import { parseError } from "@repo/observability/error";
 import { log } from "@repo/observability/log";
 import { NextResponse } from "next/server";
 import { corsHeaders, preflight } from "@/lib/api/cors";
+import { withinRateLimit } from "@/lib/api/rate-limit";
 import { hashRecoveryCode, removeAuthenticators } from "@/lib/api/two-step";
 
 export const OPTIONS = preflight;
@@ -29,6 +30,31 @@ export const POST = async (request: Request) => {
   }
 
   const admin = createAdminClient();
+  // Five tries an hour per account (OWASP ASVS 2.2.1); when they run out,
+  // the person is emailed once that hour, in case it isn't them.
+  const allowed = await withinRateLimit(request, "recovery-code", {
+    failClosed: true,
+    key: session.userId,
+    max: 5,
+    windowSeconds: 3600,
+  });
+  if (!allowed) {
+    const alert = await withinRateLimit(request, "recovery-code-alert", {
+      key: session.userId,
+      max: 1,
+      windowSeconds: 3600,
+    });
+    if (alert) {
+      await admin
+        .schema("core")
+        .from("outbox")
+        .insert({
+          kind: "access.recovery_attempts",
+          payload: { user_id: session.userId },
+        });
+    }
+    return json({ error: "rate_limited" }, 429);
+  }
   try {
     // Spent in one statement: a code works once, even if sent twice.
     const spent = await admin

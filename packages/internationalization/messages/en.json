@@ -128,7 +128,10 @@
       "notAuib": "Not at AUIB?",
       "guestLink": "Make a guest account to book events",
       "guestTitle": "A guest account",
-      "guestLede": "Anyone may make a guest account to book a place at the Society’s open events. Guests aren’t members: membership is for AUIB students, with an AUIB email."
+      "guestLede": "Anyone may make a guest account to book a place at the Society’s open events. Guests aren’t members: membership is for AUIB students, with an AUIB email.",
+      "resend": "Send the email again",
+      "resendIn": "Send the email again in {seconds} s",
+      "resent": "Sent. Check your inbox and spam folder."
     },
     "forgot": {
       "title": "Reset your password",

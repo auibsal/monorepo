@@ -418,6 +418,24 @@ export const twoStepReset = (
     ],
   }));
 
+/** Too many wrong recovery codes on the account within an hour. */
+export const recoveryAttempts = (lang: Lang, app: string) =>
+  build(lang, (l) => ({
+    action: diwan(app, l),
+    heading:
+      l === "ar"
+        ? "محاولات متكررة برموز الاسترداد"
+        : "Several recovery codes were tried on your account",
+    paragraphs: [
+      l === "ar"
+        ? "أُدخلت رموز استرداد خاطئة عدة مرات في حسابك خلال الساعة الماضية، فأوقفنا المحاولات لمدة ساعة."
+        : "Wrong recovery codes were entered on your account several times in the last hour, so we have paused further tries for an hour.",
+      l === "ar"
+        ? "إن لم تكن أنت، فغيّر كلمة المرور الآن وردّ على هذه الرسالة."
+        : "If this wasn’t you, change your password now and reply to this email.",
+    ],
+  }));
+
 /**
  * The Council's answer to an account from outside AUIB: verified (the
  * member finishes setting up and is in), or not.

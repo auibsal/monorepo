@@ -33,6 +33,7 @@ import {
   personalEmailConfirm,
   pieceNote,
   piecePublished,
+  recoveryAttempts,
   removalDone,
   removalReceived,
   removalRequested,
@@ -529,6 +530,13 @@ const eventNotice =
   };
 
 const handlers: Record<string, Handler> = {
+  // From /api/two-step/recover: the hour's tries ran out.
+  "access.recovery_attempts": async (admin, payload) => {
+    const to = await recipient(admin, payload.user_id);
+    if (to) {
+      await send(to, recoveryAttempts(to.lang, appUrl()));
+    }
+  },
   // ── Journeys added in the email audit (owner, Nov 4, 2026) ──────────
   "access.role_assigned": async (admin, payload) => {
     const [to, { data }] = await Promise.all([

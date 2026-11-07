@@ -7,7 +7,6 @@ import { FormHeader } from "@repo/brand/components/sal/form-header";
 import { Button } from "@repo/brand/components/ui/button";
 import { Input } from "@repo/brand/components/ui/input";
 import { Label } from "@repo/brand/components/ui/label";
-import { apiPath } from "@repo/internationalization";
 import { Link } from "@repo/internationalization/navigation";
 import { useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
@@ -23,21 +22,6 @@ const SUBMIT = {
   link: ["signIn.sendLink", "forgot.sending"],
   password: ["signIn.submit", "signIn.submitting"],
 } as const;
-
-/** Whether an address has an account; null when the check can't answer. */
-const knownAddress = async (email: string): Promise<boolean | null> => {
-  try {
-    const response = await fetch(apiPath("/sign-in/known"), {
-      body: JSON.stringify({ email }),
-      headers: { "content-type": "application/json" },
-      method: "POST",
-    });
-    const body = (await response.json()) as { known?: boolean };
-    return typeof body.known === "boolean" ? body.known : null;
-  } catch {
-    return null;
-  }
-};
 
 /**
  * `embedded`: inside another page (the partner application), which has
@@ -93,15 +77,10 @@ export const SignInForm = ({
     inFlight.current = true;
     setPending(true);
     setError(undefined);
-    let result = await request();
-    // No account with this address says so (owner, Oct 31, 2026), rather
-    // than "wrong password" or a link that never comes.
-    const unsure =
-      (!result.ok && result.code === "invalid_credentials") ||
-      (result.ok && mode === "link");
-    if (unsure && (await knownAddress(email)) === false) {
-      result = { code: "no_account", ok: false };
-    }
+    // The answer never says whether an address has an account (OWASP ASVS
+    // 2.2.2, NIST SP 800-63B): a wrong address and a wrong password read
+    // the same, and a sign-in link "is on its way" either way.
+    const result = await request();
     inFlight.current = false;
     human.reset();
     setPending(false);

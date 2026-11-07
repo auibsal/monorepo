@@ -226,10 +226,10 @@ select ok(
   'and it is listed by its day'
 );
 
--- ── Signing in ──────────────────────────────────────────────────────────────
+-- ── Signing in never says whether an address has an account (ASVS 2.2.2) ──
 select pg_temp.logout();
-select ok(private.account_exists('MEMBER-om@auib.edu.iq'), 'An account is found by its address');
-select ok(not private.account_exists('nobody@auib.edu.iq'), 'and an unknown address is not');
+select hasnt_function('core', 'account_exists', array['text'], 'No account check for the API');
+select hasnt_function('private', 'account_exists', array['text'], 'and none behind it');
 
 select * from finish();
 rollback;

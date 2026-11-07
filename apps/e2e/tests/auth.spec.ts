@@ -119,6 +119,26 @@ test("sign-up takes only AUIB addresses", async ({ page }) => {
   await expect(page.getByLabel("Family name")).toHaveCount(0);
 });
 
+test("a whole address pasted and submitted at once signs up the right address", async ({
+  page,
+}) => {
+  await page.goto(`${urls.web}/sign-up`);
+  // Pasted, then submitted with Enter: the field is never left (no blur).
+  await page
+    .getByLabel("Your AUIB email")
+    .fill(`paste.${Date.now()}@auib.edu.iq`);
+  await page
+    .getByLabel("Password", { exact: true })
+    .fill("a long enough passphrase");
+  await page.getByLabel("Password", { exact: true }).press("Enter");
+  const status = page.getByRole("status").first();
+  await expect(status).toContainText("@auib.edu.iq");
+  await expect(status).not.toContainText("auib.edu.iq@auib.edu.iq");
+  await expect(
+    page.getByRole("button", { name: /Send the email again in \d+ s/ })
+  ).toBeDisabled();
+});
+
 test("signing in with an address that has no account says so", async ({
   page,
 }) => {
