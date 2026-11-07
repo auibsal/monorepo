@@ -81,14 +81,8 @@ const NAME = {
 };
 
 const FOOTER = {
-  ar: "أُرسلت من موقع جمعية الفنون والآداب في الجامعة الأمريكية في العراق – بغداد، auibsal.org.",
-  en: "Sent by the website of the AUIB Society of Arts and Letters, auibsal.org.",
-};
-
-/** Under every email and in the site's footer (owner, Nov 7, 2026). */
-export const SUSTAINABILITY = {
-  ar: "الأصل عندنا: بلا ورق. والكتب يُعاد استخدامها عبر «الفصل الثاني».",
-  en: "Paperless by default. Books reused through Second Chapter.",
+  ar: "أُرسلت من موقع جمعية الفنون والآداب في الجامعة الأمريكية في العراق – بغداد، auibsal.org. الأصل عندنا: بلا ورق. والكتب يُعاد استخدامها عبر «الفصل الثاني».",
+  en: "Sent by the website of the AUIB Society of Arts and Letters, auibsal.org. Paperless by default. Books reused through Second Chapter.",
 };
 
 /**
@@ -120,10 +114,7 @@ export const noticeText = ({
     ...footer.map((line) =>
       line.href ? `${line.text} ${line.link ?? ""}: ${line.href}` : line.text
     ),
-    ...blocks.flatMap((block) => [
-      FOOTER[block.lang],
-      SUSTAINABILITY[block.lang],
-    ]),
+    ...blocks.map((block) => FOOTER[block.lang]),
   ].join("\n");
 
 const Block = ({ block }: { block: NoticeBlock }) => {
@@ -304,7 +295,7 @@ export const Notice = ({ blocks, footer = [], preview }: NoticeProps) => {
                 textAlign: block.lang === "ar" ? "right" : "left",
               }}
             >
-              {FOOTER[block.lang]} {SUSTAINABILITY[block.lang]}
+              {FOOTER[block.lang]}
             </Text>
           ))}
         </Container>

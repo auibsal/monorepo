@@ -211,7 +211,7 @@ const highlights: [string, IconName][] = [
   ["The Company", "drama"],
   ["Next Stop", "bus"],
   ["Join", "user-plus"],
-  ["Partners", "hand-helping"],
+  ["Partners", "handshake"],
 ];
 
 export const Highlights: Story = {

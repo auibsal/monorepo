@@ -1,14 +1,15 @@
 import { Icon } from "@repo/brand/components/sal/icon";
 import type { Meta, StoryObj } from "@storybook/react";
 import type { ReactNode } from "react";
-import QRCode from "react-qr-code";
+import stickers from "../assets/print/stickers/stickers.json";
 
 /**
- * Print (SAL-PRT-01, packages/brand/assets/print): the Charter poster, the
- * Open Call poster and the camera-shy stickers drawn here at their printed
- * size, the rest of the printables as one HTML page, and the sizes each
- * piece is printed at (Notion, Brand essentials). No PDFs: print a story
- * from the browser. Print only when current stock runs out.
+ * Print (SAL-MED-02, packages/brand/assets/print): the camera-shy stickers
+ * and the sticker pack drawn here at their printed size, the rest of the
+ * printables as one HTML page, and the sizes each piece is printed at
+ * (Notion, Brand essentials). Paperless by default: print from the browser,
+ * only to the confirmed need (the RSVP count plus 10%, or the number asked
+ * for), requested from Student Life through the General Secretary.
  */
 const meta = {
   title: "Print",
@@ -18,16 +19,17 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-const HTML = "brand-kit/print/sal-prt-01-printables.html";
+const HTML = "brand-kit/print/printables.html";
 
 export const Printables: Story = {
   render: () => (
     <div className="grid max-w-5xl gap-4">
       <p className="text-sm">
-        The one-pager, Get involved, the Term Cards, membership cards,
-        certificates (Service, Fellow, the Qirtas Awards, the Apprenticeship,
-        Honorary Fellow), the Register's half-sheet, name badges and the
-        photography notice.{" "}
+        What exists only on paper: name badges and the photography notice with
+        the camera-shy stickers; the posters and the sticker pack are below.
+        Forms and letters are components (see Components → Brand); the
+        membership card and certificates are the site’s own designs. All are
+        printed from their own pages; <code>bun run print</code> makes the PDFs.{" "}
         <a className="underline" href={HTML}>
           Open the HTML
         </a>
@@ -35,7 +37,7 @@ export const Printables: Story = {
       <iframe
         className="h-[80vh] w-full border border-line bg-white"
         src={HTML}
-        title="SAL-PRT-01 Printables"
+        title="SAL-MED-02 Printables"
       />
     </div>
   ),
@@ -65,111 +67,6 @@ const Sheet = ({
   </div>
 );
 
-/** The Charter poster, A3: the Charter's purpose, pillars and values. */
-export const CharterPoster: Story = {
-  render: () => (
-    <Sheet height="420mm" width="297mm">
-      <div className="absolute start-[30mm] top-[27mm]">
-        {/* biome-ignore lint/performance/noImgElement: the logo file as supplied */}
-        <img
-          alt="AUIB Society of Arts and Letters"
-          className="block h-[29mm] w-auto"
-          height={110}
-          src="brand/sal-lockup-horizontal.svg"
-          width={400}
-        />
-      </div>
-      <p className="absolute inset-x-[30mm] top-[120mm] font-light text-[76pt] leading-none tracking-[-0.03em]">
-        The paper and
-        <br />
-        the pen.
-      </p>
-      <div className="absolute inset-x-[30mm] top-[200mm] grid grid-cols-2 gap-[17mm] border-[#273236] border-t-[0.6pt] pt-[11mm]">
-        <div>
-          <p className={label}>We exist</p>
-          <p className="mt-[3mm] font-light text-[21pt] leading-[1.4]">
-            To cultivate a culture of literature and creative expression across
-            AUIB.
-          </p>
-          <p className={`${label} mt-[11mm]`}>Our pillars</p>
-          <p className="mt-[3mm] text-[16pt] leading-[1.7]">
-            Connecting students
-            <br />
-            Fostering creativity
-            <br />
-            Celebrating culture
-            <br />
-            Building a community
-          </p>
-        </div>
-        <div>
-          <p className={label}>Our values</p>
-          <p className="mt-[3mm] text-[16pt] leading-[1.7]">
-            Open door. Free, for every student.
-            <br />
-            Craft. Serious, even when fun.
-            <br />
-            Two languages, equal care.
-            <br />
-            Care. Consent before cameras.
-            <br />
-            Needs, not money.
-            <br />
-            Built to last.
-          </p>
-        </div>
-      </div>
-      <div className="absolute inset-x-[30mm] bottom-[27mm] flex items-end justify-between text-[11pt]">
-        <span>Ratified on Charter Day, Tuesday, October 13, 2026</span>
-        <span>@auibsal</span>
-      </div>
-    </Sheet>
-  ),
-};
-
-/**
- * The Open Call poster, A3 (or A4 at 71%): the Edition's call, in the copy
- * of the Instagram post, with a QR to auibsal.org/qirtas/write.
- */
-export const OpenCallPoster: Story = {
-  render: () => (
-    <Sheet height="420mm" width="297mm">
-      <div className="absolute start-[30mm] top-[27mm]">
-        {/* biome-ignore lint/performance/noImgElement: the logo file as supplied */}
-        <img
-          alt="The Bookmark"
-          className="block h-[34mm] w-auto"
-          height={130}
-          src="brand/sal-symbol.svg"
-          width={80}
-        />
-      </div>
-      <p className="absolute inset-x-[30mm] top-[120mm] font-light text-[96pt] leading-none tracking-[-0.03em]">
-        Write for
-        <br />
-        Qirtas.
-      </p>
-      <div className="absolute inset-x-[30mm] top-[245mm] border-[#273236] border-t-[0.6pt] pt-[11mm]">
-        <p className="max-w-[180mm] font-light text-[24pt] leading-[1.4]">
-          Poems, stories, essays, art and photography for Edition 1, printed
-          this spring.
-        </p>
-        <p className="mt-[8mm] text-[16pt]">Until Thursday, December 3</p>
-      </div>
-      <div className="absolute inset-x-[30mm] bottom-[27mm] flex items-end justify-between text-[11pt]">
-        <span>auibsal.org · @auibsal</span>
-        <QRCode
-          bgColor="#ffffff"
-          fgColor="#273236"
-          size={150}
-          title="auibsal.org/qirtas/write"
-          value="https://auibsal.org/qirtas/write"
-        />
-      </div>
-    </Sheet>
-  ),
-};
-
 /** Camera-shy stickers, 40 mm round on sticker paper, twenty to a sheet. */
 export const CameraShyStickers: Story = {
   render: () => (
@@ -196,96 +93,100 @@ export const CameraShyStickers: Story = {
 };
 
 /** The sticker pack: every sticker at 100%, with its cut line in magenta. */
-const STICKER_PACK: [string, string, string, number, number][] = [
-  ["bookmark", "The Bookmark", "The Society", 56.08, 66.67],
-  ["bookmark-tile", "Bookmark tile", "The Society", 55.92, 55.92],
-  ["bookmark-tile-ink", "Bookmark tile, ink", "The Society", 55.92, 55.92],
-  ["lockup-stacked", "Stacked lockup", "The Society", 57.92, 88.92],
-  ["wordmark-ar", "Arabic wordmark", "The Society", 77.92, 78.5],
-  ["bumper-bilingual", "Bilingual bumper", "The Society", 195.92, 82.75],
-  ["postage-stamp", "Postage stamp", "The Society", 51.92, 61.92],
-  ["postmark", "Postmark", "The Society", 59.92, 59.92],
-  ["motto-en", "The paper and the pen.", "The motto", 155.92, 77.92],
-  ["motto-ar", "Arabic motto", "The motto", 125.92, 49.92],
-  ["motto-strip", "Motto strip", "The motto", 205.92, 35.92],
-  ["the-pen", "The pen", "The motto", 33.92, 83.92],
-  ["the-paper", "The paper", "The motto", 55.92, 71.92],
-  ["qirtas-keys", "QIRTAS in keys", "Qirtas", 177.92, 51.92],
-  ["key-qaf", "Qaf key", "Qirtas", 61.92, 61.92],
-  ["qirtas-nameplate", "Qirtas nameplate", "Qirtas", 137.92, 71.92],
-  ["qirtas-ar", "Qirtas in Arabic", "Qirtas", 155.92, 63.92],
-  ["section-news", "News", "Qirtas", 49.92, 49.92],
-  ["section-voices", "Voices", "Qirtas", 49.92, 49.92],
-  ["section-letters", "Letters", "Qirtas", 49.92, 49.92],
-  ["section-gallery", "Gallery", "Qirtas", 49.92, 49.92],
-  ["section-video", "Video", "Qirtas", 49.92, 49.92],
-  ["section-games", "Games", "Qirtas", 49.92, 49.92],
-  ["read-blind", "Read blind", "Qirtas", 101.92, 47.92],
-  ["next-stop", "Next Stop", "Qirtas", 69.92, 77.92],
-  ["ticket", "What’s on ticket", "Events", 101.92, 47.92],
-  ["record", "The record", "Events", 65.92, 65.92],
-  ["read-it", "Read it, talk about it", "Events", 69.92, 69.92],
-  ["cup", "A cup of tea", "Events", 69.92, 69.92],
-  ["open-book", "An open book", "Events", 97.92, 63.92],
-  ["book-stack", "A stack of books", "Events", 79.92, 47.92],
-  ["icon-book-open", "Book open", "Events", 49.92, 49.92],
-  ["icon-headphones", "Headphones", "Events", 49.92, 49.92],
-  ["the-company", "The Company", "The Company", 95.92, 69.92],
-  ["icon-drama", "Drama", "The Company", 49.92, 49.92],
-  ["typewriter", "The typewriter", "Typewriter Tour", 86.92, 61.92],
-  ["six-words", "Six words, to fill in", "Typewriter Tour", 95.92, 61.92],
-  ["icon-keyboard", "Keyboard", "Typewriter Tour", 49.92, 49.92],
-  ["hudhud", "Hudhud", "Hudhud", 69.92, 69.92],
-  ["hudhud-flying", "Hudhud flying", "Hudhud", 87.92, 67.92],
-  ["hudhud-reversed", "Hudhud on crimson", "Hudhud", 67.92, 62.92],
-  ["join-qr", "Join", "Ways in", 55.92, 67.92],
-  ["get-involved", "Get involved", "Ways in", 111.92, 35.92],
-  ["camera-shy", "Camera-shy", "Ways in", 45.92, 45.92],
-];
+const STICKER_PACK = stickers.map(({ family, id, name, size }) => ({
+  family,
+  id,
+  name,
+  size: [size[0] ?? 0, size[1] ?? 0] as const,
+}));
 
 export const StickerPack: Story = {
   render: () => (
     <div className="grid gap-10 bg-[#d9d9d9] p-10">
-      {[...new Set(STICKER_PACK.map(([, , family]) => family))].map(
-        (family) => (
-          <section className="grid gap-4" key={family}>
-            <h2 className="font-light text-2xl">{family}</h2>
-            <div className="flex flex-wrap items-end gap-8">
-              {STICKER_PACK.filter(([, , f]) => f === family).map(
-                ([id, name, , w, h]) => (
-                  <figure className="m-0 grid gap-2" key={id}>
-                    {/* biome-ignore lint/performance/noImgElement: the print file as supplied */}
-                    <img
-                      alt={name}
-                      height={h * 4}
-                      src={`brand-kit/print/stickers/${id}.svg`}
-                      style={{ height: `${h}mm`, width: `${w}mm` }}
-                      width={w * 4}
-                    />
-                    <figcaption className="text-xs">{name}</figcaption>
-                  </figure>
-                )
-              )}
-            </div>
-          </section>
-        )
-      )}
+      {[...new Set(STICKER_PACK.map(({ family }) => family))].map((family) => (
+        <section className="grid gap-4" key={family}>
+          <h2 className="font-light text-2xl">{family}</h2>
+          <div className="flex flex-wrap items-end gap-8">
+            {STICKER_PACK.filter((s) => s.family === family).map(
+              ({ id, name, size: [w, h] }) => (
+                <figure className="m-0 grid gap-2" key={id}>
+                  {/* biome-ignore lint/performance/noImgElement: the print file as supplied */}
+                  <img
+                    alt={name}
+                    height={h * 4}
+                    src={`brand-kit/print/stickers/${id}.svg`}
+                    style={{ height: `${h}mm`, width: `${w}mm` }}
+                    width={w * 4}
+                  />
+                  <figcaption className="text-xs">{name}</figcaption>
+                </figure>
+              )
+            )}
+          </div>
+        </section>
+      ))}
     </div>
   ),
 };
 
 const SIZES: [string, string][] = [
-  ["Charter poster", "A3"],
-  ["Open Call poster", "A3 or A4"],
-  ["Term Card", "A6, four to an A4 sheet"],
-  ["Membership card", "85 × 55 mm, 300 gsm, ten to an A4 sheet"],
-  ["Certificate of Service (F-28)", "A4 landscape"],
-  ["Fellow certificate", "A4 landscape"],
+  ["Membership card (on request)", "85.6 × 54 mm, printed from the site"],
+  [
+    "Certificates: Qalam, the Mutanabbi Prize",
+    "A4 landscape, printed from the site",
+  ],
+  ["Letters", "A4, from the component"],
   ["Name badges", "90 × 55 mm"],
   ["Photography notice", "A4"],
   ["Camera-shy stickers", "40 mm round, twenty to an A4 sheet"],
   ["Sticker pack", "Die-cut, each at its own size (assets/print/stickers)"],
+  ["Posters: the Typewriter Tour (two sides), the Society", "A2"],
 ];
+
+const POSTERS: [string, string, number][] = [
+  ["typewriter-tour", "The Typewriter Tour", 2],
+  ["typewriter-tour-ar", "The Typewriter Tour, Arabic", 2],
+  ["society", "The Society", 1],
+  ["society-ar", "The Society, Arabic", 1],
+];
+
+/**
+ * The posters, A2, each in its English and Arabic edition: the Typewriter
+ * Tour (two sides, the rules of the paperless Tour) and the Society (for club
+ * fairs and notice boards). Shown at 25%; `bun run print` makes the PDFs.
+ */
+export const Posters: Story = {
+  render: () => (
+    <div className="flex flex-wrap items-start gap-8">
+      {POSTERS.map(([file, name, sides]) => (
+        <figure className="m-0 grid gap-2" key={file}>
+          <div className="h-[149mm] w-[105mm] overflow-hidden">
+            <iframe
+              className="origin-top-left border-0"
+              src={`brand-kit/print/posters/${file}.html`}
+              style={{
+                height: `${594 * sides}mm`,
+                transform: "scale(0.25)",
+                width: "420mm",
+              }}
+              title={name}
+            />
+          </div>
+          <figcaption className="text-xs">
+            {name}
+            {sides > 1 ? " (the front; the back follows)" : ""}{" "}
+            <a
+              className="underline"
+              href={`brand-kit/print/posters/${file}.html`}
+            >
+              Open
+            </a>
+          </figcaption>
+        </figure>
+      ))}
+    </div>
+  ),
+};
 
 export const Sizes: Story = {
   render: () => (

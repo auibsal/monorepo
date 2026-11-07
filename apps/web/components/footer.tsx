@@ -138,8 +138,8 @@ export const Footer = async ({ consent = true }: FooterProps = {}) => {
               <CookieSettings />
             ) : null}
           </ul>
+          <p>{tx("paperless")}</p>
           <p>{tx("colophon")}</p>
-          <p>{tx("sustainability")}</p>
         </div>
       </div>
     </footer>

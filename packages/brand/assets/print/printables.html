@@ -1,0 +1,402 @@
+<!doctype html><html lang="en"><head><link href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&family=Ubuntu+Mono:wght@400;700&display=swap" rel="stylesheet"><meta charset="utf-8"><title>SAL-MED-02 · Printables</title>
+<style>/* ============================================================
+   SAL Design System v3 — built on the AUIB palette
+   Crimson #9C213E · White #FFFFFF · Ink #273236 · Ubuntu
+   v3 adds: the Key monogram, legal-document styles, role cards,
+   org charts, form fields, document control, Ubuntu Mono accents
+   ============================================================ */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+:root{
+  --crimson:#9C213E; --crimson-700:#7E1A32; --crimson-100:#C3CACB; --crimson-50:#F7ECEF;
+  --ink:#273236; --ink-70:#4A5559; --ink-50:#6E777A; --ink-10:#E7EAEB; --line:#E3DEDF; --paper:#FAF7F5; --white:#fff;
+  --sans:Ubuntu, "Ubuntu Arabic", sans-serif; --ar:"Ubuntu Arabic", Ubuntu, sans-serif; --mono:'Ubuntu Mono', Ubuntu, monospace;
+}
+@page{size:A4;margin:0}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#fff}
+body{font-family:var(--sans);color:var(--ink);font-size:10.3pt;line-height:1.5;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.ar{font-family:var(--ar);direction:rtl;unicode-bidi:isolate}
+.mono{font-family:var(--mono)}
+.page{width:210mm;height:297mm;position:relative;overflow:hidden;page-break-after:always;break-after:page;padding:24mm 21mm 20mm 21mm;background:#fff}
+.page:last-child{page-break-after:auto;break-after:auto}
+.page.dark{background:var(--ink);color:#fff}
+.page.crimson{background:var(--crimson);color:#fff}
+.page.paper{background:var(--paper)}
+.runner{position:absolute;top:12mm;right:14mm;font-size:8pt;color:var(--ink)}
+.runner-l{position:absolute;top:12mm;left:21mm;font-size:8pt;color:var(--crimson);font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+.dark .runner,.crimson .runner,.crimson .runner-l,.dark .runner-l{color:#fff}
+.folio{position:absolute;bottom:9mm;left:21mm;right:21mm;display:flex;justify-content:space-between;font-size:7.5pt;color:var(--ink-50)}
+.folio .code{font-family:var(--mono);letter-spacing:.04em}
+.dark .folio,.crimson .folio{color:rgba(255,255,255,.72)}
+
+h1.display{font-weight:700;font-size:54pt;line-height:1.02;color:var(--crimson);letter-spacing:-.01em;margin-bottom:5mm}
+h1.display.md{font-size:42pt}
+h1.display.sm{font-size:32pt}
+h1.display.xs{font-size:26pt;margin-bottom:3mm}
+.dark h1.display,.crimson h1.display{color:#fff}
+.lede{font-weight:300;font-size:17pt;line-height:1.32;color:var(--ink);margin-bottom:8mm}
+.lede.sm{font-size:14pt;margin-bottom:6mm}
+.lede.xs{font-size:12pt;margin-bottom:4mm}
+.dark .lede,.crimson .lede{color:#fff}
+h2{font-weight:700;font-size:18pt;line-height:1.15;color:var(--ink);margin:0 0 3mm}
+h2.c{color:var(--crimson)}
+h3{font-weight:700;font-size:11.5pt;color:var(--ink);margin:0 0 1.4mm;line-height:1.25}
+h3.c{color:var(--crimson)}
+h4{font-weight:700;font-size:10pt;margin:0 0 1mm}
+.dark h2,.dark h3,.crimson h2,.crimson h3{color:#fff}
+p{margin:0 0 2.4mm}
+.small{font-size:8.4pt;color:var(--ink-50);line-height:1.45}
+.xs{font-size:7.8pt;line-height:1.4}
+.dark .small,.crimson .small{color:rgba(255,255,255,.75)}
+.muted{color:var(--ink-50)}
+.intro{font-size:14pt;line-height:1.38;margin-bottom:8mm}
+.big-p{font-size:12pt;line-height:1.5}
+.kicker{font-size:7.8pt;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--crimson);margin-bottom:1.5mm}
+.dark .kicker,.crimson .kicker{color:var(--crimson-100)}
+hr.rule{border:0;border-top:1.5px solid var(--crimson);margin:4mm 0 6mm}
+.dark hr.rule,.crimson hr.rule{border-top-color:#fff}
+hr.thin{border:0;border-top:1px solid var(--line);margin:3mm 0}
+b,strong{font-weight:700}
+
+/* bands */
+.band{position:absolute;left:0;right:0;bottom:0;background:var(--crimson);color:#fff;padding:8mm 21mm 10mm}
+.band h2{color:#fff;font-weight:400;font-size:20pt;margin-bottom:2mm}
+.band p{font-size:9.4pt;line-height:1.55;color:#fff;margin:0}
+.band.ink{background:var(--ink)}
+.band.flow{position:relative;margin:7mm -21mm 0}
+
+/* cards */
+.grid{display:grid;gap:4mm}
+.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:1fr 1fr 1fr}.g4{grid-template-columns:repeat(4,1fr)}
+.card{background:#fff;color:var(--ink);border-radius:9px;padding:6mm 5.5mm}
+.card h3{color:var(--crimson);font-size:12.5pt;margin:3mm 0 1.6mm}
+.card p{font-size:9.1pt;line-height:1.5;margin:0}
+.card.line{border:1px solid var(--crimson)}
+.card.tint{background:var(--crimson-50)}
+.card.grey{background:var(--ink-10)}
+.card.cr{background:var(--crimson);color:#fff}
+.card.cr h3{color:#fff;font-weight:400;font-size:14pt;margin-top:0}
+.card.cr p{color:#fff}
+.card.ink{background:var(--ink);color:#fff}
+.card.ink h3{color:#fff}
+.card.dashed{border:1.2px dashed var(--crimson);background:#fff}
+.card.pad-s{padding:4mm 4.5mm}
+.card.pad-s h3{margin-top:0}
+.ic{width:11mm;height:11mm;border-radius:50%;background:var(--crimson-50);display:flex;align-items:center;justify-content:center;flex:none}
+.ic svg{width:5.6mm;height:5.6mm;stroke:var(--crimson);stroke-width:2.1}
+.ic.w{background:rgba(255,255,255,.14)} .ic.w svg{stroke:#fff}
+
+/* tables */
+table.t{width:100%;border-collapse:collapse;font-size:9pt;line-height:1.42}
+table.t th{text-align:left;font-size:7.6pt;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--crimson);padding:0 3mm 2mm 0;border-bottom:1.5px solid var(--crimson);vertical-align:bottom}
+table.t td{padding:2.4mm 3mm 2.4mm 0;border-bottom:1px solid var(--line);vertical-align:top}
+table.t td:first-child{font-weight:700}
+table.t.plain td:first-child{font-weight:400}
+table.t td.tbc,.tbc{font-style:italic;color:var(--ink-50)}
+table.t.tight td{padding:1.6mm 2.5mm 1.6mm 0}
+table.t.xs{font-size:8.1pt}
+table.t.xs th{font-size:7pt}
+table.t tr.hl td{background:var(--crimson-50)}
+table.t td.c,table.t th.c{text-align:center}
+.dark table.t td{border-bottom-color:rgba(255,255,255,.2)}
+.dark table.t th{color:var(--crimson-100);border-bottom-color:var(--crimson-100)}
+/* RACI marks */
+.m{display:inline-block;min-width:5.2mm;height:5.2mm;line-height:5.2mm;border-radius:50%;text-align:center;font-size:7.2pt;font-weight:700}
+.m.A{background:var(--crimson);color:#fff}.m.R{background:var(--crimson-100);color:var(--crimson-700)}.m.C{border:1px solid var(--ink-50);color:var(--ink-70)}.m.I{color:var(--ink-50)}
+
+/* numbered list */
+.nl .it{display:grid;grid-template-columns:15mm 1fr;padding:3.6mm 0;border-bottom:1px solid var(--crimson)}
+.nl .it:last-child{border-bottom:0}
+.nl .n{font-weight:700;font-size:21pt;color:var(--crimson);line-height:1}
+.nl h3{font-size:11.5pt;margin-bottom:.8mm}
+.nl p{font-size:9.2pt;margin:0;color:var(--ink-70)}
+.nl.compact .it{padding:2.5mm 0}
+.nl.compact .n{font-size:16pt}
+.dark .nl .it{border-bottom-color:rgba(255,255,255,.3)} .dark .nl .n{color:var(--crimson-100)} .dark .nl p{color:rgba(255,255,255,.8)}
+
+/* definition rows */
+.dl .row{display:grid;grid-template-columns:55mm 1fr;gap:6mm;padding:3.2mm 0;align-items:start}
+.dl .row h2{font-size:16pt;margin:0}
+.dl .row p{margin:0;font-size:9.8pt}
+.dl.tight .row{padding:2.1mm 0;grid-template-columns:44mm 1fr}
+.dl.tight .row h2{font-size:12.5pt}
+.dl.lined .row{border-bottom:1px solid var(--line)}
+
+/* timeline */
+.tl{position:relative}
+.tl:before{content:"";position:absolute;left:5.6mm;top:3mm;bottom:2mm;width:1.4px;background:var(--crimson)}
+.tl .ev{display:grid;grid-template-columns:13mm 38mm 1fr;gap:3mm;padding:2.4mm 3mm 2.4mm 0;position:relative;align-items:start}
+.tl .dot{width:11.2mm;height:11.2mm;border-radius:50%;border:1.6px solid var(--crimson);background:#fff;position:relative;z-index:1;margin-top:-2mm}
+.tl .ev.hl{background:var(--crimson-50);border-radius:7px;margin-left:-4mm;padding-left:4mm}
+.tl .ev.hl .dot{background:var(--crimson)}
+.tl .date{color:var(--crimson);font-weight:500;font-size:9pt}
+.tl h3{font-size:11.5pt;margin-bottom:.5mm}
+.tl p{font-size:8.9pt;color:var(--ink-70);margin:0;line-height:1.45}
+.tl.sm .dot{width:8mm;height:8mm;margin-left:1.6mm;margin-top:-1mm}
+.tl.sm .ev{padding:1.5mm 3mm 1.5mm 0}
+
+/* stats */
+.stats{display:grid;gap:5mm}
+.stat .num{font-weight:700;font-size:32pt;line-height:1}
+.stat .lab{font-size:9.2pt;margin-top:1.5mm}
+
+.pill{display:inline-block;font-size:7.4pt;font-weight:500;padding:.5mm 2.3mm;border-radius:20px;background:var(--crimson-50);color:var(--crimson);margin:0 1mm 1mm 0;white-space:nowrap}
+.pill.ink{background:var(--ink-10);color:var(--ink)}
+.pill.solid{background:var(--crimson);color:#fff}
+.pill.dk{background:var(--ink);color:#fff}
+
+.note{border-left:3px solid var(--crimson);background:var(--crimson-50);padding:3.2mm 4.5mm;border-radius:0 6px 6px 0;font-size:9.1pt;margin:3mm 0}
+.note b{color:var(--crimson)}
+.note.ink{border-left-color:var(--ink);background:var(--ink-10)} .note.ink b{color:var(--ink)}
+.box{border:1px solid var(--crimson);border-radius:8px;padding:5mm}
+
+ul.b{list-style:none;margin:0 0 2mm}
+ul.b li{position:relative;padding-left:5mm;margin-bottom:1.4mm;font-size:9.4pt}
+ul.b li:before{content:"";position:absolute;left:0;top:2.1mm;width:1.7mm;height:1.7mm;background:var(--crimson)}
+.dark ul.b li:before,.crimson ul.b li:before{background:#fff}
+ul.b.sm li{font-size:8.7pt;margin-bottom:1mm}
+ul.b.xs li{font-size:8pt;margin-bottom:.7mm;padding-left:4mm} ul.b.xs li:before{top:1.8mm;width:1.4mm;height:1.4mm}
+ul.chk{list-style:none}
+ul.chk li{position:relative;padding-left:7mm;margin-bottom:1.5mm;font-size:9.2pt}
+ul.chk li:before{content:"";position:absolute;left:0;top:.9mm;width:3.5mm;height:3.5mm;border:1.2px solid var(--crimson);border-radius:1px}
+ul.chk.sm li{font-size:8.5pt;margin-bottom:1.1mm}
+
+/* ---------- v3: legal document (constitution, bylaws) ---------- */
+.art{margin-bottom:5mm;break-inside:avoid}
+.art .ah{display:flex;align-items:baseline;gap:4mm;border-bottom:1.5px solid var(--crimson);padding-bottom:1.6mm;margin-bottom:2.4mm}
+.art .ah .no{font-family:var(--mono);font-weight:700;color:var(--crimson);font-size:10pt;letter-spacing:.06em;white-space:nowrap}
+.art .ah h2{font-size:14.5pt;margin:0}
+.cl{display:grid;grid-template-columns:11mm 1fr;gap:1mm;margin-bottom:1.6mm;font-size:9.3pt;line-height:1.5}
+.cl .cn{font-family:var(--mono);color:var(--crimson);font-weight:700;font-size:9pt}
+.cl.sub{grid-template-columns:11mm 7mm 1fr} .cl.sub .cn2{font-family:var(--mono);color:var(--ink-50);font-size:8.6pt}
+.cl p{margin:0}
+.legal-2{column-count:2;column-gap:8mm}
+.legal-2 .art{break-inside:auto}
+.legal-2 .cl{break-inside:avoid}
+
+/* ---------- v3: org chart ---------- */
+.org{display:flex;flex-direction:column;align-items:center;gap:0}
+.orow{display:flex;justify-content:center;gap:4mm;width:100%}
+.ob{border-radius:7px;padding:2.4mm 3mm;text-align:center;min-width:30mm;font-size:8.6pt;line-height:1.25}
+.ob b{display:block;font-size:9.4pt}
+.ob span{font-size:7.4pt;opacity:.85}
+.ob.cr{background:var(--crimson);color:#fff}
+.ob.ink{background:var(--ink);color:#fff}
+.ob.tint{background:var(--crimson-50);color:var(--ink)}
+.ob.ln{border:1.2px solid var(--crimson);background:#fff}
+.ob.dash{border:1.2px dashed var(--ink-50);background:#fff;color:var(--ink-70)}
+.vl{width:1.4px;height:5mm;background:var(--crimson)}
+.hl-line{height:1.4px;background:var(--crimson)}
+
+/* ---------- v3: role card ---------- */
+.role{border-top:2px solid var(--crimson);padding-top:3mm;margin-bottom:5mm;break-inside:avoid}
+.role .rh{display:flex;justify-content:space-between;align-items:baseline;gap:4mm}
+.role .rh h2{font-size:15pt;margin:0;color:var(--crimson)}
+.role .meta{display:flex;flex-wrap:wrap;gap:1mm 5mm;font-size:7.8pt;color:var(--ink-70);margin:1.4mm 0 2.4mm}
+.role .meta b{color:var(--ink)}
+.role .purpose{font-weight:300;font-size:11pt;line-height:1.38;margin-bottom:2.6mm}
+.role .cols{display:grid;grid-template-columns:1.35fr 1fr;gap:6mm}
+
+/* ---------- v3: forms ---------- */
+.fhead{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2px solid var(--crimson);padding-bottom:3mm;margin-bottom:4mm}
+.fhead .fcode{font-family:var(--mono);font-size:9pt;color:var(--crimson);font-weight:700}
+.fhead h1{font-size:21pt;line-height:1.1;color:var(--ink);font-weight:700}
+.fhead .fsub{font-size:8.6pt;color:var(--ink-50);margin-top:1mm}
+.fl{margin-bottom:3.2mm}
+.fl .lb{font-size:7.4pt;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--crimson);margin-bottom:1mm}
+.fl .ln{border-bottom:1px solid var(--ink);height:7mm}
+.fl .area{border:1px solid var(--ink-50);border-radius:3px}
+.frow{display:grid;gap:5mm}
+.f2{grid-template-columns:1fr 1fr}.f3{grid-template-columns:1fr 1fr 1fr}.f4{grid-template-columns:repeat(4,1fr)}
+.cb{display:inline-flex;align-items:center;gap:1.6mm;margin-right:4.5mm;font-size:8.8pt;white-space:nowrap}
+.cb:before{content:"";width:3.3mm;height:3.3mm;border:1.1px solid var(--crimson);border-radius:1px;display:inline-block}
+table.grid-f{width:100%;border-collapse:collapse;font-size:8pt}
+table.grid-f th{background:var(--crimson);color:#fff;font-weight:500;text-align:left;padding:1.6mm 2mm;font-size:7.4pt;letter-spacing:.04em}
+table.grid-f td{border:1px solid var(--line);height:7.6mm;padding:1mm 2mm;vertical-align:top}
+table.grid-f.tall td{height:9.5mm}
+table.grid-f td.lab{background:var(--crimson-50);font-weight:700;width:34mm}
+.sig{display:grid;gap:8mm;margin-top:6mm}
+.sigline{border-top:1px solid var(--ink);padding-top:1.2mm;font-size:7.4pt;color:var(--ink-50)}
+.letter{border:1px solid var(--line);border-radius:8px;padding:6mm 7mm;font-size:9.2pt;line-height:1.55;background:#fff}
+.letter .subj{font-weight:700;color:var(--crimson);margin-bottom:2mm}
+.letter p{margin-bottom:2mm}
+
+/* document control block */
+.dc{display:grid;grid-template-columns:repeat(4,1fr);border-top:1.5px solid var(--crimson);border-bottom:1px solid var(--line);font-size:7.8pt}
+.dc div{padding:2mm 2.5mm 2mm 0}
+.dc b{display:block;font-size:6.8pt;letter-spacing:.1em;text-transform:uppercase;color:var(--crimson);margin-bottom:.5mm}
+
+/* ---------- the Key monogram ---------- */
+.key{border-radius:50%;background:var(--crimson);display:inline-flex;align-items:center;justify-content:center;position:relative;flex:none}
+.key:after{content:"";position:absolute;inset:7%;border-radius:50%;border:1.6px solid rgba(255,255,255,.9)}
+.key span{color:#fff;font-weight:700;letter-spacing:.02em;line-height:1}
+.key.ink{background:var(--ink)}
+.key.w{background:#fff}.key.w:after{border-color:var(--crimson)}.key.w span{color:var(--crimson)}
+
+/* cover */
+.cover .brandrow{display:flex;align-items:center;gap:4mm}
+.cover .brand{font-weight:700;color:var(--crimson);font-size:13pt;line-height:1.3}
+.cover .doccode{position:absolute;top:24mm;right:21mm;font-family:var(--mono);font-size:9pt;color:var(--ink-50);text-align:right;line-height:1.5}
+.cover .title{font-weight:700;font-size:58pt;line-height:1.02;color:var(--ink);margin-top:32mm;letter-spacing:-.01em}
+.cover .sub{font-weight:300;font-size:16pt;line-height:1.35;margin-top:7mm;color:var(--ink)}
+.cover .prep{font-size:10.5pt;margin-top:12mm}
+.cover .people{position:absolute;left:21mm;right:21mm;top:200mm;display:flex;justify-content:space-between}
+.cover .people .k{font-size:8.3pt}
+.cover .people .v{font-size:15pt;margin-top:1mm}
+.cover .people .r{font-size:8.3pt;margin-top:1mm}
+.cover .foot,.foot{position:absolute;left:0;right:0;bottom:0;height:22mm;background:var(--crimson);color:#fff;display:flex;justify-content:space-between;align-items:center;padding:0 14mm;font-size:11pt}
+
+.center-v{display:flex;flex-direction:column;justify-content:center}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:8mm}
+.two.wide-l{grid-template-columns:1.3fr 1fr}
+.two.wide-r{grid-template-columns:1fr 1.3fr}
+.mt1{margin-top:1mm}.mt2{margin-top:2mm}.mt3{margin-top:3mm}.mt4{margin-top:4mm}.mt6{margin-top:6mm}.mt8{margin-top:8mm}.mt10{margin-top:10mm}
+.mb0{margin-bottom:0}.mb2{margin-bottom:2mm}.mb4{margin-bottom:4mm}.mb6{margin-bottom:6mm}
+.cr{color:var(--crimson)}
+.w{color:#fff}
+.nowrap{white-space:nowrap}
+
+/* ==================================================================
+   SAL-MED-02 Brand and Identity, Version 1 — document layer.
+   Quiet by default: Light headlines in ink, one color per headline,
+   hairlines and space, square corners, no tints, no icons.
+   The Bookmark is only ever the logo. Headings stand alone.
+   ================================================================== */
+@font-face{font-family:"Ubuntu Arabic";font-weight:300;src:url(../fonts/UbuntuArabic-Regular.woff2)}
+@font-face{font-family:"Ubuntu Arabic";font-weight:400;src:url(../fonts/UbuntuArabic-Regular.woff2)}
+@font-face{font-family:"Ubuntu Arabic";font-weight:500;src:url(../fonts/UbuntuArabic-Regular.woff2)}
+@font-face{font-family:"Ubuntu Arabic";font-weight:700;src:url(../fonts/UbuntuArabic-Bold.woff2)}
+:root{--crimson:#9C213E;--ink:#273236;--paper:#F5F2EE;--stone:#E2DDD6;--ash:#5C6568;--rose:#C3CACB;
+  --crimson-50:transparent;--crimson-100:#C3CACB;--ink-70:#5C6568;--ink-50:#5C6568;--ink-10:#F5F2EE;--line:#E2DDD6}
+body{font-size:10.3pt;line-height:1.55}
+.page{padding-top:24mm}
+.page.dark,.page.crimson{background:#fff;color:var(--ink)}
+.page.dark *,.page.crimson *{color:inherit}
+.runner,.runner-l{display:none}
+.folio{border-top:1px solid var(--stone);padding-top:2.2mm;color:var(--ash);bottom:10mm}
+.folio .code{font-size:7.6pt}
+h1.display,.dark h1.display,.crimson h1.display{font-weight:300;color:var(--ink);font-size:40pt;line-height:1.02;letter-spacing:-.025em;margin-bottom:4mm}
+h1.display.md{font-size:34pt} h1.display.sm{font-size:28pt} h1.display.xs{font-size:22pt}
+.lede,.dark .lede{font-weight:300;color:var(--ink)}
+h2,h2.c,.dark h2{font-weight:400;color:var(--ink);letter-spacing:-.01em}
+h3,h3.c,.dark h3,.card h3{font-weight:500;color:var(--ink)}
+.kicker,.dark .kicker{font-weight:500;color:var(--ash);letter-spacing:.1em}
+.kicker:has(+ h1),.kicker:has(+ h2),.kicker:has(+ h3),.kicker:has(+ .display){display:none!important}
+.intro,.big-p{font-weight:300}
+.small,.dark .small,.xs{color:var(--ash)}
+.cr{color:var(--ash)}
+hr.rule,.dark hr.rule{border-top:1px solid var(--ink)}
+.card,.card.tint,.card.line,.card.grey,.card.cr,.card.ink,.card.dashed{background:transparent!important;color:inherit;border:0;border-top:1px solid var(--ink);border-radius:0;padding:3mm 0 1mm}
+.card h3,.card.cr h3{color:var(--ink);font-weight:500;font-size:11.5pt;margin:0 0 1.4mm}
+.card p,.card.cr p{color:inherit}
+.ic{display:none!important}
+.band,.band.ink{background:transparent;color:var(--ink);border-top:1px solid var(--ink);margin:0 21mm;padding:4mm 0 0;left:0;right:0;bottom:24mm}
+.band h2{color:var(--ink);font-weight:300;font-size:17pt}
+.band p{color:var(--ink)}
+.band.flow{margin:7mm 0 0}
+.note,.note.ink{background:transparent;border:0;border-top:1px solid var(--stone);border-radius:0;padding:2.5mm 0 0}
+.note b,.note.ink b{color:var(--ink)}
+.box{border:1px solid var(--stone);border-radius:0}
+table.t th{color:var(--ash);font-weight:500;border-bottom:1px solid var(--ink);letter-spacing:.1em;background:transparent}
+table.t td{border-bottom:1px solid var(--stone)}
+table.t td:first-child{font-weight:500}
+table.t tr.hl td{background:var(--paper)}
+ul.b li:before,.dark ul.b li:before,.crimson ul.b li:before{background:var(--ink);width:1.3mm;height:1.3mm;top:2.3mm;border-radius:0}
+ul.chk li:before{border-color:var(--ink)}
+.nl .it{border-bottom:1px solid var(--stone)}
+.nl .n,.dark .nl .n{font-weight:300;color:var(--ink);font-size:20pt;background:transparent}
+.stat .num{font-weight:300}
+.num.cr{color:var(--ink)}
+.pill,.pill.ink,.pill.dk,.pill.solid{background:transparent;color:var(--ash);padding:0;font-weight:500;letter-spacing:.08em;text-transform:uppercase;font-size:6.8pt;border:0}
+.tl:before{background:var(--stone);width:1px}
+.tl .dot{width:3mm;height:3mm;border:1px solid var(--ink);background:#fff;margin:1mm 0 0 4.1mm}
+.tl .ev.hl{background:transparent;margin-left:0;padding-left:0}
+.tl .ev.hl .dot{background:var(--ink);border-color:var(--ink)}
+.tl .date{color:var(--ink);font-weight:500}
+.art .ah{border-bottom:1px solid var(--ink)}
+.art .ah .no,.cl .cn{color:var(--ash);font-weight:400}
+.art .ah h2{font-weight:400}
+.ob,.ob.ln,.ob.tint,.ob.dash{background:#fff;color:var(--ink);border:1px solid var(--stone);border-radius:0}
+.ob.cr,.ob.ink{background:var(--ink);color:#fff;border:0;border-radius:0}
+.ob.dash{border-style:dashed}
+.vl,.hl-line{background:var(--ink)}
+.fhead{border-bottom:1px solid var(--ink);align-items:flex-end}
+.fhead .fcode{color:var(--ash);font-weight:400}
+.fhead h1{font-weight:300;font-size:22pt;letter-spacing:-.02em;color:var(--ink)}
+.fl .lb{color:var(--ash);font-weight:500}
+.cb:before{border-color:var(--ink)}
+table.grid-f th{background:transparent;color:var(--ash);font-weight:500;border-bottom:1px solid var(--ink);letter-spacing:.08em;text-transform:uppercase;font-size:6.6pt}
+table.grid-f td{border-color:var(--stone)}
+table.grid-f td.lab{background:var(--paper)}
+.dc{border-top:1px solid var(--ink);border-bottom:1px solid var(--stone);background:transparent}
+.dc b{color:var(--ash);font-weight:500}
+.letter{border:0;border-top:1px solid var(--ink);border-radius:0;padding:4mm 0 2mm;background:transparent}
+.role{border-top:1px solid var(--ink)}
+.role .rh h2{color:var(--ink);font-weight:300;font-size:17pt}
+.sym{display:block;height:auto}
+.m.A{background:var(--ink)!important;color:#fff!important}.m.R{background:transparent!important;border:1px solid var(--ink);color:var(--ink)!important}.m.C{border-color:var(--stone);color:var(--ash)}
+/* cover (DocumentCover) */
+.c6 .lock{position:absolute;top:19mm;left:21mm;height:20.6mm}
+.c6 .code{position:absolute;top:21mm;right:21mm;text-align:right;font-family:var(--mono);font-size:9.6pt;line-height:1.4;color:var(--ash)}
+.c6 .t6{position:absolute;top:84.7mm;left:21mm;right:21mm;font-size:64pt;line-height:1;font-weight:300;letter-spacing:-.03em;color:var(--ink)}
+.c6 .s6{position:absolute;top:148mm;left:21mm;width:118mm;font-size:13.5pt;line-height:1.5;color:var(--ink)}
+.c6 .a6{position:absolute;top:178mm;left:21mm;width:130mm;font-size:9.5pt;line-height:1.5;color:var(--ash)}
+.c6 .p6{position:absolute;bottom:40mm;left:21mm;right:21mm;display:flex;gap:30mm;font-size:9.6pt;line-height:1.6;color:var(--ash)}
+.c6 .p6 b{display:block;font-weight:400;font-size:14pt;line-height:1.4;color:var(--ink)}
+.foot6{position:absolute;left:21mm;right:21mm;bottom:16mm;border-top:1px solid var(--ink);padding-top:3mm;display:flex;justify-content:space-between;font-weight:500;font-size:9pt;color:var(--ink)}
+.cover .foot{display:none}
+.fcols{display:grid;grid-template-columns:1fr 1fr;gap:8mm;align-items:start}
+.fcols.one{grid-template-columns:1fr}
+.letter .subj{color:var(--ink)}
+@page land{size:297mm 210mm;margin:0}
+.page.land{width:297mm;height:210mm;page:land}
+</style><style></style></head><body><section class="page "><div style="position:absolute;left:15mm;top:18mm;display:grid;grid-template-columns:90mm 90mm"><div style="width:90mm;height:55mm;outline:.4px dashed #bbb;outline-offset:-.2px;padding:5mm;position:relative">
+<img src="../logos/sal-lockup-horizontal.svg" style="height:5.0mm;width:auto;display:block;">
+<div style="border-bottom:.6pt solid var(--ink);height:12mm;margin-top:5mm"></div>
+<div style="display:flex;justify-content:space-between;font-size:7pt;margin-top:1.4mm"><span style="color:var(--ash)">Name</span><span style="font-weight:500;letter-spacing:.12em;text-transform:uppercase">President</span></div></div><div style="width:90mm;height:55mm;outline:.4px dashed #bbb;outline-offset:-.2px;padding:5mm;position:relative">
+<img src="../logos/sal-lockup-horizontal.svg" style="height:5.0mm;width:auto;display:block;">
+<div style="border-bottom:.6pt solid var(--ink);height:12mm;margin-top:5mm"></div>
+<div style="display:flex;justify-content:space-between;font-size:7pt;margin-top:1.4mm"><span style="color:var(--ash)">Name</span><span style="font-weight:500;letter-spacing:.12em;text-transform:uppercase">Vice President</span></div></div><div style="width:90mm;height:55mm;outline:.4px dashed #bbb;outline-offset:-.2px;padding:5mm;position:relative">
+<img src="../logos/sal-lockup-horizontal.svg" style="height:5.0mm;width:auto;display:block;">
+<div style="border-bottom:.6pt solid var(--ink);height:12mm;margin-top:5mm"></div>
+<div style="display:flex;justify-content:space-between;font-size:7pt;margin-top:1.4mm"><span style="color:var(--ash)">Name</span><span style="font-weight:500;letter-spacing:.12em;text-transform:uppercase">Editor-in-Chief</span></div></div><div style="width:90mm;height:55mm;outline:.4px dashed #bbb;outline-offset:-.2px;padding:5mm;position:relative">
+<img src="../logos/sal-lockup-horizontal.svg" style="height:5.0mm;width:auto;display:block;">
+<div style="border-bottom:.6pt solid var(--ink);height:12mm;margin-top:5mm"></div>
+<div style="display:flex;justify-content:space-between;font-size:7pt;margin-top:1.4mm"><span style="color:var(--ash)">Name</span><span style="font-weight:500;letter-spacing:.12em;text-transform:uppercase">Director of Media</span></div></div><div style="width:90mm;height:55mm;outline:.4px dashed #bbb;outline-offset:-.2px;padding:5mm;position:relative">
+<img src="../logos/sal-lockup-horizontal.svg" style="height:5.0mm;width:auto;display:block;">
+<div style="border-bottom:.6pt solid var(--ink);height:12mm;margin-top:5mm"></div>
+<div style="display:flex;justify-content:space-between;font-size:7pt;margin-top:1.4mm"><span style="color:var(--ash)">Name</span><span style="font-weight:500;letter-spacing:.12em;text-transform:uppercase">Event Lead</span></div></div><div style="width:90mm;height:55mm;outline:.4px dashed #bbb;outline-offset:-.2px;padding:5mm;position:relative">
+<img src="../logos/sal-lockup-horizontal.svg" style="height:5.0mm;width:auto;display:block;">
+<div style="border-bottom:.6pt solid var(--ink);height:12mm;margin-top:5mm"></div>
+<div style="display:flex;justify-content:space-between;font-size:7pt;margin-top:1.4mm"><span style="color:var(--ash)">Name</span><span style="font-weight:500;letter-spacing:.12em;text-transform:uppercase">Member</span></div></div><div style="width:90mm;height:55mm;outline:.4px dashed #bbb;outline-offset:-.2px;padding:5mm;position:relative">
+<img src="../logos/sal-lockup-horizontal.svg" style="height:5.0mm;width:auto;display:block;">
+<div style="border-bottom:.6pt solid var(--ink);height:12mm;margin-top:5mm"></div>
+<div style="display:flex;justify-content:space-between;font-size:7pt;margin-top:1.4mm"><span style="color:var(--ash)">Name</span><span style="font-weight:500;letter-spacing:.12em;text-transform:uppercase">Volunteer</span></div></div><div style="width:90mm;height:55mm;outline:.4px dashed #bbb;outline-offset:-.2px;padding:5mm;position:relative">
+<img src="../logos/sal-lockup-horizontal.svg" style="height:5.0mm;width:auto;display:block;">
+<div style="border-bottom:.6pt solid var(--ink);height:12mm;margin-top:5mm"></div>
+<div style="display:flex;justify-content:space-between;font-size:7pt;margin-top:1.4mm"><span style="color:var(--ash)">Name</span><span style="font-weight:500;letter-spacing:.12em;text-transform:uppercase">Guest</span></div></div></div><div style="position:absolute;bottom:6mm;left:15mm;font-size:6.5pt;color:var(--ash)">Name badges · 90 × 55 mm · fits standard badge holders</div><div class="folio"><span class="code">SAL-MED-02 · Printables</span><span>1 / 3</span></div></section><section class="page "><div style="border:.6pt solid var(--ink);padding:10mm 9mm;margin-top:2mm">
+<img src="../logos/sal-lockup-horizontal.svg" style="height:8.8mm;width:auto;display:block;"><div style="font-size:34pt;font-weight:300;line-height:1.05;margin-top:12mm;letter-spacing:-.02em">We are taking<br>photos today.</div>
+<p style="font-size:12pt;margin-top:6mm;max-width:140mm">Prefer not to appear? Take a <b>camera-shy</b> sticker, the crossed-out camera. Our photographers will not publish any photo in which you can be recognized. Ask us to remove any photo at any time: it comes down within 24 hours.</p>
+<div style="margin-top:4mm">@auibsal</div></div>
+<p class="small mt2">Photography notice · Policy Manual (SAL-GOV-03) · print at A4 for the door. No identifiable photographs of anyone under 18. The Arabic notice is printed as its own sheet.</p>
+<div style="font-size:7.6pt;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--ash);margin-top:10mm;margin-bottom:3mm">Camera-shy stickers · 40 mm round · print on sticker paper</div><div style="display:grid;grid-template-columns:repeat(4,40mm);gap:4mm"><div style="width:40mm;height:40mm;border-radius:50%;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;text-align:center"><svg role="img" aria-label="Camera-shy" width="22mm" height="22mm" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="square" stroke-linejoin="miter"><path d="M2 2l20 20"/><path d="M7 7H2v13h18"/><path d="M9.5 4h5L17 7h5v9.5"/><path d="M14.121 15.121A3 3 0 1 1 9.88 10.88"/></svg></div><div style="width:40mm;height:40mm;border-radius:50%;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;text-align:center"><svg role="img" aria-label="Camera-shy" width="22mm" height="22mm" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="square" stroke-linejoin="miter"><path d="M2 2l20 20"/><path d="M7 7H2v13h18"/><path d="M9.5 4h5L17 7h5v9.5"/><path d="M14.121 15.121A3 3 0 1 1 9.88 10.88"/></svg></div><div style="width:40mm;height:40mm;border-radius:50%;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;text-align:center"><svg role="img" aria-label="Camera-shy" width="22mm" height="22mm" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="square" stroke-linejoin="miter"><path d="M2 2l20 20"/><path d="M7 7H2v13h18"/><path d="M9.5 4h5L17 7h5v9.5"/><path d="M14.121 15.121A3 3 0 1 1 9.88 10.88"/></svg></div><div style="width:40mm;height:40mm;border-radius:50%;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;text-align:center"><svg role="img" aria-label="Camera-shy" width="22mm" height="22mm" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="square" stroke-linejoin="miter"><path d="M2 2l20 20"/><path d="M7 7H2v13h18"/><path d="M9.5 4h5L17 7h5v9.5"/><path d="M14.121 15.121A3 3 0 1 1 9.88 10.88"/></svg></div><div style="width:40mm;height:40mm;border-radius:50%;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;text-align:center"><svg role="img" aria-label="Camera-shy" width="22mm" height="22mm" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="square" stroke-linejoin="miter"><path d="M2 2l20 20"/><path d="M7 7H2v13h18"/><path d="M9.5 4h5L17 7h5v9.5"/><path d="M14.121 15.121A3 3 0 1 1 9.88 10.88"/></svg></div><div style="width:40mm;height:40mm;border-radius:50%;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;text-align:center"><svg role="img" aria-label="Camera-shy" width="22mm" height="22mm" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="square" stroke-linejoin="miter"><path d="M2 2l20 20"/><path d="M7 7H2v13h18"/><path d="M9.5 4h5L17 7h5v9.5"/><path d="M14.121 15.121A3 3 0 1 1 9.88 10.88"/></svg></div><div style="width:40mm;height:40mm;border-radius:50%;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;text-align:center"><svg role="img" aria-label="Camera-shy" width="22mm" height="22mm" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="square" stroke-linejoin="miter"><path d="M2 2l20 20"/><path d="M7 7H2v13h18"/><path d="M9.5 4h5L17 7h5v9.5"/><path d="M14.121 15.121A3 3 0 1 1 9.88 10.88"/></svg></div><div style="width:40mm;height:40mm;border-radius:50%;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;text-align:center"><svg role="img" aria-label="Camera-shy" width="22mm" height="22mm" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="square" stroke-linejoin="miter"><path d="M2 2l20 20"/><path d="M7 7H2v13h18"/><path d="M9.5 4h5L17 7h5v9.5"/><path d="M14.121 15.121A3 3 0 1 1 9.88 10.88"/></svg></div></div><div class="folio"><span class="code">SAL-MED-02 · Printables</span><span>2 / 3</span></div></section><section class="page "><div style="position:absolute;left:21mm;right:21mm;top:19mm">
+<div style="font-size:30pt;font-weight:300;line-height:1;letter-spacing:-.02em">Sticker pack</div>
+<p style="font-size:10pt;margin:4mm 0 8mm;color:var(--ash)">43 stickers at 20%, for Student Life to print from the sticker files (one page each at 100%, cut line in magenta), to the confirmed need: the expected joiners at the club fair or the Typewriter Tour, plus 10%.</p>
+<div style="display:flex;flex-wrap:wrap;gap:3mm 4mm;align-items:flex-end"><figure style="margin:0;display:grid;gap:1mm;justify-items:start"><img src="stickers/bookmark.svg" alt="The Bookmark" style="height:13.3mm;width:auto"><figcaption style="font-size:6pt;color:var(--ash)">The Bookmark · 50 × 61 mm</figcaption></figure><figure style="margin:0;display:grid;gap:1mm;justify-items:start"><img src="stickers/bookmark-tile.svg" alt="Bookmark tile" style="height:11.2mm;width:auto"><figcaption style="font-size:6pt;color:var(--ash)">Bookmark tile · 50 × 50 mm</figcaption></figure><figure style="margin:0;display:grid;gap:1mm;justify-items:start"><img src="stickers/bookmark-tile-ink.svg" alt="Bookmark tile, ink" style="height:11.2mm;width:auto"><figcaption style="font-size:6pt;color:var(--ash)">Bookmark tile, ink · 50 × 50 mm</figcaption></figure><figure style="margin:0;display:grid;gap:1mm;justify-items:start"><img src="stickers/lockup-stacked.svg" alt="Stacked lockup" style="height:17.8mm;width:auto"><figcaption style="font-size:6pt;color:var(--ash)">Stacked lockup · 52 × 83 mm</figcaption></figure><figure style="margin:0;display:grid;gap:1mm;justify-items:start"><img src="stickers/wordmark-ar.svg" alt="Arabic wordmark" style="height:15.7mm;width:auto"><figcaption style="font-size:6pt;color:var(--ash)">Arabic wordmark · 72 × 72 mm</figcaption></figure><figure style="margin:0;display:grid;gap:1mm;justify-items:start"><img src="stickers/bumper-bilingual.svg" alt="Bilingual bumper" style="height:16.6mm;width:auto"><figcaption style="font-size:6pt;color:var(--ash)">Bilingual bumper · 190 × 77 mm</figcaption></figure><figure style="margin:0;display:grid;gap:1mm;justify-items:start"><img src="stickers/postage-stamp.svg" alt="Postage stamp" style="height:12.4mm;width:auto"><figcaption style="font-size:6pt;color:var(--ash)">Postage stamp · 46 × 56 mm</figcaption></figure><figure style="margin:0;display:grid;gap:1mm;justify-items:start"><img src="stickers/postmark.svg" alt="Postmark" style="height:12.0mm;width:auto"><figcaption style="font-size:6pt;color:var(--ash)">Postmark · 54 × 54 mm</figcaption></figure><figure style="margin:0;display:grid;gap:1mm;justify-items:start"><img src="stickers/motto-en.svg" alt="The paper and the pen." style="height:15.6mm;width:auto"><figcaption style="font-size:6pt;color:var(--ash)">The paper and the pen. · 162 × 72 mm</figcaption></figure><figure style="margin:0;display:grid;gap:1mm;justify-items:start"><img src="stickers/motto-ar.svg" alt="Arabic motto" style="height:10.0mm;width:auto"><figcaption style="font-size:6pt;color:var(--ash)">Arabic motto · 136 × 44 mm</figcaption></figure><figure style="margin:0;display:grid;gap:1mm;justify-items:start"><img src="stickers/motto-strip.svg" alt="Motto strip" style="height:7.2mm;width:auto"><figcaption style="font-size:6pt;color:var(--ash)">Motto strip · 200 × 30 mm</figcaption></figure><figure style="margin:0;display:grid;gap:1mm;justify-items:start"><img src="stickers/the-pen.svg" alt="The pen" style="height:16.8mm;width:auto"><figcaption style="font-size:6pt;color:var(--ash)">The pen · 28 × 78 mm</figcaption></figure><figure style="margin:0;display:grid;gap:1mm;justify-items:start"><img src="stickers/the-paper.svg" alt="The paper" style="height:14.4mm;width:auto"><figcaption style="font-size:6pt;color:var(--ash)">The paper · 50 × 66 mm</figcaption></figure><figure style="margin:0;display:grid;gap:1mm;justify-items:start"><img src="stickers/qirtas-keys.svg" alt="QIRTAS in keys" style="height:10.4mm;width:auto"><figcaption style="font-size:6pt;color:var(--ash)">QIRTAS in keys · 172 × 46 mm</figcaption></figure><figure style="margin:0;display:grid;gap:1mm;justify-items:start"><img src="stickers/key-qaf.svg" alt="Qaf key" style="height:12.4mm;width:auto"><figcaption style="font-size:6pt;color:var(--ash)">Qaf key · 56 × 56 mm</figcaption></figure><figure style="margin:0;display:grid;gap:1mm;justify-items:start"><img src="stickers/qirtas-nameplate.svg" alt="Qirtas nameplate" style="height:14.4mm;width:auto"><figcaption style="font-size:6pt;color:var(--ash)">Qirtas nameplate · 132 × 66 mm</figcaption></figure><figure style="margin:0;display:grid;gap:1mm;justify-items:start"><img src="stickers/qirtas-ar.svg" alt="Qirtas in Arabic" style="height:12.8mm;width:auto"><figcaption style="font-size:6pt;color:var(--ash)">Qirtas in Arabic · 150 × 58 mm</figcaption></figure><figure style="margin:0;display:grid;gap:1mm;justify-items:start"><img src="stickers/section-news.svg" alt="News" style="height:10.0mm;width:auto"><figcaption style="font-size:6pt;color:var(--ash)">News · 44 × 44 mm</figcaption></figure><figure style="margin:0;display:grid;gap:1mm;justify-items:start"><img src="stickers/section-voices.svg" alt="Voices" style="height:10.0mm;width:auto"><figcaption style="font-size:6pt;color:var(--ash)">Voices · 44 × 44 mm</figcaption></figure><figure style="margin:0;display:grid;gap:1mm;justify-items:start"><img src="stickers/section-letters.svg" alt="Letters" style="height:10.0mm;width:auto"><figcaption style="font-size:6pt;color:var(--ash)">Letters · 44 × 44 mm</figcaption></figure><figure style="margin:0;display:grid;gap:1mm;justify-items:start"><img src="stickers/section-gallery.svg" alt="Gallery" style="height:10.0mm;width:auto"><figcaption style="font-size:6pt;color:var(--ash)">Gallery · 44 × 44 mm</figcaption></figure><figure style="margin:0;display:grid;gap:1mm;justify-items:start"><img src="stickers/section-video.svg" alt="Video" style="height:10.0mm;width:auto"><figcaption style="font-size:6pt;color:var(--ash)">Video · 44 × 44 mm</figcaption></figure><figure style="margin:0;display:grid;gap:1mm;justify-items:start"><img src="stickers/section-games.svg" alt="Games" style="height:10.0mm;width:auto"><figcaption style="font-size:6pt;color:var(--ash)">Games · 44 × 44 mm</figcaption></figure><figure style="margin:0;display:grid;gap:1mm;justify-items:start"><img src="stickers/read-blind.svg" alt="Read blind" style="height:9.6mm;width:auto"><figcaption style="font-size:6pt;color:var(--ash)">Read blind · 96 × 42 mm</figcaption></figure><figure style="margin:0;display:grid;gap:1mm;justify-items:start"><img src="stickers/the-company.svg" alt="The Company" style="height:14.0mm;width:auto"><figcaption style="font-size:6pt;color:var(--ash)">The Company · 90 × 64 mm</figcaption></figure><figure style="margin:0;display:grid;gap:1mm;justify-items:start"><img src="stickers/icon-drama.svg" alt="Drama" style="height:10.0mm;width:auto"><figcaption style="font-size:6pt;color:var(--ash)">Drama · 44 × 44 mm</figcaption></figure><figure style="margin:0;display:grid;gap:1mm;justify-items:start"><img src="stickers/next-stop.svg" alt="Next Stop" style="height:15.6mm;width:auto"><figcaption style="font-size:6pt;color:var(--ash)">Next Stop · 64 × 72 mm</figcaption></figure><figure style="margin:0;display:grid;gap:1mm;justify-items:start"><img src="stickers/ticket.svg" alt="What’s on ticket" style="height:9.6mm;width:auto"><figcaption style="font-size:6pt;color:var(--ash)">What’s on ticket · 96 × 42 mm</figcaption></figure><figure style="margin:0;display:grid;gap:1mm;justify-items:start"><img src="stickers/record.svg" alt="The record" style="height:13.2mm;width:auto"><figcaption style="font-size:6pt;color:var(--ash)">The record · 60 × 60 mm</figcaption></figure><figure style="margin:0;display:grid;gap:1mm;justify-items:start"><img src="stickers/cup.svg" alt="A cup of tea" style="height:14.0mm;width:auto"><figcaption style="font-size:6pt;color:var(--ash)">A cup of tea · 64 × 64 mm</figcaption></figure><figure style="margin:0;display:grid;gap:1mm;justify-items:start"><img src="stickers/open-book.svg" alt="An open book" style="height:12.8mm;width:auto"><figcaption style="font-size:6pt;color:var(--ash)">An open book · 92 × 58 mm</figcaption></figure><figure style="margin:0;display:grid;gap:1mm;justify-items:start"><img src="stickers/book-stack.svg" alt="A stack of books" style="height:9.6mm;width:auto"><figcaption style="font-size:6pt;color:var(--ash)">A stack of books · 74 × 42 mm</figcaption></figure><figure style="margin:0;display:grid;gap:1mm;justify-items:start"><img src="stickers/icon-book-open.svg" alt="Book open" style="height:10.0mm;width:auto"><figcaption style="font-size:6pt;color:var(--ash)">Book open · 44 × 44 mm</figcaption></figure><figure style="margin:0;display:grid;gap:1mm;justify-items:start"><img src="stickers/icon-headphones.svg" alt="Headphones" style="height:10.0mm;width:auto"><figcaption style="font-size:6pt;color:var(--ash)">Headphones · 44 × 44 mm</figcaption></figure><figure style="margin:0;display:grid;gap:1mm;justify-items:start"><img src="stickers/typewriter.svg" alt="The typewriter" style="height:12.4mm;width:auto"><figcaption style="font-size:6pt;color:var(--ash)">The typewriter · 81 × 56 mm</figcaption></figure><figure style="margin:0;display:grid;gap:1mm;justify-items:start"><img src="stickers/icon-keyboard.svg" alt="Keyboard" style="height:10.0mm;width:auto"><figcaption style="font-size:6pt;color:var(--ash)">Keyboard · 44 × 44 mm</figcaption></figure><figure style="margin:0;display:grid;gap:1mm;justify-items:start"><img src="stickers/second-chapter.svg" alt="Second Chapter" style="height:14.0mm;width:auto"><figcaption style="font-size:6pt;color:var(--ash)">Second Chapter · 64 × 64 mm</figcaption></figure><figure style="margin:0;display:grid;gap:1mm;justify-items:start"><img src="stickers/hudhud.svg" alt="Hudhud" style="height:14.0mm;width:auto"><figcaption style="font-size:6pt;color:var(--ash)">Hudhud · 64 × 64 mm</figcaption></figure><figure style="margin:0;display:grid;gap:1mm;justify-items:start"><img src="stickers/hudhud-flying.svg" alt="Hudhud flying" style="height:13.6mm;width:auto"><figcaption style="font-size:6pt;color:var(--ash)">Hudhud flying · 82 × 62 mm</figcaption></figure><figure style="margin:0;display:grid;gap:1mm;justify-items:start"><img src="stickers/hudhud-reversed.svg" alt="Hudhud on crimson" style="height:12.6mm;width:auto"><figcaption style="font-size:6pt;color:var(--ash)">Hudhud on crimson · 62 × 57 mm</figcaption></figure><figure style="margin:0;display:grid;gap:1mm;justify-items:start"><img src="stickers/join-qr.svg" alt="Join" style="height:13.6mm;width:auto"><figcaption style="font-size:6pt;color:var(--ash)">Join · 50 × 62 mm</figcaption></figure><figure style="margin:0;display:grid;gap:1mm;justify-items:start"><img src="stickers/get-involved.svg" alt="Get involved" style="height:7.2mm;width:auto"><figcaption style="font-size:6pt;color:var(--ash)">Get involved · 106 × 30 mm</figcaption></figure><figure style="margin:0;display:grid;gap:1mm;justify-items:start"><img src="stickers/camera-shy.svg" alt="Camera-shy" style="height:9.2mm;width:auto"><figcaption style="font-size:6pt;color:var(--ash)">Camera-shy · 40 × 40 mm</figcaption></figure></div>
+</div><div class="folio"><span class="code">SAL-MED-02 · Printables</span><span>3 / 3</span></div></section></body></html>

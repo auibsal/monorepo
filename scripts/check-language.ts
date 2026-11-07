@@ -49,9 +49,9 @@ const ARABIC: Rule[] = [
   { pattern: /[ء-ي][^\n]*[“”]|[“”][^\n]*[ء-ي]/, why: "«» quotes in Arabic" },
 ];
 
-// Iraqi spellings and words (گ, چ and common colloquial words).
+// Iraqi spellings and words (گ, چ, پ and common colloquial words).
 const IRAQI =
-  /[گچ]|(^|[\s،.])(شلون|هسه|هسّه|ماكو|اكو|شكو|هواية|راح يـ|دا يـ|ليش|شنو)(?=$|[\s،.؟])/;
+  /[گچپ]|(^|[\s،.])(شلون|هسه|هسّه|ماكو|اكو|شكو|هواية|راح يـ|دا يـ|ليش|شنو)(?=$|[\s،.؟])/;
 
 const ENGLISH: Rule[] = [
   // Chicago: curly quotes and apostrophes ("it’s", “a quote”).

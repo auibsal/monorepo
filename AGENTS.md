@@ -657,10 +657,10 @@ any schema change. Integration tests run against a local stack with
     Lead (`tour_lead`, picked by the General Secretary), kept in the Diwan
     under People → Typewriter Tour (`/diwan/people/typewriter-tour`, module
     `tour`).
-  - **Copy and channels.** The Instagram bio is "Qirtas, our paper. The
-    Company, our theater. Events all year at @auibaghdad."; the
-    highlights, in order: What's on, Qirtas, Next Stop, The Company, Join,
-    Get involved (`packages/brand/assets/social`). Retired names, never in
+  - **Copy and channels.** The Instagram bio is "The paper and the pen
+    at @auibaghdad." (owner, Nov 7, 2026); the highlights, in order:
+    What's on, Qirtas, The Company, Next Stop, Join, Partners
+    (`packages/brand/assets/social`). Retired names, never in
     copy (`scripts/check-language.ts` refuses them): Director of Programs,
     Events, Partnerships or Membership, Program Lead, "the six programs",
     Standing Programs, flagships, the Evenings, the Specials, weekly
@@ -954,12 +954,12 @@ any schema change. Integration tests run against a local stack with
   and signs at the door speak Iraqi Arabic, spelled as Iraqis write it (گ);
   the site, the Diwan, emails, documents, certificates, Qirtas and the
   bot's Telegram profile stay in standard Arabic. Never both in one
-  message (Guide → Voice, "Which Arabic"). Iraqi lines are
-  needs-native-review like any Arabic written here.
+  message (Guide → Voice, "Which Arabic"), spelled with گ، چ، پ.
 - **One language standard** (owner, Nov 4, 2026; Guide → Voice,
-  "Language standard", with the glossary). English: American, sentence
-  case, straight quotes, the ellipsis character, en dashes for ranges, "for
-  example" over "e.g.". Arabic: Latin digits, the Iraqi month names
+  "Language standard", with the glossary). English: American, following
+  the Chicago Manual of Style (owner, Nov 6, 2026: curly quotes in prose,
+  the serial comma), sentence case for interface labels, the ellipsis
+  character, en dashes for ranges, "for example" over "e.g.". Arabic: Latin digits, the Iraqi month names
   (`ar-IQ`), ، ؛ ؟ and «», tanween before the alif (شكرًا), one word per
   term (Edition الإصدار, piece عمل, event فعالية, version النسخة, Get
   involved «شارك معنا»). `bun run check:i18n` runs

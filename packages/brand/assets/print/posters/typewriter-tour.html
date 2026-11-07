@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>SAL-MED-02 · Typewriter Tour poster</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500&family=Ubuntu+Mono&display=swap">
+<style>
+@font-face{font-family:"Ubuntu Arabic";font-weight:400;src:url(../../fonts/UbuntuArabic-Regular.woff2)}
+@font-face{font-family:"Ubuntu Arabic";font-weight:700;src:url(../../fonts/UbuntuArabic-Bold.woff2)}
+@page{size:420mm 594mm;margin:0}
+:root{--crimson:#9c213e;--ink:#273236;--white:#fff;--stone:#e2ddd6}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{font-family:Ubuntu,sans-serif;color:var(--white);-webkit-print-color-adjust:exact;print-color-adjust:exact}
+body[dir=rtl]{font-family:"Ubuntu Arabic",Ubuntu,sans-serif}
+.sheet{position:relative;width:420mm;height:594mm;overflow:hidden;break-after:page}
+.sheet:last-child{break-after:auto}
+.crimson{background:var(--crimson)}
+.ink{background:var(--ink)}
+.slug{position:absolute;top:14mm;inset-inline-end:24mm;margin:0;font:400 8pt "Ubuntu Mono",monospace;letter-spacing:.02em}
+h1,h2,p,ul{margin:0}
+ul{list-style:none;padding:0}
+.qr{display:block;width:100%;height:auto}
+.qrbox{background:var(--white);padding:5mm}
+
+.hl{position:absolute;top:30mm;inset-inline:30mm;font-weight:300;font-size:128pt;line-height:1;letter-spacing:-.03em}
+[dir=rtl] .hl{font-weight:400;letter-spacing:0;line-height:1.3;font-size:112pt}
+.photo{position:absolute;left:-50mm;bottom:-117mm;width:470mm;height:auto;display:block}
+.quote{position:absolute;top:236mm;right:22mm;width:124mm}
+.quote p{font-weight:300;font-size:34pt;line-height:1.2;letter-spacing:-.01em}
+.quote .by{margin-top:7mm;font-weight:400;font-size:20pt;letter-spacing:0}
+[dir=rtl] .quote p{font-weight:400;font-size:30pt;line-height:1.6;letter-spacing:0}
+[dir=rtl] .quote .by{font-size:19pt}
+.top{position:absolute;top:30mm;inset-inline:30mm}
+.lockup{display:block;height:52mm;width:auto}
+.title{margin-top:20mm;font-weight:300;font-size:116pt;line-height:1;letter-spacing:-.03em}
+[dir=rtl] .title{font-weight:400;font-size:92pt;line-height:1.3;letter-spacing:0}
+.grid{position:absolute;top:196mm;inset-inline:30mm;display:grid;grid-template-columns:1fr 1fr;border-top:.5mm solid var(--white)}
+.cell{padding:9mm 0 12mm;min-height:148mm}
+.cell:nth-child(odd){padding-inline-end:12mm;border-inline-end:.5mm solid var(--white)}
+.cell:nth-child(even){padding-inline-start:12mm}
+.cell:nth-child(n+3){border-top:.5mm solid var(--white)}
+.cell h2{font-weight:300;font-size:54pt;line-height:1.05;letter-spacing:-.02em;margin-bottom:7mm}
+[dir=rtl] .cell h2{font-weight:400;font-size:46pt;line-height:1.4;letter-spacing:0}
+.rows li{font-size:24pt;line-height:1.3;padding:3.6mm 0;border-bottom:.3mm solid rgba(255,255,255,.55)}
+.rows li:last-child{border-bottom:0}
+[dir=rtl] .rows li{font-size:22pt;line-height:1.7;padding:2.6mm 0}
+.join{display:grid;grid-template-columns:78mm 1fr;gap:8mm;align-items:end}
+.join p{font-size:24pt;line-height:1.35}
+.join .url{margin-top:3mm;font-weight:500}
+[dir=rtl] .join p{line-height:1.75}
+.who{font-size:24pt;line-height:1.4}
+.who .m{display:block;margin-bottom:6mm;font-weight:300;font-size:44pt;line-height:1.1;letter-spacing:-.02em}
+[dir=rtl] .who{line-height:1.8}
+[dir=rtl] .who .m{font-weight:400;font-size:40pt;line-height:1.5;letter-spacing:0}
+.tips{position:absolute;bottom:24mm;inset-inline:30mm;display:flex;flex-wrap:wrap;gap:3mm 14mm;align-items:baseline;font-size:19pt;line-height:1.4}
+.tips h2{font-size:12pt;font-weight:500;letter-spacing:.14em;text-transform:uppercase;width:100%}
+[dir=rtl] .tips h2{letter-spacing:0;font-size:16pt}
+.key{font-family:"Ubuntu Mono",monospace;font-size:22pt}
+
+</style>
+</head>
+<body dir="ltr">
+<section class="sheet crimson">
+  <p class="slug" dir="ltr">SAL-MED-02 · Typewriter Tour poster</p>
+  <h1 class="hl">Tell us a story.<br>Six words only.</h1>
+  <img class="photo" src="hemingway.webp" alt="Ernest Hemingway at a typewriter">
+  <div class="quote"><p>“For sale: baby shoes,<br>never worn.”</p><p class="by">—attributed to Hemingway</p></div>
+</section>
+<section class="sheet crimson">
+  <div class="top">
+    <img class="lockup" src="../../logos/sal-lockup-horizontal-reversed.svg" alt="AUIB Society of Arts and Letters">
+    <h1 class="title">The Typewriter Tour</h1>
+  </div>
+  <div class="grid">
+    <div class="cell"><h2>The rules</h2><ul class="rows"><li>One page per person.</li><li>Six words. Punctuation doesn’t count.</li><li>Typed on the Society’s typewriter.</li><li>Keep it campus-appropriate.</li></ul></div>
+    <div class="cell"><h2>Your page</h2><ul class="rows"><li>Join on auibsal.org at the station.</li><li>You choose in your account who sees your page. It’s private until you choose.</li><li>You take your page home.</li></ul></div>
+    <div class="cell"><h2>Join</h2><div class="join"><div class="qrbox"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 25 25" class="qr" role="img" aria-label="auibsal.org/join"><path class="qrline" stroke="#273236" d="M0 0.5h7m3 0h1m1 0h1m1 0h1m1 0h1m1 0h7m-25 1h1m5 0h1m3 0h4m1 0h2m1 0h1m5 0h1m-25 1h1m1 0h3m1 0h1m1 0h1m1 0h1m5 0h1m1 0h1m1 0h3m1 0h1m-25 1h1m1 0h3m1 0h1m1 0h1m1 0h5m3 0h1m1 0h3m1 0h1m-25 1h1m1 0h3m1 0h1m1 0h3m5 0h1m1 0h1m1 0h3m1 0h1m-25 1h1m5 0h1m1 0h1m3 0h4m2 0h1m5 0h1m-25 1h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7m-17 1h2m2 0h1m1 0h1m1 0h1m-17 1h1m1 0h5m3 0h2m1 0h1m4 0h5m-23 1h2m1 0h1m3 0h4m1 0h2m3 0h1m1 0h1m3 0h1m-23 1h2m1 0h1m1 0h1m1 0h1m1 0h2m1 0h3m1 0h3m1 0h1m1 0h2m-24 1h2m1 0h2m6 0h1m1 0h5m5 0h1m-25 1h2m2 0h1m1 0h1m3 0h5m2 0h2m1 0h1m1 0h3m-25 1h2m1 0h1m3 0h3m3 0h1m2 0h1m2 0h1m1 0h1m1 0h1m-24 1h1m4 0h2m2 0h5m1 0h2m2 0h3m1 0h2m-25 1h1m2 0h2m2 0h1m3 0h1m3 0h1m1 0h4m3 0h1m-25 1h1m1 0h1m3 0h2m1 0h1m1 0h10m1 0h1m-15 1h3m1 0h2m1 0h2m3 0h2m-22 1h7m2 0h2m1 0h3m1 0h1m1 0h1m1 0h1m1 0h3m-25 1h1m5 0h1m1 0h3m1 0h1m1 0h1m1 0h1m3 0h2m2 0h1m-25 1h1m1 0h3m1 0h1m1 0h2m2 0h9m1 0h1m-23 1h1m1 0h3m1 0h1m1 0h1m3 0h2m2 0h3m1 0h5m-25 1h1m1 0h3m1 0h1m1 0h2m2 0h1m2 0h1m5 0h2m1 0h1m-25 1h1m5 0h1m2 0h3m2 0h1m1 0h1m1 0h4m2 0h1m-25 1h7m1 0h7m4 0h6"/></svg></div><div><p>Scan to join the Society.</p><p class="url" dir="ltr">auibsal.org/join</p></div></div></div>
+    <div class="cell"><h2>Who we are</h2><p class="who"><span class="m">The paper and the pen.</span>AUIB Society of Arts and Letters</p></div>
+  </div>
+  <div class="tips"><h2>Typewriter tips</h2><p>Press the keys hard.</p><p>For <span class="key">1</span>, type a lowercase <span class="key">l</span>.</p><p>For <span class="key">!</span>, type a period, backspace, then an apostrophe.</p></div>
+</section>
+</body>
+</html>
