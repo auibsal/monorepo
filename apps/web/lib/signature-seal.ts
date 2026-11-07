@@ -1,7 +1,7 @@
 import { seedFromText } from "@repo/brand/components/sal/guilloche";
 
 /** The card number as it is printed on the card. */
-export const cardNumber = (value: number) => String(value).padStart(4, "0");
+export const cardNumber = (value: number) => String(value).padStart(5, "0");
 
 /**
  * A short mark of who signed and when, as on a digital seal: the same on

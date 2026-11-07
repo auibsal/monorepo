@@ -7,7 +7,7 @@ import { BrandLogo } from "../brand-logo";
 import { Guilloche } from "./guilloche";
 
 /** The card number as printed: four digits at least (No. 0042). */
-export const cardNumber = (value: number) => String(value).padStart(4, "0");
+export const cardNumber = (value: number) => String(value).padStart(5, "0");
 
 /** How far the card leans, at most, in degrees. */
 const MAX_TILT = 8;

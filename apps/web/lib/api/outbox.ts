@@ -76,7 +76,11 @@ import { type CacheTag, cacheTags } from "@/lib/supabase";
 import type { Sticker } from "./bot/stickers";
 import { pushToUser } from "./push";
 import { telegramToUser } from "./telegram";
-import { expireWalletPass, walletConfigured } from "./wallet";
+import {
+  expireWalletPass,
+  renumberWalletPass,
+  walletConfigured,
+} from "./wallet";
 
 /**
  * Processes core.outbox rows: the emails and site revalidation queued by
@@ -1380,6 +1384,16 @@ const handlers: Record<string, Handler> = {
     }
     if (waiting.length > 0) {
       throw new BroadcastPending(waiting.join(" "));
+    }
+  },
+  // The renumbering (decisions §10): a saved pass shows the new number.
+  "wallet.renumber": async (_admin, payload) => {
+    if (
+      walletConfigured() &&
+      typeof payload.code === "string" &&
+      typeof payload.number === "number"
+    ) {
+      await renumberWalletPass(payload.code, payload.number);
     }
   },
 };
