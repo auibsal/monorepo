@@ -1328,15 +1328,15 @@ export const welcome = (lang: Lang, app: string) =>
               href: link("/get-involved"),
               title:
                 l === "ar"
-                  ? "شارك: الأدوار والمناوبات وتجارب الأداء"
-                  : "Get involved: roles, shifts and auditions",
+                  ? "شارك معنا: الأدوار وفرق الفعاليات وتجارب الأداء"
+                  : "Get involved: roles, event teams and auditions",
             },
             {
               href: "https://t.me/auibsal_bot",
               title:
                 l === "ar"
                   ? "هدهد على Telegram: يدخلك مجموعة الأعضاء"
-                  : "Hudhud on Telegram: lets you into the members' group",
+                  : "Hudhud on Telegram: lets you into the members’ group",
             },
           ],
           title: l === "ar" ? "من أين تبدأ" : "Where to start",

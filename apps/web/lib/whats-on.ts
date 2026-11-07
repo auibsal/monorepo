@@ -59,7 +59,7 @@ const dayKey = (year: number, monthIndex: number, day: number) => {
 
 /**
  * The month as weeks of seven day keys, starting on the Society's first day
- * of the week (Saturday); days outside the month are null.
+ * of the week (Sunday); days outside the month are null.
  */
 export const monthWeeks = (month: Month) => {
   const first = new Date(Date.UTC(month.year, month.monthIndex, 1));
