@@ -67,6 +67,26 @@ const LANGUAGE_PREFIXES = ["", "/ar"] as const;
 let nextConfig: NextConfig = {
   ...config,
   headers: async () => [
+    // The API routes answer with JSON, CSV or a calendar (audit E5): the
+    // transport and sniffing headers the pages get, and never framed or
+    // indexed. The design system's files keep their own rule below.
+    {
+      headers: [
+        {
+          key: "Strict-Transport-Security",
+          value: "max-age=63072000; includeSubDomains; preload",
+        },
+        { key: "X-Content-Type-Options", value: "nosniff" },
+        { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+        { key: "Cross-Origin-Resource-Policy", value: "same-origin" },
+        { key: "X-Robots-Tag", value: "noindex, nofollow" },
+      ],
+      source: "/api/:path*",
+    },
+    {
+      headers: [{ key: "X-Frame-Options", value: "DENY" }],
+      source: "/api/:path((?!design/).*)",
+    },
     {
       headers: [
         { key: "X-Robots-Tag", value: "noindex, nofollow" },

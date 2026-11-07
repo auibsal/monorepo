@@ -11,20 +11,14 @@ export const buckets = {
   library: {
     id: "library",
     maxBytes: 50 * 1024 * 1024,
-    mimeTypes: undefined,
+    mimeTypes: ["application/pdf", "image/jpeg", "image/png", "image/webp"],
     public: false,
   },
-  /** Public: published images, issue PDFs, document PDFs, avatars/<user id>/…. */
+  /** Public: published images, the Edition's PDF, avatars/<user id>/… (no SVG). */
   media: {
     id: "media",
     maxBytes: 25 * 1024 * 1024,
-    mimeTypes: [
-      "image/jpeg",
-      "image/png",
-      "image/webp",
-      "image/svg+xml",
-      "application/pdf",
-    ],
+    mimeTypes: ["image/jpeg", "image/png", "image/webp", "application/pdf"],
     public: true,
   },
   /**

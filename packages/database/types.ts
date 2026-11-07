@@ -394,6 +394,7 @@ export type Database = {
       activity_log: {
         Row: {
           actor_id: string | null;
+          changed: string[] | null;
           id: number;
           new_row: Json | null;
           occurred_at: string;
@@ -405,6 +406,7 @@ export type Database = {
         };
         Insert: {
           actor_id?: string | null;
+          changed?: string[] | null;
           id?: never;
           new_row?: Json | null;
           occurred_at?: string;
@@ -416,6 +418,7 @@ export type Database = {
         };
         Update: {
           actor_id?: string | null;
+          changed?: string[] | null;
           id?: never;
           new_row?: Json | null;
           occurred_at?: string;

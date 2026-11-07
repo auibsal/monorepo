@@ -62,7 +62,10 @@ describe("checkFile", () => {
     expect(checkFile("library", { size: 0, type: "text/plain" })).toBe("empty");
     expect(
       checkFile("library", { size: 10, type: "application/x-anything" })
-    ).toBeNull();
+    ).toBe("type_not_allowed");
+    expect(checkFile("media", { size: 10, type: "image/svg+xml" })).toBe(
+      "type_not_allowed"
+    );
   });
 });
 
