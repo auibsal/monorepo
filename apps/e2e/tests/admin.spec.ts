@@ -78,3 +78,15 @@ test("editing in the Diwan opens its own page, one step under its list", async (
   // Saving returns to the list it came from.
   await expect(page).toHaveURL(/\/diwan\/qirtas$/);
 });
+
+test("the design system's files open for officers only", async ({
+  page,
+  request,
+}) => {
+  const anonymous = await request.get(`${urls.web}/_design/index.html`);
+  expect(anonymous.status()).toBe(404);
+  await signInWithPassword(page, editor.email);
+  const staff = await page.request.get(`${urls.web}/_design/index.html`);
+  expect(staff.status()).toBe(200);
+  expect(staff.headers()["content-type"]).toContain("text/html");
+});

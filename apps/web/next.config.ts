@@ -10,8 +10,10 @@ const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
 // domain setting.
 //
 // The design system (packages/brand, `bun run build:site`) is built into
-// public/_design and shown inside the Diwan at /diwan/design, which frames
-// it: only the site may frame it, and search engines never index it.
+// apps/web/design and shown inside the Diwan at /diwan/design, which frames
+// it. /_design is a rewrite (not a redirect) to the API route that serves
+// those files to staff only (owner, Nov 7, 2026); only the site may frame
+// it, and search engines never index it.
 let nextConfig: NextConfig = {
   ...config,
   headers: async () => [
@@ -22,6 +24,12 @@ let nextConfig: NextConfig = {
       ],
       source: "/_design/:path*",
     },
+  ],
+  outputFileTracingIncludes: {
+    "/api/design/[...path]": ["./design/**/*"],
+  },
+  rewrites: async () => [
+    { destination: "/api/design/:path*", source: "/_design/:path*" },
   ],
 };
 

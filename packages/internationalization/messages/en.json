@@ -4840,33 +4840,12 @@
       "contactPress": "For anything else, contact the Media Director through any of our channels."
     },
     "privacy": {
-      "title": "Privacy and photo policy",
-      "lede": "How the Society treats your data and your image, from the Policy Manual, and how this website handles your information.",
-      "photoTitle": "Consent, photography and media",
-      "dataTitle": "Privacy and member data",
-      "source": "Policy Manual",
       "p": {
         "5_1": "Anyone clearly featured in Society video or photography, or in an interview, signs a release before publication. Guests see their episode or feature before it is released.",
         "5_2": "At every event, a notice says that photography is taking place. Anyone may wear a camera-shy sticker or ask not to be photographed; photographers respect this without question.",
         "5_3": "Anyone may ask for a photo or video of themselves to be removed. The Society takes it down within 24 hours, no reasons needed.",
         "5_4": "Crowd photographs are fine; close-ups of individuals who have not agreed are not published.",
-        "5_5": "Photographs of people praying, in distress or in private moments are not taken.",
-        "6_1": "The Society collects only what it needs: name, AUIB email, college, year, phone (optional), and attendance. It never collects ID numbers or bank details.",
-        "6_2": "Member data lives in the restricted Members folder, seen only by the officers and the Records Lead.",
-        "6_3": "Member data is never shared outside the Society or used for anything other than Society business, including campaigning in Society elections.",
-        "6_4": "Members may ask to see or delete their data at any time. Data of members who leave is deleted one year after they leave, except their name and roles in the archive.",
-        "6_5": "Submissions, ballots and conduct records follow their own retention rules: Qirtas’s guidelines, B6.11 and B10.8."
-      },
-      "platformTitle": "This website",
-      "platform": {
-        "signIn": "You sign in with your email address. The sign-in cookie is shared across auibsal.org and its subdomains, and is used only to keep you signed in.",
-        "storage": "Member records are stored with Supabase in the European Union (Frankfurt). Who can see each record is enforced in the database itself, by role.",
-        "email": "Email from the platform is sent by Resend from the European Union (Ireland). Links in it are not tracked.",
-        "hosting": "The website is hosted on Vercel.",
-        "analytics": "This website uses no analytics or advertising cookies.",
-        "delete": "You can delete your account under Settings, in your account.",
-        "analyticsOn": "This website counts visits with Google Analytics 4, through Google Tag Manager served from auibsal.org. Analytics cookies are set only if you allow them (Cookie settings, at the foot of every page).",
-        "newsletter": "The Sunday Paper’s public list keeps only your email address, your language and when you subscribed. Unsubscribing stops it at once."
+        "5_5": "Photographs of people praying, in distress or in private moments are not taken."
       }
     },
     "care": {

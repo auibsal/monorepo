@@ -39,7 +39,6 @@ const staticPaths = [
   "/join/typewriter-tour",
   "/about/contact",
   "/about/press",
-  "/library/privacy",
   "/next-stop/care",
   "/events",
   "/library",
