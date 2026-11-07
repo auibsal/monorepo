@@ -11,21 +11,13 @@ export interface CspSources {
 /** A Content Security Policy, directive name to sources (or `true`). */
 export type Csp = Record<string, readonly string[] | true>;
 
-/** The third-party origins the site uses: Google Analytics, YouTube. */
+/**
+ * The third-party origins the site uses: YouTube's privacy-enhanced player
+ * for Next Stop. Analytics is Vercel's, served from the site's own origin.
+ */
 export const defaultCspSources: CspSources = {
-  connect: [
-    "https://*.google-analytics.com",
-    "https://*.analytics.google.com",
-    "https://*.googletagmanager.com",
-  ],
-  // Next Stop episodes: YouTube's privacy-enhanced (no-cookie) player only.
   frame: ["https://www.youtube-nocookie.com"],
-  img: [
-    "https://*.google-analytics.com",
-    "https://*.googletagmanager.com",
-    "https://i.ytimg.com",
-  ],
-  script: ["https://www.googletagmanager.com"],
+  img: ["https://i.ytimg.com"],
 };
 
 /** Cloudflare Turnstile, Supabase Auth's human check on the sign-in forms. */

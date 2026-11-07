@@ -517,10 +517,10 @@ any schema change. Integration tests run against a local stack with
   the sustainability line. A new journey adds its row to
   `docs/platform/email.md` and its story in
   `packages/brand/stories/emails.stories.tsx`.
-- **Analytics** on `apps/web` only: Google Tag Manager with GA4, consent
-  from the site's own card (cookie `sal_consent`) through consent mode,
-  analytics only (the ad signals stay denied). Record events with
-  `track()` from `@repo/analytics/client`
+- **Analytics** on the public site only: Vercel Web Analytics, cookieless
+  (decisions, Nov 7): no Google Tag Manager or Analytics and no cookie
+  banner. The site sets only the cookies it needs (the session, the
+  language and the theme), listed in the Privacy Notice
   (`docs/platform/analytics.md`).
 
 ## The site's practice

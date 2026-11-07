@@ -4,16 +4,9 @@ import { localizedPath } from "@repo/internationalization";
 import { Link } from "@repo/internationalization/navigation";
 import NextLink from "next/link";
 import { getLocale, getTranslations } from "next-intl/server";
-import { CookieSettings } from "@/components/cookie-settings";
-import { askedConsent } from "@/lib/consent";
 
 const INSTAGRAM = "https://www.instagram.com/auibsal";
 const INSTAGRAM_HANDLE = "@auibsal";
-
-interface FooterProps {
-  /** The cookie settings link: only where the consent card runs (the site). */
-  readonly consent?: boolean;
-}
 
 const linkClass = "hover:text-accent hover:underline hover:underline-offset-4";
 
@@ -22,11 +15,11 @@ const linkClass = "hover:text-accent hover:underline hover:underline-offset-4";
  * alike: ink in both modes. The reversed lockup in the page's language and
  * one sentence, three short columns under white labels (Programs, Society,
  * Stay in touch; two side by side on phones), then a hairline and the fine
- * print, which keeps the policies and cookie settings within reach. Nothing here repeats the
+ * print, which keeps the policies within reach. Nothing here repeats the
  * header (owner, Oct 30, 2026): its sections, Search, Sign in and
  * Membership live only there.
  */
-export const Footer = async ({ consent = true }: FooterProps = {}) => {
+export const Footer = async () => {
   const t = await getTranslations("web.footer");
   const tn = await getTranslations("web.nav");
   const tx = await getTranslations("web.footerExtra");
@@ -134,9 +127,6 @@ export const Footer = async ({ consent = true }: FooterProps = {}) => {
                 </Link>
               </li>
             ))}
-            {consent && Object.values(askedConsent()).some(Boolean) ? (
-              <CookieSettings />
-            ) : null}
           </ul>
           <p>{tx("paperless")}</p>
           <p>{tx("colophon")}</p>

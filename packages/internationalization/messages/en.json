@@ -4198,7 +4198,6 @@
       "privacy": "Privacy and photo policy",
       "partners": "Partners",
       "newsletter": "The Sunday Paper",
-      "cookieSettings": "Cookie settings",
       "governance": "The Council",
       "terms": "Terms of use",
       "accessibility": "Accessibility",
@@ -4210,22 +4209,6 @@
       },
       "verify": "Verify a card or certificate",
       "nextStop": "Next Stop"
-    },
-    "consent": {
-      "title": "Cookies",
-      "body": "auibsal.org counts visits with Google Analytics only if you allow it.",
-      "privacy": "Privacy policy",
-      "allow": "Allow",
-      "allowAll": "Allow all",
-      "decline": "Decline",
-      "choose": "Choose",
-      "choices": "Your choices",
-      "save": "Save my choices",
-      "close": "Close cookie settings",
-      "analytics": {
-        "name": "Analytics",
-        "description": "Counting visits with Google Analytics."
-      }
     },
     "home": {
       "metaTitle": "The paper and the pen",

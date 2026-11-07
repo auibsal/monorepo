@@ -1,4 +1,3 @@
-import { keys as analytics } from "@repo/analytics/keys";
 import { keys as auth } from "@repo/auth/keys";
 import { keys as database } from "@repo/database/keys";
 import { keys as email } from "@repo/email/keys";
@@ -8,14 +7,7 @@ import { keys as telegram } from "@repo/telegram/keys";
 import { createEnv } from "@t3-oss/env-nextjs";
 import { z } from "zod";
 
-const presets = envPresets(
-  analytics(),
-  auth(),
-  core(),
-  database(),
-  email(),
-  telegram()
-);
+const presets = envPresets(auth(), core(), database(), email(), telegram());
 
 /**
  * The one app's environment. Server keys (the Supabase secret key, Resend,
