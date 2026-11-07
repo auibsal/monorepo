@@ -75,3 +75,5 @@ Arabic rules: Modern Standard Arabic; Latin digits (0–9); «» for quotations 
 | names of people | in Arabic editions, written in Arabic script as in the Founding Proposal (شاهين فرجو، فجر سيف خالد عزت، يعقوب غسان العزاوي، محمد علي إحسان أحميد، علي حيدر، مية حكيمي، حسن صادق) |
 | Jelena Zivkovic / Ali Najm | يلينا زيفكوفيتش / علي نجم |
 | Qirtas (grammar) | قرطاس is masculine (قرطاس يصدر، نشره قرطاس); when the word «صحيفة» is used, agree with it |
+
+**Titles of named holders:** a title that names a woman takes تاء التأنيث (نائبة الرئيس، الأمينة العامة، رئيسة التحرير، مديرة الإعلام) with feminine verbs and pronouns; a seat named in the abstract keeps the form above. The Vice President is «نائبة الرئيس».
