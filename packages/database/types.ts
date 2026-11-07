@@ -2400,6 +2400,7 @@ export type Database = {
           id: string;
           kind: string;
           partner_id: string | null;
+          resolution_id: string | null;
           revoked_at: string | null;
         };
         Insert: {
@@ -2414,6 +2415,7 @@ export type Database = {
           id?: string;
           kind: string;
           partner_id?: string | null;
+          resolution_id?: string | null;
           revoked_at?: string | null;
         };
         Update: {
@@ -2428,6 +2430,7 @@ export type Database = {
           id?: string;
           kind?: string;
           partner_id?: string | null;
+          resolution_id?: string | null;
           revoked_at?: string | null;
         };
         Relationships: [
@@ -2436,6 +2439,13 @@ export type Database = {
             columns: ["partner_id"];
             isOneToOne: false;
             referencedRelation: "partners";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "partner_invitations_resolution_id_fkey";
+            columns: ["resolution_id"];
+            isOneToOne: false;
+            referencedRelation: "resolutions";
             referencedColumns: ["id"];
           },
         ];

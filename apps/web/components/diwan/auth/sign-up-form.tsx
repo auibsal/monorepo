@@ -4,6 +4,7 @@ import { AUIB_DOMAIN, auibLocalPart, signUpWithEmail } from "@repo/auth/email";
 import { useAuth } from "@repo/auth/provider";
 import { FormHeader } from "@repo/brand/components/sal/form-header";
 import { Button } from "@repo/brand/components/ui/button";
+import { Checkbox } from "@repo/brand/components/ui/checkbox";
 import { Input } from "@repo/brand/components/ui/input";
 import { Label } from "@repo/brand/components/ui/label";
 import { Link } from "@repo/internationalization/navigation";
@@ -61,6 +62,9 @@ export const SignUpForm = ({ next: given, outside }: SignUpFormProps) => {
   const named =
     nameParts.partsComplete(fullNames.en) &&
     nameParts.partsComplete(fullNames.ar);
+  // Students join themselves and say so (decisions §2); faculty and staff
+  // ask for Associate membership on /join instead.
+  const [student, setStudent] = useState(false);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string>();
   const [sentTo, setSentTo] = useState<string>();
@@ -209,7 +213,18 @@ export const SignUpForm = ({ next: given, outside }: SignUpFormProps) => {
               </fieldset>
             ))}
           </div>
-        ) : null}
+        ) : (
+          <div className="flex items-start gap-3">
+            <Checkbox
+              checked={student}
+              id={`${id}-student`}
+              onCheckedChange={(v) => setStudent(v === true)}
+            />
+            <Label className="leading-normal" htmlFor={`${id}-student`}>
+              {t("signUp.student")}
+            </Label>
+          </div>
+        )}
         {human.element}
         {error ? (
           <p className="text-text" role="alert">
@@ -220,7 +235,7 @@ export const SignUpForm = ({ next: given, outside }: SignUpFormProps) => {
           disabled={
             pending ||
             !human.ready ||
-            (external ? !named : auibLocalPart(values.email) === "")
+            (external ? !named : auibLocalPart(values.email) === "" || !student)
           }
           type="submit"
         >

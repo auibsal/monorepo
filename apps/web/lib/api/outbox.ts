@@ -105,6 +105,20 @@ interface OutboxRow {
 }
 
 // English pages have no language prefix; other languages do ("/ar").
+/** The kind of invitation email: a class, a partner's team or guest, or the Society's guest. */
+const invitationKind = (
+  kind: string,
+  hasPartner: boolean
+): "team" | "guest" | "society" | "associate" | "honorary" => {
+  if (kind === "associate" || kind === "honorary") {
+    return kind;
+  }
+  if (!hasPartner) {
+    return "society";
+  }
+  return kind === "team" ? "team" : "guest";
+};
+
 const prefix = (lang: string) =>
   lang === project.locale.default ? "" : `/${lang}`;
 
@@ -1079,10 +1093,7 @@ const handlers: Record<string, Handler> = {
       name =
         lang === "ar" ? (partner.name_ar ?? partner.name_en) : partner.name_en;
     }
-    let kind: "team" | "guest" | "society" = "society";
-    if (name) {
-      kind = invitation.kind === "team" ? "team" : "guest";
-    }
+    const kind = invitationKind(invitation.kind, Boolean(name));
     await send(
       { email: invitation.email, lang },
       partnerInvitation(

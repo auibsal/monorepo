@@ -132,7 +132,8 @@
       "guestLede": "Anyone may make a guest account to book a place at the Society’s open events. Guests aren’t members: membership is for AUIB students, with an AUIB email.",
       "resend": "Send the email again",
       "resendIn": "Send the email again in {seconds} s",
-      "resent": "Sent. Check your inbox and spam folder."
+      "resent": "Sent. Check your inbox and spam folder.",
+      "student": "I’m an enrolled AUIB student. (Faculty and staff: ask for Associate membership on Join.)"
     },
     "forgot": {
       "title": "Reset your password",
@@ -999,15 +1000,26 @@
         "guests": {
           "link": "Guests",
           "title": "The Society’s guests",
-          "lede": "People outside AUIB whom Membership invites, with no partner. They hold a guest’s membership and card: they book places and write for calls open to them. A partner’s guests are on its dashboard.",
+          "lede": "People outside AUIB who signed up as guests or whom an event’s lead invited by name. They hold a guest’s card: they book places and write for Qirtas. A partner’s guests are on its dashboard.",
           "current": "Guests now",
           "empty": "No guests yet.",
           "since": "Since {date}",
           "end": "End",
           "endConfirm": "End {name}'s guest membership? Their card stops.",
-          "invite": "Invite"
+          "invite": "Invite to a class"
         },
-        "notAMember": "Guest or partner"
+        "notAMember": "Guest or partner",
+        "classes": {
+          "hint": "Associate Members (faculty, staff and friends of the Society) and Honorary Members join by invitation, one named person at a time. The link works for that address only, for fourteen days. An invitation never gives a role or a seat.",
+          "class": "Class",
+          "associate": "Associate Member",
+          "honorary": "Honorary Member",
+          "resolution": "The Council’s resolution",
+          "resolutionHint": "An Honorary Member is invited only after the Council adopts its resolution (F-34).",
+          "email": "Their email",
+          "invite": "Send the invitation",
+          "sent": "Invitation sent."
+        }
       },
       "member": {
         "title": "Member",
@@ -3904,15 +3916,11 @@
         "inviteGuest": "Invite a guest",
         "sent": "Invitation sent.",
         "open": "Open invitations",
-        "link": "Shareable link",
         "until": "Until {date}",
         "copy": "Copy link",
         "copied": "Copied",
         "withdraw": "Withdraw",
-        "withdrawConfirm": "Withdraw this invitation? Its link stops working.",
-        "linkHint": "Or make a link to share with your people. Whoever signs up with it waits here until you verify them.",
-        "makeLink": "Make a link",
-        "societyLinkHint": "Or make a link to share. Whoever signs up with it is the Society’s guest at once."
+        "withdrawConfirm": "Withdraw this invitation? Its link stops working."
       }
     },
     "accountHome": {
@@ -3957,7 +3965,10 @@
         "unknown": "Something went wrong. Try again.",
         "one_membership": "This account already holds a membership of another kind. An account is one kind only: a member, a guest or a partner’s."
       },
-      "society": "The AUIB Society of Arts and Letters invites you as its guest: book places at events and carry a guest’s card."
+      "society": "The AUIB Society of Arts and Letters invites you as its guest: book places at events, write for Qirtas and carry a guest’s card.",
+      "associate": "The AUIB Society of Arts and Letters invites you to join as an Associate Member: come to events, write for Qirtas and carry the live membership card.",
+      "honorary": "The Council of the AUIB Society of Arts and Letters has voted to invite you to join as an Honorary Member.",
+      "acceptClass": "Accept to join the Society."
     },
     "joint": {
       "title": "Run with a partner",

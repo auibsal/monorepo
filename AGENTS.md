@@ -216,6 +216,14 @@ any schema change. Integration tests run against a local stack with
   only Members vote (checked in at two events or general meetings that
   academic year: check-ins are the only record, `membership.activity_records`)
   and hold office. Staff is a member holding a role (`private.is_staff`).
+  Students join themselves with an AUIB address and confirm they are
+  students; Associate and Honorary Members (Honorary only after the
+  Council's resolution, F-34) join by the Director of Membership's
+  invitation. One invitation system (`governance.partner_invitations`,
+  decisions §10): every invitation is single-use, to a named address,
+  valid 14 days and revocable, sent by the Director of Membership
+  (classes), a Partner Lead (the team, its guests) or an event's lead
+  (guests); no shareable links and no invitation ever grants a role.
   Sign-up takes an AUIB address only, unless the account comes from an
   invitation, applies to partner or signs up as a guest
   (`private.sign_up_allowed`). `/welcome` asks one question per screen
@@ -325,8 +333,7 @@ any schema change. Integration tests run against a local stack with
   checklist. No perks or offers anywhere: sponsors in kind are thanked
   with a "Supported by" line, and the card is for the door only.
 - **Guests** sign up at `/sign-up/guest`, or are invited by named email
-  from Membership → Guests, by a partner, or by an event's lead on the
-  event's Diwan page (`partner_invitations.event_id`); never members. Each
+  by a partner or by an event's lead on the event's Diwan page (`partner_invitations.event_id`); never members. Each
   has a number from the one series and a Guest card from the start, books
   RSVP events, and writes for Qirtas (bylined as a guest, never eligible
   for the Prize).

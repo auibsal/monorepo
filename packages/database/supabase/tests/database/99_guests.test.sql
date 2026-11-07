@@ -95,7 +95,7 @@ as $$
 $$;
 -- </preamble>
 
-select plan(5);
+select plan(8);
 
 select pg_temp.make_user('00000000-0000-0000-0000-00000002b001', 'lead.g@auib.edu.iq', 'Lead');
 select pg_temp.make_user('00000000-0000-0000-0000-00000002b002', 'other.g@auib.edu.iq', 'Other');
@@ -121,7 +121,7 @@ select lives_ok(
 select throws_ok(
   $$ insert into governance.partner_invitations (kind, event_id)
      values ('guest', '00000000-0000-0000-0000-00000002b101') $$,
-  '42501', null,
+  '22023', 'invitation_needs_email',
   'but never by a shareable link'
 );
 select is((select count(*)::int from governance.partner_invitations where event_id is not null), 1,
@@ -133,6 +133,28 @@ select throws_ok(
      values ('guest', 'stranger.g@gmail.com', '00000000-0000-0000-0000-00000002b101') $$,
   '42501', null,
   'Someone who does not lead the event cannot'
+);
+
+-- Classes: the Director of Membership invites by name; an Honorary Member
+-- only after the Council's adopted resolution (F-34).
+select pg_temp.logout();
+select pg_temp.make_user('00000000-0000-0000-0000-00000002b004', 'membership.g@auib.edu.iq', 'Membership');
+select pg_temp.grant_role('00000000-0000-0000-0000-00000002b004', 'membership_director');
+select pg_temp.council_resolution();
+select pg_temp.login_as('00000000-0000-0000-0000-00000002b004');
+select lives_ok(
+  $$ insert into governance.partner_invitations (kind, email) values ('associate', 'professor.g@auib.edu.iq') $$,
+  'Faculty and staff are invited to the Associate class with their AUIB address'
+);
+select throws_ok(
+  $$ insert into governance.partner_invitations (kind, email) values ('honorary', 'poet.g@example.org') $$,
+  '22023', 'needs_council_resolution',
+  'An Honorary Member is invited only with the Council''s resolution'
+);
+select lives_ok(
+  $$ insert into governance.partner_invitations (kind, email, resolution_id)
+     values ('honorary', 'poet.g@example.org', '00000000-0000-0000-0000-0000000c0001') $$,
+  'and with it'
 );
 
 select * from finish();

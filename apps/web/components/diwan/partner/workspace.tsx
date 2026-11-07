@@ -618,7 +618,7 @@ interface Invitation {
   email: string | null;
   expires_at: string;
   id: string;
-  kind: "team" | "guest";
+  kind: "team" | "guest" | "associate" | "honorary";
 }
 
 /** The link an invitation is, on this site (/invite/<code>). */
@@ -626,9 +626,9 @@ const inviteUrl = (code: string, locale: string) =>
   `${window.location.origin}${locale === "en" ? "" : `/${locale}`}/invite/${code}`;
 
 /**
- * An email invitation: to the team (the Lead's) or as a guest. The person
- * gets an email; the link works for fourteen days. With no partner, the
- * Society's own guest (Membership, in the Diwan).
+ * An email invitation to a named person (decisions §10): to the team (the
+ * Lead's) or as the partner's guest. The person gets an email; the link
+ * works for that address only, for fourteen days.
  */
 export const InviteByEmail = ({
   kind,
@@ -700,7 +700,7 @@ export const OpenInvitations = ({
   kind,
   partnerId,
 }: {
-  kind: "team" | "guest";
+  kind: "team" | "guest" | "associate" | "honorary";
   partnerId: string | null;
 }) => {
   const t = useTranslations("diwan.partnerDesk.invite");
@@ -757,7 +757,7 @@ export const OpenInvitations = ({
           >
             <span className="grid gap-1">
               <span className="break-all text-sm" dir="ltr">
-                {invitation.email ?? t("link")}
+                {invitation.email}
               </span>
               <span className="type-caption">
                 {t("until", {
@@ -787,44 +787,6 @@ export const OpenInvitations = ({
         ))}
       </RowList>
       <ErrorLine error={withdraw.error} />
-    </div>
-  );
-};
-
-/**
- * A shareable guest link, for the partner's own group: whoever joins
- * through it waits until the partner verifies them. The Society's own link
- * (no partner) welcomes its guests at once.
- */
-export const ShareableLink = ({ partnerId }: { partnerId: string | null }) => {
-  const t = useTranslations("diwan.partnerDesk.invite");
-  const { supabase } = useAuth();
-  const queryClient = useQueryClient();
-  const make = useMutation({
-    mutationFn: async () =>
-      unwrap(
-        await supabase
-          .schema("governance")
-          .from("partner_invitations")
-          .insert({ kind: "guest", partner_id: partnerId })
-      ),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: KEY }),
-  });
-  return (
-    <div className="grid gap-2">
-      <p className="type-caption">
-        {partnerId ? t("linkHint") : t("societyLinkHint")}
-      </p>
-      <Button
-        className="justify-self-start"
-        disabled={make.isPending}
-        onClick={() => make.mutate()}
-        type="button"
-        variant="outline"
-      >
-        {t("makeLink")}
-      </Button>
-      <ErrorLine error={make.error} />
     </div>
   );
 };
@@ -973,7 +935,6 @@ export const PartnerPeople = () => {
           >
             <Guests partnerId={partner.id} />
             <InviteByEmail kind="guest" partnerId={partner.id} />
-            <ShareableLink partnerId={partner.id} />
             <OpenInvitations kind="guest" partnerId={partner.id} />
           </DiwanSection>
           <DiwanSection

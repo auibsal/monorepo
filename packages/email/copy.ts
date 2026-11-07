@@ -495,12 +495,37 @@ export const personalEmailConfirm = (lang: Lang, confirm: string) =>
 const SOCIETY_AR = "جمعية الفنون والآداب في الجامعة الأمريكية في بغداد";
 
 /** A partner invitation's heading and first lines, by kind and language. */
+type InvitationKind = "team" | "guest" | "society" | "associate" | "honorary";
+
 const invitationLines = (
   l: Lang,
-  kind: "team" | "guest" | "society",
+  kind: InvitationKind,
   partner: string
 ): { body: string; heading: string } => {
-  // The Society's own guest, invited by Membership (owner, Oct 31, 2026).
+  // Joining by class (decisions §2): from the Director of Membership.
+  if (kind === "associate") {
+    return l === "ar"
+      ? {
+          body: `تدعوك ${SOCIETY_AR} لتكون عضوًا منتسبًا: تحضر الفعاليات وتكتب لقرطاس وتحمل بطاقة العضوية الحيّة. لا يصوّت العضو المنتسب ولا يشغل منصبًا.`,
+          heading: "أنت مدعو عضوًا منتسبًا",
+        }
+      : {
+          body: "The AUIB Society of Arts and Letters invites you to join as an Associate Member: you come to events, write for Qirtas and carry the live membership card. Associate Members don’t vote or hold office.",
+          heading: "You are invited to join as an Associate Member",
+        };
+  }
+  if (kind === "honorary") {
+    return l === "ar"
+      ? {
+          body: `صوّت مجلس ${SOCIETY_AR} على دعوتك عضوًا فخريًا. تحضر الفعاليات وتكتب لقرطاس وتحمل بطاقة العضوية الحيّة.`,
+          heading: "أنت مدعو عضوًا فخريًا",
+        }
+      : {
+          body: "The Council of the AUIB Society of Arts and Letters has voted to invite you to join as an Honorary Member. You come to events, write for Qirtas and carry the live membership card.",
+          heading: "You are invited to join as an Honorary Member",
+        };
+  }
+  // The Society's own guest, invited by an event's lead.
   if (kind === "society") {
     return l === "ar"
       ? {
@@ -541,7 +566,7 @@ const invitationLines = (
 export const partnerInvitation = (
   lang: Lang,
   partner: string,
-  kind: "team" | "guest" | "society",
+  kind: InvitationKind,
   link: string
 ) =>
   build(lang, (l) => ({
