@@ -283,6 +283,26 @@ any schema change. Integration tests run against a local stack with
   - **The Library re-sync** (`/api/cron/notion-sync?documents=all`)
     republishes every document row, Arabic editions by code, and retires
     rows of retired families.
+  - **One design per thing** (decisions §6): `FormPage`, `Letter`,
+    `MembershipCard` and `Certificate` in `@repo/brand/components/sal`
+    (the guilloche too). The site renders them; print and PDF are the
+    same page printed from the browser; Google Wallet carries the card's
+    fields (name, member number, class, member since, live QR). The card
+    is "membership card", never "ID card"; its check
+    (`/verify/member/<code>`) shows name, class, status and member since
+    only, and lists no certificates. Certificates are finishing Qalam and
+    the Mutanabbi Prize only, one language each (`lang`), signed by the
+    Qalam lead and the Editor-in-Chief, or the Editor-in-Chief and the
+    President (`recognition.certificateSigners`, `sign_certificate`); a
+    Qalam student is named from the roster, and the check shows first
+    name, last initial, school and year. Service is a letter
+    (`membership.service_letters`, F-05) with a verification code checked
+    on `/verify/<code>`; the Diwan's letter page writes F-03, F-30, F-32,
+    F-33, F-34 and F-42 on the same template.
+  - **The forms register** in SAL-EXB-01 is the one source of every
+    form's number, title and fields: `bun run check:forms`
+    (`scripts/check-forms-register.ts`, in CI with the `NOTION_TOKEN`
+    secret) compares `governance.form_types` and `registerFields` with it.
 
 - **RLS first.** Postgres Row Level Security is the security boundary for
   every read and write. Every table has RLS enabled in the migration that
@@ -415,9 +435,7 @@ any schema change. Integration tests run against a local stack with
   the card number, and from the serial on certificates; the check pages and
   the Wallet banner draw the same one, so a card or certificate can be
   compared with its check. One check for both: `/verify/<code>` takes a
-  certificate or a card code. A card's check lists the member's
-  certificates only if they turn it on (`show_certificates_on_card`, off by
-  default). Google Wallet only (`docs/platform/wallet.md`); the card asks
+  certificate or a card code. Google Wallet only (`docs/platform/wallet.md`); the card asks
   the Wallet API whether the pass is saved rather than waiting for
   Google's callback. Never put an
   account id in a QR.

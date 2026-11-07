@@ -35,6 +35,13 @@ Branch: `claude/new-session-qosn60` (PR #229).
 - [ ] Import the spring 2026 Tour and load the invitations (173 rows; 15
       plain; 4 greeted "Hello,"; 62 import rows without email stay
       private). Send only when the owner says go.
+- [x] One design per thing: FormPage, Letter, MembershipCard and
+      Certificate from `packages/brand`; certificates (Qalam, the Prize),
+      service letters with verification, the letter page, the check pages
+      (migration 000900).
+- [x] The forms register check (`bun run check:forms`).
+- [ ] Add the repository secret `NOTION_TOKEN` (GitHub, Actions secrets)
+      so CI runs the forms register check; without it the step skips.
 - [ ] Remove `charity` from the Data API's exposed schemas, then drop the
       empty schema in a later migration.
 

@@ -22,6 +22,12 @@ own versions in the Library.
 - Hudhud warns and then removes people in the members' group who haven't
   joined.
 - The Library re-syncs every document from Notion under the new codes.
+- One design for each form, letter, membership card and certificate, from
+  the brand kit; certificates only for finishing Qalam and the Mutanabbi
+  Prize, in one language each; service letters with a code anyone can
+  check; the card's check shows name, class, status and member since.
+- The site's forms follow the register in the Leadership Handbook, checked
+  in CI.
 
 - Every event is one kind: council meetings, the AGM and Launch Night are
   made in What's on like any other. An event takes the add-ons it needs
