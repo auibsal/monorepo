@@ -112,3 +112,11 @@ export const noticeMessage = ({ body, button, title }: Notice) => ({
     ? `<b>${escapeHtml(title)}</b>\n\n${escapeHtml(body)}`
     : `<b>${escapeHtml(title)}</b>`,
 });
+
+/**
+ * The account page where a member connects Telegram (HUD-1, HUD-2): the
+ * settings panel lives here, Telegram's login returns here, the API route
+ * accepts only this address, and Hudhud's "Link my account" opens it.
+ * BotFather's redirect list must carry it in both languages.
+ */
+export const TELEGRAM_LINK_PAGE = "/membership/settings/notices";

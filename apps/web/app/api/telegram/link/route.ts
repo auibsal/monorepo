@@ -2,7 +2,7 @@ import { authenticateRequest } from "@repo/auth/verify";
 import { createAdminClient } from "@repo/database/admin";
 import { parseError } from "@repo/observability/error";
 import { log } from "@repo/observability/log";
-import { botIdFromToken } from "@repo/telegram";
+import { botIdFromToken, TELEGRAM_LINK_PAGE } from "@repo/telegram";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { env } from "@/env";
@@ -22,7 +22,6 @@ export const OPTIONS = preflight;
 // is 43 base64url characters.
 const VERIFIER = /^[\w.~-]{43,128}$/;
 const CHALLENGE = /^[\w-]{43}$/;
-const PROFILE_PATH = /^(\/[a-z]{2})?\/membership\/profile$/;
 
 const body = z.union([
   z.object({
@@ -37,12 +36,13 @@ const body = z.union([
   }),
 ]);
 
-/** Telegram returns the member to their Diwan profile, in either language. */
+/** Telegram returns the member to their settings page, in either language. */
 const isProfilePage = (redirectUri: string) => {
   const url = new URL(redirectUri);
   return (
     url.origin === new URL(env.NEXT_PUBLIC_SITE_URL).origin &&
-    PROFILE_PATH.test(url.pathname) &&
+    (url.pathname === TELEGRAM_LINK_PAGE ||
+      url.pathname === `/ar${TELEGRAM_LINK_PAGE}`) &&
     !url.search &&
     !url.hash
   );
@@ -66,15 +66,20 @@ export const POST = async (request: Request) => {
     return json({ error: "unauthorized" }, 401);
   }
   const parsed = body.safeParse(await request.json().catch(() => ({})));
-  if (!(parsed.success && isProfilePage(parsed.data.redirectUri))) {
+  if (!parsed.success) {
     return json({ error: "invalid_body" }, 400);
   }
   const token = env.TELEGRAM_BOT_TOKEN;
   const clientSecret = env.TELEGRAM_LOGIN_CLIENT_SECRET;
+  // Without Telegram's login the page falls back to the bot's one-time
+  // code, whatever page it is on (HUD-1).
   if (!(token && clientSecret)) {
     return "code" in parsed.data
       ? json({ error: "not_configured" }, 503)
       : json({ url: null });
+  }
+  if (!isProfilePage(parsed.data.redirectUri)) {
+    return json({ error: "invalid_body" }, 400);
   }
   const clientId = botIdFromToken(token);
   if (!("code" in parsed.data)) {

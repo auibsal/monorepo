@@ -1,6 +1,6 @@
 import { apiUrl, siteUrl } from "@repo/internationalization";
 import { journal } from "@repo/sal-data";
-import { startLink } from "@repo/telegram";
+import { startLink, TELEGRAM_LINK_PAGE } from "@repo/telegram";
 import type { Lang } from "./copy";
 
 /** A public page, in the member's language (English has no prefix). */
@@ -26,9 +26,9 @@ export const wordPage = (lang: Lang) => web(lang, "/qirtas/games/word");
 export const documentPage = (lang: Lang, slug: string) =>
   web(lang, `/library/${slug}`);
 
-/** Where a member connects Telegram: their profile. */
+/** Where a member connects Telegram: Settings in their account (HUD-2). */
 export const connectPage = (lang: Lang) =>
-  accountPage(lang, "/profile#telegram");
+  siteUrl(lang, `${TELEGRAM_LINK_PAGE}#telegram`);
 
 export const botLink = (username: string, payload?: string) =>
   startLink(username, payload);
