@@ -3,6 +3,7 @@ import { log } from "@repo/observability/log";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { env } from "@/env";
+import { problem } from "@/lib/api/problem";
 import { verifySvix } from "@/lib/api/svix";
 
 const event = z.object({
@@ -24,11 +25,11 @@ const event = z.object({
 export const POST = async (request: Request) => {
   const secret = env.RESEND_WEBHOOK_SECRET;
   if (!secret) {
-    return NextResponse.json({ error: "not_configured" }, { status: 503 });
+    return problem(503, "not_configured");
   }
   const body = await request.text();
   if (!verifySvix(secret, request.headers, body)) {
-    return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+    return problem(401, "unauthorized");
   }
   const parsed = event.safeParse(JSON.parse(body));
   if (!parsed.success) {
@@ -63,7 +64,7 @@ export const POST = async (request: Request) => {
       .upsert(rows, { onConflict: "email" });
     if (error) {
       log.error(`Suppression not kept: ${error.message}`);
-      return NextResponse.json({ error: "failed" }, { status: 500 });
+      return problem(500, "failed");
     }
   }
   return NextResponse.json({ ok: true });

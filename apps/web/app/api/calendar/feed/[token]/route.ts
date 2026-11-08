@@ -1,6 +1,7 @@
 import { createAdminClient } from "@repo/database/admin";
 import { memberFeed } from "@/lib/api/calendar";
 import { icsResponse, renderCalendar } from "@/lib/api/ics";
+import { problem } from "@/lib/api/problem";
 
 const TOKEN = /^[0-9a-f]{48}$/;
 const ICS_SUFFIX = /\.ics$/;
@@ -12,12 +13,12 @@ export const GET = async (
 ) => {
   const token = (await params).token.replace(ICS_SUFFIX, "");
   if (!TOKEN.test(token)) {
-    return new Response("Not found", { status: 404 });
+    return problem(404, "not_found");
   }
 
   const feed = await memberFeed(createAdminClient(), token);
   if (!feed) {
-    return new Response("Not found", { status: 404 });
+    return problem(404, "not_found");
   }
 
   const name =

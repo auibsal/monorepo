@@ -2,9 +2,9 @@ import { authenticateRequest } from "@repo/auth/verify";
 import { createAdminClient } from "@repo/database/admin";
 import { parseError } from "@repo/observability/error";
 import { log } from "@repo/observability/log";
-import { NextResponse } from "next/server";
 import { corsHeaders, preflight } from "@/lib/api/cors";
 import { hasPermission } from "@/lib/api/permissions";
+import { respond } from "@/lib/api/problem";
 import { removeAuthenticators } from "@/lib/api/two-step";
 
 export const OPTIONS = preflight;
@@ -20,8 +20,7 @@ const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
  */
 export const POST = async (request: Request) => {
   const headers = corsHeaders(request);
-  const json = (data: object, status = 200) =>
-    NextResponse.json(data, { headers, status });
+  const json = respond(headers);
 
   const session = await authenticateRequest(request);
   if (!session) {

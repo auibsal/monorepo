@@ -2,6 +2,7 @@ import { createAdminClient } from "@repo/database/admin";
 import { NextResponse } from "next/server";
 import { corsHeaders, preflight } from "@/lib/api/cors";
 import { inviteStopEmail, stopTokenUser } from "@/lib/api/email-stop";
+import { problem } from "@/lib/api/problem";
 
 export const OPTIONS = preflight;
 
@@ -26,10 +27,7 @@ export const POST = async (request: Request) => {
     // The one-time invitation's stop link: off the list for good.
     const email = inviteStopEmail(invite);
     if (!email) {
-      return NextResponse.json(
-        { error: "invalid_token" },
-        { headers, status: 400 }
-      );
+      return problem(400, "invalid_token", headers);
     }
     const { error } = await createAdminClient()
       .schema("membership")
@@ -37,7 +35,7 @@ export const POST = async (request: Request) => {
       .delete()
       .eq("email", email);
     return error
-      ? NextResponse.json({ error: "failed" }, { headers, status: 500 })
+      ? problem(500, "failed", headers)
       : NextResponse.json({ ok: true }, { headers });
   }
   const fromQuery = params.get("token");
@@ -48,10 +46,7 @@ export const POST = async (request: Request) => {
     fromQuery ?? (typeof body?.token === "string" ? body.token : "");
   const userId = stopTokenUser(token);
   if (!userId) {
-    return NextResponse.json(
-      { error: "invalid_token" },
-      { headers, status: 400 }
-    );
+    return problem(400, "invalid_token", headers);
   }
   const { error } = await createAdminClient()
     .schema("core")
@@ -59,7 +54,7 @@ export const POST = async (request: Request) => {
     .update({ notify_email: false })
     .eq("id", userId);
   if (error) {
-    return NextResponse.json({ error: "failed" }, { headers, status: 500 });
+    return problem(500, "failed", headers);
   }
   return NextResponse.json({ ok: true }, { headers });
 };

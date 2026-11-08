@@ -1,25 +1,13 @@
-import { timingSafeEqual } from "node:crypto";
 import { env } from "@/env";
+import { hasBearer } from "./bearer";
+import { problem } from "./problem";
 
 /**
  * Vercel Cron sends `Authorization: Bearer <CRON_SECRET>` when the
  * `CRON_SECRET` environment variable is set on the project. Fails closed: if
  * the secret is not configured, every request is rejected.
  */
-export const isAuthorizedCronRequest = (request: Request): boolean => {
-  const secret = env.CRON_SECRET;
+export const isAuthorizedCronRequest = (request: Request): boolean =>
+  hasBearer(request, env.CRON_SECRET);
 
-  if (!secret) {
-    return false;
-  }
-
-  const header = request.headers.get("authorization") ?? "";
-  const expected = Buffer.from(`Bearer ${secret}`);
-  const received = Buffer.from(header);
-
-  return (
-    expected.length === received.length && timingSafeEqual(expected, received)
-  );
-};
-
-export const unauthorized = () => new Response("Unauthorized", { status: 401 });
+export const unauthorized = () => problem(401, "unauthorized");

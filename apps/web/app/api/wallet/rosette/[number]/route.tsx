@@ -1,5 +1,6 @@
 import { guillochePaths } from "@repo/brand/components/sal/guilloche";
 import { ImageResponse } from "next/og";
+import { problem } from "@/lib/api/problem";
 
 const NUMBER = /^[0-9]{1,7}$/;
 const PAPER = "#f5f2ee";
@@ -16,7 +17,7 @@ export const GET = async (
 ) => {
   const { number } = await params;
   if (!NUMBER.test(number)) {
-    return new Response("Not found", { status: 404 });
+    return problem(404, "not_found");
   }
   const paths = guillochePaths(Number(number));
   return new ImageResponse(

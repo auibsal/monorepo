@@ -1,27 +1,16 @@
-import { timingSafeEqual } from "node:crypto";
 import { revalidateTag } from "next/cache";
 import { env } from "@/env";
+import { hasBearer } from "@/lib/api/bearer";
+import { problem } from "@/lib/api/problem";
 import { cacheTags } from "@/lib/supabase";
-
-const authorized = (request: Request) => {
-  const secret = env.REVALIDATE_SECRET;
-  if (!secret) {
-    return false;
-  }
-  const expected = Buffer.from(`Bearer ${secret}`);
-  const received = Buffer.from(request.headers.get("authorization") ?? "");
-  return (
-    expected.length === received.length && timingSafeEqual(expected, received)
-  );
-};
 
 /**
  * POST { tags: ["events", …] } with `Authorization: Bearer <REVALIDATE_SECRET>`.
  * Called by the API routes when publish-relevant rows change.
  */
 export const POST = async (request: Request) => {
-  if (!authorized(request)) {
-    return new Response("Unauthorized", { status: 401 });
+  if (!hasBearer(request, env.REVALIDATE_SECRET)) {
+    return problem(401, "unauthorized");
   }
 
   const body = (await request.json().catch(() => ({}))) as { tags?: unknown };

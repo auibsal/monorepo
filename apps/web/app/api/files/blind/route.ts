@@ -3,7 +3,6 @@ import { createAdminClient } from "@repo/database/admin";
 import { parseError } from "@repo/observability/error";
 import { log } from "@repo/observability/log";
 import { createSignedFileUrl } from "@repo/storage";
-import { NextResponse } from "next/server";
 import { z } from "zod";
 import {
   blindExtensions,
@@ -11,6 +10,7 @@ import {
   stripMetadata,
 } from "@/lib/api/blind-copy";
 import { corsHeaders, preflight } from "@/lib/api/cors";
+import { respond } from "@/lib/api/problem";
 
 export const OPTIONS = preflight;
 export const maxDuration = 60;
@@ -92,8 +92,7 @@ const ensureBlindCopy = async (
  */
 export const POST = async (request: Request) => {
   const headers = corsHeaders(request);
-  const json = (data: object, status = 200) =>
-    NextResponse.json(data, { headers, status });
+  const json = respond(headers);
 
   const session = await authenticateRequest(request);
   if (!session) {

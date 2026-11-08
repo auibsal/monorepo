@@ -2,9 +2,9 @@ import { createAdminClient } from "@repo/database/admin";
 import { parseError } from "@repo/observability/error";
 import { log } from "@repo/observability/log";
 import { programmes } from "@repo/sal-data";
-import { NextResponse } from "next/server";
 import { z } from "zod";
 import { corsHeaders, preflight } from "@/lib/api/cors";
+import { respond } from "@/lib/api/problem";
 import { withinRateLimit } from "@/lib/api/rate-limit";
 import { isHuman } from "@/lib/api/turnstile";
 
@@ -32,8 +32,7 @@ const PER_HOUR = 3;
  */
 export const POST = async (request: Request) => {
   const headers = corsHeaders(request);
-  const json = (payload: object, status = 200) =>
-    NextResponse.json(payload, { headers, status });
+  const json = respond(headers);
 
   const parsed = requestSchema.safeParse(
     await request.json().catch(() => null)

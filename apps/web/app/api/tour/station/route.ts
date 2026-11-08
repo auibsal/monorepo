@@ -3,8 +3,8 @@ import { createAdminClient } from "@repo/database/admin";
 import { parseError } from "@repo/observability/error";
 import { log } from "@repo/observability/log";
 import { buckets, checkFile } from "@repo/storage";
-import { NextResponse } from "next/server";
 import { corsHeaders, preflight } from "@/lib/api/cors";
+import { respond } from "@/lib/api/problem";
 
 export const OPTIONS = preflight;
 
@@ -37,8 +37,7 @@ const text = (form: FormData, key: string) => {
  */
 export const POST = async (request: Request) => {
   const headers = corsHeaders(request);
-  const json = (data: object, status = 200) =>
-    NextResponse.json(data, { headers, status });
+  const json = respond(headers);
 
   const session = await authenticateRequest(request);
   if (!session) {

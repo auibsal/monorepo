@@ -1,7 +1,7 @@
 import { createAdminClient } from "@repo/database/admin";
-import { NextResponse } from "next/server";
 import { z } from "zod";
 import { corsHeaders, preflight } from "@/lib/api/cors";
+import { respond } from "@/lib/api/problem";
 
 export const OPTIONS = preflight;
 
@@ -15,8 +15,7 @@ const requestSchema = z.object({ token: z.string().min(32).max(128) });
  */
 export const POST = async (request: Request) => {
   const headers = corsHeaders(request);
-  const json = (payload: object, status = 200) =>
-    NextResponse.json(payload, { headers, status });
+  const json = respond(headers);
 
   const parsed = requestSchema.safeParse(
     await request.json().catch(() => null)

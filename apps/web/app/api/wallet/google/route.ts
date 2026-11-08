@@ -1,8 +1,8 @@
 import { authenticateRequest } from "@repo/auth/verify";
 import { createAdminClient } from "@repo/database/admin";
 import { membership } from "@repo/sal-data";
-import { NextResponse } from "next/server";
 import { corsHeaders, preflight } from "@/lib/api/cors";
+import { respond } from "@/lib/api/problem";
 import {
   ensureWalletCallback,
   googleWalletLink,
@@ -62,8 +62,7 @@ const syncHeld = async (userId: string, code: string) => {
  */
 export const POST = async (request: Request) => {
   const headers = corsHeaders(request);
-  const json = (data: object, status = 200) =>
-    NextResponse.json(data, { headers, status });
+  const json = respond(headers);
 
   const body = (await request.json().catch(() => ({}))) as { check?: unknown };
   if (!walletConfigured()) {

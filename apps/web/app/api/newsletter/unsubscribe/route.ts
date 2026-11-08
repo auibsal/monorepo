@@ -1,6 +1,7 @@
 import { createAdminClient } from "@repo/database/admin";
 import { NextResponse } from "next/server";
 import { corsHeaders, preflight } from "@/lib/api/cors";
+import { problem } from "@/lib/api/problem";
 
 export const OPTIONS = preflight;
 
@@ -21,10 +22,7 @@ export const POST = async (request: Request) => {
   const token =
     fromQuery ?? (typeof body?.token === "string" ? body.token : "");
   if (!TOKEN.test(token)) {
-    return NextResponse.json(
-      { error: "invalid_token" },
-      { headers, status: 400 }
-    );
+    return problem(400, "invalid_token", headers);
   }
   const { error } = await createAdminClient()
     .schema("content")
@@ -37,7 +35,7 @@ export const POST = async (request: Request) => {
     .eq("unsubscribe_token", token)
     .neq("status", "unsubscribed");
   if (error) {
-    return NextResponse.json({ error: "failed" }, { headers, status: 500 });
+    return problem(500, "failed", headers);
   }
   return NextResponse.json({ ok: true }, { headers });
 };
