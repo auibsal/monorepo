@@ -103,6 +103,9 @@ let nextConfig: NextConfig = {
     "/api/design/[...path]": ["./design/**/*"],
     "/api/email/signature": ["../../packages/brand/assets/fonts/*.ttf"],
   },
+  // Off: with it, a missing event or piece answered 200 (its shared shell
+  // streams first) and a piece's text-size buttons stopped answering.
+  partialPrefetching: false,
   redirects: async () =>
     LANGUAGE_PREFIXES.flatMap((prefix) =>
       MOVED.map(([from, to]) => ({
