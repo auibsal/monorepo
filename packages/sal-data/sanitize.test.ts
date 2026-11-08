@@ -1,6 +1,7 @@
 import { expect, test } from "vitest";
 import {
   sanitizeRichText,
+  splitAtFigures,
   toPlainText,
   withContents,
   withNotes,
@@ -64,4 +65,23 @@ test("a long read's contents anchor each part's heading", () => {
   expect(body).toContain('<h2 id="en-part-1">One</h2>');
   expect(body).toContain('<h2 id="en-part-2" dir="rtl">');
   expect(body).toContain("<h2></h2>");
+});
+
+test("text crafted with many unclosed tags is read in linear time", () => {
+  const many = (open: string) => open.repeat(50_000);
+  const started = performance.now();
+  withNotes(many("<small "), "en");
+  withNotes(many("<small>a"), "en");
+  withContents(many("<h2 "), "en");
+  withContents(many("<h2>a"), "en");
+  splitAtFigures(many("<p "));
+  expect(performance.now() - started).toBeLessThan(1000);
+});
+
+test("an unclosed tag is left as it is", () => {
+  expect(withNotes("<p>One <small>two</p>", "en")).toEqual({
+    body: "<p>One <small>two</p>",
+    notes: [],
+  });
+  expect(withNotes("<smaller>x</smaller>", "en").notes).toEqual([]);
 });

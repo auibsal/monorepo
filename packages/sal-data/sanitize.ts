@@ -68,7 +68,72 @@ export const toPlainText = (html: string | null | undefined) =>
     .replace(/\s+/gu, " ")
     .trim();
 
-const NOTE = /<small(?:\s[^>]*)?>([\s\S]*?)<\/small>/gu;
+const SPACE = /\s/u;
+
+interface Element {
+  /** Where the element ends, after its closing tag. */
+  end: number;
+  /** The HTML between its tags. */
+  inner: string;
+  /** The whole element, opening tag to closing tag. */
+  outer: string;
+  /** Where its opening tag starts. */
+  start: number;
+}
+
+/**
+ * Each <tag>…</tag> in sanitized HTML, in order, the content ending at the
+ * first closing tag. A scan with indexOf rather than a regular expression:
+ * each character is read a bounded number of times, so text crafted with
+ * many unclosed tags can't make it slow (CodeQL js/polynomial-redos).
+ */
+function* elements(html: string, tag: string): Generator<Element> {
+  const open = `<${tag}`;
+  const close = `</${tag}>`;
+  let from = 0;
+  while (from < html.length) {
+    const start = html.indexOf(open, from);
+    if (start < 0) {
+      return;
+    }
+    const after = html.charAt(start + open.length);
+    if (!(after === ">" || SPACE.test(after))) {
+      from = start + open.length;
+      continue;
+    }
+    const openEnd = html.indexOf(">", start + open.length);
+    if (openEnd < 0) {
+      return;
+    }
+    const closeAt = html.indexOf(close, openEnd + 1);
+    if (closeAt < 0) {
+      return;
+    }
+    const end = closeAt + close.length;
+    yield {
+      end,
+      inner: html.slice(openEnd + 1, closeAt),
+      outer: html.slice(start, end),
+      start,
+    };
+    from = end;
+  }
+}
+
+/** Replaces each <tag>…</tag> with what `replace` returns for it. */
+const replaceElements = (
+  html: string,
+  tag: string,
+  replace: (element: Element) => string
+) => {
+  let out = "";
+  let last = 0;
+  for (const element of elements(html, tag)) {
+    out += html.slice(last, element.start) + replace(element);
+    last = element.end;
+  }
+  return out + html.slice(last);
+};
 
 /**
  * Notes in rich text (design review A13): each <small> written in the text
@@ -78,7 +143,7 @@ const NOTE = /<small(?:\s[^>]*)?>([\s\S]*?)<\/small>/gu;
  */
 export const withNotes = (html: string, prefix: string) => {
   const notes: { html: string; id: string; ref: string }[] = [];
-  const body = html.replace(NOTE, (_match, note: string) => {
+  const body = replaceElements(html, "small", ({ inner: note }) => {
     const n = notes.length + 1;
     const id = `${prefix}-note-${n}`;
     const ref = `${prefix}-ref-${n}`;
@@ -88,8 +153,6 @@ export const withNotes = (html: string, prefix: string) => {
   return { body, notes };
 };
 
-const HEADING = /<h2(?:\s[^>]*)?>([\s\S]*?)<\/h2>/gu;
-
 /**
  * A long read's contents (design review A15): each <h2> of the sanitized
  * text gets an anchor, and its words a line in the contents. `prefix`
@@ -97,7 +160,7 @@ const HEADING = /<h2(?:\s[^>]*)?>([\s\S]*?)<\/h2>/gu;
  */
 export const withContents = (html: string, prefix: string) => {
   const contents: { id: string; text: string }[] = [];
-  const body = html.replace(HEADING, (match, inner: string) => {
+  const body = replaceElements(html, "h2", ({ inner, outer: match }) => {
     const text = toPlainText(inner);
     if (!text) {
       return match;
@@ -109,8 +172,8 @@ export const withContents = (html: string, prefix: string) => {
   return { body, contents };
 };
 
-const FIGURE_MARK =
-  /<p(?:\s[^>]*)?>\s*\[(?:figure|شكل)\s*(\d{1,2})\]\s*<\/p>/giu;
+/** A paragraph's whole text reading "[figure 2]" («[شكل 2]»). */
+const FIGURE_MARK = /^\s*\[(?:figure|شكل)\s*(\d{1,2})\]\s*$/iu;
 
 export type TextPart = { html: string } | { figure: number };
 
@@ -122,13 +185,16 @@ export type TextPart = { html: string } | { figure: number };
 export const splitAtFigures = (html: string): TextPart[] => {
   const parts: TextPart[] = [];
   let last = 0;
-  for (const match of html.matchAll(FIGURE_MARK)) {
-    const at = match.index ?? 0;
-    if (at > last) {
-      parts.push({ html: html.slice(last, at) });
+  for (const paragraph of elements(html, "p")) {
+    const mark = FIGURE_MARK.exec(paragraph.inner);
+    if (!mark) {
+      continue;
     }
-    parts.push({ figure: Number(match[1]) });
-    last = at + match[0].length;
+    if (paragraph.start > last) {
+      parts.push({ html: html.slice(last, paragraph.start) });
+    }
+    parts.push({ figure: Number(mark[1]) });
+    last = paragraph.end;
   }
   if (last < html.length) {
     parts.push({ html: html.slice(last) });

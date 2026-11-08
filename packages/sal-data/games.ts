@@ -384,10 +384,11 @@ const placeEntry = (
     if (cell && cell.letter !== letter) {
       return false;
     }
-    line[c] = {
+    // Rows are full-length arrays, so splice writes exactly this square.
+    line.splice(c, 1, {
       letter,
       number: i === 0 ? entry.number : cell?.number,
-    };
+    });
   }
   return true;
 };
