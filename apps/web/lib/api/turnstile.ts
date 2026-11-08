@@ -1,7 +1,7 @@
 import "server-only";
 
-import { log } from "@repo/observability/log";
 import { env } from "@/env";
+import { log } from "@/lib/observability/log";
 import { visitorOf } from "./rate-limit";
 
 const VERIFY = "https://challenges.cloudflare.com/turnstile/v0/siteverify";

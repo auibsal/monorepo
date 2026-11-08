@@ -1,6 +1,5 @@
 "use client";
 
-import { useAuth } from "@repo/auth/provider";
 import type { Locale } from "@repo/internationalization";
 import {
   formatClock,
@@ -8,7 +7,6 @@ import {
   formatNumber,
 } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
-import { localized, programmes } from "@repo/sal-data";
 import { useQuery } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { RowList } from "@/components/diwan/page";
@@ -17,6 +15,8 @@ import {
   ErrorState,
   SectionSpinner,
 } from "@/components/diwan/states";
+import { useAuth } from "@/lib/auth/provider";
+import { localized, programmes } from "@/lib/data";
 
 /**
  * Every open role, for anyone to read, in one list (decisions.md:

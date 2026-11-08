@@ -1,4 +1,5 @@
 import { internationalizationMiddleware } from "@repo/internationalization/proxy";
+import { NextRequest } from "next/server";
 import {
   contentSecurityPolicy,
   createNonce,
@@ -7,8 +8,7 @@ import {
   telegramMiniApp,
   withNonce,
   withSecurityHeaders,
-} from "@repo/security/proxy";
-import { NextRequest } from "next/server";
+} from "@/lib/security/proxy";
 import { themeScript } from "@/lib/theme";
 
 export const config = {

@@ -1,6 +1,6 @@
-import { latestPieces } from "@repo/sal-data/journal";
-import { escapeHtml, link } from "@repo/telegram";
 import { Composer, InlineKeyboard } from "grammy";
+import { latestPieces } from "@/lib/data/journal";
+import { escapeHtml, link } from "@/lib/telegram";
 import type { BotContext } from "../context";
 import type { Lang } from "../copy";
 import { anon } from "../db";

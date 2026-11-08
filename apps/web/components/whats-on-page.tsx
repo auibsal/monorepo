@@ -1,12 +1,12 @@
 import { project } from "@repo/config";
 import type { Locale } from "@repo/internationalization";
 import { Link } from "@repo/internationalization/navigation";
-import { events } from "@repo/sal-data";
 import { getTranslations } from "next-intl/server";
 import { ManageLinks } from "@/components/manage-links";
 import { PageHeader } from "@/components/section";
 import { loadProgramme } from "@/components/series";
 import { MonthCalendar, MonthSection, nextAfter } from "@/components/whats-on";
+import { events } from "@/lib/data";
 import { readPublished } from "@/lib/supabase";
 import { roughlyNow } from "@/lib/this-year";
 import { type Month, monthFrom, monthParam } from "@/lib/whats-on";

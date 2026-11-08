@@ -18,15 +18,9 @@ export default defineConfig({
     },
     projects: [
       "apps/web",
-      "packages/storage",
-      "packages/auth",
       "packages/config",
-      "packages/sal-data",
       "packages/brand",
-      "packages/rbac",
       "packages/internationalization",
-      "packages/next-config",
-      "packages/telegram",
     ],
   },
 });

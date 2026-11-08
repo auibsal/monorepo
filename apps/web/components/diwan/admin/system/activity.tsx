@@ -1,13 +1,13 @@
 "use client";
 
-import { useAuth } from "@repo/auth/provider";
 import { Button } from "@repo/brand/components/ui/button";
 import type { Locale } from "@repo/internationalization";
 import { formatDateTime } from "@repo/internationalization/format";
-import { localized, unwrap } from "@repo/sal-data";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
+import { useAuth } from "@/lib/auth/provider";
+import { localized, unwrap } from "@/lib/data";
 import { RowList } from "../../page";
 import { EmptyLine, SectionSpinner } from "../../states";
 import { AdminHeading, Field, SelectInput } from "../kit";

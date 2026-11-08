@@ -1,8 +1,4 @@
-import { authenticateRequest } from "@repo/auth/verify";
 import { createAdminClient } from "@repo/database/admin";
-import { parseError } from "@repo/observability/error";
-import { log } from "@repo/observability/log";
-import { botIdFromToken, TELEGRAM_LINK_PAGE } from "@repo/telegram";
 import { z } from "zod";
 import { env } from "@/env";
 import { sharedBot } from "@/lib/api/bot/bot";
@@ -14,6 +10,10 @@ import {
   exchangeCode,
   TelegramLoginError,
 } from "@/lib/api/telegram-login";
+import { authenticateRequest } from "@/lib/auth/verify";
+import { parseError } from "@/lib/observability/error";
+import { log } from "@/lib/observability/log";
+import { botIdFromToken, TELEGRAM_LINK_PAGE } from "@/lib/telegram";
 
 export const maxDuration = 30;
 export const OPTIONS = preflight;

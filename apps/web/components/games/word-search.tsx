@@ -2,12 +2,6 @@
 
 import { Button } from "@repo/brand/components/ui/button";
 import { cn } from "@repo/brand/lib/utils";
-import {
-  cellsOf,
-  type GameLang,
-  type WordSearch,
-  wordBetween,
-} from "@repo/sal-data/games";
 import { useTranslations } from "next-intl";
 import {
   type KeyboardEvent,
@@ -16,6 +10,12 @@ import {
   useRef,
   useState,
 } from "react";
+import {
+  cellsOf,
+  type GameLang,
+  type WordSearch,
+  wordBetween,
+} from "@/lib/data/games";
 import { loadProgress, saveProgress } from "./storage";
 
 type Cell = [number, number];

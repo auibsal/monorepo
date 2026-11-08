@@ -2,14 +2,6 @@
 
 import { Button } from "@repo/brand/components/ui/button";
 import { cn } from "@repo/brand/lib/utils";
-import {
-  type Crossword,
-  type CrosswordEntry,
-  crosswordCells,
-  type GameLang,
-  lettersOf,
-  normalizeWord,
-} from "@repo/sal-data/games";
 import { useTranslations } from "next-intl";
 import {
   type ChangeEvent,
@@ -19,6 +11,14 @@ import {
   useRef,
   useState,
 } from "react";
+import {
+  type Crossword,
+  type CrosswordEntry,
+  crosswordCells,
+  type GameLang,
+  lettersOf,
+  normalizeWord,
+} from "@/lib/data/games";
 import { loadProgress, saveProgress } from "./storage";
 
 type Filled = Record<string, string>;

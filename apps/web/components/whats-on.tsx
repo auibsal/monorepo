@@ -7,10 +7,10 @@ import {
   toZonedDateValue,
 } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
-import { events, localized } from "@repo/sal-data";
 import { getTranslations } from "next-intl/server";
 import type { ComponentProps, ReactNode } from "react";
 import { type DatedItem, DatedList } from "@/components/event-list";
+import { events, localized } from "@/lib/data";
 import { readPublished } from "@/lib/supabase";
 import { roughlyNow } from "@/lib/this-year";
 import {

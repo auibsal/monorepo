@@ -1,7 +1,6 @@
 import type { Locale } from "@repo/internationalization";
 import { formatMonth } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
-import { journal } from "@repo/sal-data";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import {
@@ -9,6 +8,7 @@ import {
   archiveMonths,
   archivePath,
 } from "@/components/qirtas/archive";
+import { journal } from "@/lib/data";
 import { localizedMetadata } from "@/lib/metadata";
 import { roughlyNow } from "@/lib/this-year";
 import { isMonthSegment, monthFrom } from "@/lib/whats-on";

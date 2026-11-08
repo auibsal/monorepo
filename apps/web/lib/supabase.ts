@@ -2,9 +2,9 @@ import "server-only";
 
 import { AsyncLocalStorage } from "node:async_hooks";
 import type { Database } from "@repo/database";
-import { setClock } from "@repo/sal-data";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import { env } from "@/env";
+import { setClock } from "@/lib/data";
 import { roughlyNow } from "@/lib/this-year";
 
 /** The moment a published read runs at (see `readPublished`). */

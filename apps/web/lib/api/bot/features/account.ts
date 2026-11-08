@@ -1,5 +1,5 @@
-import { escapeHtml } from "@repo/telegram";
 import { type Api, Composer, InlineKeyboard } from "grammy";
+import { escapeHtml } from "@/lib/telegram";
 import type { BotContext } from "../context";
 import { type Copy, copy, type Lang } from "../copy";
 import { db, visibleEvents, whoami } from "../db";

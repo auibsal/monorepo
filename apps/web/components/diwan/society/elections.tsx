@@ -1,18 +1,18 @@
 "use client";
 
-import { isAuibEmail } from "@repo/auth/email";
-import { useAuth } from "@repo/auth/provider";
 import { Button } from "@repo/brand/components/ui/button";
 import { Label } from "@repo/brand/components/ui/label";
 import { Textarea } from "@repo/brand/components/ui/textarea";
 import { localizedPath } from "@repo/internationalization";
 import { formatClock, formatLongDate } from "@repo/internationalization/format";
 import { Link, useRouter } from "@repo/internationalization/navigation";
-import { governance, localized, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useState } from "react";
 import { ChoiceInput } from "@/components/diwan/admin/choice-input";
+import { isAuibEmail } from "@/lib/auth/email";
+import { useAuth } from "@/lib/auth/provider";
+import { governance, localized, unwrap } from "@/lib/data";
 import { DiwanPage } from "../page";
 import { EmptyLine, ErrorState, SectionSpinner } from "../states";
 import { SocietySection } from "./section";

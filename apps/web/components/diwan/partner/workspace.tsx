@@ -1,6 +1,5 @@
 "use client";
 
-import { useAuth } from "@repo/auth/provider";
 import { Button } from "@repo/brand/components/ui/button";
 import { Checkbox } from "@repo/brand/components/ui/checkbox";
 import { Input } from "@repo/brand/components/ui/input";
@@ -12,11 +11,12 @@ import {
   formatLongDate,
 } from "@repo/internationalization/format";
 import { Link, usePathname } from "@repo/internationalization/navigation";
-import { localized, partners, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, type ReactNode, useState } from "react";
 import { Signature } from "@/components/signature";
+import { useAuth } from "@/lib/auth/provider";
+import { localized, partners, unwrap } from "@/lib/data";
 import { type MyPartner, useMyPartners } from "@/lib/diwan/partners";
 import {
   type InviteeLanguage,

@@ -1,6 +1,6 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
-import { authenticateCookies } from "@repo/auth/verify";
+import { authenticateCookies } from "@/lib/auth/verify";
 
 /**
  * The design system's files (packages/brand's stories, built into

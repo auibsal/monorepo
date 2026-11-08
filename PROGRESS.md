@@ -203,7 +203,7 @@ Part A first).
     pages are prerendered around what each request needs; a record page
     has a placeholder shell so a missing record still answers 404; the
     time comes from `roughlyNow` (`lib/this-year.ts`) and reaches
-    `@repo/sal-data` through `setClock`. The bundle-size check is the
+    `lib/data` through `setClock`. The bundle-size check is the
     performance budget the journeys already enforce on a mid-range phone
     (`apps/e2e/tests/performance.spec.ts`).
   - F6: the `charity` schema is dropped and no longer exposed (Nov 8).

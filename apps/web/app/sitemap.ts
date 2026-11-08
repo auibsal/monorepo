@@ -5,11 +5,11 @@ import {
   locales,
   localizedPath,
 } from "@repo/internationalization";
-import { content, documents, journal } from "@repo/sal-data";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { MetadataRoute } from "next";
 import { cacheLife } from "next/cache";
 import { pieceHref } from "@/components/qirtas/cards";
+import { content, documents, journal } from "@/lib/data";
 import { readPublished } from "@/lib/supabase";
 
 /**

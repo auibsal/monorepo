@@ -1,8 +1,8 @@
 "use client";
 
-import { useAuth } from "@repo/auth/provider";
-import { journal, unwrap } from "@repo/sal-data";
 import { useQuery } from "@tanstack/react-query";
+import { useAuth } from "@/lib/auth/provider";
+import { journal, unwrap } from "@/lib/data";
 import { callApi } from "@/lib/diwan/api";
 
 export type SubmissionStatus = journal.SubmissionStatus;

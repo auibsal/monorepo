@@ -1,8 +1,8 @@
-import { keys as auth } from "@repo/auth/keys";
-import { envPresets, withPresets } from "@repo/next-config/env";
-import { keys as core } from "@repo/next-config/keys";
 import { createEnv } from "@t3-oss/env-nextjs";
 import { z } from "zod";
+import { keys as auth } from "@/lib/auth/keys";
+import { envPresets, withPresets } from "@/lib/next-config/env";
+import { keys as core } from "@/lib/next-config/keys";
 
 const presets = envPresets(auth(), core());
 

@@ -1,10 +1,10 @@
 import { createHmac, timingSafeEqual } from "node:crypto";
-import { log } from "@repo/observability/log";
 import { after } from "next/server";
 import { env } from "@/env";
 import { runNotionSync } from "@/lib/api/notion/run";
 import { problem } from "@/lib/api/problem";
 import { withinRateLimit } from "@/lib/api/rate-limit";
+import { log } from "@/lib/observability/log";
 
 export const maxDuration = 60;
 

@@ -1,8 +1,8 @@
 import "server-only";
 
 import { formatClock, formatLongDate } from "@repo/internationalization/format";
-import { sanitizeRichText } from "@repo/sal-data";
-import { uploadMedia } from "@repo/storage";
+import { sanitizeRichText } from "@/lib/data";
+import { uploadMedia } from "@/lib/storage";
 import { pageHtml } from "./blocks";
 import { bareId, type NotionPage } from "./client";
 import {

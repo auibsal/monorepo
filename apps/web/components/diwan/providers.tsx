@@ -1,8 +1,8 @@
 "use client";
 
-import { AuthProvider } from "@repo/auth/provider";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { type ReactNode, useState } from "react";
+import { AuthProvider } from "@/lib/auth/provider";
 import { getSupabase } from "@/lib/diwan/supabase";
 
 interface AppProvidersProps {

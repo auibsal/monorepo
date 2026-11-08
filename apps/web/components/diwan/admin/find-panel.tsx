@@ -1,14 +1,14 @@
 "use client";
 
-import { useAuth } from "@repo/auth/provider";
 import { Icon } from "@repo/brand/components/sal/icon";
 import { Input } from "@repo/brand/components/ui/input";
-import { adminSections } from "@repo/rbac";
-import { content, localized } from "@repo/sal-data";
 import { useQuery } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useDeferredValue, useEffect, useId, useRef, useState } from "react";
+import { useAuth } from "@/lib/auth/provider";
+import { content, localized } from "@/lib/data";
 import { Link, usePathname } from "@/lib/diwan/navigation";
+import { adminSections } from "@/lib/rbac";
 import { useVisibleModules } from "./admin-shell";
 import { allowedViews } from "./section-views";
 

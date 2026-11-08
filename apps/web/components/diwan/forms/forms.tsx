@@ -1,14 +1,14 @@
 "use client";
 
-import { useAuth } from "@repo/auth/provider";
 import type { Locale } from "@repo/internationalization";
 import { formatLongDate } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
-import { hasPermission, type Permission } from "@repo/rbac";
-import { forms, unwrap } from "@repo/sal-data";
 import { useQuery } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
+import { useAuth } from "@/lib/auth/provider";
+import { forms, unwrap } from "@/lib/data";
 import { useGrants, useMemberStatus } from "@/lib/diwan/queries";
+import { hasPermission, type Permission } from "@/lib/rbac";
 import { DiwanPage, DiwanSection, RowList } from "../page";
 import { EmptyLine, SectionSpinner } from "../states";
 

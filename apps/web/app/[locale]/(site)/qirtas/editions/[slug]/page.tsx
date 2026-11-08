@@ -5,7 +5,6 @@ import {
   formatNumber,
 } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
-import { journal, localized } from "@repo/sal-data";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
@@ -13,6 +12,7 @@ import { ManageLinks } from "@/components/manage-links";
 import { pieceHref } from "@/components/qirtas/cards";
 import { EditionCover, loadEditions } from "@/components/qirtas/editions";
 import { ShareLink } from "@/components/share";
+import { journal, localized } from "@/lib/data";
 import { mediaUrl } from "@/lib/media";
 import { localizedMetadata } from "@/lib/metadata";
 import { PLACEHOLDER_SLUG } from "@/lib/placeholder";

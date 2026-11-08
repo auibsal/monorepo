@@ -1,6 +1,6 @@
 import { apiUrl, siteUrl } from "@repo/internationalization";
-import { journal } from "@repo/sal-data";
-import { startLink, TELEGRAM_LINK_PAGE } from "@repo/telegram";
+import { journal } from "@/lib/data";
+import { startLink, TELEGRAM_LINK_PAGE } from "@/lib/telegram";
 import type { Lang } from "./copy";
 
 /** A public page, in the member's language (English has no prefix). */

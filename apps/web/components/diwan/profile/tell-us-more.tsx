@@ -1,10 +1,10 @@
 "use client";
 
-import { useAuth } from "@repo/auth/provider";
 import { Link } from "@repo/internationalization/navigation";
-import { membership } from "@repo/sal-data";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
+import { useAuth } from "@/lib/auth/provider";
+import { membership } from "@/lib/data";
 
 type Details = membership.MemberDetails;
 

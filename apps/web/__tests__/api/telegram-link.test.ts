@@ -8,7 +8,7 @@ const env = vi.hoisted(() => ({
   TELEGRAM_LOGIN_CLIENT_SECRET: undefined as string | undefined,
 }));
 vi.mock("@/env", () => ({ env }));
-vi.mock("@repo/auth/verify", () => ({
+vi.mock("@/lib/auth/verify", () => ({
   authenticateRequest: async (request: Request) =>
     request.headers.get("authorization") ? { userId: "u1" } : null,
 }));

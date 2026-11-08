@@ -3,7 +3,6 @@
 import { Button } from "@repo/brand/components/ui/button";
 import { Input } from "@repo/brand/components/ui/input";
 import { cn } from "@repo/brand/lib/utils";
-import { journal } from "@repo/sal-data";
 import { Mark, Node } from "@tiptap/core";
 import { TableKit } from "@tiptap/extension-table";
 import {
@@ -15,6 +14,7 @@ import {
 import StarterKit from "@tiptap/starter-kit";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
+import { journal } from "@/lib/data";
 
 interface RichTextProps {
   /**

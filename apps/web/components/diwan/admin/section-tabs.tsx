@@ -1,7 +1,7 @@
 "use client";
 
-import type { AdminSection } from "@repo/rbac";
 import { useTranslations } from "next-intl";
+import type { AdminSection } from "@/lib/rbac";
 import { SectionTabs, useVisibleModules } from "./admin-shell";
 import { allowedViews } from "./section-views";
 

@@ -1,5 +1,4 @@
 import type { Locale } from "@repo/internationalization";
-import { documents } from "@repo/sal-data";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { setRequestLocale } from "next-intl/server";
@@ -7,6 +6,7 @@ import {
   DocumentArticle,
   documentMetadata,
 } from "@/components/library/document-page";
+import { documents } from "@/lib/data";
 import { PLACEHOLDER_SLUG } from "@/lib/placeholder";
 
 interface DocumentProps {

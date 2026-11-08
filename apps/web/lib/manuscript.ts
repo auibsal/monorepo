@@ -1,6 +1,6 @@
 "use client";
 
-import { sanitizeRichText, toPlainText } from "@repo/sal-data";
+import { sanitizeRichText, toPlainText } from "@/lib/data";
 import {
   layoutPages,
   type TextPage,

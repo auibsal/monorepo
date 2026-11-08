@@ -1,6 +1,5 @@
 "use client";
 
-import { useAuth } from "@repo/auth/provider";
 import { Button } from "@repo/brand/components/ui/button";
 import {
   Dialog,
@@ -18,10 +17,11 @@ import {
   formatNumber,
 } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
-import { events, localized, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import QRCode from "react-qr-code";
+import { useAuth } from "@/lib/auth/provider";
+import { events, localized, unwrap } from "@/lib/data";
 import { queryKeys, useMyRsvps, useMyWaitlist } from "@/lib/diwan/queries";
 import { RowList } from "../page";
 import { EmptyLine, ErrorState, SectionSpinner } from "../states";

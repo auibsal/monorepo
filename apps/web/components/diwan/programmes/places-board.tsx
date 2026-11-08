@@ -1,6 +1,5 @@
 "use client";
 
-import { useAuth } from "@repo/auth/provider";
 import { Button } from "@repo/brand/components/ui/button";
 import {
   formatClock,
@@ -8,11 +7,12 @@ import {
   formatNumber,
 } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
-import { localized, membership, programmes, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 import { ManageLinks } from "@/components/manage-links";
+import { useAuth } from "@/lib/auth/provider";
+import { localized, membership, programmes, unwrap } from "@/lib/data";
 import { queryKeys, useMyShifts } from "@/lib/diwan/queries";
 import { ErrorLine } from "../admin/kit";
 import { StartLinks } from "../forms/forms";

@@ -2,7 +2,7 @@ import {
   type AdminSection,
   hasPermissionAnywhere,
   type Permission,
-} from "@repo/rbac";
+} from "@/lib/rbac";
 
 /**
  * Every view of a Diwan section, with what opens it. The row links each

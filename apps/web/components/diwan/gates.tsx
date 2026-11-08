@@ -1,9 +1,9 @@
 "use client";
 
-import { useAuth } from "@repo/auth/provider";
 import { usePathname, useRouter } from "@repo/internationalization/navigation";
-import type { membership } from "@repo/sal-data";
 import { type ReactNode, useEffect } from "react";
+import { useAuth } from "@/lib/auth/provider";
+import type { membership } from "@/lib/data";
 import { safeNextPath } from "@/lib/diwan/navigation";
 import {
   hasAllNames,

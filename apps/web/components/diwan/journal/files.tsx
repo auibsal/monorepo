@@ -1,13 +1,13 @@
 "use client";
 
-import type { useAuth } from "@repo/auth/provider";
 import { Button } from "@repo/brand/components/ui/button";
 import { formatNumber } from "@repo/internationalization/format";
-import { journal, unwrap } from "@repo/sal-data";
-import { removeFiles, uploadSubmissionFile } from "@repo/storage";
 import { useTranslations } from "next-intl";
 import { useId } from "react";
 import { FileInput } from "@/components/fields/file-input";
+import type { useAuth } from "@/lib/auth/provider";
+import { journal, unwrap } from "@/lib/data";
+import { removeFiles, uploadSubmissionFile } from "@/lib/storage";
 
 export type FileKind = "manuscript" | "image" | "source";
 

@@ -1,9 +1,9 @@
 import type { Locale } from "@repo/internationalization";
 import { formatClock, formatLongDate } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
-import { content, events, journal, localized } from "@repo/sal-data";
 import { getTranslations } from "next-intl/server";
 import { NewsletterSignup } from "@/components/newsletter/signup";
+import { content, events, journal, localized } from "@/lib/data";
 import { type Issue, issueOf } from "@/lib/sunday-paper";
 import { readPublished } from "@/lib/supabase";
 

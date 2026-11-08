@@ -9,7 +9,7 @@
  *   `governance.form_types` with the same code and title, and no row is
  *   missing from the register;
  * - a form the register says is filled at auibsal.org/forms/F-xx is a site
- *   form (`@repo/sal-data/forms`), and no other is;
+ *   form (`@/lib/data/forms`), and no other is;
  * - each site form's field phrases (`registerFields`) appear in its entry.
  *
  * Reads Notion with NOTION_TOKEN and the database's Data API with
@@ -17,7 +17,7 @@
  * migrations). Without NOTION_TOKEN it says so and skips; with
  * REQUIRE_FORMS_REGISTER=1 a missing token fails.
  */
-import { formKeys, registerFields } from "../packages/sal-data/forms";
+import { formKeys, registerFields } from "../apps/web/lib/data/forms";
 
 const NOTION = "https://api.notion.com/v1";
 const VERSION = "2026-03-11";
@@ -197,7 +197,7 @@ const typeProblems = (type: FormType, entry: Entry | undefined) => {
   }
   if (onSite !== (formKeys as readonly string[]).includes(type.key)) {
     problems.push(
-      `${type.code}: ${onSite ? "missing from" : "should not be in"} @repo/sal-data/forms.`
+      `${type.code}: ${onSite ? "missing from" : "should not be in"} apps/web/lib/data/forms.`
     );
   }
   return problems;

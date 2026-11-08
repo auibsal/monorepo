@@ -2,17 +2,17 @@
 
 import { Icon } from "@repo/brand/components/sal/icon";
 import { cn } from "@repo/brand/lib/utils";
+import { useTranslations } from "next-intl";
+import type { ReactNode } from "react";
+import { Link, usePathname } from "@/lib/diwan/navigation";
+import { useGrants } from "@/lib/diwan/queries";
 import {
   type AdminModule,
   adminModules,
   adminSections,
   hasPermissionAnywhere,
   sectionOfPath,
-} from "@repo/rbac";
-import { useTranslations } from "next-intl";
-import type { ReactNode } from "react";
-import { Link, usePathname } from "@/lib/diwan/navigation";
-import { useGrants } from "@/lib/diwan/queries";
+} from "@/lib/rbac";
 import { TwoStepPanel, useTwoStep } from "../auth/two-step";
 import { SectionSpinner } from "../states";
 import { AdminHeading } from "./kit";

@@ -1,6 +1,5 @@
 "use client";
 
-import { useAuth } from "@repo/auth/provider";
 import { Link } from "@repo/internationalization/navigation";
 import { useTranslations } from "next-intl";
 import { RequireMember } from "@/components/diwan/gates";
@@ -8,6 +7,7 @@ import { DiwanPage } from "@/components/diwan/page";
 import { PlacesBoard } from "@/components/diwan/programmes/places-board";
 import { PageSpinner } from "@/components/diwan/states";
 import { ManageLinks } from "@/components/manage-links";
+import { useAuth } from "@/lib/auth/provider";
 import { useMyMembership } from "@/lib/diwan/queries";
 import { OpenPlaces } from "./open-places";
 

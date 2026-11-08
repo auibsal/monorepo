@@ -1,6 +1,5 @@
 "use client";
 
-import { useAuth } from "@repo/auth/provider";
 import { FormHeader } from "@repo/brand/components/sal/form-header";
 import { Button } from "@repo/brand/components/ui/button";
 import { isLocale } from "@repo/internationalization";
@@ -9,6 +8,7 @@ import type { EmailOtpType } from "@supabase/supabase-js";
 import { useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
+import { useAuth } from "@/lib/auth/provider";
 import { safeNextPath, stripLocale } from "@/lib/diwan/navigation";
 
 const types = new Set<EmailOtpType>([

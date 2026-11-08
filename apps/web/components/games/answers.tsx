@@ -2,14 +2,14 @@
 
 import { Button } from "@repo/brand/components/ui/button";
 import { Input } from "@repo/brand/components/ui/input";
+import { useTranslations } from "next-intl";
+import { type FormEvent, useEffect, useId, useState } from "react";
 import {
   type Anagrams,
   type GameLang,
   sameAnswer,
   scramble,
-} from "@repo/sal-data/games";
-import { useTranslations } from "next-intl";
-import { type FormEvent, useEffect, useId, useState } from "react";
+} from "@/lib/data/games";
 import { loadProgress, saveProgress } from "./storage";
 
 type State = "open" | "solved" | "shown";

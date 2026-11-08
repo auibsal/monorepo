@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+import { useEffect, useMemo, useState } from "react";
 import {
   dailyAnagrams,
   dailyCrossword,
@@ -7,9 +9,7 @@ import {
   type GameLang,
   gameDay,
   gameNumber,
-} from "@repo/sal-data/games";
-import { useTranslations } from "next-intl";
-import { useEffect, useMemo, useState } from "react";
+} from "@/lib/data/games";
 import { AnswersGame } from "./answers";
 import { CrosswordGame } from "./crossword";
 import { WordSearchGame } from "./word-search";

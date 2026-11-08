@@ -39,7 +39,7 @@ media do.
   - `app/[locale]/diwan`: **the Diwan**, auibsal.org/diwan, the staff's
     administration only (anyone holding a role, `RequireStaff`), one
     section per Council seat (decisions §6; `adminSections` in
-    `@repo/rbac`; `DiwanNav` and `SectionTabs` in `admin-shell.tsx`): the
+    `lib/rbac`; `DiwanNav` and `SectionTabs` in `admin-shell.tsx`): the
     Desk (`/diwan`: what needs you, quick actions, Waiting, what happened,
     the Connected panel for Notion, Hudhud and email); the Council
     (`/diwan/council`: meetings and their resolutions, requests to Student
@@ -69,6 +69,14 @@ media do.
     The bot acts for a member only through the `core.telegram_*`
     functions, which run the Diwan functions under the member's claims so
     RLS still decides. Bot copy is in `lib/api/bot/copy.ts`.
+  - `lib/` holds the app's own code that is not a page or a component:
+    `lib/auth` (sign-in, sessions, passkeys), `lib/rbac` (permission
+    keys, role bundles, modules and sections, the client mirror of
+    `access.has_permission()`, test personas), `lib/data` (zod schemas
+    and typed queries per domain, the forms registry `forms.ts` and the
+    daily games), `lib/storage`, `lib/telegram`, `lib/security` (headers
+    and CSP), `lib/observability` (logging) and `lib/next-config` (the
+    environment and the Next config helpers), imported as `@/lib/<name>`.
 - `packages/brand`: **the design system**, SAL-MED-02, the single source of
   the brand: the guide (`guide/`, Markdown), the rules in short
   (`BRAND-BOOK.md`), the assets (tokens, fonts, icons, logos, Hudhud, the
@@ -85,20 +93,19 @@ media do.
   (`app/api/design`, a rewrite; never indexed). The public sees the brand only on the press page
   (`/about/press`). No PDFs or document files in the repository: print
   is the page printed from the browser.
-- `packages/*`: shared code, imported as `@repo/<name>` (a fixed internal
-  scope; never rename it).
+- `packages/*`: what the app shares with the design system or the
+  database tooling, imported as `@repo/<name>` (a fixed internal scope;
+  never rename it). Code used only by the app lives in `apps/web/lib`.
   - `@repo/database`: SQL migrations (`supabase/migrations`), pgTAP tests
     (`supabase/tests/database`), generated types.
-  - `@repo/rbac`: permission keys, role bundles, modules and sections, the
-    client mirror of `access.has_permission()`, test personas.
-  - `@repo/sal-data`: zod schemas and typed queries per domain, the forms
-    registry (`forms.ts`) and the daily games.
   - `@repo/email`: the email template and every email's copy
-    (`copy.ts`).
+    (`copy.ts`); the design system draws every email from it.
   - `@repo/internationalization`: messages, navigation, formatting.
 - `packages/config/project.json`: names, motto, the site URL, the `/diwan`
   (`paths.diwan`) and `/api` paths, locales, region, hello@auibsal.org and
   the AUIB calendar. Read it through `@repo/config`.
+- `tsconfig.base.json` and `tsconfig.nextjs.json` at the root: the
+  TypeScript settings every workspace extends.
 - `docs/platform`: the platform runbooks (Markdown). There is no separate
   docs site.
 - `scripts/`: `check-placeholders.ts`, `check-rtl.ts`, `check-i18n.ts`,
@@ -180,7 +187,8 @@ any schema change. Integration tests run against a local stack with
 - **Secrets are server-only.** The secret key, Resend, the cron and
   webhook secrets and the Telegram token are read only in route handlers
   and `lib/api`; CI greps the client bundle for their names. New env vars
-  go in the package's `keys.ts` and in `apps/web/.env.example`.
+  go in the `keys.ts` beside the code that reads them and in
+  `apps/web/.env.example`.
 - **Personal data lives only on the site.** Never in Notion, in git or in
   a migration: imports of personal data (such as the spring 2026 Tour,
   `programmes.import_tour`) go from the officer's browser straight to the
@@ -201,12 +209,12 @@ any schema change. Integration tests run against a local stack with
   number (`/api/files/blind`); originals open by role through
   `journal.open_original`, each opening kept.
 - **No third-party monitoring or protection.** Errors and logs go to the
-  Vercel runtime log (`@repo/observability` prints only); the security
-  headers are the app's own (`@repo/security`; your account and the Diwan
+  Vercel runtime log (`lib/observability` prints only); the security
+  headers are the app's own (`lib/security`; your account and the Diwan
   render per request with a nonce-based CSP, `apps/web/proxy.ts`, so a new
   page there stays under their layouts and never adds an inline script); public forms are rate
   limited in the database (`withinRateLimit`, `core.take_rate`).
-- **Files:** use `@repo/storage`. Private buckets are reached only through
+- **Files:** use `lib/storage`. Private buckets are reached only through
   signed URLs issued by the API routes.
 
 ## The Society's domain
@@ -342,7 +350,7 @@ everywhere:
 ## General rules
 
 - **Package manager:** Bun with the hoisted linker (`bunfig.toml`).
-  Declare every dependency a package imports; keep versions aligned. Bun
+  Declare every dependency a workspace imports; keep versions aligned. Bun
   installs and runs scripts; Next.js runs on Node.
 - **Auth:** email sign-in (AUIB address first; magic link or password). In
   your account and the Diwan, query with `useAuth().supabase` so RLS

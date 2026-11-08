@@ -1,17 +1,17 @@
 "use client";
 
-import { useAuth } from "@repo/auth/provider";
 import { SalCard } from "@repo/brand/components/sal/card";
 import { Input } from "@repo/brand/components/ui/input";
 import type { Locale } from "@repo/internationalization";
 import { formatLongDate } from "@repo/internationalization/format";
-import { hasPermissionAnywhere } from "@repo/rbac";
-import { localized, membership, type partners, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 import { Signature } from "@/components/signature";
+import { useAuth } from "@/lib/auth/provider";
+import { localized, membership, type partners, unwrap } from "@/lib/data";
 import { useGrants } from "@/lib/diwan/queries";
+import { hasPermissionAnywhere } from "@/lib/rbac";
 import { DiwanSection } from "../../page";
 import { ErrorState, SectionSpinner } from "../../states";
 import { ConfirmAction, ErrorLine, Field } from "../kit";

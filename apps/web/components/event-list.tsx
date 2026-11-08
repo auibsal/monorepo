@@ -2,8 +2,8 @@ import { Icon } from "@repo/brand/components/sal/icon";
 import type { Locale } from "@repo/internationalization";
 import { formatClock, formatDayParts } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
-import { localized } from "@repo/sal-data";
 import type { ReactNode } from "react";
+import { localized } from "@/lib/data";
 
 export interface DatedItem {
   /** The day the row is filed under (an instant; shown in Baghdad). */

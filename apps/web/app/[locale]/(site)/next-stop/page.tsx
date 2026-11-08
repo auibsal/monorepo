@@ -1,11 +1,11 @@
 import { Shelf } from "@repo/brand/components/sal/shelf";
 import type { Locale } from "@repo/internationalization";
 import { Link } from "@repo/internationalization/navigation";
-import { journal, localized } from "@repo/sal-data";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { loadEpisodes } from "@/components/next-stop";
 import { PieceCardView } from "@/components/qirtas/cards";
+import { journal, localized } from "@/lib/data";
 import { localizedMetadata } from "@/lib/metadata";
 import { readPublished } from "@/lib/supabase";
 

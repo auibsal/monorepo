@@ -10,9 +10,9 @@ to keep up.
 
 ## Decision
 
-Errors and logs go to the Vercel runtime log (`@repo/observability`).
+Errors and logs go to the Vercel runtime log (`lib/observability`).
 Analytics are Vercel Web Analytics, which sets no cookies. The security
-headers and CSP are the app's own (`@repo/security`); public forms are
+headers and CSP are the app's own (`lib/security`); public forms are
 rate limited in the database and checked with Cloudflare Turnstile.
 
 ## Consequences

@@ -1,6 +1,6 @@
 import "server-only";
 
-import { type governance, sanitizeRichText } from "@repo/sal-data";
+import { type governance, sanitizeRichText } from "@/lib/data";
 import { pageHtml } from "./blocks";
 import { bareId, type NotionPage } from "./client";
 import {

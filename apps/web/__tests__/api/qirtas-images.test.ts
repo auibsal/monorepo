@@ -28,7 +28,7 @@ const query = (result: object) => {
   return chain;
 };
 
-vi.mock("@repo/auth/verify", () => ({
+vi.mock("@/lib/auth/verify", () => ({
   authenticateRequest: async (request: Request) =>
     request.headers.get("authorization")
       ? {
@@ -66,7 +66,7 @@ vi.mock("@repo/database/admin", () => ({
   }),
 }));
 
-vi.mock("@repo/storage", () => ({
+vi.mock("@/lib/storage", () => ({
   uploadMedia: async (_client: unknown, area: string, file: File) => {
     state.uploaded.push({
       area,

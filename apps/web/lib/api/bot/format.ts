@@ -1,5 +1,5 @@
 import { formatClock, formatLongDate } from "@repo/internationalization/format";
-import { escapeHtml } from "@repo/telegram";
+import { escapeHtml } from "@/lib/telegram";
 import { type Copy, copy, type Lang } from "./copy";
 import type { EventRow } from "./db";
 

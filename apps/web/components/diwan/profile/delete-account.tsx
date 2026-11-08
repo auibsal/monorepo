@@ -1,6 +1,5 @@
 "use client";
 
-import { useAuth } from "@repo/auth/provider";
 import { Button } from "@repo/brand/components/ui/button";
 import {
   Dialog,
@@ -16,6 +15,7 @@ import { useRouter } from "@repo/internationalization/navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { useId, useState } from "react";
+import { useAuth } from "@/lib/auth/provider";
 import { ApiError, callApi } from "@/lib/diwan/api";
 import { DiwanSection } from "../page";
 

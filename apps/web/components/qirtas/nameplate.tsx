@@ -1,8 +1,8 @@
 import type { Locale } from "@repo/internationalization";
 import { formatLongDate } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
-import { journal } from "@repo/sal-data";
 import { getTranslations } from "next-intl/server";
+import { journal } from "@/lib/data";
 import { roughlyNow } from "@/lib/this-year";
 import { DeskNav } from "./desk-nav";
 

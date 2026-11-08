@@ -1,10 +1,10 @@
 "use client";
 
-import { useAuth } from "@repo/auth/provider";
 import { Link } from "@repo/internationalization/navigation";
-import { unwrap } from "@repo/sal-data";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
+import { useAuth } from "@/lib/auth/provider";
+import { unwrap } from "@/lib/data";
 import { useMySubmissions } from "@/lib/diwan/queries";
 import { RowList } from "../page";
 import { Section } from "./section";

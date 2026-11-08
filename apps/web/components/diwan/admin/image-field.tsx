@@ -1,13 +1,13 @@
 "use client";
 
-import { useAuth } from "@repo/auth/provider";
 import { Button } from "@repo/brand/components/ui/button";
 import { Label } from "@repo/brand/components/ui/label";
-import { getMediaUrl, uploadMedia } from "@repo/storage";
-import { StorageError } from "@repo/storage/files";
 import { useTranslations } from "next-intl";
 import { useId, useState } from "react";
 import { FileInput } from "@/components/fields/file-input";
+import { useAuth } from "@/lib/auth/provider";
+import { getMediaUrl, uploadMedia } from "@/lib/storage";
+import { StorageError } from "@/lib/storage/files";
 
 interface ImageFieldProps {
   /** Folder in the public media bucket, e.g. "events". */

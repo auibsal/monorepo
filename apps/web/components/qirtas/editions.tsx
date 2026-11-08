@@ -2,9 +2,9 @@ import { SectionHead } from "@repo/brand/components/sal/section-head";
 import type { Locale } from "@repo/internationalization";
 import { formatClock, formatLongDate } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
-import { journal, localized } from "@repo/sal-data";
 import { getTranslations } from "next-intl/server";
 import { ViewTransition } from "react";
+import { journal, localized } from "@/lib/data";
 import { mediaUrl } from "@/lib/media";
 import { readPublished } from "@/lib/supabase";
 

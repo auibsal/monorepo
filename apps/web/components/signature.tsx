@@ -1,13 +1,13 @@
 "use client";
 
-import { useAuth } from "@repo/auth/provider";
 import { Guilloche, seedFromText } from "@repo/brand/components/sal/guilloche";
 import { cn } from "@repo/brand/lib/utils";
 import type { Locale } from "@repo/internationalization";
 import { formatLongDate } from "@repo/internationalization/format";
-import { membership } from "@repo/sal-data";
 import { useQuery } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
+import { useAuth } from "@/lib/auth/provider";
+import { membership } from "@/lib/data";
 import { useProfile } from "@/lib/diwan/queries";
 import { cardNumber, sealOf } from "@/lib/signature-seal";
 

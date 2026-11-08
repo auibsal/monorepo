@@ -2,7 +2,7 @@ import "server-only";
 
 import ar from "@repo/internationalization/messages/ar.json";
 import en from "@repo/internationalization/messages/en.json";
-import { forms } from "@repo/sal-data";
+import { forms } from "@/lib/data";
 
 type Lang = "en" | "ar";
 type Labels = Record<string, unknown>;

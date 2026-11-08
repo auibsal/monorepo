@@ -1,11 +1,11 @@
 import "server-only";
 
 import { createAdminClient } from "@repo/database/admin";
-import { parseError } from "@repo/observability/error";
-import { log } from "@repo/observability/log";
 import { revalidateTag } from "next/cache";
 import { env } from "@/env";
 import { diwan, origin } from "@/lib/api/urls";
+import { parseError } from "@/lib/observability/error";
+import { log } from "@/lib/observability/log";
 import { createNotion, type Notion, type NotionUser } from "./client";
 import type { Admin, Sources, SyncContext } from "./context";
 import { publishDocuments, syncAdoptionRecords } from "./documents";

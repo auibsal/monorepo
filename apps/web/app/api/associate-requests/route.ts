@@ -1,11 +1,11 @@
 import { createAdminClient } from "@repo/database/admin";
-import { parseError } from "@repo/observability/error";
-import { log } from "@repo/observability/log";
 import { z } from "zod";
 import { corsHeaders, preflight } from "@/lib/api/cors";
 import { respond } from "@/lib/api/problem";
 import { withinRateLimit } from "@/lib/api/rate-limit";
 import { isHuman } from "@/lib/api/turnstile";
+import { parseError } from "@/lib/observability/error";
+import { log } from "@/lib/observability/log";
 
 export const OPTIONS = preflight;
 

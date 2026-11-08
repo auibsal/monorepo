@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("server-only", () => ({}));
 vi.mock("@/env", () => ({ env: { TELEGRAM_BOT_TOKEN: "123:abc" } }));
-vi.mock("@repo/observability/log", () => ({ log: { warn: vi.fn() } }));
+vi.mock("@/lib/observability/log", () => ({ log: { warn: vi.fn() } }));
 
 const { telegramToUser } = await import("@/lib/api/telegram");
 

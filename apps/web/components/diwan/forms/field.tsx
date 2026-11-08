@@ -10,10 +10,10 @@ import {
   formatLongDate,
   formatNumber,
 } from "@repo/internationalization/format";
-import type { forms } from "@repo/sal-data";
 import { useLocale, useTranslations } from "next-intl";
 import { useId } from "react";
 import { DateInput } from "@/components/fields/date-input";
+import type { forms } from "@/lib/data";
 import { DateTimeField, SelectInput } from "../admin/kit";
 
 type Field = forms.FormField;

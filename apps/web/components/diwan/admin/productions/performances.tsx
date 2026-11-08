@@ -1,14 +1,14 @@
 "use client";
 
-import { useAuth } from "@repo/auth/provider";
 import { Button } from "@repo/brand/components/ui/button";
 import { Input } from "@repo/brand/components/ui/input";
 import { Textarea } from "@repo/brand/components/ui/textarea";
 import { formatClock, formatLongDate } from "@repo/internationalization/format";
-import { localized, productions, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
+import { useAuth } from "@/lib/auth/provider";
+import { localized, productions, unwrap } from "@/lib/data";
 import { SectionSpinner } from "../../states";
 import { ErrorLine, Field, SaveButton, SelectInput } from "../kit";
 import { useMemberNames } from "../member-picker";

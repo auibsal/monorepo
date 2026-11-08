@@ -1,6 +1,5 @@
 "use client";
 
-import { useAuth } from "@repo/auth/provider";
 import { Checkbox } from "@repo/brand/components/ui/checkbox";
 import { Input } from "@repo/brand/components/ui/input";
 import { Label } from "@repo/brand/components/ui/label";
@@ -9,13 +8,14 @@ import {
   formatLongDate,
   formatNumber,
 } from "@repo/internationalization/format";
-import { hasPermission } from "@repo/rbac";
-import { membership } from "@repo/sal-data";
 import { useQuery } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useDeferredValue, useId, useMemo, useState } from "react";
+import { useAuth } from "@/lib/auth/provider";
+import { membership } from "@/lib/data";
 import { Link } from "@/lib/diwan/navigation";
 import { useGrants } from "@/lib/diwan/queries";
+import { hasPermission } from "@/lib/rbac";
 import { ErrorState, SectionSpinner } from "../../states";
 import {
   AdminHeading,

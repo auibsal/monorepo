@@ -1,10 +1,10 @@
 import type { Locale } from "@repo/internationalization";
 import { Link } from "@repo/internationalization/navigation";
-import { journal, localized, programmes } from "@repo/sal-data";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { PieceColumn } from "@/components/qirtas/cards";
+import { journal, localized, programmes } from "@/lib/data";
 import { localizedMetadata } from "@/lib/metadata";
 import { PLACEHOLDER_SLUG } from "@/lib/placeholder";
 import { readPublished } from "@/lib/supabase";

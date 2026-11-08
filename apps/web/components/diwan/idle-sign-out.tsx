@@ -1,9 +1,9 @@
 "use client";
 
-import { useAuth } from "@repo/auth/provider";
 import { usePathname, useRouter } from "@repo/internationalization/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
+import { useAuth } from "@/lib/auth/provider";
 
 /** How long the Diwan stays signed in with nobody using it. */
 export const IDLE_MINUTES = 30;

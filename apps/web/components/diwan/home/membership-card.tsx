@@ -1,6 +1,5 @@
 "use client";
 
-import { useAuth } from "@repo/auth/provider";
 import {
   MembershipCard as CardFace,
   cardNumber,
@@ -17,11 +16,12 @@ import {
 } from "@repo/brand/components/ui/dialog";
 import { siteUrl } from "@repo/internationalization";
 import { formatLongDate } from "@repo/internationalization/format";
-import { membership, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import QRCode from "react-qr-code";
+import { useAuth } from "@/lib/auth/provider";
+import { membership, unwrap } from "@/lib/data";
 import { callApi } from "@/lib/diwan/api";
 import {
   useMemberStatus,

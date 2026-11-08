@@ -5,7 +5,7 @@ vi.mock("server-only", () => ({}));
 vi.mock("@/env", () => ({
   env: { CRON_SECRET: "c".repeat(40), TELEGRAM_BOT_USERNAME: "sal_test_bot" },
 }));
-vi.mock("@repo/auth/verify", () => ({ authenticateRequest: async () => null }));
+vi.mock("@/lib/auth/verify", () => ({ authenticateRequest: async () => null }));
 
 const { POST } = await import("@/app/api/telegram/setup/route");
 

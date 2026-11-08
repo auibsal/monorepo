@@ -1,12 +1,12 @@
 import type { Locale } from "@repo/internationalization";
 import { Link } from "@repo/internationalization/navigation";
-import { localized } from "@repo/sal-data";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { ManageLinks } from "@/components/manage-links";
 import { PageHeader, Section } from "@/components/section";
 import { loadProgramme } from "@/components/series";
 import { whatsOnPath } from "@/components/whats-on-page";
+import { localized } from "@/lib/data";
 import { roughlyNow } from "@/lib/this-year";
 import { monthFrom } from "@/lib/whats-on";
 

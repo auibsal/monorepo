@@ -11,7 +11,7 @@ disagrees; the conventions for every change are in `AGENTS.md`.
 - **The Council of nine.** The Executive Board (President, Vice President,
   General Secretary) and six directors (Editor-in-Chief, Director of
   Media, Artistic Director, Director of Events, Director of Partnerships,
-  Director of Membership); `isCouncil` in `@repo/rbac/roles.ts`, mirrored
+  Director of Membership); `isCouncil` in `lib/rbac/roles.ts`, mirrored
   from the database. Until a seat is filled, the President covers Events
   and the Artistic Director, the Vice President Partnerships, the General
   Secretary Membership; the role bundles give them those permissions. The
@@ -254,7 +254,7 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   `?view=list`); its record keeps the print run, printer and
   date.
 - **Games**, daily, made in the reader's browser and the same for everyone
-  on a Baghdad day (`@repo/sal-data/games`): the word, the word search,
+  on a Baghdad day (`lib/data/games`): the word, the word search,
   the crossword and the anagrams at `/qirtas/games/...`, checked ahead by
   the Games editors in the Newsroom's queue (`journal.game_checks`). No
   hand-made puzzles and no Edition calls (decisions §5): the standing call

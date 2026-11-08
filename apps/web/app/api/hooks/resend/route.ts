@@ -1,10 +1,10 @@
 import { createAdminClient } from "@repo/database/admin";
-import { log } from "@repo/observability/log";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { env } from "@/env";
 import { problem } from "@/lib/api/problem";
 import { verifySvix } from "@/lib/api/svix";
+import { log } from "@/lib/observability/log";
 
 const event = z.object({
   data: z

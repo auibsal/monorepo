@@ -1,13 +1,13 @@
 import { project } from "@repo/config";
 import { createAdminClient } from "@repo/database/admin";
-import { parseError } from "@repo/observability/error";
-import { log } from "@repo/observability/log";
 import { revalidateTag } from "next/cache";
 import { env } from "@/env";
 import { hasBearer } from "@/lib/api/bearer";
 import { parseIcal } from "@/lib/api/ical";
 import { problem } from "@/lib/api/problem";
 import { termsFromFeed } from "@/lib/api/terms";
+import { parseError } from "@/lib/observability/error";
+import { log } from "@/lib/observability/log";
 
 export const maxDuration = 60;
 

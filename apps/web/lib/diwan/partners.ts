@@ -1,8 +1,8 @@
 "use client";
 
-import { useAuth } from "@repo/auth/provider";
-import { unwrap } from "@repo/sal-data";
 import { useQuery } from "@tanstack/react-query";
+import { useAuth } from "@/lib/auth/provider";
+import { unwrap } from "@/lib/data";
 
 export interface MyPartner extends Record<string, unknown> {
   id: string;

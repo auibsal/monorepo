@@ -64,7 +64,7 @@ Every address is under auibsal.org: the Diwan at `/diwan`, the API at
 5. **One session, one origin.** The public pages, the Diwan and the API
    routes share auibsal.org, so the session cookie needs no domain setting.
    Production keeps `NEXT_PUBLIC_AUTH_COOKIE_DOMAIN=.auibsal.org` only
-   because existing sessions carry that domain (`packages/auth/cookies.ts`).
+   because existing sessions carry that domain (`apps/web/lib/auth/cookies.ts`).
 
 ## Data model
 

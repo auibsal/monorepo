@@ -1,11 +1,11 @@
-import { authenticateRequest } from "@repo/auth/verify";
-import { parseError } from "@repo/observability/error";
 import { env } from "@/env";
 import { corsHeaders, preflight } from "@/lib/api/cors";
 import { createNotion } from "@/lib/api/notion/client";
 import { accessLists, homeUrl, readSyncState } from "@/lib/api/notion/run";
 import { hasPermission } from "@/lib/api/permissions";
 import { respond } from "@/lib/api/problem";
+import { authenticateRequest } from "@/lib/auth/verify";
+import { parseError } from "@/lib/observability/error";
 
 export const OPTIONS = preflight;
 

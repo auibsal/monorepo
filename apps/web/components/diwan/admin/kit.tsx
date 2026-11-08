@@ -1,6 +1,5 @@
 "use client";
 
-import { useAuth } from "@repo/auth/provider";
 import { DataTable as BrandDataTable } from "@repo/brand/components/sal/data-table";
 import { Field } from "@repo/brand/components/sal/field";
 import {
@@ -22,7 +21,6 @@ import {
   fromZonedInputValue,
   toZonedInputValue,
 } from "@repo/internationalization/format";
-import { DataError } from "@repo/sal-data";
 import { useTranslations } from "next-intl";
 import {
   type ComponentProps,
@@ -32,6 +30,8 @@ import {
   useState,
 } from "react";
 import { DateInput } from "@/components/fields/date-input";
+import { useAuth } from "@/lib/auth/provider";
+import { DataError } from "@/lib/data";
 import { callApiText } from "@/lib/diwan/api";
 import { useAppLink } from "@/lib/link-context";
 import { ChoiceInput } from "./choice-input";

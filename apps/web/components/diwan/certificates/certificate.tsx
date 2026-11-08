@@ -1,6 +1,5 @@
 "use client";
 
-import { useAuth } from "@repo/auth/provider";
 import {
   type CertificateProps,
   Certificate as CertificateSheet,
@@ -9,9 +8,10 @@ import { Button } from "@repo/brand/components/ui/button";
 import { project } from "@repo/config";
 import { localizedPath } from "@repo/internationalization";
 import { formatPlainDate } from "@repo/internationalization/format";
-import { recognition, unwrap } from "@repo/sal-data";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
+import { useAuth } from "@/lib/auth/provider";
+import { recognition, unwrap } from "@/lib/data";
 import { useQueryParam } from "@/lib/diwan/use-query-param";
 import { EmptyLine, ErrorState, SectionSpinner } from "../states";
 

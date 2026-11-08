@@ -1,10 +1,10 @@
 import "server-only";
 
 import type { AdminClient } from "@repo/database/admin";
-import { log } from "@repo/observability/log";
-import { noticeMessage } from "@repo/telegram";
 import { Api, GrammyError } from "grammy";
 import { env } from "@/env";
+import { log } from "@/lib/observability/log";
+import { noticeMessage } from "@/lib/telegram";
 import { type Sticker, type StickerSet, stickerId } from "./bot/stickers";
 import type { PushNotice } from "./push";
 

@@ -1,9 +1,9 @@
 import { Link } from "@repo/internationalization/navigation";
-import { localized, partners } from "@repo/sal-data";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Institutions } from "@/components/institutions";
 import { ManageLinks } from "@/components/manage-links";
 import { PageHeader, Section } from "@/components/section";
+import { localized, partners } from "@/lib/data";
 import { mediaUrl } from "@/lib/media";
 import { type LocaleParams, sectionMetadata } from "@/lib/page";
 import { readPublished } from "@/lib/supabase";

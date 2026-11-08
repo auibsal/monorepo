@@ -1,6 +1,5 @@
 "use client";
 
-import { useAuth } from "@repo/auth/provider";
 import { SalCard } from "@repo/brand/components/sal/card";
 import { Button } from "@repo/brand/components/ui/button";
 import type { Locale } from "@repo/internationalization";
@@ -8,10 +7,11 @@ import {
   formatDateTime,
   formatNumber,
 } from "@repo/internationalization/format";
-import { governance, localized, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
+import { useAuth } from "@/lib/auth/provider";
+import { governance, localized, unwrap } from "@/lib/data";
 import { useRouter } from "@/lib/diwan/navigation";
 import { SectionSpinner } from "../../states";
 import {

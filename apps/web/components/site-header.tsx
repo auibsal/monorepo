@@ -1,6 +1,5 @@
 "use client";
 
-import { hasSessionCookie } from "@repo/auth/session-cookie";
 import { Icon } from "@repo/brand/components/sal/icon";
 import { cn } from "@repo/brand/lib/utils";
 import { diwanPath, localizedPath } from "@repo/internationalization";
@@ -9,6 +8,7 @@ import { Link, usePathname } from "@repo/internationalization/navigation";
 import NextLink from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { type ReactNode, useEffect, useRef, useState } from "react";
+import { hasSessionCookie } from "@/lib/auth/session-cookie";
 import { readWays, type Ways } from "@/lib/staff";
 import { Masthead, mastheadLink } from "./masthead";
 

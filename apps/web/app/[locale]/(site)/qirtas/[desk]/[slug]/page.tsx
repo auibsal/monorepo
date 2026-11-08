@@ -1,5 +1,4 @@
 import type { Locale } from "@repo/internationalization";
-import { journal } from "@repo/sal-data";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { setRequestLocale } from "next-intl/server";
@@ -8,6 +7,7 @@ import {
   PieceArticle,
   pieceMetadata,
 } from "@/components/qirtas/piece-page";
+import { journal } from "@/lib/data";
 import { PLACEHOLDER_SLUG } from "@/lib/placeholder";
 
 interface PieceProps {

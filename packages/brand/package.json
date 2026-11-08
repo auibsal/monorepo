@@ -31,7 +31,6 @@
   },
   "devDependencies": {
     "@playwright/test": "1.65.0",
-    "@repo/typescript-config": "workspace:*",
     "@storybook/addon-docs": "^10.6.6",
     "@storybook/addon-themes": "^10.6.6",
     "@storybook/nextjs": "^10.6.6",

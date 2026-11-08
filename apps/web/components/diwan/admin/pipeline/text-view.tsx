@@ -1,4 +1,4 @@
-import { sanitizeRichText } from "@repo/sal-data";
+import { sanitizeRichText } from "@/lib/data";
 
 /** Submitted rich text, sanitized again on the way out. */
 export const TextView = ({
