@@ -64,7 +64,6 @@ const MembershipMenu = ({
   extras: readonly Way[];
   way: Way;
 }) => {
-  const t = useTranslations("web.nav");
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
@@ -99,7 +98,6 @@ const MembershipMenu = ({
     <div className="relative" ref={ref}>
       <button
         aria-expanded={open}
-        aria-label={t("accountMenu")}
         className={cn(mastheadLink, "inline-flex items-center gap-1.5")}
         onClick={() => setOpen(!open)}
         type="button"

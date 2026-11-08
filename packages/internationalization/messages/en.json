@@ -5,7 +5,6 @@
     "motto": "The paper and the pen.",
     "programmeLine": "a Society of Arts and Letters program",
     "language": "Language",
-    "switchLanguage": "Switch language",
     "otherLanguage": "العربية",
     "theme": {
       "dark": "Dark mode",
@@ -4188,7 +4187,6 @@
       "involved": "Get involved",
       "search": "Search",
       "diwan": "The Diwan",
-      "accountMenu": "Membership menu",
       "company": "The Company",
       "partner": "Partner dashboard"
     },

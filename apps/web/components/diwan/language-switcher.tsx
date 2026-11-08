@@ -22,7 +22,6 @@ export const LanguageSwitcher = () => {
 
   return (
     <button
-      aria-label={t("switchLanguage")}
       className={cn(mastheadLink, "inline-flex items-center gap-1.5")}
       lang={other}
       onClick={() => {
