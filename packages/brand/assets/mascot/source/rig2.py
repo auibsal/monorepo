@@ -51,7 +51,6 @@ def eye(sc,kind):
 def beak(sc,open_=0):
     s=f'<path d="M 414 174 C 458 178 494 200 516 248 C 519 255 511 260 506 254 C 488 226 460 212 418 212 Z" fill="{sc["beak"]}"/>'
     if open_:
-        lo=f'<path d="M 420 214 C 446 218+{open_} 466 226+{open_} 478 242+{open_} C 472 246+{open_} 448 234+{open_} 418 226 Z"'
         lo=(f'<path d="M 418 212 C 446 {216+open_} 466 {226+open_} 478 {242+open_} C 472 {247+open_} 448 {236+open_} 416 222 Z" fill="{sc["beak"]}"/>')
         s=lo+s
     return s
