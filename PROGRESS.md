@@ -191,11 +191,12 @@ Part A first).
   CSP for your account and the Diwan; axe on every WCAG 2.1 A/AA rule; the
   public pages on a Pixel and an iPhone; keyboard journeys; signed share
   images; the Notion webhook; webhooks under `/api/hooks/*`.
-- [ ] **Audit F, left open on purpose:**
-  - F4 (after V1): moving DataTable, Field, ChoiceInput, Table, NavTabs,
-    EmptyState, ErrorState and ActionBar into `packages/brand` with
-    stories. They read the app's messages, auth and API helpers in 73
-    files, so each must first take its labels as props: its own change.
+- [x] **Audit F, the last items:**
+  - F4: the shared pieces are in `packages/brand/components/sal` with
+    stories (Components/Kit, Nov 8): DataTable, Field, ChoiceInput,
+    ErrorNotice, EmptyLine, PageError and ActionBar take their words as
+    props; the app's `kit.tsx`, `choice-input.tsx`, `states.tsx` and
+    `error-state.tsx` pass its messages, so their importers are unchanged.
   - F5: deploying only after migrations is done (Nov 8; the Deploy Hook
     is the owner's step above). Cache Components is on (Nov 8): public
     pages are prerendered around what each request needs; a record page
@@ -204,9 +205,9 @@ Part A first).
     `@repo/sal-data` through `setClock`. The bundle-size check is the
     performance budget the journeys already enforce on a mid-range phone
     (`apps/e2e/tests/performance.spec.ts`).
-  - F6: dropping the `charity` schema (empty; after it leaves the exposed
-    schemas). `supabase/setup-cli` is not needed: CI runs the CLI pinned
-    in the lockfile.
+  - F6: the `charity` schema is dropped and no longer exposed (Nov 8).
+    `supabase/setup-cli` is not needed: CI runs the CLI pinned in the
+    lockfile.
   - F7: coverage minimums are set (PR #250, `vitest.config.ts`): two
     points under Nov 8's coverage.
   - F1: AGENTS.md is cut to the conventions (Nov 8; the domain is in

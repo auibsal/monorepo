@@ -74,7 +74,9 @@ media do.
   (`BRAND-BOOK.md`), the assets (tokens, fonts, icons, logos, Hudhud, the
   social templates, the printables), and the code the app imports as
   `@repo/brand` (`styles/globals.css`, `components/ui` (shadcn),
-  `components/sal`, `lib`). Its stories are the Diwan's own page
+  `components/sal`, `lib`; the kit your account and the Diwan are built
+  from, DataTable, Field, ChoiceInput and the states, takes its words as
+  props). Its stories are the Diwan's own page
   `/diwan/media/design` (Guide, Foundations, Logos, Components, Emails,
   Social, Print; each entry at `/diwan/media/design/<entry>`,
   `components/diwan/admin/system/design.tsx`), drawn in place from the

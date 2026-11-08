@@ -1,3 +1,4 @@
+import { ActionBar } from "@repo/brand/components/sal/action-bar";
 import { Icon } from "@repo/brand/components/sal/icon";
 import type { Locale } from "@repo/internationalization";
 import { apiPath } from "@repo/internationalization";
@@ -9,7 +10,6 @@ import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { EventBooking } from "@/components/event-booking";
 import { EventParts } from "@/components/event-parts";
-import { ActionBar } from "@/components/frame/action-bar";
 import { ManageLinks } from "@/components/manage-links";
 import { eventLd, JsonLd } from "@/lib/json-ld";
 import { mediaUrl } from "@/lib/media";
