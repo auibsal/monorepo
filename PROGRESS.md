@@ -115,9 +115,11 @@ Part A first).
 
 - [ ] **Vercel → Environment Variables (Production):** add
   `TURNSTILE_SECRET_KEY` (the widget's secret) and `RESEND_WEBHOOK_SECRET`;
-  remove `RESEND_FROM`, `NEXT_PUBLIC_GTM_ID` and
-  `NEXT_PUBLIC_TAG_GATEWAY_PATH` (still set on Nov 8; nothing reads
-  them). Web Analytics and Speed Insights are on (Nov 8).
+  remove `NEXT_PUBLIC_SENTRY_DSN`, `SENTRY_ORG`, `SENTRY_PROJECT`,
+  `ARCJET_KEY`, `NEXT_PUBLIC_ADSENSE_CLIENT`, `NEXT_PUBLIC_ADSENSE_SLOT`
+  and the four `PASS_*` variables (nothing reads them). Done on Nov 8:
+  `RESEND_FROM`, `NEXT_PUBLIC_GTM_ID` and `NEXT_PUBLIC_TAG_GATEWAY_PATH`
+  removed; Web Analytics and Speed Insights on.
 - [ ] **Resend → Webhooks:** add `https://auibsal.org/api/hooks/resend` for
   `email.bounced` and `email.complained` (none is set up on Nov 8); its
   signing secret goes in Vercel as `RESEND_WEBHOOK_SECRET`. Until then a
