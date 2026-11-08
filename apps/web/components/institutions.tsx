@@ -33,7 +33,7 @@ export const Institutions = async ({
           const body = (
             <>
               <span className="type-label">{t(`roles.${item.role}`)}</span>
-              <span className="p-space-3 grid h-28 place-items-center">
+              <span className="py-space-3 grid h-28 items-center justify-items-start">
                 {/* biome-ignore lint/performance/noImgElement: a static logo file */}
                 <img
                   alt={name}

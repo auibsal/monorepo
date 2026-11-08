@@ -53,13 +53,12 @@ Clear space is one notch depth (about a quarter of the symbol's width) on every 
 
 ## AUIB's logos
 
-The University and its offices appear in one standard set, in `apps/web/public/institutions/`, all in AUIB's brand:
+The University and its offices appear in one standard set, in `apps/web/public/institutions/`, all in AUIB's brand and all made the same way:
 
-- **The University:** the AUIB mark alone (`auib`).
-- **An office or partner:** the AUIB mark, a hairline, then the name, over "American University of Iraq – Baghdad" (`student-life`, `cas`, `press`, `library`). The name is the office's own, without "AUIB", which the mark already carries: Office of Student Life, College of Arts and Sciences, Press, Library.
-- **One crimson (#AB1D3F) and one gray (#6D6E71).** Names in Ubuntu Bold, in title case, on one line or broken after "of"; the University line in Ubuntu Medium; hairlines in gray.
-- **Two versions of each:** color for paper (`<name>.svg`) and white for ink (`<name>-white.svg`). The page shows the one that suits its ground; never put the color version on ink.
-- **Shown side by side at the same height.** Never recolor, retype or rearrange one; a new office is drawn on the same grid.
+- **One layout.** The AUIB mark, a hairline as tall as the mark, then the name, its lines centered on the mark. The University's name is "American University of / Iraq – Baghdad"; each office or partner gives its own name without "AUIB", which the mark already carries: Office of Student Life, College of Arts and Sciences, Press, Library.
+- **One type, two colors.** Names in Ubuntu Bold, title case, on one line or broken after "of", in AUIB crimson (#AB1D3F); the hairline and the mark's AUIB in AUIB gray (#6D6E71).
+- **Transparent, in two versions.** Color for paper (`<name>.svg`) and white for ink (`<name>-white.svg`), with no background of their own. The page shows the one that suits its ground; never the color version on ink.
+- **Same size, same place.** Shown at one height, the marks aligned on the start edge. Never recolor, retype or rearrange one; a new office is drawn on the same grid.
 
 ## Never
 
