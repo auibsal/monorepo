@@ -2,7 +2,7 @@
 
 Hudhud (هدهد), the hoopoe, is the AUIB Society of Arts and Letters'
 Telegram bot. The code is in apps/web
-(`lib/api/bot`, routes `/api/telegram`, `/api/telegram/setup`,
+(`lib/api/bot`, routes `/api/hooks/telegram` (the webhook), `/api/telegram/setup`,
 `/api/telegram/link`, `/api/cron/telegram`);
 the mascot and its rules are in `packages/brand/assets/mascot`.
 
@@ -99,7 +99,7 @@ And without commands:
 - The bot is grammY inside the API routes, the only code with secrets: the
   Telegram token sits next to the Supabase secret key, and the same code
   sends the Diwan notices to Telegram. Telegram delivers updates to
-  `auibsal.org/api/telegram` with the webhook secret; anything without it
+  `auibsal.org/api/hooks/telegram` with the webhook secret; anything without it
   is refused. The bot's identity comes from the token and
   `TELEGRAM_BOT_USERNAME`, so a cold start makes no extra call to
   Telegram.

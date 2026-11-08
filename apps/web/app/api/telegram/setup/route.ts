@@ -14,7 +14,7 @@ export const OPTIONS = preflight;
 
 const body = z.object({ connect: z.boolean().default(false) });
 
-const webhookUrl = () => api("/telegram");
+const webhookUrl = () => api("/hooks/telegram");
 
 /**
  * POST /telegram/setup, for the Desk's Connected panel (settings

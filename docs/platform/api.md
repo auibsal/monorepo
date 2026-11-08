@@ -7,7 +7,8 @@ means the route re-checks a permission with `hasPermission`. Public forms
 check Turnstile (`lib/api/turnstile.ts`) and a limit per address in the
 database (`withinRateLimit`).
 
-Errors are RFC 9457 problem details (`application/problem+json`, from
+Webhooks (calls from outside services) live under `/api/hooks/*`, the
+scheduled jobs under `/api/cron/*`. Errors are RFC 9457 problem details (`application/problem+json`, from
 `lib/api/problem.ts`): `type`, `title` and `status`, with the route's short
 code in `error` (`"unauthorized"`, `"invalid_request"`, …), which the
 Diwan's `callApi` reads. Shared secrets are checked by one helper,
@@ -36,6 +37,8 @@ the secret is unset.
 | `/api/forms/sign` | POST | Anyone signing without an account; anonymous concerns | Turnstile, or a single-use form link | per address |
 | `/api/health` | GET | Uptime checks | Public (`no-store`) | — |
 | `/api/hooks/outbox` | POST | The Supabase database webhook on `core.outbox` | `DATABASE_WEBHOOK_SECRET` Bearer | — |
+| `/api/hooks/telegram` | POST | Telegram (Hudhud’s webhook) | `TELEGRAM_WEBHOOK_SECRET` header | — |
+| `/api/hooks/wallet` | POST | Google Wallet (a pass saved or removed) | Google’s signed message | — |
 | `/api/hooks/resend` | POST | Resend (bounces and complaints) | Svix signature (`RESEND_WEBHOOK_SECRET`) | — |
 | `/api/invitations/test` | POST | The Diwan (an invitation list’s test) | Member + permission | — |
 | `/api/newsletter/confirm` | POST | The confirmation page | The emailed token | — |
@@ -47,7 +50,6 @@ the secret is unset.
 | `/api/push/test` | POST | The member’s notification settings | Member | — |
 | `/api/removal-requests` | POST | Anyone (a request to take something down) | Turnstile | per address |
 | `/api/revalidate` | POST | Outside callers refreshing published pages | `REVALIDATE_SECRET` Bearer | — |
-| `/api/telegram` | POST | Telegram (Hudhud’s webhook) | `TELEGRAM_WEBHOOK_SECRET` header | — |
 | `/api/telegram/link` | POST | The member (link Telegram) | Member | — |
 | `/api/telegram/setup` | POST | The Diwan (set the webhook) | Member + permission | — |
 | `/api/tour/photo` | POST | Whoever runs the Tour; the page’s writer | Member | — |
@@ -56,7 +58,6 @@ the secret is unset.
 | `/api/two-step/recovery-codes` | POST | The member | Member (aal2) | — |
 | `/api/two-step/reset` | POST | Whoever holds `roles.assign` | Member + permission | — |
 | `/api/wallet/google` | POST | The member (Add to Google Wallet) | Member | — |
-| `/api/wallet/google/callback` | POST | Google Wallet | Google’s signed message | — |
 
 The scheduled jobs that call these, and those that run inside Postgres,
 are in `docs/platform/overview.md` (Scheduled jobs).

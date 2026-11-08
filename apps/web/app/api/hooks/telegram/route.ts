@@ -1,13 +1,14 @@
 import { webhookCallback } from "grammy";
 import { env } from "@/env";
 import { sharedBot } from "@/lib/api/bot/bot";
+import { problem } from "@/lib/api/problem";
 
 export const maxDuration = 30;
 
 let handle: ((request: Request) => Promise<Response>) | undefined;
 
 /**
- * POST /telegram: updates from Telegram for Hudhud, the Society's bot
+ * POST /hooks/telegram: updates from Telegram for Hudhud, the Society's bot
  * (lib/bot). grammY checks the secret token Telegram sends with every
  * update and refuses anything without it. An update that takes too long is
  * answered anyway, so Telegram does not send it again meanwhile.
@@ -15,7 +16,7 @@ let handle: ((request: Request) => Promise<Response>) | undefined;
 export const POST = (request: Request) => {
   const secretToken = env.TELEGRAM_WEBHOOK_SECRET;
   if (!(secretToken && env.TELEGRAM_BOT_TOKEN)) {
-    return Response.json({ ok: false }, { status: 503 });
+    return problem(503, "not_configured");
   }
   handle ??= webhookCallback(sharedBot(), "std/http", {
     onTimeout: "return",

@@ -60,7 +60,7 @@ media do.
     the outbox, Resend Broadcasts (`lib/api/broadcast.ts`), cron, calendar
     feeds, exports, signed URLs, account deletion, Google Wallet, the
     Notion sync (`lib/api/notion`) and Hudhud, the Society's Telegram bot
-    (`lib/api/bot`, grammY; webhook `/api/telegram`;
+    (`lib/api/bot`, grammY; webhook `/api/hooks/telegram`;
     `docs/platform/telegram.md`). The only code that reads the secret key.
     The bot acts for a member only through the `core.telegram_*`
     functions, which run the Diwan functions under the member's claims so

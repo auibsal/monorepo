@@ -194,7 +194,7 @@ export const googleWalletLink = async (card: WalletCard) => {
       // Used only when the class doesn't exist yet.
       genericClasses: [
         {
-          callbackOptions: { url: api("/wallet/google/callback") },
+          callbackOptions: { url: api("/hooks/wallet") },
           id: walletClassId(),
           multipleDevicesAndHoldersAllowedStatus: "ONE_USER_ALL_DEVICES",
         },
@@ -355,7 +355,7 @@ export const ensureWalletCallback = async () => {
     `${WALLET_API}/genericClass/${encodeURIComponent(walletClassId())}`,
     {
       body: JSON.stringify({
-        callbackOptions: { url: api("/wallet/google/callback") },
+        callbackOptions: { url: api("/hooks/wallet") },
       }),
       headers: {
         authorization: `Bearer ${await accessToken()}`,
