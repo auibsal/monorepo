@@ -63,8 +63,9 @@ test.describe("public site", () => {
       page.getByRole("link", { name: /AUIB’s calendar/u })
     ).toHaveAttribute("href", /auib\.edu\.iq/u);
     await expectAccessible(page);
-    await page.goto(`${urls.web}/events/${month}`);
-    await expect(page).toHaveURL(new RegExp(`/events\\?month=${month}$`, "u"));
+    // A month is a query string; the old path-style address is not found.
+    const old = await page.goto(`${urls.web}/events/${month}`);
+    expect(old?.status()).toBe(404);
     // A month with nothing in it points to what comes next.
     await page.goto(`${urls.web}/events?month=2026-01`);
     const next = page.getByText("Next:");
