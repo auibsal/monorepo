@@ -3,7 +3,7 @@ import "server-only";
 import { project } from "@repo/config";
 import type { AdminClient } from "@repo/database/admin";
 import { log } from "@repo/observability/log";
-import webpush from "web-push";
+import { sendNotification, WebPushError } from "web-push";
 import { env } from "@/env";
 
 /**
@@ -49,7 +49,7 @@ export const pushToUser = async (
   const results = await Promise.all(
     (devices ?? []).map(async (device) => {
       try {
-        await webpush.sendNotification(
+        await sendNotification(
           {
             endpoint: device.endpoint,
             keys: { auth: device.auth, p256dh: device.p256dh },
@@ -67,8 +67,7 @@ export const pushToUser = async (
         );
         return true;
       } catch (error) {
-        const status =
-          error instanceof webpush.WebPushError ? error.statusCode : 0;
+        const status = error instanceof WebPushError ? error.statusCode : 0;
         if (GONE.has(status)) {
           await admin
             .schema("core")
