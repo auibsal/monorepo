@@ -14,6 +14,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useEffect, useId, useState } from "react";
 import { FileInput } from "@/components/fields/file-input";
+import { callApi } from "@/lib/diwan/api";
 import { Link, useRouter } from "@/lib/diwan/navigation";
 import { useGrants } from "@/lib/diwan/queries";
 import { useQueryParam } from "@/lib/diwan/use-query-param";
@@ -494,6 +495,12 @@ const Media = ({ record }: { record: PieceRecord }) => {
       ),
     onSettled: refresh,
   });
+  // A piece accepted from a submission takes the writer's images, their
+  // metadata stripped (/api/qirtas/images).
+  const fromSubmission = useMutation({
+    mutationFn: () => callApi(supabase, "/qirtas/images", { piece: pieceId }),
+    onSettled: refresh,
+  });
   const remove = useMutation({
     mutationFn: async (mediaId: string) =>
       unwrap(
@@ -580,6 +587,18 @@ const Media = ({ record }: { record: PieceRecord }) => {
           );
         })}
       </ol>
+      {record.piece?.submission_id && record.media.length === 0 ? (
+        <div className="flex flex-wrap gap-2">
+          <Button
+            disabled={fromSubmission.isPending}
+            onClick={() => fromSubmission.mutate()}
+            size="sm"
+            variant="outline"
+          >
+            {t("fromSubmission")}
+          </Button>
+        </div>
+      ) : null}
       <div className="grid gap-2">
         <Label htmlFor={id}>{t("add")}</Label>
         <FileInput
@@ -597,7 +616,11 @@ const Media = ({ record }: { record: PieceRecord }) => {
         />
         <p className="type-caption">{t("hint")}</p>
       </div>
-      <ErrorLine error={upload.error ?? update.error ?? remove.error} />
+      <ErrorLine
+        error={
+          upload.error ?? fromSubmission.error ?? update.error ?? remove.error
+        }
+      />
     </section>
   );
 };

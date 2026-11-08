@@ -2676,6 +2676,7 @@
           "earlier": "Move earlier",
           "remove": "Remove",
           "add": "Add images",
+          "fromSubmission": "Use the images the writer sent",
           "hint": "JPEG, PNG or WebP, up to 25 MB each. At least 3,000 px on the long side for Gallery work. Only images whose identifiable people consented."
         },
         "credits": {
